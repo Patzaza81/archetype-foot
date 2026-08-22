@@ -1,0 +1,64 @@
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, Arial, sans-serif;
+  margin: 0;
+  padding: 16px;
+  background: #0f1115;
+  color: #e7e7e7;
+}
+header { margin-bottom: 16px; }
+h1 { font-size: 1.4rem; margin: 0 0 4px; }
+#maj { color: #9aa0a6; font-size: 0.85rem; margin: 0; }
+
+/* Mobile par défaut : une seule colonne */
+.grille {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+/* Tablette : 2 colonnes */
+@media (min-width: 640px) {
+  .grille { grid-template-columns: repeat(2, 1fr); }
+  body { padding: 24px; }
+}
+
+/* Desktop : 3 colonnes, largeur max pour ne pas étirer les cartes */
+@media (min-width: 1024px) {
+  .grille { grid-template-columns: repeat(3, 1fr); }
+  body { max-width: 1200px; margin: 0 auto; padding: 32px; }
+  h1 { font-size: 1.8rem; }
+}
+
+.match {
+  background: #1a1d24;
+  border-radius: 10px;
+  padding: 14px 16px;
+  border: 1px solid #2a2e37;
+  min-width: 0; /* évite le débordement du texte long dans la grille */
+}
+.match .teams {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.match .meta {
+  color: #9aa0a6;
+  font-size: 0.8rem;
+  margin-top: 4px;
+}
+.match .signal {
+  margin-top: 8px;
+  font-size: 0.9rem;
+}
+.standout {
+  border-color: #d4af37;
+  box-shadow: 0 0 0 1px #d4af37 inset;
+}
+.mise {
+  color: #4caf50;
+  font-weight: 600;
+}
