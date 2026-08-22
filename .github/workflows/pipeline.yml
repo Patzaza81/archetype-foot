@@ -1,0 +1,57 @@
+name: Pipeline quotidien Archetype Foot
+
+on:
+  schedule:
+    - cron: "0 7 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Installer les dépendances
+        run: pip install requests beautifulsoup4 pandas lxml
+
+      - name: Lancer le scraper matchendirect (dump brut pour diagnostic)
+        run: |
+          python scraper.py --sortie /tmp/matches_debug.json
+          echo "--- Aperçu des matchs extraits (matchendirect) ---"
+          cat /tmp/matches_debug.json
+
+      - name: Lancer le scraper BeSoccer (dump brut pour diagnostic, PSG en test)
+        run: |
+          python -c "
+          from scraper_besoccer import recupere_gf_ga_dom_ext, recupere_historique_matchs
+          import json
+          try:
+              gf_ga = recupere_gf_ga_dom_ext('paris-saint-germain-fc')
+              print('GF/GA dom/ext PSG:', json.dumps(gf_ga, indent=2))
+          except Exception as e:
+              print('ÉCHEC GF/GA:', e)
+          try:
+              historique = recupere_historique_matchs('paris-saint-germain-fc', max_matchs=5)
+              print('Historique PSG:', json.dumps(historique, indent=2, ensure_ascii=False))
+          except Exception as e:
+              print('ÉCHEC historique:', e)
+          "
+        continue-on-error: true
+
+      - name: Lancer le pipeline complet
+        run: python run_pipeline.py
+
+      - name: Commit et push du résultat
+        run: |
+          git config user.name "archetype-foot-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data.json
+          git diff --staged --quiet || git commit -m "Mise à jour quotidienne des données"
+          git push
