@@ -1,0 +1,411 @@
+"""
+calculs.py — Portage déterministe des Règles N3 / N4 / N6 / N7 (Module 2 v4.3)
+et de l'Étape 7 (Module 3 v6.3), UNIQUEMENT la partie mathématique fixe.
+
+Ce fichier N'IMPLÉMENTE PAS :
+- la vérification de fraîcheur des pages sources (Module 1)
+- la détection de pénalités de points (Module 1)
+- le risque de rotation continentale (Module 1 v1.7)
+- la double vérification des handicaps 3 voies (Module 3, Étape 4)
+- toute analyse de corrélation sémantique entre marchés (nécessite jugement,
+  pas juste un chiffre — cf. SEUIL_CORRELATION ci-dessous, implémenté seulement
+  pour le cas simple "même match, marchés mécaniquement liés")
+
+Ces points restent des tâches manuelles ou une v2 — les inclure de façon fiable
+avant demain reviendrait à réécrire en code un jugement d'agent, pas juste une formule.
+
+Constantes reprises telles quelles de TABLEAU_RECAPITULATIF.md (gelées jusqu'à
+backtest historique — ne pas modifier sans repasser par ce document).
+"""
+
+import math
+
+# --- Constantes gelées (Module 2 / Module 3) ---
+GA_REFERENCE = 1.35
+BORNE_MIN_DEFENSE = 0.70
+BORNE_MAX_DEFENSE = 1.30
+
+POIDS_FORME = 0.30
+POIDS_CLASSEMENT = 0.20
+POIDS_REPOS = 0.15
+POIDS_ABSENCES = 0.15
+POIDS_DISTANCE = 0.10
+POIDS_H2H = 0.10
+BORNE_RATIO = 0.15  # borne +/- par facteur avant pondération
+
+RHO_DIXON_COLES = -0.1
+
+SEUIL_EV_MIN = 0.05
+FOURCHETTE_COTE_MIN = 1.25
+FOURCHETTE_COTE_MAX = 1.69
+SEUIL_CORRELATION = 0.70
+KELLY_FRACTION = 0.25
+MISE_MAX_PARI = 0.04
+CLUSTER_MAX = 0.10
+NB_PARIS_MAX = 3
+SEUIL_STANDOUT = 0.15
+
+CONFIANCE_LAMBDA_SEUILS = {"FAIBLE": 8, "MOYENNE": 15}  # < 8 = FAIBLE, < 15 = MOYENNE, sinon NORMALE
+
+
+def clamp(x, lo, hi):
+    return max(lo, min(hi, x))
+
+
+def confiance_lambda(nb_matchs_utilises: int) -> str:
+    """Étape 5bis — indicateur descriptif, ne modifie aucun calcul."""
+    if nb_matchs_utilises < CONFIANCE_LAMBDA_SEUILS["FAIBLE"]:
+        return "FAIBLE"
+    if nb_matchs_utilises < CONFIANCE_LAMBDA_SEUILS["MOYENNE"]:
+        return "MOYENNE"
+    return "NORMALE"
+
+
+def calcule_lambda(gf_home_domicile, ga_home_domicile, gf_away_exterieur, ga_away_exterieur,
+                    ratios_contextuels_home=None, ratios_contextuels_away=None):
+    """
+    Règle N3 — reproduit Étapes 1 à 4 du Module 2 v4.3 à l'identique.
+    ratios_contextuels_* : dict optionnel avec les clés parmi
+        {"forme", "classement", "repos", "absences", "distance", "h2h"}
+        chaque valeur déjà exprimée en ratio relatif à l'adversaire, non bornée.
+    """
+    poids = {
+        "forme": POIDS_FORME, "classement": POIDS_CLASSEMENT, "repos": POIDS_REPOS,
+        "absences": POIDS_ABSENCES, "distance": POIDS_DISTANCE, "h2h": POIDS_H2H,
+    }
+
+    def ajustement(ratios):
+        if not ratios:
+            return 0.0
+        num, den = 0.0, 0.0
+        for cle, valeur in ratios.items():
+            if cle not in poids:
+                continue
+            r = clamp(valeur, -BORNE_RATIO, BORNE_RATIO)
+            num += poids[cle] * r
+            den += poids[cle]
+        return num / den if den > 0 else 0.0
+
+    lambda_home_base = gf_home_domicile
+    lambda_away_base = gf_away_exterieur
+
+    modifier_defense_away = clamp(ga_away_exterieur / GA_REFERENCE, BORNE_MIN_DEFENSE, BORNE_MAX_DEFENSE)
+    modifier_defense_home = clamp(ga_home_domicile / GA_REFERENCE, BORNE_MIN_DEFENSE, BORNE_MAX_DEFENSE)
+
+    lambda_home_prelim = lambda_home_base * modifier_defense_away
+    lambda_away_prelim = lambda_away_base * modifier_defense_home
+
+    ajustement_home = ajustement(ratios_contextuels_home)
+    ajustement_away = ajustement(ratios_contextuels_away)
+
+    lambda_home = lambda_home_prelim * math.exp(ajustement_home)
+    lambda_away = lambda_away_prelim * math.exp(ajustement_away)
+
+    return {
+        "lambda_home": lambda_home,
+        "lambda_away": lambda_away,
+        "audit": {
+            "lambda_home_base": lambda_home_base,
+            "lambda_away_base": lambda_away_base,
+            "modifier_defense_home": modifier_defense_home,
+            "modifier_defense_away": modifier_defense_away,
+            "ajustement_home": ajustement_home,
+            "ajustement_away": ajustement_away,
+        },
+    }
+
+
+def _tau_dixon_coles(x, y, lambda_home, lambda_away, rho=RHO_DIXON_COLES):
+    """Correction Dixon-Coles standard sur les 4 cases de score bas."""
+    if x == 0 and y == 0:
+        return 1 - lambda_home * lambda_away * rho
+    if x == 0 and y == 1:
+        return 1 + lambda_home * rho
+    if x == 1 and y == 0:
+        return 1 + lambda_away * rho
+    if x == 1 and y == 1:
+        return 1 - rho
+    return 1.0
+
+
+def matrice_poisson_dixon_coles(lambda_home, lambda_away, max_buts=5):
+    """Règle N6 — tableau P(k,j) pour k,j de 0 à max_buts, agrégé en '5+' au-delà."""
+
+    def poisson_pmf(k, lam):
+        return (lam ** k) * math.exp(-lam) / math.factorial(k)
+
+    matrice = {}
+    for x in range(max_buts + 1):
+        for y in range(max_buts + 1):
+            p = poisson_pmf(x, lambda_home) * poisson_pmf(y, lambda_away)
+            p *= _tau_dixon_coles(x, y, lambda_home, lambda_away)
+            matrice[(x, y)] = max(p, 0.0)
+
+    total = sum(matrice.values())
+    if total > 0:
+        matrice = {k: v / total for k, v in matrice.items()}
+    return matrice
+
+
+def probabilite_marche(matrice, condition):
+    """condition: fonction(x, y) -> bool. Somme les cases correspondantes."""
+    return sum(p for (x, y), p in matrice.items() if condition(x, y))
+
+
+# --- Marchés dérivés de la matrice, ajoutés pour couvrir la palette complète ---
+# Tous calculables à partir de la MÊME matrice Poisson/Dixon-Coles déjà produite.
+# Aucun de ces marchés ne nécessite une nouvelle source de données -- seulement
+# une cote de marché à comparer (saisie manuelle ou scrapée).
+
+def probabilite_over_under(matrice, ligne, sens="over"):
+    """
+    Plus de/Moins de X.5 buts (total match, ou déjà filtré sur une seule équipe
+    si `matrice` a été réduite à une seule dimension avant l'appel).
+    ligne : ex. 2.5 pour "Plus de 2.5 buts"
+    """
+    seuil = int(ligne)  # 2.5 -> 2 (le seuil est le nombre entier juste en dessous)
+    if sens == "over":
+        return probabilite_marche(matrice, lambda x, y: (x + y) > ligne)
+    return probabilite_marche(matrice, lambda x, y: (x + y) < ligne)
+
+
+def probabilite_over_under_equipe(matrice, ligne, equipe="domicile", sens="over"):
+    """Plus de/Moins de X.5 buts pour UNE équipe seulement (pas le total du match)."""
+    idx = 0 if equipe == "domicile" else 1
+    if sens == "over":
+        return probabilite_marche(matrice, lambda x, y: (x if idx == 0 else y) > ligne)
+    return probabilite_marche(matrice, lambda x, y: (x if idx == 0 else y) < ligne)
+
+
+def probabilite_btts(matrice, sens="oui"):
+    """Les deux équipes marquent (BTTS)."""
+    if sens == "oui":
+        return probabilite_marche(matrice, lambda x, y: x > 0 and y > 0)
+    return probabilite_marche(matrice, lambda x, y: x == 0 or y == 0)
+
+
+def probabilite_score_exact(matrice, score_home, score_away):
+    """Score exact -- lecture directe de la matrice, aucun calcul supplémentaire."""
+    return matrice.get((score_home, score_away), 0.0)
+
+
+def probabilite_cages_inviolees(matrice, equipe="domicile"):
+    """Cages inviolées (clean sheet) pour l'équipe désignée."""
+    if equipe == "domicile":
+        return probabilite_marche(matrice, lambda x, y: y == 0)
+    return probabilite_marche(matrice, lambda x, y: x == 0)
+
+
+def probabilite_impair_pair(matrice, sens="impair"):
+    """Nombre total de buts impair ou pair."""
+    if sens == "impair":
+        return probabilite_marche(matrice, lambda x, y: (x + y) % 2 == 1)
+    return probabilite_marche(matrice, lambda x, y: (x + y) % 2 == 0)
+
+
+def probabilite_nombre_exact_buts(matrice, n, plafond_ouvert=6):
+    """Nombre exact de buts dans le match. n >= plafond_ouvert agrège en 'n+'."""
+    if n >= plafond_ouvert:
+        return probabilite_marche(matrice, lambda x, y: (x + y) >= plafond_ouvert)
+    return probabilite_marche(matrice, lambda x, y: (x + y) == n)
+
+
+def calcule_ev(probabilite_modele, cote_observee):
+    """Règle N7 — EV = (cote x probabilité) - 1. Jamais de mélange modèle/marché avant ce calcul."""
+    if cote_observee is None:
+        return None
+    return (cote_observee * probabilite_modele) - 1
+
+
+def kelly_stake(probabilite_modele, cote_observee):
+    """
+    Étape 7 Module 3 — Kelly fractionné à 25%, plafonné à MISE_MAX_PARI (4%).
+    Retourne 0 si le pari est filtré (hors fourchette de cote ou EV insuffisant).
+    """
+    if cote_observee is None:
+        return 0.0
+    ev = calcule_ev(probabilite_modele, cote_observee)
+    if ev is None or ev < SEUIL_EV_MIN:
+        return 0.0
+    if not (FOURCHETTE_COTE_MIN <= cote_observee <= FOURCHETTE_COTE_MAX):
+        return 0.0
+
+    b = cote_observee - 1
+    p = probabilite_modele
+    q = 1 - p
+    f_kelly = (b * p - q) / b if b > 0 else 0.0
+    if f_kelly <= 0:
+        return 0.0
+
+    mise = f_kelly * KELLY_FRACTION
+    return min(mise, MISE_MAX_PARI)
+
+
+def est_standout(probabilite_modele, cote_observee):
+    """Critère 'Pari en or' (Module 4) — EV >= SEUIL_STANDOUT."""
+    ev = calcule_ev(probabilite_modele, cote_observee)
+    return ev is not None and ev >= SEUIL_STANDOUT
+
+
+##############################################################################
+# EXTENSION MARCHÉS — 25/08/2026
+#
+# Toutes les fonctions ci-dessous dérivent UNIQUEMENT de la matrice Poisson/
+# Dixon-Coles déjà calculée par matrice_poisson_dixon_coles(). Aucune donnée
+# supplémentaire requise, aucune nouvelle source à scraper. C'est la réponse
+# concrète au constat : le nombre de marchés couvrables n'a jamais été limité
+# par la source de cotes, seulement par le code qu'on avait écrit jusqu'ici.
+#
+# HORS PÉRIMÈTRE VOLONTAIRE (pas oublié, exclu consciemment) :
+# - Marchés 1ère/2ème mi-temps : nécessitent des lambdas mi-temps séparés
+#   (Règle N5 Module 2), qui nécessitent eux-mêmes l'historique détaillé des
+#   scores à la mi-temps sur plusieurs matchs — donnée non confirmée
+#   disponible en scraping simple (voir discussion du 22/08). Tant que cette
+#   donnée n'est pas branchée, ces marchés restent NON_CALCULABLE.
+# - Cartons, corners, buteurs, joueurs : pas de modèle statistique pour ça
+#   dans ce pipeline. Un modèle Poisson sur les buts ne prédit pas les cartons.
+##############################################################################
+
+
+def probabilite_double_chance(matrice):
+    p1 = probabilite_marche(matrice, lambda x, y: x > y)
+    pn = probabilite_marche(matrice, lambda x, y: x == y)
+    p2 = probabilite_marche(matrice, lambda x, y: x < y)
+    return {"1X": p1 + pn, "12": p1 + p2, "X2": pn + p2}
+
+
+def probabilite_over_under(matrice, ligne, equipe=None):
+    """
+    equipe=None -> total buts du match. equipe='home'/'away' -> buts d'une
+    seule équipe. ligne peut être un demi-entier (0.5, 1.5, 2.5...) ou un
+    entier (traité comme ligne asiatique simple, sans push géré ici).
+    """
+    if equipe == "home":
+        cond_total = lambda x, y: x
+    elif equipe == "away":
+        cond_total = lambda x, y: y
+    else:
+        cond_total = lambda x, y: x + y
+
+    plus = sum(p for (x, y), p in matrice.items() if cond_total(x, y) > ligne)
+    moins = sum(p for (x, y), p in matrice.items() if cond_total(x, y) < ligne)
+    egal = sum(p for (x, y), p in matrice.items() if cond_total(x, y) == ligne)
+    # ligne entière -> push possible (egal), redistribué nulle part ici :
+    # affiché tel quel, à interpréter comme "push" si ligne entière.
+    return {"plus": plus, "moins": moins, "push": egal}
+
+
+def probabilite_btts(matrice):
+    oui = sum(p for (x, y), p in matrice.items() if x > 0 and y > 0)
+    return {"oui": oui, "non": 1 - oui}
+
+
+def probabilite_handicap_2choix(matrice, ligne_domicile):
+    """
+    ligne_domicile : handicap appliqué à l'équipe à domicile, ex: -1.5 signifie
+    "domicile doit gagner par 2 buts d'écart ou plus pour couvrir".
+    Lignes demi-entières uniquement (pas de push possible) — conforme au
+    filtre v1 qui exclut les tableaux à push ambigus (Handicap à 3 choix).
+    """
+    if ligne_domicile == int(ligne_domicile):
+        raise ValueError("probabilite_handicap_2choix ne gère que les lignes demi-entières (pas de push). "
+                          "Pour les lignes entières, saisie manuelle requise (Handicap à 3 choix).")
+    domicile_couvre = sum(
+        p for (x, y), p in matrice.items() if (x + ligne_domicile) > y
+    )
+    return {"domicile": domicile_couvre, "exterieur": 1 - domicile_couvre}
+
+
+def probabilite_score_exact(matrice, x, y):
+    return matrice.get((x, y), 0.0)
+
+
+def probabilite_nombre_exact_buts(matrice, n):
+    """Probabilité que le total de buts soit EXACTEMENT n (pas un cumul)."""
+    return sum(p for (bx, by), p in matrice.items() if bx + by == n)
+
+
+def probabilite_nombre_buts_ou_plus(matrice, n):
+    """Probabilité que le total de buts soit >= n. Sert uniquement pour la
+    queue de distribution (ex: '6+'), jamais pour une valeur isolée — sinon
+    on mélangerait deux granularités différentes dans la même clé."""
+    return sum(p for (bx, by), p in matrice.items() if bx + by >= n)
+
+
+def probabilite_pair_impair(matrice):
+    pair = sum(p for (x, y), p in matrice.items() if (x + y) % 2 == 0)
+    return {"pair": pair, "impair": 1 - pair}
+
+
+def probabilite_cages_inviolees(matrice, equipe):
+    """P(l'adversaire de `equipe` ne marque pas) — 'clean sheet' pour `equipe`."""
+    if equipe == "home":
+        oui = sum(p for (x, y), p in matrice.items() if y == 0)
+    else:
+        oui = sum(p for (x, y), p in matrice.items() if x == 0)
+    return {"oui": oui, "non": 1 - oui}
+
+
+def construit_probabilites_marches(matrice, lignes_ou=(0.5, 1.5, 2.5, 3.5, 4.5),
+                                    lignes_handicap=(-2.5, -1.5, -0.5, 0.5, 1.5, 2.5)):
+    """
+    Construit le dictionnaire complet des probabilités modèle pour tous les
+    marchés v1 (buts uniquement). Clés stables, consommées telles quelles par
+    le frontend (script.js) pour le rapprochement avec les cotes collées
+    manuellement. NE PAS renommer les clés sans mettre à jour script.js en
+    même temps — une seule source de vérité pour le schéma, dupliquée dans
+    les deux langages faute d'un backend qui tournerait à la demande.
+    """
+    marches = {
+        "1x2": {
+            "1": probabilite_marche(matrice, lambda x, y: x > y),
+            "X": probabilite_marche(matrice, lambda x, y: x == y),
+            "2": probabilite_marche(matrice, lambda x, y: x < y),
+        },
+        "double_chance": probabilite_double_chance(matrice),
+        "btts": probabilite_btts(matrice),
+        "pair_impair": probabilite_pair_impair(matrice),
+        "cages_inviolees_domicile": probabilite_cages_inviolees(matrice, "home"),
+        "cages_inviolees_exterieur": probabilite_cages_inviolees(matrice, "away"),
+        "over_under": {},
+        "over_under_domicile": {},
+        "over_under_exterieur": {},
+        "handicap": {},
+        "score_exact": {},
+        "nombre_exact_buts": {},
+    }
+
+    for ligne in lignes_ou:
+        marches["over_under"][str(ligne)] = probabilite_over_under(matrice, ligne)
+        marches["over_under_domicile"][str(ligne)] = probabilite_over_under(matrice, ligne, "home")
+        marches["over_under_exterieur"][str(ligne)] = probabilite_over_under(matrice, ligne, "away")
+
+    for ligne in lignes_handicap:
+        marches["handicap"][str(ligne)] = probabilite_handicap_2choix(matrice, ligne)
+
+    for x in range(6):
+        for y in range(6):
+            marches["score_exact"][f"{x}-{y}"] = probabilite_score_exact(matrice, x, y)
+
+    for n in range(6):
+        marches["nombre_exact_buts"][str(n)] = probabilite_nombre_exact_buts(matrice, n)
+    marches["nombre_exact_buts"]["6+"] = probabilite_nombre_buts_ou_plus(matrice, 6)
+
+    return marches
+
+
+def plafonner_cluster(paris, plafond_cluster=CLUSTER_MAX, nb_max=NB_PARIS_MAX):
+    """
+    Filtre simple : garde au plus NB_PARIS_MAX paris (les plus forts EV en premier),
+    et plafonne la somme des mises à plafond_cluster.
+    NE remplace PAS le filtre de corrélation sémantique (Étape 4 Module 3) qui
+    demande de savoir si deux marchés sont mécaniquement liés (ex: 1X2 + BTTS du
+    même match) — ça reste à vérifier manuellement pour l'instant.
+    """
+    paris_tries = sorted(paris, key=lambda p: p.get("ev", 0), reverse=True)[:nb_max]
+    total = sum(p.get("mise", 0) for p in paris_tries)
+    if total > plafond_cluster and total > 0:
+        facteur = plafond_cluster / total
+        for p in paris_tries:
+            p["mise"] = p["mise"] * facteur
+    return paris_tries
