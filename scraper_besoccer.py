@@ -28,7 +28,15 @@ import requests
 from bs4 import BeautifulSoup
 
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (compatible; ArchetypeFootBot/1.0; +https://github.com/)"
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    ),
+    "Accept": (
+        "text/html,application/xhtml+xml,application/xml;q=0.9,"
+        "image/webp,*/*;q=0.8"
+    ),
+    "Accept-Language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
 }
 
 COLONNES_ATTENDUES = ["Pts", "MP", "W", "D", "L", "GK", "GA", "GD"]
@@ -87,13 +95,9 @@ def recupere_gf_ga_dom_ext(nom_equipe_slug):
             "Vérification manuelle nécessaire avant de faire confiance à ces chiffres."
         )
 
-    # Ordre observé : [0]=Total, [1]=Home, [2]=Away
     table_home, table_away = tables[1], tables[2]
 
     def extrait_ligne_equipe(table, slug):
-        # La colonne du nom d'équipe n'a pas de nom de colonne fiable observé
-        # (souvent une colonne sans en-tête contenant le lien) — on cherche la
-        # ligne dont une cellule contient le slug ou un nom approchant.
         for _, ligne in table.iterrows():
             texte_ligne = " ".join(str(v) for v in ligne.values)
             if slug.replace("-", " ") in texte_ligne.lower():
@@ -139,12 +143,9 @@ def recupere_historique_matchs(nom_equipe_slug, max_matchs=10):
         if len(resultats) >= max_matchs:
             break
         texte = a.get_text(" ", strip=True)
-        # Format observé (via extraction, à confirmer sur le vrai HTML) :
-        # "Nantes Nantes 0-1 PSGPSG 17 AUG 2025" -- domicile dupliqué,
-        # score au milieu, extérieur dupliqué, date à la fin.
         m = re.search(r"(\d+)\s*-\s*(\d+)", texte)
         if not m:
-            continue  # match à venir (pas encore de score), pas une erreur
+            continue
 
         avant_score = texte[:m.start()].strip()
         apres_score = texte[m.end():].strip()
