@@ -21,11 +21,13 @@ jobs:
       - name: Installer les dépendances
         run: pip install requests beautifulsoup4 pandas lxml
 
-      - name: Générer la liste brute des matchs du jour (pour la page de sélection)
+      - name: Générer les listes brutes aujourd'hui + demain (pour la page de sélection)
         run: |
-          python scraper.py --max-matchs 200 --sortie matchs_du_jour.json
-          echo "--- Aperçu ---"
+          python scraper.py --max-matchs 200
+          echo "--- Aperçu aujourd'hui ---"
           head -c 500 matchs_du_jour.json
+          echo "--- Aperçu demain ---"
+          head -c 500 matchs_demain.json
 
       - name: Lancer le pipeline complet (matchs sélectionnés uniquement)
         run: python run_pipeline.py
@@ -34,7 +36,15 @@ jobs:
         run: |
           git config user.name "archetype-foot-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add data.json matchs_du_jour.json
+          git add data.json matchs_du_jour.json matchs_demain.json
+          # panier.json et historique_pronostics.json ne sont écrits par
+          # run_pipeline.py QUE s'il y avait au moins un match à traiter
+          # (voir run_pipeline.py::main) -- peuvent donc ne pas exister sur
+          # un run à vide. `git add` sur un chemin absent ferait échouer le
+          # step (shell en mode -e par défaut sur GitHub Actions).
+          for f in panier.json historique_pronostics.json; do
+            [ -f "$f" ] && git add "$f"
+          done
           git diff --staged --quiet || git commit -m "Mise à jour quotidienne des données"
           git pull --rebase origin main
           git push
