@@ -312,3 +312,78 @@ def recupere_cotes_marches(url_match_face_a_face):
         marches[nom_marche] = [dict(zip(selections, ligne)) for ligne in lignes if len(ligne) == pas]
 
     return marches
+
+
+# --------------------------------------------------------------------------
+# Classement universel via l'URL du match (25/08) — remplace le besoin d'une
+# table de correspondance compétition -> slug de classement. N'importe quel
+# match, dans n'importe quel championnat, a une URL /live-score/{slug}.html
+# déjà scrapée par scraper.py ; l'onglet ?p=classement de CETTE URL donne le
+# classement Saison Régulière de la compétition du match, sans construction
+# manuelle de slug par ligue. Contrepartie assumée : classement combiné
+# (pas de split domicile/extérieur séparé comme sur classement-foot/.../).
+# Réutilise exactement la même logique de parsing (+ mêmes correctifs) que
+# recupere_classement.
+# --------------------------------------------------------------------------
+
+def recupere_classement_du_match(url_match):
+    """
+    url_match : url /live-score/{slug}.html d'un match, SANS paramètre ?p=.
+    Retourne une liste de {'equipe', 'pts', 'j', 'v', 'n', 'd', 'bp', 'bc', 'diff'}
+    pour toute la compétition (classement Saison Régulière combiné).
+    """
+    url = url_match + "?p=classement"
+    html = fetch_html(url)
+    try:
+        tables = pd.read_html(io.StringIO(html))
+    except ValueError as e:
+        raise RuntimeError(f"Aucun tableau de classement trouvé sur {url}") from e
+
+    for t in tables:
+        if isinstance(t.columns, pd.MultiIndex):
+            t.columns = t.columns.get_level_values(-1)
+
+    table = next((t for t in tables if all(c in t.columns for c in COLONNES_CLASSEMENT)), None)
+    if table is None:
+        raise RuntimeError(
+            f"Tableau de classement introuvable sur {url}. "
+            f"Colonnes vues : {[list(t.columns) for t in tables]}"
+        )
+
+    lignes = []
+    for _, ligne in table.iterrows():
+        pts_brut = ligne["Pts"]
+        if isinstance(pts_brut, str) and not pts_brut.strip().lstrip("-").isdigit():
+            continue
+        nom_equipe = None
+        for col in table.columns:
+            val = ligne[col]
+            if isinstance(val, str) and not val.strip().lstrip("-").isdigit():
+                nom_equipe = val.strip()
+                break
+        try:
+            lignes.append({
+                "equipe": nom_equipe,
+                "pts": int(ligne["Pts"]), "j": int(ligne["J"]), "v": int(ligne["V"]),
+                "n": int(ligne["N"]), "d": int(ligne["D"]), "bp": int(ligne["BP"]),
+                "bc": int(ligne["BC"]), "diff": int(ligne["Diff"]),
+            })
+        except (ValueError, TypeError):
+            continue
+    return lignes
+
+
+def trouve_equipe_dans_classement(classement, nom_equipe):
+    """
+    Recherche tolérante (insensible à la casse, sous-chaîne dans un sens ou
+    l'autre) car les noms d'équipe peuvent différer légèrement entre la page
+    programme du jour et la page classement (ex. 'Not. Forest' vs
+    'Nottingham Forest'). Retourne None si rien de fiable trouvé — jamais de
+    correspondance devinée au hasard.
+    """
+    nom_norm = nom_equipe.strip().lower()
+    for ligne in classement:
+        eq_norm = (ligne["equipe"] or "").strip().lower()
+        if eq_norm == nom_norm or eq_norm in nom_norm or nom_norm in eq_norm:
+            return ligne
+    return None
