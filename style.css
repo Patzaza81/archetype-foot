@@ -123,8 +123,9 @@ main.grille {
 .badge-nogo { background: var(--red); color: #fff; }
 
 /* Niveau 3 — donnée principale : la plus grosse taille de tout l'écran */
+/* MODIFICATION 1 : Scores en TURQUOISE */
 .proba-1 {
-  color: var(--text);
+  color: var(--turquoise); /* Remplace var(--text) */
   font-size: 26px;
   font-weight: 700;
 }
@@ -235,10 +236,11 @@ main.grille {
 
 #compteur { text-align: center; padding: 6px; color: var(--text-secondary); font-size: 14px; }
 
+/* MODIFICATION 2 : Noms des championnats en JAUNE OR */
 .selection-competition {
   font-size: 13px;
   font-weight: 700;
-  color: var(--turquoise);
+  color: var(--gold); /* Remplace var(--turquoise) */
   padding: 8px 12px;
   background: var(--surface-2);
   text-transform: uppercase;
@@ -252,11 +254,36 @@ main.grille {
   padding: 10px 12px;
   border-bottom: 1px solid var(--border);
 }
+
+/* MODIFICATION 3 : Boutons de sélection en BLANC avec coche visible */
 .selection-item input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
   width: 22px;
   height: 22px;
-  accent-color: var(--turquoise);
+  background-color: #FFFFFF; /* Fond blanc pur */
+  border: 2px solid var(--border); /* Bordure grise pour le contraste */
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
 }
+/* État coché : fond blanc conservé + coche en vert foncé (couleur du fond) */
+.selection-item input[type="checkbox"]:checked {
+  border-color: var(--text-secondary);
+}
+.selection-item input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 6px;
+  width: 6px;
+  height: 12px;
+  border: solid var(--bg); /* Coche foncée très visible */
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
 .selection-item label { font-size: 16px; }
 
 #sortie-json {
