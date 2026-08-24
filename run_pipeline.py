@@ -1,19 +1,24 @@
 """
-run_pipeline.py — Orchestrateur. Flux MANUEL (25/08) : le pipeline ne traite
-plus automatiquement tous les matchs du jour. Il lit matchs_selectionnes.json
-(liste de match_id, éditée à la main via la page de sélection du site) et
-n'enrichit QUE ces matchs-là. Le cron quotidien de pipeline.yml continue de
-tourner mais devient décoratif tant qu'aucune sélection n'est à jour :
-sélection vide ou absente -> data.json avec 0 match traité, pas une erreur.
+run_pipeline.py — Orchestrateur. Flux MANUEL : le pipeline ne traite que les
+matchs listés dans matchs_selectionnes.json (édité à la main via
+selection.html), pas tous les matchs du jour.
 
-Le scraping brut (liste complète des matchs du jour, ~150-200, pour
-alimenter la page de sélection) est fait SÉPARÉMENT par scraper.py ->
-matchs_du_jour.json, AVANT ce script, dans pipeline.yml. Ce script ne
-rescrape pas la liste brute lui-même — il la relit depuis ce fichier pour
-éviter un second fetch de /live-foot/ inutile.
+BRANCHEMENT cote_1 (25/08) : ajout de recupere_cotes_marches pour peupler
+cote_1 automatiquement -- jusqu'ici toujours None, donc ev_victoire_domicile
+et mise_kelly_victoire_domicile n'étaient JAMAIS calculés malgré un modèle
+fonctionnel. Choix du bookmaker de référence : MINIMUM du panel observé
+(betclic/unibet/winamax/bet365/pmu) -- Betpawa (bookmaker réellement utilisé
+pour les paris) n'apparaît dans aucun panel matchendirect observé jusqu'ici ;
+ses cotes sont structurellement plus basses (bonus). Le minimum du panel est
+l'approximation la plus prudente disponible, PAS une garantie de correspondre
+à la vraie cote Betpawa -- à traiter comme majorant, pas comme valeur exacte,
+tant qu'aucune comparaison directe n'a été faite.
+
+selection.html/selection.js NON touchés dans ce commit -- une seule chose à
+la fois, comme convenu.
 """
 import json
-from scraper_details import recupere_details_match, recupere_gf_ga_avec_repli
+from scraper_details import recupere_details_match, recupere_gf_ga_avec_repli, recupere_cotes_marches
 import calculs
 
 MAX_MATCHS_HISTORIQUE = 10
@@ -26,16 +31,31 @@ def charge_json_ou_vide(chemin, defaut):
         with open(chemin, "r", encoding="utf-8") as f:
             return json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
-        # Fichier absent ou vide -> comportement par défaut, jamais une
-        # erreur qui ferait planter tout le run.
         return defaut
 
 
 def filtre_par_selection(matchs_bruts, ids_selectionnes):
+    """Ne garde que les matchs dont match_id est dans la sélection.
+    Format de matchs_selectionnes.json : liste de match_id (chaînes),
+    inchangé -- pas de format alternatif introduit ici."""
     if not ids_selectionnes:
         return []
     ids_set = set(ids_selectionnes)
     return [m for m in matchs_bruts if m.get("match_id") in ids_set]
+
+
+def extrait_cote_1_min(cotes_marches):
+    """
+    Retourne le minimum de la cote "1" (victoire domicile) sur le panel de
+    bookmakers du marché 1x2, ou None si le marché est introuvable/vide.
+    Voir note en tête de fichier sur le choix du minimum (approximation
+    Betpawa).
+    """
+    panel = cotes_marches.get("1x2") if cotes_marches else None
+    if not panel:
+        return None
+    valeurs = [ligne["1"] for ligne in panel if "1" in ligne and ligne["1"]]
+    return min(valeurs) if valeurs else None
 
 
 def construit_signaux(matchs_bruts):
@@ -99,7 +119,16 @@ def construit_signaux(matchs_bruts):
             resultats.append(signal)
             continue
 
-        cote_1 = m.get("cote_1")
+        # Branchement cote_1 -- nouveau. Best-effort assumé : un échec ici ne
+        # doit jamais bloquer le calcul du modèle, seulement priver le match
+        # de la partie EV/Kelly (déjà le comportement pour cote_1 absente).
+        cote_1 = None
+        try:
+            cotes = recupere_cotes_marches(url_match + "?p=face-a-face")
+            cote_1 = extrait_cote_1_min(cotes)
+        except Exception as e:
+            signal["avertissement_cotes"] = f"erreur_technique: {e}"
+
         lam = calculs.calcule_lambda(gf_home, ga_home, gf_away, ga_away)
         matrice = calculs.matrice_poisson_dixon_coles(lam["lambda_home"], lam["lambda_away"])
         proba_1 = calculs.probabilite_marche(matrice, lambda x, y: x > y)
@@ -112,6 +141,7 @@ def construit_signaux(matchs_bruts):
         )
         signal["nb_matchs_domicile_utilises"] = stats_domicile["nb_domicile"]
         signal["nb_matchs_exterieur_utilises"] = stats_exterieur["nb_exterieur"]
+        signal["cote_1"] = cote_1
 
         if cote_1:
             signal["ev_victoire_domicile"] = calculs.calcule_ev(proba_1, cote_1)
@@ -131,11 +161,9 @@ def main():
     matchs_a_traiter = filtre_par_selection(matchs_du_jour, selection)
 
     if not matchs_du_jour:
-        print(f"ATTENTION : {FICHIER_MATCHS_DU_JOUR} introuvable ou vide -- "
-              f"a-t-il bien été généré avant cette étape dans le workflow ?")
+        print(f"ATTENTION : {FICHIER_MATCHS_DU_JOUR} introuvable ou vide.")
     if not selection:
-        print(f"Aucune sélection dans {FICHIER_SELECTION} -- 0 match sera traité "
-              f"(comportement normal si aucune sélection n'a encore été faite aujourd'hui).")
+        print(f"Aucune sélection dans {FICHIER_SELECTION} -- 0 match sera traité.")
 
     signaux = construit_signaux(matchs_a_traiter)
     sortie = {
