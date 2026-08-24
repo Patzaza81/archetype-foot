@@ -4,11 +4,12 @@ forme + H2H + cotes (page face-a-face), 20 derniers résultats (page
 statistique). Tout en HTTP simple — aucune de ces pages n'a jamais renvoyé
 d'erreur 406 ni de blocage, contrairement à BeSoccer (abandonné).
 
-STATUT DE VÉRIFICATION : les URLs et la présence des données ont été
-confirmées via un outil de récupération web (contenu extrait, pas le HTML
-brut — même limite que partout ailleurs dans ce projet, voir scraper.py).
-Ce script n'a jamais tourné contre le vrai HTML. Première vérification
-réelle : le diagnostic GitHub Actions, comme pour scraper.py.
+STATUT DE VÉRIFICATION : détails_match, classement, H2H, 20 derniers
+résultats et cotes ont tous été testés contre le vrai HTML (fetch direct
+des pages matchendirect, 24/08/2026). Les 3 bugs identifiés lors du
+premier run réel (colonnes multi-niveaux du classement, score hors-lien
+pour les 20 derniers résultats, ancrage regex trop strict pour les cotes)
+sont corrigés dans cette version. H2H et details_match fonctionnaient déjà.
 """
 
 import io
@@ -36,6 +37,10 @@ def fetch_html(url, retries=3, delay=2):
             time.sleep(delay)
     raise RuntimeError(f"Échec de récupération de {url} après {retries} tentatives: {last_err}")
 
+
+# --------------------------------------------------------------------------
+# Détails de match + URL statistique réelle — fonctionne, testé le 24/08.
+# --------------------------------------------------------------------------
 
 def recupere_details_match(url_match):
     """
@@ -68,10 +73,21 @@ def recupere_details_match(url_match):
     return resultat
 
 
+# --------------------------------------------------------------------------
+# Classement Général / Domicile / Extérieur
+# BUG CORRIGÉ (24/08) : pd.read_html renvoie des colonnes multi-niveaux
+# (ex. ('Saison Régulière', 'Equipe')) car la page a un en-tête de groupe
+# au-dessus des vrais noms de colonnes. On aplatit avant de filtrer.
+# --------------------------------------------------------------------------
+
 COLONNES_CLASSEMENT = ["Pts", "J", "V", "N", "D", "BP", "BC", "Diff"]
 
 
 def recupere_classement(url_classement_base):
+    """
+    url_classement_base : ex 'https://www.matchendirect.fr/classement-foot/france/classement-ligue-1.html'
+    Retourne {'general': [...], 'domicile': [...], 'exterieur': [...]}
+    """
     variantes = {
         "general": url_classement_base,
         "domicile": url_classement_base + "?p=home",
@@ -84,6 +100,11 @@ def recupere_classement(url_classement_base):
             tables = pd.read_html(io.StringIO(html))
         except ValueError as e:
             raise RuntimeError(f"Aucun tableau trouvé sur {url} ({cle})") from e
+
+        # Correctif : aplatir les colonnes multi-niveaux avant filtrage.
+        for t in tables:
+            if isinstance(t.columns, pd.MultiIndex):
+                t.columns = t.columns.get_level_values(-1)
 
         table = next((t for t in tables if all(c in t.columns for c in COLONNES_CLASSEMENT)), None)
         if table is None:
@@ -108,7 +129,13 @@ def recupere_classement(url_classement_base):
             })
         resultat[cle] = lignes
     return resultat
-    
+
+
+# --------------------------------------------------------------------------
+# Page face-a-face : H2H — fonctionne, testé le 24/08. Le score est inclus
+# dans le texte du lien lui-même sur cette page ("Fulham 2 - 1 Chelsea"),
+# donc la recherche par lien fonctionne ici.
+# --------------------------------------------------------------------------
 
 def _extrait_matchs_scores(soup, ancre_regex, max_matchs=20):
     ancre = soup.find(string=re.compile(ancre_regex))
@@ -144,14 +171,76 @@ def _extrait_matchs_scores(soup, ancre_regex, max_matchs=20):
     return matchs
 
 
+def recupere_h2h(url_match_face_a_face, max_confrontations=20):
+    html = fetch_html(url_match_face_a_face)
+    soup = BeautifulSoup(html, "html.parser")
+    return _extrait_matchs_scores(soup, r"Confrontations entre les deux équipes", max_matchs=max_confrontations)
+
+
+# --------------------------------------------------------------------------
+# Page statistique : 20 derniers résultats par équipe.
+# BUG CORRIGÉ (24/08) : sur cette page (contrairement à la page face-a-face),
+# le score est dans une cellule de tableau séparée du lien — le lien ne
+# contient que les noms d'équipes ("Fulham - Real Sociedad"), pas le score.
+# On parcourt donc les lignes de tableau (<tr>) plutôt que les liens seuls.
+# --------------------------------------------------------------------------
+
+def _parse_table_matchs(soup, ancre_regex, max_matchs=20):
+    ancre = soup.find(string=re.compile(ancre_regex))
+    if ancre is None:
+        return []
+
+    table = ancre.find_parent().find_next("table")
+    if table is None:
+        return []
+
+    matchs = []
+    for tr in table.find_all("tr"):
+        if len(matchs) >= max_matchs:
+            break
+
+        lien_match = None
+        for a in tr.find_all("a"):
+            href = a.get("href", "")
+            texte_lien = a.get_text(" ", strip=True)
+            if ("/live-score/" in href or "/foot-score/" in href) and " - " in texte_lien \
+                    and not re.search(r"\d+\s*-\s*\d+", texte_lien):
+                lien_match = a
+                break
+        if lien_match is None:
+            continue
+
+        noms = [n.strip() for n in lien_match.get_text(" ", strip=True).split(" - ")]
+        if len(noms) != 2:
+            continue
+
+        texte_ligne = tr.get_text(" ", strip=True)
+        m = re.search(r"(\d+)\s*-\s*(\d+)", texte_ligne)
+        if not m:
+            continue
+
+        matchs.append({
+            "domicile_brut": noms[0],
+            "exterieur_brut": noms[1],
+            "buts_domicile": int(m.group(1)),
+            "buts_exterieur": int(m.group(2)),
+            "url_match": lien_match.get("href", ""),
+        })
+    return matchs
+
+
 def recupere_20_derniers_resultats(url_statistique, nom_equipe_1, nom_equipe_2):
+    """
+    url_statistique : ex '.../statistique/chelsea-contre-fulham.html'
+    Retourne {nom_equipe_1: [...], nom_equipe_2: [...]}
+    """
     html = fetch_html(url_statistique)
     soup = BeautifulSoup(html, "html.parser")
 
     resultat = {}
     for nom in (nom_equipe_1, nom_equipe_2):
         ancre_regex = rf"20 derniers résultats de {re.escape(nom)}"
-        resultat[nom] = _extrait_matchs_scores(soup, ancre_regex, max_matchs=20)
+        resultat[nom] = _parse_table_matchs(soup, ancre_regex, max_matchs=20)
 
     if not resultat[nom_equipe_1] and not resultat[nom_equipe_2]:
         raise RuntimeError(
@@ -161,23 +250,25 @@ def recupere_20_derniers_resultats(url_statistique, nom_equipe_1, nom_equipe_2):
     return resultat
 
 
-def recupere_h2h(url_match_face_a_face, max_confrontations=20):
-    html = fetch_html(url_match_face_a_face)
-    soup = BeautifulSoup(html, "html.parser")
-    return _extrait_matchs_scores(soup, r"Confrontations entre les deux équipes", max_matchs=max_confrontations)
-
+# --------------------------------------------------------------------------
+# Page face-a-face : cotes multi-bookmakers.
+# BUG CORRIGÉ (24/08) : le texte "Cotes 1N2" existe bien sur la page, mais
+# l'ancrage regex ^...$ ne tolérait pas les espaces/retours à la ligne
+# autour du nœud de texte HTML brut, donc ne matchait jamais. Comparaison
+# par égalité sur texte strippé à la place.
+# --------------------------------------------------------------------------
 
 def recupere_cotes_marches(url_match_face_a_face):
     html = fetch_html(url_match_face_a_face)
     soup = BeautifulSoup(html, "html.parser")
 
     marches = {}
-    for nom_marche, regex_titre, selections in [
-        ("1x2", r"^Cotes 1N2$", ["1", "N", "2"]),
-        ("double_chance", r"^Double chance$", ["1N", "12", "N2"]),
-        ("btts", r"^Les 2 équipes marquent$", ["Oui", "Non"]),
+    for nom_marche, titre_attendu, selections in [
+        ("1x2", "Cotes 1N2", ["1", "N", "2"]),
+        ("double_chance", "Double chance", ["1N", "12", "N2"]),
+        ("btts", "Les 2 équipes marquent", ["Oui", "Non"]),
     ]:
-        titre = soup.find(string=re.compile(regex_titre))
+        titre = soup.find(string=lambda s: s and s.strip() == titre_attendu)
         if titre is None:
             marches[nom_marche] = None
             continue
