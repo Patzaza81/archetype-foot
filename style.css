@@ -23,7 +23,6 @@ body {
   color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   line-height: 1.5;
-  /* Espace en bas pour ne jamais laisser le bandeau Netlify masquer du contenu */
   padding-bottom: 90px;
 }
 
@@ -105,16 +104,12 @@ main.grille {
 }
 
 /* --- MODIFICATION : Scores en TURQUOISE --- */
-/* Si vos scores sont dans une classe dédiée (ex: <span class="score">) */
-.teams .score, .score {
+/* IMPORTANT : Dans votre HTML, entourez le score avec la classe .score 
+   Exemple : <span>Coritiba — Corinthians <span class="score">(2-1)</span></span> */
+.score {
   color: var(--turquoise);
   font-weight: 700;
-  font-size: 22px;
 }
-/* Si le score est juste le 2ème enfant dans votre HTML (ex: "Bologne — Lazio (0-0)"),
-   vous pouvez décommenter la ligne ci-dessous pour le passer en turquoise :
-.teams span:nth-child(2) { color: var(--turquoise); }
-*/
 
 /* Niveau 2 — statut : jamais la couleur seule, toujours un mot en clair */
 .ligne-verdict {
@@ -266,31 +261,30 @@ main.grille {
   border-bottom: 1px solid var(--border);
 }
 
-/* --- MODIFICATION : Boutons de sélection en GRIS CLAIR --- */
-.selection-item input[type="checkbox"] {
+/* --- MODIFICATION MAJEURE : Boutons de sélection GRIS CLAIR (Universel) --- */
+/* Ce sélecteur fonctionne sur toutes les cases à cocher, sans dépendre d'un parent spécifique */
+input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
   width: 22px;
   height: 22px;
-  background-color: #E0E0E0; /* Gris clair */
-  border: 2px solid var(--border); /* Bordure grise pour le contraste */
+  background-color: #E0E0E0 !important; /* Gris clair forcé */
+  border: 2px solid rgba(255,255,255,.10);
   border-radius: 4px;
   cursor: pointer;
   position: relative;
   flex-shrink: 0;
 }
-/* État coché : fond gris conservé + coche en vert très foncé */
-.selection-item input[type="checkbox"]:checked {
-  border-color: var(--text-secondary);
-}
-.selection-item input[type="checkbox"]:checked::after {
+
+/* Coche visible sur le gris clair */
+input[type="checkbox"]:checked::after {
   content: "";
   position: absolute;
   top: 2px;
   left: 6px;
   width: 6px;
   height: 12px;
-  border: solid var(--bg); /* Coche foncée très visible sur gris */
+  border: solid #071E18; /* Vert très foncé */
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
 }
