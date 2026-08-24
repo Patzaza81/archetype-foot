@@ -4,12 +4,16 @@ forme + H2H + cotes (page face-a-face), 20 derniers résultats (page
 statistique). Tout en HTTP simple — aucune de ces pages n'a jamais renvoyé
 d'erreur 406 ni de blocage, contrairement à BeSoccer (abandonné).
 
-STATUT DE VÉRIFICATION : détails_match, classement, H2H, 20 derniers
-résultats et cotes ont tous été testés contre le vrai HTML (fetch direct
-des pages matchendirect, 24/08/2026). Les 3 bugs identifiés lors du
-premier run réel (colonnes multi-niveaux du classement, score hors-lien
-pour les 20 derniers résultats, ancrage regex trop strict pour les cotes)
-sont corrigés dans cette version. H2H et details_match fonctionnaient déjà.
+STATUT DE VÉRIFICATION (24/08/2026) :
+- details_match, H2H, 20 derniers résultats : testés OK sur run réel.
+- classement : bug colonnes multi-niveaux corrigé une fois (aplatissement),
+  un résidu subsistait (ligne d'en-tête "Saison Régulière" prise pour une
+  ligne de données) — corrigé ici en filtrant les lignes non numériques.
+- cotes : bug d'ancrage regex corrigé (titre trouvé), mais l'extraction
+  mélangeait plusieurs marchés car les titres de section ne sont pas des
+  balises h2/h3 réelles — la condition d'arrêt ne se déclenchait jamais.
+  Corrigé ici en arrêtant au prochain titre de marché connu plutôt qu'à
+  une balise de titre HTML qui n'existe pas sur cette page.
 """
 
 import io
@@ -43,12 +47,6 @@ def fetch_html(url, retries=3, delay=2):
 # --------------------------------------------------------------------------
 
 def recupere_details_match(url_match):
-    """
-    url_match : url /live-score/{slug}.html d'un match (page par défaut,
-    SANS paramètre ?p=).
-    Retourne {'lieu':..., 'meteo':..., 'arbitre':..., 'diffuseur':...,
-              'url_statistique': ... ou None si lien absent}
-    """
     html = fetch_html(url_match)
     soup = BeautifulSoup(html, "html.parser")
 
@@ -75,19 +73,15 @@ def recupere_details_match(url_match):
 
 # --------------------------------------------------------------------------
 # Classement Général / Domicile / Extérieur
-# BUG CORRIGÉ (24/08) : pd.read_html renvoie des colonnes multi-niveaux
-# (ex. ('Saison Régulière', 'Equipe')) car la page a un en-tête de groupe
-# au-dessus des vrais noms de colonnes. On aplatit avant de filtrer.
+# CORRECTIF v2 (aplatissement colonnes) + CORRECTIF v3 (filtre lignes non
+# numériques : la ligne d'en-tête de groupe "Saison Régulière" restait
+# parfois comme première ligne de données après aplatissement).
 # --------------------------------------------------------------------------
 
 COLONNES_CLASSEMENT = ["Pts", "J", "V", "N", "D", "BP", "BC", "Diff"]
 
 
 def recupere_classement(url_classement_base):
-    """
-    url_classement_base : ex 'https://www.matchendirect.fr/classement-foot/france/classement-ligue-1.html'
-    Retourne {'general': [...], 'domicile': [...], 'exterieur': [...]}
-    """
     variantes = {
         "general": url_classement_base,
         "domicile": url_classement_base + "?p=home",
@@ -101,7 +95,6 @@ def recupere_classement(url_classement_base):
         except ValueError as e:
             raise RuntimeError(f"Aucun tableau trouvé sur {url} ({cle})") from e
 
-        # Correctif : aplatir les colonnes multi-niveaux avant filtrage.
         for t in tables:
             if isinstance(t.columns, pd.MultiIndex):
                 t.columns = t.columns.get_level_values(-1)
@@ -115,26 +108,35 @@ def recupere_classement(url_classement_base):
 
         lignes = []
         for _, ligne in table.iterrows():
+            # Filtre : ignore toute ligne résiduelle d'en-tête (valeur non
+            # numérique dans une colonne censée être numérique).
+            pts_brut = ligne["Pts"]
+            if isinstance(pts_brut, str) and not pts_brut.strip().lstrip("-").isdigit():
+                continue
+
             nom_equipe = None
             for col in table.columns:
                 val = ligne[col]
-                if isinstance(val, str) and not val.strip().isdigit():
+                if isinstance(val, str) and not val.strip().lstrip("-").isdigit():
                     nom_equipe = val.strip()
                     break
-            lignes.append({
-                "equipe": nom_equipe,
-                "pts": int(ligne["Pts"]), "j": int(ligne["J"]), "v": int(ligne["V"]),
-                "n": int(ligne["N"]), "d": int(ligne["D"]), "bp": int(ligne["BP"]),
-                "bc": int(ligne["BC"]), "diff": int(ligne["Diff"]),
-            })
+            try:
+                lignes.append({
+                    "equipe": nom_equipe,
+                    "pts": int(ligne["Pts"]), "j": int(ligne["J"]), "v": int(ligne["V"]),
+                    "n": int(ligne["N"]), "d": int(ligne["D"]), "bp": int(ligne["BP"]),
+                    "bc": int(ligne["BC"]), "diff": int(ligne["Diff"]),
+                })
+            except (ValueError, TypeError):
+                # Ligne non convertible malgré le filtre ci-dessus — on
+                # l'ignore plutôt que de faire planter tout le classement.
+                continue
         resultat[cle] = lignes
     return resultat
 
 
 # --------------------------------------------------------------------------
-# Page face-a-face : H2H — fonctionne, testé le 24/08. Le score est inclus
-# dans le texte du lien lui-même sur cette page ("Fulham 2 - 1 Chelsea"),
-# donc la recherche par lien fonctionne ici.
+# Page face-a-face : H2H — fonctionne, testé le 24/08.
 # --------------------------------------------------------------------------
 
 def _extrait_matchs_scores(soup, ancre_regex, max_matchs=20):
@@ -178,11 +180,7 @@ def recupere_h2h(url_match_face_a_face, max_confrontations=20):
 
 
 # --------------------------------------------------------------------------
-# Page statistique : 20 derniers résultats par équipe.
-# BUG CORRIGÉ (24/08) : sur cette page (contrairement à la page face-a-face),
-# le score est dans une cellule de tableau séparée du lien — le lien ne
-# contient que les noms d'équipes ("Fulham - Real Sociedad"), pas le score.
-# On parcourt donc les lignes de tableau (<tr>) plutôt que les liens seuls.
+# Page statistique : 20 derniers résultats — corrigé et testé le 24/08.
 # --------------------------------------------------------------------------
 
 def _parse_table_matchs(soup, ancre_regex, max_matchs=20):
@@ -230,10 +228,6 @@ def _parse_table_matchs(soup, ancre_regex, max_matchs=20):
 
 
 def recupere_20_derniers_resultats(url_statistique, nom_equipe_1, nom_equipe_2):
-    """
-    url_statistique : ex '.../statistique/chelsea-contre-fulham.html'
-    Retourne {nom_equipe_1: [...], nom_equipe_2: [...]}
-    """
     html = fetch_html(url_statistique)
     soup = BeautifulSoup(html, "html.parser")
 
@@ -252,11 +246,25 @@ def recupere_20_derniers_resultats(url_statistique, nom_equipe_1, nom_equipe_2):
 
 # --------------------------------------------------------------------------
 # Page face-a-face : cotes multi-bookmakers.
-# BUG CORRIGÉ (24/08) : le texte "Cotes 1N2" existe bien sur la page, mais
-# l'ancrage regex ^...$ ne tolérait pas les espaces/retours à la ligne
-# autour du nœud de texte HTML brut, donc ne matchait jamais. Comparaison
-# par égalité sur texte strippé à la place.
+# CORRECTIF v3 : les titres de section ("Cotes 1N2", "Double chance", "Les
+# 2 équipes marquent", "X.5 Plus / Moins"...) ne sont PAS des balises h2/h3
+# — ce sont de simples nœuds de texte au même niveau que le reste. La
+# condition d'arrêt sur h2/h3 ne se déclenchait donc jamais, et les nombres
+# d'un marché débordaient sur le marché suivant. Correctif : s'arrêter au
+# prochain titre de marché connu (les mêmes trois qu'on cherche, plus les
+# variantes "Plus / Moins" et "Mi-temps") plutôt qu'à une balise HTML.
 # --------------------------------------------------------------------------
+
+TITRES_MARCHES_CONNUS = [
+    "Cotes 1N2",
+    "Double chance",
+    "Les 2 équipes marquent",
+    "Mi-temps - Résultat",
+]
+_REGEX_AUTRE_TITRE = re.compile(
+    r"^(" + "|".join(re.escape(t) for t in TITRES_MARCHES_CONNUS) + r"|\d+(\.\d+)? Plus / Moins)$"
+)
+
 
 def recupere_cotes_marches(url_match_face_a_face):
     html = fetch_html(url_match_face_a_face)
@@ -272,13 +280,18 @@ def recupere_cotes_marches(url_match_face_a_face):
         if titre is None:
             marches[nom_marche] = None
             continue
+
         nombres = []
-        for element in titre.find_parent().find_all_next(limit=60):
-            if element.name in ("h2", "h3"):
-                break
+        for element in titre.find_all_next(limit=200):
             texte = element.get_text(strip=True) if hasattr(element, "get_text") else str(element).strip()
+            # Arrêt dès qu'on retombe sur un titre de marché connu — le
+            # nôtre pourrait réapparaître ailleurs sur la page (mini-widget
+            # en haut de page pour "Mi-temps - Résultat" par exemple).
+            if _REGEX_AUTRE_TITRE.match(texte):
+                break
             if re.fullmatch(r"\d+[.,]\d{2}", texte):
                 nombres.append(float(texte.replace(",", ".")))
+
         pas = len(selections)
         lignes = [nombres[i:i + pas] for i in range(0, len(nombres) - pas + 1, pas)]
         marches[nom_marche] = [dict(zip(selections, ligne)) for ligne in lignes if len(ligne) == pas]
