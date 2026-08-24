@@ -58,12 +58,15 @@ def url_resultat_foot(date_obj):
 
 
 def fetch_html(url, retries=3, delay=2):
+    """Retourne (html, url_finale) -- url_finale est l'URL réellement servie
+    après redirections éventuelles (requests les suit automatiquement sans
+    lever d'erreur). Nécessaire pour détecter le cas "demain" ci-dessous."""
     last_err = None
     for _ in range(retries):
         try:
             resp = requests.get(url, headers=HEADERS, timeout=15)
             resp.raise_for_status()
-            return resp.text
+            return resp.text, resp.url
         except requests.RequestException as e:
             last_err = e
             time.sleep(delay)
@@ -144,11 +147,29 @@ def parse_matches(html, max_matchs=20, date_label=None):
 
 def scrape_programme(jour="aujourdhui", max_matchs=200):
     if jour == "aujourdhui":
-        html = fetch_html(BASE_URL_AUJOURDHUI)
+        html, _ = fetch_html(BASE_URL_AUJOURDHUI)
         date_label = datetime.date.today().isoformat()
     elif jour == "demain":
         date_cible = datetime.date.today() + datetime.timedelta(days=1)
-        html = fetch_html(url_resultat_foot(date_cible))
+        url_demandee = url_resultat_foot(date_cible)
+        html, url_finale = fetch_html(url_demandee)
+        # CORRECTIF (confirmé en production, 25/08quater) : l'hypothèse
+        # "non vérifiée" signalée plus haut s'est réalisée -- cette URL ne
+        # sert pas vraiment le programme de demain en HTTP simple, elle
+        # redirige silencieusement vers la page du jour. `requests` suit la
+        # redirection sans lever d'erreur, donc sans ce contrôle explicite
+        # de l'URL finale, "demain" recevait purement et simplement le
+        # contenu d'"aujourd'hui" -- déjà observé en conditions réelles
+        # (les deux onglets affichaient la même liste de 200 matchs).
+        segment_attendu = f"resultat-foot-{date_cible.strftime('%d-%m-%Y')}"
+        if segment_attendu not in url_finale:
+            raise RuntimeError(
+                f"L'URL demain ({url_demandee}) a redirigé vers {url_finale} "
+                f"au lieu d'y rester -- cette page n'est probablement pas "
+                f"accessible en HTTP simple (rendu côté client uniquement). "
+                f"Traité comme un échec pour éviter de dupliquer les matchs "
+                f"du jour sous l'étiquette 'demain'."
+            )
         date_label = date_cible.isoformat()
     else:
         raise ValueError("jour doit être 'aujourdhui' ou 'demain'")
