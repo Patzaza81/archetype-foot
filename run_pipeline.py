@@ -1,25 +1,41 @@
 """
-run_pipeline.py — Orchestrateur quotidien. TOUT À LA RACINE DU DÉPÔT,
-volontairement — aucun dossier pipeline/ nécessaire. Seule contrainte réelle
-de GitHub : .github/workflows/pipeline.yml doit rester à cet emplacement
-précis, ça ne se discute pas. Tout le reste vit à côté de index.html, comme
-les fichiers déjà uploadés avec succès.
-Écrit data.json à la racine — lu directement par index.html/script.js.
+run_pipeline.py — Orchestrateur. Flux MANUEL (25/08) : le pipeline ne traite
+plus automatiquement tous les matchs du jour. Il lit matchs_selectionnes.json
+(liste de match_id, éditée à la main via la page de sélection du site) et
+n'enrichit QUE ces matchs-là. Le cron quotidien de pipeline.yml continue de
+tourner mais devient décoratif tant qu'aucune sélection n'est à jour :
+sélection vide ou absente -> data.json avec 0 match traité, pas une erreur.
 
-BRANCHEMENT GF/GA v2 (25/08) : remplace l'usage de recupere_classement_du_match
-(moyenne saison agrégée, pas de split domicile/extérieur) par
-recupere_gf_ga_avec_repli — vrais derniers matchs domicile/extérieur, avec
-repli sur la saison précédente UNIQUEMENT si la compétition est identique
-(garde-fou promotion/relégation, TRANSITION.md 9.2). Aucun match amical
-utilisé dans le calcul. `raison_non_traite` explique chaque échec, remplace
-l'ancien champ `erreur_classement`.
+Le scraping brut (liste complète des matchs du jour, ~150-200, pour
+alimenter la page de sélection) est fait SÉPARÉMENT par scraper.py ->
+matchs_du_jour.json, AVANT ce script, dans pipeline.yml. Ce script ne
+rescrape pas la liste brute lui-même — il la relit depuis ce fichier pour
+éviter un second fetch de /live-foot/ inutile.
 """
 import json
-from scraper import scrape_programme_du_jour
 from scraper_details import recupere_details_match, recupere_gf_ga_avec_repli
 import calculs
 
 MAX_MATCHS_HISTORIQUE = 10
+FICHIER_MATCHS_DU_JOUR = "matchs_du_jour.json"
+FICHIER_SELECTION = "matchs_selectionnes.json"
+
+
+def charge_json_ou_vide(chemin, defaut):
+    try:
+        with open(chemin, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        # Fichier absent ou vide -> comportement par défaut, jamais une
+        # erreur qui ferait planter tout le run.
+        return defaut
+
+
+def filtre_par_selection(matchs_bruts, ids_selectionnes):
+    if not ids_selectionnes:
+        return []
+    ids_set = set(ids_selectionnes)
+    return [m for m in matchs_bruts if m.get("match_id") in ids_set]
 
 
 def construit_signaux(matchs_bruts):
@@ -79,9 +95,6 @@ def construit_signaux(matchs_bruts):
         ga_away = stats_exterieur.get("ga_exterieur")
 
         if None in (gf_home, ga_home, gf_away, ga_away):
-            # L'équipe n'a aucun match dans le contexte demandé (ex. aucun
-            # match extérieur joué du tout) même après repli saison
-            # précédente -> pas de valeur devinée.
             signal["raison_non_traite"] = "historique_domicile_ou_exterieur_vide"
             resultats.append(signal)
             continue
@@ -112,16 +125,29 @@ def construit_signaux(matchs_bruts):
 
 
 def main():
-    matchs = scrape_programme_du_jour(max_matchs=20)
-    signaux = construit_signaux(matchs)
+    matchs_du_jour = charge_json_ou_vide(FICHIER_MATCHS_DU_JOUR, defaut=[])
+    selection = charge_json_ou_vide(FICHIER_SELECTION, defaut=[])
+
+    matchs_a_traiter = filtre_par_selection(matchs_du_jour, selection)
+
+    if not matchs_du_jour:
+        print(f"ATTENTION : {FICHIER_MATCHS_DU_JOUR} introuvable ou vide -- "
+              f"a-t-il bien été généré avant cette étape dans le workflow ?")
+    if not selection:
+        print(f"Aucune sélection dans {FICHIER_SELECTION} -- 0 match sera traité "
+              f"(comportement normal si aucune sélection n'a encore été faite aujourd'hui).")
+
+    signaux = construit_signaux(matchs_a_traiter)
     sortie = {
         "genere_le": None,
+        "nb_matchs_du_jour_disponibles": len(matchs_du_jour),
+        "nb_matchs_selectionnes": len(selection),
         "nb_matchs": len(signaux),
         "matchs": signaux,
     }
     with open("data.json", "w", encoding="utf-8") as f:
         json.dump(sortie, f, indent=2, ensure_ascii=False)
-    print(f"Pipeline terminé : {len(signaux)} matchs -> data.json")
+    print(f"Pipeline terminé : {len(signaux)} matchs traités sur {len(selection)} sélectionnés -> data.json")
 
 
 if __name__ == "__main__":
