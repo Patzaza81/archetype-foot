@@ -19,9 +19,7 @@ jobs:
           python-version: "3.12"
 
       - name: Installer les dépendances
-        run: |
-          pip install requests beautifulsoup4 pandas lxml playwright
-          playwright install --with-deps chromium
+        run: pip install requests beautifulsoup4 pandas lxml
 
       - name: Lancer le scraper matchendirect (dump brut pour diagnostic)
         run: |
@@ -29,21 +27,28 @@ jobs:
           echo "--- Aperçu des matchs extraits (matchendirect) ---"
           cat /tmp/matches_debug.json
 
-      - name: Lancer le scraper BeSoccer (dump brut pour diagnostic, PSG en test)
+      - name: Lancer le scraper d'enrichissement (classement, H2H, cotes)
         run: |
           python -c "
-          from scraper_besoccer import recupere_gf_ga_dom_ext, recupere_historique_matchs
+          from scraper_details import recupere_classement, recupere_20_derniers_resultats, recupere_h2h, recupere_cotes_marches
           import json
-          try:
-              gf_ga = recupere_gf_ga_dom_ext('paris-saint-germain-fc')
-              print('GF/GA dom/ext PSG:', json.dumps(gf_ga, indent=2))
-          except Exception as e:
-              print('ÉCHEC GF/GA:', e)
-          try:
-              historique = recupere_historique_matchs('paris-saint-germain-fc', max_matchs=5)
-              print('Historique PSG:', json.dumps(historique, indent=2, ensure_ascii=False))
-          except Exception as e:
-              print('ÉCHEC historique:', e)
+
+          url_classement = 'https://www.matchendirect.fr/classement-foot/france/classement-ligue-1.html'
+          url_stat = 'https://www.matchendirect.fr/statistique/chelsea-contre-fulham.html'
+          url_faf = 'https://www.matchendirect.fr/live-score/fulham-chelsea_3zanwwudms3ktzt5y7te4auqc.html?p=face-a-face'
+
+          for nom, fn, args in [
+              ('classement', recupere_classement, (url_classement,)),
+              ('20 derniers resultats', recupere_20_derniers_resultats, (url_stat, 'Chelsea', 'Fulham')),
+              ('H2H', recupere_h2h, (url_faf,)),
+              ('cotes', recupere_cotes_marches, (url_faf,)),
+          ]:
+              try:
+                  resultat = fn(*args)
+                  print(f'--- {nom} : OK ---')
+                  print(json.dumps(resultat, indent=2, ensure_ascii=False)[:1500])
+              except Exception as e:
+                  print(f'--- {nom} : ÉCHEC ---', e)
           "
         continue-on-error: true
 
