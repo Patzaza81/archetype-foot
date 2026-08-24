@@ -116,6 +116,30 @@ function construitDetails(m) {
   </details>`;
 }
 
+// Niveau 3 -- donnée principale. CORRIGÉ (25/08) : n'affiche PLUS la
+// probabilité de victoire domicile par défaut, quel que soit le pari
+// retenu -- c'était trompeur (ex. le pari en or est "Moins de 2.5 buts",
+// mais le site affichait "p(1) victoire domicile : 27%" sans rapport).
+// Affiche désormais la probabilité du PARI RÉELLEMENT RETENU (le pari en
+// or de LISTE_B, probabilité la plus haute), avec le nom du marché et une
+// justification chiffrée. Rien n'est affiché si NO_GO -- aucun pari
+// retenu, rien à mettre en avant ni à justifier.
+function construitNiveau3(m) {
+  if (m.verdict_global !== "GO") return "";
+  const listeB = m.LISTE_B_liste_finale_apres_correlation;
+  if (!listeB || listeB.length === 0) return "";
+  const pariEnOr = [...listeB].sort((a, b) => b.probabilite_modele - a.probabilite_modele)[0];
+  return `<div class="proba-1">
+    ${formatPct(pariEnOr.probabilite_modele)}
+    <span class="proba-1-label">probabilité modèle — ${pariEnOr.marche}</span>
+  </div>
+  <p class="pourquoi-pari">
+    pourquoi ce pari : cote ${pariEnOr.cote_observee.toFixed(2)}, ev ${formatPct(pariEnOr.ev_brut)},
+    confiance ${m.confiance || "n/d"} (${m.nb_matchs_domicile_utilises ?? "?"} matchs domicile /
+    ${m.nb_matchs_exterieur_utilises ?? "?"} matchs extérieur utilisés).
+  </p>`;
+}
+
 fetch("data.json?_=" + Date.now())
   .then((r) => r.json())
   .then((data) => {
@@ -149,14 +173,12 @@ fetch("data.json?_=" + Date.now())
       } else {
         const estGo = m.verdict_global === "GO";
         // Niveau 2 -- statut (texte ET couleur, jamais couleur seule)
-        // Niveau 3 -- donnée principale, la plus grosse taille de l'écran
         html += `<div class="ligne-verdict">
           <span class="badge ${estGo ? "badge-go" : "badge-nogo"}">${estGo ? "✓ GO" : "✕ NO_GO"}</span>
-        </div>
-        <div class="proba-1">
-          ${formatPct(m.probabilite_victoire_domicile)}
-          <span class="proba-1-label">probabilité modèle de victoire domicile</span>
         </div>`;
+        // Niveau 3 -- probabilité du pari RETENU uniquement, jamais la
+        // victoire domicile par défaut (voir construitNiveau3 ci-dessus).
+        html += construitNiveau3(m);
 
         // Niveau 4 -- détails
         if (!estGo && m.motif_no_go) {
