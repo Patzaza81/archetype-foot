@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f1115">
+<title>Archetype Foot — Sélection</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .selection-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-bottom: 1px solid #2a2d34; }
+  .selection-item input { width: 20px; height: 20px; }
+  .selection-competition { font-size: 0.85em; opacity: 0.7; padding: 6px 12px; background: #1a1c22; }
+  #copier-btn { position: sticky; top: 0; z-index: 10; width: 100%; padding: 14px; font-size: 1.05em;
+                background: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer; margin-bottom: 12px; }
+  #copier-btn:active { background: #1d4ed8; }
+  #sortie-json { width: 100%; min-height: 90px; margin-top: 10px; font-family: monospace; font-size: 0.85em; }
+  #compteur { text-align: center; padding: 8px; opacity: 0.8; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Archetype Foot — Sélection des matchs</h1>
+  <p id="maj">Chargement…</p>
+</header>
+<main>
+  <button id="copier-btn">Copier la sélection (0)</button>
+  <p id="compteur"></p>
+  <div id="liste"></div>
+  <p style="padding: 12px; opacity: 0.7; font-size: 0.9em;">
+    Après avoir coché tes matchs, tape "Copier la sélection", puis colle le
+    résultat dans <code>matchs_selectionnes.json</code> sur GitHub avant de
+    lancer le workflow.
+  </p>
+  <textarea id="sortie-json" readonly placeholder="Le JSON à coller apparaîtra ici après avoir tapé sur le bouton."></textarea>
+</main>
+<script src="selection.js"></script>
+</body>
+</html>
