@@ -152,121 +152,6 @@ def probabilite_marche(matrice, condition):
     return sum(p for (x, y), p in matrice.items() if condition(x, y))
 
 
-# --- Marchés dérivés de la matrice, ajoutés pour couvrir la palette complète ---
-# Tous calculables à partir de la MÊME matrice Poisson/Dixon-Coles déjà produite.
-# Aucun de ces marchés ne nécessite une nouvelle source de données -- seulement
-# une cote de marché à comparer (saisie manuelle ou scrapée).
-
-def probabilite_over_under(matrice, ligne, sens="over"):
-    """
-    Plus de/Moins de X.5 buts (total match, ou déjà filtré sur une seule équipe
-    si `matrice` a été réduite à une seule dimension avant l'appel).
-    ligne : ex. 2.5 pour "Plus de 2.5 buts"
-    """
-    seuil = int(ligne)  # 2.5 -> 2 (le seuil est le nombre entier juste en dessous)
-    if sens == "over":
-        return probabilite_marche(matrice, lambda x, y: (x + y) > ligne)
-    return probabilite_marche(matrice, lambda x, y: (x + y) < ligne)
-
-
-def probabilite_over_under_equipe(matrice, ligne, equipe="domicile", sens="over"):
-    """Plus de/Moins de X.5 buts pour UNE équipe seulement (pas le total du match)."""
-    idx = 0 if equipe == "domicile" else 1
-    if sens == "over":
-        return probabilite_marche(matrice, lambda x, y: (x if idx == 0 else y) > ligne)
-    return probabilite_marche(matrice, lambda x, y: (x if idx == 0 else y) < ligne)
-
-
-def probabilite_btts(matrice, sens="oui"):
-    """Les deux équipes marquent (BTTS)."""
-    if sens == "oui":
-        return probabilite_marche(matrice, lambda x, y: x > 0 and y > 0)
-    return probabilite_marche(matrice, lambda x, y: x == 0 or y == 0)
-
-
-def probabilite_score_exact(matrice, score_home, score_away):
-    """Score exact -- lecture directe de la matrice, aucun calcul supplémentaire."""
-    return matrice.get((score_home, score_away), 0.0)
-
-
-def probabilite_cages_inviolees(matrice, equipe="domicile"):
-    """Cages inviolées (clean sheet) pour l'équipe désignée."""
-    if equipe == "domicile":
-        return probabilite_marche(matrice, lambda x, y: y == 0)
-    return probabilite_marche(matrice, lambda x, y: x == 0)
-
-
-def probabilite_impair_pair(matrice, sens="impair"):
-    """Nombre total de buts impair ou pair."""
-    if sens == "impair":
-        return probabilite_marche(matrice, lambda x, y: (x + y) % 2 == 1)
-    return probabilite_marche(matrice, lambda x, y: (x + y) % 2 == 0)
-
-
-def probabilite_nombre_exact_buts(matrice, n, plafond_ouvert=6):
-    """Nombre exact de buts dans le match. n >= plafond_ouvert agrège en 'n+'."""
-    if n >= plafond_ouvert:
-        return probabilite_marche(matrice, lambda x, y: (x + y) >= plafond_ouvert)
-    return probabilite_marche(matrice, lambda x, y: (x + y) == n)
-
-
-def calcule_ev(probabilite_modele, cote_observee):
-    """Règle N7 — EV = (cote x probabilité) - 1. Jamais de mélange modèle/marché avant ce calcul."""
-    if cote_observee is None:
-        return None
-    return (cote_observee * probabilite_modele) - 1
-
-
-def kelly_stake(probabilite_modele, cote_observee):
-    """
-    Étape 7 Module 3 — Kelly fractionné à 25%, plafonné à MISE_MAX_PARI (4%).
-    Retourne 0 si le pari est filtré (hors fourchette de cote ou EV insuffisant).
-    """
-    if cote_observee is None:
-        return 0.0
-    ev = calcule_ev(probabilite_modele, cote_observee)
-    if ev is None or ev < SEUIL_EV_MIN:
-        return 0.0
-    if not (FOURCHETTE_COTE_MIN <= cote_observee <= FOURCHETTE_COTE_MAX):
-        return 0.0
-
-    b = cote_observee - 1
-    p = probabilite_modele
-    q = 1 - p
-    f_kelly = (b * p - q) / b if b > 0 else 0.0
-    if f_kelly <= 0:
-        return 0.0
-
-    mise = f_kelly * KELLY_FRACTION
-    return min(mise, MISE_MAX_PARI)
-
-
-def est_standout(probabilite_modele, cote_observee):
-    """Critère 'Pari en or' (Module 4) — EV >= SEUIL_STANDOUT."""
-    ev = calcule_ev(probabilite_modele, cote_observee)
-    return ev is not None and ev >= SEUIL_STANDOUT
-
-
-##############################################################################
-# EXTENSION MARCHÉS — 25/08/2026
-#
-# Toutes les fonctions ci-dessous dérivent UNIQUEMENT de la matrice Poisson/
-# Dixon-Coles déjà calculée par matrice_poisson_dixon_coles(). Aucune donnée
-# supplémentaire requise, aucune nouvelle source à scraper. C'est la réponse
-# concrète au constat : le nombre de marchés couvrables n'a jamais été limité
-# par la source de cotes, seulement par le code qu'on avait écrit jusqu'ici.
-#
-# HORS PÉRIMÈTRE VOLONTAIRE (pas oublié, exclu consciemment) :
-# - Marchés 1ère/2ème mi-temps : nécessitent des lambdas mi-temps séparés
-#   (Règle N5 Module 2), qui nécessitent eux-mêmes l'historique détaillé des
-#   scores à la mi-temps sur plusieurs matchs — donnée non confirmée
-#   disponible en scraping simple (voir discussion du 22/08). Tant que cette
-#   donnée n'est pas branchée, ces marchés restent NON_CALCULABLE.
-# - Cartons, corners, buteurs, joueurs : pas de modèle statistique pour ça
-#   dans ce pipeline. Un modèle Poisson sur les buts ne prédit pas les cartons.
-##############################################################################
-
-
 def probabilite_double_chance(matrice):
     p1 = probabilite_marche(matrice, lambda x, y: x > y)
     pn = probabilite_marche(matrice, lambda x, y: x == y)
@@ -290,8 +175,6 @@ def probabilite_over_under(matrice, ligne, equipe=None):
     plus = sum(p for (x, y), p in matrice.items() if cond_total(x, y) > ligne)
     moins = sum(p for (x, y), p in matrice.items() if cond_total(x, y) < ligne)
     egal = sum(p for (x, y), p in matrice.items() if cond_total(x, y) == ligne)
-    # ligne entière -> push possible (egal), redistribué nulle part ici :
-    # affiché tel quel, à interpréter comme "push" si ligne entière.
     return {"plus": plus, "moins": moins, "push": egal}
 
 
@@ -304,8 +187,7 @@ def probabilite_handicap_2choix(matrice, ligne_domicile):
     """
     ligne_domicile : handicap appliqué à l'équipe à domicile, ex: -1.5 signifie
     "domicile doit gagner par 2 buts d'écart ou plus pour couvrir".
-    Lignes demi-entières uniquement (pas de push possible) — conforme au
-    filtre v1 qui exclut les tableaux à push ambigus (Handicap à 3 choix).
+    Lignes demi-entières uniquement (pas de push possible).
     """
     if ligne_domicile == int(ligne_domicile):
         raise ValueError("probabilite_handicap_2choix ne gère que les lignes demi-entières (pas de push). "
@@ -327,8 +209,7 @@ def probabilite_nombre_exact_buts(matrice, n):
 
 def probabilite_nombre_buts_ou_plus(matrice, n):
     """Probabilité que le total de buts soit >= n. Sert uniquement pour la
-    queue de distribution (ex: '6+'), jamais pour une valeur isolée — sinon
-    on mélangerait deux granularités différentes dans la même clé."""
+    queue de distribution (ex: '6+'), jamais pour une valeur isolée."""
     return sum(p for (bx, by), p in matrice.items() if bx + by >= n)
 
 
@@ -351,10 +232,7 @@ def construit_probabilites_marches(matrice, lignes_ou=(0.5, 1.5, 2.5, 3.5, 4.5),
     """
     Construit le dictionnaire complet des probabilités modèle pour tous les
     marchés v1 (buts uniquement). Clés stables, consommées telles quelles par
-    le frontend (script.js) pour le rapprochement avec les cotes collées
-    manuellement. NE PAS renommer les clés sans mettre à jour script.js en
-    même temps — une seule source de vérité pour le schéma, dupliquée dans
-    les deux langages faute d'un backend qui tournerait à la demande.
+    le frontend (script.js).
     """
     marches = {
         "1x2": {
@@ -394,13 +272,59 @@ def construit_probabilites_marches(matrice, lignes_ou=(0.5, 1.5, 2.5, 3.5, 4.5),
     return marches
 
 
+def calcule_ev(probabilite_modele, cote_observee):
+    """Règle N7 — EV = (cote x probabilité) - 1. Jamais de mélange modèle/marché avant ce calcul."""
+    if cote_observee is None:
+        return None
+    return (cote_observee * probabilite_modele) - 1
+
+
+def kelly_stake(probabilite_modele, cote_observee):
+    """
+    Étape 7 Module 3 — Kelly fractionné à 25%, plafonné à MISE_MAX_PARI (4%).
+    Retourne 0 si le pari est filtré (hors fourchette de cote ou EV insuffisant).
+    """
+    if cote_observee is None:
+        return 0.0
+    ev = calcule_ev(probabilite_modele, cote_observee)
+    if ev is None or ev < SEUIL_EV_MIN:
+        return 0.0
+    if not (FOURCHETTE_COTE_MIN <= cote_observee <= FOURCHETTE_COTE_MAX):
+        return 0.0
+
+    b = cote_observee - 1
+    p = probabilite_modele
+    q = 1 - p
+    f_kelly = (b * p - q) / b if b > 0 else 0.0
+    if f_kelly <= 0:
+        return 0.0
+
+    mise = f_kelly * KELLY_FRACTION
+    return min(mise, MISE_MAX_PARI)
+
+
+def est_standout(probabilite_modele, cote_observee):
+    """
+    Critère 'Pari en or' (Module 4) — EV >= SEUIL_STANDOUT.
+    CORRECTIF (25/08) : doit aussi respecter la fourchette de cote
+    exploitable (FOURCHETTE_COTE_MIN/MAX), comme kelly_stake(). Avant ce
+    correctif, un match avec un fort EV mais une cote hors fourchette
+    (ex. 3.80, un outsider) était marqué "standout" alors qu'aucune mise
+    n'est jamais recommandée dessus (mise_kelly = 0) — badge trompeur sur
+    le site, découvert dès que cote_1 a commencé à circuler réellement.
+    """
+    if cote_observee is None:
+        return False
+    if not (FOURCHETTE_COTE_MIN <= cote_observee <= FOURCHETTE_COTE_MAX):
+        return False
+    ev = calcule_ev(probabilite_modele, cote_observee)
+    return ev is not None and ev >= SEUIL_STANDOUT
+
+
 def plafonner_cluster(paris, plafond_cluster=CLUSTER_MAX, nb_max=NB_PARIS_MAX):
     """
     Filtre simple : garde au plus NB_PARIS_MAX paris (les plus forts EV en premier),
     et plafonne la somme des mises à plafond_cluster.
-    NE remplace PAS le filtre de corrélation sémantique (Étape 4 Module 3) qui
-    demande de savoir si deux marchés sont mécaniquement liés (ex: 1X2 + BTTS du
-    même match) — ça reste à vérifier manuellement pour l'instant.
     """
     paris_tries = sorted(paris, key=lambda p: p.get("ev", 0), reverse=True)[:nb_max]
     total = sum(p.get("mise", 0) for p in paris_tries)
