@@ -37,16 +37,37 @@ HEADERS = {
         "image/webp,*/*;q=0.8"
     ),
     "Accept-Language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Connection": "keep-alive",
+    "Sec-Fetch-Dest": "document",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-Site": "none",
+    "Sec-Fetch-User": "?1",
+    "Upgrade-Insecure-Requests": "1",
 }
+
+_SESSION = requests.Session()
+_SESSION.headers.update(HEADERS)
 
 COLONNES_ATTENDUES = ["Pts", "MP", "W", "D", "L", "GK", "GA", "GD"]
 
 
 def fetch_html(url, retries=3, delay=2):
+    """
+    STATUT (25/08/2026, 2e tentative) : la première correction (User-Agent +
+    Accept + Accept-Language) n'a PAS suffi — même erreur 406 constatée en
+    conditions réelles. Cette version ajoute les en-têtes Sec-Fetch-* et une
+    session avec cookies persistants (un vrai navigateur envoie ces signaux
+    automatiquement, `requests` non). Si ÇA échoue aussi, la conclusion
+    honnête sera que BeSoccer a une protection anti-bot qui ne se contourne
+    pas avec des en-têtes seuls (empreinte TLS, JavaScript requis) — il
+    faudrait alors Playwright pour ce site précis, pas une nouvelle liste
+    d'en-têtes à deviner indéfiniment.
+    """
     last_err = None
     for _ in range(retries):
         try:
-            resp = requests.get(url, headers=HEADERS, timeout=15)
+            resp = _SESSION.get(url, timeout=15)
             resp.raise_for_status()
             return resp.text
         except requests.RequestException as e:
