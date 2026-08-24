@@ -1,502 +1,37 @@
+/* Archetype Foot — refonte visuelle (25/08). Design tokens centralisés,
+   hiérarchie typographique stricte, couleur jamais seul vecteur
+   d'information (texte + icône toujours présents à côté de la couleur). */
+
 :root {
-  --vert-fonce: #0e2019;
-  --vert-fonce-2: #16302596;
-  --vert-carte: #14261f;
-  --moutarde: #d9a441;
-  --moutarde-clair: #f0c46a;
-  --texte-clair: #e8e6df;
-  --texte-attenue: #a8a99e;
-  --rouge-ev: #c05050;
-  --vert-ev: #6b9b5e;
-  --bordure: #2a3d33;
+  --bg: #071E18;
+  --surface: #0D2922;
+  --surface-2: #12342B;
+  --turquoise: #19C7B5;
+  --gold: #E5B83F;
+  --green: #72B85C;
+  --red: #C84E50;
+  --text: #F3F5F2;
+  --text-secondary: #B9C4BF;
+  --border: rgba(255,255,255,.10);
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
-  background: var(--vert-fonce);
-  color: var(--texte-clair);
+  background: var(--bg);
+  color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   line-height: 1.5;
+  /* Espace en bas pour ne jamais laisser le bandeau Netlify masquer du contenu */
+  padding-bottom: 90px;
 }
 
 header {
-  padding: 24px 16px 16px;
-  border-bottom: 2px solid var(--moutarde);
-  background: linear-gradient(180deg, #122a20, var(--vert-fonce));
+  padding: 20px 16px 14px;
+  border-bottom: 1px solid var(--border);
 }
 
-header h1 {
-  margin: 0 0 6px;
-  color: var(--moutarde);
-  font-size: 1.6em;
-  letter-spacing: 0.02em;
-}
-
-#maj {
-  margin: 0;
-  color: var(--texte-attenue);
-  font-size: 0.9em;
-}
-
-main.grille {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 14px;
-  padding: 16px;
-}
-
-.match {
-  background: var(--vert-carte);
-  border: 1px solid var(--bordure);
-  border-radius: 10px;
-  padding: 14px 16px;
-}
-
-.match.standout {
-  border-color: var(--moutarde);
-  box-shadow: 0 0 0 1px var(--moutarde), 0 4px 14px rgba(217, 164, 65, 0.15);
-}
-
-.teams {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  font-weight: 600;
-  font-size: 1.05em;
-}
-
-.teams span:nth-child(2) {
-  color: var(--moutarde-clair);
-  font-weight: 700;
-  font-size: 0.95em;
-  white-space: nowrap;
-}
-
-.meta {
-  color: var(--texte-attenue);
-  font-size: 0.8em;
-  margin-top: 4px;
-  margin-bottom: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-.signal {
-  font-size: 0.9em;
-  border-top: 1px solid var(--bordure);
-  padding-top: 10px;
-}
-
-.signal-non-traite {
-  color: var(--texte-attenue);
-  font-style: italic;
-}
-
-.mise {
-  margin-top: 6px;
-  color: var(--vert-ev);
-  font-weight: 700;
-}
-
-.match.standout .mise {
-  color: var(--moutarde);
-}
-
-.mise-nulle {
-  margin-top: 6px;
-  color: var(--texte-attenue);
-}
-
-.meta-confiance {
-  margin-top: 8px;
-  font-size: 0.82em;
-  color: var(--texte-attenue);
-  border-top: 1px dashed var(--bordure);
-  padding-top: 6px;
-}
-
-/* Coloration simple selon l'EV -- appliquée via une classe utilitaire au
-   besoin, non générée automatiquement pour l'instant (script.js ne pose
-   pas encore cette classe) : préparé, à activer si voulu plus tard. */
-.ev-positif { color: var(--vert-ev); }
-.ev-negatif { color: var(--rouge-ev); }
-:root {
-  --vert-fonce: #0e2019;
-  --vert-fonce-2: #16302596;
-  --vert-carte: #14261f;
-  --moutarde: #d9a441;
-  --moutarde-clair: #f0c46a;
-  --texte-clair: #e8e6df;
-  --texte-attenue: #a8a99e;
-  --rouge-ev: #c05050;
-  --vert-ev: #6b9b5e;
-  --bordure: #2a3d33;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  background: var(--vert-fonce);
-  color: var(--texte-clair);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  line-height: 1.5;
-}
-
-header {
-  padding: 24px 16px 16px;
-  border-bottom: 2px solid var(--moutarde);
-  background: linear-gradient(180deg, #122a20, var(--vert-fonce));
-}
-
-header h1 {
-  margin: 0 0 6px;
-  color: var(--moutarde);
-  font-size: 1.6em;
-  letter-spacing: 0.02em;
-}
-
-#maj {
-  margin: 0;
-  color: var(--texte-attenue);
-  font-size: 0.9em;
-}
-
-main.grille {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 14px;
-  padding: 16px;
-}
-
-.match {
-  background: var(--vert-carte);
-  border: 1px solid var(--bordure);
-  border-radius: 10px;
-  padding: 14px 16px;
-}
-
-.match.standout {
-  border-color: var(--moutarde);
-  box-shadow: 0 0 0 1px var(--moutarde), 0 4px 14px rgba(217, 164, 65, 0.15);
-}
-
-.teams {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  font-weight: 600;
-  font-size: 1.05em;
-}
-
-.teams span:nth-child(2) {
-  color: var(--moutarde-clair);
-  font-weight: 700;
-  font-size: 0.95em;
-  white-space: nowrap;
-}
-
-.meta {
-  color: var(--texte-attenue);
-  font-size: 0.8em;
-  margin-top: 4px;
-  margin-bottom: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-.signal {
-  font-size: 0.9em;
-  border-top: 1px solid var(--bordure);
-  padding-top: 10px;
-}
-
-.signal-non-traite {
-  color: var(--texte-attenue);
-  font-style: italic;
-}
-
-.mise {
-  margin-top: 6px;
-  color: var(--vert-ev);
-  font-weight: 700;
-}
-
-.match.standout .mise {
-  color: var(--moutarde);
-}
-
-.mise-nulle {
-  margin-top: 6px;
-  color: var(--texte-attenue);
-}
-
-.meta-confiance {
-  margin-top: 8px;
-  font-size: 0.82em;
-  color: var(--texte-attenue);
-  border-top: 1px dashed var(--bordure);
-  padding-top: 6px;
-}
-
-/* Coloration simple selon l'EV -- appliquée via une classe utilitaire au
-   besoin, non générée automatiquement pour l'instant (script.js ne pose
-   pas encore cette classe) : préparé, à activer si voulu plus tard. */
-.ev-positif { color: var(--vert-ev); }
-.ev-negatif { color: var(--rouge-ev); }
-
-/* Ajouts Module 4 (25/08) -- verdict GO/NO_GO, bloc paris, bloc risques */
-.match-go { border-left: 3px solid var(--vert-ev); }
-.match-nogo { border-left: 3px solid var(--rouge-ev); opacity: 0.85; }
-
-.ligne-verdict {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  border-top: 1px solid var(--bordure);
-  padding-top: 10px;
-}
-
-.badge {
-  font-weight: 700;
-  font-size: 0.85em;
-  padding: 3px 10px;
-  border-radius: 12px;
-  letter-spacing: 0.04em;
-}
-.badge-go { background: var(--vert-ev); color: #0e2019; }
-.badge-nogo { background: var(--rouge-ev); color: #fff; }
-
-.proba-1 { color: var(--texte-attenue); font-size: 0.9em; }
-
-.motif-no-go {
-  margin-top: 8px;
-  font-size: 0.85em;
-  color: var(--texte-attenue);
-  font-style: italic;
-}
-
-.bloc-paris { margin-top: 10px; }
-.pari-ligne {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 6px 0;
-  border-bottom: 1px dashed var(--bordure);
-  font-size: 0.9em;
-}
-.pari-ligne.pari-en-or {
-  color: var(--moutarde);
-  font-weight: 700;
-}
-.pari-mise { color: var(--vert-ev); }
-.pari-en-or .pari-mise { color: var(--moutarde); }
-
-.bloc-risques {
-  margin-top: 10px;
-  padding: 8px 10px;
-  border: 1px solid var(--rouge-ev);
-  border-radius: 8px;
-  font-size: 0.8em;
-  color: var(--texte-attenue);
-}
-.risques-titre { color: var(--rouge-ev); font-weight: 700; margin-bottom: 4px; }
-.risque-ligne { margin-top: 2px; }
-:root {
-  --vert-fonce: #0e2019;
-  --vert-fonce-2: #16302596;
-  --vert-carte: #14261f;
-  --moutarde: #d9a441;
-  --moutarde-clair: #f0c46a;
-  --texte-clair: #e8e6df;
-  --texte-attenue: #a8a99e;
-  --rouge-ev: #c05050;
-  --vert-ev: #6b9b5e;
-  --bordure: #2a3d33;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  background: var(--vert-fonce);
-  color: var(--texte-clair);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  line-height: 1.5;
-}
-
-header {
-  padding: 24px 16px 16px;
-  border-bottom: 2px solid var(--moutarde);
-  background: linear-gradient(180deg, #122a20, var(--vert-fonce));
-}
-
-header h1 {
-  margin: 0 0 6px;
-  color: var(--moutarde);
-  font-size: 1.6em;
-  letter-spacing: 0.02em;
-}
-
-#maj {
-  margin: 0;
-  color: var(--texte-attenue);
-  font-size: 0.9em;
-}
-
-main.grille {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 14px;
-  padding: 16px;
-}
-
-.match {
-  background: var(--vert-carte);
-  border: 1px solid var(--bordure);
-  border-radius: 10px;
-  padding: 14px 16px;
-}
-
-.match.standout {
-  border-color: var(--moutarde);
-  box-shadow: 0 0 0 1px var(--moutarde), 0 4px 14px rgba(217, 164, 65, 0.15);
-}
-
-.teams {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  font-weight: 600;
-  font-size: 1.05em;
-}
-
-.teams span:nth-child(2) {
-  color: var(--moutarde-clair);
-  font-weight: 700;
-  font-size: 0.95em;
-  white-space: nowrap;
-}
-
-.meta {
-  color: var(--texte-attenue);
-  font-size: 0.8em;
-  margin-top: 4px;
-  margin-bottom: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-.signal {
-  font-size: 0.9em;
-  border-top: 1px solid var(--bordure);
-  padding-top: 10px;
-}
-
-.signal-non-traite {
-  color: var(--texte-attenue);
-  font-style: italic;
-}
-
-.mise {
-  margin-top: 6px;
-  color: var(--vert-ev);
-  font-weight: 700;
-}
-
-.match.standout .mise {
-  color: var(--moutarde);
-}
-
-.mise-nulle {
-  margin-top: 6px;
-  color: var(--texte-attenue);
-}
-
-.meta-confiance {
-  margin-top: 8px;
-  font-size: 0.82em;
-  color: var(--texte-attenue);
-  border-top: 1px dashed var(--bordure);
-  padding-top: 6px;
-}
-
-/* Coloration simple selon l'EV -- appliquée via une classe utilitaire au
-   besoin, non générée automatiquement pour l'instant (script.js ne pose
-   pas encore cette classe) : préparé, à activer si voulu plus tard. */
-.ev-positif { color: var(--vert-ev); }
-.ev-negatif { color: var(--rouge-ev); }
-
-/* Ajouts Module 4 (25/08) -- verdict GO/NO_GO, bloc paris, bloc risques */
-.match-go { border-left: 3px solid var(--vert-ev); }
-.match-nogo { border-left: 3px solid var(--rouge-ev); opacity: 0.85; }
-
-.ligne-verdict {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  border-top: 1px solid var(--bordure);
-  padding-top: 10px;
-}
-
-.badge {
-  font-weight: 700;
-  font-size: 0.85em;
-  padding: 3px 10px;
-  border-radius: 12px;
-  letter-spacing: 0.04em;
-}
-.badge-go { background: var(--vert-ev); color: #0e2019; }
-.badge-nogo { background: var(--rouge-ev); color: #fff; }
-
-.proba-1 { color: var(--texte-attenue); font-size: 0.9em; }
-
-.motif-no-go {
-  margin-top: 8px;
-  font-size: 0.85em;
-  color: var(--texte-attenue);
-  font-style: italic;
-}
-
-.bloc-paris { margin-top: 10px; }
-.pari-ligne {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 6px 0;
-  border-bottom: 1px dashed var(--bordure);
-  font-size: 0.9em;
-}
-.pari-ligne.pari-en-or {
-  color: var(--moutarde);
-  font-weight: 700;
-}
-.pari-mise { color: var(--vert-ev); }
-.pari-en-or .pari-mise { color: var(--moutarde); }
-
-.bloc-risques {
-  margin-top: 10px;
-  padding: 8px 10px;
-  border: 1px solid var(--rouge-ev);
-  border-radius: 8px;
-  font-size: 0.8em;
-  color: var(--texte-attenue);
-}
-.risques-titre { color: var(--rouge-ev); font-weight: 700; margin-bottom: 4px; }
-.risque-ligne { margin-top: 2px; }
-
-/* Navigation croisée index.html <-> selection.html (25/08) */
 .header-top {
   display: flex;
   justify-content: space-between;
@@ -505,297 +40,234 @@ main.grille {
   gap: 10px;
 }
 
+header h1 {
+  margin: 0;
+  color: var(--gold);
+  font-size: 32px;
+  font-weight: 700;
+}
+
 .nav-bouton {
-  color: var(--moutarde);
+  color: var(--turquoise);
   text-decoration: none;
-  border: 1px solid var(--moutarde);
+  border: 1px solid var(--turquoise);
   border-radius: 6px;
   padding: 6px 14px;
-  font-size: 0.85em;
+  font-size: 14px;
   font-weight: 600;
   white-space: nowrap;
 }
-.nav-bouton:active { background: var(--moutarde); color: var(--vert-fonce); }
-
-/* Niveau de détail N1/N2 (25/08) -- <details> natif, replié par défaut */
-.details-niveau1 {
-  margin-top: 10px;
-  font-size: 0.85em;
-  border-top: 1px solid var(--bordure);
-  padding-top: 8px;
-}
-.details-niveau1 summary {
-  cursor: pointer;
-  color: var(--moutarde);
-  font-weight: 600;
-}
-.detail-pourquoi {
-  color: var(--texte-attenue);
-  margin: 8px 0;
-  line-height: 1.6;
-}
-.detail-sous-titre {
-  color: var(--moutarde-clair);
-  font-size: 0.9em;
-  margin: 10px 0 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-.detail-vide { color: var(--texte-attenue); font-style: italic; }
-.detail-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 8px;
-}
-.detail-table th, .detail-table td {
-  text-align: left;
-  padding: 4px 6px;
-  border-bottom: 1px solid var(--bordure);
-}
-.detail-autres-marches { color: var(--texte-attenue); }
-.detail-marche-ligne { padding: 2px 0; }
-:root {
-  --vert-fonce: #0e2019;
-  --vert-fonce-2: #16302596;
-  --vert-carte: #14261f;
-  --moutarde: #d9a441;
-  --moutarde-clair: #f0c46a;
-  --texte-clair: #e8e6df;
-  --texte-attenue: #a8a99e;
-  --rouge-ev: #c05050;
-  --vert-ev: #6b9b5e;
-  --bordure: #2a3d33;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  background: var(--vert-fonce);
-  color: var(--texte-clair);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  line-height: 1.5;
-}
-
-header {
-  padding: 24px 16px 16px;
-  border-bottom: 2px solid var(--moutarde);
-  background: linear-gradient(180deg, #122a20, var(--vert-fonce));
-}
-
-header h1 {
-  margin: 0 0 6px;
-  color: var(--moutarde);
-  font-size: 1.6em;
-  letter-spacing: 0.02em;
-}
+.nav-bouton:active { background: var(--turquoise); color: var(--bg); }
 
 #maj {
-  margin: 0;
-  color: var(--texte-attenue);
-  font-size: 0.9em;
+  margin: 10px 0 0;
+  color: var(--text-secondary);
+  font-size: 14px;
 }
 
 main.grille {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 14px;
+  gap: 12px;
   padding: 16px;
 }
 
+/* --- Carte : hiérarchie stricte à 5 niveaux --- */
+
 .match {
-  background: var(--vert-carte);
-  border: 1px solid var(--bordure);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 14px 16px;
+  padding: 16px;
 }
 
-.match.standout {
-  border-color: var(--moutarde);
-  box-shadow: 0 0 0 1px var(--moutarde), 0 4px 14px rgba(217, 164, 65, 0.15);
-}
-
+/* Niveau 1 — identification */
 .teams {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
   gap: 8px;
-  font-weight: 600;
-  font-size: 1.05em;
-}
-
-.teams span:nth-child(2) {
-  color: var(--moutarde-clair);
+  font-size: 22px;
   font-weight: 700;
-  font-size: 0.95em;
+}
+.teams span:nth-child(2) {
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 16px;
   white-space: nowrap;
 }
-
 .meta {
-  color: var(--texte-attenue);
-  font-size: 0.8em;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 600;
   margin-top: 4px;
-  margin-bottom: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
+  margin-bottom: 14px;
 }
 
-.signal {
-  font-size: 0.9em;
-  border-top: 1px solid var(--bordure);
-  padding-top: 10px;
-}
-
-.signal-non-traite {
-  color: var(--texte-attenue);
-  font-style: italic;
-}
-
-.mise {
-  margin-top: 6px;
-  color: var(--vert-ev);
-  font-weight: 700;
-}
-
-.match.standout .mise {
-  color: var(--moutarde);
-}
-
-.mise-nulle {
-  margin-top: 6px;
-  color: var(--texte-attenue);
-}
-
-.meta-confiance {
-  margin-top: 8px;
-  font-size: 0.82em;
-  color: var(--texte-attenue);
-  border-top: 1px dashed var(--bordure);
-  padding-top: 6px;
-}
-
-/* Coloration simple selon l'EV -- appliquée via une classe utilitaire au
-   besoin, non générée automatiquement pour l'instant (script.js ne pose
-   pas encore cette classe) : préparé, à activer si voulu plus tard. */
-.ev-positif { color: var(--vert-ev); }
-.ev-negatif { color: var(--rouge-ev); }
-
-/* Ajouts Module 4 (25/08) -- verdict GO/NO_GO, bloc paris, bloc risques */
-.match-go { border-left: 3px solid var(--vert-ev); }
-.match-nogo { border-left: 3px solid var(--rouge-ev); opacity: 0.85; }
-
+/* Niveau 2 — statut : jamais la couleur seule, toujours un mot en clair */
 .ligne-verdict {
   display: flex;
   align-items: center;
   gap: 10px;
-  border-top: 1px solid var(--bordure);
   padding-top: 10px;
+  border-top: 1px solid var(--border);
 }
-
 .badge {
   font-weight: 700;
-  font-size: 0.85em;
-  padding: 3px 10px;
+  font-size: 13px;
+  padding: 4px 12px;
   border-radius: 12px;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
 }
-.badge-go { background: var(--vert-ev); color: #0e2019; }
-.badge-nogo { background: var(--rouge-ev); color: #fff; }
+.badge-go { background: var(--green); color: #06140f; }
+.badge-nogo { background: var(--red); color: #fff; }
 
-.proba-1 { color: var(--texte-attenue); font-size: 0.9em; }
+/* Niveau 3 — donnée principale : la plus grosse taille de tout l'écran */
+.proba-1 {
+  color: var(--text);
+  font-size: 26px;
+  font-weight: 700;
+}
+.proba-1-label {
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 400;
+  display: block;
+}
 
+/* Niveau 4 — détails */
 .motif-no-go {
   margin-top: 8px;
-  font-size: 0.85em;
-  color: var(--texte-attenue);
-  font-style: italic;
+  font-size: 14px;
+  color: var(--text-secondary);
 }
 
-.bloc-paris { margin-top: 10px; }
+.bloc-paris { margin-top: 12px; }
 .pari-ligne {
   display: flex;
   justify-content: space-between;
   gap: 8px;
-  padding: 6px 0;
-  border-bottom: 1px dashed var(--bordure);
-  font-size: 0.9em;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 15px;
 }
 .pari-ligne.pari-en-or {
-  color: var(--moutarde);
+  color: var(--gold);
   font-weight: 700;
 }
-.pari-mise { color: var(--vert-ev); }
-.pari-en-or .pari-mise { color: var(--moutarde); }
+.pari-mise { color: var(--green); font-weight: 600; }
+.pari-en-or .pari-mise { color: var(--gold); }
 
 .bloc-risques {
-  margin-top: 10px;
-  padding: 8px 10px;
-  border: 1px solid var(--rouge-ev);
-  border-radius: 8px;
-  font-size: 0.8em;
-  color: var(--texte-attenue);
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: var(--surface-2);
+  border-left: 3px solid var(--red);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text-secondary);
 }
-.risques-titre { color: var(--rouge-ev); font-weight: 700; margin-bottom: 4px; }
+.risques-titre { color: var(--red); font-weight: 700; margin-bottom: 4px; }
 .risque-ligne { margin-top: 2px; }
 
-/* Navigation croisée index.html <-> selection.html (25/08) */
-.header-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
+.signal-non-traite {
+  color: var(--text-secondary);
+  font-size: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
 }
 
-.nav-bouton {
-  color: var(--moutarde);
-  text-decoration: none;
-  border: 1px solid var(--moutarde);
-  border-radius: 6px;
-  padding: 6px 14px;
-  font-size: 0.85em;
-  font-weight: 600;
-  white-space: nowrap;
-}
-.nav-bouton:active { background: var(--moutarde); color: var(--vert-fonce); }
-
-/* Niveau de détail N1/N2 (25/08) -- <details> natif, replié par défaut */
+/* Niveau 5 — action secondaire (détail N1/N2), repliée par défaut */
 .details-niveau1 {
-  margin-top: 10px;
-  font-size: 0.85em;
-  border-top: 1px solid var(--bordure);
+  margin-top: 12px;
+  border-top: 1px solid var(--border);
   padding-top: 8px;
 }
 .details-niveau1 summary {
   cursor: pointer;
-  color: var(--moutarde);
+  color: var(--turquoise);
   font-weight: 600;
+  font-size: 14px;
+  list-style: none;
 }
+.details-niveau1 summary::-webkit-details-marker { display: none; }
+.details-niveau1 summary::before { content: "▸ "; }
+.details-niveau1[open] summary::before { content: "▾ "; }
+
 .detail-pourquoi {
-  color: var(--texte-attenue);
-  margin: 8px 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  margin: 10px 0;
   line-height: 1.6;
 }
 .detail-sous-titre {
-  color: var(--moutarde-clair);
-  font-size: 0.9em;
-  margin: 10px 0 4px;
+  color: var(--turquoise);
+  font-size: 12px;
+  margin: 12px 0 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+}
+.detail-vide { color: var(--text-secondary); font-size: 13px; font-style: italic; }
+.detail-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; font-size: 13px; }
+.detail-table th, .detail-table td { text-align: left; padding: 5px 6px; border-bottom: 1px solid var(--border); }
+.detail-autres-marches { color: var(--text-secondary); font-size: 13px; }
+.detail-marche-ligne { padding: 2px 0; }
+
+/* --- Page de sélection --- */
+
+#copier-btn {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  width: 100%;
+  padding: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  background: var(--turquoise);
+  color: var(--bg);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+#copier-btn:active { background: #14a396; }
+
+#compteur { text-align: center; padding: 6px; color: var(--text-secondary); font-size: 14px; }
+
+.selection-competition {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--turquoise);
+  padding: 8px 12px;
+  background: var(--surface-2);
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
-.detail-vide { color: var(--texte-attenue); font-style: italic; }
-.detail-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 8px;
-}
-.detail-table th, .detail-table td {
-  text-align: left;
-  padding: 4px 6px;
-  border-bottom: 1px solid var(--bordure);
-}
-.detail-autres-marches { color: var(--texte-attenue); }
-.detail-marche-ligne { padding: 2px 0; }
 
+.selection-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.selection-item input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--turquoise);
+}
+.selection-item label { font-size: 16px; }
+
+#sortie-json {
+  width: 100%;
+  min-height: 90px;
+  margin-top: 10px;
+  font-family: monospace;
+  font-size: 13px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px;
+}
