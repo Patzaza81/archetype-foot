@@ -11,6 +11,7 @@ Ce script n'a jamais tourné contre le vrai HTML. Première vérification
 réelle : le diagnostic GitHub Actions, comme pour scraper.py.
 """
 
+import io
 import re
 import time
 
@@ -37,6 +38,52 @@ def fetch_html(url, retries=3, delay=2):
 
 
 # --------------------------------------------------------------------------
+# Détails de match + URL statistique réelle (résout le blocage identifié le
+# 24/08 : l'ordre des équipes dans /statistique/{eq1}-contre-{eq2}.html
+# n'est pas déterministe — Fulham domicile vs Chelsea donne
+# "chelsea-contre-fulham", pas l'inverse. Solution retenue : lire le lien
+# réel affiché sur la page de match plutôt que reconstruire l'URL à la main.
+# Bonus : cette même page donne aussi lieu/météo/arbitre/diffuseur (point 2
+# de TRANSITION.md, jamais branché jusqu'ici) — un seul fetch pour les deux.
+# --------------------------------------------------------------------------
+
+def recupere_details_match(url_match):
+    """
+    url_match : url /live-score/{slug}.html d'un match (page par défaut,
+    SANS paramètre ?p=).
+    Retourne {'lieu':..., 'meteo':..., 'arbitre':..., 'diffuseur':...,
+              'url_statistique': ... ou None si lien absent}
+    """
+    html = fetch_html(url_match)
+    soup = BeautifulSoup(html, "html.parser")
+
+    resultat = {"lieu": None, "meteo": None, "arbitre": None, "diffuseur": None, "url_statistique": None}
+
+    # Lien "Stats des équipes" vers /statistique/ — texte exact observé,
+    # recherché de façon tolérante (contient "Stats" et pointe vers /statistique/).
+    lien_stat = soup.select_one("a[href*='/statistique/']")
+    if lien_stat:
+        href = lien_stat.get("href", "")
+        resultat["url_statistique"] = href if href.startswith("http") else "https://www.matchendirect.fr" + href
+
+    # Bloc "Détails du match" : lignes précédées d'emoji distinctifs, texte
+    # libre sinon. Recherche par emoji car plus stable qu'une classe CSS
+    # jamais observée (même limite que partout ailleurs dans ce projet).
+    texte_page = soup.get_text("\n", strip=True)
+    for ligne in texte_page.split("\n"):
+        if ligne.startswith("🏟"):
+            resultat["lieu"] = ligne.lstrip("🏟").strip()
+        elif ligne.startswith("🌡"):
+            resultat["meteo"] = ligne.lstrip("🌡").strip()
+        elif ligne.startswith("📣"):
+            resultat["arbitre"] = ligne.lstrip("📣").strip()
+        elif ligne.startswith("📺"):
+            resultat["diffuseur"] = ligne.lstrip("📺").strip()
+
+    return resultat
+
+
+# --------------------------------------------------------------------------
 # Classement Général / Domicile / Extérieur
 # --------------------------------------------------------------------------
 
@@ -47,6 +94,7 @@ def recupere_classement(url_classement_base):
     """
     url_classement_base : ex 'https://www.matchendirect.fr/classement-foot/france/classement-ligue-1.html'
     Retourne {'general': [...], 'domicile': [...], 'exterieur': [...]}
+    Chaque élément de liste : {'equipe': str, 'pts':int, 'j':int, 'v':int, 'n':int, 'd':int, 'bp':int, 'bc':int, 'diff':int}
     """
     variantes = {
         "general": url_classement_base,
@@ -57,7 +105,7 @@ def recupere_classement(url_classement_base):
     for cle, url in variantes.items():
         html = fetch_html(url)
         try:
-            tables = pd.read_html(html)
+            tables = pd.read_html(io.StringIO(html))
         except ValueError as e:
             raise RuntimeError(f"Aucun tableau trouvé sur {url} ({cle})") from e
 
@@ -70,6 +118,8 @@ def recupere_classement(url_classement_base):
 
         lignes = []
         for _, ligne in table.iterrows():
+            # La colonne équipe n'a pas de nom fiable observé — on prend la
+            # première colonne texte non numérique restante.
             nom_equipe = None
             for col in table.columns:
                 val = ligne[col]
@@ -92,15 +142,17 @@ def recupere_classement(url_classement_base):
 
 def _extrait_matchs_scores(soup, ancre_regex, max_matchs=20):
     """
-    Cherche un titre correspondant à ancre_regex, puis extrait les lignes de
-    match qui suivent (liens contenant un score "X - Y") jusqu'au prochain
-    titre de section ou la fin du bloc.
+    Cherche un titre (h2/h3/strong/texte) correspondant à ancre_regex, puis
+    extrait les lignes de match qui suivent (liens contenant un score
+    "X - Y") jusqu'au prochain titre de section ou la fin du bloc.
     """
     ancre = soup.find(string=re.compile(ancre_regex))
     if ancre is None:
         return []
 
     matchs = []
+    # On cherche les liens de match dans les éléments suivants l'ancre,
+    # jusqu'à un maximum raisonnable ou un nouveau titre de section (##).
     conteneur = ancre.find_parent()
     if conteneur is None:
         return []
@@ -109,7 +161,7 @@ def _extrait_matchs_scores(soup, ancre_regex, max_matchs=20):
         if len(matchs) >= max_matchs:
             break
         if element.name in ("h2", "h3"):
-            break
+            break  # nouvelle section, on arrête
         if element.name == "a":
             href = element.get("href", "")
             if "/live-score/" in href or "/foot-score/" in href:
@@ -158,7 +210,7 @@ def recupere_h2h(url_match_face_a_face, max_confrontations=20):
     """
     url_match_face_a_face : url de match + '?p=face-a-face'
     Retourne la liste des confrontations directes passées, la plus récente
-    d'abord.
+    d'abord, avec score (et mi-temps si présente dans le texte du lien).
     """
     html = fetch_html(url_match_face_a_face)
     soup = BeautifulSoup(html, "html.parser")
@@ -168,8 +220,10 @@ def recupere_h2h(url_match_face_a_face, max_confrontations=20):
 def recupere_cotes_marches(url_match_face_a_face):
     """
     Extrait les cotes 1N2, Double Chance et BTTS depuis la page face-a-face.
-    Retourne un dict {marche: [{selection: cote}, ...]} — best effort,
-    partie la plus fragile de ce fichier.
+    Retourne un dict {marche: {bookmaker: {selection: cote}}} — best effort,
+    structure la plus fragile de ce fichier (nombreux tableaux consécutifs
+    sans attribut distinctif observable). À vérifier en priorité sur le
+    premier vrai run.
     """
     html = fetch_html(url_match_face_a_face)
     soup = BeautifulSoup(html, "html.parser")
@@ -184,6 +238,8 @@ def recupere_cotes_marches(url_match_face_a_face):
         if titre is None:
             marches[nom_marche] = None
             continue
+        # Les cotes suivent le titre sous forme de nombres décimaux dans les
+        # éléments suivants, groupés par ligne de bookmaker.
         nombres = []
         for element in titre.find_parent().find_all_next(limit=60):
             if element.name in ("h2", "h3"):
@@ -191,6 +247,7 @@ def recupere_cotes_marches(url_match_face_a_face):
             texte = element.get_text(strip=True) if hasattr(element, "get_text") else str(element).strip()
             if re.fullmatch(r"\d+[.,]\d{2}", texte):
                 nombres.append(float(texte.replace(",", ".")))
+        # Regroupe par paquets de len(selections)
         pas = len(selections)
         lignes = [nombres[i:i + pas] for i in range(0, len(nombres) - pas + 1, pas)]
         marches[nom_marche] = [dict(zip(selections, ligne)) for ligne in lignes if len(ligne) == pas]
