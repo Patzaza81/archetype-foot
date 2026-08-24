@@ -217,12 +217,20 @@ def _parse_table_matchs(soup, ancre_regex, max_matchs=20):
         if not m:
             continue
 
+        # Compétition : dernier lien de la ligne, distinct du lien du match.
+        # Nécessaire pour le filtre "même compétition" (TRANSITION.md 9.2) —
+        # non appliqué ici, juste rendu disponible pour run_pipeline.py.
+        liens_ligne = tr.find_all("a")
+        lien_competition = liens_ligne[-1] if liens_ligne and liens_ligne[-1] is not lien_match else None
+        competition = lien_competition.get_text(strip=True) if lien_competition else None
+
         matchs.append({
             "domicile_brut": noms[0],
             "exterieur_brut": noms[1],
             "buts_domicile": int(m.group(1)),
             "buts_exterieur": int(m.group(2)),
             "url_match": lien_match.get("href", ""),
+            "competition": competition,
         })
     return matchs
 
