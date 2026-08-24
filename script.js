@@ -1,10 +1,8 @@
-// script.js — Module 4 complet (25/08). Vue par défaut (verdict, paris
-// recommandés, risques) + niveau de détail N1/N2 dans une section
-// dépliable native (<details>), pour combler les 4 manques identifiés :
-// bloc "pourquoi", LISTE_A visible, lambda/ajustements (N2), et tous les
-// marchés calculés même ceux hors LISTE_A/B (over/under complet, BTTS,
-// pair/impair, cages inviolées -- ces trois derniers sans cote scrapée,
-// affichés en probabilité modèle seule, jamais présentés comme jouables).
+// script.js — Module 4, hiérarchie visuelle à 5 niveaux (25/08) :
+// 1. identification (équipes/compétition) 2. statut (verdict, texte +
+// couleur, jamais couleur seule) 3. donnée principale (p(1), plus grosse
+// taille de l'écran) 4. détails (paris, risques) 5. action secondaire
+// (détail N1/N2, repliée par défaut).
 
 const RAISONS_LISIBLES = {
   "donnees_de_base_manquantes": "données de base manquantes (équipe/compétition non identifiée)",
@@ -38,7 +36,7 @@ function construitBlocParisRecommandes(listeB) {
   const lignes = listeB.map((p) => {
     const estPariEnOr = p === pariEnOr;
     return `<div class="pari-ligne${estPariEnOr ? " pari-en-or" : ""}">
-      <span class="pari-marche">${p.marche}${estPariEnOr ? " ⭐" : ""}</span>
+      <span class="pari-marche">${p.marche}${estPariEnOr ? " ★ pari en or" : ""}</span>
       <span class="pari-cote">cote ${p.cote_observee.toFixed(2)}</span>
       <span class="pari-mise">${(p.mise_pct_bankroll * 100).toFixed(2)}% bankroll</span>
     </div>`;
@@ -52,10 +50,10 @@ function construitBlocRisques(m) {
     lignes.push("les seuils de ce système n'ont pas encore été validés sur un historique de résultats réels.");
   }
   if (m.confiance === "FAIBLE") {
-    lignes.push(`confiance faible sur ce calcul -- construit sur ${m.nb_matchs_domicile_utilises} matchs domicile / ${m.nb_matchs_exterieur_utilises} matchs extérieur.`);
+    lignes.push(`confiance faible -- construit sur ${m.nb_matchs_domicile_utilises} matchs domicile / ${m.nb_matchs_exterieur_utilises} matchs extérieur.`);
   }
   if (m.avertissement_cotes || m.avertissement_classement || m.avertissement_h2h) {
-    lignes.push("certaines données contextuelles (cotes, classement ou historique direct) n'ont pas pu être récupérées -- calcul poursuivi avec les données disponibles.");
+    lignes.push("certaines données contextuelles n'ont pas pu être récupérées -- calcul poursuivi avec les données disponibles.");
   }
   if (lignes.length === 0) return "";
   return `<div class="bloc-risques">
@@ -63,8 +61,6 @@ function construitBlocRisques(m) {
     ${lignes.map(l => `<div class="risque-ligne">${l}</div>`).join("")}
   </div>`;
 }
-
-// --- NIVEAU DE DÉTAIL (N1/N2), dans <details>, jamais affiché par défaut ---
 
 function construitBlocPourquoi(m) {
   const lam = m.lambda;
@@ -74,7 +70,6 @@ function construitBlocPourquoi(m) {
     ajustement contexte ${(lam.audit.ajustement_home*100).toFixed(1)}%) —
     lambda extérieur : ${lam.lambda_away.toFixed(2)} (base ${lam.audit.lambda_away_base.toFixed(2)},
     ajustement contexte ${(lam.audit.ajustement_away*100).toFixed(1)}%).
-    confiance : ${m.confiance || "n/d"} (${m.nb_matchs_domicile_utilises ?? "?"} dom. / ${m.nb_matchs_exterieur_utilises ?? "?"} ext.)
   </p>`;
 }
 
@@ -87,7 +82,7 @@ function construitTableListeA(listeA) {
     <td>${formatPct(c.probabilite_modele)}</td><td>${formatPct(c.ev_brut)}</td>
   </tr>`).join("");
   return `<table class="detail-table">
-    <thead><tr><th>marché</th><th>cote</th><th>proba modèle</th><th>ev</th></tr></thead>
+    <thead><tr><th>marché</th><th>cote</th><th>proba</th><th>ev</th></tr></thead>
     <tbody>${lignes}</tbody>
   </table>`;
 }
@@ -105,7 +100,7 @@ function construitAutresMarches(marches) {
     marches.cages_inviolees_exterieur ? `<div class="detail-marche-ligne">cage inviolée extérieur : ${formatPct(marches.cages_inviolees_exterieur.oui)}</div>` : "",
   ].join("");
   return `<div class="detail-autres-marches">
-    <p class="detail-sous-titre">tous les marchés calculés (probabilité modèle seule, pas nécessairement cotés)</p>
+    <p class="detail-sous-titre">tous les marchés calculés</p>
     ${lignesOU}${autres}
   </div>`;
 }
@@ -113,9 +108,9 @@ function construitAutresMarches(marches) {
 function construitDetails(m) {
   if (!m.traite) return "";
   return `<details class="details-niveau1">
-    <summary>voir le détail (n1/n2)</summary>
+    <summary>voir les détails</summary>
     ${construitBlocPourquoi(m)}
-    <p class="detail-sous-titre">liste_a — marchés évalués, avant filtre de corrélation</p>
+    <p class="detail-sous-titre">marchés évalués avant filtre de corrélation</p>
     ${construitTableListeA(m.LISTE_A_marches_passant_EV_et_cote)}
     ${construitAutresMarches(m.marches)}
   </details>`;
@@ -130,7 +125,7 @@ fetch("data.json?_=" + Date.now())
       "mis à jour : " + (data.genere_le || "inconnu") +
       " — " + data.nb_matchs + " match(s) traité(s)" +
       (nbSelect != null ? ` sur ${nbSelect} sélectionné(s)` : "") +
-      (nbDispo != null ? ` (${nbDispo} disponibles aujourd'hui)` : "");
+      (nbDispo != null ? ` (${nbDispo} disponibles)` : "");
 
     const container = document.getElementById("matches");
     if (!data.matchs || data.matchs.length === 0) {
@@ -140,28 +135,43 @@ fetch("data.json?_=" + Date.now())
 
     data.matchs.forEach((m) => {
       const div = document.createElement("div");
-      const estGo = m.verdict_global === "GO";
-      div.className = "match" + (estGo ? " match-go" : " match-nogo");
+      div.className = "match";
 
-      let corpsHtml;
-      if (!m.traite) {
-        corpsHtml = `<div class="signal signal-non-traite">non analysé — ${traduireRaison(m.raison_non_traite)}</div>`;
-      } else {
-        const badge = `<span class="badge ${estGo ? "badge-go" : "badge-nogo"}">${m.verdict_global || "?"}</span>`;
-        const motif = (!estGo && m.motif_no_go) ? `<div class="motif-no-go">${m.motif_no_go}</div>` : "";
-        const paris = estGo ? construitBlocParisRecommandes(m.LISTE_B_liste_finale_apres_correlation) : "";
-        const risques = construitBlocRisques(m);
-        corpsHtml = `
-          <div class="ligne-verdict">${badge}<span class="proba-1">p(1) modèle : ${formatPct(m.probabilite_victoire_domicile)}</span></div>
-          ${motif}${paris}${risques}${construitDetails(m)}
-        `;
-      }
-
-      div.innerHTML = `
+      // Niveau 1 -- identification
+      let html = `
         <div class="teams"><span>${m.domicile}</span><span>${m.score || m.heure || ""}</span><span>${m.exterieur}</span></div>
         <div class="meta">${(m.competition || "").replace(/\s+/g, " ").trim()}</div>
-        ${corpsHtml}
       `;
+
+      if (!m.traite) {
+        // Statut seul quand non analysé -- pas de niveau 3/4 à afficher
+        html += `<div class="signal-non-traite">non analysé — ${traduireRaison(m.raison_non_traite)}</div>`;
+      } else {
+        const estGo = m.verdict_global === "GO";
+        // Niveau 2 -- statut (texte ET couleur, jamais couleur seule)
+        // Niveau 3 -- donnée principale, la plus grosse taille de l'écran
+        html += `<div class="ligne-verdict">
+          <span class="badge ${estGo ? "badge-go" : "badge-nogo"}">${estGo ? "✓ GO" : "✕ NO_GO"}</span>
+        </div>
+        <div class="proba-1">
+          ${formatPct(m.probabilite_victoire_domicile)}
+          <span class="proba-1-label">probabilité modèle de victoire domicile</span>
+        </div>`;
+
+        // Niveau 4 -- détails
+        if (!estGo && m.motif_no_go) {
+          html += `<div class="motif-no-go">${m.motif_no_go}</div>`;
+        }
+        if (estGo) {
+          html += construitBlocParisRecommandes(m.LISTE_B_liste_finale_apres_correlation);
+        }
+        html += construitBlocRisques(m);
+
+        // Niveau 5 -- action secondaire, repliée
+        html += construitDetails(m);
+      }
+
+      div.innerHTML = html;
       container.appendChild(div);
     });
   })
