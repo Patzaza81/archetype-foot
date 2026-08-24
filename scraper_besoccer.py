@@ -12,6 +12,11 @@ HISTORIQUE DE CE FICHIER, sans détour :
    Conclusion actée : ce n'est pas un problème d'en-têtes manquants, c'est une
    protection anti-bot qui les en-têtes seuls ne suffisent pas à contourner
    (empreinte de connexion, JavaScript requis, ou les deux).
+4. Playwright activé — le 406 disparaît enfin, mais la page reçue est vide
+   (<html><head></head><body></body></html>), signe que BeSoccer détecte
+   l'automatisation du navigateur lui-même. Cette version ajoute un contexte
+   de navigateur plus réaliste (user-agent, viewport, langue) et un délai
+   d'attente pour laisser une éventuelle vérification anti-bot se résoudre.
 
 Décision : Playwright pour BeSoccer uniquement. matchendirect reste en HTTP
 simple (confirmé fonctionnel, aucune raison de changer ce qui marche).
@@ -28,18 +33,35 @@ COLONNES_ATTENDUES = ["Pts", "MP", "W", "D", "L", "GK", "GA", "GD"]
 def fetch_html(url, headless=True, timeout=30000):
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=headless)
-        page = browser.new_page()
+        context = browser.new_context(
+            viewport={"width": 1280, "height": 800},
+            locale="fr-FR",
+            user_agent=(
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            ),
+        )
+        page = context.new_page()
         page.goto(url, wait_until="networkidle", timeout=timeout)
+        page.wait_for_timeout(2000)
         html = page.content()
         browser.close()
     return html
 
 
 def _trouve_tables_classement(html):
+    if len(html) < 500:
+        raise RuntimeError(
+            f"Page quasi vide reçue ({len(html)} caractères) — probable détection "
+            f"du navigateur automatisé par BeSoccer. Contenu brut : {html!r}"
+        )
     try:
         tables = pd.read_html(html)
     except ValueError as e:
-        raise RuntimeError("Aucun tableau HTML trouvé sur la page — structure probablement changée.") from e
+        raise RuntimeError(
+            f"Aucun tableau HTML trouvé — page de {len(html)} caractères reçue. "
+            f"Début du contenu : {html[:300]!r}"
+        ) from e
 
     candidates = [t for t in tables if all(c in t.columns for c in COLONNES_ATTENDUES)]
     if not candidates:
