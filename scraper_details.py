@@ -280,38 +280,56 @@ def recupere_20_derniers_resultats(url_statistique, nom_equipe_1, nom_equipe_2):
 # variantes "Plus / Moins" et "Mi-temps") plutôt qu'à une balise HTML.
 # --------------------------------------------------------------------------
 
+LIGNES_OVER_UNDER_CONNUES = [0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5]
+
 TITRES_MARCHES_CONNUS = [
     "Cotes 1N2",
     "Double chance",
     "Les 2 équipes marquent",
     "Mi-temps - Résultat",
-]
+] + [f"{l} Plus / Moins" for l in LIGNES_OVER_UNDER_CONNUES]
 _REGEX_AUTRE_TITRE = re.compile(
-    r"^(" + "|".join(re.escape(t) for t in TITRES_MARCHES_CONNUS) + r"|\d+(\.\d+)? Plus / Moins)$"
+    r"^(" + "|".join(re.escape(t) for t in TITRES_MARCHES_CONNUS) + r")$"
 )
 
 
 def recupere_cotes_marches(url_match_face_a_face):
+    """
+    Retourne un dict avec les clés "1x2", "double_chance", "btts", et
+    "over_under_0.5" .. "over_under_7.5" (Étape 1 de l'inventaire, 25/08).
+    Handicap NON inclus : jamais observé comme section de cotes distincte
+    dans les pages face-a-face fetchées sur ce projet -- pas de structure
+    réelle à parser, pas de code écrit sans preuve. Handicap 3 voies
+    explicitement exclu par décision (voir TRANSITION.md).
+    Chaque marché absent du HTML renvoie None, jamais une liste vide
+    devinée.
+    """
     html = fetch_html(url_match_face_a_face)
     soup = BeautifulSoup(html, "html.parser")
 
     marches = {}
-    for nom_marche, titre_attendu, selections in [
+    definitions = [
         ("1x2", "Cotes 1N2", ["1", "N", "2"]),
         ("double_chance", "Double chance", ["1N", "12", "N2"]),
         ("btts", "Les 2 équipes marquent", ["Oui", "Non"]),
-    ]:
+    ] + [
+        (f"over_under_{l}", f"{l} Plus / Moins", ["plus", "moins"])
+        for l in LIGNES_OVER_UNDER_CONNUES
+    ]
+
+    for nom_marche, titre_attendu, selections in definitions:
         titre = soup.find(string=lambda s: s and s.strip() == titre_attendu)
         if titre is None:
             marches[nom_marche] = None
             continue
 
         nombres = []
-        # CORRECTIF : ne parcourir que les nœuds de texte (string=True),
-        # jamais les balises. find_all_next() sans filtre renvoie à la fois
-        # une balise <td>3.98</td> ET son contenu texte comme deux éléments
-        # séparés dans l'itération — chaque cote était donc comptée deux
-        # fois, ce qui décalait tout le regroupement par paquets de 3.
+        # CORRECTIF (24/08) : ne parcourir que les nœuds de texte
+        # (string=True), jamais les balises. find_all_next() sans filtre
+        # renvoie à la fois une balise <td>3.98</td> ET son contenu texte
+        # comme deux éléments séparés dans l'itération -- chaque cote était
+        # donc comptée deux fois, décalant tout le regroupement par
+        # paquets de 3.
         for texte_brut in titre.find_all_next(string=True, limit=400):
             texte = texte_brut.strip()
             if not texte:
