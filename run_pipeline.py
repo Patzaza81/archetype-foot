@@ -1,6 +1,8 @@
 """
-run_pipeline.py — Orchestrateur. Flux MANUEL, ne traite que
-matchs_selectionnes.json.
+run_pipeline.py — Orchestrateur. Flux MANUEL : ne traite que ce qui est dans
+panier.json (25/08ter -- remplace matchs_selectionnes.json +
+matchs_manuels.json, unifiés en un seul fichier après retour utilisateur sur
+la friction de deux fichiers/deux boutons séparés).
 
 ÉTAPES 1/5/6/7 DE L'INVENTAIRE (25/08) : cotes étendues à tous les marchés
 over/under scrapables (scraper_details.py), évaluation EV sur TOUS les
@@ -12,8 +14,36 @@ explicite). Rotation continentale EXCLUE. L'ANCIEN format de sortie
 tel quel en plus des nouveaux champs -- script.js n'est pas encore adapté
 au nouveau format (Module 4, chantier séparé), on ne casse pas l'affichage
 actuel en ajoutant les nouveaux champs à côté.
+
+AJOUT 25/08ter -- panier.json (remplace matchs_selectionnes.json ET
+matchs_manuels.json) :
+Chaque entrée peut être :
+  (a) une simple chaîne match_id (ancien format matchs_selectionnes.json,
+      conservé pour compatibilité) -- résolue en cherchant ce match_id dans
+      matchs_du_jour.json OU matchs_demain.json (fusionnés) ;
+  (b) un objet {"match_id": "..."} -- même résolution que (a) ;
+  (c) un objet complet {"url_match", "domicile", "exterieur",
+      "competition"} -- traité comme un ajout manuel, "match_id" déduit de
+      l'URL si absent (ancien matchs_manuels.json).
+Une entrée qui ne correspond à aucun de ces trois cas, ou dont le match_id
+ne se résout dans aucune des deux listes du jour, est écartée avec un
+avertissement explicite plutôt que de faire planter le run.
+
+AJOUT 25/08ter -- historique_pronostics.json :
+Après chaque run qui a traité au moins un match, panier.json est vidé --
+mais son contenu ET les verdicts produits sont archivés (append, jamais
+écrasé) dans historique_pronostics.json, un enregistrement par date de run.
+Rien n'est perdu : la sélection redevient vide pour forcer un choix
+conscient au run suivant (évite le piège de la "sélection périmée"), et
+l'historique sert à étudier l'évolution des pronostics dans le temps.
+CROISSANCE NON BORNÉE : ce fichier grossit indéfiniment (append-only, jamais
+purgé). Pas un problème dans l'immédiat, mais à surveiller si le dépôt Git
+devient volumineux après plusieurs mois -- une rotation/archivage périodique
+n'est PAS implémentée ici.
 """
+import datetime
 import json
+import re
 from scraper_details import (
     recupere_details_match, recupere_gf_ga_avec_repli, recupere_cotes_marches,
     recupere_classement_du_match, recupere_h2h,
@@ -22,7 +52,13 @@ import calculs
 
 MAX_MATCHS_HISTORIQUE = 10
 FICHIER_MATCHS_DU_JOUR = "matchs_du_jour.json"
-FICHIER_SELECTION = "matchs_selectionnes.json"
+FICHIER_MATCHS_DEMAIN = "matchs_demain.json"
+FICHIER_PANIER = "panier.json"
+FICHIER_HISTORIQUE = "historique_pronostics.json"
+# Même regex que scraper.py -- réutilisée ici pour dériver un match_id
+# depuis une URL matchendirect saisie à la main, si l'utilisateur ne
+# fournit pas match_id explicitement.
+MATCH_LINK_RE = re.compile(r"/live-score/([a-z0-9\-]+)_([a-z0-9]+)\.html")
 
 
 def charge_json_ou_vide(chemin, defaut):
@@ -33,11 +69,67 @@ def charge_json_ou_vide(chemin, defaut):
         return defaut
 
 
-def filtre_par_selection(matchs_bruts, ids_selectionnes):
-    if not ids_selectionnes:
-        return []
-    ids_set = set(ids_selectionnes)
-    return [m for m in matchs_bruts if m.get("match_id") in ids_set]
+def normalise_panier(panier_brut, matchs_du_jour, matchs_demain):
+    """
+    Résout chaque entrée de panier.json vers un match complet (voir les
+    3 cas dans le docstring du module). Retourne la liste des matchs
+    valides, prêts pour construit_signaux -- une entrée invalide ou
+    irrésoluble est écartée avec un avertissement, jamais silencieusement.
+    """
+    index_jour_demain = {
+        m["match_id"]: m for m in (matchs_du_jour + matchs_demain) if m.get("match_id")
+    }
+    valides = []
+    for i, item in enumerate(panier_brut):
+        if isinstance(item, str):
+            item = {"match_id": item}
+
+        a_tous_les_champs_manuels = (
+            item.get("url_match") and item.get("domicile")
+            and item.get("exterieur") and item.get("competition")
+        )
+        if a_tous_les_champs_manuels:
+            match_id = item.get("match_id")
+            if not match_id:
+                trouve = MATCH_LINK_RE.search(item["url_match"])
+                if not trouve:
+                    print(f"AVERTISSEMENT panier.json[{i}] ignoré : match_id absent "
+                          f"et introuvable depuis l'URL '{item['url_match']}'.")
+                    continue
+                match_id = trouve.group(2)
+            valides.append({
+                "domicile": item["domicile"], "exterieur": item["exterieur"],
+                "score": item.get("score"), "competition": item["competition"],
+                "url_match": item["url_match"], "match_id": match_id,
+                "source": item.get("source", "manuel"),
+            })
+            continue
+
+        match_id = item.get("match_id")
+        if match_id and match_id in index_jour_demain:
+            m = dict(index_jour_demain[match_id])
+            m["source"] = item.get("source", "liste")
+            valides.append(m)
+            continue
+
+        print(f"AVERTISSEMENT panier.json[{i}] ignoré : match_id '{match_id}' "
+              f"introuvable dans {FICHIER_MATCHS_DU_JOUR} ni {FICHIER_MATCHS_DEMAIN}, "
+              f"et champs manuels (url_match/domicile/exterieur/competition) incomplets.")
+    return valides
+
+
+def archive_run(signaux, nb_entrees_panier):
+    """Append (jamais d'écrasement) un enregistrement daté dans
+    historique_pronostics.json -- voir docstring du module."""
+    historique = charge_json_ou_vide(FICHIER_HISTORIQUE, defaut=[])
+    historique.append({
+        "date": datetime.date.today().isoformat(),
+        "nb_entrees_panier": nb_entrees_panier,
+        "nb_matchs_traites": len(signaux),
+        "matchs": signaux,
+    })
+    with open(FICHIER_HISTORIQUE, "w", encoding="utf-8") as f:
+        json.dump(historique, f, indent=2, ensure_ascii=False)
 
 
 def extrait_cote_min(panel, cle):
@@ -207,7 +299,20 @@ def construit_signaux(matchs_bruts):
 
         cotes_marches = {}
         try:
-            cotes_marches = recupere_cotes_marches(url_match + "?p=face-a-face")
+            cotes_marches, diagnostics_cotes = recupere_cotes_marches(url_match + "?p=face-a-face")
+            # CORRECTIF 25/08bis (scraper_details.py) : si un marché
+            # bascule en repli (aucun séparateur bookmaker détecté) ou
+            # écarte des groupes incomplets, on le trace dans le signal --
+            # ne pas laisser cette info disparaître silencieusement, elle
+            # sert à vérifier le correctif au prochain cycle réel.
+            marches_a_risque = {
+                marche: diag for marche, diag in diagnostics_cotes.items()
+                if diag.get("trouve") and (
+                    not diag["separateurs_detectes"] or diag["groupes_incomplets_ecartes"] > 0
+                )
+            }
+            if marches_a_risque:
+                signal["diagnostics_cotes_a_risque"] = marches_a_risque
         except Exception as e:
             signal["avertissement_cotes"] = f"erreur_technique: {e}"
 
@@ -272,26 +377,48 @@ def construit_signaux(matchs_bruts):
 
 def main():
     matchs_du_jour = charge_json_ou_vide(FICHIER_MATCHS_DU_JOUR, defaut=[])
-    selection = charge_json_ou_vide(FICHIER_SELECTION, defaut=[])
+    matchs_demain = charge_json_ou_vide(FICHIER_MATCHS_DEMAIN, defaut=[])
+    panier_brut = charge_json_ou_vide(FICHIER_PANIER, defaut=[])
 
-    matchs_a_traiter = filtre_par_selection(matchs_du_jour, selection)
+    matchs_a_traiter = normalise_panier(panier_brut, matchs_du_jour, matchs_demain)
 
     if not matchs_du_jour:
         print(f"ATTENTION : {FICHIER_MATCHS_DU_JOUR} introuvable ou vide.")
-    if not selection:
-        print(f"Aucune sélection dans {FICHIER_SELECTION} -- 0 match sera traité.")
+    if not panier_brut:
+        print(f"{FICHIER_PANIER} vide -- 0 match sera traité.")
+    elif not matchs_a_traiter:
+        # Distingue explicitement "panier vide" de "panier périmé/mal
+        # formé" -- les match_id sont des hash uniques par affiche, donc un
+        # panier d'un jour précédent ne matchera quasiment jamais
+        # matchs_du_jour.json/matchs_demain.json du jour. Sans ce message,
+        # le run se termine avec "0 match traité" sans qu'on sache pourquoi.
+        print(f"ATTENTION : {len(panier_brut)} entrée(s) dans {FICHIER_PANIER} mais "
+              f"AUCUNE n'a pu être résolue -- panier probablement périmé (oubli de "
+              f"mise à jour avant ce run ?) ou entrées mal formées (voir avertissements ci-dessus).")
 
     signaux = construit_signaux(matchs_a_traiter)
+
+    if matchs_a_traiter:
+        # CORRECTIF 25/08ter : le panier n'est vidé qu'APRÈS avoir archivé
+        # -- rien n'est perdu, contrairement à un simple reset (voir
+        # docstring du module). Vidé seulement s'il y avait quelque chose à
+        # traiter, pour ne pas écraser un panier déjà vide sans raison.
+        archive_run(signaux, len(matchs_a_traiter))
+        with open(FICHIER_PANIER, "w", encoding="utf-8") as f:
+            json.dump([], f)
+
     sortie = {
         "genere_le": None,
         "nb_matchs_du_jour_disponibles": len(matchs_du_jour),
-        "nb_matchs_selectionnes": len(selection),
+        "nb_matchs_demain_disponibles": len(matchs_demain),
+        "nb_entrees_panier": len(panier_brut),
         "nb_matchs": len(signaux),
         "matchs": signaux,
     }
     with open("data.json", "w", encoding="utf-8") as f:
         json.dump(sortie, f, indent=2, ensure_ascii=False)
-    print(f"Pipeline terminé : {len(signaux)} matchs traités sur {len(selection)} sélectionnés -> data.json")
+    print(f"Pipeline terminé : {len(signaux)} matchs traités "
+          f"(panier : {len(panier_brut)} entrée(s)) -> data.json")
 
 
 if __name__ == "__main__":
