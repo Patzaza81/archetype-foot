@@ -282,8 +282,15 @@ def recupere_cotes_marches(url_match_face_a_face):
             continue
 
         nombres = []
-        for element in titre.find_all_next(limit=200):
-            texte = element.get_text(strip=True) if hasattr(element, "get_text") else str(element).strip()
+        # CORRECTIF : ne parcourir que les nœuds de texte (string=True),
+        # jamais les balises. find_all_next() sans filtre renvoie à la fois
+        # une balise <td>3.98</td> ET son contenu texte comme deux éléments
+        # séparés dans l'itération — chaque cote était donc comptée deux
+        # fois, ce qui décalait tout le regroupement par paquets de 3.
+        for texte_brut in titre.find_all_next(string=True, limit=400):
+            texte = texte_brut.strip()
+            if not texte:
+                continue
             # Arrêt dès qu'on retombe sur un titre de marché connu — le
             # nôtre pourrait réapparaître ailleurs sur la page (mini-widget
             # en haut de page pour "Mi-temps - Résultat" par exemple).
