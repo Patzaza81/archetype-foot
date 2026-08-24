@@ -19,7 +19,9 @@ jobs:
           python-version: "3.12"
 
       - name: Installer les dépendances
-        run: pip install requests beautifulsoup4 pandas lxml
+        run: |
+          pip install requests beautifulsoup4 pandas lxml playwright
+          playwright install --with-deps chromium
 
       - name: Lancer le scraper matchendirect (dump brut pour diagnostic)
         run: |
