@@ -1,90 +1,41 @@
 """
 scraper_besoccer.py — Récupération GF/GA domicile/extérieur et historique
-récent, depuis BeSoccer.
+récent, depuis BeSoccer, via Playwright.
 
-CHOIX TECHNIQUE : pandas.read_html() plutôt que BeautifulSoup + sélecteurs
-CSS. Raison explicite : je n'ai jamais pu observer le HTML brut de ce site
-(mon outil de récupération web pré-extrait toujours le contenu, même en
-changeant de méthode d'extraction) — donc je ne peux vérifier aucun nom de
-classe CSS. pandas.read_html() lit les balises <table> par leur structure,
-pas par leur style, ce qui rend ce code robuste à cette limite au lieu de
-deviner des sélecteurs invérifiables.
+HISTORIQUE DE CE FICHIER, sans détour :
+1. Version requests + pandas.read_html — rejetée par BeSoccer en HTTP 406,
+   confirmé en conditions réelles (run GitHub Actions).
+2. Ajout d'en-têtes navigateur complets (User-Agent/Accept/Accept-Language)
+   — même échec 406, confirmé par un deuxième run réel.
+3. Ajout des en-têtes Sec-Fetch-* + session avec cookies — MÊME ÉCHEC 406,
+   confirmé par un troisième run réel, fraîchement relancé après ce correctif.
+   Conclusion actée : ce n'est pas un problème d'en-têtes manquants, c'est une
+   protection anti-bot qui les en-têtes seuls ne suffisent pas à contourner
+   (empreinte de connexion, JavaScript requis, ou les deux).
 
-STATUT DE VÉRIFICATION, sans détour : la structure ci-dessous (colonnes
-Pts/MP/W/D/L/GK/GA/GD, onglets Total/Home/Away) a été observée trois fois de
-suite via une extraction de contenu (pas le HTML source lui-même). Ce
-script n'a JAMAIS tourné contre le HTML réel — ni ici (accès réseau
-bloqué), ni ailleurs. La première vérification réelle aura lieu dans le
-run de diagnostic GitHub Actions (voir pipeline.yml). Si la structure a
-changé ou si pandas ne trouve pas les tableaux attendus, ce script échouera
-proprement (exception explicite), pas silencieusement.
+Décision : Playwright pour BeSoccer uniquement. matchendirect reste en HTTP
+simple (confirmé fonctionnel, aucune raison de changer ce qui marche).
 """
 
 import re
-import time
 
 import pandas as pd
-import requests
-from bs4 import BeautifulSoup
-
-HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-        "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-    ),
-    "Accept": (
-        "text/html,application/xhtml+xml,application/xml;q=0.9,"
-        "image/webp,*/*;q=0.8"
-    ),
-    "Accept-Language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
-    "Accept-Encoding": "gzip, deflate, br",
-    "Connection": "keep-alive",
-    "Sec-Fetch-Dest": "document",
-    "Sec-Fetch-Mode": "navigate",
-    "Sec-Fetch-Site": "none",
-    "Sec-Fetch-User": "?1",
-    "Upgrade-Insecure-Requests": "1",
-}
-
-_SESSION = requests.Session()
-_SESSION.headers.update(HEADERS)
+from playwright.sync_api import sync_playwright
 
 COLONNES_ATTENDUES = ["Pts", "MP", "W", "D", "L", "GK", "GA", "GD"]
 
 
-def fetch_html(url, retries=3, delay=2):
-    """
-    STATUT (25/08/2026, 2e tentative) : la première correction (User-Agent +
-    Accept + Accept-Language) n'a PAS suffi — même erreur 406 constatée en
-    conditions réelles. Cette version ajoute les en-têtes Sec-Fetch-* et une
-    session avec cookies persistants (un vrai navigateur envoie ces signaux
-    automatiquement, `requests` non). Si ÇA échoue aussi, la conclusion
-    honnête sera que BeSoccer a une protection anti-bot qui ne se contourne
-    pas avec des en-têtes seuls (empreinte TLS, JavaScript requis) — il
-    faudrait alors Playwright pour ce site précis, pas une nouvelle liste
-    d'en-têtes à deviner indéfiniment.
-    """
-    last_err = None
-    for _ in range(retries):
-        try:
-            resp = _SESSION.get(url, timeout=15)
-            resp.raise_for_status()
-            return resp.text
-        except requests.RequestException as e:
-            last_err = e
-            time.sleep(delay)
-    raise RuntimeError(f"Échec de récupération de {url} après {retries} tentatives: {last_err}")
+def fetch_html(url, headless=True, timeout=30000):
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=headless)
+        page = browser.new_page()
+        page.goto(url, wait_until="networkidle", timeout=timeout)
+        html = page.content()
+        browser.close()
+    return html
 
 
 def _trouve_tables_classement(html):
-    """
-    Retourne la liste des DataFrames trouvés dans la page qui ressemblent à
-    un tableau de classement (colonnes GK/GA présentes). BeSoccer affiche
-    généralement 3 versions (Total/Home/Away) à la suite — on les distingue
-    par leur ORDRE D'APPARITION, pas par un attribut identifiant (non
-    observable). Si ça casse, ce sera parce que l'ordre a changé — à corriger
-    à ce moment-là, pas à deviner maintenant.
-    """
     try:
         tables = pd.read_html(html)
     except ValueError as e:
@@ -104,7 +55,6 @@ def recupere_gf_ga_dom_ext(nom_equipe_slug):
     """
     nom_equipe_slug : identifiant BeSoccer dans l'URL, ex. 'paris-saint-germain-fc'.
     Retourne {'domicile': {'gf':.., 'ga':.., 'mp':..}, 'exterieur': {...}}
-    à partir des tableaux Total/Home/Away de la page /team/table/{slug}.
     """
     url = f"https://www.besoccer.com/team/table/{nom_equipe_slug}"
     html = fetch_html(url)
@@ -143,18 +93,10 @@ def recupere_gf_ga_dom_ext(nom_equipe_slug):
 def recupere_historique_matchs(nom_equipe_slug, max_matchs=10):
     """
     Retourne les `max_matchs` derniers matchs TERMINÉS (le plus récent
-    d'abord), avec domicile/extérieur explicite et score, depuis la page
-    /team/matches/{slug}.
-
-    CORRECTION IMPORTANTE (25/08/2026) : la première version de cette fonction
-    ancrait l'extraction sur le motif texte "**FT**" — un artefact de mise en
-    forme Markdown produit par MON outil de récupération web, pas quelque
-    chose qui existe dans le vrai HTML brut que ce script recevra en
-    production. Ça aurait échoué silencieusement (aucune correspondance,
-    liste vide) sans jamais toucher au vrai site. Corrigé : on ancre
-    maintenant sur l'attribut href des liens vers /match/, qui est un
-    attribut HTML réel, pas un artefact d'un outil d'extraction.
+    d'abord), avec domicile/extérieur explicite et score.
     """
+    from bs4 import BeautifulSoup
+
     url = f"https://www.besoccer.com/team/matches/{nom_equipe_slug}"
     html = fetch_html(url)
     soup = BeautifulSoup(html, "html.parser")
@@ -184,7 +126,6 @@ def recupere_historique_matchs(nom_equipe_slug, max_matchs=10):
     if not resultats:
         raise RuntimeError(
             f"Aucun match terminé trouvé pour {nom_equipe_slug} via les liens /match/ — "
-            "structure probablement différente de celle observée, à vérifier avec le HTML réel en main "
-            "(voir logs de diagnostic GitHub Actions)."
+            "structure probablement différente de celle observée."
         )
     return resultats
