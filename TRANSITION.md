@@ -418,3 +418,28 @@ zip local.
 - Implémenter le filtre "même compétition" (9.2) en exploitant le nouveau
   champ `competition` — décision prise de ne PAS le faire maintenant sans
   discussion explicite.
+  ## ⚠ BUG OUVERT, NON RÉSOLU — À TRAITER EN PRIORITÉ
+
+**Cote invraisemblable observée sur une ligne over/under haute (25/08/2026).**
+Match Gil Vicente-Casa Pia : lambda_home=1.96, lambda_away=0.60 → modèle
+donne 99.3% de probabilité sur "Moins de 6.5 buts", cote scrapée = 1.61.
+Une probabilité aussi extrême devrait correspondre à une cote proche de
+1.00-1.05 (cf. cotes réelles observées sur des lignes similaires : 1.03-1.06
+sur "5.5 Plus/Moins" plus tôt dans le projet). Cote de 1.61 fortement
+suspecte d'une mauvaise association ligne/colonne dans
+`recupere_cotes_marches` (déjà arrivé deux fois : double comptage, ancrage
+regex) — probablement spécifique aux lignes hautes (5.5-7.5 buts).
+
+**Diagnostic reporté** : le match a commencé avant que le HTML de la page
+`?p=face-a-face` ait pu être capturé — cotes disparues après coup d'envoi.
+
+**À faire au prochain cycle, AVANT le coup d'envoi des matchs
+sélectionnés** : ouvrir la page `?p=face-a-face` d'un match avec une ligne
+haute probable, capturer le HTML (ou une capture d'écran de la section
+over/under) avant que le match démarre, et comparer avec ce que
+`recupere_cotes_marches` a effectivement extrait dans `data.json`.
+
+**Ne pas faire confiance aux "paris en or" sur les lignes over/under 5.5+
+tant que ce point n'est pas vérifié.** Les autres marchés (1X2, double
+chance, BTTS, lignes 0.5-2.5) n'ont montré aucun signe d'anomalie jusqu'ici.
+
