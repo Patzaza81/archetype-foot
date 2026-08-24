@@ -295,7 +295,9 @@ _REGEX_AUTRE_TITRE = re.compile(
 
 def recupere_cotes_marches(url_match_face_a_face):
     """
-    Retourne un dict avec les clés "1x2", "double_chance", "btts", et
+    Retourne un tuple (marches, diagnostics).
+
+    marches : dict avec les clés "1x2", "double_chance", "btts", et
     "over_under_0.5" .. "over_under_7.5" (Étape 1 de l'inventaire, 25/08).
     Handicap NON inclus : jamais observé comme section de cotes distincte
     dans les pages face-a-face fetchées sur ce projet -- pas de structure
@@ -303,11 +305,54 @@ def recupere_cotes_marches(url_match_face_a_face):
     explicitement exclu par décision (voir TRANSITION.md).
     Chaque marché absent du HTML renvoie None, jamais une liste vide
     devinée.
+
+    diagnostics : dict par marché ({"trouve", "separateurs_detectes",
+    "groupes_valides", "groupes_incomplets_ecartes"}) -- à consulter à
+    chaque run pour vérifier qu'aucun marché ne bascule silencieusement
+    en mode repli (voir CORRECTIF 25/08bis ci-dessous).
+
+    CORRECTIF 25/08bis -- bug de cote invraisemblable (ligne haute
+    over/under, ex. 6.5 : cote 1.61 scrapée pour une proba modèle de 99%,
+    alors qu'une cote proche de 1.00-1.05 était attendue) :
+    l'ancien code regroupait les nombres trouvés après un titre en
+    paquets de taille fixe `pas` (2 pour over/under, 3 pour 1X2), un
+    paquet = un bookmaker, dans l'ordre d'apparition. Si UN SEUL
+    bookmaker ne propose pas la ligne (fréquent sur 5.5-7.5 buts, où
+    tous les bookmakers ne couvrent pas ces lignes), il ne contribue
+    aucun nombre -- mais le code ne le détecte pas, donc TOUS les
+    bookmakers suivants se décalent d'une position. Une cote "plus" d'un
+    bookmaker se retrouve alignée comme "moins" d'un autre : le résultat
+    est un nombre plausible en apparence (une vraie cote existe quelque
+    part dans le flux) mais associé au mauvais bookmaker et à la mauvaise
+    colonne. Ce n'était pas un problème de regex ou de double comptage
+    (déjà corrigés) mais un problème de données manquantes non gérées.
+
+    Nouvelle approche : le nom (ou tout texte) de chaque bookmaker,
+    présent entre deux lignes de cotes dans le flux de texte, sert
+    maintenant de séparateur explicite entre deux bookmakers, au lieu de
+    ne compter que les nombres et d'ignorer tout le reste. Un groupe de
+    nombres compris entre deux séparateurs est accepté seulement s'il
+    contient EXACTEMENT `pas` valeurs ; un groupe incomplet est écarté
+    (compté dans les diagnostics) SANS décaler les bookmakers suivants,
+    puisque chacun est délimité indépendamment par son propre séparateur.
+
+    HYPOTHÈSE NON VÉRIFIÉE EN HTML RÉEL (accès live impossible dans cet
+    environnement d'édition) : que du texte non numérique (nom/logo de
+    bookmaker) sépare bien chaque ligne de cotes sur la page
+    matchendirect. Si c'est faux -- aucun séparateur détecté -- la
+    fonction bascule automatiquement sur l'ancien découpage par paquets
+    fixes (comportement pré-25/08, donc vulnérable au même bug) et le
+    signale via diagnostics[marche]["separateurs_detectes"] = False.
+    À VÉRIFIER AU PROCHAIN CYCLE avec la capture HTML pré-coup d'envoi
+    déjà prévue : si "separateurs_detectes" est False sur un run réel,
+    cette hypothèse est invalidée et le correctif ne s'applique pas --
+    revenir ici avant de faire confiance aux lignes 5.5+.
     """
     html = fetch_html(url_match_face_a_face)
     soup = BeautifulSoup(html, "html.parser")
 
     marches = {}
+    diagnostics = {}
     definitions = [
         ("1x2", "Cotes 1N2", ["1", "N", "2"]),
         ("double_chance", "Double chance", ["1N", "12", "N2"]),
@@ -321,15 +366,19 @@ def recupere_cotes_marches(url_match_face_a_face):
         titre = soup.find(string=lambda s: s and s.strip() == titre_attendu)
         if titre is None:
             marches[nom_marche] = None
+            diagnostics[nom_marche] = {"trouve": False}
             continue
 
-        nombres = []
-        # CORRECTIF (24/08) : ne parcourir que les nœuds de texte
-        # (string=True), jamais les balises. find_all_next() sans filtre
-        # renvoie à la fois une balise <td>3.98</td> ET son contenu texte
-        # comme deux éléments séparés dans l'itération -- chaque cote était
-        # donc comptée deux fois, décalant tout le regroupement par
-        # paquets de 3.
+        pas = len(selections)
+        tous_nombres = []      # repli : liste plate, comportement pré-25/08
+        groupes_separes = []   # nouveau : groupes délimités par séparateur texte
+        groupe_courant = []
+        nb_separateurs = 0
+        nb_groupes_incomplets = 0
+
+        # CORRECTIF (24/08, conservé) : ne parcourir que les nœuds de
+        # texte (string=True), jamais les balises -- find_all_next() sans
+        # filtre comptait chaque cote deux fois (balise + texte).
         for texte_brut in titre.find_all_next(string=True, limit=400):
             texte = texte_brut.strip()
             if not texte:
@@ -340,13 +389,47 @@ def recupere_cotes_marches(url_match_face_a_face):
             if _REGEX_AUTRE_TITRE.match(texte):
                 break
             if re.fullmatch(r"\d+[.,]\d{2}", texte):
-                nombres.append(float(texte.replace(",", ".")))
+                valeur = float(texte.replace(",", "."))
+                tous_nombres.append(valeur)
+                groupe_courant.append(valeur)
+                continue
+            # Texte non numérique = séparateur présumé entre deux
+            # bookmakers (nom, logo alt, "-", etc.).
+            nb_separateurs += 1
+            if groupe_courant:
+                if len(groupe_courant) == pas:
+                    groupes_separes.append(groupe_courant)
+                else:
+                    nb_groupes_incomplets += 1
+                groupe_courant = []
+        # Dernier groupe en fin de flux (avant le titre suivant ou la fin
+        # de la page, sans séparateur terminal).
+        if groupe_courant:
+            if len(groupe_courant) == pas:
+                groupes_separes.append(groupe_courant)
+            else:
+                nb_groupes_incomplets += 1
 
-        pas = len(selections)
-        lignes = [nombres[i:i + pas] for i in range(0, len(nombres) - pas + 1, pas)]
-        marches[nom_marche] = [dict(zip(selections, ligne)) for ligne in lignes if len(ligne) == pas]
+        separateurs_detectes = nb_separateurs > 0
+        if separateurs_detectes:
+            lignes = groupes_separes
+        else:
+            # Repli explicite -- hypothèse des séparateurs invalidée pour
+            # cette page. NON FIABLE sur les lignes où un bookmaker peut
+            # manquer : c'est exactement le comportement qui a produit le
+            # bug d'origine.
+            lignes = [tous_nombres[i:i + pas] for i in range(0, len(tous_nombres) - pas + 1, pas)]
+            lignes = [g for g in lignes if len(g) == pas]
 
-    return marches
+        marches[nom_marche] = [dict(zip(selections, ligne)) for ligne in lignes]
+        diagnostics[nom_marche] = {
+            "trouve": True,
+            "separateurs_detectes": separateurs_detectes,
+            "groupes_valides": len(lignes),
+            "groupes_incomplets_ecartes": nb_groupes_incomplets,
+        }
+
+    return marches, diagnostics
 
 
 # --------------------------------------------------------------------------
