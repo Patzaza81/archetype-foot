@@ -50,12 +50,29 @@ def recupere_details_match(url_match):
     html = fetch_html(url_match)
     soup = BeautifulSoup(html, "html.parser")
 
-    resultat = {"lieu": None, "meteo": None, "arbitre": None, "diffuseur": None, "url_statistique": None}
+    resultat = {"lieu": None, "meteo": None, "arbitre": None, "diffuseur": None,
+                "url_statistique": None, "url_equipe_domicile": None, "url_equipe_exterieur": None}
 
     lien_stat = soup.select_one("a[href*='/statistique/']")
     if lien_stat:
         href = lien_stat.get("href", "")
         resultat["url_statistique"] = href if href.startswith("http") else "https://www.matchendirect.fr" + href
+
+    # URLs des pages équipe : les deux premiers liens /equipe/ distincts dans
+    # l'ordre du document correspondent à domicile puis extérieur (l'équipe
+    # à domicile est toujours présentée en premier sur cette page).
+    urls_equipe_vues = []
+    for a in soup.select("a[href*='/equipe/']"):
+        href = a.get("href", "")
+        href_abs = href if href.startswith("http") else "https://www.matchendirect.fr" + href
+        if href_abs not in urls_equipe_vues:
+            urls_equipe_vues.append(href_abs)
+        if len(urls_equipe_vues) >= 2:
+            break
+    if len(urls_equipe_vues) >= 1:
+        resultat["url_equipe_domicile"] = urls_equipe_vues[0]
+    if len(urls_equipe_vues) >= 2:
+        resultat["url_equipe_exterieur"] = urls_equipe_vues[1]
 
     texte_page = soup.get_text("\n", strip=True)
     for ligne in texte_page.split("\n"):
@@ -387,3 +404,131 @@ def trouve_equipe_dans_classement(classement, nom_equipe):
         if eq_norm == nom_norm or eq_norm in nom_norm or nom_norm in eq_norm:
             return ligne
     return None
+
+
+# --------------------------------------------------------------------------
+# Historique par compétition avec repli saison précédente (25/08) — remplace
+# l'usage de recupere_classement_du_match pour gf/ga : au lieu d'une moyenne
+# saison courante agrégée (pas de split domicile/extérieur, biaisée en début
+# de saison par un faible nombre de matchs joués), on prend les VRAIS
+# derniers matchs domicile et extérieur, en repliant sur la saison
+# précédente UNIQUEMENT si la compétition est identique (garde-fou strict :
+# une équipe promue/reléguée ne doit jamais hériter des chiffres de l'autre
+# division). Les matchs amicaux sont exclus du calcul, jamais utilisés
+# comme repli — contexte de jeu non comparable (effectifs remaniés, enjeu
+# nul), même dilués avec un faible poids.
+# --------------------------------------------------------------------------
+
+def _normalise_texte(s):
+    return re.sub(r"\s+", " ", s or "").strip().lower()
+
+
+def _memes_equipes(nom1, nom2):
+    """Comparaison tolérante — les noms peuvent différer légèrement entre
+    pages (ex. 'Not. Forest' vs 'Nottingham Forest'). Best-effort assumé :
+    en cas de doute, mieux vaut rater un rapprochement que d'en deviner un
+    faux (voir _extrait_historique_competition, qui ignore une ligne plutôt
+    que de l'attribuer à la mauvaise équipe)."""
+    n1, n2 = _normalise_texte(nom1), _normalise_texte(nom2)
+    return n1 == n2 or n1 in n2 or n2 in n1
+
+
+def _saison_actuelle_et_precedente():
+    """Convention saison européenne : la saison démarre en juillet.
+    Retourne (saison_actuelle, saison_precedente) au format 'AAAA/AAAA'."""
+    from datetime import date
+    aujourd_hui = date.today()
+    if aujourd_hui.month >= 7:
+        debut = aujourd_hui.year
+    else:
+        debut = aujourd_hui.year - 1
+    actuelle = f"{debut}/{debut + 1}"
+    precedente = f"{debut - 1}/{debut}"
+    return actuelle, precedente
+
+
+def _extrait_historique_competition(soup, nom_competition, nom_equipe, max_matchs=10):
+    """
+    Retourne la liste des matchs JOUÉS (score présent) de `nom_equipe` dans
+    la compétition `nom_competition`, sur la page déjà chargée (une saison).
+    Retourne None si cette compétition n'apparaît pas du tout sur la page —
+    c'est le garde-fou : absence de section = équipe pas dans cette
+    compétition cette saison-là (promotion/relégation), on ne devine jamais
+    une correspondance approximative de compétition.
+    """
+    cible = _normalise_texte(nom_competition)
+    ancre = soup.find(string=lambda s: s and _normalise_texte(s) == cible)
+    if ancre is None:
+        return None
+    table = ancre.find_parent().find_next("table")
+    if table is None:
+        return []
+
+    matchs = []
+    for tr in table.find_all("tr"):
+        liens_avec_score = [a for a in tr.find_all("a") if re.search(r"\d+\s*-\s*\d+", a.get_text(" ", strip=True))]
+        if not liens_avec_score:
+            continue  # pas de score = match à venir, on l'ignore
+        texte = liens_avec_score[0].get_text(" ", strip=True)
+        m = re.match(r"^(.*?)\s+(\d+)\s*-\s*(\d+)\s+(.*)$", texte)
+        if not m:
+            continue
+        nom_dom, buts_dom, buts_ext, nom_ext = m.group(1).strip(), int(m.group(2)), int(m.group(3)), m.group(4).strip()
+
+        if _memes_equipes(nom_equipe, nom_dom):
+            matchs.append({"domicile": True, "buts_marques": buts_dom, "buts_encaisses": buts_ext})
+        elif _memes_equipes(nom_equipe, nom_ext):
+            matchs.append({"domicile": False, "buts_marques": buts_ext, "buts_encaisses": buts_dom})
+        # ni l'un ni l'autre -> ligne ignorée, jamais devinée
+
+    return matchs
+
+
+def recupere_gf_ga_avec_repli(url_equipe, nom_equipe, nom_competition, max_matchs=10):
+    """
+    Calcule gf/ga domicile et extérieur pour `nom_equipe` dans
+    `nom_competition`, en utilisant en priorité la saison en cours, puis en
+    complétant avec la saison précédente UNIQUEMENT si la compétition existe
+    à l'identique sur cette page-là (garde-fou promotion/relégation, section
+    9.2 de TRANSITION.md). Aucun match amical n'est utilisé.
+
+    Retourne un dict :
+      {'gf_domicile', 'ga_domicile', 'nb_domicile',
+       'gf_exterieur', 'ga_exterieur', 'nb_exterieur'}
+    ou {'raison_non_traite': str} si aucun match exploitable n'a été trouvé.
+    """
+    saison_actuelle, saison_precedente = _saison_actuelle_et_precedente()
+
+    matchs_domicile, matchs_exterieur = [], []
+
+    for saison in (saison_actuelle, saison_precedente):
+        if len(matchs_domicile) >= max_matchs and len(matchs_exterieur) >= max_matchs:
+            break
+        try:
+            url = url_equipe if saison == saison_actuelle else f"{url_equipe}?season={saison.replace('/', '%2F')}"
+            html = fetch_html(url)
+        except RuntimeError:
+            continue  # saison précédente injoignable -> on s'arrête là, pas d'invention
+        soup = BeautifulSoup(html, "html.parser")
+        historique = _extrait_historique_competition(soup, nom_competition, nom_equipe, max_matchs)
+        if historique is None:
+            # Compétition absente sur cette page -> garde-fou : on n'utilise
+            # PAS cette saison comme repli (promotion/relégation probable).
+            continue
+        for m in historique:
+            if m["domicile"] and len(matchs_domicile) < max_matchs:
+                matchs_domicile.append(m)
+            elif not m["domicile"] and len(matchs_exterieur) < max_matchs:
+                matchs_exterieur.append(m)
+
+    if not matchs_domicile and not matchs_exterieur:
+        return {"raison_non_traite": "aucun_match_joue_saison_actuelle_ou_precedente"}
+
+    resultat = {"nb_domicile": len(matchs_domicile), "nb_exterieur": len(matchs_exterieur)}
+    if matchs_domicile:
+        resultat["gf_domicile"] = sum(m["buts_marques"] for m in matchs_domicile) / len(matchs_domicile)
+        resultat["ga_domicile"] = sum(m["buts_encaisses"] for m in matchs_domicile) / len(matchs_domicile)
+    if matchs_exterieur:
+        resultat["gf_exterieur"] = sum(m["buts_marques"] for m in matchs_exterieur) / len(matchs_exterieur)
+        resultat["ga_exterieur"] = sum(m["buts_encaisses"] for m in matchs_exterieur) / len(matchs_exterieur)
+    return resultat
