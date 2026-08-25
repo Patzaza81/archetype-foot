@@ -294,7 +294,24 @@ def recupere_cotes_marches(url_match_face_a_face):
     ]
 
     for nom_marche, titre_attendu, selections in definitions:
-        titre = soup.find(string=lambda s: s and s.strip() == titre_attendu)
+        # CORRECTIF (26/08bis) : un même titre de marché peut apparaître DEUX FOIS
+        # sur la page -- une fois dans un widget d'aperçu en haut (sans Bet365),
+        # une fois dans le tableau complet plus bas (avec Bet365). Confirmé sur
+        # HTML réel (Valence-Real Betis, 25/08/2026) : "Mi-temps - Résultat"
+        # apparaît une première fois dans l'aperçu (4 bookmakers, pas de Bet365)
+        # puis une seconde fois dans le tableau complet (avec Bet365). soup.find()
+        # ancrait sur la PREMIÈRE occurrence -- si un jour l'aperçu affiche un
+        # marché qu'on exploite réellement (1N2, BTTS, une ligne O/U), la marche
+        # find_all_next() sans limite dérive depuis l'aperçu à travers tout le
+        # contenu intermédiaire (Détails du match, Pronostic...) jusqu'au
+        # prochain titre reconnu -- pouvant renvoyer la cote Bet365 d'un AUTRE
+        # marché, réelle mais associée à la mauvaise sélection, sans jamais lever
+        # d'erreur. Cause probable du bug de cote invraisemblable (voir
+        # TRANSITION.md, bug ouvert Gil Vicente-Casa Pia). Le tableau complet
+        # étant structurellement le DERNIER endroit où un titre de marché
+        # apparaît sur la page, on ancre désormais sur la dernière occurrence.
+        titres = soup.find_all(string=lambda s: s and s.strip() == titre_attendu)
+        titre = titres[-1] if titres else None
         if titre is None:
             marches[nom_marche] = None
             continue
