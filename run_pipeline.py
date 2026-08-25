@@ -67,23 +67,38 @@ def normalise_panier(panier_brut, matchs_du_jour, matchs_demain):
         if isinstance(item, str):
             item = {"match_id": item}
 
-        a_tous_les_champs_manuels = (
-            item.get("url_match") and item.get("domicile")
-            and item.get("exterieur") and item.get("competition")
-        )
-        if a_tous_les_champs_manuels:
+        # CORRECTIF (26/08quinquies) : généralisé pour accepter deux cas --
+        # (a) le cas historique : url_match matchendirect présente, match_id
+        #     déduit de l'URL si absent (comportement inchangé) ;
+        # (b) NOUVEAU : aucune url_match (ex. page dédiée Betpawa, match hors
+        #     couverture matchendirect ou non cherché) -- accepté SI
+        #     cotes_manuelles ET match_id explicite sont fournis (le frontend
+        #     betpawa.js génère ce match_id, voir betpawa.js). Sans URL,
+        #     construit_signaux() marquera le match "non traité" avec une
+        #     raison explicite (pas de forme/classement/H2H disponibles) --
+        #     jamais un plantage, jamais une donnée devinée.
+        a_infos_de_base = item.get("domicile") and item.get("exterieur") and item.get("competition")
+        a_url = item.get("url_match")
+        a_cotes_manuelles = item.get("cotes_manuelles")
+
+        if a_infos_de_base and (a_url or a_cotes_manuelles):
             match_id = item.get("match_id")
-            if not match_id:
-                trouve = MATCH_LINK_RE.search(item["url_match"])
+            if not match_id and a_url:
+                trouve = MATCH_LINK_RE.search(a_url)
                 if not trouve:
                     print(f"AVERTISSEMENT panier.json[{i}] ignoré : match_id absent "
-                          f"et introuvable depuis l'URL '{item['url_match']}'.")
+                          f"et introuvable depuis l'URL '{a_url}'.")
                     continue
                 match_id = trouve.group(2)
+            if not match_id:
+                print(f"AVERTISSEMENT panier.json[{i}] ignoré : match_id absent et "
+                      f"aucune URL matchendirect pour le déduire (entrée sans "
+                      f"scraping -- le frontend doit fournir un match_id explicite).")
+                continue
             valides.append({
                 "domicile": item["domicile"], "exterieur": item["exterieur"],
                 "score": item.get("score"), "competition": item["competition"],
-                "url_match": item["url_match"], "match_id": match_id,
+                "url_match": a_url, "match_id": match_id,
                 "source": item.get("source", "manuel"),
                 # CORRECTIF (26/08ter) : cotes saisies à la main (ex. Betpawa),
                 # voir GABARIT_COTES_MANUELLES.json. Absent -> comportement
@@ -308,8 +323,24 @@ def construit_signaux(matchs_bruts):
 
         signal = {**m, "traite": False}
 
-        if not (url_match and nom_domicile and nom_exterieur and competition):
+        if not (nom_domicile and nom_exterieur and competition):
             signal["raison_non_traite"] = "donnees_de_base_manquantes"
+            resultats.append(signal)
+            continue
+
+        if not url_match:
+            # CORRECTIF (26/08quinquies) : match sans page matchendirect (ex.
+            # ajouté depuis betpawa.html, championnat hors couverture ou URL
+            # simplement non cherchée). Les cotes manuelles alimentent l'EV
+            # mais ne remplacent pas classement/forme/H2H, nécessaires au
+            # calcul de lambda -- rien n'est deviné à la place. Le match
+            # reste visible (verdict NO_GO implicite) avec une raison claire,
+            # plutôt que d'être traité ou silencieusement perdu.
+            signal["raison_non_traite"] = (
+                "pas_d_url_matchendirect : forme/classement/H2H indisponibles, "
+                "lambda non calculable -- les cotes manuelles seules ne suffisent "
+                "pas à faire tourner le modèle Poisson/Dixon-Coles"
+            )
             resultats.append(signal)
             continue
 
