@@ -1,8 +1,8 @@
-// betpawa.js — page dédiée au dépôt Betpawa (26/08quinquies). Parse le
-// texte brut côté client (parseBetpawa.js, portage exact de
-// parse_betpawa.py -- vérifié identique sur 5 matchs réels) et pousse
-// l'entrée dans le MÊME localStorage que index.js/panier.js/selection.js :
-// un seul panier, peu importe la source du match.
+// betpawa.js — page dédiée au dépôt Betpawa (26/08sexies). Parse le texte
+// brut côté client (parseBetpawa.js, portage exact de parse_betpawa.py --
+// vérifié identique sur 5 matchs réels) et pousse l'entrée dans le MÊME
+// localStorage que index.js/panier.js : un seul panier, peu importe la
+// source du match.
 
 const CLE_PANIER = "archetype_panier";
 
@@ -44,6 +44,24 @@ function genererMatchId(domicile, exterieur) {
   return `betpawa_${slug(domicile)}_${slug(exterieur)}_${dateDuJourISO()}`;
 }
 
+// CORRECTIF (26/08sexies) : détecte domicile/extérieur directement dans le
+// texte collé -- le format Betpawa observé sur tous les matchs testés place
+// toujours les deux noms d'équipe juste après la ligne "Retour" (ou juste
+// avant "Football//" en repli si "Retour" est absent). Évite la confusion
+// entre placeholder grisé et valeur réellement saisie qui bloquait l'ajout.
+function detecteEquipes(texte) {
+  const lignes = texte.split("\n").map((l) => l.trim()).filter((l) => l.length > 0);
+  const idxRetour = lignes.indexOf("Retour");
+  if (idxRetour !== -1 && idxRetour + 2 < lignes.length) {
+    return { domicile: lignes[idxRetour + 1], exterieur: lignes[idxRetour + 2] };
+  }
+  const idxFootball = lignes.findIndex((l) => l.startsWith("Football"));
+  if (idxFootball >= 2) {
+    return { domicile: lignes[idxFootball - 2], exterieur: lignes[idxFootball - 1] };
+  }
+  return null;
+}
+
 function afficheResultat(message, ok) {
   const div = document.getElementById("resultat-ajout");
   div.textContent = message;
@@ -61,6 +79,64 @@ function afficheApercu(cotes) {
   div.className = "visible";
   div.innerHTML = `<strong>${cles.length} marché(s) reconnu(s) :</strong> ` + cles.join(", ");
 }
+
+function rafraichitListeSession() {
+  const conteneur = document.getElementById("items-session");
+  const betpawaItems = chargePanier()
+    .map((item, i) => ({ item, i }))
+    .filter(({ item }) => item.source === "betpawa");
+
+  conteneur.innerHTML = "";
+  if (betpawaItems.length === 0) {
+    conteneur.innerHTML = "<div class='item-session'>Aucun match Betpawa dans le panier pour l'instant.</div>";
+    return;
+  }
+
+  betpawaItems.forEach(({ item }) => {
+    const div = document.createElement("div");
+    div.className = "item-session";
+    const nbMarches = item.cotes_manuelles ? Object.keys(item.cotes_manuelles).length : 0;
+    const texte = document.createElement("span");
+    texte.innerHTML = `${item.domicile} — ${item.exterieur}` +
+      `<span class="tag">${item.competition} · ${nbMarches} marché(s)` +
+      (item.url_match ? "" : " · sans URL matchendirect") + `</span>`;
+
+    const retirer = document.createElement("button");
+    retirer.textContent = "✕";
+    retirer.title = "Retirer du panier";
+    retirer.style.cssText = "background:none;border:none;color:#C84E50;font-size:1.1em;cursor:pointer;padding:4px 8px;";
+    retirer.addEventListener("click", () => {
+      const p = chargePanier().filter((x) => x.match_id !== item.match_id);
+      sauvePanier(p);
+      metAJourBoutonPanier();
+      rafraichitListeSession();
+    });
+
+    div.appendChild(texte);
+    div.appendChild(retirer);
+    conteneur.appendChild(div);
+  });
+}
+
+// Auto-détection à la saisie -- ne remplace que des champs vides, pour ne
+// jamais écraser une correction manuelle que Patrick aurait déjà faite.
+document.getElementById("brut-betpawa").addEventListener("input", () => {
+  const texte = document.getElementById("brut-betpawa").value;
+  const detecte = detecteEquipes(texte);
+  if (!detecte) return;
+
+  const champDomicile = document.getElementById("bp-domicile");
+  const champExterieur = document.getElementById("bp-exterieur");
+
+  if (!champDomicile.value.trim()) {
+    champDomicile.value = detecte.domicile;
+    document.getElementById("detecte-domicile").classList.add("visible");
+  }
+  if (!champExterieur.value.trim()) {
+    champExterieur.value = detecte.exterieur;
+    document.getElementById("detecte-exterieur").classList.add("visible");
+  }
+});
 
 document.getElementById("ajouter-btn").addEventListener("click", () => {
   const domicile = document.getElementById("bp-domicile").value.trim();
@@ -123,13 +199,25 @@ document.getElementById("ajouter-btn").addEventListener("click", () => {
     (dejaPresent
       ? `${domicile} — ${exterieur} déjà présent aujourd'hui -- cotes remplacées`
       : `${domicile} — ${exterieur} ajouté au panier`) +
-      ` (${Object.keys(cotes).length} marché(s)).` +
+      ` (${Object.keys(cotes).length} marché(s)). Prêt pour le match suivant.` +
       (url ? "" : " Sans URL matchendirect -- sera marqué non traité tant qu'une source de forme n'est pas branchée."),
     true
   );
   metAJourBoutonPanier();
+  rafraichitListeSession();
 
+  // CORRECTIF (26/08sexies) : les 4 champs sont désormais réinitialisés (pas
+  // seulement le texte collé), pour enchaîner plusieurs matchs sans jamais
+  // laisser une équipe ou une compétition du match précédent traîner dans
+  // le formulaire.
   document.getElementById("brut-betpawa").value = "";
+  document.getElementById("bp-domicile").value = "";
+  document.getElementById("bp-exterieur").value = "";
+  document.getElementById("bp-competition").value = "";
+  document.getElementById("bp-url").value = "";
+  document.getElementById("detecte-domicile").classList.remove("visible");
+  document.getElementById("detecte-exterieur").classList.remove("visible");
 });
 
 metAJourBoutonPanier();
+rafraichitListeSession();
