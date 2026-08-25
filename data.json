@@ -14,68 +14,6 @@
       "match_id": "72e6g9h1pn6n02wyh6hi1e49g",
       "source": "manuel",
       "traite": true,
-      "diagnostics_cotes_a_risque": {
-        "1x2": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "double_chance": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "btts": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_0.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 2
-        },
-        "over_under_1.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_2.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_3.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_4.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_5.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 1,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_6.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        }
-      },
       "lambda": {
         "lambda_home": 0.9983458602415847,
         "lambda_away": 1.0397940387341076,
@@ -92,7 +30,10 @@
       "confiance": "MOYENNE",
       "nb_matchs_domicile_utilises": 10,
       "nb_matchs_exterieur_utilises": 10,
-      "cote_1": null,
+      "cote_1": 2.6,
+      "ev_victoire_domicile": -0.1599811489756876,
+      "mise_kelly_victoire_domicile": 0.0,
+      "standout": false,
       "marches": {
         "1x2": {
           "1": 0.32308417347088936,
@@ -320,10 +261,26 @@
           "6+": 0.01668675024000607
         }
       },
-      "verdict_global": "NO_GO",
-      "motif_no_go": "2 marché(s) évalués, aucun dans la fourchette 1.25-1.69 avec EV>=5%",
-      "LISTE_A_marches_passant_EV_et_cote": [],
-      "LISTE_B_liste_finale_apres_correlation": [],
+      "verdict_global": "GO",
+      "motif_no_go": null,
+      "LISTE_A_marches_passant_EV_et_cote": [
+        {
+          "marche": "Moins de 3.5 buts",
+          "ev_brut": 0.06411982077453438,
+          "cote_observee": 1.25,
+          "probabilite_modele": 0.8512958566196275,
+          "mise_pct_bankroll": 0.04
+        }
+      ],
+      "LISTE_B_liste_finale_apres_correlation": [
+        {
+          "marche": "Moins de 3.5 buts",
+          "ev_brut": 0.06411982077453438,
+          "cote_observee": 1.25,
+          "probabilite_modele": 0.8512958566196275,
+          "mise_pct_bankroll": 0.04
+        }
+      ],
       "coefficients_empiriques": false
     },
     {
@@ -456,74 +413,6 @@
       "match_id": "52eej74ce0i8lv64hem6x0f84",
       "source": "manuel",
       "traite": true,
-      "diagnostics_cotes_a_risque": {
-        "1x2": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "double_chance": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "btts": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_0.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 2
-        },
-        "over_under_1.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_2.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_3.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_4.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_5.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 1,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_6.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_7.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        }
-      },
       "lambda": {
         "lambda_home": 1.1251538929373301,
         "lambda_away": 2.70363016036726,
@@ -540,7 +429,10 @@
       "confiance": "FAIBLE",
       "nb_matchs_domicile_utilises": 1,
       "nb_matchs_exterieur_utilises": 10,
-      "cote_1": null,
+      "cote_1": 2.47,
+      "ev_victoire_domicile": -0.6684473871207254,
+      "mise_kelly_victoire_domicile": 0.0,
+      "standout": false,
       "marches": {
         "1x2": {
           "1": 0.1342318270766294,
@@ -768,10 +660,26 @@
           "6+": 0.13871970281444346
         }
       },
-      "verdict_global": "NO_GO",
-      "motif_no_go": "2 marché(s) évalués, aucun dans la fourchette 1.25-1.69 avec EV>=5%",
-      "LISTE_A_marches_passant_EV_et_cote": [],
-      "LISTE_B_liste_finale_apres_correlation": [],
+      "verdict_global": "GO",
+      "motif_no_go": null,
+      "LISTE_A_marches_passant_EV_et_cote": [
+        {
+          "marche": "Double chance - X2",
+          "ev_brut": 0.20341776036348502,
+          "cote_observee": 1.39,
+          "probabilite_modele": 0.8657681729233706,
+          "mise_pct_bankroll": 0.04
+        }
+      ],
+      "LISTE_B_liste_finale_apres_correlation": [
+        {
+          "marche": "Double chance - X2",
+          "ev_brut": 0.20341776036348502,
+          "cote_observee": 1.39,
+          "probabilite_modele": 0.8657681729233706,
+          "mise_pct_bankroll": 0.04
+        }
+      ],
       "coefficients_empiriques": false
     },
     {
@@ -783,74 +691,6 @@
       "match_id": "52qcyx0cn1s78zv76nuksowes",
       "source": "manuel",
       "traite": true,
-      "diagnostics_cotes_a_risque": {
-        "1x2": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "double_chance": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "btts": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_0.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 2
-        },
-        "over_under_1.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_2.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_3.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_4.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_5.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 1,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_6.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_7.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        }
-      },
       "lambda": {
         "lambda_home": 2.869730579538859,
         "lambda_away": 0.6375614640185613,
@@ -867,7 +707,10 @@
       "confiance": "MOYENNE",
       "nb_matchs_domicile_utilises": 10,
       "nb_matchs_exterieur_utilises": 10,
-      "cote_1": null,
+      "cote_1": 1.66,
+      "ev_victoire_domicile": 0.34357079650467925,
+      "mise_kelly_victoire_domicile": 0.04,
+      "standout": true,
       "marches": {
         "1x2": {
           "1": 0.8093799978943851,
@@ -1095,10 +938,26 @@
           "6+": 0.0774756156624996
         }
       },
-      "verdict_global": "NO_GO",
-      "motif_no_go": "2 marché(s) évalués, aucun dans la fourchette 1.25-1.69 avec EV>=5%",
-      "LISTE_A_marches_passant_EV_et_cote": [],
-      "LISTE_B_liste_finale_apres_correlation": [],
+      "verdict_global": "GO",
+      "motif_no_go": null,
+      "LISTE_A_marches_passant_EV_et_cote": [
+        {
+          "marche": "1X2 - 1",
+          "ev_brut": 0.34357079650467925,
+          "cote_observee": 1.66,
+          "probabilite_modele": 0.8093799978943851,
+          "mise_pct_bankroll": 0.04
+        }
+      ],
+      "LISTE_B_liste_finale_apres_correlation": [
+        {
+          "marche": "1X2 - 1",
+          "ev_brut": 0.34357079650467925,
+          "cote_observee": 1.66,
+          "probabilite_modele": 0.8093799978943851,
+          "mise_pct_bankroll": 0.04
+        }
+      ],
       "coefficients_empiriques": false
     },
     {
@@ -1110,314 +969,256 @@
       "match_id": "53e31gd5wjftw26v579g5fjmc",
       "source": "manuel",
       "traite": true,
-      "diagnostics_cotes_a_risque": {
-        "1x2": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "double_chance": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "btts": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_0.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 2
-        },
-        "over_under_1.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_2.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_3.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_4.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_5.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 1,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_7.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        }
-      },
+      "avertissement_classement": "erreur_technique: Tableau de classement introuvable sur https://www.matchendirect.fr/live-score/al-shabab-al-riyadh_53e31gd5wjftw26v579g5fjmc.html?p=classement. Colonnes vues : [[0]]",
       "lambda": {
-        "lambda_home": 1.8124614186561216,
-        "lambda_away": 1.020098342429698,
+        "lambda_home": 1.56,
+        "lambda_away": 1.1851851851851851,
         "audit": {
           "lambda_home_base": 1.2,
           "lambda_away_base": 1.0,
           "modifier_defense_home": 1.1851851851851851,
           "modifier_defense_away": 1.3,
-          "ajustement_home": 0.14999999999999997,
-          "ajustement_away": -0.14999999999999997
+          "ajustement_home": 0.0,
+          "ajustement_away": 0.0
         }
       },
-      "probabilite_victoire_domicile": 0.5440938904508823,
+      "probabilite_victoire_domicile": 0.44573973354778107,
       "confiance": "MOYENNE",
       "nb_matchs_domicile_utilises": 10,
       "nb_matchs_exterieur_utilises": 10,
-      "cote_1": null,
+      "cote_1": 1.54,
+      "ev_victoire_domicile": -0.31356081033641714,
+      "mise_kelly_victoire_domicile": 0.0,
+      "standout": false,
       "marches": {
         "1x2": {
-          "1": 0.5440938904508823,
-          "X": 0.2542645489228083,
-          "2": 0.2016415606263093
+          "1": 0.44573973354778107,
+          "X": 0.27619771686319683,
+          "2": 0.27806254958902205
         },
         "double_chance": {
-          "1X": 0.7983584393736907,
-          "12": 0.7457354510771916,
-          "X2": 0.4559061095491176
+          "1X": 0.7219374504109779,
+          "12": 0.7238022831368032,
+          "X2": 0.5542602664522189
         },
         "btts": {
-          "oui": 0.5447306279616663,
-          "non": 0.45526937203833373
+          "oui": 0.5592410272004291,
+          "non": 0.4407589727995709
         },
         "pair_impair": {
-          "pair": 0.5233457505949022,
-          "impair": 0.4766542494050978
+          "pair": 0.5258105585720934,
+          "impair": 0.47418944142790664
         },
         "cages_inviolees_domicile": {
-          "oui": 0.3607970007986153,
-          "non": 0.6392029992013847
+          "oui": 0.3061211489051003,
+          "non": 0.6938788510948997
         },
         "cages_inviolees_exterieur": {
-          "oui": 0.16501849832277857,
-          "non": 0.8349815016772214
+          "oui": 0.21126934534104658,
+          "non": 0.7887306546589534
         },
         "over_under": {
           "0.5": {
-            "plus": 0.9294538729169397,
-            "moins": 0.07054612708306021,
+            "plus": 0.923368478553424,
+            "moins": 0.07663152144657602,
             "push": 0
           },
           "1.5": {
-            "plus": 0.7828243176889875,
-            "moins": 0.2171756823110124,
+            "plus": 0.7697413449107132,
+            "moins": 0.2302586550892867,
             "push": 0
           },
           "2.5": {
-            "plus": 0.532967210890623,
-            "moins": 0.4670327891093769,
+            "plus": 0.5140908022232121,
+            "moins": 0.48590919777678787,
             "push": 0
           },
           "3.5": {
-            "plus": 0.3074490386525499,
-            "moins": 0.6925509613474501,
+            "plus": 0.29109663153509774,
+            "moins": 0.7089033684649022,
             "push": 0
           },
           "4.5": {
-            "plus": 0.1477506136337531,
-            "moins": 0.8522493863662468,
+            "plus": 0.13805655809618073,
+            "moins": 0.8619434419038192,
             "push": 0
           },
           "5.5": {
-            "plus": 0.05727954711034815,
-            "moins": 0.9427204528896518,
+            "plus": 0.05403188962734717,
+            "moins": 0.9459681103726528,
             "push": 0
           },
           "6.5": {
-            "plus": 0.01759334576417439,
-            "moins": 0.9824066542358255,
+            "plus": 0.017131589629262062,
+            "moins": 0.9828684103707379,
             "push": 0
           },
           "7.5": {
-            "plus": 0.00424215702894796,
-            "moins": 0.995757842971052,
+            "plus": 0.004308485380914533,
+            "moins": 0.9956915146190854,
             "push": 0
           }
         },
         "over_under_domicile": {
           "0.5": {
-            "plus": 0.8349815016772214,
-            "moins": 0.16501849832277857,
+            "plus": 0.7887306546589534,
+            "moins": 0.21126934534104658,
             "push": 0
           },
           "1.5": {
-            "plus": 0.5358918401026153,
-            "moins": 0.4641081598973847,
+            "plus": 0.4591504759269207,
+            "moins": 0.5408495240730793,
             "push": 0
           },
           "2.5": {
-            "plus": 0.2648476039411703,
-            "moins": 0.7351523960588296,
+            "plus": 0.20207793651593522,
+            "moins": 0.7979220634840647,
             "push": 0
           },
           "3.5": {
-            "plus": 0.10109519701059119,
-            "moins": 0.8989048029894088,
+            "plus": 0.06840021602222279,
+            "moins": 0.9315997839777772,
             "push": 0
           },
           "4.5": {
-            "plus": 0.02689646706715321,
-            "moins": 0.9731035329328468,
+            "plus": 0.01626590502967493,
+            "moins": 0.983734094970325,
             "push": 0
           },
           "5.5": {
             "plus": 0,
-            "moins": 1.0,
+            "moins": 0.9999999999999999,
             "push": 0
           },
           "6.5": {
             "plus": 0,
-            "moins": 1.0,
+            "moins": 0.9999999999999999,
             "push": 0
           },
           "7.5": {
             "plus": 0,
-            "moins": 1.0,
+            "moins": 0.9999999999999999,
             "push": 0
           }
         },
         "over_under_exterieur": {
           "0.5": {
-            "plus": 0.6392029992013847,
-            "moins": 0.3607970007986153,
+            "plus": 0.6938788510948997,
+            "moins": 0.3061211489051003,
             "push": 0
           },
           "1.5": {
-            "plus": 0.27115457673311066,
-            "moins": 0.7288454232668893,
+            "plus": 0.3310686005407067,
+            "moins": 0.6689313994592933,
             "push": 0
           },
           "2.5": {
-            "plus": 0.08343178388623496,
-            "moins": 0.916568216113765,
+            "plus": 0.1160699335456294,
+            "moins": 0.8839300664543706,
             "push": 0
           },
           "3.5": {
-            "plus": 0.019599880613111114,
-            "moins": 0.9804001193868889,
+            "plus": 0.03113218855991987,
+            "moins": 0.96886781144008,
             "push": 0
           },
           "4.5": {
-            "plus": 0.0033211759323494984,
-            "moins": 0.9966788240676505,
+            "plus": 0.005965449304894826,
+            "moins": 0.9940345506951052,
             "push": 0
           },
           "5.5": {
             "plus": 0,
-            "moins": 1.0,
+            "moins": 0.9999999999999999,
             "push": 0
           },
           "6.5": {
             "plus": 0,
-            "moins": 1.0,
+            "moins": 0.9999999999999999,
             "push": 0
           },
           "7.5": {
             "plus": 0,
-            "moins": 1.0,
+            "moins": 0.9999999999999999,
             "push": 0
           }
         },
         "handicap": {
           "-2.5": {
-            "domicile": 0.13781322886510125,
-            "exterieur": 0.8621867711348987
+            "domicile": 0.09017377750646223,
+            "exterieur": 0.9098262224935377
           },
           "-1.5": {
-            "domicile": 0.31151963689697726,
-            "exterieur": 0.6884803631030227
+            "domicile": 0.22995916255021887,
+            "exterieur": 0.7700408374497811
           },
           "-0.5": {
-            "domicile": 0.5440938904508823,
-            "exterieur": 0.4559061095491177
+            "domicile": 0.44573973354778107,
+            "exterieur": 0.5542602664522189
           },
           "0.5": {
-            "domicile": 0.7983584393736907,
-            "exterieur": 0.20164156062630934
+            "domicile": 0.7219374504109779,
+            "exterieur": 0.2780625495890221
           },
           "1.5": {
-            "domicile": 0.9244446097046554,
-            "exterieur": 0.07555539029534464
+            "domicile": 0.8830003256220853,
+            "exterieur": 0.1169996743779147
           },
           "2.5": {
-            "domicile": 0.9794699050574833,
-            "exterieur": 0.020530094942516675
+            "domicile": 0.9636838756546015,
+            "exterieur": 0.03631612434539855
           }
         },
         "score_exact": {
-          "0-0": 0.07054612708306021,
-          "0-1": 0.049726850173871795,
-          "0-2": 0.030977733376549476,
-          "0-3": 0.010533444823215752,
-          "0-4": 0.002686287401059268,
-          "0-5": 0.0005480554650220684,
-          "1-0": 0.09690270505408038,
-          "1-1": 0.1210874259310141,
-          "1-2": 0.05614594658241196,
-          "1-3": 0.0190914623476216,
-          "1-4": 0.0048687922738419485,
-          "1-5": 0.0009933293856361385,
-          "2-0": 0.09779194749080095,
-          "2-1": 0.0997574035383381,
-          "2-2": 0.050881180997274594,
-          "2-3": 0.01730126946539509,
-          "2-4": 0.0044122490758947705,
-          "2-5": 0.0009001855937414445,
-          "3-0": 0.05908137729410734,
-          "3-1": 0.06026881504618249,
-          "3-2": 0.030740059164406402,
-          "3-3": 0.01045262779993394,
-          "3-4": 0.002665677073186799,
-          "3-5": 0.0005438505527621405,
-          "4-0": 0.026770679226658836,
-          "4-1": 0.02730872550483183,
-          "4-2": 0.013928792810673284,
-          "4-3": 0.004736246152738171,
-          "4-4": 0.0012078592124368111,
-          "4-5": 0.0002464270360990463,
-          "5-0": 0.00970416464990761,
-          "5-1": 0.009899202274035622,
-          "5-2": 0.005049079915560017,
-          "5-3": 0.0017168526842192848,
-          "5-4": 0.0004378396443420176,
-          "5-5": 8.932789908866014e-05
+          "0-0": 0.07663152144657602,
+          "0-1": 0.06469317739525898,
+          "0-2": 0.04542262762524766,
+          "0-3": 0.017944741777875615,
+          "0-4": 0.005316960526777959,
+          "0-5": 0.0012603165693103311,
+          "1-0": 0.08893395624745169,
+          "1-1": 0.13153257394581094,
+          "1-2": 0.07085929909538635,
+          "1-3": 0.027993797173485963,
+          "1-4": 0.008294458421773617,
+          "1-5": 0.001966093848124117,
+          "2-0": 0.07869534111644255,
+          "2-1": 0.09326855243430228,
+          "2-2": 0.05527025329440135,
+          "2-3": 0.021835161795319052,
+          "2-4": 0.006469677568983421,
+          "2-5": 0.0015335532015368111,
+          "3-0": 0.04092157738055013,
+          "3-1": 0.048499647265837185,
+          "3-2": 0.028740531713088702,
+          "3-3": 0.011354284133565906,
+          "3-4": 0.003364232335871379,
+          "3-5": 0.0007974476647991418,
+          "4-0": 0.01595941517841455,
+          "4-1": 0.018914862433676502,
+          "4-2": 0.011208807368104595,
+          "4-3": 0.004428170812090703,
+          "4-4": 0.001312050610989838,
+          "4-5": 0.00031100458927166535,
+          "5-0": 0.00497933753566534,
+          "5-1": 0.005901437079307069,
+          "5-2": 0.003497147898848634,
+          "5-3": 0.0013815892933722995,
+          "5-4": 0.0004093597906288294,
+          "5-5": 9.703343185275958e-05
         },
         "nombre_exact_buts": {
-          "0": 0.07054612708306021,
-          "1": 0.14662955522795218,
-          "2": 0.2498571067983645,
-          "3": 0.22551817223807316,
-          "4": 0.1596984250187968,
-          "5": 0.09047106652340495,
-          "6+": 0.05727954711034815
+          "0": 0.07663152144657602,
+          "1": 0.1536271336427107,
+          "2": 0.25565054268750115,
+          "3": 0.22299417068811436,
+          "4": 0.153040073438917,
+          "5": 0.08402466846883354,
+          "6+": 0.05403188962734717
         }
       },
       "verdict_global": "NO_GO",
-      "motif_no_go": "4 marché(s) évalués, aucun dans la fourchette 1.25-1.69 avec EV>=5%",
+      "motif_no_go": "23 marché(s) évalués, aucun dans la fourchette 1.25-1.69 avec EV>=5%",
       "LISTE_A_marches_passant_EV_et_cote": [],
       "LISTE_B_liste_finale_apres_correlation": [],
       "coefficients_empiriques": false
@@ -1431,68 +1232,6 @@
       "match_id": "5327u81detyy2nje3s4vi63o4",
       "source": "manuel",
       "traite": true,
-      "diagnostics_cotes_a_risque": {
-        "1x2": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "double_chance": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 1,
-          "groupes_incomplets_ecartes": 1
-        },
-        "btts": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_0.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 3
-        },
-        "over_under_1.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 2
-        },
-        "over_under_2.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_3.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_4.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_5.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_7.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 1,
-          "groupes_incomplets_ecartes": 1
-        }
-      },
       "lambda": {
         "lambda_home": 1.020098342429698,
         "lambda_away": 3.580170703518265,
@@ -1509,7 +1248,10 @@
       "confiance": "MOYENNE",
       "nb_matchs_domicile_utilises": 10,
       "nb_matchs_exterieur_utilises": 10,
-      "cote_1": null,
+      "cote_1": 7.7,
+      "ev_victoire_domicile": -0.4461358525912852,
+      "mise_kelly_victoire_domicile": 0.0,
+      "standout": false,
       "marches": {
         "1x2": {
           "1": 0.07193040875437855,
@@ -1738,7 +1480,7 @@
         }
       },
       "verdict_global": "NO_GO",
-      "motif_no_go": "7 marché(s) évalués, aucun dans la fourchette 1.25-1.69 avec EV>=5%",
+      "motif_no_go": "23 marché(s) évalués, aucun dans la fourchette 1.25-1.69 avec EV>=5%",
       "LISTE_A_marches_passant_EV_et_cote": [],
       "LISTE_B_liste_finale_apres_correlation": [],
       "coefficients_empiriques": false
@@ -1807,68 +1549,6 @@
       "match_id": "71l2f5qull2yzqxy409ojb2tw",
       "source": "manuel",
       "traite": true,
-      "diagnostics_cotes_a_risque": {
-        "1x2": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "double_chance": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "btts": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_0.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 2
-        },
-        "over_under_1.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_2.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_3.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_4.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_5.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        },
-        "over_under_7.5": {
-          "trouve": true,
-          "separateurs_detectes": true,
-          "groupes_valides": 0,
-          "groupes_incomplets_ecartes": 1
-        }
-      },
       "lambda": {
         "lambda_home": 2.5732476931537525,
         "lambda_away": 0.5422460251477864,
@@ -1885,7 +1565,10 @@
       "confiance": "MOYENNE",
       "nb_matchs_domicile_utilises": 10,
       "nb_matchs_exterieur_utilises": 10,
-      "cote_1": null,
+      "cote_1": 1.44,
+      "ev_victoire_domicile": 0.14545900704376913,
+      "mise_kelly_victoire_domicile": 0.04,
+      "standout": false,
       "marches": {
         "1x2": {
           "1": 0.7954576437803953,
@@ -2113,10 +1796,26 @@
           "6+": 0.051309133747789136
         }
       },
-      "verdict_global": "NO_GO",
-      "motif_no_go": "2 marché(s) évalués, aucun dans la fourchette 1.25-1.69 avec EV>=5%",
-      "LISTE_A_marches_passant_EV_et_cote": [],
-      "LISTE_B_liste_finale_apres_correlation": [],
+      "verdict_global": "GO",
+      "motif_no_go": null,
+      "LISTE_A_marches_passant_EV_et_cote": [
+        {
+          "marche": "1X2 - 1",
+          "ev_brut": 0.14545900704376913,
+          "cote_observee": 1.44,
+          "probabilite_modele": 0.7954576437803953,
+          "mise_pct_bankroll": 0.04
+        }
+      ],
+      "LISTE_B_liste_finale_apres_correlation": [
+        {
+          "marche": "1X2 - 1",
+          "ev_brut": 0.14545900704376913,
+          "cote_observee": 1.44,
+          "probabilite_modele": 0.7954576437803953,
+          "mise_pct_bankroll": 0.04
+        }
+      ],
       "coefficients_empiriques": false
     },
     {
