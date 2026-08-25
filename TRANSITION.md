@@ -371,3 +371,85 @@ attente de confirmation utilisateur avant de coder.
 - Fonction serverless Netlify (13.8).
 - Vérifier le seuil de corrélation 0.70 sur un échantillon plus large.
 - `index.html`/`selection.html` jamais testés sur desktop.
+- 
+## 14. Refonte panier.json + cotes Bet365 fixe (26/08/2026)
+
+### 14.1 Architecture "panier" (introduite hors de cette conversation, découverte le 26/08)
+Une autre session a unifié `matchs_selectionnes.json` et un ancien
+`matchs_manuels.json` en un seul fichier `panier.json`, acceptant trois
+formats d'entrée (simple `match_id`, objet `{match_id}`, ou objet complet
+manuel avec `url_match`/`domicile`/`exterieur`/`competition`). Ajouts
+associés : `matchs_demain.json` (matchs du lendemain, même structure que
+`matchs_du_jour.json`) et `historique_pronostics.json` (archive
+append-only de chaque run, jamais purgée -- croissance non bornée
+assumée, à surveiller après plusieurs mois).
+`panier.json` est vidé automatiquement après chaque run ayant traité au
+moins un match, forçant une sélection consciente à chaque cycle plutôt
+que de risquer un panier périmé silencieux.
+
+### 14.2 Piège du double-tableau JSON — récidive, cause confirmée
+Le même bug que `matchs_selectionnes.json` (section 13.6) s'est reproduit
+sur `panier.json` : un `[]` vide collé avant la vraie liste
+(`[][{...}]`), invalide comme JSON unique, donnant silencieusement 0
+match traité. Cause : coller une nouvelle sélection sans remplacer
+totalement le contenu précédent. Toujours vérifier le contenu réel du
+fichier après un collage, pas seulement supposer qu'il est bon.
+
+### 14.3 Correctif "25/08bis" (cotes multi-bookmakers) — ÉCHEC confirmé, ABANDONNÉ
+Un correctif visant le bug historique des cotes invraisemblables sur
+lignes over/under hautes (voir bug ouvert en tête de document) a tenté de
+détecter un "séparateur texte" entre bookmakers pour fiabiliser le
+comptage par paquets. Sur un run réel de 25 matchs, ce correctif a
+produit un échec quasi total : `cote_1: null` sur les 25 matchs,
+`groupes_valides: 0` sur la quasi-totalité des marchés. Cause racine
+identifiée en récupérant le vrai HTML d'un match (Lyon-Fenerbahce,
+26/08) : **le nom de chaque bookmaker n'existe QUE dans l'attribut `alt`
+d'une image (`<img alt="bet365 logo">`), jamais comme texte visible sur
+la page.** Le correctif cherchait un séparateur texte qui n'a jamais
+existé ; ce qu'il détectait comme "séparateur" était très probablement le
+caractère `-` (cote indisponible), cassant le comptage sur la quasi-
+totalité des lignes. Correctif retiré entièrement.
+
+### 14.4 Changement de méthode : Bet365 fixe, abandon du multi-bookmaker (26/08)
+Décision explicite : un seul bookmaker fixe (Bet365) plutôt que plusieurs
+bookmakers avec sélection du minimum ("proxy Betpawa", section 13.1).
+Simplifie radicalement le code : ancrage direct sur l'image
+`alt="bet365 logo"` (recherche par attribut, pas par texte), lecture des
+valeurs qui suivent immédiatement jusqu'à la prochaine image ou fin de
+section. Plus de comptage par paquets, plus de détection de séparateur.
+Une cote manquante (`-`) devient `None` pour cette seule sélection, sans
+invalider le reste du marché. Bookmaker absent d'une section entière ->
+marché à `None`, jamais deviné.
+Choix de Bet365 : seul bookmaker observé présent sur toutes les lignes
+over/under du match de référence, y compris les plus hautes (6.5, 7.5)
+où les autres bookmakers disparaissent souvent.
+**Abandon assumé de l'approximation Betpawa** ("minimum du panel") au
+profit d'une seule cote Bet365, structurellement différente (plus
+généreuse que Betpawa) mais bien plus fiable techniquement.
+`recupere_cotes_marches` ne renvoie plus un tuple `(marches,
+diagnostics)` -- juste le dict des marchés, le diagnostic de repli n'a
+plus lieu d'être avec une seule source.
+
+### 14.5 Validation réelle du correctif (26/08, 25 matchs)
+Premier run avec cotes Bet365 fixes sur la sélection réelle de 25 matchs :
+`cote_1` renseigné sur la totalité des matchs traités (contre `null`
+systématique avant). Plusieurs matchs passent de `NO_GO` à `GO` pour la
+première fois de façon légitime (Valence-Real Betis, Abha-Al Khaleej,
+Al Taawon-Al Fayha, Real Madrid-Real Sociedad), avec des EV et mises
+Kelly cohérents. Un cas de confiance FAIBLE correctement signalé malgré
+un EV élevé (Abha-Al Khaleej, 1 seul match domicile disponible) --
+prudence recommandée sur ce type de cas malgré un verdict GO technique.
+
+### 14.6 Limite connue, assumée
+Bet365 ne couvre pas forcément tous les marchés sur les compétitions
+confidentielles (petites coupes, championnats mineurs, jeunes/U21) --
+attendre des `cote_1: null` fréquents sur ce type de matchs, ce n'est pas
+un bug mais une limite de couverture du bookmaker choisi.
+
+### 14.7 Bug ouvert historique (tête de document) — statut
+Le bug de cote invraisemblable sur ligne over/under haute (Gil Vicente-
+Casa Pia, 25/08) est traité indirectement : la nouvelle méthode Bet365
+fixe élimine la cause structurelle (comptage par paquets sensible à un
+bookmaker manquant). Le cas précis n'a pas été retesté sur ce match
+exact (déjà commencé), mais le mécanisme qui produisait l'erreur n'existe
+plus dans le nouveau code.
