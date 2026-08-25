@@ -24,6 +24,31 @@ FICHIER_PANIER = "panier.json"
 FICHIER_HISTORIQUE = "historique_pronostics.json"
 MATCH_LINK_RE = re.compile(r"/live-score/([a-z0-9\-]+)_([a-z0-9]+)\.html")
 
+# CORRECTIF (26/08ter) : jusqu'ici, seuls 1x2/double_chance/btts/over_under
+# (total) alimentaient LISTE_A/LISTE_B -- pas parce que le modèle ne calcule
+# pas les autres marchés (calculs.py calcule aussi handicap, over/under par
+# équipe, pair/impair, cages inviolées, score exact), mais parce
+# qu'aucune source scrapée (matchendirect/Bet365) n'a jamais fourni de cote
+# pour ces marchés-là. Avec l'ajout de cotes saisies manuellement (ex.
+# Betpawa, qui couvre ces marchés), construit_candidats() est étendu pour
+# les exploiter. Aucun effet sur les matchs scrapés : cote_marche() renvoie
+# toujours None pour ces clés côté matchendirect/Bet365, donc ces candidats
+# restent simplement absents comme avant.
+#
+# Score exact reste volontairement à part : c'est le marché le plus
+# sensible à une erreur de modèle (probabilités individuelles faibles,
+# écarts de cote énormes pour une petite erreur d'ajustement de lambda).
+# Cohérent avec la décision déjà actée dans TRANSITION.md 13.1 ("calculés
+# mais jamais dans LISTE_A/LISTE_B"). Bascule à True si tu veux l'inclure
+# après avoir jugé le risque acceptable -- pas une décision technique.
+INCLURE_SCORE_EXACT_DANS_ANALYSE = False
+
+# Même logique pour le nombre exact de buts (0,1,2,3,4,5,6+) -- marché
+# calculé par calculs.py depuis le début mais jamais branché ici avant le
+# 26/08quater. Moins de combinaisons que le score exact (7 contre ~56),
+# mais mêmes probabilités individuelles faibles pour les cases centrales.
+INCLURE_NOMBRE_EXACT_BUTS_DANS_ANALYSE = False
+
 
 def charge_json_ou_vide(chemin, defaut):
     try:
@@ -60,6 +85,10 @@ def normalise_panier(panier_brut, matchs_du_jour, matchs_demain):
                 "score": item.get("score"), "competition": item["competition"],
                 "url_match": item["url_match"], "match_id": match_id,
                 "source": item.get("source", "manuel"),
+                # CORRECTIF (26/08ter) : cotes saisies à la main (ex. Betpawa),
+                # voir GABARIT_COTES_MANUELLES.json. Absent -> comportement
+                # identique à avant (scraping matchendirect/Bet365).
+                "cotes_manuelles": item.get("cotes_manuelles"),
             })
             continue
 
@@ -67,6 +96,10 @@ def normalise_panier(panier_brut, matchs_du_jour, matchs_demain):
         if match_id and match_id in index_jour_demain:
             m = dict(index_jour_demain[match_id])
             m["source"] = item.get("source", "liste")
+            # Permet aussi de fournir des cotes manuelles pour un match déjà
+            # listé aujourd'hui/demain, si on préfère les cotes Betpawa aux
+            # cotes Bet365 scrapées pour ce match précis.
+            m["cotes_manuelles"] = item.get("cotes_manuelles")
             valides.append(m)
             continue
 
@@ -160,6 +193,107 @@ def construit_candidats(marches_probas, cotes_marches):
                 "probabilite_modele": probas["moins"], "cote_observee": cote_moins,
             })
 
+    # --- Marchés ajoutés (26/08ter) : voir commentaire sur
+    # INCLURE_SCORE_EXACT_DANS_ANALYSE en tête de fichier pour le contexte. ---
+
+    p_handicap = marches_probas.get("handicap", {})
+    for ligne_str, probas in p_handicap.items():
+        ligne = float(ligne_str)
+        cle_cotes = f"handicap_{ligne_str}"
+        cote_domicile = cote_marche(cotes_marches, cle_cotes, "domicile")
+        if cote_domicile is not None:
+            candidats.append({
+                "marche": f"Handicap {ligne_str} - Domicile", "condition": lambda x, y, l=ligne: (x + l) > y,
+                "probabilite_modele": probas["domicile"], "cote_observee": cote_domicile,
+            })
+        cote_exterieur = cote_marche(cotes_marches, cle_cotes, "exterieur")
+        if cote_exterieur is not None:
+            candidats.append({
+                "marche": f"Handicap {ligne_str} - Extérieur", "condition": lambda x, y, l=ligne: (x + l) < y,
+                "probabilite_modele": probas["exterieur"], "cote_observee": cote_exterieur,
+            })
+
+    for cle_probas, libelle, cond_plus in [
+        ("over_under_domicile", "Domicile", lambda x, y, l: x > l),
+        ("over_under_exterieur", "Extérieur", lambda x, y, l: y > l),
+    ]:
+        for ligne_str, probas in marches_probas.get(cle_probas, {}).items():
+            ligne = float(ligne_str)
+            cle_cotes = f"{cle_probas}_{ligne_str}"
+            cote_plus = cote_marche(cotes_marches, cle_cotes, "plus")
+            if cote_plus is not None:
+                candidats.append({
+                    "marche": f"Plus de {ligne_str} buts - {libelle}",
+                    "condition": lambda x, y, l=ligne, f=cond_plus: f(x, y, l),
+                    "probabilite_modele": probas["plus"], "cote_observee": cote_plus,
+                })
+            cote_moins = cote_marche(cotes_marches, cle_cotes, "moins")
+            if cote_moins is not None:
+                candidats.append({
+                    "marche": f"Moins de {ligne_str} buts - {libelle}",
+                    "condition": lambda x, y, l=ligne, f=cond_plus: not f(x, y, l),
+                    "probabilite_modele": probas["moins"], "cote_observee": cote_moins,
+                })
+
+    p_pi = marches_probas.get("pair_impair", {})
+    if p_pi:
+        for cle_marche, condition in [
+            ("pair", lambda x, y: (x + y) % 2 == 0),
+            ("impair", lambda x, y: (x + y) % 2 == 1),
+        ]:
+            cote = cote_marche(cotes_marches, "pair_impair", cle_marche)
+            if cote is not None:
+                candidats.append({
+                    "marche": f"Total buts - {cle_marche}", "condition": condition,
+                    "probabilite_modele": p_pi[cle_marche], "cote_observee": cote,
+                })
+
+    for cle_probas, condition_oui, libelle in [
+        ("cages_inviolees_domicile", lambda x, y: y == 0, "Domicile"),
+        ("cages_inviolees_exterieur", lambda x, y: x == 0, "Extérieur"),
+    ]:
+        p_ci = marches_probas.get(cle_probas, {})
+        if p_ci:
+            cote_oui = cote_marche(cotes_marches, cle_probas, "oui")
+            if cote_oui is not None:
+                candidats.append({
+                    "marche": f"Cage inviolée - {libelle}", "condition": condition_oui,
+                    "probabilite_modele": p_ci["oui"], "cote_observee": cote_oui,
+                })
+            cote_non = cote_marche(cotes_marches, cle_probas, "non")
+            if cote_non is not None:
+                candidats.append({
+                    "marche": f"Encaisse au moins 1 but - {libelle}",
+                    "condition": lambda x, y, c=condition_oui: not c(x, y),
+                    "probabilite_modele": p_ci["non"], "cote_observee": cote_non,
+                })
+
+    if INCLURE_SCORE_EXACT_DANS_ANALYSE:
+        for score_str, proba in marches_probas.get("score_exact", {}).items():
+            x_cible, y_cible = (int(v) for v in score_str.split("-"))
+            cote = cote_marche(cotes_marches, "score_exact", score_str)
+            if cote is not None:
+                candidats.append({
+                    "marche": f"Score exact {score_str}",
+                    "condition": lambda x, y, xc=x_cible, yc=y_cible: x == xc and y == yc,
+                    "probabilite_modele": proba, "cote_observee": cote,
+                })
+
+    if INCLURE_NOMBRE_EXACT_BUTS_DANS_ANALYSE:
+        for n_str, proba in marches_probas.get("nombre_exact_buts", {}).items():
+            cote = cote_marche(cotes_marches, "nombre_exact_buts", n_str)
+            if cote is not None:
+                if n_str == "6+":
+                    condition = lambda x, y: (x + y) >= 6
+                else:
+                    n_cible = int(n_str)
+                    condition = lambda x, y, nc=n_cible: (x + y) == nc
+                candidats.append({
+                    "marche": f"Nombre exact de buts {n_str}",
+                    "condition": condition,
+                    "probabilite_modele": proba, "cote_observee": cote,
+                })
+
     return candidats
 
 
@@ -243,11 +377,24 @@ def construit_signaux(matchs_bruts):
         ratios_home = {"classement": ratio_classement_home, "h2h": ratio_h2h_home}
         ratios_away = {"classement": ratio_classement_away, "h2h": ratio_h2h_away}
 
+        cotes_manuelles = m.get("cotes_manuelles")
         cotes_marches = {}
-        try:
-            cotes_marches = recupere_cotes_marches(url_match + "?p=face-a-face")
-        except Exception as e:
-            signal["avertissement_cotes"] = f"erreur_technique: {e}"
+        if cotes_manuelles:
+            # CORRECTIF (26/08ter) : cotes saisies à la main (ex. Betpawa) --
+            # pas de scraping matchendirect pour ce match. Structure attendue
+            # identique à ce que recupere_cotes_marches renvoie (voir
+            # GABARIT_COTES_MANUELLES.json). Aucune vérification de fraîcheur
+            # ou de cohérence n'est faite ici -- responsabilité de la
+            # personne qui saisit les cotes, comme pour tout champ manuel du
+            # panier.
+            cotes_marches = cotes_manuelles
+            signal["source_cotes"] = "manuel"
+        else:
+            try:
+                cotes_marches = recupere_cotes_marches(url_match + "?p=face-a-face")
+            except Exception as e:
+                signal["avertissement_cotes"] = f"erreur_technique: {e}"
+            signal["source_cotes"] = "matchendirect_bet365"
 
         cote_1 = cote_marche(cotes_marches, "1x2", "1")
 
