@@ -2,7 +2,2155 @@
   "genere_le": null,
   "nb_matchs_du_jour_disponibles": 200,
   "nb_matchs_demain_disponibles": 200,
-  "nb_entrees_panier": 0,
-  "nb_matchs": 0,
-  "matchs": []
+  "nb_entrees_panier": 25,
+  "nb_matchs": 25,
+  "matchs": [
+    {
+      "domicile": "Valence",
+      "exterieur": "Real Betis",
+      "score": null,
+      "competition": "Espagne :\n                        LaLiga",
+      "url_match": "https://www.matchendirect.fr/live-score/valence-real-betis_72e6g9h1pn6n02wyh6hi1e49g.html",
+      "match_id": "72e6g9h1pn6n02wyh6hi1e49g",
+      "source": "manuel",
+      "traite": true,
+      "diagnostics_cotes_a_risque": {
+        "1x2": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "double_chance": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "btts": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_0.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 2
+        },
+        "over_under_1.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_2.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_3.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_4.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_5.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 1,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_6.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        }
+      },
+      "lambda": {
+        "lambda_home": 0.9983458602415847,
+        "lambda_away": 1.0397940387341076,
+        "audit": {
+          "lambda_home_base": 1.1,
+          "lambda_away_base": 1.3,
+          "modifier_defense_home": 0.7,
+          "modifier_defense_away": 1.037037037037037,
+          "ajustement_home": -0.1333333333333333,
+          "ajustement_away": 0.1333333333333333
+        }
+      },
+      "probabilite_victoire_domicile": 0.32308417347088936,
+      "confiance": "MOYENNE",
+      "nb_matchs_domicile_utilises": 10,
+      "nb_matchs_exterieur_utilises": 10,
+      "cote_1": null,
+      "marches": {
+        "1x2": {
+          "1": 0.32308417347088936,
+          "X": 0.332401096478458,
+          "2": 0.3445147300506527
+        },
+        "double_chance": {
+          "1X": 0.6554852699493474,
+          "12": 0.667598903521542,
+          "X2": 0.6769158265291106
+        },
+        "btts": {
+          "oui": 0.42149310043305294,
+          "non": 0.5785068995669471
+        },
+        "pair_impair": {
+          "pair": 0.535513950959195,
+          "impair": 0.46448604904080504
+        },
+        "cages_inviolees_domicile": {
+          "oui": 0.3537844226079594,
+          "non": 0.6462155773920406
+        },
+        "cages_inviolees_exterieur": {
+          "oui": 0.3687056845281209,
+          "non": 0.6312943154718791
+        },
+        "over_under": {
+          "0.5": {
+            "plus": 0.8560167924308668,
+            "moins": 0.14398320756913321,
+            "push": 0
+          },
+          "1.5": {
+            "plus": 0.6172388395157885,
+            "moins": 0.38276116048421155,
+            "push": 0
+          },
+          "2.5": {
+            "plus": 0.33276831574181687,
+            "moins": 0.6672316842581831,
+            "push": 0
+          },
+          "3.5": {
+            "plus": 0.14870414338037255,
+            "moins": 0.8512958566196275,
+            "push": 0
+          },
+          "4.5": {
+            "plus": 0.05491700996492292,
+            "moins": 0.9450829900350771,
+            "push": 0
+          },
+          "5.5": {
+            "plus": 0.01668675024000607,
+            "moins": 0.983313249759994,
+            "push": 0
+          },
+          "6.5": {
+            "plus": 0.004108658660045144,
+            "moins": 0.9958913413399549,
+            "push": 0
+          },
+          "7.5": {
+            "plus": 0.0008021893475074816,
+            "moins": 0.9991978106524926,
+            "push": 0
+          }
+        },
+        "over_under_domicile": {
+          "0.5": {
+            "plus": 0.6312943154718791,
+            "moins": 0.3687056845281209,
+            "push": 0
+          },
+          "1.5": {
+            "plus": 0.2631985216756899,
+            "moins": 0.7368014783243102,
+            "push": 0
+          },
+          "2.5": {
+            "plus": 0.07945506572130713,
+            "moins": 0.9205449342786929,
+            "push": 0
+          },
+          "3.5": {
+            "plus": 0.018308559521793808,
+            "moins": 0.9816914404782062,
+            "push": 0
+          },
+          "4.5": {
+            "plus": 0.003047219188663678,
+            "moins": 0.9969527808113364,
+            "push": 0
+          },
+          "5.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          },
+          "6.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          },
+          "7.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          }
+        },
+        "over_under_exterieur": {
+          "0.5": {
+            "plus": 0.6462155773920406,
+            "moins": 0.3537844226079594,
+            "push": 0
+          },
+          "1.5": {
+            "plus": 0.2783526437672962,
+            "moins": 0.7216473562327038,
+            "push": 0
+          },
+          "2.5": {
+            "plus": 0.08710180104017119,
+            "moins": 0.9128981989598288,
+            "push": 0
+          },
+          "3.5": {
+            "plus": 0.02081463898332489,
+            "moins": 0.9791853610166752,
+            "push": 0
+          },
+          "4.5": {
+            "plus": 0.003583389995497259,
+            "moins": 0.9964166100045028,
+            "push": 0
+          },
+          "5.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          },
+          "6.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          },
+          "7.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          }
+        },
+        "handicap": {
+          "-2.5": {
+            "domicile": 0.035427788203426624,
+            "exterieur": 0.9645722117965734
+          },
+          "-1.5": {
+            "domicile": 0.1260476295397338,
+            "exterieur": 0.8739523704602662
+          },
+          "-0.5": {
+            "domicile": 0.32308417347088936,
+            "exterieur": 0.6769158265291106
+          },
+          "0.5": {
+            "domicile": 0.6554852699493473,
+            "exterieur": 0.3445147300506527
+          },
+          "1.5": {
+            "domicile": 0.8612643258647935,
+            "exterieur": 0.1387356741352065
+          },
+          "2.5": {
+            "domicile": 0.9595648653028984,
+            "exterieur": 0.04043513469710158
+          }
+        },
+        "score_exact": {
+          "0-0": 0.14398320756913321,
+          "0-1": 0.12209227489855458,
+          "0-2": 0.07051527288428461,
+          "0-3": 0.024440453461596,
+          "0-4": 0.006353259453331477,
+          "0-5": 0.0013212162612210368,
+          "1-0": 0.11668567801652377,
+          "1-1": 0.1489496784168747,
+          "1-2": 0.07039863076783122,
+          "1-3": 0.024400025535811477,
+          "1-4": 0.006342750274274194,
+          "1-5": 0.0013190307848738865,
+          "2-0": 0.06500557247281231,
+          "2-1": 0.06759240674172826,
+          "2-2": 0.03514109079687008,
+          "2-3": 0.01217983224173317,
+          "2-4": 0.0031661292394339086,
+          "2-5": 0.0006584244618050264,
+          "3-0": 0.021632681390288833,
+          "3-1": 0.022493533151456593,
+          "3-2": 0.011694320840476296,
+          "3-3": 0.0040532283656570965,
+          "3-4": 0.0010536306730595598,
+          "3-5": 0.00021911177857494716,
+          "4-0": 0.005399224477980006,
+          "4-1": 0.005614081425990883,
+          "4-2": 0.0029187441998565996,
+          "4-3": 0.0010116309398668817,
+          "4-4": 0.00026297195516814155,
+          "4-5": 5.468733426761731e-05,
+          "5-0": 0.0010780586812212738,
+          "5-1": 0.001120958990139434,
+          "5-2": 0.0005827832378061945,
+          "5-3": 0.0002019915121816809,
+          "5-4": 5.250739256034993e-05,
+          "5-5": 1.0919374754744698e-05
+        },
+        "nombre_exact_buts": {
+          "0": 0.14398320756913321,
+          "1": 0.23877795291507836,
+          "2": 0.28447052377397164,
+          "3": 0.18406417236144432,
+          "4": 0.09378713341544963,
+          "5": 0.03823025972491685,
+          "6+": 0.01668675024000607
+        }
+      },
+      "verdict_global": "NO_GO",
+      "motif_no_go": "2 marché(s) évalués, aucun dans la fourchette 1.25-1.69 avec EV>=5%",
+      "LISTE_A_marches_passant_EV_et_cote": [],
+      "LISTE_B_liste_finale_apres_correlation": [],
+      "coefficients_empiriques": false
+    },
+    {
+      "domicile": "Sabah",
+      "exterieur": "H Be'er Sheva",
+      "score": null,
+      "competition": "Europe :\n                        Ligue des Champions Play-off",
+      "url_match": "https://www.matchendirect.fr/live-score/sabah-h-be-er-sheva_5ytx6y7p250pyo5ok0i6gt4wk.html",
+      "match_id": "5ytx6y7p250pyo5ok0i6gt4wk",
+      "source": "manuel",
+      "traite": false,
+      "raison_non_traite": "domicile: aucun_match_joue_saison_actuelle_ou_precedente"
+    },
+    {
+      "domicile": "Bodo/Glimt",
+      "exterieur": "NEC Nimègue",
+      "score": null,
+      "competition": "Europe :\n                        Ligue des Champions Play-off",
+      "url_match": "https://www.matchendirect.fr/live-score/bodo-glimt-nec-nimegue_8gbx1gz80q0e2d5ovr1192bys.html",
+      "match_id": "8gbx1gz80q0e2d5ovr1192bys",
+      "source": "manuel",
+      "traite": false,
+      "raison_non_traite": "domicile: aucun_match_joue_saison_actuelle_ou_precedente"
+    },
+    {
+      "domicile": "LASK",
+      "exterieur": "Celtic Glasgow",
+      "score": null,
+      "competition": "Europe :\n                        Ligue des Champions Play-off",
+      "url_match": "https://www.matchendirect.fr/live-score/lask-celtic-glasgow_33xds1ineigdgnfrzj2bp06j8.html",
+      "match_id": "33xds1ineigdgnfrzj2bp06j8",
+      "source": "manuel",
+      "traite": false,
+      "raison_non_traite": "domicile: aucun_match_joue_saison_actuelle_ou_precedente"
+    },
+    {
+      "domicile": "Cardiff",
+      "exterieur": "Norwich City",
+      "score": null,
+      "competition": "Angleterre :\n                        Coupe de la Ligue 2e Tour",
+      "url_match": "https://www.matchendirect.fr/live-score/cardiff-norwich-city_bnoyi0jzngl15do7zitt0yyac.html",
+      "match_id": "bnoyi0jzngl15do7zitt0yyac",
+      "source": "manuel",
+      "traite": false,
+      "raison_non_traite": "domicile: aucun_match_joue_saison_actuelle_ou_precedente"
+    },
+    {
+      "domicile": "Brann",
+      "exterieur": "Autriche Vienne",
+      "score": null,
+      "competition": "Europe :\n                        Ligue des Champions Féminine 3e Tour de Qualification",
+      "url_match": "https://www.matchendirect.fr/live-score/brann-autriche-vienne_2uils0d03ljssjhghizoss8ic.html",
+      "match_id": "2uils0d03ljssjhghizoss8ic",
+      "source": "manuel",
+      "traite": false,
+      "raison_non_traite": "domicile: aucun_match_joue_saison_actuelle_ou_precedente"
+    },
+    {
+      "domicile": "Lyon",
+      "exterieur": "Fenerbahce",
+      "score": null,
+      "competition": "Europe :\n                        Ligue des Champions Play-off - des équipes Françaises",
+      "url_match": "https://www.matchendirect.fr/live-score/lyon-fenerbahce_6zwixw3w0wq9qg9e7rcod10k4.html",
+      "match_id": "6zwixw3w0wq9qg9e7rcod10k4",
+      "source": "manuel",
+      "traite": false,
+      "raison_non_traite": "domicile: aucun_match_joue_saison_actuelle_ou_precedente"
+    },
+    {
+      "domicile": "NK Celje",
+      "exterieur": "S. Bratislava",
+      "score": null,
+      "competition": "Europe :\n                        Ligue des Champions Play-off",
+      "url_match": "https://www.matchendirect.fr/live-score/nk-celje-s-bratislava_46sqzj11n5h07a2d83x0hva50.html",
+      "match_id": "46sqzj11n5h07a2d83x0hva50",
+      "source": "manuel",
+      "traite": false,
+      "raison_non_traite": "domicile: aucun_match_joue_saison_actuelle_ou_precedente"
+    },
+    {
+      "domicile": "Doncaster",
+      "exterieur": "Middlesbrough",
+      "score": null,
+      "competition": "Angleterre :\n                        Coupe de la Ligue 2e Tour",
+      "url_match": "https://www.matchendirect.fr/live-score/doncaster-middlesbrough_blesnodjnbjxwsbns17xognbo.html",
+      "match_id": "blesnodjnbjxwsbns17xognbo",
+      "source": "manuel",
+      "traite": false,
+      "raison_non_traite": "domicile: aucun_match_joue_saison_actuelle_ou_precedente"
+    },
+    {
+      "domicile": "Barnsley",
+      "exterieur": "Crewe",
+      "score": null,
+      "competition": "Angleterre :\n                        Coupe de la Ligue 2e Tour",
+      "url_match": "https://www.matchendirect.fr/live-score/barnsley-crewe_blo16mnddstxd128kcnum7f2s.html",
+      "match_id": "blo16mnddstxd128kcnum7f2s",
+      "source": "manuel",
+      "traite": false,
+      "raison_non_traite": "domicile: aucun_match_joue_saison_actuelle_ou_precedente"
+    },
+    {
+      "domicile": "Southampton",
+      "exterieur": "West Ham",
+      "score": null,
+      "competition": "Angleterre :\n                        Coupe de la Ligue 2e Tour",
+      "url_match": "https://www.matchendirect.fr/live-score/southampton-west-ham_boplo1dwnkv7f2ii23zcinmz8.html",
+      "match_id": "boplo1dwnkv7f2ii23zcinmz8",
+      "source": "manuel",
+      "traite": false,
+      "raison_non_traite": "domicile: aucun_match_joue_saison_actuelle_ou_precedente"
+    },
+    {
+      "domicile": "Ipswich Town",
+      "exterieur": "Leicester",
+      "score": null,
+      "competition": "Angleterre :\n                        Coupe de la Ligue 2e Tour",
+      "url_match": "https://www.matchendirect.fr/live-score/ipswich-town-leicester_bnfvq6orywjchggjhzxoa1tlg.html",
+      "match_id": "bnfvq6orywjchggjhzxoa1tlg",
+      "source": "manuel",
+      "traite": false,
+      "raison_non_traite": "domicile: aucun_match_joue_saison_actuelle_ou_precedente"
+    },
+    {
+      "domicile": "Abha",
+      "exterieur": "Al Khaleej",
+      "score": null,
+      "competition": "Arabie Saoudite :\n                        Première Division",
+      "url_match": "https://www.matchendirect.fr/live-score/abha-al-khaleej_52eej74ce0i8lv64hem6x0f84.html",
+      "match_id": "52eej74ce0i8lv64hem6x0f84",
+      "source": "manuel",
+      "traite": true,
+      "diagnostics_cotes_a_risque": {
+        "1x2": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "double_chance": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "btts": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_0.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 2
+        },
+        "over_under_1.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_2.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_3.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_4.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_5.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 1,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_6.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_7.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        }
+      },
+      "lambda": {
+        "lambda_home": 1.1251538929373301,
+        "lambda_away": 2.70363016036726,
+        "audit": {
+          "lambda_home_base": 1.0,
+          "lambda_away_base": 1.8,
+          "modifier_defense_home": 1.3,
+          "modifier_defense_away": 1.3,
+          "ajustement_home": -0.14444444444444443,
+          "ajustement_away": 0.14444444444444443
+        }
+      },
+      "probabilite_victoire_domicile": 0.1342318270766294,
+      "confiance": "FAIBLE",
+      "nb_matchs_domicile_utilises": 1,
+      "nb_matchs_exterieur_utilises": 10,
+      "cote_1": null,
+      "marches": {
+        "1x2": {
+          "1": 0.1342318270766294,
+          "X": 0.18258583206561782,
+          "2": 0.6831823408577528
+        },
+        "double_chance": {
+          "1X": 0.31681765914224724,
+          "12": 0.8174141679343822,
+          "X2": 0.8657681729233706
+        },
+        "btts": {
+          "oui": 0.6341285426065273,
+          "non": 0.3658714573934727
+        },
+        "pair_impair": {
+          "pair": 0.5128492301139597,
+          "impair": 0.48715076988604034
+        },
+        "cages_inviolees_domicile": {
+          "oui": 0.07101132667876905,
+          "non": 0.9289886733212309
+        },
+        "cages_inviolees_exterieur": {
+          "oui": 0.32495519739498485,
+          "non": 0.6750448026050151
+        },
+        "over_under": {
+          "0.5": {
+            "plus": 0.9699049333197187,
+            "moins": 0.030095066680281248,
+            "push": 0
+          },
+          "1.5": {
+            "plus": 0.8955929621340755,
+            "moins": 0.10440703786592458,
+            "push": 0
+          },
+          "2.5": {
+            "plus": 0.719434743810611,
+            "moins": 0.280565256189389,
+            "push": 0
+          },
+          "3.5": {
+            "plus": 0.5035696201517185,
+            "moins": 0.4964303798482815,
+            "push": 0
+          },
+          "4.5": {
+            "plus": 0.2969443843692708,
+            "moins": 0.7030556156307292,
+            "push": 0
+          },
+          "5.5": {
+            "plus": 0.13871970281444346,
+            "moins": 0.8612802971855565,
+            "push": 0
+          },
+          "6.5": {
+            "plus": 0.05033376575123328,
+            "moins": 0.9496662342487667,
+            "push": 0
+          },
+          "7.5": {
+            "plus": 0.01421174967094389,
+            "moins": 0.9857882503290561,
+            "push": 0
+          }
+        },
+        "over_under_domicile": {
+          "0.5": {
+            "plus": 0.6750448026050151,
+            "moins": 0.32495519739498485,
+            "push": 0
+          },
+          "1.5": {
+            "plus": 0.3094201972258294,
+            "moins": 0.6905798027741705,
+            "push": 0
+          },
+          "2.5": {
+            "plus": 0.10372822317779641,
+            "moins": 0.8962717768222036,
+            "push": 0
+          },
+          "3.5": {
+            "plus": 0.026583181395760207,
+            "moins": 0.9734168186042398,
+            "push": 0
+          },
+          "4.5": {
+            "plus": 0.004883170375292452,
+            "moins": 0.9951168296247075,
+            "push": 0
+          },
+          "5.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          },
+          "6.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          },
+          "7.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          }
+        },
+        "over_under_exterieur": {
+          "0.5": {
+            "plus": 0.9289886733212309,
+            "moins": 0.07101132667876905,
+            "push": 0
+          },
+          "1.5": {
+            "plus": 0.7370003087848187,
+            "moins": 0.2629996912151813,
+            "push": 0
+          },
+          "2.5": {
+            "plus": 0.47746754238470457,
+            "moins": 0.5225324576152954,
+            "push": 0
+          },
+          "3.5": {
+            "plus": 0.24357400410373817,
+            "moins": 0.7564259958962618,
+            "push": 0
+          },
+          "4.5": {
+            "plus": 0.08548359800087944,
+            "moins": 0.9145164019991205,
+            "push": 0
+          },
+          "5.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          },
+          "6.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          },
+          "7.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          }
+        },
+        "handicap": {
+          "-2.5": {
+            "domicile": 0.01373688297853628,
+            "exterieur": 0.9862631170214637
+          },
+          "-1.5": {
+            "domicile": 0.04992829923484927,
+            "exterieur": 0.9500717007651507
+          },
+          "-0.5": {
+            "domicile": 0.1342318270766294,
+            "exterieur": 0.8657681729233706
+          },
+          "0.5": {
+            "domicile": 0.31681765914224724,
+            "exterieur": 0.6831823408577528
+          },
+          "1.5": {
+            "domicile": 0.529238183942549,
+            "exterieur": 0.47076181605745104
+          },
+          "2.5": {
+            "domicile": 0.7382045013620931,
+            "exterieur": 0.26179549863790685
+          }
+        },
+        "score_exact": {
+          "0-0": 0.030095066680281248,
+          "0-1": 0.05536804989336805,
+          "0-2": 0.08433652133601557,
+          "0-3": 0.07600492090150289,
+          "0-4": 0.051372299121407776,
+          "0-5": 0.027778339462409315,
+          "1-0": 0.01894392129227528,
+          "1-1": 0.07721523702312309,
+          "1-2": 0.09489156529801011,
+          "1-3": 0.0855172326347198,
+          "1-4": 0.05780174234559294,
+          "1-5": 0.0312549067854645,
+          "2-0": 0.014606459964325759,
+          "2-1": 0.03949046569574801,
+          "2-2": 0.053383807050986484,
+          "2-3": 0.04811002360609115,
+          "2-4": 0.03251792770935222,
+          "2-5": 0.01758329002152938,
+          "3-0": 0.005478171763631461,
+          "3-1": 0.014810950403826321,
+          "3-2": 0.020021666107744245,
+          "3-3": 0.018043726783233436,
+          "3-4": 0.012195890984144107,
+          "3-5": 0.006594635739456631,
+          "4-0": 0.0015409465715073244,
+          "4-1": 0.004166149626241727,
+          "4-2": 0.005631863891054961,
+          "4-3": 0.005075492358313167,
+          "4-4": 0.0034305635546622573,
+          "4-5": 0.0018549950186883192,
+          "5-0": 0.0003467604067479796,
+          "5-1": 0.0009375118941050562,
+          "5-2": 0.0012673427163027334,
+          "5-3": 0.001142141997105946,
+          "5-4": 0.0007719823876994327,
+          "5-5": 0.00041743097333130357
+        },
+        "nombre_exact_buts": {
+          "0": 0.030095066680281248,
+          "1": 0.07431197118564332,
+          "2": 0.17615821832346443,
+          "3": 0.2158651236588925,
+          "4": 0.2066252357824477,
+          "5": 0.15822468155482736,
+          "6+": 0.13871970281444346
+        }
+      },
+      "verdict_global": "NO_GO",
+      "motif_no_go": "2 marché(s) évalués, aucun dans la fourchette 1.25-1.69 avec EV>=5%",
+      "LISTE_A_marches_passant_EV_et_cote": [],
+      "LISTE_B_liste_finale_apres_correlation": [],
+      "coefficients_empiriques": false
+    },
+    {
+      "domicile": "Al Taawon",
+      "exterieur": "Al Fayha",
+      "score": null,
+      "competition": "Arabie Saoudite :\n                        Première Division",
+      "url_match": "https://www.matchendirect.fr/live-score/al-taawon-al-fayha_52qcyx0cn1s78zv76nuksowes.html",
+      "match_id": "52qcyx0cn1s78zv76nuksowes",
+      "source": "manuel",
+      "traite": true,
+      "diagnostics_cotes_a_risque": {
+        "1x2": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "double_chance": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "btts": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_0.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 2
+        },
+        "over_under_1.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_2.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_3.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_4.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_5.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 1,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_6.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_7.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        }
+      },
+      "lambda": {
+        "lambda_home": 2.869730579538859,
+        "lambda_away": 0.6375614640185613,
+        "audit": {
+          "lambda_home_base": 1.9,
+          "lambda_away_base": 1.0,
+          "modifier_defense_home": 0.7407407407407407,
+          "modifier_defense_away": 1.3,
+          "ajustement_home": 0.14999999999999997,
+          "ajustement_away": -0.14999999999999997
+        }
+      },
+      "probabilite_victoire_domicile": 0.8093799978943851,
+      "confiance": "MOYENNE",
+      "nb_matchs_domicile_utilises": 10,
+      "nb_matchs_exterieur_utilises": 10,
+      "cote_1": null,
+      "marches": {
+        "1x2": {
+          "1": 0.8093799978943851,
+          "X": 0.13634693656687707,
+          "2": 0.05427306553873793
+        },
+        "double_chance": {
+          "1X": 0.9457269344612622,
+          "12": 0.863653063433123,
+          "X2": 0.190620002105615
+        },
+        "btts": {
+          "oui": 0.4485092667381649,
+          "non": 0.5514907332618351
+        },
+        "pair_impair": {
+          "pair": 0.5076592147999258,
+          "impair": 0.4923407852000742
+        },
+        "cages_inviolees_domicile": {
+          "oui": 0.5286084562701256,
+          "non": 0.47139154372987435
+        },
+        "cages_inviolees_exterieur": {
+          "oui": 0.06107220845284189,
+          "non": 0.9389277915471581
+        },
+        "over_under": {
+          "0.5": {
+            "plus": 0.9618100685388676,
+            "moins": 0.038189931461132386,
+            "push": 0
+          },
+          "1.5": {
+            "plus": 0.8603964482627218,
+            "moins": 0.13960355173727823,
+            "push": 0
+          },
+          "2.5": {
+            "plus": 0.6559298796596633,
+            "moins": 0.34407012034033674,
+            "push": 0
+          },
+          "3.5": {
+            "plus": 0.4237940003219153,
+            "moins": 0.5762059996780848,
+            "push": 0
+          },
+          "4.5": {
+            "plus": 0.220251919665543,
+            "moins": 0.7797480803344571,
+            "push": 0
+          },
+          "5.5": {
+            "plus": 0.0774756156624996,
+            "moins": 0.9225243843375005,
+            "push": 0
+          },
+          "6.5": {
+            "plus": 0.019062252868820462,
+            "moins": 0.9809377471311795,
+            "push": 0
+          },
+          "7.5": {
+            "plus": 0.0034878362048218862,
+            "moins": 0.9965121637951782,
+            "push": 0
+          }
+        },
+        "over_under_domicile": {
+          "0.5": {
+            "plus": 0.9389277915471581,
+            "moins": 0.06107220845284189,
+            "push": 0
+          },
+          "1.5": {
+            "plus": 0.7636670073900662,
+            "moins": 0.23633299260993385,
+            "push": 0
+          },
+          "2.5": {
+            "plus": 0.512191391545283,
+            "moins": 0.487808608454717,
+            "push": 0
+          },
+          "3.5": {
+            "plus": 0.2716356366125694,
+            "moins": 0.7283643633874307,
+            "push": 0
+          },
+          "4.5": {
+            "plus": 0.09905308510895339,
+            "moins": 0.9009469148910466,
+            "push": 0
+          },
+          "5.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          },
+          "6.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          },
+          "7.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          }
+        },
+        "over_under_exterieur": {
+          "0.5": {
+            "plus": 0.4713915437298744,
+            "moins": 0.5286084562701256,
+            "push": 0
+          },
+          "1.5": {
+            "plus": 0.1343711624577015,
+            "moins": 0.8656288375422986,
+            "push": 0
+          },
+          "2.5": {
+            "plus": 0.02693555861371136,
+            "moins": 0.9730644413862887,
+            "push": 0
+          },
+          "3.5": {
+            "plus": 0.004103291655547187,
+            "moins": 0.9958967083444529,
+            "push": 0
+          },
+          "4.5": {
+            "plus": 0.00046404826836974385,
+            "moins": 0.9995359517316303,
+            "push": 0
+          },
+          "5.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          },
+          "6.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          },
+          "7.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          }
+        },
+        "handicap": {
+          "-2.5": {
+            "domicile": 0.37293727462916765,
+            "exterieur": 0.6270627253708323
+          },
+          "-1.5": {
+            "domicile": 0.607744721071061,
+            "exterieur": 0.39225527892893897
+          },
+          "-0.5": {
+            "domicile": 0.8093799978943851,
+            "exterieur": 0.19062000210561492
+          },
+          "0.5": {
+            "domicile": 0.9457269344612621,
+            "exterieur": 0.0542730655387379
+          },
+          "1.5": {
+            "domicile": 0.9859294019543918,
+            "exterieur": 0.014070598045608174
+          },
+          "2.5": {
+            "domicile": 0.9975191430123033,
+            "exterieur": 0.0024808569876967335
+          }
+        },
+        "score_exact": {
+          "0-0": 0.038189931461132386,
+          "0-1": 0.014675933348042082,
+          "0-2": 0.006561329593217107,
+          "0-3": 0.0013944169671199365,
+          "0-4": 0.00022225663075232718,
+          "0-5": 2.834045257805731e-05,
+          "1-0": 0.08673768692810375,
+          "1-1": 0.06497310192855145,
+          "1-2": 0.018829248176088394,
+          "1-3": 0.004001601011171914,
+          "1-4": 0.0006378166497752302,
+          "1-5": 8.132946340122194e-05,
+          "2-0": 0.13293213708128995,
+          "2-1": 0.0847524079326633,
+          "2-2": 0.02701743464032357,
+          "2-3": 0.005741758394436829,
+          "2-4": 0.0009151809719995021,
+          "2-5": 0.00011669682406998653,
+          "3-0": 0.12715980626187642,
+          "3-1": 0.08107219224463855,
+          "3-2": 0.025844252789343,
+          "3-3": 0.005492433214946437,
+          "3-4": 0.0008754409403863559,
+          "3-5": 0.00011162948152290224,
+          "4-0": 0.0912285961294859,
+          "4-1": 0.05816383730867308,
+          "4-2": 0.01854151063372751,
+          "4-3": 0.003940450888251679,
+          "4-4": 0.0006280699093017451,
+          "4-5": 8.008663417608513e-05,
+          "5-0": 0.052360298408237214,
+          "5-1": 0.03338290850960446,
+          "5-2": 0.010641828011290554,
+          "5-3": 0.00226160648223738,
+          "5-4": 0.0003604782849622831,
+          "5-5": 4.596541262149068e-05
+        },
+        "nombre_exact_buts": {
+          "0": 0.038189931461132386,
+          "1": 0.10141362027614584,
+          "2": 0.2044665686030585,
+          "3": 0.23213587933774804,
+          "4": 0.20354208065637225,
+          "5": 0.14277630400304342,
+          "6+": 0.0774756156624996
+        }
+      },
+      "verdict_global": "NO_GO",
+      "motif_no_go": "2 marché(s) évalués, aucun dans la fourchette 1.25-1.69 avec EV>=5%",
+      "LISTE_A_marches_passant_EV_et_cote": [],
+      "LISTE_B_liste_finale_apres_correlation": [],
+      "coefficients_empiriques": false
+    },
+    {
+      "domicile": "Al Shabab",
+      "exterieur": "Al Riyadh",
+      "score": null,
+      "competition": "Arabie Saoudite :\n                        Première Division",
+      "url_match": "https://www.matchendirect.fr/live-score/al-shabab-al-riyadh_53e31gd5wjftw26v579g5fjmc.html",
+      "match_id": "53e31gd5wjftw26v579g5fjmc",
+      "source": "manuel",
+      "traite": true,
+      "diagnostics_cotes_a_risque": {
+        "1x2": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "double_chance": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "btts": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_0.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 2
+        },
+        "over_under_1.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_2.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_3.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_4.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_5.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 1,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_7.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        }
+      },
+      "lambda": {
+        "lambda_home": 1.8124614186561216,
+        "lambda_away": 1.020098342429698,
+        "audit": {
+          "lambda_home_base": 1.2,
+          "lambda_away_base": 1.0,
+          "modifier_defense_home": 1.1851851851851851,
+          "modifier_defense_away": 1.3,
+          "ajustement_home": 0.14999999999999997,
+          "ajustement_away": -0.14999999999999997
+        }
+      },
+      "probabilite_victoire_domicile": 0.5440938904508823,
+      "confiance": "MOYENNE",
+      "nb_matchs_domicile_utilises": 10,
+      "nb_matchs_exterieur_utilises": 10,
+      "cote_1": null,
+      "marches": {
+        "1x2": {
+          "1": 0.5440938904508823,
+          "X": 0.2542645489228083,
+          "2": 0.2016415606263093
+        },
+        "double_chance": {
+          "1X": 0.7983584393736907,
+          "12": 0.7457354510771916,
+          "X2": 0.4559061095491176
+        },
+        "btts": {
+          "oui": 0.5447306279616663,
+          "non": 0.45526937203833373
+        },
+        "pair_impair": {
+          "pair": 0.5233457505949022,
+          "impair": 0.4766542494050978
+        },
+        "cages_inviolees_domicile": {
+          "oui": 0.3607970007986153,
+          "non": 0.6392029992013847
+        },
+        "cages_inviolees_exterieur": {
+          "oui": 0.16501849832277857,
+          "non": 0.8349815016772214
+        },
+        "over_under": {
+          "0.5": {
+            "plus": 0.9294538729169397,
+            "moins": 0.07054612708306021,
+            "push": 0
+          },
+          "1.5": {
+            "plus": 0.7828243176889875,
+            "moins": 0.2171756823110124,
+            "push": 0
+          },
+          "2.5": {
+            "plus": 0.532967210890623,
+            "moins": 0.4670327891093769,
+            "push": 0
+          },
+          "3.5": {
+            "plus": 0.3074490386525499,
+            "moins": 0.6925509613474501,
+            "push": 0
+          },
+          "4.5": {
+            "plus": 0.1477506136337531,
+            "moins": 0.8522493863662468,
+            "push": 0
+          },
+          "5.5": {
+            "plus": 0.05727954711034815,
+            "moins": 0.9427204528896518,
+            "push": 0
+          },
+          "6.5": {
+            "plus": 0.01759334576417439,
+            "moins": 0.9824066542358255,
+            "push": 0
+          },
+          "7.5": {
+            "plus": 0.00424215702894796,
+            "moins": 0.995757842971052,
+            "push": 0
+          }
+        },
+        "over_under_domicile": {
+          "0.5": {
+            "plus": 0.8349815016772214,
+            "moins": 0.16501849832277857,
+            "push": 0
+          },
+          "1.5": {
+            "plus": 0.5358918401026153,
+            "moins": 0.4641081598973847,
+            "push": 0
+          },
+          "2.5": {
+            "plus": 0.2648476039411703,
+            "moins": 0.7351523960588296,
+            "push": 0
+          },
+          "3.5": {
+            "plus": 0.10109519701059119,
+            "moins": 0.8989048029894088,
+            "push": 0
+          },
+          "4.5": {
+            "plus": 0.02689646706715321,
+            "moins": 0.9731035329328468,
+            "push": 0
+          },
+          "5.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          },
+          "6.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          },
+          "7.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          }
+        },
+        "over_under_exterieur": {
+          "0.5": {
+            "plus": 0.6392029992013847,
+            "moins": 0.3607970007986153,
+            "push": 0
+          },
+          "1.5": {
+            "plus": 0.27115457673311066,
+            "moins": 0.7288454232668893,
+            "push": 0
+          },
+          "2.5": {
+            "plus": 0.08343178388623496,
+            "moins": 0.916568216113765,
+            "push": 0
+          },
+          "3.5": {
+            "plus": 0.019599880613111114,
+            "moins": 0.9804001193868889,
+            "push": 0
+          },
+          "4.5": {
+            "plus": 0.0033211759323494984,
+            "moins": 0.9966788240676505,
+            "push": 0
+          },
+          "5.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          },
+          "6.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          },
+          "7.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          }
+        },
+        "handicap": {
+          "-2.5": {
+            "domicile": 0.13781322886510125,
+            "exterieur": 0.8621867711348987
+          },
+          "-1.5": {
+            "domicile": 0.31151963689697726,
+            "exterieur": 0.6884803631030227
+          },
+          "-0.5": {
+            "domicile": 0.5440938904508823,
+            "exterieur": 0.4559061095491177
+          },
+          "0.5": {
+            "domicile": 0.7983584393736907,
+            "exterieur": 0.20164156062630934
+          },
+          "1.5": {
+            "domicile": 0.9244446097046554,
+            "exterieur": 0.07555539029534464
+          },
+          "2.5": {
+            "domicile": 0.9794699050574833,
+            "exterieur": 0.020530094942516675
+          }
+        },
+        "score_exact": {
+          "0-0": 0.07054612708306021,
+          "0-1": 0.049726850173871795,
+          "0-2": 0.030977733376549476,
+          "0-3": 0.010533444823215752,
+          "0-4": 0.002686287401059268,
+          "0-5": 0.0005480554650220684,
+          "1-0": 0.09690270505408038,
+          "1-1": 0.1210874259310141,
+          "1-2": 0.05614594658241196,
+          "1-3": 0.0190914623476216,
+          "1-4": 0.0048687922738419485,
+          "1-5": 0.0009933293856361385,
+          "2-0": 0.09779194749080095,
+          "2-1": 0.0997574035383381,
+          "2-2": 0.050881180997274594,
+          "2-3": 0.01730126946539509,
+          "2-4": 0.0044122490758947705,
+          "2-5": 0.0009001855937414445,
+          "3-0": 0.05908137729410734,
+          "3-1": 0.06026881504618249,
+          "3-2": 0.030740059164406402,
+          "3-3": 0.01045262779993394,
+          "3-4": 0.002665677073186799,
+          "3-5": 0.0005438505527621405,
+          "4-0": 0.026770679226658836,
+          "4-1": 0.02730872550483183,
+          "4-2": 0.013928792810673284,
+          "4-3": 0.004736246152738171,
+          "4-4": 0.0012078592124368111,
+          "4-5": 0.0002464270360990463,
+          "5-0": 0.00970416464990761,
+          "5-1": 0.009899202274035622,
+          "5-2": 0.005049079915560017,
+          "5-3": 0.0017168526842192848,
+          "5-4": 0.0004378396443420176,
+          "5-5": 8.932789908866014e-05
+        },
+        "nombre_exact_buts": {
+          "0": 0.07054612708306021,
+          "1": 0.14662955522795218,
+          "2": 0.2498571067983645,
+          "3": 0.22551817223807316,
+          "4": 0.1596984250187968,
+          "5": 0.09047106652340495,
+          "6+": 0.05727954711034815
+        }
+      },
+      "verdict_global": "NO_GO",
+      "motif_no_go": "4 marché(s) évalués, aucun dans la fourchette 1.25-1.69 avec EV>=5%",
+      "LISTE_A_marches_passant_EV_et_cote": [],
+      "LISTE_B_liste_finale_apres_correlation": [],
+      "coefficients_empiriques": false
+    },
+    {
+      "domicile": "Al Ettifaq",
+      "exterieur": "Al Nassr",
+      "score": null,
+      "competition": "Arabie Saoudite :\n                        Première Division",
+      "url_match": "https://www.matchendirect.fr/live-score/al-ettifaq-al-nassr_5327u81detyy2nje3s4vi63o4.html",
+      "match_id": "5327u81detyy2nje3s4vi63o4",
+      "source": "manuel",
+      "traite": true,
+      "diagnostics_cotes_a_risque": {
+        "1x2": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "double_chance": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 1,
+          "groupes_incomplets_ecartes": 1
+        },
+        "btts": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_0.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 3
+        },
+        "over_under_1.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 2
+        },
+        "over_under_2.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_3.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_4.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_5.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_7.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 1,
+          "groupes_incomplets_ecartes": 1
+        }
+      },
+      "lambda": {
+        "lambda_home": 1.020098342429698,
+        "lambda_away": 3.580170703518265,
+        "audit": {
+          "lambda_home_base": 1.6,
+          "lambda_away_base": 2.6,
+          "modifier_defense_home": 1.1851851851851851,
+          "modifier_defense_away": 0.7407407407407407,
+          "ajustement_home": -0.14999999999999997,
+          "ajustement_away": 0.14999999999999997
+        }
+      },
+      "probabilite_victoire_domicile": 0.07193040875437855,
+      "confiance": "MOYENNE",
+      "nb_matchs_domicile_utilises": 10,
+      "nb_matchs_exterieur_utilises": 10,
+      "cote_1": null,
+      "marches": {
+        "1x2": {
+          "1": 0.07193040875437855,
+          "X": 0.12378126367870412,
+          "2": 0.8042883275669174
+        },
+        "double_chance": {
+          "1X": 0.19571167243308268,
+          "12": 0.8762187363212959,
+          "X2": 0.9280695912456215
+        },
+        "btts": {
+          "oui": 0.6225024023054091,
+          "non": 0.3774975976945909
+        },
+        "pair_impair": {
+          "pair": 0.5046732511511051,
+          "impair": 0.49532674884889494
+        },
+        "cages_inviolees_domicile": {
+          "oui": 0.032911770667448464,
+          "non": 0.9670882293325516
+        },
+        "cages_inviolees_exterieur": {
+          "oui": 0.3607970007986153,
+          "non": 0.6392029992013847
+        },
+        "over_under": {
+          "0.5": {
+            "plus": 0.983788826228527,
+            "moins": 0.01621117377147295,
+            "push": 0
+          },
+          "1.5": {
+            "plus": 0.9378364892185377,
+            "moins": 0.06216351078146227,
+            "push": 0
+          },
+          "2.5": {
+            "plus": 0.8078532141848108,
+            "moins": 0.19214678581518918,
+            "push": 0
+          },
+          "3.5": {
+            "plus": 0.6151838728559559,
+            "moins": 0.3848161271440441,
+            "push": 0
+          },
+          "4.5": {
+            "plus": 0.39360117110137743,
+            "moins": 0.6063988288986226,
+            "push": 0
+          },
+          "5.5": {
+            "plus": 0.18973316230155607,
+            "moins": 0.8102668376984439,
+            "push": 0
+          },
+          "6.5": {
+            "plus": 0.06817374119856266,
+            "moins": 0.9318262588014373,
+            "push": 0
+          },
+          "7.5": {
+            "plus": 0.018711013087535786,
+            "moins": 0.9812889869124642,
+            "push": 0
+          }
+        },
+        "over_under_domicile": {
+          "0.5": {
+            "plus": 0.6392029992013847,
+            "moins": 0.3607970007986153,
+            "push": 0
+          },
+          "1.5": {
+            "plus": 0.2711545767331107,
+            "moins": 0.7288454232668893,
+            "push": 0
+          },
+          "2.5": {
+            "plus": 0.08343178388623496,
+            "moins": 0.916568216113765,
+            "push": 0
+          },
+          "3.5": {
+            "plus": 0.019599880613111114,
+            "moins": 0.9804001193868889,
+            "push": 0
+          },
+          "4.5": {
+            "plus": 0.0033211759323494984,
+            "moins": 0.9966788240676505,
+            "push": 0
+          },
+          "5.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          },
+          "6.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          },
+          "7.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          }
+        },
+        "over_under_exterieur": {
+          "0.5": {
+            "plus": 0.9670882293325516,
+            "moins": 0.032911770667448464,
+            "push": 0
+          },
+          "1.5": {
+            "plus": 0.8492584721880407,
+            "moins": 0.15074152781195924,
+            "push": 0
+          },
+          "2.5": {
+            "plus": 0.638333149922316,
+            "moins": 0.3616668500776839,
+            "push": 0
+          },
+          "3.5": {
+            "plus": 0.3866169301203506,
+            "moins": 0.6133830698796494,
+            "push": 0
+          },
+          "4.5": {
+            "plus": 0.16132017118651035,
+            "moins": 0.8386798288134897,
+            "push": 0
+          },
+          "5.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          },
+          "6.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          },
+          "7.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          }
+        },
+        "handicap": {
+          "-2.5": {
+            "domicile": 0.005755857014176162,
+            "exterieur": 0.9942441429858239
+          },
+          "-1.5": {
+            "domicile": 0.023725029063996046,
+            "exterieur": 0.9762749709360039
+          },
+          "-0.5": {
+            "domicile": 0.07193040875437855,
+            "exterieur": 0.9280695912456215
+          },
+          "0.5": {
+            "domicile": 0.19571167243308268,
+            "exterieur": 0.8042883275669173
+          },
+          "1.5": {
+            "domicile": 0.37577839804636926,
+            "exterieur": 0.6242216019536307
+          },
+          "2.5": {
+            "domicile": 0.5971140896897057,
+            "exterieur": 0.4028859103102943
+          }
+        },
+        "score_exact": {
+          "0-0": 0.01621117377147295,
+          "0-1": 0.038175917358883,
+          "0-2": 0.07610122366595487,
+          "0-3": 0.09081845715691417,
+          "0-4": 0.0812863949129782,
+          "0-5": 0.05820383393241214,
+          "1-0": 0.007776419651106317,
+          "1-1": 0.04770376186054273,
+          "1-2": 0.07763073211851226,
+          "1-3": 0.0926437576077907,
+          "1-4": 0.0829201167128149,
+          "1-5": 0.05937363451750704,
+          "2-0": 0.00617828950722931,
+          "2-1": 0.022119331091636673,
+          "2-2": 0.03959549057784914,
+          "2-3": 0.047252871786083006,
+          "2-4": 0.042293336806409794,
+          "2-5": 0.03028347307766782,
+          "3-0": 0.0021008209617918053,
+          "3-1": 0.007521297660744085,
+          "3-2": 0.013463764768718214,
+          "3-3": 0.01606752539467544,
+          "3-4": 0.01438112092401319,
+          "3-5": 0.01029737356318111,
+          "4-0": 0.0005357609952163462,
+          "4-1": 0.0019181158191613522,
+          "4-2": 0.003433591030858205,
+          "4-3": 0.004097614005513875,
+          "4-4": 0.0036675394042167265,
+          "4-5": 0.0026260834257951114,
+          "5-0": 0.00010930578063173604,
+          "5-1": 0.00039133335354293554,
+          "5-2": 0.0007005201038319867,
+          "5-3": 0.0008359938509882839,
+          "5-4": 0.000748250173407417,
+          "5-5": 0.0005357726699471392
+        },
+        "nombre_exact_buts": {
+          "0": 0.01621117377147295,
+          "1": 0.04595233700998932,
+          "2": 0.12998327503372692,
+          "3": 0.1926693413288549,
+          "4": 0.22158270175457848,
+          "5": 0.20386800879982137,
+          "6+": 0.18973316230155607
+        }
+      },
+      "verdict_global": "NO_GO",
+      "motif_no_go": "7 marché(s) évalués, aucun dans la fourchette 1.25-1.69 avec EV>=5%",
+      "LISTE_A_marches_passant_EV_et_cote": [],
+      "LISTE_B_liste_finale_apres_correlation": [],
+      "coefficients_empiriques": false
+    },
+    {
+      "domicile": "Blackpool",
+      "exterieur": "A. Villa U21",
+      "score": null,
+      "competition": "Angleterre :\n                        Trophée EFL  Groupe Nord B",
+      "url_match": "https://www.matchendirect.fr/live-score/blackpool-a-villa-u21_dbxc1if5s5gmzj59ll0uowlqs.html",
+      "match_id": "dbxc1if5s5gmzj59ll0uowlqs",
+      "source": "manuel",
+      "traite": false,
+      "raison_non_traite": "domicile: aucun_match_joue_saison_actuelle_ou_precedente"
+    },
+    {
+      "domicile": "Bristol Rovers",
+      "exterieur": "Chelsea U21",
+      "score": null,
+      "competition": "Angleterre :\n                        Trophée EFL  Groupe Nord B",
+      "url_match": "https://www.matchendirect.fr/live-score/bristol-rovers-chelsea-u21_ch53ym97egjeqb6ksrn12htlg.html",
+      "match_id": "ch53ym97egjeqb6ksrn12htlg",
+      "source": "manuel",
+      "traite": false,
+      "raison_non_traite": "domicile: aucun_match_joue_saison_actuelle_ou_precedente"
+    },
+    {
+      "domicile": "AEK",
+      "exterieur": "Levski Sofia",
+      "score": null,
+      "competition": "Europe :\n                        Ligue des Champions Play-off",
+      "url_match": "https://www.matchendirect.fr/live-score/aek-levski-sofia_1zu5g4u8kllciorz30n3vjjtg.html",
+      "match_id": "1zu5g4u8kllciorz30n3vjjtg",
+      "source": "manuel",
+      "traite": false,
+      "raison_non_traite": "domicile: aucun_match_joue_saison_actuelle_ou_precedente"
+    },
+    {
+      "domicile": "Rapid Wien",
+      "exterieur": "Hearts",
+      "score": null,
+      "competition": "Europe :\n                        Ligue Conférence Play-off",
+      "url_match": "https://www.matchendirect.fr/live-score/rapid-wien-hearts_c5tx8vy32btv8mh0st3s51rf8.html",
+      "match_id": "c5tx8vy32btv8mh0st3s51rf8",
+      "source": "manuel",
+      "traite": false,
+      "raison_non_traite": "domicile: aucun_match_joue_saison_actuelle_ou_precedente"
+    },
+    {
+      "domicile": "Viking",
+      "exterieur": "D. Zagreb",
+      "score": null,
+      "competition": "Europe :\n                        Ligue des Champions Play-off",
+      "url_match": "https://www.matchendirect.fr/live-score/viking-d-zagreb_2w3hw8qbrw34hrc1jol3r6ej8.html",
+      "match_id": "2w3hw8qbrw34hrc1jol3r6ej8",
+      "source": "manuel",
+      "traite": false,
+      "raison_non_traite": "domicile: aucun_match_joue_saison_actuelle_ou_precedente"
+    },
+    {
+      "domicile": "Real Madrid",
+      "exterieur": "Real Sociedad",
+      "score": null,
+      "competition": "Espagne :\n                        LaLiga",
+      "url_match": "https://www.matchendirect.fr/live-score/real-madrid-real-sociedad_71l2f5qull2yzqxy409ojb2tw.html",
+      "match_id": "71l2f5qull2yzqxy409ojb2tw",
+      "source": "manuel",
+      "traite": true,
+      "diagnostics_cotes_a_risque": {
+        "1x2": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "double_chance": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "btts": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_0.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 2
+        },
+        "over_under_1.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_2.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_3.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_4.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_5.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        },
+        "over_under_7.5": {
+          "trouve": true,
+          "separateurs_detectes": true,
+          "groupes_valides": 0,
+          "groupes_incomplets_ecartes": 1
+        }
+      },
+      "lambda": {
+        "lambda_home": 2.5732476931537525,
+        "lambda_away": 0.5422460251477864,
+        "audit": {
+          "lambda_home_base": 2.3,
+          "lambda_away_base": 0.9,
+          "modifier_defense_home": 0.7,
+          "modifier_defense_away": 0.9629629629629629,
+          "ajustement_home": 0.14999999999999997,
+          "ajustement_away": -0.14999999999999997
+        }
+      },
+      "probabilite_victoire_domicile": 0.7954576437803953,
+      "confiance": "MOYENNE",
+      "nb_matchs_domicile_utilises": 10,
+      "nb_matchs_exterieur_utilises": 10,
+      "cote_1": null,
+      "marches": {
+        "1x2": {
+          "1": 0.7954576437803953,
+          "X": 0.15098661073503658,
+          "2": 0.0535557454845681
+        },
+        "double_chance": {
+          "1X": 0.9464442545154319,
+          "12": 0.8490133892649634,
+          "X2": 0.20454235621960468
+        },
+        "btts": {
+          "oui": 0.39153365274336155,
+          "non": 0.6084663472566385
+        },
+        "pair_impair": {
+          "pair": 0.51007300623298,
+          "impair": 0.48992699376702
+        },
+        "cages_inviolees_domicile": {
+          "oui": 0.581453781416699,
+          "non": 0.418546218583301
+        },
+        "cages_inviolees_exterieur": {
+          "oui": 0.08005762385475204,
+          "non": 0.919942376145248
+        },
+        "over_under": {
+          "0.5": {
+            "plus": 0.9469549419851874,
+            "moins": 0.05304505801481261,
+            "push": 0
+          },
+          "1.5": {
+            "plus": 0.8149198069807215,
+            "moins": 0.18508019301927847,
+            "push": 0
+          },
+          "2.5": {
+            "plus": 0.5825113299955748,
+            "moins": 0.4174886700044252,
+            "push": 0
+          },
+          "3.5": {
+            "plus": 0.34790091670021095,
+            "moins": 0.652099083299789,
+            "push": 0
+          },
+          "4.5": {
+            "plus": 0.1651690994827525,
+            "moins": 0.8348309005172475,
+            "push": 0
+          },
+          "5.5": {
+            "plus": 0.051309133747789136,
+            "moins": 0.9486908662522109,
+            "push": 0
+          },
+          "6.5": {
+            "plus": 0.010959570760782016,
+            "moins": 0.989040429239218,
+            "push": 0
+          },
+          "7.5": {
+            "plus": 0.0017289726715392108,
+            "moins": 0.9982710273284607,
+            "push": 0
+          }
+        },
+        "over_under_domicile": {
+          "0.5": {
+            "plus": 0.919942376145248,
+            "moins": 0.08005762385475204,
+            "push": 0
+          },
+          "1.5": {
+            "plus": 0.7139342802416365,
+            "moins": 0.28606571975836353,
+            "push": 0
+          },
+          "2.5": {
+            "plus": 0.4488793514641538,
+            "moins": 0.5511206485358462,
+            "push": 0
+          },
+          "3.5": {
+            "plus": 0.22152869011892407,
+            "moins": 0.7784713098810759,
+            "push": 0
+          },
+          "4.5": {
+            "plus": 0.0752712989080259,
+            "moins": 0.9247287010919741,
+            "push": 0
+          },
+          "5.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          },
+          "6.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          },
+          "7.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          }
+        },
+        "over_under_exterieur": {
+          "0.5": {
+            "plus": 0.418546218583301,
+            "moins": 0.581453781416699,
+            "push": 0
+          },
+          "1.5": {
+            "plus": 0.1032552168029461,
+            "moins": 0.8967447831970539,
+            "push": 0
+          },
+          "2.5": {
+            "plus": 0.017772570562815556,
+            "moins": 0.9822274294371844,
+            "push": 0
+          },
+          "3.5": {
+            "plus": 0.002321695515207171,
+            "moins": 0.9976783044847928,
+            "push": 0
+          },
+          "4.5": {
+            "plus": 0.0002271516203019805,
+            "moins": 0.999772848379698,
+            "push": 0
+          },
+          "5.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          },
+          "6.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          },
+          "7.5": {
+            "plus": 0,
+            "moins": 1.0,
+            "push": 0
+          }
+        },
+        "handicap": {
+          "-2.5": {
+            "domicile": 0.337282988755983,
+            "exterieur": 0.662717011244017
+          },
+          "-1.5": {
+            "domicile": 0.5767472734147325,
+            "exterieur": 0.42325272658526747
+          },
+          "-0.5": {
+            "domicile": 0.7954576437803953,
+            "exterieur": 0.2045423562196047
+          },
+          "0.5": {
+            "domicile": 0.9464442545154319,
+            "exterieur": 0.053555745484568096
+          },
+          "1.5": {
+            "domicile": 0.9874053193606631,
+            "exterieur": 0.012594680639336886
+          },
+          "2.5": {
+            "domicile": 0.9980386745020534,
+            "exterieur": 0.0019613254979465866
+          }
+        },
+        "score_exact": {
+          "0-0": 0.05304505801481261,
+          "0-1": 0.018746198532088296,
+          "0-2": 0.006843537538801204,
+          "0-3": 0.0012369603427882059,
+          "0-4": 0.00016768420728558703,
+          "0-5": 1.8185218976133412e-05,
+          "1-0": 0.11328893647237756,
+          "1-1": 0.0714477488255444,
+          "1-2": 0.017610117184731308,
+          "1-3": 0.0031830053486024256,
+          "1-4": 0.00043149299957595245,
+          "1-5": 4.679507277983114e-05,
+          "2-0": 0.15411719062080112,
+          "2-1": 0.08356943402107311,
+          "2-2": 0.022657596710888545,
+          "2-3": 0.004095330585293624,
+          "2-4": 0.0005551691828854065,
+          "2-5": 6.020765654083122e-05,
+          "3-0": 0.1321939017467712,
+          "3-1": 0.0716816177709637,
+          "3-2": 0.019434536156233997,
+          "3-3": 0.0035127666604362747,
+          "3-4": 0.0004761959397233085,
+          "3-5": 5.1643071101295783e-05,
+          "4-0": 0.08504191317971821,
+          "4-1": 0.04611363939266535,
+          "4-2": 0.012502468832885584,
+          "4-3": 0.002259804676388764,
+          "4-4": 0.0003063425258455468,
+          "4-5": 3.3222603394696155e-05,
+          "5-0": 0.04376678138221831,
+          "5-1": 0.02373236323802002,
+          "5-2": 0.006434389816589902,
+          "5-3": 0.0011630074340990898,
+          "5-4": 0.0001576590395893894,
+          "5-5": 1.709799750919278e-05
+        },
+        "nombre_exact_buts": {
+          "0": 0.05304505801481261,
+          "1": 0.13203513500446584,
+          "2": 0.23240847698514672,
+          "3": 0.23461041329536383,
+          "4": 0.18273181721745846,
+          "5": 0.11385996573496336,
+          "6+": 0.051309133747789136
+        }
+      },
+      "verdict_global": "NO_GO",
+      "motif_no_go": "2 marché(s) évalués, aucun dans la fourchette 1.25-1.69 avec EV>=5%",
+      "LISTE_A_marches_passant_EV_et_cote": [],
+      "LISTE_B_liste_finale_apres_correlation": [],
+      "coefficients_empiriques": false
+    },
+    {
+      "domicile": "Al Ahli",
+      "exterieur": "Auckland",
+      "score": null,
+      "competition": "Monde :\n                        Championnat du Monde des Clubs 1er tour",
+      "url_match": "https://www.matchendirect.fr/live-score/al-ahli-auckland_6y7uyozot3y9leb81w55e21hw.html",
+      "match_id": "6y7uyozot3y9leb81w55e21hw",
+      "source": "manuel",
+      "traite": false,
+      "raison_non_traite": "domicile: aucun_match_joue_saison_actuelle_ou_precedente"
+    },
+    {
+      "domicile": "Tottenham",
+      "exterieur": "Charlton",
+      "score": null,
+      "competition": "Angleterre :\n                        Coupe de la Ligue 2e Tour",
+      "url_match": "https://www.matchendirect.fr/live-score/tottenham-charlton_1ezeagdpksz0khz2rqv2u4h78.html",
+      "match_id": "1ezeagdpksz0khz2rqv2u4h78",
+      "source": "manuel",
+      "traite": false,
+      "raison_non_traite": "domicile: aucun_match_joue_saison_actuelle_ou_precedente"
+    },
+    {
+      "domicile": "Newcastle",
+      "exterieur": "West Bromwich",
+      "score": null,
+      "competition": "Angleterre :\n                        Coupe de la Ligue 2e Tour",
+      "url_match": "https://www.matchendirect.fr/live-score/newcastle-west-bromwich_bknajtbqppwmefadqwamlnnys.html",
+      "match_id": "bknajtbqppwmefadqwamlnnys",
+      "source": "manuel",
+      "traite": false,
+      "raison_non_traite": "domicile: aucun_match_joue_saison_actuelle_ou_precedente"
+    }
+  ]
 }
