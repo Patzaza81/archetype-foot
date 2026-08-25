@@ -145,8 +145,27 @@ document.getElementById("ajouter-btn").addEventListener("click", () => {
   const url = document.getElementById("bp-url").value.trim();
   const brut = document.getElementById("brut-betpawa").value;
 
-  if (!domicile || !exterieur || !competition) {
-    afficheResultat("Équipe domicile, extérieur et compétition sont obligatoires.", false);
+  // CORRECTIF (26/08septies) : signale précisément LE(S) champ(s) vide(s)
+  // au lieu d'un message générique -- deux confusions de suite (placeholder
+  // pris pour une valeur remplie) montrent que "les 3 sont obligatoires"
+  // ne suffit pas à localiser le problème quand 2 champs sur 3 sont déjà
+  // corrects. Le champ fautif est aussi entouré en rouge, pas seulement
+  // nommé dans le texte.
+  const champsRequis = [
+    { id: "bp-domicile", valeur: domicile, nom: "Équipe domicile" },
+    { id: "bp-exterieur", valeur: exterieur, nom: "Équipe extérieur" },
+    { id: "bp-competition", valeur: competition, nom: "Compétition" },
+  ];
+  const manquants = champsRequis.filter((c) => !c.valeur);
+  champsRequis.forEach((c) => {
+    document.getElementById(c.id).style.borderColor = manquants.includes(c) ? "#C84E50" : "";
+  });
+  if (manquants.length > 0) {
+    afficheResultat(
+      "Champ manquant : " + manquants.map((c) => c.nom).join(", ") + ".",
+      false
+    );
+    document.getElementById(manquants[0].id).focus();
     return;
   }
   if (!brut.trim()) {
@@ -215,6 +234,9 @@ document.getElementById("ajouter-btn").addEventListener("click", () => {
   document.getElementById("bp-exterieur").value = "";
   document.getElementById("bp-competition").value = "";
   document.getElementById("bp-url").value = "";
+  document.getElementById("bp-domicile").style.borderColor = "";
+  document.getElementById("bp-exterieur").style.borderColor = "";
+  document.getElementById("bp-competition").style.borderColor = "";
   document.getElementById("detecte-domicile").classList.remove("visible");
   document.getElementById("detecte-exterieur").classList.remove("visible");
 });
