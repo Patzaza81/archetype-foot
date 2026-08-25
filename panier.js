@@ -32,8 +32,11 @@ function rafraichit() {
       div.className = "item-panier";
 
       const texte = document.createElement("span");
-      const tagTexte = item.source === "manuel" ? "manuel" : "liste";
-      texte.innerHTML = `${item.domicile} — ${item.exterieur}<span class="tag">${item.competition || "?"} · ${tagTexte}</span>`;
+      const tagTexte = item.source === "betpawa" ? "betpawa"
+        : item.source === "manuel" ? "manuel" : "liste";
+      const nbMarches = item.cotes_manuelles ? Object.keys(item.cotes_manuelles).length : 0;
+      const suffixeCotes = nbMarches > 0 ? ` · ${nbMarches} marché(s) fournis` : "";
+      texte.innerHTML = `${item.domicile} — ${item.exterieur}<span class="tag">${item.competition || "?"} · ${tagTexte}${suffixeCotes}</span>`;
 
       const retirer = document.createElement("button");
       retirer.textContent = "✕";
@@ -62,6 +65,11 @@ function copierPanier() {
     exterieur: item.exterieur,
     competition: item.competition,
     url_match: item.url_match,
+    // CORRECTIF (26/08quinquies) : sans ces deux champs, un match ajouté
+    // depuis betpawa.html perdait ses cotes au moment du copier-coller --
+    // le JSON copié ne contenait plus que les 4 champs historiques.
+    source: item.source,
+    cotes_manuelles: item.cotes_manuelles,
   }));
   const json = JSON.stringify(items, null, 2);
   const bouton = document.getElementById("tout-copier-btn");
