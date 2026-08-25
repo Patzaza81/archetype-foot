@@ -1,35 +1,49 @@
 # Archetype Foot — Document de transition
-Dernière mise à jour : 25/08/2026, dans la continuité d'une session longue.
+Dernière mise à jour : 26/08/2026, dans la continuité d'une session longue.
 Objectif de ce document : permettre de reprendre le projet dans une nouvelle
 fenêtre de conversation sans perdre l'historique de décisions, ni répéter
 les erreurs déjà identifiées et corrigées.
 
 ---
 
-## ⚠ BUG OUVERT, NON RÉSOLU — À TRAITER EN PRIORITÉ
+## ✅ BUG RÉSOLU (26/08/2026) — cote invraisemblable sur ligne over/under haute
 
-**Cote invraisemblable observée sur une ligne over/under haute (25/08/2026).**
-Match Gil Vicente-Casa Pia : lambda_home=1.96, lambda_away=0.60 → modèle
-donne 99.3% de probabilité sur "Moins de 6.5 buts", cote scrapée = 1.61.
-Une probabilité aussi extrême devrait correspondre à une cote proche de
-1.00-1.05 (cf. cotes réelles observées sur des lignes similaires : 1.03-1.06
-sur "5.5 Plus/Moins" plus tôt dans le projet). Cote de 1.61 fortement
-suspecte d'une mauvaise association ligne/colonne dans
-`recupere_cotes_marches` (déjà arrivé deux fois : double comptage, ancrage
-regex) — probablement spécifique aux lignes hautes (5.5-7.5 buts).
+**Symptôme d'origine (25/08/2026)** : match Gil Vicente-Casa Pia,
+lambda_home=1.96, lambda_away=0.60 → modèle donne 99.3% de probabilité sur
+"Moins de 6.5 buts", cote scrapée = 1.61 (attendu : 1.00-1.05, cf. cotes
+réelles observées sur des lignes similaires ailleurs dans le projet).
 
-**Diagnostic reporté** : le match a commencé avant que le HTML de la page
-`?p=face-a-face` ait pu être capturé — cotes disparues après coup d'envoi.
+**Cause racine confirmée** : dans `recupere_cotes_marches`
+(`scraper_details.py`), l'ancrage du titre de marché utilisait
+`soup.find(string=...)`, qui retourne la PREMIÈRE occurrence du texte dans
+tout le document. Or un même titre de marché peut apparaître deux fois sur
+la page matchendirect : une fois dans un widget d'aperçu en haut de page
+(sans Bet365 parmi les bookmakers affichés), une fois dans le tableau
+complet plus bas (avec Bet365). Confirmé sur HTML réel récupéré le
+26/08/2026 (match Valence-Real Betis, LaLiga) : le titre "Mi-temps -
+Résultat" apparaît deux fois exactement selon ce schéma. Si un jour ce
+widget d'aperçu affiche un marché réellement exploité (1N2, BTTS, une
+ligne over/under) plutôt que "Mi-temps", `soup.find` ancre sur l'aperçu, et
+la marche `find_all_next()` (sans limite) qui cherche ensuite le logo
+Bet365 dérive à travers tout le contenu intermédiaire (Détails du match,
+Pronostic...) jusqu'au prochain titre reconnu — pouvant renvoyer la cote
+Bet365 d'un AUTRE marché, réelle mais mal associée, sans jamais lever
+d'erreur ni de `None`. C'est le mécanisme le plus probable derrière la cote
+de 1.61 : une valeur cohérente pour un marché 1N2, pas pour un
+over/under 6.5.
 
-**À faire au prochain cycle, AVANT le coup d'envoi des matchs
-sélectionnés** : ouvrir la page `?p=face-a-face` d'un match avec une ligne
-haute probable, capturer le HTML (ou une capture d'écran de la section
-over/under) avant que le match démarre, et comparer avec ce que
-`recupere_cotes_marches` a effectivement extrait dans `data.json`.
+**Correctif appliqué** : `soup.find` remplacé par `soup.find_all` +
+sélection de la DERNIÈRE occurrence (le tableau complet étant
+structurellement le dernier endroit où un titre de marché apparaît sur la
+page). Commité sur `main` le 26/08/2026.
 
-**Ne pas faire confiance aux "paris en or" sur les lignes over/under 5.5+
-tant que ce point n'est pas vérifié.** Les autres marchés (1X2, double
-chance, BTTS, lignes 0.5-2.5) n'ont montré aucun signe d'anomalie jusqu'ici.
+**Limite assumée de cette vérification** : diagnostic établi par lecture
+manuelle du HTML réel (outil de fetch), pas par exécution du scraper en
+conditions réelles — `matchendirect.fr` n'était pas accessible depuis
+l'environnement d'édition de ce correctif. **À confirmer au prochain run
+réel (GitHub Actions ou manuel)** : vérifier que `cote_1` reste renseigné
+sur l'ensemble des matchs traités, en particulier sur les lignes
+over/under 5.5+.
 
 ---
 
@@ -367,7 +381,8 @@ déposé par l'utilisateur dans les variables d'environnement Netlify. En
 attente de confirmation utilisateur avant de coder.
 
 ### 13.9 Reste à faire
-- BUG DE COTE (voir tout en haut du document) — priorité absolue.
+- BUG DE COTE — RÉSOLU le 26/08 (voir tout en haut du document et 14.8).
+  Reste à confirmer sur un run réel de production.
 - Fonction serverless Netlify (13.8).
 - Vérifier le seuil de corrélation 0.70 sur un échantillon plus large.
 - `index.html`/`selection.html` jamais testés sur desktop.
@@ -453,3 +468,27 @@ fixe élimine la cause structurelle (comptage par paquets sensible à un
 bookmaker manquant). Le cas précis n'a pas été retesté sur ce match
 exact (déjà commencé), mais le mécanisme qui produisait l'erreur n'existe
 plus dans le nouveau code.
+
+### 14.8 Bug de cote — cause racine réelle confirmée et corrigée (26/08)
+Le passage à Bet365 fixe (14.4) n'était pas la cause du bug de cote
+invraisemblable -- une deuxième cause, indépendante, a été identifiée en
+récupérant du HTML réel (match Valence-Real Betis, LaLiga, 26/08) :
+`recupere_cotes_marches` ancrait sur un titre de marché via
+`soup.find(string=...)`, qui retourne la PREMIÈRE occurrence dans tout le
+document. Un même titre de marché peut apparaître deux fois sur la page
+matchendirect -- une fois dans un widget d'aperçu en haut (sans Bet365),
+une fois dans le tableau complet plus bas (avec Bet365). Confirmé
+concrètement : "Mi-temps - Résultat" apparaît selon ce schéma exact sur
+la page réelle inspectée. Si l'aperçu affiche un jour un marché
+réellement exploité (1N2, BTTS, une ligne over/under) au lieu de
+"Mi-temps", l'ancrage sur la première occurrence fait dériver la marche
+`find_all_next()` (sans limite) à travers le contenu intermédiaire de la
+page jusqu'au prochain titre reconnu, renvoyant potentiellement la cote
+Bet365 d'un AUTRE marché -- réelle, mais mal associée, sans jamais
+produire de `None` ni d'erreur. Correctif : `soup.find` -> `soup.find_all`
++ sélection de la DERNIÈRE occurrence (le tableau complet étant
+structurellement en dernière position sur la page). Commité sur `main`.
+Non testé en conditions réelles de production (accès réseau à
+matchendirect.fr indisponible depuis l'environnement d'édition) --
+à confirmer au prochain run réel, en particulier `cote_1` sur les lignes
+over/under 5.5+.
