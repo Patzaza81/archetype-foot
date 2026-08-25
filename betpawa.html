@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#071E18">
+<title>Archetype Foot — Dépôt Betpawa</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  #nav-pages { display: flex; gap: 8px; margin: 12px 0; }
+  #nav-pages a { flex: 1; text-align: center; padding: 12px; border-radius: 6px; text-decoration: none;
+                 font-weight: bold; font-size: 0.95em; }
+  #nav-accueil { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
+  #nav-panier { background: var(--turquoise); color: var(--bg); }
+
+  #form-betpawa { padding: 4px 0 24px; }
+  #form-betpawa label { display: block; font-size: 13px; color: var(--text-secondary);
+                         margin: 14px 0 4px; font-weight: 600; }
+  #form-betpawa input, #form-betpawa textarea {
+    width: 100%; box-sizing: border-box; padding: 10px; background: var(--surface);
+    border: 1px solid var(--border); color: var(--text); border-radius: 6px; font-size: 15px;
+  }
+  #brut-betpawa { min-height: 220px; font-family: monospace; font-size: 12px; }
+  #ajouter-btn {
+    width: 100%; margin-top: 18px; padding: 14px; font-size: 16px; font-weight: 700;
+    background: var(--turquoise); color: var(--bg); border: none; border-radius: 8px; cursor: pointer;
+  }
+  #ajouter-btn:active { background: #14a396; }
+  #resultat-ajout {
+    margin-top: 14px; padding: 10px 12px; border-radius: 6px; font-size: 14px; display: none;
+  }
+  #resultat-ajout.ok { display: block; background: var(--surface-2); border-left: 3px solid var(--green); color: var(--text); }
+  #resultat-ajout.erreur { display: block; background: var(--surface-2); border-left: 3px solid var(--red); color: var(--text); }
+  #apercu-marches {
+    margin-top: 14px; padding: 10px 12px; background: var(--surface); border-radius: 6px;
+    font-size: 13px; color: var(--text-secondary); display: none;
+  }
+  #apercu-marches.visible { display: block; }
+  #note-scraping { margin-top: 20px; padding: 10px 12px; background: var(--surface-2);
+                    border-left: 3px solid var(--gold); border-radius: 6px; font-size: 13px;
+                    color: var(--text-secondary); }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-top">
+    <h1>Dépôt Betpawa</h1>
+  </div>
+  <p id="maj">Colle un match Betpawa, sans limite de nombre.</p>
+  <div id="nav-pages">
+    <a id="nav-accueil" href="index.html">← Accueil</a>
+    <a id="nav-panier" href="panier.html">🧺 Panier (0)</a>
+  </div>
+</header>
+<main>
+  <div id="form-betpawa">
+    <label for="bp-domicile">Équipe domicile</label>
+    <input id="bp-domicile" type="text" placeholder="ex. Mamelodi Sundowns">
+
+    <label for="bp-exterieur">Équipe extérieur</label>
+    <input id="bp-exterieur" type="text" placeholder="ex. AmaZulu FC">
+
+    <label for="bp-competition">Compétition</label>
+    <input id="bp-competition" type="text" placeholder="ex. PSL Afrique du Sud">
+
+    <label for="bp-url">URL matchendirect.fr (optionnelle)</label>
+    <input id="bp-url" type="text" placeholder="Laisse vide si le match n'est pas sur matchendirect">
+
+    <label for="brut-betpawa">Texte brut copié depuis Betpawa (tout, sans trier)</label>
+    <textarea id="brut-betpawa" placeholder="Colle ici tout ce que tu as copié sur la page marchés Betpawa..."></textarea>
+
+    <button id="ajouter-btn">Analyser et ajouter au panier</button>
+    <div id="resultat-ajout"></div>
+    <div id="apercu-marches"></div>
+  </div>
+
+  <div id="note-scraping">
+    <strong>Note :</strong> si aucune URL matchendirect n'est fournie, ce match
+    sera ajouté au panier mais marqué "non traité" par le pipeline — les cotes
+    Betpawa seules ne suffisent pas à calculer le modèle de buts (forme,
+    classement, historique de confrontations viennent de matchendirect).
+  </div>
+</main>
+<script src="parseBetpawa.js"></script>
+<script src="betpawa.js"></script>
+</body>
+</html>
