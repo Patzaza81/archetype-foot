@@ -39,6 +39,16 @@
   #note-scraping { margin-top: 20px; padding: 10px 12px; background: var(--surface-2);
                     border-left: 3px solid var(--gold); border-radius: 6px; font-size: 13px;
                     color: var(--text-secondary); }
+  .detecte { font-size: 12px; color: var(--turquoise); margin-top: -2px; margin-bottom: 6px; display: none; }
+  .detecte.visible { display: block; }
+
+  #liste-session { margin-top: 24px; }
+  #liste-session h2 { font-size: 14px; color: var(--text-secondary); margin: 0 0 8px;
+                       text-transform: uppercase; letter-spacing: 0.03em; }
+  .item-session { display: flex; align-items: center; justify-content: space-between;
+                  padding: 10px 12px; background: var(--surface); border-radius: 6px; margin-bottom: 6px;
+                  font-size: 14px; }
+  .item-session .tag { font-size: 12px; color: var(--text-secondary); display: block; }
 </style>
 </head>
 <body>
@@ -54,24 +64,31 @@
 </header>
 <main>
   <div id="form-betpawa">
-    <label for="bp-domicile">Équipe domicile</label>
+    <label for="brut-betpawa">1. Colle ici tout le texte copié depuis Betpawa (sans trier)</label>
+    <textarea id="brut-betpawa" placeholder="Colle ici tout ce que tu as copié sur la page marchés Betpawa..."></textarea>
+
+    <label for="bp-domicile">2. Équipe domicile (détectée automatiquement, modifiable)</label>
     <input id="bp-domicile" type="text" placeholder="ex. Mamelodi Sundowns">
+    <div id="detecte-domicile" class="detecte">✓ détecté depuis le texte collé</div>
 
-    <label for="bp-exterieur">Équipe extérieur</label>
+    <label for="bp-exterieur">Équipe extérieur (détectée automatiquement, modifiable)</label>
     <input id="bp-exterieur" type="text" placeholder="ex. AmaZulu FC">
+    <div id="detecte-exterieur" class="detecte">✓ détecté depuis le texte collé</div>
 
-    <label for="bp-competition">Compétition</label>
+    <label for="bp-competition">3. Compétition (à saisir toi-même)</label>
     <input id="bp-competition" type="text" placeholder="ex. PSL Afrique du Sud">
 
     <label for="bp-url">URL matchendirect.fr (optionnelle)</label>
     <input id="bp-url" type="text" placeholder="Laisse vide si le match n'est pas sur matchendirect">
 
-    <label for="brut-betpawa">Texte brut copié depuis Betpawa (tout, sans trier)</label>
-    <textarea id="brut-betpawa" placeholder="Colle ici tout ce que tu as copié sur la page marchés Betpawa..."></textarea>
-
     <button id="ajouter-btn">Analyser et ajouter au panier</button>
     <div id="resultat-ajout"></div>
     <div id="apercu-marches"></div>
+  </div>
+
+  <div id="liste-session">
+    <h2>Ajoutés pendant cette session</h2>
+    <div id="items-session"></div>
   </div>
 
   <div id="note-scraping">
