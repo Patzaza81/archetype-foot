@@ -3,17 +3,6 @@ scraper_details.py — Enrichissement matchendirect : classement dom/ext,
 forme + H2H + cotes (page face-a-face), 20 derniers résultats (page
 statistique). Tout en HTTP simple — aucune de ces pages n'a jamais renvoyé
 d'erreur 406 ni de blocage, contrairement à BeSoccer (abandonné).
-
-STATUT DE VÉRIFICATION (24/08/2026) :
-- details_match, H2H, 20 derniers résultats : testés OK sur run réel.
-- classement : bug colonnes multi-niveaux corrigé une fois (aplatissement),
-  un résidu subsistait (ligne d'en-tête "Saison Régulière" prise pour une
-  ligne de données) — corrigé ici en filtrant les lignes non numériques.
-- cotes : bug d'ancrage regex corrigé (titre trouvé), mais l'extraction
-  mélangeait plusieurs marchés car les titres de section ne sont pas des
-  balises h2/h3 réelles — la condition d'arrêt ne se déclenchait jamais.
-  Corrigé ici en arrêtant au prochain titre de marché connu plutôt qu'à
-  une balise de titre HTML qui n'existe pas sur cette page.
 """
 
 import io
@@ -58,9 +47,6 @@ def recupere_details_match(url_match):
         href = lien_stat.get("href", "")
         resultat["url_statistique"] = href if href.startswith("http") else "https://www.matchendirect.fr" + href
 
-    # URLs des pages équipe : les deux premiers liens /equipe/ distincts dans
-    # l'ordre du document correspondent à domicile puis extérieur (l'équipe
-    # à domicile est toujours présentée en premier sur cette page).
     urls_equipe_vues = []
     for a in soup.select("a[href*='/equipe/']"):
         href = a.get("href", "")
@@ -87,13 +73,6 @@ def recupere_details_match(url_match):
 
     return resultat
 
-
-# --------------------------------------------------------------------------
-# Classement Général / Domicile / Extérieur
-# CORRECTIF v2 (aplatissement colonnes) + CORRECTIF v3 (filtre lignes non
-# numériques : la ligne d'en-tête de groupe "Saison Régulière" restait
-# parfois comme première ligne de données après aplatissement).
-# --------------------------------------------------------------------------
 
 COLONNES_CLASSEMENT = ["Pts", "J", "V", "N", "D", "BP", "BC", "Diff"]
 
@@ -125,8 +104,6 @@ def recupere_classement(url_classement_base):
 
         lignes = []
         for _, ligne in table.iterrows():
-            # Filtre : ignore toute ligne résiduelle d'en-tête (valeur non
-            # numérique dans une colonne censée être numérique).
             pts_brut = ligne["Pts"]
             if isinstance(pts_brut, str) and not pts_brut.strip().lstrip("-").isdigit():
                 continue
@@ -145,16 +122,10 @@ def recupere_classement(url_classement_base):
                     "bc": int(ligne["BC"]), "diff": int(ligne["Diff"]),
                 })
             except (ValueError, TypeError):
-                # Ligne non convertible malgré le filtre ci-dessus — on
-                # l'ignore plutôt que de faire planter tout le classement.
                 continue
         resultat[cle] = lignes
     return resultat
 
-
-# --------------------------------------------------------------------------
-# Page face-a-face : H2H — fonctionne, testé le 24/08.
-# --------------------------------------------------------------------------
 
 def _extrait_matchs_scores(soup, ancre_regex, max_matchs=20):
     ancre = soup.find(string=re.compile(ancre_regex))
@@ -196,10 +167,6 @@ def recupere_h2h(url_match_face_a_face, max_confrontations=20):
     return _extrait_matchs_scores(soup, r"Confrontations entre les deux équipes", max_matchs=max_confrontations)
 
 
-# --------------------------------------------------------------------------
-# Page statistique : 20 derniers résultats — corrigé et testé le 24/08.
-# --------------------------------------------------------------------------
-
 def _parse_table_matchs(soup, ancre_regex, max_matchs=20):
     ancre = soup.find(string=re.compile(ancre_regex))
     if ancre is None:
@@ -234,9 +201,6 @@ def _parse_table_matchs(soup, ancre_regex, max_matchs=20):
         if not m:
             continue
 
-        # Compétition : dernier lien de la ligne, distinct du lien du match.
-        # Nécessaire pour le filtre "même compétition" (TRANSITION.md 9.2) —
-        # non appliqué ici, juste rendu disponible pour run_pipeline.py.
         liens_ligne = tr.find_all("a")
         lien_competition = liens_ligne[-1] if liens_ligne and liens_ligne[-1] is not lien_match else None
         competition = lien_competition.get_text(strip=True) if lien_competition else None
@@ -270,14 +234,8 @@ def recupere_20_derniers_resultats(url_statistique, nom_equipe_1, nom_equipe_2):
 
 
 # --------------------------------------------------------------------------
-# Page face-a-face : cotes multi-bookmakers.
-# CORRECTIF v3 : les titres de section ("Cotes 1N2", "Double chance", "Les
-# 2 équipes marquent", "X.5 Plus / Moins"...) ne sont PAS des balises h2/h3
-# — ce sont de simples nœuds de texte au même niveau que le reste. La
-# condition d'arrêt sur h2/h3 ne se déclenchait donc jamais, et les nombres
-# d'un marché débordaient sur le marché suivant. Correctif : s'arrêter au
-# prochain titre de marché connu (les mêmes trois qu'on cherche, plus les
-# variantes "Plus / Moins" et "Mi-temps") plutôt qu'à une balise HTML.
+# Cotes — Bet365 uniquement (26/08). Voir docstring de la fonction pour le
+# changement de méthode et la cause du bug précédent enfin confirmée.
 # --------------------------------------------------------------------------
 
 LIGNES_OVER_UNDER_CONNUES = [0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5]
@@ -292,67 +250,40 @@ _REGEX_AUTRE_TITRE = re.compile(
     r"^(" + "|".join(re.escape(t) for t in TITRES_MARCHES_CONNUS) + r")$"
 )
 
+BOOKMAKER_FIXE = "bet365"
+
 
 def recupere_cotes_marches(url_match_face_a_face):
     """
-    Retourne un tuple (marches, diagnostics).
+    Retourne les cotes d'UN SEUL bookmaker fixe (Bet365), pour tous les
+    marchés 1x2/double_chance/btts/over_under (0.5-7.5). dict simple
+    (plus de tuple avec diagnostics -- inutile maintenant, la méthode
+    n'a plus de mode de repli ambigu à surveiller).
 
-    marches : dict avec les clés "1x2", "double_chance", "btts", et
-    "over_under_0.5" .. "over_under_7.5" (Étape 1 de l'inventaire, 25/08).
-    Handicap NON inclus : jamais observé comme section de cotes distincte
-    dans les pages face-a-face fetchées sur ce projet -- pas de structure
-    réelle à parser, pas de code écrit sans preuve. Handicap 3 voies
-    explicitement exclu par décision (voir TRANSITION.md).
-    Chaque marché absent du HTML renvoie None, jamais une liste vide
-    devinée.
+    CHANGEMENT DE MÉTHODE (26/08) -- abandon du multi-bookmaker et de
+    "minimum du panel" (approximation Betpawa), décision explicite.
+    Cause du bug précédent confirmée en récupérant le vrai HTML : le nom
+    de chaque bookmaker n'existe QUE dans l'attribut alt de son logo
+    (<img alt="bet365 logo">), jamais comme texte visible. Le correctif
+    25/08bis cherchait un "séparateur texte" entre bookmakers -- ça ne
+    pouvait pas fonctionner ; ce qu'il détectait comme séparateur était
+    probablement le caractère "-" (cote indisponible), cassant le
+    comptage par paquets sur la quasi-totalité des lignes.
 
-    diagnostics : dict par marché ({"trouve", "separateurs_detectes",
-    "groupes_valides", "groupes_incomplets_ecartes"}) -- à consulter à
-    chaque run pour vérifier qu'aucun marché ne bascule silencieusement
-    en mode repli (voir CORRECTIF 25/08bis ci-dessous).
+    Nouvelle méthode : ancrer directement sur l'image du bookmaker fixe
+    (recherche par attribut alt), puis lire les valeurs qui suivent
+    immédiatement jusqu'à la prochaine image ou la fin de section. Une
+    valeur "-" devient None pour CETTE seule sélection, sans invalider
+    le reste du marché. Bookmaker absent d'une section -> marché entier
+    à None, jamais deviné.
 
-    CORRECTIF 25/08bis -- bug de cote invraisemblable (ligne haute
-    over/under, ex. 6.5 : cote 1.61 scrapée pour une proba modèle de 99%,
-    alors qu'une cote proche de 1.00-1.05 était attendue) :
-    l'ancien code regroupait les nombres trouvés après un titre en
-    paquets de taille fixe `pas` (2 pour over/under, 3 pour 1X2), un
-    paquet = un bookmaker, dans l'ordre d'apparition. Si UN SEUL
-    bookmaker ne propose pas la ligne (fréquent sur 5.5-7.5 buts, où
-    tous les bookmakers ne couvrent pas ces lignes), il ne contribue
-    aucun nombre -- mais le code ne le détecte pas, donc TOUS les
-    bookmakers suivants se décalent d'une position. Une cote "plus" d'un
-    bookmaker se retrouve alignée comme "moins" d'un autre : le résultat
-    est un nombre plausible en apparence (une vraie cote existe quelque
-    part dans le flux) mais associé au mauvais bookmaker et à la mauvaise
-    colonne. Ce n'était pas un problème de regex ou de double comptage
-    (déjà corrigés) mais un problème de données manquantes non gérées.
-
-    Nouvelle approche : le nom (ou tout texte) de chaque bookmaker,
-    présent entre deux lignes de cotes dans le flux de texte, sert
-    maintenant de séparateur explicite entre deux bookmakers, au lieu de
-    ne compter que les nombres et d'ignorer tout le reste. Un groupe de
-    nombres compris entre deux séparateurs est accepté seulement s'il
-    contient EXACTEMENT `pas` valeurs ; un groupe incomplet est écarté
-    (compté dans les diagnostics) SANS décaler les bookmakers suivants,
-    puisque chacun est délimité indépendamment par son propre séparateur.
-
-    HYPOTHÈSE NON VÉRIFIÉE EN HTML RÉEL (accès live impossible dans cet
-    environnement d'édition) : que du texte non numérique (nom/logo de
-    bookmaker) sépare bien chaque ligne de cotes sur la page
-    matchendirect. Si c'est faux -- aucun séparateur détecté -- la
-    fonction bascule automatiquement sur l'ancien découpage par paquets
-    fixes (comportement pré-25/08, donc vulnérable au même bug) et le
-    signale via diagnostics[marche]["separateurs_detectes"] = False.
-    À VÉRIFIER AU PROCHAIN CYCLE avec la capture HTML pré-coup d'envoi
-    déjà prévue : si "separateurs_detectes" est False sur un run réel,
-    cette hypothèse est invalidée et le correctif ne s'applique pas --
-    revenir ici avant de faire confiance aux lignes 5.5+.
+    Choix de Bet365 : seul bookmaker observé présent sur toutes les
+    lignes over/under, y compris les plus hautes (6.5, 7.5).
     """
     html = fetch_html(url_match_face_a_face)
     soup = BeautifulSoup(html, "html.parser")
 
     marches = {}
-    diagnostics = {}
     definitions = [
         ("1x2", "Cotes 1N2", ["1", "N", "2"]),
         ("double_chance", "Double chance", ["1N", "12", "N2"]),
@@ -366,90 +297,52 @@ def recupere_cotes_marches(url_match_face_a_face):
         titre = soup.find(string=lambda s: s and s.strip() == titre_attendu)
         if titre is None:
             marches[nom_marche] = None
-            diagnostics[nom_marche] = {"trouve": False}
             continue
 
-        pas = len(selections)
-        tous_nombres = []      # repli : liste plate, comportement pré-25/08
-        groupes_separes = []   # nouveau : groupes délimités par séparateur texte
-        groupe_courant = []
-        nb_separateurs = 0
-        nb_groupes_incomplets = 0
+        logo_bookmaker = None
+        for element in titre.find_all_next():
+            if isinstance(element, str):
+                if _REGEX_AUTRE_TITRE.match(element.strip()):
+                    break
+                continue
+            if element.name == "img":
+                alt = (element.get("alt") or "").lower()
+                if BOOKMAKER_FIXE in alt:
+                    logo_bookmaker = element
+                    break
 
-        # CORRECTIF (24/08, conservé) : ne parcourir que les nœuds de
-        # texte (string=True), jamais les balises -- find_all_next() sans
-        # filtre comptait chaque cote deux fois (balise + texte).
-        for texte_brut in titre.find_all_next(string=True, limit=400):
+        if logo_bookmaker is None:
+            marches[nom_marche] = None
+            continue
+
+        valeurs = []
+        for texte_brut in logo_bookmaker.find_all_next(string=True, limit=20):
             texte = texte_brut.strip()
             if not texte:
                 continue
-            # Arrêt dès qu'on retombe sur un titre de marché connu — le
-            # nôtre pourrait réapparaître ailleurs sur la page (mini-widget
-            # en haut de page pour "Mi-temps - Résultat" par exemple).
             if _REGEX_AUTRE_TITRE.match(texte):
                 break
             if re.fullmatch(r"\d+[.,]\d{2}", texte):
-                valeur = float(texte.replace(",", "."))
-                tous_nombres.append(valeur)
-                groupe_courant.append(valeur)
-                continue
-            # Texte non numérique = séparateur présumé entre deux
-            # bookmakers (nom, logo alt, "-", etc.).
-            nb_separateurs += 1
-            if groupe_courant:
-                if len(groupe_courant) == pas:
-                    groupes_separes.append(groupe_courant)
-                else:
-                    nb_groupes_incomplets += 1
-                groupe_courant = []
-        # Dernier groupe en fin de flux (avant le titre suivant ou la fin
-        # de la page, sans séparateur terminal).
-        if groupe_courant:
-            if len(groupe_courant) == pas:
-                groupes_separes.append(groupe_courant)
+                valeurs.append(float(texte.replace(",", ".")))
+            elif texte == "-":
+                valeurs.append(None)
             else:
-                nb_groupes_incomplets += 1
+                break
+            if len(valeurs) >= len(selections):
+                break
 
-        separateurs_detectes = nb_separateurs > 0
-        if separateurs_detectes:
-            lignes = groupes_separes
-        else:
-            # Repli explicite -- hypothèse des séparateurs invalidée pour
-            # cette page. NON FIABLE sur les lignes où un bookmaker peut
-            # manquer : c'est exactement le comportement qui a produit le
-            # bug d'origine.
-            lignes = [tous_nombres[i:i + pas] for i in range(0, len(tous_nombres) - pas + 1, pas)]
-            lignes = [g for g in lignes if len(g) == pas]
+        marches[nom_marche] = (
+            dict(zip(selections, valeurs)) if len(valeurs) == len(selections) else None
+        )
 
-        marches[nom_marche] = [dict(zip(selections, ligne)) for ligne in lignes]
-        diagnostics[nom_marche] = {
-            "trouve": True,
-            "separateurs_detectes": separateurs_detectes,
-            "groupes_valides": len(lignes),
-            "groupes_incomplets_ecartes": nb_groupes_incomplets,
-        }
-
-    return marches, diagnostics
+    return marches
 
 
 # --------------------------------------------------------------------------
-# Classement universel via l'URL du match (25/08) — remplace le besoin d'une
-# table de correspondance compétition -> slug de classement. N'importe quel
-# match, dans n'importe quel championnat, a une URL /live-score/{slug}.html
-# déjà scrapée par scraper.py ; l'onglet ?p=classement de CETTE URL donne le
-# classement Saison Régulière de la compétition du match, sans construction
-# manuelle de slug par ligue. Contrepartie assumée : classement combiné
-# (pas de split domicile/extérieur séparé comme sur classement-foot/.../).
-# Réutilise exactement la même logique de parsing (+ mêmes correctifs) que
-# recupere_classement.
+# Classement universel via l'URL du match (25/08).
 # --------------------------------------------------------------------------
 
 def recupere_classement_du_match(url_match):
-    """
-    url_match : url /live-score/{slug}.html d'un match, SANS paramètre ?p=.
-    Retourne une liste de {'equipe', 'pts', 'j', 'v', 'n', 'd', 'bp', 'bc', 'diff'}
-    pour toute la compétition (classement Saison Régulière combiné).
-    """
     url = url_match + "?p=classement"
     html = fetch_html(url)
     try:
@@ -492,13 +385,6 @@ def recupere_classement_du_match(url_match):
 
 
 def trouve_equipe_dans_classement(classement, nom_equipe):
-    """
-    Recherche tolérante (insensible à la casse, sous-chaîne dans un sens ou
-    l'autre) car les noms d'équipe peuvent différer légèrement entre la page
-    programme du jour et la page classement (ex. 'Not. Forest' vs
-    'Nottingham Forest'). Retourne None si rien de fiable trouvé — jamais de
-    correspondance devinée au hasard.
-    """
     nom_norm = nom_equipe.strip().lower()
     for ligne in classement:
         eq_norm = (ligne["equipe"] or "").strip().lower()
@@ -507,36 +393,16 @@ def trouve_equipe_dans_classement(classement, nom_equipe):
     return None
 
 
-# --------------------------------------------------------------------------
-# Historique par compétition avec repli saison précédente (25/08) — remplace
-# l'usage de recupere_classement_du_match pour gf/ga : au lieu d'une moyenne
-# saison courante agrégée (pas de split domicile/extérieur, biaisée en début
-# de saison par un faible nombre de matchs joués), on prend les VRAIS
-# derniers matchs domicile et extérieur, en repliant sur la saison
-# précédente UNIQUEMENT si la compétition est identique (garde-fou strict :
-# une équipe promue/reléguée ne doit jamais hériter des chiffres de l'autre
-# division). Les matchs amicaux sont exclus du calcul, jamais utilisés
-# comme repli — contexte de jeu non comparable (effectifs remaniés, enjeu
-# nul), même dilués avec un faible poids.
-# --------------------------------------------------------------------------
-
 def _normalise_texte(s):
     return re.sub(r"\s+", " ", s or "").strip().lower()
 
 
 def _memes_equipes(nom1, nom2):
-    """Comparaison tolérante — les noms peuvent différer légèrement entre
-    pages (ex. 'Not. Forest' vs 'Nottingham Forest'). Best-effort assumé :
-    en cas de doute, mieux vaut rater un rapprochement que d'en deviner un
-    faux (voir _extrait_historique_competition, qui ignore une ligne plutôt
-    que de l'attribuer à la mauvaise équipe)."""
     n1, n2 = _normalise_texte(nom1), _normalise_texte(nom2)
     return n1 == n2 or n1 in n2 or n2 in n1
 
 
 def _saison_actuelle_et_precedente():
-    """Convention saison européenne : la saison démarre en juillet.
-    Retourne (saison_actuelle, saison_precedente) au format 'AAAA/AAAA'."""
     from datetime import date
     aujourd_hui = date.today()
     if aujourd_hui.month >= 7:
@@ -549,14 +415,6 @@ def _saison_actuelle_et_precedente():
 
 
 def _extrait_historique_competition(soup, nom_competition, nom_equipe, max_matchs=10):
-    """
-    Retourne la liste des matchs JOUÉS (score présent) de `nom_equipe` dans
-    la compétition `nom_competition`, sur la page déjà chargée (une saison).
-    Retourne None si cette compétition n'apparaît pas du tout sur la page —
-    c'est le garde-fou : absence de section = équipe pas dans cette
-    compétition cette saison-là (promotion/relégation), on ne devine jamais
-    une correspondance approximative de compétition.
-    """
     cible = _normalise_texte(nom_competition)
     ancre = soup.find(string=lambda s: s and _normalise_texte(s) == cible)
     if ancre is None:
@@ -569,7 +427,7 @@ def _extrait_historique_competition(soup, nom_competition, nom_equipe, max_match
     for tr in table.find_all("tr"):
         liens_avec_score = [a for a in tr.find_all("a") if re.search(r"\d+\s*-\s*\d+", a.get_text(" ", strip=True))]
         if not liens_avec_score:
-            continue  # pas de score = match à venir, on l'ignore
+            continue
         texte = liens_avec_score[0].get_text(" ", strip=True)
         m = re.match(r"^(.*?)\s+(\d+)\s*-\s*(\d+)\s+(.*)$", texte)
         if not m:
@@ -580,24 +438,11 @@ def _extrait_historique_competition(soup, nom_competition, nom_equipe, max_match
             matchs.append({"domicile": True, "buts_marques": buts_dom, "buts_encaisses": buts_ext})
         elif _memes_equipes(nom_equipe, nom_ext):
             matchs.append({"domicile": False, "buts_marques": buts_ext, "buts_encaisses": buts_dom})
-        # ni l'un ni l'autre -> ligne ignorée, jamais devinée
 
     return matchs
 
 
 def recupere_gf_ga_avec_repli(url_equipe, nom_equipe, nom_competition, max_matchs=10):
-    """
-    Calcule gf/ga domicile et extérieur pour `nom_equipe` dans
-    `nom_competition`, en utilisant en priorité la saison en cours, puis en
-    complétant avec la saison précédente UNIQUEMENT si la compétition existe
-    à l'identique sur cette page-là (garde-fou promotion/relégation, section
-    9.2 de TRANSITION.md). Aucun match amical n'est utilisé.
-
-    Retourne un dict :
-      {'gf_domicile', 'ga_domicile', 'nb_domicile',
-       'gf_exterieur', 'ga_exterieur', 'nb_exterieur'}
-    ou {'raison_non_traite': str} si aucun match exploitable n'a été trouvé.
-    """
     saison_actuelle, saison_precedente = _saison_actuelle_et_precedente()
 
     matchs_domicile, matchs_exterieur = [], []
@@ -609,12 +454,10 @@ def recupere_gf_ga_avec_repli(url_equipe, nom_equipe, nom_competition, max_match
             url = url_equipe if saison == saison_actuelle else f"{url_equipe}?season={saison.replace('/', '%2F')}"
             html = fetch_html(url)
         except RuntimeError:
-            continue  # saison précédente injoignable -> on s'arrête là, pas d'invention
+            continue
         soup = BeautifulSoup(html, "html.parser")
         historique = _extrait_historique_competition(soup, nom_competition, nom_equipe, max_matchs)
         if historique is None:
-            # Compétition absente sur cette page -> garde-fou : on n'utilise
-            # PAS cette saison comme repli (promotion/relégation probable).
             continue
         for m in historique:
             if m["domicile"] and len(matchs_domicile) < max_matchs:
