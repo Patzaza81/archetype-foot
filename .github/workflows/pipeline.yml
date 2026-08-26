@@ -35,7 +35,7 @@ jobs:
         # continue-on-error : fonctionnalité annexe (aide la recherche
         # automatique d'URL matchendirect pour les matchs Betpawa) -- son
         # échec ne doit jamais empêcher le pipeline principal de tourner.
-        run: python scraper_semaine.py
+        run: python scraper_semaine.py --max-matchs 100000
         continue-on-error: true
 
       - name: Récupérer les matchs Betpawa listés dans betpawa_urls.txt
