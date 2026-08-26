@@ -50,34 +50,34 @@ def _normalise_nom_equipe(nom):
     return " ".join(mots_utiles) or nom.lower()
 
 
-def _dernier_mot(nom):
-    mots = _normalise_nom_equipe(nom).split()
-    return mots[-1] if mots else ""
+def _correspond_via_initiale(nom_abrege, nom_complet):
+    """Cas ciblé : matchendirect réduit parfois le premier mot d'un nom
+    composé à une seule initiale ('S. Bratislava' pour 'Slovan
+    Bratislava', 'D. Zagreb' pour 'Dinamo Zagreb'). Ne matche QUE ce
+    pattern précis -- un premier mot d'une seule lettre, suivi du reste
+    du nom identique -- jamais une simple ressemblance de dernier mot."""
+    mots_abr = _normalise_nom_equipe(nom_abrege).split()
+    mots_complet = _normalise_nom_equipe(nom_complet).split()
+    if len(mots_abr) < 2 or len(mots_abr[0]) != 1:
+        return False
+    reste = mots_abr[1:]
+    for i, mot in enumerate(mots_complet[:-len(reste)] if len(reste) else []):
+        if mot[:1] == mots_abr[0] and mots_complet[i + 1:] == reste:
+            return True
+    return False
 
 
 def _noms_correspondent(nom_a, nom_b):
     a, b = _normalise_nom_equipe(nom_a), _normalise_nom_equipe(nom_b)
     if a and b and (a in b or b in a):
         return True
-
-    # REPLI (ajouté après le cas Celje-Slovan Bratislava/Viking-Dinamo
-    # Zagreb, 26/08) : matchendirect abrège parfois le premier mot d'un nom
-    # composé en initiale ("S. Bratislava" pour "Slovan Bratislava", "D.
-    # Zagreb" pour "Dinamo Zagreb"). Ce n'est pas un token de type de club
-    # comme "FC"/"AC" (ligne 44 ci-dessus) -- c'est la moitié du nom qui
-    # disparaît -- donc l'inclusion de sous-chaîne ne peut jamais matcher.
-    # Repli : égalité STRICTE (pas d'inclusion) sur le dernier mot, qui est
-    # presque toujours la partie la plus distinctive du nom (la ville ou le
-    # nom propre). Seuil de 4 caractères pour exclure les mots courts
-    # ("st", "de", "le") qui donneraient de vrais faux positifs.
-    # Testé sur les 2540 matchs de matchs_semaine.json (26/08) : une seule
-    # collision trouvée (deux matchs "Akron" différents, contre "CSKA
-    # Moscou" et "L. Moscou") -- déjà interceptée par le contrôle
-    # d'ambiguïté existant dans cherche_url_matchendirect_auto() (plusieurs
-    # candidats => aucun retenu), donc aucun risque de fausse fusion
-    # silencieuse comme l'incident Manchester City/United.
-    da, db = _dernier_mot(nom_a), _dernier_mot(nom_b)
-    return len(da) >= 4 and da == db
+    # REJETÉ (26/08) : un repli par simple "dernier mot identique" avait
+    # été testé, mais un test à grande échelle (2876 matchs réels) a
+    # trouvé un faux positif dangereux -- "CSKA Sofia" et "Slavia Sofia"
+    # (deux clubs différents, même ville) auraient matché, exactement le
+    # type d'incident déjà évité pour Manchester City/United. Remplacé par
+    # le repli ci-dessous, qui ne cible QUE le cas réel observé (initiale).
+    return _correspond_via_initiale(nom_a, nom_b) or _correspond_via_initiale(nom_b, nom_a)
 
 
 def cherche_url_matchendirect_auto(domicile, exterieur, date_betpawa=None):
