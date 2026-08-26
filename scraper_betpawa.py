@@ -28,6 +28,62 @@ from parse_betpawa_playwright import parse_betpawa_playwright
 
 FICHIER_URLS = "betpawa_urls.txt"
 FICHIER_PANIER = "panier.json"
+FICHIER_MATCHS_DU_JOUR = "matchs_du_jour.json"
+FICHIER_MATCHS_DEMAIN = "matchs_demain.json"
+FICHIER_MATCHS_SEMAINE = "matchs_semaine.json"
+
+# Tokens de type de club sans valeur distinctive pour l'appariement de noms
+# -- "AC Horsens" et "Horsens" doivent se reconnaître comme la même équipe.
+# CORRECTIF : liste volontairement réduite au strict minimum -- "United",
+# "City", "Real", "Athletic", "Town", "Sporting" etc. sont RETIRÉS de cette
+# liste après un faux positif dangereux confirmé ("Manchester City" et
+# "Manchester United" se faisaient reconnaître comme la même équipe, ces
+# mots étant précisément ce qui distingue deux clubs rivaux d'une même
+# ville). Mieux vaut rater un appariement légitime (repli sur l'URL
+# manuelle) que fusionner deux équipes différentes.
+TOKENS_CLUB_IGNORES = {"fc", "ac", "cf", "sc", "afc", "cfc", "club"}
+
+
+def _normalise_nom_equipe(nom):
+    mots = re.sub(r"[^a-z0-9\s]", " ", nom.lower()).split()
+    mots_utiles = [m for m in mots if m not in TOKENS_CLUB_IGNORES]
+    return " ".join(mots_utiles) or nom.lower()
+
+
+def _noms_correspondent(nom_a, nom_b):
+    a, b = _normalise_nom_equipe(nom_a), _normalise_nom_equipe(nom_b)
+    return a and b and (a in b or b in a)
+
+
+def cherche_url_matchendirect_auto(domicile, exterieur):
+    """Cherche le match dans matchs_du_jour.json/matchs_demain.json par nom
+    d'équipe (Betpawa et matchendirect n'utilisent pas toujours exactement
+    la même orthographe -- "AC Horsens" vs "Horsens"). Retourne l'URL trouvée
+    ou None -- ne devine jamais si la correspondance est ambiguë : mieux
+    vaut aucune URL automatique qu'une mauvaise (mauvaises stats de forme
+    utilisées pour calculer lambda, silencieusement)."""
+    candidats = []
+    for fichier in (FICHIER_MATCHS_DU_JOUR, FICHIER_MATCHS_DEMAIN, FICHIER_MATCHS_SEMAINE):
+        try:
+            with open(fichier, "r", encoding="utf-8") as f:
+                candidats.extend(json.load(f))
+        except (FileNotFoundError, json.JSONDecodeError):
+            continue
+
+    correspondances = [
+        m for m in candidats
+        if m.get("domicile") and m.get("exterieur")
+        and _noms_correspondent(domicile, m["domicile"])
+        and _noms_correspondent(exterieur, m["exterieur"])
+    ]
+
+    if len(correspondances) == 1:
+        return correspondances[0].get("url_match")
+    if len(correspondances) > 1:
+        print(f"  Recherche auto matchendirect : {len(correspondances)} "
+              f"correspondances AMBIGUËS pour '{domicile} - {exterieur}' -- "
+              f"aucune retenue, pas de devinette.")
+    return None
 
 
 def slug(s):
@@ -145,6 +201,24 @@ def traite_url(page, url_betpawa, url_matchendirect):
     print(f"  Match : {meta['domicile']} - {meta['exterieur']} "
           f"({meta['competition']})")
 
+    # CORRECTIF (26/08duodecies) : recherche automatique d'abord -- si le
+    # match est déjà dans les listes du jour/demain (scraper.py, exécuté
+    # juste avant cette étape dans pipeline.yml), l'URL matchendirect est
+    # trouvée sans rien demander. Sinon, repli sur l'URL fournie à la main
+    # dans betpawa_urls.txt (utile pour un match trop loin dans le temps
+    # pour être déjà dans ces listes).
+    url_match_auto = cherche_url_matchendirect_auto(meta["domicile"], meta["exterieur"])
+    if url_match_auto:
+        print(f"  URL matchendirect trouvée automatiquement : {url_match_auto}")
+        url_match_finale = url_match_auto
+    elif url_matchendirect:
+        print(f"  Pas trouvé automatiquement -- URL fournie à la main utilisée.")
+        url_match_finale = url_matchendirect
+    else:
+        print(f"  Pas trouvé automatiquement, aucune URL fournie à la main -- "
+              f"match affiché sans calcul (forme/classement/H2H indisponibles).")
+        url_match_finale = None
+
     cotes = meilleur_parsing(texte, meta["domicile"], meta["exterieur"])
     if not cotes:
         print("  AVERTISSEMENT : aucun marché reconnu du tout -- entrée "
@@ -166,7 +240,7 @@ def traite_url(page, url_betpawa, url_matchendirect):
         # Betpawa, matchendirect reste seul pour ça -- les deux sources
         # sont complémentaires, pas redondantes). Sans URL matchendirect,
         # comportement inchangé : "non traité", cotes affichées seules.
-        "url_match": url_matchendirect,
+        "url_match": url_match_finale,
         "match_id": genere_match_id(meta["domicile"], meta["exterieur"]),
         "source": "betpawa",
         "cotes_manuelles": cotes,
