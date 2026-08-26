@@ -501,7 +501,7 @@ def main():
             json.dump([], f)
 
     sortie = {
-        "genere_le": None,
+        "genere_le": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
         "nb_matchs_du_jour_disponibles": len(matchs_du_jour),
         "nb_matchs_demain_disponibles": len(matchs_demain),
         "nb_entrees_panier": len(panier_brut),
