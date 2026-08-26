@@ -19,7 +19,9 @@ jobs:
           python-version: "3.12"
 
       - name: Installer les dépendances
-        run: pip install requests beautifulsoup4 pandas lxml
+        run: |
+          pip install requests beautifulsoup4 pandas lxml playwright
+          playwright install --with-deps chromium
 
       - name: Générer les listes brutes aujourd'hui + demain (pour la page de sélection)
         run: |
@@ -28,6 +30,13 @@ jobs:
           head -c 500 matchs_du_jour.json
           echo "--- Aperçu demain ---"
           head -c 500 matchs_demain.json
+
+      - name: Récupérer les matchs Betpawa listés dans betpawa_urls.txt
+        # continue-on-error : un souci sur cette étape (site Betpawa qui a
+        # changé, une URL invalide) ne doit jamais empêcher le pipeline
+        # matchendirect de tourner normalement pour le reste des matchs.
+        run: python scraper_betpawa.py
+        continue-on-error: true
 
       - name: Lancer le pipeline complet (matchs sélectionnés uniquement)
         run: python run_pipeline.py
