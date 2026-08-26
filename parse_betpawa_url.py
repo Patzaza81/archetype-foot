@@ -15,6 +15,7 @@ pas déployé sur le site -- c'est Claude qui récupère l'URL et fait tourner
 ce parseur à la demande, il n'y a pas de portage JS correspondant.
 """
 import re
+from datetime import date as _date
 
 
 def _lignes_non_vides(texte):
@@ -157,18 +158,59 @@ def parse_betpawa_url(texte, nom_domicile, nom_exterieur):
     return cotes
 
 
+def _date_iso_depuis_jour_mois(jour_mois, aujourdhui=None):
+    """Convertit '29/08' en '2026-08-29'. L'année n'est pas dans le titre
+    Betpawa -- on prend l'année en cours, sauf si la date obtenue tombe
+    loin dans le passé (>300 jours), auquel cas on bascule sur l'année
+    suivante (cas d'un match scrapé fin décembre pour un match de janvier).
+    Retourne None si le format est invalide plutôt que de lever une
+    exception -- une date de désambiguïsation ratée ne doit jamais faire
+    échouer l'extraction de domicile/exterieur/competition, qui reste
+    l'essentiel."""
+    aujourdhui = aujourdhui or _date.today()
+    try:
+        jour, mois = (int(x) for x in jour_mois.split("/"))
+        candidate = _date(aujourdhui.year, mois, jour)
+    except ValueError:
+        return None
+    if (aujourdhui - candidate).days > 300:
+        try:
+            candidate = _date(aujourdhui.year + 1, mois, jour)
+        except ValueError:
+            return None
+    return candidate.isoformat()
+
+
 def extrait_meta(meta_og_title):
-    """Extrait domicile/exterieur/competition depuis le meta og:title, ex.
-    'Bet on AFC Bournemouth - Everton FC | 3:00 pm Sat 29/08 | Premier League
-    | England | Football | betPawa Cameroon'."""
+    """Extrait domicile/exterieur/competition/date/heure depuis le meta
+    og:title, ex. 'Bet on AFC Bournemouth - Everton FC | 3:00 pm Sat 29/08
+    | Premier League | England | Football | betPawa Cameroon'.
+
+    'date' sert à désambiguïser un nom d'équipe qui matche plusieurs
+    matchs matchendirect à la fois (voir cherche_url_matchendirect_auto()
+    dans scraper_betpawa.py). 'heure' est capturée telle quelle (ex.
+    '3:00 pm') mais N'EST PAS ENCORE UTILISÉE pour filtrer ou
+    désambiguïser -- le fuseau horaire de Betpawa (probablement Cameroun,
+    WAT/UTC+1) par rapport à celui de matchendirect (probablement France,
+    CEST/UTC+2 en été) n'a jamais été vérifié en conditions réelles. Elle
+    est stockée pour permettre la comparaison manuelle sur le prochain run
+    réel (voir 'heure' dans matchs_du_jour.json pour le même match) avant
+    de décider d'un éventuel filtre par heure.
+
+    Les deux champs peuvent être None si leur format n'a pas été reconnu ;
+    le comportement de recherche reste alors identique à avant leur ajout
+    (pas de régression possible)."""
     m = re.match(
-        r"^Bet on (.+?) - (.+?) \| .+? \| (.+?) \| (.+?) \| Football \|",
+        r"^Bet on (.+?) - (.+?) \| (\d{1,2}:\d{2} [ap]m) .*?(\d{1,2}/\d{1,2}) \| "
+        r"(.+?) \| (.+?) \| Football \|",
         meta_og_title,
     )
     if not m:
         return None
-    domicile, exterieur, competition, pays = m.groups()
+    domicile, exterieur, heure, jour_mois, competition, pays = m.groups()
     return {
         "domicile": domicile.strip(), "exterieur": exterieur.strip(),
         "competition": f"{pays.strip()} : {competition.strip()}",
+        "date": _date_iso_depuis_jour_mois(jour_mois),
+        "heure": heure.strip(),
     }
