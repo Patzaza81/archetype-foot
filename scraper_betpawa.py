@@ -169,8 +169,8 @@ def main():
         sys.exit(1)
 
     panier = lit_panier()
-    ids_existants = {item.get("match_id") for item in panier if isinstance(item, dict)}
-    nouvelles_entrees = []
+    index_existant = {item.get("match_id"): idx for idx, item in enumerate(panier) if isinstance(item, dict)}
+    nb_ajoutes, nb_mis_a_jour = 0, 0
 
     with sync_playwright() as p:
         navigateur = p.chromium.launch()
@@ -179,17 +179,23 @@ def main():
             entree = traite_url(page, url)
             if entree is None:
                 continue
-            if entree["match_id"] in ids_existants:
-                print(f"  Déjà présent dans {FICHIER_PANIER} -- ignoré (pas de doublon).")
-                continue
-            nouvelles_entrees.append(entree)
-            ids_existants.add(entree["match_id"])
+            if entree["match_id"] in index_existant:
+                # CORRECTIF : remplacer, pas ignorer -- sinon une entrée
+                # ratée lors d'un run précédent (0 marché) bloque
+                # définitivement la mise à jour, même quand ce run-ci
+                # obtient les vraies cotes.
+                panier[index_existant[entree["match_id"]]] = entree
+                nb_mis_a_jour += 1
+                print(f"  Déjà présent dans {FICHIER_PANIER} -- cotes remplacées.")
+            else:
+                panier.append(entree)
+                index_existant[entree["match_id"]] = len(panier) - 1
+                nb_ajoutes += 1
         navigateur.close()
 
-    if nouvelles_entrees:
-        panier.extend(nouvelles_entrees)
+    if nb_ajoutes or nb_mis_a_jour:
         ecrit_panier(panier)
-        print(f"\n{len(nouvelles_entrees)} match(s) Betpawa ajouté(s) à {FICHIER_PANIER}.")
+        print(f"\n{nb_ajoutes} match(s) ajouté(s), {nb_mis_a_jour} mis à jour dans {FICHIER_PANIER}.")
     else:
         print("\nAucune nouvelle entrée à ajouter.")
 
