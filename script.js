@@ -108,7 +108,7 @@ function construitAutresMarches(marches) {
 function construitDetails(m) {
   if (!m.traite) return "";
   return `<details class="details-niveau1">
-    <summary>voir les détails</summary>
+    <summary><span class="texte-ferme">voir les détails</span><span class="texte-ouvert">masquer les détails</span></summary>
     ${construitBlocPourquoi(m)}
     <p class="detail-sous-titre">marchés évalués avant filtre de corrélation</p>
     ${construitTableListeA(m.LISTE_A_marches_passant_EV_et_cote)}
