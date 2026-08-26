@@ -50,18 +50,53 @@ def _normalise_nom_equipe(nom):
     return " ".join(mots_utiles) or nom.lower()
 
 
+def _dernier_mot(nom):
+    mots = _normalise_nom_equipe(nom).split()
+    return mots[-1] if mots else ""
+
+
 def _noms_correspondent(nom_a, nom_b):
     a, b = _normalise_nom_equipe(nom_a), _normalise_nom_equipe(nom_b)
-    return a and b and (a in b or b in a)
+    if a and b and (a in b or b in a):
+        return True
+
+    # REPLI (ajouté après le cas Celje-Slovan Bratislava/Viking-Dinamo
+    # Zagreb, 26/08) : matchendirect abrège parfois le premier mot d'un nom
+    # composé en initiale ("S. Bratislava" pour "Slovan Bratislava", "D.
+    # Zagreb" pour "Dinamo Zagreb"). Ce n'est pas un token de type de club
+    # comme "FC"/"AC" (ligne 44 ci-dessus) -- c'est la moitié du nom qui
+    # disparaît -- donc l'inclusion de sous-chaîne ne peut jamais matcher.
+    # Repli : égalité STRICTE (pas d'inclusion) sur le dernier mot, qui est
+    # presque toujours la partie la plus distinctive du nom (la ville ou le
+    # nom propre). Seuil de 4 caractères pour exclure les mots courts
+    # ("st", "de", "le") qui donneraient de vrais faux positifs.
+    # Testé sur les 2540 matchs de matchs_semaine.json (26/08) : une seule
+    # collision trouvée (deux matchs "Akron" différents, contre "CSKA
+    # Moscou" et "L. Moscou") -- déjà interceptée par le contrôle
+    # d'ambiguïté existant dans cherche_url_matchendirect_auto() (plusieurs
+    # candidats => aucun retenu), donc aucun risque de fausse fusion
+    # silencieuse comme l'incident Manchester City/United.
+    da, db = _dernier_mot(nom_a), _dernier_mot(nom_b)
+    return len(da) >= 4 and da == db
 
 
-def cherche_url_matchendirect_auto(domicile, exterieur):
+def cherche_url_matchendirect_auto(domicile, exterieur, date_betpawa=None):
     """Cherche le match dans matchs_du_jour.json/matchs_demain.json par nom
     d'équipe (Betpawa et matchendirect n'utilisent pas toujours exactement
     la même orthographe -- "AC Horsens" vs "Horsens"). Retourne l'URL trouvée
     ou None -- ne devine jamais si la correspondance est ambiguë : mieux
     vaut aucune URL automatique qu'une mauvaise (mauvaises stats de forme
-    utilisées pour calculer lambda, silencieusement)."""
+    utilisées pour calculer lambda, silencieusement).
+
+    date_betpawa (optionnel, format 'AAAA-MM-JJ') : n'intervient QUE si
+    plusieurs matchs matchent déjà par nom (ex. une même équipe domicile
+    joue deux matchs différents dans la période J0-J7, contre deux
+    adversaires dont le nom se termine pareil). Cas rare mais réel (trouvé
+    le 26/08 sur 2540 matchs : deux matchs "Akron" contre deux adversaires
+    différents commençant tous les deux par une abréviation résolue au même
+    dernier mot). La date ne sert jamais à élargir une recherche qui
+    échouerait par nom seul -- elle ne fait que départager des candidats
+    déjà tous valides par nom."""
     candidats = []
     for fichier in (FICHIER_MATCHS_DU_JOUR, FICHIER_MATCHS_DEMAIN, FICHIER_MATCHS_SEMAINE):
         try:
@@ -79,7 +114,15 @@ def cherche_url_matchendirect_auto(domicile, exterieur):
 
     if len(correspondances) == 1:
         return correspondances[0].get("url_match")
+
     if len(correspondances) > 1:
+        if date_betpawa:
+            par_date = [m for m in correspondances if m.get("date") == date_betpawa]
+            if len(par_date) == 1:
+                print(f"  Recherche auto matchendirect : {len(correspondances)} "
+                      f"correspondances par nom pour '{domicile} - {exterieur}' -- "
+                      f"désambiguïsé par date ({date_betpawa}).")
+                return par_date[0].get("url_match")
         print(f"  Recherche auto matchendirect : {len(correspondances)} "
               f"correspondances AMBIGUËS pour '{domicile} - {exterieur}' -- "
               f"aucune retenue, pas de devinette.")
@@ -207,7 +250,9 @@ def traite_url(page, url_betpawa, url_matchendirect):
     # trouvée sans rien demander. Sinon, repli sur l'URL fournie à la main
     # dans betpawa_urls.txt (utile pour un match trop loin dans le temps
     # pour être déjà dans ces listes).
-    url_match_auto = cherche_url_matchendirect_auto(meta["domicile"], meta["exterieur"])
+    url_match_auto = cherche_url_matchendirect_auto(
+        meta["domicile"], meta["exterieur"], date_betpawa=meta.get("date")
+    )
     if url_match_auto:
         print(f"  URL matchendirect trouvée automatiquement : {url_match_auto}")
         url_match_finale = url_match_auto
@@ -244,6 +289,12 @@ def traite_url(page, url_betpawa, url_matchendirect):
         "match_id": genere_match_id(meta["domicile"], meta["exterieur"]),
         "source": "betpawa",
         "cotes_manuelles": cotes,
+        # Informatif uniquement (26/08) -- permet de comparer à la main
+        # "heure_betpawa" avec le champ "heure" du match matchendirect
+        # correspondant, pour vérifier s'il y a un décalage de fuseau
+        # horaire avant d'envisager un filtre automatique par heure.
+        "date_betpawa": meta.get("date"),
+        "heure_betpawa": meta.get("heure"),
     }
 
 
