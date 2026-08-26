@@ -431,6 +431,24 @@ def _saison_actuelle_et_precedente():
     return actuelle, precedente
 
 
+_MOTS_GENERIQUES_COMPETITION = {
+    "league", "ligue", "liga", "lig", "liiga", "cup", "coupe", "division",
+    "championship", "premiere", "premiere", "first", "1", "2",
+}
+
+
+def _mots_significatifs(partie_competition):
+    """Retire les mots génériques ('league'/'ligue'/'liga'/'cup'/'coupe'...)
+    qui varient d'une langue à l'autre sans rien dire de LA compétition
+    précise -- ne garde que ce qui la distingue vraiment ('chinese',
+    'super', 'premier', un nom propre...). Si tout est générique (nom
+    d'une seule syllabe comme 'Superliga', déjà géré par l'inclusion de
+    sous-chaîne), retombe sur les mots bruts plutôt que sur un ensemble
+    vide, pour ne jamais perdre toute information de comparaison."""
+    mots = [m for m in partie_competition.split() if m not in _MOTS_GENERIQUES_COMPETITION]
+    return set(mots) if mots else set(partie_competition.split())
+
+
 def _partie_competition(nom_competition):
     """Retire le préfixe pays ('Denmark :', 'Danemark :', etc.) -- il diffère
     presque toujours entre Betpawa (anglais) et matchendirect (français ou
@@ -440,6 +458,14 @@ def _partie_competition(nom_competition):
     return _normalise_texte(nom_competition.split(":", 1)[-1])
 
 
+def _competitions_correspondent(cible, candidat):
+    if not cible or not candidat:
+        return False
+    if cible in candidat or candidat in cible:
+        return True
+    return bool(_mots_significatifs(cible) & _mots_significatifs(candidat))
+
+
 def _extrait_historique_competition(soup, nom_competition, nom_equipe, max_matchs=10):
     # CORRECTIF (26/08) : l'égalité stricte texte-complet ('Denmark :
     # Superliga' vs 'Danemark : Superligaen' sur la vraie page matchendirect,
@@ -447,22 +473,23 @@ def _extrait_historique_competition(soup, nom_competition, nom_equipe, max_match
     # Betpawa, pas seulement les cas rares -- le préfixe pays et
     # l'orthographe locale de la compétition ne correspondent jamais
     # exactement d'une source à l'autre. Remplacé par une comparaison sur le
-    # nom de compétition seul (préfixe pays retiré des deux côtés), en
-    # inclusion plutôt qu'égalité stricte ('superliga' dans 'superligaen').
-    # Risque de faux positif volontairement jugé faible ici : contrairement
-    # au matching de noms d'équipes sur tout un pays (incident CSKA/Slavia
-    # Sofia du même jour), cette recherche ne compare qu'un petit nombre de
-    # rubriques (2 à 4 en général : championnat, coupe, amicaux) sur la
-    # page d'UNE SEULE équipe déjà identifiée avec certitude -- pas de
-    # risque de confondre deux équipes différentes.
+    # nom de compétition seul (préfixe pays retiré des deux côtés).
+    # CORRECTIF COMPLÉMENTAIRE (26/08, cas Qingdao) : la seule inclusion de
+    # sous-chaîne ne suffisait pas non plus -- 'Chinese Super League' vs
+    # 'Super Ligue' (vraie page matchendirect) diffèrent par la traduction
+    # du mot 'league'/'ligue' lui-même, pas juste par l'ordre ou le pays.
+    # Ajout d'une comparaison par mots significatifs communs (voir
+    # _competitions_correspondent). Risque de faux positif jugé faible :
+    # comme pour le premier correctif, on ne compare qu'un petit nombre de
+    # rubriques (2 à 5) sur la page d'UNE équipe déjà identifiée avec
+    # certitude, jamais entre équipes différentes.
     cible = _partie_competition(nom_competition)
     ancre = None
     for candidat in soup.find_all(string=True):
         texte = _normalise_texte(str(candidat))
         if ":" not in texte:
             continue
-        partie = _partie_competition(texte)
-        if partie and cible and (partie in cible or cible in partie):
+        if _competitions_correspondent(cible, _partie_competition(texte)):
             ancre = candidat
             break
     if ancre is None:
