@@ -70,7 +70,19 @@ def recupere_page(page, url):
     """Charge la page et renvoie (texte_complet, titre). Attend explicitement
     qu'un marché connu apparaisse plutôt qu'un délai fixe -- plus robuste si
     le réseau est lent, échoue proprement sinon (texte quand même renvoyé,
-    peut juste être incomplet)."""
+    peut juste être incomplet).
+
+    CORRECTIF (26/08decies) -- phase de découverte pour les données de
+    forme/classement/H2H : ces données n'apparaissaient PAS dans le texte
+    capturé lors du premier run réel (confirmé sur capture d'écran), alors
+    qu'elles sont visibles sur la page pour un utilisateur -- probablement
+    chargées dans un onglet ("Team stats", "H2H") qu'il faut cliquer, pas
+    seulement attendre. Cette version clique sur les onglets visibles avant
+    de capturer, et imprime le texte capturé en ENTIER (pas juste un
+    extrait) pour voir la vraie structure avant de construire l'extracteur
+    de statistiques -- même démarche que pour les cotes : diagnostic
+    d'abord, construction ensuite.
+    """
     page.goto(url, timeout=30000, wait_until="domcontentloaded")
     try:
         page.wait_for_selector("text=/1X2/i", timeout=15000)
@@ -78,6 +90,18 @@ def recupere_page(page, url):
     except Exception as e:
         print(f"  Attente du marché 1X2 : JAMAIS TROUVÉ ({e}) -- "
               f"page probablement incomplète (JS non chargé, ou bloqué).")
+
+    # Tentative de clic sur les onglets de statistiques, s'ils existent.
+    # Ne fait rien planter si absents -- juste une tentative, avec un
+    # message clair sur ce qui a marché ou pas.
+    for nom_onglet in ["Team stats", "H2H", "Form", "Full"]:
+        try:
+            page.click(f"text={nom_onglet}", timeout=3000)
+            print(f"  Onglet '{nom_onglet}' : cliqué.")
+            page.wait_for_timeout(1000)  # laisse le temps au contenu de charger après le clic
+        except Exception:
+            print(f"  Onglet '{nom_onglet}' : non trouvé ou non cliquable -- ignoré.")
+
     texte = page.inner_text("body")
     titre = page.title()
     return texte, titre
@@ -127,6 +151,18 @@ def traite_url(page, url):
 
     print(f"  Match : {meta['domicile']} - {meta['exterieur']} "
           f"({meta['competition']})")
+
+    # CORRECTIF (26/08decies) : phase de découverte des données de forme --
+    # imprime la partie du texte AVANT le premier marché de cotes (où
+    # devraient se trouver classement/forme/H2H si le clic sur les onglets
+    # a fonctionné). Non conditionné à un échec cette fois : c'est
+    # justement ce qu'on ne connaît pas encore.
+    idx_1x2 = texte.find("1X2")
+    section_avant_cotes = texte[:idx_1x2] if idx_1x2 != -1 else texte
+    print(f"  --- Texte capturé AVANT la section des cotes "
+          f"({len(section_avant_cotes)} caractères) ---")
+    print(section_avant_cotes)
+    print(f"  --- Fin de cette section ---")
 
     cotes = meilleur_parsing(texte, meta["domicile"], meta["exterieur"])
     if not cotes:
