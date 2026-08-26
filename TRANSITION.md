@@ -1,5 +1,7 @@
 # Archetype Foot — Document de transition
-Dernière mise à jour : 26/08/2026, dans la continuité d'une session longue.
+Dernière mise à jour : 26/08/2026 (audit complet post-intégration Betpawa,
+correction de plusieurs affirmations devenues fausses en cours de session),
+dans la continuité d'une session longue.
 Objectif de ce document : permettre de reprendre le projet dans une nouvelle
 fenêtre de conversation sans perdre l'historique de décisions, ni répéter
 les erreurs déjà identifiées et corrigées.
@@ -116,8 +118,12 @@ joueurs — aucun modèle statistique disponible ici).
 
 ```
 GitHub Actions (cron quotidien + déclenchement manuel)
-  → scraper.py           (matchs du jour — matchendirect /live-foot/)
-  → scraper_details.py   (classement, H2H, forme, cotes — matchendirect)
+  → scraper.py           (matchs aujourd'hui/demain — matchendirect, HTTP simple)
+  → scraper_semaine.py   (matchs J+2 à J+7 — matchendirect, via Playwright,
+                           contourne le blocage HTTP simple confirmé -- 15.9)
+  → scraper_betpawa.py   (cotes + marchés Betpawa, via Playwright,
+                           JS requis pour voir les cotes -- 15.7)
+  → scraper_details.py   (classement, H2H, forme -- matchendirect, HTTP simple)
   → calculs.py           (Poisson/Dixon-Coles/EV/Kelly)
   → run_pipeline.py      (orchestrateur, écrit data.json)
   → commit + push automatique vers le dépôt
@@ -131,9 +137,11 @@ imposé par GitHub).
 **Site Netlify** : connecté au dépôt via import Git (pas de déploiement
 manuel "Drop" — celui-là a été abandonné, voir section 5).
 
-**Aucune API tierce, aucun navigateur automatisé (Playwright) dans
-l'architecture actuelle.** Tout est en HTTP simple (`requests` +
-`BeautifulSoup`/`pandas.read_html`).
+**Playwright (navigateur automatisé)** : réintroduit le 26/08 pour deux usages
+précis, tous les deux dans `pipeline.yml`, distincts du flux matchendirect
+"aujourd'hui" qui reste en HTTP simple (`requests`) — voir section 15.7 et
+15.9. Le reste de l'architecture matchendirect ("aujourd'hui") continue de
+fonctionner sans navigateur.
 
 ---
 
@@ -176,8 +184,13 @@ confirmée après recherche réelle sur le site).
   l'automatisation elle-même). Abandonné le 24/08 après avoir découvert que
   matchendirect fournissait déjà les mêmes données (classement dom/ext,
   historique de matchs) sans aucune protection.
-- **Playwright / navigateur automatisé** : abandonné avec BeSoccer. Aucune
-  page matchendirect utilisée n'en a jamais eu besoin.
+- **Playwright / navigateur automatisé** : abandonné avec BeSoccer le 24/08,
+  **RÉINTRODUIT le 26/08** pour deux usages précis et confirmés fonctionnels
+  en conditions réelles : récupérer les cotes Betpawa (données chargées par
+  JS, confirmé par `test_scraping_betpawa.py` qu'une requête HTTP simple ne
+  les voit pas) et contourner un blocage confirmé de matchendirect sur les
+  dates futures (voir 15.7 et 15.9). Le flux matchendirect "aujourd'hui"
+  original n'en a toujours pas besoin.
 - **Marchés mi-temps** : abandonné sur décision explicite (24/08) — "on fait
   simple".
 - **Comparateur multi-bookmakers dédié (Oddspedia, etc.)** : jugé inutile
@@ -210,6 +223,23 @@ confirmée après recherche réelle sur le site).
   s'activer en pratique sur des matchs à faible pouvoir de but — observé
   empiriquement (0.63 max sur des lignes over/under adjacentes), jamais
   confirmé comme un vrai problème sur un échantillon large. Voir section 13.
+- **`scraper_betpawa.py` — détection de format par essai/erreur** : trois
+  parseurs différents existent (`parse_betpawa.py`, `parse_betpawa_url.py`,
+  `parse_betpawa_playwright.py`) pour trois formats de texte différents
+  observés à ce jour sur Betpawa. Le script garde automatiquement celui qui
+  reconnaît le plus de marchés -- fonctionne sur tous les cas testés (5
+  championnats), mais un futur format non prévu donnerait 0 marché reconnu
+  sans erreur explicite (voir 15.7) plutôt que d'échouer bruyamment.
+- **Recherche automatique d'URL matchendirect par nom d'équipe (15.9)** :
+  logique de correspondance testée sur une douzaine de cas, dont plusieurs
+  pièges volontaires (voir bug Manchester City/United corrigé, 15.9) --
+  reste une heuristique, pas une garantie. Conçue pour échouer proprement
+  (aucune correspondance retenue) plutôt que deviner en cas de doute, mais
+  un futur cas piège non anticipé reste possible.
+- **`scraper_semaine.py`** : un seul run réel de validation à ce jour
+  (26/08, 2531 matchs sur 6 jours) -- fonctionne, mais la fiabilité dans la
+  durée (le site pourrait changer sa protection anti-robot) n'est pas
+  acquise pour toujours.
 
 ---
 
@@ -260,11 +290,16 @@ tout le périmètre construit à ce jour.
 Forme annulée entièrement le 25/08 (section 5) — cette limite ne s'applique
 plus, plus aucun indice de forme n'est calculé.
 
-### 9.7 Discipline des sources, toujours en vigueur
-Ordre de priorité strict : (1) matchendirect.fr, autorité en cas de
-conflit ; (2) besoccer.com, repli jamais réactivé ; (3) FotMob/Sofascore,
-jamais utilisées. Aucune source hors de cette liste ne doit être citée
-comme preuve d'un fait utilisé dans un calcul.
+### 9.7 Discipline des sources, toujours en vigueur -- précisée le 26/08
+Ordre de priorité strict pour la forme/classement/H2H : matchendirect.fr,
+seule autorité, jamais concurrencée. Betpawa/besoccer/FotMob/Sofascore n'y
+contribuent jamais (voir décision explicite 15.8 sur Betpawa). **Exception
+volontaire et unique, actée le 26/08** : pour les COTES seulement, Betpawa
+est une source à part entière et concurrente de Bet365/matchendirect --
+pas un repli, un choix délibéré (cotes réelles, celles sur lesquelles
+l'utilisateur mise réellement). Les deux rôles ne se mélangent jamais :
+Betpawa ne fournit jamais de stats, matchendirect ne fournit jamais de
+cotes pour un match sourcé Betpawa.
 
 ### 9.8 Auto-déclaration à conserver — TOUJOURS EN VIGUEUR
 `coefficients_empiriques: false` toujours présent dans `data.json` et
@@ -272,19 +307,57 @@ affiché explicitement sur le site (bloc risques, Module 4).
 
 ---
 
-## 10. Fichiers actuels du dépôt (mis à jour 25/08)
+## 10. Fichiers actuels du dépôt (mis à jour 26/08 -- liste vérifiée
+contre le dépôt réel, pas recopiée de mémoire)
 
-- `scraper.py` — matchs du jour (inchangé depuis le 23/08)
-- `scraper_details.py` — classement/H2H/cotes/repli saison (testé en
-  conditions réelles, étendu aux lignes over/under 0.5-7.5)
-- `calculs.py` — Poisson/Dixon-Coles/EV/Kelly/GO-NO_GO/corrélation (testé)
-- `run_pipeline.py` — orchestrateur, flux sélection manuelle + GO/NO_GO
-- `index.html` / `selection.html` — navigation croisée entre les deux pages
-- `script.js` — affichage Module 4, hiérarchie visuelle à 5 niveaux
+**Scraping matchendirect**
+- `scraper.py` — matchs aujourd'hui/demain, HTTP simple (inchangé depuis
+  le 23/08, jamais touché par les travaux Betpawa)
+- `scraper_semaine.py` — matchs J+2 à J+7, via Playwright (nouveau, 26/08,
+  voir 15.9)
+- `scraper_details.py` — classement/H2H/forme/cotes matchendirect (bug de
+  cote corrigé le 26/08, voir tout en haut du document)
+
+**Scraping/traitement Betpawa (tous nouveaux, 26/08)**
+- `scraper_betpawa.py` — automatisation complète par navigateur (voir 15.7)
+- `parse_betpawa.py` — parseur format copier-coller (français, séparé)
+- `parse_betpawa_url.py` — parseur format récupération Claude (anglais, collé)
+- `parse_betpawa_playwright.py` — parseur format navigateur automatisé
+  (anglais, séparé) -- le format réellement produit par Playwright
+- `GABARIT_COTES_MANUELLES.json` — documentation du format `cotes_manuelles`
+- `betpawa_urls.txt` — liste d'URLs à traiter (une par ligne, format hybride
+  optionnel avec `|`, voir 15.9)
+- `test_scraping_betpawa.py` — script de diagnostic ponctuel (a confirmé
+  qu'une requête HTTP simple ne peut pas voir les cotes Betpawa)
+
+**Calcul et orchestration**
+- `calculs.py` — Poisson/Dixon-Coles/EV/Kelly/GO-NO_GO/corrélation (inchangé
+  par les travaux Betpawa)
+- `run_pipeline.py` — orchestrateur ; étendu le 26/08 pour `cotes_manuelles`,
+  les marchés handicap/O-U par équipe/pair-impair/cages inviolées, et les
+  entrées sans `url_match` (voir section 15)
+
+**Site (affichage)**
+- `index.html` / `panier.html` / `pronostics.html` / `betpawa.html` —
+  navigation croisée entre les quatre pages
+- `script.js` — affichage Module 4
+- `panier.js` — panier partagé, gère les entrées Betpawa (étiquette,
+  cotes conservées au copier-coller)
+- `betpawa.js` — page de dépôt Betpawa (détection auto domicile/extérieur,
+  persistance de brouillon, détection d'URL collée par erreur -- 15.10)
+- `parseBetpawa.js` — portage JS de `parse_betpawa.py` pour la page web
 - `selection.js` — sélection avec cases turquoise
-- `style.css` — thème turquoise/or/vert (refonte du 25/08)
-- `matchs_du_jour.json` / `matchs_selectionnes.json` / `data.json` — générés
+- `style.css` — thème turquoise/or/vert
+
+**Données générées** (jamais éditées à la main, sauf `panier.json` et
+`betpawa_urls.txt`)
+- `matchs_du_jour.json` / `matchs_demain.json` / `matchs_semaine.json` /
+  `panier.json` / `data.json` / `historique_pronostics.json`
+
+**Autre**
 - `Pipeline_Football_v_15082026_h2h_rotation.zip` — document génèse original
+- `.github/workflows/pipeline.yml` — workflow unique, étapes matchendirect
+  (jour/semaine) puis Betpawa puis calcul, dans cet ordre
 
 ## 11. Diagnostic et correctifs confirmés sur HTML réel (24/08/2026)
 
@@ -333,8 +406,11 @@ par rapport à ce qui était noté ici le 24/08.
 - Score exact, pair/impair, cages inviolées : calculés mais JAMAIS dans
   LISTE_A/LISTE_B — aucune cote scrapée pour ces marchés. Affichés en
   lecture seule dans le détail N1 du site.
-- Betpawa : cote de référence = minimum du panel de bookmakers scrapés —
-  Betpawa lui-même absent de tous les panels observés.
+- Betpawa : idée d'origine (25/08) abandonnée avant tout test réel --
+  utiliser Betpawa comme "cote de référence" via minimum du panel de
+  bookmakers scrapés. **Périmée, remplacée le 26/08** par une intégration
+  directe et bien plus ambitieuse (source de cotes à part entière, pas un
+  proxy) -- voir section 15.
 
 ### 13.2 Étape 3 Module 2 — Classement + H2H, branchés et testés
 `calcule_ratio_classement` et `calcule_ratio_h2h` ajoutés à `calculs.py`.
@@ -492,3 +568,182 @@ Non testé en conditions réelles de production (accès réseau à
 matchendirect.fr indisponible depuis l'environnement d'édition) --
 à confirmer au prochain run réel, en particulier `cote_1` sur les lignes
 over/under 5.5+.
+
+---
+
+## 15. Intégration Betpawa (26/08)
+
+### 15.1 Cotes manuelles -- principe
+Nouveau champ optionnel `cotes_manuelles` dans une entrée `panier.json`.
+Présent -> `construit_signaux()` saute le scraping matchendirect/Bet365 et
+utilise ce dict directement comme `cotes_marches`. Absent -> comportement
+strictement inchangé (scraping normal). Structure attendue : voir
+`GABARIT_COTES_MANUELLES.json`, à la racine du dépôt.
+
+### 15.2 Nouveaux marchés dans l'analyse automatique
+`construit_candidats()` étendu : handicap 2 choix (lignes demi-entières
+uniquement), over/under par équipe, pair/impair, cages inviolées. Ces
+marchés étaient déjà calculés par `calculs.py` mais jamais exploités faute
+de cote scrapée -- aucun effet sur les matchs matchendirect/Bet365 (cote
+toujours absente pour ces clés côté scraping), actifs uniquement quand des
+cotes manuelles les fournissent.
+
+Score exact et nombre exact de buts restent **volontairement exclus** par
+défaut (`INCLURE_SCORE_EXACT_DANS_ANALYSE` / `INCLURE_NOMBRE_EXACT_BUTS_
+DANS_ANALYSE` dans `run_pipeline.py`, tous deux `False`) -- probabilités
+individuelles trop faibles, marché le plus sensible à une erreur de modèle.
+Bascule à `True` volontairement si le risque est jugé acceptable.
+
+### 15.3 Matchs sans URL matchendirect
+`normalise_panier()` accepte maintenant une entrée avec `cotes_manuelles`
+mais SANS `url_match` (à condition d'un `match_id` explicite). `construit_
+signaux()` la traite proprement : `raison_non_traite` explicite ("pas
+d'URL matchendirect, forme/classement/H2H indisponibles, lambda non
+calculable"), jamais un plantage ni une valeur devinée. Cas fréquent pour
+un match Betpawa dont le championnat n'est pas couvert par matchendirect --
+reste un point ouvert (voir 15.6) si on veut vraiment analyser ces matchs.
+
+### 15.4 Deux méthodes d'apport, en parallèle, chacune indépendante
+**Décision (26/08)** : garder les deux, pas de méthode unique -- si l'une
+échoue pour un match donné, basculer sur l'autre.
+
+- **Copier-coller** (page `betpawa.html`, `betpawa.js`, `parseBetpawa.js`) :
+  Patrick colle le texte brut copié depuis l'app Betpawa (téléphone),
+  domicile/extérieur détectés automatiquement depuis le texte (ligne après
+  "Retour"), compétition saisie manuellement mais persistée d'un ajout à
+  l'autre (`localStorage`, clé `archetype_derniere_competition`) -- elle
+  n'apparaît pas dans le texte copiable sur cette page Betpawa. Tout se
+  passe dans le navigateur, pousse directement dans le panier partagé
+  (`localStorage` `archetype_panier`, même clé que `index.js`/`panier.js`).
+  Validation de formulaire précise : champ manquant nommé explicitement et
+  entouré en rouge (pas de message générique après deux confusions
+  placeholder/valeur remplie).
+
+- **URL** (`parse_betpawa_url.py`, exécuté par Claude dans le chat, pas
+  déployé côté site) : Patrick donne l'URL `betpawa.cm/event/...`, Claude
+  la récupère et en extrait domicile/extérieur/compétition (fiable, depuis
+  les métadonnées de la page, jamais depuis un copier-coller) + toutes les
+  cotes, puis renvoie l'entrée `panier.json` complète à coller à la main.
+  Format de page RADICALEMENT différent du copier-coller : étiquette et
+  valeur collées sans séparateur ("11.94" = "1" + "1.94"), nécessite un
+  parseur dédié (pas un portage du premier). Fonctionne uniquement en
+  circuit manuel via le chat -- une page du site ne peut pas récupérer une
+  URL betpawa.cm elle-même (CORS, hors de notre contrôle).
+
+### 15.5 Couverture des marchés Betpawa -- limite réelle, pas un bug
+Testé sur 5 matchs réels, 4 championnats : Angleterre (25+ marchés),
+Afrique du Sud (18-19), Corée du Sud (23), **Arménie (2 marchés
+seulement -- 1X2 et double chance)**. La richesse de l'offre Betpawa varie
+énormément selon la confidentialité du championnat -- attendre des
+`cotes_manuelles` très pauvres sur les petites ligues, ce n'est pas un
+défaut du parseur.
+
+Une URL de type `betpawa.cm/events/group/...` (liste de matchs d'un
+championnat) N'EST PAS une page de match individuel -- `parse_betpawa_url.py`
+ne la traite pas. Toujours donner l'URL `/event/...` du match précis.
+
+### 15.6 Stats Betpawa comme source de forme -- TRANCHÉ, pas reporté (voir 15.8)
+
+### 15.7 Automatisation complète par navigateur (26/08, après 15.4)
+Décision utilisateur : Betpawa devient la priorité absolue pour les cotes
+("on mise sur ces cotes réelles"), matchendirect passe au second plan pour
+les stats. `scraper_betpawa.py` automatise entièrement la méthode URL
+(15.4) : lit `betpawa_urls.txt`, ouvre chaque page avec Playwright/Chromium,
+extrait domicile/extérieur/compétition depuis le titre de la page, puis les
+cotes. Tourne dans `pipeline.yml`, zéro intervention manuelle au-delà de
+l'ajout de l'URL au fichier.
+
+**Découverte critique en cours de route** : le format de texte capturé par
+un vrai navigateur automatisé est un TROISIÈME format, différent des deux
+déjà connus (copier-coller téléphone : français, séparé ; récupération
+Claude : anglais, collé) -- anglais, mais séparé. Confirmé sur capture
+d'écran d'un run réel GitHub Actions. `parse_betpawa_playwright.py` créé
+pour ce format précis. `scraper_betpawa.py` essaie les trois parseurs et
+garde celui qui reconnaît le plus de marchés -- résiste au format réel sans
+savoir à l'avance lequel des trois s'appliquera.
+
+**Bug de dédoublonnage trouvé et corrigé** : un match déjà présent dans
+`panier.json` (ex. d'un run précédent ayant échoué, 0 marché) était
+purement et simplement IGNORÉ au lieu d'être mis à jour -- les cotes
+fraîchement récupérées étaient jetées silencieusement. Corrigé : une
+entrée existante est désormais REMPLACÉE, jamais ignorée.
+
+**Validé en conditions réelles** (26/08, AC Horsens - Viborg FF,
+Superliga danoise) : 25 marchés extraits automatiquement, aucune
+intervention manuelle après l'ajout de l'URL.
+
+### 15.8 Décision finale sur les stats Betpawa -- matchendirect reste seul
+Une tentative réelle d'extraire classement/forme/H2H depuis Betpawa (pour
+remplacer entièrement matchendirect comme source de forme, cf. ancienne
+section 15.6) a échoué techniquement : même après avoir cliqué sur les
+onglets "Team stats"/"H2H"/"Form" avec Playwright, ces données
+n'apparaissent PAS dans le texte capturé -- confirmé deux fois sur capture
+d'écran de run réel. Hypothèse la plus probable : données visibles
+seulement après connexion à un compte Betpawa (page affiche
+"LOGIN"/"JOIN NOW"), pendant que l'outil de récupération de Claude (pas un
+navigateur) y accède autrement (contenu pré-généré pour le référencement,
+accessible sans connexion).
+
+**Décision explicite de l'utilisateur, définitive** : ne pas poursuivre
+cette piste. Matchendirect reste l'UNIQUE source de forme/classement/H2H,
+Betpawa reste l'UNIQUE source de cotes pour les matchs qu'il apporte. Les
+deux rôles ne se mélangent jamais (voir 9.7). Toute reprise future de
+l'idée "stats Betpawa" doit repartir de ce constat d'échec technique, pas
+le reconsidérer comme une option jamais essayée.
+
+### 15.9 Système hybride Betpawa (cotes) + matchendirect (forme) (26/08)
+`betpawa_urls.txt` accepte un format à deux URLs par ligne, séparées par
+`|` : `URL_BETPAWA | URL_MATCHENDIRECT`. La deuxième URL alimente
+`url_match`, permettant un vrai calcul GO/NO_GO complet (lambda calculé
+sur données matchendirect, comparé aux cotes Betpawa). Sans elle, le match
+reste "non traité" (15.3).
+
+**Recherche automatique ajoutée pour éviter la saisie manuelle** :
+`cherche_url_matchendirect_auto()` compare les noms d'équipe Betpawa à
+`matchs_du_jour.json`/`matchs_demain.json`/`matchs_semaine.json` (J+2 à
+J+7, voir ci-dessous) avant de retomber sur l'URL manuelle du `|`. Ne
+retient jamais une correspondance ambiguë (plusieurs candidats) -- mieux
+vaut aucune URL automatique qu'une mauvaise.
+
+**BUG DANGEREUX TROUVÉ ET CORRIGÉ avant tout déploiement** : la première
+version de cette recherche traitait "Manchester City" et "Manchester
+United" comme la même équipe (les mots "United"/"City"/"Real"/"Athletic"
+etc. étaient traités comme du bruit générique à ignorer, réduisant
+"Manchester United" à "Manchester", inclus dans "Manchester City"). Ces
+mots sont précisément ce qui distingue des clubs rivaux d'une même ville
+-- retirés de la liste des mots ignorés. Testé ensuite sur une douzaine de
+cas pièges (Real Madrid/Real Betis, Athletic Bilbao/Atletico Madrid,
+Newcastle United/Sheffield United...) avant validation. Point de vigilance
+permanent : c'est une heuristique de correspondance de texte, pas une
+identité garantie -- un futur cas piège non anticipé reste possible (voir
+section 6).
+
+**`scraper_semaine.py` créé pour élargir la fenêtre de recherche
+automatique** : `scraper.py` ne couvre qu'aujourd'hui/demain, et "demain"
+échoue en pratique (redirection confirmée vers la page du jour, voir
+section 3). Un nouveau script, séparé de `scraper.py` (zéro risque sur le
+flux "aujourd'hui" qui fonctionne), utilise Playwright pour récupérer
+J+2 à J+7 -- Playwright contourne le blocage qui empêche une requête HTTP
+simple de voir ces pages. Confirmé en conditions réelles (26/08) : 6 jours
+récupérés, 2531 matchs au total, sans limite de nombre par jour (le
+plafond initial de 200/jour a été retiré à la demande explicite de
+l'utilisateur -- le temps de calcul en plus est jugé négligeable).
+
+### 15.10 Corrections d'ergonomie sur betpawa.js (26/08)
+Deux confusions récurrentes corrigées à la racine plutôt que par un
+rappel répété :
+- **URL collée dans le champ texte des marchés** : la page attend le texte
+  copié des cotes, pas un lien -- confusion survenue plusieurs fois de
+  suite malgré des rappels. Détection automatique (`^https?://`) avec
+  message explicite redirigeant vers le bon circuit (chat ou
+  `betpawa_urls.txt`), avant toute autre validation.
+- **Perte de saisie au rechargement de la page** : Safari recharge parfois
+  la page en arrière-plan (gestion mémoire iOS) quand l'utilisateur change
+  d'application pour aller chercher une URL ailleurs, vidant le
+  formulaire. Chaque champ se sauvegarde désormais à chaque frappe
+  (`localStorage`) et se restaure au chargement -- un rechargement ne perd
+  plus rien. Effacé automatiquement après un ajout réussi. Attention au
+  point d'ordre d'exécution : la restauration du brouillon doit passer
+  AVANT le pré-remplissage de la dernière compétition utilisée (15.4),
+  sinon ce dernier écrase une saisie de compétition en cours avec une
+  valeur plus ancienne.
