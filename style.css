@@ -200,6 +200,9 @@ main.grille {
 .details-niveau1 summary::-webkit-details-marker { display: none; }
 .details-niveau1 summary::before { content: "▸ "; }
 .details-niveau1[open] summary::before { content: "▾ "; }
+.details-niveau1 .texte-ouvert { display: none; }
+.details-niveau1[open] .texte-ferme { display: none; }
+.details-niveau1[open] .texte-ouvert { display: inline; }
 
 .detail-pourquoi {
   color: var(--text-secondary);
