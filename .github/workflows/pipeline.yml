@@ -31,6 +31,13 @@ jobs:
           echo "--- Aperçu demain ---"
           head -c 500 matchs_demain.json
 
+      - name: Générer la liste J+2 à J+7 (via navigateur, contourne le blocage HTTP simple)
+        # continue-on-error : fonctionnalité annexe (aide la recherche
+        # automatique d'URL matchendirect pour les matchs Betpawa) -- son
+        # échec ne doit jamais empêcher le pipeline principal de tourner.
+        run: python scraper_semaine.py
+        continue-on-error: true
+
       - name: Récupérer les matchs Betpawa listés dans betpawa_urls.txt
         # continue-on-error : un souci sur cette étape (site Betpawa qui a
         # changé, une URL invalide) ne doit jamais empêcher le pipeline
@@ -45,7 +52,7 @@ jobs:
         run: |
           git config user.name "archetype-foot-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add data.json matchs_du_jour.json matchs_demain.json
+          git add data.json matchs_du_jour.json matchs_demain.json matchs_semaine.json
           # panier.json et historique_pronostics.json ne sont écrits par
           # run_pipeline.py QUE s'il y avait au moins un match à traiter
           # (voir run_pipeline.py::main) -- peuvent donc ne pas exister sur
