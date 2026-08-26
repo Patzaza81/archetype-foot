@@ -73,9 +73,10 @@ def recupere_page(page, url):
     page.goto(url, timeout=30000, wait_until="domcontentloaded")
     try:
         page.wait_for_selector("text=/1X2/i", timeout=15000)
+        print("  Attente du marché 1X2 : trouvé.")
     except Exception as e:
-        print(f"  AVERTISSEMENT : le marché 1X2 n'est jamais apparu ({e}) -- "
-              f"page peut-être incomplète, on continue quand même.")
+        print(f"  Attente du marché 1X2 : JAMAIS TROUVÉ ({e}) -- "
+              f"page probablement incomplète (JS non chargé, ou bloqué).")
     texte = page.inner_text("body")
     titre = page.title()
     return texte, titre
@@ -127,6 +128,10 @@ def traite_url(page, url):
         print("  AVERTISSEMENT : aucun marché reconnu du tout -- entrée "
               "quand même créée (utile pour voir la raison dans data.json), "
               "mais à vérifier à la main.")
+        print(f"  --- Longueur du texte capturé : {len(texte)} caractères ---")
+        print(f"  --- Extrait des 1500 premiers caractères capturés ---")
+        print(texte[:1500])
+        print(f"  --- Fin de l'extrait ---")
 
     return {
         "domicile": meta["domicile"],
