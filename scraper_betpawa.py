@@ -1,22 +1,21 @@
 """
-scraper_betpawa.py -- récupère automatiquement les pages de match Betpawa
-listées dans betpawa_urls.txt (une URL par ligne) et les ajoute à
-panier.json, sans intervention manuelle.
+scraper_betpawa.py -- récupère automatiquement les cotes des pages de match
+Betpawa listées dans betpawa_urls.txt et les ajoute à panier.json, sans
+intervention manuelle.
+
+SYSTÈME HYBRIDE (décision du 26/08) : Betpawa fournit les cotes et
+marchés, matchendirect reste l'UNIQUE source de forme/classement/H2H --
+volontairement, pas par manque d'essai (une tentative d'extraire ces
+stats depuis Betpawa via navigateur automatisé a échoué, données absentes
+du texte capturé même après clic sur les onglets). Chaque ligne de
+betpawa_urls.txt peut donc contenir une deuxième URL matchendirect
+optionnelle (séparateur '|') pour que le match ait un vrai calcul
+GO/NO_GO ; sans elle, le match reste "non traité" (cotes affichées seules).
 
 Nécessite un navigateur automatisé (Playwright/Chromium) car le contenu
-est chargé par JavaScript après le chargement initial -- confirmé par
-test_scraping_betpawa.py (26/08) : une requête HTTP classique ne renvoie
-que le squelette vide de l'application, aucune cote.
-
-CE SCRIPT N'A JAMAIS ÉTÉ TESTÉ EN CONDITIONS RÉELLES au moment où il est
-écrit -- l'environnement d'édition n'a pas accès à betpawa.cm. Le format
-exact du texte qu'un vrai navigateur automatisé va extraire de la page est
-une inconnue : c'est pour ça que les DEUX parseurs déjà construits et
-validés (parse_betpawa.py pour le format "copier-coller", parse_betpawa_url.py
-pour le format "concaténé" vu par l'outil de récupération de Claude) sont
-essayés, et celui qui reconnaît le plus de marchés est gardé. Le premier
-run réel en dira plus -- lire attentivement le journal de ce run avant de
-lui faire confiance.
+des cotes est chargé par JavaScript après le chargement initial (confirmé
+par test_scraping_betpawa.py, 26/08 : une requête HTTP classique ne
+renvoie que le squelette vide de l'application).
 """
 import json
 import re
@@ -46,11 +45,27 @@ def genere_match_id(domicile, exterieur):
 
 
 def lit_urls():
+    """Une ligne = une URL Betpawa (cotes), avec en option une deuxième URL
+    matchendirect séparée par '|' (forme/classement/H2H -- SEULE source
+    utilisée pour ça, jamais Betpawa, décision du 26/08 : les deux sources
+    sont complémentaires par force, pas redondantes). Format :
+        https://www.betpawa.cm/event/XXXX?filter=all
+        https://www.betpawa.cm/event/YYYY?filter=all | https://www.matchendirect.fr/live-score/zzz_id.html
+    Retourne une liste de (url_betpawa, url_matchendirect_ou_None)."""
     try:
         with open(FICHIER_URLS, "r", encoding="utf-8") as f:
-            return [l.strip() for l in f if l.strip() and not l.strip().startswith("#")]
+            lignes = [l.strip() for l in f if l.strip() and not l.strip().startswith("#")]
     except FileNotFoundError:
         return []
+
+    resultat = []
+    for ligne in lignes:
+        if "|" in ligne:
+            url_bp, url_md = (p.strip() for p in ligne.split("|", 1))
+            resultat.append((url_bp, url_md or None))
+        else:
+            resultat.append((ligne, None))
+    return resultat
 
 
 def lit_panier():
@@ -70,19 +85,7 @@ def recupere_page(page, url):
     """Charge la page et renvoie (texte_complet, titre). Attend explicitement
     qu'un marché connu apparaisse plutôt qu'un délai fixe -- plus robuste si
     le réseau est lent, échoue proprement sinon (texte quand même renvoyé,
-    peut juste être incomplet).
-
-    CORRECTIF (26/08decies) -- phase de découverte pour les données de
-    forme/classement/H2H : ces données n'apparaissaient PAS dans le texte
-    capturé lors du premier run réel (confirmé sur capture d'écran), alors
-    qu'elles sont visibles sur la page pour un utilisateur -- probablement
-    chargées dans un onglet ("Team stats", "H2H") qu'il faut cliquer, pas
-    seulement attendre. Cette version clique sur les onglets visibles avant
-    de capturer, et imprime le texte capturé en ENTIER (pas juste un
-    extrait) pour voir la vraie structure avant de construire l'extracteur
-    de statistiques -- même démarche que pour les cotes : diagnostic
-    d'abord, construction ensuite.
-    """
+    peut juste être incomplet)."""
     page.goto(url, timeout=30000, wait_until="domcontentloaded")
     try:
         page.wait_for_selector("text=/1X2/i", timeout=15000)
@@ -90,18 +93,6 @@ def recupere_page(page, url):
     except Exception as e:
         print(f"  Attente du marché 1X2 : JAMAIS TROUVÉ ({e}) -- "
               f"page probablement incomplète (JS non chargé, ou bloqué).")
-
-    # Tentative de clic sur les onglets de statistiques, s'ils existent.
-    # Ne fait rien planter si absents -- juste une tentative, avec un
-    # message clair sur ce qui a marché ou pas.
-    for nom_onglet in ["Team stats", "H2H", "Form", "Full"]:
-        try:
-            page.click(f"text={nom_onglet}", timeout=3000)
-            print(f"  Onglet '{nom_onglet}' : cliqué.")
-            page.wait_for_timeout(1000)  # laisse le temps au contenu de charger après le clic
-        except Exception:
-            print(f"  Onglet '{nom_onglet}' : non trouvé ou non cliquable -- ignoré.")
-
     texte = page.inner_text("body")
     titre = page.title()
     return texte, titre
@@ -135,10 +126,12 @@ def meilleur_parsing(texte, domicile, exterieur):
     return meilleur_resultat
 
 
-def traite_url(page, url):
-    print(f"\n=== {url} ===")
+def traite_url(page, url_betpawa, url_matchendirect):
+    print(f"\n=== {url_betpawa} ===")
+    if url_matchendirect:
+        print(f"  (forme/classement/H2H depuis matchendirect : {url_matchendirect})")
     try:
-        texte, titre = recupere_page(page, url)
+        texte, titre = recupere_page(page, url_betpawa)
     except Exception as e:
         print(f"  ÉCHEC de récupération : {e}")
         return None
@@ -151,18 +144,6 @@ def traite_url(page, url):
 
     print(f"  Match : {meta['domicile']} - {meta['exterieur']} "
           f"({meta['competition']})")
-
-    # CORRECTIF (26/08decies) : phase de découverte des données de forme --
-    # imprime la partie du texte AVANT le premier marché de cotes (où
-    # devraient se trouver classement/forme/H2H si le clic sur les onglets
-    # a fonctionné). Non conditionné à un échec cette fois : c'est
-    # justement ce qu'on ne connaît pas encore.
-    idx_1x2 = texte.find("1X2")
-    section_avant_cotes = texte[:idx_1x2] if idx_1x2 != -1 else texte
-    print(f"  --- Texte capturé AVANT la section des cotes "
-          f"({len(section_avant_cotes)} caractères) ---")
-    print(section_avant_cotes)
-    print(f"  --- Fin de cette section ---")
 
     cotes = meilleur_parsing(texte, meta["domicile"], meta["exterieur"])
     if not cotes:
@@ -178,7 +159,14 @@ def traite_url(page, url):
         "domicile": meta["domicile"],
         "exterieur": meta["exterieur"],
         "competition": meta["competition"],
-        "url_match": None,
+        # CORRECTIF (26/08undecies) : url_match = la source matchendirect si
+        # fournie -- c'est elle, et UNIQUEMENT elle, qui alimente
+        # forme/classement/H2H dans construit_signaux(). Betpawa ne fournit
+        # jamais ces données (décision du 26/08 : pas de statistiques
+        # Betpawa, matchendirect reste seul pour ça -- les deux sources
+        # sont complémentaires, pas redondantes). Sans URL matchendirect,
+        # comportement inchangé : "non traité", cotes affichées seules.
+        "url_match": url_matchendirect,
         "match_id": genere_match_id(meta["domicile"], meta["exterieur"]),
         "source": "betpawa",
         "cotes_manuelles": cotes,
@@ -211,8 +199,8 @@ def main():
     with sync_playwright() as p:
         navigateur = p.chromium.launch()
         page = navigateur.new_page()
-        for url in urls:
-            entree = traite_url(page, url)
+        for url_betpawa, url_matchendirect in urls:
+            entree = traite_url(page, url_betpawa, url_matchendirect)
             if entree is None:
                 continue
             if entree["match_id"] in index_existant:
