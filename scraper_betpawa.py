@@ -25,6 +25,7 @@ import unicodedata
 
 from parse_betpawa import parse_betpawa
 from parse_betpawa_url import parse_betpawa_url, extrait_meta
+from parse_betpawa_playwright import parse_betpawa_playwright
 
 FICHIER_URLS = "betpawa_urls.txt"
 FICHIER_PANIER = "panier.json"
@@ -83,27 +84,31 @@ def recupere_page(page, url):
 
 
 def meilleur_parsing(texte, domicile, exterieur):
-    """Essaie les deux parseurs connus, garde celui qui reconnaît le plus de
-    marchés -- le format réel produit par le navigateur automatisé n'était
-    pas connu au moment d'écrire ce script (voir docstring en tête)."""
-    try:
-        resultat_a = parse_betpawa(texte, domicile, exterieur)
-    except Exception as e:
-        print(f"  parse_betpawa (format copier-coller) a échoué : {e}")
-        resultat_a = {}
-    try:
-        resultat_b = parse_betpawa_url(texte, domicile, exterieur)
-    except Exception as e:
-        print(f"  parse_betpawa_url (format concaténé) a échoué : {e}")
-        resultat_b = {}
+    """Essaie les trois parseurs connus, garde celui qui reconnaît le plus de
+    marchés. Trois formats réellement observés à ce jour, tous différents :
+    (1) copier-coller téléphone -- français, étiquette/valeur séparées ;
+    (2) outil de récupération de Claude -- anglais, étiquette/valeur collées ;
+    (3) navigateur automatisé (Playwright) -- anglais, étiquette/valeur
+    séparées -- confirmé le 26/08 sur le journal réel d'un run GitHub Actions,
+    aucun des deux premiers ne le couvrait."""
+    strategies = [
+        ("copier-coller (FR, séparé)", parse_betpawa),
+        ("récupération Claude (EN, collé)", parse_betpawa_url),
+        ("navigateur automatisé (EN, séparé)", parse_betpawa_playwright),
+    ]
+    meilleur_nom, meilleur_resultat = None, {}
+    for nom, fonction in strategies:
+        try:
+            resultat = fonction(texte, domicile, exterieur)
+        except Exception as e:
+            print(f"  {nom} a échoué : {e}")
+            resultat = {}
+        print(f"  {nom} : {len(resultat)} marché(s)")
+        if len(resultat) > len(meilleur_resultat):
+            meilleur_nom, meilleur_resultat = nom, resultat
 
-    if len(resultat_a) >= len(resultat_b):
-        print(f"  Format retenu : copier-coller ({len(resultat_a)} marchés "
-              f"contre {len(resultat_b)})")
-        return resultat_a
-    print(f"  Format retenu : concaténé ({len(resultat_b)} marchés contre "
-          f"{len(resultat_a)})")
-    return resultat_b
+    print(f"  Format retenu : {meilleur_nom or 'aucun'} ({len(meilleur_resultat)} marché(s))")
+    return meilleur_resultat
 
 
 def traite_url(page, url):
