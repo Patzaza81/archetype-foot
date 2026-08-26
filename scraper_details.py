@@ -431,9 +431,40 @@ def _saison_actuelle_et_precedente():
     return actuelle, precedente
 
 
+def _partie_competition(nom_competition):
+    """Retire le préfixe pays ('Denmark :', 'Danemark :', etc.) -- il diffère
+    presque toujours entre Betpawa (anglais) et matchendirect (français ou
+    langue locale), et n'apporte rien à la comparaison : on cherche la même
+    équipe sur SA PROPRE page matchendirect, le pays est donc déjà garanti
+    correct par construction."""
+    return _normalise_texte(nom_competition.split(":", 1)[-1])
+
+
 def _extrait_historique_competition(soup, nom_competition, nom_equipe, max_matchs=10):
-    cible = _normalise_texte(nom_competition)
-    ancre = soup.find(string=lambda s: s and _normalise_texte(s) == cible)
+    # CORRECTIF (26/08) : l'égalité stricte texte-complet ('Denmark :
+    # Superliga' vs 'Danemark : Superligaen' sur la vraie page matchendirect,
+    # confirmé en conditions réelles) échouait pour TOUT match venant de
+    # Betpawa, pas seulement les cas rares -- le préfixe pays et
+    # l'orthographe locale de la compétition ne correspondent jamais
+    # exactement d'une source à l'autre. Remplacé par une comparaison sur le
+    # nom de compétition seul (préfixe pays retiré des deux côtés), en
+    # inclusion plutôt qu'égalité stricte ('superliga' dans 'superligaen').
+    # Risque de faux positif volontairement jugé faible ici : contrairement
+    # au matching de noms d'équipes sur tout un pays (incident CSKA/Slavia
+    # Sofia du même jour), cette recherche ne compare qu'un petit nombre de
+    # rubriques (2 à 4 en général : championnat, coupe, amicaux) sur la
+    # page d'UNE SEULE équipe déjà identifiée avec certitude -- pas de
+    # risque de confondre deux équipes différentes.
+    cible = _partie_competition(nom_competition)
+    ancre = None
+    for candidat in soup.find_all(string=True):
+        texte = _normalise_texte(str(candidat))
+        if ":" not in texte:
+            continue
+        partie = _partie_competition(texte)
+        if partie and cible and (partie in cible or cible in partie):
+            ancre = candidat
+            break
     if ancre is None:
         return None
     table = ancre.find_parent().find_next("table")
