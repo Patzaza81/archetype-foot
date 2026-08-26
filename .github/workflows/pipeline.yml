@@ -21,6 +21,10 @@ jobs:
       - name: Installer les dépendances
         run: pip install requests beautifulsoup4 pandas lxml
 
+      - name: TEST PONCTUEL -- scraping Betpawa (à retirer après lecture du résultat)
+        run: python test_scraping_betpawa.py
+        continue-on-error: true
+
       - name: Générer les listes brutes aujourd'hui + demain (pour la page de sélection)
         run: |
           python scraper.py --max-matchs 200
