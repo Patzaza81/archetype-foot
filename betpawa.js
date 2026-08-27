@@ -44,6 +44,34 @@ function genererMatchId(domicile, exterieur) {
   return `betpawa_${slug(domicile)}_${slug(exterieur)}_${dateDuJourISO()}`;
 }
 
+// Fonction d'envoi vers Netlify pour déclencher le robot GitHub Actions
+async function declencherPipelineNetlify(matchData) {
+  try {
+    const payload = {
+      equipe_dom: matchData.domicile,
+      equipe_ext: matchData.exterieur,
+      date: dateDuJourISO(),
+      heure: "20:00",
+      url_matchendirect: matchData.url_match || ""
+    };
+
+    const response = await fetch('/.netlify/functions/trigger', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+    if (response.ok && data.ok) {
+      console.log("Pipeline GitHub déclenché avec succès via Netlify pour :", matchData.domicile, "vs", matchData.exterieur);
+    } else {
+      console.warn("Avertissement lors du déclenchement Netlify :", data.error || data);
+    }
+  } catch (e) {
+    console.error("Erreur lors du déclenchement de la fonction Netlify :", e);
+  }
+}
+
 // CORRECTIF (26/08sexies) : détecte domicile/extérieur directement dans le
 // texte collé -- le format Betpawa observé sur tous les matchs testés place
 // toujours les deux noms d'équipe juste après la ligne "Retour" (ou juste
@@ -213,12 +241,15 @@ document.getElementById("ajouter-btn").addEventListener("click", () => {
   }
   sauvePanier(panier);
 
+  // Déclenchement automatique du pipeline GitHub via Netlify
+  declencherPipelineNetlify(entree);
+
   afficheApercu(cotes);
   afficheResultat(
     (dejaPresent
       ? `${domicile} — ${exterieur} déjà présent aujourd'hui -- cotes remplacées`
       : `${domicile} — ${exterieur} ajouté au panier`) +
-      ` (${Object.keys(cotes).length} marché(s)). Prêt pour le match suivant.` +
+      ` (${Object.keys(cotes).length} marché(s)). Analyse envoyée au robot !` +
       (url ? "" : " Sans URL matchendirect -- sera marqué non traité tant qu'une source de forme n'est pas branchée."),
     true
   );
