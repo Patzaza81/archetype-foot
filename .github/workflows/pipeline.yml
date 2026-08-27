@@ -3,10 +3,38 @@ name: Pipeline quotidien Archetype Foot
 on:
   schedule:
     - cron: "0 7 * * *"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      equipe_dom:
+        description: 'Équipe Domicile'
+        required: false
+        type: string
+      equipe_ext:
+        description: 'Équipe Extérieure'
+        required: false
+        type: string
+      date:
+        description: 'Date du match (YYYY-MM-DD)'
+        required: false
+        type: string
+      heure:
+        description: 'Heure du match (HH:MM)'
+        required: false
+        type: string
+      url_matchendirect:
+        description: 'URL MatchEnDirect'
+        required: false
+        type: string
 
 permissions:
   contents: write
+
+env:
+  INPUT_EQUIPE_DOM: ${{ inputs.equipe_dom }}
+  INPUT_EQUIPE_EXT: ${{ inputs.equipe_ext }}
+  INPUT_DATE: ${{ inputs.date }}
+  INPUT_HEURE: ${{ inputs.heure }}
+  INPUT_URL_MATCHENDIRECT: ${{ inputs.url_matchendirect }}
 
 jobs:
   run-pipeline:
