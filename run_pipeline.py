@@ -457,7 +457,11 @@ def construit_signaux(matchs_bruts):
         candidats = construit_candidats(marches_probas, cotes_marches)
         liste_a = calculs.construit_liste_a(candidats)
         liste_b = calculs.construit_liste_b(liste_a, matrice)
-        decision = calculs.decision_go_nogo(liste_a, liste_b, len(candidats))
+        decision = calculs.decision_go_nogo(
+            liste_a, liste_b, len(candidats),
+            nb_matchs_domicile_utilises=stats_domicile["nb_domicile"],
+            nb_matchs_exterieur_utilises=stats_exterieur["nb_exterieur"],
+        )
 
         def serialise(c):
             return {
