@@ -1,6 +1,7 @@
-// panier.js — page dédiée au panier (25/08quinquies). Lit/écrit le même
-// localStorage que index.js -- c'est le seul lien entre les deux pages,
-// puisqu'une navigation complète recharge tout le JS.
+// panier.js — page dédiée au panier. Lit/écrit le même localStorage que
+// index.js. "Analyser tout le panier" envoie la liste entière en un seul
+// appel à trigger.js -- un seul run GitHub Actions pour tous les matchs
+// cochés, au lieu d'un run par match.
 
 const CLE_PANIER = "archetype_panier";
 const RE_MATCH_URL = /\/live-score\/([a-z0-9-]+)_([a-z0-9]+)\.html/i;
@@ -17,6 +18,18 @@ function chargePanier() {
 
 function sauvePanier(liste) {
   localStorage.setItem(CLE_PANIER, JSON.stringify(liste));
+}
+
+function construitItemsEnvoi(panier) {
+  return panier.map((item) => ({
+    match_id: item.match_id,
+    domicile: item.domicile,
+    exterieur: item.exterieur,
+    competition: item.competition,
+    url_match: item.url_match,
+    source: item.source,
+    cotes_manuelles: item.cotes_manuelles,
+  }));
 }
 
 function rafraichit() {
@@ -55,22 +68,12 @@ function rafraichit() {
   }
 
   document.getElementById("tout-copier-btn").textContent = `Tout copier (${panier.length})`;
+  document.getElementById("analyser-panier-btn").textContent = `🔬 Analyser tout le panier (${panier.length})`;
 }
 
 function copierPanier() {
   const panier = chargePanier();
-  const items = panier.map((item) => ({
-    match_id: item.match_id,
-    domicile: item.domicile,
-    exterieur: item.exterieur,
-    competition: item.competition,
-    url_match: item.url_match,
-    // CORRECTIF (26/08quinquies) : sans ces deux champs, un match ajouté
-    // depuis betpawa.html perdait ses cotes au moment du copier-coller --
-    // le JSON copié ne contenait plus que les 4 champs historiques.
-    source: item.source,
-    cotes_manuelles: item.cotes_manuelles,
-  }));
+  const items = construitItemsEnvoi(panier);
   const json = JSON.stringify(items, null, 2);
   const bouton = document.getElementById("tout-copier-btn");
 
@@ -99,7 +102,45 @@ function copierPanier() {
   }
 }
 
+async function analyserPanier() {
+  const panier = chargePanier();
+  const statut = document.getElementById("statut-analyse-panier");
+  const bouton = document.getElementById("analyser-panier-btn");
+
+  if (panier.length === 0) {
+    statut.textContent = "❌ Panier vide -- coche au moins un match avant d'analyser.";
+    statut.className = "erreur";
+    return;
+  }
+
+  bouton.disabled = true;
+  statut.textContent = `Envoi de ${panier.length} match(s) au pipeline…`;
+  statut.className = "";
+
+  try {
+    const res = await fetch("/.netlify/functions/trigger", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ matchs: construitItemsEnvoi(panier) }),
+    });
+    const data = await res.json();
+    if (res.ok && data.ok) {
+      statut.textContent = "✅ " + data.message + " Résultat dans quelques minutes sur \"Voir les pronostics\".";
+      statut.className = "ok";
+    } else {
+      statut.textContent = "❌ " + (data.error || "Erreur serveur");
+      statut.className = "erreur";
+    }
+  } catch (e) {
+    statut.textContent = "❌ Impossible de joindre le serveur.";
+    statut.className = "erreur";
+  } finally {
+    bouton.disabled = false;
+  }
+}
+
 document.getElementById("tout-copier-btn").addEventListener("click", copierPanier);
+document.getElementById("analyser-panier-btn").addEventListener("click", analyserPanier);
 
 document.getElementById("ajouter-manuel-btn").addEventListener("click", () => {
   const url = document.getElementById("manuel-url").value.trim();
