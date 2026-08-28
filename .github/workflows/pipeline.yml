@@ -6,25 +6,9 @@ on:
 
   workflow_dispatch:
     inputs:
-      equipe_dom:
-        description: "Équipe à domicile"
+      matchs_json:
+        description: "Liste JSON des matchs à analyser (tableau d'objets)"
         required: true
-        type: string
-      equipe_ext:
-        description: "Équipe à l'extérieur"
-        required: true
-        type: string
-      date:
-        description: "Date du match au format YYYY-MM-DD"
-        required: true
-        type: string
-      heure:
-        description: "Heure du match au format HH:MM"
-        required: true
-        type: string
-      url_matchendirect:
-        description: "URL Matchendirect de secours (facultative)"
-        required: false
         type: string
 
 permissions:
@@ -60,14 +44,10 @@ jobs:
         if: github.event_name == 'schedule'
         run: python run_pipeline.py
 
-      - name: Pipeline déclenché manuellement (nouveau canal)
+      - name: Pipeline déclenché manuellement (panier envoyé depuis le site)
         if: github.event_name == 'workflow_dispatch'
         env:
-          INPUT_EQUIPE_DOM: ${{ github.event.inputs.equipe_dom }}
-          INPUT_EQUIPE_EXT: ${{ github.event.inputs.equipe_ext }}
-          INPUT_DATE: ${{ github.event.inputs.date }}
-          INPUT_HEURE: ${{ github.event.inputs.heure }}
-          INPUT_URL_MD: ${{ github.event.inputs.url_matchendirect }}
+          INPUT_MATCHS_JSON: ${{ github.event.inputs.matchs_json }}
         run: python dispatch_pipeline.py
 
       - name: Commit et push du résultat
