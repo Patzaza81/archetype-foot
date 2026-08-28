@@ -14,10 +14,17 @@
   .item-panier button { background: none; border: none; color: #ef4444; font-size: 1.2em;
                          cursor: pointer; padding: 4px 8px; }
   .vide { padding: 16px; opacity: 0.6; text-align: center; }
-  #tout-copier-btn { display: block; width: 100%; margin: 16px 0; padding: 14px;
+  #tout-copier-btn { display: block; width: 100%; margin: 16px 0 8px 0; padding: 14px;
                       background: #2563eb; color: white; border: none; border-radius: 6px;
                       font-size: 1em; font-weight: bold; cursor: pointer; }
   #tout-copier-btn.copie { background: #16a34a; }
+  #analyser-panier-btn { display: block; width: 100%; margin: 0 0 16px 0; padding: 14px;
+                      background: #7c3aed; color: white; border: none; border-radius: 6px;
+                      font-size: 1em; font-weight: bold; cursor: pointer; }
+  #analyser-panier-btn:disabled { opacity: 0.5; cursor: default; }
+  #statut-analyse-panier { padding: 0 0 16px 0; font-size: 0.9em; }
+  #statut-analyse-panier.ok { color: #14b8a6; }
+  #statut-analyse-panier.erreur { color: #ef4444; }
   #copie-fallback { display: none; width: 100%; box-sizing: border-box; margin-bottom: 16px;
                      min-height: 70px; font-family: monospace; font-size: 0.8em; }
   #ajout-manuel { margin-top: 24px; padding: 12px; border: 1px solid #2a2d34; border-radius: 6px; }
@@ -38,6 +45,10 @@
   <a id="retour-accueil" href="index.html" class="nav-bouton">← Accueil</a>
   <a id="retour-betpawa" href="betpawa.html" class="nav-bouton">⚽ Betpawa</a>
   <div id="liste-panier"></div>
+
+  <button id="analyser-panier-btn">🔬 Analyser tout le panier (0)</button>
+  <div id="statut-analyse-panier"></div>
+
   <button id="tout-copier-btn">Tout copier (0)</button>
   <textarea id="copie-fallback" readonly placeholder="Si la copie automatique échoue, le JSON apparaît ici -- sélectionne-le à la main."></textarea>
 
@@ -51,11 +62,10 @@
   </div>
 
   <p style="padding: 12px; opacity: 0.7; font-size: 0.9em;">
-    Tape "Tout copier", puis colle le résultat dans <code>panier.json</code>
-    sur GitHub avant de lancer le workflow. Seuls les matchs de l'onglet
-    "Aujourd'hui" sont garantis d'être disponibles pour le calcul -- le
-    panier se vide automatiquement après chaque run traité, tout est
-    archivé dans <code>historique_pronostics.json</code>.
+    "Analyser tout le panier" envoie la liste entière en un seul run
+    GitHub Actions. "Tout copier" reste disponible en secours si tu
+    préfères coller le JSON toi-même dans <code>panier.json</code> sur
+    GitHub.
   </p>
 </main>
 <script src="panier.js"></script>
