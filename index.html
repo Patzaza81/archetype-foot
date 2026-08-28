@@ -7,7 +7,7 @@
 <title>Archetype Foot — Accueil</title>
 <link rel="stylesheet" href="style.css">
 <style>
-  .selection-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-bottom: 1px solid #2a2d34; }
+  .selection-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-bottom: 1px solid #2a2d34; flex-wrap: wrap; }
   .selection-item input { width: 20px; height: 20px; }
   .selection-item .heure { opacity: 0.65; font-variant-numeric: tabular-nums; min-width: 3.2em; }
   .selection-competition { font-size: 0.85em; opacity: 0.7; padding: 6px 12px; background: #1a1c22; }
@@ -21,6 +21,12 @@
   #nav-panier { background: #14b8a6; color: #0f1115; }
   #nav-pronostics { background: #2563eb; color: white; }
   #nav-betpawa { background: #E5B83F; color: #071E18; }
+  .btn-analyser { background: #7c3aed; color: white; border: none; border-radius: 6px; padding: 6px 10px;
+                  font-size: 0.85em; cursor: pointer; margin-left: auto; }
+  .btn-analyser:disabled { opacity: 0.5; cursor: default; }
+  .statut-analyse { font-size: 0.8em; width: 100%; padding: 2px 0 4px 0; }
+  .statut-analyse.ok { color: #14b8a6; }
+  .statut-analyse.erreur { color: #ef4444; }
 </style>
 </head>
 <body>
