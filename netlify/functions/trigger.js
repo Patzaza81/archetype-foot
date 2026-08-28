@@ -11,8 +11,8 @@
 //   GITHUB_WORKFLOW_FILE (défaut : pipeline.yml)
 //   GITHUB_REF           (défaut : main)
 
-const MAX_BODY_BYTES = 32 * 1024;
-const MAX_MATCHS = 30;
+const MAX_BODY_BYTES = 256 * 1024;
+const MAX_MATCHS = 200;
 const DEFAULT_WORKFLOW_FILE = "pipeline.yml";
 const DEFAULT_REF = "main";
 const GITHUB_API_VERSION = "2022-11-28";
