@@ -45,7 +45,7 @@ function rafraichit() {
       div.className = "item-panier";
 
       const texte = document.createElement("span");
-      const tagTexte = item.source === "betpawa" ? "betpawa"
+      const tagTexte = item.source === "betpawa" ? "bookmaker"
         : item.source === "manuel" ? "manuel" : "liste";
       const nbMarches = item.cotes_manuelles ? Object.keys(item.cotes_manuelles).length : 0;
       const suffixeCotes = nbMarches > 0 ? ` · ${nbMarches} marché(s) fournis` : "";
