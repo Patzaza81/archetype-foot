@@ -46,21 +46,17 @@ jobs:
           playwright install --with-deps chromium
 
       - name: Générer les listes brutes aujourd'hui + demain
-        if: github.event_name == 'schedule'
-        run: |
-          python scraper.py --max-matchs 200
+        run: python scraper.py --max-matchs 200
 
       - name: Générer la liste J+2 à J+7
-        if: github.event_name == 'schedule'
         run: python scraper_semaine.py --max-matchs 100000
         continue-on-error: true
 
       - name: Récupérer les matchs Betpawa (betpawa_urls.txt)
-        if: github.event_name == 'schedule'
         run: python scraper_betpawa.py
         continue-on-error: true
 
-      - name: Pipeline planifié (ancien chemin, inchangé)
+      - name: Pipeline planifié (ancien chemin)
         if: github.event_name == 'schedule'
         run: python run_pipeline.py
 
