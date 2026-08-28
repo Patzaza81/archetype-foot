@@ -1,8 +1,10 @@
-// betpawa.js — page dédiée au dépôt Betpawa (26/08sexies). Parse le texte
-// brut côté client (parseBetpawa.js, portage exact de parse_betpawa.py --
-// vérifié identique sur 5 matchs réels) et pousse l'entrée dans le MÊME
-// localStorage que index.js/panier.js : un seul panier, peu importe la
-// source du match.
+// betpawa.js — page dédiée au dépôt Betpawa. Parse le texte brut côté
+// client (parseBetpawa.js, portage exact de parse_betpawa.py) et pousse
+// l'entrée dans le MÊME localStorage que index.js/panier.js : un seul
+// panier, peu importe la source du match. L'envoi vers GitHub se fait
+// désormais uniquement depuis panier.html ("Analyser tout le panier"),
+// en un seul run pour tous les matchs -- plus de déclenchement individuel
+// depuis cette page.
 
 const CLE_PANIER = "archetype_panier";
 
@@ -42,34 +44,6 @@ function genererMatchId(domicile, exterieur) {
   // même match le même jour fusionnent naturellement (le panier dédoublonne
   // déjà par match_id), un dépôt le lendemain crée une entrée distincte.
   return `betpawa_${slug(domicile)}_${slug(exterieur)}_${dateDuJourISO()}`;
-}
-
-// Fonction d'envoi vers Netlify pour déclencher le robot GitHub Actions
-async function declencherPipelineNetlify(matchData) {
-  try {
-    const payload = {
-      equipe_dom: matchData.domicile,
-      equipe_ext: matchData.exterieur,
-      date: dateDuJourISO(),
-      heure: "20:00",
-      url_matchendirect: matchData.url_match || ""
-    };
-
-    const response = await fetch('/.netlify/functions/trigger', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-
-    const data = await response.json();
-    if (response.ok && data.ok) {
-      console.log("Pipeline GitHub déclenché avec succès via Netlify pour :", matchData.domicile, "vs", matchData.exterieur);
-    } else {
-      console.warn("Avertissement lors du déclenchement Netlify :", data.error || data);
-    }
-  } catch (e) {
-    console.error("Erreur lors du déclenchement de la fonction Netlify :", e);
-  }
 }
 
 // CORRECTIF (26/08sexies) : détecte domicile/extérieur directement dans le
@@ -173,12 +147,6 @@ document.getElementById("ajouter-btn").addEventListener("click", () => {
   const url = document.getElementById("bp-url").value.trim();
   const brut = document.getElementById("brut-betpawa").value;
 
-  // CORRECTIF (26/08septies) : signale précisément LE(S) champ(s) vide(s)
-  // au lieu d'un message générique -- deux confusions de suite (placeholder
-  // pris pour une valeur remplie) montrent que "les 3 sont obligatoires"
-  // ne suffit pas à localiser le problème quand 2 champs sur 3 sont déjà
-  // corrects. Le champ fautif est aussi entouré en rouge, pas seulement
-  // nommé dans le texte.
   const champsRequis = [
     { id: "bp-domicile", valeur: domicile, nom: "Équipe domicile" },
     { id: "bp-exterieur", valeur: exterieur, nom: "Équipe extérieur" },
@@ -241,25 +209,18 @@ document.getElementById("ajouter-btn").addEventListener("click", () => {
   }
   sauvePanier(panier);
 
-  // Déclenchement automatique du pipeline GitHub via Netlify
-  declencherPipelineNetlify(entree);
-
   afficheApercu(cotes);
   afficheResultat(
     (dejaPresent
       ? `${domicile} — ${exterieur} déjà présent aujourd'hui -- cotes remplacées`
       : `${domicile} — ${exterieur} ajouté au panier`) +
-      ` (${Object.keys(cotes).length} marché(s)). Analyse envoyée au robot !` +
+      ` (${Object.keys(cotes).length} marché(s)). Va sur "Panier" pour lancer l'analyse.` +
       (url ? "" : " Sans URL matchendirect -- sera marqué non traité tant qu'une source de forme n'est pas branchée."),
     true
   );
   metAJourBoutonPanier();
   rafraichitListeSession();
 
-  // CORRECTIF (26/08sexies) : les 4 champs sont désormais réinitialisés (pas
-  // seulement le texte collé), pour enchaîner plusieurs matchs sans jamais
-  // laisser une équipe ou une compétition du match précédent traîner dans
-  // le formulaire.
   document.getElementById("brut-betpawa").value = "";
   document.getElementById("bp-domicile").value = "";
   document.getElementById("bp-exterieur").value = "";
