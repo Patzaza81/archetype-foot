@@ -1,5 +1,6 @@
-// index.js — page d'accueil. Parcourir + cocher (ancien système, inchangé)
-// + bouton "Analyser" par match (nouveau, appelle trigger.js directement).
+// index.js — page d'accueil. Parcourir + cocher uniquement -- le panier
+// n'est plus affiché ici, juste synchronisé via localStorage pour que
+// panier.html le retrouve après navigation.
 
 const CLE_PANIER = "archetype_panier";
 const donnees = { aujourdhui: null, demain: null };
@@ -28,50 +29,6 @@ function formatEnTete(jour, nbMatchs) {
   return jour === "aujourdhui"
     ? `${nbMatchs} match(s) disponible(s) aujourd'hui`
     : `${nbMatchs} match(s) disponible(s) demain`;
-}
-
-// Envoie ce match précis à GitHub Actions via trigger.js. Utilise les
-// vraies date/heure du match (pas de valeur codée en dur) -- si l'une des
-// deux manque dans les données scrapées, on prévient au lieu de deviner.
-async function analyserMatch(m, boutonEl, statutEl) {
-  if (!m.date || !m.heure) {
-    statutEl.textContent = "❌ Date ou heure manquante pour ce match -- impossible d'analyser.";
-    statutEl.className = "statut-analyse erreur";
-    return;
-  }
-
-  boutonEl.disabled = true;
-  statutEl.textContent = "Envoi au pipeline…";
-  statutEl.className = "statut-analyse";
-
-  const payload = {
-    equipe_dom: m.domicile,
-    equipe_ext: m.exterieur,
-    date: m.date,
-    heure: m.heure,
-    url_matchendirect: m.url_match || null,
-  };
-
-  try {
-    const res = await fetch("/.netlify/functions/trigger", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    const data = await res.json();
-    if (res.ok && data.ok) {
-      statutEl.textContent = "✅ Analyse lancée. Résultat dans quelques minutes sur \"Voir les pronostics\".";
-      statutEl.className = "statut-analyse ok";
-    } else {
-      statutEl.textContent = "❌ " + (data.error || "Erreur serveur");
-      statutEl.className = "statut-analyse erreur";
-    }
-  } catch (e) {
-    statutEl.textContent = "❌ Impossible de joindre le serveur.";
-    statutEl.className = "statut-analyse erreur";
-  } finally {
-    boutonEl.disabled = false;
-  }
 }
 
 function afficheListe(jour) {
@@ -124,20 +81,9 @@ function afficheListe(jour) {
     label.htmlFor = checkbox.id;
     label.textContent = `${m.domicile} — ${m.exterieur}` + (m.score ? ` (${m.score})` : "");
 
-    const btnAnalyser = document.createElement("button");
-    btnAnalyser.className = "btn-analyser";
-    btnAnalyser.textContent = "🔬 Analyser";
-
-    const statut = document.createElement("div");
-    statut.className = "statut-analyse";
-
-    btnAnalyser.addEventListener("click", () => analyserMatch(m, btnAnalyser, statut));
-
     div.appendChild(checkbox);
     div.appendChild(heure);
     div.appendChild(label);
-    div.appendChild(btnAnalyser);
-    div.appendChild(statut);
     liste.appendChild(div);
   });
 }
