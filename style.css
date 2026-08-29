@@ -13,6 +13,9 @@
   --text: #F3F5F2;
   --text-secondary: #B9C4BF;
   --border: rgba(255,255,255,.10);
+  /* 29/08/2026 -- responsive : largeur max du contenu sur grand écran,
+     pour ne pas étirer les cartes/textes bord à bord sur desktop. */
+  --content-max-width: 1200px;
 }
 
 * { box-sizing: border-box; }
@@ -24,6 +27,16 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   line-height: 1.5;
   padding-bottom: 90px;
+}
+
+/* 29/08/2026 -- responsive : header et main centrés avec une largeur max
+   commune à toutes les pages (index/panier/pronostics/selection/betpawa
+   utilisent toutes <header> et <main>, donc une seule règle suffit ici
+   au lieu de la dupliquer par page). */
+header, main {
+  max-width: var(--content-max-width);
+  margin-left: auto;
+  margin-right: auto;
 }
 
 header {
@@ -313,4 +326,27 @@ input[type="checkbox"]:checked::after {
   font-size: 13px;
   margin: 6px 0 0;
   line-height: 1.5;
+}
+
+/* --- 29/08/2026 -- Responsive : palier tablette/desktop ---
+   La grille de cartes (main.grille) utilise déjà "auto-fill" : elle se
+   réorganise seule en plusieurs colonnes sans media query. Ce palier
+   ajuste ce que "auto-fill" ne couvre pas -- espacements, taille de
+   police, largeur des boutons -- pour un écran plus large qu'un
+   téléphone. Rien ne change en dessous de 700px (comportement mobile
+   identique à avant). */
+@media (min-width: 700px) {
+  header h1 { font-size: 40px; }
+
+  main.grille {
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+    padding: 24px;
+  }
+
+  .match { padding: 20px; }
+
+  #nav-pages { max-width: 480px; }
+
+  #copier-btn { max-width: 480px; margin-left: auto; margin-right: auto; }
 }
