@@ -1,7 +1,11 @@
 // panier.js — page dédiée au panier. Lit/écrit le même localStorage que
 // index.js. "Analyser tout le panier" envoie la liste entière en un seul
 // appel à trigger.js -- un seul run GitHub Actions pour tous les matchs
-// cochés, au lieu d'un run par match.
+// cochés, au lieu d'un run par match. Le panier local se vide automatiquement
+// après un envoi accepté par GitHub, pour rester synchronisé avec panier.json
+// côté serveur (que run_pipeline.py vide lui aussi après traitement) --
+// sinon les cases cochées restent affichées comme sélectionnées après un run
+// déjà traité, et repartent par erreur au envoi suivant.
 
 const CLE_PANIER = "archetype_panier";
 const RE_MATCH_URL = /\/live-score\/([a-z0-9-]+)_([a-z0-9]+)\.html/i;
@@ -127,6 +131,8 @@ async function analyserPanier() {
     if (res.ok && data.ok) {
       statut.textContent = "✅ " + data.message + " Résultat dans quelques minutes sur \"Voir les pronostics\".";
       statut.className = "ok";
+      sauvePanier([]);
+      rafraichit();
     } else {
       statut.textContent = "❌ " + (data.error || "Erreur serveur");
       statut.className = "erreur";
