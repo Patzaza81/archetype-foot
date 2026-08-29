@@ -429,9 +429,16 @@ def construit_signaux(matchs_bruts):
 
         cote_1 = cote_marche(cotes_marches, "1x2", "1")
 
+        # (26/08/2026 -- calibration) pays extrait de "competition" (ex.
+        # "Norvège : Eliteserien" -> "Norvège") pour choisir la bonne valeur
+        # dans GA_REFERENCE_PAR_LIGUE (calculs.py). Absent du dict -> "default",
+        # comportement identique à l'ancien GA_REFERENCE fixe.
+        pays_match = competition.split(":")[0].strip() if competition else None
+
         lam = calculs.calcule_lambda(
             gf_home, ga_home, gf_away, ga_away,
             ratios_contextuels_home=ratios_home, ratios_contextuels_away=ratios_away,
+            pays=pays_match,
         )
         matrice = calculs.matrice_poisson_dixon_coles(lam["lambda_home"], lam["lambda_away"])
         proba_1 = calculs.probabilite_marche(matrice, lambda x, y: x > y)
