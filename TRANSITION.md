@@ -100,4 +100,63 @@ d'une vraie opportunité manquée par le marché.
 
 **Cause probable, non confirmée** : `recupere_gf_ga_avec_repli`
 (`scraper_details.py`) calcule `gf_exterieur`/`ga_exterieur` comme une
-simp
+simple moyenne arithmétique sur (au plus) 10 matchs, sans aucune
+protection contre un score extrême (une correction 6-0, un forfait). Sur
+un échantillon de seulement 10 valeurs, un seul score aberrant suffit à
+tirer toute la moyenne significativement. Contrairement au bug résolu
+ci-dessus (taille d'échantillon), celui-ci concerne un échantillon de
+taille correcte mais potentiellement pollué.
+
+**Non corrigé volontairement** : plafonner ou filtrer les scores extrêmes
+modifierait une formule mathématique du modèle -- le fichier `calculs.py`
+gèle explicitement ses constantes *"jusqu'à backtest historique -- ne pas
+modifier sans repasser par ce document"*. Choisir un plafond arbitraire
+serait un jugement de conception, pas un simple correctif de bug.
+
+**À faire au prochain cycle** : vérifier manuellement sur matchendirect.fr
+les 10 derniers matchs à l'extérieur de PS PAE Kalamata pour confirmer ou
+infirmer l'hypothèse d'un score extrême isolé. Option de transparence
+envisagée mais pas codée : afficher dans le détail du match le score le
+plus extrême de l'échantillon utilisé, pour repérer ce genre de cas d'un
+coup d'œil sans vérification manuelle systématique.
+
+---
+
+## 1. Philosophie du projet — non négociable
+
+- **Les sources de données sont des outils à extraire, pas des cahiers des
+  charges rigides.** Le document PythonAnywhere/Playwright fourni au départ
+  n'a jamais été suivi tel quel — chaque choix technique a été revérifié en
+  conditions réelles avant adoption.
+- **Aucune affirmation sans vérification en conditions réelles.** Plusieurs
+  erreurs de cette session viennent d'avoir cru un test insuffisant (mauvais
+  paramètre d'URL, mauvaise méthode de test). La correction systématique :
+  refaire le test, pas défendre la première conclusion. Confirmé à nouveau
+  le 28-29/08 : un fichier "corrigé" et commité sur GitHub ne veut rien
+  dire tant qu'un run ne l'a pas réellement exécuté -- deux vérifications
+  distinctes, jamais confondues (voir section 16.8).
+- **Dire clairement ce qui est confirmé, ce qui est probable, et ce qui est
+  un pur best-effort non testé.** Ne jamais présenter un best-effort comme
+  une certitude. Un rapport d'avancement produit par un autre outil (voir
+  16.2) peut lui-même contenir des affirmations fausses présentées comme
+  validées -- toujours revérifier sur le dépôt réel, jamais sur la
+  description qui en est faite.
+- **Priorité au gratuit et au simple.** Toute solution payante ou nécessitant
+  un navigateur automatisé (Playwright) a été écartée dès qu'une alternative
+  HTTP simple et gratuite a été trouvée.
+- **Le scope se réduit consciemment plutôt que de s'étendre indéfiniment.**
+  Mi-temps abandonné, BeSoccer abandonné, comparateur multi-bookmakers jugé
+  inutile — chaque abandon a une raison explicite, listée ci-dessous.
+- **En cas d'ambiguïté ou de donnée insuffisante, s'abstenir plutôt que
+  deviner.** Déjà en vigueur pour le matching d'équipes (NO MATCH plutôt
+  qu'une fausse correspondance) et pour les cotes absentes (`None` jamais
+  inventé). Étendu le 29/08 à la fiabilité statistique elle-même :
+  échantillon trop petit -> NO_GO forcé, plutôt qu'un GO affiché avec un
+  simple avertissement ignorable (voir bug résolu ci-dessus).
+
+---
+
+## 2. Constantes gelées ("moteurs initiaux") — ne pas modifier sans repasser par un backtest
+
+Ces valeurs viennent du pipeline original (Modules 1-4) et sont déjà codées
+dans `calculs.py` :
