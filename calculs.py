@@ -21,9 +21,48 @@ backtest historique — ne pas modifier sans repasser par ce document).
 import math
 
 # --- Constantes gelées (Module 2 / Module 3) ---
-GA_REFERENCE = 1.35
-BORNE_MIN_DEFENSE = 0.70
-BORNE_MAX_DEFENSE = 1.30
+# GA_REFERENCE_PAR_LIGUE (26/08/2026 -- calibration) : remplace l'ancienne
+# constante unique GA_REFERENCE=1.35 appliquée à toutes les ligues. Valeurs
+# "Norvège"/"Suède"/"Danemark"/"Arabie Saoudite"/"Corée du Sud" sont des
+# ORDRES DE GRANDEUR (connaissance générale de ces championnats), PAS des
+# moyennes calculées sur données réelles -- à remplacer dès que les vraies
+# moyennes de buts encaissés saison en cours sont disponibles. Toute clé de
+# pays absente retombe sur "default" (l'ancienne valeur 1.35, inchangée).
+GA_REFERENCE_PAR_LIGUE = {
+    "default": 1.35,
+    "Norvège": 1.55, "Suède": 1.50, "Danemark": 1.45,
+    "Arabie Saoudite": 1.20, "Corée du Sud": 1.15,
+}
+
+
+def get_ga_reference(pays=None):
+    return GA_REFERENCE_PAR_LIGUE.get(pays, GA_REFERENCE_PAR_LIGUE["default"])
+
+
+# BORNE_MIN_DEFENSE/BORNE_MAX_DEFENSE (26/08/2026 -- calibration) : élargies de
+# 0.70/1.30 à 0.55/1.60. Constat sur 391 matchs analysés (24-29/08/2026) : 41%
+# des modificateurs de défense étaient collés exactement sur l'ancienne borne
+# -- signe que la borne était plus étroite que l'écart réel entre équipes.
+# Élargissement symétrique de 0.15 de chaque côté, pas encore revérifié sur
+# nouvel échantillon post-changement.
+BORNE_MIN_DEFENSE = 0.55
+BORNE_MAX_DEFENSE = 1.60
+
+# K_SHRINKAGE (26/08/2026 -- calibration) : calculé sur 42 paris GO vérifiés
+# (24-29/08/2026) -- probabilité moyenne annoncée par le modèle 0.815,
+# réussite réelle observée 0.548. k = (0.548-0.5)/(0.815-0.5) = 0.152,
+# arrondi à 0.15. Échantillon petit (42 paris) -- à revérifier sur un
+# échantillon plus large avant de considérer cette valeur définitive.
+K_SHRINKAGE = 0.15
+
+
+def ajuste_probabilite(p):
+    """Resserre une probabilité modèle vers 0.5 d'un facteur K_SHRINKAGE,
+    pour corriger la surconfiance mesurée (voir note ci-dessus). Appliqué
+    dans calcule_ev(), kelly_stake() et est_standout() -- un seul point de
+    calcul, jamais une correction manuelle répétée à trois endroits."""
+    return 0.5 + (p - 0.5) * K_SHRINKAGE
+
 
 POIDS_FORME = 0.30
 POIDS_CLASSEMENT = 0.20
@@ -35,7 +74,11 @@ BORNE_RATIO = 0.15  # borne +/- par facteur avant pondération
 
 RHO_DIXON_COLES = -0.1
 
-SEUIL_EV_MIN = 0.05
+# SEUIL_EV_MIN (26/08/2026 -- calibration) : relevé de 0.05 à 0.12. Sur les 42
+# paris GO vérifiés, l'EV affiché moyen était de 0.199 pour les paris PERDANTS
+# contre 0.170 pour les GAGNANTS -- un seuil à 0.05 ne filtre donc rien
+# d'utile. 0.12 est fixé au-dessus de l'EV moyen observé sur les perdants.
+SEUIL_EV_MIN = 0.12
 FOURCHETTE_COTE_MIN = 1.25
 FOURCHETTE_COTE_MAX = 1.69
 SEUIL_CORRELATION = 0.70
@@ -237,13 +280,17 @@ def confiance_lambda(nb_matchs_utilises: int) -> str:
 
 
 def calcule_lambda(gf_home_domicile, ga_home_domicile, gf_away_exterieur, ga_away_exterieur,
-                    ratios_contextuels_home=None, ratios_contextuels_away=None):
+                    ratios_contextuels_home=None, ratios_contextuels_away=None, pays=None):
     """
     Règle N3 — reproduit Étapes 1 à 4 du Module 2 v4.3 à l'identique.
     ratios_contextuels_* : dict optionnel avec les clés parmi
         {"forme", "classement", "repos", "absences", "distance", "h2h"}
         chaque valeur déjà exprimée en ratio relatif à l'adversaire, non bornée.
+    pays : (26/08/2026 -- calibration) nom du pays de la compétition, utilisé
+        pour choisir la bonne valeur dans GA_REFERENCE_PAR_LIGUE. None ->
+        valeur "default" (comportement identique à l'ancien GA_REFERENCE fixe).
     """
+    ga_reference = get_ga_reference(pays)
     poids = {
         "forme": POIDS_FORME, "classement": POIDS_CLASSEMENT, "repos": POIDS_REPOS,
         "absences": POIDS_ABSENCES, "distance": POIDS_DISTANCE, "h2h": POIDS_H2H,
@@ -264,8 +311,8 @@ def calcule_lambda(gf_home_domicile, ga_home_domicile, gf_away_exterieur, ga_awa
     lambda_home_base = gf_home_domicile
     lambda_away_base = gf_away_exterieur
 
-    modifier_defense_away = clamp(ga_away_exterieur / GA_REFERENCE, BORNE_MIN_DEFENSE, BORNE_MAX_DEFENSE)
-    modifier_defense_home = clamp(ga_home_domicile / GA_REFERENCE, BORNE_MIN_DEFENSE, BORNE_MAX_DEFENSE)
+    modifier_defense_away = clamp(ga_away_exterieur / ga_reference, BORNE_MIN_DEFENSE, BORNE_MAX_DEFENSE)
+    modifier_defense_home = clamp(ga_home_domicile / ga_reference, BORNE_MIN_DEFENSE, BORNE_MAX_DEFENSE)
 
     lambda_home_prelim = lambda_home_base * modifier_defense_away
     lambda_away_prelim = lambda_away_base * modifier_defense_home
@@ -448,9 +495,12 @@ def construit_probabilites_marches(matrice, lignes_ou=(0.5, 1.5, 2.5, 3.5, 4.5),
 
 
 def calcule_ev(probabilite_modele, cote_observee):
-    """Règle N7 — EV = (cote x probabilité) - 1. Jamais de mélange modèle/marché avant ce calcul."""
+    """Règle N7 — EV = (cote x probabilité) - 1. Jamais de mélange modèle/marché avant ce calcul.
+    (26/08/2026 -- calibration) probabilite_modele resserrée via ajuste_probabilite()
+    avant le calcul, pour corriger la surconfiance mesurée (voir K_SHRINKAGE)."""
     if cote_observee is None:
         return None
+    probabilite_modele = ajuste_probabilite(probabilite_modele)
     return (cote_observee * probabilite_modele) - 1
 
 
@@ -468,7 +518,9 @@ def kelly_stake(probabilite_modele, cote_observee):
         return 0.0
 
     b = cote_observee - 1
-    p = probabilite_modele
+    # (26/08/2026 -- calibration) même resserrement que dans calcule_ev(),
+    # appliqué ici aussi car le calcul Kelly ci-dessous réutilise p directement.
+    p = ajuste_probabilite(probabilite_modele)
     q = 1 - p
     f_kelly = (b * p - q) / b if b > 0 else 0.0
     if f_kelly <= 0:
