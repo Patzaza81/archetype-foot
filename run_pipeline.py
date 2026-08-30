@@ -477,10 +477,35 @@ def construit_signaux(matchs_bruts):
                 "mise_pct_bankroll": calculs.kelly_stake(c["probabilite_modele"], c["cote_observee"]),
             }
 
-        signal["verdict_global"] = decision["verdict_global"]
-        signal["motif_no_go"] = decision["motif_no_go"]
+        # (30/08/2026 -- correctif) LISTE_A/LISTE_B qualifient un candidat sur
+        # son EV BRUT (voir calcule_ev() dans calculs.py) ; mais la mise
+        # Kelly, elle, utilise une probabilité resserrée (K_SHRINKAGE) --
+        # un candidat peut donc qualifier pour LISTE_B (EV brut >= 12%) et
+        # pourtant recevoir une mise Kelly de 0% (pas d'edge une fois la
+        # surconfiance du modèle corrigée). Un "GO" affiché avec un pari à
+        # 0% de mise n'a aucun sens pour l'utilisateur -- on ne garde donc
+        # dans LISTE_B que les candidats dont la mise réelle est positive,
+        # et on repasse en NO_GO si plus aucun candidat n'a de mise après ce
+        # filtre, avec un motif explicite (distinct de "aucun marché ne
+        # passe le filtre EV/cote", qui reste le motif de decision_go_nogo
+        # quand LISTE_A est vide dès le départ).
+        liste_b_serialisee = [serialise(c) for c in liste_b]
+        liste_b_avec_mise = [c for c in liste_b_serialisee if c["mise_pct_bankroll"] > 0]
+
+        verdict_global = decision["verdict_global"]
+        motif_no_go = decision["motif_no_go"]
+        if verdict_global == "GO" and not liste_b_avec_mise:
+            verdict_global = "NO_GO"
+            motif_no_go = (
+                "EV positif sur la probabilité brute, mais mise Kelly nulle une fois la "
+                "probabilité resserrée (K_SHRINKAGE) -- pas d'edge réel après correction de "
+                "la surconfiance mesurée du modèle."
+            )
+
+        signal["verdict_global"] = verdict_global
+        signal["motif_no_go"] = motif_no_go
         signal["LISTE_A_marches_passant_EV_et_cote"] = [serialise(c) for c in liste_a]
-        signal["LISTE_B_liste_finale_apres_correlation"] = [serialise(c) for c in liste_b]
+        signal["LISTE_B_liste_finale_apres_correlation"] = liste_b_avec_mise
         signal["coefficients_empiriques"] = False
 
         resultats.append(signal)
