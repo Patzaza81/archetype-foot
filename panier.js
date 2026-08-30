@@ -18,8 +18,8 @@
 // À REMPLACER par tes vraies valeurs (Project Settings > API sur supabase.com).
 // SUPABASE_ANON_KEY est publique par design (RLS protège les données même
 // si cette clé est visible dans le code source du site) -- rien à cacher ici.
-const SUPABASE_URL = "https://TON-PROJET.supabase.co";
-const SUPABASE_ANON_KEY = "TA_CLE_ANON_PUBLIQUE";
+const SUPABASE_URL = "https://hjrcqodwfjxqcjvjoxzq.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhqcmNxb2R3Zmp4cWNqdmpveHpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgxMTU3NjUsImV4cCI6MjEwMzY5MTc2NX0.rxJ2W-2UI0oQrGAprqnrPJM3WO1HCoYft0ZeS38oZfY";
 
 // Nécessite d'avoir ajouté dans panier.html, avant panier.js :
 // <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
