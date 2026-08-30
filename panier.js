@@ -34,7 +34,15 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // Supabase n'est pas prêt -- seul "Analyser tout le panier" restera
 // indisponible jusqu'à la configuration réelle (voir assureSession()).
 const SUPABASE_CONFIGURE = !SUPABASE_URL.includes("TON-PROJET") && !!window.supabase;
-const supabase = SUPABASE_CONFIGURE ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+// (30/08/2026 -- correctif critique) "const supabase = ..." plantait TOUT
+// le fichier avec "SyntaxError: Can't create duplicate variable that
+// shadows a global property: 'supabase'" -- la librairie
+// @supabase/supabase-js crée déjà, toute seule, une variable globale
+// nommée "supabase" dans le navigateur ; la redéclarer avec const/let est
+// interdit en JavaScript. Renommé en "supabaseClient" partout dans ce
+// fichier -- aucun rapport avec Supabase lui-même, uniquement un conflit
+// de nom avec notre propre code.
+const supabaseClient = SUPABASE_CONFIGURE ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
 const CLE_PANIER = "archetype_panier";
 const RE_MATCH_URL = /\/live-score\/([a-z0-9-]+)_([a-z0-9]+)\.html/i;
@@ -75,10 +83,10 @@ async function assureSession() {
       "voir TRANSITION.md section 0.5. Le panier fonctionne (cocher, copier), mais l'analyse en ligne pas encore."
     );
   }
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await supabaseClient.auth.getSession();
   if (session) return session;
 
-  const { data, error } = await supabase.auth.signInAnonymously();
+  const { data, error } = await supabaseClient.auth.signInAnonymously();
   if (error) throw new Error("Connexion anonyme impossible : " + error.message);
   return data.session;
 }
@@ -176,7 +184,7 @@ async function analyserPanier() {
     // panier au nom de quelqu'un d'autre même en bricolant la requête.
     const session = await assureSession();
 
-    const { data: panierInsere, error: erreurInsertion } = await supabase
+    const { data: panierInsere, error: erreurInsertion } = await supabaseClient
       .from("paniers")
       .insert({ user_id: session.user.id, matchs: construitItemsEnvoi(panier) })
       .select()
