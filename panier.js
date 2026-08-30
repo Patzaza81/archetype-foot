@@ -1,11 +1,29 @@
 // panier.js — page dédiée au panier. Lit/écrit le même localStorage que
-// index.js. "Analyser tout le panier" envoie la liste entière en un seul
-// appel à trigger.js -- un seul run GitHub Actions pour tous les matchs
-// cochés, au lieu d'un run par match. Le panier local se vide automatiquement
-// après un envoi accepté par GitHub, pour rester synchronisé avec panier.json
-// côté serveur (que run_pipeline.py vide lui aussi après traitement) --
-// sinon les cases cochées restent affichées comme sélectionnées après un run
-// déjà traité, et repartent par erreur au envoi suivant.
+// index.js pour LA CONSTRUCTION du panier (cocher/décocher des matchs) --
+// ça ne change pas. Ce qui change (29/08/2026 -- Supabase) : "Analyser tout
+// le panier" n'envoie plus le tableau de matchs brut à trigger.js. Il :
+//   1. s'assure d'une session Supabase (anonyme, pas de mot de passe --
+//      créée automatiquement au premier envoi, réutilisée ensuite tant que
+//      le navigateur garde la session) ;
+//   2. insère le panier comme une ligne dans la table `paniers`, avec le
+//      user_id de cette session (RLS empêche toute autre personne de la
+//      lire) ;
+//   3. transmet seulement l'id de cette ligne (panier_id) + le jeton de
+//      session à trigger.js, qui vérifie l'appartenance avant de déclencher
+//      le pipeline.
+// Chaque personne a désormais son propre panier ET son propre résultat --
+// plus de fichier panier.json partagé, plus d'écrasement entre deux envois
+// simultanés.
+
+// À REMPLACER par tes vraies valeurs (Project Settings > API sur supabase.com).
+// SUPABASE_ANON_KEY est publique par design (RLS protège les données même
+// si cette clé est visible dans le code source du site) -- rien à cacher ici.
+const SUPABASE_URL = "https://TON-PROJET.supabase.co";
+const SUPABASE_ANON_KEY = "TA_CLE_ANON_PUBLIQUE";
+
+// Nécessite d'avoir ajouté dans panier.html, avant panier.js :
+// <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const CLE_PANIER = "archetype_panier";
 const RE_MATCH_URL = /\/live-score\/([a-z0-9-]+)_([a-z0-9]+)\.html/i;
@@ -34,6 +52,18 @@ function construitItemsEnvoi(panier) {
     source: item.source,
     cotes_manuelles: item.cotes_manuelles,
   }));
+}
+
+// (29/08/2026 -- Supabase) Session anonyme : réutilise celle déjà en cours
+// dans ce navigateur, ou en crée une nouvelle sinon. C'est cette session
+// (via son user_id) qui isole le panier et le résultat de chaque personne.
+async function assureSession() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session) return session;
+
+  const { data, error } = await supabase.auth.signInAnonymously();
+  if (error) throw new Error("Connexion anonyme impossible : " + error.message);
+  return data.session;
 }
 
 function rafraichit() {
@@ -122,10 +152,30 @@ async function analyserPanier() {
   statut.className = "";
 
   try {
+    // (29/08/2026 -- Supabase) 1. session anonyme, 2. la ligne panier est
+    // créée directement depuis le navigateur (pas via trigger.js) -- RLS
+    // (policy "chacun crée ses propres paniers") vérifie que user_id
+    // correspond bien au jeton envoyé, donc personne ne peut créer un
+    // panier au nom de quelqu'un d'autre même en bricolant la requête.
+    const session = await assureSession();
+
+    const { data: panierInsere, error: erreurInsertion } = await supabase
+      .from("paniers")
+      .insert({ user_id: session.user.id, matchs: construitItemsEnvoi(panier) })
+      .select()
+      .single();
+
+    if (erreurInsertion) throw new Error(erreurInsertion.message);
+
+    // 3. trigger.js ne reçoit plus que l'id + le jeton -- jamais les
+    // matchs eux-mêmes en clair dans cette requête-ci.
     const res = await fetch("/.netlify/functions/trigger", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ matchs: construitItemsEnvoi(panier) }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify({ panier_id: panierInsere.id }),
     });
     const data = await res.json();
     if (res.ok && data.ok) {
@@ -138,7 +188,7 @@ async function analyserPanier() {
       statut.className = "erreur";
     }
   } catch (e) {
-    statut.textContent = "❌ Impossible de joindre le serveur.";
+    statut.textContent = "❌ " + (e.message || "Impossible de joindre le serveur.");
     statut.className = "erreur";
   } finally {
     bouton.disabled = false;
