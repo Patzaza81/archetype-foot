@@ -1,7 +1,7 @@
 # Archetype Foot — Document de transition
-Dernière mise à jour : 30/08/2026 (calibration empirique par ligue +
-passage à Supabase pour l'isolation multi-utilisateur, voir section 0),
-dans la continuité d'une session longue.
+Dernière mise à jour : 30/08/2026 soir (mise en service réelle de Supabase,
+voir section 0.8 -- inclut le bug le plus coûteux de tout le projet à ce
+jour et sa correction), dans la continuité d'une session longue.
 Objectif de ce document : permettre de reprendre le projet dans une nouvelle
 fenêtre de conversation sans perdre l'historique de décisions, ni répéter
 les erreurs déjà identifiées et corrigées.
@@ -175,16 +175,31 @@ avec la clé anonyme exposée côté front (c'est voulu, pas une faille).
   committer à chaque run manuel n'avait plus d'utilité et recréait le
   risque de conflit qu'on venait de fermer côté Supabase.
 
-**Reste à faire, pas encore livré** :
-- Créer le projet Supabase + exécuter le SQL ci-dessus.
-- Remplacer les placeholders `SUPABASE_URL`/`SUPABASE_ANON_KEY` en haut de
-  `panier.js` et `script.js`.
-- Ajouter `<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>`
-  dans `panier.html` ET `pronostics.html`, avant le script de page.
-- Secrets Netlify (`SUPABASE_URL`, `SUPABASE_ANON_KEY`) et GitHub Actions
-  (`SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`).
-- **Test réel non encore fait** : deux navigateurs, deux paniers envoyés à
-  peu près en même temps, vérifier que chacun voit son propre résultat.
+**MISE À JOUR 30/08/2026 soir : entièrement fait, en service réel.** Ce qui
+suit était la checklist de configuration -- gardée pour mémoire de ce qui a
+été fait, avec les difficultés réelles rencontrées à chaque étape détaillées
+en section 0.8 :
+- ✅ Projet Supabase `archetype-foot` créé (org `TechGo`, région `eu-west`),
+  SQL exécuté (voir 0.8 pour l'ordre exact des étapes qui a fonctionné).
+- ✅ Connexions anonymes activées (`Authentication > Sign In / Providers >
+  Anonymous Sign-Ins`) -- étape facile à oublier, sans effet visible tant
+  qu'on ne l'a pas activée (pas d'erreur explicite, juste rien ne se passe).
+- ✅ `SUPABASE_URL`/`SUPABASE_ANON_KEY` renseignés dans `panier.js` et
+  `script.js` (clés "Legacy anon, service_role" -- voir 0.8.3, PAS les
+  nouvelles clés "Publishable/secret" que Supabase met en avant par défaut
+  maintenant).
+- ✅ Script `@supabase/supabase-js` ajouté dans `panier.html` ET
+  `pronostics.html`.
+- ✅ Secrets Netlify (`SUPABASE_URL`, `SUPABASE_ANON_KEY`) et GitHub Actions
+  (`SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`) créés.
+- ✅ **Test réel effectué et réussi** le 30/08 au soir : panier envoyé
+  depuis `archetype-foot.netlify.app` (⚠️ pas `type-foot.netlify.app`, un
+  autre site Netlify plus ancien resté connecté à rien -- voir 0.8.6),
+  traité automatiquement, résultat visible sur "Voir les pronostics" sans
+  aucune intervention manuelle sur `panier.json`.
+- **Non fait** : le test à deux navigateurs simultanés (isolation réelle
+  entre deux utilisateurs différents) reste à faire -- un seul utilisateur
+  (Patrick) a testé jusqu'ici.
 
 ### 0.6 Responsive (`style.css`)
 Le site n'avait aucune media query (0 dans tout le fichier) malgré la
@@ -258,6 +273,128 @@ l'environnement d'édition de ce correctif. **À confirmer au prochain run
 réel (GitHub Actions ou manuel)** : vérifier que `cote_1` reste renseigné
 sur l'ensemble des matchs traités, en particulier sur les lignes
 over/under 5.5+.
+
+### 0.8 Session du 30/08/2026 (soir) — mise en service réelle de Supabase, et tout ce qui a mal tourné en route
+
+**Résultat final : ÇA MARCHE.** Panier envoyé depuis le site (`archetype-foot.netlify.app`),
+traité automatiquement par GitHub Actions sans aucune intervention manuelle sur
+`panier.json`, résultat visible sur "Voir les pronostics". La chaîne complète
+décrite en 0.5 fonctionne enfin de bout en bout. Mais le chemin pour y arriver a
+révélé plusieurs problèmes réels, chacun documenté ci-dessous avec sa cause
+exacte -- objectif : ne plus jamais perdre une soirée dessus.
+
+**Ordre de lecture recommandé si un problème similaire réapparaît** : le 0.8.5
+(bug de code) est CELUI qui a coûté le plus de temps -- le lire en premier.
+
+#### 0.8.1 GitHub Actions : `panier_id` obligatoire empêchait toute relance manuelle
+`workflow_dispatch.inputs.panier_id` était `required: true`. Résultat : impossible
+de relancer le pipeline à la demande sans Supabase déjà configuré -- aucune façon
+de tester "les matchs d'aujourd'hui" en attendant. **Corrigé** : `required: false`,
+et les conditions `if:` de chaque étape (`run_pipeline.py` vs `dispatch_pipeline.py`,
+commit final) gèrent maintenant le cas `panier_id` vide comme un run planifié classique.
+Peut se resservir un jour si un autre champ obligatoire bloque un usage légitime :
+se demander systématiquement "et si cette valeur est vide, quel comportement de
+repli est raisonnable ?" avant de marquer un input `required: true`.
+
+#### 0.8.2 GitHub Actions : cron programmé, mais jamais synchronisé avec le déploiement du fichier
+Cron changé de 7h UTC à 0h UTC (1h Douala) pour que l'analyse soit prête au réveil.
+Sauf qu'un changement de cron ne s'applique qu'à partir du PROCHAIN passage de
+l'heure programmée après que le fichier modifié a été mergé sur `main` -- pas
+rétroactivement. Poussé après minuit UTC un jour donné => le nouvel horaire ne
+prend effet que la nuit suivante. **Leçon** : après tout changement de cron,
+compter au moins un cycle complet (24h) avant de s'attendre à voir l'effet, et
+le dire explicitement à Patrick pour éviter la fausse alerte "ça n'a pas marché".
+Fait aussi ressortir un point structurel à garder en tête : GitHub Actions ne
+garantit pas la ponctualité à la minute sur les dépôts peu actifs -- un run
+planifié a démarré avec 6h de retard un jour de cette session (14h05 au lieu de
+7h). Ne jamais promettre "prêt à telle heure précise", seulement "prêt en général
+dans la nuit/matinée".
+
+#### 0.8.3 Supabase a changé de système de clés API sans prévenir (connaissance déjà périmée en cours de session)
+Supabase a introduit un nouvel onglet par défaut ("Publishable and secret API
+keys") qui n'existait pas dans ce qui était su au début de cette conversation.
+Les clés `anon`/`service_role` qu'utilise tout le code déjà écrit
+(`panier.js`/`script.js`/`dispatch_pipeline.py`/`trigger.js`) sont désormais
+reléguées dans un second onglet, "Legacy anon, service_role API keys" --
+toujours fonctionnelles, juste plus dans l'onglet visible par défaut.
+**Décision prise** : rester sur le système "Legacy" plutôt que migrer vers les
+nouvelles clés "Publishable/secret", pour ne pas réécrire tout le code un soir
+où la priorité était de faire marcher l'existant. **À surveiller** : Supabase
+a averti que les clés legacy seront un jour dépréciées (pas de date donnée) --
+migrer vers `sb_publishable_...`/`sb_secret_...` sera à reprendre un autre jour,
+pas en urgence.
+
+#### 0.8.4 Menus Supabase/GitHub/Netlify réorganisés depuis la dernière fois -- plusieurs faux départs de navigation
+Sur Supabase, "API Keys" n'est plus sous "Settings > General" mais sous
+"Settings > Configuration > API Keys", un onglet séparé. Sur GitHub mobile,
+"Settings" (du dépôt) est caché derrière un bouton "More" quand la largeur
+d'écran ne permet pas d'afficher tous les onglets ("Code / Issues / Pull
+requests / ... / More"), et "Secrets and variables" est lui-même sous
+"Security and quality" avec un sous-menu déroulant "Actions" -- pas à
+confondre avec l'onglet "Actions" tout court, qui montre les *runs*, pas les
+secrets. **Leçon générale, pas seulement pour ces deux plateformes** :
+signaler explicitement, avant même de guider vers un menu, que ces
+interfaces évoluent régulièrement et que le chemin décrit peut être
+approximatif -- demander une capture de ce qui s'affiche réellement dès le
+premier doute plutôt qu'insister sur un chemin qui s'avère faux plusieurs
+fois de suite.
+
+#### 0.8.5 LE bug -- `const supabase = ...` plantait TOUT le fichier, silencieusement, pendant des heures
+**C'est celui qui a fait perdre le plus de temps ce soir, et il était entièrement
+évitable.** `panier.js` et `script.js` déclaraient tous deux `const supabase =
+createClient(...)`. Mais le script `@supabase/supabase-js` chargé juste avant
+crée déjà, tout seul, une variable globale nommée `supabase` dans le navigateur.
+Redéclarer un nom déjà global avec `const`/`let` est une erreur de syntaxe stricte
+en JavaScript (`SyntaxError: Can't create duplicate variable that shadows a
+global property: 'supabase'`) -- **le fichier entier refuse de s'exécuter**, pas
+seulement la ligne fautive. Résultat observé : le panier affichait "0" indéfiniment
+sur la page panier (alors que l'accueil, qui n'utilise pas Supabase, affichait le
+bon nombre) -- aucune erreur visible à l'écran par défaut, puisque Safari mobile
+n'a pas de console accessible sans Mac. Plusieurs pistes fausses explorées avant
+de trouver la vraie cause : cache navigateur, mauvais site Netlify (voir 0.8.6,
+qui était réel mais ne suffisait pas à tout expliquer), fichier corrompu au
+copier-coller, conflit d'édition GitHub. **Corrigé** : renommé `supabase` en
+`supabaseClient` partout dans les deux fichiers (`const supabaseClient =
+window.supabase.createClient(...)`, puis tous les usages `supabase.auth...`/
+`supabase.from(...)` mis à jour en conséquence).
+**Leçon technique, réutilisable ailleurs** : toute variable nommée comme la
+librairie globale qu'elle initialise (`supabase`, mais le même risque existe
+avec `stripe`, `firebase`, etc. chargés en `<script>` classique plutôt qu'en
+module) doit être vérifiée AVANT livraison, pas découverte en production --
+un simple `grep` du nom de variable contre le nom du package suffit.
+**Leçon de méthode, plus large** : dès qu'un symptôme résiste à plusieurs
+corrections plausibles d'affilée sans jamais changer, la vraie erreur est
+probablement plus basique qu'on ne le suppose (une syntaxe qui plante tout,
+pas une logique métier subtile) -- la lecture ligne par ligne du fichier tel
+qu'il existe réellement sur GitHub aurait révélé ce bug immédiatement dès la
+première suspicion de plantage, sans attendre de fabriquer un outil de
+diagnostic pour l'afficher.
+
+#### 0.8.6 Deux sites Netlify différents testés sans s'en rendre compte
+`type-foot.netlify.app` (ancien site, déconnecté du dépôt GitHub actuel,
+jamais mis à jour par nos commits) contre `archetype-foot.netlify.app` (le
+vrai site, relié à `github.com/Patzaza81/archetype-foot`, celui que Netlify
+"Deploys" confirmait publier à chaque commit). Toutes les captures de la
+première partie de la soirée montraient `type-foot.netlify.app` -- ce qui
+explique une partie de la confusion ("j'ai remplacé les fichiers mais rien
+ne change"), même si le vrai bug (0.8.5) restait présent sur les deux sites
+une fois qu'on a basculé sur le bon. **Leçon** : quand un correctif poussé
+sur GitHub semble n'avoir _aucun_ effet, même après un déploiement confirmé
+"Published", vérifier en premier le nom de domaine affiché dans la barre
+d'adresse -- avant de chercher un problème de cache ou de code.
+
+#### 0.8.7 Outil de diagnostic temporaire -- utile une fois, retiré ensuite
+Face à un plantage sans message d'erreur visible, un bloc HTML/JS a été
+ajouté temporairement à `panier.html` (écoute `window.addEventListener("error",
+...)`, affiche le message dans une bande rouge en bas d'écran) -- seul moyen
+d'obtenir un vrai message d'erreur JavaScript sur iPhone sans Mac ni
+console développeur accessible. A permis d'identifier 0.8.5 en une capture
+d'écran, là où plusieurs échanges de suppositions n'avaient rien donné.
+Retiré du fichier une fois le vrai bug confirmé et corrigé -- ne doit pas
+rester en production indéfiniment (une bande d'erreur brute n'est pas destinée
+aux utilisateurs finaux). **Si un plantage silencieux similaire réapparaît**,
+ce bloc peut être réintroduit directement plutôt que ré-explorer plusieurs
+pistes à l'aveugle d'abord -- gain de temps confirmé ce soir.
 
 ---
 
@@ -592,15 +729,19 @@ contre le dépôt réel, pas recopiée de mémoire)
 
 **Site (affichage)**
 - `index.html` / `panier.html` / `pronostics.html` / `betpawa.html` —
-  navigation croisée entre les quatre pages ; **30/08/2026** : nécessitent
-  toutes les deux (`panier.html`, `pronostics.html`) l'ajout du script
-  `@supabase/supabase-js` avant leur script de page respectif (voir 0.5,
-  pas encore fait par l'utilisateur)
+  navigation croisée entre les quatre pages ; **30/08/2026 soir** : le
+  script `@supabase/supabase-js` est bien présent dans `panier.html` ET
+  `pronostics.html` (fait, testé -- voir 0.8), Supabase en service réel
 - `script.js` — affichage Module 4 (chargé par `pronostics.html` — ce
   n'est PAS un fichier séparé nommé `pronostics.js`, confusion levée en
-  session, voir 0.7) ; **remplacé le 30/08** pour lire Supabase au lieu de
-  `data.json` (voir 0.5)
-- `panier.js` — **remplacé le 30/08** pour la session anonyme Supabase
+  session, voir 0.7) ; **30/08/2026** : lit Supabase avec repli sur
+  `data.json` (voir 0.5) ; **30/08/2026 soir** : correctif critique
+  `supabase` → `supabaseClient` (voir 0.8.5, le bug qui a bloqué toute
+  la mise en service pendant des heures)
+- `panier.js` — **30/08/2026** : session anonyme Supabase (voir 0.5) ;
+  **30/08/2026 soir** : même correctif critique `supabase` →
+  `supabaseClient` que `script.js` (voir 0.8.5) ; gère toujours les
+  entrées Betpawa (étiquette, cotes conservées au copier-coller)
   (voir 0.5) ; gère toujours les entrées Betpawa (étiquette, cotes
   conservées au copier-coller)
 - `style.css` — thème turquoise/or/vert ; **30/08/2026** : première passe
