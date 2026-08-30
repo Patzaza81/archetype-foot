@@ -48,12 +48,13 @@ def get_ga_reference(pays=None):
 BORNE_MIN_DEFENSE = 0.55
 BORNE_MAX_DEFENSE = 1.60
 
-# K_SHRINKAGE (26/08/2026 -- calibration) : calculé sur 42 paris GO vérifiés
-# (24-29/08/2026) -- probabilité moyenne annoncée par le modèle 0.815,
-# réussite réelle observée 0.548. k = (0.548-0.5)/(0.815-0.5) = 0.152,
-# arrondi à 0.15. Échantillon petit (42 paris) -- à revérifier sur un
-# échantillon plus large avant de considérer cette valeur définitive.
-K_SHRINKAGE = 0.15
+# K_SHRINKAGE (29/08/2026 -- calibration, mise à jour) : recalculé sur
+# l'échantillon complet 24-29/08/2026, 47 matchs GO / 68 paris (contre 42
+# paris sur 26 matchs le 26/08) -- probabilité moyenne annoncée 0.824,
+# réussite réelle observée 0.588. k = (0.588-0.5)/(0.824-0.5) = 0.272,
+# arrondi à 0.27. Toujours pas les 150-200 paris visés pour une valeur
+# considérée stable -- à revérifier à ce seuil.
+K_SHRINKAGE = 0.27
 
 
 def ajuste_probabilite(p):
