@@ -2,7 +2,12 @@ name: Pipeline quotidien Archetype Foot
 
 on:
   schedule:
-    - cron: "0 7 * * *"
+    # 30/08/2026 : passé de 7h UTC (8h à Douala) à 0h UTC = 1h à Douala
+    # (UTC+1, pas d'heure d'été) -- Patrick veut que l'analyse du jour soit
+    # déjà prête au réveil, pas déclenchée après. GitHub Actions programme
+    # toujours ses cron en UTC, jamais dans un fuseau local -- à revoir si
+    # Patrick change de fuseau.
+    - cron: "0 0 * * *"
 
   workflow_dispatch:
     inputs:
