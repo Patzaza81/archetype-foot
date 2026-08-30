@@ -12,8 +12,8 @@ on:
   workflow_dispatch:
     inputs:
       panier_id:
-        description: "Id du panier Supabase à analyser"
-        required: true
+        description: "Id du panier Supabase à analyser -- LAISSER VIDE pour relancer l'analyse complète du jour (équivalent du run planifié, sans attendre le prochain cron)"
+        required: false
         type: string
 
 permissions:
@@ -49,12 +49,12 @@ jobs:
         run: python scraper_betpawa.py
         continue-on-error: true
 
-      - name: Pipeline planifié (ancien chemin)
-        if: github.event_name == 'schedule'
+      - name: Pipeline planifié ou relance manuelle complète (panier_id vide)
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         run: python run_pipeline.py
 
-      - name: Pipeline déclenché manuellement (panier envoyé depuis le site)
-        if: github.event_name == 'workflow_dispatch'
+      - name: Pipeline déclenché manuellement (panier Supabase, panier_id renseigné)
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id != ''
         env:
           INPUT_PANIER_ID: ${{ github.event.inputs.panier_id }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -62,11 +62,11 @@ jobs:
         run: python dispatch_pipeline.py
 
       - name: Vérifier les scores des jours précédents
-        if: github.event_name == 'schedule'
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         run: python verification_resultats.py
 
-      - name: Commit et push du résultat (run planifié uniquement)
-        if: github.event_name == 'schedule'
+      - name: Commit et push du résultat (run planifié ou relance manuelle complète)
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         run: |
           git config user.name "archetype-foot-bot"
           git config user.email "bot@users.noreply.github.com"
