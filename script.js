@@ -151,7 +151,16 @@ function construitNiveau3(m) {
 // À REMPLACER par tes vraies valeurs -- mêmes que dans panier.js.
 const SUPABASE_URL = "https://TON-PROJET.supabase.co";
 const SUPABASE_ANON_KEY = "TA_CLE_ANON_PUBLIQUE";
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// (30/08/2026 -- repli data.json) Tant que SUPABASE_URL n'a pas été
+// remplacé par un vrai projet, cette page ne doit dépendre ni de Supabase
+// ni du script @supabase/supabase-js (pas encore ajouté dans
+// pronostics.html) -- le run automatique quotidien (schedule, 7h) écrit
+// data.json indépendamment de tout ça, et doit rester consultable seul.
+// SUPABASE_CONFIGURE bascule entre les deux modes ; à retirer une fois
+// SUPABASE_URL vraiment remplacé ET le script ajouté dans la page.
+const SUPABASE_CONFIGURE = !SUPABASE_URL.includes("TON-PROJET") && !!window.supabase;
+const supabase = SUPABASE_CONFIGURE ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
 const DELAI_ATTENTE_MS = 15000;
 const INTERVALLE_RAFRAICHISSEMENT_MS = 20000; // le pipeline prend "quelques minutes" (panier.js) --
@@ -205,7 +214,25 @@ function afficheMatchs(matchs, genereLe) {
   });
 }
 
+async function chargeDepuisDataJson() {
+  const delaiDepasse = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error("délai dépassé (15s) -- vérifie ta connexion, ou que data.json existe bien à la racine du site.")), DELAI_ATTENTE_MS)
+  );
+  const r = await Promise.race([fetch("data.json?_=" + Date.now()), delaiDepasse]);
+  const data = await r.json();
+  afficheMatchs(data.matchs || [], data.genere_le);
+  return data.genere_le || null;
+}
+
 async function chargeDernierResultat() {
+  if (!SUPABASE_CONFIGURE) {
+    // Mode transitoire : affiche l'analyse automatique du jour (data.json,
+    // écrite par le run planifié) -- pas le résultat d'un panier envoyé
+    // manuellement, qui nécessite Supabase configuré (voir 0.5 de
+    // TRANSITION.md).
+    return await chargeDepuisDataJson();
+  }
+
   const { data: { session } } = await supabase.auth.getSession();
   if (!session) {
     afficheMatchs([], null);
@@ -252,6 +279,10 @@ async function boucleRafraichissement() {
   }
 
   compteurRafraichissements += 1;
+  // Mode data.json (Supabase pas encore configuré) : un seul chargement --
+  // data.json ne change qu'une fois par jour (run planifié), pas besoin de
+  // sonder toutes les 20s comme pour un résultat de panier en cours d'analyse.
+  if (!SUPABASE_CONFIGURE) return;
   if (compteurRafraichissements < NB_RAFRAICHISSEMENTS_MAX) {
     setTimeout(boucleRafraichissement, INTERVALLE_RAFRAICHISSEMENT_MS);
   }
