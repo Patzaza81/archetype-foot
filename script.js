@@ -160,7 +160,12 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // SUPABASE_CONFIGURE bascule entre les deux modes ; à retirer une fois
 // SUPABASE_URL vraiment remplacé ET le script ajouté dans la page.
 const SUPABASE_CONFIGURE = !SUPABASE_URL.includes("TON-PROJET") && !!window.supabase;
-const supabase = SUPABASE_CONFIGURE ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+// (30/08/2026 -- correctif critique) même bug que panier.js : "const
+// supabase = ..." plantait tout le fichier ("Can't create duplicate
+// variable that shadows a global property: 'supabase'") -- la librairie
+// @supabase/supabase-js crée déjà cette variable globale toute seule.
+// Renommé en "supabaseClient" partout dans ce fichier.
+const supabaseClient = SUPABASE_CONFIGURE ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
 const DELAI_ATTENTE_MS = 15000;
 const INTERVALLE_RAFRAICHISSEMENT_MS = 20000; // le pipeline prend "quelques minutes" (panier.js) --
@@ -233,7 +238,7 @@ async function chargeDernierResultat() {
     return await chargeDepuisDataJson();
   }
 
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await supabaseClient.auth.getSession();
   if (!session) {
     afficheMatchs([], null);
     document.getElementById("maj").textContent = "aucun panier envoyé depuis cet appareil pour le moment.";
@@ -244,7 +249,7 @@ async function chargeDernierResultat() {
     setTimeout(() => reject(new Error("délai dépassé (15s) -- vérifie ta connexion.")), DELAI_ATTENTE_MS)
   );
 
-  const requete = supabase
+  const requete = supabaseClient
     .from("resultats_pipeline")
     .select("data, created_at")
     .eq("user_id", session.user.id)
