@@ -21,16 +21,24 @@ backtest historique — ne pas modifier sans repasser par ce document).
 import math
 
 # --- Constantes gelées (Module 2 / Module 3) ---
-# GA_REFERENCE_PAR_LIGUE (26/08/2026 -- calibration) : remplace l'ancienne
-# constante unique GA_REFERENCE=1.35 appliquée à toutes les ligues. Valeurs
-# "Norvège"/"Suède"/"Danemark"/"Arabie Saoudite"/"Corée du Sud" sont des
-# ORDRES DE GRANDEUR (connaissance générale de ces championnats), PAS des
-# moyennes calculées sur données réelles -- à remplacer dès que les vraies
-# moyennes de buts encaissés saison en cours sont disponibles. Toute clé de
-# pays absente retombe sur "default" (l'ancienne valeur 1.35, inchangée).
+# GA_REFERENCE_PAR_LIGUE : remplace l'ancienne constante unique
+# GA_REFERENCE=1.35 appliquée à toutes les ligues. Deux statuts différents
+# selon la clé, à ne pas confondre :
+# - "Norvège"/"Suède"/"Danemark" (29/08/2026) : CALCULÉES sur données réelles
+#   (Football-Data.co.uk, dernière saison COMPLÈTE -- Eliteserien 2025 = 240
+#   matchs, Allsvenskan 2025 = 240 matchs, Superliga danoise 2025/2026 = 192
+#   matchs). La saison 2026 en cours a été écartée pour le Danemark : 28
+#   matchs seulement, moyenne 1.30 contre 1.55 sur la saison complète --
+#   écart trop grand pour un échantillon aussi partiel, saison complète
+#   retenue comme plus robuste.
+# - "Arabie Saoudite"/"Corée du Sud" (26/08/2026) : encore des ORDRES DE
+#   GRANDEUR (connaissance générale, pas de données), à remplacer dès qu'un
+#   CSV équivalent est disponible pour ces deux championnats.
+# Toute clé de pays absente retombe sur "default" (l'ancienne valeur 1.35,
+# inchangée).
 GA_REFERENCE_PAR_LIGUE = {
     "default": 1.35,
-    "Norvège": 1.55, "Suède": 1.50, "Danemark": 1.45,
+    "Norvège": 1.59, "Suède": 1.42, "Danemark": 1.55,
     "Arabie Saoudite": 1.20, "Corée du Sud": 1.15,
 }
 
