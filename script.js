@@ -149,8 +149,8 @@ function construitNiveau3(m) {
 // <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 // À REMPLACER par tes vraies valeurs -- mêmes que dans panier.js.
-const SUPABASE_URL = "https://TON-PROJET.supabase.co";
-const SUPABASE_ANON_KEY = "TA_CLE_ANON_PUBLIQUE";
+const SUPABASE_URL = "https://hjrcqodwfjxqcjvjoxzq.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhqcmNxb2R3Zmp4cWNqdmpveHpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgxMTU3NjUsImV4cCI6MjEwMzY5MTc2NX0.rxJ2W-2UI0oQrGAprqnrPJM3WO1HCoYft0ZeS38oZfY";
 
 // (30/08/2026 -- repli data.json) Tant que SUPABASE_URL n'a pas été
 // remplacé par un vrai projet, cette page ne doit dépendre ni de Supabase
