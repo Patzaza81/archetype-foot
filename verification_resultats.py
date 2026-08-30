@@ -73,6 +73,10 @@ def verifie_jour(jour):
         print(f"[verification] échec récupération {url} : {e}", file=sys.stderr)
         return 0
 
+    # max_matchs=2000 : une page résultat contient plusieurs centaines de
+    # matchs (toutes compétitions confondues, voir les pages collées dans
+    # cette conversation) -- la valeur par défaut de parse_matches (20) en
+    # perdrait la quasi-totalité silencieusement.
     matchs_page = parse_matches(html, max_matchs=2000, date_label=jour["date"])
 
     trouves = 0
