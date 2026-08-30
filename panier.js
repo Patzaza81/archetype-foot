@@ -23,7 +23,18 @@ const SUPABASE_ANON_KEY = "TA_CLE_ANON_PUBLIQUE";
 
 // Nécessite d'avoir ajouté dans panier.html, avant panier.js :
 // <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+//
+// (30/08/2026 -- correctif) Tant que ce script n'est pas ajouté ET que
+// SUPABASE_URL n'est pas remplacé, window.supabase n'existe pas -- appeler
+// window.supabase.createClient() plantait alors TOUTE la page dès le
+// chargement (avant même rafraichit()), ce qui empêchait le panier de
+// s'afficher (0 au lieu du vrai nombre, même quand localStorage en
+// contenait déjà). SUPABASE_CONFIGURE permet à la page de fonctionner
+// normalement pour CONSTRUIRE le panier (cocher/décocher, copier) tant que
+// Supabase n'est pas prêt -- seul "Analyser tout le panier" restera
+// indisponible jusqu'à la configuration réelle (voir assureSession()).
+const SUPABASE_CONFIGURE = !SUPABASE_URL.includes("TON-PROJET") && !!window.supabase;
+const supabase = SUPABASE_CONFIGURE ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
 const CLE_PANIER = "archetype_panier";
 const RE_MATCH_URL = /\/live-score\/([a-z0-9-]+)_([a-z0-9]+)\.html/i;
@@ -58,6 +69,12 @@ function construitItemsEnvoi(panier) {
 // dans ce navigateur, ou en crée une nouvelle sinon. C'est cette session
 // (via son user_id) qui isole le panier et le résultat de chaque personne.
 async function assureSession() {
+  if (!SUPABASE_CONFIGURE) {
+    throw new Error(
+      "Supabase pas encore configuré (SUPABASE_URL/clé, script @supabase/supabase-js dans panier.html) -- " +
+      "voir TRANSITION.md section 0.5. Le panier fonctionne (cocher, copier), mais l'analyse en ligne pas encore."
+    );
+  }
   const { data: { session } } = await supabase.auth.getSession();
   if (session) return session;
 
