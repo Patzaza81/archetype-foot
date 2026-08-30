@@ -68,24 +68,6 @@
     GitHub.
   </p>
 </main>
-<!-- (30/08/2026 -- DIAGNOSTIC TEMPORAIRE, à retirer une fois le vrai bug
-     trouvé) Affiche directement sur la page toute erreur JavaScript qui
-     empêcherait panier.js de finir de s'exécuter -- sur iPhone sans Mac,
-     impossible d'ouvrir la vraie console développeur, donc on la simule
-     ici pour voir le message d'erreur réel au lieu de deviner. -->
-<div id="diagnostic-erreur" style="display:none; position:fixed; bottom:0; left:0; right:0;
-     background:#7f1d1d; color:#fff; padding:14px; font-family:monospace; font-size:0.8em;
-     z-index:9999; max-height:40vh; overflow:auto; white-space:pre-wrap;"></div>
-<script>
-  window.addEventListener("error", function (evenement) {
-    const zone = document.getElementById("diagnostic-erreur");
-    zone.style.display = "block";
-    zone.textContent = "ERREUR JS -- " + evenement.message +
-      "\nFichier : " + evenement.filename +
-      "\nLigne : " + evenement.lineno + ", colonne : " + evenement.colno +
-      (evenement.error && evenement.error.stack ? "\n\n" + evenement.error.stack : "");
-  });
-</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="panier.js"></script>
 </body>
