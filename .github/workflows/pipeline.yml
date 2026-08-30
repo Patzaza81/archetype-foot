@@ -14,14 +14,6 @@ on:
 permissions:
   contents: write
 
-# (29/08/2026 -- Supabase) Sans ce bloc, deux envois manuels rapprochés
-# (deux personnes, ou la même qui relance vite) démarrent deux runs en
-# parallèle -- chacun traite son propre panier_id (ça, c'est déjà isolé),
-# mais les deux essaient quand même de push sur main au même moment ->
-# conflit de commit, run qui échoue pour une raison qui n'a rien à voir
-# avec le panier lui-même. "cancel-in-progress: false" : on met en file
-# d'attente, on n'annule jamais un run déjà lancé (un panier en cours ne
-# doit jamais être coupé à mi-chemin).
 concurrency:
   group: pipeline-archetype-foot
   cancel-in-progress: false
@@ -64,15 +56,10 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: python dispatch_pipeline.py
 
-      # (29/08/2026 -- Supabase) panier.json et historique_pronostics.json
-      # ne sont plus le canal de résultat pour un envoi manuel -- le
-      # résultat part vers Supabase (isolé par utilisateur, voir
-      # dispatch_pipeline.py). Les committer aussi sur main à chaque run
-      # manuel n'avait plus d'utilité et recréait exactement le risque de
-      # conflit qu'on vient de fermer côté Supabase : deux runs manuels qui
-      # écrivent au même fichier partagé. On ne les commit donc plus que
-      # pour le run planifié (schedule), qui lui reste un fichier public
-      # partagé par nature (les matchs du jour, pas propres à quelqu'un).
+      - name: Vérifier les scores des jours précédents
+        if: github.event_name == 'schedule'
+        run: python verification_resultats.py
+
       - name: Commit et push du résultat (run planifié uniquement)
         if: github.event_name == 'schedule'
         run: |
