@@ -22,29 +22,92 @@ import math
 
 # --- Constantes gelées (Module 2 / Module 3) ---
 # GA_REFERENCE_PAR_LIGUE : remplace l'ancienne constante unique
-# GA_REFERENCE=1.35 appliquée à toutes les ligues. Deux statuts différents
+# GA_REFERENCE=1.35 appliquée à toutes les ligues. Trois statuts différents
 # selon la clé, à ne pas confondre :
-# - "Norvège"/"Suède"/"Danemark" (29/08/2026) : CALCULÉES sur données réelles
-#   (Football-Data.co.uk, dernière saison COMPLÈTE -- Eliteserien 2025 = 240
-#   matchs, Allsvenskan 2025 = 240 matchs, Superliga danoise 2025/2026 = 192
-#   matchs). La saison 2026 en cours a été écartée pour le Danemark : 28
-#   matchs seulement, moyenne 1.30 contre 1.55 sur la saison complète --
-#   écart trop grand pour un échantillon aussi partiel, saison complète
-#   retenue comme plus robuste.
-# - "Arabie Saoudite"/"Corée du Sud" (26/08/2026) : encore des ORDRES DE
-#   GRANDEUR (connaissance générale, pas de données), à remplacer dès qu'un
-#   CSV équivalent est disponible pour ces deux championnats.
+# - "Norvège"/"Suède"/"Danemark" (29/08/2026), "Italie"/"Allemagne"/
+#   "France"/"Turquie"/"Espagne"/"Angleterre"/"Pays-Bas"/"Portugal"/"Grèce"/
+#   "Belgique"/"Russie"/"Suisse"/"Pologne" (30/08/2026) : CALCULÉES sur
+#   données réelles (Football-Data.co.uk). Saison retenue par pays -- la
+#   PLUS RÉCENTE COMPLÈTE, jamais une saison en cours trop courte (le
+#   Danemark 2026/2027 n'avait que 28 matchs, écart de 0.25 avec sa saison
+#   complète -- même logique appliquée à Russie/Suisse/Pologne ci-dessous,
+#   dont la saison 2026/2027 n'avait que 16 à 38 matchs) :
+#     Italie 2025/2026 (380 matchs), Allemagne 2025/2026 (306), France
+#     2025/2026 (306), Turquie 2025/2026 (306), Espagne 2025/2026 (380),
+#     Angleterre 2025/2026 (380), Pays-Bas 2025/2026 (306), Portugal
+#     2025/2026 (306), Grèce 2025/2026 (236), Belgique 2025/2026 (311),
+#     Norvège 2025 (240), Suède 2025 (240), Danemark 2025/2026 (192),
+#     Russie 2025/2026 (240), Suisse 2025/2026 (228), Pologne 2025/2026 (306).
+# - "Arabie Saoudite" (30/08/2026) : CALCULÉE sur classement réel FootyStats
+#   (Saudi Pro League, saison 2025/26 complète -- 18 équipes, 34 matchs/
+#   équipe, GF total = GA total = 921). Écart important avec l'ancienne
+#   estimation devinée (1.20 -> 1.50) : cette ligue est nettement plus
+#   offensive qu'estimé au départ.
+# - "Corée du Sud" (30/08/2026) : CALCULÉE sur classement réel FootyStats
+#   (K League 1, saison 2025 complète -- 12 équipes, 33 matchs/équipe, GF
+#   total = GA total = 512, confirmé cohérent entre les deux colonnes).
+#   Vérifiée par recoupement avec la saison 2026 en cours (151/198 matchs) :
+#   1.21, du même ordre que 1.29 sur la saison complète -- retenue comme
+#   plus fiable, valeur pas trop éloignée entre les deux saisons.
+# - "Japon" (30/08/2026) : CALCULÉE sur classement réel FootyStats (J1
+#   League, saison 2025 complète -- 20 équipes, 38 matchs/équipe, GF total
+#   = GA total = 911).
+# - "Estonie" (30/08/2026) : CALCULÉE (Meistriliiga, saison 2025 complète --
+#   182/182 matchs, GF=GA=575).
+# - "Tunisie" (30/08/2026) : CALCULÉE (Ligue 1, saison 2025/26 complète --
+#   240/240 matchs, GF=GA=414).
+# - "Etats-Unis" (30/08/2026) : CALCULÉE (MLS, saison 2025 complète --
+#   540/540 matchs, 30 équipes, GF=GA=1629).
+# - "South Africa" (30/08/2026) : CALCULÉE (Premier Soccer League, saison
+#   2025/26 complète -- 240/240 matchs, GF=GA=485). Clé en anglais
+#   volontairement -- c'est exactement le nom que matchendirect utilise
+#   pour ce pays dans "competition" (vu dans le corpus), pas de traduction
+#   française pour éviter de reproduire le bug Betpawa/ALIAS_PAYS trouvé
+#   plus tôt dans l'autre sens.
+# - "Chine" (30/08/2026) : CALCULÉE (Chinese Super League, saison 2025
+#   complète -- 240/240 matchs, GF=GA=771).
+# - "Écosse" : PAS ENCORE FAITE -- seule une saison 2026/27 à peine
+#   commencée (16/198 matchs, 2-4 matchs/équipe) a été fournie, bien trop
+#   courte pour être fiable (même problème que le Danemark au premier tour).
+#   Retombe sur "default" en attendant une saison complète.
 # Toute clé de pays absente retombe sur "default" (l'ancienne valeur 1.35,
 # inchangée).
 GA_REFERENCE_PAR_LIGUE = {
     "default": 1.35,
     "Norvège": 1.59, "Suède": 1.42, "Danemark": 1.55,
-    "Arabie Saoudite": 1.20, "Corée du Sud": 1.15,
+    "Italie": 1.21, "Allemagne": 1.62, "France": 1.41, "Turquie": 1.33,
+    "Espagne": 1.35, "Angleterre": 1.38, "Pays-Bas": 1.59, "Portugal": 1.34,
+    "Grèce": 1.28, "Belgique": 1.34, "Russie": 1.27, "Suisse": 1.65,
+    "Pologne": 1.37, "Corée du Sud": 1.29, "Arabie Saoudite": 1.50,
+    "Japon": 1.20, "Estonia": 1.58, "Tunisie": 0.86, "Etats-Unis": 1.51,
+    "South Africa": 1.01, "China": 1.61,
 }
 
 
 def get_ga_reference(pays=None):
-    return GA_REFERENCE_PAR_LIGUE.get(pays, GA_REFERENCE_PAR_LIGUE["default"])
+    pays_normalise = ALIAS_PAYS.get(pays, pays)
+    return GA_REFERENCE_PAR_LIGUE.get(pays_normalise, GA_REFERENCE_PAR_LIGUE["default"])
+
+
+# ALIAS_PAYS (30/08/2026 -- calibration, correctif) : matchendirect et
+# Betpawa ne nomment pas les pays pareil dans le champ "competition" --
+# matchendirect utilise le français ("Danemark", "Corée du Sud"), Betpawa
+# l'anglais ("Denmark", "Republic of Korea"), et pour l'Allemagne, Betpawa
+# omet carrément le pays ("Bundesliga" tout court, sans "Germany :" devant).
+# Sans cette table, un match sourcé Betpawa dans une ligue déjà calculée
+# retombait silencieusement sur "default" (1.35) au lieu de la vraie valeur
+# -- déjà arrivé pour Danemark/Corée du Sud/Allemagne sur des matchs réels
+# du corpus avant ce correctif. Couvre les 19 clés de GA_REFERENCE_PAR_LIGUE
+# ci-dessus ; à compléter si un nouveau pays y est ajouté plus tard.
+ALIAS_PAYS = {
+    "Denmark": "Danemark", "Republic of Korea": "Corée du Sud", "South Korea": "Corée du Sud",
+    "Bundesliga": "Allemagne", "Germany": "Allemagne", "Netherlands": "Pays-Bas",
+    "Spain": "Espagne", "England": "Angleterre", "Italy": "Italie", "Belgium": "Belgique",
+    "Turkey": "Turquie", "Greece": "Grèce", "Russia": "Russie", "Switzerland": "Suisse",
+    "Poland": "Pologne", "Norway": "Norvège", "Sweden": "Suède", "Saudi Arabia": "Arabie Saoudite",
+    "Japan": "Japon", "Estonie": "Estonia", "États-Unis": "Etats-Unis", "USA": "Etats-Unis",
+    "United States": "Etats-Unis", "Afrique du Sud": "South Africa", "Chine": "China",
+}
 
 
 # BORNE_MIN_DEFENSE/BORNE_MAX_DEFENSE (26/08/2026 -- calibration) : élargies de
