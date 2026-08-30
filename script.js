@@ -140,74 +140,121 @@ function construitNiveau3(m) {
   </p>`;
 }
 
-// Filet de sécurité (25/08sexies) : sur connexion lente, si la requête ne
-// répond pas du tout (ni succès ni échec réseau), rien n'indiquait pourquoi
-// la page restait bloquée sur "Chargement...". Un délai explicite rend
-// l'attente visible plutôt que silencieuse.
-const delaiDepasse = new Promise((_, reject) =>
-  setTimeout(() => reject(new Error("délai dépassé (15s) -- vérifie ta connexion, ou que data.json existe bien à la racine du site")), 15000)
-);
+// (29/08/2026 -- Supabase) Chargement isolé par utilisateur : plus de
+// fetch("data.json") global. On lit le résultat le plus récent de
+// resultats_pipeline pour la session en cours -- RLS garantit que la
+// requête ne peut renvoyer que les lignes de cet utilisateur, même en cas
+// de bug côté client. Nécessite d'avoir ajouté dans pronostics.html, avant
+// <script src="script.js">, la même balise que sur panier.html :
+// <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-Promise.race([fetch("data.json?_=" + Date.now()), delaiDepasse])
-  .then((r) => r.json())
-  .then((data) => {
-    const nbDispo = data.nb_matchs_du_jour_disponibles;
-    const nbDemain = data.nb_matchs_demain_disponibles;
-    const nbPanier = data.nb_entrees_panier;
-    document.getElementById("maj").textContent =
-      "mis à jour : " + (data.genere_le || "inconnu") +
-      " — " + data.nb_matchs + " match(s) traité(s)" +
-      (nbPanier != null ? ` sur ${nbPanier} entrée(s) du panier` : "") +
-      (nbDispo != null ? ` (${nbDispo} dispo. aujourd'hui` : "") +
-      (nbDemain != null ? `, ${nbDemain} demain)` : (nbDispo != null ? ")" : ""));
+// À REMPLACER par tes vraies valeurs -- mêmes que dans panier.js.
+const SUPABASE_URL = "https://TON-PROJET.supabase.co";
+const SUPABASE_ANON_KEY = "TA_CLE_ANON_PUBLIQUE";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const container = document.getElementById("matches");
-    if (!data.matchs || data.matchs.length === 0) {
-      container.innerHTML = "<p>aucun match traité pour le moment -- as-tu ajouté des matchs au panier (page \"sélectionner des matchs\") et copié panier.json avant de lancer le workflow ?</p>";
-      return;
+const DELAI_ATTENTE_MS = 15000;
+const INTERVALLE_RAFRAICHISSEMENT_MS = 20000; // le pipeline prend "quelques minutes" (panier.js) --
+                                               // on réinterroge régulièrement au lieu d'un seul essai.
+const NB_RAFRAICHISSEMENTS_MAX = 15;          // ~5 min, puis on arrête de sonder tout seul.
+
+function afficheErreur(message) {
+  document.getElementById("maj").textContent = "erreur de chargement : " + message;
+}
+
+function afficheMatchs(matchs, genereLe) {
+  document.getElementById("maj").textContent =
+    "mis à jour : " + (genereLe || "inconnu") + " — " + matchs.length + " match(s) traité(s)";
+
+  const container = document.getElementById("matches");
+  container.innerHTML = "";
+  if (!matchs || matchs.length === 0) {
+    container.innerHTML = "<p>aucun résultat pour le moment -- envoie un panier depuis la page \"panier\" si ce n'est pas déjà fait.</p>";
+    return;
+  }
+
+  matchs.forEach((m) => {
+    const div = document.createElement("div");
+    div.className = "match";
+
+    let html = `
+      <div class="teams"><span>${m.domicile}</span><span>${m.score || m.heure || ""}</span><span>${m.exterieur}</span></div>
+      <div class="meta">${(m.competition || "").replace(/\s+/g, " ").trim()}</div>
+    `;
+
+    if (!m.traite) {
+      html += `<div class="signal-non-traite">non analysé — ${traduireRaison(m.raison_non_traite)}</div>`;
+    } else {
+      const estGo = m.verdict_global === "GO";
+      html += `<div class="ligne-verdict">
+        <span class="badge ${estGo ? "badge-go" : "badge-nogo"}">${estGo ? "✓ GO" : "✕ NO_GO"}</span>
+      </div>`;
+      html += construitNiveau3(m);
+      if (!estGo && m.motif_no_go) {
+        html += `<div class="motif-no-go">${m.motif_no_go}</div>`;
+      }
+      if (estGo) {
+        html += construitBlocParisRecommandes(m.LISTE_B_liste_finale_apres_correlation);
+      }
+      html += construitBlocRisques(m);
+      html += construitDetails(m);
     }
 
-    data.matchs.forEach((m) => {
-      const div = document.createElement("div");
-      div.className = "match";
-
-      // Niveau 1 -- identification
-      let html = `
-        <div class="teams"><span>${m.domicile}</span><span>${m.score || m.heure || ""}</span><span>${m.exterieur}</span></div>
-        <div class="meta">${(m.competition || "").replace(/\s+/g, " ").trim()}</div>
-      `;
-
-      if (!m.traite) {
-        // Statut seul quand non analysé -- pas de niveau 3/4 à afficher
-        html += `<div class="signal-non-traite">non analysé — ${traduireRaison(m.raison_non_traite)}</div>`;
-      } else {
-        const estGo = m.verdict_global === "GO";
-        // Niveau 2 -- statut (texte ET couleur, jamais couleur seule)
-        html += `<div class="ligne-verdict">
-          <span class="badge ${estGo ? "badge-go" : "badge-nogo"}">${estGo ? "✓ GO" : "✕ NO_GO"}</span>
-        </div>`;
-        // Niveau 3 -- probabilité du pari RETENU uniquement, jamais la
-        // victoire domicile par défaut (voir construitNiveau3 ci-dessus).
-        html += construitNiveau3(m);
-
-        // Niveau 4 -- détails
-        if (!estGo && m.motif_no_go) {
-          html += `<div class="motif-no-go">${m.motif_no_go}</div>`;
-        }
-        if (estGo) {
-          html += construitBlocParisRecommandes(m.LISTE_B_liste_finale_apres_correlation);
-        }
-        html += construitBlocRisques(m);
-
-        // Niveau 5 -- action secondaire, repliée
-        html += construitDetails(m);
-      }
-
-      div.innerHTML = html;
-      container.appendChild(div);
-    });
-  })
-  .catch((err) => {
-    document.getElementById("maj").textContent = "erreur de chargement : " + err.message;
-    console.error(err);
+    div.innerHTML = html;
+    container.appendChild(div);
   });
+}
+
+async function chargeDernierResultat() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) {
+    afficheMatchs([], null);
+    document.getElementById("maj").textContent = "aucun panier envoyé depuis cet appareil pour le moment.";
+    return null;
+  }
+
+  const delaiDepasse = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error("délai dépassé (15s) -- vérifie ta connexion.")), DELAI_ATTENTE_MS)
+  );
+
+  const requete = supabase
+    .from("resultats_pipeline")
+    .select("data, created_at")
+    .eq("user_id", session.user.id)
+    .order("created_at", { ascending: false })
+    .limit(1);
+
+  const { data: lignes, error } = await Promise.race([requete, delaiDepasse]);
+  if (error) throw new Error(error.message);
+
+  if (!lignes || lignes.length === 0) {
+    afficheMatchs([], null);
+    document.getElementById("maj").textContent = "aucun résultat pour le moment -- l'analyse est peut-être encore en cours.";
+    return null;
+  }
+
+  const ligne = lignes[0];
+  afficheMatchs(ligne.data || [], ligne.created_at);
+  return ligne.created_at;
+}
+
+let compteurRafraichissements = 0;
+let dernierHorodatageAffiche = null;
+
+async function boucleRafraichissement() {
+  try {
+    const horodatage = await chargeDernierResultat();
+    dernierHorodatageAffiche = horodatage || dernierHorodatageAffiche;
+  } catch (err) {
+    afficheErreur(err.message);
+    console.error(err);
+    return; // on arrête de sonder si Supabase répond en erreur
+  }
+
+  compteurRafraichissements += 1;
+  if (compteurRafraichissements < NB_RAFRAICHISSEMENTS_MAX) {
+    setTimeout(boucleRafraichissement, INTERVALLE_RAFRAICHISSEMENT_MS);
+  }
+}
+
+boucleRafraichissement();
