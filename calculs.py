@@ -568,11 +568,17 @@ def construit_probabilites_marches(matrice, lignes_ou=(0.5, 1.5, 2.5, 3.5, 4.5),
 
 def calcule_ev(probabilite_modele, cote_observee):
     """Règle N7 — EV = (cote x probabilité) - 1. Jamais de mélange modèle/marché avant ce calcul.
-    (26/08/2026 -- calibration) probabilite_modele resserrée via ajuste_probabilite()
-    avant le calcul, pour corriger la surconfiance mesurée (voir K_SHRINKAGE)."""
+    (30/08/2026 -- calibration, correctif) NE resserre PLUS la probabilité ici
+    -- SEUIL_EV_MIN (0.12) a été calculé à partir des EV BRUTS (non resserrés)
+    des 68 paris GO vérifiés (moyenne perdants 0.199, gagnants 0.170) ; lui
+    appliquer une probabilité déjà resserrée par K_SHRINKAGE rend le seuil
+    mathématiquement inatteignable (plafond théorique 7.3%, jamais 12%,
+    quelle que soit la donnée réelle -- confirmé sur un run de 107 matchs
+    resté à 0 GO). Le resserrement reste appliqué dans kelly_stake() : son
+    rôle est de réduire la mise quand le modèle est probablement trop
+    confiant, pas de bloquer la décision GO/NO_GO elle-même."""
     if cote_observee is None:
         return None
-    probabilite_modele = ajuste_probabilite(probabilite_modele)
     return (cote_observee * probabilite_modele) - 1
 
 
@@ -590,8 +596,10 @@ def kelly_stake(probabilite_modele, cote_observee):
         return 0.0
 
     b = cote_observee - 1
-    # (26/08/2026 -- calibration) même resserrement que dans calcule_ev(),
-    # appliqué ici aussi car le calcul Kelly ci-dessous réutilise p directement.
+    # (30/08/2026 -- correctif) resserrement appliqué UNIQUEMENT ici (taille
+    # de la mise), plus dans calcule_ev() ci-dessus (voir sa docstring) --
+    # réduit la mise si le modèle est probablement trop confiant, sans
+    # jamais empêcher la décision GO elle-même d'être prise.
     p = ajuste_probabilite(probabilite_modele)
     q = 1 - p
     f_kelly = (b * p - q) / b if b > 0 else 0.0
