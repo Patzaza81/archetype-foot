@@ -38,8 +38,12 @@ jobs:
           pip install requests beautifulsoup4 pandas lxml playwright
           playwright install --with-deps chromium
 
+      # CORRECTIF 31/08/2026 : --max-matchs 200 tronquait réellement la liste
+      # (matchs_du_jour.json/matchs_demain.json plafonnés à 200 chacun,
+      # confirmé). Aligné sur scraper_semaine.py qui utilise déjà 100000
+      # (= pas de limite pratique) pour ne perdre aucun match du jour/demain.
       - name: Générer les listes brutes aujourd'hui + demain
-        run: python scraper.py --max-matchs 200
+        run: python scraper.py --max-matchs 100000
 
       - name: Générer la liste J+2 à J+7
         run: python scraper_semaine.py --max-matchs 100000
