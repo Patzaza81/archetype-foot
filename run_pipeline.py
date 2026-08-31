@@ -1,12 +1,12 @@
 """
-run_pipeline.py â€” Orchestrateur. Flux MANUEL : ne traite que ce qui est dans
+run_pipeline.py — Orchestrateur. Flux MANUEL : ne traite que ce qui est dans
 panier.json.
 
 CORRECTIF 26/08 : recupere_cotes_marches ne renvoie plus un tuple
-(marches, diagnostics) -- juste le dict des marchÃ©s (bookmaker fixe Bet365,
-voir scraper_details.py). Suppression du diagnostic "cotes Ã  risque",
-devenu sans objet : plus de mode de repli ambigu Ã  surveiller avec une
-seule source de cote par marchÃ©.
+(marches, diagnostics) -- juste le dict des marchés (bookmaker fixe Bet365,
+voir scraper_details.py). Suppression du diagnostic "cotes à risque",
+devenu sans objet : plus de mode de repli ambigu à surveiller avec une
+seule source de cote par marché.
 """
 import datetime
 import json
@@ -25,28 +25,28 @@ FICHIER_HISTORIQUE = "historique_pronostics.json"
 MATCH_LINK_RE = re.compile(r"/live-score/([a-z0-9\-]+)_([a-z0-9]+)\.html")
 
 # CORRECTIF (26/08ter) : jusqu'ici, seuls 1x2/double_chance/btts/over_under
-# (total) alimentaient LISTE_A/LISTE_B -- pas parce que le modÃ¨le ne calcule
-# pas les autres marchÃ©s (calculs.py calcule aussi handicap, over/under par
-# Ã©quipe, pair/impair, cages inviolÃ©es, score exact), mais parce
-# qu'aucune source scrapÃ©e (matchendirect/Bet365) n'a jamais fourni de cote
-# pour ces marchÃ©s-lÃ . Avec l'ajout de cotes saisies manuellement (ex.
-# Betpawa, qui couvre ces marchÃ©s), construit_candidats() est Ã©tendu pour
-# les exploiter. Aucun effet sur les matchs scrapÃ©s : cote_marche() renvoie
-# toujours None pour ces clÃ©s cÃ´tÃ© matchendirect/Bet365, donc ces candidats
+# (total) alimentaient LISTE_A/LISTE_B -- pas parce que le modèle ne calcule
+# pas les autres marchés (calculs.py calcule aussi handicap, over/under par
+# équipe, pair/impair, cages inviolées, score exact), mais parce
+# qu'aucune source scrapée (matchendirect/Bet365) n'a jamais fourni de cote
+# pour ces marchés-là. Avec l'ajout de cotes saisies manuellement (ex.
+# Betpawa, qui couvre ces marchés), construit_candidats() est étendu pour
+# les exploiter. Aucun effet sur les matchs scrapés : cote_marche() renvoie
+# toujours None pour ces clés côté matchendirect/Bet365, donc ces candidats
 # restent simplement absents comme avant.
 #
-# Score exact reste volontairement Ã  part : c'est le marchÃ© le plus
-# sensible Ã  une erreur de modÃ¨le (probabilitÃ©s individuelles faibles,
-# Ã©carts de cote Ã©normes pour une petite erreur d'ajustement de lambda).
-# CohÃ©rent avec la dÃ©cision dÃ©jÃ  actÃ©e dans TRANSITION.md 13.1 ("calculÃ©s
-# mais jamais dans LISTE_A/LISTE_B"). Bascule Ã  True si tu veux l'inclure
-# aprÃ¨s avoir jugÃ© le risque acceptable -- pas une dÃ©cision technique.
+# Score exact reste volontairement à part : c'est le marché le plus
+# sensible à une erreur de modèle (probabilités individuelles faibles,
+# écarts de cote énormes pour une petite erreur d'ajustement de lambda).
+# Cohérent avec la décision déjà actée dans TRANSITION.md 13.1 ("calculés
+# mais jamais dans LISTE_A/LISTE_B"). Bascule à True si tu veux l'inclure
+# après avoir jugé le risque acceptable -- pas une décision technique.
 INCLURE_SCORE_EXACT_DANS_ANALYSE = False
 
-# MÃªme logique pour le nombre exact de buts (0,1,2,3,4,5,6+) -- marchÃ©
-# calculÃ© par calculs.py depuis le dÃ©but mais jamais branchÃ© ici avant le
+# Même logique pour le nombre exact de buts (0,1,2,3,4,5,6+) -- marché
+# calculé par calculs.py depuis le début mais jamais branché ici avant le
 # 26/08quater. Moins de combinaisons que le score exact (7 contre ~56),
-# mais mÃªmes probabilitÃ©s individuelles faibles pour les cases centrales.
+# mais mêmes probabilités individuelles faibles pour les cases centrales.
 INCLURE_NOMBRE_EXACT_BUTS_DANS_ANALYSE = False
 
 
@@ -67,16 +67,16 @@ def normalise_panier(panier_brut, matchs_du_jour, matchs_demain):
         if isinstance(item, str):
             item = {"match_id": item}
 
-        # CORRECTIF (26/08quinquies) : gÃ©nÃ©ralisÃ© pour accepter deux cas --
-        # (a) le cas historique : url_match matchendirect prÃ©sente, match_id
-        #     dÃ©duit de l'URL si absent (comportement inchangÃ©) ;
-        # (b) NOUVEAU : aucune url_match (ex. page dÃ©diÃ©e Betpawa, match hors
-        #     couverture matchendirect ou non cherchÃ©) -- acceptÃ© SI
+        # CORRECTIF (26/08quinquies) : généralisé pour accepter deux cas --
+        # (a) le cas historique : url_match matchendirect présente, match_id
+        #     déduit de l'URL si absent (comportement inchangé) ;
+        # (b) NOUVEAU : aucune url_match (ex. page dédiée Betpawa, match hors
+        #     couverture matchendirect ou non cherché) -- accepté SI
         #     cotes_manuelles ET match_id explicite sont fournis (le frontend
-        #     betpawa.js gÃ©nÃ¨re ce match_id, voir betpawa.js). Sans URL,
-        #     construit_signaux() marquera le match "non traitÃ©" avec une
+        #     betpawa.js génère ce match_id, voir betpawa.js). Sans URL,
+        #     construit_signaux() marquera le match "non traité" avec une
         #     raison explicite (pas de forme/classement/H2H disponibles) --
-        #     jamais un plantage, jamais une donnÃ©e devinÃ©e.
+        #     jamais un plantage, jamais une donnée devinée.
         a_infos_de_base = item.get("domicile") and item.get("exterieur") and item.get("competition")
         a_url = item.get("url_match")
         a_cotes_manuelles = item.get("cotes_manuelles")
@@ -86,13 +86,13 @@ def normalise_panier(panier_brut, matchs_du_jour, matchs_demain):
             if not match_id and a_url:
                 trouve = MATCH_LINK_RE.search(a_url)
                 if not trouve:
-                    print(f"AVERTISSEMENT panier.json[{i}] ignorÃ© : match_id absent "
+                    print(f"AVERTISSEMENT panier.json[{i}] ignoré : match_id absent "
                           f"et introuvable depuis l'URL '{a_url}'.")
                     continue
                 match_id = trouve.group(2)
             if not match_id:
-                print(f"AVERTISSEMENT panier.json[{i}] ignorÃ© : match_id absent et "
-                      f"aucune URL matchendirect pour le dÃ©duire (entrÃ©e sans "
+                print(f"AVERTISSEMENT panier.json[{i}] ignoré : match_id absent et "
+                      f"aucune URL matchendirect pour le déduire (entrée sans "
                       f"scraping -- le frontend doit fournir un match_id explicite).")
                 continue
             valides.append({
@@ -100,9 +100,9 @@ def normalise_panier(panier_brut, matchs_du_jour, matchs_demain):
                 "score": item.get("score"), "competition": item["competition"],
                 "url_match": a_url, "match_id": match_id,
                 "source": item.get("source", "manuel"),
-                # CORRECTIF (26/08ter) : cotes saisies Ã  la main (ex. Betpawa),
+                # CORRECTIF (26/08ter) : cotes saisies à la main (ex. Betpawa),
                 # voir GABARIT_COTES_MANUELLES.json. Absent -> comportement
-                # identique Ã  avant (scraping matchendirect/Bet365).
+                # identique à avant (scraping matchendirect/Bet365).
                 "cotes_manuelles": item.get("cotes_manuelles"),
             })
             continue
@@ -111,14 +111,14 @@ def normalise_panier(panier_brut, matchs_du_jour, matchs_demain):
         if match_id and match_id in index_jour_demain:
             m = dict(index_jour_demain[match_id])
             m["source"] = item.get("source", "liste")
-            # Permet aussi de fournir des cotes manuelles pour un match dÃ©jÃ 
-            # listÃ© aujourd'hui/demain, si on prÃ©fÃ¨re les cotes Betpawa aux
-            # cotes Bet365 scrapÃ©es pour ce match prÃ©cis.
+            # Permet aussi de fournir des cotes manuelles pour un match déjà
+            # listé aujourd'hui/demain, si on préfère les cotes Betpawa aux
+            # cotes Bet365 scrapées pour ce match précis.
             m["cotes_manuelles"] = item.get("cotes_manuelles")
             valides.append(m)
             continue
 
-        print(f"AVERTISSEMENT panier.json[{i}] ignorÃ© : match_id '{match_id}' "
+        print(f"AVERTISSEMENT panier.json[{i}] ignoré : match_id '{match_id}' "
               f"introuvable dans {FICHIER_MATCHS_DU_JOUR} ni {FICHIER_MATCHS_DEMAIN}, "
               f"et champs manuels (url_match/domicile/exterieur/competition) incomplets.")
     return valides
@@ -137,10 +137,10 @@ def archive_run(signaux, nb_entrees_panier):
 
 
 def cote_marche(cotes_marches, cle_marche, cle_selection):
-    """Lit une cote pour un marchÃ©/sÃ©lection donnÃ©s -- remplace
-    extrait_cote_min (obsolÃ¨te, ne s'applique qu'Ã  un panel multi-
-    bookmakers). Une seule source dÃ©sormais : marches[cle][cle_selection],
-    dÃ©jÃ  None si absente."""
+    """Lit une cote pour un marché/sélection donnés -- remplace
+    extrait_cote_min (obsolète, ne s'applique qu'à un panel multi-
+    bookmakers). Une seule source désormais : marches[cle][cle_selection],
+    déjà None si absente."""
     panel = cotes_marches.get(cle_marche)
     if not panel:
         return None
@@ -208,8 +208,8 @@ def construit_candidats(marches_probas, cotes_marches):
                 "probabilite_modele": probas["moins"], "cote_observee": cote_moins,
             })
 
-    # --- MarchÃ©s ajoutÃ©s (26/08ter) : voir commentaire sur
-    # INCLURE_SCORE_EXACT_DANS_ANALYSE en tÃªte de fichier pour le contexte. ---
+    # --- Marchés ajoutés (26/08ter) : voir commentaire sur
+    # INCLURE_SCORE_EXACT_DANS_ANALYSE en tête de fichier pour le contexte. ---
 
     p_handicap = marches_probas.get("handicap", {})
     for ligne_str, probas in p_handicap.items():
@@ -224,13 +224,13 @@ def construit_candidats(marches_probas, cotes_marches):
         cote_exterieur = cote_marche(cotes_marches, cle_cotes, "exterieur")
         if cote_exterieur is not None:
             candidats.append({
-                "marche": f"Handicap {ligne_str} - ExtÃ©rieur", "condition": lambda x, y, l=ligne: (x + l) < y,
+                "marche": f"Handicap {ligne_str} - Extérieur", "condition": lambda x, y, l=ligne: (x + l) < y,
                 "probabilite_modele": probas["exterieur"], "cote_observee": cote_exterieur,
             })
 
     for cle_probas, libelle, cond_plus in [
         ("over_under_domicile", "Domicile", lambda x, y, l: x > l),
-        ("over_under_exterieur", "ExtÃ©rieur", lambda x, y, l: y > l),
+        ("over_under_exterieur", "Extérieur", lambda x, y, l: y > l),
     ]:
         for ligne_str, probas in marches_probas.get(cle_probas, {}).items():
             ligne = float(ligne_str)
@@ -265,14 +265,14 @@ def construit_candidats(marches_probas, cotes_marches):
 
     for cle_probas, condition_oui, libelle in [
         ("cages_inviolees_domicile", lambda x, y: y == 0, "Domicile"),
-        ("cages_inviolees_exterieur", lambda x, y: x == 0, "ExtÃ©rieur"),
+        ("cages_inviolees_exterieur", lambda x, y: x == 0, "Extérieur"),
     ]:
         p_ci = marches_probas.get(cle_probas, {})
         if p_ci:
             cote_oui = cote_marche(cotes_marches, cle_probas, "oui")
             if cote_oui is not None:
                 candidats.append({
-                    "marche": f"Cage inviolÃ©e - {libelle}", "condition": condition_oui,
+                    "marche": f"Cage inviolée - {libelle}", "condition": condition_oui,
                     "probabilite_modele": p_ci["oui"], "cote_observee": cote_oui,
                 })
             cote_non = cote_marche(cotes_marches, cle_probas, "non")
@@ -330,16 +330,16 @@ def construit_signaux(matchs_bruts):
 
         if not url_match:
             # CORRECTIF (26/08quinquies) : match sans page matchendirect (ex.
-            # ajoutÃ© depuis betpawa.html, championnat hors couverture ou URL
-            # simplement non cherchÃ©e). Les cotes manuelles alimentent l'EV
-            # mais ne remplacent pas classement/forme/H2H, nÃ©cessaires au
-            # calcul de lambda -- rien n'est devinÃ© Ã  la place. Le match
+            # ajouté depuis betpawa.html, championnat hors couverture ou URL
+            # simplement non cherchée). Les cotes manuelles alimentent l'EV
+            # mais ne remplacent pas classement/forme/H2H, nécessaires au
+            # calcul de lambda -- rien n'est deviné à la place. Le match
             # reste visible (verdict NO_GO implicite) avec une raison claire,
-            # plutÃ´t que d'Ãªtre traitÃ© ou silencieusement perdu.
+            # plutôt que d'être traité ou silencieusement perdu.
             signal["raison_non_traite"] = (
                 "pas_d_url_matchendirect : forme/classement/H2H indisponibles, "
                 "lambda non calculable -- les cotes manuelles seules ne suffisent "
-                "pas Ã  faire tourner le modÃ¨le Poisson/Dixon-Coles"
+                "pas à faire tourner le modèle Poisson/Dixon-Coles"
             )
             resultats.append(signal)
             continue
@@ -411,11 +411,11 @@ def construit_signaux(matchs_bruts):
         cotes_manuelles = m.get("cotes_manuelles")
         cotes_marches = {}
         if cotes_manuelles:
-            # CORRECTIF (26/08ter) : cotes saisies Ã  la main (ex. Betpawa) --
+            # CORRECTIF (26/08ter) : cotes saisies à la main (ex. Betpawa) --
             # pas de scraping matchendirect pour ce match. Structure attendue
-            # identique Ã  ce que recupere_cotes_marches renvoie (voir
-            # GABARIT_COTES_MANUELLES.json). Aucune vÃ©rification de fraÃ®cheur
-            # ou de cohÃ©rence n'est faite ici -- responsabilitÃ© de la
+            # identique à ce que recupere_cotes_marches renvoie (voir
+            # GABARIT_COTES_MANUELLES.json). Aucune vérification de fraîcheur
+            # ou de cohérence n'est faite ici -- responsabilité de la
             # personne qui saisit les cotes, comme pour tout champ manuel du
             # panier.
             cotes_marches = cotes_manuelles
@@ -429,8 +429,10 @@ def construit_signaux(matchs_bruts):
 
         cote_1 = cote_marche(cotes_marches, "1x2", "1")
 
-        # Module 2 v4.3 : GA_REFERENCE est une constante externe fixe (1.35),
-        # indÃ©pendante du pays ou de la compÃ©tition.
+        # (26/08/2026 -- calibration) pays extrait de "competition" (ex.
+        # "Norvège : Eliteserien" -> "Norvège") pour choisir la bonne valeur
+        # dans GA_REFERENCE_PAR_LIGUE (calculs.py). Absent du dict -> "default",
+        # comportement identique à l'ancien GA_REFERENCE fixe.
         pays_match = competition.split(":")[0].strip() if competition else None
 
         lam = calculs.calcule_lambda(
@@ -475,15 +477,35 @@ def construit_signaux(matchs_bruts):
                 "mise_pct_bankroll": calculs.kelly_stake(c["probabilite_modele"], c["cote_observee"]),
             }
 
+        # (30/08/2026 -- correctif) LISTE_A/LISTE_B qualifient un candidat sur
+        # son EV BRUT (voir calcule_ev() dans calculs.py) ; mais la mise
+        # Kelly, elle, utilise une probabilité resserrée (K_SHRINKAGE) --
+        # un candidat peut donc qualifier pour LISTE_B (EV brut >= 12%) et
+        # pourtant recevoir une mise Kelly de 0% (pas d'edge une fois la
+        # surconfiance du modèle corrigée). Un "GO" affiché avec un pari à
+        # 0% de mise n'a aucun sens pour l'utilisateur -- on ne garde donc
+        # dans LISTE_B que les candidats dont la mise réelle est positive,
+        # et on repasse en NO_GO si plus aucun candidat n'a de mise après ce
+        # filtre, avec un motif explicite (distinct de "aucun marché ne
+        # passe le filtre EV/cote", qui reste le motif de decision_go_nogo
+        # quand LISTE_A est vide dès le départ).
         liste_b_serialisee = [serialise(c) for c in liste_b]
+        liste_b_avec_mise = [c for c in liste_b_serialisee if c["mise_pct_bankroll"] > 0]
 
         verdict_global = decision["verdict_global"]
         motif_no_go = decision["motif_no_go"]
+        if verdict_global == "GO" and not liste_b_avec_mise:
+            verdict_global = "NO_GO"
+            motif_no_go = (
+                "EV positif sur la probabilité brute, mais mise Kelly nulle une fois la "
+                "probabilité resserrée (K_SHRINKAGE) -- pas d'edge réel après correction de "
+                "la surconfiance mesurée du modèle."
+            )
 
         signal["verdict_global"] = verdict_global
         signal["motif_no_go"] = motif_no_go
         signal["LISTE_A_marches_passant_EV_et_cote"] = [serialise(c) for c in liste_a]
-        signal["LISTE_B_liste_finale_apres_correlation"] = liste_b_serialisee
+        signal["LISTE_B_liste_finale_apres_correlation"] = liste_b_avec_mise
         signal["coefficients_empiriques"] = False
 
         resultats.append(signal)
@@ -501,11 +523,11 @@ def main():
     if not matchs_du_jour:
         print(f"ATTENTION : {FICHIER_MATCHS_DU_JOUR} introuvable ou vide.")
     if not panier_brut:
-        print(f"{FICHIER_PANIER} vide -- 0 match sera traitÃ©.")
+        print(f"{FICHIER_PANIER} vide -- 0 match sera traité.")
     elif not matchs_a_traiter:
-        print(f"ATTENTION : {len(panier_brut)} entrÃ©e(s) dans {FICHIER_PANIER} mais "
-              f"AUCUNE n'a pu Ãªtre rÃ©solue -- panier probablement pÃ©rimÃ© (oubli de "
-              f"mise Ã  jour avant ce run ?) ou entrÃ©es mal formÃ©es (voir avertissements ci-dessus).")
+        print(f"ATTENTION : {len(panier_brut)} entrée(s) dans {FICHIER_PANIER} mais "
+              f"AUCUNE n'a pu être résolue -- panier probablement périmé (oubli de "
+              f"mise à jour avant ce run ?) ou entrées mal formées (voir avertissements ci-dessus).")
 
     signaux = construit_signaux(matchs_a_traiter)
 
@@ -524,8 +546,9 @@ def main():
     }
     with open("data.json", "w", encoding="utf-8") as f:
         json.dump(sortie, f, indent=2, ensure_ascii=False)
-    print(f"Pipeline terminÃ© : {len(signaux)} matchs traitÃ©s "
-          f"(panier : {len(panier_brut)} entrÃ©e(s)) -> data.json")
+    print(f"Pipeline terminé : {len(signaux)} matchs traités "
+          f"(panier : {len(panier_brut)} entrée(s)) -> data.json")
 
 
 if __name__ == "__main__":
+    main()
