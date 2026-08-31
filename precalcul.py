@@ -27,7 +27,25 @@ import datetime
 import json
 import sys
 
+import run_pipeline
 from run_pipeline import construit_signaux, charge_json_ou_vide
+from cache_equipes import recupere_gf_ga_avec_cache
+
+# On mémorise la vraie fonction (celle qui scrape réellement), puis on
+# remplace, uniquement pour ce script, celle utilisée à l'intérieur de
+# construit_signaux() par une version qui vérifie d'abord le cache.
+# run_pipeline.py lui-même n'est pas modifié -- il continue d'appeler la
+# fonction réelle quand il tourne seul (mode panier).
+_recupere_gf_ga_reelle = run_pipeline.recupere_gf_ga_avec_repli
+
+
+def _recupere_gf_ga_avec_cache(url_equipe, nom_equipe, nom_competition, max_matchs=10):
+    return recupere_gf_ga_avec_cache(
+        _recupere_gf_ga_reelle, url_equipe, nom_equipe, nom_competition, max_matchs
+    )
+
+
+run_pipeline.recupere_gf_ga_avec_repli = _recupere_gf_ga_avec_cache
 
 MODEL_VERSION = "Archetype-v4.3"  # à synchroniser manuellement avec calculs.py
                                    # tant qu'aucun champ de version n'existe
