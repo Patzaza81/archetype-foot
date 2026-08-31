@@ -49,6 +49,14 @@ jobs:
         run: python scraper_betpawa.py
         continue-on-error: true
 
+      # AJOUT 31/08/2026 : test du pré-calcul J+1/J+2/J+3, indépendant du
+      # panier utilisateur. N'existait pas avant -- première exécution en
+      # conditions réelles. continue-on-error: true pour ne jamais casser le
+      # run principal (panier/calculs) tant que ce mode n'est pas validé.
+      - name: Pré-calcul J+1/J+2/J+3 (test, indépendant du panier)
+        run: python precalcul.py
+        continue-on-error: true
+
       - name: Pipeline planifié ou relance manuelle complète (panier_id vide)
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         run: python run_pipeline.py
@@ -70,7 +78,7 @@ jobs:
         run: |
           git config user.name "archetype-foot-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add data.json matchs_du_jour.json matchs_demain.json matchs_semaine.json
+          git add data.json matchs_du_jour.json matchs_demain.json matchs_semaine.json precalcul.json
           for f in panier.json historique_pronostics.json; do
             [ -f "$f" ] && git add "$f"
           done
