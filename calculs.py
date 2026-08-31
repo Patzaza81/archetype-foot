@@ -1,139 +1,111 @@
 """
-calculs.py — Portage déterministe des Règles N3 / N4 / N6 / N7 (Module 2 v4.3)
-et de l'Étape 7 (Module 3 v6.3), UNIQUEMENT la partie mathématique fixe.
+calculs.py â€” Portage dÃ©terministe des RÃ¨gles N3 / N4 / N6 / N7 (Module 2 v4.3)
+et de l'Ã‰tape 7 (Module 3 v6.3), UNIQUEMENT la partie mathÃ©matique fixe.
 
-Ce fichier N'IMPLÉMENTE PAS :
-- la vérification de fraîcheur des pages sources (Module 1)
-- la détection de pénalités de points (Module 1)
+Ce fichier N'IMPLÃ‰MENTE PAS :
+- la vÃ©rification de fraÃ®cheur des pages sources (Module 1)
+- la dÃ©tection de pÃ©nalitÃ©s de points (Module 1)
 - le risque de rotation continentale (Module 1 v1.7)
-- la double vérification des handicaps 3 voies (Module 3, Étape 4)
-- toute analyse de corrélation sémantique entre marchés (nécessite jugement,
-  pas juste un chiffre — cf. SEUIL_CORRELATION ci-dessous, implémenté seulement
-  pour le cas simple "même match, marchés mécaniquement liés")
+- la double vÃ©rification des handicaps 3 voies (Module 3, Ã‰tape 4)
+- toute analyse de corrÃ©lation sÃ©mantique entre marchÃ©s (nÃ©cessite jugement,
+  pas juste un chiffre â€” cf. SEUIL_CORRELATION ci-dessous, implÃ©mentÃ© seulement
+  pour le cas simple "mÃªme match, marchÃ©s mÃ©caniquement liÃ©s")
 
-Ces points restent des tâches manuelles ou une v2 — les inclure de façon fiable
-avant demain reviendrait à réécrire en code un jugement d'agent, pas juste une formule.
+Ces points restent des tÃ¢ches manuelles ou une v2 â€” les inclure de faÃ§on fiable
+avant demain reviendrait Ã  rÃ©Ã©crire en code un jugement d'agent, pas juste une formule.
 
-Constantes reprises telles quelles de TABLEAU_RECAPITULATIF.md (gelées jusqu'à
-backtest historique — ne pas modifier sans repasser par ce document).
+Constantes reprises telles quelles de TABLEAU_RECAPITULATIF.md (gelÃ©es jusqu'Ã 
+backtest historique â€” ne pas modifier sans repasser par ce document).
 """
 
 import math
 
-# --- Constantes gelées (Module 2 / Module 3) ---
-# GA_REFERENCE_PAR_LIGUE : remplace l'ancienne constante unique
-# GA_REFERENCE=1.35 appliquée à toutes les ligues. Trois statuts différents
-# selon la clé, à ne pas confondre :
-# - "Norvège"/"Suède"/"Danemark" (29/08/2026), "Italie"/"Allemagne"/
-#   "France"/"Turquie"/"Espagne"/"Angleterre"/"Pays-Bas"/"Portugal"/"Grèce"/
-#   "Belgique"/"Russie"/"Suisse"/"Pologne" (30/08/2026) : CALCULÉES sur
-#   données réelles (Football-Data.co.uk). Saison retenue par pays -- la
-#   PLUS RÉCENTE COMPLÈTE, jamais une saison en cours trop courte (le
-#   Danemark 2026/2027 n'avait que 28 matchs, écart de 0.25 avec sa saison
-#   complète -- même logique appliquée à Russie/Suisse/Pologne ci-dessous,
-#   dont la saison 2026/2027 n'avait que 16 à 38 matchs) :
+# --- Constantes gelÃ©es (Module 2 / Module 3) ---
+# GA_REFERENCE : constante externe fixe du Module 2 v4.3.
+# - "NorvÃ¨ge"/"SuÃ¨de"/"Danemark" (29/08/2026), "Italie"/"Allemagne"/
+#   "France"/"Turquie"/"Espagne"/"Angleterre"/"Pays-Bas"/"Portugal"/"GrÃ¨ce"/
+#   "Belgique"/"Russie"/"Suisse"/"Pologne" (30/08/2026) : CALCULÃ‰ES sur
+#   donnÃ©es rÃ©elles (Football-Data.co.uk). Saison retenue par pays -- la
+#   PLUS RÃ‰CENTE COMPLÃˆTE, jamais une saison en cours trop courte (le
+#   Danemark 2026/2027 n'avait que 28 matchs, Ã©cart de 0.25 avec sa saison
+#   complÃ¨te -- mÃªme logique appliquÃ©e Ã  Russie/Suisse/Pologne ci-dessous,
+#   dont la saison 2026/2027 n'avait que 16 Ã  38 matchs) :
 #     Italie 2025/2026 (380 matchs), Allemagne 2025/2026 (306), France
 #     2025/2026 (306), Turquie 2025/2026 (306), Espagne 2025/2026 (380),
 #     Angleterre 2025/2026 (380), Pays-Bas 2025/2026 (306), Portugal
-#     2025/2026 (306), Grèce 2025/2026 (236), Belgique 2025/2026 (311),
-#     Norvège 2025 (240), Suède 2025 (240), Danemark 2025/2026 (192),
+#     2025/2026 (306), GrÃ¨ce 2025/2026 (236), Belgique 2025/2026 (311),
+#     NorvÃ¨ge 2025 (240), SuÃ¨de 2025 (240), Danemark 2025/2026 (192),
 #     Russie 2025/2026 (240), Suisse 2025/2026 (228), Pologne 2025/2026 (306).
-# - "Arabie Saoudite" (30/08/2026) : CALCULÉE sur classement réel FootyStats
-#   (Saudi Pro League, saison 2025/26 complète -- 18 équipes, 34 matchs/
-#   équipe, GF total = GA total = 921). Écart important avec l'ancienne
-#   estimation devinée (1.20 -> 1.50) : cette ligue est nettement plus
-#   offensive qu'estimé au départ.
-# - "Corée du Sud" (30/08/2026) : CALCULÉE sur classement réel FootyStats
-#   (K League 1, saison 2025 complète -- 12 équipes, 33 matchs/équipe, GF
-#   total = GA total = 512, confirmé cohérent entre les deux colonnes).
-#   Vérifiée par recoupement avec la saison 2026 en cours (151/198 matchs) :
-#   1.21, du même ordre que 1.29 sur la saison complète -- retenue comme
-#   plus fiable, valeur pas trop éloignée entre les deux saisons.
-# - "Japon" (30/08/2026) : CALCULÉE sur classement réel FootyStats (J1
-#   League, saison 2025 complète -- 20 équipes, 38 matchs/équipe, GF total
+# - "Arabie Saoudite" (30/08/2026) : CALCULÃ‰E sur classement rÃ©el FootyStats
+#   (Saudi Pro League, saison 2025/26 complÃ¨te -- 18 Ã©quipes, 34 matchs/
+#   Ã©quipe, GF total = GA total = 921). Ã‰cart important avec l'ancienne
+#   estimation devinÃ©e (1.20 -> 1.50) : cette ligue est nettement plus
+#   offensive qu'estimÃ© au dÃ©part.
+# - "CorÃ©e du Sud" (30/08/2026) : CALCULÃ‰E sur classement rÃ©el FootyStats
+#   (K League 1, saison 2025 complÃ¨te -- 12 Ã©quipes, 33 matchs/Ã©quipe, GF
+#   total = GA total = 512, confirmÃ© cohÃ©rent entre les deux colonnes).
+#   VÃ©rifiÃ©e par recoupement avec la saison 2026 en cours (151/198 matchs) :
+#   1.21, du mÃªme ordre que 1.29 sur la saison complÃ¨te -- retenue comme
+#   plus fiable, valeur pas trop Ã©loignÃ©e entre les deux saisons.
+# - "Japon" (30/08/2026) : CALCULÃ‰E sur classement rÃ©el FootyStats (J1
+#   League, saison 2025 complÃ¨te -- 20 Ã©quipes, 38 matchs/Ã©quipe, GF total
 #   = GA total = 911).
-# - "Estonie" (30/08/2026) : CALCULÉE (Meistriliiga, saison 2025 complète --
+# - "Estonie" (30/08/2026) : CALCULÃ‰E (Meistriliiga, saison 2025 complÃ¨te --
 #   182/182 matchs, GF=GA=575).
-# - "Tunisie" (30/08/2026) : CALCULÉE (Ligue 1, saison 2025/26 complète --
+# - "Tunisie" (30/08/2026) : CALCULÃ‰E (Ligue 1, saison 2025/26 complÃ¨te --
 #   240/240 matchs, GF=GA=414).
-# - "Etats-Unis" (30/08/2026) : CALCULÉE (MLS, saison 2025 complète --
-#   540/540 matchs, 30 équipes, GF=GA=1629).
-# - "South Africa" (30/08/2026) : CALCULÉE (Premier Soccer League, saison
-#   2025/26 complète -- 240/240 matchs, GF=GA=485). Clé en anglais
+# - "Etats-Unis" (30/08/2026) : CALCULÃ‰E (MLS, saison 2025 complÃ¨te --
+#   540/540 matchs, 30 Ã©quipes, GF=GA=1629).
+# - "South Africa" (30/08/2026) : CALCULÃ‰E (Premier Soccer League, saison
+#   2025/26 complÃ¨te -- 240/240 matchs, GF=GA=485). ClÃ© en anglais
 #   volontairement -- c'est exactement le nom que matchendirect utilise
 #   pour ce pays dans "competition" (vu dans le corpus), pas de traduction
-#   française pour éviter de reproduire le bug Betpawa/ALIAS_PAYS trouvé
-#   plus tôt dans l'autre sens.
-# - "Chine" (30/08/2026) : CALCULÉE (Chinese Super League, saison 2025
-#   complète -- 240/240 matchs, GF=GA=771).
-# - "Écosse" : PAS ENCORE FAITE -- seule une saison 2026/27 à peine
-#   commencée (16/198 matchs, 2-4 matchs/équipe) a été fournie, bien trop
-#   courte pour être fiable (même problème que le Danemark au premier tour).
-#   Retombe sur "default" en attendant une saison complète.
-# Toute clé de pays absente retombe sur "default" (l'ancienne valeur 1.35,
-# inchangée).
-GA_REFERENCE_PAR_LIGUE = {
-    "default": 1.35,
-    "Norvège": 1.59, "Suède": 1.42, "Danemark": 1.55,
-    "Italie": 1.21, "Allemagne": 1.62, "France": 1.41, "Turquie": 1.33,
-    "Espagne": 1.35, "Angleterre": 1.38, "Pays-Bas": 1.59, "Portugal": 1.34,
-    "Grèce": 1.28, "Belgique": 1.34, "Russie": 1.27, "Suisse": 1.65,
-    "Pologne": 1.37, "Corée du Sud": 1.29, "Arabie Saoudite": 1.50,
-    "Japon": 1.20, "Estonia": 1.58, "Tunisie": 0.86, "Etats-Unis": 1.51,
-    "South Africa": 1.01, "China": 1.61,
-}
+#   franÃ§aise pour Ã©viter de reproduire le bug Betpawa/ALIAS_PAYS trouvÃ©
+#   plus tÃ´t dans l'autre sens.
+# - "Chine" (30/08/2026) : CALCULÃ‰E (Chinese Super League, saison 2025
+#   complÃ¨te -- 240/240 matchs, GF=GA=771).
+# - "Ã‰cosse" : PAS ENCORE FAITE -- seule une saison 2026/27 Ã  peine
+#   commencÃ©e (16/198 matchs, 2-4 matchs/Ã©quipe) a Ã©tÃ© fournie, bien trop
+#   courte pour Ãªtre fiable (mÃªme problÃ¨me que le Danemark au premier tour).
+#   Retombe sur "default" en attendant une saison complÃ¨te.
+# Toute clÃ© de pays absente retombe sur "default" (l'ancienne valeur 1.35,
+# inchangÃ©e).
+GA_REFERENCE = 1.35
 
 
 def get_ga_reference(pays=None):
-    pays_normalise = ALIAS_PAYS.get(pays, pays)
-    return GA_REFERENCE_PAR_LIGUE.get(pays_normalise, GA_REFERENCE_PAR_LIGUE["default"])
+    """RÃ©fÃ©rence dÃ©fensive fixe du Module 2 v4.3.
+
+    Le pays n'intervient pas dans le calcul : GA_REFERENCE est une constante
+    externe unique, conformÃ©ment Ã  la rÃ¨gle N3bis de la base de rÃ©fÃ©rence.
+    """
+    return GA_REFERENCE
 
 
-# ALIAS_PAYS (30/08/2026 -- calibration, correctif) : matchendirect et
-# Betpawa ne nomment pas les pays pareil dans le champ "competition" --
-# matchendirect utilise le français ("Danemark", "Corée du Sud"), Betpawa
-# l'anglais ("Denmark", "Republic of Korea"), et pour l'Allemagne, Betpawa
-# omet carrément le pays ("Bundesliga" tout court, sans "Germany :" devant).
-# Sans cette table, un match sourcé Betpawa dans une ligue déjà calculée
-# retombait silencieusement sur "default" (1.35) au lieu de la vraie valeur
-# -- déjà arrivé pour Danemark/Corée du Sud/Allemagne sur des matchs réels
-# du corpus avant ce correctif. Couvre les 19 clés de GA_REFERENCE_PAR_LIGUE
-# ci-dessus ; à compléter si un nouveau pays y est ajouté plus tard.
+# Alias conservÃ©s uniquement pour compatibilitÃ© des entrÃ©es ; ils ne modifient
+# plus la rÃ©fÃ©rence dÃ©fensive fixe.
 ALIAS_PAYS = {
-    "Denmark": "Danemark", "Republic of Korea": "Corée du Sud", "South Korea": "Corée du Sud",
+    "Denmark": "Danemark", "Republic of Korea": "CorÃ©e du Sud", "South Korea": "CorÃ©e du Sud",
     "Bundesliga": "Allemagne", "Germany": "Allemagne", "Netherlands": "Pays-Bas",
     "Spain": "Espagne", "England": "Angleterre", "Italy": "Italie", "Belgium": "Belgique",
-    "Turkey": "Turquie", "Greece": "Grèce", "Russia": "Russie", "Switzerland": "Suisse",
-    "Poland": "Pologne", "Norway": "Norvège", "Sweden": "Suède", "Saudi Arabia": "Arabie Saoudite",
-    "Japan": "Japon", "Estonie": "Estonia", "États-Unis": "Etats-Unis", "USA": "Etats-Unis",
+    "Turkey": "Turquie", "Greece": "GrÃ¨ce", "Russia": "Russie", "Switzerland": "Suisse",
+    "Poland": "Pologne", "Norway": "NorvÃ¨ge", "Sweden": "SuÃ¨de", "Saudi Arabia": "Arabie Saoudite",
+    "Japan": "Japon", "Estonie": "Estonia", "Ã‰tats-Unis": "Etats-Unis", "USA": "Etats-Unis",
     "United States": "Etats-Unis", "Afrique du Sud": "South Africa", "Chine": "China",
 }
 
 
-# BORNE_MIN_DEFENSE/BORNE_MAX_DEFENSE (26/08/2026 -- calibration) : élargies de
-# 0.70/1.30 à 0.55/1.60. Constat sur 391 matchs analysés (24-29/08/2026) : 41%
-# des modificateurs de défense étaient collés exactement sur l'ancienne borne
-# -- signe que la borne était plus étroite que l'écart réel entre équipes.
-# Élargissement symétrique de 0.15 de chaque côté, pas encore revérifié sur
-# nouvel échantillon post-changement.
-BORNE_MIN_DEFENSE = 0.55
-BORNE_MAX_DEFENSE = 1.60
+# Bornes dÃ©fensives exactes du Module 2 v4.3.
+BORNE_MIN_DEFENSE = 0.70
+BORNE_MAX_DEFENSE = 1.30
 
-# K_SHRINKAGE (29/08/2026 -- calibration, mise à jour) : recalculé sur
-# l'échantillon complet 24-29/08/2026, 47 matchs GO / 68 paris (contre 42
-# paris sur 26 matchs le 26/08) -- probabilité moyenne annoncée 0.824,
-# réussite réelle observée 0.588. k = (0.588-0.5)/(0.824-0.5) = 0.272,
-# arrondi à 0.27. Toujours pas les 150-200 paris visés pour une valeur
-# considérée stable -- à revérifier à ce seuil.
-K_SHRINKAGE = 0.27
-
+# Aucun shrinkage probabiliste : la base v4.3 interdit toute modification
+# silencieuse de la probabilitÃ© modÃ¨le aprÃ¨s Poisson/Dixon-Coles.
+K_SHRINKAGE = 1.0
 
 def ajuste_probabilite(p):
-    """Resserre une probabilité modèle vers 0.5 d'un facteur K_SHRINKAGE,
-    pour corriger la surconfiance mesurée (voir note ci-dessus). Appliqué
-    dans calcule_ev(), kelly_stake() et est_standout() -- un seul point de
-    calcul, jamais une correction manuelle répétée à trois endroits."""
-    return 0.5 + (p - 0.5) * K_SHRINKAGE
+    """CompatibilitÃ© API : retourne la probabilitÃ© modÃ¨le inchangÃ©e."""
+    return p
 
 
 POIDS_FORME = 0.30
@@ -142,15 +114,12 @@ POIDS_REPOS = 0.15
 POIDS_ABSENCES = 0.15
 POIDS_DISTANCE = 0.10
 POIDS_H2H = 0.10
-BORNE_RATIO = 0.15  # borne +/- par facteur avant pondération
+BORNE_RATIO = 0.15  # borne +/- par facteur avant pondÃ©ration
 
 RHO_DIXON_COLES = -0.1
 
-# SEUIL_EV_MIN (26/08/2026 -- calibration) : relevé de 0.05 à 0.12. Sur les 42
-# paris GO vérifiés, l'EV affiché moyen était de 0.199 pour les paris PERDANTS
-# contre 0.170 pour les GAGNANTS -- un seuil à 0.05 ne filtre donc rien
-# d'utile. 0.12 est fixé au-dessus de l'EV moyen observé sur les perdants.
-SEUIL_EV_MIN = 0.12
+# Seuil EV exact du Module 3 v6.3.
+SEUIL_EV_MIN = 0.05
 FOURCHETTE_COTE_MIN = 1.25
 FOURCHETTE_COTE_MAX = 1.69
 SEUIL_CORRELATION = 0.70
@@ -168,13 +137,13 @@ def clamp(x, lo, hi):
 
 
 # --------------------------------------------------------------------------
-# Étape 3 (Module 2 v4.3) — ratios contextuels. Forme, Absences, Distance
-# ANNULÉS sur décision explicite (25/08) : Forme jamais formalisée sur ce
-# projet, Absences non fiable à scraper sur matchendirect (pas de liste
-# blessés/suspendus confirmée), Distance jamais commencée (géocodage).
-# Seuls Classement et H2H sont calculés. Le garde-fou "donnée absente ->
+# Ã‰tape 3 (Module 2 v4.3) â€” ratios contextuels. Forme, Absences, Distance
+# ANNULÃ‰S sur dÃ©cision explicite (25/08) : Forme jamais formalisÃ©e sur ce
+# projet, Absences non fiable Ã  scraper sur matchendirect (pas de liste
+# blessÃ©s/suspendus confirmÃ©e), Distance jamais commencÃ©e (gÃ©ocodage).
+# Seuls Classement et H2H sont calculÃ©s. Le garde-fou "donnÃ©e absente ->
 # ratio neutre (0.0)" du Module 2 s'applique aux deux -- jamais une erreur,
-# jamais une estimation devinée.
+# jamais une estimation devinÃ©e.
 # --------------------------------------------------------------------------
 
 def _normalise_texte_ratio(s):
@@ -191,8 +160,8 @@ def calcule_ratio_classement(classement, nom_equipe, nom_adversaire):
     """
     Score_classement = (N-Position)/(N-1)
     ratio_classement = clamp(Score_propre - Score_adverse, -0.15, 0.15)
-    `classement` : liste renvoyée par recupere_classement_du_match
-    (scraper_details.py), déjà triée par rang (ordre du document = ordre
+    `classement` : liste renvoyÃ©e par recupere_classement_du_match
+    (scraper_details.py), dÃ©jÃ  triÃ©e par rang (ordre du document = ordre
     d'affichage du site -- position = index + 1).
     """
     N = len(classement)
@@ -218,9 +187,9 @@ def calcule_ratio_classement(classement, nom_equipe, nom_adversaire):
 def calcule_ratio_h2h(historique_h2h, nom_equipe, nom_adversaire, max_confrontations=10):
     """
     ratio_h2h = clamp((moyenne_propre - moyenne_adverse)/3, -0.15, 0.15)
-    sur les 10 dernières confrontations directes disponibles (ou moins si
+    sur les 10 derniÃ¨res confrontations directes disponibles (ou moins si
     l'historique est plus court). `historique_h2h` : sortie de
-    recupere_h2h (scraper_details.py), plus récent en premier.
+    recupere_h2h (scraper_details.py), plus rÃ©cent en premier.
     """
     buts_propre, buts_adverse = [], []
     for m in historique_h2h[:max_confrontations]:
@@ -240,18 +209,18 @@ def calcule_ratio_h2h(historique_h2h, nom_equipe, nom_adversaire, max_confrontat
 
 
 # --------------------------------------------------------------------------
-# Module 3 v6.3 — Étapes 1, 2, 4, 6 (25/08). Handicap 3 voies (Étape 0) EXCLU
-# sur décision explicite. Rotation continentale EXCLUE. Le dimensionnement
-# Kelly (Étape 7, déjà existant ci-dessus) reste strictement inchangé.
+# Module 3 v6.3 â€” Ã‰tapes 1, 2, 4, 6 (25/08). Handicap 3 voies (Ã‰tape 0) EXCLU
+# sur dÃ©cision explicite. Rotation continentale EXCLUE. Le dimensionnement
+# Kelly (Ã‰tape 7, dÃ©jÃ  existant ci-dessus) reste strictement inchangÃ©.
 # --------------------------------------------------------------------------
 
 def correlation_marches(matrice, condition_a, condition_b):
     """
-    Corrélation de Pearson EXACTE entre deux indicatrices de marché, calculée
-    sur la matrice jointe Poisson/Dixon-Coles déjà produite pour le match --
-    un calcul mécanique déterminé par le modèle lui-même, pas une estimation
-    ni un jugement sémantique. Sert à éviter d'empiler des mises sur des
-    marchés redondants du MÊME match (Étape 4, Module 3 v6.3).
+    CorrÃ©lation de Pearson EXACTE entre deux indicatrices de marchÃ©, calculÃ©e
+    sur la matrice jointe Poisson/Dixon-Coles dÃ©jÃ  produite pour le match --
+    un calcul mÃ©canique dÃ©terminÃ© par le modÃ¨le lui-mÃªme, pas une estimation
+    ni un jugement sÃ©mantique. Sert Ã  Ã©viter d'empiler des mises sur des
+    marchÃ©s redondants du MÃŠME match (Ã‰tape 4, Module 3 v6.3).
     """
     scores = list(matrice.keys())
     probs = list(matrice.values())
@@ -272,11 +241,11 @@ def correlation_marches(matrice, condition_a, condition_b):
 def construit_liste_a(candidats_bruts, seuil_ev=SEUIL_EV_MIN,
                        cote_min=FOURCHETTE_COTE_MIN, cote_max=FOURCHETTE_COTE_MAX):
     """
-    Étapes 1-2 Module 3 : plancher EV (5%) puis fourchette de cote
+    Ã‰tapes 1-2 Module 3 : plancher EV (5%) puis fourchette de cote
     (1.25-1.69). `candidats_bruts` : liste de dicts
     {"marche", "condition" (fn(x,y)->bool), "probabilite_modele", "cote_observee"}.
-    Retourne LISTE_A, triée par EV décroissant. Un candidat sans cote
-    (cote_observee=None) est écarté silencieusement, jamais une erreur.
+    Retourne LISTE_A, triÃ©e par EV dÃ©croissant. Un candidat sans cote
+    (cote_observee=None) est Ã©cartÃ© silencieusement, jamais une erreur.
     """
     liste_a = []
     for c in candidats_bruts:
@@ -293,9 +262,9 @@ def construit_liste_a(candidats_bruts, seuil_ev=SEUIL_EV_MIN,
 
 def construit_liste_b(liste_a, matrice, seuil_correlation=SEUIL_CORRELATION, nb_max=NB_PARIS_MAX):
     """
-    Étape 4 Module 3 : filtre de corrélation mécanique. Parcourt LISTE_A
-    (déjà triée par EV décroissant) et exclut tout candidat dont la
-    corrélation avec un marché DÉJÀ retenu dépasse le seuil.
+    Ã‰tape 4 Module 3 : filtre de corrÃ©lation mÃ©canique. Parcourt LISTE_A
+    (dÃ©jÃ  triÃ©e par EV dÃ©croissant) et exclut tout candidat dont la
+    corrÃ©lation avec un marchÃ© DÃ‰JÃ€ retenu dÃ©passe le seuil.
     """
     liste_b = []
     for candidat in liste_a:
@@ -310,40 +279,23 @@ def construit_liste_b(liste_a, matrice, seuil_correlation=SEUIL_CORRELATION, nb_
 
 def decision_go_nogo(liste_a, liste_b, nb_marches_evalues,
                       nb_matchs_domicile_utilises=None, nb_matchs_exterieur_utilises=None):
-    """
-    Étape 6 Module 3 : verdict simplifié, deux issues seulement.
+    """Ã‰tape 6 Module 3 v6.3 : GO si LISTE_B est non vide, sinon NO_GO.
 
-    CORRECTIF : un échantillon trop mince (moins de CONFIANCE_LAMBDA_SEUILS["FAIBLE"]
-    matchs domicile OU extérieur) force désormais NO_GO, quel que soit l'EV calculé --
-    confiance_lambda() restait purement descriptif jusqu'ici, un GO pouvait sortir sur
-    la base d'un seul match (ex. Bolton-Lincoln, GO à 95.1% sur 1/1 match). Ce n'est
-    plus le cas : sous ce seuil, l'échantillon est jugé insuffisant pour recommander
-    quoi que ce soit, peu importe le chiffre affiché.
+    La confiance sur le nombre de matchs est descriptive uniquement (Ã‰tape 5bis)
+    et ne constitue jamais un veto sur la dÃ©cision.
     """
-    seuil = CONFIANCE_LAMBDA_SEUILS["FAIBLE"]
-    if nb_matchs_domicile_utilises is not None and nb_matchs_domicile_utilises < seuil:
-        return {
-            "verdict_global": "NO_GO",
-            "motif_no_go": f"échantillon insuffisant -- {nb_matchs_domicile_utilises} match(s) domicile utilisés, minimum {seuil} requis",
-        }
-    if nb_matchs_exterieur_utilises is not None and nb_matchs_exterieur_utilises < seuil:
-        return {
-            "verdict_global": "NO_GO",
-            "motif_no_go": f"échantillon insuffisant -- {nb_matchs_exterieur_utilises} match(s) extérieur utilisés, minimum {seuil} requis",
-        }
-
     if liste_b:
         return {"verdict_global": "GO", "motif_no_go": None}
     if liste_a:
-        motif = f"{len(liste_a)} marché(s) dans la fourchette avec EV suffisant, tous exclus par corrélation"
+        motif = f"{len(liste_a)} marchÃ©(s) dans la fourchette avec EV suffisant, tous exclus par corrÃ©lation"
     else:
-        motif = (f"{nb_marches_evalues} marché(s) évalués, aucun dans la fourchette "
+        motif = (f"{nb_marches_evalues} marchÃ©(s) Ã©valuÃ©s, aucun dans la fourchette "
                  f"{FOURCHETTE_COTE_MIN}-{FOURCHETTE_COTE_MAX} avec EV>={SEUIL_EV_MIN*100:.0f}%")
     return {"verdict_global": "NO_GO", "motif_no_go": motif}
 
 
 def confiance_lambda(nb_matchs_utilises: int) -> str:
-    """Étape 5bis — indicateur descriptif, ne modifie aucun calcul."""
+    """Ã‰tape 5bis â€” indicateur descriptif, ne modifie aucun calcul."""
     if nb_matchs_utilises < CONFIANCE_LAMBDA_SEUILS["FAIBLE"]:
         return "FAIBLE"
     if nb_matchs_utilises < CONFIANCE_LAMBDA_SEUILS["MOYENNE"]:
@@ -354,13 +306,13 @@ def confiance_lambda(nb_matchs_utilises: int) -> str:
 def calcule_lambda(gf_home_domicile, ga_home_domicile, gf_away_exterieur, ga_away_exterieur,
                     ratios_contextuels_home=None, ratios_contextuels_away=None, pays=None):
     """
-    Règle N3 — reproduit Étapes 1 à 4 du Module 2 v4.3 à l'identique.
-    ratios_contextuels_* : dict optionnel avec les clés parmi
+    RÃ¨gle N3 â€” reproduit Ã‰tapes 1 Ã  4 du Module 2 v4.3 Ã  l'identique.
+    ratios_contextuels_* : dict optionnel avec les clÃ©s parmi
         {"forme", "classement", "repos", "absences", "distance", "h2h"}
-        chaque valeur déjà exprimée en ratio relatif à l'adversaire, non bornée.
-    pays : (26/08/2026 -- calibration) nom du pays de la compétition, utilisé
+        chaque valeur dÃ©jÃ  exprimÃ©e en ratio relatif Ã  l'adversaire, non bornÃ©e.
+    pays : (26/08/2026 -- calibration) nom du pays de la compÃ©tition, utilisÃ©
         pour choisir la bonne valeur dans GA_REFERENCE_PAR_LIGUE. None ->
-        valeur "default" (comportement identique à l'ancien GA_REFERENCE fixe).
+        valeur "default" (comportement identique Ã  l'ancien GA_REFERENCE fixe).
     """
     ga_reference = get_ga_reference(pays)
     poids = {
@@ -423,7 +375,7 @@ def _tau_dixon_coles(x, y, lambda_home, lambda_away, rho=RHO_DIXON_COLES):
 
 
 def matrice_poisson_dixon_coles(lambda_home, lambda_away, max_buts=5):
-    """Règle N6 — tableau P(k,j) pour k,j de 0 à max_buts, agrégé en '5+' au-delà."""
+    """RÃ¨gle N6 â€” tableau P(k,j) pour k,j de 0 Ã  max_buts, agrÃ©gÃ© en '5+' au-delÃ ."""
 
     def poisson_pmf(k, lam):
         return (lam ** k) * math.exp(-lam) / math.factorial(k)
@@ -456,8 +408,8 @@ def probabilite_double_chance(matrice):
 def probabilite_over_under(matrice, ligne, equipe=None):
     """
     equipe=None -> total buts du match. equipe='home'/'away' -> buts d'une
-    seule équipe. ligne peut être un demi-entier (0.5, 1.5, 2.5...) ou un
-    entier (traité comme ligne asiatique simple, sans push géré ici).
+    seule Ã©quipe. ligne peut Ãªtre un demi-entier (0.5, 1.5, 2.5...) ou un
+    entier (traitÃ© comme ligne asiatique simple, sans push gÃ©rÃ© ici).
     """
     if equipe == "home":
         cond_total = lambda x, y: x
@@ -479,13 +431,13 @@ def probabilite_btts(matrice):
 
 def probabilite_handicap_2choix(matrice, ligne_domicile):
     """
-    ligne_domicile : handicap appliqué à l'équipe à domicile, ex: -1.5 signifie
-    "domicile doit gagner par 2 buts d'écart ou plus pour couvrir".
-    Lignes demi-entières uniquement (pas de push possible).
+    ligne_domicile : handicap appliquÃ© Ã  l'Ã©quipe Ã  domicile, ex: -1.5 signifie
+    "domicile doit gagner par 2 buts d'Ã©cart ou plus pour couvrir".
+    Lignes demi-entiÃ¨res uniquement (pas de push possible).
     """
     if ligne_domicile == int(ligne_domicile):
-        raise ValueError("probabilite_handicap_2choix ne gère que les lignes demi-entières (pas de push). "
-                          "Pour les lignes entières, saisie manuelle requise (Handicap à 3 choix).")
+        raise ValueError("probabilite_handicap_2choix ne gÃ¨re que les lignes demi-entiÃ¨res (pas de push). "
+                          "Pour les lignes entiÃ¨res, saisie manuelle requise (Handicap Ã  3 choix).")
     domicile_couvre = sum(
         p for (x, y), p in matrice.items() if (x + ligne_domicile) > y
     )
@@ -497,13 +449,13 @@ def probabilite_score_exact(matrice, x, y):
 
 
 def probabilite_nombre_exact_buts(matrice, n):
-    """Probabilité que le total de buts soit EXACTEMENT n (pas un cumul)."""
+    """ProbabilitÃ© que le total de buts soit EXACTEMENT n (pas un cumul)."""
     return sum(p for (bx, by), p in matrice.items() if bx + by == n)
 
 
 def probabilite_nombre_buts_ou_plus(matrice, n):
-    """Probabilité que le total de buts soit >= n. Sert uniquement pour la
-    queue de distribution (ex: '6+'), jamais pour une valeur isolée."""
+    """ProbabilitÃ© que le total de buts soit >= n. Sert uniquement pour la
+    queue de distribution (ex: '6+'), jamais pour une valeur isolÃ©e."""
     return sum(p for (bx, by), p in matrice.items() if bx + by >= n)
 
 
@@ -513,7 +465,7 @@ def probabilite_pair_impair(matrice):
 
 
 def probabilite_cages_inviolees(matrice, equipe):
-    """P(l'adversaire de `equipe` ne marque pas) — 'clean sheet' pour `equipe`."""
+    """P(l'adversaire de `equipe` ne marque pas) â€” 'clean sheet' pour `equipe`."""
     if equipe == "home":
         oui = sum(p for (x, y), p in matrice.items() if y == 0)
     else:
@@ -524,8 +476,8 @@ def probabilite_cages_inviolees(matrice, equipe):
 def construit_probabilites_marches(matrice, lignes_ou=(0.5, 1.5, 2.5, 3.5, 4.5),
                                     lignes_handicap=(-2.5, -1.5, -0.5, 0.5, 1.5, 2.5)):
     """
-    Construit le dictionnaire complet des probabilités modèle pour tous les
-    marchés v1 (buts uniquement). Clés stables, consommées telles quelles par
+    Construit le dictionnaire complet des probabilitÃ©s modÃ¨le pour tous les
+    marchÃ©s v1 (buts uniquement). ClÃ©s stables, consommÃ©es telles quelles par
     le frontend (script.js).
     """
     marches = {
@@ -567,25 +519,16 @@ def construit_probabilites_marches(matrice, lignes_ou=(0.5, 1.5, 2.5, 3.5, 4.5),
 
 
 def calcule_ev(probabilite_modele, cote_observee):
-    """Règle N7 — EV = (cote x probabilité) - 1. Jamais de mélange modèle/marché avant ce calcul.
-    (30/08/2026 -- calibration, correctif) NE resserre PLUS la probabilité ici
-    -- SEUIL_EV_MIN (0.12) a été calculé à partir des EV BRUTS (non resserrés)
-    des 68 paris GO vérifiés (moyenne perdants 0.199, gagnants 0.170) ; lui
-    appliquer une probabilité déjà resserrée par K_SHRINKAGE rend le seuil
-    mathématiquement inatteignable (plafond théorique 7.3%, jamais 12%,
-    quelle que soit la donnée réelle -- confirmé sur un run de 107 matchs
-    resté à 0 GO). Le resserrement reste appliqué dans kelly_stake() : son
-    rôle est de réduire la mise quand le modèle est probablement trop
-    confiant, pas de bloquer la décision GO/NO_GO elle-même."""
+    """RÃ¨gle N8 â€” EV = (cote x probabilitÃ© modÃ¨le) - 1."""
     if cote_observee is None:
         return None
     return (cote_observee * probabilite_modele) - 1
 
 
 def kelly_stake(probabilite_modele, cote_observee):
-    """
-    Étape 7 Module 3 — Kelly fractionné à 25%, plafonné à MISE_MAX_PARI (4%).
-    Retourne 0 si le pari est filtré (hors fourchette de cote ou EV insuffisant).
+    """Ã‰tape 7 Module 3 v6.3 â€” Kelly fractionnÃ© Ã  25%, plafond 4%.
+
+    La probabilitÃ© utilisÃ©e est exactement celle du modÃ¨le, sans shrinkage.
     """
     if cote_observee is None:
         return 0.0
@@ -596,13 +539,8 @@ def kelly_stake(probabilite_modele, cote_observee):
         return 0.0
 
     b = cote_observee - 1
-    # (30/08/2026 -- correctif) resserrement appliqué UNIQUEMENT ici (taille
-    # de la mise), plus dans calcule_ev() ci-dessus (voir sa docstring) --
-    # réduit la mise si le modèle est probablement trop confiant, sans
-    # jamais empêcher la décision GO elle-même d'être prise.
-    p = ajuste_probabilite(probabilite_modele)
-    q = 1 - p
-    f_kelly = (b * p - q) / b if b > 0 else 0.0
+    q = 1 - probabilite_modele
+    f_kelly = (b * probabilite_modele - q) / b if b > 0 else 0.0
     if f_kelly <= 0:
         return 0.0
 
@@ -612,13 +550,13 @@ def kelly_stake(probabilite_modele, cote_observee):
 
 def est_standout(probabilite_modele, cote_observee):
     """
-    Critère 'Pari en or' (Module 4) — EV >= SEUIL_STANDOUT.
+    CritÃ¨re 'Pari en or' (Module 4) â€” EV >= SEUIL_STANDOUT.
     CORRECTIF (25/08) : doit aussi respecter la fourchette de cote
     exploitable (FOURCHETTE_COTE_MIN/MAX), comme kelly_stake(). Avant ce
     correctif, un match avec un fort EV mais une cote hors fourchette
-    (ex. 3.80, un outsider) était marqué "standout" alors qu'aucune mise
-    n'est jamais recommandée dessus (mise_kelly = 0) — badge trompeur sur
-    le site, découvert dès que cote_1 a commencé à circuler réellement.
+    (ex. 3.80, un outsider) Ã©tait marquÃ© "standout" alors qu'aucune mise
+    n'est jamais recommandÃ©e dessus (mise_kelly = 0) â€” badge trompeur sur
+    le site, dÃ©couvert dÃ¨s que cote_1 a commencÃ© Ã  circuler rÃ©ellement.
     """
     if cote_observee is None:
         return False
@@ -631,7 +569,7 @@ def est_standout(probabilite_modele, cote_observee):
 def plafonner_cluster(paris, plafond_cluster=CLUSTER_MAX, nb_max=NB_PARIS_MAX):
     """
     Filtre simple : garde au plus NB_PARIS_MAX paris (les plus forts EV en premier),
-    et plafonne la somme des mises à plafond_cluster.
+    et plafonne la somme des mises Ã  plafond_cluster.
     """
     paris_tries = sorted(paris, key=lambda p: p.get("ev", 0), reverse=True)[:nb_max]
     total = sum(p.get("mise", 0) for p in paris_tries)
