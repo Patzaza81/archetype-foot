@@ -82,7 +82,7 @@ jobs:
         run: |
           git config user.name "archetype-foot-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add data.json matchs_du_jour.json matchs_demain.json matchs_semaine.json precalcul.json
+          git add data.json matchs_du_jour.json matchs_demain.json matchs_semaine.json precalcul.json cache_equipes.json
           for f in panier.json historique_pronostics.json; do
             [ -f "$f" ] && git add "$f"
           done
