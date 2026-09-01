@@ -502,39 +502,42 @@ pas au moteur qui fonctionne déjà") :
   recherche+vérification chaque nuit pour un match déjà résolu. Fonction
   de purge écrite (`purge_matchs_joues`) mais jamais appelée
   automatiquement à ce jour.
-- **Test de validation double-run construit** (lance les mêmes 100 matchs
-  deux fois de suite, cache vide puis rempli, vérifie que les résultats
-  sont identiques et que les 37 trouvés reviennent du cache au 2e passage)
-  -- **lancé en toute fin de session, résultat non encore rapporté au
-  moment de la rédaction de cette section.** À vérifier en priorité à la
-  reprise (voir 16.7).
+- **Test de validation double-run réalisé et CONFIRMÉ (01/09/2026)** :
+  lance les mêmes 100 matchs deux fois de suite, cache vide puis rempli.
+  **Résultat : 40 trouvés / 2 ambigus identiques sur les deux runs (aucune
+  dérive), 40/40 correspondances venues du cache au 2e passage, gain de
+  temps réel de 47% (13m10s -> 6m57s, durée totale du test : 20 minutes).**
+  Cache validé pour la mise en production. Note en passant : le run à vide
+  (13 minutes pour 100 matchs) est nettement plus rapide que les 30-45
+  minutes estimées lors du test V30 équivalent -- les optimisations
+  successives du moteur (sélecteurs plus directs, moins de vérifications
+  redondantes) ont aussi accéléré la résolution elle-même, indépendamment
+  de l'effet du cache.
 
 ### 16.7 Ce qui reste à faire (priorités, dans l'ordre suggéré)
-1. **Récupérer et vérifier le résultat du test double-run** (cache vide
-   puis rempli) sur les 100 matchs -- doit confirmer 0 dérive de résultat
-   et un vrai gain de temps mesuré.
-2. **Brancher `resolution_betpawa.py` + `cache_betpawa.py` dans
+1. **Brancher `resolution_betpawa.py` + `cache_betpawa.py` dans
    `precalcul.py`** -- à ce jour, ces deux modules existent et sont
    validés en isolation (via `test_scraping_betpawa_liste.py`, un script
-   diagnostic, PAS le pipeline réel), mais rien ne les appelle depuis le
-   vrai pré-calcul nocturne. C'est la prochaine étape concrète.
-3. **Mesurer la vraie couverture Betpawa** en auditant manuellement un
-   échantillon des "NON TROUVÉ" -- pour savoir si 37% est un bon ou un
+   diagnostic, PAS le pipeline réel, et le cache est maintenant confirmé
+   fiable sur un double-run), mais rien ne les appelle depuis le vrai
+   pré-calcul nocturne. C'est la prochaine étape concrète.
+2. **Mesurer la vraie couverture Betpawa** en auditant manuellement un
+   échantillon des "NON TROUVÉ" -- pour savoir si ~40% est un bon ou un
    mauvais score une fois la vraie limite du site connue (question
    soulevée en 16.5, jamais tranchée).
-4. **Envisager la parallélisation** des recherches Playwright si le volume
+3. **Envisager la parallélisation** des recherches Playwright si le volume
    réel (600-800 matchs/nuit) rend le temps d'exécution actuel
-   (30-45 minutes pour 100 matchs séquentiels) inacceptable à l'échelle.
-   Prudence à observer : risque de détection d'usage anormal par Betpawa
-   si trop de requêtes simultanées.
-5. **Revenir sur la question du ROI réel du moteur** (0.1, jamais
+   (environ 13 minutes pour 100 matchs sans cache, moins avec) inacceptable
+   à l'échelle. Prudence à observer : risque de détection d'usage anormal
+   par Betpawa si trop de requêtes simultanées.
+4. **Revenir sur la question du ROI réel du moteur** (0.1, jamais
    revérifiée depuis le 30/08) -- reste la question la plus importante du
    projet indépendamment de tout le travail d'infrastructure de cette
    session. Toute cette session a amélioré la vitesse et la richesse des
    données, rien sur la rentabilité du moteur lui-même.
-6. Programmer un appel périodique à `purge_matchs_joues()` pour
+5. Programmer un appel périodique à `purge_matchs_joues()` pour
    `cache_betpawa.json`, sans quoi il grossira indéfiniment.
-7. Reprendre la feuille de route plus ancienne (Phase 5 : frontend en
+6. Reprendre la feuille de route plus ancienne (Phase 5 : frontend en
    lecture seule ; Phase 6 : mode administrateur) -- pas touchée du tout
    pendant cette session, entièrement concentrée sur le backend.
 
@@ -548,11 +551,10 @@ trop haut) :
   non anticipé (deux matchs différents, mêmes deux noms d'équipe
   ressemblants, même date) reste théoriquement possible, quoique very
   improbable vu la double vérification.
-- **`cache_betpawa.py`** : jamais testé sur plus de 2 exécutions
-  consécutives à la date de rédaction (le test double-run vient d'être
-  lancé). Le comportement sur plusieurs nuits réelles (matchs qui sortent
-  de la fenêtre, cache qui doit rester cohérent) n'est pas encore
-  confirmé.
+- **`cache_betpawa.py`** : validé sur un double-run (100 matchs, 0 dérive,
+  47% de gain de temps). Reste non testé sur plusieurs nuits réelles
+  consécutives (matchs qui sortent de la fenêtre, cohérence du cache dans
+  la durée) -- premier vrai test seulement en conditions de production.
 - **`cache_equipes.py`** : même limite -- un seul cycle de comparaison
   avant/après observé (1h08m57s -> 58m26s), l'effet en régime stable sur
   plusieurs nuits consécutives n'est pas mesuré.
