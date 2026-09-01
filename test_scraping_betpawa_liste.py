@@ -20,7 +20,7 @@ FICHIER_SORTIE = "diagnostic_liste_betpawa.txt"
 
 
 def compte_liens(page):
-    return len(page.eval_on_selector_all("a[href*='/event/']", "els => els.length"))
+    return page.eval_on_selector_all("a[href*='/event/']", "els => els.length")
 
 
 def main():
