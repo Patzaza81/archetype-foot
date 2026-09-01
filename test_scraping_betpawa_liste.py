@@ -1,22 +1,23 @@
 """
-test_scraping_betpawa_liste.py -- V19. La V18 a confirmé que le vrai
-problème n'est pas la méthode de recherche elle-même, mais les
-différences d'orthographe entre matchendirect et Betpawa (ex. "Talaea
-Gaish" vs "Talaea El Gaish", confirmé manuellement par Patrick). Ce
-test essaie PLUSIEURS variantes du nom, de la plus complète à la plus
-simplifiée, avant d'abandonner :
-1. Le nom tel quel
-2. Le nom nettoyé (sans FC/SC/AC/CF, et sans "El"/"Al" -- absents de
-   la liste existante dans scraper_betpawa.py, ajoutés ici pour ce test)
-3. Le mot le plus distinctif du nom nettoyé (souvent le dernier mot,
-   plus rare donc plus susceptible de matcher dans la recherche de
-   Betpawa)
+test_scraping_betpawa_liste.py -- V20. La V19 a révélé deux vrais bugs
+(pas des absences réelles de match) :
+1. Le sélecteur de champ de recherche ("input:not(#bookingCode)") était
+   trop large -- il comptait aussi les ~267 cases à cocher cachées du
+   panneau Leagues, et finissait par cliquer sur un interrupteur "Show
+   1UP & 2UP" au lieu du champ de recherche. Corrigé en excluant
+   explicitement les checkbox/radio et en ciblant un vrai champ texte.
+2. Le nettoyage des noms remplaçait les lettres accentuées (ó, ø, ł)
+   par des espaces au lieu de les translittérer -- "Sokół Ostróda"
+   devenait "sok ostr da" au lieu de "sokol ostroda". Corrigé avec une
+   translittération basique des caractères les plus courants en
+   football européen.
 
 Ce script ne fait partie d'AUCUN pipeline -- rien ne l'appelle
 automatiquement.
 """
 import re
 import sys
+import unicodedata
 
 from playwright.sync_api import sync_playwright
 
@@ -26,8 +27,6 @@ from scraper_betpawa import TOKENS_CLUB_IGNORES
 URL_EVENTS = "https://www.betpawa.cm/events?categoryId=2&marketId=1X2"
 FICHIER_SORTIE = "diagnostic_liste_betpawa.txt"
 
-# Ajout local (pas dans scraper_betpawa.py) : "el"/"al" absents de la
-# liste existante, cause probable de l'échec observé sur Talaea Gaish.
 TOKENS_IGNORES_ETENDUS = TOKENS_CLUB_IGNORES | {"el", "al"}
 
 MATCHS_A_TESTER = [
@@ -39,22 +38,44 @@ MATCHS_A_TESTER = [
 ]
 
 
+def translitere(nom):
+    """Remplace les lettres accentuées par leur équivalent latin simple
+    (ó -> o, ø -> o, ł -> l, etc.) au lieu de les supprimer -- correctif
+    du bug observé sur "Sokół Ostróda" -> "sok ostr da"."""
+    nom = nom.replace("ø", "o").replace("Ø", "O").replace("ł", "l").replace("Ł", "L")
+    nfkd = unicodedata.normalize("NFKD", nom)
+    return "".join(c for c in nfkd if not unicodedata.combining(c))
+
+
 def normalise(nom):
+    nom = translitere(nom)
     mots = re.sub(r"[^a-z0-9\s]", " ", nom.lower()).split()
     return [m for m in mots if m not in TOKENS_IGNORES_ETENDUS]
 
 
 def variantes_du_nom(nom):
     mots_nettoyes = normalise(nom)
-    variantes = [nom]  # 1. tel quel
+    variantes = [nom]
     nettoye = " ".join(mots_nettoyes)
     if nettoye and nettoye.lower() != nom.lower():
-        variantes.append(nettoye)  # 2. nettoyé
+        variantes.append(nettoye)
     if mots_nettoyes:
-        mot_distinctif = max(mots_nettoyes, key=len)  # 3. mot le plus long/distinctif
+        mot_distinctif = max(mots_nettoyes, key=len)
         if mot_distinctif not in [v.lower() for v in variantes]:
             variantes.append(mot_distinctif)
     return variantes
+
+
+def trouve_champ_recherche(page):
+    """CORRECTIF V20 : cible uniquement un vrai champ de saisie texte,
+    jamais une case à cocher (les ~267 checkbox cachées du panneau
+    Leagues faisaient planter la V19)."""
+    champs = page.locator("input[type='text'], input[type='search'], input:not([type])")
+    for i in range(champs.count()):
+        c = champs.nth(i)
+        if c.is_visible() and c.get_attribute("id") != "bookingCode":
+            return c
+    return None
 
 
 def cherche_avec_variantes(page, nom_domicile, nom_exterieur, etapes):
@@ -63,13 +84,10 @@ def cherche_avec_variantes(page, nom_domicile, nom_exterieur, etapes):
             page.locator("[aria-label*='earch' i]").first.click(timeout=5000)
             page.wait_for_timeout(800)
 
-            champs = page.locator("input:not(#bookingCode)")
-            champ = None
-            for i in range(champs.count()):
-                if champs.nth(i).is_visible():
-                    champ = champs.nth(i)
-                    break
+            champ = trouve_champ_recherche(page)
             if champ is None:
+                etapes.append(f"[{nom_domicile} - {nom_exterieur}] variante '{variante}' -- "
+                              f"champ de recherche introuvable")
                 continue
 
             champ.click(timeout=3000)
