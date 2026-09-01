@@ -52,9 +52,22 @@ def main():
             page.wait_for_timeout(1000)
             etapes.append("clic sur 'Demain'/'Tomorrow' réussi")
 
-            page.get_by_text(re.compile(r"^(Apply|Appliquer)$")).first.click(timeout=5000)
+            # CORRECTIF V10 : "Apply"/"Appliquer" existe en plusieurs
+            # exemplaires cachés (un par panneau : Leagues, Markets,
+            # Calendrier). .first prenait systématiquement un bouton
+            # invisible d'un autre panneau. On cherche ici celui qui est
+            # réellement visible.
+            boutons_apply = page.get_by_text(re.compile(r"^(Apply|Appliquer)$"))
+            clic_apply_fait = False
+            for i in range(boutons_apply.count()):
+                bouton = boutons_apply.nth(i)
+                if bouton.is_visible():
+                    bouton.click(timeout=5000)
+                    clic_apply_fait = True
+                    break
+            etapes.append(f"clic sur Apply/Appliquer visible réussi : {clic_apply_fait} "
+                          f"(sur {boutons_apply.count()} boutons trouvés au total)")
             page.wait_for_timeout(3000)
-            etapes.append("clic sur Apply/Appliquer réussi")
         except Exception as e:
             etapes.append(f"échec à une étape : {e}")
 
