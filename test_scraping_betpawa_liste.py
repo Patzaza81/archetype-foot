@@ -81,6 +81,16 @@ def trouve_champ_recherche(page):
 def cherche_avec_variantes(page, nom_domicile, nom_exterieur, etapes):
     for variante in variantes_du_nom(nom_domicile):
         try:
+            # CORRECTIF V21 : revenir sur la page de base avant CHAQUE
+            # variante, pas juste une fois par match -- la loupe est un
+            # bouton bascule (ouvre/ferme), donc la recliquer sans
+            # recharger la page la refermait au lieu de la rouvrir.
+            page.goto(URL_EVENTS, timeout=30000, wait_until="domcontentloaded")
+            try:
+                page.wait_for_load_state("networkidle", timeout=8000)
+            except Exception:
+                pass
+
             page.locator("[aria-label*='earch' i]").first.click(timeout=5000)
             page.wait_for_timeout(800)
 
@@ -134,11 +144,6 @@ def main():
         page = contexte.new_page()
 
         for nom_domicile, nom_exterieur in MATCHS_A_TESTER:
-            page.goto(URL_EVENTS, timeout=30000, wait_until="domcontentloaded")
-            try:
-                page.wait_for_load_state("networkidle", timeout=10000)
-            except Exception:
-                pass
             url = cherche_avec_variantes(page, nom_domicile, nom_exterieur, etapes)
             resultats[f"{nom_domicile} - {nom_exterieur}"] = url
 
