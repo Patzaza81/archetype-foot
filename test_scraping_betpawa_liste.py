@@ -74,6 +74,30 @@ def normalise(nom):
     return [m for m in mots if m not in TOKENS_IGNORES_ETENDUS]
 
 
+def normalise_pour_comparaison(texte):
+    """Normalisation tolérante pour COMPARER un nom à une suggestion --
+    gère les abréviations les plus courantes révélées par la V24
+    (Saint/St, United/Utd, Moscow/Moskva, Olympiacos/Olympiakos...),
+    en plus des accents déjà traités par translitere()."""
+    texte = translitere(texte).lower()
+    texte = re.sub(r"[^a-z0-9\s]", " ", texte)
+    remplacements = {
+        "saint": "st", "united": "utd", "moscow": "moskva",
+        "olympiacos": "olympiakos",
+    }
+    mots = texte.split()
+    mots = [remplacements.get(m, m) for m in mots]
+    mots = [m for m in mots if m not in TOKENS_IGNORES_ETENDUS]
+    return " ".join(mots)
+
+
+def se_ressemblent(nom_a, nom_b):
+    a, b = normalise_pour_comparaison(nom_a), normalise_pour_comparaison(nom_b)
+    if not a or not b:
+        return False
+    return a in b or b in a
+
+
 def variantes_du_nom(nom):
     mots_nettoyes = normalise(nom)
     variantes = [nom]
@@ -139,7 +163,18 @@ def cherche_avec_variantes(page, nom_domicile, nom_exterieur, etapes):
                     continue
                 if texte and texte not in textes_vus:
                     textes_vus.append(texte)
-                    if nom_exterieur.lower() in texte.lower():
+                    # CORRECTIF V25 : comparaison tolérante (accents +
+                    # abréviations Saint/St, United/Utd, etc.) au lieu
+                    # d'une recherche de sous-chaîne stricte -- la V24 a
+                    # montré que Kilmarnock/Motherwell/Larissa/Zbrojovka/
+                    # Spartak Moscou étaient TOUS trouvés dans les
+                    # suggestions mais ratés par une comparaison trop
+                    # stricte (St vs Saint, Utd vs United, etc.).
+                    if len(texte.split(" - ")) == 2:
+                        _, nom_ext_suggestion = texte.split(" - ", 1)
+                    else:
+                        nom_ext_suggestion = texte
+                    if se_ressemblent(nom_exterieur, nom_ext_suggestion):
                         bonne_suggestion = options.nth(i)
                         break
 
