@@ -1,41 +1,27 @@
 """
-test_scraping_betpawa_liste.py -- teste UNE question précise, avant de
-construire quoi que ce soit dessus : une page de liste Betpawa
-(events/group/...) contient-elle, après chargement JS, assez d'information
-(équipes, heure, date) pour identifier plusieurs matchs à la fois --
-contrairement à une page de match individuel (déjà exploitée par
-scraper_betpawa.py), jamais utilisée à ce jour comme source de découverte.
+test_scraping_betpawa_liste.py -- V2, teste deux questions précises avant
+de construire quoi que ce soit :
+1. Le défilement (scroll) charge-t-il plus de matchs que les ~20 visibles
+   au premier chargement (confirmé lors du test V1, 31/08/2026) ?
+2. Les jours suivants (J+1, J+2, J+3) apparaissent-ils dans cette même
+   liste, ou faut-il une autre action (onglet, sélecteur de date) pour
+   les voir ?
 
 Ce script ne fait partie d'AUCUN pipeline -- rien ne l'appelle
-automatiquement. Il sert uniquement à répondre à cette question, sur le
-modèle exact de test_scraping_betpawa.py (26/08), qui avait fait la même
-chose pour les pages de match individuelles avant de construire
-scraper_betpawa.py dessus.
-
-IMPORTANT -- URL_TEST ci-dessous est un PLACEHOLDER. Il doit être remplacé
-par une vraie URL de liste, copiée depuis Betpawa (naviguer jusqu'à la
-liste des matchs d'un championnat, pas un match précis), avant que ce
-script ait le moindre sens à exécuter.
+automatiquement.
 """
+import re
 import sys
 
 from playwright.sync_api import sync_playwright
 
-# URL confirmée par recherche externe (31/08/2026) : page publique indexée
-# "Bet on Upcoming Matches | betPawa Cameroon" -- jamais vérifiée en
-# conditions réelles par ce projet à ce jour, d'où ce diagnostic avant
-# d'aller plus loin.
 URL_TEST = "https://www.betpawa.cm/events"
-
 FICHIER_SORTIE = "diagnostic_liste_betpawa.txt"
+NB_SCROLLS = 20
+PAUSE_MS_ENTRE_SCROLLS = 1200
 
 
 def main():
-    if URL_TEST.startswith("REMPLACER"):
-        print("ERREUR : URL_TEST n'a pas été remplacée par une vraie URL "
-              "de liste Betpawa. Rien à tester.", file=sys.stderr)
-        sys.exit(1)
-
     print(f"Requête vers : {URL_TEST}")
 
     with sync_playwright() as p:
@@ -43,33 +29,44 @@ def main():
         page = navigateur.new_page()
         page.goto(URL_TEST, timeout=30000, wait_until="domcontentloaded")
 
-        # Pas de sélecteur précis à attendre (contrairement à
-        # recupere_page() dans scraper_betpawa.py, qui attend "1X2" --
-        # inconnu si une liste affiche ce texte). On attend simplement que
-        # le réseau se calme, repli raisonnable pour une première
-        # exploration.
         try:
             page.wait_for_load_state("networkidle", timeout=15000)
         except Exception as e:
-            print(f"  networkidle jamais atteint ({e}) -- page probablement "
-                  f"encore en chargement partiel, on continue quand même.")
+            print(f"  networkidle jamais atteint au chargement initial ({e})")
 
-        texte = page.inner_text("body")
+        taille_precedente = 0
+        paliers = []
+        for i in range(NB_SCROLLS):
+            page.mouse.wheel(0, 3000)
+            page.wait_for_timeout(PAUSE_MS_ENTRE_SCROLLS)
+            texte_actuel = page.inner_text("body")
+            taille_actuelle = len(texte_actuel)
+            paliers.append(taille_actuelle)
+            print(f"  scroll {i+1}/{NB_SCROLLS} -- taille du texte : {taille_actuelle} caractères")
+            if taille_actuelle == taille_precedente:
+                print("  taille stable sur ce scroll -- possible fin de liste atteinte")
+            taille_precedente = taille_actuelle
+
+        texte_final = page.inner_text("body")
         titre = page.title()
         navigateur.close()
 
-    print(f"Titre de la page : {titre}")
-    print(f"Taille du texte récupéré : {len(texte)} caractères")
-    print()
-    print("--- Extrait des 3000 premiers caractères ---")
-    print(texte[:3000])
-    print("--- Fin de l'extrait ---")
+    # Repère toutes les dates au format "JJ/MM" présentes dans le texte
+    # (ex. dans "Tue 01/09"), pour savoir quels jours sont couverts.
+    dates_trouvees = sorted(set(re.findall(r"\b(\d{2}/\d{2})\b", texte_final)))
+
+    print(f"\nTitre de la page : {titre}")
+    print(f"Taille finale du texte : {len(texte_final)} caractères")
+    print(f"Dates distinctes repérées dans le texte : {dates_trouvees}")
 
     with open(FICHIER_SORTIE, "w", encoding="utf-8") as f:
         f.write(f"URL testée : {URL_TEST}\n")
         f.write(f"Titre : {titre}\n")
-        f.write(f"Taille : {len(texte)} caractères\n\n")
-        f.write(texte)
+        f.write(f"Taille finale : {len(texte_final)} caractères\n")
+        f.write(f"Paliers de taille au fil des {NB_SCROLLS} scrolls : {paliers}\n")
+        f.write(f"Dates distinctes repérées (JJ/MM) : {dates_trouvees}\n\n")
+        f.write("--- Texte complet après scroll ---\n")
+        f.write(texte_final)
 
     print(f"\nTexte complet écrit dans {FICHIER_SORTIE} (committé par le workflow).")
 
