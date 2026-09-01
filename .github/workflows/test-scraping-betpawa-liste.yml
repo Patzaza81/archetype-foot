@@ -7,6 +7,9 @@ name: Test scraping Betpawa -- page de liste (ponctuel)
 on:
   workflow_dispatch: {}
 
+permissions:
+  contents: write
+
 jobs:
   test-scraping-liste:
     runs-on: ubuntu-latest
