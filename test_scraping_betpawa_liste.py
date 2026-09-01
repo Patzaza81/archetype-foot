@@ -42,11 +42,23 @@ def main():
             etapes.append(f"Échec clic bouton recherche : {e}")
 
         try:
-            champ = page.locator("input").first
+            # CORRECTIF V16 : la page contient plusieurs champs <input>
+            # (dont "bookingCode", le code de pari, sans rapport avec la
+            # recherche). .first prenait ce mauvais champ. On exclut
+            # explicitement bookingCode et on prend le premier champ
+            # visible restant.
+            champs = page.locator("input:not(#bookingCode)")
+            champ = None
+            for i in range(champs.count()):
+                if champs.nth(i).is_visible():
+                    champ = champs.nth(i)
+                    break
+            if champ is None:
+                raise Exception("Aucun champ de saisie visible autre que bookingCode")
             champ.click(timeout=3000)
             page.keyboard.type(NOM_TEST, delay=80)
             page.wait_for_timeout(1500)
-            etapes.append(f"'{NOM_TEST}' tapé au clavier réel (avec délai entre les touches)")
+            etapes.append(f"'{NOM_TEST}' tapé au clavier réel dans le bon champ")
         except Exception as e:
             etapes.append(f"Échec de la saisie clavier : {e}")
 
