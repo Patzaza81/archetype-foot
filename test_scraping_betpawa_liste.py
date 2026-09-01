@@ -1,13 +1,16 @@
 """
-test_scraping_betpawa_liste.py -- V23. La V22 a validé la méthode sur un
-petit échantillon (2/5, échecs tous légitimes -- matchs absents de
-Betpawa, pas des bugs). Patrick demande un échantillon plus large avant
-de considérer la méthode fiable. Ce test reprend la recette validée
-(V20-V22 : bon champ de recherche, bon menu de suggestions, variantes de
-nom) sur 30 vrais matchs pris dans precalcul.json du 01/09/2026 (8 de
-grands championnats connus + 22 tirés au hasard dans tout le reste, sans
-tri favorable) -- un échantillon honnête pour mesurer le vrai taux de
-réussite.
+test_scraping_betpawa_liste.py -- V26. Deux changements :
+1. Vérification de l'hypothèse PSG : chercher "Paris Saint-Germain" au
+   lieu de "PSG", pour confirmer si le sigle est le problème.
+2. Remplacement de la comparaison par dictionnaire d'abréviations
+   (Saint/St, United/Utd...) -- approche qui ne finira jamais de couvrir
+   tous les cas -- par un calcul de RESSEMBLANCE (SequenceMatcher, dans
+   la bibliothèque standard Python) : au lieu de chercher une liste
+   fermée de cas particuliers, on mesure à quel point deux noms se
+   ressemblent en pourcentage, et on accepte au-delà d'un seuil. Ça
+   couvre naturellement Saint/St, Utd/United, Moskva/Moscow, et bien
+   d'autres variantes qu'on n'a pas encore rencontrées, sans avoir à
+   les lister à l'avance.
 
 Ce script ne fait partie d'AUCUN pipeline -- rien ne l'appelle
 automatiquement.
@@ -15,6 +18,7 @@ automatiquement.
 import re
 import sys
 import unicodedata
+from difflib import SequenceMatcher
 
 from playwright.sync_api import sync_playwright
 
@@ -25,12 +29,13 @@ URL_EVENTS = "https://www.betpawa.cm/events?categoryId=2&marketId=1X2"
 FICHIER_SORTIE = "diagnostic_liste_betpawa.txt"
 
 TOKENS_IGNORES_ETENDUS = TOKENS_CLUB_IGNORES | {"el", "al"}
+SEUIL_RESSEMBLANCE = 0.55  # à ajuster selon les résultats réels
 
-# Échantillon réel, pris dans precalcul.json (01/09/2026, 774 matchs) --
-# 8 de grands championnats + 22 au hasard dans le reste, mélangés.
+# Échantillon identique aux tests précédents (comparaison directe
+# possible), + un test ciblé pour l'hypothèse PSG.
 MATCHS_A_TESTER = [
-    ("Beskid", "Śląsk II"),
-    ("PSG", "AS Monaco"),
+    ("Bocholt", "Bonn"),
+    ("Paris Saint-Germain", "AS Monaco"),  # test de l'hypothèse PSG (nom complet au lieu du sigle)
     ("Puerto Montt", "Curicó Unido"),
     ("Bunyodkor", "Surkhon Termez"),
     ("Hoffenheim", "Leverkusen"),
@@ -75,27 +80,17 @@ def normalise(nom):
 
 
 def normalise_pour_comparaison(texte):
-    """Normalisation tolérante pour COMPARER un nom à une suggestion --
-    gère les abréviations les plus courantes révélées par la V24
-    (Saint/St, United/Utd, Moscow/Moskva, Olympiacos/Olympiakos...),
-    en plus des accents déjà traités par translitere()."""
-    texte = translitere(texte).lower()
-    texte = re.sub(r"[^a-z0-9\s]", " ", texte)
-    remplacements = {
-        "saint": "st", "united": "utd", "moscow": "moskva",
-        "olympiacos": "olympiakos",
-    }
-    mots = texte.split()
-    mots = [remplacements.get(m, m) for m in mots]
-    mots = [m for m in mots if m not in TOKENS_IGNORES_ETENDUS]
+    mots = normalise(texte)
     return " ".join(mots)
 
 
-def se_ressemblent(nom_a, nom_b):
+def ratio_ressemblance(nom_a, nom_b):
     a, b = normalise_pour_comparaison(nom_a), normalise_pour_comparaison(nom_b)
     if not a or not b:
-        return False
-    return a in b or b in a
+        return 0.0
+    if a in b or b in a:
+        return 1.0  # inclusion directe (après nettoyage) = ressemblance maximale
+    return SequenceMatcher(None, a, b).ratio()
 
 
 def variantes_du_nom(nom):
@@ -134,17 +129,6 @@ def cherche_avec_variantes(page, nom_domicile, nom_exterieur, etapes):
 
             champ = trouve_champ_recherche(page)
             if champ is None:
-                # CORRECTIF V24 : la V23 continuait silencieusement ici,
-                # donnant des "NON TROUVÉ" sans aucune preuve -- suspect
-                # sur des matchs connus comme PSG-Monaco. On capture
-                # maintenant le titre de la page et un extrait du texte
-                # visible, pour voir si Betpawa a réagi anormalement
-                # (page d'erreur, ralentissement, etc.).
-                titre = page.title()
-                extrait = page.inner_text("body")[:150].replace("\n", " ")
-                etapes.append(f"échec [{nom_domicile} - {nom_exterieur}] variante '{variante}' : "
-                              f"champ introuvable -- titre page: '{titre}' -- début texte: '{extrait}'")
-                page.wait_for_timeout(1500)  # pause avant de réessayer, au cas où c'est un ralentissement
                 continue
 
             champ.click(timeout=3000)
@@ -155,38 +139,35 @@ def cherche_avec_variantes(page, nom_domicile, nom_exterieur, etapes):
             options = liste_suggestions.locator("li, [role='option']")
 
             textes_vus = []
-            bonne_suggestion = None
+            meilleure_option = None
+            meilleur_ratio = 0.0
             for i in range(min(options.count(), 15)):
                 try:
                     texte = options.nth(i).inner_text(timeout=800)
                 except Exception:
                     continue
-                if texte and texte not in textes_vus:
-                    textes_vus.append(texte)
-                    # CORRECTIF V25 : comparaison tolérante (accents +
-                    # abréviations Saint/St, United/Utd, etc.) au lieu
-                    # d'une recherche de sous-chaîne stricte -- la V24 a
-                    # montré que Kilmarnock/Motherwell/Larissa/Zbrojovka/
-                    # Spartak Moscou étaient TOUS trouvés dans les
-                    # suggestions mais ratés par une comparaison trop
-                    # stricte (St vs Saint, Utd vs United, etc.).
-                    if len(texte.split(" - ")) == 2:
-                        _, nom_ext_suggestion = texte.split(" - ", 1)
-                    else:
-                        nom_ext_suggestion = texte
-                    if se_ressemblent(nom_exterieur, nom_ext_suggestion):
-                        bonne_suggestion = options.nth(i)
-                        break
+                if not texte or texte in textes_vus:
+                    continue
+                textes_vus.append(texte)
+                if " - " in texte:
+                    _, nom_ext_suggestion = texte.split(" - ", 1)
+                else:
+                    nom_ext_suggestion = texte
+                r = ratio_ressemblance(nom_exterieur, nom_ext_suggestion)
+                if r > meilleur_ratio:
+                    meilleur_ratio = r
+                    meilleure_option = options.nth(i)
 
-            if bonne_suggestion is not None:
-                bonne_suggestion.click(timeout=5000, force=True)
+            if meilleure_option is not None and meilleur_ratio >= SEUIL_RESSEMBLANCE:
+                meilleure_option.click(timeout=5000, force=True)
                 page.wait_for_timeout(1500)
                 url = page.url
-                etapes.append(f"TROUVÉ [{nom_domicile} - {nom_exterieur}] (variante '{variante}') -> {url}")
+                etapes.append(f"TROUVÉ [{nom_domicile} - {nom_exterieur}] (variante '{variante}', "
+                              f"ressemblance {meilleur_ratio:.2f}) -> {url}")
                 return url
             else:
-                etapes.append(f"pas de correspondance [{nom_domicile} - {nom_exterieur}] variante '{variante}' -- "
-                              f"suggestions vues : {textes_vus[:5]}")
+                etapes.append(f"pas de correspondance [{nom_domicile} - {nom_exterieur}] variante '{variante}' "
+                              f"(meilleure ressemblance : {meilleur_ratio:.2f}) -- suggestions vues : {textes_vus[:5]}")
         except Exception as e:
             etapes.append(f"échec technique [{nom_domicile} - {nom_exterieur}] variante '{variante}' : "
                           f"{str(e)[:120]}")
