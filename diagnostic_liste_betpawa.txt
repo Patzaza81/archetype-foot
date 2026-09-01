@@ -1,4 +1,6 @@
-Résultat : échec : Locator.click: Timeout 5000ms exceeded.
+--- Étapes ---
+clic sur 'Markets' réussi
+échec clic 'Tomorrow' : Locator.click: Timeout 5000ms exceeded.
 Call log:
   - waiting for get_by_text("Tomorrow", exact=True).first
     - locator resolved to <span class="_label_1gupj_23 _regular_1gupj_114">Tomorrow</span>
@@ -11,18 +13,36 @@ Call log:
       - element is not visible
     - retrying click action
       - waiting 100ms
-    9 × waiting for element to be visible, enabled and stable
+    10 × waiting for element to be visible, enabled and stable
+       - element is not visible
+     - retrying click action
+       - waiting 500ms
+
+échec clic 'Apply' : Locator.click: Timeout 5000ms exceeded.
+Call log:
+  - waiting for get_by_text("Apply", exact=True).first
+    - locator resolved to <span class="_title_1od8m_194">Apply</span>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
       - element is not visible
     - retrying click action
-      - waiting 500ms
-    - waiting for element to be visible, enabled and stable
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+      - waiting 100ms
+    10 × waiting for element to be visible, enabled and stable
+       - element is not visible
+     - retrying click action
+       - waiting 500ms
+
 
 URL finale (barre d'adresse) : https://www.betpawa.cm/events?categoryId=2&marketId=1X2
 
---- Requêtes réseau déclenchées par le clic (0) ---
+--- Requêtes réseau déclenchées après ouverture Markets (1) ---
+POST https://analytics.google.com/g/collect?v=2&tid=G-81NDDTKQDC&gtm=45je68s1h1v880977428z8843568780za20gzb843568780zd843568780&_p=1788235483557&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=EAAAAGQC&are=1&cid=300543863.1788235484&frm=0&ir=1&pscdl=noapi&rcb=6&sr=1280x720&uaa=x86&uab=64&uafvl=Not%253DA%253FBrand%3B99.0.0.0%7CHeadlessChrome%3B151.0.7922.34%7CChromium%3B151.0.7922.34&uam=&uamb=0&uap=Linux&uapv=&uaw=0&ul=en-us&gaf=2&_s=2&tag_exp=115938466~115938468~118897920~118897930~120213116~120385422&sid=1788235484&sct=1&seg=0&dl=https%3A%2F%2Fwww.betpawa.cm%2Fevents%3FcategoryId%3D2%26marketId%3D1X2&dt=Bet%20on%20Upcoming%20Matches%20%7C%20betPawa%20Cameroon&en=event_filters_click&epn.event_timestamp=1788235486641&ep.container_version=252&ep.site_release=2.239.65&ep.site_theme=light&ep.filter=market&_et=2259&up.jurisdiction=cameroon&up.environment=prod&tfd=9050
 
-
---- Texte de la page après clic ---
+--- Texte de la page après clics ---
 LOGIN
 JOIN NOW
 UPCOMING
@@ -31,6 +51,20 @@ LIVE
 OUTRIGHTS
 Leagues
 Markets
+1X2
+1X2 1UP
+1X2 2UP
+Total Goals Over/Under
+Home Team Over/Under
+Away Team Over/Under
+Double Chance
+Double Chance 1UP
+Both Teams to Score (GG/NG)
+1X2 First Half
+Over/Under First Half
+1X2 - Interval 10 minutes (00:01-09:59)
+RESET FILTERS
+APPLY
 Show 1UP & 2UP
 11:30 Tue 01/09
 Sigma Olomouc U19
@@ -76,9 +110,9 @@ Beijing Guoan
 Football / China / FA Cup
 
 1
-15.25
+14.36
 X
-7.82
+7.85
 2
 1.12
 12:35 Tue 01/09
@@ -236,25 +270,25 @@ Football / Russian Federation / Russian Cup
 
 1X2 | Full Time
 1
-3.49
+3.38
 X
-3.44
+3.48
 2
-1.95
+1.97
 1X2 1UP | Full Time
 1
-1.99
+1.96
 X
-3.44
+3.48
 2
-1.47
+1.49
 1X2 2UP | Full Time
 1
-3.37
+3.27
 X
-3.44
+3.48
 2
-1.90
+1.92
 14:30 Tue 01/09
 No In-Play Cashout
 Podhale Nowy Targ
@@ -263,11 +297,11 @@ Pogon Grodzisk Mazowiecki
 Football / Poland / Puchar Polski
 
 1
-2.76
+2.86
 X
-3.57
+3.43
 2
-2.24
+2.23
 15:00 Tue 01/09
 Ghazl El Mahallah
 Al Sharqiya Enppi
@@ -314,11 +348,11 @@ Puszcza Niepolomice
 Football / Poland / Puchar Polski
 
 1
-5.93
+5.92
 X
-4.21
+4.39
 2
-1.46
+1.44
 Cameroon
 Official Partner
 Sport
