@@ -1,47 +1,33 @@
 """
-test_scraping_betpawa_liste.py -- V30. Procédure à trois tamis, demandée
-par Patrick après la découverte d'un faux positif (Tanta-Masar confondu
-avec Macará-Manta) :
+test_scraping_betpawa_liste.py -- V31. Test du cache_betpawa.py branché
+sur resolution_betpawa.py (le moteur V30, promu module de production,
+INCHANGÉ). Règle stricte respectée : seuls les TROUVÉ (tamis 1 ou 2)
+sont enregistrés dans le cache -- jamais les AMBIGU ni les NON TROUVÉ.
 
-TAMIS 1 -- correspondance forte et unique (domicile ET extérieur, score
-           >= 0.80 chacun) : accepté automatiquement.
-TAMIS 2 -- si ambigu (0 candidat en tamis 1, mais 1+ candidats au-dessus
-           d'un seuil minimal) : on ouvre CHAQUE candidat restant, on lit
-           sa vraie date affichée sur Betpawa, et on la compare à la
-           date déjà connue depuis matchendirect. Un seul candidat à la
-           bonne date -> confirmé par la date, pas par le nom.
-TAMIS 3 -- si toujours ambigu après la date (plusieurs à la même date,
-           ou aucun) : laissé de côté, jamais de choix au hasard.
+Ordre de vérification demandé par Patrick :
+1. Vider le cache, lancer sur les 100 matchs -- doit reproduire
+   exactement 37 trouvés / 3 ambigus / 60 non trouvés (le moteur n'a
+   pas changé).
+2. Relancer immédiatement une deuxième fois SANS vider le cache -- les
+   37 trouvés doivent être retrouvés directement (cache hit), sans
+   repasser par Playwright, et le résultat doit être identique (pas de
+   AMBIGU/NON TROUVÉ transformé en TROUVÉ artificiellement).
+3. Mesurer le temps du 1er run vs le 2e run.
 
 Ce script ne fait partie d'AUCUN pipeline -- rien ne l'appelle
 automatiquement.
 """
-import re
-import sys
-import unicodedata
-from difflib import SequenceMatcher
+import os
+import time
 
 from playwright.sync_api import sync_playwright
 
-sys.path.insert(0, ".")
-from scraper_betpawa import TOKENS_CLUB_IGNORES
+from resolution_betpawa import resoudre_match
+from cache_betpawa import cherche_dans_cache, enregistre_correspondance
 
-URL_EVENTS = "https://www.betpawa.cm/events?categoryId=2&marketId=1X2"
 FICHIER_SORTIE = "diagnostic_liste_betpawa.txt"
+FICHIER_CACHE = "cache_betpawa.json"
 
-TOKENS_IGNORES_ETENDUS = TOKENS_CLUB_IGNORES | {"el", "al"}
-SEUIL_HAUTE_CONFIANCE = 0.80
-SEUIL_CANDIDAT = 0.50
-
-SIGLES_CONNUS = {
-    "psg": "Paris Saint-Germain",
-    "om": "Olympique Marseille",
-    "ol": "Olympique Lyonnais",
-}
-
-# Échantillon identique aux tests précédents (100 matchs), avec en plus
-# la date connue depuis matchendirect (format AAAA-MM-JJ), nécessaire
-# pour le tamis 2.
 MATCHS_A_TESTER = [
     ("Lernayin Artsakh", "Urartu II", "2026-09-02"),
     ("Caracas", "Portuguesa", "2026-09-02"),
@@ -146,192 +132,41 @@ MATCHS_A_TESTER = [
 ]
 
 
-def translitere(nom):
-    nom = nom.replace("ø", "o").replace("Ø", "O").replace("ł", "l").replace("Ł", "L")
-    nfkd = unicodedata.normalize("NFKD", nom)
-    return "".join(c for c in nfkd if not unicodedata.combining(c))
+def traite_avec_cache(page, nom_domicile, nom_exterieur, date_iso, etapes):
+    """Vérifie le cache AVANT toute recherche Betpawa. Si absent,
+    délègue entièrement à resolution_betpawa.resoudre_match() -- logique
+    de correspondance INCHANGÉE. N'enregistre dans le cache que les
+    vrais TROUVÉ (jamais AMBIGU ni NON TROUVÉ)."""
+    hit = cherche_dans_cache(nom_domicile, nom_exterieur, date_iso)
+    if hit is not None:
+        etapes.append(f"CACHE HIT [{nom_domicile} - {nom_exterieur}] -> {hit['event_id']}")
+        return hit["event_id"], True  # True = venu du cache, pas de Playwright utilisé
+
+    resultat = resoudre_match(page, nom_domicile, nom_exterieur, date_iso, etapes)
+
+    if resultat and resultat != "AMBIGU":
+        enregistre_correspondance(
+            nom_domicile, nom_exterieur, date_iso,
+            event_id_url=resultat, tamis="V30",
+        )
+    return resultat, False
 
 
-def normalise(nom):
-    nom = translitere(nom)
-    mots = re.sub(r"[^a-z0-9\s]", " ", nom.lower()).split()
-    return [m for m in mots if m not in TOKENS_IGNORES_ETENDUS]
-
-
-def normalise_pour_comparaison(texte):
-    return " ".join(normalise(texte))
-
-
-def ratio_ressemblance(nom_a, nom_b):
-    a, b = normalise_pour_comparaison(nom_a), normalise_pour_comparaison(nom_b)
-    if not a or not b:
-        return 0.0
-    if a in b or b in a:
-        return 1.0
-    return SequenceMatcher(None, a, b).ratio()
-
-
-def developpe_sigle(nom):
-    cle = nom.strip().lower()
-    return SIGLES_CONNUS.get(cle, nom)
-
-
-def variantes_du_nom(nom):
-    nom = developpe_sigle(nom)
-    mots_nettoyes = normalise(nom)
-    variantes = [nom]
-    nettoye = " ".join(mots_nettoyes)
-    if nettoye and nettoye.lower() != nom.lower():
-        variantes.append(nettoye)
-    if mots_nettoyes:
-        mot_distinctif = max(mots_nettoyes, key=len)
-        if mot_distinctif not in [v.lower() for v in variantes]:
-            variantes.append(mot_distinctif)
-    return variantes
-
-
-def trouve_champ_recherche(page):
-    champs = page.locator("input[type='text'], input[type='search'], input:not([type])")
-    for i in range(champs.count()):
-        c = champs.nth(i)
-        if c.is_visible() and c.get_attribute("id") != "bookingCode":
-            return c
-    return None
-
-
-def date_ddmm_attendue(date_iso):
-    """Convertit 'AAAA-MM-JJ' (matchendirect) en 'JJ/MM' (format affiché
-    sur Betpawa, ex. '04/09')."""
-    try:
-        annee, mois, jour = date_iso.split("-")
-        return f"{jour}/{mois}"
-    except Exception:
-        return None
-
-
-def ouvre_recherche_et_tape(page, variante):
-    """Recette de base validée (V20-V22) : ouvrir la recherche, taper un
-    texte, retourne la liste des options de suggestion visibles."""
-    page.goto(URL_EVENTS, timeout=30000, wait_until="domcontentloaded")
-    try:
-        page.wait_for_load_state("networkidle", timeout=6000)
-    except Exception:
-        pass
-    page.locator("[aria-label*='earch' i]").first.click(timeout=5000)
-    page.wait_for_timeout(500)
-    champ = trouve_champ_recherche(page)
-    if champ is None:
-        return None
-    champ.click(timeout=3000)
-    page.keyboard.type(variante, delay=40)
-    page.wait_for_timeout(1200)
-    liste_suggestions = page.locator("[data-test-id='search-suggestions']")
-    return liste_suggestions.locator("li, [role='option']")
-
-
-def collecte_candidats(page, variante, nom_domicile, nom_exterieur):
-    """TAMIS 1 (implicite ici) : calcule le score de chaque suggestion
-    visible, retourne la liste triée (score, texte) -- ne clique sur
-    rien encore."""
-    options = ouvre_recherche_et_tape(page, variante)
-    if options is None:
-        return []
-    candidats = []
-    textes_vus = []
-    for i in range(min(options.count(), 15)):
-        try:
-            texte = options.nth(i).inner_text(timeout=700)
-        except Exception:
-            continue
-        if not texte or texte in textes_vus or " - " not in texte:
-            continue
-        textes_vus.append(texte)
-        nom_dom_suggestion, nom_ext_suggestion = texte.split(" - ", 1)
-        r_dom = ratio_ressemblance(nom_domicile, nom_dom_suggestion)
-        r_ext = ratio_ressemblance(nom_exterieur, nom_ext_suggestion)
-        score = min(r_dom, r_ext)
-        if score >= SEUIL_CANDIDAT:
-            candidats.append((score, texte))
-    candidats.sort(key=lambda c: c[0], reverse=True)
-    return candidats
-
-
-def verifie_date_candidat(page, variante, texte_candidat, date_attendue_ddmm):
-    """TAMIS 2 : rouvre la recherche, clique précisément sur le
-    candidat désigné (par son texte), lit sa vraie date sur la page du
-    match, compare à la date attendue."""
-    options = ouvre_recherche_et_tape(page, variante)
-    if options is None:
-        return None, None
-    for i in range(min(options.count(), 15)):
-        try:
-            texte = options.nth(i).inner_text(timeout=700)
-        except Exception:
-            continue
-        if texte == texte_candidat:
-            options.nth(i).click(timeout=5000, force=True)
-            page.wait_for_timeout(1200)
-            url = page.url
-            texte_page = page.inner_text("body")[:300]
-            m = re.search(r"\b(\d{2}/\d{2})\b", texte_page)
-            date_trouvee = m.group(1) if m else None
-            return url, date_trouvee
-    return None, None
-
-
-def traite_un_match(page, nom_domicile, nom_exterieur, date_iso, etapes):
-    date_attendue = date_ddmm_attendue(date_iso)
-
-    for variante in variantes_du_nom(nom_domicile):
-        candidats = collecte_candidats(page, variante, nom_domicile, nom_exterieur)
-        if not candidats:
-            continue
-
-        candidats_confiants = [c for c in candidats if c[0] >= SEUIL_HAUTE_CONFIANCE]
-
-        # TAMIS 1
-        if len(candidats_confiants) == 1:
-            score, texte = candidats_confiants[0]
-            url, _ = verifie_date_candidat(page, variante, texte, date_attendue)
-            if url:
-                etapes.append(f"TROUVÉ (tamis 1) [{nom_domicile} - {nom_exterieur}] "
-                              f"score {score:.2f} -> {url}")
-                return url
-            continue
-
-        # TAMIS 2 : ambigu -- vérifier la date de chaque candidat restant
-        if candidats and date_attendue:
-            candidats_a_verifier = candidats_confiants if candidats_confiants else candidats[:4]
-            candidats_a_bonne_date = []
-            for score, texte in candidats_a_verifier:
-                url, date_trouvee = verifie_date_candidat(page, variante, texte, date_attendue)
-                if url and date_trouvee == date_attendue:
-                    candidats_a_bonne_date.append((score, texte, url))
-
-            if len(candidats_a_bonne_date) == 1:
-                score, texte, url = candidats_a_bonne_date[0]
-                etapes.append(f"TROUVÉ (tamis 2, date confirmée {date_attendue}) "
-                              f"[{nom_domicile} - {nom_exterieur}] -> {url}")
-                return url
-            elif len(candidats_a_bonne_date) > 1:
-                etapes.append(f"AMBIGU (tamis 3, {len(candidats_a_bonne_date)} candidats à la même date "
-                              f"{date_attendue}) [{nom_domicile} - {nom_exterieur}] : "
-                              f"{[t for _, t, _ in candidats_a_bonne_date]}")
-                return "AMBIGU"
-
-        if candidats:
-            etapes.append(f"AMBIGU (tamis 3, aucune date ne correspond) "
-                          f"[{nom_domicile} - {nom_exterieur}] variante '{variante}' -- "
-                          f"candidats vus : {[t for _, t in candidats[:4]]}")
-            return "AMBIGU"
-
-    etapes.append(f"NON TROUVÉ [{nom_domicile} - {nom_exterieur}]")
-    return None
+def lance_une_serie(page, etapes, resultats, cache_utilise_compteur):
+    for i, (nom_domicile, nom_exterieur, date_iso) in enumerate(MATCHS_A_TESTER, 1):
+        print(f"[{i}/{len(MATCHS_A_TESTER)}] {nom_domicile} - {nom_exterieur}")
+        url, venu_du_cache = traite_avec_cache(page, nom_domicile, nom_exterieur, date_iso, etapes)
+        resultats[f"{nom_domicile} - {nom_exterieur}"] = url
+        if venu_du_cache:
+            cache_utilise_compteur[0] += 1
 
 
 def main():
     etapes = []
-    resultats = {}
+
+    # Repart d'un cache vide pour ce test, comme demandé (étape 1).
+    if os.path.exists(FICHIER_CACHE):
+        os.remove(FICHIER_CACHE)
 
     with sync_playwright() as p:
         navigateur = p.chromium.launch()
@@ -339,31 +174,42 @@ def main():
         contexte = navigateur.new_context(**appareil)
         page = contexte.new_page()
 
-        for i, (nom_domicile, nom_exterieur, date_iso) in enumerate(MATCHS_A_TESTER, 1):
-            print(f"[{i}/{len(MATCHS_A_TESTER)}] {nom_domicile} - {nom_exterieur}")
-            url = traite_un_match(page, nom_domicile, nom_exterieur, date_iso, etapes)
-            resultats[f"{nom_domicile} - {nom_exterieur}"] = url
+        etapes.append("=== RUN 1 (cache vide) ===")
+        resultats_run1 = {}
+        compteur_cache_1 = [0]
+        debut_1 = time.time()
+        lance_une_serie(page, etapes, resultats_run1, compteur_cache_1)
+        duree_1 = time.time() - debut_1
+
+        etapes.append(f"\n=== RUN 2 (cache rempli par le run 1) ===")
+        resultats_run2 = {}
+        compteur_cache_2 = [0]
+        debut_2 = time.time()
+        lance_une_serie(page, etapes, resultats_run2, compteur_cache_2)
+        duree_2 = time.time() - debut_2
 
         navigateur.close()
 
-    nb_trouves = sum(1 for v in resultats.values() if v and v != "AMBIGU")
-    nb_ambigus = sum(1 for v in resultats.values() if v == "AMBIGU")
-    nb_non_trouves = len(resultats) - nb_trouves - nb_ambigus
+    nb_trouves_1 = sum(1 for v in resultats_run1.values() if v and v != "AMBIGU")
+    nb_ambigus_1 = sum(1 for v in resultats_run1.values() if v == "AMBIGU")
+    nb_trouves_2 = sum(1 for v in resultats_run2.values() if v and v != "AMBIGU")
+    nb_ambigus_2 = sum(1 for v in resultats_run2.values() if v == "AMBIGU")
 
-    # Vérification finale : aucune URL ne doit apparaître deux fois
-    # (la preuve qu'il n'y a plus de faux positif comme Tanta/Macará).
-    from collections import Counter
-    urls_utilisees = Counter(v for v in resultats.values() if v and v != "AMBIGU")
-    doublons = {u: c for u, c in urls_utilisees.items() if c > 1}
+    resultats_identiques = resultats_run1 == resultats_run2
 
-    etapes.insert(0, f"Résultat global : {nb_trouves} trouvés / {nb_ambigus} ambigus / "
-                     f"{nb_non_trouves} non trouvés -- sur {len(MATCHS_A_TESTER)} matchs. "
-                     f"Doublons d'URL détectés : {doublons if doublons else 'AUCUN'}")
+    rapport = [
+        f"RUN 1 (cache vide) : {nb_trouves_1} trouvés / {nb_ambigus_1} ambigus, "
+        f"{compteur_cache_1[0]} venus du cache (doit être 0), durée : {duree_1:.0f}s",
+        f"RUN 2 (cache rempli) : {nb_trouves_2} trouvés / {nb_ambigus_2} ambigus, "
+        f"{compteur_cache_2[0]} venus du cache (doit être {nb_trouves_1}), durée : {duree_2:.0f}s",
+        f"Résultats run1 == run2 (aucune dérive) : {resultats_identiques}",
+        f"Gain de temps run2 vs run1 : {round(100 * (1 - duree_2 / duree_1))}%" if duree_1 else "N/A",
+    ]
 
     with open(FICHIER_SORTIE, "w", encoding="utf-8") as f:
-        f.write("--- Étapes ---\n" + "\n".join(etapes))
+        f.write("--- Étapes ---\n" + "\n".join(rapport) + "\n\n--- Détail ---\n" + "\n".join(etapes))
 
-    print("\n".join(etapes))
+    print("\n".join(rapport))
     print(f"\nRapport écrit dans {FICHIER_SORTIE} (committé par le workflow).")
 
 
