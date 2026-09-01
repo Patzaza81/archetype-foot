@@ -63,11 +63,18 @@ def main():
             etapes.append(f"Échec de la saisie clavier : {e}")
 
         try:
-            page.get_by_text("RECHERCHE", exact=True).first.click(timeout=5000)
+            # V17 : pas besoin du bouton RECHERCHE -- les suggestions
+            # apparaissent déjà pendant la saisie (confirmé : "Real Betis
+            # Seville - Real Madrid" etc. sont apparues sans validation).
+            # On clique directement sur une suggestion contenant le nom
+            # cherché, pour voir si ça mène à la page du match.
+            suggestion = page.get_by_text(re.compile(re.escape(NOM_TEST))).first
+            texte_suggestion = suggestion.inner_text(timeout=3000)
+            suggestion.click(timeout=5000)
             page.wait_for_timeout(2500)
-            etapes.append("Bouton RECHERCHE cliqué")
+            etapes.append(f"Suggestion cliquée : '{texte_suggestion}'")
         except Exception as e:
-            etapes.append(f"Échec clic RECHERCHE : {e}")
+            etapes.append(f"Échec clic sur une suggestion : {e}")
 
         url_finale = page.url
         texte_final = page.inner_text("body")
