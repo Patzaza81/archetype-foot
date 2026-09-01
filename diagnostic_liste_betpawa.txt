@@ -3,13 +3,68 @@ Résultat global : 1/5 matchs trouvés
 [Bocholt - Bonn] variante 'Bocholt' -- pas de correspondance (suggestions vues : [])
 [Bocholt - Bonn] ÉCHEC après toutes les variantes
 [Talaea Gaish - ZED] variante 'Talaea Gaish' -- pas de correspondance (suggestions vues : [])
-[Talaea Gaish - ZED] variante 'talaea' -- champ de recherche introuvable
+[Talaea Gaish - ZED] variante 'talaea' -- échec technique : Locator.click: Timeout 5000ms exceeded.
+Call log:
+  - waiting for locator("div, span").filter(has_text=re.compile(r"talaea", re.IGNORECASE)).nth(13)
+    - locator resolved to <div class="SportEvents_row__hpo_u w-100">…</div>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <ul role="listbox" data-theme="light" data-test-id="search-suggestions" class="SearchSuggestions_dropdown__UqAtw">…</ul> from <div class="Navbar_subNavContainer___PPLz">…</div> subtree intercepts pointer events
+    - retrying click action
+    - waiting 20ms
+    - waiting for element to be visible, enabled and stable
+    - element is not stable
+  - retrying click action
+    - waiting 100ms
+    - waiting for element to be visible, enabled and stable
+    - element is visible, enabled and stable
+    - scrolling into view if needed
+    - done scrolling
+    - <span class="text-sm">Scm Ramnicu Valcea - ACSM Resita</span> from <div class="Navbar_subNavContainer___PPLz">…</div> subtree intercepts pointer events
+  - retrying click action
+    - waiting 100ms
+    - waiting for element to be visible, enabled and stable
+    - element is not stable
+  2 × retrying click action
+      - waiting 500ms
+      - waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <ul role="listbox" data-theme="light" data-test-id="search-suggestions" class="SearchSuggestions_dropdown__UqAtw">…</ul> from <div class="Navbar_subNavContainer___PPLz">…</div> subtree intercepts pointer events
+    - retrying click action
+      - waiting 500ms
+      - waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <ul role="listbox" data-theme="light" data-test-id="search-suggestions" class="SearchSuggestions_dropdown__UqAtw">…</ul> from <div class="Navbar_subNavContainer___PPLz">…</div> subtree intercepts pointer events
+    - retrying click action
+      - waiting 500ms
+      - waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <span class="text-sm">…</span> from <div class="Navbar_subNavContainer___PPLz">…</div> subtree intercepts pointer events
+    - retrying click action
+      - waiting 500ms
+      - waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <span class="text-sm">…</span> from <div class="Navbar_subNavContainer___PPLz">…</div> subtree intercepts pointer events
+  - retrying click action
+    - waiting 500ms
+
 [Talaea Gaish - ZED] ÉCHEC après toutes les variantes
 [Sokół Ostróda - Sokół Kleczew] variante 'Sokół Ostróda' -- pas de correspondance (suggestions vues : [])
-[Sokół Ostróda - Sokół Kleczew] variante 'sokol ostroda' -- champ de recherche introuvable
+[Sokół Ostróda - Sokół Kleczew] variante 'sokol ostroda' -- pas de correspondance (suggestions vues : [])
 [Sokół Ostróda - Sokół Kleczew] variante 'ostroda' -- pas de correspondance (suggestions vues : [])
 [Sokół Ostróda - Sokół Kleczew] ÉCHEC après toutes les variantes
 [Brøndby - Spartak] variante 'Brøndby' -- pas de correspondance (suggestions vues : [])
-[Brøndby - Spartak] variante 'brondby' -- champ de recherche introuvable
+[Brøndby - Spartak] variante 'brondby' -- pas de correspondance (suggestions vues : [])
 [Brøndby - Spartak] ÉCHEC après toutes les variantes
 [West Bromwich - Charlton] TROUVÉ avec la variante 'West Bromwich' -> https://www.betpawa.cm/event/37437239?filter=all
