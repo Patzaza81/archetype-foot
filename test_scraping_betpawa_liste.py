@@ -1,15 +1,11 @@
 """
-test_scraping_betpawa_liste.py -- V14. Nouvelle idée de Patrique
-(31/08/2026), potentiellement la vraie solution : au lieu de lister tous
-les matchs (plafonné à 20, scroll impossible malgré 5 méthodes testées),
-utiliser le bouton recherche (loupe, visible en haut de l'écran sur son
-téléphone) pour chercher directement un nom d'équipe -- celui qu'on a
-déjà depuis matchendirect. Si ça marche, plus besoin de filtre jour ni
-championnat : on cherche, on trouve, quel que soit le jour.
-
-Ce test cherche le bouton recherche, clique dessus, tape un nom d'équipe
-connu ("Real Madrid", exemple volontairement gros club pour être sûr
-qu'il y a un match dans les jours à venir), et regarde ce qui apparaît.
+test_scraping_betpawa_liste.py -- V15. Patrick a confirmé par capture
+d'écran que la recherche par nom d'équipe fonctionne réellement (ex.
+"Ipswich Town" -> 10 matchs). Deux corrections par rapport à la V14 :
+1. Utiliser de vraies frappes clavier (page.keyboard.type) au lieu de
+   .fill(), qui n'a visiblement pas déclenché la recherche de l'appli.
+2. Cliquer explicitement sur le bouton "RECHERCHE" après la saisie --
+   absent de la V14, cause probable de l'échec.
 
 Ce script ne fait partie d'AUCUN pipeline -- rien ne l'appelle
 automatiquement.
@@ -38,45 +34,28 @@ def main():
         except Exception:
             pass
 
-        # Plusieurs façons possibles de désigner le bouton recherche --
-        # on essaie plusieurs stratégies dans l'ordre jusqu'à ce qu'une
-        # marche.
-        strategies = [
-            ("aria-label contenant 'search'", "[aria-label*='earch' i]"),
-            ("bouton avec icône search générique", "button:has(svg[class*='earch' i])"),
-            ("lien vers /search", "a[href*='search']"),
-            ("icône loupe par classe", "[class*='earch' i]"),
-        ]
+        try:
+            page.locator("[aria-label*='earch' i]").first.click(timeout=5000)
+            page.wait_for_timeout(1000)
+            etapes.append("Bouton recherche cliqué")
+        except Exception as e:
+            etapes.append(f"Échec clic bouton recherche : {e}")
 
-        clic_reussi = False
-        for nom_strategie, selecteur in strategies:
-            try:
-                element = page.locator(selecteur).first
-                if element.count() > 0 and element.is_visible():
-                    element.click(timeout=3000)
-                    page.wait_for_timeout(1500)
-                    etapes.append(f"Bouton recherche trouvé et cliqué via : {nom_strategie}")
-                    clic_reussi = True
-                    break
-            except Exception as e:
-                etapes.append(f"Stratégie '{nom_strategie}' échouée : {e}")
+        try:
+            champ = page.locator("input").first
+            champ.click(timeout=3000)
+            page.keyboard.type(NOM_TEST, delay=80)
+            page.wait_for_timeout(1500)
+            etapes.append(f"'{NOM_TEST}' tapé au clavier réel (avec délai entre les touches)")
+        except Exception as e:
+            etapes.append(f"Échec de la saisie clavier : {e}")
 
-        if not clic_reussi:
-            etapes.append("AUCUNE stratégie n'a trouvé le bouton recherche.")
-
-        url_apres_clic = page.url
-        etapes.append(f"URL après clic sur recherche : {url_apres_clic}")
-
-        # Si un clic a réussi, on tente de taper le nom d'équipe dans le
-        # premier champ de texte visible qui apparaît.
-        if clic_reussi:
-            try:
-                champ = page.locator("input[type='text'], input[type='search'], input:not([type])").first
-                champ.fill(NOM_TEST, timeout=5000)
-                page.wait_for_timeout(2000)
-                etapes.append(f"Nom '{NOM_TEST}' tapé dans le champ de recherche")
-            except Exception as e:
-                etapes.append(f"Échec de la saisie dans le champ : {e}")
+        try:
+            page.get_by_text("RECHERCHE", exact=True).first.click(timeout=5000)
+            page.wait_for_timeout(2500)
+            etapes.append("Bouton RECHERCHE cliqué")
+        except Exception as e:
+            etapes.append(f"Échec clic RECHERCHE : {e}")
 
         url_finale = page.url
         texte_final = page.inner_text("body")
