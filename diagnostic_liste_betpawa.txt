@@ -1,14 +1,43 @@
 --- Étapes ---
-Bouton recherche trouvé et cliqué via : aria-label contenant 'search'
-URL après clic sur recherche : https://www.betpawa.cm/events?categoryId=2&marketId=1X2
-Nom 'Real Madrid' tapé dans le champ de recherche
+Bouton recherche cliqué
+Échec de la saisie clavier : Locator.click: Timeout 3000ms exceeded.
+Call log:
+  - waiting for locator("input").first
+    - locator resolved to <input maxlength="7" id="bookingCode" name="bookingCode" class="_field_1y5z1_35" placeholder="Enter booking code" data-test-id="bet-booking-code-input"/>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <span class="_label_1umaw_102">Markets</span> from <div id="page-content-container" class="PageContainer_container__mNKzK">…</div> subtree intercepts pointer events
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <span class="_label_1umaw_102">Markets</span> from <div id="page-content-container" class="PageContainer_container__mNKzK">…</div> subtree intercepts pointer events
+    - retrying click action
+      - waiting 100ms
+    6 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <span class="_label_1umaw_102">Markets</span> from <div id="page-content-container" class="PageContainer_container__mNKzK">…</div> subtree intercepts pointer events
+    - retrying click action
+      - waiting 500ms
+
+Échec clic RECHERCHE : Locator.click: Timeout 5000ms exceeded.
+Call log:
+  - waiting for get_by_text("RECHERCHE", exact=True).first
+
 
 URL finale : https://www.betpawa.cm/events?categoryId=2&marketId=1X2
 
 Nombre de liens /event/ trouvés après recherche : 20
 
 ID=37395267  ::  11:30 Tue 01/09 | Sigma Olomouc U19 | Sparta Prague U19 | Football / Czech Republic / U19 1st Division | 1 | 2.19 | X | 3.98 | 2 | 2.62
-ID=37408475  ::  12:00 Tue 01/09 | FC Kharkiv Women | KFF Mitrovica Women | Football / International / UEFA Europa Cup, Women | 1 | 1.49 | X | 4.43 | 2 | 5.40
+ID=37408475  ::  12:00 Tue 01/09 | FC Kharkiv Women | KFF Mitrovica Women | Football / International / UEFA Europa Cup, Women | 1 | 1.51 | X | 4.41 | 2 | 5.18
 ID=37372179  ::  12:35 Tue 01/09 | Dalian Yingbo FC | Shanghai Shenhua FC | Football / China / FA Cup | 1 | 2.73 | X | 3.64 | 2 | 2.23
 ID=37395273  ::  12:35 Tue 01/09 | No In-Play Cashout | Lanzhou Longyuan Athletic | Beijing Guoan | Football / China / FA Cup | 1 | 14.30 | X | 7.63 | 2 | 1.12
 ID=37395228  ::  12:35 Tue 01/09 | Shandong Taishan FC | Shanghai Port FC | Football / China / FA Cup | 1 | 2.34 | X | 3.64 | 2 | 2.58
@@ -26,12 +55,11 @@ ID=37400602  ::  14:30 Tue 01/09 | No In-Play Cashout | Podhale Nowy Targ | Pogo
 ID=37372197  ::  15:00 Tue 01/09 | Ghazl El Mahallah | Al Sharqiya Enppi | Football / Egypt / Premier League | 1X2 | Full Time | 1 | 2.73 | X | 2.58 | 2 | 3.17 | 1X2 1UP | Full Time | 1 | 2.02 | X | 2.58 | 2 | 2.22 | 1X2 2UP | Full Time | 1 | 2.68 | X | 2.58 | 2 | 3.15
 ID=37328660  ::  15:00 Tue 01/09 | Al Sadd SC | Al Gharafa SC | Football / Qatar / Qatar Cup | 1 | 1.52 | X | 4.49 | 2 | 4.78
 ID=37395262  ::  15:00 Tue 01/09 | Wisla Plock II | Puszcza Niepolomice | Football / Poland / Puchar Polski | 1 | 5.92 | X | 4.39 | 2 | 1.44
-ID=37128412  ::  15:00 Tue 01/09 | Talaea El Gaish | Zed FC | Football / Egypt / Premier League | 1X2 | Full Time | 1 | 2.48 | X | 2.77 | 2 | 3.26 | 1X2 1UP | Full Time | 1 | 1.83 | X | 2.77 | 2 | 2.19 | 1X2 2UP | Full Time | 1 | 2.43 | X | 2.77 | 2 | 3.24
+ID=37128412  ::  15:00 Tue 01/09 | Talaea El Gaish | Zed FC | Football / Egypt / Premier League | 1X2 | Full Time | 1 | 2.53 | X | 2.78 | 2 | 3.17 | 1X2 1UP | Full Time | 1 | 1.86 | X | 2.78 | 2 | 2.15 | 1X2 2UP | Full Time | 1 | 2.48 | X | 2.78 | 2 | 3.15
 
 --- Texte complet de la page après recherche ---
 Betslip
 Booking Code
-Please enter a valid booking code.
 LOAD BETSLIP
 Betslip is empty
 LEARN HOW TO BET
@@ -61,11 +89,11 @@ KFF Mitrovica Women
 Football / International / UEFA Europa Cup, Women
 
 1
-1.49
+1.51
 X
-4.43
+4.41
 2
-5.40
+5.18
 12:35 Tue 01/09
 Dalian Yingbo FC
 Shanghai Shenhua FC
@@ -325,25 +353,25 @@ Football / Egypt / Premier League
 
 1X2 | Full Time
 1
-2.48
+2.53
 X
-2.77
+2.78
 2
-3.26
+3.17
 1X2 1UP | Full Time
 1
-1.83
+1.86
 X
-2.77
+2.78
 2
-2.19
+2.15
 1X2 2UP | Full Time
 1
-2.43
+2.48
 X
-2.77
+2.78
 2
-3.24
+3.15
 Cameroon
 Official Partner
 Sport
