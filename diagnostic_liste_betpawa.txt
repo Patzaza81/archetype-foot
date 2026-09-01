@@ -1,19 +1,25 @@
 --- Étapes ---
-échec application du filtre : Locator.click: Timeout 5000ms exceeded.
+Essai 1 échoué : Locator.click: Timeout 5000ms exceeded.
 Call log:
   - waiting for get_by_text("Demain", exact=True).first
 
-Après scroll souris (10x) : 20 matchs
-Après touche End (5x) : 20 matchs
-Conteneurs scrollables détectés (top 10) : [{'tag': 'BODY', 'classe': '', 'scrollH': 772, 'clientH': 720}, {'tag': 'DIV', 'classe': '', 'scrollH': 772, 'clientH': 720}, {'tag': 'DIV', 'classe': 'PageContainer_app__V61uo', 'scrollH': 772, 'clientH': 720}, {'tag': 'DIV', 'classe': 'PageContainer_container__mNKzK', 'scrollH': 684, 'clientH': 632}, {'tag': 'SECTION', 'classe': 'PageContainer_leftColumn__1SvBX', 'scrollH': 684, 'clientH': 632}, {'tag': 'DIV', 'classe': 'ScrollableWrapper_container__U3Z_d', 'scrollH': 4937, 'clientH': 632}, {'tag': 'DIV', 'classe': 'ScrollableWrapper_content__stSNb', 'scrollH': 4937, 'clientH': 632}]
-Après scroll JS direct sur conteneurs détectés : 20 matchs
+Essai 2 échoué : Locator.click: Timeout 5000ms exceeded.
+Call log:
+  - waiting for get_by_text("Demain", exact=True).first
+
+Essai 3 échoué : Locator.click: Timeout 5000ms exceeded.
+Call log:
+  - waiting for get_by_text("Demain", exact=True).first
+
+Stabilisé après 4 pas de scroll incrémental à 20 matchs
+Nombre de matchs après scroll incrémental complet : 20
 
 Nombre final de liens /event/ : 20
 
 ID=37395267  ::  11:30 Tue 01/09 | Sigma Olomouc U19 | Sparta Prague U19 | Football / Czech Republic / U19 1st Division | 1 | 2.24 | X | 4.00 | 2 | 2.54
 ID=37408475  ::  12:00 Tue 01/09 | FC Kharkiv Women | KFF Mitrovica Women | Football / International / UEFA Europa Cup, Women | 1 | 1.49 | X | 4.43 | 2 | 5.40
 ID=37372179  ::  12:35 Tue 01/09 | Dalian Yingbo FC | Shanghai Shenhua FC | Football / China / FA Cup | 1 | 2.82 | X | 3.63 | 2 | 2.18
-ID=37395273  ::  12:35 Tue 01/09 | No In-Play Cashout | Lanzhou Longyuan Athletic | Beijing Guoan | Football / China / FA Cup | 1 | 13.36 | X | 7.44 | 2 | 1.14
+ID=37395273  ::  12:35 Tue 01/09 | No In-Play Cashout | Lanzhou Longyuan Athletic | Beijing Guoan | Football / China / FA Cup | 1 | 14.30 | X | 7.63 | 2 | 1.12
 ID=37395228  ::  12:35 Tue 01/09 | Shandong Taishan FC | Shanghai Port FC | Football / China / FA Cup | 1 | 2.34 | X | 3.64 | 2 | 2.58
 ID=37372191  ::  13:00 Tue 01/09 | Hull City U21 | Swansea City U21 | Football / England / Professional Development League | 1 | 2.51 | X | 3.97 | 2 | 2.22
 ID=37372176  ::  13:00 Tue 01/09 | Charlton Athletic U21 | Wigan Athletic U21 | Football / England / Professional Development League | 1 | 1.58 | X | 4.62 | 2 | 3.96
@@ -27,6 +33,6 @@ ID=36566375  ::  14:00 Tue 01/09 | Bandirmaspor | Antalyaspor | Football / Turke
 ID=37395260  ::  14:15 Tue 01/09 | FK Akron Tolyatti | Lokomotiv Moscow | Football / Russian Federation / Russian Cup | 1X2 | Full Time | 1 | 3.38 | X | 3.48 | 2 | 1.97 | 1X2 1UP | Full Time | 1 | 1.96 | X | 3.48 | 2 | 1.49 | 1X2 2UP | Full Time | 1 | 3.27 | X | 3.48 | 2 | 1.92
 ID=37400602  ::  14:30 Tue 01/09 | No In-Play Cashout | Podhale Nowy Targ | Pogon Grodzisk Mazowiecki | Football / Poland / Puchar Polski | 1 | 2.86 | X | 3.43 | 2 | 2.23
 ID=37372197  ::  15:00 Tue 01/09 | Ghazl El Mahallah | Al Sharqiya Enppi | Football / Egypt / Premier League | 1X2 | Full Time | 1 | 2.73 | X | 2.58 | 2 | 3.17 | 1X2 1UP | Full Time | 1 | 2.01 | X | 2.58 | 2 | 2.20 | 1X2 2UP | Full Time | 1 | 2.68 | X | 2.58 | 2 | 3.15
-ID=37328660  ::  15:00 Tue 01/09 | Al Sadd SC | Al Gharafa SC | Football / Qatar / Qatar Cup | 1 | 1.50 | X | 4.09 | 2 | 5.52
+ID=37328660  ::  15:00 Tue 01/09 | Al Sadd SC | Al Gharafa SC | Football / Qatar / Qatar Cup | 1 | 1.52 | X | 4.49 | 2 | 4.78
 ID=37395262  ::  15:00 Tue 01/09 | Wisla Plock II | Puszcza Niepolomice | Football / Poland / Puchar Polski | 1 | 5.92 | X | 4.39 | 2 | 1.44
 ID=37128412  ::  15:00 Tue 01/09 | Talaea El Gaish | Zed FC | Football / Egypt / Premier League | 1X2 | Full Time | 1 | 2.30 | X | 2.81 | 2 | 3.59 | 1X2 1UP | Full Time | 1 | 1.76 | X | 2.81 | 2 | 2.32 | 1X2 2UP | Full Time | 1 | 2.25 | X | 2.81 | 2 | 3.57
