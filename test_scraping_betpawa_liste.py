@@ -1,27 +1,35 @@
 """
-test_scraping_betpawa_liste.py -- V18. La V17 a confirmé de bout en bout
-que la recherche par nom d'équipe fonctionne : cliquer sur la loupe,
-taper un nom, cliquer sur la suggestion correspondante mène directement
-à la page du match avec tous ses marchés. Ce test vérifie la fiabilité
-de cette recette sur un échantillon de VRAIS matchs pris dans
-precalcul.json (pas juste "Real Madrid", un cas facile) -- certains
-noms d'équipes s'écrivent différemment entre matchendirect et Betpawa
-(ex. "Talaea Gaish" vs "Talaea El Gaish"), donc ce test vérifie si une
-correspondance simple (l'un des deux noms apparaît dans le texte d'une
-suggestion) suffit, ou s'il faut une logique plus tolérante.
+test_scraping_betpawa_liste.py -- V19. La V18 a confirmé que le vrai
+problème n'est pas la méthode de recherche elle-même, mais les
+différences d'orthographe entre matchendirect et Betpawa (ex. "Talaea
+Gaish" vs "Talaea El Gaish", confirmé manuellement par Patrick). Ce
+test essaie PLUSIEURS variantes du nom, de la plus complète à la plus
+simplifiée, avant d'abandonner :
+1. Le nom tel quel
+2. Le nom nettoyé (sans FC/SC/AC/CF, et sans "El"/"Al" -- absents de
+   la liste existante dans scraper_betpawa.py, ajoutés ici pour ce test)
+3. Le mot le plus distinctif du nom nettoyé (souvent le dernier mot,
+   plus rare donc plus susceptible de matcher dans la recherche de
+   Betpawa)
 
 Ce script ne fait partie d'AUCUN pipeline -- rien ne l'appelle
 automatiquement.
 """
 import re
+import sys
 
 from playwright.sync_api import sync_playwright
+
+sys.path.insert(0, ".")
+from scraper_betpawa import TOKENS_CLUB_IGNORES
 
 URL_EVENTS = "https://www.betpawa.cm/events?categoryId=2&marketId=1X2"
 FICHIER_SORTIE = "diagnostic_liste_betpawa.txt"
 
-# Échantillon réel, pris dans precalcul.json le 31/08/2026 -- mélange de
-# clubs obscurs et moyennement connus, pour un test honnête.
+# Ajout local (pas dans scraper_betpawa.py) : "el"/"al" absents de la
+# liste existante, cause probable de l'échec observé sur Talaea Gaish.
+TOKENS_IGNORES_ETENDUS = TOKENS_CLUB_IGNORES | {"el", "al"}
+
 MATCHS_A_TESTER = [
     ("Bocholt", "Bonn"),
     ("Talaea Gaish", "ZED"),
@@ -31,57 +39,70 @@ MATCHS_A_TESTER = [
 ]
 
 
-def cherche_et_clique(page, nom_domicile, nom_exterieur, etapes):
-    """Reproduit la recette validée en V17 : ouvrir la recherche, taper
-    le nom de l'équipe domicile, chercher parmi les suggestions celle
-    qui contient aussi le nom de l'équipe extérieure, cliquer dessus."""
-    try:
-        page.locator("[aria-label*='earch' i]").first.click(timeout=5000)
-        page.wait_for_timeout(800)
+def normalise(nom):
+    mots = re.sub(r"[^a-z0-9\s]", " ", nom.lower()).split()
+    return [m for m in mots if m not in TOKENS_IGNORES_ETENDUS]
 
-        champs = page.locator("input:not(#bookingCode)")
-        champ = None
-        for i in range(champs.count()):
-            if champs.nth(i).is_visible():
-                champ = champs.nth(i)
-                break
-        if champ is None:
-            etapes.append(f"[{nom_domicile}] Aucun champ de recherche visible")
-            return None
 
-        champ.click(timeout=3000)
-        page.keyboard.type(nom_domicile, delay=60)
-        page.wait_for_timeout(1500)
+def variantes_du_nom(nom):
+    mots_nettoyes = normalise(nom)
+    variantes = [nom]  # 1. tel quel
+    nettoye = " ".join(mots_nettoyes)
+    if nettoye and nettoye.lower() != nom.lower():
+        variantes.append(nettoye)  # 2. nettoyé
+    if mots_nettoyes:
+        mot_distinctif = max(mots_nettoyes, key=len)  # 3. mot le plus long/distinctif
+        if mot_distinctif not in [v.lower() for v in variantes]:
+            variantes.append(mot_distinctif)
+    return variantes
 
-        # Liste toutes les suggestions visibles, cherche celle qui
-        # contient aussi le nom de l'équipe extérieure (comparaison
-        # simple, insensible à la casse -- première approximation).
-        suggestions = page.locator("div, span").filter(has_text=re.compile(re.escape(nom_domicile), re.IGNORECASE))
-        textes_vus = []
-        bonne_suggestion = None
-        for i in range(min(suggestions.count(), 15)):
-            try:
-                texte = suggestions.nth(i).inner_text(timeout=1000)
-            except Exception:
+
+def cherche_avec_variantes(page, nom_domicile, nom_exterieur, etapes):
+    for variante in variantes_du_nom(nom_domicile):
+        try:
+            page.locator("[aria-label*='earch' i]").first.click(timeout=5000)
+            page.wait_for_timeout(800)
+
+            champs = page.locator("input:not(#bookingCode)")
+            champ = None
+            for i in range(champs.count()):
+                if champs.nth(i).is_visible():
+                    champ = champs.nth(i)
+                    break
+            if champ is None:
                 continue
-            if texte and texte not in textes_vus and len(texte) < 100:
-                textes_vus.append(texte)
-                if nom_exterieur.lower() in texte.lower():
-                    bonne_suggestion = suggestions.nth(i)
 
-        if bonne_suggestion is None:
-            etapes.append(f"[{nom_domicile} - {nom_exterieur}] AUCUNE suggestion ne contient les deux noms. "
-                          f"Suggestions vues : {textes_vus[:8]}")
-            return None
+            champ.click(timeout=3000)
+            page.keyboard.type(variante, delay=60)
+            page.wait_for_timeout(1500)
 
-        bonne_suggestion.click(timeout=5000)
-        page.wait_for_timeout(2000)
-        url = page.url
-        etapes.append(f"[{nom_domicile} - {nom_exterieur}] TROUVÉ -> {url}")
-        return url
-    except Exception as e:
-        etapes.append(f"[{nom_domicile} - {nom_exterieur}] ÉCHEC : {e}")
-        return None
+            suggestions = page.locator("div, span").filter(has_text=re.compile(re.escape(variante), re.IGNORECASE))
+            textes_vus = []
+            bonne_suggestion = None
+            for i in range(min(suggestions.count(), 15)):
+                try:
+                    texte = suggestions.nth(i).inner_text(timeout=1000)
+                except Exception:
+                    continue
+                if texte and texte not in textes_vus and len(texte) < 100:
+                    textes_vus.append(texte)
+                    if nom_exterieur.lower() in texte.lower():
+                        bonne_suggestion = suggestions.nth(i)
+
+            if bonne_suggestion is not None:
+                bonne_suggestion.click(timeout=5000)
+                page.wait_for_timeout(2000)
+                url = page.url
+                etapes.append(f"[{nom_domicile} - {nom_exterieur}] TROUVÉ avec la variante '{variante}' -> {url}")
+                return url
+            else:
+                etapes.append(f"[{nom_domicile} - {nom_exterieur}] variante '{variante}' -- pas de correspondance "
+                              f"(suggestions vues : {textes_vus[:5]})")
+        except Exception as e:
+            etapes.append(f"[{nom_domicile} - {nom_exterieur}] variante '{variante}' -- échec technique : {e}")
+
+    etapes.append(f"[{nom_domicile} - {nom_exterieur}] ÉCHEC après toutes les variantes")
+    return None
 
 
 def main():
@@ -100,7 +121,7 @@ def main():
                 page.wait_for_load_state("networkidle", timeout=10000)
             except Exception:
                 pass
-            url = cherche_et_clique(page, nom_domicile, nom_exterieur, etapes)
+            url = cherche_avec_variantes(page, nom_domicile, nom_exterieur, etapes)
             resultats[f"{nom_domicile} - {nom_exterieur}"] = url
 
         navigateur.close()
