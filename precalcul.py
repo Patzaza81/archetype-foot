@@ -8,20 +8,28 @@ change -- au lieu de panier.json (sélection manuelle), on prend directement
 matchs_demain.json (J+1) + matchs_semaine.json filtré sur les deux dates
 suivantes (J+2, J+3).
 
+AJOUT 01/09/2026 : avant construit_signaux(), chaque match de la fenêtre
+passe par resolution_betpawa_precalcul.resout_cotes_betpawa(), qui tente
+de trouver sa correspondance Betpawa (cache ou résolution fraîche via
+resolution_betpawa.py) et d'en récupérer les cotes réelles. Si trouvé :
+le match reçoit cotes_manuelles, et run_pipeline.construit_signaux()
+utilisera automatiquement cette source au lieu de scraper Bet365 (logique
+déjà existante dans run_pipeline.py, inchangée). Si rien n'est trouvé (ou
+Playwright indisponible, ou erreur technique) : comportement strictement
+identique à avant cet ajout.
+
 Sortie : precalcul.json, liste de signaux au même format que ceux produits
 par run_pipeline.py, avec deux champs ajoutés :
   - model_version : identifiant de la version du moteur au moment du calcul
   - status        : READY (traite=True), PARTIAL/FAILED (traite=False,
                     voir raison_non_traite)
+Et désormais un bloc "betpawa" (compteurs de résolution/cotes, voir
+resolution_betpawa_precalcul.py) pour ne jamais avoir à deviner ce qui
+s'est passé sur un run donné.
 
-Ce script tourne EN PLUS du pipeline existant pour l'instant -- il ne le
-remplace pas. Le panier et son déclenchement manuel restent fonctionnels
-tant que ce mode n'a pas été validé sur plusieurs cycles réels.
-
-JAMAIS EXÉCUTÉ EN CONDITIONS RÉELLES au moment où ce fichier est écrit --
-recupere_details_match() fait des appels réseau vers matchendirect.fr,
-indisponibles depuis l'environnement où ce script a été rédigé. Le premier
-run réel (GitHub Actions ou local avec accès réseau) est le vrai test.
+JAMAIS EXÉCUTÉ EN CONDITIONS RÉELLES AVEC LE VOLET BETPAWA au moment où ce
+fichier est écrit -- voir resolution_betpawa_precalcul.py. Le reste
+(pré-calcul sans Betpawa) tourne déjà en production depuis le 31/08.
 """
 import datetime
 import json
@@ -30,6 +38,7 @@ import sys
 import run_pipeline
 from run_pipeline import construit_signaux, charge_json_ou_vide
 from cache_equipes import recupere_gf_ga_avec_cache
+from resolution_betpawa_precalcul import resout_cotes_betpawa
 
 # On mémorise la vraie fonction (celle qui scrape réellement), puis on
 # remplace, uniquement pour ce script, celle utilisée à l'intérieur de
@@ -98,6 +107,13 @@ def main():
               "exploitable -- vérifier que scraper.py et scraper_semaine.py "
               "ont bien tourné avant ce script.")
 
+    # AJOUT 01/09/2026 -- modifie fenetre EN PLACE (ajoute cotes_manuelles
+    # aux matchs résolus). Ne fait jamais planter le run : toute erreur
+    # interne est absorbée dans resout_cotes_betpawa() et se traduit par
+    # un compteur, jamais une exception qui remonte ici.
+    compteurs_betpawa = resout_cotes_betpawa(fenetre)
+    print(f"Résolution Betpawa : {compteurs_betpawa}")
+
     signaux = construit_signaux(fenetre)
 
     for s in signaux:
@@ -114,6 +130,7 @@ def main():
         "nb_matchs_fenetre": len(fenetre),
         "nb_ready": sum(1 for s in signaux if s["status"] == "READY"),
         "nb_partial": sum(1 for s in signaux if s["status"] == "PARTIAL"),
+        "betpawa": compteurs_betpawa,
         "signaux": signaux,
     }
 
@@ -121,7 +138,9 @@ def main():
         json.dump(sortie, f, ensure_ascii=False, indent=2)
 
     print(f"{FICHIER_SORTIE} écrit : {sortie['nb_matchs_fenetre']} matchs "
-          f"({sortie['nb_ready']} READY, {sortie['nb_partial']} PARTIAL).")
+          f"({sortie['nb_ready']} READY, {sortie['nb_partial']} PARTIAL). "
+          f"Betpawa : {compteurs_betpawa['betpawa_cotes_extraites']} match(s) "
+          f"avec cotes réelles, {compteurs_betpawa['betpawa_tentes']} tenté(s).")
 
     if not fenetre:
         sys.exit(1)
