@@ -1,28 +1,32 @@
 --- Étapes ---
-clic sur l'icône après 'Markets' réussi
-'Demain'/'Tomorrow' visible après ce clic : True
-clic sur 'Demain'/'Tomorrow' réussi
-clic sur Apply/Appliquer visible réussi : True (sur 0 boutons trouvés au total)
+échec application du filtre : Locator.click: Timeout 5000ms exceeded.
+Call log:
+  - waiting for get_by_text("Demain", exact=True).first
 
-Nombre de liens /event/ trouvés après filtre : 20
+Après scroll souris (10x) : 20 matchs
+Après touche End (5x) : 20 matchs
+Conteneurs scrollables détectés (top 10) : [{'tag': 'BODY', 'classe': '', 'scrollH': 772, 'clientH': 720}, {'tag': 'DIV', 'classe': '', 'scrollH': 772, 'clientH': 720}, {'tag': 'DIV', 'classe': 'PageContainer_app__V61uo', 'scrollH': 772, 'clientH': 720}, {'tag': 'DIV', 'classe': 'PageContainer_container__mNKzK', 'scrollH': 684, 'clientH': 632}, {'tag': 'SECTION', 'classe': 'PageContainer_leftColumn__1SvBX', 'scrollH': 684, 'clientH': 632}, {'tag': 'DIV', 'classe': 'ScrollableWrapper_container__U3Z_d', 'scrollH': 4937, 'clientH': 632}, {'tag': 'DIV', 'classe': 'ScrollableWrapper_content__stSNb', 'scrollH': 4937, 'clientH': 632}]
+Après scroll JS direct sur conteneurs détectés : 20 matchs
 
-ID=37395252  ::  00:00 Wed 02/09 | FC Universitario de Vinto | Club Aurora | Football / Bolivia / Copa Division Profesional | 1 | 2.48 | X | 3.43 | 2 | 2.53
-ID=37640833  ::  00:45 Wed 02/09 | Club 2 de Mayo Reserves | Club Sportivo Luqueño Reserves | Football / Paraguay / Paraguay Reserve League | 1 | 2.93 | X | 3.66 | 2 | 2.10
-ID=37411849  ::  01:00 Wed 02/09 | LDU Quito | Mushuc Runa SC | Football / Ecuador / LigaPro Primera A | 1X2 | Full Time | 1 | 1.56 | X | 3.99 | 2 | 5.64 | 1X2 1UP | Full Time | 1 | 1.34 | X | 3.99 | 2 | 2.79 | 1X2 2UP | Full Time | 1 | 1.53 | X | 3.99 | 2 | 5.61
-ID=37272451  ::  01:00 Wed 02/09 | Atletico Mineiro MG | Cruzeiro EC MG | Football / Brazil / Copa do Brasil | 1X2 | Full Time | 1 | 2.40 | X | 3.05 | 2 | 3.08 | 1X2 1UP | Full Time | 1 | 1.74 | X | 3.05 | 2 | 2.00 | 1X2 2UP | Full Time | 1 | 2.35 | X | 3.05 | 2 | 3.06
-ID=37271901  ::  02:00 Wed 02/09 | Fortaleza FC | CD Once Caldas | Football / Colombia / Primera A, Apertura | 1X2 | Full Time | 1 | 2.63 | X | 3.31 | 2 | 2.58 | 1X2 1UP | Full Time | 1 | 1.79 | X | 3.31 | 2 | 1.82 | 1X2 2UP | Full Time | 1 | 2.48 | X | 3.31 | 2 | 2.67
-ID=37411804  ::  10:00 Wed 02/09 | HNK Rijeka U19 | NK Kustosija Zagreb U19 | Football / Croatia / U19 Prva NL Juniori | 1 | 1.89 | X | 3.80 | 2 | 3.25
-ID=37437236  ::  10:30 Wed 02/09 | Vanraure Hachinohe FC | Tochigi City FC | Football / Japan / J.League Cup | 1 | 3.56 | X | 3.80 | 2 | 1.87
-ID=37437214  ::  10:30 Wed 02/09 | SC Sagamihara | Jubilo Iwata | Football / Japan / J.League Cup | 1 | 2.68 | X | 3.35 | 2 | 2.44
-ID=37411898  ::  11:00 Wed 02/09 | FC Osaka | Ventforet Kofu | Football / Japan / J.League Cup | 1 | 2.55 | X | 3.56 | 2 | 2.46
-ID=37411865  ::  11:00 Wed 02/09 | FC Gifu | Tokushima Vortis | Football / Japan / J.League Cup | 1 | 2.25 | X | 3.52 | 2 | 2.84
-ID=37411842  ::  11:00 Wed 02/09 | Kagoshima United | Hokkaido Consadole Sapporo | Football / Japan / J.League Cup | 1 | 2.44 | X | 3.35 | 2 | 2.68
-ID=37411826  ::  11:00 Wed 02/09 | Renofa Yamaguchi | Fujieda MYFC | Football / Japan / J.League Cup | 1 | 5.41 | X | 4.25 | 2 | 1.52
-ID=37437190  ::  11:00 Wed 02/09 | Thespa Gunma | Albirex Niigata | Football / Japan / J.League Cup | 1 | 8.86 | X | 5.20 | 2 | 1.29
-ID=37411813  ::  11:00 Wed 02/09 | NK Rudes U19 | HNK Hajduk Split U19 | Football / Croatia / U19 Prva NL Juniori | 1 | 3.50 | X | 3.70 | 2 | 1.84
-ID=37437186  ::  11:00 Wed 02/09 | FC Ryukyu | Yokohama FC | Football / Japan / J.League Cup | 1 | 5.95 | X | 4.03 | 2 | 1.51
-ID=37354879  ::  11:00 Wed 02/09 | V-Varen Nagasaki | Gamba Osaka | Football / Japan / J.League | 1X2 | Full Time | 1 | 3.51 | X | 3.46 | 2 | 2.06 | 1X2 1UP | Full Time | 1 | 2.04 | X | 3.46 | 2 | 1.53 | 1X2 2UP | Full Time | 1 | 3.48 | X | 3.46 | 2 | 2.02
-ID=37354876  ::  11:00 Wed 02/09 | Tokyo Verdy | Vissel Kobe | Football / Japan / J.League | 1X2 | Full Time | 1 | 3.89 | X | 3.07 | 2 | 2.09 | 1X2 1UP | Full Time | 1 | 2.32 | X | 3.07 | 2 | 1.63 | 1X2 2UP | Full Time | 1 | 3.87 | X | 3.07 | 2 | 2.05
-ID=37354875  ::  11:00 Wed 02/09 | JEF United Chiba | Fagiano Okayama | Football / Japan / J.League | 1X2 | Full Time | 1 | 3.95 | X | 3.61 | 2 | 1.89 | 1X2 1UP | Full Time | 1 | 2.20 | X | 3.61 | 2 | 1.48 | 1X2 2UP | Full Time | 1 | 3.93 | X | 3.61 | 2 | 1.85
-ID=37354878  ::  11:00 Wed 02/09 | Sanfrecce Hiroshima | Nagoya Grampus | Football / Japan / J.League | 1X2 | Full Time | 1 | 1.48 | X | 4.59 | 2 | 6.01 | 1X2 1UP | Full Time | 1 | 1.28 | X | 4.59 | 2 | 2.67 | 1X2 2UP | Full Time | 1 | 1.45 | X | 4.59 | 2 | 5.82
-ID=37354877  ::  11:00 Wed 02/09 | Mito Hollyhock | Kashima Antlers | Football / Japan / J.League | 1X2 | Full Time | 1 | 3.97 | X | 3.40 | 2 | 1.94 | 1X2 1UP | Full Time | 1 | 2.24 | X | 3.40 | 2 | 1.50 | 1X2 2UP | Full Time | 1 | 3.95 | X | 3.40 | 2 | 1.90
+Nombre final de liens /event/ : 20
+
+ID=37395267  ::  11:30 Tue 01/09 | Sigma Olomouc U19 | Sparta Prague U19 | Football / Czech Republic / U19 1st Division | 1 | 2.24 | X | 4.00 | 2 | 2.54
+ID=37408475  ::  12:00 Tue 01/09 | FC Kharkiv Women | KFF Mitrovica Women | Football / International / UEFA Europa Cup, Women | 1 | 1.49 | X | 4.43 | 2 | 5.40
+ID=37372179  ::  12:35 Tue 01/09 | Dalian Yingbo FC | Shanghai Shenhua FC | Football / China / FA Cup | 1 | 2.82 | X | 3.63 | 2 | 2.18
+ID=37395273  ::  12:35 Tue 01/09 | No In-Play Cashout | Lanzhou Longyuan Athletic | Beijing Guoan | Football / China / FA Cup | 1 | 13.36 | X | 7.44 | 2 | 1.14
+ID=37395228  ::  12:35 Tue 01/09 | Shandong Taishan FC | Shanghai Port FC | Football / China / FA Cup | 1 | 2.34 | X | 3.64 | 2 | 2.58
+ID=37372191  ::  13:00 Tue 01/09 | Hull City U21 | Swansea City U21 | Football / England / Professional Development League | 1 | 2.51 | X | 3.97 | 2 | 2.22
+ID=37372176  ::  13:00 Tue 01/09 | Charlton Athletic U21 | Wigan Athletic U21 | Football / England / Professional Development League | 1 | 1.58 | X | 4.62 | 2 | 3.96
+ID=37395279  ::  13:00 Tue 01/09 | Huddersfield Town U21 | Queens Park Rangers U21 | Football / England / Professional Development League | 1 | 1.67 | X | 4.45 | 2 | 3.60
+ID=37395233  ::  13:00 Tue 01/09 | Fleetwood Town U21 | Millwall U21 | Football / England / Professional Development League | 1 | 2.13 | X | 4.18 | 2 | 2.56
+ID=37372238  ::  13:00 Tue 01/09 | Bristol City U21 | Sheffield United U21 | Football / England / Professional Development League | 1 | 2.88 | X | 3.96 | 2 | 2.00
+ID=37562907  ::  13:15 Tue 01/09 | Brunei DPMM FC | Terengganu FC | Football / Malaysia / FA Cup | 1 | 4.10 | X | 3.75 | 2 | 1.70
+ID=37395230  ::  13:30 Tue 01/09 | Korona II Kielce SA | RKS Radomiak Radom | Football / Poland / Puchar Polski | 1 | 10.49 | X | 7.05 | 2 | 1.17
+ID=37479922  ::  14:00 Tue 01/09 | NEC FC | Lugazi Municipal FC | Football / Uganda / Premier League | 1 | 1.57 | X | 3.09 | 2 | 6.28
+ID=36566375  ::  14:00 Tue 01/09 | Bandirmaspor | Antalyaspor | Football / Turkey / 1. Lig | 1X2 | Full Time | 1 | 2.57 | X | 3.25 | 2 | 2.67 | 1X2 1UP | Full Time | 1 | 1.77 | X | 3.25 | 2 | 1.82 | 1X2 2UP | Full Time | 1 | 2.52 | X | 3.25 | 2 | 2.66
+ID=37395260  ::  14:15 Tue 01/09 | FK Akron Tolyatti | Lokomotiv Moscow | Football / Russian Federation / Russian Cup | 1X2 | Full Time | 1 | 3.38 | X | 3.48 | 2 | 1.97 | 1X2 1UP | Full Time | 1 | 1.96 | X | 3.48 | 2 | 1.49 | 1X2 2UP | Full Time | 1 | 3.27 | X | 3.48 | 2 | 1.92
+ID=37400602  ::  14:30 Tue 01/09 | No In-Play Cashout | Podhale Nowy Targ | Pogon Grodzisk Mazowiecki | Football / Poland / Puchar Polski | 1 | 2.86 | X | 3.43 | 2 | 2.23
+ID=37372197  ::  15:00 Tue 01/09 | Ghazl El Mahallah | Al Sharqiya Enppi | Football / Egypt / Premier League | 1X2 | Full Time | 1 | 2.73 | X | 2.58 | 2 | 3.17 | 1X2 1UP | Full Time | 1 | 2.01 | X | 2.58 | 2 | 2.20 | 1X2 2UP | Full Time | 1 | 2.68 | X | 2.58 | 2 | 3.15
+ID=37328660  ::  15:00 Tue 01/09 | Al Sadd SC | Al Gharafa SC | Football / Qatar / Qatar Cup | 1 | 1.50 | X | 4.09 | 2 | 5.52
+ID=37395262  ::  15:00 Tue 01/09 | Wisla Plock II | Puszcza Niepolomice | Football / Poland / Puchar Polski | 1 | 5.92 | X | 4.39 | 2 | 1.44
+ID=37128412  ::  15:00 Tue 01/09 | Talaea El Gaish | Zed FC | Football / Egypt / Premier League | 1X2 | Full Time | 1 | 2.30 | X | 2.81 | 2 | 3.59 | 1X2 1UP | Full Time | 1 | 1.76 | X | 2.81 | 2 | 2.32 | 1X2 2UP | Full Time | 1 | 2.25 | X | 2.81 | 2 | 3.57
