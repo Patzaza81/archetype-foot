@@ -110,6 +110,17 @@ def cherche_avec_variantes(page, nom_domicile, nom_exterieur, etapes):
 
             champ = trouve_champ_recherche(page)
             if champ is None:
+                # CORRECTIF V24 : la V23 continuait silencieusement ici,
+                # donnant des "NON TROUVÉ" sans aucune preuve -- suspect
+                # sur des matchs connus comme PSG-Monaco. On capture
+                # maintenant le titre de la page et un extrait du texte
+                # visible, pour voir si Betpawa a réagi anormalement
+                # (page d'erreur, ralentissement, etc.).
+                titre = page.title()
+                extrait = page.inner_text("body")[:150].replace("\n", " ")
+                etapes.append(f"échec [{nom_domicile} - {nom_exterieur}] variante '{variante}' : "
+                              f"champ introuvable -- titre page: '{titre}' -- début texte: '{extrait}'")
+                page.wait_for_timeout(1500)  # pause avant de réessayer, au cas où c'est un ralentissement
                 continue
 
             champ.click(timeout=3000)
@@ -119,15 +130,18 @@ def cherche_avec_variantes(page, nom_domicile, nom_exterieur, etapes):
             liste_suggestions = page.locator("[data-test-id='search-suggestions']")
             options = liste_suggestions.locator("li, [role='option']")
 
+            textes_vus = []
             bonne_suggestion = None
             for i in range(min(options.count(), 15)):
                 try:
                     texte = options.nth(i).inner_text(timeout=800)
                 except Exception:
                     continue
-                if texte and nom_exterieur.lower() in texte.lower():
-                    bonne_suggestion = options.nth(i)
-                    break
+                if texte and texte not in textes_vus:
+                    textes_vus.append(texte)
+                    if nom_exterieur.lower() in texte.lower():
+                        bonne_suggestion = options.nth(i)
+                        break
 
             if bonne_suggestion is not None:
                 bonne_suggestion.click(timeout=5000, force=True)
@@ -135,6 +149,9 @@ def cherche_avec_variantes(page, nom_domicile, nom_exterieur, etapes):
                 url = page.url
                 etapes.append(f"TROUVÉ [{nom_domicile} - {nom_exterieur}] (variante '{variante}') -> {url}")
                 return url
+            else:
+                etapes.append(f"pas de correspondance [{nom_domicile} - {nom_exterieur}] variante '{variante}' -- "
+                              f"suggestions vues : {textes_vus[:5]}")
         except Exception as e:
             etapes.append(f"échec technique [{nom_domicile} - {nom_exterieur}] variante '{variante}' : "
                           f"{str(e)[:120]}")
