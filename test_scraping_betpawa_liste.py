@@ -1,11 +1,10 @@
 """
-test_scraping_betpawa_liste.py -- V7. Le paramètre d'URL deviné
-(&day=Tomorrow) ne fonctionne pas (confirmé par requête statique,
-31/08/2026) -- le filtre par jour doit passer par un appel réseau caché
-déclenché en JavaScript. Ce script clique sur "Tomorrow" + "Apply" dans
-le navigateur et ENREGISTRE toutes les requêtes réseau déclenchées, pour
-identifier l'appel exact (URL + paramètres) à réutiliser ensuite
-directement, sans navigateur.
+test_scraping_betpawa_liste.py -- V8. La V7 a confirmé que "Tomorrow"
+existe dans la page mais n'est pas visible (probablement caché dans le
+panneau "Markets", qui doit être ouvert avant, comme "Leagues" devait
+l'être pour voir les championnats). Ce test ouvre "Markets" d'abord,
+PUIS clique sur "Tomorrow" + "Apply", en capturant les requêtes réseau
+déclenchées.
 
 Ce script ne fait partie d'AUCUN pipeline -- rien ne l'appelle
 automatiquement.
@@ -34,38 +33,50 @@ def main():
         except Exception:
             pass
 
-        nb_requetes_avant_clic = len(requetes_capturees)
+        etapes = []
 
-        resultat = "non tenté"
-        texte_final = ""
+        try:
+            page.get_by_text("Markets", exact=True).first.click(timeout=5000)
+            page.wait_for_timeout(1500)
+            etapes.append("clic sur 'Markets' réussi")
+        except Exception as e:
+            etapes.append(f"échec clic 'Markets' : {e}")
+
+        nb_avant_tomorrow = len(requetes_capturees)
+
         try:
             page.get_by_text("Tomorrow", exact=True).first.click(timeout=5000)
             page.wait_for_timeout(1000)
+            etapes.append("clic sur 'Tomorrow' réussi")
+        except Exception as e:
+            etapes.append(f"échec clic 'Tomorrow' : {e}")
+
+        try:
             page.get_by_text("Apply", exact=True).first.click(timeout=5000)
             page.wait_for_timeout(3000)
-            texte_final = page.inner_text("body")
-            resultat = "clic Tomorrow + Apply réussi"
+            etapes.append("clic sur 'Apply' réussi")
         except Exception as e:
-            resultat = f"échec : {e}"
-            try:
-                texte_final = page.inner_text("body")
-            except Exception:
-                pass
+            etapes.append(f"échec clic 'Apply' : {e}")
+
+        try:
+            texte_final = page.inner_text("body")
+        except Exception:
+            texte_final = "(impossible de lire le texte final)"
 
         url_finale = page.url
         navigateur.close()
 
-    nouvelles_requetes = requetes_capturees[nb_requetes_avant_clic:]
+    nouvelles_requetes = requetes_capturees[nb_avant_tomorrow:]
 
     with open(FICHIER_SORTIE, "w", encoding="utf-8") as f:
-        f.write(f"Résultat : {resultat}\n")
+        f.write("--- Étapes ---\n" + "\n".join(etapes) + "\n\n")
         f.write(f"URL finale (barre d'adresse) : {url_finale}\n\n")
-        f.write(f"--- Requêtes réseau déclenchées par le clic ({len(nouvelles_requetes)}) ---\n")
+        f.write(f"--- Requêtes réseau déclenchées après ouverture Markets ({len(nouvelles_requetes)}) ---\n")
         f.write("\n".join(nouvelles_requetes))
-        f.write(f"\n\n--- Texte de la page après clic ---\n{texte_final}")
+        f.write(f"\n\n--- Texte de la page après clics ---\n{texte_final}")
 
-    print(f"Résultat : {resultat}")
-    print(f"Nombre de requêtes capturées après clic : {len(nouvelles_requetes)}")
+    print("\n".join(etapes))
+    print(f"Nombre de requêtes capturées : {len(nouvelles_requetes)}")
     for r in nouvelles_requetes:
         print(f"  {r}")
 
