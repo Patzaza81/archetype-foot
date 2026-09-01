@@ -1,16 +1,11 @@
 """
-test_scraping_betpawa_liste.py -- V26. Deux changements :
-1. Vérification de l'hypothèse PSG : chercher "Paris Saint-Germain" au
-   lieu de "PSG", pour confirmer si le sigle est le problème.
-2. Remplacement de la comparaison par dictionnaire d'abréviations
-   (Saint/St, United/Utd...) -- approche qui ne finira jamais de couvrir
-   tous les cas -- par un calcul de RESSEMBLANCE (SequenceMatcher, dans
-   la bibliothèque standard Python) : au lieu de chercher une liste
-   fermée de cas particuliers, on mesure à quel point deux noms se
-   ressemblent en pourcentage, et on accepte au-delà d'un seuil. Ça
-   couvre naturellement Saint/St, Utd/United, Moskva/Moscow, et bien
-   d'autres variantes qu'on n'a pas encore rencontrées, sans avoir à
-   les lister à l'avance.
+test_scraping_betpawa_liste.py -- V27. Test à grande échelle (100 vrais
+matchs de precalcul.json, tirage honnête comme les échantillons
+précédents) de la recette validée en V26 : recherche par nom d'équipe +
+comparaison par ressemblance (SequenceMatcher) au lieu d'une liste
+d'abréviations. Ajout d'une petite table de sigles connus (PSG -> Paris
+Saint-Germain) convertis avant la recherche, suite à la confirmation
+que Betpawa ne reconnaît pas les sigles à 3 lettres.
 
 Ce script ne fait partie d'AUCUN pipeline -- rien ne l'appelle
 automatiquement.
@@ -29,41 +24,115 @@ URL_EVENTS = "https://www.betpawa.cm/events?categoryId=2&marketId=1X2"
 FICHIER_SORTIE = "diagnostic_liste_betpawa.txt"
 
 TOKENS_IGNORES_ETENDUS = TOKENS_CLUB_IGNORES | {"el", "al"}
-SEUIL_RESSEMBLANCE = 0.55  # à ajuster selon les résultats réels
+SEUIL_RESSEMBLANCE = 0.55
 
-# Échantillon identique aux tests précédents (comparaison directe
-# possible), + un test ciblé pour l'hypothèse PSG.
+SIGLES_CONNUS = {
+    "psg": "Paris Saint-Germain",
+    "om": "Olympique Marseille",
+    "ol": "Olympique Lyonnais",
+}
+
 MATCHS_A_TESTER = [
-    ("Bocholt", "Bonn"),
-    ("Paris Saint-Germain", "AS Monaco"),  # test de l'hypothèse PSG (nom complet au lieu du sigle)
-    ("Puerto Montt", "Curicó Unido"),
-    ("Bunyodkor", "Surkhon Termez"),
-    ("Hoffenheim", "Leverkusen"),
-    ("Progrès SE", "Hammam-Lif"),
-    ("Larne", "Glentoran"),
-    ("St. Lavallois", "Red Star"),
-    ("Mornar", "Bokelj"),
-    ("Blacks Power", "Uganda Police"),
-    ("Oriental", "R. Montevideo"),
-    ("Asswehly", "KVZ"),
-    ("Kilmarnock FC", "Saint Mirren FC"),
     ("Lernayin Artsakh", "Urartu II"),
-    ("Larissa", "Olympiakos"),
-    ("Assyriska", "IFK Stocksund"),
-    ("Zénith", "Dynamo Makh."),
-    ("Motherwell FC", "Dundee Utd."),
-    ("Muangnont", "Hua Hin"),
-    ("Zbrojovka", "H. Kralove"),
-    ("Treaty Utd", "Wexford"),
-    ("Brøndby", "Spartak"),
-    ("Pattani", "BG Pathum Utd"),
-    ("Spartak Moscou", "Rodina Moskva"),
-    ("Resovia", "Arka Gdynia"),
-    ("Hienghène", "Lössi"),
-    ("Westchester SC", "C. Red Wolves"),
-    ("Fort Wayne", "Richmond"),
-    ("Bombers", "Harlem Utd"),
-    ("Santa Cruz", "Pelotas"),
+    ("Caracas", "Portuguesa"),
+    ("Cosmos", "Sarasota"),
+    ("Real Sociedad", "Celta Vigo"),
+    ("TWL Elektra", "LAC-IC"),
+    ("ES Sétif", "ES Ben Aknoun"),
+    ("Jedinstvo K", "Trayal"),
+    ("Ingolstadt", "A. Aachen"),
+    ("Atl. Mineiro", "Cruzeiro MG"),
+    ("Bayern Munich II", "Eichstätt"),
+    ("Young Star", "Vision"),
+    ("PSG", "AS Monaco"),
+    ("Wattenscheid", "Rödinghausen"),
+    ("Khelang United", "Kamphaeng"),
+    ("Tychy", "LKS Lódz"),
+    ("Binh Phuoc", "CLB Viettel"),
+    ("Ulfarnir", "Alafoss"),
+    ("Slovan", "SFK 2000"),
+    ("Zrinjski", "Siroki Brije"),
+    ("Stockport U21", "Stoke City U21"),
+    ("Altach", "Bischofshofen"),
+    ("Lusail City", "Al Wakrah"),
+    ("Hoffenheim", "Leverkusen"),
+    ("Konoplev U19", "Ural U19"),
+    ("Național", "Congaz"),
+    ("Vitesse", "TOP Oss"),
+    ("Turkmenistan U20", "Thaïlande U20"),
+    ("Pyunik II", "Sardarapat"),
+    ("Cibalia", "Orijent"),
+    ("Celtic Glasgow", "Aberdeen"),
+    ("Juventus", "Spratzern"),
+    ("Sportivo Amel.", "Trinidense Res."),
+    ("Baltika", "Krylya Sovetov"),
+    ("Krušik", "Stepojevac"),
+    ("Waalwijk", "NAC"),
+    ("Unia Swarzędz", "Lech Poznan II"),
+    ("Rakow C.", "Górnik Zabrze"),
+    ("River Plate", "Nacional"),
+    ("Ipswich Town", "Liverpool"),
+    ("Baglan Dragons", "Afan Lido"),
+    ("Paloma", "Fužinar"),
+    ("Biar", "Olympique Akbou"),
+    ("CFR Cluj", "Farul"),
+    ("JEF Utd", "Fagiano"),
+    ("M. Hollyhock", "Kashima"),
+    ("Macará", "Manta"),
+    ("Al Shorta", "Arbil"),
+    ("V. Sarsfield", "Boca Juniors"),
+    ("Preston U21", "Wolves U21"),
+    ("Hallescher", "Tasmania Berlin"),
+    ("Lopburi City", "Kasem Bundit"),
+    ("Managua", "Diriangén"),
+    ("Winterthur", "Xamax"),
+    ("Choloma", "Olancho"),
+    ("Slovenj Gradec", "Maribor"),
+    ("Ovoshtnik", "Rozova dolina"),
+    ("Santo Domingo", "Cumbayá"),
+    ("Iskra", "Țarigrad"),
+    ("Spartaan'20", "UDI"),
+    ("US Boulogne", "Dijon FCO"),
+    ("Gainare Tottori", "Omiya"),
+    ("Genoa", "Côme"),
+    ("JS Kabylie", "Rouisset"),
+    ("Cardiff MU", "Cambrian"),
+    ("Queens Park R.", "Cardiff"),
+    ("Kheybar", "Foolad"),
+    ("Toulouse", "Lille"),
+    ("Vejle-Kolding", "Hjørring"),
+    ("Hanovre", "Karlsruher"),
+    ("Nasaf", "Neftchi"),
+    ("Altrincham", "Eastleigh"),
+    ("SOSA", "Central Coast"),
+    ("Petrovac", "Sutjeska"),
+    ("America Cali", "Alianza Valledupar"),
+    ("EIF II", "LePa"),
+    ("Politehnica T.", "FC Rapid Bucarest"),
+    ("Pragersko", "Grajena"),
+    ("Nacional", "Libertad"),
+    ("Estudiantes M.", "UCV"),
+    ("Bizertin", "Olympique Béja"),
+    ("Inde U20", "Ouzbékistan U20"),
+    ("Lyon", "AJ Auxerre"),
+    ("Vinotinto", "San Antonio"),
+    ("Kriens", "Lausanne-Ouchy"),
+    ("Espérance ST", "Marsa"),
+    ("Tafic FC", "Gaborone"),
+    ("Kapfenberg", "Hertha Wels"),
+    ("Yala City", "Jalor City"),
+    ("Atlas", "Guadalajara"),
+    ("Hifk", "HPS"),
+    ("Sivasspor", "Mardin 1969"),
+    ("Burnley", "Middlesbrough"),
+    ("15 de Agosto", "Fomboni"),
+    ("Tanta", "Masar"),
+    ("Coquimbo", "U. Concepción"),
+    ("Flora T.", "Tammeka"),
+    ("Bohemians P.", "Jablonec"),
+    ("Pelikan", "Swit Nowy Dwór"),
+    ("Vålerenga", "Radomlje"),
+    ("Real Native", "Midlands Wand."),
 ]
 
 
@@ -80,8 +149,7 @@ def normalise(nom):
 
 
 def normalise_pour_comparaison(texte):
-    mots = normalise(texte)
-    return " ".join(mots)
+    return " ".join(normalise(texte))
 
 
 def ratio_ressemblance(nom_a, nom_b):
@@ -89,11 +157,20 @@ def ratio_ressemblance(nom_a, nom_b):
     if not a or not b:
         return 0.0
     if a in b or b in a:
-        return 1.0  # inclusion directe (après nettoyage) = ressemblance maximale
+        return 1.0
     return SequenceMatcher(None, a, b).ratio()
 
 
+def developpe_sigle(nom):
+    """Convertit un sigle connu (PSG, OM...) vers le nom complet du club
+    -- Betpawa ne reconnaît pas les sigles à 3 lettres (confirmé sur
+    PSG en V26)."""
+    cle = nom.strip().lower()
+    return SIGLES_CONNUS.get(cle, nom)
+
+
 def variantes_du_nom(nom):
+    nom = developpe_sigle(nom)
     mots_nettoyes = normalise(nom)
     variantes = [nom]
     nettoye = " ".join(mots_nettoyes)
@@ -125,15 +202,15 @@ def cherche_avec_variantes(page, nom_domicile, nom_exterieur, etapes):
                 pass
 
             page.locator("[aria-label*='earch' i]").first.click(timeout=5000)
-            page.wait_for_timeout(600)
+            page.wait_for_timeout(500)
 
             champ = trouve_champ_recherche(page)
             if champ is None:
                 continue
 
             champ.click(timeout=3000)
-            page.keyboard.type(variante, delay=50)
-            page.wait_for_timeout(1300)
+            page.keyboard.type(variante, delay=40)
+            page.wait_for_timeout(1200)
 
             liste_suggestions = page.locator("[data-test-id='search-suggestions']")
             options = liste_suggestions.locator("li, [role='option']")
@@ -143,7 +220,7 @@ def cherche_avec_variantes(page, nom_domicile, nom_exterieur, etapes):
             meilleur_ratio = 0.0
             for i in range(min(options.count(), 15)):
                 try:
-                    texte = options.nth(i).inner_text(timeout=800)
+                    texte = options.nth(i).inner_text(timeout=700)
                 except Exception:
                     continue
                 if not texte or texte in textes_vus:
@@ -160,17 +237,17 @@ def cherche_avec_variantes(page, nom_domicile, nom_exterieur, etapes):
 
             if meilleure_option is not None and meilleur_ratio >= SEUIL_RESSEMBLANCE:
                 meilleure_option.click(timeout=5000, force=True)
-                page.wait_for_timeout(1500)
+                page.wait_for_timeout(1200)
                 url = page.url
                 etapes.append(f"TROUVÉ [{nom_domicile} - {nom_exterieur}] (variante '{variante}', "
                               f"ressemblance {meilleur_ratio:.2f}) -> {url}")
                 return url
             else:
                 etapes.append(f"pas de correspondance [{nom_domicile} - {nom_exterieur}] variante '{variante}' "
-                              f"(meilleure ressemblance : {meilleur_ratio:.2f}) -- suggestions vues : {textes_vus[:5]}")
+                              f"(meilleure ressemblance : {meilleur_ratio:.2f})")
         except Exception as e:
             etapes.append(f"échec technique [{nom_domicile} - {nom_exterieur}] variante '{variante}' : "
-                          f"{str(e)[:120]}")
+                          f"{str(e)[:100]}")
 
     etapes.append(f"NON TROUVÉ [{nom_domicile} - {nom_exterieur}]")
     return None
