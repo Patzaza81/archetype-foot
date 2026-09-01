@@ -1,16 +1,13 @@
 """
-test_scraping_betpawa_liste.py -- V20. La V19 a révélé deux vrais bugs
-(pas des absences réelles de match) :
-1. Le sélecteur de champ de recherche ("input:not(#bookingCode)") était
-   trop large -- il comptait aussi les ~267 cases à cocher cachées du
-   panneau Leagues, et finissait par cliquer sur un interrupteur "Show
-   1UP & 2UP" au lieu du champ de recherche. Corrigé en excluant
-   explicitement les checkbox/radio et en ciblant un vrai champ texte.
-2. Le nettoyage des noms remplaçait les lettres accentuées (ó, ø, ł)
-   par des espaces au lieu de les translittérer -- "Sokół Ostróda"
-   devenait "sok ostr da" au lieu de "sokol ostroda". Corrigé avec une
-   translittération basique des caractères les plus courants en
-   football européen.
+test_scraping_betpawa_liste.py -- V23. La V22 a validé la méthode sur un
+petit échantillon (2/5, échecs tous légitimes -- matchs absents de
+Betpawa, pas des bugs). Patrick demande un échantillon plus large avant
+de considérer la méthode fiable. Ce test reprend la recette validée
+(V20-V22 : bon champ de recherche, bon menu de suggestions, variantes de
+nom) sur 30 vrais matchs pris dans precalcul.json du 01/09/2026 (8 de
+grands championnats connus + 22 tirés au hasard dans tout le reste, sans
+tri favorable) -- un échantillon honnête pour mesurer le vrai taux de
+réussite.
 
 Ce script ne fait partie d'AUCUN pipeline -- rien ne l'appelle
 automatiquement.
@@ -29,19 +26,43 @@ FICHIER_SORTIE = "diagnostic_liste_betpawa.txt"
 
 TOKENS_IGNORES_ETENDUS = TOKENS_CLUB_IGNORES | {"el", "al"}
 
+# Échantillon réel, pris dans precalcul.json (01/09/2026, 774 matchs) --
+# 8 de grands championnats + 22 au hasard dans le reste, mélangés.
 MATCHS_A_TESTER = [
-    ("Bocholt", "Bonn"),
-    ("Talaea Gaish", "ZED"),
-    ("Sokół Ostróda", "Sokół Kleczew"),
+    ("Beskid", "Śląsk II"),
+    ("PSG", "AS Monaco"),
+    ("Puerto Montt", "Curicó Unido"),
+    ("Bunyodkor", "Surkhon Termez"),
+    ("Hoffenheim", "Leverkusen"),
+    ("Progrès SE", "Hammam-Lif"),
+    ("Larne", "Glentoran"),
+    ("St. Lavallois", "Red Star"),
+    ("Mornar", "Bokelj"),
+    ("Blacks Power", "Uganda Police"),
+    ("Oriental", "R. Montevideo"),
+    ("Asswehly", "KVZ"),
+    ("Kilmarnock FC", "Saint Mirren FC"),
+    ("Lernayin Artsakh", "Urartu II"),
+    ("Larissa", "Olympiakos"),
+    ("Assyriska", "IFK Stocksund"),
+    ("Zénith", "Dynamo Makh."),
+    ("Motherwell FC", "Dundee Utd."),
+    ("Muangnont", "Hua Hin"),
+    ("Zbrojovka", "H. Kralove"),
+    ("Treaty Utd", "Wexford"),
     ("Brøndby", "Spartak"),
-    ("West Bromwich", "Charlton"),
+    ("Pattani", "BG Pathum Utd"),
+    ("Spartak Moscou", "Rodina Moskva"),
+    ("Resovia", "Arka Gdynia"),
+    ("Hienghène", "Lössi"),
+    ("Westchester SC", "C. Red Wolves"),
+    ("Fort Wayne", "Richmond"),
+    ("Bombers", "Harlem Utd"),
+    ("Santa Cruz", "Pelotas"),
 ]
 
 
 def translitere(nom):
-    """Remplace les lettres accentuées par leur équivalent latin simple
-    (ó -> o, ø -> o, ł -> l, etc.) au lieu de les supprimer -- correctif
-    du bug observé sur "Sokół Ostróda" -> "sok ostr da"."""
     nom = nom.replace("ø", "o").replace("Ø", "O").replace("ł", "l").replace("Ł", "L")
     nfkd = unicodedata.normalize("NFKD", nom)
     return "".join(c for c in nfkd if not unicodedata.combining(c))
@@ -67,9 +88,6 @@ def variantes_du_nom(nom):
 
 
 def trouve_champ_recherche(page):
-    """CORRECTIF V20 : cible uniquement un vrai champ de saisie texte,
-    jamais une case à cocher (les ~267 checkbox cachées du panneau
-    Leagues faisaient planter la V19)."""
     champs = page.locator("input[type='text'], input[type='search'], input:not([type])")
     for i in range(champs.count()):
         c = champs.nth(i)
@@ -81,62 +99,47 @@ def trouve_champ_recherche(page):
 def cherche_avec_variantes(page, nom_domicile, nom_exterieur, etapes):
     for variante in variantes_du_nom(nom_domicile):
         try:
-            # CORRECTIF V21 : revenir sur la page de base avant CHAQUE
-            # variante, pas juste une fois par match -- la loupe est un
-            # bouton bascule (ouvre/ferme), donc la recliquer sans
-            # recharger la page la refermait au lieu de la rouvrir.
             page.goto(URL_EVENTS, timeout=30000, wait_until="domcontentloaded")
             try:
-                page.wait_for_load_state("networkidle", timeout=8000)
+                page.wait_for_load_state("networkidle", timeout=6000)
             except Exception:
                 pass
 
             page.locator("[aria-label*='earch' i]").first.click(timeout=5000)
-            page.wait_for_timeout(800)
+            page.wait_for_timeout(600)
 
             champ = trouve_champ_recherche(page)
             if champ is None:
-                etapes.append(f"[{nom_domicile} - {nom_exterieur}] variante '{variante}' -- "
-                              f"champ de recherche introuvable")
                 continue
 
             champ.click(timeout=3000)
-            page.keyboard.type(variante, delay=60)
-            page.wait_for_timeout(1500)
+            page.keyboard.type(variante, delay=50)
+            page.wait_for_timeout(1300)
 
-            # CORRECTIF V22 : le menu de suggestions a un attribut
-            # précis (data-test-id="search-suggestions"), révélé par le
-            # message d'erreur de la V21. Le cibler directement évite le
-            # conflit de clic observé (le sélecteur générique div/span
-            # tombait sur un élément recouvert par le menu lui-même).
             liste_suggestions = page.locator("[data-test-id='search-suggestions']")
             options = liste_suggestions.locator("li, [role='option']")
 
-            textes_vus = []
             bonne_suggestion = None
             for i in range(min(options.count(), 15)):
                 try:
-                    texte = options.nth(i).inner_text(timeout=1000)
+                    texte = options.nth(i).inner_text(timeout=800)
                 except Exception:
                     continue
-                if texte and texte not in textes_vus:
-                    textes_vus.append(texte)
-                    if nom_exterieur.lower() in texte.lower():
-                        bonne_suggestion = options.nth(i)
+                if texte and nom_exterieur.lower() in texte.lower():
+                    bonne_suggestion = options.nth(i)
+                    break
 
             if bonne_suggestion is not None:
                 bonne_suggestion.click(timeout=5000, force=True)
-                page.wait_for_timeout(2000)
+                page.wait_for_timeout(1500)
                 url = page.url
-                etapes.append(f"[{nom_domicile} - {nom_exterieur}] TROUVÉ avec la variante '{variante}' -> {url}")
+                etapes.append(f"TROUVÉ [{nom_domicile} - {nom_exterieur}] (variante '{variante}') -> {url}")
                 return url
-            else:
-                etapes.append(f"[{nom_domicile} - {nom_exterieur}] variante '{variante}' -- pas de correspondance "
-                              f"(suggestions vues : {textes_vus[:5]})")
         except Exception as e:
-            etapes.append(f"[{nom_domicile} - {nom_exterieur}] variante '{variante}' -- échec technique : {e}")
+            etapes.append(f"échec technique [{nom_domicile} - {nom_exterieur}] variante '{variante}' : "
+                          f"{str(e)[:120]}")
 
-    etapes.append(f"[{nom_domicile} - {nom_exterieur}] ÉCHEC après toutes les variantes")
+    etapes.append(f"NON TROUVÉ [{nom_domicile} - {nom_exterieur}]")
     return None
 
 
@@ -150,14 +153,16 @@ def main():
         contexte = navigateur.new_context(**appareil)
         page = contexte.new_page()
 
-        for nom_domicile, nom_exterieur in MATCHS_A_TESTER:
+        for i, (nom_domicile, nom_exterieur) in enumerate(MATCHS_A_TESTER, 1):
+            print(f"[{i}/{len(MATCHS_A_TESTER)}] {nom_domicile} - {nom_exterieur}")
             url = cherche_avec_variantes(page, nom_domicile, nom_exterieur, etapes)
             resultats[f"{nom_domicile} - {nom_exterieur}"] = url
 
         navigateur.close()
 
     nb_trouves = sum(1 for v in resultats.values() if v)
-    etapes.insert(0, f"Résultat global : {nb_trouves}/{len(MATCHS_A_TESTER)} matchs trouvés")
+    etapes.insert(0, f"Résultat global : {nb_trouves}/{len(MATCHS_A_TESTER)} matchs trouvés "
+                     f"({round(100 * nb_trouves / len(MATCHS_A_TESTER))}%)")
 
     with open(FICHIER_SORTIE, "w", encoding="utf-8") as f:
         f.write("--- Étapes ---\n" + "\n".join(etapes))
