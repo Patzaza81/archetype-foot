@@ -104,21 +104,28 @@ def cherche_avec_variantes(page, nom_domicile, nom_exterieur, etapes):
             page.keyboard.type(variante, delay=60)
             page.wait_for_timeout(1500)
 
-            suggestions = page.locator("div, span").filter(has_text=re.compile(re.escape(variante), re.IGNORECASE))
+            # CORRECTIF V22 : le menu de suggestions a un attribut
+            # précis (data-test-id="search-suggestions"), révélé par le
+            # message d'erreur de la V21. Le cibler directement évite le
+            # conflit de clic observé (le sélecteur générique div/span
+            # tombait sur un élément recouvert par le menu lui-même).
+            liste_suggestions = page.locator("[data-test-id='search-suggestions']")
+            options = liste_suggestions.locator("li, [role='option']")
+
             textes_vus = []
             bonne_suggestion = None
-            for i in range(min(suggestions.count(), 15)):
+            for i in range(min(options.count(), 15)):
                 try:
-                    texte = suggestions.nth(i).inner_text(timeout=1000)
+                    texte = options.nth(i).inner_text(timeout=1000)
                 except Exception:
                     continue
-                if texte and texte not in textes_vus and len(texte) < 100:
+                if texte and texte not in textes_vus:
                     textes_vus.append(texte)
                     if nom_exterieur.lower() in texte.lower():
-                        bonne_suggestion = suggestions.nth(i)
+                        bonne_suggestion = options.nth(i)
 
             if bonne_suggestion is not None:
-                bonne_suggestion.click(timeout=5000)
+                bonne_suggestion.click(timeout=5000, force=True)
                 page.wait_for_timeout(2000)
                 url = page.url
                 etapes.append(f"[{nom_domicile} - {nom_exterieur}] TROUVÉ avec la variante '{variante}' -> {url}")
