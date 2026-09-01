@@ -1,17 +1,11 @@
 """
-test_scraping_betpawa_liste.py -- V5, REGROUPÉE. Teste plusieurs
-hypothèses en un seul run, pour éviter les allers-retours répétés :
-
-TEST A : sélectionner Premier League dans le filtre "Leagues" + APPLY --
-         la liste se met-elle à jour avec plusieurs matchs/dates, et
-         l'URL change-t-elle vers un format réutilisable ?
-TEST B : après ce filtre, le scroll charge-t-il plus de matchs ?
-TEST C : cliquer directement sur le nom d'une compétition affichée dans
-         un match (ex. "Football / England / Premier League") -- mène-t-il
-         à une page dédiée à cette compétition avec une URL propre ?
-TEST D : recherche de tout élément de la page mentionnant "Tomorrow" /
-         "Demain" / un sélecteur de date, pour voir s'il existe un moyen
-         direct de changer de jour sans passer par les compétitions.
+test_scraping_betpawa_liste.py -- V6. Objectif : extraire TOUS les liens
+vers des matchs présents sur la page de liste (pas un par un), avec leur
+ID Betpawa et l'heure/date affichée juste avant dans le texte, pour
+étudier si l'ID suit une récurrence exploitable (ex. corrélé à l'heure
+du match, à l'ordre d'ajout, etc.) -- question posée par Patrick le
+31/08/2026 après plusieurs tests infructueux sur le filtrage par
+championnat.
 
 Ce script ne fait partie d'AUCUN pipeline -- rien ne l'appelle
 automatiquement.
@@ -24,97 +18,42 @@ URL_TEST = "https://www.betpawa.cm/events"
 FICHIER_SORTIE = "diagnostic_liste_betpawa.txt"
 
 
-def dates_dans(texte):
-    return sorted(set(re.findall(r"\b(\d{2}/\d{2})\b", texte)))
-
-
 def main():
-    rapport = []
-
-    def log(section, contenu):
-        rapport.append(f"\n{'='*20} {section} {'='*20}\n{contenu}\n")
-        print(f"--- {section} ---\n{contenu[:500]}\n")
-
     with sync_playwright() as p:
         navigateur = p.chromium.launch()
         page = navigateur.new_page()
         page.goto(URL_TEST, timeout=30000, wait_until="domcontentloaded")
         try:
             page.wait_for_load_state("networkidle", timeout=15000)
-        except Exception as e:
-            log("CHARGEMENT INITIAL", f"networkidle jamais atteint : {e}")
+        except Exception:
+            pass
 
-        texte_initial = page.inner_text("body")
-        log("ÉTAT INITIAL", f"URL: {page.url}\nDates trouvées: {dates_dans(texte_initial)}\nTaille: {len(texte_initial)}")
+        # Récupère tous les liens <a> dont le href contient "/event/",
+        # avec le texte visible du bloc entier (contient normalement
+        # l'heure, la date, les deux équipes).
+        liens = page.eval_on_selector_all(
+            "a[href*='/event/']",
+            "els => els.map(e => ({href: e.href, texte: e.innerText}))"
+        )
 
-        # --- TEST A : filtre Premier League + APPLY ---
-        try:
-            page.get_by_text("Leagues", exact=True).first.click(timeout=5000)
-            page.wait_for_timeout(1500)
-            page.get_by_text("Premier League", exact=True).first.click(timeout=5000)
-            page.wait_for_timeout(1000)
-            page.get_by_text("APPLY", exact=True).first.click(timeout=5000)
-            page.wait_for_timeout(3000)
-            texte_a = page.inner_text("body")
-            log("TEST A -- Filtre Premier League + APPLY",
-                f"URL après filtre: {page.url}\n"
-                f"Dates trouvées: {dates_dans(texte_a)}\n"
-                f"Taille: {len(texte_a)}\n\n"
-                f"Texte complet:\n{texte_a}")
-        except Exception as e:
-            log("TEST A -- ÉCHEC", str(e))
-            texte_a = texte_initial
-
-        # --- TEST B : scroll après filtre ---
-        try:
-            largeur = page.viewport_size["width"]
-            hauteur = page.viewport_size["height"]
-            page.mouse.move(largeur / 2, hauteur / 2)
-            for _ in range(8):
-                page.mouse.wheel(0, 2000)
-                page.wait_for_timeout(800)
-            texte_b = page.inner_text("body")
-            log("TEST B -- Scroll après filtre",
-                f"Dates trouvées: {dates_dans(texte_b)}\n"
-                f"Taille avant: {len(texte_a)} -> après scroll: {len(texte_b)}")
-        except Exception as e:
-            log("TEST B -- ÉCHEC", str(e))
-
-        # --- TEST C : cliquer sur le nom d'une compétition dans un match ---
-        try:
-            page.goto(URL_TEST, timeout=30000, wait_until="domcontentloaded")
-            page.wait_for_timeout(2000)
-            lien_competition = page.get_by_text(re.compile(r"Football / .+ /.+")).first
-            texte_lien = lien_competition.inner_text(timeout=5000)
-            lien_competition.click(timeout=5000)
-            page.wait_for_timeout(2500)
-            texte_c = page.inner_text("body")
-            log("TEST C -- Clic sur une compétition affichée dans un match",
-                f"Texte du lien cliqué: {texte_lien}\n"
-                f"URL après clic: {page.url}\n"
-                f"Dates trouvées: {dates_dans(texte_c)}\n"
-                f"Taille: {len(texte_c)}\n\n"
-                f"Texte complet:\n{texte_c}")
-        except Exception as e:
-            log("TEST C -- ÉCHEC", str(e))
-
-        # --- TEST D : recherche d'un sélecteur de date ---
-        try:
-            page.goto(URL_TEST, timeout=30000, wait_until="domcontentloaded")
-            page.wait_for_timeout(2000)
-            texte_d = page.inner_text("body")
-            mentions = [mot for mot in ["Tomorrow", "Demain", "Today", "Aujourd'hui", "Calendar", "Date"] if mot in texte_d]
-            log("TEST D -- Recherche d'un sélecteur de date",
-                f"Mentions trouvées dans le texte: {mentions if mentions else 'AUCUNE'}")
-        except Exception as e:
-            log("TEST D -- ÉCHEC", str(e))
-
+        titre = page.title()
         navigateur.close()
 
-    with open(FICHIER_SORTIE, "w", encoding="utf-8") as f:
-        f.write("".join(rapport))
+    lignes_rapport = [f"Nombre de liens /event/ trouvés : {len(liens)}\n"]
+    for lien in liens:
+        m = re.search(r"/event/(\d+)", lien["href"])
+        id_event = m.group(1) if m else "?"
+        texte_compact = " | ".join(l.strip() for l in lien["texte"].split("\n") if l.strip())
+        lignes_rapport.append(f"ID={id_event}  ::  {texte_compact}")
 
-    print(f"\nRapport complet écrit dans {FICHIER_SORTIE} (committé par le workflow).")
+    rapport = "\n".join(lignes_rapport)
+    print(rapport[:3000])
+
+    with open(FICHIER_SORTIE, "w", encoding="utf-8") as f:
+        f.write(f"Titre : {titre}\n\n")
+        f.write(rapport)
+
+    print(f"\nRapport écrit dans {FICHIER_SORTIE} (committé par le workflow).")
 
 
 if __name__ == "__main__":
