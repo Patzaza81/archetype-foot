@@ -1,12 +1,13 @@
 """
-test_scraping_betpawa_liste.py -- V12. La V11 a identifié le vrai
-conteneur scrollable (classe "ScrollableWrapper_container", scrollHeight
-4937 vs clientHeight 632) mais un saut direct (scrollTop = scrollHeight)
-n'a rien chargé de plus -- probablement une liste virtualisée qui a
-besoin de scrolls progressifs, comme un vrai doigt sur l'écran, pas un
-saut brutal. Ce test scrolle ce conteneur précis par petits incréments.
-Le clic sur "Demain" a aussi échoué une fois sur deux (intermittent) --
-ajout d'une nouvelle tentative en cas d'échec.
+test_scraping_betpawa_liste.py -- V13. Observation clé de Patrick
+(31/08/2026) : sur son téléphone, il n'y a pas de barre de défilement --
+il pose le doigt sur un match et pousse vers le haut (geste tactile).
+Tous les tests précédents (V2, V11, V12) simulaient une molette de
+souris d'ordinateur, jamais un vrai geste tactile -- ce qui peut
+expliquer pourquoi rien ne se chargeait. Ce test émule un vrai
+téléphone (viewport + tactile activé) et reproduit le geste exact
+(appui, glissement vers le haut, relâchement) via les événements
+tactiles bas niveau, au lieu d'une molette.
 
 Ce script ne fait partie d'AUCUN pipeline -- rien ne l'appelle
 automatiquement.
@@ -23,27 +24,22 @@ def compte_liens(page):
     return page.eval_on_selector_all("a[href*='/event/']", "els => els.length")
 
 
-def applique_filtre_demain(page, etapes, tentatives=3):
-    for essai in range(1, tentatives + 1):
-        try:
-            bouton_markets = page.get_by_text("Markets", exact=True).first
-            bouton_calendrier = bouton_markets.locator("xpath=../following-sibling::*[1]")
-            bouton_calendrier.click(timeout=5000)
-            page.wait_for_timeout(1500)
-            page.get_by_text("Demain", exact=True).first.click(timeout=5000)
-            page.wait_for_timeout(1000)
-            boutons_apply = page.get_by_text(re.compile(r"^(Apply|Appliquer)$"))
-            for i in range(boutons_apply.count()):
-                if boutons_apply.nth(i).is_visible():
-                    boutons_apply.nth(i).click(timeout=5000)
-                    break
-            page.wait_for_timeout(3000)
-            etapes.append(f"Filtre Demain appliqué à l'essai {essai} -- matchs au départ : {compte_liens(page)}")
-            return True
-        except Exception as e:
-            etapes.append(f"Essai {essai} échoué : {e}")
-            page.wait_for_timeout(1000)
-    return False
+def geste_swipe_vers_le_haut(page, cdp, x, y_depart, y_arrivee, etapes_intermediaires=5):
+    """Reproduit un vrai geste tactile : doigt posé, glissé progressivement
+    vers le haut, puis relâché -- exactement le geste décrit par Patrick,
+    au lieu d'une molette de souris."""
+    cdp.send("Input.dispatchTouchEvent", {
+        "type": "touchStart",
+        "touchPoints": [{"x": x, "y": y_depart}],
+    })
+    for i in range(1, etapes_intermediaires + 1):
+        y_courant = y_depart + (y_arrivee - y_depart) * i / etapes_intermediaires
+        cdp.send("Input.dispatchTouchEvent", {
+            "type": "touchMove",
+            "touchPoints": [{"x": x, "y": y_courant}],
+        })
+        page.wait_for_timeout(50)
+    cdp.send("Input.dispatchTouchEvent", {"type": "touchEnd", "touchPoints": []})
 
 
 def main():
@@ -51,39 +47,38 @@ def main():
 
     with sync_playwright() as p:
         navigateur = p.chromium.launch()
-        page = navigateur.new_page()
+        # Émule un vrai téléphone (comme celui de Patrick) au lieu d'un
+        # ordinateur -- viewport étroit, tactile activé.
+        appareil = p.devices["iPhone 13"]
+        contexte = navigateur.new_context(**appareil)
+        page = contexte.new_page()
+        cdp = contexte.new_cdp_session(page)
+
         page.goto(URL_TEST, timeout=30000, wait_until="domcontentloaded")
         try:
             page.wait_for_load_state("networkidle", timeout=15000)
         except Exception:
             pass
 
-        applique_filtre_demain(page, etapes)
+        etapes.append(f"Émulation téléphone active -- matchs au départ : {compte_liens(page)}")
 
-        # Scroll incrémental ciblé sur le vrai conteneur identifié en V11
-        # (classe contenant "ScrollableWrapper"), par petits pas, avec
-        # une pause à chaque étape pour laisser le temps au rendu
-        # virtualisé de charger la suite.
-        for etape_scroll in range(25):
+        largeur = page.viewport_size["width"]
+        hauteur = page.viewport_size["height"]
+
+        for etape_scroll in range(15):
             nb_avant = compte_liens(page)
-            page.evaluate("""
-                () => {
-                    const els = document.querySelectorAll('*');
-                    for (const el of els) {
-                        if (el.className && String(el.className).includes('ScrollableWrapper')) {
-                            el.scrollBy(0, 400);
-                        }
-                    }
-                }
-            """)
-            page.wait_for_timeout(700)
+            # Doigt posé vers le bas de l'écran, glissé jusqu'en haut --
+            # le geste exact décrit par Patrick.
+            geste_swipe_vers_le_haut(page, cdp, largeur / 2, hauteur * 0.8, hauteur * 0.2)
+            page.wait_for_timeout(1000)
             nb_apres = compte_liens(page)
+            etapes.append(f"Swipe {etape_scroll + 1} : {nb_avant} -> {nb_apres} matchs")
             if nb_apres == nb_avant and etape_scroll > 3:
-                etapes.append(f"Stabilisé après {etape_scroll} pas de scroll incrémental à {nb_apres} matchs")
+                etapes.append(f"Stabilisé après {etape_scroll + 1} swipes")
                 break
 
         nb_final = compte_liens(page)
-        etapes.append(f"Nombre de matchs après scroll incrémental complet : {nb_final}")
+        etapes.append(f"Nombre final de matchs après swipes tactiles : {nb_final}")
 
         liens = page.eval_on_selector_all(
             "a[href*='/event/']",
