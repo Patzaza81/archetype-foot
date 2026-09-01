@@ -1,12 +1,12 @@
 """
-test_scraping_betpawa_liste.py -- V9. Patrick a confirmé par capture
-d'écran (31/08/2026) que le filtre par jour n'est PAS dans "Markets"
-(erreur des V7/V8) mais derrière une icône calendrier séparée, à droite
-de "Markets" -- un troisième panneau indépendant, avec "Aujourd'hui /
-Demain / [jours de la semaine]" et un bouton Apply. Ce test cible cette
-icône par sa position (juste après le bouton "Markets"), sélectionne
-"Demain", puis extrait tous les liens de matchs avec la méthode qui a
-déjà fonctionné (V6).
+test_scraping_betpawa_liste.py -- V11. Le filtre "Demain" fonctionne
+(confirmé : 20 matchs, tous datés du bon jour). Mais seulement 20 sur 82
+annoncés -- il faut charger le reste. Ce test applique le même filtre
+que la V10, PUIS essaie plusieurs méthodes de défilement l'une après
+l'autre (scroll souris classique, touche "End", et scroll direct via
+JavaScript sur le conteneur qui a vraiment une barre de défilement),
+en comptant le nombre de matchs après chaque tentative pour voir
+laquelle fonctionne.
 
 Ce script ne fait partie d'AUCUN pipeline -- rien ne l'appelle
 automatiquement.
@@ -17,6 +17,10 @@ from playwright.sync_api import sync_playwright
 
 URL_TEST = "https://www.betpawa.cm/events?categoryId=2&marketId=1X2"
 FICHIER_SORTIE = "diagnostic_liste_betpawa.txt"
+
+
+def compte_liens(page):
+    return len(page.eval_on_selector_all("a[href*='/event/']", "els => els.length"))
 
 
 def main():
@@ -31,48 +35,67 @@ def main():
         except Exception:
             pass
 
+        # --- Réapplique le filtre Demain (recette V10, déjà validée) ---
         try:
-            # L'icône calendrier est le bouton juste après "Markets" dans
-            # la même barre de filtres -- pas de texte à cibler, on
-            # prend l'élément frère suivant.
             bouton_markets = page.get_by_text("Markets", exact=True).first
             bouton_calendrier = bouton_markets.locator("xpath=../following-sibling::*[1]")
             bouton_calendrier.click(timeout=5000)
             page.wait_for_timeout(1500)
-            etapes.append("clic sur l'icône après 'Markets' réussi")
-
-            texte_panneau = page.inner_text("body")
-            contient_demain = "Demain" in texte_panneau or "Tomorrow" in texte_panneau
-            etapes.append(f"'Demain'/'Tomorrow' visible après ce clic : {contient_demain}")
-
-            if "Demain" in texte_panneau:
-                page.get_by_text("Demain", exact=True).first.click(timeout=5000)
-            elif "Tomorrow" in texte_panneau:
-                page.get_by_text("Tomorrow", exact=True).first.click(timeout=5000)
+            page.get_by_text("Demain", exact=True).first.click(timeout=5000)
             page.wait_for_timeout(1000)
-            etapes.append("clic sur 'Demain'/'Tomorrow' réussi")
-
-            # CORRECTIF V10 : "Apply"/"Appliquer" existe en plusieurs
-            # exemplaires cachés (un par panneau : Leagues, Markets,
-            # Calendrier). .first prenait systématiquement un bouton
-            # invisible d'un autre panneau. On cherche ici celui qui est
-            # réellement visible.
             boutons_apply = page.get_by_text(re.compile(r"^(Apply|Appliquer)$"))
-            clic_apply_fait = False
             for i in range(boutons_apply.count()):
-                bouton = boutons_apply.nth(i)
-                if bouton.is_visible():
-                    bouton.click(timeout=5000)
-                    clic_apply_fait = True
+                if boutons_apply.nth(i).is_visible():
+                    boutons_apply.nth(i).click(timeout=5000)
                     break
-            etapes.append(f"clic sur Apply/Appliquer visible réussi : {clic_apply_fait} "
-                          f"(sur {boutons_apply.count()} boutons trouvés au total)")
             page.wait_for_timeout(3000)
+            etapes.append(f"Filtre Demain appliqué -- matchs visibles au départ : {compte_liens(page)}")
         except Exception as e:
-            etapes.append(f"échec à une étape : {e}")
+            etapes.append(f"échec application du filtre : {e}")
 
-        # Extraction des liens, qu'on ait réussi le filtre ou non --
-        # utile dans les deux cas pour voir ce qui est réellement affiché.
+        # --- Méthode 1 : scroll souris classique, position centrée ---
+        largeur = page.viewport_size["width"]
+        hauteur = page.viewport_size["height"]
+        page.mouse.move(largeur / 2, hauteur / 2)
+        for _ in range(10):
+            page.mouse.wheel(0, 2500)
+            page.wait_for_timeout(600)
+        etapes.append(f"Après scroll souris (10x) : {compte_liens(page)} matchs")
+
+        # --- Méthode 2 : touche "End" ---
+        for _ in range(5):
+            page.keyboard.press("End")
+            page.wait_for_timeout(600)
+        etapes.append(f"Après touche End (5x) : {compte_liens(page)} matchs")
+
+        # --- Méthode 3 : trouver le vrai conteneur scrollable et le scroller directement ---
+        resultat_js = page.evaluate("""
+            () => {
+                const tous = document.querySelectorAll('*');
+                let trouves = [];
+                for (const el of tous) {
+                    if (el.scrollHeight > el.clientHeight + 50 && el.clientHeight > 200) {
+                        trouves.push({tag: el.tagName, classe: el.className, scrollH: el.scrollHeight, clientH: el.clientHeight});
+                    }
+                }
+                return trouves.slice(0, 10);
+            }
+        """)
+        etapes.append(f"Conteneurs scrollables détectés (top 10) : {resultat_js}")
+
+        page.evaluate("""
+            () => {
+                const tous = document.querySelectorAll('*');
+                for (const el of tous) {
+                    if (el.scrollHeight > el.clientHeight + 50 && el.clientHeight > 200) {
+                        el.scrollTop = el.scrollHeight;
+                    }
+                }
+            }
+        """)
+        page.wait_for_timeout(2000)
+        etapes.append(f"Après scroll JS direct sur conteneurs détectés : {compte_liens(page)} matchs")
+
         liens = page.eval_on_selector_all(
             "a[href*='/event/']",
             "els => els.map(e => ({href: e.href, texte: e.innerText}))"
@@ -80,7 +103,7 @@ def main():
 
         navigateur.close()
 
-    lignes_liens = [f"Nombre de liens /event/ trouvés après filtre : {len(liens)}\n"]
+    lignes_liens = [f"Nombre final de liens /event/ : {len(liens)}\n"]
     for lien in liens:
         m = re.search(r"/event/(\d+)", lien["href"])
         id_event = m.group(1) if m else "?"
@@ -92,7 +115,6 @@ def main():
         f.write("\n".join(lignes_liens))
 
     print("\n".join(etapes))
-    print("\n".join(lignes_liens[:5]))
     print(f"\nRapport écrit dans {FICHIER_SORTIE} (committé par le workflow).")
 
 
