@@ -2,11 +2,6 @@ name: Pipeline quotidien Archetype Foot
 
 on:
   schedule:
-    # 30/08/2026 : passé de 7h UTC (8h à Douala) à 0h UTC = 1h à Douala
-    # (UTC+1, pas d'heure d'été) -- Patrick veut que l'analyse du jour soit
-    # déjà prête au réveil, pas déclenchée après. GitHub Actions programme
-    # toujours ses cron en UTC, jamais dans un fuseau local -- à revoir si
-    # Patrick change de fuseau.
     - cron: "0 0 * * *"
 
   workflow_dispatch:
@@ -16,7 +11,7 @@ on:
         required: false
         type: string
       limite_betpawa:
-        description: "01/09/2026 -- TEST : nombre max de matchs à faire passer par la résolution Betpawa dans precalcul.py (laisser vide = pas de limite, plein volume 600-800 matchs, JAMAIS TESTÉ à ce jour). Mettre 15 pour un premier test prudent."
+        description: "02/09/2026 -- nombre max de matchs Betpawa dans precalcul.py. VIDE = valeur par défaut prudente (100), utilisée aussi automatiquement par le cron nocturne tant que le plein volume n'est pas validé en routine. Pour tester le VRAI volume illimité (déjà testé le 02/09 : 1574 matchs, 5h18m, proche de la limite de 6h de GitHub), taper le mot illimite (sans accent)."
         required: false
         type: string
 
@@ -42,10 +37,6 @@ jobs:
           pip install requests beautifulsoup4 pandas lxml playwright
           playwright install --with-deps chromium
 
-      # CORRECTIF 31/08/2026 : --max-matchs 200 tronquait réellement la liste
-      # (matchs_du_jour.json/matchs_demain.json plafonnés à 200 chacun,
-      # confirmé). Aligné sur scraper_semaine.py qui utilise déjà 100000
-      # (= pas de limite pratique) pour ne perdre aucun match du jour/demain.
       - name: Générer les listes brutes aujourd'hui + demain
         run: python scraper.py --max-matchs 100000
 
@@ -57,13 +48,18 @@ jobs:
         run: python scraper_betpawa.py
         continue-on-error: true
 
-      # AJOUT 01/09/2026 : PRECALCUL_LIMITE_BETPAWA vient de l'input manuel
-      # limite_betpawa -- vide sur un run planifié (schedule), donc pas de
-      # limite en production tant que ce n'est pas voulu explicitement.
-      # continue-on-error: true conservé -- ce mode reste en observation.
+      # CORRECTIF 02/09/2026 (2e application -- la 1re n'avait pas pris) :
+      # le cron (schedule) ne fournit JAMAIS github.event.inputs.limite_betpawa
+      # (existe seulement sur workflow_dispatch) -- sans le "|| '100'", ça
+      # donne une chaîne vide = AUCUNE limite. Confirmé en conditions réelles
+      # le 02/09 : run de 5h18m51s sur 1574 matchs, à 40 min du mur des 6h de
+      # GitHub Actions. Défaut sûr désormais : 100, pour le cron ET pour un
+      # déclenchement manuel où le champ est laissé vide. Taper "illimite"
+      # dans le champ pour forcer explicitement le plein volume (déjà testé,
+      # fonctionne, mais proche de la limite).
       - name: Pré-calcul J+1/J+2/J+3 + résolution Betpawa (indépendant du panier)
         env:
-          PRECALCUL_LIMITE_BETPAWA: ${{ github.event.inputs.limite_betpawa }}
+          PRECALCUL_LIMITE_BETPAWA: ${{ github.event.inputs.limite_betpawa || '100' }}
         run: python precalcul.py
         continue-on-error: true
 
