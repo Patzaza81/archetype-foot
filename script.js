@@ -132,7 +132,6 @@ function construitNiveau3(m) {
   </p>`;
 }
 
-// (29/08/2026 -- Supabase) config panier -- inchangée.
 const SUPABASE_URL = "https://hjrcqodwfjxqcjvjoxzq.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhqcmNxb2R3Zmp4cWNqdmpveHpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgxMTU3NjUsImV4cCI6MjEwMzY5MTc2NX0.rxJ2W-2UI0oQrGAprqnrPJM3WO1HCoYft0ZeS38oZfY";
 const SUPABASE_CONFIGURE = !SUPABASE_URL.includes("TON-PROJET") && !!window.supabase;
@@ -146,10 +145,6 @@ function afficheErreur(message) {
   document.getElementById("maj").textContent = "erreur de chargement : " + message;
 }
 
-// CHANGÉ 02/09/2026 : accepte directement le texte d'en-tête à afficher
-// (au lieu de reconstruire "mis à jour : ..." en dur) -- nécessaire pour
-// que les 3 onglets J+1/J+2/J+3 et l'onglet Panier affichent chacun un
-// en-tête différent avec la même fonction de rendu.
 function afficheMatchs(matchs, enTete) {
   document.getElementById("maj").textContent = enTete;
 
@@ -192,17 +187,21 @@ function afficheMatchs(matchs, enTete) {
   });
 }
 
-// ---- AJOUT 02/09/2026 -- Onglets J+1/J+2/J+3, lisent precalcul.json ----
-// (le pré-calcul automatique nocturne, jusqu'ici invisible sur le site).
-// Dates calculées côté client à l'ouverture -- jamais codées en dur --
-// donc toujours correctes quel que soit le jour où la page est ouverte.
+// AJOUT 02/09/2026 (correctif race condition) -- jetonAffichage incrémenté
+// à chaque changement d'onglet. Chaque fonction async capture le jeton au
+// moment où elle démarre, et vérifie qu'il est TOUJOURS le plus récent
+// avant d'écrire dans le DOM -- sinon elle abandonne silencieusement.
+// Corrige le bug observé le 02/09 : un clic rapide entre onglets pouvait
+// laisser un fetch obsolète (ex. Panier) écraser l'affichage d'un onglet
+// déjà quitté (ex. J1), même si le bouton actif était le bon.
+let jetonAffichage = 0;
 
 const FORMAT_DATE_ONGLET = { weekday: "short", day: "numeric", month: "short" };
 
 function dateIsoDansNJours(n) {
   const d = new Date();
   d.setDate(d.getDate() + n);
-  return d.toISOString().slice(0, 10); // YYYY-MM-DD, même format que precalcul.json
+  return d.toISOString().slice(0, 10);
 }
 
 function dateLisible(dateIso) {
@@ -212,7 +211,7 @@ function dateLisible(dateIso) {
 
 const DATES_FENETRE = { j1: dateIsoDansNJours(1), j2: dateIsoDansNJours(2), j3: dateIsoDansNJours(3) };
 
-let precalculCharge = null; // un seul fetch pour la durée de la page, les 3 onglets piochent dedans
+let precalculCharge = null;
 
 async function chargePrecalcul() {
   if (precalculCharge) return precalculCharge;
@@ -222,9 +221,10 @@ async function chargePrecalcul() {
   return precalculCharge;
 }
 
-async function afficheOngletJour(cle) {
+async function afficheOngletJour(cle, monJeton) {
   try {
     const data = await chargePrecalcul();
+    if (monJeton !== jetonAffichage) return; // un autre onglet a été demandé entre-temps
     const dateIso = DATES_FENETRE[cle];
     const signaux = (data.signaux || []).filter((s) => s.date === dateIso);
     const nbReady = signaux.filter((s) => s.traite).length;
@@ -234,29 +234,30 @@ async function afficheOngletJour(cle) {
       `(mis à jour : ${data.genere_le || "inconnu"})`
     );
   } catch (err) {
+    if (monJeton !== jetonAffichage) return;
     afficheErreur(err.message);
     console.error(err);
   }
 }
 
-// ---- Onglet Panier -- comportement inchangé (data.json ou Supabase) ----
-
-async function chargeDepuisDataJson() {
+async function chargeDepuisDataJson(monJeton) {
   const delaiDepasse = new Promise((_, reject) =>
     setTimeout(() => reject(new Error("délai dépassé (15s) -- vérifie ta connexion, ou que data.json existe bien à la racine du site.")), DELAI_ATTENTE_MS)
   );
   const r = await Promise.race([fetch("data.json?_=" + Date.now()), delaiDepasse]);
   const data = await r.json();
+  if (monJeton !== jetonAffichage) return data.genere_le || null;
   afficheMatchs(data.matchs || [], "mis à jour : " + (data.genere_le || "inconnu") + " — " + (data.matchs || []).length + " match(s) traité(s)");
   return data.genere_le || null;
 }
 
-async function chargeDernierResultat() {
+async function chargeDernierResultat(monJeton) {
   if (!SUPABASE_CONFIGURE) {
-    return await chargeDepuisDataJson();
+    return await chargeDepuisDataJson(monJeton);
   }
 
   const { data: { session } } = await supabaseClient.auth.getSession();
+  if (monJeton !== jetonAffichage) return null;
   if (!session) {
     afficheMatchs([], "aucun panier envoyé depuis cet appareil pour le moment.");
     return null;
@@ -274,6 +275,7 @@ async function chargeDernierResultat() {
     .limit(1);
 
   const { data: lignes, error } = await Promise.race([requete, delaiDepasse]);
+  if (monJeton !== jetonAffichage) return null;
   if (error) throw new Error(error.message);
 
   if (!lignes || lignes.length === 0) {
@@ -286,13 +288,14 @@ async function chargeDernierResultat() {
   return ligne.created_at;
 }
 
-// ---- Orchestration des 4 onglets ----
-
 let compteurRafraichissements = 0;
 let ongletActif = "j1";
 
 async function activeOngletPronostics(cle) {
   ongletActif = cle;
+  jetonAffichage += 1;
+  const monJeton = jetonAffichage;
+
   ["j1", "j2", "j3", "panier"].forEach((c) => {
     const bouton = document.getElementById("onglet-" + c);
     if (bouton) bouton.classList.toggle("actif", c === cle);
@@ -300,24 +303,26 @@ async function activeOngletPronostics(cle) {
 
   compteurRafraichissements = 0;
   if (cle === "panier") {
-    await chargeDernierResultat();
+    await chargeDernierResultat(monJeton);
     if (SUPABASE_CONFIGURE) setTimeout(boucleRafraichissement, INTERVALLE_RAFRAICHISSEMENT_MS);
   } else {
-    await afficheOngletJour(cle);
+    await afficheOngletJour(cle, monJeton);
   }
 }
 
 async function boucleRafraichissement() {
   if (ongletActif !== "panier" || !SUPABASE_CONFIGURE) return;
+  const monJeton = jetonAffichage;
   try {
-    await chargeDernierResultat();
+    await chargeDernierResultat(monJeton);
   } catch (err) {
+    if (monJeton !== jetonAffichage) return;
     afficheErreur(err.message);
     console.error(err);
     return;
   }
   compteurRafraichissements += 1;
-  if (compteurRafraichissements < NB_RAFRAICHISSEMENTS_MAX) {
+  if (compteurRafraichissements < NB_RAFRAICHISSEMENTS_MAX && monJeton === jetonAffichage) {
     setTimeout(boucleRafraichissement, INTERVALLE_RAFRAICHISSEMENT_MS);
   }
 }
