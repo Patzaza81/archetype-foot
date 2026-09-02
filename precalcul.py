@@ -10,26 +10,29 @@ suivantes (J+2, J+3).
 
 AJOUT 01/09/2026 : avant construit_signaux(), chaque match de la fenêtre
 passe par resolution_betpawa_precalcul.resout_cotes_betpawa(), qui tente
-de trouver sa correspondance Betpawa (cache ou résolution fraîche via
-resolution_betpawa.py) et d'en récupérer les cotes réelles. Si trouvé :
-le match reçoit cotes_manuelles, et run_pipeline.construit_signaux()
-utilisera automatiquement cette source au lieu de scraper Bet365 (logique
-déjà existante dans run_pipeline.py, inchangée). Si rien n'est trouvé (ou
-Playwright indisponible, ou erreur technique) : comportement strictement
-identique à avant cet ajout.
+de trouver sa correspondance Betpawa et d'en récupérer les cotes réelles.
+Voir resolution_betpawa_precalcul.py pour le détail.
 
-Sortie : precalcul.json, liste de signaux au même format que ceux produits
-par run_pipeline.py, avec deux champs ajoutés :
-  - model_version : identifiant de la version du moteur au moment du calcul
-  - status        : READY (traite=True), PARTIAL/FAILED (traite=False,
-                    voir raison_non_traite)
-Et désormais un bloc "betpawa" (compteurs de résolution/cotes, voir
-resolution_betpawa_precalcul.py) pour ne jamais avoir à deviner ce qui
-s'est passé sur un run donné.
+AJOUT 02/09/2026 : archive_precalcul() enregistre dans
+historique_pronostics.json (même fichier que run_pipeline.py, format
+compatible, réutilisé sans modification de verification_resultats.py) une
+version allégée des matchs READY -- SEULEMENT ceux dont la date est J+1
+(demain), jamais J+2/J+3, pour ne jamais archiver le même match plusieurs
+fois à mesure qu'il avance dans la fenêtre au fil des nuits. Sans ça, le
+pré-calcul nocturne calculait des centaines de pronostics par nuit qui ne
+rentraient jamais dans le circuit de vérification (verification_resultats.py
+ne lit QUE historique_pronostics.json) -- donc jamais utilisables pour
+mesurer un ROI réel ni construire l'échantillon de ~1000 matchs vérifiés visé.
+Version volontairement allégée (pas les distributions de probabilité
+complètes) pour ne pas faire exploser la taille du fichier au fil du temps.
 
-JAMAIS EXÉCUTÉ EN CONDITIONS RÉELLES AVEC LE VOLET BETPAWA au moment où ce
-fichier est écrit -- voir resolution_betpawa_precalcul.py. Le reste
-(pré-calcul sans Betpawa) tourne déjà en production depuis le 31/08.
+Sortie : precalcul.json (inchangé dans sa fonction), avec en plus :
+  - nb_archives_historique : nombre de matchs J+1 READY archivés ce run
+Et historique_pronostics.json, grossi d'une entrée par date de match J+1
+présente ce soir (normalement une seule, celle de demain).
+
+JAMAIS EXÉCUTÉ EN CONDITIONS RÉELLES au moment où ce fichier est écrit --
+voir procédure de vérification donnée à Patrick en dehors de ce fichier.
 """
 import datetime
 import json
@@ -63,6 +66,7 @@ MODEL_VERSION = "Archetype-v4.3"  # à synchroniser manuellement avec calculs.py
 FICHIER_MATCHS_DEMAIN = "matchs_demain.json"
 FICHIER_MATCHS_SEMAINE = "matchs_semaine.json"
 FICHIER_SORTIE = "precalcul.json"
+FICHIER_HISTORIQUE = "historique_pronostics.json"  # même fichier que run_pipeline.py
 
 
 def dates_j2_j3(aujourdhui=None):
@@ -74,6 +78,11 @@ def dates_j2_j3(aujourdhui=None):
         (aujourdhui + datetime.timedelta(days=2)).isoformat(),
         (aujourdhui + datetime.timedelta(days=3)).isoformat(),
     }
+
+
+def date_j1(aujourdhui=None):
+    aujourdhui = aujourdhui or datetime.date.today()
+    return (aujourdhui + datetime.timedelta(days=1)).isoformat()
 
 
 def charge_matchs_fenetre():
@@ -97,6 +106,60 @@ def charge_matchs_fenetre():
         fenetre.append(m)
 
     return fenetre, len(matchs_demain), len(matchs_j2_j3)
+
+
+def _slim_pour_archive(s):
+    """Version allégée d'un signal pour historique_pronostics.json -- garde
+    tout ce qu'il faut pour calculer un ROI et vérifier le résultat plus
+    tard, jamais les distributions de probabilité complètes de calculs.py
+    (bruit de calcul interne, inutile pour la vérification, coûteux en
+    taille de fichier)."""
+    return {
+        "domicile": s.get("domicile"),
+        "exterieur": s.get("exterieur"),
+        "competition": s.get("competition"),
+        "match_id": s.get("match_id"),
+        "date": s.get("date"),
+        "heure": s.get("heure"),
+        "score": None,
+        "verdict_global": s.get("verdict_global"),
+        "motif_no_go": s.get("motif_no_go"),
+        "confiance": s.get("confiance"),
+        "source_cotes": s.get("source_cotes"),
+        "betpawa_url": s.get("betpawa_url"),
+        "model_version": s.get("model_version"),
+        "LISTE_B_liste_finale_apres_correlation": s.get("LISTE_B_liste_finale_apres_correlation"),
+    }
+
+
+def archive_precalcul(signaux, date_j1_iso):
+    """N'archive QUE les matchs READY (traite=True, verdict_global calculé)
+    ET dont la date est celle de demain (J+1) -- jamais J+2/J+3, pour ne
+    jamais archiver le même match plusieurs fois à mesure qu'il avance dans
+    la fenêtre au fil des nuits (un match J+3 ce soir redeviendra J+2 demain
+    puis J+1 après-demain -- c'est CE run-là, la veille du match, qui
+    l'archive, pas les précédents).
+
+    Retourne le nombre de matchs archivés (jamais une affirmation vague de
+    succès)."""
+    candidats = [
+        s for s in signaux
+        if s.get("traite") and s.get("verdict_global") and s.get("date") == date_j1_iso
+    ]
+    if not candidats:
+        return 0
+
+    historique = charge_json_ou_vide(FICHIER_HISTORIQUE, defaut=[])
+    historique.append({
+        "date": date_j1_iso,
+        "source": "precalcul_auto",
+        "nb_matchs_traites": len(candidats),
+        "matchs": [_slim_pour_archive(s) for s in candidats],
+    })
+    with open(FICHIER_HISTORIQUE, "w", encoding="utf-8") as f:
+        json.dump(historique, f, ensure_ascii=False, indent=2)
+
+    return len(candidats)
 
 
 def main():
@@ -123,6 +186,12 @@ def main():
             "%Y-%m-%dT%H:%M:%SZ"
         )
 
+    # AJOUT 02/09/2026 -- ferme la boucle vers verification_resultats.py.
+    date_j1_iso = date_j1()
+    nb_archives = archive_precalcul(signaux, date_j1_iso)
+    print(f"Archivage historique : {nb_archives} match(s) J+1 ({date_j1_iso}) "
+          f"ajouté(s) à {FICHIER_HISTORIQUE}.")
+
     sortie = {
         "genere_le": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
         "nb_matchs_demain_source": nb_demain,
@@ -130,6 +199,7 @@ def main():
         "nb_matchs_fenetre": len(fenetre),
         "nb_ready": sum(1 for s in signaux if s["status"] == "READY"),
         "nb_partial": sum(1 for s in signaux if s["status"] == "PARTIAL"),
+        "nb_archives_historique": nb_archives,
         "betpawa": compteurs_betpawa,
         "signaux": signaux,
     }
