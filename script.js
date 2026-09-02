@@ -145,6 +145,36 @@ function afficheErreur(message) {
   document.getElementById("maj").textContent = "erreur de chargement : " + message;
 }
 
+// AJOUT 02/09/2026 -- meilleure valeur EV d'un match GO (celle du pari en
+// or), pour trier. -Infinity pour tout le reste (NO_GO, non traité) --
+// garantit qu'ils passent toujours après les GO dans le tri.
+function meilleurEv(m) {
+  if (m.verdict_global !== "GO") return -Infinity;
+  const listeB = m.LISTE_B_liste_finale_apres_correlation;
+  if (!listeB || listeB.length === 0) return -Infinity;
+  return Math.max(...listeB.map((p) => p.ev_brut));
+}
+
+// AJOUT 02/09/2026 -- GO triés par EV décroissant en premier, puis NO_GO,
+// puis non traités en dernier -- pour ne plus avoir à scroller des dizaines
+// de matchs pour trouver les rares paris actionnables. La case "GO
+// uniquement" filtre le reste complètement si cochée.
+function trieEtFiltre(matchs) {
+  const copie = [...(matchs || [])];
+  copie.sort((a, b) => {
+    const rangA = a.verdict_global === "GO" ? 0 : (a.traite ? 1 : 2);
+    const rangB = b.verdict_global === "GO" ? 0 : (b.traite ? 1 : 2);
+    if (rangA !== rangB) return rangA - rangB;
+    if (rangA === 0) return meilleurEv(b) - meilleurEv(a);
+    return 0;
+  });
+  const filtreGo = document.getElementById("filtre-go");
+  if (filtreGo && filtreGo.checked) {
+    return copie.filter((m) => m.verdict_global === "GO");
+  }
+  return copie;
+}
+
 function afficheMatchs(matchs, enTete) {
   document.getElementById("maj").textContent = enTete;
 
@@ -187,14 +217,17 @@ function afficheMatchs(matchs, enTete) {
   });
 }
 
-// AJOUT 02/09/2026 (correctif race condition) -- jetonAffichage incrémenté
-// à chaque changement d'onglet. Chaque fonction async capture le jeton au
-// moment où elle démarre, et vérifie qu'il est TOUJOURS le plus récent
-// avant d'écrire dans le DOM -- sinon elle abandonne silencieusement.
-// Corrige le bug observé le 02/09 : un clic rapide entre onglets pouvait
-// laisser un fetch obsolète (ex. Panier) écraser l'affichage d'un onglet
-// déjà quitté (ex. J1), même si le bouton actif était le bon.
 let jetonAffichage = 0;
+let dernierEnsembleBrut = [];     // dernière liste non triée/filtrée reçue
+let dernierEnTeteBase = "";       // en-tête sans le suffixe GO/tri
+
+// AJOUT 02/09/2026 -- ré-affiche à partir des données déjà en mémoire
+// (pas de refetch) quand on coche/décoche "GO uniquement".
+function reaffiche() {
+  const trie = trieEtFiltre(dernierEnsembleBrut);
+  const nbGo = dernierEnsembleBrut.filter((m) => m.verdict_global === "GO").length;
+  afficheMatchs(trie, `${dernierEnTeteBase} — ${nbGo} GO`);
+}
 
 const FORMAT_DATE_ONGLET = { weekday: "short", day: "numeric", month: "short" };
 
@@ -224,15 +257,13 @@ async function chargePrecalcul() {
 async function afficheOngletJour(cle, monJeton) {
   try {
     const data = await chargePrecalcul();
-    if (monJeton !== jetonAffichage) return; // un autre onglet a été demandé entre-temps
+    if (monJeton !== jetonAffichage) return;
     const dateIso = DATES_FENETRE[cle];
     const signaux = (data.signaux || []).filter((s) => s.date === dateIso);
     const nbReady = signaux.filter((s) => s.traite).length;
-    afficheMatchs(
-      signaux,
-      `${cle.toUpperCase()} — ${dateLisible(dateIso)} — ${nbReady}/${signaux.length} match(s) analysé(s) ` +
-      `(mis à jour : ${data.genere_le || "inconnu"})`
-    );
+    dernierEnsembleBrut = signaux;
+    dernierEnTeteBase = `${cle.toUpperCase()} — ${dateLisible(dateIso)} — ${nbReady}/${signaux.length} match(s) analysé(s) (mis à jour : ${data.genere_le || "inconnu"})`;
+    reaffiche();
   } catch (err) {
     if (monJeton !== jetonAffichage) return;
     afficheErreur(err.message);
@@ -247,7 +278,9 @@ async function chargeDepuisDataJson(monJeton) {
   const r = await Promise.race([fetch("data.json?_=" + Date.now()), delaiDepasse]);
   const data = await r.json();
   if (monJeton !== jetonAffichage) return data.genere_le || null;
-  afficheMatchs(data.matchs || [], "mis à jour : " + (data.genere_le || "inconnu") + " — " + (data.matchs || []).length + " match(s) traité(s)");
+  dernierEnsembleBrut = data.matchs || [];
+  dernierEnTeteBase = "mis à jour : " + (data.genere_le || "inconnu") + " — " + dernierEnsembleBrut.length + " match(s) traité(s)";
+  reaffiche();
   return data.genere_le || null;
 }
 
@@ -259,7 +292,9 @@ async function chargeDernierResultat(monJeton) {
   const { data: { session } } = await supabaseClient.auth.getSession();
   if (monJeton !== jetonAffichage) return null;
   if (!session) {
-    afficheMatchs([], "aucun panier envoyé depuis cet appareil pour le moment.");
+    dernierEnsembleBrut = [];
+    dernierEnTeteBase = "aucun panier envoyé depuis cet appareil pour le moment.";
+    reaffiche();
     return null;
   }
 
@@ -279,12 +314,16 @@ async function chargeDernierResultat(monJeton) {
   if (error) throw new Error(error.message);
 
   if (!lignes || lignes.length === 0) {
-    afficheMatchs([], "aucun résultat pour le moment -- l'analyse est peut-être encore en cours.");
+    dernierEnsembleBrut = [];
+    dernierEnTeteBase = "aucun résultat pour le moment -- l'analyse est peut-être encore en cours.";
+    reaffiche();
     return null;
   }
 
   const ligne = lignes[0];
-  afficheMatchs(ligne.data || [], "mis à jour : " + ligne.created_at + " — " + (ligne.data || []).length + " match(s) traité(s)");
+  dernierEnsembleBrut = ligne.data || [];
+  dernierEnTeteBase = "mis à jour : " + ligne.created_at + " — " + dernierEnsembleBrut.length + " match(s) traité(s)";
+  reaffiche();
   return ligne.created_at;
 }
 
@@ -335,5 +374,8 @@ async function boucleRafraichissement() {
   }
   bouton.addEventListener("click", () => activeOngletPronostics(cle));
 });
+
+const filtreGo = document.getElementById("filtre-go");
+if (filtreGo) filtreGo.addEventListener("change", reaffiche);
 
 activeOngletPronostics("j1");
