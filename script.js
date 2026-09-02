@@ -116,14 +116,6 @@ function construitDetails(m) {
   </details>`;
 }
 
-// Niveau 3 -- donnée principale. CORRIGÉ (25/08) : n'affiche PLUS la
-// probabilité de victoire domicile par défaut, quel que soit le pari
-// retenu -- c'était trompeur (ex. le pari en or est "Moins de 2.5 buts",
-// mais le site affichait "p(1) victoire domicile : 27%" sans rapport).
-// Affiche désormais la probabilité du PARI RÉELLEMENT RETENU (le pari en
-// or de LISTE_B, probabilité la plus haute), avec le nom du marché et une
-// justification chiffrée. Rien n'est affiché si NO_GO -- aucun pari
-// retenu, rien à mettre en avant ni à justifier.
 function construitNiveau3(m) {
   if (m.verdict_global !== "GO") return "";
   const listeB = m.LISTE_B_liste_finale_apres_correlation;
@@ -140,50 +132,31 @@ function construitNiveau3(m) {
   </p>`;
 }
 
-// (29/08/2026 -- Supabase) Chargement isolé par utilisateur : plus de
-// fetch("data.json") global. On lit le résultat le plus récent de
-// resultats_pipeline pour la session en cours -- RLS garantit que la
-// requête ne peut renvoyer que les lignes de cet utilisateur, même en cas
-// de bug côté client. Nécessite d'avoir ajouté dans pronostics.html, avant
-// <script src="script.js">, la même balise que sur panier.html :
-// <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-// À REMPLACER par tes vraies valeurs -- mêmes que dans panier.js.
+// (29/08/2026 -- Supabase) config panier -- inchangée.
 const SUPABASE_URL = "https://hjrcqodwfjxqcjvjoxzq.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhqcmNxb2R3Zmp4cWNqdmpveHpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgxMTU3NjUsImV4cCI6MjEwMzY5MTc2NX0.rxJ2W-2UI0oQrGAprqnrPJM3WO1HCoYft0ZeS38oZfY";
-
-// (30/08/2026 -- repli data.json) Tant que SUPABASE_URL n'a pas été
-// remplacé par un vrai projet, cette page ne doit dépendre ni de Supabase
-// ni du script @supabase/supabase-js (pas encore ajouté dans
-// pronostics.html) -- le run automatique quotidien (schedule, 7h) écrit
-// data.json indépendamment de tout ça, et doit rester consultable seul.
-// SUPABASE_CONFIGURE bascule entre les deux modes ; à retirer une fois
-// SUPABASE_URL vraiment remplacé ET le script ajouté dans la page.
 const SUPABASE_CONFIGURE = !SUPABASE_URL.includes("TON-PROJET") && !!window.supabase;
-// (30/08/2026 -- correctif critique) même bug que panier.js : "const
-// supabase = ..." plantait tout le fichier ("Can't create duplicate
-// variable that shadows a global property: 'supabase'") -- la librairie
-// @supabase/supabase-js crée déjà cette variable globale toute seule.
-// Renommé en "supabaseClient" partout dans ce fichier.
 const supabaseClient = SUPABASE_CONFIGURE ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
 const DELAI_ATTENTE_MS = 15000;
-const INTERVALLE_RAFRAICHISSEMENT_MS = 20000; // le pipeline prend "quelques minutes" (panier.js) --
-                                               // on réinterroge régulièrement au lieu d'un seul essai.
-const NB_RAFRAICHISSEMENTS_MAX = 15;          // ~5 min, puis on arrête de sonder tout seul.
+const INTERVALLE_RAFRAICHISSEMENT_MS = 20000;
+const NB_RAFRAICHISSEMENTS_MAX = 15;
 
 function afficheErreur(message) {
   document.getElementById("maj").textContent = "erreur de chargement : " + message;
 }
 
-function afficheMatchs(matchs, genereLe) {
-  document.getElementById("maj").textContent =
-    "mis à jour : " + (genereLe || "inconnu") + " — " + matchs.length + " match(s) traité(s)";
+// CHANGÉ 02/09/2026 : accepte directement le texte d'en-tête à afficher
+// (au lieu de reconstruire "mis à jour : ..." en dur) -- nécessaire pour
+// que les 3 onglets J+1/J+2/J+3 et l'onglet Panier affichent chacun un
+// en-tête différent avec la même fonction de rendu.
+function afficheMatchs(matchs, enTete) {
+  document.getElementById("maj").textContent = enTete;
 
   const container = document.getElementById("matches");
   container.innerHTML = "";
   if (!matchs || matchs.length === 0) {
-    container.innerHTML = "<p>aucun résultat pour le moment -- envoie un panier depuis la page \"panier\" si ce n'est pas déjà fait.</p>";
+    container.innerHTML = "<p>aucun résultat pour le moment.</p>";
     return;
   }
 
@@ -219,29 +192,73 @@ function afficheMatchs(matchs, genereLe) {
   });
 }
 
+// ---- AJOUT 02/09/2026 -- Onglets J+1/J+2/J+3, lisent precalcul.json ----
+// (le pré-calcul automatique nocturne, jusqu'ici invisible sur le site).
+// Dates calculées côté client à l'ouverture -- jamais codées en dur --
+// donc toujours correctes quel que soit le jour où la page est ouverte.
+
+const FORMAT_DATE_ONGLET = { weekday: "short", day: "numeric", month: "short" };
+
+function dateIsoDansNJours(n) {
+  const d = new Date();
+  d.setDate(d.getDate() + n);
+  return d.toISOString().slice(0, 10); // YYYY-MM-DD, même format que precalcul.json
+}
+
+function dateLisible(dateIso) {
+  const [an, mois, jour] = dateIso.split("-").map(Number);
+  return new Date(an, mois - 1, jour).toLocaleDateString("fr-FR", FORMAT_DATE_ONGLET);
+}
+
+const DATES_FENETRE = { j1: dateIsoDansNJours(1), j2: dateIsoDansNJours(2), j3: dateIsoDansNJours(3) };
+
+let precalculCharge = null; // un seul fetch pour la durée de la page, les 3 onglets piochent dedans
+
+async function chargePrecalcul() {
+  if (precalculCharge) return precalculCharge;
+  const r = await fetch("precalcul.json?_=" + Date.now());
+  if (!r.ok) throw new Error(`precalcul.json introuvable (status ${r.status})`);
+  precalculCharge = await r.json();
+  return precalculCharge;
+}
+
+async function afficheOngletJour(cle) {
+  try {
+    const data = await chargePrecalcul();
+    const dateIso = DATES_FENETRE[cle];
+    const signaux = (data.signaux || []).filter((s) => s.date === dateIso);
+    const nbReady = signaux.filter((s) => s.traite).length;
+    afficheMatchs(
+      signaux,
+      `${cle.toUpperCase()} — ${dateLisible(dateIso)} — ${nbReady}/${signaux.length} match(s) analysé(s) ` +
+      `(mis à jour : ${data.genere_le || "inconnu"})`
+    );
+  } catch (err) {
+    afficheErreur(err.message);
+    console.error(err);
+  }
+}
+
+// ---- Onglet Panier -- comportement inchangé (data.json ou Supabase) ----
+
 async function chargeDepuisDataJson() {
   const delaiDepasse = new Promise((_, reject) =>
     setTimeout(() => reject(new Error("délai dépassé (15s) -- vérifie ta connexion, ou que data.json existe bien à la racine du site.")), DELAI_ATTENTE_MS)
   );
   const r = await Promise.race([fetch("data.json?_=" + Date.now()), delaiDepasse]);
   const data = await r.json();
-  afficheMatchs(data.matchs || [], data.genere_le);
+  afficheMatchs(data.matchs || [], "mis à jour : " + (data.genere_le || "inconnu") + " — " + (data.matchs || []).length + " match(s) traité(s)");
   return data.genere_le || null;
 }
 
 async function chargeDernierResultat() {
   if (!SUPABASE_CONFIGURE) {
-    // Mode transitoire : affiche l'analyse automatique du jour (data.json,
-    // écrite par le run planifié) -- pas le résultat d'un panier envoyé
-    // manuellement, qui nécessite Supabase configuré (voir 0.5 de
-    // TRANSITION.md).
     return await chargeDepuisDataJson();
   }
 
   const { data: { session } } = await supabaseClient.auth.getSession();
   if (!session) {
-    afficheMatchs([], null);
-    document.getElementById("maj").textContent = "aucun panier envoyé depuis cet appareil pour le moment.";
+    afficheMatchs([], "aucun panier envoyé depuis cet appareil pour le moment.");
     return null;
   }
 
@@ -260,37 +277,58 @@ async function chargeDernierResultat() {
   if (error) throw new Error(error.message);
 
   if (!lignes || lignes.length === 0) {
-    afficheMatchs([], null);
-    document.getElementById("maj").textContent = "aucun résultat pour le moment -- l'analyse est peut-être encore en cours.";
+    afficheMatchs([], "aucun résultat pour le moment -- l'analyse est peut-être encore en cours.");
     return null;
   }
 
   const ligne = lignes[0];
-  afficheMatchs(ligne.data || [], ligne.created_at);
+  afficheMatchs(ligne.data || [], "mis à jour : " + ligne.created_at + " — " + (ligne.data || []).length + " match(s) traité(s)");
   return ligne.created_at;
 }
 
+// ---- Orchestration des 4 onglets ----
+
 let compteurRafraichissements = 0;
-let dernierHorodatageAffiche = null;
+let ongletActif = "j1";
+
+async function activeOngletPronostics(cle) {
+  ongletActif = cle;
+  ["j1", "j2", "j3", "panier"].forEach((c) => {
+    const bouton = document.getElementById("onglet-" + c);
+    if (bouton) bouton.classList.toggle("actif", c === cle);
+  });
+
+  compteurRafraichissements = 0;
+  if (cle === "panier") {
+    await chargeDernierResultat();
+    if (SUPABASE_CONFIGURE) setTimeout(boucleRafraichissement, INTERVALLE_RAFRAICHISSEMENT_MS);
+  } else {
+    await afficheOngletJour(cle);
+  }
+}
 
 async function boucleRafraichissement() {
+  if (ongletActif !== "panier" || !SUPABASE_CONFIGURE) return;
   try {
-    const horodatage = await chargeDernierResultat();
-    dernierHorodatageAffiche = horodatage || dernierHorodatageAffiche;
+    await chargeDernierResultat();
   } catch (err) {
     afficheErreur(err.message);
     console.error(err);
-    return; // on arrête de sonder si Supabase répond en erreur
+    return;
   }
-
   compteurRafraichissements += 1;
-  // Mode data.json (Supabase pas encore configuré) : un seul chargement --
-  // data.json ne change qu'une fois par jour (run planifié), pas besoin de
-  // sonder toutes les 20s comme pour un résultat de panier en cours d'analyse.
-  if (!SUPABASE_CONFIGURE) return;
   if (compteurRafraichissements < NB_RAFRAICHISSEMENTS_MAX) {
     setTimeout(boucleRafraichissement, INTERVALLE_RAFRAICHISSEMENT_MS);
   }
 }
 
-boucleRafraichissement();
+["j1", "j2", "j3", "panier"].forEach((cle) => {
+  const bouton = document.getElementById("onglet-" + cle);
+  if (!bouton) return;
+  if (cle !== "panier") {
+    bouton.textContent = `${cle.toUpperCase()} — ${dateLisible(DATES_FENETRE[cle])}`;
+  }
+  bouton.addEventListener("click", () => activeOngletPronostics(cle));
+});
+
+activeOngletPronostics("j1");
