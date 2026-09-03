@@ -11,7 +11,7 @@ on:
         required: false
         type: string
       limite_betpawa:
-        description: "02/09/2026 -- nombre max de matchs Betpawa dans precalcul.py. VIDE = valeur par défaut prudente (100), utilisée aussi automatiquement par le cron nocturne tant que le plein volume n'est pas validé en routine. Pour tester le VRAI volume illimité (déjà testé le 02/09 : 1574 matchs, 5h18m, proche de la limite de 6h de GitHub), taper le mot illimite (sans accent)."
+        description: "03/09/2026 -- CORRECTIF : plus de limite par défaut (voir run #91, 33m37s total avec le filtre de compétitions actif, large marge sous les 6h de GitHub). VIDE = volume complet, utilisé aussi par le cron nocturne. Renseigne un nombre ici seulement si tu veux explicitement RE-plafonner (ex. pour un test)."
         required: false
         type: string
 
@@ -40,7 +40,7 @@ jobs:
       - name: Générer les listes brutes aujourd'hui + demain
         run: python scraper.py --max-matchs 100000
 
-      - name: Générer la liste J+2 à J+7
+      - name: Générer la liste J+2 à J+3
         run: python scraper_semaine.py --max-matchs 100000
         continue-on-error: true
 
@@ -48,18 +48,18 @@ jobs:
         run: python scraper_betpawa.py
         continue-on-error: true
 
-      # CORRECTIF 02/09/2026 (2e application -- la 1re n'avait pas pris) :
-      # le cron (schedule) ne fournit JAMAIS github.event.inputs.limite_betpawa
-      # (existe seulement sur workflow_dispatch) -- sans le "|| '100'", ça
-      # donne une chaîne vide = AUCUNE limite. Confirmé en conditions réelles
-      # le 02/09 : run de 5h18m51s sur 1574 matchs, à 40 min du mur des 6h de
-      # GitHub Actions. Défaut sûr désormais : 100, pour le cron ET pour un
-      # déclenchement manuel où le champ est laissé vide. Taper "illimite"
-      # dans le champ pour forcer explicitement le plein volume (déjà testé,
-      # fonctionne, mais proche de la limite).
-      - name: Pré-calcul J+1/J+2/J+3 + résolution Betpawa (indépendant du panier)
+      # CORRECTIF 03/09/2026 : plafond de 100 supprimé. Le run #91 (filtre
+      # de compétitions actif, cap à 100) a tourné en 33m37s total -- très
+      # loin des 6h de GitHub Actions, y compris en comptant que la fenêtre
+      # s'élargit désormais à J0 (aujourd'hui) en plus de J+1/J+2/J+3.
+      # PRECALCUL_LIMITE_BETPAWA vide/absent = pas de limite (comportement
+      # documenté dans resolution_betpawa_precalcul.py). Le champ
+      # limite_betpawa du workflow_dispatch, s'il est laissé vide (cas normal
+      # ET cas du cron, qui ne le fournit jamais), donne bien une chaîne
+      # vide ici -- pas besoin de "|| '100'" ni d'aucune valeur par défaut.
+      - name: Pré-calcul J0/J+1/J+2/J+3 + résolution Betpawa (indépendant du panier)
         env:
-          PRECALCUL_LIMITE_BETPAWA: ${{ github.event.inputs.limite_betpawa || '100' }}
+          PRECALCUL_LIMITE_BETPAWA: ${{ github.event.inputs.limite_betpawa }}
         run: python precalcul.py
         continue-on-error: true
 
