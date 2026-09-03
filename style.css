@@ -25,7 +25,13 @@
   --green: #72B85C;
   --red: #C84E50;
   --text: #F3F5F2;
-  --text-secondary: #B9C4BF;
+  /* 03/09/2026 -- assombri (#B9C4BF -> #7E8D86) : Patrick a signalé que ce
+     gris restait visuellement trop proche du blanc pour distinguer
+     clairement les noms d'équipe des noms de championnat. Contraste
+     vérifié : ~5.4:1 sur le fond --bg (#071E18), au-dessus du seuil de
+     lisibilité AA pour texte normal (4.5:1) -- reste lisible tout en
+     étant nettement plus gris. */
+  --text-secondary: #7E8D86;
   --border: rgba(255,255,255,.10);
   /* 29/08/2026 -- responsive : largeur max du contenu sur grand écran,
      pour ne pas étirer les cartes/textes bord à bord sur desktop. */
