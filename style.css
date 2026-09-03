@@ -13,7 +13,15 @@
    son propre fond (#0f1115 vs #071E18), son propre "turquoise actif"
    (#14b8a6 vs #2563eb vs #19C7B5) et le gold servait à 5 rôles
    différents (titre, cote, nom de compétition, pari recommandé, bouton
-   nav) -- une couleur qui signale tout ne signale plus rien. */
+   nav) -- une couleur qui signale tout ne signale plus rien.
+
+   MISE À JOUR 03/09/2026 (plus tard le même jour) : le gris ne
+   suffisait pas comme différenciateur des noms de championnat en usage
+   réel (même assombri) -- premier essai avec le gold de la marque,
+   écarté par Patrick pour ne pas diluer son rôle de repère unique
+   (marque + pari recommandé). Solution retenue : couleur dédiée
+   --categorie (violet doux), pas une couleur déjà chargée de sens
+   ailleurs. Le gold reste donc à 2 rôles, comme prévu à l'origine. */
 
 :root {
   --bg: #071E18;
@@ -32,6 +40,15 @@
      lisibilité AA pour texte normal (4.5:1) -- reste lisible tout en
      étant nettement plus gris. */
   --text-secondary: #7E8D86;
+  /* 03/09/2026 -- couleur dédiée aux noms de championnat/compétition.
+     Le gold est resté réservé à la marque + au pari recommandé (sur
+     décision de Patrick) -- ni le gold, ni le vert/rouge (statuts), ni
+     le turquoise lui-même (déjà utilisé pour l'état actif/les liens)
+     ne convenaient. Violet doux : écart de teinte net avec le
+     turquoise (donc jamais confondu) tout en formant un duo cohérent
+     avec lui -- palette qui reste froide au lieu d'ajouter une 3e
+     teinte chaude à côté du gold. */
+  --categorie: #9C8FE0;
   --border: rgba(255,255,255,.10);
   /* 29/08/2026 -- responsive : largeur max du contenu sur grand écran,
      pour ne pas étirer les cartes/textes bord à bord sur desktop. */
@@ -74,7 +91,10 @@ header {
 
 /* Le gold reste ici -- rôle 1/2 : identité de marque, toujours visible,
    ne rentre jamais en concurrence avec un signal fonctionnel dans une
-   carte de match puisqu'il est hors du contenu défilant. */
+   carte de match puisqu'il est hors du contenu défilant. Un essai
+   d'extension aux noms de championnat (03/09/2026) a été écarté par
+   Patrick pour préserver cette exclusivité -- voir --categorie plus
+   haut pour la couleur finalement retenue à cet usage. */
 header h1 {
   margin: 0;
   color: var(--gold);
@@ -223,7 +243,7 @@ main.grille {
 .entete-categorie {
   font-size: 13px;
   font-weight: 700;
-  color: var(--text-secondary);
+  color: var(--categorie);
   padding: 8px 12px;
   margin: 24px 16px 8px;
   background: var(--surface-2);
@@ -426,7 +446,7 @@ main.grille {
 .selection-competition {
   font-size: 13px;
   font-weight: 700;
-  color: var(--text-secondary);
+  color: var(--categorie);
   padding: 8px 12px;
   background: var(--surface-2);
   text-transform: uppercase;
