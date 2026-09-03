@@ -84,6 +84,25 @@ jobs:
         run: |
           git config user.name "archetype-foot-bot"
           git config user.email "bot@users.noreply.github.com"
+
+          # DIAGNOSTIC 03/09/2026 -- precalcul_leger.json est écrit avec
+          # succès par precalcul.py (confirmé : le print "precalcul_leger.json
+          # écrit en parallèle" apparaît dans le log de CETTE session, donc
+          # après l'écriture réussie du fichier) mais n'a jamais été retrouvé
+          # dans les commits produits ensuite, alors que le mécanisme git add
+          # lui-même fonctionne (historique_pronostics.json, ajouté par la
+          # même boucle, se met bien à jour à chaque run). Recherche de code
+          # menée avant ce correctif : aucun os.remove/shutil, aucun git
+          # clean/checkout/reset caché dans precalcul.py, run_pipeline.py,
+          # verification_resultats.py ou ce workflow -- rien trouvé. Ces
+          # lignes tranchent la seule question qui reste ouverte : le fichier
+          # est-il présent sur le disque à CET instant précis, juste avant le
+          # git add.
+          echo "--- diagnostic precalcul_leger.json : état avant git add ---"
+          ls -la precalcul_leger.json precalcul.json historique_pronostics.json 2>&1 || true
+          echo "--- git status avant add ---"
+          git status --porcelain
+
           git add data.json matchs_du_jour.json matchs_demain.json matchs_semaine.json precalcul.json cache_equipes.json cache_betpawa.json diagnostic_precalcul_betpawa.txt
           # CORRECTIF 03/09/2026 : precalcul_leger.json (nouveau fichier depuis
           # la session du 02/09, cf TRANSITION.md 17.5) était généré par
@@ -94,6 +113,10 @@ jobs:
           for f in panier.json historique_pronostics.json precalcul_leger.json; do
             [ -f "$f" ] && git add "$f"
           done
+
+          echo "--- diagnostic precalcul_leger.json : git status après add ---"
+          git status --porcelain
+
           git diff --staged --quiet || git commit -m "Mise à jour pipeline"
           git pull --rebase origin main
           git push
