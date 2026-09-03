@@ -3,25 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0f1115">
+<meta name="theme-color" content="#071E18">
 <title>Archetype Foot — Accueil</title>
 <link rel="stylesheet" href="style.css">
-<style>
-  .selection-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-bottom: 1px solid #2a2d34; }
-  .selection-item input { width: 20px; height: 20px; }
-  .selection-item .heure { opacity: 0.65; font-variant-numeric: tabular-nums; min-width: 3.2em; }
-  .selection-competition { font-size: 0.85em; opacity: 0.7; padding: 6px 12px; background: #1a1c22; }
-  #onglets-jour { display: flex; gap: 8px; margin: 12px 0; }
-  #onglets-jour button { flex: 1; padding: 10px; border: 1px solid #2a2d34; background: #1a1c22; color: inherit;
-                          border-radius: 6px; cursor: pointer; font-size: 0.95em; }
-  #onglets-jour button.actif { background: #14b8a6; color: #0f1115; font-weight: bold; border-color: #14b8a6; }
-  #nav-pages { display: flex; gap: 8px; margin: 12px 0; }
-  #nav-pages a { flex: 1; text-align: center; padding: 12px; border-radius: 6px; text-decoration: none;
-                 font-weight: bold; font-size: 0.95em; }
-  #nav-panier { background: #14b8a6; color: #0f1115; }
-  #nav-pronostics { background: #2563eb; color: white; }
-  #nav-betpawa { background: #E5B83F; color: #071E18; }
-</style>
 </head>
 <body>
 <header>
@@ -29,14 +13,14 @@
     <h1>Archetype Foot</h1>
   </div>
   <p id="maj">Chargement…</p>
-  <div id="nav-pages">
+  <div id="nav-pages" class="nav-pages">
     <a id="nav-panier" href="panier.html">🧺 Panier (0)</a>
     <a id="nav-pronostics" href="pronostics.html">📊 Voir les pronostics</a>
     <a id="nav-betpawa" href="betpawa.html">⚽ Betpawa</a>
   </div>
 </header>
 <main>
-  <div id="onglets-jour">
+  <div id="onglets-jour" class="tabs">
     <button id="onglet-aujourdhui" class="actif" data-jour="aujourdhui">Aujourd'hui</button>
     <button id="onglet-demain" data-jour="demain">Demain</button>
   </div>
