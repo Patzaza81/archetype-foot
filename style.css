@@ -1,12 +1,26 @@
-/* Archetype Foot — refonte visuelle (25/08). Design tokens centralisés,
-   hiérarchie typographique stricte, couleur jamais seul vecteur
-   d'information (texte + icône toujours présents à côté de la couleur). */
+/* Archetype Foot — refonte visuelle (25/08, révisée 03/09/2026).
+   Design tokens centralisés, hiérarchie typographique stricte, couleur
+   jamais seul vecteur d'information (texte + icône toujours présents à
+   côté de la couleur).
+
+   RÈGLE 03/09/2026 -- SOURCE UNIQUE DE VÉRITÉ POUR LES COULEURS :
+   plus aucune page (index.html, panier.html, pronostics.html,
+   betpawa.html) ne doit coder une couleur en dur dans son propre
+   <style>. Toute nouvelle page/bouton/onglet doit utiliser les
+   variables ci-dessous ou les classes partagées de ce fichier
+   (.nav-pages, .tabs, .bouton-principal, .bouton-secondaire,
+   #statut-analyse-panier.ok/.erreur). Avant cette révision, chaque page avait
+   son propre fond (#0f1115 vs #071E18), son propre "turquoise actif"
+   (#14b8a6 vs #2563eb vs #19C7B5) et le gold servait à 5 rôles
+   différents (titre, cote, nom de compétition, pari recommandé, bouton
+   nav) -- une couleur qui signale tout ne signale plus rien. */
 
 :root {
   --bg: #071E18;
   --surface: #0D2922;
   --surface-2: #12342B;
   --turquoise: #19C7B5;
+  --turquoise-active: #14a396;
   --gold: #E5B83F;
   --green: #72B85C;
   --red: #C84E50;
@@ -52,6 +66,9 @@ header {
   gap: 10px;
 }
 
+/* Le gold reste ici -- rôle 1/2 : identité de marque, toujours visible,
+   ne rentre jamais en concurrence avec un signal fonctionnel dans une
+   carte de match puisqu'il est hors du contenu défilant. */
 header h1 {
   margin: 0;
   color: var(--gold);
@@ -76,6 +93,115 @@ header h1 {
   color: var(--text-secondary);
   font-size: 14px;
 }
+
+/* --- 03/09/2026 -- Barre de navigation entre pages (accueil/panier/
+   pronostics/betpawa). Un seul style pour les trois : ce sont des liens
+   de navigation de poids égal, pas des appels à l'action classés par
+   urgence -- donc pas de rouge/bleu/violet/gold qui laisserait croire
+   qu'un lien est plus "important" qu'un autre. Remplace les styles
+   inline précédemment dupliqués (et divergents) dans index.html et
+   betpawa.html. --- */
+.nav-pages {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0;
+  flex-wrap: wrap;
+}
+.nav-pages a {
+  flex: 1;
+  min-width: 120px;
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 14px;
+  background: var(--surface-2);
+  color: var(--turquoise);
+  border: 1px solid var(--turquoise);
+}
+.nav-pages a:active { background: var(--turquoise); color: var(--bg); }
+
+/* --- 03/09/2026 -- Onglets (jour sur l'accueil, J+1/J+2/J+3 sur
+   pronostics). Même remarque : une seule couleur "actif" pour tout le
+   site, au lieu de turquoise ici et bleu là. --- */
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0;
+  flex-wrap: wrap;
+}
+.tabs button {
+  flex: 1;
+  min-width: 80px;
+  padding: 10px 6px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1.3;
+  font-weight: 600;
+}
+.tabs button.actif {
+  background: var(--turquoise);
+  color: var(--bg);
+  border-color: var(--turquoise);
+}
+
+/* --- 03/09/2026 -- Boutons pleine largeur. Deux niveaux seulement :
+   principal (l'action que la page veut que tu fasses) et secondaire
+   (le repli manuel). Remplace le bleu/violet/vert codés en dur dans
+   panier.html, selection.html et betpawa.html. --- */
+.bouton-principal {
+  display: block;
+  width: 100%;
+  margin: 0 0 12px;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  background: var(--turquoise);
+  color: var(--bg);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.bouton-principal:active { background: var(--turquoise-active); }
+.bouton-principal:disabled { opacity: .5; cursor: default; }
+
+.bouton-secondaire {
+  display: block;
+  width: 100%;
+  margin: 0 0 12px;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.bouton-secondaire:active { background: var(--surface); }
+
+/* État "copié" -- s'applique à .bouton-principal ou .bouton-secondaire
+   indifféremment (panier.js/selection.js font classList.add("copie")). */
+.bouton-principal.copie,
+.bouton-secondaire.copie {
+  background: var(--green);
+  color: #06140f;
+  border-color: var(--green);
+}
+
+/* Statuts texte (remplace les couleurs #14b8a6/#ef4444 codées en dur
+   dans panier.html pour #statut-analyse-panier). Sélecteurs scopés à
+   l'ID et pas en classes génériques : panier.js fait littéralement
+   `statut.className = "ok"` / `"erreur"` (remplace toute la classe,
+   pas classList.add) -- une classe .statut-ok générique ne matcherait
+   jamais. Vérifié dans panier.js avant d'écrire cette règle. */
+#statut-analyse-panier.ok { color: var(--green); }
+#statut-analyse-panier.erreur { color: var(--red); }
 
 main.grille {
   display: grid;
@@ -102,8 +228,12 @@ main.grille {
   font-size: 22px;
   font-weight: 700;
 }
+/* 03/09/2026 -- la cote/heure affichée à côté du nom des équipes n'est
+   qu'une métadonnée, pas un signal à part entière : elle repasse en
+   texte secondaire neutre au lieu du gold (qui ne sert plus qu'au pari
+   recommandé, cf .pari-en-or plus bas). */
 .teams span:nth-child(2) {
-  color: var(--gold);
+  color: var(--text-secondary);
   font-weight: 700;
   font-size: 16px;
   white-space: nowrap;
@@ -116,8 +246,8 @@ main.grille {
   margin-bottom: 14px;
 }
 
-/* --- MODIFICATION : Scores en TURQUOISE --- */
-/* IMPORTANT : Dans votre HTML, entourez le score avec la classe .score 
+/* --- Scores en TURQUOISE --- */
+/* IMPORTANT : Dans votre HTML, entourez le score avec la classe .score
    Exemple : <span>Coritiba — Corinthians <span class="score">(2-1)</span></span> */
 .score {
   color: var(--turquoise);
@@ -171,6 +301,10 @@ main.grille {
   border-bottom: 1px solid var(--border);
   font-size: 15px;
 }
+/* Le gold reste ici -- rôle 2/2, et le seul rôle fonctionnel qu'il lui
+   reste : LE pari mis en avant par le moteur. C'est justement parce que
+   le gold n'apparaît nulle part ailleurs dans une carte que l'œil le
+   repère immédiatement ici. */
 .pari-ligne.pari-en-or {
   color: var(--gold);
   font-weight: 700;
@@ -254,15 +388,18 @@ main.grille {
   cursor: pointer;
   margin-bottom: 12px;
 }
-#copier-btn:active { background: #14a396; }
+#copier-btn:active { background: var(--turquoise-active); }
 
 #compteur { text-align: center; padding: 6px; color: var(--text-secondary); font-size: 14px; }
 
-/* Noms des championnats en JAUNE OR */
+/* 03/09/2026 -- Noms des championnats : repassés en texte secondaire
+   neutre. Ce n'est qu'un séparateur de section, pas un signal -- le
+   gold ne doit plus apparaître que sur le pari recommandé (cf plus
+   haut), sinon il perd sa valeur de repère visuel. */
 .selection-competition {
   font-size: 13px;
   font-weight: 700;
-  color: var(--gold);
+  color: var(--text-secondary);
   padding: 8px 12px;
   background: var(--surface-2);
   text-transform: uppercase;
@@ -276,15 +413,19 @@ main.grille {
   padding: 10px 12px;
   border-bottom: 1px solid var(--border);
 }
+.selection-item .heure {
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+  min-width: 3.2em;
+}
 
-/* --- MODIFICATION MAJEURE : Boutons de sélection GRIS CLAIR (Universel) --- */
-/* Ce sélecteur fonctionne sur toutes les cases à cocher, sans dépendre d'un parent spécifique */
+/* --- Cases à cocher : gris clair universel, coche foncée visible --- */
 input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
   width: 22px;
   height: 22px;
-  background-color: #E0E0E0 !important; /* Gris clair forcé */
+  background-color: #E0E0E0 !important;
   border: 2px solid rgba(255,255,255,.10);
   border-radius: 4px;
   cursor: pointer;
@@ -292,7 +433,6 @@ input[type="checkbox"] {
   flex-shrink: 0;
 }
 
-/* Coche visible sur le gris clair */
 input[type="checkbox"]:checked::after {
   content: "";
   position: absolute;
@@ -300,7 +440,7 @@ input[type="checkbox"]:checked::after {
   left: 6px;
   width: 6px;
   height: 12px;
-  border: solid #071E18; /* Vert très foncé */
+  border: solid #071E18;
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
 }
@@ -328,6 +468,57 @@ input[type="checkbox"]:checked::after {
   line-height: 1.5;
 }
 
+/* --- Panier (item, ajout manuel) --- */
+.item-panier {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.item-panier .tag {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-left: 6px;
+  display: block;
+}
+.item-panier button {
+  background: none;
+  border: none;
+  color: var(--red);
+  font-size: 19px;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+.vide { padding: 16px; color: var(--text-secondary); text-align: center; }
+
+#ajout-manuel {
+  margin-top: 24px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+#ajout-manuel h2 { font-size: 16px; margin: 0 0 10px; color: var(--text); }
+#ajout-manuel input {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 8px;
+  padding: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 4px;
+}
+#ajout-manuel button {
+  padding: 10px 14px;
+  background: var(--turquoise);
+  color: var(--bg);
+  border: none;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
 /* --- 29/08/2026 -- Responsive : palier tablette/desktop ---
    La grille de cartes (main.grille) utilise déjà "auto-fill" : elle se
    réorganise seule en plusieurs colonnes sans media query. Ce palier
@@ -346,7 +537,7 @@ input[type="checkbox"]:checked::after {
 
   .match { padding: 20px; }
 
-  #nav-pages { max-width: 480px; }
+  .nav-pages, #nav-pages { max-width: 480px; }
 
-  #copier-btn { max-width: 480px; margin-left: auto; margin-right: auto; }
+  #copier-btn, .bouton-principal, .bouton-secondaire { max-width: 480px; margin-left: auto; margin-right: auto; }
 }
