@@ -1,18 +1,20 @@
-// index.js — v5
-// Correction du panier : les matchs sélectionnés dans l'onglet "7 jours"
-// sont maintenant enregistrés dans localStorage.
-// Le fonctionnement existant des onglets et du bouton "Analyser" est conservé.
+// index.js — v6
+// CORRECTIF 03/09/2026 -- suppression de l'onglet "semaine" et du bouton
+// "Analyser" associé : code mort confirmé (index.html ne contient ni
+// #onglet-semaine, ni #btn-analyser, ni #status-analyse -- tous les
+// document.getElementById() correspondants renvoyaient déjà null en
+// production). L'onglet "semaine" chargeait "catalogue_unifie.json", un
+// fichier que plus aucun script de ce dépôt ne génère. Comportement des
+// onglets "aujourd'hui" et "demain" strictement inchangé.
 
 const CLE_PANIER = "archetype_panier";
 
 const donnees = {
   aujourdhui: null,
-  demain: null,
-  semaine: null
+  demain: null
 };
 
 let ongletActif = "aujourdhui";
-let selectionCourante = null;
 
 function chargePanier() {
   try {
@@ -71,8 +73,7 @@ function retirerDuPanier(matchId) {
 function formatEnTete(jour, nbMatchs) {
   const labels = {
     aujourdhui: "aujourd'hui",
-    demain: "demain",
-    semaine: "7 prochains jours"
+    demain: "demain"
   };
 
   return `${nbMatchs} match(s) disponible(s) ${labels[jour] || jour}`;
@@ -83,7 +84,6 @@ function afficheListe(jour) {
 
   const maj = document.getElementById("maj");
   const liste = document.getElementById("liste");
-  const boutonAnalyser = document.getElementById("btn-analyser");
 
   if (maj) {
     maj.textContent = formatEnTete(
@@ -98,11 +98,6 @@ function afficheListe(jour) {
 
   if (!matchs || matchs.length === 0) {
     liste.innerHTML = "<p>aucun match disponible.</p>";
-
-    if (boutonAnalyser) {
-      boutonAnalyser.classList.remove("visible");
-    }
-
     return;
   }
 
@@ -150,45 +145,8 @@ function afficheListe(jour) {
           ...m,
           source: "liste"
         });
-
-        selectionCourante = m;
-
-        if (
-          jour === "semaine" &&
-          boutonAnalyser
-        ) {
-          boutonAnalyser.classList.add("visible");
-        }
-
       } else {
         retirerDuPanier(m.match_id);
-
-        if (
-          selectionCourante &&
-          String(selectionCourante.match_id) ===
-            String(m.match_id)
-        ) {
-          selectionCourante = null;
-        }
-
-        if (
-          jour === "semaine" &&
-          boutonAnalyser
-        ) {
-          const aUneSelection = matchs.some(
-            (match) =>
-              chargePanier().some(
-                (p) =>
-                  String(p.match_id) ===
-                  String(match.match_id)
-              )
-          );
-
-          boutonAnalyser.classList.toggle(
-            "visible",
-            aUneSelection
-          );
-        }
       }
     });
 
@@ -213,27 +171,6 @@ function afficheListe(jour) {
 
     liste.appendChild(div);
   });
-
-  if (boutonAnalyser) {
-    if (jour !== "semaine") {
-      boutonAnalyser.classList.remove("visible");
-
-    } else {
-      const aUneSelection = matchs.some(
-        (match) =>
-          chargePanier().some(
-            (p) =>
-              String(p.match_id) ===
-              String(match.match_id)
-          )
-      );
-
-      boutonAnalyser.classList.toggle(
-        "visible",
-        aUneSelection
-      );
-    }
-  }
 }
 
 function activeOnglet(jour) {
@@ -241,8 +178,7 @@ function activeOnglet(jour) {
 
   const ids = [
     ["onglet-aujourdhui", "aujourdhui"],
-    ["onglet-demain", "demain"],
-    ["onglet-semaine", "semaine"]
+    ["onglet-demain", "demain"]
   ];
 
   ids.forEach(([id, valeur]) => {
@@ -298,11 +234,6 @@ Promise.all([
   chargeJour(
     "demain",
     "matchs_demain_filtre.json"
-  ),
-
-  chargeJour(
-    "semaine",
-    "catalogue_unifie.json"
   )
 ]).then(() => {
   activeOnglet(ongletActif);
@@ -330,146 +261,6 @@ if (boutonDemain) {
   boutonDemain.addEventListener(
     "click",
     () => activeOnglet("demain")
-  );
-}
-
-const boutonSemaine =
-  document.getElementById(
-    "onglet-semaine"
-  );
-
-if (boutonSemaine) {
-  boutonSemaine.addEventListener(
-    "click",
-    () => activeOnglet("semaine")
-  );
-}
-
-const boutonAnalyser =
-  document.getElementById(
-    "btn-analyser"
-  );
-
-if (boutonAnalyser) {
-  boutonAnalyser.addEventListener(
-    "click",
-    async () => {
-
-      if (!selectionCourante) {
-        const panier = chargePanier();
-
-        if (panier.length > 0) {
-          selectionCourante =
-            panier[panier.length - 1];
-        }
-      }
-
-      if (!selectionCourante) return;
-
-      const status =
-        document.getElementById(
-          "status-analyse"
-        );
-
-      boutonAnalyser.disabled = true;
-
-      if (status) {
-        status.textContent =
-          "Envoi au pipeline…";
-
-        status.style.color = "";
-      }
-
-      const payload = {
-        equipe_dom:
-          selectionCourante.domicile,
-
-        equipe_ext:
-          selectionCourante.exterieur,
-
-        date:
-          selectionCourante.date,
-
-        heure:
-          selectionCourante.heure ||
-          "00:00",
-
-        url_matchendirect:
-          selectionCourante.url_matchendirect ||
-          selectionCourante.url_match ||
-          null
-      };
-
-      try {
-        const res = await fetch(
-          "/.netlify/functions/trigger",
-          {
-            method: "POST",
-
-            headers: {
-              "Content-Type":
-                "application/json"
-            },
-
-            body: JSON.stringify(
-              payload
-            )
-          }
-        );
-
-        let data = {};
-
-        try {
-          data = await res.json();
-        } catch (e) {
-          data = {};
-        }
-
-        if (
-          res.ok &&
-          data.ok
-        ) {
-          if (status) {
-            status.textContent =
-              "✅ Analyse lancée. Résultat dans ~2 min.";
-
-            status.style.color =
-              "#14b8a6";
-          }
-
-        } else {
-          if (status) {
-            status.textContent =
-              "❌ " +
-              (
-                data.error ||
-                "Erreur serveur"
-              );
-
-            status.style.color =
-              "#ef4444";
-          }
-        }
-
-      } catch (e) {
-        console.error(
-          "Erreur trigger :",
-          e
-        );
-
-        if (status) {
-          status.textContent =
-            "❌ Impossible de joindre le serveur";
-
-          status.style.color =
-            "#ef4444";
-        }
-
-      } finally {
-        boutonAnalyser.disabled =
-          false;
-      }
-    }
   );
 }
 
