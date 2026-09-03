@@ -1,6 +1,6 @@
 """
 scraper_semaine.py -- récupère le programme matchendirect des prochains
-jours (par défaut J+2 à J+7 -- aujourd'hui et demain restent gérés par
+jours (par défaut J+2 à J+3 -- aujourd'hui et demain restent gérés par
 scraper.py) en utilisant un navigateur automatisé (Playwright), qui
 contourne le problème confirmé en production sur `scraper.py` : une
 requête HTTP classique sur /resultat-foot-{date}/ redirige silencieusement
@@ -17,9 +17,13 @@ même format que matchs_du_jour.json/matchs_demain.json -- consommée par
 scraper_betpawa.cherche_url_matchendirect_auto() en plus de ces deux
 fichiers).
 
-JAMAIS TESTÉ EN CONDITIONS RÉELLES au moment où ce fichier est écrit --
-l'environnement d'édition n'a pas accès à matchendirect.fr. Le premier run
-réel est le vrai test, comme pour scraper_betpawa.py en son temps.
+CORRECTIF 03/09/2026 -- plage par défaut réduite de J+2/J+7 à J+2/J+3 :
+Patrick a décidé de limiter toute la fenêtre (auto + panier manuel) à 4
+jours (aujourd'hui à J+3). Les jours J+4 à J+7 scrapés jusqu'ici ne
+servaient nulle part : ni à precalcul.py (qui ne lit que J+2/J+3 via
+dates_j2_j3()), ni à l'onglet "semaine" de index.js (supprimé le même
+jour -- il pointait de toute façon vers catalogue_unifie.json, un fichier
+jamais généré par aucun script de ce dépôt).
 """
 import argparse
 import datetime
@@ -48,8 +52,9 @@ def main():
                          help="Premier jour à récupérer, en jours à partir d'aujourd'hui "
                               "(2 = après-demain, puisque aujourd'hui/demain sont déjà "
                               "couverts par scraper.py)")
-    parser.add_argument("--jours-apres", type=int, default=7,
-                         help="Dernier jour à récupérer (7 = une semaine)")
+    parser.add_argument("--jours-apres", type=int, default=3,
+                         help="Dernier jour à récupérer (3 = fenêtre complète "
+                              "limitée à J+3, voir CORRECTIF 03/09/2026)")
     parser.add_argument("--max-matchs", type=int, default=200)
     parser.add_argument("--sortie", default=FICHIER_SORTIE_DEFAUT)
     args = parser.parse_args()
