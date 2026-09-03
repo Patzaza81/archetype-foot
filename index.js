@@ -292,12 +292,12 @@ function chargeJour(jour, fichier) {
 Promise.all([
   chargeJour(
     "aujourdhui",
-    "matchs_du_jour.json"
+    "matchs_du_jour_filtre.json"
   ),
 
   chargeJour(
     "demain",
-    "matchs_demain.json"
+    "matchs_demain_filtre.json"
   ),
 
   chargeJour(
