@@ -175,9 +175,18 @@ function construitCarteMatch(m) {
   const div = document.createElement("div");
   div.className = "match";
 
+  // AJOUT 03/09/2026 -- date exacte + heure sur chaque carte, en plus du
+  // regroupement par onglet (demande de Patrick) : utile notamment en vue
+  // "par catégorie", où les cartes de plusieurs championnats se suivent
+  // sans repère de date visible ailleurs que l'onglet actif.
+  const dateAffichee = m.date ? dateLisible(m.date) : "";
+  const dateHeure = dateAffichee
+    ? `${dateAffichee}${m.heure ? " à " + m.heure : ""}`
+    : "";
+
   let html = `
     <div class="teams"><span>${m.domicile}</span><span>${m.score || m.heure || ""}</span><span>${m.exterieur}</span></div>
-    <div class="meta">${(m.competition || "").replace(/\s+/g, " ").trim()}</div>
+    <div class="meta">${(m.competition || "").replace(/\s+/g, " ").trim()}${dateHeure ? " — " + dateHeure : ""}</div>
   `;
 
   if (!m.traite) {
@@ -295,7 +304,21 @@ function dateLisible(dateIso) {
   return new Date(an, mois - 1, jour).toLocaleDateString("fr-FR", FORMAT_DATE_ONGLET);
 }
 
-const DATES_FENETRE = { j1: dateIsoDansNJours(1), j2: dateIsoDansNJours(2), j3: dateIsoDansNJours(3) };
+// AJOUT 03/09/2026 -- j0 (aujourd'hui) rejoint la fenêtre affichée, en plus
+// de j1/j2/j3 -- voir precalcul.py (charge_matchs_fenetre) pour le
+// changement côté données : ce fichier n'avait rien à changer sur le fond,
+// DATES_FENETRE et le tableau d'onglets ci-dessous étaient déjà génériques.
+const DATES_FENETRE = {
+  j0: dateIsoDansNJours(0),
+  j1: dateIsoDansNJours(1),
+  j2: dateIsoDansNJours(2),
+  j3: dateIsoDansNJours(3),
+};
+
+// Libellé affiché sur le bouton et dans l'en-tête -- "Aujourd'hui" est plus
+// lisible que "J0" pour l'utilisateur, contrairement à j1/j2/j3 qui restent
+// tels quels.
+const LIBELLE_ONGLET = { j0: "Aujourd'hui", j1: "J+1", j2: "J+2", j3: "J+3" };
 
 let precalculCharge = null;
 
@@ -317,7 +340,7 @@ async function afficheOngletJour(cle, monJeton) {
     const signaux = (data.signaux || []).filter((s) => s.date === dateIso);
     const nbReady = signaux.filter((s) => s.traite).length;
     dernierEnsembleBrut = signaux;
-    dernierEnTeteBase = `${cle.toUpperCase()} — ${dateLisible(dateIso)} — ${nbReady}/${signaux.length} match(s) analysé(s) (mis à jour : ${data.genere_le || "inconnu"})`;
+    dernierEnTeteBase = `${LIBELLE_ONGLET[cle] || cle.toUpperCase()} — ${dateLisible(dateIso)} — ${nbReady}/${signaux.length} match(s) analysé(s) (mis à jour : ${data.genere_le || "inconnu"})`;
     reaffiche();
   } catch (err) {
     if (monJeton !== jetonAffichage) return;
@@ -383,14 +406,14 @@ async function chargeDernierResultat(monJeton) {
 }
 
 let compteurRafraichissements = 0;
-let ongletActif = "j1";
+let ongletActif = "j0";
 
 async function activeOngletPronostics(cle) {
   ongletActif = cle;
   jetonAffichage += 1;
   const monJeton = jetonAffichage;
 
-  ["j1", "j2", "j3", "panier"].forEach((c) => {
+  ["j0", "j1", "j2", "j3", "panier"].forEach((c) => {
     const bouton = document.getElementById("onglet-" + c);
     if (bouton) bouton.classList.toggle("actif", c === cle);
   });
@@ -421,11 +444,11 @@ async function boucleRafraichissement() {
   }
 }
 
-["j1", "j2", "j3", "panier"].forEach((cle) => {
+["j0", "j1", "j2", "j3", "panier"].forEach((cle) => {
   const bouton = document.getElementById("onglet-" + cle);
   if (!bouton) return;
   if (cle !== "panier") {
-    bouton.textContent = `${cle.toUpperCase()} — ${dateLisible(DATES_FENETRE[cle])}`;
+    bouton.textContent = `${LIBELLE_ONGLET[cle] || cle.toUpperCase()} — ${dateLisible(DATES_FENETRE[cle])}`;
   }
   bouton.addEventListener("click", () => activeOngletPronostics(cle));
 });
@@ -450,4 +473,4 @@ if (filtreGo) filtreGo.addEventListener("change", reaffiche);
   });
 });
 
-activeOngletPronostics("j1");
+activeOngletPronostics("j0");
