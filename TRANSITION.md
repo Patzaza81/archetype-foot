@@ -567,3 +567,139 @@ trop haut) :
   16.5) -- si confirmé sur d'autres cas, le taux de détection réel pourrait
   être structurellement plus bas sur J+3 que sur J+1, question non
   tranchée à ce jour.
+  ## 17. Session du 02/09/2026 -- Branchement Betpawa dans precalcul.py, archivage, frontend
+
+### 17.1 Branchement resolution_betpawa.py + cache_betpawa.py dans precalcul.py -- FAIT ET VALIDÉ
+Nouveau fichier **`resolution_betpawa_precalcul.py`** : pont entre les deux
+modules déjà validés (16.6) et `precalcul.py`, sans modifier une seule
+ligne de leur logique interne (règle stricte respectée). Pour chaque match
+de la fenêtre J+1/J+2/J+3 : vérifie le cache, sinon lance
+`resoudre_match()`, puis si trouvé récupère les cotes réelles via
+`scraper_betpawa.recupere_page()` + `meilleur_parsing()`. Si cotes
+trouvées : `cotes_manuelles` est injecté dans le match, ce qui fait
+basculer `run_pipeline.construit_signaux()` sur ces cotes au lieu de
+Bet365/matchendirect (mécanisme déjà existant dans run_pipeline.py,
+inchangé). Jamais d'exception qui remonte -- tout est absorbé dans des
+compteurs, écrit dans `diagnostic_precalcul_betpawa.txt` à chaque run.
+Un paramètre `PRECALCUL_LIMITE_BETPAWA` (variable d'env, lue par
+`resolution_betpawa_precalcul.py`) permet de plafonner le nombre de
+matchs traités par Betpawa sur un run -- voir 17.3.
+
+**Validé en conditions réelles à petite échelle (15 matchs, 01/09)** :
+13/15 trouvés, cotes extraites, `verdict_global` calculé correctement à
+partir des vraies cotes Betpawa (vérifié sur le JSON complet, pas
+seulement un exemple) -- confirme que le branchement fonctionne de bout
+en bout, pas seulement la résolution isolée.
+
+**Validé à pleine échelle (1574 matchs, run automatique 02/09)** :
+498 trouvés, 49 ambigus, 1027 non trouvés, 0 erreur. Durée de l'étape
+Betpawa seule : **12428 secondes (~3h27m)**. Durée totale du job :
+**5h18m51s**, à 40 minutes du mur des 6h de GitHub Actions -- **trop
+proche de la limite pour être fiable en routine sans plafond** (voir
+17.3).
+
+### 17.2 Archivage automatique dans historique_pronostics.json -- CODE ÉCRIT, PAS ENCORE VÉRIFIÉ EN CONDITIONS RÉELLES
+Problème identifié en cours de session : le pré-calcul nocturne produisait
+des centaines de pronostics par nuit qui n'entraient jamais dans
+`historique_pronostics.json` -- donc jamais utilisables par
+`verification_resultats.py`, donc jamais comptés dans l'objectif
+d'accumuler ~1000 matchs vérifiés avant de miser réellement (0.1).
+
+**Solution retenue** : `archive_precalcul()` dans `precalcul.py`,
+appelée après `construit_signaux()`. Deux décisions de conception à
+retenir :
+- **Version allégée** (`_slim_pour_archive`) -- pas les distributions de
+  probabilité complètes, seulement ce qu'il faut pour calculer un ROI et
+  vérifier le score plus tard (équipes, date, verdict, LISTE_B, etc.).
+  Sans ça, le fichier grossirait de façon incontrôlable (chaque match
+  archivé brut pèse plusieurs Ko).
+- **Seuls les matchs dont la date est EXACTEMENT J+1 (demain) sont
+  archivés** -- jamais J+2/J+3. Sans cette règle, un même match serait
+  archivé jusqu'à 3 fois (une fois par nuit, à mesure qu'il descend de
+  J+3 à J+1 dans la fenêtre), faussant tout calcul de ROI par triple
+  comptage. Chaque match n'entre dans l'historique qu'une seule fois, la
+  veille de son coup d'envoi.
+
+**État de vérification réel, à ne pas confondre avec "ça marche"** : le
+code existe et est raisonné, mais **aucun run n'a encore exécuté cette
+version de `precalcul.py` avec succès à ce jour** -- le run automatique
+du 02/09 (5h18m, voir 17.1) a tourné avec une version DU CODE ANTÉRIEURE
+à cet ajout (course de vitesse entre le commit de Patrick et le
+déclenchement du cron à 0h UTC). `historique_pronostics.json` ne contient
+donc encore aucune entrée `"source": "precalcul_auto"` au moment où cette
+section est écrite. **Prochaine étape immédiate à la reprise : vérifier
+qu'un run avec le code à jour produit bien cette entrée.**
+
+### 17.3 Incident -- limite de sécurité Betpawa appliquée deux fois trop tard
+Le run automatique du 02/09 (cron 0h UTC) a tourné SANS AUCUNE limite sur
+la résolution Betpawa (`PRECALCUL_LIMITE_BETPAWA` vide sur un événement
+`schedule`, qui ne fournit jamais `github.event.inputs.*`) -- 5h18m51s de
+durée, à 40 minutes du mur des 6h. **Deux fois de suite, Patrick a cru
+avoir appliqué le correctif (`|| '100'` en repli sur la valeur de
+l'input) et ne l'avait en réalité pas fait** -- confirmé les deux fois en
+lisant directement le contenu du `pipeline.yml` du dépôt (zip uploadé),
+pas en se fiant à une déclaration verbale. **Leçon opérationnelle
+retenue pour la suite : ne jamais confirmer qu'un fichier a été
+correctement remplacé sans le vérifier soi-même sur le contenu réel
+transmis (zip du dépôt, ou copier-coller direct dans le message) --
+jamais sur la seule affirmation de l'avoir fait.**
+
+État à la fin de cette session : le correctif (`PRECALCUL_LIMITE_BETPAWA:
+${{ github.event.inputs.limite_betpawa || '100' }}`) a été confirmé
+appliqué par lecture directe du fichier. Reste à vérifier que le PROCHAIN
+run planifié (cron suivant) respecte bien cette limite de 100 par défaut.
+
+### 17.4 Frontend -- `/pronostics.html` connecté au pré-calcul automatique pour la première fois
+Avant cette session, `/pronostics.html` ne lisait que `data.json` (résultat
+du panier manuel) -- le pré-calcul nocturne, quel que soit son volume,
+était entièrement invisible sur le site. Changements :
+- **4 onglets** : J+1/J+2/J+3 (lisent le pré-calcul, dates calculées
+  dynamiquement côté client à l'ouverture de la page, jamais codées en
+  dur) + Panier (comportement `data.json`/Supabase strictement inchangé,
+  conservé en parallèle sur décision explicite de Patrick).
+- **Tri par défaut** : GO triés par EV décroissant en premier, puis
+  NO_GO, puis non traités -- avant, les rares paris actionnables étaient
+  noyés dans des centaines de matchs. Case à cocher "afficher seulement
+  les GO" ajoutée en complément, filtre en mémoire (pas de refetch).
+- **Correctif race condition** (trouvé et corrigé le jour même) : un
+  changement rapide d'onglet pouvait laisser un fetch obsolète écraser
+  l'affichage d'un onglet déjà quitté. Corrigé par un jeton
+  d'affichage incrémenté à chaque changement d'onglet, vérifié avant
+  tout rendu.
+
+### 17.5 precalcul_leger.json -- CODE ÉCRIT, PAS ENCORE GÉNÉRÉ NI VÉRIFIÉ
+`precalcul.json` est passé de 3,4 Mo (01/09, 831 matchs) à 9,2 Mo (02/09,
+1574 matchs) -- chargé en entier par le site à chaque ouverture, sur une
+connexion 3G annoncée par Patrick. Solution : `precalcul.py` écrit
+désormais EN PLUS `precalcul_leger.json` (mêmes signaux, sans les champs
+`marches` et `lambda`, les plus lourds et les moins utiles au quotidien --
+le verdict, le pari recommandé, la cote et l'EV n'en dépendent jamais,
+voir docstring de `_leger_pour_site`). `script.js` a été modifié pour
+lire ce fichier léger au lieu de `precalcul.json`.
+
+**État à la fin de la session : le fichier n'existe pas encore sur le
+dépôt** -- confirmé par une erreur 404 sur le site
+("`precalcul_leger.json introuvable`") au moment où cette section est
+écrite, car aucun run n'a encore tourné avec cette version de
+`precalcul.py`. Attendu au prochain run réussi. `pipeline.yml` a été mis
+à jour pour committer ce nouveau fichier (`git add` complété).
+
+### 17.6 Ce qui reste à faire (priorités, dans l'ordre suggéré)
+1. **Vérifier le prochain run de bout en bout** : `precalcul_leger.json`
+   existe et le site charge sans erreur 404 ; `historique_pronostics.json`
+   contient une nouvelle entrée `"source": "precalcul_auto"` avec la
+   bonne date (demain) ; la durée totale reste sous la limite grâce au
+   plafond à 100 (17.3).
+2. **Revenir sur la question du ROI réel du moteur** (0.1, toujours pas
+   revérifiée) -- maintenant que l'archivage automatique existe (une fois
+   vérifié), l'échantillon va enfin pouvoir grossir de façon significative
+   chaque nuit sans dépendre du panier manuel. C'est le bon moment pour
+   remettre cette question sur la table, comme prévu depuis le 16.7.4.
+3. **Décider d'un vrai régime de `limite_betpawa`** en routine (100 est un
+   choix prudent provisoire, pas un chiffre validé par une mesure de
+   couverture réelle à cette valeur) -- ou avancer sur la parallélisation
+   déjà évoquée en 16.7.3 si le volume complet doit un jour tourner sans
+   limite de façon fiable.
+4. Les points 16.7.2, 16.7.5, 16.7.6 (couverture Betpawa réelle, purge du
+   cache, Phase 5/6 de la feuille de route) restent non traités, inchangés
+   depuis la session précédente.
