@@ -1,12 +1,23 @@
 """
-precalcul.py -- prépare automatiquement les pronostics de J+1, J+2 et J+3,
-indépendamment de tout panier utilisateur.
+precalcul.py -- prépare automatiquement les pronostics d'aujourd'hui (J0),
+J+1, J+2 et J+3, indépendamment de tout panier utilisateur.
 
 Ne modifie ni calculs.py ni run_pipeline.py : réutilise construit_signaux()
 tel quel (le moteur ne change pas), seule la source des matchs à traiter
 change -- au lieu de panier.json (sélection manuelle), on prend directement
-matchs_demain.json (J+1) + matchs_semaine.json filtré sur les deux dates
-suivantes (J+2, J+3).
+matchs_du_jour.json (J0) + matchs_demain.json (J+1) + matchs_semaine.json
+filtré sur les deux dates suivantes (J+2, J+3).
+
+AJOUT 03/09/2026 (3e partie du jour) : aujourd'hui (J0) rejoint la fenêtre
+automatique -- décision de Patrick, jusque-là ces matchs n'étaient
+accessibles que via le panier manuel (matchs_du_jour.json servait
+uniquement à selection.html/index.js). Conséquence sur l'archivage : un
+match J0 ne traverse la fenêtre qu'UNE seule nuit (contrairement à J+2/J+3
+qui progressent vers J+1 au fil des nuits) -- il doit donc être archivé dès
+cette nuit-là, sous peine de disparaître de matchs_du_jour.json le
+lendemain sans jamais avoir été enregistré dans historique_pronostics.json.
+archive_precalcul() archive donc désormais les matchs dont la date est soit
+aujourd'hui, soit J+1 -- jamais J+2/J+3 (inchangé).
 
 AJOUT 01/09/2026 : avant construit_signaux(), chaque match de la fenêtre
 passe par resolution_betpawa_precalcul.resout_cotes_betpawa(), qui tente
@@ -631,6 +642,13 @@ def date_j1(aujourdhui=None):
     return (aujourdhui + datetime.timedelta(days=1)).isoformat()
 
 
+# AJOUT 03/09/2026 (3e partie) -- voir docstring : nécessaire pour que
+# archive_precalcul() sache archiver les matchs J0, en plus de J+1.
+def date_aujourdhui(aujourdhui=None):
+    aujourdhui = aujourdhui or datetime.date.today()
+    return aujourdhui.isoformat()
+
+
 # AJOUT 03/09/2026 -- combine tous les filtres déjà écrits pour pouvoir
 # filtrer une liste de matchs bruts (pas seulement la fenêtre J+1/J+2/J+3)
 # -- utilisé pour générer matchs_du_jour_filtre.json et
@@ -664,6 +682,9 @@ def genere_listes_filtrees_affichage():
 
 
 def charge_matchs_fenetre():
+    # AJOUT 03/09/2026 (3e partie) -- aujourd'hui (J0) rejoint la fenêtre
+    # automatique, voir docstring en tête de fichier.
+    matchs_du_jour = charge_json_ou_vide(FICHIER_MATCHS_DU_JOUR, defaut=[])
     matchs_demain = charge_json_ou_vide(FICHIER_MATCHS_DEMAIN, defaut=[])
     matchs_semaine = charge_json_ou_vide(FICHIER_MATCHS_SEMAINE, defaut=[])
 
@@ -672,7 +693,7 @@ def charge_matchs_fenetre():
 
     vus = set()
     fenetre = []
-    for m in matchs_demain + matchs_j2_j3:
+    for m in matchs_du_jour + matchs_demain + matchs_j2_j3:
         mid = m.get("match_id")
         if not mid or mid in vus:
             continue
@@ -724,7 +745,7 @@ def charge_matchs_fenetre():
     fenetre = [m for m in fenetre if not est_hors_top_flight_unique(m.get("competition"))]
     nb_exclus_top_flight_unique = nb_avant_unique - len(fenetre)
 
-    return (fenetre, len(matchs_demain), len(matchs_j2_j3),
+    return (fenetre, len(matchs_du_jour), len(matchs_demain), len(matchs_j2_j3),
             nb_exclus_jeunes_reserves, nb_exclus_liste, nb_exclus_chine,
             nb_exclus_oceanie, nb_exclus_femmes, nb_exclus_europe,
             nb_exclus_top_flight_unique)
@@ -763,10 +784,15 @@ def _leger_pour_site(s):
     return d
 
 
-def archive_precalcul(signaux, date_j1_iso):
+def archive_precalcul(signaux, dates_a_archiver):
+    """AJOUT 03/09/2026 (3e partie) -- accepte désormais un ENSEMBLE de
+    dates (aujourd'hui + J+1), pas une seule date : voir docstring en tête
+    de fichier pour pourquoi un match J0 doit être archivé la nuit même où
+    il apparaît dans la fenêtre, contrairement à J+1 qui a jusque-là
+    toujours été le seul point d'archivage."""
     candidats = [
         s for s in signaux
-        if s.get("traite") and s.get("verdict_global") and s.get("date") == date_j1_iso
+        if s.get("traite") and s.get("verdict_global") and s.get("date") in dates_a_archiver
     ]
     if not candidats:
         return 0
@@ -791,7 +817,7 @@ def main():
           f"aujourd'hui {nb_jour_avant} -> {nb_jour_apres}, "
           f"demain {nb_demain_aff_avant} -> {nb_demain_aff_apres}.")
 
-    (fenetre, nb_demain, nb_j2_j3, nb_exclus_jeunes_reserves,
+    (fenetre, nb_du_jour, nb_demain, nb_j2_j3, nb_exclus_jeunes_reserves,
      nb_exclus_liste, nb_exclus_chine, nb_exclus_oceanie,
      nb_exclus_femmes, nb_exclus_europe,
      nb_exclus_top_flight_unique) = charge_matchs_fenetre()
@@ -828,15 +854,17 @@ def main():
             "%Y-%m-%dT%H:%M:%SZ"
         )
 
+    date_j0_iso = date_aujourdhui()
     date_j1_iso = date_j1()
-    nb_archives = archive_precalcul(signaux, date_j1_iso)
-    print(f"Archivage historique : {nb_archives} match(s) J+1 ({date_j1_iso}) "
-          f"ajouté(s) à {FICHIER_HISTORIQUE}.")
+    nb_archives = archive_precalcul(signaux, {date_j0_iso, date_j1_iso})
+    print(f"Archivage historique : {nb_archives} match(s) J0 ({date_j0_iso}) "
+          f"+ J+1 ({date_j1_iso}) ajouté(s) à {FICHIER_HISTORIQUE}.")
 
     genere_le = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
 
     sortie = {
         "genere_le": genere_le,
+        "nb_matchs_du_jour_source": nb_du_jour,
         "nb_matchs_demain_source": nb_demain,
         "nb_matchs_j2_j3_source": nb_j2_j3,
         "nb_exclus_jeunes_reserves": nb_exclus_jeunes_reserves,
