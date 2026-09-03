@@ -1,830 +1,109 @@
-"""
-precalcul.py -- prépare automatiquement les pronostics de J+1, J+2 et J+3,
-indépendamment de tout panier utilisateur.
-
-Ne modifie ni calculs.py ni run_pipeline.py : réutilise construit_signaux()
-tel quel (le moteur ne change pas), seule la source des matchs à traiter
-change -- au lieu de panier.json (sélection manuelle), on prend directement
-matchs_demain.json (J+1) + matchs_semaine.json filtré sur les deux dates
-suivantes (J+2, J+3).
-
-AJOUT 01/09/2026 : avant construit_signaux(), chaque match de la fenêtre
-passe par resolution_betpawa_precalcul.resout_cotes_betpawa(), qui tente
-de trouver sa correspondance Betpawa et d'en récupérer les cotes réelles.
-Voir resolution_betpawa_precalcul.py pour le détail.
-
-AJOUT 02/09/2026 : archive_precalcul() enregistre dans
-historique_pronostics.json une version allégée des matchs READY dont la
-date est J+1 -- jamais J+2/J+3, pour ne jamais archiver le même match
-plusieurs fois à mesure qu'il avance dans la fenêtre au fil des nuits.
-
-AJOUT 02/09/2026 (2e partie du jour) : precalcul_leger.json -- même
-contenu que precalcul.json pour les 3 jours de la fenêtre, MAIS sans les
-champs marches (toutes les probabilités par marché) ni lambda (audit du
-calcul) -- ce sont eux qui font l'essentiel du poids du fichier (9,2 Mo au
-02/09 pour 1574 matchs). Le site (script.js) lit désormais ce fichier
-léger, pas precalcul.json, pour rester utilisable en 3G. Conséquence
-connue : la section "tous les marchés calculés" et le détail du lambda
-n'apparaissent plus dans "voir les détails" sur le site -- le verdict, le
-pari recommandé, la cote, l'EV et le tableau LISTE_A restent, eux,
-inchangés. precalcul.json (complet) continue d'exister pour l'inspection
-manuelle/debug sur GitHub.
-
-AJOUT 03/09/2026 : filtre_jeunes_et_reserves() retire de la fenêtre, AVANT
-la résolution Betpawa et AVANT construit_signaux, les catégories U15 à
-U21 et les équipes réserve -- décidé après mesure sur un run réel :
-149/2408 matchs (6,2%) de la fenêtre du 03/09 tombaient dans ces
-catégories, zéro faux positif constaté sur les 27 compétitions
-concernées (vérifié une par une). Filtre volontairement étroit : "coupe"
-et "2e division" ne sont PAS filtrés par mot-clé -- un mot-clé "coupe"
-attraperait aussi la Copa de la Liga Profesional argentine (compétition
-majeure, pas une coupe secondaire), et un mot-clé "2"/"deuxième" pour les
-divisions est encore plus trompeur : vérifié pays par pays sur l'Afrique
-et l'Asie (03/09), certaines vraies 2e divisions sont étiquetées "1" par
-traduction (ÉAU "Division 1", probablement Ouzbékistan "1ère Division"),
-alors que la plupart des "Ligue 1"/"Division 1"/"Première Ligue" listées
-SONT le premier échelon. Un mot-clé aurait raté les pièges et risqué
-d'écraser de vrais premiers échelons.
-
-AJOUT 03/09/2026 (2e partie) : COMPETITIONS_EXCLUES -- liste EXPLICITE
-(pays, sous-chaîne de compétition), décidée avec Patrick après vérification
-manuelle pays par pays, jamais un mot-clé générique :
-  - Égypte "2. Ligue", Corée du Sud "K-Ligue 2", Japon "J2 Ligue",
-    Qatar "Division 2" : 2e division confirmée sans ambiguïté.
-  - ÉAU "Division 1", Ouzbékistan "1ère Division" : niveau réel incertain,
-    exclus sur un autre critère -- ces compétitions produisent rarement
-    des données exploitables (peu ou pas d'historique sur matchendirect),
-    indépendamment de leur rang exact dans la pyramide nationale.
-  - Chine "Ligue 1" : c'est le 2e échelon chinois (China League One,
-    confirmé via Wikipedia -- "Level on pyramid: 2", promotion vers la
-    Super League), pas le premier -- le nom est une traduction littérale
-    trompeuse (même piège que l'anglais "League One", 3e division en
-    Angleterre). Décision finale de Patrick (03/09) : pour la Chine, SEULE
-    la Super Ligue est conservée -- la Ligue 1 (2e échelon) est exclue.
-    Implémenté en liste BLANCHE (COMPETITIONS_CHINE_AUTORISEES) via une
-    fonction dédiée à ce pays (est_chine_non_autorisee) plutôt qu'un
-    mot-clé générique partagé -- PATRON À RÉUTILISER pour tout futur cas
-    problématique par pays (une fonction est_<pays>_non_autorise() par
-    cas, pas un ajout au mot-clé générique). Si une 3e compétition
-    chinoise apparaît un jour dans la fenêtre (D3, coupe, etc.), elle est
-    exclue par défaut, pas oubliée parce qu'elle n'est pas encore listée.
-
-Sortie : precalcul.json (complet, inchangé) + precalcul_leger.json (nouveau,
-pour le site) + historique_pronostics.json (grossi d'une entrée par date de
-match J+1 présente ce soir).
-
-JAMAIS EXÉCUTÉ EN CONDITIONS RÉELLES au moment où ce fichier est écrit --
-voir procédure de vérification donnée à Patrick en dehors de ce fichier.
-"""
-import datetime
-import json
-import re
-import sys
-
-import run_pipeline
-from run_pipeline import construit_signaux, charge_json_ou_vide
-from cache_equipes import recupere_gf_ga_avec_cache
-from resolution_betpawa_precalcul import resout_cotes_betpawa
-
-_recupere_gf_ga_reelle = run_pipeline.recupere_gf_ga_avec_repli
-
-
-def _recupere_gf_ga_avec_cache(url_equipe, nom_equipe, nom_competition, max_matchs=10):
-    return recupere_gf_ga_avec_cache(
-        _recupere_gf_ga_reelle, url_equipe, nom_equipe, nom_competition, max_matchs
-    )
-
-
-run_pipeline.recupere_gf_ga_avec_repli = _recupere_gf_ga_avec_cache
-
-MODEL_VERSION = "Archetype-v4.3"
-
-FICHIER_MATCHS_DEMAIN = "matchs_demain.json"
-FICHIER_MATCHS_SEMAINE = "matchs_semaine.json"
-FICHIER_SORTIE = "precalcul.json"
-FICHIER_SORTIE_LEGER = "precalcul_leger.json"
-FICHIER_HISTORIQUE = "historique_pronostics.json"
-
-# AJOUT 03/09/2026 -- voir docstring. \b évite qu'un nom d'équipe contenant
-# "u19" comme partie d'un mot plus long ne matche par accident (aucun cas
-# de ce genre trouvé dans les 388 compétitions vues au 03/09, mais coûte
-# rien à se protéger).
-# CORRECTIF 03/09/2026 -- ne captait que "réserve"/"reserve", pas
-# l'orthographe espagnole "reserva" -- trouvé en analysant les
-# compétitions d'Amérique du Sud (Paraguay : "Division Profesional
-# Reserva" passait au travers du filtre).
-# CORRECTIF 03/09/2026 (2e élargissement) -- le répertoire officiel
-# matchendirect (/competition-foot/) a révélé d'autres mots-clés jeunes/
-# réserve qui ne suivent pas le format "U15"-"U21" : France "Espoirs",
-# Italie "Primavera" (jeunes) et "Berretti" (jeunes), Pays-Bas "Beloften"
-# (réserve/jeunes), Autriche "Jugendliga" (jeunes), Espagne "Juvenil"/
-# "Cadete"/"Infantil" (catégories jeunes), Croatie "Juniori", Brésil
-# "Aspirantes" (réserve). Chaque mot vérifié individuellement contre les
-# vraies données avant ajout : zéro collision avec un championnat déjà
-# gardé (voir vérification du 03/09).
-_RE_JEUNE_OU_RESERVE = re.compile(
-    r"\bu1[5-9]\b|\bu20\b|\bu21\b|r[ée]serve|reserva|espoir|primavera|"
-    r"berretti|beloften|jugendliga|juvenil|junior|aspirantes|cadete|infantil|"
-    r"jeunes|mladinska",
-    re.IGNORECASE,
-)
-
-
-def est_jeune_ou_reserve(nom_competition):
-    return bool(_RE_JEUNE_OU_RESERVE.search(nom_competition or ""))
-
-
-# AJOUT 03/09/2026 -- voir docstring. Liste EXPLICITE (pays, sous-chaîne),
-# jamais un mot-clé générique -- décidée avec Patrick après vérification
-# manuelle pays par pays. Chine "Ligue 1" volontairement ABSENTE de cette
-# liste (voir docstring) : ne pas l'ajouter sans confirmation de Patrick.
-#
-# AJOUT 03/09/2026 (Amériques + Océanie) -- même règle que la Chine :
-# 2e échelon et en dessous exclus, même si compétitif (ex. Série B
-# brésilienne, exclue par cohérence avec la décision Chine -- à réviser
-# si Patrick veut une exception pour les 2e divisions à forte audience).
-# Océanie : aucune compétition australienne/néo-zélandaise dans la
-# fenêtre du 03/09 -- rien à exclure, pas d'oubli.
-# Pièges de traduction repérés (nom contenant "1" ou "Primera" mais qui
-# est en réalité un échelon inférieur) : USL Ligue 1 (USA, 3e échelon
-# malgré le nom), Ascenso MX (Mexique, 2e échelon), Primera División
-# Amateur (Uruguay, échelon amateur sous la Segunda). Confiance moyenne
-# (pas de source externe vérifiée comme pour la Chine) : Panama "Liga
-# Prom" (probablement "Liga Promocional" = 2e échelon) et Guatemala
-# "1ère Division ... Groupe B" (probablement une poule d'un échelon
-# inférieur) -- à corriger si Patrick a une meilleure info.
-COMPETITIONS_EXCLUES = [
-    ("Égypte", "2. Ligue"),
-    ("Corée du Sud", "K-Ligue 2"),
-    ("Japon", "J2 Ligue"),
-    ("Qatar", "Division 2"),
-    ("ÉAU", "Division 1"),
-    ("Ouzbékistan", "1ère Division"),
-    ("Argentine", "Tournoi Fédéral A"),
-    ("Brésil", "Série B"),
-    ("Brésil", "Série C"),
-    ("Brésil", "Série D"),
-    ("Brésil", "Carioca 2"),
-    ("Brésil", "Gaucho 2"),
-    ("Brésil", "Gaúcho 3"),
-    ("Brésil", "Goiano 2"),
-    ("Brésil", "Paranaense 3"),
-    ("Brésil", "Cearense 3"),
-    ("Brésil", "Capixaba B"),
-    ("Chili", "Primera B"),
-    ("Colombie", "Première B"),
-    ("Costa Rica", "Liga de Ascenso"),
-    ("Pérou", "2. Ligue"),
-    ("Pérou", "Liga 3"),
-    ("Uruguay", "Segunda Division"),
-    ("Uruguay", "Primera División Amateur"),
-    ("Venezuela", "Segunda Division"),
-    ("Équateur", "Première B"),
-    ("Etats-Unis", "USL"),
-    ("Mexique", "Ascenso MX"),
-    ("Mexique", "Liga TDP"),
-    ("Panama", "Liga Prom"),
-    ("Guatemala", "1ère Division"),
-]
-
-
-def est_competition_exclue(nom_competition):
-    c = (nom_competition or "").replace("\n", " ")
-    return any(pays in c and sous_chaine in c for pays, sous_chaine in COMPETITIONS_EXCLUES)
-
-
-# AJOUT 03/09/2026 (3e partie) -- Chine : cas particulier en LISTE BLANCHE,
-# pas en liste noire (voir docstring). Seule la Super Ligue est autorisée ;
-# toute autre compétition chinoise (Ligue 1 comprise -- 2e échelon
-# confirmé, voir docstring) est exclue par défaut. Patron à réutiliser tel
-# quel pour tout futur cas problématique par pays : une fonction
-# est_<pays>_non_autorise() dédiée plutôt qu'un mot-clé générique partagé.
-COMPETITIONS_CHINE_AUTORISEES = ("Super Ligue",)
-
-
-def est_chine_non_autorisee(nom_competition):
-    c = (nom_competition or "").replace("\n", " ")
-    if "Chine" not in c:
-        return False
-    return not any(autorisee in c for autorisee in COMPETITIONS_CHINE_AUTORISEES)
-
-
-# AJOUT 03/09/2026 (4e partie) -- Océanie : même patron que la Chine, mais
-# à l'échelle d'une ZONE plutôt qu'un seul pays. Consigne de Patrick : ne
-# garder QUE le premier échelon australien et néo-zélandais. VÉRIFIÉ sur
-# matchendirect.fr (capture d'écran Patrick, 03/09) : il n'existe PAS de
-# "1ère division néo-zélandaise" séparée -- les clubs néo-zélandais
-# (Auckland, Wellington Phoenix) jouent dans la MÊME compétition que
-# l'Australie, listée sous le pays "Australie", nom exact "A-Ligue". Ce
-# qui apparaît séparément sous le pays "Nouvelle-Zélande" ("Premier
-# League", subdivisée en ligues régionales -- Ligue Centrale, Ligue du
-# Nordouest, etc.) est un échelon INFÉRIEUR, sous la A-Ligue -- donc
-# exclu, comme les autres nations du Pacifique. Explicitement PAS une
-# règle rigide/standard à généraliser ailleurs (dixit Patrick) -- propre
-# à l'Océanie.
-OCEANIE_PAYS_TOUJOURS_EXCLUS = (
-    "Nouvelle-Calédonie", "Îles Cook", "Îles Salomon", "Fidji",
-    "Papouasie-Nouvelle-Guinée", "Vanuatu", "Tahiti", "Samoa", "Tonga",
-    "Océanie", "Nouvelle-Zélande",
-)
-
-
-def est_oceanie_non_autorisee(nom_competition):
-    c = (nom_competition or "").replace("\n", " ")
-    if any(pays in c for pays in OCEANIE_PAYS_TOUJOURS_EXCLUS):
-        return True
-    if "Australie" in c:
-        return "A-Ligue" not in c
-    return False
-
-
-# AJOUT 03/09/2026 (5e partie) -- compétitions féminines : consigne de
-# Patrick, ne garder QUE la 1ère division européenne, tout le reste
-# supprimé (y compris la NWSL américaine, pourtant la meilleure ligue
-# féminine au monde -- exclue uniquement parce qu'elle n'est pas
-# européenne). Liste blanche vérifiée compétition par compétition sur les
-# 23 entrées "Femmes" de la fenêtre du 03/09 (Wikipedia pour chaque cas
-# douteux) :
-#   - Norvège "1. Division Femmes" : PIÈGE -- c'est la 2e division
-#     confirmée (Wikipedia, "Level on pyramid: 2") ; le vrai 1er échelon
-#     norvégien s'appelle "Toppserien", absent de cette fenêtre.
-#   - Écarté aussi : toute coupe (Autriche, Portugal -- une coupe n'est
-#     pas "la 1ère division"), tout ce qui est explicitement 2e/inférieur
-#     (Angleterre Championnat, Danemark 2. Division, Espagne Segunda
-#     Federacion, Écosse SWPL 2), et tout hors Europe (Brésil, Japon,
-#     États-Unis NWSL).
-# AJOUT 03/09/2026 (complément) -- liste étendue à partir du répertoire
-# officiel matchendirect (/competition-foot/, récupéré par Patrick),
-# qui donne le vrai nom de marque de chaque championnat féminin --
-# corrige le point faible signalé plus haut (Damallsvenskan, Toppserien,
-# etc. n'ont aucun marqueur "femme"/"féminin" détectable par mot-clé).
-# Confiance forte quand confirmée par une donnée réelle déjà vue dans
-# une fenêtre ; confiance moyenne pour les entrées ajoutées seulement à
-# partir du répertoire, jamais vues en vrai -- possibles noms anciens
-# (le répertoire semble accumuler aussi des libellés historiques, ex.
-# France "CFA"/"CFA2", remplacés depuis par National 2/3).
-COMPETITIONS_FEMMES_AUTORISEES = (
-    ("Allemagne", "Bundesliga Femmes"),
-    ("Angleterre", "Femmes Super Ligue"),
-    ("Belgique", "Super Ligue Femmes"),
-    ("Espagne", "Primera Division Femmes"),
-    ("Estonie", "Meistriliiga Femmes"),
-    ("Hongrie", "NB I Femmes"),
-    ("Lituanie", "A Lyga Femmes"),
-    ("Pays-Bas", "Eredivisie Femmes"),
-    ("Serbie", "Super Ligue Femmes"),
-    ("Slovaquie", "I Ligue Femmes"),
-    ("Écosse", "SWPL 1 Femmes"),
-    # -- ajouts (répertoire officiel), confiance forte (nom de marque
-    # confirmé, sans marqueur féminin détectable autrement) :
-    ("Suède", "Damallsvenskan"),
-    ("Norvège", "Toppserien"),
-    ("Suisse", "Nationalliga A"),  # ancien nom masculin, réattribué aux femmes depuis le rebranding "Super League" (2003) -- pas de risque de confusion avec le championnat hommes actuel
-    # -- ajouts (répertoire officiel), confiance MOYENNE, jamais vus dans
-    # une vraie fenêtre -- à confirmer si l'un d'eux apparaît un jour :
-    ("France", "Arkema Première Ligue"),
-    ("Italie", "Série A féminine"),
-    ("Portugal", "1ère Division Féminine"),
-    ("Danemark", "Elitedivisionen"),
-)
-
-
-# CORRECTIF 03/09/2026 -- ne détectait que "femme", ratait "Féminine"/
-# "féminin" (France "Arkema Première Ligue" -- non détectable par mot-clé,
-# voir note plus bas -- "Coupe Féminine de Serie A", "Coupe de Premier
-# Ligue Féminine") et "Zenska" (slovène). Élargi ; "Damallsvenskan"
-# (Suède) reste indétectable par mot-clé -- c'est un nom de marque sans
-# aucun marqueur féminin explicite, à traiter à la main si besoin.
-def est_femmes_non_autorisee(nom_competition):
-    c = (nom_competition or "").replace("\n", " ").lower()
-    if not any(m in c for m in ("femme", "femin", "fémin", "zenska")):
-        return False
-    return not any(pays.lower() in c and comp.lower() in c for pays, comp in COMPETITIONS_FEMMES_AUTORISEES)
-
-
-NIVEAUX_EUROPE_HOMMES = {
-    "Angleterre": {"paliers": [("Premier League",), ("Championnat",), ("League One",),
-                                ("League Two",), ("Ligue Nationale",)]},
-    "France": {"paliers": [("Ligue 1",), ("Ligue 2",), ("Ligue 3",)]},
-    "Espagne": {"paliers": [("LaLiga",), ("Segunda Division",), ("Première Division RFEF",)]},
-    "Italie": {"paliers": [("Serie A",), ("Série B",), ("Série C",)]},
-    "Allemagne": {"paliers": [("Bundesliga",), ("2. Bundesliga",), ("Ligue 3",)]},
-    "Portugal": {"paliers": [("Primeira Liga",), ("Liga Portugal 2",), ("Ligue 3",)]},
-    "Norvège": {"paliers": [("Eliteserien",), ("OBOS-ligaen",)]},
-    "Suède": {"paliers": [("Allsvenskan",), ("Superettan",)]},
-    "Suisse": {"paliers": [("Super Ligue",), ("Challenge Ligue",)]},
-    "Belgique": {"paliers": [("Pro Ligue",), ("2e Division",)]},
-    "Écosse": {"paliers": [("Premier Ligue",), ("Première Division",)]},
-    "Finlande": {"paliers": [("Veikkausliiga",), ("Ykkösliiga",)]},
-    "Autriche": {"paliers": [("Bundesliga",), ("2. Liga",)]},
-    "Pays-Bas": {"paliers": [("Eredivisie",), ("Eerste Divisie",)]},
-    "Pologne": {"paliers": [("Ekstraklasa",), ("1. Ligue",)]},
-    "Turquie": {"paliers": [("Super Ligue",), ("TFF 1. Ligue",)]},
-    "Slovénie": {"paliers": [("1. SNL",), ("2. SNL",)]},
-}
-
-
-# CORRECTIF 03/09/2026 -- la version par sous-chaîne "dans" donnait deux
-# faux gardés : "Ligue Nationale" matchait à l'intérieur de "Ligue
-# Nationale N/S Nord" (palier 6 anglais, à exclure), et "Serie A"
-# matchait à l'intérieur de "Coupe Féminine de Serie A" (une coupe
-# féminine, pas le championnat). La comparaison "exacte" essayée ensuite
-# cassait à son tour les groupes légitimes ("Série C Girone A", "Ligue 3
-# Groupe A" doivent rester des paliers autorisés). Solution retenue :
-# "commence par" (gère les suffixes Groupe/Girone légitimes) + exclusion
-# de tout ce qui contient "coupe" (une coupe n'est jamais un palier de
-# championnat, quel que soit le pays) + garde explicite pour le seul cas
-# où un préfixe autorisé est aussi le début d'un palier inférieur non
-# désiré (Angleterre "Ligue Nationale" vs "Ligue Nationale N/S Nord").
-def est_europe_hommes_non_autorisee(nom_competition):
-    c = (nom_competition or "").replace("\n", " ")
-    # CORRECTIF 03/09/2026 -- vérifie l'appartenance à la liste blanche
-    # Femmes ENTIÈRE, pas seulement la présence d'un mot-clé "femme"/
-    # "femin" : les noms de marque purs (Damallsvenskan, Toppserien,
-    # Nationalliga A) n'ont aucun marqueur détectable et se faisaient
-    # exclure par erreur ici (aucun palier masculin ne les matche).
-    if any(pays in c and comp in c for pays, comp in COMPETITIONS_FEMMES_AUTORISEES):
-        return False
-    if any(m in c.lower() for m in ("femme", "femin", "fémin")):
-        return False  # géré par est_femmes_non_autorisee -- pas de double traitement ici
-    if ":" not in c:
-        return False
-    pays_brut, comp_brut = c.split(":", 1)
-    pays_brut = pays_brut.strip()
-    comp = " ".join(comp_brut.split())
-    if pays_brut not in NIVEAUX_EUROPE_HOMMES:
-        return False
-    # CORRECTIF 03/09/2026 -- une coupe n'est pas un palier de championnat,
-    # quel que soit le pays de cette liste : exclue directement (l'essai
-    # précédent la laissait passer par erreur).
-    if "coupe" in comp.lower():
-        return True
-    for palier in NIVEAUX_EUROPE_HOMMES[pays_brut]["paliers"]:
-        for motif in palier:
-            if not comp.startswith(motif):
-                continue
-            if pays_brut == "Angleterre" and motif == "Ligue Nationale" and \
-               ("Nord" in comp or "Sud" in comp):
-                continue  # National League North/South (palier 6), pas le vrai palier 5
-            return False
-    return True
-
-
-# AJOUT 03/09/2026 (7e partie) -- reste de l'Europe (33 pays hors des 17
-# déjà traités) : seule la 1ère division, règle par défaut. Comparaison
-# EXACTE (pas "commence par") -- contrairement aux paliers à groupes
-# (Serie C Girone, National 3 Groupe...), ces championnats sont des
-# ligues nationales uniques sans subdivision régionale, donc pas de
-# risque de casser un "Groupe A" légitime, et ça évite la collision
-# "Super Ligue" / "Super Ligue 2" (Grèce, Serbie) rencontrée plus haut.
-#
-# Nouveaux pièges de traduction trouvés en vérifiant CE bloc contre les
-# vraies données du 03/09 (le mot "premier/première/1er/1ère" désigne le
-# 2e échelon, pas le 1er, dans ces 7 cas) :
-#   - Biélorussie : "1ère Division" = 2e échelon (Bélarus First League) ;
-#     le vrai 1er est "Première Ligue" (Premier League).
-#   - Croatie : "Prva NL" = 2e échelon malgré "Prva" ("premier" en
-#     croate) ; le vrai 1er est "HNL".
-#   - Danemark : "1ère Division" = 2e échelon (Danish 1st Division) ; le
-#     vrai 1er est "Superligaen".
-#   - Irlande : "Division 1" = 2e échelon (League of Ireland First
-#     Division) ; le vrai 1er est "Première Ligue" (Premier Division).
-#   - Islande : "1 Deild Karla" = 2e échelon malgré le "1" ; le vrai 1er
-#     est "Úrvalsdeild".
-#   - Lituanie : "1 Lyga" = 2e échelon ; le vrai 1er est "A Lyga".
-#   - Monténégro : "Prva Liga" = 2e échelon malgré "Prva" ; ATTENTION,
-#     piège inverse du Monténégro par rapport à la Serbie -- au
-#     Monténégro "Prva Liga" est le VRAI 1er échelon (rien en dessous
-#     dans cette fenêtre ne le contredit), alors qu'en Serbie "Prva
-#     Liga" est le 2e (voir Serbie ci-dessous). Le même libellé ne veut
-#     pas dire la même chose d'un pays à l'autre -- aucune règle
-#     générique n'aurait pu deviner ça.
-#   - Russie : "FNL" = 2e échelon (Football National League, sigle
-#     officiel) ; le vrai 1er est "Première Ligue" (Premier Liga).
-#   - Serbie : "Prva Liga" = 2e échelon (malgré "Prva" = "premier") ; le
-#     vrai 1er est "Super Ligue".
-# AJOUT 03/09/2026 (fusion) -- Amérique, reste de l'Europe, Afrique et
-# Asie regroupés dans UNE seule liste blanche "1ère division uniquement",
-# une seule fonction -- au lieu de 3-4 blocs séparés qui faisaient tous
-# la même chose. Reste SÉPARÉ : NIVEAUX_EUROPE_HOMMES (17 pays à paliers
-# multiples, structure différente par nature -- ne peut pas être fondu
-# dans une liste à une seule valeur par pays).
-#
-# "Commence par" partout (pas d'égalité stricte) : les suffixes de saison
-# (Ouverture/Clôture/Apertura/Clausura/2e Tour) sont la norme hors
-# d'Europe de l'Ouest, autant traiter tout le monde pareil.
-#
-# None = pays/zone TOUJOURS exclu (confédérations continentales -- CAF,
-# ASEAN -- qui ne proposent que des coupes/qualifications, jamais un
-# vrai championnat national ; Malte, exclue sur décision de Patrick pour
-# éviter un cas spécial).
-#
-# Nouveaux pièges de traduction trouvés en construisant ce bloc, vérifiés
-# contre les vraies données ou une source externe :
-#   - Afrique du Sud : "Ligue 1" = 2e échelon (National First Division,
-#     confirmé Wikipedia -- "Level on pyramid: 2") ; le vrai 1er est
-#     "Première Ligue de Football".
-#   - Hong Kong : "HKFA 1ère Division" = ancien nom du 1er échelon,
-#     rétrogradé 2e échelon lors de la restructuration de 2014 ; le vrai
-#     1er est désormais "Premier Ligue" (Hong Kong Premier League).
-#   - Égypte : aucun match au 1er échelon dans la fenêtre du 03/09 pour
-#     vérifier le libellé exact -- "Première Ligue" retenu par cohérence
-#     avec les autres pays de la zone (Iran, Ghana...), confiance
-#     MOYENNE, à corriger si un vrai match égyptien de D1 apparaît un
-#     jour avec un nom différent.
-TOP_FLIGHT_UNIQUE_PAR_PAYS = {
-    # -- Amérique --
-    "Argentine": "Copa de la Liga Profesional",
-    "Belize": "Premier League",
-    "Bolivie": "Primera Division",
-    "Brésil": "Série A",
-    "Canada": "Première Ligue",
-    "Chili": "Superliga",
-    "Colombie": "Première A",
-    "Costa Rica": "1ère Division",
-    "Dominique": "Premier Ligue",
-    "El Salvador": "1ère Division",
-    "Etats-Unis": "MLS",
-    "Guadeloupe": "Division d'Honneur",
-    "Guatemala": "Ligue Nationale",
-    "Guyana": "GFF Super League",
-    "Guyane Française": "Division d'Honneur",
-    "Honduras": "Ligue National",
-    "Martinique": "Division d'Honneur",
-    "Mexique": "Liga MX",
-    "Nicaragua": "1ère Division",
-    "Panama": "Primera Division",
-    "Paraguay": "Professionnel de la Division",
-    "Porto Rico": "Division 1",
-    "Pérou": "Primera Division",
-    "République Dominicaine": "IV Liga Mayor",
-    "Saint-Kitts-et-Nevis": "Premier League",
-    "Uruguay": "Primera Division",
-    "Venezuela": "Primera Division",
-    "Équateur": "Première A",
-    "Amérique du Nord": None,
-    "Amérique du Sud": None,
-    # -- Reste de l'Europe (hors les 17 pays à paliers multiples) --
-    "ARY Macédoine": "1. MFL",
-    "Albanie": "Superliga",
-    "Andorre": "1ère Division",
-    "Arménie": "1ère Division",
-    "Azerbaïdjan": "Première Ligue",
-    "Bosnie-Herzégovine": "Première Ligue",
-    "Bulgarie": "Parva Liga",
-    "Bélarus": "Première Ligue",
-    "Chypre": "1. Division",
-    "Croatie": "HNL",
-    "Danemark": "Superligaen",
-    "Estonie": "Meistriliiga",
-    "Gibraltar": "Première Division",
-    "Grèce": "Super Ligue",
-    "Géorgie": "Ligue Erovnuli",
-    "Hongrie": "NB I",
-    "Irlande": "Première Ligue",
-    "Irlande du Nord": "IFA Premiership",
-    "Islande": "Úrvalsdeild",
-    "Israël": "Ligat Al",
-    "Kosovo": "Superliga",
-    "Lettonie": "Virsliga",
-    "Lituanie": "A Lyga",
-    "Luxembourg": "BGL Ligue",
-    "Malte": None,
-    "Moldavie": "Divizia Nationala",
-    "Monténégro": "Prva Liga",
-    "Pays de Galles": "Cymru Premier",
-    "Roumanie": "Liga 1",
-    "Russie": "Première Ligue",
-    "Saint-Marin": "Campionato Ligue",
-    "Serbie": "Super Ligue",
-    "Slovaquie": "Super Ligue",
-    "Ukraine": "Première Ligue",
-    # -- Afrique --
-    "Afrique du Sud": "Première Ligue de Football",
-    "Algérie": "Ligue 1",
-    "Angola": "Girabola",
-    "Botswana": "Premier Ligue",
-    "Burundi": "Ligue A",
-    "Ghana": "Première Ligue",
-    "Lesotho": "Premier League",
-    "Malawi": "Super Ligue",
-    "Nigeria": "Premier Ligue",
-    "Ouganda": "Premier Ligue",
-    "Rwanda": "Premier League",
-    "Tanzanie": "Ligue Kuu Bara",
-    "Tunisie": "Ligue 1",
-    "Zimbabwe": "Premier Ligue",
-    "Égypte": "Première Ligue",
-    "Afrique": None,
-    # -- Asie (Israël déjà couvert ci-dessus, membre UEFA malgré la
-    # géographie -- pas dupliqué ici) --
-    "Arabie Saoudite": "Première Division",
-    "Bahreïn": "Premiere Ligue",
-    "Cambodge": "1ère Division",
-    "Corée du Sud": "K-Ligue",
-    "Hong Kong": "Premier Ligue",
-    "Indonésie": "Ligue 1",
-    "Iran": "Première Ligue",
-    "Iraq": "Ligue Irakienne",
-    "Jordanie": "Division 1",
-    "Kazakhstan": "Super Ligue",
-    "Koweït": "Première Ligue",
-    "Malaisie": "Super Ligue",
-    "Myanmar": "Ligue Nationale",
-    "Oman": "Division 1",
-    "Ouzbékistan": "Oliy Liga",
-    "Philippines": "PFL",
-    "Qatar": "Division 1",
-    "Sri Lanka": "Super Ligue",
-    "Tadjikistan": "Division",
-    "Thaïlande": "1. Ligue",
-    "Viêt-Nam": "V Ligue 1",
-    "ÉAU": "Ligue du Golfe",
-    "Asie": None,
-    # -- Pays trouvés manquants lors de l'audit final grand format (03/09) --
-    # ces 3 pays n'avaient jamais été ajoutés à aucune liste, fuite totale
-    # depuis le début du filtre Europe/Amérique/Afrique/Asie.
-    "Japon": "J1 Ligue",  # J2 Ligue déjà exclue plus haut (COMPETITIONS_EXCLUES), pas besoin de la revoir ici
-    "République Tchèque": "Ligue Tchèque",
-    "Îles Féroé": "Formuladeildin",  # "1 Deild" est le 2e échelon malgré le nom -- même piège que partout ailleurs
-    # -- "Monde" : matchs amicaux internationaux et compétitions hors
-    # confédération -- toujours exclu, jamais un vrai championnat national.
-    "Monde": None,
-    # -- Compétitions continentales européennes (club) -- noms exacts vus
-    # directement sur matchendirect.fr (page Real Madrid, plus tôt dans
-    # cette session), PAS le répertoire officiel qui suggérait "UEFA
-    # Ligue des Champions"/"UEFA Ligue Europa" -- Matchendirect fait
-    # foi, pas une source externe (consigne de Patrick, 03/09). Trois
-    # compétitions autorisées ici, d'où le tuple au lieu d'une seule
-    # chaîne -- tout le reste sous "Europe" (Nations League,
-    # qualifications Euro, jeunes...) reste exclu par défaut.
-    # CORRECTIF 03/09/2026 -- noms exacts confirmés par captures d'écran
-    # réelles de Patrick (matchendirect.fr, pas une source externe,
-    # conformément à sa consigne) : "Phase de Ligue" fait partie du nom
-    # actuel depuis le nouveau format à ligue unique (2024/25), ce n'est
-    # pas juste "Ligue des Champions"/"Ligue Europa". La variante
-    # "... - des équipes Françaises" est la même compétition vue filtrée
-    # -- "commence par" la capte automatiquement (suffixe, pas un préfixe
-    # différent). Confirmé aussi à exclure : "Ligue des Nations de
-    # l'UEFA" (sélections nationales, pas des clubs) -- déjà hors de
-    # cette liste, donc déjà exclue par défaut, rien à changer là-dessus.
-    # "Ligue Conférence Phase de Ligue" non vue en vrai dans ces captures
-    # -- déduite par cohérence avec les deux autres, à corriger si le nom
-    # réel diffère.
-    "Europe": ("Ligue des Champions Phase de Ligue", "Ligue Europa Phase de Ligue", "Ligue Conférence Phase de Ligue"),
-}
-
-
-def est_hors_top_flight_unique(nom_competition):
-    c = (nom_competition or "").replace("\n", " ")
-    if any(pays in c and comp in c for pays, comp in COMPETITIONS_FEMMES_AUTORISEES):
-        return False
-    if any(m in c.lower() for m in ("femme", "femin", "fémin")):
-        return False
-    if ":" not in c:
-        return False
-    pays_brut, comp_brut = c.split(":", 1)
-    pays_brut = pays_brut.strip()
-    comp = " ".join(comp_brut.split())
-    if pays_brut not in TOP_FLIGHT_UNIQUE_PAR_PAYS:
-        return False  # pays hors de ce bloc (déjà traité ailleurs -- les 17 pays à paliers multiples)
-    attendu = TOP_FLIGHT_UNIQUE_PAR_PAYS[pays_brut]
-    if attendu is None:
-        return True  # zone toujours exclue (confédération continentale, ou Malte)
-    # CORRECTIF 03/09/2026 -- certaines zones autorisent PLUSIEURS
-    # compétitions (ex. "Europe" : Ligue des Champions + Europa +
-    # Conférence) -- valeur en tuple dans ce cas, pas une seule chaîne.
-    if isinstance(attendu, tuple):
-        return not any(comp.startswith(motif) for motif in attendu)
-    # CORRECTIF 03/09/2026 -- "Super Ligue" (Grèce, Serbie, gardé) est
-    # aussi le début de "Super Ligue 2" (2e échelon, à exclure) -- même
-    # collision que "Ligue Nationale"/"Ligue Nationale Nord" en Angleterre.
-    if attendu == "Super Ligue" and comp.startswith("Super Ligue 2"):
-        return True
-    return not comp.startswith(attendu)
-
-
-def dates_j2_j3(aujourdhui=None):
-    aujourdhui = aujourdhui or datetime.date.today()
-    return {
-        (aujourdhui + datetime.timedelta(days=2)).isoformat(),
-        (aujourdhui + datetime.timedelta(days=3)).isoformat(),
-    }
-
-
-def date_j1(aujourdhui=None):
-    aujourdhui = aujourdhui or datetime.date.today()
-    return (aujourdhui + datetime.timedelta(days=1)).isoformat()
-
-
-def charge_matchs_fenetre():
-    matchs_demain = charge_json_ou_vide(FICHIER_MATCHS_DEMAIN, defaut=[])
-    matchs_semaine = charge_json_ou_vide(FICHIER_MATCHS_SEMAINE, defaut=[])
-
-    cibles = dates_j2_j3()
-    matchs_j2_j3 = [m for m in matchs_semaine if m.get("date") in cibles]
-
-    vus = set()
-    fenetre = []
-    for m in matchs_demain + matchs_j2_j3:
-        mid = m.get("match_id")
-        if not mid or mid in vus:
-            continue
-        vus.add(mid)
-        fenetre.append(m)
-
-    # AJOUT 03/09/2026 -- filtre jeunes/réserves, appliqué ici pour que ces
-    # matchs ne consomment ni tentative Betpawa ni appel réseau dans
-    # construit_signaux (voir docstring pour la mesure d'impact).
-    nb_avant_filtre = len(fenetre)
-    fenetre = [m for m in fenetre if not est_jeune_ou_reserve(m.get("competition"))]
-    nb_exclus_jeunes_reserves = nb_avant_filtre - len(fenetre)
-
-    # AJOUT 03/09/2026 (2e partie) -- liste explicite de compétitions
-    # exclues (2e divisions confirmées + compétitions à données trop
-    # souvent absentes), voir docstring et COMPETITIONS_EXCLUES.
-    nb_avant_liste = len(fenetre)
-    fenetre = [m for m in fenetre if not est_competition_exclue(m.get("competition"))]
-    nb_exclus_liste = nb_avant_liste - len(fenetre)
-
-    # AJOUT 03/09/2026 (3e partie) -- Chine : liste blanche, Super Ligue
-    # uniquement (voir docstring).
-    nb_avant_chine = len(fenetre)
-    fenetre = [m for m in fenetre if not est_chine_non_autorisee(m.get("competition"))]
-    nb_exclus_chine = nb_avant_chine - len(fenetre)
-
-    # AJOUT 03/09/2026 (4e partie) -- Océanie : liste blanche par zone,
-    # Australie/Nouvelle-Zélande uniquement (voir docstring).
-    nb_avant_oceanie = len(fenetre)
-    fenetre = [m for m in fenetre if not est_oceanie_non_autorisee(m.get("competition"))]
-    nb_exclus_oceanie = nb_avant_oceanie - len(fenetre)
-
-    # AJOUT 03/09/2026 (5e partie) -- Femmes : liste blanche, 1ère division
-    # européenne uniquement (voir docstring).
-    nb_avant_femmes = len(fenetre)
-    fenetre = [m for m in fenetre if not est_femmes_non_autorisee(m.get("competition"))]
-    nb_exclus_femmes = nb_avant_femmes - len(fenetre)
-
-    # AJOUT 03/09/2026 (6e partie) -- Europe hommes : paliers par pays
-    # (voir docstring et NIVEAUX_EUROPE_HOMMES).
-    nb_avant_europe = len(fenetre)
-    fenetre = [m for m in fenetre if not est_europe_hommes_non_autorisee(m.get("competition"))]
-    nb_exclus_europe = nb_avant_europe - len(fenetre)
-
-    # AJOUT 03/09/2026 (fusion) -- Amérique + reste de l'Europe + Afrique
-    # + Asie : 1ère division uniquement, une seule liste blanche fusionnée
-    # (voir docstring et TOP_FLIGHT_UNIQUE_PAR_PAYS).
-    nb_avant_unique = len(fenetre)
-    fenetre = [m for m in fenetre if not est_hors_top_flight_unique(m.get("competition"))]
-    nb_exclus_top_flight_unique = nb_avant_unique - len(fenetre)
-
-    return (fenetre, len(matchs_demain), len(matchs_j2_j3),
-            nb_exclus_jeunes_reserves, nb_exclus_liste, nb_exclus_chine,
-            nb_exclus_oceanie, nb_exclus_femmes, nb_exclus_europe,
-            nb_exclus_top_flight_unique)
-
-
-def _slim_pour_archive(s):
-    """Version pour historique_pronostics.json -- encore plus réduite que
-    la version site (pas besoin de LISTE_A/raison_non_traite pour un
-    match déjà archivé, seulement de quoi calculer un ROI et vérifier)."""
-    return {
-        "domicile": s.get("domicile"),
-        "exterieur": s.get("exterieur"),
-        "competition": s.get("competition"),
-        "match_id": s.get("match_id"),
-        "date": s.get("date"),
-        "heure": s.get("heure"),
-        "score": None,
-        "verdict_global": s.get("verdict_global"),
-        "motif_no_go": s.get("motif_no_go"),
-        "confiance": s.get("confiance"),
-        "source_cotes": s.get("source_cotes"),
-        "betpawa_url": s.get("betpawa_url"),
-        "model_version": s.get("model_version"),
-        "LISTE_B_liste_finale_apres_correlation": s.get("LISTE_B_liste_finale_apres_correlation"),
-    }
-
-
-def _leger_pour_site(s):
-    """Version pour precalcul_leger.json -- tout ce que script.js affiche
-    SAUF marches et lambda (les deux champs les plus lourds, utilisés
-    seulement par la section 'tous les marchés calculés'/détail du lambda
-    dans 'voir les détails')."""
-    d = dict(s)
-    d.pop("marches", None)
-    d.pop("lambda", None)
-    return d
-
-
-def archive_precalcul(signaux, date_j1_iso):
-    candidats = [
-        s for s in signaux
-        if s.get("traite") and s.get("verdict_global") and s.get("date") == date_j1_iso
-    ]
-    if not candidats:
-        return 0
-
-    historique = charge_json_ou_vide(FICHIER_HISTORIQUE, defaut=[])
-    historique.append({
-        "date": date_j1_iso,
-        "source": "precalcul_auto",
-        "nb_matchs_traites": len(candidats),
-        "matchs": [_slim_pour_archive(s) for s in candidats],
-    })
-    with open(FICHIER_HISTORIQUE, "w", encoding="utf-8") as f:
-        json.dump(historique, f, ensure_ascii=False, indent=2)
-
-    return len(candidats)
-
-
-def main():
-    (fenetre, nb_demain, nb_j2_j3, nb_exclus_jeunes_reserves,
-     nb_exclus_liste, nb_exclus_chine, nb_exclus_oceanie,
-     nb_exclus_femmes, nb_exclus_europe,
-     nb_exclus_top_flight_unique) = charge_matchs_fenetre()
-
-    if not fenetre:
-        print("ATTENTION : aucune matchs_demain.json/matchs_semaine.json "
-              "exploitable -- vérifier que scraper.py et scraper_semaine.py "
-              "ont bien tourné avant ce script.")
-
-    print(f"Filtre jeunes/réserves : {nb_exclus_jeunes_reserves} match(s) "
-          f"écarté(s) avant Betpawa et avant calcul des signaux.")
-    print(f"Filtre liste explicite (2e divisions confirmées + données "
-          f"souvent absentes) : {nb_exclus_liste} match(s) écarté(s).")
-    print(f"Filtre Chine (liste blanche, Super Ligue uniquement) : "
-          f"{nb_exclus_chine} match(s) écarté(s).")
-    print(f"Filtre Océanie (liste blanche, Australie/Nouvelle-Zélande "
-          f"uniquement) : {nb_exclus_oceanie} match(s) écarté(s).")
-    print(f"Filtre Femmes (liste blanche, 1ère division européenne "
-          f"uniquement) : {nb_exclus_femmes} match(s) écarté(s).")
-    print(f"Filtre Europe hommes (paliers par pays) : "
-          f"{nb_exclus_europe} match(s) écarté(s).")
-    print(f"Filtre 1ère division unique (Amérique + reste Europe + "
-          f"Afrique + Asie) : {nb_exclus_top_flight_unique} match(s) écarté(s).")
-
-    compteurs_betpawa = resout_cotes_betpawa(fenetre)
-    print(f"Résolution Betpawa : {compteurs_betpawa}")
-
-    signaux = construit_signaux(fenetre)
-
-    for s in signaux:
-        s["model_version"] = MODEL_VERSION
-        s["status"] = "READY" if s.get("traite") else "PARTIAL"
-        s["prepared_at"] = datetime.datetime.now(datetime.timezone.utc).strftime(
-            "%Y-%m-%dT%H:%M:%SZ"
-        )
-
-    date_j1_iso = date_j1()
-    nb_archives = archive_precalcul(signaux, date_j1_iso)
-    print(f"Archivage historique : {nb_archives} match(s) J+1 ({date_j1_iso}) "
-          f"ajouté(s) à {FICHIER_HISTORIQUE}.")
-
-    genere_le = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
-
-    sortie = {
-        "genere_le": genere_le,
-        "nb_matchs_demain_source": nb_demain,
-        "nb_matchs_j2_j3_source": nb_j2_j3,
-        "nb_exclus_jeunes_reserves": nb_exclus_jeunes_reserves,
-        "nb_exclus_liste_explicite": nb_exclus_liste,
-        "nb_exclus_chine_liste_blanche": nb_exclus_chine,
-        "nb_exclus_oceanie_liste_blanche": nb_exclus_oceanie,
-        "nb_exclus_femmes_liste_blanche": nb_exclus_femmes,
-        "nb_exclus_europe_hommes_paliers": nb_exclus_europe,
-        "nb_exclus_top_flight_unique": nb_exclus_top_flight_unique,
-        "nb_matchs_fenetre": len(fenetre),
-        "nb_ready": sum(1 for s in signaux if s["status"] == "READY"),
-        "nb_partial": sum(1 for s in signaux if s["status"] == "PARTIAL"),
-        "nb_archives_historique": nb_archives,
-        "betpawa": compteurs_betpawa,
-        "signaux": signaux,
-    }
-
-    with open(FICHIER_SORTIE, "w", encoding="utf-8") as f:
-        json.dump(sortie, f, ensure_ascii=False, indent=2)
-
-    # AJOUT 02/09/2026 -- version allégée pour le site (voir docstring).
-    sortie_legere = {
-        "genere_le": genere_le,
-        "nb_matchs_fenetre": len(fenetre),
-        "nb_ready": sortie["nb_ready"],
-        "nb_partial": sortie["nb_partial"],
-        "signaux": [_leger_pour_site(s) for s in signaux],
-    }
-    with open(FICHIER_SORTIE_LEGER, "w", encoding="utf-8") as f:
-        json.dump(sortie_legere, f, ensure_ascii=False, indent=2)
-
-    print(f"{FICHIER_SORTIE} écrit : {sortie['nb_matchs_fenetre']} matchs "
-          f"({sortie['nb_ready']} READY, {sortie['nb_partial']} PARTIAL). "
-          f"{FICHIER_SORTIE_LEGER} écrit en parallèle (sans marches/lambda). "
-          f"Betpawa : {compteurs_betpawa['betpawa_cotes_extraites']} match(s) "
-          f"avec cotes réelles, {compteurs_betpawa['betpawa_tentes']} tenté(s).")
-
-    if not fenetre:
-        sys.exit(1)
-
-
-if __name__ == "__main__":
-    main()
+name: Pipeline quotidien Archetype Foot
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+  workflow_dispatch:
+    inputs:
+      panier_id:
+        description: "Id du panier Supabase à analyser -- LAISSER VIDE pour relancer l'analyse complète du jour (équivalent du run planifié, sans attendre le prochain cron)"
+        required: false
+        type: string
+      limite_betpawa:
+        description: "02/09/2026 -- nombre max de matchs Betpawa dans precalcul.py. VIDE = valeur par défaut prudente (100), utilisée aussi automatiquement par le cron nocturne tant que le plein volume n'est pas validé en routine. Pour tester le VRAI volume illimité (déjà testé le 02/09 : 1574 matchs, 5h18m, proche de la limite de 6h de GitHub), taper le mot illimite (sans accent)."
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pipeline-archetype-foot
+  cancel-in-progress: false
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Installer les dépendances
+        run: |
+          pip install requests beautifulsoup4 pandas lxml playwright
+          playwright install --with-deps chromium
+
+      - name: Générer les listes brutes aujourd'hui + demain
+        run: python scraper.py --max-matchs 100000
+
+      - name: Générer la liste J+2 à J+7
+        run: python scraper_semaine.py --max-matchs 100000
+        continue-on-error: true
+
+      - name: Récupérer les matchs Betpawa (betpawa_urls.txt)
+        run: python scraper_betpawa.py
+        continue-on-error: true
+
+      # CORRECTIF 02/09/2026 (2e application -- la 1re n'avait pas pris) :
+      # le cron (schedule) ne fournit JAMAIS github.event.inputs.limite_betpawa
+      # (existe seulement sur workflow_dispatch) -- sans le "|| '100'", ça
+      # donne une chaîne vide = AUCUNE limite. Confirmé en conditions réelles
+      # le 02/09 : run de 5h18m51s sur 1574 matchs, à 40 min du mur des 6h de
+      # GitHub Actions. Défaut sûr désormais : 100, pour le cron ET pour un
+      # déclenchement manuel où le champ est laissé vide. Taper "illimite"
+      # dans le champ pour forcer explicitement le plein volume (déjà testé,
+      # fonctionne, mais proche de la limite).
+      - name: Pré-calcul J+1/J+2/J+3 + résolution Betpawa (indépendant du panier)
+        env:
+          PRECALCUL_LIMITE_BETPAWA: ${{ github.event.inputs.limite_betpawa || '100' }}
+        run: python precalcul.py
+        continue-on-error: true
+
+      - name: Pipeline planifié ou relance manuelle complète (panier_id vide)
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+        run: python run_pipeline.py
+
+      - name: Pipeline déclenché manuellement (panier Supabase, panier_id renseigné)
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id != ''
+        env:
+          INPUT_PANIER_ID: ${{ github.event.inputs.panier_id }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: python dispatch_pipeline.py
+
+      - name: Vérifier les scores des jours précédents
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+        run: python verification_resultats.py
+
+      - name: Commit et push du résultat (run planifié ou relance manuelle complète)
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+        run: |
+          git config user.name "archetype-foot-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data.json matchs_du_jour.json matchs_demain.json matchs_semaine.json precalcul.json cache_equipes.json cache_betpawa.json diagnostic_precalcul_betpawa.txt
+          # CORRECTIF 03/09/2026 : precalcul_leger.json (nouveau fichier depuis
+          # la session du 02/09, cf TRANSITION.md 17.5) était généré par
+          # precalcul.py mais absent de cette liste -- jamais commité, donc
+          # jamais servi par le site (404 permanent quel que soit le succès
+          # du run). Ajouté dans la boucle conditionnelle car le fichier peut
+          # ne pas exister si l'étape précalcul échoue (continue-on-error).
+          # AJOUT 03/09/2026 : matchs_du_jour_filtre.json et
+          # matchs_demain_filtre.json -- Patrick a signalé que le filtre de
+          # compétitions ne touchait que precalcul.json/precalcul_leger.json
+          # (le pipeline automatique), pas les listes affichées sur l'accueil
+          # pour la sélection manuelle du panier. Ces 2 nouveaux fichiers sont
+          # des copies filtrées de matchs_du_jour.json/matchs_demain.json,
+          # générées par precalcul.py -- les fichiers bruts restent
+          # committés tels quels juste au-dessus (run_pipeline.py en a besoin
+          # intacts pour résoudre un match ajouté manuellement au panier,
+          # même hors filtre).
+          for f in panier.json historique_pronostics.json precalcul_leger.json matchs_du_jour_filtre.json matchs_demain_filtre.json; do
+            [ -f "$f" ] && git add "$f"
+          done
+          git diff --staged --quiet || git commit -m "Mise à jour pipeline"
+          git pull --rebase origin main
+          git push
