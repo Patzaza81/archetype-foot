@@ -210,6 +210,27 @@ main.grille {
   padding: 16px;
 }
 
+/* --- 03/09/2026 -- En-tête de groupe pour la vue "par catégorie" des
+   pronostics (script.js). Distincte de .selection-competition (page de
+   sélection) même si visuellement proche : deux fonctionnalités
+   indépendantes, pas de couplage entre elles. --- */
+.entete-categorie {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  padding: 8px 12px;
+  margin: 24px 16px 8px;
+  background: var(--surface-2);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-radius: 6px;
+}
+.entete-categorie:first-child { margin-top: 16px; }
+@media (min-width: 700px) {
+  .entete-categorie { margin-left: 24px; margin-right: 24px; }
+}
+
+
 /* --- Carte : hiérarchie stricte à 5 niveaux --- */
 
 .match {
@@ -445,7 +466,12 @@ input[type="checkbox"]:checked::after {
   transform: rotate(45deg);
 }
 
-.selection-item label { font-size: 16px; }
+/* 03/09/2026 -- les noms d'équipe héritaient du blanc quasi-pur du texte
+   par défaut (var(--text)), trop proche visuellement du gris clair déjà
+   utilisé pour les noms de championnat -- confusion signalée par Patrick.
+   Distinction désormais par le POIDS (gras pour la compétition, normal
+   ici) plutôt que par une nuance de blanc à peine différente. */
+.selection-item label { font-size: 16px; color: var(--text-secondary); }
 
 #sortie-json {
   width: 100%;
