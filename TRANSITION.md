@@ -1,8 +1,9 @@
 # Archetype Foot — Document de transition
-Dernière mise à jour : 01/09/2026 (session pré-calcul J+1/J+2/J+3 +
-association automatique Betpawa, voir section 16 — nouvelle session la
-plus longue à ce jour, contient la découverte la plus importante du
-projet sur la récupération de cotes).
+Dernière mise à jour : 03/09/2026 (session filtre de compétitions complet +
+refonte visuelle — voir section 18, la plus longue et la plus large en
+portée à ce jour : touche toutes les zones du monde, mais **le nouveau
+filtre n'a jamais tourné en conditions réelles**, seulement testé contre
+un instantané figé de données).
 Objectif de ce document : permettre de reprendre le projet dans une nouvelle
 fenêtre de conversation sans perdre l'historique de décisions, ni répéter
 les erreurs déjà identifiées et corrigées.
@@ -34,13 +35,12 @@ d'habitude). Sur les 47 matchs GO avec score confirmé (68 paris au total) :
 - **Limite assumée** : 68 paris reste un échantillon modeste. Les valeurs
   ci-dessous seront à revérifier une fois `verification_resultats.py`
   (0.4) aura accumulé 150-200+ paris GO vérifiés.
-- **⚠️ TOUJOURS NON REVÉRIFIÉ AU 01/09/2026** — la session 16 (pré-calcul +
-  Betpawa) n'a pas touché à cette question. C'est la question la plus
-  importante du projet restée sans réponse depuis le 30/08 : les
-  correctifs de 0.2 (K_SHRINKAGE etc.) n'ont jamais été revalidés sur un
-  nouvel échantillon. Toute l'infrastructure construite en session 16 rend
-  le système plus rapide et plus riche en données, mais ne dit rien sur
-  la rentabilité réelle du moteur.
+- **⚠️ TOUJOURS NON REVÉRIFIÉ AU 03/09/2026** — ni la session 16, ni la 17,
+  ni la 18 n'ont touché à cette question. C'est la question la plus
+  importante du projet restée sans réponse depuis le 30/08. Toute
+  l'infrastructure construite depuis (pré-calcul, Betpawa, filtre de
+  compétitions) rend le système plus rapide, plus riche en données et
+  plus propre, mais ne dit rien sur la rentabilité réelle du moteur.
 
 ### 0.2 Correctifs appliqués à `calculs.py` suite à ce constat
 - **`K_SHRINKAGE = 0.27`** (nouvelle constante) : resserre toute
@@ -107,7 +107,7 @@ aujourd'hui, va chercher la page résultat matchendirect correspondante et
 écrit le score dans les matchs déjà analysés (GO/NO_GO) qui n'en ont pas
 encore — seulement si le statut scrapé est bien `"TER"`. Branché dans
 `pipeline.yml`, run planifié uniquement. **Toujours non confirmé sur un
-volume suffisant au 01/09** (voir 0.1).
+volume suffisant au 03/09.**
 
 ### 0.5 Passage à Supabase — isolation multi-utilisateur
 Auth anonyme Supabase (un `user_id` par appareil), deux tables avec Row
@@ -122,7 +122,9 @@ deux utilisateurs différents).
 
 ### 0.6 Responsive (`style.css`)
 `header`/`main` centrés (max-width 1200px) + un palier `@media (min-width:
-700px)`. Grille de cartes déjà intrinsèquement responsive.
+700px)`. Grille de cartes déjà intrinsèquement responsive. **Voir 18.2
+pour la refonte complète du système de couleurs, qui touche aussi ce
+fichier.**
 
 ### 0.7 Erreurs commises en session, corrigées avant livraison
 Confusions `run_pipeline.py`/`dispatch_pipeline.py` et
@@ -181,15 +183,22 @@ occurrence. Commité le 26/08.
 - **Les sources de données sont des outils à extraire, pas des cahiers des
   charges rigides.**
 - **Aucune affirmation sans vérification en conditions réelles.** La
-  session 16 (voir plus bas) est le meilleur exemple à ce jour de cette
-  discipline appliquée strictement : chaque hypothèse (scroll, filtre
-  jour, sigle PSG, faux positif de nom) a été vérifiée par un test réel
-  avant d'être actée, y compris quand ça demandait de recommencer
-  plusieurs fois.
+  session 18 (filtre de compétitions, voir plus bas) applique cette
+  discipline à une échelle inédite : chaque pays "à risque" a été vérifié
+  soit contre les vraies données du dernier run, soit contre une source
+  externe (Wikipedia), soit contre une capture d'écran matchendirect
+  fournie par Patrick — mais **le résultat final n'a toujours pas tourné
+  en production**, seulement contre un instantané figé. Ne pas confondre
+  "vérifié contre des données réelles" et "vérifié en production".
 - **Dire clairement ce qui est confirmé, ce qui est probable, et ce qui est
   un pur best-effort non testé.**
 - **Priorité au gratuit et au simple.**
 - **Le scope se réduit consciemment plutôt que de s'étendre indéfiniment.**
+- **Ne jamais confirmer qu'un fichier a été correctement modifié sans
+  vérifier soi-même le contenu réel transmis** (leçon de la session 17,
+  reconfirmée en 18 : la Nouvelle-Zélande a été supposée "gardée" avant
+  qu'une capture d'écran réelle ne prouve qu'elle n'a pas sa propre 1ère
+  division, elle joue dans l'A-Ligue australienne).
 
 ---
 
@@ -227,49 +236,65 @@ Marchés calculables : 1X2, Double Chance, BTTS, Over/Under (toutes
 lignes), Handicap à 2 choix (lignes demi-entières), Score exact, Nombre
 exact de buts, Pair/Impair, Cages inviolées.
 
+**Rien de tout ça n'a été touché par la session 18** — le filtre de
+compétitions agit uniquement en amont, sur QUELS matchs entrent dans le
+calcul, jamais sur COMMENT le calcul lui-même fonctionne.
+
 ---
 
-## 3. Architecture actuelle (mise à jour session 16)
+## 3. Architecture actuelle (mise à jour session 18)
 
 ```
 GitHub Actions (cron quotidien 0h UTC = 1h Douala + déclenchement manuel)
   → scraper.py           (matchs aujourd'hui/demain — matchendirect, HTTP
-                           simple ; plafond de 200/jour RETIRÉ le 31/08,
-                           voir 16.1 — était un vrai bug, pas voulu)
+                           simple ; plafond de 200/jour RETIRÉ le 31/08)
   → scraper_semaine.py   (matchs J+2 à J+7 — matchendirect, via Playwright,
                            tourne déjà chaque nuit en production, pas de
                            plafond)
   → scraper_betpawa.py   (cotes + marchés Betpawa POUR LES URLS DE
                            betpawa_urls.txt SEULEMENT — pas un scan
-                           automatique, voir 16.2 pour la limite réelle
-                           découverte ce jour-là)
+                           automatique)
   → scraper_details.py   (classement, H2H, forme -- matchendirect, HTTP simple)
   → calculs.py           (Poisson/Dixon-Coles/EV/Kelly, calibré par ligue -- 0.2)
-  → precalcul.py         (NOUVEAU 31/08 — voir 16.3 — pré-calcul J+1/J+2/J+3
-                           indépendant du panier, réutilise construit_signaux()
-                           sans y toucher ; utilise cache_equipes.py)
-  → cache_equipes.py     (NOUVEAU 31/08 — cache persistant des stats
-                           GF/GA par équipe+compétition, voir 16.3)
+  → precalcul.py         (pré-calcul J+1/J+2/J+3 indépendant du panier,
+                           réutilise construit_signaux() sans y toucher ;
+                           utilise cache_equipes.py ; DEPUIS LE 03/09,
+                           applique aussi le filtre de compétitions complet
+                           -- voir section 18 -- AVANT la résolution
+                           Betpawa et AVANT construit_signaux())
+  → cache_equipes.py     (cache persistant des stats GF/GA par
+                           équipe+compétition)
   -- run planifié (schedule) --
   → run_pipeline.py      (orchestrateur, écrit data.json)
   → verification_resultats.py  (scores des jours passés -- 0.4)
   → commit + push automatique vers le dépôt
   -- run manuel (workflow_dispatch, panier_id) --
-  → dispatch_pipeline.py (lit le panier Supabase par panier_id)
+  → dispatch_pipeline.py (lit le panier Supabase par panier_id -- PAS
+                           affecté par le filtre de compétitions, voir
+                           18.6 : le panier manuel garde volontairement
+                           accès à TOUT, y compris ce que le filtre exclut
+                           par défaut)
 
-NOUVEAU 31/08-01/09 -- résolution d'identité Betpawa (voir section 16) :
   → resolution_betpawa.py (module de PRODUCTION, moteur à 3 tamis validé
-                           sur 100 matchs réels : 37 trouvés / 3 ambigus /
-                           60 non trouvés, ZÉRO faux positif -- règle
-                           stricte : ne plus modifier sans repasser par un
-                           test complet sur échantillon)
+                           sur 100 matchs réels -- règle stricte : ne plus
+                           modifier sans repasser par un test complet)
   → cache_betpawa.py      (cache persistant des correspondances CERTAINES
-                           uniquement, jamais des AMBIGU/NON TROUVÉ, avec
-                           traçabilité complète -- voir 16.5)
-  -- PAS ENCORE BRANCHÉ dans precalcul.py ni pipeline.yml, voir 16.7 --
+                           uniquement)
+  → resolution_betpawa_precalcul.py (pont entre les deux modules
+                           ci-dessus et precalcul.py, branché depuis la
+                           session 17)
 
 Netlify sert le dépôt en statique (index.html/panier.html/pronostics.html/
 betpawa.html), Supabase pour l'isolation multi-utilisateur (0.5).
+
+NOUVEAU 03/09 -- fichiers générés par precalcul.py pour l'AFFICHAGE
+seulement (accueil, sélection manuelle du panier) :
+  matchs_du_jour_filtre.json  (copie filtrée de matchs_du_jour.json)
+  matchs_demain_filtre.json   (copie filtrée de matchs_demain.json)
+  -- les fichiers BRUTS (matchs_du_jour.json, matchs_demain.json) restent
+  intacts et committés tels quels : run_pipeline.py (normalise_panier) en
+  a besoin pour résoudre un match_id ajouté manuellement au panier, même
+  hors filtre. index.js lit désormais les versions _filtre.
 ```
 
 **Dépôt GitHub** : `Patzaza81/archetype-foot`, branche `main`.
@@ -279,19 +304,18 @@ betpawa.html), Supabase pour l'isolation multi-utilisateur (0.5).
 ## 4-14. [Sections historiques, inchangées depuis le 30/08 — voir versions
 précédentes de ce document pour le détail complet : pages matchendirect
 découvertes (section 4), décisions d'abandon (section 5), fragilités
-connues (section 6, mise à jour ci-dessous en 16.8), architecture Betpawa
+connues (section 6, mise à jour en 16.8/17/18.9), architecture Betpawa
 copier-coller/URL manuelle (section 15), etc. Pas reproduites intégralement
-ici pour ne pas alourdir -- se référer à la version du 30/08 conservée dans
-l'historique du dépôt/de la conversation précédente si le détail est
-nécessaire.]
+ici pour ne pas alourdir -- se référer à l'historique du dépôt/de la
+conversation si le détail est nécessaire.]
 
 ---
 
 ## 16. Session du 31/08-01/09/2026 — pré-calcul J+1/J+2/J+3 et résolution d'identité Betpawa
 
-**La session la plus longue et la plus riche en détours de tout le projet
-à ce jour.** Contient la découverte la plus importante du projet sur la
-récupération de cotes réelles, mais uniquement après plusieurs pistes
+**La session la plus longue et la plus riche en détours du projet, jusqu'à
+la session 18.** Contient la découverte la plus importante du projet sur
+la récupération de cotes réelles, mais uniquement après plusieurs pistes
 mortes explorées à fond avant d'y arriver. Documentée en détail
 volontairement, y compris les échecs, pour ne jamais avoir à refaire ce
 chemin.
@@ -343,8 +367,14 @@ au niveau du module (`run_pipeline.recupere_gf_ga_avec_repli = ...`), sans
 toucher à `run_pipeline.py` lui-même. Premier run (cache vide) : 1h08m57s.
 Deuxième run (cache partiellement rempli) : 58m26s -- amélioration réelle
 mais plus modeste qu'espéré sur ce seul cycle ; l'effet complet du cache ne
-se mesurera que sur plusieurs nuits consécutives, jamais vérifié sur plus
-de 2 runs consécutifs à ce jour.
+se mesurera que sur plusieurs nuits consécutives.
+
+**IMPORTANT, découvert seulement en session 18 (18.7)** : ce cache ne
+couvre que les stats GF/GA par équipe. Trois autres appels réseau par
+match (classement, H2H, cotes) n'ont AUCUN cache -- notamment le
+classement, refait identique pour chaque match d'une même compétition/
+journée. Piste de cache classement/H2H proposée en 18.8, jamais
+implémentée à ce jour.
 
 ### 16.3 La quête de la découverte automatique des matchs Betpawa -- pistes mortes documentées
 
@@ -452,7 +482,7 @@ soi-même"), la logique de décision a été reconstruite en 3 étapes :
 - **Tamis 3** -- si toujours ambigu après la date (plusieurs à la même
   date, ou aucune correspondance de date) : marqué "AMBIGU", jamais de
   choix au hasard. Reste disponible pour un arbitrage ultérieur (pas
-  construit à ce jour -- voir 16.7).
+  construit à ce jour).
 
 **Validation empirique finale, échantillon de 100 matchs réels** (tirage
 honnête : 20 de grands championnats + 80 au hasard dans le reste de
@@ -466,240 +496,597 @@ grande majorité de championnats absents de la couverture Betpawa
 Liban, Thaïlande D2...). Un cas notable identifié : "PSG - AS Monaco"
 (match du 4 septembre, donc J+3) non trouvé malgré la conversion de sigle
 correcte -- hypothèse retenue : un match trop loin dans le futur peut ne
-pas encore être indexé par la recherche Betpawa au moment du test, most
-probable given qu'un autre match PSG plus proche (2 septembre, vs
-Eintracht) existait bien. **Non confirmé formellement, à revérifier** si
-le cas se reproduit.
+pas encore être indexé par la recherche Betpawa au moment du test. **Non
+confirmé formellement, à revérifier** si le cas se reproduit.
 
 **⚠️ Question méthodologique ouverte, soulevée par une relecture externe
 (ChatGPT, sollicité par Patrick sur le même énoncé de problème)** : le
 taux de 37% ne distingue pas "vraie absence du match sur Betpawa" de
 "match présent mais raté par l'algorithme" -- aucun audit manuel
 systématique des 60 non-trouvés n'a été fait à ce jour pour trancher.
-Cette proposition externe a surtout reformulé l'architecture déjà
-construite ici (peu d'apport nouveau), mais a soulevé cette question
-valablement, ainsi que l'idée du cache de correspondances (voir 16.6,
-retenue et construite) et la piste de paralléliser les recherches
-Playwright pour la vitesse (évoquée, pas construite à ce jour).
 
 ### 16.6 Industrialisation -- `resolution_betpawa.py` + `cache_betpawa.py`
-Sur demande explicite de Patrick, avec une règle stricte ("on ne touche
-pas au moteur qui fonctionne déjà") :
-
-- **`resolution_betpawa.py`** (NOUVEAU) : le moteur à 3 tamis, extrait tel
-  quel du script de test validé, promu module de production stable.
-  **Règle documentée en tête de fichier : ne plus modifier la logique des
-  tamis sans repasser par un test complet sur échantillon** -- même
-  discipline que `calculs.py`.
-- **`cache_betpawa.py`** (NOUVEAU) : mémoire persistante des
-  correspondances CERTAINES uniquement -- jamais un AMBIGU, jamais un NON
-  TROUVÉ. Structure riche par match (pas juste `nom -> event_id`) :
-  équipes source ET Betpawa, `event_id`, date, compétition, niveau de
-  confiance, horodatage de vérification, tamis d'origine. Clé de cache =
-  (domicile, exterieur, date) normalisés -- pertinent parce qu'un même
-  match reste dans la fenêtre glissante J+1→J+2→J+3 jusqu'à 3 nuits de
-  suite avant d'être joué, donc le cache évite de refaire toute la
-  recherche+vérification chaque nuit pour un match déjà résolu. Fonction
-  de purge écrite (`purge_matchs_joues`) mais jamais appelée
-  automatiquement à ce jour.
+- **`resolution_betpawa.py`** : le moteur à 3 tamis, promu module de
+  production stable. **Règle documentée en tête de fichier : ne plus
+  modifier la logique des tamis sans repasser par un test complet sur
+  échantillon** -- même discipline que `calculs.py`.
+- **`cache_betpawa.py`** : mémoire persistante des correspondances
+  CERTAINES uniquement -- jamais un AMBIGU, jamais un NON TROUVÉ.
 - **Test de validation double-run réalisé et CONFIRMÉ (01/09/2026)** :
-  lance les mêmes 100 matchs deux fois de suite, cache vide puis rempli.
-  **Résultat : 40 trouvés / 2 ambigus identiques sur les deux runs (aucune
-  dérive), 40/40 correspondances venues du cache au 2e passage, gain de
-  temps réel de 47% (13m10s -> 6m57s, durée totale du test : 20 minutes).**
-  Cache validé pour la mise en production. Note en passant : le run à vide
-  (13 minutes pour 100 matchs) est nettement plus rapide que les 30-45
-  minutes estimées lors du test V30 équivalent -- les optimisations
-  successives du moteur (sélecteurs plus directs, moins de vérifications
-  redondantes) ont aussi accéléré la résolution elle-même, indépendamment
-  de l'effet du cache.
+  40 trouvés / 2 ambigus identiques sur les deux runs (aucune dérive),
+  40/40 correspondances venues du cache au 2e passage, gain de temps réel
+  de 47% (13m10s -> 6m57s).
 
-### 16.7 Ce qui reste à faire (priorités, dans l'ordre suggéré)
-1. **Brancher `resolution_betpawa.py` + `cache_betpawa.py` dans
-   `precalcul.py`** -- à ce jour, ces deux modules existent et sont
-   validés en isolation (via `test_scraping_betpawa_liste.py`, un script
-   diagnostic, PAS le pipeline réel, et le cache est maintenant confirmé
-   fiable sur un double-run), mais rien ne les appelle depuis le vrai
-   pré-calcul nocturne. C'est la prochaine étape concrète.
-2. **Mesurer la vraie couverture Betpawa** en auditant manuellement un
-   échantillon des "NON TROUVÉ" -- pour savoir si ~40% est un bon ou un
-   mauvais score une fois la vraie limite du site connue (question
-   soulevée en 16.5, jamais tranchée).
-3. **Envisager la parallélisation** des recherches Playwright si le volume
-   réel (600-800 matchs/nuit) rend le temps d'exécution actuel
-   (environ 13 minutes pour 100 matchs sans cache, moins avec) inacceptable
-   à l'échelle. Prudence à observer : risque de détection d'usage anormal
-   par Betpawa si trop de requêtes simultanées.
-4. **Revenir sur la question du ROI réel du moteur** (0.1, jamais
-   revérifiée depuis le 30/08) -- reste la question la plus importante du
-   projet indépendamment de tout le travail d'infrastructure de cette
-   session. Toute cette session a amélioré la vitesse et la richesse des
-   données, rien sur la rentabilité du moteur lui-même.
-5. Programmer un appel périodique à `purge_matchs_joues()` pour
-   `cache_betpawa.json`, sans quoi il grossira indéfiniment.
-6. Reprendre la feuille de route plus ancienne (Phase 5 : frontend en
-   lecture seule ; Phase 6 : mode administrateur) -- pas touchée du tout
-   pendant cette session, entièrement concentrée sur le backend.
+### 16.7 Ce qui restait à faire fin session 16 (repris et complété en 17/18)
+1. Brancher `resolution_betpawa.py` + `cache_betpawa.py` dans
+   `precalcul.py` -- **FAIT en session 17, voir 17.1**.
+2. Mesurer la vraie couverture Betpawa en auditant les "NON TROUVÉ" --
+   **toujours pas fait**.
+3. Envisager la parallélisation des recherches Playwright -- **toujours
+   pas fait, ni même retenté**.
+4. Revenir sur la question du ROI réel du moteur -- **toujours pas fait,
+   voir 0.1**.
+5. Purge périodique de `cache_betpawa.json` -- **toujours pas fait**.
+6. Phase 5/6 de la feuille de route (frontend lecture seule, mode admin)
+   -- **toujours pas touchée**.
 
-### 16.8 Mise à jour de la section 6 (fragilités connues)
-En plus des points déjà listés au 30/08 (BUG de cote resté à confirmer en
-prod, lieu/météo/arbitre jamais branchés, seuil de corrélation possiblement
-trop haut) :
-- **`resolution_betpawa.py`** : validé sur 100 matchs avec zéro faux
-  positif détecté, mais reste une heuristique de ressemblance de texte +
-  vérification de date -- pas une garantie absolue. Un futur cas piège
-  non anticipé (deux matchs différents, mêmes deux noms d'équipe
-  ressemblants, même date) reste théoriquement possible, quoique very
-  improbable vu la double vérification.
-- **`cache_betpawa.py`** : validé sur un double-run (100 matchs, 0 dérive,
-  47% de gain de temps). Reste non testé sur plusieurs nuits réelles
-  consécutives (matchs qui sortent de la fenêtre, cohérence du cache dans
-  la durée) -- premier vrai test seulement en conditions de production.
-- **`cache_equipes.py`** : même limite -- un seul cycle de comparaison
-  avant/après observé (1h08m57s -> 58m26s), l'effet en régime stable sur
-  plusieurs nuits consécutives n'est pas mesuré.
-- **La recherche Betpawa ne trouve pas les sigles de club à 3 lettres**
-  (confirmé sur PSG) -- `SIGLES_CONNUS` est une petite table manuelle,
-  pas une solution générale ; tout sigle non listé échouera silencieusement
-  (retournera "NON TROUVÉ", pas une erreur).
-- **Couverture temporelle incertaine** : un match à J+3 peut ne pas encore
-  être indexé par la recherche Betpawa au moment du scan (cas PSG-Monaco,
-  16.5) -- si confirmé sur d'autres cas, le taux de détection réel pourrait
-  être structurellement plus bas sur J+3 que sur J+1, question non
-  tranchée à ce jour.
-  ## 17. Session du 02/09/2026 -- Branchement Betpawa dans precalcul.py, archivage, frontend
+### 16.8 Fragilités connues (mise à jour de la section 6)
+- `resolution_betpawa.py` : validé sur 100 matchs, zéro faux positif
+  détecté, mais reste une heuristique -- pas une garantie absolue.
+- `cache_betpawa.py`/`cache_equipes.py` : validés sur un cycle
+  avant/après ou un double-run, jamais sur plusieurs nuits réelles
+  consécutives en production.
+- `SIGLES_CONNUS` reste une petite table manuelle -- tout sigle non
+  listé échoue silencieusement.
+- Couverture temporelle incertaine sur J+3 (cas PSG-Monaco, 16.5).
+
+---
+
+## 17. Session du 02/09/2026 -- Branchement Betpawa dans precalcul.py, archivage, frontend
 
 ### 17.1 Branchement resolution_betpawa.py + cache_betpawa.py dans precalcul.py -- FAIT ET VALIDÉ
-Nouveau fichier **`resolution_betpawa_precalcul.py`** : pont entre les deux
+Nouveau fichier `resolution_betpawa_precalcul.py` : pont entre les deux
 modules déjà validés (16.6) et `precalcul.py`, sans modifier une seule
-ligne de leur logique interne (règle stricte respectée). Pour chaque match
-de la fenêtre J+1/J+2/J+3 : vérifie le cache, sinon lance
-`resoudre_match()`, puis si trouvé récupère les cotes réelles via
-`scraper_betpawa.recupere_page()` + `meilleur_parsing()`. Si cotes
-trouvées : `cotes_manuelles` est injecté dans le match, ce qui fait
-basculer `run_pipeline.construit_signaux()` sur ces cotes au lieu de
-Bet365/matchendirect (mécanisme déjà existant dans run_pipeline.py,
+ligne de leur logique interne. Pour chaque match de la fenêtre J+1/J+2/J+3 :
+vérifie le cache, sinon lance `resoudre_match()`, puis si trouvé récupère
+les cotes réelles via `scraper_betpawa.recupere_page()` +
+`meilleur_parsing()`. Si cotes trouvées : `cotes_manuelles` est injecté
+dans le match, ce qui fait basculer `run_pipeline.construit_signaux()`
+sur ces cotes au lieu de Bet365/matchendirect (mécanisme déjà existant,
 inchangé). Jamais d'exception qui remonte -- tout est absorbé dans des
 compteurs, écrit dans `diagnostic_precalcul_betpawa.txt` à chaque run.
-Un paramètre `PRECALCUL_LIMITE_BETPAWA` (variable d'env, lue par
-`resolution_betpawa_precalcul.py`) permet de plafonner le nombre de
-matchs traités par Betpawa sur un run -- voir 17.3.
+Paramètre `PRECALCUL_LIMITE_BETPAWA` (variable d'env) pour plafonner le
+nombre de matchs traités par Betpawa sur un run -- voir 17.3.
 
 **Validé en conditions réelles à petite échelle (15 matchs, 01/09)** :
-13/15 trouvés, cotes extraites, `verdict_global` calculé correctement à
-partir des vraies cotes Betpawa (vérifié sur le JSON complet, pas
-seulement un exemple) -- confirme que le branchement fonctionne de bout
-en bout, pas seulement la résolution isolée.
+13/15 trouvés, cotes extraites, `verdict_global` calculé correctement.
 
 **Validé à pleine échelle (1574 matchs, run automatique 02/09)** :
 498 trouvés, 49 ambigus, 1027 non trouvés, 0 erreur. Durée de l'étape
-Betpawa seule : **12428 secondes (~3h27m)**. Durée totale du job :
-**5h18m51s**, à 40 minutes du mur des 6h de GitHub Actions -- **trop
-proche de la limite pour être fiable en routine sans plafond** (voir
-17.3).
+Betpawa seule : 12428 secondes (~3h27m). Durée totale du job : 5h18m51s,
+à 40 minutes du mur des 6h de GitHub Actions.
 
-### 17.2 Archivage automatique dans historique_pronostics.json -- CODE ÉCRIT, PAS ENCORE VÉRIFIÉ EN CONDITIONS RÉELLES
-Problème identifié en cours de session : le pré-calcul nocturne produisait
-des centaines de pronostics par nuit qui n'entraient jamais dans
-`historique_pronostics.json` -- donc jamais utilisables par
-`verification_resultats.py`, donc jamais comptés dans l'objectif
-d'accumuler ~1000 matchs vérifiés avant de miser réellement (0.1).
+**IMPORTANT, découvert en session 18 (18.7)** : cette durée de 5h18m
+n'était en réalité PAS causée par la résolution Betpawa elle-même (qui ne
+prend que quelques minutes une fois plafonnée), mais par
+`construit_signaux()` qui retraite l'intégralité de la fenêtre (jusqu'à
+2400+ matchs) indépendamment de toute limite Betpawa -- voir 18.7 pour le
+détail complet de cette découverte tardive, qui remet en cause
+l'interprétation de cet incident telle qu'écrite ci-dessus à l'époque.
 
-**Solution retenue** : `archive_precalcul()` dans `precalcul.py`,
-appelée après `construit_signaux()`. Deux décisions de conception à
-retenir :
-- **Version allégée** (`_slim_pour_archive`) -- pas les distributions de
-  probabilité complètes, seulement ce qu'il faut pour calculer un ROI et
-  vérifier le score plus tard (équipes, date, verdict, LISTE_B, etc.).
-  Sans ça, le fichier grossirait de façon incontrôlable (chaque match
-  archivé brut pèse plusieurs Ko).
-- **Seuls les matchs dont la date est EXACTEMENT J+1 (demain) sont
-  archivés** -- jamais J+2/J+3. Sans cette règle, un même match serait
-  archivé jusqu'à 3 fois (une fois par nuit, à mesure qu'il descend de
-  J+3 à J+1 dans la fenêtre), faussant tout calcul de ROI par triple
-  comptage. Chaque match n'entre dans l'historique qu'une seule fois, la
-  veille de son coup d'envoi.
+### 17.2 Archivage automatique dans historique_pronostics.json -- CONFIRMÉ EN SESSION 18
+`archive_precalcul()` dans `precalcul.py`, appelée après
+`construit_signaux()`. Version allégée (`_slim_pour_archive`, pas les
+distributions de probabilité complètes). Seuls les matchs dont la date est
+EXACTEMENT J+1 sont archivés -- jamais J+2/J+3, pour ne jamais archiver le
+même match plusieurs fois à mesure qu'il descend dans la fenêtre.
 
-**État de vérification réel, à ne pas confondre avec "ça marche"** : le
-code existe et est raisonné, mais **aucun run n'a encore exécuté cette
-version de `precalcul.py` avec succès à ce jour** -- le run automatique
-du 02/09 (5h18m, voir 17.1) a tourné avec une version DU CODE ANTÉRIEURE
-à cet ajout (course de vitesse entre le commit de Patrick et le
-déclenchement du cron à 0h UTC). `historique_pronostics.json` ne contient
-donc encore aucune entrée `"source": "precalcul_auto"` au moment où cette
-section est écrite. **Prochaine étape immédiate à la reprise : vérifier
-qu'un run avec le code à jour produit bien cette entrée.**
+**CONFIRMÉ EN SESSION 18** : le run du 03/09 (post-correctif) a bien
+produit une entrée `"source": "precalcul_auto"`, date `2026-09-04`
+(J+1 par rapport au run), 247 matchs, structure cohérente, une seule
+date. **Ce point précis est donc résolu**, contrairement à
+`precalcul_leger.json` (voir 18.1).
 
-### 17.3 Incident -- limite de sécurité Betpawa appliquée deux fois trop tard
-Le run automatique du 02/09 (cron 0h UTC) a tourné SANS AUCUNE limite sur
-la résolution Betpawa (`PRECALCUL_LIMITE_BETPAWA` vide sur un événement
-`schedule`, qui ne fournit jamais `github.event.inputs.*`) -- 5h18m51s de
-durée, à 40 minutes du mur des 6h. **Deux fois de suite, Patrick a cru
-avoir appliqué le correctif (`|| '100'` en repli sur la valeur de
-l'input) et ne l'avait en réalité pas fait** -- confirmé les deux fois en
-lisant directement le contenu du `pipeline.yml` du dépôt (zip uploadé),
-pas en se fiant à une déclaration verbale. **Leçon opérationnelle
-retenue pour la suite : ne jamais confirmer qu'un fichier a été
-correctement remplacé sans le vérifier soi-même sur le contenu réel
-transmis (zip du dépôt, ou copier-coller direct dans le message) --
-jamais sur la seule affirmation de l'avoir fait.**
+### 17.3 Incident -- limite de sécurité Betpawa appliquée deux fois trop tard, puis diagnostic revu en session 18
+Le run automatique du 02/09 a tourné SANS AUCUNE limite sur la résolution
+Betpawa (`PRECALCUL_LIMITE_BETPAWA` vide sur un événement `schedule`,
+qui ne fournit jamais `github.event.inputs.*`) -- 5h18m51s de durée.
+Correctif (`|| '100'`) confirmé appliqué par lecture directe du fichier
+après deux tentatives ratées.
 
-État à la fin de cette session : le correctif (`PRECALCUL_LIMITE_BETPAWA:
-${{ github.event.inputs.limite_betpawa || '100' }}`) a été confirmé
-appliqué par lecture directe du fichier. Reste à vérifier que le PROCHAIN
-run planifié (cron suivant) respecte bien cette limite de 100 par défaut.
+**Nuance capitale ajoutée en session 18 (18.7)** : ce correctif limite
+bien le NOMBRE de matchs qui obtiennent une résolution Betpawa, mais PAS
+le nombre de matchs traités par `construit_signaux()` -- qui tourne
+TOUJOURS sur l'intégralité de la fenêtre, quelle que soit la valeur de
+`PRECALCUL_LIMITE_BETPAWA`. Autrement dit : **passer la limite de 100 à 5
+ne change quasiment rien à la durée totale du run** -- constaté
+empiriquement par Patrick (run à 5 matchs sélectionnés dans le panier,
+toujours ~1h+ sur l'étape de pré-calcul), qui a mené à toute
+l'investigation de performance de la session 18 (voir 18.7/18.8). La
+vraie explication de l'incident du 02/09 est donc la TAILLE DE LA FENÊTRE
+elle-même (2408 matchs ce jour-là), pas le volume Betpawa. Le filtre de
+compétitions de la session 18 s'attaque directement à cette taille de
+fenêtre (37% conservé sur le dernier test, voir 18.3) -- c'est le vrai
+successeur de ce correctif, pas `PRECALCUL_LIMITE_BETPAWA`.
 
-### 17.4 Frontend -- `/pronostics.html` connecté au pré-calcul automatique pour la première fois
-Avant cette session, `/pronostics.html` ne lisait que `data.json` (résultat
-du panier manuel) -- le pré-calcul nocturne, quel que soit son volume,
-était entièrement invisible sur le site. Changements :
-- **4 onglets** : J+1/J+2/J+3 (lisent le pré-calcul, dates calculées
-  dynamiquement côté client à l'ouverture de la page, jamais codées en
-  dur) + Panier (comportement `data.json`/Supabase strictement inchangé,
-  conservé en parallèle sur décision explicite de Patrick).
-- **Tri par défaut** : GO triés par EV décroissant en premier, puis
-  NO_GO, puis non traités -- avant, les rares paris actionnables étaient
-  noyés dans des centaines de matchs. Case à cocher "afficher seulement
-  les GO" ajoutée en complément, filtre en mémoire (pas de refetch).
-- **Correctif race condition** (trouvé et corrigé le jour même) : un
-  changement rapide d'onglet pouvait laisser un fetch obsolète écraser
-  l'affichage d'un onglet déjà quitté. Corrigé par un jeton
-  d'affichage incrémenté à chaque changement d'onglet, vérifié avant
-  tout rendu.
+### 17.4 Frontend -- `/pronostics.html` connecté au pré-calcul automatique
+4 onglets (J+1/J+2/J+3/Panier), tri GO-EV décroissant en premier, case
+"afficher seulement les GO", correctif race condition (jeton d'affichage
+incrémenté à chaque changement d'onglet). **Complété en session 18** avec
+un mode d'affichage supplémentaire "Par catégorie" (regroupement par
+championnat) -- voir 18.2.
 
-### 17.5 precalcul_leger.json -- CODE ÉCRIT, PAS ENCORE GÉNÉRÉ NI VÉRIFIÉ
-`precalcul.json` est passé de 3,4 Mo (01/09, 831 matchs) à 9,2 Mo (02/09,
-1574 matchs) -- chargé en entier par le site à chaque ouverture, sur une
-connexion 3G annoncée par Patrick. Solution : `precalcul.py` écrit
-désormais EN PLUS `precalcul_leger.json` (mêmes signaux, sans les champs
-`marches` et `lambda`, les plus lourds et les moins utiles au quotidien --
-le verdict, le pari recommandé, la cote et l'EV n'en dépendent jamais,
-voir docstring de `_leger_pour_site`). `script.js` a été modifié pour
-lire ce fichier léger au lieu de `precalcul.json`.
+### 17.5 precalcul_leger.json -- TOUJOURS NON RÉSOLU, voir 18.1
+`precalcul.py` écrit `precalcul_leger.json` (mêmes signaux, sans les
+champs `marches`/`lambda`) pour que le site n'ait plus à charger le
+fichier complet (9,2 Mo au 02/09) sur une connexion 3G.
+**⚠️ Ce point n'est PAS résolu au 03/09, malgré une session entière de
+diagnostic -- voir le détail complet en 18.1, section à lire en premier
+à la reprise.**
 
-**État à la fin de la session : le fichier n'existe pas encore sur le
-dépôt** -- confirmé par une erreur 404 sur le site
-("`precalcul_leger.json introuvable`") au moment où cette section est
-écrite, car aucun run n'a encore tourné avec cette version de
-`precalcul.py`. Attendu au prochain run réussi. `pipeline.yml` a été mis
-à jour pour committer ce nouveau fichier (`git add` complété).
+### 17.6 Ce qui restait à faire fin session 17 (repris en 18)
+1. Vérifier le prochain run de bout en bout -- **fait partiellement en
+   18.1** : `historique_pronostics.json` confirmé bon (17.2), mais
+   `precalcul_leger.json` **toujours pas résolu**.
+2. Revenir sur le ROI réel du moteur -- **toujours pas fait**.
+3. Décider d'un vrai régime de `limite_betpawa` -- **reconsidéré en
+   18.7** : cette variable n'est plus le bon levier, voir 17.3 ci-dessus.
+4. Couverture Betpawa réelle, purge du cache, Phase 5/6 -- **toujours pas
+   traités**.
 
-### 17.6 Ce qui reste à faire (priorités, dans l'ordre suggéré)
-1. **Vérifier le prochain run de bout en bout** : `precalcul_leger.json`
-   existe et le site charge sans erreur 404 ; `historique_pronostics.json`
-   contient une nouvelle entrée `"source": "precalcul_auto"` avec la
-   bonne date (demain) ; la durée totale reste sous la limite grâce au
-   plafond à 100 (17.3).
-2. **Revenir sur la question du ROI réel du moteur** (0.1, toujours pas
-   revérifiée) -- maintenant que l'archivage automatique existe (une fois
-   vérifié), l'échantillon va enfin pouvoir grossir de façon significative
-   chaque nuit sans dépendre du panier manuel. C'est le bon moment pour
-   remettre cette question sur la table, comme prévu depuis le 16.7.4.
-3. **Décider d'un vrai régime de `limite_betpawa`** en routine (100 est un
-   choix prudent provisoire, pas un chiffre validé par une mesure de
-   couverture réelle à cette valeur) -- ou avancer sur la parallélisation
-   déjà évoquée en 16.7.3 si le volume complet doit un jour tourner sans
-   limite de façon fiable.
-4. Les points 16.7.2, 16.7.5, 16.7.6 (couverture Betpawa réelle, purge du
-   cache, Phase 5/6 de la feuille de route) restent non traités, inchangés
-   depuis la session précédente.
+---
+
+## 18. Session du 03/09/2026 — Filtre de compétitions complet + refonte visuelle + diagnostic inachevé sur precalcul_leger.json
+
+**Session la plus large en portée à ce jour : touche la quasi-totalité des
+championnats du monde.** Contient une découverte importante sur la vraie
+cause de la lenteur du pré-calcul (18.7), un filtre de compétitions
+construit et audité dans les deux sens, une refonte visuelle complète, et
+**un diagnostic resté ouvert** sur `precalcul_leger.json` -- à ne pas
+perdre de vue, ce n'est pas résolu malgré tout le temps qui y a été
+consacré.
+
+### 18.1 ⚠️ NON RÉSOLU -- precalcul_leger.json toujours absent du dépôt au moment où cette section est écrite
+**À lire en premier à la reprise. C'est la priorité opérationnelle
+immédiate, avant même de relancer le pipeline avec le nouveau filtre.**
+
+Chronologie du diagnostic, aucune conclusion définitive atteinte :
+1. Log du run confirmé : `precalcul.py` écrit bien `precalcul_leger.json`
+   avec succès (le print "precalcul_leger.json écrit en parallèle"
+   n'apparaît qu'après l'écriture réussie du fichier, exclu tout crash
+   Python entre les deux écritures).
+2. Le mécanisme de commit fonctionne : `historique_pronostics.json`,
+   ajouté par la même boucle shell (`for f in ... ; do [ -f "$f" ] &&
+   git add "$f"; done`), se met à jour correctement à chaque run.
+3. Pourtant, `precalcul_leger.json` n'apparaît PAS dans la liste des
+   fichiers du commit produit par ce run (vérifié directement sur
+   GitHub, commit `91cccbf`, liste des fichiers modifiés).
+4. Recherche de code menée, RIEN trouvé : aucun `os.remove`/`shutil`,
+   aucun `git clean`/`checkout`/`reset` caché dans `precalcul.py`,
+   `run_pipeline.py`, `verification_resultats.py` ou `pipeline.yml`.
+   Aucun `.gitignore` ni `.gitattributes` qui l'exclurait. Le nom du
+   fichier est identique octet pour octet des deux côtés (vérifié).
+5. **Correctif tenté (non encore vérifié en conditions réelles)** :
+   instrumentation de diagnostic ajoutée dans l'étape "Commit et push"
+   de `pipeline.yml` -- deux `ls -la` et deux `git status --porcelain`
+   avant et après le `git add`, pour trancher si le fichier existe
+   VRAIMENT sur le disque du runner à cet instant précis. **Cette
+   instrumentation n'a jamais été vérifiée sur un run réel** -- la
+   session a bifurqué vers le filtre de compétitions juste après (sur
+   décision explicite de Patrick, "pas la priorité").
+6. Pendant ce temps, Patrick a testé le site en conditions réelles et a
+   confirmé : la page `pronostics.html` affiche bien l'erreur
+   `"erreur de chargement : precalcul_leger.json introuvable (status
+   404)"`, cohérent avec tout ce qui précède.
+
+**Prochaine étape immédiate, sans ambiguïté** : relancer un run, ouvrir
+le log de l'étape "Commit et push du résultat", lire la sortie des
+`ls -la`/`git status` déjà en place. Si le fichier n'existe pas à cet
+instant précis malgré le print de `precalcul.py` confirmant qu'il a été
+écrit, il faudra chercher du côté d'une éventuelle réinitialisation du
+répertoire de travail entre les étapes du job (aucune piste concrète
+identifiée à ce jour, seulement des pistes déjà écartées).
+
+### 18.2 Refonte visuelle (style.css + pronostics.html)
+Palette de couleurs entièrement revue après plusieurs itérations avec
+Patrick (violet essayé puis abandonné, gold essayé puis abandonné pour ne
+pas diluer son rôle de repère unique marque+pari recommandé, bordeaux
+essayé puis abandonné pour manque de contraste sur fond sombre) --
+**palette finale validée** :
+
+| Élément | Couleur |
+|---|---|
+| Compétitions | `#B8F2E6` (menthe pâle) |
+| Clubs/équipes | blanc cassé (`--text`) |
+| Heures | gris clair dédié (`--heure`, `#B9C4BF`) |
+| Fond principal | vert sombre (`--bg`, inchangé) |
+| Gold | réservé exclusivement à la marque (titre) et au pari recommandé |
+
+`--text-secondary` a aussi été assombri (`#B9C4BF` -> `#7E8D86`) pour les
+métadonnées de carte (pronostics), distinct de `--heure` qui garde
+l'ancienne valeur claire -- deux variables différentes pour deux usages
+qui n'ont pas la même exigence de lisibilité.
+
+**Nouvelle fonctionnalité sur `pronostics.html`** : bouton "Par catégorie"
+à côté de "Liste complète" -- regroupe les mêmes cartes par championnat
+(tri alphabétique du championnat puis par heure), sans rechargement
+réseau (retrie/regroupe les données déjà en mémoire, comme le filtre GO).
+`script.js` : fonction `construitCarteMatch()` extraite pour être
+réutilisable entre les deux modes d'affichage.
+
+**Bug de collision de sous-chaîne trouvé et corrigé en cours de route** :
+`"Ligue Nationale"` matchait par erreur à l'intérieur de `"Ligue Nationale
+N/S Nord"`, et `"Serie A"` à l'intérieur de `"Coupe Féminine de Serie A"`
+-- l'égalité stricte réintroduisait d'autres problèmes (casse les
+suffixes de groupe légitimes comme "Girone A"). Solution retenue : "commence
+par" partout, avec des gardes explicites nommées pour les cas de collision
+identifiés (voir 18.4).
+
+### 18.3 Le filtre de compétitions -- vue d'ensemble
+**Objectif de départ (Patrick)** : réduire drastiquement le nombre de
+championnats traités automatiquement, sur la conviction que la majorité
+des ~2400 matchs d'une fenêtre J+1/J+2/J+3 sont des catégories à faible
+valeur (matchs amicaux, coupes de qualification, jeunes, réserves, 2e
+divisions, championnats à données quasi systématiquement absentes).
+
+**Résultat final mesuré sur la fenêtre du 03/09** :
+- Source brute : 2569 matchs (avant dédoublonnage)
+- Fenêtre finale après tous les filtres : **953 matchs (37,1% conservé)**
+- 125 pays/zones explicitement couverts (108 dans une liste "1ère
+  division unique", 17 dans un système à paliers multiples)
+
+**⚠️ CE FILTRE N'A JAMAIS TOURNÉ EN PRODUCTION.** Tout le travail décrit
+ci-dessous a été testé exclusivement en rejouant les fonctions Python
+contre un instantané figé (`precalcul.json` du dernier run réel, celui du
+02-03/09) -- jamais par une exécution réelle de `precalcul.py` dans
+GitHub Actions avec des données fraîchement scrapées. **Vérifier le
+prochain run réel de bout en bout est la priorité n°1 après 18.1.**
+
+### 18.4 Détail des blocs du filtre (tous dans `precalcul.py`, appliqués dans `charge_matchs_fenetre()`, AVANT la résolution Betpawa et AVANT `construit_signaux()`)
+
+**Ordre d'application, chacun réduisant `fenetre` avant le suivant :**
+
+1. **`est_jeune_ou_reserve()`** -- regex élargie au fil de la session :
+   `u1[5-9]`/`u20`/`u21`, `réserve`/`reserve`/`reserva` (piège trouvé :
+   l'orthographe espagnole "Reserva" n'était pas captée au départ),
+   `espoir`, `primavera`, `berretti`, `beloften`, `jugendliga`, `juvenil`,
+   `junior`, `aspirantes`, `cadete`, `infantil`, `jeunes`, `mladinska`
+   (ces derniers mots-clés trouvés en construisant le reste du filtre, pas
+   dès le départ). **195 matchs exclus sur la fenêtre du 03/09.**
+2. **`est_competition_exclue()`** -- liste EXPLICITE (pays, sous-chaîne),
+   jamais un mot-clé générique. Couvre les 2e divisions confirmées
+   d'Afrique/Asie/Amérique (Égypte "2. Ligue", Corée "K-Ligue 2", Japon
+   "J2 Ligue", Qatar "Division 2", Panama "Liga Prom", Guatemala "1ère
+   Division Groupe B", Brésil Série B/C/D + toutes les compétitions
+   d'État de niveau 2/3, Chili "Primera B", Colombie "Première B", Costa
+   Rica "Liga de Ascenso", Pérou "2. Ligue"/"Liga 3", Uruguay "Segunda
+   Division"/"Primera División Amateur", Venezuela "Segunda Division",
+   Équateur "Première B", USA "USL"+"USL Ligue 1", Mexique "Ascenso
+   MX"+"Liga TDP", Argentine "Tournoi Fédéral A") + deux cas exclus sur le
+   critère "données souvent absentes" plutôt que le niveau exact (ÉAU
+   "Division 1", Ouzbékistan "1ère Division"). **146 matchs exclus.**
+   Panama et Guatemala : confiance passée de moyenne à HAUTE en cours de
+   session (confirmés via Wikipedia -- Panama "Liga Prom" = "Level on
+   pyramid: 2" + composée d'équipes réserve "Tauro FC II" ; Guatemala
+   "Primera División" = 2e échelon officiel malgré le nom).
+3. **`est_chine_non_autorisee()`** -- liste blanche dédiée, PAS la liste
+   noire générale (patron à réutiliser pour tout futur cas par pays).
+   Seule "Super Ligue" autorisée -- "Ligue 1" chinoise confirmée être le
+   2e échelon (China League One, "Level on pyramid: 2", piège de
+   traduction comme l'anglais "League One"). Patrick a d'abord demandé de
+   garder les deux, puis s'est ravisé pour ne garder que la Super Ligue --
+   décision finale, ne pas revenir dessus sans qu'il le redemande
+   explicitement. **8 matchs exclus.**
+4. **`est_oceanie_non_autorisee()`** -- liste blanche par ZONE (pas un
+   seul pays). Consigne explicite de Patrick : ne garder QUE le 1er
+   échelon australien et néo-zélandais, "cette liste n'est pas un
+   standard à généraliser ailleurs". **Piège découvert via une vraie
+   capture d'écran matchendirect (pas Wikipedia, sur consigne explicite
+   de Patrick -- "Matchendirect fait foi ici")** : il n'existe PAS de 1ère
+   division néo-zélandaise séparée -- les clubs néo-zélandais (Auckland,
+   Wellington Phoenix) jouent dans la MÊME compétition que l'Australie,
+   nommée "A-Ligue". Ce qui apparaît sous le pays "Nouvelle-Zélande"
+   séparément ("Premier League", subdivisée en ligues régionales) est un
+   échelon inférieur. Implémenté : seule "Australie : A-Ligue" passe,
+   "Nouvelle-Zélande" en tant que pays séparé est toujours exclue, comme
+   les autres nations du Pacifique (Nouvelle-Calédonie, Îles Cook, Îles
+   Salomon...). **10 matchs exclus.** ⚠️ Aucun match australien/néo-
+   zélandais n'était présent dans la fenêtre testée -- le nom exact
+   "A-Ligue" est confirmé par capture d'écran, mais le comportement du
+   filtre sur un vrai match n'a jamais été vérifié en conditions réelles.
+5. **`est_femmes_non_autorisee()`** -- liste blanche, consigne explicite
+   de Patrick : "seulement la 1ère division européenne, tout le reste
+   supprimé" -- y compris la NWSL américaine (pourtant la meilleure ligue
+   féminine au monde), exclue uniquement parce qu'elle n'est pas
+   européenne. Onze compétitions confirmées sur la fenêtre testée
+   (Allemagne, Angleterre, Belgique, Espagne, Estonie, Hongrie, Lituanie,
+   Pays-Bas, Serbie, Slovaquie, Écosse), complétées ensuite avec des noms
+   de marque trouvés dans le répertoire officiel matchendirect (voir
+   18.5) : Suède "Damallsvenskan", Norvège "Toppserien", Suisse
+   "Nationalliga A" -- ces trois-là n'ont AUCUN marqueur textuel
+   "femme"/"féminin" détectable, la fonction de détection a dû être
+   élargie spécifiquement pour ne pas les exclure par erreur (voir bug
+   ci-dessous). **Piège trouvé (Norvège)** : "1. Division Femmes" est la
+   2e division féminine norvégienne (confirmé Wikipedia, "Level on
+   pyramid: 2") -- le vrai 1er échelon est "Toppserien", absent de la
+   fenêtre testée. **Gap connu, PAS complètement corrigé** : la détection
+   ne couvre que "femme"/"femin"/"fémin"/"zenska" -- toute ligue féminine
+   nommée uniquement par une marque sans AUCUN de ces marqueurs (à l'image
+   de Damallsvenskan avant qu'on la découvre) peut encore échapper à la
+   détection dans un pays non encore audité. **75 matchs exclus.**
+6. **`est_europe_hommes_non_autorisee()`** -- système à PALIERS
+   MULTIPLES pour 17 pays, seule structure qui ne rentre pas dans le
+   modèle "1 seule compétition autorisée" des autres blocs :
+   - **Angleterre** : jusqu'au palier 5 (National League) --
+     Premier League/Championnat/League One/League Two/Ligue Nationale.
+   - **France, Espagne, Italie, Allemagne, Portugal** : jusqu'au
+     palier 3. Piège confirmé (Portugal, via recherche externe) :
+     "Ligue 3" EST le palier 3 depuis 2021, "Campeonato de Portugal" est
+     DESCENDU au palier 4 la même année -- l'inverse de ce qu'on pourrait
+     supposer au nom.
+   - **Norvège, Suède, Suisse, Belgique, Écosse, Finlande, Autriche,
+     Pays-Bas, Pologne, Turquie, Slovénie** : les deux premières ligues.
+     Piège confirmé (Pays-Bas) : "Deuxième Division" est en réalité la
+     Tweede Divisie, palier 3 amateur -- PAS le vrai palier 2 (Eerste
+     Divisie, déjà nommé différemment). Confiance MOYENNE, jamais
+     vérifiée par une source externe : Écosse (Premier Ligue/Première
+     Division = Premiership/Championship, déduit de l'ordre logique) et
+     Belgique ("2e Division" = Challenger Pro League, supposé). Autriche :
+     aucune compétition des paliers 1-2 n'apparaissait dans la fenêtre
+     testée -- la règle ne retient donc rien pour l'Autriche cette
+     fois-ci, ce n'est pas un oubli.
+   - **Garde anti-collision** : "Ligue Nationale" (Angleterre, palier 5
+     autorisé) vs "Ligue Nationale N/S Nord" (palier 6) -- exclusion
+     explicite si "Nord"/"Sud" apparaît en plus.
+   - Toute "coupe" est exclue directement dans ce bloc, quel que soit le
+     pays de cette liste. **666 matchs exclus.**
+7. **`est_hors_top_flight_unique()`** -- fusion en UNE seule structure
+   (`TOP_FLIGHT_UNIQUE_PAR_PAYS`, 108 entrées) de ce qui était initialement
+   4 blocs séparés (reste de l'Europe, Amérique, Afrique, Asie) -- sur
+   demande explicite de Patrick ("on va intégrer les matchs européens à
+   cette liste"). "Commence par" partout (pas égalité stricte) : les
+   saisons Apertura/Clausura/Ouverture/Clôture sont la norme hors Europe
+   de l'Ouest. `None` = zone toujours exclue (confédérations continentales
+   CAF/ASEAN/Amérique du Nord/Amérique du Sud, "Monde" -- matchs
+   amicaux --, Malte -- voir ci-dessous). Valeur en tuple = plusieurs
+   compétitions autorisées (voir coupes européennes ci-dessous).
+   - **Malte EXCLUE ENTIÈREMENT**, décision explicite de Patrick après
+     qu'un cas spécial (saison scindée Ouverture/Clôture cassait la
+     comparaison) ait posé problème -- "si ça pose problème, exclus-la,
+     elle apparaît de toute façon presque jamais dans les propositions
+     Betpawa". Ce n'est PAS une règle générale ("pas de cas spécial
+     nulle part") -- juste ce pays précis.
+   - **Piège confirmé (Afrique du Sud, via Wikipedia)** : "Ligue 1" =
+     National First Division = 2e échelon officiel ("Level on pyramid:
+     2") -- le vrai 1er échelon est "Première Ligue de Football".
+     **Confirmé ensuite directement sur une vraie fiche matchendirect**
+     (capture d'écran de Patrick, classement réel avec Orlando Pirates/
+     Mamelodi/Kaizer Chiefs) -- Matchendirect fait foi, pas seulement
+     Wikipedia, consigne retenue pour la suite.
+   - **Piège confirmé (Hong Kong)** : "HKFA 1ère Division" = ancien nom du
+     1er échelon, rétrogradé 2e échelon lors de la restructuration de
+     2014 -- le vrai 1er est "Premier Ligue".
+   - Canada : "Nord Super League" (Northern Super League, féminine,
+     confirmée être une vraie 1ère division professionnelle) est
+     volontairement exclue ICI -- cohérent avec la règle femmes
+     (Amérique non-européenne, donc hors périmètre féminin autorisé).
+   - Trois pays en **confiance MOYENNE, jamais confirmés sur une vraie
+     fiche matchendirect** : Chili "Superliga", Égypte "Première Ligue"
+     (aucun match au 1er échelon dans la fenêtre testée pour vérifier),
+     Panama "Liga Prom"/Guatemala (déjà passés en confiance haute, voir
+     point 2).
+   - **Garde anti-collision** : "Super Ligue" (Grèce, Serbie) vs "Super
+     Ligue 2" -- même patron que la garde Angleterre.
+   - **Compétitions de clubs européennes intégrées, à la demande de
+     Patrick** : "Europe" autorise un TUPLE de 3 valeurs -- "Ligue des
+     Champions Phase de Ligue", "Ligue Europa Phase de Ligue", "Ligue
+     Conférence Phase de Ligue". Noms exacts confirmés par captures
+     d'écran RÉELLES de Patrick (pas une source externe) -- "Phase de
+     Ligue" fait partie du nom actuel depuis le nouveau format à ligue
+     unique (2024/25), PAS juste "Ligue des Champions"/"Ligue Europa"
+     comme une première tentative basée sur un souvenir de session
+     antérieure l'avait supposé à tort. La variante "... - des équipes
+     Françaises" (vue distincte sur le site) est la même compétition,
+     capturée automatiquement par "commence par" puisque c'est un
+     suffixe. Confirmé à exclure : "Ligue des Nations de l'UEFA"
+     (sélections nationales, pas des clubs). "Ligue Conférence Phase de
+     Ligue" n'a jamais été vue en vrai dans une capture -- déduite par
+     cohérence avec les deux autres, à vérifier si le nom réel diffère.
+   - **258 matchs exclus** (dernier chiffre mesuré, après les 3 pays
+     oubliés ajoutés lors de l'audit final -- voir 18.5).
+
+### 18.5 Audit final -- 2 passes, dans les deux sens
+**Passe 1 (faux négatifs -- des matchs auraient dû être exclus mais
+survivent)** : vérification systématique que CHAQUE match survivant dans
+la fenêtre finale appartient à une catégorie explicitement validée (liste
+Femmes, système à paliers, ou liste unique). A débusqué **3 pays
+complètement oubliés** dans la construction du filtre (jamais ajoutés à
+aucune liste, fuite totale depuis le début malgré tout le travail déjà
+fait) :
+- **Japon** : "J1 Ligue" ajouté (J2 Ligue déjà exclue séparément).
+- **République Tchèque** : jamais traitée du tout -- "Ligue Tchèque"
+  ajoutée comme seul palier autorisé.
+- **Îles Féroé** : jamais traitée -- "Formuladeildin" ajoutée ; piège
+  trouvé au passage, "1 Deild" est le 2e échelon malgré le nom.
+- **"Monde" (matchs amicaux internationaux)** : jamais traité -- ajouté
+  en exclusion totale (`None`).
+
+**Passe 2 (faux positifs -- des matchs auraient pu être exclus par
+erreur)** : vérification qu'aucune clé n'est dupliquée dans les
+dictionnaires (aurait écrasé silencieusement une entrée), qu'aucun pays
+n'apparaît dans les deux systèmes à la fois (paliers multiples ET liste
+unique -- aurait pu créer un conflit), et qu'aucun pays avec des matchs
+bruts n'a zéro survivant sans raison légitime (les 2 seuls cas trouvés,
+Égypte et Îles Féroé, s'expliquent par l'absence de match à leur 1er
+échelon ce jour précis, pas par un bug d'orthographe).
+
+**Les deux passes sont passées propres à la fin de la session** -- mais
+rappel du 18.3 : ceci reste une vérification contre un instantané figé,
+jamais un run réel.
+
+### 18.6 Le gap "listes des jours affichées" -- CORRIGÉ EN SESSION
+Patrick a soulevé un point que je n'avais pas anticipé : tout le filtre
+ci-dessus ne touchait que `precalcul.json`/`precalcul_leger.json` (le
+pipeline automatique), jamais les fichiers que l'accueil (`index.js`)
+affiche pour la sélection manuelle du panier (`matchs_du_jour.json`,
+`matchs_demain.json`) -- un utilisateur pouvait donc toujours voir et
+sélectionner manuellement un match U19/2e division/etc. sur la page
+d'accueil, malgré tout le travail de filtrage.
+
+**Solution retenue, importante à ne pas défaire par erreur** : NE PAS
+filtrer les fichiers bruts eux-mêmes -- `run_pipeline.py`
+(`normalise_panier`) en a besoin intacts pour résoudre un `match_id`
+ajouté manuellement au panier, y compris un match hors filtre (un
+utilisateur doit pouvoir forcer l'analyse d'un cas particulier). À la
+place : `precalcul.py` génère deux NOUVEAUX fichiers,
+`matchs_du_jour_filtre.json` et `matchs_demain_filtre.json` (même contenu
+que les fichiers bruts, filtré avec exactement les mêmes fonctions que
+1-7 ci-dessus via une fonction combinée `est_match_a_masquer()`).
+`index.js` a été modifié pour lire ces 2 nouveaux fichiers.
+`pipeline.yml` les ajoute au commit (boucle conditionnelle, comme
+`precalcul_leger.json`).
+
+**Testé contre les vraies données** : aujourd'hui 176 -> 70 matchs,
+demain 405 -> 166 matchs. **Jamais vérifié en conditions réelles
+(GitHub Actions)**, même limite que tout le reste de la session 18.
+
+**Précision importante donnée à Patrick, à ne pas oublier** : la page
+`pronostics.html` (J1/J2/J3, pipeline automatique) était déjà
+intégralement couverte par le filtre depuis le début de la session --
+seule la page d'accueil (sélection manuelle "Aujourd'hui"/"Demain")
+avait ce trou. Il n'existe pas de sélection manuelle pour J+2/J+3 sur
+l'accueil (seulement 2 onglets) -- un 3e onglet "Semaine" est prévu dans
+le code JS (`chargeJour("semaine", "catalogue_unifie.json")`) mais
+**`catalogue_unifie.json` n'existe pas, aucun script ne le génère** -- un
+hook mort qui échoue silencieusement à chaque chargement de la page
+d'accueil. Pas corrigé, pas prioritaire, mais signalé -- à finir ou
+supprimer si Patrick le demande.
+
+### 18.7 Découverte de session -- la vraie cause de la lenteur du pré-calcul
+En creusant pourquoi limiter Betpawa à 5 matchs au lieu de 100 ne changeait
+presque rien au temps de run (question posée par Patrick), lecture directe
+du code de `precalcul.py` : `construit_signaux(fenetre)` tourne sur
+l'INTÉGRALITÉ de la fenêtre, sans aucune condition liée à
+`PRECALCUL_LIMITE_BETPAWA` -- cette variable ne limite QUE
+`resout_cotes_betpawa()`, l'étape d'avant. Erreur de diagnostic de ma part
+à corriger : le correctif de la session 17 (17.3) n'a jamais visé la
+bonne variable pour contrôler la durée totale du run.
+
+**Structure interne de `construit_signaux()` clarifiée** (dans
+`run_pipeline.py`, jamais modifiée) : chaque match fait d'abord un appel
+"détails", puis les stats GF/GA des 2 équipes (déjà mises en cache depuis
+la session 16, voir `cache_equipes.py`) -- **si l'une des deux échoue, le
+match s'arrête là** (`continue`), sans jamais atteindre les 3 appels
+suivants (classement, H2H, cotes). Donc les matchs qui finissent PARTIAL
+coûtent peu (1 à 4 requêtes) ; le vrai coût se concentre sur les matchs
+qui ont une vraie chance de finir READY.
+
+**Gaspillage réel confirmé** : `recupere_classement_du_match(url_match)`
+attache l'URL du CLASSEMENT à l'URL du MATCH individuel -- si une
+compétition a 10 matchs dans la fenêtre, son classement (identique pour
+tous) est retéléchargé 10 fois, sans aucun cache (contrairement aux stats
+d'équipe). Même chose pour `recupere_h2h` (refait à chaque nuit pour la
+même paire, alors que l'historique de confrontation ne change quasiment
+jamais).
+
+**Deux pistes comparées, une seule retenue pour l'instant** : la
+proposition initiale de Patrick (3 runs séparés par jour, décalés de 2
+minutes, ne recalculant que le jour "neuf" chaque nuit) a été comparée à
+l'extension du cache déjà existant (classement par compétition, H2H par
+paire, même patron que `cache_equipes.py`). **Verdict donné à Patrick,
+jamais tranché explicitement par lui, jamais implémenté** : l'extension du
+cache est plus petite, moins risquée, et le gain potentiel (facteur 10 sur
+une compétition à 10 matchs) est probablement supérieur à un découpage en
+3 runs. **Le filtre de compétitions (18.3-18.5) a été construit à la
+place, en réponse à la même préoccupation de lenteur, mais agit sur un
+levier différent (moins de matchs au total) plutôt que sur le coût par
+match.** Les deux approches sont complémentaires, pas exclusives -- rien
+n'empêche de faire les deux plus tard.
+
+### 18.8 Piste explorée puis mise en pause -- bug Premier League/Serie A/La Liga (0% READY)
+En croisant le statut READY/PARTIAL par compétition sur la fenêtre du
+02-03/09 : Premier League, Serie A et La Liga affichaient **0% de matchs
+READY** (Arsenal-Chelsea, Real Madrid, etc.), alors que Bundesliga (20/21)
+et Ligue 1 (44/62) fonctionnaient presque normalement. Ce n'est
+structurellement pas une question de couverture de données (ce sont les
+clubs les plus documentés au monde) -- diagnostic en cours au moment où
+Patrick a explicitement demandé de mettre cette piste en pause ("pas la
+priorité, on avance sur le filtre").
+
+**État du diagnostic au moment de la pause, à reprendre tel quel si
+Patrick redemande d'y revenir** :
+- Hypothèse initiale (mots génériques "liga" retirés avant comparaison,
+  cassant spécifiquement "La Liga") -- **infirmée** : vérifié que le
+  champ `competition` côté precalcul ET le libellé réel de la page
+  matchendirect (Real Madrid) utilisent tous les deux "LaLiga" en un seul
+  mot, donc la comparaison de texte devrait réussir.
+- Hypothèse retenue ensuite, non vérifiable avec les outils disponibles :
+  `recupere_classement()`/`_extrait_historique_competition`
+  (`scraper_details.py`) utilise `.find_next("table")` après avoir trouvé
+  le titre de section -- si matchendirect a migré la mise en page des
+  résultats de match vers des `<div>` plutôt que des `<table>` HTML pour
+  CERTAINES ligues (Premier League/Serie A/La Liga) mais pas d'autres
+  (Bundesliga/Ligue 1), le code sauterait par-dessus tous les matchs et
+  tomberait sur un tableau HTML sans rapport plus bas dans la page
+  (repéré sur la page Real Madrid : le seul vrai `<table>` restant est la
+  liste des joueurs de l'effectif). **Jamais confirmé** -- l'outil de
+  récupération de page utilisé convertit le HTML en texte lisible et ne
+  permet pas de voir la structure exacte des balises, et il n'y a pas
+  d'accès réseau direct à matchendirect.fr depuis le bac à sable.
+- Solution proposée pour trancher, jamais mise en œuvre : un script de
+  diagnostic jetable tournant DANS GitHub Actions (accès réseau réel),
+  qui imprimerait juste la structure trouvée après le titre "LaLiga" sur
+  une vraie page, sans toucher au comportement de production.
+- **Impact potentiel si confirmé et corrigé** : récupérerait des READY
+  sur certains des matchs les plus regardés et les mieux documentés du
+  monde, actuellement perdus. Plus intéressant que filtrer des
+  championnats obscurs, mais plus risqué à corriger (touche
+  potentiellement `scraper_details.py`, fichier jamais modifié à ce jour).
+
+### 18.9 Répertoire officiel matchendirect (`/competition-foot/`) -- utilisé, avec une réserve importante
+Patrick a récupéré et transmis le contenu complet de cette page (~650
+compétitions listées par pays) -- base précieuse pour construire le
+filtre à partir d'une liste exhaustive plutôt que d'attendre qu'une
+compétition apparaisse par hasard dans une fenêtre de 3 jours.
+
+**Réserve importante, découverte en l'utilisant** : ce répertoire semble
+accumuler aussi des noms ANCIENS/renommés, pas seulement les noms
+actuellement en usage. Exemple concret trouvé : pour la France, le
+répertoire liste "National", "CFA", "CFA 2" -- alors que les vraies
+données de match actuelles utilisent "Ligue 3", "National 2", "National
+3" (renommage officiel réel il y a plusieurs années). **Le répertoire
+n'a donc jamais été traité comme source de vérité absolue** -- chaque nom
+en a été extrait comme hypothèse de travail, puis vérifié soit contre les
+vraies données d'une fenêtre récente, soit contre une source externe,
+soit (préférence explicite de Patrick, voir 18.4 point 7) contre une
+vraie capture d'écran matchendirect.
+
+### 18.10 Ce qui reste à faire (priorités, dans l'ordre suggéré)
+1. **`precalcul_leger.json` (18.1)** -- toujours cassé, diagnostic
+   instrumenté mais jamais lu. Priorité absolue avant tout le reste.
+2. **Vérifier le nouveau filtre de compétitions en conditions réelles**
+   (18.3) -- lancer un run complet, vérifier que la fenêtre finale est
+   cohérente (pas de championnat majeur disparu par erreur, volume
+   nettement réduit comme attendu), vérifier que
+   `matchs_du_jour_filtre.json`/`matchs_demain_filtre.json` se génèrent et
+   se committent correctement (18.6).
+3. **Mesurer l'impact réel sur la durée du run** maintenant que le filtre
+   réduit la fenêtre à ~37% -- et vérifier si ça suffit à résoudre le
+   problème de fond (18.7) ou si l'extension du cache classement/H2H reste
+   nécessaire en complément.
+4. **Revenir sur le bug Premier League/Serie A/La Liga (18.8)** si
+   Patrick le redemande -- diagnostic à reprendre exactement où il a été
+   laissé, ne pas repartir de zéro.
+5. **Revenir sur la question du ROI réel du moteur** (0.1) -- toujours
+   pas fait depuis le 30/08, malgré 3 sessions entières d'infrastructure
+   depuis.
+6. Points de confiance moyenne à vérifier dès qu'une vraie occasion se
+   présente (18.4) : Chili "Superliga", Égypte "Première Ligue", Écosse/
+   Belgique (mapping des paliers), Océanie (aucun match australien/néo-
+   zélandais jamais vu dans une vraie fenêtre), "Ligue Conférence Phase
+   de Ligue" (jamais vue en vrai).
+7. Décider du sort du hook "semaine" mort dans `index.js`
+   (`catalogue_unifie.json` inexistant, 18.6) -- le finir ou le
+   supprimer.
+8. Purge du cache Betpawa, couverture Betpawa réelle, Phase 5/6 de la
+   feuille de route -- toujours non traités depuis la session 16.
