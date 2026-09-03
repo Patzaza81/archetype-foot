@@ -14,22 +14,25 @@ de trouver sa correspondance Betpawa et d'en récupérer les cotes réelles.
 Voir resolution_betpawa_precalcul.py pour le détail.
 
 AJOUT 02/09/2026 : archive_precalcul() enregistre dans
-historique_pronostics.json (même fichier que run_pipeline.py, format
-compatible, réutilisé sans modification de verification_resultats.py) une
-version allégée des matchs READY -- SEULEMENT ceux dont la date est J+1
-(demain), jamais J+2/J+3, pour ne jamais archiver le même match plusieurs
-fois à mesure qu'il avance dans la fenêtre au fil des nuits. Sans ça, le
-pré-calcul nocturne calculait des centaines de pronostics par nuit qui ne
-rentraient jamais dans le circuit de vérification (verification_resultats.py
-ne lit QUE historique_pronostics.json) -- donc jamais utilisables pour
-mesurer un ROI réel ni construire l'échantillon de ~1000 matchs vérifiés visé.
-Version volontairement allégée (pas les distributions de probabilité
-complètes) pour ne pas faire exploser la taille du fichier au fil du temps.
+historique_pronostics.json une version allégée des matchs READY dont la
+date est J+1 -- jamais J+2/J+3, pour ne jamais archiver le même match
+plusieurs fois à mesure qu'il avance dans la fenêtre au fil des nuits.
 
-Sortie : precalcul.json (inchangé dans sa fonction), avec en plus :
-  - nb_archives_historique : nombre de matchs J+1 READY archivés ce run
-Et historique_pronostics.json, grossi d'une entrée par date de match J+1
-présente ce soir (normalement une seule, celle de demain).
+AJOUT 02/09/2026 (2e partie du jour) : precalcul_leger.json -- même
+contenu que precalcul.json pour les 3 jours de la fenêtre, MAIS sans les
+champs marches (toutes les probabilités par marché) ni lambda (audit du
+calcul) -- ce sont eux qui font l'essentiel du poids du fichier (9,2 Mo au
+02/09 pour 1574 matchs). Le site (script.js) lit désormais ce fichier
+léger, pas precalcul.json, pour rester utilisable en 3G. Conséquence
+connue : la section "tous les marchés calculés" et le détail du lambda
+n'apparaissent plus dans "voir les détails" sur le site -- le verdict, le
+pari recommandé, la cote, l'EV et le tableau LISTE_A restent, eux,
+inchangés. precalcul.json (complet) continue d'exister pour l'inspection
+manuelle/debug sur GitHub.
+
+Sortie : precalcul.json (complet, inchangé) + precalcul_leger.json (nouveau,
+pour le site) + historique_pronostics.json (grossi d'une entrée par date de
+match J+1 présente ce soir).
 
 JAMAIS EXÉCUTÉ EN CONDITIONS RÉELLES au moment où ce fichier est écrit --
 voir procédure de vérification donnée à Patrick en dehors de ce fichier.
@@ -43,11 +46,6 @@ from run_pipeline import construit_signaux, charge_json_ou_vide
 from cache_equipes import recupere_gf_ga_avec_cache
 from resolution_betpawa_precalcul import resout_cotes_betpawa
 
-# On mémorise la vraie fonction (celle qui scrape réellement), puis on
-# remplace, uniquement pour ce script, celle utilisée à l'intérieur de
-# construit_signaux() par une version qui vérifie d'abord le cache.
-# run_pipeline.py lui-même n'est pas modifié -- il continue d'appeler la
-# fonction réelle quand il tourne seul (mode panier).
 _recupere_gf_ga_reelle = run_pipeline.recupere_gf_ga_avec_repli
 
 
@@ -59,20 +57,16 @@ def _recupere_gf_ga_avec_cache(url_equipe, nom_equipe, nom_competition, max_matc
 
 run_pipeline.recupere_gf_ga_avec_repli = _recupere_gf_ga_avec_cache
 
-MODEL_VERSION = "Archetype-v4.3"  # à synchroniser manuellement avec calculs.py
-                                   # tant qu'aucun champ de version n'existe
-                                   # dans calculs.py lui-même (à ajouter séparément)
+MODEL_VERSION = "Archetype-v4.3"
 
 FICHIER_MATCHS_DEMAIN = "matchs_demain.json"
 FICHIER_MATCHS_SEMAINE = "matchs_semaine.json"
 FICHIER_SORTIE = "precalcul.json"
-FICHIER_HISTORIQUE = "historique_pronostics.json"  # même fichier que run_pipeline.py
+FICHIER_SORTIE_LEGER = "precalcul_leger.json"
+FICHIER_HISTORIQUE = "historique_pronostics.json"
 
 
 def dates_j2_j3(aujourdhui=None):
-    """Retourne les dates ISO de J+2 et J+3 (J+1 vient de matchs_demain.json,
-    qui ne contient pas de champ date exploitable de la même façon -- voir
-    scraper.py)."""
     aujourdhui = aujourdhui or datetime.date.today()
     return {
         (aujourdhui + datetime.timedelta(days=2)).isoformat(),
@@ -86,10 +80,6 @@ def date_j1(aujourdhui=None):
 
 
 def charge_matchs_fenetre():
-    """Construit la liste des matchs J+1/J+2/J+3 à partir des fichiers déjà
-    produits par scraper.py (J+1) et scraper_semaine.py (J+2..J+7, filtré ici
-    sur J+2/J+3 seulement). Ne relance aucun scraping -- consomme les fichiers
-    tels qu'écrits par le run GitHub Actions du jour."""
     matchs_demain = charge_json_ou_vide(FICHIER_MATCHS_DEMAIN, defaut=[])
     matchs_semaine = charge_json_ou_vide(FICHIER_MATCHS_SEMAINE, defaut=[])
 
@@ -109,11 +99,9 @@ def charge_matchs_fenetre():
 
 
 def _slim_pour_archive(s):
-    """Version allégée d'un signal pour historique_pronostics.json -- garde
-    tout ce qu'il faut pour calculer un ROI et vérifier le résultat plus
-    tard, jamais les distributions de probabilité complètes de calculs.py
-    (bruit de calcul interne, inutile pour la vérification, coûteux en
-    taille de fichier)."""
+    """Version pour historique_pronostics.json -- encore plus réduite que
+    la version site (pas besoin de LISTE_A/raison_non_traite pour un
+    match déjà archivé, seulement de quoi calculer un ROI et vérifier)."""
     return {
         "domicile": s.get("domicile"),
         "exterieur": s.get("exterieur"),
@@ -132,16 +120,18 @@ def _slim_pour_archive(s):
     }
 
 
-def archive_precalcul(signaux, date_j1_iso):
-    """N'archive QUE les matchs READY (traite=True, verdict_global calculé)
-    ET dont la date est celle de demain (J+1) -- jamais J+2/J+3, pour ne
-    jamais archiver le même match plusieurs fois à mesure qu'il avance dans
-    la fenêtre au fil des nuits (un match J+3 ce soir redeviendra J+2 demain
-    puis J+1 après-demain -- c'est CE run-là, la veille du match, qui
-    l'archive, pas les précédents).
+def _leger_pour_site(s):
+    """Version pour precalcul_leger.json -- tout ce que script.js affiche
+    SAUF marches et lambda (les deux champs les plus lourds, utilisés
+    seulement par la section 'tous les marchés calculés'/détail du lambda
+    dans 'voir les détails')."""
+    d = dict(s)
+    d.pop("marches", None)
+    d.pop("lambda", None)
+    return d
 
-    Retourne le nombre de matchs archivés (jamais une affirmation vague de
-    succès)."""
+
+def archive_precalcul(signaux, date_j1_iso):
     candidats = [
         s for s in signaux
         if s.get("traite") and s.get("verdict_global") and s.get("date") == date_j1_iso
@@ -170,10 +160,6 @@ def main():
               "exploitable -- vérifier que scraper.py et scraper_semaine.py "
               "ont bien tourné avant ce script.")
 
-    # AJOUT 01/09/2026 -- modifie fenetre EN PLACE (ajoute cotes_manuelles
-    # aux matchs résolus). Ne fait jamais planter le run : toute erreur
-    # interne est absorbée dans resout_cotes_betpawa() et se traduit par
-    # un compteur, jamais une exception qui remonte ici.
     compteurs_betpawa = resout_cotes_betpawa(fenetre)
     print(f"Résolution Betpawa : {compteurs_betpawa}")
 
@@ -186,14 +172,15 @@ def main():
             "%Y-%m-%dT%H:%M:%SZ"
         )
 
-    # AJOUT 02/09/2026 -- ferme la boucle vers verification_resultats.py.
     date_j1_iso = date_j1()
     nb_archives = archive_precalcul(signaux, date_j1_iso)
     print(f"Archivage historique : {nb_archives} match(s) J+1 ({date_j1_iso}) "
           f"ajouté(s) à {FICHIER_HISTORIQUE}.")
 
+    genere_le = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+
     sortie = {
-        "genere_le": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
+        "genere_le": genere_le,
         "nb_matchs_demain_source": nb_demain,
         "nb_matchs_j2_j3_source": nb_j2_j3,
         "nb_matchs_fenetre": len(fenetre),
@@ -207,8 +194,20 @@ def main():
     with open(FICHIER_SORTIE, "w", encoding="utf-8") as f:
         json.dump(sortie, f, ensure_ascii=False, indent=2)
 
+    # AJOUT 02/09/2026 -- version allégée pour le site (voir docstring).
+    sortie_legere = {
+        "genere_le": genere_le,
+        "nb_matchs_fenetre": len(fenetre),
+        "nb_ready": sortie["nb_ready"],
+        "nb_partial": sortie["nb_partial"],
+        "signaux": [_leger_pour_site(s) for s in signaux],
+    }
+    with open(FICHIER_SORTIE_LEGER, "w", encoding="utf-8") as f:
+        json.dump(sortie_legere, f, ensure_ascii=False, indent=2)
+
     print(f"{FICHIER_SORTIE} écrit : {sortie['nb_matchs_fenetre']} matchs "
           f"({sortie['nb_ready']} READY, {sortie['nb_partial']} PARTIAL). "
+          f"{FICHIER_SORTIE_LEGER} écrit en parallèle (sans marches/lambda). "
           f"Betpawa : {compteurs_betpawa['betpawa_cotes_extraites']} match(s) "
           f"avec cotes réelles, {compteurs_betpawa['betpawa_tentes']} tenté(s).")
 
