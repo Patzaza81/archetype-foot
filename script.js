@@ -145,9 +145,6 @@ function afficheErreur(message) {
   document.getElementById("maj").textContent = "erreur de chargement : " + message;
 }
 
-// AJOUT 02/09/2026 -- meilleure valeur EV d'un match GO (celle du pari en
-// or), pour trier. -Infinity pour tout le reste (NO_GO, non traité) --
-// garantit qu'ils passent toujours après les GO dans le tri.
 function meilleurEv(m) {
   if (m.verdict_global !== "GO") return -Infinity;
   const listeB = m.LISTE_B_liste_finale_apres_correlation;
@@ -155,10 +152,6 @@ function meilleurEv(m) {
   return Math.max(...listeB.map((p) => p.ev_brut));
 }
 
-// AJOUT 02/09/2026 -- GO triés par EV décroissant en premier, puis NO_GO,
-// puis non traités en dernier -- pour ne plus avoir à scroller des dizaines
-// de matchs pour trouver les rares paris actionnables. La case "GO
-// uniquement" filtre le reste complètement si cochée.
 function trieEtFiltre(matchs) {
   const copie = [...(matchs || [])];
   copie.sort((a, b) => {
@@ -218,11 +211,9 @@ function afficheMatchs(matchs, enTete) {
 }
 
 let jetonAffichage = 0;
-let dernierEnsembleBrut = [];     // dernière liste non triée/filtrée reçue
-let dernierEnTeteBase = "";       // en-tête sans le suffixe GO/tri
+let dernierEnsembleBrut = [];
+let dernierEnTeteBase = "";
 
-// AJOUT 02/09/2026 -- ré-affiche à partir des données déjà en mémoire
-// (pas de refetch) quand on coche/décoche "GO uniquement".
 function reaffiche() {
   const trie = trieEtFiltre(dernierEnsembleBrut);
   const nbGo = dernierEnsembleBrut.filter((m) => m.verdict_global === "GO").length;
@@ -246,10 +237,12 @@ const DATES_FENETRE = { j1: dateIsoDansNJours(1), j2: dateIsoDansNJours(2), j3: 
 
 let precalculCharge = null;
 
+// CHANGÉ 02/09/2026 -- fetch precalcul_leger.json (sans marches/lambda) au
+// lieu de precalcul.json (9,2 Mo au 02/09) -- voir precalcul.py pour le détail.
 async function chargePrecalcul() {
   if (precalculCharge) return precalculCharge;
-  const r = await fetch("precalcul.json?_=" + Date.now());
-  if (!r.ok) throw new Error(`precalcul.json introuvable (status ${r.status})`);
+  const r = await fetch("precalcul_leger.json?_=" + Date.now());
+  if (!r.ok) throw new Error(`precalcul_leger.json introuvable (status ${r.status})`);
   precalculCharge = await r.json();
   return precalculCharge;
 }
