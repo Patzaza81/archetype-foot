@@ -85,7 +85,13 @@ jobs:
           git config user.name "archetype-foot-bot"
           git config user.email "bot@users.noreply.github.com"
           git add data.json matchs_du_jour.json matchs_demain.json matchs_semaine.json precalcul.json cache_equipes.json cache_betpawa.json diagnostic_precalcul_betpawa.txt
-          for f in panier.json historique_pronostics.json; do
+          # CORRECTIF 03/09/2026 : precalcul_leger.json (nouveau fichier depuis
+          # la session du 02/09, cf TRANSITION.md 17.5) était généré par
+          # precalcul.py mais absent de cette liste -- jamais commité, donc
+          # jamais servi par le site (404 permanent quel que soit le succès
+          # du run). Ajouté dans la boucle conditionnelle car le fichier peut
+          # ne pas exister si l'étape précalcul échoue (continue-on-error).
+          for f in panier.json historique_pronostics.json precalcul_leger.json; do
             [ -f "$f" ] && git add "$f"
           done
           git diff --staged --quiet || git commit -m "Mise à jour pipeline"
