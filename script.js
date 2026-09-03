@@ -168,10 +168,45 @@ function trieEtFiltre(matchs) {
   return copie;
 }
 
+// 03/09/2026 -- extrait de afficheMatchs() pour être réutilisable par la
+// vue "par catégorie" (afficheMatchsGroupe) sans dupliquer le HTML d'une
+// carte. Comportement strictement identique à avant.
+function construitCarteMatch(m) {
+  const div = document.createElement("div");
+  div.className = "match";
+
+  let html = `
+    <div class="teams"><span>${m.domicile}</span><span>${m.score || m.heure || ""}</span><span>${m.exterieur}</span></div>
+    <div class="meta">${(m.competition || "").replace(/\s+/g, " ").trim()}</div>
+  `;
+
+  if (!m.traite) {
+    html += `<div class="signal-non-traite">non analysé — ${traduireRaison(m.raison_non_traite)}</div>`;
+  } else {
+    const estGo = m.verdict_global === "GO";
+    html += `<div class="ligne-verdict">
+      <span class="badge ${estGo ? "badge-go" : "badge-nogo"}">${estGo ? "✓ GO" : "✕ NO_GO"}</span>
+    </div>`;
+    html += construitNiveau3(m);
+    if (!estGo && m.motif_no_go) {
+      html += `<div class="motif-no-go">${m.motif_no_go}</div>`;
+    }
+    if (estGo) {
+      html += construitBlocParisRecommandes(m.LISTE_B_liste_finale_apres_correlation);
+    }
+    html += construitBlocRisques(m);
+    html += construitDetails(m);
+  }
+
+  div.innerHTML = html;
+  return div;
+}
+
 function afficheMatchs(matchs, enTete) {
   document.getElementById("maj").textContent = enTete;
 
   const container = document.getElementById("matches");
+  container.className = "grille";
   container.innerHTML = "";
   if (!matchs || matchs.length === 0) {
     container.innerHTML = "<p>aucun résultat pour le moment.</p>";
@@ -179,45 +214,72 @@ function afficheMatchs(matchs, enTete) {
   }
 
   matchs.forEach((m) => {
-    const div = document.createElement("div");
-    div.className = "match";
+    container.appendChild(construitCarteMatch(m));
+  });
+}
 
-    let html = `
-      <div class="teams"><span>${m.domicile}</span><span>${m.score || m.heure || ""}</span><span>${m.exterieur}</span></div>
-      <div class="meta">${(m.competition || "").replace(/\s+/g, " ").trim()}</div>
-    `;
+// 03/09/2026 -- vue "par catégorie" : mêmes cartes que afficheMatchs(),
+// mais regroupées sous un en-tête par championnat, sur le même principe
+// que le regroupement déjà utilisé sur l'accueil (index.js). L'ordre
+// GO-d'abord de trieEtFiltre() n'a pas de sens ici (on parcourt par
+// championnat, pas par pertinence) -- tri alphabétique du championnat,
+// puis par heure de coup d'envoi à l'intérieur d'un même championnat.
+function groupeParCompetition(matchs) {
+  const copie = [...matchs];
+  copie.sort((a, b) => {
+    const ca = (a.competition || "").replace(/\s+/g, " ").trim();
+    const cb = (b.competition || "").replace(/\s+/g, " ").trim();
+    if (ca !== cb) return ca.localeCompare(cb, "fr");
+    return (a.heure || "").localeCompare(b.heure || "");
+  });
+  return copie;
+}
 
-    if (!m.traite) {
-      html += `<div class="signal-non-traite">non analysé — ${traduireRaison(m.raison_non_traite)}</div>`;
-    } else {
-      const estGo = m.verdict_global === "GO";
-      html += `<div class="ligne-verdict">
-        <span class="badge ${estGo ? "badge-go" : "badge-nogo"}">${estGo ? "✓ GO" : "✕ NO_GO"}</span>
-      </div>`;
-      html += construitNiveau3(m);
-      if (!estGo && m.motif_no_go) {
-        html += `<div class="motif-no-go">${m.motif_no_go}</div>`;
-      }
-      if (estGo) {
-        html += construitBlocParisRecommandes(m.LISTE_B_liste_finale_apres_correlation);
-      }
-      html += construitBlocRisques(m);
-      html += construitDetails(m);
+function afficheMatchsGroupe(matchs, enTete) {
+  document.getElementById("maj").textContent = enTete;
+
+  const container = document.getElementById("matches");
+  container.className = "";
+  container.innerHTML = "";
+  if (!matchs || matchs.length === 0) {
+    container.innerHTML = "<p>aucun résultat pour le moment.</p>";
+    return;
+  }
+
+  const groupes = groupeParCompetition(matchs);
+  let competitionCourante = null;
+  let sousConteneur = null;
+
+  groupes.forEach((m) => {
+    const nomCompetition = (m.competition || "compétition inconnue").replace(/\s+/g, " ").trim();
+    if (nomCompetition !== competitionCourante) {
+      competitionCourante = nomCompetition;
+      const entete = document.createElement("div");
+      entete.className = "entete-categorie";
+      entete.textContent = nomCompetition;
+      container.appendChild(entete);
+      sousConteneur = document.createElement("div");
+      sousConteneur.className = "grille";
+      container.appendChild(sousConteneur);
     }
-
-    div.innerHTML = html;
-    container.appendChild(div);
+    sousConteneur.appendChild(construitCarteMatch(m));
   });
 }
 
 let jetonAffichage = 0;
 let dernierEnsembleBrut = [];
 let dernierEnTeteBase = "";
+let modeAffichage = "liste"; // 03/09/2026 -- "liste" ou "categorie"
 
 function reaffiche() {
   const trie = trieEtFiltre(dernierEnsembleBrut);
   const nbGo = dernierEnsembleBrut.filter((m) => m.verdict_global === "GO").length;
-  afficheMatchs(trie, `${dernierEnTeteBase} — ${nbGo} GO`);
+  const enTete = `${dernierEnTeteBase} — ${nbGo} GO`;
+  if (modeAffichage === "categorie") {
+    afficheMatchsGroupe(trie, enTete);
+  } else {
+    afficheMatchs(trie, enTete);
+  }
 }
 
 const FORMAT_DATE_ONGLET = { weekday: "short", day: "numeric", month: "short" };
@@ -370,5 +432,22 @@ async function boucleRafraichissement() {
 
 const filtreGo = document.getElementById("filtre-go");
 if (filtreGo) filtreGo.addEventListener("change", reaffiche);
+
+// 03/09/2026 -- bascule liste complète / par catégorie. Ne recharge rien
+// depuis le réseau : on retrie/regroupe l'ensemble déjà en mémoire
+// (dernierEnsembleBrut), exactement comme le fait déjà le filtre GO.
+["liste", "categorie"].forEach((mode) => {
+  const bouton = document.getElementById("mode-" + mode);
+  if (!bouton) return;
+  bouton.addEventListener("click", () => {
+    if (modeAffichage === mode) return;
+    modeAffichage = mode;
+    ["liste", "categorie"].forEach((m) => {
+      const b = document.getElementById("mode-" + m);
+      if (b) b.classList.toggle("actif", m === mode);
+    });
+    reaffiche();
+  });
+});
 
 activeOngletPronostics("j1");
