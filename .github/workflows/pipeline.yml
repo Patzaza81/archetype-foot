@@ -82,6 +82,19 @@ jobs:
       - name: Commit et push du résultat (run planifié ou relance manuelle complète)
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         run: |
+          echo "=================================================="
+          echo "DIAGNOSTIC 18.1 -- AVANT git add"
+          echo "=================================================="
+          echo "--- pwd ---"
+          pwd
+          echo "--- ls -la du répertoire courant ---"
+          ls -la
+          echo "--- ls -la ciblé sur precalcul_leger.json ---"
+          ls -la precalcul_leger.json 2>&1 || echo "==> ABSENT DU DISQUE avant git add"
+          echo "--- git status --porcelain (avant) ---"
+          git status --porcelain
+          echo "=================================================="
+
           git config user.name "archetype-foot-bot"
           git config user.email "bot@users.noreply.github.com"
           git add data.json matchs_du_jour.json matchs_demain.json matchs_semaine.json precalcul.json cache_equipes.json cache_betpawa.json diagnostic_precalcul_betpawa.txt
@@ -104,6 +117,16 @@ jobs:
           for f in panier.json historique_pronostics.json precalcul_leger.json matchs_du_jour_filtre.json matchs_demain_filtre.json; do
             [ -f "$f" ] && git add "$f"
           done
+
+          echo "=================================================="
+          echo "DIAGNOSTIC 18.1 -- APRÈS git add"
+          echo "=================================================="
+          echo "--- ls -la ciblé sur precalcul_leger.json ---"
+          ls -la precalcul_leger.json 2>&1 || echo "==> ABSENT DU DISQUE après git add"
+          echo "--- git status --porcelain (après add, avant commit) ---"
+          git status --porcelain
+          echo "=================================================="
+
           git diff --staged --quiet || git commit -m "Mise à jour pipeline"
           git pull --rebase origin main
           git push
