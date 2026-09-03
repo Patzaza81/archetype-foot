@@ -40,15 +40,18 @@
      lisibilité AA pour texte normal (4.5:1) -- reste lisible tout en
      étant nettement plus gris. */
   --text-secondary: #7E8D86;
+  /* 03/09/2026 -- gris CLAIR dédié aux heures (liste de sélection),
+     distinct de --text-secondary : celui-ci a été volontairement
+     assombri pour les métadonnées des cartes de pronostics, trop foncé
+     pour un horaire qui doit rester discret mais lisible au premier
+     coup d'œil. Reprend la valeur d'origine de --text-secondary avant
+     assombrissement. */
+  --heure: #B9C4BF;
   /* 03/09/2026 -- couleur dédiée aux noms de championnat/compétition.
-     Le gold est resté réservé à la marque + au pari recommandé (sur
-     décision de Patrick) -- ni le gold, ni le vert/rouge (statuts), ni
-     le turquoise lui-même (déjà utilisé pour l'état actif/les liens)
-     ne convenaient. Violet doux : écart de teinte net avec le
-     turquoise (donc jamais confondu) tout en formant un duo cohérent
-     avec lui -- palette qui reste froide au lieu d'ajouter une 3e
-     teinte chaude à côté du gold. */
-  --categorie: #9C8FE0;
+     Palette finale validée par Patrick (table couleur) : menthe pâle,
+     après les essais violet puis bordeaux. Le gold reste réservé à la
+     marque + au pari recommandé. */
+  --categorie: #B8F2E6;
   --border: rgba(255,255,255,.10);
   /* 29/08/2026 -- responsive : largeur max du contenu sur grand écran,
      pour ne pas étirer les cartes/textes bord à bord sur desktop. */
@@ -461,7 +464,7 @@ main.grille {
   border-bottom: 1px solid var(--border);
 }
 .selection-item .heure {
-  color: var(--text-secondary);
+  color: var(--heure);
   font-variant-numeric: tabular-nums;
   min-width: 3.2em;
 }
@@ -497,7 +500,12 @@ input[type="checkbox"]:checked::after {
    utilisé pour les noms de championnat -- confusion signalée par Patrick.
    Distinction désormais par le POIDS (gras pour la compétition, normal
    ici) plutôt que par une nuance de blanc à peine différente. */
-.selection-item label { font-size: 16px; color: var(--text-secondary); }
+/* 03/09/2026 -- repassé en blanc (var(--text)) sur préférence de
+   Patrick, maintenant que .selection-competition a sa propre couleur
+   dédiée (--categorie, bordeaux) -- la distinction entre nom d'équipe
+   et nom de championnat n'a plus besoin de reposer sur un contraste de
+   gris. */
+.selection-item label { font-size: 16px; color: var(--text); }
 
 #sortie-json {
   width: 100%;
