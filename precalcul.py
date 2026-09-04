@@ -665,7 +665,8 @@ def est_hors_top_flight_unique(nom_competition):
 
 
 def dates_j2_j3(aujourdhui=None):
-    aujourdhui = aujourdhui or datetime.date.today()
+    # CORRECTIF FUSEAU HORAIRE 04/09/2026 -- voir run_pipeline.aujourdhui_france()
+    aujourdhui = aujourdhui or run_pipeline.aujourdhui_france()
     return {
         (aujourdhui + datetime.timedelta(days=2)).isoformat(),
         (aujourdhui + datetime.timedelta(days=3)).isoformat(),
@@ -673,14 +674,14 @@ def dates_j2_j3(aujourdhui=None):
 
 
 def date_j1(aujourdhui=None):
-    aujourdhui = aujourdhui or datetime.date.today()
+    aujourdhui = aujourdhui or run_pipeline.aujourdhui_france()
     return (aujourdhui + datetime.timedelta(days=1)).isoformat()
 
 
 # AJOUT 03/09/2026 (3e partie) -- voir docstring : nécessaire pour que
 # archive_precalcul() sache archiver les matchs J0, en plus de J+1.
 def date_aujourdhui(aujourdhui=None):
-    aujourdhui = aujourdhui or datetime.date.today()
+    aujourdhui = aujourdhui or run_pipeline.aujourdhui_france()
     return aujourdhui.isoformat()
 
 
