@@ -548,6 +548,23 @@ def construit_signaux(matchs_bruts):
         signal["marches"] = marches_probas
 
         candidats = construit_candidats(marches_probas, cotes_marches)
+
+        # AJOUT (04/09/2026 soir) -- archive TOUS les marchés évalués ayant
+        # une cote réelle (probabilité modèle + cote observée), pas
+        # seulement ceux qui passent le filtre EV/cote de LISTE_A. Avant cet
+        # ajout, un marché qui échouait au filtre voyait sa cote perdue
+        # définitivement (jamais écrite sur disque) -- ce qui plafonnait à
+        # 63 le nombre de triplets (probabilité, cote réelle, résultat)
+        # exploitables pour recalibrer K_SHRINKAGE/SEUIL_EV_MIN sur 9 jours
+        # d'historique (voir calcule_roi.py, qui en a besoin). "candidats"
+        # exclut déjà les marchés sans cote réelle (construit_candidats ne
+        # les ajoute pas) -- rien à filtrer de plus ici.
+        signal["TOUS_MARCHES_EVALUES"] = [
+            {"marche": c["marche"], "probabilite_modele": c["probabilite_modele"],
+             "cote_observee": c["cote_observee"]}
+            for c in candidats
+        ]
+
         liste_a = calculs.construit_liste_a(candidats)
         liste_b = calculs.construit_liste_b(liste_a, matrice)
         decision = calculs.decision_go_nogo(
@@ -563,18 +580,17 @@ def construit_signaux(matchs_bruts):
                 "mise_pct_bankroll": calculs.kelly_stake(c["probabilite_modele"], c["cote_observee"]),
             }
 
-        # (30/08/2026 -- correctif) LISTE_A/LISTE_B qualifient un candidat sur
-        # son EV BRUT (voir calcule_ev() dans calculs.py) ; mais la mise
-        # Kelly, elle, utilise une probabilité resserrée (K_SHRINKAGE) --
-        # un candidat peut donc qualifier pour LISTE_B (EV brut >= 12%) et
-        # pourtant recevoir une mise Kelly de 0% (pas d'edge une fois la
-        # surconfiance du modèle corrigée). Un "GO" affiché avec un pari à
-        # 0% de mise n'a aucun sens pour l'utilisateur -- on ne garde donc
-        # dans LISTE_B que les candidats dont la mise réelle est positive,
-        # et on repasse en NO_GO si plus aucun candidat n'a de mise après ce
-        # filtre, avec un motif explicite (distinct de "aucun marché ne
-        # passe le filtre EV/cote", qui reste le motif de decision_go_nogo
-        # quand LISTE_A est vide dès le départ).
+        # (30/08/2026 -- correctif originel, contexte changé le 04/09/2026)
+        # Ce garde-fou supposait LISTE_A/LISTE_B qualifiées sur un EV BRUT
+        # (non resserré) et seule la mise Kelly resserrée par K_SHRINKAGE --
+        # ce n'était qu'une intention à l'époque : K_SHRINKAGE n'était pas
+        # branché du tout (voir calculs.py). Depuis le 04/09/2026,
+        # calcule_ev() applique le resserrement en interne, donc "ev_brut"
+        # ci-dessous et le filtre LISTE_A sont DÉJÀ sur la probabilité
+        # corrigée -- ce garde-fou (mise Kelly nulle -> NO_GO) devient rare
+        # en pratique (il ne se déclenche plus que dans la fine marge entre
+        # EV resserré >= SEUIL_EV_MIN et fraction de Kelly <= 0), mais reste
+        # inoffensif à garder comme filet de sécurité.
         liste_b_serialisee = [serialise(c) for c in liste_b]
         liste_b_avec_mise = [c for c in liste_b_serialisee if c["mise_pct_bankroll"] > 0]
 
