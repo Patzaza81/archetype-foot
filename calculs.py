@@ -95,17 +95,52 @@ ALIAS_PAYS = {
 }
 
 
-# Bornes défensives exactes du Module 2 v4.3.
-BORNE_MIN_DEFENSE = 0.70
-BORNE_MAX_DEFENSE = 1.30
+# Bornes défensives -- RÉGRESSION CORRIGÉE (04/09/2026 soir) : ce fichier
+# avait été ramené à 0.70/1.30 (anciennes valeurs Module 2 v4.3), défaisant
+# sans le documenter le correctif du 30/08 qui les avait élargies à 0.55/1.60
+# suite à la saturation observée (41% des modificateurs de défense collés
+# exactement sur l'ancienne borne). Régression confirmée accidentelle par
+# Patrick -- remis à la valeur du 30/08.
+BORNE_MIN_DEFENSE = 0.55
+BORNE_MAX_DEFENSE = 1.60
 
-# Aucun shrinkage probabiliste : la base v4.3 interdit toute modification
-# silencieuse de la probabilité modèle après Poisson/Dixon-Coles.
-K_SHRINKAGE = 1.0
+# K_SHRINKAGE -- RÉGRESSION CORRIGÉE (04/09/2026 soir) : ce fichier avait
+# K_SHRINKAGE=1.0 (aucune correction) ET ajuste_probabilite() qui renvoyait p
+# inchangée -- la fonction existait mais n'était appelée nulle part dans le
+# pipeline, donc le shrinkage n'avait AUCUN effet réel quelle que soit sa
+# valeur. Régression confirmée accidentelle par Patrick.
+#
+# Valeur retenue (0.48) et seuil associé (0.02 ci-dessous) : PAS le calibrage
+# théorique poolé (k=0.254, voir historique de session) -- ce dernier,
+# combiné à FOURCHETTE_COTE_MAX=1.69, rend TOUT pari mathématiquement
+# impossible (même p=1.0 après ce shrinkage ne peut jamais atteindre l'EV
+# minimal à ces cotes -- vérifié par calcul, 0/125 candidats historiques
+# passeraient). k=0.48/seuil=0.02 est le réglage qui maximise le taux de
+# réussite réel sur les 63 paris (probabilité+cote réelle+résultat) qui
+# existent concrètement dans historique_pronostics.json, sous contrainte
+# d'un volume minimum (n=10) pour ne pas friser le pur bruit statistique :
+# 70.0% de réussite réelle contre 57.1% avec l'ancien réglage (k=1.0).
+#
+# CE RÉGLAGE EST PROVISOIRE ET FRAGILE (n=10) -- pas un aboutissement.
+# Le pipeline n'archivait jusqu'ici QUE les marchés qui passaient déjà le
+# filtre EV, plafonnant les données exploitables pour ce calibrage à 63
+# paris au total sur 9 jours. Le correctif d'archivage complet livré en
+# même temps que ce fichier (voir run_pipeline.py, archive TOUS les
+# marchés évalués avec leur cote réelle) doit faire grossir cet échantillon
+# rapidement -- recalculer cette valeur dès que l'échantillon dépasse une
+# quinzaine de paris par palier de k testé (voir calcule_roi.py, qui refait
+# cette recherche de grille automatiquement chaque nuit).
+K_SHRINKAGE = 0.48
 
 def ajuste_probabilite(p):
-    """Compatibilité API : retourne la probabilité modèle inchangée."""
-    return p
+    """Resserre la probabilité modèle vers 0.5 d'un facteur K_SHRINKAGE,
+    pour corriger la surconfiance mesurée du modèle (voir historique de
+    session -- écart constant d'environ 23 points entre le taux de
+    réussite réel et la probabilité annoncée, sur deux échantillons
+    indépendants). Appelée par calcule_ev() et kelly_stake() -- avant le
+    04/09/2026, cette fonction existait mais n'était appelée nulle part,
+    rendant K_SHRINKAGE totalement sans effet quelle que soit sa valeur."""
+    return 0.5 + K_SHRINKAGE * (p - 0.5)
 
 
 POIDS_FORME = 0.30
@@ -118,8 +153,13 @@ BORNE_RATIO = 0.15  # borne +/- par facteur avant pondération
 
 RHO_DIXON_COLES = -0.1
 
-# Seuil EV exact du Module 3 v6.3.
-SEUIL_EV_MIN = 0.05
+# SEUIL_EV_MIN -- RÉGRESSION CORRIGÉE (04/09/2026 soir) : était retombé à
+# 0.05 (ancienne valeur Module 3 v6.3). Valeur retenue ici (0.02) fait
+# partie du même réglage empirique que K_SHRINKAGE ci-dessus (voir son
+# commentaire) -- les deux ont été recherchés ensemble sur la grille
+# (k, seuil_ev), pas indépendamment. Ne pas changer l'un sans l'autre sans
+# refaire le calcul.
+SEUIL_EV_MIN = 0.02
 FOURCHETTE_COTE_MIN = 1.25
 FOURCHETTE_COTE_MAX = 1.69
 SEUIL_CORRELATION = 0.70
@@ -519,16 +559,34 @@ def construit_probabilites_marches(matrice, lignes_ou=(0.5, 1.5, 2.5, 3.5, 4.5),
 
 
 def calcule_ev(probabilite_modele, cote_observee):
-    """Règle N8 — EV = (cote x probabilité modèle) - 1."""
+    """Règle N8 — EV = (cote x probabilité modèle AJUSTÉE) - 1.
+
+    CORRECTIF (04/09/2026 soir) : applique désormais ajuste_probabilite()
+    en interne avant le calcul. Avant ce correctif, cette fonction utilisait
+    la probabilité brute du modèle -- ajuste_probabilite() existait dans ce
+    même fichier mais n'était appelée nulle part, rendant K_SHRINKAGE sans
+    aucun effet réel. probabilite_modele reçu ici reste la valeur BRUTE
+    (celle affichée telle quelle ailleurs, ex. LISTE_A/LISTE_B) -- c'est ce
+    point d'entrée qui resserre, pas l'appelant.
+    """
     if cote_observee is None:
         return None
-    return (cote_observee * probabilite_modele) - 1
+    return (cote_observee * ajuste_probabilite(probabilite_modele)) - 1
 
 
 def kelly_stake(probabilite_modele, cote_observee):
     """Étape 7 Module 3 v6.3 — Kelly fractionné à 25%, plafond 4%.
 
-    La probabilité utilisée est exactement celle du modèle, sans shrinkage.
+    CORRECTIF (04/09/2026 soir) : la probabilité utilisée pour la mise
+    Kelly elle-même est maintenant celle resserrée par ajuste_probabilite()
+    -- avant ce correctif, le commentaire ici affirmait explicitement
+    l'inverse ("exactement celle du modèle, sans shrinkage"), ce qui était
+    de toute façon cohérent avec le reste du fichier à l'époque (shrinkage
+    non branché), mais aurait été une incohérence dangereuse si seul
+    calcule_ev() avait été corrigé sans toucher ce calcul : le filtre EV
+    aurait jugé le pari sur la probabilité honnête, puis la mise aurait été
+    dimensionnée sur la probabilité brute surconfiante -- sur-mise
+    systématique par rapport à l'edge réel.
     """
     if cote_observee is None:
         return 0.0
@@ -538,9 +596,10 @@ def kelly_stake(probabilite_modele, cote_observee):
     if not (FOURCHETTE_COTE_MIN <= cote_observee <= FOURCHETTE_COTE_MAX):
         return 0.0
 
+    p_adj = ajuste_probabilite(probabilite_modele)
     b = cote_observee - 1
-    q = 1 - probabilite_modele
-    f_kelly = (b * probabilite_modele - q) / b if b > 0 else 0.0
+    q = 1 - p_adj
+    f_kelly = (b * p_adj - q) / b if b > 0 else 0.0
     if f_kelly <= 0:
         return 0.0
 
