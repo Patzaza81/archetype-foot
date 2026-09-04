@@ -122,12 +122,18 @@ def calcule_dashboard(historique):
                     continue
                 mise = p.get("mise_pct_bankroll") or 0
                 cote = p.get("cote_observee") or 0
+                # AJOUT (04/09/2026 soir) -- probabilite_modele est déjà
+                # présente dans LISTE_B depuis toujours ; elle n'était juste
+                # jamais recopiée ici. Nécessaire pour calcule_calibrage()
+                # ci-dessous (mesurer l'écart réussite réelle/probabilité
+                # annoncée -- sinon impossible de recalculer K_SHRINKAGE).
+                proba = p.get("probabilite_modele")
                 gain = mise * (cote - 1) if resultat else -mise
                 detail.append({
                     "date": m.get("date"), "domicile": m.get("domicile"),
                     "exterieur": m.get("exterieur"), "competition": m.get("competition"),
                     "score": m.get("score"), "marche": p.get("marche"),
-                    "cote_observee": cote, "mise_pct_bankroll": mise,
+                    "cote_observee": cote, "probabilite_modele": proba, "mise_pct_bankroll": mise,
                     "confiance": m.get("confiance"), "gagne": resultat, "gain_pct_bankroll": gain,
                 })
 
@@ -161,6 +167,80 @@ def calcule_dashboard(historique):
     }
 
 
+def ajuste_p(p, k):
+    return 0.5 + k * (p - 0.5)
+
+
+def calcule_calibrage(historique, k_min=0.10, k_max=1.00, k_pas=0.02,
+                       seuil_min=0.02, seuil_max=0.20, seuil_pas=0.01,
+                       n_planchers=(10, 20, 30, 50)):
+    """AJOUT (04/09/2026 soir) -- recherche de grille (K_SHRINKAGE, SEUIL_EV_MIN)
+    sur TOUS_MARCHES_EVALUES (voir run_pipeline.py), pas seulement les paris
+    qui ont déjà été recommandés. Contrairement à calcule_dashboard() ci-
+    dessus (qui mesure la performance de CE QUI A ÉTÉ JOUÉ), ceci rejoue
+    TOUS les marchés évalués avec une cote réelle, qu'ils aient ou non
+    passé le filtre EV au moment du run -- l'échantillon exploitable pour
+    ce calcul grossit donc bien plus vite que les 63 paris qui plafonnaient
+    ce calibrage avant le 04/09/2026 (TOUS_MARCHES_EVALUES n'existe que
+    pour les matchs traités APRÈS ce correctif -- l'échantillon met
+    plusieurs jours à dépasser l'historique pré-correctif).
+
+    Ne modifie JAMAIS calculs.py automatiquement -- affiche seulement une
+    recommandation par palier de volume minimum (n_planchers), à appliquer
+    manuellement après relecture (voir règle de Patrick : jamais de
+    changement sur les tamis sans repasser par un test complet). Un seul
+    pari à faible n peut faire beaucoup varier le "meilleur" réglage --
+    lire plusieurs nuits de suite avant de changer quoi que ce soit.
+    """
+    triplets = []
+    for jour in historique:
+        for m in jour.get("matchs", []):
+            score = parse_score(m.get("score"))
+            if score is None:
+                continue
+            buts_dom, buts_ext = score
+            for c in (m.get("TOUS_MARCHES_EVALUES") or []):
+                resultat = verifie_pari(c.get("marche"), buts_dom, buts_ext)
+                if resultat is None:
+                    continue
+                proba, cote = c.get("probabilite_modele"), c.get("cote_observee")
+                if proba is None or not cote:
+                    continue
+                triplets.append({"gagne": resultat, "proba": proba, "cote": cote})
+
+    resultats = []
+    k = k_min
+    while k <= k_max + 1e-9:
+        seuil = seuil_min
+        while seuil <= seuil_max + 1e-9:
+            lignes = [t["gagne"] for t in triplets
+                      if 1.25 <= t["cote"] <= 1.69
+                      and (t["cote"] * ajuste_p(t["proba"], k) - 1) >= seuil]
+            if lignes:
+                nb = len(lignes)
+                taux = sum(lignes) / nb * 100
+                resultats.append({"k": round(k, 2), "seuil_ev": round(seuil, 2), "n": nb, "taux_reussite_pct": round(taux, 1)})
+            seuil += seuil_pas
+        k += k_pas
+
+    recommandations = {}
+    for n_min in n_planchers:
+        candidats = [r for r in resultats if r["n"] >= n_min]
+        if not candidats:
+            recommandations[f"n_min_{n_min}"] = None
+            continue
+        candidats.sort(key=lambda r: (-r["taux_reussite_pct"], -r["n"]))
+        recommandations[f"n_min_{n_min}"] = candidats[0]
+
+    return {
+        "nb_triplets_disponibles": len(triplets),
+        "note": ("Recommandation par palier de volume minimum -- ne descend jamais "
+                 "en dessous d'un seuil sans un n suffisant pour être crédible. "
+                 "Ne modifie pas calculs.py automatiquement, à appliquer manuellement."),
+        "recommandations_par_palier_n": recommandations,
+    }
+
+
 def main():
     try:
         with open(FICHIER_HISTORIQUE, "r", encoding="utf-8") as f:
@@ -170,6 +250,7 @@ def main():
         sys.exit(1)
 
     dashboard = calcule_dashboard(historique)
+    dashboard["calibrage_k_shrinkage"] = calcule_calibrage(historique)
     dashboard["genere_le"] = __import__("datetime").datetime.now(
         __import__("datetime").timezone.utc
     ).strftime("%Y-%m-%d %H:%M UTC")
