@@ -824,7 +824,14 @@ def archive_precalcul(signaux, dates_a_archiver):
     dates (aujourd'hui + J+1), pas une seule date : voir docstring en tête
     de fichier pour pourquoi un match J0 doit être archivé la nuit même où
     il apparaît dans la fenêtre, contrairement à J+1 qui a jusque-là
-    toujours été le seul point d'archivage."""
+    toujours été le seul point d'archivage.
+
+    CORRECTIF 03/09/2026 (bug des doublons, 570/1251 trouvés en vérifiant
+    le vrai ROI) -- délègue maintenant à
+    run_pipeline.ajoute_matchs_a_historique(), qui déduplique par match et
+    range chaque match dans le bloc de SA PROPRE date au lieu d'un bloc
+    unique halluciné pour tout le lot (voir sa docstring pour le détail des
+    deux bugs corrigés)."""
     candidats = [
         s for s in signaux
         if s.get("traite") and s.get("verdict_global") and s.get("date") in dates_a_archiver
@@ -832,17 +839,7 @@ def archive_precalcul(signaux, dates_a_archiver):
     if not candidats:
         return 0
 
-    historique = charge_json_ou_vide(FICHIER_HISTORIQUE, defaut=[])
-    historique.append({
-        "date": date_j1_iso,
-        "source": "precalcul_auto",
-        "nb_matchs_traites": len(candidats),
-        "matchs": [_slim_pour_archive(s) for s in candidats],
-    })
-    with open(FICHIER_HISTORIQUE, "w", encoding="utf-8") as f:
-        json.dump(historique, f, ensure_ascii=False, indent=2)
-
-    return len(candidats)
+    return run_pipeline.ajoute_matchs_a_historique([_slim_pour_archive(s) for s in candidats])
 
 
 def main():
