@@ -11,6 +11,7 @@ seule source de cote par marché.
 import datetime
 import json
 import re
+from zoneinfo import ZoneInfo
 from scraper_details import (
     recupere_details_match, recupere_gf_ga_avec_repli, recupere_cotes_marches,
     recupere_classement_du_match, recupere_h2h,
@@ -22,6 +23,27 @@ FICHIER_MATCHS_DU_JOUR = "matchs_du_jour.json"
 FICHIER_MATCHS_DEMAIN = "matchs_demain.json"
 FICHIER_PANIER = "panier.json"
 FICHIER_HISTORIQUE = "historique_pronostics.json"
+
+# AJOUT 04/09/2026 -- CORRECTIF FUSEAU HORAIRE (bug trouvé en vérifiant les
+# scores fournis par Patrick, 7 matchs d'Amérique latine/Arabie Saoudite
+# archivés avec un jour de décalage). Tous les calculs de "date du jour" du
+# projet utilisaient datetime.date.today(), qui renvoie la date du fuseau
+# horaire DU SERVEUR -- UTC par défaut sur les runners GitHub Actions.
+# matchendirect.fr, site français, regroupe visiblement ses matchs par jour
+# calendaire FRANÇAIS (CET/CEST, UTC+1 ou +2 selon la saison). Entre
+# 22h00 et 00h00 UTC (soit 00h00-02h00 heure française l'été), le jour
+# calendaire a déjà changé en France mais pas encore en UTC -- exactement
+# la fenêtre où Patrick a déclenché plusieurs runs manuels aujourd'hui
+# (soirée). Un run lancé dans cette fenêtre calculait "aujourd'hui"/"demain"
+# avec un jour de retard par rapport à ce que matchendirect affiche
+# réellement, d'où le décalage observé.
+#
+# Remplace TOUS les datetime.date.today() du projet (scraper.py,
+# scraper_semaine.py, precalcul.py, verification_resultats.py) par cette
+# fonction unique, qui calcule "aujourd'hui" en heure française peu importe
+# le fuseau du serveur qui exécute le code.
+def aujourdhui_france():
+    return datetime.datetime.now(ZoneInfo("Europe/Paris")).date()
 MATCH_LINK_RE = re.compile(r"/live-score/([a-z0-9\-]+)_([a-z0-9]+)\.html")
 
 # CORRECTIF (26/08ter) : jusqu'ici, seuls 1x2/double_chance/btts/over_under
