@@ -1635,3 +1635,36 @@ que le correctif tourne réellement en production, pas seulement en local.
    décision de Patrick) ; confiance moyenne Chili/Égypte/Écosse-Belgique/
    Océanie/Ligue Conférence ; purge cache Betpawa/classement/H2H sans
    politique d'expiration active.
+   ## 21. Session du 04-05/09/2026 — Moteur de justification branché, GA_REFERENCE_PAR_LIGUE restauré (25 pays), bug 18.8 corrigé pour de vrai
+
+### 21.1 Bug 18.8 -- correctif RÉEL cette fois
+Le "correctif" annoncé en 20.1 n'était en fait jamais écrit dans le fichier
+(vérifié par diff avec GitHub main -- identique à l'ancien code bogué).
+Corrigé pour de vrai dans scraper_details.py::_extrait_historique_competition
+(boucle table-par-table, max 4 tentatives). Testé sur 3 cas synthétiques
+(dont Cagliari). PAS ENCORE VÉRIFIÉ sur un run réel.
+
+### 21.2 GA_REFERENCE_PAR_LIGUE restauré -- 25 pays réels
+8 pays (FootyStats, déjà présents dans les commentaires) + 16 pays calculés
+depuis les vrais CSV Football-Data.co.uk (10 "grands" championnats + 6
+extra leagues, saison 2025/26 complète, 0 ligne incomplète). Toujours sur
+"default" (1.35) : Écosse, Autriche, et toute compétition continentale.
+LIMITE : get_ga_reference ne distingue que par PAYS, pas par division --
+Eerste Divisie/Challenge Ligue (2e divisions, très présentes dans les
+échecs du 04/09) héritent de la valeur de la 1ère division du même pays.
+
+### 21.3 Moteur de justification branché (moteur_justification.py fourni par Patrick)
+Nouveau fichier adapte_justification.py fait le pont entre les vrais matchs
+bruts (désormais exposés par scraper_details.py) et le moteur. Réutilise
+calcule_roi.verifie_pari() pour les marchés symétriques. Handicap/Score
+exact : aucune preuve construite (pas de règle fiable sur historique
+orienté). Branché dans run_pipeline.py sur le "pari en or" ; script.js
+affiche le nouveau bloc à la place de l'ancien résumé cote/ev/confiance.
+TESTÉ : adapte_justification.py de bout en bout (4 scénarios). NON TESTÉ :
+le chemin GO complet dans le pipeline réel (seulement le chemin NO_GO).
+
+### 21.4 Fichiers livrés cette session (tous testés avant livraison, sauf 21.3 GO)
+scraper_details.py (18.8 + matchs bruts exposés), calculs.py (GA_REFERENCE_PAR_LIGUE,
+25 pays), adapte_justification.py (nouveau), run_pipeline.py (justification
+branchée), script.js (nouveau bloc justification), historique_pronostics.json
++ roi_dashboard.json (scores du 04/09 injectés, 35/39).
