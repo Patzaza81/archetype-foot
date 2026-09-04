@@ -137,11 +137,38 @@ function construitNiveau3(m) {
     ${formatPct(probaAffichee)}
     <span class="proba-1-label">probabilité modèle (ajustée) — ${pariEnOr.marche}</span>
   </div>
-  <p class="pourquoi-pari">
-    pourquoi ce pari : cote ${pariEnOr.cote_observee.toFixed(2)}, ev ${formatPct(pariEnOr.ev_brut)},
-    confiance ${m.confiance || "n/d"} (${m.nb_matchs_domicile_utilises ?? "?"} matchs domicile /
-    ${m.nb_matchs_exterieur_utilises ?? "?"} matchs extérieur utilisés).
-  </p>`;
+  ${construitBlocJustification(m, pariEnOr)}`;
+}
+
+// AJOUT 04/09/2026 (soir) -- rendu du vrai moteur de justification
+// (moteur_justification.py + adapte_justification.py), qui remplace le
+// résumé technique "cote/ev/confiance" par des faits statistiques réels
+// (fréquences comptées sur l'historique réel, jamais inventées -- voir
+// adapte_justification.py). m.justification est None si le marché
+// recommandé n'a pas de preuve fiable construite pour lui (Handicap, Score
+// exact -- voir en-tête d'adapte_justification.py) ou si le match a été
+// archivé avant ce correctif -- repli sur l'ancien résumé dans ce cas,
+// pour ne jamais laisser un GO sans aucune explication affichée.
+function construitBlocJustification(m, pariEnOr) {
+  const j = m.justification;
+  if (!j || !j.justifications || j.justifications.length === 0) {
+    return `<p class="pourquoi-pari">
+      pourquoi ce pari : cote ${pariEnOr.cote_observee.toFixed(2)}, ev ${formatPct(pariEnOr.ev_brut)},
+      confiance ${m.confiance || "n/d"} (${m.nb_matchs_domicile_utilises ?? "?"} matchs domicile /
+      ${m.nb_matchs_exterieur_utilises ?? "?"} matchs extérieur utilisés).
+    </p>`;
+  }
+  const lignes = j.justifications
+    .map(just => `<li class="justification-ligne">${just.texte}</li>`)
+    .join("");
+  const solidite = j.solidite_donnees
+    ? `<p class="justification-solidite">${j.solidite_donnees}</p>`
+    : "";
+  return `<div class="bloc-justification">
+    <p class="justification-titre">${j.titre}</p>
+    <ul class="justification-liste">${lignes}</ul>
+    ${solidite}
+  </div>`;
 }
 
 const SUPABASE_URL = "https://hjrcqodwfjxqcjvjoxzq.supabase.co";
