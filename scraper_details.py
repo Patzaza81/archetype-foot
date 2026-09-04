@@ -359,7 +359,13 @@ def recupere_cotes_marches(url_match_face_a_face):
 # Classement universel via l'URL du match (25/08).
 # --------------------------------------------------------------------------
 
-def recupere_classement_du_match(url_match):
+def recupere_classement_du_match(url_match, nom_competition=None):
+    # AJOUT 03/09/2026 -- nom_competition accepté mais IGNORÉ ici : ce
+    # paramètre ne sert qu'à la clé de cache (voir cache_classement.py et
+    # precalcul.py), pas au scraping lui-même, qui ne dépend que de l'URL.
+    # Ajouté en second paramètre OPTIONNEL pour que l'appel direct depuis
+    # run_pipeline.py (flux panier manuel, sans passer par precalcul.py)
+    # continue de fonctionner qu'il passe 1 ou 2 arguments.
     url = url_match + "?p=classement"
     html = fetch_html(url)
     try:
