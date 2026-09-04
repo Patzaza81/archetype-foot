@@ -70,16 +70,107 @@ import math
 #   Retombe sur "default" en attendant une saison complète.
 # Toute clé de pays absente retombe sur "default" (l'ancienne valeur 1.35,
 # inchangée).
+#
+# RESTAURATION 04/09/2026 (soir) -- GA_REFERENCE_PAR_LIGUE avait été
+# régressée à une constante unique (voir TRANSITION.md 20.2/20.10 point 5).
+# Restaurée ici, mais SEULEMENT pour les pays dont la valeur numérique
+# calculée est réellement récupérable : les 8 pays ci-dessous ont leurs
+# totaux bruts (GF total = GA total, équipes, matchs) écrits noir sur
+# blanc dans les commentaires ci-dessus (source FootyStats), ce qui permet
+# de recalculer GA_REFERENCE = GF_total / (matchs-équipe totaux) sans
+# deviner. Vérifié : GF_total = GA_total pour les 8 (aucune incohérence).
+#
+# Les 19 (correction : 16, voir TRANSITION.md 0.3) championnats calculés
+# via Football-Data.co.uk (Italie, Allemagne, France, Turquie, Espagne,
+# Angleterre, Pays-Bas, Portugal, Grèce, Belgique, Norvège, Suède,
+# Danemark, Russie, Suisse, Pologne) NE SONT PAS restaurés ici : le
+# document de transition confirme la méthode et les saisons utilisées,
+# mais le résultat numérique de ce calcul n'est écrit nulle part de
+# récupérable (ni dans ce fichier, ni dans TRANSITION.md, ni ailleurs dans
+# le dépôt) -- halte délibérée plutôt que d'inventer une valeur. Ces pays
+# retombent donc sur "default" (1.35) comme avant, y COMPRIS plusieurs pays
+# très représentés dans les échecs du 04/09 (France, Allemagne, Pays-Bas,
+# Suisse, Danemark) -- cette restauration partielle ne les corrige pas.
+# Pour les traiter, il faudrait refaire le calcul depuis les CSV
+# Football-Data.co.uk (méthode documentée en 0.3) et écrire le résultat
+# ici, une fois pour toutes, pour ne plus le reperdre à la prochaine
+# régression accidentelle.
 GA_REFERENCE = 1.35
+
+GA_REFERENCE_PAR_LIGUE = {
+    "default": GA_REFERENCE,
+    # FootyStats, saison complète la plus récente -- voir TRANSITION.md 0.3.
+    "Arabie Saoudite": 1.5049,   # 18 équipes x 34 matchs, GF=GA=921
+    "Corée du Sud": 1.2929,      # 12 équipes x 33 matchs, GF=GA=512
+    "Japon": 1.1987,             # 20 équipes x 38 matchs, GF=GA=911
+    "Estonie": 1.5797,           # 182 matchs (364 matchs-équipe), GF=GA=575
+    "Tunisie": 0.8625,           # 240 matchs (480 matchs-équipe), GF=GA=414
+    # Accent variable selon la source (matchendirect peut afficher l'un ou
+    # l'autre) -- les deux clés pointent vers la même valeur pour ne pas
+    # dépendre d'un alias non branché (voir ALIAS_PAYS ci-dessous, jamais
+    # appliqué par get_ga_reference).
+    "Etats-Unis": 1.5083,        # MLS, 30 équipes x 36 matchs (540 matchs), GF=GA=1629
+    "États-Unis": 1.5083,
+    "South Africa": 1.0104,      # 240 matchs (480 matchs-équipe), GF=GA=485 -- clé en anglais volontairement (voir note plus haut)
+    "Chine": 1.6062,             # 240 matchs (480 matchs-équipe), GF=GA=771
+
+    # AJOUT 04/09/2026 (soir, suite) -- Football-Data.co.uk, saison 2025/26
+    # complète, calculé directement depuis les CSV réels (colonnes FTHG/FTAG,
+    # 0 ligne incomplète pour les 10). Nombres de matchs vérifiés identiques
+    # à ceux cités dans le commentaire d'origine (voir TRANSITION.md 0.3) --
+    # Italie 380, Allemagne 306, France 306, Turquie 306, Espagne 380,
+    # Angleterre 380, Pays-Bas 306, Portugal 306, Grèce 236, Belgique 311.
+    # ATTENTION -- ces valeurs sont calculées sur le championnat de PLUS HAUT
+    # NIVEAU de chaque pays (F1/D1/I1/T1/SP1/E0/N1/P1/G1/B1). get_ga_reference
+    # ne distingue que par PAYS, pas par division : un match en 2e division
+    # (ex. "Pays-Bas : Eerste Divisie", "Suisse : Challenge Ligue") utilisera
+    # donc la même valeur que la 1ère division du même pays, ce qui peut être
+    # imprécis si le niveau de buts diffère significativement entre divisions
+    # d'un même pays (pas vérifié).
+    "France": 1.4101,       # Ligue 1, 306 matchs, GF=GA=863
+    "Allemagne": 1.6176,    # Bundesliga, 306 matchs, GF=GA=990
+    "Italie": 1.2132,       # Serie A, 380 matchs, GF=GA=922
+    "Turquie": 1.3268,      # Süper Lig, 306 matchs, GF=GA=812
+    "Espagne": 1.3474,      # La Liga, 380 matchs, GF=GA=1024
+    "Angleterre": 1.375,    # Premier League, 380 matchs, GF=GA=1045
+    "Pays-Bas": 1.5882,     # Eredivisie (1ère division), 306 matchs, GF=GA=972
+    "Portugal": 1.3415,     # Primeira Liga, 306 matchs, GF=GA=821
+    "Grèce": 1.2839,        # Super League, 236 matchs, GF=GA=606
+    "Belgique": 1.3376,     # Pro League (1ère division), 311 matchs, GF=GA=832
+
+    # AJOUT 04/09/2026 (soir, suite finale) -- Football-Data.co.uk "extra
+    # leagues" (football-data.co.uk/new/{code}.csv, colonnes HG/AG/Season,
+    # plusieurs saisons empilées dans le même fichier -- filtré sur la
+    # DERNIÈRE SAISON COMPLÈTE uniquement, jamais 2026/2027 qui est en cours
+    # au moment de ce calcul). 0 ligne incomplète pour les 6. Nombres de
+    # matchs de la saison retenue identiques à ceux déjà cités dans le
+    # commentaire d'origine pour Danemark/Suisse/Pologne/Russie (voir
+    # TRANSITION.md 0.3) -- cohérent avec le même calcul refait ici.
+    # Norvège/Suède : saison CALENDAIRE (mars-décembre), pas août-mai comme
+    # les autres -- dernière complète = 2025 (2026 encore en cours).
+    "Suisse": 1.6447,     # Super League, saison 2025/2026, 228 matchs, GF=GA=750
+    "Norvège": 1.5938,    # Eliteserien, saison 2025 (calendaire), 240 matchs, GF=GA=765
+    "Russie": 1.2688,     # Premier League, saison 2025/2026, 240 matchs, GF=GA=609
+    "Suède": 1.4229,      # Allsvenskan, saison 2025 (calendaire), 240 matchs, GF=GA=683
+    "Danemark": 1.5495,   # Superliga, saison 2025/2026, 192 matchs, GF=GA=595
+    "Pologne": 1.3676,    # Ekstraklasa, saison 2025/2026, 306 matchs, GF=GA=837
+
+    # Restent sur "default" (1.35) -- non calculés/non récupérables :
+    # Écosse (saison trop courte au moment du calcul), Autriche (jamais
+    # traitée). "Europe"/"Monde"/"International" ne peuvent jamais avoir de
+    # valeur par pays (compétitions continentales/mondiales).
+}
 
 
 def get_ga_reference(pays=None):
-    """Référence défensive fixe du Module 2 v4.3.
-
-    Le pays n'intervient pas dans le calcul : GA_REFERENCE est une constante
-    externe unique, conformément à la règle N3bis de la base de référence.
-    """
-    return GA_REFERENCE
+    """Référence défensive du Module 2 v4.3, désormais PAR PAYS quand une
+    valeur réelle calculée est disponible (voir GA_REFERENCE_PAR_LIGUE et
+    TRANSITION.md 0.3) ; retombe sur la constante universelle (1.35) pour
+    tout pays absent du dict -- comportement strictement identique à
+    l'ancien GA_REFERENCE fixe pour ces pays-là, aucune régression."""
+    if pays is None:
+        return GA_REFERENCE_PAR_LIGUE["default"]
+    return GA_REFERENCE_PAR_LIGUE.get(pays, GA_REFERENCE_PAR_LIGUE["default"])
 
 
 # Alias conservés uniquement pour compatibilité des entrées ; ils ne modifient
