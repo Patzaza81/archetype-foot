@@ -84,6 +84,39 @@ def extrait_resultat_de_ce_panier(matchs_demandes, historique):
     return trouves
 
 
+# AJOUT 03/09/2026 -- demande explicite de Patrick : un match du panier déjà
+# analysé (par le moteur automatique J0/J+1/J+2/J+3, OU archivé lors d'un
+# panier précédent) ne doit PAS redéclencher un scraping complet -- son
+# résultat existant est réutilisé tel quel. Deux sources sont regardées,
+# dans cet ordre :
+#   1. precalcul.json (moteur automatique) -- couvre les matchs actuellement
+#      dans la fenêtre J0-J+3, MÊME s'ils n'ont pas encore été archivés cette
+#      nuit (l'archivage ne se fait qu'à J0/J+1, voir precalcul.py).
+#   2. historique_pronostics.json -- couvre ce qui est sorti de la fenêtre
+#      automatique (matchs plus anciens) ou déjà analysé via un panier
+#      précédent.
+# RÈGLE STRICTE (déjà respectée par extrait_resultat_de_ce_panier ci-dessus,
+# reconduite ici) : on ne renvoie JAMAIS que les matchs explicitement
+# demandés -- comparaison par (domicile, exterieur), jamais "tout ce qui
+# traîne" dans ces fichiers.
+def cherche_deja_analyses(matchs_demandes, precalcul_signaux, historique):
+    cles_demandees = {(m["domicile"], m["exterieur"]) for m in matchs_demandes}
+    trouves = {}
+
+    for s in precalcul_signaux:
+        cle = (s.get("domicile"), s.get("exterieur"))
+        if cle in cles_demandees and s.get("traite") and s.get("verdict_global"):
+            trouves[cle] = s
+
+    for jour in historique:
+        for m in jour.get("matchs", []):
+            cle = (m.get("domicile"), m.get("exterieur"))
+            if cle in cles_demandees and cle not in trouves:
+                trouves[cle] = m
+
+    return trouves
+
+
 def main():
     panier_id = os.environ.get("INPUT_PANIER_ID", "").strip()
     if not panier_id:
@@ -117,12 +150,41 @@ def main():
         print("ERREUR : aucune entrée valide après filtrage -- rien à traiter.", file=sys.stderr)
         sys.exit(1)
 
+    # AJOUT 03/09/2026 -- voir cherche_deja_analyses() ci-dessus : on regarde
+    # d'abord ce qui est déjà disponible avant de lancer quoi que ce soit.
+    precalcul_signaux = []
+    if os.path.exists("precalcul.json"):
+        with open("precalcul.json", "r", encoding="utf-8") as f:
+            precalcul_signaux = json.load(f).get("signaux", [])
+
+    historique_existant = []
+    if os.path.exists("historique_pronostics.json"):
+        with open("historique_pronostics.json", "r", encoding="utf-8") as f:
+            historique_existant = json.load(f)
+
+    deja_analyses = cherche_deja_analyses(panier, precalcul_signaux, historique_existant)
+    manquants = [m for m in panier if (m["domicile"], m["exterieur"]) not in deja_analyses]
+
+    if not manquants:
+        print(f"[dispatch] les {len(panier)} match(s) du panier sont déjà "
+              f"analysés -- aucun scraping déclenché, résultats existants "
+              f"réutilisés tels quels.")
+        resultat = [deja_analyses[(m["domicile"], m["exterieur"])] for m in panier]
+        ecrit_resultat(panier_id, ligne_panier["user_id"], resultat)
+        print(f"[dispatch] résultat écrit dans Supabase pour panier {panier_id} "
+              f"({len(resultat)} match(s), 100% déjà disponibles).")
+        return
+
     # run_pipeline.py inchangé : il lit toujours panier.json sur disque et
     # écrit toujours historique_pronostics.json/data.json globalement.
+    # Seuls les matchs MANQUANTS sont écrits ici -- ceux déjà analysés ne
+    # sont pas repassés dans le scraping.
     with open("panier.json", "w", encoding="utf-8") as f:
-        json.dump(panier, f, ensure_ascii=False, indent=2)
+        json.dump(manquants, f, ensure_ascii=False, indent=2)
 
-    print(f"[dispatch] panier.json écrit : {len(panier)} entrée(s) sur {len(matchs)} reçue(s).")
+    print(f"[dispatch] panier.json écrit : {len(manquants)} entrée(s) à "
+          f"analyser sur {len(matchs)} reçue(s) ({len(deja_analyses)} "
+          f"déjà disponibles, non re-scrapées).")
 
     import run_pipeline
     run_pipeline.main()
@@ -130,10 +192,22 @@ def main():
     with open("historique_pronostics.json", "r", encoding="utf-8") as f:
         historique = json.load(f)
 
-    resultat = extrait_resultat_de_ce_panier(panier, historique)
+    resultat_nouveaux = extrait_resultat_de_ce_panier(manquants, historique)
+    resultat_par_cle = dict(deja_analyses)
+    for r in resultat_nouveaux:
+        resultat_par_cle[(r.get("domicile"), r.get("exterieur"))] = r
+
+    # RÈGLE STRICTE : ordre et contenu = exactement le panier demandé, ni
+    # plus ni moins -- un match qu'on n'a réussi à retrouver ni déjà
+    # analysé ni tout juste calculé est simplement absent du résultat
+    # renvoyé (pas de placeholder inventé).
+    resultat = [resultat_par_cle[(m["domicile"], m["exterieur"])]
+                for m in panier if (m["domicile"], m["exterieur"]) in resultat_par_cle]
+
     ecrit_resultat(panier_id, ligne_panier["user_id"], resultat)
     print(f"[dispatch] résultat écrit dans Supabase pour panier {panier_id} "
-          f"({len(resultat)} match(s) trouvé(s) sur {len(panier)} demandé(s)).")
+          f"({len(resultat)} match(s) trouvé(s) sur {len(panier)} demandé(s), "
+          f"dont {len(deja_analyses)} réutilisé(s) sans nouveau scraping).")
 
 
 if __name__ == "__main__":
