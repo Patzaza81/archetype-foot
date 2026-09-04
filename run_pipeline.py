@@ -389,6 +389,19 @@ def construit_candidats(marches_probas, cotes_marches):
                     "probabilite_modele": proba, "cote_observee": cote,
                 })
 
+    # AJOUT (04/09/2026 soir) -- probabilite_modele_ajustee, calculée une
+    # seule fois ici pour tous les candidats (peu importe le marché), pour
+    # affichage. "probabilite_modele" reste BRUTE partout ailleurs (calculs.py
+    # en a besoin non-resserrée -- calcule_ev()/kelly_stake() appliquent
+    # ajuste_probabilite() eux-mêmes en interne ; la resserrer ici aussi
+    # doublerait le shrinkage). Corrige le vrai problème signalé par
+    # Patrick : le badge affiché ("100.0%") restait la probabilité brute
+    # même après le correctif K_SHRINKAGE, alors que l'EV affiché à côté,
+    # lui, reflétait déjà la version corrigée -- incohérence trompeuse,
+    # donnant l'impression à tort que rien n'avait changé.
+    for c in candidats:
+        c["probabilite_modele_ajustee"] = calculs.ajuste_probabilite(c["probabilite_modele"])
+
     return candidats
 
 
