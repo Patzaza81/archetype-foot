@@ -146,11 +146,13 @@ def parse_matches(html, max_matchs=20, date_label=None):
 
 
 def scrape_programme(jour="aujourdhui", max_matchs=200):
+    # CORRECTIF FUSEAU HORAIRE 04/09/2026 -- voir run_pipeline.aujourdhui_france()
+    from run_pipeline import aujourdhui_france
     if jour == "aujourdhui":
         html, _ = fetch_html(BASE_URL_AUJOURDHUI)
-        date_label = datetime.date.today().isoformat()
+        date_label = aujourdhui_france().isoformat()
     elif jour == "demain":
-        date_cible = datetime.date.today() + datetime.timedelta(days=1)
+        date_cible = aujourdhui_france() + datetime.timedelta(days=1)
         url_demandee = url_resultat_foot(date_cible)
         html, url_finale = fetch_html(url_demandee)
         # CORRECTIF (confirmé en production, 25/08quater) : l'hypothèse
