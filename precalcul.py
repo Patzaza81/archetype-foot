@@ -95,6 +95,8 @@ import sys
 import run_pipeline
 from run_pipeline import construit_signaux, charge_json_ou_vide
 from cache_equipes import recupere_gf_ga_avec_cache
+from cache_classement import recupere_classement_avec_cache
+from cache_h2h import recupere_h2h_avec_cache
 from resolution_betpawa_precalcul import resout_cotes_betpawa
 
 _recupere_gf_ga_reelle = run_pipeline.recupere_gf_ga_avec_repli
@@ -107,6 +109,39 @@ def _recupere_gf_ga_avec_cache(url_equipe, nom_equipe, nom_competition, max_matc
 
 
 run_pipeline.recupere_gf_ga_avec_repli = _recupere_gf_ga_avec_cache
+
+# AJOUT 03/09/2026 (v2, sur demande explicite de Patrick) -- le classement
+# est désormais partagé par TOUS les matchs d'une même compétition dans la
+# fenêtre, pas seulement réutilisé d'un run à l'autre pour le même match.
+# Voir cache_classement.py et le point d'appel modifié dans run_pipeline.py
+# (recupere_classement_du_match reçoit maintenant competition en 2e argument).
+_recupere_classement_reelle = run_pipeline.recupere_classement_du_match
+
+
+def _recupere_classement_avec_cache(url_match, nom_competition=None):
+    return recupere_classement_avec_cache(
+        _recupere_classement_reelle, url_match, nom_competition
+    )
+
+
+run_pipeline.recupere_classement_du_match = _recupere_classement_avec_cache
+
+_recupere_h2h_reelle = run_pipeline.recupere_h2h
+
+
+# NOTE (pas un oubli) -- le H2H n'a PAS le même traitement que le
+# classement ci-dessus : un H2H est propre à UNE PAIRE d'équipes précise,
+# deux matchs différents dans la fenêtre n'ont donc jamais le même
+# adversaire à partager. Le cache (cache_h2h.py) reste utile pour la
+# relance d'un run sur les mêmes matchs, pas pour regrouper plusieurs
+# matchs entre eux -- il n'y a rien à regrouper.
+def _recupere_h2h_avec_cache(url_match_face_a_face, max_confrontations=20):
+    return recupere_h2h_avec_cache(
+        _recupere_h2h_reelle, url_match_face_a_face, max_confrontations
+    )
+
+
+run_pipeline.recupere_h2h = _recupere_h2h_avec_cache
 
 MODEL_VERSION = "Archetype-v4.3"
 
