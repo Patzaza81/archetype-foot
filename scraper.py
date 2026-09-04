@@ -51,6 +51,24 @@ MATCH_LINK_RE = re.compile(r"^/live-score/([a-z0-9\-]+)_([a-z0-9]+)\.html$")
 RE_HEURE = re.compile(r"^\d{1,2}:\d{2}$")
 
 
+def convertit_heure_cameroun(heure, date_label):
+    """Convertit une heure "HH:MM" affichée par matchendirect (heure
+    française, Europe/Paris) vers l'heure du Cameroun (Africa/Douala,
+    UTC+1 fixe, jamais d'heure d'été). Renvoie None si "heure" n'est pas
+    un horaire propre (statut de match en direct/fini/reporté -- ex.
+    "83'", "MT", "TER", "REP") ou si la date est manquante -- jamais une
+    valeur inventée ou approximative."""
+    if not heure or not RE_HEURE.match(heure) or not date_label:
+        return None
+    from zoneinfo import ZoneInfo
+    h, m = (int(x) for x in heure.split(":"))
+    dt_paris = datetime.datetime.strptime(date_label, "%Y-%m-%d").replace(
+        hour=h, minute=m, tzinfo=ZoneInfo("Europe/Paris")
+    )
+    dt_cameroun = dt_paris.astimezone(ZoneInfo("Africa/Douala"))
+    return dt_cameroun.strftime("%H:%M")
+
+
 def url_resultat_foot(date_obj):
     """URL "demain"/"hier" du site, construite depuis une date. Format
     DD-MM-YYYY confirmé via la nav réelle du site (liens "Demain"/"Hier")."""
@@ -139,6 +157,28 @@ def parse_matches(html, max_matchs=20, date_label=None):
             continue
         if date_label:
             entree["date"] = date_label
+        # AJOUT (04/09/2026 soir) -- "heure" est recopiée telle quelle depuis
+        # matchendirect.fr, qui affiche systématiquement l'heure française
+        # (Europe/Paris) -- vérifié en croisant Pau-Sochaux (affiché "20:00"
+        # ici) avec plusieurs sources de presse sportive françaises
+        # indépendantes, toutes confirmant un coup d'envoi à 20h00 heure de
+        # Paris. Aucune conversion n'était faite nulle part (scraper, pipeline,
+        # frontend) -- un utilisateur au Cameroun (UTC+1 fixe, sans heure
+        # d'été) lisant "20:00" pouvait croire à tort que le match n'avait pas
+        # encore commencé alors qu'il avait déjà démarré depuis une heure
+        # (la France est en UTC+2 l'été, jusqu'à fin octobre).
+        # heure_cameroun est calculée ici, en plus de "heure" (jamais à sa
+        # place -- "heure" reste la valeur brute de matchendirect, utile si
+        # jamais un recoupement avec le site source est nécessaire plus tard).
+        # LIMITE CONNUE, non traitée ici : un match affiché entre 00:00 et
+        # 00:59 heure française tomberait la veille une fois converti au
+        # Cameroun -- "date" n'est PAS recalculée dans ce cas (elle resterait
+        # celle du jour matchendirect), ce qui décalerait ce match précis
+        # d'un jour dans l'affichage par onglet (aujourd'hui/J+1/etc). Cas
+        # rare (aucun championnat suivi ne programme habituellement de coup
+        # d'envoi dans cette tranche), mais à garder en tête si un jour un
+        # match apparaît dans le mauvais onglet.
+        entree["heure_cameroun"] = convertit_heure_cameroun(entree["heure"], date_label)
         matchs.append(entree)
         if len(matchs) >= max_matchs:
             break
