@@ -294,8 +294,17 @@ function reaffiche() {
 const FORMAT_DATE_ONGLET = { weekday: "short", day: "numeric", month: "short" };
 
 function dateIsoDansNJours(n) {
-  const d = new Date();
-  d.setDate(d.getDate() + n);
+  // CORRECTIF FUSEAU HORAIRE 04/09/2026 -- toISOString() convertit en UTC
+  // avant de lire la date, ce qui décale la date locale française de -1
+  // jour entre 22h00 et 00h00 UTC (0h-2h heure française l'été). Le
+  // pipeline calcule désormais "aujourd'hui" en heure française
+  // (aujourdhui_france() côté serveur, precalcul.py) -- ce front-end doit
+  // faire pareil, sinon les onglets afficheraient parfois un jour
+  // différent de celui réellement servi par precalcul_leger.json.
+  const fmt = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Paris" });
+  const [an, mois, jour] = fmt.format(new Date()).split("-").map(Number);
+  const d = new Date(Date.UTC(an, mois - 1, jour));
+  d.setUTCDate(d.getUTCDate() + n);
   return d.toISOString().slice(0, 10);
 }
 
