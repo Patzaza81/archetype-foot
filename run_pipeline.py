@@ -391,7 +391,13 @@ def construit_signaux(matchs_bruts):
 
         ratio_classement_home = ratio_classement_away = 0.0
         try:
-            classement = recupere_classement_du_match(url_match)
+            # AJOUT 03/09/2026 -- competition transmis en 2e argument, pour
+            # que le cache (precalcul.py + cache_classement.py) puisse
+            # regrouper tous les matchs d'une même compétition sur UN SEUL
+            # classement au lieu d'un par match. Sans effet ici : la
+            # fonction réelle (scraper_details.py) l'accepte mais l'ignore,
+            # elle ne s'en sert que pour la clé de cache.
+            classement = recupere_classement_du_match(url_match, competition)
             ratio_classement_home = calculs.calcule_ratio_classement(classement, nom_domicile, nom_exterieur)
             ratio_classement_away = -ratio_classement_home
         except Exception as e:
