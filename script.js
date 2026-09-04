@@ -179,13 +179,18 @@ function construitCarteMatch(m) {
   // regroupement par onglet (demande de Patrick) : utile notamment en vue
   // "par catégorie", où les cartes de plusieurs championnats se suivent
   // sans repère de date visible ailleurs que l'onglet actif.
+  // AJOUT (04/09/2026 soir) -- heureAffichee préfère heure_cameroun
+  // (Africa/Douala) sur m.heure brute (France) -- voir scraper.py. Repli
+  // sur m.heure pour les statuts en direct ("83'", "MT"...), qui n'ont
+  // jamais de heure_cameroun.
+  const heureAffichee = m.heure_cameroun || m.heure || "";
   const dateAffichee = m.date ? dateLisible(m.date) : "";
   const dateHeure = dateAffichee
-    ? `${dateAffichee}${m.heure ? " à " + m.heure : ""}`
+    ? `${dateAffichee}${heureAffichee ? " à " + heureAffichee : ""}${m.heure_cameroun ? " (heure Cameroun)" : ""}`
     : "";
 
   let html = `
-    <div class="teams"><span>${m.domicile}</span><span>${m.score || m.heure || ""}</span><span>${m.exterieur}</span></div>
+    <div class="teams"><span>${m.domicile}</span><span>${m.score || heureAffichee || ""}</span><span>${m.exterieur}</span></div>
     <div class="meta">${(m.competition || "").replace(/\s+/g, " ").trim()}${dateHeure ? " — " + dateHeure : ""}</div>
   `;
 
