@@ -154,7 +154,14 @@ function afficheListe(jour) {
 
     heure.className = "heure";
 
-    heure.textContent = m.heure || "--:--";
+    // AJOUT (04/09/2026 soir) -- affiche l'heure Cameroun (Africa/Douala)
+    // quand elle a pu être calculée (heure_cameroun, voir scraper.py),
+    // repli sur m.heure brute (France) si absente -- statuts en direct
+    // ("83'", "MT", "TER"...) n'ont jamais de heure_cameroun, donc
+    // s'affichent toujours tels quels via ce repli, sans "(FR)" à côté.
+    heure.textContent = m.heure_cameroun
+      ? `${m.heure_cameroun} (heure Cameroun)`
+      : (m.heure || "--:--");
 
     const label = document.createElement("label");
 
