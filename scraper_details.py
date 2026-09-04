@@ -495,6 +495,19 @@ def _extrait_historique_competition(soup, nom_competition, nom_equipe, max_match
     # logique : uniquement des print() sur les chemins d'échec, pour savoir
     # OÙ ça casse (ancre introuvable ? table introuvable ? table trouvée
     # mais 0 ligne reconnue ?) sans toucher au comportement existant.
+    #
+    # CORRECTIF 04/09/2026 (18.8, cause principale, 36 équipes sur 50) :
+    # find_next("table") s'arrêtait sur un petit tableau décoratif (icône
+    # flèche + cloche d'alerte, 1-4 lignes <tr>, aucun lien /live-score/)
+    # que matchendirect insère entre le titre de la compétition et le vrai
+    # tableau de matchs -- confirmé en récupérant la vraie page Cagliari en
+    # direct (la vraie table Serie A, avec 2 matchs à score, arrivait juste
+    # après ce tableau décoratif). On avance maintenant de tableau en
+    # tableau jusqu'à en trouver un contenant au moins un lien /live-score/
+    # ou /foot-score/, avec une limite de 4 tableaux pour ne pas déborder
+    # sur la section d'une AUTRE compétition plus bas sur la page si aucun
+    # vrai tableau de matchs n'existe ici.
+    MAX_TABLEAUX_ESSAYES = 4
     cible = _partie_competition(nom_competition)
     ancre = None
     for candidat in soup.find_all(string=True):
@@ -511,10 +524,28 @@ def _extrait_historique_competition(soup, nom_competition, nom_equipe, max_match
                   f"sur la page ne correspond.")
         return None
     table = ancre.find_parent().find_next("table")
+    tentative = 0
+    while table is not None and tentative < MAX_TABLEAUX_ESSAYES:
+        contient_lien_match = any(
+            "/live-score/" in a.get("href", "") or "/foot-score/" in a.get("href", "")
+            for a in table.find_all("a")
+        )
+        if contient_lien_match:
+            break
+        if diag_libelle:
+            print(f"[DIAG 18.8] {diag_libelle} -- tableau #{tentative + 1} après "
+                  f"l'ancre ignoré (aucun lien /live-score/ ou /foot-score/ dedans, "
+                  f"probablement le tableau décoratif) -- passage au tableau suivant.")
+        table = table.find_next("table")
+        tentative += 1
+    else:
+        table = None
+
     if table is None:
         if diag_libelle:
-            print(f"[DIAG 18.8] {diag_libelle} -- ancre TROUVÉE ({ancre!r}) "
-                  f"mais find_next('table') ne renvoie AUCUNE table après.")
+            print(f"[DIAG 18.8] {diag_libelle} -- ancre TROUVÉE ({ancre!r}) mais "
+                  f"aucun tableau contenant un lien /live-score/ ou /foot-score/ "
+                  f"trouvé dans les {MAX_TABLEAUX_ESSAYES} tableaux suivants.")
         return []
 
     matchs = []
@@ -535,10 +566,10 @@ def _extrait_historique_competition(soup, nom_competition, nom_equipe, max_match
 
     if diag_libelle and not matchs:
         nb_lignes = len(table.find_all("tr"))
-        print(f"[DIAG 18.8] {diag_libelle} -- ancre ET table trouvées, mais "
-              f"0 match reconnu sur {nb_lignes} ligne(s) <tr>. Le tableau "
-              f"trouvé n'est probablement pas le bon (find_next a sauté "
-              f"par-dessus la vraie table, ou format de ligne différent).")
+        print(f"[DIAG 18.8] {diag_libelle} -- ancre ET table (contenant un lien "
+              f"/live-score/ ou /foot-score/) trouvées, mais 0 match reconnu sur "
+              f"{nb_lignes} ligne(s) <tr>. Format de ligne différent de celui "
+              f"attendu par le regex.")
 
     return matchs
 
@@ -583,4 +614,13 @@ def recupere_gf_ga_avec_repli(url_equipe, nom_equipe, nom_competition, max_match
     if matchs_exterieur:
         resultat["gf_exterieur"] = sum(m["buts_marques"] for m in matchs_exterieur) / len(matchs_exterieur)
         resultat["ga_exterieur"] = sum(m["buts_encaisses"] for m in matchs_exterieur) / len(matchs_exterieur)
+    # AJOUT 04/09/2026 (soir) -- expose les listes brutes match-par-match
+    # (déjà calculées ci-dessus, jusqu'ici jetées après la moyenne). Sert au
+    # moteur de justification (moteur_justification.py) pour compter de
+    # vraies occurrences (ex. "Over 2.5 : 7/8") au lieu d'inventer un
+    # pourcentage à partir de gf_domicile/ga_domicile. Champs additionnels
+    # uniquement -- ne change rien à ce qui existait avant pour les appelants
+    # qui ne lisent que gf_*/ga_*/nb_*.
+    resultat["matchs_domicile_bruts"] = matchs_domicile
+    resultat["matchs_exterieur_bruts"] = matchs_exterieur
     return resultat
