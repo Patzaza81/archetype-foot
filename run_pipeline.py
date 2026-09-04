@@ -124,16 +124,74 @@ def normalise_panier(panier_brut, matchs_du_jour, matchs_demain):
     return valides
 
 
+def ajoute_matchs_a_historique(candidats, fichier=FICHIER_HISTORIQUE):
+    """AJOUT 03/09/2026 -- corrige un bug grave trouvé en vérifiant les vrais
+    chiffres du ROI (570 doublons sur 1251 entrées, 45% du fichier) : ni
+    cette fonction (avant ce correctif) ni archive_precalcul() (precalcul.py)
+    ne vérifiaient si un match était déjà archivé avant de l'ajouter -- un
+    run relancé plusieurs fois le même jour (courant pendant les sessions de
+    debug) réarchivait bêtement les mêmes matchs en boucle, faussant tout
+    calcul de ROI basé sur le nombre d'entrées.
+
+    Corrige aussi un 2e bug lié : les blocs étaient étiquetés avec UNE SEULE
+    date supposée pour tout le lot (ex. date_j1_iso), alors qu'un lot peut
+    mélanger des matchs d'aujourd'hui (J0) et de demain (J+1) depuis l'ajout
+    de J0 à la fenêtre automatique -- un match J0 se retrouvait alors
+    étiqueté avec la date de demain. Chaque match est maintenant rangé dans
+    le bloc correspondant à SA PROPRE date (m.get("date")), pas une date
+    globale pour tout l'appel.
+
+    Déduplication par match_id si présent, sinon par (domicile, exterieur)
+    -- à l'intérieur de la date du match, pas globalement (une même paire
+    peut légitimement se rejouer à des dates différentes).
+
+    Fusionne dans un bloc EXISTANT pour cette date au lieu d'en créer un
+    nouveau à chaque appel -- élimine aussi les 6 blocs séparés vus pour une
+    même date dans le fichier actuel.
+
+    Retourne le nombre de matchs RÉELLEMENT ajoutés (hors doublons déjà
+    présents)."""
+    historique = charge_json_ou_vide(fichier, defaut=[])
+
+    vus_par_date = {}
+    blocs_par_date = {}
+    for jour in historique:
+        d = jour.get("date")
+        blocs_par_date.setdefault(d, jour)
+        vus = vus_par_date.setdefault(d, set())
+        for m in jour.get("matchs", []):
+            vus.add(m.get("match_id") or (m.get("domicile"), m.get("exterieur")))
+
+    nb_ajoutes = 0
+    for m in candidats:
+        d = m.get("date")
+        cle = m.get("match_id") or (m.get("domicile"), m.get("exterieur"))
+        if cle in vus_par_date.get(d, set()):
+            continue
+
+        if d not in blocs_par_date:
+            nouveau_bloc = {"date": d, "matchs": []}
+            historique.append(nouveau_bloc)
+            blocs_par_date[d] = nouveau_bloc
+
+        blocs_par_date[d]["matchs"].append(m)
+        vus_par_date.setdefault(d, set()).add(cle)
+        nb_ajoutes += 1
+
+    if nb_ajoutes:
+        with open(fichier, "w", encoding="utf-8") as f:
+            json.dump(historique, f, ensure_ascii=False, indent=2)
+
+    return nb_ajoutes
+
+
 def archive_run(signaux, nb_entrees_panier):
-    historique = charge_json_ou_vide(FICHIER_HISTORIQUE, defaut=[])
-    historique.append({
-        "date": datetime.date.today().isoformat(),
-        "nb_entrees_panier": nb_entrees_panier,
-        "nb_matchs_traites": len(signaux),
-        "matchs": signaux,
-    })
-    with open(FICHIER_HISTORIQUE, "w", encoding="utf-8") as f:
-        json.dump(historique, f, indent=2, ensure_ascii=False)
+    # AJOUT 03/09/2026 -- ne fait plus qu'appeler ajoute_matchs_a_historique
+    # (dédupliqué, un bloc par date réelle) au lieu d'ajouter aveuglément un
+    # nouveau bloc à chaque run. nb_entrees_panier n'était utilisé nulle
+    # part en aval (vérifié) -- retiré des métadonnées du bloc, qui n'a plus
+    # de sens une fois plusieurs runs fusionnés dans le même bloc.
+    ajoute_matchs_a_historique(signaux)
 
 
 def cote_marche(cotes_marches, cle_marche, cle_selection):
