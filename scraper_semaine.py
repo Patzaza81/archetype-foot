@@ -71,7 +71,9 @@ def main():
         sys.exit(0)
 
     tous_les_matchs = []
-    aujourd_hui = datetime.date.today()
+    # CORRECTIF FUSEAU HORAIRE 04/09/2026 -- voir run_pipeline.aujourdhui_france()
+    from run_pipeline import aujourdhui_france
+    aujourd_hui = aujourdhui_france()
 
     with sync_playwright() as p:
         navigateur = p.chromium.launch()
