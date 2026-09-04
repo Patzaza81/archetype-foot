@@ -1,12 +1,13 @@
 # Archetype Foot — Document de transition
-Dernière mise à jour : 04/09/2026 (session la plus dense à ce jour — voir
-section 19 : 18.1 et 18.3 enfin confirmés en conditions réelles, ajout de
-J0 à la fenêtre automatique, suppression du plafond Betpawa, cache
-classement/H2H, **deux bugs graves trouvés ET corrigés** (doublons
-d'archive, décalage de fuseau horaire), premier calcul RÉEL du ROI
-automatisé, et **le bug 18.8 s'avère toucher 30,5% du volume total**, pas
-juste 2-3 championnats comme supposé — priorité absolue de la prochaine
-session).
+Dernière mise à jour : 04/09/2026, soirée (session 20 — voir section 20 :
+bug 18.8 enfin résolu (cause racine confirmée en direct sur matchendirect),
+**régression majeure découverte dans `calculs.py`** (shrinkage jamais
+branché nulle part dans le pipeline, 5 constantes gelées régressées),
+re-calibrage empirique complet (`K_SHRINKAGE=0,48`, `SEUIL_EV_MIN=0,02`,
+base primaire provisoire), plafond de données de calibrage identifié et
+corrigé (`TOUS_MARCHES_EVALUES`), incohérence affichage/calcul corrigée
+(le badge de probabilité affichait la valeur brute, pas la corrigée), et
+correctif du décalage horaire France/Cameroun jamais géré jusqu'ici).
 Objectif de ce document : permettre de reprendre le projet dans une nouvelle
 fenêtre de conversation sans perdre l'historique de décisions, ni répéter
 les erreurs déjà identifiées et corrigées.
@@ -15,36 +16,59 @@ les erreurs déjà identifiées et corrigées.
 
 ## ⚠️ SITUATIONS CRITIQUES — à lire avant toute action
 
-1. **Bug 18.8 (matchs à 0% traité) touche 320 matchs sur 1050 (30,5% du
-   volume), répartis sur 42 compétitions** — pas seulement Premier
-   League/Serie A comme on le pensait jusqu'ici. C'est désormais le
-   facteur limitant numéro 1 du système, avant tout le reste. Patrick a
-   demandé le log complet `[DIAG 18.8]` (via "Download log archive" sur
-   le run GitHub Actions) pour diagnostiquer le motif commun — **ce zip
-   n'a pas encore été fourni/analysé au moment de la rédaction de cette
-   section**. Priorité absolue de la prochaine session, voir 19.10.
-2. **L'échantillon ROI est minuscule (39 paris)** — voir 19.8. Le premier
-   calcul manuel fait par l'assistant contenait un bug (comparaison
-   `total < 3` au lieu de `total < 3.5` pour "Moins de X.5 buts"), corrigé
-   depuis dans `calcule_roi.py` (testé, fiable). Chiffre correct : 56,4%
-   de réussite, ROI -16,9%. **Ne surtout pas ajuster `calculs.py` sur la
-   base de cet échantillon** — beaucoup trop petit pour être significatif.
-3. **Historique partiellement mal daté avant le correctif fuseau horaire**
-   (19.9) — environ 333 matchs archivés entre le 24 et le 30/08 ont une
-   date enregistrée fausse (décalée d'un jour, parfois plus) et restent
-   donc sans score vérifié. Le correctif empêche que ça se reproduise,
-   mais ne corrige PAS rétroactivement l'historique existant. Pas traité
-   comme urgent par Patrick pour l'instant, mais à garder en tête
-   si le ROI semble bloqué à un échantillon anormalement petit.
-4. **18.1 et 18.3 sont RÉSOLUS, confirmés par des preuves indépendantes**
-   (pas seulement des logs) — ne pas rouvrir ces diagnostics comme s'ils
-   étaient encore actifs. Voir 19.1 et 19.2.
-5. Règle de travail toujours en vigueur, plus importante que jamais vu le
-   volume de changements aujourd'hui : **ne jamais croire un run réussi
-   sur parole** — un statut vert GitHub Actions ne prouve rien sur le
-   contenu réel des données produites. Toujours revérifier en récupérant
-   les fichiers réels (`raw.githubusercontent.com/.../main/<fichier>`) et
-   en les inspectant, pas en se fiant à la description de l'étape.
+1. **Bug 18.8 -- cause racine trouvée et corrigée cette session (20.1)**,
+   mais **pas encore vérifiée sur un run réel post-déploiement**. Ne pas
+   rouvrir le diagnostic depuis zéro : relire 20.1 d'abord, puis vérifier
+   combien de compétitions restent à 0% traité après le prochain run
+   complet. Une cause secondaire (4 compétitions : Suède Allsvenskan/
+   Superettan, Bélarus Première Ligue, Lettonie Virsliga) reste non
+   résolue et nécessite une vérification manuelle de Patrick dans un
+   navigateur -- l'assistant n'a pas pu trancher avec certitude si c'est
+   un vrai trou de données matchendirect ou un artefact de son propre
+   outil de récupération.
+2. **`calculs.py` peut régresser silencieusement sans que personne ne s'en
+   aperçoive** -- découvert cette session : 5 des 21 constantes gelées
+   (section 2) étaient revenues à d'anciennes valeurs, ET la fonction de
+   correction de surconfiance (`ajuste_probabilite()`) n'était appelée
+   nulle part dans tout le pipeline, la rendant totalement sans effet
+   quelle que soit sa valeur. Personne n'a pu dire avec certitude comment
+   ni quand cette régression s'est produite (voir 20.2). **Réflexe à
+   prendre en début de toute nouvelle session : comparer les valeurs
+   réelles de `calculs.py` à la table de la section 2, et vérifier que
+   les fonctions citées dans les commentaires sont bien appelées quelque
+   part (`grep`), pas juste présentes dans le fichier.**
+3. **`K_SHRINKAGE = 0,48` et `SEUIL_EV_MIN = 0,02` sont une base
+   primaire PROVISOIRE (20.3)**, trouvée sur seulement 63 paris concrets
+   (probabilité + cote réelle + résultat) -- pas le calibrage théorique
+   poolé (0,254, qui rend tout pari impossible avec la fourchette de
+   cotes actuelle, voir 20.3). Un nouveau mécanisme (`TOUS_MARCHES_EVALUES`,
+   20.4) doit faire grossir l'échantillon de calibrage bien plus vite
+   qu'avant -- relire `calibrage_k_shrinkage` dans `roi_dashboard.json`
+   dans quelques jours avant de considérer ce réglage comme acquis.
+4. **Historique partiellement mal daté avant le correctif fuseau horaire
+   du 04/09 matin** -- environ 333 matchs archivés entre le 24 et le
+   30/08 ont une date enregistrée fausse et restent sans score vérifié.
+   Le correctif empêche que ça se reproduise, mais ne corrige PAS
+   rétroactivement l'historique existant. Pas urgent pour Patrick.
+5. **18.1 et 18.3 sont RÉSOLUS**, confirmés par des preuves indépendantes
+   -- ne pas rouvrir ces diagnostics comme s'ils étaient encore actifs.
+   Voir 19.1 et 19.2.
+6. **Le badge de probabilité affiché peut être en avance ou en retard sur
+   le calcul réel sans que ça saute aux yeux** (20.5) -- corrigé cette
+   session, mais retenir la leçon : après tout changement de calcul
+   interne, vérifier explicitement que l'AFFICHAGE (`script.js`/`index.js`)
+   reflète bien le nouveau calcul, pas seulement la logique de décision.
+7. **`pipeline.yml` ne se déclenche que sur cron (minuit UTC) ou
+   `workflow_dispatch` manuel -- jamais sur un simple push** (20.7).
+   Remplacer des fichiers dans le dépôt ne relance rien tout seul. Le
+   panier du site déclenche bien un run réel, mais réutilise tel quel
+   tout match déjà présent dans `precalcul.json`/`historique_pronostics.json`
+   sans recalcul -- piège si on veut vérifier un correctif tout juste
+   déployé via le panier avant que `precalcul.json` ait été régénéré.
+8. Règle de travail toujours en vigueur : **ne jamais croire un run
+   réussi sur parole** — un statut vert GitHub Actions ne prouve rien sur
+   le contenu réel des données produites. Toujours revérifier en
+   récupérant les fichiers réels et en les inspectant.
 
 ---
 
@@ -242,8 +266,21 @@ occurrence. Commité le 26/08.
 
 ## 2. Constantes gelées ("moteurs initiaux") — ne pas modifier sans repasser par un backtest
 
+**MISE À JOUR 04/09/2026 (soirée)** : `K_SHRINKAGE` et `SEUIL_EV_MIN`
+ci-dessous ne sont plus des constantes figées une fois pour toutes -- ce
+sont désormais des valeurs PROVISOIRES, recalculées par
+`calcule_roi.py::calcule_calibrage()` chaque nuit sur l'échantillon qui
+grossit (voir 20.3/20.4). Elles ont aussi été trouvées régressées à
+d'anciennes valeurs plus tôt cette session (20.2) -- **toujours comparer
+les valeurs réelles de `calculs.py` à cette table en début de session**,
+et vérifier que `ajuste_probabilite()` est bien appelée quelque part
+(`grep ajuste_probabilite *.py`), pas juste présente dans le fichier.
+
 ```
-GA_REFERENCE_PAR_LIGUE (dict par pays, voir 0.2/0.3)
+GA_REFERENCE_PAR_LIGUE (dict par pays, voir 0.2/0.3) -- RÉGRESSÉ au
+    04/09/2026 (constante unique 1.35, pays ignoré), PAS ENCORE RESTAURÉ
+    (reporté faute d'avoir les valeurs numériques exactes sous la main,
+    voir 20.10 point 5)
 BORNE_MIN_DEFENSE = 0.55
 BORNE_MAX_DEFENSE = 1.60
 
@@ -257,7 +294,8 @@ BORNE_RATIO = 0.15
 
 RHO_DIXON_COLES = -0.1
 
-SEUIL_EV_MIN = 0.12
+SEUIL_EV_MIN = 0.02  -- PROVISOIRE, voir note ci-dessus (était 0.12,
+    calculé le 30/08 puis régressé puis re-calibré empiriquement le 04/09)
 FOURCHETTE_COTE_MIN = 1.25
 FOURCHETTE_COTE_MAX = 1.69
 SEUIL_CORRELATION = 0.70
@@ -267,7 +305,11 @@ CLUSTER_MAX = 0.10
 NB_PARIS_MAX = 3
 SEUIL_STANDOUT = 0.15
 
-K_SHRINKAGE = 0.27
+K_SHRINKAGE = 0.48  -- PROVISOIRE, voir note ci-dessus (était 0.27,
+    calculé le 30/08 sur 68 paris ; re-calibré à 0.48 le 04/09 sur 63
+    paris après découverte que 0.27 -- et même le calibrage poolé à
+    0.254 sur 107 paris -- rend tout pari mathématiquement impossible
+    avec FOURCHETTE_COTE_MAX=1.69, voir 20.3)
 ```
 
 Marchés calculables : 1X2, Double Chance, BTTS, Over/Under (toutes
@@ -1383,3 +1425,213 @@ Résultat run #94 : **2h50m28s, succès**, vérifié fichier par fichier
    panier quand tout est déjà connu (19.5) nécessiterait de revoir les
    règles RLS Supabase -- hors périmètre de l'assistant sans accès direct
    à la config Supabase.
+
+---
+
+## 20. Session du 04/09/2026 (soirée) — Bug 18.8 résolu, régression K_SHRINKAGE trouvée et corrigée, affichage aligné sur le calcul
+
+### 20.1 Bug 18.8 — cause racine trouvée et corrigée (voir 19.10)
+Log complet du run #94 analysé en entier (362 lignes `[DIAG 18.8]`). Deux
+mécanismes distincts, pas un seul :
+- **Cause principale (36 équipes en échec double-saison sur 50)** :
+  `find_next("table")` dans `_extrait_historique_competition` attrapait un
+  petit tableau décoratif (icône flèche + cloche d'alerte, 1-4 lignes
+  `<tr>`, aucun lien `/live-score/`) inséré par matchendirect entre le
+  titre de la compétition et le vrai tableau de matchs. Confirmé en
+  récupérant la vraie page Cagliari en direct : la vraie table Serie A
+  avait bien 2 matchs joués avec score juste après ce tableau décoratif.
+  Corrigé dans `scraper_details.py` : avance de tableau en tableau jusqu'à
+  trouver un lien `/live-score/`, s'arrête à la section suivante sinon.
+- **Cause secondaire, non résolue (14 équipes)** : pour 4 compétitions
+  (Suède Allsvenskan/Superettan, Bélarus Première Ligue, Lettonie
+  Virsliga), le titre de la compétition n'apparaît carrément pas sur la
+  page de l'équipe, dans aucune des deux saisons — vérifié sur AIK Solna
+  et Malmö en direct. Possible trou de données côté matchendirect/Mackolik
+  pour ces championnats — **Patrick doit vérifier lui-même dans un
+  navigateur avant de conclure**, l'assistant n'a pas pu éliminer une
+  troncature de son propre outil de récupération avec certitude.
+- **Point méthodologique** : sur les 311 équipes qui apparaissent dans le
+  log, 261 s'auto-corrigent déjà via le repli sur la saison précédente
+  (`recupere_gf_ga_avec_repli`) — le chiffre "320 matchs / 42 compétitions
+  à 0%" du run #94 mélangeait donc de vrais échecs et des faux positifs
+  qui s'auto-guérissaient déjà. Seules 50 équipes échouaient réellement
+  sur les deux saisons.
+- Fichier livré et testé (2 cas reconstruits à partir du vrai HTML) :
+  `scraper_details.py`. **Pas encore vérifié sur un run réel** — à
+  confirmer au prochain diagnostic combien de compétitions restent à 0%.
+
+### 20.2 Régression majeure trouvée dans calculs.py — shrinkage jamais branché
+Découverte partie d'une observation de Patrick (pourcentages "explosent les
+compteurs", des 100,0% sur des échantillons d'1 seul match). L'investigation
+a révélé une régression bien plus grave que prévu :
+- `K_SHRINKAGE` était à `1.0` (aucun effet) au lieu de `0.27` (session
+  0.2), `BORNE_MIN/MAX_DEFENSE` à `0.70/1.30` au lieu de `0.55/1.60`,
+  `SEUIL_EV_MIN` à `0.05` au lieu de `0.12`, `GA_REFERENCE_PAR_LIGUE`
+  remplacé par une constante unique `1.35` (`pays` ignoré) — 5 régressions
+  sur les 21 constantes gelées de la section 2 (16 autres intactes).
+- **Plus grave** : `ajuste_probabilite()` (censée appliquer
+  `K_SHRINKAGE`) existait dans le fichier mais **n'était appelée nulle
+  part dans tout le pipeline** — confirmé par `grep`. Donc même en
+  remettant `K_SHRINKAGE = 0.27`, ça n'aurait rien changé au comportement
+  réel tant que le branchement lui-même n'était pas fait.
+- Patrick a confirmé une régression accidentelle, pas un choix délibéré
+  (le fichier citait un `TABLEAU_RECAPITULATIF.md` "Module 2 v4.3 /
+  Module 3 v6.3" comme source — **ce fichier n'existe nulle part dans le
+  dépôt**, origine exacte de la régression jamais identifiée avec
+  certitude).
+- Patrick a explicitement demandé de recalibrer sur les données réelles
+  disponibles plutôt que de simplement restaurer 0.27 à l'aveugle.
+
+### 20.3 Re-calibrage empirique — pourquoi 0.27 (et même 0.254 poolé) ne marchent pas
+- Calcul du taux de surconfiance sur l'échantillon actuel (39 paris,
+  `historique_pronostics.json`) en extrayant directement `probabilite_modele`
+  (déjà présent dans `LISTE_B`, jamais exploité par `calcule_roi.py`) :
+  **56,4% réel vs 79,2% annoncé -> k=0,220** — cohérent avec le calibrage
+  du 30/08 (k=0,270 sur 68 paris). Poolé sur 107 paris : k=0,254.
+- **Mais k=0,254 combiné à `FOURCHETTE_COTE_MAX=1.69` rend TOUT pari
+  mathématiquement impossible** : même une prédiction certaine (p=1.0)
+  plafonne à une probabilité ajustée de 0,627 après ce shrinkage, or il
+  faut une cote >= 1,59 rien que pour EV=0 — donc quasiment toute la
+  fourchette de cotes actuelle est hors d'atteinte. Vérifié : 0 des 125
+  candidats historiques LISTE_A n'auraient passé le filtre EV avec ce k.
+  Confirme le souvenir de Patrick d'avoir déjà tenté un shrinkage proche
+  de cette valeur et obtenu des NO_GO partout.
+- **Réglage retenu comme base primaire**, trouvé par recherche de grille
+  (k, seuil_ev) sur les 63 paris concrets disponibles (probabilité + cote
+  réelle + résultat), en maximisant le taux de réussite réel sous
+  contrainte d'un volume minimum (n>=10, pour éviter le pur bruit
+  statistique) : **K_SHRINKAGE = 0,48, SEUIL_EV_MIN = 0,02** -> 70,0% de
+  réussite réelle sur 10 paris, contre 57,1% avec l'ancien réglage cassé
+  (k=1.0). **Fragile par construction (n=10)** — pas un aboutissement.
+- Table complète du compromis (tous les paliers de n de 63 à 1) montrée à
+  Patrick avant validation — près de n=63 (quasi toute la donnée), le
+  meilleur taux atteignable retombe autour de 57-59%, proche de l'état
+  actuel : utiliser "toute la donnée" ramène mécaniquement au point de
+  départ, ce n'est pas un choix arbitraire de l'assistant.
+
+### 20.4 Plafond de données découvert — 63 paris, pas plus, et pourquoi
+Le pipeline n'archivait QUE les marchés qui passaient déjà le filtre EV du
+moment (`LISTE_A_marches_passant_EV_et_cote`) — les cotes des marchés qui
+échouaient au filtre existaient en mémoire pendant le run mais n'étaient
+jamais écrites sur disque, donc perdues pour toujours. 133 matchs sur 176
+à score connu n'ont ainsi aucune cote exploitable pour un recalibrage,
+malgré une probabilité modèle archivée.
+- **Corrigé** : `run_pipeline.py::construit_candidats()` archive
+  désormais TOUS les marchés évalués ayant une cote réelle dans un
+  nouveau champ `TOUS_MARCHES_EVALUES`, qu'ils passent ou non le filtre
+  EV. L'échantillon exploitable va grossir bien plus vite à partir de
+  maintenant (mais pas rétroactivement — les 9 jours déjà archivés
+  restent plafonnés à 63).
+- `calcule_roi.py::calcule_calibrage()` (nouveau) : refait la recherche
+  de grille chaque nuit sur `TOUS_MARCHES_EVALUES`, donne une
+  recommandation par palier de volume minimum (10/20/30/50) dans
+  `roi_dashboard.json`. **Ne modifie jamais `calculs.py` automatiquement**
+  — affiche une recommandation à appliquer manuellement, conformément à
+  la règle de Patrick (jamais de changement sur les tamis sans test
+  complet).
+
+### 20.5 Incohérence affichage/calcul découverte après coup — "tu inventes tes données"
+Après déploiement du correctif ci-dessus, Patrick a signalé (à raison) que
+rien ne semblait avoir changé sur le site : le gros badge de probabilité
+continuait d'afficher des valeurs proches de 100% même après le correctif.
+Cause : `calcule_ev()`/`kelly_stake()` appliquaient bien le shrinkage en
+interne (vérifié : l'EV affiché sur plusieurs captures collait exactement
+à la formule avec p ajustée, à la décimale près), mais **le badge affiché
+restait la probabilité BRUTE** (`probabilite_modele`), jamais mise à jour
+pour refléter la correction — une incohérence trompeuse entre ce qui se
+calcule et ce qui s'affiche, pas une absence réelle de correction.
+- Corrigé : nouveau champ `probabilite_modele_ajustee` calculé une seule
+  fois dans `construit_candidats()` (évite de dupliquer
+  `ajuste_probabilite()` à chaque marché) ; `script.js` affiche
+  désormais cette valeur (badge principal ET tableau de détail), avec
+  repli sur la brute pour les matchs archivés avant ce correctif.
+- **Leçon pour les prochaines sessions** : quand on corrige un calcul
+  interne, toujours vérifier explicitement que l'AFFICHAGE reflète le
+  nouveau calcul, pas seulement la logique de décision — l'écart entre
+  les deux ici a fait perdre une grosse partie de la session en
+  aller-retours évitables.
+
+### 20.6 Heure affichée — décalage France/Cameroun jamais géré
+Patrick (basé au Cameroun, UTC+1 fixe) a signalé qu'un match affiché
+"20:00" avait en réalité déjà commencé selon son heure locale —
+matchendirect affiche systématiquement l'heure française (Europe/Paris,
+UTC+2 l'été), jamais convertie ni étiquetée nulle part dans le pipeline ou
+le frontend. Vérifié : Pau-Sochaux confirmé "20h00" par plusieurs sources
+de presse françaises indépendantes — l'heure elle-même n'était pas
+fausse, juste jamais convertie pour un lecteur hors France.
+- Corrigé : `scraper.py::convertit_heure_cameroun()` (nouvelle fonction,
+  `zoneinfo`), calcule `heure_cameroun` pour chaque match dès le
+  scraping (un seul point de correction, couvre `scraper_semaine.py` qui
+  réutilise la même fonction). `index.js`/`script.js` affichent
+  `heure_cameroun` avec la mention explicite "(heure Cameroun)", repli
+  sur l'heure brute pour les statuts en direct ("83'", "MT"...).
+- **Limite documentée, non traitée** : un match entre 00h00 et 00h59
+  heure française tomberait la veille une fois converti au Cameroun,
+  mais "date" (donc l'onglet aujourd'hui/J+1/etc.) resterait celle
+  d'origine — décalage d'affichage possible dans ce cas rare, aucun
+  championnat suivi ne programmant normalement de coup d'envoi à cette
+  heure-là.
+- **⚠️ NON CONFIRMÉ EN PRODUCTION AU MOMENT DE CETTE RÉDACTION** — les
+  captures de Patrick après déploiement ne montraient toujours pas
+  "(heure Cameroun)". Deux causes possibles non tranchées : cache
+  navigateur (à tester en navigation privée) ou Netlify n'ayant pas
+  redéployé `script.js`/`index.js`. À vérifier en priorité à la
+  prochaine session.
+
+### 20.7 Mécanique du pipeline GitHub Actions — clarifiée cette session
+- `pipeline.yml` ne se déclenche QUE sur cron (`0 0 * * *`, minuit UTC) ou
+  `workflow_dispatch` manuel — **jamais sur un simple push**. Remplacer
+  des fichiers dans le dépôt ne relance rien tout seul.
+- Soumettre le panier sur le site déclenche bien un vrai run
+  (`netlify/functions/trigger.js` -> API GitHub `workflow_dispatch` avec
+  `panier_id`), mais `dispatch_pipeline.py` réutilise TEL QUEL le
+  résultat déjà archivé pour tout match déjà présent dans
+  `precalcul.json`/`historique_pronostics.json` — aucun recalcul. Seuls
+  les matchs absents des deux sont traités à neuf. Piège identifié : si
+  `precalcul.json` n'a pas encore été régénéré avec un correctif tout
+  juste déployé, le panier peut faire croire à tort que rien n'a changé
+  sur un match qui s'y trouvait déjà.
+- `concurrency: group: pipeline-archetype-foot, cancel-in-progress: false`
+  — les runs déclenchés pendant qu'un autre tourne se mettent en FILE
+  D'ATTENTE (statut "Pending"), jamais en parallèle ni annulés.
+  Comportement volontaire (évite sans doute la récidive du bug de
+  doublons d'archivage), pas une anomalie si un run reste "Pending" un
+  moment.
+
+### 20.8 Fichiers livrés cette session (tous testés avant livraison)
+`scraper_details.py`, `calculs.py`, `run_pipeline.py` (deux versions
+successives — la deuxième corrige 20.5), `calcule_roi.py`, `scraper.py`,
+`script.js` (deux versions — la deuxième corrige 20.5), `index.js`.
+
+### 20.9 Vérifié en conditions réelles avant la fin de session
+Captures du site après déploiement (run manuel complet + tentative de
+panier) : GO passés de 71 à 12 (aujourd'hui) et de 172 à 50 (J+1) —
+cohérent avec le correctif. EV affiché sur 3 paris différents recalculé à
+la main à partir des captures, correspond exactement à la formule avec
+`k=0,48` (3,6%, 19,0%, 16,8%, tous exacts à la décimale près) — confirme
+que le correctif tourne réellement en production, pas seulement en local.
+
+### 20.10 Ce qui reste à faire (remplace et complète 19.14)
+1. **Vérifier que `heure_cameroun` s'affiche bien en production** (20.6)
+   — tester en navigation privée d'abord, puis vérifier l'onglet Netlify
+   "Deploys" si le problème persiste.
+2. **Confirmer combien de compétitions restent à 0% traité** après
+   déploiement de `scraper_details.py` (20.1) — comparer au chiffre de
+   référence (42 compétitions / 320 matchs du run #94).
+3. Vérifier soi-même dans un navigateur si Suède Allsvenskan/Superettan,
+   Bélarus Première Ligue, Lettonie Virsliga ont vraiment un trou de
+   données matchendirect (20.1) — pas confirmable avec certitude depuis
+   l'environnement de l'assistant.
+4. Laisser `TOUS_MARCHES_EVALUES` (20.4) grossir plusieurs jours, puis
+   relire `calibrage_k_shrinkage` dans `roi_dashboard.json` pour voir si
+   `K_SHRINKAGE=0,48` reste le meilleur choix à un palier de volume plus
+   élevé (n>=20/30) — ne pas ajuster `calculs.py` avant que ce soit le
+   cas.
+5. `GA_REFERENCE_PAR_LIGUE` toujours sur la régression (constante unique
+   1.35, `pays` ignoré) — reporté cette session faute d'avoir les valeurs
+   numériques exactes par pays sous la main (voir 0.3), pas oublié.
+6. Points en attente reconduits depuis 19.14, toujours non traités :
+   ~333 matchs historiques mal datés (correction rétroactive ou non,
+   décision de Patrick) ; confiance moyenne Chili/Égypte/Écosse-Belgique/
+   Océanie/Ligue Conférence ; purge cache Betpawa/classement/H2H sans
+   politique d'expiration active.
