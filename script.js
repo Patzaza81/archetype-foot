@@ -77,9 +77,13 @@ function construitTableListeA(listeA) {
   if (!listeA || listeA.length === 0) {
     return `<p class="detail-vide">aucun marché n'a passé le filtre EV + fourchette de cote.</p>`;
   }
+  // AJOUT (04/09/2026 soir) -- colonne "proba" de ce tableau de détail
+  // affiche désormais l'ajustée, cohérent avec la colonne "ev" juste à
+  // côté (qui, elle, reflétait déjà la version corrigée malgré son nom
+  // "ev_brut" -- voir run_pipeline.py). Repli sur la brute si absente.
   const lignes = listeA.map(c => `<tr>
     <td>${c.marche}</td><td>${c.cote_observee.toFixed(2)}</td>
-    <td>${formatPct(c.probabilite_modele)}</td><td>${formatPct(c.ev_brut)}</td>
+    <td>${formatPct(c.probabilite_modele_ajustee ?? c.probabilite_modele)}</td><td>${formatPct(c.ev_brut)}</td>
   </tr>`).join("");
   return `<table class="detail-table">
     <thead><tr><th>marché</th><th>cote</th><th>proba</th><th>ev</th></tr></thead>
@@ -121,9 +125,17 @@ function construitNiveau3(m) {
   const listeB = m.LISTE_B_liste_finale_apres_correlation;
   if (!listeB || listeB.length === 0) return "";
   const pariEnOr = [...listeB].sort((a, b) => b.probabilite_modele - a.probabilite_modele)[0];
+  // AJOUT (04/09/2026 soir) -- affiche la probabilité AJUSTÉE (resserrée par
+  // K_SHRINKAGE), pas la brute. Avant ce correctif, ce badge montrait la
+  // probabilité brute alors que l'EV juste en dessous ("ev_brut") reflétait
+  // déjà, lui, la version corrigée -- incohérence trompeuse qui donnait
+  // l'impression que rien n'avait changé après le correctif K_SHRINKAGE.
+  // Repli sur probabilite_modele pour les matchs archivés avant ce correctif
+  // (probabilite_modele_ajustee n'existe pas dessus).
+  const probaAffichee = pariEnOr.probabilite_modele_ajustee ?? pariEnOr.probabilite_modele;
   return `<div class="proba-1">
-    ${formatPct(pariEnOr.probabilite_modele)}
-    <span class="proba-1-label">probabilité modèle — ${pariEnOr.marche}</span>
+    ${formatPct(probaAffichee)}
+    <span class="proba-1-label">probabilité modèle (ajustée) — ${pariEnOr.marche}</span>
   </div>
   <p class="pourquoi-pari">
     pourquoi ce pari : cote ${pariEnOr.cote_observee.toFixed(2)}, ev ${formatPct(pariEnOr.ev_brut)},
