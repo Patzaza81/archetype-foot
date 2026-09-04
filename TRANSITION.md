@@ -1,12 +1,50 @@
 # Archetype Foot — Document de transition
-Dernière mise à jour : 03/09/2026 (session filtre de compétitions complet +
-refonte visuelle — voir section 18, la plus longue et la plus large en
-portée à ce jour : touche toutes les zones du monde, mais **le nouveau
-filtre n'a jamais tourné en conditions réelles**, seulement testé contre
-un instantané figé de données).
+Dernière mise à jour : 04/09/2026 (session la plus dense à ce jour — voir
+section 19 : 18.1 et 18.3 enfin confirmés en conditions réelles, ajout de
+J0 à la fenêtre automatique, suppression du plafond Betpawa, cache
+classement/H2H, **deux bugs graves trouvés ET corrigés** (doublons
+d'archive, décalage de fuseau horaire), premier calcul RÉEL du ROI
+automatisé, et **le bug 18.8 s'avère toucher 30,5% du volume total**, pas
+juste 2-3 championnats comme supposé — priorité absolue de la prochaine
+session).
 Objectif de ce document : permettre de reprendre le projet dans une nouvelle
 fenêtre de conversation sans perdre l'historique de décisions, ni répéter
 les erreurs déjà identifiées et corrigées.
+
+---
+
+## ⚠️ SITUATIONS CRITIQUES — à lire avant toute action
+
+1. **Bug 18.8 (matchs à 0% traité) touche 320 matchs sur 1050 (30,5% du
+   volume), répartis sur 42 compétitions** — pas seulement Premier
+   League/Serie A comme on le pensait jusqu'ici. C'est désormais le
+   facteur limitant numéro 1 du système, avant tout le reste. Patrick a
+   demandé le log complet `[DIAG 18.8]` (via "Download log archive" sur
+   le run GitHub Actions) pour diagnostiquer le motif commun — **ce zip
+   n'a pas encore été fourni/analysé au moment de la rédaction de cette
+   section**. Priorité absolue de la prochaine session, voir 19.10.
+2. **L'échantillon ROI est minuscule (39 paris)** — voir 19.8. Le premier
+   calcul manuel fait par l'assistant contenait un bug (comparaison
+   `total < 3` au lieu de `total < 3.5` pour "Moins de X.5 buts"), corrigé
+   depuis dans `calcule_roi.py` (testé, fiable). Chiffre correct : 56,4%
+   de réussite, ROI -16,9%. **Ne surtout pas ajuster `calculs.py` sur la
+   base de cet échantillon** — beaucoup trop petit pour être significatif.
+3. **Historique partiellement mal daté avant le correctif fuseau horaire**
+   (19.9) — environ 333 matchs archivés entre le 24 et le 30/08 ont une
+   date enregistrée fausse (décalée d'un jour, parfois plus) et restent
+   donc sans score vérifié. Le correctif empêche que ça se reproduise,
+   mais ne corrige PAS rétroactivement l'historique existant. Pas traité
+   comme urgent par Patrick pour l'instant, mais à garder en tête
+   si le ROI semble bloqué à un échantillon anormalement petit.
+4. **18.1 et 18.3 sont RÉSOLUS, confirmés par des preuves indépendantes**
+   (pas seulement des logs) — ne pas rouvrir ces diagnostics comme s'ils
+   étaient encore actifs. Voir 19.1 et 19.2.
+5. Règle de travail toujours en vigueur, plus importante que jamais vu le
+   volume de changements aujourd'hui : **ne jamais croire un run réussi
+   sur parole** — un statut vert GitHub Actions ne prouve rien sur le
+   contenu réel des données produites. Toujours revérifier en récupérant
+   les fichiers réels (`raw.githubusercontent.com/.../main/<fichier>`) et
+   en les inspectant, pas en se fiant à la description de l'étape.
 
 ---
 
@@ -1061,32 +1099,287 @@ vraies données d'une fenêtre récente, soit contre une source externe,
 soit (préférence explicite de Patrick, voir 18.4 point 7) contre une
 vraie capture d'écran matchendirect.
 
-### 18.10 Ce qui reste à faire (priorités, dans l'ordre suggéré)
-1. **`precalcul_leger.json` (18.1)** -- toujours cassé, diagnostic
-   instrumenté mais jamais lu. Priorité absolue avant tout le reste.
-2. **Vérifier le nouveau filtre de compétitions en conditions réelles**
-   (18.3) -- lancer un run complet, vérifier que la fenêtre finale est
-   cohérente (pas de championnat majeur disparu par erreur, volume
-   nettement réduit comme attendu), vérifier que
-   `matchs_du_jour_filtre.json`/`matchs_demain_filtre.json` se génèrent et
-   se committent correctement (18.6).
-3. **Mesurer l'impact réel sur la durée du run** maintenant que le filtre
-   réduit la fenêtre à ~37% -- et vérifier si ça suffit à résoudre le
-   problème de fond (18.7) ou si l'extension du cache classement/H2H reste
-   nécessaire en complément.
-4. **Revenir sur le bug Premier League/Serie A/La Liga (18.8)** si
-   Patrick le redemande -- diagnostic à reprendre exactement où il a été
-   laissé, ne pas repartir de zéro.
-5. **Revenir sur la question du ROI réel du moteur** (0.1) -- toujours
-   pas fait depuis le 30/08, malgré 3 sessions entières d'infrastructure
-   depuis.
-6. Points de confiance moyenne à vérifier dès qu'une vraie occasion se
-   présente (18.4) : Chili "Superliga", Égypte "Première Ligue", Écosse/
-   Belgique (mapping des paliers), Océanie (aucun match australien/néo-
-   zélandais jamais vu dans une vraie fenêtre), "Ligue Conférence Phase
-   de Ligue" (jamais vue en vrai).
-7. Décider du sort du hook "semaine" mort dans `index.js`
-   (`catalogue_unifie.json` inexistant, 18.6) -- le finir ou le
-   supprimer.
-8. Purge du cache Betpawa, couverture Betpawa réelle, Phase 5/6 de la
-   feuille de route -- toujours non traités depuis la session 16.
+### 18.10 Ce qui restait à faire fin de session 18 — voir section 19 pour la suite réelle
+(Liste conservée telle quelle pour l'historique ; chaque point y est marqué
+comme résolu, partiellement résolu, ou reporté.)
+1. `precalcul_leger.json` (18.1) → **RÉSOLU**, voir 19.1.
+2. Filtre de compétitions en conditions réelles (18.3) → **RÉSOLU**, voir 19.2.
+3. Impact sur la durée du run / cache classement-H2H (18.7) → **cache
+   ajouté**, voir 19.6. Durée mesurée en situation réelle, voir 19.12.
+4. Bug Premier League/Serie A/La Liga (18.8) → **rouvert et son ampleur
+   réelle découverte : 42 compétitions, 30,5% du volume**, voir 19.10.
+   PRIORITÉ ABSOLUE prochaine session.
+5. ROI réel du moteur (0.1) → **calculé pour la première fois,
+   automatisé**, voir 19.8.
+6. Points de confiance moyenne (18.4) → toujours en attente d'une vraie
+   occasion (Chili "Superliga", Égypte "Première Ligue", Écosse/Belgique,
+   Océanie, "Ligue Conférence Phase de Ligue").
+7. Hook "semaine" mort dans `index.js` → **RÉSOLU, supprimé** (Patrick a
+   tranché : 4 jours max, plus besoin), voir 19.4.
+8. Purge cache Betpawa, couverture Betpawa réelle, Phase 5/6 → toujours
+   non traités.
+
+---
+
+## 19. Session du 04/09/2026 — J0 + Betpawa illimité + 2 bugs graves trouvés et corrigés + bug 18.8 massivement élargi
+
+Session la plus dense à ce jour, enchaînant une longue série de demandes
+de Patrick. Résumé dans l'ordre chronologique.
+
+### 19.1 `precalcul_leger.json` (18.1) — RÉSOLU, confirmé par preuve indépendante
+Le diagnostic instrumenté en session 18 (ls -la / git status avant-après
+`git add`) a enfin été lu sur un run réel (#91) : le fichier était bien
+présent, bien indexé, bien commité (`98b7b99`, 12 fichiers changés).
+**Vérifié en plus par un moyen indépendant du log** : fetch direct de
+`raw.githubusercontent.com/.../precalcul_leger.json`, HTTP 200, taille
+exactement identique à celle annoncée dans le log. Le site
+(`pronostics.html`) charge désormais ce fichier sans erreur 404.
+
+Note : le fichier était marqué `M` (modifié) et non `A` (nouveau) dans le
+commit — signe qu'un des runs précédents avait en fait réussi à le
+committer sans que ce soit su. Sans conséquence, juste une note pour
+comprendre l'historique.
+
+### 19.2 Filtre de compétitions (18.3) — RÉSOLU, chiffres réels
+Run #91 : fenêtre réduite de 2621 matchs sources à 951 après filtre
+(~36-38% conservé), cohérent avec le 37,1% mesuré en session 18 sur
+l'instantané figé. Détail des 7 filtres (comptages réels, run #91) :
+jeunes/réserves -200, liste explicite -160, Chine -8, Océanie -7, Femmes
+-78, Europe hommes paliers -685, 1ère division unique -378. Aucun
+championnat majeur disparu par erreur constaté.
+
+### 19.3 Ajout de J0 (aujourd'hui) à la fenêtre automatique + date/heure sur chaque carte
+Demande de Patrick : la fenêtre automatique (jusque-là J+1/J+2/J+3) inclut
+désormais aujourd'hui. Changements :
+- `precalcul.py` : `charge_matchs_fenetre()` inclut `matchs_du_jour.json`.
+- **Bug trouvé en l'implémentant** : `archive_precalcul()` n'archivait
+  qu'à la date J+1 -- un match J0 ne traverse la fenêtre qu'UNE nuit,
+  contrairement à J+2/J+3 qui progressent sur plusieurs nuits. Sans
+  correctif, ces matchs auraient été analysés puis jamais archivés.
+  Corrigé : archive désormais sur (aujourd'hui OU J+1).
+- `script.js` : nouvel onglet "Aujourd'hui" (actif par défaut), onglets
+  renommés "Aujourd'hui / J+1 / J+2 / J+3" (avec le "+", demande explicite
+  de Patrick). Chaque carte affiche désormais sa date exacte à côté de
+  l'heure (`m.date` + `m.heure` dans `construitCarteMatch()`).
+- `index.html`/`index.js` (panier manuel) : **non concerné** par ce
+  changement -- reste volontairement limité à aujourd'hui/demain pour la
+  sélection manuelle, "aujourd'hui" dans la fenêtre auto est une fonction
+  séparée de la sélection panier.
+
+### 19.4 Betpawa illimité + suppression du hook "semaine" + `scraper_semaine.py` recentré
+- Plafond `PRECALCUL_LIMITE_BETPAWA` (100) supprimé. Justifié par les
+  chiffres réels : run #91 (plafond 100) = 33m37s total ; seul test
+  "illimité" antérieur (02/09, avant filtre) = 5h18m sur 1574 matchs.
+  Large marge de sécurité. **Confirmé sur run #94** (1050 matchs, Betpawa
+  illimité) : run total 2h50m28s, dont 1h45m38s pour Betpawa seul --
+  toujours confortablement sous les 6h de GitHub Actions, mais Betpawa
+  est redevenu le vrai poste de temps.
+- `index.js` : onglet "semaine" et bouton "Analyser" supprimés -- code
+  mort confirmé (aucun élément HTML correspondant dans `index.html`,
+  jamais fonctionnel ; pointait vers `catalogue_unifie.json`, un fichier
+  que rien ne génère). Tranche définitivement le point 18.10-7.
+- `scraper_semaine.py` : plage par défaut réduite de J+2/J+7 à J+2/J+3 --
+  les jours J+4 à J+7 ne servaient nulle part (ni au pré-calcul, ni au
+  hook mort supprimé ci-dessus).
+
+### 19.5 Panier manuel : ne re-scrape plus un match déjà analysé
+Demande de Patrick, vérifiée d'abord (n'était PAS le cas) : chaque envoi
+de panier déclenchait systématiquement un scraping complet, même pour un
+match déjà connu. `dispatch_pipeline.py` cherche désormais dans
+`precalcul.json` (fenêtre courante) PUIS `historique_pronostics.json`
+(archive) avant de lancer quoi que ce soit :
+- Si tous les matchs du panier sont déjà connus → aucun scraping, résultat
+  renvoyé directement.
+- Sinon → seuls les matchs manquants sont écrits dans `panier.json` et
+  scrapés.
+- Règle stricte du panier (afficher UNIQUEMENT les matchs sélectionnés)
+  vérifiée et testée -- aucune fuite d'un match non demandé.
+- **Limite assumée** : le déclenchement du workflow GitHub Actions
+  lui-même reste inévitable (le clic panier passe toujours par
+  Supabase + `trigger.js`) -- seul le scraping coûteux est évité,pas
+  l'appel réseau initial. Éliminer ça demanderait de toucher les règles
+  RLS Supabase, non vérifiable depuis l'environnement de l'assistant.
+
+### 19.6 Cache classement + H2H (extension de 18.7)
+`cache_equipes.py` mettait déjà en cache le GF/GA (découvert en creusant,
+pas su avant) -- ce qui manquait vraiment : classement et H2H, jamais
+cachés. Deux nouveaux modules ajoutés, même modèle que `cache_equipes.py` :
+- `cache_classement.py` : clé = **nom de la compétition** (pas l'URL du
+  match) -- tous les matchs d'une même ligue, dans la MÊME fenêtre,
+  partagent désormais un seul classement au lieu d'un fetch par match.
+  Nécessite `recupere_classement_du_match(url_match, competition)` (2e
+  argument ajouté, optionnel, ignoré par la fonction réelle -- ne casse
+  pas le flux panier manuel qui l'appelle aussi). TTL 12h.
+- `cache_h2h.py` : clé = URL du match (un H2H est propre à une paire
+  précise, rien à regrouper entre matchs différents contrairement au
+  classement -- utile seulement pour une relance sur les mêmes matchs).
+  TTL 7 jours.
+- **Testé avant livraison** : simulation avec 3 matchs "France : Ligue 1"
+  + 1 "Espagne : LaLiga" → la fonction de scraping n'a été appelée qu'une
+  fois par compétition (pas par match). Confirmé fonctionnel.
+
+### 19.7 BUG GRAVE TROUVÉ ET CORRIGÉ -- doublons dans `historique_pronostics.json`
+En répondant à "combien de matchs analysés au total", découverte que
+l'archive contenait **570 doublons sur 1251 entrées (45%)** -- des blocs
+entiers réarchivés à l'identique à chaque run relancé le même jour (aucune
+vérification avant ajout). Un 2e bug lié : un lot mélangeant J0 et J+1
+(depuis 19.3) était étiqueté avec UNE SEULE date pour tout le lot,
+mislabelant les matchs J0.
+
+**Corrigé** : nouvelle fonction `ajoute_matchs_a_historique()` dans
+`run_pipeline.py` (réutilisée par `archive_run()` ET `archive_precalcul()`) :
+- Déduplique par `match_id` (ou domicile/extérieur à défaut), PAR DATE.
+- Range chaque match dans le bloc de SA PROPRE date (`m.get("date")`), pas
+  une date supposée pour tout le lot.
+- **Testé avant livraison** : rejouer deux fois le même lot n'ajoute rien
+  la 2e fois ; un lot mélangeant deux dates se range en deux blocs
+  séparés.
+
+**Nettoyage rétroactif appliqué** : fichier existant nettoyé en réutilisant
+la fonction corrigée elle-même (pas une logique de nettoyage à part) →
+1251 → **682 matchs réellement distincts**. Patrick a remplacé le fichier
+sur GitHub via "Upload files" (l'éditeur en ligne ne gère pas bien un
+fichier de 2,7 Mo sur mobile). Après le run #94 (nouvel archivage propre) :
+**977 matchs, 0 doublon détecté** dans les 9 blocs.
+
+### 19.8 Premier calcul RÉEL du ROI -- `calcule_roi.py`
+Personne n'avait jamais vérifié automatiquement si un pari GO avait
+réellement gagné -- `verification_resultats.py` remplit juste le score
+final, rien de plus. Nouveau script `calcule_roi.py`, tourne après
+`verification_resultats.py` dans `pipeline.yml` :
+- Règles de chaque marché (22 types : 1X2, double chance, BTTS,
+  over/under total et par équipe, handicap, pair/impair, cage inviolée,
+  score exact, nombre exact de buts) copiées EXACTEMENT depuis
+  `construit_candidats()` (`run_pipeline.py`) -- pas réinventées.
+- Écrit `roi_dashboard.json` : résumé global + par marché + par confiance
+  + détail pari par pari.
+- **Auto-correction notable** : le premier calcul fait à la main par
+  l'assistant (avant d'écrire le script) contenait un bug -- `total < 3`
+  au lieu de `total < 3.5` pour "Moins de X.5 buts", faisant perdre à tort
+  les matchs à exactement 3 buts. Détecté en testant le script contre le
+  calcul manuel, corrigé avant livraison.
+- **Chiffre réel actuel (39 paris, échantillon minuscule)** : 22 gagnés
+  (56,4%), ROI -16,9%. Par marché : Plus de X.5 buts +2,2% (meilleur),
+  1X2 -54% (pire, mais seulement 3 paris -- pas significatif). Cohérent
+  avec le -15,5% mesuré fin août -- pas de dérive alarmante, mais rien à
+  changer dans `calculs.py` sur un échantillon aussi petit.
+
+### 19.9 BUG GRAVE TROUVÉ ET CORRIGÉ -- décalage de fuseau horaire sur les dates
+En essayant de faire correspondre des scores fournis par Patrick
+(captures matchendirect) à des matchs archivés, découverte que 11 matchs
+sur les quelques dizaines vérifiées avaient une **date enregistrée fausse**
+(décalée d'un jour), tous des matchs d'Amérique latine ou d'Arabie
+Saoudite joués tard le soir heure locale.
+
+**Cause identifiée et confirmée par test** : tout le projet utilisait
+`datetime.date.today()`, qui renvoie la date du fuseau du SERVEUR (UTC sur
+GitHub Actions), alors que matchendirect.fr (site français) regroupe ses
+matchs par jour calendaire FRANÇAIS (CET/CEST). Entre 22h00 et 00h00 UTC
+(0h-2h du matin en France l'été), le jour a déjà changé en France mais pas
+en UTC -- exactement la fenêtre où Patrick déclenche souvent des runs
+manuels en soirée.
+
+**Corrigé** : nouvelle fonction `aujourdhui_france()` (`run_pipeline.py`,
+`zoneinfo.ZoneInfo("Europe/Paris")`), remplace TOUS les
+`datetime.date.today()` du projet : `scraper.py`, `scraper_semaine.py`,
+`precalcul.py` (3 fonctions), `verification_resultats.py`. **Trouvé en
+vérifiant, pas seulement le backend** : `script.js` (onglets du site)
+souffrait du même bug côté navigateur (`toISOString()` convertit en UTC)
+-- corrigé aussi, sinon le backend aurait été juste mais l'affichage se
+serait décalé 2h chaque nuit quand même.
+
+**Testé avant livraison** : simulation d'un run à 23h30 UTC -- ancien code
+aurait dit "27/08", nouveau dit "28/08" (correct, déjà le lendemain en
+France à cette heure).
+
+**Ce qui n'est PAS corrigé** : les ~333 matchs déjà mal datés dans
+l'historique restent mal datés (voir situation critique #3 en tête de
+document). Le correctif empêche la récidive, ne répare pas le passé. 11
+d'entre eux ont été corrigés manuellement avec les scores fournis par
+Patrick (matchs identifiés en cherchant sur TOUTES les pages fournies, pas
+seulement celle de la date enregistrée).
+
+### 19.10 Bug 18.8 -- ampleur réelle découverte : 42 compétitions, 30,5% du volume ⚠️ PRIORITÉ ABSOLUE
+Diagnostic `[DIAG 18.8]` (ajouté en session 19, dans
+`scraper_details.py::_extrait_historique_competition` et
+`recupere_gf_ga_avec_repli`) a tourné sur le run #94. Analyse de
+`precalcul.json` réel (pas juste le log) : **42 compétitions ont 0% de
+matchs traités**, totalisant **320 matchs sur 1050 (30,5% du volume
+total)** -- très au-delà des 2-3 championnats (Premier League/Serie A)
+identifiés en session 18. Liste complète des compétitions touchées dans
+la sortie de la conversation du 04/09 (à re-générer si besoin : filtrer
+`precalcul.json` sur les compétitions avec ≥2 matchs et 0 `traite`).
+
+Cause technique confirmée par le diagnostic : `_extrait_historique_competition`
+utilise `.find_next("table")` après avoir trouvé l'ancre texte de la
+compétition sur la page de l'équipe -- l'ancre est INTROUVABLE pour un
+grand nombre de ligues (confirmé pour Espagne Primera RFEF Groupe 1,
+Mexique Liga MX Ouverture, en plus de Premier League/Serie A). Raison
+exacte encore à déterminer -- **Patrick doit fournir le zip d'archive de
+logs complet du run #94** (`Download log archive` depuis le menu ⚙️ du
+job GitHub Actions) pour une analyse exhaustive de toutes les lignes
+`[DIAG 18.8]` et identifier un motif commun entre les 42 compétitions.
+**Ce zip n'a pas encore été transmis au moment de la rédaction.**
+
+### 19.11 Vérification de scores manuelle -- pages fournies par Patrick (24, 25, 27, 28/08, 03/09)
+Extraction réussie du HTML brut depuis des fichiers `.webarchive` Safari
+(`plistlib`, clé `WebMainResource.WebResourceData`), réutilisation directe
+de `parse_matches()` (`scraper.py`) pour rester cohérent avec le reste du
+pipeline. Résultat : seulement 11 matchs sur ~344 en attente ont pu être
+mis à jour, TOUS avec une date enregistrée fausse (voir 19.9 -- c'est
+cette recherche qui a mené à la découverte du bug fuseau horaire). Les
+~333 restants n'étaient simplement sur aucune des 5 pages fournies (vraie
+date probablement 26, 29 ou 30/08, jamais demandées). Confirmé
+explicitement : **zéro match n'a jamais été archivé avec la date
+"2026-09-03" correctement enregistrée** -- mais 7 matchs du 03/09 existent
+dans l'archive, mal étiquetés "04/09".
+
+### 19.12 Run #94 -- validation complète, tout vérifié contre les données réelles
+Premier run combinant TOUS les changements de la session (J0, Betpawa
+illimité, caches, dédup archive, fuseau horaire, `calcule_roi.py`). Un run
+précédent de 3h a été interrompu par Patrick puis relancé manuellement --
+sans risque : le commit ne se fait qu'en toute fin de pipeline, et le
+`concurrency.group` de `pipeline.yml` empêche deux runs de se chevaucher.
+
+Résultat run #94 : **2h50m28s, succès**, vérifié fichier par fichier
+(pas seulement le statut vert) :
+- `precalcul.json` : J0 inclus (396 matchs sources), fenêtre 1050 matchs,
+  662 READY / 388 PARTIAL.
+- Betpawa : 1050 tentatives (= 100% de la fenêtre, plus de plafond),
+  1h45m38s -- redevenu le vrai poste de temps du run.
+- `historique_pronostics.json` : 977 matchs, 0 doublon.
+- `roi_dashboard.json` et les 2 nouveaux caches (`cache_classement.json`,
+  `cache_h2h.json`) bien générés et commités.
+
+### 19.13 Fichiers livrés cette session (pour référence, tous testés avant livraison)
+`pipeline.yml`, `precalcul.py`, `run_pipeline.py`, `scraper.py`,
+`scraper_semaine.py`, `scraper_details.py`, `verification_resultats.py`,
+`dispatch_pipeline.py`, `index.js`, `script.js`, `pronostics.html`,
+`cache_classement.py` (nouveau), `cache_h2h.py` (nouveau), `calcule_roi.py`
+(nouveau), `historique_pronostics.json` (nettoyé, donnée pas code).
+
+### 19.14 Ce qui reste à faire (priorités, dans l'ordre suggéré)
+1. **Bug 18.8 (42 compétitions, 30,5% du volume)** -- PRIORITÉ ABSOLUE.
+   Obtenir le zip d'archive de logs complet du run #94 (`[DIAG 18.8]`),
+   l'analyser exhaustivement, identifier le motif commun, proposer un
+   correctif testé sur échantillon avant tout déploiement (règle de
+   Patrick : jamais toucher aux tamis/calculs sans test complet).
+2. Continuer à accumuler l'échantillon ROI (39 paris actuellement, viser
+   les ~1000 mentionnés comme objectif) avant toute conclusion ou
+   ajustement de `calculs.py`.
+3. Décider si les ~333 matchs historiques mal datés (avant le correctif
+   fuseau horaire) méritent une correction rétroactive, ou si on les
+   laisse tels quels (matchs déjà loin dans le passé, impact limité sur
+   le ROI qui se base surtout sur les matchs récents/futurs).
+4. Points de confiance moyenne toujours en attente (18.4, reconduit
+   depuis session 18) : Chili "Superliga", Égypte "Première Ligue",
+   Écosse/Belgique (paliers), Océanie, "Ligue Conférence Phase de Ligue".
+5. Purge cache Betpawa/classement/H2H -- aucune politique d'expiration
+   automatique en place (`purge_entrees_expirees()` existe dans les 3
+   modules mais n'est appelée nulle part). Pas urgent tant que la taille
+   reste gérable (`cache_h2h.json` déjà 1,48 Mo après un seul run avec
+   Betpawa illimité -- à surveiller).
+6. Décision en attente : éliminer complètement le déclenchement réseau du
+   panier quand tout est déjà connu (19.5) nécessiterait de revoir les
+   règles RLS Supabase -- hors périmètre de l'assistant sans accès direct
+   à la config Supabase.
