@@ -28,6 +28,7 @@ import sys
 
 from scraper import parse_matches, url_resultat_foot, fetch_html
 from scraper_details import _memes_equipes
+from run_pipeline import aujourdhui_france
 
 FICHIER_HISTORIQUE = "historique_pronostics.json"
 NB_JOURS_MAX_A_VERIFIER = 10  # au-delà, on abandonne (page trop ancienne /
@@ -91,7 +92,8 @@ def verifie_jour(jour):
 
 def main():
     historique = charge_historique()
-    aujourdhui = datetime.date.today()
+    # CORRECTIF FUSEAU HORAIRE 04/09/2026 -- voir run_pipeline.aujourdhui_france()
+    aujourdhui = aujourdhui_france()
     limite_ancienne = aujourdhui - datetime.timedelta(days=NB_JOURS_MAX_A_VERIFIER)
 
     total_trouves = 0
