@@ -17,7 +17,8 @@ from scraper_details import (
     recupere_classement_du_match, recupere_h2h,
 )
 import calculs
-
+import adapte_justification
+from moteur_justification import PronosticValide, construit_justification, vers_dict
 MAX_MATCHS_HISTORIQUE = 10
 FICHIER_MATCHS_DU_JOUR = "matchs_du_jour.json"
 FICHIER_MATCHS_DEMAIN = "matchs_demain.json"
@@ -497,6 +498,7 @@ def construit_signaux(matchs_bruts):
             signal["avertissement_classement"] = f"erreur_technique: {e}"
 
         ratio_h2h_home = ratio_h2h_away = 0.0
+        historique_h2h_brut = []
         try:
             historique_h2h_brut = recupere_h2h(url_match + "?p=face-a-face")
             ratio_h2h_home = calculs.calcule_ratio_h2h(historique_h2h_brut, nom_domicile, nom_exterieur)
@@ -622,6 +624,40 @@ def construit_signaux(matchs_bruts):
         signal["LISTE_A_marches_passant_EV_et_cote"] = [serialise(c) for c in liste_a]
         signal["LISTE_B_liste_finale_apres_correlation"] = liste_b_avec_mise
         signal["coefficients_empiriques"] = False
+
+        # AJOUT 04/09/2026 (soir) -- justification du "pari en or" (celui
+        # affiché en badge principal -- même sélection que construitNiveau3
+        # dans script.js : probabilité modèle la plus haute de LISTE_B).
+        # Construite uniquement à partir de faits réellement vérifiables
+        # (voir adapte_justification.py) -- jamais un fait inventé. None si
+        # verdict NO_GO ou si aucun fait vérifiable n'a pu être construit
+        # pour ce marché (ex. Handicap, Score exact -- voir adapte_justification.py).
+        signal["justification"] = None
+        if verdict_global == "GO" and liste_b_avec_mise:
+            pari_en_or = max(liste_b_avec_mise, key=lambda c: c["probabilite_modele"])
+            try:
+                preuves = adapte_justification.construit_preuves(
+                    pari_en_or["marche"],
+                    stats_domicile.get("matchs_domicile_bruts", []),
+                    stats_exterieur.get("matchs_exterieur_bruts", []),
+                    historique_h2h_brut,
+                    nom_domicile, nom_exterieur,
+                )
+                pronostic_valide = PronosticValide(
+                    marche=pari_en_or["marche"],
+                    probabilite_modele=pari_en_or["probabilite_modele"],
+                    cote=pari_en_or["cote_observee"],
+                    ev=pari_en_or["ev_brut"],
+                    verdict=verdict_global,
+                )
+                signal["justification"] = vers_dict(
+                    construit_justification(pronostic_valide, preuves, maximum=3)
+                )
+            except Exception as e:
+                # Ne doit jamais faire échouer tout le traitement du match --
+                # l'absence de justification est acceptable, un plantage du
+                # run entier ne l'est pas.
+                signal["avertissement_justification"] = f"erreur_technique: {e}"
 
         resultats.append(signal)
 
