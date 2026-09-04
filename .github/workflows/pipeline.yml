@@ -79,6 +79,16 @@ jobs:
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         run: python verification_resultats.py
 
+      # AJOUT 03/09/2026 -- calcule le résultat (gagné/perdu) de chaque
+      # pari archivé dont le score vient d'être vérifié, et met à jour le
+      # tableau de bord ROI. Pure relecture de historique_pronostics.json,
+      # aucun scraping -- doit tourner APRÈS la vérification ci-dessus,
+      # jamais avant (sinon les scores tout juste trouvés ne seraient pas
+      # encore là pour ce calcul).
+      - name: Calculer le ROI (paris gagnés/perdus, par marché et confiance)
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+        run: python calcule_roi.py
+
       - name: Commit et push du résultat (run planifié ou relance manuelle complète)
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         run: |
@@ -114,7 +124,7 @@ jobs:
           # committés tels quels juste au-dessus (run_pipeline.py en a besoin
           # intacts pour résoudre un match ajouté manuellement au panier,
           # même hors filtre).
-          for f in panier.json historique_pronostics.json precalcul_leger.json matchs_du_jour_filtre.json matchs_demain_filtre.json cache_classement.json cache_h2h.json; do
+          for f in panier.json historique_pronostics.json precalcul_leger.json matchs_du_jour_filtre.json matchs_demain_filtre.json cache_classement.json cache_h2h.json roi_dashboard.json; do
             [ -f "$f" ] && git add "$f"
           done
 
