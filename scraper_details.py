@@ -466,7 +466,7 @@ def _competitions_correspondent(cible, candidat):
     return bool(_mots_significatifs(cible) & _mots_significatifs(candidat))
 
 
-def _extrait_historique_competition(soup, nom_competition, nom_equipe, max_matchs=10):
+def _extrait_historique_competition(soup, nom_competition, nom_equipe, max_matchs=10, diag_libelle=None):
     # CORRECTIF (26/08) : l'égalité stricte texte-complet ('Denmark :
     # Superliga' vs 'Danemark : Superligaen' sur la vraie page matchendirect,
     # confirmé en conditions réelles) échouait pour TOUT match venant de
@@ -483,6 +483,12 @@ def _extrait_historique_competition(soup, nom_competition, nom_equipe, max_match
     # comme pour le premier correctif, on ne compare qu'un petit nombre de
     # rubriques (2 à 5) sur la page d'UNE équipe déjà identifiée avec
     # certitude, jamais entre équipes différentes.
+    #
+    # AJOUT DIAGNOSTIC 03/09/2026 (18.8) -- diag_libelle est un simple tag de
+    # log (ex. "Newcastle | saison 2025/2026"), aucune incidence sur la
+    # logique : uniquement des print() sur les chemins d'échec, pour savoir
+    # OÙ ça casse (ancre introuvable ? table introuvable ? table trouvée
+    # mais 0 ligne reconnue ?) sans toucher au comportement existant.
     cible = _partie_competition(nom_competition)
     ancre = None
     for candidat in soup.find_all(string=True):
@@ -493,9 +499,16 @@ def _extrait_historique_competition(soup, nom_competition, nom_equipe, max_match
             ancre = candidat
             break
     if ancre is None:
+        if diag_libelle:
+            print(f"[DIAG 18.8] {diag_libelle} -- ancre INTROUVABLE pour "
+                  f"compétition cible = {cible!r}. Aucun texte contenant ':' "
+                  f"sur la page ne correspond.")
         return None
     table = ancre.find_parent().find_next("table")
     if table is None:
+        if diag_libelle:
+            print(f"[DIAG 18.8] {diag_libelle} -- ancre TROUVÉE ({ancre!r}) "
+                  f"mais find_next('table') ne renvoie AUCUNE table après.")
         return []
 
     matchs = []
@@ -514,6 +527,13 @@ def _extrait_historique_competition(soup, nom_competition, nom_equipe, max_match
         elif _memes_equipes(nom_equipe, nom_ext):
             matchs.append({"domicile": False, "buts_marques": buts_ext, "buts_encaisses": buts_dom})
 
+    if diag_libelle and not matchs:
+        nb_lignes = len(table.find_all("tr"))
+        print(f"[DIAG 18.8] {diag_libelle} -- ancre ET table trouvées, mais "
+              f"0 match reconnu sur {nb_lignes} ligne(s) <tr>. Le tableau "
+              f"trouvé n'est probablement pas le bon (find_next a sauté "
+              f"par-dessus la vraie table, ou format de ligne différent).")
+
     return matchs
 
 
@@ -525,13 +545,20 @@ def recupere_gf_ga_avec_repli(url_equipe, nom_equipe, nom_competition, max_match
     for saison in (saison_actuelle, saison_precedente):
         if len(matchs_domicile) >= max_matchs and len(matchs_exterieur) >= max_matchs:
             break
+        # AJOUT DIAGNOSTIC 03/09/2026 (18.8) -- tag lisible dans le log,
+        # aucune incidence sur la logique (voir _extrait_historique_competition).
+        diag_libelle = f"{nom_equipe} | {nom_competition!r} | saison {saison}"
         try:
             url = url_equipe if saison == saison_actuelle else f"{url_equipe}?season={saison.replace('/', '%2F')}"
             html = fetch_html(url)
-        except RuntimeError:
+        except RuntimeError as e:
+            print(f"[DIAG 18.8] {diag_libelle} -- fetch_html a échoué sur "
+                  f"{url!r} ({e}), saison ignorée.")
             continue
         soup = BeautifulSoup(html, "html.parser")
-        historique = _extrait_historique_competition(soup, nom_competition, nom_equipe, max_matchs)
+        historique = _extrait_historique_competition(
+            soup, nom_competition, nom_equipe, max_matchs, diag_libelle=diag_libelle
+        )
         if historique is None:
             continue
         for m in historique:
