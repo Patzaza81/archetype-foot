@@ -439,20 +439,51 @@ def _saison_actuelle_et_precedente():
 
 _MOTS_GENERIQUES_COMPETITION = {
     "league", "ligue", "liga", "lig", "liiga", "cup", "coupe", "division",
-    "championship", "premiere", "premiere", "first", "1", "2",
+    "championship", "premiere", "premiere", "first",
 }
+# CORRECTIF 05/09/2026 -- '1'/'2' retirés de cette liste : ce sont des
+# chiffres distinctifs (Ligue 1 vs Ligue 2 = deux compétitions FRANÇAISES
+# différentes), pas des connecteurs génériques comme 'league'/'cup'. Les
+# garder ici comme "génériques" les faisait disparaître AVANT même le
+# repli sur les mots courts dans _mots_significatifs, ce qui provoquait
+# une collision confirmée entre Ligue 1 et Ligue 2 (les deux ne gardaient
+# plus que le mot 'ligue' en commun après filtrage).
 
 
 def _mots_significatifs(partie_competition):
     """Retire les mots génériques ('league'/'ligue'/'liga'/'cup'/'coupe'...)
     qui varient d'une langue à l'autre sans rien dire de LA compétition
     précise -- ne garde que ce qui la distingue vraiment ('chinese',
-    'super', 'premier', un nom propre...). Si tout est générique (nom
-    d'une seule syllabe comme 'Superliga', déjà géré par l'inclusion de
-    sous-chaîne), retombe sur les mots bruts plutôt que sur un ensemble
-    vide, pour ne jamais perdre toute information de comparaison."""
-    mots = [m for m in partie_competition.split() if m not in _MOTS_GENERIQUES_COMPETITION]
-    return set(mots) if mots else set(partie_competition.split())
+    'super', 'premier', un nom propre...).
+
+    CORRECTIF 05/09/2026 (deux bugs préexistants débusqués ensemble par les
+    tests, corrigés ensemble puisqu'ils viennent du même repli) :
+
+    1) Jetons d'une seule lettre ('c', 'b'...) désormais exclus -- confirmé
+       en prod (Giugliano-Sorrente, Italie Serie C) : le 'c' isolé de
+       'Série C' (palier) suffisait à matcher n'importe quelle section
+       contenant aussi un 'c' isolé, y compris une Coupe d'Italie Serie C
+       (compétition totalement différente d'un championnat).
+
+    2) '1'/'2' étaient dans _MOTS_GENERIQUES_COMPETITION -- 'Ligue 1' et
+       'Ligue 2' (France, DEUX compétitions différentes) matchaient déjà à
+       tort AVANT ce correctif : les deux mots retirés (générique 'ligue'
+       + chiffre), l'ancien repli sur 'tout est vide -> mots bruts'
+       réintroduisait alors 'ligue' des DEUX côtés, collision garantie.
+       Nouveau repli à trois niveaux : mots significatifs non-génériques
+       ET longs (>1 caractère) en priorité ; à défaut, mots non-génériques
+       même courts (garde '1'/'2' pour distinguer Ligue 1/Ligue 2 sans
+       jamais réintroduire un mot générique déjà écarté) ; en tout dernier
+       recours seulement (tout était générique, ex. 'Superliga' seul),
+       les mots bruts.
+    """
+    sans_generiques = [m for m in partie_competition.split() if m not in _MOTS_GENERIQUES_COMPETITION]
+    significatifs = [m for m in sans_generiques if len(m) > 1]
+    if significatifs:
+        return set(significatifs)
+    if sans_generiques:
+        return set(sans_generiques)
+    return set(partie_competition.split())
 
 
 def _partie_competition(nom_competition):
@@ -464,8 +495,35 @@ def _partie_competition(nom_competition):
     return _normalise_texte(nom_competition.split(":", 1)[-1])
 
 
+_MOTIF_IDENTIFIANT_GROUPE = re.compile(
+    r"\b(?:girone|group|groupe|gruppo|grupo)\s+([a-z0-9]+)$|(?<!\d)\b([12])$"
+)
+
+
+def _identifiant_groupe(partie_competition):
+    """Extrait l'identifiant de sous-groupe final ('girone b' -> 'b',
+    'ligue 1' -> '1'), ou None si le nom ne se termine pas par un tel
+    motif. Utilisé pour départager deux noms de compétition par ailleurs
+    identiques ou très proches (ex. 'Primera RFEF Groupe 1' vs 'Groupe 2')
+    -- voir _competitions_correspondent."""
+    m = _MOTIF_IDENTIFIANT_GROUPE.search(partie_competition)
+    if not m:
+        return None
+    return m.group(1) or m.group(2)
+
+
 def _competitions_correspondent(cible, candidat):
     if not cible or not candidat:
+        return False
+    # CORRECTIF 05/09/2026 -- veto explicite AVANT toute autre règle : si
+    # les deux noms se terminent par un identifiant de groupe/girone
+    # explicite et qu'ils diffèrent, ce sont deux compétitions distinctes,
+    # point final -- même si tous les autres mots concordent par ailleurs
+    # (confirmé nécessaire : 'Primera RFEF Groupe 1' vs 'Groupe 2'
+    # partagent 3 mots significatifs, l'overlap seul les aurait fait
+    # matcher à tort malgré le numéro de groupe différent).
+    id_cible, id_candidat = _identifiant_groupe(cible), _identifiant_groupe(candidat)
+    if id_cible is not None and id_candidat is not None and id_cible != id_candidat:
         return False
     if cible in candidat or candidat in cible:
         return True
