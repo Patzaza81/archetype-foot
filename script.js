@@ -1,753 +1,592 @@
-"""
-calculs.py — Portage déterministe des Règles N3 / N4 / N6 / N7 (Module 2 v4.3)
-et de l'Étape 7 (Module 3 v6.3), UNIQUEMENT la partie mathématique fixe.
+// script.js — Module 4, hiérarchie visuelle à 5 niveaux (25/08) :
+// 1. identification (équipes/compétition) 2. statut (verdict, texte +
+// couleur, jamais couleur seule) 3. donnée principale (p(1), plus grosse
+// taille de l'écran) 4. détails (paris, risques) 5. action secondaire
+// (détail N1/N2, repliée par défaut).
 
-Ce fichier N'IMPLÉMENTE PAS :
-- la vérification de fraîcheur des pages sources (Module 1)
-- la détection de pénalités de points (Module 1)
-- le risque de rotation continentale (Module 1 v1.7)
-- la double vérification des handicaps 3 voies (Module 3, Étape 4)
-- toute analyse de corrélation sémantique entre marchés (nécessite jugement,
-  pas juste un chiffre — cf. SEUIL_CORRELATION ci-dessous, implémenté seulement
-  pour le cas simple "même match, marchés mécaniquement liés")
+const RAISONS_LISIBLES = {
+  "donnees_de_base_manquantes": "données de base manquantes (équipe/compétition non identifiée)",
+  "url_equipe_introuvable_sur_page_match": "page équipe introuvable sur matchendirect",
+  "historique_domicile_ou_exterieur_vide": "aucun historique domicile ou extérieur exploitable",
+};
 
-Ces points restent des tâches manuelles ou une v2 — les inclure de façon fiable
-avant demain reviendrait à réécrire en code un jugement d'agent, pas juste une formule.
-
-Constantes reprises telles quelles de TABLEAU_RECAPITULATIF.md (gelées jusqu'à
-backtest historique — ne pas modifier sans repasser par ce document).
-"""
-
-import math
-
-# --- Constantes gelées (Module 2 / Module 3) ---
-# GA_REFERENCE : constante externe fixe du Module 2 v4.3.
-# - "Norvège"/"Suède"/"Danemark" (29/08/2026), "Italie"/"Allemagne"/
-#   "France"/"Turquie"/"Espagne"/"Angleterre"/"Pays-Bas"/"Portugal"/"Grèce"/
-#   "Belgique"/"Russie"/"Suisse"/"Pologne" (30/08/2026) : CALCULÉES sur
-#   données réelles (Football-Data.co.uk). Saison retenue par pays -- la
-#   PLUS RÉCENTE COMPLÈTE, jamais une saison en cours trop courte (le
-#   Danemark 2026/2027 n'avait que 28 matchs, écart de 0.25 avec sa saison
-#   complète -- même logique appliquée à Russie/Suisse/Pologne ci-dessous,
-#   dont la saison 2026/2027 n'avait que 16 à 38 matchs) :
-#     Italie 2025/2026 (380 matchs), Allemagne 2025/2026 (306), France
-#     2025/2026 (306), Turquie 2025/2026 (306), Espagne 2025/2026 (380),
-#     Angleterre 2025/2026 (380), Pays-Bas 2025/2026 (306), Portugal
-#     2025/2026 (306), Grèce 2025/2026 (236), Belgique 2025/2026 (311),
-#     Norvège 2025 (240), Suède 2025 (240), Danemark 2025/2026 (192),
-#     Russie 2025/2026 (240), Suisse 2025/2026 (228), Pologne 2025/2026 (306).
-# - "Arabie Saoudite" (30/08/2026) : CALCULÉE sur classement réel FootyStats
-#   (Saudi Pro League, saison 2025/26 complète -- 18 équipes, 34 matchs/
-#   équipe, GF total = GA total = 921). Écart important avec l'ancienne
-#   estimation devinée (1.20 -> 1.50) : cette ligue est nettement plus
-#   offensive qu'estimé au départ.
-# - "Corée du Sud" (30/08/2026) : CALCULÉE sur classement réel FootyStats
-#   (K League 1, saison 2025 complète -- 12 équipes, 33 matchs/équipe, GF
-#   total = GA total = 512, confirmé cohérent entre les deux colonnes).
-#   Vérifiée par recoupement avec la saison 2026 en cours (151/198 matchs) :
-#   1.21, du même ordre que 1.29 sur la saison complète -- retenue comme
-#   plus fiable, valeur pas trop éloignée entre les deux saisons.
-# - "Japon" (30/08/2026) : CALCULÉE sur classement réel FootyStats (J1
-#   League, saison 2025 complète -- 20 équipes, 38 matchs/équipe, GF total
-#   = GA total = 911).
-# - "Estonie" (30/08/2026) : CALCULÉE (Meistriliiga, saison 2025 complète --
-#   182/182 matchs, GF=GA=575).
-# - "Tunisie" (30/08/2026) : CALCULÉE (Ligue 1, saison 2025/26 complète --
-#   240/240 matchs, GF=GA=414).
-# - "Etats-Unis" (30/08/2026) : CALCULÉE (MLS, saison 2025 complète --
-#   540/540 matchs, 30 équipes, GF=GA=1629).
-# - "South Africa" (30/08/2026) : CALCULÉE (Premier Soccer League, saison
-#   2025/26 complète -- 240/240 matchs, GF=GA=485). Clé en anglais
-#   volontairement -- c'est exactement le nom que matchendirect utilise
-#   pour ce pays dans "competition" (vu dans le corpus), pas de traduction
-#   française pour éviter de reproduire le bug Betpawa/ALIAS_PAYS trouvé
-#   plus tôt dans l'autre sens.
-# - "Chine" (30/08/2026) : CALCULÉE (Chinese Super League, saison 2025
-#   complète -- 240/240 matchs, GF=GA=771).
-# - "Écosse" : PAS ENCORE FAITE -- seule une saison 2026/27 à peine
-#   commencée (16/198 matchs, 2-4 matchs/équipe) a été fournie, bien trop
-#   courte pour être fiable (même problème que le Danemark au premier tour).
-#   Retombe sur "default" en attendant une saison complète.
-# Toute clé de pays absente retombe sur "default" (l'ancienne valeur 1.35,
-# inchangée).
-#
-# RESTAURATION 04/09/2026 (soir) -- GA_REFERENCE_PAR_LIGUE avait été
-# régressée à une constante unique (voir TRANSITION.md 20.2/20.10 point 5).
-# Restaurée ici, mais SEULEMENT pour les pays dont la valeur numérique
-# calculée est réellement récupérable : les 8 pays ci-dessous ont leurs
-# totaux bruts (GF total = GA total, équipes, matchs) écrits noir sur
-# blanc dans les commentaires ci-dessus (source FootyStats), ce qui permet
-# de recalculer GA_REFERENCE = GF_total / (matchs-équipe totaux) sans
-# deviner. Vérifié : GF_total = GA_total pour les 8 (aucune incohérence).
-#
-# Les 19 (correction : 16, voir TRANSITION.md 0.3) championnats calculés
-# via Football-Data.co.uk (Italie, Allemagne, France, Turquie, Espagne,
-# Angleterre, Pays-Bas, Portugal, Grèce, Belgique, Norvège, Suède,
-# Danemark, Russie, Suisse, Pologne) NE SONT PAS restaurés ici : le
-# document de transition confirme la méthode et les saisons utilisées,
-# mais le résultat numérique de ce calcul n'est écrit nulle part de
-# récupérable (ni dans ce fichier, ni dans TRANSITION.md, ni ailleurs dans
-# le dépôt) -- halte délibérée plutôt que d'inventer une valeur. Ces pays
-# retombent donc sur "default" (1.35) comme avant, y COMPRIS plusieurs pays
-# très représentés dans les échecs du 04/09 (France, Allemagne, Pays-Bas,
-# Suisse, Danemark) -- cette restauration partielle ne les corrige pas.
-# Pour les traiter, il faudrait refaire le calcul depuis les CSV
-# Football-Data.co.uk (méthode documentée en 0.3) et écrire le résultat
-# ici, une fois pour toutes, pour ne plus le reperdre à la prochaine
-# régression accidentelle.
-GA_REFERENCE = 1.35
-
-GA_REFERENCE_PAR_LIGUE = {
-    "default": GA_REFERENCE,
-    # FootyStats, saison complète la plus récente -- voir TRANSITION.md 0.3.
-    "Arabie Saoudite": 1.5049,   # 18 équipes x 34 matchs, GF=GA=921
-    "Corée du Sud": 1.2929,      # 12 équipes x 33 matchs, GF=GA=512
-    "Japon": 1.1987,             # 20 équipes x 38 matchs, GF=GA=911
-    "Estonie": 1.5797,           # 182 matchs (364 matchs-équipe), GF=GA=575
-    "Tunisie": 0.8625,           # 240 matchs (480 matchs-équipe), GF=GA=414
-    # Accent variable selon la source (matchendirect peut afficher l'un ou
-    # l'autre) -- les deux clés pointent vers la même valeur pour ne pas
-    # dépendre d'un alias non branché (voir ALIAS_PAYS ci-dessous, jamais
-    # appliqué par get_ga_reference).
-    "Etats-Unis": 1.5083,        # MLS, 30 équipes x 36 matchs (540 matchs), GF=GA=1629
-    "États-Unis": 1.5083,
-    "South Africa": 1.0104,      # 240 matchs (480 matchs-équipe), GF=GA=485 -- clé en anglais volontairement (voir note plus haut)
-    "Chine": 1.6062,             # 240 matchs (480 matchs-équipe), GF=GA=771
-
-    # AJOUT 04/09/2026 (soir, suite) -- Football-Data.co.uk, saison 2025/26
-    # complète, calculé directement depuis les CSV réels (colonnes FTHG/FTAG,
-    # 0 ligne incomplète pour les 10). Nombres de matchs vérifiés identiques
-    # à ceux cités dans le commentaire d'origine (voir TRANSITION.md 0.3) --
-    # Italie 380, Allemagne 306, France 306, Turquie 306, Espagne 380,
-    # Angleterre 380, Pays-Bas 306, Portugal 306, Grèce 236, Belgique 311.
-    # ATTENTION -- ces valeurs sont calculées sur le championnat de PLUS HAUT
-    # NIVEAU de chaque pays (F1/D1/I1/T1/SP1/E0/N1/P1/G1/B1). get_ga_reference
-    # ne distingue que par PAYS, pas par division : un match en 2e division
-    # (ex. "Pays-Bas : Eerste Divisie", "Suisse : Challenge Ligue") utilisera
-    # donc la même valeur que la 1ère division du même pays, ce qui peut être
-    # imprécis si le niveau de buts diffère significativement entre divisions
-    # d'un même pays (pas vérifié).
-    "France": 1.4101,       # Ligue 1, 306 matchs, GF=GA=863
-    "Allemagne": 1.6176,    # Bundesliga, 306 matchs, GF=GA=990
-    "Italie": 1.2132,       # Serie A, 380 matchs, GF=GA=922
-    "Turquie": 1.3268,      # Süper Lig, 306 matchs, GF=GA=812
-    "Espagne": 1.3474,      # La Liga, 380 matchs, GF=GA=1024
-    "Angleterre": 1.375,    # Premier League, 380 matchs, GF=GA=1045
-    "Pays-Bas": 1.5882,     # Eredivisie (1ère division), 306 matchs, GF=GA=972
-    "Portugal": 1.3415,     # Primeira Liga, 306 matchs, GF=GA=821
-    "Grèce": 1.2839,        # Super League, 236 matchs, GF=GA=606
-    "Belgique": 1.3376,     # Pro League (1ère division), 311 matchs, GF=GA=832
-
-    # AJOUT 04/09/2026 (soir, suite finale) -- Football-Data.co.uk "extra
-    # leagues" (football-data.co.uk/new/{code}.csv, colonnes HG/AG/Season,
-    # plusieurs saisons empilées dans le même fichier -- filtré sur la
-    # DERNIÈRE SAISON COMPLÈTE uniquement, jamais 2026/2027 qui est en cours
-    # au moment de ce calcul). 0 ligne incomplète pour les 6. Nombres de
-    # matchs de la saison retenue identiques à ceux déjà cités dans le
-    # commentaire d'origine pour Danemark/Suisse/Pologne/Russie (voir
-    # TRANSITION.md 0.3) -- cohérent avec le même calcul refait ici.
-    # Norvège/Suède : saison CALENDAIRE (mars-décembre), pas août-mai comme
-    # les autres -- dernière complète = 2025 (2026 encore en cours).
-    "Suisse": 1.6447,     # Super League, saison 2025/2026, 228 matchs, GF=GA=750
-    "Norvège": 1.5938,    # Eliteserien, saison 2025 (calendaire), 240 matchs, GF=GA=765
-    "Russie": 1.2688,     # Premier League, saison 2025/2026, 240 matchs, GF=GA=609
-    "Suède": 1.4229,      # Allsvenskan, saison 2025 (calendaire), 240 matchs, GF=GA=683
-    "Danemark": 1.5495,   # Superliga, saison 2025/2026, 192 matchs, GF=GA=595
-    "Pologne": 1.3676,    # Ekstraklasa, saison 2025/2026, 306 matchs, GF=GA=837
-
-    # Restent sur "default" (1.35) -- non calculés/non récupérables :
-    # Écosse (saison trop courte au moment du calcul), Autriche (jamais
-    # traitée). "Europe"/"Monde"/"International" ne peuvent jamais avoir de
-    # valeur par pays (compétitions continentales/mondiales).
+function traduireRaison(raison) {
+  if (!raison) return "raison inconnue";
+  const m = raison.match(/^(domicile|exterieur):\s*(.+)$/);
+  if (m) {
+    const cote = m[1] === "domicile" ? "équipe à domicile" : "équipe à l'extérieur";
+    const code = m[2];
+    if (code.startsWith("aucun_match_joue")) {
+      return `${cote} : aucun match joué cette saison ni la précédente dans cette compétition`;
+    }
+    return `${cote} : ${code}`;
+  }
+  if (raison.startsWith("erreur_technique:")) {
+    return "erreur technique : " + raison.replace("erreur_technique:", "").trim();
+  }
+  return RAISONS_LISIBLES[raison] || raison;
 }
 
-
-def get_ga_reference(pays=None):
-    """Référence défensive du Module 2 v4.3, désormais PAR PAYS quand une
-    valeur réelle calculée est disponible (voir GA_REFERENCE_PAR_LIGUE et
-    TRANSITION.md 0.3) ; retombe sur la constante universelle (1.35) pour
-    tout pays absent du dict -- comportement strictement identique à
-    l'ancien GA_REFERENCE fixe pour ces pays-là, aucune régression."""
-    if pays is None:
-        return GA_REFERENCE_PAR_LIGUE["default"]
-    return GA_REFERENCE_PAR_LIGUE.get(pays, GA_REFERENCE_PAR_LIGUE["default"])
-
-
-# Alias conservés uniquement pour compatibilité des entrées ; ils ne modifient
-# plus la référence défensive fixe.
-ALIAS_PAYS = {
-    "Denmark": "Danemark", "Republic of Korea": "Corée du Sud", "South Korea": "Corée du Sud",
-    "Bundesliga": "Allemagne", "Germany": "Allemagne", "Netherlands": "Pays-Bas",
-    "Spain": "Espagne", "England": "Angleterre", "Italy": "Italie", "Belgium": "Belgique",
-    "Turkey": "Turquie", "Greece": "Grèce", "Russia": "Russie", "Switzerland": "Suisse",
-    "Poland": "Pologne", "Norway": "Norvège", "Sweden": "Suède", "Saudi Arabia": "Arabie Saoudite",
-    "Japan": "Japon", "Estonie": "Estonia", "États-Unis": "Etats-Unis", "USA": "Etats-Unis",
-    "United States": "Etats-Unis", "Afrique du Sud": "South Africa", "Chine": "China",
+function formatPct(x) {
+  const pct = x * 100;
+  // AJOUT 05/09/2026 -- une proba comme 0.9995 à 0.99999 arrondissait à
+  // "100.0%", donnant une fausse impression de certitude absolue alors
+  // que le modèle ne l'affirme jamais vraiment à 100% pile. Plafonné à
+  // 99.9% tant que ce n'est pas EXACTEMENT 1.0.
+  if (pct >= 99.95 && x < 1) return "99.9%";
+  return pct.toFixed(1) + "%";
 }
 
+function construitBlocParisRecommandes(listeB) {
+  if (!listeB || listeB.length === 0) return "";
+  const parisTries = [...listeB].sort((a, b) => b.probabilite_modele - a.probabilite_modele);
+  const pariEnOr = parisTries[0];
+  const lignes = listeB.map((p) => {
+    const estPariEnOr = p === pariEnOr;
+    return `<div class="pari-ligne${estPariEnOr ? " pari-en-or" : ""}">
+      <span class="pari-marche">${p.marche}${estPariEnOr ? " ★ pari en or" : ""}</span>
+      <span class="pari-cote">cote ${p.cote_observee.toFixed(2)}</span>
+      <span class="pari-mise">${(p.mise_pct_bankroll * 100).toFixed(2)}% bankroll</span>
+    </div>`;
+  }).join("");
+  return `<div class="bloc-paris">${lignes}</div>`;
+}
 
-# Bornes défensives -- RÉGRESSION CORRIGÉE (04/09/2026 soir) : ce fichier
-# avait été ramené à 0.70/1.30 (anciennes valeurs Module 2 v4.3), défaisant
-# sans le documenter le correctif du 30/08 qui les avait élargies à 0.55/1.60
-# suite à la saturation observée (41% des modificateurs de défense collés
-# exactement sur l'ancienne borne). Régression confirmée accidentelle par
-# Patrick -- remis à la valeur du 30/08.
-BORNE_MIN_DEFENSE = 0.55
-BORNE_MAX_DEFENSE = 1.60
+function construitBlocRisques(m) {
+  const lignes = [];
+  if (m.coefficients_empiriques === false) {
+    lignes.push("les seuils de ce système n'ont pas encore été validés sur un historique de résultats réels.");
+  }
+  if (m.confiance === "FAIBLE") {
+    lignes.push(`confiance faible -- construit sur ${m.nb_matchs_domicile_utilises} matchs domicile / ${m.nb_matchs_exterieur_utilises} matchs extérieur.`);
+  }
+  if (m.avertissement_cotes || m.avertissement_classement || m.avertissement_h2h) {
+    lignes.push("certaines données contextuelles n'ont pas pu être récupérées -- calcul poursuivi avec les données disponibles.");
+  }
+  if (lignes.length === 0) return "";
+  return `<div class="bloc-risques">
+    <div class="risques-titre">⚠ à lire avant de parier</div>
+    ${lignes.map(l => `<div class="risque-ligne">${l}</div>`).join("")}
+  </div>`;
+}
 
-# K_SHRINKAGE -- RÉGRESSION CORRIGÉE (04/09/2026 soir) : ce fichier avait
-# K_SHRINKAGE=1.0 (aucune correction) ET ajuste_probabilite() qui renvoyait p
-# inchangée -- la fonction existait mais n'était appelée nulle part dans le
-# pipeline, donc le shrinkage n'avait AUCUN effet réel quelle que soit sa
-# valeur. Régression confirmée accidentelle par Patrick.
-#
-# Valeur retenue (0.48) et seuil associé (0.02 ci-dessous) : PAS le calibrage
-# théorique poolé (k=0.254, voir historique de session) -- ce dernier,
-# combiné à FOURCHETTE_COTE_MAX=1.69, rend TOUT pari mathématiquement
-# impossible (même p=1.0 après ce shrinkage ne peut jamais atteindre l'EV
-# minimal à ces cotes -- vérifié par calcul, 0/125 candidats historiques
-# passeraient). k=0.48/seuil=0.02 est le réglage qui maximise le taux de
-# réussite réel sur les 63 paris (probabilité+cote réelle+résultat) qui
-# existent concrètement dans historique_pronostics.json, sous contrainte
-# d'un volume minimum (n=10) pour ne pas friser le pur bruit statistique :
-# 70.0% de réussite réelle contre 57.1% avec l'ancien réglage (k=1.0).
-#
-# CE RÉGLAGE EST PROVISOIRE ET FRAGILE (n=10) -- pas un aboutissement.
-# Le pipeline n'archivait jusqu'ici QUE les marchés qui passaient déjà le
-# filtre EV, plafonnant les données exploitables pour ce calibrage à 63
-# paris au total sur 9 jours. Le correctif d'archivage complet livré en
-# même temps que ce fichier (voir run_pipeline.py, archive TOUS les
-# marchés évalués avec leur cote réelle) doit faire grossir cet échantillon
-# rapidement -- recalculer cette valeur dès que l'échantillon dépasse une
-# quinzaine de paris par palier de k testé (voir calcule_roi.py, qui refait
-# cette recherche de grille automatiquement chaque nuit).
-K_SHRINKAGE = 0.48
+function construitBlocPourquoi(m) {
+  const lam = m.lambda;
+  if (!lam) return "";
+  return `<p class="detail-pourquoi">
+    lambda domicile : ${lam.lambda_home.toFixed(2)} (base ${lam.audit.lambda_home_base.toFixed(2)},
+    ajustement contexte ${(lam.audit.ajustement_home*100).toFixed(1)}%) —
+    lambda extérieur : ${lam.lambda_away.toFixed(2)} (base ${lam.audit.lambda_away_base.toFixed(2)},
+    ajustement contexte ${(lam.audit.ajustement_away*100).toFixed(1)}%).
+  </p>`;
+}
 
-def ajuste_probabilite(p):
-    """Resserre la probabilité modèle vers 0.5 d'un facteur K_SHRINKAGE,
-    pour corriger la surconfiance mesurée du modèle (voir historique de
-    session -- écart constant d'environ 23 points entre le taux de
-    réussite réel et la probabilité annoncée, sur deux échantillons
-    indépendants). Appelée par calcule_ev() et kelly_stake() -- avant le
-    04/09/2026, cette fonction existait mais n'était appelée nulle part,
-    rendant K_SHRINKAGE totalement sans effet quelle que soit sa valeur."""
-    return 0.5 + K_SHRINKAGE * (p - 0.5)
+function construitTableListeA(listeA) {
+  if (!listeA || listeA.length === 0) {
+    return `<p class="detail-vide">aucun marché n'a passé le filtre EV + fourchette de cote.</p>`;
+  }
+  // AJOUT (04/09/2026 soir) -- colonne "proba" de ce tableau de détail
+  // affiche désormais l'ajustée, cohérent avec la colonne "ev" juste à
+  // côté (qui, elle, reflétait déjà la version corrigée malgré son nom
+  // "ev_brut" -- voir run_pipeline.py). Repli sur la brute si absente.
+  const lignes = listeA.map(c => `<tr>
+    <td>${c.marche}</td><td>${c.cote_observee.toFixed(2)}</td>
+    <td>${formatPct(c.probabilite_modele_ajustee ?? c.probabilite_modele)}</td><td>${formatPct(c.ev_brut)}</td>
+  </tr>`).join("");
+  return `<table class="detail-table">
+    <thead><tr><th>marché</th><th>cote</th><th>proba</th><th>ev</th></tr></thead>
+    <tbody>${lignes}</tbody>
+  </table>`;
+}
 
+function construitAutresMarches(marches) {
+  if (!marches) return "";
+  const lignesOU = Object.entries(marches.over_under || {})
+    .sort((a, b) => parseFloat(a[0]) - parseFloat(b[0]))
+    .map(([ligne, p]) => `<div class="detail-marche-ligne">plus de ${ligne} buts : ${formatPct(p.plus)}</div>`)
+    .join("");
+  const autres = [
+    marches.btts ? `<div class="detail-marche-ligne">btts oui : ${formatPct(marches.btts.oui)}</div>` : "",
+    marches.pair_impair ? `<div class="detail-marche-ligne">total pair : ${formatPct(marches.pair_impair.pair)}</div>` : "",
+    marches.cages_inviolees_domicile ? `<div class="detail-marche-ligne">cage inviolée domicile : ${formatPct(marches.cages_inviolees_domicile.oui)}</div>` : "",
+    marches.cages_inviolees_exterieur ? `<div class="detail-marche-ligne">cage inviolée extérieur : ${formatPct(marches.cages_inviolees_exterieur.oui)}</div>` : "",
+  ].join("");
+  return `<div class="detail-autres-marches">
+    <p class="detail-sous-titre">tous les marchés calculés</p>
+    ${lignesOU}${autres}
+  </div>`;
+}
 
-POIDS_FORME = 0.30
-POIDS_CLASSEMENT = 0.20
-POIDS_REPOS = 0.15
-POIDS_ABSENCES = 0.15
-POIDS_DISTANCE = 0.10
-POIDS_H2H = 0.10
-BORNE_RATIO = 0.15  # borne +/- par facteur avant pondération
+function construitDetails(m) {
+  if (!m.traite) return "";
+  return `<details class="details-niveau1">
+    <summary><span class="texte-ferme">voir les détails</span><span class="texte-ouvert">masquer les détails</span></summary>
+    ${construitBlocPourquoi(m)}
+    <p class="detail-sous-titre">marchés évalués avant filtre de corrélation</p>
+    ${construitTableListeA(m.LISTE_A_marches_passant_EV_et_cote)}
+    ${construitAutresMarches(m.marches)}
+  </details>`;
+}
 
-RHO_DIXON_COLES = -0.1
+function construitNiveau3(m) {
+  if (m.verdict_global !== "GO") return "";
+  const listeB = m.LISTE_B_liste_finale_apres_correlation;
+  if (!listeB || listeB.length === 0) return "";
+  const pariEnOr = [...listeB].sort((a, b) => b.probabilite_modele - a.probabilite_modele)[0];
 
-# SEUIL_EV_MIN -- RÉGRESSION CORRIGÉE (04/09/2026 soir) : était retombé à
-# 0.05 (ancienne valeur Module 3 v6.3). Valeur retenue ici (0.02) fait
-# partie du même réglage empirique que K_SHRINKAGE ci-dessus (voir son
-# commentaire) -- les deux ont été recherchés ensemble sur la grille
-# (k, seuil_ev), pas indépendamment. Ne pas changer l'un sans l'autre sans
-# refaire le calcul.
-SEUIL_EV_MIN = 0.02
-FOURCHETTE_COTE_MIN = 1.25
-FOURCHETTE_COTE_MAX = 1.69
-SEUIL_CORRELATION = 0.70
-KELLY_FRACTION = 0.25
-MISE_MAX_PARI = 0.04
-CLUSTER_MAX = 0.10
-NB_PARIS_MAX = 3
-SEUIL_STANDOUT = 0.15
+  const cat = categorieMarche(pariEnOr.marche);
+  const stats = roiDashboardCharge?.par_marche?.[cat];
+  const assezDeRecul = stats && stats.nb_paris >= SEUIL_MIN_PARIS_POUR_TAUX_REEL;
 
-CONFIANCE_LAMBDA_SEUILS = {"FAIBLE": 8, "MOYENNE": 15}  # < 8 = FAIBLE, < 15 = MOYENNE, sinon NORMALE
+  // REFAIT 05/09/2026 -- avant, le badge et l'explication étaient deux
+  // blocs indépendants, chacun avec son propre repli "pas de données" --
+  // sur un pari sans historique de marché ET sans preuve de justification,
+  // ça affichait DEUX phrases vagues qui se répétaient (retour utilisateur :
+  // "incompréhensible, très mal formulé"). Un seul bloc maintenant, un seul
+  // message par situation, texte en couleur principale (pas grisé) pour la
+  // partie qui compte vraiment.
+  let badge;
+  if (assezDeRecul) {
+    badge = `<div class="proba-1">
+      ${stats.taux_reussite_pct.toFixed(1)}%
+      <span class="proba-1-label">de réussite sur les ${stats.nb_paris} derniers paris du type "${cat}" (${stats.nb_gagnes} gagnés) — pari recommandé ici : ${pariEnOr.marche}</span>
+    </div>`;
+  } else {
+    const nb = stats ? stats.nb_paris : 0;
+    badge = `<div class="proba-1 proba-1-insuffisant">
+      pas assez de recul
+      <span class="proba-1-label">seulement ${nb} pari(s) "${pariEnOr.marche}" enregistré(s) jusqu'ici (il en faut au moins ${SEUIL_MIN_PARIS_POUR_TAUX_REEL})</span>
+    </div>`;
+  }
 
-# AJOUT 05/09/2026 -- réutilise le seuil FAIBLE déjà défini ci-dessus plutôt
-# qu'un nouveau chiffre arbitraire : sous ce seuil (confiance FAIBLE), le
-# pari est maintenant bloqué en NO_GO (voir decision_go_nogo), pas juste
-# étiqueté "FAIBLE" en laissant le GO passer quand même comme avant.
-SEUIL_MATCHS_MIN_POUR_GO = CONFIANCE_LAMBDA_SEUILS["FAIBLE"]
+  return `${badge}
+  ${construitBlocJustification(m, pariEnOr)}`;
+}
 
+// AJOUT 04/09/2026 (soir) -- rendu du vrai moteur de justification
+// (moteur_justification.py + adapte_justification.py), qui remplace le
+// résumé technique "cote/ev/confiance" par des faits statistiques réels
+// (fréquences comptées sur l'historique réel, jamais inventées -- voir
+// adapte_justification.py). m.justification est None si le marché
+// recommandé n'a pas de preuve fiable construite pour lui (Handicap, Score
+// exact -- voir en-tête d'adapte_justification.py) ou si le match a été
+// archivé avant ce correctif -- repli sur l'ancien résumé dans ce cas,
+// pour ne jamais laisser un GO sans aucune explication affichée.
+function construitBlocJustification(m, pariEnOr) {
+  const j = m.justification;
+  if (!j || !j.justifications || j.justifications.length === 0) {
+    // REFAIT 05/09/2026 -- l'ancien texte ("pourquoi ce pari : cote X, ev Y,
+    // confiance Z...") était un jargon technique redondant avec le badge
+    // juste au-dessus. Remplacé par une seule ligne factuelle et courte.
+    return `<p class="pourquoi-pari">
+      Cote ${pariEnOr.cote_observee.toFixed(2)} · ${m.nb_matchs_domicile_utilises ?? "?"} matchs domicile
+      et ${m.nb_matchs_exterieur_utilises ?? "?"} matchs extérieur analysés pour ce pronostic.
+    </p>`;
+  }
+  const lignes = j.justifications
+    .map(just => `<li class="justification-ligne">${just.texte}</li>`)
+    .join("");
+  const solidite = j.solidite_donnees
+    ? `<p class="justification-solidite">Basé sur : ${j.solidite_donnees}</p>`
+    : "";
+  return `<div class="bloc-justification">
+    <p class="justification-titre">${j.titre}</p>
+    <ul class="justification-liste">${lignes}</ul>
+    ${solidite}
+  </div>`;
+}
 
-def clamp(x, lo, hi):
-    return max(lo, min(hi, x))
+const SUPABASE_URL = "https://hjrcqodwfjxqcjvjoxzq.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhqcmNxb2R3Zmp4cWNqdmpveHpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgxMTU3NjUsImV4cCI6MjEwMzY5MTc2NX0.rxJ2W-2UI0oQrGAprqnrPJM3WO1HCoYft0ZeS38oZfY";
+const SUPABASE_CONFIGURE = !SUPABASE_URL.includes("TON-PROJET") && !!window.supabase;
+const supabaseClient = SUPABASE_CONFIGURE ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
+const DELAI_ATTENTE_MS = 15000;
+const INTERVALLE_RAFRAICHISSEMENT_MS = 20000;
+const NB_RAFRAICHISSEMENTS_MAX = 15;
 
-# --------------------------------------------------------------------------
-# Étape 3 (Module 2 v4.3) — ratios contextuels. Forme, Absences, Distance
-# ANNULÉS sur décision explicite (25/08) : Forme jamais formalisée sur ce
-# projet, Absences non fiable à scraper sur matchendirect (pas de liste
-# blessés/suspendus confirmée), Distance jamais commencée (géocodage).
-# Seuls Classement et H2H sont calculés. Le garde-fou "donnée absente ->
-# ratio neutre (0.0)" du Module 2 s'applique aux deux -- jamais une erreur,
-# jamais une estimation devinée.
-# --------------------------------------------------------------------------
+function afficheErreur(message) {
+  document.getElementById("maj").textContent = "erreur de chargement : " + message;
+}
 
-def _normalise_texte_ratio(s):
-    import re
-    return re.sub(r"\s+", " ", s or "").strip().lower()
+function meilleurEv(m) {
+  if (m.verdict_global !== "GO") return -Infinity;
+  const listeB = m.LISTE_B_liste_finale_apres_correlation;
+  if (!listeB || listeB.length === 0) return -Infinity;
+  return Math.max(...listeB.map((p) => p.ev_brut));
+}
 
+function trieEtFiltre(matchs) {
+  const copie = [...(matchs || [])];
+  copie.sort((a, b) => {
+    const rangA = a.verdict_global === "GO" ? 0 : (a.traite ? 1 : 2);
+    const rangB = b.verdict_global === "GO" ? 0 : (b.traite ? 1 : 2);
+    if (rangA !== rangB) return rangA - rangB;
+    if (rangA === 0) return meilleurEv(b) - meilleurEv(a);
+    return 0;
+  });
+  const filtreGo = document.getElementById("filtre-go");
+  if (filtreGo && filtreGo.checked) {
+    return copie.filter((m) => m.verdict_global === "GO");
+  }
+  return copie;
+}
 
-def _memes_equipes_ratio(nom1, nom2):
-    n1, n2 = _normalise_texte_ratio(nom1), _normalise_texte_ratio(nom2)
-    return n1 == n2 or n1 in n2 or n2 in n1
+// 03/09/2026 -- extrait de afficheMatchs() pour être réutilisable par la
+// vue "par catégorie" (afficheMatchsGroupe) sans dupliquer le HTML d'une
+// carte. Comportement strictement identique à avant.
+function construitCarteMatch(m) {
+  const div = document.createElement("div");
+  div.className = "match";
 
+  // AJOUT 03/09/2026 -- date exacte + heure sur chaque carte, en plus du
+  // regroupement par onglet (demande de Patrick) : utile notamment en vue
+  // "par catégorie", où les cartes de plusieurs championnats se suivent
+  // sans repère de date visible ailleurs que l'onglet actif.
+  // AJOUT (04/09/2026 soir) -- heureAffichee préfère heure_cameroun
+  // (Africa/Douala) sur m.heure brute (France) -- voir scraper.py. Repli
+  // sur m.heure pour les statuts en direct ("83'", "MT"...), qui n'ont
+  // jamais de heure_cameroun.
+  const heureAffichee = m.heure_cameroun || m.heure || "";
+  const dateAffichee = m.date ? dateLisible(m.date) : "";
+  const dateHeure = dateAffichee
+    ? `${dateAffichee}${heureAffichee ? " à " + heureAffichee : ""}${m.heure_cameroun ? " (heure Cameroun)" : ""}`
+    : "";
 
-def calcule_ratio_classement(classement, nom_equipe, nom_adversaire):
-    """
-    Score_classement = (N-Position)/(N-1)
-    ratio_classement = clamp(Score_propre - Score_adverse, -0.15, 0.15)
-    `classement` : liste renvoyée par recupere_classement_du_match
-    (scraper_details.py), déjà triée par rang (ordre du document = ordre
-    d'affichage du site -- position = index + 1).
-    """
-    N = len(classement)
-    if N <= 1:
-        return 0.0
+  let html = `
+    <div class="teams"><span>${m.domicile}</span><span>${m.score || heureAffichee || ""}</span><span>${m.exterieur}</span></div>
+    <div class="meta">${(m.competition || "").replace(/\s+/g, " ").trim()}${dateHeure ? " — " + dateHeure : ""}</div>
+  `;
 
-    def position_de(nom):
-        for i, ligne in enumerate(classement):
-            if _memes_equipes_ratio(ligne.get("equipe", ""), nom):
-                return i + 1
-        return None
-
-    pos_propre = position_de(nom_equipe)
-    pos_adverse = position_de(nom_adversaire)
-    if pos_propre is None or pos_adverse is None:
-        return 0.0
-
-    score_propre = (N - pos_propre) / (N - 1)
-    score_adverse = (N - pos_adverse) / (N - 1)
-    return clamp(score_propre - score_adverse, -0.15, 0.15)
-
-
-def calcule_ratio_h2h(historique_h2h, nom_equipe, nom_adversaire, max_confrontations=10):
-    """
-    ratio_h2h = clamp((moyenne_propre - moyenne_adverse)/3, -0.15, 0.15)
-    sur les 10 dernières confrontations directes disponibles (ou moins si
-    l'historique est plus court). `historique_h2h` : sortie de
-    recupere_h2h (scraper_details.py), plus récent en premier.
-    """
-    buts_propre, buts_adverse = [], []
-    for m in historique_h2h[:max_confrontations]:
-        if _memes_equipes_ratio(nom_equipe, m.get("domicile_brut", "")):
-            buts_propre.append(m["buts_domicile"])
-            buts_adverse.append(m["buts_exterieur"])
-        elif _memes_equipes_ratio(nom_equipe, m.get("exterieur_brut", "")):
-            buts_propre.append(m["buts_exterieur"])
-            buts_adverse.append(m["buts_domicile"])
-
-    if not buts_propre:
-        return 0.0
-
-    moyenne_propre = sum(buts_propre) / len(buts_propre)
-    moyenne_adverse = sum(buts_adverse) / len(buts_adverse)
-    return clamp((moyenne_propre - moyenne_adverse) / 3, -0.15, 0.15)
-
-
-# --------------------------------------------------------------------------
-# Module 3 v6.3 — Étapes 1, 2, 4, 6 (25/08). Handicap 3 voies (Étape 0) EXCLU
-# sur décision explicite. Rotation continentale EXCLUE. Le dimensionnement
-# Kelly (Étape 7, déjà existant ci-dessus) reste strictement inchangé.
-# --------------------------------------------------------------------------
-
-def correlation_marches(matrice, condition_a, condition_b):
-    """
-    Corrélation de Pearson EXACTE entre deux indicatrices de marché, calculée
-    sur la matrice jointe Poisson/Dixon-Coles déjà produite pour le match --
-    un calcul mécanique déterminé par le modèle lui-même, pas une estimation
-    ni un jugement sémantique. Sert à éviter d'empiler des mises sur des
-    marchés redondants du MÊME match (Étape 4, Module 3 v6.3).
-    """
-    scores = list(matrice.keys())
-    probs = list(matrice.values())
-    a = [1.0 if condition_a(x, y) else 0.0 for (x, y) in scores]
-    b = [1.0 if condition_b(x, y) else 0.0 for (x, y) in scores]
-
-    ea = sum(p*ai for p, ai in zip(probs, a))
-    eb = sum(p*bi for p, bi in zip(probs, b))
-    cov = sum(p*(ai-ea)*(bi-eb) for p, ai, bi in zip(probs, a, b))
-    var_a = sum(p*(ai-ea)**2 for p, ai in zip(probs, a))
-    var_b = sum(p*(bi-eb)**2 for p, bi in zip(probs, b))
-
-    if var_a <= 0 or var_b <= 0:
-        return 0.0
-    return cov / math.sqrt(var_a * var_b)
-
-
-def construit_liste_a(candidats_bruts, seuil_ev=SEUIL_EV_MIN,
-                       cote_min=FOURCHETTE_COTE_MIN, cote_max=FOURCHETTE_COTE_MAX):
-    """
-    Étapes 1-2 Module 3 : plancher EV (5%) puis fourchette de cote
-    (1.25-1.69). `candidats_bruts` : liste de dicts
-    {"marche", "condition" (fn(x,y)->bool), "probabilite_modele", "cote_observee"}.
-    Retourne LISTE_A, triée par EV décroissant. Un candidat sans cote
-    (cote_observee=None) est écarté silencieusement, jamais une erreur.
-    """
-    liste_a = []
-    for c in candidats_bruts:
-        if c.get("cote_observee") is None:
-            continue
-        ev = calcule_ev(c["probabilite_modele"], c["cote_observee"])
-        if ev is None or ev < seuil_ev:
-            continue
-        if not (cote_min <= c["cote_observee"] <= cote_max):
-            continue
-        liste_a.append({**c, "ev_brut": ev})
-    return sorted(liste_a, key=lambda c: c["ev_brut"], reverse=True)
-
-
-def construit_liste_b(liste_a, matrice, seuil_correlation=SEUIL_CORRELATION, nb_max=NB_PARIS_MAX):
-    """
-    Étape 4 Module 3 : filtre de corrélation mécanique. Parcourt LISTE_A
-    (déjà triée par EV décroissant) et exclut tout candidat dont la
-    corrélation avec un marché DÉJÀ retenu dépasse le seuil.
-    """
-    liste_b = []
-    for candidat in liste_a:
-        correle_a_un_retenu = any(
-            abs(correlation_marches(matrice, candidat["condition"], retenu["condition"])) > seuil_correlation
-            for retenu in liste_b
-        )
-        if not correle_a_un_retenu and len(liste_b) < nb_max:
-            liste_b.append(candidat)
-    return liste_b
-
-
-def decision_go_nogo(liste_a, liste_b, nb_marches_evalues,
-                      nb_matchs_domicile_utilises=None, nb_matchs_exterieur_utilises=None):
-    """Étape 6 Module 3 v6.3 : GO si LISTE_B est non vide, sinon NO_GO.
-
-    CORRECTIF 05/09/2026 -- avant, la confiance sur le nombre de matchs
-    était purement descriptive et NE BLOQUAIT JAMAIS un GO (voir ancien
-    commentaire ci-dessous, conservé pour traçabilité) -- un match avec
-    1 seul match domicile ET 1 seul extérieur pouvait obtenir un GO
-    (confirmé en prod : Eldense-Majorque, Segunda Division espagnole,
-    05/09/2026). Ajout d'un vrai veto : sous SEUIL_MATCHS_MIN_POUR_GO
-    matchs utilisés (domicile ET extérieur), NO_GO quel que soit l'EV --
-    l'échantillon est trop petit pour qu'un lambda calculé dessus ait un
-    sens, peu importe à quel point l'EV a l'air bon sur le papier.
-
-    Ancien commentaire (jusqu'au 04/09/2026) : "La confiance sur le nombre
-    de matchs est descriptive uniquement (Étape 5bis) et ne constitue
-    jamais un veto sur la décision."
-    """
-    if (nb_matchs_domicile_utilises is not None and nb_matchs_domicile_utilises < SEUIL_MATCHS_MIN_POUR_GO) or \
-       (nb_matchs_exterieur_utilises is not None and nb_matchs_exterieur_utilises < SEUIL_MATCHS_MIN_POUR_GO):
-        motif = (f"Échantillon insuffisant pour un GO : {nb_matchs_domicile_utilises} match(s) "
-                 f"domicile / {nb_matchs_exterieur_utilises} extérieur utilisés -- minimum "
-                 f"{SEUIL_MATCHS_MIN_POUR_GO} des deux côtés, quel que soit l'EV affiché.")
-        return {"verdict_global": "NO_GO", "motif_no_go": motif}
-    if liste_b:
-        return {"verdict_global": "GO", "motif_no_go": None}
-    if liste_a:
-        motif = f"{len(liste_a)} marché(s) dans la fourchette avec EV suffisant, tous exclus par corrélation"
-    else:
-        motif = (f"{nb_marches_evalues} marché(s) évalués, aucun dans la fourchette "
-                 f"{FOURCHETTE_COTE_MIN}-{FOURCHETTE_COTE_MAX} avec EV>={SEUIL_EV_MIN*100:.0f}%")
-    return {"verdict_global": "NO_GO", "motif_no_go": motif}
-
-
-def confiance_lambda(nb_matchs_utilises: int) -> str:
-    """Étape 5bis — indicateur descriptif, ne modifie aucun calcul."""
-    if nb_matchs_utilises < CONFIANCE_LAMBDA_SEUILS["FAIBLE"]:
-        return "FAIBLE"
-    if nb_matchs_utilises < CONFIANCE_LAMBDA_SEUILS["MOYENNE"]:
-        return "MOYENNE"
-    return "NORMALE"
-
-
-def calcule_lambda(gf_home_domicile, ga_home_domicile, gf_away_exterieur, ga_away_exterieur,
-                    ratios_contextuels_home=None, ratios_contextuels_away=None, pays=None):
-    """
-    Règle N3 — reproduit Étapes 1 à 4 du Module 2 v4.3 à l'identique.
-    ratios_contextuels_* : dict optionnel avec les clés parmi
-        {"forme", "classement", "repos", "absences", "distance", "h2h"}
-        chaque valeur déjà exprimée en ratio relatif à l'adversaire, non bornée.
-    pays : (26/08/2026 -- calibration) nom du pays de la compétition, utilisé
-        pour choisir la bonne valeur dans GA_REFERENCE_PAR_LIGUE. None ->
-        valeur "default" (comportement identique à l'ancien GA_REFERENCE fixe).
-    """
-    ga_reference = get_ga_reference(pays)
-    poids = {
-        "forme": POIDS_FORME, "classement": POIDS_CLASSEMENT, "repos": POIDS_REPOS,
-        "absences": POIDS_ABSENCES, "distance": POIDS_DISTANCE, "h2h": POIDS_H2H,
+  if (!m.traite) {
+    html += `<div class="signal-non-traite">non analysé — ${traduireRaison(m.raison_non_traite)}</div>`;
+  } else {
+    const estGo = m.verdict_global === "GO";
+    html += `<div class="ligne-verdict">
+      <span class="badge ${estGo ? "badge-go" : "badge-nogo"}">${estGo ? "✓ GO" : "✕ NO_GO"}</span>
+    </div>`;
+    html += construitNiveau3(m);
+    if (!estGo && m.motif_no_go) {
+      html += `<div class="motif-no-go">${m.motif_no_go}</div>`;
     }
-
-    def ajustement(ratios):
-        if not ratios:
-            return 0.0
-        num, den = 0.0, 0.0
-        for cle, valeur in ratios.items():
-            if cle not in poids:
-                continue
-            r = clamp(valeur, -BORNE_RATIO, BORNE_RATIO)
-            num += poids[cle] * r
-            den += poids[cle]
-        return num / den if den > 0 else 0.0
-
-    lambda_home_base = gf_home_domicile
-    lambda_away_base = gf_away_exterieur
-
-    modifier_defense_away = clamp(ga_away_exterieur / ga_reference, BORNE_MIN_DEFENSE, BORNE_MAX_DEFENSE)
-    modifier_defense_home = clamp(ga_home_domicile / ga_reference, BORNE_MIN_DEFENSE, BORNE_MAX_DEFENSE)
-
-    lambda_home_prelim = lambda_home_base * modifier_defense_away
-    lambda_away_prelim = lambda_away_base * modifier_defense_home
-
-    ajustement_home = ajustement(ratios_contextuels_home)
-    ajustement_away = ajustement(ratios_contextuels_away)
-
-    lambda_home = lambda_home_prelim * math.exp(ajustement_home)
-    lambda_away = lambda_away_prelim * math.exp(ajustement_away)
-
-    return {
-        "lambda_home": lambda_home,
-        "lambda_away": lambda_away,
-        "audit": {
-            "lambda_home_base": lambda_home_base,
-            "lambda_away_base": lambda_away_base,
-            "modifier_defense_home": modifier_defense_home,
-            "modifier_defense_away": modifier_defense_away,
-            "ajustement_home": ajustement_home,
-            "ajustement_away": ajustement_away,
-        },
+    if (estGo) {
+      html += construitBlocParisRecommandes(m.LISTE_B_liste_finale_apres_correlation);
     }
+    html += construitBlocRisques(m);
+    html += construitDetails(m);
+  }
 
+  div.innerHTML = html;
+  return div;
+}
 
-def _tau_dixon_coles(x, y, lambda_home, lambda_away, rho=RHO_DIXON_COLES):
-    """Correction Dixon-Coles standard sur les 4 cases de score bas."""
-    if x == 0 and y == 0:
-        return 1 - lambda_home * lambda_away * rho
-    if x == 0 and y == 1:
-        return 1 + lambda_home * rho
-    if x == 1 and y == 0:
-        return 1 + lambda_away * rho
-    if x == 1 and y == 1:
-        return 1 - rho
-    return 1.0
+function afficheMatchs(matchs, enTete) {
+  document.getElementById("maj").textContent = enTete;
 
+  const container = document.getElementById("matches");
+  container.className = "grille";
+  container.innerHTML = "";
+  if (!matchs || matchs.length === 0) {
+    container.innerHTML = "<p>aucun résultat pour le moment.</p>";
+    return;
+  }
 
-def matrice_poisson_dixon_coles(lambda_home, lambda_away, max_buts=5):
-    """Règle N6 — tableau P(k,j) pour k,j de 0 à max_buts, agrégé en '5+' au-delà."""
+  matchs.forEach((m) => {
+    container.appendChild(construitCarteMatch(m));
+  });
+}
 
-    def poisson_pmf(k, lam):
-        return (lam ** k) * math.exp(-lam) / math.factorial(k)
+// 03/09/2026 -- vue "par catégorie" : mêmes cartes que afficheMatchs(),
+// mais regroupées sous un en-tête par championnat, sur le même principe
+// que le regroupement déjà utilisé sur l'accueil (index.js). L'ordre
+// GO-d'abord de trieEtFiltre() n'a pas de sens ici (on parcourt par
+// championnat, pas par pertinence) -- tri alphabétique du championnat,
+// puis par heure de coup d'envoi à l'intérieur d'un même championnat.
+function groupeParCompetition(matchs) {
+  const copie = [...matchs];
+  copie.sort((a, b) => {
+    const ca = (a.competition || "").replace(/\s+/g, " ").trim();
+    const cb = (b.competition || "").replace(/\s+/g, " ").trim();
+    if (ca !== cb) return ca.localeCompare(cb, "fr");
+    return (a.heure || "").localeCompare(b.heure || "");
+  });
+  return copie;
+}
 
-    matrice = {}
-    for x in range(max_buts + 1):
-        for y in range(max_buts + 1):
-            p = poisson_pmf(x, lambda_home) * poisson_pmf(y, lambda_away)
-            p *= _tau_dixon_coles(x, y, lambda_home, lambda_away)
-            matrice[(x, y)] = max(p, 0.0)
+function afficheMatchsGroupe(matchs, enTete) {
+  document.getElementById("maj").textContent = enTete;
 
-    total = sum(matrice.values())
-    if total > 0:
-        matrice = {k: v / total for k, v in matrice.items()}
-    return matrice
+  const container = document.getElementById("matches");
+  container.className = "";
+  container.innerHTML = "";
+  if (!matchs || matchs.length === 0) {
+    container.innerHTML = "<p>aucun résultat pour le moment.</p>";
+    return;
+  }
 
+  const groupes = groupeParCompetition(matchs);
+  let competitionCourante = null;
+  let sousConteneur = null;
 
-def probabilite_marche(matrice, condition):
-    """condition: fonction(x, y) -> bool. Somme les cases correspondantes."""
-    return sum(p for (x, y), p in matrice.items() if condition(x, y))
-
-
-def probabilite_double_chance(matrice):
-    p1 = probabilite_marche(matrice, lambda x, y: x > y)
-    pn = probabilite_marche(matrice, lambda x, y: x == y)
-    p2 = probabilite_marche(matrice, lambda x, y: x < y)
-    return {"1X": p1 + pn, "12": p1 + p2, "X2": pn + p2}
-
-
-def probabilite_over_under(matrice, ligne, equipe=None):
-    """
-    equipe=None -> total buts du match. equipe='home'/'away' -> buts d'une
-    seule équipe. ligne peut être un demi-entier (0.5, 1.5, 2.5...) ou un
-    entier (traité comme ligne asiatique simple, sans push géré ici).
-    """
-    if equipe == "home":
-        cond_total = lambda x, y: x
-    elif equipe == "away":
-        cond_total = lambda x, y: y
-    else:
-        cond_total = lambda x, y: x + y
-
-    plus = sum(p for (x, y), p in matrice.items() if cond_total(x, y) > ligne)
-    moins = sum(p for (x, y), p in matrice.items() if cond_total(x, y) < ligne)
-    egal = sum(p for (x, y), p in matrice.items() if cond_total(x, y) == ligne)
-    return {"plus": plus, "moins": moins, "push": egal}
-
-
-def probabilite_btts(matrice):
-    oui = sum(p for (x, y), p in matrice.items() if x > 0 and y > 0)
-    return {"oui": oui, "non": 1 - oui}
-
-
-def probabilite_handicap_2choix(matrice, ligne_domicile):
-    """
-    ligne_domicile : handicap appliqué à l'équipe à domicile, ex: -1.5 signifie
-    "domicile doit gagner par 2 buts d'écart ou plus pour couvrir".
-    Lignes demi-entières uniquement (pas de push possible).
-    """
-    if ligne_domicile == int(ligne_domicile):
-        raise ValueError("probabilite_handicap_2choix ne gère que les lignes demi-entières (pas de push). "
-                          "Pour les lignes entières, saisie manuelle requise (Handicap à 3 choix).")
-    domicile_couvre = sum(
-        p for (x, y), p in matrice.items() if (x + ligne_domicile) > y
-    )
-    return {"domicile": domicile_couvre, "exterieur": 1 - domicile_couvre}
-
-
-def probabilite_score_exact(matrice, x, y):
-    return matrice.get((x, y), 0.0)
-
-
-def probabilite_nombre_exact_buts(matrice, n):
-    """Probabilité que le total de buts soit EXACTEMENT n (pas un cumul)."""
-    return sum(p for (bx, by), p in matrice.items() if bx + by == n)
-
-
-def probabilite_nombre_buts_ou_plus(matrice, n):
-    """Probabilité que le total de buts soit >= n. Sert uniquement pour la
-    queue de distribution (ex: '6+'), jamais pour une valeur isolée."""
-    return sum(p for (bx, by), p in matrice.items() if bx + by >= n)
-
-
-def probabilite_pair_impair(matrice):
-    pair = sum(p for (x, y), p in matrice.items() if (x + y) % 2 == 0)
-    return {"pair": pair, "impair": 1 - pair}
-
-
-def probabilite_cages_inviolees(matrice, equipe):
-    """P(l'adversaire de `equipe` ne marque pas) — 'clean sheet' pour `equipe`."""
-    if equipe == "home":
-        oui = sum(p for (x, y), p in matrice.items() if y == 0)
-    else:
-        oui = sum(p for (x, y), p in matrice.items() if x == 0)
-    return {"oui": oui, "non": 1 - oui}
-
-
-def construit_probabilites_marches(matrice, lignes_ou=(0.5, 1.5, 2.5, 3.5, 4.5),
-                                    lignes_handicap=(-2.5, -1.5, -0.5, 0.5, 1.5, 2.5)):
-    """
-    Construit le dictionnaire complet des probabilités modèle pour tous les
-    marchés v1 (buts uniquement). Clés stables, consommées telles quelles par
-    le frontend (script.js).
-    """
-    marches = {
-        "1x2": {
-            "1": probabilite_marche(matrice, lambda x, y: x > y),
-            "X": probabilite_marche(matrice, lambda x, y: x == y),
-            "2": probabilite_marche(matrice, lambda x, y: x < y),
-        },
-        "double_chance": probabilite_double_chance(matrice),
-        "btts": probabilite_btts(matrice),
-        "pair_impair": probabilite_pair_impair(matrice),
-        "cages_inviolees_domicile": probabilite_cages_inviolees(matrice, "home"),
-        "cages_inviolees_exterieur": probabilite_cages_inviolees(matrice, "away"),
-        "over_under": {},
-        "over_under_domicile": {},
-        "over_under_exterieur": {},
-        "handicap": {},
-        "score_exact": {},
-        "nombre_exact_buts": {},
+  groupes.forEach((m) => {
+    const nomCompetition = (m.competition || "compétition inconnue").replace(/\s+/g, " ").trim();
+    if (nomCompetition !== competitionCourante) {
+      competitionCourante = nomCompetition;
+      const entete = document.createElement("div");
+      entete.className = "entete-categorie";
+      entete.textContent = nomCompetition;
+      container.appendChild(entete);
+      sousConteneur = document.createElement("div");
+      sousConteneur.className = "grille";
+      container.appendChild(sousConteneur);
     }
+    sousConteneur.appendChild(construitCarteMatch(m));
+  });
+}
 
-    for ligne in lignes_ou:
-        marches["over_under"][str(ligne)] = probabilite_over_under(matrice, ligne)
-        marches["over_under_domicile"][str(ligne)] = probabilite_over_under(matrice, ligne, "home")
-        marches["over_under_exterieur"][str(ligne)] = probabilite_over_under(matrice, ligne, "away")
+let jetonAffichage = 0;
+let dernierEnsembleBrut = [];
+let dernierEnTeteBase = "";
+let modeAffichage = "liste"; // 03/09/2026 -- "liste" ou "categorie"
 
-    for ligne in lignes_handicap:
-        marches["handicap"][str(ligne)] = probabilite_handicap_2choix(matrice, ligne)
+function reaffiche() {
+  const trie = trieEtFiltre(dernierEnsembleBrut);
+  const nbGo = dernierEnsembleBrut.filter((m) => m.verdict_global === "GO").length;
+  const enTete = `${dernierEnTeteBase} — ${nbGo} GO`;
+  if (modeAffichage === "categorie") {
+    afficheMatchsGroupe(trie, enTete);
+  } else {
+    afficheMatchs(trie, enTete);
+  }
+}
 
-    for x in range(6):
-        for y in range(6):
-            marches["score_exact"][f"{x}-{y}"] = probabilite_score_exact(matrice, x, y)
+const FORMAT_DATE_ONGLET = { weekday: "short", day: "numeric", month: "short" };
 
-    for n in range(6):
-        marches["nombre_exact_buts"][str(n)] = probabilite_nombre_exact_buts(matrice, n)
-    marches["nombre_exact_buts"]["6+"] = probabilite_nombre_buts_ou_plus(matrice, 6)
+function dateIsoDansNJours(n) {
+  // CORRECTIF FUSEAU HORAIRE 04/09/2026 -- toISOString() convertit en UTC
+  // avant de lire la date, ce qui décale la date locale française de -1
+  // jour entre 22h00 et 00h00 UTC (0h-2h heure française l'été). Le
+  // pipeline calcule désormais "aujourd'hui" en heure française
+  // (aujourdhui_france() côté serveur, precalcul.py) -- ce front-end doit
+  // faire pareil, sinon les onglets afficheraient parfois un jour
+  // différent de celui réellement servi par precalcul_leger.json.
+  const fmt = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Paris" });
+  const [an, mois, jour] = fmt.format(new Date()).split("-").map(Number);
+  const d = new Date(Date.UTC(an, mois - 1, jour));
+  d.setUTCDate(d.getUTCDate() + n);
+  return d.toISOString().slice(0, 10);
+}
 
-    return marches
+function dateLisible(dateIso) {
+  const [an, mois, jour] = dateIso.split("-").map(Number);
+  return new Date(an, mois - 1, jour).toLocaleDateString("fr-FR", FORMAT_DATE_ONGLET);
+}
 
+// AJOUT 03/09/2026 -- j0 (aujourd'hui) rejoint la fenêtre affichée, en plus
+// de j1/j2/j3 -- voir precalcul.py (charge_matchs_fenetre) pour le
+// changement côté données : ce fichier n'avait rien à changer sur le fond,
+// DATES_FENETRE et le tableau d'onglets ci-dessous étaient déjà génériques.
+const DATES_FENETRE = {
+  j0: dateIsoDansNJours(0),
+  j1: dateIsoDansNJours(1),
+  j2: dateIsoDansNJours(2),
+  j3: dateIsoDansNJours(3),
+};
 
-def calcule_ev(probabilite_modele, cote_observee):
-    """Règle N8 — EV = (cote x probabilité modèle AJUSTÉE) - 1.
+// Libellé affiché sur le bouton et dans l'en-tête -- "Aujourd'hui" est plus
+// lisible que "J0" pour l'utilisateur, contrairement à j1/j2/j3 qui restent
+// tels quels.
+const LIBELLE_ONGLET = { j0: "Aujourd'hui", j1: "J+1", j2: "J+2", j3: "J+3" };
 
-    CORRECTIF (04/09/2026 soir) : applique désormais ajuste_probabilite()
-    en interne avant le calcul. Avant ce correctif, cette fonction utilisait
-    la probabilité brute du modèle -- ajuste_probabilite() existait dans ce
-    même fichier mais n'était appelée nulle part, rendant K_SHRINKAGE sans
-    aucun effet réel. probabilite_modele reçu ici reste la valeur BRUTE
-    (celle affichée telle quelle ailleurs, ex. LISTE_A/LISTE_B) -- c'est ce
-    point d'entrée qui resserre, pas l'appelant.
-    """
-    if cote_observee is None:
-        return None
-    return (cote_observee * ajuste_probabilite(probabilite_modele)) - 1
+let precalculCharge = null;
 
+// AJOUT 05/09/2026 -- vraies performances mesurées (roi_dashboard.json,
+// calcule_roi.py), pour remplacer le badge de probabilité du MODÈLE
+// (jamais fiable -- voir TRANSITION.md : gagnants 0.84 vs perdants 0.79
+// de probabilité annoncée, à peine 5 points d'écart) par le vrai taux de
+// réussite mesuré sur les paris déjà résolus. Chargé une fois, en
+// parallèle du reste -- un échec ici ne doit jamais bloquer l'affichage
+// des pronostics, juste faire retomber sur "pas encore assez de données".
+let roiDashboardCharge = null;
+async function chargeRoiDashboard() {
+  try {
+    const r = await fetch("roi_dashboard.json?_=" + Date.now());
+    if (!r.ok) return;
+    roiDashboardCharge = await r.json();
+    reaffiche();
+  } catch (err) {
+    console.error("roi_dashboard.json indisponible -- vrais taux masqués, sans impact sur le reste :", err);
+  }
+}
 
-def kelly_stake(probabilite_modele, cote_observee):
-    """Étape 7 Module 3 v6.3 — Kelly fractionné à 25%, plafond 4%.
+// Port JS EXACT de categorie_marche() (calcule_roi.py) -- ne jamais avoir
+// deux définitions différentes du même regroupement de marché dans le
+// dépôt (même piège que celui déjà évité dans adapte_justification.py).
+function categorieMarche(marche) {
+  if (!marche) return "inconnu";
+  const prefixe = marche.split(" - ")[0];
+  const SANS_LIGNE_VARIABLE = ["1X2", "Double chance", "BTTS", "Total buts", "Cage inviolée", "Encaisse au moins 1 but"];
+  if (SANS_LIGNE_VARIABLE.includes(prefixe)) return prefixe;
+  return prefixe.replace(/\d+(\.\d+)?/g, "N").trim();
+}
 
-    CORRECTIF (04/09/2026 soir) : la probabilité utilisée pour la mise
-    Kelly elle-même est maintenant celle resserrée par ajuste_probabilite()
-    -- avant ce correctif, le commentaire ici affirmait explicitement
-    l'inverse ("exactement celle du modèle, sans shrinkage"), ce qui était
-    de toute façon cohérent avec le reste du fichier à l'époque (shrinkage
-    non branché), mais aurait été une incohérence dangereuse si seul
-    calcule_ev() avait été corrigé sans toucher ce calcul : le filtre EV
-    aurait jugé le pari sur la probabilité honnête, puis la mise aurait été
-    dimensionnée sur la probabilité brute surconfiante -- sur-mise
-    systématique par rapport à l'edge réel.
-    """
-    if cote_observee is None:
-        return 0.0
-    ev = calcule_ev(probabilite_modele, cote_observee)
-    if ev is None or ev < SEUIL_EV_MIN:
-        return 0.0
-    if not (FOURCHETTE_COTE_MIN <= cote_observee <= FOURCHETTE_COTE_MAX):
-        return 0.0
+// Nombre minimum de paris résolus avant d'afficher un taux -- sous ce
+// seuil, un "100%" sur 1 ou 2 paris serait aussi trompeur que le badge de
+// probabilité qu'on retire. Pas de valeur "scientifique" ici, juste évite
+// l'exemple le plus flagrant (voir TRANSITION.md, fragilité déjà démontrée
+// sur de petits échantillons lors du calibrage K_SHRINKAGE).
+const SEUIL_MIN_PARIS_POUR_TAUX_REEL = 15;
 
-    p_adj = ajuste_probabilite(probabilite_modele)
-    b = cote_observee - 1
-    q = 1 - p_adj
-    f_kelly = (b * p_adj - q) / b if b > 0 else 0.0
-    if f_kelly <= 0:
-        return 0.0
+// CHANGÉ 02/09/2026 -- fetch precalcul_leger.json (sans marches/lambda) au
+// lieu de precalcul.json (9,2 Mo au 02/09) -- voir precalcul.py pour le détail.
+async function chargePrecalcul() {
+  if (precalculCharge) return precalculCharge;
+  const r = await fetch("precalcul_leger.json?_=" + Date.now());
+  if (!r.ok) throw new Error(`precalcul_leger.json introuvable (status ${r.status})`);
+  precalculCharge = await r.json();
+  return precalculCharge;
+}
 
-    mise = f_kelly * KELLY_FRACTION
-    return min(mise, MISE_MAX_PARI)
+async function afficheOngletJour(cle, monJeton) {
+  try {
+    const data = await chargePrecalcul();
+    if (monJeton !== jetonAffichage) return;
+    const dateIso = DATES_FENETRE[cle];
+    const signaux = (data.signaux || []).filter((s) => s.date === dateIso);
+    const nbReady = signaux.filter((s) => s.traite).length;
+    dernierEnsembleBrut = signaux;
+    dernierEnTeteBase = `${LIBELLE_ONGLET[cle] || cle.toUpperCase()} — ${dateLisible(dateIso)} — ${nbReady}/${signaux.length} match(s) analysé(s) (mis à jour : ${data.genere_le || "inconnu"})`;
+    reaffiche();
+  } catch (err) {
+    if (monJeton !== jetonAffichage) return;
+    afficheErreur(err.message);
+    console.error(err);
+  }
+}
 
+async function chargeDepuisDataJson(monJeton) {
+  const delaiDepasse = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error("délai dépassé (15s) -- vérifie ta connexion, ou que data.json existe bien à la racine du site.")), DELAI_ATTENTE_MS)
+  );
+  const r = await Promise.race([fetch("data.json?_=" + Date.now()), delaiDepasse]);
+  const data = await r.json();
+  if (monJeton !== jetonAffichage) return data.genere_le || null;
+  dernierEnsembleBrut = data.matchs || [];
+  dernierEnTeteBase = "mis à jour : " + (data.genere_le || "inconnu") + " — " + dernierEnsembleBrut.length + " match(s) traité(s)";
+  reaffiche();
+  return data.genere_le || null;
+}
 
-def est_standout(probabilite_modele, cote_observee):
-    """
-    Critère 'Pari en or' (Module 4) — EV >= SEUIL_STANDOUT.
-    CORRECTIF (25/08) : doit aussi respecter la fourchette de cote
-    exploitable (FOURCHETTE_COTE_MIN/MAX), comme kelly_stake(). Avant ce
-    correctif, un match avec un fort EV mais une cote hors fourchette
-    (ex. 3.80, un outsider) était marqué "standout" alors qu'aucune mise
-    n'est jamais recommandée dessus (mise_kelly = 0) — badge trompeur sur
-    le site, découvert dès que cote_1 a commencé à circuler réellement.
-    """
-    if cote_observee is None:
-        return False
-    if not (FOURCHETTE_COTE_MIN <= cote_observee <= FOURCHETTE_COTE_MAX):
-        return False
-    ev = calcule_ev(probabilite_modele, cote_observee)
-    return ev is not None and ev >= SEUIL_STANDOUT
+async function chargeDernierResultat(monJeton) {
+  if (!SUPABASE_CONFIGURE) {
+    return await chargeDepuisDataJson(monJeton);
+  }
 
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (monJeton !== jetonAffichage) return null;
+  if (!session) {
+    dernierEnsembleBrut = [];
+    dernierEnTeteBase = "aucun panier envoyé depuis cet appareil pour le moment.";
+    reaffiche();
+    return null;
+  }
 
-def plafonner_cluster(paris, plafond_cluster=CLUSTER_MAX, nb_max=NB_PARIS_MAX):
-    """
-    Filtre simple : garde au plus NB_PARIS_MAX paris (les plus forts EV en premier),
-    et plafonne la somme des mises à plafond_cluster.
-    """
-    paris_tries = sorted(paris, key=lambda p: p.get("ev", 0), reverse=True)[:nb_max]
-    total = sum(p.get("mise", 0) for p in paris_tries)
-    if total > plafond_cluster and total > 0:
-        facteur = plafond_cluster / total
-        for p in paris_tries:
-            p["mise"] = p["mise"] * facteur
-    return paris_tries
+  const delaiDepasse = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error("délai dépassé (15s) -- vérifie ta connexion.")), DELAI_ATTENTE_MS)
+  );
+
+  const requete = supabaseClient
+    .from("resultats_pipeline")
+    .select("data, created_at")
+    .eq("user_id", session.user.id)
+    .order("created_at", { ascending: false })
+    .limit(1);
+
+  const { data: lignes, error } = await Promise.race([requete, delaiDepasse]);
+  if (monJeton !== jetonAffichage) return null;
+  if (error) throw new Error(error.message);
+
+  if (!lignes || lignes.length === 0) {
+    dernierEnsembleBrut = [];
+    dernierEnTeteBase = "aucun résultat pour le moment -- l'analyse est peut-être encore en cours.";
+    reaffiche();
+    return null;
+  }
+
+  const ligne = lignes[0];
+  dernierEnsembleBrut = ligne.data || [];
+  dernierEnTeteBase = "mis à jour : " + ligne.created_at + " — " + dernierEnsembleBrut.length + " match(s) traité(s)";
+  reaffiche();
+  return ligne.created_at;
+}
+
+let compteurRafraichissements = 0;
+let ongletActif = "j0";
+
+async function activeOngletPronostics(cle) {
+  ongletActif = cle;
+  jetonAffichage += 1;
+  const monJeton = jetonAffichage;
+
+  ["j0", "j1", "j2", "j3", "panier"].forEach((c) => {
+    const bouton = document.getElementById("onglet-" + c);
+    if (bouton) bouton.classList.toggle("actif", c === cle);
+  });
+
+  compteurRafraichissements = 0;
+  if (cle === "panier") {
+    await chargeDernierResultat(monJeton);
+    if (SUPABASE_CONFIGURE) setTimeout(boucleRafraichissement, INTERVALLE_RAFRAICHISSEMENT_MS);
+  } else {
+    await afficheOngletJour(cle, monJeton);
+  }
+}
+
+async function boucleRafraichissement() {
+  if (ongletActif !== "panier" || !SUPABASE_CONFIGURE) return;
+  const monJeton = jetonAffichage;
+  try {
+    await chargeDernierResultat(monJeton);
+  } catch (err) {
+    if (monJeton !== jetonAffichage) return;
+    afficheErreur(err.message);
+    console.error(err);
+    return;
+  }
+  compteurRafraichissements += 1;
+  if (compteurRafraichissements < NB_RAFRAICHISSEMENTS_MAX && monJeton === jetonAffichage) {
+    setTimeout(boucleRafraichissement, INTERVALLE_RAFRAICHISSEMENT_MS);
+  }
+}
+
+["j0", "j1", "j2", "j3", "panier"].forEach((cle) => {
+  const bouton = document.getElementById("onglet-" + cle);
+  if (!bouton) return;
+  if (cle !== "panier") {
+    bouton.textContent = `${LIBELLE_ONGLET[cle] || cle.toUpperCase()} — ${dateLisible(DATES_FENETRE[cle])}`;
+  }
+  bouton.addEventListener("click", () => activeOngletPronostics(cle));
+});
+
+const filtreGo = document.getElementById("filtre-go");
+if (filtreGo) filtreGo.addEventListener("change", reaffiche);
+
+// 03/09/2026 -- bascule liste complète / par catégorie. Ne recharge rien
+// depuis le réseau : on retrie/regroupe l'ensemble déjà en mémoire
+// (dernierEnsembleBrut), exactement comme le fait déjà le filtre GO.
+["liste", "categorie"].forEach((mode) => {
+  const bouton = document.getElementById("mode-" + mode);
+  if (!bouton) return;
+  bouton.addEventListener("click", () => {
+    if (modeAffichage === mode) return;
+    modeAffichage = mode;
+    ["liste", "categorie"].forEach((m) => {
+      const b = document.getElementById("mode-" + m);
+      if (b) b.classList.toggle("actif", m === mode);
+    });
+    reaffiche();
+  });
+});
+
+activeOngletPronostics("j0");
+chargeRoiDashboard();
