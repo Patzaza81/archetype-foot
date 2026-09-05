@@ -134,30 +134,32 @@ function construitNiveau3(m) {
   if (!listeB || listeB.length === 0) return "";
   const pariEnOr = [...listeB].sort((a, b) => b.probabilite_modele - a.probabilite_modele)[0];
 
-  // SUPPRIMÉ 05/09/2026 -- l'ancien badge affichait la probabilité du
-  // MODÈLE (brute ou ajustée), jamais fiable comme indicateur de vraie
-  // chance de succès (voir TRANSITION.md : gagnants/perdants quasi
-  // identiques en probabilité annoncée). Remplacé par le vrai taux de
-  // réussite mesuré sur les paris déjà résolus pour ce type de marché
-  // (roi_dashboard.json, calcule_roi.py -- même catégorisation exacte,
-  // voir categorieMarche() ci-dessus).
   const cat = categorieMarche(pariEnOr.marche);
   const stats = roiDashboardCharge?.par_marche?.[cat];
-  let blocTaux;
-  if (stats && stats.nb_paris >= SEUIL_MIN_PARIS_POUR_TAUX_REEL) {
-    blocTaux = `<div class="proba-1">
+  const assezDeRecul = stats && stats.nb_paris >= SEUIL_MIN_PARIS_POUR_TAUX_REEL;
+
+  // REFAIT 05/09/2026 -- avant, le badge et l'explication étaient deux
+  // blocs indépendants, chacun avec son propre repli "pas de données" --
+  // sur un pari sans historique de marché ET sans preuve de justification,
+  // ça affichait DEUX phrases vagues qui se répétaient (retour utilisateur :
+  // "incompréhensible, très mal formulé"). Un seul bloc maintenant, un seul
+  // message par situation, texte en couleur principale (pas grisé) pour la
+  // partie qui compte vraiment.
+  let badge;
+  if (assezDeRecul) {
+    badge = `<div class="proba-1">
       ${stats.taux_reussite_pct.toFixed(1)}%
-      <span class="proba-1-label">taux de réussite RÉEL mesuré — ${pariEnOr.marche} (${stats.nb_gagnes}/${stats.nb_paris} paris résolus)</span>
+      <span class="proba-1-label">de réussite sur les ${stats.nb_paris} derniers paris "${pariEnOr.marche}" (${stats.nb_gagnes} gagnés)</span>
     </div>`;
   } else {
     const nb = stats ? stats.nb_paris : 0;
-    blocTaux = `<div class="proba-1 proba-1-insuffisant">
-      pas encore assez de données
-      <span class="proba-1-label">${pariEnOr.marche} — seulement ${nb} pari(s) résolu(s) jusqu'ici (minimum ${SEUIL_MIN_PARIS_POUR_TAUX_REEL})</span>
+    badge = `<div class="proba-1 proba-1-insuffisant">
+      pas assez de recul
+      <span class="proba-1-label">seulement ${nb} pari(s) "${pariEnOr.marche}" enregistré(s) jusqu'ici (il en faut au moins ${SEUIL_MIN_PARIS_POUR_TAUX_REEL})</span>
     </div>`;
   }
 
-  return `${blocTaux}
+  return `${badge}
   ${construitBlocJustification(m, pariEnOr)}`;
 }
 
@@ -173,17 +175,19 @@ function construitNiveau3(m) {
 function construitBlocJustification(m, pariEnOr) {
   const j = m.justification;
   if (!j || !j.justifications || j.justifications.length === 0) {
+    // REFAIT 05/09/2026 -- l'ancien texte ("pourquoi ce pari : cote X, ev Y,
+    // confiance Z...") était un jargon technique redondant avec le badge
+    // juste au-dessus. Remplacé par une seule ligne factuelle et courte.
     return `<p class="pourquoi-pari">
-      pourquoi ce pari : cote ${pariEnOr.cote_observee.toFixed(2)}, ev ${formatPct(pariEnOr.ev_brut)},
-      confiance ${m.confiance || "n/d"} (${m.nb_matchs_domicile_utilises ?? "?"} matchs domicile /
-      ${m.nb_matchs_exterieur_utilises ?? "?"} matchs extérieur utilisés).
+      Cote ${pariEnOr.cote_observee.toFixed(2)} · ${m.nb_matchs_domicile_utilises ?? "?"} matchs domicile
+      et ${m.nb_matchs_exterieur_utilises ?? "?"} matchs extérieur analysés pour ce pronostic.
     </p>`;
   }
   const lignes = j.justifications
     .map(just => `<li class="justification-ligne">${just.texte}</li>`)
     .join("");
   const solidite = j.solidite_donnees
-    ? `<p class="justification-solidite">${j.solidite_donnees}</p>`
+    ? `<p class="justification-solidite">Basé sur : ${j.solidite_donnees}</p>`
     : "";
   return `<div class="bloc-justification">
     <p class="justification-titre">${j.titre}</p>
