@@ -1,11 +1,11 @@
 {
   "global": {
-    "nb_paris": 105,
+    "nb_paris": 106,
     "nb_gagnes": 65,
-    "taux_reussite_pct": 61.9,
-    "mise_totale_pct_bankroll": 4.04,
-    "gain_net_pct_bankroll": -0.46,
-    "roi_pct": -11.4
+    "taux_reussite_pct": 61.3,
+    "mise_totale_pct_bankroll": 4.08,
+    "gain_net_pct_bankroll": -0.5,
+    "roi_pct": -12.3
   },
   "par_marche": {
     "1X2": {
@@ -17,12 +17,12 @@
       "roi_pct": -18.9
     },
     "BTTS": {
-      "nb_paris": 8,
+      "nb_paris": 9,
       "nb_gagnes": 4,
-      "taux_reussite_pct": 50.0,
-      "mise_totale_pct_bankroll": 0.28,
-      "gain_net_pct_bankroll": -0.07,
-      "roi_pct": -25.3
+      "taux_reussite_pct": 44.4,
+      "mise_totale_pct_bankroll": 0.32,
+      "gain_net_pct_bankroll": -0.11,
+      "roi_pct": -34.5
     },
     "Double chance": {
       "nb_paris": 25,
@@ -75,12 +75,12 @@
       "roi_pct": 8.5
     },
     "MOYENNE": {
-      "nb_paris": 82,
+      "nb_paris": 83,
       "nb_gagnes": 48,
-      "taux_reussite_pct": 58.5,
-      "mise_totale_pct_bankroll": 3.16,
-      "gain_net_pct_bankroll": -0.53,
-      "roi_pct": -16.9
+      "taux_reussite_pct": 57.8,
+      "mise_totale_pct_bankroll": 3.2,
+      "gain_net_pct_bankroll": -0.57,
+      "roi_pct": -18.0
     }
   },
   "detail": [
@@ -1553,6 +1553,20 @@
       "confiance": "MOYENNE",
       "gagne": false,
       "gain_pct_bankroll": -0.04
+    },
+    {
+      "date": "2026-09-04",
+      "domicile": "FC Juarez",
+      "exterieur": "Pachuca CF",
+      "competition": "Mexique :\n                        Liga MX Ouverture",
+      "score": "0-2",
+      "marche": "BTTS - oui",
+      "cote_observee": 1.64,
+      "probabilite_modele": 0.6741191132597292,
+      "mise_pct_bankroll": 0.04,
+      "confiance": "MOYENNE",
+      "gagne": false,
+      "gain_pct_bankroll": -0.04
     }
   ],
   "calibrage_k_shrinkage": {
@@ -1565,5 +1579,5 @@
       "n_min_50": null
     }
   },
-  "genere_le": "2026-09-05 04:12 UTC"
+  "genere_le": "2026-09-05 05:36 UTC"
 }
