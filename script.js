@@ -27,7 +27,15 @@ function traduireRaison(raison) {
   return RAISONS_LISIBLES[raison] || raison;
 }
 
-function formatPct(x) { return (x * 100).toFixed(1) + "%"; }
+function formatPct(x) {
+  const pct = x * 100;
+  // AJOUT 05/09/2026 -- une proba comme 0.9995 à 0.99999 arrondissait à
+  // "100.0%", donnant une fausse impression de certitude absolue alors
+  // que le modèle ne l'affirme jamais vraiment à 100% pile. Plafonné à
+  // 99.9% tant que ce n'est pas EXACTEMENT 1.0.
+  if (pct >= 99.95 && x < 1) return "99.9%";
+  return pct.toFixed(1) + "%";
+}
 
 function construitBlocParisRecommandes(listeB) {
   if (!listeB || listeB.length === 0) return "";
