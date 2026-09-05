@@ -329,14 +329,14 @@ main.grille {
   font-weight: 700;
 }
 .proba-1-label {
-  color: var(--text-secondary);
+  color: var(--text);
   font-size: 13px;
   font-weight: 400;
   display: block;
 }
 
 .proba-1-insuffisant {
-  color: var(--text-secondary);
+  color: var(--text);
   font-size: 16px;
   font-weight: 600;
 }
@@ -529,7 +529,7 @@ input[type="checkbox"]:checked::after {
 /* Justification du pari retenu (25/08) -- repli pour matchs archivés avant
    le moteur de justification (04/09 soir) */
 .pourquoi-pari {
-  color: var(--text-secondary);
+  color: var(--text);
   font-size: 13px;
   margin: 6px 0 0;
   line-height: 1.5;
@@ -545,7 +545,7 @@ input[type="checkbox"]:checked::after {
   border-left: 3px solid var(--turquoise);
   border-radius: 6px;
   font-size: 13px;
-  color: var(--text-secondary);
+  color: var(--text);
 }
 .justification-titre { color: var(--turquoise); font-weight: 700; margin-bottom: 4px; }
 .justification-liste { margin: 0; padding-left: 18px; }
