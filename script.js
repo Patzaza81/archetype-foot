@@ -149,7 +149,7 @@ function construitNiveau3(m) {
   if (assezDeRecul) {
     badge = `<div class="proba-1">
       ${stats.taux_reussite_pct.toFixed(1)}%
-      <span class="proba-1-label">de réussite sur les ${stats.nb_paris} derniers paris "${pariEnOr.marche}" (${stats.nb_gagnes} gagnés)</span>
+      <span class="proba-1-label">de réussite sur les ${stats.nb_paris} derniers paris du type "${cat}" (${stats.nb_gagnes} gagnés) — pari recommandé ici : ${pariEnOr.marche}</span>
     </div>`;
   } else {
     const nb = stats ? stats.nb_paris : 0;
