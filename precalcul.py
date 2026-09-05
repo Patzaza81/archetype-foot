@@ -94,9 +94,10 @@ import sys
 
 import run_pipeline
 from run_pipeline import construit_signaux, charge_json_ou_vide
-from cache_equipes import recupere_gf_ga_avec_cache
-from cache_classement import recupere_classement_avec_cache
-from cache_h2h import recupere_h2h_avec_cache
+from cache_equipes import recupere_gf_ga_avec_cache, purge_entrees_expirees as purge_equipes_expirees
+from cache_classement import recupere_classement_avec_cache, purge_entrees_expirees as purge_classement_expirees
+from cache_h2h import recupere_h2h_avec_cache, purge_entrees_expirees as purge_h2h_expirees
+from cache_betpawa import purge_matchs_joues as purge_betpawa_matchs_joues
 from resolution_betpawa_precalcul import resout_cotes_betpawa
 
 _recupere_gf_ga_reelle = run_pipeline.recupere_gf_ga_avec_repli
@@ -937,6 +938,33 @@ def main():
 
     if not fenetre:
         sys.exit(1)
+
+    # AJOUT 05/09/2026 -- purge des caches équipes/classement/H2H/Betpawa.
+    # Ces fonctions existaient déjà (voir cache_equipes.py, cache_classement.py,
+    # cache_h2h.py, cache_betpawa.py) mais n'étaient jamais appelées -- les
+    # fichiers de cache ne faisaient donc que grossir indéfiniment. AUCUN
+    # changement de comportement du run : une entrée expirée est déjà
+    # ignorée à la lecture (voir _expire() dans chaque module) et redemandée
+    # fraîche, purgée ou non -- ceci ne fait que supprimer du DISQUE les
+    # entrées qui seraient de toute façon re-scrapées. Le mécanisme "cache
+    # valide -> réutilisé, cache absent/expiré -> re-cherché" (ce qui permet
+    # de limiter un run au lendemain aux seuls matchs manquants) reste
+    # strictement identique. Isolé dans un try : un souci ici ne doit
+    # jamais faire échouer un run par ailleurs réussi.
+    try:
+        dates_fenetre = {m.get("date") for m in fenetre if m.get("date")}
+        nb_purge_equipes = purge_equipes_expirees()
+        nb_purge_classement = purge_classement_expirees()
+        nb_purge_h2h = purge_h2h_expirees()
+        nb_purge_betpawa = purge_betpawa_matchs_joues(dates_fenetre)
+        print(f"Purge caches : {nb_purge_equipes} équipe(s) expirée(s), "
+              f"{nb_purge_classement} classement(s) expiré(s), "
+              f"{nb_purge_h2h} H2H expiré(s), "
+              f"{nb_purge_betpawa} correspondance(s) Betpawa hors fenêtre.")
+    except Exception as e:
+        print(f"AVERTISSEMENT : purge des caches échouée ({e}) -- sans "
+              f"conséquence sur le run, les caches resteront juste plus "
+              f"gros que nécessaire jusqu'au prochain run.")
 
 
 if __name__ == "__main__":
