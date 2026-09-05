@@ -520,12 +520,37 @@ input[type="checkbox"]:checked::after {
   padding: 8px;
 }
 
-/* Justification du pari retenu (25/08) */
+/* Justification du pari retenu (25/08) -- repli pour matchs archivés avant
+   le moteur de justification (04/09 soir) */
 .pourquoi-pari {
   color: var(--text-secondary);
   font-size: 13px;
   margin: 6px 0 0;
   line-height: 1.5;
+}
+
+/* Moteur de justification (04/09 soir) -- mêmes tons que .bloc-risques
+   (surface-2 + bordure gauche colorée) pour rester cohérent visuellement,
+   turquoise au lieu de rouge : ce n'est pas un avertissement. */
+.bloc-justification {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: var(--surface-2);
+  border-left: 3px solid var(--turquoise);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.justification-titre { color: var(--turquoise); font-weight: 700; margin-bottom: 4px; }
+.justification-liste { margin: 0; padding-left: 18px; }
+.justification-ligne { margin-top: 2px; }
+.justification-solidite {
+  margin: 8px 0 0;
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  font-style: italic;
+  color: var(--text-secondary);
 }
 
 /* --- Panier (item, ajout manuel) --- */
