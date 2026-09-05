@@ -592,6 +592,16 @@ def construit_signaux(matchs_bruts):
             return {
                 "marche": c["marche"], "ev_brut": c["ev_brut"],
                 "cote_observee": c["cote_observee"], "probabilite_modele": c["probabilite_modele"],
+                # CORRECTIF 05/09/2026 -- ce champ était réclamé par script.js
+                # depuis le 04/09 ("affiche désormais l'ajustée") mais n'avait
+                # JAMAIS été ajouté ici -- le fallback ?? retombait donc
+                # toujours sur la brute, silencieusement. Résultat concret :
+                # un marché avec probabilite_modele brute proche de 1.0
+                # affichait "100.0%" alors que l'EV juste à côté (lui,
+                # correctement calculé sur la version resserrée par
+                # calcule_ev) pouvait être bien plus bas -- incohérence que
+                # TRANSITION.md 20.10 disait déjà réglée, à tort.
+                "probabilite_modele_ajustee": calculs.ajuste_probabilite(c["probabilite_modele"]),
                 "mise_pct_bankroll": calculs.kelly_stake(c["probabilite_modele"], c["cote_observee"]),
             }
 
