@@ -133,18 +133,31 @@ function construitNiveau3(m) {
   const listeB = m.LISTE_B_liste_finale_apres_correlation;
   if (!listeB || listeB.length === 0) return "";
   const pariEnOr = [...listeB].sort((a, b) => b.probabilite_modele - a.probabilite_modele)[0];
-  // AJOUT (04/09/2026 soir) -- affiche la probabilité AJUSTÉE (resserrée par
-  // K_SHRINKAGE), pas la brute. Avant ce correctif, ce badge montrait la
-  // probabilité brute alors que l'EV juste en dessous ("ev_brut") reflétait
-  // déjà, lui, la version corrigée -- incohérence trompeuse qui donnait
-  // l'impression que rien n'avait changé après le correctif K_SHRINKAGE.
-  // Repli sur probabilite_modele pour les matchs archivés avant ce correctif
-  // (probabilite_modele_ajustee n'existe pas dessus).
-  const probaAffichee = pariEnOr.probabilite_modele_ajustee ?? pariEnOr.probabilite_modele;
-  return `<div class="proba-1">
-    ${formatPct(probaAffichee)}
-    <span class="proba-1-label">probabilité modèle (ajustée) — ${pariEnOr.marche}</span>
-  </div>
+
+  // SUPPRIMÉ 05/09/2026 -- l'ancien badge affichait la probabilité du
+  // MODÈLE (brute ou ajustée), jamais fiable comme indicateur de vraie
+  // chance de succès (voir TRANSITION.md : gagnants/perdants quasi
+  // identiques en probabilité annoncée). Remplacé par le vrai taux de
+  // réussite mesuré sur les paris déjà résolus pour ce type de marché
+  // (roi_dashboard.json, calcule_roi.py -- même catégorisation exacte,
+  // voir categorieMarche() ci-dessus).
+  const cat = categorieMarche(pariEnOr.marche);
+  const stats = roiDashboardCharge?.par_marche?.[cat];
+  let blocTaux;
+  if (stats && stats.nb_paris >= SEUIL_MIN_PARIS_POUR_TAUX_REEL) {
+    blocTaux = `<div class="proba-1">
+      ${stats.taux_reussite_pct.toFixed(1)}%
+      <span class="proba-1-label">taux de réussite RÉEL mesuré — ${pariEnOr.marche} (${stats.nb_gagnes}/${stats.nb_paris} paris résolus)</span>
+    </div>`;
+  } else {
+    const nb = stats ? stats.nb_paris : 0;
+    blocTaux = `<div class="proba-1 proba-1-insuffisant">
+      pas encore assez de données
+      <span class="proba-1-label">${pariEnOr.marche} — seulement ${nb} pari(s) résolu(s) jusqu'ici (minimum ${SEUIL_MIN_PARIS_POUR_TAUX_REEL})</span>
+    </div>`;
+  }
+
+  return `${blocTaux}
   ${construitBlocJustification(m, pariEnOr)}`;
 }
 
@@ -383,6 +396,43 @@ const LIBELLE_ONGLET = { j0: "Aujourd'hui", j1: "J+1", j2: "J+2", j3: "J+3" };
 
 let precalculCharge = null;
 
+// AJOUT 05/09/2026 -- vraies performances mesurées (roi_dashboard.json,
+// calcule_roi.py), pour remplacer le badge de probabilité du MODÈLE
+// (jamais fiable -- voir TRANSITION.md : gagnants 0.84 vs perdants 0.79
+// de probabilité annoncée, à peine 5 points d'écart) par le vrai taux de
+// réussite mesuré sur les paris déjà résolus. Chargé une fois, en
+// parallèle du reste -- un échec ici ne doit jamais bloquer l'affichage
+// des pronostics, juste faire retomber sur "pas encore assez de données".
+let roiDashboardCharge = null;
+async function chargeRoiDashboard() {
+  try {
+    const r = await fetch("roi_dashboard.json?_=" + Date.now());
+    if (!r.ok) return;
+    roiDashboardCharge = await r.json();
+    reaffiche();
+  } catch (err) {
+    console.error("roi_dashboard.json indisponible -- vrais taux masqués, sans impact sur le reste :", err);
+  }
+}
+
+// Port JS EXACT de categorie_marche() (calcule_roi.py) -- ne jamais avoir
+// deux définitions différentes du même regroupement de marché dans le
+// dépôt (même piège que celui déjà évité dans adapte_justification.py).
+function categorieMarche(marche) {
+  if (!marche) return "inconnu";
+  const prefixe = marche.split(" - ")[0];
+  const SANS_LIGNE_VARIABLE = ["1X2", "Double chance", "BTTS", "Total buts", "Cage inviolée", "Encaisse au moins 1 but"];
+  if (SANS_LIGNE_VARIABLE.includes(prefixe)) return prefixe;
+  return prefixe.replace(/\d+(\.\d+)?/g, "N").trim();
+}
+
+// Nombre minimum de paris résolus avant d'afficher un taux -- sous ce
+// seuil, un "100%" sur 1 ou 2 paris serait aussi trompeur que le badge de
+// probabilité qu'on retire. Pas de valeur "scientifique" ici, juste évite
+// l'exemple le plus flagrant (voir TRANSITION.md, fragilité déjà démontrée
+// sur de petits échantillons lors du calibrage K_SHRINKAGE).
+const SEUIL_MIN_PARIS_POUR_TAUX_REEL = 15;
+
 // CHANGÉ 02/09/2026 -- fetch precalcul_leger.json (sans marches/lambda) au
 // lieu de precalcul.json (9,2 Mo au 02/09) -- voir precalcul.py pour le détail.
 async function chargePrecalcul() {
@@ -535,3 +585,4 @@ if (filtreGo) filtreGo.addEventListener("change", reaffiche);
 });
 
 activeOngletPronostics("j0");
+chargeRoiDashboard();
