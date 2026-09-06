@@ -548,6 +548,8 @@ def construit_signaux(matchs_bruts):
             gf_home, ga_home, gf_away, ga_away,
             ratios_contextuels_home=ratios_home, ratios_contextuels_away=ratios_away,
             pays=pays_match, competition=competition_partie,
+            nb_matchs_domicile_utilises=stats_domicile["nb_domicile"],
+            nb_matchs_exterieur_utilises=stats_exterieur["nb_exterieur"],
         )
         matrice = calculs.matrice_poisson_dixon_coles(lam["lambda_home"], lam["lambda_away"])
         proba_1 = calculs.probabilite_marche(matrice, lambda x, y: x > y)
@@ -594,6 +596,7 @@ def construit_signaux(matchs_bruts):
             liste_a, liste_b, len(candidats),
             nb_matchs_domicile_utilises=stats_domicile["nb_domicile"],
             nb_matchs_exterieur_utilises=stats_exterieur["nb_exterieur"],
+            lambda_home=lam["lambda_home"], lambda_away=lam["lambda_away"],
         )
 
         def serialise(c):
