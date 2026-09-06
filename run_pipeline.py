@@ -528,171 +528,158 @@ def construit_signaux(matchs_bruts):
                 signal["avertissement_cotes"] = f"erreur_technique: {e}"
             signal["source_cotes"] = "matchendirect_bet365"
 
-        cote_1 = cote_marche(cotes_marches, "1x2", "1")
+        # CORRECTIF 06/09/2026 (Groupe 2, bug #19) -- tout ce bloc (cote_1
+        # jusqu'à la justification) écrivait directement sur `signal` au fur
+        # et à mesure. Une exception à n'importe quel point laissait `signal`
+        # dans un état incohérent -- parfois "traite": True avec certains
+        # champs déjà posés (lambda, cote_1...) mais decision/verdict/LISTE_B
+        # jamais atteints : un FAUX signal partiellement calculé, pas un
+        # échec propre. Toute cette section calcule maintenant dans des
+        # variables locales, fusionnées sur `signal` en une seule fois
+        # SEULEMENT si tout réussit. En cas d'exception, `signal` reste
+        # exactement tel qu'il était avant ce bloc (raison_non_traite déjà
+        # géré par les blocs précédents) -- aucun champ de décision ne fuit
+        # jamais dans un match marqué en échec.
+        try:
+            cote_1 = cote_marche(cotes_marches, "1x2", "1")
 
-        # (26/08/2026 -- calibration) pays extrait de "competition" (ex.
-        # "Norvège : Eliteserien" -> "Norvège") pour choisir la bonne valeur
-        # dans GA_REFERENCE_PAR_LIGUE (calculs.py). Absent du dict -> "default",
-        # comportement identique à l'ancien GA_REFERENCE fixe.
-        pays_match = competition.split(":")[0].strip() if competition else None
-        # (05/09/2026 -- calibration par division) partie après le pays,
-        # ex. "Pays-Bas : Eerste Divisie" -> "Eerste Divisie". Transmise en
-        # plus du pays -- get_ga_reference() l'utilise en priorité si une
-        # valeur existe dans GA_REFERENCE_PAR_COMPETITION (calculs.py),
-        # sinon retombe sur le pays comme avant. Résout le point critique
-        # #8 de TRANSITION.md (Eerste Divisie/Challenge Ligue héritaient à
-        # tort de la valeur de la 1ère division du même pays).
-        competition_partie = competition.split(":", 1)[1].strip() if competition and ":" in competition else None
+            # (26/08/2026 -- calibration) pays extrait de "competition" (ex.
+            # "Norvège : Eliteserien" -> "Norvège") pour choisir la bonne
+            # valeur dans GA_REFERENCE_PAR_LIGUE (calculs.py). Absent du
+            # dict -> "default", comportement identique à l'ancien
+            # GA_REFERENCE fixe.
+            pays_match = competition.split(":")[0].strip() if competition else None
+            # (05/09/2026 -- calibration par division) partie après le pays,
+            # ex. "Pays-Bas : Eerste Divisie" -> "Eerste Divisie". Transmise
+            # en plus du pays -- get_ga_reference() l'utilise en priorité si
+            # une valeur existe dans GA_REFERENCE_PAR_COMPETITION
+            # (calculs.py), sinon retombe sur le pays comme avant.
+            competition_partie = competition.split(":", 1)[1].strip() if competition and ":" in competition else None
 
-        lam = calculs.calcule_lambda(
-            gf_home, ga_home, gf_away, ga_away,
-            ratios_contextuels_home=ratios_home, ratios_contextuels_away=ratios_away,
-            pays=pays_match, competition=competition_partie,
-            nb_matchs_domicile_utilises=stats_domicile["nb_domicile"],
-            nb_matchs_exterieur_utilises=stats_exterieur["nb_exterieur"],
-        )
-        matrice = calculs.matrice_poisson_dixon_coles(lam["lambda_home"], lam["lambda_away"])
-        proba_1 = calculs.probabilite_marche(matrice, lambda x, y: x > y)
-        marches_probas = calculs.construit_probabilites_marches(
-            matrice, lignes_ou=(0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5)
-        )
-
-        signal["lambda"] = lam
-        signal["probabilite_victoire_domicile"] = proba_1
-        signal["traite"] = True
-        signal["confiance"] = calculs.confiance_lambda(
-            min(stats_domicile["nb_domicile"], stats_exterieur["nb_exterieur"])
-        )
-        signal["nb_matchs_domicile_utilises"] = stats_domicile["nb_domicile"]
-        signal["nb_matchs_exterieur_utilises"] = stats_exterieur["nb_exterieur"]
-        signal["cote_1"] = cote_1
-        if cote_1:
-            signal["ev_victoire_domicile"] = calculs.calcule_ev(proba_1, cote_1)
-            signal["mise_kelly_victoire_domicile"] = calculs.kelly_stake(proba_1, cote_1)
-            signal["standout"] = calculs.est_standout(proba_1, cote_1)
-        signal["marches"] = marches_probas
-
-        candidats = construit_candidats(marches_probas, cotes_marches)
-
-        # AJOUT (04/09/2026 soir) -- archive TOUS les marchés évalués ayant
-        # une cote réelle (probabilité modèle + cote observée), pas
-        # seulement ceux qui passent le filtre EV/cote de LISTE_A. Avant cet
-        # ajout, un marché qui échouait au filtre voyait sa cote perdue
-        # définitivement (jamais écrite sur disque) -- ce qui plafonnait à
-        # 63 le nombre de triplets (probabilité, cote réelle, résultat)
-        # exploitables pour recalibrer K_SHRINKAGE/SEUIL_EV_MIN sur 9 jours
-        # d'historique (voir calcule_roi.py, qui en a besoin). "candidats"
-        # exclut déjà les marchés sans cote réelle (construit_candidats ne
-        # les ajoute pas) -- rien à filtrer de plus ici.
-        signal["TOUS_MARCHES_EVALUES"] = [
-            {"marche": c["marche"], "probabilite_modele": c["probabilite_modele"],
-             "cote_observee": c["cote_observee"]}
-            for c in candidats
-        ]
-
-        liste_a = calculs.construit_liste_a(candidats)
-        liste_b = calculs.construit_liste_b(liste_a, matrice)
-        decision = calculs.decision_go_nogo(
-            liste_a, liste_b, len(candidats),
-            nb_matchs_domicile_utilises=stats_domicile["nb_domicile"],
-            nb_matchs_exterieur_utilises=stats_exterieur["nb_exterieur"],
-            lambda_home=lam["lambda_home"], lambda_away=lam["lambda_away"],
-        )
-
-        def serialise(c):
-            return {
-                "marche": c["marche"], "ev_brut": c["ev_brut"],
-                "cote_observee": c["cote_observee"], "probabilite_modele": c["probabilite_modele"],
-                # CORRECTIF 05/09/2026 -- ce champ était réclamé par script.js
-                # depuis le 04/09 ("affiche désormais l'ajustée") mais n'avait
-                # JAMAIS été ajouté ici -- le fallback ?? retombait donc
-                # toujours sur la brute, silencieusement. Résultat concret :
-                # un marché avec probabilite_modele brute proche de 1.0
-                # affichait "100.0%" alors que l'EV juste à côté (lui,
-                # correctement calculé sur la version resserrée par
-                # calcule_ev) pouvait être bien plus bas -- incohérence que
-                # TRANSITION.md 20.10 disait déjà réglée, à tort.
-                "probabilite_modele_ajustee": calculs.ajuste_probabilite(c["probabilite_modele"]),
-                "mise_pct_bankroll": calculs.kelly_stake(c["probabilite_modele"], c["cote_observee"]),
-            }
-
-        # (30/08/2026 -- correctif originel, contexte changé le 04/09/2026)
-        # Ce garde-fou supposait LISTE_A/LISTE_B qualifiées sur un EV BRUT
-        # (non resserré) et seule la mise Kelly resserrée par K_SHRINKAGE --
-        # ce n'était qu'une intention à l'époque : K_SHRINKAGE n'était pas
-        # branché du tout (voir calculs.py). Depuis le 04/09/2026,
-        # calcule_ev() applique le resserrement en interne, donc "ev_brut"
-        # ci-dessous et le filtre LISTE_A sont DÉJÀ sur la probabilité
-        # corrigée -- ce garde-fou (mise Kelly nulle -> NO_GO) devient rare
-        # en pratique (il ne se déclenche plus que dans la fine marge entre
-        # EV resserré >= SEUIL_EV_MIN et fraction de Kelly <= 0), mais reste
-        # inoffensif à garder comme filet de sécurité.
-        liste_b_serialisee = [serialise(c) for c in liste_b]
-        liste_b_avec_mise = [c for c in liste_b_serialisee if c["mise_pct_bankroll"] > 0]
-
-        # CORRECTIF 06/09/2026 -- plafonner_cluster() existait dans calculs.py
-        # (CLUSTER_MAX=10%) mais n'était appelée nulle part : un match pouvait
-        # exposer jusqu'à NB_PARIS_MAX * MISE_MAX_PARI = 3 * 4% = 12% de la
-        # bankroll sans aucun garde-fou réel. Branchée ici, sur les vrais
-        # champs de LISTE_B ("ev_brut"/"mise_pct_bankroll" -- voir le
-        # correctif complémentaire dans calculs.py, les noms par défaut de la
-        # fonction ne correspondaient à aucun champ réel). Ne change rien si
-        # la somme des mises est déjà sous le plafond (cas normal) ; ne fait
-        # jamais remonter une mise, seulement redistribuer/réduire.
-        liste_b_avec_mise = calculs.plafonner_cluster(
-            liste_b_avec_mise, cle_ev="ev_brut", cle_mise="mise_pct_bankroll"
-        )
-
-        verdict_global = decision["verdict_global"]
-        motif_no_go = decision["motif_no_go"]
-        if verdict_global == "GO" and not liste_b_avec_mise:
-            verdict_global = "NO_GO"
-            motif_no_go = (
-                "EV positif sur la probabilité brute, mais mise Kelly nulle une fois la "
-                "probabilité resserrée (K_SHRINKAGE) -- pas d'edge réel après correction de "
-                "la surconfiance mesurée du modèle."
+            lam = calculs.calcule_lambda(
+                gf_home, ga_home, gf_away, ga_away,
+                ratios_contextuels_home=ratios_home, ratios_contextuels_away=ratios_away,
+                pays=pays_match, competition=competition_partie,
+                nb_matchs_domicile_utilises=stats_domicile["nb_domicile"],
+                nb_matchs_exterieur_utilises=stats_exterieur["nb_exterieur"],
+            )
+            matrice = calculs.matrice_poisson_dixon_coles(lam["lambda_home"], lam["lambda_away"])
+            proba_1 = calculs.probabilite_marche(matrice, lambda x, y: x > y)
+            marches_probas = calculs.construit_probabilites_marches(
+                matrice, lignes_ou=(0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5)
             )
 
-        signal["verdict_global"] = verdict_global
-        signal["motif_no_go"] = motif_no_go
-        signal["LISTE_A_marches_passant_EV_et_cote"] = [serialise(c) for c in liste_a]
-        signal["LISTE_B_liste_finale_apres_correlation"] = liste_b_avec_mise
-        signal["coefficients_empiriques"] = False
+            resultat_calcul = {
+                "lambda": lam,
+                "probabilite_victoire_domicile": proba_1,
+                "traite": True,
+                "confiance": calculs.confiance_lambda(
+                    min(stats_domicile["nb_domicile"], stats_exterieur["nb_exterieur"])
+                ),
+                "nb_matchs_domicile_utilises": stats_domicile["nb_domicile"],
+                "nb_matchs_exterieur_utilises": stats_exterieur["nb_exterieur"],
+                "cote_1": cote_1,
+                "marches": marches_probas,
+            }
+            if cote_1:
+                resultat_calcul["ev_victoire_domicile"] = calculs.calcule_ev(proba_1, cote_1)
+                resultat_calcul["mise_kelly_victoire_domicile"] = calculs.kelly_stake(proba_1, cote_1)
+                resultat_calcul["standout"] = calculs.est_standout(proba_1, cote_1)
 
-        # AJOUT 04/09/2026 (soir) -- justification du "pari en or" (celui
-        # affiché en badge principal -- même sélection que construitNiveau3
-        # dans script.js : probabilité modèle la plus haute de LISTE_B).
-        # Construite uniquement à partir de faits réellement vérifiables
-        # (voir adapte_justification.py) -- jamais un fait inventé. None si
-        # verdict NO_GO ou si aucun fait vérifiable n'a pu être construit
-        # pour ce marché (ex. Handicap, Score exact -- voir adapte_justification.py).
-        signal["justification"] = None
-        if verdict_global == "GO" and liste_b_avec_mise:
-            pari_en_or = max(liste_b_avec_mise, key=lambda c: c["probabilite_modele"])
-            try:
-                preuves = adapte_justification.construit_preuves(
-                    pari_en_or["marche"],
-                    stats_domicile.get("matchs_domicile_bruts", []),
-                    stats_exterieur.get("matchs_exterieur_bruts", []),
-                    historique_h2h_brut,
-                    nom_domicile, nom_exterieur,
-                )
-                pronostic_valide = PronosticValide(
-                    marche=pari_en_or["marche"],
-                    probabilite_modele=pari_en_or["probabilite_modele"],
-                    cote=pari_en_or["cote_observee"],
-                    ev=pari_en_or["ev_brut"],
-                    verdict=verdict_global,
-                )
-                signal["justification"] = vers_dict(
-                    construit_justification(pronostic_valide, preuves, maximum=3)
-                )
-            except Exception as e:
-                # Ne doit jamais faire échouer tout le traitement du match --
-                # l'absence de justification est acceptable, un plantage du
-                # run entier ne l'est pas.
-                signal["avertissement_justification"] = f"erreur_technique: {e}"
+            candidats = construit_candidats(marches_probas, cotes_marches)
 
+            # AJOUT (04/09/2026 soir) -- archive TOUS les marchés évalués
+            # ayant une cote réelle (probabilité modèle + cote observée),
+            # pas seulement ceux qui passent le filtre EV/cote de LISTE_A.
+            resultat_calcul["TOUS_MARCHES_EVALUES"] = [
+                {"marche": c["marche"], "probabilite_modele": c["probabilite_modele"],
+                 "cote_observee": c["cote_observee"]}
+                for c in candidats
+            ]
+
+            liste_a = calculs.construit_liste_a(candidats)
+            liste_b = calculs.construit_liste_b(liste_a, matrice)
+            decision = calculs.decision_go_nogo(
+                liste_a, liste_b, len(candidats),
+                nb_matchs_domicile_utilises=stats_domicile["nb_domicile"],
+                nb_matchs_exterieur_utilises=stats_exterieur["nb_exterieur"],
+                lambda_home=lam["lambda_home"], lambda_away=lam["lambda_away"],
+            )
+
+            def serialise(c):
+                return {
+                    "marche": c["marche"], "ev_brut": c["ev_brut"],
+                    "cote_observee": c["cote_observee"], "probabilite_modele": c["probabilite_modele"],
+                    "probabilite_modele_ajustee": calculs.ajuste_probabilite(c["probabilite_modele"]),
+                    "mise_pct_bankroll": calculs.kelly_stake(c["probabilite_modele"], c["cote_observee"]),
+                }
+
+            liste_b_serialisee = [serialise(c) for c in liste_b]
+            liste_b_avec_mise = [c for c in liste_b_serialisee if c["mise_pct_bankroll"] > 0]
+            liste_b_avec_mise = calculs.plafonner_cluster(
+                liste_b_avec_mise, cle_ev="ev_brut", cle_mise="mise_pct_bankroll"
+            )
+
+            verdict_global = decision["verdict_global"]
+            motif_no_go = decision["motif_no_go"]
+            if verdict_global == "GO" and not liste_b_avec_mise:
+                verdict_global = "NO_GO"
+                motif_no_go = (
+                    "EV positif sur la probabilité brute, mais mise Kelly nulle une fois la "
+                    "probabilité resserrée (K_SHRINKAGE) -- pas d'edge réel après correction de "
+                    "la surconfiance mesurée du modèle."
+                )
+
+            resultat_calcul["verdict_global"] = verdict_global
+            resultat_calcul["motif_no_go"] = motif_no_go
+            resultat_calcul["LISTE_A_marches_passant_EV_et_cote"] = [serialise(c) for c in liste_a]
+            resultat_calcul["LISTE_B_liste_finale_apres_correlation"] = liste_b_avec_mise
+            resultat_calcul["coefficients_empiriques"] = False
+
+            # AJOUT 04/09/2026 (soir) -- justification du "pari en or" (celui
+            # affiché en badge principal -- même sélection que
+            # construitNiveau3 dans script.js : probabilité modèle la plus
+            # haute de LISTE_B). Un échec ici reste un simple avertissement
+            # (déjà le comportement d'origine) -- l'absence de justification
+            # ne doit jamais faire échouer tout le match.
+            resultat_calcul["justification"] = None
+            if verdict_global == "GO" and liste_b_avec_mise:
+                pari_en_or = max(liste_b_avec_mise, key=lambda c: c["probabilite_modele"])
+                try:
+                    preuves = adapte_justification.construit_preuves(
+                        pari_en_or["marche"],
+                        stats_domicile.get("matchs_domicile_bruts", []),
+                        stats_exterieur.get("matchs_exterieur_bruts", []),
+                        historique_h2h_brut,
+                        nom_domicile, nom_exterieur,
+                    )
+                    pronostic_valide = PronosticValide(
+                        marche=pari_en_or["marche"],
+                        probabilite_modele=pari_en_or["probabilite_modele"],
+                        cote=pari_en_or["cote_observee"],
+                        ev=pari_en_or["ev_brut"],
+                        verdict=verdict_global,
+                    )
+                    resultat_calcul["justification"] = vers_dict(
+                        construit_justification(pronostic_valide, preuves, maximum=3)
+                    )
+                except Exception as e:
+                    # Ne doit jamais faire échouer tout le traitement du
+                    # match -- l'absence de justification est acceptable, un
+                    # plantage du run entier ne l'est pas.
+                    resultat_calcul["avertissement_justification"] = f"erreur_technique: {e}"
+
+        except Exception as e:
+            # CORRECTIF 06/09/2026 (bug #19) -- `signal` n'a reçu AUCUNE
+            # écriture de ce bloc (tout était dans resultat_calcul, jamais
+            # fusionné) : il reste exactement dans l'état où il était avant
+            # -- traite toujours False, aucun champ de décision/cote/EV/
+            # Kelly partiellement présent. Pas de faux signal.
+            signal["raison_non_traite"] = f"erreur_technique: {e}"
+            resultats.append(signal)
+            continue
+
+        signal.update(resultat_calcul)
         resultats.append(signal)
 
     return resultats
