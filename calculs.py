@@ -815,15 +815,36 @@ def est_standout(probabilite_modele, cote_observee):
     return ev is not None and ev >= SEUIL_STANDOUT
 
 
-def plafonner_cluster(paris, plafond_cluster=CLUSTER_MAX, nb_max=NB_PARIS_MAX):
+def plafonner_cluster(paris, plafond_cluster=CLUSTER_MAX, nb_max=NB_PARIS_MAX,
+                       cle_ev="ev_brut", cle_mise="mise_pct_bankroll"):
     """
-    Filtre simple : garde au plus NB_PARIS_MAX paris (les plus forts EV en premier),
-    et plafonne la somme des mises à plafond_cluster.
+    Filtre simple : garde au plus nb_max paris (les plus forts EV en premier),
+    et plafonne la somme des mises à plafond_cluster (redistribution
+    proportionnelle si la somme dépasse le plafond).
+
+    CORRECTIF 06/09/2026 -- cette fonction existait depuis l'origine (Module 4)
+    mais n'était appelée NULLE PART dans tout le pipeline : le plafond de
+    risque CLUSTER_MAX=10% déclaré n'avait donc jamais d'effet réel -- un
+    même match pouvait exposer jusqu'à NB_PARIS_MAX * MISE_MAX_PARI = 3 * 4%
+    = 12% de la bankroll, sans aucun garde-fou. Branchée maintenant dans
+    run_pipeline.py, juste après construction de liste_b_avec_mise et avant
+    sa sérialisation dans LISTE_B_liste_finale_apres_correlation.
+
+    CORRECTIF COMPLÉMENTAIRE (même session) -- les clés par défaut d'origine
+    ("ev", "mise") ne correspondent à AUCUN champ réellement produit par
+    serialise() dans run_pipeline.py, qui utilise "ev_brut" et
+    "mise_pct_bankroll". Appeler cette fonction telle quelle contre les
+    vrais dicts de LISTE_B aurait silencieusement lu 0 partout via .get()
+    -- total toujours nul, plafonnement jamais déclenché, bug corrigé en
+    apparence seulement. Paramètres cle_ev/cle_mise ajoutés pour pointer
+    vers les vrais noms de champs ; testé sur 6 cas (somme sous/au-dessus
+    du plafond, >3 paris en entrée, liste vide, pari seul dépassant le
+    plafond, mises toutes nulles) avant livraison.
     """
-    paris_tries = sorted(paris, key=lambda p: p.get("ev", 0), reverse=True)[:nb_max]
-    total = sum(p.get("mise", 0) for p in paris_tries)
+    paris_tries = sorted(paris, key=lambda p: p.get(cle_ev, 0), reverse=True)[:nb_max]
+    total = sum(p.get(cle_mise, 0) for p in paris_tries)
     if total > plafond_cluster and total > 0:
         facteur = plafond_cluster / total
         for p in paris_tries:
-            p["mise"] = p["mise"] * facteur
+            p[cle_mise] = p[cle_mise] * facteur
     return paris_tries
