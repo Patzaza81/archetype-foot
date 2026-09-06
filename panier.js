@@ -45,6 +45,13 @@ const SUPABASE_CONFIGURE = !SUPABASE_URL.includes("TON-PROJET") && !!window.supa
 const supabaseClient = SUPABASE_CONFIGURE ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
 const CLE_PANIER = "archetype_panier";
+// AJOUT 06/09/2026 (bug #24) -- persiste l'id du DERNIER panier envoyé
+// avec succès, pour que script.js puisse cibler précisément SON résultat
+// (voir chargeDernierResultat() dans script.js) plutôt que "le dernier
+// résultat toutes soumissions confondues", qui pouvait afficher le
+// résultat d'une soumission plus ancienne si elle finissait de se
+// calculer après une soumission plus récente.
+const CLE_DERNIER_PANIER_ID = "archetype_dernier_panier_id";
 
 function chargePanier() {
   try {
@@ -107,7 +114,17 @@ function rafraichit() {
         : item.source === "manuel" ? "manuel" : "liste";
       const nbMarches = item.cotes_manuelles ? Object.keys(item.cotes_manuelles).length : 0;
       const suffixeCotes = nbMarches > 0 ? ` · ${nbMarches} marché(s) fournis` : "";
-      texte.innerHTML = `${item.domicile} — ${item.exterieur}<span class="tag">${item.competition || "?"} · ${tagTexte}${suffixeCotes}</span>`;
+      // CORRECTIF 06/09/2026 (bug #27) : construction DOM (textContent) au
+      // lieu d'innerHTML -- domicile/exterieur/competition viennent de
+      // matchendirect/Betpawa (scraping), jamais garantis sans caractère
+      // spécial. Impact réel resté borné au self-XSS jusqu'ici (RLS limite
+      // chaque panier à son propriétaire), mais correction peu coûteuse ici
+      // (un seul point d'interpolation, contrairement à script.js).
+      texte.appendChild(document.createTextNode(`${item.domicile} — ${item.exterieur}`));
+      const tag = document.createElement("span");
+      tag.className = "tag";
+      tag.textContent = `${item.competition || "?"} · ${tagTexte}${suffixeCotes}`;
+      texte.appendChild(tag);
 
       const retirer = document.createElement("button");
       retirer.textContent = "✕";
@@ -205,6 +222,12 @@ async function analyserPanier() {
     if (res.ok && data.ok) {
       statut.textContent = "✅ " + data.message + " Résultat dans quelques minutes sur \"Voir les pronostics\".";
       statut.className = "ok";
+      // CORRECTIF 06/09/2026 (bug #24) : persisté seulement ici, sur un
+      // envoi RÉELLEMENT accepté par trigger.js -- pas juste après
+      // l'insertion Supabase (panierInsere.id existe même si trigger.js
+      // refuse ensuite, ex. rate-limit #25) -- sinon script.js chercherait
+      // pour toujours le résultat d'une analyse jamais réellement lancée.
+      localStorage.setItem(CLE_DERNIER_PANIER_ID, panierInsere.id);
       sauvePanier([]);
       rafraichit();
     } else {
