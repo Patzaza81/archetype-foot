@@ -98,10 +98,30 @@ def main():
 
     total_trouves = 0
     total_restants = 0
+    total_abandonnes = 0
     for jour in historique:
         date_obj = datetime.date.fromisoformat(jour["date"])
-        if not (limite_ancienne <= date_obj < aujourdhui):
-            continue  # jour d'aujourd'hui (pas fini) ou trop ancien (abandon)
+
+        # CORRECTIF 06/09/2026 (Groupe 4, bug #29) -- avant, un jour trop
+        # ancien était simplement ignoré (`continue`) : les matchs jamais
+        # retrouvés restaient avec score=None indéfiniment, indiscernables
+        # d'un match "pas encore vérifié". calcule_calibrage()/
+        # calcule_dashboard() les excluaient déjà (score=None -> skip),
+        # mais SANS jamais savoir combien ni pourquoi -- biais de sélection
+        # invisible si les matchs introuvables (petites compétitions, noms
+        # mal orthographiés) ont des caractéristiques différentes des
+        # autres. Statut explicite ajouté ici ; la correction du biais
+        # lui-même reste impossible (personne ne peut deviner un score
+        # jamais retrouvé) -- seule sa VISIBILITÉ est corrigée.
+        if date_obj < limite_ancienne:
+            for m in jour.get("matchs", []):
+                if (m.get("verdict_global") and m.get("score") is None
+                        and m.get("score_statut") != "non_resolu_definitif"):
+                    m["score_statut"] = "non_resolu_definitif"
+                    total_abandonnes += 1
+            continue
+        if date_obj >= aujourdhui:
+            continue  # jour d'aujourd'hui (pas fini) -- jamais abandonné
 
         total_trouves += verifie_jour(jour)
         total_restants += sum(
@@ -110,7 +130,9 @@ def main():
 
     sauve_historique(historique)
     print(f"[verification] {total_trouves} score(s) renseigné(s) -- "
-          f"{total_restants} match(s) analysé(s) encore sans score après ce passage.")
+          f"{total_restants} match(s) analysé(s) encore sans score après ce passage -- "
+          f"{total_abandonnes} match(s) marqué(s) non_resolu_definitif ce run (délai de "
+          f"{NB_JOURS_MAX_A_VERIFIER} jours dépassé).")
 
 
 if __name__ == "__main__":
