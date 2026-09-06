@@ -1,0 +1,28 @@
+name: Diagnostic sélecteur de saison (matchendirect)
+
+# Se déclenche UNIQUEMENT à la main, depuis l'onglet "Actions" de GitHub.
+# Ne modifie AUCUN fichier -- affiche seulement des logs à lire dans le
+# résultat du run. Objectif : découvrir comment fonctionne réellement le
+# sélecteur de saison sur la page d'une équipe matchendirect, pour pouvoir
+# corriger le repli vers la saison précédente (recupere_gf_ga_avec_repli
+# dans scraper_details.py).
+on:
+  workflow_dispatch:
+
+jobs:
+  diagnostic-saison:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Installer les dépendances (identiques à pipeline.yml)
+        run: |
+          pip install requests beautifulsoup4 pandas lxml playwright
+          playwright install --with-deps chromium
+
+      - name: Lancer le diagnostic
+        run: python diagnostic_selecteur_saison.py
