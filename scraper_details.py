@@ -420,9 +420,27 @@ def _normalise_texte(s):
     return re.sub(r"\s+", " ", s or "").strip().lower()
 
 
+# CORRECTIF 05/09/2026 -- même bug que celui trouvé et corrigé dans
+# resolution_betpawa.py (ratio_ressemblance) : "n1 in n2 or n2 in n1"
+# confond une équipe et sa réserve/jeunes (ex. 'Real Madrid' vs 'Real
+# Madrid Castilla'). Utilisée ici pour retrouver la ligne d'une équipe
+# dans un classement ou un historique H2H -- un faux positif fait
+# pointer sur la mauvaise ligne (mauvaise position, mauvais historique
+# de buts). Même liste de marqueurs que resolution_betpawa.py.
+_MARQUEURS_RESERVE_EQUIPE = {"b", "ii", "iii", "castilla", "atletic", "reserve",
+                             "reservas", "u23", "u21", "u20", "u19", "juvenil"}
+
+
 def _memes_equipes(nom1, nom2):
     n1, n2 = _normalise_texte(nom1), _normalise_texte(nom2)
-    return n1 == n2 or n1 in n2 or n2 in n1
+    if n1 == n2:
+        return True
+    if n1 in n2 or n2 in n1:
+        mots_en_trop = (set(n1.split()) - set(n2.split())) | (set(n2.split()) - set(n1.split()))
+        if mots_en_trop & _MARQUEURS_RESERVE_EQUIPE:
+            return False
+        return True
+    return False
 
 
 def _saison_actuelle_et_precedente():
