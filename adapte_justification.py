@@ -51,6 +51,38 @@ from moteur_justification import (
 
 MARCHES_SYMETRIQUES = {"OVER_UNDER_MATCH", "BTTS", "PAIR_IMPAIR", "NOMBRE_EXACT_BUTS"}
 
+# AJOUT 06/09/2026 (bug #41) -- même liste de marqueurs que calculs.py/
+# resolution_betpawa.py/scraper_betpawa.py (copie locale, choix
+# d'architecture déjà établi dans ce dépôt), réutilisée ici pour orienter
+# chaque confrontation H2H par équipe -- voir _correspond_a_equipe et
+# _preuve_h2h ci-dessous.
+_MARQUEURS_RESERVE_EQUIPE = {"b", "ii", "iii", "castilla", "atletic", "reserve",
+                             "reservas", "u23", "u21", "u20", "u19", "juvenil"}
+
+
+def _normalise_nom_equipe_h2h(nom):
+    import re
+    mots = re.sub(r"[^a-z0-9\s]", " ", (nom or "").lower()).split()
+    return mots
+
+
+def _correspond_a_equipe(nom_cible, nom_brut):
+    """Même logique que calculs._memes_equipes_ratio() -- copie locale
+    plutôt qu'un import inter-module pour une fonction privée par
+    convention (_memes_equipes_ratio), cohérent avec le reste du dépôt."""
+    m1, m2 = _normalise_nom_equipe_h2h(nom_cible), _normalise_nom_equipe_h2h(nom_brut)
+    n1, n2 = " ".join(m1), " ".join(m2)
+    if not n1 or not n2:
+        return False
+    if n1 == n2:
+        return True
+    if n1 in n2 or n2 in n1:
+        mots_en_trop = (set(m1) - set(m2)) | (set(m2) - set(m1))
+        if mots_en_trop & _MARQUEURS_RESERVE_EQUIPE:
+            return False
+        return True
+    return False
+
 
 def _marche_sans_suffixe_cote(marche: str) -> str:
     """'Plus de 1.5 buts - Domicile' -> 'Plus de 1.5 buts' (forme symétrique,
@@ -168,15 +200,45 @@ def _preuve_sans_but(matchs, contexte, source, equipe) -> Optional[PreuveStatist
     )
 
 
-def _preuve_h2h(marche: str, h2h_brut: List[dict]) -> Optional[PreuveStatistique]:
-    """H2H : toujours évalué sous forme symétrique (le marché ne distingue
-    pas qui était domicile dans CES confrontations passées)."""
+def _preuve_h2h(marche: str, h2h_brut: List[dict], equipe_cible: Optional[str] = None) -> Optional[PreuveStatistique]:
+    """H2H. Pour un marché SYMÉTRIQUE (BTTS, Over/Under match, pair/impair,
+    nombre exact de buts), le résultat ne dépend pas de qui était domicile
+    dans ces confrontations passées -- (buts_domicile, buts_exterieur)
+    utilisés tels quels, equipe_cible=None.
+
+    CORRECTIF 06/09/2026 (bug #41) : pour un marché PAR ÉQUIPE (Plus/Moins
+    de X - Domicile/Extérieur, Cage inviolée, Sans but), le traitement
+    symétrique était appliqué À TORT -- un même échantillon H2H mélange des
+    confrontations où l'équipe visée a joué tantôt domicile, tantôt
+    extérieur ; évaluer "buts_domicile > seuil" sans distinguer répond à
+    une question DIFFÉRENTE à chaque ligne de l'historique (parfois
+    l'équipe visée, parfois son adversaire). calcule_ratio_h2h() dans
+    calculs.py -- le VRAI calcul utilisé pour ajuster lambda -- s'oriente
+    déjà par équipe via _memes_equipes_ratio() : la justification affichée
+    pouvait donc reposer sur un fait statistiquement différent de ce que
+    le modèle a réellement utilisé. equipe_cible renseigné (nom de
+    l'équipe visée par le marché) oriente maintenant chaque confrontation
+    de son point de vue, comme calcule_ratio_h2h()."""
     if not h2h_brut:
         return None
     marche_symetrique = _marche_sans_suffixe_cote(marche)
+
+    if equipe_cible is None:
+        paires = [(m["buts_domicile"], m["buts_exterieur"]) for m in h2h_brut]
+    else:
+        paires = []
+        for m in h2h_brut:
+            if _correspond_a_equipe(equipe_cible, m.get("domicile_brut", "")):
+                paires.append((m["buts_domicile"], m["buts_exterieur"]))
+            elif _correspond_a_equipe(equipe_cible, m.get("exterieur_brut", "")):
+                paires.append((m["buts_exterieur"], m["buts_domicile"]))
+            # ni l'un ni l'autre : nom non résolu pour cette ligne --
+            # écartée plutôt que de deviner, même philosophie que le reste
+            # du dépôt.
+
     occurrences, total = 0, 0
-    for m in h2h_brut:
-        resultat = calcule_roi.verifie_pari(marche_symetrique, m["buts_domicile"], m["buts_exterieur"])
+    for buts_propre, buts_adverse in paires:
+        resultat = calcule_roi.verifie_pari(marche_symetrique, buts_propre, buts_adverse)
         if resultat is None:
             continue
         total += 1
@@ -193,6 +255,7 @@ def _preuve_h2h(marche: str, h2h_brut: List[dict]) -> Optional[PreuveStatistique
         pourcentage=round(occurrences / total * 100, 1),
         source="h2h",
         verifie=True,
+        equipe=equipe_cible,
     )
 
 
@@ -218,6 +281,16 @@ def construit_preuves(
     ctx_dom = f"Domicile -- {len(matchs_domicile_bruts)} derniers matchs"
     ctx_ext = f"Extérieur -- {len(matchs_exterieur_bruts)} derniers matchs"
 
+    # AJOUT 06/09/2026 (bug #41) -- renseigné dans les 3 branches "par
+    # équipe" ci-dessous, transmis à _preuve_h2h() en fin de fonction pour
+    # orienter le H2H du point de vue de CETTE équipe précise, au lieu
+    # d'un traitement symétrique qui mélangeait les deux équipes de
+    # l'historique H2H (voir _preuve_h2h). Reste None pour les marchés
+    # symétriques (comportement inchangé, correct pour ceux-là) et pour
+    # 1X2/Double chance/Handicap/Score exact (aucune preuve par équipe
+    # construite pour ces marchés, voir plus bas -- inchangé).
+    equipe_cible_h2h = None
+
     if type_marche in MARCHES_SYMETRIQUES:
         p = _preuve_frequence(marche, matchs_domicile_bruts, marche, ctx_dom,
                                "historique_equipe_domicile", equipe=nom_domicile)
@@ -237,6 +310,7 @@ def construit_preuves(
         ctx = ctx_dom if "domicile" in marche.lower() else ctx_ext
         source = "historique_equipe_domicile" if "domicile" in marche.lower() else "historique_equipe_exterieure"
         equipe = nom_domicile if "domicile" in marche.lower() else nom_exterieur
+        equipe_cible_h2h = equipe
         # Réévalue en forme symétrique (sans suffixe) sur les buts marqués
         # SEULS de l'équipe -- verifie_pari attend (buts_domicile,
         # buts_exterieur), donc on passe (buts_marques, 0) et on regarde
@@ -266,6 +340,7 @@ def construit_preuves(
         ctx = ctx_dom if "domicile" in marche.lower() else ctx_ext
         source = "historique_equipe_domicile" if "domicile" in marche.lower() else "historique_equipe_exterieure"
         equipe = nom_domicile if "domicile" in marche.lower() else nom_exterieur
+        equipe_cible_h2h = equipe
         p = _preuve_clean_sheet(cible, ctx, source, equipe)
         if p:
             preuves.append(p)
@@ -275,6 +350,7 @@ def construit_preuves(
         ctx = ctx_dom if "domicile" in marche.lower() else ctx_ext
         source = "historique_equipe_domicile" if "domicile" in marche.lower() else "historique_equipe_exterieure"
         equipe = nom_domicile if "domicile" in marche.lower() else nom_exterieur
+        equipe_cible_h2h = equipe
         p = _preuve_sans_but(cible, ctx, source, equipe)
         if p:
             preuves.append(p)
@@ -283,7 +359,7 @@ def construit_preuves(
     # construite ici pour l'instant (voir en-tête). moteur_justification.py
     # affichera alors uniquement les preuves H2H ci-dessous s'il y en a.
 
-    p = _preuve_h2h(marche, h2h_brut)
+    p = _preuve_h2h(marche, h2h_brut, equipe_cible=equipe_cible_h2h)
     if p:
         preuves.append(p)
 
