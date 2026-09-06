@@ -412,9 +412,31 @@ def decision_go_nogo(liste_a, liste_b, nb_marches_evalues,
                       nb_matchs_domicile_utilises=None, nb_matchs_exterieur_utilises=None):
     """Étape 6 Module 3 v6.3 : GO si LISTE_B est non vide, sinon NO_GO.
 
-    La confiance sur le nombre de matchs est descriptive uniquement (Étape 5bis)
-    et ne constitue jamais un veto sur la décision.
+    CORRECTIF RÉEL (05/09/2026) -- TRANSITION.md 21.8 annonçait ce veto
+    comme "corrigé et testé (6 cas)" alors qu'il n'était en réalité JAMAIS
+    écrit dans cette fonction : les deux paramètres nb_matchs_*_utilises
+    étaient reçus mais jamais lus dans le corps, rendant tout appelant qui
+    les passait sans aucun effet (vérifié : un cas type Eldense, 1 match
+    domicile / 1 extérieur, ressortait en GO). Veto ajouté ici pour de
+    vrai : sous le seuil FAIBLE (CONFIANCE_LAMBDA_SEUILS["FAIBLE"], 8
+    matchs), NO_GO automatique quel que soit l'EV, sur le domicile OU
+    l'extérieur. None = information non fournie par l'appelant -> ignoré
+    (comportement identique à avant pour les appels qui ne passent pas
+    ces paramètres).
+
+    La confiance sur le nombre de matchs reste par ailleurs descriptive
+    (Étape 5bis, `confiance_lambda`) pour tout ce qui est au-dessus du
+    seuil FAIBLE -- seul le seuil FAIBLE devient un veto dur.
     """
+    seuil_min = CONFIANCE_LAMBDA_SEUILS["FAIBLE"]
+    if nb_matchs_domicile_utilises is not None and nb_matchs_domicile_utilises < seuil_min:
+        return {"verdict_global": "NO_GO",
+                "motif_no_go": (f"Échantillon domicile insuffisant "
+                                 f"({nb_matchs_domicile_utilises} match(s) < {seuil_min})")}
+    if nb_matchs_exterieur_utilises is not None and nb_matchs_exterieur_utilises < seuil_min:
+        return {"verdict_global": "NO_GO",
+                "motif_no_go": (f"Échantillon extérieur insuffisant "
+                                 f"({nb_matchs_exterieur_utilises} match(s) < {seuil_min})")}
     if liste_b:
         return {"verdict_global": "GO", "motif_no_go": None}
     if liste_a:
