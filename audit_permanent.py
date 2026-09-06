@@ -647,6 +647,85 @@ verite(
 
 
 # ============================================================================
+section("Groupe 1 — identité canonique par match_id (bugs #7/#8, 06/09)")
+# ============================================================================
+import dispatch_pipeline as _dp
+
+_panier_g1 = [{"match_id": "match_06_09", "domicile": "Tirana", "exterieur": "Vora", "competition": "Superliga"}]
+_hist_g1 = [{"date": "2026-03-22", "matchs": [
+    {"match_id": "match_22_03", "domicile": "Tirana", "exterieur": "Vora", "score": "3-0", "resultat": "MAUVAIS"},
+]}]
+verite(
+    "cherche_deja_analyses() ne confond plus deux rencontres différentes entre les mêmes "
+    "équipes (match_id différent -- ex. aller-retour, championnat vs coupe)",
+    len(_dp.cherche_deja_analyses(_panier_g1, [], _hist_g1)) == 0,
+)
+verite(
+    "extrait_resultat_de_ce_panier() ne renvoie pas non plus le mauvais match dans ce cas",
+    _dp.extrait_resultat_de_ce_panier(_panier_g1, _hist_g1) == [],
+)
+_panier_degrade = [{"domicile": "Foo", "exterieur": "Bar", "competition": "X"}]
+_hist_degrade = [{"date": "2026-09-01", "matchs": [{"domicile": "Foo", "exterieur": "Bar", "score": "1-0"}]}]
+verite(
+    "Le repli (domicile, exterieur) fonctionne toujours pour une entrée dégradée sans match_id",
+    len(_dp.extrait_resultat_de_ce_panier(_panier_degrade, _hist_degrade)) == 1,
+)
+
+
+# ============================================================================
+section("Groupe 1 — retrait de la saisie manuelle et de l'ancien moteur du cron (#23/#40/#22, 06/09)")
+# ============================================================================
+import os as _os
+
+for _f in ("betpawa.html", "betpawa.js"):
+    verite(f"{_f} n'existe plus (saisie manuelle de cotes retirée)", not _os.path.exists(_f))
+
+with open("panier.js", encoding="utf-8") as f:
+    _src_panier_js = f.read()
+verite(
+    "panier.js ne contient plus le handler d'ajout manuel ni RE_MATCH_URL",
+    "ajouter-manuel-btn" not in _src_panier_js and "RE_MATCH_URL" not in _src_panier_js,
+)
+
+with open("panier.html", encoding="utf-8") as f:
+    _src_panier_html = f.read()
+verite(
+    "panier.html ne contient plus le bloc #ajout-manuel ni le lien vers betpawa.html",
+    "ajout-manuel" not in _src_panier_html and "betpawa.html" not in _src_panier_html,
+)
+
+with open("index.html", encoding="utf-8") as f:
+    _src_index_html = f.read()
+verite("index.html ne contient plus le lien vers betpawa.html", "betpawa.html" not in _src_index_html)
+
+# Le moteur automatique (cotes_manuelles interne, résolution Betpawa) ne
+# doit JAMAIS être touché par ce retrait -- le nom du champ est historique,
+# pas une preuve de saisie manuelle (voir décision explicite de Patrick).
+with open("resolution_betpawa_precalcul.py", encoding="utf-8") as f:
+    _src_rbp = f.read()
+verite(
+    "resolution_betpawa_precalcul.py continue d'écrire cotes_manuelles en interne "
+    "(moteur automatique, jamais retiré malgré le nom historique du champ)",
+    'm["cotes_manuelles"] = cotes' in _src_rbp,
+)
+for _f in ("scraper_betpawa.py", "parse_betpawa.py", "parse_betpawa_url.py"):
+    verite(f"{_f} existe toujours (fonctions utilisées en interne par le moteur actif)", _os.path.exists(_f))
+
+with open(".github/workflows/pipeline.yml", encoding="utf-8") as f:
+    _src_yml = f.read()
+verite(
+    "pipeline.yml ne lance plus scraper_betpawa.py (ancien moteur retiré du cron -- "
+    "seule une mention en commentaire explicatif est attendue, pas une commande run:)",
+    "run: python scraper_betpawa.py" not in _src_yml,
+)
+verite(
+    "pipeline.yml ne lance plus run_pipeline.py sous condition schedule/panier_id vide "
+    "(seule la branche dispatch_pipeline.py peut encore l'appeler, en interne)",
+    "python run_pipeline.py" not in _src_yml and "import run_pipeline" in open("dispatch_pipeline.py", encoding="utf-8").read(),
+)
+
+
+# ============================================================================
 print("\n" + "=" * 70)
 if echecs:
     print(f"AUDIT ÉCHOUÉ -- {len(echecs)} vérité(s) fausse(s) :")
