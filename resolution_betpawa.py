@@ -34,6 +34,20 @@ TOKENS_IGNORES_ETENDUS = TOKENS_CLUB_IGNORES | {"el", "al"}
 SEUIL_HAUTE_CONFIANCE = 0.80
 SEUIL_CANDIDAT = 0.50
 
+# CORRECTIF 05/09/2026 -- veto réserve. Trouvé en testant (pas dans les
+# 100 matchs déjà validés, cas synthétiques) : la règle substring
+# ("a in b or b in a" -> 1.0) matche à tort une équipe et sa réserve
+# (Real Madrid / Real Madrid Castilla, Sporting Lisbonne / Sporting
+# Lisbonne B) -- score 1.0, TAMIS 1 accepte automatiquement sans même
+# vérifier la date si un seul candidat ressort à ce score-là. Risque
+# concret : réserve et équipe première jouant le même jour, mauvaises
+# cotes récupérées. Ne couvre PAS le cas d'un club homonyme mais
+# entièrement différent (ex. Independiente Argentine vs Independiente
+# del Valle Équateur) -- aucun marqueur textuel fiable ne distingue ce
+# cas-là d'un vrai alias, reste un risque non résolu.
+MARQUEURS_RESERVE = {"b", "ii", "iii", "castilla", "atletic", "reserve",
+                      "reservas", "u23", "u21", "u20", "u19", "juvenil"}
+
 SIGLES_CONNUS = {
     "psg": "Paris Saint-Germain",
     "om": "Olympique Marseille",
@@ -58,10 +72,18 @@ def normalise_pour_comparaison(texte):
 
 
 def ratio_ressemblance(nom_a, nom_b):
-    a, b = normalise_pour_comparaison(nom_a), normalise_pour_comparaison(nom_b)
+    mots_a, mots_b = normalise(nom_a), normalise(nom_b)
+    a, b = " ".join(mots_a), " ".join(mots_b)
     if not a or not b:
         return 0.0
     if a in b or b in a:
+        # CORRECTIF 05/09/2026 -- voir MARQUEURS_RESERVE ci-dessus. Un nom
+        # inclus dans l'autre n'est un alias fiable QUE si les mots en
+        # trop ne sont pas un marqueur de réserve/jeunes -- sinon ce sont
+        # deux équipes différentes du même club, pas la même équipe.
+        mots_en_trop = (set(mots_a) - set(mots_b)) | (set(mots_b) - set(mots_a))
+        if mots_en_trop & MARQUEURS_RESERVE:
+            return 0.0
         return 1.0
     return SequenceMatcher(None, a, b).ratio()
 
