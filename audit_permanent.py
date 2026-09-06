@@ -1086,6 +1086,58 @@ if _os_g5.path.exists(_g5_fichier_cache_test):
 
 
 # ============================================================================
+section("Groupe 7 (partie #20) — meilleur_parsing() choisit sur marchés PLAUSIBLES, pas bruts (06/09)")
+# ============================================================================
+verite(
+    "_marches_plausibles() ne touche pas des cotes normales (aucune <= 1.0)",
+    sb._marches_plausibles({"1x2": {"1": 1.5, "N": 3.2, "2": 5.0}})
+    == {"1x2": {"1": 1.5, "N": 3.2, "2": 5.0}},
+)
+verite(
+    "_marches_plausibles() écarte un marché entier dès qu'une valeur <= 1.0 y figure, "
+    "sans toucher aux autres marchés",
+    sb._marches_plausibles({"1x2": {"1": 1.5, "N": 3.2, "2": 5.0}, "errone": {"x": 0.8, "y": 2.0}})
+    == {"1x2": {"1": 1.5, "N": 3.2, "2": 5.0}},
+)
+verite(
+    "_marches_plausibles() tolère None (absence connue, pas une erreur)",
+    sb._marches_plausibles({"over_under_2.5": {"plus": 1.9, "moins": None}})
+    == {"over_under_2.5": {"plus": 1.9, "moins": None}},
+)
+
+_g7_orig_pb = sb.parse_betpawa
+_g7_orig_pbu = sb.parse_betpawa_url
+_g7_orig_pbp = sb.parse_betpawa_playwright
+sb.parse_betpawa = lambda t, d, e: {
+    "1x2": {"1": 0.4, "N": 0.2, "2": 0.1},
+    "btts": {"Oui": 0.3, "Non": 0.2},
+    "pair_impair": {"pair": 0.5, "impair": 0.1},
+}
+sb.parse_betpawa_url = lambda t, d, e: {"1x2": {"1": 1.9, "N": 3.4, "2": 3.9}}
+sb.parse_betpawa_playwright = lambda t, d, e: {}
+try:
+    _g7_resultat = sb.meilleur_parsing("texte quelconque", "A", "B")
+finally:
+    sb.parse_betpawa = _g7_orig_pb
+    sb.parse_betpawa_url = _g7_orig_pbu
+    sb.parse_betpawa_playwright = _g7_orig_pbp
+
+verite(
+    "meilleur_parsing() choisit le parseur avec le plus de marchés PLAUSIBLES "
+    "(1 marché valide bat 3 marchés bruts mais tous à cotes <=1.0)",
+    _g7_resultat == {"1x2": {"1": 1.9, "N": 3.4, "2": 3.9}},
+)
+verite(
+    "_marches_plausibles() conserve une valeur non-dict sans la filtrer, aucun crash",
+    sb._marches_plausibles({"note_libre": "texte quelconque"}) == {"note_libre": "texte quelconque"},
+)
+verite(
+    "_marches_plausibles() sur un dict vide ne plante pas",
+    sb._marches_plausibles({}) == {},
+)
+
+
+# ============================================================================
 print("\n" + "=" * 70)
 if echecs:
     print(f"AUDIT ÉCHOUÉ -- {len(echecs)} vérité(s) fausse(s) :")
