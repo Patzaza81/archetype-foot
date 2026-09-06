@@ -358,6 +358,46 @@ for nom, valeur_attendue in valeurs_attendues.items():
 
 
 # ============================================================================
+section("plafonner_cluster — plafond de risque CLUSTER_MAX réellement appliqué (bug #12, 06/09)")
+# ============================================================================
+# La fonction existait depuis l'origine mais n'était appelée nulle part --
+# CLUSTER_MAX=10% n'avait jamais d'effet réel (un match pouvait exposer
+# jusqu'à 3*4%=12%). Corrigée en même temps que le bug de clés
+# ("ev"/"mise" vs les vrais champs "ev_brut"/"mise_pct_bankroll").
+
+_paris_test = [
+    {"ev_brut": 0.09, "mise_pct_bankroll": 0.04},
+    {"ev_brut": 0.07, "mise_pct_bankroll": 0.04},
+    {"ev_brut": 0.05, "mise_pct_bankroll": 0.04},
+]
+_r = calculs.plafonner_cluster([dict(p) for p in _paris_test], cle_ev="ev_brut", cle_mise="mise_pct_bankroll")
+_total = sum(p["mise_pct_bankroll"] for p in _r)
+verite(
+    "plafonner_cluster() ramène bien 12% de mise cumulée à 10% (CLUSTER_MAX)",
+    abs(_total - calculs.CLUSTER_MAX) < 1e-9,
+    f"total obtenu={_total}",
+)
+
+with open("run_pipeline.py", encoding="utf-8") as f:
+    _source_rp2 = f.read()
+verite(
+    "run_pipeline.py appelle bien calculs.plafonner_cluster() sur liste_b_avec_mise",
+    "calculs.plafonner_cluster(" in _source_rp2,
+)
+
+
+# ============================================================================
+section("resolution_betpawa tamis 1 — la date retournée n'est plus jetée (bug #5, 06/09)")
+# ============================================================================
+import resolution_betpawa as _rb
+_source_resoudre_match = inspect.getsource(_rb.resoudre_match)
+verite(
+    "resoudre_match() compare bien la date trouvée à la date attendue au tamis 1",
+    "date_trouvee == date_attendue" in _source_resoudre_match,
+)
+
+
+# ============================================================================
 print("\n" + "=" * 70)
 if echecs:
     print(f"AUDIT ÉCHOUÉ -- {len(echecs)} vérité(s) fausse(s) :")
