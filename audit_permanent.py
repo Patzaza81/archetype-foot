@@ -182,6 +182,28 @@ verite(
 
 
 # ============================================================================
+section("_memes_equipes / _memes_equipes_ratio — équipe vs sa réserve (bug trouvé le 05/09)")
+# ============================================================================
+# Même bug que resolution_betpawa.py : "n1 in n2 or n2 in n1" confondait
+# une équipe et sa réserve/jeunes (Real Madrid vs Real Madrid Castilla).
+# Utilisées pour retrouver une ligne de classement ou un historique H2H.
+
+cas_reserve = [
+    ("Real Madrid", "Real Madrid Castilla", False),
+    ("Sporting Lisbonne", "Sporting Lisbonne B", False),
+    ("PSG", "PSG U19", False),
+    ("AS Roma", "Roma", True),
+    ("PSG", "PSG", True),
+]
+for a, b, attendu in cas_reserve:
+    r = sd._memes_equipes(a, b)
+    verite(f"scraper_details._memes_equipes({a!r}, {b!r})", r == attendu, f"obtenu={r}")
+for a, b, attendu in cas_reserve:
+    r = calculs._memes_equipes_ratio(a, b)
+    verite(f"calculs._memes_equipes_ratio({a!r}, {b!r})", r == attendu, f"obtenu={r}")
+
+
+# ============================================================================
 section("Purges de cache — réellement appelées dans precalcul.py, pas juste définies")
 # ============================================================================
 with open("precalcul.py", encoding="utf-8") as f:
