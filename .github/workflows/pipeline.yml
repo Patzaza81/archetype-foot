@@ -44,9 +44,13 @@ jobs:
         run: python scraper_semaine.py --max-matchs 100000
         continue-on-error: true
 
-      - name: Récupérer les matchs Betpawa (betpawa_urls.txt)
-        run: python scraper_betpawa.py
-        continue-on-error: true
+      # CORRECTIF 06/09/2026 (Groupe 1, bugs #23/#40/#22) -- scraper_betpawa.py
+      # lisait betpawa_urls.txt (ancien mécanisme manuel, retiré le 06/09 en
+      # même temps que betpawa.html/betpawa.js) et alimentait panier.json/
+      # data.json, un chemin mort en pratique tant que Supabase est configuré
+      # (data.json n'est plus lu par personne côté site -- voir script.js).
+      # Étape supprimée : le moteur automatique (precalcul.py, ci-dessous)
+      # couvre déjà tous les matchs J0-J+3 via resolution_betpawa_precalcul.py.
 
       # CORRECTIF 03/09/2026 : plafond de 100 supprimé. Le run #91 (filtre
       # de compétitions actif, cap à 100) a tourné en 33m37s total -- très
@@ -63,9 +67,15 @@ jobs:
         run: python precalcul.py
         continue-on-error: true
 
-      - name: Pipeline planifié ou relance manuelle complète (panier_id vide)
-        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
-        run: python run_pipeline.py
+      # CORRECTIF 06/09/2026 (Groupe 1, bug #22/#40) -- cette étape lisait
+      # panier.json tel quel sur le disque lors d'un run planifié, alors que
+      # panier.json n'a de sens que pour le canal Supabase (voir la branche
+      # dispatch_pipeline.py juste en dessous, qui écrit un panier.json frais
+      # avant d'appeler run_pipeline.main() en interne). Un run planifié
+      # pouvait ainsi retraiter un panier.json périmé laissé par un run
+      # manuel précédent (symptôme réel observé : panier.json à 11 entrées
+      # d'août, data.json à 0 match). run_pipeline.py reste utilisé, mais
+      # UNIQUEMENT via dispatch_pipeline.py -- jamais directement en planifié.
 
       - name: Pipeline déclenché manuellement (panier Supabase, panier_id renseigné)
         if: github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id != ''
