@@ -117,6 +117,55 @@ verite(
 
 
 # ============================================================================
+section("GA_REFERENCE_PAR_COMPETITION — division distincte du pays (bug 05/09, corrigé)")
+# ============================================================================
+# Point critique #8 de TRANSITION.md : Eerste Divisie/Challenge Ligue
+# héritaient à tort de la valeur de la 1ère division du même pays.
+
+verite(
+    "Suisse Challenge Ligue a SA PROPRE valeur (différente de la Super Ligue)",
+    calculs.get_ga_reference("Suisse", "Challenge Ligue") != calculs.get_ga_reference("Suisse", None),
+)
+verite(
+    "Suisse Super League garde sa valeur pays inchangée (pas de régression)",
+    calculs.get_ga_reference("Suisse", "Super League") == calculs.get_ga_reference("Suisse", None),
+)
+verite(
+    "compétition inconnue retombe sur la valeur pays (pas de valeur inventée)",
+    calculs.get_ga_reference("Pays-Bas", "Eerste Divisie inconnue XYZ") == calculs.get_ga_reference("Pays-Bas", None),
+)
+verite(
+    "Eerste Divisie (Pays-Bas D2) a SA PROPRE valeur (différente de l'Eredivisie)",
+    calculs.get_ga_reference("Pays-Bas", "Eerste Divisie") != calculs.get_ga_reference("Pays-Bas", None),
+)
+verite(
+    "pays=None, competition=None -> default (comportement d'origine intact)",
+    calculs.get_ga_reference(None, None) == calculs.get_ga_reference(None),
+)
+
+with open("run_pipeline.py", encoding="utf-8") as f:
+    _source_rp = f.read()
+verite(
+    "run_pipeline.py transmet bien 'competition' à calcule_lambda (pas seulement 'pays')",
+    "competition=competition_partie" in _source_rp,
+)
+
+# Bug réel trouvé le 06/09 sur un vrai run (pas en test) : matchendirect
+# affiche "Challenge Ligue" (français) avec un retour à la ligne avant,
+# jamais "Challenge League" (anglais) -- la clé du dict doit matcher EXACTEMENT
+# la chaîne brute réelle, extraction incluse (split+strip), pas une version
+# idéalisée tapée à la main.
+_competition_brute_reelle = "Suisse :\n                        Challenge Ligue"
+_pays_reel = _competition_brute_reelle.split(":")[0].strip()
+_partie_reelle = _competition_brute_reelle.split(":", 1)[1].strip()
+verite(
+    "Challenge Ligue (chaîne brute réelle avec saut de ligne) a SA PROPRE valeur, pas celle de la Super Ligue",
+    calculs.get_ga_reference(_pays_reel, _partie_reelle) != calculs.get_ga_reference("Suisse", None),
+    f"obtenu={calculs.get_ga_reference(_pays_reel, _partie_reelle)}",
+)
+
+
+# ============================================================================
 section("decision_go_nogo — veto d'échantillon minimum (bug du 05/09, corrigé une 2e fois)")
 # ============================================================================
 # Bug réel trouvé le 05/09 : TRANSITION.md 21.8 annonçait ce veto comme
