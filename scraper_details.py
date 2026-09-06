@@ -408,10 +408,21 @@ def recupere_classement_du_match(url_match, nom_competition=None):
 
 
 def trouve_equipe_dans_classement(classement, nom_equipe):
+    """NON UTILISÉE ACTUELLEMENT dans le pipeline (aucun appelant trouvé
+    dans tout le dépôt au 05/09/2026) -- calcule_ratio_classement()
+    (calculs.py) fait sa propre recherche via _memes_equipes_ratio().
+    Corrigée quand même par cohérence, au cas où elle serait réutilisée
+    plus tard -- même bug/même correctif que _memes_equipes ci-dessous."""
     nom_norm = nom_equipe.strip().lower()
     for ligne in classement:
         eq_norm = (ligne["equipe"] or "").strip().lower()
-        if eq_norm == nom_norm or eq_norm in nom_norm or nom_norm in eq_norm:
+        if eq_norm == nom_norm:
+            return ligne
+        if eq_norm in nom_norm or nom_norm in eq_norm:
+            mots_en_trop = (set(eq_norm.split()) - set(nom_norm.split())) | \
+                           (set(nom_norm.split()) - set(eq_norm.split()))
+            if mots_en_trop & _MARQUEURS_RESERVE_EQUIPE:
+                continue
             return ligne
     return None
 
