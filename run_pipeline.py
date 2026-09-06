@@ -535,11 +535,19 @@ def construit_signaux(matchs_bruts):
         # dans GA_REFERENCE_PAR_LIGUE (calculs.py). Absent du dict -> "default",
         # comportement identique à l'ancien GA_REFERENCE fixe.
         pays_match = competition.split(":")[0].strip() if competition else None
+        # (05/09/2026 -- calibration par division) partie après le pays,
+        # ex. "Pays-Bas : Eerste Divisie" -> "Eerste Divisie". Transmise en
+        # plus du pays -- get_ga_reference() l'utilise en priorité si une
+        # valeur existe dans GA_REFERENCE_PAR_COMPETITION (calculs.py),
+        # sinon retombe sur le pays comme avant. Résout le point critique
+        # #8 de TRANSITION.md (Eerste Divisie/Challenge Ligue héritaient à
+        # tort de la valeur de la 1ère division du même pays).
+        competition_partie = competition.split(":", 1)[1].strip() if competition and ":" in competition else None
 
         lam = calculs.calcule_lambda(
             gf_home, ga_home, gf_away, ga_away,
             ratios_contextuels_home=ratios_home, ratios_contextuels_away=ratios_away,
-            pays=pays_match,
+            pays=pays_match, competition=competition_partie,
         )
         matrice = calculs.matrice_poisson_dixon_coles(lam["lambda_home"], lam["lambda_away"])
         proba_1 = calculs.probabilite_marche(matrice, lambda x, y: x > y)
