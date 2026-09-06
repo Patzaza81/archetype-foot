@@ -58,6 +58,12 @@ except Exception as e:
     print(f"[FAIL] import scraper_betpawa.py -- {e}")
     sys.exit(1)
 
+try:
+    import scraper_semaine as ss
+except Exception as e:
+    print(f"[FAIL] import scraper_semaine.py -- {e}")
+    sys.exit(1)
+
 
 # ============================================================================
 section("K_SHRINKAGE / ajuste_probabilite — doit avoir un effet réel")
@@ -885,6 +891,73 @@ verite(
     "acceptée, pas une donnée corrompue -- décision explicite de Patrick)",
     "continue-on-error: true" in _bloc_semaine and "exit 1" not in _bloc_semaine,
 )
+
+
+# ============================================================================
+section("Groupe 6 — déduplication match_id dans matchs_semaine.json (bug #9, 06/09)")
+# ============================================================================
+# Preuve directe (06/09) : 19 match_id présents sous DEUX dates différentes
+# dans le vrai matchs_semaine.json du dépôt (matchs de 00h00-02h30 heure
+# française, listés par matchendirect.fr sur les deux pages calendaires
+# adjacentes -- PAS le bug de redirection déjà connu sur "demain", le
+# recouvrement mesuré n'est que de 6-7%, jamais 100%).
+
+_g6_sans_doublon = [
+    {"match_id": "g6a", "domicile": "A", "exterieur": "B", "date": "2026-09-08"},
+    {"match_id": "g6b", "domicile": "C", "exterieur": "D", "date": "2026-09-09"},
+]
+verite(
+    "deduplique_par_match_id() ne touche pas une liste déjà sans doublon",
+    ss.deduplique_par_match_id(_g6_sans_doublon) == _g6_sans_doublon,
+)
+
+_g6_vrai_doublon = [
+    {"match_id": "g6x", "domicile": "Fluminense", "exterieur": "Platense", "date": "2026-09-08"},
+    {"match_id": "g6x", "domicile": "Fluminense", "exterieur": "Platense", "date": "2026-09-09"},
+]
+_g6_resultat = ss.deduplique_par_match_id(_g6_vrai_doublon)
+verite(
+    "Un vrai doublon (même match_id, 2 dates) est réduit à 1 seule entrée, "
+    "la date la plus proche (J+2) est celle gardée",
+    len(_g6_resultat) == 1 and _g6_resultat[0]["date"] == "2026-09-08",
+    f"obtenu={_g6_resultat}",
+)
+
+_g6_meme_heure_equipes_differentes = [
+    {"match_id": "g6p1", "domicile": "A", "exterieur": "B", "date": "2026-09-08", "heure": "01:00"},
+    {"match_id": "g6p2", "domicile": "C", "exterieur": "D", "date": "2026-09-08", "heure": "01:00"},
+]
+verite(
+    "Deux matchs différents à la même heure ne sont jamais fusionnés à tort",
+    len(ss.deduplique_par_match_id(_g6_meme_heure_equipes_differentes)) == 2,
+)
+
+verite(
+    "deduplique_par_match_id() ne plante pas sur une liste vide",
+    ss.deduplique_par_match_id([]) == [],
+)
+
+_g6_sans_id = [{"domicile": "A", "exterieur": "B", "date": "2026-09-08"}]
+verite(
+    "Une entrée sans match_id est conservée telle quelle (aucun crash, pas de dédup impossible)",
+    ss.deduplique_par_match_id(_g6_sans_id) == _g6_sans_id,
+)
+
+# Vérité sur les VRAIES données du dépôt, pas seulement des cas construits.
+import json as _json
+try:
+    with open("matchs_semaine.json", encoding="utf-8") as f:
+        _g6_donnees_reelles = _json.load(f)
+    _g6_dedupliquees = ss.deduplique_par_match_id(_g6_donnees_reelles)
+    _g6_ids = [m["match_id"] for m in _g6_dedupliquees if m.get("match_id")]
+    verite(
+        "matchs_semaine.json réel, une fois dédupliqué, n'a plus aucun match_id "
+        "associé à deux dates différentes",
+        len(_g6_ids) == len(set(_g6_ids)),
+        f"{len(_g6_donnees_reelles)} matchs avant, {len(_g6_dedupliquees)} après",
+    )
+except (FileNotFoundError, _json.JSONDecodeError) as e:
+    print(f"[SKIP] vérité matchs_semaine.json réel -- fichier absent ou invalide ({e})")
 
 
 # ============================================================================
