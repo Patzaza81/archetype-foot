@@ -198,7 +198,7 @@ def get_ga_reference(pays=None, competition=None):
 # division). Clé = le nom de compétition tel qu'affiché par matchendirect
 # après le pays (ex. "Pays-Bas : Eerste Divisie" -> "Eerste Divisie").
 #
-# "Challenge League" (Suisse, 2e division) -- AJOUT 05/09/2026, calculée
+# "Challenge Ligue" (Suisse, 2e division) -- AJOUT 05/09/2026, calculée
 # sur la vraie table finale Flashscore de la saison 2025/2026 (championnat
 # terminé, promotion Vaduz/relégation Bellinzona actées) : 10 équipes x 36
 # matchs = 180 matchs, GF_total = GA_total = 551 (vérifié, somme des BP de
@@ -206,8 +206,17 @@ def get_ga_reference(pays=None, competition=None):
 # capture d'écran, pas par CSV Football-Data.co.uk (absent de leurs
 # "extra leagues" pour cette compétition) -- méthode différente des
 # 16 pays de GA_REFERENCE_PAR_LIGUE, mais même vérification (GF=GA).
+#
+# CORRECTIF 06/09/2026 -- clé renommée "Challenge League" -> "Challenge
+# Ligue". Bug réel trouvé sur les vraies données d'un run complet (pas en
+# test) : matchendirect affiche "Challenge Ligue" (français), jamais
+# "Challenge League" (anglais). Avec l'ancienne clé, le lookup ne matchait
+# JAMAIS -- la Challenge Ligue retombait silencieusement sur la valeur de
+# la Super Ligue (D1), exactement le bug que ce correctif devait résoudre.
+# Vérifié : precalcul.json de ce run contient bien le libellé
+# "Suisse :\n                        Challenge Ligue".
 GA_REFERENCE_PAR_COMPETITION = {
-    "Challenge League": 551 / (2 * 180),  # 1.5306 -- Suisse D2, saison 2025/2026
+    "Challenge Ligue": 551 / (2 * 180),   # 1.5306 -- vraie clé utilisée par matchendirect (français)
     # "Eerste Divisie" (Pays-Bas, 2e division) -- AJOUT 05/09/2026, calculée
     # sur la vraie table finale Flashscore de la saison 2025/2026 (Den Haag
     # champion, saison terminée) : 20 équipes x 38 matchs = 380 matchs,
