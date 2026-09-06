@@ -21,6 +21,22 @@ const DEFAULT_REF = "main";
 const GITHUB_API_VERSION = "2022-11-28";
 const RE_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+// AJOUT 06/09/2026 (bug #25) -- rate-limit + vérification "pas déjà en
+// cours", appliqués tous deux via des requêtes Supabase avec le jeton de
+// L'UTILISATEUR (pas service_role) -- RLS scope déjà tout à ses propres
+// lignes, aucun filtre user_id explicite à ajouter ici, même principe que
+// verifiePanierAppartientAUtilisateur() ci-dessous.
+const LIMITE_PANIERS_PAR_FENETRE = 3;
+const FENETRE_RATE_LIMIT_MINUTES = 10;
+
+// AJOUT 06/09/2026 (bug #26) -- taille max de panier. Schéma Supabase non
+// vérifiable depuis ce dépôt (pas de contrainte CHECK côté base à ce
+// jour) -- appliqué ici, côté fonction, en relisant le panier déjà inséré
+// (même requête que la vérification de propriété, `matchs` ajouté au
+// select). Valeur choisie par défaut, jamais confirmée avec Patrick --
+// À AJUSTER si besoin, une simple constante à changer.
+const TAILLE_MAX_PANIER = 50;
+
 function jsonResponse(statusCode, body) {
   return {
     statusCode,
@@ -73,17 +89,72 @@ function getConfiguration() {
 // la policy "chacun voit ses propres paniers" fait que la requête renvoie
 // un tableau vide, comme si le panier n'existait pas. Aucune vérification
 // manuelle de propriétaire à coder ici -- la base la fait toute seule.
+//
+// CORRECTIF 06/09/2026 (bug #26) : select étendu à "id,matchs" (avant :
+// "id" seul) pour pouvoir vérifier la taille du panier dans le même
+// aller-retour réseau, sans requête supplémentaire. Retourne désormais
+// { ok, matchs } au lieu d'un simple booléen -- ok=false couvre les deux
+// anciens cas (panier introuvable OU n'appartenant pas à l'appelant,
+// RLS renvoie un tableau vide dans les deux cas, indiscernables et c'est
+// voulu -- jamais révéler qu'un panier_id existe chez quelqu'un d'autre).
 async function verifiePanierAppartientAUtilisateur(config, panierId, jetonUtilisateur) {
-  const url = `${config.supabaseUrl}/rest/v1/paniers?id=eq.${encodeURIComponent(panierId)}&select=id`;
+  const url = `${config.supabaseUrl}/rest/v1/paniers?id=eq.${encodeURIComponent(panierId)}&select=id,matchs`;
   const response = await fetch(url, {
     headers: {
       apikey: config.supabaseAnonKey,
       Authorization: `Bearer ${jetonUtilisateur}`,
     },
   });
+  if (!response.ok) return { ok: false, matchs: null };
+  const lignes = await response.json();
+  if (!Array.isArray(lignes) || lignes.length !== 1) return { ok: false, matchs: null };
+  return { ok: true, matchs: lignes[0].matchs };
+}
+
+// AJOUT 06/09/2026 (bug #25, partie 1/2) -- un panier "en_cours" existe
+// déjà pour cet utilisateur (statut posé par dispatch_pipeline.py une
+// fois le run GitHub Actions réellement démarré, voir marque_panier_en_cours()) ?
+// LIMITE CONNUE, acceptée : workflow_dispatch est asynchrone (jusqu'à
+// ~1 min avant que le run démarre côté GitHub) -- une double soumission
+// très rapprochée, avant que le premier run n'ait eu le temps de poser
+// "en_cours", peut passer ce contrôle. Le rate-limit ci-dessous couvre ce
+// cas résiduel en bornant le nombre total de soumissions, pas seulement
+// les "en_cours" détectées.
+async function utilisateurADejaUnePanierEnCours(config, jetonUtilisateur) {
+  const url = `${config.supabaseUrl}/rest/v1/paniers?select=id&statut=eq.en_cours`;
+  const response = await fetch(url, {
+    headers: {
+      apikey: config.supabaseAnonKey,
+      Authorization: `Bearer ${jetonUtilisateur}`,
+    },
+  });
+  // Échec technique de la vérification elle-même -- ne bloque jamais
+  // l'utilisateur pour une panne de CE contrôle précis (même philosophie
+  // que le reste du dépôt : mieux vaut laisser passer que faire échouer
+  // tout le monde sur un contrôle annexe en panne).
   if (!response.ok) return false;
   const lignes = await response.json();
-  return Array.isArray(lignes) && lignes.length === 1;
+  return Array.isArray(lignes) && lignes.length > 0;
+}
+
+// AJOUT 06/09/2026 (bug #25, partie 2/2) -- nombre de paniers créés par
+// cet utilisateur dans la fenêtre récente (inclut le panier qui vient
+// d'être inséré par panier.js juste avant cet appel -- c'est voulu, il
+// compte dans le total). Retourne null sur échec technique (jamais 0 --
+// 0 affirmerait à tort "aucune activité récente" et lèverait le
+// rate-limit par erreur si la requête a juste échoué).
+async function compteParisRecents(config, jetonUtilisateur) {
+  const depuis = new Date(Date.now() - FENETRE_RATE_LIMIT_MINUTES * 60 * 1000).toISOString();
+  const url = `${config.supabaseUrl}/rest/v1/paniers?select=id&created_at=gte.${encodeURIComponent(depuis)}`;
+  const response = await fetch(url, {
+    headers: {
+      apikey: config.supabaseAnonKey,
+      Authorization: `Bearer ${jetonUtilisateur}`,
+    },
+  });
+  if (!response.ok) return null;
+  const lignes = await response.json();
+  return Array.isArray(lignes) ? lignes.length : null;
 }
 
 async function dispatchWorkflow(config, panierId) {
@@ -151,9 +222,43 @@ exports.handler = async (event) => {
   }
 
   try {
-    const appartientBienAUtilisateur = await verifiePanierAppartientAUtilisateur(config, panierId, jetonUtilisateur);
+    const { ok: appartientBienAUtilisateur, matchs } =
+      await verifiePanierAppartientAUtilisateur(config, panierId, jetonUtilisateur);
     if (!appartientBienAUtilisateur) {
       return jsonResponse(404, { ok: false, error: "Panier introuvable." });
+    }
+
+    // CORRECTIF 06/09/2026 (bug #26) : taille max de panier, vérifiée
+    // AVANT tout déclenchement -- un panier trop gros ne consomme jamais
+    // de minutes GitHub Actions ni de résolution Betpawa pour rien.
+    const nbMatchs = Array.isArray(matchs) ? matchs.length : 0;
+    if (nbMatchs > TAILLE_MAX_PANIER) {
+      return jsonResponse(400, {
+        ok: false,
+        error: `Panier trop volumineux (${nbMatchs} match(s), maximum ${TAILLE_MAX_PANIER}).`,
+      });
+    }
+
+    // CORRECTIF 06/09/2026 (bug #25) : "pas déjà en_cours" avant le
+    // rate-limit -- message plus précis pour l'utilisateur dans le cas le
+    // plus probable (relance impatiente pendant qu'une analyse tourne
+    // déjà), le rate-limit couvrant le reste (spam, ou double clic trop
+    // rapide pour que "en_cours" soit déjà posé -- voir la limite connue
+    // documentée sur utilisateurADejaUnePanierEnCours()).
+    const dejaEnCours = await utilisateurADejaUnePanierEnCours(config, jetonUtilisateur);
+    if (dejaEnCours) {
+      return jsonResponse(429, {
+        ok: false,
+        error: "Une analyse est déjà en cours pour ce compte -- attends qu'elle se termine avant d'en lancer une nouvelle.",
+      });
+    }
+
+    const nbRecents = await compteParisRecents(config, jetonUtilisateur);
+    if (nbRecents !== null && nbRecents > LIMITE_PANIERS_PAR_FENETRE) {
+      return jsonResponse(429, {
+        ok: false,
+        error: `Trop de demandes récentes (maximum ${LIMITE_PANIERS_PAR_FENETRE} par ${FENETRE_RATE_LIMIT_MINUTES} minutes) -- réessaie plus tard.`,
+      });
     }
 
     const accepted = await dispatchWorkflow(config, panierId);
