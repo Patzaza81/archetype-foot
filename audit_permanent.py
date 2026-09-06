@@ -513,6 +513,140 @@ verite(
 
 
 # ============================================================================
+section("Groupe 4 — calcule_calibrage() ne confond plus marchés et matchs distincts (bug #13, 06/09)")
+# ============================================================================
+import calcule_roi as _cr
+
+
+def _marche_test(cote, proba):
+    return {"marche": "Moins de 2.5 buts", "probabilite_modele": proba, "cote_observee": cote}
+
+
+def _match_test(match_id, date, score, marches):
+    return {"match_id": match_id, "date": date, "domicile": "A", "exterieur": "B",
+            "verdict_global": "GO", "score": score, "TOUS_MARCHES_EVALUES": marches}
+
+
+# 2 matchs à 28 marchés chacun ne doivent jamais compter comme 56 matchs distincts.
+_marches_28 = [_marche_test(1.40, 0.85) for _ in range(28)]
+_hist_pseudo = [
+    {"date": "2026-08-01", "matchs": [_match_test("m1", "2026-08-01", "1-0", _marches_28)]},
+    {"date": "2026-08-02", "matchs": [_match_test("m2", "2026-08-02", "1-0", _marches_28)]},
+]
+_r_pseudo = _cr.calcule_calibrage(_hist_pseudo)
+verite(
+    "2 matchs à 28 marchés chacun comptent bien pour 2 matchs distincts (pas 56)",
+    _r_pseudo["nb_matchs_distincts_train"] + _r_pseudo["nb_matchs_distincts_test"] == 2,
+    f"obtenu={_r_pseudo['nb_matchs_distincts_train'] + _r_pseudo['nb_matchs_distincts_test']}",
+)
+verite(
+    "Avec seulement 2 matchs distincts, le palier n_min_10 reste None (pas de calibrage fabriqué)",
+    _r_pseudo["recommandations_par_palier_n"]["n_min_10"] is None,
+)
+
+# 15 matchs distincts : n_min_10 exploitable, mais n_min_20 doit rester None
+# -- jamais un repli silencieux du palier supérieur vers l'inférieur.
+_hist_15 = [{"date": f"2026-01-{i+1:02d}",
+             "matchs": [_match_test(f"m{i}", f"2026-01-{i+1:02d}", "1-0", [_marche_test(1.40, 0.85)])]}
+            for i in range(15)]
+_r_15 = _cr.calcule_calibrage(_hist_15)
+_train_n = _r_15["nb_matchs_distincts_train"]
+verite(
+    "n_min_20 reste None quand l'échantillon train n'atteint pas 20 matchs distincts "
+    "(aucune substitution par le palier n_min_10)",
+    _train_n < 20 and _r_15["recommandations_par_palier_n"]["n_min_20"] is None,
+    f"train={_train_n}",
+)
+
+# Score de Brier : pénalise un réglage surconfiant-et-faux plus qu'un
+# réglage prudent-et-juste, même quand le taux de réussite seul ne le
+# distinguerait pas de la même façon.
+_hist_A = [{"date": f"2026-02-{i+1:02d}",
+            "matchs": [_match_test(f"a{i}", f"2026-02-{i+1:02d}", "3-0", [_marche_test(1.30, 0.95)])]}
+           for i in range(15)]
+_hist_B = [{"date": f"2026-03-{i+1:02d}",
+            "matchs": [_match_test(f"b{i}", f"2026-03-{i+1:02d}", "1-0", [_marche_test(1.30, 0.80)])]}
+           for i in range(15)]
+_reco_A = _cr.calcule_calibrage(_hist_A, k_min=1.0, k_max=1.0, k_pas=1.0,
+                                 seuil_min=0.02, seuil_max=0.02, seuil_pas=1.0)["recommandations_par_palier_n"]["n_min_10"]
+_reco_B = _cr.calcule_calibrage(_hist_B, k_min=1.0, k_max=1.0, k_pas=1.0,
+                                 seuil_min=0.02, seuil_max=0.02, seuil_pas=1.0)["recommandations_par_palier_n"]["n_min_10"]
+verite(
+    "Le score de Brier est bien pire pour un réglage surconfiant-et-faux (0% de réussite, "
+    "annoncé à 95%) qu'un réglage prudent-et-juste (100% de réussite, annoncé à 80%)",
+    _reco_A is not None and _reco_B is not None and _reco_A["brier_score"] > _reco_B["brier_score"],
+    f"A={_reco_A['brier_score'] if _reco_A else None} B={_reco_B['brier_score'] if _reco_B else None}",
+)
+
+# Contrôle hors-échantillon absent si le sous-ensemble test n'atteint pas
+# lui-même 10 matchs distincts -- jamais une valeur fabriquée.
+verite(
+    "controle_hors_echantillon reste None quand le sous-ensemble test est trop petit",
+    _r_pseudo["controle_hors_echantillon_par_palier_n"]["n_min_10"] is None,
+)
+
+# Matchs marqués non_resolu_definitif (#29) : exclus du calibrage ET comptés.
+_hist_nrd = [{"date": "2026-03-01", "matchs": [
+    {**_match_test("x1", "2026-03-01", None, [_marche_test(1.4, 0.8)]), "score_statut": "non_resolu_definitif"},
+    _match_test("x2", "2026-03-01", "1-0", [_marche_test(1.4, 0.8)]),
+]}]
+_r_nrd = _cr.calcule_calibrage(_hist_nrd)
+verite(
+    "Un match marqué non_resolu_definitif est exclu du calibrage ET compté séparément",
+    _r_nrd["nb_matchs_non_resolus_definitif"] == 1,
+)
+
+
+# ============================================================================
+section("Groupe 4 — TOUS_MARCHES_EVALUES à nouveau archivé (bug #1, 06/09)")
+# ============================================================================
+import precalcul as _pc
+
+_s_test = {
+    "domicile": "A", "exterieur": "B", "competition": "C", "match_id": "x",
+    "date": "2026-09-06", "heure": "20:00", "verdict_global": "GO", "motif_no_go": None,
+    "confiance": "NORMALE", "source_cotes": "betpawa_auto", "betpawa_url": "u",
+    "model_version": "v1", "LISTE_B_liste_finale_apres_correlation": [],
+    "TOUS_MARCHES_EVALUES": [{"marche": "X", "probabilite_modele": 0.6, "cote_observee": 1.5}],
+}
+_r_archive = _pc._slim_pour_archive(_s_test)
+verite(
+    "_slim_pour_archive() conserve maintenant TOUS_MARCHES_EVALUES (calibrage débloqué)",
+    _r_archive.get("TOUS_MARCHES_EVALUES") == _s_test["TOUS_MARCHES_EVALUES"],
+)
+
+
+# ============================================================================
+section("Groupe 4 — statut explicite après le délai de vérification (bug #29, 06/09)")
+# ============================================================================
+import datetime as _dt
+import verification_resultats as _vr
+
+_aujourdhui = _vr.aujourdhui_france()
+_trop_vieux = (_aujourdhui - _dt.timedelta(days=_vr.NB_JOURS_MAX_A_VERIFIER + 5)).isoformat()
+_recent = (_aujourdhui - _dt.timedelta(days=2)).isoformat()
+_hist_vr = [
+    {"date": _trop_vieux, "matchs": [{"verdict_global": "GO", "score": None, "domicile": "A", "exterieur": "B"}]},
+    {"date": _recent, "matchs": [{"verdict_global": "GO", "score": None, "domicile": "C", "exterieur": "D"}]},
+]
+_charge_orig, _sauve_orig, _verifie_orig = _vr.charge_historique, _vr.sauve_historique, _vr.verifie_jour
+_vr.charge_historique = lambda: _hist_vr
+_vr.sauve_historique = lambda h: None
+_vr.verifie_jour = lambda jour: 0
+_vr.main()
+_vr.charge_historique, _vr.sauve_historique, _vr.verifie_jour = _charge_orig, _sauve_orig, _verifie_orig
+
+verite(
+    "Un jour au-delà du délai reçoit score_statut=non_resolu_definitif sur ses matchs non résolus",
+    _hist_vr[0]["matchs"][0].get("score_statut") == "non_resolu_definitif",
+)
+verite(
+    "Un jour récent (dans le délai) ne reçoit jamais ce statut, même sans score",
+    "score_statut" not in _hist_vr[1]["matchs"][0],
+)
+
+
+# ============================================================================
 print("\n" + "=" * 70)
 if echecs:
     print(f"AUDIT ÉCHOUÉ -- {len(echecs)} vérité(s) fausse(s) :")
