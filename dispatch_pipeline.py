@@ -79,6 +79,22 @@ def _cle_match(m):
     return m.get("match_id") or (m.get("domicile"), m.get("exterieur"))
 
 
+def marque_panier_echec(panier_id):
+    """CORRECTIF 06/09/2026 (Groupe 2, bug #11) -- avant, une exception
+    n'importe où entre marque_panier_en_cours() et la fin de main() laissait
+    le panier bloqué "en_cours" indéfiniment côté Supabase, sans jamais
+    d'erreur visible pour l'utilisateur. Écrit seulement "statut": "echec"
+    -- colonne déjà existante et déjà utilisée pour "en_cours"/"termine",
+    aucune nouvelle colonne Supabase supposée (schéma non vérifiable depuis
+    ce dépôt). Le détail de l'exception reste dans les logs GitHub Actions
+    (voir main()), pas persisté ici."""
+    url, headers = _config_supabase()
+    requests.patch(
+        f"{url}/rest/v1/paniers", params={"id": f"eq.{panier_id}"},
+        headers=headers, json={"statut": "echec"}, timeout=30,
+    )
+
+
 def extrait_resultat_de_ce_panier(matchs_demandes, historique):
     """Le fichier historique_pronostics.json produit par run_pipeline.py reste
     global (utilisé aussi par le pipeline quotidien planifié) -- on y retrouve
@@ -144,83 +160,100 @@ def main():
 
     marque_panier_en_cours(panier_id)
 
-    panier = []
-    for i, m in enumerate(matchs):
-        if not isinstance(m, dict) or not m.get("domicile") or not m.get("exterieur") or not m.get("competition"):
-            print(f"AVERTISSEMENT : entrée {i} ignorée (domicile/exterieur/competition manquant).", file=sys.stderr)
-            continue
-        panier.append({
-            "domicile": m["domicile"],
-            "exterieur": m["exterieur"],
-            "competition": m["competition"],
-            "url_match": m.get("url_match"),
-            "match_id": m.get("match_id"),
-            "source": m.get("source", "panier_web"),
-            "cotes_manuelles": m.get("cotes_manuelles"),
-        })
+    # CORRECTIF 06/09/2026 (Groupe 2, bug #11) -- tout ce qui suit était
+    # jusqu'ici sans filet : une exception n'importe où (parsing, run_pipeline,
+    # écriture du résultat...) laissait le panier bloqué "en_cours" pour
+    # toujours côté Supabase, sans jamais d'erreur visible pour l'utilisateur.
+    # Le détail de l'exception va dans les logs GitHub Actions (déjà
+    # consultables) ; seul "statut": "echec" est persisté (voir
+    # marque_panier_echec ci-dessus -- aucune nouvelle colonne supposée).
+    try:
+        panier = []
+        for i, m in enumerate(matchs):
+            if not isinstance(m, dict) or not m.get("domicile") or not m.get("exterieur") or not m.get("competition"):
+                print(f"AVERTISSEMENT : entrée {i} ignorée (domicile/exterieur/competition manquant).", file=sys.stderr)
+                continue
+            panier.append({
+                "domicile": m["domicile"],
+                "exterieur": m["exterieur"],
+                "competition": m["competition"],
+                "url_match": m.get("url_match"),
+                "match_id": m.get("match_id"),
+                "source": m.get("source", "panier_web"),
+                "cotes_manuelles": m.get("cotes_manuelles"),
+            })
 
-    if not panier:
-        print("ERREUR : aucune entrée valide après filtrage -- rien à traiter.", file=sys.stderr)
-        sys.exit(1)
+        if not panier:
+            print("ERREUR : aucune entrée valide après filtrage -- rien à traiter.", file=sys.stderr)
+            marque_panier_echec(panier_id)
+            sys.exit(1)
 
-    # AJOUT 03/09/2026 -- voir cherche_deja_analyses() ci-dessus : on regarde
-    # d'abord ce qui est déjà disponible avant de lancer quoi que ce soit.
-    precalcul_signaux = []
-    if os.path.exists("precalcul.json"):
-        with open("precalcul.json", "r", encoding="utf-8") as f:
-            precalcul_signaux = json.load(f).get("signaux", [])
+        # AJOUT 03/09/2026 -- voir cherche_deja_analyses() ci-dessus : on
+        # regarde d'abord ce qui est déjà disponible avant de lancer quoi
+        # que ce soit.
+        precalcul_signaux = []
+        if os.path.exists("precalcul.json"):
+            with open("precalcul.json", "r", encoding="utf-8") as f:
+                precalcul_signaux = json.load(f).get("signaux", [])
 
-    historique_existant = []
-    if os.path.exists("historique_pronostics.json"):
+        historique_existant = []
+        if os.path.exists("historique_pronostics.json"):
+            with open("historique_pronostics.json", "r", encoding="utf-8") as f:
+                historique_existant = json.load(f)
+
+        deja_analyses = cherche_deja_analyses(panier, precalcul_signaux, historique_existant)
+        manquants = [m for m in panier if _cle_match(m) not in deja_analyses]
+
+        if not manquants:
+            print(f"[dispatch] les {len(panier)} match(s) du panier sont déjà "
+                  f"analysés -- aucun scraping déclenché, résultats existants "
+                  f"réutilisés tels quels.")
+            resultat = [deja_analyses[_cle_match(m)] for m in panier]
+            ecrit_resultat(panier_id, ligne_panier["user_id"], resultat)
+            print(f"[dispatch] résultat écrit dans Supabase pour panier {panier_id} "
+                  f"({len(resultat)} match(s), 100% déjà disponibles).")
+            return
+
+        # run_pipeline.py inchangé : il lit toujours panier.json sur disque et
+        # écrit toujours historique_pronostics.json/data.json globalement.
+        # Seuls les matchs MANQUANTS sont écrits ici -- ceux déjà analysés ne
+        # sont pas repassés dans le scraping.
+        with open("panier.json", "w", encoding="utf-8") as f:
+            json.dump(manquants, f, ensure_ascii=False, indent=2)
+
+        print(f"[dispatch] panier.json écrit : {len(manquants)} entrée(s) à "
+              f"analyser sur {len(matchs)} reçue(s) ({len(deja_analyses)} "
+              f"déjà disponibles, non re-scrapées).")
+
+        import run_pipeline
+        run_pipeline.main()
+
         with open("historique_pronostics.json", "r", encoding="utf-8") as f:
-            historique_existant = json.load(f)
+            historique = json.load(f)
 
-    deja_analyses = cherche_deja_analyses(panier, precalcul_signaux, historique_existant)
-    manquants = [m for m in panier if _cle_match(m) not in deja_analyses]
+        resultat_nouveaux = extrait_resultat_de_ce_panier(manquants, historique)
+        resultat_par_cle = dict(deja_analyses)
+        for r in resultat_nouveaux:
+            resultat_par_cle[_cle_match(r)] = r
 
-    if not manquants:
-        print(f"[dispatch] les {len(panier)} match(s) du panier sont déjà "
-              f"analysés -- aucun scraping déclenché, résultats existants "
-              f"réutilisés tels quels.")
-        resultat = [deja_analyses[_cle_match(m)] for m in panier]
+        # RÈGLE STRICTE : ordre et contenu = exactement le panier demandé, ni
+        # plus ni moins -- un match qu'on n'a réussi à retrouver ni déjà
+        # analysé ni tout juste calculé est simplement absent du résultat
+        # renvoyé (pas de placeholder inventé).
+        resultat = [resultat_par_cle[_cle_match(m)]
+                    for m in panier if _cle_match(m) in resultat_par_cle]
+
         ecrit_resultat(panier_id, ligne_panier["user_id"], resultat)
         print(f"[dispatch] résultat écrit dans Supabase pour panier {panier_id} "
-              f"({len(resultat)} match(s), 100% déjà disponibles).")
-        return
+              f"({len(resultat)} match(s) trouvé(s) sur {len(panier)} demandé(s), "
+              f"dont {len(deja_analyses)} réutilisé(s) sans nouveau scraping).")
 
-    # run_pipeline.py inchangé : il lit toujours panier.json sur disque et
-    # écrit toujours historique_pronostics.json/data.json globalement.
-    # Seuls les matchs MANQUANTS sont écrits ici -- ceux déjà analysés ne
-    # sont pas repassés dans le scraping.
-    with open("panier.json", "w", encoding="utf-8") as f:
-        json.dump(manquants, f, ensure_ascii=False, indent=2)
-
-    print(f"[dispatch] panier.json écrit : {len(manquants)} entrée(s) à "
-          f"analyser sur {len(matchs)} reçue(s) ({len(deja_analyses)} "
-          f"déjà disponibles, non re-scrapées).")
-
-    import run_pipeline
-    run_pipeline.main()
-
-    with open("historique_pronostics.json", "r", encoding="utf-8") as f:
-        historique = json.load(f)
-
-    resultat_nouveaux = extrait_resultat_de_ce_panier(manquants, historique)
-    resultat_par_cle = dict(deja_analyses)
-    for r in resultat_nouveaux:
-        resultat_par_cle[_cle_match(r)] = r
-
-    # RÈGLE STRICTE : ordre et contenu = exactement le panier demandé, ni
-    # plus ni moins -- un match qu'on n'a réussi à retrouver ni déjà
-    # analysé ni tout juste calculé est simplement absent du résultat
-    # renvoyé (pas de placeholder inventé).
-    resultat = [resultat_par_cle[_cle_match(m)]
-                for m in panier if _cle_match(m) in resultat_par_cle]
-
-    ecrit_resultat(panier_id, ligne_panier["user_id"], resultat)
-    print(f"[dispatch] résultat écrit dans Supabase pour panier {panier_id} "
-          f"({len(resultat)} match(s) trouvé(s) sur {len(panier)} demandé(s), "
-          f"dont {len(deja_analyses)} réutilisé(s) sans nouveau scraping).")
+    except SystemExit:
+        raise
+    except Exception as e:
+        print(f"ERREUR dispatch_pipeline : {e}", file=sys.stderr)
+        marque_panier_echec(panier_id)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
