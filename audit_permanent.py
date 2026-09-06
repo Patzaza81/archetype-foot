@@ -64,6 +64,13 @@ except Exception as e:
     print(f"[FAIL] import scraper_semaine.py -- {e}")
     sys.exit(1)
 
+try:
+    import resolution_betpawa_precalcul as rbp
+    import cache_betpawa as cbp
+except Exception as e:
+    print(f"[FAIL] import resolution_betpawa_precalcul.py / cache_betpawa.py -- {e}")
+    sys.exit(1)
+
 
 # ============================================================================
 section("K_SHRINKAGE / ajuste_probabilite — doit avoir un effet réel")
@@ -958,6 +965,124 @@ try:
     )
 except (FileNotFoundError, _json.JSONDecodeError) as e:
     print(f"[SKIP] vérité matchs_semaine.json réel -- fichier absent ou invalide ({e})")
+
+
+# ============================================================================
+section("Groupe 5 — titre Betpawa revérifié avant extraction des cotes (bug #6, 06/09)")
+# ============================================================================
+# Preuve directe : meilleur_parsing()/parse_betpawa_playwright() sont
+# génériques par conception (1X2/BTTS/Over-Under ne dépendent d'aucun nom
+# d'équipe dans le texte capturé) -- une mauvaise URL Betpawa renvoie donc
+# de VRAIES cotes, juste pour le mauvais match, jamais un résultat vide.
+# Risque concentré sur les cache hits antérieurs au correctif tamis 1
+# (#12, réserve/jeunes). Vérifié ici par exécution réelle de
+# resout_cotes_betpawa(), monkeypatchs de bas niveau (réseau/Playwright),
+# jamais une relecture de commentaire.
+
+_g5_titre_fmt = ("Bet on {dom} - {ext} | 3:00 pm Sat 29/08 | Premier League | "
+                 "England | Football | betPawa Cameroon")
+_g5_fichier_cache_test = "cache_betpawa_test_audit_permanent.json"
+
+
+def _g5_execute(fenetre, titre_page, cache_contenu, cotes_simulees):
+    import json as _json_g5
+    with open(_g5_fichier_cache_test, "w", encoding="utf-8") as f:
+        _json_g5.dump(cache_contenu, f)
+
+    _orig_cherche = rbp.cherche_dans_cache
+    _orig_invalide = rbp.invalide_entree
+    _orig_recupere = rbp.recupere_page
+    _orig_meilleur = rbp.meilleur_parsing
+    _orig_resoudre = rbp.resoudre_match
+    _orig_enregistre = rbp.enregistre_correspondance
+    _g5_appels_invalide = []
+
+    rbp.cherche_dans_cache = lambda d, e, dt: cbp.cherche_dans_cache(
+        d, e, dt, fichier_cache=_g5_fichier_cache_test)
+    rbp.invalide_entree = lambda d, e, dt: (
+        _g5_appels_invalide.append((d, e, dt)) or
+        cbp.invalide_entree(d, e, dt, fichier_cache=_g5_fichier_cache_test)
+    )
+    rbp.recupere_page = lambda page, url: ("texte capture", titre_page)
+    rbp.meilleur_parsing = lambda texte, d, e: cotes_simulees
+    rbp.resoudre_match = lambda page, d, e, dt, etapes: "https://betpawa.cm/event/FRAIS"
+    rbp.enregistre_correspondance = lambda *a, **k: None
+
+    try:
+        compteurs = rbp.resout_cotes_betpawa(fenetre)
+    finally:
+        # Restauration immédiate -- même précaution que pour les tests #19/#10
+        # ci-dessus (un monkeypatch laissé actif casse silencieusement les
+        # vérités plus anciennes).
+        rbp.cherche_dans_cache = _orig_cherche
+        rbp.invalide_entree = _orig_invalide
+        rbp.recupere_page = _orig_recupere
+        rbp.meilleur_parsing = _orig_meilleur
+        rbp.resoudre_match = _orig_resoudre
+        rbp.enregistre_correspondance = _orig_enregistre
+
+    return compteurs, fenetre[0], _g5_appels_invalide
+
+
+_g5_c1, _g5_m1, _ = _g5_execute(
+    [{"domicile": "Fluminense", "exterieur": "Platense", "date": "2026-09-08"}],
+    _g5_titre_fmt.format(dom="Fluminense", ext="Platense"),
+    {}, {"1x2": {"1": 1.5, "N": 3.2, "2": 5.0}},
+)
+verite(
+    "Titre correspondant au match attendu -- cotes extraites normalement, aucun mismatch",
+    _g5_c1["betpawa_titre_mismatch"] == 0 and _g5_c1["betpawa_cotes_extraites"] == 1
+    and "cotes_manuelles" in _g5_m1,
+)
+
+_g5_c4, _g5_m4, _ = _g5_execute(
+    [{"domicile": "Fluminense", "exterieur": "Platense", "date": "2026-09-08"}],
+    _g5_titre_fmt.format(dom="Boca Juniors", ext="São Paulo"),
+    {}, {"1x2": {"1": 1.5, "N": 3.2, "2": 5.0}},
+)
+verite(
+    "Titre d'un AUTRE match (résolution fraîche) -- cotes NON extraites, "
+    "betpawa_titre_mismatch incrémenté",
+    _g5_c4["betpawa_titre_mismatch"] == 1 and _g5_c4["betpawa_cotes_extraites"] == 0
+    and "cotes_manuelles" not in _g5_m4,
+)
+
+_g5_cle = cbp._cle("Fluminense", "Platense", "2026-09-08")
+_g5_cache_avec_hit = {_g5_cle: {"event_id": "https://betpawa.cm/event/VIEUX", "date": "2026-09-08"}}
+_g5_c5, _g5_m5, _g5_inv5 = _g5_execute(
+    [{"domicile": "Fluminense", "exterieur": "Platense", "date": "2026-09-08"}],
+    _g5_titre_fmt.format(dom="Boca Juniors", ext="São Paulo"),
+    _g5_cache_avec_hit, {"1x2": {"1": 1.5, "N": 3.2, "2": 5.0}},
+)
+_g5_apres = cbp.cherche_dans_cache("Fluminense", "Platense", "2026-09-08",
+                                    fichier_cache=_g5_fichier_cache_test)
+verite(
+    "Cache hit dont le titre chargé ne correspond pas -- entrée cache invalidée, "
+    "cotes NON extraites",
+    _g5_c5["betpawa_cache_hit"] == 1 and _g5_c5["betpawa_titre_mismatch"] == 1
+    and _g5_inv5 == [("Fluminense", "Platense", "2026-09-08")] and _g5_apres is None,
+)
+
+_g5_c3, _g5_m3, _ = _g5_execute(
+    [{"domicile": "A", "exterieur": "B", "date": "2026-09-08"}],
+    "Titre non standard qui ne matche pas le format Betpawa",
+    {}, {"1x2": {"1": 2.0, "N": 3.0, "2": 3.5}},
+)
+verite(
+    "Titre imparsable (format inconnu) -- comportement inchangé, cotes quand "
+    "même extraites, aucun crash",
+    _g5_c3["betpawa_titre_mismatch"] == 0 and _g5_c3["betpawa_cotes_extraites"] == 1,
+)
+
+verite(
+    "invalide_entree() sur une clé déjà absente du cache ne plante pas et renvoie False",
+    cbp.invalide_entree("Inconnu", "Inconnu2", "2026-09-08",
+                         fichier_cache=_g5_fichier_cache_test) is False,
+)
+
+import os as _os_g5
+if _os_g5.path.exists(_g5_fichier_cache_test):
+    _os_g5.remove(_g5_fichier_cache_test)
 
 
 # ============================================================================
