@@ -71,6 +71,12 @@ except Exception as e:
     print(f"[FAIL] import resolution_betpawa_precalcul.py / cache_betpawa.py -- {e}")
     sys.exit(1)
 
+try:
+    import adapte_justification as aj
+except Exception as e:
+    print(f"[FAIL] import adapte_justification.py -- {e}")
+    sys.exit(1)
+
 
 # ============================================================================
 section("K_SHRINKAGE / ajuste_probabilite — doit avoir un effet réel")
@@ -1134,6 +1140,80 @@ verite(
 verite(
     "_marches_plausibles() sur un dict vide ne plante pas",
     sb._marches_plausibles({}) == {},
+)
+
+
+# ============================================================================
+section("Groupe 8 — filtre réserve/jeunes sur le nom d'équipe, pas seulement la compétition (bug #4, 06/09)")
+# ============================================================================
+verite(
+    "est_equipe_jeune_ou_reserve() détecte une équipe réserve (nom composé, marqueur 'castilla')",
+    _pc.est_equipe_jeune_ou_reserve("Real Madrid Castilla") is True,
+)
+verite(
+    "est_equipe_jeune_ou_reserve() détecte une équipe jeunes (marqueur 'u19')",
+    _pc.est_equipe_jeune_ou_reserve("PSG U19") is True,
+)
+verite(
+    "est_equipe_jeune_ou_reserve() ne déclenche pas de faux positif sur un nom sans marqueur",
+    _pc.est_equipe_jeune_ou_reserve("Manchester United") is False
+    and _pc.est_equipe_jeune_ou_reserve("Independiente") is False,
+)
+verite(
+    "est_equipe_jeune_ou_reserve(None) ne plante pas, renvoie False",
+    _pc.est_equipe_jeune_ou_reserve(None) is False,
+)
+
+
+# ============================================================================
+section("Groupe 8 — orientation H2H par équipe dans la justification (bug #41, 06/09 -- correctif d'orientation SEUL, décision explicite de Patrick)")
+# ============================================================================
+# Portée volontairement limitée à l'orientation domicile/extérieur par
+# équipe (cohérente avec calcule_ratio_h2h() dans calculs.py). Le problème
+# plus profond découvert en creusant (le marché symétrique "Plus de N
+# buts" évalue le TOTAL des deux équipes, pas les buts propres de
+# l'équipe visée -- reste présent pour OVER_UNDER_EQUIPE ; CLEAN_SHEET et
+# SANS_BUT ne produisent d'ailleurs aujourd'hui AUCUNE preuve H2H, avec ou
+# sans ce correctif, le nom de marché sans suffixe n'étant reconnu par
+# verifie_pari() dans aucun des deux cas) n'est PAS corrigé ici -- décision
+# explicite de Patrick de garder le correctif d'orientation seul.
+def _g8_h2h(dom_brut, ext_brut, bd, be):
+    return {"domicile_brut": dom_brut, "exterieur_brut": ext_brut, "buts_domicile": bd, "buts_exterieur": be}
+
+
+verite(
+    "_preuve_h2h(equipe_cible=None) reproduit le comportement symétrique d'origine (régression)",
+    (lambda p: p is not None and p.total == 2 and p.occurrences == 2)(
+        aj._preuve_h2h("Plus de 1.5 buts",
+                        [_g8_h2h("Fluminense", "Platense", 2, 1), _g8_h2h("Platense", "Fluminense", 0, 3)],
+                        equipe_cible=None)
+    ),
+)
+verite(
+    "_preuve_h2h() attribue correctement l'équipe visée qu'elle ait joué domicile ou extérieur dans le H2H",
+    (lambda p1, p2: p1 is not None and p1.equipe == "Fluminense"
+     and p2 is not None and p2.equipe == "Fluminense")(
+        aj._preuve_h2h("Plus de 1.5 buts - Domicile", [_g8_h2h("Fluminense", "Platense", 2, 1)], equipe_cible="Fluminense"),
+        aj._preuve_h2h("Plus de 1.5 buts - Domicile", [_g8_h2h("Platense", "Fluminense", 1, 2)], equipe_cible="Fluminense"),
+    ),
+)
+verite(
+    "_preuve_h2h() écarte une ligne H2H dont aucun des deux noms ne correspond à l'équipe visée, "
+    "jamais une correspondance devinée",
+    aj._preuve_h2h("Plus de 1.5 buts - Domicile",
+                    [_g8_h2h("Equipe Inconnue A", "Equipe Inconnue B", 2, 1)],
+                    equipe_cible="Fluminense") is None,
+)
+verite(
+    "_preuve_h2h() sur une liste H2H vide ne plante pas",
+    aj._preuve_h2h("Plus de 1.5 buts - Domicile", [], equipe_cible="Fluminense") is None,
+)
+verite(
+    "_correspond_a_equipe() ne confond pas une équipe avec sa réserve homonyme (veto réserve, même "
+    "logique que calculs._memes_equipes_ratio)",
+    aj._preuve_h2h("Plus de 1.5 buts - Domicile",
+                    [_g8_h2h("Real Madrid Castilla", "Betis", 2, 1)],
+                    equipe_cible="Real Madrid") is None,
 )
 
 
