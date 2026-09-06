@@ -676,9 +676,26 @@ def _extrait_historique_competition(soup, nom_competition, nom_equipe, max_match
 
 
 def recupere_gf_ga_avec_repli(url_equipe, nom_equipe, nom_competition, max_matchs=10):
+    """CORRECTIF 06/09/2026 -- le repli vers la saison précédente
+    (`?season=X` sur l'URL de l'équipe) s'est révélé peu fiable en
+    conditions réelles : testé sur 3 équipes jamais consultées avant
+    (Troyes, Marseille, RC Lens), le paramètre a fonctionné pour UNE
+    seule (Marseille) et a été silencieusement ignoré pour les deux
+    autres (page renvoyée identique à la saison en cours, sans erreur).
+    Comportement du site non déterministe -- pas un bug ponctuel à
+    corriger une fois, un vrai aléa à détecter à chaque appel.
+
+    Détection : on compare l'historique extrait de la tentative "saison
+    précédente" à celui déjà obtenu pour la saison actuelle. S'ils sont
+    identiques (mêmes matchs, dans le même ordre), le paramètre de
+    saison a été ignoré par le site -- on jette cette tentative plutôt
+    que de compter deux fois les mêmes matchs. On ne devine jamais :
+    soit le site renvoie vraiment autre chose et on l'utilise, soit non
+    et on ignore, exactement comme avant ce correctif dans ce cas-là."""
     saison_actuelle, saison_precedente = _saison_actuelle_et_precedente()
 
     matchs_domicile, matchs_exterieur = [], []
+    historique_saison_actuelle = None
 
     for saison in (saison_actuelle, saison_precedente):
         if len(matchs_domicile) >= max_matchs and len(matchs_exterieur) >= max_matchs:
@@ -699,6 +716,19 @@ def recupere_gf_ga_avec_repli(url_equipe, nom_equipe, nom_competition, max_match
         )
         if historique is None:
             continue
+
+        if saison == saison_actuelle:
+            historique_saison_actuelle = historique
+        elif historique == historique_saison_actuelle:
+            # CORRECTIF 06/09/2026 -- le site a renvoyé exactement la même
+            # page que pour la saison actuelle : le paramètre ?season= a
+            # été ignoré cette fois-ci. On ne compte pas ces matchs deux
+            # fois -- ni ne les compte du tout, puisqu'ils ne sont pas
+            # vraiment de la saison précédente.
+            print(f"[DIAG 18.8] {diag_libelle} -- paramètre de saison IGNORÉ par le site "
+                  f"(page identique à la saison actuelle) -- tentative écartée.")
+            continue
+
         for m in historique:
             if m["domicile"] and len(matchs_domicile) < max_matchs:
                 matchs_domicile.append(m)
