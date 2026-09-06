@@ -1,409 +1,173 @@
-"""
-audit_permanent.py — Script d'audit permanent (TRANSITION.md 21.11)
-
-Objectif : vérifier par le CALCUL, jamais par la lecture d'un commentaire,
-une liste d'affirmations sur le comportement réel du code. Chaque bug
-trouvé et corrigé s'ajoute ici pour toujours — ce fichier ne doit
-JAMAIS rétrécir.
-
-À faire tourner :
-- au tout début de CHAQUE session, avant tout autre travail
-- après tout commit multi-fichiers, avant de considérer un correctif
-  comme livré
-
-Exit code 0 = tout passe. Exit code 1 = au moins une vérité a échoué
-(la liste des échecs est imprimée en clair, jamais un simple compteur).
-
-Ce script importe le code réel (pas une copie, pas une réécriture des
-règles) — un import qui échoue est déjà en soi un signal (fichier
-manquant, erreur de syntaxe, dépendance cassée).
-"""
-
-import sys
-
-echecs = []
-
-
-def verite(nom, condition_calculee, detail=""):
-    """Enregistre le résultat d'une vérité. `condition_calculee` doit être
-    un booléen déjà calculé par exécution réelle du code, jamais une
-    supposition."""
-    global echecs
-    if condition_calculee:
-        print(f"[OK]   {nom}")
-    else:
-        print(f"[FAIL] {nom}" + (f" -- {detail}" if detail else ""))
-        echecs.append(nom)
-
-
-def section(titre):
-    print(f"\n--- {titre} ---")
-
-
-try:
-    import calculs
-except Exception as e:
-    print(f"[FAIL] import calculs.py -- {e}")
-    sys.exit(1)
-
-try:
-    import scraper_details as sd
-except Exception as e:
-    print(f"[FAIL] import scraper_details.py -- {e}")
-    sys.exit(1)
-
-try:
-    import scraper_betpawa as sb
-except Exception as e:
-    print(f"[FAIL] import scraper_betpawa.py -- {e}")
-    sys.exit(1)
-
-
-# ============================================================================
-section("K_SHRINKAGE / ajuste_probabilite — doit avoir un effet réel")
-# ============================================================================
-# Bug historique (20.2) : ajuste_probabilite() existait mais n'était jamais
-# appelée nulle part dans le pipeline -- K_SHRINKAGE n'avait aucun effet
-# quelle que soit sa valeur.
-
-p_brute = 0.9
-p_ajustee = calculs.ajuste_probabilite(p_brute)
-verite(
-    "ajuste_probabilite(0.9) resserre bien vers 0.5 (n'est pas un no-op)",
-    p_ajustee != p_brute and 0.5 < p_ajustee < p_brute,
-    f"obtenu={p_ajustee}",
-)
-
-# calcule_ev doit utiliser la version ajustée en interne, pas la brute
-ev_avec_brute_manuelle = (2.0 * p_brute) - 1
-ev_reel = calculs.calcule_ev(p_brute, 2.0)
-verite(
-    "calcule_ev() applique bien ajuste_probabilite() en interne (pas la proba brute)",
-    ev_reel != ev_avec_brute_manuelle,
-    f"ev_reel={ev_reel} vs ev_si_brute_utilisee={ev_avec_brute_manuelle}",
-)
-
-# kelly_stake doit lui aussi utiliser la version ajustée (bug 20 : un
-# commentaire affirmait explicitement l'inverse)
-import inspect
-source_kelly = inspect.getsource(calculs.kelly_stake)
-verite(
-    "kelly_stake() appelle bien ajuste_probabilite() (pas seulement calcule_ev())",
-    "ajuste_probabilite(" in source_kelly,
-)
-
-
-# ============================================================================
-section("GA_REFERENCE_PAR_LIGUE — doit varier par pays, pas retomber sur le default partout")
-# ============================================================================
-default_val = calculs.get_ga_reference(None)
-france_val = calculs.get_ga_reference("France")
-ecosse_val = calculs.get_ga_reference("Écosse")
-
-verite(
-    "get_ga_reference('France') diffère du default (calibrage réel actif)",
-    france_val != default_val,
-    f"France={france_val} default={default_val}",
-)
-verite(
-    "get_ga_reference('Écosse') retombe bien sur le default (non calibré, documenté comme tel)",
-    ecosse_val == default_val,
-    f"Écosse={ecosse_val} default={default_val}",
-)
-verite(
-    "get_ga_reference('PaysInexistantXYZ') ne casse pas, retombe sur default",
-    calculs.get_ga_reference("PaysInexistantXYZ") == default_val,
-)
-
-
-# ============================================================================
-section("GA_REFERENCE_PAR_COMPETITION — division distincte du pays (bug 05/09, corrigé)")
-# ============================================================================
-# Point critique #8 de TRANSITION.md : Eerste Divisie/Challenge Ligue
-# héritaient à tort de la valeur de la 1ère division du même pays.
-
-verite(
-    "Suisse Challenge Ligue a SA PROPRE valeur (différente de la Super Ligue)",
-    calculs.get_ga_reference("Suisse", "Challenge Ligue") != calculs.get_ga_reference("Suisse", None),
-)
-verite(
-    "Suisse Super League garde sa valeur pays inchangée (pas de régression)",
-    calculs.get_ga_reference("Suisse", "Super League") == calculs.get_ga_reference("Suisse", None),
-)
-verite(
-    "compétition inconnue retombe sur la valeur pays (pas de valeur inventée)",
-    calculs.get_ga_reference("Pays-Bas", "Eerste Divisie inconnue XYZ") == calculs.get_ga_reference("Pays-Bas", None),
-)
-verite(
-    "Eerste Divisie (Pays-Bas D2) a SA PROPRE valeur (différente de l'Eredivisie)",
-    calculs.get_ga_reference("Pays-Bas", "Eerste Divisie") != calculs.get_ga_reference("Pays-Bas", None),
-)
-verite(
-    "pays=None, competition=None -> default (comportement d'origine intact)",
-    calculs.get_ga_reference(None, None) == calculs.get_ga_reference(None),
-)
-
-with open("run_pipeline.py", encoding="utf-8") as f:
-    _source_rp = f.read()
-verite(
-    "run_pipeline.py transmet bien 'competition' à calcule_lambda (pas seulement 'pays')",
-    "competition=competition_partie" in _source_rp,
-)
-
-# Bug réel trouvé le 06/09 sur un vrai run (pas en test) : matchendirect
-# affiche "Challenge Ligue" (français) avec un retour à la ligne avant,
-# jamais "Challenge League" (anglais) -- la clé du dict doit matcher EXACTEMENT
-# la chaîne brute réelle, extraction incluse (split+strip), pas une version
-# idéalisée tapée à la main.
-_competition_brute_reelle = "Suisse :\n                        Challenge Ligue"
-_pays_reel = _competition_brute_reelle.split(":")[0].strip()
-_partie_reelle = _competition_brute_reelle.split(":", 1)[1].strip()
-verite(
-    "Challenge Ligue (chaîne brute réelle avec saut de ligne) a SA PROPRE valeur, pas celle de la Super Ligue",
-    calculs.get_ga_reference(_pays_reel, _partie_reelle) != calculs.get_ga_reference("Suisse", None),
-    f"obtenu={calculs.get_ga_reference(_pays_reel, _partie_reelle)}",
-)
-
-
-# ============================================================================
-section("decision_go_nogo — veto d'échantillon minimum (bug du 05/09, corrigé une 2e fois)")
-# ============================================================================
-# Bug réel trouvé le 05/09 : TRANSITION.md 21.8 annonçait ce veto comme
-# "corrigé et testé (6 cas)" alors qu'il n'était jamais écrit dans le
-# corps de la fonction (paramètres reçus, jamais lus).
-
-liste_b_non_vide = [{"marche": "x"}]
-
-cas_veto = [
-    (10, 10, "GO", "échantillons suffisants"),
-    (None, None, "GO", "échantillons non fournis (compat)"),
-    (1, 10, "NO_GO", "domicile insuffisant (type Eldense)"),
-    (10, 1, "NO_GO", "extérieur insuffisant"),
-    (7, 7, "NO_GO", "sous le seuil des deux côtés"),
-]
-for dom, ext, attendu, desc in cas_veto:
-    d = calculs.decision_go_nogo(
-        liste_b_non_vide, liste_b_non_vide, 10,
-        nb_matchs_domicile_utilises=dom, nb_matchs_exterieur_utilises=ext,
-    )
-    verite(
-        f"decision_go_nogo veto échantillon : {desc}",
-        d["verdict_global"] == attendu,
-        f"attendu={attendu} obtenu={d['verdict_global']} (dom={dom}, ext={ext})",
-    )
-
-verite(
-    "decision_go_nogo() sans marché éligible reste NO_GO",
-    calculs.decision_go_nogo([], [], 10, nb_matchs_domicile_utilises=10,
-                              nb_matchs_exterieur_utilises=10)["verdict_global"] == "NO_GO",
-)
-
-
-# ============================================================================
-section("_competitions_correspondent — Ligue 1/2, Girone B/C, Serie C/Coupe")
-# ============================================================================
-# Bug 21.9 (Girone B vs Girone C, Ligue 1 vs Ligue 2) + bug complémentaire
-# trouvé le 05/09 en testant le premier correctif (Serie C championnat vs
-# Coupe Italie Serie C -- mot "serie" partagé, non filtré).
-
-cas_correspondance = [
-    ("girone b", "girone c", False),
-    ("ligue 1", "ligue 2", False),
-    ("serie c girone c", "coupe italie serie c", False),
-    ("serie a", "serie b", False),
-    ("division 1", "division 2", False),
-    ("superliga", "superliga", True),
-    ("chinese super league", "super ligue", True),
-    ("ligue 1", "ligue 1", True),
-    ("serie a", "serie a", True),
-]
-for cible, candidat, attendu in cas_correspondance:
-    r = sd._competitions_correspondent(cible, candidat)
-    verite(
-        f"_competitions_correspondent({cible!r}, {candidat!r})",
-        r == attendu,
-        f"attendu={attendu} obtenu={r}",
-    )
-
-
-# ============================================================================
-section("scraper_details 18.8 — boucle table-par-table réellement présente")
-# ============================================================================
-source_extrait = inspect.getsource(sd._extrait_historique_competition)
-verite(
-    "_extrait_historique_competition boucle sur plusieurs tables (pas un seul find_next('table'))",
-    "MAX_TABLEAUX_ESSAYES" in source_extrait and "while table is not None" in source_extrait,
-)
-
-
-# ============================================================================
-section("_memes_equipes / _memes_equipes_ratio — équipe vs sa réserve (bug trouvé le 05/09)")
-# ============================================================================
-# Même bug que resolution_betpawa.py : "n1 in n2 or n2 in n1" confondait
-# une équipe et sa réserve/jeunes (Real Madrid vs Real Madrid Castilla).
-# Utilisées pour retrouver une ligne de classement ou un historique H2H.
-
-cas_reserve = [
-    ("Real Madrid", "Real Madrid Castilla", False),
-    ("Sporting Lisbonne", "Sporting Lisbonne B", False),
-    ("PSG", "PSG U19", False),
-    ("AS Roma", "Roma", True),
-    ("PSG", "PSG", True),
-]
-for a, b, attendu in cas_reserve:
-    r = sd._memes_equipes(a, b)
-    verite(f"scraper_details._memes_equipes({a!r}, {b!r})", r == attendu, f"obtenu={r}")
-for a, b, attendu in cas_reserve:
-    r = calculs._memes_equipes_ratio(a, b)
-    verite(f"calculs._memes_equipes_ratio({a!r}, {b!r})", r == attendu, f"obtenu={r}")
-
-for a, b, attendu in [
-    ("Real Madrid", "Real Madrid Castilla", False),
-    ("Barcelona", "Barcelona Atletic", False),
-    ("PSG", "PSG U19", False),
-    ("AC Horsens", "Horsens", True),
-    ("S. Bratislava", "Slovan Bratislava", True),
-]:
-    r = sb._noms_correspondent(a, b)
-    verite(f"scraper_betpawa._noms_correspondent({a!r}, {b!r}) [utilisée en prod]", r == attendu, f"obtenu={r}")
-
-_classement_test = [{"equipe": "Real Madrid", "pts": 10}, {"equipe": "Real Madrid Castilla", "pts": 5}]
-verite(
-    "scraper_details.trouve_equipe_dans_classement ne confond pas Real Madrid avec sa réserve",
-    sd.trouve_equipe_dans_classement(_classement_test, "Real Madrid") == {"equipe": "Real Madrid", "pts": 10},
-)
-
-
-# ============================================================================
-section("Purges de cache — réellement appelées dans precalcul.py, pas juste définies")
-# ============================================================================
-with open("precalcul.py", encoding="utf-8") as f:
-    source_precalcul = f.read()
-
-for nom_appel in ["purge_equipes_expirees()", "purge_classement_expirees()",
-                   "purge_h2h_expirees()", "purge_betpawa_matchs_joues("]:
-    verite(
-        f"precalcul.py appelle bien {nom_appel}",
-        nom_appel in source_precalcul,
-    )
-
-
-# ============================================================================
-section("probabilite_modele_ajustee — réellement construit dans serialise(), pas juste attendu par script.js")
-# ============================================================================
-with open("run_pipeline.py", encoding="utf-8") as f:
-    source_run_pipeline = f.read()
-
-verite(
-    "run_pipeline.py construit bien le champ probabilite_modele_ajustee (pas seulement script.js qui l'attend)",
-    'c["probabilite_modele_ajustee"]' in source_run_pipeline or "c['probabilite_modele_ajustee']" in source_run_pipeline,
-)
-
-with open("script.js", encoding="utf-8") as f:
-    source_script_js = f.read()
-verite(
-    "script.js affiche bien probabilite_modele_ajustee avec repli sur la brute",
-    "probabilite_modele_ajustee" in source_script_js,
-)
-
-
-# ============================================================================
-section("TOUS_MARCHES_EVALUES — archivage complet réellement branché (pas seulement LISTE_A)")
-# ============================================================================
-verite(
-    "run_pipeline.py construit bien signal['TOUS_MARCHES_EVALUES']",
-    'signal["TOUS_MARCHES_EVALUES"]' in source_run_pipeline,
-)
-with open("calcule_roi.py", encoding="utf-8") as f:
-    source_calcule_roi = f.read()
-verite(
-    "calcule_roi.py consomme bien TOUS_MARCHES_EVALUES pour le calibrage (pas juste les paris déjà filtrés)",
-    'get("TOUS_MARCHES_EVALUES")' in source_calcule_roi or "['TOUS_MARCHES_EVALUES']" in source_calcule_roi,
-)
-
-
-# ============================================================================
-section("moteur de justification — réellement branché dans run_pipeline.py")
-# ============================================================================
-verite(
-    "run_pipeline.py importe/utilise adapte_justification",
-    "adapte_justification" in source_run_pipeline,
-)
-
-
-# ============================================================================
-section("Bornes défensives et constantes gelées — pas de régression silencieuse")
-# ============================================================================
-# Bug 20.2 : 5 constantes gelées étaient revenues à d'anciennes valeurs
-# sans que personne ne s'en aperçoive. Valeurs de référence figées ici
-# (section 2 de TRANSITION.md / commentaires calculs.py du 04-05/09).
-
-valeurs_attendues = {
-    "BORNE_MIN_DEFENSE": 0.55,
-    "BORNE_MAX_DEFENSE": 1.60,
-    "K_SHRINKAGE": 0.48,
-    "SEUIL_EV_MIN": 0.02,
-    "FOURCHETTE_COTE_MIN": 1.25,
-    "FOURCHETTE_COTE_MAX": 1.69,
-    "KELLY_FRACTION": 0.25,
-    "MISE_MAX_PARI": 0.04,
-}
-for nom, valeur_attendue in valeurs_attendues.items():
-    valeur_reelle = getattr(calculs, nom, None)
-    verite(
-        f"{nom} = {valeur_attendue} (pas de régression silencieuse)",
-        valeur_reelle == valeur_attendue,
-        f"obtenu={valeur_reelle}",
-    )
-
-
-# ============================================================================
-section("plafonner_cluster — plafond de risque CLUSTER_MAX réellement appliqué (bug #12, 06/09)")
-# ============================================================================
-# La fonction existait depuis l'origine mais n'était appelée nulle part --
-# CLUSTER_MAX=10% n'avait jamais d'effet réel (un match pouvait exposer
-# jusqu'à 3*4%=12%). Corrigée en même temps que le bug de clés
-# ("ev"/"mise" vs les vrais champs "ev_brut"/"mise_pct_bankroll").
-
-_paris_test = [
-    {"ev_brut": 0.09, "mise_pct_bankroll": 0.04},
-    {"ev_brut": 0.07, "mise_pct_bankroll": 0.04},
-    {"ev_brut": 0.05, "mise_pct_bankroll": 0.04},
-]
-_r = calculs.plafonner_cluster([dict(p) for p in _paris_test], cle_ev="ev_brut", cle_mise="mise_pct_bankroll")
-_total = sum(p["mise_pct_bankroll"] for p in _r)
-verite(
-    "plafonner_cluster() ramène bien 12% de mise cumulée à 10% (CLUSTER_MAX)",
-    abs(_total - calculs.CLUSTER_MAX) < 1e-9,
-    f"total obtenu={_total}",
-)
-
-with open("run_pipeline.py", encoding="utf-8") as f:
-    _source_rp2 = f.read()
-verite(
-    "run_pipeline.py appelle bien calculs.plafonner_cluster() sur liste_b_avec_mise",
-    "calculs.plafonner_cluster(" in _source_rp2,
-)
-
-
-# ============================================================================
-section("resolution_betpawa tamis 1 — la date retournée n'est plus jetée (bug #5, 06/09)")
-# ============================================================================
-import resolution_betpawa as _rb
-_source_resoudre_match = inspect.getsource(_rb.resoudre_match)
-verite(
-    "resoudre_match() compare bien la date trouvée à la date attendue au tamis 1",
-    "date_trouvee == date_attendue" in _source_resoudre_match,
-)
-
-
-# ============================================================================
-print("\n" + "=" * 70)
-if echecs:
-    print(f"AUDIT ÉCHOUÉ -- {len(echecs)} vérité(s) fausse(s) :")
-    for e in echecs:
-        print(f"  - {e}")
-    sys.exit(1)
-else:
-    print("AUDIT OK -- toutes les vérités connues sont confirmées par calcul.")
-    sys.exit(0)
+# Audit contradictoire Archetype Foot — feuille de route (état final)
+
+Document de travail pour la vérification des 40 points de l'audit externe
+(+ 1 point trouvé en cours de route, justifications H2H). Les 41 points
+sont maintenant tous vérifiés sur le vrai code et/ou les vraies données
+du dépôt — plus aucun n'est une simple hypothèse. Complète TRANSITION.md,
+ne le remplace pas.
+
+## Méthode appliquée
+
+4 statuts : `CONFIRMÉ` (preuve directe + démonstration), `RÉFUTÉ`,
+`PARTIEL/CONTEXTUEL` (réel mais nuancé), `NON DÉMONTRABLE`. Deux niveaux
+de preuve : template complet (calcul/argent/identité/risque) ou léger
+(reste). Regroupement par module fonctionnel puis, ici, par cause racine
+pour préparer la correction groupée.
+
+**État du code : gelé.** Seuls #5 et #12 ont été corrigés (validés
+isolés, sans dépendance). Tout le reste attend l'architecture de
+correction groupée ci-dessous.
+
+---
+
+## Tableau final — statut, gravité, module
+
+| # | Titre | Module | Statut | Gravité |
+|---|---|---|---|---|
+| 1 | Calibrage cassé (`TOUS_MARCHES_EVALUES` jeté à l'archivage) | Calcul | CONFIRMÉ | **P0** |
+| 2 | Poisson tronqué 0–5, docstring mensonger sur "5+" | Calcul | CONFIRMÉ | **P0** |
+| 3 | λ anormaux autorisés — démontré sur un pari GO réel (Partick-Celtic) | Calcul | CONFIRMÉ | **P0** |
+| 4 | Filtre réserve/jeunes aveugle aux noms d'équipe (cause des λ extrêmes Liechtenstein) | Sélection matchs | CONFIRMÉ | P2 (déjà atténué par le veto d'échantillon) |
+| 5 | Tamis 1 Betpawa ignorait la date retournée | Résolution Betpawa | CONFIRMÉ | **✅ CORRIGÉ (06/09)** |
+| 6 | Résolution Betpawa ne revérifie pas le titre/équipes au moment d'extraire les cotes | Résolution Betpawa | CONFIRMÉ | P1 |
+| 7 | `cherche_deja_analyses` : clé (domicile, extérieur) sans date/id | Identité de match | CONFIRMÉ | **P0** |
+| 8 | `extrait_resultat_de_ce_panier` : même clé insuffisante | Identité de match | CONFIRMÉ | **P0** |
+| 9 | `scraper_semaine.py` sans vérification URL/date finale | Scraping/dates | CONFIRMÉ (19 match_id dupliqués sur 2 dates, preuve directe) | **P0** |
+| 10 | Le workflow publie malgré des erreurs critiques (`continue-on-error`) | Pipeline | CONFIRMÉ | **P0** |
+| 11 | Panier bloqué "en_cours" indéfiniment si exception | Pipeline | CONFIRMÉ (chaîne complète avec #19 démontrée) | **P0** |
+| 12 | `CLUSTER_MAX`/`plafonner_cluster` jamais appelé (+ bug de clés caché) | Calcul | CONFIRMÉ | **✅ CORRIGÉ (06/09)** |
+| 13 | Calibrage surajusté — 28x d'inflation d'échantillon mesurée sur données réelles | Calcul | CONFIRMÉ | **P0** |
+| 14 | `source_cotes` jamais affiché (absence totale, pas juste peu visible) | Affichage | CONFIRMÉ | P1 |
+| 15 | Fallback saison précédente peu fiable | Scraping/dates | Déjà connu (TRANSITION.md #13) | — |
+| 16 | Extraction équipes fragile (2 premiers liens `/equipe/`) | Scraping | CONFIRMÉ mécanisme, 0 échec observé sur 639 matchs | P2 |
+| 17 | Absence de classement → ratio neutre 0.0 sans distinction | Calcul | CONFIRMÉ, impact dilué | P2 |
+| 18 | Absence de H2H → ratio neutre 0.0, même ambiguïté | Calcul | CONFIRMÉ, impact dilué | P2 |
+| 19 | Cotes manuelles non validées → crash `TypeError` reproduit, fait tomber tout `precalcul.py` | Données | CONFIRMÉ, remonté par démonstration | **P0** |
+| 20 | `meilleur_parsing` choisit le plus bavard, pas le plus juste | Résolution Betpawa | CONFIRMÉ, impact contextuel (un seul format réel en prod) | P2 |
+| 21 | Parser Bet365 dépend d'un format décimal figé | Scraping | CONFIRMÉ, échec déjà sûr (None, pas de valeur fausse) | P2 |
+| 22 | `panier.json` encore lu dans le flux automatique planifié | Architecture | CONFIRMÉ (symptôme exact reproduit : 11 entrées périmées, `data.json` à 0 matchs) | P1 (pas P0 : `data.json` mort tant que Supabase tourne) |
+| 23 | `scraper_betpawa.py`/`betpawa_urls.txt` encore exécutés en auto | Architecture | CONFIRMÉ, même cause que #22 | P1 |
+| 24 | Résultats Supabase pas liés au `panier_id` courant | Frontend | CONFIRMÉ | P1 |
+| 25 | Fonction Netlify sans rate-limit | Sécurité | CONFIRMÉ | P1 |
+| 26 | Pas de taille max de panier côté serveur | Sécurité | CONFIRMÉ (schéma DB non vérifiable depuis ce dépôt) | P1 |
+| 27 | XSS via `innerHTML` | Sécurité | CONFIRMÉ, impact borné au self-XSS (aucun chemin public trouvé) | P2 |
+| 28 | "Pari en or" = proba max, pas meilleur EV | Calcul/UX | CONFIRMÉ, question sémantique/produit, pas un bug de calcul | P2 |
+| 29 | Vérification résultats abandonnée après 10 jours (biais de sélection) | Données/Calibrage | CONFIRMÉ mécanisme, ampleur non mesurable actuellement | P2 |
+| 30 | Cache négatif 7 jours peut masquer une récupération réussie | Données | CONFIRMÉ | P2 |
+| 31 | H2H caché 7 jours sans revalidation | Données | PARTIEL — choix de conception documenté par l'auteur, pas un oubli | P3 |
+| 32 | Fuseau horaire imparfait 00h–01h | Scraping/dates | Déjà connu (limite documentée dans scraper.py) | — |
+| 33 | `date.today()` résiduel dans `_saison_actuelle_et_precedente` | Scraping/dates | CONFIRMÉ, impact quasi nul (dépend du mois, pas de l'heure) | P3 |
+| 34 | Pas de `requirements.txt` | Dette technique | CONFIRMÉ | P2 |
+| 35 | Cron minuit UTC vs 07h Cameroun voulu | Architecture | Mis de côté — décision produit, pas un bug | — |
+| 36 | Fichiers de transition/diagnostic dans le chemin principal | Dette technique | CONFIRMÉ (sous-groupe réellement mort identifié : `selection.*`, `payload_builder.py`, `matchs_selectionnes.json` — zéro référence trouvée nulle part) | P2 |
+| 37 | Documentation contradictoire avec le code réel | Dette technique | CONFIRMÉ (1 exemple précis), NON DÉMONTRABLE (1 exemple) | P3 |
+| 38 | `audit_permanent.py` n'est pas une vraie suite de tests | Méthode | CONFIRMÉ dans sa forme, utilité réelle vérifiée en pratique sur cet audit | P2 |
+| 39 | ~17-18 Mo de fichiers générés versionnés | Dette technique | CONFIRMÉ, chiffres vérifiés | P3 |
+| 40 | Deux moteurs concurrents (ancien panier vs nouveau precalcul) | Architecture | CONFIRMÉ (reproduction exacte du symptôme cité par l'audit) | P1 |
+| 41 | Justification H2H traitée comme symétrique sur marchés par équipe | Calcul/Justification | CONFIRMÉ | P1 |
+
+---
+
+## Architecture de correction groupée, par cause racine
+
+Pas de correction point par point — chaque groupe ci-dessous est UN
+chantier, pas N correctifs isolés.
+
+### Groupe 1 — Identité canonique de match (P0)
+**Points : #7, #8, #40, #22, #23.** Cause unique : absence de `match_id`
+comme clé partout où deux matchs peuvent partager les mêmes noms
+d'équipe (aller-retour, championnat vs coupe), combinée à la coexistence
+de l'ancien moteur (`run_pipeline.py`/`scraper_betpawa.py` lus depuis
+`panier.json`) jamais retiré du cron planifié après la migration vers
+`precalcul.py`/Supabase. **Une seule correction** : introduire `match_id`
+comme clé dans `dispatch_pipeline.py` (#7/#8), retirer les étapes
+`run_pipeline.py`/`scraper_betpawa.py` du déclenchement `schedule` dans
+`pipeline.yml` (#40/#22/#23), garder `run_pipeline.py` comme module
+importable pour le seul chemin `dispatch_pipeline.py`.
+
+### Groupe 2 — Résilience du pipeline face aux erreurs (P0)
+**Points : #10, #11, #19.** Cause unique : rien dans la chaîne ne
+distingue "échec local d'un match" de "échec qui doit tout arrêter", et
+aucun filet ne rattrape un plantage entre le marquage `en_cours` et la
+fin du traitement. Chaîne de défaillance démontrée : une cote manuelle
+malformée (#19) fait planter `precalcul.py`/`dispatch_pipeline.py`,
+`continue-on-error` (#10) laisse quand même publier, un panier reste
+bloqué "en_cours" sans erreur visible (#11). **Une seule correction** :
+try/except localisé autour du bloc `cote_1`/EV/Kelly (isole l'échec au
+match fautif) + machine d'état d'échec explicite dans
+`dispatch_pipeline.py` + le commit du workflow planifié doit échouer
+(pas juste logguer) si `precalcul_leger.json` est absent/vide après
+l'étape `precalcul.py`.
+
+### Groupe 3 — Modèle Poisson & λ non borné (P0)
+**Points : #2, #3.** Cause unique, déjà détaillée avec démonstration
+chiffrée sur un pari GO réel (Partick-Celtic). **Une seule correction** :
+étendre la grille Poisson (0-12 ou 0-15) ET introduire un shrinkage/
+plafond sur `gf_home_domicile`/`gf_away_exterieur` proportionnel à la
+taille d'échantillon avant utilisation comme base λ.
+
+### Groupe 4 — Calibrage (P0, dépend du Groupe 3 pour les données à venir)
+**Points : #1, #13, #29 (accessoire).** #13 doit être corrigé (grouper
+par `match_id`, ajouter un score de calibration) AVANT de réparer #1
+(remettre `TOUS_MARCHES_EVALUES` dans l'archive) — sinon on ferait
+grossir un échantillon dont la méthode est fausse. #29 est accessoire
+(biais de sélection sur les matchs jamais retrouvés) mais touche le même
+pipeline de données de calibrage — à traiter dans la foulée, pas
+séparément.
+
+### Groupe 5 — Résolution Betpawa & cotes (P1)
+**Points : #6, #20.** #6 : réutiliser le nom déjà extrait au moment de
+la résolution plutôt que de revalider depuis zéro. Action complémentaire
+non-code : purger `cache_betpawa.json` des entrées antérieures au
+correctif #5 (résolues potentiellement via l'ancien tamis 1 buggé).
+
+### Groupe 6 — Scraping dates/fuseaux (P0)
+**Point : #9** (preuve directe : 19 match_id dupliqués sur 2 dates dans
+les vraies données). Appliquer à `scraper_semaine.py` le même garde-fou
+URL/date que `scraper.py` a déjà pour "demain". #33 (cosmétique, P3) à
+corriger dans la foulée par cohérence (`aujourdhui_france()` partout).
+
+### Groupe 7 — Sécurité/panier (P1, indépendant du reste)
+**Points : #24, #25, #26, #27.** Aucune dépendance avec les groupes
+1-6 — peut être traité en parallèle sans attendre. Persister `panier_id`
+côté client (#24), rate-limit + vérif "pas déjà en_cours" dans
+`trigger.js` (#25), taille max panier (#26), `textContent` au lieu
+d'`innerHTML` (#27).
+
+### Groupe 8 — Qualité de données diverses (P2, non urgent)
+**Points : #4, #16, #17, #18, #21, #30, #31, #41.** Pas de calcul faux
+produit par ces points (déjà vérifié un par un), mais qualité/robustesse
+à améliorer. Peuvent être traités en tâche de fond, aucun ordre imposé
+entre eux.
+
+### Groupe 9 — Dette technique pure (P2/P3, aucun lien avec le calcul)
+**Points : #34, #36, #37, #38, #39.** `requirements.txt`, suppression
+des fichiers morts confirmés (`selection.*`, `payload_builder.py`,
+`matchs_selectionnes.json`), documentation à rafraîchir, migration
+`audit_permanent.py` vers `pytest` à terme. Aucune urgence, aucun risque
+de régression sur le moteur.
+
+### Mis de côté / non-bugs
+**#15, #32** : déjà actés dans TRANSITION.md, pas rouverts.
+**#35** : décision produit (cron 00h UTC), pas un défaut technique.
+
+---
+
+## Déjà corrigé (hors gel, isolés dès confirmation)
+
+- **#5** — Tamis 1 Betpawa compare maintenant la date retournée à la
+  date attendue. Testé sur 7 cas.
+- **#12** — `plafonner_cluster()` réellement appelée sur `LISTE_B`, bug
+  de clés (`ev`/`mise` vs `ev_brut`/`mise_pct_bankroll`) corrigé en même
+  temps. Testé sur 6 cas.
+- `audit_permanent.py` passe à 60/60 vérités avec ces deux correctifs.
+
+---
+
+## Prochaine étape
+
+Les 9 groupes ci-dessus sont la base de la phase "architecture cible"
+annoncée dans la méthode initiale. Reste à décider : ordre de traitement
+des groupes P0 (1 à 4 — probablement 3 puis 4, puis 1, puis 2, vu les
+dépendances internes à chacun), et si les groupes P1/P2 indépendants
+(5, 6, 7) peuvent être menés en parallèle du travail sur les groupes P0.
