@@ -43,6 +43,10 @@ FICHIER_MATCHS_SEMAINE = "matchs_semaine.json"
 # manuelle) que fusionner deux équipes différentes.
 TOKENS_CLUB_IGNORES = {"fc", "ac", "cf", "sc", "afc", "cfc", "club"}
 
+# CORRECTIF 05/09/2026 -- voir _noms_correspondent ci-dessous.
+MARQUEURS_RESERVE_EQUIPE = {"b", "ii", "iii", "castilla", "atletic", "reserve",
+                            "reservas", "u23", "u21", "u20", "u19", "juvenil"}
+
 
 def _normalise_nom_equipe(nom):
     mots = re.sub(r"[^a-z0-9\s]", " ", nom.lower()).split()
@@ -70,6 +74,17 @@ def _correspond_via_initiale(nom_abrege, nom_complet):
 def _noms_correspondent(nom_a, nom_b):
     a, b = _normalise_nom_equipe(nom_a), _normalise_nom_equipe(nom_b)
     if a and b and (a in b or b in a):
+        # CORRECTIF 05/09/2026 -- même bug trouvé et corrigé dans
+        # resolution_betpawa.py/scraper_details.py/calculs.py : le
+        # substring seul confond une équipe et sa réserve/jeunes (ex.
+        # 'Real Madrid' vs 'Real Madrid Castilla', 'PSG' vs 'PSG U19').
+        # Ici c'est en production réelle (cherche_url_matchendirect_auto) :
+        # un faux positif fait pointer vers la mauvaise page matchendirect,
+        # donc de mauvaises stats de forme pour tout le calcul de lambda.
+        mots_a, mots_b = set(a.split()), set(b.split())
+        mots_en_trop = (mots_a - mots_b) | (mots_b - mots_a)
+        if mots_en_trop & MARQUEURS_RESERVE_EQUIPE:
+            return False
         return True
     # REJETÉ (26/08) : un repli par simple "dernier mot identique" avait
     # été testé, mais un test à grande échelle (2876 matchs réels) a
