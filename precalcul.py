@@ -195,6 +195,28 @@ def est_jeune_ou_reserve(nom_competition):
     return bool(_RE_JEUNE_OU_RESERVE.search(nom_competition or ""))
 
 
+# AJOUT 06/09/2026 (bug #4) -- est_jeune_ou_reserve() ci-dessus ne regarde
+# que le NOM DE LA COMPÉTITION -- un match impliquant une équipe réserve/
+# jeunes dans une compétition au nom neutre (coupe amateur, tournoi
+# amical...) passait à travers. Vérifie ici le nom de l'ÉQUIPE elle-même,
+# mot par mot, contre les mêmes marqueurs déjà utilisés pour la
+# correspondance de noms ailleurs dans le dépôt (calculs.py/
+# resolution_betpawa.py/scraper_betpawa.py) -- copie locale par choix
+# d'architecture déjà établi ici (chaque module garde la sienne plutôt que
+# de dépendre d'un autre module pour une simple liste de mots).
+# Impact déjà atténué avant ce correctif par le veto d'échantillon
+# (decision_go_nogo, NO_GO sous 8 matchs, voir calculs.py) -- ce correctif
+# évite un scraping/calcul inutile en amont, ce n'est pas un risque de
+# mauvais GO qui n'était pas déjà couvert par ailleurs.
+_MARQUEURS_RESERVE_NOM_EQUIPE = {"b", "ii", "iii", "castilla", "atletic", "reserve",
+                                  "reservas", "u23", "u21", "u20", "u19", "juvenil"}
+
+
+def est_equipe_jeune_ou_reserve(nom_equipe):
+    mots = re.sub(r"[^a-z0-9\s]", " ", (nom_equipe or "").lower()).split()
+    return any(mot in _MARQUEURS_RESERVE_NOM_EQUIPE for mot in mots)
+
+
 # AJOUT 03/09/2026 -- voir docstring. Liste EXPLICITE (pays, sous-chaîne),
 # jamais un mot-clé générique -- décidée avec Patrick après vérification
 # manuelle pays par pays. Chine "Ligue 1" volontairement ABSENTE de cette
@@ -744,6 +766,16 @@ def charge_matchs_fenetre():
     fenetre = [m for m in fenetre if not est_jeune_ou_reserve(m.get("competition"))]
     nb_exclus_jeunes_reserves = nb_avant_filtre - len(fenetre)
 
+    # AJOUT 06/09/2026 (bug #4) -- même filtre, mais sur le NOM DE
+    # L'ÉQUIPE plutôt que sur celui de la compétition (voir docstring de
+    # est_equipe_jeune_ou_reserve ci-dessus). Appliqué après le filtre par
+    # compétition, sur ce qu'il reste.
+    nb_avant_reserve_equipe = len(fenetre)
+    fenetre = [m for m in fenetre
+               if not est_equipe_jeune_ou_reserve(m.get("domicile"))
+               and not est_equipe_jeune_ou_reserve(m.get("exterieur"))]
+    nb_exclus_reserve_equipe = nb_avant_reserve_equipe - len(fenetre)
+
     # AJOUT 03/09/2026 (2e partie) -- liste explicite de compétitions
     # exclues (2e divisions confirmées + compétitions à données trop
     # souvent absentes), voir docstring et COMPETITIONS_EXCLUES.
@@ -783,7 +815,7 @@ def charge_matchs_fenetre():
     nb_exclus_top_flight_unique = nb_avant_unique - len(fenetre)
 
     return (fenetre, len(matchs_du_jour), len(matchs_demain), len(matchs_j2_j3),
-            nb_exclus_jeunes_reserves, nb_exclus_liste, nb_exclus_chine,
+            nb_exclus_jeunes_reserves, nb_exclus_reserve_equipe, nb_exclus_liste, nb_exclus_chine,
             nb_exclus_oceanie, nb_exclus_femmes, nb_exclus_europe,
             nb_exclus_top_flight_unique)
 
@@ -863,7 +895,7 @@ def main():
           f"demain {nb_demain_aff_avant} -> {nb_demain_aff_apres}.")
 
     (fenetre, nb_du_jour, nb_demain, nb_j2_j3, nb_exclus_jeunes_reserves,
-     nb_exclus_liste, nb_exclus_chine, nb_exclus_oceanie,
+     nb_exclus_reserve_equipe, nb_exclus_liste, nb_exclus_chine, nb_exclus_oceanie,
      nb_exclus_femmes, nb_exclus_europe,
      nb_exclus_top_flight_unique) = charge_matchs_fenetre()
 
@@ -872,8 +904,10 @@ def main():
               "exploitable -- vérifier que scraper.py et scraper_semaine.py "
               "ont bien tourné avant ce script.")
 
-    print(f"Filtre jeunes/réserves : {nb_exclus_jeunes_reserves} match(s) "
-          f"écarté(s) avant Betpawa et avant calcul des signaux.")
+    print(f"Filtre jeunes/réserves (compétition) : {nb_exclus_jeunes_reserves} "
+          f"match(s) écarté(s) avant Betpawa et avant calcul des signaux.")
+    print(f"Filtre jeunes/réserves (nom d'équipe) : {nb_exclus_reserve_equipe} "
+          f"match(s) écarté(s).")
     print(f"Filtre liste explicite (2e divisions confirmées + données "
           f"souvent absentes) : {nb_exclus_liste} match(s) écarté(s).")
     print(f"Filtre Chine (liste blanche, Super Ligue uniquement) : "
@@ -913,6 +947,7 @@ def main():
         "nb_matchs_demain_source": nb_demain,
         "nb_matchs_j2_j3_source": nb_j2_j3,
         "nb_exclus_jeunes_reserves": nb_exclus_jeunes_reserves,
+        "nb_exclus_reserve_equipe": nb_exclus_reserve_equipe,
         "nb_exclus_liste_explicite": nb_exclus_liste,
         "nb_exclus_chine_liste_blanche": nb_exclus_chine,
         "nb_exclus_oceanie_liste_blanche": nb_exclus_oceanie,
