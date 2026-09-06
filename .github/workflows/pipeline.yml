@@ -62,10 +62,39 @@ jobs:
       # ET cas du cron, qui ne le fournit jamais), donne bien une chaîne
       # vide ici -- pas besoin de "|| '100'" ni d'aucune valeur par défaut.
       - name: Pré-calcul J0/J+1/J+2/J+3 + résolution Betpawa (indépendant du panier)
+        id: precalcul
         env:
           PRECALCUL_LIMITE_BETPAWA: ${{ github.event.inputs.limite_betpawa }}
         run: python precalcul.py
         continue-on-error: true
+
+      # CORRECTIF 06/09/2026 (Groupe 2, bug #10) -- continue-on-error sur
+      # l'étape précalcul ci-dessus empêchait déjà le job de s'arrêter tout
+      # seul en cas de plantage, mais rien ne vérifiait ensuite que le
+      # résultat était réellement exploitable : verification_resultats.py/
+      # calcule_roi.py/le commit tournaient quand même sur un
+      # precalcul_leger.json absent, vide ou périmé. Cette garde n'a PAS
+      # continue-on-error : si elle échoue (exit 1), le job s'arrête ici,
+      # aucune étape suivante ne s'exécute -- ni la vérification des scores,
+      # ni le calcul du ROI, ni le commit. Choix assumé (décision Patrick) :
+      # sécurité avant complétude -- verification_resultats.py/calcule_roi.py
+      # traitent de toute façon un arriéré, ils rattraperont au prochain run
+      # réussi. scraper_semaine.py reste volontairement HORS de cette garde
+      # (continue-on-error ci-dessus non retiré) : une dégradation de la
+      # couverture J+2/J+3 n'est pas une donnée corrompue, contrairement à un
+      # échec de precalcul.py.
+      - name: Vérifier que le pré-calcul a réellement produit un résultat exploitable (uniquement si schedule/relance complète)
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+        run: |
+          if [ "${{ steps.precalcul.outcome }}" != "success" ]; then
+            echo "ERREUR : l'étape précalcul a échoué (continue-on-error l'a seulement empêchée d'arrêter le job immédiatement) -- arrêt AVANT toute publication."
+            exit 1
+          fi
+          if [ ! -s precalcul_leger.json ]; then
+            echo "ERREUR : precalcul_leger.json absent ou vide après un précalcul pourtant marqué réussi -- arrêt AVANT publication."
+            exit 1
+          fi
+          echo "Pré-calcul vérifié OK -- precalcul_leger.json présent et non vide."
 
       # CORRECTIF 06/09/2026 (Groupe 1, bug #22/#40) -- cette étape lisait
       # panier.json tel quel sur le disque lors d'un run planifié, alors que
