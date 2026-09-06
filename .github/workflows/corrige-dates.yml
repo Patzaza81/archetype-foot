@@ -1,0 +1,47 @@
+name: Corriger les dates de l'historique (rattrapage ponctuel 24-30/08)
+
+# Se déclenche UNIQUEMENT à la main, depuis l'onglet "Actions" de GitHub
+# (fonctionne depuis le navigateur iPhone, pas besoin d'ordinateur).
+# Coche "dry_run" = true pour un essai à blanc (rien n'est écrit),
+# false pour appliquer les corrections pour de vrai.
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Essai à blanc (true) ou correction réelle (false) ?"
+        required: true
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  corrige-dates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Installer les dépendances
+        run: pip install requests beautifulsoup4
+
+      - name: Lancer le script (dry-run)
+        if: ${{ inputs.dry_run == true }}
+        run: python corrige_dates_historique.py --dry-run
+
+      - name: Lancer le script (correction réelle)
+        if: ${{ inputs.dry_run == false }}
+        run: python corrige_dates_historique.py
+
+      - name: Committer historique_pronostics.json si modifié
+        if: ${{ inputs.dry_run == false }}
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add historique_pronostics.json
+          git diff --staged --quiet || git commit -m "Rattrapage dates historique (24-30/08)"
+          git push
