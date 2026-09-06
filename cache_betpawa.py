@@ -93,3 +93,20 @@ def purge_matchs_joues(dates_encore_actives, fichier_cache=FICHIER_CACHE):
     if len(encore_utiles) != len(cache):
         _sauve(encore_utiles, fichier_cache)
     return len(cache) - len(encore_utiles)
+
+
+def invalide_entree(nom_domicile, nom_exterieur, date_iso, fichier_cache=FICHIER_CACHE):
+    """AJOUT 06/09/2026 (bug #6) -- supprime UNE entrée précise du cache,
+    quand elle est prouvée fausse après coup (le titre de la page
+    Betpawa rechargée ne correspond pas aux équipes attendues -- voir
+    resolution_betpawa_precalcul.py). Ne touche à rien d'autre dans le
+    cache. Retourne True si une entrée a bien été supprimée, False si
+    elle n'existait déjà plus (ex. supprimée par un run concurrent) --
+    jamais une exception dans ce cas, purement informatif."""
+    cache = _charge(fichier_cache)
+    cle = _cle(nom_domicile, nom_exterieur, date_iso)
+    if cle in cache:
+        del cache[cle]
+        _sauve(cache, fichier_cache)
+        return True
+    return False
