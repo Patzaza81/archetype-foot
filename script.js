@@ -4,6 +4,29 @@
 // taille de l'écran) 4. détails (paris, risques) 5. action secondaire
 // (détail N1/N2, repliée par défaut).
 
+// AJOUT 06/09/2026 (bug #27) -- échappe le texte inséré dans du HTML
+// construit par concaténation de chaînes (les fonctions construit*
+// ci-dessous). Choix délibéré, différent de la reformulation littérale de
+// l'audit ("textContent/construction DOM") : une conversion complète de
+// tout ce fichier en construction DOM nœud par nœud est un chantier bien
+// plus large que ce que l'audit qualifiait de "peu coûteux" -- ce module
+// est un arbre de ~10 fonctions imbriquées qui se passent du HTML en
+// chaîne. echappeHtml() neutralise le même vecteur (impossible d'injecter
+// une balise/script actif) avec un risque de régression bien moindre sur
+// un rendu déjà complexe. Appliqué à toute valeur qui peut transporter du
+// texte scrapé/généré (domicile, extérieur, compétition, raison,
+// justification) -- jamais aux nombres déjà formatés (toFixed/formatPct),
+// qui ne peuvent pas contenir de balise par construction.
+function echappeHtml(texte) {
+  if (texte === null || texte === undefined) return "";
+  return String(texte)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 const RAISONS_LISIBLES = {
   "donnees_de_base_manquantes": "données de base manquantes (équipe/compétition non identifiée)",
   "url_equipe_introuvable_sur_page_match": "page équipe introuvable sur matchendirect",
@@ -90,7 +113,7 @@ function construitTableListeA(listeA) {
   // côté (qui, elle, reflétait déjà la version corrigée malgré son nom
   // "ev_brut" -- voir run_pipeline.py). Repli sur la brute si absente.
   const lignes = listeA.map(c => `<tr>
-    <td>${c.marche}</td><td>${c.cote_observee.toFixed(2)}</td>
+    <td>${echappeHtml(c.marche)}</td><td>${c.cote_observee.toFixed(2)}</td>
     <td>${formatPct(c.probabilite_modele_ajustee ?? c.probabilite_modele)}</td><td>${formatPct(c.ev_brut)}</td>
   </tr>`).join("");
   return `<table class="detail-table">
@@ -149,13 +172,13 @@ function construitNiveau3(m) {
   if (assezDeRecul) {
     badge = `<div class="proba-1">
       ${stats.taux_reussite_pct.toFixed(1)}%
-      <span class="proba-1-label">de réussite sur les ${stats.nb_paris} derniers paris du type "${cat}" (${stats.nb_gagnes} gagnés) — pari recommandé ici : ${pariEnOr.marche}</span>
+      <span class="proba-1-label">de réussite sur les ${stats.nb_paris} derniers paris du type "${echappeHtml(cat)}" (${stats.nb_gagnes} gagnés) — pari recommandé ici : ${echappeHtml(pariEnOr.marche)}</span>
     </div>`;
   } else {
     const nb = stats ? stats.nb_paris : 0;
     badge = `<div class="proba-1 proba-1-insuffisant">
       pas assez de recul
-      <span class="proba-1-label">seulement ${nb} pari(s) "${pariEnOr.marche}" enregistré(s) jusqu'ici (il en faut au moins ${SEUIL_MIN_PARIS_POUR_TAUX_REEL})</span>
+      <span class="proba-1-label">seulement ${nb} pari(s) "${echappeHtml(pariEnOr.marche)}" enregistré(s) jusqu'ici (il en faut au moins ${SEUIL_MIN_PARIS_POUR_TAUX_REEL})</span>
     </div>`;
   }
 
@@ -184,13 +207,13 @@ function construitBlocJustification(m, pariEnOr) {
     </p>`;
   }
   const lignes = j.justifications
-    .map(just => `<li class="justification-ligne">${just.texte}</li>`)
+    .map(just => `<li class="justification-ligne">${echappeHtml(just.texte)}</li>`)
     .join("");
   const solidite = j.solidite_donnees
-    ? `<p class="justification-solidite">Basé sur : ${j.solidite_donnees}</p>`
+    ? `<p class="justification-solidite">Basé sur : ${echappeHtml(j.solidite_donnees)}</p>`
     : "";
   return `<div class="bloc-justification">
-    <p class="justification-titre">${j.titre}</p>
+    <p class="justification-titre">${echappeHtml(j.titre)}</p>
     <ul class="justification-liste">${lignes}</ul>
     ${solidite}
   </div>`;
@@ -204,6 +227,10 @@ const supabaseClient = SUPABASE_CONFIGURE ? window.supabase.createClient(SUPABAS
 const DELAI_ATTENTE_MS = 15000;
 const INTERVALLE_RAFRAICHISSEMENT_MS = 20000;
 const NB_RAFRAICHISSEMENTS_MAX = 15;
+// AJOUT 06/09/2026 (bug #24) -- même clé que panier.js, voir son
+// commentaire pour le détail. Lue ici, jamais écrite -- seul panier.js
+// écrit cette clé, sur un envoi réellement accepté.
+const CLE_DERNIER_PANIER_ID = "archetype_dernier_panier_id";
 
 function afficheErreur(message) {
   document.getElementById("maj").textContent = "erreur de chargement : " + message;
@@ -254,12 +281,12 @@ function construitCarteMatch(m) {
     : "";
 
   let html = `
-    <div class="teams"><span>${m.domicile}</span><span>${m.score || heureAffichee || ""}</span><span>${m.exterieur}</span></div>
-    <div class="meta">${(m.competition || "").replace(/\s+/g, " ").trim()}${dateHeure ? " — " + dateHeure : ""}</div>
+    <div class="teams"><span>${echappeHtml(m.domicile)}</span><span>${echappeHtml(m.score || heureAffichee || "")}</span><span>${echappeHtml(m.exterieur)}</span></div>
+    <div class="meta">${echappeHtml((m.competition || "").replace(/\s+/g, " ").trim())}${dateHeure ? " — " + echappeHtml(dateHeure) : ""}</div>
   `;
 
   if (!m.traite) {
-    html += `<div class="signal-non-traite">non analysé — ${traduireRaison(m.raison_non_traite)}</div>`;
+    html += `<div class="signal-non-traite">non analysé — ${echappeHtml(traduireRaison(m.raison_non_traite))}</div>`;
   } else {
     const estGo = m.verdict_global === "GO";
     html += `<div class="ligne-verdict">
@@ -267,7 +294,7 @@ function construitCarteMatch(m) {
     </div>`;
     html += construitNiveau3(m);
     if (!estGo && m.motif_no_go) {
-      html += `<div class="motif-no-go">${m.motif_no_go}</div>`;
+      html += `<div class="motif-no-go">${echappeHtml(m.motif_no_go)}</div>`;
     }
     if (estGo) {
       html += construitBlocParisRecommandes(m.LISTE_B_liste_finale_apres_correlation);
@@ -495,12 +522,26 @@ async function chargeDernierResultat(monJeton) {
     setTimeout(() => reject(new Error("délai dépassé (15s) -- vérifie ta connexion.")), DELAI_ATTENTE_MS)
   );
 
-  const requete = supabaseClient
+  // CORRECTIF 06/09/2026 (bug #24) : avant, cette requête ne filtrait que
+  // par user_id et prenait le résultat le plus récent TOUTES soumissions
+  // confondues -- si une soumission plus ancienne finissait de se calculer
+  // APRÈS une soumission plus récente, son résultat s'affichait à la
+  // place du bon. panier_id (persisté par panier.js sur un envoi
+  // réellement accepté) cible désormais précisément LE panier envoyé en
+  // dernier depuis cet appareil, quand on le connaît. Repli sur l'ancien
+  // comportement (dernier résultat toutes soumissions confondues) sinon --
+  // ex. première visite sur cet appareil avant ce correctif, ou
+  // localStorage vidé -- jamais un écran vide là où l'ancien comportement
+  // affichait quelque chose.
+  const panierIdActuel = localStorage.getItem(CLE_DERNIER_PANIER_ID);
+  let requete = supabaseClient
     .from("resultats_pipeline")
-    .select("data, created_at")
-    .eq("user_id", session.user.id)
-    .order("created_at", { ascending: false })
-    .limit(1);
+    .select("data, created_at, panier_id")
+    .eq("user_id", session.user.id);
+  if (panierIdActuel) {
+    requete = requete.eq("panier_id", panierIdActuel);
+  }
+  requete = requete.order("created_at", { ascending: false }).limit(1);
 
   const { data: lignes, error } = await Promise.race([requete, delaiDepasse]);
   if (monJeton !== jetonAffichage) return null;
