@@ -52,6 +52,12 @@ except Exception as e:
     print(f"[FAIL] import scraper_details.py -- {e}")
     sys.exit(1)
 
+try:
+    import scraper_betpawa as sb
+except Exception as e:
+    print(f"[FAIL] import scraper_betpawa.py -- {e}")
+    sys.exit(1)
+
 
 # ============================================================================
 section("K_SHRINKAGE / ajuste_probabilite — doit avoir un effet réel")
@@ -201,6 +207,22 @@ for a, b, attendu in cas_reserve:
 for a, b, attendu in cas_reserve:
     r = calculs._memes_equipes_ratio(a, b)
     verite(f"calculs._memes_equipes_ratio({a!r}, {b!r})", r == attendu, f"obtenu={r}")
+
+for a, b, attendu in [
+    ("Real Madrid", "Real Madrid Castilla", False),
+    ("Barcelona", "Barcelona Atletic", False),
+    ("PSG", "PSG U19", False),
+    ("AC Horsens", "Horsens", True),
+    ("S. Bratislava", "Slovan Bratislava", True),
+]:
+    r = sb._noms_correspondent(a, b)
+    verite(f"scraper_betpawa._noms_correspondent({a!r}, {b!r}) [utilisée en prod]", r == attendu, f"obtenu={r}")
+
+_classement_test = [{"equipe": "Real Madrid", "pts": 10}, {"equipe": "Real Madrid Castilla", "pts": 5}]
+verite(
+    "scraper_details.trouve_equipe_dans_classement ne confond pas Real Madrid avec sa réserve",
+    sd.trouve_equipe_dans_classement(_classement_test, "Real Madrid") == {"equipe": "Real Madrid", "pts": 10},
+)
 
 
 # ============================================================================
