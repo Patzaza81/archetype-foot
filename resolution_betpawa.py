@@ -201,12 +201,27 @@ def resoudre_match(page, nom_domicile, nom_exterieur, date_iso, etapes):
 
         if len(candidats_confiants) == 1:
             score, texte = candidats_confiants[0]
-            url, _ = verifie_date_candidat(page, variante, texte, date_attendue)
-            if url:
+            url, date_trouvee = verifie_date_candidat(page, variante, texte, date_attendue)
+            if url and (not date_attendue or date_trouvee == date_attendue):
                 etapes.append(f"TROUVÉ (tamis 1) [{nom_domicile} - {nom_exterieur}] "
                               f"score {score:.2f} -> {url}")
                 return url
-            continue
+            if not url:
+                # Échec technique (page injoignable) -- comme avant, on
+                # tente la variante de nom suivante.
+                continue
+            # CORRECTIF 06/09/2026 -- bug réel : l'ancien code faisait
+            # `url, _ = verifie_date_candidat(...)` et jetait la date
+            # retournée sans jamais la comparer à date_attendue. Un candidat
+            # unique à confiance >=0.80 pouvait donc être accepté même à la
+            # MAUVAISE date. On ne "continue" plus ici vers la variante de
+            # nom suivante : on retombe dans la vérification tamis 2/3
+            # ci-dessous, qui revérifiera ce même candidat et tranchera
+            # proprement entre AMBIGU/NON TROUVÉ plutôt que de risquer une
+            # mauvaise cote attachée au mauvais match.
+            etapes.append(f"[tamis 1 rejeté] [{nom_domicile} - {nom_exterieur}] candidat "
+                          f"unique score {score:.2f} mais date {date_trouvee!r} != "
+                          f"{date_attendue!r} -- passage au tamis 2.")
 
         if candidats and date_attendue:
             candidats_a_verifier = candidats_confiants if candidats_confiants else candidats[:4]
