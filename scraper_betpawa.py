@@ -212,9 +212,42 @@ def recupere_page(page, url):
     return texte, titre
 
 
+def _marches_plausibles(resultat):
+    """AJOUT 06/09/2026 (bug #20) -- garde-fou structurel avant de compter
+    les marchés d'un parseur. Une cote décimale <= 1.0 est mathématiquement
+    impossible (le pari le plus sûr rapporte toujours plus que la mise) --
+    un marché contenant une telle valeur est le signe que le parseur a
+    dérapé sur la mauvaise ligne du texte capturé, pas un vrai marché.
+    Écarte le marché ENTIER dans ce cas (jamais une valeur isolée gardée à
+    côté d'une valeur fausse dans le même marché). None reste toléré
+    (valeur explicitement absente, ex. `paires.get(...)` qui ne trouve
+    rien) -- ce n'est pas une preuve d'erreur, contrairement à une valeur
+    numérique invalide."""
+    marches_valides = {}
+    for marche, valeurs in resultat.items():
+        if not isinstance(valeurs, dict):
+            marches_valides[marche] = valeurs
+            continue
+        valide = all(
+            v is None or (isinstance(v, (int, float)) and not isinstance(v, bool) and v > 1.0)
+            for v in valeurs.values()
+        )
+        if valide:
+            marches_valides[marche] = valeurs
+    return marches_valides
+
+
 def meilleur_parsing(texte, domicile, exterieur):
     """Essaie les trois parseurs connus, garde celui qui reconnaît le plus de
-    marchés. Trois formats réellement observés à ce jour, tous différents :
+    marchés PLAUSIBLES (voir _marches_plausibles -- correctif #20, 06/09 :
+    avant, le choix se faisait sur le nombre BRUT de marchés retournés, sans
+    aucune vérification que ces marchés contiennent des cotes réalistes --
+    un parseur qui dérape sur le mauvais texte pouvait gagner face au bon
+    parseur simplement en produisant plus d'entrées, même fausses). Un seul
+    format de capture réel en production à ce jour (Playwright), donc
+    impact contextuel aujourd'hui, mais ce garde-fou protège aussi le jour
+    où un autre format réapparaîtra. Trois formats réellement observés à ce
+    jour, tous différents :
     (1) copier-coller téléphone -- français, étiquette/valeur séparées ;
     (2) outil de récupération de Claude -- anglais, étiquette/valeur collées ;
     (3) navigateur automatisé (Playwright) -- anglais, étiquette/valeur
@@ -232,7 +265,8 @@ def meilleur_parsing(texte, domicile, exterieur):
         except Exception as e:
             print(f"  {nom} a échoué : {e}")
             resultat = {}
-        print(f"  {nom} : {len(resultat)} marché(s)")
+        resultat = _marches_plausibles(resultat)
+        print(f"  {nom} : {len(resultat)} marché(s) plausible(s)")
         if len(resultat) > len(meilleur_resultat):
             meilleur_nom, meilleur_resultat = nom, resultat
 
