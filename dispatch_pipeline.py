@@ -70,16 +70,28 @@ def ecrit_resultat(panier_id, user_id, data):
     )
 
 
+def _cle_match(m):
+    """Identité canonique d'un match. match_id (identifiant matchendirect réel,
+    présent sur 100% des entrées depuis le retrait de la saisie manuelle --
+    06/09/2026) prioritaire ; repli (domicile, exterieur) seulement pour une
+    entrée dégradée qui n'en aurait pas, même convention que la déduplication
+    déjà en place dans run_pipeline.py."""
+    return m.get("match_id") or (m.get("domicile"), m.get("exterieur"))
+
+
 def extrait_resultat_de_ce_panier(matchs_demandes, historique):
     """Le fichier historique_pronostics.json produit par run_pipeline.py reste
     global (utilisé aussi par le pipeline quotidien planifié) -- on y retrouve
-    les entrées de CE panier en comparant (domicile, exterieur), pour ne
-    renvoyer à l'utilisateur que ce qu'il a lui-même demandé."""
-    cles_demandees = {(m["domicile"], m["exterieur"]) for m in matchs_demandes}
+    les entrées de CE panier par match_id (CORRECTIF 06/09/2026, bug #8 --
+    (domicile, exterieur) seul pouvait faire retourner le résultat d'une
+    AUTRE rencontre entre les deux mêmes équipes, ex. aller-retour ou
+    championnat vs coupe), pour ne renvoyer à l'utilisateur que ce qu'il a
+    lui-même demandé."""
+    cles_demandees = {_cle_match(m) for m in matchs_demandes}
     trouves = []
     for jour in historique:
         for m in jour.get("matchs", []):
-            if (m.get("domicile"), m.get("exterieur")) in cles_demandees:
+            if _cle_match(m) in cles_demandees:
                 trouves.append(m)
     return trouves
 
@@ -95,22 +107,23 @@ def extrait_resultat_de_ce_panier(matchs_demandes, historique):
 #   2. historique_pronostics.json -- couvre ce qui est sorti de la fenêtre
 #      automatique (matchs plus anciens) ou déjà analysé via un panier
 #      précédent.
-# RÈGLE STRICTE (déjà respectée par extrait_resultat_de_ce_panier ci-dessus,
-# reconduite ici) : on ne renvoie JAMAIS que les matchs explicitement
-# demandés -- comparaison par (domicile, exterieur), jamais "tout ce qui
-# traîne" dans ces fichiers.
+# CORRECTIF 06/09/2026 (bug #7) : comparaison désormais par match_id (voir
+# _cle_match ci-dessus), plus par (domicile, exterieur) -- deux rencontres
+# différentes entre les deux mêmes équipes ne se substituent plus l'une à
+# l'autre. On ne renvoie toujours JAMAIS que les matchs explicitement
+# demandés -- jamais "tout ce qui traîne" dans ces fichiers.
 def cherche_deja_analyses(matchs_demandes, precalcul_signaux, historique):
-    cles_demandees = {(m["domicile"], m["exterieur"]) for m in matchs_demandes}
+    cles_demandees = {_cle_match(m) for m in matchs_demandes}
     trouves = {}
 
     for s in precalcul_signaux:
-        cle = (s.get("domicile"), s.get("exterieur"))
+        cle = _cle_match(s)
         if cle in cles_demandees and s.get("traite") and s.get("verdict_global"):
             trouves[cle] = s
 
     for jour in historique:
         for m in jour.get("matchs", []):
-            cle = (m.get("domicile"), m.get("exterieur"))
+            cle = _cle_match(m)
             if cle in cles_demandees and cle not in trouves:
                 trouves[cle] = m
 
@@ -163,13 +176,13 @@ def main():
             historique_existant = json.load(f)
 
     deja_analyses = cherche_deja_analyses(panier, precalcul_signaux, historique_existant)
-    manquants = [m for m in panier if (m["domicile"], m["exterieur"]) not in deja_analyses]
+    manquants = [m for m in panier if _cle_match(m) not in deja_analyses]
 
     if not manquants:
         print(f"[dispatch] les {len(panier)} match(s) du panier sont déjà "
               f"analysés -- aucun scraping déclenché, résultats existants "
               f"réutilisés tels quels.")
-        resultat = [deja_analyses[(m["domicile"], m["exterieur"])] for m in panier]
+        resultat = [deja_analyses[_cle_match(m)] for m in panier]
         ecrit_resultat(panier_id, ligne_panier["user_id"], resultat)
         print(f"[dispatch] résultat écrit dans Supabase pour panier {panier_id} "
               f"({len(resultat)} match(s), 100% déjà disponibles).")
@@ -195,14 +208,14 @@ def main():
     resultat_nouveaux = extrait_resultat_de_ce_panier(manquants, historique)
     resultat_par_cle = dict(deja_analyses)
     for r in resultat_nouveaux:
-        resultat_par_cle[(r.get("domicile"), r.get("exterieur"))] = r
+        resultat_par_cle[_cle_match(r)] = r
 
     # RÈGLE STRICTE : ordre et contenu = exactement le panier demandé, ni
     # plus ni moins -- un match qu'on n'a réussi à retrouver ni déjà
     # analysé ni tout juste calculé est simplement absent du résultat
     # renvoyé (pas de placeholder inventé).
-    resultat = [resultat_par_cle[(m["domicile"], m["exterieur"])]
-                for m in panier if (m["domicile"], m["exterieur"]) in resultat_par_cle]
+    resultat = [resultat_par_cle[_cle_match(m)]
+                for m in panier if _cle_match(m) in resultat_par_cle]
 
     ecrit_resultat(panier_id, ligne_panier["user_id"], resultat)
     print(f"[dispatch] résultat écrit dans Supabase pour panier {panier_id} "
