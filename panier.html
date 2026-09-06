@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="style.css">
 <style>
   /* Réglages propres à cette page uniquement, sans couleur codée en dur. */
-  #retour-accueil, #retour-betpawa { display: inline-block; margin-bottom: 12px; margin-right: 8px; }
+  #retour-accueil { display: inline-block; margin-bottom: 12px; margin-right: 8px; }
   #copie-fallback { display: none; width: 100%; box-sizing: border-box; margin-bottom: 16px;
                      min-height: 70px; font-family: monospace; font-size: 13px; }
   #statut-analyse-panier { padding: 0 0 16px; font-size: 14px; }
@@ -25,7 +25,6 @@
 </header>
 <main>
   <a id="retour-accueil" href="index.html" class="nav-bouton">← Accueil</a>
-  <a id="retour-betpawa" href="betpawa.html" class="nav-bouton">⚽ Betpawa</a>
   <div id="liste-panier"></div>
 
   <button id="analyser-panier-btn" class="bouton-principal">🔬 Analyser tout le panier (0)</button>
@@ -33,15 +32,6 @@
 
   <button id="tout-copier-btn" class="bouton-secondaire">Tout copier (0)</button>
   <textarea id="copie-fallback" readonly placeholder="Si la copie automatique échoue, le JSON apparaît ici -- sélectionne-le à la main."></textarea>
-
-  <div id="ajout-manuel">
-    <h2>Ajouter un match hors liste</h2>
-    <input id="manuel-url" type="text" placeholder="URL matchendirect.fr complète (ex. https://www.matchendirect.fr/live-score/psg-om_xxxxx.html)">
-    <input id="manuel-domicile" type="text" placeholder="Équipe domicile (ex. PSG)">
-    <input id="manuel-exterieur" type="text" placeholder="Équipe extérieur (ex. OM)">
-    <input id="manuel-competition" type="text" placeholder="Compétition (ex. France : Ligue 1 McDonald's)">
-    <button id="ajouter-manuel-btn" class="bouton-secondaire">Ajouter au panier</button>
-  </div>
 
   <p style="padding: 12px; opacity: 0.7; font-size: 0.9em;">
     "Analyser tout le panier" envoie la liste entière en un seul run
