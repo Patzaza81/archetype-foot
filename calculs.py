@@ -282,9 +282,25 @@ def _normalise_texte_ratio(s):
     return re.sub(r"\s+", " ", s or "").strip().lower()
 
 
+# CORRECTIF 05/09/2026 -- même bug/même correctif que _memes_equipes
+# dans scraper_details.py (voir son commentaire). Utilisée ici pour
+# retrouver la position d'une équipe dans le classement et son
+# historique H2H -- un faux positif fausse le ratio de classement ou
+# le ratio H2H utilisé dans calcule_lambda().
+_MARQUEURS_RESERVE_EQUIPE = {"b", "ii", "iii", "castilla", "atletic", "reserve",
+                             "reservas", "u23", "u21", "u20", "u19", "juvenil"}
+
+
 def _memes_equipes_ratio(nom1, nom2):
     n1, n2 = _normalise_texte_ratio(nom1), _normalise_texte_ratio(nom2)
-    return n1 == n2 or n1 in n2 or n2 in n1
+    if n1 == n2:
+        return True
+    if n1 in n2 or n2 in n1:
+        mots_en_trop = (set(n1.split()) - set(n2.split())) | (set(n2.split()) - set(n1.split()))
+        if mots_en_trop & _MARQUEURS_RESERVE_EQUIPE:
+            return False
+        return True
+    return False
 
 
 def calcule_ratio_classement(classement, nom_equipe, nom_adversaire):
