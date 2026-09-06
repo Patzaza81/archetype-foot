@@ -27,8 +27,9 @@ import os
 import time
 
 from resolution_betpawa import resoudre_match
-from cache_betpawa import cherche_dans_cache, enregistre_correspondance
-from scraper_betpawa import recupere_page, meilleur_parsing
+from cache_betpawa import cherche_dans_cache, enregistre_correspondance, invalide_entree
+from scraper_betpawa import recupere_page, meilleur_parsing, _noms_correspondent
+from parse_betpawa_url import extrait_meta
 
 FICHIER_DIAGNOSTIC = "diagnostic_precalcul_betpawa.txt"
 
@@ -68,6 +69,7 @@ def resout_cotes_betpawa(fenetre):
         "betpawa_trouves_frais": 0,
         "betpawa_ambigus": 0,
         "betpawa_non_trouves": 0,
+        "betpawa_titre_mismatch": 0,
         "betpawa_cotes_extraites": 0,
         "betpawa_cotes_vides": 0,
         "betpawa_erreurs": 0,
@@ -141,13 +143,46 @@ def resout_cotes_betpawa(fenetre):
                     )
 
                 try:
-                    texte, _titre = recupere_page(page, url)
-                    cotes = meilleur_parsing(texte, domicile, exterieur)
+                    texte, titre = recupere_page(page, url)
                 except Exception as e:
                     etapes.append(f"ERREUR récupération cotes "
                                   f"[{domicile} - {exterieur}] ({url}) : {e}")
                     compteurs["betpawa_erreurs"] += 1
                     continue
+
+                # CORRECTIF 06/09/2026 (bug #6) : le titre de la page était
+                # récupéré puis jeté (`_titre`), jamais revérifié contre
+                # domicile/exterieur avant d'extraire les cotes -- risque
+                # concentré sur les cache hits antérieurs au correctif
+                # tamis 1 (#12, réserve/jeunes). meilleur_parsing() est
+                # générique par conception (1X2/BTTS/Over-Under ne
+                # dépendent d'aucun nom d'équipe dans le texte capturé) :
+                # une mauvaise URL renvoie donc de VRAIES cotes, juste
+                # pour le mauvais match, jamais un résultat vide qui
+                # alerterait tout seul. meta_titre=None (titre imparsable)
+                # laisse le comportement identique à avant ce correctif --
+                # jamais démontré comme un risque, pas de dégradation du
+                # taux de résolution actuel sur une hypothèse non vérifiée.
+                meta_titre = extrait_meta(titre)
+                if meta_titre is not None and not (
+                    _noms_correspondent(domicile, meta_titre["domicile"])
+                    and _noms_correspondent(exterieur, meta_titre["exterieur"])
+                ):
+                    etapes.append(
+                        f"TITRE NE CORRESPOND PAS [{domicile} - {exterieur}] -- page "
+                        f"chargée : '{meta_titre['domicile']} - {meta_titre['exterieur']}' "
+                        f"({url}) -- cotes NON extraites, match laissé sur Bet365 par défaut."
+                    )
+                    compteurs["betpawa_titre_mismatch"] += 1
+                    if hit is not None and invalide_entree(domicile, exterieur, date_iso):
+                        etapes.append(
+                            f"  Entrée cache invalidée pour [{domicile} - {exterieur} / "
+                            f"{date_iso}] -- une résolution fraîche sera retentée au "
+                            f"prochain run."
+                        )
+                    continue
+
+                cotes = meilleur_parsing(texte, domicile, exterieur)
 
                 if cotes:
                     m["cotes_manuelles"] = cotes
