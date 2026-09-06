@@ -290,6 +290,47 @@ def ajuste_probabilite(p):
     return 0.5 + K_SHRINKAGE * (p - 0.5)
 
 
+# K_SHRINKAGE_LAMBDA -- AJOUT 06/09/2026 (Groupe 3, correction #3).
+# INDÉPENDANT de K_SHRINKAGE ci-dessus, à ne jamais confondre ni fusionner :
+# celui-ci agit AVANT Poisson, sur la moyenne brute de buts marqués
+# (gf_home_domicile/gf_away_exterieur) qui sert de base à lambda --
+# K_SHRINKAGE agit APRÈS Poisson, sur la probabilité finale d'un marché.
+#
+# Un échantillon à la limite du veto (n=8-9, CONFIANCE_LAMBDA_SEUILS
+# ["FAIBLE"]) peut refléter un résultat exceptionnel plutôt qu'un vrai
+# niveau (cas réel Module A : Vaduz II, n=1, un seul match 8-0, lambda=12.8
+# -- déjà neutralisé par le veto d'échantillon, mais le mécanisme lui-même
+# restait sans aucun garde-fou pour un cas futur à n=8-9). Shrinkage
+# empirique bayésien vers la référence de ligue (réutilise get_ga_reference
+# -- dans une ligue équilibrée, GF moyen = GA moyen sur l'ensemble des
+# équipes, donc une référence déjà calibrée sert aussi de cible pour
+# l'attaque) :
+#     lambda_base_shrunk = (n * lambda_base_brut + k * reference) / (n + k)
+# S'estompe automatiquement quand l'échantillon grossit (n grand ->
+# shrinkage négligeable) -- délibérément PAS un plafond dur, qui écraserait
+# un vrai écart de niveau : cas réel vérifié Module C, Celtic FC féminin,
+# n=10, gf_exterieur=2.9 sur 10 matchs cohérents (7,4,4,3,2,2,2,2,2,1 buts)
+# -- ce n'est pas du bruit, un clamp aurait dégradé le modèle au lieu de le
+# réparer.
+#
+# k=3 PROVISOIRE, choisi délibérément faible pour ne pas dénaturer un signal
+# comme Celtic (n=8 -> 27% de poids référence, n=10 -> 23%, n=20 -> 13%) --
+# À RECALIBRER SUR DONNÉES RÉELLES une fois le Groupe 4 (calibrage) en état
+# de le faire, exactement comme K_SHRINKAGE (0.48) l'a été. Ne pas
+# considérer cette valeur comme définitive.
+K_SHRINKAGE_LAMBDA = 3
+
+# LAMBDA_MIN_PLAUSIBLE / LAMBDA_MAX_PLAUSIBLE -- filet de sécurité EXPLICITE
+# (motif NO_GO visible dans decision_go_nogo), PAS un clamp silencieux : si
+# lambda dépasse ces bornes même après shrinkage, plus personne ne peut dire
+# si la valeur a un sens -- on refuse le pari plutôt que d'en inventer un.
+# Bornes volontairement larges pour ne pas rejeter à tort un vrai écart de
+# niveau (le cas Celtic ci-dessus, lambda=5.13, doit rester sous le plafond).
+# PROVISOIRE -- à recalibrer avec le Groupe 4.
+LAMBDA_MIN_PLAUSIBLE = 0.05
+LAMBDA_MAX_PLAUSIBLE = 6.0
+
+
 POIDS_FORME = 0.30
 POIDS_CLASSEMENT = 0.20
 POIDS_REPOS = 0.15
@@ -481,7 +522,8 @@ def construit_liste_b(liste_a, matrice, seuil_correlation=SEUIL_CORRELATION, nb_
 
 
 def decision_go_nogo(liste_a, liste_b, nb_marches_evalues,
-                      nb_matchs_domicile_utilises=None, nb_matchs_exterieur_utilises=None):
+                      nb_matchs_domicile_utilises=None, nb_matchs_exterieur_utilises=None,
+                      lambda_home=None, lambda_away=None):
     """Étape 6 Module 3 v6.3 : GO si LISTE_B est non vide, sinon NO_GO.
 
     CORRECTIF RÉEL (05/09/2026) -- TRANSITION.md 21.8 annonçait ce veto
@@ -499,7 +541,14 @@ def decision_go_nogo(liste_a, liste_b, nb_marches_evalues,
     La confiance sur le nombre de matchs reste par ailleurs descriptive
     (Étape 5bis, `confiance_lambda`) pour tout ce qui est au-dessus du
     seuil FAIBLE -- seul le seuil FAIBLE devient un veto dur.
-    """
+
+    lambda_home / lambda_away : (06/09/2026 -- Groupe 3, correction #3)
+    filet de sécurité EXPLICITE, pas un clamp silencieux dans calcule_lambda
+    -- si lambda (même après shrinkage, voir K_SHRINKAGE_LAMBDA) sort de
+    [LAMBDA_MIN_PLAUSIBLE, LAMBDA_MAX_PLAUSIBLE], NO_GO avec motif clair
+    plutôt que d'utiliser une valeur dont plus personne ne peut dire si
+    elle a un sens. None = information non fournie -> ignoré (identique
+    à avant)."""
     seuil_min = CONFIANCE_LAMBDA_SEUILS["FAIBLE"]
     if nb_matchs_domicile_utilises is not None and nb_matchs_domicile_utilises < seuil_min:
         return {"verdict_global": "NO_GO",
@@ -509,6 +558,14 @@ def decision_go_nogo(liste_a, liste_b, nb_marches_evalues,
         return {"verdict_global": "NO_GO",
                 "motif_no_go": (f"Échantillon extérieur insuffisant "
                                  f"({nb_matchs_exterieur_utilises} match(s) < {seuil_min})")}
+    if lambda_home is not None and not (LAMBDA_MIN_PLAUSIBLE <= lambda_home <= LAMBDA_MAX_PLAUSIBLE):
+        return {"verdict_global": "NO_GO",
+                "motif_no_go": (f"Lambda domicile hors plage plausible "
+                                 f"({lambda_home:.2f}, attendu {LAMBDA_MIN_PLAUSIBLE}-{LAMBDA_MAX_PLAUSIBLE})")}
+    if lambda_away is not None and not (LAMBDA_MIN_PLAUSIBLE <= lambda_away <= LAMBDA_MAX_PLAUSIBLE):
+        return {"verdict_global": "NO_GO",
+                "motif_no_go": (f"Lambda extérieur hors plage plausible "
+                                 f"({lambda_away:.2f}, attendu {LAMBDA_MIN_PLAUSIBLE}-{LAMBDA_MAX_PLAUSIBLE})")}
     if liste_b:
         return {"verdict_global": "GO", "motif_no_go": None}
     if liste_a:
@@ -530,7 +587,8 @@ def confiance_lambda(nb_matchs_utilises: int) -> str:
 
 def calcule_lambda(gf_home_domicile, ga_home_domicile, gf_away_exterieur, ga_away_exterieur,
                     ratios_contextuels_home=None, ratios_contextuels_away=None, pays=None,
-                    competition=None):
+                    competition=None, nb_matchs_domicile_utilises=None,
+                    nb_matchs_exterieur_utilises=None):
     """
     Règle N3 — reproduit Étapes 1 à 4 du Module 2 v4.3 à l'identique.
     ratios_contextuels_* : dict optionnel avec les clés parmi
@@ -543,6 +601,12 @@ def calcule_lambda(gf_home_domicile, ga_home_domicile, gf_away_exterieur, ga_awa
         pays dans le libellé matchendirect (ex. "Eerste Divisie", "Challenge
         League"). Prioritaire sur `pays` si une valeur existe dans
         GA_REFERENCE_PAR_COMPETITION. None -> comportement par pays inchangé.
+    nb_matchs_domicile_utilises / nb_matchs_exterieur_utilises : (06/09/2026
+        -- Groupe 3, correction #3) taille de l'échantillon domicile/
+        extérieur derrière gf_home_domicile/gf_away_exterieur. Utilisée pour
+        un shrinkage empirique bayésien vers ga_reference (voir
+        K_SHRINKAGE_LAMBDA) -- None -> aucun shrinkage appliqué, comportement
+        identique à avant pour tout appelant qui ne les fournit pas.
     """
     ga_reference = get_ga_reference(pays, competition)
     poids = {
@@ -562,8 +626,15 @@ def calcule_lambda(gf_home_domicile, ga_home_domicile, gf_away_exterieur, ga_awa
             den += poids[cle]
         return num / den if den > 0 else 0.0
 
-    lambda_home_base = gf_home_domicile
-    lambda_away_base = gf_away_exterieur
+    def shrink_vers_reference(valeur_brute, n):
+        if n is None:
+            return valeur_brute
+        return (n * valeur_brute + K_SHRINKAGE_LAMBDA * ga_reference) / (n + K_SHRINKAGE_LAMBDA)
+
+    lambda_home_base_brut = gf_home_domicile
+    lambda_away_base_brut = gf_away_exterieur
+    lambda_home_base = shrink_vers_reference(lambda_home_base_brut, nb_matchs_domicile_utilises)
+    lambda_away_base = shrink_vers_reference(lambda_away_base_brut, nb_matchs_exterieur_utilises)
 
     modifier_defense_away = clamp(ga_away_exterieur / ga_reference, BORNE_MIN_DEFENSE, BORNE_MAX_DEFENSE)
     modifier_defense_home = clamp(ga_home_domicile / ga_reference, BORNE_MIN_DEFENSE, BORNE_MAX_DEFENSE)
@@ -583,6 +654,8 @@ def calcule_lambda(gf_home_domicile, ga_home_domicile, gf_away_exterieur, ga_awa
         "audit": {
             "lambda_home_base": lambda_home_base,
             "lambda_away_base": lambda_away_base,
+            "lambda_home_base_brut": lambda_home_base_brut,
+            "lambda_away_base_brut": lambda_away_base_brut,
             "modifier_defense_home": modifier_defense_home,
             "modifier_defense_away": modifier_defense_away,
             "ajustement_home": ajustement_home,
@@ -604,8 +677,24 @@ def _tau_dixon_coles(x, y, lambda_home, lambda_away, rho=RHO_DIXON_COLES):
     return 1.0
 
 
-def matrice_poisson_dixon_coles(lambda_home, lambda_away, max_buts=5):
-    """Règle N6 — tableau P(k,j) pour k,j de 0 à max_buts, agrégé en '5+' au-delà."""
+def matrice_poisson_dixon_coles(lambda_home, lambda_away, max_buts=15):
+    """Règle N6 — tableau P(k,j) pour k,j de 0 à max_buts, renormalisé.
+
+    CORRECTIF 06/09/2026 (Groupe 3, correction #2) -- l'ancien docstring
+    affirmait une agrégation en case "5+" que le code n'a JAMAIS faite (bug
+    réel, démontré sur données de production : Partick-Celtic FC,
+    lambda_away=5.13 -- seulement 59.35% de la masse Poisson réelle captée
+    par l'ancienne grille 0-5, le reste jeté puis redistribué artificiellement
+    par la renormalisation. Écart mesuré jusqu'à 40+ points de probabilité
+    sur certains marchés "Plus de X buts" pour ce cas précis).
+
+    max_buts porté de 5 à 15 : à lambda=10 (bien au-delà de tout cas réel
+    observé sur ce dépôt, y compris Celtic à 5.13), la masse de probabilité
+    au-delà de 15 buts est de l'ordre de 10^-4 -- négligeable. Pas de case
+    agrégée "5+" : compliquerait les scores exacts pour un gain nul une fois
+    la grille suffisamment large pour capter la quasi-totalité de la masse.
+    Coût de calcul : 256 cellules au lieu de 36, sans impact mesurable.
+    """
 
     def poisson_pmf(k, lam):
         return (lam ** k) * math.exp(-lam) / math.factorial(k)
