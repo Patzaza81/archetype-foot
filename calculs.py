@@ -148,7 +148,18 @@ GA_REFERENCE_PAR_LIGUE = {
     # TRANSITION.md 0.3) -- cohérent avec le même calcul refait ici.
     # Norvège/Suède : saison CALENDAIRE (mars-décembre), pas août-mai comme
     # les autres -- dernière complète = 2025 (2026 encore en cours).
-    "Suisse": 1.6447,     # Super League, saison 2025/2026, 228 matchs, GF=GA=750
+    # CORRECTIF 05/09/2026 -- valeur revérifiée sur la vraie table
+    # Flashscore (Patrick, capture d'écran) : 644 buts sur 198 matchs
+    # (12 équipes x 33 matchs -- phase régulière avant scission groupe
+    # championnat/groupe relégation, écart jugé non significatif par
+    # Patrick par rapport aux 38 matchs de la saison complète).
+    # GF_total=GA_total=644 vérifié. Remplace l'ancienne valeur (1.6447,
+    # 750 buts/228 matchs) -- écart de ~1%, dans la marge attendue entre
+    # 33 et 38 matchs, pas une erreur. Confirme au passage que l'ancienne
+    # valeur était globalement correcte : c'est un chiffre Wikipedia
+    # (691 buts) consulté en cours de route qui s'est révélé faux, pas
+    # celle-ci.
+    "Suisse": 1.6263,      # Super League, saison 2025/2026, 198 matchs (33/équipe), GF=GA=644
     "Norvège": 1.5938,    # Eliteserien, saison 2025 (calendaire), 240 matchs, GF=GA=765
     "Russie": 1.2688,     # Premier League, saison 2025/2026, 240 matchs, GF=GA=609
     "Suède": 1.4229,      # Allsvenskan, saison 2025 (calendaire), 240 matchs, GF=GA=683
@@ -162,15 +173,51 @@ GA_REFERENCE_PAR_LIGUE = {
 }
 
 
-def get_ga_reference(pays=None):
-    """Référence défensive du Module 2 v4.3, désormais PAR PAYS quand une
-    valeur réelle calculée est disponible (voir GA_REFERENCE_PAR_LIGUE et
-    TRANSITION.md 0.3) ; retombe sur la constante universelle (1.35) pour
-    tout pays absent du dict -- comportement strictement identique à
-    l'ancien GA_REFERENCE fixe pour ces pays-là, aucune régression."""
+def get_ga_reference(pays=None, competition=None):
+    """Référence défensive du Module 2 v4.3, PAR COMPÉTITION quand une
+    valeur exacte est disponible (GA_REFERENCE_PAR_COMPETITION), sinon
+    PAR PAYS (GA_REFERENCE_PAR_LIGUE), sinon la constante universelle
+    (1.35). Comportement identique à avant pour tout ce qui n'a pas de
+    valeur de division -- aucune régression.
+
+    `competition` : partie après le pays dans le libellé matchendirect
+    (ex. "Pays-Bas : Eerste Divisie" -> competition="Eerste Divisie").
+    Résout le point critique #8 de TRANSITION.md (05/09) : avant ce
+    correctif, un match de 2e division (Eerste Divisie, Challenge
+    Ligue) héritait à tort de la valeur de la 1ère division du même
+    pays."""
+    if competition is not None and competition in GA_REFERENCE_PAR_COMPETITION:
+        return GA_REFERENCE_PAR_COMPETITION[competition]
     if pays is None:
         return GA_REFERENCE_PAR_LIGUE["default"]
     return GA_REFERENCE_PAR_LIGUE.get(pays, GA_REFERENCE_PAR_LIGUE["default"])
+
+
+# GA_REFERENCE_PAR_COMPETITION -- valeurs calculées pour des DIVISIONS
+# SPÉCIFIQUES qui hériteraient sinon à tort de la valeur du pays (1ère
+# division). Clé = le nom de compétition tel qu'affiché par matchendirect
+# après le pays (ex. "Pays-Bas : Eerste Divisie" -> "Eerste Divisie").
+#
+# "Challenge League" (Suisse, 2e division) -- AJOUT 05/09/2026, calculée
+# sur la vraie table finale Flashscore de la saison 2025/2026 (championnat
+# terminé, promotion Vaduz/relégation Bellinzona actées) : 10 équipes x 36
+# matchs = 180 matchs, GF_total = GA_total = 551 (vérifié, somme des BP de
+# chaque équipe recoupée avec la somme des BC). Fournie par Patrick via
+# capture d'écran, pas par CSV Football-Data.co.uk (absent de leurs
+# "extra leagues" pour cette compétition) -- méthode différente des
+# 16 pays de GA_REFERENCE_PAR_LIGUE, mais même vérification (GF=GA).
+GA_REFERENCE_PAR_COMPETITION = {
+    "Challenge League": 551 / (2 * 180),  # 1.5306 -- Suisse D2, saison 2025/2026
+    # "Eerste Divisie" (Pays-Bas, 2e division) -- AJOUT 05/09/2026, calculée
+    # sur la vraie table finale Flashscore de la saison 2025/2026 (Den Haag
+    # champion, saison terminée) : 20 équipes x 38 matchs = 380 matchs,
+    # GF_total = GA_total = 1214 (vérifié). Confirmée par une seconde source
+    # indépendante (infobox Wikipedia de la même saison, même chiffre exact :
+    # 1214 buts) -- les deux sources s'accordent, contrairement au cas
+    # Suisse D1 où Wikipedia s'est révélé faux (voir plus bas, valeur encore
+    # non résolue pour "Super League").
+    "Eerste Divisie": 1214 / (2 * 380),  # 1.5974 -- Pays-Bas D2, saison 2025/2026
+}
 
 
 # Alias conservés uniquement pour compatibilité des entrées ; ils ne modifient
@@ -473,7 +520,8 @@ def confiance_lambda(nb_matchs_utilises: int) -> str:
 
 
 def calcule_lambda(gf_home_domicile, ga_home_domicile, gf_away_exterieur, ga_away_exterieur,
-                    ratios_contextuels_home=None, ratios_contextuels_away=None, pays=None):
+                    ratios_contextuels_home=None, ratios_contextuels_away=None, pays=None,
+                    competition=None):
     """
     Règle N3 — reproduit Étapes 1 à 4 du Module 2 v4.3 à l'identique.
     ratios_contextuels_* : dict optionnel avec les clés parmi
@@ -482,8 +530,12 @@ def calcule_lambda(gf_home_domicile, ga_home_domicile, gf_away_exterieur, ga_awa
     pays : (26/08/2026 -- calibration) nom du pays de la compétition, utilisé
         pour choisir la bonne valeur dans GA_REFERENCE_PAR_LIGUE. None ->
         valeur "default" (comportement identique à l'ancien GA_REFERENCE fixe).
+    competition : (05/09/2026 -- calibration par division) partie après le
+        pays dans le libellé matchendirect (ex. "Eerste Divisie", "Challenge
+        League"). Prioritaire sur `pays` si une valeur existe dans
+        GA_REFERENCE_PAR_COMPETITION. None -> comportement par pays inchangé.
     """
-    ga_reference = get_ga_reference(pays)
+    ga_reference = get_ga_reference(pays, competition)
     poids = {
         "forme": POIDS_FORME, "classement": POIDS_CLASSEMENT, "repos": POIDS_REPOS,
         "absences": POIDS_ABSENCES, "distance": POIDS_DISTANCE, "h2h": POIDS_H2H,
