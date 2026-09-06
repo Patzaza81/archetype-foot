@@ -311,8 +311,11 @@ verite(
 section("TOUS_MARCHES_EVALUES — archivage complet réellement branché (pas seulement LISTE_A)")
 # ============================================================================
 verite(
-    "run_pipeline.py construit bien signal['TOUS_MARCHES_EVALUES']",
-    'signal["TOUS_MARCHES_EVALUES"]' in source_run_pipeline,
+    "run_pipeline.py construit bien TOUS_MARCHES_EVALUES, fusionné sur signal ensuite "
+    "(motif changé au Groupe 2 -- calcul dans resultat_calcul avant fusion, pour "
+    "isoler l'échec d'un match sans jamais laisser un champ fuiter -- voir #19)",
+    'resultat_calcul["TOUS_MARCHES_EVALUES"]' in source_run_pipeline
+    and "signal.update(resultat_calcul)" in source_run_pipeline,
 )
 with open("calcule_roi.py", encoding="utf-8") as f:
     source_calcule_roi = f.read()
@@ -503,8 +506,12 @@ _source_rp3 = inspect.getsource(open("run_pipeline.py", encoding="utf-8").read()
 with open("run_pipeline.py", encoding="utf-8") as f:
     _source_rp3 = f.read()
 verite(
-    "run_pipeline.py transmet bien nb_matchs_*_utilises à calcule_lambda (shrinkage actif en production)",
-    "nb_matchs_domicile_utilises=stats_domicile[\"nb_domicile\"],\n            nb_matchs_exterieur_utilises=stats_exterieur[\"nb_exterieur\"],\n        )\n        matrice" in _source_rp3,
+    "run_pipeline.py transmet bien nb_matchs_*_utilises à calcule_lambda (shrinkage actif en "
+    "production) -- vérifié sur le contenu réel, pas une mise en page exacte (changée au "
+    "Groupe 2 par l'imbrication dans le bloc try/except de #19)",
+    'nb_matchs_domicile_utilises=stats_domicile["nb_domicile"],' in _source_rp3
+    and 'nb_matchs_exterieur_utilises=stats_exterieur["nb_exterieur"],' in _source_rp3
+    and "calculs.calcule_lambda(" in _source_rp3,
 )
 verite(
     "run_pipeline.py transmet bien lambda_home/lambda_away à decision_go_nogo (veto de plausibilité actif)",
@@ -722,6 +729,161 @@ verite(
     "pipeline.yml ne lance plus run_pipeline.py sous condition schedule/panier_id vide "
     "(seule la branche dispatch_pipeline.py peut encore l'appeler, en interne)",
     "python run_pipeline.py" not in _src_yml and "import run_pipeline" in open("dispatch_pipeline.py", encoding="utf-8").read(),
+)
+
+
+# ============================================================================
+section("Groupe 2 — isolation de l'échec d'un match, jamais un faux signal partiel (bug #19, 06/09)")
+# ============================================================================
+import run_pipeline as _rp
+
+
+def _casse_calcule_lambda_une_fois():
+    appels = {"n": 0}
+    def _f(*a, **k):
+        appels["n"] += 1
+        if appels["n"] == 1:
+            raise ValueError("simulation d'erreur")
+        return {"lambda_home": 1.0, "lambda_away": 1.0, "audit": {}}
+    return _f
+
+
+_orig_recupere_details_match = _rp.recupere_details_match
+_orig_recupere_gf_ga_avec_repli = _rp.recupere_gf_ga_avec_repli
+_orig_recupere_classement_du_match = _rp.recupere_classement_du_match
+_orig_recupere_h2h = _rp.recupere_h2h
+_orig_recupere_cotes_marches = _rp.recupere_cotes_marches
+_orig_calcule_lambda = calculs.calcule_lambda
+
+_rp.recupere_details_match = lambda url: {"url_equipe_domicile": "u1", "url_equipe_exterieur": "u2"}
+_rp.recupere_gf_ga_avec_repli = lambda url, nom, comp, max_matchs: {
+    "gf_domicile": 1.2, "ga_domicile": 1.1, "gf_exterieur": 1.0, "ga_exterieur": 1.3,
+    "nb_domicile": 10, "nb_exterieur": 10,
+}
+_rp.recupere_classement_du_match = lambda url, comp: []
+_rp.recupere_h2h = lambda url: []
+_rp.recupere_cotes_marches = lambda url: {}
+calculs.calcule_lambda = _casse_calcule_lambda_une_fois()
+
+_matchs_g2 = [
+    {"domicile": "A", "exterieur": "B", "competition": "X", "url_match": "http://exemple/1"},
+    {"domicile": "C", "exterieur": "D", "competition": "Y", "url_match": "http://exemple/2"},
+]
+_resultats_g2 = _rp.construit_signaux(_matchs_g2)
+_r1, _r2 = _resultats_g2[0], _resultats_g2[1]
+
+# CORRECTIF -- restaurer IMMÉDIATEMENT les vraies fonctions : ce module est
+# partagé par tout le fichier, un monkeypatch qui reste en place casserait
+# silencieusement toute vérité plus bas qui inspecte le vrai code source de
+# calculs.calcule_lambda (déjà vécu une fois en écrivant ce correctif -- 2
+# vérités antérieures ont échoué avant cette restauration).
+_rp.recupere_details_match = _orig_recupere_details_match
+_rp.recupere_gf_ga_avec_repli = _orig_recupere_gf_ga_avec_repli
+_rp.recupere_classement_du_match = _orig_recupere_classement_du_match
+_rp.recupere_h2h = _orig_recupere_h2h
+_rp.recupere_cotes_marches = _orig_recupere_cotes_marches
+calculs.calcule_lambda = _orig_calcule_lambda
+
+verite(
+    "Un match dont le calcul plante reste traite=False, sans AUCUN champ de "
+    "décision/lambda/cote fuité (pas de faux signal partiellement calculé)",
+    _r1.get("traite") is False and "erreur_technique" in _r1.get("raison_non_traite", "")
+    and "verdict_global" not in _r1 and "lambda" not in _r1
+    and "cote_1" not in _r1 and "LISTE_B_liste_finale_apres_correlation" not in _r1,
+)
+verite(
+    "L'échec d'un match n'affecte pas le traitement du match suivant dans le même run",
+    _r2.get("traite") is True and "verdict_global" in _r2,
+)
+
+
+# ============================================================================
+section("Groupe 2 — panier marqué en échec explicite, jamais bloqué en_cours (bug #11, 06/09)")
+# ============================================================================
+import dispatch_pipeline as _dp2
+
+_appels_g2 = []
+_orig_recupere_panier = _dp2.recupere_panier
+_orig_marque_en_cours = _dp2.marque_panier_en_cours
+_orig_marque_echec = _dp2.marque_panier_echec
+_orig_cherche_deja = _dp2.cherche_deja_analyses
+_orig_ecrit_resultat = _dp2.ecrit_resultat
+
+_dp2.recupere_panier = lambda panier_id: {
+    "id": panier_id, "user_id": "user-test",
+    "matchs": [{"match_id": "m1", "domicile": "A", "exterieur": "B", "competition": "X"}],
+}
+_dp2.marque_panier_en_cours = lambda panier_id: _appels_g2.append(("en_cours", panier_id))
+_dp2.marque_panier_echec = lambda panier_id: _appels_g2.append(("echec", panier_id))
+_dp2.cherche_deja_analyses = lambda panier, precalcul, historique: {
+    "m1": {"domicile": "A", "exterieur": "B", "verdict_global": "GO", "traite": True}
+}
+
+
+def _ecrit_resultat_qui_plante_g2(*a, **k):
+    raise RuntimeError("panne simulée")
+
+
+_dp2.ecrit_resultat = _ecrit_resultat_qui_plante_g2
+
+import os as _os2
+_os2.environ["SUPABASE_URL"] = "https://exemple.test"
+_os2.environ["SUPABASE_SERVICE_ROLE_KEY"] = "cle-test"
+_os2.environ["INPUT_PANIER_ID"] = "panier-verite-g2"
+
+try:
+    _dp2.main()
+    _sortie_g2 = False
+except SystemExit as _e:
+    _sortie_g2 = (_e.code != 0)
+
+# Restauration immédiate, même précaution que pour le test #19 ci-dessus.
+_dp2.recupere_panier = _orig_recupere_panier
+_dp2.marque_panier_en_cours = _orig_marque_en_cours
+_dp2.marque_panier_echec = _orig_marque_echec
+_dp2.cherche_deja_analyses = _orig_cherche_deja
+_dp2.ecrit_resultat = _orig_ecrit_resultat
+
+verite(
+    "Une exception en cours de traitement marque le panier 'echec' (jamais bloqué "
+    "'en_cours' indéfiniment) et fait sortir le processus en erreur",
+    ("en_cours", "panier-verite-g2") in _appels_g2 and ("echec", "panier-verite-g2") in _appels_g2
+    and _appels_g2.index(("en_cours", "panier-verite-g2")) < _appels_g2.index(("echec", "panier-verite-g2"))
+    and _sortie_g2,
+)
+
+
+# ============================================================================
+section("Groupe 2 — garde bloquante si le pré-calcul échoue réellement (bug #10, 06/09)")
+# ============================================================================
+with open(".github/workflows/pipeline.yml", encoding="utf-8") as f:
+    _yml_g2 = f.read()
+
+_debut_garde = _yml_g2.index("Vérifier que le pré-calcul a réellement produit")
+_fin_garde = _yml_g2.index("Pipeline déclenché manuellement")
+_bloc_garde = _yml_g2[_debut_garde:_fin_garde]
+
+_debut_precalcul = _yml_g2.index("Pré-calcul J0/J+1/J+2/J+3")
+_bloc_precalcul = _yml_g2[_debut_precalcul:_debut_garde]
+
+_debut_semaine = _yml_g2.index("Générer la liste J+2")
+_bloc_semaine = _yml_g2[_debut_semaine:_debut_precalcul]
+
+verite(
+    "La garde post-précalcul cible steps.precalcul.outcome, vérifie precalcul_leger.json, "
+    "et n'a jamais la directive continue-on-error: sur elle-même",
+    "steps.precalcul.outcome" in _bloc_garde and "precalcul_leger.json" in _bloc_garde
+    and "exit 1" in _bloc_garde and "continue-on-error:" not in _bloc_garde,
+)
+verite(
+    "L'étape précalcul.py garde son id et son continue-on-error (nécessaire pour que "
+    "la garde puisse lire l'outcome sans arrêter le job avant elle)",
+    "id: precalcul" in _bloc_precalcul and "continue-on-error: true" in _bloc_precalcul,
+)
+verite(
+    "scraper_semaine.py reste hors de la garde bloquante (dégradation de couverture "
+    "acceptée, pas une donnée corrompue -- décision explicite de Patrick)",
+    "continue-on-error: true" in _bloc_semaine and "exit 1" not in _bloc_semaine,
 )
 
 
