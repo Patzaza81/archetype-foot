@@ -27,7 +27,7 @@ jobs:
           python-version: "3.12"
 
       - name: Installer les dépendances
-        run: pip install requests beautifulsoup4
+        run: pip install requests beautifulsoup4 pandas lxml
 
       - name: Lancer le script (dry-run)
         if: ${{ inputs.dry_run == true }}
