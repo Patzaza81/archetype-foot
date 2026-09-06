@@ -439,7 +439,7 @@ def _saison_actuelle_et_precedente():
 
 _MOTS_GENERIQUES_COMPETITION = {
     "league", "ligue", "liga", "lig", "liiga", "cup", "coupe", "division",
-    "championship", "premiere", "premiere", "first",
+    "championship", "premiere", "premiere", "first", "serie",
 }
 # CORRECTIF 05/09/2026 -- '1'/'2' retirés de cette liste : ce sont des
 # chiffres distinctifs (Ligue 1 vs Ligue 2 = deux compétitions FRANÇAISES
@@ -448,6 +448,20 @@ _MOTS_GENERIQUES_COMPETITION = {
 # repli sur les mots courts dans _mots_significatifs, ce qui provoquait
 # une collision confirmée entre Ligue 1 et Ligue 2 (les deux ne gardaient
 # plus que le mot 'ligue' en commun après filtrage).
+#
+# CORRECTIF 05/09/2026 (bis) -- 'serie' AJOUTÉ à cette liste : trouvé en
+# testant le correctif ci-dessus sur des cas non couverts par les 12 cas
+# de TRANSITION.md 21.9. 'serie' (palier italien/espagnol, équivalent de
+# 'division' déjà générique ici) restait comme mot commun entre un
+# championnat et une coupe du MÊME pays/palier (ex. "Serie C Girone C"
+# vs "Coupe Italie Serie C") -- confirmé faux positif par test :
+# _competitions_correspondent('serie c girone c', 'coupe italie serie c')
+# renvoyait True (mot commun restant : 'serie') alors que ce sont deux
+# compétitions différentes (championnat vs coupe). Le veto girone/groupe
+# ne s'applique pas ici car un seul des deux côtés se termine par un
+# identifiant de groupe explicite. Avec 'serie' générique, le repli à
+# trois niveaux fait son travail normalement (ex: 'girone' vs 'italie'
+# ne se recoupent plus).
 
 
 def _mots_significatifs(partie_competition):
