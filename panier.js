@@ -45,7 +45,6 @@ const SUPABASE_CONFIGURE = !SUPABASE_URL.includes("TON-PROJET") && !!window.supa
 const supabaseClient = SUPABASE_CONFIGURE ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
 const CLE_PANIER = "archetype_panier";
-const RE_MATCH_URL = /\/live-score\/([a-z0-9-]+)_([a-z0-9]+)\.html/i;
 
 function chargePanier() {
   try {
@@ -222,35 +221,5 @@ async function analyserPanier() {
 
 document.getElementById("tout-copier-btn").addEventListener("click", copierPanier);
 document.getElementById("analyser-panier-btn").addEventListener("click", analyserPanier);
-
-document.getElementById("ajouter-manuel-btn").addEventListener("click", () => {
-  const url = document.getElementById("manuel-url").value.trim();
-  const domicile = document.getElementById("manuel-domicile").value.trim();
-  const exterieur = document.getElementById("manuel-exterieur").value.trim();
-  const competition = document.getElementById("manuel-competition").value.trim();
-
-  const trouve = url.match(RE_MATCH_URL);
-  if (!trouve) {
-    alert("URL matchendirect invalide -- doit ressembler à https://www.matchendirect.fr/live-score/xxx_id.html");
-    return;
-  }
-  if (!domicile || !exterieur || !competition) {
-    alert("Domicile, extérieur et compétition sont obligatoires.");
-    return;
-  }
-
-  const matchId = trouve[2];
-  const panier = chargePanier();
-  if (!panier.some((p) => p.match_id === matchId)) {
-    panier.push({ match_id: matchId, url_match: url, domicile, exterieur, competition, source: "manuel" });
-    sauvePanier(panier);
-  }
-  rafraichit();
-
-  document.getElementById("manuel-url").value = "";
-  document.getElementById("manuel-domicile").value = "";
-  document.getElementById("manuel-exterieur").value = "";
-  document.getElementById("manuel-competition").value = "";
-});
 
 rafraichit();
