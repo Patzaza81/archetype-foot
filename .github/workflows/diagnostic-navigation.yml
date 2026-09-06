@@ -1,0 +1,22 @@
+name: Diagnostic navigation réelle (page ligue -> équipe -> saison)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  diagnostic-navigation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Installer les dépendances (identiques à pipeline.yml)
+        run: |
+          pip install requests beautifulsoup4 pandas lxml playwright
+          playwright install --with-deps chromium
+
+      - name: Lancer le diagnostic
+        run: python diagnostic_navigation_reelle.py
