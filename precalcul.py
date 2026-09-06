@@ -791,7 +791,17 @@ def charge_matchs_fenetre():
 def _slim_pour_archive(s):
     """Version pour historique_pronostics.json -- encore plus réduite que
     la version site (pas besoin de LISTE_A/raison_non_traite pour un
-    match déjà archivé, seulement de quoi calculer un ROI et vérifier)."""
+    match déjà archivé, seulement de quoi calculer un ROI et vérifier).
+
+    CORRECTIF 06/09/2026 (Groupe 4, bug #1) -- TOUS_MARCHES_EVALUES était
+    absent d'ici alors que calcule_roi.calcule_calibrage() en dépend
+    entièrement pour recalibrer K_SHRINKAGE/SEUIL_EV_MIN : nb_triplets_
+    disponibles restait bloqué à 0 depuis le 04/09, aucune correction
+    possible. Remis en place SEULEMENT maintenant que #13 (pseudo-
+    réplication -- un match à 28 marchés ne comptait avant que pour 1 dans
+    la taille d'échantillon, comptera bien pour 28 marchés mais 1 seul
+    match distinct) est corrigé dans calcule_roi.py -- sinon on aurait
+    fait grossir un échantillon avec une méthode encore fausse."""
     return {
         "domicile": s.get("domicile"),
         "exterieur": s.get("exterieur"),
@@ -807,6 +817,7 @@ def _slim_pour_archive(s):
         "betpawa_url": s.get("betpawa_url"),
         "model_version": s.get("model_version"),
         "LISTE_B_liste_finale_apres_correlation": s.get("LISTE_B_liste_finale_apres_correlation"),
+        "TOUS_MARCHES_EVALUES": s.get("TOUS_MARCHES_EVALUES"),
     }
 
 
