@@ -627,6 +627,19 @@ def construit_signaux(matchs_bruts):
         liste_b_serialisee = [serialise(c) for c in liste_b]
         liste_b_avec_mise = [c for c in liste_b_serialisee if c["mise_pct_bankroll"] > 0]
 
+        # CORRECTIF 06/09/2026 -- plafonner_cluster() existait dans calculs.py
+        # (CLUSTER_MAX=10%) mais n'était appelée nulle part : un match pouvait
+        # exposer jusqu'à NB_PARIS_MAX * MISE_MAX_PARI = 3 * 4% = 12% de la
+        # bankroll sans aucun garde-fou réel. Branchée ici, sur les vrais
+        # champs de LISTE_B ("ev_brut"/"mise_pct_bankroll" -- voir le
+        # correctif complémentaire dans calculs.py, les noms par défaut de la
+        # fonction ne correspondaient à aucun champ réel). Ne change rien si
+        # la somme des mises est déjà sous le plafond (cas normal) ; ne fait
+        # jamais remonter une mise, seulement redistribuer/réduire.
+        liste_b_avec_mise = calculs.plafonner_cluster(
+            liste_b_avec_mise, cle_ev="ev_brut", cle_mise="mise_pct_bankroll"
+        )
+
         verdict_global = decision["verdict_global"]
         motif_no_go = decision["motif_no_go"]
         if verdict_global == "GO" and not liste_b_avec_mise:
