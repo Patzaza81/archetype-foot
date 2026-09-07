@@ -261,6 +261,42 @@ verite(
     "MAX_TABLEAUX_ESSAYES" in source_extrait and "while table is not None" in source_extrait,
 )
 
+# AJOUT 07/09/2026 -- session faux négatifs (situation critique #20) : sans
+# l'URL réellement fetchée dans le log, une "ancre INTROUVABLE" est
+# indiscernable d'une vraie absence de donnée (confirmé en analysant les
+# logs du run #104 -- cas concret trouvé : plusieurs pages /equipe/
+# matchendirect peuvent partager le même nom affiché, ex. équipe masculine
+# vs équipe féminine du même club). Vérifié par exécution réelle, pas par
+# lecture du commentaire : on force un échec de fetch_html et on inspecte
+# ce qui est réellement imprimé.
+import io as _io_diag
+import contextlib as _ctx_diag
+
+_orig_fetch_html_diag = sd.fetch_html
+
+
+def _fetch_html_echoue_toujours(url, retries=3, delay=2):
+    raise RuntimeError("échec forcé (audit_permanent)")
+
+
+sd.fetch_html = _fetch_html_echoue_toujours
+_buf_diag = _io_diag.StringIO()
+with _ctx_diag.redirect_stdout(_buf_diag):
+    sd.recupere_gf_ga_avec_repli(
+        "https://www.matchendirect.fr/equipe/audit-permanent-test.html",
+        "Equipe Audit", "Pays Test : Competition Test", max_matchs=10,
+    )
+# CORRECTIF -- restaurer IMMÉDIATEMENT la vraie fonction, avant toute autre
+# vérité de ce fichier qui pourrait dépendre du vrai fetch_html.
+sd.fetch_html = _orig_fetch_html_diag
+_sortie_diag = _buf_diag.getvalue()
+
+verite(
+    "[DIAG 18.8] inclut désormais l'URL réellement fetchée (pas seulement équipe/compétition/saison)",
+    "url='https://www.matchendirect.fr/equipe/audit-permanent-test.html'" in _sortie_diag,
+    detail=f"sortie observée : {_sortie_diag.strip()!r}",
+)
+
 
 # ============================================================================
 section("_memes_equipes / _memes_equipes_ratio — équipe vs sa réserve (bug trouvé le 05/09)")
