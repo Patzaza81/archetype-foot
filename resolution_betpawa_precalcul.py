@@ -10,13 +10,20 @@ RÈGLE RESPECTÉE : ne modifie aucune ligne de resolution_betpawa.py
 de ces deux modules, exactement comme test_scraping_betpawa_liste.py le
 faisait pour son test isolé.
 
-JAMAIS EXÉCUTÉ EN CONDITIONS RÉELLES au moment où ce fichier est écrit
--- betpawa.cm est inaccessible depuis l'environnement où ce fichier a
-été rédigé (même blocage réseau que matchendirect.fr). Le premier run
-réel (GitHub Actions) est le vrai test -- voir la procédure de
-vérification donnée à Patrick en dehors de ce fichier, et
-diagnostic_precalcul_betpawa.txt (généré à chaque run) pour la trace
-complète.
+CORRECTIF 06/09/2026 (bug #37) -- la ligne ci-dessous affirmait "JAMAIS
+EXÉCUTÉ EN CONDITIONS RÉELLES au moment où ce fichier est écrit", ce qui
+est devenu faux : cache_betpawa.json contient 380 entrées réelles au
+06/09/2026, preuve directe que ce module a bien tourné en production.
+Corrigée ici, sans toucher à l'affirmation adjacente sur le volume complet
+(600-800 matchs/nuit) faute de preuve sur cette échelle précise.
+
+Testé en conditions réelles depuis son premier déploiement (voir
+cache_betpawa.json, 380 entrées réelles au 06/09/2026) -- betpawa.cm
+reste inaccessible depuis l'environnement où ce fichier est modifié (même
+blocage réseau que matchendirect.fr), donc toute modification de ce
+fichier ne peut être vérifiée qu'après déploiement réel (GitHub Actions),
+jamais localement -- voir diagnostic_precalcul_betpawa.txt (généré à
+chaque run) pour la trace complète.
 
 Comportement en cas d'échec, à chaque étape : le match concerné garde
 son comportement ACTUEL (cotes Bet365 via matchendirect, url_match déjà
