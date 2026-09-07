@@ -104,6 +104,34 @@ EV_MIN = 0.05
 STAKE_V0 = 0.01
 RHO_DIXON_COLES_V0 = 0.0
 
+# AJOUT 07/09/2026 -- CALIBRÉ, PAS DEVINÉ, MAIS PROVISOIRE.
+# Contexte : la première journée d'observation réelle (306 matchs) a
+# montré que lambda (V0, formule brute sans référence de ligue) sous-
+# estime le nombre de buts réels de ~18.8% (mesuré sur 222 matchs
+# reconstruits depuis historique_pronostics.json). Avant de corriger,
+# vérifié que ce n'était pas du bruit : validation croisée temporelle
+# STRICTE (jamais le même jour pour mesurer et pour vérifier) --
+#   facteur mesuré sur le 29/08 (n=145) = x1.173 -> testé sur le 30/08
+#     (n=67, jamais vu) : erreur ramenée de +0.330 à -0.170 but/match.
+#   facteur mesuré sur le 30/08 (n=67) = x1.114 -> testé sur le 29/08
+#     (n=145, jamais vu) : erreur ramenée de +0.330 (sans correction,
+#     par symétrie) à +0.174 but/match.
+# Les deux mesures indépendantes (1.173 et 1.114) sont à moins de 0.03
+# l'une de l'autre -- signal stable, pas un artefact d'un seul jour.
+# Valeur retenue = mesure sur l'ensemble combiné (n=212).
+#
+# RESTE PROVISOIRE MALGRÉ LA VALIDATION : seulement 2 jours indépendants
+# testés (aucun autre jour n'avait un échantillon assez grand) -- la cause
+# exacte du biais n'est pas confirmée (hypothèse : échantillon "10
+# derniers matchs" encore dominé par la saison précédente en tout début
+# de saison ; l'écart mesuré diminuait déjà entre le 29 et le 30/08,
+# cohérent avec cette hypothèse sans la prouver). À RECALIBRER dès que
+# historique_v0.jsonl aura accumulé ses propres résultats vérifiés
+# (voir verifie_historique_v0.py) -- ce chiffre n'est pas la version
+# définitive, seulement la meilleure estimation disponible aujourd'hui,
+# mesurée honnêtement plutôt que choisie pour obtenir un résultat donné.
+CORRECTION_BUTS_V0 = 1.155
+
 LIGNES_OU = (0.5, 1.5, 2.5, 3.5, 4.5)
 LIGNES_HANDICAP = (-2.5, -1.5, -0.5, 0.5, 1.5, 2.5)
 
@@ -152,10 +180,24 @@ def get_reference_verifiee(pays: Optional[str] = None, competition: Optional[str
     """Référence défensive de ligue -- UNIQUEMENT si une valeur réellement
     mesurée existe (jamais "default"=1.35, qui est une estimation non
     vérifiée, pas une mesure). Renvoie None si aucune valeur mesurée
-    n'existe pour ce pays/cette compétition -- l'appelant doit alors
-    appliquer un modificateur neutre (1.0), jamais bloquer le match pour ce
-    seul motif (décision explicite de Patrick, 07/09/2026 : "on ne peut pas
-    ignorer tout le monde")."""
+    n'existe pour ce pays/cette compétition.
+
+    CORRECTIF 07/09/2026 (première journée d'observation réelle) : cette
+    référence n'est PLUS appliquée à lambda (voir calcule_lambda_v0) --
+    conservée uniquement à titre INFORMATIF/LOGGÉ. Les données réelles ont
+    montré qu'un modificateur basé dessus (ga_adverse/référence) reste
+    instable même avec une référence VRAIMENT MESURÉE (pas un "default") :
+    exemple réel, Al Khaleej-Al Riyadh (Arabie Saoudite, référence mesurée
+    1.5049, pas inventée) -- modificateur observé = 2.19, lambda_domicile
+    poussé à 5.81 (juste sous le plafond de plausibilité 6.0, donc jamais
+    intercepté), probabilité de marché résultante absurde (80.8% pour
+    "Plus de 4.5 buts"), EV affiché de 482%. La cause : le ratio repose sur
+    ga_away_exterieur, lui-même une moyenne à petit échantillon (N=8-10) --
+    une seule référence de ligue fiable ne rend pas fiable un ratio dont le
+    numérateur reste bruité. Un nouveau clamp aurait simplement réintroduit
+    une constante à deviner (exactement ce qu'on vient de retirer). Décision
+    (Patrick, 07/09/2026, "je veux un système simple robuste et
+    fonctionnel") : retrait net plutôt qu'un nouveau seuil arbitraire."""
     if competition is not None and competition in GA_REFERENCE_PAR_COMPETITION:
         return GA_REFERENCE_PAR_COMPETITION[competition]
     if pays is not None and pays in GA_REFERENCE_PAR_LIGUE and pays != "default":
@@ -166,46 +208,41 @@ def get_reference_verifiee(pays: Optional[str] = None, competition: Optional[str
 def calcule_lambda_v0(gf_home_domicile, ga_home_domicile, gf_away_exterieur, ga_away_exterieur,
                        pays=None, competition=None):
     """
-    lambda_domicile = (gf_home_domicile + ga_away_exterieur) / 2 * modificateur_defense
-    lambda_exterieur = (gf_away_exterieur + ga_home_domicile) / 2 * modificateur_defense
+    lambda_domicile = (gf_home_domicile + ga_away_exterieur) / 2 * CORRECTION_BUTS_V0
+    lambda_exterieur = (gf_away_exterieur + ga_home_domicile) / 2 * CORRECTION_BUTS_V0
 
-    Pas de shrinkage bayésien vers une référence (décision V0 : on assume le
-    bruit d'un petit échantillon, compensé par le veto N_MIN, pas par une
-    correction de lambda). Le modificateur de référence de ligue n'est
-    appliqué QUE si get_reference_verifiee() renvoie une vraie valeur ;
-    sinon il vaut 1.0 (neutre, aucun ajustement, jamais un blocage).
+    AUCUN ajustement multiplicatif par référence de ligue (voir doctrine
+    complète dans get_reference_verifiee ci-dessus : retiré le 07/09/2026
+    après la première journée d'observation réelle, qui a montré que ce
+    mécanisme produit des lambda instables même avec une référence
+    vraiment mesurée). Pas de shrinkage bayésien non plus (décision V0
+    initiale : on assume le bruit d'un petit échantillon, compensé par le
+    veto N_MIN, pas par une correction de lambda basée sur une référence).
 
-    CORRECTIF (audit du 07/09/2026, demandé par Patrick) : le modificateur
-    n'est plus borné par un clamp intermédiaire -- une version précédente
-    empruntait BORNE_MIN/MAX_DEFENSE au moteur existant (0.55/1.60, avec en
-    plus une erreur de recopie à 0.5/1.5) sans jamais faire valider cette
-    constante. Retiré entièrement : le veto de plausibilité sur le lambda
-    FINAL (verifie_plausibilite_lambda, 0.1-6.0, déjà approuvé) est le seul
-    filet de sécurité -- un modificateur extrême produirait un lambda hors
-    plage, intercepté en aval, sans besoin d'un deuxième garde-fou non
-    déclaré.
+    AJOUT 07/09/2026 : CORRECTION_BUTS_V0, elle, EST appliquée -- voir sa
+    doctrine complète ci-dessus (constante). Contrairement au modificateur
+    de référence retiré, celle-ci a été validée par validation croisée
+    temporelle sur des matchs réels avant d'être branchée, pas déduite
+    d'un raisonnement seul. Reste étiquetée provisoire malgré cette
+    validation (échantillon encore limité à 2 jours indépendants).
+
+    `pays`/`competition` restent acceptés en paramètres uniquement pour
+    peupler `reference_disponible` dans l'audit -- à titre d'observation
+    pour une éventuelle V1, sans aucun effet sur le calcul.
     """
     reference = get_reference_verifiee(pays, competition)
 
     lambda_domicile_brut = (gf_home_domicile + ga_away_exterieur) / 2
     lambda_exterieur_brut = (gf_away_exterieur + ga_home_domicile) / 2
 
-    if reference is not None and reference > 0:
-        modifier_domicile = ga_away_exterieur / reference
-        modifier_exterieur = ga_home_domicile / reference
-    else:
-        modifier_domicile = 1.0
-        modifier_exterieur = 1.0
-
     return {
-        "lambda_home": lambda_domicile_brut * modifier_domicile,
-        "lambda_away": lambda_exterieur_brut * modifier_exterieur,
+        "lambda_home": lambda_domicile_brut * CORRECTION_BUTS_V0,
+        "lambda_away": lambda_exterieur_brut * CORRECTION_BUTS_V0,
         "audit": {
             "lambda_home_brut": lambda_domicile_brut,
             "lambda_away_brut": lambda_exterieur_brut,
-            "reference_utilisee": reference,
-            "modifier_domicile": modifier_domicile,
-            "modifier_exterieur": modifier_exterieur,
+            "correction_buts_appliquee": CORRECTION_BUTS_V0,
+            "reference_disponible": reference,  # informatif uniquement, jamais appliqué
         },
     }
 
