@@ -10,9 +10,12 @@ _extrait_historique_competition dans scraper_details.py) -- un cache par
 équipe seule mélangerait les deux et donnerait un mauvais résultat.
 
 Deux durées de validité différentes, volontairement :
-- une équipe SANS historique connu (raison_non_traite) : ça ne va pas
-  changer d'un jour à l'autre pour un petit club en coupe préliminaire.
-  Cache long (TTL_SANS_HISTORIQUE_HEURES).
+- une équipe SANS historique connu (raison_non_traite) : cache moyen
+  (TTL_SANS_HISTORIQUE_HEURES) -- réduit de 7 jours à 4 jours (décision de
+  Patrick, 06/09/2026, point #30 de l'audit) : un cache de 7 jours pouvait
+  masquer une récupération devenue possible entre-temps (ex. une équipe
+  qui n'avait simplement pas encore joué cette saison au moment du
+  premier scraping).
 - une équipe avec des stats réelles : ses derniers résultats peuvent
   changer si elle joue entre-temps. Cache plus court
   (TTL_AVEC_HISTORIQUE_HEURES).
@@ -27,9 +30,15 @@ import json
 import os
 
 FICHIER_CACHE = "cache_equipes.json"
-TTL_SANS_HISTORIQUE_HEURES = 24 * 7   # un club amateur en coupe prélim.
+# CORRECTIF 06/09/2026 (bug #30, décision de Patrick) -- 7 jours (24*7)
+# réduit à 4 jours (24*4).
+TTL_SANS_HISTORIQUE_HEURES = 24 * 4   # un club amateur en coupe prélim.
                                         # ne va pas soudain avoir un
-                                        # historique le lendemain
+                                        # historique le lendemain -- mais
+                                        # 4 jours plutôt que 7 pour ne pas
+                                        # masquer trop longtemps une
+                                        # équipe qui vient de jouer son
+                                        # premier match de la saison
 TTL_AVEC_HISTORIQUE_HEURES = 20        # un peu moins d'une journée --
                                         # laisse le temps à un nouveau
                                         # résultat de rentrer avant le
