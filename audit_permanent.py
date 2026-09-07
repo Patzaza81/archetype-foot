@@ -77,6 +77,13 @@ except Exception as e:
     print(f"[FAIL] import adapte_justification.py -- {e}")
     sys.exit(1)
 
+try:
+    import cache_h2h as ch2h
+    import cache_equipes as ceq
+except Exception as e:
+    print(f"[FAIL] import cache_h2h.py / cache_equipes.py -- {e}")
+    sys.exit(1)
+
 
 # ============================================================================
 section("K_SHRINKAGE / ajuste_probabilite — doit avoir un effet réel")
@@ -1214,6 +1221,19 @@ verite(
     aj._preuve_h2h("Plus de 1.5 buts - Domicile",
                     [_g8_h2h("Real Madrid Castilla", "Betis", 2, 1)],
                     equipe_cible="Real Madrid") is None,
+)
+
+
+# ============================================================================
+section("Groupe 8 — TTL cache équipes/H2H réduits de 7 à 4 jours (bugs #30/#31, décision de Patrick, 06/09)")
+# ============================================================================
+verite(
+    "cache_equipes.TTL_SANS_HISTORIQUE_HEURES vaut bien 96h (4 jours), plus 7 jours",
+    ceq.TTL_SANS_HISTORIQUE_HEURES == 24 * 4,
+)
+verite(
+    "cache_h2h.TTL_HEURES vaut bien 96h (4 jours), plus 7 jours",
+    ch2h.TTL_HEURES == 24 * 4,
 )
 
 
