@@ -1,0 +1,15 @@
+# CORRECTIF 06/09/2026 (bug #34) -- généré à partir de la ligne
+# "pip install ..." déjà utilisée dans .github/workflows/pipeline.yml
+# (source de vérité, déjà testée en conditions réelles). Aucune version
+# épinglée : le workflow n'en épingle aucune non plus aujourd'hui, en
+# ajouter ici sans les avoir testées créerait un écart avec ce qui tourne
+# réellement. pipeline.yml continue d'utiliser sa propre ligne "pip
+# install" -- ce fichier n'est PAS encore branché dessus (changer
+# pipeline.yml pour utiliser "pip install -r requirements.txt" est un
+# changement séparé, pas fait ici, à valider explicitement avant de le
+# faire).
+requests
+beautifulsoup4
+pandas
+lxml
+playwright
