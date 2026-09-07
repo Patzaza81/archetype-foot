@@ -67,6 +67,7 @@ même règle, pas une nouvelle.
 """
 
 import run_pipeline as rp
+import precalcul
 from scraper_details import recupere_details_match, recupere_gf_ga_avec_repli
 from cache_equipes import recupere_gf_ga_avec_cache
 import moteur_v0 as mv0
@@ -237,14 +238,21 @@ def evalue_et_journalise(m: dict, chemin_historique: str = HISTORIQUE_V0_CHEMIN)
 
 
 def main():
-    matchs_du_jour = rp.charge_json_ou_vide(rp.FICHIER_MATCHS_DU_JOUR, defaut=[])
-    matchs_demain = rp.charge_json_ou_vide(rp.FICHIER_MATCHS_DEMAIN, defaut=[])
-    panier_brut = rp.charge_json_ou_vide(rp.FICHIER_PANIER, defaut=[])
-    matchs_a_traiter = rp.normalise_panier(panier_brut, matchs_du_jour, matchs_demain)
+    # CORRECTIF 07/09/2026 (remarque de Patrick : le run GitHub Actions ne
+    # faisait tourner que precalcul.py, jamais ce script) -- la version
+    # précédente lisait panier.json via run_pipeline.normalise_panier(),
+    # qui n'a de sens que pour le canal Supabase (dispatch_pipeline.py) --
+    # sur un run planifié normal, panier.json est vide ou périmé, ce script
+    # aurait donc évalué presque aucun match. La vraie liste "tous les
+    # matchs du jour/demain/J+2/J+3, après tous les filtres (jeunes,
+    # réserves, divisions, zones autorisées...)" est construite par
+    # precalcul.charge_matchs_fenetre() -- réutilisée ici TELLE QUELLE
+    # (même fonction, mêmes filtres déjà tous testés), pas réimplémentée.
+    fenetre, *_ = precalcul.charge_matchs_fenetre()
 
-    print(f"[moteur_v0] {len(matchs_a_traiter)} match(s) à évaluer en observation "
+    print(f"[moteur_v0] {len(fenetre)} match(s) à évaluer en observation "
           f"(aucun pari réel, journal : {HISTORIQUE_V0_CHEMIN}).")
-    for m in matchs_a_traiter:
+    for m in fenetre:
         evalue_et_journalise(m)
     print("[moteur_v0] terminé.")
 
