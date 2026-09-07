@@ -1293,15 +1293,28 @@ verite(
 )
 
 verite(
-    "Un pays SANS référence de ligue vérifiée obtient un modificateur neutre (1.0), "
-    "JAMAIS le default=1.35 du moteur existant, et n'est jamais bloqué pour ce seul motif",
-    _mv0.calcule_lambda_v0(1.6, 1.2, 1.3, 1.4, pays="Andorre")["audit"]["reference_utilisee"] is None
-    and _mv0.calcule_lambda_v0(1.6, 1.2, 1.3, 1.4, pays="Andorre")["audit"]["modifier_domicile"] == 1.0,
+    "La reference de ligue n'est PAS appliquee a lambda, meme quand elle est reellement "
+    "mesuree (Espagne) : le calcul ignore la reference dans les deux cas (Espagne vs Andorre) "
+    "-- retire le 07/09/2026 apres qu'un modificateur meme base sur une reference reelle "
+    "(Arabie Saoudite, 1.5049) ait produit un lambda instable (5.81) sur une vraie donnee "
+    "(Al Khaleej-Al Riyadh)",
+    _mv0.calcule_lambda_v0(1.6, 1.2, 1.3, 1.4, pays="Espagne")["lambda_home"]
+    == _mv0.calcule_lambda_v0(1.6, 1.2, 1.3, 1.4, pays="Andorre")["lambda_home"],
 )
 
 verite(
-    "Un pays AVEC référence réellement mesurée (Espagne) applique bien cette valeur, pas 1.0",
-    _mv0.calcule_lambda_v0(1.6, 1.2, 1.3, 1.4, pays="Espagne")["audit"]["reference_utilisee"] == 1.3474,
+    "AJOUT 07/09/2026 -- CORRECTION_BUTS_V0 (calibree par validation croisee temporelle sur "
+    "212 vrais matchs, PAS devinee) est bien appliquee au lambda final : "
+    "lambda == moyenne_brute * CORRECTION_BUTS_V0, exactement",
+    abs(_mv0.calcule_lambda_v0(1.6, 1.2, 1.3, 1.4, pays="Andorre")["lambda_home"]
+        - (1.6 + 1.4) / 2 * _mv0.CORRECTION_BUTS_V0) < 1e-9,
+)
+
+verite(
+    "reference_disponible reste loggee a titre informatif (Espagne mesuree, Andorre non) "
+    "sans influencer le calcul -- utile pour une decision V1 future, jamais pour la V0",
+    _mv0.calcule_lambda_v0(1.6, 1.2, 1.3, 1.4, pays="Espagne")["audit"]["reference_disponible"] == 1.3474
+    and _mv0.calcule_lambda_v0(1.6, 1.2, 1.3, 1.4, pays="Andorre")["audit"]["reference_disponible"] is None,
 )
 
 _marches_incoherentes_test = {
