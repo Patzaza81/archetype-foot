@@ -700,11 +700,20 @@ def recupere_gf_ga_avec_repli(url_equipe, nom_equipe, nom_competition, max_match
     for saison in (saison_actuelle, saison_precedente):
         if len(matchs_domicile) >= max_matchs and len(matchs_exterieur) >= max_matchs:
             break
-        # AJOUT DIAGNOSTIC 03/09/2026 (18.8) -- tag lisible dans le log,
-        # aucune incidence sur la logique (voir _extrait_historique_competition).
-        diag_libelle = f"{nom_equipe} | {nom_competition!r} | saison {saison}"
+        url = url_equipe if saison == saison_actuelle else f"{url_equipe}?season={saison.replace('/', '%2F')}"
+        # AJOUT DIAGNOSTIC 03/09/2026 (18.8), COMPLÉTÉ 07/09/2026 -- l'URL
+        # réellement fetchée est désormais incluse dans le tag de log. Sans
+        # elle, une "ancre INTROUVABLE" ne permettait pas de vérifier après
+        # coup si la page récupérée était la bonne : confirmé en session
+        # (analyse des logs du run #104) que matchendirect peut exposer
+        # plusieurs pages /equipe/ différentes partageant le même nom
+        # affiché (ex. équipe masculine vs équipe féminine du même club),
+        # ce qui rendrait une "ancre introuvable" indiscernable d'une
+        # vraie absence de donnée sans pouvoir rejouer l'URL exacte.
+        # Pur ajout de contexte dans le log -- aucune incidence sur la
+        # logique existante (voir _extrait_historique_competition).
+        diag_libelle = f"{nom_equipe} | {nom_competition!r} | saison {saison} | url={url!r}"
         try:
-            url = url_equipe if saison == saison_actuelle else f"{url_equipe}?season={saison.replace('/', '%2F')}"
             html = fetch_html(url)
         except RuntimeError as e:
             print(f"[DIAG 18.8] {diag_libelle} -- fetch_html a échoué sur "
