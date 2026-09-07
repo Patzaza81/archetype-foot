@@ -1365,6 +1365,45 @@ verite(
     _ligne_log_test["verdict"] == "NO_BET" and _ligne_log_test["resultat_reel"] is None,
 )
 
+# AJOUT 07/09/2026 (audit ligne par ligne demandé par Patrick) -- deux
+# vraies violations trouvées et corrigées le même jour, voir historique de
+# session : (1) BORNE_MODIFIER_DEFENSE, constante empruntée à l'ancien
+# moteur sans validation, retirée entièrement ; (2) controle_empirique_v0
+# évaluait à tort des marchés asymétriques (1X2, Handicap, "- Extérieur"...)
+# sur un historique déjà réorienté (buts_marques/buts_encaisses), faussant
+# silencieusement les champs loggés -- même bug d'orientation que #41 dans
+# adapte_justification.py, réintroduit puis retrouvé le même jour.
+verite(
+    "BORNE_MODIFIER_DEFENSE (constante non validée, valeurs même fausses par rapport à "
+    "l'original) a bien été retirée du module -- plus aucune trace",
+    not hasattr(_mv0, "BORNE_MODIFIER_DEFENSE"),
+)
+
+verite(
+    "controle_empirique_v0 renvoie une vraie observation pour un marché symétrique (BTTS)",
+    _mv0.controle_empirique_v0(
+        "BTTS - oui",
+        [{"buts_marques": 3, "buts_encaisses": 1}, {"buts_marques": 0, "buts_encaisses": 0}],
+        [], "domicile",
+    ) == (1, 2),
+)
+verite(
+    "controle_empirique_v0 renvoie None pour un marché asymétrique (1X2 - 1) -- jamais une "
+    "observation orientée à tort sur un historique déjà réorienté du point de vue de l'équipe",
+    _mv0.controle_empirique_v0(
+        "1X2 - 1",
+        [{"buts_marques": 3, "buts_encaisses": 1}], [], "domicile",
+    ) is None,
+)
+verite(
+    "controle_empirique_v0 renvoie None pour un marché suffixé '- Extérieur' même appliqué à "
+    "l'historique domicile (dépend de la position réelle, pas du point de vue de l'équipe)",
+    _mv0.controle_empirique_v0(
+        "Plus de 1.5 buts - Extérieur",
+        [{"buts_marques": 3, "buts_encaisses": 1}], [], "domicile",
+    ) is None,
+)
+
 
 # ============================================================================
 print("\n" + "=" * 70)
