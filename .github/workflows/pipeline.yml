@@ -68,6 +68,20 @@ jobs:
         run: python precalcul.py
         continue-on-error: true
 
+      # AJOUT 07/09/2026 -- moteur V0 (voir moteur_v0.py), en OBSERVATION
+      # UNIQUEMENT : aucune décision réelle, aucun pari réel, n'écrit que
+      # dans historique_v0.jsonl (+ cache_equipes.json, partagé et additif,
+      # voir doctrine dans brancher_moteur_v0.py). Placée ici, APRÈS le
+      # pré-calcul mais AVANT la porte de vérification ci-dessous : profite
+      # du cache_equipes.json déjà réchauffé par le pré-calcul, et tourne
+      # même si ce dernier a partiellement échoué (continue-on-error sur
+      # les deux) -- la porte plus bas ne doit jamais empêcher
+      # l'observation V0 de tourner. Décision explicite de Patrick
+      # (07/09/2026) : ne remplace ni ne modifie aucune étape existante.
+      - name: Moteur V0 -- observation en parallèle, aucun pari réel (voir moteur_v0.py)
+        run: python brancher_moteur_v0.py
+        continue-on-error: true
+
       # CORRECTIF 06/09/2026 (Groupe 2, bug #10) -- continue-on-error sur
       # l'étape précalcul ci-dessus empêchait déjà le job de s'arrêter tout
       # seul en cas de plantage, mais rien ne vérifiait ensuite que le
@@ -163,7 +177,7 @@ jobs:
           # committés tels quels juste au-dessus (run_pipeline.py en a besoin
           # intacts pour résoudre un match ajouté manuellement au panier,
           # même hors filtre).
-          for f in panier.json historique_pronostics.json precalcul_leger.json matchs_du_jour_filtre.json matchs_demain_filtre.json cache_classement.json cache_h2h.json roi_dashboard.json; do
+          for f in panier.json historique_pronostics.json precalcul_leger.json matchs_du_jour_filtre.json matchs_demain_filtre.json cache_classement.json cache_h2h.json roi_dashboard.json historique_v0.jsonl; do
             [ -f "$f" ] && git add "$f"
           done
 
