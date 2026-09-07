@@ -16,26 +16,50 @@ Ce fichier ne fait QUE de la plomberie :
 
 MODE OBSERVATION UNIQUEMENT :
     - Ne modifie JAMAIS precalcul.json / precalcul_leger.json / panier.json
-      ni aucun fichier du pipeline existant.
+      ni aucun fichier de DÉCISION du pipeline existant.
     - N'influence AUCUNE décision réelle, AUCUN pari réel.
-    - Écrit uniquement dans historique_v0.jsonl.
+    - Écrit dans historique_v0.jsonl (résultats V0) ET dans
+      cache_equipes.json (PARTAGÉ avec le pipeline principal, via
+      cache_equipes.recupere_gf_ga_avec_cache -- voir doctrine ci-dessous.
+      C'est un cache additif de données déjà publiques (GF/GA d'une
+      équipe), jamais un champ de décision -- le partager est le but
+      recherché : réutiliser ce que le pipeline principal a déjà récupéré
+      plutôt que de re-scraper).
     - Tourne EN PLUS du pipeline existant (run_pipeline.py), jamais à sa
-      place -- les deux peuvent tourner l'un après l'autre sans conflit
-      (aucun fichier partagé en écriture).
+      place.
 
 Fonctions réutilisées TELLES QUELLES (aucune modification) :
     run_pipeline.charge_json_ou_vide / normalise_panier
         -- exactement la même liste de matchs que le pipeline principal.
     run_pipeline.recupere_cotes_marches
         -- cotes réelles (matchendirect/Bet365), même source que le
-           moteur existant.
+           moteur existant. Pas de cache pour cette fonction (ni ici ni
+           dans le pipeline principal -- les cotes évoluent trop vite pour
+           qu'un TTL ait un sens) : un vrai appel réseau à chaque run,
+           identique au comportement du pipeline principal.
+    cache_equipes.recupere_gf_ga_avec_cache
+        -- CORRECTIF 07/09/2026 (remarque de Patrick : "les données sont
+           censées exister et être stockées") -- la première version de ce
+           fichier appelait scraper_details.recupere_gf_ga_avec_repli
+           directement, en contournant le cache que precalcul.py branche
+           sur run_pipeline.py par monkey-patch (précalcul.py réassigne
+           run_pipeline.recupere_gf_ga_avec_repli à une version cachée --
+           un import direct depuis scraper_details, comme le faisait cette
+           première version, contourne ce monkey-patch et re-scrape à
+           chaque run). Corrigé pour appeler cache_equipes.
+           recupere_gf_ga_avec_cache directement, sur le MÊME fichier
+           cache_equipes.json que le pipeline principal -- un cache hit si
+           l'équipe/compétition a déjà été récupérée dans le TTL (4 jours
+           sans historique, 20h avec -- voir cache_equipes.py), un vrai
+           scraping sinon.
     run_pipeline.MAX_MATCHS_HISTORIQUE / FICHIER_MATCHS_DU_JOUR /
     FICHIER_MATCHS_DEMAIN / FICHIER_PANIER
         -- mêmes constantes, pas de nouvelle valeur.
-    scraper_details.recupere_details_match / recupere_gf_ga_avec_repli
-        -- déjà mis en cache par cache_equipes.py (TTL 4 jours) : un appel
-           juste après le pipeline principal est un cache hit, pas un
-           second scraping réel.
+    scraper_details.recupere_details_match
+        -- pas de cache (ni ici ni dans le pipeline principal -- page de
+           match légère, jamais mise en cache nulle part dans ce dépôt) :
+           un vrai appel réseau à chaque run, identique au pipeline
+           principal.
 
 Extraction pays/competition depuis le libellé matchendirect : copie EXACTE
 de la logique déjà en place dans run_pipeline.py (split(":")[0]/[1]) --
@@ -44,6 +68,7 @@ même règle, pas une nouvelle.
 
 import run_pipeline as rp
 from scraper_details import recupere_details_match, recupere_gf_ga_avec_repli
+from cache_equipes import recupere_gf_ga_avec_cache
 import moteur_v0 as mv0
 
 HISTORIQUE_V0_CHEMIN = "historique_v0.jsonl"
@@ -149,11 +174,23 @@ def evalue_et_journalise(m: dict, chemin_historique: str = HISTORIQUE_V0_CHEMIN)
         return
 
     try:
-        stats_domicile = recupere_gf_ga_avec_repli(
-            url_eq_domicile, nom_domicile, competition, max_matchs=rp.MAX_MATCHS_HISTORIQUE
+        # CORRECTIF (07/09/2026, remarque de Patrick) -- appel direct à
+        # recupere_gf_ga_avec_repli() sans passer par le cache existant :
+        # la version précédente re-scrapait matchendirect à CHAQUE run,
+        # même juste après le pipeline principal, alors que cache_equipes.py
+        # avait déjà mémorisé le résultat. Corrigé pour appeler le même
+        # wrapper de cache que precalcul.py (recupere_gf_ga_avec_cache),
+        # sur le MÊME fichier cache_equipes.json -- un hit si le pipeline
+        # principal (ou un run précédent de cet adaptateur) a déjà
+        # récupéré cette équipe/compétition dans le TTL, un vrai scraping
+        # sinon (jamais bloquant, juste plus lent la première fois).
+        stats_domicile = recupere_gf_ga_avec_cache(
+            recupere_gf_ga_avec_repli, url_eq_domicile, nom_domicile, competition,
+            max_matchs=rp.MAX_MATCHS_HISTORIQUE,
         )
-        stats_exterieur = recupere_gf_ga_avec_repli(
-            url_eq_exterieur, nom_exterieur, competition, max_matchs=rp.MAX_MATCHS_HISTORIQUE
+        stats_exterieur = recupere_gf_ga_avec_cache(
+            recupere_gf_ga_avec_repli, url_eq_exterieur, nom_exterieur, competition,
+            max_matchs=rp.MAX_MATCHS_HISTORIQUE,
         )
     except Exception as e:
         echec(f"erreur_technique_historique: {e}")
