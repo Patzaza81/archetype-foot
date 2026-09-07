@@ -17,7 +17,8 @@ réutilise bien le H2H (le but demandé) ; ça ne fusionne pas un éventuel
 aller/retour (deux URLs différentes, mêmes équipes) -- cas rare, non
 demandé ici.
 
-TTL long (7 jours) : contrairement au classement, l'historique de
+TTL long (4 jours, réduit depuis 7 -- décision de Patrick, 06/09/2026,
+point #31 de l'audit) : contrairement au classement, l'historique de
 confrontations entre deux équipes précises ne change que si elles se
 rejouent -- un événement rare à l'échelle de quelques jours.
 
@@ -30,7 +31,9 @@ import json
 import os
 
 FICHIER_CACHE = "cache_h2h.json"
-TTL_HEURES = 24 * 7
+# CORRECTIF 06/09/2026 (bug #31, décision de Patrick) -- 7 jours (24*7)
+# réduit à 4 jours (24*4).
+TTL_HEURES = 24 * 4
 
 
 def _cle(url_match_face_a_face):
