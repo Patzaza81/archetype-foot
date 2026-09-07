@@ -1274,6 +1274,99 @@ verite(
 
 
 # ============================================================================
+section("Moteur V0 (07/09/2026) — invariants figés, décision explicite de Patrick")
+# ============================================================================
+import moteur_v0 as _mv0
+
+verite(
+    "N < N_MIN (8) déclenche un NO_BET dur, quel que soit le reste",
+    _mv0.evalue_match_v0(1.5, 1.0, 1.2, 1.1, nb_matchs_domicile_utilises=7,
+                         nb_matchs_exterieur_utilises=10, cotes_marches={"BTTS - oui": 1.01})["verdict"] == "NO_BET",
+)
+
+_r_lambda_implausible = _mv0.evalue_match_v0(
+    12.0, 1.0, 1.2, 1.1, nb_matchs_domicile_utilises=10, nb_matchs_exterieur_utilises=10, cotes_marches={},
+)
+verite(
+    "Lambda hors [0.1, 6.0] (cas type Vaduz II) déclenche un NO_BET, jamais un clamp silencieux",
+    _r_lambda_implausible["verdict"] == "NO_BET" and "plausible" in (_r_lambda_implausible["motif"] or ""),
+)
+
+verite(
+    "Un pays SANS référence de ligue vérifiée obtient un modificateur neutre (1.0), "
+    "JAMAIS le default=1.35 du moteur existant, et n'est jamais bloqué pour ce seul motif",
+    _mv0.calcule_lambda_v0(1.6, 1.2, 1.3, 1.4, pays="Andorre")["audit"]["reference_utilisee"] is None
+    and _mv0.calcule_lambda_v0(1.6, 1.2, 1.3, 1.4, pays="Andorre")["audit"]["modifier_domicile"] == 1.0,
+)
+
+verite(
+    "Un pays AVEC référence réellement mesurée (Espagne) applique bien cette valeur, pas 1.0",
+    _mv0.calcule_lambda_v0(1.6, 1.2, 1.3, 1.4, pays="Espagne")["audit"]["reference_utilisee"] == 1.3474,
+)
+
+_marches_incoherentes_test = {
+    "Plus de 0.5 buts": 0.90, "Plus de 1.5 buts": 0.95,  # 1.5 > 0.5 -- incohérent
+    "Plus de 2.5 buts": 0.40, "Plus de 3.5 buts": 0.20, "Plus de 4.5 buts": 0.10,
+}
+_invalides_test = _mv0.verifie_coherence_v0(_marches_incoherentes_test)
+verite(
+    "Une incohérence de monotonie (Plus de 1.5 > Plus de 0.5) invalide la ligne fautive, "
+    "jamais une correction automatique, et ne contamine pas les lignes cohérentes",
+    "Plus de 1.5 buts" in _invalides_test and "Plus de 0.5 buts" not in _invalides_test
+    and "Plus de 2.5 buts" not in _invalides_test,
+)
+
+verite(
+    "EV pile au seuil (0.70 * 1.5 - 1, qui vaut 0.049999999999999822 en flottant, pas 0.05 exact) "
+    "est bien accepté grâce à la tolérance -- sans elle, un vrai edge au seuil serait rejeté à tort",
+    _mv0.calcule_ev_v0(0.70, 1.5) >= _mv0.EV_MIN - 1e-9,
+)
+verite(
+    "La tolérance flottante ne masque jamais un vrai rejet (EV réellement sous le seuil, 4.99%)",
+    _mv0.calcule_ev_v0(0.60, 1.7499) < _mv0.EV_MIN - 1e-9,
+)
+
+_candidats_famille_test = [
+    {"marche": "1X2 - 1", "ev": 0.10},
+    {"marche": "Double chance - 1X", "ev": 0.20},
+    {"marche": "BTTS - oui", "ev": 0.06},
+]
+_selection_famille_test = _mv0.filtre_famille_v0(_candidats_famille_test)
+_noms_selection_famille_test = {c["marche"] for c in _selection_famille_test}
+verite(
+    "Un seul candidat retenu par famille (résultat : 1X2 et Double chance ensemble) -- "
+    "garde le meilleur EV (Double chance - 1X, 0.20), écarte 1X2 - 1 (même famille, EV plus faible)",
+    "Double chance - 1X" in _noms_selection_famille_test and "1X2 - 1" not in _noms_selection_famille_test
+    and "BTTS - oui" in _noms_selection_famille_test,
+)
+
+verite(
+    "Une cote absente (None) ne produit jamais d'EV -- jamais un pari inventé sur une donnée manquante",
+    _mv0.calcule_ev_v0(0.90, None) is None,
+)
+
+_r_go_test = _mv0.evalue_match_v0(
+    2.0, 1.0, 1.8, 1.2, nb_matchs_domicile_utilises=10, nb_matchs_exterieur_utilises=10,
+    cotes_marches={"Plus de 2.5 buts": 2.20, "BTTS - oui": 2.00},
+)
+verite(
+    "Un cas GO complet produit une mise fixe STAKE_V0 (1%) sur chaque sélection, jamais une mise variable",
+    _r_go_test["verdict"] == "GO"
+    and all(s["mise_pct_bankroll"] == _mv0.STAKE_V0 for s in _r_go_test["selection"]),
+)
+
+_ligne_log_test = _mv0.enregistre_evaluation_v0(
+    {"equipe_domicile": "Audit", "equipe_exterieur": "Permanent"}, _r_lambda_implausible,
+    chemin="/tmp/audit_permanent_historique_v0_test.jsonl",
+)
+verite(
+    "enregistre_evaluation_v0 journalise aussi bien un NO_BET qu'un GO (pas seulement les paris pris) "
+    "-- corrige le plafond d'échantillon (63 paris) qui limitait la calibration du moteur existant",
+    _ligne_log_test["verdict"] == "NO_BET" and _ligne_log_test["resultat_reel"] is None,
+)
+
+
+# ============================================================================
 print("\n" + "=" * 70)
 if echecs:
     print(f"AUDIT ÉCHOUÉ -- {len(echecs)} vérité(s) fausse(s) :")
