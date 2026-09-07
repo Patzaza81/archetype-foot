@@ -92,7 +92,6 @@ from calculs import (
     probabilite_handicap_2choix,
     probabilite_pair_impair,
     probabilite_cages_inviolees,
-    clamp,
 )
 
 MAX_BUTS_V0 = 15  # même borne que le moteur existant -- masse au-delà négligeable (~1e-4) même à lambda=10
@@ -104,7 +103,6 @@ LAMBDA_MAX_PLAUSIBLE = 6.0
 EV_MIN = 0.05
 STAKE_V0 = 0.01
 RHO_DIXON_COLES_V0 = 0.0
-BORNE_MODIFIER_DEFENSE = (0.5, 1.5)  # même bornage que le moteur existant (BORNE_MIN/MAX_DEFENSE)
 
 LIGNES_OU = (0.5, 1.5, 2.5, 3.5, 4.5)
 LIGNES_HANDICAP = (-2.5, -1.5, -0.5, 0.5, 1.5, 2.5)
@@ -176,6 +174,16 @@ def calcule_lambda_v0(gf_home_domicile, ga_home_domicile, gf_away_exterieur, ga_
     correction de lambda). Le modificateur de référence de ligue n'est
     appliqué QUE si get_reference_verifiee() renvoie une vraie valeur ;
     sinon il vaut 1.0 (neutre, aucun ajustement, jamais un blocage).
+
+    CORRECTIF (audit du 07/09/2026, demandé par Patrick) : le modificateur
+    n'est plus borné par un clamp intermédiaire -- une version précédente
+    empruntait BORNE_MIN/MAX_DEFENSE au moteur existant (0.55/1.60, avec en
+    plus une erreur de recopie à 0.5/1.5) sans jamais faire valider cette
+    constante. Retiré entièrement : le veto de plausibilité sur le lambda
+    FINAL (verifie_plausibilite_lambda, 0.1-6.0, déjà approuvé) est le seul
+    filet de sécurité -- un modificateur extrême produirait un lambda hors
+    plage, intercepté en aval, sans besoin d'un deuxième garde-fou non
+    déclaré.
     """
     reference = get_reference_verifiee(pays, competition)
 
@@ -183,8 +191,8 @@ def calcule_lambda_v0(gf_home_domicile, ga_home_domicile, gf_away_exterieur, ga_
     lambda_exterieur_brut = (gf_away_exterieur + ga_home_domicile) / 2
 
     if reference is not None and reference > 0:
-        modifier_domicile = clamp(ga_away_exterieur / reference, *BORNE_MODIFIER_DEFENSE)
-        modifier_exterieur = clamp(ga_home_domicile / reference, *BORNE_MODIFIER_DEFENSE)
+        modifier_domicile = ga_away_exterieur / reference
+        modifier_exterieur = ga_home_domicile / reference
     else:
         modifier_domicile = 1.0
         modifier_exterieur = 1.0
@@ -355,11 +363,42 @@ def verifie_coherence_v0(marches_probas):
 # mélangée à la probabilité modèle -- décision explicite du 07/09/2026)
 # --------------------------------------------------------------------------
 
+# Marchés SYMÉTRIQUES -- leur vérification (verifie_pari) ne dépend QUE de
+# x+y, ou de x>0 et y>0 indépendamment, jamais de la position réelle
+# domicile/extérieur. Ce sont les SEULS marchés qu'on peut évaluer
+# honnêtement sur l'historique "propre" d'une équipe (buts_marques/
+# buts_encaisses, déjà réorienté du point de vue de l'équipe elle-même, PAS
+# les vraies positions domicile/extérieur du match réel).
+#
+# CORRECTIF (audit du 07/09/2026, demandé par Patrick) : la version
+# précédente appelait verifie_pari(marche, buts_marques, buts_encaisses)
+# pour TOUS les marchés sans exception -- correct pour les symétriques,
+# mais FAUX pour 1X2/Double chance/Handicap/"- Domicile"/"- Extérieur"/Cage
+# inviolée/Encaisse au moins 1 but/Score exact : ces marchés dépendent de
+# la position (x=domicile réel, y=extérieur réel) que verifie_pari attend,
+# alors que buts_marques/buts_encaisses n'est PAS cette position -- c'est
+# le même bug d'orientation que celui trouvé et corrigé le 07/09 dans
+# adapte_justification.py (bug #41), réintroduit ici par erreur puis
+# retrouvé pendant l'audit ligne par ligne demandé par Patrick le même
+# jour. Restreint désormais aux marchés dont verifie_pari a été vérifié
+# commutatif par construction (voir adapte_justification.MARCHES_SYMETRIQUES,
+# même liste conceptuelle, redéfinie ici localement pour ne pas créer de
+# dépendance croisée entre les deux fichiers).
+_MARCHES_SYMETRIQUES_EMPIRIQUE = {
+    "BTTS - oui", "BTTS - non",
+    "Total buts - pair", "Total buts - impair",
+} | {f"Plus de {l} buts" for l in LIGNES_OU} | {f"Moins de {l} buts" for l in LIGNES_OU}
+
+
 def controle_empirique_v0(marche: str, matchs_domicile_bruts, matchs_exterieur_bruts, cible: str):
     """cible : 'domicile' ou 'exterieur' -- sur quel historique observer le
-    marché. Renvoie (occurrences, total) ou None si non observable.
-    Réutilise calcule_roi.verifie_pari tel quel (même règle de marché que
-    partout ailleurs dans le dépôt -- jamais une deuxième définition)."""
+    marché. Renvoie (occurrences, total) ou None si non observable OU si le
+    marché n'est pas symétrique (voir _MARCHES_SYMETRIQUES_EMPIRIQUE --
+    jamais une observation orientée à tort). Réutilise calcule_roi.verifie_pari
+    tel quel (même règle de marché que partout ailleurs dans le dépôt --
+    jamais une deuxième définition)."""
+    if marche not in _MARCHES_SYMETRIQUES_EMPIRIQUE:
+        return None
     matchs = matchs_domicile_bruts if cible == "domicile" else matchs_exterieur_bruts
     if not matchs:
         return None
