@@ -1997,6 +1997,61 @@ verite(
 
 
 # ============================================================================
+section("archetype_model/poisson/markets.calcule_tous_les_marches + branchement complet "
+        "dans main.py/boucle_b.py (08/09/2026) — point d'entrée unique, plus de duplication")
+# ============================================================================
+_r_calc_audit = _amk.calcule_tous_les_marches(1.5, 1.0)
+verite(
+    "calcule_tous_les_marches : toutes les familles de marchés présentes "
+    "(1x2/DC/BTTS/total/handicap/buts par équipe/combo)",
+    set(_r_calc_audit.keys()) == {"1x2", "double_chance", "btts", "over_under_total", "handicap",
+                                   "buts_equipe_domicile", "buts_equipe_exterieur", "combo_dc_total"},
+)
+verite(
+    "calcule_tous_les_marches : cohérent avec un calcul direct indépendant "
+    "(matrice_scores + probabilites_1x2/resultat_handicap séparément)",
+    _r_calc_audit["1x2"] == _amk.probabilites_1x2(_amdist.matrice_scores(1.5, 1.0))
+    and _r_calc_audit["handicap"][0.0] == _amk.resultat_handicap(_amdist.matrice_scores(1.5, 1.0), 0.0),
+)
+verite(
+    "calcule_tous_les_marches(None, 1.0) : structure complète mais tout None en profondeur, "
+    "jamais un dict tronqué ou un crash",
+    _amk.calcule_tous_les_marches(None, 1.0)["combo_dc_total"][("1X", "over", 1.5)] is None,
+)
+
+# Vérifie le VRAI branchement : main.analyse_match doit maintenant exposer handicap/combo,
+# pas seulement 1x2/DC/BTTS/over_under_2_5 comme avant ce chantier.
+_amloader_e2e.fetch_html = _stub_e2e
+_r_e2e_apres_branchement = _ammain_e2e.analyse_match(
+    "https://www.matchendirect.fr/equipe/equipeA.html", "EquipeA",
+    "https://www.matchendirect.fr/equipe/equipeB.html", "EquipeB",
+    "Suède : Allsvenskan",
+)
+verite(
+    "main.analyse_match expose maintenant 'handicap' et 'combo_dc_total' dans chaque "
+    "scénario (branchement réel, pas juste la fonction centrale testée isolément)",
+    "handicap" in _r_e2e_apres_branchement["marches_par_scenario"]["offensif"]
+    and "combo_dc_total" in _r_e2e_apres_branchement["marches_par_scenario"]["offensif"],
+)
+_amloader_e2e.fetch_html = _original_fetch_e2e
+
+_bb.recupere_details_match = _stub_details_bb
+_r_bb_apres_branchement = _bb.evalue_un_match(_match_test_bb, _cache_test_bb)
+_bb.recupere_details_match = _original_details_bb
+verite(
+    "boucle_b.evalue_un_match expose aussi 'handicap' et 'combo_dc_total' (même point "
+    "d'entrée que main.py, plus de logique dupliquée entre les deux)",
+    "handicap" in _r_bb_apres_branchement["predictions_par_scenario"]["offensif"]
+    and "combo_dc_total" in _r_bb_apres_branchement["predictions_par_scenario"]["offensif"],
+)
+verite(
+    "boucle_b.recupere_details_match réellement restauré à l'original après cette "
+    "vérification additionnelle (aucun monkeypatch qui fuit)",
+    _bb.recupere_details_match is _original_details_bb,
+)
+
+
+# ============================================================================
 print("\n" + "=" * 70)
 if echecs:
     print(f"AUDIT ÉCHOUÉ -- {len(echecs)} vérité(s) fausse(s) :")
