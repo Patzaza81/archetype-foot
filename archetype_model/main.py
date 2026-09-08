@@ -15,15 +15,21 @@ PÉRIMÈTRE ASSUMÉ, décision du 08/09/2026 (contrainte de temps) :
   un bug caché, c'est la conséquence mécanique et assumée du choix de
   ne pas coder l'agrégation multi-compétitions dans cette fenêtre de
   temps.
-- Marchés calculés : 1X2, Double Chance, BTTS, Over/Under 2.5 total
-  (voir poisson/markets.py pour le périmètre réduit assumé).
+- Marchés calculés : TOUS ceux couverts par poisson.markets.calcule_tous_les_marches
+  (1X2, Double Chance, BTTS, Over/Under total, buts par équipe,
+  Handicap au quart de but, combos DC+Total) -- voir poisson/markets.py
+  pour le détail et les lignes par défaut assumées.
+- Robustesse calculée seulement sur un sous-ensemble (1X2 x3, BTTS,
+  Over/Under 2.5) -- l'étendre à tous les nouveaux marchés (handicap,
+  combos, buts par équipe) n'est pas fait ici, faute de temps (décision
+  du 08/09/2026) ; la structure (_valeurs_4_scenarios + extracteur) est
+  générique et se réutilise directement pour n'importe quel marché.
 """
 
 from .data import loader
 from .data import validation
 from .statistics import team_stats
 from .poisson import lambda_estimators
-from .poisson import distribution
 from .poisson import markets
 from .poisson import robustness
 
@@ -82,13 +88,7 @@ def analyse_match(url_domicile, nom_domicile, url_exterieur, nom_exterieur, nom_
     for scenario in SCENARIOS:
         la = lambdas["A"][scenario]
         lb = lambdas["B"][scenario]
-        matrice = distribution.matrice_scores(la, lb)
-        marches_par_scenario[scenario] = {
-            "1x2": markets.probabilites_1x2(matrice),
-            "double_chance": markets.probabilites_double_chance(matrice),
-            "btts": markets.probabilite_btts(matrice),
-            "over_under_2_5": markets.probabilites_over_under_total(matrice, 2.5),
-        }
+        marches_par_scenario[scenario] = markets.calcule_tous_les_marches(la, lb)
 
     def _extrait_1x2(issue):
         return lambda m: m["1x2"][issue] if m["1x2"] else None
@@ -100,7 +100,7 @@ def analyse_match(url_domicile, nom_domicile, url_exterieur, nom_exterieur, nom_
         "btts": robustness.evalue_robustesse(
             _valeurs_4_scenarios(marches_par_scenario, lambda m: m["btts"])),
         "over_2_5": robustness.evalue_robustesse(
-            _valeurs_4_scenarios(marches_par_scenario, lambda m: m["over_under_2_5"]["over"] if m["over_under_2_5"] else None)),
+            _valeurs_4_scenarios(marches_par_scenario, lambda m: m["over_under_total"][2.5]["over"] if m["over_under_total"][2.5] else None)),
     }
 
     return {
