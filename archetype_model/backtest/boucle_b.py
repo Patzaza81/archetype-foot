@@ -189,3 +189,52 @@ def execute_boucle_b(chemin_historique="historique_pronostics.json", chemin_cach
     with open(chemin_cache, "r", encoding="utf-8") as f:
         cache = json.load(f)
     return [evalue_un_match(m, cache) for m in matchs]
+
+
+def _brier_score(paires_prob_reel):
+    """Score de Brier : moyenne de (probabilité prédite - résultat réel
+    binaire 0/1)^2 -- plus bas est meilleur (0 = prédictions parfaites,
+    0.25 = pas mieux qu'une pièce non informée sur un événement à 50%).
+    None si la liste est vide, jamais une exception."""
+    if not paires_prob_reel:
+        return None
+    return sum((p - r) ** 2 for p, r in paires_prob_reel) / len(paires_prob_reel)
+
+
+def agrege_resultats(resultats):
+    """
+    Résumé d'un run de `execute_boucle_b` : comptage par statut (pour
+    voir tout de suite combien de matchs sont réellement exploitables
+    vs bloqués par quelle raison), et score de Brier du marché
+    "victoire domicile" (1X2), un par scénario λ -- calibration
+    seulement sur les matchs au statut OK, jamais mélangé avec les
+    matchs en échec.
+
+    Ne calcule le Brier que sur le marché 1X2/domicile pour cette
+    version -- étendre à BTTS/Over-Under est immédiat (même structure)
+    mais pas fait ici, faute de temps (décision du 08/09/2026).
+    """
+    comptes_statut = {}
+    for r in resultats:
+        comptes_statut[r["statut"]] = comptes_statut.get(r["statut"], 0) + 1
+
+    matchs_ok = [r for r in resultats if r["statut"] == "OK"]
+
+    brier_par_scenario = {}
+    for scenario in SCENARIOS:
+        paires = []
+        for r in matchs_ok:
+            marches_scenario = r["predictions_par_scenario"][scenario]
+            p_1x2 = marches_scenario["1x2"]
+            if p_1x2 is None:
+                continue
+            reel = 1 if r["resultat_reel"]["issue_1x2"] == "domicile" else 0
+            paires.append((p_1x2["domicile"], reel))
+        brier_par_scenario[scenario] = _brier_score(paires)
+
+    return {
+        "n_total": len(resultats),
+        "comptes_par_statut": comptes_statut,
+        "n_matchs_ok": len(matchs_ok),
+        "brier_score_victoire_domicile_par_scenario": brier_par_scenario,
+    }
