@@ -1,5 +1,11 @@
 # Archetype Foot — Document de transition
-Dernière mise à jour : 04/09/2026, soirée (session 20 — voir section 20 :
+Dernière mise à jour : 08/09/2026 (session 27 — voir section 27 : modèle
+`archetype_model` (remplaçant définitif de V0) verrouillé en version 3
+après deux relectures croisées, 4 nouveaux marchés spécifiés, feu vert
+donné pour l'implémentation — **mais aucun code écrit cette session**,
+tout reste à faire dans la fenêtre suivante).
+
+Mise à jour précédente : 04/09/2026, soirée (session 20 — voir section 20 :
 bug 18.8 enfin résolu (cause racine confirmée en direct sur matchendirect),
 **régression majeure découverte dans `calculs.py`** (shrinkage jamais
 branché nulle part dans le pipeline, 5 constantes gelées régressées),
@@ -16,6 +22,18 @@ les erreurs déjà identifiées et corrigées.
 
 ## ⚠️ SITUATIONS CRITIQUES — à lire avant toute action
 
+0. **PRIORITÉ ABSOLUE ACTUELLE — `archetype_model` verrouillé, zéro ligne
+   de code écrite (27.1 à 27.6).** V0 est définitivement abandonné (décision
+   explicite de Patrick, pas seulement suspendue comme le disait la
+   situation critique #26 précédente — voir 27.1). Le document de
+   référence est désormais `ARCHETYPE_FOOT_modele_corrige_v3.md` (livré en
+   pièce jointe chat, **PAS dans le dépôt** — à redemander à Patrick en
+   début de session si absent du contexte). Feu vert donné pour
+   l'implémentation. Ne pas rouvrir de débat sur l'architecture ou la
+   philosophie du modèle (V0 vs multi-λ, coefficients, score composite)
+   — c'est tranché, deux relectures croisées faites. Commencer directement
+   par `data/`+`validation/` ou `poisson/` selon la préférence de Patrick
+   en début de session.
 1. **Bug 18.8 -- cause racine trouvée et corrigée cette session (20.1)**,
    mais **pas encore vérifiée sur un run réel post-déploiement**. Ne pas
    rouvrir le diagnostic depuis zéro : relire 20.1 d'abord, puis vérifier
@@ -1902,3 +1920,43 @@ La règle "saison actuelle uniquement, minimum 5 matchs" est strictement plus re
 - ⬜ Si Patrick a la réponse de ChatGPT sur la question de calibration (situation critique #25/26.1), l'intégrer à la réflexion sur la fenêtre de données de la nouvelle spec.
 - ⬜ Décider explicitement : la V0 actuelle (fichiers non poussés, voir situation critique #24) est-elle abandonnée, ou sert-elle de brique de départ partiellement réutilisable (ex. le mécanisme de journalisation `historique_v0.jsonl`/`verifie_historique_v0.py` semble largement compatible avec la nouvelle spec, section 25 "journalisation obligatoire" de la spec) ?
 - ⬜ Tout ce qui restait ouvert avant ce pivot reste ouvert et non prioritaire pour l'instant : bug H2H 1X2/Double chance (#17/24.2), faux négatifs `scraper_details.py` (#20), #33/#38/#39.
+
+## 27. Session du 08/09/2026 — Verrouillage complet du modèle `archetype_model`, aucun code écrit
+
+### 27.1 V0 définitivement abandonné, pas juste suspendu
+Patrick a tranché explicitement en tout début de session : **on n'utilise plus V0 du tout**, ni comme code de base, ni comme référence de comparaison. Contrairement à ce que disait la situation critique #26 précédente ("suspendue, pas annulée"), c'est maintenant une décision ferme et définitive. Toute comparaison ou réutilisation de code V0 (matrice Poisson, fonctions `*_v0`) a été explicitement écartée en cours de session — `archetype_model/` est un package intégralement neuf, aucune ligne de V0 dedans.
+
+### 27.2 Chiffrage réel de l'impact "saison actuelle uniquement" (répond à la situation critique #26.4 de la session précédente)
+Deux chiffres réels obtenus, aucun n'est une estimation :
+- **`cache_equipes.json`** (725 couples équipe/compétition, snapshot 05-07/09) : `nb_domicile`==10 (plafond `max_matchs`) pour 368/725 (50,8%), `nb_exterieur`==10 pour 367/725 (50,6%), les deux plafonnés ensemble pour 359/725 (49,5%). À ce stade de saison (2-4 journées), un plafond à 10 signifie presque toujours qu'un repli sur la saison précédente a été nécessaire.
+- **`historique_pronostics.json`** (ancien moteur, 24/08→30/08, avant rupture de schéma du 04/09) : 434 matchs candidats, 131 (30,2%) rejetés pour motif `aucun_match_joué_saison_actuelle_ou_précédente` — zéro historique trouvé même avec repli complet autorisé (plancher le plus permissif possible, l'ancien moteur n'a pas de `N_MIN`). Seulement 272/434 (62,7%) traités avec ce plancher minimal.
+- **Blocage confirmé, réel, pas contournable sur les données actuelles** : `scraper_details.py` (`_extrait_historique_competition`) n'a jamais extrait la date de chaque match individuel — impossible de reconstituer rétroactivement "quelles données étaient disponibles avant tel match précis". Le chiffre EXACT de l'impact de la fenêtre 5-12/saison-actuelle nécessite un correctif ciblé (ajouter le champ date au parsing) puis un nouveau run — pas fait cette session, resté hors périmètre.
+- **Conclusion opérationnelle retenue** : le taux de non-résolu réel sous la nouvelle règle sera supérieur à 30-50% en tout début de saison, décroissant ensuite. Assumé comme un compromis du modèle, pas un défaut à corriger.
+
+### 27.3 Distinction importante clarifiée en session (erreur de Claude corrigée en direct) : le blocage de date N'EMPÊCHE PAS le walk-forward
+Claude avait initialement (à tort) présenté le blocage de 27.2 comme empêchant aussi la validation walk-forward rétroactive. Patrick a contesté à juste titre. Vérification faite : **`historique_pronostics.json` contient déjà 272 matchs avec un score réel enregistré**, capturés par le pipeline de production AVANT le coup d'envoi (donc sans fuite d'information), le résultat étant ajouté après coup. C'est un vrai jeu de données walk-forward valide, immédiatement exploitable pour un backtest du nouveau moteur — **aucun besoin d'attendre le correctif de date pour ça**. Le blocage de 27.2 concerne uniquement la reconstruction rétroactive de la composition saison-actuelle/saison-précédente d'un échantillon, pas la validité temporelle du backtest lui-même. À bien garder distinct dans toute future implémentation de `validation/walk_forward.py` (boucle B).
+Note additionnelle : `historique_v0.jsonl` (306 matchs V0) a `resultat_reel` à `null` sur les 306 lignes — jamais vérifié (`verifie_historique_v0.py`, mentionné créé en 24.6, absent du zip livré cette session, cohérent avec le fait que les fichiers V0 n'ont jamais été poussés). Le vrai gisement immédiatement exploitable pour le backtest est donc les 272 matchs d'`historique_pronostics.json`, pas les 306 de V0.
+
+### 27.4 Nouvelle spécification reçue et corrigée deux fois (documents livrés en pièce jointe chat, PAS dans le dépôt)
+- Document reçu en cours de session : `ARCHETYPE_FOOT___Modèle_de_conception_consolidé_et_spécification_technique.md` — version bien plus formalisée et complète que la première réponse ChatGPT de la session 26 (multi-λ à 4 scénarios, P1/P2/P3, familles/groupes d'exposition, deux boucles de validation walk-forward/rétrospective déjà alignées avec 27.3).
+- Claude a relu ce document et trouvé 7 failles de spécification réelles (pas des désaccords de philosophie) : λ offensif/défensif utilisés en sortie mais jamais formellement définis ; seuil de robustesse multi-λ jamais chiffré ; Edge et EDV mathématiquement toujours de même signe (`EDV = cote × Edge`) sans que leur usage différencié soit exploité ; pas de règle de départage pour P1 ; aucun fichier dédié à la mesure de robustesse dans l'arborescence ; formule de probabilité du handicap non dérivée ; validation du facteur correctif 1,155 restée qualitative sans règle de décision.
+- Ces 7 points corrigés et intégrés dans **`ARCHETYPE_FOOT_modele_corrige_v2.md`** (généré par Claude, livré en pièce jointe chat — **PAS dans le dépôt**).
+- Patrick a fait relire ce v2 à ChatGPT, qui a trouvé 5 correctifs supplémentaires, tous vérifiés fondés par Claude avant intégration (aucun accepté par précaution) : P1 classé par Edge décroissant, incohérent avec son rôle de "convergence" annoncé (Edge redescend en dernier départage) ; déduplication par comptage de signaux corroborants, réintroduisant un score caché (remplacé par cascade déterministe robustesse→H2H→Edge/EDV) ; P3 "robustesse suffisante" non verrouillée (fixé : STABLE obligatoire, pas de fallback INSTABLE) ; seuil 0,08 à centraliser en constante nommée (`ROBUSTNESS_STD_THRESHOLD`) plutôt que recopié en dur ; traitement des lignes de handicap en quart de but pas assez précis (précisé : répartition 50/50 de l'enjeu sur les deux lignes adjacentes).
+- Ces 5 points intégrés dans **`ARCHETYPE_FOOT_modele_corrige_v3.md`** (généré par Claude, livré en pièce jointe chat — **PAS dans le dépôt, à redemander en début de session suivante si absent du contexte** — c'est le document de référence actuel, remplace le v2 et la spec ChatGPT initiale de la session 26).
+
+### 27.5 Quatre nouveaux marchés ajoutés (demande explicite de Patrick), intégrés en section 9.4 du v3
+Tous dérivés de la matrice de scores déjà prévue par le modèle, aucune nouvelle donnée ni coefficient :
+- **TEAM_GOALS Over** (équipe X marque +0.5/+1.5/+2.5 buts) — famille déjà présente, ligne 0.5 ajoutée, lue sur la distribution marginale de Poisson de l'équipe seule (pas la matrice jointe), fiche d'affichage montrant le λ propre à cette équipe.
+- **TEAM_GOALS Under** (symétrique, -0.5/-1.5/-2.5).
+- **COMBO_DC_TOTAL Over** (double chance + total de buts Over 1.5/2.5/3.5) — nouvelle famille, calcul **conjoint** sur la matrice (jamais un produit de probabilités marginales, DC et total de buts ne sont pas indépendants). Nouveau fichier prévu : `markets/combo_markets.py`.
+- **COMBO_DC_TOTAL Under** (symétrique, Under 1.5/2.5/3.5/4.5).
+
+### 27.6 Statut de fin de session : feu vert donné, ZÉRO code écrit
+Patrick a explicitement demandé de ne pas coder dans cette fenêtre. Le modèle v3 est verrouillé et validé (deux relectures croisées fermées), mais **aucun fichier Python n'existe encore pour `archetype_model/`**. Point resté ouvert et non résolu, à traiter dès le début de l'implémentation : **vérifier si `matchendirect.fr` liste l'historique d'une équipe du plus récent au plus ancien ou l'inverse** — `_extrait_historique_competition` prend actuellement les N premières lignes rencontrées sans que cet ordre soit vérifié ni documenté ; si l'ordre est inversé, la règle "12 plus récents" (section 5 du v3) deviendrait silencieusement "12 plus anciens". Vérification manuelle de Patrick nécessaire (page réelle dans un navigateur), l'environnement d'édition n'a pas accès à `matchendirect.fr`.
+
+### 27.7 Feuille de route à l'issue de cette session
+- 🆕 **PRIORITÉ ABSOLUE SESSION SUIVANTE** : redemander `ARCHETYPE_FOOT_modele_corrige_v3.md` si absent du contexte (pas dans le dépôt), puis démarrer l'implémentation module par module — discipline habituelle inchangée (fichiers impactés → dépendances → invariants → tests de non-régression → feu vert → implémentation → mise à jour `audit_permanent.py` → livraison fichier par fichier).
+- ⬜ Vérifier l'ordre chronologique des matchs sur une page matchendirect réelle (27.6) AVANT de coder `data/validation.py` (troncature aux 12 plus récents).
+- ⬜ Une fois le moteur codé : lancer la boucle B (backtest rétrospectif) sur les 272 matchs déjà vérifiés d'`historique_pronostics.json` (27.3) — recalculer λ selon les formules du v3 à partir des données brutes déjà en cache, ne jamais réutiliser un λ déjà stocké par l'ancien moteur.
+- ⬜ Correctif optionnel, hors périmètre de l'implémentation principale, à proposer à Patrick séparément si utile : ajouter le champ date au parsing de `_extrait_historique_competition` pour débloquer le chiffrage exact de 27.2 (actuellement seulement estimé par proxy).
+- ⬜ Tout ce qui restait ouvert avant ce pivot reste ouvert et non prioritaire : bug H2H 1X2/Double chance (#17/24.2), faux négatifs `scraper_details.py` (#20), #33/#38/#39.
