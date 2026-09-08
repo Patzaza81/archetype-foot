@@ -53,7 +53,7 @@ from cache_equipes import _cle
 
 from ..data import validation
 from ..statistics import team_stats
-from ..poisson import lambda_estimators, distribution, markets
+from ..poisson import lambda_estimators, markets
 from ..main import SCENARIOS
 
 
@@ -158,12 +158,9 @@ def evalue_un_match(match_verifie, cache):
 
     predictions_par_scenario = {}
     for scenario in SCENARIOS:
-        matrice = distribution.matrice_scores(lambdas["A"][scenario], lambdas["B"][scenario])
-        predictions_par_scenario[scenario] = {
-            "1x2": markets.probabilites_1x2(matrice),
-            "over_under_2_5": markets.probabilites_over_under_total(matrice, 2.5),
-            "btts": markets.probabilite_btts(matrice),
-        }
+        predictions_par_scenario[scenario] = markets.calcule_tous_les_marches(
+            lambdas["A"][scenario], lambdas["B"][scenario]
+        )
 
     return {
         "statut": "OK",
