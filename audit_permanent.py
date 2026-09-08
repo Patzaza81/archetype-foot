@@ -1608,6 +1608,69 @@ verite(
 
 
 # ============================================================================
+section("archetype_model/poisson/lambda_estimators (08/09/2026) — 4 scénarios λ "
+        "(offensif/défensif/contextuel/global), v3 §6")
+# ============================================================================
+from archetype_model.poisson.lambda_estimators import estime_lambdas
+
+_r_lambda_test = estime_lambdas(
+    gf_a_domicile=2.0, ga_a_domicile=0.5, gf_a_global=1.8, ga_a_global=0.7,
+    gf_b_exterieur=1.0, ga_b_exterieur=1.5, gf_b_global=1.2, ga_b_global=1.4,
+)
+verite(
+    "estime_lambdas : λ_A offensif=GF_A_domicile, λ_A défensif=GA_B_exterieur "
+    "(vulnérabilité de L'ADVERSAIRE, jamais celle de A), λ_A contextuel=moyenne exacte des deux",
+    _r_lambda_test["A"]["offensif"] == 2.0 and _r_lambda_test["A"]["defensif"] == 1.5
+    and _r_lambda_test["A"]["contextuel"] == 1.75,
+)
+verite(
+    "estime_lambdas : λ_global croise bien l'attaque globale d'UNE équipe avec la défense "
+    "globale de L'AUTRE (λ_A global = (GF_A_global+GA_B_global)/2 = 1.6, PAS GA_A_global)",
+    _r_lambda_test["A"]["global"] == 1.6 and _r_lambda_test["B"]["global"] == 0.95,
+)
+verite(
+    "estime_lambdas : les 4 scénarios de A restent 4 valeurs séparées, aucune pondération "
+    "entre eux (v3 §6 dernier paragraphe) -- vérifié sur un jeu où rien ne coïncide par hasard",
+    len({_r_lambda_test["A"]["offensif"], _r_lambda_test["A"]["defensif"],
+         _r_lambda_test["A"]["contextuel"], _r_lambda_test["A"]["global"]}) == 4,
+)
+
+_r_lambda_none = estime_lambdas(
+    gf_a_domicile=None, ga_a_domicile=0.5, gf_a_global=1.8, ga_a_global=0.7,
+    gf_b_exterieur=1.0, ga_b_exterieur=1.5, gf_b_global=1.2, ga_b_global=1.4,
+)
+verite(
+    "estime_lambdas : GF_A_domicile absent -> λ_A offensif ET contextuel deviennent None "
+    "(dépendent de la valeur manquante), mais λ_A défensif (indépendant) reste calculé -- "
+    "pas de crash, pas de faux zéro",
+    _r_lambda_none["A"]["offensif"] is None and _r_lambda_none["A"]["contextuel"] is None
+    and _r_lambda_none["A"]["defensif"] == 1.5,
+)
+
+_r_lambda_ga_a_global_none = estime_lambdas(
+    gf_a_domicile=2.0, ga_a_domicile=0.5, gf_a_global=1.8, ga_a_global=None,
+    gf_b_exterieur=1.0, ga_b_exterieur=1.5, gf_b_global=1.2, ga_b_global=1.4,
+)
+verite(
+    "estime_lambdas : GA_A_global absent -> λ_B global DOIT devenir None (dépendance réelle "
+    "de la formule v3 §6, pas une fuite à corriger) ; λ_A global reste intact (dépend de "
+    "GA_B_global, pas de GA_A_global)",
+    _r_lambda_ga_a_global_none["B"]["global"] is None and _r_lambda_ga_a_global_none["A"]["global"] == 1.6,
+)
+
+_r_lambda_tout_none = estime_lambdas(
+    gf_a_domicile=None, ga_a_domicile=None, gf_a_global=None, ga_a_global=None,
+    gf_b_exterieur=None, ga_b_exterieur=None, gf_b_global=None, ga_b_global=None,
+)
+verite(
+    "estime_lambdas : tout None des deux côtés -> les 8 valeurs de sortie sont None, "
+    "jamais un crash",
+    all(v is None for v in _r_lambda_tout_none["A"].values())
+    and all(v is None for v in _r_lambda_tout_none["B"].values()),
+)
+
+
+# ============================================================================
 print("\n" + "=" * 70)
 if echecs:
     print(f"AUDIT ÉCHOUÉ -- {len(echecs)} vérité(s) fausse(s) :")
