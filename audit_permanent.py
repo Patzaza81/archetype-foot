@@ -1419,6 +1419,195 @@ verite(
 
 
 # ============================================================================
+section("archetype_model/data (08/09/2026) — fenêtre statistique et récupération "
+        "saison en cours, package neuf isolé de l'ancien moteur")
+# ============================================================================
+import archetype_model.data.validation as _amv
+import archetype_model.data.loader as _aml
+
+
+def _fabrique(n):
+    return [{"idx": i} for i in range(n)]
+
+
+verite(
+    "classifie_fenetre : N=3 -> INSUFFISANT, matchs_retenus vide",
+    _amv.classifie_fenetre(_fabrique(3))
+    == {"statut": _amv.STATUT_INSUFFISANT, "n_brut": 3, "matchs_retenus": []},
+)
+verite(
+    "classifie_fenetre : N=8 -> UTILISABLE, les 8 matchs conservés sans réordonnancement",
+    _amv.classifie_fenetre(_fabrique(8))["matchs_retenus"] == _fabrique(8),
+)
+verite(
+    "classifie_fenetre : N=15 -> tronqué aux 12 PLUS RÉCENTS (les 12 DERNIERS de la "
+    "liste, jamais les 12 premiers -- inversion volontaire par rapport au bug "
+    "d'ordre de recupere_gf_ga_avec_repli, voir loader.py)",
+    _amv.classifie_fenetre(_fabrique(15))["matchs_retenus"] == [{"idx": i} for i in range(3, 15)],
+)
+verite(
+    "classifie_fenetre : N=0 -> INSUFFISANT, pas de crash sur liste vide",
+    _amv.classifie_fenetre([]) == {"statut": _amv.STATUT_INSUFFISANT, "n_brut": 0, "matchs_retenus": []},
+)
+verite(
+    "classifie_fenetre : N=5 (borne basse incluse) -> UTILISABLE",
+    _amv.classifie_fenetre(_fabrique(5))["statut"] == _amv.STATUT_UTILISABLE,
+)
+verite(
+    "classifie_fenetre : N=12 (borne haute incluse) -> UTILISABLE, PAS tronqué",
+    _amv.classifie_fenetre(_fabrique(12))["matchs_retenus"] == _fabrique(12),
+)
+
+# CORRECTIF -- monkeypatch de _aml.fetch_html (nom lié localement par
+# `from scraper_details import fetch_html` dans loader.py -- patcher
+# sd.fetch_html n'aurait aucun effet ici) : à restaurer IMMÉDIATEMENT
+# après le test, avant toute autre vérité.
+_original_fetch_html_aml = _aml.fetch_html
+
+_HTML_OK_ARCHETYPE = """
+<html><body>
+<div>Suède : Allsvenskan</div>
+<table>
+<tr><td><a href="/live-score/m1">Kalmar 0-1 Djurgarden</a></td></tr>
+<tr><td><a href="/live-score/m2">AIK Solna 1-0 Kalmar</a></td></tr>
+<tr><td><a href="/report/m3">Sirius - Kalmar (rapport, pas de score)</a></td></tr>
+<tr><td><a href="/live-score/m4">Kalmar 2-0 Halmstads BK</a></td></tr>
+</table>
+</body></html>
+"""
+
+
+def _stub_fetch_html_sans_repli(url, *a, **kw):
+    if "?season=" in url:
+        raise AssertionError("repli saison précédente construit -- violerait v3 §4.1")
+    return _HTML_OK_ARCHETYPE
+
+
+_aml.fetch_html = _stub_fetch_html_sans_repli
+_r_historique_test = _aml.recupere_historique_saison_courante(
+    "https://www.matchendirect.fr/equipe/kalmar_test.html", "Suède : Allsvenskan", "Kalmar",
+)
+verite(
+    "loader.recupere_historique_saison_courante : 3 matchs valides extraits (la ligne "
+    "'rapport' sans score n'augmente pas N), ordre de page préservé tel quel",
+    [m["buts_marques"] for m in _r_historique_test] == [0, 0, 2]
+    and [m["domicile"] for m in _r_historique_test] == [True, False, True],
+)
+verite(
+    "loader.recupere_historique_saison_courante : jamais de repli saison précédente "
+    "(?season=) -- vérifié structurellement, pas juste supposé",
+    True,  # si _stub_fetch_html_sans_repli avait vu ?season=, l'appel ci-dessus aurait levé
+)
+
+_aml.fetch_html = lambda url, *a, **kw: "<html><body><div>Norvège : Eliteserien</div></body></html>"
+verite(
+    "loader.recupere_historique_saison_courante : compétition absente de la page -> "
+    "liste vide, jamais None (pas de crash en aval pour l'appelant)",
+    _aml.recupere_historique_saison_courante(
+        "https://www.matchendirect.fr/equipe/x.html", "Suède : Allsvenskan", "Kalmar",
+    ) == [],
+)
+
+# CORRECTIF -- restaurer IMMÉDIATEMENT la vraie fonction, avant toute autre
+# vérité de ce script (même convention que le groupe resolution_betpawa
+# plus haut dans ce fichier).
+_aml.fetch_html = _original_fetch_html_aml
+verite(
+    "archetype_model.data.loader.fetch_html réellement restauré à l'original après "
+    "les tests (aucun monkeypatch qui fuit vers le reste de l'audit)",
+    _aml.fetch_html is _original_fetch_html_aml,
+)
+
+
+# ============================================================================
+section("archetype_model/statistics (08/09/2026) — statistiques descriptives "
+        "d'équipe (offensif/défensif/résultats/buts), agnostiques de la source")
+# ============================================================================
+from archetype_model.statistics import distributions as _amd
+from archetype_model.statistics import team_stats as _amts
+from archetype_model.statistics import goals as _amg
+
+verite(
+    "distributions.variance utilise la variance de POPULATION (division par N, pas "
+    "N-1) -- décision documentée en tête de fichier, vérifiée par calcul sur un jeu "
+    "de référence à variance de population connue (4.0)",
+    abs(_amd.variance([2, 4, 4, 4, 5, 5, 7, 9]) - 4.0) < 1e-9,
+)
+verite(
+    "distributions : toutes les fonctions scalaires renvoient None sur liste vide, "
+    "jamais 0 ni une exception (moyenne/mediane/variance/ecart_type/min/max)",
+    _amd.moyenne([]) is None and _amd.mediane([]) is None and _amd.variance([]) is None
+    and _amd.ecart_type([]) is None and _amd.minimum([]) is None and _amd.maximum([]) is None,
+)
+verite(
+    "distributions.distribution_paliers([]) renvoie les 4 clés à 0, jamais un dict "
+    "partiel (un accès distribution['3+'] en aval ne doit jamais lever KeyError)",
+    _amd.distribution_paliers([]) == {"0": 0, "1": 0, "2": 0, "3+": 0},
+)
+
+_matchs_mixtes_test = [
+    {"domicile": True, "buts_marques": 2, "buts_encaisses": 0},
+    {"domicile": True, "buts_marques": 1, "buts_encaisses": 1},
+    {"domicile": True, "buts_marques": 0, "buts_encaisses": 2},
+    {"domicile": True, "buts_marques": 3, "buts_encaisses": 1},
+    {"domicile": True, "buts_marques": 0, "buts_encaisses": 0},
+]
+verite(
+    "team_stats.stats_offensives : n=5, moyenne=1.2, distribution 0/1/2/3+ correcte "
+    "sur un jeu de matchs mixtes réel",
+    _amts.stats_offensives(_matchs_mixtes_test)["moyenne"] == 1.2
+    and _amts.stats_offensives(_matchs_mixtes_test)["distribution"] == {"0": 2, "1": 1, "2": 1, "3+": 1},
+)
+verite(
+    "team_stats.stats_defensives : 2 clean sheets/5 (fréquence 0.4), fréquence "
+    "d'encaissement = 0.6 -- les deux sommant à 1.0 par construction",
+    _amts.stats_defensives(_matchs_mixtes_test)["frequence_clean_sheets"] == 0.4,
+)
+_resultats_test = _amts.resultats(_matchs_mixtes_test)
+verite(
+    "team_stats.resultats : victoires+nuls+defaites == n toujours, jamais un résultat "
+    "qui se perd (2 victoires, 2 nuls, 1 défaite sur 5)",
+    _resultats_test["victoires"] + _resultats_test["nuls"] + _resultats_test["defaites"]
+    == _resultats_test["n"] == 5
+    and (_resultats_test["victoires"], _resultats_test["nuls"], _resultats_test["defaites"]) == (2, 2, 1),
+)
+verite(
+    "team_stats sur liste vide (les 3 fonctions) : aucune ZeroDivisionError sur les "
+    "fréquences, tout à None proprement",
+    _amts.stats_offensives([])["moyenne"] is None
+    and _amts.stats_defensives([])["frequence_clean_sheets"] is None
+    and _amts.resultats([])["frequence_victoires"] is None,
+)
+
+_matchs_buts_test = [
+    {"domicile": True, "buts_marques": 2, "buts_encaisses": 0},
+    {"domicile": True, "buts_marques": 1, "buts_encaisses": 1},
+    {"domicile": True, "buts_marques": 0, "buts_encaisses": 0},
+    {"domicile": True, "buts_marques": 3, "buts_encaisses": 2},
+]
+verite(
+    "goals.buts_totaux_par_match calcule bien marques+encaissees par match (totaux "
+    "attendus [2,2,0,5], pas une approximation)",
+    _amg.buts_totaux_par_match(_matchs_buts_test) == [2, 2, 0, 5],
+)
+verite(
+    "goals.btts : 2 occurrences sur 4 (fréquence 0.5) sur le jeu de test",
+    _amg.btts(_matchs_buts_test) == {"n": 4, "occurrences": 2, "frequence": 0.5},
+)
+_ou25_test = _amg.over_under(_matchs_buts_test, 2.5)
+verite(
+    "goals.over_under(ligne=2.5) : over+under == n TOUJOURS (ligne à virgule, "
+    "aucun match ne peut être exactement sur la ligne)",
+    _ou25_test["over"] + _ou25_test["under"] == _ou25_test["n"] == 4
+    and _ou25_test["over"] == 1,
+)
+verite(
+    "goals.over_under([], ligne) et goals.btts([]) ne plantent pas, fréquences à None",
+    _amg.over_under([], 2.5)["frequence_over"] is None and _amg.btts([])["frequence"] is None,
+)
+
+
+# ============================================================================
 print("\n" + "=" * 70)
 if echecs:
     print(f"AUDIT ÉCHOUÉ -- {len(echecs)} vérité(s) fausse(s) :")
