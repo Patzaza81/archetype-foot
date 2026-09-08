@@ -1671,6 +1671,79 @@ verite(
 
 
 # ============================================================================
+section("archetype_model/poisson/distribution (08/09/2026) — matrice de Poisson "
+        "jointe, v3 §7")
+# ============================================================================
+import math as _math_audit
+from archetype_model.poisson import distribution as _amdist
+
+verite(
+    "distribution.loi_poisson : valeurs de référence pour λ=1 conformes à la table "
+    "de Poisson standard (P(X=0)=P(X=1)=e^-1, P(X=2)=e^-1/2)",
+    abs(_amdist.loi_poisson(1.0, 0) - _math_audit.exp(-1)) < 1e-9
+    and abs(_amdist.loi_poisson(1.0, 2) - _math_audit.exp(-1) * 0.5) < 1e-9,
+)
+_da_audit = _amdist.distribution_marginale(1.2, max_buts=5)
+_db_audit = _amdist.distribution_marginale(0.8, max_buts=5)
+_m_audit = _amdist.matrice_scores(1.2, 0.8, max_buts=5)
+verite(
+    "distribution.matrice_scores : indépendance vérifiée EXACTEMENT cellule par cellule "
+    "(m[2][3] == P(X=2)*P(Y=3)), pas une approximation",
+    _m_audit[2][3] == _da_audit[2] * _db_audit[3] and _m_audit[0][0] == _da_audit[0] * _db_audit[0],
+)
+verite(
+    "distribution.masse_totale sur max_buts=15 proche de 1.0 à 1e-9 (résidu de troncature "
+    "négligeable pour des λ réalistes, jamais utilisée pour renormaliser)",
+    abs(_amdist.masse_totale(_amdist.matrice_scores(1.2, 0.8, max_buts=15)) - 1.0) < 1e-9,
+)
+verite(
+    "distribution : λ=None (scénario indisponible) -> matrice_scores/loi_poisson renvoient "
+    "None des deux côtés, jamais une exception ni une matrice à moitié construite",
+    _amdist.matrice_scores(None, 1.0) is None and _amdist.matrice_scores(1.0, None) is None
+    and _amdist.loi_poisson(None, 3) is None,
+)
+verite(
+    "distribution : λ=0 (cas dégénéré) -> P(X=0)=1.0 exactement, P(X=k>0)=0.0 pour tout k>0",
+    _amdist.distribution_marginale(0.0, max_buts=5) == [1.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+)
+
+
+# ============================================================================
+section("archetype_model/poisson/robustness (08/09/2026) — seuil de stabilité "
+        "multi-λ, v3 §8 (CORRECTIF 2/11)")
+# ============================================================================
+from archetype_model.poisson import robustness as _amrob
+
+verite(
+    "robustness.evalue_robustesse : 4 probabilités identiques -> écart_type=0.0 -> STABLE",
+    _amrob.evalue_robustesse([0.30, 0.30, 0.30, 0.30])
+    == {"ecart_type": 0.0, "statut": _amrob.STATUT_STABLE},
+)
+verite(
+    "robustness.evalue_robustesse : forte dispersion (0.10/0.40/0.15/0.35, écart-type "
+    ">> 0.08) -> INSTABLE",
+    _amrob.evalue_robustesse([0.10, 0.40, 0.15, 0.35])["statut"] == _amrob.STATUT_INSTABLE,
+)
+verite(
+    "robustness.evalue_robustesse : écart-type EXACTEMENT au seuil (0.08, jusqu'à "
+    "l'imprécision flottante 0.08000000000000002) -> STABLE, règle '≤' pas '<' -- "
+    "tolérance epsilon ajoutée après qu'un test l'ait révélé avant livraison",
+    _amrob.evalue_robustesse([0.28, 0.28, 0.12, 0.12])["statut"] == _amrob.STATUT_STABLE,
+)
+verite(
+    "robustness.evalue_robustesse : un scénario None -> INDETERMINE, jamais un calcul "
+    "dégradé sur 3 valeurs qui fabriquerait une fausse STABLE",
+    _amrob.evalue_robustesse([0.20, 0.21, None, 0.20])
+    == {"ecart_type": None, "statut": _amrob.STATUT_INDETERMINE},
+)
+verite(
+    "robustness.evalue_robustesse : mauvais compte (3 valeurs au lieu de 4) -> "
+    "INDETERMINE, défensif, pas de crash",
+    _amrob.evalue_robustesse([0.20, 0.21, 0.19])["statut"] == _amrob.STATUT_INDETERMINE,
+)
+
+
+# ============================================================================
 print("\n" + "=" * 70)
 if echecs:
     print(f"AUDIT ÉCHOUÉ -- {len(echecs)} vérité(s) fausse(s) :")
