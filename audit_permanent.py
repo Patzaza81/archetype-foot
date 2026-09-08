@@ -1859,6 +1859,144 @@ verite(
 
 
 # ============================================================================
+section("archetype_model/backtest/boucle_b (08/09/2026) — backtest walk-forward, "
+        "λ recalculés depuis cache_equipes.json, JAMAIS depuis l'ancien moteur "
+        "(jamais testé contre le vrai réseau matchendirect.fr -- voir docstring)")
+# ============================================================================
+import scraper_details as _sd_bb
+import archetype_model.backtest.boucle_b as _bb
+
+
+def _entree_cache_bb(gf_dom, ga_dom, gf_ext, ga_ext, n=10):
+    return {
+        "horodatage": "2026-09-01T00:00:00Z",
+        "resultat": {
+            "gf_domicile": gf_dom, "ga_domicile": ga_dom, "gf_exterieur": gf_ext, "ga_exterieur": ga_ext,
+            "matchs_domicile_bruts": [{"buts_marques": gf_dom, "buts_encaisses": ga_dom, "domicile": True}] * n,
+            "matchs_exterieur_bruts": [{"buts_marques": gf_ext, "buts_encaisses": ga_ext, "domicile": False}] * n,
+            "nb_domicile": n, "nb_exterieur": n,
+        },
+    }
+
+
+_cache_test_bb = {
+    "https://www.matchendirect.fr/equipe/equipeA.html||suède : allsvenskan":
+        _entree_cache_bb(gf_dom=2.0, ga_dom=0.5, gf_ext=0.8, ga_ext=1.2),
+    "https://www.matchendirect.fr/equipe/equipeB.html||suède : allsvenskan":
+        _entree_cache_bb(gf_dom=1.0, ga_dom=1.0, gf_ext=1.0, ga_ext=1.5),
+}
+_match_test_bb = {
+    "domicile": "EquipeA", "exterieur": "EquipeB", "competition": "Suède : Allsvenskan",
+    "score": "2-1", "url_match": "https://www.matchendirect.fr/live-score/equipeA-equipeB.html",
+    "date": "2026-08-20", "match_id": "abc123",
+}
+_original_details_bb = _bb.recupere_details_match
+
+
+def _stub_details_bb(url_match):
+    return {"url_equipe_domicile": "https://www.matchendirect.fr/equipe/equipeA.html",
+            "url_equipe_exterieur": "https://www.matchendirect.fr/equipe/equipeB.html"}
+
+
+_bb.recupere_details_match = _stub_details_bb
+_r_bb = _bb.evalue_un_match(_match_test_bb, _cache_test_bb)
+verite(
+    "boucle_b.evalue_un_match : statut OK, λ_A offensif recalculé = GF_A_domicile du "
+    "CACHE (2.0) -- jamais un λ de l'ancien moteur",
+    _r_bb["statut"] == "OK" and abs(_r_bb["lambdas"]["A"]["offensif"] - 2.0) < 1e-9,
+)
+_match_avec_piege_bb = dict(_match_test_bb)
+_match_avec_piege_bb["lambda"] = {"lambda_home": 999.0, "lambda_away": 999.0}
+_r_piege_bb = _bb.evalue_un_match(_match_avec_piege_bb, _cache_test_bb)
+verite(
+    "boucle_b.evalue_un_match : un champ 'lambda' de l'ancien moteur présent dans "
+    "l'entrée d'entrée n'est JAMAIS lu ni réutilisé (reste basé sur le cache, pas 999.0)",
+    abs(_r_piege_bb["lambdas"]["A"]["offensif"] - 2.0) < 1e-9,
+)
+verite(
+    "boucle_b.evalue_un_match : score absent -> statut SCORE_ILLISIBLE, pas de crash",
+    _bb.evalue_un_match({**_match_test_bb, "score": None}, _cache_test_bb)["statut"] == "SCORE_ILLISIBLE",
+)
+verite(
+    "boucle_b.evalue_un_match : équipe résolue mais absente du cache -> statut "
+    "ABSENT_DU_CACHE, jamais un crash qui interromprait tout le backtest",
+    _bb.evalue_un_match(_match_test_bb, {})["statut"] == "ABSENT_DU_CACHE",
+)
+_bb.recupere_details_match = _original_details_bb
+verite(
+    "boucle_b.recupere_details_match réellement restauré à l'original après les tests",
+    _bb.recupere_details_match is _original_details_bb,
+)
+
+_resultats_agrege_audit = [
+    {"statut": "OK", "resultat_reel": {"issue_1x2": "domicile"},
+     "predictions_par_scenario": {s: {"1x2": {"domicile": 0.6, "nul": 0, "exterieur": 0}} for s in _bb.SCENARIOS}},
+    {"statut": "OK", "resultat_reel": {"issue_1x2": "exterieur"},
+     "predictions_par_scenario": {s: {"1x2": {"domicile": 0.4, "nul": 0, "exterieur": 0}} for s in _bb.SCENARIOS}},
+    {"statut": "INSUFFISANT"},
+]
+_agrege_audit = _bb.agrege_resultats(_resultats_agrege_audit)
+verite(
+    "boucle_b.agrege_resultats : comptage par statut correct (2 OK, 1 INSUFFISANT), "
+    "Brier scénario 'offensif' == 0.16 (calcul manuel indépendant : (0.6-1)²+(0.4-0)²)/2)",
+    _agrege_audit["comptes_par_statut"] == {"OK": 2, "INSUFFISANT": 1}
+    and abs(_agrege_audit["brier_score_victoire_domicile_par_scenario"]["offensif"] - 0.16) < 1e-12,
+)
+verite(
+    "boucle_b.agrege_resultats : liste vide -> aucun crash, n_total=0, Brier=None partout "
+    "(jamais un calcul déguisé sur liste vide)",
+    _bb.agrege_resultats([])["n_total"] == 0
+    and all(v is None for v in _bb.agrege_resultats([])["brier_score_victoire_domicile_par_scenario"].values()),
+)
+
+
+# ============================================================================
+section("archetype_model/poisson/markets — extension handicap au quart de but + "
+        "combos DC/Total (08/09/2026, v3 §9.3 CORRECTIF 6/12, §9.4.3/9.4.4)")
+# ============================================================================
+_m_hc_audit = _amdist.matrice_scores(1.5, 1.0, max_buts=15)
+
+_r_h0_audit = _amk.resultat_handicap(_m_hc_audit, 0)
+_p123_hc_audit = _amk.probabilites_1x2(_m_hc_audit)
+verite(
+    "markets.resultat_handicap(ligne=0) : identique à probabilites_1x2 (gain=domicile, "
+    "push=nul, perte=exterieur), pas une coïncidence -- même lecture de la matrice",
+    abs(_r_h0_audit["gain"] - _p123_hc_audit["domicile"]) < 1e-12
+    and abs(_r_h0_audit["push"] - _p123_hc_audit["nul"]) < 1e-12,
+)
+_r_h_demi_audit = _amk.resultat_handicap(_m_hc_audit, -0.5)
+verite(
+    "markets.resultat_handicap(ligne demi-entière) : push TOUJOURS 0.0 (aucun score entier "
+    "ne peut égaler un score+0.5) -- conséquence mathématique, pas une approximation",
+    _r_h_demi_audit["push"] == 0.0,
+)
+_r_h_quart_audit = _amk.resultat_handicap(_m_hc_audit, -0.25)
+verite(
+    "markets.resultat_handicap(-0.25, quart de but, CORRECTIF 12) == moyenne EXACTE de "
+    "handicap(0) et handicap(-0.5), vérifié par calcul indépendant",
+    abs(_r_h_quart_audit["gain"] - 0.5 * (_r_h0_audit["gain"] + _r_h_demi_audit["gain"])) < 1e-12,
+)
+verite(
+    "markets.resultat_handicap(None, ligne) -> None, pas de crash",
+    _amk.resultat_handicap(None, -0.25) is None,
+)
+
+_pdc_hc_audit = _amk.probabilites_double_chance(_m_hc_audit)
+_p_1x_over_audit = _amk.probabilite_combo_dc_total(_m_hc_audit, "1X", 2.5, "over")
+_p_1x_under_audit = _amk.probabilite_combo_dc_total(_m_hc_audit, "1X", 2.5, "under")
+verite(
+    "markets.probabilite_combo_dc_total : combo(1X,Over2.5) + combo(1X,Under2.5) == P(1X) "
+    "exactement -- les deux combos partitionnent 1X sans perte ni double-comptage",
+    abs((_p_1x_over_audit + _p_1x_under_audit) - _pdc_hc_audit["1X"]) < 1e-9,
+)
+verite(
+    "markets.probabilite_combo_dc_total(None, ...) -> None ; cote_dc/sens invalides "
+    "lèvent une ValueError explicite, jamais un résultat silencieux faux",
+    _amk.probabilite_combo_dc_total(None, "1X", 2.5, "over") is None,
+)
+
+
+# ============================================================================
 print("\n" + "=" * 70)
 if echecs:
     print(f"AUDIT ÉCHOUÉ -- {len(echecs)} vérité(s) fausse(s) :")
