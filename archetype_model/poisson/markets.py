@@ -175,3 +175,60 @@ def probabilite_combo_dc_total(matrice, cote_dc, ligne, sens):
         condition_total = lambda x, y: (x + y) < ligne
 
     return _somme_cellules(matrice, lambda x, y: condition_dc(x, y) and condition_total(x, y))
+
+
+# Lignes IMPOSÉES par le v3 (pas un choix) :
+LIGNES_BUTS_EQUIPE = (0.5, 1.5, 2.5)          # v3 §9.4.1/9.4.2, exact
+LIGNES_COMBO_OVER = (1.5, 2.5, 3.5)           # v3 §9.4.3, exact
+LIGNES_COMBO_UNDER = (1.5, 2.5, 3.5, 4.5)     # v3 §9.4.4, exact
+
+# Lignes ASSUMÉES par défaut (le v3 donne la formule, pas une liste de lignes à
+# calculer systématiquement pour Total/Handicap) -- décision du 08/09/2026,
+# à ajuster si un usage réel demande d'autres lignes. Ne pas confondre avec les
+# listes ci-dessus, qui elles sont imposées par le texte du v3.
+LIGNES_TOTAL_PAR_DEFAUT = (0.5, 1.5, 2.5, 3.5, 4.5)
+LIGNES_HANDICAP_PAR_DEFAUT = (-1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5)
+
+
+def calcule_tous_les_marches(lambda_a, lambda_b, max_buts=None):
+    """
+    Calcule TOUS les marchés couverts par ce module pour UN scénario λ
+    donné (lambda_a, lambda_b) -- point d'entrée unique, réutilisé par
+    archetype_model.main et archetype_model.backtest.boucle_b pour
+    éviter que les deux dupliquent (et déphasent) la même logique.
+
+    Si lambda_a ou lambda_b est None, chaque marché individuel renvoie
+    déjà None par sa propre gestion de l'absent -- pas de garde
+    spéciale nécessaire ici, le comportement se propage naturellement.
+    """
+    from . import distribution as _distribution  # import local : évite tout risque de cycle au chargement du package
+
+    kwargs_matrice = {} if max_buts is None else {"max_buts": max_buts}
+    matrice = _distribution.matrice_scores(lambda_a, lambda_b, **kwargs_matrice)
+    dist_a = _distribution.distribution_marginale(lambda_a, **kwargs_matrice)
+    dist_b = _distribution.distribution_marginale(lambda_b, **kwargs_matrice)
+
+    return {
+        "1x2": probabilites_1x2(matrice),
+        "double_chance": probabilites_double_chance(matrice),
+        "btts": probabilite_btts(matrice),
+        "over_under_total": {
+            ligne: probabilites_over_under_total(matrice, ligne) for ligne in LIGNES_TOTAL_PAR_DEFAUT
+        },
+        "handicap": {
+            ligne: resultat_handicap(matrice, ligne) for ligne in LIGNES_HANDICAP_PAR_DEFAUT
+        },
+        "buts_equipe_domicile": {
+            ligne: probabilites_buts_equipe(dist_a, ligne) for ligne in LIGNES_BUTS_EQUIPE
+        },
+        "buts_equipe_exterieur": {
+            ligne: probabilites_buts_equipe(dist_b, ligne) for ligne in LIGNES_BUTS_EQUIPE
+        },
+        "combo_dc_total": {
+            (dc, "over", ligne): probabilite_combo_dc_total(matrice, dc, ligne, "over")
+            for dc in DOUBLE_CHANCES_VALIDES for ligne in LIGNES_COMBO_OVER
+        } | {
+            (dc, "under", ligne): probabilite_combo_dc_total(matrice, dc, ligne, "under")
+            for dc in DOUBLE_CHANCES_VALIDES for ligne in LIGNES_COMBO_UNDER
+        },
+    }
