@@ -1744,6 +1744,121 @@ verite(
 
 
 # ============================================================================
+section("archetype_model/poisson/markets (08/09/2026) — marchés essentiels "
+        "(1X2/DC/BTTS/O-U total/O-U équipe), périmètre réduit assumé, v3 §9 partiel")
+# ============================================================================
+from archetype_model.poisson import markets as _amk
+
+_m_audit_mk = _amdist.matrice_scores(1.5, 1.0, max_buts=15)
+_p123_audit = _amk.probabilites_1x2(_m_audit_mk)
+verite(
+    "markets.probabilites_1x2 : les 3 issues somment à 1.0 (troncature négligeable), "
+    "et l'équipe au λ plus fort a bien la probabilité de victoire la plus haute",
+    abs(_p123_audit["domicile"] + _p123_audit["nul"] + _p123_audit["exterieur"] - 1.0) < 1e-6
+    and _p123_audit["domicile"] > _p123_audit["exterieur"],
+)
+_pdc_audit = _amk.probabilites_double_chance(_m_audit_mk)
+verite(
+    "markets.probabilites_double_chance : cohérence exacte avec 1X2 (1X=domicile+nul, "
+    "X2=nul+exterieur, 12=domicile+exterieur), jamais recalculé indépendamment",
+    abs(_pdc_audit["1X"] - (_p123_audit["domicile"] + _p123_audit["nul"])) < 1e-12,
+)
+_p_btts_audit = _amk.probabilite_btts(_m_audit_mk)
+verite(
+    "markets.probabilite_btts : cohérent avec un calcul indépendant par "
+    "inclusion-exclusion (1-P(X=0)-P(Y=0)+P(X=0,Y=0))",
+    abs(_p_btts_audit - (1.0 - sum(_m_audit_mk[0])
+                          - sum(ligne[0] for ligne in _m_audit_mk) + _m_audit_mk[0][0])) < 1e-12,
+)
+verite(
+    "markets : matrice/distribution None (λ indisponible en amont) -> toutes les "
+    "fonctions renvoient None, jamais un crash ni une probabilité inventée",
+    _amk.probabilites_1x2(None) is None and _amk.probabilites_double_chance(None) is None
+    and _amk.probabilite_btts(None) is None and _amk.probabilites_over_under_total(None, 2.5) is None
+    and _amk.probabilites_buts_equipe(None, 1.5) is None,
+)
+_m_sym_audit = _amdist.matrice_scores(1.3, 1.3, max_buts=15)
+_p_sym_audit = _amk.probabilites_1x2(_m_sym_audit)
+verite(
+    "markets.probabilites_1x2 : λ identiques des deux côtés -> P(domicile)≈P(exterieur) "
+    "(symétrie de la matrice, à l'imprécision flottante d'ordre de sommation près, "
+    "aucun avantage domicile codé en dur)",
+    abs(_p_sym_audit["domicile"] - _p_sym_audit["exterieur"]) < 1e-9,
+)
+
+
+# ============================================================================
+section("archetype_model/main.analyse_match (08/09/2026) — orchestration bout en bout, "
+        "périmètre réduit assumé (λ_global toujours None -> robustesse toujours INDETERMINE)")
+# ============================================================================
+import archetype_model.data.loader as _amloader_e2e
+import archetype_model.main as _ammain_e2e
+
+
+def _fixture_equipe_e2e(nom, resultats):
+    lignes = []
+    for i, (adv, bp, bc, dom) in enumerate(resultats):
+        texte = f"{nom} {bp}-{bc} {adv}" if dom else f"{adv} {bc}-{bp} {nom}"
+        lignes.append(f'<tr><td><a href="/live-score/x{i}">{texte}</a></td></tr>')
+    return f'<html><body><div>Suède : Allsvenskan</div><table>{"".join(lignes)}</table></body></html>'
+
+
+_matchs_a_e2e = [("X1", 2, 0, True), ("X2", 3, 1, True), ("X3", 1, 1, True),
+                 ("X4", 2, 0, True), ("X5", 2, 1, True), ("X6", 2, 0, True)]
+_matchs_b_e2e = [("Y1", 1, 2, False), ("Y2", 0, 1, False), ("Y3", 2, 1, False),
+                 ("Y4", 1, 2, False), ("Y5", 0, 2, False), ("Y6", 2, 1, False)]
+_html_a_e2e = _fixture_equipe_e2e("EquipeA", _matchs_a_e2e)
+_html_b_e2e = _fixture_equipe_e2e("EquipeB", _matchs_b_e2e)
+_original_fetch_e2e = _amloader_e2e.fetch_html
+
+
+def _stub_e2e(url, *a, **kw):
+    if "?season=" in url:
+        raise AssertionError("repli saison précédente déclenché -- violerait v3 §4.1")
+    return _html_a_e2e if "equipeA" in url else _html_b_e2e
+
+
+_amloader_e2e.fetch_html = _stub_e2e
+_r_e2e = _ammain_e2e.analyse_match(
+    "https://www.matchendirect.fr/equipe/equipeA.html", "EquipeA",
+    "https://www.matchendirect.fr/equipe/equipeB.html", "EquipeB",
+    "Suède : Allsvenskan",
+)
+verite(
+    "analyse_match bout en bout : statut OK avec 6 matchs de chaque côté, λ_A offensif ≈ "
+    "GF domicile réel (2.0), équipe la plus forte (A) a la plus haute proba de victoire",
+    _r_e2e["statut"] == "OK" and abs(_r_e2e["lambdas"]["A"]["offensif"] - 2.0) < 1e-9
+    and _r_e2e["marches_par_scenario"]["offensif"]["1x2"]["domicile"]
+    > _r_e2e["marches_par_scenario"]["offensif"]["1x2"]["exterieur"],
+)
+verite(
+    "analyse_match bout en bout : robustesse TOUJOURS INDETERMINE tant que λ_global est "
+    "None (limite de périmètre assumée du 08/09/2026, jamais une fausse STABLE/INSTABLE)",
+    all(v["statut"] == "INDETERMINE" for v in _r_e2e["robustesse_par_marche"].values()),
+)
+
+_html_a_peu_e2e = _fixture_equipe_e2e("EquipeA", _matchs_a_e2e[:3])
+_amloader_e2e.fetch_html = lambda url, *a, **kw: (_html_a_peu_e2e if "equipeA" in url else _html_b_e2e)
+_r_insuff_e2e = _ammain_e2e.analyse_match(
+    "https://www.matchendirect.fr/equipe/equipeA.html", "EquipeA",
+    "https://www.matchendirect.fr/equipe/equipeB.html", "EquipeB",
+    "Suède : Allsvenskan",
+)
+verite(
+    "analyse_match bout en bout : équipe A avec seulement 3 matchs (N<5) -> statut "
+    "INSUFFISANT, aucun lambda calculé, pas de crash",
+    _r_insuff_e2e["statut"] == "INSUFFISANT" and "lambdas" not in _r_insuff_e2e,
+)
+
+_amloader_e2e.fetch_html = _original_fetch_e2e
+verite(
+    "archetype_model.data.loader.fetch_html réellement restauré à l'original après le "
+    "test d'intégration bout en bout (aucun monkeypatch qui fuit)",
+    _amloader_e2e.fetch_html is _original_fetch_e2e,
+)
+
+
+# ============================================================================
 print("\n" + "=" * 70)
 if echecs:
     print(f"AUDIT ÉCHOUÉ -- {len(echecs)} vérité(s) fausse(s) :")
