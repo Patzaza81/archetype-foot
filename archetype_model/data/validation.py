@@ -19,6 +19,14 @@ moteur, non corrigé ici, hors périmètre).
 garanti EN AMONT par `_extrait_historique_competition`, qui n'ajoute à
 l'historique que les lignes où un score a été reconnu par regex -- cette
 fonction ne refiltre donc rien, elle classe et tronque seulement.
+
+DÉCISION ANNULÉE (08/09/2026, décision explicite de Patrick) : une
+fonction `classifie_fenetre_globale` (sans troncature à 12, pour une
+liste "toutes compétitions confondues") a existé brièvement ici.
+Annulée en même temps que `data.loader.recupere_historique_toutes_competitions`
+-- λ_global utilise maintenant `classifie_fenetre` normalement, sur la
+seule compétition du match. Ne pas réintroduire sans en reparler
+d'abord avec Patrick.
 """
 
 N_MIN_UTILISABLE = 5
