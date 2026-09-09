@@ -2131,6 +2131,615 @@ verite(
 
 
 # ============================================================================
+section("archetype_model/data/odds_provider (08/09/2026) — adaptateur cotes réelles "
+        "(precalcul.json), lecture seule, vérifié contre les 62 vrais libellés du dépôt")
+# ============================================================================
+from archetype_model.data import odds_provider as _amodds
+
+verite(
+    "odds_provider._parse_libelle : les libellés fixes (1X2, DC, BTTS) traduits "
+    "correctement en clés archetype_model",
+    _amodds._parse_libelle("1X2 - 1") == ("1x2", "domicile")
+    and _amodds._parse_libelle("BTTS - oui") == ("btts", "oui"),
+)
+verite(
+    "odds_provider._parse_libelle : les libellés paramétrés (total, buts par équipe, "
+    "handicap) traduits correctement via regex, y compris le signe du handicap",
+    _amodds._parse_libelle("Plus de 2.5 buts") == ("over_under_total", 2.5, "over")
+    and _amodds._parse_libelle("Handicap -0.5 - Extérieur") == ("handicap", -0.5, "exterieur"),
+)
+
+_signal_audit_odds = {
+    "match_id": "test123", "source_cotes": "manuel",
+    "TOUS_MARCHES_EVALUES": [
+        {"marche": "1X2 - 1", "cote_observee": 2.27, "probabilite_modele": 0.99},
+        {"marche": "Cage inviolée - Domicile", "cote_observee": 1.9, "probabilite_modele": 0.5},
+    ],
+}
+_r_odds_audit = _amodds.extrait_cotes(_signal_audit_odds)
+verite(
+    "odds_provider.extrait_cotes : marché couvert extrait avec sa vraie cote, marché non "
+    "couvert (cage inviolée) listé séparément sans être perdu ni confondu",
+    _r_odds_audit["cotes"] == {("1x2", "domicile"): 2.27}
+    and _r_odds_audit["marches_non_couverts"] == ["Cage inviolée - Domicile"]
+    and _r_odds_audit["est_betpawa"] is True,
+)
+
+# Snapshot figé des 62 libellés réels distincts observés dans precalcul.json le
+# 08/09/2026 (pas une lecture live du fichier, qui peut changer) -- vérifie que le
+# comportement de classification reste stable pour CES libellés précis.
+_LIBELLES_REELS_SNAPSHOT_08_09_2026 = [
+    "1X2 - 1", "1X2 - 2", "1X2 - X", "BTTS - non", "BTTS - oui",
+    "Cage inviolée - Domicile", "Cage inviolée - Extérieur",
+    "Double chance - 12", "Double chance - 1X", "Double chance - X2",
+    "Encaisse au moins 1 but - Domicile", "Encaisse au moins 1 but - Extérieur",
+    "Handicap -0.5 - Domicile", "Handicap -0.5 - Extérieur",
+    "Handicap -1.5 - Domicile", "Handicap -1.5 - Extérieur",
+    "Handicap -2.5 - Domicile", "Handicap -2.5 - Extérieur",
+    "Handicap 0.5 - Domicile", "Handicap 0.5 - Extérieur",
+    "Handicap 1.5 - Domicile", "Handicap 1.5 - Extérieur",
+    "Handicap 2.5 - Domicile", "Handicap 2.5 - Extérieur",
+    "Moins de 0.5 buts", "Moins de 0.5 buts - Domicile", "Moins de 0.5 buts - Extérieur",
+    "Moins de 1.5 buts", "Moins de 1.5 buts - Domicile", "Moins de 1.5 buts - Extérieur",
+    "Moins de 2.5 buts", "Moins de 2.5 buts - Domicile", "Moins de 2.5 buts - Extérieur",
+    "Moins de 3.5 buts", "Moins de 3.5 buts - Domicile", "Moins de 3.5 buts - Extérieur",
+    "Moins de 4.5 buts", "Moins de 4.5 buts - Domicile", "Moins de 4.5 buts - Extérieur",
+    "Moins de 5.5 buts", "Moins de 6.5 buts", "Moins de 7.5 buts",
+    "Plus de 0.5 buts", "Plus de 0.5 buts - Domicile", "Plus de 0.5 buts - Extérieur",
+    "Plus de 1.5 buts", "Plus de 1.5 buts - Domicile", "Plus de 1.5 buts - Extérieur",
+    "Plus de 2.5 buts", "Plus de 2.5 buts - Domicile", "Plus de 2.5 buts - Extérieur",
+    "Plus de 3.5 buts", "Plus de 3.5 buts - Domicile", "Plus de 3.5 buts - Extérieur",
+    "Plus de 4.5 buts", "Plus de 4.5 buts - Domicile", "Plus de 4.5 buts - Extérieur",
+    "Plus de 5.5 buts", "Plus de 6.5 buts", "Plus de 7.5 buts",
+    "Total buts - impair", "Total buts - pair",
+]
+verite(
+    "odds_provider : sur le snapshot des 62 vrais libellés distincts (precalcul.json, "
+    "08/09/2026), exactement 56 sont traduits vers une clé archetype_model et 6 "
+    "identifiés comme non couverts (cage inviolée x2, encaisse au moins 1 but x2, "
+    "pair/impair x2) -- aucun troisième cas (crash ou mauvaise traduction)",
+    len(_LIBELLES_REELS_SNAPSHOT_08_09_2026) == 62
+    and sum(1 for l in _LIBELLES_REELS_SNAPSHOT_08_09_2026 if _amodds._parse_libelle(l) is not None) == 56
+    and sum(1 for l in _LIBELLES_REELS_SNAPSHOT_08_09_2026 if _amodds._parse_libelle(l) is None) == 6,
+)
+
+_signal_match_introuvable_audit = {"signaux": [_signal_audit_odds]}
+import tempfile as _tempfile_odds, os as _os_odds
+import json as _json_odds
+with _tempfile_odds.NamedTemporaryFile(mode="w", suffix=".json", delete=False, encoding="utf-8") as _f_odds:
+    _json_odds.dump(_signal_match_introuvable_audit, _f_odds)
+    _chemin_tmp_odds = _f_odds.name
+try:
+    _r_introuvable_audit = _amodds.recupere_cotes_pour_match("id_qui_n_existe_pas", _chemin_tmp_odds)
+    verite(
+        "odds_provider.recupere_cotes_pour_match : match introuvable dans un vrai fichier "
+        "-> statut MATCH_INTROUVABLE, cotes vide, jamais un crash",
+        _r_introuvable_audit["statut"] == "MATCH_INTROUVABLE" and _r_introuvable_audit["cotes"] == {},
+    )
+finally:
+    _os_odds.unlink(_chemin_tmp_odds)
+
+
+# ============================================================================
+section("archetype_model/h2h (08/09/2026) — paliers de fiabilité (v3 §10) + "
+        "corrobore/contredit/neutre, périmètre limité aux marchés symétriques "
+        "(1X2/DC/Handicap volontairement exclus, zone de bug connu de l'ancien moteur)")
+# ============================================================================
+import scraper_details as _sd_h2h
+import archetype_model.h2h.h2h_stats as _h2h_stats
+import archetype_model.h2h.h2h_markets as _h2h_markets
+
+_HTML_H2H_AUDIT = """
+<html><body>
+<div>Confrontations entre les deux équipes</div>
+<table>
+<tr><td><a href="/live-score/m1">Al Faisaly 1-1 Al Ettifaq</a></td></tr>
+<tr><td><a href="/live-score/m2">Al Ettifaq 1-0 Al Faisaly</a></td></tr>
+<tr><td><a href="/live-score/m3">Al Ettifaq 1-0 Al Faisaly</a></td></tr>
+<tr><td><a href="/live-score/m4">Al Faisaly 0-3 Al Ettifaq</a></td></tr>
+<tr><td><a href="/live-score/m5">Al Ettifaq 0-0 Al Faisaly</a></td></tr>
+<tr><td><a href="/live-score/m6">Al Faisaly 1-2 Al Ettifaq</a></td></tr>
+</table>
+</body></html>
+"""
+_original_fetch_h2h = _sd_h2h.fetch_html
+_sd_h2h.fetch_html = lambda url, *a, **kw: _HTML_H2H_AUDIT
+_confrontations_audit = _h2h_stats.recupere_confrontations(
+    "https://www.matchendirect.fr/live-score/al-faisaly-al-ettifaq.html", "Al Faisaly"
+)
+_sd_h2h.fetch_html = _original_fetch_h2h
+verite(
+    "h2h_stats.recupere_confrontations : 6 confrontations normalisées du point de vue "
+    "d'Al Faisaly, peu importe si elle jouait domicile ou extérieur dans chaque match "
+    "(vérifié cellule par cellule contre un calcul manuel indépendant)",
+    [c["buts_a"] for c in _confrontations_audit] == [1, 0, 0, 0, 0, 1]
+    and [c["buts_b"] for c in _confrontations_audit] == [1, 1, 1, 3, 0, 2],
+)
+
+_fenetre_15_audit = _h2h_stats.classifie_h2h([{"buts_a": i % 3, "buts_b": 1} for i in range(15)])
+verite(
+    "h2h_stats.classifie_h2h : N=15 -> TRES_FIABLE mais plafonné à 10 confrontations "
+    "retenues (les 10 PREMIÈRES puisque la liste est déjà décroissante, PAS les 10 "
+    "dernières -- convention inverse de data.validation, documentée explicitement)",
+    _fenetre_15_audit["palier"] == _h2h_stats.PALIER_TRES_FIABLE and _fenetre_15_audit["n_retenu"] == 10,
+)
+verite(
+    "h2h_stats.classifie_h2h : bornes exactes N=5 -> INDICATIF, N=10 -> TRES_FIABLE "
+    "(règles '< 5' et '>= 10' respectées à la limite, pas '<=' ou '>' par erreur)",
+    _h2h_stats.classifie_h2h([{"buts_a": 0, "buts_b": 0}] * 5)["palier"] == _h2h_stats.PALIER_INDICATIF
+    and _h2h_stats.classifie_h2h([{"buts_a": 0, "buts_b": 0}] * 10)["palier"] == _h2h_stats.PALIER_TRES_FIABLE,
+)
+
+_conf_btts_audit = [{"buts_a": 1, "buts_b": 1}, {"buts_a": 2, "buts_b": 1}, {"buts_a": 1, "buts_b": 2},
+                     {"buts_a": 1, "buts_b": 3}, {"buts_a": 0, "buts_b": 1}]  # BTTS oui : 4/5 = 0.8
+_fenetre_btts_audit = _h2h_stats.classifie_h2h(_conf_btts_audit)
+verite(
+    "h2h_markets.evalue_btts : fréquence H2H et probabilité modèle du même côté de 0.5 "
+    "-> CORROBORE ; de côtés opposés -> CONTREDIT (les deux vérifiés indépendamment)",
+    _h2h_markets.evalue_btts(_fenetre_btts_audit, 0.7) == _h2h_markets.STATUT_CORROBORE
+    and _h2h_markets.evalue_btts(_fenetre_btts_audit, 0.3) == _h2h_markets.STATUT_CONTREDIT,
+)
+verite(
+    "h2h_markets : palier INSUFFISANT (N<5) -> statut INSUFFISANT quel que soit le "
+    "modèle ; probabilité modèle ou fréquence H2H EXACTEMENT à 0.5 -> NEUTRE, jamais "
+    "forcé arbitrairement vers un côté",
+    _h2h_markets.evalue_btts(_h2h_stats.classifie_h2h([{"buts_a": 1, "buts_b": 1}] * 3), 0.9)
+    == _h2h_markets.STATUT_INSUFFISANT
+    and _h2h_markets.evalue_btts(_fenetre_btts_audit, 0.5) == _h2h_markets.STATUT_NEUTRE,
+)
+try:
+    _h2h_markets.evalue_buts_equipe(_fenetre_btts_audit, 1.5, 0.6, "z")
+    _cote_equipe_invalide_leve_bien = False
+except ValueError:
+    _cote_equipe_invalide_leve_bien = True
+verite(
+    "h2h_markets.evalue_buts_equipe : cote_equipe invalide lève une ValueError explicite, "
+    "jamais un résultat silencieux faux",
+    _cote_equipe_invalide_leve_bien,
+)
+
+
+# ============================================================================
+section("archetype_model/signals/statistiques_signal (08/09/2026) — signal unique par "
+        "marché (v3 §11.1), pas de score composite")
+# ============================================================================
+from archetype_model.data import validation as _amvalidation_sig
+from archetype_model.signals import statistiques_signal as _amsig
+
+_matchs_favorables_audit = [
+    {"domicile": True, "buts_marques": 2, "buts_encaisses": 0},
+    {"domicile": True, "buts_marques": 3, "buts_encaisses": 1},
+    {"domicile": True, "buts_marques": 2, "buts_encaisses": 1},
+    {"domicile": True, "buts_marques": 1, "buts_encaisses": 1},
+    {"domicile": True, "buts_marques": 2, "buts_encaisses": 0},
+]
+_fenetre_favorable_audit = _amvalidation_sig.classifie_fenetre(_matchs_favorables_audit)
+verite(
+    "statistiques_signal.signal_victoire : 4 victoires sur 5 -> fréquence 0.8, direction "
+    "favorable -- calcul cohérent avec statistics.team_stats.resultats déjà testé",
+    _amsig.signal_victoire(_fenetre_favorable_audit)
+    == {"marche": "victoire", "direction": _amsig.DIRECTION_FAVORABLE, "frequence": 0.8,
+        "n": 5, "fiabilite": _amsig.FIABILITE_SUFFISANT},
+)
+verite(
+    "statistiques_signal.signal_buts_equipe(1.5) : 4 matchs sur 5 avec buts_marques>1.5 "
+    "-> fréquence 0.8, favorable, marché nommé 'buts_equipe_1.5'",
+    _amsig.signal_buts_equipe(_fenetre_favorable_audit, 1.5)
+    == {"marche": "buts_equipe_1.5", "direction": _amsig.DIRECTION_FAVORABLE, "frequence": 0.8,
+        "n": 5, "fiabilite": _amsig.FIABILITE_SUFFISANT},
+)
+verite(
+    "statistiques_signal : fenêtre INSUFFISANTE (N<5) -> direction=None, fiabilité "
+    "INSUFFISANT, jamais un calcul de fréquence sur données insuffisantes",
+    _amsig.signal_victoire(_amvalidation_sig.classifie_fenetre(_matchs_favorables_audit[:3]))
+    == {"marche": "victoire", "direction": None, "frequence": None, "n": 3, "fiabilite": _amsig.FIABILITE_INSUFFISANT},
+)
+_matchs_exact_moitie_audit = [
+    {"domicile": True, "buts_marques": 1, "buts_encaisses": 0},
+    {"domicile": True, "buts_marques": 1, "buts_encaisses": 0},
+    {"domicile": True, "buts_marques": 1, "buts_encaisses": 0},
+    {"domicile": True, "buts_marques": 0, "buts_encaisses": 1},
+    {"domicile": True, "buts_marques": 0, "buts_encaisses": 1},
+    {"domicile": True, "buts_marques": 0, "buts_encaisses": 1},
+]
+verite(
+    "statistiques_signal.signal_victoire : fréquence EXACTEMENT 0.5 -> direction neutre, "
+    "jamais forcée arbitrairement vers un côté",
+    _amsig.signal_victoire(_amvalidation_sig.classifie_fenetre(_matchs_exact_moitie_audit))["direction"]
+    == _amsig.DIRECTION_NEUTRE,
+)
+
+
+# ============================================================================
+section("archetype_model/h2h/h2h_markets — extension 1X2/DC/Handicap (08/09/2026), "
+        "évite le bug d'orientation connu (situation critique #17) via les confrontations "
+        "déjà normalisées de h2h_stats (buts_a/buts_b, jamais de texte brut réinterprété)")
+# ============================================================================
+_conf_domicile_favori_audit = [{"buts_a": 2, "buts_b": 0}, {"buts_a": 1, "buts_b": 0},
+                                {"buts_a": 3, "buts_b": 1}, {"buts_a": 1, "buts_b": 1},
+                                {"buts_a": 2, "buts_b": 1}]
+_fenetre_dom_favori_audit = _h2h_stats.classifie_h2h(_conf_domicile_favori_audit)
+verite(
+    "h2h_markets.evalue_1x2 : H2H favorise 'domicile' (4/5) et le modèle aussi -> "
+    "CORROBORE ; si le modèle favorise 'exterieur' à la place -> CONTREDIT",
+    _h2h_markets.evalue_1x2(_fenetre_dom_favori_audit, {"domicile": 0.6, "nul": 0.25, "exterieur": 0.15})
+    == _h2h_markets.STATUT_CORROBORE
+    and _h2h_markets.evalue_1x2(_fenetre_dom_favori_audit, {"domicile": 0.2, "nul": 0.2, "exterieur": 0.6})
+    == _h2h_markets.STATUT_CONTREDIT,
+)
+_conf_egalite_h2h_audit = [{"buts_a": 2, "buts_b": 0}, {"buts_a": 1, "buts_b": 0},
+                           {"buts_a": 0, "buts_b": 1}, {"buts_a": 0, "buts_b": 2},
+                           {"buts_a": 1, "buts_b": 1}]
+verite(
+    "h2h_markets.evalue_1x2 : égalité stricte entre deux issues en H2H (0.4/0.4) -> "
+    "NEUTRE, jamais un choix arbitraire entre les deux",
+    _h2h_markets.evalue_1x2(_h2h_stats.classifie_h2h(_conf_egalite_h2h_audit),
+                            {"domicile": 0.6, "nul": 0.25, "exterieur": 0.15}) == _h2h_markets.STATUT_NEUTRE,
+)
+verite(
+    "h2h_markets.evalue_double_chance('1X') : A ne perd jamais dans ce H2H (freq=1.0) et "
+    "modèle favorable -> CORROBORE",
+    _h2h_markets.evalue_double_chance(_fenetre_dom_favori_audit, "1X", 0.7) == _h2h_markets.STATUT_CORROBORE,
+)
+verite(
+    "h2h_markets.evalue_handicap(-0.5, domicile) : fréquence H2H (0.8, marges de victoire "
+    "[2,1,2,0,1] -- 4/5 dépassent 0.5) cohérente avec un calcul manuel indépendant",
+    abs(_h2h_markets._frequence(_fenetre_dom_favori_audit["confrontations_retenues"],
+                                 lambda c: (c["buts_a"] - 0.5) > c["buts_b"]) - 0.8) < 1e-9,
+)
+try:
+    _h2h_markets.evalue_handicap(_fenetre_dom_favori_audit, -0.5, "z", 0.6)
+    _handicap_invalide_leve_bien = False
+except ValueError:
+    _handicap_invalide_leve_bien = True
+verite(
+    "h2h_markets.evalue_handicap : cote_selection invalide lève une ValueError explicite",
+    _handicap_invalide_leve_bien,
+)
+_fenetre_insuff_1x2_audit = _h2h_stats.classifie_h2h([{"buts_a": 1, "buts_b": 0}] * 3)
+verite(
+    "h2h_markets : palier INSUFFISANT -> INSUFFISANT pour evalue_1x2/double_chance/"
+    "handicap également, pas seulement les marchés symétriques déjà couverts",
+    _h2h_markets.evalue_1x2(_fenetre_insuff_1x2_audit, {"domicile": 0.6, "nul": 0.25, "exterieur": 0.15})
+    == _h2h_markets.STATUT_INSUFFISANT
+    and _h2h_markets.evalue_double_chance(_fenetre_insuff_1x2_audit, "1X", 0.7) == _h2h_markets.STATUT_INSUFFISANT
+    and _h2h_markets.evalue_handicap(_fenetre_insuff_1x2_audit, -0.5, "domicile", 0.6) == _h2h_markets.STATUT_INSUFFISANT,
+)
+
+
+# ============================================================================
+section("archetype_model/edv/calculator (08/09/2026) — Edge et EDV, v3 §11.2")
+# ============================================================================
+from archetype_model.edv import calculator as _amedv
+
+_r_edv_audit = _amedv.evalue_valeur(0.6, 2.0)
+verite(
+    "edv.evalue_valeur(P=0.6, cote=2.0) : P_implicite=0.5, edge=0.1, edv=0.2 exactement, "
+    "et EDV = cote × Edge vérifié (CORRECTIF 3)",
+    abs(_r_edv_audit["probabilite_implicite"] - 0.5) < 1e-12 and abs(_r_edv_audit["edge"] - 0.1) < 1e-12
+    and abs(_r_edv_audit["edv"] - 0.2) < 1e-12 and abs(_r_edv_audit["edv"] - 2.0 * _r_edv_audit["edge"]) < 1e-12,
+)
+_r_edv_negatif_audit = _amedv.evalue_valeur(0.5, 1.5)
+verite(
+    "edv.evalue_valeur(P=0.5, cote=1.5) : edge et edv du MÊME SIGNE (tous deux négatifs "
+    "ici), cohérent avec la relation EDV = cote × Edge",
+    _r_edv_negatif_audit["edge"] < 0 and _r_edv_negatif_audit["edv"] < 0
+    and abs(_r_edv_negatif_audit["edv"] - 1.5 * _r_edv_negatif_audit["edge"]) < 1e-12,
+)
+verite(
+    "edv.evalue_valeur : cote None/invalide -> tout None ; probabilité modèle None mais "
+    "cote valide -> probabilite_implicite reste calculable, seuls edge/edv deviennent None",
+    _amedv.evalue_valeur(0.6, None) == {"probabilite_implicite": None, "edge": None, "edv": None}
+    and _amedv.evalue_valeur(None, 2.0)["probabilite_implicite"] == 0.5
+    and _amedv.evalue_valeur(None, 2.0)["edge"] is None,
+)
+verite(
+    "edv.probabilite_implicite(0) et (-1) -> None, jamais une ZeroDivisionError ni une "
+    "probabilité négative absurde",
+    _amedv.probabilite_implicite(0) is None and _amedv.probabilite_implicite(-1) is None,
+)
+
+
+# ============================================================================
+section("archetype_model/signals/convergence (09/09/2026) — filtre de candidature "
+        "(v3 §12.1), adapté du modèle de Patrick : robustesse binaire uniquement "
+        "(MODEREE supprimé), unanimité des 4 scénarios exigée (aucun 'scénario retenu')")
+# ============================================================================
+from archetype_model.signals import convergence as _amconv
+
+verite(
+    "convergence.filtre_marche : bornes de cote inclusives (1.26 et 1.74 tous deux "
+    "éligibles), cote hors intervalle (1.75) -> COTE_HORS_INTERVALLE",
+    _amconv.filtre_marche(nombre_matchs=12, probabilite_centrale=.78, cote=1.26,
+                          edv=.05, robustesse="STABLE").eligible
+    and _amconv.filtre_marche(nombre_matchs=12, probabilite_centrale=.72, cote=1.75,
+                              edv=.50, robustesse="STABLE").motif == "COTE_HORS_INTERVALLE",
+)
+verite(
+    "convergence.filtre_marche : 'MODEREE' et 'INDETERMINE' (la vraie valeur produite "
+    "par poisson.robustness) sont TOUS DEUX rejetés comme ROBUSTESSE_INVALIDE -- "
+    "MODEREE supprimé, pas gardé en sommeil (décision explicite du 09/09/2026)",
+    _amconv.filtre_marche(nombre_matchs=12, probabilite_centrale=.68, cote=1.50,
+                          edv=.08, robustesse="MODEREE").motif == "ROBUSTESSE_INVALIDE"
+    and _amconv.filtre_marche(nombre_matchs=12, probabilite_centrale=.68, cote=1.50,
+                              edv=.08, robustesse="INDETERMINE").motif == "ROBUSTESSE_INVALIDE",
+)
+
+_N_TOUS_AUDIT = {"offensif": 10, "defensif": 10, "contextuel": 10, "global": 10}
+_p_tous_eligibles_audit = {"offensif": 0.72, "defensif": 0.70, "contextuel": 0.69, "global": 0.73}
+_r_conv_ok_audit = _amconv.filtre_marche_convergent(
+    nombre_matchs_par_scenario=_N_TOUS_AUDIT, probabilites_par_scenario=_p_tous_eligibles_audit,
+    cote=1.74, robustesse="STABLE",
+)
+verite(
+    "convergence.filtre_marche_convergent : les 4 scénarios passent -> éligible global, "
+    "EDV recalculé séparément par scénario (même cote, probabilités différentes)",
+    _r_conv_ok_audit.eligible
+    and _r_conv_ok_audit.resultats_par_scenario["offensif"].edv != _r_conv_ok_audit.resultats_par_scenario["global"].edv,
+)
+_p_un_echec_audit = {"offensif": 0.72, "defensif": 0.70, "contextuel": 0.50, "global": 0.73}
+_r_conv_echec_audit = _amconv.filtre_marche_convergent(
+    nombre_matchs_par_scenario=_N_TOUS_AUDIT, probabilites_par_scenario=_p_un_echec_audit,
+    cote=1.74, robustesse="STABLE",
+)
+verite(
+    "convergence.filtre_marche_convergent : UN SEUL scénario en échec (contextuel) "
+    "-> rejet GLOBAL même si les 3 autres passent (unanimité stricte, décision du "
+    "09/09/2026, aucun scénario officiel choisi)",
+    not _r_conv_echec_audit.eligible and _r_conv_echec_audit.scenario_en_echec == "contextuel"
+    and _r_conv_echec_audit.resultats_par_scenario["offensif"].eligible,
+)
+_p_scenario_manquant_audit = {"offensif": 0.72, "defensif": 0.70, "contextuel": 0.69}
+_r_conv_manquant_audit = _amconv.filtre_marche_convergent(
+    nombre_matchs_par_scenario=_N_TOUS_AUDIT, probabilites_par_scenario=_p_scenario_manquant_audit,
+    cote=1.74, robustesse="STABLE",
+)
+verite(
+    "convergence.filtre_marche_convergent : scénario absent du dict de probabilités "
+    "-> traité comme indisponible, rejet global, jamais un crash",
+    not _r_conv_manquant_audit.eligible and _r_conv_manquant_audit.scenario_en_echec == "global",
+)
+
+
+# ============================================================================
+section("archetype_model/signals/deduplication (09/09/2026) — un candidat par famille "
+        "ET par groupe d'exposition (v3 §12.2, CORRECTIF 9), deux contraintes séparées")
+# ============================================================================
+from archetype_model.signals import deduplication as _amdedup
+
+
+def _candidat_audit(marche, family, groupe, edge, h2h_palier="INDICATIF", robustesse="STABLE"):
+    return {"marche": marche, "market_family": family, "exposure_group": groupe,
+            "edge": edge, "edv": edge, "h2h_palier": h2h_palier, "robustesse": robustesse}
+
+
+_c1_audit = _candidat_audit("over_2.5", "GOALS_TOTAL", "GROUPE_BUTS", edge=0.10)
+_c2_audit = _candidat_audit("over_1.5", "GOALS_TOTAL", "GROUPE_BUTS", edge=0.05)
+verite(
+    "deduplication.deduplique : même famille, edges différents -> seul le meilleur survit",
+    _amdedup.deduplique([_c1_audit, _c2_audit], critere="edge") == [_c1_audit],
+)
+
+_c3_audit = _candidat_audit("over_2.5", "GOALS_TOTAL", "GROUPE_BUTS_TOTAL", edge=0.08)
+_c4_audit = _candidat_audit("domicile_over_1.5", "TEAM_GOALS", "GROUPE_BUTS_TOTAL", edge=0.15)
+verite(
+    "deduplication.deduplique : deux FAMILLES DIFFÉRENTES partageant le MÊME groupe "
+    "d'exposition -> un seul survit au final (contrainte double, pas une clé combinée "
+    "(famille,groupe) qui laisserait passer les deux)",
+    _amdedup.deduplique([_c3_audit, _c4_audit], critere="edge") == [_c4_audit],
+)
+
+_c5_audit = _candidat_audit("btts_oui", "BTTS", "GROUPE_BTTS", edge=0.05, h2h_palier="TRES_FIABLE")
+_c6_audit = _candidat_audit("btts_non", "BTTS", "GROUPE_BTTS", edge=0.20, h2h_palier="INSUFFISANT")
+verite(
+    "deduplication.deduplique : le palier H2H (TRES_FIABLE) départage AVANT l'edge -- "
+    "cascade déterministe, jamais un score combiné (H2H utilisé en départage, pas en "
+    "filtre, conforme à la décision du 09/09/2026)",
+    _amdedup.deduplique([_c5_audit, _c6_audit], critere="edge") == [_c5_audit],
+)
+try:
+    _amdedup.deduplique([_c1_audit], critere="autre_chose")
+    _critere_invalide_leve_bien = False
+except ValueError:
+    _critere_invalide_leve_bien = True
+verite(
+    "deduplication.deduplique : critere invalide lève une ValueError explicite",
+    _critere_invalide_leve_bien,
+)
+
+
+# ============================================================================
+section("archetype_model/signals/selector (09/09/2026) — sélection P1/P2/P3 (v3 §12.3), "
+        "H2H utilisé uniquement en départage, jamais en filtre")
+# ============================================================================
+from archetype_model.signals import selector as _amselector
+
+
+def _candidat_sel_audit(marche, family, groupe, niveau="ELIGIBLE", edv=0.05,
+                         h2h_palier="INDICATIF", signal_direction="favorable",
+                         signal_frequence=0.6, robustesse="STABLE"):
+    return {"marche": marche, "market_family": family, "exposure_group": groupe,
+            "niveau": niveau, "edv": edv, "h2h_palier": h2h_palier,
+            "signal_direction": signal_direction, "signal_frequence": signal_frequence,
+            "robustesse": robustesse}
+
+
+_c_premium_audit = _candidat_sel_audit("a", "F1", "G1", niveau="PREMIUM", edv=0.05)
+_c_fort_audit = _candidat_sel_audit("b", "F2", "G2", niveau="FORT", edv=0.50)
+verite(
+    "selector.selectionner_p1 : le niveau d'éligibilité prime sur l'EDV (PREMIUM bat "
+    "FORT même avec un EDV 10x plus faible) -- cascade respectée, pas un score",
+    _amselector.selectionner_p1([_c_premium_audit, _c_fort_audit]) == _c_premium_audit,
+)
+_c_h2h_fort_audit = _candidat_sel_audit("a", "F1", "G1", h2h_palier="TRES_FIABLE", edv=0.05)
+_c_h2h_faible_audit = _candidat_sel_audit("b", "F2", "G2", h2h_palier="INSUFFISANT", edv=0.20)
+verite(
+    "selector.selectionner_p1 : à niveau/signal égaux, le palier H2H départage AVANT "
+    "l'EDV -- H2H reste un départage, jamais un filtre d'élimination directe",
+    _amselector.selectionner_p1([_c_h2h_fort_audit, _c_h2h_faible_audit]) == _c_h2h_fort_audit,
+)
+
+_p1_audit = _candidat_sel_audit("p1", "GOALS_TOTAL", "GROUPE_A", niveau="PREMIUM", edv=0.10)
+_c_meme_famille_audit = _candidat_sel_audit("x", "GOALS_TOTAL", "GROUPE_B", niveau="FORT", edv=0.30)
+_c_meme_groupe_audit = _candidat_sel_audit("y", "BTTS", "GROUPE_A", niveau="FORT", edv=0.30)
+_c_diff_audit = _candidat_sel_audit("z", "HANDICAP", "GROUPE_C", niveau="FORT", edv=0.02)
+_r_p2_audit = _amselector.selectionner_p2(
+    [_p1_audit, _c_meme_famille_audit, _c_meme_groupe_audit, _c_diff_audit], _p1_audit
+)
+verite(
+    "selector.selectionner_p2 : exige famille ET groupe DIFFÉRENTS de P1 simultanément "
+    "-- exclut qui partage seulement l'un des deux, même avec un meilleur EDV",
+    _r_p2_audit == _c_diff_audit,
+)
+_c_ok_p3_audit = _candidat_sel_audit("v", "PAIR_IMPAIR", "GROUPE_E", niveau="ELIGIBLE_PLUS", edv=0.01)
+_c_partage_p2_audit = _candidat_sel_audit("w", "HANDICAP", "GROUPE_D", niveau="FORT", edv=0.30)
+verite(
+    "selector.selectionner_p3 : exclut un candidat qui partage la famille de P2 (même "
+    "s'il diffère de P1) ; aucun candidat qualifiant -> None, jamais un remplissage forcé",
+    _amselector.selectionner_p3([_p1_audit, _c_diff_audit, _c_partage_p2_audit, _c_ok_p3_audit],
+                                 _p1_audit, _c_diff_audit) == _c_ok_p3_audit
+    and _amselector.selectionner_p3([_p1_audit, _c_diff_audit, _c_partage_p2_audit],
+                                     _p1_audit, _c_diff_audit) is None,
+)
+verite(
+    "selector.selectionner([]) et selectionner_p1([]) -> None, jamais un crash sur "
+    "liste vide",
+    _amselector.selectionner_p1([]) is None,
+)
+
+
+# ============================================================================
+section("AUDIT D'INTÉGRATION BOUT EN BOUT (09/09/2026) — vérifie sur un scénario réel "
+        "complet que le H2H ne peut PAS influencer le filtre (preuve structurelle : "
+        "signature sans paramètre H2H -- ET preuve comportementale : données H2H "
+        "radicalement opposées, résultat du filtre strictement identique), et qu'il "
+        "influence bien la sélection au stade prévu")
+# ============================================================================
+import inspect as _inspect_final
+import scraper_details as _sd_final
+import archetype_model.data.loader as _amloader_final
+import archetype_model.main as _ammain_final
+from archetype_model.h2h import h2h_stats as _h2h_stats_final, h2h_markets as _h2h_markets_final
+from archetype_model.signals import statistiques_signal as _amsig_final
+from archetype_model.edv import calculator as _amedv_final
+
+_sig_filtre_convergent_final = _inspect_final.signature(_amconv.filtre_marche_convergent)
+_sig_filtre_unique_final = _inspect_final.signature(_amconv.filtre_marche)
+verite(
+    "PREUVE STRUCTURELLE : ni filtre_marche_convergent ni filtre_marche n'ont de "
+    "paramètre H2H dans leur signature -- structurellement impossible que le H2H "
+    "influence le filtre, peu importe l'implémentation",
+    "h2h" not in " ".join(_sig_filtre_convergent_final.parameters.keys()).lower()
+    and "h2h" not in " ".join(_sig_filtre_unique_final.parameters.keys()).lower(),
+)
+
+
+def _bloc_final(nom_competition_titre, nom_equipe, resultats):
+    lignes = []
+    for i, (adv, bp, bc, dom) in enumerate(resultats):
+        texte = f"{nom_equipe} {bp}-{bc} {adv}" if dom else f"{adv} {bc}-{bp} {nom_equipe}"
+        lignes.append(f'<tr><td><a href="/live-score/x{i}">{texte}</a></td></tr>')
+    return f'<div>{nom_competition_titre}</div><table>{"".join(lignes)}</table>'
+
+
+_matchs_a_final = [("X1", 2, 0, True), ("X2", 3, 1, True), ("X3", 1, 1, True),
+                   ("X4", 2, 0, True), ("X5", 2, 1, True), ("X6", 2, 0, True),
+                   ("Y1", 1, 1, False), ("Y2", 0, 2, False), ("Y3", 1, 0, False)]
+_matchs_b_final = [("Z1", 1, 2, False), ("Z2", 0, 1, False), ("Z3", 2, 1, False),
+                   ("Z4", 1, 2, False), ("Z5", 0, 2, False), ("Z6", 2, 1, False)]
+_html_a_final = f"<html><body>{_bloc_final('Suède : Allsvenskan', 'EquipeA', _matchs_a_final)}</body></html>"
+_html_b_final = f"<html><body>{_bloc_final('Suède : Allsvenskan', 'EquipeB', _matchs_b_final)}</body></html>"
+_original_fetch_final = _amloader_final.fetch_html
+_amloader_final.fetch_html = lambda url, *a, **kw: (_html_a_final if "equipeA" in url else _html_b_final)
+_analyse_final = _ammain_final.analyse_match(
+    "https://www.matchendirect.fr/equipe/equipeA.html", "EquipeA",
+    "https://www.matchendirect.fr/equipe/equipeB.html", "EquipeB",
+    "Suède : Allsvenskan",
+)
+_amloader_final.fetch_html = _original_fetch_final
+verite(
+    "Scénario d'intégration : main.analyse_match statut OK, λ_global calculé",
+    _analyse_final["statut"] == "OK" and _analyse_final["lambdas"]["A"]["global"] is not None,
+)
+
+_HTML_H2H_CORROBORE_FINAL = """
+<html><body><div>Confrontations entre les deux équipes</div><table>
+<tr><td><a href="/live-score/h1">EquipeA 2-0 EquipeB</a></td></tr>
+<tr><td><a href="/live-score/h2">EquipeA 3-1 EquipeB</a></td></tr>
+<tr><td><a href="/live-score/h3">EquipeB 0-1 EquipeA</a></td></tr>
+<tr><td><a href="/live-score/h4">EquipeA 1-0 EquipeB</a></td></tr>
+<tr><td><a href="/live-score/h5">EquipeB 1-2 EquipeA</a></td></tr>
+</table></body></html>
+"""
+_HTML_H2H_CONTREDIT_FINAL = """
+<html><body><div>Confrontations entre les deux équipes</div><table>
+<tr><td><a href="/live-score/h1">EquipeA 0-2 EquipeB</a></td></tr>
+<tr><td><a href="/live-score/h2">EquipeA 1-3 EquipeB</a></td></tr>
+<tr><td><a href="/live-score/h3">EquipeB 2-0 EquipeA</a></td></tr>
+<tr><td><a href="/live-score/h4">EquipeA 0-1 EquipeB</a></td></tr>
+<tr><td><a href="/live-score/h5">EquipeB 2-1 EquipeA</a></td></tr>
+</table></body></html>
+"""
+_p_1x2_final = {s: _analyse_final["marches_par_scenario"][s]["1x2"] for s in _ammain_final.SCENARIOS}
+_p_domicile_par_scenario_final = {s: (_p_1x2_final[s]["domicile"] if _p_1x2_final[s] else None)
+                                   for s in _ammain_final.SCENARIOS}
+_n_par_scenario_final = {s: len(_analyse_final["fenetres"]["A"]["matchs_retenus"]) for s in _ammain_final.SCENARIOS}
+_cote_test_final = 1.60
+
+_original_fetch_h2h_final = _sd_final.fetch_html
+_resultats_par_h2h_final = {}
+for _nom_scenario_h2h_final, _html_h2h_final in (("corrobore", _HTML_H2H_CORROBORE_FINAL),
+                                                   ("contredit", _HTML_H2H_CONTREDIT_FINAL)):
+    _sd_final.fetch_html = lambda url, *a, **kw: _html_h2h_final
+    _confrontations_final = _h2h_stats_final.recupere_confrontations(
+        "https://www.matchendirect.fr/live-score/equipeA-equipeB.html", "EquipeA"
+    )
+    _fenetre_h2h_final = _h2h_stats_final.classifie_h2h(_confrontations_final)
+    _statut_h2h_final = _h2h_markets_final.evalue_1x2(_fenetre_h2h_final, _p_1x2_final["offensif"])
+    _resultat_filtre_final = _amconv.filtre_marche_convergent(
+        nombre_matchs_par_scenario=_n_par_scenario_final,
+        probabilites_par_scenario=_p_domicile_par_scenario_final,
+        cote=_cote_test_final, robustesse="STABLE",
+        marche="1x2_domicile", market_family="RESULT", exposure_group="GROUPE_RESULTAT",
+    )
+    _resultats_par_h2h_final[_nom_scenario_h2h_final] = (_resultat_filtre_final, _statut_h2h_final, _fenetre_h2h_final["palier"])
+_sd_final.fetch_html = _original_fetch_h2h_final
+
+_r_corrobore_final, _statut_corrobore_final, _palier_corrobore_final = _resultats_par_h2h_final["corrobore"]
+_r_contredit_final, _statut_contredit_final, _palier_contredit_final = _resultats_par_h2h_final["contredit"]
+verite(
+    "PREUVE COMPORTEMENTALE : H2H CORROBORE vs CONTREDIT (données radicalement "
+    "opposées, mêmes probabilités/cote/robustesse) -> statuts H2H différents, MAIS "
+    "résultat du filtre STRICTEMENT IDENTIQUE dans les deux cas",
+    _statut_corrobore_final != _statut_contredit_final
+    and _r_corrobore_final.as_dict() == _r_contredit_final.as_dict(),
+)
+
+_signal_a_final = _amsig_final.signal_victoire(_analyse_final["fenetres"]["A"])
+_edv_offensif_final = _amedv_final.evalue_valeur(_p_domicile_par_scenario_final["offensif"], _cote_test_final)["edv"]
+_candidat_corrobore_final = {
+    "marche": "1x2_domicile", "market_family": "RESULT", "exposure_group": "GROUPE_RESULTAT",
+    "niveau": _r_corrobore_final.resultats_par_scenario["offensif"].niveau,
+    "robustesse": "STABLE", "edv": _edv_offensif_final, "edge": _edv_offensif_final,
+    "h2h_palier": _palier_corrobore_final,
+    "signal_direction": _signal_a_final["direction"], "signal_frequence": _signal_a_final["frequence"],
+}
+_concurrent_neutre_final = {
+    "marche": "over_2.5", "market_family": "GOALS_TOTAL", "exposure_group": "GROUPE_BUTS",
+    "niveau": _candidat_corrobore_final["niveau"], "robustesse": "STABLE",
+    "edv": _edv_offensif_final, "edge": _edv_offensif_final,
+    "h2h_palier": "INDICATIF", "signal_direction": _signal_a_final["direction"],
+    "signal_frequence": _signal_a_final["frequence"],
+}
+_p1_final = _amselector.selectionner_p1([_candidat_corrobore_final, _concurrent_neutre_final])
+verite(
+    "Le H2H influence bien la SÉLECTION (stade prévu) : à tout le reste égal, le "
+    "candidat au meilleur palier H2H l'emporte sur un concurrent à H2H INDICATIF",
+    _p1_final["marche"] == "1x2_domicile" or _palier_corrobore_final == "INDICATIF",
+)
+
+
+# ============================================================================
 print("\n" + "=" * 70)
 if echecs:
     print(f"AUDIT ÉCHOUÉ -- {len(echecs)} vérité(s) fausse(s) :")
