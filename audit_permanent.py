@@ -1832,9 +1832,10 @@ verite(
     > _r_e2e["marches_par_scenario"]["offensif"]["1x2"]["exterieur"],
 )
 verite(
-    "analyse_match bout en bout : robustesse TOUJOURS INDETERMINE tant que λ_global est "
-    "None (limite de périmètre assumée du 08/09/2026, jamais une fausse STABLE/INSTABLE)",
-    all(v["statut"] == "INDETERMINE" for v in _r_e2e["robustesse_par_marche"].values()),
+    "analyse_match bout en bout : robustesse_par_marche présente sans crash (le statut "
+    "précis STABLE/INSTABLE/INDETERMINE dépend de λ_global, testé spécifiquement plus "
+    "loin dans la section dédiée à ce chantier du 08/09/2026)",
+    set(_r_e2e["robustesse_par_marche"].keys()) == {"1x2_domicile", "1x2_nul", "1x2_exterieur", "btts", "over_2_5"},
 )
 
 _html_a_peu_e2e = _fixture_equipe_e2e("EquipeA", _matchs_a_e2e[:3])
@@ -2047,6 +2048,84 @@ verite(
 verite(
     "boucle_b.recupere_details_match réellement restauré à l'original après cette "
     "vérification additionnelle (aucun monkeypatch qui fuit)",
+    _bb.recupere_details_match is _original_details_bb,
+)
+
+
+# ============================================================================
+section("archetype_model/main._stats_globales + boucle_b._stats_globales_depuis_cache "
+        "(08/09/2026) — λ_global sur la SEULE compétition du match (décision explicite "
+        "de Patrick, annule une version antérieure multi-compétitions)")
+# ============================================================================
+import archetype_model.data.loader as _amloader_global
+
+
+def _bloc_audit_global(nom_competition_titre, nom_equipe, resultats):
+    lignes = []
+    for i, (adv, bp, bc, dom) in enumerate(resultats):
+        texte = f"{nom_equipe} {bp}-{bc} {adv}" if dom else f"{adv} {bc}-{bp} {nom_equipe}"
+        lignes.append(f'<tr><td><a href="/live-score/x{i}">{texte}</a></td></tr>')
+    return f'<div>{nom_competition_titre}</div><table>{"".join(lignes)}</table>'
+
+
+_matchs_a_global_audit = [("X1", 2, 0, True), ("X2", 3, 1, True), ("X3", 1, 1, True),
+                          ("X4", 2, 0, True), ("X5", 2, 1, True), ("X6", 2, 0, True),
+                          ("Y1", 1, 1, False), ("Y2", 0, 2, False), ("Y3", 1, 0, False)]
+_matchs_b_global_audit = [("Z1", 1, 2, False), ("Z2", 0, 1, False), ("Z3", 2, 1, False),
+                          ("Z4", 1, 2, False), ("Z5", 0, 2, False), ("Z6", 2, 1, False)]
+_html_a_global_audit = f"<html><body>{_bloc_audit_global('Suède : Allsvenskan', 'EquipeA', _matchs_a_global_audit)}</body></html>"
+_html_b_global_audit = f"<html><body>{_bloc_audit_global('Suède : Allsvenskan', 'EquipeB', _matchs_b_global_audit)}</body></html>"
+_original_fetch_global = _amloader_global.fetch_html
+_amloader_global.fetch_html = lambda url, *a, **kw: (_html_a_global_audit if "equipeA" in url else _html_b_global_audit)
+_r_global_audit = _ammain_e2e.analyse_match(
+    "https://www.matchendirect.fr/equipe/equipeA.html", "EquipeA",
+    "https://www.matchendirect.fr/equipe/equipeB.html", "EquipeB",
+    "Suède : Allsvenskan",
+)
+_amloader_global.fetch_html = _original_fetch_global
+verite(
+    "main.analyse_match : λ_A global calculé sur la SEULE compétition du match (9 matchs "
+    "domicile+extérieur fusionnés), sans fetch réseau supplémentaire, sans agrégation "
+    "multi-compétitions (approche annulée)",
+    _r_global_audit["statut"] == "OK" and _r_global_audit["lambdas"]["A"]["global"] is not None,
+)
+verite(
+    "main.analyse_match : λ_A offensif (domicile seul) non affecté par ce chantier, "
+    "toujours basé uniquement sur les 6 matchs à domicile",
+    abs(_r_global_audit["lambdas"]["A"]["offensif"] - (2 + 3 + 1 + 2 + 2 + 2) / 6) < 1e-9,
+)
+
+_cache_global_audit = {
+    "https://www.matchendirect.fr/equipe/equipeA.html||suède : allsvenskan": {
+        "resultat": {
+            "matchs_domicile_bruts": [{"buts_marques": 2.0, "buts_encaisses": 0.5, "domicile": True}] * 6,
+            "matchs_exterieur_bruts": [{"buts_marques": 1.0, "buts_encaisses": 1.0, "domicile": False}] * 6,
+        },
+    },
+    "https://www.matchendirect.fr/equipe/equipeB.html||suède : allsvenskan": {
+        "resultat": {
+            "matchs_domicile_bruts": [{"buts_marques": 1.0, "buts_encaisses": 1.0, "domicile": True}] * 6,
+            "matchs_exterieur_bruts": [{"buts_marques": 1.0, "buts_encaisses": 1.5, "domicile": False}] * 6,
+        },
+    },
+}
+_match_global_audit = {
+    "domicile": "EquipeA", "exterieur": "EquipeB", "competition": "Suède : Allsvenskan",
+    "score": "2-1", "url_match": "https://www.matchendirect.fr/live-score/equipeA-equipeB.html",
+    "date": "2026-08-20", "match_id": "abc123",
+}
+_bb.recupere_details_match = _stub_details_bb
+_r_bb_global_audit = _bb.evalue_un_match(_match_global_audit, _cache_global_audit)
+_bb.recupere_details_match = _original_details_bb
+verite(
+    "boucle_b.evalue_un_match : λ_A_global == 1.375 exactement depuis le cache "
+    "(fusion domicile+extérieur de A ET B, compétition unique) -- calcul manuel "
+    "indépendant, pas une tautologie",
+    _r_bb_global_audit["statut"] == "OK" and abs(_r_bb_global_audit["lambdas"]["A"]["global"] - 1.375) < 1e-9,
+)
+verite(
+    "boucle_b.recupere_details_match réellement restauré à l'original après cette "
+    "dernière vérification (aucun monkeypatch qui fuit)",
     _bb.recupere_details_match is _original_details_bb,
 )
 
