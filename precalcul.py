@@ -87,6 +87,7 @@ match J+1 présente ce soir).
 JAMAIS EXÉCUTÉ EN CONDITIONS RÉELLES au moment où ce fichier est écrit --
 voir procédure de vérification donnée à Patrick en dehors de ce fichier.
 """
+import collections
 import datetime
 import json
 import re
@@ -998,6 +999,25 @@ def applique_archetype_model(signaux):
         # contient aucun P1 (règle explicite de Patrick, 09/09/2026).
         s["moteur_utilise"] = "archetype_model"
         s["archetype_model"] = resultat
+
+    # AJOUT 09/09/2026 (après le 1er run réel) -- résumé imprimé dans le log
+    # GitHub Actions, pour permettre de juger un run SANS devoir retélécharger
+    # et reparser precalcul.json à la main à chaque fois (manque identifié
+    # lors de la vérification du 1er run réel : aucune trace de la
+    # répartition archetype_model/fallback/non-tenté n'existait dans le log).
+    _compte_moteur = collections.Counter(s.get("moteur_utilise") for s in signaux)
+    _compte_statut_am = collections.Counter(
+        s["archetype_model"].get("statut") for s in signaux if s.get("moteur_utilise") == "archetype_model"
+    )
+    _nb_avec_p1 = sum(
+        1 for s in signaux
+        if s.get("moteur_utilise") == "archetype_model"
+        and s["archetype_model"].get("statut") == "OK"
+        and s["archetype_model"].get("selection", {}).get("P1")
+    )
+    print(f"archetype_model -- moteur_utilise : {dict(_compte_moteur)}")
+    print(f"archetype_model -- statuts (parmi les tentatives réussies) : {dict(_compte_statut_am)}")
+    print(f"archetype_model -- matchs avec un P1 réel : {_nb_avec_p1}")
 
     return signaux
 
