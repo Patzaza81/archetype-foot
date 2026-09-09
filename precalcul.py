@@ -860,10 +860,23 @@ def _leger_pour_site(s):
     """Version pour precalcul_leger.json -- tout ce que script.js affiche
     SAUF marches et lambda (les deux champs les plus lourds, utilisés
     seulement par la section 'tous les marchés calculés'/détail du lambda
-    dans 'voir les détails')."""
+    dans 'voir les détails').
+
+    AJOUT 09/09/2026 (reprise de session) -- même logique appliquée au
+    résultat d'archetype_model : la version COMPLÈTE (diagnostics par
+    marché, fenêtres avec tous les matchs retenus, les 4 lambdas, tous les
+    candidats avant dédoublonnage) reste dans precalcul.json pour
+    l'inspection/debug (GitHub), mais gonflerait precalcul_leger.json
+    exactement comme marches/lambda le faisaient avant leur retrait (voir
+    docstring de module, 9,2 Mo au 02/09/2026 pour 1574 matchs) -- le
+    bloc de vérification ajouté dans script.js (construitBlocArchetypeModel)
+    n'a besoin que du statut et de la sélection P1/P2/P3."""
     d = dict(s)
     d.pop("marches", None)
     d.pop("lambda", None)
+    am = d.get("archetype_model")
+    if isinstance(am, dict):
+        d["archetype_model"] = {"statut": am.get("statut"), "selection": am.get("selection")}
     return d
 
 
