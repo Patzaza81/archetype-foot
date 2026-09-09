@@ -2739,6 +2739,336 @@ verite(
 )
 
 
+section("archetype_model/main.analyse_match_complet (09/09/2026, reprise de "
+        "session) — orchestration complète data->h2h->signal->cotes->edv->"
+        "filtre->dedup->sélection, 3 cas nominaux + 3 cas de rejet propre")
+# ============================================================================
+import json as _json_amc
+import os as _os_amc
+import archetype_model.data.loader as _amloader_amc
+import scraper_details as _sd_amc
+import archetype_model.main as _ammain_amc
+
+
+def _bloc_amc(nom_competition_titre, nom_equipe, resultats):
+    lignes = []
+    for i, (adv, bp, bc, dom) in enumerate(resultats):
+        texte = f"{nom_equipe} {bp}-{bc} {adv}" if dom else f"{adv} {bc}-{bp} {nom_equipe}"
+        lignes.append(f'<tr><td><a href="/live-score/x{i}">{texte}</a></td></tr>')
+    return f'<div>{nom_competition_titre}</div><table>{"".join(lignes)}</table>'
+
+
+# A : fort à domicile (3-0 systématique) -- lambda_A^offensif = GF_A_domicile élevé.
+_MATCHS_A_AMC = [("V1", 1, 1, False), ("V2", 1, 1, False), ("V3", 1, 1, False)] + \
+                [("H1", 3, 0, True), ("H2", 3, 0, True), ("H3", 3, 0, True), ("H4", 3, 0, True),
+                 ("H5", 3, 0, True), ("H6", 3, 0, True), ("H7", 3, 0, True), ("H8", 3, 0, True)]
+# B : faible à l'extérieur (0-2 systématique) -- lambda_B^offensif = GF_B_exterieur faible.
+_MATCHS_B_AMC = [("D1", 1, 1, True), ("D2", 1, 1, True), ("D3", 1, 1, True)] + \
+                [("E1", 0, 2, False), ("E2", 0, 2, False), ("E3", 0, 2, False), ("E4", 0, 2, False),
+                 ("E5", 0, 2, False), ("E6", 0, 2, False), ("E7", 0, 2, False), ("E8", 0, 2, False)]
+
+_HTML_A_AMC = f"<html><body>{_bloc_amc('Suède : Allsvenskan', 'EquipeA', _MATCHS_A_AMC)}</body></html>"
+_HTML_B_AMC = f"<html><body>{_bloc_amc('Suède : Allsvenskan', 'EquipeB', _MATCHS_B_AMC)}</body></html>"
+_HTML_A_PAUVRE_AMC = f"<html><body>{_bloc_amc('Suède : Allsvenskan', 'EquipeA', _MATCHS_A_AMC[-2:])}</body></html>"
+
+_HTML_H2H_RICHE_AMC = """
+<html><body><div>Confrontations entre les deux équipes</div><table>
+<tr><td><a href="/live-score/h1">EquipeA 2-0 EquipeB</a></td></tr>
+<tr><td><a href="/live-score/h2">EquipeA 3-1 EquipeB</a></td></tr>
+<tr><td><a href="/live-score/h3">EquipeB 0-1 EquipeA</a></td></tr>
+<tr><td><a href="/live-score/h4">EquipeA 1-0 EquipeB</a></td></tr>
+<tr><td><a href="/live-score/h5">EquipeB 1-2 EquipeA</a></td></tr>
+</table></body></html>
+"""
+
+_PRECALCUL_AMC = {
+    "signaux": [
+        {
+            "match_id": "MATCH_TEST_1",
+            "source_cotes": "manuel",
+            "TOUS_MARCHES_EVALUES": [
+                {"marche": "1X2 - 1", "cote_observee": 1.45, "probabilite_modele": 0.5},
+                {"marche": "1X2 - X", "cote_observee": 4.20, "probabilite_modele": 0.2},
+                {"marche": "1X2 - 2", "cote_observee": 6.50, "probabilite_modele": 0.2},
+                {"marche": "BTTS - oui", "cote_observee": 1.85, "probabilite_modele": 0.5},
+                {"marche": "BTTS - non", "cote_observee": 1.35, "probabilite_modele": 0.5},
+                {"marche": "Plus de 2.5 buts", "cote_observee": 1.65, "probabilite_modele": 0.5},
+            ],
+        },
+        {
+            "match_id": "MATCH_TEST_COTES_HORS_INTERVALLE",
+            "source_cotes": "manuel",
+            "TOUS_MARCHES_EVALUES": [
+                {"marche": "1X2 - 1", "cote_observee": 5.00, "probabilite_modele": 0.5},
+                {"marche": "BTTS - oui", "cote_observee": 5.00, "probabilite_modele": 0.5},
+                {"marche": "Plus de 2.5 buts", "cote_observee": 5.00, "probabilite_modele": 0.5},
+            ],
+        },
+    ]
+}
+
+_PRECALCUL_PATH_AMC = "_precalcul_audit_amc_tmp.json"
+with open(_PRECALCUL_PATH_AMC, "w", encoding="utf-8") as _f_amc:
+    _json_amc.dump(_PRECALCUL_AMC, _f_amc)
+
+_original_fetch_loader_amc = _amloader_amc.fetch_html
+_original_fetch_sd_amc = _sd_amc.fetch_html
+
+
+def _patch_fetch_amc(html_a=_HTML_A_AMC, html_b=_HTML_B_AMC):
+    _amloader_amc.fetch_html = lambda url, *a, **kw: (html_a if "equipeA" in url else html_b)
+
+
+def _unpatch_fetch_amc():
+    _amloader_amc.fetch_html = _original_fetch_loader_amc
+
+
+def _patch_h2h_amc(html):
+    _sd_amc.fetch_html = lambda url, *a, **kw: html
+
+
+def _unpatch_h2h_amc():
+    _sd_amc.fetch_html = _original_fetch_sd_amc
+
+
+try:
+    # --- CAS 1 (doit réussir) : run complet nominal ---
+    _patch_fetch_amc()
+    _patch_h2h_amc(_HTML_H2H_RICHE_AMC)
+    _r1_amc = _ammain_amc.analyse_match_complet(
+        "https://www.matchendirect.fr/equipe/equipeA.html", "EquipeA",
+        "https://www.matchendirect.fr/equipe/equipeB.html", "EquipeB",
+        "Suède : Allsvenskan", "MATCH_TEST_1",
+        url_h2h="https://www.matchendirect.fr/live-score/equipeA-equipeB.html",
+        chemin_precalcul=_PRECALCUL_PATH_AMC,
+    )
+    _unpatch_fetch_amc()
+    _unpatch_h2h_amc()
+
+    verite(
+        "CAS 1 : run complet nominal -> statut OK, P1 = 1x2_domicile "
+        "(équipe A nettement dominante à domicile)",
+        _r1_amc["statut"] == "OK" and _r1_amc["selection"]["P1"] is not None
+        and _r1_amc["selection"]["P1"]["marche"] == "1x2_domicile",
+    )
+    verite(
+        "CAS 1 : les 6 candidats v1 (1x2 x3, btts x2, over_2.5) sont tous "
+        "diagnostiqués, éligibles ou non",
+        _r1_amc["statut"] == "OK" and len(_r1_amc["diagnostics"]) == 6,
+    )
+
+    # --- CAS 2 (doit réussir) : pas d'URL H2H -> dégradé proprement ---
+    _patch_fetch_amc()
+    _r2_amc = _ammain_amc.analyse_match_complet(
+        "https://www.matchendirect.fr/equipe/equipeA.html", "EquipeA",
+        "https://www.matchendirect.fr/equipe/equipeB.html", "EquipeB",
+        "Suède : Allsvenskan", "MATCH_TEST_1",
+        url_h2h=None, chemin_precalcul=_PRECALCUL_PATH_AMC,
+    )
+    _unpatch_fetch_amc()
+
+    verite(
+        "CAS 2 : absence d'URL H2H -> statut OK quand même, palier INSUFFISANT, "
+        "jamais une exception",
+        _r2_amc["statut"] == "OK" and _r2_amc["h2h"]["palier"] == "INSUFFISANT",
+    )
+
+    # --- CAS 3 (doit réussir) : marché sans fonction de signal (1x2_nul) ---
+    _patch_fetch_amc()
+    _patch_h2h_amc(_HTML_H2H_RICHE_AMC)
+    _r3_amc = _ammain_amc.analyse_match_complet(
+        "https://www.matchendirect.fr/equipe/equipeA.html", "EquipeA",
+        "https://www.matchendirect.fr/equipe/equipeB.html", "EquipeB",
+        "Suède : Allsvenskan", "MATCH_TEST_1",
+        url_h2h="https://www.matchendirect.fr/live-score/equipeA-equipeB.html",
+        chemin_precalcul=_PRECALCUL_PATH_AMC,
+    )
+    _unpatch_fetch_amc()
+    _unpatch_h2h_amc()
+    _diag_nul_amc = [d for d in _r3_amc["diagnostics"] if d["marche"] == "1x2_nul"][0]
+
+    verite(
+        "CAS 3 : le marché '1x2_nul' (aucune fonction de signal Statistiques "
+        "disponible) reste diagnostiqué proprement, jamais un crash",
+        _diag_nul_amc["filtre"]["eligible"] is False,
+    )
+
+    # --- CAS 4 (doit échouer proprement) : équipe domicile insuffisante ---
+    _patch_fetch_amc(html_a=_HTML_A_PAUVRE_AMC)
+    _r4_amc = _ammain_amc.analyse_match_complet(
+        "https://www.matchendirect.fr/equipe/equipeA.html", "EquipeA",
+        "https://www.matchendirect.fr/equipe/equipeB.html", "EquipeB",
+        "Suède : Allsvenskan", "MATCH_TEST_1",
+        chemin_precalcul=_PRECALCUL_PATH_AMC,
+    )
+    _unpatch_fetch_amc()
+
+    verite(
+        "CAS 4 (rejet attendu) : équipe domicile < 5 matchs -> statut "
+        "INSUFFISANT, aucune clé 'candidats' produite",
+        _r4_amc["statut"] == "INSUFFISANT" and "candidats" not in _r4_amc,
+    )
+
+    # --- CAS 5 (doit échouer proprement) : match absent de precalcul.json ---
+    _patch_fetch_amc()
+    _r5_amc = _ammain_amc.analyse_match_complet(
+        "https://www.matchendirect.fr/equipe/equipeA.html", "EquipeA",
+        "https://www.matchendirect.fr/equipe/equipeB.html", "EquipeB",
+        "Suède : Allsvenskan", "MATCH_INTROUVABLE_XYZ",
+        chemin_precalcul=_PRECALCUL_PATH_AMC,
+    )
+    _unpatch_fetch_amc()
+
+    verite(
+        "CAS 5 (rejet attendu) : match_id absent de precalcul.json -> statut "
+        "COTES_INDISPONIBLES, jamais une exception",
+        _r5_amc["statut"] == "COTES_INDISPONIBLES",
+    )
+
+    # --- CAS 6 (doit échouer proprement) : toutes les cotes hors intervalle ---
+    _patch_fetch_amc()
+    _r6_amc = _ammain_amc.analyse_match_complet(
+        "https://www.matchendirect.fr/equipe/equipeA.html", "EquipeA",
+        "https://www.matchendirect.fr/equipe/equipeB.html", "EquipeB",
+        "Suède : Allsvenskan", "MATCH_TEST_COTES_HORS_INTERVALLE",
+        chemin_precalcul=_PRECALCUL_PATH_AMC,
+    )
+    _unpatch_fetch_amc()
+
+    verite(
+        "CAS 6 (rejet attendu) : toutes les cotes hors [1.26, 1.74] -> statut "
+        "OK mais candidats vides, P1/P2/P3 tous None (jamais un remplissage forcé)",
+        _r6_amc["statut"] == "OK" and _r6_amc["candidats"] == []
+        and _r6_amc["selection"]["P1"] is None
+        and _r6_amc["selection"]["P2"] is None
+        and _r6_amc["selection"]["P3"] is None,
+    )
+finally:
+    # Restauration systématique même si une vérité lève une exception
+    # inattendue -- jamais de fetch_html patché qui fuit vers la section
+    # suivante de l'audit.
+    _amloader_amc.fetch_html = _original_fetch_loader_amc
+    _sd_amc.fetch_html = _original_fetch_sd_amc
+    if _os_amc.path.exists(_PRECALCUL_PATH_AMC):
+        _os_amc.remove(_PRECALCUL_PATH_AMC)
+
+
+section("precalcul.applique_archetype_model (09/09/2026, reprise) — règle de "
+        "fallback EXPLICITE de Patrick : erreur technique -> repli ancien "
+        "moteur, décision métier normale (INSUFFISANT/COTES_INDISPONIBLES/OK "
+        "sans candidat) -> JAMAIS de repli")
+# ============================================================================
+import precalcul as _precalcul_amc2
+
+
+class _FakeArchetypeModelModule:
+    def __init__(self, reponse=None, exception=None):
+        self._reponse = reponse
+        self._exception = exception
+
+    def analyse_match_complet(self, *a, **kw):
+        if self._exception:
+            raise self._exception
+        return self._reponse
+
+
+def _signal_de_base_amc2(traite=True):
+    return {
+        "traite": traite, "url_match": "https://x/match.html",
+        "domicile": "A", "exterieur": "B", "competition": "Test",
+        "match_id": "M1", "TOUS_MARCHES_EVALUES": [], "source_cotes": "manuel",
+    }
+
+
+_original_details_amc2 = _precalcul_amc2._recupere_details_match_reelle
+_original_archetype_amc2 = _precalcul_amc2.archetype_model_main
+
+try:
+    # --- CAS A (doit réussir) : statut OK avec P1 réel -> pas de fallback ---
+    _precalcul_amc2._recupere_details_match_reelle = lambda url: {
+        "url_equipe_domicile": "u1", "url_equipe_exterieur": "u2"}
+    _precalcul_amc2.archetype_model_main = _FakeArchetypeModelModule(reponse={
+        "statut": "OK",
+        "selection": {"P1": {"marche": "1x2_domicile"}, "P2": None, "P3": None},
+        "candidats": [{"marche": "1x2_domicile"}],
+    })
+    _s_a_amc2 = _signal_de_base_amc2()
+    _precalcul_amc2.applique_archetype_model([_s_a_amc2])
+    verite(
+        "CAS A : statut OK avec P1 réel -> moteur_utilise = archetype_model, "
+        "aucune clé archetype_model_erreur",
+        _s_a_amc2["moteur_utilise"] == "archetype_model" and "archetype_model_erreur" not in _s_a_amc2,
+    )
+
+    # --- CAS B (LE CAS CRITIQUE, règle de Patrick) : INSUFFISANT -> PAS de fallback ---
+    _precalcul_amc2.archetype_model_main = _FakeArchetypeModelModule(
+        reponse={"statut": "INSUFFISANT", "fenetres": {}})
+    _s_b_amc2 = _signal_de_base_amc2()
+    _precalcul_amc2.applique_archetype_model([_s_b_amc2])
+    verite(
+        "CAS B (RÈGLE CRITIQUE) : statut INSUFFISANT est une décision normale "
+        "du nouveau moteur -> moteur_utilise reste archetype_model, jamais "
+        "un fallback vers l'ancien moteur",
+        _s_b_amc2["moteur_utilise"] == "archetype_model" and "archetype_model_erreur" not in _s_b_amc2,
+    )
+
+    # --- CAS C (LE CAS CRITIQUE, règle de Patrick) : OK mais candidats vides -> PAS de fallback ---
+    _precalcul_amc2.archetype_model_main = _FakeArchetypeModelModule(reponse={
+        "statut": "OK", "selection": {"P1": None, "P2": None, "P3": None}, "candidats": [],
+    })
+    _s_c_amc2 = _signal_de_base_amc2()
+    _precalcul_amc2.applique_archetype_model([_s_c_amc2])
+    verite(
+        "CAS C (RÈGLE CRITIQUE) : statut OK avec P1=None (aucun marché "
+        "n'a passé le filtre) -> décision normale, PAS de fallback, "
+        "résultat complet conservé tel quel",
+        _s_c_amc2["moteur_utilise"] == "archetype_model" and _s_c_amc2["archetype_model"]["candidats"] == [],
+    )
+
+    # --- CAS D (doit échouer proprement, avec fallback) : exception Python ---
+    _precalcul_amc2.archetype_model_main = _FakeArchetypeModelModule(
+        exception=ConnectionError("timeout matchendirect"))
+    _s_d_amc2 = _signal_de_base_amc2()
+    _precalcul_amc2.applique_archetype_model([_s_d_amc2])
+    verite(
+        "CAS D (rejet attendu -> fallback) : exception Python (erreur "
+        "technique réelle) -> repli ancien moteur, message d'erreur capturé, "
+        "aucune clé archetype_model orpheline",
+        _s_d_amc2["moteur_utilise"] == "ancien (fallback technique)"
+        and "timeout matchendirect" in _s_d_amc2.get("archetype_model_erreur", "")
+        and "archetype_model" not in _s_d_amc2,
+    )
+
+    # --- CAS E (rejet attendu -> fallback) : url équipe introuvable au 2e appel ---
+    _precalcul_amc2._recupere_details_match_reelle = lambda url: {
+        "url_equipe_domicile": None, "url_equipe_exterieur": "u2"}
+    _precalcul_amc2.archetype_model_main = _FakeArchetypeModelModule(reponse={"statut": "OK"})
+    _s_e_amc2 = _signal_de_base_amc2()
+    _precalcul_amc2.applique_archetype_model([_s_e_amc2])
+    verite(
+        "CAS E (rejet attendu -> fallback) : url équipe introuvable au 2e "
+        "appel -> repli ancien moteur, jamais un crash",
+        _s_e_amc2["moteur_utilise"] == "ancien (fallback technique)",
+    )
+
+    # --- CAS F (rejet attendu, jamais tenté) : traite=False ---
+    _precalcul_amc2._recupere_details_match_reelle = lambda url: (_ for _ in ()).throw(
+        AssertionError("ne doit jamais être appelé"))
+    _precalcul_amc2.archetype_model_main = _FakeArchetypeModelModule(
+        exception=AssertionError("ne doit jamais être appelé"))
+    _s_f_amc2 = _signal_de_base_amc2(traite=False)
+    _precalcul_amc2.applique_archetype_model([_s_f_amc2])
+    verite(
+        "CAS F (rejet attendu, jamais tenté) : traite=False côté ancien "
+        "moteur -> archetype_model jamais appelé (aucun appel réseau "
+        "gaspillé sur un match déjà sans base exploitable)",
+        _s_f_amc2["moteur_utilise"] == "ancien (non tente -- base insuffisante deja cote ancien moteur)",
+    )
+finally:
+    _precalcul_amc2._recupere_details_match_reelle = _original_details_amc2
+    _precalcul_amc2.archetype_model_main = _original_archetype_amc2
+
+
 # ============================================================================
 print("\n" + "=" * 70)
 if echecs:
