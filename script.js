@@ -262,6 +262,54 @@ function trieEtFiltre(matchs) {
 // 03/09/2026 -- extrait de afficheMatchs() pour être réutilisable par la
 // vue "par catégorie" (afficheMatchsGroupe) sans dupliquer le HTML d'une
 // carte. Comportement strictement identique à avant.
+// AJOUT 09/09/2026 (reprise de session) -- affichage TEMPORAIRE et
+// TOLÉRANT du nouveau moteur (archetype_model), en PLUS de l'affichage
+// existant de l'ancien moteur ci-dessus (jamais remplacé, jamais masqué,
+// jamais modifié) -- objectif unique : permettre à Patrick de VÉRIFIER
+// par comparaison visuelle sur un vrai run avant toute bascule
+// définitive (voir precalcul.py::applique_archetype_model et sa règle de
+// fallback -- erreur technique uniquement, jamais une décision métier).
+//
+// Ce bloc ne doit JAMAIS faire planter une carte si les champs sont
+// absents (matchs archivés avant ce correctif, ou match jamais tenté par
+// archetype_model, ex. traite=false côté ancien moteur) -- tout est lu
+// avec des valeurs par défaut explicites, jamais une supposition sur la
+// structure de m.archetype_model.
+function construitBlocArchetypeModel(m) {
+  const moteur = m.moteur_utilise;
+  if (!moteur) return ""; // rien à afficher pour un match jamais passé par ce correctif
+
+  const formatPctSur = (x) => (x !== null && x !== undefined ? formatPct(x) : "?");
+
+  let contenu = `<div class="am-ligne am-moteur">moteur utilisé : <strong>${echappeHtml(moteur)}</strong></div>`;
+
+  if (moteur === "ancien (fallback technique)") {
+    const erreur = m.archetype_model_erreur || "raison non précisée";
+    contenu += `<div class="am-ligne am-erreur">archetype_model indisponible sur ce match : ${echappeHtml(erreur)}</div>`;
+  } else {
+    const am = m.archetype_model;
+    if (am) {
+      contenu += `<div class="am-ligne">statut archetype_model : ${echappeHtml(am.statut || "?")}</div>`;
+      const selection = am.selection;
+      if (selection) {
+        ["P1", "P2", "P3"].forEach((rang) => {
+          const c = selection[rang];
+          contenu += c
+            ? `<div class="am-ligne am-candidat">${rang} : ${echappeHtml(c.marche)}` +
+              ` (niveau ${echappeHtml(c.niveau || "?")}, edge ${formatPctSur(c.edge)}, edv ${formatPctSur(c.edv)},` +
+              ` H2H ${echappeHtml(c.h2h_palier || "?")})</div>`
+            : `<div class="am-ligne am-candidat-vide">${rang} : aucun</div>`;
+        });
+      }
+    }
+  }
+
+  return `<details class="details-niveau1 am-bloc">
+    <summary><span class="texte-ferme">voir archetype_model (nouveau moteur, vérification)</span><span class="texte-ouvert">masquer archetype_model</span></summary>
+    ${contenu}
+  </details>`;
+}
+
 function construitCarteMatch(m) {
   const div = document.createElement("div");
   div.className = "match";
@@ -302,6 +350,8 @@ function construitCarteMatch(m) {
     html += construitBlocRisques(m);
     html += construitDetails(m);
   }
+
+  html += construitBlocArchetypeModel(m);
 
   div.innerHTML = html;
   return div;
