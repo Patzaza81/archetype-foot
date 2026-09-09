@@ -1960,3 +1960,58 @@ Patrick a explicitement demandé de ne pas coder dans cette fenêtre. Le modèle
 - ⬜ Une fois le moteur codé : lancer la boucle B (backtest rétrospectif) sur les 272 matchs déjà vérifiés d'`historique_pronostics.json` (27.3) — recalculer λ selon les formules du v3 à partir des données brutes déjà en cache, ne jamais réutiliser un λ déjà stocké par l'ancien moteur.
 - ⬜ Correctif optionnel, hors périmètre de l'implémentation principale, à proposer à Patrick séparément si utile : ajouter le champ date au parsing de `_extrait_historique_competition` pour débloquer le chiffrage exact de 27.2 (actuellement seulement estimé par proxy).
 - ⬜ Tout ce qui restait ouvert avant ce pivot reste ouvert et non prioritaire : bug H2H 1X2/Double chance (#17/24.2), faux négatifs `scraper_details.py` (#20), #33/#38/#39.
+
+## 28. Session du 09/09/2026 — `archetype_model` intégralement codé, testé et audité, du chargement des données à la sélection P1/P2/P3
+
+### 28.1 Résumé : les 27 fichiers du package sont écrits, testés unitairement, intégrés dans `audit_permanent.py`, et un audit d'intégration bout en bout confirme leur assemblage correct
+```
+archetype_model/__init__.py
+archetype_model/data/{__init__,loader,validation,odds_provider}.py
+archetype_model/statistics/{__init__,distributions,team_stats,goals}.py
+archetype_model/poisson/{__init__,lambda_estimators,distribution,robustness,markets}.py
+archetype_model/h2h/{__init__,h2h_stats,h2h_markets}.py
+archetype_model/edv/{__init__,calculator}.py
+archetype_model/signals/{__init__,statistiques_signal,convergence,deduplication,selector}.py
+archetype_model/backtest/{__init__,boucle_b}.py
+archetype_model/main.py
+```
+Tout le pipeline décrit par le v3 est couvert, à l'exception explicite du référentiel central formel (§9.1, `markets/registry.py`) — voir 28.10. `audit_permanent.py` contient désormais ~35 nouvelles sections de vérités (une par chantier), toutes vertes.
+
+### 28.2 Ordre chronologique matchendirect.fr — enfin vérifié sur captures d'écran réelles, DEUX conventions opposées coexistent
+Vérifié le 08/09/2026 avec Patrick (point resté ouvert depuis 27.6) :
+- **Tableau "historique par compétition"** (celui que lit `_extrait_historique_competition`, utilisé pour domicile/extérieur et pour le global compétition-unique) : **CROISSANT**, plus ancien en premier (confirmé sur Al Ettifaq/Arabie Saoudite et Kalmar/Suède). Conséquence : `data/loader.py` tronque aux 12 plus récents en prenant `liste[-12:]`, PAS `liste[:12]`.
+- **Tableau "Confrontations entre les deux équipes"** (H2H, celui que lit `_extrait_matchs_scores`/`recupere_h2h`) : **DÉCROISSANT**, plus récent en premier (confirmé sur Al Faisaly/Al Ettifaq). Conséquence inverse : `h2h/h2h_stats.py` tronque aux 10 plus récents avec `liste[:10]`.
+Les deux conventions sont documentées explicitement dans le code (`data/loader.py::ASSUME_ORDRE_CROISSANT`, `h2h/h2h_stats.py` docstring) pour qu'on ne les confonde jamais.
+Bug réel confirmé au passage, **non corrigé, hors périmètre, décision explicite de Patrick** : l'ANCIEN moteur (`scraper_details.recupere_gf_ga_avec_repli`) prend les N premiers éléments rencontrés sur le tableau croissant — donc les N PLUS ANCIENS, pas les plus récents. Tourne en prod depuis le début (`run_pipeline.py`, `precalcul.py`, `calculs.py`).
+
+### 28.3 λ_global : tentative multi-compétitions codée puis ANNULÉE sur décision de Patrick, remplacée par une version compétition-unique
+Un premier chantier a ajouté `data/loader.py::recupere_historique_toutes_competitions` (découverte de tous les blocs "Pays : Compétition" d'une page équipe, fusion). Fonctionnel et testé (vérifié sur une vraie page Lille OSC à 2 compétitions), mais **Patrick a demandé l'annulation explicite** : "on reste sur les matchs de championnat". Le code a été **supprimé** (pas laissé en sommeil, conformément à la discipline "poubelle ce qui n'est plus utilisé" du tout début de session) et remplacé par une version qui réutilise l'historique DÉJÀ récupéré pour la compétition du match (domicile+extérieur fusionnés, sans fetch réseau supplémentaire) — voir `main.py::_stats_globales` et `backtest/boucle_b.py::_stats_globales_depuis_cache`. λ_global est donc calculé, mais uniquement sur la compétition du match analysé, comme les 3 autres scénarios.
+
+### 28.4 Cotes réelles : `data/odds_provider.py`, découverte que Betpawa n'est PAS la source principale
+Audit réel de `precalcul.json` : 223 matchs sur 363 utilisent `source_cotes="matchendirect_bet365"` (scraping direct), seulement 91 utilisent `"manuel"` (la voie Betpawa via `panier.json`/`cotes_manuelles`). Les deux sources sont déjà unifiées par le pipeline existant dans `signaux[].TOUS_MARCHES_EVALUES` (liste `{marche, cote_observee, probabilite_modele}`) — `odds_provider.py` lit cette liste, traduit les 62 libellés français vers les clés `archetype_model` (56 reconnus, 6 non couverts : cage inviolée x2, encaisse au moins 1 but x2, pair/impair x2 — familles CLEAN_SHEET/PAIR_IMPAIR jamais codées dans `poisson/markets.py`), et ignore totalement `probabilite_modele` (celle de l'ANCIEN moteur, jamais réutilisée). Rappel de Patrick à garder pour plus tard, non bloquant : Betpawa reste la source économiquement pertinente (site de pari réel) — `est_betpawa` exposé dans le résultat pour un futur arbitrage entre sources, aucune préférence appliquée aujourd'hui (une seule source existe par match dans `precalcul.json`).
+
+### 28.5 H2H : bug d'orientation de l'ancien moteur (#17) structurellement évité, pas juste évité par prudence
+`h2h/h2h_stats.py::recupere_confrontations` normalise chaque confrontation passée en `{"buts_a", "buts_b"}` du point de vue de l'équipe A, peu importe si elle jouait domicile ou extérieur dans cette rencontre historique précise (réutilise `scraper_details._memes_equipes`). Grâce à cette normalisation faite UNE FOIS en amont, `h2h/h2h_markets.py` a pu coder les 6 familles de marchés (BTTS, Over/Under total, buts par équipe, **1X2, Double Chance, Handicap**) sans jamais réinterpréter de texte brut au moment de la comparaison — c'est cette réinterprétation tardive qui causait le bug de l'ancien moteur, et elle n'existe plus dans cette architecture. Palier de fiabilité (`<5` INSUFFISANT, 5-7 INDICATIF, 8-9 FIABLE, `≥10` TRÈS FIABLE) codé conformément au v3 §10.
+
+### 28.6 Filtre de candidature : robustesse binaire confirmée, AUCUN scénario λ "officiel"
+Patrick a fourni un `filter.py` externe comme modèle, adapté en `signals/convergence.py` avec deux corrections tranchées explicitement :
+1. **`MODEREE` (3e niveau de robustesse) supprimé entièrement**, pas gardé en sommeil — notre `poisson/robustness.py` reste strictement binaire (STABLE/INSTABLE, seuil unique 0.08, v3 tel quel). Un `robustesse="INDETERMINE"` (la vraie valeur produite quand un scénario manque) est rejeté comme `ROBUSTESSE_INVALIDE`.
+2. **Aucun "scénario retenu" choisi arbitrairement** pour alimenter le filtre avec une probabilité unique — le terme n'apparaît qu'une fois dans tout le v3 (§9.4.1, jamais défini) et n'existait pas dans notre code. Décision finale de Patrick : **le filtre tourne une fois par scénario (offensif/défensif/contextuel/global) et exige l'ÉLIGIBILITÉ DANS LES 4** (`filtre_marche_convergent`) — un seul échec rejette le marché entier. Aucune moyenne, aucun choix arbitraire.
+
+### 28.7 Dédoublonnage : deux contraintes séparées, pas une clé combinée
+`signals/deduplication.py` — vérification textuelle faite AVANT de coder (§12.2) : "un seul par famille ET par groupe d'exposition" sont deux regroupements séparés, pas une paire (famille, groupe). Réduction en deux étapes (un par famille, puis parmi ces représentants un par groupe d'exposition) — sinon deux candidats de familles différentes partageant un même groupe économiquement corrélé passeraient tous les deux. Cascade de départage : robustesse (no-op en pratique, toujours STABLE) → palier H2H → Edge/EDV selon le rôle visé.
+
+### 28.8 Sélection P1/P2/P3 : H2H confirmé non décisionnel avant ce stade, par preuve structurelle ET comportementale
+`signals/selector.py` : P1 (cascade niveau → robustesse → signal Statistiques → palier H2H → EDV), P2 (même cascade, parmi les candidats dont famille ET groupe diffèrent TOUS LES DEUX de P1), P3 (idem vs P1 et P2, STABLE et EDV positif obligatoires, absent si personne ne qualifie — jamais un remplissage forcé).
+
+### 28.9 Audit d'intégration bout en bout — H2H prouvé non décisionnel avant sélection, deux façons
+Section dédiée dans `audit_permanent.py` : (1) preuve STRUCTURELLE — `filtre_marche`/`filtre_marche_convergent` n'ont aucun paramètre H2H dans leur signature, vérifié par introspection (`inspect.signature`) ; (2) preuve COMPORTEMENTALE — sur un scénario réaliste complet (deux équipes, historique suffisant), un H2H fortement CORROBORE et un H2H fortement CONTREDIT (données fabriquées pour être diamétralement opposées) produisent des résultats de filtre **strictement identiques** (`as_dict()` égal), alors que le même H2H change bien l'issue de la sélection P1 quand il sert de départage entre deux candidats équivalents par ailleurs.
+
+### 28.10 Ce qui reste ouvert, pour la session suivante
+- 🆕 **Référentiel central formel (§9.1, `markets/registry.py`)** : jamais codé. Non bloquant en pratique — `deduplication.py`/`selector.py` fonctionnent avec `market_family`/`exposure_group` fournis directement par l'appelant plutôt que déduits d'un registre central. À faire si on veut une source unique de vérité pour ces classifications plutôt que de les répéter à chaque appel.
+- 🆕 **`validation/` (walk_forward.py, calibration.py, performance.py, bias_check.py)** : seule `backtest/boucle_b.py` existe (équivalent walk-forward rétrospectif partiel). Calibration (probabilité annoncée vs fréquence réelle), performance (ROI/Brier/log loss détaillés) et le test de correction historique 1.155 (§14.3) ne sont pas codés.
+- 🆕 **Boucle B jamais exécutée sur les vraies données** : `backtest/boucle_b.py` est écrit et testé sur fixtures, mais nécessite un accès réseau à matchendirect.fr (résolution équipe→cache via `recupere_details_match`) que l'environnement d'édition n'a pas. À lancer via GitHub Actions ou en local. Le nombre réel de matchs vérifiés dans `historique_pronostics.json` est 1266 aujourd'hui (pas 272, chiffre de 27.3 devenu obsolète — la base grossit chaque nuit).
+- 🆕 **CLEAN_SHEET et PAIR_IMPAIR** : cotes déjà disponibles via `odds_provider.py` (6 libellés non couverts sur 62), mais aucune fonction dans `poisson/markets.py` ne calcule ces probabilités depuis la matrice de Poisson.
+- 🆕 **`main.py` n'utilise que 1X2/DC/BTTS/Over-Under 2.5 pour la robustesse** (5 marchés) — `calcule_tous_les_marches` produit bien tous les marchés (dont handicap/combos) par scénario, mais `robustesse_par_marche` ne les couvre pas tous. Extension directe si besoin (la structure `_valeurs_4_scenarios` + extracteur est déjà générique).
+- 🆕 **Rien n'assemble encore `h2h`/`signals`/`edv`/`odds_provider` avec `main.py` en une seule fonction d'orchestration de bout en bout** — chaque brique existe et est testée séparément (et l'audit d'intégration de 28.9 prouve qu'assemblées manuellement elles fonctionnent ensemble), mais il n'y a pas encore de fonction unique du type `analyse_match_complete()` qui enchaîne tout automatiquement pour un match réel.
+- ⬜ Reste de la feuille de route de 27.7 non traité cette session (correctif date optionnel, bugs mineurs #17/#20/#33/#38/#39) : toujours hors périmètre, non prioritaire.
