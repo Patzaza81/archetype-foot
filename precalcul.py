@@ -99,6 +99,9 @@ from cache_classement import recupere_classement_avec_cache, purge_entrees_expir
 from cache_h2h import recupere_h2h_avec_cache, purge_entrees_expirees as purge_h2h_expirees
 from cache_betpawa import purge_matchs_joues as purge_betpawa_matchs_joues
 from resolution_betpawa_precalcul import resout_cotes_betpawa
+from scraper_details import recupere_details_match as _recupere_details_match_reelle
+import archetype_model.main as archetype_model_main
+from archetype_model.data import odds_provider as archetype_odds_provider
 
 _recupere_gf_ga_reelle = run_pipeline.recupere_gf_ga_avec_repli
 
@@ -887,6 +890,105 @@ def archive_precalcul(signaux, dates_a_archiver):
     return run_pipeline.ajoute_matchs_a_historique([_slim_pour_archive(s) for s in candidats])
 
 
+def applique_archetype_model(signaux):
+    """
+    Chantier du 09/09/2026 (reprise de session) -- tente
+    archetype_model.main.analyse_match_complet() en PRIORITÉ sur chaque
+    match déjà traité par l'ancien moteur, avec repli vers le résultat de
+    l'ancien moteur -- UNIQUEMENT en cas d'ERREUR TECHNIQUE (exception
+    Python non attrapée par archetype_model), JAMAIS quand archetype_model
+    renvoie une décision métier normale (INSUFFISANT, COTES_INDISPONIBLES,
+    ou OK avec sélection vide).
+
+    RÈGLE EXPLICITE DE PATRICK (09/09/2026), NE JAMAIS CONTOURNER :
+
+        ERREUR TECHNIQUE (exception)          -> fallback ancien moteur
+        INSUFFISANT / COTES_INDISPONIBLES /
+        OK avec candidats vides ou P1 None    -> PAS de fallback,
+                                                  décision normale du
+                                                  nouveau moteur
+
+    Un "pas de pari" du nouveau moteur est une décision, pas une panne --
+    le laisser déclencher un fallback permettrait à l'ancien moteur de
+    recontourner silencieusement les nouvelles règles du système (le
+    risque exact que ce garde-fou existe pour éliminer).
+
+    N'appelle archetype_model QUE pour les signaux avec `traite=True` --
+    si l'ancien moteur a déjà échoué à obtenir les données de base
+    (historique, URLs équipe) pour ce match, archetype_model n'a rien de
+    plus à se mettre sous la dent non plus.
+
+    Ajoute à chaque signal, SANS jamais toucher aux champs existants de
+    l'ancien moteur (`verdict_global`, `LISTE_A_...`, etc. -- toujours
+    produits tels quels, encore lus par script.js/pronostics.html à
+    l'identique tant que l'affichage n'a pas été revu) :
+    - "moteur_utilise" : "archetype_model" |
+      "ancien (fallback technique)" |
+      "ancien (non tente -- base insuffisante deja cote ancien moteur)"
+    - "archetype_model" : sortie complète de analyse_match_complet() --
+      présente uniquement si l'appel n'a PAS levé d'exception (statut OK,
+      INSUFFISANT ou COTES_INDISPONIBLES, tous les trois posés ici)
+    - "archetype_model_erreur" : message d'exception -- présente
+      UNIQUEMENT dans le cas fallback technique
+
+    COTES : passées directement depuis `s` (le signal DÉJÀ calculé EN
+    MÉMOIRE par l'ancien moteur dans CE MÊME run, via
+    `odds_provider.extrait_cotes`), jamais relues depuis `precalcul.json`
+    sur disque -- ce fichier est justement celui que ce run est en train
+    de construire, donc pas encore à jour pour ce match précis.
+
+    COÛT RÉSEAU ASSUMÉ, à mesurer sur le premier run réel avant de juger
+    si ça mérite un chantier séparé : `recupere_details_match(url_match)`
+    est rappelé ICI une 2e fois (déjà appelé une 1re fois DANS
+    construit_signaux(), résultat non exposé sur `signal` -- voir
+    run_pipeline.py, non modifiable). Un appel réseau supplémentaire par
+    match traité, pas de mise en cache ici (pas de bénéfice intra-run,
+    chaque match a une URL différente).
+    """
+    for s in signaux:
+        if not s.get("traite"):
+            s["moteur_utilise"] = "ancien (non tente -- base insuffisante deja cote ancien moteur)"
+            continue
+
+        url_match = s.get("url_match")
+        nom_domicile = s.get("domicile")
+        nom_exterieur = s.get("exterieur")
+        competition = s.get("competition")
+        match_id = s.get("match_id")
+
+        try:
+            details = _recupere_details_match_reelle(url_match)
+            url_eq_domicile = details.get("url_equipe_domicile")
+            url_eq_exterieur = details.get("url_equipe_exterieur")
+            if not url_eq_domicile or not url_eq_exterieur:
+                raise ValueError(
+                    "url_equipe_introuvable_sur_page_match (2e appel -- "
+                    "l'ancien moteur les avait pourtant obtenues pour ce match)"
+                )
+
+            cotes_info = {**archetype_odds_provider.extrait_cotes(s), "statut": "OK"}
+
+            resultat = archetype_model_main.analyse_match_complet(
+                url_eq_domicile, nom_domicile, url_eq_exterieur, nom_exterieur,
+                competition, match_id,
+                url_h2h=url_match + "?p=face-a-face",
+                cotes_info=cotes_info,
+            )
+        except Exception as e:
+            s["moteur_utilise"] = "ancien (fallback technique)"
+            s["archetype_model_erreur"] = f"erreur_technique: {e}"
+            continue
+
+        # AUCUNE exception ici -- INSUFFISANT, COTES_INDISPONIBLES ou OK
+        # sont TOUS des décisions normales du nouveau moteur, jamais un
+        # fallback, même si "candidats" est vide ou si "selection" ne
+        # contient aucun P1 (règle explicite de Patrick, 09/09/2026).
+        s["moteur_utilise"] = "archetype_model"
+        s["archetype_model"] = resultat
+
+    return signaux
+
+
 def main():
     nb_jour_avant, nb_jour_apres, nb_demain_aff_avant, nb_demain_aff_apres = \
         genere_listes_filtrees_affichage()
@@ -925,6 +1027,7 @@ def main():
     print(f"Résolution Betpawa : {compteurs_betpawa}")
 
     signaux = construit_signaux(fenetre)
+    signaux = applique_archetype_model(signaux)
 
     for s in signaux:
         s["model_version"] = MODEL_VERSION
