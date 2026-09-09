@@ -2,28 +2,30 @@
 archetype_model/main.py — Orchestration d'un match réel : va chercher
 l'historique des deux équipes (data.loader), calcule les stats
 (statistics.team_stats), les 4 λ (poisson.lambda_estimators), les
-matrices et marchés essentiels (poisson.distribution/markets), et la
-robustesse par marché (poisson.robustness).
+matrices et marchés (poisson.distribution/markets), et la robustesse
+par marché (poisson.robustness).
 
-PÉRIMÈTRE ASSUMÉ, décision du 08/09/2026 (contrainte de temps) :
-- λ_global est TOUJOURS None ici -- data.loader ne sait pas encore
-  agréger "toutes compétitions confondues" (limite déjà documentée
-  dans statistics/team_stats.py). Conséquence directe et honnête :
-  la robustesse par marché ne peut jamais être STABLE/INSTABLE tant
-  que ce chantier n'est pas fait, elle est TOUJOURS INDETERMINE
-  (poisson.robustness exige les 4 scénarios présents). Ce n'est pas
-  un bug caché, c'est la conséquence mécanique et assumée du choix de
-  ne pas coder l'agrégation multi-compétitions dans cette fenêtre de
-  temps.
+λ_global (v3 §6) EST calculé ici, mais UNIQUEMENT sur la compétition du
+match analysé (domicile + extérieur mélangés) -- PAS "toutes
+compétitions confondues" comme une première version le faisait :
+annulé le 08/09/2026, décision explicite de Patrick ("on reste sur les
+matchs de championnat"). Voir `_stats_globales` ci-dessous et l'en-tête
+de data/loader.py pour l'historique de cette décision.
+
+PÉRIMÈTRE ASSUMÉ restant, décision du 08/09/2026 (contrainte de temps) :
 - Marchés calculés : TOUS ceux couverts par poisson.markets.calcule_tous_les_marches
   (1X2, Double Chance, BTTS, Over/Under total, buts par équipe,
   Handicap au quart de but, combos DC+Total) -- voir poisson/markets.py
   pour le détail et les lignes par défaut assumées.
 - Robustesse calculée seulement sur un sous-ensemble (1X2 x3, BTTS,
   Over/Under 2.5) -- l'étendre à tous les nouveaux marchés (handicap,
-  combos, buts par équipe) n'est pas fait ici, faute de temps (décision
-  du 08/09/2026) ; la structure (_valeurs_4_scenarios + extracteur) est
-  générique et se réutilise directement pour n'importe quel marché.
+  combos, buts par équipe) n'est pas fait ici, faute de temps ; la
+  structure (_valeurs_4_scenarios + extracteur) est générique et se
+  réutilise directement pour n'importe quel marché.
+- `backtest.boucle_b` calcule maintenant λ_global de la même façon
+  (compétition unique, domicile+extérieur fusionnés) -- possible sans
+  fetch supplémentaire car `cache_equipes.json` contient déjà les deux
+  listes par équipe pour cette compétition.
 """
 
 from .data import loader
@@ -47,6 +49,32 @@ def _valeurs_4_scenarios(resultats_par_scenario, extracteur):
     return valeurs
 
 
+def _stats_globales(historique_complet_equipe):
+    """
+    GF/GA pour le scénario "global" (v3 §6) -- calculé sur la même
+    compétition que les autres scénarios (décision du 08/09/2026,
+    annule une version antérieure qui agrégeait plusieurs compétitions,
+    voir data/loader.py et data/validation.py pour l'historique de
+    cette décision). "Global" ici veut dire : TOUS les matchs de
+    l'équipe dans cette compétition, domicile ET extérieur mélangés
+    -- contrairement aux scénarios offensif/défensif qui isolent l'un
+    ou l'autre.
+
+    `historique_complet_equipe` est la liste COMPLÈTE (non séparée par
+    domicile.loader.separe_domicile_exterieur) déjà récupérée par
+    `analyse_match` -- aucun fetch réseau supplémentaire ici.
+
+    Retourne (None, None) si la fenêtre est INSUFFISANTE (N<5) --
+    lambda_estimators gère déjà nativement un GF/GA à None (le
+    scénario global devient None sans affecter les 3 autres)."""
+    fenetre_globale = validation.classifie_fenetre(historique_complet_equipe)
+    if fenetre_globale["statut"] != validation.STATUT_UTILISABLE:
+        return None, None
+    stats_off = team_stats.stats_offensives(fenetre_globale["matchs_retenus"])
+    stats_def = team_stats.stats_defensives(fenetre_globale["matchs_retenus"])
+    return stats_off["moyenne"], stats_def["moyenne"]
+
+
 def analyse_match(url_domicile, nom_domicile, url_exterieur, nom_exterieur, nom_competition):
     """
     Analyse complète d'un match A (domicile) contre B (extérieur).
@@ -56,7 +84,9 @@ def analyse_match(url_domicile, nom_domicile, url_exterieur, nom_exterieur, nom_
       exploitables (v3 §4.2, N<5) dans la fenêtre pertinente
       (domicile pour A, extérieur pour B) -- dans ce cas, aucune autre
       clé n'est présente, ne jamais lire "lambdas"/"marches" sans
-      vérifier le statut d'abord.
+      vérifier le statut d'abord. Note : l'insuffisance de la fenêtre
+      GLOBALE seule ne bloque PAS le match (elle rend juste λ_global
+      None pour l'équipe concernée, voir _stats_globales).
     - "OK" sinon, avec "fenetres" (diagnostic des fenêtres utilisées),
       "lambdas", "marches_par_scenario", "robustesse_par_marche".
     """
@@ -77,11 +107,14 @@ def analyse_match(url_domicile, nom_domicile, url_exterieur, nom_exterieur, nom_
     stats_off_b = team_stats.stats_offensives(fenetre_b["matchs_retenus"])
     stats_def_b = team_stats.stats_defensives(fenetre_b["matchs_retenus"])
 
+    gf_a_global, ga_a_global = _stats_globales(historique_domicile)
+    gf_b_global, ga_b_global = _stats_globales(historique_exterieur)
+
     lambdas = lambda_estimators.estime_lambdas(
         gf_a_domicile=stats_off_a["moyenne"], ga_a_domicile=stats_def_a["moyenne"],
-        gf_a_global=None, ga_a_global=None,  # voir note de périmètre en tête de fichier
+        gf_a_global=gf_a_global, ga_a_global=ga_a_global,
         gf_b_exterieur=stats_off_b["moyenne"], ga_b_exterieur=stats_def_b["moyenne"],
-        gf_b_global=None, ga_b_global=None,
+        gf_b_global=gf_b_global, ga_b_global=ga_b_global,
     )
 
     marches_par_scenario = {}
