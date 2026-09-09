@@ -33,6 +33,15 @@ déjà testées ailleurs dans le dépôt -- aucune n'est modifiée :
 - scraper_details.fetch_html
 - scraper_details._extrait_historique_competition
 Aucune écriture, aucun cache, aucun état partagé avec l'ancien moteur.
+
+DÉCISION ANNULÉE (08/09/2026, décision explicite de Patrick) : une
+version antérieure de ce fichier ajoutait une agrégation "toutes
+compétitions confondues" (`recupere_historique_toutes_competitions`)
+pour alimenter λ_global (v3 §6). Annulée : λ_global reste calculé sur
+la SEULE compétition du match (comme les 3 autres scénarios), pas sur
+plusieurs compétitions fusionnées -- voir `main._stats_globales` pour
+le calcul actuel. Ne pas réintroduire cette fonction sans en reparler
+d'abord avec Patrick.
 """
 
 from bs4 import BeautifulSoup
