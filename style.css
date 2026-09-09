@@ -427,6 +427,18 @@ main.grille {
 .detail-autres-marches { color: var(--text-secondary); font-size: 13px; }
 .detail-marche-ligne { padding: 2px 0; }
 
+/* AJOUT 09/09/2026 (reprise de session) -- bloc TEMPORAIRE de vérification
+   du nouveau moteur (archetype_model), en plus de l'affichage existant
+   ci-dessus (jamais modifié). Reprend .details-niveau1 pour le pli/dépli,
+   styles propres minimes pour rester lisible en attendant la refonte
+   définitive de l'affichage (à faire une fois le vrai run observé). */
+.am-bloc { margin-top: 8px; }
+.am-ligne { font-size: 13px; padding: 2px 0; color: var(--text-secondary); }
+.am-moteur strong { color: var(--text-primary); }
+.am-erreur { color: var(--red); }
+.am-candidat { color: var(--text-primary); }
+.am-candidat-vide { font-style: italic; }
+
 /* --- Page de sélection --- */
 
 #copier-btn {
