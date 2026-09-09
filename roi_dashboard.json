@@ -1,11 +1,11 @@
 {
   "global": {
-    "nb_paris": 552,
+    "nb_paris": 553,
     "nb_gagnes": 352,
-    "taux_reussite_pct": 63.8,
-    "mise_totale_pct_bankroll": 20.75,
-    "gain_net_pct_bankroll": -1.6,
-    "roi_pct": -7.7
+    "taux_reussite_pct": 63.7,
+    "mise_totale_pct_bankroll": 20.79,
+    "gain_net_pct_bankroll": -1.64,
+    "roi_pct": -7.9
   },
   "par_marche": {
     "1X2": {
@@ -57,12 +57,12 @@
       "roi_pct": 8.0
     },
     "Moins de N buts": {
-      "nb_paris": 174,
+      "nb_paris": 175,
       "nb_gagnes": 109,
-      "taux_reussite_pct": 62.6,
-      "mise_totale_pct_bankroll": 6.6,
-      "gain_net_pct_bankroll": -0.69,
-      "roi_pct": -10.4
+      "taux_reussite_pct": 62.3,
+      "mise_totale_pct_bankroll": 6.64,
+      "gain_net_pct_bankroll": -0.73,
+      "roi_pct": -11.0
     },
     "Plus de N buts": {
       "nb_paris": 84,
@@ -83,12 +83,12 @@
       "roi_pct": -6.2
     },
     "MOYENNE": {
-      "nb_paris": 373,
+      "nb_paris": 374,
       "nb_gagnes": 237,
-      "taux_reussite_pct": 63.5,
-      "mise_totale_pct_bankroll": 14.2,
-      "gain_net_pct_bankroll": -1.19,
-      "roi_pct": -8.4
+      "taux_reussite_pct": 63.4,
+      "mise_totale_pct_bankroll": 14.24,
+      "gain_net_pct_bankroll": -1.23,
+      "roi_pct": -8.7
     }
   },
   "detail": [
@@ -7819,12 +7819,26 @@
       "confiance": "MOYENNE",
       "gagne": true,
       "gain_pct_bankroll": 0.014797431992062666
+    },
+    {
+      "date": "2026-09-08",
+      "domicile": "Al-Qadsiah",
+      "exterieur": "Al Ahli",
+      "competition": "Arabie Saoudite :\n                        Première Division",
+      "score": "3-2",
+      "marche": "Moins de 3.5 buts",
+      "cote_observee": 1.61,
+      "probabilite_modele": 0.8858554873906168,
+      "mise_pct_bankroll": 0.04,
+      "confiance": "MOYENNE",
+      "gagne": false,
+      "gain_pct_bankroll": -0.04
     }
   ],
   "calibrage_k_shrinkage": {
-    "nb_triplets_disponibles": 0,
+    "nb_triplets_disponibles": 518,
     "nb_matchs_distincts_train": 0,
-    "nb_matchs_distincts_test": 0,
+    "nb_matchs_distincts_test": 18,
     "nb_matchs_non_resolus_definitif": 0,
     "note": "Recommandation par palier de volume minimum de MATCHS DISTINCTS (pas de marchés) -- en dessous de 10, aucun calibrage n'est considéré crédible (None), jamais un repli sur un palier inférieur. Tri par score de Brier (calibration), pas par taux de réussite brut. Ne modifie pas calculs.py automatiquement, à appliquer manuellement.",
     "recommandations_par_palier_n": {
@@ -7840,5 +7854,5 @@
       "n_min_50": null
     }
   },
-  "genere_le": "2026-09-08 03:44 UTC"
+  "genere_le": "2026-09-09 05:26 UTC"
 }
