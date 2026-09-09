@@ -38,12 +38,13 @@ règles -- limite connue, assumée, documentée ici plutôt que cachée :
 aucune autre source de données historiques n'existe pour rejouer ces
 matchs autrement.
 
-PÉRIMÈTRE, hérité de main.py : λ_global toujours None (cache_equipes.json
-ne contient que domicile/extérieur par compétition, pas de stats
-"toutes compétitions confondues") -- les résultats de robustesse ne
-sont donc pas calculés ici (voir main.py pour cette limite détaillée) ;
-ce module se concentre sur la comparaison prédiction/résultat réel par
-scénario, pas sur la robustesse inter-scénarios.
+λ_global (v3 §6) EST calculé ici aussi (08/09/2026) : compétition
+UNIQUE (celle du match), domicile+extérieur de chaque équipe fusionnés
+-- voir `_stats_globales_depuis_cache`. Possible sans fetch réseau
+supplémentaire, `cache_equipes.json` contient déjà les deux listes par
+équipe. Ce module ne calcule PAS la robustesse inter-scénarios (voir
+main.py pour ça) -- il se concentre sur la comparaison prédiction/
+résultat réel par scénario.
 """
 
 import json
@@ -104,6 +105,32 @@ def recupere_fenetres_depuis_cache(url_domicile, url_exterieur, competition, cac
     return validation.classifie_fenetre(matchs_a_domicile), validation.classifie_fenetre(matchs_b_exterieur)
 
 
+def _stats_globales_depuis_cache(url_equipe, competition, cache):
+    """
+    GF/GA pour le scénario "global" (v3 §6) DEPUIS LE CACHE -- même
+    principe que main._stats_globales : compétition UNIQUE (celle du
+    match), domicile+extérieur de cette équipe fusionnés, PAS plusieurs
+    compétitions (décision du 08/09/2026, annule une version
+    antérieure qui aurait mélangé plusieurs compétitions).
+
+    Possible sans fetch réseau supplémentaire : `cache_equipes.json`
+    contient déjà `matchs_domicile_bruts` ET `matchs_exterieur_bruts`
+    pour chaque équipe dans cette compétition -- il suffit de les
+    fusionner. (None, None) si l'équipe est absente du cache ou si la
+    fenêtre globale est INSUFFISANTE (N<5).
+    """
+    entree = cache.get(_cle(url_equipe, competition))
+    if entree is None:
+        return None, None
+    matchs_fusionnes = entree["resultat"]["matchs_domicile_bruts"] + entree["resultat"]["matchs_exterieur_bruts"]
+    fenetre_globale = validation.classifie_fenetre(matchs_fusionnes)
+    if fenetre_globale["statut"] != validation.STATUT_UTILISABLE:
+        return None, None
+    stats_off = team_stats.stats_offensives(fenetre_globale["matchs_retenus"])
+    stats_def = team_stats.stats_defensives(fenetre_globale["matchs_retenus"])
+    return stats_off["moyenne"], stats_def["moyenne"]
+
+
 def _parse_score(score_str):
     """'0-1' -> (0, 1). None si le format est inattendu -- jamais un
     score deviné."""
@@ -141,11 +168,14 @@ def evalue_un_match(match_verifie, cache):
     stats_off_b = team_stats.stats_offensives(fenetre_b["matchs_retenus"])
     stats_def_b = team_stats.stats_defensives(fenetre_b["matchs_retenus"])
 
+    gf_a_global, ga_a_global = _stats_globales_depuis_cache(url_a, match_verifie["competition"], cache)
+    gf_b_global, ga_b_global = _stats_globales_depuis_cache(url_b, match_verifie["competition"], cache)
+
     lambdas = lambda_estimators.estime_lambdas(
         gf_a_domicile=stats_off_a["moyenne"], ga_a_domicile=stats_def_a["moyenne"],
-        gf_a_global=None, ga_a_global=None,
+        gf_a_global=gf_a_global, ga_a_global=ga_a_global,
         gf_b_exterieur=stats_off_b["moyenne"], ga_b_exterieur=stats_def_b["moyenne"],
-        gf_b_global=None, ga_b_global=None,
+        gf_b_global=gf_b_global, ga_b_global=ga_b_global,
     )
 
     buts_dom_reel, buts_ext_reel = score
