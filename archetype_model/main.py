@@ -428,19 +428,19 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
     # Chantier du 09/09/2026 (feu vert de Patrick) -- extension du périmètre
     # v1 à 4 marchés de plus, tous deux déjà calculables avec les cotes déjà
     # récupérées (voir data/odds_provider.py) :
-    _ajoute("cage_inviolee_domicile", "CLEAN_SHEET", "GROUPE_BUTS",
+    _ajoute("cage_inviolee_domicile", "CLEAN_SHEET_DOMICILE", "GROUPE_BUTS",
             lambda m: m["buts_equipe_exterieur"][0.5]["under"] if m["buts_equipe_exterieur"][0.5] else None,
             ("buts_equipe_exterieur", 0.5, "under"), "cage_inviolee_domicile",
             signal_buts_b_05, None)
-    _ajoute("encaisse_domicile", "CLEAN_SHEET", "GROUPE_BUTS",
+    _ajoute("encaisse_domicile", "CLEAN_SHEET_DOMICILE", "GROUPE_BUTS",
             lambda m: m["buts_equipe_exterieur"][0.5]["over"] if m["buts_equipe_exterieur"][0.5] else None,
             ("buts_equipe_exterieur", 0.5, "over"), "cage_inviolee_domicile",
             signal_buts_b_05, None)
-    _ajoute("cage_inviolee_exterieur", "CLEAN_SHEET", "GROUPE_BUTS",
+    _ajoute("cage_inviolee_exterieur", "CLEAN_SHEET_EXTERIEUR", "GROUPE_BUTS",
             lambda m: m["buts_equipe_domicile"][0.5]["under"] if m["buts_equipe_domicile"][0.5] else None,
             ("buts_equipe_domicile", 0.5, "under"), "cage_inviolee_exterieur",
             signal_buts_a_05, None)
-    _ajoute("encaisse_exterieur", "CLEAN_SHEET", "GROUPE_BUTS",
+    _ajoute("encaisse_exterieur", "CLEAN_SHEET_EXTERIEUR", "GROUPE_BUTS",
             lambda m: m["buts_equipe_domicile"][0.5]["over"] if m["buts_equipe_domicile"][0.5] else None,
             ("buts_equipe_domicile", 0.5, "over"), "cage_inviolee_exterieur",
             signal_buts_a_05, None)
