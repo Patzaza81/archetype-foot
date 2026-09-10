@@ -91,6 +91,21 @@ def probabilites_buts_equipe(distribution_marginale_equipe, ligne):
     return {"over": over, "under": under}
 
 
+def probabilite_parite_totale(matrice):
+    """P(total de buts du match PAIR), P(total de buts du match IMPAIR)
+    (v3 §9.2, famille PAIR_IMPAIR -- chantier du 09/09/2026, reprise :
+    marché identifié comme non couvert depuis l'audit du 08/09/2026,
+    voir data/odds_provider.py). Lue sur la matrice jointe (x+y), pas
+    la distribution marginale d'une équipe -- même source que
+    probabilites_over_under_total. pair+impair == 1.0 toujours (à la
+    troncature de la matrice près)."""
+    if matrice is None:
+        return None
+    pair = _somme_cellules(matrice, lambda x, y: (x + y) % 2 == 0)
+    impair = _somme_cellules(matrice, lambda x, y: (x + y) % 2 == 1)
+    return {"pair": pair, "impair": impair}
+
+
 def _resultat_handicap_ligne_entiere_ou_demie(matrice, h):
     """Handicap pour une ligne déjà entière ou demi-entière (v3 §9.3,
     CORRECTIF 6) -- dérivée mécaniquement de la matrice, aucun
@@ -224,6 +239,7 @@ def calcule_tous_les_marches(lambda_a, lambda_b, max_buts=None):
         "buts_equipe_exterieur": {
             ligne: probabilites_buts_equipe(dist_b, ligne) for ligne in LIGNES_BUTS_EQUIPE
         },
+        "parite_totale": probabilite_parite_totale(matrice),
         "combo_dc_total": {
             (dc, "over", ligne): probabilite_combo_dc_total(matrice, dc, ligne, "over")
             for dc in DOUBLE_CHANCES_VALIDES for ligne in LIGNES_COMBO_OVER
