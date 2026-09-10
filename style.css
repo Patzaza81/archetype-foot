@@ -321,6 +321,10 @@ main.grille {
 }
 .badge-go { background: var(--green); color: #06140f; }
 .badge-nogo { background: var(--red); color: #fff; }
+/* AJOUT 10/09/2026 -- badge distinct pour un pick archetype_model retenu
+   quand l'ancien moteur dit NO_GO -- jamais confondu avec le vert GO
+   (ancien moteur) ni le rouge NO_GO trompeur d'avant ce correctif. */
+.badge-archetype { background: var(--turquoise); color: #06140f; }
 
 /* Niveau 3 — donnée principale : la plus grosse taille de tout l'écran */
 .proba-1 {
