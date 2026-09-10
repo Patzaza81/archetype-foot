@@ -648,3 +648,251 @@ input[type="checkbox"]:checked::after {
 
   #copier-btn, .bouton-principal, .bouton-secondaire { max-width: 480px; margin-left: auto; margin-right: auto; }
 }
+/* ============================================================================
+   10/09/2026 -- Refonte de la carte de pronostic (archetype.html), à la
+   demande de Patrick : la version précédente affichait une seule ligne
+   technique ("over_under_total_3.5_under (niveau PREMIUM, edge 12.4%, ...)")
+   -- illisible pour un parieur. Nouvelle hiérarchie : PRONOSTIC > COTE >
+   PROBABILITÉ > CONFIANCE > POURQUOI > métriques secondaires.
+
+   Réutilise les variables déjà définies en tête de fichier (--bg, --surface,
+   --gold, --turquoise, --text, --text-secondary, --green, --border) --
+   voir la règle "source unique de vérité pour les couleurs" en tête de ce
+   fichier. Une seule nouvelle variable ajoutée : --bonus (violet doux),
+   pour le 3e rang de pronostic, qui n'avait pas encore de couleur dédiée.
+   ============================================================================ */
+:root {
+  --bonus: #A78BFA;
+}
+
+/* Page de sélections archetype.html : une seule colonne, toujours --
+   contrairement à main.grille (multi-colonnes) utilisée ailleurs, chaque
+   "carte match" ici est un bloc riche (en-tête + 3 pronostics + détails),
+   pas une carte compacte -- une grille multi-colonnes la rendrait illisible. */
+main.flux-selections {
+  display: block;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 16px;
+}
+main.flux-selections .carte-match {
+  margin-bottom: 28px;
+}
+
+
+/* --- En-tête de match (bandeau équipes + compétition) --- */
+.entete-match {
+  position: relative;
+  background:
+    radial-gradient(ellipse 140% 100% at 50% -20%, rgba(229,184,63,.12), transparent 60%),
+    linear-gradient(180deg, var(--surface-2) 0%, var(--surface) 100%);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px 18px 20px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.entete-match::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: repeating-linear-gradient(115deg, rgba(255,255,255,.035) 0 2px, transparent 2px 60px);
+  pointer-events: none;
+}
+.entete-match .equipes {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.entete-match .nom-equipe {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  flex: 1;
+  line-height: 1.2;
+}
+.entete-match .nom-equipe.exterieur { text-align: right; }
+.entete-match .heure-match {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 14px;
+  white-space: nowrap;
+}
+.entete-match .info-competition {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--categorie);
+  font-weight: 600;
+}
+
+/* --- Carte de pronostic (3 rangs, une seule structure, couleur par rang
+   via une classe modificatrice) --- */
+.carte-pronostic {
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+.carte-pronostic.rang-1 { border-color: var(--gold); background: linear-gradient(180deg, rgba(229,184,63,.09), var(--surface) 60%); }
+.carte-pronostic.rang-2 { border-color: var(--turquoise); background: linear-gradient(180deg, rgba(25,199,181,.08), var(--surface) 60%); }
+.carte-pronostic.rang-3 { border-color: var(--bonus); background: linear-gradient(180deg, rgba(167,139,250,.08), var(--surface) 60%); }
+
+.carte-pronostic .entete-rang {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.carte-pronostic .pastille-rang {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 999px;
+  color: var(--bg);
+}
+.rang-1 .pastille-rang { background: var(--gold); }
+.rang-2 .pastille-rang { background: var(--turquoise); }
+.rang-3 .pastille-rang { background: var(--bonus); }
+.carte-pronostic .sous-titre-rang {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.carte-pronostic .libelle-marche {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.25;
+  margin: 4px 0 14px;
+}
+
+/* --- Ligne cote + jauge de probabilité --- */
+.ligne-cote-proba {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+.bloc-cote {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 16px;
+  text-align: center;
+}
+.rang-1 .bloc-cote { border-color: var(--gold); }
+.rang-2 .bloc-cote { border-color: var(--turquoise); }
+.rang-3 .bloc-cote { border-color: var(--bonus); }
+.bloc-cote .etiquette { font-size: 11px; color: var(--text-secondary); font-weight: 600; }
+.bloc-cote .valeur-cote { font-size: 26px; font-weight: 800; color: var(--text); line-height: 1.1; }
+
+.jauge-probabilite {
+  width: 68px;
+  height: 68px;
+  flex-shrink: 0;
+  position: relative;
+}
+.jauge-probabilite svg { transform: rotate(-90deg); }
+.jauge-probabilite .fond-anneau { fill: none; stroke: var(--border); stroke-width: 6; }
+.jauge-probabilite .valeur-anneau { fill: none; stroke-width: 6; stroke-linecap: round; }
+.rang-1 .valeur-anneau { stroke: var(--gold); }
+.rang-2 .valeur-anneau { stroke: var(--turquoise); }
+.rang-3 .valeur-anneau { stroke: var(--bonus); }
+.jauge-probabilite .texte-anneau {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text);
+}
+.bloc-proba-texte { flex: 1; }
+.bloc-proba-texte .etiquette { font-size: 11px; color: var(--text-secondary); font-weight: 600; }
+.bloc-proba-texte .description { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+
+/* --- Confiance (étoiles) --- */
+.ligne-confiance {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  font-size: 14px;
+}
+.ligne-confiance .etoiles { letter-spacing: 2px; font-size: 15px; }
+.rang-1 .etoiles { color: var(--gold); }
+.rang-2 .etoiles { color: var(--turquoise); }
+.rang-3 .etoiles { color: var(--bonus); }
+.ligne-confiance .etoiles .vide { color: var(--border); }
+.ligne-confiance .texte-confiance { color: var(--text-secondary); }
+
+/* --- Pourquoi ? --- */
+.bloc-pourquoi {
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+.bloc-pourquoi .titre { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.bloc-pourquoi .texte { font-size: 14px; color: var(--text-secondary); line-height: 1.45; }
+
+/* --- Métriques secondaires (avantage / gain) --- */
+.metriques-secondaires {
+  display: flex;
+  gap: 10px;
+}
+.metriques-secondaires .metrique {
+  flex: 1;
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 10px 12px;
+  text-align: center;
+}
+.metriques-secondaires .etiquette { font-size: 11px; color: var(--text-secondary); font-weight: 600; }
+.metriques-secondaires .valeur { font-size: 16px; font-weight: 800; color: var(--green); margin-top: 2px; }
+
+/* --- Aucun candidat qualifié à ce rang (jamais de faux 3e pronostic) --- */
+.carte-pronostic.vide {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 14px;
+  padding: 24px 18px;
+}
+
+/* --- Détails de l'analyse (accordéon natif, léger, sans JS de plus) --- */
+.details-analyse {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+.details-analyse summary {
+  padding: 16px 18px;
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.details-analyse summary::-webkit-details-marker { display: none; }
+.details-analyse summary::after { content: "⌄"; color: var(--text-secondary); font-size: 18px; }
+.details-analyse[open] summary::after { content: "⌃"; }
+.details-analyse .contenu-details {
+  padding: 0 18px 18px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 16px;
+  font-size: 13px;
+}
+.details-analyse .ligne-detail { display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding: 6px 0; }
+.details-analyse .ligne-detail .cle { color: var(--text-secondary); }
+.details-analyse .ligne-detail .val { color: var(--text); font-weight: 600; }
