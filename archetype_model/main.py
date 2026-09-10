@@ -42,6 +42,7 @@ from .signals import statistiques_signal
 from .signals import convergence
 from .signals import deduplication
 from .signals import selector
+from . import justification
 from .edv import calculator as edv_calculator
 
 SCENARIOS = ("offensif", "defensif", "contextuel", "global")
@@ -239,7 +240,8 @@ def _par_scenario(marches_par_scenario, extracteur):
 def _construit_candidat(*, marche, market_family, exposure_group,
                          marches_par_scenario, extracteur, cote,
                          robustesse_statut, n_par_scenario,
-                         h2h_palier, h2h_statut, signal):
+                         h2h_palier, h2h_statut, signal,
+                         matchs_a_domicile=None, matchs_b_exterieur=None):
     """
     Applique le filtre de convergence (unanimité des 4 scénarios) à UN
     marché. Retourne (candidat, diagnostic) -- `candidat` est None si le
@@ -252,6 +254,13 @@ def _construit_candidat(*, marche, market_family, exposure_group,
     signal_direction/signal_frequence restent None sur le candidat --
     dégradé proprement (selector.py traite déjà une valeur absente comme
     le rang le plus bas, jamais un crash, voir signals/selector.py).
+
+    `matchs_a_domicile`/`matchs_b_exterieur` (10/09/2026, demande de
+    Patrick) : les matchs RÉELS déjà chargés (fenetres.A/B.matchs_retenus),
+    passés à justification.confirmation_historique() pour produire un
+    comptage PUREMENT DESCRIPTIF ("7 des 8 derniers matchs..."), ajouté au
+    candidat une fois la décision déjà prise -- n'entre dans aucun calcul
+    de probabilité, de filtre ou de sélection ci-dessus.
     """
     probabilites = _par_scenario(marches_par_scenario, extracteur)
     resultat = convergence.filtre_marche_convergent(
@@ -276,11 +285,16 @@ def _construit_candidat(*, marche, market_family, exposure_group,
         "exposure_group": exposure_group,
         "niveau": resultat.resultats_par_scenario[SCENARIO_REPRESENTATIF].niveau,
         "robustesse": robustesse_statut,
+        "probabilite": p_repr,
+        "cote": cote,
         "edge": valeur["edge"],
         "edv": valeur["edv"],
         "h2h_palier": h2h_palier,
         "signal_direction": signal["direction"] if signal else None,
         "signal_frequence": signal["frequence"] if signal else None,
+        "confirmation_historique": justification.confirmation_historique(
+            marche, matchs_a_domicile, matchs_b_exterieur
+        ) if matchs_a_domicile is not None or matchs_b_exterieur is not None else None,
     }
     return candidat, diagnostic
 
@@ -394,6 +408,14 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
     candidats = []
     diagnostics = []
 
+    # Filtrage par rôle une seule fois (pas à chaque marché) -- réutilisé
+    # par tous les appels _ajoute() et par la boucle dynamique plus bas.
+    # A joue à domicile aujourd'hui -> ses matchs À DOMICILE passés ; B
+    # joue à l'extérieur aujourd'hui -> ses matchs À L'EXTÉRIEUR passés.
+    # Même convention que lambda_estimators.py (gf_a_domicile, ga_b_exterieur).
+    _matchs_a_domicile = [m for m in base["fenetres"]["A"]["matchs_retenus"] if m.get("domicile") is True]
+    _matchs_b_exterieur = [m for m in base["fenetres"]["B"]["matchs_retenus"] if m.get("domicile") is False]
+
     def _ajoute(marche, family, group, extracteur, cle_cote, robustesse_key, signal, h2h_statut):
         candidat, diag = _construit_candidat(
             marche=marche, market_family=family, exposure_group=group,
@@ -402,6 +424,7 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
             robustesse_statut=robustesse_par_marche[robustesse_key]["statut"],
             n_par_scenario=n_par_scenario, h2h_palier=fenetre_h2h["palier"],
             h2h_statut=h2h_statut, signal=signal,
+            matchs_a_domicile=_matchs_a_domicile, matchs_b_exterieur=_matchs_b_exterieur,
         )
         diagnostics.append(diag)
         if candidat is not None:
@@ -637,11 +660,16 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
                 "exposure_group": group,
                 "niveau": resultat_dyn.resultats_par_scenario[SCENARIO_REPRESENTATIF].niveau,
                 "robustesse": robustesse_statut_dyn,
+                "probabilite": p_repr_dyn,
+                "cote": cote_reelle,
                 "edge": valeur_dyn["edge"],
                 "edv": valeur_dyn["edv"],
                 "h2h_palier": fenetre_h2h["palier"],
                 "signal_direction": None,
                 "signal_frequence": None,
+                "confirmation_historique": justification.confirmation_historique(
+                    marche_nom, _matchs_a_domicile, _matchs_b_exterieur
+                ),
                 "_cle_cote": cle_cote,  # interne, retiré avant retour -- clé structurée
                                         # d'origine, nécessaire au garde-fou anti-corrélation
                                         # combo ci-dessous (jamais du texte reparsé).
