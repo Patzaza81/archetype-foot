@@ -123,6 +123,39 @@ function traduitPalierH2H(palier) {
   }
 }
 
+/** Détermine le sujet de la phrase de confirmation selon le marché :
+ * une équipe précise, ou "les deux équipes confondues" pour les marchés
+ * qui combinent les matchs des deux (buts total, BTTS, parité...). Pure
+ * traduction -- ne décide de rien, se contente de savoir quelle liste de
+ * matchs le comptage (déjà calculé côté serveur) représente. */
+function sujetConfirmation(marche, equipes) {
+  const dom = equipes.domicile || "L'équipe à domicile";
+  const ext = equipes.exterieur || "L'équipe à l'extérieur";
+  if (marche === "1x2_domicile" || marche === "double_chance_1X") return { texte: dom, pluriel: false };
+  if (marche === "1x2_exterieur" || marche === "double_chance_X2") return { texte: ext, pluriel: false };
+  if (/^buts_equipe_domicile_|^cage_inviolee_domicile$|^encaisse_domicile$|^handicap_domicile_/.test(marche)) return { texte: dom, pluriel: false };
+  if (/^buts_equipe_exterieur_|^cage_inviolee_exterieur$|^encaisse_exterieur$|^handicap_exterieur_/.test(marche)) return { texte: ext, pluriel: false };
+  return { texte: "Les deux équipes (confondues)", pluriel: true };
+}
+
+/**
+ * Construit la phrase "Pourquoi ?" chiffrée à partir du comptage réel
+ * `confirmation` = {nb_confirmant, nb_echantillon} déjà calculé côté
+ * serveur (archetype_model/justification.py) sur les matchs réellement
+ * joués. Ne recalcule rien, ne fabrique aucun chiffre : si `confirmation`
+ * est null (marché pas encore couvert par ce comptage), renvoie null --
+ * l'appelant doit alors utiliser une phrase générique de repli.
+ */
+function construitPhraseConfirmation(marche, confirmation, equipes) {
+  if (!confirmation || !confirmation.nb_echantillon) return null;
+  const { nb_confirmant, nb_echantillon } = confirmation;
+  const pct = Math.round((nb_confirmant / nb_echantillon) * 100);
+  const { texte, pluriel } = sujetConfirmation(marche, equipes);
+  const verbe = pluriel ? "confirment" : "confirme";
+  const possessif = pluriel ? "leurs" : "ses";
+  return `${texte} ${verbe} cette tendance sur ${nb_confirmant} de ${possessif} ${nb_echantillon} derniers matchs comparables (${pct} %).`;
+}
+
 if (typeof module !== "undefined") {
-  module.exports = { traduitMarche, traduitNiveau, traduitPalierH2H };
+  module.exports = { traduitMarche, traduitNiveau, traduitPalierH2H, construitPhraseConfirmation };
 }
