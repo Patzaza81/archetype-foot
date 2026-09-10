@@ -1,10 +1,14 @@
-// archetype.js — créé le 10/09/2026, à la demande explicite de Patrick :
-// "une page unique pour les pronostics retenus du nouveau moteur", après
-// confusion sur pronostics.html où les sélections archetype_model étaient
-// noyées parmi tout l'historique de l'ancien moteur (verdict_global,
-// GO/NO_GO...). Cette page ne connaît qu'UN SEUL critère de tri : la
-// sélection réelle d'archetype_model (voir estArchetypeGo). Rien d'autre à
-// parcourir, rien de l'ancien moteur affiché ici.
+// archetype.js — révisé le 10/09/2026 à la demande de Patrick : la carte
+// précédente affichait une ligne technique brute ("over_under_total_3.5_under
+// (niveau PREMIUM, edge 12.4%, edv 16.0%, H2H FIABLE)"), illisible pour un
+// parieur. Nouvelle hiérarchie : PRONOSTIC > COTE > PROBABILITÉ > CONFIANCE >
+// POURQUOI > métriques secondaires. Voir traduction_marches.js pour la
+// traduction pure clé-technique -> texte, chargé avant ce fichier.
+//
+// RÈGLE INCHANGÉE (déjà en vigueur, réaffirmée explicitement par Patrick le
+// 10/09/2026) : ce fichier ne recalcule rien, ne choisit pas les rangs, ne
+// vérifie aucun filtre, ne fabrique aucune statistique. Il affiche
+// uniquement ce qu'archetype_model a déjà décidé.
 
 function estArchetypeGo(m) {
   return m.moteur_utilise === "archetype_model"
@@ -26,38 +30,157 @@ function echappeHtml(texte) {
 function formatPctSur(x) {
   if (x === null || x === undefined) return "?";
   const pct = x * 100;
-  // Même plafond que script.js::formatPct -- une proba à 99.95%+ (mais
-  // pas exactement 1.0) ne doit jamais s'afficher "100.0%".
   if (pct >= 99.95 && x < 1) return "99.9%";
-  return pct.toFixed(1) + "%";
+  return pct.toFixed(1).replace(".", ",") + "%";
 }
 
-function construitLigneCandidat(rang, c) {
-  if (!c) return "";
-  return `<div class="am-ligne am-candidat">
-    <strong>${echappeHtml(rang)}</strong> — ${echappeHtml(c.marche)}
-    (niveau ${echappeHtml(c.niveau || "?")}, edge ${formatPctSur(c.edge)}, edv ${formatPctSur(c.edv)},
-    H2H ${echappeHtml(c.h2h_palier || "?")})
-  </div>`;
+function formatPctEntier(x) {
+  if (x === null || x === undefined) return "?";
+  return Math.round(x * 100) + " %";
+}
+
+function formatCote(cote) {
+  if (cote === null || cote === undefined) return "?";
+  return cote.toFixed(2).replace(".", ",");
+}
+
+const RANGS = [
+  { cle: "P1", classe: "rang-1", pastille: "Le meilleur choix", sousTitre: "Pronostic principal" },
+  { cle: "P2", classe: "rang-2", pastille: "Meilleure rentabilité", sousTitre: "Deuxième choix" },
+  { cle: "P3", classe: "rang-3", pastille: "Pronostic bonus", sousTitre: "Troisième choix" },
+];
+
+/** Construit la phrase "Pourquoi ?" à partir UNIQUEMENT de données déjà
+ * calculées par le moteur (niveau, palier H2H). N'invente jamais un
+ * chiffre ("7/8 derniers matchs") qui n'existe pas encore dans les
+ * données -- voir la note transmise à Patrick : ce chiffre nécessite un
+ * champ supplémentaire côté archetype_model, pas encore présent. */
+function construitPourquoi(candidat) {
+  const phrases = [];
+  const { texte: texteConfiance } = traduitNiveau(candidat.niveau);
+  phrases.push(`Le modèle statistique juge ce pronostic avec une confiance ${texteConfiance.toLowerCase()}.`);
+  const phraseH2H = traduitPalierH2H(candidat.h2h_palier);
+  if (phraseH2H) phrases.push(phraseH2H + ".");
+  return phrases.join(" ");
+}
+
+function construitBlocCandidat(rangInfo, candidat, equipes) {
+  const div = document.createElement("div");
+  if (!candidat) {
+    div.className = "carte-pronostic vide";
+    div.innerHTML = `<span class="pastille-rang" style="opacity:.5">${echappeHtml(rangInfo.pastille)}</span><p style="margin-top:10px">Aucun pronostic n'a passé tous les critères du modèle pour ce rang.</p>`;
+    return div;
+  }
+
+  div.className = `carte-pronostic ${rangInfo.classe}`;
+  const libelle = traduitMarche(candidat.marche, equipes);
+  const { etoiles, texte: texteConfiance } = traduitNiveau(candidat.niveau);
+  const etoilesHtml = "★".repeat(etoiles) + `<span class="vide">${"★".repeat(5 - etoiles)}</span>`;
+  const pct = candidat.edge !== null && candidat.edge !== undefined
+    ? null // edge n'est pas la probabilité -- ne pas confondre les deux dans la jauge
+    : null;
+  // La probabilité affichée dans la jauge est la probabilité du modèle,
+  // pas l'edge ni l'EDV -- si le champ n'est pas exposé par le moteur sur
+  // ce candidat, on masque la jauge plutôt que d'afficher un faux chiffre.
+  const probaModele = candidat.probabilite;
+  const probaConnue = probaModele !== null && probaModele !== undefined;
+  const pctEntier = probaConnue ? Math.round(probaModele * 100) : null;
+
+  div.innerHTML = `
+    <div class="entete-rang">
+      <span class="pastille-rang">${echappeHtml(rangInfo.pastille)}</span>
+      <span class="sous-titre-rang">${echappeHtml(rangInfo.sousTitre)}</span>
+    </div>
+    <div class="libelle-marche">${echappeHtml(libelle)}</div>
+    <div class="ligne-cote-proba">
+      <div class="bloc-cote">
+        <div class="etiquette">COTE</div>
+        <div class="valeur-cote">${formatCote(candidat.cote)}</div>
+      </div>
+      ${probaConnue ? `
+      <div class="jauge-probabilite">
+        <svg width="68" height="68" viewBox="0 0 68 68">
+          <circle class="fond-anneau" cx="34" cy="34" r="28"></circle>
+          <circle class="valeur-anneau" cx="34" cy="34" r="28"
+            stroke-dasharray="${(2 * Math.PI * 28).toFixed(1)}"
+            stroke-dashoffset="${(2 * Math.PI * 28 * (1 - pctEntier / 100)).toFixed(1)}"></circle>
+        </svg>
+        <div class="texte-anneau">${pctEntier}%</div>
+      </div>
+      <div class="bloc-proba-texte">
+        <div class="etiquette">CHANCES DE RÉUSSITE ESTIMÉES</div>
+      </div>` : `<div class="bloc-proba-texte"><div class="etiquette">Probabilité non communiquée pour ce marché</div></div>`}
+    </div>
+    <div class="ligne-confiance">
+      <span class="etoiles">${etoilesHtml}</span>
+      <span class="texte-confiance">Confiance ${texteConfiance.toLowerCase()}</span>
+    </div>
+    <div class="bloc-pourquoi">
+      <div class="titre">Pourquoi ce choix ?</div>
+      <div class="texte">${echappeHtml(construitPourquoi(candidat))}</div>
+    </div>
+    <div class="metriques-secondaires">
+      <div class="metrique">
+        <div class="etiquette">AVANTAGE ESTIMÉ</div>
+        <div class="valeur">+${formatPctSur(candidat.edge)}</div>
+      </div>
+      <div class="metrique">
+        <div class="etiquette">GAIN POTENTIEL</div>
+        <div class="valeur">+${formatPctSur(candidat.edv)}</div>
+      </div>
+    </div>
+  `;
+  return div;
+}
+
+function construitDetails(m) {
+  const details = document.createElement("details");
+  details.className = "details-analyse";
+  const selection = m.archetype_model.selection || {};
+  const lignes = [];
+  ["P1", "P2", "P3"].forEach((cle) => {
+    const c = selection[cle];
+    if (!c) return;
+    lignes.push(`<div class="ligne-detail"><span class="cle">${cle} — marché technique</span><span class="val">${echappeHtml(c.marche)}</span></div>`);
+    lignes.push(`<div class="ligne-detail"><span class="cle">${cle} — niveau</span><span class="val">${echappeHtml(c.niveau || "?")}</span></div>`);
+    lignes.push(`<div class="ligne-detail"><span class="cle">${cle} — stabilité</span><span class="val">${echappeHtml(c.robustesse || "?")}</span></div>`);
+    lignes.push(`<div class="ligne-detail"><span class="cle">${cle} — historique direct</span><span class="val">${echappeHtml(c.h2h_palier || "?")}</span></div>`);
+  });
+  details.innerHTML = `
+    <summary>Détails techniques de l'analyse</summary>
+    <div class="contenu-details">${lignes.join("")}</div>
+  `;
+  return details;
 }
 
 function construitCarte(m) {
-  const div = document.createElement("div");
-  div.className = "match";
+  const conteneur = document.createElement("div");
+  conteneur.className = "carte-match";
 
+  const equipes = { domicile: m.domicile, exterieur: m.exterieur };
   const heureAffichee = m.heure_cameroun || m.heure || "";
-  const dateHeure = `${m.date || ""}${heureAffichee ? " à " + heureAffichee : ""}${m.heure_cameroun ? " (heure Cameroun)" : ""}`;
-  const selection = m.archetype_model.selection || {};
+  const competition = (m.competition || "").replace(/\s+/g, " ").trim();
 
-  div.innerHTML = `
-    <div class="teams"><span>${echappeHtml(m.domicile)}</span><span>${echappeHtml(m.score || heureAffichee || "")}</span><span>${echappeHtml(m.exterieur)}</span></div>
-    <div class="meta">${echappeHtml((m.competition || "").replace(/\s+/g, " ").trim())}${dateHeure ? " — " + echappeHtml(dateHeure) : ""}</div>
-    <div class="ligne-verdict"><span class="badge badge-archetype">★ ARCHETYPE</span></div>
-    ${construitLigneCandidat("P1", selection.P1)}
-    ${construitLigneCandidat("P2", selection.P2)}
-    ${construitLigneCandidat("P3", selection.P3)}
+  const entete = document.createElement("div");
+  entete.className = "entete-match";
+  entete.innerHTML = `
+    <div class="equipes">
+      <div class="nom-equipe domicile">${echappeHtml(m.domicile)}</div>
+      <div class="heure-match">${echappeHtml(heureAffichee)}${m.date ? "<br>" + echappeHtml(m.date) : ""}</div>
+      <div class="nom-equipe exterieur">${echappeHtml(m.exterieur)}</div>
+    </div>
+    ${competition ? `<div class="info-competition">${echappeHtml(competition)}</div>` : ""}
   `;
-  return div;
+  conteneur.appendChild(entete);
+
+  const selection = m.archetype_model.selection || {};
+  RANGS.forEach((rangInfo) => {
+    conteneur.appendChild(construitBlocCandidat(rangInfo, selection[rangInfo.cle], equipes));
+  });
+
+  conteneur.appendChild(construitDetails(m));
+
+  return conteneur;
 }
 
 function afficheSelections(matchs) {
@@ -66,7 +189,6 @@ function afficheSelections(matchs) {
   container.innerHTML = "";
 
   const retenus = (matchs || []).filter(estArchetypeGo);
-  // Tri chronologique (date puis heure) -- le match le plus proche en premier.
   retenus.sort((a, b) => {
     const cleA = (a.date || "") + (a.heure_cameroun || a.heure || "");
     const cleB = (b.date || "") + (b.heure_cameroun || b.heure || "");
@@ -74,11 +196,11 @@ function afficheSelections(matchs) {
   });
 
   maj.textContent = retenus.length
-    ? `${retenus.length} sélection(s) archetype_model`
-    : "aucune sélection archetype_model pour le moment";
+    ? `${retenus.length} match${retenus.length > 1 ? "s" : ""} analysé${retenus.length > 1 ? "s" : ""} aujourd'hui`
+    : "Aucune sélection pour le moment";
 
   if (retenus.length === 0) {
-    container.innerHTML = "<p class=\"detail-vide\">Aucun match n'a actuellement de sélection archetype_model (P1 réel). Ce n'est pas une erreur -- voir le filtre de convergence (unanimité des 4 scénarios).</p>";
+    container.innerHTML = "<p class=\"detail-vide\">Aucun match ne remplit actuellement tous les critères du modèle. Ce n'est pas une erreur : le modèle préfère ne rien proposer plutôt que de proposer un pari incertain.</p>";
     return;
   }
 
