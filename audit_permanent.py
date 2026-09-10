@@ -1835,7 +1835,7 @@ verite(
     "analyse_match bout en bout : robustesse_par_marche présente sans crash (le statut "
     "précis STABLE/INSTABLE/INDETERMINE dépend de λ_global, testé spécifiquement plus "
     "loin dans la section dédiée à ce chantier du 08/09/2026)",
-    set(_r_e2e["robustesse_par_marche"].keys()) == {"1x2_domicile", "1x2_nul", "1x2_exterieur", "btts", "over_2_5"},
+    set(_r_e2e["robustesse_par_marche"].keys()) == {"1x2_domicile", "1x2_nul", "1x2_exterieur", "btts", "over_2_5", "cage_inviolee_domicile", "cage_inviolee_exterieur", "parite_pair"},
 )
 
 _html_a_peu_e2e = _fixture_equipe_e2e("EquipeA", _matchs_a_e2e[:3])
@@ -2004,15 +2004,43 @@ section("archetype_model/poisson/markets.calcule_tous_les_marches + branchement 
 _r_calc_audit = _amk.calcule_tous_les_marches(1.5, 1.0)
 verite(
     "calcule_tous_les_marches : toutes les familles de marchés présentes "
-    "(1x2/DC/BTTS/total/handicap/buts par équipe/combo)",
+    "(1x2/DC/BTTS/total/handicap/buts par équipe/parité/combo)",
     set(_r_calc_audit.keys()) == {"1x2", "double_chance", "btts", "over_under_total", "handicap",
-                                   "buts_equipe_domicile", "buts_equipe_exterieur", "combo_dc_total"},
+                                   "buts_equipe_domicile", "buts_equipe_exterieur", "parite_totale", "combo_dc_total"},
 )
 verite(
     "calcule_tous_les_marches : cohérent avec un calcul direct indépendant "
     "(matrice_scores + probabilites_1x2/resultat_handicap séparément)",
     _r_calc_audit["1x2"] == _amk.probabilites_1x2(_amdist.matrice_scores(1.5, 1.0))
     and _r_calc_audit["handicap"][0.0] == _amk.resultat_handicap(_amdist.matrice_scores(1.5, 1.0), 0.0),
+)
+
+# --- probabilite_parite_totale (chantier du 09/09/2026, feu vert de Patrick) ---
+_mat_parite_audit = _amdist.matrice_scores(1.5, 1.0)
+_r_parite_audit = _amk.probabilite_parite_totale(_mat_parite_audit)
+_pair_manuel_audit = sum(
+    p for x, ligne in enumerate(_mat_parite_audit) for y, p in enumerate(ligne) if (x + y) % 2 == 0
+)
+verite(
+    "probabilite_parite_totale : pair + impair == 1.0 (à la troncature de la matrice près)",
+    abs(_r_parite_audit["pair"] + _r_parite_audit["impair"] - 1.0) < 1e-6,
+)
+verite(
+    "probabilite_parite_totale : cohérent avec un calcul manuel indépendant sur la même matrice",
+    abs(_r_parite_audit["pair"] - _pair_manuel_audit) < 1e-12,
+)
+verite(
+    "probabilite_parite_totale : (0,0) compte bien comme PAIR (0 est pair, piège classique)",
+    _r_parite_audit["pair"] >= _mat_parite_audit[0][0],
+)
+verite(
+    "probabilite_parite_totale(None) -> None, jamais un crash (λ manquant en amont)",
+    _amk.probabilite_parite_totale(None) is None,
+)
+verite(
+    "probabilite_parite_totale : présente dans calcule_tous_les_marches, jamais oubliée "
+    "en cas de λ absent (structure complète même en None)",
+    _amk.calcule_tous_les_marches(None, 1.0)["parite_totale"] is None,
 )
 verite(
     "calcule_tous_les_marches(None, 1.0) : structure complète mais tout None en profondeur, "
@@ -2153,15 +2181,16 @@ _signal_audit_odds = {
     "match_id": "test123", "source_cotes": "manuel",
     "TOUS_MARCHES_EVALUES": [
         {"marche": "1X2 - 1", "cote_observee": 2.27, "probabilite_modele": 0.99},
-        {"marche": "Cage inviolée - Domicile", "cote_observee": 1.9, "probabilite_modele": 0.5},
+        {"marche": "Marché fabriqué inexistant", "cote_observee": 1.9, "probabilite_modele": 0.5},
     ],
 }
 _r_odds_audit = _amodds.extrait_cotes(_signal_audit_odds)
 verite(
-    "odds_provider.extrait_cotes : marché couvert extrait avec sa vraie cote, marché non "
-    "couvert (cage inviolée) listé séparément sans être perdu ni confondu",
+    "odds_provider.extrait_cotes : marché couvert extrait avec sa vraie cote, un libellé "
+    "totalement inconnu (fabriqué -- plus aucun marché réel n'est non couvert depuis le "
+    "09/09/2026) listé séparément sans être perdu ni confondu",
     _r_odds_audit["cotes"] == {("1x2", "domicile"): 2.27}
-    and _r_odds_audit["marches_non_couverts"] == ["Cage inviolée - Domicile"]
+    and _r_odds_audit["marches_non_couverts"] == ["Marché fabriqué inexistant"]
     and _r_odds_audit["est_betpawa"] is True,
 )
 
@@ -2195,12 +2224,12 @@ _LIBELLES_REELS_SNAPSHOT_08_09_2026 = [
 ]
 verite(
     "odds_provider : sur le snapshot des 62 vrais libellés distincts (precalcul.json, "
-    "08/09/2026), exactement 56 sont traduits vers une clé archetype_model et 6 "
-    "identifiés comme non couverts (cage inviolée x2, encaisse au moins 1 but x2, "
-    "pair/impair x2) -- aucun troisième cas (crash ou mauvaise traduction)",
+    "08/09/2026), les 62 sont désormais TOUS traduits vers une clé archetype_model -- "
+    "0 non couvert depuis la 2e passe du chantier du 09/09/2026 (domicile+extérieur) -- "
+    "aucun crash ni mauvaise traduction",
     len(_LIBELLES_REELS_SNAPSHOT_08_09_2026) == 62
-    and sum(1 for l in _LIBELLES_REELS_SNAPSHOT_08_09_2026 if _amodds._parse_libelle(l) is not None) == 56
-    and sum(1 for l in _LIBELLES_REELS_SNAPSHOT_08_09_2026 if _amodds._parse_libelle(l) is None) == 6,
+    and sum(1 for l in _LIBELLES_REELS_SNAPSHOT_08_09_2026 if _amodds._parse_libelle(l) is not None) == 62
+    and sum(1 for l in _LIBELLES_REELS_SNAPSHOT_08_09_2026 if _amodds._parse_libelle(l) is None) == 0,
 )
 
 _signal_match_introuvable_audit = {"signaux": [_signal_audit_odds]}
@@ -2852,9 +2881,10 @@ try:
         and _r1_amc["selection"]["P1"]["marche"] == "1x2_domicile",
     )
     verite(
-        "CAS 1 : les 6 candidats v1 (1x2 x3, btts x2, over_2.5) sont tous "
-        "diagnostiqués, éligibles ou non",
-        _r1_amc["statut"] == "OK" and len(_r1_amc["diagnostics"]) == 6,
+        "CAS 1 : les 12 candidats v2 (1x2 x3, btts x2, over_2.5, cage_inviolee_domicile, "
+        "encaisse_domicile, cage_inviolee_exterieur, encaisse_exterieur, parite_pair, "
+        "parite_impair) sont tous diagnostiqués, éligibles ou non",
+        _r1_amc["statut"] == "OK" and len(_r1_amc["diagnostics"]) == 12,
     )
 
     # --- CAS 2 (doit réussir) : pas d'URL H2H -> dégradé proprement ---
