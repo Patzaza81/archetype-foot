@@ -178,6 +178,16 @@ def analyse_match(url_domicile, nom_domicile, url_exterieur, nom_exterieur, nom_
             _valeurs_4_scenarios(marches_par_scenario, lambda m: m["btts"])),
         "over_2_5": robustness.evalue_robustesse(
             _valeurs_4_scenarios(marches_par_scenario, lambda m: m["over_under_total"][2.5]["over"] if m["over_under_total"][2.5] else None)),
+        # Chantier du 09/09/2026 (feu vert de Patrick) : cage_inviolee_domicile
+        # réutilise buts_equipe_exterieur[0.5] -- même robustesse sert aux deux
+        # candidats complémentaires (cage inviolée ET encaisse au moins 1 but),
+        # exactement comme "btts" sert à la fois btts_oui et btts_non.
+        "cage_inviolee_domicile": robustness.evalue_robustesse(
+            _valeurs_4_scenarios(marches_par_scenario, lambda m: m["buts_equipe_exterieur"][0.5]["under"] if m["buts_equipe_exterieur"][0.5] else None)),
+        "cage_inviolee_exterieur": robustness.evalue_robustesse(
+            _valeurs_4_scenarios(marches_par_scenario, lambda m: m["buts_equipe_domicile"][0.5]["under"] if m["buts_equipe_domicile"][0.5] else None)),
+        "parite_pair": robustness.evalue_robustesse(
+            _valeurs_4_scenarios(marches_par_scenario, lambda m: m["parite_totale"]["pair"] if m["parite_totale"] else None)),
     }
 
     return {
@@ -195,20 +205,25 @@ def analyse_match(url_domicile, nom_domicile, url_exterieur, nom_exterieur, nom_
 # produire une vraie sélection P1/P2/P3 sur un match réel. Additif uniquement
 # -- analyse_match() ci-dessus n'est pas modifiée.
 #
-# PÉRIMÈTRE v1, décision EXPLICITE pour ne pas élargir la portée du chantier
-# sans le dire (règle de travail de Patrick) : couvre EXACTEMENT les 5
-# marchés déjà robustesse-évalués par analyse_match() -- 1X2 (domicile/nul/
-# extérieur), BTTS (oui/non), Over 2.5. Handicap/TeamGoals/Double Chance/
-# combos restent HORS PÉRIMÈTRE tant que `robustesse_par_marche` n'est pas
-# étendu à ces marchés (voir docstring d'analyse_match() ci-dessus,
-# "périmètre assumé restant" -- extension directe, structure déjà générique,
-# mais chantier séparé, pas fait ici).
+# PÉRIMÈTRE v2 (09/09/2026, feu vert de Patrick, complété en 2e passe --
+# "tout ajouter sans exception si les données permettent de calculer sans
+# ambiguïté") : couvre les 5 marchés déjà robustesse-évalués par
+# analyse_match() en v1 -- 1X2 (domicile/nul/extérieur), BTTS (oui/non),
+# Over 2.5 -- PLUS 4 marchés ajoutés ce jour, domicile ET extérieur :
+# Cage inviolée / Encaisse au moins 1 but (réutilisent buts_equipe_domicile/
+# buts_equipe_exterieur[0.5] déjà calculés), et Parité totale (pair/impair,
+# nouvelle fonction poisson/markets.py::probabilite_parite_totale). Soit
+# 12 candidats au total. Handicap/TeamGoals/Double Chance/combos restent
+# HORS PÉRIMÈTRE tant que `robustesse_par_marche` n'est pas étendu à ces
+# marchés -- chantier séparé, pas fait ici.
 #
-# CONSÉQUENCE ASSUMÉE de ce périmètre restreint : seuls 2 groupes
-# d'exposition existent en v1 (GROUPE_RESULTAT, GROUPE_BUTS) -- P3 exige un
-# 3e groupe distinct de P1 et P2, donc P3 sera quasi toujours None tant que
-# le périmètre n'est pas étendu. C'est une conséquence mécanique du périmètre
-# choisi, pas un bug de selector.py (déjà testé unitairement par ailleurs).
+# CONSÉQUENCE ASSUMÉE de ce périmètre : les 12 candidats ne couvrent
+# toujours que 2 groupes d'exposition (GROUPE_RESULTAT, GROUPE_BUTS) --
+# les 9 hors 1X2 partagent tous GROUPE_BUTS. P3 exige un 3e groupe
+# distinct de P1 et P2, donc P3 reste quasi toujours None tant que le
+# périmètre n'est pas étendu à un 3e groupe (ex. Handicap). C'est une
+# conséquence mécanique du périmètre choisi, pas un bug de selector.py
+# (déjà testé unitairement par ailleurs).
 # ============================================================================
 
 
@@ -369,6 +384,11 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
     signal_victoire_b = statistiques_signal.signal_victoire(base["fenetres"]["B"])
     signal_btts_a = statistiques_signal.signal_btts(base["fenetres"]["A"])
     signal_over25_a = statistiques_signal.signal_over_under_total(base["fenetres"]["A"], 2.5)
+    # Chantier du 09/09/2026 : même signal (buts de B à la ligne 0.5) pour
+    # cage_inviolee_domicile ET encaisse_domicile -- ce sont les deux faces
+    # de la même statistique (buts encaissés par B, vu du signal de B).
+    signal_buts_b_05 = statistiques_signal.signal_buts_equipe(base["fenetres"]["B"], 0.5)
+    signal_buts_a_05 = statistiques_signal.signal_buts_equipe(base["fenetres"]["A"], 0.5)
 
     candidats = []
     diagnostics = []
@@ -404,6 +424,32 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
     _ajoute("over_2.5", "GOALS_TOTAL", "GROUPE_BUTS",
             lambda m: m["over_under_total"][2.5]["over"] if m["over_under_total"][2.5] else None,
             ("over_under_total", 2.5, "over"), "over_2_5", signal_over25_a, statut_h2h_over25)
+
+    # Chantier du 09/09/2026 (feu vert de Patrick) -- extension du périmètre
+    # v1 à 4 marchés de plus, tous deux déjà calculables avec les cotes déjà
+    # récupérées (voir data/odds_provider.py) :
+    _ajoute("cage_inviolee_domicile", "CLEAN_SHEET", "GROUPE_BUTS",
+            lambda m: m["buts_equipe_exterieur"][0.5]["under"] if m["buts_equipe_exterieur"][0.5] else None,
+            ("buts_equipe_exterieur", 0.5, "under"), "cage_inviolee_domicile",
+            signal_buts_b_05, None)
+    _ajoute("encaisse_domicile", "CLEAN_SHEET", "GROUPE_BUTS",
+            lambda m: m["buts_equipe_exterieur"][0.5]["over"] if m["buts_equipe_exterieur"][0.5] else None,
+            ("buts_equipe_exterieur", 0.5, "over"), "cage_inviolee_domicile",
+            signal_buts_b_05, None)
+    _ajoute("cage_inviolee_exterieur", "CLEAN_SHEET", "GROUPE_BUTS",
+            lambda m: m["buts_equipe_domicile"][0.5]["under"] if m["buts_equipe_domicile"][0.5] else None,
+            ("buts_equipe_domicile", 0.5, "under"), "cage_inviolee_exterieur",
+            signal_buts_a_05, None)
+    _ajoute("encaisse_exterieur", "CLEAN_SHEET", "GROUPE_BUTS",
+            lambda m: m["buts_equipe_domicile"][0.5]["over"] if m["buts_equipe_domicile"][0.5] else None,
+            ("buts_equipe_domicile", 0.5, "over"), "cage_inviolee_exterieur",
+            signal_buts_a_05, None)
+    _ajoute("parite_pair", "PARITE", "GROUPE_BUTS",
+            lambda m: m["parite_totale"]["pair"] if m["parite_totale"] else None,
+            ("parite_totale", "pair"), "parite_pair", None, None)
+    _ajoute("parite_impair", "PARITE", "GROUPE_BUTS",
+            lambda m: m["parite_totale"]["impair"] if m["parite_totale"] else None,
+            ("parite_totale", "impair"), "parite_pair", None, None)
 
     candidats_dedupliques = deduplication.deduplique(candidats, critere="edge") if candidats else []
     selection = selector.selectionner(candidats_dedupliques)
