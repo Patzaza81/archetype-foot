@@ -34,6 +34,7 @@ from .data import odds_provider
 from .statistics import team_stats
 from .poisson import lambda_estimators
 from .poisson import markets
+from .poisson import distribution
 from .poisson import robustness
 from .h2h import h2h_stats
 from .h2h import h2h_markets
@@ -450,6 +451,225 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
     _ajoute("parite_impair", "PARITE", "GROUPE_BUTS",
             lambda m: m["parite_totale"]["impair"] if m["parite_totale"] else None,
             ("parite_totale", "impair"), "parite_pair", None, None)
+
+    # ========================================================================
+    # CHANTIER DU 10/09/2026 (feu vert de Patrick) -- PÉRIMÈTRE DYNAMIQUE,
+    # piloté par les cotes réellement disponibles plutôt que par une liste
+    # figée. Les 12 `_ajoute()` ci-dessus restent INCHANGÉS (mêmes clés
+    # `market_family`/`exposure_group`, même comportement, zéro régression
+    # possible sur les candidats déjà en production). Ce bloc ajoute
+    # uniquement les clés de `cotes` qui ne sont PAS déjà couvertes par les
+    # 12 appels fixes : Double Chance, Over/Under sur toute ligne réellement
+    # cotée, Handicap sur toute ligne réellement cotée, buts par équipe sur
+    # les lignes autres que 0.5 (déjà prises par cage_inviolee/encaisse).
+    #
+    # PAS INCLUS ici, volontairement (chantier séparé, pas de feu vert
+    # encore donné) : les marchés combinés DC+Total (poisson/markets.py::
+    # probabilite_combo_dc_total). Ils partagent une exposition économique
+    # avec leurs marchés composants (ex. combo "1X + Over 2.5" est corrélé
+    # à la fois avec Double Chance 1X ET avec Over 2.5) -- deduplication.py
+    # ne dédouble que par (famille, groupe) simple, pas par recouvrement
+    # entre plusieurs groupes à la fois. Les ajouter sans y réfléchir
+    # d'abord romprait silencieusement l'invariant anti-corrélation posé le
+    # 09/09/2026.
+    #
+    # Contrairement aux 12 marchés fixes (qui utilisent `marches_par_scenario`,
+    # déjà agrégé sur les lignes PAR DÉFAUT de poisson/markets.py), ce bloc
+    # recalcule matrice/distribution directement depuis les lambdas déjà
+    # obtenus -- calcul pur, aucun fetch réseau supplémentaire -- pour
+    # couvrir n'importe quelle ligne réellement cotée, y compris celles hors
+    # des lignes par défaut (ex. Over/Under 5.5/6.5/7.5, Handicap +-2.5).
+    #
+    # EXPOSURE_GROUP -- décision explicite à valider avec Patrick avant
+    # bascule en production :
+    #   - Double Chance partage GROUPE_RESULTAT avec 1X2 (corrélation
+    #     directe : DC 1X et 1X2 domicile parient tous les deux sur "le
+    #     domicile ne perd pas"), mais une AUTRE famille ("DOUBLE_CHANCE"
+    #     vs "RESULT") -- dedup ne gardera donc qu'UN SEUL candidat parmi
+    #     TOUT GROUPE_RESULTAT (1X2 + DC confondus), jamais les deux à la
+    #     fois sur le même match.
+    #   - Handicap reçoit un troisième groupe, GROUPE_HANDICAP (nouveau,
+    #     n'existait pas avant) -- distinct de GROUPE_RESULTAT et
+    #     GROUPE_BUTS. Conséquence positive assumée : P3 (qui exige un 3e
+    #     groupe distinct de P1 et P2) peut désormais réellement se
+    #     déclencher, ce qui n'était quasi jamais possible avant (2 groupes
+    #     seulement en périmètre v1, voir commentaire plus haut).
+    #   - Over/Under (toutes lignes) et buts par équipe (lignes hors 0.5)
+    #     restent dans GROUPE_BUTS, comme Over 2.5/BTTS/Parité déjà en
+    #     place -- une ligne 1.5 et une ligne 3.5 sur le même total sont
+    #     fortement corrélées, dedup doit les traiter comme concurrentes,
+    #     pas comme deux paris indépendants.
+    # ========================================================================
+    lambdas_dyn = base["lambdas"]
+    matrices_par_scenario = {
+        s: distribution.matrice_scores(lambdas_dyn["A"][s], lambdas_dyn["B"][s]) for s in SCENARIOS
+    }
+    dist_a_par_scenario = {s: distribution.distribution_marginale(lambdas_dyn["A"][s]) for s in SCENARIOS}
+    dist_b_par_scenario = {s: distribution.distribution_marginale(lambdas_dyn["B"][s]) for s in SCENARIOS}
+
+    def _extractor_dynamique(cle):
+        """Construit un extracteur (scenario -> probabilité) à partir d'une
+        clé structurée d'odds_provider._parse_libelle. Retourne None si la
+        clé n'est pas (encore) gérable dynamiquement (ex. combos, exclus
+        volontairement ci-dessus)."""
+        if cle[0] == "1x2":
+            _, sel = cle
+            return lambda s: markets.probabilites_1x2(matrices_par_scenario[s])[sel] if matrices_par_scenario[s] else None
+        if cle[0] == "double_chance":
+            _, sel = cle
+            return lambda s: markets.probabilites_double_chance(matrices_par_scenario[s])[sel] if matrices_par_scenario[s] else None
+        if cle[0] == "btts":
+            _, sel = cle
+            def _f(s):
+                p = markets.probabilite_btts(matrices_par_scenario[s]) if matrices_par_scenario[s] else None
+                return p if sel == "oui" else (1.0 - p if p is not None else None)
+            return _f
+        if cle[0] == "parite_totale":
+            _, sel = cle
+            return lambda s: markets.probabilite_parite_totale(matrices_par_scenario[s])[sel] if matrices_par_scenario[s] else None
+        if cle[0] == "over_under_total":
+            _, ligne, sens = cle
+            def _f(s):
+                p = markets.probabilites_over_under_total(matrices_par_scenario[s], ligne) if matrices_par_scenario[s] else None
+                return p[sens] if p else None
+            return _f
+        if cle[0] == "buts_equipe_domicile":
+            _, ligne, sens = cle
+            def _f(s):
+                p = markets.probabilites_buts_equipe(dist_a_par_scenario[s], ligne) if dist_a_par_scenario[s] else None
+                return p[sens] if p else None
+            return _f
+        if cle[0] == "buts_equipe_exterieur":
+            _, ligne, sens = cle
+            def _f(s):
+                p = markets.probabilites_buts_equipe(dist_b_par_scenario[s], ligne) if dist_b_par_scenario[s] else None
+                return p[sens] if p else None
+            return _f
+        if cle[0] == "handicap":
+            _, ligne, sel = cle
+            def _f(s):
+                r = markets.resultat_handicap(matrices_par_scenario[s], ligne) if matrices_par_scenario[s] else None
+                if r is None:
+                    return None
+                return r["gain"] if sel == "domicile" else r["perte"]
+            return _f
+        if cle[0] == "combo_dc_total":
+            _, dc, sens, ligne = cle
+            return lambda s: markets.probabilite_combo_dc_total(matrices_par_scenario[s], dc, ligne, sens) if matrices_par_scenario[s] else None
+        return None  # toute future extension non gérée -> ignoré, jamais un crash
+
+    _CLES_DEJA_CABLEES = {
+        ("1x2", "domicile"), ("1x2", "nul"), ("1x2", "exterieur"),
+        ("btts", "oui"), ("btts", "non"),
+        ("over_under_total", 2.5, "over"),
+        ("buts_equipe_exterieur", 0.5, "under"), ("buts_equipe_exterieur", 0.5, "over"),
+        ("buts_equipe_domicile", 0.5, "under"), ("buts_equipe_domicile", 0.5, "over"),
+        ("parite_totale", "pair"), ("parite_totale", "impair"),
+    }
+
+    _FAMILLE_GROUPE = {
+        "1x2": ("RESULT", "GROUPE_RESULTAT"),
+        "double_chance": ("DOUBLE_CHANCE", "GROUPE_RESULTAT"),
+        "over_under_total": ("GOALS_TOTAL", "GROUPE_BUTS"),
+        "buts_equipe_domicile": ("GOALS_EQUIPE_DOMICILE", "GROUPE_BUTS"),
+        "buts_equipe_exterieur": ("GOALS_EQUIPE_EXTERIEUR", "GROUPE_BUTS"),
+        "handicap": ("HANDICAP", "GROUPE_HANDICAP"),
+        # COMBO_DC_TOTAL (chantier demandé par Patrick le 10/09/2026) :
+        # probabilité calculée CONJOINTEMENT (poisson.markets.probabilite_
+        # combo_dc_total, jamais un produit naïf DC x Total -- les deux
+        # dépendent du même score, v3 §9.4.3/9.4.4). Le calcul lui-même est
+        # donc correct et testé. Le risque n'est pas dans le calcul de
+        # probabilité mais dans la SÉLECTION : parier à la fois sur "1X" et
+        # sur "1X + Over 1.5" pour le même match double l'exposition au même
+        # évènement. Un simple exposure_group commun ne suffit pas ici (le
+        # combo est corrélé à DEUX marchés différents à la fois, DC et
+        # Total, pas à un seul groupe) -- voir le garde-fou explicite juste
+        # après la boucle, qui retire un combo si son composant DC ou son
+        # composant Total est déjà éligible sur ce match.
+        "combo_dc_total": ("COMBO_DC_TOTAL", "GROUPE_COMBO_DC_TOTAL"),
+    }
+
+    def _nom_marche_dynamique(cle):
+        if cle[0] in ("1x2", "double_chance"):
+            return f"{cle[0]}_{cle[1]}"
+        if cle[0] == "handicap":
+            _, ligne, sel = cle
+            return f"handicap_{sel}_{ligne}"
+        if cle[0] == "combo_dc_total":
+            _, dc, sens, ligne = cle
+            return f"combo_{dc}_{sens}_{ligne}"
+        _, ligne, sens = cle
+        return f"{cle[0]}_{ligne}_{sens}"
+
+    for cle_cote, cote_reelle in cotes.items():
+        if cle_cote in _CLES_DEJA_CABLEES:
+            continue
+        if cle_cote[0] not in _FAMILLE_GROUPE:
+            continue  # clé future non reconnue par ce module : ignorée, pas d'erreur
+        extracteur_dyn = _extractor_dynamique(cle_cote)
+        if extracteur_dyn is None:
+            continue
+
+        probabilites_dyn = {s: extracteur_dyn(s) for s in SCENARIOS}
+        robustesse_dyn = robustness.evalue_robustesse([probabilites_dyn[s] for s in SCENARIOS])
+        robustesse_statut_dyn = robustesse_dyn["statut"] if isinstance(robustesse_dyn, dict) else robustesse_dyn
+
+        marche_nom = _nom_marche_dynamique(cle_cote)
+        family, group = _FAMILLE_GROUPE[cle_cote[0]]
+
+        resultat_dyn = convergence.filtre_marche_convergent(
+            nombre_matchs_par_scenario=n_par_scenario,
+            probabilites_par_scenario=probabilites_dyn,
+            cote=cote_reelle,
+            robustesse=robustesse_statut_dyn,
+            marche=marche_nom,
+            market_family=family,
+            exposure_group=group,
+        )
+        diagnostics.append({"marche": marche_nom, "filtre": resultat_dyn.as_dict(), "h2h_statut": None})
+
+        if resultat_dyn.eligible:
+            p_repr_dyn = probabilites_dyn[SCENARIO_REPRESENTATIF]
+            valeur_dyn = edv_calculator.evalue_valeur(p_repr_dyn, cote_reelle)
+            candidats.append({
+                "marche": marche_nom,
+                "market_family": family,
+                "exposure_group": group,
+                "niveau": resultat_dyn.resultats_par_scenario[SCENARIO_REPRESENTATIF].niveau,
+                "robustesse": robustesse_statut_dyn,
+                "edge": valeur_dyn["edge"],
+                "edv": valeur_dyn["edv"],
+                "h2h_palier": fenetre_h2h["palier"],
+                "signal_direction": None,
+                "signal_frequence": None,
+                "_cle_cote": cle_cote,  # interne, retiré avant retour -- clé structurée
+                                        # d'origine, nécessaire au garde-fou anti-corrélation
+                                        # combo ci-dessous (jamais du texte reparsé).
+            })
+
+    # GARDE-FOU ANTI-CORRÉLATION COMBO (chantier du 10/09/2026, demandé par
+    # Patrick) : un candidat combo_dc_total est retiré si son composant DC
+    # (même sélection 1X/X2/12) OU son composant Total (même ligne ET même
+    # sens) est LUI-MÊME éligible sur ce match -- sinon un pari et sa
+    # variante combinée pourraient être sélectionnés tous les deux, ce qui
+    # double l'exposition au même évènement. Comparaison sur les clés
+    # STRUCTURÉES (`_cle_cote`), jamais sur le texte du nom de marché.
+    _dc_eligibles = {c["_cle_cote"][1] for c in candidats if c.get("_cle_cote", (None,))[0] == "double_chance"}
+    _total_eligibles = {
+        (c["_cle_cote"][1], c["_cle_cote"][2]) for c in candidats
+        if c.get("_cle_cote", (None,))[0] == "over_under_total"
+    }
+
+    def _combo_est_correle(cle):
+        _, dc, sens, ligne = cle
+        return dc in _dc_eligibles or (ligne, sens) in _total_eligibles
+
+    candidats = [
+        c for c in candidats
+        if c.get("_cle_cote", (None,))[0] != "combo_dc_total" or not _combo_est_correle(c["_cle_cote"])
+    ]
+    for c in candidats:
+        c.pop("_cle_cote", None)
 
     candidats_dedupliques = deduplication.deduplique(candidats, critere="edge") if candidats else []
     selection = selector.selectionner(candidats_dedupliques)
