@@ -3244,18 +3244,19 @@ try:
     # chantier n'a aucun effet sur le run tel qu'il est aujourd'hui.
     import json as _json_dyn
 
-    with open("precalcul.json", encoding="utf-8") as _f_dyn:
-        _d_dyn = _json_dyn.load(_f_dyn)
-    _ok_dyn = [
-        s for s in _d_dyn["signaux"]
-        if s.get("moteur_utilise") == "archetype_model" and s.get("archetype_model", {}).get("statut") == "OK"
-    ]
+    # Fixture FIGÉE (jamais le precalcul.json vivant -- il est écrasé à
+    # chaque run de production, un test de non-régression ne peut pas
+    # dépendre d'un fichier que la prod réécrit). Contient uniquement les
+    # champs nécessaires (lambdas/fenetres/cotes) des 446 matchs OK réels du
+    # run du 10/09/2026, extraits une fois pour toutes.
+    with open("fixture_rejeu_10092026.json", encoding="utf-8") as _f_dyn:
+        _ok_dyn = _json_dyn.load(_f_dyn)
     from archetype_model.data import odds_provider as _op_dyn
 
     _total_candidats_dyn = 0
     _matchs_avec_p1_dyn = set()
     for _s_dyn in _ok_dyn:
-        _am_res_dyn = _s_dyn["archetype_model"]
+        _am_res_dyn = _s_dyn
 
         def _fake_pour_ce_match(url_domicile, nom_domicile, url_exterieur, nom_exterieur, nom_competition,
                                  _am=_am_res_dyn):
