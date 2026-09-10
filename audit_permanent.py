@@ -3310,6 +3310,150 @@ finally:
 
 
 # ============================================================================
+section("archetype_model/justification.py — comptage historique PUREMENT "
+        "DESCRIPTIF (10/09/2026, demande de Patrick : \"va jusqu'au bout\") "
+        "pour remplacer les phrases génériques par des chiffres réels "
+        "(\"7 des 8 derniers matchs...\"). Ne doit JAMAIS influencer la "
+        "décision -- vérifié explicitement ci-dessous.")
+import archetype_model.justification as _just_dyn
+
+_matchs_a_test = [
+    {"domicile": True, "buts_marques": 2, "buts_encaisses": 1},
+    {"domicile": True, "buts_marques": 0, "buts_encaisses": 0},
+    {"domicile": False, "buts_marques": 3, "buts_encaisses": 0},
+    {"domicile": True, "buts_marques": 1, "buts_encaisses": 2},
+]
+_matchs_b_test = [
+    {"domicile": False, "buts_marques": 1, "buts_encaisses": 1},
+    {"domicile": False, "buts_marques": 0, "buts_encaisses": 2},
+    {"domicile": True, "buts_marques": 5, "buts_encaisses": 0},
+]
+
+verite(
+    "confirmation_historique CAS 1 (doit compter juste) : over_2_5 sur "
+    "dom_a=[3,0,3] + ext_b=[2,2] -> 2 confirmants sur 5",
+    _just_dyn.confirmation_historique("over_2_5", _matchs_a_test, _matchs_b_test)
+    == {"nb_confirmant": 2, "nb_echantillon": 5},
+)
+verite(
+    "confirmation_historique CAS 2 (doit compter juste) : cage_inviolee_domicile "
+    "sur dom_a=[enc:1,0,2] -> 1 clean sheet sur 3",
+    _just_dyn.confirmation_historique("cage_inviolee_domicile", _matchs_a_test, _matchs_b_test)
+    == {"nb_confirmant": 1, "nb_echantillon": 3},
+)
+verite(
+    "confirmation_historique CAS 3 (doit compter juste) : 1x2_exterieur sur "
+    "ext_b=[nul,defaite] -> 0 victoire sur 2",
+    _just_dyn.confirmation_historique("1x2_exterieur", _matchs_a_test, _matchs_b_test)
+    == {"nb_confirmant": 0, "nb_echantillon": 2},
+)
+verite(
+    "confirmation_historique CAS 4 (doit échouer proprement) : marché combo "
+    "non couvert -> None, jamais un chiffre inventé",
+    _just_dyn.confirmation_historique("combo_12_over_1.5", _matchs_a_test, _matchs_b_test) is None,
+)
+verite(
+    "confirmation_historique CAS 5 (doit échouer proprement) : échantillon "
+    "vide (aucun match à domicile dans la fenêtre) -> None, jamais 0/0",
+    _just_dyn.confirmation_historique(
+        "1x2_domicile", [{"domicile": False, "buts_marques": 1, "buts_encaisses": 0}], _matchs_b_test
+    ) is None,
+)
+verite(
+    "confirmation_historique CAS 6 (doit échouer proprement) : clé de "
+    "marché totalement inconnue -> None, jamais un crash",
+    _just_dyn.confirmation_historique("marche_qui_n_existe_pas", _matchs_a_test, _matchs_b_test) is None,
+)
+
+# --- Invariant capital : le champ ne doit JAMAIS influencer la décision.
+# Preuve par calcul, pas par lecture du code : on rejoue un vrai match du
+# fixture avec des matchs_retenus VOLONTAIREMENT différents (falsifiés) --
+# si la sélection P1/l'edge/l'edv changent, c'est que le module a une
+# influence cachée sur la décision, ce qui serait un bug grave.
+import json as _json_just
+
+with open("fixture_rejeu_10092026.json", encoding="utf-8") as _f_just:
+    _fixture_just = _json_just.load(_f_just)
+_match_test_just = _fixture_just[0]
+
+
+def _rejoue_avec_fenetres(fenetres_remplacement):
+    def _fake(url_domicile, nom_domicile, url_exterieur, nom_exterieur, nom_competition,
+              _am=_match_test_just, _fen=fenetres_remplacement):
+        from archetype_model.poisson import markets as _mk3, robustness as _rb3
+        _lambdas = _am["lambdas"]
+        _mps = {s: _mk3.calcule_tous_les_marches(_lambdas["A"][s], _lambdas["B"][s]) for s in _am_dyn.SCENARIOS}
+
+        def _v4c(extracteur):
+            return [extracteur(_mps[s]) for s in _am_dyn.SCENARIOS]
+
+        _rpm = {
+            "1x2_domicile": _rb3.evalue_robustesse(_v4c(lambda m: m["1x2"]["domicile"] if m["1x2"] else None)),
+            "1x2_nul": _rb3.evalue_robustesse(_v4c(lambda m: m["1x2"]["nul"] if m["1x2"] else None)),
+            "1x2_exterieur": _rb3.evalue_robustesse(_v4c(lambda m: m["1x2"]["exterieur"] if m["1x2"] else None)),
+            "btts": _rb3.evalue_robustesse(_v4c(lambda m: m["btts"])),
+            "over_2_5": _rb3.evalue_robustesse(_v4c(lambda m: m["over_under_total"][2.5]["over"] if m["over_under_total"][2.5] else None)),
+            "cage_inviolee_domicile": _rb3.evalue_robustesse(_v4c(lambda m: m["buts_equipe_exterieur"][0.5]["under"] if m["buts_equipe_exterieur"][0.5] else None)),
+            "cage_inviolee_exterieur": _rb3.evalue_robustesse(_v4c(lambda m: m["buts_equipe_domicile"][0.5]["under"] if m["buts_equipe_domicile"][0.5] else None)),
+            "parite_pair": _rb3.evalue_robustesse(_v4c(lambda m: m["parite_totale"]["pair"] if m["parite_totale"] else None)),
+        }
+        return {"statut": "OK", "fenetres": _fen, "lambdas": _lambdas,
+                "marches_par_scenario": _mps, "robustesse_par_marche": _rpm}
+
+    _am_dyn.analyse_match = _fake
+    _cotes_info_just = _op_dyn.extrait_cotes(_match_test_just)
+    _cotes_info_just["statut"] = "OK"
+    return _am_dyn.analyse_match_complet(
+        url_domicile="fake", nom_domicile=_match_test_just.get("domicile"),
+        url_exterieur="fake", nom_exterieur=_match_test_just.get("exterieur"),
+        nom_competition=_match_test_just.get("competition"), match_id=_match_test_just.get("match_id"),
+        url_h2h=None, cotes_info=_cotes_info_just,
+    )
+
+
+_fenetres_reelles = _match_test_just["fenetres"]
+_fenetres_falsifiees = {
+    "A": {**_fenetres_reelles["A"], "matchs_retenus": [
+        {"domicile": True, "buts_marques": 9, "buts_encaisses": 0} for _ in range(8)
+    ]},
+    "B": {**_fenetres_reelles["B"], "matchs_retenus": [
+        {"domicile": False, "buts_marques": 0, "buts_encaisses": 9} for _ in range(8)
+    ]},
+}
+_res_reel_just = _rejoue_avec_fenetres(_fenetres_reelles)
+_res_falsifie_just = _rejoue_avec_fenetres(_fenetres_falsifiees)
+
+_p1_reel = _res_reel_just["selection"].get("P1")
+_p1_falsifie = _res_falsifie_just["selection"].get("P1")
+_meme_decision = (
+    (_p1_reel is None) == (_p1_falsifie is None)
+    and (_p1_reel is None or (
+        _p1_reel["marche"] == _p1_falsifie["marche"]
+        and _p1_reel["edge"] == _p1_falsifie["edge"]
+        and _p1_reel["edv"] == _p1_falsifie["edv"]
+        and _p1_reel["niveau"] == _p1_falsifie["niveau"]
+    ))
+)
+verite(
+    "INVARIANT : falsifier complètement les matchs historiques utilisés "
+    "pour le comptage descriptif (confirmation_historique) NE CHANGE RIEN "
+    "à la sélection P1 (même marché, même edge, même edv, même niveau) -- "
+    "preuve que ce champ n'influence jamais la décision",
+    _meme_decision,
+)
+verite(
+    "Le comptage change bel et bien entre les deux jeux de matchs "
+    "(sinon le test ci-dessus serait vide de sens) : confirmation_historique "
+    "du P1 réel diffère entre fenêtres réelles et fenêtres falsifiées",
+    (_p1_reel is None and _p1_falsifie is None) or (
+        _p1_reel is not None and _p1_falsifie is not None
+        and _p1_reel.get("confirmation_historique") != _p1_falsifie.get("confirmation_historique")
+    ),
+)
+_am_dyn.analyse_match = _original_analyse_match_dyn
+
+
+# ============================================================================
 print("\n" + "=" * 70)
 if echecs:
     print(f"AUDIT ÉCHOUÉ -- {len(echecs)} vérité(s) fausse(s) :")
