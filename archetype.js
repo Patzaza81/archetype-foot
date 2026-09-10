@@ -50,15 +50,20 @@ const RANGS = [
   { cle: "P3", classe: "rang-3", pastille: "Pronostic bonus", sousTitre: "Troisième choix" },
 ];
 
-/** Construit la phrase "Pourquoi ?" à partir UNIQUEMENT de données déjà
- * calculées par le moteur (niveau, palier H2H). N'invente jamais un
- * chiffre ("7/8 derniers matchs") qui n'existe pas encore dans les
- * données -- voir la note transmise à Patrick : ce chiffre nécessite un
- * champ supplémentaire côté archetype_model, pas encore présent. */
-function construitPourquoi(candidat) {
+/** Construit la phrase "Pourquoi ?". Priorité à la phrase chiffrée et
+ * réelle (construitPhraseConfirmation, basée sur un vrai comptage de
+ * matchs passés) ; repli sur une phrase générique UNIQUEMENT si ce
+ * comptage n'est pas disponible pour ce marché (jamais un chiffre
+ * inventé pour combler l'absence). */
+function construitPourquoi(candidat, equipes) {
   const phrases = [];
-  const { texte: texteConfiance } = traduitNiveau(candidat.niveau);
-  phrases.push(`Le modèle statistique juge ce pronostic avec une confiance ${texteConfiance.toLowerCase()}.`);
+  const phraseChiffree = construitPhraseConfirmation(candidat.marche, candidat.confirmation_historique, equipes);
+  if (phraseChiffree) {
+    phrases.push(phraseChiffree);
+  } else {
+    const { texte: texteConfiance } = traduitNiveau(candidat.niveau);
+    phrases.push(`Le modèle statistique juge ce pronostic avec une confiance ${texteConfiance.toLowerCase()}.`);
+  }
   const phraseH2H = traduitPalierH2H(candidat.h2h_palier);
   if (phraseH2H) phrases.push(phraseH2H + ".");
   return phrases.join(" ");
@@ -117,7 +122,7 @@ function construitBlocCandidat(rangInfo, candidat, equipes) {
     </div>
     <div class="bloc-pourquoi">
       <div class="titre">Pourquoi ce choix ?</div>
-      <div class="texte">${echappeHtml(construitPourquoi(candidat))}</div>
+      <div class="texte">${echappeHtml(construitPourquoi(candidat, equipes))}</div>
     </div>
     <div class="metriques-secondaires">
       <div class="metrique">
