@@ -99,32 +99,57 @@ def analyse_match(url_domicile, nom_domicile, url_exterieur, nom_exterieur, nom_
     Analyse complète d'un match A (domicile) contre B (extérieur).
 
     Retourne un dict avec au minimum la clé "statut" :
-    - "INSUFFISANT" si l'une des deux équipes n'a pas assez de matchs
-      exploitables (v3 §4.2, N<5) dans la fenêtre pertinente
-      (domicile pour A, extérieur pour B) -- dans ce cas, aucune autre
-      clé n'est présente, ne jamais lire "lambdas"/"marches" sans
-      vérifier le statut d'abord. Note : l'insuffisance de la fenêtre
-      GLOBALE seule ne bloque PAS le match (elle rend juste λ_global
-      None pour l'équipe concernée, voir _stats_globales).
-    - "OK" sinon, avec "fenetres" (diagnostic des fenêtres utilisées),
-      "lambdas", "marches_par_scenario", "robustesse_par_marche".
+    - "INSUFFISANT" si l'une des deux équipes a moins de 5 matchs au
+      TOTAL cette saison, dans cette compétition (domicile+extérieur
+      confondus) -- CORRECTIF du 09/09/2026 (décision explicite de
+      Patrick) : la version précédente gatait séparément sur le
+      sous-ensemble domicile-seul (pour A) / extérieur-seul (pour B),
+      ce qui bloquait à tort des équipes ayant largement assez de
+      matchs au total mais peu dans un rôle précis (ex. 5 matchs
+      saison dont seulement 1 ou 2 à domicile, fréquent en tout début
+      de saison où N≥5 par rôle est mathématiquement quasi impossible
+      avant la 10e-12e journée). Aucune autre clé n'est présente dans
+      ce cas, ne jamais lire "lambdas"/"marches" sans vérifier le
+      statut d'abord. Note : l'insuffisance de la fenêtre GLOBALE seule
+      ne bloque PAS le match (elle rend juste λ_global None pour
+      l'équipe concernée, voir _stats_globales).
+    - "OK" sinon, avec "fenetres" (diagnostic des fenêtres TOTALES
+      utilisées pour le gate -- pas les sous-ensembles domicile/
+      extérieur), "lambdas", "marches_par_scenario",
+      "robustesse_par_marche".
+
+    IMPORTANT, conséquence du correctif ci-dessus : une fois le total
+    validé (N≥5), les moyennes GF/GA domicile (pour A) et extérieur
+    (pour B) sont calculées avec le sous-ensemble domicile-seul/
+    extérieur-seul DISPONIBLE dans les 12 matchs totaux les plus
+    récents retenus -- SANS nouveau seuil N≥5 appliqué à ce
+    sous-ensemble (décision explicite de Patrick : "on calcule les
+    moyennes avec les données dont on dispose"). Si ce sous-ensemble
+    est vide (ex. une équipe qui n'a joué qu'à l'extérieur jusqu'ici),
+    la moyenne devient None proprement (distributions.moyenne sur liste
+    vide, jamais un crash) et le scénario offensif/défensif concerné
+    devient None via lambda_estimators, sans affecter les autres
+    scénarios -- la robustesse (écart-type sur 4 valeurs dont une
+    None) deviendra alors INDETERMINE pour ce marché, ce qui le fera
+    rejeter par le filtre (ROBUSTESSE_INDISPONIBLE), sans jamais
+    fabriquer une fausse confiance sur une moyenne à 1 match.
     """
     historique_domicile = loader.recupere_historique_saison_courante(url_domicile, nom_competition, nom_domicile)
     historique_exterieur = loader.recupere_historique_saison_courante(url_exterieur, nom_competition, nom_exterieur)
 
-    matchs_dom_domicile, _ = loader.separe_domicile_exterieur(historique_domicile)
-    _, matchs_ext_exterieur = loader.separe_domicile_exterieur(historique_exterieur)
-
-    fenetre_a = validation.classifie_fenetre(matchs_dom_domicile)
-    fenetre_b = validation.classifie_fenetre(matchs_ext_exterieur)
+    fenetre_a = validation.classifie_fenetre(historique_domicile)
+    fenetre_b = validation.classifie_fenetre(historique_exterieur)
 
     if fenetre_a["statut"] != validation.STATUT_UTILISABLE or fenetre_b["statut"] != validation.STATUT_UTILISABLE:
         return {"statut": "INSUFFISANT", "fenetres": {"A": fenetre_a, "B": fenetre_b}}
 
-    stats_off_a = team_stats.stats_offensives(fenetre_a["matchs_retenus"])
-    stats_def_a = team_stats.stats_defensives(fenetre_a["matchs_retenus"])
-    stats_off_b = team_stats.stats_offensives(fenetre_b["matchs_retenus"])
-    stats_def_b = team_stats.stats_defensives(fenetre_b["matchs_retenus"])
+    matchs_dom_domicile, _ = loader.separe_domicile_exterieur(fenetre_a["matchs_retenus"])
+    _, matchs_ext_exterieur = loader.separe_domicile_exterieur(fenetre_b["matchs_retenus"])
+
+    stats_off_a = team_stats.stats_offensives(matchs_dom_domicile)
+    stats_def_a = team_stats.stats_defensives(matchs_dom_domicile)
+    stats_off_b = team_stats.stats_offensives(matchs_ext_exterieur)
+    stats_def_b = team_stats.stats_defensives(matchs_ext_exterieur)
 
     gf_a_global, ga_a_global = _stats_globales(historique_domicile)
     gf_b_global, ga_b_global = _stats_globales(historique_exterieur)
