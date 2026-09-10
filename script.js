@@ -236,6 +236,20 @@ function afficheErreur(message) {
   document.getElementById("maj").textContent = "erreur de chargement : " + message;
 }
 
+// AJOUT 10/09/2026 (correctif urgent) -- jusqu'ici, "retenu" ne voulait dire
+// qu'une seule chose : verdict_global === "GO" (ancien moteur). Un match où
+// archetype_model trouve un P1 réel mais où l'ancien moteur dit NO_GO était
+// invisible sur cette page (trié en bas, masqué par le filtre GO, badgé
+// "✕ NO_GO" à tort) -- alors que la donnée elle-même était correcte, voir
+// script.js::construitBlocArchetypeModel. Ne remplace RIEN de l'ancien
+// moteur, ajoute seulement un second critère de "retenu".
+function estArchetypeGo(m) {
+  return m.moteur_utilise === "archetype_model"
+    && m.archetype_model
+    && m.archetype_model.statut === "OK"
+    && !!(m.archetype_model.selection && m.archetype_model.selection.P1);
+}
+
 function meilleurEv(m) {
   if (m.verdict_global !== "GO") return -Infinity;
   const listeB = m.LISTE_B_liste_finale_apres_correlation;
@@ -246,15 +260,15 @@ function meilleurEv(m) {
 function trieEtFiltre(matchs) {
   const copie = [...(matchs || [])];
   copie.sort((a, b) => {
-    const rangA = a.verdict_global === "GO" ? 0 : (a.traite ? 1 : 2);
-    const rangB = b.verdict_global === "GO" ? 0 : (b.traite ? 1 : 2);
+    const rangA = (a.verdict_global === "GO" || estArchetypeGo(a)) ? 0 : (a.traite ? 1 : 2);
+    const rangB = (b.verdict_global === "GO" || estArchetypeGo(b)) ? 0 : (b.traite ? 1 : 2);
     if (rangA !== rangB) return rangA - rangB;
     if (rangA === 0) return meilleurEv(b) - meilleurEv(a);
     return 0;
   });
   const filtreGo = document.getElementById("filtre-go");
   if (filtreGo && filtreGo.checked) {
-    return copie.filter((m) => m.verdict_global === "GO");
+    return copie.filter((m) => m.verdict_global === "GO" || estArchetypeGo(m));
   }
   return copie;
 }
@@ -337,8 +351,11 @@ function construitCarteMatch(m) {
     html += `<div class="signal-non-traite">non analysé — ${echappeHtml(traduireRaison(m.raison_non_traite))}</div>`;
   } else {
     const estGo = m.verdict_global === "GO";
+    const estArchGo = !estGo && estArchetypeGo(m);
+    const classeBadge = estGo ? "badge-go" : (estArchGo ? "badge-archetype" : "badge-nogo");
+    const texteBadge = estGo ? "✓ GO" : (estArchGo ? "★ ARCHETYPE" : "✕ NO_GO");
     html += `<div class="ligne-verdict">
-      <span class="badge ${estGo ? "badge-go" : "badge-nogo"}">${estGo ? "✓ GO" : "✕ NO_GO"}</span>
+      <span class="badge ${classeBadge}">${texteBadge}</span>
     </div>`;
     html += construitNiveau3(m);
     if (!estGo && m.motif_no_go) {
@@ -429,7 +446,8 @@ let modeAffichage = "liste"; // 03/09/2026 -- "liste" ou "categorie"
 function reaffiche() {
   const trie = trieEtFiltre(dernierEnsembleBrut);
   const nbGo = dernierEnsembleBrut.filter((m) => m.verdict_global === "GO").length;
-  const enTete = `${dernierEnTeteBase} — ${nbGo} GO`;
+  const nbArchGo = dernierEnsembleBrut.filter((m) => m.verdict_global !== "GO" && estArchetypeGo(m)).length;
+  const enTete = `${dernierEnTeteBase} — ${nbGo} GO${nbArchGo ? ` + ${nbArchGo} ARCHETYPE` : ""}`;
   if (modeAffichage === "categorie") {
     afficheMatchsGroupe(trie, enTete);
   } else {
