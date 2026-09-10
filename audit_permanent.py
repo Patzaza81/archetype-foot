@@ -3100,6 +3100,215 @@ finally:
 
 
 # ============================================================================
+section("archetype_model/main.py — PÉRIMÈTRE DYNAMIQUE de marchés (10/09/2026, "
+        "demande explicite de Patrick) : Double Chance, Over/Under toutes lignes "
+        "cotées, buts par équipe toutes lignes, Handicap toutes lignes, Pair/"
+        "Impair, PLUS marchés combinés DC+Total avec garde-fou anti-corrélation. "
+        "Remplace la liste figée à 12 marchés par un parcours de `cotes` "
+        "(data.odds_provider) : tout marché dont la cote existe ET que le "
+        "modèle sait calculer entre automatiquement, sans modification "
+        "manuelle de main.py.")
+import archetype_model.main as _am_dyn
+
+_original_analyse_match_dyn = _am_dyn.analyse_match
+
+
+def _fake_analyse_match_dyn(url_domicile, nom_domicile, url_exterieur, nom_exterieur, nom_competition):
+    """Match synthétique équipe A nettement dominante (mêmes λ sur les 4
+    scénarios -> robustesse trivialement STABLE) -- isole la logique du
+    périmètre dynamique et du garde-fou combo, sans dépendre du réseau."""
+    lambdas = {"A": {s: 2.2 for s in _am_dyn.SCENARIOS}, "B": {s: 0.5 for s in _am_dyn.SCENARIOS}}
+    from archetype_model.poisson import markets as _mk_dyn, robustness as _rb_dyn
+    marches_par_scenario = {
+        s: _mk_dyn.calcule_tous_les_marches(lambdas["A"][s], lambdas["B"][s]) for s in _am_dyn.SCENARIOS
+    }
+
+    def _v4(extracteur):
+        return [extracteur(marches_par_scenario[s]) for s in _am_dyn.SCENARIOS]
+
+    robustesse_par_marche = {
+        "1x2_domicile": _rb_dyn.evalue_robustesse(_v4(lambda m: m["1x2"]["domicile"])),
+        "1x2_nul": _rb_dyn.evalue_robustesse(_v4(lambda m: m["1x2"]["nul"])),
+        "1x2_exterieur": _rb_dyn.evalue_robustesse(_v4(lambda m: m["1x2"]["exterieur"])),
+        "btts": _rb_dyn.evalue_robustesse(_v4(lambda m: m["btts"])),
+        "over_2_5": _rb_dyn.evalue_robustesse(_v4(lambda m: m["over_under_total"][2.5]["over"])),
+        "cage_inviolee_domicile": _rb_dyn.evalue_robustesse(_v4(lambda m: m["buts_equipe_exterieur"][0.5]["under"])),
+        "cage_inviolee_exterieur": _rb_dyn.evalue_robustesse(_v4(lambda m: m["buts_equipe_domicile"][0.5]["under"])),
+        "parite_pair": _rb_dyn.evalue_robustesse(_v4(lambda m: m["parite_totale"]["pair"])),
+    }
+    return {
+        "statut": "OK",
+        "fenetres": {
+            "A": {"statut": "UTILISABLE", "matchs_retenus": [{"buts_marques": 1, "buts_encaisses": 1} for _ in range(8)]},
+            "B": {"statut": "UTILISABLE", "matchs_retenus": [{"buts_marques": 1, "buts_encaisses": 1} for _ in range(8)]},
+        },
+        "lambdas": lambdas,
+        "marches_par_scenario": marches_par_scenario,
+        "robustesse_par_marche": robustesse_par_marche,
+    }
+
+
+def _run_dyn(cotes_dict):
+    _am_dyn.analyse_match = _fake_analyse_match_dyn
+    cotes_info = {"cotes": cotes_dict, "statut": "OK"}
+    return _am_dyn.analyse_match_complet(
+        url_domicile="fake", nom_domicile="A", url_exterieur="fake", nom_exterieur="B",
+        nom_competition="Test", match_id="m1", url_h2h=None, cotes_info=cotes_info,
+    )
+
+
+try:
+    # --- Périmètre dynamique de base : Double Chance et Handicap, marchés
+    # jamais câblés en dur avant ce chantier, doivent devenir des candidats
+    # dès lors qu'une cote existe -- preuve que le parcours de `cotes` marche
+    # réellement, pas seulement les 12 marchés historiques.
+    _r_dc = _run_dyn({("double_chance", "1X"): 1.30})
+    verite(
+        "Périmètre dynamique : Double Chance 1X devient un candidat réel dès "
+        "qu'une cote existe, sans entrée dédiée dans main.py",
+        any(c["marche"] == "double_chance_1X" for c in _r_dc["candidats"]),
+    )
+
+    _r_hcp = _run_dyn({("handicap", -0.5, "domicile"): 1.45})
+    verite(
+        "Périmètre dynamique : Handicap domicile -0.5 devient un candidat "
+        "réel, groupe d'exposition dédié GROUPE_HANDICAP (3e groupe, "
+        "distinct de GROUPE_RESULTAT/GROUPE_BUTS)",
+        any(c["marche"] == "handicap_domicile_-0.5" and c["exposure_group"] == "GROUPE_HANDICAP"
+            for c in _r_hcp["candidats"]),
+    )
+
+    # --- Garde-fou anti-corrélation combo_dc_total (probabilité conjointe,
+    # jamais un produit naïf -- voir poisson/markets.py::probabilite_
+    # combo_dc_total) : 3 cas qui DOIVENT accepter le combo, 3 qui DOIVENT
+    # le rejeter proprement, sans jamais toucher aux candidats non-combo.
+    def _combos(r):
+        return [c["marche"] for c in r["candidats"] if c["market_family"] == "COMBO_DC_TOTAL"]
+
+    _c1 = _combos(_run_dyn({("combo_dc_total", "12", "over", 1.5): 1.70}))
+    verite(
+        "Garde-fou combo CAS 1 (doit accepter) : combo isolé, aucun "
+        "composant DC/Total coté par ailleurs -> accepté",
+        _c1 == ["combo_12_over_1.5"],
+    )
+
+    _c2 = _combos(_run_dyn({("combo_dc_total", "12", "over", 1.5): 1.70, ("double_chance", "1X"): 1.30}))
+    verite(
+        "Garde-fou combo CAS 2 (doit accepter) : DC coté sur une sélection "
+        "DIFFÉRENTE (1X, pas 12) -> pas corrélé, combo accepté",
+        _c2 == ["combo_12_over_1.5"],
+    )
+
+    _c3 = _combos(_run_dyn({("combo_dc_total", "12", "over", 1.5): 1.70, ("over_under_total", 3.5, "under"): 1.55}))
+    verite(
+        "Garde-fou combo CAS 3 (doit accepter) : Total coté sur une ligne "
+        "DIFFÉRENTE (3.5, pas 1.5) -> pas corrélé, combo accepté",
+        _c3 == ["combo_12_over_1.5"],
+    )
+
+    _r4 = _run_dyn({("combo_dc_total", "12", "over", 1.5): 1.70, ("double_chance", "12"): 1.30})
+    verite(
+        "Garde-fou combo CAS 4 (doit rejeter proprement) : composant DC "
+        "EXACT (même sélection 12) également éligible -> combo retiré, DC "
+        "conservé (pas de sur-suppression)",
+        _combos(_r4) == [] and any(c["marche"] == "double_chance_12" for c in _r4["candidats"]),
+    )
+
+    _r5 = _run_dyn({("combo_dc_total", "12", "over", 1.5): 1.70, ("over_under_total", 1.5, "over"): 1.45})
+    verite(
+        "Garde-fou combo CAS 5 (doit rejeter proprement) : composant Total "
+        "EXACT (même ligne 1.5, même sens over) également éligible -> combo "
+        "retiré, Total conservé",
+        _combos(_r5) == [] and any(c["marche"] == "over_under_total_1.5_over" for c in _r5["candidats"]),
+    )
+
+    _r6 = _run_dyn({
+        ("combo_dc_total", "12", "over", 1.5): 1.70,
+        ("double_chance", "12"): 1.30,
+        ("over_under_total", 1.5, "over"): 1.45,
+    })
+    verite(
+        "Garde-fou combo CAS 6 (doit rejeter proprement) : DC ET Total "
+        "corrélés tous les deux éligibles -> combo retiré, les deux autres "
+        "conservés",
+        _combos(_r6) == [] and len(_r6["candidats"]) == 2,
+    )
+
+    # --- Non-régression : le rejeu réel des 446 matchs OK du run du "
+    # 10/09/2026 (precalcul.json, lambdas déjà calculés, zéro réseau) donne
+    # toujours 68 candidats 4/4 (16 base + 52 nouveau périmètre) et 48
+    # matchs distincts avec un P1 réel après dédoublonnage/sélection --
+    # valeurs figées ici pour détecter toute régression future. Combos exclus
+    # de ce chiffre : aucune cote combo n'existe dans les vraies données
+    # actuelles (scraper_betpawa.py ne les extrait pas encore), donc ce
+    # chantier n'a aucun effet sur le run tel qu'il est aujourd'hui.
+    import json as _json_dyn
+
+    with open("precalcul.json", encoding="utf-8") as _f_dyn:
+        _d_dyn = _json_dyn.load(_f_dyn)
+    _ok_dyn = [
+        s for s in _d_dyn["signaux"]
+        if s.get("moteur_utilise") == "archetype_model" and s.get("archetype_model", {}).get("statut") == "OK"
+    ]
+    from archetype_model.data import odds_provider as _op_dyn
+
+    _total_candidats_dyn = 0
+    _matchs_avec_p1_dyn = set()
+    for _s_dyn in _ok_dyn:
+        _am_res_dyn = _s_dyn["archetype_model"]
+
+        def _fake_pour_ce_match(url_domicile, nom_domicile, url_exterieur, nom_exterieur, nom_competition,
+                                 _am=_am_res_dyn):
+            from archetype_model.poisson import markets as _mk2, robustness as _rb2
+            _lambdas = _am["lambdas"]
+            _mps = {s: _mk2.calcule_tous_les_marches(_lambdas["A"][s], _lambdas["B"][s]) for s in _am_dyn.SCENARIOS}
+
+            def _v4b(extracteur):
+                return [extracteur(_mps[s]) for s in _am_dyn.SCENARIOS]
+
+            _rpm = {
+                "1x2_domicile": _rb2.evalue_robustesse(_v4b(lambda m: m["1x2"]["domicile"] if m["1x2"] else None)),
+                "1x2_nul": _rb2.evalue_robustesse(_v4b(lambda m: m["1x2"]["nul"] if m["1x2"] else None)),
+                "1x2_exterieur": _rb2.evalue_robustesse(_v4b(lambda m: m["1x2"]["exterieur"] if m["1x2"] else None)),
+                "btts": _rb2.evalue_robustesse(_v4b(lambda m: m["btts"])),
+                "over_2_5": _rb2.evalue_robustesse(_v4b(lambda m: m["over_under_total"][2.5]["over"] if m["over_under_total"][2.5] else None)),
+                "cage_inviolee_domicile": _rb2.evalue_robustesse(_v4b(lambda m: m["buts_equipe_exterieur"][0.5]["under"] if m["buts_equipe_exterieur"][0.5] else None)),
+                "cage_inviolee_exterieur": _rb2.evalue_robustesse(_v4b(lambda m: m["buts_equipe_domicile"][0.5]["under"] if m["buts_equipe_domicile"][0.5] else None)),
+                "parite_pair": _rb2.evalue_robustesse(_v4b(lambda m: m["parite_totale"]["pair"] if m["parite_totale"] else None)),
+            }
+            return {"statut": "OK", "fenetres": _am["fenetres"], "lambdas": _lambdas,
+                    "marches_par_scenario": _mps, "robustesse_par_marche": _rpm}
+
+        _am_dyn.analyse_match = _fake_pour_ce_match
+        _cotes_info_dyn = _op_dyn.extrait_cotes(_s_dyn)
+        _cotes_info_dyn["statut"] = "OK"
+        _res_dyn = _am_dyn.analyse_match_complet(
+            url_domicile="fake", nom_domicile=_s_dyn.get("domicile"),
+            url_exterieur="fake", nom_exterieur=_s_dyn.get("exterieur"),
+            nom_competition=_s_dyn.get("competition"), match_id=_s_dyn.get("match_id"),
+            url_h2h=None, cotes_info=_cotes_info_dyn,
+        )
+        if _res_dyn["statut"] != "OK":
+            continue
+        _total_candidats_dyn += len(_res_dyn["candidats"])
+        if _res_dyn["selection"].get("P1"):
+            _matchs_avec_p1_dyn.add(_s_dyn.get("match_id"))
+
+    verite(
+        f"Rejeu réel (446 matchs OK, run du 10/09/2026) : 68 candidats 4/4 "
+        f"AVANT dédoublonnage (obtenu : {_total_candidats_dyn})",
+        _total_candidats_dyn == 68,
+    )
+    verite(
+        f"Rejeu réel (446 matchs OK, run du 10/09/2026) : 48 matchs distincts "
+        f"avec un P1 réel APRÈS dédoublonnage/sélection (obtenu : {len(_matchs_avec_p1_dyn)})",
+        len(_matchs_avec_p1_dyn) == 48,
+    )
+finally:
+    _am_dyn.analyse_match = _original_analyse_match_dyn
+
+
+# ============================================================================
 print("\n" + "=" * 70)
 if echecs:
     print(f"AUDIT ÉCHOUÉ -- {len(echecs)} vérité(s) fausse(s) :")
