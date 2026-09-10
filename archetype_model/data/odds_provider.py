@@ -27,11 +27,16 @@ source de cote par match existe dans precalcul.json aujourd'hui, pas
 un choix entre plusieurs.
 
 MARCHÉS NON COUVERTS, assumé et documenté (pas une erreur silencieuse) :
-`precalcul.json` fournit des cotes pour "Cage inviolée" (clean sheet)
-et "Total buts - pair/impair" (v3 §9.2 : familles CLEAN_SHEET et
-PAIR_IMPAIR) -- non codées dans poisson/markets.py à ce jour. Ces
-libellés sont reconnus comme "non couverts", jamais silencieusement
-ignorés : voir `marches_non_couverts` dans le résultat.
+statut au 09/09/2026 (reprise de session, 2e feu vert de Patrick) --
+"Cage inviolée" et "Encaisse au moins 1 but", domicile ET extérieur, plus
+"Total buts - pair/impair" sont désormais TOUS couverts (v3 §9.2, familles
+CLEAN_SHEET et PAIR_IMPAIR -- CLEAN_SHEET réutilise directement
+buts_equipe_exterieur[0.5]/buts_equipe_domicile[0.5] déjà calculés, voir
+poisson/markets.py::probabilite_parite_totale pour PAIR_IMPAIR). Sur le
+run réel du 09/09/2026 (698 matchs), plus aucun libellé non couvert.
+`marches_non_couverts` reste dans le résultat pour tout libellé qui
+apparaîtrait à l'avenir et ne serait pas encore reconnu -- jamais
+silencieusement ignoré.
 """
 
 import json
@@ -48,6 +53,21 @@ _LIBELLES_STATIQUES = {
     "Double chance - 12": ("double_chance", "12"),
     "BTTS - oui": ("btts", "oui"),
     "BTTS - non": ("btts", "non"),
+    "Total buts - pair": ("parite_totale", "pair"),
+    "Total buts - impair": ("parite_totale", "impair"),
+    # Cage inviolée domicile = l'EXTÉRIEUR ne marque pas = exactement
+    # buts_equipe_exterieur à la ligne 0.5, côté "under" -- même
+    # probabilité, pas une approximation (chantier du 09/09/2026, feu
+    # vert de Patrick). "Encaisse au moins 1 but" est son complément
+    # exact (côté "over" de la même ligne). Symétrique côté extérieur :
+    # cage inviolée extérieur = le DOMICILE ne marque pas =
+    # buts_equipe_domicile à la ligne 0.5 (2e feu vert, même séance :
+    # "tout ajouter sans exception si les données permettent de calculer
+    # sans ambiguïté").
+    "Cage inviolée - Domicile": ("buts_equipe_exterieur", 0.5, "under"),
+    "Encaisse au moins 1 but - Domicile": ("buts_equipe_exterieur", 0.5, "over"),
+    "Cage inviolée - Extérieur": ("buts_equipe_domicile", 0.5, "under"),
+    "Encaisse au moins 1 but - Extérieur": ("buts_equipe_domicile", 0.5, "over"),
 }
 
 _RE_BUTS = re.compile(r"^(Plus|Moins) de (\d+(?:\.\d+)?) buts(?: - (Domicile|Extérieur))?$")
