@@ -42,7 +42,7 @@ from .signals import statistiques_signal
 from .signals import convergence
 from .signals import deduplication
 from .signals import selector
-from . import justification
+import justification
 from .edv import calculator as edv_calculator
 
 SCENARIOS = ("offensif", "defensif", "contextuel", "global")
@@ -198,6 +198,10 @@ def analyse_match(url_domicile, nom_domicile, url_exterieur, nom_exterieur, nom_
         "lambdas": lambdas,
         "marches_par_scenario": marches_par_scenario,
         "robustesse_par_marche": robustesse_par_marche,
+        # Historique complet conservé uniquement en mémoire pour construire
+        # les preuves d'affichage après sélection. Il n'entre dans aucun
+        # calcul du modèle et est retiré avant la sortie finale.
+        "_historique_justification": {"A": historique_domicile, "B": historique_exterieur},
     }
 
 
@@ -241,7 +245,10 @@ def _construit_candidat(*, marche, market_family, exposure_group,
                          marches_par_scenario, extracteur, cote,
                          robustesse_statut, n_par_scenario,
                          h2h_palier, h2h_statut, signal,
-                         matchs_a_domicile=None, matchs_b_exterieur=None):
+                         matchs_a_domicile=None, matchs_b_exterieur=None,
+                         historique_a=None, historique_b=None,
+                         confrontations_h2h=None, nom_domicile="", nom_exterieur=""):
+
     """
     Applique le filtre de convergence (unanimité des 4 scénarios) à UN
     marché. Retourne (candidat, diagnostic) -- `candidat` est None si le
@@ -295,6 +302,11 @@ def _construit_candidat(*, marche, market_family, exposure_group,
         "confirmation_historique": justification.confirmation_historique(
             marche, matchs_a_domicile, matchs_b_exterieur
         ) if matchs_a_domicile is not None or matchs_b_exterieur is not None else None,
+        "justification": justification.construit_justification(
+            marche, historique_a or [], historique_b or [],
+            h2h=confrontations_h2h or [],
+            nom_domicile=nom_domicile, nom_exterieur=nom_exterieur,
+        ),
     }
     return candidat, diagnostic
 
@@ -415,6 +427,9 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
     # Même convention que lambda_estimators.py (gf_a_domicile, ga_b_exterieur).
     _matchs_a_domicile = [m for m in base["fenetres"]["A"]["matchs_retenus"] if m.get("domicile") is True]
     _matchs_b_exterieur = [m for m in base["fenetres"]["B"]["matchs_retenus"] if m.get("domicile") is False]
+    _historique_a_justif = base.get("_historique_justification", {}).get("A", [])
+    _historique_b_justif = base.get("_historique_justification", {}).get("B", [])
+    _h2h_justif = fenetre_h2h.get("confrontations_retenues", [])
 
     def _ajoute(marche, family, group, extracteur, cle_cote, robustesse_key, signal, h2h_statut):
         candidat, diag = _construit_candidat(
@@ -425,6 +440,9 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
             n_par_scenario=n_par_scenario, h2h_palier=fenetre_h2h["palier"],
             h2h_statut=h2h_statut, signal=signal,
             matchs_a_domicile=_matchs_a_domicile, matchs_b_exterieur=_matchs_b_exterieur,
+            historique_a=_historique_a_justif, historique_b=_historique_b_justif,
+            confrontations_h2h=_h2h_justif,
+            nom_domicile=nom_domicile, nom_exterieur=nom_exterieur,
         )
         diagnostics.append(diag)
         if candidat is not None:
@@ -669,6 +687,10 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
                 "signal_frequence": None,
                 "confirmation_historique": justification.confirmation_historique(
                     marche_nom, _matchs_a_domicile, _matchs_b_exterieur
+                ),
+                "justification": justification.construit_justification(
+                    marche_nom, _historique_a_justif, _historique_b_justif,
+                    h2h=_h2h_justif, nom_domicile=nom_domicile, nom_exterieur=nom_exterieur,
                 ),
                 "_cle_cote": cle_cote,  # interne, retiré avant retour -- clé structurée
                                         # d'origine, nécessaire au garde-fou anti-corrélation
