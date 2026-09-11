@@ -12,21 +12,20 @@ annulé le 08/09/2026, décision explicite de Patrick ("on reste sur les
 matchs de championnat"). Voir `_stats_globales` ci-dessous et l'en-tête
 de data/loader.py pour l'historique de cette décision.
 
-PÉRIMÈTRE ASSUMÉ restant, décision du 08/09/2026 (contrainte de temps) :
-- Marchés calculés : TOUS ceux couverts par poisson.markets.calcule_tous_les_marches
-  (1X2, Double Chance, BTTS, Over/Under total, buts par équipe,
-  Handicap au quart de but, combos DC+Total) -- voir poisson/markets.py
-  pour le détail et les lignes par défaut assumées.
-- Robustesse calculée seulement sur un sous-ensemble (1X2 x3, BTTS,
-  Over/Under 2.5) -- l'étendre à tous les nouveaux marchés (handicap,
-  combos, buts par équipe) n'est pas fait ici, faute de temps ; la
-  structure (_valeurs_4_scenarios + extracteur) est générique et se
-  réutilise directement pour n'importe quel marché.
-- `backtest.boucle_b` calcule maintenant λ_global de la même façon
+PÉRIMÈTRE MARCHÉS : le moteur calcule les familles couvertes par
+`poisson.markets`, puis `analyse_match_complet()` utilise le registre
+dynamique des marchés réellement cotés. La robustesse des marchés dynamiques
+est calculée au moment de leur évaluation ; aucune famille cotée n’est
+écartée uniquement parce qu’elle n’était pas dans l’ancienne liste de 12.
+
+`backtest.boucle_b` calcule maintenant λ_global de la même façon
   (compétition unique, domicile+extérieur fusionnés) -- possible sans
   fetch supplémentaire car `cache_equipes.json` contient déjà les deux
   listes par équipe pour cette compétition.
 """
+
+import os
+import statistics
 
 from .data import loader
 from .data import validation
@@ -34,7 +33,6 @@ from .data import odds_provider
 from .statistics import team_stats
 from .poisson import lambda_estimators
 from .poisson import markets
-from .poisson import distribution
 from .poisson import robustness
 from .h2h import h2h_stats
 from .h2h import h2h_markets
@@ -42,8 +40,9 @@ from .signals import statistiques_signal
 from .signals import convergence
 from .signals import deduplication
 from .signals import selector
-import justification
+from .signals import market_registry
 from .edv import calculator as edv_calculator
+import justification
 
 SCENARIOS = ("offensif", "defensif", "contextuel", "global")
 
@@ -57,6 +56,13 @@ SCENARIOS = ("offensif", "defensif", "contextuel", "global")
 # désigné pour porter les valeurs affichées d'un candidat une fois éligible).
 # À AJUSTER SI LE v3 PRÉCISE AUTRE CHOSE.
 SCENARIO_REPRESENTATIF = "offensif"
+
+# Mode de décision : le mode historique 4/4 reste disponible pour comparaison.
+# Le mode 3/4 reste explicitement optionnel pour les études comparatives.
+# La production reste par défaut en unanimité 4/4.
+MODE_CONVERGENCE = os.getenv("ARCHETYPE_MODE_CONVERGENCE", "UNANIMITE_4_4").strip().upper()
+if MODE_CONVERGENCE not in {"UNANIMITE_4_4", "CONSENSUS_3_4"}:
+    MODE_CONVERGENCE = "UNANIMITE_4_4"
 
 
 def _valeurs_4_scenarios(resultats_par_scenario, extracteur):
@@ -240,8 +246,7 @@ def _par_scenario(marches_par_scenario, extracteur):
 def _construit_candidat(*, marche, market_family, exposure_group,
                          marches_par_scenario, extracteur, cote,
                          robustesse_statut, n_par_scenario,
-                         h2h_palier, h2h_statut, signal,
-                         matchs_a_domicile=None, matchs_b_exterieur=None):
+                         h2h_palier, h2h_statut, signal):
     """
     Applique le filtre de convergence (unanimité des 4 scénarios) à UN
     marché. Retourne (candidat, diagnostic) -- `candidat` est None si le
@@ -254,16 +259,14 @@ def _construit_candidat(*, marche, market_family, exposure_group,
     signal_direction/signal_frequence restent None sur le candidat --
     dégradé proprement (selector.py traite déjà une valeur absente comme
     le rang le plus bas, jamais un crash, voir signals/selector.py).
-
-    `matchs_a_domicile`/`matchs_b_exterieur` (10/09/2026, demande de
-    Patrick) : les matchs RÉELS déjà chargés (fenetres.A/B.matchs_retenus),
-    passés à justification.confirmation_historique() pour produire un
-    comptage PUREMENT DESCRIPTIF ("7 des 8 derniers matchs..."), ajouté au
-    candidat une fois la décision déjà prise -- n'entre dans aucun calcul
-    de probabilité, de filtre ou de sélection ci-dessus.
     """
     probabilites = _par_scenario(marches_par_scenario, extracteur)
-    resultat = convergence.filtre_marche_convergent(
+    filtre_convergence = (
+        convergence.filtre_marche_consensus_3_sur_4
+        if MODE_CONVERGENCE == "CONSENSUS_3_4"
+        else convergence.filtre_marche_convergent
+    )
+    resultat = filtre_convergence(
         nombre_matchs_par_scenario=n_par_scenario,
         probabilites_par_scenario=probabilites,
         cote=cote,
@@ -277,24 +280,40 @@ def _construit_candidat(*, marche, market_family, exposure_group,
     if not resultat.eligible:
         return None, diagnostic
 
-    p_repr = probabilites[SCENARIO_REPRESENTATIF]
-    valeur = edv_calculator.evalue_valeur(p_repr, cote)
+    # En consensus 3/4, aucune branche n'est privilégiée : la médiane des
+    # quatre probabilités constitue la valeur centrale affichée et économique.
+    # En mode historique 4/4, on conserve strictement la convention offensive.
+    probabilites_valides = [
+        float(p) for p in probabilites.values()
+        if isinstance(p, (int, float)) and not isinstance(p, bool) and 0.0 <= float(p) <= 1.0
+    ]
+    if MODE_CONVERGENCE == "CONSENSUS_3_4" and probabilites_valides:
+        p_repr = statistics.median(probabilites_valides)
+        valeur = edv_calculator.evalue_valeur(p_repr, cote)
+        niveau_repr = convergence.filtre_marche(
+            nombre_matchs=n_par_scenario.get(SCENARIOS[0]),
+            probabilite_centrale=p_repr,
+            cote=cote,
+            edv=valeur["edv"],
+            robustesse=robustesse_statut,
+            marche=marche, market_family=market_family, exposure_group=exposure_group,
+        ).niveau
+    else:
+        p_repr = probabilites[SCENARIO_REPRESENTATIF]
+        valeur = edv_calculator.evalue_valeur(p_repr, cote)
+        niveau_repr = resultat.resultats_par_scenario[SCENARIO_REPRESENTATIF].niveau
     candidat = {
         "marche": marche,
         "market_family": market_family,
         "exposure_group": exposure_group,
-        "niveau": resultat.resultats_par_scenario[SCENARIO_REPRESENTATIF].niveau,
+        "niveau": niveau_repr,
+        "probabilite_centrale": p_repr,
         "robustesse": robustesse_statut,
-        "probabilite": p_repr,
-        "cote": cote,
         "edge": valeur["edge"],
         "edv": valeur["edv"],
         "h2h_palier": h2h_palier,
         "signal_direction": signal["direction"] if signal else None,
         "signal_frequence": signal["frequence"] if signal else None,
-        "confirmation_historique": justification.confirmation_historique(
-            marche, matchs_a_domicile, matchs_b_exterieur
-        ) if matchs_a_domicile is not None or matchs_b_exterieur is not None else None,
     }
     return candidat, diagnostic
 
@@ -305,7 +324,7 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
     """
     Orchestration complète d'un match réel A (domicile) contre B (extérieur) :
     data -> statistiques -> multi-λ -> Poisson -> H2H -> signal Statistiques
-    -> cotes réelles -> Edge/EDV -> filtre (unanimité 4 scénarios) ->
+    -> cotes réelles -> Edge/EDV -> filtre (mode de convergence actif) ->
     dédoublonnage -> sélection P1/P2/P3.
 
     Voir le commentaire de section ci-dessus pour le périmètre v1 (5
@@ -405,330 +424,91 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
     signal_buts_b_05 = statistiques_signal.signal_buts_equipe(base["fenetres"]["B"], 0.5)
     signal_buts_a_05 = statistiques_signal.signal_buts_equipe(base["fenetres"]["A"], 0.5)
 
+    # ------------------------------------------------------------------
+    # PÉRIMÈTRE DYNAMIQUE DES MARCHÉS
+    # ------------------------------------------------------------------
+    # Avant ce chantier, le moteur possédait 12 candidats codés en dur
+    # alors que precalcul.json expose déjà plusieurs dizaines de marchés
+    # réellement cotés et que poisson.markets sait les calculer.
+    # Le périmètre économique devient donc piloté par les cotes observées,
+    # sans inventer de nouveau seuil de sélection.
+    registre_marches = market_registry.depuis_cotes(cotes)
+    lignes_total = [k[1] for k in cotes if isinstance(k, tuple) and k and k[0] == "over_under_total"]
+    lignes_team = [k[1] for k in cotes if isinstance(k, tuple) and k and k[0] in ("buts_equipe_domicile", "buts_equipe_exterieur")]
+    lignes_handicap = [k[1] for k in cotes if isinstance(k, tuple) and k and k[0] == "handicap"]
+    if lignes_total or lignes_team or lignes_handicap:
+        marches_par_scenario = {
+            scenario: markets.calcule_tous_les_marches(
+                base["lambdas"]["A"][scenario],
+                base["lambdas"]["B"][scenario],
+                lignes_total=lignes_total or None,
+                lignes_buts_equipe=lignes_team or None,
+                lignes_handicap=lignes_handicap or None,
+            )
+            for scenario in SCENARIOS
+        }
+
     candidats = []
     diagnostics = []
 
-    # Filtrage par rôle une seule fois (pas à chaque marché) -- réutilisé
-    # par tous les appels _ajoute() et par la boucle dynamique plus bas.
-    # A joue à domicile aujourd'hui -> ses matchs À DOMICILE passés ; B
-    # joue à l'extérieur aujourd'hui -> ses matchs À L'EXTÉRIEUR passés.
-    # Même convention que lambda_estimators.py (gf_a_domicile, ga_b_exterieur).
-    _matchs_a_domicile = [m for m in base["fenetres"]["A"]["matchs_retenus"] if m.get("domicile") is True]
-    _matchs_b_exterieur = [m for m in base["fenetres"]["B"]["matchs_retenus"] if m.get("domicile") is False]
+    # UNE SEULE source de vérité pour le périmètre de marchés : les cotes
+    # réellement observées. Chaque marché reconnu passe par exactement le
+    # même moteur de décision (4 scénarios, stabilité, cote, probabilité,
+    # EDV). Aucun marché n'est oublié parce qu'il n'était pas dans une liste
+    # historique codée en dur.
+    for definition in registre_marches:
+        probabilites = _par_scenario(marches_par_scenario, definition.extracteur)
+        robustesse_dynamique = robustness.evalue_robustesse(list(probabilites.values()))
 
-    def _ajoute(marche, family, group, extracteur, cle_cote, robustesse_key, signal, h2h_statut):
-        candidat, diag = _construit_candidat(
-            marche=marche, market_family=family, exposure_group=group,
-            marches_par_scenario=marches_par_scenario, extracteur=extracteur,
-            cote=cotes.get(cle_cote),
-            robustesse_statut=robustesse_par_marche[robustesse_key]["statut"],
-            n_par_scenario=n_par_scenario, h2h_palier=fenetre_h2h["palier"],
-            h2h_statut=h2h_statut, signal=signal,
-            matchs_a_domicile=_matchs_a_domicile, matchs_b_exterieur=_matchs_b_exterieur,
+        # Les signaux/H2H spécifiques restent des informations auxiliaires,
+        # jamais des règles de sélection supplémentaires. Ils sont utilisés
+        # seulement pour les familles historiques où ils existent déjà.
+        signal = None
+        h2h_statut = None
+        if definition.cle[0] == "1x2":
+            signal = signal_victoire_a if definition.cle[1] == "domicile" else signal_victoire_b if definition.cle[1] == "exterieur" else None
+            h2h_statut = statut_h2h_1x2
+        elif definition.cle[0] == "btts":
+            signal = signal_btts_a
+            h2h_statut = statut_h2h_btts
+        elif definition.cle == ("over_under_total", 2.5, "over"):
+            signal = signal_over25_a
+            h2h_statut = statut_h2h_over25
+        elif definition.cle == ("buts_equipe_exterieur", 0.5, "under"):
+            signal = signal_buts_b_05
+        elif definition.cle == ("buts_equipe_exterieur", 0.5, "over"):
+            signal = signal_buts_b_05
+        elif definition.cle == ("buts_equipe_domicile", 0.5, "under"):
+            signal = signal_buts_a_05
+        elif definition.cle == ("buts_equipe_domicile", 0.5, "over"):
+            signal = signal_buts_a_05
+
+        candidat, diagnostic = _construit_candidat(
+            marche=definition.nom,
+            market_family=definition.famille,
+            exposure_group=definition.exposition,
+            marches_par_scenario=marches_par_scenario,
+            extracteur=definition.extracteur,
+            cote=cotes.get(definition.cle),
+            robustesse_statut=robustesse_dynamique["statut"],
+            n_par_scenario=n_par_scenario,
+            h2h_palier=fenetre_h2h["palier"],
+            h2h_statut=h2h_statut,
+            signal=signal,
         )
-        diagnostics.append(diag)
+        diagnostics.append(diagnostic)
         if candidat is not None:
             candidats.append(candidat)
-
-    _ajoute("1x2_domicile", "RESULT", "GROUPE_RESULTAT",
-            lambda m: m["1x2"]["domicile"] if m["1x2"] else None,
-            ("1x2", "domicile"), "1x2_domicile", signal_victoire_a, statut_h2h_1x2)
-    _ajoute("1x2_nul", "RESULT", "GROUPE_RESULTAT",
-            lambda m: m["1x2"]["nul"] if m["1x2"] else None,
-            ("1x2", "nul"), "1x2_nul", None, statut_h2h_1x2)
-    _ajoute("1x2_exterieur", "RESULT", "GROUPE_RESULTAT",
-            lambda m: m["1x2"]["exterieur"] if m["1x2"] else None,
-            ("1x2", "exterieur"), "1x2_exterieur", signal_victoire_b, statut_h2h_1x2)
-    _ajoute("btts_oui", "BTTS", "GROUPE_BUTS",
-            lambda m: m["btts"],
-            ("btts", "oui"), "btts", signal_btts_a, statut_h2h_btts)
-    _ajoute("btts_non", "BTTS", "GROUPE_BUTS",
-            lambda m: (1.0 - m["btts"]) if m["btts"] is not None else None,
-            ("btts", "non"), "btts", signal_btts_a, statut_h2h_btts)
-    _ajoute("over_2.5", "GOALS_TOTAL", "GROUPE_BUTS",
-            lambda m: m["over_under_total"][2.5]["over"] if m["over_under_total"][2.5] else None,
-            ("over_under_total", 2.5, "over"), "over_2_5", signal_over25_a, statut_h2h_over25)
-
-    # Chantier du 09/09/2026 (feu vert de Patrick) -- extension du périmètre
-    # v1 à 4 marchés de plus, tous deux déjà calculables avec les cotes déjà
-    # récupérées (voir data/odds_provider.py) :
-    _ajoute("cage_inviolee_domicile", "CLEAN_SHEET_DOMICILE", "GROUPE_BUTS",
-            lambda m: m["buts_equipe_exterieur"][0.5]["under"] if m["buts_equipe_exterieur"][0.5] else None,
-            ("buts_equipe_exterieur", 0.5, "under"), "cage_inviolee_domicile",
-            signal_buts_b_05, None)
-    _ajoute("encaisse_domicile", "CLEAN_SHEET_DOMICILE", "GROUPE_BUTS",
-            lambda m: m["buts_equipe_exterieur"][0.5]["over"] if m["buts_equipe_exterieur"][0.5] else None,
-            ("buts_equipe_exterieur", 0.5, "over"), "cage_inviolee_domicile",
-            signal_buts_b_05, None)
-    _ajoute("cage_inviolee_exterieur", "CLEAN_SHEET_EXTERIEUR", "GROUPE_BUTS",
-            lambda m: m["buts_equipe_domicile"][0.5]["under"] if m["buts_equipe_domicile"][0.5] else None,
-            ("buts_equipe_domicile", 0.5, "under"), "cage_inviolee_exterieur",
-            signal_buts_a_05, None)
-    _ajoute("encaisse_exterieur", "CLEAN_SHEET_EXTERIEUR", "GROUPE_BUTS",
-            lambda m: m["buts_equipe_domicile"][0.5]["over"] if m["buts_equipe_domicile"][0.5] else None,
-            ("buts_equipe_domicile", 0.5, "over"), "cage_inviolee_exterieur",
-            signal_buts_a_05, None)
-    _ajoute("parite_pair", "PARITE", "GROUPE_BUTS",
-            lambda m: m["parite_totale"]["pair"] if m["parite_totale"] else None,
-            ("parite_totale", "pair"), "parite_pair", None, None)
-    _ajoute("parite_impair", "PARITE", "GROUPE_BUTS",
-            lambda m: m["parite_totale"]["impair"] if m["parite_totale"] else None,
-            ("parite_totale", "impair"), "parite_pair", None, None)
-
-    # ========================================================================
-    # CHANTIER DU 10/09/2026 (feu vert de Patrick) -- PÉRIMÈTRE DYNAMIQUE,
-    # piloté par les cotes réellement disponibles plutôt que par une liste
-    # figée. Les 12 `_ajoute()` ci-dessus restent INCHANGÉS (mêmes clés
-    # `market_family`/`exposure_group`, même comportement, zéro régression
-    # possible sur les candidats déjà en production). Ce bloc ajoute
-    # uniquement les clés de `cotes` qui ne sont PAS déjà couvertes par les
-    # 12 appels fixes : Double Chance, Over/Under sur toute ligne réellement
-    # cotée, Handicap sur toute ligne réellement cotée, buts par équipe sur
-    # les lignes autres que 0.5 (déjà prises par cage_inviolee/encaisse).
-    #
-    # PAS INCLUS ici, volontairement (chantier séparé, pas de feu vert
-    # encore donné) : les marchés combinés DC+Total (poisson/markets.py::
-    # probabilite_combo_dc_total). Ils partagent une exposition économique
-    # avec leurs marchés composants (ex. combo "1X + Over 2.5" est corrélé
-    # à la fois avec Double Chance 1X ET avec Over 2.5) -- deduplication.py
-    # ne dédouble que par (famille, groupe) simple, pas par recouvrement
-    # entre plusieurs groupes à la fois. Les ajouter sans y réfléchir
-    # d'abord romprait silencieusement l'invariant anti-corrélation posé le
-    # 09/09/2026.
-    #
-    # Contrairement aux 12 marchés fixes (qui utilisent `marches_par_scenario`,
-    # déjà agrégé sur les lignes PAR DÉFAUT de poisson/markets.py), ce bloc
-    # recalcule matrice/distribution directement depuis les lambdas déjà
-    # obtenus -- calcul pur, aucun fetch réseau supplémentaire -- pour
-    # couvrir n'importe quelle ligne réellement cotée, y compris celles hors
-    # des lignes par défaut (ex. Over/Under 5.5/6.5/7.5, Handicap +-2.5).
-    #
-    # EXPOSURE_GROUP -- décision explicite à valider avec Patrick avant
-    # bascule en production :
-    #   - Double Chance partage GROUPE_RESULTAT avec 1X2 (corrélation
-    #     directe : DC 1X et 1X2 domicile parient tous les deux sur "le
-    #     domicile ne perd pas"), mais une AUTRE famille ("DOUBLE_CHANCE"
-    #     vs "RESULT") -- dedup ne gardera donc qu'UN SEUL candidat parmi
-    #     TOUT GROUPE_RESULTAT (1X2 + DC confondus), jamais les deux à la
-    #     fois sur le même match.
-    #   - Handicap reçoit un troisième groupe, GROUPE_HANDICAP (nouveau,
-    #     n'existait pas avant) -- distinct de GROUPE_RESULTAT et
-    #     GROUPE_BUTS. Conséquence positive assumée : P3 (qui exige un 3e
-    #     groupe distinct de P1 et P2) peut désormais réellement se
-    #     déclencher, ce qui n'était quasi jamais possible avant (2 groupes
-    #     seulement en périmètre v1, voir commentaire plus haut).
-    #   - Over/Under (toutes lignes) et buts par équipe (lignes hors 0.5)
-    #     restent dans GROUPE_BUTS, comme Over 2.5/BTTS/Parité déjà en
-    #     place -- une ligne 1.5 et une ligne 3.5 sur le même total sont
-    #     fortement corrélées, dedup doit les traiter comme concurrentes,
-    #     pas comme deux paris indépendants.
-    # ========================================================================
-    lambdas_dyn = base["lambdas"]
-    matrices_par_scenario = {
-        s: distribution.matrice_scores(lambdas_dyn["A"][s], lambdas_dyn["B"][s]) for s in SCENARIOS
-    }
-    dist_a_par_scenario = {s: distribution.distribution_marginale(lambdas_dyn["A"][s]) for s in SCENARIOS}
-    dist_b_par_scenario = {s: distribution.distribution_marginale(lambdas_dyn["B"][s]) for s in SCENARIOS}
-
-    def _extractor_dynamique(cle):
-        """Construit un extracteur (scenario -> probabilité) à partir d'une
-        clé structurée d'odds_provider._parse_libelle. Retourne None si la
-        clé n'est pas (encore) gérable dynamiquement (ex. combos, exclus
-        volontairement ci-dessus)."""
-        if cle[0] == "1x2":
-            _, sel = cle
-            return lambda s: markets.probabilites_1x2(matrices_par_scenario[s])[sel] if matrices_par_scenario[s] else None
-        if cle[0] == "double_chance":
-            _, sel = cle
-            return lambda s: markets.probabilites_double_chance(matrices_par_scenario[s])[sel] if matrices_par_scenario[s] else None
-        if cle[0] == "btts":
-            _, sel = cle
-            def _f(s):
-                p = markets.probabilite_btts(matrices_par_scenario[s]) if matrices_par_scenario[s] else None
-                return p if sel == "oui" else (1.0 - p if p is not None else None)
-            return _f
-        if cle[0] == "parite_totale":
-            _, sel = cle
-            return lambda s: markets.probabilite_parite_totale(matrices_par_scenario[s])[sel] if matrices_par_scenario[s] else None
-        if cle[0] == "over_under_total":
-            _, ligne, sens = cle
-            def _f(s):
-                p = markets.probabilites_over_under_total(matrices_par_scenario[s], ligne) if matrices_par_scenario[s] else None
-                return p[sens] if p else None
-            return _f
-        if cle[0] == "buts_equipe_domicile":
-            _, ligne, sens = cle
-            def _f(s):
-                p = markets.probabilites_buts_equipe(dist_a_par_scenario[s], ligne) if dist_a_par_scenario[s] else None
-                return p[sens] if p else None
-            return _f
-        if cle[0] == "buts_equipe_exterieur":
-            _, ligne, sens = cle
-            def _f(s):
-                p = markets.probabilites_buts_equipe(dist_b_par_scenario[s], ligne) if dist_b_par_scenario[s] else None
-                return p[sens] if p else None
-            return _f
-        if cle[0] == "handicap":
-            _, ligne, sel = cle
-            def _f(s):
-                r = markets.resultat_handicap(matrices_par_scenario[s], ligne) if matrices_par_scenario[s] else None
-                if r is None:
-                    return None
-                return r["gain"] if sel == "domicile" else r["perte"]
-            return _f
-        if cle[0] == "combo_dc_total":
-            _, dc, sens, ligne = cle
-            return lambda s: markets.probabilite_combo_dc_total(matrices_par_scenario[s], dc, ligne, sens) if matrices_par_scenario[s] else None
-        return None  # toute future extension non gérée -> ignoré, jamais un crash
-
-    _CLES_DEJA_CABLEES = {
-        ("1x2", "domicile"), ("1x2", "nul"), ("1x2", "exterieur"),
-        ("btts", "oui"), ("btts", "non"),
-        ("over_under_total", 2.5, "over"),
-        ("buts_equipe_exterieur", 0.5, "under"), ("buts_equipe_exterieur", 0.5, "over"),
-        ("buts_equipe_domicile", 0.5, "under"), ("buts_equipe_domicile", 0.5, "over"),
-        ("parite_totale", "pair"), ("parite_totale", "impair"),
-    }
-
-    _FAMILLE_GROUPE = {
-        "1x2": ("RESULT", "GROUPE_RESULTAT"),
-        "double_chance": ("DOUBLE_CHANCE", "GROUPE_RESULTAT"),
-        "over_under_total": ("GOALS_TOTAL", "GROUPE_BUTS"),
-        "buts_equipe_domicile": ("GOALS_EQUIPE_DOMICILE", "GROUPE_BUTS"),
-        "buts_equipe_exterieur": ("GOALS_EQUIPE_EXTERIEUR", "GROUPE_BUTS"),
-        "handicap": ("HANDICAP", "GROUPE_HANDICAP"),
-        # COMBO_DC_TOTAL (chantier demandé par Patrick le 10/09/2026) :
-        # probabilité calculée CONJOINTEMENT (poisson.markets.probabilite_
-        # combo_dc_total, jamais un produit naïf DC x Total -- les deux
-        # dépendent du même score, v3 §9.4.3/9.4.4). Le calcul lui-même est
-        # donc correct et testé. Le risque n'est pas dans le calcul de
-        # probabilité mais dans la SÉLECTION : parier à la fois sur "1X" et
-        # sur "1X + Over 1.5" pour le même match double l'exposition au même
-        # évènement. Un simple exposure_group commun ne suffit pas ici (le
-        # combo est corrélé à DEUX marchés différents à la fois, DC et
-        # Total, pas à un seul groupe) -- voir le garde-fou explicite juste
-        # après la boucle, qui retire un combo si son composant DC ou son
-        # composant Total est déjà éligible sur ce match.
-        "combo_dc_total": ("COMBO_DC_TOTAL", "GROUPE_COMBO_DC_TOTAL"),
-    }
-
-    def _nom_marche_dynamique(cle):
-        if cle[0] in ("1x2", "double_chance"):
-            return f"{cle[0]}_{cle[1]}"
-        if cle[0] == "handicap":
-            _, ligne, sel = cle
-            return f"handicap_{sel}_{ligne}"
-        if cle[0] == "combo_dc_total":
-            _, dc, sens, ligne = cle
-            return f"combo_{dc}_{sens}_{ligne}"
-        _, ligne, sens = cle
-        return f"{cle[0]}_{ligne}_{sens}"
-
-    for cle_cote, cote_reelle in cotes.items():
-        if cle_cote in _CLES_DEJA_CABLEES:
-            continue
-        if cle_cote[0] not in _FAMILLE_GROUPE:
-            continue  # clé future non reconnue par ce module : ignorée, pas d'erreur
-        extracteur_dyn = _extractor_dynamique(cle_cote)
-        if extracteur_dyn is None:
-            continue
-
-        probabilites_dyn = {s: extracteur_dyn(s) for s in SCENARIOS}
-        robustesse_dyn = robustness.evalue_robustesse([probabilites_dyn[s] for s in SCENARIOS])
-        robustesse_statut_dyn = robustesse_dyn["statut"] if isinstance(robustesse_dyn, dict) else robustesse_dyn
-
-        marche_nom = _nom_marche_dynamique(cle_cote)
-        family, group = _FAMILLE_GROUPE[cle_cote[0]]
-
-        resultat_dyn = convergence.filtre_marche_convergent(
-            nombre_matchs_par_scenario=n_par_scenario,
-            probabilites_par_scenario=probabilites_dyn,
-            cote=cote_reelle,
-            robustesse=robustesse_statut_dyn,
-            marche=marche_nom,
-            market_family=family,
-            exposure_group=group,
-        )
-        diagnostics.append({"marche": marche_nom, "filtre": resultat_dyn.as_dict(), "h2h_statut": None})
-
-        if resultat_dyn.eligible:
-            p_repr_dyn = probabilites_dyn[SCENARIO_REPRESENTATIF]
-            valeur_dyn = edv_calculator.evalue_valeur(p_repr_dyn, cote_reelle)
-            candidats.append({
-                "marche": marche_nom,
-                "market_family": family,
-                "exposure_group": group,
-                "niveau": resultat_dyn.resultats_par_scenario[SCENARIO_REPRESENTATIF].niveau,
-                "robustesse": robustesse_statut_dyn,
-                "probabilite": p_repr_dyn,
-                "cote": cote_reelle,
-                "edge": valeur_dyn["edge"],
-                "edv": valeur_dyn["edv"],
-                "h2h_palier": fenetre_h2h["palier"],
-                "signal_direction": None,
-                "signal_frequence": None,
-                "confirmation_historique": justification.confirmation_historique(
-                    marche_nom, _matchs_a_domicile, _matchs_b_exterieur
-                ),
-                "_cle_cote": cle_cote,  # interne, retiré avant retour -- clé structurée
-                                        # d'origine, nécessaire au garde-fou anti-corrélation
-                                        # combo ci-dessous (jamais du texte reparsé).
-            })
-
-    # GARDE-FOU ANTI-CORRÉLATION COMBO (chantier du 10/09/2026, demandé par
-    # Patrick) : un candidat combo_dc_total est retiré si son composant DC
-    # (même sélection 1X/X2/12) OU son composant Total (même ligne ET même
-    # sens) est LUI-MÊME éligible sur ce match -- sinon un pari et sa
-    # variante combinée pourraient être sélectionnés tous les deux, ce qui
-    # double l'exposition au même évènement. Comparaison sur les clés
-    # STRUCTURÉES (`_cle_cote`), jamais sur le texte du nom de marché.
-    _dc_eligibles = {c["_cle_cote"][1] for c in candidats if c.get("_cle_cote", (None,))[0] == "double_chance"}
-    _total_eligibles = {
-        (c["_cle_cote"][1], c["_cle_cote"][2]) for c in candidats
-        if c.get("_cle_cote", (None,))[0] == "over_under_total"
-    }
-
-    def _combo_est_correle(cle):
-        _, dc, sens, ligne = cle
-        return dc in _dc_eligibles or (ligne, sens) in _total_eligibles
-
-    candidats = [
-        c for c in candidats
-        if c.get("_cle_cote", (None,))[0] != "combo_dc_total" or not _combo_est_correle(c["_cle_cote"])
-    ]
-    for c in candidats:
-        c.pop("_cle_cote", None)
 
     candidats_dedupliques = deduplication.deduplique(candidats, critere="edge") if candidats else []
     selection = selector.selectionner(candidats_dedupliques)
 
-    # EXPLICATION POST-DÉCISION : le sélecteur vient de décider P1/P2/P3.
-    # On trace maintenant exactement pourquoi chaque sélection a obtenu son
-    # rang. Cette étape ne modifie aucune décision et ne recalcule rien.
-    diagnostics_par_marche = {d.get("marche"): d for d in diagnostics if d.get("marche")}
-    for rang in ("P1", "P2", "P3"):
-        candidat = selection.get(rang)
-        if not isinstance(candidat, dict):
-            continue
-        diagnostic = diagnostics_par_marche.get(candidat.get("marche"), {})
-        candidat["justification_selection"] = justification.construit_raison_selection(
-            candidat, rang, candidats_dedupliques, diagnostic
-        )
-
-        # La justification descriptive est construite sur les mêmes
-        # historiques que le moteur. Elle n'intervient jamais dans la
-        # sélection. H2H est transmis uniquement comme donnée descriptive.
-        candidat["justification"] = justification.construit_justification(
-            candidat.get("marche"),
-            base["fenetres"]["A"].get("matchs_retenus", []),
-            base["fenetres"]["B"].get("matchs_retenus", []),
-            h2h=fenetre_h2h.get("confrontations_retenues", []),
-            nom_domicile=nom_domicile,
-            nom_exterieur=nom_exterieur,
-        )
-
-    return {
+    # EXPLICATION POST-DÉCISION : cette étape est strictement descriptive.
+    # Le sélecteur a déjà terminé P1/P2/P3 ; la justification ne peut ni
+    # changer le marché, ni recalculer une probabilité, ni filtrer un candidat.
+    resultat = {
         "statut": "OK",
+        "mode_convergence": MODE_CONVERGENCE,
         "fenetres": base["fenetres"],
         "lambdas": base["lambdas"],
         "candidats": candidats,
@@ -742,4 +522,10 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
             "over_2.5": statut_h2h_over25,
         },
         "cotes_info": {k: v for k, v in cotes_info.items() if k != "cotes"},
+        "h2h_confrontations": fenetre_h2h["confrontations_retenues"],
     }
+
+    return justification.enrichit_selection(
+        resultat, nom_domicile=nom_domicile, nom_exterieur=nom_exterieur,
+        h2h=fenetre_h2h["confrontations_retenues"]
+    )
