@@ -57,18 +57,26 @@ function construitJauge(probabilite) {
   return `<div class="jauge" aria-label="${Math.round(v * 100)} % de chances de réussite"><svg viewBox="0 0 76 76" aria-hidden="true"><circle class="fond" cx="38" cy="38" r="${r}"></circle><circle class="valeur" cx="38" cy="38" r="${r}" stroke-dasharray="${c.toFixed(2)}" stroke-dashoffset="${(c * (1 - v)).toFixed(2)}"></circle></svg><strong>${Math.round(v * 100)}%</strong></div>`;
 }
 function construitPourquoi(candidat) {
-  const j = candidat && candidat.justification;
   const morceaux = [];
-  if (j && j.resume) morceaux.push(`<p class="resume-preuve">${echappeHtml(j.resume)}</p>`);
+  const js = candidat && candidat.justification_selection;
+  const j = candidat && candidat.justification;
+
+  if (js && js.texte) {
+    morceaux.push(`<p class="resume-preuve">${echappeHtml(js.texte)}</p>`);
+  }
+
   if (j && Array.isArray(j.preuves)) {
-    j.preuves.forEach(p => {
+    j.preuves.forEach((p) => {
       if (!p || !p.texte) return;
-      morceaux.push(`<div class="preuve"><span class="preuve-titre">${echappeHtml(p.titre || "Statistique clé")}</span><span class="preuve-texte">${echappeHtml(p.texte)}</span></div>`);
+      morceaux.push(
+        `<div class="preuve"><span class="preuve-titre">${echappeHtml(p.titre || "Statistique clé")}</span><span class="preuve-texte">${echappeHtml(p.texte)}</span></div>`
+      );
     });
   }
-  if (morceaux.length) return morceaux.join("");
-  return `<p class="resume-preuve">Cette sélection ressort de la convergence des analyses statistiques du match.</p>`;
+
+  return morceaux.join("");
 }
+
 function construitBlocCandidat(info, candidat, equipes) {
   if (!candidat) return null;
   const article = document.createElement("article");

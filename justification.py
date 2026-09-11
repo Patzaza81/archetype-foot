@@ -15,9 +15,11 @@ import re
 from statistics import mean
 
 MIN_MATCHS_PREUVE = 5
+MIN_MATCHS_APPUI = 3
 MAX_MATCHS_AFFICHAGE = 8
 MIN_H2H_PREUVE = 5
 MIN_POURCENTAGE_PREUVE = 60.0
+MIN_POURCENTAGE_APPUI = 75.0
 
 
 def _propres(matchs):
@@ -59,6 +61,13 @@ def _historique_preuve(role_matchs, historique_recent):
 
 def _role(matchs, domicile):
     return [m for m in _propres(matchs) if m.get("domicile") is domicile]
+
+
+def _role_public(matchs):
+    """Conserve uniquement les matchs du rôle demandé et les limite aux 8
+    plus récents. Ne change jamais le rôle ni l'ordre des données."""
+    propres = _propres(matchs)
+    return propres[-MAX_MATCHS_AFFICHAGE:] if len(propres) >= MIN_MATCHS_APPUI else []
 
 
 def _pct(n, d):
@@ -110,15 +119,32 @@ def _h2h_freq(confrontations, condition):
 
 
 def _preuve_frequence(titre, matchs, condition, texte):
-    f = _freq(matchs, condition)
-    if not f:
+    """Transforme une fréquence observée en preuve publique.
+
+    5+ matchs à 60 % ou plus : preuve statistique.
+    3-4 matchs à 75 % ou plus : appui récent, explicitement marqué comme
+    limité. En dessous, aucune fréquence n'est affichée.
+    """
+    matchs = _propres(matchs)
+    n = len(matchs)
+    if n < MIN_MATCHS_APPUI:
         return None
+    ok = sum(1 for m in matchs if condition(m))
+    pourcentage = _pct(ok, n)
+    if n >= MIN_MATCHS_PREUVE and pourcentage >= MIN_POURCENTAGE_PREUVE:
+        force = "preuve"
+    elif n < MIN_MATCHS_PREUVE and pourcentage >= MIN_POURCENTAGE_APPUI:
+        force = "appui"
+    else:
+        return None
+    suffixe = "" if force == "preuve" else " — appui récent sur un échantillon limité"
     return {
         "titre": titre,
-        "texte": f"{f['occurrences']}/{f['total']} {texte}",
-        "occurrences": f["occurrences"],
-        "total": f["total"],
-        "pourcentage": f["pourcentage"],
+        "texte": f"{ok}/{n} {texte} ({pourcentage} %){suffixe}.",
+        "occurrences": ok,
+        "total": n,
+        "pourcentage": pourcentage,
+        "force": force,
     }
 
 
@@ -150,8 +176,10 @@ def construit_justification(marche, matchs_a, matchs_b, h2h=None,
     """
     a = _propres(matchs_a)
     b = _propres(matchs_b)
-    a_dom, a_role = _historique_preuve(_role(a, True), a)
-    b_ext, b_role = _historique_preuve(_role(b, False), b)
+    a_role_matchs = _role(a, True)
+    b_role_matchs = _role(b, False)
+    a_dom, a_role = _historique_preuve(a_role_matchs, a)
+    b_ext, b_role = _historique_preuve(b_role_matchs, b)
     h2h_retenu = _h2h_propres(h2h)
 
     preuves = []
@@ -210,7 +238,7 @@ def construit_justification(marche, matchs_a, matchs_b, h2h=None,
         condition = lambda m: m["buts_marques"] >= m["buts_encaisses"]
         resume = f"{equipe} présente un profil solide à domicile sur les résultats récents."
         desc = "derniers matchs à domicile sans défaite" if a_role else "derniers matchs sans défaite"
-        _ajoute(preuves, _preuve_frequence("Forme récente", a_dom, condition, desc))
+        _ajoute(preuves, _preuve_frequence("Forme récente", _role_public(a_role_matchs), condition, desc))
         h2h_condition = lambda x: x["buts_a"] >= x["buts_b"]
 
     elif marche in ("double_chance_X2", "1x2_exterieur"):
@@ -218,7 +246,7 @@ def construit_justification(marche, matchs_a, matchs_b, h2h=None,
         condition = lambda m: m["buts_marques"] >= m["buts_encaisses"]
         resume = f"{equipe} présente un profil solide à l'extérieur sur les résultats récents."
         desc = "derniers matchs à l'extérieur sans défaite" if b_role else "derniers matchs sans défaite"
-        _ajoute(preuves, _preuve_frequence("Forme récente", b_ext, condition, desc))
+        _ajoute(preuves, _preuve_frequence("Forme récente", _role_public(b_role_matchs), condition, desc))
         h2h_condition = lambda x: x["buts_a"] <= x["buts_b"]
 
     elif marche == "double_chance_12":
@@ -233,7 +261,7 @@ def construit_justification(marche, matchs_a, matchs_b, h2h=None,
             ligne, sens = info
             role = "domicile" if "domicile" in marche else "exterieur"
             equipe = _sujet_role(role, nom_domicile or "Équipe à domicile", nom_exterieur or "Équipe à l'extérieur")
-            matchs = a_dom if role == "domicile" else b_ext
+            matchs = _role_public(a_role_matchs) if role == "domicile" else _role_public(b_role_matchs)
             condition = lambda m, l=ligne, s=sens: m["buts_marques"] > l if s == "over" else m["buts_marques"] < l
             ligne_txt = str(ligne).replace(".", ",")
             resume = f"{equipe} montre une tendance régulière à marquer {('plus de' if sens == 'over' else 'moins de')} {ligne_txt} but(s)."
@@ -244,14 +272,14 @@ def construit_justification(marche, matchs_a, matchs_b, h2h=None,
     elif marche.startswith("cage_inviolee_"):
         role = "domicile" if marche.endswith("domicile") else "exterieur"
         equipe = _sujet_role(role, nom_domicile or "Équipe à domicile", nom_exterieur or "Équipe à l'extérieur")
-        matchs = a_dom if role == "domicile" else b_ext
+        matchs = _role_public(a_role_matchs) if role == "domicile" else _role_public(b_role_matchs)
         resume = f"{equipe} présente une tendance régulière à préserver sa cage sur ses matchs comparables récents."
         _ajoute(preuves, _preuve_frequence("Forme récente", matchs, lambda m: m["buts_encaisses"] == 0, "derniers matchs avec une cage inviolée"))
 
     elif marche.startswith("encaisse_"):
         role = "domicile" if marche.endswith("domicile") else "exterieur"
         equipe = _sujet_role(role, nom_domicile or "Équipe à domicile", nom_exterieur or "Équipe à l'extérieur")
-        matchs = a_dom if role == "domicile" else b_ext
+        matchs = _role_public(a_role_matchs) if role == "domicile" else _role_public(b_role_matchs)
         resume = f"{equipe} encaisse régulièrement au moins un but sur ses matchs comparables récents."
         _ajoute(preuves, _preuve_frequence("Forme récente", matchs, lambda m: m["buts_encaisses"] > 0, "derniers matchs en encaissant au moins un but"))
 
@@ -267,11 +295,31 @@ def construit_justification(marche, matchs_a, matchs_b, h2h=None,
         if m:
             role, ligne = m.group(1), float(m.group(2))
             equipe = _sujet_role(role, nom_domicile or "Équipe à domicile", nom_exterieur or "Équipe à l'extérieur")
-            matchs = a_dom if role == "domicile" else b_ext
+            matchs = _role_public(a_role_matchs) if role == "domicile" else _role_public(b_role_matchs)
             condition = lambda x, l=ligne: x["buts_marques"] + l > x["buts_encaisses"]
             ligne_txt = str(ligne).replace(".", ",")
             resume = f"{equipe} présente un profil récent cohérent avec un handicap de {ligne_txt}."
-            _ajoute(preuves, _preuve_frequence("Forme récente", matchs, condition, f"derniers matchs couvrant ce handicap de {ligne_txt}"))
+            if ligne == -0.5:
+                description = "derniers matchs à domicile avec une victoire" if role == "domicile" else "derniers matchs à l'extérieur avec une victoire"
+            elif ligne == 0.5:
+                description = "derniers matchs à domicile sans défaite" if role == "domicile" else "derniers matchs à l'extérieur sans défaite"
+            elif ligne < 0:
+                marge = int(abs(ligne) + 0.5)
+                description = (
+                    f"derniers matchs à domicile gagnés avec au moins {marge} buts d'écart"
+                    if role == "domicile" else
+                    f"derniers matchs à l'extérieur gagnés avec au moins {marge} buts d'écart"
+                )
+            else:
+                marge = int(ligne + 0.5)
+                description = (
+                    f"derniers matchs à domicile terminés sans défaite de plus d'un but"
+                    if role == "domicile" and marge == 1 else
+                    f"derniers matchs à l'extérieur terminés sans défaite de plus d'un but"
+                    if role == "exterieur" and marge == 1 else
+                    f"derniers matchs compatibles avec le handicap {ligne_txt}"
+                )
+            _ajoute(preuves, _preuve_frequence("Forme récente", matchs, condition, description))
 
     # Le H2H est une preuve séparée : le palier technique seul ne suffit pas.
     # On exige un historique direct réellement disponible et >= 5 rencontres.
@@ -301,6 +349,99 @@ def construit_justification(marche, matchs_a, matchs_b, h2h=None,
         "donnees_suffisantes": bool(ordonnees),
     }
 
+
+
+def construit_raison_selection(candidat, rang, candidats, diagnostic):
+    """Explique POURQUOI un candidat déjà sélectionné a obtenu son rang.
+
+    Cette fonction ne sélectionne rien et ne recalcule ni probabilité ni
+    EDV. Elle lit uniquement les résultats de la convergence et la cascade
+    du sélecteur déjà exécutée. Elle rend la justification du choix
+    intelligible et traçable, y compris lorsque l'historique spécifique ne
+    permet pas de produire une fréquence.
+    """
+    if not isinstance(candidat, dict):
+        return None
+
+    filtre = (diagnostic or {}).get("filtre") or {}
+    par_scenario = filtre.get("resultats_par_scenario") or {}
+    valeurs = []
+    for nom in ("offensif", "defensif", "contextuel", "global"):
+        r = par_scenario.get(nom) or {}
+        p = r.get("probabilite_centrale")
+        if isinstance(p, (int, float)):
+            valeurs.append(float(p))
+
+    morceaux = []
+    if len(valeurs) == 4:
+        minimum = min(valeurs)
+        maximum = max(valeurs)
+        morceaux.append(
+            f"Le modèle a validé ce marché dans ses 4 scénarios, avec des estimations comprises entre {minimum * 100:.0f} % et {maximum * 100:.0f} %."
+        )
+    else:
+        morceaux.append("Le marché a franchi tous les contrôles disponibles de la convergence du modèle.")
+
+    if candidat.get("robustesse") == "STABLE":
+        morceaux.append("Les quatre scénarios restent stables sur ce marché.")
+
+    niveau = candidat.get("niveau")
+    if niveau == "PREMIUM":
+        morceaux.append("Il atteint le niveau d'éligibilité le plus élevé.")
+    elif niveau:
+        morceaux.append(f"Il atteint le niveau d'éligibilité {niveau.lower().replace('_', ' ')}.")
+
+    # La cascade réelle est : niveau -> robustesse -> signal -> H2H -> EDV.
+    # Pour expliquer sans réimplémenter la décision, on regarde les valeurs
+    # de la cascade déjà définie par selector._cle_cascade.
+    autres = [c for c in (candidats or []) if c.get("marche") != candidat.get("marche")]
+    try:
+        cle = selector_cascade = None
+        # Le module appelant injecte éventuellement une clé technique dans
+        # le diagnostic ; sinon on se contente d'une explication de rang.
+    except Exception:
+        pass
+
+    if rang == "P1":
+        if autres:
+            # Comparaison stricte des critères, dans le même ordre que le selector.
+            from archetype_model.signals import selector as _selector
+            ordre = [
+                ("niveau", _selector.ORDRE_NIVEAU, lambda c: _selector.ORDRE_NIVEAU.get(c.get("niveau"), -1)),
+                ("robustesse", _selector.ORDRE_ROBUSTESSE, lambda c: _selector.ORDRE_ROBUSTESSE.get(c.get("robustesse"), 0)),
+            ]
+            direction_map = _selector.ORDRE_DIRECTION_SIGNAL
+            # signal = tuple(direction, fréquence)
+            ordre.append(("signal", None, lambda c: (direction_map.get(c.get("signal_direction"), -1), c.get("signal_frequence") if c.get("signal_frequence") is not None else float("-inf"))))
+            ordre.append(("H2H", _selector.ORDRE_PALIER_H2H, lambda c: _selector.ORDRE_PALIER_H2H.get(c.get("h2h_palier"), 0)))
+            ordre.append(("EDV", None, lambda c: c.get("edv") if isinstance(c.get("edv"), (int, float)) else float("-inf")))
+            for nom, _, fn in ordre:
+                valeur = fn(candidat)
+                autres_valeurs = [fn(c) for c in autres]
+                if autres_valeurs and valeur > max(autres_valeurs):
+                    if nom == "EDV":
+                        morceaux.append(f"À critères précédents équivalents, son gain potentiel de {float(candidat.get('edv', 0)) * 100:.1f} % l'a départagé.")
+                    elif nom == "H2H":
+                        morceaux.append("La qualité des confrontations directes l'a départagé à ce stade de la cascade.")
+                    elif nom == "signal":
+                        morceaux.append("Le signal statistique l'a départagé à ce stade de la cascade.")
+                    elif nom == "niveau":
+                        morceaux.append("Son niveau d'éligibilité supérieur l'a placé devant les autres marchés.")
+                    break
+        else:
+            morceaux.append("Il n'y avait pas d'autre candidat éligible à départager.")
+    elif rang == "P2":
+        morceaux.append("Il a ensuite été retenu comme meilleur candidat restant après la diversification imposée par le modèle.")
+    elif rang == "P3":
+        morceaux.append("Il a été retenu comme meilleure option restante après les deux premières sélections, avec une exposition distincte.")
+
+    return {
+        "texte": " ".join(morceaux),
+        "scenarios_valides": len(valeurs),
+        "scenarios_total": 4,
+        "probabilite_min": min(valeurs) if valeurs else None,
+        "probabilite_max": max(valeurs) if valeurs else None,
+    }
 
 def confirmation_historique(marche, matchs_a, matchs_b):
     """Compatibilité avec le moteur : renvoie la première preuve >= 5."""
