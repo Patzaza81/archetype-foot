@@ -1,224 +1,650 @@
-// archetype.js — révisé le 10/09/2026 à la demande de Patrick : la carte
-// précédente affichait une ligne technique brute ("over_under_total_3.5_under
-// (niveau PREMIUM, edge 12.4%, edv 16.0%, H2H FIABLE)"), illisible pour un
-// parieur. Nouvelle hiérarchie : PRONOSTIC > COTE > PROBABILITÉ > CONFIANCE >
-// POURQUOI > métriques secondaires. Voir traduction_marches.js pour la
-// traduction pure clé-technique -> texte, chargé avant ce fichier.
-//
-// RÈGLE INCHANGÉE (déjà en vigueur, réaffirmée explicitement par Patrick le
-// 10/09/2026) : ce fichier ne recalcule rien, ne choisit pas les rangs, ne
-// vérifie aucun filtre, ne fabrique aucune statistique. Il affiche
-// uniquement ce qu'archetype_model a déjà décidé.
+/* Archetype Foot — refonte visuelle (25/08, révisée 03/09/2026).
+   Design tokens centralisés, hiérarchie typographique stricte, couleur
+   jamais seul vecteur d'information (texte + icône toujours présents à
+   côté de la couleur).
 
-function estArchetypeGo(m) {
-  return m.moteur_utilise === "archetype_model"
-    && m.archetype_model
-    && m.archetype_model.statut === "OK"
-    && !!(m.archetype_model.selection && m.archetype_model.selection.P1);
+   RÈGLE 03/09/2026 -- SOURCE UNIQUE DE VÉRITÉ POUR LES COULEURS :
+   plus aucune page (index.html, panier.html, pronostics.html,
+   betpawa.html) ne doit coder une couleur en dur dans son propre
+   <style>. Toute nouvelle page/bouton/onglet doit utiliser les
+   variables ci-dessous ou les classes partagées de ce fichier
+   (.nav-pages, .tabs, .bouton-principal, .bouton-secondaire,
+   #statut-analyse-panier.ok/.erreur). Avant cette révision, chaque page avait
+   son propre fond (#0f1115 vs #071E18), son propre "turquoise actif"
+   (#14b8a6 vs #2563eb vs #19C7B5) et le gold servait à 5 rôles
+   différents (titre, cote, nom de compétition, pari recommandé, bouton
+   nav) -- une couleur qui signale tout ne signale plus rien.
+
+   MISE À JOUR 03/09/2026 (plus tard le même jour) : le gris ne
+   suffisait pas comme différenciateur des noms de championnat en usage
+   réel (même assombri) -- premier essai avec le gold de la marque,
+   écarté par Patrick pour ne pas diluer son rôle de repère unique
+   (marque + pari recommandé). Solution retenue : couleur dédiée
+   --categorie (violet doux), pas une couleur déjà chargée de sens
+   ailleurs. Le gold reste donc à 2 rôles, comme prévu à l'origine. */
+
+:root {
+  --bg: #071E18;
+  --surface: #0D2922;
+  --surface-2: #12342B;
+  --turquoise: #19C7B5;
+  --turquoise-active: #14a396;
+  --gold: #E5B83F;
+  --green: #72B85C;
+  --red: #C84E50;
+  --text: #F3F5F2;
+  /* 03/09/2026 -- assombri (#B9C4BF -> #7E8D86) : Patrick a signalé que ce
+     gris restait visuellement trop proche du blanc pour distinguer
+     clairement les noms d'équipe des noms de championnat. Contraste
+     vérifié : ~5.4:1 sur le fond --bg (#071E18), au-dessus du seuil de
+     lisibilité AA pour texte normal (4.5:1) -- reste lisible tout en
+     étant nettement plus gris. */
+  --text-secondary: #7E8D86;
+  /* 03/09/2026 -- gris CLAIR dédié aux heures (liste de sélection),
+     distinct de --text-secondary : celui-ci a été volontairement
+     assombri pour les métadonnées des cartes de pronostics, trop foncé
+     pour un horaire qui doit rester discret mais lisible au premier
+     coup d'œil. Reprend la valeur d'origine de --text-secondary avant
+     assombrissement. */
+  --heure: #B9C4BF;
+  /* 03/09/2026 -- couleur dédiée aux noms de championnat/compétition.
+     Palette finale validée par Patrick (table couleur) : menthe pâle,
+     après les essais violet puis bordeaux. Le gold reste réservé à la
+     marque + au pari recommandé. */
+  --categorie: #B8F2E6;
+  --border: rgba(255,255,255,.10);
+  /* 29/08/2026 -- responsive : largeur max du contenu sur grand écran,
+     pour ne pas étirer les cartes/textes bord à bord sur desktop. */
+  --content-max-width: 1200px;
 }
 
-function echappeHtml(texte) {
-  if (texte === null || texte === undefined) return "";
-  return String(texte)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.5;
+  padding-bottom: 90px;
 }
 
-function formatPctSur(x) {
-  if (x === null || x === undefined) return "?";
-  const pct = x * 100;
-  if (pct >= 99.95 && x < 1) return "99.9%";
-  return pct.toFixed(1).replace(".", ",") + "%";
+/* 29/08/2026 -- responsive : header et main centrés avec une largeur max
+   commune à toutes les pages (index/panier/pronostics/selection/betpawa
+   utilisent toutes <header> et <main>, donc une seule règle suffit ici
+   au lieu de la dupliquer par page). */
+header, main {
+  max-width: var(--content-max-width);
+  margin-left: auto;
+  margin-right: auto;
 }
 
-function formatPctEntier(x) {
-  if (x === null || x === undefined) return "?";
-  return Math.round(x * 100) + " %";
+header {
+  padding: 20px 16px 14px;
+  border-bottom: 1px solid var(--border);
 }
 
-function formatCote(cote) {
-  if (cote === null || cote === undefined) return "?";
-  return cote.toFixed(2).replace(".", ",");
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-const RANGS = [
-  { cle: "P1", classe: "rang-1", pastille: "Le meilleur choix", sousTitre: "Pronostic principal" },
-  { cle: "P2", classe: "rang-2", pastille: "Meilleure rentabilité", sousTitre: "Deuxième choix" },
-  { cle: "P3", classe: "rang-3", pastille: "Pronostic bonus", sousTitre: "Troisième choix" },
-];
+/* Le gold reste ici -- rôle 1/2 : identité de marque, toujours visible,
+   ne rentre jamais en concurrence avec un signal fonctionnel dans une
+   carte de match puisqu'il est hors du contenu défilant. Un essai
+   d'extension aux noms de championnat (03/09/2026) a été écarté par
+   Patrick pour préserver cette exclusivité -- voir --categorie plus
+   haut pour la couleur finalement retenue à cet usage. */
+header h1 {
+  margin: 0;
+  color: var(--gold);
+  font-size: 32px;
+  font-weight: 700;
+}
 
-/** Construit la phrase "Pourquoi ?". Priorité à la phrase chiffrée et
- * réelle (construitPhraseConfirmation, basée sur un vrai comptage de
- * matchs passés) ; repli sur une phrase générique UNIQUEMENT si ce
- * comptage n'est pas disponible pour ce marché (jamais un chiffre
- * inventé pour combler l'absence). */
-function construitPourquoi(candidat, equipes) {
-  const phrases = [];
-  const phraseChiffree = construitPhraseConfirmation(candidat.marche, candidat.confirmation_historique, equipes);
-  if (phraseChiffree) {
-    phrases.push(phraseChiffree);
-  } else {
-    const { texte: texteConfiance } = traduitNiveau(candidat.niveau);
-    phrases.push(`Le modèle statistique juge ce pronostic avec une confiance ${texteConfiance.toLowerCase()}.`);
+.nav-bouton {
+  color: var(--turquoise);
+  text-decoration: none;
+  border: 1px solid var(--turquoise);
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.nav-bouton:active { background: var(--turquoise); color: var(--bg); }
+
+#maj {
+  margin: 10px 0 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+/* --- 03/09/2026 -- Barre de navigation entre pages (accueil/panier/
+   pronostics/betpawa). Un seul style pour les trois : ce sont des liens
+   de navigation de poids égal, pas des appels à l'action classés par
+   urgence -- donc pas de rouge/bleu/violet/gold qui laisserait croire
+   qu'un lien est plus "important" qu'un autre. Remplace les styles
+   inline précédemment dupliqués (et divergents) dans index.html et
+   betpawa.html. --- */
+.nav-pages {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0;
+  flex-wrap: wrap;
+}
+.nav-pages a {
+  flex: 1;
+  min-width: 120px;
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 14px;
+  background: var(--surface-2);
+  color: var(--turquoise);
+  border: 1px solid var(--turquoise);
+}
+.nav-pages a:active { background: var(--turquoise); color: var(--bg); }
+
+/* --- 03/09/2026 -- Onglets (jour sur l'accueil, J+1/J+2/J+3 sur
+   pronostics). Même remarque : une seule couleur "actif" pour tout le
+   site, au lieu de turquoise ici et bleu là. --- */
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0;
+  flex-wrap: wrap;
+}
+.tabs button {
+  flex: 1;
+  min-width: 80px;
+  padding: 10px 6px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1.3;
+  font-weight: 600;
+}
+.tabs button.actif {
+  background: var(--turquoise);
+  color: var(--bg);
+  border-color: var(--turquoise);
+}
+
+/* --- 03/09/2026 -- Boutons pleine largeur. Deux niveaux seulement :
+   principal (l'action que la page veut que tu fasses) et secondaire
+   (le repli manuel). Remplace le bleu/violet/vert codés en dur dans
+   panier.html, selection.html et betpawa.html. --- */
+.bouton-principal {
+  display: block;
+  width: 100%;
+  margin: 0 0 12px;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  background: var(--turquoise);
+  color: var(--bg);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.bouton-principal:active { background: var(--turquoise-active); }
+.bouton-principal:disabled { opacity: .5; cursor: default; }
+
+.bouton-secondaire {
+  display: block;
+  width: 100%;
+  margin: 0 0 12px;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.bouton-secondaire:active { background: var(--surface); }
+
+/* État "copié" -- s'applique à .bouton-principal ou .bouton-secondaire
+   indifféremment (panier.js/selection.js font classList.add("copie")). */
+.bouton-principal.copie,
+.bouton-secondaire.copie {
+  background: var(--green);
+  color: #06140f;
+  border-color: var(--green);
+}
+
+/* Statuts texte (remplace les couleurs #14b8a6/#ef4444 codées en dur
+   dans panier.html pour #statut-analyse-panier). Sélecteurs scopés à
+   l'ID et pas en classes génériques : panier.js fait littéralement
+   `statut.className = "ok"` / `"erreur"` (remplace toute la classe,
+   pas classList.add) -- une classe .statut-ok générique ne matcherait
+   jamais. Vérifié dans panier.js avant d'écrire cette règle. */
+#statut-analyse-panier.ok { color: var(--green); }
+#statut-analyse-panier.erreur { color: var(--red); }
+
+main.grille {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 12px;
+  padding: 16px;
+}
+
+/* --- 03/09/2026 -- En-tête de groupe pour la vue "par catégorie" des
+   pronostics (script.js). Distincte de .selection-competition (page de
+   sélection) même si visuellement proche : deux fonctionnalités
+   indépendantes, pas de couplage entre elles. --- */
+.entete-categorie {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--categorie);
+  padding: 8px 12px;
+  margin: 24px 16px 8px;
+  background: var(--surface-2);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-radius: 6px;
+}
+.entete-categorie:first-child { margin-top: 16px; }
+@media (min-width: 700px) {
+  .entete-categorie { margin-left: 24px; margin-right: 24px; }
+}
+
+
+/* --- Carte : hiérarchie stricte à 5 niveaux --- */
+
+.match {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+}
+
+/* Niveau 1 — identification */
+.teams {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 22px;
+  font-weight: 700;
+}
+/* 03/09/2026 -- la cote/heure affichée à côté du nom des équipes n'est
+   qu'une métadonnée, pas un signal à part entière : elle repasse en
+   texte secondaire neutre au lieu du gold (qui ne sert plus qu'au pari
+   recommandé, cf .pari-en-or plus bas). */
+.teams span:nth-child(2) {
+  color: var(--text-secondary);
+  font-weight: 700;
+  font-size: 16px;
+  white-space: nowrap;
+}
+.meta {
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 4px;
+  margin-bottom: 14px;
+}
+
+/* --- Scores en TURQUOISE --- */
+/* IMPORTANT : Dans votre HTML, entourez le score avec la classe .score
+   Exemple : <span>Coritiba — Corinthians <span class="score">(2-1)</span></span> */
+.score {
+  color: var(--turquoise);
+  font-weight: 700;
+}
+
+/* Niveau 2 — statut : jamais la couleur seule, toujours un mot en clair */
+.ligne-verdict {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+.badge {
+  font-weight: 700;
+  font-size: 13px;
+  padding: 4px 12px;
+  border-radius: 12px;
+  letter-spacing: 0.03em;
+}
+.badge-go { background: var(--green); color: #06140f; }
+.badge-nogo { background: var(--red); color: #fff; }
+/* AJOUT 10/09/2026 -- badge distinct pour un pick archetype_model retenu
+   quand l'ancien moteur dit NO_GO -- jamais confondu avec le vert GO
+   (ancien moteur) ni le rouge NO_GO trompeur d'avant ce correctif. */
+.badge-archetype { background: var(--turquoise); color: #06140f; }
+
+/* Niveau 3 — donnée principale : la plus grosse taille de tout l'écran */
+.proba-1 {
+  color: var(--turquoise);
+  font-size: 26px;
+  font-weight: 700;
+}
+.proba-1-label {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 400;
+  display: block;
+}
+
+.proba-1-insuffisant {
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+
+.motif-no-go {
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.bloc-paris { margin-top: 12px; }
+.pari-ligne {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 15px;
+}
+/* Le gold reste ici -- rôle 2/2, et le seul rôle fonctionnel qu'il lui
+   reste : LE pari mis en avant par le moteur. C'est justement parce que
+   le gold n'apparaît nulle part ailleurs dans une carte que l'œil le
+   repère immédiatement ici. */
+.pari-ligne.pari-en-or {
+  color: var(--gold);
+  font-weight: 700;
+}
+.pari-mise { color: var(--green); font-weight: 600; }
+.pari-en-or .pari-mise { color: var(--gold); }
+
+.bloc-risques {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: var(--surface-2);
+  border-left: 3px solid var(--red);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.risques-titre { color: var(--red); font-weight: 700; margin-bottom: 4px; }
+.risque-ligne { margin-top: 2px; }
+
+.signal-non-traite {
+  color: var(--text-secondary);
+  font-size: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+/* Niveau 5 — action secondaire (détail N1/N2), repliée par défaut */
+.details-niveau1 {
+  margin-top: 12px;
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+}
+.details-niveau1 summary {
+  cursor: pointer;
+  color: var(--turquoise);
+  font-weight: 600;
+  font-size: 14px;
+  list-style: none;
+}
+.details-niveau1 summary::-webkit-details-marker { display: none; }
+.details-niveau1 summary::before { content: "▸ "; }
+.details-niveau1[open] summary::before { content: "▾ "; }
+.details-niveau1 .texte-ouvert { display: none; }
+.details-niveau1[open] .texte-ferme { display: none; }
+.details-niveau1[open] .texte-ouvert { display: inline; }
+
+.detail-pourquoi {
+  color: var(--text-secondary);
+  font-size: 13px;
+  margin: 10px 0;
+  line-height: 1.6;
+}
+.detail-sous-titre {
+  color: var(--turquoise);
+  font-size: 12px;
+  margin: 12px 0 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+}
+.detail-vide { color: var(--text-secondary); font-size: 13px; font-style: italic; }
+.detail-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; font-size: 13px; }
+.detail-table th, .detail-table td { text-align: left; padding: 5px 6px; border-bottom: 1px solid var(--border); }
+.detail-autres-marches { color: var(--text-secondary); font-size: 13px; }
+.detail-marche-ligne { padding: 2px 0; }
+
+/* AJOUT 09/09/2026 (reprise de session) -- bloc TEMPORAIRE de vérification
+   du nouveau moteur (archetype_model), en plus de l'affichage existant
+   ci-dessus (jamais modifié). Reprend .details-niveau1 pour le pli/dépli,
+   styles propres minimes pour rester lisible en attendant la refonte
+   définitive de l'affichage (à faire une fois le vrai run observé). */
+.am-bloc { margin-top: 8px; }
+.am-ligne { font-size: 13px; padding: 2px 0; color: var(--text-secondary); }
+.am-moteur strong { color: var(--text-primary); }
+.am-erreur { color: var(--red); }
+.am-candidat { color: var(--text-primary); }
+.am-candidat-vide { font-style: italic; }
+
+/* --- Page de sélection --- */
+
+#copier-btn {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  width: 100%;
+  padding: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  background: var(--turquoise);
+  color: var(--bg);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+#copier-btn:active { background: var(--turquoise-active); }
+
+#compteur { text-align: center; padding: 6px; color: var(--text-secondary); font-size: 14px; }
+
+/* 03/09/2026 -- Noms des championnats : repassés en texte secondaire
+   neutre. Ce n'est qu'un séparateur de section, pas un signal -- le
+   gold ne doit plus apparaître que sur le pari recommandé (cf plus
+   haut), sinon il perd sa valeur de repère visuel. */
+.selection-competition {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--categorie);
+  padding: 8px 12px;
+  background: var(--surface-2);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.selection-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.selection-item .heure {
+  color: var(--heure);
+  font-variant-numeric: tabular-nums;
+  min-width: 3.2em;
+}
+
+/* --- Cases à cocher : gris clair universel, coche foncée visible --- */
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  background-color: #E0E0E0 !important;
+  border: 2px solid rgba(255,255,255,.10);
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+}
+
+input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 6px;
+  width: 6px;
+  height: 12px;
+  border: solid #071E18;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* 03/09/2026 -- les noms d'équipe héritaient du blanc quasi-pur du texte
+   par défaut (var(--text)), trop proche visuellement du gris clair déjà
+   utilisé pour les noms de championnat -- confusion signalée par Patrick.
+   Distinction désormais par le POIDS (gras pour la compétition, normal
+   ici) plutôt que par une nuance de blanc à peine différente. */
+/* 03/09/2026 -- repassé en blanc (var(--text)) sur préférence de
+   Patrick, maintenant que .selection-competition a sa propre couleur
+   dédiée (--categorie, bordeaux) -- la distinction entre nom d'équipe
+   et nom de championnat n'a plus besoin de reposer sur un contraste de
+   gris. */
+.selection-item label { font-size: 16px; color: var(--text); }
+
+#sortie-json {
+  width: 100%;
+  min-height: 90px;
+  margin-top: 10px;
+  font-family: monospace;
+  font-size: 13px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px;
+}
+
+/* Justification du pari retenu (25/08) -- repli pour matchs archivés avant
+   le moteur de justification (04/09 soir) */
+.pourquoi-pari {
+  color: var(--text);
+  font-size: 13px;
+  margin: 6px 0 0;
+  line-height: 1.5;
+}
+
+/* Moteur de justification (04/09 soir) -- mêmes tons que .bloc-risques
+   (surface-2 + bordure gauche colorée) pour rester cohérent visuellement,
+   turquoise au lieu de rouge : ce n'est pas un avertissement. */
+.bloc-justification {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: var(--surface-2);
+  border-left: 3px solid var(--turquoise);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text);
+}
+.justification-titre { color: var(--turquoise); font-weight: 700; margin-bottom: 4px; }
+.justification-liste { margin: 0; padding-left: 18px; }
+.justification-ligne { margin-top: 2px; }
+.justification-solidite {
+  margin: 8px 0 0;
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+/* --- Panier (item, ajout manuel) --- */
+.item-panier {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.item-panier .tag {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-left: 6px;
+  display: block;
+}
+.item-panier button {
+  background: none;
+  border: none;
+  color: var(--red);
+  font-size: 19px;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+.vide { padding: 16px; color: var(--text-secondary); text-align: center; }
+
+#ajout-manuel {
+  margin-top: 24px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+#ajout-manuel h2 { font-size: 16px; margin: 0 0 10px; color: var(--text); }
+#ajout-manuel input {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 8px;
+  padding: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 4px;
+}
+#ajout-manuel button {
+  padding: 10px 14px;
+  background: var(--turquoise);
+  color: var(--bg);
+  border: none;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* --- 29/08/2026 -- Responsive : palier tablette/desktop ---
+   La grille de cartes (main.grille) utilise déjà "auto-fill" : elle se
+   réorganise seule en plusieurs colonnes sans media query. Ce palier
+   ajuste ce que "auto-fill" ne couvre pas -- espacements, taille de
+   police, largeur des boutons -- pour un écran plus large qu'un
+   téléphone. Rien ne change en dessous de 700px (comportement mobile
+   identique à avant). */
+@media (min-width: 700px) {
+  header h1 { font-size: 40px; }
+
+  main.grille {
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+    padding: 24px;
   }
-  const phraseH2H = traduitPalierH2H(candidat.h2h_palier);
-  if (phraseH2H) phrases.push(phraseH2H + ".");
-  return phrases.join(" ");
+
+  .match { padding: 20px; }
+
+  .nav-pages, #nav-pages { max-width: 480px; }
+
+  #copier-btn, .bouton-principal, .bouton-secondaire { max-width: 480px; margin-left: auto; margin-right: auto; }
 }
-
-function construitBlocCandidat(rangInfo, candidat, equipes) {
-  const div = document.createElement("div");
-  if (!candidat) {
-    div.className = "carte-pronostic vide";
-    div.innerHTML = `<span class="pastille-rang" style="opacity:.5">${echappeHtml(rangInfo.pastille)}</span><p style="margin-top:10px">Aucun pronostic n'a passé tous les critères du modèle pour ce rang.</p>`;
-    return div;
-  }
-
-  div.className = `carte-pronostic ${rangInfo.classe}`;
-  const libelle = traduitMarche(candidat.marche, equipes);
-  const { etoiles, texte: texteConfiance } = traduitNiveau(candidat.niveau);
-  const etoilesHtml = "★".repeat(etoiles) + `<span class="vide">${"★".repeat(5 - etoiles)}</span>`;
-  const pct = candidat.edge !== null && candidat.edge !== undefined
-    ? null // edge n'est pas la probabilité -- ne pas confondre les deux dans la jauge
-    : null;
-  // La probabilité affichée dans la jauge est la probabilité du modèle,
-  // pas l'edge ni l'EDV -- si le champ n'est pas exposé par le moteur sur
-  // ce candidat, on masque la jauge plutôt que d'afficher un faux chiffre.
-  const probaModele = candidat.probabilite;
-  const probaConnue = probaModele !== null && probaModele !== undefined;
-  const pctEntier = probaConnue ? Math.round(probaModele * 100) : null;
-
-  div.innerHTML = `
-    <div class="entete-rang">
-      <span class="pastille-rang">${echappeHtml(rangInfo.pastille)}</span>
-      <span class="sous-titre-rang">${echappeHtml(rangInfo.sousTitre)}</span>
-    </div>
-    <div class="libelle-marche">${echappeHtml(libelle)}</div>
-    <div class="ligne-cote-proba">
-      <div class="bloc-cote">
-        <div class="etiquette">COTE</div>
-        <div class="valeur-cote">${formatCote(candidat.cote)}</div>
-      </div>
-      ${probaConnue ? `
-      <div class="jauge-probabilite">
-        <svg width="68" height="68" viewBox="0 0 68 68">
-          <circle class="fond-anneau" cx="34" cy="34" r="28"></circle>
-          <circle class="valeur-anneau" cx="34" cy="34" r="28"
-            stroke-dasharray="${(2 * Math.PI * 28).toFixed(1)}"
-            stroke-dashoffset="${(2 * Math.PI * 28 * (1 - pctEntier / 100)).toFixed(1)}"></circle>
-        </svg>
-        <div class="texte-anneau">${pctEntier}%</div>
-      </div>
-      <div class="bloc-proba-texte">
-        <div class="etiquette">CHANCES DE RÉUSSITE ESTIMÉES</div>
-      </div>` : `<div class="bloc-proba-texte"><div class="etiquette">Probabilité non communiquée pour ce marché</div></div>`}
-    </div>
-    <div class="ligne-confiance">
-      <span class="etoiles">${etoilesHtml}</span>
-      <span class="texte-confiance">Confiance ${texteConfiance.toLowerCase()}</span>
-    </div>
-    <div class="bloc-pourquoi">
-      <div class="titre">Pourquoi ce choix ?</div>
-      <div class="texte">${echappeHtml(construitPourquoi(candidat, equipes))}</div>
-    </div>
-    <div class="metriques-secondaires">
-      <div class="metrique">
-        <div class="etiquette">AVANTAGE ESTIMÉ</div>
-        <div class="valeur">+${formatPctSur(candidat.edge)}</div>
-      </div>
-      <div class="metrique">
-        <div class="etiquette">GAIN POTENTIEL</div>
-        <div class="valeur">+${formatPctSur(candidat.edv)}</div>
-      </div>
-    </div>
-  `;
-  return div;
-}
-
-function construitDetails(m) {
-  const details = document.createElement("details");
-  details.className = "details-analyse";
-  const selection = m.archetype_model.selection || {};
-  const lignes = [];
-  ["P1", "P2", "P3"].forEach((cle) => {
-    const c = selection[cle];
-    if (!c) return;
-    lignes.push(`<div class="ligne-detail"><span class="cle">${cle} — marché technique</span><span class="val">${echappeHtml(c.marche)}</span></div>`);
-    lignes.push(`<div class="ligne-detail"><span class="cle">${cle} — niveau</span><span class="val">${echappeHtml(c.niveau || "?")}</span></div>`);
-    lignes.push(`<div class="ligne-detail"><span class="cle">${cle} — stabilité</span><span class="val">${echappeHtml(c.robustesse || "?")}</span></div>`);
-    lignes.push(`<div class="ligne-detail"><span class="cle">${cle} — historique direct</span><span class="val">${echappeHtml(c.h2h_palier || "?")}</span></div>`);
-  });
-  details.innerHTML = `
-    <summary>Détails techniques de l'analyse</summary>
-    <div class="contenu-details">${lignes.join("")}</div>
-  `;
-  return details;
-}
-
-function construitCarte(m) {
-  const conteneur = document.createElement("div");
-  conteneur.className = "carte-match";
-
-  const equipes = { domicile: m.domicile, exterieur: m.exterieur };
-  const heureAffichee = m.heure_cameroun || m.heure || "";
-  const competition = (m.competition || "").replace(/\s+/g, " ").trim();
-
-  const entete = document.createElement("div");
-  entete.className = "entete-match";
-  entete.innerHTML = `
-    <div class="equipes">
-      <div class="nom-equipe domicile">${echappeHtml(m.domicile)}</div>
-      <div class="heure-match">${echappeHtml(heureAffichee)}${m.date ? "<br>" + echappeHtml(m.date) : ""}</div>
-      <div class="nom-equipe exterieur">${echappeHtml(m.exterieur)}</div>
-    </div>
-    ${competition ? `<div class="info-competition">${echappeHtml(competition)}</div>` : ""}
-  `;
-  conteneur.appendChild(entete);
-
-  const selection = m.archetype_model.selection || {};
-  RANGS.forEach((rangInfo) => {
-    conteneur.appendChild(construitBlocCandidat(rangInfo, selection[rangInfo.cle], equipes));
-  });
-
-  conteneur.appendChild(construitDetails(m));
-
-  return conteneur;
-}
-
-function afficheSelections(matchs) {
-  const container = document.getElementById("matches");
-  const maj = document.getElementById("maj");
-  container.innerHTML = "";
-
-  const retenus = (matchs || []).filter(estArchetypeGo);
-  retenus.sort((a, b) => {
-    const cleA = (a.date || "") + (a.heure_cameroun || a.heure || "");
-    const cleB = (b.date || "") + (b.heure_cameroun || b.heure || "");
-    return cleA.localeCompare(cleB);
-  });
-
-  maj.textContent = retenus.length
-    ? `${retenus.length} match${retenus.length > 1 ? "s" : ""} analysé${retenus.length > 1 ? "s" : ""} aujourd'hui`
-    : "Aucune sélection pour le moment";
-
-  if (retenus.length === 0) {
-    container.innerHTML = "<p class=\"detail-vide\">Aucun match ne remplit actuellement tous les critères du modèle. Ce n'est pas une erreur : le modèle préfère ne rien proposer plutôt que de proposer un pari incertain.</p>";
-    return;
-  }
-
-  retenus.forEach((m) => container.appendChild(construitCarte(m)));
-}
-
-fetch("precalcul_leger.json?_=" + Date.now())
-  .then((r) => {
-    if (!r.ok) throw new Error("precalcul_leger.json introuvable (status " + r.status + ")");
-    return r.json();
-  })
-  .then((data) => afficheSelections(data.signaux || []))
-  .catch((err) => {
-    document.getElementById("maj").textContent = "erreur de chargement : " + err.message;
-    console.error(err);
-  });

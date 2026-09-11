@@ -83,13 +83,14 @@ function formatDate(dateIso) {
     return dateIso;
   }
 
-  return d
-    .toLocaleDateString("fr-FR", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    })
-    .replace(".", "");
+  const texte = d.toLocaleDateString("fr-FR", {
+    weekday: "long",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+
+  return texte.charAt(0).toUpperCase() + texte.slice(1).replace(".", "");
 }
 
 function initialesEquipe(nom) {

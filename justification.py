@@ -1,5 +1,5 @@
 """
-justification.py — créé le 10/09/2026, à la demande
+archetype_model/justification.py — créé le 10/09/2026, à la demande
 explicite de Patrick ("va jusqu'au bout"), pour remplacer les phrases
 génériques ("confiance très forte") de l'affichage par des phrases
 chiffrées et vraies ("7 des 8 derniers matchs...").
@@ -42,16 +42,7 @@ def _compte(matchs, condition):
     if n == 0:
         return None
     confirmant = sum(1 for m in matchs if condition(m))
-    buts_marques = [float(m["buts_marques"]) for m in matchs]
-    buts_encaisses = [float(m["buts_encaisses"]) for m in matchs]
-    buts_totaux = [a + b for a, b in zip(buts_marques, buts_encaisses)]
-    return {
-        "nb_confirmant": confirmant,
-        "nb_echantillon": n,
-        "moyenne_buts_marques": sum(buts_marques) / n,
-        "moyenne_buts_encaisses": sum(buts_encaisses) / n,
-        "moyenne_buts_totaux": sum(buts_totaux) / n,
-    }
+    return {"nb_confirmant": confirmant, "nb_echantillon": n}
 
 
 def _combine(res_a, res_b):
@@ -62,25 +53,7 @@ def _combine(res_a, res_b):
         return None
     n = (res_a["nb_echantillon"] if res_a else 0) + (res_b["nb_echantillon"] if res_b else 0)
     c = (res_a["nb_confirmant"] if res_a else 0) + (res_b["nb_confirmant"] if res_b else 0)
-    moyenne_marques = (
-        ((res_a["moyenne_buts_marques"] * res_a["nb_echantillon"]) if res_a else 0.0)
-        + ((res_b["moyenne_buts_marques"] * res_b["nb_echantillon"]) if res_b else 0.0)
-    ) / n
-    moyenne_encaisses = (
-        ((res_a["moyenne_buts_encaisses"] * res_a["nb_echantillon"]) if res_a else 0.0)
-        + ((res_b["moyenne_buts_encaisses"] * res_b["nb_echantillon"]) if res_b else 0.0)
-    ) / n
-    moyenne_totaux = (
-        ((res_a["moyenne_buts_totaux"] * res_a["nb_echantillon"]) if res_a else 0.0)
-        + ((res_b["moyenne_buts_totaux"] * res_b["nb_echantillon"]) if res_b else 0.0)
-    ) / n
-    return {
-        "nb_confirmant": c,
-        "nb_echantillon": n,
-        "moyenne_buts_marques": moyenne_marques,
-        "moyenne_buts_encaisses": moyenne_encaisses,
-        "moyenne_buts_totaux": moyenne_totaux,
-    }
+    return {"nb_confirmant": c, "nb_echantillon": n}
 
 
 def confirmation_historique(marche, matchs_a, matchs_b):
