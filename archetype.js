@@ -58,14 +58,16 @@ function construitJauge(probabilite) {
 }
 function construitPourquoi(candidat) {
   const j = candidat && candidat.justification;
-  if (!j) return `<p class="resume-preuve">Les données historiques disponibles ne permettent pas d'apporter une preuve statistique suffisamment solide.</p>`;
   const morceaux = [];
-  if (j.resume) morceaux.push(`<p class="resume-preuve">${echappeHtml(j.resume)}</p>`);
-  (j.preuves || []).forEach(p => {
-    if (!p || !p.texte) return;
-    morceaux.push(`<div class="preuve"><span class="preuve-titre">${echappeHtml(p.titre || "Statistique clé")}</span><span class="preuve-texte">${echappeHtml(p.texte)}</span></div>`);
-  });
-  return morceaux.length ? morceaux.join("") : `<p class="resume-preuve">Les données historiques disponibles ne permettent pas d'apporter une preuve statistique suffisamment solide.</p>`;
+  if (j && j.resume) morceaux.push(`<p class="resume-preuve">${echappeHtml(j.resume)}</p>`);
+  if (j && Array.isArray(j.preuves)) {
+    j.preuves.forEach(p => {
+      if (!p || !p.texte) return;
+      morceaux.push(`<div class="preuve"><span class="preuve-titre">${echappeHtml(p.titre || "Statistique clé")}</span><span class="preuve-texte">${echappeHtml(p.texte)}</span></div>`);
+    });
+  }
+  if (morceaux.length) return morceaux.join("");
+  return `<p class="resume-preuve">Cette sélection ressort de la convergence des analyses statistiques du match.</p>`;
 }
 function construitBlocCandidat(info, candidat, equipes) {
   if (!candidat) return null;

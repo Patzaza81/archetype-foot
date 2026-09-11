@@ -34,11 +34,27 @@ def _propres(matchs):
 
 
 def _derniers(matchs, minimum=MIN_MATCHS_PREUVE):
-    """Garde les 8 derniers matchs au maximum, mais refuse tout échantillon < 5."""
+    """Retourne jusqu'à 8 matchs récents si l'historique est exploitable."""
     propres = _propres(matchs)
     if len(propres) < minimum:
         return []
     return propres[-MAX_MATCHS_AFFICHAGE:]
+
+def _historique_preuve(role_matchs, historique_recent):
+    """Choisit le meilleur échantillon public sans confondre les contextes.
+
+    Le rôle (domicile/extérieur) est prioritaire lorsqu'il fournit au moins
+    5 matchs. Sinon, on bascule sur les derniers matchs toutes situations.
+    Dans ce second cas, le texte doit parler de « forme récente » et jamais
+    prétendre qu'il s'agit d'un historique domicile/extérieur.
+    """
+    role = _derniers(role_matchs)
+    if role:
+        return role, True
+    recent = _derniers(historique_recent)
+    if recent:
+        return recent, False
+    return [], False
 
 
 def _role(matchs, domicile):
@@ -134,10 +150,8 @@ def construit_justification(marche, matchs_a, matchs_b, h2h=None,
     """
     a = _propres(matchs_a)
     b = _propres(matchs_b)
-    a_dom = _derniers(_role(a, True))
-    b_ext = _derniers(_role(b, False))
-    a_recent = _derniers(a)
-    b_recent = _derniers(b)
+    a_dom, a_role = _historique_preuve(_role(a, True), a)
+    b_ext, b_role = _historique_preuve(_role(b, False), b)
     h2h_retenu = _h2h_propres(h2h)
 
     preuves = []
@@ -156,12 +170,12 @@ def construit_justification(marche, matchs_a, matchs_b, h2h=None,
             condition = lambda m, l=ligne: m["buts_marques"] + m["buts_encaisses"] > l
             description = f"derniers matchs au-dessus de {ligne_txt} buts"
 
-        _ajoute(preuves, _preuve_frequence(
-            nom_domicile or "Équipe à domicile", a_dom, condition, description
-        ))
-        _ajoute(preuves, _preuve_frequence(
-            nom_exterieur or "Équipe à l'extérieur", b_ext, condition, description
-        ))
+        lib_a = (nom_domicile or "Équipe à domicile") if a_role else "Forme récente"
+        lib_b = (nom_exterieur or "Équipe à l'extérieur") if b_role else "Forme récente"
+        desc_a = description + (" à domicile" if a_role else "")
+        desc_b = description + (" à l'extérieur" if b_role else "")
+        _ajoute(preuves, _preuve_frequence(lib_a, a_dom, condition, desc_a))
+        _ajoute(preuves, _preuve_frequence(lib_b, b_ext, condition, desc_b))
         _ajoute(preuves, _preuve_moyenne(
             "Statistique clé",
             "Moyenne de {valeur:.2f} buts par match sur cet échantillon.",
@@ -195,14 +209,16 @@ def construit_justification(marche, matchs_a, matchs_b, h2h=None,
         equipe = nom_domicile or "L'équipe à domicile"
         condition = lambda m: m["buts_marques"] >= m["buts_encaisses"]
         resume = f"{equipe} présente un profil solide à domicile sur les résultats récents."
-        _ajoute(preuves, _preuve_frequence("Forme récente", a_dom, condition, "derniers matchs à domicile sans défaite"))
+        desc = "derniers matchs à domicile sans défaite" if a_role else "derniers matchs sans défaite"
+        _ajoute(preuves, _preuve_frequence("Forme récente", a_dom, condition, desc))
         h2h_condition = lambda x: x["buts_a"] >= x["buts_b"]
 
     elif marche in ("double_chance_X2", "1x2_exterieur"):
         equipe = nom_exterieur or "L'équipe à l'extérieur"
         condition = lambda m: m["buts_marques"] >= m["buts_encaisses"]
         resume = f"{equipe} présente un profil solide à l'extérieur sur les résultats récents."
-        _ajoute(preuves, _preuve_frequence("Forme récente", b_ext, condition, "derniers matchs à l'extérieur sans défaite"))
+        desc = "derniers matchs à l'extérieur sans défaite" if b_role else "derniers matchs sans défaite"
+        _ajoute(preuves, _preuve_frequence("Forme récente", b_ext, condition, desc))
         h2h_condition = lambda x: x["buts_a"] <= x["buts_b"]
 
     elif marche == "double_chance_12":
@@ -221,7 +237,8 @@ def construit_justification(marche, matchs_a, matchs_b, h2h=None,
             condition = lambda m, l=ligne, s=sens: m["buts_marques"] > l if s == "over" else m["buts_marques"] < l
             ligne_txt = str(ligne).replace(".", ",")
             resume = f"{equipe} montre une tendance régulière à marquer {('plus de' if sens == 'over' else 'moins de')} {ligne_txt} but(s)."
-            _ajoute(preuves, _preuve_frequence("Forme récente", matchs, condition, f"derniers matchs avec {('plus de' if sens == 'over' else 'moins de')} {ligne_txt} but(s) marqué(s)"))
+            contexte = " à domicile" if role == "domicile" and a_role else " à l'extérieur" if role == "exterieur" and b_role else ""
+            _ajoute(preuves, _preuve_frequence("Forme récente", matchs, condition, f"derniers matchs{contexte} avec {('plus de' if sens == 'over' else 'moins de')} {ligne_txt} but(s) marqué(s)"))
             _ajoute(preuves, _preuve_moyenne("Statistique clé", f"{equipe} marque en moyenne {{valeur:.2f}} but par match sur cet échantillon.", matchs, lambda m: m["buts_marques"]))
 
     elif marche.startswith("cage_inviolee_"):

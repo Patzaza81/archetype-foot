@@ -877,7 +877,25 @@ def _leger_pour_site(s):
     d.pop("lambda", None)
     am = d.get("archetype_model")
     if isinstance(am, dict):
-        d["archetype_model"] = {"statut": am.get("statut"), "selection": am.get("selection")}
+        selection = am.get("selection") or {}
+        selection_legere = {}
+        for rang, candidat in selection.items():
+            if not isinstance(candidat, dict):
+                continue
+            # Les justifications sont des données légères, déjà calculées
+            # après la sélection. Elles doivent survivre dans le fichier
+            # destiné au site ; sinon l'interface ne peut que tomber sur un
+            # message générique, même lorsque le moteur dispose d'une preuve.
+            c = dict(candidat)
+            if isinstance(c.get("justification"), dict):
+                j = c["justification"]
+                c["justification"] = {
+                    "resume": j.get("resume"),
+                    "preuves": j.get("preuves") or [],
+                    "donnees_suffisantes": bool(j.get("donnees_suffisantes")),
+                }
+            selection_legere[rang] = c
+        d["archetype_model"] = {"statut": am.get("statut"), "selection": selection_legere}
     return d
 
 
