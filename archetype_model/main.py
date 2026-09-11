@@ -42,7 +42,7 @@ from .signals import statistiques_signal
 from .signals import convergence
 from .signals import deduplication
 from .signals import selector
-from . import justification
+import justification
 from .edv import calculator as edv_calculator
 
 SCENARIOS = ("offensif", "defensif", "contextuel", "global")
