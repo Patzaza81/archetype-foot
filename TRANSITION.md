@@ -2126,3 +2126,34 @@ Champs additionnels sur chaque candidat (base et dynamique) : `probabilite` et `
 - Rendu visuel vérifié par capture d'écran réelle (wkhtmltoimage, faute d'accès réseau à un navigateur headless plus moderne) -- `conic-gradient` abandonné au profit d'un anneau SVG après un premier essai qui ne s'affichait pas ; `inset: 0` remplacé par les 4 propriétés explicites pour la même raison de compatibilité.
 - La phrase de confirmation pour les combos reste générique -- traiter proprement le comptage conjoint est un chantier séparé si les combos sont un jour réellement exploités (voir §30.4/30.7, toujours bloqué sur le scraper).
 - Le rendu réel sur téléphone (Safari iOS, l'usage réel de Patrick) n'a pas pu être vérifié directement dans cet environnement -- à confirmer par Patrick après déploiement.
+
+## 32. Session du 11/09/2026 — Découverte et audit du système modifié en parallèle (nouvelle interface + justification enrichie), transition vers une nouvelle fenêtre
+
+### 32.1 Contexte
+Patrick a continué à coder dans une autre fenêtre pendant que la session ici était bloquée (limite de conversation), pour ne pas interrompre le travail. Cette session a consisté à **découvrir et auditer** ce qui avait été fait ailleurs, jamais à le deviner ou à le prendre sur parole — vérification directe du dépôt réel (`api.github.com/.../git/trees` puis `codeload.github.com` pour le contenu complet, l'API seule étant vite limitée en débit).
+
+### 32.2 Ce qui a été fait ailleurs (vérifié, pas supposé)
+- **`archetype.html`/`archetype.js` entièrement refaits** : nouvelle identité visuelle (écussons avec initiales d'équipe plutôt que de faux logos, dégradés or/turquoise/violet par rang P1/P2/P3, jauge circulaire SVG, étoiles de confiance, nom de marché en police serif). Fidèle à la maquette d'origine de Patrick — vérifié par capture d'écran réelle (wkhtmltoimage), pas seulement par lecture du code.
+- **`justification.py` déplacé à la racine du dépôt** (hors du package `archetype_model/`), importé en absolu (`import justification`) depuis `archetype_model/main.py` -- fonctionne (cohérent avec le reste du dépôt qui importe déjà tout en absolu depuis la racine), mais casse tout ce qui référençait encore l'ancien chemin `archetype_model.justification`.
+- **Nouvelle fonction `construit_justification()`**, bien plus rigoureuse que la version `confirmation_historique()` de la session précédente : n'affiche une preuve chiffrée ("7/8 derniers matchs...") que si l'échantillon est suffisant (**≥ 5 matchs**) ET le taux favorable (**≥ 60 %**) -- sinon un résumé qualitatif générique est affiché à la place, jamais un chiffre approximatif. Intègre aussi le H2H comme preuve séparée ("Confrontations directes"), plafonne à 3 preuves par sélection (2 fréquences + 1 H2H/moyenne, H2H priorisé si disponible). `confirmation_historique()` est conservée comme adaptateur de compatibilité au-dessus (renvoie la première preuve chiffrée suffisante), mais n'est plus utilisée par l'affichage -- `archetype.js` lit désormais `candidat.justification.{resume,preuves}` directement.
+- **`parseBetpawa.js`** (portage JS de `parse_betpawa.py`) présent à la racine mais **non référencé par aucune page HTML** -- travail en cours, pas encore branché.
+
+### 32.3 Bugs trouvés et corrigés dans `audit_permanent.py` (le seul fichier livré cette session)
+1. **Crash immédiat** (`ModuleNotFoundError: No module named 'archetype_model.justification'`) -- l'audit importait encore l'ancien chemin. Corrigé en `import justification`.
+2. **3 tests devenus obsolètes, pas le code** : le changement de contrat de `confirmation_historique()` (seuil qualité ≥5/≥60%, voir 32.2) faisait légitimement échouer 3 tests écrits sous l'ancien contrat (qui acceptait tout échantillon non vide). Réécrits pour vérifier le VRAI contrat actuel : échantillon insuffisant → `None` même à 100 % de réussite ; taux insuffisant → `None` même sur 6 matchs.
+3. **6 nouveaux tests ajoutés pour `construit_justification()`** elle-même (jamais testée directement avant cette session, alors que c'est la fonction réellement utilisée par l'affichage) : preuve chiffrée réelle avec nom d'équipe, intégration H2H, plafond à 3 preuves, échantillon insuffisant → repli propre, marché combo non géré → repli propre, marché inconnu → repli propre. Chaque cas vérifié à la main avant d'être figé.
+
+**Résultat final : 313 vérités, 0 échec.** Fichier `audit_permanent.py` corrigé livré à Patrick pour remplacement dans le dépôt (pas encore confirmé appliqué à la fin de cette session -- **à vérifier en priorité en reprise**).
+
+### 32.4 Chantier explicitement annulé cette session
+Un chantier de retrait des informations affichées de l'ancien moteur (`script.js`/`pronostics.html`/bouton "Analyser le panier" dans `panier.js`) avait été commencé puis **annulé par Patrick en cours de route** ("elle ne servira plus à rien j'ai continué de coder ailleurs") -- rien de ce chantier n'a été livré ni appliqué. L'ancien moteur et son affichage restent tels quels pour l'instant. Si ce retrait est toujours souhaité, c'est une demande à reformuler explicitement en reprise, pas à supposer.
+
+### 32.5 Limite connue, non résolue
+Le test de non-régression 68/48 (rejeu sur les 446 matchs du fixture figé, `fixture_rejeu_10092026.json`) ne fait PAS transiter d'historique réel dans `construit_justification()` -- la fixture date d'avant ce chantier de justification et ne contient pas `_historique_justification`/confrontations H2H. Ce test vérifie donc toujours la non-régression de la DÉCISION (P1/P2/P3, edge, edv -- inchangés, 68/48 confirmés), mais PAS que la justification affichée est correctement peuplée en conditions réelles de bout en bout -- seuls les tests unitaires directs sur `construit_justification()` (32.3, point 3) couvrent ça, de façon isolée. À combler si une garantie de bout en bout est souhaitée.
+
+### 32.6 Priorité de la prochaine session
+Patrick contrôle en ce moment (autre fenêtre) le comportement réel du nouveau système sur le run de la nuit. À la reprise, vérifier en priorité, sur le dépôt réel (jamais sur la mémoire de cette session) :
+1. Le run de la nuit s'est-il terminé sans exception ? (logs GitHub Actions)
+2. Le correctif d'`audit_permanent.py` (32.3) a-t-il été appliqué au dépôt ?
+3. `candidat.justification.preuves` contient-il des preuves chiffrées réelles sur au moins quelques matchs du run (pas seulement des résumés génériques faute de `_historique_justification` correctement peuplé en production) ?
+4. Quelles sont les "légères modifications" que Patrick a en tête -- à demander explicitement, pas à deviner.
