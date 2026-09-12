@@ -273,6 +273,47 @@ def construit_justification(marche, matchs_a, matchs_b, h2h=None,
             resume = f"{equipe} présente un profil récent cohérent avec un handicap de {ligne_txt}."
             _ajoute(preuves, _preuve_frequence("Forme récente", matchs, condition, f"derniers matchs couvrant ce handicap de {ligne_txt}"))
 
+    elif marche.startswith("combo_"):
+        m = re.match(r"^combo_(1X|X2|12)_(over|under)_(-?\d+(?:\.\d+)?)$", marche)
+        if m:
+            dc, sens, ligne = m.group(1), m.group(2), float(m.group(3))
+            ligne_txt = str(ligne).replace(".", ",")
+            nom_dom = nom_domicile or "L'équipe à domicile"
+            nom_ext = nom_exterieur or "L'équipe à l'extérieur"
+
+            if dc == "1X":
+                matchs_combo = a_dom
+                cond_dc = lambda x: x["buts_marques"] >= x["buts_encaisses"]
+                h2h_cond_dc = lambda x: x["buts_a"] >= x["buts_b"]
+                libelle_dc = f"{nom_dom} sans défaite"
+            elif dc == "X2":
+                matchs_combo = b_ext
+                cond_dc = lambda x: x["buts_marques"] >= x["buts_encaisses"]
+                h2h_cond_dc = lambda x: x["buts_a"] <= x["buts_b"]
+                libelle_dc = f"{nom_ext} sans défaite"
+            else:  # "12"
+                matchs_combo = a_dom + b_ext
+                cond_dc = lambda x: x["buts_marques"] != x["buts_encaisses"]
+                h2h_cond_dc = lambda x: x["buts_a"] != x["buts_b"]
+                libelle_dc = "un vainqueur"
+
+            if sens == "over":
+                cond_total = lambda x, l=ligne: x["buts_marques"] + x["buts_encaisses"] > l
+                h2h_cond_total = lambda x, l=ligne: x["buts_a"] + x["buts_b"] > l
+                libelle_total = f"plus de {ligne_txt} buts"
+            else:
+                cond_total = lambda x, l=ligne: x["buts_marques"] + x["buts_encaisses"] < l
+                h2h_cond_total = lambda x, l=ligne: x["buts_a"] + x["buts_b"] < l
+                libelle_total = f"moins de {ligne_txt} buts"
+
+            condition = lambda x, cd=cond_dc, ct=cond_total: cd(x) and ct(x)
+            resume = f"Ce combo associe deux tendances observées séparément sur les matchs comparables récents : {libelle_dc} et {libelle_total}."
+            _ajoute(preuves, _preuve_frequence(
+                "Forme récente", matchs_combo, condition,
+                "derniers matchs comparables vérifiant les deux conditions du combo à la fois",
+            ))
+            h2h_condition = lambda x, cd=h2h_cond_dc, ct=h2h_cond_total: cd(x) and ct(x)
+
     # Le H2H est une preuve séparée : le palier technique seul ne suffit pas.
     # On exige un historique direct réellement disponible et >= 5 rencontres.
     if h2h_condition:
@@ -313,3 +354,119 @@ def confirmation_historique(marche, matchs_a, matchs_b):
                 "pourcentage": preuve["pourcentage"],
             }
     return None
+
+
+# ============================================================================
+# RAISON RÉELLE DE LA SÉLECTION (chantier du 12/09/2026, demande de Patrick :
+# "la vraie raison du choix", pas une phrase reconstituée à partir de
+# l'historique). Utilise UNIQUEMENT les champs qui ont réellement servi à
+# la décision (niveau, robustesse, signal, h2h_palier, edv) et le diagnostic
+# produit par archetype_model.signals.selector.diagnostique_p1/p2/p3
+# (jamais recalculé ici, jamais une supposition sur ce qui a différencié).
+#
+# APPELÉE UNIQUEMENT APRÈS QUE P1/P2/P3 SONT DÉJÀ FIGÉS -- ces fonctions ne
+# participent à AUCUNE sélection et ne sont jamais lues par
+# archetype_model/signals/selector.py ni signals/convergence.py. Elles ne
+# font que mettre en mots une décision déjà prise ailleurs.
+# ============================================================================
+
+LIBELLES_NIVEAU = {
+    "PREMIUM": "le niveau d'éligibilité le plus élevé (PREMIUM)",
+    "TRES_FORT": "un niveau d'éligibilité très fort",
+    "FORT": "un niveau d'éligibilité fort",
+    "ELIGIBLE": "un niveau d'éligibilité suffisant",
+    "ELIGIBLE_PLUS": "un niveau d'éligibilité de base",
+}
+
+LIBELLES_H2H = {
+    "TRES_FIABLE": "très fiables",
+    "FIABLE": "fiables",
+    "INDICATIF": "indicatives",
+    "INSUFFISANT": "insuffisantes",
+}
+
+
+def construit_raison_selection(candidat, diagnostic):
+    """Construit la phrase de raison réelle de la sélection, à partir
+    UNIQUEMENT des champs de décision du candidat et du `diagnostic`
+    fourni par selector.diagnostique_p1/p2/p3 (dict avec au moins la
+    clé "critere"). Ne recalcule jamais quel critère a décidé -- se
+    contente de traduire en français ce que le diagnostic rapporte.
+
+    Retourne une phrase (str), ou None si `candidat` est None.
+    """
+    if candidat is None:
+        return None
+
+    niveau = candidat.get("niveau")
+    lib_niveau = LIBELLES_NIVEAU.get(niveau)
+    if lib_niveau:
+        base = f"Ce marché a été validé dans les 4 scénarios du modèle, avec {lib_niveau}."
+    else:
+        base = "Ce marché a été validé dans les 4 scénarios du modèle."
+
+    critere = (diagnostic or {}).get("critere")
+
+    if critere == "aucun_concurrent":
+        return base + " Aucun autre marché ne concourait dans son groupe -- il a été retenu par défaut, sans concurrent à départager."
+    if critere == "egalite_totale":
+        return base + " Il était à égalité parfaite avec le meilleur marché concurrent sur tous les critères du modèle."
+    if critere == "niveau":
+        return base + " C'est ce niveau d'éligibilité, supérieur à celui du meilleur marché concurrent, qui l'a distingué."
+    if critere == "robustesse":
+        return base + " Sa stabilité sur les 4 scénarios était supérieure à celle du meilleur marché concurrent, ce qui l'a distingué."
+    if critere == "signal":
+        direction = candidat.get("signal_direction")
+        if direction == "favorable":
+            return base + " Le signal de forme récente, favorable, l'a distingué du meilleur marché concurrent."
+        if direction == "defavorable":
+            return base + " La faiblesse du signal de forme récente sur le marché concurrent l'a distingué."
+        return base + " Le signal de forme récente l'a distingué du meilleur marché concurrent."
+    if critere == "h2h":
+        palier = candidat.get("h2h_palier")
+        lib_h2h = LIBELLES_H2H.get(palier)
+        if lib_h2h:
+            return base + f" La fiabilité des confrontations directes ({lib_h2h}) l'a distingué du meilleur marché concurrent."
+        return base + " La fiabilité des confrontations directes l'a distingué du meilleur marché concurrent."
+    if critere == "edv":
+        edv = candidat.get("edv")
+        if isinstance(edv, (int, float)):
+            return base + f" À critères équivalents par ailleurs, son gain potentiel ({edv * 100:.1f} %) l'a départagé du meilleur marché concurrent."
+        return base + " À critères équivalents par ailleurs, son gain potentiel l'a départagé du meilleur marché concurrent."
+    # "aucune_selection", critère absent ou inconnu -> repli honnête,
+    # jamais une raison inventée au-delà de ce qui est garanti vrai.
+    return base
+
+
+def enrichit_justification_selection(candidat, diagnostic):
+    """Ajoute la RAISON RÉELLE de la sélection à la justification déjà
+    construite par construit_justification() (historique/H2H).
+    N'efface aucune information : l'ancien résumé (tendance
+    historique) devient une preuve parmi les autres au lieu d'être
+    présenté comme LA raison du choix.
+
+    APPELÉE UNIQUEMENT après que P1/P2/P3 sont déjà figés -- la
+    mutation en place du candidat est acceptée ici car ce candidat est
+    déjà la sélection finale, plus jamais relu pour une décision.
+
+    Retourne le nouveau dict justification (ou None si candidat est
+    None).
+    """
+    if candidat is None:
+        return None
+
+    justification_actuelle = candidat.get("justification") or {}
+    raison = construit_raison_selection(candidat, diagnostic)
+
+    ancien_resume = justification_actuelle.get("resume")
+    preuves = list(justification_actuelle.get("preuves") or [])
+    if ancien_resume:
+        preuves.insert(0, {"titre": "Tendance historique", "texte": ancien_resume})
+
+    nouvelle_justification = {
+        "resume": raison or ancien_resume,
+        "preuves": preuves,
+        "donnees_suffisantes": bool(justification_actuelle.get("donnees_suffisantes")),
+    }
+    candidat["justification"] = nouvelle_justification
+    return nouvelle_justification

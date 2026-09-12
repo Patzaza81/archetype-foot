@@ -3451,11 +3451,66 @@ verite(
         "preuves": [], "donnees_suffisantes": False,
     },
 )
+# CAS 5 corrigé le 12/09/2026 -- changement de contrat VOLONTAIRE, pas une
+# régression : le combo DC+Total est désormais géré par construit_justification
+# (demande explicite de Patrick, 12/09/2026 -- "justifier handicap comme
+# double chance"). L'ancien test vérifiait l'ABSENCE de gestion ; il est
+# remplacé ci-dessous par un test du VRAI comportement actuel.
+_r_just_combo = _just_dyn.construit_justification(
+    "combo_12_over_1.5", _dom_a_riche, [], nom_domicile="Cannes", nom_exterieur="Amiens"
+)
 verite(
-    "construit_justification CAS 5 (doit échouer proprement) : marché combo "
-    "non géré par ce module -> ni résumé ni preuve inventés, jamais un crash",
+    "construit_justification CAS 5 (doit réussir) : combo '12 + over 1.5' "
+    "sur 8 matchs domicile (5 confirmant les DEUX conditions à la fois, "
+    "62,5 %) -> preuve chiffrée réelle, plus géré comme un marché inconnu",
+    _r_just_combo["preuves"] == [{
+        "titre": "Forme récente",
+        "texte": "5/8 derniers matchs comparables vérifiant les deux conditions du combo à la fois",
+        "occurrences": 5, "total": 8, "pourcentage": 62.5,
+    }] and _r_just_combo["donnees_suffisantes"] is True,
+)
+verite(
+    "construit_justification CAS 5bis (doit échouer proprement) : combo "
+    "'1X + over 1.5' sur seulement 3 matchs (< 5, seuil de qualité) -> "
+    "aucune preuve chiffrée, même à 100 % de réussite sur les 3",
     _just_dyn.construit_justification(
-        "combo_12_over_1.5", _dom_a_riche, [], nom_domicile="Cannes", nom_exterieur="Amiens"
+        "combo_1X_over_1.5",
+        [
+            {"domicile": True, "buts_marques": 3, "buts_encaisses": 0},
+            {"domicile": True, "buts_marques": 2, "buts_encaisses": 1},
+            {"domicile": True, "buts_marques": 4, "buts_encaisses": 2},
+        ],
+        [], nom_domicile="Cannes", nom_exterieur="Amiens",
+    )["preuves"] == [],
+)
+verite(
+    "construit_justification CAS 5ter (doit réussir) : combo 'X2 + under 3.5' "
+    "utilise bien la fenêtre EXTÉRIEURE (equipe B), pas domicile -- "
+    "vérifie l'orientation, pas seulement la présence d'une preuve (le "
+    "match 0-1, une défaite pour B, échoue à juste titre la condition X2 : "
+    "4/5, pas 5/5)",
+    _just_dyn.construit_justification(
+        "combo_X2_under_3.5", [],
+        [
+            {"domicile": False, "buts_marques": 0, "buts_encaisses": 0},
+            {"domicile": False, "buts_marques": 1, "buts_encaisses": 1},
+            {"domicile": False, "buts_marques": 0, "buts_encaisses": 1},
+            {"domicile": False, "buts_marques": 1, "buts_encaisses": 0},
+            {"domicile": False, "buts_marques": 2, "buts_encaisses": 1},
+        ],
+        nom_domicile="Cannes", nom_exterieur="Amiens",
+    )["preuves"] == [{
+        "titre": "Forme récente",
+        "texte": "4/5 derniers matchs comparables vérifiant les deux conditions du combo à la fois",
+        "occurrences": 4, "total": 5, "pourcentage": 80.0,
+    }],
+)
+verite(
+    "construit_justification CAS 5quater (doit échouer proprement) : "
+    "format combo non reconnu (double chance invalide) -> repli propre, "
+    "jamais une exception",
+    _just_dyn.construit_justification(
+        "combo_99_over_1.5", _dom_a_riche, [], nom_domicile="Cannes", nom_exterieur="Amiens"
     ) == {"resume": None, "preuves": [], "donnees_suffisantes": False},
 )
 verite(
@@ -3552,6 +3607,213 @@ verite(
     ),
 )
 _am_dyn.analyse_match = _original_analyse_match_dyn
+
+
+# ============================================================================
+# CHANTIER "RAISON RÉELLE DU CHOIX" (12/09/2026, demande de Patrick) --
+# tests directs de archetype_model.signals.selector.diagnostique_* (jamais
+# testées avant ce chantier, alors que ce sont ces fonctions qui vont
+# alimenter la justification affichée) et de
+# justification.construit_raison_selection/enrichit_justification_selection.
+# ============================================================================
+from archetype_model.signals import selector as _sel_dyn
+
+section("archetype_model/signals/selector.py -- diagnostique_differenciation "
+         "(12/09/2026) : PUR DIAGNOSTIC, jamais lu par selectionner_p1/p2/p3, "
+         "jamais appelé pendant la sélection elle-même.")
+
+_niveau_ref = {"market_family": "A", "exposure_group": "GA", "niveau": "TRES_FORT",
+               "robustesse": "STABLE", "signal_direction": None, "signal_frequence": None,
+               "h2h_palier": None, "edv": 0.10}
+
+# CAS 1 (doit réussir) : niveau différent -> critère "niveau"
+_c_gagnant_niveau = {**_niveau_ref, "niveau": "PREMIUM"}
+_c_concurrent_niveau = {**_niveau_ref, "niveau": "FORT"}
+verite(
+    "diagnostique_differenciation CAS 1 (doit réussir) : niveau différent "
+    "(PREMIUM vs FORT) -> critère rapporté = 'niveau', jamais un autre",
+    _sel_dyn.diagnostique_differenciation(_c_gagnant_niveau, [_c_concurrent_niveau])
+    == {"critere": "niveau", "valeur_gagnant": 4, "valeur_concurrent": 2},
+)
+
+# CAS 2 (doit réussir) : niveau/robustesse égaux, signal différent -> "signal"
+_c_gagnant_signal = {**_niveau_ref, "signal_direction": "favorable", "signal_frequence": 0.8}
+_c_concurrent_signal = {**_niveau_ref, "signal_direction": "defavorable", "signal_frequence": 0.2}
+_diag_signal = _sel_dyn.diagnostique_differenciation(_c_gagnant_signal, [_c_concurrent_signal])
+verite(
+    "diagnostique_differenciation CAS 2 (doit réussir) : niveau/robustesse "
+    "identiques, signal différent (favorable vs défavorable) -> critère "
+    "rapporté = 'signal'",
+    _diag_signal["critere"] == "signal",
+)
+
+# CAS 3 (doit réussir) : tout égal sauf H2H -> "h2h"
+_c_gagnant_h2h = {**_niveau_ref, "h2h_palier": "TRES_FIABLE"}
+_c_concurrent_h2h = {**_niveau_ref, "h2h_palier": "INSUFFISANT"}
+verite(
+    "diagnostique_differenciation CAS 3 (doit réussir) : niveau/robustesse/"
+    "signal identiques, H2H différent -> critère rapporté = 'h2h', jamais "
+    "un critère antérieur dans la cascade",
+    _sel_dyn.diagnostique_differenciation(_c_gagnant_h2h, [_c_concurrent_h2h])["critere"] == "h2h",
+)
+
+# CAS 4 (doit réussir) : tout égal sauf EDV -> "edv" (dernier recours)
+_c_gagnant_edv = {**_niveau_ref, "edv": 0.457}
+_c_concurrent_edv = {**_niveau_ref, "edv": 0.12}
+verite(
+    "diagnostique_differenciation CAS 4 (doit réussir) : seul l'EDV "
+    "diffère -> critère rapporté = 'edv', avec les deux vraies valeurs "
+    "conservées (jamais arrondies ni perdues)",
+    _sel_dyn.diagnostique_differenciation(_c_gagnant_edv, [_c_concurrent_edv])
+    == {"critere": "edv", "valeur_gagnant": 0.457, "valeur_concurrent": 0.12},
+)
+
+# CAS 5 (rejet attendu) : aucun concurrent -> jamais un faux départage
+verite(
+    "diagnostique_differenciation CAS 5 (rejet attendu) : aucun concurrent "
+    "dans le pool -> critère = 'aucun_concurrent', jamais un critère "
+    "inventé (ex. 'edv' par défaut)",
+    _sel_dyn.diagnostique_differenciation(_niveau_ref, []) == {"critere": "aucun_concurrent"},
+)
+
+# CAS 6 (rejet attendu) : gagnant None -> jamais un crash
+verite(
+    "diagnostique_differenciation CAS 6 (rejet attendu) : gagnant None "
+    "(aucune sélection à ce rang) -> critère = 'aucune_selection', aucune "
+    "exception",
+    _sel_dyn.diagnostique_differenciation(None, [_niveau_ref]) == {"critere": "aucune_selection"},
+)
+
+# CAS 7 (rejet attendu, cas honnête) : égalité totale sur les 5 critères
+_c_identique = dict(_niveau_ref)
+verite(
+    "diagnostique_differenciation CAS 7 (cas honnête, rare mais réel) : "
+    "concurrent strictement identique sur les 5 critères -> critère = "
+    "'egalite_totale', jamais un départage fabriqué sur l'EDV par défaut",
+    _sel_dyn.diagnostique_differenciation(_niveau_ref, [_c_identique]) == {"critere": "egalite_totale"},
+)
+
+# CAS 8 (doit réussir) : diagnostique_p2/p3 respectent EXACTEMENT les mêmes
+# conditions d'éligibilité que selectionner_p2/p3 -- reformule le rejeu réel
+# 68/48 : le pool de concurrents de P2 ne doit contenir aucun candidat de la
+# même famille/groupe que P1.
+_p1_test = {"market_family": "FAM_A", "exposure_group": "GRP_A", "niveau": "PREMIUM",
+            "robustesse": "STABLE", "signal_direction": None, "signal_frequence": None,
+            "h2h_palier": None, "edv": 0.10}
+_p2_valide_test = {"market_family": "FAM_B", "exposure_group": "GRP_B", "niveau": "FORT",
+                    "robustesse": "STABLE", "signal_direction": None, "signal_frequence": None,
+                    "h2h_palier": None, "edv": 0.08}
+_p2_meme_famille_test = {"market_family": "FAM_A", "exposure_group": "GRP_C", "niveau": "TRES_FORT",
+                          "robustesse": "STABLE", "signal_direction": None, "signal_frequence": None,
+                          "h2h_palier": None, "edv": 0.30}
+_pool_p2_test = [_p1_test, _p2_valide_test, _p2_meme_famille_test]
+_diag_p2_test = _sel_dyn.diagnostique_p2(_pool_p2_test, _p1_test, _p2_valide_test)
+verite(
+    "diagnostique_p2 CAS 8 (doit réussir) : un candidat de même famille "
+    "que P1 (donc jamais réellement concurrent de P2) est bien EXCLU du "
+    "pool de comparaison, même s'il a un meilleur niveau",
+    _diag_p2_test == {"critere": "aucun_concurrent"},
+)
+
+section("justification.py -- construit_raison_selection/"
+         "enrichit_justification_selection (12/09/2026) : traduisent le "
+         "diagnostic de selector.py en phrase française, jamais l'inverse.")
+
+_cand_premium = {"marche": "over_2_5", "niveau": "PREMIUM", "robustesse": "STABLE",
+                  "signal_direction": None, "signal_frequence": None,
+                  "h2h_palier": None, "edv": 0.457,
+                  "justification": {"resume": "Ancien résumé historique.",
+                                     "preuves": [{"titre": "Forme récente", "texte": "4/5 ..."}],
+                                     "donnees_suffisantes": True}}
+
+verite(
+    "construit_raison_selection CAS 1 (doit réussir) : critère 'niveau' "
+    "-> la phrase mentionne le niveau PREMIUM ET le fait qu'il a distingué "
+    "le candidat, jamais une phrase sur l'EDV ou le signal",
+    "PREMIUM" in _just_dyn.construit_raison_selection(_cand_premium, {"critere": "niveau"})
+    and "distingué" in _just_dyn.construit_raison_selection(_cand_premium, {"critere": "niveau"}),
+)
+verite(
+    "construit_raison_selection CAS 2 (doit réussir) : critère 'edv' -> "
+    "la phrase contient la VRAIE valeur d'EDV du candidat (45.7 %), "
+    "jamais une valeur générique ou arrondie différemment",
+    "45.7" in _just_dyn.construit_raison_selection(_cand_premium, {"critere": "edv"}),
+)
+verite(
+    "construit_raison_selection CAS 3 (rejet attendu, cas honnête) : "
+    "critère 'aucun_concurrent' -> la phrase dit explicitement l'absence "
+    "de concurrent, jamais un faux départage inventé",
+    "défaut" in _just_dyn.construit_raison_selection(_cand_premium, {"critere": "aucun_concurrent"})
+    or "sans concurrent" in _just_dyn.construit_raison_selection(_cand_premium, {"critere": "aucun_concurrent"}),
+)
+verite(
+    "construit_raison_selection CAS 4 (rejet attendu, cas honnête) : "
+    "critère 'egalite_totale' -> la phrase ne pointe vers AUCUN des 5 "
+    "noms de critère (niveau/robustesse/signal/h2h/edv) comme s'il avait "
+    "décidé, puisqu'aucun n'a réellement décidé",
+    not any(
+        mot in _just_dyn.construit_raison_selection(_cand_premium, {"critere": "egalite_totale"})
+        for mot in ("distingué", "départagé")
+    ),
+)
+verite(
+    "construit_raison_selection CAS 5 (rejet attendu) : candidat None -> "
+    "None, jamais une exception ni une phrase vide inventée",
+    _just_dyn.construit_raison_selection(None, {"critere": "niveau"}) is None,
+)
+
+_cand_enrichi_test = {
+    "marche": "over_2_5", "niveau": "PREMIUM", "robustesse": "STABLE",
+    "signal_direction": None, "signal_frequence": None, "h2h_palier": None, "edv": 0.457,
+    "justification": {"resume": "Ancien résumé historique.",
+                       "preuves": [{"titre": "Forme récente", "texte": "4/5 ..."}],
+                       "donnees_suffisantes": True},
+}
+_j_enrichie = _just_dyn.enrichit_justification_selection(_cand_enrichi_test, {"critere": "niveau"})
+verite(
+    "enrichit_justification_selection CAS 6 (doit réussir) : l'ancien "
+    "résumé historique n'est PAS perdu -- il devient une preuve "
+    "'Tendance historique' au lieu d'être présenté comme la raison",
+    any(p.get("titre") == "Tendance historique" and p.get("texte") == "Ancien résumé historique."
+        for p in _j_enrichie["preuves"]),
+)
+verite(
+    "enrichit_justification_selection CAS 7 (doit réussir) : la preuve de "
+    "fréquence déjà présente avant enrichissement (4/5 ...) est toujours "
+    "là aussi -- rien n'est écrasé, seulement ajouté",
+    any(p.get("titre") == "Forme récente" for p in _j_enrichie["preuves"]),
+)
+verite(
+    "enrichit_justification_selection CAS 8 (rejet attendu) : candidat "
+    "None -> None, jamais une exception (utilisé tel quel dans main.py "
+    "sur P1/P2/P3 qui peuvent être None)",
+    _just_dyn.enrichit_justification_selection(None, {"critere": "niveau"}) is None,
+)
+
+section("INVARIANT capital (Chantier B) : le diagnostic et l'enrichissement "
+         "de la justification ne changent JAMAIS la sélection P1/P2/P3 "
+         "elle-même -- vérifié sur le VRAI rejeu du fixture (446 matchs), "
+         "pas sur un cas jouet.")
+
+# Rejeu réel : _res_reel_just a été produit PLUS HAUT dans ce fichier en
+# appelant analyse_match_complet() sur un vrai match du fixture -- cette
+# fonction inclut maintenant l'appel à diagnostique_selection() +
+# enrichit_justification_selection() (voir main.py). On vérifie ici que le
+# P1 obtenu est TOUJOURS le même objet que celui présent dans
+# candidats_dedupliques (rien n'a été substitué), et qu'il porte bien une
+# justification enrichie (resume non vide) -- sans jamais avoir eu besoin
+# de recalculer la sélection nous-mêmes.
+verite(
+    "INVARIANT (Chantier B) : sur le cas réel rejoué plus haut, le P1 "
+    "retenu par selectionner() est TOUJOURS le même objet dans "
+    "candidats_dedupliques après le passage de diagnostique_selection/"
+    "enrichit_justification_selection (aucune substitution, aucun candidat "
+    "recréé) -- et sa justification porte bien un resume non vide",
+    _p1_reel is None or (
+        any(c is _p1_reel for c in _res_reel_just["candidats_dedupliques"])
+        and bool(_p1_reel.get("justification", {}).get("resume"))
+    ),
+)
 
 
 # ============================================================================

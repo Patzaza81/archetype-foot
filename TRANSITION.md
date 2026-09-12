@@ -2157,3 +2157,40 @@ Patrick contrôle en ce moment (autre fenêtre) le comportement réel du nouveau
 2. Le correctif d'`audit_permanent.py` (32.3) a-t-il été appliqué au dépôt ?
 3. `candidat.justification.preuves` contient-il des preuves chiffrées réelles sur au moins quelques matchs du run (pas seulement des résumés génériques faute de `_historique_justification` correctement peuplé en production) ?
 4. Quelles sont les "légères modifications" que Patrick a en tête -- à demander explicitement, pas à deviner.
+
+## 33. Session du 12/09/2026 — Vérification du run de nuit + Chantier "raison réelle du choix" (justification), combo couvert
+
+### 33.1 Vérification de la priorité de la session 32
+Sur le dépôt réel (codeload + logs GitHub Actions fournis par Patrick, jamais sur la mémoire de session précédente) :
+1. **Run de la nuit terminé sans exception** : confirmé par les vrais logs Actions (commit `447696e` poussé avec succès). Seule anomalie : une équipe (Farmel, Indonésie) avec une page matchendirect en 404 -- gérée proprement (saison ignorée), pas un crash.
+2. **Correctif `audit_permanent.py` (32.3) appliqué** : confirmé -- `import justification` correct, plus aucune référence à l'ancien chemin cassé. Réexécuté réellement (pas relu) : 313 vérités, 0 échec au début de cette session.
+3. **`candidat.justification.preuves` réel en production** : confirmé avec des chiffres du run réel -- 42 P1 sur 943 signaux, dont 23/42 avec preuve chiffrée réelle, 19/42 en repli générique (attendu quand l'échantillon ne passe pas le seuil ≥5/≥60%, pas un bug).
+4. **Point noté, pas résolu** : le run de cette nuit a pris 4h44 contre 33m37s pour un run antérieur (commentaire dans `pipeline.yml`) -- sous la limite de 6h GitHub Actions mais x8, à surveiller.
+
+### 33.2 Découvertes importantes avant tout chantier
+- **`historique_v0.jsonl`** (50 Mo, 5939 lignes) : AUCUNE ligne n'a `resultat_reel` rempli (0/5939, dont 940 verdicts "GO"). Le mécanisme de calibration voulu par Patrick n'a rien à calibrer aujourd'hui -- aucun résultat réel n'est jamais rattaché.
+- **`historique_pronostics.json`/`verification_resultats.py`/`calcule_roi.py`** ne connaissent QUE l'ancien moteur (schéma `LISTE_B_liste_finale_apres_correlation`, etc.) -- `archetype_model` (le moteur en production depuis le 09-10/09) n'est vérifié NULLE PART contre les résultats réels. Le tableau ROI actuel (64,3%, -7,1%) ne parle donc que de l'ancien moteur.
+- **Git history récupérable** : ~156 pronostics réels d'`archetype_model` sur des matchs déjà joués (09-10 matin/soir, 09-11, 09-12) existent dans l'historique Git de `precalcul.json` mais ne sont archivés nulle part -- récupérables si on le fait avant que Patrick ne demande un nettoyage complet des données.
+- **Décision de Patrick** : ne PAS effacer les données avant d'avoir récupéré ces résultats réels. Chantier de récupération + vraie architecture d'archivage **mis en pause**, pas abandonné -- à reprendre en session dédiée.
+- **Décision de Patrick sur le signal** : la sélection P1/P2/P3 doit rester une procédure "totalement indépendante et isolée" -- le chantier d'extension du `signal_direction`/`signal_frequence` (`statistiques_signal.py`) à Handicap/combos/etc. (évoqué un temps comme "Chantier C") est **abandonné**, parce qu'il aurait ajouté un vrai critère de décision à la sélection, pas juste enrichi l'affichage. Ne pas le reproposer sans une demande explicite et séparée.
+
+### 33.3 Chantier livré cette session : la vraie raison du choix (justification)
+**Confirmé au préalable, par du code déjà en place et un test dédié** : la justification affichée n'a jamais influencé et n'influencera jamais la sélection P1/P2/P3 -- ce sont deux mécanismes complètement séparés (`selector.py`/`convergence.py` pour la décision, `justification.py` pour l'explication après coup).
+
+**Problème réel confirmé dans le code avant de coder quoi que ce soit** : `construit_justification()` ne connaissait que l'historique de fréquence (matchs passés) -- jamais les vrais champs de décision (`niveau`, `robustesse`, `signal_direction`/`frequence`, `h2h_palier`, `edv`). La phrase affichée comme "pourquoi ce choix" ne reflétait donc jamais la vraie cascade de sélection (`niveau` → `robustesse` → `signal` → `H2H` → `EDV`, `signals/selector.py`).
+
+**Solution implémentée, purement additive, sélection jamais touchée :**
+- `archetype_model/signals/selector.py` : ajout de `diagnostique_differenciation()`/`diagnostique_p1/p2/p3()`/`diagnostique_selection()` -- PUR diagnostic après coup, reproduit à l'identique les conditions d'éligibilité de `selectionner_p2/p3` (jamais appelé PAR elles), détermine quel critère de la cascade a réellement différencié le gagnant du meilleur concurrent resté sur le carreau.
+- `justification.py` : ajout de `construit_raison_selection()` (traduit le diagnostic en phrase française, jamais l'inverse) et `enrichit_justification_selection()` (fusionne la raison réelle avec l'historique déjà construit -- l'ancien résumé historique devient une preuve "Tendance historique" au lieu d'être présenté comme LA raison). Ajout aussi de la gestion du marché **combo** (DC+Total), absente jusqu'ici -- demande explicite de Patrick, vérifiée : aucun combo n'a d'ailleurs été généré sur le run de cette nuit (0/59 candidats), donc ce trou n'avait pas encore causé de dégât visible.
+- `archetype_model/main.py` : un seul appel ajouté après `selector.selectionner()`, jamais avant.
+- `precalcul.py` et `archetype.js` : **aucun changement nécessaire** -- ils lisent déjà exactement les clés (`resume`/`preuves`/`donnees_suffisantes`) produites par la nouvelle justification.
+
+**Vérifications réelles effectuées** (pas seulement des tests unitaires) :
+- Rejeu 68/48 sur les 446 matchs du fixture : **inchangé à l'identique** (preuve que la sélection elle-même n'a pas bougé).
+- Résultat visuellement inspecté sur 3 vrais matchs du fixture (ex. Clermont-US Boulogne : "C'est ce niveau d'éligibilité, supérieur à celui du meilleur marché concurrent, qui l'a distingué.") -- phrase vraie, pas reconstituée.
+- `audit_permanent.py` : 313 → **333 vérités, 0 échec**. Un test existant (`construit_justification CAS 5`) corrigé car il testait un changement de contrat volontaire de cette session (combo non géré → combo géré) ; une erreur de calcul manuel dans un nouveau test (CAS 5ter, 5/5 au lieu de 4/5) trouvée et corrigée avant livraison, pas après.
+
+### 33.4 À reprendre en priorité
+1. Récupération des résultats réels pour `historique_v0.jsonl` et les ~156 pronostics `archetype_model` orphelins dans l'historique Git (33.2), avant toute calibration ou nettoyage.
+2. Construction d'une vraie architecture d'archivage/vérification pour `archetype_model` (aucune aujourd'hui).
+3. Confirmer que le nouveau texte de justification s'affiche correctement une fois en production (prochain run réel).
