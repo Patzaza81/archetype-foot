@@ -3315,37 +3315,65 @@ section("archetype_model/justification.py — comptage historique PUREMENT "
         "pour remplacer les phrases génériques par des chiffres réels "
         "(\"7 des 8 derniers matchs...\"). Ne doit JAMAIS influencer la "
         "décision -- vérifié explicitement ci-dessous.")
-import archetype_model.justification as _just_dyn
+import justification as _just_dyn
 
 _matchs_a_test = [
     {"domicile": True, "buts_marques": 2, "buts_encaisses": 1},
+    {"domicile": True, "buts_marques": 2, "buts_encaisses": 2},
+    {"domicile": True, "buts_marques": 3, "buts_encaisses": 1},
     {"domicile": True, "buts_marques": 0, "buts_encaisses": 0},
-    {"domicile": False, "buts_marques": 3, "buts_encaisses": 0},
-    {"domicile": True, "buts_marques": 1, "buts_encaisses": 2},
+    {"domicile": True, "buts_marques": 2, "buts_encaisses": 2},
 ]
 _matchs_b_test = [
+    {"domicile": False, "buts_marques": 1, "buts_encaisses": 2},
+    {"domicile": False, "buts_marques": 2, "buts_encaisses": 1},
     {"domicile": False, "buts_marques": 1, "buts_encaisses": 1},
-    {"domicile": False, "buts_marques": 0, "buts_encaisses": 2},
-    {"domicile": True, "buts_marques": 5, "buts_encaisses": 0},
 ]
 
+# NOTE (11/09/2026, reprise) -- confirmation_historique() délègue désormais à
+# construit_justification() (justification.py, à la racine du dépôt --
+# import corrigé de `archetype_model.justification` à `justification`
+# suite au déplacement du module), qui n'accepte une preuve chiffrée que si
+# l'échantillon est suffisant (>= 5 matchs) ET le taux favorable (>= 60 %) --
+# règle de qualité volontaire, plus stricte que l'ancienne version qui
+# acceptait n'importe quel échantillon non vide. Les 3 cas ci-dessous
+# testent maintenant CE contrat réel, pas l'ancien.
 verite(
     "confirmation_historique CAS 1 (doit compter juste) : over_2_5 sur "
-    "dom_a=[3,0,3] + ext_b=[2,2] -> 2 confirmants sur 5",
+    "dom_a (5 matchs, 4 confirmants) -> la 1ère preuve suffisante (>= 5, "
+    ">= 60 %) est retenue",
     _just_dyn.confirmation_historique("over_2_5", _matchs_a_test, _matchs_b_test)
-    == {"nb_confirmant": 2, "nb_echantillon": 5},
+    == {"nb_confirmant": 4, "nb_echantillon": 5, "pourcentage": 80.0},
 )
 verite(
-    "confirmation_historique CAS 2 (doit compter juste) : cage_inviolee_domicile "
-    "sur dom_a=[enc:1,0,2] -> 1 clean sheet sur 3",
-    _just_dyn.confirmation_historique("cage_inviolee_domicile", _matchs_a_test, _matchs_b_test)
-    == {"nb_confirmant": 1, "nb_echantillon": 3},
+    "confirmation_historique CAS 2 (doit échouer proprement) : "
+    "cage_inviolee_domicile sur seulement 3 matchs (3/3 clean sheets, 100 %) "
+    "-> None malgré un taux parfait, l'échantillon (< 5) est insuffisant",
+    _just_dyn.confirmation_historique(
+        "cage_inviolee_domicile",
+        [
+            {"domicile": True, "buts_marques": 1, "buts_encaisses": 0},
+            {"domicile": True, "buts_marques": 2, "buts_encaisses": 0},
+            {"domicile": True, "buts_marques": 0, "buts_encaisses": 0},
+        ],
+        [],
+    ) is None,
 )
 verite(
-    "confirmation_historique CAS 3 (doit compter juste) : 1x2_exterieur sur "
-    "ext_b=[nul,defaite] -> 0 victoire sur 2",
-    _just_dyn.confirmation_historique("1x2_exterieur", _matchs_a_test, _matchs_b_test)
-    == {"nb_confirmant": 0, "nb_echantillon": 2},
+    "confirmation_historique CAS 3 (doit échouer proprement) : 1x2_exterieur "
+    "sur 6 matchs mais seulement 2 confirmants (33 %) -> None malgré un "
+    "échantillon suffisant, le taux (< 60 %) est insuffisant",
+    _just_dyn.confirmation_historique(
+        "1x2_exterieur", [],
+        [
+            {"domicile": False, "buts_marques": 0, "buts_encaisses": 1},
+            {"domicile": False, "buts_marques": 0, "buts_encaisses": 2},
+            {"domicile": False, "buts_marques": 1, "buts_encaisses": 3},
+            {"domicile": False, "buts_marques": 0, "buts_encaisses": 1},
+            {"domicile": False, "buts_marques": 1, "buts_encaisses": 1},
+            {"domicile": False, "buts_marques": 2, "buts_encaisses": 1},
+        ],
+    ) is None,
 )
 verite(
     "confirmation_historique CAS 4 (doit échouer proprement) : marché combo "
@@ -3363,6 +3391,79 @@ verite(
     "confirmation_historique CAS 6 (doit échouer proprement) : clé de "
     "marché totalement inconnue -> None, jamais un crash",
     _just_dyn.confirmation_historique("marche_qui_n_existe_pas", _matchs_a_test, _matchs_b_test) is None,
+)
+
+# --- Tests directs de construit_justification() (11/09/2026, reprise) --
+# c'est la fonction RÉELLEMENT utilisée par l'affichage (candidat.justification
+# dans main.py, lu par archetype.js) -- confirmation_historique n'est plus
+# qu'un adaptateur de compatibilité au-dessus. Elle n'avait aucun test direct
+# avant cette reprise.
+_dom_a_riche = [
+    {"domicile": True, "buts_marques": 2, "buts_encaisses": 2},
+    {"domicile": True, "buts_marques": 2, "buts_encaisses": 1},
+    {"domicile": True, "buts_marques": 3, "buts_encaisses": 0},
+    {"domicile": True, "buts_marques": 1, "buts_encaisses": 2},
+    {"domicile": True, "buts_marques": 2, "buts_encaisses": 2},
+    {"domicile": True, "buts_marques": 0, "buts_encaisses": 0},
+    {"domicile": True, "buts_marques": 4, "buts_encaisses": 1},
+    {"domicile": True, "buts_marques": 2, "buts_encaisses": 1},
+]
+_h2h_riche = [
+    {"buts_a": 2, "buts_b": 1}, {"buts_a": 3, "buts_b": 0}, {"buts_a": 1, "buts_b": 1},
+    {"buts_a": 2, "buts_b": 0}, {"buts_a": 3, "buts_b": 2},
+]
+_r_just_riche = _just_dyn.construit_justification(
+    "over_2_5", _dom_a_riche, [], h2h=_h2h_riche, nom_domicile="Cannes", nom_exterieur="Amiens"
+)
+verite(
+    "construit_justification CAS 1 (doit réussir) : 8 matchs domicile dont "
+    "7 confirmants (87,5 %) -> preuve chiffrée réelle avec le nom de "
+    "l'équipe, jamais un texte générique",
+    any(p.get("titre") == "Cannes" and p.get("occurrences") == 7 and p.get("total") == 8
+        for p in _r_just_riche["preuves"]) and _r_just_riche["donnees_suffisantes"] is True,
+)
+verite(
+    "construit_justification CAS 2 (doit réussir) : H2H fourni et suffisant "
+    "(5 confrontations, seuil >= 5) -> une preuve \"Confrontations directes\" "
+    "distincte apparaît",
+    any(p.get("titre") == "Confrontations directes" for p in _r_just_riche["preuves"]),
+)
+verite(
+    "construit_justification CAS 3 (doit réussir) : jamais plus de 3 preuves, "
+    "même quand plusieurs sources (fréquences + H2H + moyenne) sont "
+    "disponibles",
+    len(_r_just_riche["preuves"]) <= 3,
+)
+verite(
+    "construit_justification CAS 4 (doit échouer proprement) : seulement 3 "
+    "matchs (< 5, seuil de qualité) -> aucune preuve chiffrée publiée, même "
+    "à 100 % de réussite, mais un résumé qualitatif reste affiché",
+    _just_dyn.construit_justification(
+        "over_2_5",
+        [
+            {"domicile": True, "buts_marques": 2, "buts_encaisses": 0},
+            {"domicile": True, "buts_marques": 3, "buts_encaisses": 1},
+            {"domicile": True, "buts_marques": 1, "buts_encaisses": 0},
+        ],
+        [], nom_domicile="Cannes", nom_exterieur="Amiens",
+    ) == {
+        "resume": "Les deux équipes ont montré une belle capacité à trouver le chemin des filets ces derniers temps.",
+        "preuves": [], "donnees_suffisantes": False,
+    },
+)
+verite(
+    "construit_justification CAS 5 (doit échouer proprement) : marché combo "
+    "non géré par ce module -> ni résumé ni preuve inventés, jamais un crash",
+    _just_dyn.construit_justification(
+        "combo_12_over_1.5", _dom_a_riche, [], nom_domicile="Cannes", nom_exterieur="Amiens"
+    ) == {"resume": None, "preuves": [], "donnees_suffisantes": False},
+)
+verite(
+    "construit_justification CAS 6 (doit échouer proprement) : clé de "
+    "marché totalement inconnue -> même repli propre, aucune exception",
+    _just_dyn.construit_justification(
+        "truc_bidule", _dom_a_riche, [], nom_domicile="Cannes", nom_exterieur="Amiens"
+    ) == {"resume": None, "preuves": [], "donnees_suffisantes": False},
 )
 
 # --- Invariant capital : le champ ne doit JAMAIS influencer la décision.
