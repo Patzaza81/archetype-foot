@@ -132,3 +132,128 @@ def selectionner(candidats):
     p2 = selectionner_p2(candidats, p1)
     p3 = selectionner_p3(candidats, p1, p2)
     return {"P1": p1, "P2": p2, "P3": p3}
+
+
+# ============================================================================
+# DIAGNOSTIC DE DIFFÉRENCIATION (chantier du 12/09/2026, demande de Patrick :
+# "la vraie raison du choix", pas une phrase reconstituée) -- PUREMENT
+# DIAGNOSTIC, appelé UNIQUEMENT APRÈS que selectionner_p1/p2/p3 ont déjà
+# figé leur résultat. Ne modifie, ne relit ni ne recalcule RIEN de la
+# sélection elle-même -- aucune des fonctions ci-dessus n'est touchée,
+# aucune d'elles n'appelle ce qui suit. Sert uniquement à expliquer, après
+# coup, quel critère de la cascade a réellement différencié le gagnant du
+# meilleur concurrent resté sur le carreau -- pour que justification.py
+# puisse écrire une phrase vraie au lieu d'une phrase plausible.
+#
+# PRINCIPE DE SÉCURITÉ : les pools de concurrents ci-dessous (fonctions
+# diagnostique_p1/p2/p3) REPRODUISENT EXACTEMENT les conditions
+# d'éligibilité déjà écrites dans selectionner_p2/selectionner_p3
+# ci-dessus (copié tel quel, jamais réinventé) -- si ces conditions
+# changent un jour, ces trois fonctions doivent être mises à jour en
+# même temps, jamais l'une sans l'autre.
+# ============================================================================
+
+NOMS_CRITERES_CASCADE = ("niveau", "robustesse", "signal", "h2h", "edv")
+
+
+def _decompose_cle(candidat):
+    """Les 5 composantes de _cle_cascade, dans l'ordre, nommées pour
+    comparaison critère par critère -- jamais utilisé pour trier."""
+    return _cle_cascade(candidat)
+
+
+def diagnostique_differenciation(gagnant, concurrents):
+    """
+    Détermine, PARMI LES CANDIDATS RÉELLEMENT CONSIDÉRÉS pour ce rang
+    (`concurrents`, sans le gagnant), lequel des 5 critères de la
+    cascade (niveau, robustesse, signal, h2h, edv) a réellement
+    différencié `gagnant` du meilleur concurrent restant.
+
+    Ne participe à aucune sélection, ne modifie aucun candidat.
+
+    Retourne toujours un dict avec au moins la clé "critere" :
+        {"critere": "aucune_selection"} -- `gagnant` est None
+        {"critere": "aucun_concurrent"} -- aucun concurrent dans le pool
+        {"critere": "egalite_totale"} -- meilleur concurrent identique
+            sur les 5 critères (rare, mais rapporté honnêtement si ça
+            arrive -- jamais masqué derrière un faux départage)
+        {"critere": <un des 5 noms>, "valeur_gagnant": ...,
+         "valeur_concurrent": ...} -- le premier critère, DANS L'ORDRE
+            DE LA CASCADE, où gagnant et meilleur concurrent diffèrent.
+
+    `concurrents` : les autres candidats du MÊME pool que celui qui a
+    produit `gagnant` (fourni par l'appelant, jamais recalculé ici).
+    """
+    if gagnant is None:
+        return {"critere": "aucune_selection"}
+    if not concurrents:
+        return {"critere": "aucun_concurrent"}
+
+    meilleur_concurrent = max(concurrents, key=_cle_cascade)
+    cle_gagnant = _decompose_cle(gagnant)
+    cle_concurrent = _decompose_cle(meilleur_concurrent)
+
+    for nom, valeur_gagnant, valeur_concurrent in zip(
+        NOMS_CRITERES_CASCADE, cle_gagnant, cle_concurrent
+    ):
+        if valeur_gagnant != valeur_concurrent:
+            return {
+                "critere": nom,
+                "valeur_gagnant": valeur_gagnant,
+                "valeur_concurrent": valeur_concurrent,
+            }
+    return {"critere": "egalite_totale"}
+
+
+def diagnostique_p1(candidats, p1):
+    """Diagnostic pour P1 -- concurrents = tout le pool passé à
+    selectionner_p1 (candidats dédoublonnés), sans P1 lui-même."""
+    if p1 is None:
+        return {"critere": "aucune_selection"}
+    concurrents = [c for c in candidats if c is not p1]
+    return diagnostique_differenciation(p1, concurrents)
+
+
+def diagnostique_p2(candidats, p1, p2):
+    """Diagnostic pour P2 -- MÊME condition d'éligibilité que
+    selectionner_p2 (copiée à l'identique, voir avertissement de
+    section)."""
+    if p2 is None:
+        return {"critere": "aucune_selection"}
+    concurrents = [
+        c for c in candidats
+        if c is not p2 and c is not p1
+        and c["market_family"] != p1["market_family"]
+        and c["exposure_group"] != p1["exposure_group"]
+    ]
+    return diagnostique_differenciation(p2, concurrents)
+
+
+def diagnostique_p3(candidats, p1, p2, p3):
+    """Diagnostic pour P3 -- MÊME condition d'éligibilité que
+    selectionner_p3 (copiée à l'identique, voir avertissement de
+    section)."""
+    if p3 is None:
+        return {"critere": "aucune_selection"}
+    concurrents = [
+        c for c in candidats
+        if c is not p3 and c is not p1 and c is not p2
+        and c["market_family"] not in (p1["market_family"], p2["market_family"])
+        and c["exposure_group"] not in (p1["exposure_group"], p2["exposure_group"])
+        and c.get("robustesse") == "STABLE"
+        and c.get("edv") is not None and c.get("edv") > 0
+    ]
+    return diagnostique_differenciation(p3, concurrents)
+
+
+def diagnostique_selection(candidats, selection):
+    """Calcule le diagnostic des 3 rangs à partir du résultat déjà figé
+    de `selectionner()` -- appelée APRÈS coup, jamais pendant la
+    sélection. `selection` : le dict {"P1":..., "P2":..., "P3":...}
+    déjà produit par selectionner(candidats)."""
+    p1, p2, p3 = selection.get("P1"), selection.get("P2"), selection.get("P3")
+    return {
+        "P1": diagnostique_p1(candidats, p1),
+        "P2": diagnostique_p2(candidats, p1, p2),
+        "P3": diagnostique_p3(candidats, p1, p2, p3),
+    }
