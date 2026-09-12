@@ -724,6 +724,19 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
     candidats_dedupliques = deduplication.deduplique(candidats, critere="edge") if candidats else []
     selection = selector.selectionner(candidats_dedupliques)
 
+    # AJOUT 12/09/2026 (demande de Patrick : "la vraie raison du choix") --
+    # PUREMENT APRÈS COUP : P1/P2/P3 sont déjà figés par la ligne
+    # ci-dessus, rien ici ne les relit pour décider quoi que ce soit.
+    # diagnostique_selection() ne fait que comparer, après coup, le
+    # candidat retenu à son meilleur concurrent resté sur le carreau, pour
+    # que la justification affichée dise la vraie raison de la sélection
+    # au lieu d'une phrase reconstituée depuis l'historique seul.
+    diagnostic_selection = selector.diagnostique_selection(candidats_dedupliques, selection)
+    for _rang in ("P1", "P2", "P3"):
+        justification.enrichit_justification_selection(
+            selection.get(_rang), diagnostic_selection.get(_rang)
+        )
+
     return {
         "statut": "OK",
         "fenetres": base["fenetres"],
