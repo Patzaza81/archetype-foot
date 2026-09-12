@@ -2,7 +2,13 @@ name: Pipeline quotidien Archetype Foot
 
 on:
   schedule:
-    - cron: "0 0 * * *"
+    # MODIFIÉ 12/09/2026 (demande de Patrick) : passé de 00:00 à 21:00 UTC
+    # (= 22:00 à Douala, Cameroun, UTC+1 -- heure locale visée, confirmée par
+    # Patrick). 00:00 UTC est l'heure la plus demandée sur GitHub Actions
+    # (beaucoup de pipelines planifiés pile à minuit) -- le run réel du
+    # 12/09 a démarré à 02:28 UTC, soit 2h28 de retard sur les 00:00
+    # planifiés (confirmé par le log Actions fourni par Patrick).
+    - cron: "0 21 * * *"
 
   workflow_dispatch:
     inputs:
