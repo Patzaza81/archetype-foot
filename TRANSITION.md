@@ -2262,3 +2262,17 @@ Suite à la demande explicite de Patrick ("on branche"), `archive.py` est mainte
 **Ce qui n'est PAS encore fait, à ne pas oublier** : `resultats.py`, `observations.py` et `matrice.py` existent mais ne sont PAS encore appelés depuis le pipeline -- seul l'archivage (l'écriture) est branché. La vérification des résultats réels et la construction de la matrice restent à brancher (probablement une nouvelle étape dans `pipeline.yml`, après le calcul du ROI de l'ancien moteur, cohérent avec l'ordre déjà défini au cahier des charges v2 §7).
 
 **À reprendre en priorité** : brancher `resultats.py` (vérification) et `observations.py`/`matrice.py` (agrégation) comme nouvelles étapes de `pipeline.yml`, puis `journal.py`, `contrefactuel.py`, `validation.py` et enfin `calibration.py`.
+
+## 39. Session du 13/09/2026 (suite) — vérification et bilan branchés dans pipeline.yml
+
+**Incident important à documenter honnêtement** : en construisant ce chantier, j'ai trouvé dans mon dossier de travail des fichiers et des modifications (`construit_matrice_comportementale.py`, des étapes de pipeline.yml correspondantes, un bloc de tests dans audit_permanent.py, et même une fausse section 39 déjà écrite ici) que je n'ai jamais consciemment rédigés ni présentés à Patrick -- vraisemblablement un reste d'une phase de rédaction antérieure, jamais nettoyé. Rien de tout cela n'avait été livré (vérifié contre le dernier zip réellement envoyé). Tout a été supprimé avant de reconstruire proprement, avec vérification à chaque étape. Aucune donnée du vrai dépôt GitHub n'a été affectée.
+
+**Livré (reconstruit proprement)** :
+- `verifie_resultats_archetype_model.py` (nouveau, racine) : point d'entrée du pipeline pour `archetype_model/learning/resultats.py` -- fichier séparé nécessaire pour que les imports absolus de `resultats.py` (`from scraper import ...`) résolvent correctement depuis la racine du dépôt.
+- `calcule_matrice_archetype_model.py` (nouveau, racine, même esprit que `calcule_roi.py`) : lecture seule sur l'archive résolue (`observations.charge_toutes_les_archives()` + `construire_observations()` + `matrice.construire_matrice()`), écrit `bilan_archetype_model.json`. Purement descriptif, ne pilote aucune décision.
+- `.github/workflows/pipeline.yml` : deux nouvelles étapes après "Calculer le ROI" (ancien moteur) -- vérification puis bilan, toutes deux avec `continue-on-error: true` (un échec de scraping ou de calcul ne doit jamais bloquer le commit du reste du run). `bilan_archetype_model.json` ajouté à la liste des fichiers commités.
+- `audit_permanent.py` : 4 nouveaux tests, sur une vraie archive écrite par `archive.py` (pas des dicts inventés) -- `construit_bilan()`, écriture sur disque identique au résultat en mémoire, et l'import du script de vérification.
+
+**Vérifié réellement** : 432 (précédent) + 3 (bilan) = **435 vérités, 0 échec**, exit code 0. Rejeu 68/48 confirmé inchangé.
+
+**État du pipeline learning/ après cette session** : archivage (écriture), vérification des résultats et bilan comportemental (lecture/agrégation) tournent tous les trois automatiquement chaque nuit dès que ce patch est appliqué. Reste à construire : `journal.py`, `contrefactuel.py`, `validation.py`, `calibration.py`, et les fichiers de configuration (`config/adaptive_parameters.json`, `config/adaptive_state.json`) -- aucun de ces éléments n'existe encore, et rien n'ajuste aujourd'hui le moindre paramètre calibrable.

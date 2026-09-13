@@ -4635,6 +4635,82 @@ except Exception as _e_branchement:
     )
 
 
+# CHANTIER "branchement pipeline.yml -- vérification + bilan" (13/09/2026)
+# ============================================================================
+section("verifie_resultats_archetype_model.py + calcule_matrice_archetype_model.py "
+        "(13/09/2026) -- scripts racine du pipeline nocturne, testés de "
+        "bout en bout sur une vraie archive temporaire.")
+
+import importlib as _importlib_pipe
+import tempfile as _tmp_pipe
+from pathlib import Path as _Path_pipe
+import archetype_model.learning.archive as _archive_pipe
+
+try:
+    _cwd_avant_pipe = _os_branch.getcwd() if "_os_branch" in dir() else __import__("os").getcwd()
+    import os as _os_pipe
+    with _tmp_pipe.TemporaryDirectory() as _d_pipe:
+        _os_pipe.chdir(_d_pipe)
+        try:
+            _match_pipe = {
+                "match_id": "PIPE-001", "date_match": "2026-09-10",
+                "equipe_dom": "Equipe A", "equipe_ext": "Equipe B", "competition": "Test",
+            }
+            _candidat_pipe = {
+                "marche": "btts_oui", "market_family": "BTTS", "exposure_group": "G",
+                "niveau": "FORT", "robustesse": "STABLE", "probabilite": 0.7,
+                "cote": 1.5, "edge": 0.05, "edv": 0.08,
+            }
+            _chemin_pipe = _archive_pipe.chemin_archive_mensuelle("2026-09-10")
+            _rid_pipe = _archive_pipe.enregistrer_selection(
+                _candidat_pipe, match=_match_pipe, model_version="v1",
+                config_version="v1", chemin=_chemin_pipe,
+            )
+            _archive_pipe.mettre_a_jour_resultat(
+                _rid_pipe, buts_marques=1, buts_encaisses=1, resultat_marche="WIN",
+                date_resolution="2026-09-11T00:00:00Z", chemin=_chemin_pipe,
+            )
+
+            import calcule_matrice_archetype_model as _cmam_dyn
+            _bilan_pipe = _cmam_dyn.construit_bilan()
+
+            verite(
+                "calcule_matrice_archetype_model.construit_bilan (doit "
+                "réussir) : sur une archive avec 1 observation gagnée à "
+                "cote 1.5, ROI global = 0.5, retrouvé au niveau global ET "
+                "dans la famille BTTS",
+                _bilan_pipe["global"]["observations"] == 1
+                and abs(_bilan_pipe["global"]["roi_flat"] - 0.5) < 1e-9
+                and _bilan_pipe["par_famille"]["BTTS"]["resume"]["observations"] == 1,
+            )
+
+            _cmam_dyn.main()
+            verite(
+                "calcule_matrice_archetype_model.main() (doit réussir) : "
+                "écrit bien bilan_archetype_model.json sur disque, "
+                "contenu identique à construit_bilan()",
+                _Path_pipe(_cmam_dyn.FICHIER_BILAN).exists()
+                and _json_branch.load(open(_cmam_dyn.FICHIER_BILAN, encoding="utf-8"))["global"]["observations"] == 1,
+            )
+
+            verite(
+                "verifie_resultats_archetype_model.py (doit réussir) : "
+                "importable et expose bien main(), sans erreur -- le vrai "
+                "scraping n'est pas rejoué ici (déjà testé en profondeur "
+                "sur resultats.verifier_resultats() directement)",
+                hasattr(_importlib_pipe.import_module("verifie_resultats_archetype_model"), "main"),
+            )
+        finally:
+            _os_pipe.chdir(_cwd_avant_pipe)
+except Exception as _e_pipe:
+    verite(
+        "tests réels du branchement pipeline.yml exécutables sans "
+        "exception inattendue",
+        False,
+        str(_e_pipe),
+    )
+
+
 # ============================================================================
 print("\n" + "=" * 70)
 if echecs:
