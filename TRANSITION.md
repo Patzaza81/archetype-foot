@@ -2194,3 +2194,15 @@ Sur le dépôt réel (codeload + logs GitHub Actions fournis par Patrick, jamais
 1. Récupération des résultats réels pour `historique_v0.jsonl` et les ~156 pronostics `archetype_model` orphelins dans l'historique Git (33.2), avant toute calibration ou nettoyage.
 2. Construction d'une vraie architecture d'archivage/vérification pour `archetype_model` (aucune aujourd'hui).
 3. Confirmer que le nouveau texte de justification s'affiche correctement une fois en production (prochain run réel).
+
+## 34. Session du 13/09/2026 — archive.py livré par le bureau d'étude, base corrigée avant intégration
+
+Le bureau d'étude a livré `archetype_model/learning/archive.py` (catégories SELECTED/COUNTERFACTUAL, catégorie B en compteur seul, transition de catégorie autorisée tant que PENDING, verrou RESOLVED immuable, écriture atomique). Code inspecté intégralement : conforme au contrat verrouillé la veille.
+
+**Problème trouvé avant intégration** : leur `audit_permanent.py` livré (3576 lignes) était bâti sur un instantané du dépôt antérieur au Chantier B du 12/09 (justification/raison réelle du choix) — n'ayant jamais reçu le zip complet du dépôt, ils travaillaient sur une base obsolète. Conséquence vérifiée : import cassé (`archetype_model.justification` au lieu de `justification`, le bug déjà corrigé en session 32), et ~300 lignes de tests Chantier B absentes. Leur relance de l'audit annonçait "4 vérités déjà défaillantes sur Betpawa" -- en réalité un crash complet (`ModuleNotFoundError`), jamais 4 échecs propres.
+
+**Correction effectuée** : leur section de tests ("ARCHIVAGE archetype_model — catégorie A/B et immutabilité", 5 vérités) extraite et greffée sur le vrai fichier actuel du dépôt (celui avec Chantier B), à la bonne place (après l'INVARIANT capital Chantier B, avant le bloc final). Réexécuté réellement : **338 vérités, 0 échec**, exit code 0. Rejeu 68/48 confirmé inchangé. Les "4 vérités Betpawa" n'existent pas sur la vraie base -- c'était un artefact de leur instantané obsolète, pas un problème réel.
+
+**Décision de Patrick** : le bureau d'étude a rempli son rôle de conception (cahier des charges v2 + Addendum 1 + Addendum 2 + contrat archive.py). La suite (resultats.py, observations.py, matrice.py, calibration.py, etc.) est reprise directement en session, sans repasser par eux.
+
+**À reprendre en priorité la prochaine session** : `resultats.py` -- doit réutiliser scraper.py/scraper_details.py tels quels, résoudre à la fois les enregistrements SELECTED et COUNTERFACTUAL avec la même fonction de règlement (Annexe A complète, sans "etc."), jamais de perte par défaut sur un marché inconnu.

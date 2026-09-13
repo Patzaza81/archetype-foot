@@ -3816,6 +3816,116 @@ verite(
 )
 
 
+section("ARCHIVAGE archetype_model — catégorie A/B et immutabilité")
+# ============================================================================
+# Ajout du 13/09/2026 : archive.py est une couche de persistance uniquement.
+# Catégorie B n'est volontairement PAS archivée ; les compteurs existants de
+# precalcul.py restent la seule trace des exclusions amont.
+try:
+    import tempfile as _tmp_archive
+    from pathlib import Path as _Path_archive
+    import archetype_model.learning.archive as _archive
+
+    source_archive = inspect.getsource(_archive)
+    verite(
+        "archive.py ne contient ni EXCLUDED ni archive_exclusion()",
+        "EXCLUDED" not in source_archive and "archive_exclusion" not in source_archive,
+    )
+
+    with _tmp_archive.TemporaryDirectory() as _d_archive:
+        _p_archive = _Path_archive(_d_archive) / "2026-09.json"
+        _match_archive = {
+            "match_id": "AUDIT-ARCHIVE-001",
+            "date": "2026-09-13",
+            "heure": "18:00",
+            "domicile": "Equipe A",
+            "exterieur": "Equipe B",
+            "competition": "Test",
+        }
+        _candidat_archive = {
+            "marche": "over_under_total_2.5_over",
+            "market_family": "GOALS_TOTAL",
+            "exposure_group": "GROUPE_BUTS",
+            "niveau": "PREMIUM",
+            "robustesse": "STABLE",
+            "probabilite": 0.80,
+            "cote": 1.50,
+            "edge": 0.30,
+            "edv": 0.20,
+        }
+
+        _rid_archive = _archive.enregistrer_selection(
+            _candidat_archive,
+            match=_match_archive,
+            model_version="audit-v1",
+            config_version="audit-c1",
+            chemin=_p_archive,
+        )
+        _record_archive = _archive.charger_archive(_p_archive)[0]
+        verite(
+            "nouvelle sélection archivée avec statut PENDING et résultat vide",
+            _record_archive["categorie"] == _archive.CATEGORIE_SELECTED
+            and _record_archive["resultat_statut"] == _archive.STATUT_PENDING
+            and _record_archive["buts_marques"] is None
+            and _record_archive["buts_encaisses"] is None
+            and _record_archive["resultat_marche"] is None,
+        )
+
+        # Une observation non résolue peut changer de catégorie d'une nuit à
+        # l'autre, sans créer un doublon : même record_id.
+        _archive.enregistrer_contrefactuel(
+            _candidat_archive,
+            match=_match_archive,
+            model_version="audit-v1",
+            config_version="audit-c2",
+            chemin=_p_archive,
+        )
+        _record_transition = _archive.charger_archive(_p_archive)
+        verite(
+            "transition SELECTED -> COUNTERFACTUAL autorisée tant que PENDING",
+            len(_record_transition) == 1
+            and _record_transition[0]["record_id"] == _rid_archive
+            and _record_transition[0]["categorie"] == _archive.CATEGORIE_COUNTERFACTUAL
+            and _record_transition[0]["resultat_statut"] == _archive.STATUT_PENDING,
+        )
+
+        _archive.mettre_a_jour_resultat(
+            _rid_archive,
+            buts_marques=2,
+            buts_encaisses=1,
+            resultat_marche="WIN",
+            date_resolution="2026-09-14",
+            chemin=_p_archive,
+        )
+        _avant_tentative_ecrasement = _archive.charger_archive(_p_archive)
+        try:
+            _archive.enregistrer_selection(
+                {**_candidat_archive, "edv": 0.99, "niveau": "FORT"},
+                match=_match_archive,
+                model_version="audit-v2",
+                config_version="audit-c3",
+                chemin=_p_archive,
+            )
+            _ecrasement_bloque = False
+        except _archive.ArchiveOverwriteError:
+            _ecrasement_bloque = True
+        _apres_tentative_ecrasement = _archive.charger_archive(_p_archive)
+        verite(
+            "tentative d'écrasement d'un RESOLVED refusée techniquement",
+            _ecrasement_bloque,
+        )
+        verite(
+            "un RESOLVED reste strictement inchangé après tentative d'écrasement",
+            _apres_tentative_ecrasement == _avant_tentative_ecrasement,
+        )
+except Exception as _e_archive:
+    verite(
+        "tests réels de archive.py exécutables sans exception inattendue",
+        False,
+        str(_e_archive),
+    )
+
+
 # ============================================================================
 print("\n" + "=" * 70)
 if echecs:
