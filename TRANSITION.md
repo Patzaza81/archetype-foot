@@ -2405,3 +2405,33 @@ Le pipeline tourne chaque nuit à 21h UTC (22h Douala), sans aucune intervention
 **IMPORTANT -- état de livraison** : au moment de cette session, Patrick n'avait PAS encore intégré le zip de la session précédente (`tickets/__init__.py`, `builder.py`, `cycle.py`) sur le dépôt réel. Cette session regroupe donc TOUT (les 3 fichiers de la session 45 + les 2 nouveaux de cette session) dans une seule livraison, pour éviter tout problème d'ordre d'application.
 
 **Pas encore branché dans `pipeline.yml`** : ni `tickets/cycle.py` (vrais tickets, en attente puisque 0 ticket attendu pendant des mois), ni `tickets/observation.py` (mode observation, pourrait tourner dès maintenant chaque nuit -- à décider avec Patrick).
+
+## 47. Session du 13/09/2026 (suite et clôture) — mode observation des tickets branché dans pipeline.yml
+
+Demande explicite de Patrick : "branché le plus tôt possible, dès le prochain run."
+
+**Livré** :
+- `observe_tickets_archetype_model.py` (nouveau, racine) : orchestrateur nocturne du mode observation. Chaque nuit : (1) résout les tickets fictifs `PENDING` des nuits précédentes dont toutes les jambes ont désormais un résultat connu -- doit tourner après `verifie_resultats_archetype_model.py` ; (2) construit un nouveau ticket fictif à partir des sélections encore `PENDING` de l'archive (matchs pas encore joués) ; (3) affiche un rapport de calibration à jour. `taille` exposé en paramètre pour la testabilité, valeur par défaut = `tickets.builder.TAILLE_TICKET` (7), jamais modifiée en production.
+- `.github/workflows/pipeline.yml` : nouvelle étape "Mode observation des tickets (fictifs, seuil abaissé)", juste après la vérification des résultats et avant le bilan comportemental, `continue-on-error: true`. `tickets_observes/` ajouté à l'étape de commit (sans ça, chaque ticket fictif serait perdu au run suivant).
+- `audit_permanent.py` : 3 nouveaux tests d'intégration, sur une vraie archive temporaire, deux cycles successifs réels (construction le jour J, résolution le jour J+1 une fois les matchs joués) -- pas des mocks.
+
+**Une erreur trouvée et corrigée en écrivant les tests** : `observation` n'était pas importé sous ce nom dans la section de test -- utilisé `_tobs_dyn` (déjà en portée depuis la session précédente) à la place. Erreur d'inattention, pas un bug du code de production, détectée immédiatement par l'audit lui-même (exit code 1 au premier essai).
+
+**Vérifié réellement** : 502 (précédent) + 3 = **505 vérités, 0 échec**, exit code 0. Rejeu 68/48 confirmé inchangé. Contrôle anti-fantôme par diff de contenu : exactement `pipeline.yml`, `audit_permanent.py`, `TRANSITION.md`, `observe_tickets_archetype_model.py` et `tickets/` (déjà signalé comme jamais appliqué) modifiés/ajoutés -- rien d'autre.
+
+---
+
+## Résumé de bout en bout, pour clôturer ce chapitre
+
+Le pipeline nocturne (21h UTC / 22h Douala) exécute désormais, entièrement sans intervention :
+
+```
+Scraping → Sélection P1/P2/P3 → Archivage
+    → Vérification des résultats réels (SELECTED + COUNTERFACTUAL)
+        → Mode observation des tickets (fictifs, seuil abaissé, apprentissage rapide)
+        → Bilan comportemental
+        → Calibration adaptative (garde-fous → validation hors échantillon → promotion/rejet)
+            → Configuration externe → influence réelle sur convergence.py/robustness.py
+```
+
+Le vrai système de tickets (`tickets/builder.py`/`cycle.py`, seuil 100 observations) reste intact et distinct -- il ne produira probablement rien avant plusieurs mois, par construction honnête, pas par bug. Le mode observation (seuil 10) donnera un premier signal utile bien plus tôt, sans jamais risquer un vrai pari sur une hypothèse d'indépendance non vérifiée.

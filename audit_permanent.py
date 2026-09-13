@@ -5659,6 +5659,90 @@ except Exception as _e_obs:
 
 # ============================================================================
 print("\n" + "=" * 70)
+# ============================================================================
+# CHANTIER "observe_tickets_archetype_model.py" (13/09/2026) -- branchement
+# du mode observation, demandé "le plus tôt possible, dès le prochain run".
+# ============================================================================
+section("observe_tickets_archetype_model.py (13/09/2026) -- testé de bout "
+        "en bout sur une vraie archive temporaire, deux cycles successifs "
+        "(construction puis résolution le lendemain), pas des mocks.")
+
+import observe_tickets_archetype_model as _otam_dyn
+
+try:
+    with _tmp_cal.TemporaryDirectory() as _d_otam:
+        _cwd_avant_otam = _os_cal.getcwd()
+        _os_cal.chdir(_d_otam)
+        try:
+            _chemin_hist_otam = archive.chemin_archive_mensuelle("2026-08-01")
+            for _i in range(1, 31):
+                _a_win = "WIN" if _i % 2 == 0 else "LOSS"
+                _b_win = "WIN" if _i % 3 == 0 else "LOSS"
+                _m1_otam = {"match_id": f"H{_i}A", "date_match": f"2026-08-{((_i - 1) % 28) + 1:02d}", "equipe_dom": "A", "equipe_ext": "B", "competition": "Test"}
+                _c1_otam = {"marche": "over_2_5", "market_family": "GOALS_TOTAL", "exposure_group": "G", "niveau": "FORT", "robustesse": "STABLE", "probabilite": 0.69, "cote": 1.5, "edge": 0.05, "edv": 0.072}
+                _rid1_otam = archive.enregistrer_selection(_c1_otam, match=_m1_otam, model_version="v1", config_version="v1", chemin=_chemin_hist_otam)
+                archive.mettre_a_jour_resultat(_rid1_otam, buts_marques=1, buts_encaisses=1, resultat_marche=_a_win, date_resolution="2026-09-13T00:00:00Z", chemin=_chemin_hist_otam)
+                _m2_otam = {"match_id": f"H{_i}B", "date_match": f"2026-08-{((_i - 1) % 28) + 1:02d}", "equipe_dom": "C", "equipe_ext": "D", "competition": "Test"}
+                _c2_otam = {"marche": "btts_oui", "market_family": "BTTS", "exposure_group": "G2", "niveau": "FORT", "robustesse": "STABLE", "probabilite": 0.6, "cote": 1.55, "edge": 0.05, "edv": 0.08}
+                _rid2_otam = archive.enregistrer_selection(_c2_otam, match=_m2_otam, model_version="v1", config_version="v1", chemin=_chemin_hist_otam)
+                archive.mettre_a_jour_resultat(_rid2_otam, buts_marques=1, buts_encaisses=1, resultat_marche=_b_win, date_resolution="2026-09-13T00:00:00Z", chemin=_chemin_hist_otam)
+
+            _chemin_ajd_otam = archive.chemin_archive_mensuelle("2026-09-13")
+            _m3_otam = {"match_id": "AJD1", "date_match": "2026-09-13", "equipe_dom": "E", "equipe_ext": "F", "competition": "Test"}
+            _c3_otam = {"marche": "over_2_5", "market_family": "GOALS_TOTAL", "exposure_group": "G", "niveau": "FORT", "robustesse": "STABLE", "probabilite": 0.7, "cote": 1.5, "edge": 0.05, "edv": 0.09}
+            _rid3_otam = archive.enregistrer_selection(_c3_otam, match=_m3_otam, model_version="v1", config_version="v1", chemin=_chemin_ajd_otam)
+            _m4_otam = {"match_id": "AJD2", "date_match": "2026-09-13", "equipe_dom": "G", "equipe_ext": "H", "competition": "Test"}
+            _c4_otam = {"marche": "btts_oui", "market_family": "BTTS", "exposure_group": "G2", "niveau": "FORT", "robustesse": "STABLE", "probabilite": 0.6, "cote": 1.55, "edge": 0.05, "edv": 0.07}
+            _rid4_otam = archive.enregistrer_selection(_c4_otam, match=_m4_otam, model_version="v1", config_version="v1", chemin=_chemin_ajd_otam)
+
+            _resume1_otam = _otam_dyn.executer_cycle_observation("2026-09-13", taille=2)
+            verite(
+                "executer_cycle_observation CYCLE 1 (doit réussir) : "
+                "2 candidats PENDING trouvés, compatibles (30 jours "
+                "d'historique indépendant), un ticket fictif est "
+                "réellement construit et enregistré",
+                _resume1_otam["nb_candidats_pending"] == 2 and _resume1_otam["ticket_construit"] is True,
+            )
+
+            archive.mettre_a_jour_resultat(_rid3_otam, buts_marques=1, buts_encaisses=1, resultat_marche="WIN", date_resolution="2026-09-14T00:00:00Z", chemin=_chemin_ajd_otam)
+            archive.mettre_a_jour_resultat(_rid4_otam, buts_marques=1, buts_encaisses=1, resultat_marche="WIN", date_resolution="2026-09-14T00:00:00Z", chemin=_chemin_ajd_otam)
+
+            _resume2_otam = _otam_dyn.executer_cycle_observation("2026-09-14", taille=2)
+            verite(
+                "executer_cycle_observation CYCLE 2, le lendemain (doit "
+                "réussir) : les deux jambes du ticket de la veille sont "
+                "maintenant résolues (WIN+WIN) -- le rapport de "
+                "calibration reflète bien 1 ticket résolu, taux de "
+                "réussite réel 1.0, écart +0.58 par rapport à la "
+                "probabilité annoncée (0.42)",
+                _resume2_otam["rapport"]["nb_tickets_resolus"] == 1
+                and abs(_resume2_otam["rapport"]["taux_reussite_reel"] - 1.0) < 1e-9
+                and abs(_resume2_otam["rapport"]["ecart"] - 0.58) < 1e-9,
+            )
+
+            _chemin_obs_otam = _tobs_dyn.chemin_tickets_observes("2026-09-13")
+            _contenu_final_otam = _tobs_dyn._charge(_chemin_obs_otam)
+            verite(
+                "executer_cycle_observation (doit réussir) : le ticket "
+                "fictif enregistré le 13 est bien passé de PENDING à "
+                "RESOLVED/WIN au cycle du 14, jamais un doublon créé",
+                len(_contenu_final_otam) == 1
+                and _contenu_final_otam[0]["statut_resolution"] == "RESOLVED"
+                and _contenu_final_otam[0]["resultat_reel"] == "WIN",
+            )
+        finally:
+            _os_cal.chdir(_cwd_avant_otam)
+except Exception as _e_otam:
+    verite(
+        "tests réels de observe_tickets_archetype_model.py exécutables "
+        "sans exception inattendue",
+        False,
+        str(_e_otam),
+    )
+
+
+# ============================================================================
+print("\n" + "=" * 70)
 if echecs:
     print(f"AUDIT ÉCHOUÉ -- {len(echecs)} vérité(s) fausse(s) :")
     for e in echecs:
