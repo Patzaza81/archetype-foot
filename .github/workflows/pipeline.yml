@@ -23,6 +23,10 @@ on:
 
 permissions:
   contents: write
+  # AJOUT 13/09/2026 -- nécessaire à notifie_constat_majeur.py, qui crée
+  # une Issue via `gh issue create` uniquement quand un événement notable
+  # a été signalé cette nuit (promotion réelle, premier vrai ticket).
+  issues: write
 
 concurrency:
   group: pipeline-archetype-foot
@@ -177,6 +181,16 @@ jobs:
         run: python observe_tickets_archetype_model.py
         continue-on-error: true
 
+      # AJOUT 13/09/2026 -- tente la construction de VRAIS tickets, avec
+      # le seuil réel INCHANGÉ de tickets/builder.py (100 observations
+      # conjointes). Un résultat vide est normal et attendu pendant
+      # probablement plusieurs mois -- ce script existe pour détecter,
+      # sans intervention, le jour où ça change (voir constat_majeur.py).
+      - name: Tentative de construction de vrais tickets (seuil réel, jamais assoupli)
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+        run: python genere_tickets_reels_archetype_model.py
+        continue-on-error: true
+
       # AJOUT 13/09/2026 -- construit le bilan comportemental à partir de
       # l'archive résolue ci-dessus (lecture seule, aucun scraping,
       # rejouable à volonté). Purement descriptif (cahier des charges v2
@@ -259,6 +273,12 @@ jobs:
           # -- sans ce commit, chaque ticket construit serait perdu au run
           # suivant, impossible de suivre sa résolution le lendemain.
           [ -d tickets_observes ] && git add tickets_observes/
+          # AJOUT 13/09/2026 -- vrais_tickets/ ne contient normalement rien
+          # pendant probablement plusieurs mois (seuil réel de
+          # tickets/builder.py) -- ajouté par cohérence avec archive/config/
+          # tickets_observes/ ci-dessus, jamais un échec si le dossier
+          # n'existe pas encore.
+          [ -d vrais_tickets ] && git add vrais_tickets/
 
           echo "=================================================="
           echo "DIAGNOSTIC 18.1 -- APRÈS git add"
@@ -272,3 +292,16 @@ jobs:
           git diff --staged --quiet || git commit -m "Mise à jour pipeline"
           git pull --rebase origin main
           git push
+
+      # AJOUT 13/09/2026, demande explicite de Patrick ("qui me
+      # signalera ?") -- DOIT être la toute dernière étape du pipeline,
+      # après tous les scripts susceptibles d'avoir signalé un événement
+      # (calibre_archetype_model.py, genere_tickets_reels_archetype_model.py).
+      # Une nuit sans événement notable n'ouvre aucune Issue -- silence
+      # normal, pas une absence de fonctionnement.
+      - name: Notifier les constats majeurs (Issue GitHub, s'il y en a)
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python notifie_constat_majeur.py
+        continue-on-error: true
