@@ -5268,6 +5268,126 @@ verite(
 
 # ============================================================================
 print("\n" + "=" * 70)
+# ============================================================================
+# CHANTIER "calibre_archetype_model.py" (13/09/2026) -- orchestrateur
+# nocturne, dernière pièce de la boucle de calibration adaptative.
+# ============================================================================
+section("calibre_archetype_model.py (13/09/2026) -- testé de bout en bout "
+        "sur une vraie archive et une vraie configuration temporaires, "
+        "pas des mocks. Une erreur de conception a été trouvée et évitée "
+        "en cours de route (donnée de test posée EXACTEMENT sur la "
+        "frontière calculée -- imprécision flottante, corrigé par une "
+        "marge de sécurité, jamais un bug du code réel).")
+
+import archetype_model.learning.garde_fous as _gf_pas_dyn
+import archetype_model.learning.archive as archive
+import archetype_model.learning.journal as journal
+import calibre_archetype_model as _cam_dyn
+
+verite(
+    "_pas_essai (doit réussir) : 80% du plafond standard (5%) pour un "
+    "paramètre normal, 80% du plafond renforcé (2%) pour COTE_MIN/MAX -- "
+    "deux valeurs different bien selon le paramètre",
+    abs(_cam_dyn._pas_essai("EDV_MIN_P_67_71") - 0.04) < 1e-9
+    and abs(_cam_dyn._pas_essai("COTE_MIN") - 0.016) < 1e-9,
+)
+
+_sel_compte_test = [{"probabilite": 0.69}, {"probabilite": 0.69}, {"probabilite": 0.80}]
+_cf_compte_test = [{"probabilite": 0.69, "motif_rejet": "EDV_INSUFFISANTE"}]
+verite(
+    "_compte_observations_parametre CAS EDV_MIN (doit réussir) : ne "
+    "compte que les enregistrements du bracket 67-71 (2 selections + "
+    "1 contrefactuel = 3), jamais celui à 0.80 (bracket différent)",
+    _cam_dyn._compte_observations_parametre("EDV_MIN_P_67_71", _sel_compte_test, _cf_compte_test) == 3,
+)
+_cf_cote_compte_test = [
+    {"probabilite": 0.69, "motif_rejet": "EDV_INSUFFISANTE"},
+    {"probabilite": 0.69, "motif_rejet": "COTE_HORS_INTERVALLE"},
+]
+verite(
+    "_compte_observations_parametre CAS COTE_MIN (doit réussir) : compte "
+    "toutes les selections (3) + seulement les contrefactuels rejetés "
+    "pour motif de cote (1 sur 2) -- jamais ceux rejetés pour une autre "
+    "raison",
+    _cam_dyn._compte_observations_parametre("COTE_MIN", _sel_compte_test, _cf_cote_compte_test) == 4,
+)
+
+try:
+    with _tmp_cal.TemporaryDirectory() as _d_cam:
+        _cwd_avant_cam = _os_cal.getcwd()
+        _os_cal.chdir(_d_cam)
+        try:
+            _os_cal.makedirs("config")
+            _shutil_cal.copy(
+                _os_cal.path.join(_cwd_avant_cam, "config", "adaptive_parameters.json"),
+                "config/adaptive_parameters.json",
+            )
+            _chemin_arch_cam = archive.chemin_archive_mensuelle("2026-08-01")
+            for _i in range(1, 81):
+                _date_cam = f"2026-08-{((_i - 1) % 31) + 1:02d}" if _i <= 62 else f"2026-09-{_i - 62:02d}"
+                _match_cam = {"match_id": f"M{_i}", "date_match": _date_cam, "equipe_dom": "A", "equipe_ext": "B", "competition": "Test"}
+                _cand_sel_cam = {"marche": "over_2_5", "market_family": "GOALS", "exposure_group": "G", "niveau": "FORT", "robustesse": "STABLE", "probabilite": 0.69, "cote": 1.5, "edge": 0.05, "edv": 0.072}
+                _rid_cam = archive.enregistrer_selection(_cand_sel_cam, match=_match_cam, model_version="v1", config_version="v1", chemin=_chemin_arch_cam)
+                archive.mettre_a_jour_resultat(_rid_cam, buts_marques=1, buts_encaisses=1, resultat_marche="LOSS", date_resolution="2026-09-13T00:00:00Z", chemin=_chemin_arch_cam)
+                # edv confortablement au-dessus du seuil propose (~0.0672) --
+                # marge de securite, jamais une valeur pile sur la frontière
+                # calculée (leçon tirée en concevant ce test).
+                _cand_cf_cam = {"marche": "btts_oui", "market_family": "BTTS", "exposure_group": "G2", "scenario": "offensif", "probabilite": 0.69, "cote": 1.55, "edge": None, "edv": 0.069, "edv_min_requis": 0.07, "robustesse": "STABLE", "motif_rejet": "EDV_INSUFFISANTE"}
+                _rid2_cam = archive.enregistrer_contrefactuel(_cand_cf_cam, match={**_match_cam, "match_id": f"MC{_i}"}, model_version="v1", config_version="v1", chemin=_chemin_arch_cam)
+                archive.mettre_a_jour_resultat(_rid2_cam, buts_marques=1, buts_encaisses=1, resultat_marche="WIN", date_resolution="2026-09-13T00:00:00Z", chemin=_chemin_arch_cam)
+
+            _resume_cam = _cam_dyn.executer_cycle("2026-09-13")
+
+            verite(
+                "executer_cycle (doit réussir) : sur un scénario où le "
+                "portefeuille contrefactuel bat nettement le portefeuille "
+                "actuel dans les deux zones (apprentissage ET validation), "
+                "EDV_MIN_P_67_71 est réellement PROMU -- 1 promotion "
+                "exactement sur les 7 paramètres testés",
+                _resume_cam["promotions"] == 1 and _resume_cam["observations"] == 160,
+            )
+
+            _params_apres_cam = _json_cal.load(open("config/adaptive_parameters.json", encoding="utf-8"))
+            verite(
+                "executer_cycle (doit réussir) : EDV_MIN_P_67_71 vaut bien "
+                "0.0672 (0.07 réduit de 4%) sur DISQUE après le cycle, "
+                "tous les autres paramètres restent à leur valeur d'origine",
+                abs(_params_apres_cam["parametres"]["EDV_MIN_P_67_71"]["valeur"] - 0.0672) < 1e-6
+                and _params_apres_cam["parametres"]["COTE_MIN"]["valeur"] == 1.26,
+            )
+
+            _journal_cycle_cam = journal.charger_journal(_cam_dyn.FICHIER_JOURNAL_CYCLE)
+            verite(
+                "executer_cycle (doit réussir) : un enregistrement de "
+                "cycle est bien écrit dans le journal, même si une seule "
+                "promotion a eu lieu parmi 7 paramètres analysés -- "
+                "traçabilité du cycle entier, pas seulement des promotions",
+                len(_journal_cycle_cam) == 1 and _journal_cycle_cam[0]["parametres_analyses"] == 7,
+            )
+
+            # Deuxieme cycle, aucune nouvelle donnee -- ne doit jamais
+            # re-promouvoir la meme chose ni planter sur un etat deja modifie.
+            _resume_cam_2 = _cam_dyn.executer_cycle("2026-09-14")
+            verite(
+                "executer_cycle CAS relance sans nouvelles données (doit "
+                "réussir) : ne plante jamais sur une configuration déjà "
+                "modifiée par le cycle précédent, et n'échantillonne "
+                "jamais moins de 7 paramètres analysés",
+                _resume_cam_2["parametres_analyses"] == 7,
+            )
+        finally:
+            _os_cal.chdir(_cwd_avant_cam)
+except Exception as _e_cam:
+    verite(
+        "tests réels de calibre_archetype_model.py exécutables sans "
+        "exception inattendue",
+        False,
+        str(_e_cam),
+    )
+
+
+# ============================================================================
+print("\n" + "=" * 70)
 if echecs:
     print(f"AUDIT ÉCHOUÉ -- {len(echecs)} vérité(s) fausse(s) :")
     for e in echecs:

@@ -2337,3 +2337,34 @@ Suite à la demande explicite de Patrick ("on branche"), `archive.py` est mainte
 **État du système à la fin de cette session** : la boucle complète existe et est connectée de bout en bout -- archivage → vérification → matrice → contrefactuel → validation → garde-fous → calibration → **configuration qui influence réellement `convergence.py`/`robustness.py`**. Il ne manque plus qu'un script d'orchestration qui enchaîne tout ça chaque nuit dans `pipeline.yml` (aujourd'hui, `calibration.py` existe mais n'est appelé par aucun script exécuté automatiquement).
 
 **À reprendre en priorité** : écrire le script d'orchestration nocturne (`calibre_archetype_model.py` ou nom similaire) qui appelle, dans l'ordre, `observations.charge_toutes_les_archives()` → `matrice.construire_matrice()` → pour chaque paramètre calibrable, `calibration.evaluer_proposition()` → `promouvoir()`/`rejeter()` → `journal.enregistrer_cycle()`, puis le brancher dans `pipeline.yml` après le bilan comportemental déjà en place.
+
+## 44. Session du 13/09/2026 (suite et fin) — calibre_archetype_model.py, la boucle est complète
+
+**Dernière pièce de la boucle de calibration adaptative**, feu vert explicite de Patrick.
+
+**Livré** :
+- `calibre_archetype_model.py` (nouveau, racine) : orchestrateur nocturne. Pour chacun des 7 paramètres testables par `contrefactuel.py` (tous sauf `ROBUSTNESS_STD_THRESHOLD`), compte les observations résolues dans son bracket, propose deux variations symétriques (±80% du plafond d'amplitude de `garde_fous.py` -- jamais le plafond exact, marge de sécurité), fait passer chaque proposition par `calibration.evaluer_proposition()`. Promeut la première direction qui obtient un verdict `PROMU` et arrête aussitôt (jamais de seconde proposition testée contre une valeur devenue obsolète). Journalise systématiquement un résumé de cycle, même quand rien n'est promu.
+- `archetype_model/learning/contrefactuel.py` : ajout d'une version publique `bracket_edv_min()` (alias de `_bracket_edv_min`, comportement strictement identique) pour que le script d'orchestration réutilise la logique de bracket sans la dupliquer.
+- `.github/workflows/pipeline.yml` : nouvelle étape "Calibration adaptative d'archetype_model" après le bilan comportemental, `continue-on-error: true`. `config/` ajouté à l'étape de commit (sans ça, chaque promotion serait perdue au run suivant).
+- `audit_permanent.py` : 7 nouveaux tests, dont un test de bout en bout sur une vraie archive temporaire (160 enregistrements) démontrant une **vraie promotion réelle** : `EDV_MIN_P_67_71` passe de 0,07 à 0,0672 sur disque, avec état et journal mis à jour.
+
+**Erreur trouvée et évitée en construisant ce test, documentée honnêtement** : ma première tentative de données de test plaçait l'EDV d'un enregistrement contrefactuel EXACTEMENT sur la valeur-seuil calculée (0.0672) -- imprécision flottante (`0.0672 >= 0.06720000000000001` vaut `False` en Python) qui faisait échouer silencieusement la promotion attendue. Diagnostiqué en comparant un appel direct à `contrefactuel.tester_parametre()` (qui utilisait un `0.0672` tapé à la main, donc différent au bit près) au chemin réel du script (qui calcule la valeur par multiplication). Corrigé en donnant à la donnée de test une marge de sécurité confortable (0.069) au lieu de coller pile sur la frontière -- **pas un bug du code de production**, une leçon sur la construction de données de test avec des flottants.
+
+**Vérifié réellement** : 474 (précédent) + 7 = **481 vérités, 0 échec**, exit code 0. Rejeu 68/48 confirmé inchangé. Contrôle anti-fantôme par diff de contenu contre le vrai dépôt GitHub : exactement 8 fichiers modifiés/créés (pipeline.yml, contrefactuel.py, robustness.py, convergence.py, audit_permanent.py, config_loader.py, calibre_archetype_model.py, TRANSITION.md), rien d'autre.
+
+---
+
+## État du système à la fin de cette session -- la boucle complète existe et tourne
+
+```
+ARCHIVAGE (precalcul.py, branché session 38)
+    -> VÉRIFICATION (verifie_resultats_archetype_model.py, session 39)
+        -> BILAN COMPORTEMENTAL (calcule_matrice_archetype_model.py, session 39)
+            -> CALIBRATION (calibre_archetype_model.py, session 44)
+                -> garde_fous -> validation hors échantillon -> promotion/rejet
+                -> CONFIG EXTERNE (config/adaptive_parameters.json)
+                    -> convergence.py / robustness.py (branché session 43)
+                        -> prochain cycle de sélection réelle
+```
+
+Le pipeline tourne chaque nuit à 21h UTC (22h Douala), sans aucune intervention manuelle, du scraping jusqu'à la calibration. **Ce qui reste hors périmètre, par décision explicite, pas par oubli** : `tickets/builder.py`/`tickets/cycle.py` (bloqués, méthode de corrélation jamais définie), `learning/team_reference.py` (différé Phase 3, 98% des équipes à une seule apparition). Le rapport de constat majeur (cahier des charges v2 §7.4) n'est pas encore un mécanisme séparé -- à construire si l'expérience montre qu'un cycle mérite d'interrompre Patrick au lieu d'être simplement journalisé.
