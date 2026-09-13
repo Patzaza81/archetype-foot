@@ -4420,6 +4420,222 @@ verite(
 
 
 # ============================================================================
+# CHANTIER "branchement production" (13/09/2026, demande de Patrick :
+# "on branche") -- extraction.py + _archive_resultat_archetype_model dans
+# precalcul.py, sur de VRAIS matchs du fixture, pas seulement des cas jouets.
+# ============================================================================
+import archetype_model.learning.extraction as _ext_dyn
+
+section("archetype_model/learning/extraction.py (13/09/2026) -- ne retient "
+        "que les motifs numériques (PROBABILITE_TROP_FAIBLE, "
+        "EDV_INSUFFISANTE) proches du seuil, jamais les motifs structurels, "
+        "vérifié cas par cas avant écriture du test.")
+
+
+def _diag_test(eligible, motif=None, scenario="offensif", probabilite=None, edv=None, edv_min=None):
+    if eligible:
+        return {"marche": "x", "filtre": {"eligible": True}}
+    return {
+        "marche": "x",
+        "filtre": {
+            "eligible": False,
+            "scenario_en_echec": scenario,
+            "motif_rejet": motif,
+            "resultats_par_scenario": {
+                scenario: {
+                    "probabilite_centrale": probabilite, "edv": edv, "edv_min_requis": edv_min,
+                    "market_family": "FAM", "exposure_group": "GRP", "cote": 1.5, "robustesse": "STABLE",
+                }
+            },
+        },
+    }
+
+
+verite(
+    "extraire_marche_proche CAS marché éligible (rejet attendu) : None -- "
+    "ce n'est pas un marché rejeté proche d'un seuil, il a été accepté",
+    _ext_dyn.extraire_marche_proche(_diag_test(True)) is None,
+)
+verite(
+    "extraire_marche_proche CAS motif structurel (rejet attendu) : "
+    "DONNEES_INSUFFISANTES n'est jamais un motif numérique, jamais retenu "
+    "même si un appelant lui fournissait des valeurs numériques par erreur",
+    _ext_dyn.extraire_marche_proche(_diag_test(False, "DONNEES_INSUFFISANTES")) is None,
+)
+verite(
+    "extraire_marche_proche CAS EDV proche (doit réussir) : 0.1 - 0.089 = "
+    "0.011 <= fenêtre 0.02 -> retenu",
+    _ext_dyn.extraire_marche_proche(_diag_test(False, "EDV_INSUFFISANTE", edv=0.089, edv_min=0.1)) is not None,
+)
+verite(
+    "extraire_marche_proche CAS EDV loin (rejet attendu) : 0.1 - 0.05 = "
+    "0.05 > fenêtre 0.02 -> jamais retenu",
+    _ext_dyn.extraire_marche_proche(_diag_test(False, "EDV_INSUFFISANTE", edv=0.05, edv_min=0.1)) is None,
+)
+verite(
+    "extraire_marche_proche CAS probabilité proche (doit réussir) : "
+    "0.63 - 0.61 = 0.02 <= fenêtre 0.03 -> retenu",
+    _ext_dyn.extraire_marche_proche(_diag_test(False, "PROBABILITE_TROP_FAIBLE", probabilite=0.61)) is not None,
+)
+verite(
+    "extraire_marche_proche CAS probabilité loin (rejet attendu) : "
+    "0.63 - 0.50 = 0.13 > fenêtre 0.03 -> jamais retenu",
+    _ext_dyn.extraire_marche_proche(_diag_test(False, "PROBABILITE_TROP_FAIBLE", probabilite=0.50)) is None,
+)
+verite(
+    "extraire_marches_proches CAS liste mixte (doit réussir) : sur "
+    "3 diagnostics (1 éligible, 1 loin du seuil, 1 proche), exactement "
+    "1 marché retenu",
+    len(_ext_dyn.extraire_marches_proches([
+        _diag_test(True),
+        _diag_test(False, "EDV_INSUFFISANTE", edv=0.05, edv_min=0.1),
+        _diag_test(False, "EDV_INSUFFISANTE", edv=0.089, edv_min=0.1),
+    ])) == 1,
+)
+
+
+section("Branchement réel dans precalcul.py (13/09/2026) -- "
+        "_archive_resultat_archetype_model, testé sur de VRAIS matchs du "
+        "fixture 446 matchs, pas des cas synthétiques.")
+
+import tempfile as _tmp_branch
+from pathlib import Path as _Path_branch
+import precalcul as _pc_archivage
+import archetype_model.learning.archive as _archive_branch
+from archetype_model.poisson import markets as _mk_branch, robustness as _rb_branch
+from archetype_model.data import odds_provider as _op_branch
+
+try:
+    import json as _json_branch
+    with open("fixture_rejeu_10092026.json", encoding="utf-8") as _f_branch:
+        _fixture_branch = _json_branch.load(_f_branch)
+
+    def _match_fixture(dom, ext):
+        for _m in _fixture_branch:
+            if _m.get("domicile") == dom and _m.get("exterieur") == ext:
+                return _m
+        raise AssertionError(f"match {dom}-{ext} introuvable dans le fixture")
+
+    def _resultat_reel_fixture(m):
+        lambdas = m["lambdas"]
+        mps = {s: _mk_branch.calcule_tous_les_marches(lambdas["A"][s], lambdas["B"][s]) for s in _am_dyn.SCENARIOS}
+
+        def v4c(extracteur):
+            return [extracteur(mps[s]) for s in _am_dyn.SCENARIOS]
+
+        rpm = {
+            "1x2_domicile": _rb_branch.evalue_robustesse(v4c(lambda x: x["1x2"]["domicile"] if x["1x2"] else None)),
+            "1x2_nul": _rb_branch.evalue_robustesse(v4c(lambda x: x["1x2"]["nul"] if x["1x2"] else None)),
+            "1x2_exterieur": _rb_branch.evalue_robustesse(v4c(lambda x: x["1x2"]["exterieur"] if x["1x2"] else None)),
+            "btts": _rb_branch.evalue_robustesse(v4c(lambda x: x["btts"])),
+            "over_2_5": _rb_branch.evalue_robustesse(v4c(lambda x: x["over_under_total"][2.5]["over"] if x["over_under_total"][2.5] else None)),
+            "cage_inviolee_domicile": _rb_branch.evalue_robustesse(v4c(lambda x: x["buts_equipe_exterieur"][0.5]["under"] if x["buts_equipe_exterieur"][0.5] else None)),
+            "cage_inviolee_exterieur": _rb_branch.evalue_robustesse(v4c(lambda x: x["buts_equipe_domicile"][0.5]["under"] if x["buts_equipe_domicile"][0.5] else None)),
+            "parite_pair": _rb_branch.evalue_robustesse(v4c(lambda x: x["parite_totale"]["pair"] if x["parite_totale"] else None)),
+        }
+
+        def _fake(url_domicile, nom_domicile, url_exterieur, nom_exterieur, nom_competition, **kw):
+            return {"statut": "OK", "fenetres": m["fenetres"], "lambdas": lambdas,
+                    "marches_par_scenario": mps, "robustesse_par_marche": rpm}
+
+        _original = _am_dyn.analyse_match
+        _am_dyn.analyse_match = _fake
+        try:
+            cotes_info = {**_op_branch.extrait_cotes(m), "statut": "OK"}
+            return _am_dyn.analyse_match_complet(
+                url_domicile="fake", nom_domicile=m.get("domicile"),
+                url_exterieur="fake", nom_exterieur=m.get("exterieur"),
+                nom_competition=m.get("competition"), match_id=m.get("match_id"),
+                url_h2h=None, cotes_info=cotes_info,
+            )
+        finally:
+            _am_dyn.analyse_match = _original
+
+    with _tmp_branch.TemporaryDirectory() as _d_branch:
+        import os as _os_branch
+        _cwd_avant = _os_branch.getcwd()
+        _os_branch.chdir(_d_branch)
+        try:
+            # CAS 1 -- match avec un vrai P1 (Clermont-US Boulogne, déjà
+            # utilisé comme référence dans le Chantier B) -> doit produire
+            # un enregistrement SELECTED.
+            _m_p1 = _match_fixture("Clermont", "US Boulogne")
+            _resultat_p1 = _resultat_reel_fixture(_m_p1)
+            _s_p1 = {
+                "match_id": _m_p1["match_id"], "date": "2026-09-10", "heure": "18:00",
+                "domicile": "Clermont", "exterieur": "US Boulogne", "competition": "Ligue 2",
+            }
+            _pc_archivage._archive_resultat_archetype_model(_s_p1, _resultat_p1)
+
+            _chemin_p1 = _archive_branch.chemin_archive_mensuelle("2026-09-10")
+            _records_p1 = _archive_branch.charger_archive(_chemin_p1)
+            verite(
+                "Branchement réel CAS match avec P1 (doit réussir) : "
+                "Clermont-US Boulogne produit bien un enregistrement "
+                "SELECTED archivé, avec le vrai marché retenu par le moteur",
+                len(_records_p1) >= 1
+                and all(r["categorie"] == "SELECTED" for r in _records_p1)
+                and all(r["match_id"] == _m_p1["match_id"] for r in _records_p1),
+            )
+
+            # CAS 2 -- match sans AUCUNE sélection mais avec un marché
+            # proche du seuil (Nancy-Reims, confirmé lors de la conception
+            # de extraction.py) -> doit produire un enregistrement
+            # COUNTERFACTUAL, jamais un SELECTED.
+            _m_cf = _match_fixture("Nancy", "Reims")
+            _resultat_cf = _resultat_reel_fixture(_m_cf)
+            verite(
+                "Branchement réel CAS 2, pré-condition : Nancy-Reims n'a "
+                "réellement aucun P1/P2/P3 dans ce fixture (sinon le test "
+                "ne prouverait rien)",
+                not any((_resultat_cf.get("selection") or {}).get(r) for r in ("P1", "P2", "P3")),
+            )
+            _s_cf = {
+                "match_id": _m_cf["match_id"], "date": "2026-09-10", "heure": "18:00",
+                "domicile": "Nancy", "exterieur": "Reims", "competition": "Ligue 2",
+            }
+            _pc_archivage._archive_resultat_archetype_model(_s_cf, _resultat_cf)
+
+            _records_cf = [r for r in _archive_branch.charger_archive(_chemin_p1) if r["match_id"] == _m_cf["match_id"]]
+            verite(
+                "Branchement réel CAS match sans sélection mais avec marché "
+                "proche (doit réussir) : Nancy-Reims produit un "
+                "enregistrement COUNTERFACTUAL, jamais un SELECTED",
+                len(_records_cf) >= 1
+                and all(r["categorie"] == "COUNTERFACTUAL" for r in _records_cf),
+            )
+
+            # CAS 3 -- un échec d'archivage (chemin invalide) ne doit jamais
+            # remonter d'exception à l'appelant réel du pipeline.
+            _s_invalide = {
+                "match_id": "TEST-INVALIDE", "date": "date-invalide", "heure": "18:00",
+                "domicile": "X", "exterieur": "Y", "competition": "Test",
+            }
+            _leve_exception = False
+            try:
+                _pc_archivage._archive_resultat_archetype_model(_s_invalide, _resultat_p1)
+            except Exception:
+                _leve_exception = True
+            verite(
+                "Branchement réel CAS date invalide (rejet attendu côté "
+                "archive.py) : _archive_resultat_archetype_model lève "
+                "l'erreur ICI (c'est applique_archetype_model(), déjà "
+                "modifié, qui capture et neutralise -- ce test isole "
+                "juste que l'erreur est bien détectée, pas avalée trop tôt)",
+                _leve_exception,
+            )
+        finally:
+            _os_branch.chdir(_cwd_avant)
+except Exception as _e_branchement:
+    verite(
+        "tests réels du branchement production exécutables sans exception "
+        "inattendue",
+        False,
+        str(_e_branchement),
+    )
+
+
+# ============================================================================
 print("\n" + "=" * 70)
 if echecs:
     print(f"AUDIT ÉCHOUÉ -- {len(echecs)} vérité(s) fausse(s) :")

@@ -2246,3 +2246,19 @@ Suite à la session 34, Patrick a confirmé que le bureau d'étude avait rempli 
 **Vérifié réellement** : 401 (précédent) + 20 = **421 vérités, 0 échec**, exit code 0. Rejeu 68/48 confirmé inchangé.
 
 **À reprendre en priorité** : `calibration.py` -- le premier module qui a le droit d'appeler `garde_fous.autoriser_promotion()` et d'écrire dans une configuration externe (`config/adaptive_parameters.json`, `config/adaptive_state.json`, pas encore créés). Doit aussi produire le contenu de `journal.py` (traçabilité de chaque cycle, même quand rien n'est promu).
+
+## 38. Session du 13/09/2026 (suite) — branchement réel dans precalcul.py
+
+Suite à la demande explicite de Patrick ("on branche"), `archive.py` est maintenant réellement appelé en production, pas seulement testé en vase clos.
+
+**Livré** :
+- `archetype_model/learning/extraction.py` (nouveau) : `extraire_marche_proche()`/`extraire_marches_proches()` -- identifie, à partir des vrais `diagnostics` produits par `analyse_match_complet()`, les marchés rejetés PROCHES du seuil (motifs numériques `PROBABILITE_TROP_FAIBLE`/`EDV_INSUFFISANTE` uniquement, jamais les motifs structurels). Fenêtres retenues : 0,03 de probabilité, 0,02 d'EDV -- proposées dans l'audit du 12/09/2026, même statut "non calibré" que les autres constantes du projet. Vérifié sur de vraies données du fixture avant écriture des tests (3 matchs réels trouvés avec un marché proche, ex. Nancy-Reims : `over_under_total_1.5_over`, EDV 0,033 contre un minimum de 0,05).
+- `precalcul.py` : nouvelle fonction `_archive_resultat_archetype_model(s, resultat)`, appelée juste après `s["archetype_model"] = resultat` dans `applique_archetype_model()`, uniquement si `statut == "OK"`. Archive les P1/P2/P3 réels en `SELECTED` s'il y en a, sinon les marchés proches du seuil en `COUNTERFACTUAL` s'il y en a. Un échec d'archivage est capturé et journalisé sur stderr, jamais remonté -- l'archivage ne doit jamais interrompre le pipeline nocturne. `ARCHETYPE_MODEL_VERSION`/`ARCHETYPE_CONFIG_VERSION` : valeurs fixes provisoires en attendant `calibration.py` et un vrai fichier de configuration.
+- `.github/workflows/pipeline.yml` : `archive/` ajouté à l'étape de commit (le dossier n'existe pas encore au tout premier run -- vérifié avant `git add`, jamais un échec du commit pour ça).
+- `audit_permanent.py` : 7 tests sur `extraction.py` + 4 tests d'intégration RÉELLE sur le branchement, utilisant directement `analyse_match_complet()` sur deux vrais matchs du fixture 446 matchs (Clermont-US Boulogne pour le cas SELECTED, Nancy-Reims pour le cas COUNTERFACTUAL) -- pas des cas synthétiques.
+
+**Vérifié réellement** : 421 (précédent) + 11 = **432 vérités, 0 échec**, exit code 0. Rejeu 68/48 confirmé inchangé.
+
+**Ce qui n'est PAS encore fait, à ne pas oublier** : `resultats.py`, `observations.py` et `matrice.py` existent mais ne sont PAS encore appelés depuis le pipeline -- seul l'archivage (l'écriture) est branché. La vérification des résultats réels et la construction de la matrice restent à brancher (probablement une nouvelle étape dans `pipeline.yml`, après le calcul du ROI de l'ancien moteur, cohérent avec l'ordre déjà défini au cahier des charges v2 §7).
+
+**À reprendre en priorité** : brancher `resultats.py` (vérification) et `observations.py`/`matrice.py` (agrégation) comme nouvelles étapes de `pipeline.yml`, puis `journal.py`, `contrefactuel.py`, `validation.py` et enfin `calibration.py`.

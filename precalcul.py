@@ -103,6 +103,8 @@ from resolution_betpawa_precalcul import resout_cotes_betpawa
 from scraper_details import recupere_details_match as _recupere_details_match_reelle
 import archetype_model.main as archetype_model_main
 from archetype_model.data import odds_provider as archetype_odds_provider
+from archetype_model.learning import archive as archetype_archive
+from archetype_model.learning import extraction as archetype_extraction
 
 _recupere_gf_ga_reelle = run_pipeline.recupere_gf_ga_avec_repli
 
@@ -922,6 +924,64 @@ def archive_precalcul(signaux, dates_a_archiver):
     return run_pipeline.ajoute_matchs_a_historique([_slim_pour_archive(s) for s in candidats])
 
 
+# AJOUT 13/09/2026 (demande de Patrick, "on branche") -- archive chaque
+# résultat OK d'archetype_model dans archetype_model/learning/archive.py,
+# immédiatement après la sélection finale. Volontairement séparé
+# d'applique_archetype_model() pour rester testable seul.
+#
+# MODEL_VERSION / CONFIG_VERSION : pas encore reliées à un vrai fichier de
+# configuration (config/adaptive_parameters.json n'existe pas encore --
+# calibration.py, pas construit). Valeurs fixes en attendant, pour ne
+# jamais archiver un enregistrement sans version -- à remplacer par la
+# vraie version active dès que calibration.py existe, jamais à laisser
+# vide entre-temps.
+ARCHETYPE_MODEL_VERSION = "archetype_model_v1_2026-09-13"
+ARCHETYPE_CONFIG_VERSION = "sans_calibration_v1"
+
+
+def _archive_resultat_archetype_model(s, resultat):
+    """Archive le résultat OK d'un match -- SELECTED si au moins un P1/P2/P3
+    existe, sinon les marchés proches du seuil (catégorie A) s'il y en a.
+    N'écrit jamais si le match n'a ni sélection ni marché proche (rien à
+    archiver, pas une erreur).
+
+    Ne lève jamais d'exception vers l'appelant : un échec d'archivage est
+    une observation manquée, jamais une raison d'interrompre le pipeline
+    nocturne (voir applique_archetype_model(), qui capture toute exception
+    venant d'ici et continue sur le match suivant)."""
+    match = {
+        "match_id": s.get("match_id"),
+        "date_match": s.get("date"),
+        "heure_match": s.get("heure"),
+        "equipe_dom": s.get("domicile"),
+        "equipe_ext": s.get("exterieur"),
+        "competition": s.get("competition"),
+    }
+    chemin = archetype_archive.chemin_archive_mensuelle(match["date_match"])
+
+    selection = resultat.get("selection") or {}
+    selections = [selection[r] for r in ("P1", "P2", "P3") if selection.get(r)]
+
+    if selections:
+        contrefactuels = []
+    else:
+        contrefactuels = archetype_extraction.extraire_marches_proches(
+            resultat.get("diagnostics") or []
+        )
+
+    if not selections and not contrefactuels:
+        return 0
+
+    return archetype_archive.enregistrer_selection_et_contrefactuels(
+        match=match,
+        selections=selections,
+        contrefactuels=contrefactuels,
+        model_version=ARCHETYPE_MODEL_VERSION,
+        config_version=ARCHETYPE_CONFIG_VERSION,
+        chemin=chemin,
+    )
+
+
 def applique_archetype_model(signaux):
     """
     Chantier du 09/09/2026 (reprise de session) -- tente
@@ -1017,6 +1077,15 @@ def applique_archetype_model(signaux):
         # contient aucun P1 (règle explicite de Patrick, 09/09/2026).
         s["moteur_utilise"] = "archetype_model"
         s["archetype_model"] = resultat
+
+        if resultat.get("statut") == "OK":
+            try:
+                _archive_resultat_archetype_model(s, resultat)
+            except Exception as e:
+                # Un échec d'archivage n'est jamais une raison d'interrompre
+                # le pipeline nocturne -- c'est une observation manquée,
+                # jamais une panne du moteur de décision lui-même.
+                print(f"[archivage] échec archivage match {match_id} : {e}", file=sys.stderr)
 
     # AJOUT 09/09/2026 (après le 1er run réel) -- résumé imprimé dans le log
     # GitHub Actions, pour permettre de juger un run SANS devoir retélécharger
