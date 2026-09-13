@@ -1,420 +1,281 @@
 --- Résumé ---
-betpawa_tentes : 658
-betpawa_cache_hit : 272
-betpawa_trouves_frais : 110
-betpawa_ambigus : 36
-betpawa_non_trouves : 240
-betpawa_titre_mismatch : 144
-betpawa_cotes_extraites : 238
+betpawa_tentes : 629
+betpawa_cache_hit : 0
+betpawa_trouves_frais : 208
+betpawa_ambigus : 85
+betpawa_non_trouves : 336
+betpawa_titre_mismatch : 77
+betpawa_cotes_extraites : 131
 betpawa_cotes_vides : 0
 betpawa_erreurs : 0
 betpawa_ignore_sans_playwright : False
-betpawa_duree_secondes : 3545
+betpawa_duree_secondes : 5488
 
 --- Détail ---
-CACHE HIT [Lille - Troyes] -> https://www.betpawa.cm/event/37673861?filter=all
-COTES OK [Lille - Troyes] 16 marché(s) depuis https://www.betpawa.cm/event/37673861?filter=all
-CACHE HIT [Le Mans - RC Lens] -> https://www.betpawa.cm/event/37643599?filter=all
-TITRE NE CORRESPOND PAS [Le Mans - RC Lens] -- page chargée : 'Le Mans FC - Racing Club De Lens' (https://www.betpawa.cm/event/37643599?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Le Mans - RC Lens / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
+NON TROUVÉ [Lille - Troyes]
+AMBIGU (tamis 3, aucune date ne correspond) [Le Mans - RC Lens] variante 'Le Mans' -- candidats vus : ['Le Mans FC - Racing Club De Lens']
 NON TROUVÉ [Brest - PSG]
-CACHE HIT [Coventry - Brighton] -> https://www.betpawa.cm/event/37673696?filter=all
-COTES OK [Coventry - Brighton] 16 marché(s) depuis https://www.betpawa.cm/event/37673696?filter=all
-TROUVÉ (tamis 2, date confirmée 13/09) [Man United - Man City] -> https://www.betpawa.cm/event/37673745?filter=all
-TITRE NE CORRESPOND PAS [Man United - Man City] -- page chargée : 'Manchester United - Manchester City' (https://www.betpawa.cm/event/37673745?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-CACHE HIT [Celta Vigo - Malaga] -> https://www.betpawa.cm/event/36342430?filter=all
-TITRE NE CORRESPOND PAS [Celta Vigo - Malaga] -- page chargée : 'RC Celta de Vigo - Malaga CF' (https://www.betpawa.cm/event/36342430?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Celta Vigo - Malaga / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Levante - Barcelone] -> https://www.betpawa.cm/event/36320567?filter=all
-TITRE NE CORRESPOND PAS [Levante - Barcelone] -- page chargée : 'Levante UD - FC Barcelona' (https://www.betpawa.cm/event/36320567?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Levante - Barcelone / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Getafe - A Coruña] -> https://www.betpawa.cm/event/36342429?filter=all
+NON TROUVÉ [Coventry - Brighton]
+NON TROUVÉ [Man United - Man City]
+NON TROUVÉ [Celta Vigo - Malaga]
+[tamis 1 rejeté] [Levante - Barcelone] candidat unique score 0.89 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Levante - Barcelone] variante 'Levante' -- candidats vus : ['Levante UD - FC Barcelona']
+TROUVÉ (tamis 1) [Getafe - A Coruña] score 1.00 -> https://www.betpawa.cm/event/36342429?filter=all
 TITRE NE CORRESPOND PAS [Getafe - A Coruña] -- page chargée : 'Getafe CF - RC Deportivo de A Coruna' (https://www.betpawa.cm/event/36342429?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Getafe - A Coruña / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Real Sociedad - Atl. Madrid] -> https://www.betpawa.cm/event/36320577?filter=all
+TROUVÉ (tamis 1) [Real Sociedad - Atl. Madrid] score 0.80 -> https://www.betpawa.cm/event/36320577?filter=all
 TITRE NE CORRESPOND PAS [Real Sociedad - Atl. Madrid] -- page chargée : 'Real Sociedad San Sebastian - Atletico Madrid' (https://www.betpawa.cm/event/36320577?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Real Sociedad - Atl. Madrid / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Lecce - Monza] -> https://www.betpawa.cm/event/37109177?filter=all
-COTES OK [Lecce - Monza] 16 marché(s) depuis https://www.betpawa.cm/event/37109177?filter=all
+NON TROUVÉ [Lecce - Monza]
 NON TROUVÉ [Naples - Bologne]
-CACHE HIT [Sassuolo - Juventus] -> https://www.betpawa.cm/event/37135654?filter=all
+TROUVÉ (tamis 1) [Sassuolo - Juventus] score 1.00 -> https://www.betpawa.cm/event/37135654?filter=all
 COTES OK [Sassuolo - Juventus] 16 marché(s) depuis https://www.betpawa.cm/event/37135654?filter=all
-CACHE HIT [Leipzig - Hambourg] -> https://www.betpawa.cm/event/37057681?filter=all
-TITRE NE CORRESPOND PAS [Leipzig - Hambourg] -- page chargée : 'RB Leipzig - Hamburger SV' (https://www.betpawa.cm/event/37057681?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Leipzig - Hambourg / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Elversberg - Bayern Munich] -> https://www.betpawa.cm/event/37167128?filter=all
-COTES OK [Elversberg - Bayern Munich] 22 marché(s) depuis https://www.betpawa.cm/event/37167128?filter=all
-CACHE HIT [Excelsior - Utrecht] -> https://www.betpawa.cm/event/37028381?filter=all
-COTES OK [Excelsior - Utrecht] 16 marché(s) depuis https://www.betpawa.cm/event/37028381?filter=all
-CACHE HIT [Heerenveen - Telstar] -> https://www.betpawa.cm/event/37050890?filter=all
-COTES OK [Heerenveen - Telstar] 16 marché(s) depuis https://www.betpawa.cm/event/37050890?filter=all
-CACHE HIT [Zwolle - Feyenoord] -> https://www.betpawa.cm/event/37028380?filter=all
-COTES OK [Zwolle - Feyenoord] 16 marché(s) depuis https://www.betpawa.cm/event/37028380?filter=all
-CACHE HIT [PSV Eindhoven - S. Rotterdam] -> https://www.betpawa.cm/event/37028379?filter=all
+NON TROUVÉ [Leipzig - Hambourg]
+[tamis 1 rejeté] [Elversberg - Bayern Munich] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Elversberg - Bayern Munich] variante 'Elversberg' -- candidats vus : ['SV 07 Elversberg - Bayern Munich']
+NON TROUVÉ [Excelsior - Utrecht]
+NON TROUVÉ [Heerenveen - Telstar]
+[tamis 1 rejeté] [Zwolle - Feyenoord] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Zwolle - Feyenoord] variante 'Zwolle' -- candidats vus : ['PEC Zwolle - Feyenoord Rotterdam']
+TROUVÉ (tamis 1) [PSV Eindhoven - S. Rotterdam] score 0.81 -> https://www.betpawa.cm/event/37028379?filter=all
 COTES OK [PSV Eindhoven - S. Rotterdam] 22 marché(s) depuis https://www.betpawa.cm/event/37028379?filter=all
-CACHE HIT [Arouca - Santa Clara] -> https://www.betpawa.cm/event/37632415?filter=all
+TROUVÉ (tamis 1) [Arouca - Santa Clara] score 1.00 -> https://www.betpawa.cm/event/37632415?filter=all
 COTES OK [Arouca - Santa Clara] 16 marché(s) depuis https://www.betpawa.cm/event/37632415?filter=all
-CACHE HIT [Benfica - Gil Vicente] -> https://www.betpawa.cm/event/37632372?filter=all
-COTES OK [Benfica - Gil Vicente] 16 marché(s) depuis https://www.betpawa.cm/event/37632372?filter=all
-CACHE HIT [Famalicão - Sporting] -> https://www.betpawa.cm/event/37632316?filter=all
+TROUVÉ (tamis 1) [Benfica - Gil Vicente] score 1.00 -> https://www.betpawa.cm/event/37632372?filter=all
+COTES OK [Benfica - Gil Vicente] 15 marché(s) depuis https://www.betpawa.cm/event/37632372?filter=all
+TROUVÉ (tamis 1) [Famalicão - Sporting] score 1.00 -> https://www.betpawa.cm/event/37632316?filter=all
 TITRE NE CORRESPOND PAS [Famalicão - Sporting] -- page chargée : 'FC Famalicao - Sporting CP' (https://www.betpawa.cm/event/37632316?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Famalicão - Sporting / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Club Bruges - Antwerp] -> https://www.betpawa.cm/event/37058092?filter=all
-TITRE NE CORRESPOND PAS [Club Bruges - Antwerp] -- page chargée : 'Club Brugge - Royal Antwerp FC' (https://www.betpawa.cm/event/37058092?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Club Bruges - Antwerp / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Racing Genk - KAA Gent] -> https://www.betpawa.cm/event/37028388?filter=all
-TITRE NE CORRESPOND PAS [Racing Genk - KAA Gent] -- page chargée : 'KRC Genk - KAA Gent' (https://www.betpawa.cm/event/37028388?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Racing Genk - KAA Gent / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Zulte Waregem - Charleroi] -> https://www.betpawa.cm/event/37028389?filter=all
+NON TROUVÉ [Club Bruges - Antwerp]
+NON TROUVÉ [Racing Genk - KAA Gent]
+TROUVÉ (tamis 1) [Zulte Waregem - Charleroi] score 1.00 -> https://www.betpawa.cm/event/37028389?filter=all
 COTES OK [Zulte Waregem - Charleroi] 16 marché(s) depuis https://www.betpawa.cm/event/37028389?filter=all
-CACHE HIT [La Louvière - Courtrai] -> https://www.betpawa.cm/event/37028390?filter=all
+TROUVÉ (tamis 2, date confirmée 13/09) [La Louvière - Courtrai] -> https://www.betpawa.cm/event/37028390?filter=all
 TITRE NE CORRESPOND PAS [La Louvière - Courtrai] -- page chargée : 'RAAL La Louviere - KV Kortrijk' (https://www.betpawa.cm/event/37028390?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [La Louvière - Courtrai / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Genclerbirligi - Kasimpasa] -> https://www.betpawa.cm/event/36502280?filter=all
-COTES OK [Genclerbirligi - Kasimpasa] 16 marché(s) depuis https://www.betpawa.cm/event/36502280?filter=all
-CACHE HIT [Amed - Basaksehir] -> https://www.betpawa.cm/event/36541935?filter=all
+NON TROUVÉ [Genclerbirligi - Kasimpasa]
+TROUVÉ (tamis 1) [Amed - Basaksehir] score 1.00 -> https://www.betpawa.cm/event/36541935?filter=all
 COTES OK [Amed - Basaksehir] 16 marché(s) depuis https://www.betpawa.cm/event/36541935?filter=all
-CACHE HIT [Galatasaray - Kocaelispor] -> https://www.betpawa.cm/event/36541934?filter=all
+TROUVÉ (tamis 1) [Galatasaray - Kocaelispor] score 1.00 -> https://www.betpawa.cm/event/36541934?filter=all
 COTES OK [Galatasaray - Kocaelispor] 19 marché(s) depuis https://www.betpawa.cm/event/36541934?filter=all
-CACHE HIT [Sheffield Utd - Wolverhampton] -> https://www.betpawa.cm/event/37674138?filter=all
-TITRE NE CORRESPOND PAS [Sheffield Utd - Wolverhampton] -- page chargée : 'Sheffield United - Wolverhampton Wanderers' (https://www.betpawa.cm/event/37674138?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Sheffield Utd - Wolverhampton / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Neom - Al Fateh] -> https://www.betpawa.cm/event/37686074?filter=all
-COTES OK [Neom - Al Fateh] 15 marché(s) depuis https://www.betpawa.cm/event/37686074?filter=all
-CACHE HIT [Al Riyadh - Al Kholood] -> https://www.betpawa.cm/event/37686072?filter=all
-COTES OK [Al Riyadh - Al Kholood] 15 marché(s) depuis https://www.betpawa.cm/event/37686072?filter=all
-CACHE HIT [Diriyah - Abha] -> https://www.betpawa.cm/event/37686073?filter=all
-COTES OK [Diriyah - Abha] 15 marché(s) depuis https://www.betpawa.cm/event/37686073?filter=all
-CACHE HIT [Zurich - Vaduz] -> https://www.betpawa.cm/event/37082393?filter=all
-COTES OK [Zurich - Vaduz] 15 marché(s) depuis https://www.betpawa.cm/event/37082393?filter=all
-CACHE HIT [Lausanne - Servette] -> https://www.betpawa.cm/event/37082395?filter=all
-COTES OK [Lausanne - Servette] 16 marché(s) depuis https://www.betpawa.cm/event/37082395?filter=all
-CACHE HIT [Austria Vienne - Aus. Lustenau] -> https://www.betpawa.cm/event/37339263?filter=all
-TITRE NE CORRESPOND PAS [Austria Vienne - Aus. Lustenau] -- page chargée : 'FK Austria Wien - Austria Lustenau' (https://www.betpawa.cm/event/37339263?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Austria Vienne - Aus. Lustenau / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [WSG Tirol - Hartberg] -> https://www.betpawa.cm/event/37339266?filter=all
-COTES OK [WSG Tirol - Hartberg] 21 marché(s) depuis https://www.betpawa.cm/event/37339266?filter=all
-CACHE HIT [Sturm Graz - LASK] -> https://www.betpawa.cm/event/37313599?filter=all
-COTES OK [Sturm Graz - LASK] 16 marché(s) depuis https://www.betpawa.cm/event/37313599?filter=all
-CACHE HIT [PS PAE Kalamata - Volos] -> https://www.betpawa.cm/event/37538260?filter=all
-TITRE NE CORRESPOND PAS [PS PAE Kalamata - Volos] -- page chargée : 'PAE PS Kalamata - Volos NPS' (https://www.betpawa.cm/event/37538260?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [PS PAE Kalamata - Volos / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-TROUVÉ (tamis 1) [Asteras T. - AEK] score 1.00 -> https://www.betpawa.cm/event/37561113?filter=all
-COTES OK [Asteras T. - AEK] 14 marché(s) depuis https://www.betpawa.cm/event/37561113?filter=all
-CACHE HIT [Kifisia - Levadiakos FC] -> https://www.betpawa.cm/event/37561115?filter=all
-COTES OK [Kifisia - Levadiakos FC] 14 marché(s) depuis https://www.betpawa.cm/event/37561115?filter=all
-CACHE HIT [PAOK - Aris] -> https://www.betpawa.cm/event/37561117?filter=all
-COTES OK [PAOK - Aris] 14 marché(s) depuis https://www.betpawa.cm/event/37561117?filter=all
-CACHE HIT [Panathinaikos - Panaitolikos] -> https://www.betpawa.cm/event/37561124?filter=all
-COTES OK [Panathinaikos - Panaitolikos] 14 marché(s) depuis https://www.betpawa.cm/event/37561124?filter=all
-CACHE HIT [Gijon - Eldense] -> https://www.betpawa.cm/event/36342376?filter=all
-COTES OK [Gijon - Eldense] 15 marché(s) depuis https://www.betpawa.cm/event/36342376?filter=all
-CACHE HIT [Real Valladolid - Oviedo] -> https://www.betpawa.cm/event/36342375?filter=all
-COTES OK [Real Valladolid - Oviedo] 19 marché(s) depuis https://www.betpawa.cm/event/36342375?filter=all
+NON TROUVÉ [Sheffield Utd - Wolverhampton]
+[tamis 1 rejeté] [Neom - Al Fateh] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Neom - Al Fateh] variante 'Neom' -- candidats vus : ['Neom SC - Al-Fateh SC']
+TROUVÉ (tamis 1) [Al Riyadh - Al Kholood] score 1.00 -> https://www.betpawa.cm/event/37686072?filter=all
+COTES OK [Al Riyadh - Al Kholood] 16 marché(s) depuis https://www.betpawa.cm/event/37686072?filter=all
+TROUVÉ (tamis 1) [Diriyah - Abha] score 1.00 -> https://www.betpawa.cm/event/37686073?filter=all
+COTES OK [Diriyah - Abha] 16 marché(s) depuis https://www.betpawa.cm/event/37686073?filter=all
+NON TROUVÉ [Zurich - Vaduz]
+[tamis 1 rejeté] [Lausanne - Servette] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Lausanne - Servette] variante 'Lausanne' -- candidats vus : ['Lausanne-Sport - Servette Geneva']
+NON TROUVÉ [Austria Vienne - Aus. Lustenau]
+NON TROUVÉ [WSG Tirol - Hartberg]
+[tamis 1 rejeté] [Sturm Graz - LASK] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Sturm Graz - LASK] variante 'Sturm Graz' -- candidats vus : ['SK Sturm Graz - LASK Linz']
+[tamis 1 rejeté] [PS PAE Kalamata - Volos] candidat unique score 0.80 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [PS PAE Kalamata - Volos] variante 'PS PAE Kalamata' -- candidats vus : ['PAE PS Kalamata - Volos NPS']
+[tamis 1 rejeté] [Asteras T. - AEK] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Asteras T. - AEK] variante 'Asteras T.' -- candidats vus : ['Asteras Tripolis - AEK Athens']
+TROUVÉ (tamis 1) [Kifisia - Levadiakos FC] score 1.00 -> https://www.betpawa.cm/event/37561115?filter=all
+COTES OK [Kifisia - Levadiakos FC] 15 marché(s) depuis https://www.betpawa.cm/event/37561115?filter=all
+TROUVÉ (tamis 1) [PAOK - Aris] score 1.00 -> https://www.betpawa.cm/event/37561117?filter=all
+COTES OK [PAOK - Aris] 15 marché(s) depuis https://www.betpawa.cm/event/37561117?filter=all
+TROUVÉ (tamis 1) [Panathinaikos - Panaitolikos] score 1.00 -> https://www.betpawa.cm/event/37561124?filter=all
+COTES OK [Panathinaikos - Panaitolikos] 15 marché(s) depuis https://www.betpawa.cm/event/37561124?filter=all
+NON TROUVÉ [Gijon - Eldense]
+NON TROUVÉ [Real Valladolid - Oviedo]
 NON TROUVÉ [Majorque - Sabadell]
-CACHE HIT [Tenerife - Leganes] -> https://www.betpawa.cm/event/36320515?filter=all
+TROUVÉ (tamis 1) [Tenerife - Leganes] score 1.00 -> https://www.betpawa.cm/event/36320515?filter=all
 COTES OK [Tenerife - Leganes] 15 marché(s) depuis https://www.betpawa.cm/event/36320515?filter=all
-CACHE HIT [Avellino - Palerme] -> https://www.betpawa.cm/event/37135658?filter=all
-TITRE NE CORRESPOND PAS [Avellino - Palerme] -- page chargée : 'US Avellino - Palermo FC' (https://www.betpawa.cm/event/37135658?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Avellino - Palerme / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Mantoue - Sampdoria] -> https://www.betpawa.cm/event/37135657?filter=all
-TITRE NE CORRESPOND PAS [Mantoue - Sampdoria] -- page chargée : 'Mantova 1911 - Sampdoria Genoa' (https://www.betpawa.cm/event/37135657?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Mantoue - Sampdoria / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Heidenheim - Kiel] -> https://www.betpawa.cm/event/37027405?filter=all
-COTES OK [Heidenheim - Kiel] 15 marché(s) depuis https://www.betpawa.cm/event/37027405?filter=all
-CACHE HIT [Karlsruher - E. Cottbus] -> https://www.betpawa.cm/event/37144577?filter=all
-COTES OK [Karlsruher - E. Cottbus] 15 marché(s) depuis https://www.betpawa.cm/event/37144577?filter=all
-CACHE HIT [Osnabrück - Hertha BSC] -> https://www.betpawa.cm/event/37081424?filter=all
-TITRE NE CORRESPOND PAS [Osnabrück - Hertha BSC] -- page chargée : 'VfL 1899 Osnabruck - Hertha BSC' (https://www.betpawa.cm/event/37081424?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Osnabrück - Hertha BSC / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Volendam - Den Bosch] -> https://www.betpawa.cm/event/37673823?filter=all
-COTES OK [Volendam - Den Bosch] 15 marché(s) depuis https://www.betpawa.cm/event/37673823?filter=all
-CACHE HIT [Hammam-Lif - Espérance ST] -> https://www.betpawa.cm/event/37951117?filter=all
-TITRE NE CORRESPOND PAS [Hammam-Lif - Espérance ST] -- page chargée : 'Club S Hammam-Lif - Esperance Sportive de Tunis' (https://www.betpawa.cm/event/37951117?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Hammam-Lif - Espérance ST / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Omrane - Métlaoui] -> https://www.betpawa.cm/event/37951116?filter=all
-TITRE NE CORRESPOND PAS [Omrane - Métlaoui] -- page chargée : 'JS Omrane - ES Metlaoui' (https://www.betpawa.cm/event/37951116?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Omrane - Métlaoui / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Akhmat - Dynamo Makh.] -> https://www.betpawa.cm/event/37028355?filter=all
-COTES OK [Akhmat - Dynamo Makh.] 15 marché(s) depuis https://www.betpawa.cm/event/37028355?filter=all
-CACHE HIT [Spartak Moscou - Rostov] -> https://www.betpawa.cm/event/37082357?filter=all
-TITRE NE CORRESPOND PAS [Spartak Moscou - Rostov] -- page chargée : 'FK Spartak Moscow - FK Rostov' (https://www.betpawa.cm/event/37082357?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Spartak Moscou - Rostov / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Krasnodar - Akron] -> https://www.betpawa.cm/event/37058049?filter=all
-COTES OK [Krasnodar - Akron] 15 marché(s) depuis https://www.betpawa.cm/event/37058049?filter=all
-[tamis 1 rejeté] [Palmeiras - São Paulo] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
-AMBIGU (tamis 3, aucune date ne correspond) [Palmeiras - São Paulo] variante 'Palmeiras' -- candidats vus : ['SE Palmeiras SP - Sao Paulo FC SP']
-TROUVÉ (tamis 1) [Botafogo RJ - Bragantino SP] score 0.88 -> https://www.betpawa.cm/event/37643624?filter=all
-TITRE NE CORRESPOND PAS [Botafogo RJ - Bragantino SP] -- page chargée : 'Botafogo FR RJ - Red Bull Bragantino SP' (https://www.betpawa.cm/event/37643624?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-TROUVÉ (tamis 1) [Santos SP - Cruzeiro MG] score 0.88 -> https://www.betpawa.cm/event/37643513?filter=all
-TITRE NE CORRESPOND PAS [Santos SP - Cruzeiro MG] -- page chargée : 'Santos FC SP - Cruzeiro EC MG' (https://www.betpawa.cm/event/37643513?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-CACHE HIT [Mirassol - Vitoria BA] -> https://www.betpawa.cm/event/37673885?filter=all
+[tamis 1 rejeté] [Avellino - Palerme] candidat unique score 0.86 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Avellino - Palerme] variante 'Avellino' -- candidats vus : ['US Avellino - Palermo FC']
+AMBIGU (tamis 3, aucune date ne correspond) [Mantoue - Sampdoria] variante 'Mantoue' -- candidats vus : ['Mantova 1911 - Sampdoria Genoa']
+NON TROUVÉ [Heidenheim - Kiel]
+NON TROUVÉ [Karlsruher - E. Cottbus]
+NON TROUVÉ [Osnabrück - Hertha BSC]
+[tamis 1 rejeté] [Volendam - Den Bosch] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Volendam - Den Bosch] variante 'Volendam' -- candidats vus : ['FC Volendam - FC Den Bosch']
+AMBIGU (tamis 3, aucune date ne correspond) [Hammam-Lif - Espérance ST] variante 'hammam lif' -- candidats vus : ['Club S Hammam-Lif - Esperance Sportive de Tunis']
+[tamis 1 rejeté] [Omrane - Métlaoui] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Omrane - Métlaoui] variante 'Omrane' -- candidats vus : ['JS Omrane - ES Metlaoui']
+AMBIGU (tamis 3, aucune date ne correspond) [Akhmat - Dynamo Makh.] variante 'Akhmat' -- candidats vus : ['RFK Akhmat Grozny - FK Dinamo Moscow']
+NON TROUVÉ [Spartak Moscou - Rostov]
+TROUVÉ (tamis 1) [Krasnodar - Akron] score 1.00 -> https://www.betpawa.cm/event/37058049?filter=all
+COTES OK [Krasnodar - Akron] 16 marché(s) depuis https://www.betpawa.cm/event/37058049?filter=all
+NON TROUVÉ [Botafogo RJ - Bragantino SP]
+NON TROUVÉ [Santos SP - Cruzeiro MG]
+TROUVÉ (tamis 1) [Mirassol - Vitoria BA] score 1.00 -> https://www.betpawa.cm/event/37673885?filter=all
 COTES OK [Mirassol - Vitoria BA] 16 marché(s) depuis https://www.betpawa.cm/event/37673885?filter=all
-CACHE HIT [Flamengo - Corinthians] -> https://www.betpawa.cm/event/37673697?filter=all
+TROUVÉ (tamis 1) [Flamengo - Corinthians] score 1.00 -> https://www.betpawa.cm/event/37673697?filter=all
 COTES OK [Flamengo - Corinthians] 16 marché(s) depuis https://www.betpawa.cm/event/37673697?filter=all
-TROUVÉ (tamis 1) [Cincinnati - Charlotte] score 1.00 -> https://www.betpawa.cm/event/36172678?filter=all
-COTES OK [Cincinnati - Charlotte] 15 marché(s) depuis https://www.betpawa.cm/event/36172678?filter=all
-TROUVÉ (tamis 1) [Columbus - NY Red Bulls] score 0.80 -> https://www.betpawa.cm/event/36172679?filter=all
-TITRE NE CORRESPOND PAS [Columbus - NY Red Bulls] -- page chargée : 'Columbus Crew - New York Red Bulls' (https://www.betpawa.cm/event/36172679?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-TROUVÉ (tamis 1) [DC United - Atlanta Utd] score 0.88 -> https://www.betpawa.cm/event/36172681?filter=all
-TITRE NE CORRESPOND PAS [DC United - Atlanta Utd] -- page chargée : 'DC United - Atlanta United FC' (https://www.betpawa.cm/event/36172681?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-TROUVÉ (tamis 1) [Inter Miami - Nashville SC] score 1.00 -> https://www.betpawa.cm/event/36172680?filter=all
-COTES OK [Inter Miami - Nashville SC] 19 marché(s) depuis https://www.betpawa.cm/event/36172680?filter=all
-TROUVÉ (tamis 1) [Orlando City - Toronto] score 1.00 -> https://www.betpawa.cm/event/36140592?filter=all
-COTES OK [Orlando City - Toronto] 15 marché(s) depuis https://www.betpawa.cm/event/36140592?filter=all
-TROUVÉ (tamis 1) [Dallas - Portland] score 1.00 -> https://www.betpawa.cm/event/36140650?filter=all
-COTES OK [Dallas - Portland] 15 marché(s) depuis https://www.betpawa.cm/event/36140650?filter=all
-TROUVÉ (tamis 2, date confirmée 13/09) [Sporting KC - Los Angeles] -> https://www.betpawa.cm/event/36172710?filter=all
-TITRE NE CORRESPOND PAS [Sporting KC - Los Angeles] -- page chargée : 'Sporting Kansas City - Los Angeles FC' (https://www.betpawa.cm/event/36172710?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-TROUVÉ (tamis 2, date confirmée 13/09) [St. Louis - Minnesota Utd] -> https://www.betpawa.cm/event/36172709?filter=all
-TITRE NE CORRESPOND PAS [St. Louis - Minnesota Utd] -- page chargée : 'Saint Louis City SC - Minnesota United FC' (https://www.betpawa.cm/event/36172709?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-TROUVÉ (tamis 1) [Colorado - Montreal] score 1.00 -> https://www.betpawa.cm/event/36174204?filter=all
-COTES OK [Colorado - Montreal] 15 marché(s) depuis https://www.betpawa.cm/event/36174204?filter=all
-TROUVÉ (tamis 1) [Real Salt Lake - New York City] score 1.00 -> https://www.betpawa.cm/event/36174205?filter=all
-COTES OK [Real Salt Lake - New York City] 21 marché(s) depuis https://www.betpawa.cm/event/36174205?filter=all
-TROUVÉ (tamis 2, date confirmée 13/09) [LA Galaxy - S. Sounders] -> https://www.betpawa.cm/event/36174214?filter=all
-TITRE NE CORRESPOND PAS [LA Galaxy - S. Sounders] -- page chargée : 'Los Angeles Galaxy - Seattle Sounders' (https://www.betpawa.cm/event/36174214?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-TROUVÉ (tamis 1) [San Jose E. - Houston] score 1.00 -> https://www.betpawa.cm/event/36141609?filter=all
-COTES OK [San Jose E. - Houston] 16 marché(s) depuis https://www.betpawa.cm/event/36141609?filter=all
-CACHE HIT [Chicago Fire - NE Revolution] -> https://www.betpawa.cm/event/36208933?filter=all
+NON TROUVÉ [Cincinnati - Charlotte]
+NON TROUVÉ [Columbus - NY Red Bulls]
+AMBIGU (tamis 3, aucune date ne correspond) [DC United - Atlanta Utd] variante 'DC United' -- candidats vus : ['Leeds United - Newcastle United']
+NON TROUVÉ [Inter Miami - Nashville SC]
+NON TROUVÉ [Orlando City - Toronto]
+NON TROUVÉ [Dallas - Portland]
+NON TROUVÉ [Sporting KC - Los Angeles]
+NON TROUVÉ [St. Louis - Minnesota Utd]
+NON TROUVÉ [Colorado - Montreal]
+NON TROUVÉ [Real Salt Lake - New York City]
+NON TROUVÉ [LA Galaxy - S. Sounders]
+NON TROUVÉ [San Jose E. - Houston]
+TROUVÉ (tamis 2, date confirmée 13/09) [Chicago Fire - NE Revolution] -> https://www.betpawa.cm/event/36208933?filter=all
 TITRE NE CORRESPOND PAS [Chicago Fire - NE Revolution] -- page chargée : 'Chicago Fire - New England Revolution' (https://www.betpawa.cm/event/36208933?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Chicago Fire - NE Revolution / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [V. Whitecaps - Austin] -> https://www.betpawa.cm/event/36208984?filter=all
+TROUVÉ (tamis 2, date confirmée 13/09) [V. Whitecaps - Austin] -> https://www.betpawa.cm/event/36208984?filter=all
 COTES OK [V. Whitecaps - Austin] 15 marché(s) depuis https://www.betpawa.cm/event/36208984?filter=all
 AMBIGU (tamis 3, aucune date ne correspond) [San Diego - Phila. Union] variante 'San Diego' -- candidats vus : ['San Diego FC - Philadelphia Union']
-[tamis 1 rejeté] [Talleres - Union Santa Fe] candidat unique score 0.90 mais date None != '13/09' -- passage au tamis 2.
-AMBIGU (tamis 3, aucune date ne correspond) [Talleres - Union Santa Fe] variante 'Talleres' -- candidats vus : ['CA Talleres de Cordoba - Union de Santa Fe']
-CACHE HIT [Sarmiento - Belgrano] -> https://www.betpawa.cm/event/36934297?filter=all
+NON TROUVÉ [Talleres - Union Santa Fe]
+TROUVÉ (tamis 1) [Sarmiento - Belgrano] score 1.00 -> https://www.betpawa.cm/event/36934297?filter=all
 COTES OK [Sarmiento - Belgrano] 15 marché(s) depuis https://www.betpawa.cm/event/36934297?filter=all
-CACHE HIT [Tigre - R. Central] -> https://www.betpawa.cm/event/36964749?filter=all
+TROUVÉ (tamis 2, date confirmée 13/09) [Tigre - R. Central] -> https://www.betpawa.cm/event/36964749?filter=all
 COTES OK [Tigre - R. Central] 15 marché(s) depuis https://www.betpawa.cm/event/36964749?filter=all
-CACHE HIT [Argentinos - Gimn La Plata] -> https://www.betpawa.cm/event/36964741?filter=all
+TROUVÉ (tamis 2, date confirmée 13/09) [Argentinos - Gimn La Plata] -> https://www.betpawa.cm/event/36964741?filter=all
 TITRE NE CORRESPOND PAS [Argentinos - Gimn La Plata] -- page chargée : 'Argentinos Juniors - Gimnasia y Esgrima La Plata' (https://www.betpawa.cm/event/36964741?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Argentinos - Gimn La Plata / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
 NON TROUVÉ [Independiente - San Lorenzo]
 [tamis 1 rejeté] [Huracán - Racing Club] candidat unique score 1.00 mais date '14/09' != '13/09' -- passage au tamis 2.
 AMBIGU (tamis 3, aucune date ne correspond) [Huracán - Racing Club] variante 'Huracán' -- candidats vus : ['CA Huracan - Racing Club Avellaneda']
-CACHE HIT [Livyi Bereh - Polessya] -> https://www.betpawa.cm/event/37486008?filter=all
-TITRE NE CORRESPOND PAS [Livyi Bereh - Polessya] -- page chargée : 'FC Livyi Bereh Kyiv - FC Polissya Zhytomyr' (https://www.betpawa.cm/event/37486008?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Livyi Bereh - Polessya / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Bukovyna - Zorya] -> https://www.betpawa.cm/event/37512276?filter=all
-COTES OK [Bukovyna - Zorya] 15 marché(s) depuis https://www.betpawa.cm/event/37512276?filter=all
-NON TROUVÉ [Rivers Utd - Warri Wolves]
-NON TROUVÉ [Shooting Stars - Kano Pillars]
-NON TROUVÉ [Abia Warriors - Ikorodu City]
-TROUVÉ (tamis 1) [Barau - Ranchers Bees] score 1.00 -> https://www.betpawa.cm/event/37948412?filter=all
-COTES OK [Barau - Ranchers Bees] 1 marché(s) depuis https://www.betpawa.cm/event/37948412?filter=all
-NON TROUVÉ [Bendel Ins. - Kun Khalifat]
-TROUVÉ (tamis 2, date confirmée 13/09) [Eng. Rangers - Nasarawa Utd] -> https://www.betpawa.cm/event/37643708?filter=all
-TITRE NE CORRESPOND PAS [Eng. Rangers - Nasarawa Utd] -- page chargée : 'Zebbug Rangers FC - Fgura United FC' (https://www.betpawa.cm/event/37643708?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-TROUVÉ (tamis 1) [Inter Lagos - Sport Lagos] score 0.88 -> https://www.betpawa.cm/event/37948413?filter=all
-TITRE NE CORRESPOND PAS [Inter Lagos - Sport Lagos] -- page chargée : 'Inter Lagos FC - Sporting Lagos FC' (https://www.betpawa.cm/event/37948413?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-NON TROUVÉ [Kwara Utd - Katsina Utd]
-TROUVÉ (tamis 1) [Tornadoes - Plateau Utd] score 0.88 -> https://www.betpawa.cm/event/37948410?filter=all
-TITRE NE CORRESPOND PAS [Tornadoes - Plateau Utd] -- page chargée : 'Niger Tornadoes FC - Plateau United' (https://www.betpawa.cm/event/37948410?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-CACHE HIT [AVS - Farense] -> https://www.betpawa.cm/event/37632726?filter=all
-COTES OK [AVS - Farense] 15 marché(s) depuis https://www.betpawa.cm/event/37632726?filter=all
-CACHE HIT [Chaves - Feirense] -> https://www.betpawa.cm/event/37632675?filter=all
-COTES OK [Chaves - Feirense] 14 marché(s) depuis https://www.betpawa.cm/event/37632675?filter=all
-CACHE HIT [Amarante - Uniao de Leiria] -> https://www.betpawa.cm/event/37663333?filter=all
-TITRE NE CORRESPOND PAS [Amarante - Uniao de Leiria] -- page chargée : 'Amarante FC - UD Leiria' (https://www.betpawa.cm/event/37663333?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Amarante - Uniao de Leiria / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Lyngby - Sonderjyske] -> https://www.betpawa.cm/event/37366684?filter=all
-TITRE NE CORRESPOND PAS [Lyngby - Sonderjyske] -- page chargée : 'Lyngby BK - Soenderjyske' (https://www.betpawa.cm/event/37366684?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Lyngby - Sonderjyske / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Silkeborg - Viborg] -> https://www.betpawa.cm/event/37366680?filter=all
-COTES OK [Silkeborg - Viborg] 15 marché(s) depuis https://www.betpawa.cm/event/37366680?filter=all
+NON TROUVÉ [Polessya - Livyi Bereh]
+[tamis 1 rejeté] [Bukovyna - Zorya] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Bukovyna - Zorya] variante 'Bukovyna' -- candidats vus : ['FSC Bukovyna Chernivtsi - FC Zorya Luhansk']
+[tamis 1 rejeté] [Barau - Ranchers Bees] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Barau - Ranchers Bees] variante 'Barau' -- candidats vus : ['Barau FC - Ranchers Bees']
+[tamis 1 rejeté] [Inter Lagos - Sport Lagos] candidat unique score 0.88 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Inter Lagos - Sport Lagos] variante 'Inter Lagos' -- candidats vus : ['Inter Lagos FC - Sporting Lagos FC']
+[tamis 1 rejeté] [Tornadoes - Plateau Utd] candidat unique score 0.88 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Tornadoes - Plateau Utd] variante 'Tornadoes' -- candidats vus : ['Niger Tornadoes FC - Plateau United']
+NON TROUVÉ [AVS - Farense]
+NON TROUVÉ [Chaves - Feirense]
+AMBIGU (tamis 3, aucune date ne correspond) [Amarante - Uniao de Leiria] variante 'Amarante' -- candidats vus : ['Amarante FC - UD Leiria']
+NON TROUVÉ [Lyngby - Sonderjyske]
+NON TROUVÉ [Silkeborg - Viborg]
 NON TROUVÉ [Randers - OB]
-CACHE HIT [Nordsjaelland - AGF] -> https://www.betpawa.cm/event/37366687?filter=all
-COTES OK [Nordsjaelland - AGF] 15 marché(s) depuis https://www.betpawa.cm/event/37366687?filter=all
-CACHE HIT [Viking - Kristiansund] -> https://www.betpawa.cm/event/37058081?filter=all
-COTES OK [Viking - Kristiansund] 15 marché(s) depuis https://www.betpawa.cm/event/37058081?filter=all
+[tamis 1 rejeté] [Nordsjaelland - AGF] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Nordsjaelland - AGF] variante 'Nordsjaelland' -- candidats vus : ['FC Nordsjaelland - AGF Aarhus']
+NON TROUVÉ [Viking - Kristiansund]
 NON TROUVÉ [H. Kameratene - Molde]
-CACHE HIT [IK Start - Brann] -> https://www.betpawa.cm/event/37058079?filter=all
-COTES OK [IK Start - Brann] 18 marché(s) depuis https://www.betpawa.cm/event/37058079?filter=all
-CACHE HIT [KFUM - Aalesund] -> https://www.betpawa.cm/event/37028384?filter=all
-COTES OK [KFUM - Aalesund] 15 marché(s) depuis https://www.betpawa.cm/event/37028384?filter=all
-CACHE HIT [Fredrikstad - Sarpsborg] -> https://www.betpawa.cm/event/37028383?filter=all
+[tamis 1 rejeté] [IK Start - Brann] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [IK Start - Brann] variante 'IK Start' -- candidats vus : ['IK Start - SK Brann']
+[tamis 1 rejeté] [KFUM - Aalesund] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [KFUM - Aalesund] variante 'KFUM' -- candidats vus : ['KFUM Oslo - Aalesunds FK']
+TROUVÉ (tamis 1) [Fredrikstad - Sarpsborg] score 1.00 -> https://www.betpawa.cm/event/37028383?filter=all
 COTES OK [Fredrikstad - Sarpsborg] 16 marché(s) depuis https://www.betpawa.cm/event/37028383?filter=all
-CACHE HIT [Hammarby - Brommapojkarna] -> https://www.betpawa.cm/event/37058095?filter=all
-COTES OK [Hammarby - Brommapojkarna] 15 marché(s) depuis https://www.betpawa.cm/event/37058095?filter=all
-CACHE HIT [IF Elfsborg - Kalmar] -> https://www.betpawa.cm/event/37058096?filter=all
-COTES OK [IF Elfsborg - Kalmar] 21 marché(s) depuis https://www.betpawa.cm/event/37058096?filter=all
-CACHE HIT [Malmo - Örgryte] -> https://www.betpawa.cm/event/37082390?filter=all
-COTES OK [Malmo - Örgryte] 14 marché(s) depuis https://www.betpawa.cm/event/37082390?filter=all
-CACHE HIT [Kuopion - HJK Helsinki] -> https://www.betpawa.cm/event/37742332?filter=all
-COTES OK [Kuopion - HJK Helsinki] 18 marché(s) depuis https://www.betpawa.cm/event/37742332?filter=all
-NON TROUVÉ [Vushtrria - Drenica]
+NON TROUVÉ [Hammarby - Brommapojkarna]
+NON TROUVÉ [IF Elfsborg - Kalmar]
+NON TROUVÉ [Malmo - Örgryte]
+NON TROUVÉ [Kuopion - HJK Helsinki]
 NON TROUVÉ [FC Prishtina - Feronikeli]
-CACHE HIT [KF Drita - Gjilani] -> https://www.betpawa.cm/event/38042341?filter=all
-COTES OK [KF Drita - Gjilani] 2 marché(s) depuis https://www.betpawa.cm/event/38042341?filter=all
-CACHE HIT [Sardarapat - Alashkert] -> https://www.betpawa.cm/event/37643719?filter=all
-COTES OK [Sardarapat - Alashkert] 14 marché(s) depuis https://www.betpawa.cm/event/37643719?filter=all
-CACHE HIT [Pyunik - Shirak] -> https://www.betpawa.cm/event/37643379?filter=all
-COTES OK [Pyunik - Shirak] 14 marché(s) depuis https://www.betpawa.cm/event/37643379?filter=all
-CACHE HIT [Radnički Niš - OFK] -> https://www.betpawa.cm/event/37663201?filter=all
-TITRE NE CORRESPOND PAS [Radnički Niš - OFK] -- page chargée : 'FK Radnicki Nis - OFK Beograd' (https://www.betpawa.cm/event/37663201?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Radnički Niš - OFK / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Partizan Belgrad - FK Vojvodina] -> https://www.betpawa.cm/event/37663323?filter=all
-COTES OK [Partizan Belgrad - FK Vojvodina] 14 marché(s) depuis https://www.betpawa.cm/event/37663323?filter=all
+TROUVÉ (tamis 1) [KF Drita - Gjilani] score 1.00 -> https://www.betpawa.cm/event/38042341?filter=all
+COTES OK [KF Drita - Gjilani] 14 marché(s) depuis https://www.betpawa.cm/event/38042341?filter=all
+NON TROUVÉ [Sardarapat - Alashkert]
+NON TROUVÉ [Pyunik - Shirak]
+NON TROUVÉ [Radnički Niš - OFK]
+[tamis 1 rejeté] [Partizan Belgrad - FK Vojvodina] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Partizan Belgrad - FK Vojvodina] variante 'Partizan Belgrad' -- candidats vus : ['FK Partizan Belgrade - FK Vojvodina Novi Sad']
 NON TROUVÉ [FK IMT - Étoile Rouge]
-CACHE HIT [Isloch - Gomel] -> https://www.betpawa.cm/event/37673764?filter=all
-COTES OK [Isloch - Gomel] 15 marché(s) depuis https://www.betpawa.cm/event/37673764?filter=all
+NON TROUVÉ [Isloch - Gomel]
 NON TROUVÉ [Dnepr Mogilev - ML Rogachev]
-CACHE HIT [BATE Borisov - Naftan] -> https://www.betpawa.cm/event/37673709?filter=all
-COTES OK [BATE Borisov - Naftan] 15 marché(s) depuis https://www.betpawa.cm/event/37673709?filter=all
-CACHE HIT [Dynamo Minsk - Dinamo Brest] -> https://www.betpawa.cm/event/37673816?filter=all
+[tamis 1 rejeté] [BATE Borisov - Naftan] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [BATE Borisov - Naftan] variante 'BATE Borisov' -- candidats vus : ['Bate Borisov - Naftan Novopolotsk']
+TROUVÉ (tamis 1) [Dynamo Minsk - Dinamo Brest] score 0.92 -> https://www.betpawa.cm/event/37673816?filter=all
 TITRE NE CORRESPOND PAS [Dynamo Minsk - Dinamo Brest] -- page chargée : 'FC Dinamo Minsk - FC Brest' (https://www.betpawa.cm/event/37673816?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Dynamo Minsk - Dinamo Brest / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Patro - Eupen] -> https://www.betpawa.cm/event/37028392?filter=all
-COTES OK [Patro - Eupen] 15 marché(s) depuis https://www.betpawa.cm/event/37028392?filter=all
-CACHE HIT [Ath. Carpi - Cittadella] -> https://www.betpawa.cm/event/37333247?filter=all
-COTES OK [Ath. Carpi - Cittadella] 14 marché(s) depuis https://www.betpawa.cm/event/37333247?filter=all
-CACHE HIT [Dolomiti - AlbinoLeffe] -> https://www.betpawa.cm/event/37333245?filter=all
-COTES OK [Dolomiti - AlbinoLeffe] 14 marché(s) depuis https://www.betpawa.cm/event/37333245?filter=all
-CACHE HIT [Lecco - GIANA Erminio] -> https://www.betpawa.cm/event/37333244?filter=all
-COTES OK [Lecco - GIANA Erminio] 14 marché(s) depuis https://www.betpawa.cm/event/37333244?filter=all
-CACHE HIT [Trévise - Pro Vercelli] -> https://www.betpawa.cm/event/37333241?filter=all
-TITRE NE CORRESPOND PAS [Trévise - Pro Vercelli] -- page chargée : 'Treviso FBC 1993 - Pro Vercelli 1892' (https://www.betpawa.cm/event/37333241?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Trévise - Pro Vercelli / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Lumezzane - Renate] -> https://www.betpawa.cm/event/37333246?filter=all
-COTES OK [Lumezzane - Renate] 14 marché(s) depuis https://www.betpawa.cm/event/37333246?filter=all
-CACHE HIT [US Caratese - Alcione] -> https://www.betpawa.cm/event/37333243?filter=all
-TITRE NE CORRESPOND PAS [US Caratese - Alcione] -- page chargée : 'US Folgore Caratese - Alcione Milano' (https://www.betpawa.cm/event/37333243?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [US Caratese - Alcione / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Arzignano - Desenzano] -> https://www.betpawa.cm/event/37673913?filter=all
-COTES OK [Arzignano - Desenzano] 14 marché(s) depuis https://www.betpawa.cm/event/37673913?filter=all
-CACHE HIT [Novare - Pergolettese] -> https://www.betpawa.cm/event/37309271?filter=all
+TROUVÉ (tamis 1) [Patro - Eupen] score 1.00 -> https://www.betpawa.cm/event/37028392?filter=all
+COTES OK [Patro - Eupen] 16 marché(s) depuis https://www.betpawa.cm/event/37028392?filter=all
+NON TROUVÉ [Ath. Carpi - Cittadella]
+NON TROUVÉ [Dolomiti - AlbinoLeffe]
+NON TROUVÉ [Lecco - GIANA Erminio]
+NON TROUVÉ [Trévise - Pro Vercelli]
+[tamis 1 rejeté] [Lumezzane - Renate] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Lumezzane - Renate] variante 'Lumezzane' -- candidats vus : ['AC Lumezzane - AC Renate']
+AMBIGU (tamis 3, aucune date ne correspond) [US Caratese - Alcione] variante 'US Caratese' -- candidats vus : ['US Folgore Caratese - Alcione Milano']
+TROUVÉ (tamis 1) [Arzignano - Desenzano] score 1.00 -> https://www.betpawa.cm/event/37673913?filter=all
+COTES OK [Arzignano - Desenzano] 15 marché(s) depuis https://www.betpawa.cm/event/37673913?filter=all
+TROUVÉ (tamis 1) [Novare - Pergolettese] score 0.83 -> https://www.betpawa.cm/event/37309271?filter=all
 TITRE NE CORRESPOND PAS [Novare - Pergolettese] -- page chargée : 'Novara FC - US Pergolettese Crema' (https://www.betpawa.cm/event/37309271?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Novare - Pergolettese / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Trento - Union Brescia] -> https://www.betpawa.cm/event/37655036?filter=all
-COTES OK [Trento - Union Brescia] 18 marché(s) depuis https://www.betpawa.cm/event/37655036?filter=all
+TROUVÉ (tamis 1) [Trento - Union Brescia] score 1.00 -> https://www.betpawa.cm/event/37655036?filter=all
+COTES OK [Trento - Union Brescia] 19 marché(s) depuis https://www.betpawa.cm/event/37655036?filter=all
 NON TROUVÉ [Ravenne - Pérouse]
-TROUVÉ (tamis 1) [Torres - Ostia Mare] score 0.82 -> https://www.betpawa.cm/event/37673900?filter=all
-TITRE NE CORRESPOND PAS [Torres - Ostia Mare] -- page chargée : 'SEF Torres Sassari - AS Ostiamare' (https://www.betpawa.cm/event/37673900?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-TROUVÉ (tamis 2, date confirmée 13/09) [KF Laci - KF Vllaznia] -> https://www.betpawa.cm/event/37674191?filter=all
-TITRE NE CORRESPOND PAS [KF Laci - KF Vllaznia] -- page chargée : 'KF Laci - Vllaznia Shkoder' (https://www.betpawa.cm/event/37674191?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-CACHE HIT [AF Elbasani - Egnatia] -> https://www.betpawa.cm/event/37643726?filter=all
-COTES OK [AF Elbasani - Egnatia] 12 marché(s) depuis https://www.betpawa.cm/event/37643726?filter=all
-[tamis 1 rejeté] [The Strongest - Real Oruro] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
-AMBIGU (tamis 3, aucune date ne correspond) [The Strongest - Real Oruro] variante 'The Strongest' -- candidats vus : ['The Strongest - Cdt Real Oruro']
+NON TROUVÉ [Torres - Ostia Mare]
+NON TROUVÉ [KF Laci - KF Vllaznia]
+[tamis 1 rejeté] [AF Elbasani - Egnatia] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [AF Elbasani - Egnatia] variante 'AF Elbasani' -- candidats vus : ['Af Elbasani - KF Egnatia Rrogozhine']
 NON TROUVÉ [Blooming - ABB]
-CACHE HIT [Always Ready - Guabirá] -> https://www.betpawa.cm/event/37467861?filter=all
-COTES OK [Always Ready - Guabirá] 18 marché(s) depuis https://www.betpawa.cm/event/37467861?filter=all
-CACHE HIT [Uni de Vinto - Independiente] -> https://www.betpawa.cm/event/37462186?filter=all
+TROUVÉ (tamis 1) [Always Ready - Guabirá] score 1.00 -> https://www.betpawa.cm/event/37467861?filter=all
+COTES OK [Always Ready - Guabirá] 14 marché(s) depuis https://www.betpawa.cm/event/37467861?filter=all
+TROUVÉ (tamis 2, date confirmée 13/09) [Uni de Vinto - Independiente] -> https://www.betpawa.cm/event/37462186?filter=all
 TITRE NE CORRESPOND PAS [Uni de Vinto - Independiente] -- page chargée : 'FC Universitario de Vinto - Independiente Petrolero' (https://www.betpawa.cm/event/37462186?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Uni de Vinto - Independiente / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
 [tamis 1 rejeté] [Real Tomayapo - Bolívar] candidat unique score 1.00 mais date '14/09' != '13/09' -- passage au tamis 2.
-AMBIGU (tamis 3, aucune date ne correspond) [Real Tomayapo - Bolívar] variante 'tomayapo' -- candidats vus : ['CD Real Tomayapo - Club Bolivar']
-TROUVÉ (tamis 2, date confirmée 13/09) [Slavia Sofia - Spartak Varna] -> https://www.betpawa.cm/event/37632798?filter=all
-TITRE NE CORRESPOND PAS [Slavia Sofia - Spartak Varna] -- page chargée : 'PFC Slavia Sofia - FK Spartak 1918 Varna' (https://www.betpawa.cm/event/37632798?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-CACHE HIT [Botev Vratsa - Levski Sofia] -> https://www.betpawa.cm/event/37633056?filter=all
-COTES OK [Botev Vratsa - Levski Sofia] 14 marché(s) depuis https://www.betpawa.cm/event/37633056?filter=all
-CACHE HIT [Botev Plovdiv - Loko Plovdiv] -> https://www.betpawa.cm/event/37632921?filter=all
+AMBIGU (tamis 3, aucune date ne correspond) [Real Tomayapo - Bolívar] variante 'Real Tomayapo' -- candidats vus : ['CD Real Tomayapo - Club Bolivar']
+NON TROUVÉ [Slavia Sofia - Spartak Varna]
+[tamis 1 rejeté] [Botev Vratsa - Levski Sofia] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Botev Vratsa - Levski Sofia] variante 'Botev Vratsa' -- candidats vus : ['POFC Botev Vratsa - PFC Levski Sofia']
+TROUVÉ (tamis 2, date confirmée 13/09) [Botev Plovdiv - Loko Plovdiv] -> https://www.betpawa.cm/event/37632921?filter=all
 TITRE NE CORRESPOND PAS [Botev Plovdiv - Loko Plovdiv] -- page chargée : 'Botev Plovdiv - PFC Lokomotiv Plovdiv' (https://www.betpawa.cm/event/37632921?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Botev Plovdiv - Loko Plovdiv / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Sloga Doboj - Željezničar] -> https://www.betpawa.cm/event/37949935?filter=all
-TITRE NE CORRESPOND PAS [Sloga Doboj - Željezničar] -- page chargée : 'FK Sloga Doboj - FK Zeljeznicar Sarajevo' (https://www.betpawa.cm/event/37949935?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Sloga Doboj - Željezničar / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-NON TROUVÉ [Velež Mostar - Sarajevo]
-[tamis 1 rejeté] [Forge - Atlético Ottawa] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
-AMBIGU (tamis 3, aucune date ne correspond) [Forge - Atlético Ottawa] variante 'Forge' -- candidats vus : ['Forge FC Hamilton - Atletico Ottawa']
-CACHE HIT [Inter Toronto - Vancouver] -> https://www.betpawa.cm/event/37643737?filter=all
-COTES OK [Inter Toronto - Vancouver] 15 marché(s) depuis https://www.betpawa.cm/event/37643737?filter=all
-CACHE HIT [Pacific - Cavalry] -> https://www.betpawa.cm/event/37674246?filter=all
-COTES OK [Pacific - Cavalry] 15 marché(s) depuis https://www.betpawa.cm/event/37674246?filter=all
-AMBIGU (tamis 3, aucune date ne correspond) [Palestino - U. Catolica] variante 'Palestino' -- candidats vus : ['CD Palestino - CD Universidad Catolica']
-CACHE HIT [Deportes La Serena - U. de Chile] -> https://www.betpawa.cm/event/37526014?filter=all
+[tamis 1 rejeté] [Sloga Doboj - Željezničar] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Sloga Doboj - Željezničar] variante 'Sloga Doboj' -- candidats vus : ['FK Sloga Doboj - FK Zeljeznicar Sarajevo']
+TROUVÉ (tamis 1) [Velež Mostar - Sarajevo] score 1.00 -> https://www.betpawa.cm/event/37978825?filter=all
+TITRE NE CORRESPOND PAS [Velež Mostar - Sarajevo] -- page chargée : 'FK Velez Mostar - FK Sarajevo' (https://www.betpawa.cm/event/37978825?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
+NON TROUVÉ [Forge - Atlético Ottawa]
+TROUVÉ (tamis 1) [Inter Toronto - Vancouver] score 1.00 -> https://www.betpawa.cm/event/37643737?filter=all
+COTES OK [Inter Toronto - Vancouver] 16 marché(s) depuis https://www.betpawa.cm/event/37643737?filter=all
+TROUVÉ (tamis 1) [Pacific - Cavalry] score 1.00 -> https://www.betpawa.cm/event/37674246?filter=all
+COTES OK [Pacific - Cavalry] 16 marché(s) depuis https://www.betpawa.cm/event/37674246?filter=all
+NON TROUVÉ [Palestino - U. Catolica]
+TROUVÉ (tamis 2, date confirmée 13/09) [Deportes La Serena - U. de Chile] -> https://www.betpawa.cm/event/37526014?filter=all
 COTES OK [Deportes La Serena - U. de Chile] 17 marché(s) depuis https://www.betpawa.cm/event/37526014?filter=all
-CACHE HIT [Colo Colo - Dep. Concepcion] -> https://www.betpawa.cm/event/37526015?filter=all
+TROUVÉ (tamis 1) [Colo Colo - Dep. Concepcion] score 0.85 -> https://www.betpawa.cm/event/37526015?filter=all
 TITRE NE CORRESPOND PAS [Colo Colo - Dep. Concepcion] -- page chargée : 'Colo-Colo - Deportes Concepcion' (https://www.betpawa.cm/event/37526015?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Colo Colo - Dep. Concepcion / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
 [tamis 1 rejeté] [Audax Ital. - O'Higgins] candidat unique score 1.00 mais date '14/09' != '13/09' -- passage au tamis 2.
 AMBIGU (tamis 3, aucune date ne correspond) [Audax Ital. - O'Higgins] variante 'Audax Ital.' -- candidats vus : ['Audax Italiano - CD O´Higgins']
-NON TROUVÉ [Bogota - Llaneros]
-TROUVÉ (tamis 1) [Boyacá Chicó - Medellín] score 1.00 -> https://www.betpawa.cm/event/37632570?filter=all
-TITRE NE CORRESPOND PAS [Boyacá Chicó - Medellín] -- page chargée : 'Boyaca Chico FC - Independiente Medellin' (https://www.betpawa.cm/event/37632570?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-TROUVÉ (tamis 2, date confirmée 13/09) [Alianza Valledupar - Atl. Junior] -> https://www.betpawa.cm/event/37242208?filter=all
-TITRE NE CORRESPOND PAS [Alianza Valledupar - Atl. Junior] -- page chargée : 'Alianza FC Valledupar - CD Junior FC' (https://www.betpawa.cm/event/37242208?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-CACHE HIT [Dep. Pereira - A. Bucaraman] -> https://www.betpawa.cm/event/37242207?filter=all
+NON TROUVÉ [Boyacá Chicó - Medellín]
+NON TROUVÉ [Alianza Valledupar - Atl. Junior]
+TROUVÉ (tamis 2, date confirmée 13/09) [Dep. Pereira - A. Bucaraman] -> https://www.betpawa.cm/event/37242207?filter=all
 TITRE NE CORRESPOND PAS [Dep. Pereira - A. Bucaraman] -- page chargée : 'Deportivo Pereira FC SA - CA Bucaramanga' (https://www.betpawa.cm/event/37242207?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Dep. Pereira - A. Bucaraman / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
 NON TROUVÉ [Atl. Nacional - R. Aguilas]
 [tamis 1 rejeté] [Once Caldas - Cali] candidat unique score 1.00 mais date '14/09' != '13/09' -- passage au tamis 2.
 AMBIGU (tamis 3, aucune date ne correspond) [Once Caldas - Cali] variante 'Once Caldas' -- candidats vus : ['CD Once Caldas - Deportivo Cali']
 [tamis 1 rejeté] [Cúcuta - Millonarios FC] candidat unique score 1.00 mais date '14/09' != '13/09' -- passage au tamis 2.
 AMBIGU (tamis 3, aucune date ne correspond) [Cúcuta - Millonarios FC] variante 'Cúcuta' -- candidats vus : ['Cucuta Deportivo FC - Millonarios FC']
-[tamis 1 rejeté] [San Carlos - Puntarenas] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
-AMBIGU (tamis 3, aucune date ne correspond) [San Carlos - Puntarenas] variante 'San Carlos' -- candidats vus : ['Inter San Carlos - Puntarenas FC']
-TROUVÉ (tamis 2, date confirmée 13/09) [E. Belen - Herediano] -> https://www.betpawa.cm/event/37561132?filter=all
-COTES OK [E. Belen - Herediano] 16 marché(s) depuis https://www.betpawa.cm/event/37561132?filter=all
+NON TROUVÉ [San Carlos - Puntarenas]
+NON TROUVÉ [E. Belen - Herediano]
 NON TROUVÉ [SP. San José - Saprissa]
 [tamis 1 rejeté] [Cartaginés - Alajuelense] candidat unique score 1.00 mais date '14/09' != '13/09' -- passage au tamis 2.
 AMBIGU (tamis 3, aucune date ne correspond) [Cartaginés - Alajuelense] variante 'Cartaginés' -- candidats vus : ['CS Cartagines - Liga Deportiva Alajuelense']
-CACHE HIT [Istra - Rudeš] -> https://www.betpawa.cm/event/37635271?filter=all
-COTES OK [Istra - Rudeš] 14 marché(s) depuis https://www.betpawa.cm/event/37635271?filter=all
-CACHE HIT [Hajduk Split - Slaven] -> https://www.betpawa.cm/event/37635272?filter=all
-COTES OK [Hajduk Split - Slaven] 14 marché(s) depuis https://www.betpawa.cm/event/37635272?filter=all
-CACHE HIT [AEK Larnaca - Pafos] -> https://www.betpawa.cm/event/37592792?filter=all
-COTES OK [AEK Larnaca - Pafos] 17 marché(s) depuis https://www.betpawa.cm/event/37592792?filter=all
-CACHE HIT [Oly Nicosia - ALS Omonia] -> https://www.betpawa.cm/event/37577953?filter=all
+[tamis 1 rejeté] [Istra - Rudeš] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Istra - Rudeš] variante 'Istra' -- candidats vus : ['NK Istra 1961 - NK Rudes Zagreb']
+TROUVÉ (tamis 1) [Hajduk Split - Slaven] score 1.00 -> https://www.betpawa.cm/event/37635272?filter=all
+COTES OK [Hajduk Split - Slaven] 15 marché(s) depuis https://www.betpawa.cm/event/37635272?filter=all
+[tamis 1 rejeté] [AEK Larnaca - Pafos] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [AEK Larnaca - Pafos] variante 'AEK Larnaca' -- candidats vus : ['AEK Larnaca - Pafos FC']
+TROUVÉ (tamis 2, date confirmée 13/09) [Oly Nicosia - ALS Omonia] -> https://www.betpawa.cm/event/37577953?filter=all
 TITRE NE CORRESPOND PAS [Oly Nicosia - ALS Omonia] -- page chargée : 'Olympiakos Nicosia - Als Omonia' (https://www.betpawa.cm/event/37577953?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Oly Nicosia - ALS Omonia / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Baník - FK Pardubice] -> https://www.betpawa.cm/event/37021031?filter=all
-TITRE NE CORRESPOND PAS [Baník - FK Pardubice] -- page chargée : 'FC Banik Ostrava - FK Pardubice' (https://www.betpawa.cm/event/37021031?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Baník - FK Pardubice / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [V. Plzeň - Sigma] -> https://www.betpawa.cm/event/37021033?filter=all
-TITRE NE CORRESPOND PAS [V. Plzeň - Sigma] -- page chargée : 'FC Viktoria Plzen - SK Sigma Olomouc' (https://www.betpawa.cm/event/37021033?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [V. Plzeň - Sigma / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Zlín - H. Kralove] -> https://www.betpawa.cm/event/37077133?filter=all
-TITRE NE CORRESPOND PAS [Zlín - H. Kralove] -- page chargée : 'FC Zlin - FC Hradec Kralove' (https://www.betpawa.cm/event/37077133?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Zlín - H. Kralove / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Teplice - Slavia Prague] -> https://www.betpawa.cm/event/37021034?filter=all
-COTES OK [Teplice - Slavia Prague] 21 marché(s) depuis https://www.betpawa.cm/event/37021034?filter=all
-[tamis 1 rejeté] [Guayaquil City - Mushuc Runa] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
-AMBIGU (tamis 3, aucune date ne correspond) [Guayaquil City - Mushuc Runa] variante 'Guayaquil City' -- candidats vus : ['Guayaquil City FC - Mushuc Runa SC']
-TROUVÉ (tamis 1) [LDU Quito - CD Cuenca] score 1.00 -> https://www.betpawa.cm/event/37643358?filter=all
-COTES OK [LDU Quito - CD Cuenca] 23 marché(s) depuis https://www.betpawa.cm/event/37643358?filter=all
-CACHE HIT [Leones del N. - Universitario] -> https://www.betpawa.cm/event/37673939?filter=all
+NON TROUVÉ [Baník - FK Pardubice]
+NON TROUVÉ [V. Plzeň - Sigma]
+NON TROUVÉ [Zlín - H. Kralove]
+[tamis 1 rejeté] [Teplice - Slavia Prague] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Teplice - Slavia Prague] variante 'Teplice' -- candidats vus : ['FK Teplice - Slavia Prague']
+NON TROUVÉ [LDU Quito - CD Cuenca]
+TROUVÉ (tamis 2, date confirmée 13/09) [Leones del N. - Universitario] -> https://www.betpawa.cm/event/37673939?filter=all
 TITRE NE CORRESPOND PAS [Leones del N. - Universitario] -- page chargée : 'Leones Futbol Club - CD Tecnico Universitario' (https://www.betpawa.cm/event/37673939?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Leones del N. - Universitario / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Macará - Emelec] -> https://www.betpawa.cm/event/37242214?filter=all
-COTES OK [Macará - Emelec] 14 marché(s) depuis https://www.betpawa.cm/event/37242214?filter=all
+TROUVÉ (tamis 1) [Macará - Emelec] score 1.00 -> https://www.betpawa.cm/event/37242214?filter=all
+COTES OK [Macará - Emelec] 15 marché(s) depuis https://www.betpawa.cm/event/37242214?filter=all
 [tamis 1 rejeté] [Barcelona - Delfin] candidat unique score 1.00 mais date '14/09' != '13/09' -- passage au tamis 2.
 AMBIGU (tamis 3, aucune date ne correspond) [Barcelona - Delfin] variante 'Barcelona' -- candidats vus : ['Barcelona SC - Delfin SC']
 AMBIGU (tamis 3, aucune date ne correspond) [Libertad - Ind. del Valle] variante 'Libertad' -- candidats vus : ['Libertad Loja - CSD Independiente del Valle']
-CACHE HIT [Paide Flora - Laagri] -> https://www.betpawa.cm/event/37674201?filter=all
-TITRE NE CORRESPOND PAS [Paide Flora - Laagri] -- page chargée : 'Paide Linnameeskond - Harju JK Laagri' (https://www.betpawa.cm/event/37674201?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Paide Flora - Laagri / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Kuressaare - Tammeka] -> https://www.betpawa.cm/event/37674215?filter=all
-COTES OK [Kuressaare - Tammeka] 14 marché(s) depuis https://www.betpawa.cm/event/37674215?filter=all
-CACHE HIT [Wiesbaden - Mannheim 07] -> https://www.betpawa.cm/event/36992354?filter=all
-COTES OK [Wiesbaden - Mannheim 07] 16 marché(s) depuis https://www.betpawa.cm/event/36992354?filter=all
-CACHE HIT [Stuttgart - Wolfsbourg] -> https://www.betpawa.cm/event/37674006?filter=all
-TITRE NE CORRESPOND PAS [Stuttgart - Wolfsbourg] -- page chargée : 'VfB Stuttgart Women - VfL Wolfsburg Women' (https://www.betpawa.cm/event/37674006?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Stuttgart - Wolfsbourg / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Eintracht - Hoffenheim] -> https://www.betpawa.cm/event/37673946?filter=all
-COTES OK [Eintracht - Hoffenheim] 14 marché(s) depuis https://www.betpawa.cm/event/37673946?filter=all
-CACHE HIT [Fribourg - Mainz 05] -> https://www.betpawa.cm/event/37674167?filter=all
-TITRE NE CORRESPOND PAS [Fribourg - Mainz 05] -- page chargée : 'SC Freiburg Women - 1. FSV Mainz 05 Women' (https://www.betpawa.cm/event/37674167?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Fribourg - Mainz 05 / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-NON TROUVÉ [Atl. Balboa - Platense]
-NON TROUVÉ [Águila - INCA-Aruba]
-TROUVÉ (tamis 1) [FAS - Alianza] score 1.00 -> https://www.betpawa.cm/event/37643683?filter=all
-COTES OK [FAS - Alianza] 15 marché(s) depuis https://www.betpawa.cm/event/37643683?filter=all
+NON TROUVÉ [Paide Flora - Laagri]
+NON TROUVÉ [Kuressaare - Tammeka]
+NON TROUVÉ [Wiesbaden - Mannheim 07]
+NON TROUVÉ [Stuttgart - Wolfsbourg]
+NON TROUVÉ [Eintracht - Hoffenheim]
+AMBIGU (tamis 3, aucune date ne correspond) [Fribourg - Mainz 05] variante 'Fribourg' -- candidats vus : ['SC Freiburg Women - 1. FSV Mainz 05 Women']
+NON TROUVÉ [FAS - Alianza]
 TROUVÉ (tamis 1) [Cacahuatique - Inter] score 1.00 -> https://www.betpawa.cm/event/37548846?filter=all
-COTES OK [Cacahuatique - Inter] 14 marché(s) depuis https://www.betpawa.cm/event/37548846?filter=all
-CACHE HIT [Fuerte - Municipal L.] -> https://www.betpawa.cm/event/37674212?filter=all
-COTES OK [Fuerte - Municipal L.] 14 marché(s) depuis https://www.betpawa.cm/event/37674212?filter=all
+COTES OK [Cacahuatique - Inter] 15 marché(s) depuis https://www.betpawa.cm/event/37548846?filter=all
+TROUVÉ (tamis 1) [Fuerte - Municipal L.] score 1.00 -> https://www.betpawa.cm/event/37674212?filter=all
+COTES OK [Fuerte - Municipal L.] 15 marché(s) depuis https://www.betpawa.cm/event/37674212?filter=all
 [tamis 1 rejeté] [Angel Firpo - Metapan] candidat unique score 1.00 mais date '14/09' != '13/09' -- passage au tamis 2.
 AMBIGU (tamis 3, aucune date ne correspond) [Angel Firpo - Metapan] variante 'Angel Firpo' -- candidats vus : ['CD Luis Angel Firpo Usulutan - AD Isidro Metapan']
-TROUVÉ (tamis 1) [Marquense - San Pedro] score 1.00 -> https://www.betpawa.cm/event/37674126?filter=all
-COTES OK [Marquense - San Pedro] 15 marché(s) depuis https://www.betpawa.cm/event/37674126?filter=all
-CACHE HIT [Mixco - Aurora] -> https://www.betpawa.cm/event/37674129?filter=all
-COTES OK [Mixco - Aurora] 14 marché(s) depuis https://www.betpawa.cm/event/37674129?filter=all
-CACHE HIT [CSD Imperial - Comunicaciones] -> https://www.betpawa.cm/event/37674133?filter=all
+[tamis 1 rejeté] [Marquense - San Pedro] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Marquense - San Pedro] variante 'Marquense' -- candidats vus : ['Marquense Reserves - San Pedro FC Reserves']
+NON TROUVÉ [Mixco - Aurora]
+TROUVÉ (tamis 1) [CSD Imperial - Comunicaciones] score 0.80 -> https://www.betpawa.cm/event/37674133?filter=all
 TITRE NE CORRESPOND PAS [CSD Imperial - Comunicaciones] -- page chargée : 'CSD Coban Imperial - Comunicaciones FC' (https://www.betpawa.cm/event/37674133?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [CSD Imperial - Comunicaciones / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
 NON TROUVÉ [Guastatoya - Xelajú]
 [tamis 1 rejeté] [Municipal - Malacateco] candidat unique score 1.00 mais date '14/09' != '13/09' -- passage au tamis 2.
 AMBIGU (tamis 3, aucune date ne correspond) [Municipal - Malacateco] variante 'Municipal' -- candidats vus : ['CSD Municipal - CD Malacateco']
@@ -423,315 +284,195 @@ NON TROUVÉ [Motagua - Genesis PN]
 NON TROUVÉ [Lobos Upnfm - Choloma]
 NON TROUVÉ [Marathón - Olimpia]
 NON TROUVÉ [Independiente - Juticalpa]
-CACHE HIT [North District - BC Rangers] -> https://www.betpawa.cm/event/37674090?filter=all
-TITRE NE CORRESPOND PAS [North District - BC Rangers] -- page chargée : 'North District FC - Hong Kong Rangers' (https://www.betpawa.cm/event/37674090?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [North District - BC Rangers / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Shatin - Kowloon City] -> https://www.betpawa.cm/event/37155461?filter=all
-COTES OK [Shatin - Kowloon City] 23 marché(s) depuis https://www.betpawa.cm/event/37155461?filter=all
-CACHE HIT [Hafnarfjordur - KA] -> https://www.betpawa.cm/event/37954367?filter=all
-COTES OK [Hafnarfjordur - KA] 14 marché(s) depuis https://www.betpawa.cm/event/37954367?filter=all
+NON TROUVÉ [North District - BC Rangers]
+NON TROUVÉ [Shatin - Kowloon City]
+NON TROUVÉ [Hafnarfjordur - KA]
 NON TROUVÉ [KR - ÍA]
-CACHE HIT [Stjarnan - ÍBV] -> https://www.betpawa.cm/event/37954365?filter=all
-COTES OK [Stjarnan - ÍBV] 14 marché(s) depuis https://www.betpawa.cm/event/37954365?filter=all
-CACHE HIT [Valur - Thór] -> https://www.betpawa.cm/event/37954364?filter=all
-TITRE NE CORRESPOND PAS [Valur - Thór] -- page chargée : 'Valur Reykjavik - Thor Akureyri' (https://www.betpawa.cm/event/37954364?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Valur - Thór / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Persita - Java Utd] -> https://www.betpawa.cm/event/37257311?filter=all
-TITRE NE CORRESPOND PAS [Persita - Java Utd] -- page chargée : 'Persita Tangerang - Java United FC' (https://www.betpawa.cm/event/37257311?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Persita - Java Utd / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [PSM Makassar - Arema] -> https://www.betpawa.cm/event/37673805?filter=all
-COTES OK [PSM Makassar - Arema] 19 marché(s) depuis https://www.betpawa.cm/event/37673805?filter=all
-CACHE HIT [Persebaya - PSIM] -> https://www.betpawa.cm/event/37674019?filter=all
-COTES OK [Persebaya - PSIM] 14 marché(s) depuis https://www.betpawa.cm/event/37674019?filter=all
+NON TROUVÉ [Stjarnan - ÍBV]
+NON TROUVÉ [Valur - Thór]
+NON TROUVÉ [Persita - Java Utd]
+NON TROUVÉ [PSM Makassar - Arema]
+NON TROUVÉ [Persebaya - PSIM]
 NON TROUVÉ [Kheybar - Persepolis]
 NON TROUVÉ [Malavan - Foolad]
 NON TROUVÉ [Mes Shahr - Nassaji Maz.]
 NON TROUVÉ [Fajr - Aluminium Arak]
-CACHE HIT [H. Petah Tikva - H Be'er Sheva] -> https://www.betpawa.cm/event/37715017?filter=all
-COTES OK [H. Petah Tikva - H Be'er Sheva] 14 marché(s) depuis https://www.betpawa.cm/event/37715017?filter=all
-CACHE HIT [Arenas Getxo - Zamora] -> https://www.betpawa.cm/event/37082380?filter=all
-COTES OK [Arenas Getxo - Zamora] 15 marché(s) depuis https://www.betpawa.cm/event/37082380?filter=all
-CACHE HIT [Racing de Ferrol - Union Irun] -> https://www.betpawa.cm/event/37643471?filter=all
-TITRE NE CORRESPOND PAS [Racing de Ferrol - Union Irun] -- page chargée : 'Racing Club de Ferrol - Real Union de Irun' (https://www.betpawa.cm/event/37643471?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Racing de Ferrol - Union Irun / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Cacereño - Leonesa] -> https://www.betpawa.cm/event/37674097?filter=all
-TITRE NE CORRESPOND PAS [Cacereño - Leonesa] -- page chargée : 'CP Cacereno SAD - Cultural Leonesa' (https://www.betpawa.cm/event/37674097?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Cacereño - Leonesa / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Lugo - CD Coria] -> https://www.betpawa.cm/event/37643641?filter=all
-COTES OK [Lugo - CD Coria] 17 marché(s) depuis https://www.betpawa.cm/event/37643641?filter=all
-CACHE HIT [Torremolinos - Real Saragosse] -> https://www.betpawa.cm/event/37058074?filter=all
-TITRE NE CORRESPOND PAS [Torremolinos - Real Saragosse] -- page chargée : 'Juventud Torremolinos CF - Real Zaragoza' (https://www.betpawa.cm/event/37058074?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Torremolinos - Real Saragosse / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Tokyo Verdy - JEF Utd] -> https://www.betpawa.cm/event/37673866?filter=all
-TITRE NE CORRESPOND PAS [Tokyo Verdy - JEF Utd] -- page chargée : 'Tokyo Verdy - JEF United Chiba' (https://www.betpawa.cm/event/37673866?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Tokyo Verdy - JEF Utd / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Urawa - Fagiano] -> https://www.betpawa.cm/event/37643615?filter=all
-COTES OK [Urawa - Fagiano] 16 marché(s) depuis https://www.betpawa.cm/event/37643615?filter=all
-CACHE HIT [Gimcheon S - Gangwon] -> https://www.betpawa.cm/event/37364071?filter=all
-COTES OK [Gimcheon S - Gangwon] 15 marché(s) depuis https://www.betpawa.cm/event/37364071?filter=all
-CACHE HIT [Gwangju - Anyang] -> https://www.betpawa.cm/event/37385968?filter=all
-COTES OK [Gwangju - Anyang] 16 marché(s) depuis https://www.betpawa.cm/event/37385968?filter=all
+TROUVÉ (tamis 1) [H. Petah Tikva - H Be'er Sheva] score 0.84 -> https://www.betpawa.cm/event/37715017?filter=all
+COTES OK [H. Petah Tikva - H Be'er Sheva] 15 marché(s) depuis https://www.betpawa.cm/event/37715017?filter=all
+NON TROUVÉ [Arenas Getxo - Zamora]
+NON TROUVÉ [Racing de Ferrol - Union Irun]
+[tamis 1 rejeté] [Cacereño - Leonesa] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Cacereño - Leonesa] variante 'Cacereño' -- candidats vus : ['CP Cacereno SAD - Cultural Leonesa']
+[tamis 1 rejeté] [Lugo - CD Coria] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Lugo - CD Coria] variante 'Lugo' -- candidats vus : ['CD Lugo - CD Coria']
+NON TROUVÉ [Torremolinos - Real Saragosse]
+NON TROUVÉ [Tokyo Verdy - JEF Utd]
+NON TROUVÉ [Urawa - Fagiano]
+NON TROUVÉ [Gimcheon S - Gangwon]
+NON TROUVÉ [Gwangju - Anyang]
 NON TROUVÉ [Daugavpils - Rigas Skola]
-CACHE HIT [Panevėžys - Kauno Žalgiris] -> https://www.betpawa.cm/event/37082384?filter=all
-TITRE NE CORRESPOND PAS [Panevėžys - Kauno Žalgiris] -- page chargée : 'FK Panevezys - FK Kauno Zalgiris' (https://www.betpawa.cm/event/37082384?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Panevėžys - Kauno Žalgiris / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [FA Šiauliai - Hegelmann] -> https://www.betpawa.cm/event/37082386?filter=all
-TITRE NE CORRESPOND PAS [FA Šiauliai - Hegelmann] -- page chargée : 'FA Siauliai - FC Hegelmann Kaunas' (https://www.betpawa.cm/event/37082386?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [FA Šiauliai - Hegelmann / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Suduva - Zalgiris] -> https://www.betpawa.cm/event/37082385?filter=all
-COTES OK [Suduva - Zalgiris] 13 marché(s) depuis https://www.betpawa.cm/event/37082385?filter=all
+NON TROUVÉ [Panevėžys - Kauno Žalgiris]
+NON TROUVÉ [FA Šiauliai - Hegelmann]
+[tamis 1 rejeté] [Suduva - Zalgiris] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Suduva - Zalgiris] variante 'Suduva' -- candidats vus : ['FK Suduva Marijampole - Vilnius FK Zalgiris']
 NON TROUVÉ [Džiugas - Riteriai]
-CACHE HIT [Igdır FK - Mardin 1969] -> https://www.betpawa.cm/event/36566380?filter=all
-TITRE NE CORRESPOND PAS [Igdır FK - Mardin 1969] -- page chargée : 'Igdir FK - Mardin 1969 Spor' (https://www.betpawa.cm/event/36566380?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Igdır FK - Mardin 1969 / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Sivasspor - Muğlaspor] -> https://www.betpawa.cm/event/36566391?filter=all
-TITRE NE CORRESPOND PAS [Sivasspor - Muğlaspor] -- page chargée : 'Sivasspor - Muglaspor' (https://www.betpawa.cm/event/36566391?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Sivasspor - Muğlaspor / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Bursaspor - Esenler Erokspor] -> https://www.betpawa.cm/event/36532163?filter=all
+NON TROUVÉ [Igdır FK - Mardin 1969]
+NON TROUVÉ [Sivasspor - Muğlaspor]
+TROUVÉ (tamis 1) [Bursaspor - Esenler Erokspor] score 1.00 -> https://www.betpawa.cm/event/36532163?filter=all
 COTES OK [Bursaspor - Esenler Erokspor] 23 marché(s) depuis https://www.betpawa.cm/event/36532163?filter=all
-CACHE HIT [Fatih Karagumruk - Manisa FK] -> https://www.betpawa.cm/event/36566381?filter=all
+TROUVÉ (tamis 2, date confirmée 13/09) [Fatih Karagumruk - Manisa FK] -> https://www.betpawa.cm/event/36566381?filter=all
 TITRE NE CORRESPOND PAS [Fatih Karagumruk - Manisa FK] -- page chargée : 'Fatih Karagumruk Istanbul - Manisa Futbol Kulubu' (https://www.betpawa.cm/event/36566381?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Fatih Karagumruk - Manisa FK / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Irtysh - Okzhetpes] -> https://www.betpawa.cm/event/37673728?filter=all
-COTES OK [Irtysh - Okzhetpes] 17 marché(s) depuis https://www.betpawa.cm/event/37673728?filter=all
+NON TROUVÉ [Irtysh - Okzhetpes]
 NON TROUVÉ [Ulytau - Altay]
-CACHE HIT [K. Almaty - Tobol] -> https://www.betpawa.cm/event/37673637?filter=all
-COTES OK [K. Almaty - Tobol] 17 marché(s) depuis https://www.betpawa.cm/event/37673637?filter=all
+NON TROUVÉ [K. Almaty - Tobol]
 NON TROUVÉ [Mondorf - Strassen]
 NON TROUVÉ [Rumelange - Atert]
 NON TROUVÉ [Swift - Résidence]
-AMBIGU (tamis 3, aucune date ne correspond) [D. Toluca - Atlas] variante 'D. Toluca' -- candidats vus : ['Deportivo Toluca FC - Atlas FC']
-TROUVÉ (tamis 1) [CF Monterrey - Tigres] score 1.00 -> https://www.betpawa.cm/event/37684308?filter=all
-COTES OK [CF Monterrey - Tigres] 21 marché(s) depuis https://www.betpawa.cm/event/37684308?filter=all
-TROUVÉ (tamis 1) [Cruz Azul - Club América] score 1.00 -> https://www.betpawa.cm/event/37633105?filter=all
-TITRE NE CORRESPOND PAS [Cruz Azul - Club América] -- page chargée : 'CF Cruz Azul - CF America' (https://www.betpawa.cm/event/37633105?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-NON TROUVÉ [Santos Laguna - FC Juarez]
+NON TROUVÉ [D. Toluca - Atlas]
+NON TROUVÉ [CF Monterrey - Tigres]
+NON TROUVÉ [Cruz Azul - Club América]
+[tamis 1 rejeté] [Santos Laguna - FC Juarez] candidat unique score 1.00 mais date '14/09' != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Santos Laguna - FC Juarez] variante 'Santos Laguna' -- candidats vus : ['Club Santos Laguna - FC Juarez']
 [tamis 1 rejeté] [CD Guadalajara - Pumas] candidat unique score 1.00 mais date '14/09' != '13/09' -- passage au tamis 2.
 AMBIGU (tamis 3, aucune date ne correspond) [CD Guadalajara - Pumas] variante 'CD Guadalajara' -- candidats vus : ['CD Guadalajara - Pumas UNAM']
 NON TROUVÉ [Dacia-Buiucani - CSF Balti]
 NON TROUVÉ [Milsami - Sheriff]
-CACHE HIT [Twente - Feyenoord] -> https://www.betpawa.cm/event/37643687?filter=all
-COTES OK [Twente - Feyenoord] 15 marché(s) depuis https://www.betpawa.cm/event/37643687?filter=all
+NON TROUVÉ [Twente - Feyenoord]
 NON TROUVÉ [AZ - PSV]
-TROUVÉ (tamis 1) [De Graafschap - ADO] score 1.00 -> https://www.betpawa.cm/event/37643730?filter=all
-COTES OK [De Graafschap - ADO] 15 marché(s) depuis https://www.betpawa.cm/event/37643730?filter=all
-TROUVÉ (tamis 1) [Heerenveen - Ajax] score 1.00 -> https://www.betpawa.cm/event/37674157?filter=all
-COTES OK [Heerenveen - Ajax] 14 marché(s) depuis https://www.betpawa.cm/event/37674157?filter=all
-TROUVÉ (tamis 1) [Utrecht - Zwolle] score 1.00 -> https://www.betpawa.cm/event/37643696?filter=all
-COTES OK [Utrecht - Zwolle] 15 marché(s) depuis https://www.betpawa.cm/event/37643696?filter=all
-CACHE HIT [Egersund - Kongsvinger] -> https://www.betpawa.cm/event/37643697?filter=all
-COTES OK [Egersund - Kongsvinger] 14 marché(s) depuis https://www.betpawa.cm/event/37643697?filter=all
-CACHE HIT [Hodd IL - Lyn] -> https://www.betpawa.cm/event/37643456?filter=all
-TITRE NE CORRESPOND PAS [Hodd IL - Lyn] -- page chargée : 'Hoedd IL - Lyn 1896 FK' (https://www.betpawa.cm/event/37643456?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Hodd IL - Lyn / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Moss - Haugesund] -> https://www.betpawa.cm/event/37674217?filter=all
-COTES OK [Moss - Haugesund] 15 marché(s) depuis https://www.betpawa.cm/event/37674217?filter=all
-CACHE HIT [Ranheim - Åsane] -> https://www.betpawa.cm/event/37643650?filter=all
-COTES OK [Ranheim - Åsane] 19 marché(s) depuis https://www.betpawa.cm/event/37643650?filter=all
-CACHE HIT [Raufoss - Odd] -> https://www.betpawa.cm/event/37643549?filter=all
-COTES OK [Raufoss - Odd] 14 marché(s) depuis https://www.betpawa.cm/event/37643549?filter=all
-CACHE HIT [Sogndal IL - Strømmen] -> https://www.betpawa.cm/event/37643695?filter=all
-TITRE NE CORRESPOND PAS [Sogndal IL - Strømmen] -- page chargée : 'Sogndal Fotball - Stroemmen IF' (https://www.betpawa.cm/event/37643695?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Sogndal IL - Strømmen / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Strømsgodset - Sandnes] -> https://www.betpawa.cm/event/37643632?filter=all
-TITRE NE CORRESPOND PAS [Strømsgodset - Sandnes] -- page chargée : 'Stroemsgodset IF - Sandnes Ulf' (https://www.betpawa.cm/event/37643632?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Strømsgodset - Sandnes / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Araz - Turan Tovuz] -> https://www.betpawa.cm/event/37622060?filter=all
-COTES OK [Araz - Turan Tovuz] 18 marché(s) depuis https://www.betpawa.cm/event/37622060?filter=all
-CACHE HIT [Zira - Qarabag] -> https://www.betpawa.cm/event/37720375?filter=all
-COTES OK [Zira - Qarabag] 14 marché(s) depuis https://www.betpawa.cm/event/37720375?filter=all
-CACHE HIT [Haugesund - Rosenborg] -> https://www.betpawa.cm/event/37643495?filter=all
-COTES OK [Haugesund - Rosenborg] 14 marché(s) depuis https://www.betpawa.cm/event/37643495?filter=all
-CACHE HIT [Lyn - Brann] -> https://www.betpawa.cm/event/37643418?filter=all
-COTES OK [Lyn - Brann] 15 marché(s) depuis https://www.betpawa.cm/event/37643418?filter=all
-CACHE HIT [Molde - Hønefoss] -> https://www.betpawa.cm/event/37673905?filter=all
-TITRE NE CORRESPOND PAS [Molde - Hønefoss] -- page chargée : 'Molde FK Women - Hoenefoss BK Women' (https://www.betpawa.cm/event/37673905?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Molde - Hønefoss / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
+NON TROUVÉ [De Graafschap - ADO]
+NON TROUVÉ [Heerenveen - Ajax]
+NON TROUVÉ [Utrecht - Zwolle]
+[tamis 1 rejeté] [Egersund - Kongsvinger] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Egersund - Kongsvinger] variante 'Egersund' -- candidats vus : ['Egersunds IK - Kongsvinger IL Toppfotball']
+[tamis 1 rejeté] [Hodd IL - Lyn] candidat unique score 0.93 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Hodd IL - Lyn] variante 'Hodd IL' -- candidats vus : ['Hoedd IL - Lyn 1896 FK']
+[tamis 1 rejeté] [Moss - Haugesund] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Moss - Haugesund] variante 'Moss' -- candidats vus : ['Moss FK - FK Haugesund']
+[tamis 1 rejeté] [Ranheim - Åsane] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Ranheim - Åsane] variante 'Ranheim' -- candidats vus : ['Ranheim - Aasane Fotball', 'Ranheim 2 - Byaasen']
+[tamis 1 rejeté] [Raufoss - Odd] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Raufoss - Odd] variante 'Raufoss' -- candidats vus : ['Raufoss IL - Odds BK']
+AMBIGU (tamis 3, aucune date ne correspond) [Sogndal IL - Strømmen] variante 'Sogndal IL' -- candidats vus : ['Sogndal Fotball - Stroemmen IF']
+NON TROUVÉ [Strømsgodset - Sandnes]
+NON TROUVÉ [Araz - Turan Tovuz]
+NON TROUVÉ [Zira - Qarabag]
+NON TROUVÉ [Haugesund - Rosenborg]
+NON TROUVÉ [Lyn - Brann]
+NON TROUVÉ [Molde - Hønefoss]
 NON TROUVÉ [Stabæk - Lillestrøm]
-NON TROUVÉ [Wiliete - Luanda]
-[tamis 1 rejeté] [Dep. Recoleta - Trinidense] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
-AMBIGU (tamis 3, aucune date ne correspond) [Dep. Recoleta - Trinidense] variante 'Dep. Recoleta' -- candidats vus : ['Recoleta FC - Sportivo Trinidense']
-CACHE HIT [Club Olimpia - Luqueño] -> https://www.betpawa.cm/event/37253103?filter=all
+[tamis 1 rejeté] [Wiliete - Luanda] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Wiliete - Luanda] variante 'Wiliete' -- candidats vus : ['Wiliete SC - FC Luanda']
+TROUVÉ (tamis 1) [Club Olimpia - Luqueño] score 1.00 -> https://www.betpawa.cm/event/37253103?filter=all
 TITRE NE CORRESPOND PAS [Club Olimpia - Luqueño] -- page chargée : 'Club Olimpia - Sportivo Luqueno' (https://www.betpawa.cm/event/37253103?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Club Olimpia - Luqueño / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Rubio NU - Nacional] -> https://www.betpawa.cm/event/37705386?filter=all
+TROUVÉ (tamis 1) [Rubio NU - Nacional] score 1.00 -> https://www.betpawa.cm/event/37705386?filter=all
 COTES OK [Rubio NU - Nacional] 15 marché(s) depuis https://www.betpawa.cm/event/37705386?filter=all
-TROUVÉ (tamis 1) [Alianza Lima - Universitario] score 1.00 -> https://www.betpawa.cm/event/37441859?filter=all
-COTES OK [Alianza Lima - Universitario] 18 marché(s) depuis https://www.betpawa.cm/event/37441859?filter=all
-CACHE HIT [Moquegua - S. Cristal] -> https://www.betpawa.cm/event/37441860?filter=all
-COTES OK [Moquegua - S. Cristal] 14 marché(s) depuis https://www.betpawa.cm/event/37441860?filter=all
+NON TROUVÉ [Alianza Lima - Universitario]
+AMBIGU (tamis 3, aucune date ne correspond) [Moquegua - S. Cristal] variante 'Moquegua' -- candidats vus : ['CD Moquegua - Sporting Cristal']
 TROUVÉ (tamis 1) [Sport Boys - Deportivo G.] score 1.00 -> https://www.betpawa.cm/event/37416964?filter=all
-COTES OK [Sport Boys - Deportivo G.] 14 marché(s) depuis https://www.betpawa.cm/event/37416964?filter=all
-CACHE HIT [Atl. Grau - Alianza Atl.] -> https://www.betpawa.cm/event/37441869?filter=all
+COTES OK [Sport Boys - Deportivo G.] 15 marché(s) depuis https://www.betpawa.cm/event/37416964?filter=all
+TROUVÉ (tamis 2, date confirmée 13/09) [Atl. Grau - Alianza Atl.] -> https://www.betpawa.cm/event/37441869?filter=all
 TITRE NE CORRESPOND PAS [Atl. Grau - Alianza Atl.] -- page chargée : 'Atletico Grau - Alianza Atletico' (https://www.betpawa.cm/event/37441869?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Atl. Grau - Alianza Atl. / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Wisla Plock SA - Cracovia] -> https://www.betpawa.cm/event/37414084?filter=all
-COTES OK [Wisla Plock SA - Cracovia] 16 marché(s) depuis https://www.betpawa.cm/event/37414084?filter=all
-CACHE HIT [Pogon Szczecin - W. Krakow] -> https://www.betpawa.cm/event/37414083?filter=all
-COTES OK [Pogon Szczecin - W. Krakow] 20 marché(s) depuis https://www.betpawa.cm/event/37414083?filter=all
+NON TROUVÉ [Wisla Plock SA - Cracovia]
+NON TROUVÉ [Pogon Szczecin - W. Krakow]
 NON TROUVÉ [L. Varsovie - KS Widzew Lódz]
 NON TROUVÉ [U Skierniewice - Pogon GM]
-TROUVÉ (tamis 1) [Lechia Gdańsk - M. Legnica] score 0.82 -> https://www.betpawa.cm/event/37434976?filter=all
-TITRE NE CORRESPOND PAS [Lechia Gdańsk - M. Legnica] -- page chargée : 'KS Lechia Gdansk - Miedz Legnica' (https://www.betpawa.cm/event/37434976?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-CACHE HIT [Odra - Stal Rzeszów] -> https://www.betpawa.cm/event/37476496?filter=all
-TITRE NE CORRESPOND PAS [Odra - Stal Rzeszów] -- page chargée : 'Odra Opole - ZKS Stal Rzeszow' (https://www.betpawa.cm/event/37476496?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Odra - Stal Rzeszów / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
+NON TROUVÉ [Lechia Gdańsk - M. Legnica]
+NON TROUVÉ [Odra - Stal Rzeszów]
 NON TROUVÉ [A. Pitesti - Botoşani]
-CACHE HIT [C. Hunedoara - Univ. Craiova] -> https://www.betpawa.cm/event/37076461?filter=all
+TROUVÉ (tamis 2, date confirmée 13/09) [C. Hunedoara - Univ. Craiova] -> https://www.betpawa.cm/event/37076461?filter=all
 TITRE NE CORRESPOND PAS [C. Hunedoara - Univ. Craiova] -- page chargée : 'FC Corvinul Hunedoara 1921 - CS Universitatea Craiova' (https://www.betpawa.cm/event/37076461?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [C. Hunedoara - Univ. Craiova / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
 NON TROUVÉ [Young Lions - Albirex]
-CACHE HIT [Z. Podbrezova - KFC Komarno] -> https://www.betpawa.cm/event/37354882?filter=all
-COTES OK [Z. Podbrezova - KFC Komarno] 18 marché(s) depuis https://www.betpawa.cm/event/37354882?filter=all
-CACHE HIT [S. Bratislava - MŠK Žilina] -> https://www.betpawa.cm/event/37354884?filter=all
+NON TROUVÉ [Z. Podbrezova - KFC Komarno]
+TROUVÉ (tamis 2, date confirmée 13/09) [S. Bratislava - MŠK Žilina] -> https://www.betpawa.cm/event/37354884?filter=all
 TITRE NE CORRESPOND PAS [S. Bratislava - MŠK Žilina] -- page chargée : 'SK Slovan Bratislava - MSK Zilina' (https://www.betpawa.cm/event/37354884?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [S. Bratislava - MŠK Žilina / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
 NON TROUVÉ [NS Mura - Aluminij]
-CACHE HIT [NK Radomlje - Maribor] -> https://www.betpawa.cm/event/37633037?filter=all
-COTES OK [NK Radomlje - Maribor] 18 marché(s) depuis https://www.betpawa.cm/event/37633037?filter=all
-CACHE HIT [Milford - Richards Bay] -> https://www.betpawa.cm/event/37674248?filter=all
-COTES OK [Milford - Richards Bay] 14 marché(s) depuis https://www.betpawa.cm/event/37674248?filter=all
-TROUVÉ (tamis 2, date confirmée 13/09) [Siwelele - Gold. Arrow] -> https://www.betpawa.cm/event/37058090?filter=all
-TITRE NE CORRESPOND PAS [Siwelele - Gold. Arrow] -- page chargée : 'Siwelele FC - Lamontville Golden Arrows' (https://www.betpawa.cm/event/37058090?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-CACHE HIT [TS Galaxy - Kruger] -> https://www.betpawa.cm/event/37058091?filter=all
-COTES OK [TS Galaxy - Kruger] 14 marché(s) depuis https://www.betpawa.cm/event/37058091?filter=all
-TROUVÉ (tamis 1) [Deportivo Alavés - Granada] score 1.00 -> https://www.betpawa.cm/event/37673757?filter=all
-TITRE NE CORRESPOND PAS [Deportivo Alavés - Granada] -- page chargée : 'Deportivo Alaves Women - Granada CF Women' (https://www.betpawa.cm/event/37673757?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-CACHE HIT [Sociedad - Tenerife] -> https://www.betpawa.cm/event/37673919?filter=all
-COTES OK [Sociedad - Tenerife] 16 marché(s) depuis https://www.betpawa.cm/event/37673919?filter=all
-TROUVÉ (tamis 1) [Logroño - Valencia] score 1.00 -> https://www.betpawa.cm/event/37673882?filter=all
-TITRE NE CORRESPOND PAS [Logroño - Valencia] -- page chargée : 'Cdef Logrono Women - Valencia CF Women' (https://www.betpawa.cm/event/37673882?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
+TROUVÉ (tamis 1) [NK Radomlje - Maribor] score 1.00 -> https://www.betpawa.cm/event/37633037?filter=all
+COTES OK [NK Radomlje - Maribor] 19 marché(s) depuis https://www.betpawa.cm/event/37633037?filter=all
+NON TROUVÉ [Milford - Richards Bay]
+NON TROUVÉ [Siwelele - Gold. Arrow]
+[tamis 1 rejeté] [TS Galaxy - Kruger] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [TS Galaxy - Kruger] variante 'TS Galaxy' -- candidats vus : ['TS Galaxy FC - Kruger United']
+NON TROUVÉ [Deportivo Alavés - Granada]
+NON TROUVÉ [Sociedad - Tenerife]
+[tamis 1 rejeté] [Logroño - Valencia] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Logroño - Valencia] variante 'Logroño' -- candidats vus : ['Cdef Logrono Women - Valencia CF Women']
 TROUVÉ (tamis 1) [Eibar - Badalona] score 1.00 -> https://www.betpawa.cm/event/37643620?filter=all
-COTES OK [Eibar - Badalona] 14 marché(s) depuis https://www.betpawa.cm/event/37643620?filter=all
-CACHE HIT [Norrköping - IK Oddevold] -> https://www.betpawa.cm/event/37673993?filter=all
-TITRE NE CORRESPOND PAS [Norrköping - IK Oddevold] -- page chargée : 'IFK Norrkoping FK - IK Oddevold' (https://www.betpawa.cm/event/37673993?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Norrköping - IK Oddevold / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Ljungskile - Falkenberg] -> https://www.betpawa.cm/event/37674262?filter=all
-COTES OK [Ljungskile - Falkenberg] 14 marché(s) depuis https://www.betpawa.cm/event/37674262?filter=all
-CACHE HIT [Djurgården - Kristianstad] -> https://www.betpawa.cm/event/37028397?filter=all
-TITRE NE CORRESPOND PAS [Djurgården - Kristianstad] -- page chargée : 'Djurgardens IF DFF Women - Kristianstads DFF Women' (https://www.betpawa.cm/event/37028397?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Djurgården - Kristianstad / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-TROUVÉ (tamis 1) [Häcken - Vittsjö] score 1.00 -> https://www.betpawa.cm/event/37028395?filter=all
-TITRE NE CORRESPOND PAS [Häcken - Vittsjö] -- page chargée : 'Hacken Gothenburg Women - Vittsjo GIK Women' (https://www.betpawa.cm/event/37028395?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-CACHE HIT [Piteå - AIK] -> https://www.betpawa.cm/event/37028398?filter=all
-COTES OK [Piteå - AIK] 15 marché(s) depuis https://www.betpawa.cm/event/37028398?filter=all
-TROUVÉ (tamis 1) [Växjö - Hammarby] score 1.00 -> https://www.betpawa.cm/event/37028396?filter=all
-TITRE NE CORRESPOND PAS [Växjö - Hammarby] -- page chargée : 'Vaxjo DFF Women - Hammarby IF Women' (https://www.betpawa.cm/event/37028396?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-CACHE HIT [Prachuap - Sukhothai] -> https://www.betpawa.cm/event/37643691?filter=all
-COTES OK [Prachuap - Sukhothai] 15 marché(s) depuis https://www.betpawa.cm/event/37643691?filter=all
-CACHE HIT [Chonburi - Rayong] -> https://www.betpawa.cm/event/37028386?filter=all
-COTES OK [Chonburi - Rayong] 14 marché(s) depuis https://www.betpawa.cm/event/37028386?filter=all
-TROUVÉ (tamis 1) [Cosmos - Pennarossa] score 1.00 -> https://www.betpawa.cm/event/37643371?filter=all
-COTES OK [Cosmos - Pennarossa] 12 marché(s) depuis https://www.betpawa.cm/event/37643371?filter=all
-CACHE HIT [Juvenes/Dogana - Folgore Falciano] -> https://www.betpawa.cm/event/37673743?filter=all
-COTES OK [Juvenes/Dogana - Folgore Falciano] 12 marché(s) depuis https://www.betpawa.cm/event/37673743?filter=all
-NON TROUVÉ [SM Academy - Faetano]
-[tamis 1 rejeté] [Cerro Largo - Central Esp.] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
-AMBIGU (tamis 3, aucune date ne correspond) [Cerro Largo - Central Esp.] variante 'Cerro Largo' -- candidats vus : ['Cerro Largo FC - Central Espanol FC']
-CACHE HIT [CA Progreso - Cerro] -> https://www.betpawa.cm/event/37777134?filter=all
-COTES OK [CA Progreso - Cerro] 18 marché(s) depuis https://www.betpawa.cm/event/37777134?filter=all
-CACHE HIT [Juventud - Danubio] -> https://www.betpawa.cm/event/37777135?filter=all
-COTES OK [Juventud - Danubio] 14 marché(s) depuis https://www.betpawa.cm/event/37777135?filter=all
+COTES OK [Eibar - Badalona] 15 marché(s) depuis https://www.betpawa.cm/event/37643620?filter=all
+NON TROUVÉ [Norrköping - IK Oddevold]
+NON TROUVÉ [Ljungskile - Falkenberg]
+NON TROUVÉ [Djurgården - Kristianstad]
+NON TROUVÉ [Häcken - Vittsjö]
+NON TROUVÉ [Piteå - AIK]
+NON TROUVÉ [Växjö - Hammarby]
+NON TROUVÉ [Prachuap - Sukhothai]
+NON TROUVÉ [Chonburi - Rayong]
+NON TROUVÉ [Cerro Largo - Central Esp.]
+NON TROUVÉ [CA Progreso - Cerro]
+[tamis 1 rejeté] [Juventud - Danubio] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Juventud - Danubio] variante 'Juventud' -- candidats vus : ['CA Juventud de Las Piedras - Danubio FC']
 TROUVÉ (tamis 2, date confirmée 13/09) [Def. Sporting - D. Maldonado] -> https://www.betpawa.cm/event/37777136?filter=all
 TITRE NE CORRESPOND PAS [Def. Sporting - D. Maldonado] -- page chargée : 'Defensor Sporting - Deportivo Maldonado' (https://www.betpawa.cm/event/37777136?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-CACHE HIT [Peñarol - Albion] -> https://www.betpawa.cm/event/37747967?filter=all
+TROUVÉ (tamis 1) [Peñarol - Albion] score 1.00 -> https://www.betpawa.cm/event/37747967?filter=all
 TITRE NE CORRESPOND PAS [Peñarol - Albion] -- page chargée : 'CA Penarol Montevideo - Albion FC' (https://www.betpawa.cm/event/37747967?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Peñarol - Albion / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-NON TROUVÉ [Estudiantes M. - Dep. Tachira]
-[tamis 1 rejeté] [Dep. La Guaira - UCV] candidat unique score 0.81 mais date None != '13/09' -- passage au tamis 2.
-AMBIGU (tamis 3, aucune date ne correspond) [Dep. La Guaira - UCV] variante 'Dep. La Guaira' -- candidats vus : ['Deportivo La Guaira - UCV FC']
-[tamis 1 rejeté] [A. Puerto C. - Carabobo] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
-AMBIGU (tamis 3, aucune date ne correspond) [A. Puerto C. - Carabobo] variante 'A. Puerto C.' -- candidats vus : ['Academia Puerto Cabello - Carabobo FC']
-NON TROUVÉ [Carabobo - Dep. La Guaira]
-NON TROUVÉ [Dep. Tachira - A. Puerto C.]
-NON TROUVÉ [Metropolitan - Caracas]
-NON TROUVÉ [Monagas SC - Zamora]
-NON TROUVÉ [Portuguesa - Estudiantes M.]
-NON TROUVÉ [Trujillanos - Rayo Zuliano]
-NON TROUVÉ [UCV - Anzoátegui]
-CACHE HIT [Rayo Zuliano - Portuguesa] -> https://www.betpawa.cm/event/37992306?filter=all
+NON TROUVÉ [A. Puerto C. - Carabobo]
+TROUVÉ (tamis 1) [Rayo Zuliano - Portuguesa] score 1.00 -> https://www.betpawa.cm/event/37992306?filter=all
 COTES OK [Rayo Zuliano - Portuguesa] 15 marché(s) depuis https://www.betpawa.cm/event/37992306?filter=all
-CACHE HIT [Zamora - Trujillanos] -> https://www.betpawa.cm/event/37992307?filter=all
-COTES OK [Zamora - Trujillanos] 14 marché(s) depuis https://www.betpawa.cm/event/37992307?filter=all
-CACHE HIT [Caracas - Monagas SC] -> https://www.betpawa.cm/event/37992308?filter=all
+TROUVÉ (tamis 1) [Zamora - Trujillanos] score 1.00 -> https://www.betpawa.cm/event/37992307?filter=all
+COTES OK [Zamora - Trujillanos] 15 marché(s) depuis https://www.betpawa.cm/event/37992307?filter=all
+TROUVÉ (tamis 1) [Caracas - Monagas SC] score 1.00 -> https://www.betpawa.cm/event/37992308?filter=all
 COTES OK [Caracas - Monagas SC] 19 marché(s) depuis https://www.betpawa.cm/event/37992308?filter=all
-CACHE HIT [Hoang Anh - Hai Phong] -> https://www.betpawa.cm/event/37643724?filter=all
-TITRE NE CORRESPOND PAS [Hoang Anh - Hai Phong] -- page chargée : 'Hoang Anh Gia Lai - Haiphong FC' (https://www.betpawa.cm/event/37643724?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Hoang Anh - Hai Phong / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
+NON TROUVÉ [Hoang Anh - Hai Phong]
 NON TROUVÉ [Hồng Lĩnh - Binh Phuoc]
 NON TROUVÉ [Sileks Kratovo - Bregalnica]
-TROUVÉ (tamis 1) [Sutjeska - FK Dečić] score 1.00 -> https://www.betpawa.cm/event/37643702?filter=all
-TITRE NE CORRESPOND PAS [Sutjeska - FK Dečić] -- page chargée : 'FK Sutjeska Niksic - FK Decic Tuzi' (https://www.betpawa.cm/event/37643702?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-TROUVÉ (tamis 1) [Ordino - Casa Portugal] score 0.81 -> https://www.betpawa.cm/event/37643277?filter=all
-TITRE NE CORRESPOND PAS [Ordino - Casa Portugal] -- page chargée : 'FC Ordino - CE Casa De Portugal' (https://www.betpawa.cm/event/37643277?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-TROUVÉ (tamis 1) [Inter Escaldes - Carroi] score 0.90 -> https://www.betpawa.cm/event/37643302?filter=all
-TITRE NE CORRESPOND PAS [Inter Escaldes - Carroi] -- page chargée : 'Inter Club de Escaldes - CE Carroi' (https://www.betpawa.cm/event/37643302?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-TROUVÉ (tamis 1) [Ranger's - Esperança] score 0.93 -> https://www.betpawa.cm/event/37643235?filter=all
-TITRE NE CORRESPOND PAS [Ranger's - Esperança] -- page chargée : 'FC Rangers - CF Esperanca D Andorra' (https://www.betpawa.cm/event/37643235?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-CACHE HIT [Santa Coloma - Penya] -> https://www.betpawa.cm/event/37643263?filter=all
-COTES OK [Santa Coloma - Penya] 12 marché(s) depuis https://www.betpawa.cm/event/37643263?filter=all
+[tamis 1 rejeté] [Sutjeska - FK Dečić] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Sutjeska - FK Dečić] variante 'Sutjeska' -- candidats vus : ['FK Sutjeska Niksic - FK Decic Tuzi']
+NON TROUVÉ [Ordino - Casa Portugal]
+NON TROUVÉ [Inter Escaldes - Carroi]
+NON TROUVÉ [Ranger's - Esperança]
+TROUVÉ (tamis 1) [Santa Coloma - Penya] score 1.00 -> https://www.betpawa.cm/event/37643263?filter=all
+COTES OK [Santa Coloma - Penya] 14 marché(s) depuis https://www.betpawa.cm/event/37643263?filter=all
 NON TROUVÉ [Hankook Verdes - Port Layola]
 NON TROUVÉ [Napoles - San Pedro Pirates]
 NON TROUVÉ [Thimphu City - Ugyen]
 NON TROUVÉ [Bumamuru - Flamb. Centre]
 NON TROUVÉ [Kayanza Utd - Inter Star]
 NON TROUVÉ [Messager - Panthère]
-NON TROUVÉ [Kompong Dewa - Visakha]
-CACHE HIT [NagaWorld - Life] -> https://www.betpawa.cm/event/37674110?filter=all
-COTES OK [NagaWorld - Life] 15 marché(s) depuis https://www.betpawa.cm/event/37674110?filter=all
-CACHE HIT [Dila - Dinamo Batumi] -> https://www.betpawa.cm/event/37673989?filter=all
-COTES OK [Dila - Dinamo Batumi] 15 marché(s) depuis https://www.betpawa.cm/event/37673989?filter=all
-CACHE HIT [Iberia - Spaeri] -> https://www.betpawa.cm/event/37643501?filter=all
-COTES OK [Iberia - Spaeri] 14 marché(s) depuis https://www.betpawa.cm/event/37643501?filter=all
+NON TROUVÉ [Dila - Dinamo Batumi]
+[tamis 1 rejeté] [Iberia - Spaeri] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Iberia - Spaeri] variante 'Iberia' -- candidats vus : ['FC Iberia 1999 - FC Spaeri']
 NON TROUVÉ [Aduana - Samartex]
 NON TROUVÉ [All Blacks - Debibi]
-NON TROUVÉ [Asante Kotoko - Lions]
 NON TROUVÉ [Bibiani - Oak]
-NON TROUVÉ [Chelsea - Dreams]
 NON TROUVÉ [Karela - Bechem Utd]
 NON TROUVÉ [Medeama - Port City]
-NON TROUVÉ [Young Apostles - Holy Stars]
-NON TROUVÉ [SAB Spartans - Camerhogne]
+NON TROUVÉ [Asante Kotoko - Lions]
+AMBIGU (tamis 3, aucune date ne correspond) [SAB Spartans - Camerhogne] variante 'SAB Spartans' -- candidats vus : ['FK Spartak Moscow - FC Fakel Voronezh']
 NON TROUVÉ [St. John's - Hurricanes]
 NON TROUVÉ [Hard Rock - QPR]
 NON TROUVÉ [Honved - Paradise]
 NON TROUVÉ [SAFL - David’s]
-NON TROUVÉ [Camptown - Tigers]
 NON TROUVÉ [Le Geldar - Cosma]
-CACHE HIT [EB/Streymur - B36 Torshavn] -> https://www.betpawa.cm/event/37643389?filter=all
-COTES OK [EB/Streymur - B36 Torshavn] 19 marché(s) depuis https://www.betpawa.cm/event/37643389?filter=all
-CACHE HIT [07 Vestur - Klaksvik] -> https://www.betpawa.cm/event/37643372?filter=all
-COTES OK [07 Vestur - Klaksvik] 14 marché(s) depuis https://www.betpawa.cm/event/37643372?filter=all
-CACHE HIT [NSÍ - Víkingur] -> https://www.betpawa.cm/event/37673852?filter=all
-TITRE NE CORRESPOND PAS [NSÍ - Víkingur] -- page chargée : 'NSI Runavik - Vikingur Gota' (https://www.betpawa.cm/event/37673852?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [NSÍ - Víkingur / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
+NON TROUVÉ [EB/Streymur - B36 Torshavn]
+[tamis 1 rejeté] [07 Vestur - Klaksvik] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [07 Vestur - Klaksvik] variante '07 Vestur' -- candidats vus : ['07 Vestur Sorvagur - KI Klaksvik']
+[tamis 1 rejeté] [NSÍ - Víkingur] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [NSÍ - Víkingur] variante 'NSÍ' -- candidats vus : ['NSI Runavik - Vikingur Gota']
 TROUVÉ (tamis 1) [Skála - HB] score 1.00 -> https://www.betpawa.cm/event/37673925?filter=all
 TITRE NE CORRESPOND PAS [Skála - HB] -- page chargée : 'Skala IF - HB Torshavn' (https://www.betpawa.cm/event/37673925?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-CACHE HIT [Kahrabaa - Al Mina'a Bassora] -> https://www.betpawa.cm/event/37711440?filter=all
-TITRE NE CORRESPOND PAS [Kahrabaa - Al Mina'a Bassora] -- page chargée : 'Al Kahrabaa SC - AL Minaa' (https://www.betpawa.cm/event/37711440?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Kahrabaa - Al Mina'a Bassora / 2026-09-13] -- une résolution fraîche sera retentée au prochain run.
-NON TROUVÉ [Zakho - Mosul]
-CACHE HIT [Karkh - Duhok] -> https://www.betpawa.cm/event/37711441?filter=all
-COTES OK [Karkh - Duhok] 14 marché(s) depuis https://www.betpawa.cm/event/37711441?filter=all
-CACHE HIT [Maysan - Talaba] -> https://www.betpawa.cm/event/37681053?filter=all
-COTES OK [Maysan - Talaba] 14 marché(s) depuis https://www.betpawa.cm/event/37681053?filter=all
+AMBIGU (tamis 3, aucune date ne correspond) [Kahrabaa - Al Mina'a Bassora] variante 'Kahrabaa' -- candidats vus : ['Al Kahrabaa SC - AL Minaa']
+TROUVÉ (tamis 1) [Karkh - Duhok] score 1.00 -> https://www.betpawa.cm/event/37711441?filter=all
+COTES OK [Karkh - Duhok] 15 marché(s) depuis https://www.betpawa.cm/event/37711441?filter=all
+TROUVÉ (tamis 1) [Maysan - Talaba] score 1.00 -> https://www.betpawa.cm/event/37681053?filter=all
+COTES OK [Maysan - Talaba] 16 marché(s) depuis https://www.betpawa.cm/event/37681053?filter=all
 NON TROUVÉ [Portmore - Waterhouse]
 NON TROUVÉ [Dunbeholden - Cavalier]
 NON TROUVÉ [Montego Bay - Chapelton]
 NON TROUVÉ [Tivoli Gardens - Humble]
 NON TROUVÉ [Tru-Juice - Mount Pleasant]
-CACHE HIT [Sabah - DPMM] -> https://www.betpawa.cm/event/37643548?filter=all
-COTES OK [Sabah - DPMM] 12 marché(s) depuis https://www.betpawa.cm/event/37643548?filter=all
-TROUVÉ (tamis 1) [Selangor - Kuala Lumpur Utd] score 0.85 -> https://www.betpawa.cm/event/38063558?filter=all
-TITRE NE CORRESPOND PAS [Selangor - Kuala Lumpur Utd] -- page chargée : 'Selangor FC - Kuala Lumpur City FC' (https://www.betpawa.cm/event/38063558?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-NON TROUVÉ [Ulaangom City - KK Erchim]
-NON TROUVÉ [Khovd - Khovd Western]
-NON TROUVÉ [Vilanculo - Baía de Pemba]
-TROUVÉ (tamis 1) [Ferroviário - Ferroviário de Nampula] score 1.00 -> https://www.betpawa.cm/event/38008680?filter=all
-TITRE NE CORRESPOND PAS [Ferroviário - Ferroviário de Nampula] -- page chargée : 'Ferroviario de Lichinga - Ferroviario de Nampula' (https://www.betpawa.cm/event/38008680?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
+NON TROUVÉ [Sabah - DPMM]
+NON TROUVÉ [Selangor - Kuala Lumpur Utd]
 NON TROUVÉ [Independiente - Plaza Amador]
-TROUVÉ (tamis 1) [Tauro - Universitario] score 1.00 -> https://www.betpawa.cm/event/37250635?filter=all
-COTES OK [Tauro - Universitario] 15 marché(s) depuis https://www.betpawa.cm/event/37250635?filter=all
+NON TROUVÉ [Tauro - Universitario]
 TROUVÉ (tamis 1) [Herrera - UMECIT] score 1.00 -> https://www.betpawa.cm/event/37673663?filter=all
 COTES OK [Herrera - UMECIT] 14 marché(s) depuis https://www.betpawa.cm/event/37673663?filter=all
 [tamis 1 rejeté] [Veraguas - Alianza] candidat unique score 1.00 mais date '14/09' != '13/09' -- passage au tamis 2.
@@ -750,174 +491,171 @@ NON TROUVÉ [Superstars - Cayon]
 NON TROUVÉ [St. Peters - Lodge Patriots]
 NON TROUVÉ [Old Road Jets - St. Pauls]
 NON TROUVÉ [Renown - UC Lions]
-NON TROUVÉ [Hang Yuan - Tainan]
 NON TROUVÉ [Man. United - Chelsea]
-CACHE HIT [Birmingham - Brighton] -> https://www.betpawa.cm/event/37673832?filter=all
-COTES OK [Birmingham - Brighton] 14 marché(s) depuis https://www.betpawa.cm/event/37673832?filter=all
-CACHE HIT [Everton - Charlton] -> https://www.betpawa.cm/event/37643438?filter=all
-COTES OK [Everton - Charlton] 14 marché(s) depuis https://www.betpawa.cm/event/37643438?filter=all
-CACHE HIT [Liverpool - Tottenham] -> https://www.betpawa.cm/event/37643646?filter=all
-COTES OK [Liverpool - Tottenham] 14 marché(s) depuis https://www.betpawa.cm/event/37643646?filter=all
-CACHE HIT [Arsenal - Crystal Palace] -> https://www.betpawa.cm/event/37673907?filter=all
-COTES OK [Arsenal - Crystal Palace] 14 marché(s) depuis https://www.betpawa.cm/event/37673907?filter=all
+NON TROUVÉ [Birmingham - Brighton]
+NON TROUVÉ [Everton - 2 Charlton]
+[tamis 1 rejeté] [Liverpool - Tottenham] candidat unique score 1.00 mais date '15/09' != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Liverpool - Tottenham] variante 'Liverpool' -- candidats vus : ['Liverpool FC - Tottenham Hotspur']
+NON TROUVÉ [Arsenal - Crystal Palace]
 NON TROUVÉ [Aston Villa - Man City]
-TROUVÉ (tamis 2, date confirmée 13/09) [KoldingQ - ASA] -> https://www.betpawa.cm/event/37674124?filter=all
-TITRE NE CORRESPOND PAS [KoldingQ - ASA] -- page chargée : 'Kolding IF Women - Asa Aarhus Women' (https://www.betpawa.cm/event/37674124?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
+NON TROUVÉ [KoldingQ - ASA]
 NON TROUVÉ [Žalgiris - Žalgiris]
-TROUVÉ (tamis 1) [P. Ferreira - Sao Joao Ver] score 0.83 -> https://www.betpawa.cm/event/37401906?filter=all
-TITRE NE CORRESPOND PAS [P. Ferreira - Sao Joao Ver] -- page chargée : 'FC Pacos Ferreira - SC Sao Joao de Ver' (https://www.betpawa.cm/event/37401906?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-CACHE HIT [Paredes - Fafe] -> https://www.betpawa.cm/event/37407715?filter=all
-COTES OK [Paredes - Fafe] 12 marché(s) depuis https://www.betpawa.cm/event/37407715?filter=all
-TROUVÉ (tamis 2, date confirmée 13/09) [Belenenses - Atlético CP] -> https://www.betpawa.cm/event/37401890?filter=all
-TITRE NE CORRESPOND PAS [Belenenses - Atlético CP] -- page chargée : 'CF Os Belenenses - Atletico Clube de Portugal' (https://www.betpawa.cm/event/37401890?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-CACHE HIT [Caldas - Sernache] -> https://www.betpawa.cm/event/37401897?filter=all
-COTES OK [Caldas - Sernache] 12 marché(s) depuis https://www.betpawa.cm/event/37401897?filter=all
-CACHE HIT [Dekani - Beltinci] -> https://www.betpawa.cm/event/37673649?filter=all
-COTES OK [Dekani - Beltinci] 14 marché(s) depuis https://www.betpawa.cm/event/37673649?filter=all
-CACHE HIT [NK Rudar Velenje - Triglav] -> https://www.betpawa.cm/event/37673611?filter=all
-COTES OK [NK Rudar Velenje - Triglav] 18 marché(s) depuis https://www.betpawa.cm/event/37673611?filter=all
-NON TROUVÉ [Red Star - Metz]
+[tamis 1 rejeté] [P. Ferreira - Sao Joao Ver] candidat unique score 0.83 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [P. Ferreira - Sao Joao Ver] variante 'P. Ferreira' -- candidats vus : ['FC Pacos Ferreira - SC Sao Joao de Ver']
+TROUVÉ (tamis 1) [Paredes - Fafe] score 1.00 -> https://www.betpawa.cm/event/37407715?filter=all
+COTES OK [Paredes - Fafe] 14 marché(s) depuis https://www.betpawa.cm/event/37407715?filter=all
+NON TROUVÉ [Belenenses - Atlético CP]
+[tamis 1 rejeté] [Caldas - Sernache] candidat unique score 1.00 mais date None != '13/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Caldas - Sernache] variante 'Caldas' -- candidats vus : ['Caldas SC - GD Vitoria Sernache']
+NON TROUVÉ [Dekani - Beltinci]
+NON TROUVÉ [NK Rudar Velenje - Triglav]
+TROUVÉ (tamis 1) [Red Star - Metz] score 1.00 -> https://www.betpawa.cm/event/37715031?filter=all
+COTES OK [Red Star - Metz] 15 marché(s) depuis https://www.betpawa.cm/event/37715031?filter=all
 TROUVÉ (tamis 1) [Leeds United - Newcastle] score 1.00 -> https://www.betpawa.cm/event/37678745?filter=all
 COTES OK [Leeds United - Newcastle] 21 marché(s) depuis https://www.betpawa.cm/event/37678745?filter=all
-CACHE HIT [Villarreal - Real Betis] -> https://www.betpawa.cm/event/36320568?filter=all
+TROUVÉ (tamis 1) [Villarreal - Real Betis] score 1.00 -> https://www.betpawa.cm/event/36320568?filter=all
 COTES OK [Villarreal - Real Betis] 17 marché(s) depuis https://www.betpawa.cm/event/36320568?filter=all
 NON TROUVÉ [Côme - Parme]
 TROUVÉ (tamis 2, date confirmée 14/09) [Torino - Rome] -> https://www.betpawa.cm/event/37109178?filter=all
 TITRE NE CORRESPOND PAS [Torino - Rome] -- page chargée : 'Torino FC - AS Roma' (https://www.betpawa.cm/event/37109178?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-NON TROUVÉ [Inter - Udinese]
-CACHE HIT [Rio Ave - Estrela] -> https://www.betpawa.cm/event/37663209?filter=all
+TROUVÉ (tamis 1) [Inter - Udinese] score 1.00 -> https://www.betpawa.cm/event/37109179?filter=all
+COTES OK [Inter - Udinese] 16 marché(s) depuis https://www.betpawa.cm/event/37109179?filter=all
+TROUVÉ (tamis 1) [Rio Ave - Estrela] score 1.00 -> https://www.betpawa.cm/event/37663209?filter=all
 COTES OK [Rio Ave - Estrela] 16 marché(s) depuis https://www.betpawa.cm/event/37663209?filter=all
-CACHE HIT [Moreirense - Maritimo] -> https://www.betpawa.cm/event/37663310?filter=all
+TROUVÉ (tamis 1) [Moreirense - Maritimo] score 1.00 -> https://www.betpawa.cm/event/37663310?filter=all
 COTES OK [Moreirense - Maritimo] 16 marché(s) depuis https://www.betpawa.cm/event/37663310?filter=all
-CACHE HIT [Braga - Estoril] -> https://www.betpawa.cm/event/37663144?filter=all
+TROUVÉ (tamis 1) [Braga - Estoril] score 1.00 -> https://www.betpawa.cm/event/37663144?filter=all
 COTES OK [Braga - Estoril] 16 marché(s) depuis https://www.betpawa.cm/event/37663144?filter=all
-CACHE HIT [Gaziantep FK - Fenerbahce] -> https://www.betpawa.cm/event/36528714?filter=all
+TROUVÉ (tamis 1) [Gaziantep FK - Fenerbahce] score 1.00 -> https://www.betpawa.cm/event/36528714?filter=all
 COTES OK [Gaziantep FK - Fenerbahce] 20 marché(s) depuis https://www.betpawa.cm/event/36528714?filter=all
-CACHE HIT [Talaea Gaish - Smouha] -> https://www.betpawa.cm/event/37217162?filter=all
+TROUVÉ (tamis 1) [Talaea Gaish - Smouha] score 1.00 -> https://www.betpawa.cm/event/37217162?filter=all
 TITRE NE CORRESPOND PAS [Talaea Gaish - Smouha] -- page chargée : 'Talaea El Gaish - Smouha SC' (https://www.betpawa.cm/event/37217162?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Talaea Gaish - Smouha / 2026-09-14] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [C. Cleopatra - N. Bank Egypt] -> https://www.betpawa.cm/event/37684304?filter=all
+TROUVÉ (tamis 2, date confirmée 14/09) [C. Cleopatra - N. Bank Egypt] -> https://www.betpawa.cm/event/37684304?filter=all
 TITRE NE CORRESPOND PAS [C. Cleopatra - N. Bank Egypt] -- page chargée : 'Ceramica Cleopatra - National Bank of Egypt SC' (https://www.betpawa.cm/event/37684304?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [C. Cleopatra - N. Bank Egypt / 2026-09-14] -- une résolution fraîche sera retentée au prochain run.
 TROUVÉ (tamis 1) [Jong PSV - Jong AZ] score 1.00 -> https://www.betpawa.cm/event/37715050?filter=all
-COTES OK [Jong PSV - Jong AZ] 15 marché(s) depuis https://www.betpawa.cm/event/37715050?filter=all
-CACHE HIT [Jong Utrecht - Jong Ajax] -> https://www.betpawa.cm/event/37715020?filter=all
+COTES OK [Jong PSV - Jong AZ] 16 marché(s) depuis https://www.betpawa.cm/event/37715050?filter=all
+TROUVÉ (tamis 1) [Jong Utrecht - Jong Ajax] score 1.00 -> https://www.betpawa.cm/event/37715020?filter=all
 COTES OK [Jong Utrecht - Jong Ajax] 15 marché(s) depuis https://www.betpawa.cm/event/37715020?filter=all
 [tamis 1 rejeté] [Bahia - Remo] candidat unique score 1.00 mais date '15/09' != '14/09' -- passage au tamis 2.
 AMBIGU (tamis 3, aucune date ne correspond) [Bahia - Remo] variante 'Bahia' -- candidats vus : ['EC Bahia BA - Clube do Remo PA']
-CACHE HIT [Banfield - Barracas C] -> https://www.betpawa.cm/event/36964745?filter=all
+TROUVÉ (tamis 1) [Banfield - Barracas C] score 1.00 -> https://www.betpawa.cm/event/36964745?filter=all
 COTES OK [Banfield - Barracas C] 14 marché(s) depuis https://www.betpawa.cm/event/36964745?filter=all
-CACHE HIT [Riestra - Lanús] -> https://www.betpawa.cm/event/36934299?filter=all
+TROUVÉ (tamis 1) [Riestra - Lanús] score 1.00 -> https://www.betpawa.cm/event/36934299?filter=all
 TITRE NE CORRESPOND PAS [Riestra - Lanús] -- page chargée : 'Deportivo Riestra AFBC - CA Lanus' (https://www.betpawa.cm/event/36934299?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Riestra - Lanús / 2026-09-14] -- une résolution fraîche sera retentée au prochain run.
 AMBIGU (tamis 3, aucune date ne correspond) [Instituto - E. Rio Cuarto] variante 'Instituto' -- candidats vus : ['Instituto AC Cordoba - Estudiantes Rio Cuarto']
-CACHE HIT [Dynamo Kiev - Epitsentr D.] -> https://www.betpawa.cm/event/37486006?filter=all
+TROUVÉ (tamis 2, date confirmée 14/09) [Dynamo Kiev - Epitsentr D.] -> https://www.betpawa.cm/event/37486006?filter=all
 TITRE NE CORRESPOND PAS [Dynamo Kiev - Epitsentr D.] -- page chargée : 'FC Dynamo Kyiv - FC Epitsentr Kamianets-Podilskyi' (https://www.betpawa.cm/event/37486006?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Dynamo Kiev - Epitsentr D. / 2026-09-14] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Shakhtar - Tchernomorets] -> https://www.betpawa.cm/event/37486007?filter=all
+TROUVÉ (tamis 2, date confirmée 14/09) [Shakhtar - Tchernomorets] -> https://www.betpawa.cm/event/37486007?filter=all
 TITRE NE CORRESPOND PAS [Shakhtar - Tchernomorets] -- page chargée : 'FC Shakhtar Donetsk - FC Chernomorets Odessa' (https://www.betpawa.cm/event/37486007?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Shakhtar - Tchernomorets / 2026-09-14] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Midtjylland - Brondby] -> https://www.betpawa.cm/event/37399131?filter=all
+TROUVÉ (tamis 2, date confirmée 14/09) [Midtjylland - Brondby] -> https://www.betpawa.cm/event/37399131?filter=all
 TITRE NE CORRESPOND PAS [Midtjylland - Brondby] -- page chargée : 'FC Midtjylland - Broendby IF' (https://www.betpawa.cm/event/37399131?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Midtjylland - Brondby / 2026-09-14] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Bodo/Glimt - Sandefjord] -> https://www.betpawa.cm/event/37028382?filter=all
+TROUVÉ (tamis 1) [Bodo/Glimt - Sandefjord] score 0.95 -> https://www.betpawa.cm/event/37028382?filter=all
 TITRE NE CORRESPOND PAS [Bodo/Glimt - Sandefjord] -- page chargée : 'Bodoe/Glimt - Sandefjord Fotball' (https://www.betpawa.cm/event/37028382?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Bodo/Glimt - Sandefjord / 2026-09-14] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Djurgarden - GAIS] -> https://www.betpawa.cm/event/37108618?filter=all
-COTES OK [Djurgarden - GAIS] 19 marché(s) depuis https://www.betpawa.cm/event/37108618?filter=all
-CACHE HIT [Sirius - Degerfors IF] -> https://www.betpawa.cm/event/37036205?filter=all
+TROUVÉ (tamis 1) [Djurgarden - GAIS] score 1.00 -> https://www.betpawa.cm/event/37108618?filter=all
+COTES OK [Djurgarden - GAIS] 20 marché(s) depuis https://www.betpawa.cm/event/37108618?filter=all
+TROUVÉ (tamis 1) [Sirius - Degerfors IF] score 1.00 -> https://www.betpawa.cm/event/37036205?filter=all
 COTES OK [Sirius - Degerfors IF] 18 marché(s) depuis https://www.betpawa.cm/event/37036205?filter=all
 NON TROUVÉ [Inter Turku - VPS]
-NON TROUVÉ [Ballkani - Dukagjini]
+TROUVÉ (tamis 1) [Ballkani - Dukagjini] score 1.00 -> https://www.betpawa.cm/event/38042343?filter=all
+COTES OK [Ballkani - Dukagjini] 2 marché(s) depuis https://www.betpawa.cm/event/38042343?filter=all
 NON TROUVÉ [Llapi Podujevë - Malisheva]
-CACHE HIT [Zemun - Rad Surdulic] -> https://www.betpawa.cm/event/37663185?filter=all
+TROUVÉ (tamis 2, date confirmée 14/09) [Zemun - Rad Surdulic] -> https://www.betpawa.cm/event/37663185?filter=all
 TITRE NE CORRESPOND PAS [Zemun - Rad Surdulic] -- page chargée : 'FK Zemun - FK Radnik Surdulica' (https://www.betpawa.cm/event/37663185?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Zemun - Rad Surdulic / 2026-09-14] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Ludogorets - Septemvri] -> https://www.betpawa.cm/event/37632673?filter=all
+TROUVÉ (tamis 1) [Ludogorets - Septemvri] score 1.00 -> https://www.betpawa.cm/event/37632673?filter=all
 COTES OK [Ludogorets - Septemvri] 14 marché(s) depuis https://www.betpawa.cm/event/37632673?filter=all
 AMBIGU (tamis 3, aucune date ne correspond) [Dep. Calera - Limache] variante 'Dep. Calera' -- candidats vus : ['Deportes Union La Calera - Deportes Limache']
-NON TROUVÉ [America Cali - Dep. Pasto]
+[tamis 1 rejeté] [America Cali - Dep. Pasto] candidat unique score 0.82 mais date '15/09' != '14/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [America Cali - Dep. Pasto] variante 'america' -- candidats vus : ['America de Cali - AD Pasto']
 NON TROUVÉ [Gorica - Varaždin]
-CACHE HIT [Ypsonas - Aris] -> https://www.betpawa.cm/event/37592794?filter=all
-COTES OK [Ypsonas - Aris] 12 marché(s) depuis https://www.betpawa.cm/event/37592794?filter=all
+TROUVÉ (tamis 1) [Ypsonas - Aris] score 1.00 -> https://www.betpawa.cm/event/37592794?filter=all
+COTES OK [Ypsonas - Aris] 13 marché(s) depuis https://www.betpawa.cm/event/37592794?filter=all
 [tamis 1 rejeté] [Universidad - Orense] candidat unique score 1.00 mais date '15/09' != '14/09' -- passage au tamis 2.
 AMBIGU (tamis 3, aucune date ne correspond) [Universidad - Orense] variante 'Universidad' -- candidats vus : ['CD Universidad Catolica del Ecuador - Orense SC']
-CACHE HIT [Leverkusen - Bayern Munich] -> https://www.betpawa.cm/event/37715004?filter=all
+TROUVÉ (tamis 1) [Leverkusen - Bayern Munich] score 1.00 -> https://www.betpawa.cm/event/37715004?filter=all
 COTES OK [Leverkusen - Bayern Munich] 15 marché(s) depuis https://www.betpawa.cm/event/37715004?filter=all
-NON TROUVÉ [Antigua - Suchitepéquez]
-CACHE HIT [Vikingur R. - Keflavík] -> https://www.betpawa.cm/event/37954366?filter=all
+[tamis 1 rejeté] [Antigua - Suchitepéquez] candidat unique score 1.00 mais date '15/09' != '14/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Antigua - Suchitepéquez] variante 'Antigua' -- candidats vus : ['Antigua GFC - CD Suchitepequez']
+TROUVÉ (tamis 1) [Vikingur R. - Keflavík] score 1.00 -> https://www.betpawa.cm/event/37954366?filter=all
 TITRE NE CORRESPOND PAS [Vikingur R. - Keflavík] -- page chargée : 'Vikingur Reykjavik - Keflavik IF' (https://www.betpawa.cm/event/37954366?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Vikingur R. - Keflavík / 2026-09-14] -- une résolution fraîche sera retentée au prochain run.
-NON TROUVÉ [H Ramat Gan - M. Netanya]
-CACHE HIT [Hapoel Haifa - Bnei Sakhnin] -> https://www.betpawa.cm/event/37684330?filter=all
+TROUVÉ (tamis 2, date confirmée 14/09) [H Ramat Gan - M. Netanya] -> https://www.betpawa.cm/event/37715029?filter=all
+TITRE NE CORRESPOND PAS [H Ramat Gan - M. Netanya] -- page chargée : 'Hapoel Ramat Gan Givatayim FC - Maccabi Netanya FC' (https://www.betpawa.cm/event/37715029?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
+TROUVÉ (tamis 1) [Hapoel Haifa - Bnei Sakhnin] score 1.00 -> https://www.betpawa.cm/event/37684330?filter=all
 COTES OK [Hapoel Haifa - Bnei Sakhnin] 14 marché(s) depuis https://www.betpawa.cm/event/37684330?filter=all
-CACHE HIT [Ironi K. Shmona - Maccabi Haifa] -> https://www.betpawa.cm/event/37684315?filter=all
+TROUVÉ (tamis 2, date confirmée 14/09) [Ironi K. Shmona - Maccabi Haifa] -> https://www.betpawa.cm/event/37684315?filter=all
 TITRE NE CORRESPOND PAS [Ironi K. Shmona - Maccabi Haifa] -- page chargée : 'Hapoel Ironi Kiryat Shmona FC - Maccabi Haifa FC' (https://www.betpawa.cm/event/37684315?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Ironi K. Shmona - Maccabi Haifa / 2026-09-14] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [M. Tel Aviv - H. Tel Aviv] -> https://www.betpawa.cm/event/37715014?filter=all
+TROUVÉ (tamis 2, date confirmée 14/09) [M. Tel Aviv - H. Tel Aviv] -> https://www.betpawa.cm/event/37715014?filter=all
 COTES OK [M. Tel Aviv - H. Tel Aviv] 14 marché(s) depuis https://www.betpawa.cm/event/37715014?filter=all
-CACHE HIT [Banga - TransINVEST] -> https://www.betpawa.cm/event/37108609?filter=all
+TROUVÉ (tamis 1) [Banga - TransINVEST] score 1.00 -> https://www.betpawa.cm/event/37108609?filter=all
 COTES OK [Banga - TransINVEST] 14 marché(s) depuis https://www.betpawa.cm/event/37108609?filter=all
-CACHE HIT [Kayserispor - Istanbulspor] -> https://www.betpawa.cm/event/36566384?filter=all
+TROUVÉ (tamis 1) [Kayserispor - Istanbulspor] score 1.00 -> https://www.betpawa.cm/event/36566384?filter=all
 COTES OK [Kayserispor - Istanbulspor] 18 marché(s) depuis https://www.betpawa.cm/event/36566384?filter=all
-AMBIGU (tamis 3, aucune date ne correspond) [Club León - Atletico San L] variante 'leon' -- candidats vus : ['Leones Negros UDEG - Club Atletico La Paz']
+[tamis 1 rejeté] [Club León - Atletico San L] candidat unique score 1.00 mais date '15/09' != '14/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Club León - Atletico San L] variante 'leon' -- candidats vus : ['Club Leon - Atletico San Luis', 'Leones Negros UDEG - Club Atletico La Paz']
 TROUVÉ (tamis 1) [Safa - Sabah] score 1.00 -> https://www.betpawa.cm/event/37720376?filter=all
-COTES OK [Safa - Sabah] 2 marché(s) depuis https://www.betpawa.cm/event/37720376?filter=all
-CACHE HIT [Radomiak - Piast Gliwice] -> https://www.betpawa.cm/event/37538261?filter=all
+COTES OK [Safa - Sabah] 17 marché(s) depuis https://www.betpawa.cm/event/37720376?filter=all
+TROUVÉ (tamis 1) [Radomiak - Piast Gliwice] score 1.00 -> https://www.betpawa.cm/event/37538261?filter=all
 COTES OK [Radomiak - Piast Gliwice] 16 marché(s) depuis https://www.betpawa.cm/event/37538261?filter=all
-CACHE HIT [Stal Mielec - Nieciecza] -> https://www.betpawa.cm/event/37666311?filter=all
+TROUVÉ (tamis 1) [Stal Mielec - Nieciecza] score 1.00 -> https://www.betpawa.cm/event/37666311?filter=all
 COTES OK [Stal Mielec - Nieciecza] 14 marché(s) depuis https://www.betpawa.cm/event/37666311?filter=all
-CACHE HIT [Dundalk - St. Patrick's] -> https://www.betpawa.cm/event/37434989?filter=all
+TROUVÉ (tamis 2, date confirmée 14/09) [Dundalk - St. Patrick's] -> https://www.betpawa.cm/event/37434989?filter=all
 TITRE NE CORRESPOND PAS [Dundalk - St. Patrick's] -- page chargée : 'Dundalk FC - Saint Patrick´s Athletic FC' (https://www.betpawa.cm/event/37434989?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Dundalk - St. Patrick's / 2026-09-14] -- une résolution fraîche sera retentée au prochain run.
-CACHE HIT [Shelbourne - Drogheda] -> https://www.betpawa.cm/event/37715037?filter=all
+TROUVÉ (tamis 1) [Shelbourne - Drogheda] score 1.00 -> https://www.betpawa.cm/event/37715037?filter=all
 COTES OK [Shelbourne - Drogheda] 14 marché(s) depuis https://www.betpawa.cm/event/37715037?filter=all
 TROUVÉ (tamis 1) [Sligo Rovers - Galway Utd] score 0.87 -> https://www.betpawa.cm/event/37459941?filter=all
 TITRE NE CORRESPOND PAS [Sligo Rovers - Galway Utd] -- page chargée : 'Sligo Rovers FC - Galway United FC' (https://www.betpawa.cm/event/37459941?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-CACHE HIT [Waterford - Derry City] -> https://www.betpawa.cm/event/37715002?filter=all
+TROUVÉ (tamis 1) [Waterford - Derry City] score 1.00 -> https://www.betpawa.cm/event/37715002?filter=all
 COTES OK [Waterford - Derry City] 14 marché(s) depuis https://www.betpawa.cm/event/37715002?filter=all
-NON TROUVÉ [U. Cluj - Otelul]
-CACHE HIT [FCSB - P. Ploiesti] -> https://www.betpawa.cm/event/37050892?filter=all
+TROUVÉ (tamis 2, date confirmée 14/09) [U. Cluj - Otelul] -> https://www.betpawa.cm/event/37020246?filter=all
+COTES OK [U. Cluj - Otelul] 14 marché(s) depuis https://www.betpawa.cm/event/37020246?filter=all
+TROUVÉ (tamis 2, date confirmée 14/09) [FCSB - P. Ploiesti] -> https://www.betpawa.cm/event/37050892?filter=all
 COTES OK [FCSB - P. Ploiesti] 14 marché(s) depuis https://www.betpawa.cm/event/37050892?filter=all
-NON TROUVÉ [Geylang - Tanjong]
-CACHE HIT [Norrby - Varbergs] -> https://www.betpawa.cm/event/37715013?filter=all
+TROUVÉ (tamis 1) [Geylang - Tanjong] score 1.00 -> https://www.betpawa.cm/event/37217181?filter=all
+COTES OK [Geylang - Tanjong] 14 marché(s) depuis https://www.betpawa.cm/event/37217181?filter=all
+TROUVÉ (tamis 1) [Norrby - Varbergs] score 1.00 -> https://www.betpawa.cm/event/37715013?filter=all
 COTES OK [Norrby - Varbergs] 14 marché(s) depuis https://www.betpawa.cm/event/37715013?filter=all
 NON TROUVÉ [Orebro SK - United Nordic]
-CACHE HIT [Östersund - Helsingborg] -> https://www.betpawa.cm/event/37715038?filter=all
+TROUVÉ (tamis 1) [Östersund - Helsingborg] score 1.00 -> https://www.betpawa.cm/event/37715038?filter=all
 COTES OK [Östersund - Helsingborg] 14 marché(s) depuis https://www.betpawa.cm/event/37715038?filter=all
-CACHE HIT [Torque - Liverpool M.] -> https://www.betpawa.cm/event/37777132?filter=all
+TROUVÉ (tamis 1) [Torque - Liverpool M.] score 1.00 -> https://www.betpawa.cm/event/37777132?filter=all
 COTES OK [Torque - Liverpool M.] 14 marché(s) depuis https://www.betpawa.cm/event/37777132?filter=all
 NON TROUVÉ [Shkëndija 77 - Skopje]
-NON TROUVÉ [Mladost DG - Buducnost]
-NON TROUVÉ [Mornar - Otrant-Olympic]
-NON TROUVÉ [Petrovac - Arsenal]
+TROUVÉ (tamis 1) [Mladost DG - Buducnost] score 1.00 -> https://www.betpawa.cm/event/37715051?filter=all
+COTES OK [Mladost DG - Buducnost] 11 marché(s) depuis https://www.betpawa.cm/event/37715051?filter=all
+TROUVÉ (tamis 1) [Mornar - Otrant-Olympic] score 1.00 -> https://www.betpawa.cm/event/37108608?filter=all
+COTES OK [Mornar - Otrant-Olympic] 11 marché(s) depuis https://www.betpawa.cm/event/37108608?filter=all
+TROUVÉ (tamis 1) [Petrovac - Arsenal] score 1.00 -> https://www.betpawa.cm/event/37715044?filter=all
+COTES OK [Petrovac - Arsenal] 11 marché(s) depuis https://www.betpawa.cm/event/37715044?filter=all
 NON TROUVÉ [Drukpa - RTC]
 NON TROUVÉ [Meshakhte - Rustavi]
 NON TROUVÉ [Kutaisi - Samgurali]
-NON TROUVÉ [Tbilissi - Gagra]
+TROUVÉ (tamis 2, date confirmée 14/09) [Tbilissi - Gagra] -> https://www.betpawa.cm/event/37684309?filter=all
+TITRE NE CORRESPOND PAS [Tbilissi - Gagra] -- page chargée : 'FC Dinamo Tbilisi - FC Gagra' (https://www.betpawa.cm/event/37684309?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
 NON TROUVÉ [Golan - Newroz]
-NON TROUVÉ [Naft - Karbala]
-NON TROUVÉ [Arbil - Karma]
+TROUVÉ (tamis 1) [Naft - Karbala] score 1.00 -> https://www.betpawa.cm/event/37681052?filter=all
+COTES OK [Naft - Karbala] 14 marché(s) depuis https://www.betpawa.cm/event/37681052?filter=all
+TROUVÉ (tamis 1) [Arbil - Karma] score 0.80 -> https://www.betpawa.cm/event/37711437?filter=all
+TITRE NE CORRESPOND PAS [Arbil - Karma] -- page chargée : 'Erbil SC - AL Karma' (https://www.betpawa.cm/event/37711437?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
 NON TROUVÉ [Molynes Utd - Treasure Beach]
 NON TROUVÉ [Racing Utd - Gardens]
 NON TROUVÉ [Matlama - Lijabatho]
 NON TROUVÉ [San Miguelito - San Francisco]
 NON TROUVÉ [Ratnam - Blue Star]
 NON TROUVÉ [Radnički 1923 - Spartak]
-CACHE HIT [Rayo Vallecano - Espanyol] -> https://www.betpawa.cm/event/36342447?filter=all
+TROUVÉ (tamis 1) [Rayo Vallecano - Espanyol] score 1.00 -> https://www.betpawa.cm/event/36342447?filter=all
 COTES OK [Rayo Vallecano - Espanyol] 20 marché(s) depuis https://www.betpawa.cm/event/36342447?filter=all
 TROUVÉ (tamis 1) [Alavés - Valence] score 0.80 -> https://www.betpawa.cm/event/36342450?filter=all
 TITRE NE CORRESPOND PAS [Alavés - Valence] -- page chargée : 'Deportivo Alaves - Valencia CF' (https://www.betpawa.cm/event/36342450?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-CACHE HIT [Elche - Real Madrid] -> https://www.betpawa.cm/event/36342451?filter=all
+TROUVÉ (tamis 1) [Elche - Real Madrid] score 1.00 -> https://www.betpawa.cm/event/36342451?filter=all
 COTES OK [Elche - Real Madrid] 23 marché(s) depuis https://www.betpawa.cm/event/36342451?filter=all
 TROUVÉ (tamis 1) [Bristol City - Lincoln] score 1.00 -> https://www.betpawa.cm/event/37558227?filter=all
-COTES OK [Bristol City - Lincoln] 21 marché(s) depuis https://www.betpawa.cm/event/37558227?filter=all
-CACHE HIT [Middlesbrough - Millwall] -> https://www.betpawa.cm/event/37536474?filter=all
+COTES OK [Bristol City - Lincoln] 20 marché(s) depuis https://www.betpawa.cm/event/37558227?filter=all
+TROUVÉ (tamis 1) [Middlesbrough - Millwall] score 1.00 -> https://www.betpawa.cm/event/37536474?filter=all
 COTES OK [Middlesbrough - Millwall] 16 marché(s) depuis https://www.betpawa.cm/event/37536474?filter=all
 NON TROUVÉ [Asyut Petrol - Future]
-CACHE HIT [Wadi Degla - Al Mokawloon] -> https://www.betpawa.cm/event/37217164?filter=all
+TROUVÉ (tamis 1) [Wadi Degla - Al Mokawloon] score 1.00 -> https://www.betpawa.cm/event/37217164?filter=all
 COTES OK [Wadi Degla - Al Mokawloon] 13 marché(s) depuis https://www.betpawa.cm/event/37217164?filter=all
-NON TROUVÉ [Al Ahly - Abu Qair Semad]
+TROUVÉ (tamis 1) [Al Ahly - Abu Qair Semad] score 0.90 -> https://www.betpawa.cm/event/37217161?filter=all
+TITRE NE CORRESPOND PAS [Al Ahly - Abu Qair Semad] -- page chargée : 'AL Ahly SC (EGY) - Abo Qair Semads' (https://www.betpawa.cm/event/37217161?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
 NON TROUVÉ [Al Masry - Sakandary]
 TROUVÉ (tamis 2, date confirmée 15/09) [Grasshoppers - Sion] -> https://www.betpawa.cm/event/37807824?filter=all
 TITRE NE CORRESPOND PAS [Grasshoppers - Sion] -- page chargée : 'Grasshopper Club Zurich - FC Sion' (https://www.betpawa.cm/event/37807824?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
@@ -928,17 +666,16 @@ NON TROUVÉ [Marsa - Métlaoui]
 NON TROUVÉ [Monastir - Progrès SE]
 NON TROUVÉ [Stade Tunisien - ESZ]
 NON TROUVÉ [Falkirk FC - Hearts]
-CACHE HIT [Hibernian - Kilmarnock FC] -> https://www.betpawa.cm/event/37693749?filter=all
+TROUVÉ (tamis 1) [Hibernian - Kilmarnock FC] score 1.00 -> https://www.betpawa.cm/event/37693749?filter=all
 COTES OK [Hibernian - Kilmarnock FC] 19 marché(s) depuis https://www.betpawa.cm/event/37693749?filter=all
-CACHE HIT [Motherwell FC - Aberdeen] -> https://www.betpawa.cm/event/37693766?filter=all
+TROUVÉ (tamis 1) [Motherwell FC - Aberdeen] score 1.00 -> https://www.betpawa.cm/event/37693766?filter=all
 COTES OK [Motherwell FC - Aberdeen] 21 marché(s) depuis https://www.betpawa.cm/event/37693766?filter=all
 NON TROUVÉ [Caserte - Team Altamura]
 TROUVÉ (tamis 1) [Giugliano - Cosenza] score 1.00 -> https://www.betpawa.cm/event/37383730?filter=all
 COTES OK [Giugliano - Cosenza] 14 marché(s) depuis https://www.betpawa.cm/event/37383730?filter=all
 TROUVÉ (tamis 2, date confirmée 15/09) [Picerno - Catane] -> https://www.betpawa.cm/event/37383729?filter=all
 TITRE NE CORRESPOND PAS [Picerno - Catane] -- page chargée : 'AZ Picerno - Catania FC' (https://www.betpawa.cm/event/37383729?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-TROUVÉ (tamis 1) [Bari - Potenza] score 1.00 -> https://www.betpawa.cm/event/37385065?filter=all
-COTES OK [Bari - Potenza] 15 marché(s) depuis https://www.betpawa.cm/event/37385065?filter=all
+NON TROUVÉ [Bari - Potenza]
 TROUVÉ (tamis 1) [Barletta - Salernitana] score 1.00 -> https://www.betpawa.cm/event/37385066?filter=all
 COTES OK [Barletta - Salernitana] 14 marché(s) depuis https://www.betpawa.cm/event/37385066?filter=all
 TROUVÉ (tamis 1) [Casarano - Audace Cerig.] score 1.00 -> https://www.betpawa.cm/event/37362669?filter=all
@@ -953,72 +690,77 @@ NON TROUVÉ [Real Oruro - Real Potosí]
 NON TROUVÉ [ABB - The Strongest]
 [tamis 1 rejeté] [Boyacá Chicó - Alianza Valledupar] candidat unique score 1.00 mais date '16/09' != '15/09' -- passage au tamis 2.
 AMBIGU (tamis 3, aucune date ne correspond) [Boyacá Chicó - Alianza Valledupar] variante 'Boyacá Chicó' -- candidats vus : ['Boyaca Chico FC - Alianza FC Valledupar']
-CACHE HIT [Aldershot - Yeovil Town] -> https://www.betpawa.cm/event/37725469?filter=all
-COTES OK [Aldershot - Yeovil Town] 20 marché(s) depuis https://www.betpawa.cm/event/37725469?filter=all
+TROUVÉ (tamis 1) [Aldershot - Yeovil Town] score 1.00 -> https://www.betpawa.cm/event/37725469?filter=all
+COTES OK [Aldershot - Yeovil Town] 21 marché(s) depuis https://www.betpawa.cm/event/37725469?filter=all
 TROUVÉ (tamis 1) [Boston Utd - Woking] score 0.87 -> https://www.betpawa.cm/event/37693810?filter=all
 TITRE NE CORRESPOND PAS [Boston Utd - Woking] -- page chargée : 'Boston United FC - Woking FC' (https://www.betpawa.cm/event/37693810?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
 TROUVÉ (tamis 1) [Carlisle - Forest Green] score 1.00 -> https://www.betpawa.cm/event/37693752?filter=all
 COTES OK [Carlisle - Forest Green] 16 marché(s) depuis https://www.betpawa.cm/event/37693752?filter=all
-CACHE HIT [Harrogate - Fylde] -> https://www.betpawa.cm/event/37725425?filter=all
+TROUVÉ (tamis 1) [Harrogate - Fylde] score 1.00 -> https://www.betpawa.cm/event/37725425?filter=all
 COTES OK [Harrogate - Fylde] 16 marché(s) depuis https://www.betpawa.cm/event/37725425?filter=all
-CACHE HIT [Solihull - Barrow] -> https://www.betpawa.cm/event/37725486?filter=all
+TROUVÉ (tamis 1) [Solihull - Barrow] score 1.00 -> https://www.betpawa.cm/event/37725486?filter=all
 COTES OK [Solihull - Barrow] 16 marché(s) depuis https://www.betpawa.cm/event/37725486?filter=all
 TROUVÉ (tamis 1) [Southend Utd - Tamworth] score 0.89 -> https://www.betpawa.cm/event/37693828?filter=all
 TITRE NE CORRESPOND PAS [Southend Utd - Tamworth] -- page chargée : 'Southend United - Tamworth FC' (https://www.betpawa.cm/event/37693828?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
 TROUVÉ (tamis 1) [Sutton Utd - Eastleigh] score 0.87 -> https://www.betpawa.cm/event/37725393?filter=all
 TITRE NE CORRESPOND PAS [Sutton Utd - Eastleigh] -- page chargée : 'Sutton United - Eastleigh FC' (https://www.betpawa.cm/event/37725393?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-CACHE HIT [Wealdstone - Halifax] -> https://www.betpawa.cm/event/37725399?filter=all
+TROUVÉ (tamis 1) [Wealdstone - Halifax] score 1.00 -> https://www.betpawa.cm/event/37725399?filter=all
 COTES OK [Wealdstone - Halifax] 16 marché(s) depuis https://www.betpawa.cm/event/37725399?filter=all
-CACHE HIT [Worthing - Hornchurch] -> https://www.betpawa.cm/event/37725438?filter=all
+TROUVÉ (tamis 1) [Worthing - Hornchurch] score 1.00 -> https://www.betpawa.cm/event/37725438?filter=all
 COTES OK [Worthing - Hornchurch] 16 marché(s) depuis https://www.betpawa.cm/event/37725438?filter=all
 TROUVÉ (tamis 2, date confirmée 15/09) [Duisbourg - TSV Havelse] -> https://www.betpawa.cm/event/36471281?filter=all
 TITRE NE CORRESPOND PAS [Duisbourg - TSV Havelse] -- page chargée : 'MSV Duisburg - TSV Havelse' (https://www.betpawa.cm/event/36471281?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-CACHE HIT [Meppen - Viktoria Col] -> https://www.betpawa.cm/event/36471287?filter=all
-COTES OK [Meppen - Viktoria Col] 16 marché(s) depuis https://www.betpawa.cm/event/36471287?filter=all
+TROUVÉ (tamis 1) [Meppen - Viktoria Col] score 1.00 -> https://www.betpawa.cm/event/36471287?filter=all
+COTES OK [Meppen - Viktoria Col] 15 marché(s) depuis https://www.betpawa.cm/event/36471287?filter=all
 NON TROUVÉ [Ratisbonne - Düsseldorf]
-CACHE HIT [S. Grossaspach - SC Verl] -> https://www.betpawa.cm/event/36471286?filter=all
-COTES OK [S. Grossaspach - SC Verl] 21 marché(s) depuis https://www.betpawa.cm/event/36471286?filter=all
+TROUVÉ (tamis 2, date confirmée 15/09) [S. Grossaspach - SC Verl] -> https://www.betpawa.cm/event/36471286?filter=all
+COTES OK [S. Grossaspach - SC Verl] 20 marché(s) depuis https://www.betpawa.cm/event/36471286?filter=all
 TROUVÉ (tamis 1) [Würzburg - A. Aachen] score 1.00 -> https://www.betpawa.cm/event/36490140?filter=all
 TITRE NE CORRESPOND PAS [Würzburg - A. Aachen] -- page chargée : 'FC Wurzburger Kickers - Alemannia Aachen' (https://www.betpawa.cm/event/36490140?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-CACHE HIT [Fram Rey - Breidablik] -> https://www.betpawa.cm/event/37985962?filter=all
+TROUVÉ (tamis 1) [Fram Rey - Breidablik] score 1.00 -> https://www.betpawa.cm/event/37985962?filter=all
 COTES OK [Fram Rey - Breidablik] 15 marché(s) depuis https://www.betpawa.cm/event/37985962?filter=all
-CACHE HIT [I Tiberias - H Jerusalem] -> https://www.betpawa.cm/event/37715052?filter=all
+TROUVÉ (tamis 1) [I Tiberias - H Jerusalem] score 0.81 -> https://www.betpawa.cm/event/37715052?filter=all
 COTES OK [I Tiberias - H Jerusalem] 14 marché(s) depuis https://www.betpawa.cm/event/37715052?filter=all
-NON TROUVÉ [Beitar - M. Petah Tikva]
-CACHE HIT [Super Nova - Riga FC] -> https://www.betpawa.cm/event/37959518?filter=all
-COTES OK [Super Nova - Riga FC] 2 marché(s) depuis https://www.betpawa.cm/event/37959518?filter=all
+TROUVÉ (tamis 1) [Beitar - M. Petah Tikva] score 0.81 -> https://www.betpawa.cm/event/37715006?filter=all
+COTES OK [Beitar - M. Petah Tikva] 14 marché(s) depuis https://www.betpawa.cm/event/37715006?filter=all
+TROUVÉ (tamis 1) [Super Nova - Riga FC] score 1.00 -> https://www.betpawa.cm/event/37959518?filter=all
+COTES OK [Super Nova - Riga FC] 18 marché(s) depuis https://www.betpawa.cm/event/37959518?filter=all
 AMBIGU (tamis 3, aucune date ne correspond) [Puebla FC - D. Toluca] variante 'Puebla FC' -- candidats vus : ['Club Puebla - Deportivo Toluca FC']
-CACHE HIT [Ballymena Utd - Carrick] -> https://www.betpawa.cm/event/37725401?filter=all
+TROUVÉ (tamis 1) [Ballymena Utd - Carrick] score 0.90 -> https://www.betpawa.cm/event/37725401?filter=all
 TITRE NE CORRESPOND PAS [Ballymena Utd - Carrick] -- page chargée : 'Ballymena United - Carrick Rangers' (https://www.betpawa.cm/event/37725401?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-  Entrée cache invalidée pour [Ballymena Utd - Carrick / 2026-09-15] -- une résolution fraîche sera retentée au prochain run.
 TROUVÉ (tamis 1) [Crusaders - Dungannon] score 1.00 -> https://www.betpawa.cm/event/37693724?filter=all
 COTES OK [Crusaders - Dungannon] 15 marché(s) depuis https://www.betpawa.cm/event/37693724?filter=all
-CACHE HIT [Glentoran - Coleraine] -> https://www.betpawa.cm/event/37725430?filter=all
+TROUVÉ (tamis 1) [Glentoran - Coleraine] score 1.00 -> https://www.betpawa.cm/event/37725430?filter=all
 COTES OK [Glentoran - Coleraine] 15 marché(s) depuis https://www.betpawa.cm/event/37725430?filter=all
-CACHE HIT [Larne - Cliftonville] -> https://www.betpawa.cm/event/37693727?filter=all
+TROUVÉ (tamis 1) [Larne - Cliftonville] score 1.00 -> https://www.betpawa.cm/event/37693727?filter=all
 COTES OK [Larne - Cliftonville] 15 marché(s) depuis https://www.betpawa.cm/event/37693727?filter=all
-NON TROUVÉ [Limavady Utd - Bangor]
+TROUVÉ (tamis 1) [Limavady Utd - Bangor] score 0.89 -> https://www.betpawa.cm/event/37693745?filter=all
+TITRE NE CORRESPOND PAS [Limavady Utd - Bangor] -- page chargée : 'Limavady United FC - Bangor FC' (https://www.betpawa.cm/event/37693745?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
 TROUVÉ (tamis 1) [Portadown - Linfield] score 1.00 -> https://www.betpawa.cm/event/37725410?filter=all
 COTES OK [Portadown - Linfield] 15 marché(s) depuis https://www.betpawa.cm/event/37725410?filter=all
-CACHE HIT [Rakow C. - Zaglebie Lubin] -> https://www.betpawa.cm/event/37577940?filter=all
+TROUVÉ (tamis 1) [Rakow C. - Zaglebie Lubin] score 1.00 -> https://www.betpawa.cm/event/37577940?filter=all
 COTES OK [Rakow C. - Zaglebie Lubin] 20 marché(s) depuis https://www.betpawa.cm/event/37577940?filter=all
-NON TROUVÉ [Korona Kielce - Górnik Zabrze]
-CACHE HIT [Stenhousemuir - P. Thistle] -> https://www.betpawa.cm/event/37633084?filter=all
-COTES OK [Stenhousemuir - P. Thistle] 17 marché(s) depuis https://www.betpawa.cm/event/37633084?filter=all
-CACHE HIT [Brage - Sandviken] -> https://www.betpawa.cm/event/37693815?filter=all
+TROUVÉ (tamis 1) [Korona Kielce - Górnik Zabrze] score 1.00 -> https://www.betpawa.cm/event/37561118?filter=all
+TITRE NE CORRESPOND PAS [Korona Kielce - Górnik Zabrze] -- page chargée : 'Korona Kielce - Gornik Zabrze' (https://www.betpawa.cm/event/37561118?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
+TROUVÉ (tamis 2, date confirmée 15/09) [Stenhousemuir - P. Thistle] -> https://www.betpawa.cm/event/37633084?filter=all
+COTES OK [Stenhousemuir - P. Thistle] 16 marché(s) depuis https://www.betpawa.cm/event/37633084?filter=all
+TROUVÉ (tamis 1) [Brage - Sandviken] score 1.00 -> https://www.betpawa.cm/event/37693815?filter=all
 COTES OK [Brage - Sandviken] 14 marché(s) depuis https://www.betpawa.cm/event/37693815?filter=all
-CACHE HIT [Landskrona - Sundsvall] -> https://www.betpawa.cm/event/37693767?filter=all
+TROUVÉ (tamis 1) [Landskrona - Sundsvall] score 1.00 -> https://www.betpawa.cm/event/37693767?filter=all
 COTES OK [Landskrona - Sundsvall] 14 marché(s) depuis https://www.betpawa.cm/event/37693767?filter=all
 TROUVÉ (tamis 1) [Värnamo - Öster] score 1.00 -> https://www.betpawa.cm/event/37693803?filter=all
 TITRE NE CORRESPOND PAS [Värnamo - Öster] -- page chargée : 'IFK Varnamo - Osters IF' (https://www.betpawa.cm/event/37693803?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-CACHE HIT [Barry Town - Ammanford] -> https://www.betpawa.cm/event/37155484?filter=all
-COTES OK [Barry Town - Ammanford] 2 marché(s) depuis https://www.betpawa.cm/event/37155484?filter=all
-CACHE HIT [Connah's - Broughton] -> https://www.betpawa.cm/event/37145866?filter=all
+NON TROUVÉ [Carabobo - Dep. La Guaira]
+NON TROUVÉ [Dep. Tachira - A. Puerto C.]
+NON TROUVÉ [UCV - Anzoátegui]
+TROUVÉ (tamis 1) [Barry Town - Ammanford] score 1.00 -> https://www.betpawa.cm/event/37155484?filter=all
+COTES OK [Barry Town - Ammanford] 16 marché(s) depuis https://www.betpawa.cm/event/37155484?filter=all
+TROUVÉ (tamis 1) [Connah's - Broughton] score 1.00 -> https://www.betpawa.cm/event/37145866?filter=all
 COTES OK [Connah's - Broughton] 2 marché(s) depuis https://www.betpawa.cm/event/37145866?filter=all
-CACHE HIT [Holywell - Colwyn Bay] -> https://www.betpawa.cm/event/37118124?filter=all
-COTES OK [Holywell - Colwyn Bay] 2 marché(s) depuis https://www.betpawa.cm/event/37118124?filter=all
-CACHE HIT [Llandudno - Caernarfon] -> https://www.betpawa.cm/event/37145867?filter=all
-COTES OK [Llandudno - Caernarfon] 2 marché(s) depuis https://www.betpawa.cm/event/37145867?filter=all
+TROUVÉ (tamis 1) [Holywell - Colwyn Bay] score 1.00 -> https://www.betpawa.cm/event/37118124?filter=all
+COTES OK [Holywell - Colwyn Bay] 17 marché(s) depuis https://www.betpawa.cm/event/37118124?filter=all
+TROUVÉ (tamis 1) [Llandudno - Caernarfon] score 1.00 -> https://www.betpawa.cm/event/37145867?filter=all
+COTES OK [Llandudno - Caernarfon] 13 marché(s) depuis https://www.betpawa.cm/event/37145867?filter=all
 NON TROUVÉ [Penybont - Briton Ferry]
 TROUVÉ (tamis 1) [The New Saints - Flint Town Utd] score 0.90 -> https://www.betpawa.cm/event/37118123?filter=all
 TITRE NE CORRESPOND PAS [The New Saints - Flint Town Utd] -- page chargée : 'The New Saints FC - Flint Town United' (https://www.betpawa.cm/event/37118123?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
@@ -1063,7 +805,8 @@ COTES OK [Sunderland - AZ Alkmaar] 20 marché(s) depuis https://www.betpawa.cm/e
 TROUVÉ (tamis 1) [A Coruña - Séville] score 0.86 -> https://www.betpawa.cm/event/36320576?filter=all
 TITRE NE CORRESPOND PAS [A Coruña - Séville] -- page chargée : 'RC Deportivo de A Coruna - Sevilla FC' (https://www.betpawa.cm/event/36320576?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
 NON TROUVÉ [Atl. Madrid - Osasuna]
-NON TROUVÉ [Barcelone - Santander]
+TROUVÉ (tamis 1) [Barcelone - Santander] score 0.89 -> https://www.betpawa.cm/event/36342455?filter=all
+TITRE NE CORRESPOND PAS [Barcelone - Santander] -- page chargée : 'FC Barcelona - Racing Santander' (https://www.betpawa.cm/event/36342455?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
 TROUVÉ (tamis 1) [Levante - Ath. Bilbao] score 0.80 -> https://www.betpawa.cm/event/36342456?filter=all
 TITRE NE CORRESPOND PAS [Levante - Ath. Bilbao] -- page chargée : 'Levante UD - Athletic Bilbao' (https://www.betpawa.cm/event/36342456?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
 TROUVÉ (tamis 1) [Gouna - Petrojet] score 1.00 -> https://www.betpawa.cm/event/37735069?filter=all
@@ -1075,7 +818,8 @@ TROUVÉ (tamis 1) [Ghazl - El Zamalek] score 1.00 -> https://www.betpawa.cm/even
 COTES OK [Ghazl - El Zamalek] 14 marché(s) depuis https://www.betpawa.cm/event/37705401?filter=all
 TROUVÉ (tamis 2, date confirmée 16/09) [Lugano - Saint-Gall] -> https://www.betpawa.cm/event/37807820?filter=all
 TITRE NE CORRESPOND PAS [Lugano - Saint-Gall] -- page chargée : 'FC Lugano - FC St. Gallen 1879' (https://www.betpawa.cm/event/37807820?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-NON TROUVÉ [Thoune - Servette]
+TROUVÉ (tamis 1) [Thoune - Servette] score 0.80 -> https://www.betpawa.cm/event/37807821?filter=all
+TITRE NE CORRESPOND PAS [Thoune - Servette] -- page chargée : 'FC Thun - Servette Geneva' (https://www.betpawa.cm/event/37807821?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
 NON TROUVÉ [CR Belouizdad - USM Khenchela]
 NON TROUVÉ [CS Constantine - US Biskra]
 NON TROUVÉ [ES Ben Aknoun - JS El Biar]
@@ -1088,17 +832,23 @@ NON TROUVÉ [ESZ - Monastir]
 NON TROUVÉ [USBG - CS Sfaxien]
 TROUVÉ (tamis 2, date confirmée 16/09) [Rodina Moskva - Rubin] -> https://www.betpawa.cm/event/37128382?filter=all
 TITRE NE CORRESPOND PAS [Rodina Moskva - Rubin] -- page chargée : 'Rodina Moscow - FK Rubin Kazan' (https://www.betpawa.cm/event/37128382?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-NON TROUVÉ [Spartak Moscou - Fakel]
+TROUVÉ (tamis 1) [Spartak Moscou - Fakel] score 0.84 -> https://www.betpawa.cm/event/37128381?filter=all
+TITRE NE CORRESPOND PAS [Spartak Moscou - Fakel] -- page chargée : 'FK Spartak Moscow - FC Fakel Voronezh' (https://www.betpawa.cm/event/37128381?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
 NON TROUVÉ [Baltika - Zénith]
 TROUVÉ (tamis 2, date confirmée 16/09) [L. Moscou - Krylya Sovetov] -> https://www.betpawa.cm/event/37128380?filter=all
 TITRE NE CORRESPOND PAS [L. Moscou - Krylya Sovetov] -- page chargée : 'Lokomotiv Moscow - PFK Krylia Sovetov Samara' (https://www.betpawa.cm/event/37128380?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
 TROUVÉ (tamis 1) [Botafogo RJ - Grêmio] score 0.88 -> https://www.betpawa.cm/event/37746185?filter=all
 TITRE NE CORRESPOND PAS [Botafogo RJ - Grêmio] -- page chargée : 'Botafogo FR RJ - Gremio FB Porto Alegrense RS' (https://www.betpawa.cm/event/37746185?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-NON TROUVÉ [AIK Solna - Mjällby]
-NON TROUVÉ [Grosseto - Campobasso]
+NON TROUVÉ [Rivers Utd - Warri Wolves]
+TROUVÉ (tamis 1) [AIK Solna - Mjällby] score 1.00 -> https://www.betpawa.cm/event/37155487?filter=all
+TITRE NE CORRESPOND PAS [AIK Solna - Mjällby] -- page chargée : 'AIK - Mjallby AIF' (https://www.betpawa.cm/event/37155487?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
+TROUVÉ (tamis 1) [Grosseto - Campobasso] score 1.00 -> https://www.betpawa.cm/event/37705445?filter=all
+COTES OK [Grosseto - Campobasso] 14 marché(s) depuis https://www.betpawa.cm/event/37705445?filter=all
 NON TROUVÉ [Latina - Guidonia 1937]
-NON TROUVÉ [Ostia Mare - Ravenne]
-NON TROUVÉ [Pineto - Forlì]
+TROUVÉ (tamis 2, date confirmée 16/09) [Ostia Mare - Ravenne] -> https://www.betpawa.cm/event/37395210?filter=all
+TITRE NE CORRESPOND PAS [Ostia Mare - Ravenne] -- page chargée : 'AS Ostiamare - Ravenna FC 1913 (n)' (https://www.betpawa.cm/event/37395210?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
+TROUVÉ (tamis 1) [Pineto - Forlì] score 1.00 -> https://www.betpawa.cm/event/37705378?filter=all
+COTES OK [Pineto - Forlì] 2 marché(s) depuis https://www.betpawa.cm/event/37705378?filter=all
 NON TROUVÉ [Torres - Pianese]
 NON TROUVÉ [Livourne - Vado]
 NON TROUVÉ [Pérouse - Spezia]
@@ -1109,10 +859,12 @@ NON TROUVÉ [Nacional - Always Ready]
 NON TROUVÉ [Blooming - Uni de Vinto]
 TROUVÉ (tamis 2, date confirmée 16/09) [Lokomotiv Sf - CSKA Sofia] -> https://www.betpawa.cm/event/37729437?filter=all
 TITRE NE CORRESPOND PAS [Lokomotiv Sf - CSKA Sofia] -- page chargée : 'FC Lokomotiv 1929 Sofia - PFC CSKA Sofia' (https://www.betpawa.cm/event/37729437?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
-NON TROUVÉ [Sloga Doboj - Borac BL]
+TROUVÉ (tamis 2, date confirmée 16/09) [Sloga Doboj - Borac BL] -> https://www.betpawa.cm/event/37777144?filter=all
+TITRE NE CORRESPOND PAS [Sloga Doboj - Borac BL] -- page chargée : 'FK Sloga Doboj - FK Borac Banja Luka' (https://www.betpawa.cm/event/37777144?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
 NON TROUVÉ [Coquimbo - Huachipato]
 AMBIGU (tamis 3, aucune date ne correspond) [Once Caldas - Dep. Tolima] variante 'Once Caldas' -- candidats vus : ['CD Once Caldas - Deportivo Cali']
-NON TROUVÉ [Bogota - Atl. Nacional]
+[tamis 1 rejeté] [Bogota - Atl. Nacional] candidat unique score 0.83 mais date '17/09' != '16/09' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Bogota - Atl. Nacional] variante 'Bogota' -- candidats vus : ['Internacional de Bogota. - Atletico Nacional']
 TROUVÉ (tamis 1) [Altrincham - Hartlepool] score 1.00 -> https://www.betpawa.cm/event/37705350?filter=all
 COTES OK [Altrincham - Hartlepool] 17 marché(s) depuis https://www.betpawa.cm/event/37705350?filter=all
 TROUVÉ (tamis 1) [Kidderminster - Gateshead] score 1.00 -> https://www.betpawa.cm/event/37705367?filter=all
@@ -1122,7 +874,8 @@ TITRE NE CORRESPOND PAS [Scunthorpe Utd - Boreham Wood] -- page chargée : 'Scun
 TROUVÉ (tamis 2, date confirmée 16/09) [Paide Flora - Vaprus] -> https://www.betpawa.cm/event/37705327?filter=all
 TITRE NE CORRESPOND PAS [Paide Flora - Vaprus] -- page chargée : 'Paide Linnameeskond - Parnu JK Vaprus' (https://www.betpawa.cm/event/37705327?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
 NON TROUVÉ [Fortuna Cologne - Wiesbaden]
-AMBIGU (tamis 3, aucune date ne correspond) [Mannheim 07 - RW Essen] variante 'Mannheim 07' -- candidats vus : ['SV Waldhof Mannheim 07 - Rot-Weiss Essen']
+TROUVÉ (tamis 2, date confirmée 16/09) [Mannheim 07 - RW Essen] -> https://www.betpawa.cm/event/36471284?filter=all
+TITRE NE CORRESPOND PAS [Mannheim 07 - RW Essen] -- page chargée : 'SV Waldhof Mannheim 07 - Rot-Weiss Essen' (https://www.betpawa.cm/event/36471284?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
 TROUVÉ (tamis 2, date confirmée 16/09) [P. Münster - Sarrebruck] -> https://www.betpawa.cm/event/36471282?filter=all
 TITRE NE CORRESPOND PAS [P. Münster - Sarrebruck] -- page chargée : 'SC Preussen 06 Munster - 1. FC Saarbrucken' (https://www.betpawa.cm/event/36471282?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
 NON TROUVÉ [Angel Firpo - Alianza]
@@ -1130,17 +883,21 @@ NON TROUVÉ [Inter - FAS]
 TROUVÉ (tamis 1) [Borneo - Dewa United] score 1.00 -> https://www.betpawa.cm/event/37318965?filter=all
 COTES OK [Borneo - Dewa United] 16 marché(s) depuis https://www.betpawa.cm/event/37318965?filter=all
 TROUVÉ (tamis 1) [FK Auda - Ogre United] score 1.00 -> https://www.betpawa.cm/event/37959500?filter=all
-COTES OK [FK Auda - Ogre United] 2 marché(s) depuis https://www.betpawa.cm/event/37959500?filter=all
+COTES OK [FK Auda - Ogre United] 16 marché(s) depuis https://www.betpawa.cm/event/37959500?filter=all
 NON TROUVÉ [Zalgiris - Kauno Žalgiris]
 NON TROUVÉ [Atert - Wiltz]
 NON TROUVÉ [Differdange - Swift]
 NON TROUVÉ [Hostert - Esch]
 NON TROUVÉ [Strassen - Rumelange]
+NON TROUVÉ [Monagas SC - Zamora]
+NON TROUVÉ [Trujillanos - Rayo Zuliano]
+NON TROUVÉ [Portuguesa - Estudiantes M.]
+NON TROUVÉ [Metropolitan - Caracas]
 NON TROUVÉ [Lincoln Red - St. Josephs FC]
 NON TROUVÉ [Tsirang - Thimphu]
 NON TROUVÉ [Gaborone - Police XI]
 NON TROUVÉ [Gunners - Galaxy]
-AMBIGU (tamis 3, aucune date ne correspond) [Inter Star - Panthère] variante 'inter' -- candidats vus : ['Inter San Carlos - Puntarenas FC']
+NON TROUVÉ [Inter Star - Panthère]
 NON TROUVÉ [Young Star - Bumamuru]
 NON TROUVÉ [Flamb. Centre - Muzinga]
 NON TROUVÉ [Ngozi City - Vision]
