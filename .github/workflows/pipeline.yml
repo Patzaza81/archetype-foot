@@ -148,6 +148,31 @@ jobs:
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         run: python calcule_roi.py
 
+      # AJOUT 13/09/2026 -- pendant du "Vérifier les scores des jours
+      # précédents" ci-dessus, mais pour archetype_model (archive.py,
+      # branché le 13/09/2026 dans precalcul.py). Résout SELECTED et
+      # COUNTERFACTUAL avec la même fonction de règlement (reglement.py) --
+      # doit tourner après l'archivage du run courant (déjà fait dans
+      # precalcul.py) pour pouvoir vérifier aussi les matchs qui viennent
+      # d'être joués cette nuit. Un échec (scraping indisponible) ne doit
+      # jamais bloquer le pipeline -- continue-on-error, même logique que
+      # les autres étapes de vérification/calcul de ce fichier.
+      - name: Vérifier les résultats réels d'archetype_model (SELECTED + COUNTERFACTUAL)
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+        run: python verifie_resultats_archetype_model.py
+        continue-on-error: true
+
+      # AJOUT 13/09/2026 -- construit le bilan comportemental à partir de
+      # l'archive résolue ci-dessus (lecture seule, aucun scraping,
+      # rejouable à volonté). Purement descriptif (cahier des charges v2
+      # §6.3) : ne pilote encore aucune décision tant que calibration.py
+      # n'existe pas. Doit tourner après l'étape de vérification
+      # ci-dessus, jamais avant.
+      - name: Construire le bilan comportemental d'archetype_model
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+        run: python calcule_matrice_archetype_model.py
+        continue-on-error: true
+
       - name: Commit et push du résultat (run planifié ou relance manuelle complète)
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         run: |
@@ -183,7 +208,7 @@ jobs:
           # committés tels quels juste au-dessus (run_pipeline.py en a besoin
           # intacts pour résoudre un match ajouté manuellement au panier,
           # même hors filtre).
-          for f in panier.json historique_pronostics.json precalcul_leger.json matchs_du_jour_filtre.json matchs_demain_filtre.json cache_classement.json cache_h2h.json roi_dashboard.json historique_v0.jsonl; do
+          for f in panier.json historique_pronostics.json precalcul_leger.json matchs_du_jour_filtre.json matchs_demain_filtre.json cache_classement.json cache_h2h.json roi_dashboard.json historique_v0.jsonl bilan_archetype_model.json; do
             [ -f "$f" ] && git add "$f"
           done
           # AJOUT 13/09/2026 -- archive/ (archetype_model/learning/archive.py)
