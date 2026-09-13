@@ -186,6 +186,14 @@ jobs:
           for f in panier.json historique_pronostics.json precalcul_leger.json matchs_du_jour_filtre.json matchs_demain_filtre.json cache_classement.json cache_h2h.json roi_dashboard.json historique_v0.jsonl; do
             [ -f "$f" ] && git add "$f"
           done
+          # AJOUT 13/09/2026 -- archive/ (archetype_model/learning/archive.py)
+          # contient les fichiers archive/YYYY-MM.json, un nom de fichier
+          # différent chaque mois -- `git add` sur le dossier entier plutôt
+          # que sur une liste de noms fixes, comme pour les autres fichiers
+          # ci-dessus. Le dossier peut ne pas encore exister au tout premier
+          # run (aucun match archivé) -- ne jamais faire échouer le commit
+          # pour ça.
+          [ -d archive ] && git add archive/
 
           echo "=================================================="
           echo "DIAGNOSTIC 18.1 -- APRÈS git add"
