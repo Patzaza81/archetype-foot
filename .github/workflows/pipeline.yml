@@ -165,12 +165,27 @@ jobs:
       # AJOUT 13/09/2026 -- construit le bilan comportemental à partir de
       # l'archive résolue ci-dessus (lecture seule, aucun scraping,
       # rejouable à volonté). Purement descriptif (cahier des charges v2
-      # §6.3) : ne pilote encore aucune décision tant que calibration.py
-      # n'existe pas. Doit tourner après l'étape de vérification
-      # ci-dessus, jamais avant.
+      # §6.3) : reste purement descriptif -- ne pilote aucune décision par
+      # lui-même. Doit tourner après l'étape de vérification ci-dessus,
+      # jamais avant.
       - name: Construire le bilan comportemental d'archetype_model
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         run: python calcule_matrice_archetype_model.py
+        continue-on-error: true
+
+      # AJOUT 13/09/2026, feu vert explicite de Patrick -- dernière étape
+      # de la boucle de calibration adaptative (cahier des charges v2 §7,
+      # Addendum 2). Enchaîne garde_fous -> validation hors échantillon ->
+      # promotion/rejet pour chacun des 7 paramètres testables par
+      # contrefactuel.py, journalise systématiquement (même sans
+      # promotion). Doit tourner après le bilan comportemental ci-dessus,
+      # qui doit lui-même tourner après la vérification des résultats.
+      # convergence.py/robustness.py lisent désormais cette configuration
+      # (voir archetype_model/config_loader.py) -- une promotion ici a un
+      # effet réel sur le prochain cycle de sélection.
+      - name: Calibration adaptative d'archetype_model
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+        run: python calibre_archetype_model.py
         continue-on-error: true
 
       - name: Commit et push du résultat (run planifié ou relance manuelle complète)
@@ -219,6 +234,11 @@ jobs:
           # run (aucun match archivé) -- ne jamais faire échouer le commit
           # pour ça.
           [ -d archive ] && git add archive/
+          # AJOUT 13/09/2026 -- config/ contient adaptive_parameters.json
+          # (les valeurs calibrées), adaptive_state.json (l'état actif) et
+          # les deux journaux (cycle + promotion, calibre_archetype_model.py)
+          # -- sans ce commit, chaque promotion serait perdue au run suivant.
+          [ -d config ] && git add config/
 
           echo "=================================================="
           echo "DIAGNOSTIC 18.1 -- APRÈS git add"
