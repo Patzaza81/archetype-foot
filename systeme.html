@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#071E18">
+<title>Archetype Foot — Système</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  #maj-systeme { padding: 0 0 16px; font-size: 14px; color: var(--text-secondary); }
+  .bloc-systeme {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px; margin-bottom: 16px;
+  }
+  .bloc-systeme h2 { margin: 0 0 12px; font-size: 16px; color: var(--text); }
+  .grille-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+  .grille-stats .stat { background: var(--surface-2); border-radius: 8px; padding: 10px 12px; }
+  .grille-stats .etiquette { display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
+  .grille-stats strong { font-size: 18px; color: var(--text); }
+  .tableau-systeme { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .tableau-systeme th, .tableau-systeme td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+  .tableau-systeme th { color: var(--text-secondary); font-weight: 600; }
+  .ligne-modifiee td:first-child { color: var(--gold); font-weight: 600; }
+  .etat-vide-systeme { color: var(--text-secondary); font-size: 14px; font-style: italic; }
+  .note-systeme { margin: 10px 0 0; font-size: 13px; color: var(--text-secondary); }
+  .ecart-positif { color: var(--green); }
+  .ecart-negatif { color: var(--red); }
+  .liste-promotions { margin: 0; padding-left: 18px; font-size: 13px; }
+  .liste-promotions li { margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-top">
+    <h1>Archetype Foot — Système</h1>
+  </div>
+</header>
+<main>
+  <a href="index.html" class="nav-bouton">← Accueil</a>
+  <p id="maj-systeme">Chargement…</p>
+  <div id="contenu-systeme"></div>
+</main>
+<script src="systeme.js"></script>
+</body>
+</html>

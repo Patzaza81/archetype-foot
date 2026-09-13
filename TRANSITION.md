@@ -2480,3 +2480,29 @@ Décision de Patrick : il n'utilise plus la saisie manuelle de cotes du panier. 
 1. Nouvelle page/section pour le bilan comportemental, les tickets fictifs et l'état de calibration -- toujours pas construite.
 2. Suppression physique de `dispatch_pipeline.py`/`run_pipeline.py`/`verification_resultats.py`/`calcule_roi.py`/`GABARIT_COTES_MANUELLES.json` une fois confirmé, après quelques jours d'observation, que rien ne les appelle plus nulle part.
 3. `garde_fous.verifier_rollback()` toujours jamais appelé par `calibre_archetype_model.py`.
+
+## 50. Session du 13/09/2026 — suppression physique de l'ancien moteur + nouvelle page système
+
+**Correction importante d'une erreur de ma part, session précédente** : j'avais dit à Patrick que `dispatch_pipeline.py`, `run_pipeline.py`, `verification_resultats.py` et `calcule_roi.py` étaient tous orphelins. Faux pour deux d'entre eux -- recherche exhaustive des imports réels (pas des simples mentions en commentaire) a confirmé :
+- `run_pipeline.py` fournit des fonctions utilitaires (`aujourdhui_france`, `construit_signaux`, `charge_json_ou_vide`) utilisées par `precalcul.py` lui-même, `archetype_model/learning/resultats.py`, `scraper.py`, `scraper_semaine.py` -- **dépendance active critique**, jamais touchée.
+- `calcule_roi.py` fournit `verifie_pari()`, réutilisé tel quel par `moteur_v0.py` -- un **troisième moteur, actif chaque nuit** via `brancher_moteur_v0.py` (jamais mentionné avant cette session).
+- Seuls `dispatch_pipeline.py` et `verification_resultats.py` étaient réellement orphelins (plus jamais importés que par les tests eux-mêmes) -- **supprimés**, avec `GABARIT_COTES_MANUELLES.json` (gabarit de saisie manuelle, plus aucun lecteur une fois `dispatch_pipeline.py` parti).
+
+**Livré (suppression)** :
+- `dispatch_pipeline.py`, `verification_resultats.py`, `GABARIT_COTES_MANUELLES.json` supprimés.
+- `audit_permanent.py` : 3 blocs de tests retirés (testaient les fichiers supprimés), 1 test mis à jour (description devenue inexacte), 1 import (`_dt`) restauré après avoir failli le perdre par erreur en retirant un bloc qui le portait -- détecté et corrigé avant de continuer.
+
+**Livré (nouvelle page système)** :
+- `construit_etat_systeme.py` (nouveau, racine) : consolide en un seul fichier (`etat_systeme.json`) le bilan comportemental, les paramètres calibrés actifs, les dernières promotions et le rapport de calibration des tickets fictifs -- lecture seule, aucun second calcul. Nécessaire car JavaScript ne peut pas lister le contenu d'un dossier sur un hébergement statique.
+- `systeme.html` + `systeme.js` (nouveaux) : affichent `etat_systeme.json`. **Testé avec un DOM simulé (jsdom, installé puis nettoyé après usage)** sur des données réalistes ET sur le cas vide (rien encore calibré) -- rendu vérifié ligne par ligne dans les deux cas, aucune exception.
+- Lien de navigation "⚙️ Système" ajouté à `index.html`.
+- `.github/workflows/pipeline.yml` : nouvelle étape après la calibration et avant le commit (pour que `etat_systeme.json` soit bien publié). `etat_systeme.json` ajouté à la liste des fichiers committés.
+- `audit_permanent.py` : 4 nouveaux tests sur `construit_etat_systeme.py`, dont un vérifiant que les promotions s'affichent bien de la plus récente à la plus ancienne.
+
+**Vérifié réellement** : **511 vérités, 0 échec**, exit code 0. Rejeu 68/48 confirmé inchangé. Contrôle anti-fantôme par diff de contenu contre une copie fraîche du vrai dépôt : exactement les fichiers listés ci-dessus modifiés/ajoutés/supprimés, rien d'autre.
+
+---
+
+## État du site à la fin de cette session
+
+Quatre pages : `index.html` (accueil, panier local), `archetype.html` (sélections du jour), `panier.html` (matchs choisis, affichage seul, refonte session précédente), `systeme.html` (nouveau -- bilan, calibration, tickets fictifs). Plus aucune trace de l'ancien moteur ni dans l'affichage ni dans le pipeline nocturne, sans avoir cassé les deux autres moteurs actifs (archetype_model, V0) qui partagent certains de ses fichiers utilitaires.

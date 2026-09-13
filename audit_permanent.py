@@ -682,60 +682,15 @@ verite(
 
 
 # ============================================================================
-section("Groupe 4 — statut explicite après le délai de vérification (bug #29, 06/09)")
+# RETIRÉ le 13/09/2026 -- "Groupe 4 — statut explicite après le délai de
+# vérification" et "Groupe 1 — identité canonique par match_id"
+# testaient verification_resultats.py et dispatch_pipeline.py,
+# physiquement supprimés (décision de Patrick : orphelins, plus jamais
+# importés que par ces tests eux-mêmes -- vérifié par recherche
+# exhaustive avant suppression, contrairement à run_pipeline.py et
+# calcule_roi.py qui restent, eux, des dépendances actives partagées).
 # ============================================================================
-import datetime as _dt
-import verification_resultats as _vr
-
-_aujourdhui = _vr.aujourdhui_france()
-_trop_vieux = (_aujourdhui - _dt.timedelta(days=_vr.NB_JOURS_MAX_A_VERIFIER + 5)).isoformat()
-_recent = (_aujourdhui - _dt.timedelta(days=2)).isoformat()
-_hist_vr = [
-    {"date": _trop_vieux, "matchs": [{"verdict_global": "GO", "score": None, "domicile": "A", "exterieur": "B"}]},
-    {"date": _recent, "matchs": [{"verdict_global": "GO", "score": None, "domicile": "C", "exterieur": "D"}]},
-]
-_charge_orig, _sauve_orig, _verifie_orig = _vr.charge_historique, _vr.sauve_historique, _vr.verifie_jour
-_vr.charge_historique = lambda: _hist_vr
-_vr.sauve_historique = lambda h: None
-_vr.verifie_jour = lambda jour: 0
-_vr.main()
-_vr.charge_historique, _vr.sauve_historique, _vr.verifie_jour = _charge_orig, _sauve_orig, _verifie_orig
-
-verite(
-    "Un jour au-delà du délai reçoit score_statut=non_resolu_definitif sur ses matchs non résolus",
-    _hist_vr[0]["matchs"][0].get("score_statut") == "non_resolu_definitif",
-)
-verite(
-    "Un jour récent (dans le délai) ne reçoit jamais ce statut, même sans score",
-    "score_statut" not in _hist_vr[1]["matchs"][0],
-)
-
-
-# ============================================================================
-section("Groupe 1 — identité canonique par match_id (bugs #7/#8, 06/09)")
-# ============================================================================
-import dispatch_pipeline as _dp
-
-_panier_g1 = [{"match_id": "match_06_09", "domicile": "Tirana", "exterieur": "Vora", "competition": "Superliga"}]
-_hist_g1 = [{"date": "2026-03-22", "matchs": [
-    {"match_id": "match_22_03", "domicile": "Tirana", "exterieur": "Vora", "score": "3-0", "resultat": "MAUVAIS"},
-]}]
-verite(
-    "cherche_deja_analyses() ne confond plus deux rencontres différentes entre les mêmes "
-    "équipes (match_id différent -- ex. aller-retour, championnat vs coupe)",
-    len(_dp.cherche_deja_analyses(_panier_g1, [], _hist_g1)) == 0,
-)
-verite(
-    "extrait_resultat_de_ce_panier() ne renvoie pas non plus le mauvais match dans ce cas",
-    _dp.extrait_resultat_de_ce_panier(_panier_g1, _hist_g1) == [],
-)
-_panier_degrade = [{"domicile": "Foo", "exterieur": "Bar", "competition": "X"}]
-_hist_degrade = [{"date": "2026-09-01", "matchs": [{"domicile": "Foo", "exterieur": "Bar", "score": "1-0"}]}]
-verite(
-    "Le repli (domicile, exterieur) fonctionne toujours pour une entrée dégradée sans match_id",
-    len(_dp.extrait_resultat_de_ce_panier(_panier_degrade, _hist_degrade)) == 1,
-)
-
+import datetime as _dt  # réutilisé plus loin dans ce fichier, indépendamment du bloc retiré ci-dessus
 
 # ============================================================================
 section("Groupe 1 — retrait de la saisie manuelle et de l'ancien moteur du cron (#23/#40/#22, 06/09)")
@@ -785,12 +740,13 @@ verite(
 )
 verite(
     "pipeline.yml ne lance plus run_pipeline.py directement, ni via "
-    "dispatch_pipeline.py -- ce dernier existe toujours et importe "
-    "toujours run_pipeline (fichier orphelin, retiré du pipeline le "
-    "13/09/2026, jamais supprimé du dépôt à ce stade)",
+    "dispatch_pipeline.py -- ce dernier a été physiquement supprimé le "
+    "13/09/2026 (orphelin confirmé par recherche exhaustive), "
+    "contrairement à run_pipeline.py qui reste une dépendance active "
+    "partagée (precalcul.py, archetype_model, moteur V0)",
     "python run_pipeline.py" not in _src_yml
     and "python dispatch_pipeline.py" not in _src_yml
-    and "import run_pipeline" in open("dispatch_pipeline.py", encoding="utf-8").read(),
+    and not _os.path.exists("dispatch_pipeline.py"),
 )
 
 
@@ -860,60 +816,10 @@ verite(
 
 
 # ============================================================================
-section("Groupe 2 — panier marqué en échec explicite, jamais bloqué en_cours (bug #11, 06/09)")
+# RETIRÉ le 13/09/2026 -- "Groupe 2 — panier marqué en échec explicite"
+# testait dispatch_pipeline.py, physiquement supprimé (voir note plus
+# haut dans ce fichier, section "retrait de la saisie manuelle").
 # ============================================================================
-import dispatch_pipeline as _dp2
-
-_appels_g2 = []
-_orig_recupere_panier = _dp2.recupere_panier
-_orig_marque_en_cours = _dp2.marque_panier_en_cours
-_orig_marque_echec = _dp2.marque_panier_echec
-_orig_cherche_deja = _dp2.cherche_deja_analyses
-_orig_ecrit_resultat = _dp2.ecrit_resultat
-
-_dp2.recupere_panier = lambda panier_id: {
-    "id": panier_id, "user_id": "user-test",
-    "matchs": [{"match_id": "m1", "domicile": "A", "exterieur": "B", "competition": "X"}],
-}
-_dp2.marque_panier_en_cours = lambda panier_id: _appels_g2.append(("en_cours", panier_id))
-_dp2.marque_panier_echec = lambda panier_id: _appels_g2.append(("echec", panier_id))
-_dp2.cherche_deja_analyses = lambda panier, precalcul, historique: {
-    "m1": {"domicile": "A", "exterieur": "B", "verdict_global": "GO", "traite": True}
-}
-
-
-def _ecrit_resultat_qui_plante_g2(*a, **k):
-    raise RuntimeError("panne simulée")
-
-
-_dp2.ecrit_resultat = _ecrit_resultat_qui_plante_g2
-
-import os as _os2
-_os2.environ["SUPABASE_URL"] = "https://exemple.test"
-_os2.environ["SUPABASE_SERVICE_ROLE_KEY"] = "cle-test"
-_os2.environ["INPUT_PANIER_ID"] = "panier-verite-g2"
-
-try:
-    _dp2.main()
-    _sortie_g2 = False
-except SystemExit as _e:
-    _sortie_g2 = (_e.code != 0)
-
-# Restauration immédiate, même précaution que pour le test #19 ci-dessus.
-_dp2.recupere_panier = _orig_recupere_panier
-_dp2.marque_panier_en_cours = _orig_marque_en_cours
-_dp2.marque_panier_echec = _orig_marque_echec
-_dp2.cherche_deja_analyses = _orig_cherche_deja
-_dp2.ecrit_resultat = _orig_ecrit_resultat
-
-verite(
-    "Une exception en cours de traitement marque le panier 'echec' (jamais bloqué "
-    "'en_cours' indéfiniment) et fait sortir le processus en erreur",
-    ("en_cours", "panier-verite-g2") in _appels_g2 and ("echec", "panier-verite-g2") in _appels_g2
-    and _appels_g2.index(("en_cours", "panier-verite-g2")) < _appels_g2.index(("echec", "panier-verite-g2"))
-    and _sortie_g2,
-)
-
 
 # ============================================================================
 section("Groupe 2 — garde bloquante si le pré-calcul échoue réellement (bug #10, 06/09)")
@@ -5943,6 +5849,79 @@ except Exception as _e_calnotif:
         "exécutables sans exception inattendue",
         False,
         str(_e_calnotif),
+    )
+
+
+# ============================================================================
+print("\n" + "=" * 70)
+# ============================================================================
+# CHANTIER "construit_etat_systeme.py + systeme.html" (13/09/2026) --
+# nouvelle page pour le bilan comportemental, la calibration et les
+# tickets fictifs, jamais construite jusqu'ici.
+# ============================================================================
+section("construit_etat_systeme.py (13/09/2026) -- consolide en un seul "
+        "fichier ce que la nouvelle page systeme.html doit afficher, "
+        "testé sur de vrais fichiers temporaires.")
+
+import construit_etat_systeme as _ces_dyn
+
+try:
+    with _tmp_cal.TemporaryDirectory() as _d_ces:
+        _cwd_avant_ces = _os_cal.getcwd()
+        _os_cal.chdir(_d_ces)
+        try:
+            _os_cal.makedirs("config")
+            _shutil_cal.copy(
+                _os_cal.path.join(_cwd_avant_ces, "config", "adaptive_parameters.json"),
+                "config/adaptive_parameters.json",
+            )
+
+            _etat_vide = _ces_dyn.construit_etat()
+            verite(
+                "construit_etat CAS rien encore calibré (rejet attendu, "
+                "cas honnête) : les 8 paramètres apparaissent à leur "
+                "valeur d'origine, aucune promotion, aucun ticket -- "
+                "jamais une donnée inventée pour combler un vide",
+                len(_etat_vide["parametres_actifs"]) == 8
+                and _etat_vide["dernieres_promotions"] == []
+                and _etat_vide["rapport_tickets_observation"]["nb_tickets_resolus"] == 0,
+            )
+
+            journal.enregistrer_promotion("config/journal_promotion.jsonl", {
+                "date_cycle": "2026-09-13", "parametre": "EDV_MIN_P_67_71",
+                "avant": 0.07, "apres": 0.0672, "decision": "PROMU",
+            })
+            journal.enregistrer_promotion("config/journal_promotion.jsonl", {
+                "date_cycle": "2026-09-14", "parametre": "COTE_MIN",
+                "avant": 1.26, "apres": 1.25, "decision": "PROMU",
+            })
+            _etat_avec_promos = _ces_dyn.construit_etat()
+            verite(
+                "construit_etat (doit réussir) : les 2 promotions "
+                "apparaissent, LA PLUS RÉCENTE EN PREMIER (2026-09-14 "
+                "avant 2026-09-13) -- lecture naturelle sans avoir à "
+                "trier soi-même",
+                len(_etat_avec_promos["dernieres_promotions"]) == 2
+                and _etat_avec_promos["dernieres_promotions"][0]["date_cycle"] == "2026-09-14",
+            )
+
+            with open("bilan_archetype_model.json", "w", encoding="utf-8") as _f_bilan_ces:
+                _json_cal.dump({"global": {"observations": 42, "roi_flat": 0.05}, "par_famille": {}}, _f_bilan_ces)
+            verite(
+                "construit_etat (doit réussir) : reprend tel quel le "
+                "contenu de bilan_archetype_model.json, jamais recalculé "
+                "ici (ce script est une pure consolidation, pas un "
+                "second calcul)",
+                _ces_dyn.construit_etat()["bilan_comportemental"]["global"]["observations"] == 42,
+            )
+        finally:
+            _os_cal.chdir(_cwd_avant_ces)
+except Exception as _e_ces:
+    verite(
+        "tests réels de construit_etat_systeme.py exécutables sans "
+        "exception inattendue",
+        False,
+        str(_e_ces),
     )
 
 
