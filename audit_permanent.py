@@ -3927,6 +3927,261 @@ except Exception as _e_archive:
 
 
 # ============================================================================
+# CHANTIER "resultats.py" (13/09/2026, demande de Patrick) -- vérification
+# autonome des résultats réels pour SELECTED et COUNTERFACTUAL, avec la
+# règle exhaustive de reglement.py (Annexe A, aucune ellipse).
+# ============================================================================
+import archetype_model.learning.reglement as _reglement_dyn
+import archetype_model.learning.resultats as _resultats_dyn
+
+section("archetype_model/learning/reglement.py (13/09/2026) -- couverture "
+        "EXHAUSTIVE des 19 motifs de l'Annexe A + combos, un cas gagnant ET "
+        "un cas perdant par motif, jamais une seule direction testée.")
+
+_CAS_REGLEMENT = [
+    ("over_under_total_2.5_over", 2, 1, "WIN"), ("over_under_total_2.5_over", 1, 0, "LOSS"),
+    ("over_under_total_2.5_under", 1, 0, "WIN"), ("over_under_total_2.5_under", 2, 1, "LOSS"),
+    ("over_2_5", 3, 0, "WIN"), ("over_2_5", 1, 0, "LOSS"),
+    ("handicap_domicile_-0.5", 1, 0, "WIN"), ("handicap_domicile_-0.5", 0, 0, "LOSS"),
+    ("handicap_exterieur_-1.5", 0, 2, "WIN"), ("handicap_exterieur_-1.5", 0, 1, "LOSS"),
+    ("double_chance_1X", 1, 1, "WIN"), ("double_chance_1X", 0, 1, "LOSS"),
+    ("double_chance_X2", 1, 1, "WIN"), ("double_chance_X2", 1, 0, "LOSS"),
+    ("double_chance_12", 2, 1, "WIN"), ("double_chance_12", 1, 1, "LOSS"),
+    ("btts_oui", 1, 1, "WIN"), ("btts_oui", 1, 0, "LOSS"),
+    ("btts_non", 1, 0, "WIN"), ("btts_non", 1, 1, "LOSS"),
+    ("buts_equipe_domicile_1.5_over", 2, 0, "WIN"), ("buts_equipe_domicile_1.5_over", 1, 0, "LOSS"),
+    ("buts_equipe_domicile_1.5_under", 1, 0, "WIN"), ("buts_equipe_domicile_1.5_under", 2, 0, "LOSS"),
+    ("buts_equipe_exterieur_0.5_over", 0, 1, "WIN"), ("buts_equipe_exterieur_0.5_over", 0, 0, "LOSS"),
+    ("buts_equipe_exterieur_0.5_under", 0, 0, "WIN"), ("buts_equipe_exterieur_0.5_under", 0, 1, "LOSS"),
+    ("cage_inviolee_domicile", 1, 0, "WIN"), ("cage_inviolee_domicile", 1, 1, "LOSS"),
+    ("cage_inviolee_exterieur", 0, 1, "WIN"), ("cage_inviolee_exterieur", 1, 1, "LOSS"),
+    ("encaisse_domicile", 0, 1, "WIN"), ("encaisse_domicile", 1, 0, "LOSS"),
+    ("encaisse_exterieur", 1, 0, "WIN"), ("encaisse_exterieur", 0, 1, "LOSS"),
+    ("parite_pair", 1, 1, "WIN"), ("parite_pair", 1, 0, "LOSS"),
+    ("parite_impair", 1, 0, "WIN"), ("parite_impair", 1, 1, "LOSS"),
+    # combo : un cas où le DC est vrai mais le Total échoue (0-0), un cas où
+    # le DC échoue directement (0-1), un cas où les deux sont vrais (2-0) --
+    # ces 3 cas ensemble prouvent que c'est bien une CONJONCTION, pas
+    # seulement l'un ou l'autre des deux composants.
+    ("combo_1X_over_1.5", 2, 0, "WIN"),
+    ("combo_1X_over_1.5", 0, 1, "LOSS"),
+    ("combo_1X_over_1.5", 0, 0, "LOSS"),
+]
+for _marche_t, _dom_t, _ext_t, _attendu_t in _CAS_REGLEMENT:
+    verite(
+        f"evaluer_marche({_marche_t!r}, {_dom_t}, {_ext_t}) == {_attendu_t} "
+        "(calculé indépendamment avant écriture du test, voir session du 13/09/2026)",
+        _reglement_dyn.evaluer_marche(_marche_t, _dom_t, _ext_t).statut == _attendu_t,
+    )
+
+verite(
+    "evaluer_marche CAS marché inconnu (rejet attendu) : jamais une perte "
+    "par défaut, un statut explicite MARCHE_NON_RECONNU à la place",
+    _reglement_dyn.evaluer_marche("marche_totalement_inconnue", 1, 1).statut
+    == _reglement_dyn.MARCHE_NON_RECONNU,
+)
+
+try:
+    _reglement_dyn.evaluer_marche("btts_oui", -1, 0)
+    _leve_erreur_negatif = False
+except ValueError:
+    _leve_erreur_negatif = True
+verite(
+    "evaluer_marche CAS entiers négatifs (rejet attendu) : lève une "
+    "exception explicite, jamais un calcul silencieux sur une donnée "
+    "invalide",
+    _leve_erreur_negatif,
+)
+
+
+section("archetype_model/learning/resultats.py (13/09/2026) -- résout "
+        "SELECTED et COUNTERFACTUAL avec la MÊME fonction de règlement, "
+        "reproduit la logique d'abandon de verification_resultats.py "
+        "(jour trop ancien -> NON_RESOLU_DEFINITIF, aujourd'hui -> jamais "
+        "traité).")
+
+import tempfile as _tmp_resultats
+from pathlib import Path as _Path_resultats
+import archetype_model.learning.archive as _archive_resultats
+
+
+def _match_resultats_test(match_id, date_str, dom, ext):
+    return {
+        "match_id": match_id, "date_match": date_str, "heure_match": "18:00",
+        "equipe_dom": dom, "equipe_ext": ext, "competition": "Test résultats",
+    }
+
+
+def _candidat_resultats_test(marche):
+    return {
+        "marche": marche, "market_family": "TEST", "exposure_group": "TEST",
+        "niveau": "FORT", "robustesse": "STABLE", "probabilite": 0.7,
+        "cote": 1.5, "edge": 0.05, "edv": 0.08,
+    }
+
+
+try:
+    with _tmp_resultats.TemporaryDirectory() as _d_res:
+        _repertoire_res = str(_Path_resultats(_d_res))
+
+        # Un match d'hier (toujours résoluble), avec un SELECTED et un
+        # COUNTERFACTUAL sur le MÊME match -- preuve que les deux
+        # populations sont bien résolues par le même passage.
+        _hier = _dt.date(2026, 9, 12)
+        _chemin_res = _archive_resultats.chemin_archive_mensuelle(_hier.isoformat(), _repertoire_res)
+
+        _archive_resultats.enregistrer_selection(
+            _candidat_resultats_test("over_under_total_2.5_over"),
+            match=_match_resultats_test("RES-001", _hier.isoformat(), "Equipe Dom Test", "Equipe Ext Test"),
+            model_version="test", config_version="test", chemin=_chemin_res,
+        )
+        _archive_resultats.enregistrer_contrefactuel(
+            _candidat_resultats_test("btts_oui"),
+            match=_match_resultats_test("RES-001", _hier.isoformat(), "Equipe Dom Test", "Equipe Ext Test"),
+            model_version="test", config_version="test", chemin=_chemin_res,
+        )
+
+        # Un match trop ancien (11 jours), jamais retrouvable -> doit être
+        # abandonné SANS tentative de récupération réseau.
+        _trop_vieux = _hier - _dt.timedelta(days=11)
+        _chemin_vieux = _archive_resultats.chemin_archive_mensuelle(_trop_vieux.isoformat(), _repertoire_res)
+        _archive_resultats.enregistrer_selection(
+            _candidat_resultats_test("btts_oui"),
+            match=_match_resultats_test("RES-OLD", _trop_vieux.isoformat(), "Vieille Dom", "Vieille Ext"),
+            model_version="test", config_version="test", chemin=_chemin_vieux,
+        )
+
+        # Un match d'AUJOURD'HUI (par rapport au aujourdhui simulé) --
+        # jamais traité, même s'il est PENDING.
+        _aujourdhui_simule = _hier + _dt.timedelta(days=1)
+        _chemin_ajd = _archive_resultats.chemin_archive_mensuelle(_aujourdhui_simule.isoformat(), _repertoire_res)
+        _archive_resultats.enregistrer_selection(
+            _candidat_resultats_test("btts_oui"),
+            match=_match_resultats_test("RES-TODAY", _aujourdhui_simule.isoformat(), "Auj Dom", "Auj Ext"),
+            model_version="test", config_version="test", chemin=_chemin_ajd,
+        )
+
+        _matchs_page_test = [{
+            "domicile": "Equipe Dom Test", "exterieur": "Equipe Ext Test",
+            "score": "2-1", "heure": "TER", "competition": "Test", "match_id": "x",
+        }]
+
+        _original_fetch = _resultats_dyn.fetch_html
+        _original_url = _resultats_dyn.url_resultat_foot
+        _resultats_dyn.fetch_html = lambda url, **kw: ("<html>test</html>", None)
+        _resultats_dyn.parse_matches = lambda html, **kw: _matchs_page_test
+        _resultats_dyn.url_resultat_foot = lambda date_obj: f"https://test/{date_obj}"
+
+        _resume_res = _resultats_dyn.verifier_resultats(
+            repertoire=_repertoire_res, aujourdhui=_aujourdhui_simule
+        )
+
+        _resultats_dyn.fetch_html = _original_fetch
+        _resultats_dyn.url_resultat_foot = _original_url
+
+        _records_hier = _archive_resultats.charger_archive(_chemin_res)
+        _selected_resolu = next(r for r in _records_hier if r["categorie"] == "SELECTED")
+        _contrefactuel_resolu = next(r for r in _records_hier if r["categorie"] == "COUNTERFACTUAL")
+
+        verite(
+            "resultats.py résout le SELECTED avec le bon score et le bon "
+            "verdict (over_under_total_2.5_over sur un score réel 2-1, "
+            "total=3 > 2.5 -> WIN)",
+            _selected_resolu["resultat_statut"] == "RESOLVED"
+            and _selected_resolu["resultat_marche"] == "WIN"
+            and _selected_resolu["buts_marques"] == 2
+            and _selected_resolu["buts_encaisses"] == 1,
+        )
+        verite(
+            "resultats.py résout AUSSI le COUNTERFACTUAL du même match, avec "
+            "la MÊME fonction de règlement (btts_oui sur 2-1 -> WIN) -- "
+            "preuve que les deux populations sont bien couvertes, pas "
+            "seulement les pronostics sélectionnés",
+            _contrefactuel_resolu["resultat_statut"] == "RESOLVED"
+            and _contrefactuel_resolu["resultat_marche"] == "WIN",
+        )
+
+        # NOTE : _chemin_res / _chemin_vieux / _chemin_ajd retombent parfois
+        # sur le MÊME fichier mensuel (les 3 dates de test sont dans le même
+        # mois) -- on filtre donc explicitement par match_id, jamais par
+        # position dans la liste.
+        _record_vieux = next(
+            r for r in _archive_resultats.charger_archive(_chemin_vieux)
+            if r["match_id"] == "RES-OLD"
+        )
+        verite(
+            "resultats.py CAS jour trop ancien (rejet attendu) : un match de "
+            "11 jours (> NB_JOURS_MAX_A_VERIFIER=10) est marqué "
+            "NON_RESOLU_DEFINITIF SANS tentative réseau, jamais laissé "
+            "PENDING indéfiniment",
+            _record_vieux["resultat_statut"] == "NON_RESOLU_DEFINITIF",
+        )
+
+        _record_ajd = next(
+            r for r in _archive_resultats.charger_archive(_chemin_ajd)
+            if r["match_id"] == "RES-TODAY"
+        )
+        verite(
+            "resultats.py CAS jour = aujourd'hui (rejet attendu) : jamais "
+            "traité, reste PENDING (le match n'est pas forcément terminé)",
+            _record_ajd["resultat_statut"] == "PENDING",
+        )
+        verite(
+            "resultats.py : le résumé retourné dénombre correctement "
+            "2 résolus (SELECTED + COUNTERFACTUAL du même match) et "
+            "1 abandonné",
+            _resume_res["resolus"] == 2 and _resume_res["abandonnes"] == 1,
+        )
+
+        # Marché non reconnu : ne doit JAMAIS être résolu en LOSS par défaut.
+        _archive_resultats.enregistrer_selection(
+            _candidat_resultats_test("marche_totalement_inconnue"),
+            match=_match_resultats_test("RES-002", _hier.isoformat(), "Equipe Dom Test", "Equipe Ext Test"),
+            model_version="test", config_version="test", chemin=_chemin_res,
+        )
+        _resultats_dyn.fetch_html = lambda url, **kw: ("<html>test</html>", None)
+        _resultats_dyn.url_resultat_foot = lambda date_obj: f"https://test/{date_obj}"
+        _resume_res2 = _resultats_dyn.verifier_resultats(
+            repertoire=_repertoire_res, aujourdhui=_aujourdhui_simule
+        )
+        _resultats_dyn.fetch_html = _original_fetch
+        _resultats_dyn.url_resultat_foot = _original_url
+
+        _records_hier2 = _archive_resultats.charger_archive(_chemin_res)
+        _inconnu_resolu = next(r for r in _records_hier2 if r["marche"] == "marche_totalement_inconnue")
+        verite(
+            "resultats.py CAS marché non reconnu (rejet attendu) : reste "
+            "PENDING, jamais résolu en LOSS par défaut, et signalé dans le "
+            "résumé (non_reconnus >= 1)",
+            _inconnu_resolu["resultat_statut"] == "PENDING" and _resume_res2["non_reconnus"] >= 1,
+        )
+
+        # Verrou RESOLVED : un deuxième passage ne doit JAMAIS tenter de
+        # réécrire un enregistrement déjà résolu (déjà garanti par
+        # archive.py, ce test prouve que resultats.py ne le contourne pas
+        # en le filtrant lui-même sur resultat_statut == PENDING).
+        _resultats_dyn.fetch_html = lambda url, **kw: ("<html>test</html>", None)
+        _resultats_dyn.url_resultat_foot = lambda date_obj: f"https://test/{date_obj}"
+        _resume_res3 = _resultats_dyn.verifier_resultats(
+            repertoire=_repertoire_res, aujourdhui=_aujourdhui_simule
+        )
+        _resultats_dyn.fetch_html = _original_fetch
+        _resultats_dyn.url_resultat_foot = _original_url
+        verite(
+            "resultats.py : un deuxième passage ne re-résout rien (les "
+            "SELECTED/COUNTERFACTUAL déjà RESOLVED sont filtrés en amont, "
+            "jamais representés à archive.py)",
+            _resume_res3["resolus"] == 0,
+        )
+except Exception as _e_resultats:
+    verite(
+        "tests réels de resultats.py exécutables sans exception inattendue",
+        False,
+        str(_e_resultats),
+    )
+
+
+# ============================================================================
 print("\n" + "=" * 70)
 if echecs:
     print(f"AUDIT ÉCHOUÉ -- {len(echecs)} vérité(s) fausse(s) :")

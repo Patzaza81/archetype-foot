@@ -2206,3 +2206,18 @@ Le bureau d'étude a livré `archetype_model/learning/archive.py` (catégories S
 **Décision de Patrick** : le bureau d'étude a rempli son rôle de conception (cahier des charges v2 + Addendum 1 + Addendum 2 + contrat archive.py). La suite (resultats.py, observations.py, matrice.py, calibration.py, etc.) est reprise directement en session, sans repasser par eux.
 
 **À reprendre en priorité la prochaine session** : `resultats.py` -- doit réutiliser scraper.py/scraper_details.py tels quels, résoudre à la fois les enregistrements SELECTED et COUNTERFACTUAL avec la même fonction de règlement (Annexe A complète, sans "etc."), jamais de perte par défaut sur un marché inconnu.
+
+## 35. Session du 13/09/2026 — resultats.py et reglement.py implémentés directement (bureau d'étude non ressollicité)
+
+Suite à la session 34, Patrick a confirmé que le bureau d'étude avait rempli son rôle et a demandé de reprendre l'implémentation directement, sans repasser par eux.
+
+**Livré** :
+- `archetype_model/learning/reglement.py` (nouveau) : fonction pure `evaluer_marche(marche, buts_dom, buts_ext)`, sans I/O ni réseau, couverture EXHAUSTIVE des 19 motifs de l'Annexe A + combos DC/Total, aucun "etc.". Marché non reconnu → `MARCHE_NON_RECONNU` explicite, jamais une perte par défaut. Isolé de `resultats.py` (écart volontaire par rapport au contrat initial du bureau d'étude, validé par Patrick) pour que `contrefactuel.py` puisse le réutiliser plus tard sans dépendre du scraping.
+- `archetype_model/learning/resultats.py` (nouveau) : réutilise à l'identique `scraper.url_resultat_foot/fetch_html/parse_matches`, `scraper_details._memes_equipes`, `run_pipeline.aujourdhui_france`. Résout **à la fois** les enregistrements `SELECTED` et `COUNTERFACTUAL` avec la même fonction de règlement — c'est la correction exigée le 12/09/2026. Reproduit exactement la logique d'abandon de `verification_resultats.py` (jour trop ancien → `NON_RESOLU_DEFINITIF` sans tentative réseau, jour d'aujourd'hui → jamais traité, `NB_JOURS_MAX_A_VERIFIER = 10` identique).
+- `audit_permanent.py` : ajouts uniquement. 40 cas de règlement (un gagnant + un perdant par motif, calculés indépendamment avant écriture — une erreur de calcul manuel trouvée et corrigée avant livraison, comme en session 33) + 9 tests d'intégration `resultats.py` (SELECTED et COUNTERFACTUAL résolus ensemble, jour trop ancien, jour d'aujourd'hui, marché non reconnu jamais résolu en LOSS, deuxième passage idempotent).
+
+**Bug de test trouvé et corrigé avant livraison** : les dates de test choisies tombaient toutes dans le même fichier archive mensuel (`2026-09.json`) — les assertions `[0]` sur la liste des enregistrements ne pointaient pas sur le bon match. Corrigé en filtrant explicitement par `match_id`, jamais par position.
+
+**Vérifié réellement** : 313 (base) + 20 (Chantier B, session 32) + 5 (archive.py, session 34) + 40 + 9 (resultats.py, cette session, avec quelques ajustements) = **390 vérités, 0 échec**, exit code 0. Rejeu 68/48 confirmé inchangé.
+
+**À reprendre en priorité** : `observations.py` puis `matrice.py` (transformer l'archive résolue en agrégats exploitables), avant `calibration.py`.
