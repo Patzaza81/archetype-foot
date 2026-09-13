@@ -4713,6 +4713,103 @@ except Exception as _e_pipe:
 
 # ============================================================================
 print("\n" + "=" * 70)
+# ============================================================================
+# CHANTIER "journal.py" (13/09/2026) -- traçabilité append-only de chaque
+# cycle, avant calibration.py.
+# ============================================================================
+import tempfile as _tmp_journal
+import os as _os_journal
+import archetype_model.learning.journal as _journal_dyn
+
+section("archetype_model/learning/journal.py (13/09/2026) -- append-only, "
+        "jamais de réécriture ni de perte, vérifié réellement sur disque.")
+
+try:
+    _d_journal = _tmp_journal.mkdtemp()
+    _chemin_cycle_j = _os_journal.path.join(_d_journal, "cycle.jsonl")
+    _chemin_promo_j = _os_journal.path.join(_d_journal, "promotions.jsonl")
+
+    _leve_cycle_incomplet = False
+    try:
+        _journal_dyn.enregistrer_cycle(_chemin_cycle_j, {"date_cycle": "2026-09-13"})
+    except ValueError:
+        _leve_cycle_incomplet = True
+    verite(
+        "enregistrer_cycle CAS champ obligatoire absent (rejet attendu) : "
+        "ValueError explicite, jamais un enregistrement partiel silencieux",
+        _leve_cycle_incomplet,
+    )
+
+    _journal_dyn.enregistrer_cycle(_chemin_cycle_j, {
+        "date_cycle": "2026-09-13", "observations": 184, "parametres_analyses": 7,
+        "propositions": 1, "promotions": 0, "rejets": 1, "rollback": 0,
+        "constat_majeur": False,
+    })
+    _journal_dyn.enregistrer_cycle(_chemin_cycle_j, {
+        "date_cycle": "2026-09-14", "observations": 190, "parametres_analyses": 7,
+        "propositions": 0, "promotions": 0, "rejets": 0, "rollback": 0,
+        "constat_majeur": False,
+    })
+    _cycles_j = _journal_dyn.charger_journal(_chemin_cycle_j)
+    verite(
+        "enregistrer_cycle + charger_journal (doit réussir) : 2 cycles "
+        "écrits, tous les deux relus, dans l'ordre d'écriture -- rien "
+        "n'écrase le précédent (append-only réellement vérifié sur disque)",
+        len(_cycles_j) == 2
+        and [c["date_cycle"] for c in _cycles_j] == ["2026-09-13", "2026-09-14"],
+    )
+
+    _leve_decision_invalide = False
+    try:
+        _journal_dyn.enregistrer_promotion(_chemin_promo_j, {
+            "date_cycle": "2026-09-13", "parametre": "EDV_MIN_P_67_71",
+            "avant": 0.07, "apres": 0.068, "decision": "INVALIDE",
+        })
+    except ValueError:
+        _leve_decision_invalide = True
+    verite(
+        "enregistrer_promotion CAS decision invalide (rejet attendu) : "
+        "seules PROMU/REJETE/ROLLBACK sont acceptées, jamais une valeur "
+        "libre non contrôlée",
+        _leve_decision_invalide,
+    )
+
+    _journal_dyn.enregistrer_promotion(_chemin_promo_j, {
+        "date_cycle": "2026-09-13", "parametre": "EDV_MIN_P_67_71",
+        "avant": 0.07, "apres": 0.068, "decision": "PROMU",
+    })
+    _journal_dyn.enregistrer_promotion(_chemin_promo_j, {
+        "date_cycle": "2026-09-20", "parametre": "EDV_MIN_P_67_71",
+        "avant": 0.068, "apres": 0.065, "decision": "REJETE",
+    })
+    _journal_dyn.enregistrer_promotion(_chemin_promo_j, {
+        "date_cycle": "2026-09-13", "parametre": "COTE_MIN",
+        "avant": 1.26, "apres": 1.27, "decision": "PROMU",
+    })
+    _historique_edv = _journal_dyn.historique_parametre(_chemin_promo_j, "EDV_MIN_P_67_71")
+    verite(
+        "historique_parametre (doit réussir) : ne retourne que les 2 "
+        "entrées d'EDV_MIN_P_67_71, jamais celle de COTE_MIN, dans l'ordre "
+        "d'écriture -- répond directement à 'pourquoi ce seuil vaut cette "
+        "valeur aujourd'hui ?'",
+        [p["decision"] for p in _historique_edv] == ["PROMU", "REJETE"],
+    )
+
+    verite(
+        "charger_journal CAS fichier jamais créé (rejet attendu, cas "
+        "honnête) : liste vide, jamais une exception pour ce cas normal",
+        _journal_dyn.charger_journal(_os_journal.path.join(_d_journal, "jamais_cree.jsonl")) == [],
+    )
+except Exception as _e_journal:
+    verite(
+        "tests réels de journal.py exécutables sans exception inattendue",
+        False,
+        str(_e_journal),
+    )
+
+
+# ============================================================================
+print("\n" + "=" * 70)
 if echecs:
     print(f"AUDIT ÉCHOUÉ -- {len(echecs)} vérité(s) fausse(s) :")
     for e in echecs:

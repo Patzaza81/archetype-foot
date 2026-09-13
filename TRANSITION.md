@@ -2276,3 +2276,15 @@ Suite à la demande explicite de Patrick ("on branche"), `archive.py` est mainte
 **Vérifié réellement** : 432 (précédent) + 3 (bilan) = **435 vérités, 0 échec**, exit code 0. Rejeu 68/48 confirmé inchangé.
 
 **État du pipeline learning/ après cette session** : archivage (écriture), vérification des résultats et bilan comportemental (lecture/agrégation) tournent tous les trois automatiquement chaque nuit dès que ce patch est appliqué. Reste à construire : `journal.py`, `contrefactuel.py`, `validation.py`, `calibration.py`, et les fichiers de configuration (`config/adaptive_parameters.json`, `config/adaptive_state.json`) -- aucun de ces éléments n'existe encore, et rien n'ajuste aujourd'hui le moindre paramètre calibrable.
+
+## 40. Session du 13/09/2026 (suite) — journal.py
+
+**Livré** :
+- `archetype_model/learning/journal.py` (nouveau) : traçabilité append-only, deux journaux distincts -- `enregistrer_cycle()`/`enregistrer_promotion()` (jamais de réécriture, jamais de perte, vérifié réellement sur disque), `charger_journal()`, `historique_parametre()` (répond directement à "pourquoi ce seuil vaut cette valeur aujourd'hui ?"). Champs obligatoires validés à l'écriture (`ValueError` explicite si absents), `decision` limitée à PROMU/REJETE/ROLLBACK. Aucune autorité de décision -- enregistre ce que `calibration.py` (pas encore construit) lui fournira, sans jamais juger le fond.
+- `audit_permanent.py` : 5 nouveaux tests.
+
+**Vérifié réellement** : 435 (précédent) + 5 = **440 vérités, 0 échec**, exit code 0. Rejeu 68/48 confirmé inchangé.
+
+**Note de vigilance, suite à l'incident de la session 39** : avant de livrer, le dossier de travail a été vérifié pour ne contenir QUE les fichiers délibérément modifiés cette session (journal.py + audit_permanent.py + TRANSITION.md) -- aucune trace résiduelle d'un brouillon non nettoyé.
+
+**À reprendre en priorité** : `contrefactuel.py` (le "et si le seuil était différent ?", cahier des charges v2 §7.3 + rapport du bureau d'étude §11 et §13) -- peut maintenant s'appuyer sur `observations.py`, `extraction.py` (marchés proches déjà archivés en COUNTERFACTUAL) et `reglement.py`. Puis `validation.py` (découpage apprentissage/hors échantillon), puis enfin `calibration.py` qui orchestre tout via `garde_fous.autoriser_promotion()` et journalise via `journal.py`.
