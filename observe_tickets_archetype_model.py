@@ -26,22 +26,8 @@ from __future__ import annotations
 import datetime
 from typing import Any
 
-from archetype_model.learning import archive, observations
+from archetype_model.learning import observations
 from tickets import builder, observation, rapport_calibration
-
-
-def _candidats_pending_du_jour(repertoire_archive: str = "archive") -> list[dict[str, Any]]:
-    """Toutes les sélections SELECTED encore PENDING (matchs pas encore
-    joués) -- le pool dans lequel construire un nouveau ticket fictif.
-    Ne considère jamais les COUNTERFACTUAL (jamais de vrais paris) ni les
-    RESOLVED/NON_RESOLU_DEFINITIF (matchs déjà tranchés, sans intérêt
-    pour un NOUVEAU ticket à suivre)."""
-    tous = observations.charge_toutes_les_archives(repertoire_archive)
-    return [
-        r for r in tous
-        if r.get("categorie") == archive.CATEGORIE_SELECTED
-        and r.get("resultat_statut") == archive.STATUT_PENDING
-    ]
 
 
 def executer_cycle_observation(
@@ -54,12 +40,7 @@ def executer_cycle_observation(
     compatible est un résultat honnête, jamais une erreur)."""
     date_cycle = date_cycle or datetime.date.today().isoformat()
 
-    tous = observations.charge_toutes_les_archives(repertoire_archive)
-    selections_resolues = [
-        r for r in tous
-        if r.get("categorie") == archive.CATEGORIE_SELECTED
-        and r.get("resultat_statut") == archive.STATUT_RESOLVED
-    ]
+    _selections_resolues = observations.selections_resolues(repertoire_archive)
 
     # 1. Résoudre les tickets fictifs déjà enregistrés dont les jambes
     #    ont désormais un résultat connu (peu importe le mois où ils ont
@@ -69,12 +50,12 @@ def executer_cycle_observation(
     #    résolution serait de toute façon visible dans le rapport comme
     #    PENDING).
     chemin_mois = observation.chemin_tickets_observes(date_cycle)
-    observation.resoudre_tickets_observes(chemin_mois, selections_resolues)
+    observation.resoudre_tickets_observes(chemin_mois, _selections_resolues)
 
     # 2. Construire un nouveau ticket fictif à partir des candidats
     #    encore PENDING.
-    candidats_du_jour = _candidats_pending_du_jour(repertoire_archive)
-    marginal, matrice = builder.construire_marginal_et_matrice(selections_resolues)
+    candidats_du_jour = observations.candidats_selected_pending(repertoire_archive)
+    marginal, matrice = builder.construire_marginal_et_matrice(_selections_resolues)
     nouveau_ticket = observation.construire_ticket_observation(
         candidats_du_jour, marginal, matrice, taille=taille
     )

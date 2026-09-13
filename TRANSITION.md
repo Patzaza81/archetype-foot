@@ -2435,3 +2435,25 @@ Scraping → Sélection P1/P2/P3 → Archivage
 ```
 
 Le vrai système de tickets (`tickets/builder.py`/`cycle.py`, seuil 100 observations) reste intact et distinct -- il ne produira probablement rien avant plusieurs mois, par construction honnête, pas par bug. Le mode observation (seuil 10) donnera un premier signal utile bien plus tôt, sans jamais risquer un vrai pari sur une hypothèse d'indépendance non vérifiée.
+
+## 48. Session du 13/09/2026 — mécanisme de signalement (constat majeur → Issue GitHub)
+
+Patrick a explicitement demandé : "comment je saurais si les seuils sont atteints, qui me signalera ?" -- jusqu'ici, rien ne l'avertissait activement, contredisant sa demande initiale de ne pas avoir à suivre le système au quotidien.
+
+**Livré** :
+- `archetype_model/learning/constat_majeur.py` (nouveau) : file d'événements simple (`signaler()`/`charger_et_vider()`), sans aucune autorité de jugement -- accumule ce que les autres scripts lui signalent.
+- `archetype_model/learning/observations.py` : deux nouveaux helpers partagés, `candidats_selected_pending()` et `selections_resolues()`, extraits d'`observe_tickets_archetype_model.py` pour être réutilisés sans dupliquer (refactorisation additive, comportement inchangé).
+- `genere_tickets_reels_archetype_model.py` (nouveau, racine) : **trou trouvé en construisant ce chantier** -- aucun script n'avait jamais tenté la construction de VRAIS tickets (seuil réel 100, `tickets/cycle.py`) ; seul le mode observation (seuil 10) tournait. Ce script comble ce trou : tente chaque nuit, avec le seuil réel INCHANGÉ, écrit dans `vrais_tickets/` (jamais mélangé à `tickets_observes/` ni `archive/`), signale un constat majeur au premier succès.
+- `calibre_archetype_model.py` : signale un constat majeur à chaque promotion réelle (jamais pour un rejet).
+- `notifie_constat_majeur.py` (nouveau, racine) : dernière étape du pipeline -- transforme les événements accumulés en UNE SEULE Issue GitHub via `gh issue create` (déjà installé sur les runners, authentifié par `GITHUB_TOKEN`). **Faille de robustesse trouvée et corrigée avant livraison** : le premier jet ne protégeait que le code de retour de `gh`, pas une exception si l'exécutable était absent -- `subprocess.run` est maintenant dans un `try/except`, jamais un plantage du pipeline pour un échec de notification.
+- `.github/workflows/pipeline.yml` : permission `issues: write` ajoutée, 2 nouvelles étapes (vrais tickets, après le mode observation ; notification, tout à la fin après le commit), `vrais_tickets/` ajouté au commit (`tickets_observes/` y était déjà).
+- `audit_permanent.py` : 12 nouveaux tests. Deux erreurs d'import trouvées et corrigées par l'audit lui-même en cours de route (`observation`/`observations` non importés sous les bons noms dans les nouvelles sections) -- exactement le genre d'erreur que cette discipline de test existe pour attraper avant livraison, pas après.
+
+**Vérifié réellement** : 505 (précédent) + 11 (le compte exact après nettoyage d'un test redondant retiré) = **516 vérités, 0 échec**, exit code 0. Rejeu 68/48 confirmé inchangé. Contrôle anti-fantôme par diff de contenu : exactement les fichiers listés ci-dessus modifiés/ajoutés.
+
+**Décision de Patrick, en attente de mise en œuvre** : supprimer complètement l'interface "voir les pronostics" de l'ancien moteur (`pronostics.html` + `script.js` + lien de navigation) ET arrêter le backend nocturne devenu inutile (`verification_resultats.py`/`calcule_roi.py`) -- **question encore ouverte, posée à Patrick avant d'agir** : ces deux scripts vérifient aussi les pronostics du panier manuel (`panier.html`/`dispatch_pipeline.py`, écrit dans le même `historique_pronostics.json`) -- Patrick doit confirmer s'il utilise encore ce panier manuel avant qu'on ne coupe le backend, sous peine de casser silencieusement une fonctionnalité qu'il n'a pas demandé de toucher.
+
+**À reprendre en priorité** :
+1. Réponse de Patrick sur le panier manuel, puis suppression de l'ancien moteur (affichage + backend selon sa réponse).
+2. Nouvelle page/section pour les fonctionnalités jamais affichées (bilan comportemental, tickets fictifs et leur rapport de calibration, état de la configuration active) -- proposition validée par Patrick, pas encore construite.
+3. `garde_fous.verifier_rollback()` existe mais n'est jamais appelé par `calibre_archetype_model.py` -- aucun rollback automatique ne se déclenche aujourd'hui si un paramètre promu se révèle mauvais après coup. Chantier séparé, pas encore ouvert.

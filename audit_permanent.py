@@ -5743,6 +5743,207 @@ except Exception as _e_otam:
 
 # ============================================================================
 print("\n" + "=" * 70)
+# ============================================================================
+# CHANTIER "signalement des constats majeurs" (13/09/2026, demande
+# explicite de Patrick : "qui me signalera ?") -- constat_majeur.py,
+# genere_tickets_reels_archetype_model.py, notifie_constat_majeur.py,
+# branchement dans calibre_archetype_model.py.
+# ============================================================================
+section("archetype_model/learning/constat_majeur.py (13/09/2026) -- file "
+        "d'événements, jamais de jugement sur leur importance, vérifié "
+        "réellement sur disque.")
+
+import archetype_model.learning.constat_majeur as _cmaj_dyn
+
+with _tmp_cal.TemporaryDirectory() as _d_cmaj:
+    _chemin_cmaj = _os_cal.path.join(_d_cmaj, "constat_majeur.json")
+    verite(
+        "charger_et_vider CAS fichier jamais créé (rejet attendu, cas "
+        "honnête) : liste vide, jamais une exception -- une nuit sans "
+        "événement est le cas normal",
+        _cmaj_dyn.charger_et_vider(_chemin_cmaj) == [],
+    )
+    _cmaj_dyn.signaler("Titre 1", "Details 1", _chemin_cmaj)
+    _cmaj_dyn.signaler("Titre 2", "Details 2", _chemin_cmaj)
+    _evenements_cmaj = _cmaj_dyn.charger_et_vider(_chemin_cmaj)
+    verite(
+        "signaler + charger_et_vider (doit réussir) : 2 événements "
+        "accumulés par 2 appels distincts (simulant 2 scripts différents "
+        "dans le même cycle) sont bien tous les deux relus, dans l'ordre",
+        len(_evenements_cmaj) == 2
+        and _evenements_cmaj[0]["titre"] == "Titre 1"
+        and _evenements_cmaj[1]["titre"] == "Titre 2",
+    )
+    verite(
+        "charger_et_vider (doit réussir) : le fichier est bien vidé "
+        "après lecture -- jamais un événement notifié deux fois",
+        _cmaj_dyn.charger_et_vider(_chemin_cmaj) == [],
+    )
+
+section("archetype_model/learning/observations.py -- nouveaux helpers "
+        "partagés candidats_selected_pending/selections_resolues "
+        "(13/09/2026, extraits d'observe_tickets_archetype_model.py pour "
+        "être réutilisés sans dupliquer).")
+
+with _tmp_cal.TemporaryDirectory() as _d_helpers:
+    _cwd_avant_helpers = _os_cal.getcwd()
+    _os_cal.chdir(_d_helpers)
+    try:
+        _chemin_helpers = archive.chemin_archive_mensuelle("2026-09-13")
+        _m_pending = {"match_id": "P1", "date_match": "2026-09-13", "equipe_dom": "A", "equipe_ext": "B", "competition": "Test"}
+        _c_pending = {"marche": "over_2_5", "market_family": "GOALS", "exposure_group": "G", "niveau": "FORT", "robustesse": "STABLE", "probabilite": 0.7, "cote": 1.5, "edge": 0.05, "edv": 0.09}
+        archive.enregistrer_selection(_c_pending, match=_m_pending, model_version="v1", config_version="v1", chemin=_chemin_helpers)
+
+        _m_resolu = {"match_id": "R1", "date_match": "2026-09-10", "equipe_dom": "C", "equipe_ext": "D", "competition": "Test"}
+        _c_resolu = {"marche": "btts_oui", "market_family": "BTTS", "exposure_group": "G2", "niveau": "FORT", "robustesse": "STABLE", "probabilite": 0.6, "cote": 1.55, "edge": 0.05, "edv": 0.07}
+        _rid_resolu = archive.enregistrer_selection(_c_resolu, match=_m_resolu, model_version="v1", config_version="v1", chemin=_chemin_helpers)
+        archive.mettre_a_jour_resultat(_rid_resolu, buts_marques=1, buts_encaisses=1, resultat_marche="WIN", date_resolution="2026-09-11T00:00:00Z", chemin=_chemin_helpers)
+
+        verite(
+            "candidats_selected_pending (doit réussir) : ne retourne que "
+            "l'enregistrement PENDING (P1), jamais celui déjà RESOLVED (R1)",
+            len(_obs_dyn.candidats_selected_pending()) == 1
+            and _obs_dyn.candidats_selected_pending()[0]["match_id"] == "P1",
+        )
+        verite(
+            "selections_resolues (doit réussir) : ne retourne que "
+            "l'enregistrement RESOLVED (R1), jamais celui encore PENDING (P1)",
+            len(_obs_dyn.selections_resolues()) == 1
+            and _obs_dyn.selections_resolues()[0]["match_id"] == "R1",
+        )
+    finally:
+        _os_cal.chdir(_cwd_avant_helpers)
+
+section("genere_tickets_reels_archetype_model.py + notifie_constat_majeur.py "
+        "(13/09/2026) -- le seuil réel n'est jamais assoupli, le "
+        "signalement ne se déclenche que sur un vrai succès, jamais sur "
+        "un résultat vide.")
+
+import genere_tickets_reels_archetype_model as _gtr_dyn
+import notifie_constat_majeur as _ncm_dyn
+from tickets import cycle as _cycle_dyn
+
+try:
+    with _tmp_cal.TemporaryDirectory() as _d_gtr:
+        _cwd_avant_gtr = _os_cal.getcwd()
+        _os_cal.chdir(_d_gtr)
+        try:
+            _resume_vide_gtr = _gtr_dyn.executer_cycle("2026-09-13")
+            verite(
+                "genere_tickets_reels_archetype_model CAS aucune donnée "
+                "(rejet attendu, cas honnête) : 0 ticket réel, aucun "
+                "constat signalé -- c'est le résultat attendu pendant "
+                "probablement plusieurs mois, pas une erreur",
+                _resume_vide_gtr["nb_tickets_reels"] == 0
+                and _cmaj_dyn.charger_et_vider() == [],
+            )
+
+            _original_generer_tickets = _cycle_dyn.generer_tickets
+            _cycle_dyn.generer_tickets = lambda candidats, resolus, **kw: [{
+                "jambes": [
+                    {"match_id": "X1", "marche": "over_2_5", "probabilite": 0.7},
+                    {"match_id": "X2", "marche": "btts_oui", "probabilite": 0.6},
+                ],
+                "taille": 2, "probabilite_ticket": 0.42, "methode_probabilite": "test",
+            }]
+            try:
+                _resume_succes_gtr = _gtr_dyn.executer_cycle("2026-09-13")
+            finally:
+                _cycle_dyn.generer_tickets = _original_generer_tickets
+
+            verite(
+                "genere_tickets_reels_archetype_model CAS un vrai ticket "
+                "obtenu (doit réussir) : écrit dans vrais_tickets/, "
+                "JAMAIS dans tickets_observes/ ni archive/, et signale "
+                "exactement 1 constat majeur",
+                _resume_succes_gtr["nb_tickets_reels"] == 1
+                and _os_cal.path.exists(_gtr_dyn.chemin_vrais_tickets("2026-09-13"))
+                and not _os_cal.path.exists("tickets_observes"),
+            )
+            _constats_gtr = _cmaj_dyn.charger_et_vider()
+            verite(
+                "genere_tickets_reels_archetype_model (doit réussir) : le "
+                "constat signalé mentionne bien le bon fichier et le bon "
+                "nombre de tickets",
+                len(_constats_gtr) == 1
+                and "vrais_tickets" in _constats_gtr[0]["details"],
+            )
+
+            # notifie_constat_majeur ne doit rien avoir a signaler ici
+            # (deja vide par le charger_et_vider ci-dessus).
+            verite(
+                "notifie_constat_majeur CAS aucun événement (doit "
+                "réussir) : retourne 0 sans jamais appeler gh (aucun "
+                "événement à notifier après le charger_et_vider "
+                "précédent)",
+                _ncm_dyn.main() == 0,
+            )
+        finally:
+            _os_cal.chdir(_cwd_avant_gtr)
+except Exception as _e_gtr:
+    verite(
+        "tests réels de genere_tickets_reels_archetype_model.py et "
+        "notifie_constat_majeur.py exécutables sans exception inattendue",
+        False,
+        str(_e_gtr),
+    )
+
+verite(
+    "notifie_constat_majeur.construit_corps_issue (doit réussir) : "
+    "assemble bien plusieurs événements en un seul corps de texte lisible",
+    "Test 1" in _ncm_dyn.construit_corps_issue([{"titre": "Test 1", "details": "D1"}])
+    and "D1" in _ncm_dyn.construit_corps_issue([{"titre": "Test 1", "details": "D1"}]),
+)
+
+section("calibre_archetype_model.py -- signalement de constat majeur "
+        "(13/09/2026) sur une vraie promotion réelle, pas un mock.")
+
+try:
+    with _tmp_cal.TemporaryDirectory() as _d_calnotif:
+        _cwd_avant_calnotif = _os_cal.getcwd()
+        _os_cal.chdir(_d_calnotif)
+        try:
+            _os_cal.makedirs("config")
+            _shutil_cal.copy(
+                _os_cal.path.join(_cwd_avant_calnotif, "config", "adaptive_parameters.json"),
+                "config/adaptive_parameters.json",
+            )
+            _chemin_arch_calnotif = archive.chemin_archive_mensuelle("2026-08-01")
+            for _i in range(1, 81):
+                _date_calnotif = f"2026-08-{((_i - 1) % 31) + 1:02d}" if _i <= 62 else f"2026-09-{_i - 62:02d}"
+                _match_calnotif = {"match_id": f"M{_i}", "date_match": _date_calnotif, "equipe_dom": "A", "equipe_ext": "B", "competition": "Test"}
+                _cand_sel_calnotif = {"marche": "over_2_5", "market_family": "GOALS", "exposure_group": "G", "niveau": "FORT", "robustesse": "STABLE", "probabilite": 0.69, "cote": 1.5, "edge": 0.05, "edv": 0.072}
+                _rid_calnotif = archive.enregistrer_selection(_cand_sel_calnotif, match=_match_calnotif, model_version="v1", config_version="v1", chemin=_chemin_arch_calnotif)
+                archive.mettre_a_jour_resultat(_rid_calnotif, buts_marques=1, buts_encaisses=1, resultat_marche="LOSS", date_resolution="2026-09-13T00:00:00Z", chemin=_chemin_arch_calnotif)
+                _cand_cf_calnotif = {"marche": "btts_oui", "market_family": "BTTS", "exposure_group": "G2", "scenario": "offensif", "probabilite": 0.69, "cote": 1.55, "edge": None, "edv": 0.069, "edv_min_requis": 0.07, "robustesse": "STABLE", "motif_rejet": "EDV_INSUFFISANTE"}
+                _rid2_calnotif = archive.enregistrer_contrefactuel(_cand_cf_calnotif, match={**_match_calnotif, "match_id": f"MC{_i}"}, model_version="v1", config_version="v1", chemin=_chemin_arch_calnotif)
+                archive.mettre_a_jour_resultat(_rid2_calnotif, buts_marques=1, buts_encaisses=1, resultat_marche="WIN", date_resolution="2026-09-13T00:00:00Z", chemin=_chemin_arch_calnotif)
+
+            import calibre_archetype_model as _cam_notif_dyn
+            _resume_calnotif = _cam_notif_dyn.executer_cycle("2026-09-13")
+            _constats_calnotif = _cmaj_dyn.charger_et_vider()
+            verite(
+                "calibre_archetype_model.py (doit réussir) : une vraie "
+                "promotion (EDV_MIN_P_67_71) signale exactement 1 "
+                "constat majeur, jamais un pour chaque proposition "
+                "rejetée (12 rejets ce cycle, 0 constat pour eux)",
+                _resume_calnotif["promotions"] == 1
+                and len(_constats_calnotif) == 1
+                and "EDV_MIN_P_67_71" in _constats_calnotif[0]["titre"],
+            )
+        finally:
+            _os_cal.chdir(_cwd_avant_calnotif)
+except Exception as _e_calnotif:
+    verite(
+        "tests réels du signalement de calibre_archetype_model.py "
+        "exécutables sans exception inattendue",
+        False,
+        str(_e_calnotif),
+    )
+
+
+# ============================================================================
+print("\n" + "=" * 70)
 if echecs:
     print(f"AUDIT ÉCHOUÉ -- {len(echecs)} vérité(s) fausse(s) :")
     for e in echecs:

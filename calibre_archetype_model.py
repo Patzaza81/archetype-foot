@@ -37,7 +37,7 @@ from __future__ import annotations
 import datetime
 from typing import Any
 
-from archetype_model.learning import archive, calibration, contrefactuel, garde_fous, journal, observations
+from archetype_model.learning import archive, calibration, constat_majeur, contrefactuel, garde_fous, journal, observations
 
 FICHIER_JOURNAL_CYCLE = "config/journal_cycle.jsonl"
 FICHIER_JOURNAL_PROMOTION = "config/journal_promotion.jsonl"
@@ -118,6 +118,14 @@ def executer_cycle(date_cycle: str | None = None) -> dict[str, Any]:
                     chemin_journal_promotion=FICHIER_JOURNAL_PROMOTION,
                 )
                 nb_promotions += 1
+                constat_majeur.signaler(
+                    f"Paramètre calibré automatiquement : {parametre}",
+                    f"{parametre} passe de {valeur_actuelle} à {valeur_proposee} "
+                    f"le {date_cycle}, sur {nb_observations} observation(s) résolue(s) -- "
+                    "garde-fous respectés, amélioration confirmée sur la zone "
+                    "d'apprentissage ET la zone hors échantillon. Détail dans "
+                    f"{FICHIER_JOURNAL_PROMOTION}.",
+                )
                 break  # jamais tester la direction opposée contre une valeur devenue obsolète
             calibration.rejeter(
                 parametre, valeur_actuelle, valeur_proposee, date_cycle,
