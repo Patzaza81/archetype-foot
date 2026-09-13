@@ -64,6 +64,14 @@ def _bracket_edv_min(probabilite: float | None) -> str | None:
     return None
 
 
+def bracket_edv_min(probabilite: float | None) -> str | None:
+    """Version publique de _bracket_edv_min -- ajoutée le 13/09/2026 pour
+    que le script d'orchestration nocturne puisse déterminer le bracket
+    d'un enregistrement sans dupliquer cette logique. Comportement
+    strictement identique, aucun changement de _bracket_edv_min."""
+    return _bracket_edv_min(probabilite)
+
+
 class ResultatContrefactuel(NamedTuple):
     parametre: str
     valeur_actuelle: float
