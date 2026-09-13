@@ -50,14 +50,24 @@ from ..edv import calculator as edv_calculator
 # PARAMETRES OPERATIONNELS
 # ============================================================================
 
-COTE_MIN = 1.26
-COTE_MAX = 1.74
+# AJOUT 13/09/2026, feu vert explicite de Patrick -- ces 7 valeurs
+# proviennent maintenant de config/adaptive_parameters.json
+# (learning/calibration.py peut les ajuster), avec repli automatique sur
+# les valeurs d'origine documentées dans archetype_model/config_loader.py
+# si la configuration est absente ou invalide. La LOGIQUE de comparaison
+# plus bas (chaque "if not COTE_MIN <= cote <= COTE_MAX", etc.) reste
+# identique, ligne pour ligne -- seule la source de la valeur change
+# (cahier des charges v2 §2.4).
+from ..config_loader import valeur_parametre as _valeur_parametre
 
-EDV_MIN_P_GE_75 = 0.05
-EDV_MIN_P_71_75 = 0.05
-EDV_MIN_P_67_71 = 0.07
-EDV_MIN_P_63_67 = 0.10
-EDV_MIN_P_60_63 = 0.12
+COTE_MIN = _valeur_parametre("COTE_MIN")
+COTE_MAX = _valeur_parametre("COTE_MAX")
+
+EDV_MIN_P_GE_75 = _valeur_parametre("EDV_MIN_P_GE_75")
+EDV_MIN_P_71_75 = _valeur_parametre("EDV_MIN_P_71_75")
+EDV_MIN_P_67_71 = _valeur_parametre("EDV_MIN_P_67_71")
+EDV_MIN_P_63_67 = _valeur_parametre("EDV_MIN_P_63_67")
+EDV_MIN_P_60_63 = _valeur_parametre("EDV_MIN_P_60_63")
 
 STATUT_STABLE = "STABLE"
 STATUT_INSTABLE = "INSTABLE"
