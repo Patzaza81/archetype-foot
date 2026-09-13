@@ -2288,3 +2288,17 @@ Suite à la demande explicite de Patrick ("on branche"), `archive.py` est mainte
 **Note de vigilance, suite à l'incident de la session 39** : avant de livrer, le dossier de travail a été vérifié pour ne contenir QUE les fichiers délibérément modifiés cette session (journal.py + audit_permanent.py + TRANSITION.md) -- aucune trace résiduelle d'un brouillon non nettoyé.
 
 **À reprendre en priorité** : `contrefactuel.py` (le "et si le seuil était différent ?", cahier des charges v2 §7.3 + rapport du bureau d'étude §11 et §13) -- peut maintenant s'appuyer sur `observations.py`, `extraction.py` (marchés proches déjà archivés en COUNTERFACTUAL) et `reglement.py`. Puis `validation.py` (découpage apprentissage/hors échantillon), puis enfin `calibration.py` qui orchestre tout via `garde_fous.autoriser_promotion()` et journalise via `journal.py`.
+
+## 41. Session du 13/09/2026 (suite) — contrefactuel.py
+
+**Correctif préalable trouvé en concevant ce chantier** : `extraction.py` ne capturait pas les rejets `COTE_HORS_INTERVALLE` comme "proches du seuil" -- oubli du 13/09/2026, pas un choix délibéré. Sans lui, `contrefactuel.py` n'aurait jamais pu tester un ÉLARGISSEMENT de `COTE_MIN`/`COTE_MAX` (seul un rétrécissement, sur les `SELECTED` déjà archivés, aurait été possible). Corrigé : `COTE_HORS_INTERVALLE` ajouté aux motifs numériques, avec une fenêtre de ±0,05 sur la cote (bornes relues directement dans `convergence.py`, jamais dupliquées). **Un bug de signe trouvé et corrigé avant livraison** : la première version de la fenêtre de cote acceptait à tort n'importe quelle cote très en dessous de `COTE_MAX` comme "proche" -- corrigé en bornant l'écart entre 0 et la fenêtre, dans les deux sens.
+
+**Livré** :
+- `archetype_model/learning/contrefactuel.py` (nouveau) : `tester_parametre()` -- simulation pure lecture seule de "et si ce paramètre calibrable avait une autre valeur ?", jamais une modification de l'archive, de la configuration ou de la sélection réelle. Couvre les 5 `EDV_MIN_*` (reproduit exactement `convergence._edv_min_requis()`, brackets 0.75/0.71/0.67/0.63/0.60 fixes) et `COTE_MIN`/`COTE_MAX`. **`ROBUSTNESS_STD_THRESHOLD` explicitement NON testable** : l'écart-type des 4 scénarios qui a produit le statut archivé n'est lui-même jamais conservé -- `ValueError` explicite plutôt qu'une simulation inventée sur une donnée absente.
+- `audit_permanent.py` : 4 tests sur le correctif d'`extraction.py` + 6 tests sur `contrefactuel.py`, chaque scénario calculé indépendamment à la main avant écriture (méthode déjà éprouvée aux sessions précédentes).
+
+**Vérifié réellement** : 440 (précédent) + 10 = **450 vérités, 0 échec**, exit code 0. Rejeu 68/48 confirmé inchangé. Contrôle anti-fantôme fait avant livraison (seuls les 3 fichiers attendus ont bougé).
+
+**Limite honnête à ne pas oublier** : `contrefactuel.py` ne peut aujourd'hui simuler que 7 des 8 paramètres calibrables. `ROBUSTNESS_STD_THRESHOLD` resterait non testable tant qu'on n'archive pas l'écart-type brut des 4 probabilités par scénario -- à envisager comme un ajout futur à `archive.py` si ce paramètre doit un jour être calibré.
+
+**À reprendre en priorité** : `validation.py` (découpage apprentissage/hors échantillon -- le garde-fou statistique le plus important selon le bureau d'étude), puis enfin `calibration.py` qui orchestre archive → observations → matrice → contrefactuel → validation → garde_fous → journal, et les fichiers de configuration (`config/adaptive_parameters.json`, `config/adaptive_state.json`).

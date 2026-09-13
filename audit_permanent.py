@@ -4810,6 +4810,136 @@ except Exception as _e_journal:
 
 # ============================================================================
 print("\n" + "=" * 70)
+# ============================================================================
+# CHANTIER "contrefactuel.py" (13/09/2026) -- le "et si le seuil était
+# différent ?", cahier des charges v2 §7.3, rapport bureau d'étude §11-13.
+# ============================================================================
+section("archetype_model/learning/extraction.py -- CORRECTIF 13/09/2026 : "
+        "COTE_HORS_INTERVALLE ajouté aux motifs numériques (nécessaire "
+        "pour tester COTE_MIN/COTE_MAX en contrefactuel), fenêtre de cote "
+        "vérifiée dans les deux sens, bug de signe trouvé et corrigé "
+        "avant écriture des tests.")
+
+
+def _diag_cote_test(cote):
+    return {
+        "marche": "x",
+        "filtre": {
+            "eligible": False, "scenario_en_echec": "offensif", "motif_rejet": "COTE_HORS_INTERVALLE",
+            "resultats_par_scenario": {
+                "offensif": {"probabilite_centrale": 0.8, "edv": None, "edv_min_requis": None,
+                             "market_family": "FAM", "exposure_group": "GRP", "cote": cote, "robustesse": "STABLE"}
+            },
+        },
+    }
+
+
+verite(
+    "extraire_marche_proche CAS cote proche de COTE_MIN par en dessous "
+    "(doit réussir) : 1.22, écart 0.04 <= fenêtre 0.05 -> retenu",
+    _ext_dyn.extraire_marche_proche(_diag_cote_test(1.22)) is not None,
+)
+verite(
+    "extraire_marche_proche CAS cote loin en dessous (rejet attendu) : "
+    "1.10, écart 0.16 > fenêtre 0.05 -> jamais retenu (c'est ce cas précis "
+    "qui révélait le bug de signe avant correction)",
+    _ext_dyn.extraire_marche_proche(_diag_cote_test(1.10)) is None,
+)
+verite(
+    "extraire_marche_proche CAS cote proche de COTE_MAX par au-dessus "
+    "(doit réussir) : 1.78, écart 0.04 <= fenêtre 0.05 -> retenu",
+    _ext_dyn.extraire_marche_proche(_diag_cote_test(1.78)) is not None,
+)
+verite(
+    "extraire_marche_proche CAS cote loin au-dessus (rejet attendu) : "
+    "2.50, écart 0.76 > fenêtre 0.05 -> jamais retenu",
+    _ext_dyn.extraire_marche_proche(_diag_cote_test(2.50)) is None,
+)
+
+
+section("archetype_model/learning/contrefactuel.py (13/09/2026) -- "
+        "simulation pure lecture seule, chaque cas calculé indépendamment "
+        "à la main avant écriture du test.")
+
+import archetype_model.learning.contrefactuel as _cf_dyn
+
+try:
+    _cf_dyn.tester_parametre("ROBUSTNESS_STD_THRESHOLD", 0.08, 0.09, [], [])
+    _leve_non_testable = False
+except ValueError:
+    _leve_non_testable = True
+verite(
+    "tester_parametre CAS ROBUSTNESS_STD_THRESHOLD (rejet attendu, cas "
+    "honnête) : ValueError explicite -- la donnée brute (écart-type des "
+    "4 scénarios) n'est pas archivée, jamais une simulation inventée",
+    _leve_non_testable,
+)
+try:
+    _cf_dyn.tester_parametre("PARAM_INEXISTANT", 1, 1, [], [])
+    _leve_inconnu = False
+except ValueError:
+    _leve_inconnu = True
+verite(
+    "tester_parametre CAS paramètre inconnu (rejet attendu) : ValueError, "
+    "jamais une simulation sur un paramètre hors de la liste fermée",
+    _leve_inconnu,
+)
+
+_sel_edv_test = [
+    {"probabilite": 0.69, "edv": 0.072, "cote": 1.5, "resultat_marche": "WIN"},
+    {"probabilite": 0.69, "edv": 0.068, "cote": 1.4, "resultat_marche": "LOSS"},
+    {"probabilite": 0.80, "edv": 0.06, "cote": 1.3, "resultat_marche": "WIN"},
+]
+_cf_edv_test = [
+    {"probabilite": 0.69, "edv": 0.066, "cote": 1.45, "resultat_marche": "WIN", "motif_rejet": "EDV_INSUFFISANTE"},
+    {"probabilite": 0.69, "edv": 0.05, "cote": 1.6, "resultat_marche": "LOSS", "motif_rejet": "EDV_INSUFFISANTE"},
+]
+_r_edv_test = _cf_dyn.tester_parametre("EDV_MIN_P_67_71", 0.07, 0.065, _sel_edv_test, _cf_edv_test)
+verite(
+    "tester_parametre CAS EDV_MIN_P_67_71 (doit réussir) : ROI actuel "
+    "= (0.5 - 1.0 + 0.3) / 3 = -0.0667, calculé sur les 3 vrais SELECTED "
+    "-- vérifié indépendamment avant écriture du test",
+    _r_edv_test.nb_observations_actuelles == 3
+    and abs(_r_edv_test.roi_actuel - (-0.06666666666666665)) < 1e-9,
+)
+verite(
+    "tester_parametre CAS EDV_MIN_P_67_71 (doit réussir) : à 0.065, le "
+    "COUNTERFACTUAL à edv 0.066 entre dans le portefeuille (4 observations "
+    "au lieu de 3), le bracket GE_75 (3e SELECTED) n'est jamais affecté, "
+    "ROI contrefactuel = 0.0625",
+    _r_edv_test.nb_observations_contrefactuelles == 4
+    and abs(_r_edv_test.roi_contrefactuel - 0.0625) < 1e-9,
+)
+
+_sel_cote_test = [
+    {"cote": 1.30, "resultat_marche": "WIN"},
+    {"cote": 1.28, "resultat_marche": "LOSS"},
+]
+_cf_cote_test = [
+    {"cote": 1.24, "resultat_marche": "WIN", "motif_rejet": "COTE_HORS_INTERVALLE"},
+    {"cote": 1.20, "resultat_marche": "LOSS", "motif_rejet": "COTE_HORS_INTERVALLE"},
+    {"cote": 1.24, "resultat_marche": "WIN", "motif_rejet": "EDV_INSUFFISANTE"},
+]
+_r_cote_test = _cf_dyn.tester_parametre("COTE_MIN", 1.26, 1.24, _sel_cote_test, _cf_cote_test)
+verite(
+    "tester_parametre CAS COTE_MIN (doit réussir) : le COUNTERFACTUAL "
+    "rejeté pour mauvais motif (EDV_INSUFFISANTE) n'entre JAMAIS dans le "
+    "portefeuille contrefactuel, même si sa cote serait compatible -- "
+    "seul motif_rejet == COTE_HORS_INTERVALLE est pris en compte ici",
+    _r_cote_test.nb_observations_contrefactuelles == 3,
+)
+verite(
+    "tester_parametre CAS COTE_MIN (doit réussir) : ROI actuel -0.35 sur "
+    "2 SELECTED, ROI contrefactuel -0.1533 sur 3 (le contrefactuel à "
+    "cote 1.24 entre, celui à 1.20 n'entre pas) -- chiffres vérifiés "
+    "indépendamment avant écriture du test",
+    abs(_r_cote_test.roi_actuel - (-0.35)) < 1e-9
+    and abs(_r_cote_test.roi_contrefactuel - (-0.15333333333333332)) < 1e-9,
+)
+
+
+# ============================================================================
+print("\n" + "=" * 70)
 if echecs:
     print(f"AUDIT ÉCHOUÉ -- {len(echecs)} vérité(s) fausse(s) :")
     for e in echecs:
