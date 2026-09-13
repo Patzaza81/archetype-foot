@@ -95,18 +95,16 @@ jobs:
       # CORRECTIF 06/09/2026 (Groupe 2, bug #10) -- continue-on-error sur
       # l'étape précalcul ci-dessus empêchait déjà le job de s'arrêter tout
       # seul en cas de plantage, mais rien ne vérifiait ensuite que le
-      # résultat était réellement exploitable : verification_resultats.py/
-      # calcule_roi.py/le commit tournaient quand même sur un
-      # precalcul_leger.json absent, vide ou périmé. Cette garde n'a PAS
+      # résultat était réellement exploitable. Cette garde n'a PAS
       # continue-on-error : si elle échoue (exit 1), le job s'arrête ici,
-      # aucune étape suivante ne s'exécute -- ni la vérification des scores,
-      # ni le calcul du ROI, ni le commit. Choix assumé (décision Patrick) :
-      # sécurité avant complétude -- verification_resultats.py/calcule_roi.py
-      # traitent de toute façon un arriéré, ils rattraperont au prochain run
-      # réussi. scraper_semaine.py reste volontairement HORS de cette garde
-      # (continue-on-error ci-dessus non retiré) : une dégradation de la
-      # couverture J+2/J+3 n'est pas une donnée corrompue, contrairement à un
-      # échec de precalcul.py.
+      # aucune étape suivante ne s'exécute -- ni la vérification des
+      # résultats archetype_model, ni le bilan, ni la calibration, ni le
+      # commit. Choix assumé (décision Patrick) : sécurité avant
+      # complétude -- ces étapes traitent de toute façon un arriéré, elles
+      # rattraperont au prochain run réussi. scraper_semaine.py reste
+      # volontairement HORS de cette garde (continue-on-error ci-dessus
+      # non retiré) : une dégradation de la couverture J+2/J+3 n'est pas
+      # une donnée corrompue, contrairement à un échec de precalcul.py.
       - name: Vérifier que le pré-calcul a réellement produit un résultat exploitable (uniquement si schedule/relance complète)
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         run: |
@@ -120,47 +118,25 @@ jobs:
           fi
           echo "Pré-calcul vérifié OK -- precalcul_leger.json présent et non vide."
 
-      # CORRECTIF 06/09/2026 (Groupe 1, bug #22/#40) -- cette étape lisait
-      # panier.json tel quel sur le disque lors d'un run planifié, alors que
-      # panier.json n'a de sens que pour le canal Supabase (voir la branche
-      # dispatch_pipeline.py juste en dessous, qui écrit un panier.json frais
-      # avant d'appeler run_pipeline.main() en interne). Un run planifié
-      # pouvait ainsi retraiter un panier.json périmé laissé par un run
-      # manuel précédent (symptôme réel observé : panier.json à 11 entrées
-      # d'août, data.json à 0 match). run_pipeline.py reste utilisé, mais
-      # UNIQUEMENT via dispatch_pipeline.py -- jamais directement en planifié.
+      # RETIRÉ le 13/09/2026, décision de Patrick -- "Pipeline déclenché
+      # manuellement (panier Supabase)" (dispatch_pipeline.py),
+      # "Vérifier les scores des jours précédents" (verification_resultats.py)
+      # et "Calculer le ROI" (calcule_roi.py) : le panier n'utilise plus la
+      # saisie manuelle de cotes ni de run à la demande -- sa nouvelle
+      # fonction (afficher les sélections déjà calculées d'un match choisi,
+      # voir panier.html/panier.js) n'a plus besoin de ce backend. Fichiers
+      # laissés en place (dispatch_pipeline.py, run_pipeline.py,
+      # verification_resultats.py, calcule_roi.py) mais plus jamais
+      # appelés depuis ce pipeline -- suppression physique envisagée dans
+      # une passe séparée une fois confirmé que rien d'autre n'en dépend.
 
-      - name: Pipeline déclenché manuellement (panier Supabase, panier_id renseigné)
-        if: github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id != ''
-        env:
-          INPUT_PANIER_ID: ${{ github.event.inputs.panier_id }}
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-        run: python dispatch_pipeline.py
-
-      - name: Vérifier les scores des jours précédents
-        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
-        run: python verification_resultats.py
-
-      # AJOUT 03/09/2026 -- calcule le résultat (gagné/perdu) de chaque
-      # pari archivé dont le score vient d'être vérifié, et met à jour le
-      # tableau de bord ROI. Pure relecture de historique_pronostics.json,
-      # aucun scraping -- doit tourner APRÈS la vérification ci-dessus,
-      # jamais avant (sinon les scores tout juste trouvés ne seraient pas
-      # encore là pour ce calcul).
-      - name: Calculer le ROI (paris gagnés/perdus, par marché et confiance)
-        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
-        run: python calcule_roi.py
-
-      # AJOUT 13/09/2026 -- pendant du "Vérifier les scores des jours
-      # précédents" ci-dessus, mais pour archetype_model (archive.py,
-      # branché le 13/09/2026 dans precalcul.py). Résout SELECTED et
-      # COUNTERFACTUAL avec la même fonction de règlement (reglement.py) --
-      # doit tourner après l'archivage du run courant (déjà fait dans
-      # precalcul.py) pour pouvoir vérifier aussi les matchs qui viennent
-      # d'être joués cette nuit. Un échec (scraping indisponible) ne doit
-      # jamais bloquer le pipeline -- continue-on-error, même logique que
-      # les autres étapes de vérification/calcul de ce fichier.
+      # Résout SELECTED et COUNTERFACTUAL avec la même fonction de
+      # règlement (reglement.py) -- doit tourner après l'archivage du run
+      # courant (déjà fait dans precalcul.py) pour pouvoir vérifier aussi
+      # les matchs qui viennent d'être joués cette nuit. Un échec
+      # (scraping indisponible) ne doit jamais bloquer le pipeline --
+      # continue-on-error, même logique que les autres étapes de
+      # vérification/calcul de ce fichier.
       - name: Vérifier les résultats réels d'archetype_model (SELECTED + COUNTERFACTUAL)
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         run: python verifie_resultats_archetype_model.py
