@@ -4286,6 +4286,140 @@ verite(
 
 
 # ============================================================================
+# CHANTIER "garde_fous.py" (13/09/2026) -- barrière obligatoire avant toute
+# promotion de calibration, cahier des charges v2 §6 + Addendum 2.
+# ============================================================================
+import archetype_model.learning.garde_fous as _gf_dyn
+
+section("archetype_model/learning/garde_fous.py (13/09/2026) -- chaque "
+        "seuil vérifié indépendamment avant écriture du test, garde-fous "
+        "renforcés pour COTE_MIN/COTE_MAX confirmés distincts des autres "
+        "paramètres.")
+
+verite(
+    "verifier_parametre_autorise CAS connu (doit réussir) : COTE_MIN fait "
+    "partie de la liste fermée",
+    _gf_dyn.verifier_parametre_autorise("COTE_MIN").autorise is True,
+)
+verite(
+    "verifier_parametre_autorise CAS inconnu (rejet attendu) : jamais "
+    "autorisé, même implicitement -- aucune extension de la liste fermée",
+    _gf_dyn.verifier_parametre_autorise("PARAM_INVENTE").autorise is False,
+)
+
+verite(
+    "verifier_taille_echantillon CAS standard, 49 (rejet attendu) : "
+    "sous le seuil de 50, jamais autorisé",
+    _gf_dyn.verifier_taille_echantillon("ROBUSTNESS_STD_THRESHOLD", 49).autorise is False,
+)
+verite(
+    "verifier_taille_echantillon CAS standard, 50 (doit réussir) : "
+    "exactement au seuil, autorisé",
+    _gf_dyn.verifier_taille_echantillon("ROBUSTNESS_STD_THRESHOLD", 50).autorise is True,
+)
+verite(
+    "verifier_taille_echantillon CAS renforcé COTE_MIN, 99 (rejet attendu) "
+    ": le seuil renforcé est 100, pas 50 -- 99 reste insuffisant",
+    _gf_dyn.verifier_taille_echantillon("COTE_MIN", 99).autorise is False,
+)
+verite(
+    "verifier_taille_echantillon CAS renforcé COTE_MIN, 100 (doit réussir)",
+    _gf_dyn.verifier_taille_echantillon("COTE_MIN", 100).autorise is True,
+)
+
+verite(
+    "verifier_amplitude_cycle CAS standard sous le plafond (doit réussir) "
+    ": 0.08 -> 0.083 (3,75 %) < 5 %",
+    _gf_dyn.verifier_amplitude_cycle("ROBUSTNESS_STD_THRESHOLD", 0.08, 0.083).autorise is True,
+)
+verite(
+    "verifier_amplitude_cycle CAS standard au-delà (rejet attendu) : "
+    "0.08 -> 0.09 (12,5 %) > 5 %",
+    _gf_dyn.verifier_amplitude_cycle("ROBUSTNESS_STD_THRESHOLD", 0.08, 0.09).autorise is False,
+)
+verite(
+    "verifier_amplitude_cycle CAS renforcé COTE_MIN sous le plafond (doit "
+    "réussir) : 1.26 -> 1.27 (0,79 %) < 2 %",
+    _gf_dyn.verifier_amplitude_cycle("COTE_MIN", 1.26, 1.27).autorise is True,
+)
+verite(
+    "verifier_amplitude_cycle CAS renforcé COTE_MIN au-delà (rejet "
+    "attendu) : 1.26 -> 1.30 (3,17 %) > 2 % -- refusé alors que ce même "
+    "changement serait accepté pour un paramètre standard",
+    _gf_dyn.verifier_amplitude_cycle("COTE_MIN", 1.26, 1.30).autorise is False,
+)
+
+verite(
+    "verifier_derive_cumulative CAS standard sous le plafond (doit "
+    "réussir) : origine 0.08 -> 0.09 (12,5 %) < 15 %",
+    _gf_dyn.verifier_derive_cumulative("ROBUSTNESS_STD_THRESHOLD", 0.08, 0.09).autorise is True,
+)
+verite(
+    "verifier_derive_cumulative CAS standard au-delà (rejet attendu) : "
+    "origine 0.08 -> 0.10 (25 %) > 15 %",
+    _gf_dyn.verifier_derive_cumulative("ROBUSTNESS_STD_THRESHOLD", 0.08, 0.10).autorise is False,
+)
+verite(
+    "verifier_derive_cumulative CAS renforcé COTE_MIN au-delà (rejet "
+    "attendu) : origine 1.26 -> 1.40 (11,1 %) > 8 %",
+    _gf_dyn.verifier_derive_cumulative("COTE_MIN", 1.26, 1.40).autorise is False,
+)
+
+verite(
+    "verifier_rollback CAS dégradation au-delà du seuil (rejet attendu, "
+    "cas honnête) : ROI 0.05 -> -0.06 (dégradation 11 %) > 10 % -- "
+    "autorise=False signifie qu'un rollback est requis",
+    _gf_dyn.verifier_rollback(0.05, -0.06).autorise is False,
+)
+verite(
+    "verifier_rollback CAS dégradation acceptable (doit réussir) : "
+    "ROI 0.05 -> 0.02 (dégradation 3 %) < 10 % -- pas de rollback requis",
+    _gf_dyn.verifier_rollback(0.05, 0.02).autorise is True,
+)
+
+verite(
+    "autoriser_promotion CAS paramètre inconnu (rejet attendu) : refusé "
+    "au tout premier verrou, avant même de regarder l'échantillon",
+    _gf_dyn.autoriser_promotion("PARAM_X", 1000, 1, 1, 1).autorise is False,
+)
+verite(
+    "autoriser_promotion CAS échantillon insuffisant (rejet attendu) : "
+    "refusé avant même de comparer les valeurs proposées",
+    _gf_dyn.autoriser_promotion(
+        "ROBUSTNESS_STD_THRESHOLD", 10, 0.08, 0.08, 0.081
+    ).autorise is False,
+)
+verite(
+    "autoriser_promotion CAS amplitude par cycle trop grande (rejet "
+    "attendu) : échantillon suffisant mais 0.08 -> 0.09 dépasse 5 % -- "
+    "refusé à cette étape précise, pas avant, pas après",
+    _gf_dyn.autoriser_promotion(
+        "ROBUSTNESS_STD_THRESHOLD", 60, 0.08, 0.08, 0.09
+    ).autorise is False,
+)
+verite(
+    "autoriser_promotion CAS amplitude OK mais dérive cumulée dépassée "
+    "(rejet attendu) : 0.093 -> 0.095 ne bouge que de 2,15 %% par cycle "
+    "(sous le plafond), mais la dérive depuis l'origine 0.08 atteint "
+    "18,8 %% (> 15 %%) -- preuve que les deux vérifications sont bien "
+    "indépendantes, pas seulement la même chose répétée",
+    _gf_dyn.autoriser_promotion(
+        "ROBUSTNESS_STD_THRESHOLD", 60, 0.08, 0.093, 0.095
+    ).autorise is False
+    and "dérive" in _gf_dyn.autoriser_promotion(
+        "ROBUSTNESS_STD_THRESHOLD", 60, 0.08, 0.093, 0.095
+    ).motif,
+)
+verite(
+    "autoriser_promotion CAS tout est respecté (doit réussir) : "
+    "paramètre connu, échantillon suffisant, amplitude et dérive faibles",
+    _gf_dyn.autoriser_promotion(
+        "ROBUSTNESS_STD_THRESHOLD", 60, 0.08, 0.08, 0.082
+    ).autorise is True,
+)
+
+
+# ============================================================================
 print("\n" + "=" * 70)
 if echecs:
     print(f"AUDIT ÉCHOUÉ -- {len(echecs)} vérité(s) fausse(s) :")

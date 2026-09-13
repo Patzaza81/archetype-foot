@@ -2232,3 +2232,17 @@ Suite à la session 34, Patrick a confirmé que le bureau d'étude avait rempli 
 **Vérifié réellement** : 390 (base) + 11 = **401 vérités, 0 échec**, exit code 0. Rejeu 68/48 confirmé inchangé.
 
 **À reprendre en priorité** : `garde_fous.py` (taille d'échantillon minimale, amplitude maximale par cycle, dérive cumulée, versionnement, rollback -- section 6 du cahier des charges v2) avant `calibration.py` lui-même, puisque calibration.py ne doit jamais pouvoir promouvoir un ajustement sans passer par ce module.
+
+## 37. Session du 13/09/2026 (suite) — garde_fous.py
+
+**Livré** :
+- `archetype_model/learning/garde_fous.py` (nouveau) : barrière obligatoire avant toute promotion de calibration -- `verifier_parametre_autorise`, `verifier_taille_echantillon`, `verifier_amplitude_cycle`, `verifier_derive_cumulative`, `verifier_rollback`, et `autoriser_promotion` (orchestrateur, retourne le PREMIER motif de refus dans l'ordre paramètre → échantillon → amplitude → dérive). Purement décisionnel, aucune I/O.
+- Reprend la liste fermée des 8 paramètres calibrables (cahier des charges v2 + Addendum 2) et applique des seuils renforcés distincts à COTE_MIN/COTE_MAX (Addendum 2, section 1) : échantillon 100 au lieu de 50, amplitude ±2% au lieu de ±5%, dérive ±8% au lieu de ±15%.
+- Valeurs de départ (50/100 observations, ±5%/±2% amplitude, ±15%/±8% dérive, 10% seuil de rollback) : proposées par le bureau d'étude le 12/09/2026, jamais recalculées sur données réelles -- même statut que `ROBUSTNESS_STD_THRESHOLD` ("V1, non calibré"), à réviser si l'expérience le justifie.
+- `audit_permanent.py` : 20 nouveaux tests, dont un test dédié prouvant que la vérification d'amplitude par cycle et la vérification de dérive cumulée sont bien indépendantes (un changement peut passer l'une et échouer l'autre).
+
+**Incident mineur corrigé en cours de session** : une édition de fichier a accidentellement supprimé le test "construire_matrice CAS liste vide" en resynchronisant la fin du fichier -- repéré immédiatement en comparant le nombre de tests avant/après, corrigé avant livraison (le test est bien de retour, ligne 557).
+
+**Vérifié réellement** : 401 (précédent) + 20 = **421 vérités, 0 échec**, exit code 0. Rejeu 68/48 confirmé inchangé.
+
+**À reprendre en priorité** : `calibration.py` -- le premier module qui a le droit d'appeler `garde_fous.autoriser_promotion()` et d'écrire dans une configuration externe (`config/adaptive_parameters.json`, `config/adaptive_state.json`, pas encore créés). Doit aussi produire le contenu de `journal.py` (traçabilité de chaque cycle, même quand rien n'est promu).
