@@ -4182,6 +4182,110 @@ except Exception as _e_resultats:
 
 
 # ============================================================================
+# CHANTIER "observations.py + matrice.py" (13/09/2026)
+# ============================================================================
+import archetype_model.learning.observations as _obs_dyn
+import archetype_model.learning.matrice as _mat_dyn
+
+section("archetype_model/learning/observations.py (13/09/2026) -- "
+        "calcule_gain_flat_stake et construire_observations, EXCLUT "
+        "explicitement les COUNTERFACTUAL de la mesure de performance "
+        "réelle (ils n'ont jamais été de vrais paris).")
+
+verite(
+    "calcule_gain_flat_stake CAS gagné (doit réussir) : cote 1.4 -> "
+    "gain 0.4 (à 1e-9 près, imprécision flottante normale)",
+    abs(_obs_dyn.calcule_gain_flat_stake("WIN", 1.4) - 0.4) < 1e-9,
+)
+verite(
+    "calcule_gain_flat_stake CAS perdu (doit réussir) : toujours -1.0, "
+    "quelle que soit la cote",
+    _obs_dyn.calcule_gain_flat_stake("LOSS", 1.4) == -1.0
+    and _obs_dyn.calcule_gain_flat_stake("LOSS", 9.0) == -1.0,
+)
+verite(
+    "calcule_gain_flat_stake CAS gagné sans cote (rejet attendu) : None, "
+    "jamais un gain inventé",
+    _obs_dyn.calcule_gain_flat_stake("WIN", None) is None,
+)
+verite(
+    "calcule_gain_flat_stake CAS statut PENDING (rejet attendu) : None, "
+    "jamais interprété comme perdu par défaut",
+    _obs_dyn.calcule_gain_flat_stake("PENDING", 1.4) is None,
+)
+
+_records_obs_test = [
+    {"categorie": "SELECTED", "resultat_statut": "RESOLVED", "resultat_marche": "WIN",
+     "cote": 1.4, "market_family": "A", "niveau": "PREMIUM", "match_id": "m1", "marche": "x"},
+    {"categorie": "SELECTED", "resultat_statut": "RESOLVED", "resultat_marche": "LOSS",
+     "cote": 1.5, "market_family": "A", "niveau": "PREMIUM", "match_id": "m2", "marche": "x"},
+    {"categorie": "COUNTERFACTUAL", "resultat_statut": "RESOLVED", "resultat_marche": "WIN",
+     "cote": 1.6, "market_family": "A", "niveau": "PREMIUM", "match_id": "m3", "marche": "x"},
+    {"categorie": "SELECTED", "resultat_statut": "PENDING", "resultat_marche": None,
+     "cote": 1.3, "market_family": "A", "niveau": "PREMIUM", "match_id": "m4", "marche": "x"},
+    {"categorie": "SELECTED", "resultat_statut": "RESOLVED", "resultat_marche": "WIN",
+     "cote": 1.3, "market_family": "B", "niveau": "FORT", "match_id": "m5", "marche": "x"},
+]
+_observations_test = _obs_dyn.construire_observations(_records_obs_test)
+verite(
+    "construire_observations (doit réussir) : sur 5 enregistrements "
+    "(1 COUNTERFACTUAL, 1 PENDING, 3 SELECTED/RESOLVED), exactement 3 "
+    "observations produites -- le COUNTERFACTUAL et le PENDING sont "
+    "exclus, jamais mélangés",
+    len(_observations_test) == 3
+    and {o["match_id"] for o in _observations_test} == {"m1", "m2", "m5"},
+)
+
+section("archetype_model/learning/matrice.py (13/09/2026) -- agrégation "
+        "hiérarchique GLOBAL -> FAMILLE -> NIVEAU, purement mécanique, "
+        "vérifiée par calcul indépendant avant écriture du test.")
+
+_matrice_test = _mat_dyn.construire_matrice(_observations_test)
+verite(
+    "construire_matrice CAS global (doit réussir) : 3 observations, "
+    "2 gagnées, 1 perdue, ROI = (0.4 - 1.0 + 0.3) / 3 = -0.1 (à 1e-9 près)",
+    _matrice_test["global"]["observations"] == 3
+    and _matrice_test["global"]["gagnes"] == 2
+    and _matrice_test["global"]["perdus"] == 1
+    and abs(_matrice_test["global"]["roi_flat"] - (-0.1)) < 1e-9,
+)
+verite(
+    "construire_matrice CAS famille A (doit réussir) : 2 observations "
+    "(m1 gagné 1.4, m2 perdu), ROI = (0.4 - 1.0) / 2 = -0.3",
+    _matrice_test["par_famille"]["A"]["resume"]["observations"] == 2
+    and abs(_matrice_test["par_famille"]["A"]["resume"]["roi_flat"] - (-0.3)) < 1e-9,
+)
+verite(
+    "construire_matrice CAS famille B (doit réussir) : 1 observation "
+    "gagnée à 1.3, ROI = 0.3, isolée de la famille A",
+    _matrice_test["par_famille"]["B"]["resume"]["observations"] == 1
+    and abs(_matrice_test["par_famille"]["B"]["resume"]["roi_flat"] - 0.3) < 1e-9,
+)
+verite(
+    "construire_matrice CAS niveau imbriqué (doit réussir) : le niveau "
+    "PREMIUM de la famille A a exactement les mêmes chiffres que le "
+    "résumé de la famille A (un seul niveau présent ici)",
+    _matrice_test["par_famille"]["A"]["par_niveau"]["PREMIUM"]["observations"] == 2
+    and abs(_matrice_test["par_famille"]["A"]["par_niveau"]["PREMIUM"]["roi_flat"] - (-0.3)) < 1e-9,
+)
+verite(
+    "construire_matrice CAS famille/niveau absents (rejet attendu, cas "
+    "honnête) : classé sous INCONNUE/INCONNU, jamais ignoré silencieusement "
+    "ni fusionné avec une vraie catégorie",
+    _mat_dyn.construire_matrice([
+        {"match_id": "z", "marche": "x", "resultat": "WIN", "gain_flat_stake": 0.5,
+         "market_family": None, "niveau": None},
+    ])["par_famille"][_mat_dyn.FAMILLE_INCONNUE]["par_niveau"][_mat_dyn.NIVEAU_INCONNU]["observations"] == 1,
+)
+verite(
+    "construire_matrice CAS liste vide (rejet attendu) : structure valide "
+    "avec 0 observation, jamais une exception",
+    _mat_dyn.construire_matrice([])["global"]["observations"] == 0
+    and _mat_dyn.construire_matrice([])["global"]["roi_flat"] is None,
+)
+
+
+# ============================================================================
 print("\n" + "=" * 70)
 if echecs:
     print(f"AUDIT ÉCHOUÉ -- {len(echecs)} vérité(s) fausse(s) :")

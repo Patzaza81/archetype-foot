@@ -2221,3 +2221,14 @@ Suite à la session 34, Patrick a confirmé que le bureau d'étude avait rempli 
 **Vérifié réellement** : 313 (base) + 20 (Chantier B, session 32) + 5 (archive.py, session 34) + 40 + 9 (resultats.py, cette session, avec quelques ajustements) = **390 vérités, 0 échec**, exit code 0. Rejeu 68/48 confirmé inchangé.
 
 **À reprendre en priorité** : `observations.py` puis `matrice.py` (transformer l'archive résolue en agrégats exploitables), avant `calibration.py`.
+
+## 36. Session du 13/09/2026 (suite) — observations.py et matrice.py
+
+**Livré** :
+- `archetype_model/learning/observations.py` (nouveau) : `calcule_gain_flat_stake()` (mise=1.0, WIN→cote-1, LOSS→-1, jamais une valeur inventée si cote/résultat absents) et `construire_observations()` -- ne garde QUE les enregistrements `SELECTED` + `RESOLVED`. Les `COUNTERFACTUAL` sont explicitement exclus de la mesure de performance réelle (ils n'ont jamais été de vrais paris) -- confirmé par calcul et par test. `charge_toutes_les_archives()` concatène tous les fichiers `archive/*.json`.
+- `archetype_model/learning/matrice.py` (nouveau) : `construire_matrice()`, agrégation hiérarchique GLOBAL → FAMILLE → NIVEAU (réponse retenue du bureau d'étude à la Question 6), purement mécanique -- ne juge jamais si un segment a assez de données (rôle futur de `garde_fous.py`). Famille/niveau absents → classés `INCONNUE`/`INCONNU`, jamais ignorés ni fusionnés.
+- `audit_permanent.py` : 11 nouveaux tests, calculs vérifiés indépendamment avant écriture (aucune erreur trouvée cette fois).
+
+**Vérifié réellement** : 390 (base) + 11 = **401 vérités, 0 échec**, exit code 0. Rejeu 68/48 confirmé inchangé.
+
+**À reprendre en priorité** : `garde_fous.py` (taille d'échantillon minimale, amplitude maximale par cycle, dérive cumulée, versionnement, rollback -- section 6 du cahier des charges v2) avant `calibration.py` lui-même, puisque calibration.py ne doit jamais pouvoir promouvoir un ajustement sans passer par ce module.
