@@ -8,13 +8,14 @@
 <link rel="stylesheet" href="style.css">
 <style>
   /* Réglages propres à cette page uniquement, sans couleur codée en dur. */
-  #retour-accueil { display: inline-block; margin-bottom: 12px; margin-right: 8px; }
-  #copie-fallback { display: none; width: 100%; box-sizing: border-box; margin-bottom: 16px;
-                     min-height: 70px; font-family: monospace; font-size: 13px; }
-  #statut-analyse-panier { padding: 0 0 16px; font-size: 14px; }
-  /* .bouton-secondaire n'a pas de marge en haut par défaut -- ce bouton-ci
-     suit le statut d'analyse, il lui faut un espace au-dessus. */
-  #tout-copier-btn { margin-top: 16px; }
+  #retour-accueil { display: inline-block; margin-bottom: 12px; }
+  #statut-panier { padding: 0 0 16px; font-size: 14px; color: var(--text-secondary); }
+  .carte-panier { margin-bottom: 16px; }
+  .barre-panier { display: flex; justify-content: flex-end; margin-bottom: 6px; }
+  .bouton-retirer-panier {
+    background: none; border: 1px solid var(--text-secondary); color: var(--text-secondary);
+    border-radius: 8px; padding: 6px 12px; font-size: 13px; cursor: pointer;
+  }
 </style>
 </head>
 <body>
@@ -25,22 +26,16 @@
 </header>
 <main>
   <a id="retour-accueil" href="index.html" class="nav-bouton">← Accueil</a>
-  <div id="liste-panier"></div>
-
-  <button id="analyser-panier-btn" class="bouton-principal">🔬 Analyser tout le panier (0)</button>
-  <div id="statut-analyse-panier"></div>
-
-  <button id="tout-copier-btn" class="bouton-secondaire">Tout copier (0)</button>
-  <textarea id="copie-fallback" readonly placeholder="Si la copie automatique échoue, le JSON apparaît ici -- sélectionne-le à la main."></textarea>
-
-  <p style="padding: 12px; opacity: 0.7; font-size: 0.9em;">
-    "Analyser tout le panier" envoie la liste entière en un seul run
-    GitHub Actions. "Tout copier" reste disponible en secours si tu
-    préfères coller le JSON toi-même dans <code>panier.json</code> sur
-    GitHub.
-  </p>
+  <p id="statut-panier">Chargement…</p>
+  <div id="panier-cartes"></div>
 </main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- traduction_marches.js et archetype.js sont réutilisés tels quels
+     (construitCarte, estArchetypeGo, echappeHtml...) -- jamais dupliqués
+     ici, pour ne jamais diverger visuellement de la page Archetype.
+     archetype.js ne déclenche son auto-chargement que si un conteneur
+     #matches existe -- absent ici, donc sans effet (voir archetype.js). -->
+<script src="traduction_marches.js"></script>
+<script src="archetype.js"></script>
 <script src="panier.js"></script>
 </body>
 </html>

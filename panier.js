@@ -1,64 +1,34 @@
-// panier.js — page dédiée au panier. Lit/écrit le même localStorage que
-// index.js pour LA CONSTRUCTION du panier (cocher/décocher des matchs) --
-// ça ne change pas. Ce qui change (29/08/2026 -- Supabase) : "Analyser tout
-// le panier" n'envoie plus le tableau de matchs brut à trigger.js. Il :
-//   1. s'assure d'une session Supabase (anonyme, pas de mot de passe --
-//      créée automatiquement au premier envoi, réutilisée ensuite tant que
-//      le navigateur garde la session) ;
-//   2. insère le panier comme une ligne dans la table `paniers`, avec le
-//      user_id de cette session (RLS empêche toute autre personne de la
-//      lire) ;
-//   3. transmet seulement l'id de cette ligne (panier_id) + le jeton de
-//      session à trigger.js, qui vérifie l'appartenance avant de déclencher
-//      le pipeline.
-// Chaque personne a désormais son propre panier ET son propre résultat --
-// plus de fichier panier.json partagé, plus d'écrasement entre deux envois
-// simultanés.
-
-// À REMPLACER par tes vraies valeurs (Project Settings > API sur supabase.com).
-// SUPABASE_ANON_KEY est publique par design (RLS protège les données même
-// si cette clé est visible dans le code source du site) -- rien à cacher ici.
-const SUPABASE_URL = "https://hjrcqodwfjxqcjvjoxzq.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhqcmNxb2R3Zmp4cWNqdmpveHpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgxMTU3NjUsImV4cCI6MjEwMzY5MTc2NX0.rxJ2W-2UI0oQrGAprqnrPJM3WO1HCoYft0ZeS38oZfY";
-
-// Nécessite d'avoir ajouté dans panier.html, avant panier.js :
-// <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+// panier.js — RÉÉCRIT le 13/09/2026, décision de Patrick.
 //
-// (30/08/2026 -- correctif) Tant que ce script n'est pas ajouté ET que
-// SUPABASE_URL n'est pas remplacé, window.supabase n'existe pas -- appeler
-// window.supabase.createClient() plantait alors TOUTE la page dès le
-// chargement (avant même rafraichit()), ce qui empêchait le panier de
-// s'afficher (0 au lieu du vrai nombre, même quand localStorage en
-// contenait déjà). SUPABASE_CONFIGURE permet à la page de fonctionner
-// normalement pour CONSTRUIRE le panier (cocher/décocher, copier) tant que
-// Supabase n'est pas prêt -- seul "Analyser tout le panier" restera
-// indisponible jusqu'à la configuration réelle (voir assureSession()).
-const SUPABASE_CONFIGURE = !SUPABASE_URL.includes("TON-PROJET") && !!window.supabase;
-// (30/08/2026 -- correctif critique) "const supabase = ..." plantait TOUT
-// le fichier avec "SyntaxError: Can't create duplicate variable that
-// shadows a global property: 'supabase'" -- la librairie
-// @supabase/supabase-js crée déjà, toute seule, une variable globale
-// nommée "supabase" dans le navigateur ; la redéclarer avec const/let est
-// interdit en JavaScript. Renommé en "supabaseClient" partout dans ce
-// fichier -- aucun rapport avec Supabase lui-même, uniquement un conflit
-// de nom avec notre propre code.
-const supabaseClient = SUPABASE_CONFIGURE ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+// Ancienne fonction (supprimée) : envoyer le panier à Supabase, déclencher
+// une analyse GitHub Actions (dispatch_pipeline.py -> run_pipeline.py,
+// avec option de cotes manuelles). Patrick n'utilise plus la saisie
+// manuelle de cotes -- cette fonction n'a plus de raison d'être.
+//
+// Nouvelle fonction : le panier est une liste de matchs qu'on choisit sur
+// la page d'accueil (mécanisme inchangé, voir index.js -- CLE_PANIER
+// partagée, ne JAMAIS diverger). Cette page se contente d'aller chercher,
+// pour chaque match du panier, sa sélection archetype_model DÉJÀ CALCULÉE
+// dans precalcul_leger.json -- aucun run, aucune attente, aucun réseau
+// externe (Supabase retiré entièrement).
+//
+// Réutilise construitCarte()/afficheSelections()/estArchetypeGo()/
+// echappeHtml() d'archetype.js (inclus juste avant ce script dans
+// panier.html, avec traduction_marches.js dont il dépend) -- jamais
+// dupliqués ici, pour ne jamais diverger visuellement de la page
+// Archetype. Le conteneur de cette page s'appelle "panier-cartes", PAS
+// "matches", précisément pour ne jamais déclencher l'auto-chargement
+// intégré à archetype.js (voir le garde-fou ajouté dans ce fichier).
 
-const CLE_PANIER = "archetype_panier";
-// AJOUT 06/09/2026 (bug #24) -- persiste l'id du DERNIER panier envoyé
-// avec succès, pour que script.js puisse cibler précisément SON résultat
-// (voir chargeDernierResultat() dans script.js) plutôt que "le dernier
-// résultat toutes soumissions confondues", qui pouvait afficher le
-// résultat d'une soumission plus ancienne si elle finissait de se
-// calculer après une soumission plus récente.
-const CLE_DERNIER_PANIER_ID = "archetype_dernier_panier_id";
+const CLE_PANIER = "archetype_panier"; // identique à index.js -- ne jamais diverger
 
 function chargePanier() {
   try {
     const brut = localStorage.getItem(CLE_PANIER);
-    return brut ? JSON.parse(brut) : [];
-  } catch (e) {
-    console.error("panier illisible, réinitialisé", e);
+    if (!brut) return [];
+    const panier = JSON.parse(brut);
+    return Array.isArray(panier) ? panier : [];
+  } catch {
     return [];
   }
 }
@@ -67,182 +37,74 @@ function sauvePanier(liste) {
   localStorage.setItem(CLE_PANIER, JSON.stringify(liste));
 }
 
-function construitItemsEnvoi(panier) {
-  return panier.map((item) => ({
-    match_id: item.match_id,
-    domicile: item.domicile,
-    exterieur: item.exterieur,
-    competition: item.competition,
-    url_match: item.url_match,
-    source: item.source,
-    cotes_manuelles: item.cotes_manuelles,
-  }));
+function retirerDuPanier(matchId) {
+  const panier = chargePanier().filter(
+    (m) => String(m.match_id) !== String(matchId)
+  );
+  sauvePanier(panier);
+  affichePanier();
 }
 
-// (29/08/2026 -- Supabase) Session anonyme : réutilise celle déjà en cours
-// dans ce navigateur, ou en crée une nouvelle sinon. C'est cette session
-// (via son user_id) qui isole le panier et le résultat de chaque personne.
-async function assureSession() {
-  if (!SUPABASE_CONFIGURE) {
-    throw new Error(
-      "Supabase pas encore configuré (SUPABASE_URL/clé, script @supabase/supabase-js dans panier.html) -- " +
-      "voir TRANSITION.md section 0.5. Le panier fonctionne (cocher, copier), mais l'analyse en ligne pas encore."
-    );
-  }
-  const { data: { session } } = await supabaseClient.auth.getSession();
-  if (session) return session;
+function construitCartePanier(item, signal) {
+  const conteneur = document.createElement("div");
+  conteneur.className = "carte-panier";
 
-  const { data, error } = await supabaseClient.auth.signInAnonymously();
-  if (error) throw new Error("Connexion anonyme impossible : " + error.message);
-  return data.session;
-}
+  const barre = document.createElement("div");
+  barre.className = "barre-panier";
+  const boutonRetirer = document.createElement("button");
+  boutonRetirer.className = "bouton-retirer-panier";
+  boutonRetirer.textContent = "Retirer du panier";
+  boutonRetirer.addEventListener("click", () => retirerDuPanier(item.match_id));
+  barre.appendChild(boutonRetirer);
+  conteneur.appendChild(barre);
 
-function rafraichit() {
-  const panier = chargePanier();
-  const conteneur = document.getElementById("liste-panier");
-  conteneur.innerHTML = "";
-
-  if (panier.length === 0) {
-    conteneur.innerHTML = "<div class='vide'>Panier vide -- retourne à l'accueil pour cocher des matchs.</div>";
+  if (signal && estArchetypeGo(signal)) {
+    conteneur.appendChild(construitCarte(signal));
   } else {
-    panier.forEach((item, i) => {
-      const div = document.createElement("div");
-      div.className = "item-panier";
-
-      const texte = document.createElement("span");
-      const tagTexte = item.source === "betpawa" ? "bookmaker"
-        : item.source === "manuel" ? "manuel" : "liste";
-      const nbMarches = item.cotes_manuelles ? Object.keys(item.cotes_manuelles).length : 0;
-      const suffixeCotes = nbMarches > 0 ? ` · ${nbMarches} marché(s) fournis` : "";
-      // CORRECTIF 06/09/2026 (bug #27) : construction DOM (textContent) au
-      // lieu d'innerHTML -- domicile/exterieur/competition viennent de
-      // matchendirect/Betpawa (scraping), jamais garantis sans caractère
-      // spécial. Impact réel resté borné au self-XSS jusqu'ici (RLS limite
-      // chaque panier à son propriétaire), mais correction peu coûteuse ici
-      // (un seul point d'interpolation, contrairement à script.js).
-      texte.appendChild(document.createTextNode(`${item.domicile} — ${item.exterieur}`));
-      const tag = document.createElement("span");
-      tag.className = "tag";
-      tag.textContent = `${item.competition || "?"} · ${tagTexte}${suffixeCotes}`;
-      texte.appendChild(tag);
-
-      const retirer = document.createElement("button");
-      retirer.textContent = "✕";
-      retirer.title = "Retirer du panier";
-      retirer.addEventListener("click", () => {
-        const p = chargePanier();
-        p.splice(i, 1);
-        sauvePanier(p);
-        rafraichit();
-      });
-
-      div.appendChild(texte);
-      div.appendChild(retirer);
-      conteneur.appendChild(div);
-    });
+    const vide = document.createElement("div");
+    vide.className = "etat-vide";
+    vide.innerHTML = `<strong>${echappeHtml(item.domicile || "Équipe à domicile")} – ${echappeHtml(item.exterieur || "Équipe à l'extérieur")}</strong><p>Aucune sélection Archetype pour ce match pour l'instant.</p>`;
+    conteneur.appendChild(vide);
   }
-
-  document.getElementById("tout-copier-btn").textContent = `Tout copier (${panier.length})`;
-  document.getElementById("analyser-panier-btn").textContent = `🔬 Analyser tout le panier (${panier.length})`;
+  return conteneur;
 }
 
-function copierPanier() {
+function affichePanier() {
+  const root = document.getElementById("panier-cartes");
+  const statut = document.getElementById("statut-panier");
   const panier = chargePanier();
-  const items = construitItemsEnvoi(panier);
-  const json = JSON.stringify(items, null, 2);
-  const bouton = document.getElementById("tout-copier-btn");
 
-  const confirmeVisuellement = () => {
-    const texteOriginal = `Tout copier (${panier.length})`;
-    bouton.textContent = "Copié ✓";
-    bouton.classList.add("copie");
-    setTimeout(() => {
-      bouton.textContent = texteOriginal;
-      bouton.classList.remove("copie");
-    }, 1500);
-  };
-
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(json).then(confirmeVisuellement).catch(() => {
-      const fallback = document.getElementById("copie-fallback");
-      fallback.value = json;
-      fallback.style.display = "block";
-      fallback.select();
-    });
-  } else {
-    const fallback = document.getElementById("copie-fallback");
-    fallback.value = json;
-    fallback.style.display = "block";
-    fallback.select();
-  }
-}
-
-async function analyserPanier() {
-  const panier = chargePanier();
-  const statut = document.getElementById("statut-analyse-panier");
-  const bouton = document.getElementById("analyser-panier-btn");
-
-  if (panier.length === 0) {
-    statut.textContent = "❌ Panier vide -- coche au moins un match avant d'analyser.";
-    statut.className = "erreur";
+  if (!panier.length) {
+    statut.textContent = "Ton panier est vide.";
+    root.innerHTML = "";
     return;
   }
 
-  bouton.disabled = true;
-  statut.textContent = `Envoi de ${panier.length} match(s) au pipeline…`;
-  statut.className = "";
+  statut.textContent = "Chargement…";
 
-  try {
-    // (29/08/2026 -- Supabase) 1. session anonyme, 2. la ligne panier est
-    // créée directement depuis le navigateur (pas via trigger.js) -- RLS
-    // (policy "chacun crée ses propres paniers") vérifie que user_id
-    // correspond bien au jeton envoyé, donc personne ne peut créer un
-    // panier au nom de quelqu'un d'autre même en bricolant la requête.
-    const session = await assureSession();
+  fetch(`precalcul_leger.json?_=${Date.now()}`)
+    .then((r) => {
+      if (!r.ok) throw new Error(`precalcul_leger.json introuvable (${r.status})`);
+      return r.json();
+    })
+    .then((d) => {
+      const signaux = d.signaux || [];
+      const parId = new Map(signaux.map((s) => [String(s.match_id), s]));
+      root.innerHTML = "";
+      let nbAvecSelection = 0;
 
-    const { data: panierInsere, error: erreurInsertion } = await supabaseClient
-      .from("paniers")
-      .insert({ user_id: session.user.id, matchs: construitItemsEnvoi(panier) })
-      .select()
-      .single();
+      panier.forEach((item) => {
+        const signal = parId.get(String(item.match_id));
+        if (signal && estArchetypeGo(signal)) nbAvecSelection++;
+        root.appendChild(construitCartePanier(item, signal));
+      });
 
-    if (erreurInsertion) throw new Error(erreurInsertion.message);
-
-    // 3. trigger.js ne reçoit plus que l'id + le jeton -- jamais les
-    // matchs eux-mêmes en clair dans cette requête-ci.
-    const res = await fetch("/.netlify/functions/trigger", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${session.access_token}`,
-      },
-      body: JSON.stringify({ panier_id: panierInsere.id }),
+      statut.textContent = `${panier.length} match${panier.length > 1 ? "s" : ""} dans le panier — ${nbAvecSelection} avec une sélection Archetype.`;
+    })
+    .catch((e) => {
+      statut.textContent = "Erreur de chargement : " + e.message;
+      console.error(e);
     });
-    const data = await res.json();
-    if (res.ok && data.ok) {
-      statut.textContent = "✅ " + data.message + " Résultat dans quelques minutes sur \"Voir les pronostics\".";
-      statut.className = "ok";
-      // CORRECTIF 06/09/2026 (bug #24) : persisté seulement ici, sur un
-      // envoi RÉELLEMENT accepté par trigger.js -- pas juste après
-      // l'insertion Supabase (panierInsere.id existe même si trigger.js
-      // refuse ensuite, ex. rate-limit #25) -- sinon script.js chercherait
-      // pour toujours le résultat d'une analyse jamais réellement lancée.
-      localStorage.setItem(CLE_DERNIER_PANIER_ID, panierInsere.id);
-      sauvePanier([]);
-      rafraichit();
-    } else {
-      statut.textContent = "❌ " + (data.error || "Erreur serveur");
-      statut.className = "erreur";
-    }
-  } catch (e) {
-    statut.textContent = "❌ " + (e.message || "Impossible de joindre le serveur.");
-    statut.className = "erreur";
-  } finally {
-    bouton.disabled = false;
-  }
 }
 
-document.getElementById("tout-copier-btn").addEventListener("click", copierPanier);
-document.getElementById("analyser-panier-btn").addEventListener("click", analyserPanier);
-
-rafraichit();
+affichePanier();

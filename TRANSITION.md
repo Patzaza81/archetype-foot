@@ -2457,3 +2457,26 @@ Patrick a explicitement demandé : "comment je saurais si les seuils sont attein
 1. Réponse de Patrick sur le panier manuel, puis suppression de l'ancien moteur (affichage + backend selon sa réponse).
 2. Nouvelle page/section pour les fonctionnalités jamais affichées (bilan comportemental, tickets fictifs et leur rapport de calibration, état de la configuration active) -- proposition validée par Patrick, pas encore construite.
 3. `garde_fous.verifier_rollback()` existe mais n'est jamais appelé par `calibre_archetype_model.py` -- aucun rollback automatique ne se déclenche aujourd'hui si un paramètre promu se révèle mauvais après coup. Chantier séparé, pas encore ouvert.
+
+## 49. Session du 13/09/2026 — retrait de l'interface "voir les pronostics" et refonte du panier
+
+Décision de Patrick : il n'utilise plus la saisie manuelle de cotes du panier. Le panier ne doit pas disparaître mais change de fonction -- afficher les sélections déjà calculées des matchs qu'on y ajoute, sans déclencher aucun run.
+
+**Vérification préalable, avant de toucher quoi que ce soit** : le code lui-même confirme dans ses commentaires que `run_pipeline.py` n'est appelé QUE via `dispatch_pipeline.py` (panier manuel), jamais en planifié -- donc tout ce backend devient orphelin d'un coup dès que le panier n'en a plus besoin.
+
+**Livré** :
+- `pronostics.html` et `script.js` supprimés (ancienne interface de l'ancien moteur). Lien de navigation retiré d'`index.html`.
+- `archetype.js` : garde-fou d'une ligne ajouté (auto-chargement conditionné à la présence d'un conteneur `#matches`) -- comportement d'`archetype.html` strictement inchangé (vérifié par diff : une seule zone modifiée), mais permet à `panier.html` de réutiliser `construitCarte()`/`estArchetypeGo()`/etc. sans dupliquer ~80 lignes de rendu (jauge SVG, étoiles de confiance, traduction des marchés) et sans jamais risquer une divergence visuelle future.
+- `panier.js` réécrit entièrement : Supabase entièrement retiré, plus de déclenchement GitHub Actions. Nouvelle fonction : pour chaque match du panier (mécanisme d'ajout inchangé, `localStorage`, `CLE_PANIER` partagée avec `index.js`), va chercher sa sélection dans `precalcul_leger.json` (déjà calculée) et l'affiche directement via `archetype.js` réutilisé.
+- `panier.html` réécrit : boutons "Analyser tout le panier"/"Tout copier" retirés, nouveau conteneur `#panier-cartes` (jamais `#matches`, pour ne pas déclencher l'auto-chargement d'`archetype.js`).
+- `.github/workflows/pipeline.yml` : 3 étapes retirées ("Pipeline déclenché manuellement" / `dispatch_pipeline.py`, "Vérifier les scores des jours précédents" / `verification_resultats.py`, "Calculer le ROI" / `calcule_roi.py`). Fichiers correspondants (`dispatch_pipeline.py`, `run_pipeline.py`, `verification_resultats.py`, `calcule_roi.py`) laissés en place, orphelins -- suppression physique envisagée dans une passe séparée une fois confirmé que rien d'autre n'en dépend. Un commentaire orphelin (coupé en plein milieu par ce retrait) a été repéré et réparé.
+- `audit_permanent.py` : **deux tests anciens, sans rapport avec cette session, cassés par ce retrait et corrigés** -- un test lisait `script.js` directement (retiré, plus aucun fichier ne consomme le champ qu'il vérifiait) ; un autre découpait `pipeline.yml` en cherchant le nom d'une étape retirée comme repère (mis à jour vers le nouveau repère). Un troisième test, toujours valide mais à la description devenue trompeuse (prétendait que `dispatch_pipeline.py` était "encore appelé, en interne"), corrigé pour rester honnête.
+
+**Vérifié réellement** : 505 (avant cette session, notifications comprises) + corrections nettes = **514 vérités, 0 échec**, exit code 0. Rejeu 68/48 confirmé inchangé. HTML vérifié balise par balise (`panier.html`, `index.html`) : aucune fermeture manquante. Contrôle anti-fantôme par diff de contenu : exactement les fichiers listés ci-dessus modifiés/ajoutés/supprimés.
+
+**Note pour la suite** : cette session livre EN UNE SEULE FOIS le travail de la session précédente (notifications, jamais encore appliquée par Patrick au moment d'écrire ceci) ET celui de cette session (retrait ancien moteur + panier) -- pas la peine d'appliquer les deux zips dans l'ordre, tout est regroupé.
+
+**À reprendre en priorité** :
+1. Nouvelle page/section pour le bilan comportemental, les tickets fictifs et l'état de calibration -- toujours pas construite.
+2. Suppression physique de `dispatch_pipeline.py`/`run_pipeline.py`/`verification_resultats.py`/`calcule_roi.py`/`GABARIT_COTES_MANUELLES.json` une fois confirmé, après quelques jours d'observation, que rien ne les appelle plus nulle part.
+3. `garde_fous.verifier_rollback()` toujours jamais appelé par `calibre_archetype_model.py`.

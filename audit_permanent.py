@@ -351,22 +351,18 @@ for nom_appel in ["purge_equipes_expirees()", "purge_classement_expirees()",
 
 
 # ============================================================================
-section("probabilite_modele_ajustee — réellement construit dans serialise(), pas juste attendu par script.js")
+# RETIRÉ le 13/09/2026 -- l'ancien test "probabilite_modele_ajustee...
+# attendu par script.js" vérifiait un champ consommé UNIQUEMENT par
+# script.js -- supprimé le même jour (interface "voir les pronostics"
+# retirée, décision de Patrick). Vérifié qu'aucun autre fichier (JS/HTML)
+# ne lit ce champ avant de retirer ce test précis. La lecture de
+# run_pipeline.py ci-dessous reste nécessaire : plusieurs tests plus loin
+# dans ce fichier vérifient d'autres aspects de run_pipeline.py lui-même
+# (toujours présent, orphelin mais pas supprimé), sans rapport avec
+# script.js.
 # ============================================================================
 with open("run_pipeline.py", encoding="utf-8") as f:
     source_run_pipeline = f.read()
-
-verite(
-    "run_pipeline.py construit bien le champ probabilite_modele_ajustee (pas seulement script.js qui l'attend)",
-    'c["probabilite_modele_ajustee"]' in source_run_pipeline or "c['probabilite_modele_ajustee']" in source_run_pipeline,
-)
-
-with open("script.js", encoding="utf-8") as f:
-    source_script_js = f.read()
-verite(
-    "script.js affiche bien probabilite_modele_ajustee avec repli sur la brute",
-    "probabilite_modele_ajustee" in source_script_js,
-)
 
 
 # ============================================================================
@@ -788,9 +784,13 @@ verite(
     "run: python scraper_betpawa.py" not in _src_yml,
 )
 verite(
-    "pipeline.yml ne lance plus run_pipeline.py sous condition schedule/panier_id vide "
-    "(seule la branche dispatch_pipeline.py peut encore l'appeler, en interne)",
-    "python run_pipeline.py" not in _src_yml and "import run_pipeline" in open("dispatch_pipeline.py", encoding="utf-8").read(),
+    "pipeline.yml ne lance plus run_pipeline.py directement, ni via "
+    "dispatch_pipeline.py -- ce dernier existe toujours et importe "
+    "toujours run_pipeline (fichier orphelin, retiré du pipeline le "
+    "13/09/2026, jamais supprimé du dépôt à ce stade)",
+    "python run_pipeline.py" not in _src_yml
+    and "python dispatch_pipeline.py" not in _src_yml
+    and "import run_pipeline" in open("dispatch_pipeline.py", encoding="utf-8").read(),
 )
 
 
@@ -922,7 +922,11 @@ with open(".github/workflows/pipeline.yml", encoding="utf-8") as f:
     _yml_g2 = f.read()
 
 _debut_garde = _yml_g2.index("Vérifier que le pré-calcul a réellement produit")
-_fin_garde = _yml_g2.index("Pipeline déclenché manuellement")
+# Repère de fin mis à jour le 13/09/2026 : "Pipeline déclenché manuellement"
+# (dispatch_pipeline.py) a été retiré du pipeline (ancien moteur débranché,
+# décision de Patrick) -- l'étape suivante immédiate est désormais la
+# vérification des résultats archetype_model.
+_fin_garde = _yml_g2.index("Vérifier les résultats réels d'archetype_model")
 _bloc_garde = _yml_g2[_debut_garde:_fin_garde]
 
 _debut_precalcul = _yml_g2.index("Pré-calcul J0/J+1/J+2/J+3")

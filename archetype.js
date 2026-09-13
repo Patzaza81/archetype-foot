@@ -125,4 +125,11 @@ function afficheSelections(matchs) {
   if (!retenus.length) { root.innerHTML = `<div class="etat-vide"><strong>Aucune sélection pour le moment</strong><p>Aucun match ne remplit actuellement tous les critères du modèle. Le système préfère ne rien proposer plutôt que de forcer une sélection.</p></div>`; return; }
   retenus.forEach(m => root.appendChild(construitCarte(m)));
 }
-fetch(`precalcul_leger.json?_=${Date.now()}`).then(r => { if (!r.ok) throw new Error(`precalcul_leger.json introuvable (${r.status})`); return r.json(); }).then(d => afficheSelections(d.signaux || [])).catch(e => { document.getElementById("maj").textContent = "Erreur de chargement : " + e.message; console.error(e); });
+// AJOUT 13/09/2026 -- garde-fou pour permettre à panier.html d'inclure ce
+// script (construitCarte/afficheSelections/etc.) sans déclencher l'auto-
+// chargement ci-dessous, réservé aux pages qui ont réellement un
+// conteneur #matches (archetype.html). Comportement d'archetype.html
+// strictement inchangé -- #matches y existe toujours.
+if (document.getElementById("matches")) {
+  fetch(`precalcul_leger.json?_=${Date.now()}`).then(r => { if (!r.ok) throw new Error(`precalcul_leger.json introuvable (${r.status})`); return r.json(); }).then(d => afficheSelections(d.signaux || [])).catch(e => { document.getElementById("maj").textContent = "Erreur de chargement : " + e.message; console.error(e); });
+}
