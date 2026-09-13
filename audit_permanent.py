@@ -5388,6 +5388,277 @@ except Exception as _e_cam:
 
 # ============================================================================
 print("\n" + "=" * 70)
+# ============================================================================
+# CHANTIER "tickets/" (13/09/2026) -- Question 10 enfin tranchée par le
+# bureau d'étude : dépendance mesurée par PAIRE DE SIGNATURES
+# (market_family + exposure_group + direction), jamais par paire de
+# matchs précis. Règle C verrouillée : < 100 observations conjointes =
+# non mesurable = jamais combiné.
+# ============================================================================
+section("tickets/builder.py (13/09/2026) -- direction_depuis_marche, "
+        "signature, marginal/matrice de dépendance, chaque cas calculé "
+        "indépendamment avant écriture du test.")
+
+import tickets.builder as _tb_dyn
+
+verite(
+    "direction_depuis_marche (doit réussir) : couvre les motifs "
+    "principaux déjà en production dans reglement.py, jamais une "
+    "nouvelle convention inventée",
+    _tb_dyn.direction_depuis_marche("over_under_total_2.5_over") == "OVER"
+    and _tb_dyn.direction_depuis_marche("handicap_domicile_-0.5") == "DOMICILE"
+    and _tb_dyn.direction_depuis_marche("double_chance_1X") == "1X"
+    and _tb_dyn.direction_depuis_marche("btts_oui") == "OUI"
+    and _tb_dyn.direction_depuis_marche("parite_pair") == "PAIR",
+)
+verite(
+    "direction_depuis_marche CAS marché non reconnu (rejet attendu, cas "
+    "honnête) : 'INCONNUE', jamais une exception qui interromprait la "
+    "construction du ticket",
+    _tb_dyn.direction_depuis_marche("marche_totalement_bizarre") == "INCONNUE",
+)
+
+_records_dep_test = []
+for _i in range(1, 151):
+    _a_win = "WIN" if _i % 2 == 0 else "LOSS"
+    _b_win = "WIN" if _i % 3 == 0 else "LOSS"
+    _records_dep_test.append({"date_match": f"day{_i}", "match_id": f"M{_i}A", "market_family": "GOALS_TOTAL", "exposure_group": "G", "marche": "over_2_5", "resultat_marche": _a_win})
+    _records_dep_test.append({"date_match": f"day{_i}", "match_id": f"M{_i}B", "market_family": "BTTS", "exposure_group": "G2", "marche": "btts_oui", "resultat_marche": _b_win})
+
+_marginal_test, _matrice_test = _tb_dyn.construire_marginal_et_matrice(_records_dep_test)
+_sig_a_test = ("GOALS_TOTAL", "G", "OVER")
+_sig_b_test = ("BTTS", "G2", "OUI")
+_dep_independant_test = _tb_dyn.dependance_paire(_sig_a_test, _sig_b_test, _marginal_test, _matrice_test)
+verite(
+    "construire_marginal_et_matrice + dependance_paire CAS indépendance "
+    "réelle (doit réussir) : sur 150 jours, A gagne 1 jour sur 2, B "
+    "1 jour sur 3, conjointement 1 jour sur 6 (i%6==0) -- exactement ce "
+    "qu'implique l'indépendance mathématique, D = 1.0 pile",
+    _dep_independant_test["mesurable"] is True
+    and _dep_independant_test["nb_observations_conjointes"] == 150
+    and abs(_dep_independant_test["d"] - 1.0) < 1e-9,
+)
+
+_records_correles_test = []
+for _i in range(1, 151):
+    _resultat = "WIN" if _i % 2 == 0 else "LOSS"  # A et B gagnent/perdent TOUJOURS ensemble
+    _records_correles_test.append({"date_match": f"day{_i}", "match_id": f"M{_i}A", "market_family": "GOALS_TOTAL", "exposure_group": "G", "marche": "over_2_5", "resultat_marche": _resultat})
+    _records_correles_test.append({"date_match": f"day{_i}", "match_id": f"M{_i}B", "market_family": "BTTS", "exposure_group": "G2", "marche": "btts_oui", "resultat_marche": _resultat})
+_marginal_correle, _matrice_correle = _tb_dyn.construire_marginal_et_matrice(_records_correles_test)
+_dep_correle_test = _tb_dyn.dependance_paire(_sig_a_test, _sig_b_test, _marginal_correle, _matrice_correle)
+verite(
+    "dependance_paire CAS forte corrélation réelle (doit réussir) : A et "
+    "B gagnent/perdent TOUJOURS ensemble -> D = 0.5/(0.5×0.5) = 2.0, "
+    "nettement au-dessus de l'indépendance -- mesurable mais signale une "
+    "vraie dépendance",
+    _dep_correle_test["mesurable"] is True and abs(_dep_correle_test["d"] - 2.0) < 1e-9,
+)
+
+_c1_tb = {"match_id": "X1", "market_family": "GOALS_TOTAL", "exposure_group": "G", "marche": "over_2_5", "probabilite": 0.7, "edv": 0.1}
+_c2_tb = {"match_id": "X2", "market_family": "BTTS", "exposure_group": "G2", "marche": "btts_oui", "probabilite": 0.6, "edv": 0.08}
+_c3_meme_match_tb = {"match_id": "X1", "market_family": "BTTS", "exposure_group": "G2", "marche": "btts_oui", "probabilite": 0.6, "edv": 0.08}
+
+verite(
+    "paire_compatible CAS même match (rejet attendu) : jamais deux "
+    "jambes du même match, contrôle structurel avant tout calcul de "
+    "dépendance",
+    _tb_dyn.paire_compatible(_c1_tb, _c3_meme_match_tb, _marginal_test, _matrice_test)[0] is False,
+)
+verite(
+    "paire_compatible CAS échantillon insuffisant (rejet attendu, cas "
+    "honnête -- c'est la Règle C verrouillée par le bureau d'étude) : "
+    "sur seulement 5 jours d'historique, 5 < 100 requis -> incompatible, "
+    "quelle que soit la qualité des candidats",
+    _tb_dyn.paire_compatible(
+        _c1_tb, _c2_tb,
+        *_tb_dyn.construire_marginal_et_matrice(_records_dep_test[:10]),
+    )[0] is False,
+)
+verite(
+    "paire_compatible CAS dépendance mesurable mais hors bornes (rejet "
+    "attendu) : D=2.0 sur 150 observations réelles -- assez de données, "
+    "mais la dépendance est réelle, jamais combinée pour autant",
+    _tb_dyn.paire_compatible(_c1_tb, _c2_tb, _marginal_correle, _matrice_correle)[0] is False,
+)
+verite(
+    "paire_compatible CAS mesurable et proche de l'indépendance (doit "
+    "réussir) : 150 observations, D=1.0 -- autorisé",
+    _tb_dyn.paire_compatible(_c1_tb, _c2_tb, _marginal_test, _matrice_test)[0] is True,
+)
+
+verite(
+    "construire_ticket CAS données insuffisantes (rejet attendu, cas "
+    "honnête) : None -- jamais un ticket construit sur une dépendance "
+    "non mesurée",
+    _tb_dyn.construire_ticket([_c1_tb, _c2_tb], *_tb_dyn.construire_marginal_et_matrice(_records_dep_test[:10]), taille=2) is None,
+)
+_ticket_ok_test = _tb_dyn.construire_ticket([_c1_tb, _c2_tb], _marginal_test, _matrice_test, taille=2)
+verite(
+    "construire_ticket CAS réussi (doit réussir) : 2 jambes compatibles "
+    "-> probabilité du ticket = 0.7 × 0.6 = 0.42, produit simple "
+    "justifié puisque la dépendance mesurée est proche de l'indépendance",
+    _ticket_ok_test is not None and abs(_ticket_ok_test["probabilite_ticket"] - 0.42) < 1e-9,
+)
+
+section("tickets/cycle.py (13/09/2026) -- jamais de ticket dégradé pour "
+        "remplir le quota, jamais une jambe réutilisée dans deux tickets "
+        "du même cycle.")
+
+import tickets.cycle as _tc_dyn
+
+_c3_tb = {"match_id": "X3", "market_family": "GOALS_TOTAL", "exposure_group": "G", "marche": "over_2_5", "probabilite": 0.65, "edv": 0.09}
+_c4_tb = {"match_id": "X4", "market_family": "BTTS", "exposure_group": "G2", "marche": "btts_oui", "probabilite": 0.55, "edv": 0.07}
+
+_tickets_test = _tc_dyn.generer_tickets([_c1_tb, _c2_tb, _c3_tb, _c4_tb], _records_dep_test, max_tickets=5, taille=2)
+_toutes_jambes_test = [j["match_id"] for t in _tickets_test for j in t["jambes"]]
+verite(
+    "generer_tickets (doit réussir) : sur 4 candidats compatibles deux à "
+    "deux, produit exactement 2 tickets de taille 2 (pas plus, pas de "
+    "ticket incomplet), et aucune jambe n'est réutilisée entre les deux",
+    len(_tickets_test) == 2 and len(_toutes_jambes_test) == len(set(_toutes_jambes_test)) == 4,
+)
+verite(
+    "generer_tickets CAS aucun historique (rejet attendu, cas honnête) "
+    ": 0 ticket -- jamais un ticket construit sans dépendance mesurable, "
+    "jamais un quota rempli artificiellement",
+    _tc_dyn.generer_tickets([_c1_tb, _c2_tb], [], max_tickets=5, taille=2) == [],
+)
+
+
+# ============================================================================
+print("\n" + "=" * 70)
+# ============================================================================
+# CHANTIER "tickets/observation.py + rapport_calibration.py" (13/09/2026,
+# Option A choisie par Patrick) -- tickets fictifs, seuil abaissé, jamais
+# présentés comme de vrais tickets, jamais dans archive/.
+# ============================================================================
+section("tickets/observation.py (13/09/2026) -- seuil abaissé UNIQUEMENT "
+        "pour ce module, jamais touché dans builder.py. Testé sur de "
+        "vrais fichiers temporaires, données indépendantes vérifiées "
+        "mathématiquement (une première tentative corrélée par erreur "
+        "a été détectée et corrigée avant ce test, même leçon que pour "
+        "calibre_archetype_model.py).")
+
+import tickets.observation as _tobs_dyn
+
+_records_obs_test = []
+for _i in range(1, 31):
+    _a_win = "WIN" if _i % 2 == 0 else "LOSS"
+    _b_win = "WIN" if _i % 3 == 0 else "LOSS"
+    _records_obs_test.append({"date_match": f"day{_i}", "match_id": f"M{_i}A", "market_family": "GOALS_TOTAL", "exposure_group": "G", "marche": "over_2_5", "resultat_marche": _a_win})
+    _records_obs_test.append({"date_match": f"day{_i}", "match_id": f"M{_i}B", "market_family": "BTTS", "exposure_group": "G2", "marche": "btts_oui", "resultat_marche": _b_win})
+
+_marginal_obs, _matrice_obs = _tb_dyn.construire_marginal_et_matrice(_records_obs_test)
+_c1_obs = {"match_id": "X1", "marche": "over_2_5", "market_family": "GOALS_TOTAL", "exposure_group": "G", "probabilite": 0.7, "edv": 0.1}
+_c2_obs = {"match_id": "X2", "marche": "btts_oui", "market_family": "BTTS", "exposure_group": "G2", "probabilite": 0.6, "edv": 0.08}
+
+verite(
+    "Sur 30 observations conjointes (indépendance vérifiée D=1.0) : "
+    "builder.construire_ticket() (seuil réel 100) refuse (doit "
+    "réussir, cas honnête) -- le seuil réel n'est JAMAIS abaissé par ce "
+    "chantier",
+    _tb_dyn.construire_ticket([_c1_obs, _c2_obs], _marginal_obs, _matrice_obs, taille=2) is None,
+)
+_ticket_obs_test = _tobs_dyn.construire_ticket_observation([_c1_obs, _c2_obs], _marginal_obs, _matrice_obs, taille=2)
+verite(
+    "construire_ticket_observation (doit réussir) : les MÊMES 30 "
+    "observations passent avec le seuil abaissé (10) -- seule la taille "
+    "d'échantillon change, jamais les bornes D",
+    _ticket_obs_test is not None and abs(_ticket_obs_test["probabilite_ticket"] - 0.42) < 1e-9,
+)
+
+try:
+    with _tmp_cal.TemporaryDirectory() as _d_obs:
+        _cwd_avant_obs = _os_cal.getcwd()
+        _os_cal.chdir(_d_obs)
+        try:
+            _tobs_dyn.enregistrer_ticket_observe(_ticket_obs_test, "2026-09-13")
+            _chemin_obs_test = _tobs_dyn.chemin_tickets_observes("2026-09-13")
+
+            verite(
+                "enregistrer_ticket_observe (doit réussir) : écrit bien "
+                "un ticket PENDING sur disque, jamais un résultat "
+                "inventé à l'écriture",
+                len(_tobs_dyn._charge(_chemin_obs_test)) == 1
+                and _tobs_dyn._charge(_chemin_obs_test)[0]["statut_resolution"] == "PENDING"
+                and _tobs_dyn._charge(_chemin_obs_test)[0]["resultat_reel"] is None,
+            )
+
+            _tickets_pending = _tobs_dyn.resoudre_tickets_observes(_chemin_obs_test, [])
+            verite(
+                "resoudre_tickets_observes CAS jambes pas encore "
+                "connues (rejet attendu, cas honnête) : reste PENDING, "
+                "jamais un résultat partiel deviné",
+                _tickets_pending[0]["statut_resolution"] == "PENDING",
+            )
+
+            _records_resolus_obs = [
+                {"match_id": "X1", "marche": "over_2_5", "resultat_marche": "WIN"},
+                {"match_id": "X2", "marche": "btts_oui", "resultat_marche": "WIN"},
+            ]
+            _tickets_resolus_obs = _tobs_dyn.resoudre_tickets_observes(_chemin_obs_test, _records_resolus_obs)
+            verite(
+                "resoudre_tickets_observes CAS toutes les jambes "
+                "gagnantes (doit réussir) : RESOLVED, resultat_reel=WIN",
+                _tickets_resolus_obs[0]["statut_resolution"] == "RESOLVED"
+                and _tickets_resolus_obs[0]["resultat_reel"] == "WIN",
+            )
+
+            _records_resolus_obs2 = [
+                {"match_id": "X1", "marche": "over_2_5", "resultat_marche": "WIN"},
+                {"match_id": "X2", "marche": "btts_oui", "resultat_marche": "LOSS"},
+            ]
+            _tobs_dyn.enregistrer_ticket_observe(_ticket_obs_test, "2026-09-14")
+            _tickets_2e = _tobs_dyn.resoudre_tickets_observes(_chemin_obs_test, _records_resolus_obs2)
+            _ticket_perdant = next(t for t in _tickets_2e if t["date_construction"] == "2026-09-14")
+            verite(
+                "resoudre_tickets_observes CAS une seule jambe perdante "
+                "(doit réussir) : LOSS -- un ticket gagne seulement si "
+                "TOUTES ses jambes gagnent, jamais une majorité",
+                _ticket_perdant["statut_resolution"] == "RESOLVED"
+                and _ticket_perdant["resultat_reel"] == "LOSS",
+            )
+            verite(
+                "resoudre_tickets_observes (doit réussir) : le premier "
+                "ticket (déjà RESOLVED) n'est jamais retouché par la "
+                "résolution du second",
+                _tickets_2e[0]["resultat_reel"] == "WIN",
+            )
+
+            import tickets.rapport_calibration as _rc_dyn
+
+            _tickets_pour_rapport = _rc_dyn.charge_tous_les_tickets_observes()
+            _rapport_test = _rc_dyn.construit_rapport(_tickets_pour_rapport)
+            verite(
+                "rapport_calibration : construit_rapport (doit réussir) "
+                ": 2 tickets résolus (1 WIN, 1 LOSS), probabilité "
+                "annoncée moyenne 0.42 (les deux tickets sont "
+                "identiques), taux réel = 0.5 -- chiffres vérifiés "
+                "indépendamment avant écriture du test",
+                _rapport_test["nb_tickets_resolus"] == 2
+                and abs(_rapport_test["probabilite_annoncee_moyenne"] - 0.42) < 1e-9
+                and abs(_rapport_test["taux_reussite_reel"] - 0.5) < 1e-9,
+            )
+        finally:
+            _os_cal.chdir(_cwd_avant_obs)
+
+    verite(
+        "rapport_calibration CAS aucun ticket résolu (rejet attendu, "
+        "cas honnête) : structure valide, aucune division par zéro, "
+        "aucun écart inventé",
+        _rc_dyn.construit_rapport([])["ecart"] is None,
+    )
+except Exception as _e_obs:
+    verite(
+        "tests réels de tickets/observation.py et rapport_calibration.py "
+        "exécutables sans exception inattendue",
+        False,
+        str(_e_obs),
+    )
+
+
+# ============================================================================
+print("\n" + "=" * 70)
 if echecs:
     print(f"AUDIT ÉCHOUÉ -- {len(echecs)} vérité(s) fausse(s) :")
     for e in echecs:

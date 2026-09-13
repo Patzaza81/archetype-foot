@@ -2368,3 +2368,40 @@ ARCHIVAGE (precalcul.py, branché session 38)
 ```
 
 Le pipeline tourne chaque nuit à 21h UTC (22h Douala), sans aucune intervention manuelle, du scraping jusqu'à la calibration. **Ce qui reste hors périmètre, par décision explicite, pas par oubli** : `tickets/builder.py`/`tickets/cycle.py` (bloqués, méthode de corrélation jamais définie), `learning/team_reference.py` (différé Phase 3, 98% des équipes à une seule apparition). Le rapport de constat majeur (cahier des charges v2 §7.4) n'est pas encore un mécanisme séparé -- à construire si l'expérience montre qu'un cycle mérite d'interrompre Patrick au lieu d'être simplement journalisé.
+
+## 45. Session du 13/09/2026 (suite) — tickets/builder.py et tickets/cycle.py, Question 10 enfin tranchée
+
+**Contexte** : Patrick a confirmé avoir supprimé les 4 fichiers de cache (`cache_equipes.json`, `cache_betpawa.json`, `cache_classement.json`, `cache_h2h.json`) du dépôt réel -- vérifié sans risque au préalable (aucune donnée manuelle non reconstructible, aucun test dépendant de leur contenu, tous re-scrapés automatiquement au prochain run).
+
+**Le bureau d'étude a tranché la Question 10** (corrélation entre jambes d'un ticket) : la dépendance se mesure par **paire de signatures** (`market_family + exposure_group + direction`), jamais par paire de matchs précis -- deux matchs ne se reproduisent jamais à l'identique, mesurer à ce niveau n'aurait jamais donné assez d'observations. Paires construites entre deux matchs DISTINCTS de la MÊME journée, jamais entre journées différentes ni entre jambes du même match.
+
+**Décision explicite prise en implémentant, à confirmer avec Patrick** : leur texte ne définissait jamais ce qui rend un D (rapport de dépendance) "acceptable" une fois mesurable. `BORNES_D_ACCEPTABLE = (1/1.3, 1.3)` est une valeur de départ raisonnable mais NON validée -- même statut que les autres constantes non calibrées du projet (`ROBUSTNESS_STD_THRESHOLD`, etc.).
+
+**Livré** :
+- `tickets/__init__.py`, `tickets/builder.py`, `tickets/cycle.py` (nouveaux).
+- `builder.py` : `direction_depuis_marche()` (réutilise les motifs de `reglement.py`), `signature()`, `construire_marginal_et_matrice()` (marginal + matrice de dépendance par paire, construite sur l'archive SELECTED résolue uniquement -- jamais les COUNTERFACTUAL), `dependance_paire()`, `paire_compatible()` (Règle C : < 100 observations conjointes = incompatible, quelle que soit la qualité des candidats), `construire_ticket()` (sélection gloutonne par EDV décroissant, jamais un ticket incomplet).
+- `cycle.py` : `generer_tickets()` -- 0 à 5 tickets, jamais un ticket dégradé pour remplir le quota, jamais une jambe réutilisée entre deux tickets du même cycle.
+- Aucune modification de `selector.py`/`convergence.py`/`deduplication.py`, aucun 9e paramètre calibrable ajouté à `garde_fous.PARAMETRES_CALIBRABLES` -- toute la logique de corrélation reste confinée à `tickets/`.
+- `audit_permanent.py` : 12 nouveaux tests, chaque cas de dépendance (indépendance réelle D=1.0, forte corrélation réelle D=2.0) calculé et vérifié mathématiquement avant écriture du test.
+
+**Constat honnête à ne pas cacher** : avec le volume de données actuel (quelques dizaines d'observations résolues par nuit), atteindre 100 observations conjointes pour une seule paire de signatures prendra probablement plusieurs mois. **Il est normal et attendu que `tickets/cycle.py` ne produise aucun ticket pendant longtemps** -- ce n'est pas un bug, c'est la Règle C appliquée honnêtement plutôt qu'un seuil abaissé artificiellement pour produire des tickets prématurément.
+
+**Vérifié réellement** : 481 (précédent) + 12 = **493 vérités, 0 échec**, exit code 0. Rejeu 68/48 confirmé inchangé. Contrôle anti-fantôme par diff de contenu contre le vrai dépôt (post-suppression des caches) : exactement `audit_permanent.py`, `tickets/` et `TRANSITION.md` modifiés/ajoutés, rien d'autre.
+
+**Pas encore branché dans `pipeline.yml`** : `tickets/cycle.py` existe mais aucun script ne l'appelle automatiquement la nuit -- à faire une fois que `BORNES_D_ACCEPTABLE` aura été confirmé ou ajusté avec Patrick.
+
+## 46. Session du 13/09/2026 (suite) — mode observation des tickets (Option A)
+
+**Décision de Patrick** : ne pas attendre les mois nécessaires pour atteindre le seuil réel de 100 observations conjointes (builder.py). Construire des tickets FICTIFS avec un seuil abaissé, suivre leur probabilité annoncée face au résultat réel -- sans jamais les présenter comme de vrais tickets, sans jamais toucher au seuil réel.
+
+**Livré** :
+- `tickets/builder.py` : extension additive, non-cassante -- `paire_compatible()` et `construire_ticket()` acceptent désormais `seuil_observations`/`bornes_d` en paramètres explicites (valeurs par défaut inchangées = comportement réel jamais affecté). Vérifié : les 493 vérités précédentes passent toujours à l'identique après cette extension.
+- `tickets/observation.py` (nouveau) : `SEUIL_OBSERVATION = 10` (10x plus permissif que le seuil réel, valeur de départ non validée). `construire_ticket_observation()` réutilise `builder.construire_ticket()` avec ce seuil abaissé -- jamais les bornes D, qui restent celles de `builder.py`. Stockage entièrement séparé (`tickets_observes/YYYY-MM.json`, jamais `archive/`). `resoudre_tickets_observes()` : un ticket gagne seulement si TOUTES ses jambes gagnent (jamais une majorité), un ticket déjà `RESOLVED` n'est jamais retouché.
+- `tickets/rapport_calibration.py` (nouveau) : compare la probabilité annoncée moyenne des tickets fictifs résolus à leur taux de réussite réel -- la preuve chiffrée qui dira un jour si le seuil réel peut être abaissé, jamais une décision automatique.
+- `audit_permanent.py` : 9 nouveaux tests. Une erreur de construction de données de test trouvée et corrigée en cours de route (A et B rendus accidentellement parfaitement corrélés au lieu d'indépendants -- même famille d'erreur que pour `calibre_archetype_model.py`, jamais un bug du code réel).
+
+**Vérifié réellement** : 493 (précédent) + 9 = **502 vérités, 0 échec**, exit code 0. Rejeu 68/48 confirmé inchangé.
+
+**IMPORTANT -- état de livraison** : au moment de cette session, Patrick n'avait PAS encore intégré le zip de la session précédente (`tickets/__init__.py`, `builder.py`, `cycle.py`) sur le dépôt réel. Cette session regroupe donc TOUT (les 3 fichiers de la session 45 + les 2 nouveaux de cette session) dans une seule livraison, pour éviter tout problème d'ordre d'application.
+
+**Pas encore branché dans `pipeline.yml`** : ni `tickets/cycle.py` (vrais tickets, en attente puisque 0 ticket attendu pendant des mois), ni `tickets/observation.py` (mode observation, pourrait tourner dès maintenant chaque nuit -- à décider avec Patrick).
