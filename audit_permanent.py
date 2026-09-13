@@ -5153,6 +5153,121 @@ except Exception as _e_cal:
 
 # ============================================================================
 print("\n" + "=" * 70)
+# ============================================================================
+# CHANTIER "branchement convergence.py/robustness.py" (13/09/2026, feu vert
+# explicite de Patrick) -- config_loader.py, PREMIÈRE modification touchant
+# le comportement des fichiers protégés depuis le début du projet.
+# ============================================================================
+section("archetype_model/config_loader.py (13/09/2026) -- repli sur les "
+        "valeurs d'origine documentées dans TOUS les cas d'échec, jamais "
+        "un crash, jamais None. Chaque cas de repli vérifié réellement "
+        "sur disque avant écriture des tests.")
+
+import tempfile as _tmp_cl
+import archetype_model.config_loader as _cl_dyn
+
+verite(
+    "valeur_parametre CAS fichier réel du dépôt (doit réussir) : "
+    "COTE_MIN lu depuis config/adaptive_parameters.json vaut bien 1.26, "
+    "identique à la valeur d'origine (jamais encore calibré)",
+    _cl_dyn.valeur_parametre("COTE_MIN") == 1.26,
+)
+verite(
+    "valeur_parametre CAS fichier absent (rejet attendu, cas honnête) : "
+    "repli sur la valeur d'origine documentée, jamais une exception -- "
+    "un premier déploiement sans configuration encore créée est normal",
+    _cl_dyn.valeur_parametre("COTE_MIN", "/chemin/qui/n_existe_pas.json") == 1.26,
+)
+
+with _tmp_cl.TemporaryDirectory() as _d_cl:
+    import os as _os_cl
+
+    _chemin_mal_forme = _os_cl.path.join(_d_cl, "mal_forme.json")
+    with open(_chemin_mal_forme, "w", encoding="utf-8") as _f_cl:
+        _f_cl.write("{ceci n'est pas du json valide}")
+    verite(
+        "valeur_parametre CAS JSON mal formé (rejet attendu, cas "
+        "honnête) : repli sur la valeur d'origine, jamais une exception "
+        "qui interromprait le pipeline nocturne",
+        _cl_dyn.valeur_parametre("COTE_MIN", _chemin_mal_forme) == 1.26,
+    )
+
+    _chemin_cle_manquante = _os_cl.path.join(_d_cl, "cle_manquante.json")
+    with open(_chemin_cle_manquante, "w", encoding="utf-8") as _f_cl:
+        _f_cl.write('{"parametres": {"COTE_MAX": {"valeur": 1.74}}}')
+    verite(
+        "valeur_parametre CAS clé absente du fichier (rejet attendu, cas "
+        "honnête) : COTE_MIN non présent -> repli sur 1.26, sans jamais "
+        "affecter la lecture de COTE_MAX qui, lui, est bien présent",
+        _cl_dyn.valeur_parametre("COTE_MIN", _chemin_cle_manquante) == 1.26
+        and _cl_dyn.valeur_parametre("COTE_MAX", _chemin_cle_manquante) == 1.74,
+    )
+
+    _chemin_valeur_invalide = _os_cl.path.join(_d_cl, "valeur_invalide.json")
+    with open(_chemin_valeur_invalide, "w", encoding="utf-8") as _f_cl:
+        _f_cl.write('{"parametres": {"COTE_MIN": {"valeur": "pas_un_nombre"}}}')
+    verite(
+        "valeur_parametre CAS valeur non numérique (rejet attendu, cas "
+        "honnête) : repli sur la valeur d'origine, jamais une chaîne de "
+        "caractères propagée dans le moteur",
+        _cl_dyn.valeur_parametre("COTE_MIN", _chemin_valeur_invalide) == 1.26,
+    )
+
+    _chemin_modifie = _os_cl.path.join(_d_cl, "modifie.json")
+    with open(_chemin_modifie, "w", encoding="utf-8") as _f_cl:
+        _f_cl.write('{"parametres": {"COTE_MIN": {"valeur": 1.30}}}')
+    verite(
+        "valeur_parametre CAS valeur réellement différente (doit "
+        "réussir) : lit bien 1.30 et non 1.26 -- preuve que le mécanisme "
+        "lit vraiment le fichier, pas une valeur figée quelque part",
+        _cl_dyn.valeur_parametre("COTE_MIN", _chemin_modifie) == 1.30,
+    )
+
+_leve_param_inconnu_cl = False
+try:
+    _cl_dyn.valeur_parametre("PARAM_TOTALEMENT_INCONNU")
+except ValueError:
+    _leve_param_inconnu_cl = True
+verite(
+    "valeur_parametre CAS paramètre inconnu de config_loader (rejet "
+    "attendu) : ValueError -- erreur de programmation à corriger, jamais "
+    "un incident d'exploitation à absorber silencieusement",
+    _leve_param_inconnu_cl,
+)
+
+section("Intégration réelle convergence.py + robustness.py (13/09/2026) "
+        "-- preuve que les constantes du moteur proviennent bien de "
+        "config_loader, pas d'une valeur restée codée en dur par erreur.")
+
+import archetype_model.signals.convergence as _conv_dyn
+import archetype_model.poisson.robustness as _rob_dyn
+
+verite(
+    "convergence.COTE_MIN / COTE_MAX / EDV_MIN_* (doit réussir) : "
+    "identiques à config_loader.valeur_parametre() sur le même fichier "
+    "réel -- la constante du module N'EST PAS restée codée en dur",
+    _conv_dyn.COTE_MIN == _cl_dyn.valeur_parametre("COTE_MIN")
+    and _conv_dyn.COTE_MAX == _cl_dyn.valeur_parametre("COTE_MAX")
+    and _conv_dyn.EDV_MIN_P_67_71 == _cl_dyn.valeur_parametre("EDV_MIN_P_67_71"),
+)
+verite(
+    "robustness.ROBUSTNESS_STD_THRESHOLD (doit réussir) : identique à "
+    "config_loader.valeur_parametre() sur le même fichier réel",
+    _rob_dyn.ROBUSTNESS_STD_THRESHOLD == _cl_dyn.valeur_parametre("ROBUSTNESS_STD_THRESHOLD"),
+)
+verite(
+    "Valeurs actuelles de convergence.py/robustness.py toujours "
+    "identiques aux valeurs d'origine historiques (doit réussir) : "
+    "config/adaptive_parameters.json n'a encore jamais été calibré, donc "
+    "le comportement réel du moteur est, à ce jour, rigoureusement "
+    "inchangé par ce branchement",
+    _conv_dyn.COTE_MIN == 1.26 and _conv_dyn.COTE_MAX == 1.74
+    and _rob_dyn.ROBUSTNESS_STD_THRESHOLD == 0.08,
+)
+
+
+# ============================================================================
+print("\n" + "=" * 70)
 if echecs:
     print(f"AUDIT ÉCHOUÉ -- {len(echecs)} vérité(s) fausse(s) :")
     for e in echecs:
