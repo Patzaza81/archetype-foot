@@ -162,6 +162,21 @@ jobs:
         run: python verifie_resultats_archetype_model.py
         continue-on-error: true
 
+      # AJOUT 13/09/2026, demande explicite de Patrick ("branché le plus
+      # tôt possible, dès le prochain run") -- mode observation des
+      # tickets (Option A) : construit un ticket FICTIF par nuit avec un
+      # seuil d'observations abaissé (tickets/observation.py,
+      # SEUIL_OBSERVATION=10), jamais présenté comme un vrai ticket,
+      # jamais dans archive/. Résout aussi les tickets fictifs des nuits
+      # précédentes -- doit tourner APRÈS la vérification ci-dessus, sinon
+      # les scores tout juste trouvés ne seraient pas encore là. Le seuil
+      # RÉEL de tickets/builder.py (100 observations) n'est jamais modifié
+      # par cette étape.
+      - name: Mode observation des tickets (fictifs, seuil abaissé)
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+        run: python observe_tickets_archetype_model.py
+        continue-on-error: true
+
       # AJOUT 13/09/2026 -- construit le bilan comportemental à partir de
       # l'archive résolue ci-dessus (lecture seule, aucun scraping,
       # rejouable à volonté). Purement descriptif (cahier des charges v2
@@ -239,6 +254,11 @@ jobs:
           # les deux journaux (cycle + promotion, calibre_archetype_model.py)
           # -- sans ce commit, chaque promotion serait perdue au run suivant.
           [ -d config ] && git add config/
+          # AJOUT 13/09/2026 -- tickets_observes/ contient les tickets
+          # fictifs du mode observation (observe_tickets_archetype_model.py)
+          # -- sans ce commit, chaque ticket construit serait perdu au run
+          # suivant, impossible de suivre sa résolution le lendemain.
+          [ -d tickets_observes ] && git add tickets_observes/
 
           echo "=================================================="
           echo "DIAGNOSTIC 18.1 -- APRÈS git add"
