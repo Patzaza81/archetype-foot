@@ -4940,6 +4940,219 @@ verite(
 
 # ============================================================================
 print("\n" + "=" * 70)
+# ============================================================================
+# CHANTIER "validation.py" (13/09/2026) -- découpage apprentissage/hors
+# échantillon, le garde-fou statistique le plus important selon le
+# bureau d'étude.
+# ============================================================================
+section("archetype_model/learning/validation.py (13/09/2026) -- vérifié "
+        "sur un vrai cas de sur-ajustement construit à la main (améliore "
+        "en apprentissage, dégrade en validation), pas seulement des "
+        "chiffres jouets.")
+
+import archetype_model.learning.validation as _val_dyn
+
+_leve_proportion_invalide = False
+try:
+    _val_dyn.decoupe_apprentissage_validation([{"date_match": "2026-09-01"}], 1.5)
+except ValueError:
+    _leve_proportion_invalide = True
+verite(
+    "decoupe_apprentissage_validation CAS proportion hors bornes (rejet "
+    "attendu) : ValueError, jamais un découpage silencieux à côté",
+    _leve_proportion_invalide,
+)
+
+_records_tri_test = [{"date_match": f"2026-09-{d:02d}"} for d in range(1, 11)]
+_appr_test, _valid_test = _val_dyn.decoupe_apprentissage_validation(_records_tri_test, 0.7)
+verite(
+    "decoupe_apprentissage_validation (doit réussir) : sur 10 "
+    "enregistrements triés par date, 7 les plus anciens en apprentissage, "
+    "3 les plus récents en validation, aucun mélange",
+    [r["date_match"] for r in _appr_test] == [f"2026-09-{d:02d}" for d in range(1, 8)]
+    and [r["date_match"] for r in _valid_test] == [f"2026-09-{d:02d}" for d in range(8, 11)],
+)
+
+_sel_val_test, _cf_val_test = [], []
+for _d in range(1, 15):
+    _resultat_v = "WIN" if _d <= 5 else "LOSS"
+    _sel_val_test.append({"date_match": f"2026-08-{_d:02d}", "probabilite": 0.69, "edv": 0.072, "cote": 1.5, "resultat_marche": _resultat_v})
+    _cf_val_test.append({"date_match": f"2026-08-{_d:02d}", "probabilite": 0.69, "edv": 0.066, "cote": 1.45, "resultat_marche": "WIN", "motif_rejet": "EDV_INSUFFISANTE"})
+for _d in range(1, 7):
+    _resultat_v = "WIN" if _d <= 2 else "LOSS"
+    _sel_val_test.append({"date_match": f"2026-09-{_d:02d}", "probabilite": 0.69, "edv": 0.072, "cote": 1.5, "resultat_marche": _resultat_v})
+    _cf_val_test.append({"date_match": f"2026-09-{_d:02d}", "probabilite": 0.69, "edv": 0.066, "cote": 1.45, "resultat_marche": "LOSS", "motif_rejet": "EDV_INSUFFISANTE"})
+
+_r_val_test = _val_dyn.valide_hors_echantillon("EDV_MIN_P_67_71", 0.07, 0.065, _sel_val_test, _cf_val_test)
+verite(
+    "valide_hors_echantillon CAS amélioration réelle en apprentissage "
+    "(doit réussir) : ROI passe de -0.464 à -0.007 sur la zone ancienne "
+    "-- chiffres vérifiés indépendamment avant écriture du test",
+    _r_val_test["ameliore_apprentissage"] is True
+    and abs(_r_val_test["apprentissage"].roi_actuel - (-0.4642857142857143)) < 1e-9,
+)
+verite(
+    "valide_hors_echantillon CAS DÉGRADATION en validation (rejet "
+    "attendu, cas le plus important) : ROI passe de -0.5 à -0.75 sur la "
+    "zone récente -- la même modification qui semblait bonne en "
+    "apprentissage se révèle mauvaise hors échantillon",
+    _r_val_test["ameliore_validation"] is False
+    and abs(_r_val_test["validation"].roi_actuel - (-0.5)) < 1e-9
+    and abs(_r_val_test["validation"].roi_contrefactuel - (-0.75)) < 1e-9,
+)
+verite(
+    "valide_hors_echantillon CAS global (doit réussir) : "
+    "ameliore_les_deux_zones = False malgré une amélioration nette en "
+    "apprentissage -- exactement le sur-ajustement que ce module doit "
+    "empêcher de passer",
+    _r_val_test["ameliore_les_deux_zones"] is False,
+)
+verite(
+    "valide_hors_echantillon CAS zone d'apprentissage vide (rejet "
+    "attendu, cas honnête) : avec un seul enregistrement, la coupure à "
+    "70% laisse la zone d'apprentissage vide (ROI None) -- traité comme "
+    "'n'améliore pas', jamais une absence de preuve interprétée comme "
+    "favorable",
+    _val_dyn.valide_hors_echantillon(
+        "EDV_MIN_P_67_71", 0.07, 0.065,
+        [{"date_match": "2026-08-01", "probabilite": 0.69, "edv": 0.072, "cote": 1.5, "resultat_marche": "WIN"}],
+        [],
+    )["ameliore_apprentissage"] is False,
+)
+
+
+# ============================================================================
+print("\n" + "=" * 70)
+# ============================================================================
+# CHANTIER "calibration.py" (13/09/2026) -- orchestrateur, seul module
+# autorisé à écrire config/adaptive_parameters.json et
+# config/adaptive_state.json.
+# ============================================================================
+section("archetype_model/learning/calibration.py (13/09/2026) -- "
+        "enchaînement réel garde_fous -> validation -> promotion/rejet, "
+        "testé sur de vrais fichiers temporaires, pas des mocks.")
+
+import tempfile as _tmp_cal
+import os as _os_cal
+import shutil as _shutil_cal
+import json as _json_cal
+import archetype_model.learning.calibration as _cal_dyn
+
+try:
+    _d_cal = _tmp_cal.mkdtemp()
+    _os_cal.makedirs(_os_cal.path.join(_d_cal, "config"))
+    _shutil_cal.copy("config/adaptive_parameters.json", _os_cal.path.join(_d_cal, "config", "adaptive_parameters.json"))
+    _chemin_params_cal = _os_cal.path.join(_d_cal, "config", "adaptive_parameters.json")
+    _chemin_etat_cal = _os_cal.path.join(_d_cal, "config", "adaptive_state.json")
+    _chemin_journal_cal = _os_cal.path.join(_d_cal, "config", "journal_promotion.jsonl")
+
+    verite(
+        "evaluer_proposition CAS échantillon insuffisant (rejet attendu) "
+        ": bloqué à l'étape garde_fous, jamais un test contrefactuel "
+        "coûteux lancé pour rien",
+        _cal_dyn.evaluer_proposition("EDV_MIN_P_67_71", 0.07, 0.07, 0.065, 10, [], [])["etape"] == "garde_fous",
+    )
+
+    _sel_cal, _cf_cal = [], []
+    for _i in range(1, 15):
+        _res_cal = "WIN" if _i <= 5 else "LOSS"
+        _sel_cal.append({"date_match": f"2026-08-{_i:02d}", "probabilite": 0.69, "edv": 0.072, "cote": 1.5, "resultat_marche": _res_cal})
+        _cf_cal.append({"date_match": f"2026-08-{_i:02d}", "probabilite": 0.69, "edv": 0.0696, "cote": 1.45, "resultat_marche": "WIN", "motif_rejet": "EDV_INSUFFISANTE"})
+    for _i in range(1, 7):
+        _res_cal = "WIN" if _i <= 2 else "LOSS"
+        _sel_cal.append({"date_match": f"2026-09-{_i:02d}", "probabilite": 0.69, "edv": 0.072, "cote": 1.5, "resultat_marche": _res_cal})
+        _cf_cal.append({"date_match": f"2026-09-{_i:02d}", "probabilite": 0.69, "edv": 0.0696, "cote": 1.45, "resultat_marche": "LOSS", "motif_rejet": "EDV_INSUFFISANTE"})
+
+    _r_val_cal = _cal_dyn.evaluer_proposition("EDV_MIN_P_67_71", 0.07, 0.07, 0.0695, 60, _sel_cal, _cf_cal)
+    verite(
+        "evaluer_proposition CAS garde-fous respectés mais sur-ajustement "
+        "(rejet attendu) : passe le garde-fou d'amplitude (0.71% < 5%), "
+        "bloqué à l'étape validation -- preuve que les deux étapes sont "
+        "réellement enchaînées, pas une seule redondante",
+        _r_val_cal["decision"] == "REJETE" and _r_val_cal["etape"] == "validation",
+    )
+
+    _cal_dyn.rejeter(
+        "EDV_MIN_P_67_71", 0.07, 0.0695, "2026-09-13", _r_val_cal["motif"],
+        chemin_journal_promotion=_chemin_journal_cal,
+    )
+    _journal_apres_rejet = open(_chemin_journal_cal, encoding="utf-8").read().strip().splitlines()
+    verite(
+        "rejeter (doit réussir) : écrit une ligne REJETE dans le journal "
+        "de promotion, jamais dans la configuration active (aucun fichier "
+        "de paramètres créé dans ce dossier temporaire à ce stade)",
+        len(_journal_apres_rejet) == 1
+        and _json_cal.loads(_journal_apres_rejet[0])["decision"] == "REJETE"
+        and not _os_cal.path.exists(_os_cal.path.join(_d_cal, "config", "adaptive_state.json")),
+    )
+
+    _valeur_avant_promo = _cal_dyn.charger_parametres(_chemin_params_cal)["parametres"]["COTE_MIN"]["valeur"]
+    _cal_dyn.promouvoir(
+        "COTE_MIN", 1.25, "2026-09-13", evidence={"test": True},
+        chemin_parametres=_chemin_params_cal, chemin_etat=_chemin_etat_cal,
+        chemin_journal_promotion=_chemin_journal_cal,
+    )
+    _params_apres_promo = _json_cal.load(open(_chemin_params_cal, encoding="utf-8"))
+    _etat_apres_promo = _json_cal.load(open(_chemin_etat_cal, encoding="utf-8"))
+    verite(
+        "promouvoir (doit réussir) : COTE_MIN passe réellement de "
+        f"{_valeur_avant_promo} à 1.25 sur DISQUE (pas seulement en "
+        "mémoire), l'état actif est mis à jour, version_active incrémentée",
+        _params_apres_promo["parametres"]["COTE_MIN"]["valeur"] == 1.25
+        and _etat_apres_promo["parametres"]["COTE_MIN"]["valeur_active"] == 1.25
+        and _etat_apres_promo["version_active"] == 1,
+    )
+    _journal_apres_promo = open(_chemin_journal_cal, encoding="utf-8").read().strip().splitlines()
+    verite(
+        "promouvoir (doit réussir) : ajoute une 2e ligne au journal "
+        "(PROMU), sans jamais effacer la ligne de rejet précédente -- "
+        "append-only confirmé de bout en bout à travers calibration.py",
+        len(_journal_apres_promo) == 2
+        and _json_cal.loads(_journal_apres_promo[1])["decision"] == "PROMU"
+        and _json_cal.loads(_journal_apres_promo[0])["decision"] == "REJETE",
+    )
+
+    _leve_param_absent = False
+    try:
+        _cal_dyn.promouvoir("PARAM_INEXISTANT", 1, "2026-09-13",
+                             chemin_parametres=_chemin_params_cal, chemin_etat=_chemin_etat_cal,
+                             chemin_journal_promotion=_chemin_journal_cal)
+    except _cal_dyn.CalibrationError:
+        _leve_param_absent = True
+    verite(
+        "promouvoir CAS paramètre absent de la configuration (rejet "
+        "attendu) : CalibrationError explicite, jamais une écriture "
+        "partielle qui créerait le paramètre à la volée",
+        _leve_param_absent,
+    )
+
+    _leve_fichier_absent = False
+    try:
+        _cal_dyn.charger_parametres(_os_cal.path.join(_d_cal, "jamais_cree.json"))
+    except _cal_dyn.CalibrationError:
+        _leve_fichier_absent = True
+    verite(
+        "charger_parametres CAS fichier absent (rejet attendu) : "
+        "CalibrationError explicite -- contrairement à charger_etat, "
+        "l'absence du fichier de PARAMÈTRES n'est jamais un cas normal",
+        _leve_fichier_absent,
+    )
+    verite(
+        "charger_etat CAS fichier absent (doit réussir, cas honnête) : "
+        "état vide par défaut, jamais une exception -- le tout premier "
+        "cycle n'a normalement pas encore d'état actif",
+        _cal_dyn.charger_etat(_os_cal.path.join(_d_cal, "jamais_cree.json"))["version_active"] == 0,
+    )
+except Exception as _e_cal:
+    verite(
+        "tests réels de calibration.py exécutables sans exception inattendue",
+        False,
+        str(_e_cal),
+    )
+
+
+# ============================================================================
+print("\n" + "=" * 70)
 if echecs:
     print(f"AUDIT ÉCHOUÉ -- {len(echecs)} vérité(s) fausse(s) :")
     for e in echecs:
