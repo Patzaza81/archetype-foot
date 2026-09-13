@@ -86,3 +86,31 @@ def charge_toutes_les_archives(repertoire: str = "archive") -> list[dict[str, An
     for chemin in sorted(glob.glob(os.path.join(repertoire, "*.json"))):
         records.extend(archive.charger_archive(chemin))
     return records
+
+
+def candidats_selected_pending(repertoire: str = "archive") -> list[dict[str, Any]]:
+    """Toutes les sélections SELECTED encore PENDING (matchs pas encore
+    joués) -- le pool dans lequel les scripts de tickets (observation ET
+    réels) construisent un nouveau ticket. Ajouté le 13/09/2026, extrait
+    de observe_tickets_archetype_model.py pour être réutilisé sans
+    dupliquer -- jamais les COUNTERFACTUAL (jamais de vrais paris) ni les
+    RESOLVED/NON_RESOLU_DEFINITIF (matchs déjà tranchés)."""
+    tous = charge_toutes_les_archives(repertoire)
+    return [
+        r for r in tous
+        if r.get("categorie") == archive.CATEGORIE_SELECTED
+        and r.get("resultat_statut") == archive.STATUT_PENDING
+    ]
+
+
+def selections_resolues(repertoire: str = "archive") -> list[dict[str, Any]]:
+    """Tous les enregistrements SELECTED déjà RESOLVED -- la population
+    utilisée pour construire la matrice de dépendance des tickets et pour
+    la calibration. Ajouté le 13/09/2026, même principe de partage que
+    candidats_selected_pending()."""
+    tous = charge_toutes_les_archives(repertoire)
+    return [
+        r for r in tous
+        if r.get("categorie") == archive.CATEGORIE_SELECTED
+        and r.get("resultat_statut") == archive.STATUT_RESOLVED
+    ]
