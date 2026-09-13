@@ -28,8 +28,13 @@ pas de logique de dispersion dupliquée.
 """
 
 from ..statistics.distributions import ecart_type as _ecart_type
+from ..config_loader import valeur_parametre as _valeur_parametre
 
-ROBUSTNESS_STD_THRESHOLD = 0.08  # V1, non calibré, à réviser par walk-forward uniquement
+# AJOUT 13/09/2026, feu vert explicite de Patrick -- lit désormais
+# config/adaptive_parameters.json, avec repli sur 0.08 si absent/invalide
+# (voir archetype_model/config_loader.py). Logique de comparaison
+# inchangée plus bas (écart-type <= ROBUSTNESS_STD_THRESHOLD -> STABLE).
+ROBUSTNESS_STD_THRESHOLD = _valeur_parametre("ROBUSTNESS_STD_THRESHOLD")
 
 STATUT_STABLE = "STABLE"
 STATUT_INSTABLE = "INSTABLE"
