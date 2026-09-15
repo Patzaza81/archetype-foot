@@ -1,48 +1,16 @@
 """
-archetype_model/data/odds_provider.py — Adaptateur de cotes réelles,
-LECTURE SEULE. Ne scrape rien, ne calcule ni Edge ni EDV, ne sélectionne
-rien. Traduit uniquement le format déjà produit par le pipeline
-existant vers les clés internes d'archetype_model.
+archetype_model/data/odds_provider.py — Adaptateur de cotes réelles.
 
-SOURCE CHOISIE (audit du 08/09/2026, pas une supposition) :
-`precalcul.json` → `signaux[].TOUS_MARCHES_EVALUES` -- liste plate
-{"marche": "<libellé français>", "cote_observee": <float>,
-"probabilite_modele": <float>} présente pour TOUS les matchs traités
-(READY et PARTIAL), quelle que soit l'origine réelle de la cote
-(`source_cotes` vaut soit "matchendirect_bet365" soit "manuel").
+Lecture seule : ne scrape rien, ne calcule ni Edge ni EDV, ne sélectionne
+rien. Traduit le format déjà produit par le pipeline vers les clés internes
+d'archetype_model.
 
-Le champ `probabilite_modele` de ces entrées est la probabilité de
-L'ANCIEN MOTEUR -- JAMAIS lu ni réutilisé ici, même par accident.
-Seul `cote_observee` est extrait.
-
-RAPPEL DE PATRICK (08/09/2026), à ne pas oublier pour la suite mais qui
-NE bloque PAS ce module : Betpawa est le site où le pari s'exécute
-réellement, à privilégier dès qu'un arbitrage entre plusieurs sources
-sera nécessaire. Aujourd'hui, `source_cotes == "manuel"` est le seul
-indicateur disponible dans precalcul.json pour repérer les cotes
-Betpawa (vs "matchendirect_bet365") -- exposé ici via `est_betpawa`
-pour rendre ce futur arbitrage possible sans reprendre la plomberie,
-mais aucune préférence n'est appliquée pour l'instant : une seule
-source de cote par match existe dans precalcul.json aujourd'hui, pas
-un choix entre plusieurs.
-
-MARCHÉS NON COUVERTS, assumé et documenté (pas une erreur silencieuse) :
-statut au 09/09/2026 (reprise de session, 2e feu vert de Patrick) --
-"Cage inviolée" et "Encaisse au moins 1 but", domicile ET extérieur, plus
-"Total buts - pair/impair" sont désormais TOUS couverts (v3 §9.2, familles
-CLEAN_SHEET et PAIR_IMPAIR -- CLEAN_SHEET réutilise directement
-buts_equipe_exterieur[0.5]/buts_equipe_domicile[0.5] déjà calculés, voir
-poisson/markets.py::probabilite_parite_totale pour PAIR_IMPAIR). Sur le
-run réel du 09/09/2026 (698 matchs), plus aucun libellé non couvert.
-`marches_non_couverts` reste dans le résultat pour tout libellé qui
-apparaîtrait à l'avenir et ne serait pas encore reconnu -- jamais
-silencieusement ignoré.
+RÈGLE DE SÉCURITÉ : un marché dont la correspondance cote -> calcul n'est
+pas démontrée est refusé, jamais approximé.
 """
 
 import json
 import re
-
-# --- Traduction libellé français -> clé structurée archetype_model ---
 
 _LIBELLES_STATIQUES = {
     "1X2 - 1": ("1x2", "domicile"),
@@ -55,15 +23,6 @@ _LIBELLES_STATIQUES = {
     "BTTS - non": ("btts", "non"),
     "Total buts - pair": ("parite_totale", "pair"),
     "Total buts - impair": ("parite_totale", "impair"),
-    # Cage inviolée domicile = l'EXTÉRIEUR ne marque pas = exactement
-    # buts_equipe_exterieur à la ligne 0.5, côté "under" -- même
-    # probabilité, pas une approximation (chantier du 09/09/2026, feu
-    # vert de Patrick). "Encaisse au moins 1 but" est son complément
-    # exact (côté "over" de la même ligne). Symétrique côté extérieur :
-    # cage inviolée extérieur = le DOMICILE ne marque pas =
-    # buts_equipe_domicile à la ligne 0.5 (2e feu vert, même séance :
-    # "tout ajouter sans exception si les données permettent de calculer
-    # sans ambiguïté").
     "Cage inviolée - Domicile": ("buts_equipe_exterieur", 0.5, "under"),
     "Encaisse au moins 1 but - Domicile": ("buts_equipe_exterieur", 0.5, "over"),
     "Cage inviolée - Extérieur": ("buts_equipe_domicile", 0.5, "under"),
@@ -72,59 +31,53 @@ _LIBELLES_STATIQUES = {
 
 _RE_BUTS = re.compile(r"^(Plus|Moins) de (\d+(?:\.\d+)?) buts(?: - (Domicile|Extérieur))?$")
 _RE_HANDICAP = re.compile(r"^Handicap (-?\d+(?:\.\d+)?) - (Domicile|Extérieur)$")
+_RE_COMBO = re.compile(
+    r"^(?:Double chance\s*-\s*)?(1X|X2|12)\s*\+\s*(Plus|Moins) de (\d+(?:\.\d+)?) buts$",
+    re.IGNORECASE,
+)
 
 
 def _parse_libelle(libelle):
-    """
-    Traduit un libellé français de precalcul.json en clé structurée
-    reconnue par archetype_model : (famille, ligne, sens) pour les
-    marchés paramétrés (total, buts par équipe, handicap), (famille,
-    selection) pour les marchés fixes (1X2, DC, BTTS).
-
-    Retourne None si le libellé n'est PAS (encore) couvert par
-    archetype_model (ex. "Cage inviolée - Domicile") -- ce n'est pas
-    une erreur de format, juste un marché non codé côté archetype_model
-    à ce jour (voir docstring du module).
-    """
     if libelle in _LIBELLES_STATIQUES:
         return _LIBELLES_STATIQUES[libelle]
 
-    m = _RE_BUTS.match(libelle)
+    # Combo Double Chance + Total : désormais réellement câblé vers
+    # l'identifiant structuré attendu par archetype_model.main.
+    m = _RE_COMBO.match(libelle or "")
+    if m:
+        dc, sens_fr, ligne_str = m.groups()
+        sens = "over" if sens_fr.lower() == "plus" else "under"
+        return ("combo_dc_total", dc.upper(), sens, float(ligne_str))
+
+    m = _RE_BUTS.match(libelle or "")
     if m:
         sens_fr, ligne_str, cote_partie = m.groups()
         ligne = float(ligne_str)
         sens = "over" if sens_fr == "Plus" else "under"
         if cote_partie is None:
             return ("over_under_total", ligne, sens)
-        elif cote_partie == "Domicile":
+        if cote_partie == "Domicile":
             return ("buts_equipe_domicile", ligne, sens)
-        else:
-            return ("buts_equipe_exterieur", ligne, sens)
+        return ("buts_equipe_exterieur", ligne, sens)
 
-    m = _RE_HANDICAP.match(libelle)
+    m = _RE_HANDICAP.match(libelle or "")
     if m:
         ligne_str, cote_partie = m.groups()
         ligne = float(ligne_str)
-        cote_selection = "domicile" if cote_partie == "Domicile" else "exterieur"
-        return ("handicap", ligne, cote_selection)
+        # CORRECTIF SÉCURITÉ : le branchement actuel de main.py traite le
+        # handicap comme un handicap DOMICILE. Pour une cote extérieure h,
+        # utiliser la "perte" du handicap domicile h n'est pas équivalent à
+        # la victoire du handicap extérieur h (notamment sur les lignes
+        # demi/quart et sur les pushes). On refuse donc l'extérieur tant que
+        # le calculateur symétrique n'est pas branché explicitement.
+        if cote_partie == "Extérieur":
+            return None
+        return ("handicap", ligne, "domicile")
 
     return None
 
 
 def extrait_cotes(signal_match):
-    """
-    `signal_match` : une entrée de `precalcul.json["signaux"]` déjà
-    chargée en mémoire (pas de lecture fichier ici).
-
-    Retourne {"cotes": {clé_structurée: cote_decimale}, "source_cotes":
-    str|None, "est_betpawa": bool, "marches_non_couverts": [libellés]}.
-
-    Une entrée `TOUS_MARCHES_EVALUES` sans `cote_observee` exploitable
-    (absente, None, ou pas un nombre) est ignorée silencieusement pour
-    CETTE entrée précise, sans faire échouer l'extraction des autres
-    marchés du même match -- un problème sur une ligne ne doit jamais
-    priver le reste du match de ses cotes valides.
-    """
     cotes = {}
     marches_non_couverts = []
     for entree in signal_match.get("TOUS_MARCHES_EVALUES", []):
@@ -147,17 +100,6 @@ def extrait_cotes(signal_match):
 
 
 def recupere_cotes_pour_match(match_id, chemin_precalcul="precalcul.json"):
-    """
-    Point d'entrée principal. Cherche `match_id` dans
-    `precalcul.json["signaux"]` et retourne le résultat d'`extrait_cotes`,
-    enrichi d'un statut explicite.
-
-    Retourne {"statut": "OK"|"MATCH_INTROUVABLE", "cotes": {...},
-    "source_cotes": ..., "est_betpawa": ..., "marches_non_couverts": [...]}.
-    "MATCH_INTROUVABLE" -> "cotes" vide, jamais une exception : le
-    match n'a peut-être pas encore été traité par le pipeline existant,
-    ce n'est pas une erreur de ce module.
-    """
     with open(chemin_precalcul, "r", encoding="utf-8") as f:
         precalcul = json.load(f)
 
