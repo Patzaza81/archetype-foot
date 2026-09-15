@@ -1,40 +1,20 @@
-// traduction_marches.js — créé le 10/09/2026, à la demande de Patrick :
-// "pas d'abréviations (P1/P2/P3, H2H, EDV...), langage simple".
-//
-// RÈGLE ABSOLUE : ce fichier ne fait AUCUN calcul et ne prend AUCUNE
-// décision. Il transforme uniquement des clés techniques déjà produites
-// par archetype_model (marche, niveau, h2h_palier) en texte lisible. Si
-// une clé est inconnue, on affiche un texte de repli lisible plutôt que
-// de deviner ou de planter -- jamais un throw pour un marché qu'on ne
-// reconnaît pas encore.
+// traduction_marches.js — présentation des marchés, sans calcul ni décision.
 
-/**
- * Traduit une clé de marché technique (ex. "over_under_total_3.5_under",
- * "handicap_domicile_-0.5", "1x2_domicile") en libellé français.
- * @param {string} marche - la clé technique produite par archetype_model
- * @param {{domicile: string, exterieur: string}} equipes
- * @returns {string} libellé prêt à afficher
- */
 function traduitMarche(marche, equipes) {
   const dom = equipes.domicile || "Domicile";
   const ext = equipes.exterieur || "Extérieur";
 
-  // -- 1X2 --
   if (marche === "1x2_domicile") return `Victoire ${dom}`;
   if (marche === "1x2_nul") return "Match nul";
   if (marche === "1x2_exterieur") return `Victoire ${ext}`;
 
-  // -- Double chance --
   if (marche === "double_chance_1X") return `${dom} ne perd pas`;
   if (marche === "double_chance_X2") return `${ext} ne perd pas`;
   if (marche === "double_chance_12") return "Pas de match nul";
 
-  // -- BTTS --
   if (marche === "btts_oui") return "Les deux équipes marquent";
   if (marche === "btts_non") return "Une des deux équipes ne marque pas";
 
-  // -- Over/Under total (base historique "over_2_5" OU périmètre
-  // dynamique "over_under_total_{ligne}_{sens}") --
   if (marche === "over_2_5") return "Plus de 2,5 buts";
   {
     const m = marche.match(/^over_under_total_(-?\d+(?:\.\d+)?)_(over|under)$/);
@@ -44,14 +24,11 @@ function traduitMarche(marche, equipes) {
     }
   }
 
-  // -- Cage inviolée / encaisse (base historique, toujours ligne 0.5) --
   if (marche === "cage_inviolee_domicile") return `${dom} garde sa cage inviolée`;
   if (marche === "cage_inviolee_exterieur") return `${ext} garde sa cage inviolée`;
   if (marche === "encaisse_domicile") return `${dom} encaisse au moins un but`;
   if (marche === "encaisse_exterieur") return `${ext} encaisse au moins un but`;
 
-  // -- Buts par équipe, périmètre dynamique (lignes hors 0.5, ou toute
-  // ligne si jamais le nom générique est utilisé) --
   {
     const m = marche.match(/^buts_equipe_(domicile|exterieur)_(-?\d+(?:\.\d+)?)_(over|under)$/);
     if (m) {
@@ -65,11 +42,9 @@ function traduitMarche(marche, equipes) {
     }
   }
 
-  // -- Parité --
   if (marche === "parite_pair") return "Nombre de buts pair";
   if (marche === "parite_impair") return "Nombre de buts impair";
 
-  // -- Handicap --
   {
     const m = marche.match(/^handicap_(domicile|exterieur)_(-?\d+(?:\.\d+)?)$/);
     if (m) {
@@ -80,7 +55,6 @@ function traduitMarche(marche, equipes) {
     }
   }
 
-  // -- Combinés Double Chance + Total --
   {
     const m = marche.match(/^combo_(1X|X2|12)_(over|under)_(-?\d+(?:\.\d+)?)$/);
     if (m) {
@@ -91,43 +65,31 @@ function traduitMarche(marche, equipes) {
     }
   }
 
-  // Repli : jamais un plantage, un libellé un peu technique mais lisible
-  // plutôt qu'un crash sur un marché pas encore traduit ici.
   return marche.replace(/_/g, " ");
 }
 
-/** Traduit le niveau technique du moteur en étoiles + texte de confiance. */
+// IMPORTANT : "niveau" est un niveau d'éligibilité du filtre, pas une
+// probabilité empirique de gain. On ne l'appelle plus "Confiance" dans l'UI.
 const NIVEAU_VERS_CONFIANCE = {
-  PREMIUM: { etoiles: 5, texte: "Exceptionnelle" },
-  TRES_FORT: { etoiles: 4, texte: "Très forte" },
-  FORT: { etoiles: 3, texte: "Forte" },
-  ELIGIBLE: { etoiles: 2, texte: "Correcte" },
-  ELIGIBLE_PLUS: { etoiles: 1, texte: "Suffisante" },
+  PREMIUM: { etoiles: 5, texte: "Éligibilité maximale" },
+  TRES_FORT: { etoiles: 4, texte: "Éligibilité très forte" },
+  FORT: { etoiles: 3, texte: "Éligibilité forte" },
+  ELIGIBLE: { etoiles: 2, texte: "Éligibilité validée" },
+  ELIGIBLE_PLUS: { etoiles: 1, texte: "Éligibilité minimale" },
 };
 function traduitNiveau(niveau) {
-  return NIVEAU_VERS_CONFIANCE[niveau] || { etoiles: 1, texte: "Suffisante" };
+  return NIVEAU_VERS_CONFIANCE[niveau] || { etoiles: 1, texte: "Éligibilité minimale" };
 }
 
-/** Traduit le palier H2H technique en phrase compréhensible, ou null si
- * l'historique direct est trop pauvre pour dire quoi que ce soit. */
 function traduitPalierH2H(palier) {
   switch (palier) {
-    case "TRES_FIABLE":
-      return "Confirmé fortement par les confrontations directes passées";
-    case "FIABLE":
-      return "Confirmé par les confrontations directes passées";
-    case "INDICATIF":
-      return "Légèrement appuyé par l'historique direct, à prendre avec prudence";
-    default:
-      return null; // INSUFFISANT ou inconnu : on ne dit rien plutôt que d'inventer
+    case "TRES_FIABLE": return "Confirmé fortement par les confrontations directes passées";
+    case "FIABLE": return "Confirmé par les confrontations directes passées";
+    case "INDICATIF": return "Légèrement appuyé par l'historique direct, à prendre avec prudence";
+    default: return null;
   }
 }
 
-/** Détermine le sujet de la phrase de confirmation selon le marché :
- * une équipe précise, ou "les deux équipes confondues" pour les marchés
- * qui combinent les matchs des deux (buts total, BTTS, parité...). Pure
- * traduction -- ne décide de rien, se contente de savoir quelle liste de
- * matchs le comptage (déjà calculé côté serveur) représente. */
 function sujetConfirmation(marche, equipes) {
   const dom = equipes.domicile || "L'équipe à domicile";
   const ext = equipes.exterieur || "L'équipe à l'extérieur";
@@ -138,14 +100,6 @@ function sujetConfirmation(marche, equipes) {
   return { texte: "Les deux équipes (confondues)", pluriel: true };
 }
 
-/**
- * Construit la phrase "Pourquoi ?" chiffrée à partir du comptage réel
- * `confirmation` = {nb_confirmant, nb_echantillon} déjà calculé côté
- * serveur (archetype_model/justification.py) sur les matchs réellement
- * joués. Ne recalcule rien, ne fabrique aucun chiffre : si `confirmation`
- * est null (marché pas encore couvert par ce comptage), renvoie null --
- * l'appelant doit alors utiliser une phrase générique de repli.
- */
 function construitPhraseConfirmation(marche, confirmation, equipes) {
   if (!confirmation || !confirmation.nb_echantillon) return null;
   const { nb_confirmant, nb_echantillon } = confirmation;
