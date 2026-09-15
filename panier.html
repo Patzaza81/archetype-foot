@@ -7,33 +7,23 @@
 <title>Archetype Foot — Panier</title>
 <link rel="stylesheet" href="style.css">
 <style>
-  /* Réglages propres à cette page uniquement, sans couleur codée en dur. */
-  #retour-accueil { display: inline-block; margin-bottom: 12px; }
-  #statut-panier { padding: 0 0 16px; font-size: 14px; color: var(--text-secondary); }
-  .carte-panier { margin-bottom: 16px; }
-  .barre-panier { display: flex; justify-content: flex-end; margin-bottom: 6px; }
-  .bouton-retirer-panier {
-    background: none; border: 1px solid var(--text-secondary); color: var(--text-secondary);
-    border-radius: 8px; padding: 6px 12px; font-size: 13px; cursor: pointer;
-  }
+  #retour-accueil { display:inline-block; margin-bottom:12px; }
+  #statut-panier { padding:0 0 16px; font-size:14px; color:var(--text-secondary); }
+  .carte-panier { margin-bottom:18px; }
+  .barre-panier { display:flex; justify-content:flex-end; gap:8px; margin-bottom:8px; }
+  .bouton-analyse-panier,.bouton-retirer-panier { border-radius:8px; padding:7px 12px; font-size:13px; cursor:pointer; }
+  .bouton-analyse-panier { background:var(--accent,var(--p1)); border:1px solid var(--accent,var(--p1)); color:var(--bg,var(--surface)); }
+  .bouton-analyse-panier:disabled { opacity:.45; cursor:not-allowed; }
+  .bouton-retirer-panier { background:none; border:1px solid var(--text-secondary); color:var(--text-secondary); }
 </style>
 </head>
 <body>
-<header>
-  <div class="header-top">
-    <h1>Archetype Foot — Panier</h1>
-  </div>
-</header>
+<header><div class="header-top"><h1>Archetype Foot — Panier</h1></div></header>
 <main>
   <a id="retour-accueil" href="index.html" class="nav-bouton">← Accueil</a>
   <p id="statut-panier">Chargement…</p>
   <div id="panier-cartes"></div>
 </main>
-<!-- traduction_marches.js et archetype.js sont réutilisés tels quels
-     (construitCarte, estArchetypeGo, echappeHtml...) -- jamais dupliqués
-     ici, pour ne jamais diverger visuellement de la page Archetype.
-     archetype.js ne déclenche son auto-chargement que si un conteneur
-     #matches existe -- absent ici, donc sans effet (voir archetype.js). -->
 <script src="traduction_marches.js"></script>
 <script src="archetype.js"></script>
 <script src="panier.js"></script>
