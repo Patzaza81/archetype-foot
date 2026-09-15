@@ -31,7 +31,7 @@ _LIBELLES_STATIQUES = {
 
 _RE_BUTS = re.compile(r"^(Plus|Moins) de (\d+(?:\.\d+)?) buts(?: - (Domicile|Extérieur))?$")
 # Périmètre volontairement limité au marché Betpawa : « Handicap À 3 Choix | Fin de Match ».
-# Les autres formes de handicap sont ignorées.
+# La clé interne stocke toujours la ligne appliquée au domicile.
 _RE_HANDICAP_3 = re.compile(r"^(Domicile|Nul|Extérieur)\s+([+-]?\d+)$", re.IGNORECASE)
 _RE_COMBO = re.compile(
     r"^(?:Double chance\s*-\s*)?(1X|X2|12)\s*\+\s*(Plus|Moins) de (\d+(?:\.\d+)?) buts$",
@@ -63,11 +63,19 @@ def _parse_libelle(libelle):
         ligne = float(ligne_str)
         sel = sel.lower()
         if sel == "domicile":
-            return ("handicap_3choix", ligne, "domicile")
-        if sel == "nul":
-            return ("handicap_3choix", ligne, "nul")
-        if sel == "extérieur":
-            return ("handicap_3choix", ligne, "exterieur")
+            ligne_domicile = ligne
+            selection = "domicile"
+        elif sel == "nul":
+            ligne_domicile = ligne
+            selection = "nul"
+        else:
+            # Betpawa affiche le handicap du côté extérieur avec le signe
+            # opposé. On normalise vers la ligne appliquée au domicile afin
+            # que les trois issues d'une même ligne utilisent exactement
+            # la même référence mathématique.
+            ligne_domicile = -ligne
+            selection = "exterieur"
+        return ("handicap_3choix", ligne_domicile, selection)
     return None
 
 
