@@ -31,7 +31,7 @@ _LIBELLES_STATIQUES = {
 
 _RE_BUTS = re.compile(r"^(Plus|Moins) de (\d+(?:\.\d+)?) buts(?: - (Domicile|Extérieur))?$")
 # Périmètre volontairement limité au marché Betpawa : « Handicap À 3 Choix | Fin de Match ».
-# La clé interne stocke toujours la ligne appliquée au domicile.
+# Les trois issues d'une même ligne partagent une seule ligne interne normalisée.
 _RE_HANDICAP_3 = re.compile(r"^(Domicile|Nul|Extérieur)\s+([+-]?\d+)$", re.IGNORECASE)
 _RE_COMBO = re.compile(
     r"^(?:Double chance\s*-\s*)?(1X|X2|12)\s*\+\s*(Plus|Moins) de (\d+(?:\.\d+)?) buts$",
@@ -60,22 +60,18 @@ def _parse_libelle(libelle):
     m = _RE_HANDICAP_3.match(libelle or "")
     if m:
         sel, ligne_str = m.groups()
-        ligne = float(ligne_str)
+        # Le moteur principal reçoit une ligne interne positive puis applique
+        # -ligne à resultat_handicap(), qui représente le handicap domicile.
+        # Ainsi Domicile -3, Nul -3 et Extérieur +3 utilisent exactement
+        # la même référence mathématique : h = -3.
+        ligne_interne = abs(float(ligne_str))
         sel = sel.lower()
         if sel == "domicile":
-            ligne_domicile = ligne
-            selection = "domicile"
-        elif sel == "nul":
-            ligne_domicile = ligne
-            selection = "nul"
-        else:
-            # Betpawa affiche le handicap du côté extérieur avec le signe
-            # opposé. On normalise vers la ligne appliquée au domicile afin
-            # que les trois issues d'une même ligne utilisent exactement
-            # la même référence mathématique.
-            ligne_domicile = -ligne
-            selection = "exterieur"
-        return ("handicap_3choix", ligne_domicile, selection)
+            return ("handicap_3choix", ligne_interne, "domicile")
+        if sel == "nul":
+            return ("handicap_3choix", ligne_interne, "nul")
+        if sel == "extérieur":
+            return ("handicap_3choix", ligne_interne, "exterieur")
     return None
 
 
