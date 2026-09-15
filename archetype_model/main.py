@@ -120,17 +120,15 @@ def _extracteur_dynamique(cle, matrices_par_scenario, dist_a_par_scenario, dist_
     if cle[0] == "buts_equipe_exterieur":
         _, ligne, sens = cle
         return lambda s: (markets.probabilites_buts_equipe(dist_b_par_scenario[s], ligne) or {}).get(sens) if dist_b_par_scenario[s] else None
-    if cle[0] == "handicap":
+    if cle[0] == "handicap_3choix":
         _, ligne, sel = cle
         def f(s):
             if not matrices_par_scenario[s]: return None
-            if sel == "domicile":
-                r = markets.resultat_handicap(matrices_par_scenario[s], ligne)
-                return r["gain"] if r else None
-            # Handicap extérieur h : P(B + h > A) = P(A - h < B),
-            # donc perte du handicap domicile (-h), jamais perte du même h.
             r = markets.resultat_handicap(matrices_par_scenario[s], -ligne)
-            return r["perte"] if r else None
+            if not r: return None
+            if sel == "domicile": return r["gain"]
+            if sel == "nul": return r["push"]
+            return r["perte"]
         return f
     if cle[0] == "combo_dc_total":
         _, dc, sens, ligne = cle
@@ -191,7 +189,7 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
     matrices_par_scenario = {s: distribution.matrice_scores(lambdas_dyn["A"][s], lambdas_dyn["B"][s]) for s in SCENARIOS}
     dist_a_par_scenario = {s: distribution.distribution_marginale(lambdas_dyn["A"][s]) for s in SCENARIOS}
     dist_b_par_scenario = {s: distribution.distribution_marginale(lambdas_dyn["B"][s]) for s in SCENARIOS}
-    familles = {"1x2": ("RESULT", "GROUPE_RESULTAT"), "double_chance": ("DOUBLE_CHANCE", "GROUPE_RESULTAT"), "over_under_total": ("GOALS_TOTAL", "GROUPE_BUTS"), "buts_equipe_domicile": ("GOALS_EQUIPE_DOMICILE", "GROUPE_BUTS"), "buts_equipe_exterieur": ("GOALS_EQUIPE_EXTERIEUR", "GROUPE_BUTS"), "handicap": ("HANDICAP", "GROUPE_HANDICAP"), "combo_dc_total": ("COMBO_DC_TOTAL", "GROUPE_COMBO_DC_TOTAL"), "btts": ("BTTS", "GROUPE_BUTS"), "parite_totale": ("PARITE", "GROUPE_BUTS")}
+    familles = {"1x2": ("RESULT", "GROUPE_RESULTAT"), "double_chance": ("DOUBLE_CHANCE", "GROUPE_RESULTAT"), "over_under_total": ("GOALS_TOTAL", "GROUPE_BUTS"), "buts_equipe_domicile": ("GOALS_EQUIPE_DOMICILE", "GROUPE_BUTS"), "buts_equipe_exterieur": ("GOALS_EQUIPE_EXTERIEUR", "GROUPE_BUTS"), "handicap_3choix": ("HANDICAP", "GROUPE_HANDICAP"), "combo_dc_total": ("COMBO_DC_TOTAL", "GROUPE_COMBO_DC_TOTAL"), "btts": ("BTTS", "GROUPE_BUTS"), "parite_totale": ("PARITE", "GROUPE_BUTS")}
     cles_deja = {( "1x2", "domicile"),("1x2", "nul"),("1x2", "exterieur"),("btts", "oui"),("btts", "non"),("over_under_total",2.5,"over"),("buts_equipe_exterieur",0.5,"under"),("buts_equipe_exterieur",0.5,"over"),("buts_equipe_domicile",0.5,"under"),("buts_equipe_domicile",0.5,"over"),("parite_totale","pair"),("parite_totale","impair")}
     for cle_cote, cote_reelle in cotes.items():
         if cle_cote in cles_deja or cle_cote[0] not in familles: continue
@@ -201,10 +199,14 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
         robuste = robustness.evalue_robustesse([probabilites_dyn[s] for s in SCENARIOS])
         if not robuste: continue
         statut = robuste["statut"]
-        marche_nom = (f"{cle_cote[0]}_{cle_cote[1]}" if cle_cote[0] in ("1x2", "double_chance") else
-                      f"handicap_{cle_cote[2]}_{cle_cote[1]}" if cle_cote[0] == "handicap" else
-                      f"combo_{cle_cote[1]}_{cle_cote[2]}_{cle_cote[3]}" if cle_cote[0] == "combo_dc_total" else
-                      f"{cle_cote[0]}_{cle_cote[1]}_{cle_cote[2]}")
+        if cle_cote[0] in ("1x2", "double_chance"):
+            marche_nom = f"{cle_cote[0]}_{cle_cote[1]}"
+        elif cle_cote[0] == "handicap_3choix":
+            marche_nom = f"handicap_{cle_cote[2]}_{cle_cote[1]}"
+        elif cle_cote[0] == "combo_dc_total":
+            marche_nom = f"combo_{cle_cote[1]}_{cle_cote[2]}_{cle_cote[3]}"
+        else:
+            marche_nom = f"{cle_cote[0]}_{cle_cote[1]}_{cle_cote[2]}"
         family, group = familles[cle_cote[0]]
         resultat = convergence.filtre_marche_convergent(nombre_matchs_par_scenario=n_par_scenario, probabilites_par_scenario=probabilites_dyn, cote=cote_reelle, robustesse=statut, marche=marche_nom, market_family=family, exposure_group=group)
         diagnostics.append({"marche": marche_nom, "filtre": resultat.as_dict(), "h2h_statut": None})
