@@ -40,15 +40,11 @@ _RE_COMBO = re.compile(
 def _parse_libelle(libelle):
     if libelle in _LIBELLES_STATIQUES:
         return _LIBELLES_STATIQUES[libelle]
-
-    # Combo Double Chance + Total : désormais réellement câblé vers
-    # l'identifiant structuré attendu par archetype_model.main.
     m = _RE_COMBO.match(libelle or "")
     if m:
         dc, sens_fr, ligne_str = m.groups()
         sens = "over" if sens_fr.lower() == "plus" else "under"
         return ("combo_dc_total", dc.upper(), sens, float(ligne_str))
-
     m = _RE_BUTS.match(libelle or "")
     if m:
         sens_fr, ligne_str, cote_partie = m.groups()
@@ -59,21 +55,10 @@ def _parse_libelle(libelle):
         if cote_partie == "Domicile":
             return ("buts_equipe_domicile", ligne, sens)
         return ("buts_equipe_exterieur", ligne, sens)
-
     m = _RE_HANDICAP.match(libelle or "")
     if m:
         ligne_str, cote_partie = m.groups()
-        ligne = float(ligne_str)
-        # CORRECTIF SÉCURITÉ : le branchement actuel de main.py traite le
-        # handicap comme un handicap DOMICILE. Pour une cote extérieure h,
-        # utiliser la "perte" du handicap domicile h n'est pas équivalent à
-        # la victoire du handicap extérieur h (notamment sur les lignes
-        # demi/quart et sur les pushes). On refuse donc l'extérieur tant que
-        # le calculateur symétrique n'est pas branché explicitement.
-        if cote_partie == "Extérieur":
-            return None
-        return ("handicap", ligne, "domicile")
-
+        return ("handicap", float(ligne_str), "domicile" if cote_partie == "Domicile" else "exterieur")
     return None
 
 
@@ -90,7 +75,6 @@ def extrait_cotes(signal_match):
             marches_non_couverts.append(libelle)
         else:
             cotes[cle] = float(cote)
-
     return {
         "cotes": cotes,
         "source_cotes": signal_match.get("source_cotes"),
@@ -102,13 +86,11 @@ def extrait_cotes(signal_match):
 def recupere_cotes_pour_match(match_id, chemin_precalcul="precalcul.json"):
     with open(chemin_precalcul, "r", encoding="utf-8") as f:
         precalcul = json.load(f)
-
     for signal_match in precalcul.get("signaux", []):
         if signal_match.get("match_id") == match_id:
             resultat = extrait_cotes(signal_match)
             resultat["statut"] = "OK"
             return resultat
-
     return {
         "statut": "MATCH_INTROUVABLE",
         "cotes": {},
