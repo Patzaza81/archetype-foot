@@ -30,7 +30,9 @@ _LIBELLES_STATIQUES = {
 }
 
 _RE_BUTS = re.compile(r"^(Plus|Moins) de (\d+(?:\.\d+)?) buts(?: - (Domicile|Extérieur))?$")
-_RE_HANDICAP = re.compile(r"^Handicap (-?\d+(?:\.\d+)?) - (Domicile|Extérieur)$")
+# Périmètre volontairement limité au marché Betpawa : « Handicap À 3 Choix | Fin de Match ».
+# Les autres formes de handicap sont ignorées.
+_RE_HANDICAP_3 = re.compile(r"^(Domicile|Nul|Extérieur)\s+([+-]?\d+)$", re.IGNORECASE)
 _RE_COMBO = re.compile(
     r"^(?:Double chance\s*-\s*)?(1X|X2|12)\s*\+\s*(Plus|Moins) de (\d+(?:\.\d+)?) buts$",
     re.IGNORECASE,
@@ -55,10 +57,17 @@ def _parse_libelle(libelle):
         if cote_partie == "Domicile":
             return ("buts_equipe_domicile", ligne, sens)
         return ("buts_equipe_exterieur", ligne, sens)
-    m = _RE_HANDICAP.match(libelle or "")
+    m = _RE_HANDICAP_3.match(libelle or "")
     if m:
-        ligne_str, cote_partie = m.groups()
-        return ("handicap", float(ligne_str), "domicile" if cote_partie == "Domicile" else "exterieur")
+        sel, ligne_str = m.groups()
+        ligne = float(ligne_str)
+        sel = sel.lower()
+        if sel == "domicile":
+            return ("handicap_3choix", ligne, "domicile")
+        if sel == "nul":
+            return ("handicap_3choix", ligne, "nul")
+        if sel == "extérieur":
+            return ("handicap_3choix", ligne, "exterieur")
     return None
 
 
