@@ -34,6 +34,37 @@ function construitBlocCandidat(info, candidat, equipes) {
   return article;
 }
 function construitDetails(m) { const details = document.createElement("details"); details.className = "details-analyse"; const selection = (m.archetype_model && m.archetype_model.selection) || {}; const lignes = []; RANGS.forEach(r => { const c = selection[r.cle]; if (!c) return; lignes.push(`<div class="ligne-detail"><span class="cle">${echappeHtml(r.titre)}</span><span class="val">${echappeHtml(c.marche || "—")}</span></div>`); lignes.push(`<div class="ligne-detail"><span class="cle">Niveau d'éligibilité</span><span class="val">${echappeHtml(c.niveau || "—")}</span></div>`); lignes.push(`<div class="ligne-detail"><span class="cle">Stabilité</span><span class="val">${echappeHtml(c.robustesse || "—")}</span></div>`); }); details.innerHTML = `<summary><span><span class="details-titre">Détails de l'analyse</span><span class="details-sous-titre">Éléments techniques ayant accompagné la sélection</span></span><span class="chevron">⌄</span></summary><div class="contenu-details">${lignes.join("") || "Aucun détail technique disponible."}</div>`; return details; }
-function construitCarte(m) { const section = document.createElement("section"); section.className = "carte-match"; const equipes = { domicile: m.domicile || "Équipe à domicile", exterieur: m.exterieur || "Équipe à l'extérieur" }; const heure = m.heure_cameroun || m.heure || "—"; const date = formatDate(m.date); const competition = String(m.competition || "").replace(/\s+/g, " ").trim(); section.innerHTML = `<header class="entete-match"><div class="ligne-match"><div class="equipe domicile"><span class="ecusson-equipe">${echappeHtml(initialesEquipe(equipes.domicile))}</span><span>${echappeHtml(equipes.domicile)}</span></div><div class="bloc-horaire"><strong>${echappeHtml(heure)}</strong><span>${echappeHtml(date)}</span></div><div class="equipe exterieur"><span>${echappeHtml(equipes.exterieur)}</span><span class="ecusson-equipe">${echappeHtml(initialesEquipe(equipes.exterieur))}</span></div></div>${competition ? `<div class="competition">● &nbsp;${echappeHtml(competition)}</div>` : ""}</header>`; const selection = (m.archetype_model && m.archetype_model.selection) || {}; const selections = document.createElement("div"); selections.className = "selections"; RANGS.forEach(info => { const bloc = construitBlocCandidat(info, selection[info.cle], equipes); if (bloc) selections.appendChild(bloc); }); section.appendChild(selections); section.appendChild(construitDetails(m)); return section; }
-function afficheSelections(matchs) { const root = document.getElementById("matches"), maj = document.getElementById("maj"); root.innerHTML = ""; const retenus = (matchs || []).filter(estArchetypeGo).sort((a, b) => `${a.date || ""}${a.heure_cameroun || a.heure || ""}`.localeCompare(`${b.date || ""}${b.heure_cameroun || b.heure || ""}`)); maj.textContent = retenus.length ? `${retenus.length} match${retenus.length > 1 ? "s" : ""} analysé${retenus.length > 1 ? "s" : ""} aujourd'hui` : "Aucune sélection pour le moment"; if (!retenus.length) { root.innerHTML = `<div class="etat-vide"><strong>Aucune sélection pour le moment</strong><p>Aucun match ne remplit actuellement tous les critères du modèle. Le système préfère ne rien proposer plutôt que de forcer une sélection.</p></div>`; return; } retenus.forEach(m => root.appendChild(construitCarte(m))); }
+function identiteMatch(m) { if (m && m.match_id !== undefined && m.match_id !== null && String(m.match_id).trim() !== "") return `id:${String(m.match_id)}`; return `match:${String(m?.date || "").trim()}|${String(m?.heure_cameroun || m?.heure || "").trim()}|${String(m?.domicile || "").trim().toLowerCase()}|${String(m?.exterieur || "").trim().toLowerCase()}`; }
+function regroupeMatchs(matchs) {
+  const groupes = new Map();
+  (matchs || []).forEach(m => {
+    const cle = identiteMatch(m);
+    if (!groupes.has(cle)) { groupes.set(cle, m); return; }
+    const actuel = groupes.get(cle);
+    if (m.archetype_model && actuel.archetype_model) {
+      actuel.archetype_model.selection = { ...(actuel.archetype_model.selection || {}), ...(m.archetype_model.selection || {}) };
+    }
+  });
+  return Array.from(groupes.values());
+}
+function construitCarte(m) {
+  const section = document.createElement("section"); section.className = "carte-match";
+  const equipes = { domicile: m.domicile || "Équipe à domicile", exterieur: m.exterieur || "Équipe à l'extérieur" }; const heure = m.heure_cameroun || m.heure || "—"; const date = formatDate(m.date); const competition = String(m.competition || "").replace(/\s+/g, " ").trim();
+  section.innerHTML = `<header class="entete-match"><div class="ligne-match"><div class="equipe domicile"><span class="ecusson-equipe">${echappeHtml(initialesEquipe(equipes.domicile))}</span><span>${echappeHtml(equipes.domicile)}</span></div><div class="bloc-horaire"><strong>${echappeHtml(heure)}</strong><span>${echappeHtml(date)}</span></div><div class="equipe exterieur"><span>${echappeHtml(equipes.exterieur)}</span><span class="ecusson-equipe">${echappeHtml(initialesEquipe(equipes.exterieur))}</span></div></div>${competition ? `<div class="competition">● &nbsp;${echappeHtml(competition)}</div>` : ""}<button type="button" class="bouton-repli" aria-expanded="true">Replier <span aria-hidden="true">⌃</span></button></header>`;
+  const boutonRepli = section.querySelector(".bouton-repli");
+  const selections = document.createElement("div"); selections.className = "contenu-carte";
+  const selection = (m.archetype_model && m.archetype_model.selection) || {};
+  const blocs = RANGS.map(info => construitBlocCandidat(info, selection[info.cle], equipes)).filter(Boolean);
+  blocs.forEach(bloc => selections.appendChild(bloc));
+  section.appendChild(selections); section.appendChild(construitDetails(m));
+  boutonRepli.addEventListener("click", () => { const replie = section.classList.toggle("carte-repliee"); boutonRepli.setAttribute("aria-expanded", String(!replie)); boutonRepli.firstChild.textContent = replie ? "Déplier " : "Replier "; boutonRepli.querySelector("span").textContent = replie ? "⌄" : "⌃"; });
+  return section;
+}
+function afficheSelections(matchs) {
+  const root = document.getElementById("matches"), maj = document.getElementById("maj"); root.innerHTML = "";
+  const retenus = regroupeMatchs(matchs).filter(estArchetypeGo).sort((a, b) => `${a.date || ""}${a.heure_cameroun || a.heure || ""}`.localeCompare(`${b.date || ""}${b.heure_cameroun || b.heure || ""}`));
+  maj.textContent = retenus.length ? `${retenus.length} match${retenus.length > 1 ? "s" : ""} analysé${retenus.length > 1 ? "s" : ""} aujourd'hui` : "Aucune sélection pour le moment";
+  if (!retenus.length) { root.innerHTML = `<div class="etat-vide"><strong>Aucune sélection pour le moment</strong><p>Aucun match ne remplit actuellement tous les critères du modèle. Le système préfère ne rien proposer plutôt que de forcer une sélection.</p></div>`; return; }
+  retenus.forEach(m => root.appendChild(construitCarte(m)));
+}
 if (document.getElementById("matches")) { fetch(`precalcul_leger.json?_=${Date.now()}`).then(r => { if (!r.ok) throw new Error(`precalcul_leger.json introuvable (${r.status})`); return r.json(); }).then(d => afficheSelections(d.signaux || [])).catch(e => { document.getElementById("maj").textContent = "Erreur de chargement : " + e.message; console.error(e); }); }
