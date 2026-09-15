@@ -8,16 +8,18 @@
 <link rel="stylesheet" href="style.css">
 <style>
   #retour-accueil { display:inline-block; margin-bottom:12px; }
-  #statut-panier { padding:0 0 16px; font-size:14px; color:var(--text-secondary); }
+  #statut-panier { padding:0 0 16px; font-size:14px; color:var(--a-muted,var(--text-secondary)); }
+  #panier-cartes { max-width:980px; margin:0 auto; }
   .carte-panier { margin-bottom:18px; }
   .barre-panier { display:flex; justify-content:flex-end; gap:8px; margin-bottom:8px; }
-  .bouton-analyse-panier,.bouton-retirer-panier { border-radius:8px; padding:7px 12px; font-size:13px; cursor:pointer; }
-  .bouton-analyse-panier { background:var(--accent,var(--p1)); border:1px solid var(--accent,var(--p1)); color:var(--bg,var(--surface)); }
+  .bouton-analyse-panier,.bouton-retirer-panier { border-radius:999px; padding:8px 12px; font-size:12px; font-weight:800; cursor:pointer; }
+  .bouton-analyse-panier { background:var(--p1,#e5b83f); border:1px solid var(--p1,#e5b83f); color:#071e18; }
   .bouton-analyse-panier:disabled { opacity:.45; cursor:not-allowed; }
-  .bouton-retirer-panier { background:none; border:1px solid var(--text-secondary); color:var(--text-secondary); }
+  .bouton-retirer-panier { background:none; border:1px solid rgba(255,255,255,.18); color:var(--a-muted,var(--text-secondary)); }
+  .carte-panier .carte-match { margin-bottom:0; }
 </style>
 </head>
-<body>
+<body class="page-archetype">
 <header><div class="header-top"><h1>Archetype Foot — Panier</h1></div></header>
 <main>
   <a id="retour-accueil" href="index.html" class="nav-bouton">← Accueil</a>
