@@ -2442,7 +2442,10 @@ verite(
 
 # ============================================================================
 section("archetype_model/signals/deduplication (09/09/2026) — un candidat par famille "
-        "ET par groupe d'exposition (v3 §12.2, CORRECTIF 9), deux contraintes séparées")
+        "ET par groupe d'exposition (v3 §12.2, CORRECTIF 9), deux contraintes séparées "
+        "[ARCHIVÉ 16/09/2026 -- deduplique() n'est plus appelée en production, voir son "
+        "en-tête de fichier ; ces tests vérifient le code archivé, pas le pipeline actif, "
+        "qui utilise deduplique_par_famille()]")
 # ============================================================================
 from archetype_model.signals import deduplication as _amdedup
 
@@ -2489,7 +2492,10 @@ verite(
 
 # ============================================================================
 section("archetype_model/signals/selector (09/09/2026) — sélection P1/P2/P3 (v3 §12.3), "
-        "H2H utilisé uniquement en départage, jamais en filtre")
+        "H2H utilisé uniquement en départage, jamais en filtre "
+        "[ARCHIVÉ 16/09/2026 -- selector.py n'est plus appelé en production, voir son "
+        "en-tête de fichier ; ces tests vérifient le code archivé, pas le pipeline actif, "
+        "qui utilise signals.selection_edv_directe]")
 # ============================================================================
 from archetype_model.signals import selector as _amselector
 
@@ -3525,6 +3531,10 @@ _am_dyn.analyse_match = _original_analyse_match_dyn
 # testées avant ce chantier, alors que ce sont ces fonctions qui vont
 # alimenter la justification affichée) et de
 # justification.construit_raison_selection/enrichit_justification_selection.
+# [ARCHIVÉ 16/09/2026 -- selector.diagnostique_* n'est plus appelé en
+# production ; justification.py a ses propres branches équivalentes pour
+# selection_edv_directe.diagnostique_*, testées séparément. Ces tests-ci
+# vérifient le code archivé, pas le pipeline actif.]
 # ============================================================================
 from archetype_model.signals import selector as _sel_dyn
 

@@ -74,6 +74,25 @@ def _meilleur(candidats, critere):
 
 def deduplique(candidats, critere="edge"):
     """
+    ██ ARCHIVÉ -- HORS PRODUCTION DEPUIS LE 16/09/2026 ██ Cette fonction
+    (2 étapes : famille PUIS groupe d'exposition) n'est plus appelée
+    nulle part dans le pipeline actif -- uniquement utilisée par
+    signals.selector, lui-même archivé (voir son en-tête de fichier).
+    `archetype_model/main.py` utilise désormais `deduplique_par_famille`
+    ci-dessous (étape 1 seule), la redondance inter-famille étant
+    maintenant gérée par la vraie corrélation
+    (signals.selection_edv_directe.elimine_marches_correles) plutôt que
+    par l'étape 2 ci-dessous, dont la granularité par groupe s'est
+    révélée trop grossière (vérifié : des marchés du même groupe
+    d'exposition peuvent avoir une corrélation réelle aussi basse que
+    -0.41, largement sous le seuil 0.70 utilisé ailleurs).
+
+    Conservée telle quelle, jamais supprimée, au même titre que
+    signals.selector -- ses tests dans audit_permanent.py continuent
+    de vérifier qu'elle se comporte comme documenté, pas que le
+    pipeline de production s'appuie dessus.
+
+    --- Documentation d'origine ci-dessous, non modifiée ---
     Réduit `candidats` (tous supposés déjà ÉLIGIBLES -- ce module ne
     revérifie pas l'éligibilité, voir signals.convergence pour ça) à
     au plus UN candidat par `market_family`, ET au plus UN par

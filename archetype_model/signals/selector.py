@@ -1,4 +1,27 @@
 """
+██ ARCHIVÉ -- HORS PRODUCTION DEPUIS LE 16/09/2026 (décision explicite
+██ de Patrick) ██
+
+Ce module n'est plus appelé nulle part dans le pipeline actif.
+`archetype_model/main.py` utilise désormais
+`signals.selection_edv_directe` (sélection EDV -> probabilité -> cote,
+avec corrélation de Pearson réelle pour éliminer les marchés
+redondants, au lieu de la cascade et des groupes d'exposition
+ci-dessous).
+
+Conservé tel quel, jamais supprimé -- Patrick a explicitement demandé
+de le garder de côté au cas où un retour en arrière serait un jour
+nécessaire. Mais aucune décision de production ne doit plus dépendre
+de ce fichier tant qu'il n'est pas explicitement rebranché (et
+documenté comme tel, avec la même rigueur que son débranchement).
+
+Les tests de ce module dans audit_permanent.py restent présents et
+continuent de passer -- ils vérifient que ce code archivé se comporte
+toujours comme documenté, PAS que le pipeline de production fonctionne
+(voir le marqueur équivalent ajouté dans audit_permanent.py).
+
+--- Documentation d'origine ci-dessous, non modifiée ---
+
 archetype_model/signals/selector.py — Sélection P1/P2/P3 (ARCHETYPE_FOOT
 v3, §12.3), moteur de DÉCISION FINAL -- ne recalcule rien. Reçoit
 uniquement des candidats déjà : filtrés (signals.convergence, unanimité
