@@ -1,37 +1,15 @@
 """
 archetype_model/signals/matrice_croisement.py — Matrice de croisement
-des profils qualitatifs domicile/extérieur (demande explicite de
-Patrick, 16/09/2026, points 2-3).
+des profils qualitatifs domicile/extérieur.
 
-PRINCIPE (dans l'ordre voulu par Patrick, ne pas inverser) :
+PRINCIPE :
     1. profil_equipe.construit_profil() -- valeur réelle de chaque
-       équipe SUR SON RÔLE (ce module ne calcule rien lui-même,
-       il consomme les deux profils déjà construits).
+       équipe SUR SON RÔLE.
     2. CE MODULE -- croise les deux profils sur plusieurs dimensions
        indépendantes pour faire apparaître des TENDANCES NETTES avant
        tout calcul de lambda/EDV.
     3. lambda/EDV/robustesse (main.py, poisson/, edv/) arbitrent
-       ENSUITE entre les tendances qui ressortent ici -- ce module ne
-       calcule ni lambda ni EDV, ne consulte aucune cote, et n'écrit
-       jamais dans candidats/selector.py.
-
-Chaque "règle de croisement" ci-dessous combine UNE statistique de
-l'équipe domicile (sur sa fenêtre domicile) et UNE statistique de
-l'équipe extérieure (sur sa fenêtre extérieure) -- jamais les deux
-statistiques de la même équipe entre elles, jamais domicile+domicile
-ou extérieur+extérieur des deux côtés (ça reproduirait juste un profil
-plutôt que de croiser deux équipes).
-
-Chaque signal reste accompagné du détail de ses dimensions (jamais
-caché) et d'un `score_pondere` (nb_dimensions_convergentes x poids de
-fiabilité croisé), calculé ici en une seule passe -- demande explicite
-de Patrick le 16/09/2026 pour ne pas avoir à relire la fiabilité
-séparément à chaque fois. Nuance à garder en tête : ça reste UN
-score par marché, jamais un score unique fusionnant plusieurs marchés
-différents (over/under, BTTS, résultat...) -- cette fusion-là n'existe
-toujours pas et reste refusée. Trier et choisir entre plusieurs
-signaux convergents pour le même marché est le rôle de
-selector.py/convergence.py EN AVAL, jamais fait ici.
+       ENSUITE entre les tendances qui ressortent ici.
 """
 
 from __future__ import annotations
@@ -44,8 +22,7 @@ SEUIL_BAS = 0.40    # fréquence en-dessous de laquelle une tendance est jugée 
 
 def _niveau_fiabilite_croise(profil_a: dict, profil_b: dict) -> str:
     """Un croisement n'est fiable que si les DEUX profils le sont --
-    la fiabilité d'une paire est celle du maillon le plus faible,
-    jamais une moyenne qui masquerait un des deux côtés trop petit."""
+    la fiabilité d'une paire est celle du maillon le plus faible."""
     from ..statistics.profil_equipe import STATUT_FIABLE
     if profil_a["statut_fiabilite"] == STATUT_FIABLE and profil_b["statut_fiabilite"] == STATUT_FIABLE:
         return STATUT_FIABLE
@@ -53,20 +30,13 @@ def _niveau_fiabilite_croise(profil_a: dict, profil_b: dict) -> str:
 
 
 def _poids_fiabilite_croise(profil_a: dict, profil_b: dict) -> float:
-    """Version numérique de _niveau_fiabilite_croise -- le maillon le
-    plus faible des deux profils (jamais une moyenne, qui masquerait
-    un des deux côtés trop petit)."""
+    """Version numérique de _niveau_fiabilite_croise -- le maillon le plus faible."""
     return min(profil_a["poids_fiabilite"], profil_b["poids_fiabilite"])
 
 
 def _ajoute(signaux: list[dict], marche: str, direction: str, poids_dimensions: list[tuple[str, float]],
             fiabilite: str, poids_fiabilite_num: float):
-    """poids_dimensions : liste de (nom_dimension, valeur_frequence)
-    qui pointent TOUTES dans la même direction pour ce marché -- le
-    nombre de dimensions convergentes reste visible en détail (jamais
-    caché), mais score_pondere combine ce nombre ET la fiabilité
-    réelle de l'échantillon en UNE seule valeur, calculée ici, pour ne
-    pas obliger à relire la fiabilité séparément à chaque fois."""
+    """Combine le nombre de dimensions convergentes et la fiabilité réelles en un score_pondere unique."""
     n_dims = len(poids_dimensions)
     signaux.append({
         "marche": marche,
@@ -80,9 +50,7 @@ def _ajoute(signaux: list[dict], marche: str, direction: str, poids_dimensions: 
 
 
 def _ajoute_over_under_ligne(signaux, ligne, a_ou, b_ou, a_off, b_off, fiabilite, poids_num):
-    """Généralise les règles over_2_5/under_2_5 ci-dessus à une ligne
-    arbitraire -- MÊME structure coeur/soutien, jamais dupliquée par
-    copier-coller (une seule version à corriger si un bug est trouvé)."""
+    """Généralise les règles over/under à une ligne arbitraire."""
     tag = str(ligne).replace(".", "_")
 
     coeur = []
@@ -117,14 +85,7 @@ def _ajoute_over_under_ligne(signaux, ligne, a_ou, b_ou, a_off, b_off, fiabilite
 
 
 def _ajoute_handicap_ligne(signaux, ligne, a_hcp, b_hcp, fiabilite, poids_num):
-    """Signal de croisement pour le Handicap 3 choix à `ligne` --
-    même convention de signe que poisson.markets.resultat_handicap :
-    domicile "couvre" si sa marge > ligne. Un signal par sens
-    (domicile/extérieur), jamais de signal "nul" séparé -- le push a
-    trop peu d'occurrences historiques pour constituer une tendance
-    nette au sens de cette matrice (voir freq_push, quasi toujours
-    proche de 0 sur des lignes demi, non nul seulement sur les lignes
-    entières)."""
+    """Signal de croisement pour le Handicap 3 choix à `ligne`."""
     tag = str(ligne).replace(".", "_").replace("-", "m")
 
     coeur = []
@@ -151,12 +112,7 @@ def _ajoute_handicap_ligne(signaux, ligne, a_hcp, b_hcp, fiabilite, poids_num):
 
 
 def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, Any]) -> list[dict[str, Any]]:
-    """Croise le profil de l'équipe à domicile (sur sa fenêtre
-    domicile) avec le profil de l'équipe à l'extérieur (sur sa fenêtre
-    extérieure), et retourne une liste de signaux de tendance, triée
-    par nombre de dimensions convergentes décroissant (les tendances
-    les plus corroborées en premier -- l'arbitrage final EDV/lambda
-    reste en aval, ce tri n'est qu'un ordre de lecture)."""
+    """Croise le profil domicile avec le profil extérieur et retourne la liste des signaux triée."""
     fiabilite = _niveau_fiabilite_croise(profil_domicile, profil_exterieur)
     poids_num = _poids_fiabilite_croise(profil_domicile, profil_exterieur)
     signaux: list[dict] = []
@@ -166,10 +122,7 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
     b_off, b_def, b_res, b_bt = (profil_exterieur["attaque"], profil_exterieur["defense"],
                                  profil_exterieur["resultats"], profil_exterieur["tendances_buts"])
 
-    # --- "Plus de buts équipe domicile" : coeur obligatoire = freq/marge
-    # réelles (pas seulement des séries courtes, qui seules ont permis à
-    # domicile_plus ET exterieur_plus de sortir en même temps -- trouvé
-    # par test). Séries en soutien uniquement, jamais suffisantes seules.
+    # --- "Plus de buts équipe domicile" ---
     coeur = []
     if a_off["freq_marque_2_plus"] is not None and a_off["freq_marque_2_plus"] >= SEUIL_HAUT:
         coeur.append(("attaque_domicile_freq_marque_2+", a_off["freq_marque_2_plus"]))
@@ -185,7 +138,7 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
     if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
         _ajoute(signaux, "buts_equipe_domicile_plus", "favorable", coeur + soutien, fiabilite, poids_num)
 
-    # --- "Plus de buts équipe extérieure" : symétrique ---
+    # --- "Plus de buts équipe extérieure" ---
     coeur = []
     if b_off["freq_marque_2_plus"] is not None and b_off["freq_marque_2_plus"] >= SEUIL_HAUT:
         coeur.append(("attaque_exterieur_freq_marque_2+", b_off["freq_marque_2_plus"]))
@@ -201,7 +154,7 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
     if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
         _ajoute(signaux, "buts_equipe_exterieur_plus", "favorable", coeur + soutien, fiabilite, poids_num)
 
-    # --- BTTS oui : coeur obligatoire = freq/clean-sheet réelles, séries en soutien ---
+    # --- BTTS oui ---
     coeur = []
     if a_bt["freq_btts"] is not None and a_bt["freq_btts"] >= SEUIL_HAUT:
         coeur.append(("btts_domicile", a_bt["freq_btts"]))
@@ -219,7 +172,7 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
     if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
         _ajoute(signaux, "btts_oui", "favorable", coeur + soutien, fiabilite, poids_num)
 
-    # --- BTTS non : symétrique ---
+    # --- BTTS non ---
     coeur = []
     if a_def["freq_clean_sheet"] is not None and a_def["freq_clean_sheet"] >= SEUIL_HAUT:
         coeur.append(("forte_clean_sheet_domicile", a_def["freq_clean_sheet"]))
@@ -237,10 +190,7 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
     if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
         _ajoute(signaux, "btts_non", "favorable", coeur + soutien, fiabilite, poids_num)
 
-    # --- Over 2.5 : la fréquence over 2.5 elle-même est OBLIGATOIRE (coeur) ;
-    # l'activité offensive des deux équipes est un simple renfort, jamais
-    # suffisante seule -- sinon over_2.5 et under_2.5 peuvent sortir en
-    # même temps sur le même match (contradiction trouvée par test).
+    # --- Over 2.5 ---
     coeur = []
     if a_bt["freq_over_2_5"] is not None and a_bt["freq_over_2_5"] >= SEUIL_HAUT:
         coeur.append(("over_2.5_domicile", a_bt["freq_over_2_5"]))
@@ -258,7 +208,7 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
     if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
         _ajoute(signaux, "over_2_5", "favorable", coeur + soutien, fiabilite, poids_num)
 
-    # --- Under 2.5 : symétrique, coeur obligatoire = freq_over_2_5 basse ---
+    # --- Under 2.5 ---
     coeur = []
     if a_bt["freq_over_2_5"] is not None and a_bt["freq_over_2_5"] <= SEUIL_BAS:
         coeur.append(("under_2.5_domicile", 1 - a_bt["freq_over_2_5"]))
@@ -276,12 +226,7 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
     if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
         _ajoute(signaux, "under_2_5", "favorable", coeur + soutien, fiabilite, poids_num)
 
-    # --- AJOUT 16/09/2026 (demande Patrick, éviter que la règle NO DATA
-    # = NO BET ne tue par accident ces marchés, absents de sa liste
-    # d'extension ET de sa liste d'exclusion) : cage inviolée domicile
-    # (l'extérieur ne marque pas) / extérieur (le domicile ne marque
-    # pas). Aucune donnée nouvelle -- réutilise freq_marque_0/
-    # freq_clean_sheet déjà calculés. ---
+    # --- Cage inviolée ---
     coeur = []
     if b_off["freq_marque_0"] is not None and b_off["freq_marque_0"] >= SEUIL_HAUT:
         coeur.append(("exterieur_freq_marque_0_haute", b_off["freq_marque_0"]))
@@ -308,7 +253,7 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
     if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
         _ajoute(signaux, "cage_inviolee_exterieur", "favorable", coeur + soutien, fiabilite, poids_num)
 
-    # --- Miroirs exacts : "encaisse" = l'inverse de "cage_inviolee" ---
+    # --- Encaisse ---
     coeur = []
     if b_off["freq_marque_1_plus"] is not None and b_off["freq_marque_1_plus"] >= SEUIL_HAUT:
         coeur.append(("exterieur_freq_marque_1plus_haute", b_off["freq_marque_1_plus"]))
@@ -335,9 +280,7 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
     if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
         _ajoute(signaux, "encaisse_exterieur", "favorable", coeur + soutien, fiabilite, poids_num)
 
-    # --- AJOUT 16/09/2026 (demande Patrick) : Over/Under 1.5 et 3.5,
-    # même mécanique que 2.5 ci-dessus, généralisée via
-    # _ajoute_over_under_ligne pour ne jamais dupliquer la logique. ---
+    # --- Lignes Over/Under supplémentaires ---
     from ..statistics.profil_equipe import LIGNES_OVER_UNDER_SUPPLEMENTAIRES, LIGNES_HANDICAP_PAR_DEFAUT
     for ligne in LIGNES_OVER_UNDER_SUPPLEMENTAIRES:
         _ajoute_over_under_ligne(
@@ -346,8 +289,7 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
             a_off, b_off, fiabilite, poids_num,
         )
 
-    # --- AJOUT 16/09/2026 (demande Patrick) : Handicap 3 choix, les 7
-    # lignes standards, même mécanique générique. ---
+    # --- Lignes Handicap 3 choix ---
     for ligne in LIGNES_HANDICAP_PAR_DEFAUT:
         _ajoute_handicap_ligne(
             signaux, ligne,
@@ -355,7 +297,7 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
             fiabilite, poids_num,
         )
 
-    # --- Domination nette domicile (résultat) : forme + marge + résultats convergent ---
+    # --- Domination nette domicile ---
     dims = []
     if a_res["forme_ponderee_recence"] is not None and a_res["forme_ponderee_recence"] >= 2.0:
         dims.append(("forme_recente_domicile", a_res["forme_ponderee_recence"]))
@@ -368,7 +310,7 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
     if len(dims) >= 2:
         _ajoute(signaux, "resultat_domicile", "favorable", dims, fiabilite, poids_num)
 
-    # --- Miroir exact : résultat favorable à l'extérieur ---
+    # --- Domination nette extérieur ---
     dims = []
     if b_res["forme_ponderee_recence"] is not None and b_res["forme_ponderee_recence"] >= 2.0:
         dims.append(("forme_recente_exterieur", b_res["forme_ponderee_recence"]))
@@ -381,16 +323,24 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
     if len(dims) >= 2:
         _ajoute(signaux, "resultat_exterieur", "favorable", dims, fiabilite, poids_num)
 
-    # RÉSOLUTION FINALE (garde-fou générique, trouvé nécessaire par test
-    # 16/09/2026) : le cœur/soutien de chaque règle empêche une
-    # contradiction DANS le même camp de dimensions, mais pas le cas où
-    # l'équipe domicile justifie un marché et l'équipe extérieure
-    # justifie SEULE son opposé (ex. domicile pousse vers BTTS-oui,
-    # extérieur pousse vers BTTS-non) -- un vrai conflit de preuves,
-    # pas une erreur de calcul. Dans ce cas il n'y a PAS de tendance
-    # nette (le but même de cette matrice), donc : le marché avec le
-    # plus de dimensions convergentes gagne ; à égalité stricte, aucun
-    # des deux n'est assez net, les deux sont retirés.
+    # --- Signal matriciel Résultat Nul ---
+    coeur = []
+    if a_res.get("freq_nuls") is not None and a_res["freq_nuls"] >= 0.25:
+        coeur.append(("freq_nuls_domicile", a_res["freq_nuls"]))
+    if b_res.get("freq_nuls") is not None and b_res["freq_nuls"] >= 0.25:
+        coeur.append(("freq_nuls_exterieur", b_res["freq_nuls"]))
+    soutien = []
+    if a_bt.get("freq_over_2_5") is not None and a_bt["freq_over_2_5"] <= SEUIL_BAS:
+        soutien.append(("under_2.5_domicile_propice_nul", 1 - a_bt["freq_over_2_5"]))
+    if b_bt.get("freq_over_2_5") is not None and b_bt["freq_over_2_5"] <= SEUIL_BAS:
+        soutien.append(("under_2.5_exterieur_propice_nul", 1 - b_bt["freq_over_2_5"]))
+    if (a_res.get("forme_ponderee_recence") is not None and b_res.get("forme_ponderee_recence") is not None and
+            abs(a_res["forme_ponderee_recence"] - b_res["forme_ponderee_recence"]) <= 0.5):
+        soutien.append(("equilibre_forme_recente", abs(a_res["forme_ponderee_recence"] - b_res["forme_ponderee_recence"])))
+    if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
+        _ajoute(signaux, "resultat_nul", "favorable", coeur + soutien, fiabilite, poids_num)
+
+    # --- Résolution des contradictions ---
     opposes = {
         "over_2_5": "under_2_5", "under_2_5": "over_2_5",
         "btts_oui": "btts_non", "btts_non": "btts_oui",
@@ -400,10 +350,6 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
         "cage_inviolee_exterieur": "encaisse_exterieur", "encaisse_exterieur": "cage_inviolee_exterieur",
         "resultat_domicile": "resultat_exterieur", "resultat_exterieur": "resultat_domicile",
     }
-    # AJOUT 16/09/2026 -- mêmes oppositions, généralisées aux nouvelles
-    # lignes Over/Under et Handicap (noms de marché construits
-    # dynamiquement dans les fonctions _ajoute_over_under_ligne /
-    # _ajoute_handicap_ligne ci-dessus -- jamais codés en dur ici).
     for ligne in LIGNES_OVER_UNDER_SUPPLEMENTAIRES:
         tag = str(ligne).replace(".", "_")
         opposes[f"over_{tag}"] = f"under_{tag}"
