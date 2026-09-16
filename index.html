@@ -6,111 +6,31 @@
 <meta name="theme-color" content="#F7F1E7">
 <title>Archetype Foot — Accueil</title>
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="theme.css">
 <style>
 :root {
-  --bg: #F7F1E7;
-  --surface: #FFFDF8;
-  --surface-2: #F1E9FA;
-  --turquoise: #7C3AED;
-  --turquoise-active: #5B21B6;
-  --gold: #D4A72C;
-  --green: #2F855A;
-  --red: #C53030;
-  --text: #241B35;
-  --text-secondary: #756B7D;
-  --heure: #655B70;
-  --categorie: #7C3AED;
-  --border: rgba(64,38,91,.14);
+  --bg:#F7F1E7; --surface:#FFFDF8; --surface-2:#F1E9FA;
+  --turquoise:#315CFF; --turquoise-active:#6547E8; --gold:#9A701B;
+  --green:#2F855A; --red:#C53030; --text:#241B35; --text-secondary:#756B7D;
+  --heure:#655B70; --categorie:#315CFF; --border:rgba(64,38,91,.14);
 }
-
-body {
-  background: var(--bg);
-  color: var(--text);
-}
-
-header {
-  background: linear-gradient(135deg, rgba(79,70,229,.10), rgba(217,70,239,.10));
-  border-bottom-color: rgba(124,58,237,.18);
-}
-
-header h1 { color: var(--gold); }
-
-.nav-pages a,
-.nav-bouton {
-  background: linear-gradient(135deg, #4F46E5, #D946EF);
-  color: #fff;
-  border-color: transparent;
-  box-shadow: 0 5px 14px rgba(124,58,237,.18);
-}
-
-.nav-pages a:active,
-.nav-bouton:active {
-  background: linear-gradient(135deg, #4338CA, #C026D3);
-  color: #fff;
-}
-
-.tabs button {
-  background: #FFFDF8;
-  color: var(--text);
-  border-color: rgba(124,58,237,.16);
-}
-
-.tabs button.actif,
-.bouton-principal,
-#copier-btn {
-  background: linear-gradient(135deg, #4F46E5, #D946EF);
-  color: #fff;
-  border-color: transparent;
-  box-shadow: 0 6px 16px rgba(124,58,237,.18);
-}
-
-.tabs button.actif { color: #fff; }
-.bouton-principal:active,
-#copier-btn:active { background: linear-gradient(135deg, #4338CA, #C026D3); }
-
-.bouton-secondaire {
-  background: #FFFDF8;
-  color: var(--text);
-  border-color: rgba(124,58,237,.18);
-}
-
-.match,
-#sortie-json,
-#ajout-manuel {
-  background: var(--surface);
-  border-color: var(--border);
-  box-shadow: 0 5px 18px rgba(61,38,84,.06);
-}
-
-.score,
-.proba-1,
-.details-niveau1 summary,
-.detail-sous-titre,
-.justification-titre {
-  color: #7C3AED;
-}
-
-.pari-ligne.pari-en-or,
-.pari-en-or .pari-mise,
-header h1 { color: var(--gold); }
-
-.entete-categorie,
-.selection-competition {
-  background: #F1E9FA;
-  color: #7C3AED;
-}
-
-input[type="checkbox"]:checked::after { border-color: #3B2454; }
-
-#statut-analyse-panier.ok { color: var(--green); }
-#statut-analyse-panier.erreur { color: var(--red); }
+body{background:var(--bg);color:var(--text)}
+header{background:linear-gradient(135deg,rgba(49,92,255,.08),rgba(130,70,230,.08));border-bottom-color:rgba(49,92,255,.16)}
+header h1{color:var(--gold)}
+.nav-pages a,.nav-bouton,.bouton-principal,#copier-btn{background:linear-gradient(135deg,#315CFF,#6547E8);color:#fff;border-color:transparent}
+.nav-pages a:active,.nav-bouton:active,.bouton-principal:active,#copier-btn:active{background:linear-gradient(135deg,#284DD8,#5635C8);color:#fff}
+.tabs button{background:#FFFDF8;color:var(--text);border-color:rgba(49,92,255,.16)}
+.tabs button.actif{background:linear-gradient(135deg,#315CFF,#6547E8);color:#fff;border-color:transparent}
+.bouton-secondaire{background:#FFFDF8;color:var(--text);border-color:rgba(49,92,255,.18)}
+.match,#sortie-json,#ajout-manuel{background:var(--surface);border-color:var(--border);box-shadow:0 5px 18px rgba(61,38,84,.06)}
+.score,.proba-1,.details-niveau1 summary,.detail-sous-titre,.justification-titre{color:#6547E8}
+.pari-ligne.pari-en-or,.pari-en-or .pari-mise,header h1{color:var(--gold)}
+.entete-categorie,.selection-competition{background:#101114;color:#fff}
 </style>
 </head>
 <body>
 <header>
-  <div class="header-top">
-    <h1>Archetype Foot</h1>
-  </div>
+  <div class="header-top"><h1>Archetype Foot</h1></div>
   <p id="maj">Chargement…</p>
   <div id="nav-pages" class="nav-pages">
     <a id="nav-panier" href="panier.html">🧺 Panier (0)</a>
@@ -125,6 +45,7 @@ input[type="checkbox"]:checked::after { border-color: #3B2454; }
   </div>
   <div id="liste"></div>
 </main>
+<script src="theme.js"></script>
 <script src="index.js"></script>
 </body>
 </html>
