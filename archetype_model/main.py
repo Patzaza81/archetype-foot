@@ -273,9 +273,21 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
             valeur = edv_calculator.evalue_valeur(p, cote_reelle)
             candidats.append({"marche": marche_nom, "market_family": family, "exposure_group": group, "niveau": resultat.resultats_par_scenario[SCENARIO_REPRESENTATIF].niveau, "robustesse": statut, "probabilite": p, "cote": cote_reelle, "edge": valeur["edge"], "edv": valeur["edv"], "h2h_palier": fenetre_h2h["palier"], "condition": _condition_pour_cle(cle_cote), "signal_direction": None, "signal_frequence": None, "confirmation_historique": justification.confirmation_historique(marche_nom, _matchs_a_domicile, _matchs_b_exterieur), "justification": justification.construit_justification(marche_nom, _historique_a_justif, _historique_b_justif, h2h=_h2h_justif, nom_domicile=nom_domicile, nom_exterieur=nom_exterieur), "_cle_cote": cle_cote})
 
-    dc_eligibles = {c["_cle_cote"][1] for c in candidats if c.get("_cle_cote", (None,))[0] == "double_chance"}
-    totals_eligibles = {(c["_cle_cote"][1], c["_cle_cote"][2]) for c in candidats if c.get("_cle_cote", (None,))[0] == "over_under_total"}
-    candidats = [c for c in candidats if c.get("_cle_cote", (None,))[0] != "combo_dc_total" or not (c["_cle_cote"][1] in dc_eligibles or (c["_cle_cote"][3], c["_cle_cote"][2]) in totals_eligibles)]
+    # RÉSIDU RETIRÉ 16/09/2026 (demande explicite de Patrick, "pas de
+    # résidus qui traînent") : ce bloc excluait tout candidat Combo dès
+    # que sa composante Double Chance OU sa composante Total était
+    # elle-même éligible séparément -- une règle BINAIRE, pas basée sur
+    # la vraie corrélation, et appliquée AVANT même la déduplication,
+    # donc invisible pour signals.selection_edv_directe. Elle pouvait
+    # écarter à tort un Combo dont la vraie corrélation avec son
+    # composant DC/Total est en réalité SOUS le seuil pour ce match
+    # précis (vérifié : Double Chance 1X et Handicap domicile +1
+    # peuvent être corrélés à seulement 0.56 selon les λ du match,
+    # sous le seuil 0.70 -- le même principe s'applique ici). Le
+    # correctif : laisser TOUS les candidats Combo atteindre
+    # deduplication puis selection_edv_directe.elimine_marches_correles,
+    # qui calcule la vraie corrélation match par match au lieu d'une
+    # règle générique décidée à l'avance.
     for c in candidats: c.pop("_cle_cote", None)
     candidats_dedupliques = deduplication.deduplique(candidats, critere="edge") if candidats else []
 
