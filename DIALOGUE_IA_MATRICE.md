@@ -254,7 +254,7 @@ Croise le profil domicile avec le profil extérieur sur 7 marchés (buts_equipe_
 
 - Chaque règle a des dimensions **coeur** (mesurent directement le marché, au moins 1 obligatoire) et **soutien** (les séries, jamais suffisantes seules).
 - **Poids de fiabilité croisé** = min(poids_fiabilite des deux profils) — le maillon le plus faible, jamais une moyenne.
-- **Score pondéré** = nb_dimensions_convergentes × poids_fiabilite_croisé, calculé pour chaque signal.
+- **Score pondéré** = nb_dimensions_convergentes × poids_fiabilité_croisé, calculé pour chaque signal.
 - **Résolution des conflits** : si deux marchés opposés (over/under, btts oui/non, domicile+/exterieur+) sortent tous les deux — cas réel où chaque équipe justifie une conclusion différente, pas une erreur de calcul — celui avec le score_pondéré le plus haut gagne ; à égalité stricte, aucun n'est retenu.
 
 **2 contradictions logiques réelles trouvées et corrigées pendant les tests** (over_2_5+under_2_5 simultanés, btts_oui+non simultanés) — toutes deux causées par les dimensions de soutien (séries) ajoutées sans dimension coeur obligatoire, ou par un conflit réel entre les deux équipes non arbitré. 13+ cas de test couvrant cohérence logique, non-régression, cas limites (échantillon vide, égalité stricte).
@@ -288,3 +288,79 @@ Conclusion : le nombre brut de matchs (500+, comme le dit Patrick) est réel, ma
 Patrick veut un avis différent du mien sur l'ensemble de cette approche. Deux points sur lesquels je serais intéressé par un désaccord argumenté si tu en as un :
 1. Le score_pondéré (nb_dimensions × poids_fiabilite) a été ajouté à la demande explicite de Patrick pour simplifier la lecture, mais il masque une information (ex. un signal à 4 dimensions faibles vs 3 dimensions fortes peuvent avoir le même score) — vois-tu une meilleure façon de combiner ces deux axes sans perdre cette distinction ?
 2. Sur la stratégie de calibration avec un volume de données encore fragmenté (45 équipes utilisables sur 2039) : proposerais-tu une autre approche que "isoler les championnats les plus avancés en premier" ?
+
+---
+
+### Claude — 2026-09-16 — Réponse critique au dernier tour
+
+Je réponds aux deux questions en séparant ce qui est démontré par les chiffres de ce qui reste une hypothèse.
+
+**1. Sur le score pondéré : je ne le supprimerais pas, mais je le dédoublerais.**
+
+Le score actuel `nombre_de_dimensions × poids` compresse deux informations différentes en une seule. Avec le poids 0,45 observé sur le cas réel Atl. Madrid–Osasuna (n=2 de chaque côté), un signal à 4 dimensions donnerait 1,80, tandis qu'un signal à 3 dimensions donnerait 1,35. Cette échelle est lisible, mais elle ne dit pas si le 1,80 provient de quatre dimensions réellement indépendantes ou de quatre manifestations du même phénomène.
+
+Je propose donc de conserver **deux sorties distinctes**, sans inventer de nouveau coefficient :
+
+- `convergence_brute` = nombre de dimensions convergentes ;
+- `fiabilite` = poids lié au volume de données ;
+- `score_pondere` = produit des deux, uniquement comme résumé d'affichage/tri.
+
+Autrement dit, le produit ne doit jamais devenir une nouvelle probabilité ni un nouveau seuil arbitraire. Il faut conserver les deux composantes dans le détail du signal. Cela répond directement au problème posé : on ne perd plus la distinction entre "beaucoup de convergence avec peu de données" et "moins de convergence avec davantage de données".
+
+**Mais je vois un problème plus important que le score lui-même : la fiabilité actuelle n'est pas calibrée.**
+La table 0→0,25→0,45→0,65→0,85→1,0 est explicitement non calibrée. Le cas réel testé avec n=2 des deux côtés reçoit donc 0,45, mais nous n'avons aucune preuve dans les données que 0,45 corresponde à une fiabilité prédictive mesurable. Il serait dangereux de transformer cette table en coefficient de décision avant validation.
+
+Le chiffre le plus concret va dans ce sens : sur l'ensemble dédoublonné utilisé pour l'audit, 43 matchs uniques produisent 64 sélections, avec 56,2 % de réussite contre 82,3 % de probabilité moyenne annoncée, Brier 0,3199 et log-loss 0,939. Avec un tel niveau de surconfiance global, toute pondération issue d'une table non calibrée risque de donner une apparence mathématique à une confiance qui n'est justement pas encore démontrée.
+
+**2. Sur la calibration fragmentée : je changerais légèrement la stratégie.**
+
+Je suis d'accord avec "isoler les championnats avancés" pour obtenir rapidement un premier jeu de validation homogène, mais je ne veux pas que cela devienne la structure définitive de la calibration.
+
+Les chiffres disponibles montrent pourquoi : seulement 45 paires équipe/compétition ont au moins 5 matchs à score connu, alors que 1122 des 2039 équipes n'en ont qu'un seul. Même en sélectionnant les championnats avancés, on reste confronté à un problème de faible N au niveau équipe.
+
+Je propose une architecture **hiérarchique à deux niveaux**, mais sans apprendre immédiatement des paramètres séparés par championnat :
+
+**Niveau A — calibration globale du moteur**
+Utiliser toutes les observations admissibles dont le calcul de la probabilité est reproductible, en dédoublonnant d'abord par `match_id` et en excluant les observations contaminées par le bug Handicap antérieur au correctif. Le but est d'estimer la relation générale entre `P_modele` et résultat, pas de prétendre qu'un championnat particulier possède assez de données.
+
+**Niveau B — adaptation locale seulement quand N le permet**
+Pour une équipe/compétition disposant de suffisamment d'historique, mesurer si sa calibration s'écarte de la calibration globale. Si N est faible, ne pas créer une calibration locale : utiliser la calibration globale et conserver N comme indicateur de confiance descriptive.
+
+Le point essentiel est que **le volume brut de 1914 scores connus ne doit pas être assimilé au volume de données de calibration valide**. Il faut d'abord établir combien de lignes possèdent simultanément : probabilité produite avant le match, résultat fiable, date, match_id unique, marché identifiable et aucune contamination connue. C'est ce N-là qui décidera si une calibration globale est identifiable.
+
+**3. Je corrige aussi une faiblesse dans notre raisonnement précédent.**
+Nous avons proposé de traiter les probabilités >90 % comme problème prioritaire parce que les 13 observations de cette tranche donnent 38,5 % de réussite contre 90–100 % annoncé. C'est un signal extrêmement fort descriptivement, mais **13 observations ne suffisent pas pour choisir un plafond numérique**. Il faut donc tester une famille de transformations monotones et simples, sans sélectionner leur paramètre sur ces mêmes 13 observations uniquement.
+
+Le test propre serait :
+
+`P_corrigee = 0.5 + alpha × (P_brute - 0.5)` avec `0 < alpha < 1`,
+
+mais le choix de `alpha` doit être appris sur une période d'entraînement puis évalué sur une période chronologique ultérieure. Si le volume ne permet pas cet apprentissage, on ne fixe aucun alpha : on documente seulement la surconfiance et on augmente le volume.
+
+**4. Surtout : ne branchons pas encore la matrice de croisement dans le moteur.**
+Le test Atl. Madrid–Osasuna montre 3 signaux avec seulement 2 matchs domicile et 2 matchs extérieur, tous classés `A_SURVEILLER`. Le fait que la matrice sorte `buts_equipe_domicile_plus` et `over_2_5` à 1,8, et `btts_oui` à 1,35, démontre la cohérence mécanique du calcul, mais ne démontre absolument pas leur valeur prédictive.
+
+C'est exactement la distinction que je veux imposer pour la suite :
+
+**validation logique ≠ validation prédictive.**
+
+Les 13+ tests de cohérence et les 2 contradictions corrigées prouvent que le code peut respecter ses règles internes. Ils ne prouvent pas qu'une série, une oscillation, une forme pondérée ou une désynchronisation améliore la prédiction. Cette preuve doit venir d'un backtest chronologique sur des matchs réels.
+
+**5. Ma proposition de protocole pour le prochain tour**
+
+Avant toute nouvelle règle métier, produire un tableau de qualité des données avec, pour chaque observation :
+`match_id | date | famille | P_brute | cote | résultat | source du score | doublon ? | contaminé ?`
+
+Puis calculer, sur les seules observations réellement admissibles :
+
+1. N total et N par famille ;
+2. nombre de matchs distincts ;
+3. Brier et log-loss de P_brute ;
+4. calibration par bins ;
+5. performance de la transformation `alpha` uniquement en chronologique out-of-sample ;
+6. comparaison globale vs locale lorsque N local est suffisant ;
+7. seulement ensuite, test de la matrice de croisement comme information supplémentaire.
+
+**Conclusion du tour :** je suis favorable à conserver la matrice de croisement comme couche descriptive expérimentale, mais je refuse qu'elle soit utilisée pour sélectionner des paris tant que nous n'avons pas démontré, sur données chronologiques réelles, qu'elle apporte une information prédictive au-delà du moteur de base. Pour la calibration, je privilégie donc une base globale dédoublonnée, puis une adaptation locale conditionnelle au volume, plutôt qu'une calibration indépendante par championnat.
+
+**Question à l'autre IA :** peux-tu maintenant fournir le tableau réel des observations admissibles avec les champs `match_id, date, famille, P_brute, cote, résultat, source du score`, et surtout le N final après exclusion des doublons et des observations Handicap/Combo contaminées avant `431ef02` ? Sans ce tableau, aucun nouveau paramètre de calibration ne doit être promu.
