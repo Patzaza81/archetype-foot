@@ -79,6 +79,77 @@ def _ajoute(signaux: list[dict], marche: str, direction: str, poids_dimensions: 
     })
 
 
+def _ajoute_over_under_ligne(signaux, ligne, a_ou, b_ou, a_off, b_off, fiabilite, poids_num):
+    """Généralise les règles over_2_5/under_2_5 ci-dessus à une ligne
+    arbitraire -- MÊME structure coeur/soutien, jamais dupliquée par
+    copier-coller (une seule version à corriger si un bug est trouvé)."""
+    tag = str(ligne).replace(".", "_")
+
+    coeur = []
+    if a_ou["freq_over"] is not None and a_ou["freq_over"] >= SEUIL_HAUT:
+        coeur.append((f"over_{tag}_domicile", a_ou["freq_over"]))
+    if b_ou["freq_over"] is not None and b_ou["freq_over"] >= SEUIL_HAUT:
+        coeur.append((f"over_{tag}_exterieur", b_ou["freq_over"]))
+    soutien = []
+    if a_off["freq_marque_1_plus"] is not None and a_off["freq_marque_1_plus"] >= SEUIL_HAUT:
+        soutien.append(("attaque_domicile_active", a_off["freq_marque_1_plus"]))
+    if b_off["freq_marque_1_plus"] is not None and b_off["freq_marque_1_plus"] >= SEUIL_HAUT:
+        soutien.append(("attaque_exterieur_active", b_off["freq_marque_1_plus"]))
+    if a_ou["serie_over_actuelle"] >= 2:
+        soutien.append((f"serie_over_{tag}_domicile", a_ou["serie_over_actuelle"]))
+    if b_ou["serie_over_actuelle"] >= 2:
+        soutien.append((f"serie_over_{tag}_exterieur", b_ou["serie_over_actuelle"]))
+    if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
+        _ajoute(signaux, f"over_{tag}", "favorable", coeur + soutien, fiabilite, poids_num)
+
+    coeur = []
+    if a_ou["freq_over"] is not None and a_ou["freq_over"] <= SEUIL_BAS:
+        coeur.append((f"under_{tag}_domicile", a_ou["freq_under"]))
+    if b_ou["freq_over"] is not None and b_ou["freq_over"] <= SEUIL_BAS:
+        coeur.append((f"under_{tag}_exterieur", b_ou["freq_under"]))
+    soutien = []
+    if a_ou["serie_under_actuelle"] >= 2:
+        soutien.append((f"serie_under_{tag}_domicile", a_ou["serie_under_actuelle"]))
+    if b_ou["serie_under_actuelle"] >= 2:
+        soutien.append((f"serie_under_{tag}_exterieur", b_ou["serie_under_actuelle"]))
+    if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
+        _ajoute(signaux, f"under_{tag}", "favorable", coeur + soutien, fiabilite, poids_num)
+
+
+def _ajoute_handicap_ligne(signaux, ligne, a_hcp, b_hcp, fiabilite, poids_num):
+    """Signal de croisement pour le Handicap 3 choix à `ligne` --
+    même convention de signe que poisson.markets.resultat_handicap :
+    domicile "couvre" si sa marge > ligne. Un signal par sens
+    (domicile/extérieur), jamais de signal "nul" séparé -- le push a
+    trop peu d'occurrences historiques pour constituer une tendance
+    nette au sens de cette matrice (voir freq_push, quasi toujours
+    proche de 0 sur des lignes demi, non nul seulement sur les lignes
+    entières)."""
+    tag = str(ligne).replace(".", "_").replace("-", "m")
+
+    coeur = []
+    if a_hcp["freq_couvre"] is not None and a_hcp["freq_couvre"] >= SEUIL_HAUT:
+        coeur.append((f"handicap_{tag}_domicile_couvre", a_hcp["freq_couvre"]))
+    if b_hcp["freq_perd"] is not None and b_hcp["freq_perd"] >= SEUIL_HAUT:
+        coeur.append((f"handicap_{tag}_exterieur_perd", b_hcp["freq_perd"]))
+    soutien = []
+    if a_hcp["serie_couvre_actuelle"] >= 2:
+        soutien.append((f"serie_handicap_{tag}_domicile", a_hcp["serie_couvre_actuelle"]))
+    if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
+        _ajoute(signaux, f"handicap_domicile_{tag}", "favorable", coeur + soutien, fiabilite, poids_num)
+
+    coeur = []
+    if a_hcp["freq_perd"] is not None and a_hcp["freq_perd"] >= SEUIL_HAUT:
+        coeur.append((f"handicap_{tag}_domicile_perd", a_hcp["freq_perd"]))
+    if b_hcp["freq_couvre"] is not None and b_hcp["freq_couvre"] >= SEUIL_HAUT:
+        coeur.append((f"handicap_{tag}_exterieur_couvre", b_hcp["freq_couvre"]))
+    soutien = []
+    if b_hcp["serie_couvre_actuelle"] >= 2:
+        soutien.append((f"serie_handicap_{tag}_exterieur", b_hcp["serie_couvre_actuelle"]))
+    if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
+        _ajoute(signaux, f"handicap_exterieur_{tag}", "favorable", coeur + soutien, fiabilite, poids_num)
+
+
 def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, Any]) -> list[dict[str, Any]]:
     """Croise le profil de l'équipe à domicile (sur sa fenêtre
     domicile) avec le profil de l'équipe à l'extérieur (sur sa fenêtre
@@ -205,6 +276,85 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
     if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
         _ajoute(signaux, "under_2_5", "favorable", coeur + soutien, fiabilite, poids_num)
 
+    # --- AJOUT 16/09/2026 (demande Patrick, éviter que la règle NO DATA
+    # = NO BET ne tue par accident ces marchés, absents de sa liste
+    # d'extension ET de sa liste d'exclusion) : cage inviolée domicile
+    # (l'extérieur ne marque pas) / extérieur (le domicile ne marque
+    # pas). Aucune donnée nouvelle -- réutilise freq_marque_0/
+    # freq_clean_sheet déjà calculés. ---
+    coeur = []
+    if b_off["freq_marque_0"] is not None and b_off["freq_marque_0"] >= SEUIL_HAUT:
+        coeur.append(("exterieur_freq_marque_0_haute", b_off["freq_marque_0"]))
+    if a_def["freq_clean_sheet"] is not None and a_def["freq_clean_sheet"] >= SEUIL_HAUT:
+        coeur.append(("domicile_clean_sheet_haute", a_def["freq_clean_sheet"]))
+    soutien = []
+    if b_off["serie_sans_marquer_actuelle"] >= 2:
+        soutien.append(("serie_sans_marquer_exterieur", b_off["serie_sans_marquer_actuelle"]))
+    if a_def["serie_clean_sheet_actuelle"] >= 2:
+        soutien.append(("serie_clean_sheet_domicile", a_def["serie_clean_sheet_actuelle"]))
+    if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
+        _ajoute(signaux, "cage_inviolee_domicile", "favorable", coeur + soutien, fiabilite, poids_num)
+
+    coeur = []
+    if a_off["freq_marque_0"] is not None and a_off["freq_marque_0"] >= SEUIL_HAUT:
+        coeur.append(("domicile_freq_marque_0_haute", a_off["freq_marque_0"]))
+    if b_def["freq_clean_sheet"] is not None and b_def["freq_clean_sheet"] >= SEUIL_HAUT:
+        coeur.append(("exterieur_clean_sheet_haute", b_def["freq_clean_sheet"]))
+    soutien = []
+    if a_off["serie_sans_marquer_actuelle"] >= 2:
+        soutien.append(("serie_sans_marquer_domicile", a_off["serie_sans_marquer_actuelle"]))
+    if b_def["serie_clean_sheet_actuelle"] >= 2:
+        soutien.append(("serie_clean_sheet_exterieur", b_def["serie_clean_sheet_actuelle"]))
+    if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
+        _ajoute(signaux, "cage_inviolee_exterieur", "favorable", coeur + soutien, fiabilite, poids_num)
+
+    # --- Miroirs exacts : "encaisse" = l'inverse de "cage_inviolee" ---
+    coeur = []
+    if b_off["freq_marque_1_plus"] is not None and b_off["freq_marque_1_plus"] >= SEUIL_HAUT:
+        coeur.append(("exterieur_freq_marque_1plus_haute", b_off["freq_marque_1_plus"]))
+    if a_def["freq_encaisse_2_plus"] is not None and a_def["freq_encaisse_2_plus"] >= SEUIL_BAS:
+        coeur.append(("domicile_encaisse_frequent", a_def["freq_encaisse_2_plus"]))
+    soutien = []
+    if b_off["serie_marque_actuelle"] >= 2:
+        soutien.append(("serie_marque_exterieur", b_off["serie_marque_actuelle"]))
+    if a_def["serie_encaisse_actuelle"] >= 2:
+        soutien.append(("serie_encaisse_domicile", a_def["serie_encaisse_actuelle"]))
+    if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
+        _ajoute(signaux, "encaisse_domicile", "favorable", coeur + soutien, fiabilite, poids_num)
+
+    coeur = []
+    if a_off["freq_marque_1_plus"] is not None and a_off["freq_marque_1_plus"] >= SEUIL_HAUT:
+        coeur.append(("domicile_freq_marque_1plus_haute", a_off["freq_marque_1_plus"]))
+    if b_def["freq_encaisse_2_plus"] is not None and b_def["freq_encaisse_2_plus"] >= SEUIL_BAS:
+        coeur.append(("exterieur_encaisse_frequent", b_def["freq_encaisse_2_plus"]))
+    soutien = []
+    if a_off["serie_marque_actuelle"] >= 2:
+        soutien.append(("serie_marque_domicile", a_off["serie_marque_actuelle"]))
+    if b_def["serie_encaisse_actuelle"] >= 2:
+        soutien.append(("serie_encaisse_exterieur", b_def["serie_encaisse_actuelle"]))
+    if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
+        _ajoute(signaux, "encaisse_exterieur", "favorable", coeur + soutien, fiabilite, poids_num)
+
+    # --- AJOUT 16/09/2026 (demande Patrick) : Over/Under 1.5 et 3.5,
+    # même mécanique que 2.5 ci-dessus, généralisée via
+    # _ajoute_over_under_ligne pour ne jamais dupliquer la logique. ---
+    from ..statistics.profil_equipe import LIGNES_OVER_UNDER_SUPPLEMENTAIRES, LIGNES_HANDICAP_PAR_DEFAUT
+    for ligne in LIGNES_OVER_UNDER_SUPPLEMENTAIRES:
+        _ajoute_over_under_ligne(
+            signaux, ligne,
+            profil_domicile["tendances_over_under"][ligne], profil_exterieur["tendances_over_under"][ligne],
+            a_off, b_off, fiabilite, poids_num,
+        )
+
+    # --- AJOUT 16/09/2026 (demande Patrick) : Handicap 3 choix, les 7
+    # lignes standards, même mécanique générique. ---
+    for ligne in LIGNES_HANDICAP_PAR_DEFAUT:
+        _ajoute_handicap_ligne(
+            signaux, ligne,
+            profil_domicile["tendances_handicap"][ligne], profil_exterieur["tendances_handicap"][ligne],
+            fiabilite, poids_num,
+        )
+
     # --- Domination nette domicile (résultat) : forme + marge + résultats convergent ---
     dims = []
     if a_res["forme_ponderee_recence"] is not None and a_res["forme_ponderee_recence"] >= 2.0:
@@ -233,7 +383,21 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
         "btts_oui": "btts_non", "btts_non": "btts_oui",
         "buts_equipe_domicile_plus": "buts_equipe_exterieur_plus",
         "buts_equipe_exterieur_plus": "buts_equipe_domicile_plus",
+        "cage_inviolee_domicile": "encaisse_domicile", "encaisse_domicile": "cage_inviolee_domicile",
+        "cage_inviolee_exterieur": "encaisse_exterieur", "encaisse_exterieur": "cage_inviolee_exterieur",
     }
+    # AJOUT 16/09/2026 -- mêmes oppositions, généralisées aux nouvelles
+    # lignes Over/Under et Handicap (noms de marché construits
+    # dynamiquement dans les fonctions _ajoute_over_under_ligne /
+    # _ajoute_handicap_ligne ci-dessus -- jamais codés en dur ici).
+    for ligne in LIGNES_OVER_UNDER_SUPPLEMENTAIRES:
+        tag = str(ligne).replace(".", "_")
+        opposes[f"over_{tag}"] = f"under_{tag}"
+        opposes[f"under_{tag}"] = f"over_{tag}"
+    for ligne in LIGNES_HANDICAP_PAR_DEFAUT:
+        tag = str(ligne).replace(".", "_").replace("-", "m")
+        opposes[f"handicap_domicile_{tag}"] = f"handicap_exterieur_{tag}"
+        opposes[f"handicap_exterieur_{tag}"] = f"handicap_domicile_{tag}"
     par_marche = {s["marche"]: s for s in signaux}
     a_retirer = set()
     for marche, oppose in opposes.items():

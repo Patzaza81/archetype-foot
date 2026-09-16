@@ -194,6 +194,53 @@ def _musique(valeurs: list[int]) -> str:
     return "-".join(str(v) for v in valeurs)
 
 
+# AJOUT 16/09/2026 (demande Patrick, extension du Péage 1 à des lignes
+# paramétrées) -- lignes standards balayées, en plus de 2.5 qui reste
+# gérée séparément ci-dessus pour ne rien casser de déjà testé.
+LIGNES_OVER_UNDER_SUPPLEMENTAIRES = (1.5, 3.5)
+# Mêmes 7 lignes que poisson.markets.LIGNES_HANDICAP_PAR_DEFAUT --
+# dupliquées ici plutôt qu'importées pour garder ce module sans
+# dépendance sur poisson/ (même principe que le reste du fichier :
+# aucune dépendance nouvelle, voir docstring de module).
+LIGNES_HANDICAP_PAR_DEFAUT = (-1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5)
+
+
+def _stats_over_under_ligne(matchs_role: list[dict[str, Any]], ligne: float) -> dict[str, Any]:
+    """Généralise le bloc over/under déjà fait pour 2.5 à une ligne
+    arbitraire -- même construction (freq, musique, séries), jamais
+    dupliqué en dur ailleurs. Les lignes standards (1.5/2.5/3.5) sont
+    toujours des demi-lignes -- une égalité exacte au total est
+    impossible, freq_over + freq_under vaut donc toujours 1.0."""
+    totaux = [m["buts_marques"] + m["buts_encaisses"] for m in matchs_role]
+    return {
+        "freq_over": _frequence_egale([1 if t > ligne else 0 for t in totaux], 1) if totaux else None,
+        "freq_under": _frequence_egale([1 if t < ligne else 0 for t in totaux], 1) if totaux else None,
+        "musique_over": _musique([1 if t > ligne else 0 for t in totaux]),
+        "serie_over_actuelle": _serie_actuelle(matchs_role, lambda m: (m["buts_marques"] + m["buts_encaisses"]) > ligne),
+        "serie_under_actuelle": _serie_actuelle(matchs_role, lambda m: (m["buts_marques"] + m["buts_encaisses"]) < ligne),
+    }
+
+
+def _stats_handicap_ligne(matchs_role: list[dict[str, Any]], ligne: float) -> dict[str, Any]:
+    """Fréquence, pour CETTE équipe sur SON rôle, de couvrir/pousser/
+    perdre un handicap à `ligne` -- même convention de signe que
+    `poisson.markets.resultat_handicap` (marge = buts_marques -
+    buts_encaisses ; "couvre" si marge > ligne). Ligne entière (ex.
+    0.0, ±1.0) : le push (égalité exacte) est possible et compté
+    séparément. Ligne demi (ex. ±0.5, ±1.5) : freq_push vaut toujours 0,
+    aucun cas particulier nécessaire, la formule reste correcte."""
+    marges = [m["buts_marques"] - m["buts_encaisses"] for m in matchs_role]
+    if not marges:
+        return {"freq_couvre": None, "freq_push": None, "freq_perd": None,
+                "serie_couvre_actuelle": 0}
+    return {
+        "freq_couvre": sum(1 for mg in marges if mg > ligne) / len(marges),
+        "freq_push": sum(1 for mg in marges if mg == ligne) / len(marges),
+        "freq_perd": sum(1 for mg in marges if mg < ligne) / len(marges),
+        "serie_couvre_actuelle": _serie_actuelle(matchs_role, lambda m: (m["buts_marques"] - m["buts_encaisses"]) > ligne),
+    }
+
+
 def construit_profil(matchs_role: list[dict[str, Any]]) -> dict[str, Any]:
     """Construit le profil qualitatif complet pour UNE équipe dans SON
     RÔLE (domicile ou extérieur) sur SA fenêtre déjà filtrée par rôle.
@@ -276,5 +323,15 @@ def construit_profil(matchs_role: list[dict[str, Any]]) -> dict[str, Any]:
             "musique_over_2_5": _musique([1 if (m["buts_marques"] + m["buts_encaisses"]) > 2.5 else 0 for m in matchs_role]),
             "serie_over_2_5_actuelle": _serie_actuelle(matchs_role, lambda m: (m["buts_marques"] + m["buts_encaisses"]) > 2.5),
             "serie_under_2_5_actuelle": _serie_actuelle(matchs_role, lambda m: (m["buts_marques"] + m["buts_encaisses"]) <= 2.5),
+        },
+        # AJOUT 16/09/2026 (demande Patrick) -- lignes Over/Under
+        # supplémentaires (1.5, 3.5), clé = la ligne elle-même.
+        "tendances_over_under": {
+            ligne: _stats_over_under_ligne(matchs_role, ligne) for ligne in LIGNES_OVER_UNDER_SUPPLEMENTAIRES
+        },
+        # AJOUT 16/09/2026 (demande Patrick) -- Handicap 3 choix à
+        # chaque ligne standard, clé = la ligne elle-même.
+        "tendances_handicap": {
+            ligne: _stats_handicap_ligne(matchs_role, ligne) for ligne in LIGNES_HANDICAP_PAR_DEFAUT
         },
     }
