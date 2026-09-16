@@ -16,6 +16,8 @@ from .signals import statistiques_signal
 from .signals import convergence
 from .signals import deduplication
 from .signals import selection_edv_directe
+from .statistics import profil_equipe
+from .signals import matrice_croisement
 import justification
 from .edv import calculator as edv_calculator
 
@@ -225,8 +227,80 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
     _historique_b_justif = base.get("_historique_justification", {}).get("B", [])
     _h2h_justif = fenetre_h2h.get("confrontations_retenues", [])
 
+    # ========================================================================
+    # PÉAGE 1 (TERRAIN) -- décision d'architecture de Patrick, 16/09/2026.
+    # Calculé UNE FOIS pour le match (profil_equipe/matrice_croisement ne
+    # dépendent pas du marché, seulement du rôle de chaque équipe), puis
+    # consulté pour chaque marché avant Péage 2 (Poisson)/3 (EDV)/4 (H2H).
+    #
+    # PORTÉE RÉELLE, à garder en tête : matrice_croisement ne calcule que
+    # 7 marchés fixes (over/under à 2.5, BTTS, résultat domicile...), alors
+    # que ce module en balaie des dizaines (Handicap à toute ligne, Combo,
+    # Over/Under à d'autres seuils, Parité, cage inviolée...). Seuls les
+    # marchés qui ont une correspondance directe et non ambiguë passent par
+    # le Péage 1 (_PEAGE1_CORRESPONDANCES ci-dessous) ; les autres n'ont
+    # PAS de score_pondere disponible et continuent normalement vers le
+    # Péage 2 -- bloquer à l'aveugle un marché sans donnée serait un rejet
+    # arbitraire, pas un vrai filtre. Étendre matrice_croisement à plus de
+    # marchés (Handicap, Combo, autres lignes) est un chantier séparé, pas
+    # fait ici.
+    #
+    # LIMITE TECHNIQUE À CONNAÎTRE : poisson/markets.py calcule TOUS les
+    # marchés du match en un seul appel groupé (calcule_tous_les_marches),
+    # avant même que ce Péage 1 s'exécute -- impossible d'empêcher ce
+    # calcul Poisson brut pour un marché précis sans redécouper toute
+    # l'architecture (coût négligeable de toute façon, c'est du calcul
+    # pur). Ce qui EST garanti : aucun marché rejeté ici n'atteint jamais
+    # le filtre de convergence, l'EDV, la déduplication, ni la sélection.
+    # ========================================================================
+    SEUIL_PEAGE1 = 0.85
+
+    _profil_domicile = profil_equipe.construit_profil(_matchs_a_domicile)
+    _profil_exterieur = profil_equipe.construit_profil(_matchs_b_exterieur)
+    _signaux_croises = matrice_croisement.croise_profils(_profil_domicile, _profil_exterieur)
+    _score_pondere_par_signal = {s["marche"]: s["score_pondere"] for s in _signaux_croises}
+
+    # Correspondance EXPLICITE marché main.py -> signal matrice_croisement.
+    # Liste FERMÉE et volontairement courte -- seuls les cas où la
+    # correspondance est directe et sans ambiguïté de sens. Toute
+    # extension est une décision humaine documentée, jamais une
+    # initiative du système (même principe que config/adaptive_parameters.json).
+    _PEAGE1_CORRESPONDANCES = {
+        "btts_oui": "btts_oui",
+        "btts_non": "btts_non",
+        "over_2.5": "over_2_5",
+        "1x2_domicile": "resultat_domicile",
+    }
+
+    def _verifie_peage1(marche_nom, cle_cote=None):
+        """Retourne (autorise: bool, score_pondere: float|None, cle_signal: str|None).
+        autorise=True si aucun signal ne correspond (pas de donnée -> pas de
+        blocage) OU si le score_pondere disponible atteint SEUIL_PEAGE1."""
+        cle_signal = _PEAGE1_CORRESPONDANCES.get(marche_nom)
+        if cle_signal is None and cle_cote is not None and cle_cote[0] == "double_chance" and cle_cote[1] == "1X":
+            cle_signal = "resultat_domicile"
+        if cle_signal is None and cle_cote is not None and cle_cote[0] == "over_under_total" and cle_cote[1] == 2.5:
+            cle_signal = "over_2_5" if cle_cote[2] == "over" else "under_2_5"
+        if cle_signal is None:
+            return True, None, None  # pas de correspondance -> pas de donnée -> pas de blocage
+        score = _score_pondere_par_signal.get(cle_signal)
+        if score is None:
+            return True, None, cle_signal  # signal pas sorti de la matrice (pas assez de dimensions convergentes) -> pas de donnée -> pas de blocage
+        return score >= SEUIL_PEAGE1, score, cle_signal
+
     def ajoute(marche, family, group, extracteur, cle_cote, robustesse_key, signal, h2h_statut):
+        autorise, score, cle_signal = _verifie_peage1(marche, cle_cote)
+        if not autorise:
+            diagnostics.append({
+                "marche": marche,
+                "filtre": {"eligible": False, "motif_rejet": "MATRIX_SIGNAL_TOO_LOW",
+                           "score_pondere": score, "signal_matrice": cle_signal, "seuil": SEUIL_PEAGE1},
+                "h2h_statut": h2h_statut,
+            })
+            return
         candidat, diag = _construit_candidat(marche=marche, market_family=family, exposure_group=group, marches_par_scenario=marches_par_scenario, extracteur=extracteur, cote=cotes.get(cle_cote), robustesse_statut=robustesse_par_marche[robustesse_key]["statut"], n_par_scenario=n_par_scenario, h2h_palier=fenetre_h2h["palier"], h2h_statut=h2h_statut, signal=signal, matchs_a_domicile=_matchs_a_domicile, matchs_b_exterieur=_matchs_b_exterieur, historique_a=_historique_a_justif, historique_b=_historique_b_justif, confrontations_h2h=_h2h_justif, nom_domicile=nom_domicile, nom_exterieur=nom_exterieur, cle_cote=cle_cote)
+        if candidat is not None and score is not None:
+            candidat["score_pondere_peage1"] = score
         diagnostics.append(diag)
         if candidat is not None: candidats.append(candidat)
 
@@ -266,12 +340,23 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
         else:
             marche_nom = f"{cle_cote[0]}_{cle_cote[1]}_{cle_cote[2]}"
         family, group = familles[cle_cote[0]]
+
+        _peage1_ok, _peage1_score, _peage1_signal = _verifie_peage1(marche_nom, cle_cote)
+        if not _peage1_ok:
+            diagnostics.append({
+                "marche": marche_nom,
+                "filtre": {"eligible": False, "motif_rejet": "MATRIX_SIGNAL_TOO_LOW",
+                           "score_pondere": _peage1_score, "signal_matrice": _peage1_signal, "seuil": SEUIL_PEAGE1},
+                "h2h_statut": None,
+            })
+            continue
+
         resultat = convergence.filtre_marche_convergent(nombre_matchs_par_scenario=n_par_scenario, probabilites_par_scenario=probabilites_dyn, cote=cote_reelle, robustesse=statut, marche=marche_nom, market_family=family, exposure_group=group)
         diagnostics.append({"marche": marche_nom, "filtre": resultat.as_dict(), "h2h_statut": None})
         if resultat.eligible:
             p = probabilites_dyn[SCENARIO_REPRESENTATIF]
             valeur = edv_calculator.evalue_valeur(p, cote_reelle)
-            candidats.append({"marche": marche_nom, "market_family": family, "exposure_group": group, "niveau": resultat.resultats_par_scenario[SCENARIO_REPRESENTATIF].niveau, "robustesse": statut, "probabilite": p, "cote": cote_reelle, "edge": valeur["edge"], "edv": valeur["edv"], "h2h_palier": fenetre_h2h["palier"], "condition": _condition_pour_cle(cle_cote), "signal_direction": None, "signal_frequence": None, "confirmation_historique": justification.confirmation_historique(marche_nom, _matchs_a_domicile, _matchs_b_exterieur), "justification": justification.construit_justification(marche_nom, _historique_a_justif, _historique_b_justif, h2h=_h2h_justif, nom_domicile=nom_domicile, nom_exterieur=nom_exterieur), "_cle_cote": cle_cote})
+            candidats.append({"marche": marche_nom, "market_family": family, "exposure_group": group, "niveau": resultat.resultats_par_scenario[SCENARIO_REPRESENTATIF].niveau, "robustesse": statut, "probabilite": p, "cote": cote_reelle, "edge": valeur["edge"], "edv": valeur["edv"], "h2h_palier": fenetre_h2h["palier"], "condition": _condition_pour_cle(cle_cote), "score_pondere_peage1": _peage1_score, "signal_direction": None, "signal_frequence": None, "confirmation_historique": justification.confirmation_historique(marche_nom, _matchs_a_domicile, _matchs_b_exterieur), "justification": justification.construit_justification(marche_nom, _historique_a_justif, _historique_b_justif, h2h=_h2h_justif, nom_domicile=nom_domicile, nom_exterieur=nom_exterieur), "_cle_cote": cle_cote})
 
     # RÉSIDU RETIRÉ 16/09/2026 (demande explicite de Patrick, "pas de
     # résidus qui traînent") : ce bloc excluait tout candidat Combo dès
