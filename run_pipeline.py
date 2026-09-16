@@ -11,6 +11,7 @@ seule source de cote par marché.
 import datetime
 import json
 import re
+import sys
 from zoneinfo import ZoneInfo
 from scraper_details import (
     recupere_details_match, recupere_gf_ga_avec_repli, recupere_cotes_marches,
@@ -176,21 +177,64 @@ def ajoute_matchs_a_historique(candidats, fichier=FICHIER_HISTORIQUE):
     présents)."""
     historique = charge_json_ou_vide(fichier, defaut=[])
 
-    vus_par_date = {}
+    # CORRECTIF 16/09/2026 (trouvé en auditant un dataset dérivé pour un
+    # débat de calibration) -- match_id vient de l'URL matchendirect.fr,
+    # donc déjà unique PAR MATCH PHYSIQUE, tous jours confondus. Le
+    # dédoublonnage précédent (03/09) scopait par m.get("date"), qui est
+    # une valeur AUTO-DÉCLARÉE par le match lui-même et peut différer
+    # d'une archive à l'autre pour le MÊME match_id (vu en pratique :
+    # Cologne-Hoffenheim archivé une fois le 28/08 avec un score fantôme
+    # "1-0" -- match pas encore joué -- puis une 2e fois le 29/08 avec le
+    # vrai score final 3-2, confirmé via ESPN). Le scope par date ratait
+    # ce cas car les deux entrées avaient des m.get("date") différents.
+    # match_id est donc maintenant globalement unique, TOUTES dates
+    # confondues -- seul le fallback (domicile, exterieur), qui n'a pas
+    # cette garantie d'unicité du site source, reste scopé par date (une
+    # paire d'équipes peut légitimement se rejouer à une autre date).
+    #
+    # En cas de conflit sur un match_id déjà vu avec un score DIFFÉRENT
+    # de la première archive, on REMPLACE l'ancienne entrée par la
+    # nouvelle (présumée plus fiable : archivée après, donc plus près ou
+    # après la date réelle du match) au lieu de la garder silencieusement
+    # -- et on log l'écrasement, jamais silencieux.
+    vus_globaux_par_match_id = {}   # match_id -> (bloc_date, index_dans_matchs)
+    vus_par_date_fallback = {}      # date -> set((domicile, exterieur)) -- matchs sans match_id
     blocs_par_date = {}
     for jour in historique:
         d = jour.get("date")
         blocs_par_date.setdefault(d, jour)
-        vus = vus_par_date.setdefault(d, set())
-        for m in jour.get("matchs", []):
-            vus.add(m.get("match_id") or (m.get("domicile"), m.get("exterieur")))
+        for i, m in enumerate(jour.get("matchs", [])):
+            mid = m.get("match_id")
+            if mid:
+                vus_globaux_par_match_id[mid] = (d, i)
+            else:
+                vus_par_date_fallback.setdefault(d, set()).add((m.get("domicile"), m.get("exterieur")))
 
     nb_ajoutes = 0
+    nb_remplaces = 0
     for m in candidats:
         d = m.get("date")
-        cle = m.get("match_id") or (m.get("domicile"), m.get("exterieur"))
-        if cle in vus_par_date.get(d, set()):
-            continue
+        mid = m.get("match_id")
+
+        if mid:
+            if mid in vus_globaux_par_match_id:
+                d_existant, i_existant = vus_globaux_par_match_id[mid]
+                ancien = blocs_par_date[d_existant]["matchs"][i_existant]
+                if ancien.get("score") != m.get("score"):
+                    print(
+                        f"[archivage] conflit sur match_id={mid} : "
+                        f"score {ancien.get('score')!r} (archivé {d_existant}) "
+                        f"remplacé par {m.get('score')!r} (archivé {d}) -- "
+                        "conservation de l'entrée la plus récente",
+                        file=sys.stderr,
+                    )
+                    blocs_par_date[d_existant]["matchs"][i_existant] = m
+                    nb_remplaces += 1
+                continue
+        else:
+            cle = (m.get("domicile"), m.get("exterieur"))
+            if cle in vus_par_date_fallback.get(d, set()):
+                continue
 
         if d not in blocs_par_date:
             nouveau_bloc = {"date": d, "matchs": []}
@@ -198,10 +242,16 @@ def ajoute_matchs_a_historique(candidats, fichier=FICHIER_HISTORIQUE):
             blocs_par_date[d] = nouveau_bloc
 
         blocs_par_date[d]["matchs"].append(m)
-        vus_par_date.setdefault(d, set()).add(cle)
+        if mid:
+            vus_globaux_par_match_id[mid] = (d, len(blocs_par_date[d]["matchs"]) - 1)
+        else:
+            vus_par_date_fallback.setdefault(d, set()).add((m.get("domicile"), m.get("exterieur")))
         nb_ajoutes += 1
 
-    if nb_ajoutes:
+    if nb_remplaces:
+        print(f"[archivage] {nb_remplaces} entrée(s) remplacée(s) pour cause de score corrigé.", file=sys.stderr)
+
+    if nb_ajoutes or nb_remplaces:
         with open(fichier, "w", encoding="utf-8") as f:
             json.dump(historique, f, ensure_ascii=False, indent=2)
 
