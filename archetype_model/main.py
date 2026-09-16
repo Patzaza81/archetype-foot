@@ -15,7 +15,6 @@ from .h2h import h2h_markets
 from .signals import statistiques_signal
 from .signals import convergence
 from .signals import deduplication
-from .signals import selector
 from .signals import selection_edv_directe
 import justification
 from .edv import calculator as edv_calculator
@@ -279,22 +278,26 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
     candidats = [c for c in candidats if c.get("_cle_cote", (None,))[0] != "combo_dc_total" or not (c["_cle_cote"][1] in dc_eligibles or (c["_cle_cote"][3], c["_cle_cote"][2]) in totals_eligibles)]
     for c in candidats: c.pop("_cle_cote", None)
     candidats_dedupliques = deduplication.deduplique(candidats, critere="edge") if candidats else []
-    selection = selector.selectionner(candidats_dedupliques)
-    diagnostic_selection = selector.diagnostique_selection(candidats_dedupliques, selection)
+
+    # DÉBRANCHEMENT 16/09/2026 (décision explicite de Patrick) : l'ancienne
+    # cascade (signals.selector, décision du 09/09/2026) n'est plus
+    # utilisée pour la sélection de production -- remplacée par
+    # signals.selection_edv_directe (EDV -> probabilité -> cote,
+    # corrélation de Pearson au lieu d'exposure_group pour éliminer les
+    # marchés redondants). selector.py n'est PAS supprimé (gardé de
+    # côté au cas où, sur demande explicite de Patrick), simplement
+    # plus appelé ici.
+    matrice_repr = matrices_par_scenario.get(SCENARIO_REPRESENTATIF)
+    if matrice_repr is not None:
+        selection = selection_edv_directe.selectionner(candidats_dedupliques, matrice_repr)
+        diagnostic_selection = selection_edv_directe.diagnostique_selection(candidats_dedupliques, selection)
+    else:
+        # Lambda manquant en amont -- aucune matrice, donc aucune
+        # sélection possible (jamais une sélection partielle ou
+        # devinée). Cohérent avec le comportement déjà établi ailleurs
+        # dans ce module face à une donnée manquante.
+        selection = {"P1": None, "P2": None, "P3": None}
+        diagnostic_selection = {"P1": {"critere": "aucune_selection"}, "P2": {"critere": "aucune_selection"}, "P3": {"critere": "aucune_selection"}}
     for rang in ("P1", "P2", "P3"): justification.enrichit_justification_selection(selection.get(rang), diagnostic_selection.get(rang))
 
-    # AJOUT 16/09/2026 (demande Patrick) -- second sélecteur calculé EN
-    # PARALLÈLE, à titre de comparaison, sur les MÊMES candidats
-    # dédoublonnés. Ne remplace `selection` nulle part ci-dessus, ne
-    # modifie aucun comportement existant. Nécessite la matrice du
-    # scénario représentatif pour le calcul de corrélation -- si elle
-    # est indisponible (lambda manquant), la sélection EDV directe est
-    # simplement omise (None), jamais une exception qui casserait le
-    # retour de la fonction.
-    matrice_repr = matrices_par_scenario.get(SCENARIO_REPRESENTATIF)
-    selection_edv = (
-        selection_edv_directe.selectionner(candidats_dedupliques, matrice_repr)
-        if matrice_repr is not None else None
-    )
-
-    return {"statut":"OK", "fenetres":base["fenetres"], "lambdas":base["lambdas"], "candidats":candidats, "candidats_dedupliques":candidats_dedupliques, "selection":selection, "selection_edv_directe":selection_edv, "diagnostics":diagnostics, "h2h":{"palier":fenetre_h2h["palier"],"1x2":statut_h2h_1x2,"btts":statut_h2h_btts,"over_2.5":statut_h2h_over25}, "cotes_info":{k:v for k,v in cotes_info.items() if k != "cotes"}}
+    return {"statut":"OK", "fenetres":base["fenetres"], "lambdas":base["lambdas"], "candidats":candidats, "candidats_dedupliques":candidats_dedupliques, "selection":selection, "diagnostics":diagnostics, "h2h":{"palier":fenetre_h2h["palier"],"1x2":statut_h2h_1x2,"btts":statut_h2h_btts,"over_2.5":statut_h2h_over25}, "cotes_info":{k:v for k,v in cotes_info.items() if k != "cotes"}}

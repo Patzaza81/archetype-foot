@@ -433,6 +433,20 @@ def construit_raison_selection(candidat, diagnostic):
         if isinstance(edv, (int, float)):
             return base + f" À critères équivalents par ailleurs, son gain potentiel ({edv * 100:.1f} %) l'a départagé du meilleur marché concurrent."
         return base + " À critères équivalents par ailleurs, son gain potentiel l'a départagé du meilleur marché concurrent."
+    # AJOUT 16/09/2026 -- branches pour signals.selection_edv_directe
+    # (sélecteur EDV->probabilité->cote, débranchement de l'ancienne
+    # cascade demandé par Patrick). Additif : les branches ci-dessus
+    # restent utilisables si selector.py est un jour rebranché.
+    if critere == "probabilite":
+        p = candidat.get("probabilite")
+        if isinstance(p, (int, float)):
+            return base + f" C'est le marché le plus probable ({p * 100:.1f} %) parmi ceux restant après le premier choix."
+        return base + " C'est le marché le plus probable parmi ceux restant après le premier choix."
+    if critere == "cote":
+        cote = candidat.get("cote")
+        if isinstance(cote, (int, float)):
+            return base + f" C'est la cote la plus élevée ({cote:.2f}) parmi les marchés restants, en complément des deux premiers choix."
+        return base + " C'est la cote la plus élevée parmi les marchés restants, en complément des deux premiers choix."
     # "aucune_selection", critère absent ou inconnu -> repli honnête,
     # jamais une raison inventée au-delà de ce qui est garanti vrai.
     return base
