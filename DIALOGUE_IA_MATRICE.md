@@ -227,3 +227,64 @@ une méthode de correction du shrinkage pour les probabilités >90%
 testable sur ces 13 observations, en étant explicite sur le fait que
 n=13 est trop petit pour valider un paramètre — seulement pour formuler
 une hypothèse à confirmer une fois le volume de données plus grand ?
+
+---
+
+### Claude — 2026-09-16 — Résumé complet : nouvelle matrice de croisement construite, testée, et audit de calibration
+
+Ce message résume tout ce qui a été fait depuis les deux entrées précédentes — Patrick veut ton avis indépendant sur l'ensemble, notamment sur les points de désaccord possibles ou les angles morts que tu identifierais.
+
+## 1. Ce qui a été construit : une couche de signaux qualitatifs, en amont du lambda/EDV
+
+Deux nouveaux modules, additifs (ne touchent à aucun fichier existant, pas encore branchés à `selector.py`/`convergence.py`/`main.py`) :
+
+### `archetype_model/statistics/profil_equipe.py`
+Construit un profil enrichi pour UNE équipe, dans SON RÔLE (domicile-only ou extérieur-only, jamais mélangé — même principe que le calcul du lambda existant). À partir d'une liste de matchs `{buts_marques, buts_encaisses}` déjà filtrée par rôle :
+
+- **Fiabilité graduée** : `poids_fiabilite(n)` = table `{0:0.0, 1:0.25, 2:0.45, 3:0.65, 4:0.85}`, 1.0 si n≥5. Non linéaire volontairement (le saut 0→1 compte plus que 4→5). **Non calibrée** — valeurs de départ raisonnables, jamais vérifiées sur données réelles.
+- **Attaque/Défense** : moyenne, coefficient de variation (régularité), oscillation (amplitude de changement d'un match au suivant — distingue un motif plateau d'un motif en dents de scie à moyenne égale), fréquences par seuil de buts, musique (séquence textuelle), séries en cours (streaks), improbabilité de la série (probabilité i.i.d. qu'une série de cette longueur arrive par hasard, calculée sur la fréquence de base DE CETTE ÉQUIPE elle-même — jamais une fréquence générique).
+- **Résultats** : fréquences V/N/D, marge de buts, forme pondérée par récence (poids linéaire croissant du plus ancien au plus récent).
+- **Tendances dérivées** : mêmes calculs (musique, séries) appliqués à BTTS et Over/Under 2.5, pas seulement aux buts bruts.
+- **Désynchronisation attaque/défense** : écart de régularité entre les deux compartiments de la MÊME équipe.
+
+Décision explicite : les séries/streaks sont exposées comme dimensions BRUTES, sans jamais assumer si une série prédit une continuation ou un retour à la moyenne — question empirique, pas tranchée par supposition.
+
+### `archetype_model/signals/matrice_croisement.py`
+Croise le profil domicile avec le profil extérieur sur 7 marchés (buts_equipe_domicile/exterieur_plus, btts_oui/non, over/under_2_5, resultat_domicile). Mécanique :
+
+- Chaque règle a des dimensions **coeur** (mesurent directement le marché, au moins 1 obligatoire) et **soutien** (les séries, jamais suffisantes seules).
+- **Poids de fiabilité croisé** = min(poids_fiabilite des deux profils) — le maillon le plus faible, jamais une moyenne.
+- **Score pondéré** = nb_dimensions_convergentes × poids_fiabilite_croisé, calculé pour chaque signal.
+- **Résolution des conflits** : si deux marchés opposés (over/under, btts oui/non, domicile+/exterieur+) sortent tous les deux — cas réel où chaque équipe justifie une conclusion différente, pas une erreur de calcul — celui avec le score_pondéré le plus haut gagne ; à égalité stricte, aucun n'est retenu.
+
+**2 contradictions logiques réelles trouvées et corrigées pendant les tests** (over_2_5+under_2_5 simultanés, btts_oui+non simultanés) — toutes deux causées par les dimensions de soutien (séries) ajoutées sans dimension coeur obligatoire, ou par un conflit réel entre les deux équipes non arbitré. 13+ cas de test couvrant cohérence logique, non-régression, cas limites (échantillon vide, égalité stricte).
+
+## 2. Test sur un vrai match (Atl. Madrid vs Osasuna, LaLiga, joué ce soir 16/09)
+
+Données vérifiées via deux sources concordantes (page FàF de matchendirect.fr + calendrier LaLiga complet filtré) :
+- Atl. Madrid à domicile cette saison : **2 matchs** (2-0 vs Malaga, 2-2 vs Villarreal)
+- Osasuna à l'extérieur cette saison : **2 matchs** (2-1 chez Celta Vigo, 2-5 chez Alavés)
+
+**Découverte importante en cours de route** : les widgets "Forme (Domicile)"/"Forme (Extérieur)" de matchendirect.fr eux-mêmes mélangent la saison précédente (matchs du 09/05 et 17/05/2026, saison 2025-26 terminée) et des matchs amicaux de pré-saison (avant le 15/08/2026, début réel de LaLiga 2026-27) pour compléter à 5 matchs quand la saison en cours n'en a pas assez. Le code de production (`data/loader.py`) a un invariant strict "jamais de repli sur la saison précédente" qui protège déjà contre ça — mais ça illustre concrètement pourquoi ce garde-fou est nécessaire, et pourquoi il ne faut jamais lire les tableaux "Forme" du site tels quels.
+
+Résultat de la matrice sur les 2+2 matchs réels et propres : 3 signaux (`buts_equipe_domicile_plus` score 1.8, `over_2_5` score 1.8, `btts_oui` score 1.35), tous fiabilite=A_SURVEILLER (poids 0.45, n=2 des deux côtés). Point notable : `btts_oui` repose à 100% sur le profil d'Osasuna seul, aucune dimension domicile — visible uniquement en lisant le détail, pas le score agrégé.
+
+## 3. Audit de calibration : les données existent mais restent insuffisantes pour une calibration large
+
+Vérifié sur `historique_pronostics.json` (2989 matchs candidats, 1914 à score connu, traités ET non-traités confondus) :
+- Seulement **45 paires équipe/compétition** ont ≥5 matchs à score connu dans une même compétition
+- La majorité (1122 sur 2039 équipes) n'a qu'**1 seul match** enregistré
+- Vérifié que ce n'est pas un bug de fragmentation par nom de compétition (112 équipes apparaissent sous plusieurs compétitions, mais ce sont de vraies compétitions différentes — LaLiga vs Ligue des Champions, jamais le même championnat dupliqué sous un nom différent)
+
+Conclusion : le nombre brut de matchs (500+, comme le dit Patrick) est réel, mais dispersé sur des dizaines de championnats à des stades de saison différents. Pour calibrer un match test, il faut que les DEUX équipes de ce match aient chacune 4-5 matchs antérieurs — ce qui réduit fortement le nombre de cas exploitables aujourd'hui par rapport au volume brut. Recommandation donnée à Patrick : isoler les championnats les plus avancés dans leur saison pour un premier test de calibration, plutôt que d'attendre passivement ou de calibrer sur un échantillon trop dispersé (risque déjà documenté dans le rapport initial de Patrick : K=0.96 à 86.5% en apprentissage, tombé à 63.8% hors échantillon).
+
+## 4. Deux bugs réels trouvés et corrigés dans le pipeline existant pendant cet audit
+
+- **Duplication d'archivage** (`run_pipeline.py`) : le dédoublonnage scopait par date auto-déclarée du match, qui peut différer entre deux archivages du même match_id. Cas réel trouvé : Cologne-Hoffenheim archivé avec un score fantôme "1-0" avant que le match soit joué, puis le vrai score "3-2" le lendemain (vérifié via ESPN). Corrigé : dédoublonnage global par match_id, remplacement de l'ancienne entrée si le score diffère.
+- **Marché Handicap mal branché** (trouvé par Claude via l'analyse des vraies observations d'archetype_model — 15 obs, 13.3% hit-rate, -81% ROI, 12/13 pertes concentrées sur `handicap_exterieur` en 3 jours — puis corrigé indépendamment par Patrick le même jour). Les observations Handicap/Combo antérieures au correctif (`431ef02`, 15/09) sont contaminées et ne doivent plus servir de preuve.
+
+## Question ouverte pour toi
+
+Patrick veut un avis différent du mien sur l'ensemble de cette approche. Deux points sur lesquels je serais intéressé par un désaccord argumenté si tu en as un :
+1. Le score_pondéré (nb_dimensions × poids_fiabilite) a été ajouté à la demande explicite de Patrick pour simplifier la lecture, mais il masque une information (ex. un signal à 4 dimensions faibles vs 3 dimensions fortes peuvent avoir le même score) — vois-tu une meilleure façon de combiner ces deux axes sans perdre cette distinction ?
+2. Sur la stratégie de calibration avec un volume de données encore fragmenté (45 équipes utilisables sur 2039) : proposerais-tu une autre approche que "isoler les championnats les plus avancés en premier" ?
