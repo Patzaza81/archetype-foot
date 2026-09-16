@@ -368,6 +368,19 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
     if len(dims) >= 2:
         _ajoute(signaux, "resultat_domicile", "favorable", dims, fiabilite, poids_num)
 
+    # --- Miroir exact : résultat favorable à l'extérieur ---
+    dims = []
+    if b_res["forme_ponderee_recence"] is not None and b_res["forme_ponderee_recence"] >= 2.0:
+        dims.append(("forme_recente_exterieur", b_res["forme_ponderee_recence"]))
+    if a_res["forme_ponderee_recence"] is not None and a_res["forme_ponderee_recence"] <= 1.0:
+        dims.append(("forme_recente_domicile_faible", a_res["forme_ponderee_recence"]))
+    if b_res["freq_victoires"] is not None and b_res["freq_victoires"] >= SEUIL_HAUT:
+        dims.append(("freq_victoires_exterieur", b_res["freq_victoires"]))
+    if a_res["freq_defaites"] is not None and a_res["freq_defaites"] >= SEUIL_HAUT:
+        dims.append(("freq_defaites_domicile", a_res["freq_defaites"]))
+    if len(dims) >= 2:
+        _ajoute(signaux, "resultat_exterieur", "favorable", dims, fiabilite, poids_num)
+
     # RÉSOLUTION FINALE (garde-fou générique, trouvé nécessaire par test
     # 16/09/2026) : le cœur/soutien de chaque règle empêche une
     # contradiction DANS le même camp de dimensions, mais pas le cas où
@@ -385,6 +398,7 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
         "buts_equipe_exterieur_plus": "buts_equipe_domicile_plus",
         "cage_inviolee_domicile": "encaisse_domicile", "encaisse_domicile": "cage_inviolee_domicile",
         "cage_inviolee_exterieur": "encaisse_exterieur", "encaisse_exterieur": "cage_inviolee_exterieur",
+        "resultat_domicile": "resultat_exterieur", "resultat_exterieur": "resultat_domicile",
     }
     # AJOUT 16/09/2026 -- mêmes oppositions, généralisées aux nouvelles
     # lignes Over/Under et Handicap (noms de marché construits
