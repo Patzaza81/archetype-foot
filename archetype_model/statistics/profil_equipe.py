@@ -50,6 +50,26 @@ N_MIN_PROFIL_FIABLE = 4
 STATUT_FIABLE = "FIABLE"
 STATUT_A_SURVEILLER = "A_SURVEILLER"  # sous N_MIN_PROFIL_FIABLE, jamais bloquant, juste signalé
 
+# CORRECTIF 16/09/2026 (demande explicite de Patrick) -- le statut
+# binaire ci-dessus ne distingue pas 1 match de 3 : un échantillon de 1
+# n'a pas le même risque de "fausse illusion" qu'un échantillon de 3.
+# Coefficient GRADUÉ, V1 NON CALIBRÉ (mêmes réserves que ci-dessus) --
+# progression délibérément non linéaire : le gain de fiabilité entre 0
+# et 1 match est énorme (on passe d'aucune donnée à une seule
+# observation bruyante), le gain entre 4 et 5 est marginal (la fenêtre
+# est déjà réputée exploitable par validation.py à ce stade). Jamais
+# utilisé pour bloquer un calcul (ce n'est pas son rôle, contrairement
+# à N_MIN_PROFIL_FIABLE) -- seulement pour PONDÉRER la confiance
+# accordée à un signal en aval (matrice_croisement.py).
+_TABLE_POIDS_FIABILITE = {0: 0.0, 1: 0.25, 2: 0.45, 3: 0.65, 4: 0.85}
+POIDS_FIABILITE_PLEIN = 1.0  # n >= 5
+
+
+def poids_fiabilite(n: int) -> float:
+    """Coefficient de fiabilité gradué entre 0.0 (aucune donnée) et 1.0
+    (fenêtre pleinement fiable, n>=5) -- jamais un seuil binaire."""
+    return _TABLE_POIDS_FIABILITE.get(n, POIDS_FIABILITE_PLEIN)
+
 
 def _coefficient_variation(m: float | None, sigma: float | None) -> float | None:
     """Écart-type / moyenne -- mesure de régularité indépendante de
@@ -106,6 +126,31 @@ def _forme_ponderee_recence(matchs: list[dict[str, Any]]) -> float | None:
     return points / poids_total
 
 
+def _serie_actuelle(matchs: list[dict[str, Any]], condition) -> int:
+    """Longueur de la série EN COURS (les derniers matchs consécutifs
+    qui vérifient `condition`), en partant du plus récent (dernier
+    élément, ASSUME_ORDRE_CROISSANT) et en remontant tant que la
+    condition tient. S'arrête au premier match qui la brise -- une
+    série est par définition ININTERROMPUE, jamais la fréquence totale
+    sur toute la fenêtre (ça, c'est déjà freq_clean_sheet etc.)."""
+    serie = 0
+    for m in reversed(matchs):
+        if condition(m):
+            serie += 1
+        else:
+            break
+    return serie
+
+
+def _musique(valeurs: list[int]) -> str:
+    """Représentation compacte "1-2-0-6-1" de la séquence, plus ancien
+    en premier -- pour affichage/justification humaine uniquement,
+    jamais reparsée ailleurs dans le code (les séries ci-dessus sont
+    calculées directement sur la liste de matchs, pas sur cette
+    chaîne)."""
+    return "-".join(str(v) for v in valeurs)
+
+
 def construit_profil(matchs_role: list[dict[str, Any]]) -> dict[str, Any]:
     """Construit le profil qualitatif complet pour UNE équipe dans SON
     RÔLE (domicile ou extérieur) sur SA fenêtre déjà filtrée par rôle.
@@ -129,6 +174,7 @@ def construit_profil(matchs_role: list[dict[str, Any]]) -> dict[str, Any]:
     return {
         "n": n,
         "statut_fiabilite": STATUT_FIABLE if n >= N_MIN_PROFIL_FIABLE else STATUT_A_SURVEILLER,
+        "poids_fiabilite": poids_fiabilite(n),
 
         "attaque": {
             "moyenne": stats_off["moyenne"],
@@ -136,12 +182,18 @@ def construit_profil(matchs_role: list[dict[str, Any]]) -> dict[str, Any]:
             "freq_marque_0": _frequence_egale(buts_marques, 0),
             "freq_marque_1_plus": _frequence_seuil(buts_marques, 1),
             "freq_marque_2_plus": _frequence_seuil(buts_marques, 2),
+            "musique": _musique(buts_marques),
+            "serie_marque_actuelle": _serie_actuelle(matchs_role, lambda m: m["buts_marques"] >= 1),
+            "serie_sans_marquer_actuelle": _serie_actuelle(matchs_role, lambda m: m["buts_marques"] == 0),
         },
         "defense": {
             "moyenne": stats_def["moyenne"],
             "regularite_cv": _coefficient_variation(stats_def["moyenne"], stats_def["ecart_type"]),
             "freq_clean_sheet": stats_def["frequence_clean_sheets"],
             "freq_encaisse_2_plus": _frequence_seuil(buts_encaisses, 2),
+            "musique": _musique(buts_encaisses),
+            "serie_clean_sheet_actuelle": _serie_actuelle(matchs_role, lambda m: m["buts_encaisses"] == 0),
+            "serie_encaisse_actuelle": _serie_actuelle(matchs_role, lambda m: m["buts_encaisses"] >= 1),
         },
         "resultats": {
             "freq_victoires": resultats["frequence_victoires"],
