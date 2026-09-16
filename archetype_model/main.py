@@ -233,17 +233,20 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
     # dépendent pas du marché, seulement du rôle de chaque équipe), puis
     # consulté pour chaque marché avant Péage 2 (Poisson)/3 (EDV)/4 (H2H).
     #
-    # PORTÉE RÉELLE, à garder en tête : matrice_croisement ne calcule que
-    # 7 marchés fixes (over/under à 2.5, BTTS, résultat domicile...), alors
-    # que ce module en balaie des dizaines (Handicap à toute ligne, Combo,
-    # Over/Under à d'autres seuils, Parité, cage inviolée...). Seuls les
-    # marchés qui ont une correspondance directe et non ambiguë passent par
-    # le Péage 1 (_PEAGE1_CORRESPONDANCES ci-dessous) ; les autres n'ont
-    # PAS de score_pondere disponible et continuent normalement vers le
-    # Péage 2 -- bloquer à l'aveugle un marché sans donnée serait un rejet
-    # arbitraire, pas un vrai filtre. Étendre matrice_croisement à plus de
-    # marchés (Handicap, Combo, autres lignes) est un chantier séparé, pas
-    # fait ici.
+    # PORTÉE ÉTENDUE 16/09/2026 : matrice_croisement couvre maintenant
+    # Over/Under à 1.5/2.5/3.5, Handicap 3 choix (7 lignes standards),
+    # BTTS, résultat domicile/extérieur, cage inviolée/encaisse. Combo
+    # et Parité sont retirés du catalogue balayé (point 3 ci-dessous),
+    # pas concernés par le Péage 1.
+    #
+    # RÈGLE STRICTE NO DATA = NO BET (demande Patrick 16/09/2026, point
+    # 2) : un marché sans correspondance dans la matrice, ou dont le
+    # signal n'est pas sorti (pas assez de dimensions convergentes), est
+    # REJETÉ (NO_MATRIX_DATA_AVAILABLE) -- plus de laissez-passer par
+    # défaut. Conséquence connue : "1x2_nul" et les variantes "nul" des
+    # Double Chance n'ont pas de signal dédié -- toujours rejetés tant
+    # qu'un signal "resultat_nul" n'existe pas (voir docstring de
+    # _verifie_peage1 ci-dessous).
     #
     # LIMITE TECHNIQUE À CONNAÎTRE : poisson/markets.py calcule TOUS les
     # marchés du match en un seul appel groupé (calcule_tous_les_marches),
@@ -261,39 +264,69 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
     _score_pondere_par_signal = {s["marche"]: s["score_pondere"] for s in _signaux_croises}
 
     # Correspondance EXPLICITE marché main.py -> signal matrice_croisement.
-    # Liste FERMÉE et volontairement courte -- seuls les cas où la
-    # correspondance est directe et sans ambiguïté de sens. Toute
-    # extension est une décision humaine documentée, jamais une
-    # initiative du système (même principe que config/adaptive_parameters.json).
+    # ÉTENDU 16/09/2026 (demande Patrick, point 1) pour couvrir les
+    # lignes paramétrées en plus des 4 cas fixes d'origine. Toute
+    # extension future reste une décision humaine documentée, jamais
+    # une initiative du système (même principe que
+    # config/adaptive_parameters.json).
     _PEAGE1_CORRESPONDANCES = {
         "btts_oui": "btts_oui",
         "btts_non": "btts_non",
         "over_2.5": "over_2_5",
         "1x2_domicile": "resultat_domicile",
+        "1x2_exterieur": "resultat_exterieur",
+        "cage_inviolee_domicile": "cage_inviolee_domicile",
+        "encaisse_domicile": "encaisse_domicile",
+        "cage_inviolee_exterieur": "cage_inviolee_exterieur",
+        "encaisse_exterieur": "encaisse_exterieur",
     }
 
     def _verifie_peage1(marche_nom, cle_cote=None):
         """Retourne (autorise: bool, score_pondere: float|None, cle_signal: str|None).
-        autorise=True si aucun signal ne correspond (pas de donnée -> pas de
-        blocage) OU si le score_pondere disponible atteint SEUIL_PEAGE1."""
+
+        RÈGLE STRICTE NO DATA = NO BET (demande Patrick 16/09/2026,
+        point 2) : un marché sans correspondance dans la matrice, ou
+        dont le signal n'est pas sorti (pas assez de dimensions
+        convergentes), est REJETÉ -- plus de laissez-passer par
+        défaut. Seul un score_pondere réellement calculé et
+        >= SEUIL_PEAGE1 autorise le marché.
+
+        CONSÉQUENCE CONNUE, à garder en tête : "1x2_nul" et
+        "double_chance_X2"/"double_chance_12" (double chance nul
+        inclus dans les deux sens) n'ont pas de signal de croisement
+        dédié au nul -- ils seront TOUJOURS rejetés
+        (NO_MATRIX_DATA_AVAILABLE) tant qu'un signal "resultat_nul"
+        n'est pas construit. Décision de Patrick à confirmer : accepter
+        cette conséquence, ou demander ce signal supplémentaire."""
         cle_signal = _PEAGE1_CORRESPONDANCES.get(marche_nom)
-        if cle_signal is None and cle_cote is not None and cle_cote[0] == "double_chance" and cle_cote[1] == "1X":
-            cle_signal = "resultat_domicile"
-        if cle_signal is None and cle_cote is not None and cle_cote[0] == "over_under_total" and cle_cote[1] == 2.5:
-            cle_signal = "over_2_5" if cle_cote[2] == "over" else "under_2_5"
+        if cle_signal is None and cle_cote is not None:
+            t = cle_cote[0]
+            if t == "double_chance" and cle_cote[1] == "1X":
+                cle_signal = "resultat_domicile"
+            elif t == "double_chance" and cle_cote[1] == "X2":
+                cle_signal = "resultat_exterieur"
+            elif t == "over_under_total" and cle_cote[1] in (1.5, 2.5, 3.5):
+                tag = str(cle_cote[1]).replace(".", "_")
+                cle_signal = f"over_{tag}" if cle_cote[2] == "over" else f"under_{tag}"
+            elif t == "handicap_3choix" and cle_cote[2] in ("domicile", "exterieur"):
+                tag = str(cle_cote[1]).replace(".", "_").replace("-", "m")
+                cle_signal = f"handicap_{cle_cote[2]}_{tag}"
         if cle_signal is None:
-            return True, None, None  # pas de correspondance -> pas de donnée -> pas de blocage
+            return False, None, None  # pas de correspondance -> NO_MATRIX_DATA_AVAILABLE
         score = _score_pondere_par_signal.get(cle_signal)
         if score is None:
-            return True, None, cle_signal  # signal pas sorti de la matrice (pas assez de dimensions convergentes) -> pas de donnée -> pas de blocage
+            return False, None, cle_signal  # signal pas sorti -> NO_MATRIX_DATA_AVAILABLE
         return score >= SEUIL_PEAGE1, score, cle_signal
+
+    def _motif_peage1(score, cle_signal):
+        return "NO_MATRIX_DATA_AVAILABLE" if score is None else "MATRIX_SIGNAL_TOO_LOW"
 
     def ajoute(marche, family, group, extracteur, cle_cote, robustesse_key, signal, h2h_statut):
         autorise, score, cle_signal = _verifie_peage1(marche, cle_cote)
         if not autorise:
             diagnostics.append({
                 "marche": marche,
-                "filtre": {"eligible": False, "motif_rejet": "MATRIX_SIGNAL_TOO_LOW",
+                "filtre": {"eligible": False, "motif_rejet": _motif_peage1(score, cle_signal),
                            "score_pondere": score, "signal_matrice": cle_signal, "seuil": SEUIL_PEAGE1},
                 "h2h_statut": h2h_statut,
             })
@@ -314,14 +347,27 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
     ajoute("encaisse_domicile", "CLEAN_SHEET_DOMICILE", "GROUPE_BUTS", lambda m: m["buts_equipe_exterieur"][0.5]["over"] if m["buts_equipe_exterieur"][0.5] else None, ("buts_equipe_exterieur", 0.5, "over"), "cage_inviolee_domicile", signal_buts_b_05, None)
     ajoute("cage_inviolee_exterieur", "CLEAN_SHEET_EXTERIEUR", "GROUPE_BUTS", lambda m: m["buts_equipe_domicile"][0.5]["under"] if m["buts_equipe_domicile"][0.5] else None, ("buts_equipe_domicile", 0.5, "under"), "cage_inviolee_exterieur", signal_buts_a_05, None)
     ajoute("encaisse_exterieur", "CLEAN_SHEET_EXTERIEUR", "GROUPE_BUTS", lambda m: m["buts_equipe_domicile"][0.5]["over"] if m["buts_equipe_domicile"][0.5] else None, ("buts_equipe_domicile", 0.5, "over"), "cage_inviolee_exterieur", signal_buts_a_05, None)
-    ajoute("parite_pair", "PARITE", "GROUPE_BUTS", lambda m: m["parite_totale"]["pair"] if m["parite_totale"] else None, ("parite_totale", "pair"), "parite_pair", None, None)
-    ajoute("parite_impair", "PARITE", "GROUPE_BUTS", lambda m: m["parite_totale"]["impair"] if m["parite_totale"] else None, ("parite_totale", "impair"), "parite_pair", None, None)
+    # RETIRÉS 16/09/2026 (demande Patrick, point 3 : "assure-toi que les
+    # marchés exclus (Combos, Pair/Impair, Multiscores) sont totalement
+    # retirés de la liste des marchés balayés"). parite_pair/parite_impair
+    # ne sont plus construits du tout -- ancien code : ajoute("parite_pair",
+    # "PARITE", "GROUPE_BUTS", ...) / ajoute("parite_impair", "PARITE",
+    # "GROUPE_BUTS", ...). "Multiscores" n'a jamais existé comme marché
+    # dans ce module (rien à retirer pour ce cas).
 
     lambdas_dyn = base["lambdas"]
     matrices_par_scenario = {s: distribution.matrice_scores(lambdas_dyn["A"][s], lambdas_dyn["B"][s]) for s in SCENARIOS}
     dist_a_par_scenario = {s: distribution.distribution_marginale(lambdas_dyn["A"][s]) for s in SCENARIOS}
     dist_b_par_scenario = {s: distribution.distribution_marginale(lambdas_dyn["B"][s]) for s in SCENARIOS}
-    familles = {"1x2": ("RESULT", "GROUPE_RESULTAT"), "double_chance": ("DOUBLE_CHANCE", "GROUPE_RESULTAT"), "over_under_total": ("GOALS_TOTAL", "GROUPE_BUTS"), "buts_equipe_domicile": ("GOALS_EQUIPE_DOMICILE", "GROUPE_BUTS"), "buts_equipe_exterieur": ("GOALS_EQUIPE_EXTERIEUR", "GROUPE_BUTS"), "handicap_3choix": ("HANDICAP", "GROUPE_HANDICAP"), "combo_dc_total": ("COMBO_DC_TOTAL", "GROUPE_COMBO_DC_TOTAL"), "btts": ("BTTS", "GROUPE_BUTS"), "parite_totale": ("PARITE", "GROUPE_BUTS")}
+    # RETIRÉS 16/09/2026 (demande Patrick, point 3) : "combo_dc_total"
+    # et "parite_totale" ne sont plus dans cette table -- la boucle
+    # dynamique ci-dessous les ignore désormais totalement (elle
+    # continue sur tout cle_cote dont le type n'est pas une clé de
+    # `familles`). parite_totale était déjà filtrée par ailleurs via
+    # cles_deja (ci-dessous), mais retirée d'ici aussi par cohérence --
+    # aucun des deux marchés ne doit apparaître nulle part dans le
+    # catalogue balayé.
+    familles = {"1x2": ("RESULT", "GROUPE_RESULTAT"), "double_chance": ("DOUBLE_CHANCE", "GROUPE_RESULTAT"), "over_under_total": ("GOALS_TOTAL", "GROUPE_BUTS"), "buts_equipe_domicile": ("GOALS_EQUIPE_DOMICILE", "GROUPE_BUTS"), "buts_equipe_exterieur": ("GOALS_EQUIPE_EXTERIEUR", "GROUPE_BUTS"), "handicap_3choix": ("HANDICAP", "GROUPE_HANDICAP"), "btts": ("BTTS", "GROUPE_BUTS")}
     cles_deja = {( "1x2", "domicile"),("1x2", "nul"),("1x2", "exterieur"),("btts", "oui"),("btts", "non"),("over_under_total",2.5,"over"),("buts_equipe_exterieur",0.5,"under"),("buts_equipe_exterieur",0.5,"over"),("buts_equipe_domicile",0.5,"under"),("buts_equipe_domicile",0.5,"over"),("parite_totale","pair"),("parite_totale","impair")}
     for cle_cote, cote_reelle in cotes.items():
         if cle_cote in cles_deja or cle_cote[0] not in familles: continue
@@ -345,7 +391,7 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
         if not _peage1_ok:
             diagnostics.append({
                 "marche": marche_nom,
-                "filtre": {"eligible": False, "motif_rejet": "MATRIX_SIGNAL_TOO_LOW",
+                "filtre": {"eligible": False, "motif_rejet": _motif_peage1(_peage1_score, _peage1_signal),
                            "score_pondere": _peage1_score, "signal_matrice": _peage1_signal, "seuil": SEUIL_PEAGE1},
                 "h2h_statut": None,
             })
