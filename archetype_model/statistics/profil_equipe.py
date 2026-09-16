@@ -143,6 +143,32 @@ def _improbabilite_serie(longueur_serie: int, frequence_base: float | None) -> f
     return frequence_base ** longueur_serie
 
 
+def _oscillation(valeurs: list[int]) -> float | None:
+    """Amplitude moyenne de changement d'un match au suivant (|delta|)
+    -- distincte de regularite_cv (dispersion globale de la
+    DISTRIBUTION, indifférente à l'ordre) : un motif plateau (1-1-1-1)
+    a une oscillation de 0 quelle que soit sa variance ; un motif en
+    dents de scie (0-3-0-3) a une oscillation élevée même si sa
+    moyenne est identique à un motif régulier à 1.5. Complète la
+    régularité par la SÉQUENCE, pas seulement par la distribution.
+    None si moins de 2 matchs (aucun changement mesurable)."""
+    if len(valeurs) < 2:
+        return None
+    deltas = [abs(valeurs[i + 1] - valeurs[i]) for i in range(len(valeurs) - 1)]
+    return moyenne(deltas)
+
+
+def _desynchronisation_attaque_defense(cv_attaque: float | None, cv_defense: float | None) -> float | None:
+    """Écart entre la régularité offensive et défensive de la MÊME
+    équipe -- une équipe irrégulière en attaque mais stable en
+    défense (ou l'inverse) a un profil différent d'une équipe
+    uniformément régulière ou uniformément irrégulière des deux
+    côtés. None si l'un des deux coefficients est indisponible."""
+    if cv_attaque is None or cv_defense is None:
+        return None
+    return abs(cv_attaque - cv_defense)
+
+
 def _serie_actuelle(matchs: list[dict[str, Any]], condition) -> int:
     """Longueur de la série EN COURS (les derniers matchs consécutifs
     qui vérifient `condition`), en partant du plus récent (dernier
@@ -192,15 +218,23 @@ def construit_profil(matchs_role: list[dict[str, Any]]) -> dict[str, Any]:
     freq_clean_sheet = stats_def["frequence_clean_sheets"]
     serie_sans_marquer = _serie_actuelle(matchs_role, lambda m: m["buts_marques"] == 0)
     serie_clean_sheet = _serie_actuelle(matchs_role, lambda m: m["buts_encaisses"] == 0)
+    cv_attaque = _coefficient_variation(stats_off["moyenne"], stats_off["ecart_type"])
+    cv_defense = _coefficient_variation(stats_def["moyenne"], stats_def["ecart_type"])
 
     return {
         "n": n,
         "statut_fiabilite": STATUT_FIABLE if n >= N_MIN_PROFIL_FIABLE else STATUT_A_SURVEILLER,
         "poids_fiabilite": poids_fiabilite(n),
+        # AJOUT 16/09/2026 (demande Patrick) -- écart de régularité entre
+        # attaque et défense de LA MÊME équipe (ex. attaque en dents de
+        # scie, défense stable, ou l'inverse) -- pas une comparaison
+        # entre deux équipes, une caractéristique interne à celle-ci.
+        "desynchronisation_attaque_defense": _desynchronisation_attaque_defense(cv_attaque, cv_defense),
 
         "attaque": {
             "moyenne": stats_off["moyenne"],
-            "regularite_cv": _coefficient_variation(stats_off["moyenne"], stats_off["ecart_type"]),
+            "regularite_cv": cv_attaque,
+            "oscillation": _oscillation(buts_marques),
             "freq_marque_0": _frequence_egale(buts_marques, 0),
             "freq_marque_1_plus": _frequence_seuil(buts_marques, 1),
             "freq_marque_2_plus": _frequence_seuil(buts_marques, 2),
@@ -211,7 +245,8 @@ def construit_profil(matchs_role: list[dict[str, Any]]) -> dict[str, Any]:
         },
         "defense": {
             "moyenne": stats_def["moyenne"],
-            "regularite_cv": _coefficient_variation(stats_def["moyenne"], stats_def["ecart_type"]),
+            "regularite_cv": cv_defense,
+            "oscillation": _oscillation(buts_encaisses),
             "freq_clean_sheet": freq_clean_sheet,
             "freq_encaisse_2_plus": _frequence_seuil(buts_encaisses, 2),
             "musique": _musique(buts_encaisses),

@@ -78,49 +78,76 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
     b_off, b_def, b_res, b_bt = (profil_exterieur["attaque"], profil_exterieur["defense"],
                                  profil_exterieur["resultats"], profil_exterieur["tendances_buts"])
 
-    # --- "Plus de buts équipe domicile" : A marque souvent ET B encaisse souvent à l'extérieur ---
-    dims = []
+    # --- "Plus de buts équipe domicile" : coeur obligatoire = freq/marge
+    # réelles (pas seulement des séries courtes, qui seules ont permis à
+    # domicile_plus ET exterieur_plus de sortir en même temps -- trouvé
+    # par test). Séries en soutien uniquement, jamais suffisantes seules.
+    coeur = []
     if a_off["freq_marque_2_plus"] is not None and a_off["freq_marque_2_plus"] >= SEUIL_HAUT:
-        dims.append(("attaque_domicile_freq_marque_2+", a_off["freq_marque_2_plus"]))
+        coeur.append(("attaque_domicile_freq_marque_2+", a_off["freq_marque_2_plus"]))
     if b_def["freq_encaisse_2_plus"] is not None and b_def["freq_encaisse_2_plus"] >= SEUIL_HAUT:
-        dims.append(("defense_exterieur_freq_encaisse_2+", b_def["freq_encaisse_2_plus"]))
+        coeur.append(("defense_exterieur_freq_encaisse_2+", b_def["freq_encaisse_2_plus"]))
     if a_res["marge_buts_moyenne"] is not None and a_res["marge_buts_moyenne"] > 0:
-        dims.append(("marge_buts_domicile", a_res["marge_buts_moyenne"]))
-    if len(dims) >= 2:
-        _ajoute(signaux, "buts_equipe_domicile_plus", "favorable", dims, fiabilite)
+        coeur.append(("marge_buts_domicile", a_res["marge_buts_moyenne"]))
+    soutien = []
+    if a_off["serie_marque_actuelle"] >= 2:
+        soutien.append(("serie_marque_domicile", a_off["serie_marque_actuelle"]))
+    if b_def["serie_encaisse_actuelle"] >= 2:
+        soutien.append(("serie_encaisse_exterieur", b_def["serie_encaisse_actuelle"]))
+    if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
+        _ajoute(signaux, "buts_equipe_domicile_plus", "favorable", coeur + soutien, fiabilite)
 
     # --- "Plus de buts équipe extérieure" : symétrique ---
-    dims = []
+    coeur = []
     if b_off["freq_marque_2_plus"] is not None and b_off["freq_marque_2_plus"] >= SEUIL_HAUT:
-        dims.append(("attaque_exterieur_freq_marque_2+", b_off["freq_marque_2_plus"]))
+        coeur.append(("attaque_exterieur_freq_marque_2+", b_off["freq_marque_2_plus"]))
     if a_def["freq_encaisse_2_plus"] is not None and a_def["freq_encaisse_2_plus"] >= SEUIL_HAUT:
-        dims.append(("defense_domicile_freq_encaisse_2+", a_def["freq_encaisse_2_plus"]))
+        coeur.append(("defense_domicile_freq_encaisse_2+", a_def["freq_encaisse_2_plus"]))
     if b_res["marge_buts_moyenne"] is not None and b_res["marge_buts_moyenne"] > 0:
-        dims.append(("marge_buts_exterieur", b_res["marge_buts_moyenne"]))
-    if len(dims) >= 2:
-        _ajoute(signaux, "buts_equipe_exterieur_plus", "favorable", dims, fiabilite)
+        coeur.append(("marge_buts_exterieur", b_res["marge_buts_moyenne"]))
+    soutien = []
+    if b_off["serie_marque_actuelle"] >= 2:
+        soutien.append(("serie_marque_exterieur", b_off["serie_marque_actuelle"]))
+    if a_def["serie_encaisse_actuelle"] >= 2:
+        soutien.append(("serie_encaisse_domicile", a_def["serie_encaisse_actuelle"]))
+    if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
+        _ajoute(signaux, "buts_equipe_exterieur_plus", "favorable", coeur + soutien, fiabilite)
 
-    # --- BTTS oui : les deux équipes marquent souvent ET encaissent souvent ---
-    dims = []
+    # --- BTTS oui : coeur obligatoire = freq/clean-sheet réelles, séries en soutien ---
+    coeur = []
     if a_bt["freq_btts"] is not None and a_bt["freq_btts"] >= SEUIL_HAUT:
-        dims.append(("btts_domicile", a_bt["freq_btts"]))
+        coeur.append(("btts_domicile", a_bt["freq_btts"]))
     if b_bt["freq_btts"] is not None and b_bt["freq_btts"] >= SEUIL_HAUT:
-        dims.append(("btts_exterieur", b_bt["freq_btts"]))
+        coeur.append(("btts_exterieur", b_bt["freq_btts"]))
     if a_def["freq_clean_sheet"] is not None and a_def["freq_clean_sheet"] <= SEUIL_BAS:
-        dims.append(("faible_clean_sheet_domicile", a_def["freq_clean_sheet"]))
+        coeur.append(("faible_clean_sheet_domicile", a_def["freq_clean_sheet"]))
     if b_def["freq_clean_sheet"] is not None and b_def["freq_clean_sheet"] <= SEUIL_BAS:
-        dims.append(("faible_clean_sheet_exterieur", b_def["freq_clean_sheet"]))
-    if len(dims) >= 2:
-        _ajoute(signaux, "btts_oui", "favorable", dims, fiabilite)
+        coeur.append(("faible_clean_sheet_exterieur", b_def["freq_clean_sheet"]))
+    soutien = []
+    if a_bt["serie_btts_oui_actuelle"] >= 2:
+        soutien.append(("serie_btts_oui_domicile", a_bt["serie_btts_oui_actuelle"]))
+    if b_bt["serie_btts_oui_actuelle"] >= 2:
+        soutien.append(("serie_btts_oui_exterieur", b_bt["serie_btts_oui_actuelle"]))
+    if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
+        _ajoute(signaux, "btts_oui", "favorable", coeur + soutien, fiabilite)
 
-    # --- BTTS non : au moins une défense solide ET l'attaque en face peu fournie ---
-    dims = []
+    # --- BTTS non : symétrique ---
+    coeur = []
     if a_def["freq_clean_sheet"] is not None and a_def["freq_clean_sheet"] >= SEUIL_HAUT:
-        dims.append(("forte_clean_sheet_domicile", a_def["freq_clean_sheet"]))
+        coeur.append(("forte_clean_sheet_domicile", a_def["freq_clean_sheet"]))
     if b_off["freq_marque_0"] is not None and b_off["freq_marque_0"] >= SEUIL_BAS:
-        dims.append(("exterieur_freq_marque_0", b_off["freq_marque_0"]))
-    if len(dims) >= 2:
-        _ajoute(signaux, "btts_non", "favorable", dims, fiabilite)
+        coeur.append(("exterieur_freq_marque_0", b_off["freq_marque_0"]))
+    soutien = []
+    if a_bt["serie_btts_non_actuelle"] >= 2:
+        soutien.append(("serie_btts_non_domicile", a_bt["serie_btts_non_actuelle"]))
+    if b_bt["serie_btts_non_actuelle"] >= 2:
+        soutien.append(("serie_btts_non_exterieur", b_bt["serie_btts_non_actuelle"]))
+    if a_def["serie_clean_sheet_actuelle"] >= 2:
+        soutien.append(("serie_clean_sheet_domicile", a_def["serie_clean_sheet_actuelle"]))
+    if b_off["serie_sans_marquer_actuelle"] >= 2:
+        soutien.append(("serie_sans_marquer_exterieur", b_off["serie_sans_marquer_actuelle"]))
+    if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
+        _ajoute(signaux, "btts_non", "favorable", coeur + soutien, fiabilite)
 
     # --- Over 2.5 : la fréquence over 2.5 elle-même est OBLIGATOIRE (coeur) ;
     # l'activité offensive des deux équipes est un simple renfort, jamais
@@ -136,6 +163,10 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
         soutien.append(("attaque_domicile_active", a_off["freq_marque_1_plus"]))
     if b_off["freq_marque_1_plus"] is not None and b_off["freq_marque_1_plus"] >= SEUIL_HAUT:
         soutien.append(("attaque_exterieur_active", b_off["freq_marque_1_plus"]))
+    if a_bt["serie_over_2_5_actuelle"] >= 2:
+        soutien.append(("serie_over_2.5_domicile", a_bt["serie_over_2_5_actuelle"]))
+    if b_bt["serie_over_2_5_actuelle"] >= 2:
+        soutien.append(("serie_over_2.5_exterieur", b_bt["serie_over_2_5_actuelle"]))
     if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
         _ajoute(signaux, "over_2_5", "favorable", coeur + soutien, fiabilite)
 
@@ -150,6 +181,10 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
         soutien.append(("defense_domicile_solide", a_def["freq_clean_sheet"]))
     if b_def["freq_clean_sheet"] is not None and b_def["freq_clean_sheet"] >= SEUIL_HAUT:
         soutien.append(("defense_exterieur_solide", b_def["freq_clean_sheet"]))
+    if a_bt["serie_under_2_5_actuelle"] >= 2:
+        soutien.append(("serie_under_2.5_domicile", a_bt["serie_under_2_5_actuelle"]))
+    if b_bt["serie_under_2_5_actuelle"] >= 2:
+        soutien.append(("serie_under_2.5_exterieur", b_bt["serie_under_2_5_actuelle"]))
     if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
         _ajoute(signaux, "under_2_5", "favorable", coeur + soutien, fiabilite)
 
@@ -165,6 +200,39 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
         dims.append(("freq_defaites_exterieur", b_res["freq_defaites"]))
     if len(dims) >= 2:
         _ajoute(signaux, "resultat_domicile", "favorable", dims, fiabilite)
+
+    # RÉSOLUTION FINALE (garde-fou générique, trouvé nécessaire par test
+    # 16/09/2026) : le cœur/soutien de chaque règle empêche une
+    # contradiction DANS le même camp de dimensions, mais pas le cas où
+    # l'équipe domicile justifie un marché et l'équipe extérieure
+    # justifie SEULE son opposé (ex. domicile pousse vers BTTS-oui,
+    # extérieur pousse vers BTTS-non) -- un vrai conflit de preuves,
+    # pas une erreur de calcul. Dans ce cas il n'y a PAS de tendance
+    # nette (le but même de cette matrice), donc : le marché avec le
+    # plus de dimensions convergentes gagne ; à égalité stricte, aucun
+    # des deux n'est assez net, les deux sont retirés.
+    opposes = {
+        "over_2_5": "under_2_5", "under_2_5": "over_2_5",
+        "btts_oui": "btts_non", "btts_non": "btts_oui",
+        "buts_equipe_domicile_plus": "buts_equipe_exterieur_plus",
+        "buts_equipe_exterieur_plus": "buts_equipe_domicile_plus",
+    }
+    par_marche = {s["marche"]: s for s in signaux}
+    a_retirer = set()
+    for marche, oppose in opposes.items():
+        if marche in a_retirer or oppose in a_retirer:
+            continue
+        if marche in par_marche and oppose in par_marche:
+            n_marche = par_marche[marche]["nb_dimensions_convergentes"]
+            n_oppose = par_marche[oppose]["nb_dimensions_convergentes"]
+            if n_marche > n_oppose:
+                a_retirer.add(oppose)
+            elif n_oppose > n_marche:
+                a_retirer.add(marche)
+            else:
+                a_retirer.add(marche)
+                a_retirer.add(oppose)
+    signaux = [s for s in signaux if s["marche"] not in a_retirer]
 
     signaux.sort(key=lambda s: s["nb_dimensions_convergentes"], reverse=True)
     return signaux
