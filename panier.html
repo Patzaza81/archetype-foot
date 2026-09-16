@@ -6,37 +6,20 @@
 <meta name="theme-color" content="#F7F1E7">
 <title>Archetype Foot — Panier</title>
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="theme.css">
 <style>
-  :root {
-    --bg:#F7F1E7; --surface:#FFFDF8; --surface-2:#F1E9FA;
-    --turquoise:#7C3AED; --turquoise-active:#5B21B6; --gold:#D4A72C;
-    --green:#2F855A; --red:#C53030; --text:#241B35;
-    --text-secondary:#756B7D; --heure:#655B70; --categorie:#7C3AED;
-    --border:rgba(64,38,91,.14);
-  }
-  #retour-accueil { display:inline-block; margin-bottom:12px; }
-  #statut-panier { padding:0 0 16px; font-size:14px; color:var(--text-secondary); }
-  #panier-cartes { max-width:980px; margin:0 auto; }
-  .carte-panier { margin-bottom:18px; }
-  .barre-panier { display:flex; justify-content:flex-end; gap:8px; margin-bottom:8px; }
-  .bouton-analyse-panier,.bouton-retirer-panier { border-radius:999px; padding:8px 12px; font-size:12px; font-weight:800; cursor:pointer; }
-  .bouton-analyse-panier { background:linear-gradient(135deg,#4F46E5,#D946EF); border:1px solid transparent; color:#fff; box-shadow:0 5px 14px rgba(124,58,237,.16); }
-  .bouton-analyse-panier:disabled { opacity:.45; cursor:not-allowed; }
-  .bouton-retirer-panier { background:#FFFDF8; border:1px solid rgba(124,58,237,.16); color:var(--text-secondary); }
-  .carte-panier .carte-match { margin-bottom:0; }
-  body { background:var(--bg); color:var(--text); }
-  header { background:linear-gradient(135deg,rgba(79,70,229,.10),rgba(217,70,239,.10)); border-bottom-color:rgba(124,58,237,.18); }
-  header h1 { color:var(--gold); }
-  .carte-panier,.carte-panier .carte-match { box-shadow:0 5px 18px rgba(61,38,84,.06); }
+:root{--bg:#F7F1E7;--surface:#FFFDF8;--surface-2:#F1E9FA;--turquoise:#315CFF;--turquoise-active:#6547E8;--gold:#9A701B;--green:#2F855A;--red:#C53030;--text:#241B35;--text-secondary:#756B7D;--heure:#655B70;--categorie:#315CFF;--border:rgba(64,38,91,.14)}
+#retour-accueil{display:inline-block;margin-bottom:8px}#statut-panier{padding:0 0 8px;font-size:12px;color:var(--text-secondary)}#panier-cartes{max-width:980px;margin:0 auto}.carte-panier{margin-bottom:10px}.barre-panier{display:flex;justify-content:flex-end;gap:6px;margin-bottom:6px}.bouton-analyse-panier,.bouton-retirer-panier{border-radius:999px;padding:7px 10px;font-size:11px;font-weight:800;cursor:pointer}.bouton-analyse-panier{background:linear-gradient(135deg,#315CFF,#6547E8);border:0;color:#fff}.bouton-analyse-panier:disabled{opacity:.45;cursor:not-allowed}.bouton-retirer-panier{background:#FFFDF8;border:1px solid rgba(49,92,255,.16);color:var(--text-secondary)}.carte-panier .carte-match{margin-bottom:0}body{background:var(--bg);color:var(--text)}header{background:linear-gradient(135deg,rgba(49,92,255,.08),rgba(130,70,230,.08));border-bottom-color:rgba(49,92,255,.16)}header h1{color:var(--gold)}.carte-panier,.carte-panier .carte-match{box-shadow:0 5px 18px rgba(61,38,84,.06)}
 </style>
 </head>
 <body class="page-archetype">
 <header><div class="header-top"><h1>Archetype Foot — Panier</h1></div></header>
 <main>
-  <a id="retour-accueil" href="index.html" class="nav-bouton">← Accueil</a>
-  <p id="statut-panier">Chargement…</p>
-  <div id="panier-cartes"></div>
+<a id="retour-accueil" href="index.html" class="nav-bouton">← Accueil</a>
+<p id="statut-panier">Chargement…</p>
+<div id="panier-cartes"></div>
 </main>
+<script src="theme.js"></script>
 <script src="traduction_marches.js"></script>
 <script src="archetype.js"></script>
 <script src="panier.js"></script>
