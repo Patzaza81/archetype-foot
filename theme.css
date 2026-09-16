@@ -1,69 +1,7 @@
 /* Archetype Foot — thème visuel commun */
-:root{
-  --af-blue:#315CFF;
-  --af-blue-violet:#6547E8;
-  --af-violet:#8246E6;
-  --af-gold:#9A701B;
-  --af-gold-light:#C49A3A;
-  --af-cream:#F7F1E7;
-  --af-ink:#17141B;
-  --af-night:#0E1018;
-  --af-night-card:#171A25;
-}
-
-body{background:var(--af-cream)!important;color:var(--af-ink)!important;}
-header{padding:12px 14px 9px!important;background:linear-gradient(135deg,rgba(49,92,255,.08),rgba(130,70,230,.08))!important;border-bottom:1px solid rgba(49,92,255,.16)!important;}
-header h1{font-size:24px!important;line-height:1.15!important;color:var(--af-gold)!important;font-weight:800!important;letter-spacing:-.02em;}
-#maj{margin-top:6px!important;font-size:12px!important;}
-.nav-pages{gap:6px!important;margin:8px 0 4px!important;}
-.nav-pages a{padding:8px 7px!important;min-width:0!important;border-radius:9px!important;font-size:12px!important;background:linear-gradient(135deg,var(--af-blue),var(--af-blue-violet))!important;color:#fff!important;border:0!important;box-shadow:0 4px 12px rgba(49,92,255,.16)!important;}
-.nav-bouton{background:linear-gradient(135deg,var(--af-blue),var(--af-blue-violet))!important;color:#fff!important;border:0!important;border-radius:999px!important;padding:6px 10px!important;font-size:12px!important;box-shadow:0 4px 12px rgba(49,92,255,.14)!important;}
-.tabs{gap:6px!important;margin:8px 0!important;}
-.tabs button{padding:8px 6px!important;border-radius:8px!important;}
-.tabs button.actif,.bouton-principal,#copier-btn{background:linear-gradient(135deg,var(--af-blue),var(--af-blue-violet))!important;color:#fff!important;border-color:transparent!important;}
-.score,.proba-1,.details-niveau1 summary,.detail-sous-titre,.justification-titre{color:var(--af-blue-violet)!important;}
-.entete-categorie,.selection-competition{background:#101114!important;color:#fff!important;border-radius:6px!important;font-size:12px!important;font-weight:800!important;letter-spacing:.02em;padding:7px 10px!important;text-transform:uppercase;}
-.selection-competition{margin:10px 0 5px!important;}
-
-/* Réduction des zones hautes des pages secondaires : la marque reste prioritaire. */
-#panier-cartes,.bloc-systeme,.flux-selections{padding-top:6px!important;}
-#statut-panier,#maj-systeme{padding-bottom:8px!important;font-size:12px!important;}
-.carte-panier{margin-bottom:10px!important;}
-.bloc-systeme{padding:12px!important;margin-bottom:10px!important;border-radius:12px!important;}
-.page-archetype{padding:0 6px 30px!important;}
-.page-archetype .header-archetype{padding:9px 5px 7px!important;}
-.page-archetype h1{font-size:25px!important;color:var(--af-gold)!important;letter-spacing:.09em!important;}
-.page-archetype .logo-archetype{width:32px!important;height:32px!important;font-size:17px!important;border-color:rgba(154,112,27,.6)!important;background:rgba(154,112,27,.09)!important;color:var(--af-gold)!important;}
-.page-archetype .marque-archetype p{font-size:9px!important;}
-.page-archetype .nav-bouton{margin-top:6px!important;}
-.page-archetype .maj-archetype{margin-top:5px!important;color:var(--af-gold)!important;font-size:11px!important;}
-.page-archetype .flux-selections{padding:6px 0!important;}
-.page-archetype .carte-match{margin-bottom:9px!important;border-radius:14px!important;}
-.page-archetype .entete-match{padding:9px 10px 37px!important;}
-.page-archetype .selections{padding:7px 7px 1px!important;}
-.page-archetype .selection{margin-bottom:6px!important;border-radius:11px!important;}
-.page-archetype .selection-inner{padding:8px 9px!important;}
-.page-archetype .libelle-marche{font-size:16px!important;margin:7px 0 5px!important;}
-.page-archetype .cote{font-size:19px!important;}
-.page-archetype .jauge{width:52px!important;height:52px!important;}
-
-/* Or de marque : plus profond, réservé à ARCHETYPE. */
-.page-archetype .p1,.page-archetype .rang-1{--accent:var(--af-gold)!important;}
-
-/* Mode nuit : mémorisé et appliqué à toutes les pages. */
-body.theme-nuit{background:var(--af-night)!important;color:#F4F2F7!important;}
-body.theme-nuit header{background:linear-gradient(135deg,rgba(49,92,255,.12),rgba(130,70,230,.13))!important;border-bottom-color:rgba(255,255,255,.10)!important;}
-body.theme-nuit header h1,.theme-nuit .page-archetype h1{color:#B98A28!important;}
-body.theme-nuit .match,body.theme-nuit #sortie-json,body.theme-nuit #ajout-manuel,body.theme-nuit .carte-panier,body.theme-nuit .carte-panier .carte-match,body.theme-nuit .bloc-systeme,body.theme-nuit .etat-vide-systeme,body.theme-nuit .page-archetype .carte-match,body.theme-nuit .page-archetype .selection,body.theme-nuit .page-archetype .etat-vide{background:var(--af-night-card)!important;color:#F4F2F7!important;border-color:rgba(255,255,255,.10)!important;box-shadow:0 8px 22px rgba(0,0,0,.22)!important;}
-body.theme-nuit .page-archetype .selection{background:#131722!important;}
-body.theme-nuit .page-archetype .bloc-pourquoi{background:#1C1823!important;}
-body.theme-nuit .page-archetype .libelle-marche,body.theme-nuit .page-archetype .equipe,body.theme-nuit .page-archetype .jauge strong,body.theme-nuit .grille-stats strong{color:#F4F2F7!important;}
-body.theme-nuit .tabs button,body.theme-nuit .bouton-secondaire,body.theme-nuit .bouton-retirer-panier{background:#171A25!important;color:#F4F2F7!important;border-color:rgba(255,255,255,.12)!important;}
-body.theme-nuit .entete-categorie,body.theme-nuit .selection-competition{background:#050608!important;color:#fff!important;}
-body.theme-nuit input,body.theme-nuit textarea{background:#171A25!important;color:#fff!important;}
-
-/* Bouton nuit discret mais toujours visible. */
-.bouton-mode-nuit{margin-left:auto;width:31px;height:27px;padding:0;border:1px solid rgba(49,92,255,.22);border-radius:999px;background:rgba(255,255,255,.48);color:#34303A;font-size:14px;line-height:1;cursor:pointer;display:inline-grid;place-items:center;flex:none;}
-.bouton-mode-nuit:active{transform:scale(.96);}
-.theme-nuit .bouton-mode-nuit{background:rgba(20,23,34,.8);border-color:rgba(255,255,255,.14);color:#F4F2F7;}
-@media(max-width:600px){header .header-top{gap:7px;}header h1{font-size:22px!important}.nav-pages a{font-size:11px!important;padding:7px 5px!important}.bouton-mode-nuit{width:29px;height:25px;font-size:13px}.page-archetype h1{font-size:23px!important}}
+:root{--af-blue:#315CFF;--af-blue-violet:#6547E8;--af-violet:#8246E6;--af-gold:#9A701B;--af-gold-light:#C49A3A;--af-cream:#F7F1E7;--af-ink:#17141B;--af-night:#0E1018;--af-night-card:#171A25}
+body{background:var(--af-cream)!important;color:var(--af-ink)!important}header{padding:12px 14px 9px!important;background:linear-gradient(135deg,rgba(49,92,255,.08),rgba(130,70,230,.08))!important;border-bottom:1px solid rgba(49,92,255,.16)!important}header h1{font-size:24px!important;line-height:1.15!important;color:var(--af-gold)!important;font-weight:800!important;letter-spacing:-.02em}#maj{margin-top:6px!important;font-size:12px!important}.nav-pages{gap:6px!important;margin:8px 0 4px!important}.nav-pages a{padding:8px 7px!important;min-width:0!important;border-radius:9px!important;font-size:12px!important;background:linear-gradient(135deg,var(--af-blue),var(--af-blue-violet))!important;color:#fff!important;border:0!important;box-shadow:0 4px 12px rgba(49,92,255,.16)!important}.nav-bouton{background:linear-gradient(135deg,var(--af-blue),var(--af-blue-violet))!important;color:#fff!important;border:0!important;border-radius:999px!important;padding:6px 10px!important;font-size:12px!important;box-shadow:0 4px 12px rgba(49,92,255,.14)!important}.tabs{gap:6px!important;margin:8px 0!important}.tabs button{padding:8px 6px!important;border-radius:8px!important}.tabs button.actif,.bouton-principal,#copier-btn{background:linear-gradient(135deg,var(--af-blue),var(--af-blue-violet))!important;color:#fff!important;border-color:transparent!important}.score,.proba-1,.details-niveau1 summary,.detail-sous-titre,.justification-titre{color:var(--af-blue-violet)!important}.entete-categorie,.selection-competition{background:#101114!important;color:#fff!important;border-radius:6px!important;font-size:12px!important;font-weight:800!important;letter-spacing:.02em;padding:7px 10px!important;text-transform:uppercase}.selection-competition{margin:10px 0 5px!important}
+#panier-cartes,.bloc-systeme,.flux-selections{padding-top:6px!important}#statut-panier,#maj-systeme{padding-bottom:8px!important;font-size:12px!important}.carte-panier{margin-bottom:10px!important}.bloc-systeme{padding:12px!important;margin-bottom:10px!important;border-radius:12px!important}.page-archetype{padding:0 6px 30px!important}.page-archetype .header-archetype{padding:9px 5px 7px!important}.page-archetype h1{font-size:25px!important;color:var(--af-gold)!important;letter-spacing:.09em!important}.page-archetype .logo-archetype{width:32px!important;height:32px!important;font-size:17px!important;border-color:rgba(154,112,27,.6)!important;background:rgba(154,112,27,.09)!important;color:var(--af-gold)!important}.page-archetype .marque-archetype p{font-size:9px!important}.page-archetype .nav-bouton{margin-top:6px!important}.page-archetype .maj-archetype{margin-top:5px!important;color:var(--af-gold)!important;font-size:11px!important}.page-archetype .flux-selections{padding:6px 0!important}.page-archetype .carte-match{margin-bottom:9px!important;border-radius:14px!important}.page-archetype .entete-match{padding:9px 10px 37px!important}.page-archetype .selections{padding:7px 7px 1px!important}.page-archetype .selection{margin-bottom:6px!important;border-radius:11px!important}.page-archetype .selection-inner{padding:8px 9px!important}.page-archetype .libelle-marche{font-size:16px!important;margin:7px 0 5px!important}.page-archetype .cote{font-size:19px!important}.page-archetype .jauge{width:52px!important;height:52px!important}.page-archetype .rang-1{--accent:var(--af-gold)!important}
+body.theme-nuit{background:var(--af-night)!important;color:#F4F2F7!important}body.theme-nuit header{background:linear-gradient(135deg,rgba(49,92,255,.12),rgba(130,70,230,.13))!important;border-bottom-color:rgba(255,255,255,.10)!important}body.theme-nuit header h1,body.theme-nuit .page-archetype h1{color:#B98A28!important}body.theme-nuit .match,body.theme-nuit #sortie-json,body.theme-nuit #ajout-manuel,body.theme-nuit .carte-panier,body.theme-nuit .carte-panier .carte-match,body.theme-nuit .bloc-systeme,body.theme-nuit .etat-vide-systeme,body.theme-nuit .page-archetype .carte-match,body.theme-nuit .page-archetype .selection,body.theme-nuit .page-archetype .etat-vide{background:var(--af-night-card)!important;color:#F4F2F7!important;border-color:rgba(255,255,255,.10)!important;box-shadow:0 8px 22px rgba(0,0,0,.22)!important}body.theme-nuit .page-archetype .selection{background:#131722!important}body.theme-nuit .page-archetype .bloc-pourquoi{background:#1C1823!important}body.theme-nuit .page-archetype .libelle-marche,body.theme-nuit .page-archetype .equipe,body.theme-nuit .page-archetype .jauge strong,body.theme-nuit .grille-stats strong{color:#F4F2F7!important}body.theme-nuit .tabs button,body.theme-nuit .bouton-secondaire,body.theme-nuit .bouton-retirer-panier{background:#171A25!important;color:#F4F2F7!important;border-color:rgba(255,255,255,.12)!important}body.theme-nuit .entete-categorie,body.theme-nuit .selection-competition{background:#050608!important;color:#fff!important}body.theme-nuit input,body.theme-nuit textarea{background:#171A25!important;color:#fff!important}
+.bouton-mode-nuit{margin-left:auto;width:31px;height:27px;padding:0;border:1px solid rgba(49,92,255,.22);border-radius:999px;background:rgba(255,255,255,.48);color:#34303A;font-size:14px;line-height:1;cursor:pointer;display:inline-grid;place-items:center;flex:none}.bouton-mode-nuit:active{transform:scale(.96)}.theme-nuit .bouton-mode-nuit{background:rgba(20,23,34,.8);border-color:rgba(255,255,255,.14);color:#F4F2F7}.header-archetype{position:relative}.header-archetype .bouton-mode-nuit{position:absolute;right:5px;top:8px;margin:0}.header-archetype .nav-bouton{padding-right:38px!important}
+@media(max-width:600px){header .header-top{gap:7px}header h1{font-size:22px!important}.nav-pages a{font-size:11px!important;padding:7px 5px!important}.bouton-mode-nuit{width:29px;height:25px;font-size:13px}.page-archetype h1{font-size:23px!important}}
