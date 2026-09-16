@@ -1,12 +1,12 @@
 {
-  "genere_le": "2026-09-15T01:40:48.028464+00:00",
+  "genere_le": "2026-09-16T02:53:41.035226+00:00",
   "bilan_comportemental": {
     "global": {
-      "observations": 30,
-      "gagnes": 13,
-      "perdus": 17,
-      "somme_gains_flat_stake": -10.969999999999999,
-      "roi_flat": -0.36566666666666664
+      "observations": 41,
+      "gagnes": 20,
+      "perdus": 21,
+      "somme_gains_flat_stake": -12.319999999999997,
+      "roi_flat": -0.3004878048780487
     },
     "par_famille": {
       "GOALS_EQUIPE_DOMICILE": {
@@ -29,19 +29,19 @@
       },
       "HANDICAP": {
         "resume": {
-          "observations": 11,
-          "gagnes": 1,
-          "perdus": 10,
-          "somme_gains_flat_stake": -9.57,
-          "roi_flat": -0.87
+          "observations": 15,
+          "gagnes": 2,
+          "perdus": 13,
+          "somme_gains_flat_stake": -12.16,
+          "roi_flat": -0.8106666666666666
         },
         "par_niveau": {
           "PREMIUM": {
-            "observations": 8,
-            "gagnes": 1,
-            "perdus": 7,
-            "somme_gains_flat_stake": -6.57,
-            "roi_flat": -0.82125
+            "observations": 12,
+            "gagnes": 2,
+            "perdus": 10,
+            "somme_gains_flat_stake": -9.16,
+            "roi_flat": -0.7633333333333333
           },
           "TRES_FORT": {
             "observations": 2,
@@ -61,26 +61,26 @@
       },
       "GOALS_TOTAL": {
         "resume": {
-          "observations": 11,
-          "gagnes": 9,
+          "observations": 15,
+          "gagnes": 13,
           "perdus": 2,
-          "somme_gains_flat_stake": 2.41,
-          "roi_flat": 0.21909090909090911
+          "somme_gains_flat_stake": 3.88,
+          "roi_flat": 0.25866666666666666
         },
         "par_niveau": {
           "PREMIUM": {
-            "observations": 8,
-            "gagnes": 6,
+            "observations": 11,
+            "gagnes": 9,
             "perdus": 2,
-            "somme_gains_flat_stake": 0.6900000000000002,
-            "roi_flat": 0.08625000000000002
+            "somme_gains_flat_stake": 1.7000000000000002,
+            "roi_flat": 0.15454545454545457
           },
           "TRES_FORT": {
-            "observations": 1,
-            "gagnes": 1,
+            "observations": 2,
+            "gagnes": 2,
             "perdus": 0,
-            "somme_gains_flat_stake": 0.56,
-            "roi_flat": 0.56
+            "somme_gains_flat_stake": 1.02,
+            "roi_flat": 0.51
           },
           "FORT": {
             "observations": 2,
@@ -93,19 +93,19 @@
       },
       "DOUBLE_CHANCE": {
         "resume": {
-          "observations": 7,
-          "gagnes": 2,
-          "perdus": 5,
-          "somme_gains_flat_stake": -4.15,
-          "roi_flat": -0.5928571428571429
+          "observations": 9,
+          "gagnes": 3,
+          "perdus": 6,
+          "somme_gains_flat_stake": -4.75,
+          "roi_flat": -0.5277777777777778
         },
         "par_niveau": {
           "PREMIUM": {
-            "observations": 5,
-            "gagnes": 2,
-            "perdus": 3,
-            "somme_gains_flat_stake": -2.1500000000000004,
-            "roi_flat": -0.43000000000000005
+            "observations": 7,
+            "gagnes": 3,
+            "perdus": 4,
+            "somme_gains_flat_stake": -2.7500000000000004,
+            "roi_flat": -0.3928571428571429
           },
           "TRES_FORT": {
             "observations": 2,
@@ -113,6 +113,24 @@
             "perdus": 2,
             "somme_gains_flat_stake": -2.0,
             "roi_flat": -1.0
+          }
+        }
+      },
+      "CLEAN_SHEET_DOMICILE": {
+        "resume": {
+          "observations": 1,
+          "gagnes": 1,
+          "perdus": 0,
+          "somme_gains_flat_stake": 0.3700000000000001,
+          "roi_flat": 0.3700000000000001
+        },
+        "par_niveau": {
+          "PREMIUM": {
+            "observations": 1,
+            "gagnes": 1,
+            "perdus": 0,
+            "somme_gains_flat_stake": 0.3700000000000001,
+            "roi_flat": 0.3700000000000001
           }
         }
       }
@@ -168,6 +186,146 @@
   },
   "dernieres_promotions": [
     {
+      "date_cycle": "2026-09-16",
+      "parametre": "EDV_MIN_P_GE_75",
+      "avant": 0.05,
+      "apres": 0.05,
+      "decision": "REJETE",
+      "evidence": {
+        "motif": "n'améliore pas simultanément la zone d'apprentissage et la zone hors échantillon"
+      }
+    },
+    {
+      "date_cycle": "2026-09-16",
+      "parametre": "EDV_MIN_P_GE_75",
+      "avant": 0.05,
+      "apres": 0.05,
+      "decision": "REJETE",
+      "evidence": {
+        "motif": "n'améliore pas simultanément la zone d'apprentissage et la zone hors échantillon"
+      }
+    },
+    {
+      "date_cycle": "2026-09-16",
+      "parametre": "EDV_MIN_P_71_75",
+      "avant": 0.05,
+      "apres": 0.05,
+      "decision": "REJETE",
+      "evidence": {
+        "motif": "échantillon insuffisant : 16 < 50 requis pour 'EDV_MIN_P_71_75'"
+      }
+    },
+    {
+      "date_cycle": "2026-09-16",
+      "parametre": "EDV_MIN_P_71_75",
+      "avant": 0.05,
+      "apres": 0.05,
+      "decision": "REJETE",
+      "evidence": {
+        "motif": "échantillon insuffisant : 16 < 50 requis pour 'EDV_MIN_P_71_75'"
+      }
+    },
+    {
+      "date_cycle": "2026-09-16",
+      "parametre": "EDV_MIN_P_67_71",
+      "avant": 0.07,
+      "apres": 0.07,
+      "decision": "REJETE",
+      "evidence": {
+        "motif": "échantillon insuffisant : 13 < 50 requis pour 'EDV_MIN_P_67_71'"
+      }
+    },
+    {
+      "date_cycle": "2026-09-16",
+      "parametre": "EDV_MIN_P_67_71",
+      "avant": 0.07,
+      "apres": 0.07,
+      "decision": "REJETE",
+      "evidence": {
+        "motif": "échantillon insuffisant : 13 < 50 requis pour 'EDV_MIN_P_67_71'"
+      }
+    },
+    {
+      "date_cycle": "2026-09-16",
+      "parametre": "EDV_MIN_P_63_67",
+      "avant": 0.1,
+      "apres": 0.1,
+      "decision": "REJETE",
+      "evidence": {
+        "motif": "échantillon insuffisant : 11 < 50 requis pour 'EDV_MIN_P_63_67'"
+      }
+    },
+    {
+      "date_cycle": "2026-09-16",
+      "parametre": "EDV_MIN_P_63_67",
+      "avant": 0.1,
+      "apres": 0.1,
+      "decision": "REJETE",
+      "evidence": {
+        "motif": "échantillon insuffisant : 11 < 50 requis pour 'EDV_MIN_P_63_67'"
+      }
+    },
+    {
+      "date_cycle": "2026-09-16",
+      "parametre": "EDV_MIN_P_60_63",
+      "avant": 0.12,
+      "apres": 0.12,
+      "decision": "REJETE",
+      "evidence": {
+        "motif": "échantillon insuffisant : 4 < 50 requis pour 'EDV_MIN_P_60_63'"
+      }
+    },
+    {
+      "date_cycle": "2026-09-16",
+      "parametre": "EDV_MIN_P_60_63",
+      "avant": 0.12,
+      "apres": 0.12,
+      "decision": "REJETE",
+      "evidence": {
+        "motif": "échantillon insuffisant : 4 < 50 requis pour 'EDV_MIN_P_60_63'"
+      }
+    },
+    {
+      "date_cycle": "2026-09-16",
+      "parametre": "COTE_MIN",
+      "avant": 1.26,
+      "apres": 1.26,
+      "decision": "REJETE",
+      "evidence": {
+        "motif": "échantillon insuffisant : 41 < 100 requis pour 'COTE_MIN'"
+      }
+    },
+    {
+      "date_cycle": "2026-09-16",
+      "parametre": "COTE_MIN",
+      "avant": 1.26,
+      "apres": 1.26,
+      "decision": "REJETE",
+      "evidence": {
+        "motif": "échantillon insuffisant : 41 < 100 requis pour 'COTE_MIN'"
+      }
+    },
+    {
+      "date_cycle": "2026-09-16",
+      "parametre": "COTE_MAX",
+      "avant": 1.74,
+      "apres": 1.74,
+      "decision": "REJETE",
+      "evidence": {
+        "motif": "échantillon insuffisant : 41 < 100 requis pour 'COTE_MAX'"
+      }
+    },
+    {
+      "date_cycle": "2026-09-16",
+      "parametre": "COTE_MAX",
+      "avant": 1.74,
+      "apres": 1.74,
+      "decision": "REJETE",
+      "evidence": {
+        "motif": "échantillon insuffisant : 41 < 100 requis pour 'COTE_MAX'"
+      }
+    },
+    {
       "date_cycle": "2026-09-15",
       "parametre": "EDV_MIN_P_GE_75",
       "avant": 0.05,
@@ -225,146 +383,6 @@
       "decision": "REJETE",
       "evidence": {
         "motif": "échantillon insuffisant : 9 < 50 requis pour 'EDV_MIN_P_67_71'"
-      }
-    },
-    {
-      "date_cycle": "2026-09-15",
-      "parametre": "EDV_MIN_P_63_67",
-      "avant": 0.1,
-      "apres": 0.1,
-      "decision": "REJETE",
-      "evidence": {
-        "motif": "échantillon insuffisant : 8 < 50 requis pour 'EDV_MIN_P_63_67'"
-      }
-    },
-    {
-      "date_cycle": "2026-09-15",
-      "parametre": "EDV_MIN_P_63_67",
-      "avant": 0.1,
-      "apres": 0.1,
-      "decision": "REJETE",
-      "evidence": {
-        "motif": "échantillon insuffisant : 8 < 50 requis pour 'EDV_MIN_P_63_67'"
-      }
-    },
-    {
-      "date_cycle": "2026-09-15",
-      "parametre": "EDV_MIN_P_60_63",
-      "avant": 0.12,
-      "apres": 0.12,
-      "decision": "REJETE",
-      "evidence": {
-        "motif": "échantillon insuffisant : 2 < 50 requis pour 'EDV_MIN_P_60_63'"
-      }
-    },
-    {
-      "date_cycle": "2026-09-15",
-      "parametre": "EDV_MIN_P_60_63",
-      "avant": 0.12,
-      "apres": 0.12,
-      "decision": "REJETE",
-      "evidence": {
-        "motif": "échantillon insuffisant : 2 < 50 requis pour 'EDV_MIN_P_60_63'"
-      }
-    },
-    {
-      "date_cycle": "2026-09-15",
-      "parametre": "COTE_MIN",
-      "avant": 1.26,
-      "apres": 1.26,
-      "decision": "REJETE",
-      "evidence": {
-        "motif": "échantillon insuffisant : 30 < 100 requis pour 'COTE_MIN'"
-      }
-    },
-    {
-      "date_cycle": "2026-09-15",
-      "parametre": "COTE_MIN",
-      "avant": 1.26,
-      "apres": 1.26,
-      "decision": "REJETE",
-      "evidence": {
-        "motif": "échantillon insuffisant : 30 < 100 requis pour 'COTE_MIN'"
-      }
-    },
-    {
-      "date_cycle": "2026-09-15",
-      "parametre": "COTE_MAX",
-      "avant": 1.74,
-      "apres": 1.74,
-      "decision": "REJETE",
-      "evidence": {
-        "motif": "échantillon insuffisant : 30 < 100 requis pour 'COTE_MAX'"
-      }
-    },
-    {
-      "date_cycle": "2026-09-15",
-      "parametre": "COTE_MAX",
-      "avant": 1.74,
-      "apres": 1.74,
-      "decision": "REJETE",
-      "evidence": {
-        "motif": "échantillon insuffisant : 30 < 100 requis pour 'COTE_MAX'"
-      }
-    },
-    {
-      "date_cycle": "2026-09-14",
-      "parametre": "EDV_MIN_P_GE_75",
-      "avant": 0.05,
-      "apres": 0.05,
-      "decision": "REJETE",
-      "evidence": {
-        "motif": "échantillon insuffisant : 31 < 50 requis pour 'EDV_MIN_P_GE_75'"
-      }
-    },
-    {
-      "date_cycle": "2026-09-14",
-      "parametre": "EDV_MIN_P_GE_75",
-      "avant": 0.05,
-      "apres": 0.05,
-      "decision": "REJETE",
-      "evidence": {
-        "motif": "échantillon insuffisant : 31 < 50 requis pour 'EDV_MIN_P_GE_75'"
-      }
-    },
-    {
-      "date_cycle": "2026-09-14",
-      "parametre": "EDV_MIN_P_71_75",
-      "avant": 0.05,
-      "apres": 0.05,
-      "decision": "REJETE",
-      "evidence": {
-        "motif": "échantillon insuffisant : 4 < 50 requis pour 'EDV_MIN_P_71_75'"
-      }
-    },
-    {
-      "date_cycle": "2026-09-14",
-      "parametre": "EDV_MIN_P_71_75",
-      "avant": 0.05,
-      "apres": 0.05,
-      "decision": "REJETE",
-      "evidence": {
-        "motif": "échantillon insuffisant : 4 < 50 requis pour 'EDV_MIN_P_71_75'"
-      }
-    },
-    {
-      "date_cycle": "2026-09-14",
-      "parametre": "EDV_MIN_P_67_71",
-      "avant": 0.07,
-      "apres": 0.07,
-      "decision": "REJETE",
-      "evidence": {
-        "motif": "échantillon insuffisant : 4 < 50 requis pour 'EDV_MIN_P_67_71'"
-      }
-    },
-    {
-      "date_cycle": "2026-09-14",
-      "parametre": "EDV_MIN_P_67_71",
-      "avant": 0.07,
-      "apres": 0.07,
-      "decision": "REJETE",
-      "evidence": {
-        "motif": "échantillon insuffisant : 4 < 50 requis pour 'EDV_MIN_P_67_71'"
       }
     }
   ],
@@ -374,5 +392,5 @@
     "taux_reussite_reel": null,
     "ecart": null
   },
-  "nb_tickets_observation_pending": 1
+  "nb_tickets_observation_pending": 2
 }
