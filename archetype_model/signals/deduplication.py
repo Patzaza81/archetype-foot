@@ -106,3 +106,40 @@ def deduplique(candidats, critere="edge"):
     representants_finaux = [_meilleur(membres, critere) for membres in par_groupe.values()]
 
     return representants_finaux
+
+
+def deduplique_par_famille(candidats, critere="edge"):
+    """
+    AJOUT 16/09/2026 (demande explicite de Patrick, "rien n'accepté
+    sans vérification") -- ÉTAPE 1 SEULE de `deduplique()` ci-dessus
+    (un seul candidat par `market_family`), SANS l'étape 2 par
+    `exposure_group`.
+
+    Pourquoi séparé, jamais en modifiant `deduplique()` : l'étape 2
+    regroupe des familles entières sous une étiquette large (ex.
+    GROUPE_BUTS contient BTTS, GOALS_TOTAL, buts par équipe, clean
+    sheets, parité) -- vérifié sur des cas réels que des marchés du
+    MÊME groupe peuvent avoir une corrélation réelle (Pearson exacte,
+    poisson.correlation) aussi basse que -0.41 ou 0.58, largement sous
+    le seuil 0.70 déjà utilisé ailleurs dans le projet
+    (signals.selection_edv_directe.SEUIL_CORRELATION). L'étape 2
+    élimine donc parfois des marchés qui ne sont PAS réellement
+    redondants, sur la seule base d'une étiquette partagée.
+
+    L'étape 1 (par famille) reste nécessaire et gardée telle quelle :
+    plusieurs candidats de la MÊME famille sont typiquement les issues
+    mutuellement exclusives d'une même distribution (ex. 1X2 domicile/
+    nul/extérieur) -- les faire concourir comme des candidats
+    indépendants n'aurait pas de sens, corrélation ou non.
+
+    `deduplique()` (avec ses 2 étapes) reste INCHANGÉE et disponible
+    pour signals.selector (gardé de côté, pas supprimé) -- cette
+    fonction est un ajout, pas un remplacement.
+    """
+    if critere not in CRITERES_VALIDES:
+        raise ValueError(f"critere invalide : {critere!r}, attendu un de {CRITERES_VALIDES}")
+
+    par_famille = {}
+    for c in candidats:
+        par_famille.setdefault(c["market_family"], []).append(c)
+    return [_meilleur(membres, critere) for membres in par_famille.values()]

@@ -289,7 +289,19 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
     # qui calcule la vraie corrélation match par match au lieu d'une
     # règle générique décidée à l'avance.
     for c in candidats: c.pop("_cle_cote", None)
-    candidats_dedupliques = deduplication.deduplique(candidats, critere="edge") if candidats else []
+    # CORRECTIF 16/09/2026 (demande Patrick, "rien n'accepté sans
+    # vérification") : deduplication.deduplique() (2 étapes : famille
+    # PUIS groupe d'exposition) a été remplacée ici par
+    # deduplique_par_famille() (1 étape : famille seule). Vérifié sur
+    # cas réel que l'étape par groupe pouvait éliminer à tort des
+    # marchés du même groupe (ex. GROUPE_BUTS) dont la vraie
+    # corrélation est en réalité basse (0.58, -0.41 mesurés) --
+    # largement sous le seuil 0.70 utilisé par
+    # selection_edv_directe.elimine_marches_correles juste après, qui
+    # gère maintenant cette redondance avec le vrai calcul au lieu
+    # d'une étiquette de groupe. deduplique() (les 2 étapes) reste
+    # inchangée pour signals.selector (gardé de côté, pas supprimé).
+    candidats_dedupliques = deduplication.deduplique_par_famille(candidats, critere="edge") if candidats else []
 
     # DÉBRANCHEMENT 16/09/2026 (décision explicite de Patrick) : l'ancienne
     # cascade (signals.selector, décision du 09/09/2026) n'est plus
