@@ -16,11 +16,69 @@ from .signals import statistiques_signal
 from .signals import convergence
 from .signals import deduplication
 from .signals import selector
+from .signals import selection_edv_directe
 import justification
 from .edv import calculator as edv_calculator
 
 SCENARIOS = ("offensif", "defensif", "contextuel", "global")
 SCENARIO_REPRESENTATIF = "offensif"
+
+
+def _condition_pour_cle(cle_cote):
+    """Fonction (buts_domicile, buts_exterieur) -> bool pour un marché
+    donné, IDENTIQUE aux conditions déjà utilisées dans
+    poisson/markets.py (jamais réinventées) -- nécessaire pour
+    signals.selection_edv_directe (corrélation de Pearson exacte entre
+    marchés du même match, AJOUT 16/09/2026).
+
+    None si le type de marché n'a pas de condition simple sur un
+    scoreline unique (handicap sur ligne au quart de but -- réparti
+    50/50 sur deux lignes adjacentes, pas une indicatrice pure ; aucune
+    ligne par défaut du projet n'est actuellement une ligne au quart,
+    voir poisson/markets.py::resultat_handicap, donc ce cas ne se
+    présente pas avec LIGNES_HANDICAP_PAR_DEFAUT, mais reste géré
+    explicitement plutôt que de deviner une approximation fausse)."""
+    type_marche = cle_cote[0]
+    if type_marche == "1x2":
+        sel = cle_cote[1]
+        if sel == "domicile": return lambda x, y: x > y
+        if sel == "nul": return lambda x, y: x == y
+        return lambda x, y: x < y
+    if type_marche == "double_chance":
+        sel = cle_cote[1]
+        if sel == "1X": return lambda x, y: x >= y
+        if sel == "X2": return lambda x, y: x <= y
+        return lambda x, y: x != y
+    if type_marche == "btts":
+        sel = cle_cote[1]
+        if sel == "oui": return lambda x, y: x > 0 and y > 0
+        return lambda x, y: x == 0 or y == 0
+    if type_marche == "over_under_total":
+        _, ligne, sens = cle_cote
+        return (lambda x, y: (x + y) > ligne) if sens == "over" else (lambda x, y: (x + y) < ligne)
+    if type_marche == "buts_equipe_domicile":
+        _, ligne, sens = cle_cote
+        return (lambda x, y: x > ligne) if sens == "over" else (lambda x, y: x < ligne)
+    if type_marche == "buts_equipe_exterieur":
+        _, ligne, sens = cle_cote
+        return (lambda x, y: y > ligne) if sens == "over" else (lambda x, y: y < ligne)
+    if type_marche == "parite_totale":
+        sel = cle_cote[1]
+        return (lambda x, y: (x + y) % 2 == 0) if sel == "pair" else (lambda x, y: (x + y) % 2 == 1)
+    if type_marche == "handicap_3choix":
+        _, ligne, sel = cle_cote
+        if round(ligne * 4) % 2 != 0:
+            return None  # ligne au quart de but -- pas une indicatrice pure, voir docstring
+        h = -ligne
+        if sel == "domicile": return lambda x, y: (x + h) > y
+        if sel == "nul": return lambda x, y: (x + h) == y
+        return lambda x, y: (x + h) < y
+    if type_marche == "combo_dc_total":
+        _, dc, sens, ligne = cle_cote
+        cond_dc = {"1X": lambda x, y: x >= y, "X2": lambda x, y: x <= y, "12": lambda x, y: x != y}[dc]
+        cond_total = (lambda x, y: (x + y) > ligne) if sens == "over" else (lambda x, y: (x + y) < ligne)
+        return lambda x, y: cond_dc(x, y) and cond_total(x, y)
+    return None
 
 
 def _valeurs_4_scenarios(resultats_par_scenario, extracteur):
@@ -79,7 +137,7 @@ def _par_scenario(marches_par_scenario, extracteur):
     return {s: extracteur(marches_par_scenario[s]) for s in SCENARIOS}
 
 
-def _construit_candidat(*, marche, market_family, exposure_group, marches_par_scenario, extracteur, cote, robustesse_statut, n_par_scenario, h2h_palier, h2h_statut, signal, matchs_a_domicile=None, matchs_b_exterieur=None, historique_a=None, historique_b=None, confrontations_h2h=None, nom_domicile="", nom_exterieur=""):
+def _construit_candidat(*, marche, market_family, exposure_group, marches_par_scenario, extracteur, cote, robustesse_statut, n_par_scenario, h2h_palier, h2h_statut, signal, matchs_a_domicile=None, matchs_b_exterieur=None, historique_a=None, historique_b=None, confrontations_h2h=None, nom_domicile="", nom_exterieur="", cle_cote=None):
     probabilites = _par_scenario(marches_par_scenario, extracteur)
     resultat = convergence.filtre_marche_convergent(nombre_matchs_par_scenario=n_par_scenario, probabilites_par_scenario=probabilites, cote=cote, robustesse=robustesse_statut, marche=marche, market_family=market_family, exposure_group=exposure_group)
     diagnostic = {"marche": marche, "filtre": resultat.as_dict(), "h2h_statut": h2h_statut}
@@ -92,6 +150,7 @@ def _construit_candidat(*, marche, market_family, exposure_group, marches_par_sc
         "niveau": resultat.resultats_par_scenario[SCENARIO_REPRESENTATIF].niveau,
         "robustesse": robustesse_statut, "probabilite": p_repr, "cote": cote,
         "edge": valeur["edge"], "edv": valeur["edv"], "h2h_palier": h2h_palier,
+        "condition": _condition_pour_cle(cle_cote) if cle_cote is not None else None,
         "signal_direction": signal["direction"] if signal else None, "signal_frequence": signal["frequence"] if signal else None,
         "confirmation_historique": justification.confirmation_historique(marche, matchs_a_domicile, matchs_b_exterieur) if matchs_a_domicile is not None or matchs_b_exterieur is not None else None,
         "justification": justification.construit_justification(marche, historique_a or [], historique_b or [], h2h=confrontations_h2h or [], nom_domicile=nom_domicile, nom_exterieur=nom_exterieur),
@@ -168,7 +227,7 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
     _h2h_justif = fenetre_h2h.get("confrontations_retenues", [])
 
     def ajoute(marche, family, group, extracteur, cle_cote, robustesse_key, signal, h2h_statut):
-        candidat, diag = _construit_candidat(marche=marche, market_family=family, exposure_group=group, marches_par_scenario=marches_par_scenario, extracteur=extracteur, cote=cotes.get(cle_cote), robustesse_statut=robustesse_par_marche[robustesse_key]["statut"], n_par_scenario=n_par_scenario, h2h_palier=fenetre_h2h["palier"], h2h_statut=h2h_statut, signal=signal, matchs_a_domicile=_matchs_a_domicile, matchs_b_exterieur=_matchs_b_exterieur, historique_a=_historique_a_justif, historique_b=_historique_b_justif, confrontations_h2h=_h2h_justif, nom_domicile=nom_domicile, nom_exterieur=nom_exterieur)
+        candidat, diag = _construit_candidat(marche=marche, market_family=family, exposure_group=group, marches_par_scenario=marches_par_scenario, extracteur=extracteur, cote=cotes.get(cle_cote), robustesse_statut=robustesse_par_marche[robustesse_key]["statut"], n_par_scenario=n_par_scenario, h2h_palier=fenetre_h2h["palier"], h2h_statut=h2h_statut, signal=signal, matchs_a_domicile=_matchs_a_domicile, matchs_b_exterieur=_matchs_b_exterieur, historique_a=_historique_a_justif, historique_b=_historique_b_justif, confrontations_h2h=_h2h_justif, nom_domicile=nom_domicile, nom_exterieur=nom_exterieur, cle_cote=cle_cote)
         diagnostics.append(diag)
         if candidat is not None: candidats.append(candidat)
 
@@ -213,7 +272,7 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
         if resultat.eligible:
             p = probabilites_dyn[SCENARIO_REPRESENTATIF]
             valeur = edv_calculator.evalue_valeur(p, cote_reelle)
-            candidats.append({"marche": marche_nom, "market_family": family, "exposure_group": group, "niveau": resultat.resultats_par_scenario[SCENARIO_REPRESENTATIF].niveau, "robustesse": statut, "probabilite": p, "cote": cote_reelle, "edge": valeur["edge"], "edv": valeur["edv"], "h2h_palier": fenetre_h2h["palier"], "signal_direction": None, "signal_frequence": None, "confirmation_historique": justification.confirmation_historique(marche_nom, _matchs_a_domicile, _matchs_b_exterieur), "justification": justification.construit_justification(marche_nom, _historique_a_justif, _historique_b_justif, h2h=_h2h_justif, nom_domicile=nom_domicile, nom_exterieur=nom_exterieur), "_cle_cote": cle_cote})
+            candidats.append({"marche": marche_nom, "market_family": family, "exposure_group": group, "niveau": resultat.resultats_par_scenario[SCENARIO_REPRESENTATIF].niveau, "robustesse": statut, "probabilite": p, "cote": cote_reelle, "edge": valeur["edge"], "edv": valeur["edv"], "h2h_palier": fenetre_h2h["palier"], "condition": _condition_pour_cle(cle_cote), "signal_direction": None, "signal_frequence": None, "confirmation_historique": justification.confirmation_historique(marche_nom, _matchs_a_domicile, _matchs_b_exterieur), "justification": justification.construit_justification(marche_nom, _historique_a_justif, _historique_b_justif, h2h=_h2h_justif, nom_domicile=nom_domicile, nom_exterieur=nom_exterieur), "_cle_cote": cle_cote})
 
     dc_eligibles = {c["_cle_cote"][1] for c in candidats if c.get("_cle_cote", (None,))[0] == "double_chance"}
     totals_eligibles = {(c["_cle_cote"][1], c["_cle_cote"][2]) for c in candidats if c.get("_cle_cote", (None,))[0] == "over_under_total"}
@@ -223,4 +282,19 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
     selection = selector.selectionner(candidats_dedupliques)
     diagnostic_selection = selector.diagnostique_selection(candidats_dedupliques, selection)
     for rang in ("P1", "P2", "P3"): justification.enrichit_justification_selection(selection.get(rang), diagnostic_selection.get(rang))
-    return {"statut":"OK", "fenetres":base["fenetres"], "lambdas":base["lambdas"], "candidats":candidats, "candidats_dedupliques":candidats_dedupliques, "selection":selection, "diagnostics":diagnostics, "h2h":{"palier":fenetre_h2h["palier"],"1x2":statut_h2h_1x2,"btts":statut_h2h_btts,"over_2.5":statut_h2h_over25}, "cotes_info":{k:v for k,v in cotes_info.items() if k != "cotes"}}
+
+    # AJOUT 16/09/2026 (demande Patrick) -- second sélecteur calculé EN
+    # PARALLÈLE, à titre de comparaison, sur les MÊMES candidats
+    # dédoublonnés. Ne remplace `selection` nulle part ci-dessus, ne
+    # modifie aucun comportement existant. Nécessite la matrice du
+    # scénario représentatif pour le calcul de corrélation -- si elle
+    # est indisponible (lambda manquant), la sélection EDV directe est
+    # simplement omise (None), jamais une exception qui casserait le
+    # retour de la fonction.
+    matrice_repr = matrices_par_scenario.get(SCENARIO_REPRESENTATIF)
+    selection_edv = (
+        selection_edv_directe.selectionner(candidats_dedupliques, matrice_repr)
+        if matrice_repr is not None else None
+    )
+
+    return {"statut":"OK", "fenetres":base["fenetres"], "lambdas":base["lambdas"], "candidats":candidats, "candidats_dedupliques":candidats_dedupliques, "selection":selection, "selection_edv_directe":selection_edv, "diagnostics":diagnostics, "h2h":{"palier":fenetre_h2h["palier"],"1x2":statut_h2h_1x2,"btts":statut_h2h_btts,"over_2.5":statut_h2h_over25}, "cotes_info":{k:v for k,v in cotes_info.items() if k != "cotes"}}
