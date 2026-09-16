@@ -126,6 +126,23 @@ def _forme_ponderee_recence(matchs: list[dict[str, Any]]) -> float | None:
     return points / poids_total
 
 
+def _improbabilite_serie(longueur_serie: int, frequence_base: float | None) -> float | None:
+    """Probabilité, SOUS L'HYPOTHÈSE i.i.d. (grossière mais utile comme
+    repère, pas comme vérité), qu'une série de cette longueur survienne
+    par pur hasard étant donné la fréquence de base DE CETTE ÉQUIPE
+    elle-même (jamais une fréquence générique) -- ex. 3 clean sheets de
+    suite pour une équipe qui en fait 0.3 (30%) est bien plus
+    improbable (0.3^3=2.7%) que pour une équipe qui en fait 0.8
+    (0.8^3=51.2%). Retourne cette probabilité brute : PLUS C'EST BAS,
+    PLUS LA SÉRIE EST STATISTIQUEMENT REMARQUABLE -- ne préjuge pas de
+    ce que ça implique pour le prochain match (continuation ou retour à
+    la moyenne), seulement de si la série mérite l'attention. None si
+    longueur 0 (rien à mesurer) ou fréquence de base indisponible."""
+    if longueur_serie == 0 or frequence_base is None:
+        return None
+    return frequence_base ** longueur_serie
+
+
 def _serie_actuelle(matchs: list[dict[str, Any]], condition) -> int:
     """Longueur de la série EN COURS (les derniers matchs consécutifs
     qui vérifient `condition`), en partant du plus récent (dernier
@@ -171,6 +188,11 @@ def construit_profil(matchs_role: list[dict[str, Any]]) -> dict[str, Any]:
     buts_encaisses = [m["buts_encaisses"] for m in matchs_role]
     marges = [m["buts_marques"] - m["buts_encaisses"] for m in matchs_role]
 
+    freq_marque_0 = _frequence_egale(buts_marques, 0)
+    freq_clean_sheet = stats_def["frequence_clean_sheets"]
+    serie_sans_marquer = _serie_actuelle(matchs_role, lambda m: m["buts_marques"] == 0)
+    serie_clean_sheet = _serie_actuelle(matchs_role, lambda m: m["buts_encaisses"] == 0)
+
     return {
         "n": n,
         "statut_fiabilite": STATUT_FIABLE if n >= N_MIN_PROFIL_FIABLE else STATUT_A_SURVEILLER,
@@ -184,16 +206,18 @@ def construit_profil(matchs_role: list[dict[str, Any]]) -> dict[str, Any]:
             "freq_marque_2_plus": _frequence_seuil(buts_marques, 2),
             "musique": _musique(buts_marques),
             "serie_marque_actuelle": _serie_actuelle(matchs_role, lambda m: m["buts_marques"] >= 1),
-            "serie_sans_marquer_actuelle": _serie_actuelle(matchs_role, lambda m: m["buts_marques"] == 0),
+            "serie_sans_marquer_actuelle": serie_sans_marquer,
+            "improbabilite_serie_sans_marquer": _improbabilite_serie(serie_sans_marquer, freq_marque_0),
         },
         "defense": {
             "moyenne": stats_def["moyenne"],
             "regularite_cv": _coefficient_variation(stats_def["moyenne"], stats_def["ecart_type"]),
-            "freq_clean_sheet": stats_def["frequence_clean_sheets"],
+            "freq_clean_sheet": freq_clean_sheet,
             "freq_encaisse_2_plus": _frequence_seuil(buts_encaisses, 2),
             "musique": _musique(buts_encaisses),
-            "serie_clean_sheet_actuelle": _serie_actuelle(matchs_role, lambda m: m["buts_encaisses"] == 0),
+            "serie_clean_sheet_actuelle": serie_clean_sheet,
             "serie_encaisse_actuelle": _serie_actuelle(matchs_role, lambda m: m["buts_encaisses"] >= 1),
+            "improbabilite_serie_clean_sheet": _improbabilite_serie(serie_clean_sheet, freq_clean_sheet),
         },
         "resultats": {
             "freq_victoires": resultats["frequence_victoires"],
@@ -206,5 +230,16 @@ def construit_profil(matchs_role: list[dict[str, Any]]) -> dict[str, Any]:
         "tendances_buts": {
             "freq_btts": r_btts["frequence"],
             "freq_over_2_5": r_over25["frequence_over"],
+            # AJOUT 16/09/2026 (demande Patrick) -- musique appliquée aux
+            # marchés dérivés eux-mêmes, pas seulement aux buts bruts :
+            # une série de BTTS-oui ou d'Over-2.5 est une observation
+            # différente d'une série de clean sheets, même si les deux
+            # peuvent parfois coïncider sur les mêmes matchs.
+            "musique_btts": _musique([1 if (m["buts_marques"] > 0 and m["buts_encaisses"] > 0) else 0 for m in matchs_role]),
+            "serie_btts_oui_actuelle": _serie_actuelle(matchs_role, lambda m: m["buts_marques"] > 0 and m["buts_encaisses"] > 0),
+            "serie_btts_non_actuelle": _serie_actuelle(matchs_role, lambda m: not (m["buts_marques"] > 0 and m["buts_encaisses"] > 0)),
+            "musique_over_2_5": _musique([1 if (m["buts_marques"] + m["buts_encaisses"]) > 2.5 else 0 for m in matchs_role]),
+            "serie_over_2_5_actuelle": _serie_actuelle(matchs_role, lambda m: (m["buts_marques"] + m["buts_encaisses"]) > 2.5),
+            "serie_under_2_5_actuelle": _serie_actuelle(matchs_role, lambda m: (m["buts_marques"] + m["buts_encaisses"]) <= 2.5),
         },
     }
