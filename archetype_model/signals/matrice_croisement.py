@@ -22,13 +22,16 @@ statistiques de la même équipe entre elles, jamais domicile+domicile
 ou extérieur+extérieur des deux côtés (ça reproduirait juste un profil
 plutôt que de croiser deux équipes).
 
-Le résultat n'est jamais un score composite unique (cohérent avec le
-principe déjà établi dans statistiques_signal.py : "jamais offensif +
-défensif + tendance comptés séparément") -- c'est une LISTE de signaux
-de croisement, chacun avec son marché visé, sa direction, et le nombre
-de dimensions indépendantes qui pointent dans le même sens. Trier et
-choisir entre plusieurs signaux convergents pour le même marché est le
-rôle de selector.py/convergence.py EN AVAL, jamais fait ici.
+Chaque signal reste accompagné du détail de ses dimensions (jamais
+caché) et d'un `score_pondere` (nb_dimensions_convergentes x poids de
+fiabilité croisé), calculé ici en une seule passe -- demande explicite
+de Patrick le 16/09/2026 pour ne pas avoir à relire la fiabilité
+séparément à chaque fois. Nuance à garder en tête : ça reste UN
+score par marché, jamais un score unique fusionnant plusieurs marchés
+différents (over/under, BTTS, résultat...) -- cette fusion-là n'existe
+toujours pas et reste refusée. Trier et choisir entre plusieurs
+signaux convergents pour le même marché est le rôle de
+selector.py/convergence.py EN AVAL, jamais fait ici.
 """
 
 from __future__ import annotations
@@ -49,17 +52,30 @@ def _niveau_fiabilite_croise(profil_a: dict, profil_b: dict) -> str:
     return "A_SURVEILLER"
 
 
-def _ajoute(signaux: list[dict], marche: str, direction: str, poids_dimensions: list[tuple[str, float]], fiabilite: str):
+def _poids_fiabilite_croise(profil_a: dict, profil_b: dict) -> float:
+    """Version numérique de _niveau_fiabilite_croise -- le maillon le
+    plus faible des deux profils (jamais une moyenne, qui masquerait
+    un des deux côtés trop petit)."""
+    return min(profil_a["poids_fiabilite"], profil_b["poids_fiabilite"])
+
+
+def _ajoute(signaux: list[dict], marche: str, direction: str, poids_dimensions: list[tuple[str, float]],
+            fiabilite: str, poids_fiabilite_num: float):
     """poids_dimensions : liste de (nom_dimension, valeur_frequence)
     qui pointent TOUTES dans la même direction pour ce marché -- le
-    nombre de dimensions convergentes EST l'information à faire
-    ressortir, jamais réduite à une seule valeur agrégée."""
+    nombre de dimensions convergentes reste visible en détail (jamais
+    caché), mais score_pondere combine ce nombre ET la fiabilité
+    réelle de l'échantillon en UNE seule valeur, calculée ici, pour ne
+    pas obliger à relire la fiabilité séparément à chaque fois."""
+    n_dims = len(poids_dimensions)
     signaux.append({
         "marche": marche,
         "direction": direction,
-        "nb_dimensions_convergentes": len(poids_dimensions),
+        "nb_dimensions_convergentes": n_dims,
         "dimensions": [{"nom": nom, "valeur": val} for nom, val in poids_dimensions],
         "fiabilite": fiabilite,
+        "poids_fiabilite": poids_fiabilite_num,
+        "score_pondere": n_dims * poids_fiabilite_num,
     })
 
 
@@ -71,6 +87,7 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
     les plus corroborées en premier -- l'arbitrage final EDV/lambda
     reste en aval, ce tri n'est qu'un ordre de lecture)."""
     fiabilite = _niveau_fiabilite_croise(profil_domicile, profil_exterieur)
+    poids_num = _poids_fiabilite_croise(profil_domicile, profil_exterieur)
     signaux: list[dict] = []
 
     a_off, a_def, a_res, a_bt = (profil_domicile["attaque"], profil_domicile["defense"],
@@ -95,7 +112,7 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
     if b_def["serie_encaisse_actuelle"] >= 2:
         soutien.append(("serie_encaisse_exterieur", b_def["serie_encaisse_actuelle"]))
     if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
-        _ajoute(signaux, "buts_equipe_domicile_plus", "favorable", coeur + soutien, fiabilite)
+        _ajoute(signaux, "buts_equipe_domicile_plus", "favorable", coeur + soutien, fiabilite, poids_num)
 
     # --- "Plus de buts équipe extérieure" : symétrique ---
     coeur = []
@@ -111,7 +128,7 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
     if a_def["serie_encaisse_actuelle"] >= 2:
         soutien.append(("serie_encaisse_domicile", a_def["serie_encaisse_actuelle"]))
     if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
-        _ajoute(signaux, "buts_equipe_exterieur_plus", "favorable", coeur + soutien, fiabilite)
+        _ajoute(signaux, "buts_equipe_exterieur_plus", "favorable", coeur + soutien, fiabilite, poids_num)
 
     # --- BTTS oui : coeur obligatoire = freq/clean-sheet réelles, séries en soutien ---
     coeur = []
@@ -129,7 +146,7 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
     if b_bt["serie_btts_oui_actuelle"] >= 2:
         soutien.append(("serie_btts_oui_exterieur", b_bt["serie_btts_oui_actuelle"]))
     if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
-        _ajoute(signaux, "btts_oui", "favorable", coeur + soutien, fiabilite)
+        _ajoute(signaux, "btts_oui", "favorable", coeur + soutien, fiabilite, poids_num)
 
     # --- BTTS non : symétrique ---
     coeur = []
@@ -147,7 +164,7 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
     if b_off["serie_sans_marquer_actuelle"] >= 2:
         soutien.append(("serie_sans_marquer_exterieur", b_off["serie_sans_marquer_actuelle"]))
     if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
-        _ajoute(signaux, "btts_non", "favorable", coeur + soutien, fiabilite)
+        _ajoute(signaux, "btts_non", "favorable", coeur + soutien, fiabilite, poids_num)
 
     # --- Over 2.5 : la fréquence over 2.5 elle-même est OBLIGATOIRE (coeur) ;
     # l'activité offensive des deux équipes est un simple renfort, jamais
@@ -168,7 +185,7 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
     if b_bt["serie_over_2_5_actuelle"] >= 2:
         soutien.append(("serie_over_2.5_exterieur", b_bt["serie_over_2_5_actuelle"]))
     if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
-        _ajoute(signaux, "over_2_5", "favorable", coeur + soutien, fiabilite)
+        _ajoute(signaux, "over_2_5", "favorable", coeur + soutien, fiabilite, poids_num)
 
     # --- Under 2.5 : symétrique, coeur obligatoire = freq_over_2_5 basse ---
     coeur = []
@@ -186,7 +203,7 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
     if b_bt["serie_under_2_5_actuelle"] >= 2:
         soutien.append(("serie_under_2.5_exterieur", b_bt["serie_under_2_5_actuelle"]))
     if len(coeur) >= 1 and len(coeur) + len(soutien) >= 2:
-        _ajoute(signaux, "under_2_5", "favorable", coeur + soutien, fiabilite)
+        _ajoute(signaux, "under_2_5", "favorable", coeur + soutien, fiabilite, poids_num)
 
     # --- Domination nette domicile (résultat) : forme + marge + résultats convergent ---
     dims = []
@@ -199,7 +216,7 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
     if b_res["freq_defaites"] is not None and b_res["freq_defaites"] >= SEUIL_HAUT:
         dims.append(("freq_defaites_exterieur", b_res["freq_defaites"]))
     if len(dims) >= 2:
-        _ajoute(signaux, "resultat_domicile", "favorable", dims, fiabilite)
+        _ajoute(signaux, "resultat_domicile", "favorable", dims, fiabilite, poids_num)
 
     # RÉSOLUTION FINALE (garde-fou générique, trouvé nécessaire par test
     # 16/09/2026) : le cœur/soutien de chaque règle empêche une
@@ -223,16 +240,16 @@ def croise_profils(profil_domicile: dict[str, Any], profil_exterieur: dict[str, 
         if marche in a_retirer or oppose in a_retirer:
             continue
         if marche in par_marche and oppose in par_marche:
-            n_marche = par_marche[marche]["nb_dimensions_convergentes"]
-            n_oppose = par_marche[oppose]["nb_dimensions_convergentes"]
-            if n_marche > n_oppose:
+            score_marche = par_marche[marche]["score_pondere"]
+            score_oppose = par_marche[oppose]["score_pondere"]
+            if score_marche > score_oppose:
                 a_retirer.add(oppose)
-            elif n_oppose > n_marche:
+            elif score_oppose > score_marche:
                 a_retirer.add(marche)
             else:
                 a_retirer.add(marche)
                 a_retirer.add(oppose)
     signaux = [s for s in signaux if s["marche"] not in a_retirer]
 
-    signaux.sort(key=lambda s: s["nb_dimensions_convergentes"], reverse=True)
+    signaux.sort(key=lambda s: s["score_pondere"], reverse=True)
     return signaux
