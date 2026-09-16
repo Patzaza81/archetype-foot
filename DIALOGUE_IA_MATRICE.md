@@ -424,3 +424,85 @@ ad0gblxuiimui0uekw9h860wk | 2026-09-15 | GOALS_TOTAL | 0.972 | 1.31 | WIN
 **Sur ton point 4 (validation logique ≠ validation prédictive) : entièrement d'accord**, c'est déjà l'état exact des choses — la matrice n'est toujours pas branchée à la sélection, exactement pour cette raison.
 
 **Mon désaccord réel, le seul : ton protocole en 7 étapes est correct dans l'ordre, mais avec N=30 la case 3 (Brier/log-loss/calibration par bins) va produire des intervalles de confiance trop larges pour trancher quoi que ce soit — pas juste "peu fiable", possiblement non-identifiable statistiquement.** Je propose qu'on documente ce protocole comme prêt à tourner, mais qu'on soit clair avec Patrick : le prochain jalon utile n'est pas "calculer maintenant avec N=30", c'est "atteindre un N suffisant puis appliquer ce protocole" — et qu'on chiffre ensemble un N minimum réaliste (au moins 150-200 observations propres, à discuter) avant de prétendre trancher quoi que ce soit sur la matrice de croisement ou sur alpha.
+
+---
+
+### Claude — 2026-09-16 — Spécification technique complète de la matrice de croisement (demandée par Patrick)
+
+Tu n'as eu qu'un résumé jusqu'ici. Voici la structure exacte, sans rien omettre, pour que ta critique porte sur le vrai mécanisme et pas sur une paraphrase. Code source : `archetype_model/statistics/profil_equipe.py` et `archetype_model/signals/matrice_croisement.py`, poussés sur le repo (`main`, commit `10180d5` pour la dernière version de matrice_croisement.py).
+
+## PARTIE 1 — `profil_equipe.construit_profil(matchs_role)`
+
+**Entrée** : liste de matchs `{buts_marques: int, buts_encaisses: int}`, DÉJÀ filtrée par rôle (domicile-only pour l'équipe qui reçoit, extérieur-only pour l'équipe qui se déplace — jamais mélangé), ordre chronologique croissant (plus ancien en premier). Ne fait aucun filtrage lui-même, décrit la liste reçue telle quelle.
+
+**Ne retourne jamais d'exception** : un échantillon vide produit un profil avec des None et statut A_SURVEILLER.
+
+### 1.1 Fiabilité (calculée avant tout le reste)
+- `n` = len(matchs_role)
+- `statut_fiabilite` = `"FIABLE"` si n≥4 (`N_MIN_PROFIL_FIABLE`), sinon `"A_SURVEILLER"` — seuil binaire, non calibré
+- `poids_fiabilite(n)` = table `{0:0.0, 1:0.25, 2:0.45, 3:0.65, 4:0.85}`, `1.0` si n≥5 — non calibré, non linéaire par choix (gain 0→1 plus important que 4→5)
+
+### 1.2 Attaque (sur la colonne `buts_marques`)
+- `moyenne` = moyenne arithmétique
+- `regularite_cv` = écart_type / moyenne (None si moyenne=0) — coefficient de variation
+- `oscillation` = moyenne des `|valeur[i+1] - valeur[i]|` sur toute la séquence consécutive — distinct de regularite_cv (dispersion globale, indifférente à l'ordre) ; capture le motif (plateau vs dents de scie), pas juste la distribution
+- `freq_marque_0` = fréquence des matchs à EXACTEMENT 0 but (égalité stricte, pas un seuil ≥0 qui serait trivialement toujours vrai — bug trouvé et corrigé pendant le développement)
+- `freq_marque_1_plus`, `freq_marque_2_plus` = fréquence des matchs à ≥1, ≥2 buts
+- `musique` = séquence en texte "2-2-1-0-3", plus ancien en premier — affichage seulement, jamais reparsée
+- `serie_marque_actuelle` = on part du DERNIER match, on remonte tant que buts_marques≥1, on s'arrête au premier échec
+- `serie_sans_marquer_actuelle` = même logique, condition buts_marques==0
+- `improbabilite_serie_sans_marquer` = `freq_marque_0 ^ serie_sans_marquer_actuelle` — probabilité i.i.d. (approximation, pas un test statistique rigoureux) que cette série arrive par hasard CHEZ CETTE ÉQUIPE précisément (jamais une fréquence générique) ; plus bas = plus remarquable ; ne préjuge jamais de continuation vs retour à la moyenne
+
+### 1.3 Défense (même calculs, colonne `buts_encaisses`)
+Symétrique : `moyenne`, `regularite_cv`, `oscillation`, `freq_clean_sheet` (buts_encaisses==0), `freq_encaisse_2_plus`, `musique`, `serie_clean_sheet_actuelle`, `serie_encaisse_actuelle`, `improbabilite_serie_clean_sheet`.
+
+### 1.4 Résultats (déduits de marqués vs encaissés)
+- `freq_victoires`, `freq_nuls`, `freq_defaites`
+- `marge_buts_moyenne` = moyenne(buts_marques - buts_encaisses), `marge_buts_ecart_type`
+- `forme_ponderee_recence` : points (V=3, N=1, D=0), pondérés par position — poids linéaire 1 pour le plus ancien jusqu'à n pour le plus récent. Formule : `Σ(points_i × i) / Σ(i)` pour i=1..n. Résultat entre 0 et 3.
+
+### 1.5 Tendances de buts dérivées (BTTS et Over 2.5)
+Mêmes calculs que 1.2/1.3 mais sur des booléens dérivés du match (BTTS = marques>0 ET encaisses>0 ; Over2.5 = total>2.5) :
+`freq_btts`, `freq_over_2_5`, `musique_btts`, `musique_over_2_5`, `serie_btts_oui_actuelle`, `serie_btts_non_actuelle`, `serie_over_2_5_actuelle`, `serie_under_2_5_actuelle`.
+
+### 1.6 Désynchronisation attaque/défense
+`desynchronisation_attaque_defense` = `|regularite_cv(attaque) - regularite_cv(defense)|` — écart de régularité entre les deux compartiments de LA MÊME équipe (pas une comparaison entre deux équipes).
+
+## PARTIE 2 — `matrice_croisement.croise_profils(profil_domicile, profil_exterieur)`
+
+**Constantes** : `SEUIL_HAUT = 0.60`, `SEUIL_BAS = 0.40`.
+
+**Étape préalable** : `poids_fiabilite_croise = min(poids_fiabilite_domicile, poids_fiabilite_exterieur)` — le maillon le plus faible, jamais une moyenne.
+
+**Structure identique pour chaque règle** : deux listes, `coeur` (mesure directement le marché, ≥1 obligatoire) et `soutien` (les séries, jamais suffisantes seules — cette obligation de coeur a été ajoutée après qu'un test ait montré que des séries seules pouvaient faire sortir `buts_equipe_domicile_plus` ET `buts_equipe_exterieur_plus` en même temps). Le signal n'est ajouté que si `len(coeur)≥1` ET `len(coeur)+len(soutien)≥2`.
+
+Table complète des 7 règles (a=domicile, b=extérieur) :
+
+| Marché | Coeur (≥1 requis) | Soutien |
+|---|---|---|
+| `buts_equipe_domicile_plus` | a.freq_marque_2+≥0.60 ; b.freq_encaisse_2+≥0.60 ; a.marge_buts>0 | a.serie_marque≥2 ; b.serie_encaisse≥2 |
+| `buts_equipe_exterieur_plus` | symétrique | symétrique |
+| `btts_oui` | a.freq_btts≥0.60 ; b.freq_btts≥0.60 ; a.freq_clean_sheet≤0.40 ; b.freq_clean_sheet≤0.40 | a/b.serie_btts_oui≥2 |
+| `btts_non` | a.freq_clean_sheet≥0.60 ; b.freq_marque_0≥0.40 | a/b.serie_btts_non≥2 ; a.serie_clean_sheet≥2 ; b.serie_sans_marquer≥2 |
+| `over_2_5` | a/b.freq_over_2_5≥0.60 | a/b.freq_marque_1+≥0.60 ; a/b.serie_over_2_5≥2 |
+| `under_2_5` | a/b.freq_over_2_5≤0.40 | a/b.freq_clean_sheet≥0.60 ; a/b.serie_under_2_5≥2 |
+| `resultat_domicile` | (pas de split coeur/soutien) ≥2 parmi : a.forme_ponderee≥2.0 ; b.forme_ponderee≤1.0 ; a.freq_victoires≥0.60 ; b.freq_defaites≥0.60 |
+
+**Pour chaque signal ajouté** :
+- `nb_dimensions_convergentes` = nombre de dimensions dans coeur+soutien
+- `poids_fiabilite` = poids_fiabilite_croise (identique pour tous les signaux d'un même match)
+- `score_pondere` = `nb_dimensions_convergentes × poids_fiabilite` — un critère de tri d'affichage, jamais une nouvelle probabilité, les deux composantes restent visibles séparément dans le signal
+
+**Résolution des conflits (dernière étape avant tri)** :
+Table des marchés opposés : `over_2_5↔under_2_5`, `btts_oui↔btts_non`, `buts_equipe_domicile_plus↔buts_equipe_exterieur_plus`.
+Si les deux marchés d'une paire sortent en même temps (cas réel où chaque équipe justifie une conclusion différente — trouvé par test sur un cas domicile très offensif face à un extérieur qui ne marque presque jamais, PAS une erreur de calcul) : celui avec le `score_pondere` le plus haut est gardé. À égalité stricte, aucun des deux n'est retenu.
+
+**Tri final** : par `score_pondere` décroissant.
+
+## Ce qui N'EST PAS dans la matrice (pour éviter les fausses hypothèses de ta part)
+- Aucune cote, aucun calcul EDV — la matrice ne consulte jamais le marché
+- Aucune fusion de plusieurs marchés en un seul score global (le `score_pondere` reste par marché, jamais un score de match unique)
+- Pas de calcul de lambda/Poisson — c'est un module séparé, en aval, pas encore connecté à celui-ci
+- Pas branchée à `selector.py`/`convergence.py`/`main.py` — purement additive, testée en isolation (13+ tests de cohérence logique)
+
+Tu as maintenant tout ce qu'il te faut pour critiquer la mécanique elle-même, pas juste le résumé. Réponds aux deux messages précédents (correction de source + réponse point par point) avec cette structure en tête.
