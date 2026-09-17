@@ -90,6 +90,15 @@ function regroupeMatchs(matchs) {
   });
   return Array.from(groupes.values());
 }
+function construitApercuRepli(candidatP1, equipes) {
+  if (!candidatP1) return "";
+  const libelle = traduitMarche(candidatP1.marche, equipes);
+  return `<div class="apercu-repli">
+    <div class="apercu-etiquette"><span class="puce-rang" aria-hidden="true"></span>Pronostic principal</div>
+    <div class="apercu-marche">${echappeHtml(libelle)}</div>
+    <div class="apercu-donnees"><span>Cote<strong>${formatCote(candidatP1.cote)}</strong></span><span>Probabilité<strong>${formatPctEntier(candidatP1.probabilite)}</strong></span></div>
+  </div>`;
+}
 function construitCarte(m) {
   const section = document.createElement("section"); section.className = "carte-match";
   const equipes = { domicile: m.domicile || "Équipe à domicile", exterieur: m.exterieur || "Équipe à l'extérieur" };
@@ -101,7 +110,7 @@ function construitCarte(m) {
     <div class="equipe domicile"><span class="ecusson-equipe">${echappeHtml(initialesEquipe(equipes.domicile))}</span><span>${echappeHtml(equipes.domicile)}</span></div>
     <div class="bloc-horaire"><strong>${echappeHtml(heure)}</strong><span>${echappeHtml(date)}</span></div>
     <div class="equipe exterieur"><span>${echappeHtml(equipes.exterieur)}</span><span class="ecusson-equipe">${echappeHtml(initialesEquipe(equipes.exterieur))}</span></div>
-  </div>${competition ? `<div class="competition">${echappeHtml(competition)}</div>` : ""}<button type="button" class="bouton-repli" aria-expanded="true">Replier <span aria-hidden="true">⌃</span></button></header>`;
+  </div>${competition ? `<div class="competition">${echappeHtml(competition)}</div>` : ""}<button type="button" class="bouton-repli" aria-expanded="true">Replier <span aria-hidden="true">⌃</span></button></header>${construitApercuRepli(selection.P1, equipes)}`;
 
   const tabs = document.createElement("nav"); tabs.className = "selection-tabs"; tabs.setAttribute("aria-label", "Choix du pronostic");
   const selections = document.createElement("div"); selections.className = "contenu-carte";

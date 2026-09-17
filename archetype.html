@@ -19,8 +19,25 @@
 .page-archetype .ligne-match{display:grid;grid-template-columns:minmax(0,1fr) 110px minmax(0,1fr);align-items:center;gap:8px}.page-archetype .equipe{display:flex;align-items:center;gap:8px;min-width:0;color:var(--ref-blue-dark);font-size:21px;font-weight:950;line-height:1.02}.page-archetype .equipe.exterieur{justify-content:flex-end;text-align:right}.page-archetype .equipe span:last-child{overflow-wrap:anywhere}.page-archetype .ecusson-equipe{width:54px;height:54px;flex:none;border-radius:50%;display:grid;place-items:center;border:3px solid #D7DCE2;background:#fff;color:#315CFF;font-size:12px;font-weight:950;box-shadow:0 2px 5px rgba(23,42,77,.08)}
 .page-archetype .bloc-horaire{text-align:center;border:2px solid #E5DDCE;border-radius:18px;padding:8px 5px;background:rgba(255,255,255,.55)}.page-archetype .bloc-horaire strong{display:block;color:var(--ref-blue-dark);font-size:29px;line-height:1}.page-archetype .bloc-horaire span{display:block;margin-top:5px;color:var(--ref-blue-dark);font-size:11px;font-weight:800;line-height:1.05}
 .page-archetype .competition{margin:10px auto 0;width:max-content;max-width:100%;text-align:center;background:#08090C;color:#fff;border-radius:999px;padding:7px 14px;font-size:11px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.page-archetype .bouton-repli{position:absolute;right:12px;bottom:-15px;border:2px solid #C9D7FF;border-radius:999px;background:var(--ref-card);color:var(--ref-blue);padding:6px 13px;font-size:11px;font-weight:950;cursor:pointer;z-index:4}.page-archetype .bouton-repli:focus-visible{outline:3px solid rgba(40,89,217,.25)}
-/* Quand la carte est repliée, seul le bloc d'identité reste visible. */
+.page-archetype .bouton-repli{position:static;display:block;width:calc(100% - 24px);margin:11px auto 0;border:2px solid #C9D7FF;border-radius:999px;background:var(--ref-card);color:var(--ref-blue);padding:8px 13px;font-size:11px;font-weight:950;cursor:pointer;text-align:center}.page-archetype .bouton-repli:focus-visible{outline:3px solid rgba(40,89,217,.25)}
+/* CORRECTIF 17/09/2026 (Patrick, point 7 du cahier des charges) -- le
+   bouton était en position:absolute avec bottom:-15px, le faisant
+   déborder hors de la carte et chevaucher la carte suivante. Devient
+   un bloc pleine largeur dans le flux normal, toujours entièrement
+   contenu dans la carte, jamais coupé. */
+/* AJOUT 17/09/2026 (Patrick, point 1 du cahier des charges) -- aperçu du
+   Pronostic principal visible même carte repliée : "la carte ne doit
+   pas afficher uniquement l'identité du match". Toujours P1
+   spécifiquement (jamais le rang actuellement actif dans les onglets,
+   qui n'existe pas encore tant que la carte n'est pas dépliée). */
+.page-archetype .apercu-repli{display:none;padding:0 14px 14px}
+.page-archetype .carte-repliee .apercu-repli{display:block}
+.page-archetype .apercu-etiquette{display:flex;align-items:center;gap:6px;color:var(--ref-gold);font-size:11px;font-weight:950;text-transform:uppercase;letter-spacing:.03em;margin:0 0 7px}
+.page-archetype .puce-rang{width:9px;height:9px;border-radius:2px;background:var(--ref-gold);flex:none}
+.page-archetype .apercu-marche{font-size:17px;font-weight:900;color:var(--ref-blue-dark);margin:0 0 9px;line-height:1.2}
+.page-archetype .apercu-donnees{display:flex;gap:20px;font-size:12px;color:var(--ref-muted);font-weight:700}
+.page-archetype .apercu-donnees strong{display:block;font-size:17px;color:var(--ref-blue-dark);margin-top:2px}
+/* Quand la carte est repliée, seul le bloc d'identité + l'aperçu P1 restent visibles. */
 .page-archetype .carte-repliee .selection-tabs,.page-archetype .carte-repliee .contenu-carte,.page-archetype .carte-repliee .details-analyse{display:none}.page-archetype .carte-repliee .entete-match{border-bottom:0!important;padding-bottom:15px}
 .page-archetype .selection-tabs{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--ref-line);background:#FDFBF7}.page-archetype .selection-tab{position:relative;min-width:0;border:0;border-radius:0;padding:11px 5px 10px;color:#fff;font:950 11px/1.05 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;cursor:pointer;text-transform:uppercase}.page-archetype .selection-tab small{display:block;margin-top:4px;font-size:9px;font-weight:800;text-transform:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.98}.page-archetype .selection-tab:nth-child(1){background:var(--ref-gold)}.page-archetype .selection-tab:nth-child(2){background:var(--ref-blue-tab)}.page-archetype .selection-tab:nth-child(3){background:var(--ref-violet)}.page-archetype .selection-tab.actif:after{content:"";position:absolute;left:50%;bottom:-8px;width:16px;height:16px;background:inherit;transform:translateX(-50%) rotate(45deg);border-radius:2px}.page-archetype .selection-tab.actif{z-index:1}
 .page-archetype .contenu-carte{padding:17px 20px 12px}.page-archetype .selection{display:none;border:0;background:transparent;overflow:visible}.page-archetype .selection.actif{display:block}.page-archetype .selection-inner{padding:0}.page-archetype .libelle-marche{color:var(--ref-blue-dark);font-size:26px;line-height:1.12;font-weight:950;margin:0 0 8px}.page-archetype .resume-marche{margin:0 0 12px;color:#273C5B;font-size:15px;line-height:1.34;font-weight:650;max-width:760px}
