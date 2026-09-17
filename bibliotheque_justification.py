@@ -8,7 +8,6 @@ Cette couche ne choisit aucun marché et ne modifie aucun calcul du moteur.
 from __future__ import annotations
 
 from statistics import mean
-from typing import Any
 
 MIN_MATCHES = 5
 MAX_MATCHES = 8
@@ -159,9 +158,9 @@ def construit_justification_bibliotheque(
 ):
     """Rendu exclusif de la nouvelle bibliothèque.
 
-    En cas de conflit avec une ancienne formulation, cette sortie est la
-    seule formulation marketing active. Les fallback ne sont utilisés que
-    lorsqu'aucun indicateur spécifique du contrat n'est publiable.
+    Aucune formulation héritée n'est utilisée. Lorsqu'aucune preuve exacte
+    du contrat n'est disponible, aucune justification marketing générique
+    n'est fabriquée.
     """
     d = construit_donnees(
         marche, matchs_a, matchs_b, h2h,
@@ -172,7 +171,6 @@ def construit_justification_bibliotheque(
     b = nom_exterieur or "Équipe à l'extérieur"
     preuves = []
 
-    # Métriques fondamentales : affichage uniquement lorsqu'elles sont exactes.
     if d["ev_percentage"] is not None:
         preuves.append(_proof(
             f"Avantage Statistique : +{d['ev_percentage']:.1f}%",
@@ -203,8 +201,8 @@ def construit_justification_bibliotheque(
             ))
 
     elif marche in {"double_chance_X2", "1x2_exterieur"}:
-        # Le contrat fourni définit les indicateurs 1X autour de l'équipe A.
-        # Pour X2, aucune inversion silencieuse n'est autorisée.
+        # Le contrat fourni ne définit pas de métriques X2 spécifiques.
+        # Aucune inversion silencieuse des métriques 1X n'est autorisée.
         pass
 
     if marche.startswith("over_under_total_") or marche == "over_2_5":
@@ -244,12 +242,6 @@ def construit_justification_bibliotheque(
             ))
 
     if d["market_prob_pct"] is not None and d["odds_scraped"] is not None and d["ev_percentage"] is not None:
-        preuves.insert(0, _proof(
-            f"Avantage Statistique : +{d['ev_percentage']:.1f}%",
-            type="ev_percentage", valeur=d["ev_percentage"],
-            explication=f"La cote actuelle est supérieure de {d['ev_percentage']:.1f}% à ce que nos calculs jugent équitable.",
-        ))
-        # Une seule occurrence du bloc fondamental.
         uniques = []
         vus = set()
         for p in preuves:
@@ -260,15 +252,7 @@ def construit_justification_bibliotheque(
             uniques.append(p)
         preuves = uniques
 
-    if not preuves:
-        if d["market_prob_pct"] is not None and d["odds_scraped"] is not None:
-            resume = "Sélection confirmée par l'alignement des probabilités calculées et du prix du marché."
-        elif d["home_unbeaten_streak"] is not None or d["away_loss_rate"] is not None:
-            resume = "Profil de performance particulièrement stable validé sur l'ensemble du bilan récent."
-        else:
-            resume = "Opportunité majeure identifiée par la convergence de nos indicateurs de performance."
-    else:
-        resume = preuves[0]["texte"]
+    resume = preuves[0]["texte"] if preuves else None
 
     return {
         "resume": resume,
