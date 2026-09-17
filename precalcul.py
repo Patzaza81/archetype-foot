@@ -105,6 +105,8 @@ import archetype_model.main as archetype_model_main
 from archetype_model.data import odds_provider as archetype_odds_provider
 from archetype_model.learning import archive as archetype_archive
 from archetype_model.learning import extraction as archetype_extraction
+from archetype_model.audit import telemetry as archetype_telemetry
+from archetype_model.audit import report as archetype_audit_report
 
 _recupere_gf_ga_reelle = run_pipeline.recupere_gf_ga_avec_repli
 
@@ -1105,6 +1107,22 @@ def applique_archetype_model(signaux):
     print(f"archetype_model -- moteur_utilise : {dict(_compte_moteur)}")
     print(f"archetype_model -- statuts (parmi les tentatives réussies) : {dict(_compte_statut_am)}")
     print(f"archetype_model -- matchs avec un P1 réel : {_nb_avec_p1}")
+
+    # AJOUT 17/09/2026 (chantier Patrick, module d'audit passif) --
+    # télémétrie de rétention par étage pour CETTE nuit + rafraîchissement
+    # du dashboard (data/audit_status.json). Enveloppé comme
+    # _archive_resultat_archetype_model ci-dessus : un échec de
+    # télémétrie/dashboard n'est JAMAIS une raison d'interrompre le
+    # pipeline nocturne -- juste une observation manquée pour cette nuit,
+    # tracée sur stderr, jamais silencieuse.
+    try:
+        archetype_telemetry.enregistre_scan(signaux)
+    except Exception as e:
+        print(f"[audit] échec enregistrement télémétrie : {e}", file=sys.stderr)
+    try:
+        archetype_audit_report.genere_dashboard()
+    except Exception as e:
+        print(f"[audit] échec génération dashboard : {e}", file=sys.stderr)
 
     return signaux
 

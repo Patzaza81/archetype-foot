@@ -18,6 +18,7 @@ from .signals import deduplication
 from .signals import selection_edv_directe
 from .statistics import profil_equipe
 from .signals import matrice_croisement
+from .audit import circuit_breaker
 import justification
 from .edv import calculator as edv_calculator
 
@@ -204,6 +205,15 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
     if cotes_info is None: cotes_info = odds_provider.recupere_cotes_pour_match(match_id, chemin_precalcul)
     if cotes_info["statut"] != "OK": return {"statut": "COTES_INDISPONIBLES", "fenetres": base["fenetres"], "match_id": match_id}
     cotes = cotes_info["cotes"]
+    # AJOUT 17/09/2026 (chantier Patrick, module d'audit passif) --
+    # disjoncteur d'intégrité AVANT le Péage 1. Champ ADDITIF au
+    # résultat, jamais consulté par la suite de cette fonction : ne
+    # rejette rien, ne touche à aucun seuil de production (voir
+    # audit/circuit_breaker.py pour la garantie de passivité).
+    audit_integrite = circuit_breaker.evalue_integrite(
+        base["fenetres"]["A"], base["fenetres"]["B"],
+        match_id=match_id, cotes=cotes,
+    )
     marches_par_scenario = base["marches_par_scenario"]
     robustesse_par_marche = base["robustesse_par_marche"]
     n_par_scenario = {s: len(base["fenetres"]["A"]["matchs_retenus"]) for s in SCENARIOS}
@@ -468,4 +478,4 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
     for c in candidats:
         c.pop("condition", None)
 
-    return {"statut":"OK", "fenetres":base["fenetres"], "lambdas":base["lambdas"], "candidats":candidats, "candidats_dedupliques":candidats_dedupliques, "selection":selection, "diagnostics":diagnostics, "h2h":{"palier":fenetre_h2h["palier"],"1x2":statut_h2h_1x2,"btts":statut_h2h_btts,"over_2.5":statut_h2h_over25}, "cotes_info":{k:v for k,v in cotes_info.items() if k != "cotes"}}
+    return {"statut":"OK", "fenetres":base["fenetres"], "lambdas":base["lambdas"], "candidats":candidats, "candidats_dedupliques":candidats_dedupliques, "selection":selection, "diagnostics":diagnostics, "h2h":{"palier":fenetre_h2h["palier"],"1x2":statut_h2h_1x2,"btts":statut_h2h_btts,"over_2.5":statut_h2h_over25}, "cotes_info":{k:v for k,v in cotes_info.items() if k != "cotes"}, "audit_integrite": audit_integrite}
