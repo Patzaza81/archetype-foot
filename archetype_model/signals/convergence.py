@@ -215,7 +215,11 @@ def filtre_marche(
     Règles :
       1. nombre de matchs utilisables >= 5 ;
       2. probabilité centrale valide et >= 60 % ;
-      3. cote dans [1.26, 1.74] ;
+      3. cote dans [COTE_MIN, COTE_MAX] (calibrables, voir
+         config_loader.py -- valeurs d'origine 1.26/1.74, COTE_MAX
+         promu à 1.80 le 16/09/2026, décision explicite de Patrick ;
+         jamais un nombre en dur ici pour ne plus jamais désynchroniser
+         ce commentaire de la valeur réellement active) ;
       4. EDV >= seuil correspondant à P ;
       5. robustesse STABLE (INSTABLE ou toute autre valeur -> rejet).
 

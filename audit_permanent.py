@@ -2242,11 +2242,18 @@ section("archetype_model/signals/convergence (09/09/2026) — filtre de candidat
 from archetype_model.signals import convergence as _amconv
 
 verite(
-    "convergence.filtre_marche : bornes de cote inclusives (1.26 et 1.74 tous deux "
-    "éligibles), cote hors intervalle (1.75) -> COTE_HORS_INTERVALLE",
-    _amconv.filtre_marche(nombre_matchs=12, probabilite_centrale=.78, cote=1.26,
+    "convergence.filtre_marche : bornes de cote inclusives (COTE_MIN et "
+    "COTE_MAX tous deux éligibles), cote juste au-dessus de COTE_MAX -> "
+    "COTE_HORS_INTERVALLE (CORRECTIF 17/09/2026 -- bornes lues "
+    "dynamiquement via _amconv.COTE_MIN/COTE_MAX au lieu de valeurs codées "
+    "en dur 1.26/1.75 : la 2e moitié de ce test codait 1.75 comme 'hors "
+    "intervalle', devenu FAUX dès la promotion légitime de COTE_MAX "
+    "1.74->1.80 du 16/09/2026 -- un test qui fige en dur une valeur "
+    "calibrable devient un faux signal dès que cette valeur change "
+    "intentionnellement, jamais une vraie régression du moteur)",
+    _amconv.filtre_marche(nombre_matchs=12, probabilite_centrale=.78, cote=_amconv.COTE_MIN,
                           edv=.05, robustesse="STABLE").eligible
-    and _amconv.filtre_marche(nombre_matchs=12, probabilite_centrale=.72, cote=1.75,
+    and _amconv.filtre_marche(nombre_matchs=12, probabilite_centrale=.72, cote=_amconv.COTE_MAX + 0.01,
                               edv=.50, robustesse="STABLE").motif == "COTE_HORS_INTERVALLE",
 )
 verite(
@@ -5031,13 +5038,21 @@ verite(
     _rob_dyn.ROBUSTNESS_STD_THRESHOLD == _cl_dyn.valeur_parametre("ROBUSTNESS_STD_THRESHOLD"),
 )
 verite(
-    "Valeurs actuelles de convergence.py/robustness.py toujours "
-    "identiques aux valeurs d'origine historiques (doit réussir) : "
-    "config/adaptive_parameters.json n'a encore jamais été calibré, donc "
-    "le comportement réel du moteur est, à ce jour, rigoureusement "
-    "inchangé par ce branchement",
-    _conv_dyn.COTE_MIN == 1.26 and _conv_dyn.COTE_MAX == 1.74
-    and _rob_dyn.ROBUSTNESS_STD_THRESHOLD == 0.08,
+    "robustness.ROBUSTNESS_STD_THRESHOLD et convergence.COTE_MIN toujours "
+    "identiques aux valeurs d'origine historiques (doit réussir) : ces deux "
+    "paramètres n'ont jamais été promus depuis le branchement de "
+    "config_loader.py (13/09/2026)",
+    _conv_dyn.COTE_MIN == 1.26 and _rob_dyn.ROBUSTNESS_STD_THRESHOLD == 0.08,
+)
+verite(
+    "convergence.COTE_MAX : promotion intentionnelle 1.74->1.80 du "
+    "16/09/2026 (demande explicite de Patrick, config/adaptive_parameters.json "
+    "édité directement -- commit 472c79e) toujours active, jamais retombée "
+    "silencieusement sur l'origine (CORRECTIF 17/09/2026 -- ce test "
+    "affirmait auparavant, à tort depuis le 16/09, que COTE_MAX était "
+    "'toujours identique à l'origine' -- l'assertion d'origine avait un "
+    "sens temporel valide avant la 1re promotion réelle, plus après)",
+    _conv_dyn.COTE_MAX == 1.80 and _conv_dyn.COTE_MAX != 1.74,
 )
 
 
