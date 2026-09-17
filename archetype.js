@@ -32,9 +32,9 @@ function construitJauge(probabilite) {
 function construitPourquoi(candidat) {
   const j = candidat && candidat.justification; const morceaux = [];
   if (j && j.resume) morceaux.push(`<p class="resume-preuve">${echappeHtml(j.resume)}</p>`);
-  if (j && Array.isArray(j.preuves)) j.preuves.forEach(p => {
-    if (p && p.texte) morceaux.push(`<div class="preuve"><span class="preuve-titre">${echappeHtml(p.titre || "Statistique clé")}</span><span class="preuve-texte">${echappeHtml(p.texte)}</span></div>`);
-  });
+  if (j && Array.isArray(j.preuves) && j.preuves.length) {
+    morceaux.push(`<details class="preuves-cachees"><summary>Voir les preuves statistiques ▾</summary>${j.preuves.map(p => p && p.texte ? `<div class="preuve"><span class="preuve-titre">${echappeHtml(p.titre || "Statistique clé")}</span><span class="preuve-texte">${echappeHtml(p.texte)}</span></div>` : "").join("")}</details>`);
+  }
   return morceaux.length ? morceaux.join("") : `<p class="resume-preuve">Cette sélection ressort de la convergence des analyses statistiques du match.</p>`;
 }
 function construitBlocCandidat(info, candidat, equipes) {
@@ -60,7 +60,7 @@ function construitBlocCandidat(info, candidat, equipes) {
     <div class="bloc-pourquoi"><div class="titre">Pourquoi ce choix ?</div>${construitPourquoi(candidat)}</div>
     <div class="metriques"><div class="metrique"><span>Avantage potentiel</span><strong>${formatPct(candidat.edge)}</strong></div><div class="metrique"><span>Gain potentiel</span><strong>${formatPct(candidat.edv)}</strong></div></div>
   </div>`;
-  article.style.setProperty("--accent", `var(--${info.classe === "rang-1" ? "af-gold" : info.classe === "rang-2" ? "af-blue" : "af-blue-violet"})`);
+  article.style.setProperty("--accent", `var(--${info.classe === "rang-1" ? "ref-gold" : info.classe === "rang-2" ? "ref-blue-tab" : "ref-violet"})`);
   return article;
 }
 function construitDetails(m) {
@@ -118,7 +118,7 @@ function construitCarte(m) {
     tabs.appendChild(tab); blocs.push({tab, bloc});
   });
   if (blocs.length) {
-    blocs.forEach(x => { selections.appendChild(x.bloc); });
+    blocs.forEach(x => selections.appendChild(x.bloc));
     const actif = blocs.find(x => x.tab.dataset.cle === premier.cle) || blocs[0];
     actif.tab.classList.add("actif"); actif.bloc.classList.add("actif");
     section.appendChild(tabs); section.appendChild(selections);
@@ -137,7 +137,16 @@ function afficheSelections(matchs) {
   const retenus = regroupeMatchs(matchs).filter(estArchetypeGo).sort((a, b) => `${a.date || ""}${a.heure_cameroun || a.heure || ""}`.localeCompare(`${b.date || ""}${b.heure_cameroun || b.heure || ""}`));
   maj.textContent = retenus.length ? `${retenus.length} match${retenus.length > 1 ? "s" : ""} analysé${retenus.length > 1 ? "s" : ""} aujourd'hui` : "Aucune sélection pour le moment";
   if (!retenus.length) { root.innerHTML = `<div class="etat-vide"><strong>Aucune sélection pour le moment</strong><p>Aucun match ne remplit actuellement tous les critères du modèle. Le système préfère ne rien proposer plutôt que de forcer une sélection.</p></div>`; return; }
-  retenus.forEach(m => root.appendChild(construitCarte(m)));
+  retenus.forEach((m, index) => {
+    const carte = construitCarte(m);
+    // Un seul match est ouvert à l'arrivée : la page reste compacte et chaque autre carte peut être dépliée à la demande.
+    if (index > 0) {
+      carte.classList.add("carte-repliee");
+      const bouton = carte.querySelector(".bouton-repli");
+      if (bouton) { bouton.setAttribute("aria-expanded", "false"); bouton.firstChild.textContent = "Déplier "; bouton.querySelector("span").textContent = "⌄"; }
+    }
+    root.appendChild(carte);
+  });
 }
 if (document.getElementById("matches")) {
   fetch(`precalcul_leger.json?_=${Date.now()}`)
