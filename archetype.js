@@ -52,6 +52,18 @@ function construitPourquoi(candidat, equipes) {
   }
   return morceaux.length ? morceaux.join("") : `<p class="resume-preuve">Cette sélection ressort de la convergence des analyses statistiques du match.</p>`;
 }
+function construitStatsRapides(candidat) {
+  const preuves = (candidat.justification && candidat.justification.preuves) || [];
+  const h2h = preuves.find((p) => p.titre === "Confrontations directes");
+  const forme = preuves.find((p) => p !== h2h) || null;
+  const { texte: niveauTexte } = traduitNiveau(candidat.niveau);
+  const cases = [
+    { icone: "📊", titre: "Forme récente", texte: forme ? forme.texte : "Non disponible" },
+    { icone: "🛡️", titre: "Confrontations directes", texte: h2h ? h2h.texte : "Non disponible" },
+    { icone: "⭐", titre: "Solidité", texte: niveauTexte },
+  ];
+  return `<div class="stats-rapides">${cases.map((c) => `<div class="stat-rapide"><span class="icone-stat" aria-hidden="true">${c.icone}</span><div><span class="stat-titre">${echappeHtml(c.titre)}</span><span class="stat-texte">${echappeHtml(c.texte)}</span></div></div>`).join("")}</div>`;
+}
 function construitBlocCandidat(info, candidat, equipes) {
   if (!candidat) return null;
   const article = document.createElement("article"); article.className = `selection ${info.classe}`;
@@ -62,6 +74,7 @@ function construitBlocCandidat(info, candidat, equipes) {
   article.innerHTML = `<div class="selection-inner">
     <h2 class="libelle-marche">${echappeHtml(libelle)}</h2>
     ${candidat.justification && candidat.justification.resume ? `<p class="resume-marche">${echappeHtml(candidat.justification.resume)}</p>` : ""}
+    ${construitStatsRapides(candidat)}
     <div class="donnees-principales">
       <div>
         <span class="etiquette">Cote</span>
