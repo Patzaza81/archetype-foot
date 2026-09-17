@@ -17,21 +17,36 @@ function formatPct(x) { const n = Number(x); return Number.isFinite(n) ? `${(n *
 function formatPctEntier(x) { const n = Number(x); return Number.isFinite(n) ? `${Math.round(n * 100)} %` : "—"; }
 function formatDate(dateIso) { if (!dateIso) return ""; const d = new Date(`${dateIso}T12:00:00`); if (Number.isNaN(d.getTime())) return dateIso; return d.toLocaleDateString("fr-FR", { weekday: "short", day: "2-digit", month: "short" }).replace(/\./g, "").replace(/^./, c => c.toUpperCase()); }
 function initialesEquipe(nom) { const mots = String(nom || "?").trim().split(/\s+/).filter(Boolean); if (!mots.length) return "?"; return mots.length === 1 ? mots[0].slice(0, 2).toUpperCase() : (mots[0][0] + mots[mots.length - 1][0]).toUpperCase(); }
-function traduitConfiance(niveau) {
-  const map = {
-    PREMIUM: [5, "Très forte"], TRES_FORT: [4, "Forte"], FORT: [3, "Bonne"],
-    ELIGIBLE: [2, "Validée"], ELIGIBLE_PLUS: [1, "Minimale"],
-  };
-  return map[niveau] || [1, "Minimale"];
-}
+// AJOUT 17/09/2026 (Patrick, jargon désynchronisé du moteur réel) --
+// traduitConfiance() dupliquait, avec un texte moins précis, ce que
+// traduction_marches.js fait déjà correctement (traduitNiveau) --
+// cette dernière fonction porte un commentaire explicite : "niveau"
+// est un niveau d'éligibilité du filtre, pas une probabilité empirique
+// de gain, on ne l'appelle plus "Confiance" dans l'UI. archetype.js ne
+// suivait pas cette règle malgré sa présence documentée dans le même
+// projet -- supprimé, traduitNiveau() est utilisée directement plus bas.
 function construitJauge(probabilite) {
   const n = Number(probabilite); if (!Number.isFinite(n)) return "";
   const v = Math.max(0, Math.min(1, n)); const r = 31, c = 2 * Math.PI * r;
   return `<div class="jauge" aria-label="Probabilité du modèle : ${Math.round(v * 100)} %"><svg viewBox="0 0 76 76" aria-hidden="true"><circle class="fond" cx="38" cy="38" r="${r}"></circle><circle class="valeur" cx="38" cy="38" r="${r}" stroke-dasharray="${c.toFixed(2)}" stroke-dashoffset="${(c * (1 - v)).toFixed(2)}"></circle></svg><strong>${Math.round(v * 100)}%</strong></div>`;
 }
-function construitPourquoi(candidat) {
+function construitPourquoi(candidat, equipes) {
   const j = candidat && candidat.justification; const morceaux = [];
   if (j && j.resume) morceaux.push(`<p class="resume-preuve">${echappeHtml(j.resume)}</p>`);
+  // AJOUT 17/09/2026 (Patrick, jargon/statistiques désynchronisés du
+  // moteur réel) -- candidat.h2h_palier et candidat.confirmation_historique
+  // existent bien sur chaque candidat produit par archetype_model/main.py
+  // mais n'étaient jamais affichés ici : le H2H (l'un des 4 signaux du
+  // moteur, voir archetype_model/audit/) restait invisible côté site.
+  // traduitPalierH2H/construitPhraseConfirmation existent déjà dans
+  // traduction_marches.js spécifiquement pour ça, jamais appelées avant.
+  const phraseH2H = typeof construitPhraseConfirmation === "function"
+    ? construitPhraseConfirmation(candidat.marche, candidat.confirmation_historique, equipes || {})
+    : null;
+  const libellePalier = typeof traduitPalierH2H === "function" ? traduitPalierH2H(candidat.h2h_palier) : null;
+  if (phraseH2H || libellePalier) {
+    morceaux.push(`<div class="preuve"><span class="preuve-titre">Confrontations directes</span><span class="preuve-texte">${echappeHtml(phraseH2H || libellePalier)}</span></div>`);
+  }
   if (j && Array.isArray(j.preuves) && j.preuves.length) {
     morceaux.push(`<details class="preuves-cachees"><summary>Voir les preuves statistiques ▾</summary>${j.preuves.map(p => p && p.texte ? `<div class="preuve"><span class="preuve-titre">${echappeHtml(p.titre || "Statistique clé")}</span><span class="preuve-texte">${echappeHtml(p.texte)}</span></div>` : "").join("")}</details>`);
   }
@@ -41,7 +56,7 @@ function construitBlocCandidat(info, candidat, equipes) {
   if (!candidat) return null;
   const article = document.createElement("article"); article.className = `selection ${info.classe}`;
   article.dataset.cle = info.cle;
-  const [etoiles, niveau] = traduitConfiance(candidat.niveau);
+  const { etoiles, texte: niveauTexte } = traduitNiveau(candidat.niveau);
   const stars = "★".repeat(etoiles) + `<span class="etoiles-vides">${"★".repeat(5 - etoiles)}</span>`;
   const libelle = traduitMarche(candidat.marche, equipes);
   article.innerHTML = `<div class="selection-inner">
@@ -56,8 +71,8 @@ function construitBlocCandidat(info, candidat, equipes) {
       </div>
       ${construitJauge(candidat.probabilite)}
     </div>
-    <div class="ligne-confiance"><span>Confiance</span><span class="etoiles" aria-label="Confiance : ${etoiles} sur 5">${stars}</span><strong>${echappeHtml(niveau)}</strong></div>
-    <div class="bloc-pourquoi"><div class="titre">Pourquoi ce choix ?</div>${construitPourquoi(candidat)}</div>
+    <div class="ligne-confiance"><span>Éligibilité</span><span class="etoiles" aria-label="Éligibilité : ${etoiles} sur 5">${stars}</span><strong>${echappeHtml(niveauTexte)}</strong></div>
+    <div class="bloc-pourquoi"><div class="titre">Pourquoi ce choix ?</div>${construitPourquoi(candidat, equipes)}</div>
     <div class="metriques"><div class="metrique"><span>Avantage potentiel</span><strong>${formatPct(candidat.edge)}</strong></div><div class="metrique"><span>Gain potentiel</span><strong>${formatPct(candidat.edv)}</strong></div></div>
   </div>`;
   article.style.setProperty("--accent", `var(--${info.classe === "rang-1" ? "ref-gold" : info.classe === "rang-2" ? "ref-blue-tab" : "ref-violet"})`);
@@ -90,19 +105,30 @@ function regroupeMatchs(matchs) {
   });
   return Array.from(groupes.values());
 }
-function construitApercuRepli(candidatP1, equipes) {
-  if (!candidatP1) return "";
-  const libelle = traduitMarche(candidatP1.marche, equipes);
-  return `<div class="apercu-repli">
-    <div class="apercu-etiquette"><span class="puce-rang" aria-hidden="true"></span>Pronostic principal</div>
+function construitApercuRang(info, candidat, equipes, accentClasse) {
+  const div = document.createElement("div");
+  div.className = `apercu-rang apercu-${info.cle}`;
+  if (!candidat) {
+    div.classList.add("indisponible");
+    div.innerHTML = `<div class="apercu-etiquette"><span class="puce-rang" aria-hidden="true"></span>${echappeHtml(info.titre)}</div><p class="apercu-marche">Non disponible pour ce match</p>`;
+    return div;
+  }
+  const libelle = traduitMarche(candidat.marche, equipes);
+  div.innerHTML = `
+    <div class="apercu-etiquette"><span class="puce-rang" aria-hidden="true"></span>${echappeHtml(info.titre)}</div>
     <div class="apercu-corps">
       <div>
         <h2 class="apercu-marche">${echappeHtml(libelle)}</h2>
-        <div class="apercu-donnees"><span>Cote<strong>${formatCote(candidatP1.cote)}</strong></span><span>Probabilité<strong>${formatPctEntier(candidatP1.probabilite)}</strong></span></div>
+        <div class="apercu-donnees"><span>Cote<strong>${formatCote(candidat.cote)}</strong></span><span>Probabilité<strong>${formatPctEntier(candidat.probabilite)}</strong></span></div>
       </div>
-      ${construitJauge(candidatP1.probabilite)}
-    </div>
-  </div>`;
+      ${construitJauge(candidat.probabilite)}
+    </div>`;
+  return div;
+}
+function construitApercuListe(selection, equipes) {
+  const div = document.createElement("div"); div.className = "apercu-liste";
+  RANGS.forEach(info => div.appendChild(construitApercuRang(info, selection[info.cle], equipes)));
+  return div;
 }
 function construitCarte(m) {
   const section = document.createElement("section"); section.className = "carte-match";
@@ -115,7 +141,12 @@ function construitCarte(m) {
     <div class="equipe domicile"><span class="ecusson-equipe">${echappeHtml(initialesEquipe(equipes.domicile))}</span><span>${echappeHtml(equipes.domicile)}</span></div>
     <div class="bloc-horaire"><strong>${echappeHtml(heure)}</strong><span>${echappeHtml(date)}</span></div>
     <div class="equipe exterieur"><span>${echappeHtml(equipes.exterieur)}</span><span class="ecusson-equipe">${echappeHtml(initialesEquipe(equipes.exterieur))}</span></div>
-  </div>${competition ? `<div class="competition">${echappeHtml(competition)}</div>` : ""}</header>${construitApercuRepli(selection.P1, equipes)}<button type="button" class="bouton-repli" aria-expanded="true">Replier <span aria-hidden="true">⌃</span></button>`;
+  </div>${competition ? `<div class="competition">${echappeHtml(competition)}</div>` : ""}</header>`;
+  section.appendChild(construitApercuListe(selection, equipes));
+  const boutonRepliHtml = document.createElement("button");
+  boutonRepliHtml.type = "button"; boutonRepliHtml.className = "bouton-repli"; boutonRepliHtml.setAttribute("aria-expanded", "true");
+  boutonRepliHtml.innerHTML = `Replier <span aria-hidden="true">⌃</span>`;
+  section.appendChild(boutonRepliHtml);
 
   const tabs = document.createElement("nav"); tabs.className = "selection-tabs"; tabs.setAttribute("aria-label", "Choix du pronostic");
   const selections = document.createElement("div"); selections.className = "contenu-carte";
