@@ -77,12 +77,18 @@ EPSILON_LOG_LOSS = 1e-9
 def _est_rejet_peage1(diagnostic: Mapping[str, Any]) -> bool:
     """Un diagnostic de Péage 1 (voir _motif_peage1 dans main.py) porte
     la clé 'motif_rejet' dans son 'filtre'. Un diagnostic ayant atteint
-    le filtre de convergence porte 'decision'/'motif'
-    (ResultatFiltre.as_dict(), convergence.py) -- jamais les deux à la
-    fois, ce sont deux formes disjointes produites par deux fonctions
-    différentes de main.py."""
+    le filtre de convergence porte AUSSI 'motif_rejet'
+    (ResultatFiltreConvergent.as_dict(), convergence.py, valeur None si
+    éligible sinon un motif MotifRejet) -- 'motif_rejet' seul ne suffit
+    donc PAS à distinguer les deux formes (bug confirmé en production
+    le 17/09/2026 : 100% des diagnostics classés Péage 1, motifs de
+    convergence comme COTE_HORS_INTERVALLE/PROBABILITE_TROP_FAIBLE
+    comptés à tort dans peage1_motifs). Seule 'resultats_par_scenario'
+    est propre à ResultatFiltreConvergent.as_dict() -- absente d'un
+    rejet Péage 1 (qui porte plutôt 'score_pondere'/'signal_matrice'/
+    'seuil', voir _verifie_peage1/_motif_peage1 dans main.py)."""
     filtre = diagnostic.get("filtre") or {}
-    return "motif_rejet" in filtre
+    return "motif_rejet" in filtre and "resultats_par_scenario" not in filtre
 
 
 def _agrege_diagnostics(tous_diagnostics: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
@@ -112,7 +118,14 @@ def _agrege_diagnostics(tous_diagnostics: Iterable[Mapping[str, Any]]) -> dict[s
             convergence_eligibles += 1
         else:
             convergence_rejetes += 1
-            convergence_motifs[str(filtre.get("motif"))] += 1
+            # ResultatFiltreConvergent.as_dict() porte le motif de rejet
+            # sous "motif_rejet" (jamais "motif" -- cette dernière clé
+            # appartient à ResultatFiltre.as_dict(), la version
+            # par-scénario interne à filtre_marche_convergent(), jamais
+            # celle qui atterrit dans diagnostics -- confirmé en
+            # production le 17/09/2026, corrigé au même moment que
+            # _est_rejet_peage1 ci-dessus).
+            convergence_motifs[str(filtre.get("motif_rejet"))] += 1
 
     return {
         "marches_scannes": marches_scannes,

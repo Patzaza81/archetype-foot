@@ -35,12 +35,24 @@ def _diag_peage1_rejete(marche="over_2.5"):
 
 
 def _diag_convergence(eligible, motif=None, h2h_statut=None):
+    # AJOUT 17/09/2026 -- forme corrigée pour correspondre exactement à
+    # ResultatFiltreConvergent.as_dict() (convergence.py), la SEULE forme
+    # réellement présente dans diagnostics pour un résultat de convergence
+    # (voir main.py lignes ~347/411 : diagnostics.append({"filtre":
+    # resultat.as_dict(), ...}) où resultat vient toujours de
+    # filtre_marche_convergent(), jamais de filtre_marche() directement).
+    # L'ancienne forme de ce test ({"decision":..., "motif":...}) était
+    # celle de ResultatFiltre.as_dict() (usage interne par-scénario),
+    # qui n'atterrit JAMAIS dans diagnostics -- confirmé en production
+    # le 17/09/2026 (bug de classification découvert avec de vraies
+    # données : 100% des diagnostics classés à tort comme Péage 1).
     return {
         "marche": "1x2_domicile",
         "filtre": {
-            "decision": "ELIGIBLE" if eligible else "REJETE",
             "eligible": eligible,
-            "motif": motif,
+            "resultats_par_scenario": {},
+            "scenario_en_echec": None if eligible else "offensif",
+            "motif_rejet": motif,
         },
         "h2h_statut": h2h_statut,
     }
