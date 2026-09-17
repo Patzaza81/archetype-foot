@@ -4629,13 +4629,19 @@ verite(
 )
 verite(
     "extraire_marche_proche CAS cote proche de COTE_MAX par au-dessus "
-    "(doit réussir) : 1.78, écart 0.04 <= fenêtre 0.05 -> retenu",
-    _ext_dyn.extraire_marche_proche(_diag_cote_test(1.78)) is not None,
+    "(doit réussir) : COTE_MAX + 0.04, écart 0.04 <= fenêtre 0.05 -> "
+    "retenu (CORRECTIF 17/09/2026 -- cote codée en dur à 1.78, qui "
+    "supposait COTE_MAX=1.74 ; devenue une cote VALIDE et non plus "
+    "'proche par au-dessus' depuis la promotion 1.74->1.80 du 16/09/2026, "
+    "donc silencieusement FAUSSE depuis cette date sans que rien ne le "
+    "signale -- lue dynamiquement via _ext_dyn.COTE_MAX pour ne plus "
+    "jamais se désynchroniser d'une future promotion)",
+    _ext_dyn.extraire_marche_proche(_diag_cote_test(_ext_dyn.COTE_MAX + 0.04)) is not None,
 )
 verite(
     "extraire_marche_proche CAS cote loin au-dessus (rejet attendu) : "
-    "2.50, écart 0.76 > fenêtre 0.05 -> jamais retenu",
-    _ext_dyn.extraire_marche_proche(_diag_cote_test(2.50)) is None,
+    "COTE_MAX + 0.76, écart 0.76 > fenêtre 0.05 -> jamais retenu",
+    _ext_dyn.extraire_marche_proche(_diag_cote_test(_ext_dyn.COTE_MAX + 0.76)) is None,
 )
 
 
