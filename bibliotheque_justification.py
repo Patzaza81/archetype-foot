@@ -10,7 +10,6 @@ from __future__ import annotations
 from statistics import mean
 
 MIN_MATCHES = 5
-MAX_MATCHES = 8
 
 
 def _valid(matches):
@@ -24,7 +23,7 @@ def _valid(matches):
 
 def _recent(matches):
     matches = _valid(matches)
-    return matches[-MAX_MATCHES:] if len(matches) >= MIN_MATCHES else []
+    return matches if len(matches) >= MIN_MATCHES else []
 
 
 def _pct(n, d):
@@ -53,7 +52,7 @@ def _h2h(h2h):
         if isinstance(x, dict)
         and isinstance(x.get("buts_a"), (int, float))
         and isinstance(x.get("buts_b"), (int, float))
-    ][-MAX_MATCHES:]
+    ]
 
 
 def _market_line(market):
@@ -240,17 +239,6 @@ def construit_justification_bibliotheque(
                 f"Match ouvert : {b} marque régulièrement à l'extérieur face à une défense de {a} rarement imbattable.",
                 type="away_score_rate_home_concede_rate", away_score_rate=d["away_score_rate"], home_concede_rate=d["home_concede_rate"],
             ))
-
-    if d["market_prob_pct"] is not None and d["odds_scraped"] is not None and d["ev_percentage"] is not None:
-        uniques = []
-        vus = set()
-        for p in preuves:
-            if p.get("type") == "ev_percentage":
-                if "ev" in vus:
-                    continue
-                vus.add("ev")
-            uniques.append(p)
-        preuves = uniques
 
     resume = preuves[0]["texte"] if preuves else None
 
