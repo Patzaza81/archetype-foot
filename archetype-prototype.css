@@ -1,0 +1,35 @@
+/* Archetype — calage final plaquette prototype, 17/09/2026 */
+.page-archetype .flux-selections{max-width:900px!important;margin:0 auto!important;padding:0!important}
+.page-archetype .carte-match{width:100%!important;max-width:900px!important;margin:0 auto 12px!important;border:2.5px solid #17140F!important;border-radius:20px!important;background:#FDFBF7!important;overflow:hidden!important;box-shadow:0 7px 20px rgba(52,42,24,.12)!important}
+.page-archetype .entete-match{padding:9px 12px 8px!important;background:#FDFBF7!important}
+.page-archetype .ligne-match{grid-template-columns:minmax(0,1fr) 78px minmax(0,1fr)!important;gap:6px!important}
+.page-archetype .ecusson-equipe{width:36px!important;height:36px!important;border-radius:50%!important}
+.page-archetype .bouton-repli{position:static!important;display:block!important;width:max-content!important;max-width:calc(100% - 28px)!important;margin:11px 14px 12px auto!important;padding:8px 16px!important;border:2px solid #C9D7FF!important;border-radius:999px!important;background:#FDFBF7!important;color:#2859D9!important;font-size:11px!important;font-weight:950!important;visibility:visible!important;opacity:1!important}
+.page-archetype .apercu-liste{padding:0 14px!important}
+.page-archetype .apercu-rang{padding:7px 0!important}
+.page-archetype .apercu-corps{grid-template-columns:minmax(0,1fr) auto!important;gap:8px!important}
+.page-archetype .apercu-rang .jauge{width:38px!important;height:38px!important}
+.page-archetype .selection-tabs{grid-template-columns:repeat(3,1fr)!important;background:#FDFBF7!important}
+.page-archetype .selection-tab{min-width:0!important;padding:11px 5px 10px!important}
+.page-archetype .contenu-carte{padding:17px 20px 12px!important}
+.page-archetype .stats-rapides{grid-template-columns:repeat(3,1fr)!important;gap:10px!important}
+.page-archetype .donnees-principales{grid-template-columns:minmax(0,1fr) 92px!important;gap:14px!important}
+.page-archetype .jauge{width:88px!important;height:88px!important}
+.page-archetype .bloc-pourquoi{border-left-width:4px!important}
+@media (max-width:560px){
+  .page-archetype{padding:10px 8px 28px!important}
+  .page-archetype .carte-match{border-radius:18px!important}
+  .page-archetype .ligne-match{grid-template-columns:minmax(0,1fr) 70px minmax(0,1fr)!important}
+  .page-archetype .equipe{font-size:14px!important}
+  .page-archetype .bloc-horaire strong{font-size:15px!important}
+  .page-archetype .libelle-marche{font-size:24px!important}
+  .page-archetype .resume-marche{font-size:14px!important}
+  .page-archetype .stats-rapides{gap:7px!important}
+  .page-archetype .stat-rapide{gap:5px!important}
+  .page-archetype .stat-rapide .stat-titre,.page-archetype .stat-rapide .stat-texte{font-size:10px!important}
+  .page-archetype .donnees-principales{grid-template-columns:minmax(0,1fr) 78px!important;gap:10px!important}
+  .page-archetype .cote{font-size:30px!important}
+  .page-archetype .jauge{width:78px!important;height:78px!important}
+  .page-archetype .contenu-carte{padding:15px 14px 10px!important}
+}
+@media (min-width:900px){.page-archetype .carte-match{max-width:900px!important}}
