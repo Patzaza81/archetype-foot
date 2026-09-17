@@ -455,4 +455,17 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
         diagnostic_selection = {"P1": {"critere": "aucune_selection"}, "P2": {"critere": "aucune_selection"}, "P3": {"critere": "aucune_selection"}}
     for rang in ("P1", "P2", "P3"): justification.enrichit_justification_selection(selection.get(rang), diagnostic_selection.get(rang))
 
+    # CORRECTIF 17/09/2026 (run échoué du 16-17/09 -- TypeError: Object of
+    # type function is not JSON serializable, precalcul.py:1189, json.dump).
+    # Cause : chaque candidat porte un champ "condition" (fonction
+    # (buts_dom, buts_ext) -> bool, ajoutée par _condition_pour_cle) utilisée
+    # UNIQUEMENT par selection_edv_directe.elimine_marches_correles (Pearson)
+    # ci-dessus. Ce champ n'était jamais retiré avant que le candidat
+    # (dans candidats / candidats_dedupliques / selection P1-P2-P3, qui sont
+    # les MÊMES objets, pas des copies) atteigne precalcul.py -> json.dump.
+    # Nettoyage ICI, une fois la corrélation calculée et la sélection
+    # figée, jamais avant (elimine_marches_correles a besoin de "condition").
+    for c in candidats:
+        c.pop("condition", None)
+
     return {"statut":"OK", "fenetres":base["fenetres"], "lambdas":base["lambdas"], "candidats":candidats, "candidats_dedupliques":candidats_dedupliques, "selection":selection, "diagnostics":diagnostics, "h2h":{"palier":fenetre_h2h["palier"],"1x2":statut_h2h_1x2,"btts":statut_h2h_btts,"over_2.5":statut_h2h_over25}, "cotes_info":{k:v for k,v in cotes_info.items() if k != "cotes"}}
