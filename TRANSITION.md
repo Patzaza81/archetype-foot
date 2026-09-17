@@ -2506,3 +2506,46 @@ Décision de Patrick : il n'utilise plus la saisie manuelle de cotes du panier. 
 ## État du site à la fin de cette session
 
 Quatre pages : `index.html` (accueil, panier local), `archetype.html` (sélections du jour), `panier.html` (matchs choisis, affichage seul, refonte session précédente), `systeme.html` (nouveau -- bilan, calibration, tickets fictifs). Plus aucune trace de l'ancien moteur ni dans l'affichage ni dans le pipeline nocturne, sans avoir cassé les deux autres moteurs actifs (archetype_model, V0) qui partagent certains de ses fichiers utilitaires.
+
+## 51. Session du 17/09/2026 — module d'audit passif (`archetype_model/audit/`) + confirmation factuelle Péage 3 (EDV) sur [1.26-1.80]
+
+Deux chantiers enchaînés dans la même session, le second né d'une vérification déclenchée par le premier.
+
+**Chantier 1 -- module d'audit passif, cahier des charges de Patrick** :
+- `archetype_model/audit/circuit_breaker.py` (nouveau) : disjoncteur d'intégrité des données brutes, appelé DANS `analyse_match_complet()` juste après lecture des cotes, AVANT le Péage 1. Additif (clé `audit_integrite` au résultat), ne rejette jamais un match, ne touche à aucun seuil de production. Trois motifs indépendants : `ECHANTILLON_INSUFFISANT`, `TAUX_DONNEES_MANQUANTES_ELEVE` (>15 % de matchs bruts rejetés par validation.py), `VARIATION_COTE_BRUTALE` (>15 % d'écart avec le premier relevé jamais vu pour un match+marché, persisté dans `data/audit_odds_snapshots.json`).
+- `archetype_model/audit/telemetry.py` (nouveau) : `enregistre_scan()` agrège chaque nuit la rétention par étage RÉEL du pipeline (Péage 1 -> filtre de convergence -> H2H informatif -> sélection finale P1/P2/P3) dans `data/audit_telemetry.json` (écriture atomique, historique plafonné à 60 entrées). `calcule_scores_probabilistes()` calcule Brier score/log-loss en lecture seule sur `archetype_model/learning/archive/` déjà résolue -- jamais un second calcul de résultat.
+- `archetype_model/audit/report.py` (nouveau) : `genere_dashboard()` produit `data/audit_status.json` (GREEN <=0.20 / YELLOW <=0.23 / RED au-delà / INCONNU si aucune donnée -- jamais un GREEN inventé).
+- Intégration : `archetype_model/main.py` (appel circuit breaker) et `precalcul.py` (télémétrie + dashboard en fin de `applique_archetype_model()`, enveloppés en try/except comme `_archive_resultat_archetype_model`, jamais bloquants).
+- **Trois corrections factuelles faites AVANT d'écrire le code**, cahier des charges de Patrick comparé au code réel : cote max réelle 1.74 (pas 1.80 -- voir chantier 2, cette valeur elle-même s'est révélée incomplète), seuil de probabilité réel 60 % (pas 55 %), pas de "P4" dans le pipeline réel (H2H est un arbitre informatif, jamais un rejet ; P1/P2/P3 sont des rangs de sélection finale, pas des péages séquentiels).
+- **Vérifié réellement** : 39 tests unitaires (`tests/test_audit_circuit_breaker.py`, `tests/test_audit_telemetry.py`, `tests/test_audit_report.py`), tous verts, y compris contre les 317 vrais enregistrements de `archive/2026-09.json` -- Brier score global mesuré : **0,299** (zone RED selon les seuils du dashboard, signal réel et non fabriqué).
+
+**Chantier 2 -- Péage 3 (EDV/cote) : confirmation que [1.26-1.80] est DÉJÀ la plage active, pas une plage à créer** :
+
+Demande de Patrick, suite au chantier 1 : aligner `main.py`/`edv/` et le module d'audit sur `[1.26-1.80]`. Vérification avant toute modification (`config/adaptive_parameters.json`, `config/adaptive_state.json`, `config/journal_promotion.jsonl`, `git log`) :
+
+- `COTE_MAX` est **déjà actif à 1.80 en production depuis le 16/09/2026** (commit `472c79e`, décision explicite de Patrick, JSON édité directement -- `calibration.py` n'a jamais promu ce paramètre : chaque cycle automatique l'a rejeté faute d'échantillon suffisant, visible dans `journal_promotion.jsonl`, dates 13 au 16/09).
+- **Erreur de ma part à corriger explicitement** : plus tôt dans cette même session, j'avais affirmé à Patrick "la vraie valeur est 1.74" -- vérification incomplète, je n'avais lu que `config_loader.py` (valeur de repli) sans vérifier le fichier de configuration actif qui la surclasse.
+- Conséquence : **rien à changer** dans `main.py`/`edv/`/`circuit_breaker.py`/`telemetry.py` -- aucun de ces fichiers ne code `1.74` ni `1.80` en dur pour filtrer une cote (confirmé par recherche exhaustive). `convergence.py` lit déjà `COTE_MAX` dynamiquement depuis `config_loader.py`.
+- Ce qui était réellement cassé, trouvé en vérifiant : **trois assertions obsolètes de `audit_permanent.py`**, écrites avant la promotion du 16/09, qui codaient encore 1.74 en dur et étaient devenues fausses sans que rien ne le signale (`audit_permanent.py` n'est pas branché en CI) :
+  1. Test de bornes de `convergence.filtre_marche` : affirmait qu'une cote de 1.75 est `COTE_HORS_INTERVALLE` -- faux depuis que la borne réelle est 1.80. Corrigé pour lire `COTE_MIN`/`COTE_MAX` dynamiquement (commit `8fb8272`).
+  2. Test "valeurs toujours identiques à l'origine, jamais promues" : son intention temporelle (valide seulement avant la 1ʳᵉ promotion réelle) a expiré le 16/09 -- séparé en deux vérités distinctes, l'une pour ce qui reste réellement à l'origine (`COTE_MIN`, `ROBUSTNESS_STD_THRESHOLD`), l'autre pour la promotion intentionnelle de `COTE_MAX` (commit `8fb8272`).
+  3. Trouvée en exécutant `audit_permanent.py` en entier lors de la préparation de cette documentation (jamais fait au commit précédent, seules les 2 assertions ciblées avaient été vérifiées isolément) : `extraction.py::extraire_marche_proche` testait la fenêtre de "quasi-miss" (0,05) autour de `COTE_MAX` avec une cote figée à 1,78 -- valide uniquement quand `COTE_MAX` valait 1,74, silencieusement fausse depuis 6 jours. Corrigée de la même façon (commit `a239fd6`).
+- Commentaire de `convergence.py::filtre_marche` mis à jour pour ne plus jamais citer de valeur numérique en dur (source de la confusion initiale).
+
+**Vérifié réellement, en exécutant `audit_permanent.py` en entier (jamais fait avant cette session pour ce fichier)** : état AVANT le chantier 1 (checkout `f2e8044`) = **17 échecs**. État APRÈS les 3 corrections (`a239fd6`) = **14 échecs, 482 vérités OK, 496 vérités totales**, exit code 1 -- aucune régression introduite, 3 échecs réels corrigés. Les **14 échecs restants sont préexistants, confirmés sans rapport avec cette session** (comparés avant/après par checkout) :
+- `odds_provider._parse_libelle` (2 échecs, traduction de libellés)
+- `CAS 1` : 12 candidats v2 pas tous diagnostiqués
+- Périmètre dynamique (Double Chance, Handicap) : 2 échecs
+- Garde-fou combo (CAS 1 à 6) : 6 échecs
+- Rejeu réel du 10/09/2026 : candidats/matchs obtenus (35/29) ne correspondent plus aux chiffres attendus (68/48)
+- Branchement réel Nancy-Reims : COUNTERFACTUAL attendu, pas obtenu
+
+**Aucun de ces 14 n'a été investigué ni corrigé dans cette session** -- hors mandat, non liés à COTE_MAX, certains touchent potentiellement une vraie divergence de comportement du moteur (le rejeu réel notamment) et méritent une session dédiée.
+
+Suite pytest du dépôt : 43/44 verts (le seul échec, `test_marches_retenus_end_to_end.py`, somme des probabilités `double_chance` ≠ 1.0, confirmé préexistant et indépendant par `git stash` -- bug dans `poisson/markets.py`, non corrigé, hors mandat).
+
+**À reprendre en priorité** :
+1. Investiguer les 14 échecs pré-existants de `audit_permanent.py`, en particulier le rejeu réel (68/48 attendus vs 35/29 obtenus) qui suggère un changement de comportement réel du moteur jamais expliqué ni documenté.
+2. Brier score/log-loss : aucun déclenchement automatique de `telemetry.enregistre_scores_probabilistes()` n'existe encore -- nécessite que `archetype_model/learning/resultats.py` ait tourné, lui-même jamais câblé dans `pipeline.yml` (préexistant, pas propre à ce chantier).
+3. Finalisation des contrôles d'ingestion Data/Cache et intégration du Dashboard Frontend (lecture de `data/audit_status.json` sur une page du site, à l'image de `systeme.html`) -- pas commencée.
+
