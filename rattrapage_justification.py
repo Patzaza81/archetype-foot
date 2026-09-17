@@ -1,30 +1,9 @@
 """rattrapage_justification.py — recalcule UNIQUEMENT les textes de
 justification (bibliotheque_justification.py) sur les données déjà
-scrapées du dernier run réel, sans relancer le scraping (plusieurs
-heures) ni aucun autre calcul (cotes, probabilités, sélection P1/P2/P3
-restent strictement inchangées).
+scrapées du dernier run réel, sans relancer le scraping ni aucun autre
+calcul. Cotes, probabilités et sélection P1/P2/P3 restent inchangées.
 
-Contexte (17/09/2026, demande de Patrick) : bibliotheque_justification.py
-a été branché après le dernier run réel (15:42 UTC) -- le site affiche
-donc encore les anciens textes, gelés dans precalcul_leger.json, alors
-que le code est à jour depuis plusieurs heures. Attendre le prochain run
-complet prendrait 1h30 à 4h. Ce script ne recalcule QUE la justification
-affichée, à partir des données déjà présentes dans precalcul.json (les
-historiques de matchs bruts, fenetres.A/B.matchs_retenus, survivent déjà
-dans ce fichier -- pas besoin de rescraper).
-
-LIMITE ASSUMÉE ET EXPLICITE : le H2H brut (confrontations_h2h, la liste
-match par match) n'est PAS conservé dans precalcul.json (seul un résumé
--- statut par marché -- l'est). Les preuves basées sur le H2H
-(h2h_unbeaten_count, h2h_over_rate, etc.) ne peuvent donc pas être
-recalculées ici et resteront absentes pour ce rattrapage -- le reste
-(Avantage Statistique, forme, séries, moyennes) est recalculé
-normalement. Le prochain run complet (avec scraping réel) recalculera
-tout correctement, H2H compris.
-
-N'écrit PAS dans data/, config/, archive/ ni aucun autre fichier
-touché par le pipeline nocturne -- uniquement precalcul.json et
-precalcul_leger.json, exactement les deux fichiers que le site lit.
+Le script ne réécrit que precalcul.json et precalcul_leger.json.
 """
 import json
 import sys
@@ -36,9 +15,7 @@ FICHIER_LEGER = "precalcul_leger.json"
 
 
 def _leger_pour_site(s):
-    """Copie exacte de precalcul.py::_leger_pour_site -- reproduite ici
-    pour ne pas importer precalcul.py (effets de bord potentiels au
-    chargement du module), voir sa docstring pour le détail."""
+    """Copie de precalcul.py::_leger_pour_site sans importer precalcul.py."""
     d = dict(s)
     d.pop("marches", None)
     d.pop("lambda", None)
@@ -62,22 +39,41 @@ def _leger_pour_site(s):
     return d
 
 
+def _recupere_fenetres(s, am):
+    """Retrouve la structure réelle des fenêtres sans imposer un emplacement.
+
+    Selon la version ayant produit le fichier, les fenêtres peuvent être
+    portées directement par le signal ou par archetype_model. On privilégie
+    le conteneur du signal, puis celui du modèle. Aucun historique n'est
+    reconstruit et aucune donnée de sélection n'est modifiée.
+    """
+    for conteneur in (s, am):
+        if not isinstance(conteneur, dict):
+            continue
+        fenetres = conteneur.get("fenetres")
+        if isinstance(fenetres, dict):
+            return fenetres
+    return {}
+
+
 def recalcule_justifications(signaux):
     nb_matchs = 0
     nb_candidats = 0
     nb_sans_fenetres = 0
+    nb_fenetres_trouvees = 0
 
     for s in signaux:
         am = s.get("archetype_model")
         if not isinstance(am, dict) or am.get("statut") != "OK":
             continue
         selection = am.get("selection") or {}
-        fenetres = am.get("fenetres") or {}
+        fenetres = _recupere_fenetres(s, am)
         matchs_a = (fenetres.get("A") or {}).get("matchs_retenus")
         matchs_b = (fenetres.get("B") or {}).get("matchs_retenus")
         if not matchs_a or not matchs_b:
             nb_sans_fenetres += 1
             continue
+        nb_fenetres_trouvees += 1
 
         match_touche = False
         for rang in ("P1", "P2", "P3"):
@@ -87,8 +83,12 @@ def recalcule_justifications(signaux):
             cote = candidat.get("cote")
             proba = candidat.get("probabilite")
             candidat["justification"] = justification.construit_justification(
-                candidat.get("marche"), matchs_a, matchs_b, h2h=None,
-                nom_domicile=s.get("domicile") or "", nom_exterieur=s.get("exterieur") or "",
+                candidat.get("marche"),
+                matchs_a,
+                matchs_b,
+                h2h=None,
+                nom_domicile=s.get("domicile") or "",
+                nom_exterieur=s.get("exterieur") or "",
                 odds_scraped=cote if isinstance(cote, (int, float)) else None,
                 market_prob_pct=proba * 100.0 if isinstance(proba, (int, float)) else None,
             )
@@ -97,7 +97,12 @@ def recalcule_justifications(signaux):
         if match_touche:
             nb_matchs += 1
 
-    return {"matchs_recalcules": nb_matchs, "candidats_recalcules": nb_candidats, "matchs_sans_fenetres": nb_sans_fenetres}
+    return {
+        "matchs_recalcules": nb_matchs,
+        "candidats_recalcules": nb_candidats,
+        "matchs_sans_fenetres": nb_sans_fenetres,
+        "fenetres_trouvees": nb_fenetres_trouvees,
+    }
 
 
 def main():
@@ -110,7 +115,7 @@ def main():
     with open(FICHIER_COMPLET, "w", encoding="utf-8") as f:
         json.dump(d, f, ensure_ascii=False)
 
-    leger = {k: v for k, v in d.items()}
+    leger = dict(d)
     leger["signaux"] = [_leger_pour_site(s) for s in d["signaux"]]
     with open(FICHIER_LEGER, "w", encoding="utf-8") as f:
         json.dump(leger, f, ensure_ascii=False)
