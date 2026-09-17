@@ -95,8 +95,13 @@ function construitApercuRepli(candidatP1, equipes) {
   const libelle = traduitMarche(candidatP1.marche, equipes);
   return `<div class="apercu-repli">
     <div class="apercu-etiquette"><span class="puce-rang" aria-hidden="true"></span>Pronostic principal</div>
-    <div class="apercu-marche">${echappeHtml(libelle)}</div>
-    <div class="apercu-donnees"><span>Cote<strong>${formatCote(candidatP1.cote)}</strong></span><span>Probabilité<strong>${formatPctEntier(candidatP1.probabilite)}</strong></span></div>
+    <div class="apercu-corps">
+      <div>
+        <h2 class="apercu-marche">${echappeHtml(libelle)}</h2>
+        <div class="apercu-donnees"><span>Cote<strong>${formatCote(candidatP1.cote)}</strong></span><span>Probabilité<strong>${formatPctEntier(candidatP1.probabilite)}</strong></span></div>
+      </div>
+      ${construitJauge(candidatP1.probabilite)}
+    </div>
   </div>`;
 }
 function construitCarte(m) {
@@ -110,14 +115,25 @@ function construitCarte(m) {
     <div class="equipe domicile"><span class="ecusson-equipe">${echappeHtml(initialesEquipe(equipes.domicile))}</span><span>${echappeHtml(equipes.domicile)}</span></div>
     <div class="bloc-horaire"><strong>${echappeHtml(heure)}</strong><span>${echappeHtml(date)}</span></div>
     <div class="equipe exterieur"><span>${echappeHtml(equipes.exterieur)}</span><span class="ecusson-equipe">${echappeHtml(initialesEquipe(equipes.exterieur))}</span></div>
-  </div>${competition ? `<div class="competition">${echappeHtml(competition)}</div>` : ""}<button type="button" class="bouton-repli" aria-expanded="true">Replier <span aria-hidden="true">⌃</span></button></header>${construitApercuRepli(selection.P1, equipes)}`;
+  </div>${competition ? `<div class="competition">${echappeHtml(competition)}</div>` : ""}</header>${construitApercuRepli(selection.P1, equipes)}<button type="button" class="bouton-repli" aria-expanded="true">Replier <span aria-hidden="true">⌃</span></button>`;
 
   const tabs = document.createElement("nav"); tabs.className = "selection-tabs"; tabs.setAttribute("aria-label", "Choix du pronostic");
   const selections = document.createElement("div"); selections.className = "contenu-carte";
   const blocs = [];
-  disponibles.forEach(info => {
-    const candidat = selection[info.cle]; const libelle = traduitMarche(candidat.marche, equipes);
+  // AJOUT 17/09/2026 (Patrick) : les 3 onglets sont TOUJOURS construits,
+  // même quand un rang n'a pas de candidat -- affiché "en veille"
+  // (assombri, non cliquable) plutôt que masqué, pour que la structure
+  // à 3 choix reste visible même quand un seul pronostic existe.
+  RANGS.forEach(info => {
+    const candidat = selection[info.cle];
     const tab = document.createElement("button"); tab.type = "button"; tab.className = "selection-tab"; tab.dataset.cle = info.cle;
+    if (!candidat) {
+      tab.classList.add("indisponible"); tab.disabled = true;
+      tab.innerHTML = `${echappeHtml(info.titre)}<small>Non disponible</small>`;
+      tabs.appendChild(tab);
+      return;
+    }
+    const libelle = traduitMarche(candidat.marche, equipes);
     tab.innerHTML = `${echappeHtml(info.titre)}<small>${echappeHtml(libelle)}</small>`;
     const bloc = construitBlocCandidat(info, candidat, equipes); if (!bloc) return;
     tab.addEventListener("click", () => {
