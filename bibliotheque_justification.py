@@ -10,6 +10,7 @@ from __future__ import annotations
 from statistics import mean
 
 MIN_MATCHES = 5
+MIN_ROLE_MATCHES = 3
 
 
 def _valid(matches):
@@ -26,12 +27,17 @@ def _recent(matches):
     return matches if len(matches) >= MIN_MATCHES else []
 
 
-def _pct(n, d):
-    return round(100.0 * n / d, 1) if d else None
-
-
 def _role_matches(matches, domicile):
     return [m for m in _valid(matches) if m.get("domicile") is domicile]
+
+
+def _recent_role(matches, domicile):
+    matches = _role_matches(matches, domicile)
+    return matches if len(matches) >= MIN_ROLE_MATCHES else []
+
+
+def _pct(n, d):
+    return round(100.0 * n / d, 1) if d else None
 
 
 def _streak(matches, predicate):
@@ -57,7 +63,12 @@ def _h2h(h2h):
 
 def _market_line(market):
     import re
-    m = re.search(r"over_under_total_(-?\d+(?:\.\d+)?)_(over|under)$", market or "")
+    # Nomenclature réellement utilisée par le moteur : over_2.5, over_1.5,
+    # etc. L'ancien identifiant explicite reste accepté pour compatibilité.
+    m = re.search(r"^(over|under)_(-?\d+(?:\.\d+)?)$", market or "")
+    if m:
+        return (float(m.group(2)), m.group(1))
+    m = re.search(r"^over_under_total_(-?\d+(?:\.\d+)?)_(over|under)$", market or "")
     return (float(m.group(1)), m.group(2)) if m else None
 
 
@@ -71,8 +82,8 @@ def construit_donnees(
     market_prob_pct=None,
 ):
     """Construit uniquement les champs EXACTS de la bibliothèque."""
-    a_dom = _recent(_role_matches(matchs_a, True))
-    b_ext = _recent(_role_matches(matchs_b, False))
+    a_dom = _recent_role(matchs_a, True)
+    b_ext = _recent_role(matchs_b, False)
     h = _h2h(h2h)
     combined = a_dom + b_ext
 
@@ -100,12 +111,12 @@ def construit_donnees(
     if data["market_prob_pct"] is not None and data["odds_scraped"] is not None:
         data["ev_percentage"] = round(((data["market_prob_pct"] / 100.0 * data["odds_scraped"]) - 1.0) * 100.0, 1)
 
-    if len(a_dom) >= MIN_MATCHES:
+    if len(a_dom) >= MIN_ROLE_MATCHES:
         data["home_unbeaten_streak"] = _streak(a_dom, lambda m: m["buts_marques"] >= m["buts_encaisses"])
         data["home_win_rate"] = _pct(sum(m["buts_marques"] > m["buts_encaisses"] for m in a_dom), len(a_dom))
         data["home_concede_rate"] = _pct(sum(m["buts_encaisses"] >= 1 for m in a_dom), len(a_dom))
 
-    if len(b_ext) >= MIN_MATCHES:
+    if len(b_ext) >= MIN_ROLE_MATCHES:
         data["away_loss_rate"] = _pct(sum(m["buts_marques"] < m["buts_encaisses"] for m in b_ext), len(b_ext))
         data["away_winless_streak"] = _streak(b_ext, lambda m: m["buts_marques"] <= m["buts_encaisses"])
         data["away_concede_pct"] = _pct(sum(m["buts_encaisses"] >= 1 for m in b_ext), len(b_ext))
@@ -170,13 +181,9 @@ def construit_justification_bibliotheque(
     b = nom_exterieur or "Équipe à l'extérieur"
     preuves = []
 
-    if d["ev_percentage"] is not None:
-        preuves.append(_proof(
-            f"Avantage Statistique : +{d['ev_percentage']:.1f}%",
-            type="ev_percentage", valeur=d["ev_percentage"],
-            explication=f"La cote actuelle est supérieure de {d['ev_percentage']:.1f}% à ce que nos calculs jugent équitable.",
-        ))
-
+    # Les preuves spécifiques au marché passent avant l'EV. L'EV reste la
+    # preuve de secours lorsque aucune preuve spécifique exacte n'est
+    # disponible, mais ne doit plus masquer une preuve métier disponible.
     if marche in {"double_chance_1X", "1x2_domicile"}:
         if d["home_unbeaten_streak"] is not None and (
             d["home_unbeaten_streak"] >= 4 or (d["home_win_rate"] is not None and d["home_win_rate"] >= 65)
@@ -204,8 +211,8 @@ def construit_justification_bibliotheque(
         # Aucune inversion silencieuse des métriques 1X n'est autorisée.
         pass
 
-    if marche.startswith("over_under_total_") or marche == "over_2_5":
-        line = _market_line(marche)
+    line = _market_line(marche)
+    if marche.startswith("over_under_total_") or line:
         target = line[0] if line else 2.5
         if line is None or line[1] == "over":
             if target == 1.5 and d["over_15_rate_combined"] is not None and d["over_15_rate_combined"] >= 75:
@@ -239,6 +246,13 @@ def construit_justification_bibliotheque(
                 f"Match ouvert : {b} marque régulièrement à l'extérieur face à une défense de {a} rarement imbattable.",
                 type="away_score_rate_home_concede_rate", away_score_rate=d["away_score_rate"], home_concede_rate=d["home_concede_rate"],
             ))
+
+    if d["ev_percentage"] is not None:
+        preuves.append(_proof(
+            f"Avantage Statistique : +{d['ev_percentage']:.1f}%",
+            type="ev_percentage", valeur=d["ev_percentage"],
+            explication=f"La cote actuelle est supérieure de {d['ev_percentage']:.1f}% à ce que nos calculs jugent équitable.",
+        ))
 
     resume = preuves[0]["texte"] if preuves else None
 
