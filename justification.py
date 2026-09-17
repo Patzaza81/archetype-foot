@@ -108,48 +108,39 @@ def construit_raison_selection(candidat, diagnostic):
 
 
 def enrichit_justification_selection(candidat, diagnostic):
-    """Remplace la justification marketing par la bibliothèque stricte puis
-    ajoute la raison réelle de sélection sans influencer la sélection."""
+    """Conserve la bibliothèque marketing comme couche prioritaire.
+
+    La raison réelle P1/P2/P3 reste disponible séparément et ne remplace
+    plus le résumé ni les preuves de la bibliothèque.
+    """
     if candidat is None:
         return None
 
     justification_actuelle = candidat.get("justification") or {}
-    bibliotheque = justification_actuelle.get("bibliotheque") or {}
-    odds = candidat.get("cote")
-    prob = candidat.get("probabilite")
+    bibliotheque = dict(justification_actuelle.get("bibliotheque") or {})
+    preuves_marketing = list(justification_actuelle.get("preuves") or [])
+    resume_marketing = justification_actuelle.get("resume")
+    donnees_suffisantes = bool(justification_actuelle.get("donnees_suffisantes"))
 
-    # Recalcule la couche marketing avec les données exactes du candidat.
-    # Les historiques ne sont pas forcément conservés dans le candidat ; la
-    # justification initiale reste donc la source de ses preuves historiques.
-    if odds is not None and prob is not None:
-        justification_actuelle["bibliotheque"] = dict(bibliotheque)
-        justification_actuelle["bibliotheque"]["odds_scraped"] = odds
-        justification_actuelle["bibliotheque"]["market_prob_pct"] = prob * 100.0
-        justification_actuelle["bibliotheque"]["ev_percentage"] = round((prob * odds - 1.0) * 100.0, 1)
-        # Le calcul est strictement celui de la bibliothèque ; aucune autre
-        # définition de l'EDV/edge n'est substituée ici.
-        ev = justification_actuelle["bibliotheque"]["ev_percentage"]
-        preuve_ev = {
-            "texte": f"Avantage Statistique : +{ev:.1f}%",
-            "type": "ev_percentage",
-            "valeur": ev,
-            "explication": f"La cote actuelle est supérieure de {ev:.1f}% à ce que nos calculs jugent équitable.",
-        }
-        preuves = [p for p in (justification_actuelle.get("preuves") or []) if p.get("type") != "ev_percentage"]
-        preuves.insert(0, preuve_ev)
-        justification_actuelle["preuves"] = preuves[:3]
-        justification_actuelle["resume"] = preuve_ev["texte"]
-
+    # La couche de sélection est informative uniquement. Elle ne doit pas
+    # écraser la bibliothèque stricte ni réintroduire une formulation legacy.
     raison = construit_raison_selection(candidat, diagnostic)
-    preuves = list(justification_actuelle.get("preuves") or [])
+    selection_reason = None
     if raison:
-        preuves.insert(0, {"titre": "Raison de sélection", "texte": raison, "type": "selection_reason"})
+        selection_reason = {
+            "titre": "Raison de sélection",
+            "texte": raison,
+            "type": "selection_reason",
+        }
 
     nouvelle_justification = {
-        "resume": raison or justification_actuelle.get("resume"),
-        "preuves": preuves[:3],
-        "donnees_suffisantes": bool(justification_actuelle.get("donnees_suffisantes")),
-        "bibliotheque": justification_actuelle.get("bibliotheque") or {},
+        "resume": resume_marketing,
+        "preuves": preuves_marketing[:3],
+        "donnees_suffisantes": donnees_suffisantes,
+        "bibliotheque": bibliotheque,
     }
+    if selection_reason:
+        nouvelle_justification["raison_selection"] = selection_reason
+
     candidat["justification"] = nouvelle_justification
     return nouvelle_justification
