@@ -30,32 +30,20 @@ function construitJauge(probabilite) {
   const v = Math.max(0, Math.min(1, n)); const r = 31, c = 2 * Math.PI * r;
   return `<div class="jauge" aria-label="Probabilité du modèle : ${Math.round(v * 100)} %"><svg viewBox="0 0 76 76" aria-hidden="true"><circle class="fond" cx="38" cy="38" r="${r}"></circle><circle class="valeur" cx="38" cy="38" r="${r}" stroke-dasharray="${c.toFixed(2)}" stroke-dashoffset="${(c * (1 - v)).toFixed(2)}"></circle></svg><strong>${Math.round(v * 100)}%</strong></div>`;
 }
-function construitPourquoi(candidat, equipes) {
-  const j = candidat && candidat.justification; const morceaux = [];
-  if (j && j.resume) morceaux.push(`<p class="resume-preuve">${echappeHtml(j.resume)}</p>`);
-  // AJOUT 17/09/2026 (Patrick, jargon/statistiques désynchronisés du
-  // moteur réel) -- candidat.h2h_palier et candidat.confirmation_historique
-  // existent bien sur chaque candidat produit par archetype_model/main.py
-  // mais n'étaient jamais affichés ici : le H2H (l'un des 4 signaux du
-  // moteur, voir archetype_model/audit/) restait invisible côté site.
-  // traduitPalierH2H/construitPhraseConfirmation existent déjà dans
-  // traduction_marches.js spécifiquement pour ça, jamais appelées avant.
-  const phraseH2H = typeof construitPhraseConfirmation === "function"
-    ? construitPhraseConfirmation(candidat.marche, candidat.confirmation_historique, equipes || {})
-    : null;
-  const libellePalier = typeof traduitPalierH2H === "function" ? traduitPalierH2H(candidat.h2h_palier) : null;
-  if (phraseH2H || libellePalier) {
-    morceaux.push(`<div class="preuve"><span class="preuve-titre">Confrontations directes</span><span class="preuve-texte">${echappeHtml(phraseH2H || libellePalier)}</span></div>`);
-  }
-  if (j && Array.isArray(j.preuves) && j.preuves.length) {
+function construitPourquoi(candidat) {
+  const j = candidat && candidat.justification;
+  if (!j) return "";
+  const morceaux = [];
+  if (j.resume) morceaux.push(`<p class="resume-preuve">${echappeHtml(j.resume)}</p>`);
+  if (Array.isArray(j.preuves) && j.preuves.length) {
     morceaux.push(`<details class="preuves-cachees"><summary>Voir les preuves statistiques ▾</summary>${j.preuves.map(p => p && p.texte ? `<div class="preuve"><span class="preuve-titre">${echappeHtml(p.titre || "Statistique clé")}</span><span class="preuve-texte">${echappeHtml(p.texte)}</span></div>` : "").join("")}</details>`);
   }
-  return morceaux.length ? morceaux.join("") : `<p class="resume-preuve">Cette sélection ressort de la convergence des analyses statistiques du match.</p>`;
+  return morceaux.join("");
 }
 function construitStatsRapides(candidat) {
   const preuves = (candidat.justification && candidat.justification.preuves) || [];
-  const h2h = preuves.find((p) => p.titre === "Confrontations directes");
-  const forme = preuves.find((p) => p !== h2h) || null;
+  const h2h = preuves.find((p) => p && typeof p.type === "string" && p.type.startsWith("h2h_"));
+  const forme = preuves.find((p) => p && p !== h2h && p.type !== "ev_percentage") || null;
   const { texte: niveauTexte } = traduitNiveau(candidat.niveau);
   const cases = [
     { icone: "📊", titre: "Forme récente", texte: forme ? forme.texte : "Non disponible" },
@@ -85,7 +73,7 @@ function construitBlocCandidat(info, candidat, equipes) {
       ${construitJauge(candidat.probabilite)}
     </div>
     <div class="ligne-confiance"><span>Solidité</span><span class="etoiles" aria-label="Solidité : ${etoiles} sur 5">${stars}</span><strong>${echappeHtml(niveauTexte)}</strong></div>
-    <div class="bloc-pourquoi"><div class="titre">Pourquoi ce choix ?</div>${construitPourquoi(candidat, equipes)}</div>
+    <div class="bloc-pourquoi"><div class="titre">Pourquoi ce choix ?</div>${construitPourquoi(candidat)}</div>
     <div class="metriques"><div class="metrique" title="Écart entre la probabilité calculée par le modèle et celle qui serait 'normale' vu la cote proposée."><span>Avantage potentiel</span><strong>${formatPct(candidat.edge)}</strong></div><div class="metrique" title="Ce que rapporterait ce pari en moyenne si on le rejouait de nombreuses fois, selon le modèle."><span>Gain potentiel</span><strong>${formatPct(candidat.edv)}</strong></div></div>
   </div>`;
   article.style.setProperty("--accent", `var(--${info.classe === "rang-1" ? "ref-gold" : info.classe === "rang-2" ? "ref-blue-tab" : "ref-violet"})`);
