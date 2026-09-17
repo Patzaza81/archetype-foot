@@ -15,7 +15,7 @@ function echappeHtml(x) { return x === null || x === undefined ? "" : String(x).
 function formatCote(x) { const n = Number(x); return Number.isFinite(n) ? n.toFixed(2).replace(".", ",") : "—"; }
 function formatPct(x) { const n = Number(x); return Number.isFinite(n) ? `${(n * 100).toFixed(1).replace(".", ",")} %` : "—"; }
 function formatPctEntier(x) { const n = Number(x); return Number.isFinite(n) ? `${Math.round(n * 100)} %` : "—"; }
-function formatDate(dateIso) { if (!dateIso) return ""; const d = new Date(`${dateIso}T12:00:00`); if (Number.isNaN(d.getTime())) return dateIso; return d.toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "numeric" }).replace(/\./g, ""); }
+function formatDate(dateIso) { if (!dateIso) return ""; const d = new Date(`${dateIso}T12:00:00`); if (Number.isNaN(d.getTime())) return dateIso; return d.toLocaleDateString("fr-FR", { weekday: "short", day: "2-digit", month: "short" }).replace(/\./g, "").replace(/^./, c => c.toUpperCase()); }
 function initialesEquipe(nom) { const mots = String(nom || "?").trim().split(/\s+/).filter(Boolean); if (!mots.length) return "?"; return mots.length === 1 ? mots[0].slice(0, 2).toUpperCase() : (mots[0][0] + mots[mots.length - 1][0]).toUpperCase(); }
 function traduitConfiance(niveau) {
   const map = {
