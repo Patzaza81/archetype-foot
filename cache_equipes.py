@@ -39,10 +39,32 @@ TTL_SANS_HISTORIQUE_HEURES = 24 * 4   # un club amateur en coupe prélim.
                                         # masquer trop longtemps une
                                         # équipe qui vient de jouer son
                                         # premier match de la saison
-TTL_AVEC_HISTORIQUE_HEURES = 20        # un peu moins d'une journée --
-                                        # laisse le temps à un nouveau
-                                        # résultat de rentrer avant le
-                                        # prochain run planifié
+# CORRECTIF 17/09/2026 (Patrick, run du 16-17/09 -- durée totale 4h35,
+# dont ~2h44 de scraping matchendirect.fr par équipe alors que la
+# quasi-totalité des équipes avaient déjà un cache_equipes.json valide
+# de la veille). Cause : TTL de 20h < intervalle réel entre deux runs
+# planifiés (~24h, cron 21:00 UTC quotidien, parfois retardé -- un run
+# a démarré avec 2h28 de retard, voir commentaire pipeline.yml
+# 12/09/2026). Un TTL plus court que l'intervalle entre runs garantit
+# que CHAQUE équipe est "expirée" à CHAQUE run, ce qui annule le
+# bénéfice du cache pour la quasi-totalité des matchs traités chaque
+# nuit (l'intention initiale du 06/09/2026 -- "moins d'une journée pour
+# laisser le temps à un nouveau résultat de rentrer avant le prochain
+# run" -- se retourne contre elle-même : elle force un re-scraping
+# systématique au lieu d'un rafraîchissement ciblé sur les équipes qui
+# ont réellement rejoué depuis le dernier cache).
+#
+# 30h choisi pour couvrir l'intervalle réel avec marge (24h + retard
+# cron plausible), tout en restant strictement < 96h (TTL_SANS_HISTORIQUE)
+# et < 1 semaine -- une équipe qui joue son prochain match dans les 30h
+# suivant le dernier scraping aura une donnée vieille d'un run (jamais
+# plus), ce qui reste dans l'esprit "à jour avant le prochain run"
+# d'origine, sans annuler le cache chaque nuit.
+TTL_AVEC_HISTORIQUE_HEURES = 30        # couvre l'intervalle réel entre
+                                        # deux runs planifiés (~24h +
+                                        # marge de retard cron), pour
+                                        # que le cache serve réellement
+                                        # au lieu d'expirer chaque nuit
 
 
 def _cle(url_equipe, nom_competition):
