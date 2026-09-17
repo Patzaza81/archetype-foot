@@ -132,6 +132,45 @@ def test_enregistre_scan_compte_audit_integrite(tmp_path):
     assert entree["audit_integrite"] == {"DATA_CORRUPTED": 1}
 
 
+def test_enregistre_scan_liste_les_matchs_neutralises(tmp_path):
+    fichier = str(tmp_path / "telemetrie.json")
+    signal_corrompu = _signal_archetype_model([_diag_convergence(True)])
+    signal_corrompu["archetype_model"]["audit_integrite"] = {
+        "statut": "DATA_CORRUPTED",
+        "motifs": [{"motif": "TAUX_DONNEES_MANQUANTES_ELEVE", "role": "domicile"}],
+    }
+    signal_corrompu["domicile"] = "PSG"
+    signal_corrompu["exterieur"] = "OM"
+    signal_corrompu["date"] = "2026-09-17"
+
+    signal_ok = _signal_archetype_model([_diag_convergence(True)])
+    signal_ok["archetype_model"]["audit_integrite"] = {"statut": "OK", "motifs": []}
+    signal_ok["domicile"] = "Lyon"
+    signal_ok["exterieur"] = "Nice"
+
+    entree = tel.enregistre_scan([signal_corrompu, signal_ok], fichier=fichier)
+    assert len(entree["matchs_neutralises"]) == 1
+    m = entree["matchs_neutralises"][0]
+    assert m["domicile"] == "PSG" and m["exterieur"] == "OM"
+    assert m["statut"] == "DATA_CORRUPTED"
+    assert m["motifs"] == ["TAUX_DONNEES_MANQUANTES_ELEVE"]
+
+
+def test_enregistre_scan_plafonne_les_matchs_neutralises(tmp_path):
+    fichier = str(tmp_path / "telemetrie.json")
+    signaux = []
+    for i in range(tel.MAX_MATCHS_NEUTRALISES_PAR_RUN + 10):
+        s = _signal_archetype_model([_diag_convergence(True)])
+        s["archetype_model"]["audit_integrite"] = {"statut": "INSUFFICIENT_DATA", "motifs": []}
+        s["domicile"] = f"Equipe{i}"
+        s["exterieur"] = "Adverse"
+        signaux.append(s)
+    entree = tel.enregistre_scan(signaux, fichier=fichier)
+    assert len(entree["matchs_neutralises"]) == tel.MAX_MATCHS_NEUTRALISES_PAR_RUN
+    # les compteurs, eux, restent exacts meme au-dela du plafond d'affichage
+    assert entree["audit_integrite"]["INSUFFICIENT_DATA"] == tel.MAX_MATCHS_NEUTRALISES_PAR_RUN + 10
+
+
 def test_enregistre_scan_h2h_est_informatif_pas_un_rejet(tmp_path):
     """Le H2H ne rejette jamais -- il est simplement compté par statut,
     sans influencer eligibles/rejetes."""

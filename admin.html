@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#F7F1E7">
+<meta name="robots" content="noindex, nofollow">
+<title>Archetype Foot — Admin</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="theme.css">
+<style>
+/* Palette reprise à l'identique de systeme.html (page utilitaire la plus
+   proche) -- aucune nouvelle couleur inventée, uniquement les variables
+   déjà en usage ailleurs sur le site. */
+:root{--bg:#F7F1E7;--surface:#FFFDF8;--surface-2:#F1E9FA;--turquoise:#315CFF;--turquoise-active:#6547E8;--gold:#9A701B;--green:#2F855A;--red:#C53030;--text:#241B35;--text-secondary:#756B7D;--heure:#655B70;--categorie:#315CFF;--border:rgba(64,38,91,.14)}
+body{background:var(--bg);color:var(--text)}
+header{background:linear-gradient(135deg,rgba(49,92,255,.08),rgba(130,70,230,.08));border-bottom-color:rgba(49,92,255,.16)}
+header h1{color:var(--gold)}
+.nav-bouton{background:linear-gradient(135deg,#315CFF,#6547E8);color:#fff;border-color:transparent;box-shadow:0 5px 14px rgba(49,92,255,.16)}
+
+/* Blocs, grille de stats et tableau -- classes/valeurs reprises telles
+   quelles de systeme.html, pour une seule nomenclature partagée entre
+   les deux pages "utilitaires" du site. */
+#maj-admin{padding:0 0 8px;font-size:12px;color:var(--text-secondary)}
+.bloc-systeme{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px;box-shadow:0 5px 18px rgba(61,38,84,.06)}
+.bloc-systeme h2{margin:0 0 9px;font-size:15px;color:var(--text)}
+.grille-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:9px}
+.grille-stats .stat{background:var(--surface-2);border-radius:9px;padding:9px 10px}
+.grille-stats .etiquette{display:block;font-size:11px;color:var(--text-secondary);margin-bottom:3px}
+.grille-stats strong{font-size:17px;color:var(--text)}
+.tableau-systeme{width:100%;border-collapse:collapse;font-size:12px}
+.tableau-systeme th,.tableau-systeme td{text-align:left;padding:5px 7px;border-bottom:1px solid var(--border)}
+.tableau-systeme th{color:var(--text-secondary);font-weight:600}
+.etat-vide-systeme{color:var(--text-secondary);font-size:13px;font-style:italic}
+.note-systeme{margin:8px 0 0;font-size:12px;color:var(--text-secondary)}
+
+/* -------------------- Composants propres à cette page -------------------- */
+
+/* Écran de verrouillage */
+.admin-login-overlay{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:1000;padding:16px}
+.admin-login-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;max-width:320px;width:100%;box-shadow:0 10px 30px rgba(61,38,84,.12)}
+.admin-login-box h2{margin:0 0 14px;font-size:17px;color:var(--gold)}
+.admin-login-box label{display:block;font-size:12px;color:var(--text-secondary);margin-bottom:12px}
+.admin-login-box input{display:block;width:100%;margin-top:5px;padding:9px 10px;border:1px solid var(--border);border-radius:9px;background:var(--surface-2);color:var(--text);font-size:14px}
+.admin-login-box input:focus{outline:2px solid var(--turquoise);outline-offset:1px}
+.admin-login-box button{width:100%;margin-top:6px;padding:10px;border:0;border-radius:9px;background:linear-gradient(135deg,var(--turquoise),var(--turquoise-active));color:#fff;font-size:14px;font-weight:700;cursor:pointer}
+.admin-login-box button:active{transform:scale(.98)}
+.admin-error{color:var(--red);font-size:12px;margin:10px 0 0}
+
+/* Barre supérieure (retour + déconnexion) */
+.admin-topbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+.admin-logout{background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:999px;padding:7px 14px;font-size:12px;cursor:pointer}
+.admin-logout:active{transform:scale(.97)}
+
+/* Pastille de statut global */
+.pastille-statut{display:inline-block;width:13px;height:13px;border-radius:50%;margin-right:7px;vertical-align:middle}
+.pastille-GREEN{background:var(--green);box-shadow:0 0 0 4px rgba(47,133,90,.18)}
+.pastille-YELLOW{background:#B7871A;box-shadow:0 0 0 4px rgba(183,135,26,.18)}
+.pastille-RED{background:var(--red);box-shadow:0 0 0 4px rgba(197,48,48,.18)}
+.pastille-INCONNU{background:var(--text-secondary);box-shadow:0 0 0 4px rgba(117,107,125,.14)}
+.statut-libelle{font-size:16px;font-weight:700;vertical-align:middle}
+
+/* Badges de motif (disjoncteur d'intégrité) -- réutilisent .badge de
+   style.css (déjà chargé), avec des variantes propres à cette page. */
+.badge-motif{font-weight:700;font-size:11px;padding:3px 9px;border-radius:12px;letter-spacing:.02em;display:inline-block;margin:1px 3px 1px 0}
+.badge-motif-taux{background:var(--red);color:#fff}
+.badge-motif-variation{background:var(--gold);color:#fff}
+.badge-motif-echantillon{background:var(--text-secondary);color:#fff}
+
+/* Jauges de rétention par étage */
+.jauge-peage{margin-bottom:12px}
+.jauge-peage:last-child{margin-bottom:0}
+.jauge-peage-etiquette{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
+.jauge-peage-etiquette span{color:var(--text-secondary)}
+.jauge-peage-etiquette strong{color:var(--text)}
+.jauge-peage-piste{background:var(--surface-2);border-radius:999px;height:10px;overflow:hidden}
+.jauge-peage-remplissage{height:100%;border-radius:999px;background:linear-gradient(135deg,var(--turquoise),var(--turquoise-active))}
+.jauge-peage-note{font-size:11px;color:var(--text-secondary);margin:3px 0 0}
+
+/* Distribution H2H (informatif, jamais un rejet -- rendu différemment
+   d'une jauge de passage pour ne pas laisser croire à un péage) */
+.distribution-h2h{display:flex;border-radius:999px;overflow:hidden;height:14px;background:var(--surface-2)}
+.distribution-h2h span{display:block;height:100%}
+.distribution-h2h .h2h-CORROBORE{background:var(--green)}
+.distribution-h2h .h2h-CONTREDIT{background:var(--red)}
+.distribution-h2h .h2h-NEUTRE{background:var(--text-secondary)}
+.distribution-h2h .h2h-INSUFFISANT{background:var(--surface-2);border:1px solid var(--border)}
+.legende-h2h{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;font-size:11px;color:var(--text-secondary)}
+.legende-h2h .puce{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:middle}
+
+.decision-PROMU{color:var(--green);font-weight:700}
+.decision-REJETE{color:var(--text-secondary)}
+
+@media(max-width:600px){.admin-login-box{padding:18px}}
+</style>
+</head>
+<body>
+<header><div class="header-top"><h1>Archetype Foot — Admin</h1></div></header>
+
+<div id="admin-login-overlay" class="admin-login-overlay">
+  <form id="admin-login-form" class="admin-login-box" autocomplete="on">
+    <h2>🔒 Connexion requise</h2>
+    <label>Nom d'utilisateur
+      <input type="text" id="admin-user" name="username" autocomplete="username" required>
+    </label>
+    <label>Mot de passe
+      <input type="password" id="admin-pass" name="password" autocomplete="current-password" required>
+    </label>
+    <button type="submit">Se connecter</button>
+    <p id="admin-login-erreur" class="admin-error" hidden>Identifiants incorrects.</p>
+  </form>
+</div>
+
+<main id="admin-main" hidden>
+  <div class="admin-topbar">
+    <a href="index.html" class="nav-bouton">← Accueil</a>
+    <button id="admin-logout" class="admin-logout" type="button">Déconnexion</button>
+  </div>
+  <p id="maj-admin">Chargement…</p>
+  <div id="contenu-admin"></div>
+</main>
+
+<script src="theme.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

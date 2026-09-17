@@ -253,6 +253,14 @@ jobs:
           # tickets_observes/ ci-dessus, jamais un échec si le dossier
           # n'existe pas encore.
           [ -d vrais_tickets ] && git add vrais_tickets/
+          # AJOUT 17/09/2026 (chantier module d'audit, archetype_model/audit/)
+          # -- data/ contient audit_status.json (dashboard) et
+          # audit_telemetry.json (historique de rétention par run + Brier
+          # score) écrits par telemetry.py/report.py en fin de
+          # applique_archetype_model(). Sans ce commit, ces fichiers ne
+          # quittent jamais le runner éphémère -- admin.html afficherait un
+          # état vide en permanence, quel que soit le succès du run.
+          [ -d data ] && git add data/
 
           echo "=================================================="
           echo "DIAGNOSTIC 18.1 -- APRÈS git add"

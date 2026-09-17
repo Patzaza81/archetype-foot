@@ -56,12 +56,16 @@ from typing import Any, Iterable, Mapping, Optional
 
 from archetype_model.learning import archive as _archive
 from archetype_model.learning import reglement as _reglement
+from archetype_model.audit import circuit_breaker as _circuit_breaker
 
 FICHIER_TELEMETRIE_DEFAUT = "data/audit_telemetry.json"
 REPERTOIRE_ARCHIVE_DEFAUT = "archive"
 
 MAX_RUNS_CONSERVES = 60
 MAX_BRIER_CONSERVES = 60
+MAX_MATCHS_NEUTRALISES_PAR_RUN = 50
+
+STATUT_AUDIT_OK = _circuit_breaker.STATUT_OK
 
 EPSILON_LOG_LOSS = 1e-9
 
@@ -183,6 +187,7 @@ def enregistre_scan(
     matchs_statut_ok = 0
     selection_counts = {"P1": 0, "P2": 0, "P3": 0}
     audit_integrite_counts: Counter[str] = Counter()
+    matchs_neutralises: list[dict[str, Any]] = []
 
     for s in signaux:
         if s.get("moteur_utilise") != "archetype_model":
@@ -199,7 +204,23 @@ def enregistre_scan(
         # anticipé -- absence normale, jamais une erreur).
         audit = resultat.get("audit_integrite")
         if audit:
-            audit_integrite_counts[str(audit.get("statut"))] += 1
+            statut_audit = str(audit.get("statut"))
+            audit_integrite_counts[statut_audit] += 1
+            # Liste légère des matchs neutralisés (nom + motifs), pour le
+            # dashboard (Bloc 2 "Filtre d'intégrité") -- indépendante du
+            # statut global du match (un audit DATA_CORRUPTED n'empêche
+            # jamais le pipeline de continuer, voir circuit_breaker.py :
+            # module purement passif). Plafonnée pour rester légère --
+            # un run avec des centaines de matchs dégradés reste visible
+            # via les compteurs ci-dessus même si la liste est tronquée.
+            if statut_audit != STATUT_AUDIT_OK and len(matchs_neutralises) < MAX_MATCHS_NEUTRALISES_PAR_RUN:
+                matchs_neutralises.append({
+                    "domicile": s.get("domicile"),
+                    "exterieur": s.get("exterieur"),
+                    "date": s.get("date"),
+                    "statut": statut_audit,
+                    "motifs": [m.get("motif") for m in (audit.get("motifs") or [])],
+                })
 
         if resultat.get("statut") != "OK":
             continue
@@ -219,6 +240,7 @@ def enregistre_scan(
         "matchs_scannes_archetype_model": matchs_scannes_am,
         "matchs_statut_ok": matchs_statut_ok,
         "audit_integrite": dict(audit_integrite_counts),
+        "matchs_neutralises": matchs_neutralises,
         "marches_scannes": compteurs["marches_scannes"],
         "peage1": {
             "rejetes": compteurs["peage1_rejetes"],
