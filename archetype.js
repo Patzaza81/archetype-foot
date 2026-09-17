@@ -71,20 +71,26 @@ function construitBlocCandidat(info, candidat, equipes) {
       </div>
       ${construitJauge(candidat.probabilite)}
     </div>
-    <div class="ligne-confiance"><span>Éligibilité</span><span class="etoiles" aria-label="Éligibilité : ${etoiles} sur 5">${stars}</span><strong>${echappeHtml(niveauTexte)}</strong></div>
+    <div class="ligne-confiance"><span>Solidité</span><span class="etoiles" aria-label="Solidité : ${etoiles} sur 5">${stars}</span><strong>${echappeHtml(niveauTexte)}</strong></div>
     <div class="bloc-pourquoi"><div class="titre">Pourquoi ce choix ?</div>${construitPourquoi(candidat, equipes)}</div>
-    <div class="metriques"><div class="metrique"><span>Avantage potentiel</span><strong>${formatPct(candidat.edge)}</strong></div><div class="metrique"><span>Gain potentiel</span><strong>${formatPct(candidat.edv)}</strong></div></div>
+    <div class="metriques"><div class="metrique" title="Écart entre la probabilité calculée par le modèle et celle qui serait 'normale' vu la cote proposée."><span>Avantage potentiel</span><strong>${formatPct(candidat.edge)}</strong></div><div class="metrique" title="Ce que rapporterait ce pari en moyenne si on le rejouait de nombreuses fois, selon le modèle."><span>Gain potentiel</span><strong>${formatPct(candidat.edv)}</strong></div></div>
   </div>`;
   article.style.setProperty("--accent", `var(--${info.classe === "rang-1" ? "ref-gold" : info.classe === "rang-2" ? "ref-blue-tab" : "ref-violet"})`);
   return article;
 }
 function construitDetails(m) {
   const details = document.createElement("details"); details.className = "details-analyse";
+  const equipes = { domicile: m.domicile || "Équipe à domicile", exterieur: m.exterieur || "Équipe à l'extérieur" };
   const selection = (m.archetype_model && m.archetype_model.selection) || {}; const lignes = [];
   RANGS.forEach(r => { const c = selection[r.cle]; if (!c) return;
-    lignes.push(`<div class="ligne-detail"><span class="cle">${echappeHtml(r.titre)}</span><span class="val">${echappeHtml(c.marche || "—")}</span></div>`);
-    lignes.push(`<div class="ligne-detail"><span class="cle">Niveau d'éligibilité</span><span class="val">${echappeHtml(c.niveau || "—")}</span></div>`);
-    lignes.push(`<div class="ligne-detail"><span class="cle">Stabilité</span><span class="val">${echappeHtml(c.robustesse || "—")}</span></div>`);
+    // AJOUT 17/09/2026 (Patrick, jargon technique pas toujours compris) --
+    // marche/niveau/robustesse étaient affichés en valeurs brutes du
+    // moteur ("1x2_domicile", "PREMIUM", "STABLE"), illisibles pour qui
+    // ne connaît pas le code -- traduites comme partout ailleurs sur la carte.
+    const { texte: niveauTexte } = traduitNiveau(c.niveau);
+    lignes.push(`<div class="ligne-detail"><span class="cle">${echappeHtml(r.titre)}</span><span class="val">${echappeHtml(traduitMarche(c.marche, equipes))}</span></div>`);
+    lignes.push(`<div class="ligne-detail"><span class="cle">Solidité du pari</span><span class="val">${echappeHtml(niveauTexte)}</span></div>`);
+    lignes.push(`<div class="ligne-detail"><span class="cle">Stabilité du calcul</span><span class="val">${echappeHtml(traduitRobustesse(c.robustesse))}</span></div>`);
   });
   details.innerHTML = `<summary><span><span class="details-titre">Détails de l'analyse</span><span class="details-sous-titre">Éléments techniques ayant accompagné la sélection</span></span><span class="chevron">⌄</span></summary><div class="contenu-details">${lignes.join("") || "Aucun détail technique disponible."}</div>`;
   return details;

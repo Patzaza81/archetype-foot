@@ -68,17 +68,20 @@ function traduitMarche(marche, equipes) {
   return marche.replace(/_/g, " ");
 }
 
-// IMPORTANT : "niveau" est un niveau d'éligibilité du filtre, pas une
-// probabilité empirique de gain. On ne l'appelle plus "Confiance" dans l'UI.
+// AJOUT 17/09/2026 (Patrick, jargon technique pas toujours compris) --
+// texte simplifié, mais garde l'esprit du commentaire d'origine :
+// "niveau" reste un palier du filtre, jamais une probabilité de gain --
+// "Solidité" ne prétend pas plus qu'"Éligibilité", juste en langage
+// courant.
 const NIVEAU_VERS_CONFIANCE = {
-  PREMIUM: { etoiles: 5, texte: "Éligibilité maximale" },
-  TRES_FORT: { etoiles: 4, texte: "Éligibilité très forte" },
-  FORT: { etoiles: 3, texte: "Éligibilité forte" },
-  ELIGIBLE: { etoiles: 2, texte: "Éligibilité validée" },
-  ELIGIBLE_PLUS: { etoiles: 1, texte: "Éligibilité minimale" },
+  PREMIUM: { etoiles: 5, texte: "Solidité maximale" },
+  TRES_FORT: { etoiles: 4, texte: "Très solide" },
+  FORT: { etoiles: 3, texte: "Solide" },
+  ELIGIBLE: { etoiles: 2, texte: "Suffisamment solide" },
+  ELIGIBLE_PLUS: { etoiles: 1, texte: "Solidité de base" },
 };
 function traduitNiveau(niveau) {
-  return NIVEAU_VERS_CONFIANCE[niveau] || { etoiles: 1, texte: "Éligibilité minimale" };
+  return NIVEAU_VERS_CONFIANCE[niveau] || { etoiles: 1, texte: "Solidité de base" };
 }
 
 function traduitPalierH2H(palier) {
@@ -87,6 +90,19 @@ function traduitPalierH2H(palier) {
     case "FIABLE": return "Confirmé par les confrontations directes passées";
     case "INDICATIF": return "Légèrement appuyé par l'historique direct, à prendre avec prudence";
     default: return null;
+  }
+}
+
+// AJOUT 17/09/2026 (Patrick, jargon technique pas toujours compris) --
+// "STABLE"/"INSTABLE"/"INDETERMINE" sont des valeurs internes du moteur
+// (archetype_model/poisson/robustness.py), jamais traduites avant :
+// affichées telles quelles dans "Détails de l'analyse", illisibles pour
+// un visiteur qui ne connaît pas le code.
+function traduitRobustesse(robustesse) {
+  switch (robustesse) {
+    case "STABLE": return "Résultat stable sur les différents scénarios testés";
+    case "INSTABLE": return "Résultat qui varie selon le scénario testé";
+    default: return "Non déterminée";
   }
 }
 
@@ -111,5 +127,5 @@ function construitPhraseConfirmation(marche, confirmation, equipes) {
 }
 
 if (typeof module !== "undefined") {
-  module.exports = { traduitMarche, traduitNiveau, traduitPalierH2H, construitPhraseConfirmation };
+  module.exports = { traduitMarche, traduitNiveau, traduitPalierH2H, traduitRobustesse, construitPhraseConfirmation };
 }
