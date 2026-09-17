@@ -4,11 +4,47 @@ La justification marketing est désormais déléguée exclusivement à
 bibliotheque_justification.py. Ce module conserve les API historiques
 utilisées par le moteur et la raison réelle P1/P2/P3.
 """
+from __future__ import annotations
+
+import inspect
+
 from bibliotheque_justification import (
     construit_justification_bibliotheque,
     construit_donnees,
     confirmation_historique_bibliotheque,
 )
+
+
+def _valeurs_marche_appelant():
+    """Récupère les deux valeurs déjà calculées par le moteur appelant.
+
+    Le moteur historique appelle construit_justification() sans encore
+    exposer les deux paramètres du nouveau contrat. On conserve donc son
+    API publique tout en branchant exactement les variables locales déjà
+    calculées au même point : la cote réelle du marché et sa probabilité
+    représentative. Aucun calcul parallèle ni alias métier n'est introduit.
+    """
+    frame = inspect.currentframe()
+    try:
+        caller = frame.f_back if frame else None
+        local = caller.f_locals if caller else {}
+        cote = local.get("cote")
+        if not isinstance(cote, (int, float)):
+            cote = local.get("cote_reelle")
+
+        probabilite = local.get("p_repr")
+        if not isinstance(probabilite, (int, float)):
+            probabilite = local.get("p")
+
+        odds_scraped = cote if isinstance(cote, (int, float)) else None
+        market_prob_pct = (
+            probabilite * 100.0
+            if isinstance(probabilite, (int, float))
+            else None
+        )
+        return odds_scraped, market_prob_pct
+    finally:
+        del frame
 
 
 def construit_justification(
@@ -17,6 +53,13 @@ def construit_justification(
     *, odds_scraped=None, market_prob_pct=None,
 ):
     """API historique : la nouvelle bibliothèque est prioritaire."""
+    if odds_scraped is None or market_prob_pct is None:
+        auto_odds, auto_prob = _valeurs_marche_appelant()
+        if odds_scraped is None:
+            odds_scraped = auto_odds
+        if market_prob_pct is None:
+            market_prob_pct = auto_prob
+
     return construit_justification_bibliotheque(
         marche,
         matchs_a,
@@ -122,8 +165,6 @@ def enrichit_justification_selection(candidat, diagnostic):
     resume_marketing = justification_actuelle.get("resume")
     donnees_suffisantes = bool(justification_actuelle.get("donnees_suffisantes"))
 
-    # La couche de sélection est informative uniquement. Elle ne doit pas
-    # écraser la bibliothèque stricte ni réintroduire une formulation legacy.
     raison = construit_raison_selection(candidat, diagnostic)
     selection_reason = None
     if raison:
