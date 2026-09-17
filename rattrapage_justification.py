@@ -40,13 +40,7 @@ def _leger_pour_site(s):
 
 
 def _recupere_fenetres(s, am):
-    """Retrouve la structure réelle des fenêtres sans imposer un emplacement.
-
-    Selon la version ayant produit le fichier, les fenêtres peuvent être
-    portées directement par le signal ou par archetype_model. On privilégie
-    le conteneur du signal, puis celui du modèle. Aucun historique n'est
-    reconstruit et aucune donnée de sélection n'est modifiée.
-    """
+    """Retrouve la structure réelle des fenêtres sans imposer un emplacement."""
     for conteneur in (s, am):
         if not isinstance(conteneur, dict):
             continue
@@ -56,11 +50,33 @@ def _recupere_fenetres(s, am):
     return {}
 
 
+def _recupere_h2h(fenetres, s, am):
+    """Récupère un H2H déjà présent, sans reconstruire d'historique."""
+    for conteneur in (fenetres, s, am):
+        if not isinstance(conteneur, dict):
+            continue
+        for cle in ("h2h", "confrontations_directes", "matchs_h2h"):
+            valeur = conteneur.get(cle)
+            if isinstance(valeur, list):
+                return valeur
+    return None
+
+
+def _preuves_specifiques(justification):
+    """Retourne uniquement les preuves métier, hors preuve EV de secours."""
+    preuves = (justification or {}).get("preuves") or []
+    return [p for p in preuves if isinstance(p, dict) and p.get("type") != "ev_percentage"]
+
+
 def recalcule_justifications(signaux):
     nb_matchs = 0
     nb_candidats = 0
+    nb_avec_preuve_specifique = 0
+    nb_ev_seul = 0
+    nb_sans_preuve = 0
     nb_sans_fenetres = 0
     nb_fenetres_trouvees = 0
+    types_preuves = {}
 
     for s in signaux:
         am = s.get("archetype_model")
@@ -74,6 +90,7 @@ def recalcule_justifications(signaux):
             nb_sans_fenetres += 1
             continue
         nb_fenetres_trouvees += 1
+        h2h = _recupere_h2h(fenetres, s, am)
 
         match_touche = False
         for rang in ("P1", "P2", "P3"):
@@ -82,26 +99,43 @@ def recalcule_justifications(signaux):
                 continue
             cote = candidat.get("cote")
             proba = candidat.get("probabilite")
-            candidat["justification"] = justification.construit_justification(
+            j = justification.construit_justification(
                 candidat.get("marche"),
                 matchs_a,
                 matchs_b,
-                h2h=None,
+                h2h=h2h,
                 nom_domicile=s.get("domicile") or "",
                 nom_exterieur=s.get("exterieur") or "",
                 odds_scraped=cote if isinstance(cote, (int, float)) else None,
                 market_prob_pct=proba * 100.0 if isinstance(proba, (int, float)) else None,
             )
+            candidat["justification"] = j
             nb_candidats += 1
             match_touche = True
+
+            specifiques = _preuves_specifiques(j)
+            if specifiques:
+                nb_avec_preuve_specifique += 1
+                for preuve in specifiques:
+                    typ = preuve.get("type") or "inconnu"
+                    types_preuves[typ] = types_preuves.get(typ, 0) + 1
+            elif any(isinstance(p, dict) and p.get("type") == "ev_percentage" for p in (j.get("preuves") or [])):
+                nb_ev_seul += 1
+            else:
+                nb_sans_preuve += 1
+
         if match_touche:
             nb_matchs += 1
 
     return {
         "matchs_recalcules": nb_matchs,
         "candidats_recalcules": nb_candidats,
+        "candidats_avec_preuve_specifique": nb_avec_preuve_specifique,
+        "candidats_ev_seul": nb_ev_seul,
+        "candidats_sans_preuve": nb_sans_preuve,
         "matchs_sans_fenetres": nb_sans_fenetres,
         "fenetres_trouvees": nb_fenetres_trouvees,
+        "types_preuves_specifiques": types_preuves,
     }
 
 
