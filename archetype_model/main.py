@@ -276,7 +276,17 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
     # ========================================================================
     # PÉAGE 1 + PÉAGE 2 (v2.3)
     # ========================================================================
-    SEUIL_PEAGE1 = 0.85
+    # CORRECTIF 18/09/2026 (Patrick) -- SEUIL_PEAGE1 abaissé de 0.85 à 0.70.
+    # score_pondere = nb_dimensions_convergentes x poids_fiabilite, avec
+    # poids_fiabilite = 1.0 si profil FIABLE (n_spec >= 4), sinon 0.5. À
+    # 0.85, un profil FIABLE à une seule dimension convergente (score 1.0)
+    # passait, mais un profil non fiable à dimension unique (score 0.5)
+    # était rejeté -- trop restrictif pour la distribution réelle des
+    # scores produits par matrice_croisement.py. À 0.70 : le filtre
+    # minimum est conservé (un profil non fiable à dimension unique,
+    # score 0.5, reste rejeté), mais un profil FIABLE à dimension unique
+    # (score 1.0) passe toujours, comme avant.
+    SEUIL_PEAGE1 = 0.70
 
     _profil_domicile = profil_equipe.construit_profil(
         nom_equipe=nom_domicile,
