@@ -506,3 +506,43 @@ Si les deux marchés d'une paire sortent en même temps (cas réel où chaque é
 - Pas branchée à `selector.py`/`convergence.py`/`main.py` — purement additive, testée en isolation (13+ tests de cohérence logique)
 
 Tu as maintenant tout ce qu'il te faut pour critiquer la mécanique elle-même, pas juste le résumé. Réponds aux deux messages précédents (correction de source + réponse point par point) avec cette structure en tête.
+
+
+---
+
+# Mise à jour vérifiée — 18/09/2026 — Runs #128 et #129
+
+Cette section complète le document à partir des résultats réellement observés après les corrections de justification.
+
+## Run #128 — validation technique
+
+Le run #128, exécuté sur le commit `4f772866`, s'est terminé avec succès. Les étapes de scraping, pré-calcul, résolution Betpawa, vérification, observation, construction de vrais tickets, bilan comportemental et calibration ont abouti.
+
+La sortie confirme que `bibliotheque_justification.py` produit bien son dictionnaire de données dans les candidats. Toutefois, certains candidats ont encore `resume: null`, `preuves: []` et `donnees_suffisantes: false`. Dans plusieurs de ces cas, les indicateurs internes sont présents mais aucun template spécifique de la bibliothèque n'est applicable.
+
+Deux défauts d'intégration sont confirmés :
+- `odds_scraped`, `market_prob_pct` et donc `ev_percentage` peuvent encore arriver à `null` dans le chemin courant ;
+- `rattrapage_justification.py` existe et a été corrigé, mais n'est pas appelé par `pipeline.yml`.
+
+Le run montre également que les marchés Under réellement produits ne disposent pas encore de preuves spécifiques dans la bibliothèque, et que la nomenclature réelle `over_2.5` reste non reconnue par le règlement des résultats.
+
+## Run #129 — incident de publication
+
+Le run planifié #129 a démarré sur le même commit `4f772866` et a exécuté avec succès les étapes 1 à 14. Il a ensuite échoué à l'étape 15, après environ 2 h 29.
+
+La cause est démontrée par les logs : le job a créé localement le commit `db65c61`, puis le `git pull --rebase` a rencontré des conflits de contenu avec les modifications déjà présentes sur `main`. Les conflits touchent notamment `archive/2026-09.json`, les caches Betpawa/classement/équipes/H2H, les diagnostics, `precalcul.json`, `precalcul_leger.json`, `tickets_observes/2026-09.json` et `vrais_tickets/2026-09.json`.
+
+Conclusion : cet échec n'est pas attribué au moteur de prédiction ni au scraping. Il se produit pendant la publication Git des résultats générés. Le workflow peut donc consommer plus de deux heures de calcul avant de perdre son résultat au dernier stade.
+
+## Conséquence pour la suite
+
+Avant tout nouveau run complet :
+1. rendre la publication Git robuste aux avancées concurrentes de `main` ;
+2. réduire le temps Betpawa sans relâcher le matching sécurisé ;
+3. brancher réellement le rattrapage des justifications ;
+4. transmettre explicitement cote et probabilité à la bibliothèque ;
+5. compléter uniquement les marchés et templates démontrés par les données réelles ;
+6. auditer séparément le handicap avant toute modification de sa sélection ;
+7. reprendre la calibration uniquement sur des observations admissibles et dédoublonnées.
+
+La règle reste inchangée : **validation logique ≠ validation prédictive** et **absence de preuve ≠ justification inventée**.
