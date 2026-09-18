@@ -7,6 +7,13 @@ const RANGS = [
   { cle: "P3", classe: "rang-3", titre: "Troisième choix" },
 ];
 
+// CORRECTIF 18/09/2026 — "Forme récente" accepte uniquement des preuves
+// qui décrivent réellement la forme, jamais une statistique de buts croisée.
+const TYPES_FORME_RECENTE = new Set([
+  "home_unbeaten_streak",
+  "away_concede_pct",
+]);
+
 function estArchetypeGo(m) {
   return !!(m && m.moteur_utilise === "archetype_model" && m.archetype_model &&
     m.archetype_model.statut === "OK" && m.archetype_model.selection && m.archetype_model.selection.P1);
@@ -43,7 +50,7 @@ function construitPourquoi(candidat) {
 function construitStatsRapides(candidat) {
   const preuves = (candidat.justification && candidat.justification.preuves) || [];
   const h2h = preuves.find((p) => p && typeof p.type === "string" && p.type.startsWith("h2h_"));
-  const forme = preuves.find((p) => p && p !== h2h && p.type !== "ev_percentage") || null;
+  const forme = preuves.find((p) => p && typeof p.type === "string" && TYPES_FORME_RECENTE.has(p.type)) || null;
   const { texte: niveauTexte } = traduitNiveau(candidat.niveau);
   const cases = [
     { icone: "📊", titre: "Forme récente", texte: forme ? forme.texte : "Non disponible" },
