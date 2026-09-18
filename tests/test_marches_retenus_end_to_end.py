@@ -37,7 +37,15 @@ def test_tous_les_marches_produisent_des_probabilites_valides():
     assert attendus <= set(resultats)
 
     assert abs(sum(resultats["1x2"].values()) - 1.0) < 1e-9
-    assert abs(sum(resultats["double_chance"].values()) - 1.0) < 1e-9
+    # 1X, X2 et 12 recouvrent chacun deux des trois issues 1/N/2.
+    # Leur somme vaut donc 2, et non 1 : P(1X)+P(X2)+P(12)=2.
+    assert abs(sum(resultats["double_chance"].values()) - 2.0) < 1e-9
+    p1x = resultats["double_chance"]["1X"]
+    px2 = resultats["double_chance"]["X2"]
+    p12 = resultats["double_chance"]["12"]
+    assert abs(p1x - (resultats["1x2"]["domicile"] + resultats["1x2"]["nul"])) < 1e-9
+    assert abs(px2 - (resultats["1x2"]["nul"] + resultats["1x2"]["exterieur"])) < 1e-9
+    assert abs(p12 - (resultats["1x2"]["domicile"] + resultats["1x2"]["exterieur"])) < 1e-9
     assert abs(resultats["btts"] + (1.0 - resultats["btts"]) - 1.0) < 1e-9
     assert abs(sum(resultats["parite_totale"].values()) - 1.0) < 1e-9
 
