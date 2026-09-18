@@ -1,337 +1,682 @@
 """
-archetype_model/statistics/profil_equipe.py — Profil qualitatif enrichi
-d'une équipe pour SON RÔLE dans le match analysé (domicile ou
-extérieur), construit UNIQUEMENT à partir de team_stats.py et
-goals.py déjà existants et déjà testés -- aucune nouvelle collecte de
-données, aucune modification de main.py/selector.py/convergence.py.
+archetype_model/statistics/profil_equipe.py
+===========================================
+Module de profilage statistique d'équipe — Péage 1 (version 2.5).
 
-RÈGLE DE RÔLE (demande explicite de Patrick, 16/09/2026) : pour une
-équipe à domicile dans le match analysé, TOUTES les statistiques de ce
-profil viennent de SA fenêtre domicile uniquement (jamais mélangée
-avec ses matchs à l'extérieur) ; symétriquement pour l'équipe à
-l'extérieur. C'est déjà ce que fait le calcul du lambda dans main.py
-(stats_off_a/stats_def_a sur matchs_dom_domicile) -- ce module
-généralise ce même principe à un jeu de statistiques plus large, pour
-faire apparaître des tendances AVANT tout calcul de lambda/EDV.
+Rôle :
+    - Calculer les fréquences brutes et effectives d'une équipe sur son
+      rôle du jour (domicile ou extérieur) pour alimenter le Péage 1.
+    - Exposer les volumes bruts pour le Péage 2 (peage_2.py).
+    - Exposer les blocs structurés attendus par matrice_croisement.py.
 
-TROU DE FIABILITÉ CORRIGÉ ICI (trouvé le 16/09/2026 en auditant le
-code sur une question de Patrick) : `data.validation.classifie_fenetre`
-n'exige que N_MIN_UTILISABLE=5 matchs TOTAUX (domicile+extérieur
-confondus) avant de déclarer une équipe UTILISABLE -- mais le
-sous-échantillon réellement utilisé après séparation domicile/
-extérieur (`data.loader.separe_domicile_exterieur`) peut ensuite être
-beaucoup plus petit (ex. 1 seul match domicile sur 5 matchs totaux)
-sans qu'aucun garde-fou ne le signale. `construit_profil` calcule donc
-un statut de fiabilité SÉPARÉ, sur le sous-échantillon réel utilisé
-ici -- jamais sur le n_brut de la fenêtre globale.
+Invariants :
+    - Zéro cote, zéro bookmaker.
+    - Pas de handicap joué ici (calcul de fréquence uniquement).
+    - Pas de H2H.
+    - Pas de tri des matchs (contrat amont : ancien -> récent).
+    - Pas de décision finale.
 
-Attend en entrée une liste de matchs DÉJÀ FILTRÉE PAR RÔLE (le
-résultat de `data.loader.separe_domicile_exterieur(...)`, côté
-domicile pour l'équipe à domicile, côté extérieur pour l'équipe à
-l'extérieur) -- ce module ne fait aucun filtrage lui-même, il décrit
-la liste reçue telle quelle (même contrat que team_stats.py).
+CORRECTIF 18/09/2026 (v2.5) : normalisation du format des matchs.
+    Le loader (archetype_model/data/loader.py) fournit des dicts sous la
+    forme {"domicile": bool, "buts_marques": int, "buts_encaisses": int}.
+    Le reste du projet (peage_2.py, matrice_croisement.py, main.py) lit
+    "gf" et "ga". Sans normalisation, tous les matchs étaient rejetés
+    par _extraire_buts et P1 ne produisait aucun profil exploitable.
+    La normalisation accepte les DEUX formats : "gf"/"ga" prioritaires,
+    sinon "buts_marques"/"buts_encaisses". Aucun original n'est muté.
 """
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Dict, Any, List, Tuple, Optional
 
-from . import team_stats, goals
-from .distributions import moyenne, variance, ecart_type
 
-# Seuil de fiabilité du SOUS-ÉCHANTILLON par rôle (domicile seul ou
-# extérieur seul), distinct de N_MIN_UTILISABLE=5 de validation.py qui
-# porte sur le total domicile+extérieur. Valeur V1, NON CALIBRÉE --
-# même statut que ROBUSTNESS_STD_THRESHOLD à l'origine (§ garde_fous.py) :
-# un choix de départ raisonnable, jamais présenté comme calibré sur
-# données réelles tant qu'il ne l'est pas.
-N_MIN_PROFIL_FIABLE = 4
+# =============================================================
+# CONFIGURATION
+# =============================================================
+
+SEUIL_STABILITE = 5
+K_STABILISATION = 3.0
+SEUIL_P1 = 0.40
+
+LIEUX_VALIDES = frozenset({"domicile", "exterieur"})
+
+FENETRE_SPEC_DEFAUT = 8
+FENETRE_STAB_DEFAUT = 5
 
 STATUT_FIABLE = "FIABLE"
-STATUT_A_SURVEILLER = "A_SURVEILLER"  # sous N_MIN_PROFIL_FIABLE, jamais bloquant, juste signalé
+STATUT_A_SURVEILLER = "A_SURVEILLER"
 
-# CORRECTIF 16/09/2026 (demande explicite de Patrick) -- le statut
-# binaire ci-dessus ne distingue pas 1 match de 3 : un échantillon de 1
-# n'a pas le même risque de "fausse illusion" qu'un échantillon de 3.
-# Coefficient GRADUÉ, V1 NON CALIBRÉ (mêmes réserves que ci-dessus) --
-# progression délibérément non linéaire : le gain de fiabilité entre 0
-# et 1 match est énorme (on passe d'aucune donnée à une seule
-# observation bruyante), le gain entre 4 et 5 est marginal (la fenêtre
-# est déjà réputée exploitable par validation.py à ce stade). Jamais
-# utilisé pour bloquer un calcul (ce n'est pas son rôle, contrairement
-# à N_MIN_PROFIL_FIABLE) -- seulement pour PONDÉRER la confiance
-# accordée à un signal en aval (matrice_croisement.py).
-_TABLE_POIDS_FIABILITE = {0: 0.0, 1: 0.25, 2: 0.45, 3: 0.65, 4: 0.85}
-POIDS_FIABILITE_PLEIN = 1.0  # n >= 5
+LIGNES_OVER_UNDER_SUPPLEMENTAIRES: Tuple[float, ...] = (1.5, 3.5)
+LIGNES_HANDICAP_PAR_DEFAUT: Tuple[float, ...] = (-1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5)
+
+MARCHES_CIBLES: Tuple[str, ...] = (
+    "victoire", "nul", "defaite",
+    "over_0_5", "over_1_5", "over_2_5", "over_3_5",
+    "under_0_5", "under_1_5", "under_2_5", "under_3_5",
+    "btts_oui", "btts_non",
+    "buts_marques_over_0_5", "buts_marques_over_1_5", "buts_marques_over_2_5",
+    "buts_marques_under_0_5", "buts_marques_under_1_5", "buts_marques_under_2_5",
+    "buts_encaisses_over_0_5", "buts_encaisses_over_1_5", "buts_encaisses_over_2_5",
+    "buts_encaisses_under_0_5", "buts_encaisses_under_1_5", "buts_encaisses_under_2_5",
+    "clean_sheet", "encaisse_au_moins_1",
+)
+
+GRILLE_CN = {
+    1: 0.35,
+    2: 0.60,
+    3: 0.60,
+    4: 0.75,
+    5: 0.75,
+    6: 0.90,
+    7: 0.90,
+    8: 0.90,
+}
 
 
-def poids_fiabilite(n: int) -> float:
-    """Coefficient de fiabilité gradué entre 0.0 (aucune donnée) et 1.0
-    (fenêtre pleinement fiable, n>=5) -- jamais un seuil binaire."""
-    return _TABLE_POIDS_FIABILITE.get(n, POIDS_FIABILITE_PLEIN)
+# =============================================================
+# COEFFICIENT DE CONFIANCE
+# =============================================================
+
+def get_coefficient_cn(n: int) -> float:
+    if n <= 0:
+        return 0.0
+    if n >= 9:
+        return 1.00
+    return GRILLE_CN[n]
 
 
-def _coefficient_variation(m: float | None, sigma: float | None) -> float | None:
-    """Écart-type / moyenne -- mesure de régularité indépendante de
-    l'échelle (une équipe à 1.0 but/match +-0.2 est plus régulière
-    qu'une équipe à 1.0 +-0.9, même moyenne). None si moyenne nulle ou
-    absente (division impossible, jamais une fausse valeur 0)."""
-    if m is None or sigma is None or m == 0:
+# =============================================================
+# VALIDATION BAS NIVEAU
+# =============================================================
+
+def _est_entier_positif(v: Any) -> bool:
+    return isinstance(v, int) and not isinstance(v, bool) and v >= 0
+
+
+def _normalise_match(m: Any) -> Any:
+    """
+    Accepte les DEUX conventions du projet :
+      - "gf" / "ga"                        (convention interne moteur)
+      - "buts_marques" / "buts_encaisses"  (convention loader)
+
+    Retourne un dict copié avec les clés "gf"/"ga" renseignées si elles
+    manquaient. Ne modifie JAMAIS l'original. Un match sans aucune des
+    deux conventions est retourné tel quel (sera rejeté par _extraire_buts).
+    """
+    if not isinstance(m, dict):
+        return m
+    if _est_entier_positif(m.get("gf")) and _est_entier_positif(m.get("ga")):
+        return m
+    fm = m.get("buts_marques")
+    fa = m.get("buts_encaisses")
+    if _est_entier_positif(fm) and _est_entier_positif(fa):
+        copie = dict(m)
+        copie["gf"] = fm
+        copie["ga"] = fa
+        return copie
+    return m
+
+
+def _extraire_buts(match: Dict[str, Any]) -> Optional[Tuple[int, int]]:
+    if not isinstance(match, dict):
         return None
-    return sigma / m
+    gf = match.get("gf")
+    ga = match.get("ga")
+    if _est_entier_positif(gf) and _est_entier_positif(ga):
+        return gf, ga
+    return None
 
 
-def _frequence_egale(valeurs: list[int], valeur_cible: int) -> float | None:
-    """Fréquence des matchs où `valeurs[i] == valeur_cible` exactement
-    -- distinct de _frequence_seuil (>=), nécessaire pour "n'a marqué
-    aucun but" où un seuil >=0 serait trivialement toujours vrai."""
-    if not valeurs:
+def _lieu_match(match: Dict[str, Any]) -> Optional[str]:
+    if not isinstance(match, dict):
         return None
-    return sum(1 for v in valeurs if v == valeur_cible) / len(valeurs)
+    lieu = match.get("lieu")
+    if lieu in LIEUX_VALIDES:
+        return lieu
+    dom = match.get("domicile")
+    if dom is True:
+        return "domicile"
+    if dom is False:
+        return "exterieur"
+    return None
 
 
-def _frequence_seuil(valeurs: list[int], seuil_inclusif: int) -> float | None:
-    """Fréquence des matchs où `valeurs[i] >= seuil_inclusif` --
-    complète la moyenne par la FORME de la distribution (ex. 40% des
-    matchs à 0 but marqué décrit une équipe différente de 40% à
-    exactement 1, même si la moyenne peut être identique)."""
-    if not valeurs:
-        return None
-    return sum(1 for v in valeurs if v >= seuil_inclusif) / len(valeurs)
+def valider_matchs(historique: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    valides: List[Dict[str, Any]] = []
+    for m in historique:
+        if _extraire_buts(m) is not None:
+            valides.append(m)
+    return valides
 
 
-def _forme_ponderee_recence(matchs: list[dict[str, Any]]) -> float | None:
-    """Points (victoire=3, nul=1, défaite=0) pondérés par récence --
-    poids linéaire croissant du plus ancien (poids 1) au plus récent
-    (poids len(matchs)), normalisé en points/match pondéré ENTRE 0 et 3
-    pour rester comparable à une moyenne de points brute. Répond au
-    principe validation.py (l'ordre reçu est croissant, plus récent en
-    dernier) -- ne PAS inverser cette hypothèse ici sans vérifier
-    data.loader.ASSUME_ORDRE_CROISSANT d'abord."""
-    n = len(matchs)
-    if n == 0:
-        return None
-    poids_total = sum(range(1, n + 1))
-    if poids_total == 0:
-        return None
-    points = 0.0
-    for i, m in enumerate(matchs, start=1):
-        if m["buts_marques"] > m["buts_encaisses"]:
-            pts = 3
-        elif m["buts_marques"] == m["buts_encaisses"]:
-            pts = 1
-        else:
-            pts = 0
-        points += pts * i
-    return points / poids_total
+# =============================================================
+# SÉRIES
+# =============================================================
 
-
-def _improbabilite_serie(longueur_serie: int, frequence_base: float | None) -> float | None:
-    """Probabilité, SOUS L'HYPOTHÈSE i.i.d. (grossière mais utile comme
-    repère, pas comme vérité), qu'une série de cette longueur survienne
-    par pur hasard étant donné la fréquence de base DE CETTE ÉQUIPE
-    elle-même (jamais une fréquence générique) -- ex. 3 clean sheets de
-    suite pour une équipe qui en fait 0.3 (30%) est bien plus
-    improbable (0.3^3=2.7%) que pour une équipe qui en fait 0.8
-    (0.8^3=51.2%). Retourne cette probabilité brute : PLUS C'EST BAS,
-    PLUS LA SÉRIE EST STATISTIQUEMENT REMARQUABLE -- ne préjuge pas de
-    ce que ça implique pour le prochain match (continuation ou retour à
-    la moyenne), seulement de si la série mérite l'attention. None si
-    longueur 0 (rien à mesurer) ou fréquence de base indisponible."""
-    if longueur_serie == 0 or frequence_base is None:
-        return None
-    return frequence_base ** longueur_serie
-
-
-def _oscillation(valeurs: list[int]) -> float | None:
-    """Amplitude moyenne de changement d'un match au suivant (|delta|)
-    -- distincte de regularite_cv (dispersion globale de la
-    DISTRIBUTION, indifférente à l'ordre) : un motif plateau (1-1-1-1)
-    a une oscillation de 0 quelle que soit sa variance ; un motif en
-    dents de scie (0-3-0-3) a une oscillation élevée même si sa
-    moyenne est identique à un motif régulier à 1.5. Complète la
-    régularité par la SÉQUENCE, pas seulement par la distribution.
-    None si moins de 2 matchs (aucun changement mesurable)."""
-    if len(valeurs) < 2:
-        return None
-    deltas = [abs(valeurs[i + 1] - valeurs[i]) for i in range(len(valeurs) - 1)]
-    return moyenne(deltas)
-
-
-def _desynchronisation_attaque_defense(cv_attaque: float | None, cv_defense: float | None) -> float | None:
-    """Écart entre la régularité offensive et défensive de la MÊME
-    équipe -- une équipe irrégulière en attaque mais stable en
-    défense (ou l'inverse) a un profil différent d'une équipe
-    uniformément régulière ou uniformément irrégulière des deux
-    côtés. None si l'un des deux coefficients est indisponible."""
-    if cv_attaque is None or cv_defense is None:
-        return None
-    return abs(cv_attaque - cv_defense)
-
-
-def _serie_actuelle(matchs: list[dict[str, Any]], condition) -> int:
-    """Longueur de la série EN COURS (les derniers matchs consécutifs
-    qui vérifient `condition`), en partant du plus récent (dernier
-    élément, ASSUME_ORDRE_CROISSANT) et en remontant tant que la
-    condition tient. S'arrête au premier match qui la brise -- une
-    série est par définition ININTERROMPUE, jamais la fréquence totale
-    sur toute la fenêtre (ça, c'est déjà freq_clean_sheet etc.)."""
-    serie = 0
+def _serie_actuelle(matchs: List[Dict[str, Any]], condition) -> int:
+    count = 0
     for m in reversed(matchs):
-        if condition(m):
-            serie += 1
+        b = _extraire_buts(m)
+        if b is None:
+            break
+        if condition(b[0], b[1]):
+            count += 1
         else:
             break
-    return serie
+    return count
 
 
-def _musique(valeurs: list[int]) -> str:
-    """Représentation compacte "1-2-0-6-1" de la séquence, plus ancien
-    en premier -- pour affichage/justification humaine uniquement,
-    jamais reparsée ailleurs dans le code (les séries ci-dessus sont
-    calculées directement sur la liste de matchs, pas sur cette
-    chaîne)."""
-    return "-".join(str(v) for v in valeurs)
+# =============================================================
+# FRÉQUENCES BRUTES (à plat, compat P2)
+# =============================================================
+
+def calculer_frequences_brutes(matchs: List[Dict[str, Any]]) -> Dict[str, float]:
+    if not matchs:
+        return {m: 0.0 for m in MARCHES_CIBLES}
+
+    n = len(matchs)
+    compteurs = {m: 0 for m in MARCHES_CIBLES}
+
+    for m in matchs:
+        gf, ga = m["gf"], m["ga"]
+        total = gf + ga
+
+        if gf > ga: compteurs["victoire"] += 1
+        elif gf == ga: compteurs["nul"] += 1
+        else: compteurs["defaite"] += 1
+
+        if total > 0.5: compteurs["over_0_5"] += 1
+        if total > 1.5: compteurs["over_1_5"] += 1
+        if total > 2.5: compteurs["over_2_5"] += 1
+        if total > 3.5: compteurs["over_3_5"] += 1
+        if total < 0.5: compteurs["under_0_5"] += 1
+        if total < 1.5: compteurs["under_1_5"] += 1
+        if total < 2.5: compteurs["under_2_5"] += 1
+        if total < 3.5: compteurs["under_3_5"] += 1
+
+        if gf > 0 and ga > 0: compteurs["btts_oui"] += 1
+        else: compteurs["btts_non"] += 1
+
+        if gf > 0.5: compteurs["buts_marques_over_0_5"] += 1
+        if gf > 1.5: compteurs["buts_marques_over_1_5"] += 1
+        if gf > 2.5: compteurs["buts_marques_over_2_5"] += 1
+        if gf < 0.5: compteurs["buts_marques_under_0_5"] += 1
+        if gf < 1.5: compteurs["buts_marques_under_1_5"] += 1
+        if gf < 2.5: compteurs["buts_marques_under_2_5"] += 1
+
+        if ga > 0.5: compteurs["buts_encaisses_over_0_5"] += 1
+        if ga > 1.5: compteurs["buts_encaisses_over_1_5"] += 1
+        if ga > 2.5: compteurs["buts_encaisses_over_2_5"] += 1
+        if ga < 0.5: compteurs["buts_encaisses_under_0_5"] += 1
+        if ga < 1.5: compteurs["buts_encaisses_under_1_5"] += 1
+        if ga < 2.5: compteurs["buts_encaisses_under_2_5"] += 1
+
+        if ga == 0: compteurs["clean_sheet"] += 1
+        else: compteurs["encaisse_au_moins_1"] += 1
+
+    return {m: round(c / n, 4) for m, c in compteurs.items()}
 
 
-# AJOUT 16/09/2026 (demande Patrick, extension du Péage 1 à des lignes
-# paramétrées) -- lignes standards balayées, en plus de 2.5 qui reste
-# gérée séparément ci-dessus pour ne rien casser de déjà testé.
-LIGNES_OVER_UNDER_SUPPLEMENTAIRES = (1.5, 3.5)
-# Mêmes 7 lignes que poisson.markets.LIGNES_HANDICAP_PAR_DEFAUT --
-# dupliquées ici plutôt qu'importées pour garder ce module sans
-# dépendance sur poisson/ (même principe que le reste du fichier :
-# aucune dépendance nouvelle, voir docstring de module).
-LIGNES_HANDICAP_PAR_DEFAUT = (-1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5)
+# =============================================================
+# BLOCS STRUCTURÉS (compat matrice_croisement)
+# =============================================================
 
-
-def _stats_over_under_ligne(matchs_role: list[dict[str, Any]], ligne: float) -> dict[str, Any]:
-    """Généralise le bloc over/under déjà fait pour 2.5 à une ligne
-    arbitraire -- même construction (freq, musique, séries), jamais
-    dupliqué en dur ailleurs. Les lignes standards (1.5/2.5/3.5) sont
-    toujours des demi-lignes -- une égalité exacte au total est
-    impossible, freq_over + freq_under vaut donc toujours 1.0."""
-    totaux = [m["buts_marques"] + m["buts_encaisses"] for m in matchs_role]
+def _calcule_bloc_attaque(matchs: List[Dict[str, Any]]) -> Dict[str, Any]:
+    n = len(matchs)
+    if n == 0:
+        return {
+            "freq_marque_0": None, "freq_marque_1_plus": None,
+            "freq_marque_2_plus": None,
+            "serie_marque_actuelle": 0, "serie_sans_marquer_actuelle": 0,
+        }
+    nb_0 = sum(1 for m in matchs if m["gf"] == 0)
+    nb_1 = sum(1 for m in matchs if m["gf"] >= 1)
+    nb_2 = sum(1 for m in matchs if m["gf"] >= 2)
     return {
-        "freq_over": _frequence_egale([1 if t > ligne else 0 for t in totaux], 1) if totaux else None,
-        "freq_under": _frequence_egale([1 if t < ligne else 0 for t in totaux], 1) if totaux else None,
-        "musique_over": _musique([1 if t > ligne else 0 for t in totaux]),
-        "serie_over_actuelle": _serie_actuelle(matchs_role, lambda m: (m["buts_marques"] + m["buts_encaisses"]) > ligne),
-        "serie_under_actuelle": _serie_actuelle(matchs_role, lambda m: (m["buts_marques"] + m["buts_encaisses"]) < ligne),
+        "freq_marque_0": round(nb_0 / n, 4),
+        "freq_marque_1_plus": round(nb_1 / n, 4),
+        "freq_marque_2_plus": round(nb_2 / n, 4),
+        "serie_marque_actuelle": _serie_actuelle(matchs, lambda gf, ga: gf >= 1),
+        "serie_sans_marquer_actuelle": _serie_actuelle(matchs, lambda gf, ga: gf == 0),
     }
 
 
-def _stats_handicap_ligne(matchs_role: list[dict[str, Any]], ligne: float) -> dict[str, Any]:
-    """Fréquence, pour CETTE équipe sur SON rôle, de couvrir/pousser/
-    perdre un handicap à `ligne` -- même convention de signe que
-    `poisson.markets.resultat_handicap` (marge = buts_marques -
-    buts_encaisses ; "couvre" si marge > ligne). Ligne entière (ex.
-    0.0, ±1.0) : le push (égalité exacte) est possible et compté
-    séparément. Ligne demi (ex. ±0.5, ±1.5) : freq_push vaut toujours 0,
-    aucun cas particulier nécessaire, la formule reste correcte."""
-    marges = [m["buts_marques"] - m["buts_encaisses"] for m in matchs_role]
-    if not marges:
-        return {"freq_couvre": None, "freq_push": None, "freq_perd": None,
-                "serie_couvre_actuelle": 0}
+def _calcule_bloc_defense(matchs: List[Dict[str, Any]]) -> Dict[str, Any]:
+    n = len(matchs)
+    if n == 0:
+        return {
+            "freq_clean_sheet": None, "freq_encaisse_2_plus": None,
+            "serie_clean_sheet_actuelle": 0, "serie_encaisse_actuelle": 0,
+        }
+    nb_cs = sum(1 for m in matchs if m["ga"] == 0)
+    nb_2 = sum(1 for m in matchs if m["ga"] >= 2)
     return {
-        "freq_couvre": sum(1 for mg in marges if mg > ligne) / len(marges),
-        "freq_push": sum(1 for mg in marges if mg == ligne) / len(marges),
-        "freq_perd": sum(1 for mg in marges if mg < ligne) / len(marges),
-        "serie_couvre_actuelle": _serie_actuelle(matchs_role, lambda m: (m["buts_marques"] - m["buts_encaisses"]) > ligne),
+        "freq_clean_sheet": round(nb_cs / n, 4),
+        "freq_encaisse_2_plus": round(nb_2 / n, 4),
+        "serie_clean_sheet_actuelle": _serie_actuelle(matchs, lambda gf, ga: ga == 0),
+        "serie_encaisse_actuelle": _serie_actuelle(matchs, lambda gf, ga: ga >= 1),
     }
 
 
-def construit_profil(matchs_role: list[dict[str, Any]]) -> dict[str, Any]:
-    """Construit le profil qualitatif complet pour UNE équipe dans SON
-    RÔLE (domicile ou extérieur) sur SA fenêtre déjà filtrée par rôle.
+def _calcule_bloc_resultats(matchs: List[Dict[str, Any]]) -> Dict[str, Any]:
+    n = len(matchs)
+    if n == 0:
+        return {
+            "freq_victoires": None, "freq_nuls": None, "freq_defaites": None,
+            "marge_buts_moyenne": None, "forme_ponderee_recence": None,
+        }
+    victoires = sum(1 for m in matchs if m["gf"] > m["ga"])
+    nuls = sum(1 for m in matchs if m["gf"] == m["ga"])
+    defaites = sum(1 for m in matchs if m["gf"] < m["ga"])
+    marge = sum(m["gf"] - m["ga"] for m in matchs) / n
 
-    Ne retourne jamais None : un échantillon vide ou trop petit produit
-    un profil avec des valeurs None et statut_fiabilite=A_SURVEILLER,
-    jamais une exception -- à l'appelant de décider quoi faire d'un
-    profil peu fiable (jamais un rejet silencieux ici)."""
-    n = len(matchs_role)
-
-    stats_off = team_stats.stats_offensives(matchs_role)
-    stats_def = team_stats.stats_defensives(matchs_role)
-    resultats = team_stats.resultats(matchs_role)
-    r_btts = goals.btts(matchs_role)
-    r_over25 = goals.over_under(matchs_role, 2.5)
-
-    buts_marques = [m["buts_marques"] for m in matchs_role]
-    buts_encaisses = [m["buts_encaisses"] for m in matchs_role]
-    marges = [m["buts_marques"] - m["buts_encaisses"] for m in matchs_role]
-
-    freq_marque_0 = _frequence_egale(buts_marques, 0)
-    freq_clean_sheet = stats_def["frequence_clean_sheets"]
-    serie_sans_marquer = _serie_actuelle(matchs_role, lambda m: m["buts_marques"] == 0)
-    serie_clean_sheet = _serie_actuelle(matchs_role, lambda m: m["buts_encaisses"] == 0)
-    cv_attaque = _coefficient_variation(stats_off["moyenne"], stats_off["ecart_type"])
-    cv_defense = _coefficient_variation(stats_def["moyenne"], stats_def["ecart_type"])
+    numerateur = 0.0
+    denominateur = 0.0
+    for i, m in enumerate(matchs):
+        poids = i + 1
+        if m["gf"] > m["ga"]:
+            pts = 3.0
+        elif m["gf"] == m["ga"]:
+            pts = 1.0
+        else:
+            pts = 0.0
+        numerateur += pts * poids
+        denominateur += poids
+    forme = numerateur / denominateur if denominateur > 0 else None
 
     return {
-        "n": n,
-        "statut_fiabilite": STATUT_FIABLE if n >= N_MIN_PROFIL_FIABLE else STATUT_A_SURVEILLER,
-        "poids_fiabilite": poids_fiabilite(n),
-        # AJOUT 16/09/2026 (demande Patrick) -- écart de régularité entre
-        # attaque et défense de LA MÊME équipe (ex. attaque en dents de
-        # scie, défense stable, ou l'inverse) -- pas une comparaison
-        # entre deux équipes, une caractéristique interne à celle-ci.
-        "desynchronisation_attaque_defense": _desynchronisation_attaque_defense(cv_attaque, cv_defense),
+        "freq_victoires": round(victoires / n, 4),
+        "freq_nuls": round(nuls / n, 4),
+        "freq_defaites": round(defaites / n, 4),
+        "marge_buts_moyenne": round(marge, 4),
+        "forme_ponderee_recence": round(forme, 4) if forme is not None else None,
+    }
 
-        "attaque": {
-            "moyenne": stats_off["moyenne"],
-            "regularite_cv": cv_attaque,
-            "oscillation": _oscillation(buts_marques),
-            "freq_marque_0": _frequence_egale(buts_marques, 0),
-            "freq_marque_1_plus": _frequence_seuil(buts_marques, 1),
-            "freq_marque_2_plus": _frequence_seuil(buts_marques, 2),
-            "musique": _musique(buts_marques),
-            "serie_marque_actuelle": _serie_actuelle(matchs_role, lambda m: m["buts_marques"] >= 1),
-            "serie_sans_marquer_actuelle": serie_sans_marquer,
-            "improbabilite_serie_sans_marquer": _improbabilite_serie(serie_sans_marquer, freq_marque_0),
+
+def _calcule_bloc_tendances_buts(matchs: List[Dict[str, Any]]) -> Dict[str, Any]:
+    n = len(matchs)
+    if n == 0:
+        return {
+            "freq_btts": None, "freq_over_2_5": None,
+            "serie_btts_oui_actuelle": 0, "serie_btts_non_actuelle": 0,
+            "serie_over_2_5_actuelle": 0, "serie_under_2_5_actuelle": 0,
+        }
+    nb_btts = sum(1 for m in matchs if m["gf"] > 0 and m["ga"] > 0)
+    nb_over25 = sum(1 for m in matchs if (m["gf"] + m["ga"]) > 2.5)
+    return {
+        "freq_btts": round(nb_btts / n, 4),
+        "freq_over_2_5": round(nb_over25 / n, 4),
+        "serie_btts_oui_actuelle": _serie_actuelle(matchs, lambda gf, ga: gf > 0 and ga > 0),
+        "serie_btts_non_actuelle": _serie_actuelle(matchs, lambda gf, ga: gf == 0 or ga == 0),
+        "serie_over_2_5_actuelle": _serie_actuelle(matchs, lambda gf, ga: (gf + ga) > 2.5),
+        "serie_under_2_5_actuelle": _serie_actuelle(matchs, lambda gf, ga: (gf + ga) < 2.5),
+    }
+
+
+def _calcule_bloc_tendances_over_under(
+    matchs: List[Dict[str, Any]],
+    lignes: Tuple[float, ...],
+) -> Dict[float, Dict[str, Any]]:
+    n = len(matchs)
+    bloc: Dict[float, Dict[str, Any]] = {}
+    for ligne in lignes:
+        if n == 0:
+            bloc[ligne] = {
+                "freq_over": None, "freq_under": None,
+                "serie_over_actuelle": 0, "serie_under_actuelle": 0,
+            }
+            continue
+        nb_over = sum(1 for m in matchs if (m["gf"] + m["ga"]) > ligne)
+        nb_under = sum(1 for m in matchs if (m["gf"] + m["ga"]) < ligne)
+        bloc[ligne] = {
+            "freq_over": round(nb_over / n, 4),
+            "freq_under": round(nb_under / n, 4),
+            "serie_over_actuelle": _serie_actuelle(matchs, lambda gf, ga, l=ligne: (gf + ga) > l),
+            "serie_under_actuelle": _serie_actuelle(matchs, lambda gf, ga, l=ligne: (gf + ga) < l),
+        }
+    return bloc
+
+
+def _calcule_bloc_tendances_handicap(
+    matchs: List[Dict[str, Any]],
+    lignes: Tuple[float, ...],
+) -> Dict[float, Dict[str, Any]]:
+    n = len(matchs)
+    bloc: Dict[float, Dict[str, Any]] = {}
+    for ligne in lignes:
+        if n == 0:
+            bloc[ligne] = {
+                "freq_couvre": None, "freq_perd": None,
+                "serie_couvre_actuelle": 0,
+            }
+            continue
+        nb_couvre = sum(1 for m in matchs if (m["gf"] + ligne) > m["ga"])
+        nb_perd = sum(1 for m in matchs if (m["gf"] + ligne) < m["ga"])
+        bloc[ligne] = {
+            "freq_couvre": round(nb_couvre / n, 4),
+            "freq_perd": round(nb_perd / n, 4),
+            "serie_couvre_actuelle": _serie_actuelle(matchs, lambda gf, ga, l=ligne: (gf + l) > ga),
+        }
+    return bloc
+
+
+# =============================================================
+# RÉGIME ET FIABILITÉ
+# =============================================================
+
+def _determiner_regime(n_spec_valides: int) -> str:
+    if n_spec_valides == 0:
+        return "indisponible"
+    if n_spec_valides >= SEUIL_STABILITE:
+        return "specifique_pur"
+    return "mix_stabilise"
+
+
+def _determiner_niveau_fiabilite(regime: str) -> str:
+    return {
+        "specifique_pur": "haute",
+        "mix_stabilise": "stabilisee",
+        "indisponible": "indisponible",
+    }[regime]
+
+
+def _poids_stabilisation(n_spec: int, k: float = K_STABILISATION) -> float:
+    if n_spec <= 0:
+        return 0.0
+    return n_spec / (n_spec + k)
+
+
+def _statut_fiabilite_depuis_cn(c_n: float) -> str:
+    if c_n >= 0.75:
+        return STATUT_FIABLE
+    return STATUT_A_SURVEILLER
+
+
+# =============================================================
+# FILTRAGE HISTORIQUE
+# =============================================================
+
+def filtrer_historique_recent(
+    historique_matchs: List[Dict[str, Any]],
+    lieu_cible: Optional[str] = None,
+    lieu_exclu: Optional[str] = None,
+    fenetre: int = FENETRE_SPEC_DEFAUT,
+    deja_vus: Optional[set] = None,
+) -> List[Dict[str, Any]]:
+    if lieu_cible is not None and lieu_cible not in LIEUX_VALIDES:
+        raise ValueError(f"lieu_cible invalide : {lieu_cible!r}")
+    if lieu_exclu is not None and lieu_exclu not in LIEUX_VALIDES:
+        raise ValueError(f"lieu_exclu invalide : {lieu_exclu!r}")
+    if fenetre <= 0:
+        return []
+
+    vus = deja_vus or set()
+    resultat: List[Dict[str, Any]] = []
+
+    for match in historique_matchs:
+        if not isinstance(match, dict):
+            continue
+        lieu = _lieu_match(match)
+        if lieu_cible is not None and lieu != lieu_cible:
+            continue
+        if lieu_exclu is not None and lieu == lieu_exclu:
+            continue
+        if id(match) in vus:
+            continue
+        resultat.append(match)
+        if len(resultat) >= fenetre:
+            break
+
+    return resultat
+
+
+# =============================================================
+# CONSTRUCTION DU PROFIL
+# =============================================================
+
+def construit_profil(
+    nom_equipe: str,
+    historique_global: List[Dict[str, Any]],
+    lieu: str,
+    fenetre_specifique: int = FENETRE_SPEC_DEFAUT,
+    fenetre_stabilisateur: int = FENETRE_STAB_DEFAUT,
+    k_stabilisation: float = K_STABILISATION,
+) -> Dict[str, Any]:
+    """
+    Construit le profil complet d'une équipe pour son rôle du jour.
+
+    Contrat d'entrée :
+        - historique_global trié du PLUS ANCIEN au PLUS RÉCENT.
+        - lieu ∈ {"domicile", "exterieur"}.
+        - chaque match : soit "gf"+"ga", soit
+          "buts_marques"+"buts_encaisses", plus un marqueur de lieu
+          ("lieu" en str ou "domicile" en bool).
+
+    Sortie : dict à trois niveaux de compatibilité :
+        - champs à plat : compat peage_2.py
+        - bloc profil_role + disponibilite : compat main.py
+        - blocs structurés : compat matrice_croisement.py
+    """
+    if lieu not in LIEUX_VALIDES:
+        raise ValueError(f"lieu invalide : {lieu!r}. Attendu : {sorted(LIEUX_VALIDES)}")
+
+    # ---- 0. Normalisation du format des matchs (gf/ga OU buts_marques/buts_encaisses)
+    historique_global = [_normalise_match(m) for m in historique_global]
+
+    # ---- 1. Échantillon spécifique (le rôle)
+    matchs_specifiques = filtrer_historique_recent(
+        historique_global,
+        lieu_cible=lieu,
+        fenetre=fenetre_specifique,
+    )
+    n_spec_brut = len(matchs_specifiques)
+
+    # ---- 2. Échantillon stabilisateur (hors rôle, sans overlap)
+    ids_specifiques = {id(m) for m in matchs_specifiques}
+    matchs_stabilisateur = filtrer_historique_recent(
+        historique_global,
+        lieu_exclu=lieu,
+        fenetre=fenetre_stabilisateur,
+        deja_vus=ids_specifiques,
+    )
+    overlap_tolere = False
+    if not matchs_stabilisateur:
+        matchs_stabilisateur = filtrer_historique_recent(
+            historique_global,
+            lieu_cible=None,
+            fenetre=fenetre_stabilisateur,
+        )
+        overlap_tolere = True
+    n_stab_brut = len(matchs_stabilisateur)
+
+    # ---- 3. Fréquences à plat (compat P2)
+    matchs_specifiques_valides = valider_matchs(matchs_specifiques)
+    n_spec_valides = len(matchs_specifiques_valides)
+    freq_spec = calculer_frequences_brutes(matchs_specifiques_valides)
+
+    matchs_stab_valides = valider_matchs(matchs_stabilisateur)
+    n_stab_valides = len(matchs_stab_valides)
+    freq_stab = calculer_frequences_brutes(matchs_stab_valides)
+
+    # ---- 4. Volumes bruts (profil global)
+    matchs_global_valides = valider_matchs(historique_global)
+    n_global_valides = len(matchs_global_valides)
+    total_gf_global = sum(m["gf"] for m in matchs_global_valides)
+    total_ga_global = sum(m["ga"] for m in matchs_global_valides)
+    moy_gf_global = round(total_gf_global / n_global_valides, 3) if n_global_valides else 0.0
+    moy_ga_global = round(total_ga_global / n_global_valides, 3) if n_global_valides else 0.0
+
+    # ---- 5. Régime et mélange
+    regime = _determiner_regime(n_spec_valides)
+    niveau = _determiner_niveau_fiabilite(regime)
+    disponible = n_spec_valides > 0
+
+    c_n = get_coefficient_cn(n_spec_valides)
+
+    if regime == "specifique_pur":
+        poids_spec = 1.0
+        freq_finale = {k: round(freq_spec[k], 4) for k in MARCHES_CIBLES}
+    elif regime == "mix_stabilise":
+        poids_spec = _poids_stabilisation(n_spec_valides, k_stabilisation)
+        freq_finale = {
+            k: round(poids_spec * freq_spec[k] + (1 - poids_spec) * freq_stab[k], 4)
+            for k in MARCHES_CIBLES
+        }
+    else:
+        poids_spec = 0.0
+        freq_finale = {k: round(freq_stab[k], 4) for k in MARCHES_CIBLES}
+
+    # ---- 6. Fréquences effectives et marchés valides P1
+    freq_effectives: Dict[str, float] = {}
+    marches_valides_p1: Dict[str, bool] = {}
+    for m in MARCHES_CIBLES:
+        eff = round(freq_spec[m] * c_n, 4)
+        freq_effectives[m] = eff
+        marches_valides_p1[m] = eff >= SEUIL_P1
+
+    a_un_marche_valide = any(marches_valides_p1.values())
+
+    # ---- 7. Blocs structurés (compat matrice_croisement)
+    blocs = matchs_specifiques_valides
+    attaque = _calcule_bloc_attaque(blocs)
+    defense = _calcule_bloc_defense(blocs)
+    resultats = _calcule_bloc_resultats(blocs)
+    tendances_buts = _calcule_bloc_tendances_buts(blocs)
+    tendances_over_under = _calcule_bloc_tendances_over_under(blocs, (0.5, 1.5, 2.5, 3.5))
+    tendances_handicap = _calcule_bloc_tendances_handicap(blocs, LIGNES_HANDICAP_PAR_DEFAUT)
+
+    statut_fiabilite = _statut_fiabilite_depuis_cn(c_n)
+    poids_fiabilite = 1.0 if statut_fiabilite == STATUT_FIABLE else 0.5
+
+    # ---- 8. Assemblage
+    return {
+        # --- Identité
+        "equipe": nom_equipe,
+        "lieu_analyse": lieu,
+        "role": lieu,  # alias rétrocompat
+
+        # --- Signaux de disponibilité
+        "disponible": disponible,
+        "niveau_fiabilite": niveau,
+
+        # --- Compat P2 (à plat)
+        "echantillon_n": n_spec_valides,
+        "volumes_bruts": {
+            "total_gf": total_gf_global,
+            "total_ga": total_ga_global,
+            "moy_gf": moy_gf_global,
+            "moy_ga": moy_ga_global,
         },
-        "defense": {
-            "moyenne": stats_def["moyenne"],
-            "regularite_cv": cv_defense,
-            "oscillation": _oscillation(buts_encaisses),
-            "freq_clean_sheet": freq_clean_sheet,
-            "freq_encaisse_2_plus": _frequence_seuil(buts_encaisses, 2),
-            "musique": _musique(buts_encaisses),
-            "serie_clean_sheet_actuelle": serie_clean_sheet,
-            "serie_encaisse_actuelle": _serie_actuelle(matchs_role, lambda m: m["buts_encaisses"] >= 1),
-            "improbabilite_serie_clean_sheet": _improbabilite_serie(serie_clean_sheet, freq_clean_sheet),
+        "frequences_specifiques": freq_spec,
+        "frequences_stabilisateur": freq_stab,
+        "freq_finale": freq_finale,
+
+        # --- Compat main.py
+        "profil_role": {
+            "n_valides": n_spec_valides,
+            "c_n": c_n,
+            "frequences_brutes": freq_spec,
+            "frequences_effectives": freq_effectives,
+            "marches_valides_p1": marches_valides_p1,
         },
-        "resultats": {
-            "freq_victoires": resultats["frequence_victoires"],
-            "freq_nuls": resultats["frequence_nuls"],
-            "freq_defaites": resultats["frequence_defaites"],
-            "marge_buts_moyenne": moyenne(marges),
-            "marge_buts_ecart_type": ecart_type(marges),
-            "forme_ponderee_recence": _forme_ponderee_recence(matchs_role),
+        "disponibilite": {
+            "a_des_donnees": disponible,
+            "a_un_marche_valide": a_un_marche_valide,
         },
-        "tendances_buts": {
-            "freq_btts": r_btts["frequence"],
-            "freq_over_2_5": r_over25["frequence_over"],
-            # AJOUT 16/09/2026 (demande Patrick) -- musique appliquée aux
-            # marchés dérivés eux-mêmes, pas seulement aux buts bruts :
-            # une série de BTTS-oui ou d'Over-2.5 est une observation
-            # différente d'une série de clean sheets, même si les deux
-            # peuvent parfois coïncider sur les mêmes matchs.
-            "musique_btts": _musique([1 if (m["buts_marques"] > 0 and m["buts_encaisses"] > 0) else 0 for m in matchs_role]),
-            "serie_btts_oui_actuelle": _serie_actuelle(matchs_role, lambda m: m["buts_marques"] > 0 and m["buts_encaisses"] > 0),
-            "serie_btts_non_actuelle": _serie_actuelle(matchs_role, lambda m: not (m["buts_marques"] > 0 and m["buts_encaisses"] > 0)),
-            "musique_over_2_5": _musique([1 if (m["buts_marques"] + m["buts_encaisses"]) > 2.5 else 0 for m in matchs_role]),
-            "serie_over_2_5_actuelle": _serie_actuelle(matchs_role, lambda m: (m["buts_marques"] + m["buts_encaisses"]) > 2.5),
-            "serie_under_2_5_actuelle": _serie_actuelle(matchs_role, lambda m: (m["buts_marques"] + m["buts_encaisses"]) <= 2.5),
+        "profil_global": {
+            "n_valides": n_global_valides,
+            "volumes_bruts": {
+                "total_gf": total_gf_global,
+                "total_ga": total_ga_global,
+                "moy_gf": moy_gf_global,
+                "moy_ga": moy_ga_global,
+            },
         },
-        # AJOUT 16/09/2026 (demande Patrick) -- lignes Over/Under
-        # supplémentaires (1.5, 3.5), clé = la ligne elle-même.
-        "tendances_over_under": {
-            ligne: _stats_over_under_ligne(matchs_role, ligne) for ligne in LIGNES_OVER_UNDER_SUPPLEMENTAIRES
-        },
-        # AJOUT 16/09/2026 (demande Patrick) -- Handicap 3 choix à
-        # chaque ligne standard, clé = la ligne elle-même.
-        "tendances_handicap": {
-            ligne: _stats_handicap_ligne(matchs_role, ligne) for ligne in LIGNES_HANDICAP_PAR_DEFAUT
+
+        # --- Compat matrice_croisement.py
+        "attaque": attaque,
+        "defense": defense,
+        "resultats": resultats,
+        "tendances_buts": tendances_buts,
+        "tendances_over_under": tendances_over_under,
+        "tendances_handicap": tendances_handicap,
+        "statut_fiabilite": statut_fiabilite,
+        "poids_fiabilite": poids_fiabilite,
+
+        # --- Audit
+        "audit": {
+            "regime": regime,
+            "seuil_stabilite": SEUIL_STABILITE,
+            "specifique_n_brut": n_spec_brut,
+            "specifique_n_valides": n_spec_valides,
+            "stabilisateur_n_brut": n_stab_brut,
+            "stabilisateur_n_valides": n_stab_valides,
+            "overlap_tolere": overlap_tolere,
+            "poids_specifique": round(poids_spec, 4),
+            "poids_stabilisateur": round(1 - poids_spec, 4),
+            "k_stabilisation": k_stabilisation,
+            "version": "2.5",
         },
     }
+
+
+# =============================================================
+# HELPERS POUR L'AVAL
+# =============================================================
+
+def profil_est_consommable(profil: Dict[str, Any]) -> bool:
+    return bool(profil.get("disponible", False))
+
+
+def extraire_frequences_p1_validees(profil: Dict[str, Any]) -> Dict[str, float]:
+    pr = profil.get("profil_role", {})
+    freq_brutes = pr.get("frequences_brutes", {})
+    marches_valides = pr.get("marches_valides_p1", {})
+    return {
+        marche: freq_brutes[marche]
+        for marche, valide in marches_valides.items()
+        if valide and marche in freq_brutes
+    }
+
+
+def resume_telemetrie(profil: Dict[str, Any]) -> Dict[str, Any]:
+    audit = profil.get("audit", {})
+    return {
+        "equipe": profil.get("equipe"),
+        "lieu": profil.get("lieu_analyse"),
+        "disponible": profil.get("disponible", False),
+        "niveau_fiabilite": profil.get("niveau_fiabilite", "indisponible"),
+        "statut_fiabilite": profil.get("statut_fiabilite", STATUT_A_SURVEILLER),
+        "regime": audit.get("regime", "indisponible"),
+        "n_spec_valides": audit.get("specifique_n_valides", 0),
+        "n_stab_valides": audit.get("stabilisateur_n_valides", 0),
+        "poids_specifique": audit.get("poids_specifique", 0.0),
+        "overlap_tolere": audit.get("overlap_tolere", False),
+        "version": audit.get("version", "?"),
+    }
+
+
+# =============================================================
+# EXEMPLE
+# =============================================================
+
+if __name__ == "__main__":
+    import json
+
+    # Test avec format loader : buts_marques / buts_encaisses
+    historique_A = [
+        {"domicile": True, "buts_marques": 2, "buts_encaisses": 1},
+        {"domicile": False, "buts_marques": 1, "buts_encaisses": 1},
+        {"domicile": True, "buts_marques": 3, "buts_encaisses": 0},
+        {"domicile": True, "buts_marques": 1, "buts_encaisses": 2},
+        {"domicile": False, "buts_marques": 0, "buts_encaisses": 0},
+        {"domicile": True, "buts_marques": 2, "buts_encaisses": 2},
+        {"domicile": True, "buts_marques": 1, "buts_encaisses": 0},
+        {"domicile": False, "buts_marques": 2, "buts_encaisses": 3},
+        {"domicile": True, "buts_marques": 0, "buts_encaisses": 1},
+        {"domicile": True, "buts_marques": 4, "buts_encaisses": 1},
+    ]
+
+    profil = construit_profil("Équipe A", historique_A, lieu="domicile")
+    print(json.dumps(profil, indent=2, ensure_ascii=False, default=str))

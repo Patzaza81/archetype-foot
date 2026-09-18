@@ -25,6 +25,12 @@ exemple avant le tout premier déploiement de la configuration) -- aucun
 avertissement. Le fichier présent mais avec une clé manquante ou une
 valeur invalide est en revanche un signal d'un problème réel -- un
 avertissement est écrit sur stderr, sans jamais bloquer.
+
+CORRECTIF 18/09/2026 -- COTE_MAX alignée sur 1.80 (décision Patrick du
+16/09/2026, cf. commentaire dans signals/convergence.py). La valeur
+précédente 1.74 était un reliquat de la version initiale ; le commentaire
+de convergence.py annonçait déjà 1.80 mais VALEURS_ORIGINE n'avait jamais
+été mise à jour.
 """
 
 from __future__ import annotations
@@ -41,7 +47,7 @@ FICHIER_PARAMETRES_DEFAUT = "config/adaptive_parameters.json"
 # une estimation ni une valeur recalculée.
 VALEURS_ORIGINE: dict[str, float] = {
     "COTE_MIN": 1.26,
-    "COTE_MAX": 1.74,
+    "COTE_MAX": 1.80,
     "ROBUSTNESS_STD_THRESHOLD": 0.08,
     "EDV_MIN_P_GE_75": 0.05,
     "EDV_MIN_P_71_75": 0.05,
