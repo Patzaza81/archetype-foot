@@ -1,77 +1,219 @@
 # ROADMAP — Archetype Foot
 
-Suivi de l'état des chantiers majeurs. Chaque statut ci-dessous n'est
-posé qu'après vérification réelle (exécution de code, lecture directe
-de la configuration active ou de l'historique git) -- jamais une
-supposition. Voir `TRANSITION.md` pour le détail narratif complet de
-chaque session.
+Suivi des chantiers majeurs. Les statuts ci-dessous reposent sur des vérifications réelles du dépôt, des exécutions GitHub Actions et des fichiers produits. Aucune conclusion ne doit être tirée d'un simple statut vert sans inspection des sorties.
 
-Dernière mise à jour : 17/09/2026 (session #51 de `TRANSITION.md`).
+Dernière mise à jour : 18/09/2026 — après runs #128 et #129.
 
 ---
 
-## État des chantiers
+## 1. État immédiat
 
-### Péage 3 (EDV / filtre de cote) — **Actif & Verrouillé sur [1.26 - 1.80]**
+### Run #128 — SUCCÈS technique
+- Commit exécuté : `4f772866`.
+- Pipeline complet exécuté.
+- Les étapes scraping, pré-calcul, Betpawa, vérifications, observation, tickets, bilan comportemental et calibration sont passées.
+- La bibliothèque de justification est présente dans les sorties.
+- Défauts constatés : justifications spécifiques encore absentes pour plusieurs candidats, `odds_scraped`/`market_prob_pct` parfois nuls dans le chemin courant, marchés Under non couverts par le dictionnaire de preuves, `over_2.5` non reconnu par le règlement.
 
-- Plage active confirmée dans `config/adaptive_parameters.json`
-  (`COTE_MIN: 1.26`, `COTE_MAX: 1.80`), lue dynamiquement par
-  `archetype_model/signals/convergence.py` via `config_loader.py`.
-- `COTE_MAX` promu de 1.74 à 1.80 le 16/09/2026 (commit `472c79e`,
-  décision explicite de Patrick, édition directe du fichier de
-  configuration).
-- **Nuance à garder en tête** : "verrouillé" signifie que la valeur est
-  active et volontaire, pas qu'elle est figée dans le code -- `COTE_MAX`
-  reste un paramètre calibrable (`archetype_model/learning/garde_fous.py`,
-  `PARAMETRES_CALIBRABLES`) que `calibration.py` pourrait promouvoir à
-  nouveau à l'avenir, sous garde-fous renforcés (±2 % par cycle, ±8 %
-  cumulé depuis l'origine 1.74).
-- Trois assertions de `audit_permanent.py`, restées codées sur l'ancienne
-  valeur 1.74, corrigées le 17/09/2026 (commits `8fb8272`, `a239fd6`) --
-  voir session #51 de `TRANSITION.md`.
+### Run #129 — ÉCHEC APRÈS ~2 h 29
+- Type : `schedule`.
+- Commit de départ : `4f772866`.
+- Étapes 1 à 14 : **succès**.
+- Étape 15 — « Commit et push du résultat » : **échec**.
+- Cause exacte vérifiée dans les logs : le job a produit un commit local `db65c61`, puis le `git pull --rebase` a rencontré des conflits de contenu sur les gros fichiers de données générés simultanément sur `main` (archive, caches, diagnostics, `precalcul.json`, tickets, etc.).
+- Le rebase n'a pas pu appliquer `db65c61`, sortie 1.
+- L'échec n'est donc **pas un échec du moteur de prédiction ni du scraping** : c'est un conflit de synchronisation Git sur la phase de publication.
+- Le problème est aggravé par le volume massif des fichiers générés et par des écritures concurrentes sur `main`.
 
-### Module d'audit passif (`archetype_model/audit/`) — **Déployé et branché**
-
-- `circuit_breaker.py`, `telemetry.py`, `report.py` codés, 39 tests
-  unitaires verts, intégrés dans `archetype_model/main.py` (avant Péage 1)
-  et `precalcul.py` (télémétrie + dashboard en fin de nuit).
-- Brier score mesuré sur les vraies données déjà résolues :
-  **0,299 (zone RED)**.
-- **Limite connue** : aucun déclenchement automatique de
-  `telemetry.enregistre_scores_probabilistes()` n'existe encore dans
-  `pipeline.yml` -- `archetype_model/learning/resultats.py` (qui résout
-  les résultats réels) n'y est lui-même pas câblé (limite préexistante,
-  pas propre à ce chantier). Le Brier score ne se met donc pas à jour
-  seul aujourd'hui ; à appeler manuellement ou à brancher.
-- **Limite connue** : au point d'intégration choisi, le motif
-  `ECHANTILLON_INSUFFISANT` du circuit breaker ne peut plus se déclencher
-  en pratique (le pipeline garantit déjà `n >= 5` avant ce point) --
-  reste correct et testé, utile si le module est un jour appelé plus tôt.
+**Action prioritaire : sécuriser la publication des résultats avant de relancer des runs longs.**
 
 ---
 
-## Prochaine étape prioritaire
+## 2. Feuille de route priorisée
 
-**Finalisation des contrôles d'ingestion Data/Cache et intégration du
-Dashboard Frontend.**
+### P0 — Bloquant avant nouveau gros run
 
-- Ingestion Data/Cache : consolider les contrôles déjà en place
-  (`cache_equipes.py`, `cache_betpawa.py`, `cache_h2h.py`,
-  `cache_classement.py`, TTL) avec le circuit breaker du module d'audit,
-  aujourd'hui indépendants l'un de l'autre.
-- Dashboard Frontend : afficher `data/audit_status.json` sur une page du
-  site, sur le modèle de `systeme.html` (déjà existant pour le bilan
-  comportemental et la calibration) -- pas commencée à ce jour.
+#### P0.1 Publication GitHub atomique et sans conflit
+**Problème confirmé par le run #129.**
 
-## Connu, non planifié, à ne pas perdre de vue
+Objectif :
+- empêcher qu'un run long termine correctement puis perde ses résultats au dernier `git pull --rebase`;
+- gérer explicitement la concurrence entre run planifié et run manuel;
+- ne jamais écraser silencieusement le travail arrivé sur `main` pendant le calcul.
 
-- 14 échecs pré-existants dans `audit_permanent.py`, confirmés sans
-  rapport avec le module d'audit (voir session #51 de `TRANSITION.md`) --
-  en particulier un rejeu réel du 10/09/2026 dont les chiffres obtenus
-  (35 candidats / 29 matchs) ne correspondent plus aux chiffres attendus
-  (68/48), possible divergence de comportement réelle du moteur jamais
-  expliquée.
-- `garde_fous.verifier_rollback()` existe mais n'est jamais appelé par
-  `calibre_archetype_model.py` -- aucun rollback automatique aujourd'hui
-  si un paramètre promu se révèle mauvais après coup (signalé depuis la
-  session #47 de `TRANSITION.md`, toujours pas traité).
+Critères de sortie :
+- un run complet peut publier ses résultats même si `main` a avancé pendant son exécution;
+- aucune donnée produite n'est perdue;
+- aucun conflit manuel ne doit être requis depuis l'iPhone.
+
+#### P0.2 Réduire le temps du pré-calcul / Betpawa
+**Problème confirmé : ~80,5 min de Betpawa dans le run #128.**
+
+Constats :
+- 976 tentatives ;
+- 440 cache hits ;
+- 121 trouvailles fraîches ;
+- 48 ambiguës ;
+- 367 non trouvées ;
+- 193 titres mismatch ;
+- 0 erreur technique ;
+- durée Betpawa ~4829 s.
+
+Objectif : réduire fortement le temps sans relâcher la règle de sécurité « mieux vaut aucun match qu'un mauvais match ».
+
+Critères de sortie :
+- durée mesurée avant/après ;
+- taux de correspondances correctes conservé ;
+- aucune acceptation d'un match ambigu.
+
+---
+
+### P1 — Justifications : terminer l'intégration proprement
+
+#### P1.1 Brancher réellement `rattrapage_justification.py`
+Le script corrigé existe mais n'est pas appelé par `pipeline.yml`.
+
+Objectif :
+- faire tourner le rattrapage sur les fenêtres réellement produites ;
+- transmettre H2H quand disponible ;
+- distinguer recalcul, preuve spécifique, EV seul et absence de preuve.
+
+#### P1.2 Supprimer le pont implicite cote/probabilité
+Le chemin courant peut produire :
+- `odds_scraped: null`
+- `market_prob_pct: null`
+- `ev_percentage: null`
+
+Objectif :
+- transmettre explicitement la cote Betpawa du candidat ;
+- transmettre explicitement la probabilité affichée/calculée ;
+- supprimer la dépendance au contexte appelant/`inspect` une fois la compatibilité vérifiée.
+
+#### P1.3 Compléter uniquement les marchés réellement présents
+Le run démontre des marchés `over_under_total_3.5_under` et `over_under_total_2.5_under` avec des preuves statistiques disponibles.
+
+Objectif :
+- définir les preuves Under à partir de données réellement disponibles ;
+- ne pas inventer de métriques ;
+- conserver la règle : donnée exacte → utilisée, dérivable → calculée, définition différente → refusée, absente → à ajouter.
+
+#### P1.4 Corriger le règlement de `over_2.5`
+Le run a rencontré la nomenclature réelle `over_2.5`.
+
+Objectif :
+- accepter cette nomenclature exacte dans le règlement ;
+- vérifier toutes les variantes réellement émises avant modification ;
+- ne pas ajouter d'alias hypothétique sans preuve dans les données.
+
+---
+
+### P1 — Handicap : audit séparé
+
+**Constat actuel :**
+- 18 observations historiques analysées ;
+- 3 gagnées / 15 perdues ;
+- ROI flat stake observé : -76,61 %.
+
+Ce résultat est un signal d'audit, pas une preuve définitive avec un échantillon aussi court.
+
+Objectif :
+- vérifier l'orientation domicile/extérieur du handicap ;
+- vérifier le signe et la convention de chaque ligne ;
+- séparer les observations antérieures et postérieures au correctif `431ef02` avec horodatage lorsque disponible ;
+- rejouer les cas représentatifs ;
+- ne modifier aucune règle de sélection avant d'avoir isolé la cause.
+
+**Critère de sortie :** convention mathématique et sens du marché démontrés par des cas réels.
+
+---
+
+### P2 — Calibration et validation prédictive
+
+#### P2.1 Ne pas promouvoir de nouveau paramètre avec N insuffisant
+Le run #128 n'a produit aucune promotion de calibration.
+
+Le protocole reste :
+1. observations admissibles ;
+2. dédoublonnage par `match_id` ;
+3. exclusion des observations contaminées ;
+4. N global ;
+5. Brier/log-loss ;
+6. calibration par bins ;
+7. transformation éventuelle apprise chronologiquement puis évaluée hors échantillon.
+
+Jalon cible de travail : accumuler environ 150–200 observations propres avant de prétendre identifier une calibration globale exploitable.
+
+#### P2.2 Rejouer le fixture 68/48 verrouillé
+La suite permanente et le fixture historique doivent rester protégés.
+
+Objectif :
+- vérifier toute modification contre le rejeu attendu ;
+- ne jamais utiliser une modification de production pour masquer une divergence du fixture.
+
+#### P2.3 Rollback automatique
+`garde_fous.verifier_rollback()` existe mais n'est pas appelé par `calibre_archetype_model.py`.
+
+Objectif : intégrer un rollback vérifiable après promotion, sans contourner les garde-fous.
+
+---
+
+### P2 — Qualité des données / audit
+
+#### P2.4 Télémétrie de résultats
+Le module d'audit passif est branché mais `telemetry.enregistre_scores_probabilistes()` n'est pas encore alimenté automatiquement par la résolution réelle.
+
+Objectif : fermer la boucle score → résultat → Brier/log-loss.
+
+#### P2.5 Divergence du rejeu 10/09
+Le rejeu réel connu a produit 35 candidats / 29 matchs au lieu des 68 / 48 attendus.
+
+Objectif : expliquer cette divergence avant de considérer la suite permanente comme représentative du comportement actuel.
+
+---
+
+### P3 — Interface / présentation
+
+À traiter après stabilisation des données et du moteur :
+- afficher uniquement les justifications effectivement produites ;
+- supprimer les anciens textes historiques uniquement lorsque leur source active a été vérifiée ;
+- conserver la carte prototype : pronostic principal visible en état replié, détails complets après dépliage, autres pronostics accessibles ensuite ;
+- vérifier les boutons « Analyse » du panier ;
+- maintenir la lisibilité iPhone 414 px et les couleurs validées.
+
+---
+
+## 3. Ordre strict d'exécution
+
+1. **Corriger la publication GitHub du workflow (#129).**
+2. **Réduire le temps Betpawa sans diminuer la sécurité du matching.**
+3. **Brancher le rattrapage des justifications.**
+4. **Corriger le passage explicite cote/probabilité.**
+5. **Compléter les preuves Under réellement présentes.**
+6. **Corriger le règlement `over_2.5`.**
+7. **Auditer Handicap indépendamment.**
+8. **Accumuler les observations propres et reprendre le protocole de calibration.**
+9. **Résoudre la divergence du rejeu 68/48.**
+10. **Seulement ensuite reprendre les finitions UI dépendantes des données.**
+
+---
+
+## 4. Règles de sécurité de la feuille de route
+
+- Ne pas modifier `calculs.py`, `run_pipeline.py` ou `scraper_details.py` sans preuve et test ciblé.
+- Ne pas relâcher le matching Betpawa pour améliorer artificiellement le taux de trouvés.
+- Ne pas transformer une absence de preuve en justification marketing.
+- Ne pas promouvoir une calibration sur un échantillon insuffisant.
+- Ne pas confondre validation logique et validation prédictive.
+- Ne pas considérer un run GitHub vert comme preuve suffisante : inspecter les fichiers produits.
+- Le nouveau dictionnaire de justification prévaut sur les anciens textes lorsqu'il y a conflit.
+- Les anciennes données historiques ne doivent pas être réécrites à l'aveugle.
+
+---
+
+## 5. Point de reprise
+
+**Après le run #129 :** le prochain chantier n'est pas de relancer le pipeline.
+
+Il faut d'abord rendre sa phase de publication robuste. Le run #129 a démontré que le calcul peut aller jusqu'au bout pendant plus de deux heures, puis échouer uniquement au moment de publier les résultats.
+
+Une fois ce verrou levé, un run court de validation ciblée doit précéder tout nouveau run complet.
