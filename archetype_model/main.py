@@ -174,7 +174,7 @@ def _construit_candidat(*, marche, market_family, exposure_group, marches_par_sc
         "signal_direction": signal["direction"] if signal else None,
         "signal_frequence": signal["frequence"] if signal else None,
         "confirmation_historique": justification.confirmation_historique(marche, matchs_a_domicile, matchs_b_exterieur) if matchs_a_domicile is not None or matchs_b_exterieur is not None else None,
-        "justification": justification.construit_justification(marche, historique_a or [], historique_b or [], h2h=confrontations_h2h or [], nom_domicile=nom_domicile, nom_exterieur=nom_exterieur),
+        "justification": justification.construit_justification(marche, historique_a or [], historique_b or [], h2h=confrontations_h2h or [], nom_domicile=nom_domicile, nom_exterieur=nom_exterieur, odds_scraped=cote, market_prob_pct=p_repr * 100.0),
     }, diagnostic
 
 
@@ -499,6 +499,7 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
                 "justification": justification.construit_justification(
                     marche_nom, _historique_a_justif, _historique_b_justif,
                     h2h=_h2h_justif, nom_domicile=nom_domicile, nom_exterieur=nom_exterieur,
+                    odds_scraped=cote_reelle, market_prob_pct=p * 100.0,
                 ),
                 "_cle_cote": cle_cote,
             })
