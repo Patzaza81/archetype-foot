@@ -76,9 +76,6 @@ def _condition_pour_cle(cle_cote):
     if type_marche == "buts_equipe_exterieur":
         _, ligne, sens = cle_cote
         return (lambda x, y: y > ligne) if sens == "over" else (lambda x, y: y < ligne)
-    if type_marche == "parite_totale":
-        sel = cle_cote[1]
-        return (lambda x, y: (x + y) % 2 == 0) if sel == "pair" else (lambda x, y: (x + y) % 2 == 1)
     if type_marche == "handicap_3choix":
         _, ligne, sel = cle_cote
         if round(ligne * 4) % 2 != 0:
@@ -87,11 +84,6 @@ def _condition_pour_cle(cle_cote):
         if sel == "domicile": return lambda x, y: (x + h) > y
         if sel == "nul": return lambda x, y: (x + h) == y
         return lambda x, y: (x + h) < y
-    if type_marche == "combo_dc_total":
-        _, dc, sens, ligne = cle_cote
-        cond_dc = {"1X": lambda x, y: x >= y, "X2": lambda x, y: x <= y, "12": lambda x, y: x != y}[dc]
-        cond_total = (lambda x, y: (x + y) > ligne) if sens == "over" else (lambda x, y: (x + y) < ligne)
-        return lambda x, y: cond_dc(x, y) and cond_total(x, y)
     return None
 
 
@@ -142,7 +134,6 @@ def analyse_match(url_domicile, nom_domicile, url_exterieur, nom_exterieur, nom_
         "over_2_5": robustness.evalue_robustesse(_valeurs_4_scenarios(marches_par_scenario, lambda m: m["over_under_total"][2.5]["over"] if m["over_under_total"][2.5] else None)),
         "cage_inviolee_domicile": robustness.evalue_robustesse(_valeurs_4_scenarios(marches_par_scenario, lambda m: m["buts_equipe_exterieur"][0.5]["under"] if m["buts_equipe_exterieur"][0.5] else None)),
         "cage_inviolee_exterieur": robustness.evalue_robustesse(_valeurs_4_scenarios(marches_par_scenario, lambda m: m["buts_equipe_domicile"][0.5]["under"] if m["buts_equipe_domicile"][0.5] else None)),
-        "parite_pair": robustness.evalue_robustesse(_valeurs_4_scenarios(marches_par_scenario, lambda m: m["parite_totale"]["pair"] if m["parite_totale"] else None)),
     }
     return {
         "statut": "OK",
@@ -200,9 +191,6 @@ def _extracteur_dynamique(cle, matrices_par_scenario, dist_a_par_scenario, dist_
             p = markets.probabilite_btts(matrices_par_scenario[s]) if matrices_par_scenario[s] else None
             return p if sel == "oui" else (1.0 - p if p is not None else None)
         return f
-    if cle[0] == "parite_totale":
-        _, sel = cle
-        return lambda s: markets.probabilite_parite_totale(matrices_par_scenario[s])[sel] if matrices_par_scenario[s] else None
     if cle[0] == "over_under_total":
         _, ligne, sens = cle
         return lambda s: (markets.probabilites_over_under_total(matrices_par_scenario[s], ligne) or {}).get(sens) if matrices_par_scenario[s] else None
@@ -222,9 +210,6 @@ def _extracteur_dynamique(cle, matrices_par_scenario, dist_a_par_scenario, dist_
             if sel == "nul": return r["push"]
             return r["perte"]
         return f
-    if cle[0] == "combo_dc_total":
-        _, dc, sens, ligne = cle
-        return lambda s: markets.probabilite_combo_dc_total(matrices_par_scenario[s], dc, ligne, sens) if matrices_par_scenario[s] else None
     return None
 
 
@@ -449,7 +434,6 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
         ("over_under_total", 2.5, "over"),
         ("buts_equipe_exterieur", 0.5, "under"), ("buts_equipe_exterieur", 0.5, "over"),
         ("buts_equipe_domicile", 0.5, "under"), ("buts_equipe_domicile", 0.5, "over"),
-        ("parite_totale", "pair"), ("parite_totale", "impair"),
     }
 
     for cle_cote, cote_reelle in cotes.items():
@@ -468,7 +452,6 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
             marche_nom = f"{cle_cote[0]}_{cle_cote[1]}"
         elif cle_cote[0] == "handicap_3choix":
             marche_nom = f"handicap_{cle_cote[2]}_{cle_cote[1]}"
-        elif cle_cote[0] == "combo_dc_total":
             marche_nom = f"combo_{cle_cote[1]}_{cle_cote[2]}_{cle_cote[3]}"
         else:
             marche_nom = f"{cle_cote[0]}_{cle_cote[1]}_{cle_cote[2]}"
