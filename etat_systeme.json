@@ -1,12 +1,12 @@
 {
-  "genere_le": "2026-09-18T01:04:49.369977+00:00",
+  "genere_le": "2026-09-19T02:33:58.203940+00:00",
   "bilan_comportemental": {
     "global": {
-      "observations": 51,
-      "gagnes": 25,
-      "perdus": 26,
-      "somme_gains_flat_stake": -15.029999999999996,
-      "roi_flat": -0.2947058823529411
+      "observations": 64,
+      "gagnes": 30,
+      "perdus": 34,
+      "somme_gains_flat_stake": -20.919999999999998,
+      "roi_flat": -0.32687499999999997
     },
     "par_famille": {
       "GOALS_EQUIPE_DOMICILE": {
@@ -29,25 +29,25 @@
       },
       "HANDICAP": {
         "resume": {
-          "observations": 18,
-          "gagnes": 3,
-          "perdus": 15,
-          "somme_gains_flat_stake": -13.79,
-          "roi_flat": -0.7661111111111111
+          "observations": 21,
+          "gagnes": 4,
+          "perdus": 17,
+          "somme_gains_flat_stake": -15.389999999999999,
+          "roi_flat": -0.7328571428571428
         },
         "par_niveau": {
           "PREMIUM": {
-            "observations": 14,
-            "gagnes": 3,
-            "perdus": 11,
-            "somme_gains_flat_stake": -9.79,
-            "roi_flat": -0.6992857142857142
+            "observations": 16,
+            "gagnes": 4,
+            "perdus": 12,
+            "somme_gains_flat_stake": -10.389999999999999,
+            "roi_flat": -0.6493749999999999
           },
           "TRES_FORT": {
-            "observations": 3,
+            "observations": 4,
             "gagnes": 0,
-            "perdus": 3,
-            "somme_gains_flat_stake": -3.0,
+            "perdus": 4,
+            "somme_gains_flat_stake": -4.0,
             "roi_flat": -1.0
           },
           "FORT": {
@@ -61,19 +61,19 @@
       },
       "GOALS_TOTAL": {
         "resume": {
-          "observations": 18,
-          "gagnes": 14,
-          "perdus": 4,
-          "somme_gains_flat_stake": 2.19,
-          "roi_flat": 0.12166666666666666
+          "observations": 23,
+          "gagnes": 16,
+          "perdus": 7,
+          "somme_gains_flat_stake": 0.07999999999999963,
+          "roi_flat": 0.003478260869565201
         },
         "par_niveau": {
           "PREMIUM": {
-            "observations": 13,
-            "gagnes": 10,
-            "perdus": 3,
-            "somme_gains_flat_stake": 1.0100000000000002,
-            "roi_flat": 0.07769230769230771
+            "observations": 18,
+            "gagnes": 12,
+            "perdus": 6,
+            "somme_gains_flat_stake": -1.0999999999999996,
+            "roi_flat": -0.06111111111111109
           },
           "TRES_FORT": {
             "observations": 2,
@@ -140,6 +140,56 @@
             "roi_flat": 0.3700000000000001
           }
         }
+      },
+      "BTTS": {
+        "resume": {
+          "observations": 4,
+          "gagnes": 2,
+          "perdus": 2,
+          "somme_gains_flat_stake": -1.1800000000000002,
+          "roi_flat": -0.29500000000000004
+        },
+        "par_niveau": {
+          "FORT": {
+            "observations": 1,
+            "gagnes": 0,
+            "perdus": 1,
+            "somme_gains_flat_stake": -1.0,
+            "roi_flat": -1.0
+          },
+          "PREMIUM": {
+            "observations": 2,
+            "gagnes": 1,
+            "perdus": 1,
+            "somme_gains_flat_stake": -0.5900000000000001,
+            "roi_flat": -0.29500000000000004
+          },
+          "TRES_FORT": {
+            "observations": 1,
+            "gagnes": 1,
+            "perdus": 0,
+            "somme_gains_flat_stake": 0.4099999999999999,
+            "roi_flat": 0.4099999999999999
+          }
+        }
+      },
+      "GOALS_EQUIPE_EXTERIEUR": {
+        "resume": {
+          "observations": 1,
+          "gagnes": 0,
+          "perdus": 1,
+          "somme_gains_flat_stake": -1.0,
+          "roi_flat": -1.0
+        },
+        "par_niveau": {
+          "PREMIUM": {
+            "observations": 1,
+            "gagnes": 0,
+            "perdus": 1,
+            "somme_gains_flat_stake": -1.0,
+            "roi_flat": -1.0
+          }
+        }
       }
     }
   },
@@ -193,6 +243,146 @@
   },
   "dernieres_promotions": [
     {
+      "date_cycle": "2026-09-19",
+      "parametre": "EDV_MIN_P_GE_75",
+      "avant": 0.05,
+      "apres": 0.05,
+      "decision": "REJETE",
+      "evidence": {
+        "motif": "n'améliore pas simultanément la zone d'apprentissage et la zone hors échantillon"
+      }
+    },
+    {
+      "date_cycle": "2026-09-19",
+      "parametre": "EDV_MIN_P_GE_75",
+      "avant": 0.05,
+      "apres": 0.05,
+      "decision": "REJETE",
+      "evidence": {
+        "motif": "n'améliore pas simultanément la zone d'apprentissage et la zone hors échantillon"
+      }
+    },
+    {
+      "date_cycle": "2026-09-19",
+      "parametre": "EDV_MIN_P_71_75",
+      "avant": 0.05,
+      "apres": 0.05,
+      "decision": "REJETE",
+      "evidence": {
+        "motif": "échantillon insuffisant : 34 < 50 requis pour 'EDV_MIN_P_71_75'"
+      }
+    },
+    {
+      "date_cycle": "2026-09-19",
+      "parametre": "EDV_MIN_P_71_75",
+      "avant": 0.05,
+      "apres": 0.05,
+      "decision": "REJETE",
+      "evidence": {
+        "motif": "échantillon insuffisant : 34 < 50 requis pour 'EDV_MIN_P_71_75'"
+      }
+    },
+    {
+      "date_cycle": "2026-09-19",
+      "parametre": "EDV_MIN_P_67_71",
+      "avant": 0.07,
+      "apres": 0.07,
+      "decision": "REJETE",
+      "evidence": {
+        "motif": "échantillon insuffisant : 25 < 50 requis pour 'EDV_MIN_P_67_71'"
+      }
+    },
+    {
+      "date_cycle": "2026-09-19",
+      "parametre": "EDV_MIN_P_67_71",
+      "avant": 0.07,
+      "apres": 0.07,
+      "decision": "REJETE",
+      "evidence": {
+        "motif": "échantillon insuffisant : 25 < 50 requis pour 'EDV_MIN_P_67_71'"
+      }
+    },
+    {
+      "date_cycle": "2026-09-19",
+      "parametre": "EDV_MIN_P_63_67",
+      "avant": 0.1,
+      "apres": 0.1,
+      "decision": "REJETE",
+      "evidence": {
+        "motif": "échantillon insuffisant : 20 < 50 requis pour 'EDV_MIN_P_63_67'"
+      }
+    },
+    {
+      "date_cycle": "2026-09-19",
+      "parametre": "EDV_MIN_P_63_67",
+      "avant": 0.1,
+      "apres": 0.1,
+      "decision": "REJETE",
+      "evidence": {
+        "motif": "échantillon insuffisant : 20 < 50 requis pour 'EDV_MIN_P_63_67'"
+      }
+    },
+    {
+      "date_cycle": "2026-09-19",
+      "parametre": "EDV_MIN_P_60_63",
+      "avant": 0.12,
+      "apres": 0.12,
+      "decision": "REJETE",
+      "evidence": {
+        "motif": "échantillon insuffisant : 6 < 50 requis pour 'EDV_MIN_P_60_63'"
+      }
+    },
+    {
+      "date_cycle": "2026-09-19",
+      "parametre": "EDV_MIN_P_60_63",
+      "avant": 0.12,
+      "apres": 0.12,
+      "decision": "REJETE",
+      "evidence": {
+        "motif": "échantillon insuffisant : 6 < 50 requis pour 'EDV_MIN_P_60_63'"
+      }
+    },
+    {
+      "date_cycle": "2026-09-19",
+      "parametre": "COTE_MIN",
+      "avant": 1.26,
+      "apres": 1.26,
+      "decision": "REJETE",
+      "evidence": {
+        "motif": "échantillon insuffisant : 64 < 100 requis pour 'COTE_MIN'"
+      }
+    },
+    {
+      "date_cycle": "2026-09-19",
+      "parametre": "COTE_MIN",
+      "avant": 1.26,
+      "apres": 1.26,
+      "decision": "REJETE",
+      "evidence": {
+        "motif": "échantillon insuffisant : 64 < 100 requis pour 'COTE_MIN'"
+      }
+    },
+    {
+      "date_cycle": "2026-09-19",
+      "parametre": "COTE_MAX",
+      "avant": 1.8,
+      "apres": 1.8,
+      "decision": "REJETE",
+      "evidence": {
+        "motif": "échantillon insuffisant : 64 < 100 requis pour 'COTE_MAX'"
+      }
+    },
+    {
+      "date_cycle": "2026-09-19",
+      "parametre": "COTE_MAX",
+      "avant": 1.8,
+      "apres": 1.8,
+      "decision": "REJETE",
+      "evidence": {
+        "motif": "échantillon insuffisant : 64 < 100 requis pour 'COTE_MAX'"
+      }
+    },
+    {
       "date_cycle": "2026-09-18",
       "parametre": "EDV_MIN_P_GE_75",
       "avant": 0.05,
@@ -244,146 +434,6 @@
     },
     {
       "date_cycle": "2026-09-18",
-      "parametre": "EDV_MIN_P_67_71",
-      "avant": 0.07,
-      "apres": 0.07,
-      "decision": "REJETE",
-      "evidence": {
-        "motif": "échantillon insuffisant : 14 < 50 requis pour 'EDV_MIN_P_67_71'"
-      }
-    },
-    {
-      "date_cycle": "2026-09-18",
-      "parametre": "EDV_MIN_P_63_67",
-      "avant": 0.1,
-      "apres": 0.1,
-      "decision": "REJETE",
-      "evidence": {
-        "motif": "échantillon insuffisant : 15 < 50 requis pour 'EDV_MIN_P_63_67'"
-      }
-    },
-    {
-      "date_cycle": "2026-09-18",
-      "parametre": "EDV_MIN_P_63_67",
-      "avant": 0.1,
-      "apres": 0.1,
-      "decision": "REJETE",
-      "evidence": {
-        "motif": "échantillon insuffisant : 15 < 50 requis pour 'EDV_MIN_P_63_67'"
-      }
-    },
-    {
-      "date_cycle": "2026-09-18",
-      "parametre": "EDV_MIN_P_60_63",
-      "avant": 0.12,
-      "apres": 0.12,
-      "decision": "REJETE",
-      "evidence": {
-        "motif": "échantillon insuffisant : 6 < 50 requis pour 'EDV_MIN_P_60_63'"
-      }
-    },
-    {
-      "date_cycle": "2026-09-18",
-      "parametre": "EDV_MIN_P_60_63",
-      "avant": 0.12,
-      "apres": 0.12,
-      "decision": "REJETE",
-      "evidence": {
-        "motif": "échantillon insuffisant : 6 < 50 requis pour 'EDV_MIN_P_60_63'"
-      }
-    },
-    {
-      "date_cycle": "2026-09-18",
-      "parametre": "COTE_MIN",
-      "avant": 1.26,
-      "apres": 1.26,
-      "decision": "REJETE",
-      "evidence": {
-        "motif": "échantillon insuffisant : 51 < 100 requis pour 'COTE_MIN'"
-      }
-    },
-    {
-      "date_cycle": "2026-09-18",
-      "parametre": "COTE_MIN",
-      "avant": 1.26,
-      "apres": 1.26,
-      "decision": "REJETE",
-      "evidence": {
-        "motif": "échantillon insuffisant : 51 < 100 requis pour 'COTE_MIN'"
-      }
-    },
-    {
-      "date_cycle": "2026-09-18",
-      "parametre": "COTE_MAX",
-      "avant": 1.8,
-      "apres": 1.8,
-      "decision": "REJETE",
-      "evidence": {
-        "motif": "échantillon insuffisant : 51 < 100 requis pour 'COTE_MAX'"
-      }
-    },
-    {
-      "date_cycle": "2026-09-18",
-      "parametre": "COTE_MAX",
-      "avant": 1.8,
-      "apres": 1.8,
-      "decision": "REJETE",
-      "evidence": {
-        "motif": "échantillon insuffisant : 51 < 100 requis pour 'COTE_MAX'"
-      }
-    },
-    {
-      "date_cycle": "2026-09-17",
-      "parametre": "EDV_MIN_P_GE_75",
-      "avant": 0.05,
-      "apres": 0.05,
-      "decision": "REJETE",
-      "evidence": {
-        "motif": "n'améliore pas simultanément la zone d'apprentissage et la zone hors échantillon"
-      }
-    },
-    {
-      "date_cycle": "2026-09-17",
-      "parametre": "EDV_MIN_P_GE_75",
-      "avant": 0.05,
-      "apres": 0.05,
-      "decision": "REJETE",
-      "evidence": {
-        "motif": "n'améliore pas simultanément la zone d'apprentissage et la zone hors échantillon"
-      }
-    },
-    {
-      "date_cycle": "2026-09-17",
-      "parametre": "EDV_MIN_P_71_75",
-      "avant": 0.05,
-      "apres": 0.05,
-      "decision": "REJETE",
-      "evidence": {
-        "motif": "échantillon insuffisant : 21 < 50 requis pour 'EDV_MIN_P_71_75'"
-      }
-    },
-    {
-      "date_cycle": "2026-09-17",
-      "parametre": "EDV_MIN_P_71_75",
-      "avant": 0.05,
-      "apres": 0.05,
-      "decision": "REJETE",
-      "evidence": {
-        "motif": "échantillon insuffisant : 21 < 50 requis pour 'EDV_MIN_P_71_75'"
-      }
-    },
-    {
-      "date_cycle": "2026-09-17",
-      "parametre": "EDV_MIN_P_67_71",
-      "avant": 0.07,
-      "apres": 0.07,
-      "decision": "REJETE",
-      "evidence": {
-        "motif": "échantillon insuffisant : 14 < 50 requis pour 'EDV_MIN_P_67_71'"
-      }
-    },
-    {
-      "date_cycle": "2026-09-17",
       "parametre": "EDV_MIN_P_67_71",
       "avant": 0.07,
       "apres": 0.07,
@@ -394,10 +444,10 @@
     }
   ],
   "rapport_tickets_observation": {
-    "nb_tickets_resolus": 0,
-    "probabilite_annoncee_moyenne": null,
-    "taux_reussite_reel": null,
-    "ecart": null
+    "nb_tickets_resolus": 1,
+    "probabilite_annoncee_moyenne": 0.34391205484178894,
+    "taux_reussite_reel": 0.0,
+    "ecart": -0.34391205484178894
   },
-  "nb_tickets_observation_pending": 5
+  "nb_tickets_observation_pending": 4
 }
