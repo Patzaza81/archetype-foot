@@ -468,8 +468,16 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
         if cle_cote[0] in ("1x2", "double_chance"):
             marche_nom = f"{cle_cote[0]}_{cle_cote[1]}"
         elif cle_cote[0] == "handicap_3choix":
+            # CORRECTIF 19/09/2026 (Patrick) -- le handicap utilisé par le
+            # système est le handicap à 3 choix UNIQUEMENT. Une seconde
+            # affectation écrasait ce nom par "combo_{ligne}_{sel}_{cle_cote[3]}"
+            # juste après -- crash garanti (IndexError, cle_cote pour un
+            # handicap n'a que 3 éléments, jamais de 4e), confirmé en le
+            # déclenchant directement. Cette ligne n'aurait jamais dû
+            # exister : introduite dans d8cffdd ("Brancher le handicap
+            # Betpawa à 3 choix uniquement"), avant toute participation de
+            # cette session -- pas une régression de ce chantier.
             marche_nom = f"handicap_{cle_cote[2]}_{cle_cote[1]}"
-            marche_nom = f"combo_{cle_cote[1]}_{cle_cote[2]}_{cle_cote[3]}"
         else:
             marche_nom = f"{cle_cote[0]}_{cle_cote[1]}_{cle_cote[2]}"
         family, group = familles[cle_cote[0]]
