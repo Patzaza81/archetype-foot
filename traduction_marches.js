@@ -42,8 +42,6 @@ function traduitMarche(marche, equipes) {
     }
   }
 
-  if (marche === "parite_pair") return "Nombre de buts pair";
-  if (marche === "parite_impair") return "Nombre de buts impair";
 
   {
     const m = marche.match(/^handicap_(domicile|exterieur)_(-?\d+(?:\.\d+)?)$/);
@@ -56,12 +54,6 @@ function traduitMarche(marche, equipes) {
   }
 
   {
-    const m = marche.match(/^combo_(1X|X2|12)_(over|under)_(-?\d+(?:\.\d+)?)$/);
-    if (m) {
-      const dc = m[1] === "1X" ? `${dom} ne perd pas` : m[1] === "X2" ? `${ext} ne perd pas` : "pas de match nul";
-      const ligne = m[3].replace(".", ",");
-      const total = m[2] === "over" ? `plus de ${ligne} buts` : `moins de ${ligne} buts`;
-      return `${dc} et ${total}`;
     }
   }
 
