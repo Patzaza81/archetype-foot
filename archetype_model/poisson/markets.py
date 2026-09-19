@@ -5,7 +5,6 @@ Poisson (v3 §7/§9).
     FAIT ici       : 1X2, Double Chance, BTTS, Over/Under total, buts
                       par équipe (§9.4.1/9.4.2), Handicap au quart de
                       but (§9.3, CORRECTIF 6/12), marchés combinés
-                      DC+Total (§9.4.3/9.4.4, COMBO_DC_TOTAL)
     PAS FAIT ici   : référentiel central formel (§9.1, market_family/
                       exposure_group/déduplication) -- chantier séparé,
                       non commencé.
@@ -91,21 +90,6 @@ def probabilites_buts_equipe(distribution_marginale_equipe, ligne):
     return {"over": over, "under": under}
 
 
-def probabilite_parite_totale(matrice):
-    """P(total de buts du match PAIR), P(total de buts du match IMPAIR)
-    (v3 §9.2, famille PAIR_IMPAIR -- chantier du 09/09/2026, reprise :
-    marché identifié comme non couvert depuis l'audit du 08/09/2026,
-    voir data/odds_provider.py). Lue sur la matrice jointe (x+y), pas
-    la distribution marginale d'une équipe -- même source que
-    probabilites_over_under_total. pair+impair == 1.0 toujours (à la
-    troncature de la matrice près)."""
-    if matrice is None:
-        return None
-    pair = _somme_cellules(matrice, lambda x, y: (x + y) % 2 == 0)
-    impair = _somme_cellules(matrice, lambda x, y: (x + y) % 2 == 1)
-    return {"pair": pair, "impair": impair}
-
-
 def _resultat_handicap_ligne_entiere_ou_demie(matrice, h):
     """Handicap pour une ligne déjà entière ou demi-entière (v3 §9.3,
     CORRECTIF 6) -- dérivée mécaniquement de la matrice, aucun
@@ -158,53 +142,6 @@ def resultat_handicap(matrice, h):
 DOUBLE_CHANCES_VALIDES = ("1X", "X2", "12")
 
 
-def _condition_double_chance(cote_dc):
-    if cote_dc == "1X":
-        return lambda x, y: x >= y
-    if cote_dc == "X2":
-        return lambda x, y: x <= y
-    if cote_dc == "12":
-        return lambda x, y: x != y
-    raise ValueError(f"cote_dc invalide : {cote_dc!r}, attendu un de {DOUBLE_CHANCES_VALIDES}")
-
-
-def probabilite_combo_dc_total(matrice, cote_dc, ligne, sens):
-    """
-    Marché combiné Double Chance + Total de buts (v3 §9.4.3/9.4.4,
-    famille COMBO_DC_TOTAL) -- résolu CONJOINTEMENT sur la matrice de
-    scores, jamais par produit des deux probabilités marginales (DC et
-    total ne sont pas indépendants, ils dépendent du même résultat).
-
-    `cote_dc` : "1X", "X2" ou "12". `sens` : "over" ou "under".
-    `ligne` en X.5 par construction du marché total.
-    """
-    if matrice is None:
-        return None
-    if sens not in ("over", "under"):
-        raise ValueError(f"sens invalide : {sens!r}, attendu 'over' ou 'under'")
-
-    condition_dc = _condition_double_chance(cote_dc)
-    if sens == "over":
-        condition_total = lambda x, y: (x + y) > ligne
-    else:
-        condition_total = lambda x, y: (x + y) < ligne
-
-    return _somme_cellules(matrice, lambda x, y: condition_dc(x, y) and condition_total(x, y))
-
-
-# Lignes IMPOSÉES par le v3 (pas un choix) :
-LIGNES_BUTS_EQUIPE = (0.5, 1.5, 2.5)          # v3 §9.4.1/9.4.2, exact
-LIGNES_COMBO_OVER = (1.5, 2.5, 3.5)           # v3 §9.4.3, exact
-LIGNES_COMBO_UNDER = (1.5, 2.5, 3.5, 4.5)     # v3 §9.4.4, exact
-
-# Lignes ASSUMÉES par défaut (le v3 donne la formule, pas une liste de lignes à
-# calculer systématiquement pour Total/Handicap) -- décision du 08/09/2026,
-# à ajuster si un usage réel demande d'autres lignes. Ne pas confondre avec les
-# listes ci-dessus, qui elles sont imposées par le texte du v3.
-LIGNES_TOTAL_PAR_DEFAUT = (0.5, 1.5, 2.5, 3.5, 4.5)
-LIGNES_HANDICAP_PAR_DEFAUT = (-1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5)
-
-
 def calcule_tous_les_marches(lambda_a, lambda_b, max_buts=None):
     """
     Calcule TOUS les marchés couverts par ce module pour UN scénario λ
@@ -239,12 +176,6 @@ def calcule_tous_les_marches(lambda_a, lambda_b, max_buts=None):
         "buts_equipe_exterieur": {
             ligne: probabilites_buts_equipe(dist_b, ligne) for ligne in LIGNES_BUTS_EQUIPE
         },
-        "parite_totale": probabilite_parite_totale(matrice),
-        "combo_dc_total": {
-            (dc, "over", ligne): probabilite_combo_dc_total(matrice, dc, ligne, "over")
-            for dc in DOUBLE_CHANCES_VALIDES for ligne in LIGNES_COMBO_OVER
         } | {
-            (dc, "under", ligne): probabilite_combo_dc_total(matrice, dc, ligne, "under")
-            for dc in DOUBLE_CHANCES_VALIDES for ligne in LIGNES_COMBO_UNDER
         },
     }
