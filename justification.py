@@ -6,8 +6,6 @@ utilisées par le moteur et la raison réelle P1/P2/P3.
 """
 from __future__ import annotations
 
-import inspect
-
 from bibliotheque_justification import (
     construit_justification_bibliotheque,
     construit_donnees,
@@ -15,49 +13,17 @@ from bibliotheque_justification import (
 )
 
 
-def _valeurs_marche_appelant():
-    """Récupère les deux valeurs déjà calculées par le moteur appelant.
-
-    Compatibilité temporaire : le moteur historique appelle encore
-    construit_justification() sans exposer explicitement les deux paramètres
-    du nouveau contrat.
-    """
-    frame = inspect.currentframe()
-    try:
-        caller = frame.f_back if frame else None
-        local = caller.f_locals if caller else {}
-        cote = local.get("cote")
-        if not isinstance(cote, (int, float)):
-            cote = local.get("cote_reelle")
-
-        probabilite = local.get("p_repr")
-        if not isinstance(probabilite, (int, float)):
-            probabilite = local.get("p")
-
-        odds_scraped = cote if isinstance(cote, (int, float)) else None
-        market_prob_pct = (
-            probabilite * 100.0
-            if isinstance(probabilite, (int, float))
-            else None
-        )
-        return odds_scraped, market_prob_pct
-    finally:
-        del frame
-
-
 def construit_justification(
     marche, matchs_a, matchs_b, h2h=None,
     nom_domicile="", nom_exterieur="",
     *, odds_scraped=None, market_prob_pct=None,
 ):
-    """API historique : la nouvelle bibliothèque est prioritaire."""
-    if odds_scraped is None or market_prob_pct is None:
-        auto_odds, auto_prob = _valeurs_marche_appelant()
-        if odds_scraped is None:
-            odds_scraped = auto_odds
-        if market_prob_pct is None:
-            market_prob_pct = auto_prob
-
+    """API de compatibilité : délègue directement à la nouvelle bibliothèque.
+    
+    Le moteur Archetype fournit désormais explicitement la cote et la
+    probabilité au contrat de la bibliothèque ; aucun accès implicite au
+    contexte de l'appelant n'est nécessaire.
+    """
     return construit_justification_bibliotheque(
         marche,
         matchs_a,
