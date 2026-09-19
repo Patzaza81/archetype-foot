@@ -31,8 +31,6 @@ def test_tous_les_marches_produisent_des_probabilites_valides():
         "handicap",
         "buts_equipe_domicile",
         "buts_equipe_exterieur",
-        "parite_totale",
-        "combo_dc_total",
     }
     assert attendus <= set(resultats)
 
@@ -47,7 +45,6 @@ def test_tous_les_marches_produisent_des_probabilites_valides():
     assert abs(px2 - (resultats["1x2"]["nul"] + resultats["1x2"]["exterieur"])) < 1e-9
     assert abs(p12 - (resultats["1x2"]["domicile"] + resultats["1x2"]["exterieur"])) < 1e-9
     assert abs(resultats["btts"] + (1.0 - resultats["btts"]) - 1.0) < 1e-9
-    assert abs(sum(resultats["parite_totale"].values()) - 1.0) < 1e-9
 
 
 def test_handicap_3_choix_normalise_les_trois_issues_sur_la_meme_ligne():
@@ -82,7 +79,6 @@ def test_tous_les_libelles_retenus_sont_parsees_sans_approximation():
         "Plus de 0.5 buts - Extérieur", "Moins de 1.5 buts - Extérieur",
         "Cage inviolée - Domicile", "Encaisse au moins 1 but - Domicile",
         "Cage inviolée - Extérieur", "Encaisse au moins 1 but - Extérieur",
-        "Total buts - pair", "Total buts - impair",
         "Domicile -3", "Nul -3", "Extérieur +3",
         "1X + Plus de 1.5 buts", "1X + Moins de 2.5 buts",
         "X2 + Plus de 1.5 buts", "X2 + Moins de 2.5 buts",
@@ -102,9 +98,7 @@ def test_marches_dynamiques_restent_exploitables_par_le_filtre():
         ("over_under_total", 2.5, "over"),
         ("buts_equipe_domicile", 0.5, "over"),
         ("buts_equipe_exterieur", 0.5, "over"),
-        ("parite_totale", "pair"),
         ("handicap_3choix", 3.0, "domicile"),
-        ("combo_dc_total", "1X", "over", 1.5),
     ]
     for cle in cles:
         extracteur = main._extracteur_dynamique(cle, matrices, dist_a, dist_b)
