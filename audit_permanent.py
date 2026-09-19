@@ -1600,7 +1600,7 @@ verite(
     "analyse_match bout en bout : robustesse_par_marche présente sans crash (le statut "
     "précis STABLE/INSTABLE/INDETERMINE dépend de λ_global, testé spécifiquement plus "
     "loin dans la section dédiée à ce chantier du 08/09/2026)",
-    set(_r_e2e["robustesse_par_marche"].keys()) == {"1x2_domicile", "1x2_nul", "1x2_exterieur", "btts", "over_2_5", "cage_inviolee_domicile", "cage_inviolee_exterieur", "parite_pair"},
+    set(_r_e2e["robustesse_par_marche"].keys()) == {"1x2_domicile", "1x2_nul", "1x2_exterieur", "btts", "over_2_5", "cage_inviolee_domicile", "cage_inviolee_exterieur"},
 )
 
 _html_a_peu_e2e = _fixture_equipe_e2e("EquipeA", _matchs_a_e2e[:3])
@@ -1747,31 +1747,24 @@ verite(
     _amk.resultat_handicap(None, -0.25) is None,
 )
 
-_pdc_hc_audit = _amk.probabilites_double_chance(_m_hc_audit)
-_p_1x_over_audit = _amk.probabilite_combo_dc_total(_m_hc_audit, "1X", 2.5, "over")
-_p_1x_under_audit = _amk.probabilite_combo_dc_total(_m_hc_audit, "1X", 2.5, "under")
-verite(
-    "markets.probabilite_combo_dc_total : combo(1X,Over2.5) + combo(1X,Under2.5) == P(1X) "
-    "exactement -- les deux combos partitionnent 1X sans perte ni double-comptage",
-    abs((_p_1x_over_audit + _p_1x_under_audit) - _pdc_hc_audit["1X"]) < 1e-9,
-)
-verite(
-    "markets.probabilite_combo_dc_total(None, ...) -> None ; cote_dc/sens invalides "
-    "lèvent une ValueError explicite, jamais un résultat silencieux faux",
-    _amk.probabilite_combo_dc_total(None, "1X", 2.5, "over") is None,
-)
-
-
 # ============================================================================
 section("archetype_model/poisson/markets.calcule_tous_les_marches + branchement complet "
         "dans main.py/boucle_b.py (08/09/2026) — point d'entrée unique, plus de duplication")
 # ============================================================================
+# CORRECTIF 19/09/2026 -- parité (pair/impair) et combo_dc_total retirés
+# intentionnellement du moteur (commits "Sélection marchés : retirer
+# parité et combos", 09/2026) : probabilite_parite_totale() et
+# probabilite_combo_dc_total() n'existent plus dans markets.py. Les
+# vérités qui les testaient directement sont retirées (rien à vérifier
+# sur une fonction qui n'existe plus) ; celles qui vérifiaient la
+# présence de "parite_totale"/"combo_dc_total" dans les structures
+# globales sont mises à jour pour refléter le périmètre réel actuel.
 _r_calc_audit = _amk.calcule_tous_les_marches(1.5, 1.0)
 verite(
     "calcule_tous_les_marches : toutes les familles de marchés présentes "
-    "(1x2/DC/BTTS/total/handicap/buts par équipe/parité/combo)",
+    "(1x2/DC/BTTS/total/handicap/buts par équipe)",
     set(_r_calc_audit.keys()) == {"1x2", "double_chance", "btts", "over_under_total", "handicap",
-                                   "buts_equipe_domicile", "buts_equipe_exterieur", "parite_totale", "combo_dc_total"},
+                                   "buts_equipe_domicile", "buts_equipe_exterieur"},
 )
 verite(
     "calcule_tous_les_marches : cohérent avec un calcul direct indépendant "
@@ -1780,40 +1773,7 @@ verite(
     and _r_calc_audit["handicap"][0.0] == _amk.resultat_handicap(_amdist.matrice_scores(1.5, 1.0), 0.0),
 )
 
-# --- probabilite_parite_totale (chantier du 09/09/2026, feu vert de Patrick) ---
-_mat_parite_audit = _amdist.matrice_scores(1.5, 1.0)
-_r_parite_audit = _amk.probabilite_parite_totale(_mat_parite_audit)
-_pair_manuel_audit = sum(
-    p for x, ligne in enumerate(_mat_parite_audit) for y, p in enumerate(ligne) if (x + y) % 2 == 0
-)
-verite(
-    "probabilite_parite_totale : pair + impair == 1.0 (à la troncature de la matrice près)",
-    abs(_r_parite_audit["pair"] + _r_parite_audit["impair"] - 1.0) < 1e-6,
-)
-verite(
-    "probabilite_parite_totale : cohérent avec un calcul manuel indépendant sur la même matrice",
-    abs(_r_parite_audit["pair"] - _pair_manuel_audit) < 1e-12,
-)
-verite(
-    "probabilite_parite_totale : (0,0) compte bien comme PAIR (0 est pair, piège classique)",
-    _r_parite_audit["pair"] >= _mat_parite_audit[0][0],
-)
-verite(
-    "probabilite_parite_totale(None) -> None, jamais un crash (λ manquant en amont)",
-    _amk.probabilite_parite_totale(None) is None,
-)
-verite(
-    "probabilite_parite_totale : présente dans calcule_tous_les_marches, jamais oubliée "
-    "en cas de λ absent (structure complète même en None)",
-    _amk.calcule_tous_les_marches(None, 1.0)["parite_totale"] is None,
-)
-verite(
-    "calcule_tous_les_marches(None, 1.0) : structure complète mais tout None en profondeur, "
-    "jamais un dict tronqué ou un crash",
-    _amk.calcule_tous_les_marches(None, 1.0)["combo_dc_total"][("1X", "over", 1.5)] is None,
-)
-
-# Vérifie le VRAI branchement : main.analyse_match doit maintenant exposer handicap/combo,
+# Vérifie le VRAI branchement : main.analyse_match doit exposer handicap,
 # pas seulement 1x2/DC/BTTS/over_under_2_5 comme avant ce chantier.
 _amloader_e2e.fetch_html = _stub_e2e
 _r_e2e_apres_branchement = _ammain_e2e.analyse_match(
@@ -1822,10 +1782,9 @@ _r_e2e_apres_branchement = _ammain_e2e.analyse_match(
     "Suède : Allsvenskan",
 )
 verite(
-    "main.analyse_match expose maintenant 'handicap' et 'combo_dc_total' dans chaque "
+    "main.analyse_match expose maintenant 'handicap' dans chaque "
     "scénario (branchement réel, pas juste la fonction centrale testée isolément)",
-    "handicap" in _r_e2e_apres_branchement["marches_par_scenario"]["offensif"]
-    and "combo_dc_total" in _r_e2e_apres_branchement["marches_par_scenario"]["offensif"],
+    "handicap" in _r_e2e_apres_branchement["marches_par_scenario"]["offensif"],
 )
 _amloader_e2e.fetch_html = _original_fetch_e2e
 
@@ -1833,10 +1792,9 @@ _bb.recupere_details_match = _stub_details_bb
 _r_bb_apres_branchement = _bb.evalue_un_match(_match_test_bb, _cache_test_bb)
 _bb.recupere_details_match = _original_details_bb
 verite(
-    "boucle_b.evalue_un_match expose aussi 'handicap' et 'combo_dc_total' (même point "
+    "boucle_b.evalue_un_match expose aussi 'handicap' (même point "
     "d'entrée que main.py, plus de logique dupliquée entre les deux)",
-    "handicap" in _r_bb_apres_branchement["predictions_par_scenario"]["offensif"]
-    and "combo_dc_total" in _r_bb_apres_branchement["predictions_par_scenario"]["offensif"],
+    "handicap" in _r_bb_apres_branchement["predictions_par_scenario"]["offensif"],
 )
 verite(
     "boucle_b.recupere_details_match réellement restauré à l'original après cette "
@@ -2934,7 +2892,6 @@ def _fake_analyse_match_dyn(url_domicile, nom_domicile, url_exterieur, nom_exter
         "over_2_5": _rb_dyn.evalue_robustesse(_v4(lambda m: m["over_under_total"][2.5]["over"])),
         "cage_inviolee_domicile": _rb_dyn.evalue_robustesse(_v4(lambda m: m["buts_equipe_exterieur"][0.5]["under"])),
         "cage_inviolee_exterieur": _rb_dyn.evalue_robustesse(_v4(lambda m: m["buts_equipe_domicile"][0.5]["under"])),
-        "parite_pair": _rb_dyn.evalue_robustesse(_v4(lambda m: m["parite_totale"]["pair"])),
     }
     return {
         "statut": "OK",
@@ -3079,7 +3036,6 @@ try:
                 "over_2_5": _rb2.evalue_robustesse(_v4b(lambda m: m["over_under_total"][2.5]["over"] if m["over_under_total"][2.5] else None)),
                 "cage_inviolee_domicile": _rb2.evalue_robustesse(_v4b(lambda m: m["buts_equipe_exterieur"][0.5]["under"] if m["buts_equipe_exterieur"][0.5] else None)),
                 "cage_inviolee_exterieur": _rb2.evalue_robustesse(_v4b(lambda m: m["buts_equipe_domicile"][0.5]["under"] if m["buts_equipe_domicile"][0.5] else None)),
-                "parite_pair": _rb2.evalue_robustesse(_v4b(lambda m: m["parite_totale"]["pair"] if m["parite_totale"] else None)),
             }
             return {"statut": "OK", "fenetres": _am["fenetres"], "lambdas": _lambdas,
                     "marches_par_scenario": _mps, "robustesse_par_marche": _rpm}
@@ -3355,7 +3311,6 @@ def _rejoue_avec_fenetres(fenetres_remplacement):
             "over_2_5": _rb3.evalue_robustesse(_v4c(lambda m: m["over_under_total"][2.5]["over"] if m["over_under_total"][2.5] else None)),
             "cage_inviolee_domicile": _rb3.evalue_robustesse(_v4c(lambda m: m["buts_equipe_exterieur"][0.5]["under"] if m["buts_equipe_exterieur"][0.5] else None)),
             "cage_inviolee_exterieur": _rb3.evalue_robustesse(_v4c(lambda m: m["buts_equipe_domicile"][0.5]["under"] if m["buts_equipe_domicile"][0.5] else None)),
-            "parite_pair": _rb3.evalue_robustesse(_v4c(lambda m: m["parite_totale"]["pair"] if m["parite_totale"] else None)),
         }
         return {"statut": "OK", "fenetres": _fen, "lambdas": _lambdas,
                 "marches_par_scenario": _mps, "robustesse_par_marche": _rpm}
@@ -4339,7 +4294,6 @@ try:
             "over_2_5": _rb_branch.evalue_robustesse(v4c(lambda x: x["over_under_total"][2.5]["over"] if x["over_under_total"][2.5] else None)),
             "cage_inviolee_domicile": _rb_branch.evalue_robustesse(v4c(lambda x: x["buts_equipe_exterieur"][0.5]["under"] if x["buts_equipe_exterieur"][0.5] else None)),
             "cage_inviolee_exterieur": _rb_branch.evalue_robustesse(v4c(lambda x: x["buts_equipe_domicile"][0.5]["under"] if x["buts_equipe_domicile"][0.5] else None)),
-            "parite_pair": _rb_branch.evalue_robustesse(v4c(lambda x: x["parite_totale"]["pair"] if x["parite_totale"] else None)),
         }
 
         def _fake(url_domicile, nom_domicile, url_exterieur, nom_exterieur, nom_competition, **kw):

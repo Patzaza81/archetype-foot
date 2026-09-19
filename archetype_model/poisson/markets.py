@@ -141,6 +141,24 @@ def resultat_handicap(matrice, h):
 
 DOUBLE_CHANCES_VALIDES = ("1X", "X2", "12")
 
+# CORRECTIF 19/09/2026 -- ces 3 constantes ont été supprimées par erreur
+# lors du nettoyage "retirer parité et combos" (commit 017604c), qui ne
+# visait que LIGNES_COMBO_OVER/LIGNES_COMBO_UNDER (les lignes propres
+# aux marchés combo, correctement retirées). LIGNES_BUTS_EQUIPE,
+# LIGNES_TOTAL_PAR_DEFAUT et LIGNES_HANDICAP_PAR_DEFAUT ne sont PAS des
+# marchés combo -- elles servent respectivement aux marchés buts par
+# équipe, total de buts, et handicap, tous des marchés simples toujours
+# actifs. Leur suppression faisait planter calcule_tous_les_marches()
+# (NameError) dès le premier appel -- moteur entièrement bloqué.
+# Valeurs restaurées à l'identique depuis le dernier commit fonctionnel
+# (2ed4db2) : LIGNES_BUTS_EQUIPE imposée par le v3 §9.4.1/9.4.2 (exact,
+# jamais un choix) ; LIGNES_TOTAL_PAR_DEFAUT et LIGNES_HANDICAP_PAR_DEFAUT
+# assumées par défaut depuis le 08/09/2026 (le v3 donne la formule, pas
+# une liste de lignes imposée pour ces deux marchés).
+LIGNES_BUTS_EQUIPE = (0.5, 1.5, 2.5)
+LIGNES_TOTAL_PAR_DEFAUT = (0.5, 1.5, 2.5, 3.5, 4.5)
+LIGNES_HANDICAP_PAR_DEFAUT = (-1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5)
+
 
 def calcule_tous_les_marches(lambda_a, lambda_b, max_buts=None):
     """
@@ -175,7 +193,5 @@ def calcule_tous_les_marches(lambda_a, lambda_b, max_buts=None):
         },
         "buts_equipe_exterieur": {
             ligne: probabilites_buts_equipe(dist_b, ligne) for ligne in LIGNES_BUTS_EQUIPE
-        },
-        } | {
         },
     }

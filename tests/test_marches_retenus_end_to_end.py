@@ -70,6 +70,13 @@ def test_handicap_3_choix_normalise_les_trois_issues_sur_la_meme_ligne():
 
 
 def test_tous_les_libelles_retenus_sont_parsees_sans_approximation():
+    # CORRECTIF 19/09/2026 -- les libellés combo (double chance + total)
+    # ont été retirés du test : suppression intentionnelle du chemin de
+    # sélection (commits "Sélection marchés : retirer parité et combos"),
+    # _RE_COMBO n'existe plus dans odds_provider.py. Ce test vérifiait
+    # encore leur parsing malgré ce choix -- mis à jour pour refléter
+    # les libellés réellement supportés aujourd'hui, pas ceux d'avant
+    # cette suppression.
     libelles = [
         "1X2 - 1", "1X2 - X", "1X2 - 2",
         "Double chance - 1X", "Double chance - X2", "Double chance - 12",
@@ -80,11 +87,20 @@ def test_tous_les_libelles_retenus_sont_parsees_sans_approximation():
         "Cage inviolée - Domicile", "Encaisse au moins 1 but - Domicile",
         "Cage inviolée - Extérieur", "Encaisse au moins 1 but - Extérieur",
         "Domicile -3", "Nul -3", "Extérieur +3",
+    ]
+    assert all(_parse_libelle(libelle) is not None for libelle in libelles)
+
+
+def test_libelles_combo_ne_sont_plus_reconnus():
+    """Non-régression du sens inverse : confirme que la suppression des
+    combos est bien effective, pas un oubli silencieux qui laisserait
+    ces libellés fantômes traîner sans plus jamais être testés."""
+    libelles_combo = [
         "1X + Plus de 1.5 buts", "1X + Moins de 2.5 buts",
         "X2 + Plus de 1.5 buts", "X2 + Moins de 2.5 buts",
         "12 + Plus de 1.5 buts", "12 + Moins de 2.5 buts",
     ]
-    assert all(_parse_libelle(libelle) is not None for libelle in libelles)
+    assert all(_parse_libelle(libelle) is None for libelle in libelles_combo)
 
 
 def test_marches_dynamiques_restent_exploitables_par_le_filtre():
