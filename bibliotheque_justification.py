@@ -255,11 +255,20 @@ def construit_justification_bibliotheque(
         ))
 
     resume = preuves[0]["texte"] if preuves else None
+    # AJOUT 19/09/2026 (Patrick, règle maîtresse) -- un marché retenu doit
+    # recevoir une justification SPÉCIFIQUE à ce marché, jamais seulement
+    # la preuve EV générique (interchangeable entre tous les marchés,
+    # toujours ajoutée en dernier ci-dessus). Ce champ permet à main.py
+    # d'appliquer NO DATA -> NO GO : si aucune preuve spécifique n'existe,
+    # le marché ne doit pas être retenu, jamais affiché avec une
+    # justification générique inventée pour combler le vide.
+    preuve_specifique_disponible = any(p["type"] != "ev_percentage" for p in preuves)
 
     return {
         "resume": resume,
         "preuves": preuves[:3],
         "donnees_suffisantes": bool(preuves),
+        "preuve_specifique_disponible": preuve_specifique_disponible,
         "bibliotheque": d,
     }
 

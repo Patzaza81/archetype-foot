@@ -141,7 +141,13 @@ def analyse_match(url_domicile, nom_domicile, url_exterieur, nom_exterieur, nom_
         "lambdas": lambdas,
         "marches_par_scenario": marches_par_scenario,
         "robustesse_par_marche": robustesse_par_marche,
-        "_historique_justification": {"A": historique_domicile, "B": historique_exterieur},
+        # RENOMMÉ 18/09/2026 (Patrick) -- "_historique_justification"
+        # laissait croire que ce champ ne servait qu'au texte de
+        # justification. Depuis le chantier Péage 1/Péage 2, il alimente
+        # aussi profil_equipe.construit_profil() -- une dépendance
+        # cachée qu'un futur refactor de justification.py aurait pu
+        # casser sans le savoir. Nom public, honnête sur son usage réel.
+        "historique_complet": {"A": historique_domicile, "B": historique_exterieur},
     }
 
 
@@ -164,6 +170,17 @@ def _construit_candidat(*, marche, market_family, exposure_group, marches_par_sc
     if not resultat.eligible:
         return None, diagnostic
     p_repr = probabilites[SCENARIO_REPRESENTATIF]
+    justification_candidat = justification.construit_justification(marche, historique_a or [], historique_b or [], h2h=confrontations_h2h or [], nom_domicile=nom_domicile, nom_exterieur=nom_exterieur, odds_scraped=cote, market_prob_pct=p_repr * 100.0)
+    # AJOUT 19/09/2026 (Patrick, règle maîtresse) -- NO DATA -> NO GO
+    # appliqué à la justification : un marché sans preuve SPÉCIFIQUE (pas
+    # seulement la preuve EV générique, interchangeable entre marchés)
+    # n'est pas retenu, jamais affiché avec une justification générique.
+    if not justification_candidat.get("preuve_specifique_disponible"):
+        filtre_sans_justification = dict(resultat.as_dict())
+        filtre_sans_justification["eligible"] = False
+        filtre_sans_justification["motif_rejet"] = "JUSTIFICATION_INSUFFISANTE"
+        diagnostic = {"marche": marche, "filtre": filtre_sans_justification, "etage_atteint": "convergence", "h2h_statut": h2h_statut}
+        return None, diagnostic
     valeur = edv_calculator.evalue_valeur(p_repr, cote)
     return {
         "marche": marche, "market_family": market_family, "exposure_group": exposure_group,
@@ -174,7 +191,7 @@ def _construit_candidat(*, marche, market_family, exposure_group, marches_par_sc
         "signal_direction": signal["direction"] if signal else None,
         "signal_frequence": signal["frequence"] if signal else None,
         "confirmation_historique": justification.confirmation_historique(marche, matchs_a_domicile, matchs_b_exterieur) if matchs_a_domicile is not None or matchs_b_exterieur is not None else None,
-        "justification": justification.construit_justification(marche, historique_a or [], historique_b or [], h2h=confrontations_h2h or [], nom_domicile=nom_domicile, nom_exterieur=nom_exterieur, odds_scraped=cote, market_prob_pct=p_repr * 100.0),
+        "justification": justification_candidat,
     }, diagnostic
 
 
@@ -254,8 +271,8 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
 
     _matchs_a_domicile = [m for m in base["fenetres"]["A"]["matchs_retenus"] if m.get("domicile") is True]
     _matchs_b_exterieur = [m for m in base["fenetres"]["B"]["matchs_retenus"] if m.get("domicile") is False]
-    _historique_a_justif = base.get("_historique_justification", {}).get("A", [])
-    _historique_b_justif = base.get("_historique_justification", {}).get("B", [])
+    _historique_a_justif = base.get("historique_complet", {}).get("A", [])
+    _historique_b_justif = base.get("historique_complet", {}).get("B", [])
     _h2h_justif = fenetre_h2h.get("confrontations_retenues", [])
 
     # ========================================================================
@@ -485,24 +502,30 @@ def analyse_match_complet(url_domicile, nom_domicile, url_exterieur, nom_exterie
 
         if resultat.eligible:
             p = probabilites_dyn[SCENARIO_REPRESENTATIF]
-            valeur = edv_calculator.evalue_valeur(p, cote_reelle)
-            candidats.append({
-                "marche": marche_nom, "market_family": family, "exposure_group": group,
-                "niveau": resultat.resultats_par_scenario[SCENARIO_REPRESENTATIF].niveau,
-                "robustesse": statut, "probabilite": p, "cote": cote_reelle,
-                "edge": valeur["edge"], "edv": valeur["edv"],
-                "h2h_palier": fenetre_h2h["palier"],
-                "condition": _condition_pour_cle(cle_cote),
-                "score_pondere_peage1": _peage1_score,
-                "signal_direction": None, "signal_frequence": None,
-                "confirmation_historique": justification.confirmation_historique(marche_nom, _matchs_a_domicile, _matchs_b_exterieur),
-                "justification": justification.construit_justification(
-                    marche_nom, _historique_a_justif, _historique_b_justif,
-                    h2h=_h2h_justif, nom_domicile=nom_domicile, nom_exterieur=nom_exterieur,
-                    odds_scraped=cote_reelle, market_prob_pct=p * 100.0,
-                ),
-                "_cle_cote": cle_cote,
-            })
+            justification_candidat = justification.construit_justification(
+                marche_nom, _historique_a_justif, _historique_b_justif,
+                h2h=_h2h_justif, nom_domicile=nom_domicile, nom_exterieur=nom_exterieur,
+                odds_scraped=cote_reelle, market_prob_pct=p * 100.0,
+            )
+            if not justification_candidat.get("preuve_specifique_disponible"):
+                diag_conv["filtre"] = dict(diag_conv["filtre"])
+                diag_conv["filtre"]["eligible"] = False
+                diag_conv["filtre"]["motif_rejet"] = "JUSTIFICATION_INSUFFISANTE"
+            else:
+                valeur = edv_calculator.evalue_valeur(p, cote_reelle)
+                candidats.append({
+                    "marche": marche_nom, "market_family": family, "exposure_group": group,
+                    "niveau": resultat.resultats_par_scenario[SCENARIO_REPRESENTATIF].niveau,
+                    "robustesse": statut, "probabilite": p, "cote": cote_reelle,
+                    "edge": valeur["edge"], "edv": valeur["edv"],
+                    "h2h_palier": fenetre_h2h["palier"],
+                    "condition": _condition_pour_cle(cle_cote),
+                    "score_pondere_peage1": _peage1_score,
+                    "signal_direction": None, "signal_frequence": None,
+                    "confirmation_historique": justification.confirmation_historique(marche_nom, _matchs_a_domicile, _matchs_b_exterieur),
+                    "justification": justification_candidat,
+                    "_cle_cote": cle_cote,
+                })
 
     for c in candidats:
         c.pop("_cle_cote", None)

@@ -2891,6 +2891,28 @@ import archetype_model.main as _am_dyn
 _original_analyse_match_dyn = _am_dyn.analyse_match
 
 
+def _historique_synthetique_dyn(domicile_fort=True):
+    """Historique complet synthétique, suffisant pour
+    profil_equipe.construit_profil() (FENETRE_SPEC_DEFAUT=8,
+    FENETRE_STAB_DEFAUT=5) -- 10 matchs au rôle testé + 5 à l'autre rôle,
+    cohérent avec le lambda de _fake_analyse_match_dyn (équipe A
+    nettement dominante à domicile, équipe B nettement faible à
+    l'extérieur). AJOUT 18/09/2026 (Patrick) -- corrige le mock qui ne
+    posait pas ce champ (nommé historique_complet depuis ce même
+    chantier, avant "_historique_justification"), faisant rejeter tous
+    les candidats par le Péage 1 (aucun profil exploitable sans
+    historique) -- un bug de test, jamais un bug de production (voir
+    analyse_match() qui pose bien ce champ avec le vrai historique du
+    loader)."""
+    if domicile_fort:
+        role = [{"buts_marques": 2, "buts_encaisses": 0, "domicile": True} for _ in range(10)]
+        autre = [{"buts_marques": 1, "buts_encaisses": 1, "domicile": False} for _ in range(5)]
+    else:
+        role = [{"buts_marques": 0, "buts_encaisses": 2, "domicile": False} for _ in range(10)]
+        autre = [{"buts_marques": 1, "buts_encaisses": 1, "domicile": True} for _ in range(5)]
+    return autre + role  # du plus ancien au plus récent, rôle testé en dernier
+
+
 def _fake_analyse_match_dyn(url_domicile, nom_domicile, url_exterieur, nom_exterieur, nom_competition):
     """Match synthétique équipe A nettement dominante (mêmes λ sur les 4
     scénarios -> robustesse trivialement STABLE) -- isole la logique du
@@ -2923,6 +2945,10 @@ def _fake_analyse_match_dyn(url_domicile, nom_domicile, url_exterieur, nom_exter
         "lambdas": lambdas,
         "marches_par_scenario": marches_par_scenario,
         "robustesse_par_marche": robustesse_par_marche,
+        "historique_complet": {
+            "A": _historique_synthetique_dyn(domicile_fort=True),
+            "B": _historique_synthetique_dyn(domicile_fort=False),
+        },
     }
 
 
