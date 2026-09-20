@@ -1,5 +1,10 @@
-// archetype.js — présentation uniquement.
-// Le navigateur ne choisit aucun pronostic et ne calcule aucune statistique.
+// archetype.js — présentation uniquement (réécriture complète du 20/09/2026).
+// Le navigateur ne choisit aucun pronostic et ne calcule aucune statistique :
+// tout ce qui est affiché vient de precalcul_leger.json (archetype_model.selection).
+//
+// Contrat conservé pour panier.js : construitCarte(), regroupeMatchs(),
+// estArchetypeGo(), echappeHtml() gardent leur nom, et chaque carte contient
+// un <details class="details-analyse"> (panier.js l'ouvre via "Voir l'analyse").
 
 const RANGS = [
   { cle: "P1", classe: "rang-1", titre: "Pronostic principal" },
@@ -7,109 +12,214 @@ const RANGS = [
   { cle: "P3", classe: "rang-3", titre: "Troisième choix" },
 ];
 
-// CORRECTIF 18/09/2026 — "Forme récente" accepte uniquement des preuves
-// qui décrivent réellement la forme, jamais une statistique de buts croisée.
-const TYPES_FORME_RECENTE = new Set([
-  "home_unbeaten_streak",
-  "away_concede_pct",
-]);
+// "Forme récente" n'accepte que des preuves qui décrivent réellement la forme
+// (règle du 18/09/2026) : jamais une statistique de buts croisée.
+const TYPES_FORME_RECENTE = new Set(["home_unbeaten_streak", "away_concede_pct"]);
+
+const CLE_THEME_NUIT = "archetype_theme_nuit"; // même clé que theme.js
+let compteurCartes = 0;
+
+/* ───────────────────────── outils ───────────────────────── */
 
 function estArchetypeGo(m) {
   return !!(m && m.moteur_utilise === "archetype_model" && m.archetype_model &&
     m.archetype_model.statut === "OK" && m.archetype_model.selection && m.archetype_model.selection.P1);
 }
-function echappeHtml(x) { return x === null || x === undefined ? "" : String(x).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/'/g, "&#39;"); }
+function echappeHtml(x) {
+  return x === null || x === undefined ? "" : String(x)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
 function formatCote(x) { const n = Number(x); return Number.isFinite(n) ? n.toFixed(2).replace(".", ",") : "—"; }
-function formatPct(x) { const n = Number(x); return Number.isFinite(n) ? `${(n * 100).toFixed(1).replace(".", ",")} %` : "—"; }
 function formatPctEntier(x) { const n = Number(x); return Number.isFinite(n) ? `${Math.round(n * 100)} %` : "—"; }
-function formatDate(dateIso) { if (!dateIso) return ""; const d = new Date(`${dateIso}T12:00:00`); if (Number.isNaN(d.getTime())) return dateIso; return d.toLocaleDateString("fr-FR", { weekday: "short", day: "2-digit", month: "short" }).replace(/\./g, "").replace(/^./, c => c.toUpperCase()); }
-function initialesEquipe(nom) { const mots = String(nom || "?").trim().split(/\s+/).filter(Boolean); if (!mots.length) return "?"; return mots.length === 1 ? mots[0].slice(0, 2).toUpperCase() : (mots[0][0] + mots[mots.length - 1][0]).toUpperCase(); }
-// AJOUT 17/09/2026 (Patrick, jargon désynchronisé du moteur réel) --
-// traduitConfiance() dupliquait, avec un texte moins précis, ce que
-// traduction_marches.js fait déjà correctement (traduitNiveau) --
-// cette dernière fonction porte un commentaire explicite : "niveau"
-// est un niveau d'éligibilité du filtre, pas une probabilité empirique
-// de gain, on ne l'appelle plus "Confiance" dans l'UI. archetype.js ne
-// suivait pas cette règle malgré sa présence documentée dans le même
-// projet -- supprimé, traduitNiveau() est utilisée directement plus bas.
-function construitJauge(probabilite) {
+function formatPctSigne(x) {
+  const n = Number(x); if (!Number.isFinite(n)) return "—";
+  return `${n >= 0 ? "+" : "−"}${Math.abs(n * 100).toFixed(1).replace(".", ",")} %`;
+}
+function formatDate(dateIso) {
+  if (!dateIso) return "";
+  const d = new Date(`${dateIso}T12:00:00`);
+  if (Number.isNaN(d.getTime())) return dateIso;
+  const t = d.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" }).replace(/\./g, "").trim();
+  return t.charAt(0).toUpperCase() + t.slice(1);
+}
+
+const ICONES = {
+  forme: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V11h4v9H4zm6 0V4h4v16h-4zm6 0v-6h4v6h-4z"/></svg>',
+  h2h: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9.3 8 11 4.6-1.7 8-6 8-11V5l-8-3zm-1.2 14.2-3.5-3.5 1.4-1.4 2.1 2.1 4.6-4.6 1.4 1.4-6 6z"/></svg>',
+  avantage: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21v-6h4v6H3zm7 0v-10h4v10h-4zm7 0V7h4v14h-4zM4 9l6-5 4 3 6-5v3l-6 5-4-3-6 4V9z"/></svg>',
+  gain: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4l8 8-8 8v-5H3V9h11V4z"/></svg>',
+};
+
+function construitJauge(probabilite, classe) {
   const n = Number(probabilite); if (!Number.isFinite(n)) return "";
-  const v = Math.max(0, Math.min(1, n)); const r = 31, c = 2 * Math.PI * r;
-  return `<div class="jauge" aria-label="Probabilité du modèle : ${Math.round(v * 100)} %"><svg viewBox="0 0 76 76" aria-hidden="true"><circle class="fond" cx="38" cy="38" r="${r}"></circle><circle class="valeur" cx="38" cy="38" r="${r}" stroke-dasharray="${c.toFixed(2)}" stroke-dashoffset="${(c * (1 - v)).toFixed(2)}"></circle></svg><strong>${Math.round(v * 100)}%</strong></div>`;
+  const v = Math.max(0, Math.min(1, n)), r = 42, c = 2 * Math.PI * r, pct = Math.round(v * 100);
+  return `<div class="ax-jauge ${classe || ""}" role="img" aria-label="Probabilité du modèle : ${pct} %">` +
+    `<svg viewBox="0 0 100 100" aria-hidden="true">` +
+    `<circle class="ax-jauge-fond" cx="50" cy="50" r="${r}"></circle>` +
+    `<circle class="ax-jauge-valeur" cx="50" cy="50" r="${r}" stroke-dasharray="${(c * v).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 50 50)"></circle>` +
+    `<circle class="ax-jauge-centre" cx="50" cy="50" r="33"></circle>` +
+    `<text class="ax-jauge-texte" x="50" y="51">${pct}%</text></svg></div>`;
 }
-function construitPourquoi(candidat) {
-  const j = candidat && candidat.justification;
-  if (!j) return "";
-  const morceaux = [];
-  if (j.resume) morceaux.push(`<p class="resume-preuve">${echappeHtml(j.resume)}</p>`);
-  if (Array.isArray(j.preuves) && j.preuves.length) {
-    morceaux.push(`<details class="preuves-cachees"><summary>Voir les preuves statistiques ▾</summary>${j.preuves.map(p => p && p.texte ? `<div class="preuve"><span class="preuve-titre">${echappeHtml(p.titre || "Statistique clé")}</span><span class="preuve-texte">${echappeHtml(p.texte)}</span></div>` : "").join("")}</details>`);
-  }
-  return morceaux.join("");
+
+function construitEtoiles(etoiles) {
+  const n = Math.max(0, Math.min(5, Number(etoiles) || 0));
+  return `<span class="ax-etoiles" role="img" aria-label="Solidité : ${n} sur 5">` +
+    `${"★".repeat(n)}<span class="ax-etoiles-vides">${"★".repeat(5 - n)}</span></span>`;
 }
-function construitStatsRapides(candidat) {
-  const preuves = (candidat.justification && candidat.justification.preuves) || [];
+
+/* ───────────────────── blocs de la carte ───────────────────── */
+
+// Aperçu compact (carte repliée) : les 3 rangs, chacun avec marché, cote, probabilité et jauge.
+function construitResume(selection, equipes) {
+  const div = document.createElement("div");
+  div.className = "ax-resume";
+  div.innerHTML = RANGS.map((info) => {
+    const c = selection[info.cle];
+    if (!c) {
+      return `<div class="ax-resume-rang ax-${info.classe} ax-vide">` +
+        `<span class="ax-resume-etiquette">${echappeHtml(info.titre)}</span>` +
+        `<p class="ax-resume-indispo">Non disponible pour ce match</p></div>`;
+    }
+    return `<div class="ax-resume-rang ax-${info.classe}">` +
+      `<div class="ax-resume-corps">` +
+      `<span class="ax-resume-etiquette">${echappeHtml(info.titre)}</span>` +
+      `<h3 class="ax-resume-marche">${echappeHtml(traduitMarche(c.marche, equipes))}</h3>` +
+      `<p class="ax-resume-chiffres"><span>Cote <strong>${formatCote(c.cote)}</strong></span>` +
+      `<span>Probabilité <strong>${formatPctEntier(c.probabilite)}</strong></span></p></div>` +
+      `${construitJauge(c.probabilite, "ax-jauge-mini")}</div>`;
+  }).join("");
+  return div;
+}
+
+// Panneau détaillé d'un rang (carte dépliée) — structure de la maquette.
+function construitPanneau(info, c, equipes, idPanneau, idOnglet) {
+  const preuves = (c.justification && Array.isArray(c.justification.preuves)) ? c.justification.preuves : [];
+  const resume = c.justification && c.justification.resume ? c.justification.resume : "";
   const h2h = preuves.find((p) => p && typeof p.type === "string" && p.type.startsWith("h2h_"));
-  const forme = preuves.find((p) => p && typeof p.type === "string" && TYPES_FORME_RECENTE.has(p.type)) || null;
-  const { texte: niveauTexte } = traduitNiveau(candidat.niveau);
-  const cases = [
-    { icone: "📊", titre: "Forme récente", texte: forme ? forme.texte : "Non disponible" },
-    { icone: "🛡️", titre: "Confrontations directes", texte: h2h ? h2h.texte : "Non disponible" },
-    { icone: "⭐", titre: "Solidité", texte: niveauTexte },
-  ];
-  return `<div class="stats-rapides">${cases.map((c) => `<div class="stat-rapide"><span class="icone-stat" aria-hidden="true">${c.icone}</span><div><span class="stat-titre">${echappeHtml(c.titre)}</span><span class="stat-texte">${echappeHtml(c.texte)}</span></div></div>`).join("")}</div>`;
+  const forme = preuves.find((p) => p && typeof p.type === "string" && TYPES_FORME_RECENTE.has(p.type));
+  const niveau = traduitNiveau(c.niveau);
+  const el = document.createElement("div");
+  el.className = `ax-panneau ax-${info.classe}`;
+  el.id = idPanneau; el.setAttribute("role", "tabpanel"); el.setAttribute("aria-labelledby", idOnglet);
+  el.dataset.cle = info.cle;
+  el.innerHTML =
+    `<h2 class="ax-marche">${echappeHtml(traduitMarche(c.marche, equipes))}</h2>` +
+    `<div class="ax-ligne-cote">` +
+      `<p class="ax-texte-resume">${echappeHtml(resume)}</p>` +
+      `<div class="ax-badge-cote"><span>Cote</span><strong>${formatCote(c.cote)}</strong></div>` +
+    `</div>` +
+    `<div class="ax-preuves">` +
+      `<div class="ax-preuves-liste">` +
+        `<div class="ax-preuve"><span class="ax-icone">${ICONES.forme}</span><div><span class="ax-preuve-titre">Forme récente</span>` +
+          `<span class="ax-preuve-texte">${echappeHtml(forme ? forme.texte : "Non disponible")}</span></div></div>` +
+        `<div class="ax-preuve"><span class="ax-icone">${ICONES.h2h}</span><div><span class="ax-preuve-titre">Confrontations directes</span>` +
+          `<span class="ax-preuve-texte">${echappeHtml(h2h ? h2h.texte : "Non disponible")}</span></div></div>` +
+      `</div>` +
+      `<div class="ax-proba">${construitJauge(c.probabilite, "")}` +
+        `<span class="ax-proba-legende">Probabilité du modèle</span>` +
+        `${construitEtoiles(niveau.etoiles)}<span class="ax-solidite">${/solidit/i.test(niveau.texte) ? "" : '<span class="ax-solidite-titre">Solidité :</span> '}${echappeHtml(niveau.texte)}</span></div>` +
+    `</div>` +
+    `<ul class="ax-metriques">` +
+      `<li title="Écart entre la probabilité calculée par le modèle et celle qui serait 'normale' vu la cote proposée."><span class="ax-icone">${ICONES.avantage}</span><strong>${formatPctSigne(c.edge)}</strong><span>Avantage potentiel</span></li>` +
+      `<li title="Ce que rapporterait ce pari en moyenne si on le rejouait de nombreuses fois, selon le modèle."><span class="ax-icone">${ICONES.gain}</span><strong>${formatPctSigne(c.edv)}</strong><span>Gain potentiel</span></li>` +
+    `</ul>`;
+  return el;
 }
-function construitBlocCandidat(info, candidat, equipes) {
-  if (!candidat) return null;
-  const article = document.createElement("article"); article.className = `selection ${info.classe}`;
-  article.dataset.cle = info.cle;
-  const { etoiles, texte: niveauTexte } = traduitNiveau(candidat.niveau);
-  const stars = "★".repeat(etoiles) + `<span class="etoiles-vides">${"★".repeat(5 - etoiles)}</span>`;
-  const libelle = traduitMarche(candidat.marche, equipes);
-  article.innerHTML = `<div class="selection-inner">
-    <h2 class="libelle-marche">${echappeHtml(libelle)}</h2>
-    ${candidat.justification && candidat.justification.resume ? `<p class="resume-marche">${echappeHtml(candidat.justification.resume)}</p>` : ""}
-    ${construitStatsRapides(candidat)}
-    <div class="donnees-principales">
-      <div>
-        <span class="etiquette">Cote</span>
-        <strong class="cote">${formatCote(candidat.cote)}</strong>
-        <span class="etiquette">Probabilité du modèle</span>
-        <div class="probabilite-ligne"><strong>${formatPctEntier(candidat.probabilite)}</strong><span class="etiquette">estimation statistique</span></div>
-      </div>
-      ${construitJauge(candidat.probabilite)}
-    </div>
-    <div class="ligne-confiance"><span>Solidité</span><span class="etoiles" aria-label="Solidité : ${etoiles} sur 5">${stars}</span><strong>${echappeHtml(niveauTexte)}</strong></div>
-    <div class="bloc-pourquoi"><div class="titre">Pourquoi ce choix ?</div>${construitPourquoi(candidat)}</div>
-    <div class="metriques"><div class="metrique" title="Écart entre la probabilité calculée par le modèle et celle qui serait 'normale' vu la cote proposée."><span>Avantage potentiel</span><strong>${formatPct(candidat.edge)}</strong></div><div class="metrique" title="Ce que rapporterait ce pari en moyenne si on le rejouait de nombreuses fois, selon le modèle."><span>Gain potentiel</span><strong>${formatPct(candidat.edv)}</strong></div></div>
-  </div>`;
-  article.style.setProperty("--accent", `var(--${info.classe === "rang-1" ? "ref-gold" : info.classe === "rang-2" ? "ref-blue-tab" : "ref-violet"})`);
-  return article;
-}
-function construitDetails(m) {
-  const details = document.createElement("details"); details.className = "details-analyse";
-  const equipes = { domicile: m.domicile || "Équipe à domicile", exterieur: m.exterieur || "Équipe à l'extérieur" };
-  const selection = (m.archetype_model && m.archetype_model.selection) || {}; const lignes = [];
-  RANGS.forEach(r => { const c = selection[r.cle]; if (!c) return;
-    // AJOUT 17/09/2026 (Patrick, jargon technique pas toujours compris) --
-    // marche/niveau/robustesse étaient affichés en valeurs brutes du
-    // moteur ("1x2_domicile", "PREMIUM", "STABLE"), illisibles pour qui
-    // ne connaît pas le code -- traduites comme partout ailleurs sur la carte.
-    const { texte: niveauTexte } = traduitNiveau(c.niveau);
-    lignes.push(`<div class="ligne-detail"><span class="cle">${echappeHtml(r.titre)}</span><span class="val">${echappeHtml(traduitMarche(c.marche, equipes))}</span></div>`);
-    lignes.push(`<div class="ligne-detail"><span class="cle">Solidité du pari</span><span class="val">${echappeHtml(niveauTexte)}</span></div>`);
-    lignes.push(`<div class="ligne-detail"><span class="cle">Stabilité du calcul</span><span class="val">${echappeHtml(traduitRobustesse(c.robustesse))}</span></div>`);
-  });
-  details.innerHTML = `<summary><span><span class="details-titre">Détails de l'analyse</span><span class="details-sous-titre">Éléments techniques ayant accompagné la sélection</span></span><span class="chevron">⌄</span></summary><div class="contenu-details">${lignes.join("") || "Aucun détail technique disponible."}</div>`;
+
+// Détails techniques (un seul <details> par carte : panier.js l'ouvre via .details-analyse).
+function construitDetails(selection, equipes) {
+  const details = document.createElement("details");
+  details.className = "details-analyse ax-details";
+  const blocs = RANGS.filter((r) => selection[r.cle]).map((r) => {
+    const c = selection[r.cle];
+    const preuves = (c.justification && Array.isArray(c.justification.preuves)) ? c.justification.preuves.filter((p) => p && p.texte) : [];
+    return `<div class="ax-detail-rang ax-${r.classe}">` +
+      `<h3>${echappeHtml(r.titre)} — ${echappeHtml(traduitMarche(c.marche, equipes))}</h3>` +
+      (preuves.length ? `<ul>${preuves.map((p) => `<li>${echappeHtml(p.texte)}</li>`).join("")}</ul>` : "") +
+      `<dl><div><dt>Solidité du pari</dt><dd>${echappeHtml(traduitNiveau(c.niveau).texte)}</dd></div>` +
+      `<div><dt>Stabilité du calcul</dt><dd>${echappeHtml(traduitRobustesse(c.robustesse))}</dd></div></dl></div>`;
+  }).join("");
+  details.innerHTML = `<summary><span>Détails de l'analyse</span><span class="ax-chevron" aria-hidden="true"></span></summary><div class="ax-details-corps">${blocs}</div>`;
   return details;
 }
+
+function construitCarte(m, options) {
+  const replieAuDepart = !!(options && options.replie);
+  const id = ++compteurCartes;
+  const equipes = { domicile: m.domicile || "Équipe à domicile", exterieur: m.exterieur || "Équipe à l'extérieur" };
+  const heure = m.heure_cameroun || m.heure || "—";
+  const date = formatDate(m.date);
+  const competition = String(m.competition || "").replace(/\s+/g, " ").trim();
+  const selection = (m.archetype_model && m.archetype_model.selection) || {};
+
+  const section = document.createElement("section");
+  section.className = "ax-carte";
+  section.innerHTML =
+    `<div class="ax-match"><div class="ax-ligne-match">` +
+      `<span class="ax-equipe ax-dom">${echappeHtml(equipes.domicile)}</span>` +
+      `<div class="ax-horaire"><strong>${echappeHtml(heure)}</strong><span>${echappeHtml(date)}</span></div>` +
+      `<span class="ax-equipe ax-ext">${echappeHtml(equipes.exterieur)}</span></div>` +
+      (competition ? `<p class="ax-competition">${echappeHtml(competition)}</p>` : "") +
+    `</div>`;
+
+  section.appendChild(construitResume(selection, equipes));
+
+  // Onglets : les 3 sont toujours affichés ; un rang sans candidat est grisé et non cliquable.
+  const onglets = document.createElement("div");
+  onglets.className = "ax-onglets"; onglets.setAttribute("role", "tablist"); onglets.setAttribute("aria-label", "Choix du pronostic");
+  const panneaux = document.createElement("div");
+  panneaux.className = "ax-panneaux";
+  const actifs = [];
+  RANGS.forEach((info) => {
+    const c = selection[info.cle];
+    const idOnglet = `ax-onglet-${id}-${info.cle}`, idPanneau = `ax-panneau-${id}-${info.cle}`;
+    const bouton = document.createElement("button");
+    bouton.type = "button"; bouton.id = idOnglet; bouton.className = `ax-onglet ax-${info.classe}`;
+    bouton.setAttribute("role", "tab"); bouton.dataset.cle = info.cle;
+    if (!c) {
+      bouton.disabled = true; bouton.classList.add("ax-vide");
+      bouton.innerHTML = `<span>${echappeHtml(info.titre)}</span><small>Non disponible</small>`;
+      onglets.appendChild(bouton); return;
+    }
+    bouton.setAttribute("aria-controls", idPanneau);
+    bouton.innerHTML = `<span>${echappeHtml(info.titre)}</span>`;
+    const panneau = construitPanneau(info, c, equipes, idPanneau, idOnglet);
+    onglets.appendChild(bouton); actifs.push({ bouton, panneau });
+  });
+  const active = (cible) => actifs.forEach(({ bouton, panneau }) => {
+    const oui = bouton === cible;
+    bouton.classList.toggle("ax-actif", oui); bouton.setAttribute("aria-selected", String(oui)); bouton.tabIndex = oui ? 0 : -1;
+    panneau.hidden = !oui;
+  });
+  actifs.forEach(({ bouton, panneau }) => { bouton.addEventListener("click", () => active(bouton)); panneaux.appendChild(panneau); });
+  if (actifs.length) { active(actifs[0].bouton); section.appendChild(onglets); section.appendChild(panneaux); }
+
+  section.appendChild(construitDetails(selection, equipes));
+
+  const pied = document.createElement("div");
+  pied.className = "ax-pied";
+  const plier = document.createElement("button");
+  plier.type = "button"; plier.className = "ax-plier";
+  const applique = (replie) => {
+    section.classList.toggle("ax-replie", replie);
+    plier.setAttribute("aria-expanded", String(!replie));
+    plier.innerHTML = `${replie ? "Déplier" : "Plier"} <span aria-hidden="true">${replie ? "⌄" : "⌃"}</span>`;
+  };
+  plier.addEventListener("click", () => applique(!section.classList.contains("ax-replie")));
+  applique(replieAuDepart);
+  pied.appendChild(plier); section.appendChild(pied);
+  return section;
+}
+
+/* ───────────────── regroupement et affichage ───────────────── */
+
 function identiteMatch(m) {
   if (m && m.match_id !== undefined && m.match_id !== null && String(m.match_id).trim() !== "") return `id:${String(m.match_id)}`;
   return `match:${String(m?.date || "").trim()}|${String(m?.heure_cameroun || m?.heure || "").trim()}|${String(m?.domicile || "").trim().toLowerCase()}|${String(m?.exterieur || "").trim().toLowerCase()}`;
 }
 function regroupeMatchs(matchs) {
   const groupes = new Map();
-  (matchs || []).forEach(m => {
+  (matchs || []).forEach((m) => {
     const cle = identiteMatch(m);
     if (!groupes.has(cle)) { groupes.set(cle, m); return; }
     const actuel = groupes.get(cle);
@@ -119,108 +229,48 @@ function regroupeMatchs(matchs) {
   });
   return Array.from(groupes.values());
 }
-function construitApercuRang(info, candidat, equipes, accentClasse) {
-  const div = document.createElement("div");
-  div.className = `apercu-rang apercu-${info.cle}`;
-  if (!candidat) {
-    div.classList.add("indisponible");
-    div.innerHTML = `<div class="apercu-etiquette"><span class="puce-rang" aria-hidden="true"></span>${echappeHtml(info.titre)}</div><p class="apercu-marche">Non disponible pour ce match</p>`;
-    return div;
-  }
-  const libelle = traduitMarche(candidat.marche, equipes);
-  div.innerHTML = `
-    <div class="apercu-etiquette"><span class="puce-rang" aria-hidden="true"></span>${echappeHtml(info.titre)}</div>
-    <div class="apercu-corps">
-      <div>
-        <h2 class="apercu-marche">${echappeHtml(libelle)}</h2>
-        <div class="apercu-donnees"><span>Cote<strong>${formatCote(candidat.cote)}</strong></span><span>Probabilité<strong>${formatPctEntier(candidat.probabilite)}</strong></span></div>
-      </div>
-      ${construitJauge(candidat.probabilite)}
-    </div>`;
-  return div;
-}
-function construitApercuListe(selection, equipes) {
-  const div = document.createElement("div"); div.className = "apercu-liste";
-  RANGS.forEach(info => div.appendChild(construitApercuRang(info, selection[info.cle], equipes)));
-  return div;
-}
-function construitCarte(m) {
-  const section = document.createElement("section"); section.className = "carte-match";
-  const equipes = { domicile: m.domicile || "Équipe à domicile", exterieur: m.exterieur || "Équipe à l'extérieur" };
-  const heure = m.heure_cameroun || m.heure || "—"; const date = formatDate(m.date); const competition = String(m.competition || "").replace(/\s+/g, " ").trim();
-  const selection = (m.archetype_model && m.archetype_model.selection) || {};
-  const disponibles = RANGS.filter(r => selection[r.cle]);
-  const premier = disponibles[0] || RANGS[0];
-  section.innerHTML = `<header class="entete-match"><div class="ligne-match">
-    <div class="equipe domicile"><span class="ecusson-equipe">${echappeHtml(initialesEquipe(equipes.domicile))}</span><span>${echappeHtml(equipes.domicile)}</span></div>
-    <div class="bloc-horaire"><strong>${echappeHtml(heure)}</strong><span>${echappeHtml(date)}</span></div>
-    <div class="equipe exterieur"><span>${echappeHtml(equipes.exterieur)}</span><span class="ecusson-equipe">${echappeHtml(initialesEquipe(equipes.exterieur))}</span></div>
-  </div>${competition ? `<div class="competition">${echappeHtml(competition)}</div>` : ""}</header>`;
-  section.appendChild(construitApercuListe(selection, equipes));
-  const boutonRepliHtml = document.createElement("button");
-  boutonRepliHtml.type = "button"; boutonRepliHtml.className = "bouton-repli"; boutonRepliHtml.setAttribute("aria-expanded", "true");
-  boutonRepliHtml.innerHTML = `Replier <span aria-hidden="true">⌃</span>`;
-  section.appendChild(boutonRepliHtml);
 
-  const tabs = document.createElement("nav"); tabs.className = "selection-tabs"; tabs.setAttribute("aria-label", "Choix du pronostic");
-  const selections = document.createElement("div"); selections.className = "contenu-carte";
-  const blocs = [];
-  // AJOUT 17/09/2026 (Patrick) : les 3 onglets sont TOUJOURS construits,
-  // même quand un rang n'a pas de candidat -- affiché "en veille"
-  // (assombri, non cliquable) plutôt que masqué, pour que la structure
-  // à 3 choix reste visible même quand un seul pronostic existe.
-  RANGS.forEach(info => {
-    const candidat = selection[info.cle];
-    const tab = document.createElement("button"); tab.type = "button"; tab.className = "selection-tab"; tab.dataset.cle = info.cle;
-    if (!candidat) {
-      tab.classList.add("indisponible"); tab.disabled = true;
-      tab.innerHTML = `${echappeHtml(info.titre)}<small>Non disponible</small>`;
-      tabs.appendChild(tab);
-      return;
-    }
-    const libelle = traduitMarche(candidat.marche, equipes);
-    tab.innerHTML = `${echappeHtml(info.titre)}<small>${echappeHtml(libelle)}</small>`;
-    const bloc = construitBlocCandidat(info, candidat, equipes); if (!bloc) return;
-    tab.addEventListener("click", () => {
-      tabs.querySelectorAll(".selection-tab").forEach(t => t.classList.toggle("actif", t === tab));
-      selections.querySelectorAll(".selection").forEach(b => b.classList.toggle("actif", b === bloc));
-    });
-    tabs.appendChild(tab); blocs.push({tab, bloc});
-  });
-  if (blocs.length) {
-    blocs.forEach(x => selections.appendChild(x.bloc));
-    const actif = blocs.find(x => x.tab.dataset.cle === premier.cle) || blocs[0];
-    actif.tab.classList.add("actif"); actif.bloc.classList.add("actif");
-    section.appendChild(tabs); section.appendChild(selections);
-  }
-  section.appendChild(construitDetails(m));
-
-  const boutonRepli = section.querySelector(".bouton-repli");
-  boutonRepli.addEventListener("click", () => {
-    const replie = section.classList.toggle("carte-repliee"); boutonRepli.setAttribute("aria-expanded", String(!replie));
-    boutonRepli.firstChild.textContent = replie ? "Déplier " : "Replier "; boutonRepli.querySelector("span").textContent = replie ? "⌄" : "⌃";
-  });
-  return section;
-}
 function afficheSelections(matchs) {
-  const root = document.getElementById("matches"), maj = document.getElementById("maj"); root.innerHTML = "";
-  const retenus = regroupeMatchs(matchs).filter(estArchetypeGo).sort((a, b) => `${a.date || ""}${a.heure_cameroun || a.heure || ""}`.localeCompare(`${b.date || ""}${b.heure_cameroun || b.heure || ""}`));
-  maj.textContent = retenus.length ? `${retenus.length} match${retenus.length > 1 ? "s" : ""} analysé${retenus.length > 1 ? "s" : ""} aujourd'hui` : "Aucune sélection pour le moment";
-  if (!retenus.length) { root.innerHTML = `<div class="etat-vide"><strong>Aucune sélection pour le moment</strong><p>Aucun match ne remplit actuellement tous les critères du modèle. Le système préfère ne rien proposer plutôt que de forcer une sélection.</p></div>`; return; }
-  retenus.forEach((m, index) => {
-    const carte = construitCarte(m);
-    // Un seul match est ouvert à l'arrivée : la page reste compacte et chaque autre carte peut être dépliée à la demande.
-    if (index > 0) {
-      carte.classList.add("carte-repliee");
-      const bouton = carte.querySelector(".bouton-repli");
-      if (bouton) { bouton.setAttribute("aria-expanded", "false"); bouton.firstChild.textContent = "Déplier "; bouton.querySelector("span").textContent = "⌄"; }
-    }
-    root.appendChild(carte);
+  const racine = document.getElementById("matches"), maj = document.getElementById("maj");
+  racine.innerHTML = "";
+  const cleTri = (m) => `${m.date || ""}${m.heure_cameroun || m.heure || ""}`;
+  const retenus = regroupeMatchs(matchs).filter(estArchetypeGo).sort((a, b) => cleTri(a).localeCompare(cleTri(b)));
+  maj.textContent = retenus.length
+    ? `${retenus.length} match${retenus.length > 1 ? "s" : ""} analysé${retenus.length > 1 ? "s" : ""} aujourd'hui`
+    : "Aucune sélection pour le moment";
+  if (!retenus.length) {
+    racine.innerHTML = `<div class="ax-etat-vide"><strong>Aucune sélection pour le moment</strong>` +
+      `<p>Aucun match ne remplit actuellement tous les critères du modèle. Le système préfère ne rien proposer plutôt que de forcer une sélection.</p></div>`;
+    return;
+  }
+  // Un seul match est ouvert à l'arrivée ; les autres se déplient à la demande.
+  retenus.forEach((m, index) => racine.appendChild(construitCarte(m, { replie: index > 0 })));
+}
+
+/* ───────────────── page Archetype : thème + chargement ───────────────── */
+
+function installeThemeNuit() {
+  const bouton = document.getElementById("ax-bouton-theme");
+  if (!bouton) return;
+  const applique = (nuit) => {
+    document.body.classList.toggle("theme-nuit", nuit);
+    bouton.textContent = nuit ? "☀" : "☾";
+    bouton.setAttribute("aria-label", nuit ? "Activer le mode clair" : "Activer le mode nuit");
+  };
+  let nuit = false;
+  try { nuit = localStorage.getItem(CLE_THEME_NUIT) === "1"; } catch (e) { /* stockage indisponible */ }
+  applique(nuit);
+  bouton.addEventListener("click", () => {
+    const suivant = !document.body.classList.contains("theme-nuit");
+    try { localStorage.setItem(CLE_THEME_NUIT, suivant ? "1" : "0"); } catch (e) { /* ignoré */ }
+    applique(suivant);
   });
 }
+
 if (document.getElementById("matches")) {
+  installeThemeNuit();
   fetch(`precalcul_leger.json?_=${Date.now()}`)
-    .then(r => { if (!r.ok) throw new Error(`precalcul_leger.json introuvable (${r.status})`); return r.json(); })
-    .then(d => afficheSelections(d.signaux || []))
-    .catch(e => { document.getElementById("maj").textContent = "Erreur de chargement : " + e.message; console.error(e); });
+    .then((r) => { if (!r.ok) throw new Error(`precalcul_leger.json introuvable (${r.status})`); return r.json(); })
+    .then((d) => afficheSelections(d.signaux || []))
+    .catch((e) => { document.getElementById("maj").textContent = "Erreur de chargement : " + e.message; console.error(e); });
 }

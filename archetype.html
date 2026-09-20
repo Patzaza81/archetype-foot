@@ -2,81 +2,26 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#F8F3E8">
-<title>Archetype Foot — Sélections</title>
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="theme.css">
-<style>
-/* Carte Archetype — référence visuelle dédiée. Cette page ne dépend pas de la charte générique du système. */
-.page-archetype{--ref-bg:#F8F3E8;--ref-card:#FDFBF7;--ref-blue:#2859D9;--ref-blue-dark:#172E57;--ref-gold:#B27A08;--ref-gold-light:#D89B08;--ref-blue-tab:#1597DE;--ref-violet:#5830B5;--ref-muted:#667085;--ref-line:#DDD7CA;min-height:100vh;background:var(--ref-bg);color:var(--ref-blue-dark);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;padding:14px 10px 34px}
-.page-archetype *{box-sizing:border-box}
-.page-archetype .header-archetype{position:relative;max-width:900px;margin:0 auto 10px;padding:0 5px 9px!important;background:transparent!important;border-bottom:1px solid #D8D1C4!important}
-.page-archetype .marque-archetype{display:flex;align-items:center;gap:9px}.page-archetype .logo-archetype{width:35px;height:35px;border:0;border-radius:0;background:transparent;color:var(--ref-gold-light);font-size:30px;font-weight:950;display:grid;place-items:center;line-height:1}.page-archetype h1{margin:0;font-size:25px!important;letter-spacing:.01em;color:var(--ref-blue)!important;font-weight:950!important;line-height:1!important}.page-archetype .marque-archetype p{margin:3px 0 0;color:#34537D;font-size:10px;font-weight:700}.page-archetype .maj-archetype{margin-top:5px!important;color:var(--ref-blue)!important;font-size:11px!important;font-weight:900}
-.page-archetype .flux-selections{max-width:900px;margin:0 auto;padding:0!important}
-.page-archetype .carte-match{margin:0 auto 12px;border:2.5px solid #17140F;border-radius:20px;overflow:hidden;background:var(--ref-card);box-shadow:0 7px 20px rgba(52,42,24,.12)}
-.page-archetype .entete-match{position:relative;padding:9px 12px 8px;background:var(--ref-card)}
-.page-archetype .ligne-match{display:grid;grid-template-columns:minmax(0,1fr) 78px minmax(0,1fr);align-items:center;gap:6px}.page-archetype .equipe{display:flex;align-items:center;gap:6px;min-width:0;color:var(--ref-blue-dark);font-size:15px;font-weight:900;line-height:1.05}.page-archetype .equipe.exterieur{justify-content:flex-end;text-align:right}.page-archetype .equipe span:last-child{overflow-wrap:anywhere}.page-archetype .ecusson-equipe{width:36px;height:36px;flex:none;border-radius:50%;display:grid;place-items:center;border:2px solid #D7DCE2;background:#fff;color:#315CFF;font-size:10px;font-weight:950;box-shadow:0 2px 5px rgba(23,42,77,.08)}
-.page-archetype .bloc-horaire{text-align:center;border:1px solid #E5DDCE;border-radius:12px;padding:4px 3px;background:rgba(255,255,255,.5)}.page-archetype .bloc-horaire strong{display:block;color:var(--ref-blue-dark);font-size:16px;line-height:1}.page-archetype .bloc-horaire span{display:block;margin-top:2px;color:var(--ref-blue-dark);font-size:8px;font-weight:800;line-height:1.05}
-.page-archetype .competition{margin:6px auto 0;width:max-content;max-width:100%;text-align:center;background:#08090C;color:#fff;border-radius:999px;padding:4px 11px;font-size:9px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.page-archetype .bouton-repli{position:static;display:block;width:max-content;max-width:100%;margin:11px 14px 12px auto;border:2px solid #C9D7FF;border-radius:999px;background:var(--ref-card);color:var(--ref-blue);padding:8px 16px;font-size:11px;font-weight:950;cursor:pointer;text-align:center}.page-archetype .bouton-repli:focus-visible{outline:3px solid rgba(40,89,217,.25)}
-/* AJOUT 17/09/2026 (Patrick) : P1/P2/P3 tous visibles à l'état replié,
-   "configurés exactement comme pronostic principal" -- chaque rang a
-   son propre bloc .apercu-rang (même structure : étiquette+puce,
-   marché, cote/probabilité, jauge circulaire), coloré selon son
-   accent (or/bleu/violet). Un rang sans candidat s'affiche "en veille"
-   (assombri, sans jauge ni chiffres à montrer). Le bouton reste le
-   dernier élément du bloc compact, toujours position:static. */
-.page-archetype .apercu-liste{display:none;padding:0 14px 0}
-.page-archetype .carte-repliee .apercu-liste{display:block}
-.page-archetype .apercu-rang{padding:7px 0;border-top:1px solid var(--ref-line)}
-.page-archetype .apercu-rang:first-child{border-top:0;padding-top:2px}
-.page-archetype .apercu-rang.apercu-P1{--accent:var(--ref-gold)}
-.page-archetype .apercu-rang.apercu-P2{--accent:var(--ref-blue-tab)}
-.page-archetype .apercu-rang.apercu-P3{--accent:var(--ref-violet)}
-.page-archetype .apercu-etiquette{display:flex;align-items:center;gap:6px;color:var(--accent);font-size:10px;font-weight:950;text-transform:uppercase;letter-spacing:.03em;margin:0 0 3px}
-.page-archetype .puce-rang{width:8px;height:8px;border-radius:2px;background:var(--accent);flex:none}
-.page-archetype .apercu-corps{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px}
-.page-archetype .apercu-marche{font-size:15px;font-weight:900;color:var(--ref-blue-dark);margin:0 0 3px;line-height:1.1}
-.page-archetype .apercu-donnees{display:flex;gap:14px;font-size:10px;color:var(--ref-muted);font-weight:700}
-.page-archetype .apercu-donnees strong{display:block;font-size:14px;color:var(--ref-blue-dark);margin-top:1px}
-.page-archetype .apercu-rang .jauge{width:38px;height:38px}
-.page-archetype .apercu-rang .jauge strong{font-size:10px}
-.page-archetype .apercu-rang.indisponible{opacity:.4}
-.page-archetype .apercu-rang.indisponible .apercu-marche{font-size:12px;font-weight:700;font-style:italic;margin:0}
-/* Quand la carte est repliée, seuls l'identité + les 3 aperçus + le bouton restent visibles. */
-.page-archetype .carte-repliee .selection-tabs,.page-archetype .carte-repliee .contenu-carte,.page-archetype .carte-repliee .details-analyse{display:none}
-/* Les 3 onglets sont TOUJOURS affichés en vue dépliée aussi, même quand
-   un match n'a qu'une seule sélection réelle (P1) -- les rangs sans
-   candidat sont visibles mais "en veille" (assombris, non cliquables),
-   jamais masqués. */
-.page-archetype .selection-tab.indisponible{opacity:.32;cursor:not-allowed;pointer-events:none}
-.page-archetype .selection-tabs{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--ref-line);background:#FDFBF7}.page-archetype .selection-tab{position:relative;min-width:0;border:0;border-radius:0;padding:11px 5px 10px;color:#fff;font:950 11px/1.05 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;cursor:pointer;text-transform:uppercase}.page-archetype .selection-tab small{display:block;margin-top:4px;font-size:9px;font-weight:800;text-transform:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.98}.page-archetype .selection-tab:nth-child(1){background:var(--ref-gold)}.page-archetype .selection-tab:nth-child(2){background:var(--ref-blue-tab)}.page-archetype .selection-tab:nth-child(3){background:var(--ref-violet)}.page-archetype .selection-tab.actif:after{content:"";position:absolute;left:50%;bottom:-8px;width:16px;height:16px;background:inherit;transform:translateX(-50%) rotate(45deg);border-radius:2px}.page-archetype .selection-tab.actif{z-index:1}
-.page-archetype .contenu-carte{padding:17px 20px 12px}.page-archetype .selection{display:none;border:0;background:transparent;overflow:visible}.page-archetype .selection.actif{display:block}.page-archetype .selection-inner{padding:0}.page-archetype .libelle-marche{color:var(--ref-blue-dark);font-size:26px;line-height:1.12;font-weight:950;margin:0 0 8px}.page-archetype .resume-marche{margin:0 0 12px;color:#273C5B;font-size:15px;line-height:1.34;font-weight:650;max-width:760px}
-/* AJOUT 17/09/2026 (Patrick, capture du prototype) -- rangée de 3
-   statistiques rapides avec icône, entre le résumé et le bloc
-   cote/probabilité. Utilise UNIQUEMENT les preuves déjà calculées par
-   justification.py/bibliotheque_justification.py (jamais de nouvelle
-   donnée inventée côté JS) -- une case reste "Non disponible" si sa
-   preuve n'existe pas pour ce match, jamais un chiffre de remplissage. */
-.page-archetype .stats-rapides{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 14px}
-.page-archetype .stat-rapide{display:flex;gap:8px;align-items:flex-start}
-.page-archetype .stat-rapide .icone-stat{font-size:16px;line-height:1;flex:none;margin-top:1px}
-.page-archetype .stat-rapide .stat-titre{display:block;font-size:11px;font-weight:800;color:var(--ref-blue-dark)}
-.page-archetype .stat-rapide .stat-texte{display:block;font-size:11px;color:var(--ref-muted);line-height:1.25;margin-top:1px}
-.page-archetype .donnees-principales{display:grid;grid-template-columns:minmax(0,1fr) 92px;align-items:center;gap:14px;border-top:1px solid var(--ref-line);border-bottom:1px solid var(--ref-line);padding:11px 0}.page-archetype .etiquette{display:block;color:var(--ref-muted);font-size:11px;font-weight:800}.page-archetype .cote{display:block;font-size:32px;line-height:1;color:#315CFF;font-weight:950;margin:4px 0 10px}.page-archetype .probabilite-ligne{display:flex;align-items:baseline;gap:6px}.page-archetype .probabilite-ligne strong{font-size:23px;color:var(--ref-blue-dark)}.page-archetype .jauge{position:relative;width:88px;height:88px;margin:auto}.page-archetype .jauge svg{width:100%;height:100%;transform:rotate(-90deg)}.page-archetype .jauge circle{fill:none;stroke-width:6}.page-archetype .jauge .fond{stroke:#E2E4E8}.page-archetype .jauge .valeur{stroke:var(--accent);stroke-linecap:round}.page-archetype .jauge strong{position:absolute;inset:0;display:grid;place-items:center;font-size:20px;color:var(--ref-blue-dark)}
-.page-archetype .ligne-confiance{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:11px 0 0;color:var(--ref-muted);font-size:12px;font-weight:700}.page-archetype .etoiles{color:var(--accent);font-size:20px;letter-spacing:1px}.page-archetype .etoiles-vides{opacity:.22}.page-archetype .ligne-confiance strong{font-size:12px}
-.page-archetype .bloc-pourquoi{border-left:4px solid var(--accent);border-radius:0 12px 12px 0;background:#F6F1E5;padding:12px 14px;margin-top:11px}.page-archetype .bloc-pourquoi .titre{font-size:15px;font-weight:950;margin-bottom:6px;color:var(--ref-blue-dark)}.page-archetype .resume-preuve{margin:0;color:#293B56;font-size:13px;line-height:1.4;font-weight:650}.page-archetype .preuves-cachees{margin-top:9px}.page-archetype .preuves-cachees summary{cursor:pointer;color:var(--accent);font-size:12px;font-weight:900;list-style:none}.page-archetype .preuves-cachees summary::-webkit-details-marker{display:none}.page-archetype .preuve{display:flex;gap:9px;padding:7px 0;border-top:1px solid rgba(23,42,77,.09);font-size:11px;line-height:1.35}.page-archetype .preuve:first-child{margin-top:6px}.page-archetype .preuve-titre{min-width:120px;color:var(--accent);font-weight:950}.page-archetype .preuve-texte{color:var(--ref-muted);font-weight:600}
-.page-archetype .metriques{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:11px;border-top:1px solid var(--ref-line)}.page-archetype .metrique{padding:10px 8px;border-right:1px solid var(--ref-line);cursor:help}.page-archetype .metrique:last-child{border-right:0}.page-archetype .metrique span{display:block;color:var(--ref-muted);font-size:11px;font-weight:800}.page-archetype .metrique strong{display:block;font-size:18px;margin-top:3px;color:var(--ref-blue-dark)}
-.page-archetype .details-analyse{margin:0 20px 14px;border-top:1px solid var(--ref-line);padding-top:10px}.page-archetype .details-analyse summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px}.page-archetype .details-analyse summary::-webkit-details-marker{display:none}.page-archetype .details-titre{font-size:12px;font-weight:950}.page-archetype .details-sous-titre{display:block;color:var(--ref-muted);font-size:10px;margin-top:2px}.page-archetype .chevron{color:var(--ref-blue);font-size:18px}.page-archetype .contenu-details{padding-top:7px}.page-archetype .ligne-detail{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid rgba(23,42,77,.08);font-size:10px}.page-archetype .ligne-detail .cle{color:var(--ref-muted)}.page-archetype .ligne-detail .val{font-weight:850;text-align:right}.page-archetype .etat-vide{max-width:700px;margin:14px auto;padding:22px 18px;border:1px solid #E2D8C6;border-radius:15px;color:var(--ref-muted);text-align:center;font-size:13px;background:var(--ref-card);box-shadow:0 8px 24px rgba(53,42,24,.08)}
-body.theme-nuit .page-archetype{--ref-bg:#11131A;--ref-card:#191C25;--ref-blue-dark:#F3F2F6;--ref-muted:#A9A7B0;--ref-line:#30333D}body.theme-nuit .page-archetype .header-archetype{border-bottom-color:#30333D!important}body.theme-nuit .page-archetype .marque-archetype p{color:#C8D2EE}body.theme-nuit .page-archetype .entete-match{background:var(--ref-card)}body.theme-nuit .page-archetype .ecusson-equipe{background:#191C25;color:#DDE5FF;border-color:#3A3D47}body.theme-nuit .page-archetype .bloc-horaire{background:#191C25;border-color:#39343A}body.theme-nuit .page-archetype .bouton-repli{background:var(--ref-card)}body.theme-nuit .page-archetype .resume-marche,body.theme-nuit .page-archetype .resume-preuve{color:#DDD9E1}body.theme-nuit .page-archetype .bloc-pourquoi{background:#222019}body.theme-nuit .page-archetype .jauge .fond{stroke:#373A43}body.theme-nuit .page-archetype .preuve,body.theme-nuit .page-archetype .details-analyse,body.theme-nuit .page-archetype .ligne-detail{border-color:#30333D}
-@media(max-width:600px){.page-archetype{padding:8px 5px 24px}.page-archetype .header-archetype{margin-bottom:8px}.page-archetype .competition{font-size:9px;padding:6px 11px}.page-archetype .selection-tab{font-size:9px;padding:10px 3px 9px}.page-archetype .selection-tab small{font-size:8px}.page-archetype .contenu-carte{padding:14px 12px 9px}.page-archetype .libelle-marche{font-size:22px}.page-archetype .resume-marche{font-size:13px}.page-archetype .donnees-principales{grid-template-columns:minmax(0,1fr) 78px;gap:8px;padding:10px 0}.page-archetype .cote{font-size:29px}.page-archetype .probabilite-ligne strong{font-size:20px}.page-archetype .jauge{width:74px;height:74px}.page-archetype .jauge strong{font-size:17px}.page-archetype .ligne-confiance{font-size:11px}.page-archetype .etoiles{font-size:17px}.page-archetype .bloc-pourquoi{padding:10px 11px}.page-archetype .bloc-pourquoi .titre{font-size:14px}.page-archetype .resume-preuve{font-size:12px}.page-archetype .preuve{font-size:10px}.page-archetype .preuve-titre{min-width:92px}.page-archetype .metrique strong{font-size:16px}.page-archetype .details-analyse{margin-left:12px;margin-right:12px}.page-archetype .apercu-rang .jauge{width:34px;height:34px}.page-archetype .apercu-rang .jauge strong{font-size:9px}.page-archetype .apercu-marche{font-size:14px}.page-archetype .apercu-donnees{font-size:9px}.page-archetype .apercu-donnees strong{font-size:13px}.page-archetype .stats-rapides{grid-template-columns:1fr;gap:8px}.page-archetype .stat-rapide .icone-stat{font-size:14px}.page-archetype .stat-rapide .stat-titre,.page-archetype .stat-rapide .stat-texte{font-size:10px}}
-</style>
-  <link rel="stylesheet" href="archetype-prototype.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F6EFE2">
+<title>ARCHETYPE — Pronostics du jour</title>
+<link rel="stylesheet" href="archetype.css?v=20260920">
 </head>
-<body class="page-archetype">
-<header class="header-archetype"><div class="marque-archetype"><div class="logo-archetype" aria-hidden="true">△</div><div><h1>ARCHETYPE</h1><p>Des analyses puissantes pour de meilleures décisions</p></div></div><a href="index.html" class="nav-bouton">← Accueil</a><div id="maj" class="maj-archetype">Chargement…</div></header>
-<main id="matches" class="flux-selections"></main>
-<script src="theme.js"></script><script src="traduction_marches.js"></script><script src="archetype.js"></script>
+<body class="ax-page">
+<script>try{if(localStorage.getItem("archetype_theme_nuit")==="1")document.body.classList.add("theme-nuit")}catch(e){}</script>
+<div class="ax-conteneur">
+  <div class="ax-barre">
+    <a class="ax-lien-accueil" href="index.html"><span aria-hidden="true">←</span> Accueil</a>
+    <button id="ax-bouton-theme" class="ax-bouton-theme" type="button" aria-label="Activer le mode nuit">☾</button>
+  </div>
+  <div class="ax-entete">
+    <h1>ARCHETYPE</h1>
+    <p class="ax-bandeau">Des analyses puissantes pour de meilleures décisions</p>
+  </div>
+  <p id="maj" class="ax-maj" role="status" aria-live="polite">Chargement…</p>
+  <main id="matches" class="ax-liste-matchs"></main>
+</div>
+<script src="traduction_marches.js"></script>
+<script src="archetype.js?v=20260920"></script>
 </body>
 </html>
