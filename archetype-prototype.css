@@ -16,6 +16,20 @@
 .page-archetype .donnees-principales{grid-template-columns:minmax(0,1fr) 92px!important;gap:14px!important}
 .page-archetype .jauge{width:88px!important;height:88px!important}
 .page-archetype .bloc-pourquoi{border-left-width:4px!important}
+
+/* REPLIÉ : les trois rangs P1/P2/P3 sont une partie permanente de la
+   carte compacte. Ils restent visibles même si une autre règle de page
+   tente de masquer les détails. Aucun calcul n'est effectué ici : seules
+   les sélections déjà fournies par archetype_model sont affichées. */
+.page-archetype .carte-repliee .apercu-liste{display:block!important;visibility:visible!important}
+.page-archetype .carte-repliee .apercu-rang{display:block!important;visibility:visible!important;min-height:52px}
+.page-archetype .carte-repliee .apercu-etiquette{display:flex!important;visibility:visible!important}
+.page-archetype .carte-repliee .apercu-corps{display:grid!important;visibility:visible!important}
+.page-archetype .carte-repliee .apercu-rang.indisponible .apercu-corps{display:none!important}
+.page-archetype .carte-repliee .apercu-marche{display:block!important;visibility:visible!important}
+.page-archetype .carte-repliee .apercu-donnees{display:flex!important;visibility:visible!important}
+.page-archetype .carte-repliee .apercu-rang .jauge{display:block!important;visibility:visible!important}
+
 @media (max-width:560px){
   .page-archetype{padding:10px 8px 28px!important}
   .page-archetype .carte-match{border-radius:18px!important}
@@ -31,5 +45,16 @@
   .page-archetype .cote{font-size:30px!important}
   .page-archetype .jauge{width:78px!important;height:78px!important}
   .page-archetype .contenu-carte{padding:15px 14px 10px!important}
+
+  /* Sur 414px, chaque aperçu conserve une hiérarchie lisible :
+     rang → marché → cote/probabilité → jauge. */
+  .page-archetype .carte-repliee .apercu-liste{padding:0 12px!important}
+  .page-archetype .carte-repliee .apercu-rang{padding:8px 0!important;min-height:56px}
+  .page-archetype .carte-repliee .apercu-marche{font-size:14px!important;line-height:1.15!important}
+  .page-archetype .carte-repliee .apercu-donnees{gap:10px!important}
+  .page-archetype .carte-repliee .apercu-donnees strong{font-size:13px!important}
+  .page-archetype .carte-repliee .apercu-rang .jauge{width:36px!important;height:36px!important}
+  .page-archetype .carte-repliee .apercu-rang .jauge strong{font-size:9px!important}
+  .page-archetype .carte-repliee .bouton-repli{margin-top:9px!important}
 }
 @media (min-width:900px){.page-archetype .carte-match{max-width:900px!important}}
