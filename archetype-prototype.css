@@ -115,3 +115,13 @@ body.page-archetype .bouton-repli:active{transform:scale(.97)}
 body.page-archetype .bouton-repli:focus-visible{outline:3px solid #172E57!important;outline-offset:2px!important}
 body.page-archetype.theme-nuit .bouton-repli:focus-visible{outline-color:#FFD75E!important}
 @media (hover:hover){body.page-archetype .bouton-repli:hover{filter:brightness(1.08)}}
+
+/* ══════════════════════════════════════════════════════════════════════
+   ZONES TACTILES DE L'EN-TÊTE — 20/09/2026
+   « ← Accueil » (28px de haut) et le bouton mode nuit (≈25px) étaient sous
+   les 44px recommandés sur iPhone. On agrandit UNIQUEMENT la zone de
+   toucher, avec un pseudo-élément invisible : l'apparence ne change pas.
+   ══════════════════════════════════════════════════════════════════════ */
+body.page-archetype .header-archetype .nav-bouton{position:relative}
+body.page-archetype .header-archetype .nav-bouton::after{content:"";position:absolute;inset:-9px -4px}
+body.page-archetype .header-archetype .bouton-mode-nuit::after{content:"";position:absolute;inset:-10px}
