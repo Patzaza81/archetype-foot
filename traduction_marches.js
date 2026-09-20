@@ -53,10 +53,6 @@ function traduitMarche(marche, equipes) {
     }
   }
 
-  {
-    }
-  }
-
   return marche.replace(/_/g, " ");
 }
 
