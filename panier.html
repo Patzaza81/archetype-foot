@@ -2,27 +2,27 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#F7F1E7">
-<title>Archetype Foot — Panier</title>
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="theme.css">
-<link rel="stylesheet" href="archetype.css?v=20260920">
-<style>
-:root{--bg:#F7F1E7;--surface:#FFFDF8;--surface-2:#F1E9FA;--turquoise:#315CFF;--turquoise-active:#6547E8;--gold:#9A701B;--green:#2F855A;--red:#C53030;--text:#241B35;--text-secondary:#756B7D;--heure:#655B70;--categorie:#315CFF;--border:rgba(64,38,91,.14)}
-#retour-accueil{display:inline-block;margin-bottom:8px}#statut-panier{padding:0 0 8px;font-size:12px;color:var(--text-secondary)}#panier-cartes{max-width:980px;margin:0 auto}.carte-panier{margin-bottom:10px}.barre-panier{display:flex;justify-content:flex-end;gap:6px;margin-bottom:6px}.bouton-analyse-panier,.bouton-retirer-panier{border-radius:999px;padding:7px 10px;font-size:11px;font-weight:800;cursor:pointer}.bouton-analyse-panier{background:linear-gradient(135deg,#315CFF,#6547E8);border:0;color:#fff}.bouton-analyse-panier:disabled{opacity:.45;cursor:not-allowed}.bouton-retirer-panier{background:#FFFDF8;border:1px solid rgba(49,92,255,.16);color:var(--text-secondary)}.carte-panier .carte-match{margin-bottom:0}body{background:var(--bg);color:var(--text)}header{background:linear-gradient(135deg,rgba(49,92,255,.08),rgba(130,70,230,.08));border-bottom-color:rgba(49,92,255,.16)}header h1{color:var(--gold)}.carte-panier,.carte-panier .carte-match{box-shadow:0 5px 18px rgba(61,38,84,.06)}
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F6EFE2">
+<title>ARCHETYPE — Panier</title>
+<link rel="stylesheet" href="archetype.css?v=20260920b">
 </head>
-<body class="page-archetype">
-<header><div class="header-top"><h1>Archetype Foot — Panier</h1></div></header>
-<main>
-<a id="retour-accueil" href="index.html" class="nav-bouton">← Accueil</a>
-<p id="statut-panier">Chargement…</p>
-<div id="panier-cartes"></div>
-</main>
-<script src="theme.js"></script>
+<body class="ax-page">
+<script>try{if(localStorage.getItem("archetype_theme_nuit")==="1")document.body.classList.add("theme-nuit")}catch(e){}</script>
+<div class="ax-conteneur">
+  <div class="ax-barre">
+    <a class="ax-lien-accueil" href="index.html"><span aria-hidden="true">←</span> Accueil</a>
+    <button id="ax-bouton-theme" class="ax-bouton-theme" type="button" aria-label="Activer le mode nuit">☾</button>
+  </div>
+  <div class="ax-entete">
+    <h1>ARCHETYPE</h1>
+    <p class="ax-bandeau">Des analyses puissantes pour de meilleures décisions</p>
+  </div>
+  <p id="statut-panier" class="ax-maj" role="status" aria-live="polite">Chargement…</p>
+  <main id="panier-cartes" class="ax-liste-matchs"></main>
+</div>
 <script src="traduction_marches.js"></script>
-<script src="archetype.js"></script>
-<script src="panier.js"></script>
+<script src="archetype.js?v=20260920b"></script>
+<script src="panier.js?v=20260920b"></script>
 </body>
 </html>

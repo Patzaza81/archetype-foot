@@ -78,14 +78,13 @@ function construitResume(selection, equipes) {
     if (!c) {
       return `<div class="ax-resume-rang ax-${info.classe} ax-vide">` +
         `<span class="ax-resume-etiquette">${echappeHtml(info.titre)}</span>` +
-        `<p class="ax-resume-indispo">Non disponible pour ce match</p></div>`;
+        `<span class="ax-resume-indispo">Non disponible pour ce match</span></div>`;
     }
     return `<div class="ax-resume-rang ax-${info.classe}">` +
       `<div class="ax-resume-corps">` +
-      `<span class="ax-resume-etiquette">${echappeHtml(info.titre)}</span>` +
-      `<h3 class="ax-resume-marche">${echappeHtml(traduitMarche(c.marche, equipes))}</h3>` +
-      `<p class="ax-resume-chiffres"><span>Cote <strong>${formatCote(c.cote)}</strong></span>` +
-      `<span>Probabilité <strong>${formatPctEntier(c.probabilite)}</strong></span></p></div>` +
+      `<div class="ax-resume-tete"><span class="ax-resume-etiquette">${echappeHtml(info.titre)}</span>` +
+      `<span class="ax-resume-cote">Cote <strong>${formatCote(c.cote)}</strong></span></div>` +
+      `<h3 class="ax-resume-marche">${echappeHtml(traduitMarche(c.marche, equipes))}</h3></div>` +
       `${construitJauge(c.probabilite, "ax-jauge-mini")}</div>`;
   }).join("");
   return div;
@@ -144,7 +143,7 @@ function construitDetails(selection, equipes) {
 }
 
 function construitCarte(m, options) {
-  const replieAuDepart = !!(options && options.replie);
+  const opt = options || {};
   const id = ++compteurCartes;
   const equipes = { domicile: m.domicile || "Équipe à domicile", exterieur: m.exterieur || "Équipe à l'extérieur" };
   const heure = m.heure_cameroun || m.heure || "—";
@@ -159,7 +158,7 @@ function construitCarte(m, options) {
       `<span class="ax-equipe ax-dom">${echappeHtml(equipes.domicile)}</span>` +
       `<div class="ax-horaire"><strong>${echappeHtml(heure)}</strong><span>${echappeHtml(date)}</span></div>` +
       `<span class="ax-equipe ax-ext">${echappeHtml(equipes.exterieur)}</span></div>` +
-      (competition ? `<p class="ax-competition">${echappeHtml(competition)}</p>` : "") +
+      `<div class="ax-match-bas"><p class="ax-competition">${echappeHtml(competition)}</p><div class="ax-actions-tete"></div></div>` +
     `</div>`;
 
   section.appendChild(construitResume(selection, equipes));
@@ -196,18 +195,46 @@ function construitCarte(m, options) {
 
   section.appendChild(construitDetails(selection, equipes));
 
+  // Deux boutons pour le même geste : "Déplier" dans l'en-tête (carte repliée, compacte)
+  // et "Plier" en bas de carte (carte dépliée, comme sur la maquette). Un seul est visible à la fois.
+  const deplier = document.createElement("button");
+  deplier.type = "button"; deplier.className = "ax-deplier";
   const pied = document.createElement("div");
   pied.className = "ax-pied";
   const plier = document.createElement("button");
   plier.type = "button"; plier.className = "ax-plier";
   const applique = (replie) => {
     section.classList.toggle("ax-replie", replie);
-    plier.setAttribute("aria-expanded", String(!replie));
-    plier.innerHTML = `${replie ? "Déplier" : "Plier"} <span aria-hidden="true">${replie ? "⌄" : "⌃"}</span>`;
+    deplier.setAttribute("aria-expanded", String(!replie)); plier.setAttribute("aria-expanded", String(!replie));
+    deplier.innerHTML = `Déplier <span aria-hidden="true">⌄</span>`;
+    plier.innerHTML = `Plier <span aria-hidden="true">⌃</span>`;
   };
-  plier.addEventListener("click", () => applique(!section.classList.contains("ax-replie")));
-  applique(replieAuDepart);
+  const bascule = () => applique(!section.classList.contains("ax-replie"));
+  deplier.addEventListener("click", (e) => { e.stopPropagation(); bascule(); });
+  plier.addEventListener("click", bascule);
+  // Carte repliée : toucher n'importe où sur la carte la déplie (grande zone tactile).
+  section.addEventListener("click", (e) => {
+    if (section.classList.contains("ax-replie") && !e.target.closest("button, a, summary")) bascule();
+  });
+  applique(!!opt.replie);
+  section.querySelector(".ax-actions-tete").appendChild(deplier);
   pied.appendChild(plier); section.appendChild(pied);
+
+  // Action facultative (ex. « Retirer » dans le panier). Même principe que Déplier/Plier :
+  // en-tête quand la carte est repliée, pied de carte quand elle est dépliée -> la hauteur de la
+  // carte est strictement la même avec ou sans l'action (panier identique à la page principale).
+  if (opt.action && typeof opt.action.onClick === "function") {
+    const cree = (classe) => {
+      const bouton = document.createElement("button");
+      bouton.type = "button"; bouton.className = `ax-retirer ${classe}`;
+      bouton.textContent = opt.action.libelle || "Retirer";
+      if (opt.action.aria) bouton.setAttribute("aria-label", opt.action.aria);
+      bouton.addEventListener("click", (e) => { e.stopPropagation(); opt.action.onClick(); });
+      return bouton;
+    };
+    section.querySelector(".ax-actions-tete").prepend(cree("ax-retirer-tete"));
+    pied.prepend(cree("ax-retirer-pied"));
+  }
   return section;
 }
 
@@ -267,8 +294,8 @@ function installeThemeNuit() {
   });
 }
 
+installeThemeNuit();
 if (document.getElementById("matches")) {
-  installeThemeNuit();
   fetch(`precalcul_leger.json?_=${Date.now()}`)
     .then((r) => { if (!r.ok) throw new Error(`precalcul_leger.json introuvable (${r.status})`); return r.json(); })
     .then((d) => afficheSelections(d.signaux || []))

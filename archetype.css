@@ -56,6 +56,7 @@
 .ax-etat-vide{padding:22px 18px;border-radius:20px;background:#FFFBF3;border:1px solid #E4DCCB;text-align:center}
 .ax-etat-vide strong{display:block;font-size:18px;margin-bottom:6px}
 .ax-etat-vide p{margin:0;color:#5D6478;font-size:15px}
+.ax-etat-vide .ax-retirer-bloc{margin-top:12px;min-height:40px;color:#5D6478;border-color:#E4DCCB}
 .ax-page.theme-nuit .ax-etat-vide{background:#1A1E29;border-color:#2E3342}
 .ax-page.theme-nuit .ax-etat-vide p{color:#A9AEC2}
 
@@ -103,7 +104,22 @@ body.theme-nuit .ax-carte{
 .ax-horaire{display:grid;justify-items:center;text-align:center;min-width:84px}
 .ax-horaire strong{font-size:20px;font-weight:900;line-height:1.1}
 .ax-horaire span{font-size:12px;font-weight:600;color:var(--ax-doux)}
-.ax-competition{margin:8px 0 0;text-align:center;font-size:12.5px;font-weight:600;color:var(--ax-doux)}
+.ax-match-bas{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}
+.ax-competition{margin:0;min-width:0;flex:1 1 auto;font-size:12.5px;font-weight:600;line-height:1.25;color:var(--ax-doux)}
+.ax-actions-tete{flex:0 0 auto;display:flex;align-items:center;gap:12px}
+.ax-deplier,.ax-retirer{
+  position:relative;display:inline-flex;align-items:center;justify-content:center;gap:5px;
+  min-height:30px;padding:0 13px;border-radius:9px;cursor:pointer;
+  font:inherit;font-size:13px;font-weight:700;line-height:1;white-space:nowrap;
+  -webkit-tap-highlight-color:transparent;
+}
+/* zone tactile étendue à 44px sans agrandir le bouton visible */
+.ax-deplier::after,.ax-retirer::after{content:"";position:absolute;inset:-6px}
+.ax-deplier{border:0;background:var(--ax-bouton);color:#fff}
+.ax-retirer{border:1px solid var(--ax-ligne);background:transparent;color:var(--ax-doux)}
+.ax-deplier:focus-visible,.ax-retirer:focus-visible{outline:3px solid var(--ax-texte);outline-offset:2px}
+.ax-deplier{display:none}
+.ax-retirer-tete{display:none}
 
 /* — Onglets P1 / P2 / P3 — */
 .ax-onglets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -157,8 +173,8 @@ body.theme-nuit .ax-carte{
 .ax-jauge-valeur{fill:none;stroke:var(--ax-anneau);stroke-width:10;stroke-linecap:round}
 .ax-jauge-centre{fill:var(--ax-centre)}
 .ax-jauge-texte{fill:#fff;font-size:25px;font-weight:800;text-anchor:middle;dominant-baseline:central}
-.ax-jauge-mini{width:52px;height:52px}
-.ax-jauge-mini .ax-jauge-texte{font-size:27px}
+.ax-jauge-mini{width:36px;height:36px}
+.ax-jauge-mini .ax-jauge-texte{font-size:28px}
 
 .ax-etoiles{font-size:19px;letter-spacing:1px;line-height:1;color:var(--ax-etoile)}
 .ax-etoiles-vides{color:var(--ax-etoile-vide)}
@@ -170,22 +186,23 @@ body.theme-nuit .ax-carte{
 
 /* — Aperçu compact (carte repliée) — */
 .ax-resume{display:none;border-top:1px solid var(--ax-ligne)}
-.ax-resume-rang{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border-left:5px solid transparent}
+.ax-resume-rang{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 12px;border-left:5px solid transparent}
 .ax-resume-rang + .ax-resume-rang{border-top:1px solid var(--ax-ligne)}
 .ax-resume-rang.ax-rang-1{border-left-color:var(--ax-or)}
 .ax-resume-rang.ax-rang-2{border-left-color:var(--ax-bleu)}
 .ax-resume-rang.ax-rang-3{border-left-color:var(--ax-violet)}
-.ax-resume-corps{min-width:0}
-.ax-resume-etiquette{display:block;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.ax-resume-corps{min-width:0;flex:1 1 auto}
+.ax-resume-tete{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.ax-resume-etiquette{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;line-height:1.2}
 .ax-rang-1 .ax-resume-etiquette{color:var(--ax-or-texte)}
 .ax-rang-2 .ax-resume-etiquette{color:var(--ax-bleu-texte)}
 .ax-rang-3 .ax-resume-etiquette{color:var(--ax-violet-texte)}
-.ax-resume-marche{margin:2px 0 4px;font-size:18px;font-weight:800;line-height:1.2;overflow-wrap:anywhere}
-.ax-resume-chiffres{margin:0;display:flex;flex-wrap:wrap;gap:2px 14px;font-size:13.5px;color:var(--ax-doux)}
-.ax-resume-chiffres strong{color:var(--ax-texte);font-size:15px}
-.ax-resume-rang.ax-vide{display:block}
-.ax-resume-rang.ax-vide .ax-resume-etiquette{opacity:.75}
-.ax-resume-indispo{margin:3px 0 0;font-size:14px;font-style:italic;color:var(--ax-doux)}
+.ax-resume-cote{font-size:12.5px;line-height:1.1;color:var(--ax-doux);white-space:nowrap}
+.ax-resume-cote strong{font-size:14px;color:var(--ax-texte)}
+.ax-resume-marche{margin:1px 0 0;font-size:16px;font-weight:800;line-height:1.2;overflow-wrap:anywhere}
+.ax-resume-rang.ax-vide{flex-wrap:wrap;justify-content:flex-start;align-items:baseline;gap:0 10px;padding:5px 12px}
+.ax-resume-rang.ax-vide .ax-resume-etiquette{opacity:.8}
+.ax-resume-indispo{font-size:13px;font-style:italic;color:var(--ax-doux)}
 
 /* — Détails techniques — */
 .ax-details{margin:4px 16px 0;border-top:1px solid var(--ax-ligne)}
@@ -210,7 +227,9 @@ body.theme-nuit .ax-carte{
 .ax-detail-rang dd{margin:0;font-weight:700;text-align:right}
 
 /* — Pied : bouton Plier / Déplier — */
-.ax-pied{display:flex;justify-content:flex-end;padding:10px 16px 16px;border-top:1px solid var(--ax-ligne)}
+.ax-pied{display:flex;align-items:center;gap:12px;padding:10px 16px 16px;border-top:1px solid var(--ax-ligne)}
+.ax-plier{margin-left:auto}
+.ax-retirer-pied{min-height:44px;padding:0 18px;font-size:15px}
 .ax-plier{
   display:inline-flex;align-items:center;justify-content:center;gap:6px;
   min-height:44px;min-width:112px;padding:0 20px;
@@ -223,11 +242,20 @@ body.theme-nuit .ax-carte{
 .ax-plier:active{transform:scale(.97)}
 .ax-plier:focus-visible{outline:3px solid var(--ax-texte);outline-offset:2px}
 
-/* ══════════ État replié : l'aperçu remplace onglets + panneaux + détails ══════════ */
+/* ══════════ État replié : l'aperçu remplace onglets + panneaux + détails + pied ══════════ */
+.ax-carte.ax-replie{cursor:pointer}
 .ax-carte.ax-replie .ax-onglets,
 .ax-carte.ax-replie .ax-panneaux,
-.ax-carte.ax-replie .ax-details{display:none}
+.ax-carte.ax-replie .ax-details,
+.ax-carte.ax-replie .ax-pied{display:none}
 .ax-carte.ax-replie .ax-resume{display:block}
+.ax-carte.ax-replie .ax-deplier,
+.ax-carte.ax-replie .ax-retirer-tete{display:inline-flex}
+.ax-carte.ax-replie .ax-match{padding:8px 12px 4px}
+.ax-carte.ax-replie .ax-equipe{font-size:15.5px}
+.ax-carte.ax-replie .ax-horaire strong{font-size:18px}
+.ax-carte.ax-replie .ax-match-bas{margin-top:2px}
+.ax-carte.ax-replie .ax-horaire{min-width:70px}
 
 /* ══════════ Écrans étroits (< 360px) ══════════ */
 @media (max-width:359px){
