@@ -2,7 +2,7 @@
 
 Suivi des chantiers majeurs. Les statuts ci-dessous reposent sur des vérifications réelles du dépôt, des exécutions GitHub Actions et des fichiers produits. Aucune conclusion ne doit être tirée d'un simple statut vert sans inspection des sorties.
 
-Dernière mise à jour : 18/09/2026 — après runs #128 et #129.
+Dernière mise à jour : 20/09/2026 — après la session justification/casse critique/Handicap (voir TRANSITION.md §52).
 
 ---
 
@@ -26,6 +26,9 @@ Dernière mise à jour : 18/09/2026 — après runs #128 et #129.
 - Le problème est aggravé par le volume massif des fichiers générés et par des écritures concurrentes sur `main`.
 
 **Action prioritaire : sécuriser la publication des résultats avant de relancer des runs longs.**
+
+### Incident du 19/09 — `main` cassé entre les runs #129 et le run suivant (voir TRANSITION.md §52)
+Le nettoyage "retirer parité et combos" (décision assumée, pas remise en cause) a accidentellement supprimé du code actif sans rapport avec parité/combo : une erreur de syntaxe a rendu tout le moteur non-importable, 3 constantes de marchés actifs (buts par équipe, total, handicap) et 2 fonctions de lecture des cotes utilisées par tout le pipeline avaient disparu. Corrigé et vérifié (54/54 tests, import complet OK) avant que le run suivant ne parte. **Leçon retenue : après toute suppression volontaire de code, vérifier l'import complet du moteur et la suite de tests avant de committer — pas seulement que les occurrences ciblées ont disparu.**
 
 ---
 
@@ -79,15 +82,13 @@ Objectif :
 - distinguer recalcul, preuve spécifique, EV seul et absence de preuve.
 
 #### P1.2 Supprimer le pont implicite cote/probabilité
-Le chemin courant peut produire :
-- `odds_scraped: null`
-- `market_prob_pct: null`
-- `ev_percentage: null`
+**FAIT (session du 19-20/09, voir TRANSITION.md §52).** Le pont `inspect.currentframe()` a été retiré de `justification.py` ; `odds_scraped`/`market_prob_pct` sont désormais transmis explicitement aux deux points d'appel de `main.py`.
 
-Objectif :
-- transmettre explicitement la cote Betpawa du candidat ;
-- transmettre explicitement la probabilité affichée/calculée ;
-- supprimer la dépendance au contexte appelant/`inspect` une fois la compatibilité vérifiée.
+#### P1.5 (nouveau) Règle maîtresse : justification spécifique obligatoire par marché retenu
+**FAIT, à valider sur le prochain run réel.** Un marché retenu sans preuve spécifique (pas seulement l'EV générique) est désormais rejeté avant sélection (`JUSTIFICATION_INSUFFISANTE`). Impact quantifié sur le run du 19/09 : 22 des 32 sélections auraient été rejetées sous cette règle — à surveiller au prochain run, le volume de sélections réelles va mécaniquement baisser.
+
+#### P1.6 (nouveau) Handicap : marché mort depuis le 15/09, pas seulement biaisé
+**Découvert en session du 19-20/09.** La regex de parsing (`_RE_HANDICAP_3`) ne correspond à aucun libellé Betpawa réel depuis le commit `cc1f860` du 15/09 — le marché Handicap ne peut plus être sélectionné du tout. Une regex antérieure correcte existe dans l'historique (`_RE_HANDICAP`, format réel `"Handicap X - Domicile/Extérieur"`, 2 issues, ligne signée). Un bug de signe distinct a aussi été prouvé numériquement sur les lignes positives (inversion), mais n'explique pas l'échec des lignes négatives observé dans l'archive — **cause encore non isolée pour ce second point**. Voir TRANSITION.md §52 pour le détail du calcul.
 
 #### P1.3 Compléter uniquement les marchés réellement présents
 Le run démontre des marchés `over_under_total_3.5_under` et `over_under_total_2.5_under` avec des preuves statistiques disponibles.
@@ -109,21 +110,14 @@ Objectif :
 
 ### P1 — Handicap : audit séparé
 
-**Constat actuel :**
-- 18 observations historiques analysées ;
-- 3 gagnées / 15 perdues ;
-- ROI flat stake observé : -76,61 %.
+**Mis à jour 19-20/09 (voir TRANSITION.md §52 et P1.6 ci-dessus) :**
+- 21 observations `SELECTED` réelles réanalysées (archive continue de se résoudre) : domicile 3W/1L, extérieur 1W/13L.
+- Règlement vérifié manuellement ligne à ligne par Patrick : **correct, pas la cause**.
+- **Cause structurelle trouvée** : la regex de parsing ne correspond plus à aucun libellé Betpawa réel depuis le 15/09 (`cc1f860`) — le marché est mort, pas juste biaisé.
+- Bug de signe prouvé numériquement sur les lignes positives (formule actuelle inverse le signe), mais insuffisant pour expliquer l'échec sur les lignes négatives observé dans l'archive.
+- **Reste à faire** : isoler la cause de l'échec sur les lignes négatives ; corriger le parsing avec la regex retrouvée dans l'historique (`_RE_HANDICAP`) ; revalider avec les 21 observations réelles avant toute nouvelle confiance dans ce marché.
 
-Ce résultat est un signal d'audit, pas une preuve définitive avec un échantillon aussi court.
-
-Objectif :
-- vérifier l'orientation domicile/extérieur du handicap ;
-- vérifier le signe et la convention de chaque ligne ;
-- séparer les observations antérieures et postérieures au correctif `431ef02` avec horodatage lorsque disponible ;
-- rejouer les cas représentatifs ;
-- ne modifier aucune règle de sélection avant d'avoir isolé la cause.
-
-**Critère de sortie :** convention mathématique et sens du marché démontrés par des cas réels.
+**Critère de sortie :** convention mathématique et sens du marché démontrés par des cas réels — pas encore atteint.
 
 ---
 

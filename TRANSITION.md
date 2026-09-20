@@ -2549,3 +2549,50 @@ Suite pytest du dépôt : 43/44 verts (le seul échec, `test_marches_retenus_end
 2. Brier score/log-loss : aucun déclenchement automatique de `telemetry.enregistre_scores_probabilistes()` n'existe encore -- nécessite que `archetype_model/learning/resultats.py` ait tourné, lui-même jamais câblé dans `pipeline.yml` (préexistant, pas propre à ce chantier).
 3. Finalisation des contrôles d'ingestion Data/Cache et intégration du Dashboard Frontend (lecture de `data/audit_status.json` sur une page du site, à l'image de `systeme.html`) -- pas commencée.
 
+
+## 52. Session du 19-20/09/2026 — règle maîtresse de justification (NO DATA → NO GO), casse critique du nettoyage parité/combo, bug Handicap isolé
+
+Session dense, plusieurs chantiers enchaînés, certains menés en parallèle par Patrick directement sur GitHub pendant que Claude travaillait dessus.
+
+**Chantier 1 — Règle maîtresse : justification obligatoire et spécifique par marché retenu** (`a3112cd`, prolongé par `9b40815`, `b74d0bb`, `6f60b3b`, `5a41df2`, `d9e43d6`) :
+
+Contrat imposé par Patrick : `marché retenu → justification obligatoire → spécifique à CE marché`. Jamais une justification générique interchangeable entre marchés. Si aucune preuve spécifique n'existe, le marché n'est **pas retenu** — jamais affiché avec une phrase générique inventée (NO DATA → NO GO).
+
+- `bibliotheque_justification.py` : nouveau champ `preuve_specifique_disponible`, distingue une vraie preuve métier de la seule preuve EV générique (ajoutée sans condition dès que cote+probabilité sont connues, donc presque toujours).
+- `archetype_model/main.py` : les deux points de construction de candidat (marchés fixes + boucle dynamique) calculent désormais la justification **avant** de décider si le candidat est retenu. Sans preuve spécifique → rejet avec motif `JUSTIFICATION_INSUFFISANTE`, visible en télémétrie.
+- Le pont implicite `inspect.currentframe()` (dette architecturale documentée depuis longtemps) a été supprimé de `justification.py` ; `odds_scraped`/`market_prob_pct` sont désormais transmis explicitement aux deux points d'appel.
+- Prolongé ensuite par Patrick (couverture Double Chance X2 et marchés Under, préservation du contrat jusqu'à la sélection finale P1/P2/P3).
+- **Impact quantifié sur le run réel du 19/09 (32 sélections)** : 22 des 32 candidats retenus n'avaient qu'une justification générique (EV seul) — ils auraient été rejetés sous la nouvelle règle. Seuls 10 avaient une justification spécifique suffisante.
+
+**Chantier 2 — CRITIQUE : `main` était cassé sur GitHub, sans rapport avec le chantier 1** (`e6ef250`) :
+
+Découvert en fusionnant les commits distants pendant le chantier 1. Le nettoyage "retirer parité et combos" (`017604c`/`049f8d0`/`09212d7`, décisions assumées, pas contestées) avait accidentellement supprimé bien plus que prévu :
+- `archetype_model/poisson/markets.py` : syntaxe Python invalide (`} | {` orphelin) — **plantage à l'import de tout le moteur**, confirmé sur le commit distant lui-même, pas un artefact local.
+- 3 constantes supprimées par erreur (`LIGNES_BUTS_EQUIPE`, `LIGNES_TOTAL_PAR_DEFAUT`, `LIGNES_HANDICAP_PAR_DEFAUT`) — aucun rapport avec parité/combo, `NameError` au premier appel de `calcule_tous_les_marches()`.
+- `archetype_model/data/odds_provider.py` : tombé de 113 à 37 lignes — `extrait_cotes()`/`recupere_cotes_pour_match()` (utilisées par tout le pipeline) avaient disparu.
+- `audit_permanent.py` plantait en cascade (4 exceptions successives) sur du code combo/parité supprimé, jamais retiré des tests.
+
+Reconstruit fichier par fichier depuis le dernier commit sain (`2ed4db2`), en ne retirant que ce qui était réellement visé (parité pair/impair, combo DC+total). **Sans ce correctif, le prochain run n'aurait même pas pu démarrer.**
+
+**Chantier 3 — Crash IndexError sur le Handicap 3 choix** (`fbee644`) :
+
+Bug préexistant (confirmé par `git log -S`, commit `d8cffdd` du 15/09, antérieur à cette session) : dans la boucle dynamique de `main.py`, une ligne écrasait immédiatement le nom de marché handicap par un nom `combo_...` invalide (`cle_cote[3]` sur un tuple à 3 éléments → `IndexError` garanti). Patrick confirme : le handicap utilisé par le système est le handicap à 3 choix uniquement. Ligne fautive supprimée.
+
+**Chantier 4 — Audit Handicap : cause racine partiellement isolée, enquête pas terminée** :
+
+Point de départ : 21 observations `SELECTED` réelles archivées (`archive/2026-09.json`), handicap domicile 75 % de réussite contre handicap extérieur 7 % (1/14) — écart jugé non explicable par le bruit statistique (Patrick, ordre de grandeur 10⁻⁹ sous l'hypothèse nulle).
+
+Règlement vérifié manuellement par Patrick ligne à ligne : **correct**, pas la cause.
+
+**Découverte majeure en travaillant sur les données réelles du run en cours** (pas l'archive, sur demande explicite de Patrick) : la regex actuelle `_RE_HANDICAP_3` (`^(Domicile|Nul|Extérieur)\s+([+-]?\d+)$`) **ne correspond à AUCUN libellé handicap réel de Betpawa** — testé empiriquement à 0 correspondance sur les vrais libellés présents dans `TOUS_MARCHES_EVALUES` (format réel : `"Handicap -0.5 - Domicile"`, `"Handicap -0.5 - Extérieur"` — marché à 2 issues, même ligne signée montrée des deux côtés, jamais de "Nul"). Retrouvé par `git log -S` : une regex antérieure et correcte (`_RE_HANDICAP = re.compile(r"^Handicap (-?\d+(?:\.\d+)?) - (Domicile|Extérieur)$")`) a été remplacée par erreur dans le commit `cc1f860` du 15/09 ("Limiter le handicap au format 3 choix Betpawa", décision de Patrick basée sur une hypothèse de format qui s'est révélée fausse). **Conséquence actuelle : le marché Handicap ne peut plus être reconnu du tout depuis le 15/09** — pas seulement biaisé, mort silencieusement.
+
+Calcul concret mené sur un vrai match du run (EA Guingamp vs Red Star, lambdas réels) : la formule actuelle (`ligne_interne = abs(ligne)` puis toujours `h = -ligne_interne` quel que soit le camp) **coïncide** avec la formule correcte quand la ligne brute est déjà négative, mais **inverse le signe** quand la ligne brute est positive (prouvé numériquement : "Handicap 1.5 - Domicile" calcule 0,3098 au lieu de 0,8922, l'inverse quasi exact). Ce bug précis ne suffit cependant pas à expliquer l'échondrement observé sur les lignes négatives côté extérieur (justement le cas où la formule actuelle coïncide) — **un second problème distinct reste à isoler, enquête non terminée**.
+
+**Chantier 5 — Nouvelle architecture Péage 1/Péage 2** (`24cef62`, `cd487db`) fournie par Patrick, appliquée par Claude avec feu vert explicite sur fichiers sensibles :
+- `profil_equipe.py` (nouveau), `peage_2.py` (nouveau), `matrice_croisement.py` (remplacé) : nouveaux gates de filtrage avant la convergence existante, qui reste inchangée (vérifié ligne à ligne).
+- `SEUIL_PEAGE1` : 0.85 → 0.70 (score_pondere = nb_dimensions_convergentes × poids_fiabilite ; à 0.85 un profil non fiable à dimension unique était traité pareil qu'à 0.70, mais un profil fiable à dimension unique passait déjà — seuil ajusté pour rester sélectif sur les profils non fiables sans être plus strict que nécessaire sur les fiables).
+- Validé sur les 495 vrais matchs du dernier run réussi avant modification : 0 erreur. **Non encore validé sur un run complet post-modification en conditions réelles.**
+
+**Vérifié réellement à la fin de la session** : suite pytest 54/54 (le bug préexistant de longue date sur la somme Double Chance a aussi été corrigé entre-temps, `92a5725`, hors mandat de cette session). `audit_permanent.py` tourne jusqu'au bout sans exception après les corrections du chantier 2 (464 OK / 24 échecs restants, même catégorie déjà documentée : API `justification.py` obsolète testée, mocks sans `historique_complet` — champ renommé depuis `_historique_justification`, qui laissait croire à tort qu'il ne servait qu'au texte alors qu'il alimente maintenant aussi le Péage 1).
+
+**Non commencé, reporté** : la publication GitHub non robuste (`git pull --rebase` + `git push` en fin de pipeline, cf. §1 ROADMAP) reste le point le plus dangereux non traité cette session — un run qui réussit peut toujours perdre sa publication.
