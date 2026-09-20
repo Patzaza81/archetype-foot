@@ -113,11 +113,13 @@ def enrichit_justification_selection(candidat, diagnostic):
     preuves_marketing = list(justification_actuelle.get("preuves") or [])
     resume_marketing = justification_actuelle.get("resume")
     donnees_suffisantes = bool(justification_actuelle.get("donnees_suffisantes"))
+    preuve_specifique_disponible = bool(justification_actuelle.get("preuve_specifique_disponible"))
 
     nouvelle_justification = {
         "resume": resume_marketing,
         "preuves": preuves_marketing[:3],
         "donnees_suffisantes": donnees_suffisantes,
+        "preuve_specifique_disponible": preuve_specifique_disponible,
         "bibliotheque": bibliotheque,
     }
 
