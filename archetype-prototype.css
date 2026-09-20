@@ -58,3 +58,60 @@
   .page-archetype .carte-repliee .bouton-repli{margin-top:9px!important}
 }
 @media (min-width:900px){.page-archetype .carte-match{max-width:900px!important}}
+
+/* ══════════════════════════════════════════════════════════════════════
+   EN-TÊTE DÉGRADÉ + BOUTON DÉPLIER/REPLIER — 20/09/2026
+   Adaptation du code fourni par Patrick (.header / .toggle-btn / .section).
+   Ces trois classes n'existent dans aucune page du dépôt : le code d'origine
+   n'aurait rien changé. Il est donc rebranché sur les VRAIS éléments :
+     .header      -> .header-archetype
+     .header h1   -> .header-archetype h1
+     .toggle-btn  -> .bouton-repli
+   Portée limitée à body.page-archetype : les autres pages ne changent pas.
+   Choix volontaires :
+   - le bouton reste position:static (règle du 17/09/2026 plus haut dans ce
+     fichier) : pas de position:absolute, donc aucun chevauchement possible et
+     plus besoin de réserver 40px de marge basse (.section supprimé) ;
+   - titre en #FFD75E et non #D4A017 : le jaune moutarde donnait 2,05:1 sur le
+     bleu (seuil de lisibilité 3:1) ; #FFD75E donne 3,5:1 à 3,8:1 ;
+   - pas de text-align:center sur l'en-tête : il décentrerait "← Accueil"
+     par rapport à la marque alignée à gauche ;
+   - bouton de 44px de haut (cible tactile iPhone) avec police héritée.
+   ══════════════════════════════════════════════════════════════════════ */
+body.page-archetype .header-archetype{
+  padding:8px 12px 9px!important;
+  background:linear-gradient(90deg,#3A6BDC,#6A5ACB)!important;
+  border:0!important;
+  border-radius:16px!important;
+  box-shadow:0 4px 14px rgba(58,107,220,.25)!important;
+  color:#fff!important;
+}
+body.page-archetype .header-archetype h1{color:#FFD75E!important;background:none!important}
+body.page-archetype .header-archetype .logo-archetype{color:#FFD75E!important;background:transparent!important}
+body.page-archetype .header-archetype .marque-archetype p{color:#fff!important}
+body.page-archetype .header-archetype .maj-archetype{color:#fff!important}
+body.page-archetype .header-archetype .nav-bouton{
+  background:rgba(9,18,58,.30)!important;
+  border:1px solid rgba(255,255,255,.55)!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+body.page-archetype.theme-nuit .header-archetype{
+  background:linear-gradient(90deg,#2A4AA3,#4A3F96)!important;
+  box-shadow:0 4px 14px rgba(0,0,0,.45)!important;
+}
+
+body.page-archetype .bouton-repli{
+  position:static!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;gap:6px!important;
+  min-height:44px!important;
+  padding:0 18px!important;
+  background:#3A6BDC!important;color:#fff!important;
+  border:0!important;border-radius:6px!important;
+  font-family:inherit!important;font-size:13px!important;font-weight:700!important;line-height:1!important;
+  box-shadow:0 2px 8px rgba(58,107,220,.28)!important;
+}
+body.page-archetype .bouton-repli:active{transform:scale(.97)}
+body.page-archetype .bouton-repli:focus-visible{outline:3px solid #172E57!important;outline-offset:2px!important}
+body.page-archetype.theme-nuit .bouton-repli:focus-visible{outline-color:#FFD75E!important}
+@media (hover:hover){body.page-archetype .bouton-repli:hover{filter:brightness(1.08)}}
