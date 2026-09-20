@@ -115,6 +115,8 @@ def construit_donnees(
         data["home_unbeaten_streak"] = _streak(a_dom, lambda m: m["buts_marques"] >= m["buts_encaisses"])
         data["home_win_rate"] = _pct(sum(m["buts_marques"] > m["buts_encaisses"] for m in a_dom), len(a_dom))
         data["home_concede_rate"] = _pct(sum(m["buts_encaisses"] >= 1 for m in a_dom), len(a_dom))
+        data["home_loss_rate"] = _pct(sum(m["buts_marques"] < m["buts_encaisses"] for m in a_dom), len(a_dom))
+        data["home_winless_streak"] = _streak(a_dom, lambda m: m["buts_marques"] <= m["buts_encaisses"])
 
     if len(b_ext) >= MIN_ROLE_MATCHES:
         data["away_loss_rate"] = _pct(sum(m["buts_marques"] < m["buts_encaisses"] for m in b_ext), len(b_ext))
@@ -207,9 +209,25 @@ def construit_justification_bibliotheque(
             ))
 
     elif marche in {"double_chance_X2", "1x2_exterieur"}:
-        # Le contrat fourni ne définit pas de métriques X2 spécifiques.
-        # Aucune inversion silencieuse des métriques 1X n'est autorisée.
-        pass
+        if d["away_winless_streak"] is not None and d["away_winless_streak"] >= 4:
+            preuves.append(_proof(
+                f"Régularité à l'extérieur : {b} reste sur {d['away_winless_streak']} matchs sans défaite en déplacement.",
+                type="away_winless_streak", valeur=d["away_winless_streak"],
+            ))
+        if d["home_loss_rate"] is not None and d["home_winless_streak"] is not None and (
+            d["home_loss_rate"] >= 50 or d["home_winless_streak"] >= 4
+        ):
+            preuves.append(_proof(
+                f"Fragilité à domicile : {a} présente {d['home_loss_rate']:.1f}% de défaites récentes à domicile.",
+                type="home_loss_rate", valeur=d["home_loss_rate"],
+            ))
+        if h:
+            h2h_x2 = sum(x["buts_a"] <= x["buts_b"] for x in h)
+            if _pct(h2h_x2, len(h)) >= 70:
+                preuves.append(_proof(
+                    f"Avantage historique : {b} est restée invaincue lors de {h2h_x2} des {len(h)} dernières confrontations directes.",
+                    type="h2h_x2_unbeaten_count", valeur=h2h_x2, total=len(h),
+                ))
 
     line = _market_line(marche)
     if marche.startswith("over_under_total_") or line:
@@ -231,6 +249,20 @@ def construit_justification_bibliotheque(
                     f"Historique prolifique : la barre des {txt} buts a été franchie dans {d['h2h_over_count']} des {d['h2h_total']} derniers duels.",
                     type="h2h_over_count", valeur=d["h2h_over_count"], total=d["h2h_total"],
                 ))
+
+    elif line and line[1] == "under":
+        target = line[0]
+        if target == 1.5 and d["over_15_rate_combined"] is not None and d["over_15_rate_combined"] <= 25:
+            preuves.append(_proof(
+                f"Rythme fermé : plus de 1.5 but dans seulement {d['over_15_rate_combined']:.1f}% des matchs récents des deux équipes.",
+                type="under_15_rate_combined", valeur=d["over_15_rate_combined"],
+            ))
+        if d["h2h_over_count"] is not None and d["h2h_over_rate"] is not None and d["h2h_over_rate"] <= 30:
+            txt = str(target).replace(".", ",")
+            preuves.append(_proof(
+                f"Historique fermé : la barre des {txt} buts n'a été franchie que dans {d['h2h_over_count']} des {d['h2h_total']} derniers duels.",
+                type="h2h_under_count", valeur=d["h2h_over_count"], total=d["h2h_total"],
+            ))
 
     elif marche == "btts_oui":
         if d["both_teams_score_rate"] is not None and d["both_teams_score_rate"] >= 70:
@@ -254,7 +286,8 @@ def construit_justification_bibliotheque(
             explication=f"La cote actuelle est supérieure de {d['ev_percentage']:.1f}% à ce que nos calculs jugent équitable.",
         ))
 
-    resume = preuves[0]["texte"] if preuves else None
+    preuves_specifiques = [p for p in preuves if p.get("type") != "ev_percentage"]
+    resume = preuves_specifiques[0]["texte"] if preuves_specifiques else None
     # AJOUT 19/09/2026 (Patrick, règle maîtresse) -- un marché retenu doit
     # recevoir une justification SPÉCIFIQUE à ce marché, jamais seulement
     # la preuve EV générique (interchangeable entre tous les marchés,
@@ -262,12 +295,12 @@ def construit_justification_bibliotheque(
     # d'appliquer NO DATA -> NO GO : si aucune preuve spécifique n'existe,
     # le marché ne doit pas être retenu, jamais affiché avec une
     # justification générique inventée pour combler le vide.
-    preuve_specifique_disponible = any(p["type"] != "ev_percentage" for p in preuves)
+    preuve_specifique_disponible = bool(preuves_specifiques)
 
     return {
         "resume": resume,
         "preuves": preuves[:3],
-        "donnees_suffisantes": bool(preuves),
+        "donnees_suffisantes": preuve_specifique_disponible,
         "preuve_specifique_disponible": preuve_specifique_disponible,
         "bibliotheque": d,
     }
