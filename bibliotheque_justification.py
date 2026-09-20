@@ -249,20 +249,18 @@ def construit_justification_bibliotheque(
                     f"Historique prolifique : la barre des {txt} buts a été franchie dans {d['h2h_over_count']} des {d['h2h_total']} derniers duels.",
                     type="h2h_over_count", valeur=d["h2h_over_count"], total=d["h2h_total"],
                 ))
-
-    elif line and line[1] == "under":
-        target = line[0]
-        if target == 1.5 and d["over_15_rate_combined"] is not None and d["over_15_rate_combined"] <= 25:
-            preuves.append(_proof(
-                f"Rythme fermé : plus de 1.5 but dans seulement {d['over_15_rate_combined']:.1f}% des matchs récents des deux équipes.",
-                type="under_15_rate_combined", valeur=d["over_15_rate_combined"],
-            ))
-        if d["h2h_over_count"] is not None and d["h2h_over_rate"] is not None and d["h2h_over_rate"] <= 30:
-            txt = str(target).replace(".", ",")
-            preuves.append(_proof(
-                f"Historique fermé : la barre des {txt} buts n'a été franchie que dans {d['h2h_over_count']} des {d['h2h_total']} derniers duels.",
-                type="h2h_under_count", valeur=d["h2h_over_count"], total=d["h2h_total"],
-            ))
+        elif line[1] == "under":
+            if target == 1.5 and d["over_15_rate_combined"] is not None and d["over_15_rate_combined"] <= 25:
+                preuves.append(_proof(
+                    f"Rythme fermé : plus de 1.5 but dans seulement {d['over_15_rate_combined']:.1f}% des matchs récents des deux équipes.",
+                    type="under_15_rate_combined", valeur=d["over_15_rate_combined"],
+                ))
+            if d["h2h_over_count"] is not None and d["h2h_over_rate"] is not None and d["h2h_over_rate"] <= 30:
+                txt = str(target).replace(".", ",")
+                preuves.append(_proof(
+                    f"Historique fermé : la barre des {txt} buts n'a été franchie que dans {d['h2h_over_count']} des {d['h2h_total']} derniers duels.",
+                    type="h2h_under_count", valeur=d["h2h_over_count"], total=d["h2h_total"],
+                ))
 
     elif marche == "btts_oui":
         if d["both_teams_score_rate"] is not None and d["both_teams_score_rate"] >= 70:
