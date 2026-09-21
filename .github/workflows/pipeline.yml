@@ -44,8 +44,17 @@ jobs:
 
       - name: Installer les dépendances
         run: |
-          pip install requests beautifulsoup4 pandas lxml playwright
+          pip install requests beautifulsoup4 pandas lxml playwright pytest
           playwright install --with-deps chromium
+
+      # AJOUT 21/09/2026 -- filet de sécurité AVANT tout scraping (quelques secondes, contre 1 h 30 à 3 h 30 de run) :
+      # autotests du moteur et du pont, puis suite de tests Python. Un échec arrête le job ici, avant de perdre un run
+      # entier sur un moteur cassé (ROADMAP P0.3). Volontairement SANS continue-on-error.
+      - name: Autotests du moteur, du pont et suite Python
+        run: |
+          python moteur_v2_6_9.py --autotest
+          python pont_moteur.py --autotest
+          python -m pytest tests -q
 
       - name: Générer les listes brutes aujourd'hui + demain
         run: python scraper.py --max-matchs 100000
@@ -174,10 +183,15 @@ jobs:
       # convergence.py/robustness.py lisent désormais cette configuration
       # (voir archetype_model/config_loader.py) -- une promotion ici a un
       # effet réel sur le prochain cycle de sélection.
-      - name: Calibration adaptative d'archetype_model
-        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
-        run: python calibre_archetype_model.py
-        continue-on-error: true
+      # DÉBRANCHÉE le 21/09/2026 -- la calibration adaptative règle les paramètres de l'ANCIEN modèle
+      # (archetype_model/config_loader.py). Le moteur du pipeline est désormais moteur_v2_6_9.py, dont les constantes
+      # sont fixes dans le code : une « promotion » ici ne changerait rien au calcul tout en écrivant un journal
+      # trompeur, à partir d'un archive qui mélange deux moteurs. À rebrancher seulement si un mécanisme de
+      # calibration propre au nouveau moteur est décidé (voir ROADMAP P2.6).
+      # - name: Calibration adaptative d'archetype_model
+      #   if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+      #   run: python calibre_archetype_model.py
+      #   continue-on-error: true
 
       # AJOUT 13/09/2026 -- consolide en un seul fichier (etat_systeme.json)
       # ce que la nouvelle page systeme.html affiche : bilan comportemental,
@@ -261,6 +275,9 @@ jobs:
           # quittent jamais le runner éphémère -- admin.html afficherait un
           # état vide en permanence, quel que soit le succès du run.
           [ -d data ] && git add data/
+          # AJOUT 21/09/2026 -- export_moteur/ : entrées exactes du moteur (un fichier par date, écrasés à chaque run)
+          # et diagnostic_pont.json (matchs rejetés, avec la raison).
+          [ -d export_moteur ] && git add export_moteur/
 
           echo "=================================================="
           echo "DIAGNOSTIC 18.1 -- APRÈS git add"

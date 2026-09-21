@@ -93,6 +93,8 @@ import json
 import re
 import sys
 
+import branchement_moteur
+import pont_moteur
 import run_pipeline
 from run_pipeline import construit_signaux, charge_json_ou_vide
 from cache_equipes import recupere_gf_ga_avec_cache, purge_entrees_expirees as purge_equipes_expirees
@@ -107,14 +109,26 @@ from archetype_model.learning import archive as archetype_archive
 from archetype_model.learning import extraction as archetype_extraction
 from archetype_model.audit import telemetry as archetype_telemetry
 from archetype_model.audit import report as archetype_audit_report
+from archetype_model.h2h import h2h_stats as archetype_h2h_stats
 
 _recupere_gf_ga_reelle = run_pipeline.recupere_gf_ga_avec_repli
 
 
+# AJOUT 21/09/2026 -- branchement de moteur_v2_6_9.py (voir branchement_moteur.py et pont_moteur.py). Le signal
+# final ne conserve ni ga_domicile ni ga_exterieur (seulement le lambda calculé), alors que le moteur a besoin des
+# moyennes de buts marqués ET encaissés, et la bibliothèque de justification des listes de matchs. On garde donc le
+# dernier résultat vu par (équipe, compétition) -- clé identique à (signal["domicile"], signal["competition"]),
+# car construit_signaux() appelle la collecte avec exactement ces deux valeurs -- sans rien changer à la valeur
+# renvoyée à construit_signaux().
+STATS_EQUIPES_VUES = {}
+
+
 def _recupere_gf_ga_avec_cache(url_equipe, nom_equipe, nom_competition, max_matchs=10):
-    return recupere_gf_ga_avec_cache(
+    resultat = recupere_gf_ga_avec_cache(
         _recupere_gf_ga_reelle, url_equipe, nom_equipe, nom_competition, max_matchs
     )
+    STATS_EQUIPES_VUES[(nom_equipe, nom_competition)] = resultat
+    return resultat
 
 
 run_pipeline.recupere_gf_ga_avec_repli = _recupere_gf_ga_avec_cache
@@ -879,6 +893,9 @@ def _leger_pour_site(s):
     d = dict(s)
     d.pop("marches", None)
     d.pop("lambda", None)
+    # AJOUT 21/09/2026 -- bloc du moteur du pipeline (moteur_v2_6_9) : statut + sélection P1/P2/P3 avec justification.
+    if isinstance(d.get(branchement_moteur.CLE_BLOC), dict):
+        d[branchement_moteur.CLE_BLOC] = branchement_moteur.bloc_leger(d[branchement_moteur.CLE_BLOC])
     am = d.get("archetype_model")
     if isinstance(am, dict):
         selection = am.get("selection") or {}
@@ -990,8 +1007,52 @@ def _archive_resultat_archetype_model(s, resultat):
     )
 
 
+def _h2h_pour_signal(s):
+    """H2H d'un match, du point de vue de l'équipe à domicile, avec la même sélection (confrontations retenues)
+    que l'ancien système. Passe par le cache H2H (96 h) : jamais de requête réseau répétée inutilement."""
+    url = s.get("url_match")
+    if not url:
+        return []
+    brutes = _recupere_h2h_avec_cache(url + "?p=face-a-face")
+    normalisees = []
+    for c in brutes:
+        n = archetype_h2h_stats._normalise_confrontation(c, s["domicile"])
+        if n is not None:
+            normalisees.append(n)
+    return archetype_h2h_stats.classifie_h2h(normalisees).get("confrontations_retenues", [])
+
+
+def applique_moteur_pipeline(signaux):
+    """AJOUT 21/09/2026 -- LE moteur du pipeline : moteur_v2_6_9.py, via branchement_moteur.py.
+
+    Remplace applique_archetype_model() (débranchée, conservée plus bas pour audit_permanent.py). Pose sur chaque
+    signal `moteur_utilise` = "moteur_v2_6_9" et le bloc `moteur_v2_6_9` (statut, verdict, sélection P1/P2/P3 avec
+    justification, inventaire complet). Archive les choix retenus (SELECTED) et les value bets non retenus
+    (COUNTERFACTUAL) dans archive/AAAA-MM.json. Ne fait AUCUN repli sur l'ancien moteur (règle du propriétaire) :
+    une exception sur un match est un statut ERREUR_TECHNIQUE visible, jamais une décision inventée."""
+    def archiver(s, bloc, non_selectionnes):
+        return branchement_moteur.archive_bloc(s, bloc, non_selectionnes, archetype_archive)
+
+    resume = branchement_moteur.applique_moteur(
+        signaux, STATS_EQUIPES_VUES, h2h_fetcher=_h2h_pour_signal, archiver=archiver
+    )
+    print(f"moteur_v2_6_9 -- statuts : {resume['statuts']}")
+    print(f"moteur_v2_6_9 -- raisons des refus : {resume['raisons']}")
+    print(f"moteur_v2_6_9 -- {resume['nb_matchs_avec_choix']} match(s) avec au moins un choix, "
+          f"{resume['nb_choix_retenus']} choix retenus, {resume['nb_archives']} observation(s) archivée(s), "
+          f"{resume['nb_erreurs_archive']} erreur(s) d'archivage.")
+    erreurs = [s for s in signaux if (s.get(branchement_moteur.CLE_BLOC) or {}).get("statut") == "ERREUR_TECHNIQUE"]
+    for s in erreurs[:5]:
+        print(f"moteur_v2_6_9 -- ERREUR_TECHNIQUE {s.get('match_id')} : {s[branchement_moteur.CLE_BLOC]['raison']}",
+              file=sys.stderr)
+    return signaux
+
+
 def applique_archetype_model(signaux):
     """
+    *** DÉBRANCHÉE le 21/09/2026 : plus appelée par main(). Remplacée par applique_moteur_pipeline(). ***
+    Conservée telle quelle uniquement parce que audit_permanent.py la teste encore ; à supprimer avec ses sections.
+
     Chantier du 09/09/2026 (reprise de session) -- tente
     archetype_model.main.analyse_match_complet() en PRIORITÉ sur chaque
     match déjà traité par l'ancien moteur, avec repli vers le résultat de
@@ -1171,7 +1232,7 @@ def main():
     print(f"Résolution Betpawa : {compteurs_betpawa}")
 
     signaux = construit_signaux(fenetre)
-    signaux = applique_archetype_model(signaux)
+    signaux = applique_moteur_pipeline(signaux)
 
     for s in signaux:
         s["model_version"] = MODEL_VERSION
@@ -1206,6 +1267,7 @@ def main():
         "nb_partial": sum(1 for s in signaux if s["status"] == "PARTIAL"),
         "nb_archives_historique": nb_archives,
         "betpawa": compteurs_betpawa,
+        "moteur": {"nom": branchement_moteur.NOM_MOTEUR, "version": branchement_moteur.VERSION_MOTEUR},
         "signaux": signaux,
     }
 
@@ -1218,6 +1280,7 @@ def main():
         "nb_matchs_fenetre": len(fenetre),
         "nb_ready": sortie["nb_ready"],
         "nb_partial": sortie["nb_partial"],
+        "moteur": sortie["moteur"],
         "signaux": [_leger_pour_site(s) for s in signaux],
     }
     with open(FICHIER_SORTIE_LEGER, "w", encoding="utf-8") as f:
@@ -1228,6 +1291,17 @@ def main():
           f"{FICHIER_SORTIE_LEGER} écrit en parallèle (sans marches/lambda). "
           f"Betpawa : {compteurs_betpawa['betpawa_cotes_extraites']} match(s) "
           f"avec cotes réelles, {compteurs_betpawa['betpawa_tentes']} tenté(s).")
+
+    # AJOUT 21/09/2026 -- export des matchs au format de moteur_v2_6_9.py, un fichier par date dans export_moteur/
+    # (entrées EXACTES du moteur : `python moteur_v2_6_9.py export_moteur/matchs_moteur_AAAA-MM-JJ.json --date AAAA-MM-JJ`
+    # rejoue le calcul). Isolé dans un try : un échec ici ne doit jamais faire échouer un run par ailleurs réussi.
+    try:
+        resume_pont = pont_moteur.exporte_matchs_moteur(signaux, STATS_EQUIPES_VUES)
+        print(f"Export moteur : {resume_pont['nb_exportes']}/{resume_pont['nb_signaux']} match(s) "
+              f"exporté(s) {resume_pont['par_date']} ; rejets : {resume_pont['rejets']}.")
+    except Exception as e:
+        print(f"AVERTISSEMENT : export vers le moteur échoué ({e}) -- sans conséquence sur le run.",
+              file=sys.stderr)
 
     if not fenetre:
         sys.exit(1)
