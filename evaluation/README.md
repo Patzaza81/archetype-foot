@@ -15,9 +15,22 @@ Le fichier est reproductible : rejouer `moteur_v2_6_9.py` sur les entrées figé
 - c'est un **rejeu** (le 21/09) sur les entrées du run du 20/09 00:18 UTC, pas un run en direct ;
 - les statistiques d'équipe viennent des fenêtres de l'ancien chargeur (saison en cours, ordre chronologique, filtrées par lieu) : une approximation de la source réelle du moteur ;
 - les cotes sont celles de BetPawa à 00:18 UTC, pas à l'heure du coup d'envoi ;
-- l'échantillon est petit : 80 matchs au plus, environ 70 choix publiés. Les marchés d'un même match sont corrélés : les intervalles sont calculés **par match**.
+- l'échantillon du premier jeu est petit (80 matchs, environ 70 choix publiés) ; le jeu principal en compte 503 ; Les marchés d'un même match sont corrélés : les intervalles sont calculés **par match**.
 
-## Fournir les résultats
+## Deux jeux figés
+
+| Fichier | Contenu |
+|---|---|
+| `snapshot_historique_moteur_v2_6_9.json` | **503 matchs déjà joués (9 au 20/09)**, chacun analysé avec les cotes et historiques du **dernier run publié avant son coup d'envoi**, règle des 2 matchs par lieu comprise. Jeu principal. |
+| `snapshot_moteur_v2_6_9_2026-09-20.json` | 80 matchs du 20/09 (premier jeu, contenu dans le principal pour l'essentiel) |
+
+Les scores du jeu principal sont récupérés **automatiquement** par le pipeline chaque nuit (`evaluation_scores.py` : une requête par date sur la page des résultats, rapprochement des deux équipes avec la fonction du pipeline, score retenu seulement si le match est terminé) et écrits dans `scores_historique_moteur_v2_6_9.json`. Évaluation :
+
+```bash
+python evaluation_moteur.py evaluation/snapshot_historique_moteur_v2_6_9.json evaluation/scores_historique_moteur_v2_6_9.json
+```
+
+## Fournir les résultats à la main (autre option)
 
 Un résultat par ligne, dans l'ordre « équipe à domicile, équipe à l'extérieur » (les équipes inversées sont détectées, le score est alors inversé avec un avertissement) :
 

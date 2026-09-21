@@ -3,7 +3,8 @@
 """
 evaluation_moteur.py -- compare l'analyse FIGÉE du moteur (snapshot) aux résultats réels.
 
-    python evaluation_moteur.py evaluation/snapshot_....json resultats.txt [--json rapport.json] [--liste]
+    python evaluation_moteur.py evaluation/snapshot_....json resultats.txt   [--json rapport.json] [--liste]
+    python evaluation_moteur.py evaluation/snapshot_....json evaluation/scores_....json   (scores récupérés par le pipeline)
 
 Résultats acceptés, une ligne par match (le score est toujours « buts du premier - buts du second », dans l'ordre écrit) :
     Manta - Orense 2-1          |   Manta 2-1 Orense          |   Manta;Orense;2;1          |   2026-09-20 Manta - Orense 2-1
@@ -307,6 +308,14 @@ def rapport_texte(entete: Dict[str, Any], rapport: Dict[str, Any]) -> str:
     return "\n".join(L)
 
 
+def charge_scores(chemin: str, snapshot: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+    """Scores récupérés automatiquement (evaluation_scores.py) -> même structure que `associe`. Seuls les matchs du snapshot comptent."""
+    ids = {m["id"] for m in snapshot["matchs"]}
+    brut = json.load(open(chemin, encoding="utf-8")).get("scores", {})
+    return {i: {"buts_dom": v["buts_dom"], "buts_ext": v["buts_ext"], "ligne": "score automatique (page des résultats)", "inverse": False}
+            for i, v in brut.items() if i in ids}
+
+
 def integrite(chemin: str) -> Optional[bool]:
     somme = chemin + ".sha256"
     if not os.path.exists(somme):
@@ -325,8 +334,11 @@ def main(argv: List[str]) -> int:
         for m in sorted(snapshot["matchs"], key=lambda x: (x["date"], x["heure"], x["domicile"])):
             print(f"{m['domicile']} - {m['exterieur']}")
         return 0
-    lus, refusees = lit_resultats(open(args[1], encoding="utf-8").read())
-    attribues, rejetees, avertissements = associe(lus, snapshot["matchs"])
+    if args[1].endswith(".json"):
+        attribues, refusees, rejetees, avertissements = charge_scores(args[1], snapshot), [], [], []
+    else:
+        lus, refusees = lit_resultats(open(args[1], encoding="utf-8").read())
+        attribues, rejetees, avertissements = associe(lus, snapshot["matchs"])
     entete = {"moteur": f"{snapshot['moteur']['nom']} v{snapshot['moteur']['version']}", "origine": snapshot["origine"], "n_snapshot": len(snapshot["matchs"]),
               "n_avec_resultat": len(attribues), "integrite": integrite(args[0])}
     rapport = evalue(snapshot, attribues)

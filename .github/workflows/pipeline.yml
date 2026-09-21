@@ -147,6 +147,14 @@ jobs:
         run: python verifie_resultats_archetype_model.py
         continue-on-error: true
 
+      # AJOUT 21/09/2026 -- évaluation du moteur : scores finaux des matchs des jeux d'évaluation (evaluation/snapshot_*.json).
+      # Une requête par date sur la page des résultats ; les scores trouvés sont conservés (evaluation/scores_*.json) et lus par
+      # `python evaluation_moteur.py evaluation/snapshot_X.json evaluation/scores_X.json`. Sans effet sur le reste du pipeline.
+      - name: Récupérer les scores des matchs du jeu d'évaluation du moteur
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+        run: python evaluation_scores.py
+        continue-on-error: true
+
       # AJOUT 13/09/2026, demande explicite de Patrick ("branché le plus
       # tôt possible, dès le prochain run") -- mode observation des
       # tickets (Option A) : construit un ticket FICTIF par nuit avec un
@@ -288,6 +296,8 @@ jobs:
           # AJOUT 21/09/2026 -- export_moteur/ : entrées exactes du moteur (un fichier par date, écrasés à chaque run)
           # et diagnostic_pont.json (matchs rejetés, avec la raison).
           [ -d export_moteur ] && git add export_moteur/
+          # scores du jeu d'évaluation du moteur (evaluation/scores_*.json ; les snapshots, eux, sont figés et déjà commités)
+          [ -d evaluation ] && git add evaluation/
 
           echo "=================================================="
           echo "DIAGNOSTIC 18.1 -- APRÈS git add"
