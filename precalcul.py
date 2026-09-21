@@ -876,15 +876,9 @@ def _leger_pour_site(s):
     seulement par la section 'tous les marchés calculés'/détail du lambda
     dans 'voir les détails').
 
-    AJOUT 09/09/2026 (reprise de session) -- même logique appliquée au
-    résultat d'archetype_model : la version COMPLÈTE (diagnostics par
-    marché, fenêtres avec tous les matchs retenus, les 4 lambdas, tous les
-    candidats avant dédoublonnage) reste dans precalcul.json pour
-    l'inspection/debug (GitHub), mais gonflerait precalcul_leger.json
-    exactement comme marches/lambda le faisaient avant leur retrait (voir
-    docstring de module, 9,2 Mo au 02/09/2026 pour 1574 matchs) -- le
-    bloc de vérification ajouté dans script.js (construitBlocArchetypeModel)
-    n'a besoin que du statut et de la sélection P1/P2/P3."""
+    Le fichier léger reçoit uniquement le bloc canonique du moteur_v2_6_9
+    via branchement_moteur.bloc_leger(); aucun résultat de l'ancien moteur
+    n'est recopié."""
     d = dict(s)
     d.pop("marches", None)
     d.pop("lambda", None)
@@ -894,11 +888,6 @@ def _leger_pour_site(s):
     # Ancien bloc archetype_model supprimé le 21/09/2026 :
     # le site ne reçoit désormais que le bloc canonique moteur_v2_6_9.
 
-                # fichier allégé. Absentes = les tableaux concernés ne s'affichent pas (jamais de « — »).
-                if isinstance(j.get("bibliotheque"), dict):
-                    c["justification"]["bibliotheque"] = j["bibliotheque"]
-            selection_legere[rang] = c
-        d["archetype_model"] = {"statut": am.get("statut"), "selection": selection_legere}
     return d
 
 
