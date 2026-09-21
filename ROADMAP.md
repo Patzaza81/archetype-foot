@@ -1,5 +1,8 @@
 # ROADMAP — Archetype Foot
 
+> Les renvois « TRANSITION.md §N » de ce document désignent l'ancien journal de sessions, supprimé le 21/09/2026.
+> Il reste lisible dans l'historique Git : `git show c1ce4c9:TRANSITION.md`.
+
 Suivi des chantiers majeurs. Les statuts ci-dessous reposent sur des vérifications réelles du dépôt, des exécutions GitHub Actions et des fichiers produits. Aucune conclusion ne doit être tirée d'un simple statut vert sans inspection des sorties.
 
 Dernière mise à jour : 20/09/2026 — après la session justification/casse critique/Handicap (voir TRANSITION.md §52).

@@ -1,0 +1,255 @@
+# ARCHETYPE Foot
+
+Système d'analyse de matchs de football : collecte automatique des matchs et des cotes, modèle statistique
+(Poisson), sélection de pronostics **justifiés par des données réelles**, et publication sur un site pensé pour
+le mobile (iPhone). Le tout tourne chaque nuit sur GitHub Actions et se publie sur Netlify.
+
+> Ce document décrit l'**architecture et les règles**, qui changent peu. L'état courant s'obtient avec
+> `git log` et `ROADMAP.md`. Dernière vérification de ce README : 21/09/2026 (commit `c1ce4c9`).
+
+---
+
+## 1. Vue d'ensemble
+
+```
+matchendirect.fr ─┐                                   ┌─▶ archetype_model/       (le modèle)
+betpawa.cm ───────┴─▶ SCRAPING ─▶ matchs_*.json ─▶ precalcul.py ─┤
+                      (scraper*.py, resolution_betpawa*.py)      └─▶ bibliotheque_justification.py (les textes)
+                                                                  │
+                                    precalcul.json (complet) + precalcul_leger.json (site)
+                                                                  │
+                     vérification des résultats · tickets · calibration · état système
+                                                                  │
+                                            git push ─▶ Netlify ─▶ site (pages HTML/JS/CSS statiques)
+```
+
+Le site est **entièrement statique** : il lit des fichiers JSON produits par le pipeline. Le navigateur ne choisit
+aucun pronostic et ne calcule aucune statistique.
+
+---
+
+## 2. Le pipeline nocturne
+
+Workflow : `.github/workflows/pipeline.yml` — déclenché chaque jour à **21:00 UTC** (22:00 au Cameroun) ou à la main
+(`workflow_dispatch`). Un seul run à la fois (`concurrency`, sans annulation du run en cours). Les runs réussis récents
+durent de 1 h 30 à 3 h 30, l'essentiel du temps étant la résolution BetPawa.
+
+| # | Étape | Script | Sortie principale |
+|---|---|---|---|
+| 1 | Listes de matchs J0 et J+1 | `scraper.py` | `matchs_du_jour.json`, `matchs_demain.json` |
+| 2 | Liste J+2 et J+3 (non bloquante) | `scraper_semaine.py` | `matchs_semaine.json` |
+| 3 | Pré-calcul J0 → J+3 + résolution BetPawa | `precalcul.py` | `precalcul.json` (complet), `precalcul_leger.json` (site), `matchs_*_filtre.json`, `historique_pronostics.json`, `archive/AAAA-MM.json` |
+| 4 | Garde : le pré-calcul a-t-il produit un résultat exploitable ? | (dans le workflow) | arrête le job sinon |
+| 5 | Vérification des résultats réels | `verifie_resultats_archetype_model.py` | règlement de l'archive (`SELECTED` / `COUNTERFACTUAL`) |
+| 6 | Tickets fictifs (mode observation) | `observe_tickets_archetype_model.py` | `tickets_observes/AAAA-MM.json` |
+| 7 | Tentative de vrais tickets (seuil réel, jamais assoupli) | `genere_tickets_reels_archetype_model.py` | `vrais_tickets/AAAA-MM.json` |
+| 8 | Bilan comportemental | `calcule_matrice_archetype_model.py` | `bilan_archetype_model.json` |
+| 9 | Calibration adaptative | `calibre_archetype_model.py` | `config/adaptive_parameters.json`, `config/journal_promotion.jsonl` |
+| 10 | État système pour la page Système | `construit_etat_systeme.py` | `etat_systeme.json` |
+| 11 | Commit et push du résultat | (dans le workflow) | mise à jour du dépôt |
+| 12 | Signalement des constats majeurs | `notifie_constat_majeur.py` | Issue GitHub, s'il y en a |
+
+Les étapes 4 à 12 ne tournent que pour un run planifié ou une relance complète. L'audit passif écrit en plus
+`data/audit_status.json`, `data/audit_telemetry.json` et `data/audit_odds_snapshots.json`.
+
+⚠ Plusieurs étapes sont en `continue-on-error` : **un run vert ne prouve pas que tout a fonctionné**. Il faut
+inspecter les fichiers produits (règle de `ROADMAP.md`).
+
+---
+
+## 3. Les moteurs
+
+### 3.1 Scraping
+Sources : `matchendirect.fr` (listes, équipes, H2H, classements : HTTP simple avec `requests`) et `betpawa.cm`
+(cotes : navigateur automatisé Playwright).
+
+| Fichier | Rôle |
+|---|---|
+| `scraper.py`, `scraper_semaine.py` | Listes de matchs (la seconde passe par Playwright pour J+2/J+3) |
+| `scraper_details.py` | Pages d'équipes : classement, forme, H2H, historique de buts |
+| `resolution_betpawa.py`, `resolution_betpawa_precalcul.py`, `scraper_betpawa.py`, `parse_betpawa*.py` | Trouver le match sur BetPawa et lire ses cotes |
+| `cache_equipes.py`, `cache_h2h.py`, `cache_classement.py`, `cache_betpawa.py` | Mémoires persistantes (`cache_*.json`) pour ne pas refaire les mêmes requêtes |
+
+Règle de sécurité du matching BetPawa : **mieux vaut aucun match qu'un mauvais match** (aucune correspondance
+ambiguë n'est acceptée).
+
+`run_pipeline.py` et `calculs.py` forment l'**ancien moteur**. `archetype_model` est prioritaire ; l'ancien moteur ne
+sert de repli qu'en cas d'*erreur technique* (exception), jamais pour une décision métier normale. `precalcul.py` continue
+d'en calculer les champs historiques (listes A/B, Kelly, `verdict_global`…), que le site ne lit pas, et
+`scraper.py` en importe `aujourdhui_france()`.
+
+### 3.2 Le modèle : `archetype_model/`
+Point d'entrée : `archetype_model/main.py` — chaîne profil d'équipe (P1) → péage 2 → convergence → sélection.
+
+| Sous-paquet | Rôle |
+|---|---|
+| `data/` | Historique de la **saison en cours uniquement** (jamais de repli sur la saison précédente), fenêtrage, cotes |
+| `statistics/` | Statistiques descriptives d'équipe (jamais transformées en coefficient) |
+| `poisson/` | Cœur mathématique : scénarios de λ, matrice de scores, marchés (1X2, double chance, BTTS, plus/moins de buts, buts d'une équipe, handicap à 3 issues) |
+| `h2h/` | Confrontations directes : paliers de fiabilité |
+| `signals/` | Signal statistique par marché, convergence, dédoublonnage, sélection des choix P1 / P2 / P3 |
+| `edv/` | Avantage (`edge`) et EDV : mesure de valeur, ne modifie jamais la probabilité |
+| `audit/` | Audit passif du moteur (disjoncteur, rapport, télémétrie) |
+| `learning/` | Archive, règlement des résultats, calibration, garde-fous, journal, constats majeurs |
+| `backtest/` | Backtest « walk-forward » |
+| `config_loader.py` | **Seul** point d'entrée des paramètres calibrables (`config/adaptive_parameters.json`, avec valeurs d'origine de repli) |
+
+Le modèle sort, par match, jusqu'à trois choix classés **P1, P2, P3**. Le site les réattribue ensuite en trois
+onglets (voir §4).
+
+### 3.3 La bibliothèque de justification
+`bibliotheque_justification.py` (avec son enveloppe `justification.py`) écrit le texte que le site affiche : une
+synthèse, des preuves statistiques, et les statistiques exactes ayant servi. Contrat de sortie par choix :
+
+```
+justification = { resume, preuves: [ { type, texte, valeur } ], donnees_suffisantes, bibliotheque: { … } }
+```
+
+- **NO DATA → NO GO** : un marché sans preuve *spécifique à ce marché* est rejeté avant sélection
+  (`JUSTIFICATION_INSUFFISANTE`, dans `archetype_model/main.py`). La preuve EV, valable pour tous les marchés,
+  ne suffit jamais.
+- Une donnée n'est publiée que si elle est **calculable exactement** sur les historiques fournis (minimum 5 matchs
+  au total, 3 par lieu). Les seuils sont dans le module.
+- Familles couvertes (quand les données les permettent) : 1X2 (domicile, nul, extérieur), double chance (1X, 12, X2),
+  les deux équipes marquent (oui, non), plus/moins de buts (toutes les lignes), buts d'une équipe. **Non couverts** : handicap à 3 issues
+  (aucune cote ne lui parvient) et cage inviolée (ancien moteur).
+- `rattrapage_justification.py` recalcule les textes sur des données déjà scrapées (réécrit `precalcul.json` et
+  `precalcul_leger.json`).
+- `moteur_justification.py` et `adapte_justification.py` sont l'ancien moteur de justification, relié à `run_pipeline.py`.
+
+### 3.4 Tickets
+Dossier `tickets/` : `builder.py` (combinaison avec contrôle de dépendance), `cycle.py` (cadence), `observation.py`
+(tickets fictifs). Principe : **0 ticket est un résultat honnête** ; les critères ne sont jamais dégradés pour remplir
+un quota.
+
+---
+
+## 4. Le site
+
+Hébergé sur Netlify (`netlify.toml` : publie la racine du dépôt, en-têtes anti-cache). Aucun build, aucun framework.
+
+| Page | Fichiers | Données lues |
+|---|---|---|
+| `index.html` — Accueil, ajout au panier | `index.js`, `style.css`, `theme.css`, `theme.js` | `matchs_du_jour_filtre.json`, `matchs_demain_filtre.json` |
+| `archetype.html` — Pronostics | `archetype.js`, `archetype.css`, `traduction_marches.js`, `ui_mappings.js` | `precalcul_leger.json` |
+| `panier.html` — Panier | `panier.js` + ceux d'Archetype | `precalcul_leger.json` + panier du navigateur |
+| `systeme.html` — Bilan système | `systeme.js`, `style.css`, `theme.css` | `etat_systeme.json` |
+| `admin.html` — Audit / calibration | `admin.js`, `style.css`, `theme.css` | `data/audit_status.json`, `data/audit_telemetry.json`, `config/journal_promotion.jsonl` |
+| `presentation-site.html` | autonome | aucune (maquette temporaire) |
+
+**Cartes de match (Archetype et Panier).** Une seule fonction, `construitCarte()` dans `archetype.js`, construit les
+cartes des deux pages : le panier est donc identique à la page principale, avec en plus le bouton « Retirer ».
+Chaque carte a trois onglets — **Favori du Modèle** (choix le plus probable), **Value Bet** (meilleur EV parmi les
+restants), **Coup de Poker** (cote ≥ 2,91 et probabilité ≥ 20 %) — réattribués depuis P1/P2/P3 par
+`remappeEnOngletsApp()`. Le bouton « Détails de l'analyse » ouvre des tableaux (synthèse, preuves avec icônes,
+forme de chaque équipe, H2H, métriques combinées) alimentés par `justification.bibliotheque`.
+
+Règles d'affichage : jamais de tableau vide, jamais de « — » ni « N/A » (une valeur non calculable n'a pas de ligne),
+badge EV distinct, message neutre unique si `donnees_suffisantes` est faux, **le site ne recalcule rien**.
+
+Conventions :
+- `archetype.css` : classes préfixées `ax-`, aucun `!important`, variables portées par `.ax-carte`, mode nuit par `body.theme-nuit`.
+- `ui_mappings.js` : contrat visuel figé (type de preuve → icône, couleur, libellé français).
+- Après toute modification de `archetype.js`, `archetype.css` ou `ui_mappings.js`, **changer le paramètre `?v=`** dans
+  `archetype.html` et `panier.html` pour que les téléphones rechargent les fichiers.
+- Mémoire du navigateur : `archetype_panier` (panier), `archetype_theme_nuit` (mode nuit).
+- Accueil, Système et Admin utilisent encore l'ancienne charte (`style.css` + `theme.css`, avec de nombreux `!important`).
+
+---
+
+## 5. Fichiers de données (versionnés, réécrits par le pipeline)
+
+| Fichier | Contenu |
+|---|---|
+| `matchs_du_jour.json`, `matchs_demain.json`, `matchs_semaine.json` (+ `*_filtre.json`) | Programmes bruts et filtrés |
+| `precalcul.json` (~9 Mo) | Sortie complète du pré-calcul (diagnostics, fenêtres, tous les candidats) |
+| `precalcul_leger.json` | Version allégée lue par le site : choix retenus et leur justification |
+| `cache_equipes.json`, `cache_h2h.json`, `cache_classement.json`, `cache_betpawa.json` | Mémoires du scraping |
+| `historique_pronostics.json`, `archive/AAAA-MM.json` | Historique et archive des observations à régler |
+| `bilan_archetype_model.json`, `etat_systeme.json`, `data/audit_*.json` | Bilans et audit |
+| `config/*` | Paramètres calibrables, état et journaux de calibration |
+| `tickets_observes/`, `vrais_tickets/` | Tickets fictifs et réels, un fichier par mois |
+
+---
+
+## 6. Installer et lancer en local
+
+Python 3.12. Dépendances réellement utilisées : `requests`, `beautifulsoup4`, `pandas`, `playwright`.
+
+```bash
+pip install requests beautifulsoup4 pandas playwright pytest
+playwright install chromium
+
+python scraper.py --max-matchs 100000        # listes J0 et J+1
+python scraper_semaine.py --max-matchs 100000
+python precalcul.py                          # PRECALCUL_LIMITE_BETPAWA=20 limite la résolution BetPawa
+
+python3 -m http.server 8000                  # prévisualiser le site : http://localhost:8000/index.html
+```
+
+Ne pas ouvrir les pages par double-clic : le navigateur bloque alors le chargement des fichiers JSON.
+`requirements.txt` n'est pas encore branché sur le workflow (qui a sa propre ligne `pip install`).
+
+---
+
+## 7. Tests et contrôles
+
+```bash
+python -m pytest tests -q
+```
+
+`tests/` couvre l'audit passif, la bibliothèque de justification et les marchés retenus de bout en bout.
+`audit_permanent.py` est une suite d'audit plus large, lancée à la main.
+
+Limites connues : le workflow ne lance **ni `pytest` ni contrôle de syntaxe JavaScript**, et aucun test automatique
+de l'interface n'est versionné. Un JavaScript cassé n'est donc détecté qu'à l'ouverture de la page (cela s'est produit
+le 19/09/2026 : la page Archetype restait vide).
+
+---
+
+## 8. Principes du projet
+
+Décisions du propriétaire, documentées dans le code et dans `ROADMAP.md` (§4), toujours en vigueur :
+
+- **NO DATA → NO GO** : pas de justification générique inventée pour combler un vide.
+- **Mieux vaut aucun match qu'un mauvais match** (matching BetPawa).
+- Ne jamais dégrader les critères des tickets pour atteindre un quota.
+- Ne pas promouvoir un paramètre de calibration sur un échantillon insuffisant ; ne pas confondre validation
+  logique et validation prédictive.
+- Les statistiques descriptives ne deviennent jamais des coefficients ; l'EDV mesure la valeur sans modifier la probabilité.
+- Le site est de la présentation : il ne choisit et ne calcule rien.
+- Ne pas modifier `calculs.py`, `run_pipeline.py` ou `scraper_details.py` sans preuve et test ciblé.
+- Ne pas considérer un run vert comme preuve suffisante : inspecter les fichiers produits.
+
+---
+
+## 9. Points d'attention (constatés le 21/09/2026)
+
+- Le dépôt est **privé**, mais `netlify.toml` publie toute la racine : le code, les données et `admin.js` sont servis
+  avec le site. Le mot de passe de la page Admin est écrit **en clair** dans `admin.js` (vérification côté navigateur
+  uniquement) : ce n'est pas une protection.
+- Les gros fichiers JSON sont recommités chaque nuit : le dépôt grossit vite (`.git` ≈ 71 Mo le 20/09).
+- Publication du résultat : un `git pull --rebase` en conflit sur les fichiers de données peut faire perdre un run entier
+  (run n°129, voir `ROADMAP.md` P0.1). Éviter de pousser des données pendant qu'un run tourne.
+- Les nouveaux textes de justification (nul, double chance 12, « les deux équipes marquent : non », lignes de buts,
+  buts d'une équipe) et les champs `bibliotheque` complets n'apparaissent dans les données qu'après un run complet du pipeline.
+
+---
+
+## 10. Documents du projet
+
+| Document | Contenu |
+|---|---|
+| `ROADMAP.md` | Chantiers en cours et priorités. Certains renvois « TRANSITION.md §N » y désignent l'ancien journal de sessions (voir ci-dessous) |
+| `DIALOGUE_IA_MATRICE.md` | Cahier des charges de la recalibration du moteur de sélection (15–18/09/2026) |
+| `requirements.txt` | Dépendances Python |
+
+**Ancien journal de sessions.** `TRANSITION.md` (et sa copie `TRANSITION 4.md`) ont été supprimés le 21/09/2026 : 269 Ko
+de récit chronologique, en-tête daté du 08/09 alors que le contenu allait jusqu'au 20/09, plus de 30 fichiers cités qui n'existent
+plus. Ils restent lisibles dans l'historique Git :
+
+```bash
+git show c1ce4c9:TRANSITION.md
+```
+
+Plusieurs commentaires du code citent encore « TRANSITION.md §N » : ce sont des renvois historiques, sans effet.
