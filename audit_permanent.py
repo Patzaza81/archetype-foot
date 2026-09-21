@@ -1552,7 +1552,8 @@ verite(
 )
 
 
-# ============================================================================section("archetype_model/backtest/boucle_b (08/09/2026) — backtest walk-forward, "
+# ============================================================================
+section("archetype_model/backtest/boucle_b (08/09/2026) — backtest walk-forward, "
         "λ recalculés depuis cache_equipes.json, JAMAIS depuis l'ancien moteur "
         "(jamais testé contre le vrai réseau matchendirect.fr -- voir docstring)")
 # ============================================================================
@@ -1700,20 +1701,7 @@ verite(
     and _r_calc_audit["handicap"][0.0] == _amk.resultat_handicap(_amdist.matrice_scores(1.5, 1.0), 0.0),
 )
 
-# Vérifie le VRAI branchement : main.analyse_match doit exposer handicap,
-# pas seulement 1x2/DC/BTTS/over_under_2_5 comme avant ce chantier.
-_amloader_e2e.fetch_html = _stub_e2e
-_r_e2e_apres_branchement = _ammain_e2e.analyse_match(
-    "https://www.matchendirect.fr/equipe/equipeA.html", "EquipeA",
-    "https://www.matchendirect.fr/equipe/equipeB.html", "EquipeB",
-    "Suède : Allsvenskan",
-)
-verite(
-    "main.analyse_match expose maintenant 'handicap' dans chaque "
-    "scénario (branchement réel, pas juste la fonction centrale testée isolément)",
-    "handicap" in _r_e2e_apres_branchement["marches_par_scenario"]["offensif"],
-)
-_amloader_e2e.fetch_html = _original_fetch_e2e
+# (retiré le 21/09/2026 : vérifiait main.analyse_match, ancien moteur supprimé)
 
 _bb.recupere_details_match = _stub_details_bb
 _r_bb_apres_branchement = _bb.evalue_un_match(_match_test_bb, _cache_test_bb)
@@ -1753,25 +1741,7 @@ _matchs_b_global_audit = [("Z1", 1, 2, False), ("Z2", 0, 1, False), ("Z3", 2, 1,
                           ("Z4", 1, 2, False), ("Z5", 0, 2, False), ("Z6", 2, 1, False)]
 _html_a_global_audit = f"<html><body>{_bloc_audit_global('Suède : Allsvenskan', 'EquipeA', _matchs_a_global_audit)}</body></html>"
 _html_b_global_audit = f"<html><body>{_bloc_audit_global('Suède : Allsvenskan', 'EquipeB', _matchs_b_global_audit)}</body></html>"
-_original_fetch_global = _amloader_global.fetch_html
-_amloader_global.fetch_html = lambda url, *a, **kw: (_html_a_global_audit if "equipeA" in url else _html_b_global_audit)
-_r_global_audit = _ammain_e2e.analyse_match(
-    "https://www.matchendirect.fr/equipe/equipeA.html", "EquipeA",
-    "https://www.matchendirect.fr/equipe/equipeB.html", "EquipeB",
-    "Suède : Allsvenskan",
-)
-_amloader_global.fetch_html = _original_fetch_global
-verite(
-    "main.analyse_match : λ_A global calculé sur la SEULE compétition du match (9 matchs "
-    "domicile+extérieur fusionnés), sans fetch réseau supplémentaire, sans agrégation "
-    "multi-compétitions (approche annulée)",
-    _r_global_audit["statut"] == "OK" and _r_global_audit["lambdas"]["A"]["global"] is not None,
-)
-verite(
-    "main.analyse_match : λ_A offensif (domicile seul) non affecté par ce chantier, "
-    "toujours basé uniquement sur les 6 matchs à domicile",
-    abs(_r_global_audit["lambdas"]["A"]["offensif"] - (2 + 3 + 1 + 2 + 2 + 2) / 6) < 1e-9,
-)
+# (retiré le 21/09/2026 : vérifiait main.analyse_match, ancien moteur supprimé)
 
 _cache_global_audit = {
     "https://www.matchendirect.fr/equipe/equipeA.html||suède : allsvenskan": {
@@ -2300,7 +2270,8 @@ verite(
 )
 
 
-# ============================================================================section("archetype_model/justification.py — comptage historique PUREMENT "
+# ============================================================================
+section("archetype_model/justification.py — comptage historique PUREMENT "
         "DESCRIPTIF (10/09/2026, demande de Patrick : \"va jusqu'au bout\") "
         "pour remplacer les phrases génériques par des chiffres réels "
         "(\"7 des 8 derniers matchs...\"). Ne doit JAMAIS influencer la "
@@ -2511,91 +2482,7 @@ verite(
     ) == {"resume": None, "preuves": [], "donnees_suffisantes": False},
 )
 
-# --- Invariant capital : le champ ne doit JAMAIS influencer la décision.
-# Preuve par calcul, pas par lecture du code : on rejoue un vrai match du
-# fixture avec des matchs_retenus VOLONTAIREMENT différents (falsifiés) --
-# si la sélection P1/l'edge/l'edv changent, c'est que le module a une
-# influence cachée sur la décision, ce qui serait un bug grave.
-import json as _json_just
-
-with open("fixture_rejeu_10092026.json", encoding="utf-8") as _f_just:
-    _fixture_just = _json_just.load(_f_just)
-_match_test_just = _fixture_just[0]
-
-
-def _rejoue_avec_fenetres(fenetres_remplacement):
-    def _fake(url_domicile, nom_domicile, url_exterieur, nom_exterieur, nom_competition,
-              _am=_match_test_just, _fen=fenetres_remplacement):
-        from archetype_model.poisson import markets as _mk3, robustness as _rb3
-        _lambdas = _am["lambdas"]
-        _mps = {s: _mk3.calcule_tous_les_marches(_lambdas["A"][s], _lambdas["B"][s]) for s in _am_dyn.SCENARIOS}
-
-        def _v4c(extracteur):
-            return [extracteur(_mps[s]) for s in _am_dyn.SCENARIOS]
-
-        _rpm = {
-            "1x2_domicile": _rb3.evalue_robustesse(_v4c(lambda m: m["1x2"]["domicile"] if m["1x2"] else None)),
-            "1x2_nul": _rb3.evalue_robustesse(_v4c(lambda m: m["1x2"]["nul"] if m["1x2"] else None)),
-            "1x2_exterieur": _rb3.evalue_robustesse(_v4c(lambda m: m["1x2"]["exterieur"] if m["1x2"] else None)),
-            "btts": _rb3.evalue_robustesse(_v4c(lambda m: m["btts"])),
-            "over_2_5": _rb3.evalue_robustesse(_v4c(lambda m: m["over_under_total"][2.5]["over"] if m["over_under_total"][2.5] else None)),
-            "cage_inviolee_domicile": _rb3.evalue_robustesse(_v4c(lambda m: m["buts_equipe_exterieur"][0.5]["under"] if m["buts_equipe_exterieur"][0.5] else None)),
-            "cage_inviolee_exterieur": _rb3.evalue_robustesse(_v4c(lambda m: m["buts_equipe_domicile"][0.5]["under"] if m["buts_equipe_domicile"][0.5] else None)),
-        }
-        return {"statut": "OK", "fenetres": _fen, "lambdas": _lambdas,
-                "marches_par_scenario": _mps, "robustesse_par_marche": _rpm}
-
-    _am_dyn.analyse_match = _fake
-    _cotes_info_just = _op_dyn.extrait_cotes(_match_test_just)
-    _cotes_info_just["statut"] = "OK"
-    return _am_dyn.analyse_match_complet(
-        url_domicile="fake", nom_domicile=_match_test_just.get("domicile"),
-        url_exterieur="fake", nom_exterieur=_match_test_just.get("exterieur"),
-        nom_competition=_match_test_just.get("competition"), match_id=_match_test_just.get("match_id"),
-        url_h2h=None, cotes_info=_cotes_info_just,
-    )
-
-
-_fenetres_reelles = _match_test_just["fenetres"]
-_fenetres_falsifiees = {
-    "A": {**_fenetres_reelles["A"], "matchs_retenus": [
-        {"domicile": True, "buts_marques": 9, "buts_encaisses": 0} for _ in range(8)
-    ]},
-    "B": {**_fenetres_reelles["B"], "matchs_retenus": [
-        {"domicile": False, "buts_marques": 0, "buts_encaisses": 9} for _ in range(8)
-    ]},
-}
-_res_reel_just = _rejoue_avec_fenetres(_fenetres_reelles)
-_res_falsifie_just = _rejoue_avec_fenetres(_fenetres_falsifiees)
-
-_p1_reel = _res_reel_just["selection"].get("P1")
-_p1_falsifie = _res_falsifie_just["selection"].get("P1")
-_meme_decision = (
-    (_p1_reel is None) == (_p1_falsifie is None)
-    and (_p1_reel is None or (
-        _p1_reel["marche"] == _p1_falsifie["marche"]
-        and _p1_reel["edge"] == _p1_falsifie["edge"]
-        and _p1_reel["edv"] == _p1_falsifie["edv"]
-        and _p1_reel["niveau"] == _p1_falsifie["niveau"]
-    ))
-)
-verite(
-    "INVARIANT : falsifier complètement les matchs historiques utilisés "
-    "pour le comptage descriptif (confirmation_historique) NE CHANGE RIEN "
-    "à la sélection P1 (même marché, même edge, même edv, même niveau) -- "
-    "preuve que ce champ n'influence jamais la décision",
-    _meme_decision,
-)
-verite(
-    "Le comptage change bel et bien entre les deux jeux de matchs "
-    "(sinon le test ci-dessus serait vide de sens) : confirmation_historique "
-    "du P1 réel diffère entre fenêtres réelles et fenêtres falsifiées",
-    (_p1_reel is None and _p1_falsifie is None) or (
-        _p1_reel is not None and _p1_falsifie is not None
-        and _p1_reel.get("confirmation_historique") != _p1_falsifie.get("confirmation_historique")
-    ),
-)
-_am_dyn.analyse_match = _original_analyse_match_dyn
+# (retiré le 21/09/2026 : « invariant capital » rejoué à travers archetype_model.main, ancien moteur supprimé)
 
 
 # ============================================================================
@@ -2783,30 +2670,7 @@ verite(
     _just_dyn.enrichit_justification_selection(None, {"critere": "niveau"}) is None,
 )
 
-section("INVARIANT capital (Chantier B) : le diagnostic et l'enrichissement "
-         "de la justification ne changent JAMAIS la sélection P1/P2/P3 "
-         "elle-même -- vérifié sur le VRAI rejeu du fixture (446 matchs), "
-         "pas sur un cas jouet.")
-
-# Rejeu réel : _res_reel_just a été produit PLUS HAUT dans ce fichier en
-# appelant analyse_match_complet() sur un vrai match du fixture -- cette
-# fonction inclut maintenant l'appel à diagnostique_selection() +
-# enrichit_justification_selection() (voir main.py). On vérifie ici que le
-# P1 obtenu est TOUJOURS le même objet que celui présent dans
-# candidats_dedupliques (rien n'a été substitué), et qu'il porte bien une
-# justification enrichie (resume non vide) -- sans jamais avoir eu besoin
-# de recalculer la sélection nous-mêmes.
-verite(
-    "INVARIANT (Chantier B) : sur le cas réel rejoué plus haut, le P1 "
-    "retenu par selectionner() est TOUJOURS le même objet dans "
-    "candidats_dedupliques après le passage de diagnostique_selection/"
-    "enrichit_justification_selection (aucune substitution, aucun candidat "
-    "recréé) -- et sa justification porte bien un resume non vide",
-    _p1_reel is None or (
-        any(c is _p1_reel for c in _res_reel_just["candidats_dedupliques"])
-        and bool(_p1_reel.get("justification", {}).get("resume"))
-    ),
-)
+# (section « INVARIANT capital (Chantier B) » retirée le 21/09/2026 : elle vérifiait un résultat d'analyse_match_complet, ancien moteur supprimé)
 
 
 section("ARCHIVAGE archetype_model — catégorie A/B et immutabilité")
@@ -3487,148 +3351,12 @@ verite(
 )
 
 
-section("Branchement réel dans precalcul.py (13/09/2026) -- "
-        "_archive_resultat_archetype_model, testé sur de VRAIS matchs du "
-        "fixture 446 matchs, pas des cas synthétiques.")
-
-import tempfile as _tmp_branch
-from pathlib import Path as _Path_branch
-import precalcul as _pc_archivage
-import archetype_model.learning.archive as _archive_branch
-from archetype_model.poisson import markets as _mk_branch, robustness as _rb_branch
-from archetype_model.data import odds_provider as _op_branch
-
-try:
-    import json as _json_branch
-    with open("fixture_rejeu_10092026.json", encoding="utf-8") as _f_branch:
-        _fixture_branch = _json_branch.load(_f_branch)
-
-    def _match_fixture(dom, ext):
-        for _m in _fixture_branch:
-            if _m.get("domicile") == dom and _m.get("exterieur") == ext:
-                return _m
-        raise AssertionError(f"match {dom}-{ext} introuvable dans le fixture")
-
-    def _resultat_reel_fixture(m):
-        lambdas = m["lambdas"]
-        mps = {s: _mk_branch.calcule_tous_les_marches(lambdas["A"][s], lambdas["B"][s]) for s in _am_dyn.SCENARIOS}
-
-        def v4c(extracteur):
-            return [extracteur(mps[s]) for s in _am_dyn.SCENARIOS]
-
-        rpm = {
-            "1x2_domicile": _rb_branch.evalue_robustesse(v4c(lambda x: x["1x2"]["domicile"] if x["1x2"] else None)),
-            "1x2_nul": _rb_branch.evalue_robustesse(v4c(lambda x: x["1x2"]["nul"] if x["1x2"] else None)),
-            "1x2_exterieur": _rb_branch.evalue_robustesse(v4c(lambda x: x["1x2"]["exterieur"] if x["1x2"] else None)),
-            "btts": _rb_branch.evalue_robustesse(v4c(lambda x: x["btts"])),
-            "over_2_5": _rb_branch.evalue_robustesse(v4c(lambda x: x["over_under_total"][2.5]["over"] if x["over_under_total"][2.5] else None)),
-            "cage_inviolee_domicile": _rb_branch.evalue_robustesse(v4c(lambda x: x["buts_equipe_exterieur"][0.5]["under"] if x["buts_equipe_exterieur"][0.5] else None)),
-            "cage_inviolee_exterieur": _rb_branch.evalue_robustesse(v4c(lambda x: x["buts_equipe_domicile"][0.5]["under"] if x["buts_equipe_domicile"][0.5] else None)),
-        }
-
-        def _fake(url_domicile, nom_domicile, url_exterieur, nom_exterieur, nom_competition, **kw):
-            return {"statut": "OK", "fenetres": m["fenetres"], "lambdas": lambdas,
-                    "marches_par_scenario": mps, "robustesse_par_marche": rpm}
-
-        _original = _am_dyn.analyse_match
-        _am_dyn.analyse_match = _fake
-        try:
-            cotes_info = {**_op_branch.extrait_cotes(m), "statut": "OK"}
-            return _am_dyn.analyse_match_complet(
-                url_domicile="fake", nom_domicile=m.get("domicile"),
-                url_exterieur="fake", nom_exterieur=m.get("exterieur"),
-                nom_competition=m.get("competition"), match_id=m.get("match_id"),
-                url_h2h=None, cotes_info=cotes_info,
-            )
-        finally:
-            _am_dyn.analyse_match = _original
-
-    with _tmp_branch.TemporaryDirectory() as _d_branch:
-        import os as _os_branch
-        _cwd_avant = _os_branch.getcwd()
-        _os_branch.chdir(_d_branch)
-        try:
-            # CAS 1 -- match avec un vrai P1 (Clermont-US Boulogne, déjà
-            # utilisé comme référence dans le Chantier B) -> doit produire
-            # un enregistrement SELECTED.
-            _m_p1 = _match_fixture("Clermont", "US Boulogne")
-            _resultat_p1 = _resultat_reel_fixture(_m_p1)
-            _s_p1 = {
-                "match_id": _m_p1["match_id"], "date": "2026-09-10", "heure": "18:00",
-                "domicile": "Clermont", "exterieur": "US Boulogne", "competition": "Ligue 2",
-            }
-            _pc_archivage._archive_resultat_archetype_model(_s_p1, _resultat_p1)
-
-            _chemin_p1 = _archive_branch.chemin_archive_mensuelle("2026-09-10")
-            _records_p1 = _archive_branch.charger_archive(_chemin_p1)
-            verite(
-                "Branchement réel CAS match avec P1 (doit réussir) : "
-                "Clermont-US Boulogne produit bien un enregistrement "
-                "SELECTED archivé, avec le vrai marché retenu par le moteur",
-                len(_records_p1) >= 1
-                and all(r["categorie"] == "SELECTED" for r in _records_p1)
-                and all(r["match_id"] == _m_p1["match_id"] for r in _records_p1),
-            )
-
-            # CAS 2 -- match sans AUCUNE sélection mais avec un marché
-            # proche du seuil (Nancy-Reims, confirmé lors de la conception
-            # de extraction.py) -> doit produire un enregistrement
-            # COUNTERFACTUAL, jamais un SELECTED.
-            _m_cf = _match_fixture("Nancy", "Reims")
-            _resultat_cf = _resultat_reel_fixture(_m_cf)
-            verite(
-                "Branchement réel CAS 2, pré-condition : Nancy-Reims n'a "
-                "réellement aucun P1/P2/P3 dans ce fixture (sinon le test "
-                "ne prouverait rien)",
-                not any((_resultat_cf.get("selection") or {}).get(r) for r in ("P1", "P2", "P3")),
-            )
-            _s_cf = {
-                "match_id": _m_cf["match_id"], "date": "2026-09-10", "heure": "18:00",
-                "domicile": "Nancy", "exterieur": "Reims", "competition": "Ligue 2",
-            }
-            _pc_archivage._archive_resultat_archetype_model(_s_cf, _resultat_cf)
-
-            _records_cf = [r for r in _archive_branch.charger_archive(_chemin_p1) if r["match_id"] == _m_cf["match_id"]]
-            verite(
-                "Branchement réel CAS match sans sélection mais avec marché "
-                "proche (doit réussir) : Nancy-Reims produit un "
-                "enregistrement COUNTERFACTUAL, jamais un SELECTED",
-                len(_records_cf) >= 1
-                and all(r["categorie"] == "COUNTERFACTUAL" for r in _records_cf),
-            )
-
-            # CAS 3 -- un échec d'archivage (chemin invalide) ne doit jamais
-            # remonter d'exception à l'appelant réel du pipeline.
-            _s_invalide = {
-                "match_id": "TEST-INVALIDE", "date": "date-invalide", "heure": "18:00",
-                "domicile": "X", "exterieur": "Y", "competition": "Test",
-            }
-            _leve_exception = False
-            try:
-                _pc_archivage._archive_resultat_archetype_model(_s_invalide, _resultat_p1)
-            except Exception:
-                _leve_exception = True
-            verite(
-                "Branchement réel CAS date invalide (rejet attendu côté "
-                "archive.py) : _archive_resultat_archetype_model lève "
-                "l'erreur ICI (c'est applique_archetype_model(), déjà "
-                "modifié, qui capture et neutralise -- ce test isole "
-                "juste que l'erreur est bien détectée, pas avalée trop tôt)",
-                _leve_exception,
-            )
-        finally:
-            _os_branch.chdir(_cwd_avant)
-except Exception as _e_branchement:
-    verite(
-        "tests réels du branchement production exécutables sans exception "
-        "inattendue",
-        False,
-        str(_e_branchement),
-    )
+# (section « Branchement réel dans precalcul.py » retirée le 21/09/2026 : elle testait _archive_resultat_archetype_model et analyse_match_complet, supprimés ; l'archivage du nouveau moteur est testé dans tests/test_branchement_moteur.py)
 
 
-# CHANTIER "branchement pipeline.yml -- vérification + bilan" (13/09/2026)
-# ============================================================================
+import json as _json_branch   # (imports autrefois faits par la section « Branchement réel dans precalcul.py », retirée)
+import os as _os_branch
+
 section("verifie_resultats_archetype_model.py + calcule_matrice_archetype_model.py "
         "(13/09/2026) -- scripts racine du pipeline nocturne, testés de "
         "bout en bout sur une vraie archive temporaire.")

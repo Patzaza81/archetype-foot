@@ -55,7 +55,7 @@ from cache_equipes import _cle
 from ..data import validation
 from ..statistics import team_stats
 from ..poisson import lambda_estimators, markets
-from ..main import SCENARIOS
+from ..signals.convergence import SCENARIOS   # ex `from ..main import SCENARIOS` (main.py supprimé le 21/09/2026) : même tuple
 
 
 def charge_matchs_verifies(chemin_historique="historique_pronostics.json"):
