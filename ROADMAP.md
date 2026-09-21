@@ -5,7 +5,7 @@
 
 Suivi des chantiers majeurs. Les statuts ci-dessous reposent sur des vérifications réelles du dépôt, des exécutions GitHub Actions et des fichiers produits. Aucune conclusion ne doit être tirée d'un simple statut vert sans inspection des sorties.
 
-Dernière mise à jour : 21/09/2026 — après les sessions du 20-21/09 (refonte de l'interface, bibliothèque de justification étendue, README). Vérifications faites le 21/09 sur le dépôt (commit `a3d2b77`), sur l'API GitHub Actions et sur les fichiers produits.
+Dernière mise à jour : 21/09/2026 — après les sessions du 20-21/09 (refonte de l'interface, bibliothèque de justification étendue, README) et le **branchement du moteur v2.6.9**. Vérifications faites le 21/09 sur le dépôt (commit `a3d2b77`), sur l'API GitHub Actions et sur les fichiers produits.
 
 Statuts : **FAIT** · **EN COURS** · **À FAIRE** · **NON VÉRIFIÉ** (non re-contrôlé le 21/09).
 
@@ -36,6 +36,10 @@ Statuts : **FAIT** · **EN COURS** · **À FAIRE** · **NON VÉRIFIÉ** (non re-
 - **Fichier allégé du site** : `precalcul.py` et `rattrapage_justification.py` exportent maintenant `bibliotheque`.
 - **Tests** : 109 tests Python passent (dont 52 sur la couverture des marchés).
 - **Documentation** : `README.md` créé ; `TRANSITION.md` et `TRANSITION 4.md` supprimés.
+- **Nouveau moteur branché (21/09)** : `moteur_v2_6_9.py` remplace l'ancien modèle `archetype_model` dans le pipeline (via `pont_moteur.py` et `branchement_moteur.py`). L'ancien modèle est débranché (code conservé). Aucun repli sur l'ancien moteur. Le site lit le bloc `moteur_v2_6_9`. Rejeu du 20/09 (mêmes entrées, aucun nouveau scraping) : 139 matchs analysés sur 495 (305 sans cotes BetPawa, 37 sans historique), **71 matchs avec au moins un choix, 107 choix retenus** (contre 3 pour l'ancien modèle), 735 observations archivées (107 `SELECTED`, 628 `COUNTERFACTUAL`). Chaque marché produit est reconnu par le règlement.
+- **Règlement corrigé (21/09)** : `1x2_domicile` / `1x2_exterieur` étaient réglés comme une double chance (un nul comptait gagné) et `1x2_nul` n'existait pas. Ne touche que 5 nuls contrefactuels déjà résolus (aucun des 87 choix `SELECTED` de l'ancien modèle) ; l'archive résolue reste immuable.
+- **Filet de sécurité (21/09)** : le workflow lance les autotests du moteur et du pont puis `pytest` avant tout scraping.
+- **Tests** : 225 tests Python passent (dont les tests de cohérence moteur ↔ règlement et de contrat avec le site).
 
 ### Incidents passés (conservés pour mémoire)
 **Run #129** — le job a produit un commit local, puis le `git pull --rebase` a rencontré des conflits sur les gros fichiers de données générés simultanément sur `main` (archive, caches, diagnostics, `precalcul.json`, tickets…). Le rebase n'a pas pu appliquer le commit : les résultats de plus de quatre heures de calcul n'ont pas été publiés. Ce n'était **pas un échec du moteur ni du scraping**, mais un conflit de synchronisation Git à la publication.
@@ -70,20 +74,16 @@ Détail du run #132 : 216 cache hits, 75 trouvailles fraîches, 32 ambiguës, 17
 
 Objectif : réduire fortement le temps sans relâcher la règle de sécurité « mieux vaut aucun match qu'un mauvais match ». Critères de sortie : durée mesurée avant/après ; taux de correspondances correctes conservé ; aucune acceptation d'un match ambigu.
 
-#### P0.3 (nouveau) Filet de sécurité avant publication — **À FAIRE**
-Le workflow ne lance **ni `pytest`, ni contrôle de compilation Python, ni `node --check`** sur les scripts du site. Trois casses sont passées inaperçues jusqu'à ce que quelqu'un ouvre la page ou lance le code :
-- 19/09 : erreur de syntaxe rendant le moteur non-importable (voir incident ci-dessus) ;
-- 19/09 : `traduction_marches.js` en erreur de syntaxe → page Archetype vide ;
-- 20/09 : `NameError` dans la bibliothèque (`6f60b3b`), détecté seulement le 21/09.
-
-Objectif : `python -m pytest tests -q`, compilation de tous les `.py` et `node --check` des scripts du site avant l'étape de publication. Critère de sortie : une casse fait échouer le job **avant** le commit/push. Aucun test automatique de l'interface n'est versionné aujourd'hui.
+#### P0.3 (nouveau) Filet de sécurité avant publication — **EN COURS**
+Fait le 21/09 : `pipeline.yml` lance, avant tout scraping et sans `continue-on-error`, `python moteur_v2_6_9.py --autotest`, `python pont_moteur.py --autotest` et `python -m pytest tests -q`. Un moteur cassé arrête le job en quelques secondes.
+Reste à faire : aucun contrôle de syntaxe JavaScript (`node --check`) et aucun test de l'interface dans le workflow ; les tests d'affichage (Chrome) ne sont pas versionnés. Casses passées inaperçues jusqu'ici : 19/09 (moteur non-importable), 19/09 (`traduction_marches.js`), 20/09 (`NameError` de la bibliothèque).
 
 ---
 
 ### P1 — Justifications et marchés
 
-#### P1.1 Brancher réellement `rattrapage_justification.py` — **À FAIRE**
-Confirmé le 21/09 : aucun workflow ni script ne l'appelle. Il ne fait que recalculer les textes des candidats déjà retenus : il ne peut pas ajouter un marché rejeté auparavant (voir P1.3). Sa copie de `_leger_pour_site` exporte désormais `bibliotheque`.
+#### P1.1 Brancher `rattrapage_justification.py` — **SANS OBJET**
+Il recalculait les textes à partir des fenêtres de l'ancien modèle : il n'a plus de sens avec le nouveau moteur, dont les justifications sont calculées dans le pipeline même (`branchement_moteur.py`). À supprimer avec l'ancien modèle.
 
 #### P1.2 Supprimer le pont implicite cote/probabilité — **FAIT** (session du 19-20/09)
 Le pont `inspect.currentframe()` a été retiré de `justification.py` (0 occurrence, vérifié le 21/09) ; `odds_scraped` et `market_prob_pct` sont transmis explicitement.
@@ -95,20 +95,17 @@ La bibliothèque produit désormais un texte spécifique, calculé sur les histo
 - Les seuils des nouveaux textes reprennent ceux de la bibliothèque (70/30 %, 75/25 %, minimum 5 matchs au total et 3 par lieu) ; 20 % de nuls pour la double chance 12 et 35 % pour le nul ont été choisis lors de l'ajout.
 - Effet attendu : davantage de choix retenus (P2/P3, donc onglets Value Bet et Coup de Poker) **à partir du prochain run complet**. À mesurer, pas à présumer.
 
-#### P1.4 Corriger le règlement de `over_2.5` — **À FAIRE** (confirmé le 21/09)
-`evaluer_marche("over_2.5", …)` renvoie `MARCHE_NON_RECONNU`, alors que le moteur **émet encore** ce nom (216 diagnostics au run du 20/09) et que la bibliothèque le reconnaît. Conséquence : 19 enregistrements d'archive dont le match est déjà joué restent `PENDING` pour toujours (26 au total avec ceux du 20/09), donc n'entrent jamais dans le bilan ni la calibration. `over_1.5` et `under_2.5` sont aussi non reconnus (non émis aujourd'hui).
-Objectif : accepter la nomenclature réellement émise, vérifier toutes les variantes émises avant modification, sans alias hypothétique.
+#### P1.4 Corriger le règlement de `over_2.5` — **SANS OBJET pour l'avenir**
+Le nouveau moteur n'émet plus `over_2.5` : il produit `over_under_total_2.5_over`, reconnu par le règlement. Restent 19 anciens enregistrements d'archive (matchs joués avant le 20/09) `PENDING` pour toujours, au nom de l'ancien modèle ; ils n'affectent pas les mesures du nouveau moteur (`model_version` distincte).
 
 #### P1.5 Règle maîtresse : justification spécifique obligatoire par marché retenu — **FAIT et VALIDÉ**
 Un marché retenu sans preuve spécifique (pas seulement l'EV générique) est rejeté avant sélection (`JUSTIFICATION_INSUFFISANTE`). La règle (commit `a3112cd`, 19/09 09:01) faisait partie du run #132 : on y observe **8 marchés éligibles rejetés pour ce motif, contre 3 retenus**. Ce rejet massif venait du manque de textes par marché : voir P1.3.
 
-#### P1.6 Handicap : marché mort depuis le 15/09 — **À FAIRE**
-- La regex de parsing `_RE_HANDICAP_3` ne correspond à aucun libellé BetPawa réel depuis `cc1f860` (15/09). Au run du 20/09, **894 libellés** « Handicap N – Domicile / Extérieur » ont été écartés (format à 2 issues) et le handicap à 3 issues ne reçoit aucune cote.
-- Archive : 21 observations `SELECTED` résolues ; l'archive en compte **4 gagnées** (dont 1 sur 17 « extérieur »). Le règlement lui-même a été vérifié ligne à ligne par Patrick : correct.
-- **Piste (audit indépendant du 20/09, recontrôlée le 21/09)** : le libellé « Extérieur » porte la ligne du **domicile** (`run_pipeline.py`, génération des libellés : l'extérieur couvre avec l'opposé). `reglement.py` lit ce libellé littéralement. Relus avec la ligne opposée, **12 des 21** choix gagnent (au lieu de 4), ce qui explique l'essentiel de l'échec observé sur les lignes « extérieur ». Inférence appuyée sur l'ordre de grandeur des cotes et sur le code : à confirmer avec un écran BetPawa. Elle ne rend pas le modèle bon pour autant (12/21 contre 83 % annoncés).
-- Reste à faire : confirmer la convention sur un cas réel ; corriger le parsing avec la regex de l'historique (`_RE_HANDICAP`) ; corriger la convention de l'extérieur (au niveau du libellé ou du règlement, à décider) ; revalider sur les 21 observations réelles.
-
-Critère de sortie : convention mathématique et sens du marché démontrés par des cas réels — pas encore atteint.
+#### P1.6 Handicap — **PARTIELLEMENT RÉSOLU**
+- Avec le nouveau moteur, le handicap est **évalué** : 772 lignes sur 3 517 au rejeu du 20/09 (BetPawa « 2-way handicap » et « handicap à 3 choix »). Le nom canonique porte la ligne de l'équipe nommée (`handicap_exterieur_1.5` = extérieur à +1,5), ce que lit le règlement : la piste du signe de la ligne « extérieur » de l'ancien modèle ne se reproduit pas. Un test vérifie que la probabilité du moteur est exactement celle du règlement pour toutes les lignes.
+- **Aucun handicap n'est retenu** : la bibliothèque de justification n'a pas de texte pour ce marché, donc « NO DATA → NO GO » les écarte tous. À traiter si le handicap doit être proposé.
+- Le moteur traite l'égalité sur une ligne entière comme **perdante** (marché à 3 issues), comme le règlement. Le handicap à 2 issues (remboursement) ne serait pas réglé correctement : à ne pas activer sans adapter le règlement.
+- Reste l'archive de l'ancien modèle (21 observations, 4 gagnées, sens de la ligne « extérieur » probablement inversé) : historique non réécrit.
 
 #### P1.7 (nouveau) Historiques de buts du scraping — **À FAIRE**
 Constat du 21/09 sur `cache_equipes.json` : **161 équipes sur 1 750 (9 %) sans aucun historique** (`aucun_match_joue_saison_actuelle_ou_precedente`), concentrées sur des championnats à saison calendaire : Suède (45), Norvège (40), Estonie (14), Biélorussie (13), Japon (6), Corée du Sud (5)… Ces équipes ont pourtant joué. **Cause non établie** (hypothèse à tester : format du sélecteur de saison ; voir `diagnostic_selecteur_saison.py`).
@@ -117,21 +114,21 @@ Autres constats à instruire :
 - Premier League : des scores du cache contredisent le classement officiel (exemple : un 10-1 pour Bournemouth le 20/09). Le pipeline ne détecte pas ces écarts.
 Objectif : diagnostic reproductible sur ces championnats ; contrôle automatique « historique du cache = classement officiel ».
 
-#### P1.8 (nouveau) Brancher le nouveau moteur d'analyse — **À VENIR** (annoncé par le propriétaire le 21/09)
-Points d'attache du site, à respecter ou à adapter explicitement :
-- filtre d'affichage (page principale et panier, fonction `aAuMoinsUnCandidat`) : `moteur_utilise === "archetype_model"` et au moins un choix parmi P1, P2, P3 ; **le site ne vérifie pas `statut`**. `estArchetypeGo` (statut `OK` et P1 requis) est conservée mais n'est plus utilisée par les pages ;
-- par choix : `marche`, `cote`, `probabilite`, `edge`, `edv`, `niveau`, `robustesse`, `justification { resume, preuves[{type, texte, valeur}], donnees_suffisantes, bibliotheque }` ;
-- `_leger_pour_site` (`precalcul.py`) décide ce qui parvient au site ; `bibliotheque` n'y est exportée que si c'est un dictionnaire ;
-- réattribution en onglets côté site (`remappeEnOngletsApp`) : Favori = probabilité la plus haute, Value Bet = meilleur EDV parmi les restants, Coup de Poker = premier restant avec cote ≥ 2,91 et probabilité ≥ 20 % ;
-- tout type de preuve inconnu s'affiche avec son nom brut (voir `ui_mappings.js`) : ajouter son libellé et son icône.
+#### P1.8 Brancher le nouveau moteur d'analyse — **FAIT** (21/09), à valider sur le prochain run réel
+`moteur_v2_6_9.py` est le moteur du pipeline. Contrat avec le site, à respecter pour tout futur moteur :
+- filtre d'affichage (page principale et panier) : `moteur_utilise === CLE_MOTEUR` et au moins un choix parmi P1, P2, P3 ; **le site ne vérifie pas `statut`** ;
+- par choix : `marche` (nom canonique), `cote`, `probabilite`, `edge`, `edv`, `niveau` (`CAT_A/B/C`), `robustesse` (`null` : pas d'analyse de robustesse), `points_de_vigilance`, `justification { resume, preuves[{type, texte, valeur}], donnees_suffisantes, bibliotheque }` ;
+- `_leger_pour_site` (`precalcul.py`) décide ce qui parvient au site ;
+- réattribution en onglets côté site (`remappeEnOngletsApp`), mêmes règles que le backend : un test de contrat les compare sur 300 tirages ;
+- tout type de preuve inconnu s'affiche avec son nom brut (voir `ui_mappings.js`).
+À valider au premier run réel : statuts (`OK` / `NON_EXPORTABLE` / `SKIP` / `ERREUR_TECHNIQUE` dans le log `moteur_v2_6_9 -- statuts`), aucune `ERREUR_TECHNIQUE`, `export_moteur/` produit, archive `model_version = moteur_v2_6_9`. Limites connues : `heure` d'un signal (heure d'export) ; données d'équipe = les 10 premiers matchs de la liste (voir P1.7).
 
 ---
 
 ### P2 — Calibration et validation prédictive
 
-#### P2.1 Ne pas promouvoir de nouveau paramètre avec N insuffisant — **À TRANCHER**
-Journal au 21/09 : 139 décisions, **138 rejetées, 1 promue** : le 20/09, `EDV_MIN_P_71_75` de 0,05 à 0,048, sur **N = 55**. Le garde-fou codé (`garde_fous.py`) exige `TAILLE_MIN_STANDARD = 50` observations (100 pour `COTE_MIN` / `COTE_MAX`) : la promotion est **conforme au code**, mais très en dessous du jalon de cette feuille de route (150-200 observations propres).
-À trancher : relever `TAILLE_MIN_STANDARD` pour l'aligner sur le jalon, ou assumer 50 (dans les deux cas, écrire la décision ici). Protocole cible inchangé : observations admissibles ; dédoublonnage par `match_id` ; exclusion des observations contaminées ; N global ; Brier/log-loss ; calibration par bins ; transformation apprise chronologiquement puis évaluée hors échantillon.
+#### P2.1 Calibration adaptative — **DÉBRANCHÉE** (21/09)
+Elle réglait les paramètres de l'ancien modèle ; le nouveau moteur a des constantes fixes. L'étape est commentée dans `pipeline.yml`. La promotion du 20/09 (`EDV_MIN_P_71_75`, N = 55) est désormais sans effet. Si une calibration du nouveau moteur est décidée, elle repartira du protocole ci-dessous (observations admissibles ; dédoublonnage par `match_id` ; exclusion des observations contaminées ; N global ; Brier/log-loss ; calibration par bins ; transformation apprise chronologiquement puis évaluée hors échantillon) et d'un seuil d'échantillon à décider (le garde-fou de l'ancien code : 50).
 
 #### P2.2 Rejouer le fixture 68/48 verrouillé — **NON VÉRIFIÉ**
 La suite permanente et le fixture historique doivent rester protégés ; ne jamais utiliser une modification de production pour masquer une divergence du fixture. Le 21/09, `audit_permanent.py` donne **256 contrôles OK et 9 FAIL, identiques avant et après les modifications de la bibliothèque** : combos (garde-fous CAS 1-4 et 6), « CAS 1 : les 12 candidats v2 », périmètre dynamique du handicap −0.5, deux contrôles `odds_provider`. Les échecs de combos sont probablement liés au retrait des combos du 19/09 (à confirmer) : à instruire ou à retirer de la suite.
@@ -145,26 +142,26 @@ La suite permanente et le fixture historique doivent rester protégés ; ne jama
 #### P2.5 Divergence du rejeu 10/09 — **NON VÉRIFIÉ**
 Le rejeu réel connu a produit 35 candidats / 29 matchs au lieu des 68 / 48 attendus. À expliquer avant de considérer la suite permanente comme représentative.
 
-#### P2.6 (nouveau) Calibration des probabilités du modèle — **À FAIRE**
-Constat de l'audit indépendant du 20/09, recalculé le 21/09 sur l'archive (13-20/09, 8 jours, observations corrélées entre elles : à lire comme un signal, pas comme une preuve définitive) :
-- 87 choix `SELECTED` résolus : **55,2 % gagnés pour 82,5 % annoncés** ; ROI à plat −19,5 % ; score de Brier 0,315 pour le modèle contre 0,252 pour la probabilité implicite de la cote. L'écart de calibration représente environ 5 écarts-types ; le ROI négatif environ 2,5 (indicatif).
-- Sur les 294 marchés non retenus, le modèle est au niveau du marché (Brier 0,203 contre 0,201) : c'est la **sélection** (filtre EDV) qui retient les erreurs du modèle.
-- La calibration adaptative règle des seuils d'EDV, pas la probabilité : elle ne peut pas corriger ce défaut.
-- Pistes à instruire : la matrice est une Poisson indépendante (aucune correction de type Dixon-Coles, malgré le docstring de `correlation.py`) ; λ estimé sur 5 à 12 matchs de la saison en cours puis restreint au lieu (environ 3 à 6 matchs) ; la marge du bookmaker n'est pas retirée de la probabilité implicite.
-Critère de sortie : mesure sur 150-200 sélections propres avant toute conclusion ; aucune modification du modèle sans cette mesure.
+#### P2.6 (nouveau) Calibration des probabilités — **À FAIRE, priorité du nouveau moteur**
+**Nouveau moteur : aucune mesure.** Poisson indépendant, constantes non calibrées, un couple de λ par match ; rejeu du 20/09 : 107 choix pour 71 matchs (66 catégorie A, 6 B, 35 C), environ 20 % des lignes évaluées signalées value bets. L'archive (`model_version = moteur_v2_6_9`) enregistre chaque choix (`SELECTED`) et chaque value bet non retenu (`COUNTERFACTUAL`, catégorie D comprise) : c'est la base de mesure. Critère : mesurer sur 150-200 choix propres **avant** de juger le moteur, par famille de marché ; ne pas confondre volume de choix et valeur.
+
+**Ancien modèle (référence, 13-20/09, 8 jours, observations corrélées : un signal, pas une preuve)** :
+- 87 choix `SELECTED` résolus : 55,2 % gagnés pour 82,5 % annoncés ; ROI à plat −19,5 % ; Brier 0,315 (modèle) contre 0,252 (probabilité implicite de la cote).
+- 294 marchés contrefactuels : Brier **0,210 pour le modèle contre 0,203 pour la cote** après correction du règlement du 21/09 (0,203 contre 0,201 avant : 5 nuls comptés à tort gagnants). Le modèle est donc légèrement **moins bon que le marché** sur ce qu'il n'a pas retenu, et beaucoup moins sur ce qu'il a retenu : la sélection (filtre EDV) retient les erreurs du modèle.
+- Pistes qui valent aussi pour le nouveau moteur : Poisson indépendant sans correction de type Dixon-Coles ; λ estimé sur peu de matchs ; marge du bookmaker non retirée sur les marchés isolés (le moteur le reconnaît dans ses limites).
 
 ---
 
 ### P3 — Interface / présentation
 
-Fait le 20-21/09 : refonte de la page Archetype, panier identique, onglets, aperçu replié compact, phrase de justification sous chaque marché, tableaux de détails, mode nuit, cibles tactiles de 44 px.
+Fait le 20-21/09 : refonte de la page Archetype, panier identique, onglets, aperçu replié compact, phrase de justification sous chaque marché, tableaux de détails, points de vigilance du moteur, mode nuit, cibles tactiles de 44 px. Testé sur les 71 cartes du rejeu (Chrome, 320 à 1024 px, jour et nuit) : pas d'erreur, pas de débordement ; panier identique à la page principale (hauteurs identiques à 414 px ; à 375 px, 4 cartes sur 71 diffèrent d'une ligne quand le nom de la compétition est très long).
 
 Reste à traiter :
 - **Page Système** : le tableau `tableau-systeme` (391 px) déborde sur les écrans de 390 px ou moins (+15 px à 390 px, +29 px à 375 px, +84 px à 320 px) ; correct à 414 px.
-- **Onglets Value Bet et Coup de Poker jamais vus sur des données réelles** (un seul choix par match à ce jour) : à vérifier après le prochain run complet. Point de vigilance : sur les 106 sélections du 13-20/09, la cote maximale est 1,79 ; **aucune n'atteint le seuil de 2,91** de Coup de Poker. Sans évolution de la fourchette de cotes du moteur, cet onglet ne peut pas se remplir.
-- **Tableaux de détails** : les lignes dépendant de champs nouveaux (`away_unbeaten_streak`, `away_win_rate`, `draw_rate_combined`…) n'apparaîtront qu'après un run complet.
-- **Accueil, Système, Admin** utilisent encore l'ancienne charte (`style.css` + `theme.css`, avec de nombreux `!important`).
-- **Admin** : le mot de passe est écrit en clair dans `admin.js` et le site publie toute la racine du dépôt (dépôt privé, site public). Envisager une protection côté hébergeur.
+- **Onglets** : sur le rejeu, 34 cartes sur 71 ont au moins 2 onglets, 2 ont les 3 ; le Coup de Poker n'apparaît que sur 2 matchs (cote maximale 3,41).
+- **Volume** : 71 cartes dans une journée, sans regroupement ni filtre ; à revoir si le volume reste tel quel.
+- **Accueil, Système, Admin** utilisent encore l'ancienne charte (`style.css` + `theme.css`, avec de nombreux `!important`). La page Admin lit `data/audit_*.json`, figés depuis le débranchement de l'audit passif.
+- **Admin** : mot de passe en clair dans `admin.js` et site publiant toute la racine du dépôt (dépôt privé, site public). Envisager une protection côté hébergeur.
 - Conserver la lisibilité iPhone 375-414 px et les couleurs validées.
 
 ---
@@ -172,17 +169,17 @@ Reste à traiter :
 ## 3. Ordre strict d'exécution
 
 1. **Corriger la publication GitHub du workflow (P0.1)** — à faire.
-2. **Ajouter le filet de sécurité avant publication (P0.3)** — à faire.
+2. **Compléter le filet de sécurité avant publication (P0.3)** — en cours (autotests et `pytest` faits ; reste le contrôle JavaScript).
 3. **Réduire le temps BetPawa sans diminuer la sécurité du matching (P0.2)** — à faire.
-4. **Brancher le rattrapage des justifications (P1.1)** — à faire.
+4. ~~Brancher le rattrapage des justifications (P1.1)~~ — sans objet avec le nouveau moteur.
 5. ~~Corriger le passage explicite cote/probabilité (P1.2)~~ — fait.
 6. ~~Compléter les preuves des marchés réellement présents (P1.3)~~ — fait le 21/09, à valider sur le prochain run.
-7. **Corriger le règlement `over_2.5` (P1.4)** — à faire.
-8. **Auditer et corriger Handicap indépendamment (P1.6)** — à faire.
+7. ~~Corriger le règlement `over_2.5` (P1.4)~~ — sans objet pour le nouveau moteur.
+8. **Handicap (P1.6)** — évalué par le moteur, jamais retenu faute de texte de justification ; à décider.
 9. **Diagnostiquer les historiques de scraping manquants (P1.7)** — à faire.
-10. **Trancher le seuil de promotion de la calibration (P2.1), accumuler les observations propres, mesurer la calibration des probabilités (P2.6)** — à faire.
-11. **Résoudre la divergence du rejeu 68/48 et nettoyer la suite permanente (P2.2, P2.5)** — non vérifié.
-12. **Brancher le nouveau moteur (P1.8), puis les finitions UI dépendantes des données (P3).**
+10. **Accumuler les observations propres du nouveau moteur et mesurer sa calibration (P2.6)** — à faire (la calibration adaptative est débranchée, P2.1).
+11. **Résoudre la divergence du rejeu 68/48 et nettoyer la suite permanente (P2.2, P2.5)** — non vérifié ; `audit_permanent.py` teste encore l'ancien code.
+12. ~~Brancher le nouveau moteur (P1.8)~~ — fait le 21/09 ; à valider au premier run réel. **Mesurer sa calibration (P2.6), puis les finitions UI (P3).**
 
 ---
 
@@ -201,15 +198,13 @@ Reste à traiter :
 
 ## 5. Point de reprise
 
-**Situation.** Le pipeline n'a produit aucune donnée depuis le run #132 (20/09 00:19 UTC) ; le run #133 a été annulé. La publication (P0.1) et le filet de sécurité (P0.3) ne sont toujours pas traités.
-
-**Avant tout nouveau run complet :** traiter P0.1 et P0.3 ; un run court de validation ciblée (`workflow_dispatch` avec une limite BetPawa) doit précéder un run complet.
+**Situation.** Le pipeline n'a produit aucune donnée depuis le run #132 (20/09 00:19 UTC) ; le run #133 a été annulé. Le nouveau moteur est branché mais **n'a encore jamais tourné en conditions réelles** : les données publiées le 21/09 sont un rejeu des entrées du 20/09 (champ `rejeu_moteur` dans les fichiers), remplacé par le prochain run. La publication (P0.1) reste à traiter.
 
 **Au prochain run complet (le planifié de 21:00 UTC, ou un run manuel), inspecter les fichiers produits et pas seulement la couleur du run :**
-1. le job ne s'arrête pas sur une exception de la bibliothèque (X2, 1X2 extérieur) ;
-2. `precalcul_leger.json` contient `bibliotheque` pour chaque choix retenu ;
-3. le nombre de marchés rejetés en `JUSTIFICATION_INSUFFISANTE` a baissé (8 au run #132) et de nouveaux choix P2/P3 apparaissent ;
-4. les tableaux de « Détails de l'analyse » affichent les nouvelles lignes, sans « — » ;
+1. l'étape d'autotests passe, puis le log contient `moteur_v2_6_9 -- statuts` avec **aucune `ERREUR_TECHNIQUE`** (sinon lire les lignes `ERREUR_TECHNIQUE` sur stderr) ;
+2. `export_moteur/` est produit et `diagnostic_pont.json` explique les rejets (attendu : environ 60 % sans cotes BetPawa, environ 7 % sans historique) ;
+3. `precalcul_leger.json` contient, pour chaque signal analysé, le bloc `moteur_v2_6_9` avec sélection et `bibliotheque` ; le champ `rejeu_moteur` a disparu ;
+4. `archive/AAAA-MM.json` reçoit des enregistrements `model_version = moteur_v2_6_9` (`SELECTED` et `COUNTERFACTUAL`) sans erreur d'archivage ;
 5. la page Archetype montre les matchs du jour, et pas ceux du 20/09.
 
 Puis reprendre l'ordre du §3.
