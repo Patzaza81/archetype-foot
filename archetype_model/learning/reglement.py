@@ -83,10 +83,21 @@ def evaluer_marche(marche: str, buts_dom: int, buts_ext: int) -> ResultatMarche:
             return _win(buts_dom + ligne > buts_ext)
         return _win(buts_ext + ligne > buts_dom)
 
-    # 5-7. Double chance (+ alias historiques 1x2_domicile/exterieur)
-    if marche in ("double_chance_1X", "1x2_domicile"):
+    # 5-7. Résultat sec (1X2) et double chance.
+    # CORRECTIF 21/09/2026 : 1x2_domicile / 1x2_exterieur étaient réglés comme une double chance
+    # (« alias historiques » : un nul comptait GAGNÉ pour une victoire), alors que le nom désigne une
+    # VRAIE victoire partout ailleurs (probabilité `1x2.domicile`, libellé « Victoire … » du site).
+    # 1x2_nul n'existait pas (MARCHE_NON_RECONNU). Les enregistrements déjà résolus sous l'ancienne
+    # règle restent immuables dans l'archive (5 nuls contrefactuels concernés au 21/09).
+    if marche == "1x2_domicile":
+        return _win(buts_dom > buts_ext)
+    if marche == "1x2_exterieur":
+        return _win(buts_ext > buts_dom)
+    if marche == "1x2_nul":
+        return _win(buts_dom == buts_ext)
+    if marche == "double_chance_1X":
         return _win(buts_dom >= buts_ext)
-    if marche in ("double_chance_X2", "1x2_exterieur"):
+    if marche == "double_chance_X2":
         return _win(buts_ext >= buts_dom)
     if marche == "double_chance_12":
         return _win(buts_dom != buts_ext)
