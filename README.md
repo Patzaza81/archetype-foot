@@ -89,6 +89,14 @@ le code** : il n'y a plus de calibration adaptative. `python moteur_v2_6_9.py --
 | `pont_moteur.py` | Traduit un signal du pipeline (cotes BetPawa imbriquées, statistiques d'équipe) vers l'entrée du moteur ; exporte les entrées dans `export_moteur/` (un fichier par date : `python moteur_v2_6_9.py export_moteur/matchs_moteur_AAAA-MM-JJ.json --date AAAA-MM-JJ` rejoue le calcul) |
 | `branchement_moteur.py` | Exécute le moteur dans le pipeline et convertit sa sortie : nom canonique des marchés, justification, règle NO DATA → NO GO, sélection P1/P2/P3, archive |
 
+**Données d'entrée du moteur : `stats_saison_en_cours.py`.** Statistiques d'équipe = **saison en cours uniquement, matchs les
+plus récents** (12 par lieu, domicile pour l'équipe qui reçoit, extérieur pour la visiteuse), via le chargeur `archetype_model/data/loader.py`
+(une requête, jamais de `?season=`, ordre chronologique). Cache distinct : `cache_equipes_saison.json`. Aucun repli sur la saison
+précédente (décision non négociable du 08/09/2026) : une équipe sans match cette saison est refusée. En début de saison les
+échantillons sont donc petits ; le moteur l'affiche (« Fenêtre d'analyse trop courte », visible dans les détails). L'ancien collecteur à
+repli (`scraper_details.recupere_gf_ga_avec_repli`) ne sert plus qu'à l'ancien calcul de `construit_signaux()` : mélange de saisons et
+N plus anciens matchs, il ne doit pas alimenter le moteur.
+
 Règles de décision (`branchement_moteur.py`, D1 à D5) : candidat = value bet hors catégorie D ; sans preuve spécifique à son
 marché, pas de choix ; au plus trois choix — **P1 favori** (probabilité la plus haute), **P2 value** (meilleur EV des
 restants), **P3 coup de poker** (meilleur EV des restants avec cote ≥ 2,91 et probabilité ≥ 20 %), mêmes règles que le
@@ -258,6 +266,7 @@ Décisions du propriétaire, documentées dans le code et dans `ROADMAP.md` (§4
 | `ROADMAP.md` | Chantiers en cours et priorités. Certains renvois « TRANSITION.md §N » y désignent l'ancien journal de sessions (voir ci-dessous) |
 | `DIALOGUE_IA_MATRICE.md` | Cahier des charges de la recalibration du moteur de sélection (15–18/09/2026) |
 | `requirements.txt` | Dépendances Python |
+| Run limité | Actions → *Pipeline quotidien* → Run workflow → `jours` = 2 : aujourd'hui + demain seulement (saute la liste J+2/J+3, garde les correspondances BetPawa de J+2/J+3) ; 4 = fenêtre complète (défaut, planifié) |
 | Autotests | `python moteur_v2_6_9.py --autotest` · `python pont_moteur.py --autotest` · `python -m pytest tests -q` |
 
 **Ancien journal de sessions.** `TRANSITION.md` (et sa copie `TRANSITION 4.md`) ont été supprimés le 21/09/2026 : 269 Ko
