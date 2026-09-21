@@ -103,12 +103,7 @@ from cache_h2h import recupere_h2h_avec_cache, purge_entrees_expirees as purge_h
 from cache_betpawa import purge_matchs_joues as purge_betpawa_matchs_joues
 from resolution_betpawa_precalcul import resout_cotes_betpawa
 from scraper_details import recupere_details_match as _recupere_details_match_reelle
-import archetype_model.main as archetype_model_main
-from archetype_model.data import odds_provider as archetype_odds_provider
 from archetype_model.learning import archive as archetype_archive
-from archetype_model.learning import extraction as archetype_extraction
-from archetype_model.audit import telemetry as archetype_telemetry
-from archetype_model.audit import report as archetype_audit_report
 from archetype_model.h2h import h2h_stats as archetype_h2h_stats
 
 _recupere_gf_ga_reelle = run_pipeline.recupere_gf_ga_avec_repli
@@ -896,28 +891,9 @@ def _leger_pour_site(s):
     # AJOUT 21/09/2026 -- bloc du moteur du pipeline (moteur_v2_6_9) : statut + sélection P1/P2/P3 avec justification.
     if isinstance(d.get(branchement_moteur.CLE_BLOC), dict):
         d[branchement_moteur.CLE_BLOC] = branchement_moteur.bloc_leger(d[branchement_moteur.CLE_BLOC])
-    am = d.get("archetype_model")
-    if isinstance(am, dict):
-        selection = am.get("selection") or {}
-        selection_legere = {}
-        for rang, candidat in selection.items():
-            if not isinstance(candidat, dict):
-                continue
-            # Les justifications sont des données légères, déjà calculées
-            # après la sélection. Elles doivent survivre dans le fichier
-            # destiné au site ; sinon l'interface ne peut que tomber sur un
-            # message générique, même lorsque le moteur dispose d'une preuve.
-            c = dict(candidat)
-            if isinstance(c.get("justification"), dict):
-                j = c["justification"]
-                c["justification"] = {
-                    "resume": j.get("resume"),
-                    "preuves": j.get("preuves") or [],
-                    "donnees_suffisantes": bool(j.get("donnees_suffisantes")),
-                }
-                # AJOUT 21/09/2026 : les statistiques exactes de la bibliothèque (forme domicile /
-                # extérieur, H2H, métriques combinées) alimentent les tableaux de « Détails de
-                # l'analyse ». Quelques dizaines de nombres par choix retenu : négligeable pour le
+    # Ancien bloc archetype_model supprimé le 21/09/2026 :
+    # le site ne reçoit désormais que le bloc canonique moteur_v2_6_9.
+
                 # fichier allégé. Absentes = les tableaux concernés ne s'affichent pas (jamais de « — »).
                 if isinstance(j.get("bibliotheque"), dict):
                     c["justification"]["bibliotheque"] = j["bibliotheque"]
@@ -949,64 +925,6 @@ def archive_precalcul(signaux, dates_a_archiver):
     return run_pipeline.ajoute_matchs_a_historique([_slim_pour_archive(s) for s in candidats])
 
 
-# AJOUT 13/09/2026 (demande de Patrick, "on branche") -- archive chaque
-# résultat OK d'archetype_model dans archetype_model/learning/archive.py,
-# immédiatement après la sélection finale. Volontairement séparé
-# d'applique_archetype_model() pour rester testable seul.
-#
-# MODEL_VERSION / CONFIG_VERSION : pas encore reliées à un vrai fichier de
-# configuration (config/adaptive_parameters.json n'existe pas encore --
-# calibration.py, pas construit). Valeurs fixes en attendant, pour ne
-# jamais archiver un enregistrement sans version -- à remplacer par la
-# vraie version active dès que calibration.py existe, jamais à laisser
-# vide entre-temps.
-ARCHETYPE_MODEL_VERSION = "archetype_model_v1_2026-09-13"
-ARCHETYPE_CONFIG_VERSION = "sans_calibration_v1"
-
-
-def _archive_resultat_archetype_model(s, resultat):
-    """Archive le résultat OK d'un match -- SELECTED si au moins un P1/P2/P3
-    existe, sinon les marchés proches du seuil (catégorie A) s'il y en a.
-    N'écrit jamais si le match n'a ni sélection ni marché proche (rien à
-    archiver, pas une erreur).
-
-    Ne lève jamais d'exception vers l'appelant : un échec d'archivage est
-    une observation manquée, jamais une raison d'interrompre le pipeline
-    nocturne (voir applique_archetype_model(), qui capture toute exception
-    venant d'ici et continue sur le match suivant)."""
-    match = {
-        "match_id": s.get("match_id"),
-        "date_match": s.get("date"),
-        "heure_match": s.get("heure"),
-        "equipe_dom": s.get("domicile"),
-        "equipe_ext": s.get("exterieur"),
-        "competition": s.get("competition"),
-    }
-    chemin = archetype_archive.chemin_archive_mensuelle(match["date_match"])
-
-    selection = resultat.get("selection") or {}
-    selections = [selection[r] for r in ("P1", "P2", "P3") if selection.get(r)]
-
-    if selections:
-        contrefactuels = []
-    else:
-        contrefactuels = archetype_extraction.extraire_marches_proches(
-            resultat.get("diagnostics") or []
-        )
-
-    if not selections and not contrefactuels:
-        return 0
-
-    return archetype_archive.enregistrer_selection_et_contrefactuels(
-        match=match,
-        selections=selections,
-        contrefactuels=contrefactuels,
-        model_version=ARCHETYPE_MODEL_VERSION,
-        config_version=ARCHETYPE_CONFIG_VERSION,
-        chemin=chemin,
-    )
-
-
 def _h2h_pour_signal(s):
     """H2H d'un match, du point de vue de l'équipe à domicile, avec la même sélection (confrontations retenues)
     que l'ancien système. Passe par le cache H2H (96 h) : jamais de requête réseau répétée inutilement."""
@@ -1025,7 +943,7 @@ def _h2h_pour_signal(s):
 def applique_moteur_pipeline(signaux):
     """AJOUT 21/09/2026 -- LE moteur du pipeline : moteur_v2_6_9.py, via branchement_moteur.py.
 
-    Remplace applique_archetype_model() (débranchée, conservée plus bas pour audit_permanent.py). Pose sur chaque
+    Remplace l'ancien moteur ; aucune voie de fallback n'est conservée. Pose sur chaque
     signal `moteur_utilise` = "moteur_v2_6_9" et le bloc `moteur_v2_6_9` (statut, verdict, sélection P1/P2/P3 avec
     justification, inventaire complet). Archive les choix retenus (SELECTED) et les value bets non retenus
     (COUNTERFACTUAL) dans archive/AAAA-MM.json. Ne fait AUCUN repli sur l'ancien moteur (règle du propriétaire) :
@@ -1045,152 +963,6 @@ def applique_moteur_pipeline(signaux):
     for s in erreurs[:5]:
         print(f"moteur_v2_6_9 -- ERREUR_TECHNIQUE {s.get('match_id')} : {s[branchement_moteur.CLE_BLOC]['raison']}",
               file=sys.stderr)
-    return signaux
-
-
-def applique_archetype_model(signaux):
-    """
-    *** DÉBRANCHÉE le 21/09/2026 : plus appelée par main(). Remplacée par applique_moteur_pipeline(). ***
-    Conservée telle quelle uniquement parce que audit_permanent.py la teste encore ; à supprimer avec ses sections.
-
-    Chantier du 09/09/2026 (reprise de session) -- tente
-    archetype_model.main.analyse_match_complet() en PRIORITÉ sur chaque
-    match déjà traité par l'ancien moteur, avec repli vers le résultat de
-    l'ancien moteur -- UNIQUEMENT en cas d'ERREUR TECHNIQUE (exception
-    Python non attrapée par archetype_model), JAMAIS quand archetype_model
-    renvoie une décision métier normale (INSUFFISANT, COTES_INDISPONIBLES,
-    ou OK avec sélection vide).
-
-    RÈGLE EXPLICITE DE PATRICK (09/09/2026), NE JAMAIS CONTOURNER :
-
-        ERREUR TECHNIQUE (exception)          -> fallback ancien moteur
-        INSUFFISANT / COTES_INDISPONIBLES /
-        OK avec candidats vides ou P1 None    -> PAS de fallback,
-                                                  décision normale du
-                                                  nouveau moteur
-
-    Un "pas de pari" du nouveau moteur est une décision, pas une panne --
-    le laisser déclencher un fallback permettrait à l'ancien moteur de
-    recontourner silencieusement les nouvelles règles du système (le
-    risque exact que ce garde-fou existe pour éliminer).
-
-    N'appelle archetype_model QUE pour les signaux avec `traite=True` --
-    si l'ancien moteur a déjà échoué à obtenir les données de base
-    (historique, URLs équipe) pour ce match, archetype_model n'a rien de
-    plus à se mettre sous la dent non plus.
-
-    Ajoute à chaque signal, SANS jamais toucher aux champs existants de
-    l'ancien moteur (`verdict_global`, `LISTE_A_...`, etc. -- toujours
-    produits tels quels, encore lus par script.js/pronostics.html à
-    l'identique tant que l'affichage n'a pas été revu) :
-    - "moteur_utilise" : "archetype_model" |
-      "ancien (fallback technique)" |
-      "ancien (non tente -- base insuffisante deja cote ancien moteur)"
-    - "archetype_model" : sortie complète de analyse_match_complet() --
-      présente uniquement si l'appel n'a PAS levé d'exception (statut OK,
-      INSUFFISANT ou COTES_INDISPONIBLES, tous les trois posés ici)
-    - "archetype_model_erreur" : message d'exception -- présente
-      UNIQUEMENT dans le cas fallback technique
-
-    COTES : passées directement depuis `s` (le signal DÉJÀ calculé EN
-    MÉMOIRE par l'ancien moteur dans CE MÊME run, via
-    `odds_provider.extrait_cotes`), jamais relues depuis `precalcul.json`
-    sur disque -- ce fichier est justement celui que ce run est en train
-    de construire, donc pas encore à jour pour ce match précis.
-
-    COÛT RÉSEAU ASSUMÉ, à mesurer sur le premier run réel avant de juger
-    si ça mérite un chantier séparé : `recupere_details_match(url_match)`
-    est rappelé ICI une 2e fois (déjà appelé une 1re fois DANS
-    construit_signaux(), résultat non exposé sur `signal` -- voir
-    run_pipeline.py, non modifiable). Un appel réseau supplémentaire par
-    match traité, pas de mise en cache ici (pas de bénéfice intra-run,
-    chaque match a une URL différente).
-    """
-    for s in signaux:
-        if not s.get("traite"):
-            s["moteur_utilise"] = "ancien (non tente -- base insuffisante deja cote ancien moteur)"
-            continue
-
-        url_match = s.get("url_match")
-        nom_domicile = s.get("domicile")
-        nom_exterieur = s.get("exterieur")
-        competition = s.get("competition")
-        match_id = s.get("match_id")
-
-        try:
-            details = _recupere_details_match_reelle(url_match)
-            url_eq_domicile = details.get("url_equipe_domicile")
-            url_eq_exterieur = details.get("url_equipe_exterieur")
-            if not url_eq_domicile or not url_eq_exterieur:
-                raise ValueError(
-                    "url_equipe_introuvable_sur_page_match (2e appel -- "
-                    "l'ancien moteur les avait pourtant obtenues pour ce match)"
-                )
-
-            cotes_info = {**archetype_odds_provider.extrait_cotes(s), "statut": "OK"}
-
-            resultat = archetype_model_main.analyse_match_complet(
-                url_eq_domicile, nom_domicile, url_eq_exterieur, nom_exterieur,
-                competition, match_id,
-                url_h2h=url_match + "?p=face-a-face",
-                cotes_info=cotes_info,
-            )
-        except Exception as e:
-            s["moteur_utilise"] = "ancien (fallback technique)"
-            s["archetype_model_erreur"] = f"erreur_technique: {e}"
-            continue
-
-        # AUCUNE exception ici -- INSUFFISANT, COTES_INDISPONIBLES ou OK
-        # sont TOUS des décisions normales du nouveau moteur, jamais un
-        # fallback, même si "candidats" est vide ou si "selection" ne
-        # contient aucun P1 (règle explicite de Patrick, 09/09/2026).
-        s["moteur_utilise"] = "archetype_model"
-        s["archetype_model"] = resultat
-
-        if resultat.get("statut") == "OK":
-            try:
-                _archive_resultat_archetype_model(s, resultat)
-            except Exception as e:
-                # Un échec d'archivage n'est jamais une raison d'interrompre
-                # le pipeline nocturne -- c'est une observation manquée,
-                # jamais une panne du moteur de décision lui-même.
-                print(f"[archivage] échec archivage match {match_id} : {e}", file=sys.stderr)
-
-    # AJOUT 09/09/2026 (après le 1er run réel) -- résumé imprimé dans le log
-    # GitHub Actions, pour permettre de juger un run SANS devoir retélécharger
-    # et reparser precalcul.json à la main à chaque fois (manque identifié
-    # lors de la vérification du 1er run réel : aucune trace de la
-    # répartition archetype_model/fallback/non-tenté n'existait dans le log).
-    _compte_moteur = collections.Counter(s.get("moteur_utilise") for s in signaux)
-    _compte_statut_am = collections.Counter(
-        s["archetype_model"].get("statut") for s in signaux if s.get("moteur_utilise") == "archetype_model"
-    )
-    _nb_avec_p1 = sum(
-        1 for s in signaux
-        if s.get("moteur_utilise") == "archetype_model"
-        and s["archetype_model"].get("statut") == "OK"
-        and s["archetype_model"].get("selection", {}).get("P1")
-    )
-    print(f"archetype_model -- moteur_utilise : {dict(_compte_moteur)}")
-    print(f"archetype_model -- statuts (parmi les tentatives réussies) : {dict(_compte_statut_am)}")
-    print(f"archetype_model -- matchs avec un P1 réel : {_nb_avec_p1}")
-
-    # AJOUT 17/09/2026 (chantier Patrick, module d'audit passif) --
-    # télémétrie de rétention par étage pour CETTE nuit + rafraîchissement
-    # du dashboard (data/audit_status.json). Enveloppé comme
-    # _archive_resultat_archetype_model ci-dessus : un échec de
-    # télémétrie/dashboard n'est JAMAIS une raison d'interrompre le
-    # pipeline nocturne -- juste une observation manquée pour cette nuit,
-    # tracée sur stderr, jamais silencieuse.
-    try:
-        archetype_telemetry.enregistre_scan(signaux)
-    except Exception as e:
-        print(f"[audit] échec enregistrement télémétrie : {e}", file=sys.stderr)
-    try:
-        archetype_audit_report.genere_dashboard()
-    except Exception as e:
-        print(f"[audit] échec génération dashboard : {e}", file=sys.stderr)
-
     return signaux
 
 
