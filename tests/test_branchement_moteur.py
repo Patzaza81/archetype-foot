@@ -358,9 +358,14 @@ def test_precalcul_applique_le_moteur_et_allege_pour_le_site(tmp_path, monkeypat
 
 def test_l_ancien_modele_n_est_plus_appele_par_main():
     import inspect
+    import importlib.util
     import precalcul
     source = inspect.getsource(precalcul.main)
-    assert "applique_moteur_pipeline(" in source and "applique_archetype_model(" not in source
+    assert "applique_moteur_pipeline(" in source
+    assert "applique_archetype_model(" not in source
+    assert "archetype_model.main" not in source
+    assert '"archetype_model"' not in source
+    assert importlib.util.find_spec("archetype_model.main") is None
 
 
 # ═════════════ 10. REPRODUCTIBILITÉ : le fichier exporté rejoue le même calcul ═════════════
