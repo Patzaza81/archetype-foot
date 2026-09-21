@@ -115,16 +115,13 @@ function construitEtoiles(etoiles) {
 function construitResume(selection, equipes) {
   const div = document.createElement("div");
   div.className = "ax-resume";
+  // Un choix sans candidat n'a pas de ligne ici : son onglet, juste au-dessus, indique déjà « Non disponible ».
   div.innerHTML = RANGS.map((info) => {
     const c = selection[info.cle];
-    if (!c) {
-      return `<div class="ax-resume-rang ax-${info.classe} ax-vide">` +
-        `<span class="ax-resume-etiquette">${echappeHtml(info.titre)}</span>` +
-        `<span class="ax-resume-indispo">Non disponible pour ce match</span></div>`;
-    }
+    if (!c) return "";
     // Phrase de justification qui accompagne le marché (même source que le panneau déplié : justification.resume).
     const texte = c.justification && c.justification.resume ? c.justification.resume : "";
-    return `<div class="ax-resume-rang ax-${info.classe}">` +
+    return `<div class="ax-resume-rang ax-${info.classe}" data-cle="${info.cle}">` +
       `<div class="ax-resume-corps">` +
       `<div class="ax-resume-tete"><span class="ax-resume-etiquette">${echappeHtml(info.titre)}</span>` +
       `<span class="ax-resume-cote">Cote <strong>${formatCote(c.cote)}</strong></span></div>` +
@@ -234,16 +231,20 @@ function construitCarte(m, options) {
     const panneau = construitPanneau(info, c, equipes, idPanneau, idOnglet);
     onglets.appendChild(bouton); actifs.push({ bouton, panneau });
   });
-  const active = (cible) => actifs.forEach(({ bouton, panneau }) => {
-    const oui = bouton === cible;
-    bouton.classList.toggle("ax-actif", oui); bouton.setAttribute("aria-selected", String(oui)); bouton.tabIndex = oui ? 0 : -1;
-    panneau.hidden = !oui;
-  });
+  // Résumé compact (visible carte repliée) : placé SOUS les onglets ; il n'affiche que le choix de l'onglet actif.
+  const resume = construitResume(selection, equipes);
+  const active = (cible) => {
+    actifs.forEach(({ bouton, panneau }) => {
+      const oui = bouton === cible;
+      bouton.classList.toggle("ax-actif", oui); bouton.setAttribute("aria-selected", String(oui)); bouton.tabIndex = oui ? 0 : -1;
+      panneau.hidden = !oui;
+    });
+    resume.querySelectorAll(".ax-resume-rang").forEach((ligne) => { ligne.hidden = ligne.dataset.cle !== cible.dataset.cle; });
+  };
   actifs.forEach(({ bouton, panneau }) => { bouton.addEventListener("click", () => active(bouton)); panneaux.appendChild(panneau); });
   if (actifs.length) { active(actifs[0].bouton); section.appendChild(onglets); section.appendChild(panneaux); }
 
-  // Résumé compact (visible carte repliée) : placé SOUS les onglets.
-  section.appendChild(construitResume(selection, equipes));
+  section.appendChild(resume);
 
   // Bloc <details> (repliable) placé juste avant le pied ; son <summary> est
   // caché, c'est le bouton « Détails de l'analyse » dans le pied qui l'ouvre.
