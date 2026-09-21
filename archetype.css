@@ -284,7 +284,7 @@ body.theme-nuit .ax-carte{
    - .ax-summary-cache : le <summary> de « Détails de l'analyse » n'est jamais affiché ; c'est le bouton
      .ax-bouton-details du pied de carte qui ouvre/ferme le bloc (voir archetype.js, construitCarte).
    - un bloc détails fermé n'occupe aucune place (il n'a plus de summary visible). */
-.ax-summary-cache{display:none}
+.ax-details .ax-summary-cache{display:none}   /* spécificité (0,2,0) > .ax-details summary (0,1,1) : sinon le summary réapparaît dès que le bloc est ouvert */
 .ax-details:not([open]){display:none}
 .ax-bouton-details{
   display:inline-flex;align-items:center;justify-content:center;
