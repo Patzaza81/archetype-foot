@@ -122,11 +122,14 @@ function construitResume(selection, equipes) {
         `<span class="ax-resume-etiquette">${echappeHtml(info.titre)}</span>` +
         `<span class="ax-resume-indispo">Non disponible pour ce match</span></div>`;
     }
+    // Phrase de justification qui accompagne le marché (même source que le panneau déplié : justification.resume).
+    const texte = c.justification && c.justification.resume ? c.justification.resume : "";
     return `<div class="ax-resume-rang ax-${info.classe}">` +
       `<div class="ax-resume-corps">` +
       `<div class="ax-resume-tete"><span class="ax-resume-etiquette">${echappeHtml(info.titre)}</span>` +
       `<span class="ax-resume-cote">Cote <strong>${formatCote(c.cote)}</strong></span></div>` +
-      `<h3 class="ax-resume-marche">${echappeHtml(traduitMarche(c.marche, equipes))}</h3></div>` +
+      `<h3 class="ax-resume-marche">${echappeHtml(traduitMarche(c.marche, equipes))}</h3>` +
+      (texte ? `<p class="ax-resume-texte">${echappeHtml(texte)}</p>` : "") + `</div>` +
       `${construitJauge(c.probabilite, "ax-jauge-mini")}</div>`;
   }).join("");
   return div;

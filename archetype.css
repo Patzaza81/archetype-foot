@@ -172,7 +172,7 @@ body.theme-nuit .ax-carte{
 .ax-jauge-valeur{fill:none;stroke:var(--ax-anneau);stroke-width:10;stroke-linecap:round}
 .ax-jauge-centre{fill:var(--ax-centre)}
 .ax-jauge-texte{fill:#fff;font-size:25px;font-weight:800;text-anchor:middle;dominant-baseline:central}
-.ax-jauge-mini{width:36px;height:36px}
+.ax-jauge-mini{width:36px;height:36px;flex:0 0 36px}
 .ax-jauge-mini .ax-jauge-texte{font-size:28px}
 
 .ax-etoiles{font-size:19px;letter-spacing:1px;line-height:1;color:var(--ax-etoile)}
@@ -199,6 +199,7 @@ body.theme-nuit .ax-carte{
 .ax-resume-cote{font-size:12.5px;line-height:1.1;color:var(--ax-doux);white-space:nowrap}
 .ax-resume-cote strong{font-size:14px;color:var(--ax-texte)}
 .ax-resume-marche{margin:1px 0 0;font-size:16px;font-weight:800;line-height:1.2;overflow-wrap:anywhere}
+.ax-resume-texte{margin:3px 0 0;font-size:12.5px;line-height:1.35;color:var(--ax-doux);overflow-wrap:anywhere}
 .ax-resume-rang.ax-vide{flex-wrap:wrap;justify-content:flex-start;align-items:baseline;gap:0 10px;padding:5px 12px}
 .ax-resume-rang.ax-vide .ax-resume-etiquette{opacity:.8}
 .ax-resume-indispo{font-size:13px;font-style:italic;color:var(--ax-doux)}
