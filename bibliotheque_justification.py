@@ -117,6 +117,12 @@ def construit_donnees(
         # domicile ; la branche X2 / 1x2_exterieur les lit sans condition -> KeyError sinon.
         "home_loss_rate": None,
         "home_winless_streak": None,
+        # CORRECTIF 21/09/2026 : la série « sans défaite » de l'équipe visiteuse n'existait pas ; le texte
+        # X2 « sans défaite en déplacement » s'appuyait sur away_winless_streak (= sans VICTOIRE : nuls
+        # ou défaites), soit exactement le contraire de ce qu'il affirmait. away_win_rate complète le
+        # tableau « forme récente » de l'extérieur (symétrique de home_win_rate).
+        "away_unbeaten_streak": None,
+        "away_win_rate": None,
         # AJOUT 21/09/2026 -- champs des nouveaux marchés (nul, sans nul, BTTS non,
         # lignes de buts quelconques, buts d'une équipe). Tous calculés exactement
         # sur les mêmes historiques, avec les mêmes seuils minimaux que ci-dessus.
@@ -140,6 +146,8 @@ def construit_donnees(
     if len(b_ext) >= MIN_ROLE_MATCHES:
         data["away_loss_rate"] = _pct(sum(m["buts_marques"] < m["buts_encaisses"] for m in b_ext), len(b_ext))
         data["away_winless_streak"] = _streak(b_ext, lambda m: m["buts_marques"] <= m["buts_encaisses"])
+        data["away_unbeaten_streak"] = _streak(b_ext, lambda m: m["buts_marques"] >= m["buts_encaisses"])
+        data["away_win_rate"] = _pct(sum(m["buts_marques"] > m["buts_encaisses"] for m in b_ext), len(b_ext))
         data["away_concede_pct"] = _pct(sum(m["buts_encaisses"] >= 1 for m in b_ext), len(b_ext))
         data["away_score_rate"] = _pct(sum(m["buts_marques"] >= 1 for m in b_ext), len(b_ext))
 
@@ -252,10 +260,10 @@ def construit_justification_bibliotheque(
             ))
 
     elif marche in {"double_chance_X2", "1x2_exterieur"}:
-        if d["away_winless_streak"] is not None and d["away_winless_streak"] >= 4:
+        if d["away_unbeaten_streak"] is not None and d["away_unbeaten_streak"] >= 4:
             preuves.append(_proof(
-                f"Régularité à l'extérieur : {b} reste sur {d['away_winless_streak']} matchs sans défaite en déplacement.",
-                type="away_winless_streak", valeur=d["away_winless_streak"],
+                f"Régularité à l'extérieur : {b} reste sur {d['away_unbeaten_streak']} matchs sans défaite en déplacement.",
+                type="away_unbeaten_streak", valeur=d["away_unbeaten_streak"],
             ))
         if d["home_loss_rate"] is not None and d["home_winless_streak"] is not None and (
             d["home_loss_rate"] >= 50 or d["home_winless_streak"] >= 4

@@ -270,8 +270,30 @@ def test_total_under_refuse_a_33_pourcent():
 def test_x2_ne_plante_pas_quand_l_equipe_a_domicile_a_moins_de_3_matchs():
     # KeyError: 'home_loss_rate' avant correctif (clé absente sous le seuil de 3 matchs à domicile)
     for marche in ("double_chance_X2", "1x2_exterieur"):
-        r = just(marche, dom((1, 0), (2, 0)), ext((0, 1), (0, 1), (0, 1), (0, 1)), h2h((0, 1)))
-        assert r["resume"] is not None and "Régularité à l'extérieur : Bravo reste sur 4 matchs" in r["resume"]
+        r = just(marche, dom((1, 0), (2, 0)), ext((1, 0), (1, 1), (2, 1), (0, 0)), h2h((0, 1)))
+        assert r["resume"] is not None and "Régularité à l'extérieur : Bravo reste sur 4 matchs sans défaite" in r["resume"]
+
+
+def test_x2_ne_pretend_jamais_sans_defaite_apres_des_defaites():
+    # CORRECTIF : le texte disait « sans défaite » pour 4 DÉFAITES de suite (série « sans victoire » confondue).
+    for marche in ("double_chance_X2", "1x2_exterieur"):
+        assert resume(marche, dom((1, 0), (1, 0), (1, 0)), ext((0, 1), (0, 1), (0, 1), (0, 1))) is None
+
+
+def test_x2_les_nuls_comptent_comme_sans_defaite_et_une_defaite_coupe_la_serie():
+    for marche in ("double_chance_X2", "1x2_exterieur"):
+        assert "sans défaite" in resume(marche, dom((1, 0), (1, 0), (1, 0)), ext((1, 0), (0, 0), (2, 2), (0, 0)))
+        # la dernière rencontre (fin de liste) est une défaite : série de 0 -> aucun texte
+        assert resume(marche, dom((1, 0), (1, 0), (1, 0)), ext((1, 0), (0, 0), (2, 2), (0, 1))) is None
+
+
+def test_donnees_forme_exterieur_exactes():
+    d = bj.construit_donnees("double_chance_X2", dom((1, 0), (1, 0), (1, 0)), ext((2, 0), (1, 1), (0, 1), (1, 0), (1, 1)))
+    assert d["away_win_rate"] == 40.0            # 2 victoires sur 5
+    assert d["away_unbeaten_streak"] == 2        # 1-1 puis 1-0 (fin de liste), la défaite 0-1 coupe la série
+    assert d["away_winless_streak"] == 1         # le dernier match (1-1) est un nul ; le précédent (1-0) est une victoire
+    d2 = bj.construit_donnees("double_chance_X2", [], ext((1, 0), (1, 0)))
+    assert d2["away_win_rate"] is None and d2["away_unbeaten_streak"] is None  # sous 3 matchs : non calculable
 
 
 def test_total_under_refuse_h2h_ouvert():

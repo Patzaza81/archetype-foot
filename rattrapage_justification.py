@@ -34,6 +34,12 @@ def _leger_pour_site(s):
                     "preuves": j.get("preuves") or [],
                     "donnees_suffisantes": bool(j.get("donnees_suffisantes")),
                 }
+                # AJOUT 21/09/2026 : les statistiques exactes de la bibliothèque (forme domicile /
+                # extérieur, H2H, métriques combinées) alimentent les tableaux de « Détails de
+                # l'analyse ». Quelques dizaines de nombres par choix retenu : négligeable pour le
+                # fichier allégé. Absentes = les tableaux concernés ne s'affichent pas (jamais de « — »).
+                if isinstance(j.get("bibliotheque"), dict):
+                    c["justification"]["bibliotheque"] = j["bibliotheque"]
             selection_legere[rang] = c
         d["archetype_model"] = {"statut": am.get("statut"), "selection": selection_legere}
     return d
