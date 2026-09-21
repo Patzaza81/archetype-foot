@@ -58,3 +58,41 @@ def test_le_workflow_ne_lance_plus_la_calibration_de_l_ancien_modele():
     with open(os.path.join(RACINE, ".github", "workflows", "pipeline.yml"), encoding="utf-8") as f:
         actif = [l for l in f.read().splitlines() if not l.lstrip().startswith("#")]
     assert not any("calibre_archetype_model.py" in l for l in actif)
+
+
+# ─────────── parité avec l'environnement du workflow (échec du run n°134, 21/09/2026) ───────────
+# Le run n°134 s'est arrêté à l'étape d'autotests : un test importait PyYAML (absent du runner, qui n'installe que
+# requests, beautifulsoup4, pandas, lxml, playwright, pytest) et lisait pipeline.yml par un chemin absolu propre à la
+# machine de développement. Ces deux tests l'interdisent pour tous les tests.
+PAQUETS_DU_WORKFLOW = {"requests", "bs4", "pandas", "lxml", "playwright", "pytest"}
+
+
+def _imports_des_tests():
+    import ast
+    out = []
+    for f in sorted(glob.glob(os.path.join(RACINE, "tests", "*.py"))):
+        for n in ast.walk(ast.parse(open(f, encoding="utf-8").read())):
+            if isinstance(n, ast.Import):
+                out += [(os.path.basename(f), a.name.split(".")[0]) for a in n.names]
+            elif isinstance(n, ast.ImportFrom) and n.level == 0 and n.module:
+                out.append((os.path.basename(f), n.module.split(".")[0]))
+    return out
+
+
+def test_les_tests_n_importent_que_la_bibliotheque_standard_le_depot_et_les_paquets_du_workflow():
+    modules_du_depot = {os.path.splitext(os.path.basename(f))[0] for f in glob.glob(os.path.join(RACINE, "*.py"))} | {
+        d for d in os.listdir(RACINE) if os.path.isdir(os.path.join(RACINE, d))}
+    inconnus = sorted({(f, m) for f, m in _imports_des_tests()
+                       if m not in sys.stdlib_module_names and m not in modules_du_depot and m not in PAQUETS_DU_WORKFLOW})
+    assert not inconnus, f"paquet absent du workflow (le runner ne l'a pas) : {inconnus}"
+
+
+def test_aucun_test_ne_lit_un_chemin_absolu_de_la_machine_de_developpement():
+    fautifs = []
+    for f in sorted(glob.glob(os.path.join(RACINE, "tests", "*.py"))):
+        if os.path.basename(f) == "test_integrite_du_depot.py":
+            continue
+        for i, l in enumerate(open(f, encoding="utf-8").read().splitlines(), 1):
+            if re.search(r"[\"'](/home/|/tmp/|/mnt/|C:\\\\)", l):
+                fautifs.append(f"{os.path.basename(f)}:{i}")
+    assert not fautifs, fautifs

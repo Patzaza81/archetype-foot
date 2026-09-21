@@ -23,6 +23,7 @@ Statuts : **FAIT** · **EN COURS** · **À FAIRE** · **NON VÉRIFIÉ** (non re-
 | #131 | manuel | succès | 2 h 23 | `fbee644` |
 | #132 | planifié | succès (dernier à avoir publié, 20/09 00:19 UTC) | 1 h 29 | `62111ce` |
 | #133 | planifié | **annulé** après 28 min (20/09, 23:06 UTC ; cause non déterminée) | 0 h 28 | `97db2d9` |
+| #134 | manuel (`jours` = 2) | **échec en 52 s** à l'étape d'autotests (21/09, 12:50 UTC) : un de mes tests importait PyYAML, absent du runner, et lisait un chemin absolu de la machine de développement. Rien n'a été scrapé ni publié | 0 h 01 | `565ce32` |
 
 - **Aucune donnée fraîche depuis le run #132.** Le site affiche donc encore les matchs du 20/09. Prochain run planifié : 21/09 à 21:00 UTC.
 - Le run #132 est le dernier exécuté avant les corrections de la bibliothèque (21/09). **Le prochain run sera le premier à exécuter** : les nouveaux textes par marché, l'export de `bibliotheque` dans `precalcul_leger.json` et les corrections X2 / 1X2 extérieur. À inspecter (voir §5).
@@ -78,6 +79,7 @@ Objectif : réduire fortement le temps sans relâcher la règle de sécurité «
 
 #### P0.3 (nouveau) Filet de sécurité avant publication — **EN COURS**
 Fait le 21/09 : `pipeline.yml` lance, avant tout scraping et sans `continue-on-error`, `python moteur_v2_6_9.py --autotest`, `python pont_moteur.py --autotest` et `python -m pytest tests -q`. Un moteur cassé arrête le job en quelques secondes.
+**Le filet a fonctionné le 21/09** : le run n°134 s'est arrêté en 52 s à cette étape au lieu de perdre un run entier. Cause : un test (PyYAML absent du runner + chemin absolu). Gardes ajoutées dans `tests/test_integrite_du_depot.py` : les tests n'importent que la bibliothèque standard, le dépôt et les paquets installés par le workflow, et aucun test ne lit un chemin absolu ; plus un test de fumée de `precalcul.main()` de bout en bout (réseau simulé). Vérification à faire avant tout run : `pytest` dans un environnement vierge avec les seuls paquets du workflow.
 Reste à faire : aucun contrôle de syntaxe JavaScript (`node --check`) et aucun test de l'interface dans le workflow ; les tests d'affichage (Chrome) ne sont pas versionnés. Casses passées inaperçues jusqu'ici : 19/09 (moteur non-importable), 19/09 (`traduction_marches.js`), 20/09 (`NameError` de la bibliothèque).
 
 ---

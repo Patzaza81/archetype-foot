@@ -64,12 +64,13 @@ def test_la_purge_betpawa_garde_j2_j3_meme_en_run_a_deux_jours():
 
 
 def test_le_workflow_expose_l_option_et_saute_la_liste_j2_j3():
-    import yaml
-    d = yaml.safe_load(open("/home/claude/archetype-foot/.github/workflows/pipeline.yml", encoding="utf-8"))
-    inputs = d[True]["workflow_dispatch"]["inputs"]
-    assert inputs["jours"]["default"] == "4" and inputs["jours"]["options"] == ["4", "2"]
-    steps = d["jobs"]["run-pipeline"]["steps"]
-    semaine = next(s for s in steps if "J+2 à J+3" in s.get("name", ""))
-    assert semaine["if"] == "github.event.inputs.jours != '2'"
-    pre = next(s for s in steps if s.get("id") == "precalcul")
-    assert pre["env"]["PRECALCUL_JOURS"] == "${{ github.event.inputs.jours }}"
+    # Lecture TEXTUELLE de pipeline.yml : aucune dépendance hors des paquets installés par le workflow (pas de PyYAML),
+    # chemin relatif à la racine du dépôt (le runner GitHub n'a pas le chemin de la machine de développement).
+    import os
+    import re
+    racine = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    txt = open(os.path.join(racine, ".github", "workflows", "pipeline.yml"), encoding="utf-8").read()
+    bloc = re.search(r"^      jours:\n(.*?)^      limite_betpawa:", txt, re.S | re.M).group(1)
+    assert 'default: "4"' in bloc and re.search(r'options:\s*\n\s*- "4"\s*\n\s*- "2"', bloc)
+    assert re.search(r"- name: Générer la liste J\+2 à J\+3\n\s+if: github\.event\.inputs\.jours != '2'\n", txt)
+    assert re.search(r"id: precalcul\n\s+env:\n(?:\s+\w+: .*\n)*?\s+PRECALCUL_JOURS: \$\{\{ github\.event\.inputs\.jours \}\}", txt)
