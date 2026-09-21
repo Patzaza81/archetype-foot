@@ -72,6 +72,13 @@ def _market_line(market):
     return (float(m.group(1)), m.group(2)) if m else None
 
 
+def _team_goals_line(market):
+    """buts_equipe_(domicile|exterieur)_L_(over|under) -> (côté, ligne, sens) ou None."""
+    import re
+    m = re.search(r"^buts_equipe_(domicile|exterieur)_(-?\d+(?:\.\d+)?)_(over|under)$", market or "")
+    return (m.group(1), float(m.group(2)), m.group(3)) if m else None
+
+
 def construit_donnees(
     marche: str,
     matchs_a,
@@ -106,6 +113,18 @@ def construit_donnees(
         "both_teams_score_rate": None,
         "away_score_rate": None,
         "home_concede_rate": None,
+        # CORRECTIF 21/09/2026 : ces deux clés n'existaient que si l'équipe à domicile avait >= 3 matchs à
+        # domicile ; la branche X2 / 1x2_exterieur les lit sans condition -> KeyError sinon.
+        "home_loss_rate": None,
+        "home_winless_streak": None,
+        # AJOUT 21/09/2026 -- champs des nouveaux marchés (nul, sans nul, BTTS non,
+        # lignes de buts quelconques, buts d'une équipe). Tous calculés exactement
+        # sur les mêmes historiques, avec les mêmes seuils minimaux que ci-dessus.
+        "draw_rate_combined": None,
+        "h2h_draw_count": None,
+        "over_rate_combined": None,
+        "team_over_rate": None,
+        "opp_over_rate": None,
     }
 
     if data["market_prob_pct"] is not None and data["odds_scraped"] is not None:
@@ -136,18 +155,38 @@ def construit_donnees(
             sum(m["buts_marques"] >= 1 and m["buts_encaisses"] >= 1 for m in combined),
             len(combined),
         )
-
+        data["draw_rate_combined"] = _pct(
+            sum(m["buts_marques"] == m["buts_encaisses"] for m in combined),
+            len(combined),
+        )
     if h:
         data["h2h_unbeaten_count"] = sum(x["buts_a"] >= x["buts_b"] for x in h)
-
+        data["h2h_draw_count"] = sum(x["buts_a"] == x["buts_b"] for x in h)
     line = _market_line(marche)
-    if line and line[1] == "over":
+    # CORRECTIF 21/09/2026 : ces champs n'étaient calculés que pour les lignes « over ».
+    # Pour un marché « under », h2h_over_count restait None : la preuve « Historique
+    # fermé » (h2h_under_count) prévue plus bas ne pouvait donc jamais être produite.
+    if line:
         target = line[0]
         data["target_goals"] = target
+        if len(combined) >= MIN_MATCHES:
+            data["over_rate_combined"] = _pct(
+                sum(m["buts_marques"] + m["buts_encaisses"] > target for m in combined),
+                len(combined),
+            )
         if h:
             data["h2h_over_count"] = sum(x["buts_a"] + x["buts_b"] > target for x in h)
             data["h2h_over_rate"] = _pct(data["h2h_over_count"], len(h))
-
+    tm = _team_goals_line(marche)
+    if tm:
+        cote_marche, ligne_equipe, _ = tm
+        # domicile : l'équipe = celle qui reçoit (ses matchs à domicile), l'adversaire = celle qui se déplace.
+        equipe_ms, adverse_ms = (a_dom, b_ext) if cote_marche == "domicile" else (b_ext, a_dom)
+        data["target_goals"] = ligne_equipe
+        if len(equipe_ms) >= MIN_ROLE_MATCHES:
+            data["team_over_rate"] = _pct(sum(m["buts_marques"] > ligne_equipe for m in equipe_ms), len(equipe_ms))
+        if len(adverse_ms) >= MIN_ROLE_MATCHES:
+            data["opp_over_rate"] = _pct(sum(m["buts_encaisses"] > ligne_equipe for m in adverse_ms), len(adverse_ms))
     return data
 
 
@@ -181,6 +220,10 @@ def construit_justification_bibliotheque(
     )
     a = nom_domicile or "Équipe à domicile"
     b = nom_exterieur or "Équipe à l'extérieur"
+    # CORRECTIF 21/09/2026 : `h` était utilisé plus bas (branche X2 / 1x2_exterieur) sans être défini
+    # ici -> NameError pour double_chance_X2 et 1x2_exterieur (introduit par 6f60b3b, 20/09/2026).
+    h = _h2h(h2h)
+    marche = marche or ""
     preuves = []
 
     # Les preuves spécifiques au marché passent avant l'EV. L'EV reste la
@@ -238,6 +281,12 @@ def construit_justification_bibliotheque(
                     f"Rythme offensif : plus de 1.5 but inscrit dans {d['over_15_rate_combined']:.1f}% des matchs récents des deux équipes.",
                     type="over_15_rate_combined", valeur=d["over_15_rate_combined"],
                 ))
+            if target != 1.5 and d["over_rate_combined"] is not None and d["over_rate_combined"] >= 75:
+                txt = str(target).replace(".", ",")
+                preuves.append(_proof(
+                    f"Rythme offensif : plus de {txt} buts dans {d['over_rate_combined']:.1f}% des matchs récents des deux équipes.",
+                    type="over_line_rate_combined", valeur=d["over_rate_combined"], ligne=target,
+                ))
             if d["avg_goals_conceded_combined"] is not None and d["avg_goals_conceded_combined"] >= 1.8:
                 preuves.append(_proof(
                     f"Série ouverte : ces deux formations concèdent en moyenne {d['avg_goals_conceded_combined']:.2f} buts par rencontre cette saison.",
@@ -261,6 +310,12 @@ def construit_justification_bibliotheque(
                     f"Historique fermé : la barre des {txt} buts n'a été franchie que dans {d['h2h_over_count']} des {d['h2h_total']} derniers duels.",
                     type="h2h_under_count", valeur=d["h2h_over_count"], total=d["h2h_total"],
                 ))
+            if target != 1.5 and d["over_rate_combined"] is not None and d["over_rate_combined"] <= 25:
+                txt = str(target).replace(".", ",")
+                preuves.append(_proof(
+                    f"Rythme fermé : plus de {txt} buts dans seulement {d['over_rate_combined']:.1f}% des matchs récents des deux équipes.",
+                    type="under_line_rate_combined", valeur=d["over_rate_combined"], ligne=target,
+                ))
 
     elif marche == "btts_oui":
         if d["both_teams_score_rate"] is not None and d["both_teams_score_rate"] >= 70:
@@ -276,6 +331,75 @@ def construit_justification_bibliotheque(
                 f"Match ouvert : {b} marque régulièrement à l'extérieur face à une défense de {a} rarement imbattable.",
                 type="away_score_rate_home_concede_rate", away_score_rate=d["away_score_rate"], home_concede_rate=d["home_concede_rate"],
             ))
+
+    elif marche == "btts_non":
+        if d["both_teams_score_rate"] is not None and d["both_teams_score_rate"] <= 30:
+            preuves.append(_proof(
+                f"Match fermé : seuls {d['both_teams_score_rate']:.1f}% des matchs récents ont vu les deux équipes marquer.",
+                type="both_teams_score_rate_low", valeur=d["both_teams_score_rate"],
+            ))
+        if d["away_score_rate"] is not None and d["away_score_rate"] <= 30:
+            preuves.append(_proof(
+                f"Attaque muette en déplacement : {b} n'a marqué que dans {d['away_score_rate']:.1f}% de ses récents matchs à l'extérieur.",
+                type="away_score_rate_low", valeur=d["away_score_rate"],
+            ))
+        if d["home_concede_rate"] is not None and d["home_concede_rate"] <= 30:
+            preuves.append(_proof(
+                f"Défense solide : {a} a gardé sa cage inviolée lors de {100.0 - d['home_concede_rate']:.1f}% de ses récents matchs à domicile.",
+                type="home_clean_sheet_rate", valeur=round(100.0 - d["home_concede_rate"], 1),
+            ))
+
+    elif marche == "double_chance_12":
+        if d["draw_rate_combined"] is not None and d["draw_rate_combined"] <= 20:
+            preuves.append(_proof(
+                f"Peu de nuls : seulement {d['draw_rate_combined']:.1f}% des matchs récents des deux équipes se sont terminés sur un partage.",
+                type="draw_rate_combined_low", valeur=d["draw_rate_combined"],
+            ))
+        if d["h2h_draw_count"] is not None and d["h2h_total"] >= MIN_MATCHES and _pct(d["h2h_draw_count"], d["h2h_total"]) <= 20:
+            preuves.append(_proof(
+                f"Historique décisif : {d['h2h_draw_count']} nul seulement lors des {d['h2h_total']} dernières confrontations directes.",
+                type="h2h_no_draw_count", valeur=d["h2h_draw_count"], total=d["h2h_total"],
+            ))
+
+    elif marche == "1x2_nul":
+        if d["draw_rate_combined"] is not None and d["draw_rate_combined"] >= 35:
+            preuves.append(_proof(
+                f"Nuls fréquents : {d['draw_rate_combined']:.1f}% des matchs récents des deux équipes se sont terminés sur un partage.",
+                type="draw_rate_combined_high", valeur=d["draw_rate_combined"],
+            ))
+        if d["h2h_draw_count"] is not None and d["h2h_total"] >= MIN_MATCHES and _pct(d["h2h_draw_count"], d["h2h_total"]) >= 40:
+            preuves.append(_proof(
+                f"Historique serré : {d['h2h_draw_count']} nuls lors des {d['h2h_total']} dernières confrontations directes.",
+                type="h2h_draw_count", valeur=d["h2h_draw_count"], total=d["h2h_total"],
+            ))
+
+    elif _team_goals_line(marche):
+        cote_marche, ligne_equipe, sens = _team_goals_line(marche)
+        txt = str(ligne_equipe).replace(".", ",")
+        equipe, adverse = (a, b) if cote_marche == "domicile" else (b, a)
+        lieu_e, lieu_a = ("à domicile", "en déplacement") if cote_marche == "domicile" else ("en déplacement", "à domicile")
+        if sens == "over":
+            if d["team_over_rate"] is not None and d["team_over_rate"] >= 70:
+                preuves.append(_proof(
+                    f"Attaque en forme : {equipe} a inscrit plus de {txt} buts dans {d['team_over_rate']:.1f}% de ses récents matchs {lieu_e}.",
+                    type="team_goals_over_rate", valeur=d["team_over_rate"], ligne=ligne_equipe,
+                ))
+            if d["opp_over_rate"] is not None and d["opp_over_rate"] >= 70:
+                preuves.append(_proof(
+                    f"Défense adverse fragile : {adverse} a concédé plus de {txt} buts dans {d['opp_over_rate']:.1f}% de ses récents matchs {lieu_a}.",
+                    type="opp_concede_over_rate", valeur=d["opp_over_rate"], ligne=ligne_equipe,
+                ))
+        else:
+            if d["team_over_rate"] is not None and d["team_over_rate"] <= 30:
+                preuves.append(_proof(
+                    f"Attaque limitée : {equipe} n'a inscrit plus de {txt} buts que dans {d['team_over_rate']:.1f}% de ses récents matchs {lieu_e}.",
+                    type="team_goals_under_rate", valeur=d["team_over_rate"], ligne=ligne_equipe,
+                ))
+            if d["opp_over_rate"] is not None and d["opp_over_rate"] <= 30:
+                preuves.append(_proof(
+                    f"Défense adverse solide : {adverse} n'a concédé plus de {txt} buts que dans {d['opp_over_rate']:.1f}% de ses récents matchs {lieu_a}.",
+                    type="opp_concede_under_rate", valeur=d["opp_over_rate"], ligne=ligne_equipe,
+                ))
 
     if d["ev_percentage"] is not None:
         preuves.append(_proof(

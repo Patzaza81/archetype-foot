@@ -107,15 +107,18 @@ def test_resume_prefere_une_preuve_specifique_si_disponible():
         assert r["resume"] != next(p["texte"] for p in r["preuves"] if p["type"] == "ev_percentage")
 
 
-def test_resume_retombe_sur_ev_si_aucune_preuve_specifique():
-    """Comportement de repli inchangé : sans donnée suffisante pour une
-    preuve spécifique, l'EV reste le résumé (jamais aucun résumé du
-    tout tant que la cote et la probabilité sont connues)."""
+def test_sans_preuve_specifique_aucun_resume_no_data_no_go():
+    """Règle maîtresse du 19/09/2026 (commit a3112cd) : NO DATA -> NO GO.
+    Sans donnée suffisante pour une preuve spécifique au marché, il n'y a PAS de résumé :
+    l'EV, interchangeable entre tous les marchés, ne sert plus jamais de repli (ancien
+    comportement, que ce test vérifiait jusqu'au 20/09/2026). L'EV reste listée parmi les
+    preuves, mais ne suffit pas à retenir le marché."""
     matchs_a = _fenetre_mixte(n_domicile=1, n_exterieur=1, domicile_gagne=True)
     matchs_b = _fenetre_mixte(n_domicile=1, n_exterieur=1, domicile_gagne=False)
     r = bj.construit_justification_bibliotheque(
         "double_chance_1X", matchs_a, matchs_b, None,
         nom_domicile="A", nom_exterieur="B", odds_scraped=1.5, market_prob_pct=70,
     )
-    assert r["resume"] is not None
-    assert "Avantage Statistique" in r["resume"]
+    assert r["resume"] is None
+    assert r["preuve_specifique_disponible"] is False
+    assert [p["type"] for p in r["preuves"]] == ["ev_percentage"]
