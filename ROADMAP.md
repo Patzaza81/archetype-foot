@@ -217,6 +217,17 @@ Reste à traiter :
 
 ## 5. Point de reprise
 
+### Prochaine étape décidée le 21/09 (soir) : TESTER UN AUTRE MODÈLE DE MOTEUR
+**Pourquoi.** L'évaluation sur 390 matchs (voir P2.6) montre que `moteur_v2_6_9` est trop confiant (52,8 % de choix gagnés pour 65,1 % annoncés) et que les cotes prédisent mieux que lui (Brier 0,2004 contre 0,1860). Le propriétaire veut comparer un autre modèle.
+**Règle du protocole (évaluation/README.md, règle 6) : on ne règle pas le moteur actuel sur ce jeu.** Un autre modèle se teste en le faisant passer sur les MÊMES matchs et en le mesurant sur les MÊMES scores, avec les mêmes indicateurs.
+**Ce qui est prêt pour cela :**
+- `evaluation/snapshot_historique_moteur_v2_6_9.json` : 503 matchs, chacun avec ses entrées exactes (`entree_moteur` : moyennes de buts, effectifs, cotes de tous les marchés), figées et reproductibles (SHA-256).
+- `evaluation/scores_historique_moteur_v2_6_9.json` : 390 scores finaux (source recoupée) ; `evaluation_scores.py` complète chaque nuit.
+- `evaluation_moteur.py` : règlement des marchés, calibration, Brier contre marché, ROI, intervalles par match.
+**Ce qu'un autre moteur doit fournir** : la même interface que `moteur_v2_6_9.analyser_match(entree, date, maintenant)`, c'est-à-dire un dictionnaire avec une liste `inventaire` où chaque ligne a : `marche` (nom du moteur, converti par `branchement_moteur.nom_canonique`), `proba_modele`, `p_juste` (probabilité du marché sans marge), `cote`, `edge`, `ev`, `statut`, `is_value`, `categorie` (A/B/C/D). Une variante qui ne renvoie que des probabilités par marché suffit pour mesurer la calibration.
+**Reste à construire (non fait)** : un constructeur qui rejoue un moteur choisi sur les `entree_moteur` du jeu figé pour produire un snapshot comparable (`evaluation/construit_snapshot_historique.py` est aujourd'hui câblé sur `moteur_v2_6_9`), et un tableau comparatif « ancien moteur contre nouveau moteur » sur les mêmes scores. À faire test-first, avec les mêmes garde-fous que le reste (tests, contrôle négatif, clone propre).
+
+### Situation (21/09, soir)
 **Situation (21/09, soir).** Le run manuel n°135 (`87cf0d9`, fenêtre J0 à J+3, 23 minutes, succès) est le premier run réel du nouveau moteur et de la nouvelle source de statistiques (`stats_saison_en_cours.py`). Contrôlé sur ses fichiers : 100 signaux, tous avec le bloc `moteur_v2_6_9`, aucune clé `archetype_model`, aucune `ERREUR_TECHNIQUE` ; 28 équipes chargées dans `cache_equipes_saison.json` ; `export_moteur/` limité aux 7 matchs analysés ; 29 observations archivées (`model_version = moteur_v2_6_9` : 6 `SELECTED`, 23 `COUNTERFACTUAL`) ; 57 anciennes observations résolues avec le règlement corrigé ; site : 3 cartes, sans erreur, panier identique. Les 16 phrases de justification des 6 choix ont été relues de façon indépendante à partir des matchs bruts : 16 confirmées.
 
 **Résultat : 7 matchs analysés sur 100, 3 avec au moins un choix (6 choix).** Refus : 63 sans cotes BetPawa, 23 « déjà commencé ou terminé » (13:18 UTC), 5 historique indisponible, 2 échantillon insuffisant (première observation réelle de la règle D6).
