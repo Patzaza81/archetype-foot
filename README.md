@@ -100,10 +100,13 @@ Le bloc produit sur chaque signal est `moteur_v2_6_9` (`moteur_utilise = "moteur
 complet. Les choix retenus sont archivés en `SELECTED`, les autres value bets en `COUNTERFACTUAL` (`model_version` =
 `moteur_v2_6_9`).
 
-**Ancien modèle `archetype_model/` — débranché le 21/09/2026.** Plus appelé par le pipeline : `main.py`, `poisson/`,
-`signals/`, `edv/`, `statistics/`, `backtest/`, la calibration et la télémétrie d'audit passif. Restent utilisés : `learning/`
-(archive, règlement des résultats, bilan), `data/odds_provider.py` et `h2h/` (données). `audit_permanent.py` teste encore
-l'ancien code. Suppression définitive à décider séparément.
+**Ancien modèle `archetype_model/` — débranché puis nettoyé le 21/09/2026.** `archetype_model/main.py` (point d'entrée),
+`rattrapage_justification.py`, le repli sur l'ancien moteur et le test de bout en bout de l'ancien moteur sont **supprimés** ; les
+scénarios de l'ancien moteur ont quitté `audit_permanent.py`. Le dossier `archetype_model/` reste, car `precalcul.py` et le
+nouveau système en utilisent encore : `learning/` (archive, règlement des résultats, bilan), `h2h/` (confrontations directes),
+`data/odds_provider.py`. Les sous-paquets `poisson/`, `signals/`, `edv/`, `statistics/` ne sont plus appelés en production
+(`backtest/boucle_b.py` et l'audit s'en servent encore) : suppression à décider séparément. `tests/test_integrite_du_depot.py`
+vérifie que tout fichier compile, que tout module d'`archetype_model` s'importe et que tout script du workflow s'importe.
 
 ### 3.3 La bibliothèque de justification
 `bibliotheque_justification.py` (avec son enveloppe `justification.py`) écrit le texte que le site affiche : une

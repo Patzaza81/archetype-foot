@@ -33,13 +33,14 @@ Statuts : **FAIT** · **EN COURS** · **À FAIRE** · **NON VÉRIFIÉ** (non re-
 - **Trois onglets** Favori du Modèle / Value Bet / Coup de Poker (réattribution des choix P1/P2/P3 côté site), aperçu replié qui suit l'onglet actif, phrase de justification sous chaque marché.
 - **Tableaux de « Détails de l'analyse »** (21/09) : synthèse, preuves avec icônes (contrat visuel `ui_mappings.js`), forme domicile / extérieur, H2H, métriques combinées, badge Value Bet.
 - **Bibliothèque de justification** (21/09) : deux plantages corrigés dans la branche X2 / 1X2 extérieur (`NameError`, `KeyError`, introduits le 20/09 par `6f60b3b`, jamais exécutés en production), texte X2 corrigé (il affirmait « sans défaite » pour une série « sans victoire »), textes ajoutés pour le nul, la double chance 12, « les deux équipes marquent : non », les lignes de buts quelconques et les buts d'une équipe.
-- **Fichier allégé du site** : `precalcul.py` et `rattrapage_justification.py` exportent maintenant `bibliotheque`.
+- **Fichier allégé du site** : `precalcul.py` exporte maintenant `bibliotheque` (`rattrapage_justification.py`, qui en avait une copie, est supprimé).
 - **Tests** : 109 tests Python passent (dont 52 sur la couverture des marchés).
 - **Documentation** : `README.md` créé ; `TRANSITION.md` et `TRANSITION 4.md` supprimés.
 - **Nouveau moteur branché (21/09)** : `moteur_v2_6_9.py` remplace l'ancien modèle `archetype_model` dans le pipeline (via `pont_moteur.py` et `branchement_moteur.py`). L'ancien modèle est débranché (code conservé). Aucun repli sur l'ancien moteur. Le site lit le bloc `moteur_v2_6_9`. Rejeu du 20/09 (mêmes entrées, aucun nouveau scraping) : 139 matchs analysés sur 495 (305 sans cotes BetPawa, 37 sans historique), **71 matchs avec au moins un choix, 107 choix retenus** (contre 3 pour l'ancien modèle), 735 observations archivées (107 `SELECTED`, 628 `COUNTERFACTUAL`). Chaque marché produit est reconnu par le règlement.
 - **Règlement corrigé (21/09)** : `1x2_domicile` / `1x2_exterieur` étaient réglés comme une double chance (un nul comptait gagné) et `1x2_nul` n'existait pas. Ne touche que 5 nuls contrefactuels déjà résolus (aucun des 87 choix `SELECTED` de l'ancien modèle) ; l'archive résolue reste immuable.
 - **Filet de sécurité (21/09)** : le workflow lance les autotests du moteur et du pont puis `pytest` avant tout scraping.
-- **Tests** : 225 tests Python passent (dont les tests de cohérence moteur ↔ règlement et de contrat avec le site).
+- **Nettoyage de l'ancien moteur (21/09)** : `archetype_model/main.py`, `rattrapage_justification.py` et le test de bout en bout de l'ancien moteur sont supprimés ; `applique_archetype_model()` et le repli disparaissent de `precalcul.py` ; `precalcul.py` ne produit plus aucune clé `archetype_model`. Vérifié : le chemin de production redonne exactement les mêmes blocs que les données publiées (0 différence sur 495 signaux). Ce nettoyage avait laissé deux casses silencieuses, réparées : `archetype_model/backtest/boucle_b.py` non importable (`from ..main import SCENARIOS`, remplacé par `signals.convergence.SCENARIOS`, même tuple) et `audit_permanent.py` qui ne compilait plus (blocs coupés en plein milieu, plus des sections orphelines).
+- **Tests** : plus de 320 tests Python (dont cohérence moteur ↔ règlement, contrat avec le site, et `tests/test_integrite_du_depot.py` : tout fichier compile, tout module d'`archetype_model` et tout script du workflow s'importent).
 
 ### Incidents passés (conservés pour mémoire)
 **Run #129** — le job a produit un commit local, puis le `git pull --rebase` a rencontré des conflits sur les gros fichiers de données générés simultanément sur `main` (archive, caches, diagnostics, `precalcul.json`, tickets…). Le rebase n'a pas pu appliquer le commit : les résultats de plus de quatre heures de calcul n'ont pas été publiés. Ce n'était **pas un échec du moteur ni du scraping**, mais un conflit de synchronisation Git à la publication.
@@ -83,7 +84,7 @@ Reste à faire : aucun contrôle de syntaxe JavaScript (`node --check`) et aucun
 ### P1 — Justifications et marchés
 
 #### P1.1 Brancher `rattrapage_justification.py` — **SANS OBJET**
-Il recalculait les textes à partir des fenêtres de l'ancien modèle : il n'a plus de sens avec le nouveau moteur, dont les justifications sont calculées dans le pipeline même (`branchement_moteur.py`). À supprimer avec l'ancien modèle.
+Il recalculait les textes à partir des fenêtres de l'ancien modèle : sans objet avec le nouveau moteur, dont les justifications sont calculées dans le pipeline même (`branchement_moteur.py`). Fichier supprimé le 21/09.
 
 #### P1.2 Supprimer le pont implicite cote/probabilité — **FAIT** (session du 19-20/09)
 Le pont `inspect.currentframe()` a été retiré de `justification.py` (0 occurrence, vérifié le 21/09) ; `odds_scraped` et `market_prob_pct` sont transmis explicitement.
@@ -130,8 +131,14 @@ Objectif : diagnostic reproductible sur ces championnats ; contrôle automatique
 #### P2.1 Calibration adaptative — **DÉBRANCHÉE** (21/09)
 Elle réglait les paramètres de l'ancien modèle ; le nouveau moteur a des constantes fixes. L'étape est commentée dans `pipeline.yml`. La promotion du 20/09 (`EDV_MIN_P_71_75`, N = 55) est désormais sans effet. Si une calibration du nouveau moteur est décidée, elle repartira du protocole ci-dessous (observations admissibles ; dédoublonnage par `match_id` ; exclusion des observations contaminées ; N global ; Brier/log-loss ; calibration par bins ; transformation apprise chronologiquement puis évaluée hors échantillon) et d'un seuil d'échantillon à décider (le garde-fou de l'ancien code : 50).
 
-#### P2.2 Rejouer le fixture 68/48 verrouillé — **NON VÉRIFIÉ**
-La suite permanente et le fixture historique doivent rester protégés ; ne jamais utiliser une modification de production pour masquer une divergence du fixture. Le 21/09, `audit_permanent.py` donne **256 contrôles OK et 9 FAIL, identiques avant et après les modifications de la bibliothèque** : combos (garde-fous CAS 1-4 et 6), « CAS 1 : les 12 candidats v2 », périmètre dynamique du handicap −0.5, deux contrôles `odds_provider`. Les échecs de combos sont probablement liés au retrait des combos du 19/09 (à confirmer) : à instruire ou à retirer de la suite.
+#### P2.2 Rejouer le fixture 68/48 verrouillé — **NON VÉRIFIÉ** ; suite permanente réparée
+La suite permanente et le fixture historique doivent rester protégés ; ne jamais utiliser une modification de production pour masquer une divergence du fixture.
+
+`audit_permanent.py` (lancé à la main, hors workflow), audit **complet** :
+- avant le nettoyage (`5907eb5`) : 464 OK / 24 échecs ;
+- après le nettoyage et les réparations du 21/09 : **434 OK / 13 échecs**, aucun échec nouveau, aucun contrôle passé de OK à échec. 41 contrôles ont quitté la suite avec les sections de l'ancien moteur (dont 11 qui échouaient).
+- Les 13 échecs restants **préexistent** : 2 sur `odds_provider` (traduction des libellés de handicap) et 11 sur l'ancienne API de justification (`construit_justification`, `construit_raison_selection`, `enrichit_justification_selection`, `confirmation_historique`), dont les attentes datent d'avant la bibliothèque du 17/09. À réécrire contre la bibliothèque actuelle ou à retirer.
+- Correction d'une erreur de ce document : la référence « 256 OK / 9 échecs » publiée le matin du 21/09 venait de journaux d'audit **incomplets** (lus avant la fin de l'exécution).
 
 #### P2.3 Rollback automatique — **À FAIRE**
 `garde_fous.verifier_rollback()` existe (seuil de dégradation de ROI de 10 %) mais n'est toujours pas appelé par `calibre_archetype_model.py` (confirmé le 21/09).

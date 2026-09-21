@@ -270,10 +270,10 @@ jobs:
           # AJOUT 17/09/2026 (chantier module d'audit, archetype_model/audit/)
           # -- data/ contient audit_status.json (dashboard) et
           # audit_telemetry.json (historique de rétention par run + Brier
-          # score) écrits par telemetry.py/report.py en fin de
-          # applique_archetype_model(). Sans ce commit, ces fichiers ne
-          # quittent jamais le runner éphémère -- admin.html afficherait un
-          # état vide en permanence, quel que soit le succès du run.
+          # score), écrits par telemetry.py/report.py. NE SONT PLUS ALIMENTÉS
+          # depuis le 21/09/2026 (l'audit passif de l'ancien modèle n'est plus
+          # appelé) : admin.html affiche l'état figé au 20/09. Ligne conservée,
+          # sans effet tant que rien ne réécrit data/.
           [ -d data ] && git add data/
           # AJOUT 21/09/2026 -- export_moteur/ : entrées exactes du moteur (un fichier par date, écrasés à chaque run)
           # et diagnostic_pont.json (matchs rejetés, avec la raison).
