@@ -71,3 +71,9 @@ Pour chaque groupe : taux de réussite, probabilité moyenne annoncée, probabil
 ## Ce que ce test ne peut pas dire
 
 Avec 80 matchs, il détecte un défaut de calibration **important** et laisse passer un défaut modéré. Un résultat « pas de preuve d'un défaut » n'est pas une validation : la validation demande 150 à 200 choix propres, mesurés sur de vrais runs (`archive/`, `model_version = moteur_v2_6_9`).
+
+## Erratum du 21/09/2026 (écrit APRÈS lecture des premiers résultats, à titre de transparence)
+
+La règle de lecture n°1 (« calibration globale sur `tous_les_marches` ») est **défectueuse par construction** : les marchés opposés d'un même match (plus/moins de buts, oui/non) s'annulent exactement dans la moyenne (si l'un gagne, l'autre perd, et leurs probabilités valent 1 ensemble). L'écart global vaut donc environ 0 quel que soit le modèle, avec un intervalle artificiellement étroit. **Cette règle n'a aucune valeur de preuve et n'est plus utilisée.** Restent valides, et sont les seuls utilisés pour conclure : la fiabilité **par tranche de probabilité**, le **Brier modèle contre marché** (règle n°2), l'écart de calibration des **choix publiés** et des **value bets** (dont les marchés ne sont pas complémentaires), et le ROI (règle n°3). Les règles 2 à 6 sont inchangées, en particulier l'interdiction de régler le moteur sur ce jeu.
+
+Premier rapport : `rapport_historique_2026-09-21.txt` (353 matchs avec score sur 503, scores issus de l'archive et de `historique_pronostics.json`, non recoupables entre eux : aucun match en commun).
