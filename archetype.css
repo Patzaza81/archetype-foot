@@ -104,7 +104,7 @@ body.theme-nuit .ax-carte{
 .ax-horaire{display:grid;justify-items:center;text-align:center;min-width:84px}
 .ax-horaire strong{font-size:20px;font-weight:900;line-height:1.1}
 .ax-horaire span{font-size:12px;font-weight:600;color:var(--ax-doux)}
-.ax-match-bas{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}
+.ax-match-bas{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px;min-height:30px}
 .ax-competition{margin:0;min-width:0;flex:1 1 auto;font-size:12.5px;font-weight:600;line-height:1.25;color:var(--ax-doux)}
 .ax-actions-tete{flex:0 0 auto;display:flex;align-items:center;gap:12px}
 .ax-deplier,.ax-retirer{
@@ -119,7 +119,6 @@ body.theme-nuit .ax-carte{
 .ax-retirer{border:1px solid var(--ax-ligne);background:transparent;color:var(--ax-doux)}
 .ax-deplier:focus-visible,.ax-retirer:focus-visible{outline:3px solid var(--ax-texte);outline-offset:2px}
 .ax-deplier{display:none}
-.ax-retirer-tete{display:none}
 
 /* — Onglets P1 / P2 / P3 — */
 .ax-onglets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -227,9 +226,7 @@ body.theme-nuit .ax-carte{
 .ax-detail-rang dd{margin:0;font-weight:700;text-align:right}
 
 /* — Pied : bouton Plier / Déplier — */
-.ax-pied{display:flex;align-items:center;gap:12px;padding:10px 16px 16px;border-top:1px solid var(--ax-ligne)}
-.ax-plier{margin-left:auto}
-.ax-retirer-pied{min-height:44px;padding:0 18px;font-size:15px}
+.ax-pied{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:10px 12px;padding:10px 16px 16px;border-top:1px solid var(--ax-ligne)}
 .ax-plier{
   display:inline-flex;align-items:center;justify-content:center;gap:6px;
   min-height:44px;min-width:112px;padding:0 20px;
@@ -242,15 +239,18 @@ body.theme-nuit .ax-carte{
 .ax-plier:active{transform:scale(.97)}
 .ax-plier:focus-visible{outline:3px solid var(--ax-texte);outline-offset:2px}
 
-/* ══════════ État replié : l'aperçu remplace onglets + panneaux + détails + pied ══════════ */
+/* ══════════ État replié : onglets conservés, reste masqué ══════════
+   L'étape 2 du chantier d'adaptation à la maquette impose de garder la barre
+   d'onglets P1/P2/P3 visible même carte repliée (le parieur peut changer
+   d'aperçu sans déplier toute la carte). Le résumé compact reste affiché
+   sous les onglets ; panneaux détaillés, section « Détails de l'analyse » et
+   pied de carte (bouton Plier) sont seuls masqués. */
 .ax-carte.ax-replie{cursor:pointer}
-.ax-carte.ax-replie .ax-onglets,
 .ax-carte.ax-replie .ax-panneaux,
 .ax-carte.ax-replie .ax-details,
 .ax-carte.ax-replie .ax-pied{display:none}
 .ax-carte.ax-replie .ax-resume{display:block}
-.ax-carte.ax-replie .ax-deplier,
-.ax-carte.ax-replie .ax-retirer-tete{display:inline-flex}
+.ax-carte.ax-replie .ax-deplier{display:inline-flex}
 .ax-carte.ax-replie .ax-match{padding:8px 12px 4px}
 .ax-carte.ax-replie .ax-equipe{font-size:15.5px}
 .ax-carte.ax-replie .ax-horaire strong{font-size:18px}
@@ -279,3 +279,20 @@ body.theme-nuit .ax-carte{
 @media (prefers-reduced-motion:reduce){
   .ax-chevron::before,.ax-plier{transition:none}
 }
+
+/* ══════════ Intégration du 21/09/2026 : styles des éléments ajoutés par archetype.js ══════════
+   - .ax-summary-cache : le <summary> de « Détails de l'analyse » n'est jamais affiché ; c'est le bouton
+     .ax-bouton-details du pied de carte qui ouvre/ferme le bloc (voir archetype.js, construitCarte).
+   - un bloc détails fermé n'occupe aucune place (il n'a plus de summary visible). */
+.ax-summary-cache{display:none}
+.ax-details:not([open]){display:none}
+.ax-bouton-details{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:44px;padding:0 16px;
+  border:2px solid var(--ax-bleu-texte);border-radius:12px;cursor:pointer;
+  background:transparent;color:var(--ax-bleu-texte);
+  font:inherit;font-size:15px;font-weight:700;line-height:1;white-space:nowrap;
+  -webkit-tap-highlight-color:transparent;
+}
+.ax-bouton-details:active{transform:scale(.97)}
+.ax-bouton-details:focus-visible{outline:3px solid var(--ax-texte);outline-offset:2px}

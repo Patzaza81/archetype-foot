@@ -7,10 +7,14 @@
 // un <details class="details-analyse"> (panier.js l'ouvre via "Voir l'analyse").
 
 const RANGS = [
-  { cle: "P1", classe: "rang-1", titre: "Pronostic principal" },
-  { cle: "P2", classe: "rang-2", titre: "Deuxième choix" },
-  { cle: "P3", classe: "rang-3", titre: "Troisième choix" },
+  { cle: "P1", classe: "rang-1", titre: "Favori du Modèle" },
+  { cle: "P2", classe: "rang-2", titre: "Value Bet" },
+  { cle: "P3", classe: "rang-3", titre: "Coup de Poker" },
 ];
+
+// Seuils de sélection des onglets (étape 6).
+const SEUIL_COUP_DE_POKER_COTE = 2.91;
+const SEUIL_COUP_DE_POKER_PROBA = 0.20;
 
 // "Forme récente" n'accepte que des preuves qui décrivent réellement la forme
 // (règle du 18/09/2026) : jamais une statistique de buts croisée.
@@ -21,10 +25,48 @@ let compteurCartes = 0;
 
 /* ───────────────────────── outils ───────────────────────── */
 
+// estArchetypeGo : conservée telle quelle pour compatibilité panier.js.
+// Sens historique : match avec un candidat P1 minimum.
 function estArchetypeGo(m) {
   return !!(m && m.moteur_utilise === "archetype_model" && m.archetype_model &&
     m.archetype_model.statut === "OK" && m.archetype_model.selection && m.archetype_model.selection.P1);
 }
+
+// aAuMoinsUnCandidat : filtre d'affichage de la page principale.
+function aAuMoinsUnCandidat(m) {
+  if (!m || m.moteur_utilise !== "archetype_model" || !m.archetype_model) return false;
+  const sel = m.archetype_model.selection;
+  if (!sel) return false;
+  return !!(sel.P1 || sel.P2 || sel.P3);
+}
+
+// remappeEnOngletsApp : transforme les candidats {P1, P2, P3} de precalcul_leger.json
+// en 3 onglets sémantiques {Favori du Modèle, Value Bet, Coup de Poker} selon les
+// règles métier de la maquette. Chaque candidat n'apparaît que dans un seul onglet.
+function remappeEnOngletsApp(selectionBrute) {
+  const candidats = ["P1", "P2", "P3"].map((cle) => selectionBrute[cle]).filter(Boolean);
+  if (!candidats.length) return {};
+
+  // Favori du Modèle = plus forte probabilité du modèle.
+  const favori = candidats.reduce((best, c) =>
+    (Number(c.probabilite) || 0) > (Number(best.probabilite) || 0) ? c : best);
+
+  // Value Bet = meilleur EV parmi les candidats restants.
+  const restantsPourValue = candidats.filter((c) => c !== favori);
+  const value = restantsPourValue.length
+    ? restantsPourValue.reduce((best, c) =>
+        (Number(c.edv) || 0) > (Number(best.edv) || 0) ? c : best)
+    : null;
+
+  // Coup de Poker = premier candidat restant satisfaisant cote >= 2.91 et P >= 0.20.
+  const restantsPourPoker = candidats.filter((c) => c !== favori && c !== value);
+  const poker = restantsPourPoker.find((c) =>
+    (Number(c.cote) || 0) >= SEUIL_COUP_DE_POKER_COTE &&
+    (Number(c.probabilite) || 0) >= SEUIL_COUP_DE_POKER_PROBA) || null;
+
+  return { P1: favori, P2: value, P3: poker };
+}
+
 function echappeHtml(x) {
   return x === null || x === undefined ? "" : String(x)
     .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
@@ -125,10 +167,14 @@ function construitPanneau(info, c, equipes, idPanneau, idOnglet) {
   return el;
 }
 
-// Détails techniques (un seul <details> par carte : panier.js l'ouvre via .details-analyse).
-function construitDetails(selection, equipes) {
+// Détails techniques : conservés dans un <details class="details-analyse"> pour la
+// compatibilité avec panier.js (qui cherche .details-analyse). Le <summary> est
+// masqué visuellement (classe .ax-summary-cache) : c'est le bouton « Détails de
+// l'analyse » placé dans le pied de carte qui contrôle son ouverture.
+function construitDetails(selection, equipes, idDetails) {
   const details = document.createElement("details");
   details.className = "details-analyse ax-details";
+  details.id = idDetails;
   const blocs = RANGS.filter((r) => selection[r.cle]).map((r) => {
     const c = selection[r.cle];
     const preuves = (c.justification && Array.isArray(c.justification.preuves)) ? c.justification.preuves.filter((p) => p && p.texte) : [];
@@ -138,18 +184,20 @@ function construitDetails(selection, equipes) {
       `<dl><div><dt>Solidité du pari</dt><dd>${echappeHtml(traduitNiveau(c.niveau).texte)}</dd></div>` +
       `<div><dt>Stabilité du calcul</dt><dd>${echappeHtml(traduitRobustesse(c.robustesse))}</dd></div></dl></div>`;
   }).join("");
-  details.innerHTML = `<summary><span>Détails de l'analyse</span><span class="ax-chevron" aria-hidden="true"></span></summary><div class="ax-details-corps">${blocs}</div>`;
+  details.innerHTML = `<summary class="ax-summary-cache">Détails de l'analyse</summary><div class="ax-details-corps">${blocs}</div>`;
   return details;
 }
 
 function construitCarte(m, options) {
   const opt = options || {};
   const id = ++compteurCartes;
+  const idDetails = `ax-details-${id}`;
   const equipes = { domicile: m.domicile || "Équipe à domicile", exterieur: m.exterieur || "Équipe à l'extérieur" };
   const heure = m.heure_cameroun || m.heure || "—";
   const date = formatDate(m.date);
   const competition = String(m.competition || "").replace(/\s+/g, " ").trim();
-  const selection = (m.archetype_model && m.archetype_model.selection) || {};
+  // Étape 6 : les candidats bruts P1/P2/P3 sont remappés en 3 onglets sémantiques.
+  const selection = remappeEnOngletsApp((m.archetype_model && m.archetype_model.selection) || {});
 
   const section = document.createElement("section");
   section.className = "ax-carte";
@@ -160,8 +208,6 @@ function construitCarte(m, options) {
       `<span class="ax-equipe ax-ext">${echappeHtml(equipes.exterieur)}</span></div>` +
       `<div class="ax-match-bas"><p class="ax-competition">${echappeHtml(competition)}</p><div class="ax-actions-tete"></div></div>` +
     `</div>`;
-
-  section.appendChild(construitResume(selection, equipes));
 
   // Onglets : les 3 sont toujours affichés ; un rang sans candidat est grisé et non cliquable.
   const onglets = document.createElement("div");
@@ -193,16 +239,35 @@ function construitCarte(m, options) {
   actifs.forEach(({ bouton, panneau }) => { bouton.addEventListener("click", () => active(bouton)); panneaux.appendChild(panneau); });
   if (actifs.length) { active(actifs[0].bouton); section.appendChild(onglets); section.appendChild(panneaux); }
 
-  section.appendChild(construitDetails(selection, equipes));
+  // Résumé compact (visible carte repliée) : placé SOUS les onglets.
+  section.appendChild(construitResume(selection, equipes));
 
-  // Deux boutons pour le même geste : "Déplier" dans l'en-tête (carte repliée, compacte)
-  // et "Plier" en bas de carte (carte dépliée, comme sur la maquette). Un seul est visible à la fois.
+  // Bloc <details> (repliable) placé juste avant le pied ; son <summary> est
+  // caché, c'est le bouton « Détails de l'analyse » dans le pied qui l'ouvre.
+  const blocDetails = construitDetails(selection, equipes, idDetails);
+  section.appendChild(blocDetails);
+
+  // Pied de carte : bouton « Détails de l'analyse » (secondaire) et bouton
+  // « Plier » (principal), les deux alignés à droite.
   const deplier = document.createElement("button");
   deplier.type = "button"; deplier.className = "ax-deplier";
   const pied = document.createElement("div");
   pied.className = "ax-pied";
+  const boutonDetails = document.createElement("button");
+  boutonDetails.type = "button"; boutonDetails.className = "ax-bouton-details";
+  boutonDetails.textContent = "Détails de l'analyse";
+  boutonDetails.setAttribute("aria-controls", idDetails);
+  boutonDetails.setAttribute("aria-expanded", "false");
   const plier = document.createElement("button");
   plier.type = "button"; plier.className = "ax-plier";
+
+  boutonDetails.addEventListener("click", (e) => {
+    e.stopPropagation();
+    blocDetails.open = !blocDetails.open;
+    boutonDetails.textContent = blocDetails.open ? "Masquer les détails" : "Détails de l'analyse";
+    boutonDetails.setAttribute("aria-expanded", String(blocDetails.open));
+  });
+
   const applique = (replie) => {
     section.classList.toggle("ax-replie", replie);
     deplier.setAttribute("aria-expanded", String(!replie)); plier.setAttribute("aria-expanded", String(!replie));
@@ -218,22 +283,21 @@ function construitCarte(m, options) {
   });
   applique(!!opt.replie);
   section.querySelector(".ax-actions-tete").appendChild(deplier);
-  pied.appendChild(plier); section.appendChild(pied);
+  pied.appendChild(boutonDetails);
+  pied.appendChild(plier);
+  section.appendChild(pied);
 
-  // Action facultative (ex. « Retirer » dans le panier). Même principe que Déplier/Plier :
-  // en-tête quand la carte est repliée, pied de carte quand elle est dépliée -> la hauteur de la
-  // carte est strictement la même avec ou sans l'action (panier identique à la page principale).
+  // Action facultative (ex. « Retirer » dans le panier) : toujours dans l'en-tête, carte dépliée comme
+  // repliée. Le pied de carte est réservé à « Détails de l'analyse » et « Plier » (il ne peut pas en
+  // accueillir un troisième sur 375px). La ligne d'en-tête a la même hauteur avec ou sans action
+  // (.ax-match-bas{min-height}) : le panier reste strictement identique à la page principale.
   if (opt.action && typeof opt.action.onClick === "function") {
-    const cree = (classe) => {
-      const bouton = document.createElement("button");
-      bouton.type = "button"; bouton.className = `ax-retirer ${classe}`;
-      bouton.textContent = opt.action.libelle || "Retirer";
-      if (opt.action.aria) bouton.setAttribute("aria-label", opt.action.aria);
-      bouton.addEventListener("click", (e) => { e.stopPropagation(); opt.action.onClick(); });
-      return bouton;
-    };
-    section.querySelector(".ax-actions-tete").prepend(cree("ax-retirer-tete"));
-    pied.prepend(cree("ax-retirer-pied"));
+    const bouton = document.createElement("button");
+    bouton.type = "button"; bouton.className = "ax-retirer";
+    bouton.textContent = opt.action.libelle || "Retirer";
+    if (opt.action.aria) bouton.setAttribute("aria-label", opt.action.aria);
+    bouton.addEventListener("click", (e) => { e.stopPropagation(); opt.action.onClick(); });
+    section.querySelector(".ax-actions-tete").prepend(bouton);
   }
   return section;
 }
@@ -261,7 +325,7 @@ function afficheSelections(matchs) {
   const racine = document.getElementById("matches"), maj = document.getElementById("maj");
   racine.innerHTML = "";
   const cleTri = (m) => `${m.date || ""}${m.heure_cameroun || m.heure || ""}`;
-  const retenus = regroupeMatchs(matchs).filter(estArchetypeGo).sort((a, b) => cleTri(a).localeCompare(cleTri(b)));
+  const retenus = regroupeMatchs(matchs).filter(aAuMoinsUnCandidat).sort((a, b) => cleTri(a).localeCompare(cleTri(b)));
   maj.textContent = retenus.length
     ? `${retenus.length} match${retenus.length > 1 ? "s" : ""} analysé${retenus.length > 1 ? "s" : ""} aujourd'hui`
     : "Aucune sélection pour le moment";
