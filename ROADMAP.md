@@ -23,6 +23,7 @@ Statuts : **FAIT** · **EN COURS** · **À FAIRE** · **NON VÉRIFIÉ** (non re-
 | #131 | manuel | succès | 2 h 23 | `fbee644` |
 | #132 | planifié | succès (dernier à avoir publié, 20/09 00:19 UTC) | 1 h 29 | `62111ce` |
 | #133 | planifié | **annulé** après 28 min (20/09, 23:06 UTC ; cause non déterminée) | 0 h 28 | `97db2d9` |
+| #135 | manuel (champ `jours` laissé sur 4 : fenêtre J0 à J+3) | **succès** (21/09, 13:18 UTC) : premier run réel du nouveau moteur, voir §5 | 0 h 23 | `87cf0d9` |
 | #134 | manuel (`jours` = 2) | **échec en 52 s** à l'étape d'autotests (21/09, 12:50 UTC) : un de mes tests importait PyYAML, absent du runner, et lisait un chemin absolu de la machine de développement. Rien n'a été scrapé ni publié | 0 h 01 | `565ce32` |
 
 - **Aucune donnée fraîche depuis le run #132.** Le site affiche donc encore les matchs du 20/09. Prochain run planifié : 21/09 à 21:00 UTC.
@@ -117,7 +118,7 @@ Un marché retenu sans preuve spécifique (pas seulement l'EV générique) est r
 **Effet à connaître** : en début de saison les échantillons par lieu sont petits (médiane 4 matchs à domicile, 3 à l'extérieur) ; 51 des 74 choix du rejeu portent l'avertissement « Fenêtre d'analyse trop courte ». **Décision du propriétaire (21/09)** : un match n'est analysé que si l'équipe qui reçoit a ≥ 2 matchs à domicile et la visiteuse ≥ 2 à l'extérieur (règle D6 de `branchement_moteur.py`, `MIN_MATCHS_PAR_LIEU`) ; sinon refus `echantillon_insuffisant`, seules les conditions irréfutables (pas de cotes, match commencé/reporté, cotes inexploitables, validations V1-V12) refusent en plus. Articulation avec la bibliothèque : ses statistiques de forme exigent 3 matchs par lieu ; à 2 matchs seule la justification par le H2H ou par l'autre équipe est possible, le match est analysé mais souvent sans choix (rejeu du 20/09 : 8 matchs sur 21 avec un échantillon minimal de 2 produisent un choix, contre 27 sur 36 à 3-4 et 16 sur 25 à 5 et plus). Aucune value bet ne se perd en silence (contrôlé par un test aléatoire de 600 matchs). Non observée sur le rejeu (les équipes sans match au lieu y étaient déjà écartées) : à vérifier au premier run réel, ligne `raisons des refus`.
 Reste : 161 équipes sur 1 750 (Suède, Norvège, Estonie, Biélorussie, Japon, Corée du Sud…) sans aucun historique, cause non établie (hypothèse : format du sélecteur de saison des championnats à saison calendaire) ; scores du cache contredisant le classement pour quelques équipes (12 cas, ex. Manchester City) ; le pipeline ne détecte pas ces écarts. Piste : contrôle automatique « historique = classement officiel ».
 
-#### P1.8 Brancher le nouveau moteur d'analyse — **FAIT** (21/09), à valider sur le prochain run réel
+#### P1.8 Brancher le nouveau moteur d'analyse — **FAIT** et **VALIDÉ sur le run #135** (21/09) : 100 signaux avec bloc `moteur_v2_6_9`, 0 `ERREUR_TECHNIQUE`, export, archive et site conformes
 `moteur_v2_6_9.py` est le moteur du pipeline. Contrat avec le site, à respecter pour tout futur moteur :
 - filtre d'affichage (page principale et panier) : `moteur_utilise === CLE_MOTEUR` et au moins un choix parmi P1, P2, P3 ; **le site ne vérifie pas `statut`** ;
 - par choix : `marche` (nom canonique), `cote`, `probabilite`, `edge`, `edv`, `niveau` (`CAT_A/B/C`), `robustesse` (`null` : pas d'analyse de robustesse), `points_de_vigilance`, `justification { resume, preuves[{type, texte, valeur}], donnees_suffisantes, bibliotheque }` ;
@@ -207,13 +208,19 @@ Reste à traiter :
 
 ## 5. Point de reprise
 
-**Situation.** Le pipeline n'a produit aucune donnée depuis le run #132 (20/09 00:19 UTC) ; le run #133 a été annulé. Le nouveau moteur est branché mais **n'a encore jamais tourné en conditions réelles** : les données publiées le 21/09 sont un rejeu des entrées du 20/09 (champ `rejeu_moteur` dans les fichiers), remplacé par le prochain run. La publication (P0.1) reste à traiter.
+**Situation (21/09, soir).** Le run manuel n°135 (`87cf0d9`, fenêtre J0 à J+3, 23 minutes, succès) est le premier run réel du nouveau moteur et de la nouvelle source de statistiques (`stats_saison_en_cours.py`). Contrôlé sur ses fichiers : 100 signaux, tous avec le bloc `moteur_v2_6_9`, aucune clé `archetype_model`, aucune `ERREUR_TECHNIQUE` ; 28 équipes chargées dans `cache_equipes_saison.json` ; `export_moteur/` limité aux 7 matchs analysés ; 29 observations archivées (`model_version = moteur_v2_6_9` : 6 `SELECTED`, 23 `COUNTERFACTUAL`) ; 57 anciennes observations résolues avec le règlement corrigé ; site : 3 cartes, sans erreur, panier identique. Les 16 phrases de justification des 6 choix ont été relues de façon indépendante à partir des matchs bruts : 16 confirmées.
 
-**Au prochain run complet (le planifié de 21:00 UTC, ou un run manuel), inspecter les fichiers produits et pas seulement la couleur du run :**
-1. l'étape d'autotests passe, puis le log contient `moteur_v2_6_9 -- statuts` avec **aucune `ERREUR_TECHNIQUE`** (sinon lire les lignes `ERREUR_TECHNIQUE` sur stderr) ;
-2. `export_moteur/` est produit et `diagnostic_pont.json` explique les rejets (attendu : environ 60 % sans cotes BetPawa, environ 7 % sans historique) ;
-3. `precalcul_leger.json` contient, pour chaque signal analysé, le bloc `moteur_v2_6_9` avec sélection et `bibliotheque` ; le champ `rejeu_moteur` a disparu ;
-4. `archive/AAAA-MM.json` reçoit des enregistrements `model_version = moteur_v2_6_9` (`SELECTED` et `COUNTERFACTUAL`) sans erreur d'archivage ;
-5. la page Archetype montre les matchs du jour, et pas ceux du 20/09.
+**Résultat : 7 matchs analysés sur 100, 3 avec au moins un choix (6 choix).** Refus : 63 sans cotes BetPawa, 23 « déjà commencé ou terminé » (13:18 UTC), 5 historique indisponible, 2 échantillon insuffisant (première observation réelle de la règle D6).
+
+**Facteur limitant : la couverture BetPawa hors du jour même.** À 13:18 UTC : J0 11 matchs sur 47 avec cotes (23 déjà terminés), J+1 1 sur 8, J+2 1 sur 40, J+3 1 sur 5 ; 14 cotes extraites pour 100 tentatives (726 s). Même constat sur le rejeu du 20/09 (135 matchs exportés le jour même, 3 le lendemain, 1 à J+2). Conséquences à traiter (P0.2) : le run de J+2/J+3 coûte du temps BetPawa pour presque aucune cote ; et un run à 21:00 UTC (22:00 à Douala) voit J0 presque terminé : la valeur du site dépend de la couverture de J+1 à cette heure, non mesurée. À mesurer au run planifié de ce soir (colonne `date` de `precalcul.json`).
+
+**Le champ `jours` = 2 n'a pas été exercé en conditions réelles** (le run n°135 a tourné sur 4 jours) : mécanisme validé par tests et par le test de fumée de `precalcul.main()`.
+
+**Prochain run planifié (21:00 UTC), à inspecter comme le n°135 :**
+1. étape d'autotests verte, aucune `ERREUR_TECHNIQUE` ;
+2. couverture BetPawa par date (J+1 en particulier) ;
+3. `raisons des refus` : part de `echantillon_insuffisant` et de `historique_indisponible` ;
+4. l'archive reçoit des observations `moteur_v2_6_9` et les résout le lendemain ;
+5. la page Archetype montre les matchs de J+1.
 
 Puis reprendre l'ordre du §3.
