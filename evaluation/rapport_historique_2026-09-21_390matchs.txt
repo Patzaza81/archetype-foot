@@ -1,0 +1,401 @@
+ÉVALUATION DU MOTEUR moteur_v2_6_9 v2.6.9 — 390 matchs avec résultat sur 503 figés
+snapshot : moteur_v2_6_9 (règle D6 des 2 matchs par lieu incluse) appliqué à TOUS les matchs déjà joués dont les runs pas
+intégrité du snapshot : INTACT (empreinte SHA-256 conforme)
+
+── CHOIX PUBLIÉS (ce que le site affiche) ──
+   356 lignes sur 230 matchs ; 188 gagnées : taux 52,8 % pour une probabilité annoncée de 65,1 % (marché sans marge : 52,9 %)
+   écart de calibration (taux − probabilité annoncée) : -12,3 %   95 % : [-17,5 % ; -7,0 %]
+   Brier : modèle 0.2308 | marché 0.2169 | différence +0.0139 (le marché fait mieux que le modèle)   95 % : [+0,0002 ; +0,0276]
+   ROI à mise plate : -7,6 %   95 % : [-18,5 % ; +4,4 %]   (cote moyenne 2,03)
+
+── VALUE BETS du moteur, catégories A/B/C ──
+   1326 lignes sur 363 matchs ; 624 gagnées : taux 47,1 % pour une probabilité annoncée de 58,8 % (marché sans marge : 48,4 %)
+   écart de calibration (taux − probabilité annoncée) : -11,8 %   95 % : [-15,4 % ; -8,3 %]
+   Brier : modèle 0.2311 | marché 0.2168 | différence +0.0143 (le marché fait mieux que le modèle)   95 % : [+0,0066 ; +0,0225]
+   ROI à mise plate : -9,2 %   95 % : [-17,8 % ; -0,7 %]   (cote moyenne 2,39)
+   fiabilité par tranche de probabilité annoncée : 0-20 % : 47 lignes, annoncé 16,3 %, réel 10,6 % | 20-40 % : 220 lignes, annoncé 31,2 %, réel 20,9 % | 40-60 % : 343 lignes, annoncé 49,8 %, réel 38,8 % | 60-80 % : 509 lignes, annoncé 70,0 %, réel 56,6 % | 80-100 % : 207 lignes, annoncé 85,3 %, réel 73,4 %
+
+── VALUE BETS écartées par le moteur (catégorie D) ──
+   1123 lignes sur 286 matchs ; 342 gagnées : taux 30,5 % pour une probabilité annoncée de 50,3 % (marché sans marge : 30,8 %)
+   écart de calibration (taux − probabilité annoncée) : -19,8 %   95 % : [-24,2 % ; -15,4 %]
+   Brier : modèle 0.2381 | marché 0.1904 | différence +0.0477 (le marché fait mieux que le modèle)   95 % : [+0,0275 ; +0,0685]
+   ROI à mise plate : -8,0 %   95 % : [-21,9 % ; +6,7 %]   (cote moyenne 4,10)
+
+── TOUS LES MARCHÉS COTÉS (calibration) ──
+   10424 lignes sur 390 matchs ; 5176 gagnées : taux 49,7 % pour une probabilité annoncée de 49,8 % (marché sans marge : 51,2 %)
+   écart de calibration (taux − probabilité annoncée) : -0,1 %   95 % : [-0,2 % ; -0,0 %]
+   Brier : modèle 0.2004 | marché 0.1860 | différence +0.0144 (le marché fait mieux que le modèle)   95 % : [+0,0083 ; +0,0213]
+   ROI à mise plate : -10,2 %   95 % : [-12,0 % ; -8,4 %]   (cote moyenne 2,71)
+   fiabilité par tranche de probabilité annoncée : 0-20 % : 1764 lignes, annoncé 11,3 %, réel 16,4 % | 20-40 % : 2379 lignes, annoncé 29,7 %, réel 33,7 % | 40-60 % : 2222 lignes, annoncé 50,0 %, réel 49,9 % | 60-80 % : 2337 lignes, annoncé 70,3 %, réel 65,8 % | 80-100 % : 1722 lignes, annoncé 88,7 %, réel 83,6 %
+
+── choix publiés par rang ──
+   P1 : 230 choix, 140 gagnés (60,9 %) pour 71,4 % annoncé, ROI -0,5 %
+   P2 : 115 choix, 45 gagnés (39,1 %) pour 55,5 % annoncé, ROI -21,7 %
+   P3 : 11 choix, 3 gagnés (27,3 %) pour 34,2 % annoncé, ROI -9,3 %
+── choix publiés par famille de marché ──
+   BTTS                      38 choix,  14 gagnés (36,8 %) pour 68,7 % annoncé
+   DOUBLE_CHANCE             77 choix,  48 gagnés (62,3 %) pour 75,0 % annoncé
+   GOALS_EQUIPE_DOMICILE     17 choix,  10 gagnés (58,8 %) pour 69,9 % annoncé
+   GOALS_EQUIPE_EXTERIEUR    14 choix,  10 gagnés (71,4 %) pour 74,8 % annoncé
+   GOALS_TOTAL              121 choix,  69 gagnés (57,0 %) pour 67,2 % annoncé
+   RESULT                    89 choix,  37 gagnés (41,6 %) pour 49,7 % annoncé
+
+── détail des choix publiés ──
+   PERDU  Super Nova - Tukums 1-0 | P1 over_under_total_2.5_over cote 1.71 annoncé 63,5 %
+   PERDU  Super Nova - Tukums 1-0 | P2 over_under_total_4.5_over cote 5.18 annoncé 23,3 %
+   PERDU  Van - BKMA 2-1 | P1 1x2_exterieur cote 1.96 annoncé 63,7 %
+   PERDU  Lokomotiv - Mash'al 3-0 | P1 btts_oui cote 1.84 annoncé 59,2 %
+   PERDU  Lokomotiv - Mash'al 3-0 | P2 over_under_total_4.5_over cote 3.70 annoncé 30,3 %
+   GAGNÉ  Ararat-Armenia - Syunik 3-0 | P1 over_under_total_4.5_under cote 1.35 annoncé 85,3 %
+   GAGNÉ  Ararat-Armenia - Syunik 3-0 | P2 over_under_total_3.5_under cote 1.85 annoncé 69,9 %
+   GAGNÉ  Farul - UTA Arad 4-2 | P1 double_chance_1X cote 1.36 annoncé 83,4 %
+   GAGNÉ  Rakow C. - Motor Lublin 2-1 | P1 over_under_total_2.5_over cote 1.53 annoncé 73,6 %
+   PERDU  Rakow C. - Motor Lublin 2-1 | P2 over_under_total_3.5_over cote 2.30 annoncé 53,3 %
+   GAGNÉ  Polonia W. - Polonia Bytom 2-2 | P1 over_under_total_2.5_over cote 1.54 annoncé 76,2 %
+   GAGNÉ  Polonia W. - Polonia Bytom 2-2 | P2 btts_oui cote 1.49 annoncé 73,2 %
+   GAGNÉ  Kapa - PK-35 1-4 | P1 1x2_exterieur cote 1.49 annoncé 77,4 %
+   PERDU  Kapa - PK-35 1-4 | P2 btts_non cote 1.86 annoncé 59,0 %
+   GAGNÉ  Lausanne-Ouchy - Wil 4-0 | P1 1x2_domicile cote 1.49 annoncé 82,6 %
+   PERDU  Lausanne-Ouchy - Wil 4-0 | P2 over_under_total_3.5_under cote 1.66 annoncé 72,1 %
+   PERDU  Nyon - Xamax 1-3 | P1 double_chance_1X cote 1.72 annoncé 68,2 %
+   GAGNÉ  Nancy - Reims 1-2 | P1 over_under_total_3.5_under cote 1.29 annoncé 85,7 %
+   GAGNÉ  Nancy - Reims 1-2 | P2 1x2_exterieur cote 2.22 annoncé 48,2 %
+   PERDU  FC Emmen - De Graafschap 1-2 | P1 buts_equipe_exterieur_1.5_under cote 1.58 annoncé 73,6 %
+   GAGNÉ  MVV - Almere City 0-4 | P1 over_under_total_4.5_under cote 1.29 annoncé 86,8 %
+   PERDU  MVV - Almere City 0-4 | P2 over_under_total_3.5_under cote 1.72 annoncé 72,1 %
+   GAGNÉ  VVV - TOP Oss 3-1 | P1 buts_equipe_exterieur_1.5_under cote 1.53 annoncé 73,6 %
+   GAGNÉ  VVV - TOP Oss 3-1 | P2 1x2_domicile cote 1.85 annoncé 70,0 %
+   GAGNÉ  Étoile Carouge - Winterthur 0-1 | P1 over_under_total_3.5_under cote 1.54 annoncé 76,6 %
+   GAGNÉ  Kidderminster - Hartlepool 2-0 | P1 over_under_total_3.5_under cote 1.34 annoncé 91,2 %
+   GAGNÉ  Kidderminster - Hartlepool 2-0 | P2 double_chance_1X cote 1.45 annoncé 76,2 %
+   PERDU  Drogheda - Sligo Rovers 2-0 | P1 over_under_total_2.5_over cote 1.88 annoncé 57,7 %
+   PERDU  Drogheda - Sligo Rovers 2-0 | P2 1x2_exterieur cote 4.45 annoncé 28,8 %
+   PERDU  Drogheda - Sligo Rovers 2-0 | P3 over_under_total_3.5_over cote 3.23 annoncé 35,3 %
+   PERDU  Waterford - Dundalk 1-1 | P1 1x2_domicile cote 2.42 annoncé 47,3 %
+   PERDU  CS 2 de Mayo - Libertad 0-2 | P1 double_chance_1X cote 1.72 annoncé 74,3 %
+   PERDU  CS 2 de Mayo - Libertad 0-2 | P2 buts_equipe_domicile_0.5_over cote 1.47 annoncé 74,3 %
+   GAGNÉ  Cerro Largo - Central Esp. 0-0 | P1 double_chance_1X cote 1.31 annoncé 85,3 %
+   PERDU  M. Hollyhock - Kawasaki F. 0-1 | P1 1x2_domicile cote 3.38 annoncé 34,3 %
+   PERDU  Shimizu - Fukuoka 1-0 | P1 1x2_exterieur cote 2.48 annoncé 46,2 %
+   PERDU  S. Hiroshima - Cerezo 6-1 | P1 over_under_total_3.5_under cote 1.60 annoncé 72,7 %
+   PERDU  S. Hiroshima - Cerezo 6-1 | P2 double_chance_X2 cote 2.25 annoncé 54,6 %
+   PERDU  V-Varen - Nagoya 2-0 | P1 over_under_total_2.5_over cote 1.64 annoncé 67,9 %
+   PERDU  V-Varen - Nagoya 2-0 | P2 over_under_total_4.5_over cote 4.71 annoncé 27,5 %
+   GAGNÉ  RB Leipzig - Nuremberg 2-1 | P1 over_under_total_2.5_over cote 1.53 annoncé 82,9 %
+   GAGNÉ  RB Leipzig - Nuremberg 2-1 | P2 btts_oui cote 1.51 annoncé 78,2 %
+   PERDU  LNZ Cherkasy - Obolon' Kyiv 3-1 | P1 btts_non cote 1.38 annoncé 83,9 %
+   GAGNÉ  Fakel - Baltika 2-2 | P1 double_chance_X2 cote 1.34 annoncé 87,7 %
+   PERDU  Fakel - Baltika 2-2 | P2 btts_non cote 1.61 annoncé 72,5 %
+   GAGNÉ  Bolton - Cardiff 1-0 | P1 1x2_domicile cote 2.65 annoncé 45,3 %
+   GAGNÉ  Derby County - Birmingham 1-2 | P1 1x2_exterieur cote 2.12 annoncé 53,0 %
+   GAGNÉ  Harrogate - Tamworth 3-1 | P1 over_under_total_2.5_over cote 1.44 annoncé 87,5 %
+   GAGNÉ  Harrogate - Tamworth 3-1 | P2 btts_oui cote 1.44 annoncé 80,5 %
+   GAGNÉ  Wuhan Three - Henan Songshan 1-1 | P1 double_chance_1X cote 1.56 annoncé 68,8 %
+   PERDU  Wuhan Three - Henan Songshan 1-1 | P2 1x2_domicile cote 2.74 annoncé 46,4 %
+   GAGNÉ  EA Guingamp - Annecy 2-1 | P1 over_under_total_2.5_over cote 1.91 annoncé 59,5 %
+   PERDU  EA Guingamp - Annecy 2-1 | P2 1x2_exterieur cote 3.41 annoncé 32,7 %
+   GAGNÉ  Sochaux - Nantes 1-0 | P1 1x2_domicile cote 3.28 annoncé 33,2 %
+   GAGNÉ  SM Caen - Paris 13 2-0 | P1 1x2_domicile cote 1.60 annoncé 66,6 %
+   GAGNÉ  Bourg-en-Br. - SC Bastia 0-1 | P1 double_chance_X2 cote 1.30 annoncé 87,8 %
+   PERDU  C. Glogow - P Siedlce 0-0 | P1 1x2_exterieur cote 3.89 annoncé 28,2 %
+   PERDU  Charlton - Portsmouth 0-0 | P1 1x2_domicile cote 2.86 annoncé 38,3 %
+   GAGNÉ  Middlesbrough - Norwich City 4-3 | P1 1x2_domicile cote 1.84 annoncé 62,3 %
+   GAGNÉ  Preston - Lincoln 0-1 | P1 double_chance_X2 cote 1.58 annoncé 73,3 %
+   GAGNÉ  Southampton - Bristol City 4-1 | P1 buts_equipe_exterieur_0.5_over cote 1.41 annoncé 81,1 %
+   GAGNÉ  Southampton - Bristol City 4-1 | P2 over_under_total_2.5_over cote 1.60 annoncé 78,5 %
+   PERDU  Southampton - Bristol City 4-1 | P3 1x2_exterieur cote 4.82 annoncé 25,2 %
+   GAGNÉ  Swansea - Burnley 3-1 | P1 double_chance_1X cote 1.31 annoncé 89,3 %
+   PERDU  Swansea - Burnley 3-1 | P2 over_under_total_2.5_under cote 1.90 annoncé 63,2 %
+   PERDU  Watford - Stoke 1-2 | P1 double_chance_1X cote 1.39 annoncé 83,6 %
+   PERDU  Watford - Stoke 1-2 | P2 over_under_total_3.5_over cote 3.24 annoncé 39,0 %
+   GAGNÉ  Liverpool - Fulham 0-0 | P1 1x2_nul cote 5.31 annoncé 23,6 %
+   GAGNÉ  Eastleigh - Boreham Wood 1-1 | P1 btts_oui cote 1.58 annoncé 68,8 %
+   GAGNÉ  Eastleigh - Boreham Wood 1-1 | P2 double_chance_1X cote 2.55 annoncé 47,1 %
+   GAGNÉ  Halifax - Hornchurch 3-0 | P1 over_under_total_2.5_over cote 1.69 annoncé 73,6 %
+   PERDU  Halifax - Hornchurch 3-0 | P2 btts_oui cote 1.63 annoncé 71,8 %
+   GAGNÉ  Yeovil Town - Fylde 1-4 | P1 over_under_total_2.5_over cote 1.63 annoncé 70,9 %
+   PERDU  Yeovil Town - Fylde 1-4 | P2 1x2_domicile cote 2.45 annoncé 45,9 %
+   GAGNÉ  Boluspor - Pendikspor 1-1 | P1 buts_equipe_domicile_0.5_over cote 1.63 annoncé 77,7 %
+   PERDU  Boluspor - Pendikspor 1-1 | P2 over_under_total_4.5_over cote 4.53 annoncé 24,4 %
+   PERDU  Roda - Vitesse 1-0 | P1 double_chance_X2 cote 1.66 annoncé 78,0 %
+   PERDU  Roda - Vitesse 1-0 | P2 over_under_total_2.5_over cote 1.60 annoncé 76,2 %
+   PERDU  K. Kyzylorda - FK Atyrau 1-0 | P1 double_chance_X2 cote 1.58 annoncé 68,5 %
+   PERDU  K. Kyzylorda - FK Atyrau 1-0 | P2 1x2_exterieur cote 3.09 annoncé 39,1 %
+   PERDU  Altach - Grazer AK 1-2 | P1 double_chance_1X cote 1.34 annoncé 93,7 %
+   PERDU  Altach - Grazer AK 1-2 | P2 btts_non cote 2.16 annoncé 49,9 %
+   GAGNÉ  Jesenice - Ilirija 3-1 | P1 over_under_total_2.5_over cote 1.72 annoncé 72,3 %
+   PERDU  Jesenice - Ilirija 3-1 | P2 1x2_exterieur cote 1.88 annoncé 67,9 %
+   PERDU  NK Koper - O. Ljubljana 1-3 | P1 double_chance_1X cote 1.36 annoncé 79,4 %
+   PERDU  R. Montevideo - Boston River 3-2 | P1 btts_non cote 1.66 annoncé 70,2 %
+   GAGNÉ  R. Montevideo - Boston River 3-2 | P2 1x2_domicile cote 2.00 annoncé 57,9 %
+   GAGNÉ  Go Ahead Eagles - Groningen 1-1 | P1 double_chance_1X cote 1.46 annoncé 82,0 %
+   GAGNÉ  Umraniyespor - Antalyaspor 1-2 | P1 buts_equipe_domicile_1.5_under cote 1.40 annoncé 85,6 %
+   PERDU  Comerciantes Uni - Sport Huancayo 0-1 | P1 btts_oui cote 1.68 annoncé 64,9 %
+   PERDU  Comerciantes Uni - Sport Huancayo 0-1 | P2 over_under_total_2.5_over cote 1.84 annoncé 64,7 %
+   GAGNÉ  Cobresal - Coquimbo 3-2 | P1 buts_equipe_domicile_0.5_over cote 1.37 annoncé 83,2 %
+   GAGNÉ  Cobresal - Coquimbo 3-2 | P2 double_chance_1X cote 1.66 annoncé 77,8 %
+   GAGNÉ  Zaglebie Lubin - GKS Katowice 2-1 | P1 double_chance_1X cote 1.48 annoncé 85,4 %
+   GAGNÉ  Zaglebie Lubin - GKS Katowice 2-1 | P2 buts_equipe_domicile_1.5_over cote 2.22 annoncé 49,6 %
+   GAGNÉ  CSKA Sofia - Arda Kardzha 4-1 | P1 over_under_total_1.5_over cote 1.30 annoncé 81,9 %
+   GAGNÉ  CSKA Sofia - Arda Kardzha 4-1 | P2 btts_oui cote 1.90 annoncé 58,4 %
+   GAGNÉ  Manta - Aucas 0-0 | P1 double_chance_X2 cote 1.34 annoncé 80,3 %
+   PERDU  Manta - Aucas 0-0 | P2 1x2_exterieur cote 2.38 annoncé 47,5 %
+   PERDU  Montevideo - Nacional 1-1 | P1 btts_non cote 1.78 annoncé 71,4 %
+   GAGNÉ  Chapecoense - Internacional 1-2 | P1 over_under_total_2.5_over cote 1.85 annoncé 66,3 %
+   PERDU  Chapecoense - Internacional 1-2 | P2 double_chance_1X cote 1.78 annoncé 63,0 %
+   GAGNÉ  Supra - Hfx Wan 0-2 | P1 double_chance_X2 cote 1.82 annoncé 66,4 %
+   PERDU  Supra - Hfx Wan 0-2 | P2 over_under_total_3.5_over cote 2.39 annoncé 44,5 %
+   GAGNÉ  Dep. Recoleta - Trinidense 1-3 | P1 over_under_total_2.5_over cote 1.85 annoncé 59,8 %
+   GAGNÉ  Dep. Recoleta - Trinidense 1-3 | P2 1x2_exterieur cote 2.24 annoncé 51,3 %
+   GAGNÉ  V. Whitecaps - Austin 1-2 | P1 over_under_total_3.5_under cote 1.72 annoncé 64,7 %
+   GAGNÉ  Nordsjaelland - AGF 2-0 | P1 over_under_total_3.5_under cote 1.65 annoncé 72,1 %
+   GAGNÉ  Nordsjaelland - AGF 2-0 | P2 1x2_domicile cote 1.79 annoncé 61,0 %
+   PERDU  Neom - Al Fateh 4-2 | P1 over_under_total_3.5_under cote 1.53 annoncé 82,6 %
+   GAGNÉ  Krasnodar - Akron 1-1 | P1 over_under_total_3.5_under cote 1.62 annoncé 68,5 %
+   PERDU  Bursaspor - Esenler Erokspor 2-2 | P1 buts_equipe_domicile_1.5_under cote 1.94 annoncé 58,6 %
+   PERDU  Sarmiento - Belgrano 1-1 | P1 1x2_domicile cote 3.26 annoncé 35,3 %
+   GAGNÉ  Tigre - R. Central 0-1 | P1 over_under_total_2.5_under cote 1.43 annoncé 78,3 %
+   PERDU  Tigre - R. Central 0-1 | P2 1x2_domicile cote 2.86 annoncé 38,2 %
+   PERDU  Al Riyadh - Al Kholood 2-0 | P1 1x2_exterieur cote 2.07 annoncé 55,0 %
+   GAGNÉ  Diriyah - Abha 0-0 | P1 double_chance_X2 cote 2.49 annoncé 51,0 %
+   GAGNÉ  Hajduk Split - Slaven 1-0 | P1 1x2_domicile cote 1.30 annoncé 86,6 %
+   GAGNÉ  NK Radomlje - Maribor 0-3 | P1 buts_equipe_domicile_1.5_under cote 1.36 annoncé 82,7 %
+   GAGNÉ  NK Radomlje - Maribor 0-3 | P2 over_under_total_3.5_under cote 1.51 annoncé 80,9 %
+   PERDU  Mirassol - Vitoria BA 2-2 | P1 1x2_exterieur cote 4.98 annoncé 22,6 %
+   PERDU  Always Ready - Guabirá 6-0 | P1 over_under_total_4.5_under cote 1.34 annoncé 84,2 %
+   PERDU  Zamora - Trujillanos 1-2 | P1 1x2_domicile cote 1.94 annoncé 56,9 %
+   PERDU  Zamora - Trujillanos 1-2 | P2 over_under_total_3.5_over cote 3.78 annoncé 31,5 %
+   PERDU  Fuerte - Municipal L. 0-2 | P1 double_chance_1X cote 1.84 annoncé 63,5 %
+   PERDU  Herrera - UMECIT 1-3 | P1 double_chance_1X cote 1.69 annoncé 63,3 %
+   GAGNÉ  Caracas - Monagas SC 0-1 | P1 buts_equipe_exterieur_0.5_over cote 1.36 annoncé 78,7 %
+   PERDU  Caracas - Monagas SC 0-1 | P2 over_under_total_5.5_over cote 9.83 annoncé 12,4 %
+   GAGNÉ  Caracas - Monagas SC 0-1 | P3 1x2_exterieur cote 3.48 annoncé 33,2 %
+   PERDU  Mladost DG - Buducnost 0-2 | P1 double_chance_1X cote 1.44 annoncé 77,7 %
+   PERDU  U. Cluj - Otelul 3-0 | P1 btts_oui cote 1.73 annoncé 63,6 %
+   GAGNÉ  U. Cluj - Otelul 3-0 | P2 over_under_total_2.5_over cote 1.77 annoncé 63,0 %
+   GAGNÉ  Naft - Karbala 2-1 | P1 1x2_domicile cote 1.81 annoncé 70,4 %
+   GAGNÉ  Hapoel Haifa - Bnei Sakhnin 3-1 | P1 1x2_domicile cote 1.85 annoncé 64,3 %
+   PERDU  Petrovac - Arsenal 1-2 | P1 over_under_total_2.5_under cote 1.52 annoncé 77,7 %
+   PERDU  Petrovac - Arsenal 1-2 | P2 btts_non cote 1.58 annoncé 73,4 %
+   PERDU  Stal Mielec - Nieciecza 1-2 | P1 1x2_domicile cote 2.47 annoncé 46,9 %
+   GAGNÉ  Ludogorets - Septemvri 2-1 | P1 over_under_total_3.5_under cote 1.50 annoncé 83,4 %
+   GAGNÉ  Rio Ave - Estrela 3-3 | P1 over_under_total_1.5_over cote 1.31 annoncé 88,8 %
+   GAGNÉ  FCSB - P. Ploiesti 2-2 | P1 over_under_total_2.5_over cote 1.63 annoncé 67,9 %
+   PERDU  FCSB - P. Ploiesti 2-2 | P2 over_under_total_4.5_over cote 4.64 annoncé 27,5 %
+   GAGNÉ  Leeds United - Newcastle 4-1 | P1 double_chance_1X cote 1.40 annoncé 82,3 %
+   GAGNÉ  Leeds United - Newcastle 4-1 | P2 buts_equipe_domicile_1.5_over cote 2.07 annoncé 62,7 %
+   GAGNÉ  Moreirense - Maritimo 3-1 | P1 over_under_total_1.5_over cote 1.43 annoncé 86,4 %
+   GAGNÉ  Rakow C. - Zaglebie Lubin 2-3 | P1 buts_equipe_exterieur_0.5_over cote 1.41 annoncé 79,5 %
+   GAGNÉ  Rakow C. - Zaglebie Lubin 2-3 | P2 double_chance_X2 cote 1.92 annoncé 65,8 %
+   GAGNÉ  Jezero - Bokelj 1-1 | P1 double_chance_1X cote 1.37 annoncé 87,7 %
+   GAGNÉ  Jezero - Bokelj 1-1 | P2 over_under_total_2.5_under cote 1.46 annoncé 80,9 %
+   GAGNÉ  Meppen - Viktoria Col 1-3 | P1 double_chance_X2 cote 1.46 annoncé 79,7 %
+   GAGNÉ  S. Grossaspach - SC Verl 1-1 | P1 double_chance_1X cote 1.42 annoncé 76,6 %
+   PERDU  S. Grossaspach - SC Verl 1-1 | P2 1x2_domicile cote 2.22 annoncé 48,4 %
+   PERDU  Solihull - Barrow 1-0 | P1 double_chance_X2 cote 1.50 annoncé 74,6 %
+   PERDU  Solihull - Barrow 1-0 | P2 1x2_exterieur cote 2.39 annoncé 52,0 %
+   PERDU  Worthing - Hornchurch 1-0 | P1 over_under_total_3.5_over cote 2.35 annoncé 49,0 %
+   PERDU  Worthing - Hornchurch 1-0 | P2 over_under_total_4.5_over cote 4.04 annoncé 29,8 %
+   PERDU  Portadown - Linfield 1-1 | P1 1x2_exterieur cote 1.35 annoncé 81,1 %
+   PERDU  Barry Town - Ammanford 2-2 | P1 over_under_total_3.5_under cote 1.69 annoncé 64,7 %
+   GAGNÉ  Real Oruro - Real Potosí 0-2 | P1 double_chance_X2 cote 1.48 annoncé 78,2 %
+   PERDU  Elche - Real Madrid 2-3 | P1 double_chance_1X cote 3.89 annoncé 30,0 %
+   GAGNÉ  Monagas SC - Zamora 1-0 | P1 over_under_total_3.5_under cote 1.30 annoncé 88,6 %
+   GAGNÉ  Monagas SC - Zamora 1-0 | P2 buts_equipe_domicile_1.5_under cote 1.75 annoncé 64,5 %
+   GAGNÉ  Kidderminster - Gateshead 1-0 | P1 1x2_domicile cote 1.64 annoncé 73,1 %
+   GAGNÉ  Kidderminster - Gateshead 1-0 | P2 over_under_total_2.5_under cote 1.97 annoncé 54,4 %
+   GAGNÉ  Guabirá - Club Aurora 3-1 | P1 buts_equipe_exterieur_1.5_under cote 1.47 annoncé 74,0 %
+   GAGNÉ  Guabirá - Club Aurora 3-1 | P2 1x2_domicile cote 1.83 annoncé 58,3 %
+   PERDU  FK Atyrau - Ordabasy 0-3 | P1 buts_equipe_domicile_0.5_over cote 1.80 annoncé 69,9 %
+   PERDU  FK Atyrau - Ordabasy 0-3 | P2 btts_oui cote 2.10 annoncé 59,4 %
+   PERDU  Akron - Akhmat 2-0 | P1 double_chance_X2 cote 1.38 annoncé 84,4 %
+   GAGNÉ  Real Betis - Getafe 1-0 | P1 over_under_total_3.5_under cote 1.31 annoncé 92,8 %
+   GAGNÉ  Real Betis - Getafe 1-0 | P2 1x2_domicile cote 1.58 annoncé 76,0 %
+   GAGNÉ  Al Zawraa - Gharraf 2-0 | P1 btts_non cote 1.60 annoncé 80,9 %
+   GAGNÉ  Al Zawraa - Gharraf 2-0 | P2 1x2_domicile cote 1.45 annoncé 79,7 %
+   PERDU  Al Zawraa - Gharraf 2-0 | P3 over_under_total_1.5_under cote 3.15 annoncé 34,3 %
+   GAGNÉ  Wimbledon - Milton Keynes 0-0 | P1 double_chance_1X cote 1.62 annoncé 77,3 %
+   PERDU  Besiktas - Marseille 4-1 | P1 over_under_total_3.5_under cote 1.62 annoncé 75,8 %
+   GAGNÉ  Zhejiang G. - Wuhan Three 4-1 | P1 over_under_total_2.5_over cote 1.30 annoncé 83,7 %
+   GAGNÉ  Zhejiang G. - Wuhan Three 4-1 | P2 over_under_total_3.5_over cote 1.77 annoncé 67,4 %
+   PERDU  Bandirmaspor - Umraniyespor 0-1 | P1 1x2_domicile cote 1.84 annoncé 68,3 %
+   PERDU  Aktobe - Ulytau 2-2 | P1 over_under_total_3.5_under cote 1.37 annoncé 81,8 %
+   GAGNÉ  UTA Arad - Sepsi OSK 1-0 | P1 1x2_domicile cote 1.87 annoncé 61,8 %
+   PERDU  Buducnost - Petrovac 4-1 | P1 1x2_nul cote 2.99 annoncé 42,4 %
+   PERDU  Slavia Sofia - CSKA 1948 1-2 | P1 double_chance_1X cote 1.81 annoncé 63,0 %
+   PERDU  Kasimpasa - Konyaspor 0-0 | P1 over_under_total_1.5_over cote 1.32 annoncé 83,5 %
+   PERDU  Kasimpasa - Konyaspor 0-0 | P2 1x2_domicile cote 2.36 annoncé 54,8 %
+   GAGNÉ  Kriens - Étoile Carouge 4-1 | P1 double_chance_1X cote 1.48 annoncé 80,8 %
+   GAGNÉ  Kriens - Étoile Carouge 4-1 | P2 1x2_domicile cote 2.43 annoncé 51,6 %
+   GAGNÉ  Xamax - Rapperswil 0-3 | P1 1x2_exterieur cote 3.35 annoncé 34,6 %
+   GAGNÉ  Wil - Nyon 5-0 | P1 over_under_total_2.5_over cote 1.52 annoncé 74,3 %
+   GAGNÉ  Wil - Nyon 5-0 | P2 over_under_total_3.5_over cote 2.31 annoncé 54,2 %
+   PERDU  Wil - Nyon 5-0 | P3 1x2_exterieur cote 4.28 annoncé 27,8 %
+   PERDU  Annecy - Dijon FCO 1-2 | P1 buts_equipe_exterieur_1.5_under cote 1.36 annoncé 82,7 %
+   GAGNÉ  Reims - Montpellier 1-1 | P1 btts_oui cote 1.68 annoncé 65,3 %
+   GAGNÉ  Rudeš - Slaven 2-2 | P1 over_under_total_2.5_over cote 1.76 annoncé 73,0 %
+   GAGNÉ  Rudeš - Slaven 2-2 | P2 double_chance_1X cote 1.70 annoncé 63,1 %
+   PERDU  Almere City - Heracles 1-0 | P1 double_chance_X2 cote 1.37 annoncé 78,5 %
+   PERDU  Almere City - Heracles 1-0 | P2 1x2_exterieur cote 2.02 annoncé 60,7 %
+   GAGNÉ  FC Eindhoven - FC Emmen 3-1 | P1 double_chance_1X cote 1.76 annoncé 61,5 %
+   GAGNÉ  Jong Utrecht - VVV 1-3 | P1 1x2_exterieur cote 2.60 annoncé 44,7 %
+   GAGNÉ  Winterthur - Aarau 2-1 | P1 double_chance_1X cote 1.38 annoncé 90,1 %
+   GAGNÉ  KAA Gent - Standard 2-1 | P1 over_under_total_1.5_over cote 1.31 annoncé 86,4 %
+   GAGNÉ  Yeovil Town - Solihull 4-1 | P1 over_under_total_2.5_over cote 1.58 annoncé 76,8 %
+   GAGNÉ  Yeovil Town - Solihull 4-1 | P2 1x2_domicile cote 1.96 annoncé 58,6 %
+   GAGNÉ  Polonia Bytom - Ruch Chorzow 0-0 | P1 double_chance_1X cote 1.52 annoncé 73,6 %
+   GAGNÉ  Polonia Bytom - Ruch Chorzow 0-0 | P2 buts_equipe_exterieur_1.5_under cote 1.68 annoncé 69,0 %
+   GAGNÉ  Bristol City - Watford 1-0 | P1 over_under_total_3.5_under cote 1.38 annoncé 88,6 %
+   PERDU  Bristol City - Watford 1-0 | P2 1x2_exterieur cote 3.99 annoncé 29,3 %
+   GAGNÉ  Espanyol - Elche 1-3 | P1 1x2_exterieur cote 4.33 annoncé 26,7 %
+   PERDU  Bucheon - Gimcheon S 0-2 | P1 1x2_domicile cote 3.12 annoncé 35,8 %
+   PERDU  Urawa - Tokyo Verdy 3-1 | P1 over_under_total_2.5_under cote 1.67 annoncé 67,7 %
+   PERDU  Tokyo - Nagoya 1-0 | P1 over_under_total_2.5_over cote 1.60 annoncé 72,3 %
+   PERDU  Tokyo - Nagoya 1-0 | P2 over_under_total_3.5_over cote 2.49 annoncé 51,6 %
+   GAGNÉ  Karlsruher - Nuremberg 0-1 | P1 double_chance_X2 cote 1.45 annoncé 80,8 %
+   GAGNÉ  Barnsley - Leicester 1-1 | P1 double_chance_X2 cote 1.37 annoncé 78,2 %
+   PERDU  Barnsley - Leicester 1-1 | P2 1x2_exterieur cote 2.09 annoncé 56,7 %
+   GAGNÉ  Burton Albion - Mansfield 2-2 | P1 double_chance_1X cote 1.41 annoncé 89,6 %
+   GAGNÉ  Burton Albion - Mansfield 2-2 | P2 over_under_total_2.5_over cote 1.85 annoncé 64,7 %
+   GAGNÉ  Rochdale - Oldham 2-0 | P1 double_chance_1X cote 1.72 annoncé 69,3 %
+   GAGNÉ  Millwall - West Ham 2-2 | P1 over_under_total_2.5_over cote 1.61 annoncé 67,9 %
+   GAGNÉ  Walsall - Port Vale 2-0 | P1 double_chance_1X cote 1.38 annoncé 87,8 %
+   GAGNÉ  Tottenham - Aston Villa 2-3 | P1 buts_equipe_exterieur_0.5_over cote 1.32 annoncé 80,3 %
+   GAGNÉ  Tottenham - Aston Villa 2-3 | P2 double_chance_X2 cote 1.73 annoncé 64,5 %
+   GAGNÉ  US Boulogne - Nantes 1-2 | P1 buts_equipe_domicile_0.5_over cote 1.44 annoncé 73,6 %
+   PERDU  US Boulogne - Nantes 1-2 | P2 double_chance_1X cote 1.68 annoncé 72,0 %
+   GAGNÉ  Osasuna - Rayo Vallecano 1-1 | P1 double_chance_1X cote 1.43 annoncé 81,7 %
+   PERDU  Osasuna - Rayo Vallecano 1-1 | P2 over_under_total_3.5_over cote 3.56 annoncé 35,3 %
+   PERDU  Korona Kielce - Rakow C. 3-2 | P1 over_under_total_3.5_under cote 1.37 annoncé 82,6 %
+   PERDU  Korona Kielce - Rakow C. 3-2 | P2 buts_equipe_domicile_1.5_under cote 1.70 annoncé 66,0 %
+   GAGNÉ  La Roche - Valenciennes 3-2 | P1 double_chance_1X cote 1.33 annoncé 81,7 %
+   GAGNÉ  La Roche - Valenciennes 3-2 | P2 over_under_total_4.5_over cote 6.48 annoncé 18,5 %
+   GAGNÉ  La Roche - Valenciennes 3-2 | P3 over_under_total_3.5_over cote 3.38 annoncé 35,3 %
+   PERDU  Septemvri - Botev Plovdiv 0-3 | P1 double_chance_1X cote 1.76 annoncé 62,2 %
+   PERDU  Septemvri - Botev Plovdiv 0-3 | P2 over_under_total_4.5_over cote 6.36 annoncé 18,5 %
+   PERDU  Septemvri - Botev Plovdiv 0-3 | P3 over_under_total_3.5_over cote 3.32 annoncé 35,3 %
+   PERDU  Nieciecza - Odra 1-0 | P1 1x2_exterieur cote 3.46 annoncé 34,0 %
+   PERDU  Polonia W. - C. Glogow 2-0 | P1 btts_oui cote 1.61 annoncé 70,2 %
+   GAGNÉ  Bromley - Huddersfield 2-1 | P1 over_under_total_3.5_under cote 1.42 annoncé 79,3 %
+   PERDU  Bromley - Huddersfield 2-1 | P2 1x2_exterieur cote 1.67 annoncé 69,8 %
+   PERDU  Leyton Orient - Stevenage 1-0 | P1 over_under_total_1.5_over cote 1.37 annoncé 84,5 %
+   PERDU  Leyton Orient - Stevenage 1-0 | P2 btts_oui cote 1.89 annoncé 57,1 %
+   PERDU  Accrington - Newport 0-0 | P1 btts_oui cote 1.70 annoncé 74,5 %
+   PERDU  Accrington - Newport 0-0 | P2 1x2_domicile cote 2.06 annoncé 56,0 %
+   GAGNÉ  Luton - Bradford 0-1 | P1 over_under_total_3.5_under cote 1.31 annoncé 85,7 %
+   GAGNÉ  Luton - Bradford 0-1 | P2 over_under_total_2.5_under cote 1.85 annoncé 67,7 %
+   GAGNÉ  Peterborough - Doncaster 0-2 | P1 over_under_total_3.5_under cote 1.55 annoncé 79,3 %
+   PERDU  Peterborough - Doncaster 0-2 | P2 1x2_domicile cote 2.56 annoncé 44,3 %
+   PERDU  Reading - Notts County 2-0 | P1 buts_equipe_exterieur_0.5_over cote 1.42 annoncé 77,7 %
+   PERDU  Reading - Notts County 2-0 | P2 btts_oui cote 1.73 annoncé 71,3 %
+   PERDU  Crewe - Shrewsbury 1-1 | P1 btts_non cote 1.90 annoncé 66,9 %
+   GAGNÉ  Exeter City - Tranmere 0-0 | P1 over_under_total_2.5_under cote 1.71 annoncé 67,7 %
+   PERDU  Wigan Ath - Wycombe 0-1 | P1 over_under_total_2.5_over cote 1.72 annoncé 73,6 %
+   GAGNÉ  Wigan Ath - Wycombe 0-1 | P2 1x2_exterieur cote 3.00 annoncé 42,7 %
+   GAGNÉ  Gillingham - Bristol Rovers 3-0 | P1 1x2_domicile cote 3.34 annoncé 37,0 %
+   GAGNÉ  Portsmouth - Blackburn 2-2 | P1 double_chance_X2 cote 1.67 annoncé 67,4 %
+   PERDU  Queens Park R. - Preston 2-2 | P1 over_under_total_3.5_under cote 1.39 annoncé 88,6 %
+   GAGNÉ  Wrexham - Southampton 2-1 | P1 over_under_total_3.5_under cote 1.45 annoncé 79,3 %
+   GAGNÉ  G. Morton - Dunfermline 0-1 | P1 over_under_total_3.5_under cote 1.38 annoncé 82,6 %
+   GAGNÉ  P. Thistle - Raith Rovers FC 0-0 | P1 buts_equipe_exterieur_0.5_under cote 2.35 annoncé 51,3 %
+   GAGNÉ  Stenhousemuir - Arbroath 1-0 | P1 double_chance_12 cote 1.35 annoncé 83,2 %
+   PERDU  Stenhousemuir - Arbroath 1-0 | P2 over_under_total_1.5_over cote 1.43 annoncé 74,5 %
+   GAGNÉ  Newcastle - Hull City 2-1 | P1 over_under_total_3.5_under cote 1.51 annoncé 74,0 %
+   PERDU  Newcastle - Hull City 2-1 | P2 1x2_nul cote 4.31 annoncé 26,5 %
+   PERDU  Woking - Kidderminster 0-0 | P1 double_chance_12 cote 1.35 annoncé 79,3 %
+   PERDU  Woking - Kidderminster 0-0 | P2 btts_oui cote 1.69 annoncé 74,7 %
+   GAGNÉ  Carrick - Larne 2-5 | P1 1x2_exterieur cote 1.74 annoncé 62,6 %
+   PERDU  Cliftonville - Glentoran 1-2 | P1 double_chance_1X cote 1.66 annoncé 66,3 %
+   PERDU  Corum FK - Alanyaspor 1-2 | P1 buts_equipe_exterieur_1.5_under cote 1.33 annoncé 82,7 %
+   GAGNÉ  Linfield - Crusaders 1-0 | P1 over_under_total_3.5_under cote 1.64 annoncé 68,5 %
+   PERDU  Keciorengucu - Sivasspor 1-1 | P1 1x2_domicile cote 1.83 annoncé 67,1 %
+   PERDU  Gil Vicente - Maritimo 1-1 | P1 1x2_domicile cote 2.03 annoncé 53,0 %
+   GAGNÉ  Boston River - CA Progreso 1-2 | P1 double_chance_X2 cote 1.72 annoncé 66,2 %
+   GAGNÉ  BKMA - Sardarapat 1-1 | P1 over_under_total_3.5_under cote 1.36 annoncé 78,4 %
+   PERDU  BKMA - Sardarapat 1-1 | P2 1x2_exterieur cote 2.48 annoncé 45,5 %
+   PERDU  Kisvarda - Paksi 0-1 | P1 double_chance_1X cote 1.59 annoncé 69,2 %
+   GAGNÉ  FK Vojvodina - FK IMT 1-1 | P1 over_under_total_3.5_under cote 1.46 annoncé 79,9 %
+   GAGNÉ  GKS Katowice - Cracovia 3-2 | P1 double_chance_12 cote 1.31 annoncé 87,6 %
+   GAGNÉ  Young Boys - Servette 3-2 | P1 over_under_total_2.5_over cote 1.37 annoncé 81,2 %
+   GAGNÉ  Young Boys - Servette 3-2 | P2 over_under_total_3.5_over cote 1.94 annoncé 63,6 %
+   PERDU  Sion - Zurich 1-1 | P1 over_under_total_3.5_over cote 1.86 annoncé 59,1 %
+   PERDU  Sion - Zurich 1-1 | P2 over_under_total_5.5_over cote 5.12 annoncé 23,5 %
+   PERDU  Sion - Zurich 1-1 | P3 over_under_total_4.5_over cote 2.94 annoncé 39,6 %
+   PERDU  Arda Kardzha - Cherno More 1-1 | P1 1x2_domicile cote 1.80 annoncé 65,4 %
+   PERDU  Maccabi Haifa - I Tiberias 3-2 | P1 double_chance_X2 cote 3.05 annoncé 41,1 %
+   GAGNÉ  Trabzonspor - Galatasaray 4-0 | P1 double_chance_1X cote 1.67 annoncé 64,6 %
+   PERDU  Batman Petrol - Bursaspor 1-2 | P1 double_chance_1X cote 1.61 annoncé 67,3 %
+   GAGNÉ  Batman Petrol - Bursaspor 1-2 | P2 btts_oui cote 1.61 annoncé 66,0 %
+   PERDU  OFK - FK Radnicki 1923 3-5 | P1 double_chance_1X cote 1.53 annoncé 79,3 %
+   PERDU  OFK - FK Radnicki 1923 3-5 | P2 1x2_domicile cote 2.86 annoncé 44,9 %
+   PERDU  OFK - FK Radnicki 1923 3-5 | P3 1x2_nul cote 3.44 annoncé 34,4 %
+   PERDU  Istra - Gorica 0-1 | P1 1x2_domicile cote 1.87 annoncé 64,6 %
+   PERDU  Istra - Gorica 0-1 | P2 over_under_total_4.5_over cote 5.02 annoncé 23,6 %
+   GAGNÉ  FC Cajamarca - Cusco 1-2 | P1 over_under_total_2.5_over cote 1.59 annoncé 69,4 %
+   PERDU  FC Cajamarca - Cusco 1-2 | P2 over_under_total_4.5_over cote 4.35 annoncé 29,0 %
+   GAGNÉ  Ajax Amsterdam - Excelsior 2-2 | P1 btts_oui cote 1.68 annoncé 74,5 %
+   GAGNÉ  Kruger - Stellenbosch 0-1 | P1 double_chance_X2 cote 1.41 annoncé 85,2 %
+   PERDU  Kruger - Stellenbosch 0-1 | P2 over_under_total_1.5_over cote 1.51 annoncé 77,5 %
+   GAGNÉ  KFC Komarno - S. Bratislava 1-2 | P1 buts_equipe_domicile_1.5_under cote 1.33 annoncé 85,6 %
+   GAGNÉ  KFC Komarno - S. Bratislava 1-2 | P2 over_under_total_3.5_under cote 1.60 annoncé 75,8 %
+   GAGNÉ  Sporting - Arouca 2-2 | P1 over_under_total_4.5_under cote 1.31 annoncé 91,2 %
+   GAGNÉ  Rayo Zuliano - Monagas SC 1-1 | P1 btts_oui cote 1.60 annoncé 67,0 %
+   PERDU  Rayo Zuliano - Monagas SC 1-1 | P2 over_under_total_3.5_over cote 2.86 annoncé 44,5 %
+   PERDU  Rayo Zuliano - Monagas SC 1-1 | P3 1x2_domicile cote 3.11 annoncé 40,4 %
+   PERDU  Cavalry - Forge 1-1 | P1 1x2_domicile cote 1.99 annoncé 54,6 %
+   GAGNÉ  Remo - Santos SP 1-2 | P1 1x2_exterieur cote 2.43 annoncé 44,6 %
+   PERDU  Paranaense - Bahia 2-1 | P1 1x2_exterieur cote 3.33 annoncé 34,9 %
+   GAGNÉ  Liverpool M. - R. Montevideo 0-0 | P1 double_chance_1X cote 1.31 annoncé 84,9 %
+   GAGNÉ  Liverpool M. - R. Montevideo 0-0 | P2 btts_non cote 1.65 annoncé 78,5 %
+   GAGNÉ  Liverpool M. - R. Montevideo 0-0 | P3 1x2_nul cote 3.12 annoncé 35,5 %
+   GAGNÉ  Houston - Cincinnati 2-2 | P1 double_chance_1X cote 1.33 annoncé 89,6 %
+   GAGNÉ  Colorado - S. Sounders 3-3 | P1 double_chance_1X cote 1.29 annoncé 86,7 %
+   PERDU  Colorado - S. Sounders 3-3 | P2 1x2_domicile cote 1.88 annoncé 57,9 %
+   PERDU  Kudrivka - Kolos 2-3 | P1 1x2_domicile cote 4.04 annoncé 29,6 %
+   GAGNÉ  Piast Gliwice - Pogon Szczecin 1-2 | P1 1x2_exterieur cote 2.82 annoncé 40,4 %
+   GAGNÉ  A. Bielefeld - Heidenheim 2-2 | P1 double_chance_1X cote 1.39 annoncé 84,5 %
+   GAGNÉ  Getafe - Malaga 1-0 | P1 double_chance_12 cote 1.39 annoncé 76,8 %
+   GAGNÉ  Karpaty Lviv - Veres Rivne 1-1 | P1 over_under_total_3.5_under cote 1.30 annoncé 88,6 %
+   PERDU  Karpaty Lviv - Veres Rivne 1-1 | P2 btts_non cote 1.59 annoncé 71,0 %
+   PERDU  Hartberg - LASK 3-3 | P1 over_under_total_3.5_under cote 1.68 annoncé 64,7 %
+   PERDU  Twente - PSV Eindhoven 3-2 | P1 over_under_total_4.5_under cote 1.50 annoncé 72,5 %
+   PERDU  Twente - PSV Eindhoven 3-2 | P2 1x2_exterieur cote 2.19 annoncé 49,4 %
+   PERDU  Zaglebie Lubin - Wisla Plock SA 0-2 | P1 double_chance_1X cote 1.42 annoncé 85,7 %
+   PERDU  Zaglebie Lubin - Wisla Plock SA 0-2 | P2 buts_equipe_domicile_1.5_over cote 2.21 annoncé 55,9 %
+   GAGNÉ  Bravo - O. Ljubljana 2-1 | P1 over_under_total_3.5_under cote 1.30 annoncé 85,7 %
+   GAGNÉ  Bravo - O. Ljubljana 2-1 | P2 1x2_domicile cote 3.49 annoncé 34,6 %
+   GAGNÉ  Otrant-Olympic - Jezero 4-1 | P1 1x2_domicile cote 1.74 annoncé 61,5 %
+   GAGNÉ  Horsens - AGF 2-2 | P1 double_chance_1X cote 1.87 annoncé 67,5 %
+   PERDU  Erzurumspor - Samsunspor 1-0 | P1 double_chance_X2 cote 1.48 annoncé 87,8 %
+   GAGNÉ  Erzurumspor - Samsunspor 1-0 | P2 over_under_total_3.5_under cote 1.31 annoncé 85,7 %
+   PERDU  Szentlorinc SE - BVSC 2-1 | P1 buts_equipe_domicile_1.5_under cote 1.43 annoncé 82,7 %
+   GAGNÉ  Ceuta - Real Valladolid 1-1 | P1 over_under_total_3.5_under cote 1.29 annoncé 88,6 %
+   PERDU  Ceuta - Real Valladolid 1-1 | P2 1x2_exterieur cote 2.57 annoncé 47,9 %
+   GAGNÉ  Lausanne - Lugano 0-4 | P1 1x2_exterieur cote 1.87 annoncé 65,1 %
+   GAGNÉ  Estrela - Viseu 0-2 | P1 over_under_total_1.5_over cote 1.35 annoncé 84,5 %
+   PERDU  Estrela - Viseu 0-2 | P2 btts_oui cote 1.86 annoncé 65,8 %
+   GAGNÉ  V. Guimaraes - Moreirense 1-1 | P1 over_under_total_3.5_under cote 1.33 annoncé 91,2 %
+   PERDU  V. Guimaraes - Moreirense 1-1 | P2 btts_non cote 1.73 annoncé 72,9 %
+   GAGNÉ  Shakhtar - LNZ Cherkasy 3-0 | P1 btts_non cote 1.63 annoncé 68,1 %
+   GAGNÉ  Shakhtar - LNZ Cherkasy 3-0 | P2 buts_equipe_exterieur_0.5_under cote 1.95 annoncé 60,7 %
+   PERDU  Rijeka - Hajduk Split 3-0 | P1 btts_oui cote 1.70 annoncé 72,6 %
+   PERDU  Viborg - Nordsjaelland 4-1 | P1 over_under_total_3.5_under cote 1.60 annoncé 73,1 %
+   GAGNÉ  Viborg - Nordsjaelland 4-1 | P2 1x2_domicile cote 2.75 annoncé 45,8 %
+   PERDU  Villarreal - Levante 3-1 | P1 btts_non cote 2.33 annoncé 49,1 %
+   PERDU  Goztepe - Rizespor 2-2 | P1 double_chance_12 cote 1.32 annoncé 81,1 %
+   GAGNÉ  Mardin 1969 - Kayserispor 0-1 | P1 over_under_total_2.5_under cote 1.71 annoncé 72,2 %
+   GAGNÉ  Mardin 1969 - Kayserispor 0-1 | P2 btts_non cote 1.92 annoncé 64,6 %
+   GAGNÉ  Sarajevo - Sloga Doboj 2-0 | P1 btts_non cote 1.45 annoncé 81,7 %
+   GAGNÉ  Brinje Grosuplje - NK Radomlje 2-1 | P1 buts_equipe_exterieur_0.5_over cote 1.32 annoncé 82,6 %
+   PERDU  Brinje Grosuplje - NK Radomlje 2-1 | P2 1x2_exterieur cote 3.30 annoncé 36,6 %
+   PERDU  Lech Poznan - Radomiak 5-1 | P1 over_under_total_4.5_under cote 1.34 annoncé 90,7 %
+   GAGNÉ  Universitario - Delfin 1-1 | P1 double_chance_X2 cote 1.78 annoncé 65,2 %
+   PERDU  FC Porto - Benfica 3-1 | P1 double_chance_X2 cote 1.46 annoncé 86,9 %
+   PERDU  FC Porto - Benfica 3-1 | P2 buts_equipe_domicile_0.5_under cote 3.41 annoncé 36,8 %
+   GAGNÉ  CD Cuenca - Mushuc Runa 1-1 | P1 buts_equipe_domicile_1.5_under cote 1.38 annoncé 79,7 %
+   PERDU  CD Cuenca - Mushuc Runa 1-1 | P2 1x2_exterieur cote 3.07 annoncé 40,6 %
+   GAGNÉ  A. Bucaraman - Bogota 2-0 | P1 over_under_total_1.5_over cote 1.29 annoncé 85,3 %
+   PERDU  A. Bucaraman - Bogota 2-0 | P2 btts_oui cote 1.97 annoncé 60,0 %
+   GAGNÉ  Flamengo - Bragantino SP 2-1 | P1 over_under_total_3.5_under cote 1.50 annoncé 76,8 %
+
+113 match(s) du snapshot sans résultat (ignorés).
