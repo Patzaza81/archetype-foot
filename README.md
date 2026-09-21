@@ -120,9 +120,8 @@ justification = { resume, preuves: [ { type, texte, valeur } ], donnees_suffisan
   au total, 3 par lieu). Les seuils sont dans le module.
 - Familles couvertes (quand les données les permettent) : 1X2 (domicile, nul, extérieur), double chance (1X, 12, X2),
   les deux équipes marquent (oui, non), plus/moins de buts (toutes les lignes), buts d'une équipe. **Non couverts** : handicap à 3 issues
-  (aucune cote ne lui parvient) et cage inviolée (ancien moteur).
-- `rattrapage_justification.py` recalcule les textes sur des données déjà scrapées (réécrit `precalcul.json` et
-  `precalcul_leger.json`).
+  (aucune cote ne lui parvient) et les marchés hérités de l'ancien moteur.
+- Les justifications du moteur sont calculées directement dans `branchement_moteur.py` ; aucun rattrapage séparé n'est exécuté.
 - `moteur_justification.py` et `adapte_justification.py` sont l'ancien moteur de justification, relié à `run_pipeline.py`.
 
 ### 3.4 Tickets
