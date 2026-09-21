@@ -152,7 +152,9 @@ La suite permanente et le fixture historique doivent rester protégés ; ne jama
 #### P2.5 Divergence du rejeu 10/09 — **NON VÉRIFIÉ**
 Le rejeu réel connu a produit 35 candidats / 29 matchs au lieu des 68 / 48 attendus. À expliquer avant de considérer la suite permanente comme représentative.
 
-#### P2.6 (nouveau) Calibration des probabilités — **À FAIRE, priorité du nouveau moteur**
+#### P2.6 (nouveau) Calibration des probabilités — **EN COURS : protocole d'évaluation figé le 21/09** (`evaluation/README.md`)
+**Évaluation sur résultats réels (trêve internationale) :** analyse figée de 80 matchs du 20/09 (`evaluation/snapshot_moteur_v2_6_9_2026-09-20.json`, SHA-256 vérifié, rejeu reproductible), outil `evaluation_moteur.py`, règles de lecture écrites avant tout résultat (calibration sur tous les marchés, Brier modèle contre marché, ROI non concluant sous 150 choix, aucun réglage du moteur après lecture sans nouveau snapshot). Résultats à fournir par le propriétaire.
+
 **Nouveau moteur : aucune mesure.** Poisson indépendant, constantes non calibrées, un couple de λ par match ; rejeu du 20/09 : 107 choix pour 71 matchs (66 catégorie A, 6 B, 35 C), environ 20 % des lignes évaluées signalées value bets. L'archive (`model_version = moteur_v2_6_9`) enregistre chaque choix (`SELECTED`) et chaque value bet non retenu (`COUNTERFACTUAL`, catégorie D comprise) : c'est la base de mesure. Critère : mesurer sur 150-200 choix propres **avant** de juger le moteur, par famille de marché ; ne pas confondre volume de choix et valeur.
 
 **Ancien modèle (référence, 13-20/09, 8 jours, observations corrélées : un signal, pas une preuve)** :
@@ -212,7 +214,9 @@ Reste à traiter :
 
 **Résultat : 7 matchs analysés sur 100, 3 avec au moins un choix (6 choix).** Refus : 63 sans cotes BetPawa, 23 « déjà commencé ou terminé » (13:18 UTC), 5 historique indisponible, 2 échantillon insuffisant (première observation réelle de la règle D6).
 
-**Facteur limitant : la couverture BetPawa hors du jour même.** À 13:18 UTC : J0 11 matchs sur 47 avec cotes (23 déjà terminés), J+1 1 sur 8, J+2 1 sur 40, J+3 1 sur 5 ; 14 cotes extraites pour 100 tentatives (726 s). Même constat sur le rejeu du 20/09 (135 matchs exportés le jour même, 3 le lendemain, 1 à J+2). Conséquences à traiter (P0.2) : le run de J+2/J+3 coûte du temps BetPawa pour presque aucune cote ; et un run à 21:00 UTC (22:00 à Douala) voit J0 presque terminé : la valeur du site dépend de la couverture de J+1 à cette heure, non mesurée. À mesurer au run planifié de ce soir (colonne `date` de `precalcul.json`).
+**Contexte : trêve internationale (deux semaines, information du propriétaire, 21/09).** Le faible volume de matchs de ce run n'est donc pas représentatif d'une semaine normale, et les taux ci-dessous sont à remesurer hors trêve.
+
+**Facteur limitant observé : la couverture BetPawa hors du jour même.** À 13:18 UTC : J0 11 matchs sur 47 avec cotes (23 déjà terminés), J+1 1 sur 8, J+2 1 sur 40, J+3 1 sur 5 ; 14 cotes extraites pour 100 tentatives (726 s). Même constat sur le rejeu du 20/09 (135 matchs exportés le jour même, 3 le lendemain, 1 à J+2). Conséquences à traiter (P0.2) : le run de J+2/J+3 coûte du temps BetPawa pour presque aucune cote ; et un run à 21:00 UTC (22:00 à Douala) voit J0 presque terminé : la valeur du site dépend de la couverture de J+1 à cette heure, non mesurée. À mesurer au run planifié de ce soir (colonne `date` de `precalcul.json`).
 
 **Le champ `jours` = 2 n'a pas été exercé en conditions réelles** (le run n°135 a tourné sur 4 jours) : mécanisme validé par tests et par le test de fumée de `precalcul.main()`.
 
