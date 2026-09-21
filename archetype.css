@@ -104,7 +104,7 @@ body.theme-nuit .ax-carte{
 .ax-horaire{display:grid;justify-items:center;text-align:center;min-width:84px}
 .ax-horaire strong{font-size:20px;font-weight:900;line-height:1.1}
 .ax-horaire span{font-size:12px;font-weight:600;color:var(--ax-doux)}
-.ax-match-bas{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px;min-height:30px}
+.ax-match-bas{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px;min-height:32px}   /* 32 : la ligne absorbe un nom de compétition sur 2 lignes (31,3 px), avec ou sans bouton Retirer */
 .ax-competition{margin:0;min-width:0;flex:1 1 auto;font-size:12.5px;font-weight:600;line-height:1.25;color:var(--ax-doux)}
 .ax-actions-tete{flex:0 0 auto;display:flex;align-items:center;gap:12px}
 .ax-deplier,.ax-retirer{
@@ -246,6 +246,9 @@ body.theme-nuit .ax-ico{filter:brightness(1.7)}
 .ax-fiabilite div{display:flex;justify-content:space-between;gap:12px}
 .ax-fiabilite dt{color:var(--ax-doux)}
 .ax-fiabilite dd{margin:0;font-weight:700;text-align:right}
+.ax-vigilance{border:1px solid var(--ax-ligne);border-left:4px solid var(--ax-etoile);border-radius:12px;padding:10px 12px}
+.ax-vigilance-titre{margin:0 0 4px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ax-doux)}
+.ax-vigilance ul{margin:0;padding-left:18px;font-size:13.5px;line-height:1.4}
 .ax-analyse-vide{padding:18px 10px;text-align:center;border:1px dashed var(--ax-ligne);border-radius:12px}
 .ax-analyse-vide strong{display:block;font-size:15px;color:var(--ax-doux);margin-bottom:4px}
 .ax-analyse-vide p{margin:0;font-size:13.5px;color:var(--ax-doux)}

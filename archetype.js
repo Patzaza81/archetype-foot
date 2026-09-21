@@ -1,6 +1,6 @@
 // archetype.js — présentation uniquement (réécriture complète du 20/09/2026).
 // Le navigateur ne choisit aucun pronostic et ne calcule aucune statistique :
-// tout ce qui est affiché vient de precalcul_leger.json (archetype_model.selection).
+// tout ce qui est affiché vient de precalcul_leger.json (signal[CLE_MOTEUR].selection).
 //
 // Contrat conservé pour panier.js : construitCarte(), regroupeMatchs(),
 // estArchetypeGo(), echappeHtml() gardent leur nom, et chaque carte contient
@@ -27,15 +27,19 @@ let compteurCartes = 0;
 
 // estArchetypeGo : conservée telle quelle pour compatibilité panier.js.
 // Sens historique : match avec un candidat P1 minimum.
+// Clé du bloc produit par le moteur du pipeline (précalcul : branchement_moteur.CLE_BLOC). Changer de moteur = changer
+// cette seule constante, à condition de respecter le même contrat (selection.P1/P2/P3 avec justification).
+const CLE_MOTEUR = "moteur_v2_6_9";
+
 function estArchetypeGo(m) {
-  return !!(m && m.moteur_utilise === "archetype_model" && m.archetype_model &&
-    m.archetype_model.statut === "OK" && m.archetype_model.selection && m.archetype_model.selection.P1);
+  return !!(m && m.moteur_utilise === CLE_MOTEUR && m[CLE_MOTEUR] &&
+    m[CLE_MOTEUR].statut === "OK" && m[CLE_MOTEUR].selection && m[CLE_MOTEUR].selection.P1);
 }
 
 // aAuMoinsUnCandidat : filtre d'affichage de la page principale.
 function aAuMoinsUnCandidat(m) {
-  if (!m || m.moteur_utilise !== "archetype_model" || !m.archetype_model) return false;
-  const sel = m.archetype_model.selection;
+  if (!m || m.moteur_utilise !== CLE_MOTEUR || !m[CLE_MOTEUR]) return false;
+  const sel = m[CLE_MOTEUR].selection;
   if (!sel) return false;
   return !!(sel.P1 || sel.P2 || sel.P3);
 }
@@ -266,6 +270,18 @@ function tableauCombine(b) {
   return tableauLignes("Métriques combinées", lignes);
 }
 
+// Solidité du pari (catégorie du moteur) ; « stabilité du calcul » seulement si le moteur a fait une analyse de
+// robustesse (jamais de « Non déterminée » affiché) ; points de vigilance : artefacts et avertissements du moteur.
+function construitFiabilite(c) {
+  const lignes = [`<div><dt>Solidité du pari</dt><dd>${echappeHtml(traduitNiveau(c.niveau).texte)}</dd></div>`];
+  if (c.robustesse === "STABLE" || c.robustesse === "INSTABLE") {
+    lignes.push(`<div><dt>Stabilité du calcul</dt><dd>${echappeHtml(traduitRobustesse(c.robustesse))}</dd></div>`);
+  }
+  const vigilance = (Array.isArray(c.points_de_vigilance) ? c.points_de_vigilance : []).filter((t) => typeof t === "string" && t);
+  return `<dl class="ax-fiabilite">${lignes.join("")}</dl>` + (vigilance.length
+    ? `<div class="ax-vigilance"><p class="ax-vigilance-titre">Points de vigilance</p><ul>${vigilance.map((t) => `<li>${echappeHtml(t)}</li>`).join("")}</ul></div>` : "");
+}
+
 function construitAnalyse(info, c, equipes) {
   const j = c.justification || {};
   const b = j.bibliotheque && typeof j.bibliotheque === "object" ? j.bibliotheque : {};
@@ -282,8 +298,7 @@ function construitAnalyse(info, c, equipes) {
     tableauForme(`Forme récente — ${equipes.exterieur} (à l'extérieur)`, b, false) +
     tableauH2H(b) +
     tableauCombine(b) +
-    `<dl class="ax-fiabilite"><div><dt>Solidité du pari</dt><dd>${echappeHtml(traduitNiveau(c.niveau).texte)}</dd></div>` +
-    `<div><dt>Stabilité du calcul</dt><dd>${echappeHtml(traduitRobustesse(c.robustesse))}</dd></div></dl></div>`;
+    construitFiabilite(c) + `</div>`;
 }
 
 // Bloc <details class="details-analyse"> : conservé pour panier.js. Le <summary> est masqué
@@ -307,7 +322,7 @@ function construitCarte(m, options) {
   const date = formatDate(m.date);
   const competition = String(m.competition || "").replace(/\s+/g, " ").trim();
   // Étape 6 : les candidats bruts P1/P2/P3 sont remappés en 3 onglets sémantiques.
-  const selection = remappeEnOngletsApp((m.archetype_model && m.archetype_model.selection) || {});
+  const selection = remappeEnOngletsApp((m[CLE_MOTEUR] && m[CLE_MOTEUR].selection) || {});
 
   const section = document.createElement("section");
   section.className = "ax-carte";
@@ -429,8 +444,8 @@ function regroupeMatchs(matchs) {
     const cle = identiteMatch(m);
     if (!groupes.has(cle)) { groupes.set(cle, m); return; }
     const actuel = groupes.get(cle);
-    if (m.archetype_model && actuel.archetype_model) {
-      actuel.archetype_model.selection = { ...(actuel.archetype_model.selection || {}), ...(m.archetype_model.selection || {}) };
+    if (m[CLE_MOTEUR] && actuel[CLE_MOTEUR]) {
+      actuel[CLE_MOTEUR].selection = { ...(actuel[CLE_MOTEUR].selection || {}), ...(m[CLE_MOTEUR].selection || {}) };
     }
   });
   return Array.from(groupes.values());

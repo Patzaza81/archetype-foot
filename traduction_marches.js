@@ -67,6 +67,12 @@ const NIVEAU_VERS_CONFIANCE = {
   FORT: { etoiles: 3, texte: "Solide" },
   ELIGIBLE: { etoiles: 2, texte: "Suffisamment solide" },
   ELIGIBLE_PLUS: { etoiles: 1, texte: "Solidité de base" },
+  // Catégories de moteur_v2_6_9 (A : EV <= 20 %, probabilité >= 45 %, aucun artefact ; B : EV <= 20 %,
+  // probabilité >= 30 %, au plus un artefact ; C : le reste hors D, qui est écartée). Aucune n'atteint 4-5 étoiles :
+  // le moteur n'a pas encore de mesure de calibration réelle.
+  CAT_A: { etoiles: 3, texte: "Solide" },
+  CAT_B: { etoiles: 2, texte: "Suffisamment solide" },
+  CAT_C: { etoiles: 1, texte: "Solidité de base" },
 };
 function traduitNiveau(niveau) {
   return NIVEAU_VERS_CONFIANCE[niveau] || { etoiles: 1, texte: "Solidité de base" };
