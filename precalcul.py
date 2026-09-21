@@ -90,11 +90,13 @@ voir procédure de vérification donnée à Patrick en dehors de ce fichier.
 import collections
 import datetime
 import json
+import os
 import re
 import sys
 
 import branchement_moteur
 import pont_moteur
+import stats_saison_en_cours
 import run_pipeline
 from run_pipeline import construit_signaux, charge_json_ou_vide
 from cache_equipes import recupere_gf_ga_avec_cache, purge_entrees_expirees as purge_equipes_expirees
@@ -109,21 +111,17 @@ from archetype_model.h2h import h2h_stats as archetype_h2h_stats
 _recupere_gf_ga_reelle = run_pipeline.recupere_gf_ga_avec_repli
 
 
-# AJOUT 21/09/2026 -- branchement de moteur_v2_6_9.py (voir branchement_moteur.py et pont_moteur.py). Le signal
-# final ne conserve ni ga_domicile ni ga_exterieur (seulement le lambda calculé), alors que le moteur a besoin des
-# moyennes de buts marqués ET encaissés, et la bibliothèque de justification des listes de matchs. On garde donc le
-# dernier résultat vu par (équipe, compétition) -- clé identique à (signal["domicile"], signal["competition"]),
-# car construit_signaux() appelle la collecte avec exactement ces deux valeurs -- sans rien changer à la valeur
-# renvoyée à construit_signaux().
+# AJOUT 21/09/2026 -- branchement de moteur_v2_6_9.py (voir branchement_moteur.py et pont_moteur.py).
+# Ce collecteur (à repli sur la saison précédente, N plus anciens matchs) ne sert QU'À l'ancien calcul de
+# construit_signaux() ; il n'alimente PLUS le moteur : celui-ci lit STATS_EQUIPES_VUES, rempli plus bas par
+# charge_stats_saison() (saison en cours uniquement, matchs les plus récents -- stats_saison_en_cours.py).
 STATS_EQUIPES_VUES = {}
 
 
 def _recupere_gf_ga_avec_cache(url_equipe, nom_equipe, nom_competition, max_matchs=10):
-    resultat = recupere_gf_ga_avec_cache(
+    return recupere_gf_ga_avec_cache(
         _recupere_gf_ga_reelle, url_equipe, nom_equipe, nom_competition, max_matchs
     )
-    STATS_EQUIPES_VUES[(nom_equipe, nom_competition)] = resultat
-    return resultat
 
 
 run_pipeline.recupere_gf_ga_avec_repli = _recupere_gf_ga_avec_cache
@@ -160,6 +158,20 @@ def _recupere_h2h_avec_cache(url_match_face_a_face, max_confrontations=20):
 
 
 run_pipeline.recupere_h2h = _recupere_h2h_avec_cache
+
+# AJOUT 21/09/2026 -- URL d'équipe de chaque match, déjà obtenues par construit_signaux() (recupere_details_match) :
+# on les garde pour charger les statistiques du moteur sans refaire cette requête.
+DETAILS_VUS = {}
+_recupere_details_pipeline_reelle = run_pipeline.recupere_details_match
+
+
+def _recupere_details_avec_capture(url_match):
+    details = _recupere_details_pipeline_reelle(url_match)
+    DETAILS_VUS[url_match] = details
+    return details
+
+
+run_pipeline.recupere_details_match = _recupere_details_avec_capture
 
 MODEL_VERSION = "Archetype-v4.3"
 
@@ -757,6 +769,13 @@ def genere_listes_filtrees_affichage():
     return len(matchs_du_jour), len(du_jour_filtre), len(matchs_demain), len(demain_filtre)
 
 
+def jours_fenetre():
+    """AJOUT 21/09/2026 -- PRECALCUL_JOURS=2 limite le run à aujourd'hui (J0) et demain (J+1) : utile pour valider un
+    changement sur une petite fenêtre avant le run complet. Toute autre valeur (absente, vide, "4", "3"...) = fenêtre
+    complète J0..J+3 : une erreur de saisie ne réduit jamais silencieusement le run planifié."""
+    return 2 if os.environ.get("PRECALCUL_JOURS", "").strip() == "2" else 4
+
+
 def charge_matchs_fenetre():
     # AJOUT 03/09/2026 (3e partie) -- aujourd'hui (J0) rejoint la fenêtre
     # automatique, voir docstring en tête de fichier.
@@ -764,7 +783,7 @@ def charge_matchs_fenetre():
     matchs_demain = charge_json_ou_vide(FICHIER_MATCHS_DEMAIN, defaut=[])
     matchs_semaine = charge_json_ou_vide(FICHIER_MATCHS_SEMAINE, defaut=[])
 
-    cibles = dates_j2_j3()
+    cibles = dates_j2_j3() if jours_fenetre() == 4 else []      # 2 jours : matchs_semaine.json ignoré, même s'il est présent
     matchs_j2_j3 = [m for m in matchs_semaine if m.get("date") in cibles]
 
     vus = set()
@@ -929,6 +948,39 @@ def _h2h_pour_signal(s):
     return archetype_h2h_stats.classifie_h2h(normalisees).get("confrontations_retenues", [])
 
 
+def charge_stats_saison(signaux, details=None, fonction=None):
+    """Remplit STATS_EQUIPES_VUES pour les matchs qui ont des cotes BetPawa (les seuls que le moteur peut analyser) :
+    saison en cours seule, matchs les plus récents, avec un cache distinct (cache_equipes_saison.json). Une équipe dont le
+    chargement échoue reste ABSENTE : le match sera refusé (historique_indisponible), jamais complété par un repli."""
+    details = DETAILS_VUS if details is None else details
+    fonction = fonction or stats_saison_en_cours.stats_saison_en_cours
+    compte = collections.Counter()
+    for s in signaux:
+        if not s.get("cotes_manuelles"):
+            continue
+        d = details.get(s.get("url_match")) or {}
+        urls = {"dom": d.get("url_equipe_domicile"), "ext": d.get("url_equipe_exterieur")}
+        if not urls["dom"] or not urls["ext"]:
+            compte["match sans URL d'équipe"] += 1
+            continue
+        for cle_url, nom in (("dom", s.get("domicile")), ("ext", s.get("exterieur"))):
+            cle = (nom, s.get("competition"))
+            if cle in STATS_EQUIPES_VUES:
+                continue
+            try:
+                res = recupere_gf_ga_avec_cache(
+                    fonction, urls[cle_url], nom, s.get("competition"), stats_saison_en_cours.N_MAX_FENETRE,
+                    fichier_cache=stats_saison_en_cours.FICHIER_CACHE_SAISON,
+                )
+            except Exception as e:
+                compte["équipe en erreur"] += 1
+                print(f"[stats saison] {nom} ({s.get('competition')}) : {type(e).__name__}: {e}", file=sys.stderr)
+                continue
+            STATS_EQUIPES_VUES[cle] = res
+            compte["équipe sans match cette saison" if "raison_non_traite" in res else "équipe chargée"] += 1
+    return dict(compte)
+
+
 def applique_moteur_pipeline(signaux):
     """AJOUT 21/09/2026 -- LE moteur du pipeline : moteur_v2_6_9.py, via branchement_moteur.py.
 
@@ -937,6 +989,8 @@ def applique_moteur_pipeline(signaux):
     justification, inventaire complet). Archive les choix retenus (SELECTED) et les value bets non retenus
     (COUNTERFACTUAL) dans archive/AAAA-MM.json. Ne fait AUCUN repli sur l'ancien moteur (règle du propriétaire) :
     une exception sur un match est un statut ERREUR_TECHNIQUE visible, jamais une décision inventée."""
+    print(f"stats saison en cours -- {charge_stats_saison(signaux)}")
+
     def archiver(s, bloc, non_selectionnes):
         return branchement_moteur.archive_bloc(s, bloc, non_selectionnes, archetype_archive)
 
@@ -1081,10 +1135,12 @@ def main():
     # jamais faire échouer un run par ailleurs réussi.
     try:
         dates_fenetre = {m.get("date") for m in fenetre if m.get("date")}
-        nb_purge_equipes = purge_equipes_expirees()
+        nb_purge_equipes = purge_equipes_expirees() + purge_equipes_expirees(stats_saison_en_cours.FICHIER_CACHE_SAISON)
         nb_purge_classement = purge_classement_expirees()
         nb_purge_h2h = purge_h2h_expirees()
-        nb_purge_betpawa = purge_betpawa_matchs_joues(dates_fenetre)
+        # Les correspondances de J+2/J+3 restent utiles au run complet suivant, même quand ce run-ci n'a traité que
+        # J0/J+1 : les purger obligerait à les retrouver (jusqu'à ~80 min de BetPawa).
+        nb_purge_betpawa = purge_betpawa_matchs_joues(dates_fenetre | set(dates_j2_j3()))
         print(f"Purge caches : {nb_purge_equipes} équipe(s) expirée(s), "
               f"{nb_purge_classement} classement(s) expiré(s), "
               f"{nb_purge_h2h} H2H expiré(s), "
