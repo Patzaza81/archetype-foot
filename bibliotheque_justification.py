@@ -92,7 +92,10 @@ def construit_donnees(
     a_dom = _recent_role(matchs_a, True)
     b_ext = _recent_role(matchs_b, False)
     h = _h2h(h2h)
-    combined = a_dom + b_ext
+    # CORRECTIF 21/09/2026 : les statistiques « combinées » (phrases « des deux équipes ») exigent des matchs des DEUX
+    # équipes. Avant, si l'une n'avait pas assez de matchs à son lieu (seuil de 3), ses matchs étaient ignorés et la
+    # phrase « des deux équipes » était calculée sur une seule (cas réel : Dallas, 2 matchs à domicile, 6 à l'extérieur).
+    combined = a_dom + b_ext if (a_dom and b_ext) else []
 
     data = {
         "odds_scraped": odds_scraped if isinstance(odds_scraped, (int, float)) else None,
