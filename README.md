@@ -97,7 +97,7 @@ précédente (décision non négociable du 08/09/2026) : une équipe sans match 
 repli (`scraper_details.recupere_gf_ga_avec_repli`) ne sert plus qu'à l'ancien calcul de `construit_signaux()` : mélange de saisons et
 N plus anciens matchs, il ne doit pas alimenter le moteur.
 
-Règles de décision (`branchement_moteur.py`, D1 à D5) : candidat = value bet hors catégorie D ; sans preuve spécifique à son
+Règles de décision (`branchement_moteur.py`, D1 à D6) : **un match n'est analysé que si l'équipe qui reçoit a au moins 2 matchs à domicile et la visiteuse au moins 2 matchs à l'extérieur cette saison** (sinon refus `echantillon_insuffisant`, avec les deux effectifs) ; candidat = value bet hors catégorie D ; sans preuve spécifique à son
 marché, pas de choix ; au plus trois choix — **P1 favori** (probabilité la plus haute), **P2 value** (meilleur EV des
 restants), **P3 coup de poker** (meilleur EV des restants avec cote ≥ 2,91 et probabilité ≥ 20 %), mêmes règles que le
 site ; aucun repli sur l'ancien moteur (une exception sur un match donne `ERREUR_TECHNIQUE`) ; solidité affichée = catégorie

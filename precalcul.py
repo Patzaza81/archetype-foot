@@ -933,6 +933,14 @@ def archive_precalcul(signaux, dates_a_archiver):
     return run_pipeline.ajoute_matchs_a_historique([_slim_pour_archive(s) for s in candidats])
 
 
+def signaux_exportables(signaux):
+    """Signaux à exporter vers export_moteur/ : tous sauf ceux que le pipeline a refusés pour échantillon insuffisant
+    (règle D6 de branchement_moteur.py). Un fichier exporté rejoué avec moteur_v2_6_9.py ne doit jamais analyser un match
+    que le pipeline a refusé."""
+    return [s for s in signaux
+            if not str((s.get(branchement_moteur.CLE_BLOC) or {}).get("raison", "")).startswith(branchement_moteur.MOTIF_ECHANTILLON)]
+
+
 def _h2h_pour_signal(s):
     """H2H d'un match, du point de vue de l'équipe à domicile, avec la même sélection (confrontations retenues)
     que l'ancien système. Passe par le cache H2H (96 h) : jamais de requête réseau répétée inutilement."""
@@ -1111,7 +1119,9 @@ def main():
     # (entrées EXACTES du moteur : `python moteur_v2_6_9.py export_moteur/matchs_moteur_AAAA-MM-JJ.json --date AAAA-MM-JJ`
     # rejoue le calcul). Isolé dans un try : un échec ici ne doit jamais faire échouer un run par ailleurs réussi.
     try:
-        resume_pont = pont_moteur.exporte_matchs_moteur(signaux, STATS_EQUIPES_VUES)
+        # Seuls les matchs que le pipeline a réellement analysés sont exportés : rejouer un fichier exporté avec
+        # `python moteur_v2_6_9.py` ne doit jamais analyser un match que le pipeline a refusé (échantillon insuffisant).
+        resume_pont = pont_moteur.exporte_matchs_moteur(signaux_exportables(signaux), STATS_EQUIPES_VUES)
         print(f"Export moteur : {resume_pont['nb_exportes']}/{resume_pont['nb_signaux']} match(s) "
               f"exporté(s) {resume_pont['par_date']} ; rejets : {resume_pont['rejets']}.")
     except Exception as e:

@@ -29,6 +29,11 @@ DÉCISIONS (à contester si elles ne conviennent pas)
         retrouve exactement les mêmes rôles. Si l'une change, l'autre doit changer.
     D4. Pas de repli sur l'ancien moteur : une exception sur un match donne le statut ERREUR_TECHNIQUE pour ce
         match (visible dans le log et dans precalcul.json), jamais une décision inventée.
+    D6. Échantillon minimal (règle du propriétaire, 21/09/2026) : un match n'est analysé automatiquement que si l'équipe
+        qui reçoit a au moins 2 matchs À DOMICILE et la visiteuse au moins 2 matchs À L'EXTÉRIEUR cette saison (les deux
+        chiffres que le moteur utilise : `matchs_joues` de chaque équipe). En dessous : refus explicite
+        `echantillon_insuffisant`, avec les deux effectifs. Sinon le match est analysé, et seules les conditions
+        irréfutables le refusent (pas de cotes, match commencé/reporté, cotes inexploitables, validations V1-V12 du moteur).
     D5. Niveau de solidité affiché = catégorie du moteur (A, B, C) ; il n'y a pas d'analyse de robustesse par
         scénarios avec ce moteur : `robustesse` reste None et le site n'affiche pas de « stabilité du calcul ».
 
@@ -59,6 +64,8 @@ SEUIL_COUP_DE_POKER_COTE = 2.91
 SEUIL_COUP_DE_POKER_PROBA = 0.20
 RANGS = ("P1", "P2", "P3")
 
+MIN_MATCHS_PAR_LIEU = 2                          # D6 : minimum de matchs à domicile (équipe qui reçoit) ET à l'extérieur (visiteuse)
+MOTIF_ECHANTILLON = "echantillon_insuffisant"
 MOTIF_JUSTIFICATION = "JUSTIFICATION_INSUFFISANTE"
 MOTIF_NON_MAPPE = "MARCHE_SANS_NOM_CANONIQUE"
 
@@ -229,6 +236,14 @@ def analyse_signal(signal: Dict[str, Any], stats_equipes: Dict[Tuple[str, str], 
     if match is None:
         return bloc_non_analyse("NON_EXPORTABLE", raison or "inconnue"), []
     match.pop("_ignores", None)
+
+    # D6 -- échantillon minimal, sur les deux effectifs réellement utilisés par le moteur (matchs_joues).
+    nd = match["equipe_dom"].get("matchs_joues") or 0
+    ne = match["equipe_ext"].get("matchs_joues") or 0
+    if nd < MIN_MATCHS_PAR_LIEU or ne < MIN_MATCHS_PAR_LIEU:
+        return bloc_non_analyse("NON_EXPORTABLE", (
+            f"{MOTIF_ECHANTILLON}: {nd} match(s) à domicile pour {signal['domicile']}, {ne} match(s) à l'extérieur pour "
+            f"{signal['exterieur']} (minimum {MIN_MATCHS_PAR_LIEU} et {MIN_MATCHS_PAR_LIEU})")), []
 
     res = moteur.analyser_match(match, date_run=match["date_match"], maintenant=maintenant)
     if res["statut_global"] == "SKIP":
