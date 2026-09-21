@@ -213,15 +213,42 @@ body.theme-nuit .ax-carte{
 .ax-chevron::before{content:"⌄";display:inline-block;font-size:20px;line-height:1;color:var(--ax-doux);transition:transform .15s}
 .ax-details[open] .ax-chevron::before{transform:rotate(180deg)}
 .ax-details-corps{display:grid;gap:14px;padding:2px 0 14px}
-.ax-detail-rang h3{margin:0 0 6px;font-size:14px;font-weight:800}
+.ax-detail-rang{display:grid;gap:10px}
+.ax-detail-rang h3{margin:0;font-size:14px;font-weight:800}
 .ax-detail-rang.ax-rang-1 h3{color:var(--ax-or-texte)}
 .ax-detail-rang.ax-rang-2 h3{color:var(--ax-bleu-texte)}
 .ax-detail-rang.ax-rang-3 h3{color:var(--ax-violet-texte)}
-.ax-detail-rang ul{margin:0 0 8px;padding-left:18px;font-size:13.5px;line-height:1.4}
-.ax-detail-rang dl{margin:0;display:grid;gap:4px;font-size:13.5px}
-.ax-detail-rang dl div{display:flex;justify-content:space-between;gap:12px}
-.ax-detail-rang dt{color:var(--ax-doux)}
-.ax-detail-rang dd{margin:0;font-weight:700;text-align:right}
+
+/* — Tableaux de « Détails de l'analyse » (alimentés par la bibliothèque de justification) — */
+.ax-tab{border:1px solid var(--ax-ligne);border-radius:12px;padding:12px}
+.ax-tab-titre{margin:0 0 8px;font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--ax-doux)}
+.ax-tab-resume{border-left:4px solid var(--ax-or)}
+.ax-tab-etiquette{margin:0 0 4px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ax-or-texte)}
+.ax-tab-resume-texte{margin:0;font-size:14px;line-height:1.4;overflow-wrap:anywhere}
+.ax-tab-lignes{width:100%;border-collapse:collapse}
+.ax-tab-lignes th,.ax-tab-lignes td{padding:7px 0;border-bottom:1px solid var(--ax-ligne);font-size:13.5px;vertical-align:top}
+.ax-tab-lignes th{text-align:left;font-weight:400;color:var(--ax-doux);padding-right:10px}
+.ax-tab-lignes td{text-align:right;font-weight:800;white-space:nowrap}
+.ax-tab-lignes tr:last-child th,.ax-tab-lignes tr:last-child td{border-bottom:0}
+.ax-tab-pied{margin:6px 0 0;font-size:11.5px;color:var(--ax-doux);text-align:right}
+
+.ax-preuve-liste{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.ax-preuve-ligne{display:flex;gap:10px;align-items:flex-start}
+.ax-ico{flex:0 0 28px;width:28px;height:28px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center}
+.ax-ico svg{width:16px;height:16px}
+body.theme-nuit .ax-ico{filter:brightness(1.7)}
+.ax-preuve-corps{flex:1 1 auto;min-width:0;display:grid;gap:1px}
+.ax-preuve-lib{font-size:11.5px;font-weight:700;color:var(--ax-doux)}
+.ax-preuve-txt{font-size:13.5px;line-height:1.35;overflow-wrap:anywhere}
+.ax-ev-badge{flex:0 0 auto;align-self:center;padding:3px 9px;border-radius:7px;background:#1B5E20;color:#fff;font-size:12.5px;font-weight:800;white-space:nowrap}
+
+.ax-fiabilite{margin:0;display:grid;gap:4px;font-size:13.5px}
+.ax-fiabilite div{display:flex;justify-content:space-between;gap:12px}
+.ax-fiabilite dt{color:var(--ax-doux)}
+.ax-fiabilite dd{margin:0;font-weight:700;text-align:right}
+.ax-analyse-vide{padding:18px 10px;text-align:center;border:1px dashed var(--ax-ligne);border-radius:12px}
+.ax-analyse-vide strong{display:block;font-size:15px;color:var(--ax-doux);margin-bottom:4px}
+.ax-analyse-vide p{margin:0;font-size:13.5px;color:var(--ax-doux)}
 
 /* — Pied : bouton Plier / Déplier — */
 .ax-pied{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:10px 12px;padding:10px 16px 16px;border-top:1px solid var(--ax-ligne)}

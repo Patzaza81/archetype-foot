@@ -167,24 +167,134 @@ function construitPanneau(info, c, equipes, idPanneau, idOnglet) {
   return el;
 }
 
-// Détails techniques : conservés dans un <details class="details-analyse"> pour la
-// compatibilité avec panier.js (qui cherche .details-analyse). Le <summary> est
-// masqué visuellement (classe .ax-summary-cache) : c'est le bouton « Détails de
-// l'analyse » placé dans le pied de carte qui contrôle son ouverture.
+/* ═════════ Détails de l'analyse : tableaux alimentés par la bibliothèque de justification ═════════
+   Règles d'affichage (elles traduisent la règle « calculable exactement » de la bibliothèque) :
+   1. jamais de tableau vide : sans aucune ligne, le tableau n'existe pas ;
+   2. jamais de « — », « N/A » ou « null » : une valeur non calculable n'a pas de ligne ;
+   3. la preuve EV a un badge distinct, jamais noyée parmi les preuves métier ;
+   4. le résumé ne remplace pas les preuves : il sert de synthèse, les preuves sont le corps ;
+   5. donnees_suffisantes === false : un seul message neutre, aucun tableau ;
+   6. le site ne recalcule rien : il lit resume, preuves et bibliotheque et les affiche. */
+const estNombre = (x) => typeof x === "number" && Number.isFinite(x);
+const fmtNombre = (x, dec) => x.toFixed(dec).replace(".", ",");
+const fmtPct = (x) => `${fmtNombre(x, 1)} %`;
+const fmtMatchs = (n) => `${n} match${n > 1 ? "s" : ""}`;
+
+function iconeAnalyse(nom) {
+  const chemin = ICONES_ANALYSE[nom] || ICONES_ANALYSE.info;
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${chemin}</svg>`;
+}
+
+// Une ligne n'existe que si sa valeur est calculable.
+function lig(libelle, valeur, formate) { return estNombre(valeur) ? [libelle, formate(valeur)] : null; }
+
+function tableauLignes(titre, lignes, pied) {
+  const l = lignes.filter(Boolean);
+  if (!l.length) return "";
+  return `<div class="ax-tab"><h4 class="ax-tab-titre">${echappeHtml(titre)}</h4>` +
+    `<table class="ax-tab-lignes"><tbody>${l.map(([lib, val]) => `<tr><th scope="row">${echappeHtml(lib)}</th><td>${echappeHtml(val)}</td></tr>`).join("")}</tbody></table>` +
+    (pied ? `<p class="ax-tab-pied">${echappeHtml(pied)}</p>` : "") + `</div>`;
+}
+
+function tableauResume(resume) {
+  if (!resume) return "";
+  return `<div class="ax-tab ax-tab-resume"><p class="ax-tab-etiquette">Synthèse du modèle</p><p class="ax-tab-resume-texte">${echappeHtml(resume)}</p></div>`;
+}
+
+function tableauPreuves(preuves, b) {
+  const liste = (Array.isArray(preuves) ? preuves : []).filter((p) => p && p.texte);
+  const lignes = liste.map((p) => {
+    const meta = PREUVE_META[p.type] || { ...PREUVE_META_INCONNUE, label: p.type };
+    const ev = p.type === "ev_percentage";
+    const badge = ev && estNombre(p.valeur) ? `<span class="ax-ev-badge">+${fmtNombre(p.valeur, 1)} %</span>` : "";
+    return `<li class="ax-preuve-ligne${ev ? " ax-ev" : ""}">` +
+      `<span class="ax-ico" style="color:${echappeHtml(meta.color)};background:${echappeHtml(meta.color)}22">${iconeAnalyse(meta.icon)}</span>` +
+      `<div class="ax-preuve-corps"><span class="ax-preuve-lib">${echappeHtml(meta.label)}</span><span class="ax-preuve-txt">${echappeHtml(p.texte)}</span></div>${badge}</li>`;
+  });
+  // Badge EV « si disponible » : la preuve peut avoir été écartée de la liste (3 maximum) alors que la valeur existe.
+  if (!liste.some((p) => p.type === "ev_percentage") && estNombre(b.ev_percentage)) {
+    const meta = PREUVE_META.ev_percentage;
+    lignes.push(`<li class="ax-preuve-ligne ax-ev"><span class="ax-ico" style="color:${meta.color};background:${meta.color}22">${iconeAnalyse(meta.icon)}</span>` +
+      `<div class="ax-preuve-corps"><span class="ax-preuve-lib">${meta.label}</span></div><span class="ax-ev-badge">+${fmtNombre(b.ev_percentage, 1)} %</span></li>`);
+  }
+  if (!lignes.length) return "";
+  return `<div class="ax-tab"><h4 class="ax-tab-titre">Preuves du modèle</h4><ul class="ax-preuve-liste">${lignes.join("")}</ul></div>`;
+}
+
+function tableauForme(titre, b, domicile) {
+  const lignes = domicile ? [
+    lig("Série sans défaite", b.home_unbeaten_streak, fmtMatchs),
+    lig("Série sans victoire", b.home_winless_streak, fmtMatchs),
+    lig("Taux de victoire", b.home_win_rate, fmtPct),
+    lig("Taux de défaite", b.home_loss_rate, fmtPct),
+    lig("Matchs avec ≥1 but encaissé", b.home_concede_rate, fmtPct),
+  ] : [
+    lig("Série sans défaite", b.away_unbeaten_streak, fmtMatchs),
+    lig("Série sans victoire", b.away_winless_streak, fmtMatchs),
+    lig("Taux de victoire", b.away_win_rate, fmtPct),
+    lig("Taux de défaite", b.away_loss_rate, fmtPct),
+    lig("Matchs avec ≥1 but encaissé", b.away_concede_pct, fmtPct),
+    lig("Matchs avec ≥1 but marqué", b.away_score_rate, fmtPct),
+  ];
+  return tableauLignes(titre, lignes);
+}
+
+function tableauH2H(b) {
+  const total = b.h2h_total;
+  if (!estNombre(total) || total <= 0) return "";
+  const cible = estNombre(b.target_goals) ? fmtNombre(b.target_goals, 1) : null;
+  const lignes = [
+    estNombre(b.h2h_unbeaten_count) ? ["Domicile invaincu", `${b.h2h_unbeaten_count} / ${total}`] : null,
+    estNombre(b.h2h_draw_count) ? ["Matchs nuls", `${b.h2h_draw_count} / ${total}`] : null,
+    cible && estNombre(b.h2h_over_count)
+      ? [`Matchs > ${cible} buts`, `${b.h2h_over_count} / ${total}` + (estNombre(b.h2h_over_rate) ? ` (${fmtNombre(b.h2h_over_rate, 1)} %)` : "")]
+      : null,
+  ];
+  return tableauLignes("Confrontations directes", lignes, `${total} confrontation${total > 1 ? "s" : ""} analysée${total > 1 ? "s" : ""}`);
+}
+
+function tableauCombine(b) {
+  const cible = estNombre(b.target_goals) ? fmtNombre(b.target_goals, 1) : null;
+  const lignes = [
+    lig("Matchs > 1,5 but (combiné)", b.over_15_rate_combined, fmtPct),
+    // la ligne 1,5 est déjà couverte par over_15_rate_combined : pas de doublon
+    cible && b.target_goals !== 1.5 ? lig(`Matchs > ${cible} buts (combiné)`, b.over_rate_combined, fmtPct) : null,
+    lig("Moyenne buts encaissés", b.avg_goals_conceded_combined, (x) => fmtNombre(x, 2)),
+    lig("Les 2 équipes marquent", b.both_teams_score_rate, fmtPct),
+    lig("Matchs nuls (combiné)", b.draw_rate_combined, fmtPct),
+  ];
+  return tableauLignes("Métriques combinées", lignes);
+}
+
+function construitAnalyse(info, c, equipes) {
+  const j = c.justification || {};
+  const b = j.bibliotheque && typeof j.bibliotheque === "object" ? j.bibliotheque : {};
+  const tete = `<h3>${echappeHtml(info.titre)} — ${echappeHtml(traduitMarche(c.marche, equipes))}</h3>`;
+  const ouvre = `<div class="ax-detail-rang ax-${info.classe}" data-cle="${info.cle}" hidden>`;
+  if (!j.donnees_suffisantes) {
+    return ouvre + tete + `<div class="ax-analyse-vide"><strong>Analyse non disponible</strong>` +
+      `<p>Données historiques insuffisantes pour justifier ce marché.</p></div></div>`;
+  }
+  return ouvre + tete +
+    tableauResume(j.resume) +
+    tableauPreuves(j.preuves, b) +
+    tableauForme(`Forme récente — ${equipes.domicile} (à domicile)`, b, true) +
+    tableauForme(`Forme récente — ${equipes.exterieur} (à l'extérieur)`, b, false) +
+    tableauH2H(b) +
+    tableauCombine(b) +
+    `<dl class="ax-fiabilite"><div><dt>Solidité du pari</dt><dd>${echappeHtml(traduitNiveau(c.niveau).texte)}</dd></div>` +
+    `<div><dt>Stabilité du calcul</dt><dd>${echappeHtml(traduitRobustesse(c.robustesse))}</dd></div></dl></div>`;
+}
+
+// Bloc <details class="details-analyse"> : conservé pour panier.js. Le <summary> est masqué
+// (.ax-summary-cache) ; c'est le bouton « Détails de l'analyse » du pied de carte qui l'ouvre.
+// Un panneau par choix disponible ; seul celui de l'onglet actif est affiché (voir construitCarte).
 function construitDetails(selection, equipes, idDetails) {
   const details = document.createElement("details");
   details.className = "details-analyse ax-details";
   details.id = idDetails;
-  const blocs = RANGS.filter((r) => selection[r.cle]).map((r) => {
-    const c = selection[r.cle];
-    const preuves = (c.justification && Array.isArray(c.justification.preuves)) ? c.justification.preuves.filter((p) => p && p.texte) : [];
-    return `<div class="ax-detail-rang ax-${r.classe}">` +
-      `<h3>${echappeHtml(r.titre)} — ${echappeHtml(traduitMarche(c.marche, equipes))}</h3>` +
-      (preuves.length ? `<ul>${preuves.map((p) => `<li>${echappeHtml(p.texte)}</li>`).join("")}</ul>` : "") +
-      `<dl><div><dt>Solidité du pari</dt><dd>${echappeHtml(traduitNiveau(c.niveau).texte)}</dd></div>` +
-      `<div><dt>Stabilité du calcul</dt><dd>${echappeHtml(traduitRobustesse(c.robustesse))}</dd></div></dl></div>`;
-  }).join("");
-  details.innerHTML = `<summary class="ax-summary-cache">Détails de l'analyse</summary><div class="ax-details-corps">${blocs}</div>`;
+  const blocs = RANGS.filter((r) => selection[r.cle]).map((r) => construitAnalyse(r, selection[r.cle], equipes)).join("");
+  details.innerHTML = `<summary class="ax-summary-cache" tabindex="-1">Détails de l'analyse</summary><div class="ax-details-corps">${blocs}</div>`;
   return details;
 }
 
@@ -233,6 +343,9 @@ function construitCarte(m, options) {
   });
   // Résumé compact (visible carte repliée) : placé SOUS les onglets ; il n'affiche que le choix de l'onglet actif.
   const resume = construitResume(selection, equipes);
+  // Bloc <details> (repliable) placé juste avant le pied ; son <summary> est caché, c'est le bouton
+  // « Détails de l'analyse » dans le pied qui l'ouvre. Il montre l'analyse de l'onglet actif.
+  const blocDetails = construitDetails(selection, equipes, idDetails);
   const active = (cible) => {
     actifs.forEach(({ bouton, panneau }) => {
       const oui = bouton === cible;
@@ -240,15 +353,13 @@ function construitCarte(m, options) {
       panneau.hidden = !oui;
     });
     resume.querySelectorAll(".ax-resume-rang").forEach((ligne) => { ligne.hidden = ligne.dataset.cle !== cible.dataset.cle; });
+    blocDetails.querySelectorAll(".ax-detail-rang").forEach((bloc) => { bloc.hidden = bloc.dataset.cle !== cible.dataset.cle; });
   };
   actifs.forEach(({ bouton, panneau }) => { bouton.addEventListener("click", () => active(bouton)); panneaux.appendChild(panneau); });
   if (actifs.length) { active(actifs[0].bouton); section.appendChild(onglets); section.appendChild(panneaux); }
 
   section.appendChild(resume);
 
-  // Bloc <details> (repliable) placé juste avant le pied ; son <summary> est
-  // caché, c'est le bouton « Détails de l'analyse » dans le pied qui l'ouvre.
-  const blocDetails = construitDetails(selection, equipes, idDetails);
   section.appendChild(blocDetails);
 
   // Pied de carte : bouton « Détails de l'analyse » (secondaire) et bouton
