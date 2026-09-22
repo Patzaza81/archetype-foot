@@ -34,6 +34,7 @@ from tickets import rapport_calibration
 
 FICHIER_ETAT = "etat_systeme.json"
 FICHIER_BILAN = "bilan_archetype_model.json"
+FICHIER_BILAN_SHRINK = "bilan_shrink_v1.json"
 NB_PROMOTIONS_RECENTES = 20
 
 
@@ -47,6 +48,10 @@ def _charge_json_ou_vide(chemin: str, defaut: Any) -> Any:
 
 def construit_etat() -> dict[str, Any]:
     bilan = _charge_json_ou_vide(FICHIER_BILAN, {})
+    # AJOUT 22/09/2026 -- bilan du second moteur (shrink_v1, en test), produit par bilan_shrink_v1.py sur
+    # archive_shrink/ -- dossier séparé de archive/, jamais lu par calibre_archetype_model.py (auto-calibration
+    # du moteur principal). {} si le fichier n'existe pas encore (pipeline pas encore exécuté avec ce commit).
+    bilan_shrink = _charge_json_ou_vide(FICHIER_BILAN_SHRINK, {})
 
     try:
         parametres = calibration.charger_parametres().get("parametres", {})
@@ -67,6 +72,7 @@ def construit_etat() -> dict[str, Any]:
     return {
         "genere_le": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "bilan_comportemental": bilan,
+        "bilan_shrink_v1": bilan_shrink,
         "parametres_actifs": parametres,
         "etat_calibration": etat_calibration,
         "dernieres_promotions": dernieres_promotions,

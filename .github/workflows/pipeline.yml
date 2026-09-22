@@ -191,6 +191,16 @@ jobs:
         run: python calcule_matrice_archetype_model.py
         continue-on-error: true
 
+      # AJOUT 22/09/2026 -- résolution des résultats + bilan comportemental de shrink_v1 (second moteur, EN TEST,
+      # voir moteur_shrink_pipeline.py). Miroir exact des deux étapes ci-dessus, mais sur archive_shrink/ au lieu
+      # de archive/ : ne lit ni n'écrit jamais dans archive/ ni bilan_archetype_model.json (moteur principal).
+      # Doit tourner après la résolution des résultats du moteur principal (même contrainte réseau) et avant la
+      # consolidation de l'état système ci-dessous (qui lit bilan_shrink_v1.json).
+      - name: Résoudre les résultats et construire le bilan de shrink_v1 (en test)
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+        run: python bilan_shrink_v1.py
+        continue-on-error: true
+
       # AJOUT 13/09/2026, feu vert explicite de Patrick -- dernière étape
       # de la boucle de calibration adaptative (cahier des charges v2 §7,
       # Addendum 2). Enchaîne garde_fous -> validation hors échantillon ->

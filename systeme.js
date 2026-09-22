@@ -34,6 +34,33 @@ function construitBlocGlobal(bilan) {
   return div;
 }
 
+// AJOUT 22/09/2026 -- comparaison moteur_v2_6_9 / shrink_v1, côte à côte. shrink_v1 est un moteur EN TEST (validé
+// par validation croisée sur données passées, voir evaluation/cv_shrink.py) : ce bloc est un suivi, jamais une
+// recommandation, et ne remplace pas le bloc "Bilan comportemental global" ci-dessus (moteur_v2_6_9, seul moteur
+// dont le pipeline se sert aujourd'hui pour publier des pronostics).
+function construitBlocComparaison(bilanPrincipal, bilanShrink) {
+  const div = document.createElement("div");
+  div.className = "bloc-systeme";
+  const gP = (bilanPrincipal && bilanPrincipal.global) || {};
+  const gS = (bilanShrink && bilanShrink.global) || {};
+  const ligne = (label, a, b) => `<tr><td>${label}</td><td>${a}</td><td>${b}</td></tr>`;
+  const roiTxt = (g) => (g.roi_flat === null || g.roi_flat === undefined ? "—" : formatPctSysteme(g.roi_flat));
+  div.innerHTML = `
+    <h2>Comparaison des moteurs</h2>
+    <p class="ax-bandeau" style="margin-bottom:0.75rem;">shrink_v1 est en test : validé par validation croisée sur données passées uniquement.
+      Ce tableau suit son évolution réelle au fil des matchs, il ne garantit rien.</p>
+    <table class="tableau-systeme">
+      <thead><tr><th></th><th>moteur_v2_6_9 (actuel)</th><th>shrink_v1 (en test)</th></tr></thead>
+      <tbody>
+        ${ligne("Observations résolues", gP.observations ?? 0, gS.observations ?? 0)}
+        ${ligne("Gagnées", gP.gagnes ?? 0, gS.gagnes ?? 0)}
+        ${ligne("Perdues", gP.perdus ?? 0, gS.perdus ?? 0)}
+        ${ligne("ROI (mise flat)", roiTxt(gP), roiTxt(gS))}
+      </tbody>
+    </table>`;
+  return div;
+}
+
 function construitTableauFamilles(bilan) {
   const parFamille = (bilan && bilan.par_famille) || {};
   const familles = Object.keys(parFamille);
@@ -108,6 +135,7 @@ function afficheEtatSysteme(etat) {
   maj.textContent = etat.genere_le ? `Dernière mise à jour : ${new Date(etat.genere_le).toLocaleString("fr-FR")}` : "";
 
   racine.appendChild(construitBlocGlobal(etat.bilan_comportemental));
+  racine.appendChild(construitBlocComparaison(etat.bilan_comportemental, etat.bilan_shrink_v1));
   racine.appendChild(construitTableauFamilles(etat.bilan_comportemental));
   racine.appendChild(construitTableauParametres(etat.parametres_actifs, etat.etat_calibration));
   racine.appendChild(construitListePromotions(etat.dernieres_promotions));
