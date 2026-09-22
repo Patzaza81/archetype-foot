@@ -1,10 +1,4 @@
-"""Intégrité du dépôt après un nettoyage (21/09/2026).
-
-La suppression de archetype_model/main.py a laissé, sans qu'aucun test ne le voie :
-  - archetype_model/backtest/boucle_b.py non importable (`from ..main import SCENARIOS`) ;
-  - audit_permanent.py qui ne compilait plus (blocs coupés en plein milieu).
-Ces tests détectent cette classe de casse AVANT qu'un run de plusieurs heures ne la découvre.
-"""
+"""Intégrité du dépôt après nettoyage : compilation et import des composants réellement utilisés."""
 import glob
 import importlib
 import os
@@ -42,8 +36,9 @@ def test_tout_module_d_archetype_model_est_importable():
 def test_chaque_script_du_workflow_est_importable():
     sys.path.insert(0, RACINE)
     with open(os.path.join(RACINE, ".github", "workflows", "pipeline.yml"), encoding="utf-8") as f:
-        # étapes réellement actives : les lignes commentées (« # run: python ... ») sont ignorées
-        scripts = sorted(set(re.findall(r"^\s*(?:run:\s*|)python (\w+)\.py", f.read(), re.M)))
+        # Seules les lignes YAML actives "run: python ..." sont considérées.
+        # Les commandes volontairement commentées ne doivent pas être traitées comme des étapes du workflow.
+        scripts = sorted(set(re.findall(r"^\s*run:\s*python\s+(\w+)\.py\s*$", f.read(), re.M)))
     assert {"precalcul", "scraper", "verifie_resultats_archetype_model", "moteur_v2_6_9", "pont_moteur"} <= set(scripts), scripts
     casses = []
     for nom in scripts:
@@ -60,10 +55,7 @@ def test_le_workflow_ne_lance_plus_la_calibration_de_l_ancien_modele():
     assert not any("calibre_archetype_model.py" in l for l in actif)
 
 
-# ─────────── parité avec l'environnement du workflow (échec du run n°134, 21/09/2026) ───────────
-# Le run n°134 s'est arrêté à l'étape d'autotests : un test importait PyYAML (absent du runner, qui n'installe que
-# requests, beautifulsoup4, pandas, lxml, playwright, pytest) et lisait pipeline.yml par un chemin absolu propre à la
-# machine de développement. Ces deux tests l'interdisent pour tous les tests.
+# Parité avec l'environnement du workflow.
 PAQUETS_DU_WORKFLOW = {"requests", "bs4", "pandas", "lxml", "playwright", "pytest"}
 
 
