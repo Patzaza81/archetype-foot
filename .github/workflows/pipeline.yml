@@ -31,9 +31,6 @@ on:
 
 permissions:
   contents: write
-  # AJOUT 13/09/2026 -- nécessaire à notifie_constat_majeur.py, qui crée
-  # une Issue via `gh issue create` uniquement quand un événement notable
-  # a été signalé cette nuit (promotion réelle, premier vrai ticket).
   issues: write
 
 concurrency:
@@ -155,42 +152,6 @@ jobs:
         run: python evaluation_scores.py
         continue-on-error: true
 
-      # AJOUT 13/09/2026, demande explicite de Patrick ("branché le plus
-      # tôt possible, dès le prochain run") -- mode observation des
-      # tickets (Option A) : construit un ticket FICTIF par nuit avec un
-      # seuil d'observations abaissé (tickets/observation.py,
-      # SEUIL_OBSERVATION=10), jamais présenté comme un vrai ticket,
-      # jamais dans archive/. Résout aussi les tickets fictifs des nuits
-      # précédentes -- doit tourner APRÈS la vérification ci-dessus, sinon
-      # les scores tout juste trouvés ne seraient pas encore là. Le seuil
-      # RÉEL de tickets/builder.py (100 observations) n'est jamais modifié
-      # par cette étape.
-      - name: Mode observation des tickets (fictifs, seuil abaissé)
-        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
-        run: python observe_tickets_archetype_model.py
-        continue-on-error: true
-
-      # AJOUT 13/09/2026 -- tente la construction de VRAIS tickets, avec
-      # le seuil réel INCHANGÉ de tickets/builder.py (100 observations
-      # conjointes). Un résultat vide est normal et attendu pendant
-      # probablement plusieurs mois -- ce script existe pour détecter,
-      # sans intervention, le jour où ça change (voir constat_majeur.py).
-      - name: Tentative de construction de vrais tickets (seuil réel, jamais assoupli)
-        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
-        run: python genere_tickets_reels_archetype_model.py
-        continue-on-error: true
-
-      # AJOUT 13/09/2026 -- construit le bilan comportemental à partir de
-      # l'archive résolue ci-dessus (lecture seule, aucun scraping,
-      # rejouable à volonté). Purement descriptif (cahier des charges v2
-      # §6.3) : reste purement descriptif -- ne pilote aucune décision par
-      # lui-même. Doit tourner après l'étape de vérification ci-dessus,
-      # jamais avant.
-      - name: Construire le bilan comportemental d'archetype_model
-        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
-        run: python calcule_matrice_archetype_model.py
-        continue-on-error: true
-
       # AJOUT 22/09/2026 -- résolution des résultats + bilan comportemental de shrink_v1 (second moteur, EN TEST,
       # voir moteur_shrink_pipeline.py). Miroir exact des deux étapes ci-dessus, mais sur archive_shrink/ au lieu
       # de archive/ : ne lit ni n'écrit jamais dans archive/ ni bilan_archetype_model.json (moteur principal).
@@ -201,27 +162,7 @@ jobs:
         run: python bilan_shrink_v1.py
         continue-on-error: true
 
-      # AJOUT 13/09/2026, feu vert explicite de Patrick -- dernière étape
-      # de la boucle de calibration adaptative (cahier des charges v2 §7,
-      # Addendum 2). Enchaîne garde_fous -> validation hors échantillon ->
-      # promotion/rejet pour chacun des 7 paramètres testables par
-      # contrefactuel.py, journalise systématiquement (même sans
-      # promotion). Doit tourner après le bilan comportemental ci-dessus,
-      # qui doit lui-même tourner après la vérification des résultats.
-      # convergence.py/robustness.py lisent désormais cette configuration
-      # (voir archetype_model/config_loader.py) -- une promotion ici a un
-      # effet réel sur le prochain cycle de sélection.
-      # DÉBRANCHÉE le 21/09/2026 -- la calibration adaptative règle les paramètres de l'ANCIEN modèle
-      # (archetype_model/config_loader.py). Le moteur du pipeline est désormais moteur_v2_6_9.py, dont les constantes
-      # sont fixes dans le code : une « promotion » ici ne changerait rien au calcul tout en écrivant un journal
-      # trompeur, à partir d'un archive qui mélange deux moteurs. À rebrancher seulement si un mécanisme de
-      # calibration propre au nouveau moteur est décidé (voir ROADMAP P2.6).
-      # - name: Calibration adaptative d'archetype_model
-      #   if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
-      #   run: python calibre_archetype_model.py
-      #   continue-on-error: true
-
-      # AJOUT 13/09/2026 -- consolide en un seul fichier (etat_systeme.json)
+      # Consolidation descriptive des deux moteurs : moteur_v2_6_9 (principal) et shrink_v1 (en test).\n      # Aucun calibrage, aucune promotion et aucun ticket n'est produit ici.\n      # AJOUT 13/09/2026 -- consolide en un seul fichier (etat_systeme.json)
       # ce que la nouvelle page systeme.html affiche : bilan comportemental,
       # paramètres calibrés, dernières promotions, rapport des tickets
       # fictifs. Lecture seule, aucun calcul nouveau -- doit tourner APRÈS
@@ -279,22 +220,11 @@ jobs:
           # run (aucun match archivé) -- ne jamais faire échouer le commit
           # pour ça.
           [ -d archive ] && git add archive/
-          # AJOUT 13/09/2026 -- config/ contient adaptive_parameters.json
-          # (les valeurs calibrées), adaptive_state.json (l'état actif) et
-          # les deux journaux (cycle + promotion, calibre_archetype_model.py)
-          # -- sans ce commit, chaque promotion serait perdue au run suivant.
-          [ -d config ] && git add config/
-          # AJOUT 13/09/2026 -- tickets_observes/ contient les tickets
-          # fictifs du mode observation (observe_tickets_archetype_model.py)
-          # -- sans ce commit, chaque ticket construit serait perdu au run
-          # suivant, impossible de suivre sa résolution le lendemain.
-          [ -d tickets_observes ] && git add tickets_observes/
           # AJOUT 13/09/2026 -- vrais_tickets/ ne contient normalement rien
           # pendant probablement plusieurs mois (seuil réel de
           # tickets/builder.py) -- ajouté par cohérence avec archive/config/
           # tickets_observes/ ci-dessus, jamais un échec si le dossier
           # n'existe pas encore.
-          [ -d vrais_tickets ] && git add vrais_tickets/
           # AJOUT 17/09/2026 (chantier module d'audit, archetype_model/audit/)
           # -- data/ contient audit_status.json (dashboard) et
           # audit_telemetry.json (historique de rétention par run + Brier
