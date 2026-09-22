@@ -1,16 +1,9 @@
 // systeme.js — présentation uniquement, aucun calcul.
-// Affiche etat_systeme.json (construit_etat_systeme.py) : bilan
-// comportemental, paramètres calibrables actifs, dernières promotions,
-// rapport de calibration des tickets fictifs.
+// Affiche etat_systeme.json : bilan du moteur_v2_6_9 et suivi de shrink_v1.
 
 function formatPctSysteme(x) {
   const n = Number(x);
   return Number.isFinite(n) ? `${(n * 100).toFixed(1).replace(".", ",")} %` : "—";
-}
-
-function formatNombreSysteme(x, decimales = 4) {
-  const n = Number(x);
-  return Number.isFinite(n) ? n.toFixed(decimales).replace(".", ",") : "—";
 }
 
 function echappeHtmlSysteme(x) {
@@ -34,10 +27,6 @@ function construitBlocGlobal(bilan) {
   return div;
 }
 
-// AJOUT 22/09/2026 -- comparaison moteur_v2_6_9 / shrink_v1, côte à côte. shrink_v1 est un moteur EN TEST (validé
-// par validation croisée sur données passées, voir evaluation/cv_shrink.py) : ce bloc est un suivi, jamais une
-// recommandation, et ne remplace pas le bloc "Bilan comportemental global" ci-dessus (moteur_v2_6_9, seul moteur
-// dont le pipeline se sert aujourd'hui pour publier des pronostics).
 function construitBlocComparaison(bilanPrincipal, bilanShrink) {
   const div = document.createElement("div");
   div.className = "bloc-systeme";
@@ -47,8 +36,7 @@ function construitBlocComparaison(bilanPrincipal, bilanShrink) {
   const roiTxt = (g) => (g.roi_flat === null || g.roi_flat === undefined ? "—" : formatPctSysteme(g.roi_flat));
   div.innerHTML = `
     <h2>Comparaison des moteurs</h2>
-    <p class="ax-bandeau" style="margin-bottom:0.75rem;">shrink_v1 est en test : validé par validation croisée sur données passées uniquement.
-      Ce tableau suit son évolution réelle au fil des matchs, il ne garantit rien.</p>
+    <p class="ax-bandeau" style="margin-bottom:0.75rem;">shrink_v1 est en test. Ce tableau suit son évolution réelle au fil des matchs.</p>
     <table class="tableau-systeme">
       <thead><tr><th></th><th>moteur_v2_6_9 (actuel)</th><th>shrink_v1 (en test)</th></tr></thead>
       <tbody>
@@ -79,55 +67,6 @@ function construitTableauFamilles(bilan) {
   return div;
 }
 
-function construitTableauParametres(parametres, etatCalibration) {
-  const noms = Object.keys(parametres || {});
-  const div = document.createElement("div");
-  div.className = "bloc-systeme";
-  const valeursActives = (etatCalibration && etatCalibration.parametres) || {};
-  const lignes = noms.map((nom) => {
-    const p = parametres[nom];
-    const modifie = nom in valeursActives;
-    return `<tr class="${modifie ? "ligne-modifiee" : ""}"><td>${echappeHtmlSysteme(nom)}</td><td>${formatNombreSysteme(p.valeur)}</td><td>${formatNombreSysteme(p.valeur_origine)}</td><td>${modifie ? "Calibré" : "Jamais calibré"}</td></tr>`;
-  }).join("");
-  div.innerHTML = `<h2>Paramètres calibrables actifs</h2>
-    <table class="tableau-systeme"><thead><tr><th>Paramètre</th><th>Valeur actuelle</th><th>Valeur d'origine</th><th>Statut</th></tr></thead><tbody>${lignes}</tbody></table>
-    <p class="note-systeme">Dernier cycle de calibration : ${echappeHtmlSysteme((etatCalibration && etatCalibration.dernier_cycle) || "jamais encore exécuté")}</p>`;
-  return div;
-}
-
-function construitListePromotions(promotions) {
-  const div = document.createElement("div");
-  div.className = "bloc-systeme";
-  if (!promotions || !promotions.length) {
-    div.innerHTML = `<h2>Dernières promotions</h2><p class="etat-vide-systeme">Aucun paramètre n'a encore été calibré automatiquement.</p>`;
-    return div;
-  }
-  const lignes = promotions.map((p) => `<li><strong>${echappeHtmlSysteme(p.date_cycle)}</strong> — ${echappeHtmlSysteme(p.parametre)} : ${formatNombreSysteme(p.avant)} → ${formatNombreSysteme(p.apres)}</li>`).join("");
-  div.innerHTML = `<h2>Dernières promotions</h2><ul class="liste-promotions">${lignes}</ul>`;
-  return div;
-}
-
-function construitBlocTickets(rapport, nbPending) {
-  const div = document.createElement("div");
-  div.className = "bloc-systeme";
-  if (!rapport || !rapport.nb_tickets_resolus) {
-    div.innerHTML = `<h2>Tickets fictifs (mode observation)</h2><p class="etat-vide-systeme">Aucun ticket fictif résolu pour l'instant${nbPending ? ` (${nbPending} en attente)` : ""}.</p>`;
-    return div;
-  }
-  const ecart = rapport.ecart;
-  const classeEcart = ecart >= 0 ? "ecart-positif" : "ecart-negatif";
-  div.innerHTML = `
-    <h2>Tickets fictifs (mode observation)</h2>
-    <div class="grille-stats">
-      <div class="stat"><span class="etiquette">Tickets résolus</span><strong>${rapport.nb_tickets_resolus}</strong></div>
-      <div class="stat"><span class="etiquette">En attente</span><strong>${nbPending || 0}</strong></div>
-      <div class="stat"><span class="etiquette">Probabilité annoncée moy.</span><strong>${formatPctSysteme(rapport.probabilite_annoncee_moyenne)}</strong></div>
-      <div class="stat"><span class="etiquette">Taux de réussite réel</span><strong>${formatPctSysteme(rapport.taux_reussite_reel)}</strong></div>
-    </div>
-    <p class="note-systeme ${classeEcart}">Écart annoncé/réel : ${ecart >= 0 ? "+" : ""}${formatPctSysteme(ecart)} ${ecart < -0.05 ? "— l'annonce paraît optimiste, à surveiller." : ""}</p>`;
-  return div;
-}
-
 function afficheEtatSysteme(etat) {
   const racine = document.getElementById("contenu-systeme");
   const maj = document.getElementById("maj-systeme");
@@ -137,9 +76,6 @@ function afficheEtatSysteme(etat) {
   racine.appendChild(construitBlocGlobal(etat.bilan_comportemental));
   racine.appendChild(construitBlocComparaison(etat.bilan_comportemental, etat.bilan_shrink_v1));
   racine.appendChild(construitTableauFamilles(etat.bilan_comportemental));
-  racine.appendChild(construitTableauParametres(etat.parametres_actifs, etat.etat_calibration));
-  racine.appendChild(construitListePromotions(etat.dernieres_promotions));
-  racine.appendChild(construitBlocTickets(etat.rapport_tickets_observation, etat.nb_tickets_observation_pending));
 }
 
 fetch(`etat_systeme.json?_=${Date.now()}`)
