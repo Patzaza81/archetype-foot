@@ -36,10 +36,19 @@ def test_tout_module_d_archetype_model_est_importable():
 def test_chaque_script_du_workflow_est_importable():
     sys.path.insert(0, RACINE)
     with open(os.path.join(RACINE, ".github", "workflows", "pipeline.yml"), encoding="utf-8") as f:
-        # Seules les lignes YAML actives "run: python ..." sont considérées.
-        # Les commandes volontairement commentées ne doivent pas être traitées comme des étapes du workflow.
-        scripts = sorted(set(re.findall(r"^\s*run:\s*python\s+(\w+)\.py\s*$", f.read(), re.M)))
-    assert {"precalcul", "scraper", "verifie_resultats_archetype_model", "moteur_v2_6_9", "pont_moteur"} <= set(scripts), scripts
+        # On relève les commandes Python actives du workflow, qu'elles soient
+        # sur la même ligne que "run:" ou dans un bloc "run: |".
+        # Les lignes YAML commentées ne doivent jamais être considérées.
+        lignes_actives = [l for l in f.read().splitlines() if not l.lstrip().startswith("#")]
+    scripts = sorted(set(
+        re.findall(r"^\s*(?:run:\s*)?python\s+([A-Za-z_]\w*)\.py(?:\s+.*)?$", "\n".join(lignes_actives), re.M)
+    ))
+    scripts_attendus = {
+        "moteur_v2_6_9", "pont_moteur", "scraper", "scraper_semaine",
+        "precalcul", "verifie_resultats_archetype_model", "evaluation_scores",
+        "bilan_shrink_v1", "construit_etat_systeme", "notifie_constat_majeur",
+    }
+    assert scripts_attendus <= set(scripts), scripts
     casses = []
     for nom in scripts:
         try:
