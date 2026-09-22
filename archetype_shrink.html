@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F6EFE2">
+<title>ARCHETYPE — Moteur shrink_v1 (en test)</title>
+<link rel="stylesheet" href="archetype.css?v=20260921e">
+</head>
+<body class="ax-page">
+<script>try{if(localStorage.getItem("archetype_theme_nuit")==="1")document.body.classList.add("theme-nuit")}catch(e){}</script>
+<div class="ax-conteneur">
+  <div class="ax-barre">
+    <a class="ax-lien-accueil" href="index.html"><span aria-hidden="true">←</span> Accueil</a>
+    <button id="ax-bouton-theme" class="ax-bouton-theme" type="button" aria-label="Activer le mode nuit">☾</button>
+  </div>
+  <div class="ax-entete">
+    <h1>ARCHETYPE — shrink_v1</h1>
+    <p class="ax-bandeau">Moteur en test : validé par validation croisée sur données passées, aucun suivi sur matchs neufs pour l'instant. Comparer aux résultats du moteur principal sur <a href="systeme.html">la page système</a>.</p>
+  </div>
+  <p id="maj" class="ax-maj" role="status" aria-live="polite">Chargement…</p>
+  <main id="matches" class="ax-liste-matchs"></main>
+</div>
+<script src="traduction_marches.js"></script>
+<script src="ui_mappings.js?v=20260921e"></script>
+<script src="archetype_shrink.js?v=20260922a"></script>
+</body>
+</html>

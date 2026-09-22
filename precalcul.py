@@ -889,6 +889,21 @@ def _slim_pour_archive(s):
     }
 
 
+CLE_BLOC_SHRINK = "shrink_v1"
+
+
+def _leger_pour_site_shrink(s):
+    """Équivalent de _leger_pour_site() pour le second moteur (moteur_shrink_pipeline.py) : même allègement
+    (marches/lambda retirés), même fonction bm.bloc_leger() (générique, ne dépend pas du nom du moteur), mais ne
+    lit QUE le bloc shrink_v1 -- ne touche jamais au bloc moteur_v2_6_9 déjà traité par _leger_pour_site()."""
+    d = dict(s)
+    d.pop("marches", None)
+    d.pop("lambda", None)
+    if isinstance(d.get(CLE_BLOC_SHRINK), dict):
+        d[CLE_BLOC_SHRINK] = branchement_moteur.bloc_leger(d[CLE_BLOC_SHRINK])
+    return d
+
+
 def _leger_pour_site(s):
     """Version pour precalcul_leger.json -- tout ce que script.js affiche
     SAUF marches et lambda (les deux champs les plus lourds, utilisés
@@ -1057,6 +1072,21 @@ def main():
     signaux = construit_signaux(fenetre)
     signaux = applique_moteur_pipeline(signaux)
 
+    # AJOUT 22/09/2026 -- second moteur (shrink_v1, en test) : réutilise STATS_EQUIPES_VUES déjà chargé par
+    # applique_moteur_pipeline() ci-dessus (voir moteur_shrink_pipeline.py) -- ZÉRO second scraping. Isolé dans un
+    # try : un échec ici ne doit jamais faire échouer le run du moteur principal, déjà terminé à ce stade.
+    try:
+        import moteur_shrink_pipeline as msp
+        archiver_shrink = msp.archiver_shrink(archetype_archive)
+        resume_shrink = msp.applique_moteur_shrink(
+            signaux, STATS_EQUIPES_VUES, h2h_fetcher=_h2h_pour_signal, archiver=archiver_shrink)
+        print(f"shrink_v1 -- statuts : {resume_shrink['statuts']} ; {resume_shrink['nb_matchs_avec_choix']} "
+              f"match(s) avec au moins un choix, {resume_shrink['nb_choix_retenus']} choix retenus, "
+              f"{resume_shrink['nb_archives']} observation(s) archivée(s) dans archive_shrink/.")
+    except Exception as e:
+        print(f"AVERTISSEMENT : shrink_v1 a échoué ({type(e).__name__}: {e}) -- sans conséquence sur le run "
+              f"du moteur principal, déjà terminé.", file=sys.stderr)
+
     for s in signaux:
         s["model_version"] = MODEL_VERSION
         s["status"] = "READY" if s.get("traite") else "PARTIAL"
@@ -1108,6 +1138,18 @@ def main():
     }
     with open(FICHIER_SORTIE_LEGER, "w", encoding="utf-8") as f:
         json.dump(sortie_legere, f, ensure_ascii=False, indent=2)
+
+    # AJOUT 22/09/2026 -- fichier léger du second moteur, pour archetype_shrink.html/js (page séparée, jamais lue
+    # par archetype.js du moteur principal). Isolé dans un try, même logique que l'appel ci-dessus.
+    try:
+        sortie_shrink_legere = {"genere_le": genere_le, "nb_matchs_fenetre": len(fenetre),
+                                "moteur": {"nom": "shrink_v1", "version": "1"},
+                                "signaux": [_leger_pour_site_shrink(s) for s in signaux]}
+        with open("precalcul_shrink_leger.json", "w", encoding="utf-8") as f:
+            json.dump(sortie_shrink_legere, f, ensure_ascii=False, indent=2)
+        print("precalcul_shrink_leger.json écrit (shrink_v1, en test).")
+    except Exception as e:
+        print(f"AVERTISSEMENT : precalcul_shrink_leger.json non écrit ({type(e).__name__}: {e}).", file=sys.stderr)
 
     print(f"{FICHIER_SORTIE} écrit : {sortie['nb_matchs_fenetre']} matchs "
           f"({sortie['nb_ready']} READY, {sortie['nb_partial']} PARTIAL). "
