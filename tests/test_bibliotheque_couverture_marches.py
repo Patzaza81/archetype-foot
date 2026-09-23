@@ -55,9 +55,9 @@ def test_x2_sans_h2h_ni_historique_ne_plante_pas():
             assert r["resume"] is None and r["preuve_specifique_disponible"] is False
 
 
-def test_x2_preuve_h2h_seule():
+def test_h2h_ne_justifie_jamais_x2():
     r = just("double_chance_X2", [], [], h2h((0, 1), (1, 1), (0, 2), (1, 1), (0, 0)))
-    assert r["resume"].startswith("Avantage historique : Bravo est restée invaincue lors de 5 des 5")
+    assert r["resume"] is None and r["preuve_specifique_disponible"] is False
 
 
 # ────────────────────────────── btts_non ──────────────────────────────
@@ -98,10 +98,9 @@ def test_dc12_un_nul_sur_six_est_accepte():
     assert r is not None and "16.7%" in r
 
 
-def test_dc12_historique_decisif_seul():
-    nuls_combines = dom((1, 1), (0, 0), (2, 2)) + ext((1, 1), (0, 0), (2, 2))  # 100 % de nuls : pas de preuve de forme
-    r = resume("double_chance_12", nuls_combines[:3], nuls_combines[3:], h2h((1, 0), (0, 2), (1, 1), (2, 0), (0, 1)))
-    assert r is not None and "Historique décisif : 1 nul seulement lors des 5" in r
+def test_dc12_h2h_ne_justifie_pas_le_marche():
+    nuls_combines = dom((1, 1), (0, 0), (2, 2)) + ext((1, 1), (0, 0), (2, 2))
+    assert resume("double_chance_12", nuls_combines[:3], nuls_combines[3:], h2h((1, 0), (0, 2), (1, 1), (2, 0), (0, 1))) is None
 
 
 def test_dc12_refuse_si_les_nuls_sont_frequents():
@@ -123,14 +122,12 @@ def test_nul_taux_de_nuls_eleve():
     assert r is not None and r.startswith("Nuls fréquents : 66.7%")
 
 
-def test_nul_historique_serre_seul():
-    r = resume("1x2_nul", dom((2, 0), (1, 0), (0, 1)), ext((1, 0), (0, 2), (1, 2)), h2h((1, 1), (0, 0), (2, 0), (1, 0), (0, 1)))
-    assert r is not None and "Historique serré : 2 nuls lors des 5" in r
+def test_nul_h2h_ne_justifie_pas_le_marche():
+    assert resume("1x2_nul", dom((2, 0), (1, 0), (0, 1)), ext((1, 0), (0, 2), (1, 2)), h2h((1, 1), (0, 0), (2, 0), (1, 0), (0, 1))) is None
 
 
-def test_nul_h2h_de_six_duels_dont_trois_nuls():
-    r = resume("1x2_nul", dom((2, 0), (1, 0), (0, 1)), ext((1, 0), (0, 2), (1, 2)), h2h((1, 1), (0, 0), (2, 2), (1, 0), (0, 1), (2, 0)))
-    assert r is not None and "3 nuls lors des 6" in r
+def test_nul_h2h_ne_justifie_jamais_meme_avec_six_duels():
+    assert resume("1x2_nul", dom((2, 0), (1, 0), (0, 1)), ext((1, 0), (0, 2), (1, 2)), h2h((1, 1), (0, 0), (2, 2), (1, 0), (0, 1), (2, 0))) is None
 
 
 def test_nul_refuse_sans_aucun_nul():
@@ -252,11 +249,9 @@ def test_total_under_3_5_et_4_5():
     assert "plus de 4,5 buts dans seulement 0.0%" in resume("over_under_total_4.5_under", a, b)
 
 
-def test_total_under_historique_ferme_devient_possible():
-    # CORRECTIF : h2h_over_count n'était calculé que pour « over », donc cette preuve n'existait jamais.
-    a, b = dom((2, 1), (3, 0), (1, 2)), ext((2, 2), (1, 3), (3, 1))  # combiné très offensif : aucune autre preuve « under »
-    r = resume("over_under_total_2.5_under", a, b, h2h((1, 0), (0, 1), (1, 1), (2, 1), (0, 0)))
-    assert r is not None and "Historique fermé : la barre des 2,5 buts n'a été franchie que dans 1 des 5" in r
+def test_total_under_h2h_ne_justifie_pas_le_marche():
+    a, b = dom((2, 1), (3, 0), (1, 2)), ext((2, 2), (1, 3), (3, 1))
+    assert resume("over_under_total_2.5_under", a, b, h2h((1, 0), (0, 1), (1, 1), (2, 1), (0, 0))) is None
 
 
 def test_total_under_refuse_a_50_pourcent():
@@ -397,3 +392,24 @@ def test_un_meme_texte_ne_sert_pas_deux_marches_opposes():
     assert resume("1x2_nul", a, b) is None and resume("double_chance_12", a, b) is not None
     assert resume("btts_non", dom((1, 1), (2, 1), (1, 2)), ext((1, 1), (1, 2), (2, 1))) is None
     assert resume("btts_oui", dom((1, 1), (2, 1), (1, 2)), ext((1, 1), (1, 2), (2, 1))) is not None
+
+
+# ───────────────────── simulation réelle Stockport–Peterborough ─────────────────────
+def test_stockport_peterborough_over_3_5_suit_le_chemin_reel_du_moteur():
+    # Données réellement utilisées par le moteur au 23/09/2026 :
+    # Stockport à domicile = 1-2, 5-1, 3-4
+    # Peterborough à l'extérieur = 0-2, 0-4, 1-1
+    a = dom((1, 2), (5, 1), (3, 4))
+    b = ext((0, 2), (0, 4), (1, 1))
+    r = bj.construit_justification_bibliotheque(
+        "over_under_total_3.5", a, b, h2h=[{"buts_a": 9, "buts_b": 0}] * 7,
+        nom_domicile="Stockport", nom_exterieur="Peterborough",
+        odds_scraped=1.96, market_prob_pct=56.65298796319276,
+    )
+    assert r["preuve_specifique_disponible"] is True
+    assert r["bibliotheque"]["avg_total_goals_combined"] == 4.0
+    assert r["bibliotheque"]["avg_goals_scored_combined"] == 1.67
+    assert r["bibliotheque"]["avg_goals_conceded_combined"] == 1.67
+    assert r["resume"].startswith("Les matchs de référence portent le total moyen à 4.00 buts.")
+    assert "56.7%" in r["resume"]
+    assert "H2H" not in r["resume"]
