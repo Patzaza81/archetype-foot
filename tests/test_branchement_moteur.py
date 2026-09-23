@@ -144,6 +144,10 @@ def test_un_seul_candidat_est_le_favori():
 def test_le_favori_est_la_probabilite_la_plus_haute_la_value_le_meilleur_ev_des_restants():
     sel = bm.selectionne([c("a", 0.55, 1.9, 0.12), c("b", 0.80, 1.3, 0.05), c("d", 0.60, 1.8, 0.25)])
     assert roles(sel) == ("b", "d", None)
+    assert sel["P1"]["selection_criterion"] == "probabilite_maximale"
+    assert "probabilité modèle la plus élevée" in sel["P1"]["raison_selection"]
+    assert sel["P2"]["selection_criterion"] == "edv_maximal_restant"
+    assert "EDV le plus élevé" in sel["P2"]["raison_selection"]
 
 
 def test_coup_de_poker_cote_et_probabilite_aux_seuils_exacts():
@@ -209,6 +213,10 @@ def test_choix_retenus_avec_justification_specifique():
     for r in ("P1", "P2"):
         j = sel[r]["justification"]
         assert j["donnees_suffisantes"] is True and j["resume"] and j["preuves"]
+        assert j["raison_selection"] == sel[r]["raison_selection"]
+        assert sel[r]["selection_criterion"] in (
+            "probabilite_maximale", "edv_maximal_restant", "edv_maximal_poker"
+        )
         assert sel[r]["niveau"].startswith("CAT_") and sel[r]["robustesse"] is None
         assert sel[r]["market_family"] in ("DOUBLE_CHANCE", "RESULT")
 
@@ -330,9 +338,10 @@ def test_bloc_leger_garde_la_selection_et_reduit_la_justification():
     lg = bm.bloc_leger(bloc)
     assert set(lg) == {"statut", "moteur", "version_moteur", "statut_global", "raison", "selection"}
     j = lg["selection"]["P1"]["justification"]
-    assert set(j) == {"resume", "preuves", "donnees_suffisantes", "bibliotheque"} and "inventaire" not in lg
+    assert set(j) == {"resume", "preuves", "donnees_suffisantes", "bibliotheque", "raison_selection"} and "inventaire" not in lg
     for champ in ("marche", "cote", "probabilite", "edge", "edv", "niveau", "market_family", "exposure_group", "rang"):
         assert champ in lg["selection"]["P1"], champ
+    assert lg["selection"]["P1"]["justification"]["raison_selection"]
     json.dumps(lg)                                                                            # sérialisable
 
 
