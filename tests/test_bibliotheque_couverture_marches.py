@@ -40,7 +40,8 @@ def resume(marche, a, b, h=None):
 
 # ────────────────────────── NameError X2 / 1x2_exterieur ──────────────────────────
 def test_x2_et_1x2_exterieur_ne_plantent_plus():
-    a, b = dom((1, 0), (1, 0), (1, 0)), ext((0, 1), (0, 1), (0, 1))
+    a = dom((0, 1), (0, 1), (0, 1))
+    b = ext((1, 0), (1, 0), (1, 0))
     for marche in ("double_chance_X2", "1x2_exterieur"):
         r = just(marche, a, b, h2h((0, 1), (0, 1), (0, 1), (1, 1)))
         assert r["resume"] is not None
@@ -275,9 +276,9 @@ def test_x2_ne_plante_pas_quand_l_equipe_a_domicile_a_moins_de_3_matchs():
 
 
 def test_x2_ne_pretend_jamais_sans_defaite_apres_des_defaites():
-    # CORRECTIF : le texte disait « sans défaite » pour 4 DÉFAITES de suite (série « sans victoire » confondue).
-    for marche in ("double_chance_X2", "1x2_exterieur"):
-        assert resume(marche, dom((1, 0), (1, 0), (1, 0)), ext((0, 1), (0, 1), (0, 1), (0, 1))) is None
+    # Une série de défaites ne doit jamais être recyclée en « sans défaite ».
+    assert resume("double_chance_X2", dom((1, 0), (1, 0), (1, 0)), ext((0, 1), (0, 1), (0, 1), (0, 1))) is None
+    assert resume("1x2_exterieur", dom((1, 0), (1, 0), (1, 0)), ext((0, 1), (0, 1), (0, 1), (0, 1))) is None
 
 
 def test_x2_les_nuls_comptent_comme_sans_defaite_et_une_defaite_coupe_la_serie():
@@ -306,6 +307,51 @@ def test_ligne_1_5_garde_sa_logique_d_origine():
     assert resume("over_under_total_1.5_over", a, b).startswith("Rythme offensif : plus de 1.5 but inscrit dans 100.0%")
     a, b = dom((0, 0), (1, 0), (0, 0)), ext((0, 0), (0, 0), (0, 1))
     assert resume("over_under_total_1.5_under", a, b).startswith("Rythme fermé : plus de 1.5 but dans seulement 0.0%")
+
+
+
+
+# ─────────────────────────────── clean sheet ───────────────────────────────
+def test_clean_sheet_domicile_est_justifiable():
+    r = resume("cage_inviolee_domicile", dom((1, 0), (2, 0), (0, 0)), ext((0, 1), (0, 2), (0, 1)))
+    assert r is not None and "Alpha" in r and "100.0%" in r
+
+
+def test_clean_sheet_exterieur_est_justifiable():
+    r = resume("cage_inviolee_exterieur", dom((0, 1), (0, 2), (0, 0)), ext((1, 0), (2, 0), (0, 0)))
+    assert r is not None and "Bravo" in r and "100.0%" in r
+
+
+def test_clean_sheet_ne_recycle_pas_une_preuve_de_match_gagne():
+    assert resume("cage_inviolee_domicile", dom((2, 1), (1, 2), (2, 1)), ext((1, 0), (1, 0), (1, 0))) is None
+
+
+# ─────────────────────────────── handicap ───────────────────────────────
+def test_handicap_domicile_est_justifiable_sur_sa_ligne():
+    r = resume("handicap_domicile_1.0", dom((3, 0), (2, 0), (2, 1)), ext((0, 1), (0, 2), (1, 1)))
+    assert r is not None and "Alpha" in r and "ligne +1" in r and "100.0%" in r
+
+
+def test_handicap_exterieur_est_justifiable_sur_sa_ligne():
+    r = resume("handicap_exterieur_1.0", dom((0, 1), (0, 2), (1, 1)), ext((3, 0), (2, 0), (2, 1)))
+    assert r is not None and "Bravo" in r and "ligne +1" in r and "100.0%" in r
+
+
+def test_handicap_ne_recycle_pas_une_simple_forme():
+    assert resume("handicap_domicile_-1.0", dom((1, 0), (2, 1), (1, 0)), ext((0, 0), (0, 1), (1, 1))) is None
+
+
+# ─────────────────────────────── victoire_seche_vs_double_chance ───────────────────────────────
+def test_victoire_seche_ne_prend_plus_une_preuve_sans_defaite():
+    a = dom((1, 1), (2, 0), (0, 0))
+    b = ext((1, 0), (0, 1), (1, 1))
+    assert resume("double_chance_1X", a, b) is not None
+    assert resume("1x2_domicile", a, b) is None
+
+
+def test_victoire_seche_domicile_a_sa_propre_preuve():
+    r = resume("1x2_domicile", dom((2, 0), (1, 0), (3, 1)), ext((1, 0), (0, 2), (0, 1)))
+    assert r is not None and ("s'impose dans" in r or "cède la victoire" in r)
 
 
 # ─────────────────────────────── robustesse ───────────────────────────────
