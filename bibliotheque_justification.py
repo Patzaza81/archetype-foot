@@ -479,12 +479,6 @@ def construit_justification_bibliotheque(
                 f"{equipe} a couvert la ligne {txt} dans {taux:.1f}% de ses dernières rencontres {lieu}.",
                 type="handicap_cover_rate", valeur=taux, ligne=ligne_handicap,
             ))
-        if taux is not None and taux >= 80:
-            preuves.append(_proof(
-                f"Sur cette ligne, {equipe} a franchi la marge demandée dans {taux:.1f}% de sa série récente {lieu}.",
-                type="handicap_cover_rate_fort", valeur=taux, ligne=ligne_handicap,
-            ))
-
     elif _team_goals_line(marche):
         cote_marche, ligne_equipe, sens = _team_goals_line(marche)
         txt = str(ligne_equipe).replace(".", ",")
