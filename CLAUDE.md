@@ -80,3 +80,12 @@ La formulation doit :
 6. ne jamais transformer une statistique disponible en justification si cette statistique n'explique pas réellement le marché retenu.
 
 La variation doit être déterministe et fondée sur la preuve disponible, pas aléatoire : deux marchés opposés ne doivent jamais recevoir la même phrase simplement parce que le système dispose des mêmes chiffres.
+
+
+## Règle maîtresse — justification en conditions réelles
+
+- La justification doit restituer le chemin quantitatif réel ayant conduit au marché retenu. Elle ne doit jamais chercher après coup une statistique simplement compatible avec le marché.
+- Les données H2H sont affichées séparément à titre indicatif. Elles n'influencent ni le choix du marché ni sa justification. Une justification ne doit jamais devenir disponible uniquement grâce au H2H.
+- Pour un total de buts (+/- X,5), la preuve doit porter sur le **total du match** et suivre les données réellement utilisées par le moteur : buts marqués/encaissés dans le contexte domicile/extérieur, volume total observé, puis probabilité modèle du seuil exact.
+- Exemple réel Stockport–Peterborough du 26/09/2026 : le moteur utilise 3 matchs de Stockport à domicile et 3 matchs de Peterborough à l'extérieur. Ces six matchs produisent 4,00 buts en moyenne. Les moyennes de contexte sont Stockport 3,00 marqués / 2,33 encaissés à domicile et Peterborough 0,33 marqué / 2,33 encaissés à l'extérieur. Le moteur construit alors λ domicile = 2,67 et λ extérieur = 1,33, soit 4,00 buts attendus, puis 56,7 % pour +3,5. La justification doit suivre ce chemin, pas seulement afficher « 2,33 buts encaissés ».
+- Le texte visible doit rester naturel : expliquer pourquoi le seuil précis est soutenu, avec les données utiles et la probabilité du modèle, sans jargon interne inutile.
