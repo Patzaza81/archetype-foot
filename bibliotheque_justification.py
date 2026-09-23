@@ -12,6 +12,10 @@ from statistics import mean
 MIN_MATCHES = 5
 MIN_ROLE_MATCHES = 3
 
+# Les H2H sont une information contextuelle affichée séparément. Ils ne participent
+# jamais à la justification ni à l'éligibilité d'un marché.
+H2H_JUSTIFICATION_ACTIVE = False
+
 
 def _valid(matches):
     return [
@@ -117,6 +121,8 @@ def construit_donnees(
         "h2h_total": len(h),
         "over_15_rate_combined": None,
         "avg_goals_conceded_combined": None,
+        "avg_goals_scored_combined": None,
+        "avg_total_goals_combined": None,
         "h2h_over_rate": None,
         "target_goals": None,
         "h2h_over_count": None,
@@ -173,6 +179,12 @@ def construit_donnees(
         )
         data["avg_goals_conceded_combined"] = round(
             mean(m["buts_encaisses"] for m in combined), 2
+        )
+        data["avg_goals_scored_combined"] = round(
+            mean(m["buts_marques"] for m in combined), 2
+        )
+        data["avg_total_goals_combined"] = round(
+            mean(m["buts_marques"] + m["buts_encaisses"] for m in combined), 2
         )
         data["both_teams_score_rate"] = _pct(
             sum(m["buts_marques"] >= 1 and m["buts_encaisses"] >= 1 for m in combined),
@@ -276,7 +288,7 @@ def construit_justification_bibliotheque(
                 f"{b} cède la victoire dans {d['away_loss_rate']:.1f}% de ses derniers déplacements.",
                 type="away_loss_rate", valeur=d["away_loss_rate"],
             ))
-        if d["h2h_home_win_count"] is not None and d["h2h_total"] >= MIN_MATCHES and _pct(d["h2h_home_win_count"], d["h2h_total"]) >= 60:
+        if H2H_JUSTIFICATION_ACTIVE and d["h2h_home_win_count"] is not None and d["h2h_total"] >= MIN_MATCHES and _pct(d["h2h_home_win_count"], d["h2h_total"]) >= 60:
             preuves.append(_proof(
                 f"Les confrontations récentes tournent aussi en faveur de {a} : {d['h2h_home_win_count']} victoires sur {d['h2h_total']} duels.",
                 type="h2h_home_win_count", valeur=d["h2h_home_win_count"], total=d["h2h_total"],
@@ -293,7 +305,7 @@ def construit_justification_bibliotheque(
                 f"À domicile, {a} gagne {d['home_win_rate']:.1f}% de ses rencontres récentes.",
                 type="home_win_rate", valeur=d["home_win_rate"],
             ))
-        if d["h2h_unbeaten_count"] is not None and d["h2h_total"] >= MIN_MATCHES and _pct(d["h2h_unbeaten_count"], d["h2h_total"]) >= 60:
+        if H2H_JUSTIFICATION_ACTIVE and d["h2h_unbeaten_count"] is not None and d["h2h_total"] >= MIN_MATCHES and _pct(d["h2h_unbeaten_count"], d["h2h_total"]) >= 60:
             preuves.append(_proof(
                 f"{a} a évité la défaite dans {d['h2h_unbeaten_count']} des {d['h2h_total']} derniers duels entre les deux équipes.",
                 type="h2h_unbeaten_count", valeur=d["h2h_unbeaten_count"], total=d["h2h_total"],
@@ -310,7 +322,7 @@ def construit_justification_bibliotheque(
                 f"{a} s'incline dans {d['home_loss_rate']:.1f}% de ses dernières réceptions.",
                 type="home_loss_rate", valeur=d["home_loss_rate"],
             ))
-        if d["h2h_away_win_count"] is not None and d["h2h_total"] >= MIN_MATCHES and _pct(d["h2h_away_win_count"], d["h2h_total"]) >= 60:
+        if H2H_JUSTIFICATION_ACTIVE and d["h2h_away_win_count"] is not None and d["h2h_total"] >= MIN_MATCHES and _pct(d["h2h_away_win_count"], d["h2h_total"]) >= 60:
             preuves.append(_proof(
                 f"Les duels récents donnent également l'avantage à {b} : {d['h2h_away_win_count']} victoires sur {d['h2h_total']}.",
                 type="h2h_away_win_count", valeur=d["h2h_away_win_count"], total=d["h2h_total"],
@@ -329,7 +341,7 @@ def construit_justification_bibliotheque(
                 f"Fragilité à domicile : {a} présente {d['home_loss_rate']:.1f}% de défaites récentes à domicile.",
                 type="home_loss_rate", valeur=d["home_loss_rate"],
             ))
-        if h:
+        if H2H_JUSTIFICATION_ACTIVE and h:
             h2h_x2 = sum(x["buts_a"] <= x["buts_b"] for x in h)
             if _pct(h2h_x2, len(h)) >= 70:
                 preuves.append(_proof(
@@ -349,15 +361,25 @@ def construit_justification_bibliotheque(
             if target != 1.5 and d["over_rate_combined"] is not None and d["over_rate_combined"] >= 75:
                 txt = str(target).replace(".", ",")
                 preuves.append(_proof(
-                    f"Rythme offensif : plus de {txt} buts dans {d['over_rate_combined']:.1f}% des matchs récents des deux équipes.",
+                    f"Le seuil de {txt} buts est régulièrement franchi : {d['over_rate_combined']:.1f}% des matchs de référence dépassent cette ligne.",
                     type="over_line_rate_combined", valeur=d["over_rate_combined"], ligne=target,
+                ))
+            if target != 1.5 and d["avg_total_goals_combined"] is not None and d["market_prob_pct"] is not None:
+                txt = str(target).replace(".", ",")
+                preuves.append(_proof(
+                    f"Les matchs de référence portent le total moyen à {d['avg_total_goals_combined']:.2f} buts. "
+                    f"Le modèle estime {d['market_prob_pct']:.1f}% de chances de dépasser {txt} buts.",
+                    type="total_goals_model_path", valeur=d["market_prob_pct"], ligne=target,
+                    moyenne_total=d["avg_total_goals_combined"],
+                    moyenne_marques=d["avg_goals_scored_combined"],
+                    moyenne_encaisses=d["avg_goals_conceded_combined"],
                 ))
             if d["avg_goals_conceded_combined"] is not None and d["avg_goals_conceded_combined"] >= 1.8:
                 preuves.append(_proof(
-                    f"Série ouverte : ces deux formations concèdent en moyenne {d['avg_goals_conceded_combined']:.2f} buts par rencontre cette saison.",
+                    f"Les deux défenses concèdent en moyenne {d['avg_goals_conceded_combined']:.2f} buts par rencontre sur l'échantillon utilisé.",
                     type="avg_goals_conceded_combined", valeur=d["avg_goals_conceded_combined"],
                 ))
-            if d["h2h_over_count"] is not None and d["h2h_over_rate"] is not None and d["h2h_over_rate"] >= 70:
+            if H2H_JUSTIFICATION_ACTIVE and d["h2h_over_count"] is not None and d["h2h_over_rate"] is not None and d["h2h_over_rate"] >= 70:
                 txt = str(target).replace(".", ",")
                 preuves.append(_proof(
                     f"Historique prolifique : la barre des {txt} buts a été franchie dans {d['h2h_over_count']} des {d['h2h_total']} derniers duels.",
@@ -369,7 +391,7 @@ def construit_justification_bibliotheque(
                     f"Rythme fermé : plus de 1.5 but dans seulement {d['over_15_rate_combined']:.1f}% des matchs récents des deux équipes.",
                     type="under_15_rate_combined", valeur=d["over_15_rate_combined"],
                 ))
-            if d["h2h_over_count"] is not None and d["h2h_over_rate"] is not None and d["h2h_over_rate"] <= 30:
+            if H2H_JUSTIFICATION_ACTIVE and d["h2h_over_count"] is not None and d["h2h_over_rate"] is not None and d["h2h_over_rate"] <= 30:
                 txt = str(target).replace(".", ",")
                 preuves.append(_proof(
                     f"Historique fermé : la barre des {txt} buts n'a été franchie que dans {d['h2h_over_count']} des {d['h2h_total']} derniers duels.",
@@ -420,7 +442,7 @@ def construit_justification_bibliotheque(
                 f"Peu de nuls : seulement {d['draw_rate_combined']:.1f}% des matchs récents des deux équipes se sont terminés sur un partage.",
                 type="draw_rate_combined_low", valeur=d["draw_rate_combined"],
             ))
-        if d["h2h_draw_count"] is not None and d["h2h_total"] >= MIN_MATCHES and _pct(d["h2h_draw_count"], d["h2h_total"]) <= 20:
+        if H2H_JUSTIFICATION_ACTIVE and d["h2h_draw_count"] is not None and d["h2h_total"] >= MIN_MATCHES and _pct(d["h2h_draw_count"], d["h2h_total"]) <= 20:
             preuves.append(_proof(
                 f"Historique décisif : {d['h2h_draw_count']} nul seulement lors des {d['h2h_total']} dernières confrontations directes.",
                 type="h2h_no_draw_count", valeur=d["h2h_draw_count"], total=d["h2h_total"],
@@ -432,7 +454,7 @@ def construit_justification_bibliotheque(
                 f"Nuls fréquents : {d['draw_rate_combined']:.1f}% des matchs récents des deux équipes se sont terminés sur un partage.",
                 type="draw_rate_combined_high", valeur=d["draw_rate_combined"],
             ))
-        if d["h2h_draw_count"] is not None and d["h2h_total"] >= MIN_MATCHES and _pct(d["h2h_draw_count"], d["h2h_total"]) >= 40:
+        if H2H_JUSTIFICATION_ACTIVE and d["h2h_draw_count"] is not None and d["h2h_total"] >= MIN_MATCHES and _pct(d["h2h_draw_count"], d["h2h_total"]) >= 40:
             preuves.append(_proof(
                 f"Historique serré : {d['h2h_draw_count']} nuls lors des {d['h2h_total']} dernières confrontations directes.",
                 type="h2h_draw_count", valeur=d["h2h_draw_count"], total=d["h2h_total"],
