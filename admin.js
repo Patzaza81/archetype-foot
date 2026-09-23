@@ -1,8 +1,12 @@
-// admin.js — page d'audit/contrôle/calibration. Présentation uniquement,
-// aucun calcul de fond : lit data/audit_status.json (report.py),
-// data/audit_telemetry.json (telemetry.py) et
-// config/journal_promotion.jsonl (calibre_archetype_model.py) déjà
-// produits par le pipeline nocturne.
+// admin.js — page d'audit/contrôle. Présentation uniquement, aucun calcul
+// de fond : lit data/audit_status.json (report.py) et
+// data/audit_telemetry.json (telemetry.py), déjà produits par le pipeline
+// nocturne. NETTOYAGE 22/09/2026 : le bloc "Journal d'étalonnage &
+// calibration" (config/journal_promotion.jsonl, calibre_archetype_model.py)
+// est retiré -- ce système a été supprimé entièrement (demande de
+// Patrick). Le reste de cette page (cockpit, disjoncteurs, télémétrie)
+// appartient à l'audit passif de l'ancien modèle, déjà figé depuis le
+// 21/09/2026 (plus alimenté) -- hors périmètre de ce nettoyage.
 //
 // AUTHENTIFICATION -- LIMITE CONNUE, À GARDER EN TÊTE : cette vérification
 // est côté client uniquement (pas de backend sur un hébergement statique).
@@ -256,51 +260,6 @@
   }
 
   // -------------------------------------------------------------------
-  // Bloc 4 — Journal d'étalonnage & calibration
-  // -------------------------------------------------------------------
-
-  function parseJsonl(texte) {
-    return texte.split("\n").map((l) => l.trim()).filter(Boolean).map((l) => {
-      try { return JSON.parse(l); } catch (e) { return null; }
-    }).filter(Boolean);
-  }
-
-  function construitBlocCalibration(entrees) {
-    const div = document.createElement("div");
-    div.className = "bloc-systeme";
-
-    if (!entrees || !entrees.length) {
-      div.innerHTML = `<h2>🧪 Journal d'étalonnage & calibration</h2><p class="etat-vide-systeme">Aucun cycle de calibration n'a encore tourné.</p>`;
-      return div;
-    }
-
-    const recentes = entrees.slice().reverse().slice(0, 100);
-    const lignes = recentes.map((e) => `
-      <tr>
-        <td>${echappeHtml(e.date_cycle)}</td>
-        <td>${echappeHtml(e.parametre)}</td>
-        <td>${formatNombre(e.avant, 4)} → ${formatNombre(e.apres, 4)}</td>
-        <td class="decision-${echappeHtml(e.decision)}">${echappeHtml(e.decision)}</td>
-        <td>${echappeHtml((e.evidence || {}).motif || "")}</td>
-      </tr>`).join("");
-
-    const nbPromotions = entrees.filter((e) => e.decision === "PROMU").length;
-
-    div.innerHTML = `
-      <h2>🧪 Journal d'étalonnage & calibration</h2>
-      <div class="grille-stats">
-        <div class="stat"><span class="etiquette">Cycles journalisés</span><strong>${entrees.length}</strong></div>
-        <div class="stat"><span class="etiquette">Promotions réelles</span><strong>${nbPromotions}</strong></div>
-      </div>
-      <table class="tableau-systeme">
-        <thead><tr><th>Cycle</th><th>Paramètre</th><th>Avant → Après</th><th>Décision</th><th>Motif</th></tr></thead>
-        <tbody>${lignes}</tbody>
-      </table>
-      <p class="note-systeme">100 entrées les plus récentes affichées (les plus récentes en premier), sur ${entrees.length} au total.</p>`;
-    return div;
-  }
-
-  // -------------------------------------------------------------------
   // Orchestration
   // -------------------------------------------------------------------
 
@@ -310,22 +269,18 @@
     maj.textContent = "Chargement…";
 
     const chargeJson = (url) => fetch(`${url}?_=${Date.now()}`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
-    const chargeTexte = (url) => fetch(`${url}?_=${Date.now()}`).then((r) => (r.ok ? r.text() : "")).catch(() => "");
 
     Promise.all([
       chargeJson("data/audit_status.json"),
       chargeJson("data/audit_telemetry.json"),
-      chargeTexte("config/journal_promotion.jsonl"),
-    ]).then(([status, telemetrie, journalTexte]) => {
+    ]).then(([status, telemetrie]) => {
       racine.innerHTML = "";
       const runs = (telemetrie && telemetrie.runs) || [];
       const dernierRun = runs.length ? runs[runs.length - 1] : null;
-      const entreesJournal = parseJsonl(journalTexte || "");
 
       racine.appendChild(construitBlocCockpit(status));
       racine.appendChild(construitBlocDisjoncteurs(dernierRun));
       racine.appendChild(construitBlocTelemetrie(dernierRun));
-      racine.appendChild(construitBlocCalibration(entreesJournal));
 
       maj.textContent = status && status.horodatage_controle
         ? `Dernier contrôle d'audit : ${formatDate(status.horodatage_controle)}`
