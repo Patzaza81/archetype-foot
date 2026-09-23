@@ -343,8 +343,8 @@ def test_handicap_ne_recycle_pas_une_simple_forme():
 
 # ─────────────────────────────── victoire_seche_vs_double_chance ───────────────────────────────
 def test_victoire_seche_ne_prend_plus_une_preuve_sans_defaite():
-    a = dom((1, 1), (2, 0), (0, 0))
-    b = ext((1, 0), (0, 1), (1, 1))
+    a = dom((1, 1), (2, 0), (0, 0), (1, 1))
+    b = ext((1, 0), (0, 1), (1, 1), (1, 1))
     assert resume("double_chance_1X", a, b) is not None
     assert resume("1x2_domicile", a, b) is None
 
