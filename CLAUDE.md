@@ -25,7 +25,7 @@ Les deux doivent rester traçables. Une preuve EV générique ne remplace jamais
 
 Si un marché n'a pas de preuve spécifique calculable sur les données réelles, il ne doit pas être retenu ni affiché comme choix.
 
-De même, si la sélection finale produit un marché sans raison_selection explicite et liée au même critère que la fonction de sélection, le traitement doit échouer : ne jamais fabriquer une justification pour combler le manque.
+La sélection est souveraine : si un marché est sélectionné, cela signifie qu'il a déjà satisfait toutes les exigences de sélection. La justification ne constitue jamais un filtre supplémentaire et son absence ne peut jamais annuler rétroactivement un marché retenu. La justification doit simplement expliquer le choix à partir des éléments réellement disponibles.
 
 ## Cause de sélection actuelle du moteur V2.6.9
 
