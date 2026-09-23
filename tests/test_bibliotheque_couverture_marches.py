@@ -409,7 +409,7 @@ def test_stockport_peterborough_over_3_5_suit_le_chemin_reel_du_moteur():
     assert r["preuve_specifique_disponible"] is True
     assert r["bibliotheque"]["avg_total_goals_combined"] == 4.0
     assert r["bibliotheque"]["avg_goals_scored_combined"] == 1.67
-    assert r["bibliotheque"]["avg_goals_conceded_combined"] == 1.67
+    assert r["bibliotheque"]["avg_goals_conceded_combined"] == 2.33
     assert r["resume"].startswith("Les matchs de référence portent le total moyen à 4.00 buts.")
     assert "56.7%" in r["resume"]
     assert "H2H" not in r["resume"]
