@@ -25,6 +25,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 
 import branchement_moteur as bm
 import moteur_v2_6_9 as moteur
+import pont_moteur
 import evaluation.modeles.shrink_v1 as shrink
 
 CLE_BLOC_SHRINK = "shrink_v1"
@@ -50,19 +51,25 @@ def archiver_shrink(archive_module):
 
 
 @contextlib.contextmanager
-def _moteur_avec_shrink():
-    """Substitue construire_matrice/calcul_lambdas_trace le temps d'un match, restaure toujours ensuite — même
-    mécanisme que evaluation/rejoue_moteur.py, déjà utilisé pour valider shrink_v1 sur les 501 matchs."""
+def _moteur_avec_shrink(entree: Dict[str, Any]):
+    """Substitue construire_matrice/calcul_lambdas_trace le temps d'un match, restaure toujours ensuite -- même
+    mécanisme que evaluation/rejoue_moteur.py, déjà utilisé pour valider shrink_v1 sur les 501 matchs.
+
+    `entree` doit être le dict construit par pont_moteur.match_vers_moteur() pour CE match (equipe_dom/equipe_ext
+    avec matchs_joues) -- shrink.lambdas() en a besoin pour calculer le poids du tirage vers la référence commune.
+    Un dict vide {} désactive silencieusement tout le shrinkage (voir _shrink() dans evaluation/modeles/shrink_v1.py :
+    n=None -> valeur brute renvoyée telle quelle) -- BUG corrigé le 23/09/2026, shrink_v1 tournait comme une copie
+    exacte de moteur_v2_6_9 depuis son branchement, sans qu'aucune erreur ne le signale (voir ROADMAP)."""
     orig_matrice, orig_trace = moteur.construire_matrice, moteur.calcul_lambdas_trace
 
     def trace(att_d, def_d, att_e, def_e):
-        ld_brut, le_brut = shrink.lambdas(att_d, def_d, att_e, def_e, {})   # {} : shrink_v1 n'utilise pas `entree`
+        ld_brut, le_brut = shrink.lambdas(att_d, def_d, att_e, def_e, entree)
         ld = max(moteur.LAMBDA_MIN, min(moteur.LAMBDA_MAX, ld_brut))
         le = max(moteur.LAMBDA_MIN, min(moteur.LAMBDA_MAX, le_brut))
         return ld, le, {"dom": {"brut": ld_brut, "clampe": ld, "clamp_applique": ld != ld_brut},
                         "ext": {"brut": le_brut, "clampe": le, "clamp_applique": le != le_brut}}
 
-    moteur.construire_matrice = lambda ld, le: shrink.matrice(ld, le, {})
+    moteur.construire_matrice = lambda ld, le: shrink.matrice(ld, le, entree)
     moteur.calcul_lambdas_trace = trace
     try:
         yield
@@ -74,14 +81,21 @@ def applique_moteur_shrink(signaux: List[Dict[str, Any]], stats_equipes: Dict[Tu
                            maintenant=None, h2h_fetcher: Optional[Callable] = None,
                            archiver: Optional[Callable] = None) -> Dict[str, Any]:
     """Même contrat de retour que branchement_moteur.applique_moteur. N'appelle jamais analyse_signal() sans la
-    substitution active : shrink_v1 ne doit jamais, même par accident, être évalué avec les lambdas de v2.6.9."""
+    substitution active : shrink_v1 ne doit jamais, même par accident, être évalué avec les lambdas de v2.6.9.
+
+    Reconstruit le dict `entree` (equipe_dom/equipe_ext, matchs_joues) via pont_moteur.match_vers_moteur() -- la
+    MÊME fonction, pure, que analyse_signal() appelle en interne pour le même signal -- afin de le transmettre à
+    shrink.lambdas(). Un signal non exportable (NON_EXPORTABLE) donne entree={} : shrink_v1 tombera alors sur le
+    même statut NON_EXPORTABLE qu'affiche déjà moteur_v2_6_9 pour ce signal, sans jamais planter."""
     import datetime
     maintenant = maintenant or datetime.datetime.now(datetime.timezone.utc)
+    horodatage = maintenant.strftime("%Y-%m-%dT%H:%M:%SZ")
     statuts: Dict[str, int] = {}
     nb_selectionnes = nb_avec_choix = nb_archives = nb_erreurs_archive = 0
     for s in signaux:
         try:
-            with _moteur_avec_shrink():
+            entree, _raison = pont_moteur.match_vers_moteur(s, stats_equipes, horodatage)
+            with _moteur_avec_shrink(entree or {}):
                 bloc, non_selectionnes = bm.analyse_signal(s, stats_equipes, maintenant, h2h_fetcher)
         except Exception as e:
             bloc, non_selectionnes = bm.bloc_non_analyse("ERREUR_TECHNIQUE", f"{type(e).__name__}: {e}"), []
