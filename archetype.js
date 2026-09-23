@@ -17,8 +17,16 @@ const SEUIL_COUP_DE_POKER_COTE = 2.91;
 const SEUIL_COUP_DE_POKER_PROBA = 0.20;
 
 // "Forme récente" n'accepte que des preuves qui décrivent réellement la forme
-// (règle du 18/09/2026) : jamais une statistique de buts croisée.
-const TYPES_FORME_RECENTE = new Set(["home_unbeaten_streak", "away_concede_pct"]);
+// (règle du 18/09/2026) : jamais une statistique de buts croisée (mélangeant les deux équipes en un
+// seul chiffre -- "_combined", "both_teams_*", "away_score_rate_home_concede_rate"). Complété le
+// 23/09/2026 : chaque type ci-dessous ne décrit qu'UNE SEULE équipe (jamais un mélange des deux),
+// vérifié texte par texte dans bibliotheque_justification.py -- family "en forme"/"solide"/"fragile"
+// sur une équipe précise, jamais "les deux équipes" ou "match ouvert/fermé".
+const TYPES_FORME_RECENTE = new Set([
+  "home_unbeaten_streak", "away_unbeaten_streak", "home_loss_rate",
+  "away_concede_pct", "away_score_rate_low", "home_clean_sheet_rate",
+  "team_goals_over_rate", "team_goals_under_rate", "opp_concede_over_rate", "opp_concede_under_rate",
+]);
 
 const CLE_THEME_NUIT = "archetype_theme_nuit"; // même clé que theme.js
 let compteurCartes = 0;
