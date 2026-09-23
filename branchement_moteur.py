@@ -313,6 +313,20 @@ def analyse_signal(signal: Dict[str, Any], stats_equipes: Dict[Tuple[str, str], 
                 non_selectionnes.append(c)
 
     sel = selectionne(justifies)
+
+    # CONTRAT MAÎTRE : la justification affichée doit porter aussi la cause
+    # exacte qui a imposé la sélection finale de CE marché. Cette cause est
+    # produite par la même fonction que la sélection, jamais reconstruite
+    # après coup à partir d'une statistique disponible par hasard.
+    for choisi in sel.values():
+        if choisi:
+            j = choisi.get("justification")
+            if not isinstance(j, dict) or not choisi.get("raison_selection"):
+                raise ValueError(
+                    f"{MOTIF_JUSTIFICATION}: cause de sélection absente pour {choisi.get('marche')}"
+                )
+            j["raison_selection"] = choisi["raison_selection"]
+
     retenus = {c["marche"] for c in sel.values() if c}
     non_selectionnes.extend(c for c in justifies if c["marche"] not in retenus)
 
