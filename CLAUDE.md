@@ -46,3 +46,37 @@ Faire uniquement :
 **critère ayant réellement retenu le marché → justification exacte de ce critère et du marché.**
 
 Toute modification future de la sélection doit donc modifier simultanément son contrat de justification et ses tests.
+
+
+## Couverture obligatoire des familles de marchés
+
+La bibliothèque de justification doit couvrir tous les marchés réellement émis par moteur_v2_6_9 et reconnus par branchement_moteur.py :
+
+- 1X2 : victoire domicile, nul, victoire extérieure ;
+- Double chance : 1X, X2, 12 ;
+- BTTS : oui, non ;
+- Total de buts : over/under sur toutes les lignes réellement produites ;
+- Buts d'une équipe : over/under sur les lignes réellement produites ;
+- Cage inviolée : domicile, extérieur ;
+- Handicap : domicile/extérieur sur les lignes réellement produites.
+
+Aucun type ne doit être justifié par une preuve appartenant à un autre marché. En particulier :
+- une victoire sèche ne doit pas être justifiée par une simple série « sans défaite » ;
+- un handicap doit être justifié par la capacité historique à couvrir sa propre ligne ;
+- une cage inviolée doit être reliée à la capacité à ne pas concéder, pas simplement à une bonne forme ;
+- 1X2 nul et « pas de nul » doivent reposer sur des signaux opposés ;
+- les lignes Over/Under et les buts d'équipe doivent utiliser la ligne exacte du marché.
+
+## Style de la justification visible
+
+Le texte destiné à l'utilisateur ne doit pas ressembler à un journal de programme. Les noms techniques (EDV, market_family, selection_criterion, preuve_specifique_disponible, etc.) restent des données internes et ne doivent pas apparaître dans le discours utilisateur.
+
+La formulation doit :
+1. nommer naturellement l'équipe ou le contexte ;
+2. expliquer le mécanisme sportif qui soutient ce marché précis ;
+3. conserver les chiffres utiles ;
+4. varier l'angle selon la preuve disponible : forme à domicile/extérieur, faiblesse adverse, rythme de buts, historique direct, capacité à couvrir une ligne, solidité défensive, etc. ;
+5. éviter les phrases génériques interchangeables entre plusieurs marchés ;
+6. ne jamais transformer une statistique disponible en justification si cette statistique n'explique pas réellement le marché retenu.
+
+La variation doit être déterministe et fondée sur la preuve disponible, pas aléatoire : deux marchés opposés ne doivent jamais recevoir la même phrase simplement parce que le système dispose des mêmes chiffres.
