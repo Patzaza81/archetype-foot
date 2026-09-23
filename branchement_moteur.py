@@ -197,14 +197,41 @@ def selectionne(candidats: List[Dict[str, Any]]) -> Dict[str, Optional[Dict[str,
         return sel
     favori = min(restants, key=_cle_favori)
     restants.remove(favori)
-    sel["P1"] = dict(favori, rang="P1")
+    sel["P1"] = dict(
+        favori,
+        rang="P1",
+        selection_criterion="probabilite_maximale",
+        raison_selection=(
+            "P1 : probabilité modèle la plus élevée parmi les marchés éligibles "
+            "et disposant d'une justification spécifique."
+        ),
+    )
     if restants:
         value = min(restants, key=_cle_valeur)
         restants.remove(value)
-        sel["P2"] = dict(value, rang="P2")
+        sel["P2"] = dict(
+            value,
+            rang="P2",
+            selection_criterion="edv_maximal_restant",
+            raison_selection=(
+                "P2 : EDV le plus élevé parmi les marchés éligibles restants "
+                "et disposant d'une justification spécifique."
+            ),
+        )
     poker = [c for c in restants if est_coup_de_poker(c)]
     if poker:
-        sel["P3"] = dict(min(poker, key=_cle_valeur), rang="P3")
+        choix = min(poker, key=_cle_valeur)
+        sel["P3"] = dict(
+            choix,
+            rang="P3",
+            selection_criterion="edv_maximal_poker",
+            raison_selection=(
+                "P3 : EDV le plus élevé parmi les marchés restants satisfaisant "
+                f"simultanément cote >= {SEUIL_COUP_DE_POKER_COTE:.2f} et "
+                f"probabilité >= {SEUIL_COUP_DE_POKER_PROBA * 100:.0f} %, "
+                "avec justification spécifique."
+            ),
+        )
     return sel
 
 
@@ -371,7 +398,12 @@ def _justification_legere(j: Any) -> Any:
     """Même forme que l'ancien export : resume, preuves, donnees_suffisantes, bibliotheque (statistiques exactes)."""
     if not isinstance(j, dict):
         return j
-    out = {"resume": j.get("resume"), "preuves": j.get("preuves") or [], "donnees_suffisantes": bool(j.get("donnees_suffisantes"))}
+    out = {
+        "resume": j.get("resume"),
+        "preuves": j.get("preuves") or [],
+        "donnees_suffisantes": bool(j.get("donnees_suffisantes")),
+        "raison_selection": j.get("raison_selection"),
+    }
     if isinstance(j.get("bibliotheque"), dict):
         out["bibliotheque"] = j["bibliotheque"]
     return out
