@@ -55,7 +55,8 @@ def test_snapshot_incomplet_reprend_sans_ecraser(tmp_path):
         "https://www.football-data.co.uk/mmz4281/2526/E0.csv": b"E0,data\n",
     }
     session = FakeSession(
-        {"https://www.football-data.co.uk/downloadm.php": index},
+        {"https://www.football-data.co.uk/downloadm.php": index,
+         "https://www.football-data.co.uk/all_new_data.php": index},
         {"https://www.football-data.co.uk/mmz4281/2526/F1.csv": b"F1,original\n"},
     )
     # F1 est déjà présent localement: il ne sera jamais remplacé.
