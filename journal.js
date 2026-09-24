@@ -117,6 +117,52 @@
     });
   }
 
+  /* ─────────── Équipes à suivre (marché récurrent >= 70 %) ─────────── */
+  function afficherEquipes(j) {
+    var lignes = j.equipes_a_suivre || [];
+    var zone = document.getElementById("equipes");
+    var r = j.regles_equipes || {};
+    if (!lignes.length) {
+      zone.innerHTML = '<p class="jr-vide">Aucune équipe n\'atteint encore 70 % sur un marché avec au moins ' + (r.min_matchs || 5) + " matchs.</p>";
+      return;
+    }
+    var parEquipe = {}, ordre = [];
+    lignes.forEach(function (l) {
+      var cle = l.equipe + " | " + l.ligue;
+      if (!parEquipe[cle]) { parEquipe[cle] = []; ordre.push(cle); }
+      parEquipe[cle].push(l);
+    });
+    zone.innerHTML = ordre.map(function (cle) {
+      var ls = parEquipe[cle], t = ls[0], pm = null;
+      ls.forEach(function (l) { if (l.prochain_match) pm = l.prochain_match; });
+      var marches = ls.map(function (l) {
+        var rent = l.roi_betpawa == null ? "Cote BetPawa : pas encore assez de relevés."
+          : (l.roi_betpawa > 0 ? 'Rentable sur BetPawa : <span class="pos">' + pct(l.roi_betpawa, true) + "</span> sur " + l.paris_cotes + " cote(s) relevée(s)."
+            : "Cote BetPawa souvent trop basse pour être rentable.");
+        var cotePm = l.prochain_match && l.prochain_match.cote_betpawa ? ' <span class="jr-cote-pm">cote ' + cote(l.prochain_match.cote_betpawa) + "</span>" : "";
+        return '<div class="jr-eq-marche"><div class="jr-eq-ligne"><b>' + esc(l.marche) + "</b>" + cotePm + '<span class="jr-eq-freq">' +
+          l.gagnes + "/" + l.joues + " · " + pct(l.frequence) + "</span></div>" +
+          '<div class="jr-eq-detail">En général : ' + pct(l.frequence_generale) + " des matchs. " + rent + "</div></div>";
+      }).join("");
+      var prochain = pm ? '<div class="jr-eq-prochain">Prochain match : ' + dateCourte(pm.date) + " à " + esc(pm.heure || "—") + " contre " +
+        esc(pm.adversaire) + " (" + esc(pm.lieu) + ")" + (pm.betpawa_url ? ' · <a class="jr-lien" href="' + esc(pm.betpawa_url) +
+        '" target="_blank" rel="noopener">BetPawa →</a>' : "") + "</div>" : "";
+      return '<div class="jr-equipe" data-prochain="' + (pm ? 1 : 0) + '"><div class="jr-eq-tete"><span class="jr-fiche-nom">' + esc(t.equipe) +
+        '</span><span class="jr-badge b-A_JOUER">À suivre</span></div><div class="jr-fiche-info">' + esc(t.ligue) + " · " + t.joues + " matchs analysés</div>" +
+        prochain + marches + "</div>";
+    }).join("");
+    document.querySelectorAll("#filtres-equipes button").forEach(function (b) {
+      b.addEventListener("click", function () {
+        document.querySelectorAll("#filtres-equipes button").forEach(function (x) { x.classList.remove("actif"); });
+        b.classList.add("actif");
+        var f = b.getAttribute("data-f");
+        zone.querySelectorAll(".jr-equipe").forEach(function (el) {
+          el.style.display = (f === "toutes" || el.getAttribute("data-prochain") === "1") ? "" : "none";
+        });
+      });
+    });
+  }
+
   /* ─────────── Base d'un conseil, en clair ─────────── */
   function lieuPreuve(p) {
     var parties = String(p.segment || "").split(" | ");
@@ -220,6 +266,7 @@
     var rentables = ((j.segments || {}).ligue_marche || []).filter(positif);
     afficherResume(j, rentables);
     afficherRentables(j, rentables);
+    afficherEquipes(j);
     afficherConseils(j);
     afficherSelectionsMoteurs(j);
     afficherMoteurs(j);

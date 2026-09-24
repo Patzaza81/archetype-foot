@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#F6EFE2">
 <title>ARCHETYPE — Journal des marchés rentables</title>
 <link rel="stylesheet" href="archetype.css?v=20260921e">
-<link rel="stylesheet" href="journal.css?v=20260924d">
+<link rel="stylesheet" href="journal.css?v=20260924e">
 </head>
 <body class="ax-page">
 <script>try{if(localStorage.getItem("archetype_theme_nuit")==="1")document.body.classList.add("theme-nuit")}catch(e){}</script>
@@ -31,6 +31,16 @@
         <button type="button" data-f="fiables">Prouvé et à surveiller</button>
       </div>
       <div id="rentables"></div>
+    </section>
+
+    <section class="ax-carte jr-bloc">
+      <h2 class="jr-titre">Équipes à suivre</h2>
+      <p class="jr-aide">Équipes dont un marché précis passe dans au moins 70 % de leurs matchs (au moins 5 matchs terminés, à domicile comme à l'extérieur). Pour chaque marché : la fréquence de l'équipe, comparée à la fréquence générale de ce marché. Les marchés trop banals (qui passent déjà dans 70 % des matchs en général) sont exclus.</p>
+      <div class="jr-filtres" id="filtres-equipes">
+        <button type="button" class="actif" data-f="toutes">Toutes</button>
+        <button type="button" data-f="prochain">Avec un match à venir</button>
+      </div>
+      <div id="equipes"></div>
     </section>
 
     <section class="ax-carte jr-bloc">
@@ -60,6 +70,6 @@
     </section>
   </main>
 </div>
-<script src="journal.js?v=20260924d"></script>
+<script src="journal.js?v=20260924e"></script>
 </body>
 </html>

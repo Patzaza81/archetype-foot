@@ -165,3 +165,63 @@ def test_reussite_necessaire_et_comptes():
     assert s["gagnes"] == 1 and s["rembourses"] == 0
     assert s["reussite_necessaire"] == round(2 / 3.5, 4)      # 1 / cote moyenne (1,75)
     assert s["reussite"] == 0.5
+
+
+# --- Équipes à suivre ------------------------------------------------------------------------------------------------
+def _m(mid, dom, ext, h, a, cotes=None, ligue="L1", date="2026-09-10"):
+    return {"match_id": mid, "date": date, "ligue": ligue, "domicile": dom, "exterieur": ext, "buts": (h, a), "cotes": cotes or {}}
+
+
+def _fond(n=40):
+    # matchs neutres entre autres équipes : fréquences générales basses pour les marchés testés
+    return [_m(f"f{i}", f"X{i}", f"Y{i}", 1, 0) for i in range(n)]
+
+
+def _marches(lignes, equipe):
+    return {l["marche"] for l in lignes if l["equipe"] == equipe}
+
+
+def test_equipe_a_suivre_detectee():
+    # A marque 2+ dans 5 matchs sur 5, domicile ou extérieur : doit sortir sur « Marque 2 buts ou plus »
+    matchs = _fond() + [_m("a1", "A", "B", 2, 0), _m("a2", "C", "A", 1, 3), _m("a3", "A", "D", 2, 2),
+                        _m("a4", "E", "A", 0, 2), _m("a5", "A", "F", 4, 1)]
+    lignes = jr.construit_equipes_a_suivre(matchs, "2026-09-24", prochains={})
+    assert "Marque 2 buts ou plus" in _marches(lignes, "A")
+    l = next(x for x in lignes if x["equipe"] == "A" and x["marche"] == "Marque 2 buts ou plus")
+    assert (l["gagnes"], l["joues"], l["frequence"]) == (5, 5, 1.0)
+
+
+def test_equipe_a_suivre_4_sur_5_suffit_et_cote_du_bon_cote():
+    # A gagne 4 fois sur 5 ; la cote retenue doit être celle de SON côté (1X2 - 2 quand A joue à l'extérieur)
+    matchs = _fond() + [_m("b1", "A", "B", 1, 0, {"1X2 - 1": 2.0}), _m("b2", "C", "A", 0, 1, {"1X2 - 2": 3.0}),
+                        _m("b3", "A", "D", 2, 0, {"1X2 - 1": 1.5}), _m("b4", "E", "A", 1, 0, {"1X2 - 2": 2.5}),
+                        _m("b5", "A", "F", 3, 1, {"1X2 - 1": 1.8})]
+    l = next(x for x in jr.construit_equipes_a_suivre(matchs, "2026-09-24", prochains={}) if x["equipe"] == "A" and x["marche"] == "Victoire")
+    assert l["frequence"] == 0.8 and l["paris_cotes"] == 5
+    assert l["roi_betpawa"] == round((1.0 + 2.0 + 0.5 - 1.0 + 0.8) / 5, 4)
+
+
+def test_prochain_match_rattache_avec_la_cote_de_l_equipe():
+    matchs = _fond() + [_m(f"c{i}", "A", f"Z{i}", 3, 0) for i in range(5)]
+    prochains = {("A", "L1"): {"date": "2026-09-26", "heure": "15:00", "adversaire": "Q", "cote_equipe": "ext",
+                               "cotes": {"1X2 - 2": 2.4, "1X2 - 1": 3.1}, "betpawa_url": "u"}}
+    l = next(x for x in jr.construit_equipes_a_suivre(matchs, "2026-09-24", prochains) if x["equipe"] == "A" and x["marche"] == "Victoire")
+    assert l["prochain_match"]["cote_betpawa"] == 2.4 and l["prochain_match"]["lieu"] == "extérieur"
+
+
+def test_equipe_sous_70_pourcent_exclue():
+    # 3 victoires sur 5 = 60 %
+    matchs = _fond() + [_m("d1", "A", "B", 1, 0), _m("d2", "A", "C", 1, 0), _m("d3", "A", "D", 1, 0),
+                        _m("d4", "A", "E", 0, 1), _m("d5", "A", "F", 0, 0)]
+    assert "Victoire" not in _marches(jr.construit_equipes_a_suivre(matchs, "2026-09-24", prochains={}), "A")
+
+
+def test_equipe_avec_trop_peu_de_matchs_exclue():
+    matchs = _fond() + [_m(f"e{i}", "A", f"Z{i}", 3, 0) for i in range(4)]     # 4 matchs < 5
+    assert not _marches(jr.construit_equipes_a_suivre(matchs, "2026-09-24", prochains={}), "A")
+
+
+def test_marche_banal_exclu_meme_a_100_pourcent():
+    # « Au moins une équipe ne marque pas » passe dans presque tous les matchs du fond (1-0) : fréquence générale >= 70 %
+    matchs = _fond() + [_m(f"g{i}", "A", f"Z{i}", 1, 0) for i in range(5)]
+    assert "Au moins une équipe ne marque pas" not in _marches(jr.construit_equipes_a_suivre(matchs, "2026-09-24", prochains={}), "A")

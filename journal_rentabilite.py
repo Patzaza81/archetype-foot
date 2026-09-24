@@ -531,6 +531,142 @@ def construit_conseils(segments, aujourdhui=None, fichiers=FICHIERS_PRECALCUL):
     return conseils, pronostics
 
 # =============================================================================
+# 5 bis. Équipes à suivre (AJOUT 24/09/2026) : marchés récurrents d'une équipe
+# =============================================================================
+# Pour chaque équipe (nom + championnat), sur ses matchs terminés présents dans les données (échantillon + historique,
+# toutes sources de cotes pour la FRÉQUENCE, cotes BetPawa seulement pour le ROI), on mesure la fréquence de réussite de
+# marchés vus du côté de l'équipe. Une équipe est « à suivre » pour un marché si ce marché passe dans au moins 70 % de
+# ses matchs, sur au moins MIN_MATCHS_EQUIPE matchs. Les marchés qui passent déjà dans 70 % des matchs en général
+# (ex. plus de 1,5 but) sont exclus : les afficher ne dirait rien de l'équipe.
+MIN_MATCHS_EQUIPE = 5
+SEUIL_FREQUENCE_EQUIPE = 0.70
+MIN_COTES_ROI_EQUIPE = 3
+
+# nom affiché -> (libellé BetPawa si l'équipe joue à domicile, libellé si elle joue à l'extérieur)
+MARCHES_EQUIPE = {
+    "Victoire": ("1X2 - 1", "1X2 - 2"),
+    "Ne perd pas (victoire ou nul)": ("Double chance - 1X", "Double chance - X2"),
+    "Gagne par 2 buts ou plus": ("Handicap -1.5 - Domicile", "Handicap 1.5 - Extérieur"),
+    "Marque 2 buts ou plus": ("Plus de 1.5 buts - Domicile", "Plus de 1.5 buts - Extérieur"),
+    "Marque au moins 1 but": ("Plus de 0.5 buts - Domicile", "Plus de 0.5 buts - Extérieur"),
+    "Garde sa cage inviolée": ("Cage inviolée - Domicile", "Cage inviolée - Extérieur"),
+    "Encaisse au moins 1 but": ("Encaisse au moins 1 but - Domicile", "Encaisse au moins 1 but - Extérieur"),
+    "Match à plus de 2,5 buts": ("Plus de 2.5 buts", "Plus de 2.5 buts"),
+    "Match à plus de 3,5 buts": ("Plus de 3.5 buts", "Plus de 3.5 buts"),
+    "Match à moins de 2,5 buts": ("Moins de 2.5 buts", "Moins de 2.5 buts"),
+    "Match à moins de 3,5 buts": ("Moins de 3.5 buts", "Moins de 3.5 buts"),
+    "Les deux équipes marquent": ("BTTS - oui", "BTTS - oui"),
+    "Au moins une équipe ne marque pas": ("BTTS - non", "BTTS - non"),
+}
+
+
+def charge_tous_resultats(fichier_echantillon=FICHIER_ECHANTILLON, fichier_historique=FICHIER_HISTORIQUE):
+    """Tous les matchs terminés (score connu), quelle que soit la source des cotes. Les cotes ne sont gardées que
+    si elles viennent de BetPawa (après contrôle de cohérence). Dédoublonnage par match_id, échantillon prioritaire."""
+    matchs = {}
+    for m in (_lire_json(fichier_echantillon, {}) or {}).get("matchs", []):
+        buts = lit_score(m.get("score"))
+        if buts:
+            matchs[m["match_id"]] = {"match_id": m["match_id"], "date": m["date"], "ligue": nom_ligue(m.get("competition")),
+                                     "domicile": m.get("domicile"), "exterieur": m.get("exterieur"), "buts": buts,
+                                     "cotes": controle_coherence({k: float(v) for k, v in (m.get("cotes") or {}).items() if v and float(v) > 1.0})[0]}
+    historique = _lire_json(fichier_historique, [])
+    for jour in sorted(historique, key=lambda j: str(j.get("date", ""))) if isinstance(historique, list) else []:
+        for m in jour.get("matchs", []) or []:
+            mid = m.get("match_id")
+            buts = lit_score(m.get("score"))
+            if not mid or mid in matchs or not buts or not m.get("domicile") or not m.get("exterieur"):
+                continue
+            cotes = {}
+            if m.get("source_cotes") in SOURCES_BETPAWA:
+                for x in m.get("TOUS_MARCHES_EVALUES") or []:
+                    try:
+                        o = float(x.get("cote_observee"))
+                    except (TypeError, ValueError):
+                        continue
+                    if o > 1.0 and x.get("marche"):
+                        cotes[" ".join(x["marche"].split())] = o
+                cotes = controle_coherence(cotes)[0]
+            matchs[mid] = {"match_id": mid, "date": str(m.get("date") or jour.get("date")), "ligue": nom_ligue(m.get("competition")),
+                           "domicile": m["domicile"], "exterieur": m["exterieur"], "buts": buts, "cotes": cotes}
+    return list(matchs.values())
+
+
+def _prochains_matchs(aujourdhui, fichier=FICHIERS_PRECALCUL["moteur_v2_6_9"]):
+    """(équipe, ligue) -> prochain match à venir, avec cotes BetPawa éventuelles."""
+    out = {}
+    for s in sorted((_lire_json(fichier, {}) or {}).get("signaux", []) or [], key=lambda x: (str(x.get("date")), str(x.get("heure")))):
+        if str(s.get("date", "")) < aujourdhui:
+            continue
+        ligue = nom_ligue(s.get("competition"))
+        cotes = {}
+        if s.get("source_cotes") in SOURCES_BETPAWA:
+            for x in s.get("TOUS_MARCHES_EVALUES") or []:
+                try:
+                    cotes[" ".join(str(x.get("marche")).split())] = float(x.get("cote_observee"))
+                except (TypeError, ValueError):
+                    continue
+            cotes = controle_coherence({k: v for k, v in cotes.items() if v > 1.0})[0]
+        for cote_equipe, equipe, adversaire in (("dom", s.get("domicile"), s.get("exterieur")), ("ext", s.get("exterieur"), s.get("domicile"))):
+            if equipe and (equipe, ligue) not in out:
+                out[(equipe, ligue)] = {"date": s.get("date"), "heure": s.get("heure_cameroun") or s.get("heure"), "adversaire": adversaire,
+                                        "cote_equipe": cote_equipe, "cotes": cotes, "betpawa_url": s.get("betpawa_url")}
+    return out
+
+
+def construit_equipes_a_suivre(matchs, aujourdhui=None, prochains=None):
+    aujourdhui = aujourdhui or _aujourdhui()
+    prochains = _prochains_matchs(aujourdhui) if prochains is None else prochains
+    # fréquence générale de chaque marché (toutes équipes, tous matchs) : sert à écarter les marchés banals
+    generale = {}
+    for nom, (lib_dom, lib_ext) in MARCHES_EQUIPE.items():
+        res = []
+        for m in matchs:
+            h, a = m["buts"]
+            for lib in (lib_dom, lib_ext):
+                an = analyse_libelle(lib)
+                if an:
+                    res.append(an[1](h, a) == 1)
+        generale[nom] = sum(res) / len(res) if res else None
+    par_equipe = defaultdict(list)
+    for m in matchs:
+        par_equipe[(m["domicile"], m["ligue"])].append((m, "dom"))
+        par_equipe[(m["exterieur"], m["ligue"])].append((m, "ext"))
+    lignes = []
+    for (equipe, ligue), liste in par_equipe.items():
+        if len(liste) < MIN_MATCHS_EQUIPE:
+            continue
+        for nom, (lib_dom, lib_ext) in MARCHES_EQUIPE.items():
+            if generale[nom] is None or generale[nom] >= SEUIL_FREQUENCE_EQUIPE:
+                continue
+            gagnes, profits = 0, []
+            for m, cote_equipe in liste:
+                lib = lib_dom if cote_equipe == "dom" else lib_ext
+                r = analyse_libelle(lib)[1](*m["buts"])
+                gagnes += r == 1
+                o = m["cotes"].get(lib)
+                if o:
+                    profits.append(o - 1.0 if r == 1 else (0.0 if r == 0 else -1.0))
+            freq = gagnes / len(liste)
+            if freq < SEUIL_FREQUENCE_EQUIPE:
+                continue
+            roi = sum(profits) / len(profits) if len(profits) >= MIN_COTES_ROI_EQUIPE else None
+            ligne = {"equipe": equipe, "ligue": ligue, "marche": nom, "gagnes": gagnes, "joues": len(liste),
+                     "frequence": round(freq, 4), "frequence_generale": round(generale[nom], 4),
+                     "roi_betpawa": round(roi, 4) if roi is not None else None, "paris_cotes": len(profits),
+                     "prochain_match": None}
+            pm = prochains.get((equipe, ligue))
+            if pm:
+                lib = lib_dom if pm["cote_equipe"] == "dom" else lib_ext
+                ligne["prochain_match"] = {"date": pm["date"], "heure": pm["heure"], "adversaire": pm["adversaire"],
+                                           "lieu": "domicile" if pm["cote_equipe"] == "dom" else "extérieur",
+                                           "cote_betpawa": pm["cotes"].get(lib), "betpawa_url": pm["betpawa_url"]}
+            lignes.append(ligne)
+    lignes.sort(key=lambda x: (-x["frequence"], -x["joues"], x["ligue"], x["equipe"]))
+    return lignes
+
+
+# =============================================================================
 # 6. Assemblage
 # =============================================================================
 
@@ -541,6 +677,7 @@ def construit_journal(aujourdhui=None):
     segments = construit_segments(paris) if paris else {k: [] for k in DIMENSIONS}
     conseils, pronostics = construit_conseils(segments, aujourdhui)
     moteurs = construit_moteurs(ids_betpawa())
+    equipes = construit_equipes_a_suivre(charge_tous_resultats(), aujourdhui)
     dates = sorted({m["date"] for m in matchs})
     compte = {dim: {st: sum(1 for s in lignes if s["statut"] == st) for st in ("A_JOUER", "A_SURVEILLER", "NEUTRE", "A_EVITER")}
               for dim, lignes in segments.items()}
@@ -558,6 +695,9 @@ def construit_journal(aujourdhui=None):
                                     "Seul « à jouer » repose sur une preuve statistique, et il est recalculé chaque nuit."},
         "comptage_statuts": compte,
         "conseils": conseils,
+        "equipes_a_suivre": equipes,
+        "regles_equipes": {"min_matchs": MIN_MATCHS_EQUIPE, "seuil_frequence": SEUIL_FREQUENCE_EQUIPE,
+                           "min_cotes_roi": MIN_COTES_ROI_EQUIPE},
         "pronostics": pronostics,
         "moteurs": moteurs,
         "segments": segments,
@@ -570,6 +710,7 @@ def main():
         json.dump(journal, f, ensure_ascii=False, indent=1)
     d = journal["donnees"]
     cg = d["cout_global_betpawa"] or {}
+    print(f"[journal] {len(journal['equipes_a_suivre'])} couple(s) équipe x marché à suivre (>= 70 %).")
     print(f"[journal] {d['matchs']} matchs BetPawa terminés, {d['cotes_reglees']} cotes réglées, coût global BetPawa "
           f"{cg.get('roi', 0):+.1%} -- {len(journal['conseils'])} conseil(s) pour les matchs à venir.")
     for dim, c in journal["comptage_statuts"].items():
