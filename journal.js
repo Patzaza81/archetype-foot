@@ -70,7 +70,8 @@
       '<div class="jr-chiffre"><span>Cotes BetPawa réglées</span><b>' + (d.cotes_reglees || 0) + "</b></div>" +
       '<div class="jr-chiffre"><span>Marchés rentables</span><b class="pos">' + rentables.length + "</b></div>" +
       '<div class="jr-chiffre"><span>Prouvés ou à surveiller</span><b class="pos">' + nbFiables + "</b></div>" +
-      '</div><p class="jr-aide" style="margin:10px 0 0">' + Object.keys(ligues).length + " championnat(s) avec au moins un marché rentable · période " + esc(p) + ".</p>";
+      '</div><p class="jr-aide" style="margin:10px 0 0">' + Object.keys(ligues).length + " championnat(s) avec au moins un marché rentable · période " + esc(p) + ".</p>" +
+      '<p class="jr-source"><b>D\'où viennent ces chiffres ?</b> D\'aucun moteur de prédiction. Chaque nuit, le script du journal prend les cotes BetPawa relevées avant chaque match terminé et les compare au score final : c\'est une comptabilité de résultats réels. Seule la rubrique « Moteurs » montre les choix des deux moteurs, classés avec ces mêmes résultats.</p>';
   }
 
   /* ─────────── Scrutage : marchés rentables par championnat ─────────── */
@@ -147,9 +148,10 @@
       var prochain = pm ? '<div class="jr-eq-prochain">Prochain match : ' + dateCourte(pm.date) + " à " + esc(pm.heure || "—") + " contre " +
         esc(pm.adversaire) + " (" + esc(pm.lieu) + ")" + (pm.betpawa_url ? ' · <a class="jr-lien" href="' + esc(pm.betpawa_url) +
         '" target="_blank" rel="noopener">BetPawa →</a>' : "") + "</div>" : "";
-      return '<div class="jr-equipe" data-prochain="' + (pm ? 1 : 0) + '"><div class="jr-eq-tete"><span class="jr-fiche-nom">' + esc(t.equipe) +
+      var resume = ls.map(function (l) { return l.marche + " " + pct(l.frequence); }).join(" · ");
+      return '<details class="jr-equipe" data-prochain="' + (pm ? 1 : 0) + '"><summary><div class="jr-eq-tete"><span class="jr-fiche-nom">' + esc(t.equipe) +
         '</span><span class="jr-badge b-A_JOUER">À suivre</span></div><div class="jr-fiche-info">' + esc(t.ligue) + " · " + t.joues + " matchs analysés</div>" +
-        prochain + marches + "</div>";
+        '<div class="jr-eq-resume">' + esc(resume) + "</div>" + prochain + "</summary>" + marches + "</details>";
     }).join("");
     document.querySelectorAll("#filtres-equipes button").forEach(function (b) {
       b.addEventListener("click", function () {
@@ -172,7 +174,8 @@
   }
   function preuveTexte(p) {
     return "<b>Base :</b> " + esc(lieuPreuve(p)) + " a été coté par BetPawa sur " + p.matchs + " match(s) déjà joué(s) : " +
-      gagnesTxt(p) + " gagnés (" + pct(p.reussite) + ") à une cote moyenne de " + cote(p.cote_moyenne) + ". En misant 1 à chaque fois : " +
+      gagnesTxt(p) + " gagnés (" + pct(p.reussite) + "), cotes de " + cote(p.cote_min) + " à " + cote(p.cote_max) +
+      " (moyenne " + cote(p.cote_moyenne) + "). En misant 1 à chaque fois : " +
       '<span class="pos">' + pct(p.roi, true) + "</span>. Fiabilité : " + fiabilite(p.statut) + ".";
   }
   function enteteMatch(x, sousTitre, st) {
@@ -272,6 +275,26 @@
     afficherMoteurs(j);
     afficherRegles(j);
   }
+
+  /* Rubriques : un bouton par rubrique, une seule affichée à la fois (mémorisée dans l'adresse : journal.html#equipes). */
+  (function installeOnglets() {
+    var boutons = document.querySelectorAll("#onglets button");
+    var noms = Array.prototype.map.call(boutons, function (b) { return b.getAttribute("data-onglet"); });
+    function montre(nom, defiler) {
+      if (noms.indexOf(nom) < 0) nom = noms[0];
+      document.querySelectorAll(".jr-onglet").forEach(function (el) { el.hidden = el.getAttribute("data-onglet") !== nom; });
+      boutons.forEach(function (b) { b.classList.toggle("actif", b.getAttribute("data-onglet") === nom); });
+      if (defiler) document.getElementById("onglets").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    boutons.forEach(function (b) {
+      b.addEventListener("click", function () {
+        var nom = b.getAttribute("data-onglet");
+        try { history.replaceState(null, "", "#" + nom); } catch (e) { /* ignoré */ }
+        montre(nom, true);
+      });
+    });
+    montre((location.hash || "").replace("#", ""), false);
+  })();
 
   /* Mode nuit : même bascule et même clé que archetype.js (archetype_theme_nuit). */
   (function installeThemeNuit() {

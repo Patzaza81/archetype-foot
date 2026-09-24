@@ -16,8 +16,13 @@ et à 05:30 UTC en secours) :
    uniquement sur les matchs cotés BetPawa, par championnat et par famille de marché.
 
 3. CONSEILS : pour les matchs à venir cotés BetPawa (precalcul_leger.json / precalcul_shrink_leger.json), les
-   marchés qui tombent dans un segment « A_JOUER » ou « A_SURVEILLER », jamais dans un segment « A_EVITER »,
-   et les sélections de chaque moteur annotées du statut de leur segment.
+   marchés dont le segment championnat x marché est « A_JOUER » ou « A_SURVEILLER » et dont la cote du jour est dans la
+   fourchette des cotes mesurées (voir verdict_marche), et les sélections de chaque moteur annotées de ce statut.
+
+4. ÉQUIPES À SUIVRE : marché passant dans >= 70 % des matchs d'une équipe (>= 5 matchs), voir construit_equipes_a_suivre.
+
+Aucun moteur de prédiction n'est utilisé ici : ce script ne fait que la comptabilité « cotes BetPawa relevées x
+scores finaux ». Seule la partie MOTEURS lit les choix des deux moteurs, sans les recalculer.
 
 Statuts d'un segment (règles fixes, publiées sur la page) :
   A_JOUER      : borne basse de l'IC 95 % > 0, ROI > 0 sur CHAQUE moitié, >= 40 matchs ;
@@ -357,6 +362,7 @@ def stats_segment(paris):
             "roi_moitie_2": round(roi_m2, 4) if roi_m2 is not None else None,
             "reussite": round(gagnes / (n - rembourses), 4) if n > rembourses else None,
             "cote_moyenne": round(somme_cotes / n, 3),
+            "cote_min": round(min(p["cote"] for p in paris), 3), "cote_max": round(max(p["cote"] for p in paris), 3),
             "statut": statut_segment(len(ids), roi, bas, haut, roi_m1, roi_m2)}
 
 
@@ -454,23 +460,24 @@ def _index_statuts(segments):
 
 
 def verdict_marche(index, ligue, libelle, cote):
-    """Statut d'un marché pour un match. Niveaux examinés du plus précis au plus général :
-    championnat x marché, championnat x famille, marché (tous championnats). Le premier niveau dont le statut
-    n'est pas NEUTRE décide : une preuve précise l'emporte sur une tendance générale. Les niveaux très larges
-    (famille seule, tranche de cote, championnat seul) sont affichés à titre d'information mais ne décident pas :
-    ils sont tous négatifs à cause de la marge et bloqueraient tout. Renvoie (statut, preuve_ou_None)."""
+    """Statut d'un marché pour un match à venir (MAJ 24/09/2026).
+
+    Une seule base est admise : le MÊME marché dans le MÊME championnat (segment « ligue_marche »), et la cote du
+    match doit se situer dans la fourchette des cotes sur lesquelles ce segment a été mesuré. Les niveaux plus larges
+    (marché tous championnats, famille de marchés) ne décident plus : une moyenne « BTTS oui tous championnats » à une
+    cote moyenne de 1,73 ne dit rien d'un BTTS oui à 2,24 dans un match précis (cas Trefelin - The New Saints).
+    Renvoie (statut, preuve_ou_None) ; statut « HORS_FOURCHETTE » si la cote sort des cotes mesurées."""
     an = analyse_libelle(libelle)
     if an is None or not cote:
         return "INCONNU", None
-    famille = an[0]
     lib = " ".join(libelle.split())
-    niveaux = [("ligue_marche", ligue + " | " + lib), ("ligue_famille", ligue + " | " + famille), ("marches", lib)]
-    trouves = [(d, index.get(d, {}).get(cle)) for d, cle in niveaux]
-    trouves = [(d, s) for d, s in trouves if s]
-    for d, s in trouves:
-        if s["statut"] != "NEUTRE":
-            return s["statut"], dict(s, niveau=d)
-    return "NEUTRE", (dict(trouves[0][1], niveau=trouves[0][0]) if trouves else None)
+    seg = index.get("ligue_marche", {}).get(ligue + " | " + lib)
+    if not seg:
+        return "NEUTRE", None
+    preuve = dict(seg, niveau="ligue_marche")
+    if seg["statut"] in ("A_JOUER", "A_SURVEILLER") and not (seg.get("cote_min", 0) <= cote <= seg.get("cote_max", 1e9)):
+        return "HORS_FOURCHETTE", preuve
+    return seg["statut"], preuve
 
 
 def _aujourdhui():

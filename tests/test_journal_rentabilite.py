@@ -118,19 +118,32 @@ def test_statuts_refuses(args, attendu):
     assert jr.statut_segment(*args) == attendu
 
 
-# --- Verdict d'un marché : le niveau le plus précis non neutre décide ----------------------------------------------
-def _seg(statut, roi=0.1):
-    return {"statut": statut, "roi": roi, "matchs": 50}
+# --- Verdict d'un marché : même championnat, même marché, cote dans la fourchette mesurée ---------------------------
+def _seg(statut, roi=0.1, cmin=1.5, cmax=2.0):
+    return {"statut": statut, "roi": roi, "matchs": 50, "cote_min": cmin, "cote_max": cmax}
 
 
-def test_verdict_precis_l_emporte_sur_le_general():
-    index = {"ligue_marche": {"L1 | BTTS - oui": _seg("A_JOUER")}, "marches": {"BTTS - oui": _seg("A_EVITER", -0.1)}}
-    assert jr.verdict_marche(index, "L1", "BTTS - oui", 1.8)[0] == "A_JOUER"
+@pytest.mark.parametrize("cote", [1.5, 1.8, 2.0])
+def test_verdict_segment_precis_dans_la_fourchette(cote):
+    index = {"ligue_marche": {"L1 | BTTS - oui": _seg("A_SURVEILLER")}}
+    assert jr.verdict_marche(index, "L1", "BTTS - oui", cote)[0] == "A_SURVEILLER"
 
 
-def test_verdict_general_si_precis_neutre():
-    index = {"ligue_marche": {"L1 | BTTS - oui": _seg("NEUTRE")}, "marches": {"BTTS - oui": _seg("A_EVITER", -0.1)}}
-    assert jr.verdict_marche(index, "L1", "BTTS - oui", 1.8)[0] == "A_EVITER"
+@pytest.mark.parametrize("cote", [1.3, 2.24, 3.5])
+def test_verdict_cote_hors_fourchette(cote):
+    index = {"ligue_marche": {"L1 | BTTS - oui": _seg("A_SURVEILLER")}}
+    assert jr.verdict_marche(index, "L1", "BTTS - oui", cote)[0] == "HORS_FOURCHETTE"
+
+
+def test_verdict_la_moyenne_tous_championnats_ne_decide_plus():
+    # cas Trefelin - The New Saints : BTTS oui « à surveiller » tous championnats, rien dans ce championnat
+    index = {"marches": {"BTTS - oui": _seg("A_SURVEILLER")}, "ligue_famille": {"L2 | BTTS": _seg("A_JOUER")}}
+    assert jr.verdict_marche(index, "L2", "BTTS - oui", 2.24) == ("NEUTRE", None)
+
+
+def test_verdict_autre_championnat_ne_decide_pas():
+    index = {"ligue_marche": {"L1 | BTTS - oui": _seg("A_JOUER")}}
+    assert jr.verdict_marche(index, "L2", "BTTS - oui", 1.8)[0] == "NEUTRE"
 
 
 def test_verdict_libelle_inconnu():

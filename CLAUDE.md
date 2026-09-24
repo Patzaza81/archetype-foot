@@ -89,3 +89,25 @@ La variation doit être déterministe et fondée sur la preuve disponible, pas a
 - Pour un total de buts (+/- X,5), la preuve doit porter sur le **total du match** et suivre les données réellement utilisées par le moteur : buts marqués/encaissés dans le contexte domicile/extérieur, volume total observé, puis probabilité modèle du seuil exact.
 - Exemple réel Stockport–Peterborough du 26/09/2026 : le moteur utilise 3 matchs de Stockport à domicile et 3 matchs de Peterborough à l'extérieur. Ces six matchs produisent 4,00 buts en moyenne. Les moyennes de contexte sont Stockport 3,00 marqués / 2,33 encaissés à domicile et Peterborough 0,33 marqué / 2,33 encaissés à l'extérieur. Le moteur construit alors λ domicile = 2,67 et λ extérieur = 1,33, soit 4,00 buts attendus, puis 56,7 % pour +3,5. La justification doit suivre ce chemin, pas seulement afficher « 2,33 buts encaissés ».
 - Le texte visible doit rester naturel : expliquer pourquoi le seuil précis est soutenu, avec les données utiles et la probabilité du modèle, sans jargon interne inutile.
+
+
+# JOURNAL DE RENTABILITÉ (journal_rentabilite.py → journal.json → journal.html) — règles du 24/09/2026
+
+- **Ce n'est pas un moteur.** Le journal ne prédit rien : il règle les cotes BetPawa réellement relevées sur les scores
+  finaux. Il ne doit jamais importer ni recalculer `moteur_v2_6_9` ou `shrink_v1` ; il lit seulement leurs choix.
+- **Affichage : statistiques gagnantes uniquement.** Tout ROI négatif est calculé (statuts `A_EVITER`, `NEUTRE`) mais n'est
+  jamais affiché sur la page. La colonne « Niveau » (Prouvé / À surveiller / Non confirmé) est obligatoire : elle est le seul
+  garde-fou contre les gains dus au hasard.
+- **Conseil sur un match à venir = même championnat ET même marché.** Le segment championnat × marché doit être
+  `A_JOUER` ou `A_SURVEILLER`, et la cote du jour doit être comprise entre `cote_min` et `cote_max` du segment
+  (`verdict_marche`). Interdit : conseiller un match à partir d'une moyenne tous championnats ou d'une famille de
+  marchés (erreur corrigée le 24/09 : BTTS oui à 2,24 dans Trefelin – The New Saints, « justifié » par la moyenne
+  BTTS oui tous championnats à 1,73).
+- **Équipes à suivre** : fréquence ≥ 70 %, ≥ 5 matchs de l'équipe, marchés dont la fréquence générale est < 70 %.
+  La cote retenue est toujours celle du côté de l'équipe (domicile/extérieur).
+- **Handicaps de `historique_pronostics.json`** : ligne vue du domicile (`ligne_propre`). Toute cote de handicap
+  incohérente avec le 1X2 est retirée (`controle_coherence`), jamais corrigée.
+- **Pages** : `journal.html` et les pages de pronostics suivent le gabarit Archetype (`archetype.css`, classes `ax-`,
+  mode nuit `archetype_theme_nuit`). Après modification d'un `.js`/`.css`, changer le paramètre `?v=`.
+- **Tests** : toute fonction de comparaison ou de règlement du journal est testée sur au moins 3 cas qui doivent passer
+  et 3 qui doivent échouer (`tests/test_journal_rentabilite.py`).

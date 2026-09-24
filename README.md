@@ -5,7 +5,7 @@ Système d'analyse de matchs de football : collecte automatique des matchs et de
 le mobile (iPhone). Le tout tourne chaque nuit sur GitHub Actions et se publie sur Netlify.
 
 > Ce document décrit l'**architecture et les règles**, qui changent peu. L'état courant s'obtient avec
-> `git log` et `ROADMAP.md`. Dernière vérification de ce README : 21/09/2026 (branchement du moteur v2.6.9).
+> `git log` et `ROADMAP.md`. Dernière vérification de ce README : 24/09/2026 (journal de rentabilité, page du second moteur).
 
 ---
 
@@ -153,6 +153,8 @@ Hébergé sur Netlify (`netlify.toml` : publie la racine du dépôt, en-têtes a
 | `panier.html` — Panier | `panier.js` + ceux d'Archetype | `precalcul_leger.json` + panier du navigateur |
 | `systeme.html` — Bilan système | `systeme.js`, `style.css`, `theme.css` | `etat_systeme.json` |
 | `admin.html` — Audit / calibration | `admin.js`, `style.css`, `theme.css` | `data/audit_status.json`, `data/audit_telemetry.json`, `config/journal_promotion.jsonl` |
+| `archetype_shrink.html` et `pronostics_shrink.html` — Pronostics du second moteur | `archetype_shrink.js` + ceux d'Archetype (même gabarit, même carte) | `precalcul_shrink_leger.json` (bloc `shrink_v1`) |
+| `journal.html` — Journal de rentabilité | `journal.js`, `journal.css` + `archetype.css` | `journal.json` |
 | `presentation-site.html` | autonome | aucune (maquette temporaire) |
 
 **Cartes de match (Archetype et Panier).** Une seule fonction, `construitCarte()` dans `archetype.js`, construit les
@@ -174,6 +176,31 @@ Conventions :
 - Mémoire du navigateur : `archetype_panier` (panier), `archetype_theme_nuit` (mode nuit).
 - Accueil, Système et Admin utilisent encore l'ancienne charte (`style.css` + `theme.css`, avec de nombreux `!important`).
 
+### 4.1 Le journal de rentabilité (`journal.html`, depuis le 24/09/2026)
+
+**Aucun moteur de prédiction.** `journal_rentabilite.py` fait une comptabilité : chaque cote BetPawa relevée avant un
+match terminé est réglée sur le score final, et on calcule ce qu'aurait rapporté une mise de 1 à chaque fois (ROI).
+Sources : `data/echantillon_betpawa_501.json` (501 matchs figés, 09-20/09) + `historique_pronostics.json` (matchs à
+`source_cotes = "manuel"`, c'est-à-dire cotés BetPawa). Seule la rubrique « Moteurs » lit les choix des deux moteurs
+(`archive/`, `archive_shrink/`, `precalcul_*leger.json`), sans les recalculer.
+
+Workflow **séparé** : `.github/workflows/journal.yml`, lancé à la fin de chaque pipeline (réussi ou non) et à 05:30 UTC
+en secours ; lance `tests/test_journal_rentabilite.py` puis `journal_rentabilite.py`, et ne publie que `journal.json`.
+
+La page a une barre de rubriques (un bouton chacune, une seule affichée ; l'adresse retient la rubrique : `journal.html#equipes`) :
+
+| Rubrique | Contenu | Règle |
+|---|---|---|
+| Marchés rentables | Pour chaque championnat, chaque marché au ROI positif (≥ 10 matchs) : gagnés/joués, cote moyenne, ROI, niveau | ROI négatifs calculés mais **jamais affichés** (choix du propriétaire) |
+| Équipes à suivre | Marché passant dans ≥ 70 % des matchs d'une équipe, sur ≥ 5 matchs ; prochain match et cote BetPawa | Marchés banals (≥ 70 % en général) exclus ; une équipe à moins de 5 matchs dans les données n'apparaît pas |
+| Conseils | Marchés des matchs à venir | **Même championnat, même marché**, segment « Prouvé » ou « À surveiller », et cote du jour dans la fourchette des cotes mesurées. Aucune moyenne « tous championnats » |
+| Moteurs | Choix P1/P2/P3 des deux moteurs situés dans une zone rentable ; championnats et familles où ils ont gagné | idem Conseils |
+| Méthode | Règles et qualité des données | — |
+
+Niveaux : **Prouvé** (`A_JOUER`) = IC 95 % entièrement positif, gagnant sur chaque moitié, ≥ 40 matchs ;
+**À surveiller** (`A_SURVEILLER`) = gagnant au total et sur chaque moitié, ≥ 25 matchs ; **Non confirmé** = gagnant au total
+seulement (des centaines de segments étant scrutés, une partie de ces gains vient de la chance).
+
 ---
 
 ## 5. Fichiers de données (versionnés, réécrits par le pipeline)
@@ -189,6 +216,8 @@ Conventions :
 | `config/*` | Paramètres calibrables, état et journaux de calibration |
 | `export_moteur/` | Entrées exactes du moteur (un fichier par date, écrasés à chaque run) et `diagnostic_pont.json` (matchs rejetés, avec la raison) |
 | `tickets_observes/`, `vrais_tickets/` | Tickets fictifs et réels, un fichier par mois |
+| `journal.json` | Sortie de `journal_rentabilite.py` (workflow `journal.yml`) : segments, conseils, équipes à suivre, résultats des moteurs |
+| `data/echantillon_betpawa_501.json` | Base figée du journal : 501 matchs terminés (09-20/09/2026), cotes BetPawa d'avant-match + score |
 
 ---
 
@@ -259,6 +288,19 @@ Décisions du propriétaire, documentées dans le code et dans `ROADMAP.md` (§4
 
 ---
 
+### Ajouts du 24/09/2026
+
+- **Convention des handicaps dans `historique_pronostics.json`** : la ligne affichée est celle de l'équipe **à domicile**.
+  « Handicap -0.5 - Extérieur » = l'extérieur reçoit +0.5 (même cote que la double chance X2 dans 99 % des 733 matchs
+  vérifiés). `journal_rentabilite.ligne_propre()` applique cette convention ; le moteur lit les cotes par `pont_moteur.py`,
+  qui la gère déjà.
+- **Cotes de handicap incohérentes** avec le 1X2 du même match (côtés inversés au relevé) : retirées par
+  `journal_rentabilite.controle_coherence()` (42 au 24/09), jamais corrigées à la main.
+- **Données par équipe encore courtes** : au 24/09, aucune équipe n'a plus de 5 matchs dans les données ; la rubrique
+  « Équipes à suivre » se renforcera avec les nuits.
+- **Page du second moteur** : `archetype_shrink.js` filtrait sur `moteur_utilise`, alors que le pipeline marque le second
+  moteur dans `shrink_v1_utilise` ; la page était toujours vide (corrigé le 24/09).
+
 ## 10. Documents du projet
 
 | Document | Contenu |
@@ -268,6 +310,7 @@ Décisions du propriétaire, documentées dans le code et dans `ROADMAP.md` (§4
 | `requirements.txt` | Dépendances Python |
 | Run limité | Actions → *Pipeline quotidien* → Run workflow → `jours` = 2 : aujourd'hui + demain seulement (saute la liste J+2/J+3, garde les correspondances BetPawa de J+2/J+3) ; 4 = fenêtre complète (défaut, planifié) |
 | Autotests | `python moteur_v2_6_9.py --autotest` · `python pont_moteur.py --autotest` · `python -m pytest tests -q` |
+| Journal | `python journal_rentabilite.py` (écrit `journal.json`) · Actions → *Journal de rentabilité* → Run workflow |
 
 **Ancien journal de sessions.** `TRANSITION.md` (et sa copie `TRANSITION 4.md`) ont été supprimés le 21/09/2026 : 269 Ko
 de récit chronologique, en-tête daté du 08/09 alors que le contenu allait jusqu'au 20/09, plus de 30 fichiers cités qui n'existent

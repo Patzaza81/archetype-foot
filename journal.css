@@ -78,3 +78,21 @@ body.theme-nuit .b-A_EVITER{background:#A93226}
 .jr-eq-freq{font-weight:900;color:var(--ax-vert);white-space:nowrap}
 .jr-eq-detail{margin-top:2px;font-size:12.5px;color:var(--ax-doux)}
 .jr-cote-pm{font-size:12px;font-weight:800;color:#fff;background:var(--ax-bouton);border-radius:999px;padding:1px 8px;margin-left:6px}
+
+/* Rubriques (onglets) : barre collante, défilable horizontalement sur iPhone */
+.jr-onglets{--jo-fond:#F6EFE2;--jo-carte:#FFFBF3;--jo-texte:#1A2340;--jo-ligne:#E4DCCB;
+  position:sticky;top:0;z-index:5;display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  padding:10px 2px;margin:0 -2px;background:var(--jo-fond);scrollbar-width:none}
+body.theme-nuit .jr-onglets{--jo-fond:#0F1117;--jo-carte:#1A1E29;--jo-texte:#F1EFF7;--jo-ligne:#2E3342}
+.jr-onglets::-webkit-scrollbar{display:none}
+.jr-onglets button{flex:0 0 auto;min-height:40px;padding:0 16px;border-radius:999px;border:1px solid var(--jo-ligne);
+  background:var(--jo-carte);color:var(--jo-texte);font:inherit;font-size:14.5px;font-weight:800;cursor:pointer}
+.jr-onglets button.actif{background:linear-gradient(135deg,#315CFF,#6547E8);border-color:transparent;color:#fff}
+.jr-onglet{display:grid;gap:18px}
+.jr-onglet[hidden]{display:none}
+.jr-source{margin:10px 0 0;padding:10px 12px;border-radius:12px;border:1px solid var(--ax-ligne);font-size:13px;line-height:1.4;color:var(--ax-doux)}
+.jr-equipe summary{list-style:none;cursor:pointer}
+.jr-equipe summary::-webkit-details-marker{display:none}
+.jr-equipe summary::after{content:"Voir le détail ⌄";display:block;margin-top:4px;font-size:12.5px;font-weight:700;color:var(--ax-bleu-texte)}
+.jr-equipe[open] summary::after{content:"Replier ⌃"}
+.jr-eq-resume{margin-top:4px;font-size:13px;font-weight:700;color:var(--ax-vert)}

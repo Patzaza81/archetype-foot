@@ -5,11 +5,27 @@
 
 Suivi des chantiers majeurs. Les statuts ci-dessous reposent sur des vérifications réelles du dépôt, des exécutions GitHub Actions et des fichiers produits. Aucune conclusion ne doit être tirée d'un simple statut vert sans inspection des sorties.
 
-Dernière mise à jour : 21/09/2026 — après les sessions du 20-21/09 (refonte de l'interface, bibliothèque de justification étendue, README) et le **branchement du moteur v2.6.9**. Vérifications faites le 21/09 sur le dépôt (commit `a3d2b77`), sur l'API GitHub Actions et sur les fichiers produits.
+Dernière mise à jour : 24/09/2026 (voir §0) ; précédente : 21/09/2026 — après les sessions du 20-21/09 (refonte de l'interface, bibliothèque de justification étendue, README) et le **branchement du moteur v2.6.9**. Vérifications faites le 21/09 sur le dépôt (commit `a3d2b77`), sur l'API GitHub Actions et sur les fichiers produits.
 
 Statuts : **FAIT** · **EN COURS** · **À FAIRE** · **NON VÉRIFIÉ** (non re-contrôlé le 21/09).
 
 ---
+
+## 0. Mise à jour du 24/09/2026
+
+| Commit | Contenu | Statut |
+|---|---|---|
+| `680f926` | Pipeline débloqué : le run planifié du 23/09 (23:31 UTC) échouait à l'étape d'autotests (8 tests non alignés sur les règles de justification du 23/09 : H2H non probant, victoire sèche ≠ série sans défaite, textes humanisés). Seuls les tests ont changé | **FAIT** (run suivant `00c1949` publié) |
+| `00a778b` → `6a65aa0` | Journal de rentabilité : `journal_rentabilite.py`, `journal.yml`, `journal.html`, base figée de 501 matchs | **FAIT** (workflow exécuté : `966fa6e`) |
+| `e352409` | Page du second moteur au gabarit Archetype ; `archetype_shrink.js` corrigé (page toujours vide) | **FAIT** |
+| ce commit | Conseils du journal limités au même championnat × même marché dans la fourchette de cotes mesurée ; page en rubriques ; documentation | **FAIT** |
+
+État du journal au 24/09 : 638 matchs BetPawa terminés, 17 541 cotes réglées, coût moyen BetPawa −10,8 % ; 158 segments
+championnat × marché rentables dont 5 « À surveiller », 0 « Prouvé » ; 63 couples équipe × marché à suivre (27 équipes,
+5 matchs maximum par équipe) ; 8 conseils à venir (tous Angleterre : Ligue Nationale, double chance 1X).
+
+**À faire** : laisser le journal accumuler les matchs (aucun réglage des seuils sur ces données) ; vérifier chaque matin
+dans Actions que « Pipeline quotidien » puis « Journal de rentabilité » sont verts.
 
 ## 1. État immédiat
 
