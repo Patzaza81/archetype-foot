@@ -4,7 +4,7 @@ name: Journal de rentabilité
 # le journal (journal_rentabilite.py -> journal.json, lu par journal.html) doit rester
 # à jour même si le pipeline principal s'arrête (ex. échec de l'étape d'autotests). Il ne fait que LIRE les
 # fichiers déjà publiés (historique_pronostics.json, archive/, archive_shrink/, precalcul_*.json,
-# data/echantillon_betpawa_501.json) et n'écrit que journal.json.
+# data/echantillon_betpawa_501.json) et n'écrit que journal.json et controle_saisons.json.
 #
 # Déclenchements :
 #   - juste après chaque fin du pipeline quotidien (réussi ou non) : données les plus fraîches ;
@@ -43,17 +43,24 @@ jobs:
         run: pip install pytest
 
       # Filet de sécurité : si le règlement des marchés ou les statuts sont cassés, on ne publie rien.
-      - name: Tests du journal
-        run: python -m pytest tests/test_journal_rentabilite.py -q
+      - name: Tests du journal et du contrôle des saisons
+        run: python -m pytest tests/test_journal_rentabilite.py tests/test_controle_saisons.py -q
 
       - name: Construire journal.json
         run: python journal_rentabilite.py
 
-      - name: Publier journal.json
+      # AJOUT 24/09/2026 -- contrôle croisé des saisons d'équipes (lecture seule, écrit controle_saisons.json,
+      # affiché sur la page Système). Un échec ne bloque pas la publication du journal.
+      - name: Contrôler les données de saison (controle_saisons.json)
+        run: python controle_saisons.py
+        continue-on-error: true
+
+      - name: Publier journal.json et controle_saisons.json
         run: |
           git config user.name "archetype-foot-bot"
           git config user.email "bot@users.noreply.github.com"
           git add journal.json
+          [ -f controle_saisons.json ] && git add controle_saisons.json
           git diff --staged --quiet || git commit -m "Journal de rentabilité"
           git pull --rebase origin main
           git push

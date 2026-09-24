@@ -1,0 +1,41 @@
+name: Diagnostic pages équipes
+
+# AJOUT 24/09/2026 -- capture de vraies pages équipes matchendirect pour corriger la lecture des saisons
+# (voir controle_saisons.py). Se lance quand diagnostic/pages_a_capturer.txt change, ou à la main.
+# Lecture seule : n'écrit que dans diagnostic/. Ne touche ni au cache, ni au moteur, ni au site.
+
+on:
+  push:
+    paths:
+      - "diagnostic/pages_a_capturer.txt"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pipeline-archetype-foot
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Installer les dépendances de lecture
+        run: pip install requests beautifulsoup4 lxml
+      - name: Capturer les pages
+        run: python diagnostic_capture_pages.py
+      - name: Publier la capture
+        run: |
+          git config user.name "archetype-foot-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add diagnostic/
+          git diff --staged --quiet || git commit -m "Diagnostic : capture de pages équipes"
+          git pull --rebase origin main
+          git push

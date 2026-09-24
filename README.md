@@ -298,6 +298,13 @@ Décisions du propriétaire, documentées dans le code et dans `ROADMAP.md` (§4
   `journal_rentabilite.controle_coherence()` (42 au 24/09), jamais corrigées à la main.
 - **Données par équipe encore courtes** : au 24/09, aucune équipe n'a plus de 5 matchs dans les données ; la rubrique
   « Équipes à suivre » se renforcera avec les nuits.
+- **Saisons d'équipes parfois fausses** (`cache_equipes_saison.json`) : `scraper_details._extrait_historique_competition`
+  prend le premier tableau de matchs qui suit un texte « ressemblant » au nom de la compétition, sans vérifier que ce
+  tableau est celui de la compétition (ex. The New Saints : le match amical Glentoran 1-1 enregistré comme sa saison de
+  Cymru Premier). **Contrôle** : `controle_saisons.py` (workflow `journal.yml`) compare chaque saison enregistrée aux
+  scores connus par les pages de match et publie `controle_saisons.json`, affiché sur la page Système (23 % d'équipes
+  incohérentes au 24/09). Correction de la lecture : à faire sur de vraies pages capturées par
+  `.github/workflows/diagnostic_pages.yml` (se lance quand `diagnostic/pages_a_capturer.txt` change).
 - **Page du second moteur** : `archetype_shrink.js` filtrait sur `moteur_utilise`, alors que le pipeline marque le second
   moteur dans `shrink_v1_utilise` ; la page était toujours vide (corrigé le 24/09).
 

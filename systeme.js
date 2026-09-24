@@ -76,6 +76,7 @@ function afficheEtatSysteme(etat) {
   racine.appendChild(construitBlocGlobal(etat.bilan_comportemental));
   racine.appendChild(construitBlocComparaison(etat.bilan_comportemental, etat.bilan_shrink_v1));
   racine.appendChild(construitTableauFamilles(etat.bilan_comportemental));
+  if (window.__controleSaisons) racine.insertBefore(construitBlocControleSaisons(window.__controleSaisons), racine.firstChild);
 }
 
 fetch(`etat_systeme.json?_=${Date.now()}`)
@@ -85,3 +86,41 @@ fetch(`etat_systeme.json?_=${Date.now()}`)
     document.getElementById("maj-systeme").textContent = "Erreur de chargement : " + e.message;
     console.error(e);
   });
+
+/* AJOUT 24/09/2026 — Contrôle des données de saison (controle_saisons.py, workflow journal.yml).
+   Bloc indépendant : il s'affiche même si etat_systeme.json est indisponible, et son échec n'affecte pas le reste. */
+function construitBlocControleSaisons(rapport) {
+  const div = document.createElement("section");
+  div.className = "bloc-systeme";
+  div.id = "bloc-controle-saisons";
+  const r = rapport.resume || {};
+  const taux = r.taux_incoherence === null || r.taux_incoherence === undefined ? "—" : formatPctSysteme(r.taux_incoherence);
+  const lignes = (rapport.incoherentes || []).map((l) => {
+    const manq = (l.manquants || []).map((m) =>
+      `${echappeHtmlSysteme(m.date.slice(8, 10) + "/" + m.date.slice(5, 7))} ${echappeHtmlSysteme(m.lieu === "domicile" ? "dom." : "ext.")} ` +
+      `contre ${echappeHtmlSysteme(m.adversaire)} (${echappeHtmlSysteme(m.score_equipe)})`).join("<br>");
+    return `<tr><td><b>${echappeHtmlSysteme(l.equipe)}</b><br><span style="color:var(--text-secondary)">${echappeHtmlSysteme(l.competition)}</span></td>` +
+      `<td>${l.matchs_enregistres}</td><td>${manq}</td></tr>`;
+  }).join("");
+  div.innerHTML = `<h2>Contrôle des données de saison</h2>
+    <p style="margin:0 0 9px;font-size:12.5px;color:var(--text-secondary)">Chaque match connu par les pages de match doit figurer dans la saison enregistrée de l'équipe (même compétition, même lieu, même score). Sinon la saison enregistrée est fausse et le moteur analyse l'équipe sur de mauvais chiffres. Contrôle du ${echappeHtmlSysteme(rapport.genere_le || "—")}.</p>
+    <div class="grille-stats">
+      <div class="stat"><span class="etiquette">Équipes vérifiables</span><strong>${r.verifiables ?? 0}</strong></div>
+      <div class="stat"><span class="etiquette">Cohérentes</span><strong style="color:var(--green)">${r.coherentes ?? 0}</strong></div>
+      <div class="stat"><span class="etiquette">Incohérentes</span><strong style="color:var(--red)">${r.incoherentes ?? 0}</strong></div>
+      <div class="stat"><span class="etiquette">Taux d'erreur</span><strong style="color:var(--red)">${taux}</strong></div>
+    </div>` + (lignes ? `<div style="overflow-x:auto;margin-top:10px"><table class="tableau-systeme"><thead><tr><th>Équipe</th><th>Matchs enregistrés</th><th>Match réel absent de la saison enregistrée</th></tr></thead><tbody>${lignes}</tbody></table></div>`
+      : `<p class="etat-vide-systeme">Aucune incohérence détectée.</p>`);
+  return div;
+}
+
+fetch(`controle_saisons.json?_=${Date.now()}`)
+  .then((r) => { if (!r.ok) throw new Error(`controle_saisons.json introuvable (${r.status})`); return r.json(); })
+  .then((rapport) => {
+    window.__controleSaisons = rapport;
+    const racine = document.getElementById("contenu-systeme");
+    const ancien = document.getElementById("bloc-controle-saisons");
+    if (ancien) ancien.remove();
+    racine.insertBefore(construitBlocControleSaisons(rapport), racine.firstChild);
+  })
+  .catch((e) => console.error(e));
