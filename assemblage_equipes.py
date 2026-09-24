@@ -308,7 +308,7 @@ def main():
         json.dump(corr, f, ensure_ascii=False, indent=1)
     saisons = sorted({m.get("season") for m in fd if m.get("season")})
     equipes, bilan = assemble(_lire(FICHIER_CACHE, {}) or {}, fd, divisions, saison_fd=saisons[-1] if saisons else None)
-    doc = {"version": VERSION, "genere_le": maintenant, "saison_football_data": saisons[-1] if saisons else None,
+    doc = {"version": VERSION, "version_contrat": 1, "genere_le": maintenant, "saison_football_data": saisons[-1] if saisons else None,
            "regle": "Football-Data en base ; jours manquants complétés par Matchendirect (provisoire) ; même équipe "
                     "à ± 1 jour = même match ; reconstruit à chaque run, jamais cumulé",
            "bilan": bilan, "equipes": equipes}

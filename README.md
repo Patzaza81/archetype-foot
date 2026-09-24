@@ -218,7 +218,7 @@ seulement (des centaines de segments étant scrutés, une partie de ces gains vi
 | `tickets_observes/`, `vrais_tickets/` | Tickets fictifs et réels, un fichier par mois |
 | `data/football_data/` | Football-Data : snapshots immuables des saisons terminées, saison en cours normalisée (`CONTRAT.md`) |
 | `data/correspondances/equipes.json` | Noms d'équipes Football-Data ↔ Matchendirect, reliés par preuves (A3) |
-| `data/assemblage/equipes.json` | Matchs de chaque équipe à venir : Football-Data en base, jours manquants Matchendirect (provisoires) |
+| `data/assemblage/equipes.json` | Matchs de chaque équipe à venir : Football-Data en base, jours manquants Matchendirect (provisoires). Lu par le moteur **uniquement** via `contrat_moteur.py` (voir `docs/CONTRAT_MOTEUR.md`) |
 | `journal.json` | Sortie de `journal_rentabilite.py` (workflow `journal.yml`) : segments, conseils, équipes à suivre, résultats des moteurs |
 | `data/echantillon_betpawa_501.json` | Base figée du journal : 501 matchs terminés (09-20/09/2026), cotes BetPawa d'avant-match + score |
 

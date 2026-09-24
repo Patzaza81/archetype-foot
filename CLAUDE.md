@@ -148,4 +148,6 @@ La variation doit être déterministe et fondée sur la preuve disponible, pas a
   Matchendirect (aujourd'hui seuls les buts sont gardés).
 - Aucune comparaison de cotes entre bookmakers, aucune API externe. Aucune cote n'est collectée depuis Football-Data.
 - La collecte ne calcule rien : elle récupère, normalise, vérifie et transmet.
+- Le moteur ne lit les données d'équipes que par `contrat_moteur.py` (`charge_assemblage`, `equipe`) ; tout changement de
+  format passe par une nouvelle `VERSION_CONTRAT` + `docs/CONTRAT_MOTEUR.md` + `tests/test_contrat_moteur.py`.
 

@@ -44,7 +44,7 @@ jobs:
 
       # Filet de sécurité : si le règlement des marchés ou les statuts sont cassés, on ne publie rien.
       - name: Tests du journal et du contrôle des saisons
-        run: python -m pytest tests/test_journal_rentabilite.py tests/test_controle_saisons.py tests/test_assemblage_equipes.py tests/test_controle_football_data.py -q
+        run: python -m pytest tests/test_journal_rentabilite.py tests/test_controle_saisons.py tests/test_assemblage_equipes.py tests/test_controle_football_data.py tests/test_contrat_moteur.py -q
 
       - name: Construire journal.json
         run: python journal_rentabilite.py
@@ -61,6 +61,15 @@ jobs:
       - name: Relier les équipes et assembler les données (data/correspondances, data/assemblage)
         run: python assemblage_equipes.py
         continue-on-error: true
+
+      # AJOUT 24/09/2026 -- A5 : contrat de transmission au moteur (docs/CONTRAT_MOTEUR.md). Si les nouveaux fichiers
+      # ne sont pas conformes, on remet la version précédente (conforme) : le moteur ne lit jamais un fichier cassé.
+      - name: Vérifier le contrat de transmission au moteur
+        run: |
+          if ! python contrat_moteur.py --verifier; then
+            echo "Contrat rompu : on conserve la version précédente de l'assemblage et des correspondances."
+            git checkout -- data/assemblage data/correspondances 2>/dev/null || true
+          fi
 
       # AJOUT 24/09/2026 -- A4 : scores Football-Data contre Matchendirect (≥ 98 %), doublons, dates. Lecture seule.
       - name: Contrôler les données Football-Data (data/controles/football_data.json)
