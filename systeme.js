@@ -77,6 +77,7 @@ function afficheEtatSysteme(etat) {
   racine.appendChild(construitBlocComparaison(etat.bilan_comportemental, etat.bilan_shrink_v1));
   racine.appendChild(construitTableauFamilles(etat.bilan_comportemental));
   if (window.__controleSaisons) racine.insertBefore(construitBlocControleSaisons(window.__controleSaisons), racine.firstChild);
+  if (window.__controleFootballData) racine.insertBefore(construitBlocControleFootballData(window.__controleFootballData), racine.firstChild);
 }
 
 fetch(`etat_systeme.json?_=${Date.now()}`)
@@ -122,5 +123,38 @@ fetch(`controle_saisons.json?_=${Date.now()}`)
     const ancien = document.getElementById("bloc-controle-saisons");
     if (ancien) ancien.remove();
     racine.insertBefore(construitBlocControleSaisons(rapport), racine.firstChild);
+  })
+  .catch((e) => console.error(e));
+
+
+/* AJOUT 24/09/2026 — A4 : contrôle qualité Football-Data (controle_football_data.py). Bloc indépendant. */
+function construitBlocControleFootballData(rapport) {
+  const div = document.createElement("section");
+  div.className = "bloc-systeme";
+  div.id = "bloc-controle-football-data";
+  const r = rapport.resume || {};
+  const taux = r.taux_accord === null || r.taux_accord === undefined ? "—" : formatPctSysteme(r.taux_accord);
+  const lignes = (rapport.desaccords || []).map((d) =>
+    `<tr><td><b>${echappeHtmlSysteme(d.match)}</b><br><span style="color:var(--text-secondary)">${echappeHtmlSysteme(d.division)} · ${echappeHtmlSysteme(d.date_football_data)}</span></td>` +
+    `<td>${echappeHtmlSysteme(d.score_football_data)}</td><td>${echappeHtmlSysteme(d.score_matchendirect)} (${echappeHtmlSysteme(d.date_matchendirect)})</td></tr>`).join("");
+  div.innerHTML = `<h2>Contrôle des données Football-Data</h2>
+    <p style="margin:0 0 9px;font-size:12.5px;color:var(--text-secondary)">Scores Football-Data comparés à Matchendirect sur les matchs communs (mêmes équipes, date à ± 1 jour). ${echappeHtmlSysteme(rapport.critere || "")}. Contrôle du ${echappeHtmlSysteme(rapport.genere_le || "—")}.</p>
+    <div class="grille-stats">
+      <div class="stat"><span class="etiquette">Matchs comparés</span><strong>${r.matchs_communs_compares ?? 0}</strong></div>
+      <div class="stat"><span class="etiquette">Accord</span><strong style="color:${r.critere_atteint ? "var(--green)" : "var(--red)"}">${taux}</strong></div>
+      <div class="stat"><span class="etiquette">Désaccords</span><strong>${r.desaccords ?? 0}</strong></div>
+      <div class="stat"><span class="etiquette">Doublons / dates</span><strong>${(r.doublons ?? 0) + (r.dates_invalides ?? 0) + (r.dates_futures ?? 0)}</strong></div>
+    </div>` + (lignes ? `<div style="overflow-x:auto;margin-top:10px"><table class="tableau-systeme"><thead><tr><th>Match</th><th>Football-Data</th><th>Matchendirect</th></tr></thead><tbody>${lignes}</tbody></table></div>` : "");
+  return div;
+}
+
+fetch(`data/controles/football_data.json?_=${Date.now()}`)
+  .then((r) => { if (!r.ok) throw new Error(`football_data.json introuvable (${r.status})`); return r.json(); })
+  .then((rapport) => {
+    window.__controleFootballData = rapport;
+    const racine = document.getElementById("contenu-systeme");
+    const ancien = document.getElementById("bloc-controle-football-data");
+    if (ancien) ancien.remove();
+    racine.insertBefore(construitBlocControleFootballData(rapport), racine.firstChild);
   })
   .catch((e) => console.error(e));

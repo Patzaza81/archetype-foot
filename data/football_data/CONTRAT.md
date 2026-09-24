@@ -145,3 +145,11 @@ Matchendirect (aujourd'hui seuls les buts sont gardés).
   Matchs Football-Data : mi-temps, tirs, tirs cadrés, corners, cartons, xG (quand publiés). Matchs Matchendirect :
   date, lieu, adversaire, buts, lien. Champ `raison` pour les équipes sans Football-Data (championnat non couvert,
   ou équipe pas encore reliée).
+
+
+## A4 (24/09/2026) — contrôles qualité
+
+`controle_football_data.py` → `data/controles/football_data.json` (page Système) : concordance des scores avec
+Matchendirect sur les matchs communs (appariés par équipes reliées et date à ± 1 jour, sans regarder le score), doublons,
+dates invalides ou futures, écarts de date. Critère : ≥ 98 % d'accord. Les désaccords sont listés, jamais corrigés.
+Limite : les noms étant reliés à partir de scores identiques, le taux est optimiste par construction.
