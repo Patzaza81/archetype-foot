@@ -48,14 +48,14 @@ BetPawa est traité en dernier.
 
 | Étape | Contenu | Validé quand | Statut |
 |---|---|---|---|
-| A1 | Téléchargement football-data, championnats couverts. **Saisons passées : téléchargées une seule fois pour de bon**, stockées dans le dépôt et consultables à tout moment par le moteur, jamais retéléchargées. **Saison en cours** : mise à jour pendant le run, seulement si le fichier a changé | code branché dans le pipeline ; validation réelle au premier run puis contrôle des journaux | **EN COURS** |
+| A1 | **Snapshot annuel complet Football-Data** : toutes les divisions/compétitions CSV réellement publiées pour la saison terminée sont archivées une fois dans `data/football_data/snapshots/<saison>/`, avec brut, manifeste SHA-256 et verrou d'immutabilité. La saison suivante reçoit son propre snapshot. La saison courante reste un flux opérationnel séparé. | workflow manuel/annuel exécuté ; couverture complète, manifeste cohérent, verrou `COMPLETE`, puis test de lecture locale par le moteur | **EN COURS — architecture codée, premier snapshot réel à exécuter** |
 | A2 | Normalisation en un format unique par match : date, heure, championnat, équipes, score fin de match, score mi-temps, tirs, tirs cadrés, corners, cartons, xG (si fourni), cotes par bookmaker. **Pas de cotes d'ouverture ni de clôture** : les seules cotes utilisées et comparées sont celles **relevées pendant le run**, horodatées (BetPawa et référence prises au même moment) | contrat codé et tests locaux ; validation réelle du schéma sur le premier run | **EN COURS** |
 | A3 | Correspondance des noms d'équipes football-data ↔ matchendirect ↔ BetPawa | aucune correspondance ambiguë acceptée ; les non-résolues listées | À FAIRE |
 | A4 | Contrôles qualité : scores football-data contre scores matchendirect sur les matchs communs ; doublons ; dates | ≥ 98 % d'accord ; désaccords listés, jamais corrigés à la main | À FAIRE |
 | A5 | Contrat de transmission au moteur : fichiers et champs documentés, versionnés | README + tests | À FAIRE |
 
 
-**Implémentation A1/A2 (24/09)** : `collecte_football_data.py` est désormais appelé avant le scraping dans `pipeline.yml`. Les CSV sources sont conservés dans `data/football_data/raw/<saison>/`, le contrat normalisé dans `data/football_data/normalized/<saison>/` et la provenance dans `data/football_data/manifest.json`. Une saison passée déjà présente est lue localement et n’est jamais retéléchargée. Cette étape ne calcule aucune statistique de marché. Validation en conditions réelles encore à effectuer.
+**Implémentation A1/A2 (24/09)** : l'architecture historique est désormais séparée en snapshots annuels. `archive_football_data.py` découvre tous les CSV d'une saison terminée, les archive dans `data/football_data/snapshots/<saison>/raw/`, enregistre URL/volume/SHA-256 dans `manifest.json` et crée `_SNAPSHOT_COMPLETE.json` uniquement lorsque toute la couverture découverte est archivée. Un snapshot complet n'est jamais retéléchargé ni écrasé. Le workflow dédié `.github/workflows/football_data_snapshot.yml` permet l'archivage manuel ou annuel. `collecte_football_data.py` reste le flux opérationnel courant et la normalisation technique ; aucune statistique de marché n'est calculée. **Premier snapshot réel et validation de couverture encore à effectuer dans GitHub Actions.**
 
 ### Chantier B — Moteur (après la collecte)
 
