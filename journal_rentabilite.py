@@ -347,12 +347,16 @@ def stats_segment(paris):
     roi_m1 = sum(p["profit"] for p in m1) / len(m1) if len(m1) >= 10 else None
     roi_m2 = sum(p["profit"] for p in m2) / len(m2) if len(m2) >= 10 else None
     bas, haut = _ic_cluster(paris) if len(ids) >= MIN_MATCHS_SURVEILLER else (None, None)
+    somme_cotes = sum(p["cote"] for p in paris)
     return {"paris": n, "matchs": len(ids), "roi": round(roi, 4),
+            "gagnes": gagnes, "rembourses": rembourses,
+            # réussite nécessaire pour ne rien perdre à ces cotes (mise fixe, cotes moyennes) = 1 / cote moyenne
+            "reussite_necessaire": round(n / somme_cotes, 4) if somme_cotes else None,
             "ic95": [round(bas, 4), round(haut, 4)] if bas is not None else None,
             "roi_moitie_1": round(roi_m1, 4) if roi_m1 is not None else None,
             "roi_moitie_2": round(roi_m2, 4) if roi_m2 is not None else None,
             "reussite": round(gagnes / (n - rembourses), 4) if n > rembourses else None,
-            "cote_moyenne": round(sum(p["cote"] for p in paris) / n, 3),
+            "cote_moyenne": round(somme_cotes / n, 3),
             "statut": statut_segment(len(ids), roi, bas, haut, roi_m1, roi_m2)}
 
 

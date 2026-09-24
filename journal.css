@@ -49,3 +49,13 @@ body.theme-nuit .b-A_EVITER{background:#A93226}
 .jr-vide{margin:0;color:var(--ax-doux);font-size:14px}
 .jr-sous-titre{margin:12px 0 6px;font-size:16px;font-weight:800}
 .jr-liste{margin:0;padding-left:18px;font-size:14px;line-height:1.5}
+
+/* Fiches championnats (dépliables) */
+.jr-fiche{border:1px solid var(--ax-ligne);border-radius:14px;padding:10px 12px;margin-top:8px}
+.jr-fiche summary{display:flex;flex-direction:column;gap:2px;cursor:pointer;list-style:none}
+.jr-fiche summary::-webkit-details-marker{display:none}
+.jr-fiche summary::after{content:"Voir les marchés ⌄";font-size:12.5px;font-weight:700;color:var(--ax-bleu-texte)}
+.jr-fiche[open] summary::after{content:"Replier ⌃"}
+.jr-fiche-nom{font-size:15px;font-weight:800}
+.jr-fiche-info{font-size:12.5px;font-weight:600;color:var(--ax-doux)}
+.jr-preuve b{color:var(--ax-texte)}

@@ -156,3 +156,12 @@ def test_chargement_filtre_les_cotes_non_betpawa(tmp_path):
     assert ids["a"]["cotes"]["1X2 - 1"] == 1.9         # l'échantillon figé est prioritaire
     paris, inconnus, incoherentes = jr.paris_depuis_matchs(matchs)
     assert sorted(round(p["profit"], 2) for p in paris) == [0.9, 2.1]
+
+
+def test_reussite_necessaire_et_comptes():
+    paris = [{"match_id": "a", "date": "2026-09-10", "cote": 2.0, "profit": 1.0, "resultat": 1},
+             {"match_id": "b", "date": "2026-09-11", "cote": 1.5, "profit": -1.0, "resultat": -1}]
+    s = jr.stats_segment(paris)
+    assert s["gagnes"] == 1 and s["rembourses"] == 0
+    assert s["reussite_necessaire"] == round(2 / 3.5, 4)      # 1 / cote moyenne (1,75)
+    assert s["reussite"] == 0.5
