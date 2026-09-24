@@ -1,0 +1,209 @@
+#!/usr/bin/env python3
+"""Crée un snapshot historique Football-Data complet et immuable.
+
+Cette couche ne fait que découvrir, télécharger, vérifier et archiver les CSV
+publiés par Football-Data.co.uk pour une saison terminée. Aucun calcul de
+marché, moyenne, probabilité, EV, value ou signal n'est effectué.
+
+Politique:
+- tous les CSV découvrables pour la saison demandée sont archivés;
+- un fichier déjà présent n'est jamais retéléchargé ni écrasé;
+- le snapshot n'est marqué COMPLETE que si tous les fichiers découverts ont
+  été téléchargés et vérifiés;
+- un snapshot COMPLETE est ensuite en lecture seule pour ce collecteur;
+- le moteur consomme le snapshot local, jamais le réseau.
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import re
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+from urllib.parse import urljoin
+
+import requests
+
+INDEX_URLS = (
+    "https://www.football-data.co.uk/downloadm.php",
+    "https://www.football-data.co.uk/all_new_data.php",
+)
+SEASON_RE = re.compile(r"/mmz4281/(?P<season>\d{4})/(?P<div>[A-Za-z0-9]+)\.csv$", re.I)
+DEFAULT_ROOT = Path("data/football_data/snapshots")
+
+
+def now_utc() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+def sha256_bytes(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
+def discover_urls(session: requests.Session, season: str) -> dict[str, str]:
+    found: dict[str, str] = {}
+    for index_url in INDEX_URLS:
+        response = session.get(index_url, timeout=30)
+        response.raise_for_status()
+        for href in re.findall(r"""href\s*=\s*["']([^"']+\.csv)["']""", response.text, re.I):
+            url = urljoin(index_url, href)
+            match = SEASON_RE.search(url.replace("\\", "/"))
+            if not match or match.group("season") != season:
+                continue
+            div = match.group("div").upper()
+            found.setdefault(div, url)
+    return dict(sorted(found.items()))
+
+
+def download(session: requests.Session, url: str) -> bytes:
+    response = session.get(url, timeout=90)
+    response.raise_for_status()
+    if not response.content:
+        raise ValueError(f"Réponse vide: {url}")
+    return response.content
+
+
+def load_manifest(path: Path, season: str) -> dict:
+    if not path.exists():
+        return {
+            "schema_version": 1,
+            "source": "football-data.co.uk",
+            "season": season,
+            "status": "INCOMPLETE",
+            "created_at_utc": now_utc(),
+            "updated_at_utc": now_utc(),
+            "files": {},
+            "failed": {},
+        }
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def archive_snapshot(
+    *,
+    season: str,
+    root: Path = DEFAULT_ROOT,
+    session: requests.Session | None = None,
+) -> dict:
+    snapshot = root / season
+    raw_dir = snapshot / "raw"
+    manifest_path = snapshot / "manifest.json"
+    marker = snapshot / "_SNAPSHOT_COMPLETE.json"
+    manifest = load_manifest(manifest_path, season)
+
+    if marker.exists() or manifest.get("status") == "COMPLETE":
+        return {
+            "season": season,
+            "status": "COMPLETE",
+            "discovered": len(manifest.get("files", {})),
+            "downloaded": 0,
+            "skipped_existing": len(manifest.get("files", {})),
+            "failed": 0,
+            "immutable": True,
+        }
+
+    session = session or requests.Session()
+    session.headers.update({"User-Agent": "ArchetypeFoot/football-data-snapshot"})
+    urls = discover_urls(session, season)
+
+    if not urls:
+        raise RuntimeError(f"Aucun CSV Football-Data découvert pour la saison {season}")
+
+    files = manifest.setdefault("files", {})
+    failed: dict[str, str] = {}
+    downloaded = 0
+    skipped = 0
+
+    for div, url in urls.items():
+        path = raw_dir / f"{div}.csv"
+        existing = files.get(div)
+
+        if path.exists():
+            data = path.read_bytes()
+            digest = sha256_bytes(data)
+            if existing and existing.get("sha256") not in (None, digest):
+                raise RuntimeError(
+                    f"Conflit d'archive pour {div}: le fichier local diffère du manifeste"
+                )
+            files[div] = {
+                "competition_code": div,
+                "source_url": url,
+                "sha256": digest,
+                "bytes": len(data),
+                "archived_at_utc": (existing or {}).get("archived_at_utc"),
+                "immutable": True,
+            }
+            skipped += 1
+            continue
+
+        try:
+            data = download(session, url)
+            digest = sha256_bytes(data)
+            raw_dir.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(data)
+            files[div] = {
+                "competition_code": div,
+                "source_url": url,
+                "sha256": digest,
+                "bytes": len(data),
+                "archived_at_utc": now_utc(),
+                "immutable": True,
+            }
+            downloaded += 1
+        except Exception as exc:
+            failed[div] = str(exc)
+
+    manifest.update({
+        "schema_version": 1,
+        "source": "football-data.co.uk",
+        "season": season,
+        "status": "COMPLETE" if not failed and len(files) == len(urls) else "INCOMPLETE",
+        "updated_at_utc": now_utc(),
+        "discovered_count": len(urls),
+        "archived_count": len(files),
+        "failed": failed,
+        "coverage": sorted(urls),
+        "policy": "immutable completed-season snapshot; no overwrite and no redownload",
+    })
+    snapshot.mkdir(parents=True, exist_ok=True)
+    manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+    if manifest["status"] == "COMPLETE":
+        marker.write_text(
+            json.dumps({
+                "status": "COMPLETE",
+                "season": season,
+                "completed_at_utc": now_utc(),
+                "files": len(files),
+                "sha256_manifest": sha256_bytes(manifest_path.read_bytes()),
+            }, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+
+    return {
+        "season": season,
+        "status": manifest["status"],
+        "discovered": len(urls),
+        "downloaded": downloaded,
+        "skipped_existing": skipped,
+        "failed": len(failed),
+        "immutable": manifest["status"] == "COMPLETE",
+    }
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--season", required=True, help="Code Football-Data, ex. 2526")
+    parser.add_argument("--root", default=str(DEFAULT_ROOT))
+    args = parser.parse_args()
+    try:
+        print(json.dumps(archive_snapshot(season=args.season, root=Path(args.root)), ensure_ascii=False))
+    except Exception as exc:
+        print(f"ERREUR snapshot Football-Data: {exc}", file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
