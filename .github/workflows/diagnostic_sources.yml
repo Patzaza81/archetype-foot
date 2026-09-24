@@ -13,8 +13,9 @@ on:
 permissions:
   contents: write
 
+# Groupe propre : un diagnostic ne doit pas attendre la fin du pipeline (il n'écrit que dans diagnostic/).
 concurrency:
-  group: pipeline-archetype-foot
+  group: diagnostic-sources
   cancel-in-progress: false
 
 jobs:
