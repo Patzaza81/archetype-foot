@@ -111,3 +111,14 @@ La variation doit être déterministe et fondée sur la preuve disponible, pas a
   mode nuit `archetype_theme_nuit`). Après modification d'un `.js`/`.css`, changer le paramètre `?v=`.
 - **Tests** : toute fonction de comparaison ou de règlement du journal est testée sur au moins 3 cas qui doivent passer
   et 3 qui doivent échouer (`tests/test_journal_rentabilite.py`).
+
+
+# DONNÉES DE SAISON (cache_equipes_saison.json) — règle du 24/09/2026
+
+- Une saison d'équipe n'est lue que dans la section dont le TITRE de compétition correspond (`scraper_details._section_competition`).
+  Interdit : ancrer sur un texte quelconque de la page (JavaScript compris) ou lire un tableau situé après le titre d'une
+  autre compétition. En cas de doute : aucune donnée (NO DATA → NO GO), jamais une autre compétition.
+- Toute saison lue est confrontée aux scores connus par les pages de match (`stats_saison_en_cours.controle_coherence`) ;
+  une contradiction fait refuser l'équipe. Le contrôle nocturne `controle_saisons.py` publie le taux d'erreur (page Système).
+- Toute modification de la lecture des pages se vérifie d'abord sur de vraies pages capturées (`diagnostic/`,
+  `tests/fixtures/pages_equipes/`), jamais sur des pages imaginées.

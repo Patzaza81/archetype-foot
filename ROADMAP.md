@@ -25,9 +25,11 @@ championnat × marché rentables dont 5 « À surveiller », 0 « Prouvé » ; 6
 5 matchs maximum par équipe) ; 8 conseils à venir (tous Angleterre : Ligue Nationale, double chance 1X).
 
 **Données de saison fausses (P0)** : 41 équipes sur 181 vérifiables (23 %) ont une saison enregistrée qui contredit des
-scores réels (`controle_saisons.json`, page Système). Étape 1 FAIT : contrôle nocturne. Étape 2 EN COURS : correction de
-`_extrait_historique_competition` sur des pages réelles capturées (`diagnostic/`), puis exclusion du moteur des équipes
-incohérentes.
+scores réels (`controle_saisons.json`, page Système). Étape 1 FAIT : contrôle nocturne. Étape 2 FAIT : lecture corrigée
+(`_section_competition`, vérifiée sur 8 pages réelles : 7 équipes fausses redeviennent cohérentes, les 2 témoins sont
+inchangés) et garde-fou dans `stats_saison_en_cours.py` (saison contredisant un score connu = équipe refusée). Cache des
+saisons vidé. **À vérifier après le prochain pipeline** : taux d'incohérence sur la page Système (attendu proche de 0,
+hors équipes dont la page ne contient pas la compétition : statut SANS_DONNEES).
 
 **À faire** : laisser le journal accumuler les matchs (aucun réglage des seuils sur ces données) ; vérifier chaque matin
 dans Actions que « Pipeline quotidien » puis « Journal de rentabilité » sont verts.

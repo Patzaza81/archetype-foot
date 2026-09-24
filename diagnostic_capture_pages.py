@@ -41,7 +41,7 @@ def main():
     os.makedirs(DOSSIER, exist_ok=True)
     resultats = []
     for ligne in open(LISTE, encoding="utf-8").read().splitlines():
-        if "||" not in ligne:
+        if "||" not in ligne or ligne.lstrip().startswith("#"):
             continue
         url, competition = [x.strip() for x in ligne.split("||", 1)]
         nom = _nom_equipe(url)

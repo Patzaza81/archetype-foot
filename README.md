@@ -303,8 +303,13 @@ Décisions du propriétaire, documentées dans le code et dans `ROADMAP.md` (§4
   tableau est celui de la compétition (ex. The New Saints : le match amical Glentoran 1-1 enregistré comme sa saison de
   Cymru Premier). **Contrôle** : `controle_saisons.py` (workflow `journal.yml`) compare chaque saison enregistrée aux
   scores connus par les pages de match et publie `controle_saisons.json`, affiché sur la page Système (23 % d'équipes
-  incohérentes au 24/09). Correction de la lecture : à faire sur de vraies pages capturées par
-  `.github/workflows/diagnostic_pages.yml` (se lance quand `diagnostic/pages_a_capturer.txt` change).
+  incohérentes au 24/09). **Correction (24/09)**, vérifiée sur 8 vraies pages capturées
+  par `.github/workflows/diagnostic_pages.yml` (se lance quand `diagnostic/pages_a_capturer.txt` change) : seuls les
+  titres de compétition (h2/h3/h4 avec « : ») servent d'ancre, le meilleur titre est retenu, un titre ajoutant coupe /
+  amicaux / femmes / jeunes absent de la cible est refusé, et le tableau lu doit précéder le titre suivant
+  (`_section_competition`). Garde-fou dans `stats_saison_en_cours.py` : une saison qui contredit un score connu est
+  refusée (`saison_incoherente_avec_resultats_connus`). Tests sur pages réelles : `tests/test_lecture_saison_pages_reelles.py`.
+  `cache_equipes_saison.json` a été vidé le 24/09 pour forcer une relecture de toutes les équipes.
 - **Page du second moteur** : `archetype_shrink.js` filtrait sur `moteur_utilise`, alors que le pipeline marque le second
   moteur dans `shrink_v1_utilise` ; la page était toujours vide (corrigé le 24/09).
 

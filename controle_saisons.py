@@ -15,7 +15,8 @@ mêmes buts marqués / encaissés). Sinon, la saison enregistrée est fausse.
 Statuts par équipe :
   COHERENTE        : tous les matchs connus sont présents ;
   INCOHERENTE      : au moins un match connu manque (la saison enregistrée contredit un résultat réel) ;
-  NON_VERIFIABLE   : aucun match connu par l'autre voie (équipe non retrouvée, ou aucun match antérieur).
+  NON_VERIFIABLE   : aucun match connu par l'autre voie (équipe non retrouvée, ou aucun match antérieur) ;
+  SANS_DONNEES     : rien d'enregistré pour l'équipe (le moteur la refuse déjà) : pas une donnée fausse.
 
 Ce script n'écrit que controle_saisons.json. Il ne modifie ni le cache, ni le moteur.
 Bibliothèque standard uniquement. Usage : python controle_saisons.py
@@ -105,6 +106,10 @@ def controle_equipe(cle_cache, entree, connus):
     if not candidats:
         ligne["statut"] = "NON_VERIFIABLE"
         return ligne
+    if not enregistres:
+        # aucune donnée enregistrée : le moteur refuse déjà l'équipe (NO DATA -> NO GO), ce n'est pas une donnée fausse
+        ligne["statut"] = "SANS_DONNEES"
+        return ligne
     reste = Counter(enregistres)
     for k in sorted(candidats, key=lambda x: x["date"]):
         cle = (k["domicile"], k["marques"], k["encaisses"])
@@ -131,6 +136,7 @@ def controle(fichier_cache=FICHIER_CACHE, connus=None):
         "genere_le": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
         "resume": {"equipes_en_cache": len(lignes), "verifiables": verifiables, "coherentes": compte["COHERENTE"],
                    "incoherentes": compte["INCOHERENTE"], "non_verifiables": compte["NON_VERIFIABLE"],
+                   "sans_donnees": compte["SANS_DONNEES"],
                    "taux_incoherence": round(compte["INCOHERENTE"] / verifiables, 4) if verifiables else None},
         "methode": "Chaque match connu par les pages de match (même compétition, joué avant l'enregistrement) doit figurer "
                    "dans la saison enregistrée de l'équipe (même lieu, mêmes buts). Sinon : INCOHERENTE.",

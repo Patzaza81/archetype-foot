@@ -573,6 +573,79 @@ def _competitions_correspondent(cible, candidat):
     return bool(_mots_significatifs(cible) & _mots_significatifs(candidat))
 
 
+# ---------------------------------------------------------------------------------------------------------------
+# CORRECTIF 24/09/2026 -- choix de la section de compétition sur une page équipe (voir _extrait_historique_competition)
+# ---------------------------------------------------------------------------------------------------------------
+_MARQUEURS_AUTRE_COMPETITION = {
+    "coupe", "coppa", "cup", "copa", "pokal", "taca", "trophee", "trophy", "supercoupe", "supercoppa", "supercopa",
+    "amicaux", "amical", "amicales", "friendly", "friendlies", "femmes", "feminine", "feminin", "women", "womens",
+    "u17", "u18", "u19", "u20", "u21", "u23", "jeunes", "reserve", "reserves", "qualifications", "barrages", "playoffs",
+}
+
+
+def _mots_sans_accents(texte):
+    import unicodedata
+    t = unicodedata.normalize("NFKD", str(texte or "")).encode("ascii", "ignore").decode("ascii").lower()
+    return set(re.findall(r"[a-z0-9]+", t))
+
+
+def _sans_accents(texte):
+    import unicodedata
+    return unicodedata.normalize("NFKD", str(texte or "")).encode("ascii", "ignore").decode("ascii").lower()
+
+
+def _score_titre_competition(cible, candidat):
+    """Score d'un titre de compétition de la page pour la compétition cible (parties après « : », normalisées).
+    None = refusé : si _competitions_correspondent le refuse (comparaison faite sans accents), ou si le titre ajoute
+    un marqueur d'une autre compétition absent de la cible (coupe, amicaux, femmes, jeunes...)."""
+    c, d = _sans_accents(cible), _sans_accents(candidat)
+    if not _competitions_correspondent(c, d):
+        return None
+    a, b = _mots_sans_accents(c), _mots_sans_accents(d)
+    if (b - a) & _MARQUEURS_AUTRE_COMPETITION:
+        return None
+    if c == d:
+        return 1000
+    score = 10 * len(a & b) - 3 * len(b - a) - len(a - b)
+    if c in d or d in c:
+        score += 50
+    return score
+
+
+def _titres_competition(soup):
+    """Titres de compétition de la page, dans l'ordre : (élément, partie après « : »)."""
+    out = []
+    for h in soup.find_all(["h2", "h3", "h4"]):
+        texte = _normalise_texte(h.get_text(" ", strip=True))
+        if ":" in texte:
+            out.append((h, _partie_competition(texte)))
+    return out
+
+
+def _table_avec_matchs(t):
+    return t.name == "table" and any(
+        "/live-score/" in a.get("href", "") or "/foot-score/" in a.get("href", "") for a in t.find_all("a"))
+
+
+def _section_competition(soup, cible):
+    """(titre_retenu, tableau_de_matchs) de la compétition cible ; (None, None) si aucun titre ne convient ;
+    (titre, None) si la section du titre ne contient pas de tableau de matchs."""
+    titres = _titres_competition(soup)
+    notes = [(sc, i) for i, (_, partie) in enumerate(titres)
+             for sc in [_score_titre_competition(cible, partie)] if sc is not None]
+    if not notes:
+        return None, None
+    _, i = max(notes, key=lambda x: (x[0], -x[1]))
+    h, partie = titres[i]
+    suivants = {id(t[0]) for t in titres[i + 1:]}
+    for el in h.next_elements:
+        if id(el) in suivants:
+            return partie, None                      # section suivante atteinte sans tableau
+        if getattr(el, "name", None) == "table" and _table_avec_matchs(el):
+            return partie, el
+    return partie, None
+
+
 def _extrait_historique_competition(soup, nom_competition, nom_equipe, max_matchs=10, diag_libelle=None):
     # CORRECTIF (26/08) : l'égalité stricte texte-complet ('Denmark :
     # Superliga' vs 'Danemark : Superligaen' sur la vraie page matchendirect,
@@ -608,45 +681,27 @@ def _extrait_historique_competition(soup, nom_competition, nom_equipe, max_match
     # ou /foot-score/, avec une limite de 4 tableaux pour ne pas déborder
     # sur la section d'une AUTRE compétition plus bas sur la page si aucun
     # vrai tableau de matchs n'existe ici.
-    MAX_TABLEAUX_ESSAYES = 4
+    # CORRECTIF 24/09/2026 (cause confirmée sur 8 vraies pages capturées, diagnostic/resultat_capture.json) :
+    # l'ancre était le PREMIER texte de la page contenant « : » et un mot en commun avec la compétition, n'importe où
+    # (y compris du JavaScript), puis on prenait le premier tableau de matchs qui suivait, sans vérifier qu'il
+    # appartenait à cette compétition. Résultats faux constatés : The New Saints (ancre = un <script>, tableau lu =
+    # « Monde : Matchs Amicaux », Glentoran 1-1 enregistré comme sa saison de Cymru Premier), Colwyn Bay (idem),
+    # Salernitana / Cosenza / Pineto (« Coppa Italia Série C » lue à la place de « Série C », le mot accentué
+    # « série » n'étant pas reconnu comme générique), Aston Villa féminines (« Matchs Amicaux Femmes »).
+    # Désormais : (1) seuls les TITRES de compétition (h2/h3/h4 contenant « : ») sont candidats ; (2) parmi ceux qui
+    # correspondent, on prend le MEILLEUR (_score_titre_competition), et un titre qui ajoute une coupe, des amicaux,
+    # une catégorie féminine ou de jeunes absente de la cible est refusé ; (3) le tableau lu doit se trouver AVANT le
+    # titre de compétition suivant (sinon il appartient à une autre compétition). Aucun titre valable -> None
+    # (pas de données plutôt que de fausses données : NO DATA -> NO GO).
     cible = _partie_competition(nom_competition)
-    ancre = None
-    for candidat in soup.find_all(string=True):
-        texte = _normalise_texte(str(candidat))
-        if ":" not in texte:
-            continue
-        if _competitions_correspondent(cible, _partie_competition(texte)):
-            ancre = candidat
-            break
-    if ancre is None:
+    titre, table = _section_competition(soup, cible)
+    if titre is None:
         if diag_libelle:
-            print(f"[DIAG 18.8] {diag_libelle} -- ancre INTROUVABLE pour "
-                  f"compétition cible = {cible!r}. Aucun texte contenant ':' "
-                  f"sur la page ne correspond.")
+            print(f"[DIAG 18.8] {diag_libelle} -- aucun TITRE de compétition correspondant à {cible!r} sur la page.")
         return None
-    table = ancre.find_parent().find_next("table")
-    tentative = 0
-    while table is not None and tentative < MAX_TABLEAUX_ESSAYES:
-        contient_lien_match = any(
-            "/live-score/" in a.get("href", "") or "/foot-score/" in a.get("href", "")
-            for a in table.find_all("a")
-        )
-        if contient_lien_match:
-            break
-        if diag_libelle:
-            print(f"[DIAG 18.8] {diag_libelle} -- tableau #{tentative + 1} après "
-                  f"l'ancre ignoré (aucun lien /live-score/ ou /foot-score/ dedans, "
-                  f"probablement le tableau décoratif) -- passage au tableau suivant.")
-        table = table.find_next("table")
-        tentative += 1
-    else:
-        table = None
-
     if table is None:
         if diag_libelle:
-            print(f"[DIAG 18.8] {diag_libelle} -- ancre TROUVÉE ({ancre!r}) mais "
-                  f"aucun tableau contenant un lien /live-score/ ou /foot-score/ "
-                  f"trouvé dans les {MAX_TABLEAUX_ESSAYES} tableaux suivants.")
+            print(f"[DIAG 18.8] {diag_libelle} -- titre {titre!r} trouvé mais aucun tableau de matchs dans sa section.")
         return []
 
     matchs = []

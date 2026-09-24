@@ -1,62 +1,17 @@
 {
  "version": "1.0.0",
- "genere_le": "2026-09-24 07:10 UTC",
+ "genere_le": "2026-09-24 07:17 UTC",
  "resume": {
   "equipes_en_cache": 199,
-  "verifiables": 181,
+  "verifiables": 176,
   "coherentes": 140,
-  "incoherentes": 41,
+  "incoherentes": 36,
   "non_verifiables": 18,
-  "taux_incoherence": 0.2265
+  "sans_donnees": 5,
+  "taux_incoherence": 0.2045
  },
  "methode": "Chaque match connu par les pages de match (même compétition, joué avant l'enregistrement) doit figurer dans la saison enregistrée de l'équipe (même lieu, mêmes buts). Sinon : INCOHERENTE.",
  "incoherentes": [
-  {
-   "equipe": "antigua",
-   "competition": "guatemala : ligue nationale ouverture",
-   "url": "https://www.matchendirect.fr/equipe/antigua_vb4zqon7l05foj8xxnpygn5m.html",
-   "enregistre_le": "2026-09-24",
-   "matchs_enregistres": 0,
-   "matchs_connus": 2,
-   "manquants": [
-    {
-     "date": "2026-09-04",
-     "adversaire": "Aurora",
-     "lieu": "domicile",
-     "score_equipe": "2-1"
-    },
-    {
-     "date": "2026-09-10",
-     "adversaire": "Malacateco",
-     "lieu": "extérieur",
-     "score_equipe": "2-0"
-    }
-   ],
-   "statut": "INCOHERENTE"
-  },
-  {
-   "equipe": "mixco",
-   "competition": "guatemala : ligue nationale ouverture",
-   "url": "https://www.matchendirect.fr/equipe/mixco_7zvpa5mvf6mgae5fpqtq573g7.html",
-   "enregistre_le": "2026-09-24",
-   "matchs_enregistres": 0,
-   "matchs_connus": 2,
-   "manquants": [
-    {
-     "date": "2026-09-05",
-     "adversaire": "Comunicaciones",
-     "lieu": "domicile",
-     "score_equipe": "1-1"
-    },
-    {
-     "date": "2026-09-09",
-     "adversaire": "San Pedro",
-     "lieu": "extérieur",
-     "score_equipe": "0-2"
-    }
-   ],
-   "statut": "INCOHERENTE"
-  },
   {
    "equipe": "colwyn bay",
    "competition": "pays de galles : cymru premier",
@@ -569,57 +524,6 @@
      "adversaire": "Reggiana",
      "lieu": "extérieur",
      "score_equipe": "1-3"
-    }
-   ],
-   "statut": "INCOHERENTE"
-  },
-  {
-   "equipe": "atletico san l",
-   "competition": "mexique : liga mx ouverture",
-   "url": "https://www.matchendirect.fr/equipe/atletico-san-l_54ph1k82y99hhjsf7m2usns8u.html",
-   "enregistre_le": "2026-09-24",
-   "matchs_enregistres": 0,
-   "matchs_connus": 1,
-   "manquants": [
-    {
-     "date": "2026-09-05",
-     "adversaire": "CD Guadalajara",
-     "lieu": "domicile",
-     "score_equipe": "0-3"
-    }
-   ],
-   "statut": "INCOHERENTE"
-  },
-  {
-   "equipe": "cruz azul",
-   "competition": "mexique : liga mx ouverture",
-   "url": "https://www.matchendirect.fr/equipe/cruz-azul_1aw67co8uut64yckd3wbhy9t2.html",
-   "enregistre_le": "2026-09-23",
-   "matchs_enregistres": 0,
-   "matchs_connus": 1,
-   "manquants": [
-    {
-     "date": "2026-09-06",
-     "adversaire": "Santos Laguna",
-     "lieu": "domicile",
-     "score_equipe": "1-0"
-    }
-   ],
-   "statut": "INCOHERENTE"
-  },
-  {
-   "equipe": "pumas",
-   "competition": "mexique : liga mx ouverture",
-   "url": "https://www.matchendirect.fr/equipe/pumas_ayabrorjqa1bj7jk1fdqu1t57.html",
-   "enregistre_le": "2026-09-24",
-   "matchs_enregistres": 0,
-   "matchs_connus": 1,
-   "manquants": [
-    {
-     "date": "2026-09-10",
-     "adversaire": "Club León",
-     "lieu": "domicile",
-     "score_equipe": "3-1"
     }
    ],
    "statut": "INCOHERENTE"
