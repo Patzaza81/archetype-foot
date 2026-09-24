@@ -44,3 +44,22 @@ Le moteur d'analyse pourra lire `data/football_data/normalized/` sans
 déclencher de téléchargement et sans dépendre de Matchendirect ou BetPawa.
 Le rapprochement inter-sources et les décisions de marché sont des chantiers
 séparés.
+
+## Archive historique annuelle — A1
+
+À partir de la décision d'architecture A1, les saisons terminées sont archivées
+comme snapshots complets dans `data/football_data/snapshots/<saison>/`.
+Le snapshot contient tous les CSV Football-Data découvrables pour la saison,
+classés par division/compétition, avec manifeste SHA-256 et verrou
+`_SNAPSHOT_COMPLETE.json`.
+
+Un snapshot marqué COMPLETE est **immuable** : aucun téléchargement quotidien,
+aucun remplacement silencieux et aucune fusion avec une autre saison. En cas
+d'archive incomplète, seuls les fichiers manquants peuvent être ajoutés ; les
+fichiers déjà présents ne sont jamais écrasés.
+
+Le premier snapshot réel doit être exécuté et contrôlé dans GitHub Actions avant
+que l'archive soit considérée comme validée en conditions réelles.
+
+Le moteur doit lire ces snapshots localement. La collecte historique et la
+collecte opérationnelle de la saison courante sont deux flux distincts.
