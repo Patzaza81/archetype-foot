@@ -1,15 +1,16 @@
 {
  "version": "1.0.0",
- "genere_le": "2026-09-24 18:19 UTC",
+ "genere_le": "2026-09-24 23:25 UTC",
  "critere": "au moins 98% de scores identiques sur les matchs communs",
+ "limite": "Les noms d'équipes sont reliés (A3) à partir de matchs au score identique : une équipe dont TOUS les scores divergeraient ne serait jamais reliée, donc jamais comparée. Le taux est donc optimiste ; chaque désaccord listé reste un signal réel à examiner.",
  "resume": {
-  "matchs_football_data": 3696,
+  "matchs_football_data": 3697,
   "matchs_communs_compares": 717,
   "accords": 716,
   "desaccords": 1,
   "taux_accord": 0.9986,
   "critere_atteint": true,
-  "communs_sans_pendant_unique": 1679,
+  "communs_sans_pendant_unique": 1680,
   "ecart_de_date_jours": {
    "-1": 46,
    "0": 669,
