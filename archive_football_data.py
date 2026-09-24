@@ -33,6 +33,31 @@ INDEX_URLS = (
 SEASON_RE = re.compile(r"/mmz4281/(?P<season>\d{4})/(?P<div>[A-Za-z0-9]+)\.csv$", re.I)
 DEFAULT_ROOT = Path("data/football_data/snapshots")
 
+COMPETITIONS = {
+    "E0": ("England", "Premier League"),
+    "E1": ("England", "Championship"),
+    "E2": ("England", "League One"),
+    "E3": ("England", "League Two"),
+    "EC": ("England", "National League"),
+    "SC0": ("Scotland", "Premiership"),
+    "SC1": ("Scotland", "Championship"),
+    "SC2": ("Scotland", "League One"),
+    "D1": ("Germany", "Bundesliga"),
+    "D2": ("Germany", "2. Bundesliga"),
+    "I1": ("Italy", "Serie A"),
+    "I2": ("Italy", "Serie B"),
+    "SP1": ("Spain", "La Liga"),
+    "SP2": ("Spain", "La Liga 2"),
+    "F1": ("France", "Ligue 1"),
+    "F2": ("France", "Ligue 2"),
+    "N1": ("Netherlands", "Eredivisie"),
+    "N2": ("Netherlands", "Eerste Divisie"),
+    "B1": ("Belgium", "Jupiler Pro League"),
+    "P1": ("Portugal", "Liga I"),
+    "T1": ("Turkey", "Super Lig"),
+    "G1": ("Greece", "Super League"),
+}
+
 
 def now_utc() -> str:
     return datetime.now(timezone.utc).isoformat()
@@ -55,6 +80,21 @@ def discover_urls(session: requests.Session, season: str) -> dict[str, str]:
             div = match.group("div").upper()
             found.setdefault(div, url)
     return dict(sorted(found.items()))
+
+
+def build_catalogue(season: str, urls: dict[str, str]) -> list[dict]:
+    rows = []
+    for div, url in urls.items():
+        country, competition = COMPETITIONS.get(div, (None, None))
+        rows.append({
+            "competition_code": div,
+            "country": country,
+            "competition": competition,
+            "season": season,
+            "source_url": url,
+            "discovery_source": "football-data.co.uk/downloadm.php|all_new_data.php",
+        })
+    return rows
 
 
 def download(session: requests.Session, url: str) -> bytes:
@@ -110,6 +150,20 @@ def archive_snapshot(
     if not urls:
         raise RuntimeError(f"Aucun CSV Football-Data découvert pour la saison {season}")
 
+    catalogue_path = snapshot / "catalogue.json"
+    catalogue = {
+        "schema_version": 1,
+        "source": "football-data.co.uk",
+        "season": season,
+        "generated_at_utc": now_utc(),
+        "entries": build_catalogue(season, urls),
+    }
+    snapshot.mkdir(parents=True, exist_ok=True)
+    catalogue_path.write_text(
+        json.dumps(catalogue, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
     files = manifest.setdefault("files", {})
     failed: dict[str, str] = {}
     downloaded = 0
@@ -126,8 +180,11 @@ def archive_snapshot(
                 raise RuntimeError(
                     f"Conflit d'archive pour {div}: le fichier local diffère du manifeste"
                 )
+            country, competition = COMPETITIONS.get(div, (None, None))
             files[div] = {
                 "competition_code": div,
+                "country": country,
+                "competition": competition,
                 "source_url": url,
                 "sha256": digest,
                 "bytes": len(data),
