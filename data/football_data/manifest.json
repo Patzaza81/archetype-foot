@@ -479,19 +479,21 @@
       "competition": "MLS",
       "season_label": "2026",
       "season_format": "civile",
+      "source_last_modified": "Thu, 24 Sep 2026 16:24:29 GMT",
       "season": "2627",
       "competition_code": "USA",
       "source_url": "https://www.football-data.co.uk/new/USA.csv",
-      "sha256": "b962ab8bf60a70b749c5d04f110e5454bcaef7e4f5b46e3a3b1d730d2efe9742",
-      "bytes": 46831,
-      "rows_normalized": 387,
-      "downloaded_at_utc": "2026-09-24T13:59:53.858665+00:00",
+      "sha256": "7433d0388a99b3128ddda891349e1e746442670edc2980c0c546d7302fc2f45d",
+      "bytes": 46956,
+      "rows_normalized": 388,
+      "last_match_date": "2026-09-24",
+      "downloaded_at_utc": "2026-09-24T22:35:29.109476+00:00",
       "immutable": false
     }
   },
   "schema_version": 2,
   "source": "football-data.co.uk",
-  "updated_at_utc": "2026-09-24T13:59:58.116132+00:00",
+  "updated_at_utc": "2026-09-24T22:35:29.109508+00:00",
   "historical_policy": "completed seasons are managed by archive_football_data.py snapshots",
   "current_season_policy": "download only when the source changed (ETag/Last-Modified, then SHA-256)",
   "sources": {
@@ -592,10 +594,10 @@
       "checked_at_utc": "2026-09-24T13:59:53.341599+00:00"
     },
     "https://www.football-data.co.uk/new/USA.csv": {
-      "etag": "\"b3ce3-65c0de81ba4a1\"",
-      "last_modified": "Tue, 22 Sep 2026 08:10:58 GMT",
-      "sha256": "b54d1c68f6ec6e4194b80ba07a5208e6a46b2a46d0d19eed405e74c9ea740751",
-      "checked_at_utc": "2026-09-24T13:59:53.849938+00:00"
+      "etag": "\"b3d61-65c3d08b38515\"",
+      "last_modified": "Thu, 24 Sep 2026 16:24:29 GMT",
+      "sha256": "9b714072904e57efd99a70afc817b6ff3e55fe3e5f875b78c4265bf940543a5b",
+      "checked_at_utc": "2026-09-24T22:35:29.103280+00:00"
     }
   },
   "current_season": "2627",
@@ -603,10 +605,10 @@
   "last_run": {
     "season": "2627",
     "discovered": 38,
-    "downloaded": 38,
-    "updated": 0,
+    "downloaded": 0,
+    "updated": 1,
     "unchanged": 0,
-    "sources_not_modified": 0,
+    "sources_not_modified": 16,
     "errors": {}
   }
 }
