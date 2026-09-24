@@ -44,7 +44,7 @@ def test_normalize_row_ne_calcule_rien_et_preserve_absences():
 def test_normalize_csv_ne_remplace_pas_les_champs_absents():
     csv_bytes = (
         "Div,Date,HomeTeam,AwayTeam,FTHG,FTAG,HTHG,HTAG,HS,AS,HST,AST,HC,AC\n"
-        "F1,19/09/26,A,B,1,0,0,0,,,,2,1\n"
+        "F1,19/09/26,A,B,1,0,0,0,,,,,2,1\n"
     ).encode("utf-8")
     rows = normalize_csv(csv_bytes, "https://example/F1.csv", "2526", "F1.csv")
     assert len(rows) == 1
