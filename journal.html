@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#F6EFE2">
-<title>ARCHETYPE — Journal de rentabilité</title>
+<title>ARCHETYPE — Journal des marchés rentables</title>
 <link rel="stylesheet" href="archetype.css?v=20260921e">
-<link rel="stylesheet" href="journal.css?v=20260924c">
+<link rel="stylesheet" href="journal.css?v=20260924d">
 </head>
 <body class="ax-page">
 <script>try{if(localStorage.getItem("archetype_theme_nuit")==="1")document.body.classList.add("theme-nuit")}catch(e){}</script>
@@ -17,32 +17,31 @@
   </div>
   <div class="ax-entete">
     <h1>JOURNAL</h1>
-    <p class="ax-bandeau">Où BetPawa est attaquable, où il ne l'est pas — recalculé chaque nuit sur tous les matchs terminés</p>
+    <p class="ax-bandeau">Les marchés BetPawa qui ont rapporté, championnat par championnat — recalculé chaque nuit</p>
   </div>
   <p id="maj" class="ax-maj" role="status" aria-live="polite">Chargement…</p>
   <main class="ax-liste-matchs">
     <section class="ax-carte jr-bloc" id="resume"></section>
 
     <section class="ax-carte jr-bloc">
-      <h2 class="jr-titre">Conseils pour les matchs à venir</h2>
-      <p class="jr-aide">D'où viennent ces conseils : d'aucun modèle. Uniquement des résultats réels : les cotes BetPawa relevées avant chaque match terminé, réglées sur le score final. Un marché est conseillé quand, dans ce championnat (ou à défaut pour ce marché en général), il a rapporté de l'argent de façon régulière. Le détail de la base est écrit sur chaque carte.</p>
-      <div class="jr-filtres" id="filtres-conseils">
+      <h2 class="jr-titre">Marchés rentables par championnat</h2>
+      <p class="jr-aide">Scrutage de tous les types de marchés sur tous les matchs terminés cotés BetPawa. Seuls les marchés au ROI positif sont affichés (au moins 10 matchs). Colonne « Niveau » : <b>Prouvé</b> = gain confirmé statistiquement ; <b>À surveiller</b> = gagnant sur les deux moitiés de la période ; <b>Non confirmé</b> = gagnant au total mais sur trop peu de matchs ou une seule moitié : peut venir de la chance.</p>
+      <div class="jr-filtres" id="filtres-fiabilite">
         <button type="button" class="actif" data-f="tous">Tous</button>
-        <button type="button" data-f="A_JOUER">À jouer</button>
-        <button type="button" data-f="A_SURVEILLER">À surveiller</button>
+        <button type="button" data-f="fiables">Prouvé et à surveiller</button>
       </div>
+      <div id="rentables"></div>
+    </section>
+
+    <section class="ax-carte jr-bloc">
+      <h2 class="jr-titre">Conseils pour les matchs à venir</h2>
+      <p class="jr-aide">Marchés des prochains matchs qui tombent dans un championnat et un marché rentables (Prouvé ou À surveiller). Base : uniquement les cotes BetPawa relevées avant les matchs déjà joués et leur score final — aucun modèle. Le détail est écrit sur chaque carte.</p>
     </section>
     <div id="conseils" class="ax-liste-matchs"></div>
 
     <section class="ax-carte jr-bloc">
-      <h2 class="jr-titre">Fiches championnats</h2>
-      <p class="jr-aide">Pour chaque championnat : chaque marché avec son taux de réussite réel, la réussite qu'il faut atteindre pour ne pas perdre à la cote BetPawa, et le résultat en misant 1 à chaque match. Un marché peut gagner souvent et perdre quand même, si BetPawa le cote trop bas.</p>
-      <div id="fiches"></div>
-    </section>
-
-    <section class="ax-carte jr-bloc">
-      <h2 class="jr-titre">Sélections des deux moteurs</h2>
-      <p class="jr-aide">Les choix P1 / P2 / P3 du moteur principal et de shrink_v1 pour les matchs à venir, chacun classé par le journal selon ce que son championnat et son marché ont réellement rapporté sur BetPawa.</p>
+      <h2 class="jr-titre">Sélections des deux moteurs dans les zones rentables</h2>
+      <p class="jr-aide">Choix P1 / P2 / P3 des moteurs pour les matchs à venir, affichés seulement quand leur championnat et leur marché ont été rentables sur BetPawa.</p>
       <div class="jr-filtres" id="filtres-moteurs">
         <button type="button" class="actif" data-f="moteur_v2_6_9">Moteur principal</button>
         <button type="button" data-f="shrink_v1">shrink_v1</button>
@@ -50,18 +49,17 @@
     </section>
     <div id="selections-moteurs" class="ax-liste-matchs"></div>
 
-    <section class="ax-carte jr-bloc"><h2 class="jr-titre">Championnats</h2><div id="ligues"></div></section>
-    <section class="ax-carte jr-bloc"><h2 class="jr-titre">Marchés</h2><div id="marches"></div></section>
-    <section class="ax-carte jr-bloc">
-      <h2 class="jr-titre">Championnat × marché</h2>
-      <p class="jr-aide">Combinaisons précises avec au moins 25 matchs et un statut autre que neutre.</p>
-      <div id="ligue_marche"></div>
+    <section class="ax-carte jr-bloc" id="bloc-moteurs" hidden>
+      <h2 class="jr-titre">Où les moteurs ont gagné</h2>
+      <div id="moteurs"></div>
     </section>
-    <section class="ax-carte jr-bloc"><h2 class="jr-titre">Zones à éviter</h2><div id="eviter"></div></section>
-    <section class="ax-carte jr-bloc"><h2 class="jr-titre">Résultats réels des deux moteurs sur BetPawa</h2><div id="moteurs"></div></section>
-    <section class="ax-carte jr-bloc"><h2 class="jr-titre">Règles et qualité des données</h2><div id="regles"></div></section>
+
+    <section class="ax-carte jr-bloc">
+      <h2 class="jr-titre">Méthode</h2>
+      <div id="regles"></div>
+    </section>
   </main>
 </div>
-<script src="journal.js?v=20260924c"></script>
+<script src="journal.js?v=20260924d"></script>
 </body>
 </html>

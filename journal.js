@@ -1,13 +1,15 @@
-/* journal.js — page Journal de rentabilité (AJOUT 24/09/2026). Lit journal.json (produit chaque nuit par
-   journal_rentabilite.py dans le pipeline GitHub Actions). Aucune donnée n'est calculée ici : affichage seul. */
+/* journal.js — page Journal des marchés rentables (24/09/2026). Lit journal.json, produit chaque nuit par
+   journal_rentabilite.py (workflow .github/workflows/journal.yml). Affichage seul, aucun calcul métier ici.
+   Choix d'affichage (demande de Patrick) : seules les statistiques GAGNANTES sont montrées ; tout ce qui a un
+   ROI négatif est calculé par le script mais n'est pas affiché. */
 (function () {
   "use strict";
 
-  var NOMS_STATUT = { A_JOUER: "À jouer", A_SURVEILLER: "À surveiller", A_EVITER: "À éviter", NEUTRE: "Neutre",
-                      INCONNU: "Inconnu", COTE_NON_BETPAWA: "Cote non BetPawa" };
-  var NOMS_NIVEAU = { ligue_marche: "ce championnat, ce marché", ligue_famille: "ce championnat, cette famille de marchés",
-                      marches: "ce marché, tous championnats", ligues: "ce championnat", tranches_de_cote: "cette tranche de cote" };
-  var NOMS_MOTEUR = { moteur_v2_6_9: "Moteur principal (v2.6.9)", shrink_v1: "Moteur shrink_v1 (en test)" };
+  var MIN_MATCHS_AFFICHAGE = 10;
+  var FIABILITE = { A_JOUER: "Prouvé", A_SURVEILLER: "À surveiller", NEUTRE: "Non confirmé" };
+  var NOMS_MOTEUR = { moteur_v2_6_9: "Moteur principal (v2.6.9)", shrink_v1: "Moteur shrink_v1" };
+  var RANG_LIB = { P1: "Favori du Modèle", P2: "Value Bet", P3: "Coup de Poker" };
+  var ORDRE = { A_JOUER: 0, A_SURVEILLER: 1, NEUTRE: 2 };
 
   function esc(t) {
     return String(t == null ? "" : t).replace(/[&<>"']/g, function (c) {
@@ -16,175 +18,140 @@
   }
   function pct(x, signe) {
     if (x == null || isNaN(x)) return "—";
-    var v = (x * 100).toFixed(1).replace(".", ",") + " %";
-    return (signe && x > 0 ? "+" : "") + v;
+    return (signe && x > 0 ? "+" : "") + (x * 100).toFixed(1).replace(".", ",") + " %";
   }
-  function classe(x) { return x == null ? "" : (x > 0 ? "pos" : (x < 0 ? "neg" : "")); }
-  function badge(st) { return '<span class="jr-badge b-' + esc(st) + '">' + esc(NOMS_STATUT[st] || st) + "</span>"; }
+  function cote(x) { return x == null ? "—" : Number(x).toFixed(2).replace(".", ","); }
+  function fiabilite(st) {
+    var cls = st === "A_JOUER" ? "b-A_JOUER" : (st === "A_SURVEILLER" ? "b-A_SURVEILLER" : "b-NEUTRE");
+    return '<span class="jr-badge ' + cls + '">' + esc(FIABILITE[st] || "Non confirmé") + "</span>";
+  }
+  var FIABILITE_COURT = { A_JOUER: "Prouvé", A_SURVEILLER: "Surveiller", NEUTRE: "Non conf." };
+  function fiabiliteCourte(st) {
+    var cls = st === "A_JOUER" ? "b-A_JOUER" : (st === "A_SURVEILLER" ? "b-A_SURVEILLER" : "b-NEUTRE");
+    return '<span class="jr-badge jr-badge-court ' + cls + '">' + esc(FIABILITE_COURT[st] || "Non conf.") + "</span>";
+  }
+  function positif(s) { return s && s.roi > 0 && s.matchs >= MIN_MATCHS_AFFICHAGE; }
+  function fiable(s) { return s && (s.statut === "A_JOUER" || s.statut === "A_SURVEILLER"); }
+  function triGagnants(a, b) { return (ORDRE[a.statut] - ORDRE[b.statut]) || (b.roi - a.roi); }
 
-  /* Libellé BetPawa -> texte lisible. Handicaps : la ligne des libellés est celle de l'équipe à domicile
-     (« Handicap -0.5 - Extérieur » = extérieur +0.5) -- même convention que journal_rentabilite.ligne_propre. */
+  /* Handicaps : la ligne des libellés est celle de l'équipe à domicile (« Handicap -0.5 - Extérieur » = extérieur +0.5),
+     même convention que journal_rentabilite.ligne_propre. */
   function lisible(lib) {
     var m = /^Handicap (-?\d+(?:\.\d+)?) - (Domicile|Extérieur|Exterieur)$/.exec(String(lib || "").trim());
     if (!m) return lib;
-    var ligne = parseFloat(m[1]);
-    var dom = m[2] === "Domicile";
-    var propre = dom ? ligne : -ligne;
-    var txt = (propre > 0 ? "+" : "") + String(propre).replace(".", ",");
-    return "Handicap " + (dom ? "domicile " : "extérieur ") + txt;
+    var ligne = parseFloat(m[1]), dom = m[2] === "Domicile", propre = dom ? ligne : -ligne;
+    return "Handicap " + (dom ? "domicile " : "extérieur ") + (propre > 0 ? "+" : "") + String(propre).replace(".", ",");
   }
-  function segmentLisible(seg) {
-    return String(seg).split(" | ").map(lisible).join(" — ");
-  }
-  function ic(s) { return s.ic95 ? "[" + pct(s.ic95[0], true) + " ; " + pct(s.ic95[1], true) + "]" : "—"; }
-
-  function reussiteTxt(s) {
-    var joues = s.paris - (s.rembourses || 0);
-    return (s.gagnes != null ? s.gagnes + "/" + joues + " · " : "") + pct(s.reussite);
-  }
-
-  function tableau(lignes, opts) {
-    opts = opts || {};
-    if (!lignes || !lignes.length) return '<p class="jr-vide">Pas encore assez de données.</p>';
-    var limite = opts.limite || 12;
-    var id = "t" + Math.random().toString(36).slice(2);
-    var nomSeg = opts.nom || segmentLisible;
-    var html = '<div class="jr-table-wrap"><table class="jr-table" id="' + id + '"><thead><tr><th>' + esc(opts.titre || "Segment") +
-      "</th><th>Matchs</th><th>Réussite</th><th>Il faut</th><th>Cote moy.</th><th>ROI</th><th>Statut</th></tr></thead><tbody>";
-    lignes.forEach(function (s, i) {
-      var cache = i >= limite;
-      html += "<tr" + (cache ? ' class="cache" style="display:none"' : "") + "><td>" + esc(nomSeg(s.segment)) + "</td><td>" + s.matchs +
-        "</td><td>" + reussiteTxt(s) + "</td><td>" + pct(s.reussite_necessaire) + "</td><td>" +
-        (s.cote_moyenne != null ? String(s.cote_moyenne).replace(".", ",") : "—") + '</td><td class="' + classe(s.roi) + '">' +
-        pct(s.roi, true) + "</td><td>" + badge(s.statut) + "</td></tr>";
-    });
-    html += "</tbody></table></div>";
-    if (lignes.length > limite) html += '<button type="button" class="jr-plus" data-table="' + id + '">Afficher les ' + lignes.length + " lignes</button>";
-    return html;
-  }
-
-  function brancherBoutonsPlus(racine) {
-    racine.querySelectorAll(".jr-plus").forEach(function (b) {
-      b.addEventListener("click", function () {
-        document.querySelectorAll("#" + b.getAttribute("data-table") + " tr.cache").forEach(function (tr) { tr.style.display = ""; });
-        b.remove();
-      });
-    });
-  }
-
-  var PHRASE_STATUT = {
-    A_JOUER: "Rentable de façon prouvée : gain sur toute la période, sur chacune de ses deux moitiés, et marge d'erreur entièrement positive.",
-    A_SURVEILLER: "Gagnant sur toute la période et sur chacune de ses deux moitiés, mais pas encore assez de matchs pour exclure la chance : mise symbolique.",
-    A_EVITER: "Perdant de façon prouvée : à ne pas jouer.",
-    NEUTRE: "Ni gagnant ni perdant de façon nette."
-  };
-
-  function lieuPreuve(p) {
-    var parties = String(p.segment || "").split(" | ");
-    if (p.niveau === "ligue_marche") return "dans " + parties[0] + ", ce marché";
-    if (p.niveau === "ligue_famille") return "dans " + parties[0] + ", la famille « " + parties[1] + " »";
-    if (p.niveau === "marches") return "tous championnats confondus, ce marché";
-    return "ce segment";
-  }
-
-  /* Texte de la base d'un conseil, en clair : quels matchs, combien de gains, quelle rentabilité. */
-  function preuveTexte(p) {
-    if (!p) return "Base : aucune donnée passée pour ce championnat et ce marché.";
-    var joues = p.paris - (p.rembourses || 0);
-    return "<b>Base :</b> " + esc(lieuPreuve(p)) + " a été coté par BetPawa sur " + p.matchs + " match(s) déjà joué(s). " +
-      "Il a gagné " + (p.gagnes != null ? p.gagnes + " fois sur " + joues : pct(p.reussite)) + " (" + pct(p.reussite) + "), à une cote moyenne de " +
-      String(p.cote_moyenne).replace(".", ",") + " ; il fallait " + pct(p.reussite_necessaire) + " pour ne rien perdre. " +
-      "En misant 1 à chaque fois : " + '<span class="' + classe(p.roi) + '">' + pct(p.roi, true) + "</span>" +
-      " (1re moitié " + pct(p.roi_moitie_1, true) + ", 2e moitié " + pct(p.roi_moitie_2, true) + "). " + esc(PHRASE_STATUT[p.statut] || "");
-  }
-
   function dateCourte(iso) {
     var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ""));
     return m ? m[3] + "/" + m[2] : esc(iso);
   }
+  function gagnesTxt(s) { return s.gagnes + "/" + (s.paris - (s.rembourses || 0)); }
 
-  /* Même en-tête que les cartes de match d'archetype.html (.ax-match / .ax-ligne-match / .ax-horaire). */
-  function carteConseil(c) {
-    return '<section class="ax-carte jr-conseil" data-statut="' + esc(c.statut_journal) + '">' +
-      '<div class="ax-match"><div class="ax-ligne-match">' +
-      '<span class="ax-equipe ax-dom">' + esc(c.domicile) + "</span>" +
-      '<div class="ax-horaire"><strong>' + esc(c.heure || "—") + "</strong><span>" + dateCourte(c.date) + "</span></div>" +
-      '<span class="ax-equipe ax-ext">' + esc(c.exterieur) + "</span></div>" +
-      '<div class="ax-match-bas"><p class="ax-competition">' + esc(c.ligue) + "</p>" + badge(c.statut_journal) + "</div></div>" +
-      '<div class="jr-conseil-corps"><div class="jr-marche"><span>' + esc(lisible(c.marche)) + '</span><span class="jr-cote">' +
-      esc(String(c.cote).replace(".", ",")) + "</span></div>" +
-      '<div class="jr-preuve">' + preuveTexte(c.preuve) + "</div>" +
-      (c.betpawa_url ? '<a class="jr-lien" href="' + esc(c.betpawa_url) + '" target="_blank" rel="noopener">Ouvrir sur BetPawa →</a>' : "") +
-      "</div></section>";
+  function tableau(lignes, titre, nom) {
+    var html = '<div class="jr-table-wrap"><table class="jr-table"><thead><tr><th>' + esc(titre) +
+      "</th><th>Gagnés</th><th>Cote</th><th>ROI</th><th>Niveau</th></tr></thead><tbody>";
+    lignes.forEach(function (s) {
+      html += '<tr data-fiable="' + (fiable(s) ? 1 : 0) + '"><td>' + esc(nom(s.segment)) + "</td><td>" + gagnesTxt(s) + "<br><small>" + pct(s.reussite) + "</small>" +
+        "</td><td>" + cote(s.cote_moyenne) + '</td><td class="pos">' + pct(s.roi, true) + "</td><td>" + fiabiliteCourte(s.statut) + "</td></tr>";
+    });
+    return html + "</tbody></table></div>";
   }
 
-  function afficherConseils(j) {
-    var zone = document.getElementById("conseils");
-    var c = j.conseils || [];
-    var nbJouer = c.filter(function (x) { return x.statut_journal === "A_JOUER"; }).length;
-    var alerte = nbJouer
-      ? '<div class="jr-alerte ok">' + nbJouer + " marché(s) « à jouer » : preuve statistique complète sur les données passées.</div>"
-      : '<div class="jr-alerte info">Aucun marché n\'a encore de preuve statistique complète. Les marchés « à surveiller » sont positifs mais pas prouvés : mise symbolique uniquement, le journal les confirmera ou les écartera au fil des nuits.</div>';
-    document.getElementById("filtres-conseils").insertAdjacentHTML("afterend", alerte);
-    if (!c.length) {
-      zone.innerHTML = '<div class="ax-etat-vide"><strong>Aucun conseil pour le moment</strong><p>Aucun marché à venir dans une zone favorable.</p></div>';
-      return;
+  /* ─────────── Résumé ─────────── */
+  function afficherResume(j, rentables) {
+    var d = j.donnees || {};
+    var nbFiables = rentables.filter(fiable).length;
+    var ligues = {};
+    rentables.forEach(function (s) { ligues[String(s.segment).split(" | ")[0]] = 1; });
+    var p = d.periode ? dateCourte(d.periode[0]) + " → " + dateCourte(d.periode[1]) : "—";
+    document.getElementById("resume").innerHTML = '<h2 class="jr-titre">En bref</h2><div class="jr-chiffres">' +
+      '<div class="jr-chiffre"><span>Matchs analysés</span><b>' + (d.matchs || 0) + "</b></div>" +
+      '<div class="jr-chiffre"><span>Cotes BetPawa réglées</span><b>' + (d.cotes_reglees || 0) + "</b></div>" +
+      '<div class="jr-chiffre"><span>Marchés rentables</span><b class="pos">' + rentables.length + "</b></div>" +
+      '<div class="jr-chiffre"><span>Prouvés ou à surveiller</span><b class="pos">' + nbFiables + "</b></div>" +
+      '</div><p class="jr-aide" style="margin:10px 0 0">' + Object.keys(ligues).length + " championnat(s) avec au moins un marché rentable · période " + esc(p) + ".</p>";
+  }
+
+  /* ─────────── Scrutage : marchés rentables par championnat ─────────── */
+  function afficherRentables(j, rentables) {
+    var s = j.segments || {};
+    var parLigue = {};
+    rentables.forEach(function (x) {
+      var l = String(x.segment).split(" | ")[0];
+      (parLigue[l] = parLigue[l] || []).push(x);
+    });
+    var ligues = Object.keys(parLigue).map(function (l) {
+      var v = parLigue[l].sort(triGagnants);
+      return { nom: l, marches: v, fiables: v.filter(fiable).length, meilleur: v[0] };
+    }).sort(function (a, b) { return (b.fiables - a.fiables) || (b.marches.length - a.marches.length); });
+
+    var generaux = (s.marches || []).filter(positif).sort(triGagnants);
+    var html = "";
+    if (generaux.length) {
+      html += '<details class="jr-fiche" data-fiables="' + generaux.filter(fiable).length + '" open><summary><span class="jr-fiche-nom">Tous championnats confondus</span>' +
+        '<span class="jr-fiche-info">' + generaux.length + " marché(s) rentable(s)</span></summary>" +
+        '<div class="jr-lignes" data-tous="1">' + tableau(generaux, "Marché", lisible) + "</div></details>";
     }
-    zone.innerHTML = c.map(carteConseil).join("");
-    document.querySelectorAll("#filtres-conseils button").forEach(function (b) {
+    ligues.forEach(function (lg) {
+      html += '<details class="jr-fiche" data-fiables="' + lg.fiables + '"><summary><span class="jr-fiche-nom">' + esc(lg.nom) + "</span>" +
+        '<span class="jr-fiche-info">' + lg.marches.length + " marché(s) rentable(s)" + (lg.fiables ? " · " + lg.fiables + " prouvé(s) ou à surveiller" : "") +
+        " · meilleur : " + esc(lisible(String(lg.meilleur.segment).split(" | ")[1])) + " " + pct(lg.meilleur.roi, true) + "</span></summary>" +
+        tableau(lg.marches, "Marché", function (seg) { return lisible(String(seg).split(" | ")[1]); }) + "</details>";
+    });
+    var zone = document.getElementById("rentables");
+    zone.innerHTML = html || '<p class="jr-vide">Aucun marché rentable pour l\'instant.</p>';
+
+    document.querySelectorAll("#filtres-fiabilite button").forEach(function (b) {
       b.addEventListener("click", function () {
-        document.querySelectorAll("#filtres-conseils button").forEach(function (x) { x.classList.remove("actif"); });
+        document.querySelectorAll("#filtres-fiabilite button").forEach(function (x) { x.classList.remove("actif"); });
         b.classList.add("actif");
-        var f = b.getAttribute("data-f");
-        zone.querySelectorAll(".jr-conseil").forEach(function (el) {
-          el.style.display = (f === "tous" || el.getAttribute("data-statut") === f) ? "" : "none";
+        var seulFiables = b.getAttribute("data-f") === "fiables";
+        zone.querySelectorAll(".jr-fiche").forEach(function (f) {
+          f.style.display = (!seulFiables || Number(f.getAttribute("data-fiables")) > 0) ? "" : "none";
+          f.querySelectorAll("tbody tr").forEach(function (tr) {
+            tr.style.display = (!seulFiables || tr.getAttribute("data-fiable") === "1") ? "" : "none";
+          });
         });
       });
     });
   }
 
-  function afficherFiches(j) {
-    var s = j.segments || {};
-    var parLigue = {};
-    (s.ligue_marche || []).forEach(function (x) {
-      var l = String(x.segment).split(" | ")[0];
-      (parLigue[l] = parLigue[l] || []).push(x);
-    });
-    var ligues = (s.ligues || []).slice().sort(function (a, b) { return b.matchs - a.matchs; });
-    var html = "";
-    ligues.forEach(function (lg) {
-      var marches = (parLigue[lg.segment] || []).slice().sort(function (a, b) { return (b.reussite || 0) - (a.reussite || 0); });
-      if (!marches.length) return;
-      var gagnants = marches.filter(function (m) { return m.roi > 0; }).length;
-      var piege = marches.filter(function (m) { return (m.reussite || 0) >= 0.65 && m.roi < 0; }).length;
-      html += '<details class="jr-fiche"><summary><span class="jr-fiche-nom">' + esc(lg.segment) + "</span>" +
-        '<span class="jr-fiche-info">' + lg.matchs + " matchs · " + gagnants + " marché(s) gagnant(s)</span></summary>" +
-        '<p class="jr-aide" style="margin:8px 0">Coût moyen BetPawa dans ce championnat : <span class="' + classe(lg.roi) + '">' + pct(lg.roi, true) + "</span>." +
-        (piege ? " " + piege + " marché(s) gagnent souvent (65 % ou plus) mais perdent de l'argent : BetPawa les cote trop bas." : "") + "</p>" +
-        tableau(marches, { titre: "Marché", limite: 10, nom: function (seg) { return lisible(String(seg).split(" | ")[1]); } }) + "</details>";
-    });
-    document.getElementById("fiches").innerHTML = html || '<p class="jr-vide">Pas encore assez de données.</p>';
+  /* ─────────── Base d'un conseil, en clair ─────────── */
+  function lieuPreuve(p) {
+    var parties = String(p.segment || "").split(" | ");
+    if (p.niveau === "ligue_marche") return "Dans " + parties[0] + ", ce marché";
+    if (p.niveau === "ligue_famille") return "Dans " + parties[0] + ", la famille « " + parties[1] + " »";
+    return "Tous championnats confondus, ce marché";
   }
-
-  var RANG_LIB = { P1: "Favori du Modèle", P2: "Value Bet", P3: "Coup de Poker" };
-
-  function carteSelection(x, moteur) {
-    return '<section class="ax-carte jr-selection" data-moteur="' + esc(moteur) + '">' +
-      '<div class="ax-match"><div class="ax-ligne-match">' +
+  function preuveTexte(p) {
+    return "<b>Base :</b> " + esc(lieuPreuve(p)) + " a été coté par BetPawa sur " + p.matchs + " match(s) déjà joué(s) : " +
+      gagnesTxt(p) + " gagnés (" + pct(p.reussite) + ") à une cote moyenne de " + cote(p.cote_moyenne) + ". En misant 1 à chaque fois : " +
+      '<span class="pos">' + pct(p.roi, true) + "</span>. Fiabilité : " + fiabilite(p.statut) + ".";
+  }
+  function enteteMatch(x, sousTitre, st) {
+    return '<div class="ax-match"><div class="ax-ligne-match">' +
       '<span class="ax-equipe ax-dom">' + esc(x.domicile) + "</span>" +
       '<div class="ax-horaire"><strong>' + esc(x.heure || "—") + "</strong><span>" + dateCourte(x.date) + "</span></div>" +
       '<span class="ax-equipe ax-ext">' + esc(x.exterieur) + "</span></div>" +
-      '<div class="ax-match-bas"><p class="ax-competition">' + esc(x.ligue) + " · " + esc(NOMS_MOTEUR[moteur] || moteur) + "</p>" +
-      badge(x.statut_journal) + "</div></div>" +
-      '<div class="jr-conseil-corps"><div class="jr-marche"><span>' + esc(RANG_LIB[x.rang] || x.rang) + " · " + esc(lisible(x.marche)) +
-      '</span><span class="jr-cote">' + esc(x.cote == null ? "—" : String(x.cote).replace(".", ",")) + "</span></div>" +
-      (x.justification ? '<div class="jr-preuve"><b>Raison du moteur :</b> ' + esc(x.justification) +
-        (x.probabilite != null ? " (probabilité modèle " + pct(x.probabilite) + ")" : "") + "</div>" : "") +
-      '<div class="jr-preuve">' + (x.statut_journal === "COTE_NON_BETPAWA"
-        ? "<b>Base :</b> la cote de ce match ne vient pas de BetPawa : pari non vérifiable sur BetPawa."
-        : preuveTexte(x.preuve)) + "</div>" +
-      (x.betpawa_url && x.cotes_betpawa ? '<a class="jr-lien" href="' + esc(x.betpawa_url) + '" target="_blank" rel="noopener">Ouvrir sur BetPawa →</a>' : "") +
-      "</div></section>";
+      '<div class="ax-match-bas"><p class="ax-competition">' + esc(sousTitre) + "</p>" + fiabilite(st) + "</div></div>";
+  }
+  function lienBetpawa(x) {
+    return x.betpawa_url ? '<a class="jr-lien" href="' + esc(x.betpawa_url) + '" target="_blank" rel="noopener">Ouvrir sur BetPawa →</a>' : "";
+  }
+
+  function afficherConseils(j) {
+    var c = (j.conseils || []).filter(function (x) { return x.preuve && x.preuve.roi > 0; });
+    var zone = document.getElementById("conseils");
+    if (!c.length) {
+      zone.innerHTML = '<div class="ax-etat-vide"><strong>Aucun conseil pour le moment</strong><p>Aucun match à venir dans une zone rentable.</p></div>';
+      return;
+    }
+    zone.innerHTML = c.map(function (x) {
+      return '<section class="ax-carte">' + enteteMatch(x, x.ligue, x.statut_journal) +
+        '<div class="jr-conseil-corps"><div class="jr-marche"><span>' + esc(lisible(x.marche)) + '</span><span class="jr-cote">' + cote(x.cote) +
+        '</span></div><div class="jr-preuve">' + preuveTexte(x.preuve) + "</div>" + lienBetpawa(x) + "</div></section>";
+    }).join("");
   }
 
   function afficherSelectionsMoteurs(j) {
@@ -192,10 +159,17 @@
     var pr = j.pronostics || {};
     var html = "";
     Object.keys(NOMS_MOTEUR).forEach(function (m) {
-      var sel = (pr[m] || {}).selections || [];
-      html += sel.length ? sel.map(function (x) { return carteSelection(x, m); }).join("")
-        : '<div class="ax-etat-vide jr-selection" data-moteur="' + m + '"><strong>Aucune sélection à venir</strong><p>' +
-          esc(NOMS_MOTEUR[m]) + " n'a retenu aucun marché pour les prochains matchs.</p></div>";
+      var sel = ((pr[m] || {}).selections || []).filter(function (x) {
+        return x.cotes_betpawa && (x.statut_journal === "A_JOUER" || x.statut_journal === "A_SURVEILLER") && x.preuve && x.preuve.roi > 0;
+      });
+      html += sel.length ? sel.map(function (x) {
+        return '<section class="ax-carte jr-selection" data-moteur="' + m + '">' + enteteMatch(x, x.ligue + " · " + NOMS_MOTEUR[m], x.statut_journal) +
+          '<div class="jr-conseil-corps"><div class="jr-marche"><span>' + esc(RANG_LIB[x.rang] || x.rang) + " · " + esc(lisible(x.marche)) +
+          '</span><span class="jr-cote">' + cote(x.cote) + "</span></div>" +
+          (x.justification ? '<div class="jr-preuve"><b>Raison du moteur :</b> ' + esc(x.justification) + "</div>" : "") +
+          '<div class="jr-preuve">' + preuveTexte(x.preuve) + "</div>" + lienBetpawa(x) + "</div></section>";
+      }).join("") : '<div class="ax-etat-vide jr-selection" data-moteur="' + m + '"><strong>Aucune sélection dans une zone rentable</strong><p>' +
+        esc(NOMS_MOTEUR[m]) + " n'a retenu aucun marché à venir dans un championnat et un marché rentables.</p></div>";
     });
     zone.innerHTML = html;
     function filtre(m) {
@@ -211,79 +185,45 @@
     filtre("moteur_v2_6_9");
   }
 
-  function afficherResume(j) {
-    var d = j.donnees || {};
-    var cg = d.cout_global_betpawa || {};
-    var p = d.periode ? d.periode[0] + " → " + d.periode[1] : "—";
-    var cs = j.comptage_statuts || {};
-    function compte(st) {
-      var n = 0;
-      ["ligues", "marches", "ligue_famille", "ligue_marche"].forEach(function (k) { n += (cs[k] || {})[st] || 0; });
-      return n;
-    }
-    document.getElementById("resume").innerHTML = '<h2 class="jr-titre">En bref</h2><div class="jr-chiffres">' +
-      '<div class="jr-chiffre"><span>Matchs BetPawa terminés</span><b>' + (d.matchs || 0) + "</b></div>" +
-      '<div class="jr-chiffre"><span>Cotes réglées</span><b>' + (d.cotes_reglees || 0) + "</b></div>" +
-      '<div class="jr-chiffre"><span>Coût moyen BetPawa</span><b class="' + classe(cg.roi) + '">' + pct(cg.roi, true) + "</b></div>" +
-      '<div class="jr-chiffre"><span>Zones à jouer / à surveiller</span><b>' + compte("A_JOUER") + " / " + compte("A_SURVEILLER") + "</b></div>" +
-      '</div><p class="jr-aide" style="margin:10px 0 0">Période : ' + esc(p) +
-      ". Le « coût moyen » est ce que l'on perd en misant 1 sur toutes les cotes BetPawa relevées.</p>";
-  }
-
+  /* Résultats des moteurs : seulement les championnats / familles où ils ont gagné (ROI > 0, au moins 5 paris). */
   function afficherMoteurs(j) {
     var m = j.moteurs || {};
     var html = "";
     Object.keys(NOMS_MOTEUR).forEach(function (k) {
       var e = m[k] || {};
-      html += '<h3 class="jr-sous-titre">' + esc(NOMS_MOTEUR[k]) + "</h3>";
-      if (!e.global) { html += '<p class="jr-vide">' + esc(e.note || "Pas encore de résultat.") + "</p>"; return; }
-      var g = e.global;
-      html += '<p class="jr-aide">' + g.paris + " sélections réglées sur " + g.matchs + " matchs BetPawa — ROI <span class=\"" + classe(g.roi) + "\">" +
-        pct(g.roi, true) + "</span>, IC 95 % " + ic(g) + ", réussite " + pct(g.reussite) + ", cote moyenne " + g.cote_moyenne + ".</p>";
-      html += tableau(e.familles, { titre: "Famille de marchés", limite: 8 });
-      html += '<p class="jr-aide" style="margin:10px 0 4px">Par championnat :</p>' + tableau(e.ligues, { titre: "Championnat", limite: 8 });
+      var lignes = [].concat(e.ligues || [], e.familles || []).filter(function (s) { return s.roi > 0 && s.paris >= 5; })
+        .sort(function (a, b) { return b.roi - a.roi; });
+      if (!lignes.length) return;
+      html += '<h3 class="jr-sous-titre">' + esc(NOMS_MOTEUR[k]) + "</h3>" + tableau(lignes, "Championnat ou famille", function (x) { return x; });
     });
-    document.getElementById("moteurs").innerHTML = html;
+    if (html) {
+      document.getElementById("moteurs").innerHTML = html;
+      document.getElementById("bloc-moteurs").hidden = false;
+    }
   }
 
   function afficherRegles(j) {
-    var r = j.regles || {};
     var d = j.donnees || {};
     var inc = d.cotes_incoherentes_retirees || {};
     var nbInc = Object.keys(inc).reduce(function (a, k) { return a + inc[k]; }, 0);
-    var inconnus = Object.keys(d.libelles_non_reconnus || {});
-    var html = '<ul class="jr-liste">' +
-      "<li>" + badge("A_JOUER") + " " + esc(r.A_JOUER) + "</li>" +
-      "<li>" + badge("A_SURVEILLER") + " " + esc(r.A_SURVEILLER) + "</li>" +
-      "<li>" + badge("A_EVITER") + " " + esc(r.A_EVITER) + "</li>" +
-      "<li>" + badge("NEUTRE") + " " + esc(r.NEUTRE) + "</li></ul>" +
-      '<p class="jr-aide" style="margin-top:10px">' + esc(r.avertissement || "") + "</p>" +
-      '<p class="jr-aide">L\'intervalle de confiance (IC 95 %) est calculé en tirant au hasard des matchs entiers : les cotes d\'un même match sont liées entre elles.</p>' +
-      '<p class="jr-aide">Qualité : ' + nbInc + " cote(s) de handicap incohérente(s) avec le 1X2 du même match ont été retirées (erreurs de relevé probables)." +
-      (inconnus.length ? " Libellés non reconnus : " + esc(inconnus.join(", ")) + "." : "") + "</p>";
-    document.getElementById("regles").innerHTML = html;
+    document.getElementById("regles").innerHTML = '<ul class="jr-liste">' +
+      "<li>Chaque cote BetPawa relevée avant un match terminé est réglée sur le score final ; on calcule ce qu'aurait rapporté une mise de 1 à chaque fois (ROI).</li>" +
+      "<li>Seuls les marchés au ROI positif, sur au moins " + MIN_MATCHS_AFFICHAGE + " matchs, sont affichés. Les autres sont calculés mais masqués.</li>" +
+      "<li>" + fiabilite("A_JOUER") + " intervalle de confiance à 95 % entièrement positif, gagnant sur chaque moitié de la période, au moins 40 matchs.</li>" +
+      "<li>" + fiabilite("A_SURVEILLER") + " gagnant sur toute la période et sur chaque moitié, au moins 25 matchs : mise symbolique.</li>" +
+      "<li>" + fiabilite("NEUTRE") + " gagnant au total, mais trop peu de matchs ou une seule moitié gagnante : avec des centaines de marchés scrutés, une partie de ces gains vient forcément de la chance.</li>" +
+      "<li>" + nbInc + " cote(s) de handicap incohérente(s) avec le 1X2 du même match ont été retirées (erreurs de relevé).</li></ul>";
   }
 
   function afficher(j) {
     document.getElementById("maj").textContent = "Mis à jour : " + (j.genere_le || "—");
-    afficherResume(j);
+    var rentables = ((j.segments || {}).ligue_marche || []).filter(positif);
+    afficherResume(j, rentables);
+    afficherRentables(j, rentables);
     afficherConseils(j);
-    afficherFiches(j);
     afficherSelectionsMoteurs(j);
-    var s = j.segments || {};
-    document.getElementById("ligues").innerHTML = tableau(s.ligues, { titre: "Championnat" });
-    document.getElementById("marches").innerHTML = tableau(s.marches, { titre: "Marché" });
-    var lm = (s.ligue_marche || []).filter(function (x) { return x.statut !== "NEUTRE" && x.matchs >= 25; });
-    document.getElementById("ligue_marche").innerHTML = tableau(lm, { titre: "Championnat — marché" });
-    var ev = [];
-    ["familles", "tranches_de_cote", "marches", "ligues"].forEach(function (k) {
-      (s[k] || []).forEach(function (x) { if (x.statut === "A_EVITER") ev.push(x); });
-    });
-    ev.sort(function (a, b) { return a.roi - b.roi; });
-    document.getElementById("eviter").innerHTML = tableau(ev, { titre: "Zone", limite: 10 });
     afficherMoteurs(j);
     afficherRegles(j);
-    brancherBoutonsPlus(document);
   }
 
   /* Mode nuit : même bascule et même clé que archetype.js (archetype_theme_nuit). */

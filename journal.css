@@ -59,3 +59,11 @@ body.theme-nuit .b-A_EVITER{background:#A93226}
 .jr-fiche-nom{font-size:15px;font-weight:800}
 .jr-fiche-info{font-size:12.5px;font-weight:600;color:var(--ax-doux)}
 .jr-preuve b{color:var(--ax-texte)}
+
+/* Tableau des marchés rentables : tenir sur un écran d'iPhone */
+.jr-table th:first-child,.jr-table td:first-child{min-width:110px}
+.jr-table td small{font-size:11px;color:var(--ax-doux)}
+.jr-table th,.jr-table td{padding:7px 4px}
+.jr-badge-court{padding:2px 7px;font-size:11px}
+.jr-fiche{padding:10px 10px}
+.jr-table th:first-child,.jr-table td:first-child{min-width:96px}
