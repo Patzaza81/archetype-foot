@@ -65,3 +65,29 @@ def test_snapshot_incomplet_reprend_sans_ecraser(tmp_path):
     out = archive_snapshot(season=season, root=tmp_path / "snapshots", session=session)
     assert out["status"] == "INCOMPLETE"
     assert (raw / "F1.csv").read_bytes() == b"F1,original\n"
+
+
+def test_catalogue_contient_code_nom_et_url_directe(tmp_path):
+    season = "2526"
+    index = '<a href="/mmz4281/2526/F1.csv">Ligue 1</a><a href="/mmz4281/2526/X9.csv">nouveau</a>'
+    files = {
+        "https://www.football-data.co.uk/mmz4281/2526/F1.csv": b"F1,data\n",
+        "https://www.football-data.co.uk/mmz4281/2526/X9.csv": b"X9,data\n",
+    }
+    session = FakeSession(
+        {"https://www.football-data.co.uk/downloadm.php": index,
+         "https://www.football-data.co.uk/all_new_data.php": index},
+        files,
+    )
+    out = archive_snapshot(season=season, root=tmp_path / "snapshots", session=session)
+    assert out["status"] == "COMPLETE"
+    catalogue = json.loads(
+        (tmp_path / "snapshots/2526/catalogue.json").read_text(encoding="utf-8")
+    )
+    entries = {row["competition_code"]: row for row in catalogue["entries"]}
+    assert entries["F1"]["country"] == "France"
+    assert entries["F1"]["competition"] == "Ligue 1"
+    assert entries["F1"]["source_url"].endswith("/2526/F1.csv")
+    assert entries["X9"]["source_url"].endswith("/2526/X9.csv")
+    assert entries["X9"]["country"] is None
+    assert entries["X9"]["competition"] is None
