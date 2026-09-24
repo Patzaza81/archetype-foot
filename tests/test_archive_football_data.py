@@ -243,3 +243,27 @@ def test_new_aucune_ligne_pour_la_saison_note_vide_pas_invente(tmp_path):
 def test_filtre_saison_invalide_refuse():
     with pytest.raises(ValueError):
         filtre_saison(USA, "25-26")
+
+
+# CORRECTIF 24/09/2026 : championnats qui ont changé de format de saison (cas réels ARG et JPN)
+ARG = (b"Country,League,Season,Date,Time,Home,Away,HG,AG,Res\n"
+       b"Argentina,Liga,2019/2020,01/08/2019,20:00,A,B,1,0,H\nArgentina,Liga,2025,01/02/2025,20:00,C,D,2,1,H\n"
+       b"Argentina,Liga,2026,01/02/2026,20:00,E,F,0,0,D\n")
+JPN = (b"Country,League,Season,Date,Time,Home,Away,HG,AG,Res\n"
+       b"Japan,J1,2025,01/03/2025,10:00,A,B,1,0,H\nJapan,J1,2026/2027,01/08/2026,10:00,C,D,0,1,A\n")
+
+
+def test_format_change_argentine_prend_l_annee_civile_2025():
+    sortie, infos = filtre_saison(ARG, "2526")
+    assert (infos["season_label"], infos["rows"]) == ("2025", 1)
+
+
+def test_format_change_japon_prend_2025_et_pas_2026_2027():
+    sortie, infos = filtre_saison(JPN, "2526")
+    assert (infos["season_label"], infos["rows"]) == ("2025", 1)
+    assert b"2026/2027" not in sortie
+
+
+def test_saison_a_cheval_prioritaire_si_presente():
+    mixte = b"Country,League,Season,Date\nX,L,2025,01/01/2025\nX,L,2025/2026,01/08/2025\n"
+    assert filtre_saison(mixte, "2526")[1]["season_label"] == "2025/2026"

@@ -369,21 +369,25 @@ def filtre_saison(data: bytes, season: str) -> tuple[bytes, dict]:
     i_pays = noms.index("Country") if "Country" in noms else None
     i_ligue = noms.index("League") if "League" in noms else None
     a_cheval, civile = saison_libelles(season)
-    valeurs = set()
     gardees, pays, ligue = [], None, None
     for ligne in lignes[1:]:
         champs = next(csv.reader([ligne])) if ligne.strip() else []
         if len(champs) <= i_saison:
             continue
         v = champs[i_saison].strip().replace("-", "/")
-        valeurs.add(v)
         if v in (a_cheval, civile):
             gardees.append(ligne)
             if i_pays is not None and pays is None:
                 pays = champs[i_pays].strip() or None
             if i_ligue is not None and ligue is None:
                 ligue = champs[i_ligue].strip() or None
-    format_saison = "a_cheval" if any("/" in v for v in valeurs) else "civile"
+    # CORRECTIF 24/09/2026 : certains championnats ont changé de format (Argentine : « 2019/2020 » puis « 2020 »... ;
+    # Japon : « 2025 » puis « 2026/2027 »). Le format se décide sur les lignes de la saison, pas sur tout le fichier :
+    # lignes « AAAA/AAAA+1 » si elles existent, sinon lignes « AAAA ».
+    compte = {a_cheval: 0, civile: 0}
+    for l in gardees:
+        compte[next(csv.reader([l]))[i_saison].strip().replace("-", "/")] += 1
+    format_saison = "a_cheval" if compte[a_cheval] else "civile"
     libelle = a_cheval if format_saison == "a_cheval" else civile
     gardees = [l for l in gardees if next(csv.reader([l]))[i_saison].strip().replace("-", "/") == libelle]
     sortie = ("\n".join([lignes[0]] + gardees) + "\n").encode("utf-8")

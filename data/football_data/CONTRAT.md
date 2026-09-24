@@ -89,3 +89,8 @@ du fichier téléchargé (`source_sha256`). Pays et nom viennent des colonnes `C
 Saison « 2526 » : lignes « 2025/2026 » pour un championnat à cheval sur deux années, « 2025 » pour un championnat sur
 l'année civile. Un championnat sans ligne pour la saison est noté dans `empty` (jamais inventé). Manifeste, catalogue et
 verrou propres : le snapshot principal déjà verrouillé n'est jamais modifié.
+
+Journal des corrections : le 24/09/2026, le premier verrou `2526/nouvelles_ligues` (posé à 13:05 UTC) notait à tort
+l'Argentine et le Japon « sans ligne » (changement de format de saison mal géré). Il a été supprimé avant toute
+utilisation par le moteur, le filtre a été corrigé et testé, puis le snapshot refait une seule fois. Le snapshot
+principal `2526/` (22 divisions) n'a pas été touché.
