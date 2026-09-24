@@ -303,3 +303,7 @@ Reste à traiter :
 5. la page Archetype montre les matchs de J+1.
 
 Puis reprendre l'ordre du §3.
+
+
+### A1 — Catalogue des compétitions Football-Data
+**Implémenté le 24/09/2026** : le snapshot produit désormais catalogue.json, avec code compétition, saison et URL directe réellement découverte. Les codes actuellement identifiables sont enrichis avec pays/nom ; les codes nouveaux restent conservés sans attribution arbitraire. La découverte demeure dynamique. Tests ajoutés pour l'intégrité du catalogue. Le premier snapshot réel reste à exécuter dans GitHub Actions.
