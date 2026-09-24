@@ -96,3 +96,10 @@ Toute évolution future doit conserver :
 - `tests/test_archive_football_data.py` : tests de complétude, reprise et verrouillage.
 - `.github/workflows/football_data_snapshot.yml` : workflow annuel / manuel.
 - Le premier snapshot réel doit être exécuté dans GitHub Actions avant de considérer A1 comme validé en conditions réelles.
+
+
+## Catalogue des compétitions et URLs directes
+
+Chaque snapshot produit `catalogue.json`, construit à partir des fichiers réellement découverts dans les index officiels. Il contient le code compétition, la saison et l'URL directe officielle du CSV. Les codes actuellement connus sont enrichis avec pays et nom de compétition ; tout nouveau code est conservé avec des métadonnées descriptives nulles plutôt que deviné. Le catalogue est donc une provenance dynamique, pas une liste exhaustive codée en dur.
+
+Le manifeste reprend également ces métadonnées lorsqu'elles sont identifiables. L'URL directe enregistrée est l'URL effectivement découverte et utilisée pour le téléchargement, jamais une URL reconstruite à partir d'une hypothèse.
