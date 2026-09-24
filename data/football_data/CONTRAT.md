@@ -105,10 +105,13 @@ principal `2526/` (22 divisions) n'a pas été touché.
 | `raw/<saison>/<DIV>.csv` | CSV des 22 divisions, extraits de `mmz4281/<saison>/data.zip` |
 | `raw/<saison>/nouvelles_ligues/<CODE>.csv` | lignes de la saison en cours des championnats supplémentaires |
 | `normalized/<saison>/<CODE>.jsonl` | une ligne par match (contrat ci-dessus ; `country`/`competition` pour les supplémentaires) |
-| `cotes_run/<AAAA-MM-JJ>.jsonl` | matchs à venir (`fixtures.csv`, `new_league_fixtures.csv`) avec toutes leurs colonnes de cotes telles que publiées, et `captured_at_utc` du relevé |
 | `manifest.json` | provenance, empreintes, ETag / Last-Modified, bilan du dernier run (`last_run`) |
 
 Téléchargement seulement si la source a changé (requête conditionnelle, puis empreinte SHA-256 par division).
-Les cotes des CSV de résultats ne sont jamais utilisées ; seules les cotes relevées pendant le run le sont.
-Une publication de cotes identique n'est pas relevée deux fois le même jour. Une source en panne est notée dans
-`last_run.errors` et ne bloque pas le pipeline.
+Chaque division porte `last_match_date` et `source_last_modified` : Football-Data publie les résultats avec 1 à 4 jours
+de retard (constat du 24/09). Une source en panne est notée dans `last_run.errors` et ne bloque pas le pipeline.
+
+**Décision de Patrick (24/09/2026) : aucune cote n'est collectée ici** (pas de comparaison de cotes entre bookmakers,
+aucune API). Les colonnes de cotes des CSV restent dans les fichiers bruts et ne sont jamais utilisées.
+Règle de complément : Football-Data d'abord ; une donnée qu'il ne fournit pas (ou pas encore, à cause du retard) est
+complétée par Matchendirect côté moteur ; un marché dont une donnée nécessaire manque dans les deux sources est écarté.

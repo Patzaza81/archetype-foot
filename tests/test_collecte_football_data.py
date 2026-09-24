@@ -125,9 +125,9 @@ def _jsonl(p):
 
 
 # --- doivent réussir -------------------------------------------------------------------------------------------------
-def test_a2_collecte_principales_supplementaires_et_cotes(tmp_path, monkeypatch):
-    monkeypatch.setattr(cfd, "now_utc", lambda: "2026-09-24T12:00:00+00:00")
-    st = cfd.collect(root=tmp_path, current_season="2627", session=_site(), pause=0)
+def test_a2_collecte_principales_et_supplementaires_sans_aucune_cote(tmp_path):
+    site = _site()
+    st = cfd.collect(root=tmp_path, current_season="2627", session=site, pause=0)
     assert st["errors"] == {} and st["downloaded"] == 2
     e0 = _jsonl(tmp_path / "normalized/2627/E0.jsonl")[0]
     assert (e0["home_team"], e0["half_time_home_goals"], e0["home_corners"]) == ("Arsenal", 1, 7)
@@ -138,27 +138,23 @@ def test_a2_collecte_principales_supplementaires_et_cotes(tmp_path, monkeypatch)
     usa = _jsonl(tmp_path / "normalized/2627/USA.jsonl")
     assert [(r["home_team"], r["season"]) for r in usa] == [("Austin", "2627")]   # saison civile 2026 seulement
     assert (usa[0]["country"], usa[0]["competition"], usa[0]["full_time_home_goals"]) == ("USA", "MLS", 2)
-    cotes = _jsonl(next((tmp_path / "cotes_run").glob("*.jsonl")))
-    norwich = next(c for c in cotes if c["home_team"] == "Norwich")
-    assert norwich["odds"] == {"B365H": 2.1, "B365D": 3.4, "B365A": 3.3, "BFEH": 2.2, "BFED": 3.5, "BFEA": 3.45}
-    assert norwich["captured_at_utc"] and norwich["date"] == "2026-09-26"
-    assert not any(c["home_team"] == "Derby" for c in cotes)               # déjà joué le 19/09 : jamais gardé
-    assert st["odds_rows_already_played"] == 1
+    assert not (tmp_path / "cotes_run").exists()                           # décision du 24/09 : aucune cote relevée
+    assert site.appels and not any("fixtures" in u for u, _ in site.appels)   # jamais téléchargé
 
 
 def test_a2_source_inchangee_304_rien_retelecharge(tmp_path):
     etags = {ZIP: '"z1"', USA_URL: '"u1"'}
-    cfd.collect(root=tmp_path, current_season="2627", session=_site(etags), pause=0, avec_cotes=False)
+    cfd.collect(root=tmp_path, current_season="2627", session=_site(etags), pause=0)
     s2 = _site(etags)
-    st = cfd.collect(root=tmp_path, current_season="2627", session=s2, pause=0, avec_cotes=False)
+    st = cfd.collect(root=tmp_path, current_season="2627", session=s2, pause=0)
     assert st["sources_not_modified"] == 2 and st["downloaded"] == 0 and st["updated"] == 0
     assert (ZIP, {"If-None-Match": '"z1"'}) in s2.appels
 
 
 def test_a2_seule_la_division_modifiee_est_reecrite(tmp_path):
-    cfd.collect(root=tmp_path, current_season="2627", session=_site(), pause=0, avec_cotes=False)
+    cfd.collect(root=tmp_path, current_season="2627", session=_site(), pause=0)
     nouveau = E0 + b"E0,21/09/2026,15:00,Chelsea,Fulham,1,1,0,0,5,5,1.9\n"
-    st = cfd.collect(root=tmp_path, current_season="2627", session=_site(e0=nouveau), pause=0, avec_cotes=False)
+    st = cfd.collect(root=tmp_path, current_season="2627", session=_site(e0=nouveau), pause=0)
     assert st["updated"] == 1 and st["unchanged"] == 1                     # E0 réécrit, USA inchangé
     assert len(_jsonl(tmp_path / "normalized/2627/E0.jsonl")) == 2
 
@@ -167,23 +163,9 @@ def test_a2_seule_la_division_modifiee_est_reecrite(tmp_path):
 def test_a2_pas_d_archive_de_la_saison_erreur_signalee_sans_invention(tmp_path):
     s = _site()
     s.pages[DOWNLOADM] = '<a href="mmz4281/2526/data.zip">ancienne saison seulement</a>'
-    st = cfd.collect(root=tmp_path, current_season="2627", session=s, pause=0, avec_cotes=False)
+    st = cfd.collect(root=tmp_path, current_season="2627", session=s, pause=0)
     assert "principales" in st["errors"] and not (tmp_path / "normalized/2627/E0.jsonl").exists()
     assert (tmp_path / "normalized/2627/USA.jsonl").exists()               # l'autre source continue
-
-
-def test_a2_meme_publication_de_cotes_pas_relevee_deux_fois_le_meme_jour(tmp_path, monkeypatch):
-    monkeypatch.setattr(cfd, "now_utc", lambda: "2026-09-24T12:00:00+00:00")
-    cfd.collect(root=tmp_path, current_season="2627", session=_site(), pause=0)
-    st = cfd.collect(root=tmp_path, current_season="2627", session=_site(), pause=0)
-    assert st["odds_rows"] == 0
-    assert len(_jsonl(next((tmp_path / "cotes_run").glob("*.jsonl")))) == 2   # 1 match principal + 1 supplémentaire
-
-
-def test_a2_cote_non_numerique_absente_jamais_devinee():
-    rows = cfd.normalize_fixtures(b"Div,Date,Time,HomeTeam,AwayTeam,B365H,B365D\nE0,26/09/2026,15:00,A,B,n/a,3.4\n",
-                                  FIX, "2026-09-24T12:00:00+00:00")
-    assert rows[0]["odds"] == {"B365D": 3.4}
 
 
 def test_saison_en_cours():

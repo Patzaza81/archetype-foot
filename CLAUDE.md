@@ -122,3 +122,15 @@ La variation doit être déterministe et fondée sur la preuve disponible, pas a
   une contradiction fait refuser l'équipe. Le contrôle nocturne `controle_saisons.py` publie le taux d'erreur (page Système).
 - Toute modification de la lecture des pages se vérifie d'abord sur de vraies pages capturées (`diagnostic/`,
   `tests/fixtures/pages_equipes/`), jamais sur des pages imaginées.
+
+
+# SOURCES DE DONNÉES — décisions du 24/09/2026
+
+- Football-Data.co.uk est la source principale des données d'équipes pour les 38 divisions qu'il publie
+  (saisons terminées : `archive_football_data.py`, immuables ; saison en cours : `collecte_football_data.py`).
+- Matchendirect complète ce que Football-Data ne fournit pas ou pas encore (retard de publication de 1 à 4 jours),
+  et reste la source des listes de matchs et des championnats non couverts.
+- Un marché dont une donnée nécessaire manque dans les deux sources est ÉCARTÉ (jamais estimé, jamais remplacé).
+- Aucune comparaison de cotes entre bookmakers, aucune API externe. Aucune cote n'est collectée depuis Football-Data.
+- La collecte ne calcule rien : elle récupère, normalise, vérifie et transmet.
+

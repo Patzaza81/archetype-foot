@@ -59,10 +59,12 @@ BetPawa est traité en dernier.
 
 ### Chantier B — Moteur (après la collecte)
 
+Règle de données (décision du 24/09) : Football-Data d'abord ; ce qu'il ne fournit pas, ou pas encore (retard de 1 à
+4 jours), est complété par Matchendirect ; **un marché dont une donnée nécessaire manque dans les deux sources est écarté**.
 Nouveaux marchés (buts et résultat à la mi-temps, mi-temps/fin de match, corners total et par équipe) ; renfort des équipes
 à moins de 5 matchs à domicile ou à l'extérieur par la saison passée (décision du 24/09, modifie la règle du 08/09 ;
-xG seulement là où il est fourni, sinon buts et tirs cadrés) ; comparateur de valeur BetPawa contre Betfair Exchange,
-conservé seulement si son gain mesuré est positif et stable ; intégration au Journal.
+xG seulement là où il est fourni, sinon buts et tirs cadrés) ; intégration au Journal.
+**Abandonnés le 24/09 (décision de Patrick)** : la comparaison de cotes entre bookmakers et toute API externe.
 
 ### Chantier C — BetPawa (en dernier)
 

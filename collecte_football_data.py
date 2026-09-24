@@ -6,7 +6,6 @@ Responsabilités (aucune autre) :
 - découvrir, sur les pages d'index, les fichiers réellement publiés pour la saison en cours ;
 - ne télécharger un fichier que s'il a changé (requête conditionnelle ETag / Last-Modified, puis empreinte SHA-256) ;
 - conserver les fichiers bruts et produire une ligne normalisée par match (contrat neutre, champs absents = null) ;
-- relever les cotes des matchs À VENIR pendant le run (fixtures), horodatées, sans les interpréter ;
 - écrire un manifeste de provenance.
 
 Interdit ici : moyenne, xG dérivé, probabilité, EV, valeur, signal, choix de marché, fusion avec
@@ -17,8 +16,11 @@ CORRECTIF 24/09/2026 (vérifié sur les vraies pages, diagnostic/sources/) : la 
 11:36 UTC n'a donc rien collecté (manifeste vide). Sources réellement publiées et utilisées maintenant :
 - 22 divisions principales : archive « mmz4281/<saison>/data.zip » (lien lu sur downloadm.php) ;
 - 16 championnats supplémentaires : « new/<CODE>.csv » (toutes saisons) sur les pages pays liées depuis
-  all_new_data.php ; seules les lignes de la saison en cours sont gardées (règle de archive_football_data.filtre_saison) ;
-- cotes des matchs à venir : « fixtures.csv » et « new_league_fixtures.csv ».
+  all_new_data.php ; seules les lignes de la saison en cours sont gardées (règle de archive_football_data.filtre_saison).
+
+DÉCISION DE PATRICK (24/09/2026) : pas de comparaison de cotes entre bookmakers, aucune API. Ce collecteur ne relève
+donc AUCUNE cote. Football-Data est la source principale des données d'équipes ; les données manquantes sont complétées
+par Matchendirect côté moteur ; un marché dont une donnée nécessaire manque est écarté.
 """
 from __future__ import annotations
 
@@ -29,7 +31,6 @@ import io
 import json
 import re
 import sys
-import time
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urljoin
@@ -44,10 +45,6 @@ INDEX_URLS = (
 )
 BASE_URL = "https://www.football-data.co.uk/"
 DEFAULT_ROOT = Path("data/football_data")
-FIXTURES_URLS = {
-    "principales": "https://www.football-data.co.uk/fixtures.csv",
-    "supplementaires": "https://www.football-data.co.uk/new_league_fixtures.csv",
-}
 PAUSE_S = 1.0
 
 FIELD_MAP = {
@@ -89,10 +86,8 @@ FIELD_MAP = {
 }
 TEXTE = {"home_team", "away_team", "competition_code", "full_time_result", "half_time_result", "time",
          "country", "competition"}
-COLONNES_NON_COTES = set(FIELD_MAP) | {"Referee", "Season", "Attendance"}
 
-# Les colonnes de cotes des CSV de RÉSULTATS restent dans le CSV brut : la feuille de route n'utilise que les cotes
-# relevées pendant le run (fixtures), jamais des cotes historiques d'ouverture/clôture.
+# Les colonnes de cotes des CSV de résultats restent dans le CSV brut et ne sont jamais utilisées (décision du 24/09).
 
 
 def now_utc() -> str:
@@ -204,29 +199,6 @@ def normalize_csv(data: bytes, source_url: str, season: str, source_file: str, c
     return rows
 
 
-def normalize_fixtures(data: bytes, source_url: str, captured_at: str) -> list[dict]:
-    """Matchs à venir avec TOUTES leurs colonnes de cotes, telles que publiées (nom de colonne -> nombre), horodatées
-    du moment du relevé. Aucune interprétation (ni marge retirée, ni cote « juste »)."""
-    rows = []
-    for row in _lecteur(data):
-        dom = _clean(row.get("HomeTeam")) or _clean(row.get("Home"))
-        ext = _clean(row.get("AwayTeam")) or _clean(row.get("Away"))
-        if not (dom and ext):
-            continue
-        cotes = {}
-        for col, val in row.items():
-            if col is None or col in COLONNES_NON_COTES:
-                continue
-            n = _number(val)
-            if n is not None:
-                cotes[col] = n
-        rows.append({"source": "football-data.co.uk", "source_url": source_url, "captured_at_utc": captured_at,
-                     "competition_code": _clean(row.get("Div")), "country": _clean(row.get("Country")),
-                     "competition": _clean(row.get("League")), "date": _date(row.get("Date")),
-                     "time": _clean(row.get("Time")), "home_team": dom, "away_team": ext, "odds": cotes})
-    return rows
-
-
 def write_jsonl(path: Path, rows: list[dict]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="\n") as handle:
@@ -273,17 +245,18 @@ def _ecrit_division(root: Path, season: str, code: str, data: bytes, source_url:
 
 
 def collect(*, root: Path = DEFAULT_ROOT, current_season: str | None = None, session=None,
-            pause: float = PAUSE_S, avec_cotes: bool = True) -> dict:
+            pause: float = PAUSE_S) -> dict:
     season = current_season or saison_en_cours()
     session = session or requests.Session()
     if hasattr(session, "headers"):
         session.headers.update({"User-Agent": "ArchetypeFoot/football-data-collector"})
     manifest_path = root / "manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.exists() else {}
+    manifest.pop("odds_captures", None)
     files = manifest.setdefault("files", {})
     sources = manifest.setdefault("sources", {})
     stats = {"season": season, "discovered": 0, "downloaded": 0, "updated": 0, "unchanged": 0,
-             "sources_not_modified": 0, "errors": {}, "odds_rows": 0}
+             "sources_not_modified": 0, "errors": {}}
 
     # 1) 22 divisions principales : archive data.zip de la saison
     try:
@@ -331,40 +304,6 @@ def collect(*, root: Path = DEFAULT_ROOT, current_season: str | None = None, ses
     except Exception as exc:
         stats["errors"]["supplementaires"] = str(exc)
 
-    # 3) cotes des matchs à venir, relevées pendant ce run (horodatées)
-    if avec_cotes:
-        captured_at = now_utc()
-        jour = captured_at[:10]
-        captures = manifest.setdefault("odds_captures", {})
-        for nom, url in FIXTURES_URLS.items():
-            try:
-                r = session.get(url, timeout=60)
-                r.raise_for_status()
-                digest = sha256_bytes(r.content)
-                deja = captures.setdefault(jour, [])
-                if any(c.get("sha256") == digest and c.get("source") == nom for c in deja):
-                    continue   # même publication déjà relevée aujourd'hui : rien de nouveau
-                # Seuls les matchs PAS ENCORE JOUÉS au moment du relevé sont gardés. Constat du 24/09/2026 : le fichier
-                # publié ne change qu'environ une fois par semaine et contenait encore les matchs du 18 au 22/09 ;
-                # une cote relevée pour un match déjà joué n'est pas une cote du run.
-                rows = [x for x in normalize_fixtures(r.content, url, captured_at) if x["date"] and x["date"] >= jour]
-                stats.setdefault("odds_rows_already_played", 0)
-                if rows:
-                    chemin = root / "cotes_run" / f"{jour}.jsonl"
-                    chemin.parent.mkdir(parents=True, exist_ok=True)
-                    with chemin.open("a", encoding="utf-8", newline="\n") as f:
-                        for row in rows:
-                            f.write(json.dumps(row, ensure_ascii=False, separators=(",", ":")) + "\n")
-                total = len(normalize_fixtures(r.content, url, captured_at))
-                stats["odds_rows_already_played"] += total - len(rows)
-                deja.append({"source": nom, "sha256": digest, "captured_at_utc": captured_at, "rows": len(rows),
-                             "rows_already_played": total - len(rows)})
-                stats["odds_rows"] += len(rows)
-            except Exception as exc:
-                stats["errors"][f"cotes_{nom}"] = str(exc)
-            if pause:
-                time.sleep(pause)
-
     manifest.update({
         "schema_version": 2,
         "source": "football-data.co.uk",
@@ -372,7 +311,7 @@ def collect(*, root: Path = DEFAULT_ROOT, current_season: str | None = None, ses
         "updated_at_utc": now_utc(),
         "historical_policy": "completed seasons are managed by archive_football_data.py snapshots",
         "current_season_policy": "download only when the source changed (ETag/Last-Modified, then SHA-256)",
-        "odds_policy": "only odds captured during the run (fixtures), timestamped; no opening/closing odds",
+        "odds_policy": "no odds collected (decision of 24/09/2026: no bookmaker comparison, no API)",
         "last_run": stats,
     })
     root.mkdir(parents=True, exist_ok=True)
@@ -384,10 +323,9 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", default=str(DEFAULT_ROOT))
     parser.add_argument("--current-season", default=None)
-    parser.add_argument("--sans-cotes", action="store_true")
     args = parser.parse_args()
     try:
-        stats = collect(root=Path(args.root), current_season=args.current_season, avec_cotes=not args.sans_cotes)
+        stats = collect(root=Path(args.root), current_season=args.current_season)
     except Exception as exc:
         print(f"ERREUR collecte football-data: {exc}", file=sys.stderr)
         return 1
