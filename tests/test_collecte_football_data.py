@@ -108,7 +108,8 @@ def _zip(m):
 E0 = b"Div,Date,Time,HomeTeam,AwayTeam,FTHG,FTAG,HTHG,HTAG,HC,AC,B365H\nE0,20/09/2026,15:00,Arsenal,Leeds,2,0,1,0,7,2,1.3\n"
 USA = (b"Country,League,Season,Date,Time,Home,Away,HG,AG,Res\n"
        b"USA,MLS,2025,01/03/2025,20:00,A,B,1,0,H\nUSA,MLS,2026,20/09/2026,20:00,Austin,San Diego,2,1,H\n")
-FIXTURES = b"Div,Date,Time,HomeTeam,AwayTeam,Referee,B365H,B365D,B365A,BFEH,BFED,BFEA\nE1,26/09/2026,15:00,Norwich,Leeds,,2.1,3.4,3.3,2.2,3.5,3.45\n"
+FIXTURES = (b"Div,Date,Time,HomeTeam,AwayTeam,Referee,B365H,B365D,B365A,BFEH,BFED,BFEA\nE1,26/09/2026,15:00,Norwich,Leeds,,2.1,3.4,3.3,2.2,3.5,3.45\n"
+            b"E1,19/09/2026,15:00,Derby,Hull,,2.0,3.3,3.6,2.1,3.4,3.7\n")
 NFIXTURES = b"Country,League,Date,Time,Home,Away,PSH,PSD,PSA\nUSA,MLS,26/09/2026,01:30,Austin,San Diego,1.9,3.6,3.9\n"
 
 
@@ -124,7 +125,8 @@ def _jsonl(p):
 
 
 # --- doivent réussir -------------------------------------------------------------------------------------------------
-def test_a2_collecte_principales_supplementaires_et_cotes(tmp_path):
+def test_a2_collecte_principales_supplementaires_et_cotes(tmp_path, monkeypatch):
+    monkeypatch.setattr(cfd, "now_utc", lambda: "2026-09-24T12:00:00+00:00")
     st = cfd.collect(root=tmp_path, current_season="2627", session=_site(), pause=0)
     assert st["errors"] == {} and st["downloaded"] == 2
     e0 = _jsonl(tmp_path / "normalized/2627/E0.jsonl")[0]
@@ -137,6 +139,8 @@ def test_a2_collecte_principales_supplementaires_et_cotes(tmp_path):
     norwich = next(c for c in cotes if c["home_team"] == "Norwich")
     assert norwich["odds"] == {"B365H": 2.1, "B365D": 3.4, "B365A": 3.3, "BFEH": 2.2, "BFED": 3.5, "BFEA": 3.45}
     assert norwich["captured_at_utc"] and norwich["date"] == "2026-09-26"
+    assert not any(c["home_team"] == "Derby" for c in cotes)               # déjà joué le 19/09 : jamais gardé
+    assert st["odds_rows_already_played"] == 1
 
 
 def test_a2_source_inchangee_304_rien_retelecharge(tmp_path):
@@ -165,7 +169,8 @@ def test_a2_pas_d_archive_de_la_saison_erreur_signalee_sans_invention(tmp_path):
     assert (tmp_path / "normalized/2627/USA.jsonl").exists()               # l'autre source continue
 
 
-def test_a2_meme_publication_de_cotes_pas_relevee_deux_fois_le_meme_jour(tmp_path):
+def test_a2_meme_publication_de_cotes_pas_relevee_deux_fois_le_meme_jour(tmp_path, monkeypatch):
+    monkeypatch.setattr(cfd, "now_utc", lambda: "2026-09-24T12:00:00+00:00")
     cfd.collect(root=tmp_path, current_season="2627", session=_site(), pause=0)
     st = cfd.collect(root=tmp_path, current_season="2627", session=_site(), pause=0)
     assert st["odds_rows"] == 0

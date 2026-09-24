@@ -337,13 +337,21 @@ def collect(*, root: Path = DEFAULT_ROOT, current_season: str | None = None, ses
                 deja = captures.setdefault(jour, [])
                 if any(c.get("sha256") == digest and c.get("source") == nom for c in deja):
                     continue   # même publication déjà relevée aujourd'hui : rien de nouveau
-                rows = normalize_fixtures(r.content, url, captured_at)
-                chemin = root / "cotes_run" / f"{jour}.jsonl"
-                chemin.parent.mkdir(parents=True, exist_ok=True)
-                with chemin.open("a", encoding="utf-8", newline="\n") as f:
-                    for row in rows:
-                        f.write(json.dumps(row, ensure_ascii=False, separators=(",", ":")) + "\n")
-                deja.append({"source": nom, "sha256": digest, "captured_at_utc": captured_at, "rows": len(rows)})
+                # Seuls les matchs PAS ENCORE JOUÉS au moment du relevé sont gardés. Constat du 24/09/2026 : le fichier
+                # publié ne change qu'environ une fois par semaine et contenait encore les matchs du 18 au 22/09 ;
+                # une cote relevée pour un match déjà joué n'est pas une cote du run.
+                rows = [x for x in normalize_fixtures(r.content, url, captured_at) if x["date"] and x["date"] >= jour]
+                stats.setdefault("odds_rows_already_played", 0)
+                if rows:
+                    chemin = root / "cotes_run" / f"{jour}.jsonl"
+                    chemin.parent.mkdir(parents=True, exist_ok=True)
+                    with chemin.open("a", encoding="utf-8", newline="\n") as f:
+                        for row in rows:
+                            f.write(json.dumps(row, ensure_ascii=False, separators=(",", ":")) + "\n")
+                total = len(normalize_fixtures(r.content, url, captured_at))
+                stats["odds_rows_already_played"] += total - len(rows)
+                deja.append({"source": nom, "sha256": digest, "captured_at_utc": captured_at, "rows": len(rows),
+                             "rows_already_played": total - len(rows)})
                 stats["odds_rows"] += len(rows)
             except Exception as exc:
                 stats["errors"][f"cotes_{nom}"] = str(exc)
