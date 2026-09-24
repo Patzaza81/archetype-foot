@@ -61,6 +61,13 @@ jobs:
           python pont_moteur.py --autotest
           python -m pytest tests -q
 
+      # A1/A2 -- collecte Football-Data AVANT toute analyse.
+      # Les saisons passées sont immuables après leur premier téléchargement.
+      # La saison courante est rafraîchie seulement si le contenu source a changé.
+      # Aucun calcul de marché n'est effectué ici.
+      - name: Collecter et normaliser Football-Data
+        run: python collecte_football_data.py
+
       - name: Générer les listes brutes aujourd'hui + demain
         run: python scraper.py --max-matchs 100000
 
