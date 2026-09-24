@@ -1,0 +1,42 @@
+name: Collecte Football-Data (saison en cours)
+
+# AJOUT 24/09/2026 -- lance seulement collecte_football_data.py (étape A2), sans tout le pipeline, pour la vérifier en
+# conditions réelles. Le pipeline quotidien fait la même collecte à chaque run.
+# Déclenchement depuis l'iPhone : modifier data/football_data/demande_collecte.txt.
+
+on:
+  push:
+    paths:
+      - "data/football_data/demande_collecte.txt"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pipeline-archetype-foot
+  cancel-in-progress: false
+
+jobs:
+  collecte:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests pytest
+      - name: Tests de la collecte
+        run: python -m pytest tests/test_collecte_football_data.py tests/test_archive_football_data.py -q
+      - name: Collecter la saison en cours
+        run: python collecte_football_data.py
+      - name: Publier
+        run: |
+          git config user.name "archetype-foot-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data/football_data/
+          git diff --staged --quiet || git commit -m "Collecte Football-Data (saison en cours)"
+          git pull --rebase origin main
+          git push

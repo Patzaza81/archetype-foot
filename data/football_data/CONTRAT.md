@@ -94,3 +94,21 @@ Journal des corrections : le 24/09/2026, le premier verrou `2526/nouvelles_ligue
 l'Argentine et le Japon « sans ligne » (changement de format de saison mal géré). Il a été supprimé avant toute
 utilisation par le moteur, le filtre a été corrigé et testé, puis le snapshot refait une seule fois. Le snapshot
 principal `2526/` (22 divisions) n'a pas été touché.
+
+
+## Saison en cours — A2 (24/09/2026)
+
+`collecte_football_data.py` (pipeline quotidien, et workflow `football_data_collecte.yml` pour un essai isolé) :
+
+| Sortie | Contenu |
+|---|---|
+| `raw/<saison>/<DIV>.csv` | CSV des 22 divisions, extraits de `mmz4281/<saison>/data.zip` |
+| `raw/<saison>/nouvelles_ligues/<CODE>.csv` | lignes de la saison en cours des championnats supplémentaires |
+| `normalized/<saison>/<CODE>.jsonl` | une ligne par match (contrat ci-dessus ; `country`/`competition` pour les supplémentaires) |
+| `cotes_run/<AAAA-MM-JJ>.jsonl` | matchs à venir (`fixtures.csv`, `new_league_fixtures.csv`) avec toutes leurs colonnes de cotes telles que publiées, et `captured_at_utc` du relevé |
+| `manifest.json` | provenance, empreintes, ETag / Last-Modified, bilan du dernier run (`last_run`) |
+
+Téléchargement seulement si la source a changé (requête conditionnelle, puis empreinte SHA-256 par division).
+Les cotes des CSV de résultats ne sont jamais utilisées ; seules les cotes relevées pendant le run le sont.
+Une publication de cotes identique n'est pas relevée deux fois le même jour. Une source en panne est notée dans
+`last_run.errors` et ne bloque pas le pipeline.

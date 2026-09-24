@@ -67,6 +67,8 @@ jobs:
       # Aucun calcul de marché n'est effectué ici.
       - name: Collecter et normaliser Football-Data
         run: python collecte_football_data.py
+        # Une panne de Football-Data ne doit jamais bloquer les pronostics du jour.
+        continue-on-error: true
 
       - name: Générer les listes brutes aujourd'hui + demain
         run: python scraper.py --max-matchs 100000
