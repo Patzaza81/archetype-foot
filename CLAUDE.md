@@ -139,6 +139,11 @@ La variation doit être déterministe et fondée sur la preuve disponible, pas a
   4. Championnat non couvert par Football-Data (Cymru Premier, Serie C, Eerste Divisie…) : Matchendirect seul, sous le
      contrôle nocturne `controle_saisons.py`.
   5. Un marché dont une donnée nécessaire manque (ex. corners d'un match venu de Matchendirect) est écarté.
+  6. Remplacement automatique (précisé par Patrick le 24/09/2026) : un match ajouté depuis Matchendirect n'est que
+     PROVISOIRE. Dès que Football-Data publie ce même match (même adversaire à ± 1 jour), c'est la version Football-Data qui
+     est utilisée et la version Matchendirect disparaît. Pour que ce soit toujours vrai, l'assemblage n'est jamais stocké
+     ni cumulé d'un run à l'autre : il est entièrement reconstruit à chaque run à partir des deux sources. Chaque match
+     Matchendirect porte « provisoire : true ».
   Prérequis : correspondance des noms d'équipes (A3) et conservation de la date et de l'adversaire de chaque match
   Matchendirect (aujourd'hui seuls les buts sont gardés).
 - Aucune comparaison de cotes entre bookmakers, aucune API externe. Aucune cote n'est collectée depuis Football-Data.

@@ -53,7 +53,7 @@ BetPawa est traité en dernier.
 | A3 | Correspondance des noms d'équipes football-data ↔ matchendirect ↔ BetPawa | aucune correspondance ambiguë acceptée ; les non-résolues listées | À FAIRE |
 | A3 bis | Matchendirect : garder la date et l'adversaire de chaque match de saison (aujourd'hui seuls les buts), année déduite de la saison sans ambiguïté | dates et adversaires identiques à la page sur les pages réelles de `tests/fixtures/pages_equipes/` | À FAIRE |
 | A4 | Contrôles qualité : scores football-data contre scores matchendirect sur les matchs communs ; doublons ; dates | ≥ 98 % d'accord ; désaccords listés, jamais corrigés à la main | À FAIRE |
-| A4 bis | Assemblage par équipe : Football-Data en base, jours manquants complétés par Matchendirect après vérification des dates exactes (même adversaire à ± 1 jour = même match), source indiquée sur chaque match ; championnats non couverts : Matchendirect seul | aucun match en double sur un échantillon réel (dont MLS/Brésil pour le décalage de date) ; aucun match Football-Data remplacé | À FAIRE |
+| A4 bis | Assemblage par équipe : Football-Data en base, jours manquants complétés par Matchendirect après vérification des dates exactes (même adversaire à ± 1 jour = même match), source indiquée sur chaque match ; championnats non couverts : Matchendirect seul | aucun match en double sur un échantillon réel (dont MLS/Brésil pour le décalage de date) ; aucun match Football-Data remplacé ; un match Matchendirect provisoire est remplacé par Football-Data dès sa publication (assemblage reconstruit à chaque run, jamais cumulé) | À FAIRE |
 | A5 | Contrat de transmission au moteur : fichiers et champs documentés, versionnés | README + tests | À FAIRE |
 
 
