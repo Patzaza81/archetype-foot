@@ -132,6 +132,9 @@ def test_a2_collecte_principales_supplementaires_et_cotes(tmp_path, monkeypatch)
     e0 = _jsonl(tmp_path / "normalized/2627/E0.jsonl")[0]
     assert (e0["home_team"], e0["half_time_home_goals"], e0["home_corners"]) == ("Arsenal", 1, 7)
     assert "B365H" not in e0 and "odds" not in e0                          # pas de cotes historiques dans le contrat
+    man = json.loads((tmp_path / "manifest.json").read_text(encoding="utf-8"))
+    assert man["files"]["2627/E0"]["last_match_date"] == "2026-09-20"     # fraîcheur visible
+    assert man["files"]["2627/nouvelles_ligues/USA"]["last_match_date"] == "2026-09-20"
     usa = _jsonl(tmp_path / "normalized/2627/USA.jsonl")
     assert [(r["home_team"], r["season"]) for r in usa] == [("Austin", "2627")]   # saison civile 2026 seulement
     assert (usa[0]["country"], usa[0]["competition"], usa[0]["full_time_home_goals"]) == ("USA", "MLS", 2)

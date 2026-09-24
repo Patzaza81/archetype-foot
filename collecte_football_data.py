@@ -262,8 +262,13 @@ def _ecrit_division(root: Path, season: str, code: str, data: bytes, source_url:
     raw_path.write_bytes(data)
     rows = normalize_csv(data, source_url, season, raw_path.name, competition_code=code)
     write_jsonl(norm_path, rows)
+    # Fraîcheur visible (métadonnée, pas un calcul) : date du dernier match présent dans la source. Constat du
+    # 24/09/2026 : Football-Data publie les résultats avec 1 à 4 jours de retard (divisions principales le lundi,
+    # championnats supplémentaires le mardi) ; la Russie n'était plus mise à jour depuis le 04/08.
+    dates = [r["date"] for r in rows if r.get("date")]
     files[cle] = dict(meta, season=season, competition_code=code, source_url=source_url, sha256=digest,
-                      bytes=len(data), rows_normalized=len(rows), downloaded_at_utc=now_utc(), immutable=False)
+                      bytes=len(data), rows_normalized=len(rows), last_match_date=max(dates) if dates else None,
+                      downloaded_at_utc=now_utc(), immutable=False)
     stats["updated" if ancien else "downloaded"] += 1
 
 
@@ -295,7 +300,8 @@ def collect(*, root: Path = DEFAULT_ROOT, current_season: str | None = None, ses
             for code, data in csvs.items():
                 country, competition = afd.COMPETITIONS.get(code, (None, None))
                 _ecrit_division(root, season, code, data, f"{zip_url}#{code}.csv", files,
-                                {"country": country, "competition": competition}, stats)
+                                {"country": country, "competition": competition,
+                                 "source_last_modified": validation.get("last_modified")}, stats)
             sources[zip_url] = dict(validation, sha256=sha256_bytes(contenu), checked_at_utc=now_utc())
     except Exception as exc:
         stats["errors"]["principales"] = str(exc)
@@ -317,7 +323,8 @@ def collect(*, root: Path = DEFAULT_ROOT, current_season: str | None = None, ses
                     continue
                 _ecrit_division(root, season, code, filtre, url, files,
                                 {"country": infos["country"], "competition": infos["competition"],
-                                 "season_label": infos["season_label"], "season_format": infos["season_format"]},
+                                 "season_label": infos["season_label"], "season_format": infos["season_format"],
+                                 "source_last_modified": validation.get("last_modified")},
                                 stats, sous_dossier="nouvelles_ligues/")
             except Exception as exc:
                 stats["errors"][code] = str(exc)
