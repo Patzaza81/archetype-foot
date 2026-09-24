@@ -37,11 +37,13 @@ def test_cas_reel_dallas_pas_de_phrase_des_deux_equipes_sur_une_seule_equipe():
 
 def test_avec_les_deux_equipes_la_phrase_est_produite_et_juste():
     r = bj.construit_justification_bibliotheque("over_under_total_2.5_over", dom(4, 2, 2), ext(4, 2, 2), [], nom_domicile="A", nom_exterieur="B")
-    assert r["resume"].startswith("Rythme offensif : plus de 2,5 buts dans 100.0% des matchs récents des deux équipes")
+    # MAJ 24/09/2026 : formulation humanisée le 23/09 ; on verrouille la ligne et le taux calculés sur les deux équipes.
+    assert r["resume"] is not None and "2,5 buts" in r["resume"] and "100.0%" in r["resume"]
 
 
 def test_les_preuves_propres_a_une_equipe_restent_disponibles_sans_l_autre():
     # la série « sans défaite » de l'équipe à domicile n'a pas besoin des matchs de la visiteuse
     matchs = [{"domicile": True, "buts_marques": 2, "buts_encaisses": 0}] * 5
     r = bj.construit_justification_bibliotheque("double_chance_1X", matchs, [], [], nom_domicile="A", nom_exterieur="B")
-    assert r["resume"].startswith("Régularité à domicile : A reste sur 5 matchs sans défaite")
+    # MAJ 24/09/2026 : formulation humanisée le 23/09 (« A reste difficile à faire tomber chez elle, avec 5 matchs... »).
+    assert r["resume"] is not None and r["resume"].startswith("A ") and "5 matchs consécutifs sans défaite" in r["resume"]

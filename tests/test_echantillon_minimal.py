@@ -130,12 +130,23 @@ def test_aucun_plantage_ni_valeur_aberrante_sur_600_matchs_a_petits_echantillons
     assert n_ok > 300 and n_choix > 0, (n_ok, n_choix)          # le test exerce vraiment le moteur, pas seulement des refus
 
 
-def test_a_2_matchs_l_avertissement_du_moteur_est_visible_sur_le_choix():
-    # 2 matchs par lieu ; la justification vient ici du H2H (les statistiques de forme exigent 3 matchs par lieu)
+def test_a_2_matchs_le_h2h_ne_justifie_plus_aucun_choix():
+    # MAJ 24/09/2026 -- règle du 23/09 (CLAUDE.md, 965e6a5) : le H2H est affiché à titre indicatif et ne rend JAMAIS
+    # une justification disponible. À 2 matchs par lieu (les statistiques de forme en exigent 3), même un H2H très
+    # favorable ne produit donc aucun choix ; l'avertissement reste visible sur le bloc analysé.
     bloc, _ = bm.analyse_signal(signal(), stats_n(2, 2), NOW, lambda s: H2H_A_INVAINCU)
     assert bloc["statut"] == "OK" and "Fenêtre d'analyse trop courte" in bloc["avertissements"]
+    assert bloc["selection"]["P1"] is None
+
+
+def test_l_avertissement_du_moteur_est_visible_sur_le_choix():
+    # 4 matchs par lieu : fenêtre toujours jugée courte par le moteur, mais la forme à domicile suffit à justifier 1X.
+    bloc, _ = bm.analyse_signal(signal(), stats_n(4, 4), NOW, lambda s: H2H_A_INVAINCU)
+    assert bloc["statut"] == "OK" and "Fenêtre d'analyse trop courte" in bloc["avertissements"]
     p1 = bloc["selection"]["P1"]
-    assert p1["marche"] == "double_chance_1X" and any(pr["type"] == "h2h_unbeaten_count" for pr in p1["justification"]["preuves"])
+    types = [pr["type"] for pr in p1["justification"]["preuves"]]
+    assert p1["marche"] == "double_chance_1X" and "home_unbeaten_streak" in types
+    assert not any(t.startswith("h2h") for t in types)          # jamais de preuve H2H
     assert "Fenêtre d'analyse trop courte" in p1["points_de_vigilance"]
 
 

@@ -42,10 +42,14 @@ def resume(marche, a, b, h=None):
 def test_x2_et_1x2_exterieur_ne_plantent_plus():
     a = dom((0, 1), (0, 1), (0, 1))
     b = ext((1, 0), (1, 0), (1, 0))
+    # MAJ 24/09/2026 : depuis le 23/09 (89b7e9c), X2 et 1x2_exterieur ont des preuves distinctes. X2 peut être justifié
+    # par la fragilité de l'équipe À DOMICILE (Alpha) ; la victoire sèche extérieure par le taux de victoire de Bravo.
+    attendu = {"double_chance_X2": "Alpha présente 100.0% de défaites récentes à domicile",
+               "1x2_exterieur": "Bravo gagne 100.0%"}
     for marche in ("double_chance_X2", "1x2_exterieur"):
         r = just(marche, a, b, h2h((0, 1), (0, 1), (0, 1), (1, 1)))
         assert r["resume"] is not None
-        assert "Bravo" in r["resume"]
+        assert attendu[marche] in r["resume"]
 
 
 def test_x2_sans_h2h_ni_historique_ne_plante_pas():
@@ -210,7 +214,8 @@ def test_equipe_under_refuse_sous_3_matchs():
 def test_total_over_2_5_rythme_offensif():
     a, b = dom((2, 1), (3, 0), (1, 2)), ext((2, 2), (1, 3), (3, 1))
     r = resume("over_under_total_2.5_over", a, b)
-    assert r is not None and r.startswith("Rythme offensif : plus de 2,5 buts dans 100.0%")
+    # MAJ 24/09/2026 : formulation humanisée le 23/09 ; on verrouille la ligne exacte et le taux, pas la tournure.
+    assert r is not None and "2,5 buts" in r and "100.0%" in r
 
 
 def test_total_over_3_5_a_83_pourcent():
@@ -221,7 +226,8 @@ def test_total_over_3_5_a_83_pourcent():
 
 def test_total_over_0_5_et_ligne_ancienne_over_2_5():
     a, b = dom((1, 0), (2, 0), (1, 1)), ext((0, 1), (1, 1), (2, 0))
-    assert "plus de 0,5 buts dans 100.0%" in resume("over_under_total_0.5_over", a, b)
+    r = resume("over_under_total_0.5_over", a, b)
+    assert r is not None and "0,5 buts" in r and "100.0%" in r
     assert resume("over_2.5", dom((2, 1), (3, 0), (1, 2)), ext((2, 2), (1, 3), (3, 1))) is not None
 
 
@@ -265,9 +271,12 @@ def test_total_under_refuse_a_33_pourcent():
 
 def test_x2_ne_plante_pas_quand_l_equipe_a_domicile_a_moins_de_3_matchs():
     # KeyError: 'home_loss_rate' avant correctif (clé absente sous le seuil de 3 matchs à domicile)
-    for marche in ("double_chance_X2", "1x2_exterieur"):
-        r = just(marche, dom((1, 0), (2, 0)), ext((1, 0), (1, 1), (2, 1), (0, 0)), h2h((0, 1)))
-        assert r["resume"] is not None and "Régularité à l'extérieur : Bravo reste sur 4 matchs sans défaite" in r["resume"]
+    r = just("double_chance_X2", dom((1, 0), (2, 0)), ext((1, 0), (1, 1), (2, 1), (0, 0)), h2h((0, 1)))
+    assert r["resume"] is not None and "Bravo reste sur 4 matchs sans défaite" in r["resume"]
+    # MAJ 24/09/2026 (règle CLAUDE.md) : une victoire sèche n'est jamais justifiée par une simple série sans défaite.
+    # Ici Bravo a 2 victoires sur 4 (50 % < 65 %) et Alpha n'a pas 3 matchs à domicile : aucune preuve -> None, sans plantage.
+    r = just("1x2_exterieur", dom((1, 0), (2, 0)), ext((1, 0), (1, 1), (2, 1), (0, 0)), h2h((0, 1)))
+    assert r["resume"] is None
 
 
 def test_x2_ne_pretend_jamais_sans_defaite_apres_des_defaites():
@@ -277,10 +286,12 @@ def test_x2_ne_pretend_jamais_sans_defaite_apres_des_defaites():
 
 
 def test_x2_les_nuls_comptent_comme_sans_defaite_et_une_defaite_coupe_la_serie():
-    for marche in ("double_chance_X2", "1x2_exterieur"):
-        assert "sans défaite" in resume(marche, dom((1, 0), (1, 0), (1, 0)), ext((1, 0), (0, 0), (2, 2), (0, 0)))
-        # la dernière rencontre (fin de liste) est une défaite : série de 0 -> aucun texte
-        assert resume(marche, dom((1, 0), (1, 0), (1, 0)), ext((1, 0), (0, 0), (2, 2), (0, 1))) is None
+    marche = "double_chance_X2"
+    assert "sans défaite" in resume(marche, dom((1, 0), (1, 0), (1, 0)), ext((1, 0), (0, 0), (2, 2), (0, 0)))
+    # la dernière rencontre (fin de liste) est une défaite : série de 0 -> aucun texte
+    assert resume(marche, dom((1, 0), (1, 0), (1, 0)), ext((1, 0), (0, 0), (2, 2), (0, 1))) is None
+    # MAJ 24/09/2026 (règle CLAUDE.md) : pour la victoire sèche extérieure, des nuls ne sont jamais une preuve.
+    assert resume("1x2_exterieur", dom((1, 0), (1, 0), (1, 0)), ext((1, 0), (0, 0), (2, 2), (0, 0))) is None
 
 
 def test_donnees_forme_exterieur_exactes():
