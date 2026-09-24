@@ -113,5 +113,16 @@ de retard (constat du 24/09). Une source en panne est notée dans `last_run.erro
 
 **Décision de Patrick (24/09/2026) : aucune cote n'est collectée ici** (pas de comparaison de cotes entre bookmakers,
 aucune API). Les colonnes de cotes des CSV restent dans les fichiers bruts et ne sont jamais utilisées.
-Règle de complément : Football-Data d'abord ; une donnée qu'il ne fournit pas (ou pas encore, à cause du retard) est
-complétée par Matchendirect côté moteur ; un marché dont une donnée nécessaire manque dans les deux sources est écarté.
+Règle d'assemblage (précisée par Patrick le 24/09/2026) :
+1. Championnat couvert par Football-Data : les matchs de Football-Data sont la base (données plus complètes : mi-temps,
+   tirs, corners, cartons, xG). Matchendirect ne sert qu'à ajouter les JOURS manquants, c'est-à-dire les matchs joués
+   après la dernière mise à jour de Football-Data (retard de 1 à 4 jours) ou absents de Football-Data.
+2. Vérification des dates exactes, match par match : un match Matchendirect n'est ajouté que si l'équipe n'a AUCUN match
+   Football-Data contre le même adversaire à ± 1 jour. Le ± 1 jour est obligatoire : un match joué tard le soir en heure
+   locale (MLS, Brésil, Argentine…) peut porter la date du lendemain dans l'autre source. Jamais deux fois le même match.
+3. Chaque match transmis au moteur porte sa source (football-data ou matchendirect) et sa date.
+4. Championnat non couvert par Football-Data (Cymru Premier, Serie C, Eerste Divisie…) : Matchendirect seul, sous le
+   contrôle nocturne `controle_saisons.py`.
+5. Un marché dont une donnée nécessaire manque (ex. corners d'un match venu de Matchendirect) est écarté.
+Prérequis : correspondance des noms d'équipes (A3) et conservation de la date et de l'adversaire de chaque match
+Matchendirect (aujourd'hui seuls les buts sont gardés).

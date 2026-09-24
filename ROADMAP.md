@@ -51,7 +51,9 @@ BetPawa est traité en dernier.
 | A1 | **Snapshot annuel complet Football-Data** : toutes les divisions/compétitions CSV réellement publiées pour la saison terminée sont archivées une fois dans `data/football_data/snapshots/<saison>/`, avec brut, manifeste SHA-256 et verrou d'immutabilité. La saison suivante reçoit son propre snapshot. La saison courante reste un flux opérationnel séparé. | workflow manuel/annuel exécuté ; couverture complète, manifeste cohérent, verrou `COMPLETE`, puis test de lecture locale par le moteur | **FAIT le 24/09 pour 2526 : 38 divisions** (22 principales via `data.zip` + 16 championnats supplémentaires via `new/<CODE>.csv`), 12 349 matchs, SHA-256 et verrous vérifiés |
 | A2 | Normalisation en un format unique par match : date, heure, championnat, équipes, score fin de match, score mi-temps, tirs, tirs cadrés, corners, cartons, xG (si fourni), cotes par bookmaker. **Pas de cotes d'ouverture ni de clôture** : les seules cotes utilisées et comparées sont celles **relevées pendant le run**, horodatées (BetPawa et référence prises au même moment) | contrat codé et tests locaux ; validation réelle du schéma sur le premier run | **FAIT le 24/09** : saison 2026-27, 38 divisions, 3 696 matchs normalisés (mi-temps, tirs, corners, cartons, xG dans les divisions principales) ; téléchargement conditionnel ; cotes du run limitées aux matchs pas encore joués |
 | A3 | Correspondance des noms d'équipes football-data ↔ matchendirect ↔ BetPawa | aucune correspondance ambiguë acceptée ; les non-résolues listées | À FAIRE |
+| A3 bis | Matchendirect : garder la date et l'adversaire de chaque match de saison (aujourd'hui seuls les buts), année déduite de la saison sans ambiguïté | dates et adversaires identiques à la page sur les pages réelles de `tests/fixtures/pages_equipes/` | À FAIRE |
 | A4 | Contrôles qualité : scores football-data contre scores matchendirect sur les matchs communs ; doublons ; dates | ≥ 98 % d'accord ; désaccords listés, jamais corrigés à la main | À FAIRE |
+| A4 bis | Assemblage par équipe : Football-Data en base, jours manquants complétés par Matchendirect après vérification des dates exactes (même adversaire à ± 1 jour = même match), source indiquée sur chaque match ; championnats non couverts : Matchendirect seul | aucun match en double sur un échantillon réel (dont MLS/Brésil pour le décalage de date) ; aucun match Football-Data remplacé | À FAIRE |
 | A5 | Contrat de transmission au moteur : fichiers et champs documentés, versionnés | README + tests | À FAIRE |
 
 
@@ -59,8 +61,7 @@ BetPawa est traité en dernier.
 
 ### Chantier B — Moteur (après la collecte)
 
-Règle de données (décision du 24/09) : Football-Data d'abord ; ce qu'il ne fournit pas, ou pas encore (retard de 1 à
-4 jours), est complété par Matchendirect ; **un marché dont une donnée nécessaire manque dans les deux sources est écarté**.
+Règle de données : voir CLAUDE.md (« Règle d'assemblage », précisée le 24/09).
 Nouveaux marchés (buts et résultat à la mi-temps, mi-temps/fin de match, corners total et par équipe) ; renfort des équipes
 à moins de 5 matchs à domicile ou à l'extérieur par la saison passée (décision du 24/09, modifie la règle du 08/09 ;
 xG seulement là où il est fourni, sinon buts et tirs cadrés) ; intégration au Journal.

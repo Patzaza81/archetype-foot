@@ -128,9 +128,19 @@ La variation doit être déterministe et fondée sur la preuve disponible, pas a
 
 - Football-Data.co.uk est la source principale des données d'équipes pour les 38 divisions qu'il publie
   (saisons terminées : `archive_football_data.py`, immuables ; saison en cours : `collecte_football_data.py`).
-- Matchendirect complète ce que Football-Data ne fournit pas ou pas encore (retard de publication de 1 à 4 jours),
-  et reste la source des listes de matchs et des championnats non couverts.
-- Un marché dont une donnée nécessaire manque dans les deux sources est ÉCARTÉ (jamais estimé, jamais remplacé).
+- Règle d'assemblage (précisée par Patrick le 24/09/2026) :
+  1. Championnat couvert par Football-Data : les matchs de Football-Data sont la base (données plus complètes : mi-temps,
+     tirs, corners, cartons, xG). Matchendirect ne sert qu'à ajouter les JOURS manquants, c'est-à-dire les matchs joués
+     après la dernière mise à jour de Football-Data (retard de 1 à 4 jours) ou absents de Football-Data.
+  2. Vérification des dates exactes, match par match : un match Matchendirect n'est ajouté que si l'équipe n'a AUCUN match
+     Football-Data contre le même adversaire à ± 1 jour. Le ± 1 jour est obligatoire : un match joué tard le soir en heure
+     locale (MLS, Brésil, Argentine…) peut porter la date du lendemain dans l'autre source. Jamais deux fois le même match.
+  3. Chaque match transmis au moteur porte sa source (football-data ou matchendirect) et sa date.
+  4. Championnat non couvert par Football-Data (Cymru Premier, Serie C, Eerste Divisie…) : Matchendirect seul, sous le
+     contrôle nocturne `controle_saisons.py`.
+  5. Un marché dont une donnée nécessaire manque (ex. corners d'un match venu de Matchendirect) est écarté.
+  Prérequis : correspondance des noms d'équipes (A3) et conservation de la date et de l'adversaire de chaque match
+  Matchendirect (aujourd'hui seuls les buts sont gardés).
 - Aucune comparaison de cotes entre bookmakers, aucune API externe. Aucune cote n'est collectée depuis Football-Data.
 - La collecte ne calcule rien : elle récupère, normalise, vérifie et transmet.
 
