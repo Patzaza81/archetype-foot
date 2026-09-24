@@ -219,18 +219,28 @@ def collect(
 
         # Une saison passée devient un artefact immuable dès sa première
         # réussite. Le moteur pourra la consulter sans réseau.
-        if season == previous_season and raw_path.exists() and existing:
+        if season == previous_season and raw_path.exists():
+            # Une saison passée existante est lue localement, même si le
+            # manifeste est absent: jamais de second téléchargement.
+            data = raw_path.read_bytes()
+            digest = sha256_bytes(data)
+            if not normalized_path.exists():
+                rows = normalize_csv(data, url, season, raw_path.name)
+                write_jsonl(normalized_path, rows)
+            files[key] = {
+                "season": season,
+                "competition_code": div,
+                "source_url": url,
+                "sha256": digest,
+                "downloaded_at_utc": (existing or {}).get("downloaded_at_utc"),
+                "rows_normalized": (existing or {}).get("rows_normalized"),
+                "immutable": True,
+            }
             stats["skipped_immutable"] += 1
             continue
 
         data = download(session, url)
         digest = sha256_bytes(data)
-        if season == previous_season and raw_path.exists():
-            # Un fichier passé existe mais n'a pas de manifeste: on refuse de
-            # le remplacer silencieusement. Le manifeste sera reconstruit
-            # seulement lors d'une action explicite future.
-            stats["skipped_immutable"] += 1
-            continue
 
         old_hash = existing.get("sha256") if existing else None
         changed = old_hash != digest
