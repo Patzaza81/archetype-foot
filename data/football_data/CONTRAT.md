@@ -63,3 +63,8 @@ que l'archive soit considérée comme validée en conditions réelles.
 
 Le moteur doit lire ces snapshots localement. La collecte historique et la
 collecte opérationnelle de la saison courante sont deux flux distincts.
+
+
+## Catalogue des compétitions
+
+Chaque snapshot contient aussi `catalogue.json`. Il recense les CSV réellement découverts pour la saison et conserve, pour chaque code, l'URL directe officielle utilisée. Les compétitions actuellement identifiables sont enrichies avec leur pays et leur nom. Un code nouveau ou non identifiable n'est jamais supprimé ni attribué arbitrairement : ses champs descriptifs restent `null` jusqu'à identification fiable. La découverte des fichiers reste dynamique afin de ne pas figer la couverture Football-Data.
