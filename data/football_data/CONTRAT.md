@@ -68,3 +68,17 @@ collecte opérationnelle de la saison courante sont deux flux distincts.
 ## Catalogue des compétitions
 
 Chaque snapshot contient aussi `catalogue.json`. Il recense les CSV réellement découverts pour la saison et conserve, pour chaque code, l'URL directe officielle utilisée. Les compétitions actuellement identifiables sont enrichies avec leur pays et leur nom. Un code nouveau ou non identifiable n'est jamais supprimé ni attribué arbitrairement : ses champs descriptifs restent `null` jusqu'à identification fiable. La découverte des fichiers reste dynamique afin de ne pas figer la couverture Football-Data.
+
+
+## Correctif du 24/09/2026 — découverte par l'archive de saison
+
+Vérifié sur la vraie page `downloadm.php` (capture `diagnostic/sources/`) : pour une saison, Football-Data ne publie
+pas de liens CSV individuels mais une archive `mmz4281/<saison>/data.zip` contenant les CSV de toutes les divisions.
+Si aucun lien CSV n'est trouvé, le collecteur prend cette archive (URL découverte sur la page, jamais construite),
+en extrait les CSV dans `raw/` et enregistre la provenance dans le manifeste (`source_archive` : URL, SHA-256, taille,
+nombre de CSV ; `source_url` de chaque fichier = `<archive>#<CODE>.csv`). Une seule requête par saison.
+
+Déclenchement depuis l'iPhone : écrire la saison (ex. `2526`) dans `data/football_data/demande_snapshot.txt`.
+
+Hors périmètre de ce snapshot : les 16 championnats supplémentaires (`new/XXX.csv`), publiés en un seul fichier
+toutes saisons confondues ; ils demandent un traitement séparé.

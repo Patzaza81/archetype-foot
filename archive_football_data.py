@@ -17,9 +17,11 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import io
 import json
 import re
 import sys
+import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urljoin
@@ -30,6 +32,11 @@ INDEX_URLS = (
     "https://www.football-data.co.uk/downloadm.php",
     "https://www.football-data.co.uk/all_new_data.php",
 )
+# CORRECTIF 24/09/2026 (vérifié sur la vraie page, diagnostic/sources/www_football_data_co_uk_downloadm_php.html) :
+# pour une saison, downloadm.php ne publie PAS de lien CSV individuel mais une archive
+# « mmz4281/<saison>/data.zip » contenant tous les CSV des divisions. Sans ce repli, la découverte ne trouvait
+# aucun CSV et le snapshot 2526 échouait (« Aucun CSV Football-Data découvert »).
+ZIP_RE = re.compile(r"/mmz4281/(?P<season>\d{4})/data\.zip$", re.I)
 SEASON_RE = re.compile(r"/mmz4281/(?P<season>\d{4})/(?P<div>[A-Za-z0-9]+)\.csv$", re.I)
 DEFAULT_ROOT = Path("data/football_data/snapshots")
 
@@ -53,7 +60,7 @@ COMPETITIONS = {
     "N1": ("Netherlands", "Eredivisie"),
     "N2": ("Netherlands", "Eerste Divisie"),
     "B1": ("Belgium", "Jupiler Pro League"),
-    "P1": ("Portugal", "Liga I"),
+    "P1": ("Portugal", "Primeira Liga"),
     "T1": ("Turkey", "Super Lig"),
     "G1": ("Greece", "Super League"),
 }
@@ -82,6 +89,30 @@ def discover_urls(session: requests.Session, season: str) -> dict[str, str]:
     return dict(sorted(found.items()))
 
 
+def discover_zip(session: requests.Session, season: str) -> str | None:
+    """URL de l'archive data.zip de la saison, telle que publiée sur les pages d'index (jamais construite)."""
+    for index_url in INDEX_URLS:
+        response = session.get(index_url, timeout=30)
+        response.raise_for_status()
+        for href in re.findall(r"""href\s*=\s*["']([^"']+\.zip)["']""", response.text, re.I):
+            url = urljoin(index_url, href)
+            match = ZIP_RE.search(url.replace("\\", "/"))
+            if match and match.group("season") == season:
+                return url
+    return None
+
+
+def csv_from_zip(data: bytes) -> dict[str, bytes]:
+    """CSV contenus dans l'archive, par code de division (nom du fichier sans extension)."""
+    out: dict[str, bytes] = {}
+    with zipfile.ZipFile(io.BytesIO(data)) as archive:
+        for name in archive.namelist():
+            base = name.rsplit("/", 1)[-1]
+            if base.lower().endswith(".csv") and base[:-4]:
+                out[base[:-4].upper()] = archive.read(name)
+    return dict(sorted(out.items()))
+
+
 def build_catalogue(season: str, urls: dict[str, str]) -> list[dict]:
     rows = []
     for div, url in urls.items():
@@ -92,7 +123,8 @@ def build_catalogue(season: str, urls: dict[str, str]) -> list[dict]:
             "competition": competition,
             "season": season,
             "source_url": url,
-            "discovery_source": "football-data.co.uk/downloadm.php|all_new_data.php",
+            "discovery_source": "football-data.co.uk/downloadm.php|all_new_data.php"
+                                + (" (archive data.zip de la saison)" if "#" in url else ""),
         })
     return rows
 
@@ -146,6 +178,16 @@ def archive_snapshot(
     session = session or requests.Session()
     session.headers.update({"User-Agent": "ArchetypeFoot/football-data-snapshot"})
     urls = discover_urls(session, season)
+    contenus_zip: dict[str, bytes] = {}
+    zip_info: dict | None = None
+    if not urls:
+        zip_url = discover_zip(session, season)
+        if zip_url:
+            zip_data = download(session, zip_url)
+            contenus_zip = csv_from_zip(zip_data)
+            urls = {div: f"{zip_url}#{div}.csv" for div in contenus_zip}
+            zip_info = {"source_url": zip_url, "sha256": sha256_bytes(zip_data), "bytes": len(zip_data),
+                        "downloaded_at_utc": now_utc(), "csv_count": len(contenus_zip)}
 
     if not urls:
         raise RuntimeError(f"Aucun CSV Football-Data découvert pour la saison {season}")
@@ -195,12 +237,15 @@ def archive_snapshot(
             continue
 
         try:
-            data = download(session, url)
+            data = contenus_zip[div] if div in contenus_zip else download(session, url)
             digest = sha256_bytes(data)
             raw_dir.mkdir(parents=True, exist_ok=True)
             path.write_bytes(data)
+            country, competition = COMPETITIONS.get(div, (None, None))
             files[div] = {
                 "competition_code": div,
+                "country": country,
+                "competition": competition,
                 "source_url": url,
                 "sha256": digest,
                 "bytes": len(data),
@@ -223,6 +268,8 @@ def archive_snapshot(
         "coverage": sorted(urls),
         "policy": "immutable completed-season snapshot; no overwrite and no redownload",
     })
+    if zip_info:
+        manifest["source_archive"] = zip_info
     snapshot.mkdir(parents=True, exist_ok=True)
     manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 

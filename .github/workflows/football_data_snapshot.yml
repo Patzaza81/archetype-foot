@@ -7,6 +7,11 @@ on:
         description: "Saison Football-Data terminée à archiver, ex. 2526"
         required: true
         type: string
+  # AJOUT 24/09/2026 : déclenchement depuis l'iPhone sans bouton Actions -- modifier
+  # data/football_data/demande_snapshot.txt (une ligne : la saison, ex. 2526) lance l'archive de cette saison.
+  push:
+    paths:
+      - "data/football_data/demande_snapshot.txt"
   schedule:
     # Vérification annuelle en juillet: la saison précédente est alors terminée.
     - cron: "30 4 5 7 *"
@@ -32,8 +37,14 @@ jobs:
         env:
           INPUT_SEASON: ${{ github.event.inputs.season }}
         run: |
+          DEMANDE=""
+          if [ "${{ github.event_name }}" = "push" ] && [ -f data/football_data/demande_snapshot.txt ]; then
+            DEMANDE=$(grep -Eo '^[0-9]{4}$' data/football_data/demande_snapshot.txt | head -1)
+          fi
           if [ -n "$INPUT_SEASON" ]; then
             echo "value=$INPUT_SEASON" >> "$GITHUB_OUTPUT"
+          elif [ -n "$DEMANDE" ]; then
+            echo "value=$DEMANDE" >> "$GITHUB_OUTPUT"
           else
             YEAR=$(( $(date -u +%Y) - 1 ))
             echo "value=$(printf '%02d%02d' $((YEAR % 100)) $(((YEAR + 1) % 100)))" >> "$GITHUB_OUTPUT"
