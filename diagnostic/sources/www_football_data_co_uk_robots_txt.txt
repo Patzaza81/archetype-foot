@@ -1,0 +1,46 @@
+# Robots.txt file created by http://www.webtoolcentral.com
+# For domain: http://www.football-data.co.uk
+
+# All robots will spider the domain
+User-agent: *
+Disallow:
+
+# Block major AI training models
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: Anthropic-AI
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+# Block aggressive common scraping tools
+User-agent: CCBot
+Disallow: /
+
+User-agent: Meta-ExternalAgent
+Disallow: /
+
+User-agent: Diffbot
+Disallow: /
+
+User-agent: Omgilibot
+Disallow: /
+
+
