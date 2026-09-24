@@ -28,7 +28,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Installer les dépendances de lecture
-        run: pip install requests beautifulsoup4 lxml
+        run: pip install requests beautifulsoup4 lxml pandas
       - name: Capturer les pages
         run: python diagnostic_capture_pages.py
       - name: Publier la capture
