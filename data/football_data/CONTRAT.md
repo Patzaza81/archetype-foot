@@ -131,3 +131,17 @@ Règle d'assemblage (précisée par Patrick le 24/09/2026) :
    Matchendirect porte « provisoire : true ».
 Prérequis : correspondance des noms d'équipes (A3) et conservation de la date et de l'adversaire de chaque match
 Matchendirect (aujourd'hui seuls les buts sont gardés).
+
+
+## A3 et A4 bis (24/09/2026) — sorties transmises au moteur
+
+`assemblage_equipes.py` (workflow `journal.yml`, après le pipeline), reconstruit à chaque run :
+
+- `data/correspondances/equipes.json` : pour chaque division Football-Data, son nom de compétition Matchendirect et,
+  pour chaque équipe, son nom Matchendirect avec le nombre de preuves ; listes `ambigues` et `non_resolues`.
+  Matchendirect est le pivot (les noms BetPawa y sont déjà reliés par le pipeline).
+- `data/assemblage/equipes.json` : une entrée par équipe des matchs à venir (`cache_equipes_saison.json`), avec ses
+  matchs de la saison en cours ; chaque match porte `source` (`football-data` ou `matchendirect`) et `provisoire`.
+  Matchs Football-Data : mi-temps, tirs, tirs cadrés, corners, cartons, xG (quand publiés). Matchs Matchendirect :
+  date, lieu, adversaire, buts, lien. Champ `raison` pour les équipes sans Football-Data (championnat non couvert,
+  ou équipe pas encore reliée).

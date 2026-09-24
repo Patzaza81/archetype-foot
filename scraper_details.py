@@ -646,7 +646,32 @@ def _section_competition(soup, cible):
     return partie, None
 
 
-def _extrait_historique_competition(soup, nom_competition, nom_equipe, max_matchs=10, diag_libelle=None):
+def _date_ligne(tr, date_reference=None):
+    """A3 bis (24/09/2026) -- date ISO d'une ligne de la page équipe. La page n'affiche que « JJ/MM » (ou une heure
+    « HH:MM » pour un match du jour) : l'année retenue est celle qui donne la date la plus récente NON FUTURE par rapport
+    à la date de lecture (les lignes lues ont un score, donc sont déjà jouées). Aucune autre hypothèse."""
+    import datetime as _dt
+    ref = date_reference or _dt.datetime.now(_dt.timezone.utc).date()
+    span = tr.find("span", class_=re.compile(r"lm2_time"))
+    texte = span.get_text(strip=True) if span else ""
+    if re.fullmatch(r"\d{1,2}:\d{2}", texte):
+        return ref.isoformat()
+    m = re.fullmatch(r"(\d{1,2})/(\d{1,2})", texte)
+    if not m:
+        return None
+    jour, mois = int(m.group(1)), int(m.group(2))
+    for annee in (ref.year, ref.year - 1):
+        try:
+            d = _dt.date(annee, mois, jour)
+        except ValueError:
+            continue
+        if d <= ref + _dt.timedelta(days=1):
+            return d.isoformat()
+    return None
+
+
+def _extrait_historique_competition(soup, nom_competition, nom_equipe, max_matchs=10, diag_libelle=None,
+                                    date_reference=None):
     # CORRECTIF (26/08) : l'égalité stricte texte-complet ('Denmark :
     # Superliga' vs 'Danemark : Superligaen' sur la vraie page matchendirect,
     # confirmé en conditions réelles) échouait pour TOUT match venant de
@@ -715,10 +740,15 @@ def _extrait_historique_competition(soup, nom_competition, nom_equipe, max_match
             continue
         nom_dom, buts_dom, buts_ext, nom_ext = m.group(1).strip(), int(m.group(2)), int(m.group(3)), m.group(4).strip()
 
+        # A3 bis (24/09/2026) : date, adversaire et lien du match sont gardés (vérification des dates exactes lors de
+        # l'assemblage avec Football-Data). Les champs de buts sont inchangés.
+        details = {"date": _date_ligne(tr, date_reference), "url_match": liens_avec_score[0].get("href")}
         if _memes_equipes(nom_equipe, nom_dom):
-            matchs.append({"domicile": True, "buts_marques": buts_dom, "buts_encaisses": buts_ext})
+            matchs.append(dict({"domicile": True, "buts_marques": buts_dom, "buts_encaisses": buts_ext},
+                               adversaire=nom_ext, **details))
         elif _memes_equipes(nom_equipe, nom_ext):
-            matchs.append({"domicile": False, "buts_marques": buts_ext, "buts_encaisses": buts_dom})
+            matchs.append(dict({"domicile": False, "buts_marques": buts_ext, "buts_encaisses": buts_dom},
+                               adversaire=nom_dom, **details))
 
     if diag_libelle and not matchs:
         nb_lignes = len(table.find_all("tr"))

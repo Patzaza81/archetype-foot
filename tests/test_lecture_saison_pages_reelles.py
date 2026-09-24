@@ -102,3 +102,42 @@ def test_controle_sans_donnees_n_est_pas_une_incoherence():
                                {"x": [{"domicile": True, "marques": 1, "encaisses": 0, "date": "2026-09-10",
                                        "adversaire": "Y", "competition": "cymru premier"}]})
     assert ligne["statut"] == "SANS_DONNEES"
+
+
+# --- A3 bis (24/09/2026) : date, adversaire et lien de chaque match ---------------------------------------------------
+import datetime as _dt
+
+
+def test_the_new_saints_dates_et_adversaires_identiques_a_la_page():
+    m = sd._extrait_historique_competition(soupe("the_new_saints.html"), "Pays de Galles : Cymru Premier",
+                                           "the new saints", date_reference=_dt.date(2026, 9, 24))
+    assert [(x["date"], x["adversaire"]) for x in m] == [
+        ("2026-08-02", "Penybont"), ("2026-08-07", "Haverfordwest"), ("2026-08-14", "Briton Ferry"),
+        ("2026-08-21", "Cardiff MU"), ("2026-08-28", "Colwyn Bay"), ("2026-08-31", "Caernarfon"),
+        ("2026-09-05", "Barry Town"), ("2026-09-11", "Broughton"), ("2026-09-15", "Flint Town Utd"),
+        ("2026-09-19", "Llandudno")]
+    assert all(x["url_match"].startswith("/live-score/") for x in m)
+
+
+class _Tr:
+    """Ligne minimale : une cellule <span class="lm2_timeXxX">texte</span>."""
+    def __init__(self, texte):
+        self.s = BeautifulSoup(f'<tr><td><span class="lm2_timeXxX">{texte}</span></td></tr>', "html.parser").tr
+
+
+@pytest.mark.parametrize("texte,ref,attendu", [
+    ("02/08", _dt.date(2026, 9, 24), "2026-08-02"),
+    ("30/12", _dt.date(2027, 1, 5), "2026-12-30"),      # saison à cheval : année précédente
+    ("20:00", _dt.date(2026, 9, 24), "2026-09-24"),      # match du jour affiché avec l'heure
+])
+def test_date_ligne_annee_deduite(texte, ref, attendu):
+    assert sd._date_ligne(_Tr(texte).s, ref) == attendu
+
+
+@pytest.mark.parametrize("texte,ref,attendu", [
+    ("31/02", _dt.date(2026, 9, 24), None),              # date impossible
+    ("", _dt.date(2026, 9, 24), None),                   # pas de date
+    ("28/09", _dt.date(2026, 9, 24), "2025-09-28"),      # jamais une date future : année précédente
+])
+def test_date_ligne_refus_ou_passe(texte, ref, attendu):
+    assert sd._date_ligne(_Tr(texte).s, ref) == attendu

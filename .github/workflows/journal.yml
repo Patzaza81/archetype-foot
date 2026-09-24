@@ -44,7 +44,7 @@ jobs:
 
       # Filet de sécurité : si le règlement des marchés ou les statuts sont cassés, on ne publie rien.
       - name: Tests du journal et du contrôle des saisons
-        run: python -m pytest tests/test_journal_rentabilite.py tests/test_controle_saisons.py -q
+        run: python -m pytest tests/test_journal_rentabilite.py tests/test_controle_saisons.py tests/test_assemblage_equipes.py -q
 
       - name: Construire journal.json
         run: python journal_rentabilite.py
@@ -55,12 +55,21 @@ jobs:
         run: python controle_saisons.py
         continue-on-error: true
 
+      # AJOUT 24/09/2026 -- A3 + A4 bis : correspondance des noms Football-Data <-> Matchendirect et assemblage par
+      # équipe (Football-Data en base, jours manquants par Matchendirect, provisoires remplacés dès publication).
+      # Reconstruit entièrement à chaque run, jamais cumulé.
+      - name: Relier les équipes et assembler les données (data/correspondances, data/assemblage)
+        run: python assemblage_equipes.py
+        continue-on-error: true
+
       - name: Publier journal.json et controle_saisons.json
         run: |
           git config user.name "archetype-foot-bot"
           git config user.email "bot@users.noreply.github.com"
           git add journal.json
           [ -f controle_saisons.json ] && git add controle_saisons.json
+          [ -d data/correspondances ] && git add data/correspondances
+          [ -d data/assemblage ] && git add data/assemblage
           git diff --staged --quiet || git commit -m "Journal de rentabilité"
           git pull --rebase origin main
           git push
