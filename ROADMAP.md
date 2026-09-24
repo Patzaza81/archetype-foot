@@ -48,8 +48,8 @@ BetPawa est traité en dernier.
 
 | Étape | Contenu | Validé quand | Statut |
 |---|---|---|---|
-| A1 | Téléchargement football-data : saison en cours + saison passée, championnats couverts, une fois par jour, sans retélécharger un fichier inchangé | fichiers bruts conservés tels quels, aucun blocage | À FAIRE |
-| A2 | Normalisation en un format unique par match : date, heure, championnat, équipes, score fin de match, score mi-temps, tirs, tirs cadrés, corners, cartons, xG (si fourni), cotes par bookmaker (ouverture et clôture : 1X2, plus/moins 2,5, handicap asiatique) | chaque champ absent reste absent (jamais inventé ni remplacé) | À FAIRE |
+| A1 | Téléchargement football-data, championnats couverts. **Saisons passées : téléchargées une seule fois pour de bon**, stockées dans le dépôt et consultables à tout moment par le moteur, jamais retéléchargées. **Saison en cours** : mise à jour pendant le run, seulement si le fichier a changé | saisons passées présentes une seule fois dans le stockage ; aucun retéléchargement constaté dans les journaux du run ; aucun blocage | À FAIRE |
+| A2 | Normalisation en un format unique par match : date, heure, championnat, équipes, score fin de match, score mi-temps, tirs, tirs cadrés, corners, cartons, xG (si fourni), cotes par bookmaker. **Pas de cotes d'ouverture ni de clôture** : les seules cotes utilisées et comparées sont celles **relevées pendant le run**, horodatées (BetPawa et référence prises au même moment) | chaque champ absent reste absent (jamais inventé ni remplacé) ; chaque cote porte l'heure de son relevé | À FAIRE |
 | A3 | Correspondance des noms d'équipes football-data ↔ matchendirect ↔ BetPawa | aucune correspondance ambiguë acceptée ; les non-résolues listées | À FAIRE |
 | A4 | Contrôles qualité : scores football-data contre scores matchendirect sur les matchs communs ; doublons ; dates | ≥ 98 % d'accord ; désaccords listés, jamais corrigés à la main | À FAIRE |
 | A5 | Contrat de transmission au moteur : fichiers et champs documentés, versionnés | README + tests | À FAIRE |
