@@ -15,9 +15,10 @@ Interdiction volontaire:
 - aucune fusion avec Matchendirect/BetPawa ;
 - aucune décision de marché.
 
-Les saisons passées sont immuables: si le fichier existe déjà, il n'est jamais
-retéléchargé. La saison courante peut être remplacée seulement si son contenu
-distant a changé.
+L'historique des saisons terminées est géré exclusivement par archive_football_data.py
+et data/football_data/snapshots/. Ce collecteur ne télécharge plus la saison passée
+dans le run quotidien. La saison courante peut être remplacée seulement si son
+contenu distant a changé.
 """
 from __future__ import annotations
 
@@ -188,19 +189,15 @@ def collect(
     *,
     root: Path = DEFAULT_ROOT,
     current_season: str | None = None,
-    previous_season: str | None = None,
     session: requests.Session | None = None,
 ) -> dict:
     if current_season is None:
         now = datetime.now(timezone.utc)
         year = now.year if now.month >= 7 else now.year - 1
         current_season = season_code(year)
-    if previous_season is None:
-        previous_start = 2000 + int(current_season[:2]) - 1
-        previous_season = season_code(previous_start)
     session = session or requests.Session()
     session.headers.update({"User-Agent": "ArchetypeFoot/football-data-collector"})
-    wanted = {current_season, previous_season}
+    wanted = {current_season}
     urls = discover_urls(session, wanted)
     manifest_path = root / "manifest.json"
     manifest = {}
@@ -220,31 +217,7 @@ def collect(
         # Une saison passée devient un artefact immuable dès sa première
         # réussite. Le moteur pourra la consulter sans réseau.
         if season == previous_season and raw_path.exists():
-            # Une saison passée existante est lue localement, même si le
-            # manifeste est absent: jamais de second téléchargement.
-            data = raw_path.read_bytes()
-            digest = sha256_bytes(data)
-            if not normalized_path.exists():
-                rows = normalize_csv(data, url, season, raw_path.name)
-                write_jsonl(normalized_path, rows)
-            files[key] = {
-                "season": season,
-                "competition_code": div,
-                "source_url": url,
-                "sha256": digest,
-                "downloaded_at_utc": (existing or {}).get("downloaded_at_utc"),
-                "rows_normalized": (existing or {}).get("rows_normalized"),
-                "immutable": True,
-            }
-            stats["skipped_immutable"] += 1
-            continue
-
-        data = download(session, url)
-        digest = sha256_bytes(data)
-
-        old_hash = existing.get("sha256") if existing else None
-        changed = old_hash != digest
-        if raw_path.exists() and not changed and normalized_path.exists():
+       ) and not changed and normalized_path.exists():
             stats["skipped_immutable" if season == previous_season else "updated"] += 1
             continue
 
@@ -260,7 +233,7 @@ def collect(
             "sha256": digest,
             "downloaded_at_utc": now_utc(),
             "rows_normalized": len(rows),
-            "immutable": season == previous_season,
+            "immutable": False,
         }
         if old_hash is None:
             stats["downloaded"] += 1
@@ -271,7 +244,7 @@ def collect(
         "schema_version": 1,
         "source": "football-data.co.uk",
         "updated_at_utc": now_utc(),
-        "historical_policy": "past seasons are immutable after first successful download",
+        "historical_policy": "completed seasons are managed by archive_football_data.py snapshots",
         "current_season_policy": "current season may update when source bytes change",
         "files": files,
     })
@@ -284,13 +257,11 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", default=str(DEFAULT_ROOT))
     parser.add_argument("--current-season", default=None)
-    parser.add_argument("--previous-season", default=None)
     args = parser.parse_args()
     try:
         stats = collect(
             root=Path(args.root),
             current_season=args.current_season,
-            previous_season=args.previous_season,
         )
     except Exception as exc:
         print(f"ERREUR collecte football-data: {exc}", file=sys.stderr)
