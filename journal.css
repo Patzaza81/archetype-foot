@@ -1,0 +1,56 @@
+/* Pages journal.html et pronostics_shrink.html (AJOUT 24/09/2026) */
+:root{
+  --bg:#F7F1E7; --surface:#FFFDF8; --texte:#241B35; --texte-2:#756B7D; --bord:rgba(64,38,91,.14);
+  --bleu:#315CFF; --violet:#6547E8; --vert:#2F855A; --vert-fond:#E6F4EC; --orange:#B7791F; --orange-fond:#FDF3E1;
+  --rouge:#C53030; --rouge-fond:#FCE8E8; --gris-fond:#EFEAF3;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#15121B; --surface:#1F1A28; --texte:#EDE7F5; --texte-2:#A79FB3; --bord:rgba(255,255,255,.12);
+         --vert-fond:#16362A; --orange-fond:#3A2C12; --rouge-fond:#3D1A1A; --gris-fond:#2A2433; }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--texte);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+     padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+.jr-conteneur{max-width:760px;margin:0 auto;padding:12px 14px 40px}
+.jr-barre{display:flex;justify-content:space-between;gap:10px;margin-bottom:10px}
+.jr-barre a{color:var(--bleu);text-decoration:none;font-weight:600}
+.jr-entete h1{margin:4px 0 2px;font-size:24px;color:#9A701B}
+.jr-sous-titre{margin:0;color:var(--texte-2)}
+.jr-maj{margin:6px 0 0;font-size:13px;color:var(--texte-2)}
+.jr-bloc{background:var(--surface);border:1px solid var(--bord);border-radius:14px;padding:14px;margin-top:14px;box-shadow:0 5px 18px rgba(61,38,84,.06)}
+.jr-bloc h2{margin:0 0 8px;font-size:18px}
+.jr-aide{margin:0 0 10px;font-size:13px;color:var(--texte-2)}
+.jr-filtres{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.jr-filtres button{border:1px solid var(--bord);background:var(--surface);color:var(--texte);border-radius:999px;padding:6px 12px;font-size:14px}
+.jr-filtres button.actif{background:linear-gradient(135deg,var(--bleu),var(--violet));color:#fff;border-color:transparent}
+.jr-carte{border:1px solid var(--bord);border-radius:12px;padding:10px 12px;margin-bottom:8px}
+.jr-carte-haut{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.jr-match{font-weight:700}
+.jr-meta{font-size:12px;color:var(--texte-2)}
+.jr-marche{margin-top:6px;font-size:16px}
+.jr-marche b{font-size:17px}
+.jr-preuve{margin-top:6px;font-size:13px;color:var(--texte-2)}
+.jr-justif{margin-top:6px;font-size:13px}
+.jr-badge{display:inline-block;border-radius:999px;padding:2px 9px;font-size:12px;font-weight:700;white-space:nowrap}
+.b-A_JOUER{background:var(--vert-fond);color:var(--vert)}
+.b-A_SURVEILLER{background:var(--orange-fond);color:var(--orange)}
+.b-A_EVITER{background:var(--rouge-fond);color:var(--rouge)}
+.b-NEUTRE,.b-INCONNU,.b-COTE_NON_BETPAWA{background:var(--gris-fond);color:var(--texte-2)}
+.jr-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.jr-table{width:100%;border-collapse:collapse;font-size:13px}
+.jr-table th,.jr-table td{padding:6px 6px;border-bottom:1px solid var(--bord);text-align:right;white-space:nowrap}
+.jr-table th:first-child,.jr-table td:first-child{text-align:left;white-space:normal;min-width:140px}
+.jr-table th{font-size:12px;color:var(--texte-2);font-weight:600}
+.pos{color:var(--vert);font-weight:600}
+.neg{color:var(--rouge)}
+.jr-plus{margin-top:8px;border:0;background:none;color:var(--bleu);font-weight:600;padding:4px 0;font-size:14px}
+.jr-alerte{border-radius:10px;padding:10px 12px;font-size:14px;margin-bottom:10px}
+.jr-alerte.info{background:var(--orange-fond)}
+.jr-alerte.ok{background:var(--vert-fond)}
+.jr-chiffres{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.jr-chiffre{background:var(--gris-fond);border-radius:10px;padding:8px 10px}
+.jr-chiffre span{display:block;font-size:12px;color:var(--texte-2)}
+.jr-chiffre b{font-size:18px}
+.jr-vide{color:var(--texte-2);font-size:14px}
+a.jr-lien{color:var(--bleu);font-size:13px;text-decoration:none;font-weight:600}

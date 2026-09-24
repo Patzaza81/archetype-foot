@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F7F1E7">
+<title>Archetype Foot — Journal de rentabilité</title>
+<link rel="stylesheet" href="journal.css?v=20260924a">
+</head>
+<body>
+<div class="jr-conteneur">
+  <div class="jr-barre">
+    <a href="index.html">← Accueil</a>
+    <a href="pronostics_shrink.html">Pronostics shrink_v1 →</a>
+  </div>
+  <header class="jr-entete">
+    <h1>Journal de rentabilité</h1>
+    <p class="jr-sous-titre">Où BetPawa est attaquable, où il ne l'est pas — recalculé chaque nuit sur tous les matchs terminés.</p>
+    <p id="maj" class="jr-maj" role="status" aria-live="polite">Chargement…</p>
+  </header>
+
+  <section id="resume" class="jr-bloc"></section>
+
+  <section class="jr-bloc">
+    <h2>Conseils pour les matchs à venir</h2>
+    <p class="jr-aide">Marchés cotés BetPawa qui tombent dans un championnat ou un marché classé « à jouer » ou « à surveiller ». Le niveau le plus précis disponible décide (championnat × marché, puis championnat × famille, puis marché).</p>
+    <div class="jr-filtres" id="filtres-conseils">
+      <button class="actif" data-f="tous">Tous</button>
+      <button data-f="A_JOUER">À jouer</button>
+      <button data-f="A_SURVEILLER">À surveiller</button>
+    </div>
+    <div id="conseils"></div>
+  </section>
+
+  <section class="jr-bloc">
+    <h2>Championnats</h2>
+    <div id="ligues"></div>
+  </section>
+
+  <section class="jr-bloc">
+    <h2>Marchés</h2>
+    <div id="marches"></div>
+  </section>
+
+  <section class="jr-bloc">
+    <h2>Championnat × marché</h2>
+    <p class="jr-aide">Combinaisons précises avec au moins 25 matchs et un statut autre que neutre.</p>
+    <div id="ligue_marche"></div>
+  </section>
+
+  <section class="jr-bloc">
+    <h2>Zones à éviter</h2>
+    <div id="eviter"></div>
+  </section>
+
+  <section class="jr-bloc">
+    <h2>Résultats réels des deux moteurs sur BetPawa</h2>
+    <div id="moteurs"></div>
+  </section>
+
+  <section class="jr-bloc">
+    <h2>Règles et qualité des données</h2>
+    <div id="regles"></div>
+  </section>
+</div>
+<script src="journal.js?v=20260924a"></script>
+</body>
+</html>
