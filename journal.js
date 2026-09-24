@@ -71,13 +71,24 @@
       ", IC 95 % " + ic(p) + ", moitiés " + pct(p.roi_moitie_1, true) + " / " + pct(p.roi_moitie_2, true) + ".";
   }
 
+  function dateCourte(iso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ""));
+    return m ? m[3] + "/" + m[2] : esc(iso);
+  }
+
+  /* Même en-tête que les cartes de match d'archetype.html (.ax-match / .ax-ligne-match / .ax-horaire). */
   function carteConseil(c) {
-    return '<div class="jr-carte" data-statut="' + esc(c.statut_journal) + '"><div class="jr-carte-haut"><div><div class="jr-match">' +
-      esc(c.domicile) + " – " + esc(c.exterieur) + '</div><div class="jr-meta">' + esc(c.date) + " · " + esc(c.heure || "") +
-      " · " + esc(c.ligue) + "</div></div>" + badge(c.statut_journal) + '</div><div class="jr-marche">' + esc(lisible(c.marche)) +
-      " — cote <b>" + esc(c.cote) + '</b></div><div class="jr-preuve">' + preuveTexte(c.preuve) + "</div>" +
-      (c.betpawa_url ? '<a class="jr-lien" href="' + esc(c.betpawa_url) + '" target="_blank" rel="noopener">Ouvrir sur BetPawa</a>' : "") +
-      "</div>";
+    return '<section class="ax-carte jr-conseil" data-statut="' + esc(c.statut_journal) + '">' +
+      '<div class="ax-match"><div class="ax-ligne-match">' +
+      '<span class="ax-equipe ax-dom">' + esc(c.domicile) + "</span>" +
+      '<div class="ax-horaire"><strong>' + esc(c.heure || "—") + "</strong><span>" + dateCourte(c.date) + "</span></div>" +
+      '<span class="ax-equipe ax-ext">' + esc(c.exterieur) + "</span></div>" +
+      '<div class="ax-match-bas"><p class="ax-competition">' + esc(c.ligue) + "</p>" + badge(c.statut_journal) + "</div></div>" +
+      '<div class="jr-conseil-corps"><div class="jr-marche"><span>' + esc(lisible(c.marche)) + '</span><span class="jr-cote">' +
+      esc(String(c.cote).replace(".", ",")) + "</span></div>" +
+      '<div class="jr-preuve">' + preuveTexte(c.preuve) + "</div>" +
+      (c.betpawa_url ? '<a class="jr-lien" href="' + esc(c.betpawa_url) + '" target="_blank" rel="noopener">Ouvrir sur BetPawa →</a>' : "") +
+      "</div></section>";
   }
 
   function afficherConseils(j) {
@@ -87,14 +98,18 @@
     var alerte = nbJouer
       ? '<div class="jr-alerte ok">' + nbJouer + " marché(s) « à jouer » : preuve statistique complète sur les données passées.</div>"
       : '<div class="jr-alerte info">Aucun marché n\'a encore de preuve statistique complète. Les marchés « à surveiller » sont positifs mais pas prouvés : mise symbolique uniquement, le journal les confirmera ou les écartera au fil des nuits.</div>';
-    if (!c.length) { zone.innerHTML = alerte + '<p class="jr-vide">Aucun marché à venir dans une zone favorable.</p>'; return; }
-    zone.innerHTML = alerte + c.map(carteConseil).join("");
+    document.getElementById("filtres-conseils").insertAdjacentHTML("afterend", alerte);
+    if (!c.length) {
+      zone.innerHTML = '<div class="ax-etat-vide"><strong>Aucun conseil pour le moment</strong><p>Aucun marché à venir dans une zone favorable.</p></div>';
+      return;
+    }
+    zone.innerHTML = c.map(carteConseil).join("");
     document.querySelectorAll("#filtres-conseils button").forEach(function (b) {
       b.addEventListener("click", function () {
         document.querySelectorAll("#filtres-conseils button").forEach(function (x) { x.classList.remove("actif"); });
         b.classList.add("actif");
         var f = b.getAttribute("data-f");
-        zone.querySelectorAll(".jr-carte").forEach(function (el) {
+        zone.querySelectorAll(".jr-conseil").forEach(function (el) {
           el.style.display = (f === "tous" || el.getAttribute("data-statut") === f) ? "" : "none";
         });
       });
@@ -111,12 +126,12 @@
       ["ligues", "marches", "ligue_famille", "ligue_marche"].forEach(function (k) { n += (cs[k] || {})[st] || 0; });
       return n;
     }
-    document.getElementById("resume").innerHTML = '<div class="jr-chiffres">' +
+    document.getElementById("resume").innerHTML = '<h2 class="jr-titre">En bref</h2><div class="jr-chiffres">' +
       '<div class="jr-chiffre"><span>Matchs BetPawa terminés</span><b>' + (d.matchs || 0) + "</b></div>" +
       '<div class="jr-chiffre"><span>Cotes réglées</span><b>' + (d.cotes_reglees || 0) + "</b></div>" +
       '<div class="jr-chiffre"><span>Coût moyen BetPawa</span><b class="' + classe(cg.roi) + '">' + pct(cg.roi, true) + "</b></div>" +
-      '<div class="jr-chiffre"><span>Segments à jouer / à surveiller</span><b>' + compte("A_JOUER") + " / " + compte("A_SURVEILLER") + "</b></div>" +
-      '</div><p class="jr-aide" style="margin-top:8px">Période : ' + esc(p) +
+      '<div class="jr-chiffre"><span>Zones à jouer / à surveiller</span><b>' + compte("A_JOUER") + " / " + compte("A_SURVEILLER") + "</b></div>" +
+      '</div><p class="jr-aide" style="margin:10px 0 0">Période : ' + esc(p) +
       ". Le « coût moyen » est ce que l'on perd en misant 1 sur toutes les cotes BetPawa relevées.</p>";
   }
 
@@ -125,7 +140,7 @@
     var html = "";
     Object.keys(NOMS_MOTEUR).forEach(function (k) {
       var e = m[k] || {};
-      html += "<h3 style=\"font-size:16px;margin:10px 0 6px\">" + esc(NOMS_MOTEUR[k]) + "</h3>";
+      html += '<h3 class="jr-sous-titre">' + esc(NOMS_MOTEUR[k]) + "</h3>";
       if (!e.global) { html += '<p class="jr-vide">' + esc(e.note || "Pas encore de résultat.") + "</p>"; return; }
       var g = e.global;
       html += '<p class="jr-aide">' + g.paris + " sélections réglées sur " + g.matchs + " matchs BetPawa — ROI <span class=\"" + classe(g.roi) + "\">" +
@@ -141,12 +156,12 @@
     var inc = d.cotes_incoherentes_retirees || {};
     var nbInc = Object.keys(inc).reduce(function (a, k) { return a + inc[k]; }, 0);
     var inconnus = Object.keys(d.libelles_non_reconnus || {});
-    var html = "<ul style=\"margin:0;padding-left:18px;font-size:14px\">" +
+    var html = '<ul class="jr-liste">' +
       "<li>" + badge("A_JOUER") + " " + esc(r.A_JOUER) + "</li>" +
       "<li>" + badge("A_SURVEILLER") + " " + esc(r.A_SURVEILLER) + "</li>" +
       "<li>" + badge("A_EVITER") + " " + esc(r.A_EVITER) + "</li>" +
       "<li>" + badge("NEUTRE") + " " + esc(r.NEUTRE) + "</li></ul>" +
-      '<p class="jr-aide" style="margin-top:8px">' + esc(r.avertissement || "") + "</p>" +
+      '<p class="jr-aide" style="margin-top:10px">' + esc(r.avertissement || "") + "</p>" +
       '<p class="jr-aide">L\'intervalle de confiance (IC 95 %) est calculé en tirant au hasard des matchs entiers : les cotes d\'un même match sont liées entre elles.</p>' +
       '<p class="jr-aide">Qualité : ' + nbInc + " cote(s) de handicap incohérente(s) avec le 1X2 du même match ont été retirées (erreurs de relevé probables)." +
       (inconnus.length ? " Libellés non reconnus : " + esc(inconnus.join(", ")) + "." : "") + "</p>";
@@ -172,6 +187,25 @@
     afficherRegles(j);
     brancherBoutonsPlus(document);
   }
+
+  /* Mode nuit : même bascule et même clé que archetype.js (archetype_theme_nuit). */
+  (function installeThemeNuit() {
+    var bouton = document.getElementById("ax-bouton-theme");
+    if (!bouton) return;
+    function applique(nuit) {
+      document.body.classList.toggle("theme-nuit", nuit);
+      bouton.textContent = nuit ? "\u2600" : "\u263E";
+      bouton.setAttribute("aria-label", nuit ? "Activer le mode clair" : "Activer le mode nuit");
+    }
+    var nuit = false;
+    try { nuit = localStorage.getItem("archetype_theme_nuit") === "1"; } catch (e) { /* stockage indisponible */ }
+    applique(nuit);
+    bouton.addEventListener("click", function () {
+      var suivant = !document.body.classList.contains("theme-nuit");
+      try { localStorage.setItem("archetype_theme_nuit", suivant ? "1" : "0"); } catch (e) { /* ignoré */ }
+      applique(suivant);
+    });
+  })();
 
   fetch("journal.json?t=" + Date.now(), { cache: "no-store" })
     .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })

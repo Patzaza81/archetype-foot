@@ -39,14 +39,20 @@ let compteurCartes = 0;
 // cette seule constante, à condition de respecter le même contrat (selection.P1/P2/P3 avec justification).
 const CLE_MOTEUR = "shrink_v1"; // page miroir d'archetype.js pour le second moteur, voir moteur_shrink_pipeline.py
 
+// CORRECTIF 24/09/2026 : le pipeline marque le second moteur dans `shrink_v1_utilise` (moteur_utilise reste
+// "moteur_v2_6_9", celui du moteur principal). Le filtre sur moteur_utilise seul rendait cette page toujours vide.
+function moteurPresent(m) {
+  return !!(m && (m.moteur_utilise === CLE_MOTEUR || m[`${CLE_MOTEUR}_utilise`] === CLE_MOTEUR));
+}
+
 function estArchetypeGo(m) {
-  return !!(m && m.moteur_utilise === CLE_MOTEUR && m[CLE_MOTEUR] &&
+  return !!(moteurPresent(m) && m[CLE_MOTEUR] &&
     m[CLE_MOTEUR].statut === "OK" && m[CLE_MOTEUR].selection && m[CLE_MOTEUR].selection.P1);
 }
 
 // aAuMoinsUnCandidat : filtre d'affichage de la page principale.
 function aAuMoinsUnCandidat(m) {
-  if (!m || m.moteur_utilise !== CLE_MOTEUR || !m[CLE_MOTEUR]) return false;
+  if (!moteurPresent(m) || !m[CLE_MOTEUR]) return false;
   const sel = m[CLE_MOTEUR].selection;
   if (!sel) return false;
   return !!(sel.P1 || sel.P2 || sel.P3);

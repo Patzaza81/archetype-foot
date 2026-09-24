@@ -1,7 +1,7 @@
 name: Journal de rentabilité
 
 # AJOUT 24/09/2026 -- Workflow SÉPARÉ du pipeline quotidien, volontairement :
-# le journal (journal_rentabilite.py -> journal.json, lu par journal.html et pronostics_shrink.html) doit rester
+# le journal (journal_rentabilite.py -> journal.json, lu par journal.html) doit rester
 # à jour même si le pipeline principal s'arrête (ex. échec de l'étape d'autotests). Il ne fait que LIRE les
 # fichiers déjà publiés (historique_pronostics.json, archive/, archive_shrink/, precalcul_*.json,
 # data/echantillon_betpawa_501.json) et n'écrit que journal.json.
