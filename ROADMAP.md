@@ -48,11 +48,14 @@ BetPawa est traité en dernier.
 
 | Étape | Contenu | Validé quand | Statut |
 |---|---|---|---|
-| A1 | Téléchargement football-data, championnats couverts. **Saisons passées : téléchargées une seule fois pour de bon**, stockées dans le dépôt et consultables à tout moment par le moteur, jamais retéléchargées. **Saison en cours** : mise à jour pendant le run, seulement si le fichier a changé | saisons passées présentes une seule fois dans le stockage ; aucun retéléchargement constaté dans les journaux du run ; aucun blocage | À FAIRE |
-| A2 | Normalisation en un format unique par match : date, heure, championnat, équipes, score fin de match, score mi-temps, tirs, tirs cadrés, corners, cartons, xG (si fourni), cotes par bookmaker. **Pas de cotes d'ouverture ni de clôture** : les seules cotes utilisées et comparées sont celles **relevées pendant le run**, horodatées (BetPawa et référence prises au même moment) | chaque champ absent reste absent (jamais inventé ni remplacé) ; chaque cote porte l'heure de son relevé | À FAIRE |
+| A1 | Téléchargement football-data, championnats couverts. **Saisons passées : téléchargées une seule fois pour de bon**, stockées dans le dépôt et consultables à tout moment par le moteur, jamais retéléchargées. **Saison en cours** : mise à jour pendant le run, seulement si le fichier a changé | code branché dans le pipeline ; validation réelle au premier run puis contrôle des journaux | **EN COURS** |
+| A2 | Normalisation en un format unique par match : date, heure, championnat, équipes, score fin de match, score mi-temps, tirs, tirs cadrés, corners, cartons, xG (si fourni), cotes par bookmaker. **Pas de cotes d'ouverture ni de clôture** : les seules cotes utilisées et comparées sont celles **relevées pendant le run**, horodatées (BetPawa et référence prises au même moment) | contrat codé et tests locaux ; validation réelle du schéma sur le premier run | **EN COURS** |
 | A3 | Correspondance des noms d'équipes football-data ↔ matchendirect ↔ BetPawa | aucune correspondance ambiguë acceptée ; les non-résolues listées | À FAIRE |
 | A4 | Contrôles qualité : scores football-data contre scores matchendirect sur les matchs communs ; doublons ; dates | ≥ 98 % d'accord ; désaccords listés, jamais corrigés à la main | À FAIRE |
 | A5 | Contrat de transmission au moteur : fichiers et champs documentés, versionnés | README + tests | À FAIRE |
+
+
+**Implémentation A1/A2 (24/09)** : `collecte_football_data.py` est désormais appelé avant le scraping dans `pipeline.yml`. Les CSV sources sont conservés dans `data/football_data/raw/<saison>/`, le contrat normalisé dans `data/football_data/normalized/<saison>/` et la provenance dans `data/football_data/manifest.json`. Une saison passée déjà présente est lue localement et n’est jamais retéléchargée. Cette étape ne calcule aucune statistique de marché. Validation en conditions réelles encore à effectuer.
 
 ### Chantier B — Moteur (après la collecte)
 
