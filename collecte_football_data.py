@@ -195,17 +195,25 @@ def collect(
         now = datetime.now(timezone.utc)
         year = now.year if now.month >= 7 else now.year - 1
         current_season = season_code(year)
+
     session = session or requests.Session()
     session.headers.update({"User-Agent": "ArchetypeFoot/football-data-collector"})
     wanted = {current_season}
     urls = discover_urls(session, wanted)
+
     manifest_path = root / "manifest.json"
     manifest = {}
     if manifest_path.exists():
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
 
     files = manifest.setdefault("files", {})
-    stats = {"discovered": len(urls), "downloaded": 0, "updated": 0, "skipped_immutable": 0, "errors": 0}
+    stats = {
+        "discovered": len(urls),
+        "downloaded": 0,
+        "updated": 0,
+        "skipped_immutable": 0,
+        "errors": 0,
+    }
 
     for key, url in sorted(urls.items()):
         season, div = key.split("/", 1)
@@ -214,11 +222,15 @@ def collect(
         normalized_path = root / "normalized" / season / f"{div}.jsonl"
         existing = files.get(key)
 
-        # Une saison passée devient un artefact immuable dès sa première
-        # réussite. Le moteur pourra la consulter sans réseau.
-        if season == previous_season and raw_path.exists():
-       ) and not changed and normalized_path.exists():
-            stats["skipped_immutable" if season == previous_season else "updated"] += 1
+        data = download(session, url)
+        digest = sha256_bytes(data)
+        old_hash = existing.get("sha256") if existing else None
+        changed = old_hash != digest
+
+        # La saison courante est mutable : on ne réécrit que si la source
+        # distante a réellement changé, ou si le fichier local est incomplet.
+        if raw_path.exists() and not changed and normalized_path.exists():
+            stats["skipped_immutable"] += 1
             continue
 
         raw_path.parent.mkdir(parents=True, exist_ok=True)
@@ -235,6 +247,7 @@ def collect(
             "rows_normalized": len(rows),
             "immutable": False,
         }
+
         if old_hash is None:
             stats["downloaded"] += 1
         elif changed:
@@ -249,10 +262,11 @@ def collect(
         "files": files,
     })
     root.mkdir(parents=True, exist_ok=True)
-    manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    manifest_path.write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
     return stats
-
-
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", default=str(DEFAULT_ROOT))
