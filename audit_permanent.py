@@ -112,6 +112,7 @@ verite(
 # kelly_stake doit lui aussi utiliser la version ajustée (bug 20 : un
 # commentaire affirmait explicitement l'inverse)
 import inspect
+import os
 source_kelly = inspect.getsource(calculs.kelly_stake)
 verite(
     "kelly_stake() appelle bien ajuste_probabilite() (pas seulement calcule_ev())",
@@ -255,10 +256,18 @@ for cible, candidat, attendu in cas_correspondance:
 # ============================================================================
 section("scraper_details 18.8 — boucle table-par-table réellement présente")
 # ============================================================================
-source_extrait = inspect.getsource(sd._extrait_historique_competition)
+# MAJ 24/09/2026 : la boucle « table par table » (MAX_TABLEAUX_ESSAYES) a été remplacée par une lecture bornée à la
+# section du titre de compétition (_section_competition), après que 20 % des saisons lues se sont révélées fausses
+# (The New Saints : amicaux lus à la place de la Cymru Premier). Invariant vérifié désormais, sur une VRAIE page :
+# le tableau lu est celui de la bonne compétition, même quand d'autres tableaux de matchs le précèdent.
+from bs4 import BeautifulSoup as _BS_audit
+_page_tns = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tests", "fixtures", "pages_equipes", "the_new_saints.html")
+_m_tns = sd._extrait_historique_competition(_BS_audit(open(_page_tns, encoding="utf-8").read(), "html.parser"),
+                                            "Pays de Galles : Cymru Premier", "the new saints") if os.path.exists(_page_tns) else None
 verite(
-    "_extrait_historique_competition boucle sur plusieurs tables (pas un seul find_next('table'))",
-    "MAX_TABLEAUX_ESSAYES" in source_extrait and "while table is not None" in source_extrait,
+    "_extrait_historique_competition lit la section de la bonne compétition (vraie page The New Saints : 10 matchs "
+    "de Cymru Premier, pas les amicaux ni l'Europe qui la précèdent)",
+    _m_tns is not None and len(_m_tns) == 10 and _m_tns[0]["adversaire"] == "Penybont",
 )
 
 # AJOUT 07/09/2026 -- session faux négatifs (situation critique #20) : sans
@@ -452,9 +461,13 @@ section("resolution_betpawa tamis 1 — la date retournée n'est plus jetée (bu
 # ============================================================================
 import resolution_betpawa as _rb
 _source_resoudre_match = inspect.getsource(_rb.resoudre_match)
+# MAJ 24/09/2026 : la comparaison passe par date_compatible (même jour ou lendemain BetPawa, jamais la veille) ;
+# l'invariant reste « la date trouvée n'est jamais jetée ».
 verite(
     "resoudre_match() compare bien la date trouvée à la date attendue au tamis 1",
-    "date_trouvee == date_attendue" in _source_resoudre_match,
+    "date_compatible(date_trouvee, date_iso)" in _source_resoudre_match
+    and _rb.date_compatible("26/09", "2026-09-26") and _rb.date_compatible("27/09", "2026-09-26")
+    and not _rb.date_compatible("25/09", "2026-09-26") and not _rb.date_compatible("28/09", "2026-09-26"),
 )
 
 
@@ -1231,7 +1244,7 @@ _original_fetch_html_aml = _aml.fetch_html
 
 _HTML_OK_ARCHETYPE = """
 <html><body>
-<div>Suède : Allsvenskan</div>
+<h3>Suède : Allsvenskan</h3>
 <table>
 <tr><td><a href="/live-score/m1">Kalmar 0-1 Djurgarden</a></td></tr>
 <tr><td><a href="/live-score/m2">AIK Solna 1-0 Kalmar</a></td></tr>
