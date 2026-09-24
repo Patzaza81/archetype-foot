@@ -187,10 +187,17 @@ def write_jsonl(path: Path, rows: list[dict]) -> None:
 def collect(
     *,
     root: Path = DEFAULT_ROOT,
-    current_season: str = "2627",
-    previous_season: str = "2526",
+    current_season: str | None = None,
+    previous_season: str | None = None,
     session: requests.Session | None = None,
 ) -> dict:
+    if current_season is None:
+        now = datetime.now(timezone.utc)
+        year = now.year if now.month >= 7 else now.year - 1
+        current_season = season_code(year)
+    if previous_season is None:
+        previous_start = 2000 + int(current_season[:2]) - 1
+        previous_season = season_code(previous_start)
     session = session or requests.Session()
     session.headers.update({"User-Agent": "ArchetypeFoot/football-data-collector"})
     wanted = {current_season, previous_season}
@@ -266,8 +273,8 @@ def collect(
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", default=str(DEFAULT_ROOT))
-    parser.add_argument("--current-season", default="2627")
-    parser.add_argument("--previous-season", default="2526")
+    parser.add_argument("--current-season", default=None)
+    parser.add_argument("--previous-season", default=None)
     args = parser.parse_args()
     try:
         stats = collect(
