@@ -35,7 +35,7 @@ import time
 
 from resolution_betpawa import resoudre_match
 from cache_betpawa import cherche_dans_cache, enregistre_correspondance, invalide_entree
-from scraper_betpawa import recupere_page, meilleur_parsing, _noms_correspondent
+from scraper_betpawa import recupere_page, meilleur_parsing, titre_correspond
 from parse_betpawa_url import extrait_meta
 
 FICHIER_DIAGNOSTIC = "diagnostic_precalcul_betpawa.txt"
@@ -171,9 +171,11 @@ def resout_cotes_betpawa(fenetre):
                 # jamais démontré comme un risque, pas de dégradation du
                 # taux de résolution actuel sur une hypothèse non vérifiée.
                 meta_titre = extrait_meta(titre)
-                if meta_titre is not None and not (
-                    _noms_correspondent(domicile, meta_titre["domicile"])
-                    and _noms_correspondent(exterieur, meta_titre["exterieur"])
+                # CORRECTIF 24/09/2026 : titre_correspond remplace _noms_correspondent ici (accents, « Utd » /
+                # « United », noms francisés, habillage) ; voir scraper_betpawa.titre_correspond.
+                if meta_titre is not None and not titre_correspond(
+                    domicile, exterieur, meta_titre["domicile"], meta_titre["exterieur"],
+                    competition=m.get("competition"),
                 ):
                     etapes.append(
                         f"TITRE NE CORRESPOND PAS [{domicile} - {exterieur}] -- page "

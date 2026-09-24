@@ -172,3 +172,82 @@ def meilleur_parsing(texte, domicile, exterieur):
 
     print(f"  Format retenu : {meilleur_nom or 'aucun'} ({len(meilleur_resultat)} marché(s))")
     return meilleur_resultat
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# CORRECTIF 24/09/2026 -- contrôle du titre de la page BetPawa (resolution_betpawa_precalcul.py)
+# ---------------------------------------------------------------------------------------------------------------------
+# Constat sur le run du 24/09 (diagnostic_precalcul_betpawa.txt) : 44 pages rejetées par le contrôle du titre, dont au
+# moins 35 étaient les BONNES pages : accents transformés en espaces (« Gérone » -> « g rone », « Norrköping » ->
+# « norrk ping »), « Utd » contre « United », noms francisés (« Grenade » / « Granada CF », « Livourne » / « US Livorno
+# 1915 »), mots d'habillage (« AS Ostiamare », « ASD Sorrento 1945 »). Chaque rejet invalidait aussi l'entrée du cache :
+# la même bonne page était retrouvée puis rejetée chaque nuit, et ses cotes jamais extraites.
+# Ce contrôle garde son vrai rôle : refuser une page d'un AUTRE match (« San Jose - Portland » -> « San Marino -
+# Finland »), une équipe féminine ou réserve à la place de l'équipe première, ou deux clubs d'une même ville.
+MOTS_HABILLAGE_TITRE = {"fc", "ac", "cf", "sc", "afc", "cfc", "club", "as", "us", "ud", "cd", "sd", "asd", "ca", "cs",
+                        "csd", "fk", "sk", "if", "ifk", "bk", "calcio", "sportivo", "deportivo", "dep", "sa", "de", "del",
+                        "da", "do", "the", "1", "04"}
+# « Utd » = « United » ; « United », « City », « Town » restent DISTINCTIFS (Manchester United / Manchester City).
+SYNONYMES_TITRE = {"utd": "united"}
+MARQUEURS_FEMININ = {"women", "womens", "wfc", "ladies", "femmes", "feminin", "feminine", "dff", "dfk", "w", "frauen"}
+
+
+def _mots_titre(nom):
+    import unicodedata
+    t = unicodedata.normalize("NFKD", str(nom or "")).encode("ascii", "ignore").decode("ascii").lower()
+    t = t.replace("'", "").replace("\u2019", "")
+    return [SYNONYMES_TITRE.get(m, m) for m in re.findall(r"[a-z0-9]+", t) if not m.isdigit() or len(m) <= 2]
+
+
+MOTS_COMPETITION_FEMININE = {"femmes", "feminin", "feminine", "women", "womens", "dames", "damallsvenskan", "frauen",
+                             "ladies", "nwsl", "wsl", "kvinner", "naiset", "vrouwen"}
+
+
+def competition_feminine(competition):
+    return bool(set(_mots_titre(competition)) & MOTS_COMPETITION_FEMININE)
+
+
+def _cote_du_titre_correspond(nom_attendu, nom_page, feminine=False):
+    """(correspond, fort). fort = mots inclus/égaux ; sinon chaque mot distinctif du nom le plus court doit ressembler
+    (≥ 0,55) à un mot de l'autre, ou en être le début, l'initiale ou le sigle."""
+    import difflib
+    a_brut, b_brut = set(_mots_titre(nom_attendu)), set(_mots_titre(nom_page))
+    # Compétition masculine : une page d'équipe féminine est refusée. Compétition féminine (Matchendirect n'écrit pas
+    # « Women » dans les noms : « Logroño - Barcelone », Primera Division Femmes) : le marqueur n'est pas un motif de refus.
+    if (not feminine and (a_brut ^ b_brut) & MARQUEURS_FEMININ) or ((a_brut ^ b_brut) & MARQUEURS_RESERVE_EQUIPE):
+        return False, False
+    a = [m for m in _mots_titre(nom_attendu) if m not in MOTS_HABILLAGE_TITRE and m not in MARQUEURS_FEMININ]
+    b = [m for m in _mots_titre(nom_page) if m not in MOTS_HABILLAGE_TITRE and m not in MARQUEURS_FEMININ]
+    if not a or not b:
+        a, b = _mots_titre(nom_attendu), _mots_titre(nom_page)
+    if "".join(a) == "".join(b) or "".join(a) in "".join(b) or "".join(b) in "".join(a):
+        return True, True
+    court, long_ = (a, b) if len(a) <= len(b) else (b, a)
+
+    def proche(m, autres, strict):
+        # sigle : « CT » = « Caledonian Thistle » (initiales de mots consécutifs)
+        if 2 <= len(m) <= 3 and any("".join(w[0] for w in autres[i:i + len(m)]) == m
+                                    for i in range(len(autres) - len(m) + 1)):
+            return True
+        for o in autres:
+            if m == o or (len(m) >= 3 and o.startswith(m)) or (len(o) >= 3 and m.startswith(o)):
+                return True
+            if len(m) == 1 and o.startswith(m):
+                return True
+            if not strict and difflib.SequenceMatcher(None, m, o).ratio() >= 0.55:
+                return True
+        return False
+    if all(proche(m, long_, True) for m in court):
+        return True, True
+    return all(proche(m, long_, False) for m in court), False
+
+
+def titre_correspond(domicile, exterieur, titre_domicile, titre_exterieur, competition=None):
+    """La page BetPawa est-elle celle du match ? Les DEUX équipes doivent correspondre et au moins une de façon forte
+    (même nom à l'habillage près). Une équipe réserve d'un seul côté est toujours refusée ; une équipe féminine l'est
+    si la compétition Matchendirect n'est pas féminine."""
+    fem = competition_feminine(competition)
+    ok_d, fort_d = _cote_du_titre_correspond(domicile, titre_domicile, fem)
+    ok_e, fort_e = _cote_du_titre_correspond(exterieur, titre_exterieur, fem)
+    return ok_d and ok_e and (fort_d or fort_e)
+

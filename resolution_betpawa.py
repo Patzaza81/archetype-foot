@@ -116,6 +116,22 @@ def trouve_champ_recherche(page):
     return None
 
 
+def date_compatible(date_trouvee, date_iso):
+    """CORRECTIF 24/09/2026 -- la date BetPawa (heure du Cameroun) peut être le LENDEMAIN de la date Matchendirect pour
+    un match joué tard le soir en Amérique (MLS : samedi 19:30 locale = dimanche 01:30 à Douala). Run du 24/09 : 25
+    candidats uniques rejetés pour un jour d'écart, 35 matchs « ambigus » pour la même raison, MLS 0 sur 16.
+    Acceptées : même jour, ou BetPawa = Matchendirect + 1 jour. Jamais la veille, jamais plus d'un jour."""
+    import datetime as _dt
+    if not date_trouvee or not date_iso:
+        return False
+    try:
+        d = _dt.date.fromisoformat(str(date_iso)[:10])
+    except ValueError:
+        return False
+    lendemain = d + _dt.timedelta(days=1)
+    return date_trouvee in (f"{d.day:02d}/{d.month:02d}", f"{lendemain.day:02d}/{lendemain.month:02d}")
+
+
 def date_ddmm_attendue(date_iso):
     try:
         annee, mois, jour = date_iso.split("-")
@@ -202,9 +218,9 @@ def resoudre_match(page, nom_domicile, nom_exterieur, date_iso, etapes):
         if len(candidats_confiants) == 1:
             score, texte = candidats_confiants[0]
             url, date_trouvee = verifie_date_candidat(page, variante, texte, date_attendue)
-            if url and (not date_attendue or date_trouvee == date_attendue):
-                etapes.append(f"TROUVÉ (tamis 1) [{nom_domicile} - {nom_exterieur}] "
-                              f"score {score:.2f} -> {url}")
+            if url and (not date_attendue or date_compatible(date_trouvee, date_iso)):
+                etapes.append(f"TROUVÉ (tamis 1{', date J+1' if date_trouvee != date_attendue else ''}) "
+                              f"[{nom_domicile} - {nom_exterieur}] score {score:.2f} -> {url}")
                 return url
             if not url:
                 # Échec technique (page injoignable) -- comme avant, on
@@ -228,7 +244,7 @@ def resoudre_match(page, nom_domicile, nom_exterieur, date_iso, etapes):
             candidats_a_bonne_date = []
             for score, texte in candidats_a_verifier:
                 url, date_trouvee = verifie_date_candidat(page, variante, texte, date_attendue)
-                if url and date_trouvee == date_attendue:
+                if url and date_compatible(date_trouvee, date_iso):
                     candidats_a_bonne_date.append((score, texte, url))
 
             if len(candidats_a_bonne_date) == 1:

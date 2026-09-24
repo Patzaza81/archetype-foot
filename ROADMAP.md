@@ -67,6 +67,15 @@ Nouveaux marchés (buts et résultat à la mi-temps, mi-temps/fin de match, corn
 xG seulement là où il est fourni, sinon buts et tirs cadrés) ; intégration au Journal.
 **Abandonnés le 24/09 (décision de Patrick)** : la comparaison de cotes entre bookmakers et toute API externe.
 
+### Correctifs BetPawa anticipés (24/09/2026, avant le chantier B)
+
+Contrôle du run du 24/09 : BetPawa attribuait toujours ses cotes (103 matchs sur 327, 30 %, 0 erreur), mais deux défauts
+en perdaient environ 60 par run. (1) Contrôle du titre trop strict (`scraper_betpawa.titre_correspond`, remplace
+`_noms_correspondent` dans `resolution_betpawa_precalcul.py`) : sur les 44 rejets réels, 43 étaient de bonnes pages
+(accents, « Utd », noms francisés, compétitions féminines) ; seul « San Jose - Portland » → « San Marino - Finland » reste
+refusé. (2) Date BetPawa = lendemain pour les matchs tardifs en Amérique (`resolution_betpawa.date_compatible`) : MLS 0/16.
+27 tests sur les vrais cas. **À mesurer après le prochain run : couverture BetPawa (30 % avant).**
+
 ### Chantier C — BetPawa (en dernier)
 
 Couverture (28 % des matchs J0-J+3 au 24/09) et relevé des cotes mi-temps / corners.
