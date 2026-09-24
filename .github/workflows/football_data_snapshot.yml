@@ -56,6 +56,7 @@ jobs:
       - name: Vérifier le verrou d'immutabilité
         run: |
           test -f "data/football_data/snapshots/${{ steps.season.outputs.value }}/_SNAPSHOT_COMPLETE.json"
+          test -f "data/football_data/snapshots/${{ steps.season.outputs.value }}/nouvelles_ligues/_SNAPSHOT_COMPLETE.json"
 
       - name: Publier le snapshot
         run: |

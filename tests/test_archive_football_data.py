@@ -170,3 +170,76 @@ def test_zip_conflit_avec_un_fichier_local_refuse(tmp_path):
     (racine / "2526/raw/E0.csv").write_bytes(b"modifie\n")
     with pytest.raises(RuntimeError, match="Conflit"):
         archive_snapshot(season="2526", root=racine, session=_session_zip(_zip({"E0.csv": b"original\n", "F1.csv": b"f\n"})))
+
+
+# ---------------------------------------------------------------------------------------------------------------
+# AJOUT 24/09/2026 : championnats supplémentaires (new/<CODE>.csv, toutes saisons dans un seul fichier)
+# ---------------------------------------------------------------------------------------------------------------
+from archive_football_data import archive_new_leagues, filtre_saison
+
+NEW_INDEX = ('<A HREF="https://football-data.co.uk/usa.php">USA</A><A HREF="https://football-data.co.uk/austria.php">AUT</A>'
+             '<A HREF="https://football-data.co.uk/blog/x.php">blog</A><A HREF="new/Latest_Results.csv">x</A>')
+USA = ("Country,League,Season,Date,Time,Home,Away,HG,AG,Res\n"
+       "USA,MLS,2024,01/03/2024,20:00,A,B,1,0,H\nUSA,MLS,2025,01/03/2025,20:00,C,D,2,2,D\n"
+       "USA,MLS,2025,02/03/2025,20:00,E,F,0,1,A\nUSA,MLS,2026,01/03/2026,20:00,G,H,3,0,H\n").encode()
+AUT = ("\ufeffCountry,League,Season,Date,Time,Home,Away,HG,AG,Res\n"
+       "Austria,Bundesliga,2024/2025,01/08/2024,18:00,A,B,1,1,D\nAustria,Bundesliga,2025/2026,01/08/2025,18:00,C,D,2,0,H\n"
+       "Austria,Bundesliga,2026/2027,01/08/2026,18:00,E,F,0,0,D\n").encode()
+
+
+def _session_new(fichiers):
+    pages = {"https://www.football-data.co.uk/all_new_data.php": NEW_INDEX,
+             "https://football-data.co.uk/usa.php": '<a href="new/USA.csv">csv</a>',
+             "https://football-data.co.uk/austria.php": '<a href="new/AUT.csv">csv</a>'}
+    return FakeSession(pages, fichiers)
+
+
+def _lignes(p):
+    return p.read_text(encoding="utf-8").strip().splitlines()[1:]
+
+
+def test_new_saison_civile_et_a_cheval(tmp_path):
+    s = _session_new({"https://football-data.co.uk/new/USA.csv": USA, "https://football-data.co.uk/new/AUT.csv": AUT})
+    out = archive_new_leagues(season="2526", root=tmp_path / "s", session=s, pause=0)
+    assert out["status"] == "COMPLETE" and out["discovered"] == 2 and out["downloaded"] == 2
+    d = tmp_path / "s/2526/nouvelles_ligues"
+    assert [l.split(",")[2] for l in _lignes(d / "raw/USA.csv")] == ["2025", "2025"]        # année civile 2025
+    assert [l.split(",")[2] for l in _lignes(d / "raw/AUT.csv")] == ["2025/2026"]           # à cheval 2025/2026
+    cat = {e["competition_code"]: e for e in json.loads((d / "catalogue.json").read_text(encoding="utf-8"))["entries"]}
+    assert (cat["USA"]["country"], cat["USA"]["competition"]) == ("USA", "MLS")
+    assert (d / "_SNAPSHOT_COMPLETE.json").exists()
+    assert not (tmp_path / "s/2526/_SNAPSHOT_COMPLETE.json").exists()       # le snapshot principal n'est pas touché
+
+
+def test_new_second_passage_aucune_requete(tmp_path):
+    archive_new_leagues(season="2526", root=tmp_path / "s", pause=0, session=_session_new(
+        {"https://football-data.co.uk/new/USA.csv": USA, "https://football-data.co.uk/new/AUT.csv": AUT}))
+    s2 = FakeSession({}, {})
+    assert archive_new_leagues(season="2526", root=tmp_path / "s", session=s2, pause=0)["immutable"] is True
+    assert s2.calls == []
+
+
+def test_new_latest_results_et_blog_jamais_pris(tmp_path):
+    s = _session_new({"https://football-data.co.uk/new/USA.csv": USA, "https://football-data.co.uk/new/AUT.csv": AUT})
+    archive_new_leagues(season="2526", root=tmp_path / "s", session=s, pause=0)
+    assert not any("Latest_Results" in c or "/blog/" in c for c in s.calls)
+
+
+def test_new_sans_colonne_saison_incomplet(tmp_path):
+    s = _session_new({"https://football-data.co.uk/new/USA.csv": b"Country,Date,Home\nUSA,01/01/2025,A\n",
+                      "https://football-data.co.uk/new/AUT.csv": AUT})
+    out = archive_new_leagues(season="2526", root=tmp_path / "s", session=s, pause=0)
+    assert out["status"] == "INCOMPLETE" and out["failed"] == 1
+    assert not (tmp_path / "s/2526/nouvelles_ligues/_SNAPSHOT_COMPLETE.json").exists()
+
+
+def test_new_aucune_ligne_pour_la_saison_note_vide_pas_invente(tmp_path):
+    vieux = b"Country,League,Season,Date,Time,Home,Away,HG,AG,Res\nUSA,MLS,2019,01/03/2019,20:00,A,B,1,0,H\n"
+    s = _session_new({"https://football-data.co.uk/new/USA.csv": vieux, "https://football-data.co.uk/new/AUT.csv": AUT})
+    out = archive_new_leagues(season="2526", root=tmp_path / "s", session=s, pause=0)
+    assert out["empty"] == 1 and not (tmp_path / "s/2526/nouvelles_ligues/raw/USA.csv").exists()
+
+
+def test_filtre_saison_invalide_refuse():
+    with pytest.raises(ValueError):
+        filtre_saison(USA, "25-26")

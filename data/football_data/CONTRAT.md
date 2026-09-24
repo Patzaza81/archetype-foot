@@ -80,5 +80,12 @@ nombre de CSV ; `source_url` de chaque fichier = `<archive>#<CODE>.csv`). Une se
 
 Déclenchement depuis l'iPhone : écrire la saison (ex. `2526`) dans `data/football_data/demande_snapshot.txt`.
 
-Hors périmètre de ce snapshot : les 16 championnats supplémentaires (`new/XXX.csv`), publiés en un seul fichier
-toutes saisons confondues ; ils demandent un traitement séparé.
+## Championnats supplémentaires (24/09/2026) — toutes les divisions publiées
+
+En plus des divisions de l'archive `data.zip`, le snapshot contient `<saison>/nouvelles_ligues/` : chaque championnat
+publié en `new/<CODE>.csv` sur les pages pays liées depuis `all_new_data.php` (liens lus, jamais construits). Ces fichiers
+contiennent toutes les saisons : seules les lignes de la saison sont conservées dans `raw/<CODE>.csv`, avec l'empreinte
+du fichier téléchargé (`source_sha256`). Pays et nom viennent des colonnes `Country` et `League` du fichier lui-même.
+Saison « 2526 » : lignes « 2025/2026 » pour un championnat à cheval sur deux années, « 2025 » pour un championnat sur
+l'année civile. Un championnat sans ligne pour la saison est noté dans `empty` (jamais inventé). Manifeste, catalogue et
+verrou propres : le snapshot principal déjà verrouillé n'est jamais modifié.

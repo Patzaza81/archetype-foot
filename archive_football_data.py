@@ -49,6 +49,7 @@ COMPETITIONS = {
     "SC0": ("Scotland", "Premiership"),
     "SC1": ("Scotland", "Championship"),
     "SC2": ("Scotland", "League One"),
+    "SC3": ("Scotland", "League Two"),
     "D1": ("Germany", "Bundesliga"),
     "D2": ("Germany", "2. Bundesliga"),
     "I1": ("Italy", "Serie A"),
@@ -296,17 +297,188 @@ def archive_snapshot(
     }
 
 
+# =====================================================================================================================
+# AJOUT 24/09/2026 — Championnats supplémentaires (« new leagues ») : toutes les divisions publiées, pas seulement 22.
+# =====================================================================================================================
+# Vérifié sur les vraies pages (diagnostic/sources/) : all_new_data.php renvoie vers une page par pays (argentina.php,
+# usa.php, ...) ; chaque page publie un fichier « new/<CODE>.csv » qui contient TOUTES les saisons de ce championnat
+# (colonnes Country, League, Season, Date, Time, Home, Away, HG, AG, Res, puis des cotes). Ces fichiers ne sont pas
+# dans l'archive data.zip de la saison.
+#
+# Rangement : sous-dossier séparé « <saison>/nouvelles_ligues/ » avec son propre manifeste, catalogue et verrou, pour ne
+# JAMAIS toucher un snapshot principal déjà verrouillé. Pour chaque championnat, seules les lignes de la saison sont
+# conservées (le fichier complet change pendant la saison en cours) ; l'empreinte SHA-256 du fichier téléchargé est
+# gardée comme preuve de provenance.
+#
+# Correspondance des saisons (règle écrite, jamais devinée) : pour la saison « 2526 »,
+#   - championnat à cheval sur deux années (valeurs « 2025/2026 ») -> lignes « 2025/2026 » ;
+#   - championnat sur l'année civile (valeurs « 2025 ») -> lignes « 2025 » (dernière saison civile terminée).
+NEW_INDEX_URL = "https://www.football-data.co.uk/all_new_data.php"
+NEW_CSV_RE = re.compile(r"/new/(?P<code>[A-Za-z0-9]+)\.csv$", re.I)
+NEW_EXCLUS = {"LATEST_RESULTS"}
+PAUSE_ENTRE_PAGES_S = 1.0
+
+
+def saison_libelles(season: str) -> tuple[str, str]:
+    """« 2526 » -> (« 2025/2026 », « 2025 »)."""
+    if not re.fullmatch(r"\d{4}", season):
+        raise ValueError(f"Saison invalide : {season}")
+    debut = 2000 + int(season[:2])
+    return f"{debut}/{debut + 1}", str(debut)
+
+
+def discover_new_leagues(session: requests.Session, pause: float = PAUSE_ENTRE_PAGES_S) -> dict[str, str]:
+    """{CODE: URL new/CODE.csv} trouvés sur les pages liées depuis all_new_data.php (liens lus, jamais construits)."""
+    import time
+    response = session.get(NEW_INDEX_URL, timeout=30)
+    response.raise_for_status()
+    pages = []
+    for href in re.findall(r"""href\s*=\s*["']([^"']+\.php)["']""", response.text, re.I):
+        url = urljoin(NEW_INDEX_URL, href)
+        if "football-data.co.uk/" in url and "/blog/" not in url and "/resources/" not in url and url not in pages:
+            pages.append(url)
+    found: dict[str, str] = {}
+    for page in pages:
+        try:
+            r = session.get(page, timeout=30)
+            r.raise_for_status()
+        except Exception:  # une page indisponible n'invente rien : elle est simplement ignorée
+            continue
+        for href in re.findall(r"""href\s*=\s*["']([^"']+\.csv)["']""", r.text, re.I):
+            url = urljoin(page, href)
+            m = NEW_CSV_RE.search(url)
+            if m and m.group("code").upper() not in NEW_EXCLUS:
+                found.setdefault(m.group("code").upper(), url)
+        if pause:
+            time.sleep(pause)
+    return dict(sorted(found.items()))
+
+
+def filtre_saison(data: bytes, season: str) -> tuple[bytes, dict]:
+    """Garde l'en-tête et les lignes de la saison. Renvoie (csv_filtré, infos). Lève ValueError si pas de colonne Season."""
+    import csv
+    texte = data.decode("utf-8-sig", errors="replace")
+    lignes = texte.splitlines()
+    if not lignes:
+        raise ValueError("fichier vide")
+    entete = next(csv.reader([lignes[0]]))
+    noms = [c.strip() for c in entete]
+    if "Season" not in noms:
+        raise ValueError("colonne Season absente")
+    i_saison = noms.index("Season")
+    i_pays = noms.index("Country") if "Country" in noms else None
+    i_ligue = noms.index("League") if "League" in noms else None
+    a_cheval, civile = saison_libelles(season)
+    valeurs = set()
+    gardees, pays, ligue = [], None, None
+    for ligne in lignes[1:]:
+        champs = next(csv.reader([ligne])) if ligne.strip() else []
+        if len(champs) <= i_saison:
+            continue
+        v = champs[i_saison].strip().replace("-", "/")
+        valeurs.add(v)
+        if v in (a_cheval, civile):
+            gardees.append(ligne)
+            if i_pays is not None and pays is None:
+                pays = champs[i_pays].strip() or None
+            if i_ligue is not None and ligue is None:
+                ligue = champs[i_ligue].strip() or None
+    format_saison = "a_cheval" if any("/" in v for v in valeurs) else "civile"
+    libelle = a_cheval if format_saison == "a_cheval" else civile
+    gardees = [l for l in gardees if next(csv.reader([l]))[i_saison].strip().replace("-", "/") == libelle]
+    sortie = ("\n".join([lignes[0]] + gardees) + "\n").encode("utf-8")
+    return sortie, {"season_label": libelle, "season_format": format_saison, "rows": len(gardees),
+                    "country": pays, "competition": ligue}
+
+
+def archive_new_leagues(*, season: str, root: Path = DEFAULT_ROOT, session: requests.Session | None = None,
+                        pause: float = PAUSE_ENTRE_PAGES_S) -> dict:
+    snapshot = root / season / "nouvelles_ligues"
+    raw_dir = snapshot / "raw"
+    manifest_path = snapshot / "manifest.json"
+    marker = snapshot / "_SNAPSHOT_COMPLETE.json"
+    manifest = load_manifest(manifest_path, season)
+    if marker.exists() or manifest.get("status") == "COMPLETE":
+        return {"season": season, "scope": "nouvelles_ligues", "status": "COMPLETE", "downloaded": 0, "immutable": True,
+                "discovered": len(manifest.get("files", {})) + len(manifest.get("empty", {}))}
+    session = session or requests.Session()
+    session.headers.update({"User-Agent": "ArchetypeFoot/football-data-snapshot"})
+    urls = discover_new_leagues(session, pause=pause)
+    if not urls:
+        raise RuntimeError("Aucun fichier de championnat supplémentaire découvert")
+    files = manifest.setdefault("files", {})
+    failed: dict[str, str] = {}
+    empty: dict[str, dict] = {}
+    downloaded = 0
+    for code, url in urls.items():
+        path = raw_dir / f"{code}.csv"
+        if path.exists() and code in files:
+            if sha256_bytes(path.read_bytes()) != files[code].get("sha256"):
+                raise RuntimeError(f"Conflit d'archive pour {code}: le fichier local diffère du manifeste")
+            continue
+        if path.exists():
+            raise RuntimeError(f"Conflit d'archive pour {code}: fichier local sans entrée de manifeste")
+        try:
+            data = download(session, url)
+            filtre, infos = filtre_saison(data, season)
+        except Exception as exc:
+            failed[code] = str(exc)
+            continue
+        if infos["rows"] == 0:
+            empty[code] = {"source_url": url, "source_sha256": sha256_bytes(data), "season_format": infos["season_format"]}
+            continue
+        raw_dir.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(filtre)
+        files[code] = {"competition_code": code, "country": infos["country"], "competition": infos["competition"],
+                       "season_label": infos["season_label"], "season_format": infos["season_format"],
+                       "rows": infos["rows"], "source_url": url, "source_sha256": sha256_bytes(data),
+                       "source_bytes": len(data), "sha256": sha256_bytes(filtre), "bytes": len(filtre),
+                       "archived_at_utc": now_utc(), "immutable": True}
+        downloaded += 1
+    manifest.update({"schema_version": 1, "source": "football-data.co.uk (championnats supplémentaires)",
+                     "season": season, "updated_at_utc": now_utc(), "discovered_count": len(urls),
+                     "archived_count": len(files), "empty": empty, "failed": failed,
+                     "status": "COMPLETE" if not failed and len(files) + len(empty) == len(urls) else "INCOMPLETE",
+                     "season_rule": "à cheval : « AAAA/AAAA+1 » ; année civile : « AAAA » (première année de la saison)",
+                     "policy": "immutable completed-season snapshot; no overwrite and no redownload"})
+    snapshot.mkdir(parents=True, exist_ok=True)
+    catalogue = {"schema_version": 1, "source": "football-data.co.uk", "season": season, "generated_at_utc": now_utc(),
+                 "entries": [{"competition_code": c, "country": f["country"], "competition": f["competition"],
+                              "season_label": f["season_label"], "rows": f["rows"], "source_url": f["source_url"]}
+                             for c, f in sorted(files.items())]}
+    (snapshot / "catalogue.json").write_text(json.dumps(catalogue, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    if manifest["status"] == "COMPLETE":
+        marker.write_text(json.dumps({"status": "COMPLETE", "season": season, "scope": "nouvelles_ligues",
+                                      "completed_at_utc": now_utc(), "files": len(files), "empty": sorted(empty),
+                                      "sha256_manifest": sha256_bytes(manifest_path.read_bytes())},
+                                     ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return {"season": season, "scope": "nouvelles_ligues", "status": manifest["status"], "discovered": len(urls),
+            "downloaded": downloaded, "empty": len(empty), "failed": len(failed),
+            "immutable": manifest["status"] == "COMPLETE"}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--season", required=True, help="Code Football-Data, ex. 2526")
     parser.add_argument("--root", default=str(DEFAULT_ROOT))
+    parser.add_argument("--scope", choices=("toutes", "principales", "supplementaires"), default="toutes",
+                        help="toutes (défaut) = 22 divisions principales + championnats supplémentaires")
     args = parser.parse_args()
-    try:
-        print(json.dumps(archive_snapshot(season=args.season, root=Path(args.root)), ensure_ascii=False))
-    except Exception as exc:
-        print(f"ERREUR snapshot Football-Data: {exc}", file=sys.stderr)
-        return 1
-    return 0
+    code = 0
+    if args.scope in ("toutes", "principales"):
+        try:
+            print(json.dumps(archive_snapshot(season=args.season, root=Path(args.root)), ensure_ascii=False))
+        except Exception as exc:
+            print(f"ERREUR snapshot Football-Data (principales): {exc}", file=sys.stderr)
+            code = 1
+    if args.scope in ("toutes", "supplementaires"):
+        try:
+            print(json.dumps(archive_new_leagues(season=args.season, root=Path(args.root)), ensure_ascii=False))
+        except Exception as exc:
+            print(f"ERREUR snapshot Football-Data (supplémentaires): {exc}", file=sys.stderr)
+            code = 1
+    return code
 
 
 if __name__ == "__main__":
