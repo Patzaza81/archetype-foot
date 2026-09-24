@@ -36,21 +36,34 @@ dans Actions que « Pipeline quotidien » puis « Journal de rentabilité » son
 
 ## 0 bis. Feuille de route décidée le 24/09/2026 (Patrick)
 
-Principe : football-data.co.uk devient la référence des données historiques pour les championnats qu'il couvre
-(22 divisions principales + 16 championnats supplémentaires) ; matchendirect reste la source des listes de matchs et
-des championnats non couverts, sous contrôle nocturne (`controle_saisons.py`). BetPawa est traité en dernier.
+**Séparation stricte (décision de Patrick, 24/09) : la collecte ne calcule rien.** Elle récupère, nettoie, vérifie et
+transmet des données brutes au moteur d'analyse des marchés. Moyennes, xG par équipe, probabilités, valeur : tout se
+calcule côté moteur, dans un chantier séparé.
 
-| Phase | Chantier | Critère d'acceptation (vérifié sur données réelles) | Statut |
+football-data.co.uk devient la référence des données historiques pour les championnats qu'il couvre ; matchendirect reste
+la source des listes de matchs et des championnats non couverts, sous contrôle nocturne (`controle_saisons.py`).
+BetPawa est traité en dernier.
+
+### Chantier A — Collecte (en cours)
+
+| Étape | Contenu | Validé quand | Statut |
 |---|---|---|---|
-| 0 | Import football-data : saison en cours + saison passée, championnats couverts ; table de correspondance des noms d'équipes (football-data ↔ matchendirect ↔ BetPawa) ; contrôle croisé des scores avec matchendirect | ≥ 98 % des matchs communs ont le même score ; 0 correspondance d'équipe ambiguë acceptée | À FAIRE |
-| 1 | Nouveaux marchés : buts à la mi-temps (plus/moins 0,5 et 1,5), résultat à la mi-temps, mi-temps/fin de match, corners total, corners par équipe | Calibration mesurée sur une saison non utilisée pour régler le modèle : écart probabilité annoncée / fréquence réelle ≤ 3 points par tranche | À FAIRE |
-| 2 | Renfort des équipes à moins de 5 matchs à domicile ou à l'extérieur : saison passée (même lieu) en appui, poids décroissant avec les matchs de la saison en cours. xG seulement là où football-data le fournit (saison 2026-27, divisions principales) ; sinon buts et tirs cadrés. Promus/relégués : pas de saison passée dans la même division, traitement à part | Sur une saison de test : prévision meilleure (Brier) qu'avec la saison en cours seule, pour ces équipes | À FAIRE (modifie la règle « saison en cours uniquement » du 08/09, décision de Patrick du 24/09) |
-| 3 | Comparateur de valeur : cote BetPawa contre cote juste Betfair Exchange (marge retirée), même championnat | Test immédiat sur les matchs BetPawa déjà réglés présents dans football-data ; conservé seulement si le ROI mesuré est positif et stable ; sinon abandonné | À FAIRE |
-| 4 | Journal : nouveaux marchés et comparateur intégrés aux rubriques, avec les mêmes règles (gains seulement, niveau de preuve) | Aucun marché affiché sans cote réelle mesurée | À FAIRE |
-| 5 | BetPawa : couverture (28 % des matchs J0-J+3 au 24/09) et relevé des cotes mi-temps / corners | Couverture mesurée avant/après | À FAIRE (en dernier) |
+| A1 | Téléchargement football-data : saison en cours + saison passée, championnats couverts, une fois par jour, sans retélécharger un fichier inchangé | fichiers bruts conservés tels quels, aucun blocage | À FAIRE |
+| A2 | Normalisation en un format unique par match : date, heure, championnat, équipes, score fin de match, score mi-temps, tirs, tirs cadrés, corners, cartons, xG (si fourni), cotes par bookmaker (ouverture et clôture : 1X2, plus/moins 2,5, handicap asiatique) | chaque champ absent reste absent (jamais inventé ni remplacé) | À FAIRE |
+| A3 | Correspondance des noms d'équipes football-data ↔ matchendirect ↔ BetPawa | aucune correspondance ambiguë acceptée ; les non-résolues listées | À FAIRE |
+| A4 | Contrôles qualité : scores football-data contre scores matchendirect sur les matchs communs ; doublons ; dates | ≥ 98 % d'accord ; désaccords listés, jamais corrigés à la main | À FAIRE |
+| A5 | Contrat de transmission au moteur : fichiers et champs documentés, versionnés | README + tests | À FAIRE |
 
-Dépendance à garder en tête : les marchés de la phase 1 ne sont jouables et mesurables (ROI) qu'avec leurs cotes BetPawa
-(phase 5). D'ici là, ils sont calculés et évalués en calibration seulement.
+### Chantier B — Moteur (après la collecte)
+
+Nouveaux marchés (buts et résultat à la mi-temps, mi-temps/fin de match, corners total et par équipe) ; renfort des équipes
+à moins de 5 matchs à domicile ou à l'extérieur par la saison passée (décision du 24/09, modifie la règle du 08/09 ;
+xG seulement là où il est fourni, sinon buts et tirs cadrés) ; comparateur de valeur BetPawa contre Betfair Exchange,
+conservé seulement si son gain mesuré est positif et stable ; intégration au Journal.
+
+### Chantier C — BetPawa (en dernier)
+
+Couverture (28 % des matchs J0-J+3 au 24/09) et relevé des cotes mi-temps / corners.
 
 ## 1. État immédiat
 
