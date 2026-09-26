@@ -28,15 +28,15 @@ def minimum_edv(probability: float) -> Optional[float]:
 def evaluate_market(market: str, probability: float, odds: float, *, dispersion: Optional[float]=None) -> ValueResult:
     if not 0 < probability <= 1: raise ValueError("probabilité invalide")
     if odds <= 1: raise ValueError("cote invalide")
-    implied=1.0/odds; edge=probability-implied; edv=odds*edge; threshold=minimum_edv(probability)
+    implied=1.0/odds; edge=probability-implied; ev=odds*edge; edv=100.0*ev; threshold=minimum_edv(probability)
     reasons=[]; eligible=True
     if not ODDS_MIN <= odds <= ODDS_MAX: eligible=False; reasons.append("COTE_HORS_FENETRE")
     if threshold is None: eligible=False; reasons.append("PROBABILITE_INF_60")
-    elif edv < threshold/100.0: eligible=False; reasons.append("EDV_INSUFFISANTE")
+    elif edv < threshold: eligible=False; reasons.append("EDV_INSUFFISANTE")
     if dispersion is not None and dispersion>8: eligible=False; reasons.append("DISPERSION_SUP_8")
     elif dispersion is not None and dispersion>5 and probability<.67:
         eligible=False; reasons.append("DISPERSION_REQUIERT_P_SUP_67")
-    return ValueResult(market,probability,odds,implied,edge,edv,edv,eligible,"|".join(reasons) or "OK")
+    return ValueResult(market,probability,odds,implied,edge,edv,ev,eligible,"|".join(reasons) or "OK")
 
 def filter_value_candidates(markets: Mapping[str,float], odds: Mapping[str,float], *, dispersion: Optional[float]=None):
     return [evaluate_market(k,p,float(odds[k]),dispersion=dispersion) for k,p in markets.items() if k in odds]
