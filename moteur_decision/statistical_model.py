@@ -99,11 +99,11 @@ def previous_season_weight(n_current: int, season_progress: float) -> float:
     return ((5.0 - float(n_current)) / 5.0) * (1.0 - season_progress)
 
 
-def _lambda_from_context(home, away, previous_home, previous_away, previous_weight):
-    ha = _blend(home["attack"], previous_home.get("attack") if previous_home else None, previous_weight)
-    hd = _blend(away["defense"], previous_away.get("defense") if previous_away else None, previous_weight)
-    aa = _blend(away["attack"], previous_away.get("attack") if previous_away else None, previous_weight)
-    ad = _blend(home["defense"], previous_home.get("defense") if previous_home else None, previous_weight)
+def _lambda_from_context(home, away, previous_home, previous_away, previous_home_weight, previous_away_weight):
+    ha = _blend(home["attack"], previous_home.get("attack") if previous_home else None, previous_home_weight)
+    hd = _blend(away["defense"], previous_away.get("defense") if previous_away else None, previous_away_weight)
+    aa = _blend(away["attack"], previous_away.get("attack") if previous_away else None, previous_away_weight)
+    ad = _blend(home["defense"], previous_home.get("defense") if previous_home else None, previous_home_weight)
     if None in (ha, hd, aa, ad): raise ValueError("Données insuffisantes pour calculer lambda")
     lh, la = sqrt(max(ha, 0.0) * max(hd, 0.0)), sqrt(max(aa, 0.0) * max(ad, 0.0))
     return max(LAMBDA_MIN, min(LAMBDA_MAX, lh)), max(LAMBDA_MIN, min(LAMBDA_MAX, la))
@@ -135,24 +135,28 @@ def build_model(
     home = _ordered_latest(home_matches, True)
     away = _ordered_latest(away_matches, False)
     if season_progress is not None:
-        previous_weight = previous_season_weight(len(home), season_progress)
+        previous_home_weight = previous_season_weight(len(home), season_progress)
+        previous_away_weight = previous_season_weight(len(away), season_progress)
+    else:
+        previous_home_weight = previous_weight
+        previous_away_weight = previous_weight
     if not previous_context_compatible:
-        previous_weight = 0.0
+        previous_home_weight = previous_away_weight = 0.0
     prev_home = _ordered_latest(previous_home_matches, True)
     prev_away = _ordered_latest(previous_away_matches, False)
     if not home or not away: raise ValueError("Au moins un match domicile et un match extérieur sont nécessaires")
     hc, ac = _context_rates(home), _context_rates(away)
     phc = _context_rates(prev_home) if prev_home else None
     pac = _context_rates(prev_away) if prev_away else None
-    lh, la = _lambda_from_context(hc, ac, phc, pac, previous_weight)
+    lh, la = _lambda_from_context(hc, ac, phc, pac, previous_home_weight, previous_away_weight)
     matrix = poisson_matrix(lh, la)
 
     hf, af = _rate(home, "buts_marques_mi_temps"), _rate(away, "buts_marques_mi_temps")
     hfa, afa = _rate(home, "buts_encaisses_mi_temps"), _rate(away, "buts_encaisses_mi_temps")
-    lhf = _blend(hf, _rate(prev_home, "buts_marques_mi_temps"), previous_weight)
-    laf = _blend(af, _rate(prev_away, "buts_marques_mi_temps"), previous_weight)
-    hdef = _blend(hfa, _rate(prev_home, "buts_encaisses_mi_temps"), previous_weight)
-    adef = _blend(afa, _rate(prev_away, "buts_encaisses_mi_temps"), previous_weight)
+    lhf = _blend(hf, _rate(prev_home, "buts_marques_mi_temps"), previous_home_weight)
+    laf = _blend(af, _rate(prev_away, "buts_marques_mi_temps"), previous_away_weight)
+    hdef = _blend(hfa, _rate(prev_home, "buts_encaisses_mi_temps"), previous_home_weight)
+    adef = _blend(afa, _rate(prev_away, "buts_encaisses_mi_temps"), previous_away_weight)
     half_home = sqrt(max(lhf, 0) * max(adef, 0)) if lhf is not None and adef is not None else None
     half_away = sqrt(max(laf, 0) * max(hdef, 0)) if laf is not None and hdef is not None else None
     first_matrix = None
@@ -173,10 +177,11 @@ def build_model(
         sample_quality(len(home), len(prev_home), previous_weight, hc["xg_count"] or 0),
         sample_quality(len(away), len(prev_away), previous_weight, ac["xg_count"] or 0),
         {"home_matches_used": len(home), "away_matches_used": len(away),
-         "previous_weight": previous_weight,
+         "previous_home_weight": previous_home_weight,
+         "previous_away_weight": previous_away_weight,
          "previous_context_compatible": bool(previous_context_compatible),
          "home_dates": [m.get("date") for m in home], "away_dates": [m.get("date") for m in away],
          "h2h_used": False,
          "xg_home_used": hc["xg_count"] == len(home),
          "xg_away_used": ac["xg_count"] == len(away),
-         "previous_season_used": previous_weight > 0 and bool(prev_home) and bool(prev_away)})
+         "previous_season_used": (previous_home_weight > 0 and bool(prev_home)) or (previous_away_weight > 0 and bool(prev_away))})
