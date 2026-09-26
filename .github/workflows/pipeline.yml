@@ -156,6 +156,14 @@ jobs:
       # AJOUT 21/09/2026 -- évaluation du moteur : scores finaux des matchs des jeux d'évaluation (evaluation/snapshot_*.json).
       # Une requête par date sur la page des résultats ; les scores trouvés sont conservés (evaluation/scores_*.json) et lus par
       # `python evaluation_moteur.py evaluation/snapshot_X.json evaluation/scores_X.json`. Sans effet sur le reste du pipeline.
+      # RÉTABLI le 26/09/2026 -- écriture des scores dans historique_pronostics.json (supprimée par erreur avec
+      # verification_resultats.py le 13/09 : plus aucun score depuis le 18/09, journal figé). Une page de résultats
+      # Matchendirect par jour, seuls les matchs « TER » sont remplis, un score existant n'est jamais modifié.
+      - name: Enregistrer les scores réels dans l'historique
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+        run: python enregistre_scores_historique.py --jours 10
+        continue-on-error: true
+
       - name: Récupérer les scores des matchs du jeu d'évaluation du moteur
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         run: python evaluation_scores.py
