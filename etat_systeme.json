@@ -1,5 +1,5 @@
 {
-  "genere_le": "2026-09-26T21:29:33.287676+00:00",
+  "genere_le": "2026-09-26T23:57:27.687553+00:00",
   "bilan_comportemental": {
     "global": {
       "observations": 104,
@@ -255,23 +255,30 @@
   },
   "bilan_shrink_v1": {
     "global": {
-      "observations": 12,
-      "gagnes": 6,
-      "perdus": 6,
-      "somme_gains_flat_stake": 0.4399999999999995,
-      "roi_flat": 0.036666666666666625
+      "observations": 77,
+      "gagnes": 40,
+      "perdus": 37,
+      "somme_gains_flat_stake": -1.2699999999999958,
+      "roi_flat": -0.01649350649350644
     },
     "par_famille": {
       "DOUBLE_CHANCE": {
         "resume": {
-          "observations": 2,
-          "gagnes": 0,
-          "perdus": 2,
-          "somme_gains_flat_stake": -2.0,
-          "roi_flat": -1.0
+          "observations": 9,
+          "gagnes": 3,
+          "perdus": 6,
+          "somme_gains_flat_stake": -4.35,
+          "roi_flat": -0.4833333333333333
         },
         "par_niveau": {
           "CAT_A": {
+            "observations": 7,
+            "gagnes": 3,
+            "perdus": 4,
+            "somme_gains_flat_stake": -2.3499999999999996,
+            "roi_flat": -0.3357142857142857
+          },
+          "CAT_C": {
             "observations": 2,
             "gagnes": 0,
             "perdus": 2,
@@ -282,11 +289,11 @@
       },
       "HANDICAP": {
         "resume": {
-          "observations": 2,
-          "gagnes": 1,
-          "perdus": 1,
-          "somme_gains_flat_stake": -0.3400000000000001,
-          "roi_flat": -0.17000000000000004
+          "observations": 17,
+          "gagnes": 9,
+          "perdus": 8,
+          "somme_gains_flat_stake": -2.4699999999999998,
+          "roi_flat": -0.1452941176470588
         },
         "par_niveau": {
           "CAT_B": {
@@ -297,61 +304,143 @@
             "roi_flat": -1.0
           },
           "CAT_A": {
-            "observations": 1,
+            "observations": 14,
+            "gagnes": 8,
+            "perdus": 6,
+            "somme_gains_flat_stake": -1.34,
+            "roi_flat": -0.09571428571428572
+          },
+          "CAT_C": {
+            "observations": 2,
             "gagnes": 1,
-            "perdus": 0,
-            "somme_gains_flat_stake": 0.6599999999999999,
-            "roi_flat": 0.6599999999999999
+            "perdus": 1,
+            "somme_gains_flat_stake": -0.1299999999999999,
+            "roi_flat": -0.06499999999999995
           }
         }
       },
       "RESULT": {
         "resume": {
-          "observations": 2,
-          "gagnes": 1,
-          "perdus": 1,
-          "somme_gains_flat_stake": 1.2999999999999998,
-          "roi_flat": 0.6499999999999999
+          "observations": 13,
+          "gagnes": 7,
+          "perdus": 6,
+          "somme_gains_flat_stake": 5.3500000000000005,
+          "roi_flat": 0.4115384615384616
         },
         "par_niveau": {
           "CAT_A": {
-            "observations": 1,
-            "gagnes": 0,
-            "perdus": 1,
-            "somme_gains_flat_stake": -1.0,
-            "roi_flat": -1.0
+            "observations": 6,
+            "gagnes": 2,
+            "perdus": 4,
+            "somme_gains_flat_stake": -1.3499999999999996,
+            "roi_flat": -0.22499999999999995
+          },
+          "CAT_C": {
+            "observations": 5,
+            "gagnes": 3,
+            "perdus": 2,
+            "somme_gains_flat_stake": 2.9000000000000004,
+            "roi_flat": 0.5800000000000001
           },
           "CAT_B": {
-            "observations": 1,
-            "gagnes": 1,
+            "observations": 2,
+            "gagnes": 2,
             "perdus": 0,
-            "somme_gains_flat_stake": 2.3,
-            "roi_flat": 2.3
+            "somme_gains_flat_stake": 3.8,
+            "roi_flat": 1.9
           }
         }
       },
       "GOALS_TOTAL": {
         "resume": {
-          "observations": 6,
-          "gagnes": 4,
-          "perdus": 2,
-          "somme_gains_flat_stake": 1.4799999999999998,
-          "roi_flat": 0.24666666666666662
+          "observations": 31,
+          "gagnes": 17,
+          "perdus": 14,
+          "somme_gains_flat_stake": -1.1499999999999995,
+          "roi_flat": -0.03709677419354837
         },
         "par_niveau": {
+          "CAT_A": {
+            "observations": 17,
+            "gagnes": 13,
+            "perdus": 4,
+            "somme_gains_flat_stake": 3.41,
+            "roi_flat": 0.20058823529411765
+          },
           "CAT_C": {
+            "observations": 11,
+            "gagnes": 4,
+            "perdus": 7,
+            "somme_gains_flat_stake": -1.5599999999999996,
+            "roi_flat": -0.1418181818181818
+          },
+          "CAT_B": {
+            "observations": 3,
+            "gagnes": 0,
+            "perdus": 3,
+            "somme_gains_flat_stake": -3.0,
+            "roi_flat": -1.0
+          }
+        }
+      },
+      "GOALS_EQUIPE_EXTERIEUR": {
+        "resume": {
+          "observations": 2,
+          "gagnes": 2,
+          "perdus": 0,
+          "somme_gains_flat_stake": 1.87,
+          "roi_flat": 0.935
+        },
+        "par_niveau": {
+          "CAT_A": {
+            "observations": 2,
+            "gagnes": 2,
+            "perdus": 0,
+            "somme_gains_flat_stake": 1.87,
+            "roi_flat": 0.935
+          }
+        }
+      },
+      "BTTS": {
+        "resume": {
+          "observations": 4,
+          "gagnes": 2,
+          "perdus": 2,
+          "somme_gains_flat_stake": 0.48,
+          "roi_flat": 0.12
+        },
+        "par_niveau": {
+          "CAT_A": {
             "observations": 3,
             "gagnes": 1,
             "perdus": 2,
             "somme_gains_flat_stake": -0.6499999999999999,
             "roi_flat": -0.21666666666666665
           },
-          "CAT_A": {
-            "observations": 3,
-            "gagnes": 3,
+          "CAT_C": {
+            "observations": 1,
+            "gagnes": 1,
             "perdus": 0,
-            "somme_gains_flat_stake": 2.13,
-            "roi_flat": 0.71
+            "somme_gains_flat_stake": 1.13,
+            "roi_flat": 1.13
+          }
+        }
+      },
+      "GOALS_EQUIPE_DOMICILE": {
+        "resume": {
+          "observations": 1,
+          "gagnes": 0,
+          "perdus": 1,
+          "somme_gains_flat_stake": -1.0,
+          "roi_flat": -1.0
+        },
+        "par_niveau": {
+          "CAT_A": {
+            "observations": 1,
+            "gagnes": 0,
+            "perdus": 1,
+            "somme_gains_flat_stake": -1.0,
+            "roi_flat": -1.0
           }
         }
       }
