@@ -1,3 +1,17 @@
+# ⚠️ RAPPEL TRÈS IMPORTANT — RÈGLE DU DOUBLE CONTRÔLE (26/09/2026)
+
+Tout nouveau moteur de sélection DOIT appliquer `regles_selection.double_controle` avant de retenir un pari.
+Un pari n'est retenu que s'il passe les DEUX contrôles :
+
+1. **Saison, dans les deux sens** : l'équipe à domicile jugée sur ses matchs à domicile ET l'équipe à l'extérieur sur ses matchs à l'extérieur, plus leur saison complète. Une victoire ne se justifie jamais par la seule faiblesse de l'adversaire.
+2. **Forme récente** : les 6 derniers matchs de chaque équipe et les 3 derniers au même lieu.
+
+Ajouts du 26/09 au soir (version 1.1.0) :
+- **Seulement la même compétition** : les matchs utilisés sont ceux de la même compétition ou du même tournoi, jamais les coupes.
+- **Pari limite** (adversaire exactement au maximum de victoires récentes autorisé, cas York – Gillingham) : exclu d'un combiné dès qu'un pari propre est disponible.
+
+Détails, seuils et origine (cas Real Salt Lake – New England) : `docs/REGLE_DOUBLE_CONTROLE.md`. Tests : `tests/test_regles_selection.py`.
+
 # RÈGLE MAÎTRESSE — JUSTIFICATION DES MARCHÉS RETENUS
 
 Cette règle est permanente et ne doit jamais être oubliée, simplifiée ou contournée par Claude ou un autre agent.
@@ -150,4 +164,3 @@ La variation doit être déterministe et fondée sur la preuve disponible, pas a
 - La collecte ne calcule rien : elle récupère, normalise, vérifie et transmet.
 - Le moteur ne lit les données d'équipes que par `contrat_moteur.py` (`charge_assemblage`, `equipe`) ; tout changement de
   format passe par une nouvelle `VERSION_CONTRAT` + `docs/CONTRAT_MOTEUR.md` + `tests/test_contrat_moteur.py`.
-
