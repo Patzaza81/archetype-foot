@@ -61,7 +61,25 @@ def test_toutes_les_entrees_d_un_meme_match_remplies():
 
 def test_rattrapage_une_seule_page_par_jour():
     _, appels = run(hist())
-    assert appels == [D(2026, 9, 19), D(2026, 9, 20)]
+    assert len(appels) == len(set(appels))            # jamais deux fois la même page
+    assert appels[0] == D(2026, 9, 19) and set(appels) <= {D(2026, 9, 18), D(2026, 9, 19), D(2026, 9, 20), D(2026, 9, 21)}
+
+
+def test_match_tardif_trouve_sur_la_page_du_lendemain():
+    h = [{"date": "2026-09-22", "matchs": [{"match_id": "a1", "domicile": "Chlef", "exterieur": "MC Alger",
+                                              "date": "2026-09-22", "score": None}]}]
+    pages = {D(2026, 9, 22): [], D(2026, 9, 23): [{"domicile": "Chlef", "exterieur": "MC Alger", "score": "0-1", "heure": "TER"}]}
+    bilan, _ = run(h, pages)
+    assert h[0]["matchs"][0]["score"] == "0-1" and bilan["trouves_jour_voisin"] == 1
+
+
+def test_jamais_au_dela_d_un_jour():
+    h = [{"date": "2026-09-20", "matchs": [{"match_id": "a2", "domicile": "Chlef", "exterieur": "MC Alger",
+                                              "date": "2026-09-20", "score": None}]}]
+    pages = {D(2026, 9, 20): [], D(2026, 9, 19): [], D(2026, 9, 21): [],
+             D(2026, 9, 22): [{"domicile": "Chlef", "exterieur": "MC Alger", "score": "0-1", "heure": "TER"}]}
+    run(h, pages)
+    assert h[0]["matchs"][0]["score"] is None
 
 
 # --- ne doivent JAMAIS écrire -------------------------------------------------------------------------------------------

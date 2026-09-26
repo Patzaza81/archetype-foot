@@ -69,11 +69,23 @@ def enregistre(historique, aujourdhui, charge_page, memes_equipes, jours_max=Non
             if m.get("match_id"):
                 par_id.setdefault(m["match_id"], []).append(m)
     deja = set()
-    for n, (d, entrees) in enumerate(a_traiter.items()):
-        try:
-            page = charge_page(d)
-        except Exception as exc:
-            bilan["pages_en_echec"].append(f"{d.isoformat()} : {exc}")
+    pages = {}
+
+    def page_du(jour):
+        """Page de résultats d'un jour, chargée une seule fois (None si en échec)."""
+        if jour not in pages:
+            if pages and pause:
+                time.sleep(pause)
+            try:
+                pages[jour] = charge_page(jour)
+            except Exception as exc:
+                pages[jour] = None
+                bilan["pages_en_echec"].append(f"{jour.isoformat()} : {exc}")
+        return pages[jour]
+
+    for d, entrees in a_traiter.items():
+        page = page_du(d)
+        if page is None:
             continue
         remplis = 0
         for m in entrees:
@@ -81,6 +93,19 @@ def enregistre(historique, aujourdhui, charge_page, memes_equipes, jours_max=Non
             if cle in deja:
                 continue
             score = _trouve_score(page, m.get("domicile") or "", m.get("exterieur") or "", memes_equipes)
+            if score is None:
+                # CORRECTIF 26/09/2026 : même règle de date que le reste de la collecte -- un match joué tard le soir
+                # peut figurer sur la page de la veille ou du lendemain (ex. Algérie, Ligue 1 : « 23/09 02:00 »).
+                # Une équipe ne joue jamais deux fois à ± 1 jour : aucune confusion possible. Jamais au-delà d'un jour.
+                for voisin in (d - datetime.timedelta(days=1), d + datetime.timedelta(days=1)):
+                    if voisin >= aujourdhui:
+                        continue
+                    pv = page_du(voisin)
+                    if pv is not None:
+                        score = _trouve_score(pv, m.get("domicile") or "", m.get("exterieur") or "", memes_equipes)
+                        if score is not None:
+                            bilan["trouves_jour_voisin"] = bilan.get("trouves_jour_voisin", 0) + 1
+                            break
             if score is None:
                 bilan["sans_score_termine"] += 1
                 continue
@@ -93,8 +118,6 @@ def enregistre(historique, aujourdhui, charge_page, memes_equipes, jours_max=Non
             remplis += 1
             bilan["matchs_remplis"] += 1
         bilan["par_jour"][d.isoformat()] = {"sans_score_avant": len(entrees), "remplis": remplis}
-        if pause and n < len(a_traiter) - 1:
-            time.sleep(pause)
     return bilan
 
 
