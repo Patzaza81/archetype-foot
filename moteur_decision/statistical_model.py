@@ -88,6 +88,17 @@ def _blend(current: Optional[float], previous: Optional[float], weight: float) -
     if not 0 <= weight <= 1: raise ValueError("weight saison précédente hors [0,1]")
     return (1.0 - weight) * current + weight * previous
 
+def previous_season_weight(n_current: int, season_progress: float) -> float:
+    """Poids déterministe de la saison précédente pour un contexte court."""
+    if n_current < 0:
+        raise ValueError("n_current invalide")
+    if not 0.0 <= season_progress <= 1.0:
+        raise ValueError("season_progress doit être dans [0,1]")
+    if n_current >= 5:
+        return 0.0
+    return ((5.0 - float(n_current)) / 5.0) * (1.0 - season_progress)
+
+
 def _lambda_from_context(home, away, previous_home, previous_away, previous_weight):
     ha = _blend(home["attack"], previous_home.get("attack") if previous_home else None, previous_weight)
     hd = _blend(away["defense"], previous_away.get("defense") if previous_away else None, previous_weight)
@@ -111,9 +122,22 @@ def _factorial(n: int) -> int:
     for i in range(2, n + 1): out *= i
     return out
 
-def build_model(home_matches, away_matches, *, previous_home_matches=(), previous_away_matches=(), previous_weight=0.0) -> ModelOutput:
+def build_model(
+    home_matches,
+    away_matches,
+    *,
+    previous_home_matches=(),
+    previous_away_matches=(),
+    previous_weight=0.0,
+    season_progress: float | None = None,
+    previous_context_compatible: bool = True,
+) -> ModelOutput:
     home = _ordered_latest(home_matches, True)
     away = _ordered_latest(away_matches, False)
+    if season_progress is not None:
+        previous_weight = previous_season_weight(len(home), season_progress)
+    if not previous_context_compatible:
+        previous_weight = 0.0
     prev_home = _ordered_latest(previous_home_matches, True)
     prev_away = _ordered_latest(previous_away_matches, False)
     if not home or not away: raise ValueError("Au moins un match domicile et un match extérieur sont nécessaires")
@@ -146,6 +170,8 @@ def build_model(home_matches, away_matches, *, previous_home_matches=(), previou
         sample_quality(len(home), len(prev_home), previous_weight, hc["xg_count"] or 0),
         sample_quality(len(away), len(prev_away), previous_weight, ac["xg_count"] or 0),
         {"home_matches_used": len(home), "away_matches_used": len(away),
+         "previous_weight": previous_weight,
+         "previous_context_compatible": bool(previous_context_compatible),
          "home_dates": [m.get("date") for m in home], "away_dates": [m.get("date") for m in away],
          "h2h_used": False,
          "xg_home_used": hc["xg_count"] == len(home),
