@@ -101,3 +101,29 @@ def test_incompatible_previous_context_is_ignored():
     )
     assert out.diagnostics["previous_weight"] == 0.0
     assert out.diagnostics["previous_context_compatible"] is False
+
+
+def test_three_way_handicap_matches_betpawa_convention():
+    rows=[match("2026-08-01",True,2,0),match("2026-08-02",True,1,0),match("2026-08-03",True,3,1)]
+    away=[match("2026-08-01",False,0,1),match("2026-08-02",False,1,2),match("2026-08-03",False,2,2)]
+    out=derive_goal_markets(build_model(rows,away), handicap_lines=(1,))
+    assert "handicap_3way_1_dom" in out
+    assert "handicap_3way_1_nul" in out
+    assert "handicap_3way_1_ext" in out
+    assert abs(out["handicap_3way_1_dom"] + out["handicap_3way_1_nul"] + out["handicap_3way_1_ext"] - 1.0) < 1e-12
+
+def test_half_markets_are_only_emitted_when_both_half_models_exist():
+    home=[match("2026-08-01",True,2,0,buts_marques_mi_temps=1,buts_encaisses_mi_temps=0),
+          match("2026-08-02",True,1,1,buts_marques_mi_temps=0,buts_encaisses_mi_temps=1)]
+    away=[match("2026-08-01",False,0,1,buts_marques_mi_temps=0,buts_encaisses_mi_temps=1),
+          match("2026-08-02",False,1,1,buts_marques_mi_temps=1,buts_encaisses_mi_temps=0)]
+    markets=derive_goal_markets(build_model(home,away))
+    assert "htft_1_1" in markets
+    assert "dom_scores_both_halves" in markets
+    assert abs(markets["half_most_goals_first"] + markets["half_most_goals_second"] + markets["half_most_goals_equal"] - 1.0) < 1e-12
+
+def test_no_corners_or_cards_are_fabricated_from_goal_matrix():
+    home=[match("2026-08-01",True,1,0)]
+    away=[match("2026-08-01",False,0,1)]
+    markets=derive_goal_markets(build_model(home,away))
+    assert not any("corner" in k.lower() or "carton" in k.lower() for k in markets)
