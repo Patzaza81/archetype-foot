@@ -57,14 +57,17 @@ def _geometric_pair(a: Optional[float], b: Optional[float]) -> Optional[float]:
 
 def _context_rates(rows: Sequence[Mapping[str, Any]]) -> Dict[str, Optional[float]]:
     gf, ga = _rate(rows, "buts_marques"), _rate(rows, "buts_encaisses")
-    xg, xga = _rate(rows, "xg"), _rate(rows, "xg_concede")
+    xg_values = [m.get("xg") for m in rows]
+    xga_values = [m.get("xg_concede") for m in rows]
+    xg_complete = bool(rows) and all(_num(v) for v in xg_values) and all(_num(v) for v in xga_values)
+    xg, xga = (_rate(rows, "xg"), _rate(rows, "xg_concede")) if xg_complete else (None, None)
     return {
         "gf": gf, "ga": ga,
         "attack": _geometric_pair(gf, xg) if xg is not None else gf,
         "defense": _geometric_pair(ga, xga) if xga is not None else ga,
         "hf": _rate(rows, "buts_marques_mi_temps"),
         "ha": _rate(rows, "buts_encaisses_mi_temps"),
-        "xg_count": sum(bool(_num(m.get("xg")) and _num(m.get("xg_concede"))) for m in rows),
+        "xg_count": len(rows) if xg_complete else 0,
     }
 
 def sample_quality(n_current: int, n_previous: int = 0, previous_weight: float = 0.0, xg_available: int = 0) -> SampleQuality:
@@ -129,6 +132,9 @@ def build_model(home_matches, away_matches, *, previous_home_matches=(), previou
     half_home = sqrt(max(lhf, 0) * max(adef, 0)) if lhf is not None and adef is not None else None
     half_away = sqrt(max(laf, 0) * max(hdef, 0)) if laf is not None and hdef is not None else None
     first_matrix = poisson_matrix(half_home, half_away) if half_home is not None and half_away is not None else None
+    if first_matrix is not None:
+        half_home = min(half_home, max(LAMBDA_MIN, lh - LAMBDA_MIN))
+        half_away = min(half_away, max(LAMBDA_MIN, la - LAMBDA_MIN))
     second_home = max(LAMBDA_MIN, lh - half_home) if first_matrix is not None else None
     second_away = max(LAMBDA_MIN, la - half_away) if first_matrix is not None else None
     second_matrix = poisson_matrix(second_home, second_away) if second_home is not None and second_away is not None else None
