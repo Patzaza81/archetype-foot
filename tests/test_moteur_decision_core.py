@@ -51,7 +51,8 @@ def test_exact_total_goals_and_basic_markets():
     out=build_model(rows,away)
     markets=derive_goal_markets(out)
     assert "exact_goals_0" in markets and "exact_goals_6_plus" in markets
-    assert abs(sum(markets.values()) - len(markets)) < 1e-9
+    assert abs(markets["victoire"] + markets["nul"] + markets["defaite"] - 1.0) < 1e-12
+    assert abs(markets["exact_goals_0"] + markets["exact_goals_1"] + markets["exact_goals_2"] + markets["exact_goals_3"] + markets["exact_goals_4"] + markets["exact_goals_5"] + markets["exact_goals_6_plus"] - 1.0) < 1e-12
 
 def test_half_model_is_not_invented_when_half_data_missing():
     home=[match("2026-08-01",True,1,0)]
