@@ -76,6 +76,14 @@ en perdaient environ 60 par run. (1) Contrôle du titre trop strict (`scraper_be
 refusé. (2) Date BetPawa = lendemain pour les matchs tardifs en Amérique (`resolution_betpawa.date_compatible`) : MLS 0/16.
 27 tests sur les vrais cas. **À mesurer après le prochain run : couverture BetPawa (30 % avant).**
 
+### Scores de l'historique rétablis (26/09/2026)
+
+L'écriture des scores dans `historique_pronostics.json` avait disparu le 13/09 avec `verification_resultats.py` : aucun
+score depuis le 18/09, journal figé à 638 matchs. Rétablie par `enregistre_scores_historique.py` (pipeline nocturne,
+10 derniers jours ; une page de résultats Matchendirect par jour, statut « TER » seulement, pages de la veille et du
+lendemain pour les matchs tardifs, score existant jamais modifié ; 10 tests). Rattrapage (`scores_rattrapage.yml`) :
+822 matchs sur 921 remplis pour le 18/09-25/09 (99 restants dont 18 reportés) ; journal passé à 848 matchs BetPawa.
+
 ### Chantier C — BetPawa (en dernier)
 
 Couverture (28 % des matchs J0-J+3 au 24/09) et relevé des cotes mi-temps / corners.
