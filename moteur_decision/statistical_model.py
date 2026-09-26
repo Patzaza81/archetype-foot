@@ -174,8 +174,8 @@ def build_model(
     return ModelOutput(
         lh, la, half_home, half_away, second_home, second_away,
         matrix, first_matrix, second_matrix,
-        sample_quality(len(home), len(prev_home), previous_weight, hc["xg_count"] or 0),
-        sample_quality(len(away), len(prev_away), previous_weight, ac["xg_count"] or 0),
+        sample_quality(len(home), len(prev_home), previous_home_weight, hc["xg_count"] or 0),
+        sample_quality(len(away), len(prev_away), previous_away_weight, ac["xg_count"] or 0),
         {"home_matches_used": len(home), "away_matches_used": len(away),
          "previous_home_weight": previous_home_weight,
          "previous_away_weight": previous_away_weight,
