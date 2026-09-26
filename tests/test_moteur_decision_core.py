@@ -99,7 +99,8 @@ def test_incompatible_previous_context_is_ignored():
         season_progress=0.0,
         previous_context_compatible=False,
     )
-    assert out.diagnostics["previous_weight"] == 0.0
+    assert out.diagnostics["previous_home_weight"] == 0.0
+    assert out.diagnostics["previous_away_weight"] == 0.0
     assert out.diagnostics["previous_context_compatible"] is False
 
 
@@ -127,3 +128,13 @@ def test_no_corners_or_cards_are_fabricated_from_goal_matrix():
     away=[match("2026-08-01",False,0,1)]
     markets=derive_goal_markets(build_model(home,away))
     assert not any("corner" in k.lower() or "carton" in k.lower() for k in markets)
+
+
+def test_previous_weights_follow_each_context_sample_separately():
+    home=[match("2026-08-01",True,1,1),match("2026-08-02",True,1,1),match("2026-08-03",True,1,1),match("2026-08-04",True,1,1)]
+    away=[match("2026-08-01",False,1,1),match("2026-08-02",False,1,1)]
+    prev_h=[match("2025-08-01",True,3,1)]
+    prev_a=[match("2025-08-01",False,1,3)]
+    out=build_model(home,away,previous_home_matches=prev_h,previous_away_matches=prev_a,season_progress=0.0)
+    assert out.diagnostics["previous_home_weight"] == .2
+    assert out.diagnostics["previous_away_weight"] == .6
