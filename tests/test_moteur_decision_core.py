@@ -1,7 +1,7 @@
 import math
 import pytest
 
-from moteur_decision.statistical_model import build_model, poisson_matrix
+from moteur_decision.statistical_model import build_model, poisson_matrix, previous_season_weight
 from moteur_decision.market_engine import derive_goal_markets
 from moteur_decision.value_engine import evaluate_market
 
@@ -78,3 +78,26 @@ def test_previous_weight_is_explicit():
     a=build_model(home,away,previous_home_matches=prev_h,previous_away_matches=prev_a,previous_weight=0)
     b=build_model(home,away,previous_home_matches=prev_h,previous_away_matches=prev_a,previous_weight=.5)
     assert a.lambda_home != b.lambda_home
+
+
+def test_previous_season_weight_decreases_with_current_sample_and_progress():
+    assert previous_season_weight(1, 0.0) == .8
+    assert previous_season_weight(2, 0.0) == .6
+    assert previous_season_weight(4, 0.0) == .2
+    assert previous_season_weight(5, 0.0) == 0.0
+    assert previous_season_weight(2, 0.5) == .3
+
+def test_incompatible_previous_context_is_ignored():
+    home=[match("2026-08-01",True,1,1)]
+    away=[match("2026-08-01",False,1,1)]
+    prev_h=[match("2025-08-01",True,4,1)]
+    prev_a=[match("2025-08-01",False,1,4)]
+    out=build_model(
+        home, away,
+        previous_home_matches=prev_h,
+        previous_away_matches=prev_a,
+        season_progress=0.0,
+        previous_context_compatible=False,
+    )
+    assert out.diagnostics["previous_weight"] == 0.0
+    assert out.diagnostics["previous_context_compatible"] is False
