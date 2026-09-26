@@ -157,11 +157,14 @@ def build_model(
     half_away = sqrt(max(laf, 0) * max(hdef, 0)) if laf is not None and hdef is not None else None
     first_matrix = None
     if half_home is not None and half_away is not None:
-        half_home = min(half_home, max(LAMBDA_MIN, lh - LAMBDA_MIN))
-        half_away = min(half_away, max(LAMBDA_MIN, la - LAMBDA_MIN))
+        # Les composantes de mi-temps peuvent être nulles; seule la lambda
+        # du match complet impose LAMBDA_MIN. Les deux moitiés doivent
+        # exactement recomposer la lambda totale.
+        half_home = min(half_home, max(0.0, lh))
+        half_away = min(half_away, max(0.0, la))
         first_matrix = poisson_matrix(half_home, half_away)
-    second_home = max(LAMBDA_MIN, lh - half_home) if first_matrix is not None else None
-    second_away = max(LAMBDA_MIN, la - half_away) if first_matrix is not None else None
+    second_home = max(0.0, lh - half_home) if first_matrix is not None else None
+    second_away = max(0.0, la - half_away) if first_matrix is not None else None
     second_matrix = poisson_matrix(second_home, second_away) if second_home is not None and second_away is not None else None
 
     return ModelOutput(
