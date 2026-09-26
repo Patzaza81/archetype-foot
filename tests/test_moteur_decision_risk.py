@@ -38,3 +38,21 @@ def test_explicit_conflict_is_respected():
     ]
     out=decide(cs,max_selections=3)
     assert {x.market for x in out}=={"btts_oui","clean_sheet_dom"}
+
+
+def test_same_exposure_keeps_only_explicit_best_candidate():
+    cs=[
+      {"market":"btts_oui","probability":.70,"odds":1.60,"edge":.075,"edv":12,"eligible":True,"justification_code":"A"},
+      {"market":"btts_non","probability":.72,"odds":1.55,"edge":.0755,"edv":11.70,"eligible":True,"justification_code":"B"},
+      {"market":"clean_sheet_dom","probability":.64,"odds":1.70,"edge":.052,"edv":8.84,"eligible":True,"justification_code":"C"},
+    ]
+    out=decide(cs,max_selections=3)
+    assert {x.market for x in out}=={"btts_oui","clean_sheet_dom"}
+
+def test_less_than_three_is_valid_when_only_two_opportunities_exist():
+    cs=[
+      {"market":"btts_oui","probability":.70,"odds":1.60,"edge":.075,"edv":12,"eligible":True,"justification_code":"A"},
+      {"market":"clean_sheet_dom","probability":.64,"odds":1.70,"edge":.052,"edv":8.84,"eligible":True,"justification_code":"C"},
+    ]
+    out=decide(cs,max_selections=3)
+    assert len(out)==2
