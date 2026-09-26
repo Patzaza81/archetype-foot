@@ -131,10 +131,11 @@ def build_model(home_matches, away_matches, *, previous_home_matches=(), previou
     adef = _blend(afa, _rate(prev_away, "buts_encaisses_mi_temps"), previous_weight)
     half_home = sqrt(max(lhf, 0) * max(adef, 0)) if lhf is not None and adef is not None else None
     half_away = sqrt(max(laf, 0) * max(hdef, 0)) if laf is not None and hdef is not None else None
-    first_matrix = poisson_matrix(half_home, half_away) if half_home is not None and half_away is not None else None
-    if first_matrix is not None:
+    first_matrix = None
+    if half_home is not None and half_away is not None:
         half_home = min(half_home, max(LAMBDA_MIN, lh - LAMBDA_MIN))
         half_away = min(half_away, max(LAMBDA_MIN, la - LAMBDA_MIN))
+        first_matrix = poisson_matrix(half_home, half_away)
     second_home = max(LAMBDA_MIN, lh - half_home) if first_matrix is not None else None
     second_away = max(LAMBDA_MIN, la - half_away) if first_matrix is not None else None
     second_matrix = poisson_matrix(second_home, second_away) if second_home is not None and second_away is not None else None
@@ -147,6 +148,6 @@ def build_model(home_matches, away_matches, *, previous_home_matches=(), previou
         {"home_matches_used": len(home), "away_matches_used": len(away),
          "home_dates": [m.get("date") for m in home], "away_dates": [m.get("date") for m in away],
          "h2h_used": False,
-         "xg_home_used": _rate(home, "xg") is not None and _rate(home, "xg_concede") is not None,
-         "xg_away_used": _rate(away, "xg") is not None and _rate(away, "xg_concede") is not None,
+         "xg_home_used": hc["xg_count"] == len(home),
+         "xg_away_used": ac["xg_count"] == len(away),
          "previous_season_used": previous_weight > 0 and bool(prev_home) and bool(prev_away)})
