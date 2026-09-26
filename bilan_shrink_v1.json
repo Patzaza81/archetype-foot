@@ -1,10 +1,104 @@
 {
   "global": {
-    "observations": 0,
-    "gagnes": 0,
-    "perdus": 0,
-    "somme_gains_flat_stake": 0.0,
-    "roi_flat": null
+    "observations": 10,
+    "gagnes": 5,
+    "perdus": 5,
+    "somme_gains_flat_stake": 0.08999999999999941,
+    "roi_flat": 0.008999999999999942
   },
-  "par_famille": {}
+  "par_famille": {
+    "DOUBLE_CHANCE": {
+      "resume": {
+        "observations": 2,
+        "gagnes": 0,
+        "perdus": 2,
+        "somme_gains_flat_stake": -2.0,
+        "roi_flat": -1.0
+      },
+      "par_niveau": {
+        "CAT_A": {
+          "observations": 2,
+          "gagnes": 0,
+          "perdus": 2,
+          "somme_gains_flat_stake": -2.0,
+          "roi_flat": -1.0
+        }
+      }
+    },
+    "HANDICAP": {
+      "resume": {
+        "observations": 2,
+        "gagnes": 1,
+        "perdus": 1,
+        "somme_gains_flat_stake": -0.3400000000000001,
+        "roi_flat": -0.17000000000000004
+      },
+      "par_niveau": {
+        "CAT_B": {
+          "observations": 1,
+          "gagnes": 0,
+          "perdus": 1,
+          "somme_gains_flat_stake": -1.0,
+          "roi_flat": -1.0
+        },
+        "CAT_A": {
+          "observations": 1,
+          "gagnes": 1,
+          "perdus": 0,
+          "somme_gains_flat_stake": 0.6599999999999999,
+          "roi_flat": 0.6599999999999999
+        }
+      }
+    },
+    "RESULT": {
+      "resume": {
+        "observations": 2,
+        "gagnes": 1,
+        "perdus": 1,
+        "somme_gains_flat_stake": 1.2999999999999998,
+        "roi_flat": 0.6499999999999999
+      },
+      "par_niveau": {
+        "CAT_A": {
+          "observations": 1,
+          "gagnes": 0,
+          "perdus": 1,
+          "somme_gains_flat_stake": -1.0,
+          "roi_flat": -1.0
+        },
+        "CAT_B": {
+          "observations": 1,
+          "gagnes": 1,
+          "perdus": 0,
+          "somme_gains_flat_stake": 2.3,
+          "roi_flat": 2.3
+        }
+      }
+    },
+    "GOALS_TOTAL": {
+      "resume": {
+        "observations": 4,
+        "gagnes": 3,
+        "perdus": 1,
+        "somme_gains_flat_stake": 1.1299999999999997,
+        "roi_flat": 0.2824999999999999
+      },
+      "par_niveau": {
+        "CAT_C": {
+          "observations": 1,
+          "gagnes": 0,
+          "perdus": 1,
+          "somme_gains_flat_stake": -1.0,
+          "roi_flat": -1.0
+        },
+        "CAT_A": {
+          "observations": 3,
+          "gagnes": 3,
+          "perdus": 0,
+          "somme_gains_flat_stake": 2.13,
+          "roi_flat": 0.71
+        }
+      }
+    }
+  }
 }
