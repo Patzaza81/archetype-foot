@@ -29,10 +29,6 @@ def _exact_goals(m):
     out["exact_goals_6_plus"]=_event(m,lambda h,a:h+a>=6)
     return out
 
-def _normalize(d):
-    s=sum(d.values())
-    return {k:v/s for k,v in d.items()} if s else d
-
 def derive_goal_markets(model: ModelOutput, handicap_lines=()):
     m=model.score_matrix
     w,d,l=_half_result(m)
@@ -71,4 +67,4 @@ def derive_goal_markets(model: ModelOutput, handicap_lines=()):
                     "2e_mi_temps_clean_sheet_ext":_clean(model.score_matrix_second_half,False)})
         for x in range(6):
             o,u=_ou(model.score_matrix_second_half,x+0.5); out[f"2e_mi_temps_over_{x}_5"],out[f"2e_mi_temps_under_{x}_5"]=o,u
-    return _normalize(out)
+    return out
