@@ -65,7 +65,7 @@ def test_value_rules():
     r=evaluate_market("btts_oui",.68,1.60)
     assert r.eligible
     assert abs(r.edge-(.68-1/1.60)) < 1e-12
-    assert abs(r.edv-(1.60*r.edge)) < 1e-12
+    assert abs(r.edv-(100*1.60*r.edge)) < 1e-12
     assert r.ev == r.edv
     assert not evaluate_market("x",.59,1.60).eligible
     assert not evaluate_market("x",.70,1.80).eligible
