@@ -180,6 +180,10 @@ La variation doit être déterministe et fondée sur la preuve disponible, pas a
   être ajoutée à cette archive, avec un nouveau `SCHEMA_VERSION`.
 - **Tout nouveau moteur est jugé sur cette archive** (et sur Football-Data) avant tout branchement au pipeline : il doit
   au minimum prédire aussi bien que le marché.
+- **Football-Data (SCHEMA_VERSION 2)** : l'assemblage `data/assemblage/equipes.json` est lu par `contrat_moteur.py`
+  (seul lecteur autorisé) et chaque match y est gardé EN ENTIER (mi-temps, tirs, corners, cartons, xG), même règle
+  anti-fuite. Constat du 27/09 : cet assemblage est publié chaque nuit mais **aucun moteur ne le lit encore**
+  (chantier B). Assemblage absent ou contrat rompu : le bloc `assemblage` porte la raison, le reste est écrit.
 - **Exécution** : chaque nuit, à la fin de `enregistre_scores_historique.py` (`execution_nocturne()`), donc après
   `precalcul.py` et sa garde ; `data/` est déjà commité par le workflow. Chaque équipe est retrouvée par l'adresse
   exacte du match dans `cache_equipes_saison.json`, jamais par ressemblance de nom.

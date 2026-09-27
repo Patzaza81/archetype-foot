@@ -290,3 +290,133 @@ def test_execution_nocturne_sans_precalcul(tmp_path):
 
 def test_dossier_par_defaut_est_commite_par_le_workflow():
     assert adt.DOSSIER.replace("\\", "/") == "data/archive_test"
+
+
+# --- données Football-Data (assemblage lu par contrat_moteur) -------------------------------------------------------
+
+def fd(date, bm=1, be=0, dom=True, **extra):
+    base = {"date": date, "domicile": dom, "adversaire": "X", "buts_marques": bm, "buts_encaisses": be,
+            "buts_marques_mi_temps": 1, "buts_encaisses_mi_temps": 0, "tirs": 12, "tirs_concedes": 8,
+            "tirs_cadres": 5, "tirs_cadres_concedes": 2, "corners": 6, "corners_concedes": 3,
+            "cartons_jaunes": 2, "cartons_rouges": 0, "xg": None, "xg_concede": None,
+            "source": "football-data", "provisoire": False, "saison": "2627", "url_match": None}
+    base.update(extra)
+    return base
+
+
+def doc_assemblage(*equipes):
+    return {"version_contrat": 1, "version": "1.0.0", "genere_le": "2026-09-26 23:57 UTC", "saison_football_data": "2627",
+            "regle": "test", "bilan": {}, "equipes": list(equipes)}
+
+
+def eq_fd(slug, matchs, comp="italie : série c girone a"):
+    return {"cle_cache": f"https://www.matchendirect.fr/equipe/{slug}_abc123.html||{comp}", "competition": comp,
+            "couverte_par_football_data": True, "division_football_data": "I3", "nom_football_data": slug.title(),
+            "nom_matchendirect": slug.title(), "matchs": matchs}
+
+
+@pytest.mark.parametrize("date_equipe", ["2026-09-26", "2026-09-01", "2026-08-10"])
+def test_match_complet_d_avant_garde_en_entier(date_equipe):
+    gardes, apres, inval = adt.matchs_complets_avant([fd(date_equipe)], "2026-09-27")
+    assert len(gardes) == 1 and apres == 0 and inval == 0
+    assert gardes[0]["corners"] == 6 and gardes[0]["buts_marques_mi_temps"] == 1 and gardes[0]["tirs_cadres"] == 5
+
+
+@pytest.mark.parametrize("brut,retire,invalide", [
+    (fd("2026-09-27"), 1, 0),                 # jour du match
+    (fd("2026-10-02"), 1, 0),                 # après
+    (fd(None), 0, 1),                         # sans date
+])
+def test_match_complet_du_jour_apres_ou_sans_date_retire(brut, retire, invalide):
+    gardes, apres, inval = adt.matchs_complets_avant([brut], "2026-09-27")
+    assert gardes == [] and apres == retire and inval == invalide
+
+
+def test_match_complet_est_une_copie():
+    source = [fd("2026-09-20")]
+    gardes, _, _ = adt.matchs_complets_avant(source, "2026-09-27")
+    gardes[0]["corners"] = 99
+    assert source[0]["corners"] == 6
+
+
+URL_EQ = "https://www.matchendirect.fr/equipe/{}_abc123.html"
+
+
+def test_equipe_assemblage_ok_compte_les_donnees():
+    doc = doc_assemblage(eq_fd("pescara", [fd("2026-09-06"), fd("2026-09-20", corners=None), fd("2026-09-27")]))
+    b = adt.equipe_assemblage(doc, URL_EQ.format("pescara"), COMP, "2026-09-27")
+    assert b["statut"] == "OK" and b["couverte_par_football_data"] is True
+    assert len(b["matchs"]) == 2 and b["matchs_retires_apres_date"] == 1
+    assert b["nb_football_data"] == 2 and b["nb_avec_mi_temps"] == 2 and b["nb_avec_corners"] == 1
+
+
+@pytest.mark.parametrize("doc,url,statut", [
+    (None, URL_EQ.format("pescara"), "ASSEMBLAGE_INDISPONIBLE"),
+    (doc_assemblage(eq_fd("spezia", [])), URL_EQ.format("pescara"), "ABSENTE"),     # équipe absente
+    (doc_assemblage(eq_fd("pescara", [])), None, "ABSENTE"),                       # adresse inconnue
+])
+def test_equipe_assemblage_non_disponible(doc, url, statut):
+    assert adt.equipe_assemblage(doc, url, COMP, "2026-09-27")["statut"] == statut
+
+
+def test_equipe_assemblage_autre_competition_jamais():
+    doc = doc_assemblage(eq_fd("pescara", [fd("2026-09-06")], comp="italie : série b"))
+    assert adt.equipe_assemblage(doc, URL_EQ.format("pescara"), COMP, "2026-09-27")["statut"] == "ABSENTE"
+
+
+def test_charge_assemblage_valide(tmp_path):
+    f = tmp_path / "equipes.json"
+    f.write_text(json.dumps(doc_assemblage(eq_fd("pescara", [fd("2026-09-06")]))))
+    etat = adt.charge_assemblage_sur(str(f))
+    assert etat["statut"] == "OK" and etat["doc"]["version_contrat"] == 1
+
+
+@pytest.mark.parametrize("contenu,debut", [
+    (None, "ASSEMBLAGE_ABSENT"),                                                      # fichier absent
+    ({"version_contrat": 99, "equipes": []}, "ASSEMBLAGE_REFUSE"),                    # contrat rompu
+    ("pas du json {", "ASSEMBLAGE_REFUSE"),                                           # fichier illisible
+])
+def test_charge_assemblage_jamais_d_exception(tmp_path, contenu, debut):
+    f = tmp_path / "equipes.json"
+    if contenu is not None:
+        f.write_text(contenu if isinstance(contenu, str) else json.dumps(contenu))
+    etat = adt.charge_assemblage_sur(str(f))
+    assert etat["doc"] is None and etat["statut"].startswith(debut)
+
+
+def test_archive_avec_football_data_bout_en_bout(tmp_path):
+    cache = _cache("pescara", "spezia")
+    for e in cache.values():
+        e["resultat"] = stats_ok()
+    (tmp_path / "cache.json").write_text(json.dumps(cache))
+    (tmp_path / "equipes.json").write_text(json.dumps(doc_assemblage(
+        eq_fd("pescara", [fd("2026-09-06"), fd("2026-09-20")]),
+        eq_fd("spezia", [fd("2026-09-13", dom=False)]))))
+    s = signal("m1", "Pescara", "Spezia")
+    s["competition"], s["url_match"] = COMP, URL.format("pescara-spezia")
+    (tmp_path / "precalcul.json").write_text(json.dumps({"genere_le": "2026-09-27 01:00 UTC", "signaux": [s]}))
+    dossier = str(tmp_path / "data" / "archive_test")
+    b = adt.archive_depuis_fichiers(str(tmp_path / "precalcul.json"), str(tmp_path / "cache.json"), dossier,
+                                    fichier_assemblage=str(tmp_path / "equipes.json"))
+    assert b["avec_football_data"] == 1
+    e = adt.charge_fichier(os.path.join(dossier, "2026-09-27.json.gz"))["m1"]
+    assert e["schema_version"] == 2 and e["donnees_football_data"] is True
+    assert e["assemblage"]["genere_le"] == "2026-09-26 23:57 UTC"
+    assert e["assemblage"]["equipe_ext"]["matchs"][0]["corners"] == 6
+    assert adt.bilan_archive(dossier)["avec_football_data"] == 1
+
+
+def test_archive_sans_assemblage_ecrit_quand_meme(tmp_path):
+    cache = _cache("pescara", "spezia")
+    for e in cache.values():
+        e["resultat"] = stats_ok()
+    (tmp_path / "cache.json").write_text(json.dumps(cache))
+    s = signal("m1", "Pescara", "Spezia")
+    s["competition"], s["url_match"] = COMP, URL.format("pescara-spezia")
+    (tmp_path / "precalcul.json").write_text(json.dumps({"genere_le": "2026-09-27 01:00 UTC", "signaux": [s]}))
+    dossier = str(tmp_path / "archive_test")
+    b = adt.archive_depuis_fichiers(str(tmp_path / "precalcul.json"), str(tmp_path / "cache.json"), dossier,
+                                    fichier_assemblage=str(tmp_path / "absent.json"))
+    e = adt.charge_fichier(os.path.join(dossier, "2026-09-27.json.gz"))["m1"]
+    assert b["testables"] == 1 and e["testable"] is True
+    assert e["assemblage"]["statut"] == "ASSEMBLAGE_ABSENT" and e["donnees_football_data"] is False
