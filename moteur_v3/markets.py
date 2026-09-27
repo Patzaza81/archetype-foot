@@ -180,3 +180,67 @@ def derive_markets(model, handicap_lines: Mapping[str, float] | list[float] | tu
 
     # Corners/cartons ne sont jamais dérivés des buts.
     return out
+
+
+def _predicate_for_market(market):
+    if market == "1x2_1":
+        return lambda h, a: h > a
+    if market == "1x2_X":
+        return lambda h, a: h == a
+    if market == "1x2_2":
+        return lambda h, a: h < a
+    if market == "dc_1X":
+        return lambda h, a: h >= a
+    if market == "dc_X2":
+        return lambda h, a: h <= a
+    if market == "dc_12":
+        return lambda h, a: h != a
+    if market == "btts_yes":
+        return lambda h, a: h > 0 and a > 0
+    if market == "btts_no":
+        return lambda h, a: h == 0 or a == 0
+    if market.startswith(("over_", "under_")):
+        side, token = market.split("_", 1)
+        line = float(token.replace("_", "."))
+        return (lambda h, a, line=line: h + a > line) if side == "over" else (lambda h, a, line=line: h + a <= line)
+    if market.startswith(("home_over_", "home_under_")):
+        side, token = market.split("_", 2)[1:]
+        line = float(token.replace("_", "."))
+        return (lambda h, a, line=line: h > line) if side == "over" else (lambda h, a, line=line: h <= line)
+    if market.startswith(("away_over_", "away_under_")):
+        side, token = market.split("_", 2)[1:]
+        line = float(token.replace("_", "."))
+        return (lambda h, a, line=line: a > line) if side == "over" else (lambda h, a, line=line: a <= line)
+    if market == "clean_home":
+        return lambda h, a: a == 0
+    if market == "clean_away":
+        return lambda h, a: h == 0
+    if market.startswith("exact_goals_"):
+        token = market.removeprefix("exact_goals_")
+        if token == "6_plus":
+            return lambda h, a: h + a >= 6
+        n = int(token)
+        return lambda h, a, n=n: h + a == n
+    if market.startswith("handicap_"):
+        _, token, side = market.split("_")
+        line = float(token)
+        if side == "1":
+            return lambda h, a, line=line: h - line > a
+        if side == "X":
+            return lambda h, a, line=line: h - line == a
+        if side == "2":
+            return lambda h, a, line=line: h - line < a
+    return None
+
+
+def pairwise_joint_probability(markets, matrix):
+    """Probabilités conjointes exactes pour les marchés FT dérivés de la matrice."""
+    predicates = {m: _predicate_for_market(m) for m in markets}
+    out = {}
+    for a in markets:
+        for b in markets:
+            pa, pb = predicates.get(a), predicates.get(b)
+            if pa is None or pb is None:
+                continue
+            out[(a, b)] = _event(matrix, lambda h, x, pa=pa, pb=pb: pa(h, x) and pb(h, x))
+    return out
