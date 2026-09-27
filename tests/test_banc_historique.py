@@ -50,19 +50,54 @@ def test_probabilites_marche_groupe_incomplet(cotes, absent):
 
 # --- verdicts ---------------------------------------------------------------------------------------------------------
 
-@pytest.mark.parametrize("n_matchs,n_obs,ic,attendu", [
-    (150, 1000, (-0.03, -0.01), "AVANTAGE MESURABLE"),
-    (150, 1000, (0.01, 0.03), "MOINS BON QUE LE MARCHÉ"),
-    (150, 1000, (-0.01, 0.02), "AUCUN AVANTAGE MESURABLE"),
+# Verdict sur les DEUX mesures (écart modèle - marché : négatif = modèle meilleur).
+@pytest.mark.parametrize("ic_ll,ic_br,attendu", [
+    ((-0.03, -0.01), (-0.02, -0.001), "AVANTAGE MESURABLE"),        # meilleur sur les deux
+    ((-0.03, -0.01), (-0.01, 0.02), "AVANTAGE MESURABLE"),          # meilleur sur une, jamais pire
+    ((-0.01, 0.02), (-0.02, -0.001), "AVANTAGE MESURABLE"),         # idem, l'autre mesure
 ])
-def test_verdict_echantillon_suffisant(n_matchs, n_obs, ic, attendu):
-    assert bh.verdict(n_matchs, n_obs, ic) == attendu
+def test_verdict_avantage_seulement_si_jamais_pire(ic_ll, ic_br, attendu):
+    assert bh.verdict(150, 1000, ic_ll, ic_br) == attendu
 
 
-@pytest.mark.parametrize("n_matchs,n_obs,ic", [(99, 1000, (-0.03, -0.01)), (150, 199, (-0.03, -0.01)),
-                                               (150, 1000, None)])
-def test_verdict_echantillon_insuffisant_jamais_de_conclusion(n_matchs, n_obs, ic):
-    assert bh.verdict(n_matchs, n_obs, ic) == "ÉCHANTILLON INSUFFISANT"
+@pytest.mark.parametrize("ic_ll,ic_br,attendu", [
+    ((-0.03, -0.01), (0.001, 0.02), "MOINS BON QUE LE MARCHÉ"),     # meilleur en log-loss mais PIRE en Brier
+    ((0.01, 0.03), (-0.02, -0.001), "MOINS BON QUE LE MARCHÉ"),     # pire en log-loss
+    ((-0.01, 0.02), (-0.01, 0.01), "AUCUN AVANTAGE MESURABLE"),     # rien de significatif
+])
+def test_verdict_pire_sur_une_mesure_ou_rien(ic_ll, ic_br, attendu):
+    assert bh.verdict(150, 1000, ic_ll, ic_br) == attendu
+
+
+@pytest.mark.parametrize("n_matchs,n_obs,ic_ll,ic_br", [(99, 1000, (-0.03, -0.01), (-0.03, -0.01)),
+                                                        (150, 199, (-0.03, -0.01), (-0.03, -0.01)),
+                                                        (150, 1000, (-0.03, -0.01), None)])
+def test_verdict_echantillon_insuffisant_jamais_de_conclusion(n_matchs, n_obs, ic_ll, ic_br):
+    assert bh.verdict(n_matchs, n_obs, ic_ll, ic_br) == "ÉCHANTILLON INSUFFISANT"
+
+
+# --- calibration : verdict propre, jamais « hors tolérance » sur un petit échantillon --------------------------------
+
+@pytest.mark.parametrize("n,ecart,attendu", [(30, 0.05, "CALIBRATION_ACCEPTABLE"), (500, -0.049, "CALIBRATION_ACCEPTABLE"),
+                                             (30, 0.0, "CALIBRATION_ACCEPTABLE")])
+def test_tranche_acceptable(n, ecart, attendu):
+    assert bh.statut_tranche(n, ecart) == attendu
+
+
+@pytest.mark.parametrize("n,ecart,attendu", [(30, 0.051, "CALIBRATION_HORS_TOLERANCE"),
+                                             (500, -0.20, "CALIBRATION_HORS_TOLERANCE"),
+                                             (29, 0.30, "ÉCHANTILLON INSUFFISANT")])     # petit : jamais « mauvaise »
+def test_tranche_hors_tolerance_ou_insuffisante(n, ecart, attendu):
+    assert bh.statut_tranche(n, ecart) == attendu
+
+
+@pytest.mark.parametrize("statuts,attendu", [
+    (["CALIBRATION_ACCEPTABLE", "ÉCHANTILLON INSUFFISANT"], "CALIBRATION_ACCEPTABLE"),
+    (["CALIBRATION_ACCEPTABLE", "CALIBRATION_HORS_TOLERANCE"], "CALIBRATION_HORS_TOLERANCE"),
+    (["ÉCHANTILLON INSUFFISANT", "ÉCHANTILLON INSUFFISANT"], "ÉCHANTILLON INSUFFISANT"),
+])
+def test_verdict_calibration_global(statuts, attendu):
+    assert bh.verdict_calibration([{"statut": s} for s in statuts]) == attendu
 
 
 # --- évaluation complète sur un jeu synthétique -----------------------------------------------------------------------
@@ -112,12 +147,28 @@ def test_modele_qui_plante_compte_jamais_masque():
     def casse(entree):
         raise KeyError("x")
     r = bh.evalue(jeu_synthetique(10), casse, tirages=50)
-    assert r["global"] is None and r["rejets"] == {"erreur du modèle : KeyError": 10}
+    assert r["global"] is None and r["rejets"] == {"ERREUR_MOTEUR": 10}
+    assert r["rejets_detail"]["ERREUR_MOTEUR"] == {"KeyError": 10}
 
 
-def test_probabilite_invalide_rejetee():
-    r = bh.evalue(jeu_synthetique(10), lambda e: {"victoire": 1.4, "nul": 0.3}, tirages=50)
-    assert r["rejets"]["probabilité invalide"] == 10 and r["global"]["observations"] == 10
+def test_codes_de_rejet_distincts():
+    def modele(entree):
+        return {"victoire": 1.4, "nul": 0.3, "defaite": None, "exact_goals_2": 0.3, "marche_invente": 0.5}
+    r = bh.evalue(jeu_synthetique(10), modele, tirages=50)
+    assert r["rejets"]["PROBABILITÉ_INVALIDE"] == 10                   # victoire = 1,4
+    assert r["rejets_detail"]["MARCHÉ_NON_DISPONIBLE"]["defaite"] == 10  # absence explicite (None)
+    assert r["rejets_detail"]["MARCHÉ_NON_DISPONIBLE"]["btts_oui"] == 10  # cote présente, rien du moteur
+    assert r["rejets_detail"]["PAS_DE_COTE"]["exact_goals_2"] == 10      # probabilité sans cote : jamais évaluée
+    assert r["rejets_detail"]["MARCHÉ_HORS_REGISTRE"]["marche_invente"] == 10
+    assert r["global"]["observations"] == 10                            # seul « nul » est évalué
+
+
+def test_match_sans_aucune_cote():
+    jeu = jeu_synthetique(5)
+    for e, _ in jeu:
+        e["cotes"] = {}
+    r = bh.evalue(jeu, bh.modele_marche, tirages=50)
+    assert r["rejets"] == {"PAS_DE_COTE": 5} and r["global"] is None
 
 
 # --- règle de décision de référence (V2) -----------------------------------------------------------------------------
@@ -190,7 +241,9 @@ def test_archive_charge_uniquement_testables_avec_score(tmp_path):
 # --- verrou de non-régression : chiffres mesurés le 27/09/2026 sur le jeu figé --------------------------------------
 
 def test_non_regression_v2_sur_le_jeu_fige():
-    r = bh.evalue(bh.charge_snapshot(), bh.modele_v2_produit, bh.selection_regle_v2, tirages=50)
+    perim = bh.PERIMETRE_REFERENCE_2709
+    r = bh.evalue(bh.charge_snapshot(), bh.restreint(bh.modele_v2_produit, perim),
+                  bh.restreint(bh.selection_regle_v2, perim), tirages=50)
     sel = r["selection"]
     assert sel["selections"] == 548 and sel["matchs"] == 353
     assert abs(sel["reussite_reelle"] - 0.6332) < 0.0005 and abs(sel["reussite_annoncee"] - 0.8190) < 0.0005
@@ -204,3 +257,88 @@ def test_erreur_de_la_regle_de_decision_comptee():
     sel = bh.evalue(jeu_synthetique(10), bh.modele_marche, regle_cassee, tirages=50)["selection"]
     assert sel["selections"] == 0 and sel["erreurs"] == {"ValueError": 10}
     assert "ERREURS" in bh.rapport_texte("t", bh.evalue(jeu_synthetique(10), bh.modele_marche, regle_cassee, tirages=50))
+
+
+def test_perimetre_de_reference_jamais_modifie():
+    attendu = {"victoire", "nul", "defaite", "dc_1X", "dc_X2", "dc_12", "btts_oui", "btts_non"} | \
+        {f"{s}_{x}_5" for s in ("over", "under") for x in range(5)}
+    assert set(bh.PERIMETRE_REFERENCE_2709) == attendu
+
+
+# --- registre complet : règles de gain et marge retirée --------------------------------------------------------------
+
+@pytest.mark.parametrize("marche,h,a", [("over_5_5", 4, 2), ("buts_dom_over_1_5", 2, 0), ("clean_sheet_dom", 3, 0),
+                                        ("clean_sheet_ext_non", 1, 0), ("exact_goals_3", 2, 1),
+                                        ("exact_goals_6_plus", 4, 3), ("buts_ext_under_0_5", 5, 0)])
+def test_nouveaux_marches_gagnent(marche, h, a):
+    assert bh.gagne(marche, h, a) is True
+
+
+@pytest.mark.parametrize("marche,h,a", [("over_5_5", 3, 2), ("buts_dom_over_1_5", 1, 3), ("clean_sheet_dom", 0, 1),
+                                        ("clean_sheet_ext_non", 0, 4), ("exact_goals_3", 2, 2),
+                                        ("exact_goals_6_plus", 3, 2), ("buts_ext_under_0_5", 0, 1)])
+def test_nouveaux_marches_perdent(marche, h, a):
+    assert bh.gagne(marche, h, a) is False
+
+
+def test_nombre_exact_normalise_sur_ses_7_issues():
+    cotes = {f"exact_goals_{n}": c for n, c in zip(range(6), (9.0, 4.5, 3.4, 3.8, 5.5, 9.5))}
+    cotes["exact_goals_6_plus"] = 14.0
+    p = bh.probabilites_marche(cotes)
+    assert abs(sum(p[f"exact_goals_{n}"] for n in range(6)) + p["exact_goals_6_plus"] - 1) < 1e-12
+
+
+@pytest.mark.parametrize("cotes,oui,attendu_non", [
+    ({"clean_sheet_dom": 3.0, "clean_sheet_dom_non": 1.35}, "clean_sheet_dom", "clean_sheet_dom_non"),
+    ({"clean_sheet_dom": 3.0, "buts_ext_over_0_5": 1.35}, "clean_sheet_dom", "buts_ext_over_0_5"),  # même événement
+    ({"clean_sheet_ext": 4.0, "buts_dom_over_0_5": 1.2}, "clean_sheet_ext", "buts_dom_over_0_5"),
+])
+def test_cage_inviolee_marge_retiree_avec_son_complement(cotes, oui, attendu_non):
+    p = bh.probabilites_marche(cotes)
+    attendu = (1 / cotes[oui]) / (1 / cotes[oui] + 1 / cotes[attendu_non])
+    assert abs(p[oui] - attendu) < 1e-12 and abs(p[oui] + p[oui + "_non"] - 1) < 1e-12
+
+
+@pytest.mark.parametrize("cotes,absent", [
+    ({"clean_sheet_dom": 3.0}, "clean_sheet_dom"),                                       # aucun complément
+    ({f"exact_goals_{n}": 5.0 for n in range(6)}, "exact_goals_0"),                     # 6+ manquant
+    ({"buts_dom_over_0_5": 1.3}, "buts_dom_over_0_5"),                                  # paire incomplète
+])
+def test_aucune_probabilite_inventee_pour_un_groupe_incomplet(cotes, absent):
+    assert absent not in bh.probabilites_marche(cotes)
+
+
+def test_archive_nouveaux_marches_betpawa():
+    e = {"cotes_betpawa": {"nombre_exact_buts": {"0": 9.0, "6+": 14.0}, "over_under_5.5": {"plus": 6.0, "moins": 1.1},
+                           "over_under_domicile_1.5": {"plus": 2.2, "moins": 1.6},
+                           "cages_inviolees_exterieur": {"oui": 3.2, "non": 1.3}},
+         "cotes_observees": {"Cage inviolée - Domicile": 2.9, "Plus de 0.5 buts - Extérieur": 1.4}}
+    c = bh.cotes_archive(e)
+    assert c["exact_goals_0"] == 9.0 and c["exact_goals_6_plus"] == 14.0 and c["over_5_5"] == 6.0
+    assert c["buts_dom_over_1_5"] == 2.2 and c["clean_sheet_ext_non"] == 1.3
+    assert c["clean_sheet_dom"] == 2.9 and c["buts_ext_over_0_5"] == 1.4
+
+
+@pytest.mark.parametrize("libelle,marche,h,a,gagnant", [
+    ("Cage inviolée - Domicile", "clean_sheet_dom", 2, 0, True),
+    ("Encaisse au moins 1 but - Domicile", "clean_sheet_dom_non", 2, 1, True),     # le domicile encaisse
+    ("Encaisse au moins 1 but - Extérieur", "clean_sheet_ext_non", 1, 0, True),    # l'extérieur encaisse
+    ("Encaisse au moins 1 but - Domicile", "clean_sheet_dom_non", 3, 0, False),
+    ("Cage inviolée - Extérieur", "clean_sheet_ext", 1, 1, False),
+    ("Encaisse au moins 1 but - Extérieur", "clean_sheet_ext_non", 0, 2, False),
+])
+def test_libelles_cage_inviolee_relies_a_la_bonne_equipe(libelle, marche, h, a, gagnant):
+    assert bh.cotes_archive({"cotes_observees": {libelle: 2.0}}) == {marche: 2.0}
+    assert bh.gagne(marche, h, a) is gagnant
+
+
+def test_restreint_filtre_modele_et_selection():
+    m = bh.restreint(lambda e: {"victoire": 0.5, "over_5_5": 0.1}, {"victoire"})
+    s = bh.restreint(lambda e, p: ["victoire", "over_5_5"], {"victoire"})
+    assert m({}) == {"victoire": 0.5} and s({}, {}) == ["victoire"]
+
+
+def test_rapport_separe_performance_et_calibration():
+    texte = bh.rapport_texte("t", bh.evalue(jeu_synthetique(), bh.modele_marche, tirages=50))
+    assert "PERFORMANCE VS MARCHÉ" in texte and "\nCALIBRATION :" in texte
+    assert texte.index("-- Par marché") < texte.index("-- Par famille") < texte.index("-- Par taille")
