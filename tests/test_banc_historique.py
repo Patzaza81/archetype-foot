@@ -342,3 +342,94 @@ def test_rapport_separe_performance_et_calibration():
     texte = bh.rapport_texte("t", bh.evalue(jeu_synthetique(), bh.modele_marche, tirages=50))
     assert "PERFORMANCE VS MARCHÉ" in texte and "\nCALIBRATION :" in texte
     assert texte.index("-- Par marché") < texte.index("-- Par famille") < texte.index("-- Par taille")
+
+
+# --- segments de lecture : niveau de division (aucun coefficient) et données disponibles ------------------------------
+
+@pytest.mark.parametrize("competition", ["Angleterre : Premier League", "Etats-Unis : MLS", "Iraq : Ligue Irakienne"])
+def test_premiere_division(competition):
+    assert bh.niveau_division(competition) == bh.PREMIERE
+
+
+@pytest.mark.parametrize("competition", ["Angleterre : League Two", "France : Ligue 2 BKT", "Italie : Série C Girone A"])
+def test_division_inferieure(competition):
+    assert bh.niveau_division(competition) == bh.INFERIEURE
+
+
+@pytest.mark.parametrize("competition", ["Écosse : Première Division",          # ambigu : jamais deviné
+                                         "France : Ligue 1",                    # nom approché : pas le nom exact
+                                         "Coupe inventée", None])
+def test_competition_ambigue_ou_inconnue_non_classee(competition):
+    assert bh.niveau_division(competition) == bh.NON_CLASSEE
+
+
+def test_division_ne_change_aucun_calcul_ni_l_entree_du_moteur():
+    vus = []
+
+    def modele(entree):
+        vus.append(set(entree))
+        return bh.modele_lisse(entree)
+    jeu_a, jeu_b = jeu_synthetique(), jeu_synthetique()
+    for (ea, _), (eb, _) in zip(jeu_a, jeu_b):
+        ea["competition"], eb["competition"] = "Angleterre : Premier League", "Angleterre : League Two"
+    ga = bh.evalue(jeu_a, modele, tirages=50)["global"]
+    gb = bh.evalue(jeu_b, modele, tirages=50)["global"]
+    assert ga == gb                                                     # même verdict, mêmes écarts, mêmes IC
+    assert all("division" not in cles for cles in vus)                  # le niveau n'est jamais transmis au moteur
+
+
+@pytest.mark.parametrize("fd,attendu", [(True, "enrichies (Football-Data)"), (False, "buts seules"), (None, "buts seules")])
+def test_donnees_disponibles(fd, attendu):
+    assert bh.donnees_disponibles({"football_data": fd}) == attendu
+
+
+def test_archive_signale_football_data(tmp_path):
+    d = str(tmp_path / "archive")
+    avec, sans = _enreg("fd"), _enreg("nofd")
+    avec["donnees_football_data"] = True
+    _ecrit(d, [avec, sans])
+    jeu, _ = bh.charge_archive(d)
+    assert {e["id"]: e["football_data"] for e, _ in jeu} == {"fd": True, "nofd": False}
+
+
+# --- volume abandonné : chaque match compté à une seule étape -------------------------------------------------------
+
+def test_volume_abandonne_entonnoir():
+    jeu = jeu_synthetique(12)
+    for e, _ in jeu[:2]:
+        e["cotes"] = {}                                                    # 2 sans cote
+
+    def modele(entree):
+        i = int(entree["id"][1:])
+        if i in (2, 3):
+            raise ValueError("x")                                          # 2 erreurs du moteur
+        if i == 4:
+            return {"_abstention": "ÉCHANTILLON"}                         # abstention motivée
+        if i == 5:
+            return {"victoire": None}                                      # abstention sans motif
+        return bh.modele_marche(entree)
+
+    def regle(entree, probas):
+        i = int(entree["id"][1:])
+        if i == 6:
+            raise KeyError("y")                                            # 1 erreur de la règle
+        return ["victoire"] if i % 2 == 0 else []                          # 8, 10 sélectionnés ; 7, 9, 11 rien
+    v = bh.volume(jeu, modele, regle)
+    assert v["etapes"] == {"sans cote": 2, "erreur du moteur": 2, "abstention du moteur": 2, "erreur de la règle": 1,
+                           "aucune sélection": 3, "sélectionné": 2}
+    assert sum(v["etapes"].values()) == v["matchs"] == 12
+    assert v["motifs_abstention"] == {"ÉCHANTILLON": 1, "sans motif": 1}
+
+
+def test_volume_sans_regle_s_arrete_a_evalue():
+    v = bh.volume(jeu_synthetique(5), bh.modele_marche)
+    assert v["etapes"] == {"sans cote": 0, "erreur du moteur": 0, "abstention du moteur": 0, "évalué": 5}
+
+
+def test_metadonnee_moteur_jamais_comptee_en_rejet():
+    def modele(entree):
+        p = bh.modele_marche(entree)
+        p["_abstention"] = "rien"
+        return p
+    r = bh.evalue(jeu_synthetique(10), modele, tirages=50)
+    assert bh.HORS_REGISTRE not in r["rejets"] and "Volume abandonné" in bh.rapport_texte("t", r)

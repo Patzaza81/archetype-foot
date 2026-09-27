@@ -25,15 +25,27 @@ DEUX VERDICTS SÉPARÉS (corrections du 27/09 demandées par le concepteur de la
      suffisante l'est, ACCEPTABLE si toutes les tranches suffisantes le sont, sinon ÉCHANTILLON INSUFFISANT.
 Le marché n'est pas une vérité absolue : c'est la référence externe à battre.
 
-HIÉRARCHIE DU RAPPORT : marché, famille, taille d'échantillon (N au même lieu : 0-2, 3-4, 5+), tranche de cote, source.
-Un groupe sous les seuils est marqué « informatif » : il n'est jamais décisionnel. La conclusion globale ne vient que du
-groupe global.
+HIÉRARCHIE DU RAPPORT : marché, famille, taille d'échantillon (N au même lieu : 0-2, 3-4, 5+), tranche de cote, source,
+puis deux segments de lecture : niveau de division (1re division / division inférieure / non classée) et données
+disponibles (buts seules / enrichies Football-Data). Un groupe sous les seuils est marqué « informatif » : il n'est jamais
+décisionnel. La conclusion globale ne vient que du groupe global.
+
+AUCUNE DISCRIMINATION PAR DIVISION (règle du concepteur V3, 27/09) : le niveau de division sert UNIQUEMENT à découper le
+rapport, pour vérifier qu'un moteur n'est pas bon ou mauvais seulement dans un type de compétition. Il n'entre dans
+aucun calcul du banc (probabilités du marché, verdicts, seuils) et n'est pas transmis au moteur. Une compétition absente
+de la table ou ambiguë est « non classée » : aucun niveau deviné.
+
+VOLUME ABANDONNÉ (entonnoir par match, avec une règle de décision) : sans cote, erreur du moteur, abstention du moteur
+(aucune probabilité sur les marchés cotés ; motif facultatif via la clé « _abstention »), erreur de la règle, aucune
+sélection, sélectionné. Objectif : réduire les faux signaux, pas réduire les matchs -- ce décompte montre ce que la
+prudence d'un moteur fait perdre.
 
 CODES DE REJET (distincts, pour diagnostiquer un moteur) :
   PAS_DE_COTE (match sans aucune cote exploitable, ou probabilité fournie pour un marché sans cote), ERREUR_MOTEUR (le
   moteur lève une exception), MARCHÉ_NON_DISPONIBLE (le marché a une cote mais le moteur ne donne pas de probabilité :
   absence explicite, jamais une valeur inventée), PROBABILITÉ_INVALIDE (hors de [0 ; 1] ou non numérique),
-  MARCHÉ_HORS_REGISTRE (nom de marché inconnu du banc). ÉCHANTILLON INSUFFISANT est un verdict de groupe.
+  MARCHÉ_HORS_REGISTRE (nom de marché inconnu du banc). ÉCHANTILLON INSUFFISANT est un verdict de groupe. Une clé qui
+  commence par « _ » (ex. « _abstention ») est une métadonnée du moteur : jamais évaluée, jamais comptée en rejet.
 
 REGISTRE DES MARCHÉS (périmètre gelé) : 1X2, double chance, BTTS, plus/moins 0,5 à 5,5, buts d'équipe 0,5 et 1,5, cage
 inviolée, nombre exact de buts (0 à 5, 6+). Un marché n'est évalué que s'il a une cote dans la source : aucune
@@ -59,7 +71,8 @@ SOURCES :
 `entree` (même forme pour les deux sources) :
     id, date, competition, source, n_lieu (= min des matchs au même lieu des deux équipes),
     cotes {marche: cote}, equipe_dom / equipe_ext {nom, buts_marques_moy, buts_encaisses_moy, matchs_joues,
-    matchs (liste complète, archive seulement, sinon None)}, assemblage (archive seulement, sinon None).
+    matchs (liste complète, archive seulement, sinon None)}, assemblage (archive seulement, sinon None),
+    football_data (True si l'archive contient des données Football-Data pour ce match, sinon False).
 
 Utilisation :
     python banc_historique.py                                   # compare les modèles de référence
@@ -144,6 +157,52 @@ GROUPES_MARCHE = ([("victoire", "nul", "defaite"), ("btts_oui", "btts_non")]
 COMPLEMENT_CAGE = {"clean_sheet_dom": ("clean_sheet_dom_non", "buts_ext_over_0_5"),
                    "clean_sheet_ext": ("clean_sheet_ext_non", "buts_dom_over_0_5")}
 
+# Niveau de division : SEGMENT DE LECTURE DU RAPPORT UNIQUEMENT (jamais un coefficient, jamais transmis au moteur).
+# Noms exacts des compétitions tels qu'ils apparaissent dans les sources. Ambigu ou inconnu -> « non classée ».
+PREMIERE_DIVISION = frozenset([
+    "Afrique du Sud : Première Ligue de Football", "Allemagne : Bundesliga", "Angleterre : Premier League",
+    "Argentine : Copa de la Liga Profesional 2e Tour", "Autriche : Bundesliga",
+    "Belgique : Pro Ligue", "Bhoutan : Première Ligue", "Bolivie : Primera Division",
+    "Bosnie-Herzégovine : Première Ligue", "Brésil : Série A", "Bulgarie : Parva Liga", "Canada : Première Ligue",
+    "Chili : Superliga", "Chine : Super Ligue", "Colombie : Première A Cloture", "Corée du Sud : K-Ligue",
+    "Croatie : HNL", "Danemark : Superligaen", "El Salvador : 1ère Division Ouverture", "Espagne : LaLiga",
+    "Etats-Unis : MLS", "France : Ligue 1 McDonald's", "Guatemala : Ligue Nationale Ouverture", "Géorgie : Ligue Erovnuli",
+    "Hongrie : NB I", "Iraq : Ligue Irakienne", "Irlande : Première Ligue", "Irlande du Nord : IFA Premiership",
+    "Israël : Ligat Al", "Italie : Serie A", "Japon : J1 Ligue", "Kazakhstan : Super Ligue", "Kosovo : Superliga",
+    "Lettonie : Virsliga", "Lituanie : A Lyga", "Monténégro : Prva Liga", "Ouzbékistan : Oliy Liga",
+    "Panama : Primera Division Ouverture", "Paraguay : Professionnel de la Division Clôture",
+    "Pays de Galles : Cymru Premier", "Pays-Bas : Eredivisie", "Pologne : Ekstraklasa", "Portugal : Primeira Liga",
+    "Pérou : Primera Division Cloture", "Roumanie : Liga 1", "Serbie : Super Ligue", "Slovaquie : Super Ligue",
+    "Slovénie : 1. SNL", "Suisse : Super Ligue", "Tanzanie : Ligue Kuu Bara", "Turquie : Super Ligue",
+    "Ukraine : Première Ligue", "Uruguay : Primera Division Cloture", "Venezuela : Primera Division Clausura",
+    "Zimbabwe : Premier Ligue", "Équateur : Première A", "Îles Féroé : Formuladeildin",
+    "République Dominicaine : IV Liga Mayor", "Finlande : Veikkausliiga Tour de Championnat",
+    "Islande : Úrvalsdeild Relegation Round", "Équateur : Première A Tour de Championnat",
+])
+DIVISION_INFERIEURE = frozenset([
+    "Allemagne : 2. Bundesliga", "Allemagne : Ligue 3", "Angleterre : Championnat", "Angleterre : League One",
+    "Angleterre : League Two", "Angleterre : Ligue Nationale", "Arménie : 1ère Division", "Belgique : 2e Division",
+    "Espagne : Segunda Division", "Finlande : Ykkösliiga", "France : Ligue 2 BKT", "Hongrie : NB II", "France : Ligue 3",
+    "Italie : Série B", "Italie : Série C Girone A", "Italie : Série C Girone B", "Pays-Bas : Eerste Divisie", "Pologne : 1. Ligue", "Slovénie : 2. SNL",
+    "Suisse : Challenge Ligue", "Turquie : TFF 1. Ligue",
+])
+PREMIERE, INFERIEURE, NON_CLASSEE = "1re division", "division inférieure", "non classée"
+
+
+def niveau_division(competition):
+    """Segment de lecture du rapport. Nom exact seulement : aucun niveau deviné (coupes, phases finales, compétitions
+    féminines ou continentales, noms ambigus -> « non classée »)."""
+    if competition in PREMIERE_DIVISION:
+        return PREMIERE
+    if competition in DIVISION_INFERIEURE:
+        return INFERIEURE
+    return NON_CLASSEE
+
+
+def donnees_disponibles(entree):
+    return "enrichies (Football-Data)" if entree.get("football_data") else "buts seules"
+
+
 # Marchés du premier banc (27/09) : périmètre du verrou de non-régression V2. Ne jamais le modifier.
 PERIMETRE_REFERENCE_2709 = frozenset(
     ["victoire", "nul", "defaite", "dc_1X", "dc_X2", "dc_12", "btts_oui", "btts_non"]
@@ -225,7 +284,7 @@ def charge_snapshot(fichier_snapshot=FICHIER_SNAPSHOT, fichier_scores=FICHIER_SC
             "cotes": {k: v for k, v in (em.get("cotes") or {}).items() if k in MARCHES},
             "equipe_dom": _equipe_moyennes(d.get("nom"), d.get("buts_marques_moy"), d.get("buts_encaisses_moy"), nd),
             "equipe_ext": _equipe_moyennes(e.get("nom"), e.get("buts_marques_moy"), e.get("buts_encaisses_moy"), ne),
-            "assemblage": None,
+            "assemblage": None, "football_data": False,
         }
         out.append((entree, (sc["buts_dom"], sc["buts_ext"])))
     return out
@@ -305,7 +364,7 @@ def charge_archive(dossier=DOSSIER_ARCHIVE):
                 "source": "archive", "n_lieu": min(nd, ne), "cotes": cotes_archive(e),
                 "equipe_dom": _equipe_moyennes(e.get("domicile"), gf_d, ga_d, nd, md),
                 "equipe_ext": _equipe_moyennes(e.get("exterieur"), gf_e, ga_e, ne, mx),
-                "assemblage": e.get("assemblage"),
+                "assemblage": e.get("assemblage"), "football_data": bool(e.get("donnees_football_data")),
             }
             out.append((entree, (sc["buts_dom"], sc["buts_ext"])))
     return out, fuite
@@ -458,6 +517,8 @@ def observations(jeu, modele):
             detail[ERREUR_MOTEUR][type(e).__name__] += 1
             continue
         for marche in probas:
+            if str(marche).startswith("_"):              # métadonnée du moteur (ex. « _abstention ») : ignorée
+                continue
             if marche not in MARCHES:
                 rejets[HORS_REGISTRE] += 1
                 detail[HORS_REGISTRE][str(marche)] += 1
@@ -476,7 +537,9 @@ def observations(jeu, modele):
                 continue
             obs.append({"match": entree["id"], "marche": marche, "famille": MARCHES[marche][0],
                         "p": float(p), "pm": p_marche, "y": 1.0 if gagne(marche, h, a) else 0.0,
-                        "cote": entree["cotes"].get(marche), "n": entree["n_lieu"], "source": entree["source"]})
+                        "cote": entree["cotes"].get(marche), "n": entree["n_lieu"], "source": entree["source"],
+                        "division": niveau_division(entree.get("competition")),
+                        "donnees": donnees_disponibles(entree)})
     return obs, dict(rejets), {k: dict(v) for k, v in detail.items()}
 
 
@@ -604,7 +667,45 @@ def evalue_selection(jeu, modele, selection, tirages=TIRAGES_BOOTSTRAP, graine=G
 
 
 HIERARCHIE = (("par_marche", "marche"), ("par_famille", "famille"), ("par_n", "n"), ("par_cote", "cote"),
-              ("par_source", "source"))
+              ("par_source", "source"), ("par_division", "division"), ("par_donnees", "donnees"))
+
+# Entonnoir « volume abandonné » : une seule étape par match, dans cet ordre.
+ETAPES_VOLUME = ("sans cote", "erreur du moteur", "abstention du moteur", "erreur de la règle", "aucune sélection",
+                 "sélectionné")
+
+
+def volume(jeu, modele, selection=None):
+    """Où chaque match s'arrête. Sans règle de décision, l'entonnoir s'arrête à « évalué »."""
+    etapes, motifs = defaultdict(int), defaultdict(int)
+    for entree, _ in jeu:
+        pm = probabilites_marche(entree["cotes"])
+        if not pm:
+            etapes["sans cote"] += 1
+            continue
+        try:
+            probas = modele(entree) or {}
+        except Exception:
+            etapes["erreur du moteur"] += 1
+            continue
+        utiles = [m for m in pm if isinstance(probas.get(m), (int, float)) and not isinstance(probas.get(m), bool)
+                  and 0 <= probas[m] <= 1]
+        if not utiles:
+            etapes["abstention du moteur"] += 1
+            motifs[str(probas.get("_abstention") or "sans motif")] += 1
+            continue
+        if selection is None:
+            etapes["évalué"] += 1
+            continue
+        try:
+            choix = [m for m in (selection(entree, probas) or []) if m in MARCHES and entree["cotes"].get(m)
+                     and probas.get(m) is not None]
+        except Exception:
+            etapes["erreur de la règle"] += 1
+            continue
+        etapes["sélectionné" if choix else "aucune sélection"] += 1
+    ordre = ETAPES_VOLUME if selection is not None else ETAPES_VOLUME[:3] + ("évalué",)
+    return {"matchs": len(jeu), "etapes": {k: etapes.get(k, 0) for k in ordre},
+            "motifs_abstention": dict(motifs)}
 
 
 def evalue(jeu, modele, selection=None, tirages=TIRAGES_BOOTSTRAP, graine=GRAINE):
@@ -618,6 +719,7 @@ def evalue(jeu, modele, selection=None, tirages=TIRAGES_BOOTSTRAP, graine=GRAINE
             k = _tranche_n(o["n"]) if cle == "n" else _tranche_cote(o["cote"]) if cle == "cote" else o[cle]
             grp[k].append(o)
         rapport[nom] = {k: stats_groupe(v, tirages, graine) for k, v in sorted(grp.items())}
+    rapport["volume"] = volume(jeu, modele, selection)
     if selection is not None:
         rapport["selection"] = evalue_selection(jeu, modele, selection, tirages, graine)
     return rapport
@@ -654,7 +756,9 @@ def rapport_texte(nom, r):
     # complémentaires (victoire + nul + défaite = 100 %).
     titres = {"par_marche": ("Par marché", True), "par_famille": ("Par famille", False),
               "par_n": ("Par taille d'échantillon", False), "par_cote": ("Par tranche de cote", True),
-              "par_source": ("Par source", False)}
+              "par_source": ("Par source", False),
+              "par_division": ("Par niveau de division (lecture seulement, aucun coefficient)", False),
+              "par_donnees": ("Par données disponibles", False)}
     for nom_groupe, _ in HIERARCHIE:
         titre, avec_taux = titres[nom_groupe]
         lignes.append(f"-- {titre}")
@@ -668,6 +772,13 @@ def rapport_texte(nom, r):
             lignes.append(ligne)
     for code, par_marche in (r.get("rejets_detail") or {}).items():
         lignes.append(f"-- Rejets {code} : {par_marche}")
+    vol = r.get("volume")
+    if vol:
+        lignes.append(f"-- Volume abandonné : {vol['matchs']} matchs étudiés")
+        for k, v in vol["etapes"].items():
+            lignes.append(f"   {k:<22} {v}")
+        if vol["motifs_abstention"]:
+            lignes.append(f"   motifs d'abstention : {vol['motifs_abstention']}")
     sel = r.get("selection")
     if sel:
         if sel.get("selections"):

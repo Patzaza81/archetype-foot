@@ -101,8 +101,16 @@ python banc_historique.py --perimetre reference_2709              # périmètre 
   - *CALIBRATION* (tranches de 10 points : observations, annoncé, réel, écart et son intervalle) : tranche d'au moins
     30 observations « CALIBRATION_ACCEPTABLE » si l'écart absolu est au plus 5 points, sinon
     « CALIBRATION_HORS_TOLERANCE » ; tranche plus petite « ÉCHANTILLON INSUFFISANT », jamais déclarée mauvaise.
-- **Hiérarchie du rapport** : marché, famille, taille d'échantillon (N 0-2, 3-4, 5+), tranche de cote, source. Un groupe
-  sous les seuils est marqué « informatif », jamais décisionnel ; la conclusion globale ne vient que du groupe global.
+- **Hiérarchie du rapport** : marché, famille, taille d'échantillon (N 0-2, 3-4, 5+), tranche de cote, source, puis
+  niveau de division (1re division / division inférieure / non classée) et données disponibles (buts seules / enrichies
+  Football-Data). Un groupe sous les seuils est marqué « informatif », jamais décisionnel ; la conclusion globale ne vient
+  que du groupe global.
+- **Aucune discrimination par division** : le niveau de division sert uniquement à découper le rapport. Il n'entre dans
+  aucun calcul et n'est jamais transmis au moteur (testé). Table fixe des noms exacts ; nom ambigu ou inconnu : « non
+  classée », aucun niveau deviné.
+- **Volume abandonné** : chaque match est compté à une seule étape -- sans cote, erreur du moteur, abstention du moteur
+  (motif facultatif via la clé `_abstention`), erreur de la règle, aucune sélection, sélectionné. But : réduire les faux
+  signaux, pas réduire les matchs.
 - **Codes de rejet distincts** : `PAS_DE_COTE`, `ERREUR_MOTEUR`, `MARCHÉ_NON_DISPONIBLE` (cote présente, aucune
   probabilité du moteur : absence explicite), `PROBABILITÉ_INVALIDE`, `MARCHÉ_HORS_REGISTRE`, avec le détail par marché.
 - **Registre (périmètre gelé)** : 1X2, double chance, BTTS, plus/moins 0,5 à 5,5, buts d'équipe 0,5 et 1,5, cage
@@ -125,6 +133,10 @@ V2 (λ produit) redonne 548 sélections, 63,3 % réels pour 81,9 % annoncés et 
 | V2 (λ produit) | MOINS BON QUE LE MARCHÉ | +0,085 [+0,057 ; +0,114] | +0,023 [+0,015 ; +0,031] | HORS TOLÉRANCE |
 | λ moyenne simple | MOINS BON QUE LE MARCHÉ | +0,035 [+0,019 ; +0,052] | +0,012 [+0,007 ; +0,018] | HORS TOLÉRANCE |
 | λ lissé (k = 4) | MOINS BON QUE LE MARCHÉ | +0,022 [+0,010 ; +0,035] | +0,008 [+0,004 ; +0,013] | ACCEPTABLE |
+
+Découpage du λ lissé : 1re division (280 matchs) et division inférieure (200 matchs) toutes deux « MOINS BON QUE LE
+MARCHÉ » ; non classée (21 matchs) informative. Le jeu figé ne contient que des données « buts seules » : le segment
+enrichi viendra de l'archive de test. Volume du λ lissé avec la règle V2 : 180 matchs sans sélection, 321 sélectionnés.
 
 Sur le périmètre complet, les sélections de V2 passent à 599 (ROI −6,5 %). Buts d'équipe et cage inviolée n'ont que 17 à
 72 matchs cotés dans ce jeu : informatifs seulement.
