@@ -48,6 +48,10 @@ def evaluate_match(
     odds = match.get("odds", {})
     raw_values = {}
     candidates = []
+    # Probabilités conjointes exactes (même matrice de score) entre marchés cotés, lues par decide() pour écarter
+    # deux sélections trop liées. CORRECTIF 27/09 : la variable était utilisée sans être définie (NameError sur
+    # tout match ayant au moins une cote).
+    joint_full_time = pairwise_joint_probability([m for m in markets if m in odds], model.score)
 
     for market, probability in markets.items():
         if market not in odds:

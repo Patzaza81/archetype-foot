@@ -1,5 +1,6 @@
-
 from __future__ import annotations
+
+import pytest
 
 from moteur_v3.calibration import IsotonicCalibrator
 from moteur_v3.decision import decide
@@ -127,3 +128,52 @@ def test_missing_double_control_blocks_selection():
     selected, rejected, _ = decide([candidate])
     assert not selected
     assert any("DOUBLE_CONTROLE" in r for _, reasons in rejected for r in reasons)
+
+
+# --- AJOUT 27/09/2026 : bout en bout avec cotes (evaluate_match n'était appelé par aucun test) ------------------------
+
+from moteur_v3 import evaluate_match  # noqa: E402
+
+ODDS = {"1x2_1": 1.9, "1x2_X": 3.4, "1x2_2": 4.0, "dc_1X": 1.3, "over_2_5": 1.9, "under_2_5": 1.9,
+        "btts_yes": 1.8, "btts_no": 1.95}
+
+
+def _calibre():
+    c = IsotonicCalibrator()
+    c.fit([0.2, 0.4, 0.6, 0.8] * 20, [0, 0, 1, 1] * 20)
+    return c
+
+
+@pytest.mark.parametrize("odds,calibrator", [({"dc_1X": 1.3}, None), (ODDS, None), (ODDS, "calibre")])
+def test_evaluate_match_bout_en_bout_avec_cotes(odds, calibrator):
+    r = evaluate_match({"home_matches": rows(True, 6), "away_matches": rows(False, 6), "odds": odds},
+                       calibrator=_calibre() if calibrator else None)
+    assert {c["market"] for c in r["candidates"]} == set(odds)
+    assert all(v.market in odds for v in r["values"].values())
+
+
+@pytest.mark.parametrize("champ", ["buts_marques", "buts_encaisses"])
+def test_lambda_nul_rejete_sans_planter(champ):
+    home = rows(True, 5)
+    for x in home:
+        x[champ] = 0
+    r = evaluate_match({"home_matches": home, "away_matches": rows(False, 5), "odds": ODDS})
+    assert not r["selected"]
+    assert any("PROBABILITE_DEGENEREE" in v.reasons for v in r["values"].values())
+
+
+def test_probabilite_nulle_rejetee_pas_exception():
+    for p in (0.0, 1.0):
+        v = evaluate("x", p, 1.5)
+        assert not v.eligible and "PROBABILITE_DEGENEREE" in v.reasons
+    with pytest.raises(ValueError):
+        evaluate("x", 1.2, 1.5)
+
+
+@pytest.mark.parametrize("competition", ["Angleterre : Premier League", "Angleterre : League Two", None])
+def test_nom_de_competition_sans_effet(competition):
+    base = {"home_matches": rows(True, 6), "away_matches": rows(False, 6), "odds": ODDS}
+    r0 = evaluate_match(base, calibrator=_calibre())
+    r1 = evaluate_match({**base, "competition": competition}, calibrator=_calibre())
+    assert r0["probabilities_raw"] == r1["probabilities_raw"]
+    assert [c["probability"] for c in r0["candidates"]] == [c["probability"] for c in r1["candidates"]]

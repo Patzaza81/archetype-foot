@@ -36,13 +36,18 @@ def edv_threshold(p: float) -> float | None:
 def evaluate(market: str, probability: float, odds: float, *,
              calibrated_probability: float | None = None,
              dispersion: float | None = None) -> Value:
-    if not 0 < probability <= 1:
+    # CORRECTIF 27/09 : une probabilité exactement 0 (λ nul) est un état dégénéré à REJETER (raison
+    # PROBABILITE_DEGENEREE ci-dessous), pas une exception qui faisait planter tout le match.
+    # Arrondi flottant des sommes de la matrice (ex. 1,0000000000000002) : ramené dans [0 ; 1], rien de plus.
+    if -1e-9 <= probability < 0 or 1 < probability <= 1 + 1e-9:
+        probability = min(max(probability, 0.0), 1.0)
+    if not 0 <= probability <= 1:
         raise ValueError("PROBABILITE_INVALIDE")
     if odds <= 1:
         raise ValueError("COTE_INVALIDE")
 
     p = probability if calibrated_probability is None else calibrated_probability
-    if not 0 < p <= 1:
+    if not 0 <= p <= 1:
         raise ValueError("PROBABILITE_CALIBREE_INVALIDE")
 
     reasons: list[str] = []
