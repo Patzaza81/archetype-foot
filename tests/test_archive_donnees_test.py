@@ -261,3 +261,32 @@ def test_genere_le_sert_d_heure_de_reference(tmp_path):
         adt.archive_depuis_fichiers(str(tmp_path / "precalcul.json"), str(tmp_path / "cache.json"), dossier)
     d = adt.charge_fichier(os.path.join(dossier, "2026-09-27.json.gz"))
     assert d["m1"]["run"]["pris_le"] == "2026-09-27T01:00:00Z"
+
+
+# --- point d'entrée nocturne (appelé par enregistre_scores_historique.py) ------------------------------------------
+
+def test_execution_nocturne(tmp_path):
+    cache = _cache("pescara", "spezia")
+    for e in cache.values():
+        e["resultat"] = stats_ok()
+    (tmp_path / "cache.json").write_text(json.dumps(cache))
+    s = signal("m1", "Pescara", "Spezia", heure="10:00")
+    s["competition"], s["url_match"] = COMP, URL.format("pescara-spezia")
+    (tmp_path / "precalcul.json").write_text(json.dumps({"genere_le": "2026-09-27 01:00 UTC", "signaux": [s]}))
+    (tmp_path / "hist.json").write_text(json.dumps([{"date": "2026-09-27", "matchs": [{"match_id": "m1", "score": "1-1"}]}]))
+    dossier = str(tmp_path / "data" / "archive_test")
+    b = adt.execution_nocturne(str(tmp_path / "precalcul.json"), str(tmp_path / "cache.json"), dossier,
+                               str(tmp_path / "hist.json"), maintenant=t(27, 12))
+    assert b["avant_match"]["testables"] == 1
+    assert b["scores"]["scores_ecrits"] == 1                  # coup d'envoi 09:00 UTC le 27/09, passé à 12:00 UTC
+    assert b["archive"]["testables_avec_score"] == 1
+
+
+def test_execution_nocturne_sans_precalcul(tmp_path):
+    b = adt.execution_nocturne(str(tmp_path / "absent.json"), str(tmp_path / "c.json"), str(tmp_path / "d"),
+                               str(tmp_path / "h.json"))
+    assert "absent" in b["avant_match"] and b["archive"]["matchs"] == 0
+
+
+def test_dossier_par_defaut_est_commite_par_le_workflow():
+    assert adt.DOSSIER.replace("\\", "/") == "data/archive_test"

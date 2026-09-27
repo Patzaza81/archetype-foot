@@ -9,7 +9,8 @@ score + cotes, seuls 108 pouvaient être reconstruits pour tester un nouveau mot
 
 Règles (décision de Patrick du 27/09/2026 : « l'archive doit conserver désormais toutes les données nécessaires pour un
 test ») :
-  1. Un enregistrement par match, rangé dans le fichier de SA date : archive_test/AAAA-MM-JJ.json.gz.
+  1. Un enregistrement par match, rangé dans le fichier de SA date : data/archive_test/AAAA-MM-JJ.json.gz (data/ est
+     déjà commité à chaque run nocturne par le workflow).
   2. Contenu = ce que le moteur avait réellement sous les yeux : liste COMPLÈTE des matchs de chaque équipe (saison en
      cours, même compétition, domicile ET extérieur, date/adversaire/buts), cotes BetPawa complètes, choix du moteur.
   3. Anti-fuite : seuls les matchs d'équipe joués STRICTEMENT avant la date du match sont gardés. Un match d'équipe daté
@@ -19,15 +20,17 @@ test ») :
      qu'un score est présent, l'enregistrement n'est plus jamais modifié, sauf pour y écrire le score.
   5. Le score vient de historique_pronostics.json (rempli par enregistre_scores_historique.py), par match_id exact.
      Un score existant n'est jamais modifié.
-  6. Aucun calcul de moteur ici : on enregistre, on ne prédit rien. Étape autonome du workflow (continue-on-error) :
-     un échec ne fait jamais échouer le run, et precalcul.py n'est pas modifié.
+  6. Aucun calcul de moteur ici : on enregistre, on ne prédit rien. Appelé à la fin de enregistre_scores_historique.py
+     (étape nocturne « Enregistrer les scores réels dans l'historique », qui tourne après precalcul.py et sa garde) par
+     `execution_nocturne()`, dans un try : un échec ici ne fait jamais échouer l'enregistrement des scores, et
+     precalcul.py n'est pas modifié.
   7. Source des données : ce que precalcul.py vient d'écrire -- precalcul.json (matchs, cotes, choix du moteur) et
      cache_equipes_saison.json (saison en cours, même compétition : exactement ce que lit le moteur). Chaque équipe est
      retrouvée par l'ADRESSE EXACTE du match (« domicile-exterieur » = adresse équipe domicile + « - » + adresse équipe
      extérieur, dans la même compétition), jamais par ressemblance de nom. Pas de correspondance exacte = équipe ABSENTE.
 
 Utilisation :
-    python archive_donnees_test.py --run --scores   # run nocturne : avant-match des matchs à venir + scores des matchs joués
+    python archive_donnees_test.py --run --scores   # à la main : avant-match des matchs à venir + scores des matchs joués
     python archive_donnees_test.py --bilan          # nombre de matchs archivés, testables, avec score
 """
 from __future__ import annotations
@@ -42,7 +45,7 @@ import re
 import sys
 
 SCHEMA_VERSION = 1
-DOSSIER = "archive_test"
+DOSSIER = os.path.join("data", "archive_test")
 FICHIER_HISTORIQUE = "historique_pronostics.json"
 FICHIER_PRECALCUL = "precalcul.json"
 FICHIER_CACHE_SAISON = "cache_equipes_saison.json"
@@ -404,6 +407,21 @@ def bilan_archive(dossier=DOSSIER):
             testables_avec_score += int(bool(e.get("testable")) and e.get("score") is not None)
     return {"matchs": total, "testables": testables, "avec_score": avec_score,
             "testables_avec_score": testables_avec_score}
+
+
+def execution_nocturne(fichier_precalcul=FICHIER_PRECALCUL, fichier_cache=FICHIER_CACHE_SAISON, dossier=DOSSIER,
+                       fichier_historique=FICHIER_HISTORIQUE, maintenant=None):
+    """Point d'entrée appelé par enregistre_scores_historique.py après l'écriture des scores de l'historique :
+    avant-match des matchs de precalcul.json (s'il existe), puis scores des matchs joués. Renvoie les bilans.
+    `maintenant` (heure réelle par défaut) ne sert qu'aux scores ; l'avant-match prend l'heure de precalcul.json."""
+    bilan = {}
+    if os.path.exists(fichier_precalcul):
+        bilan["avant_match"] = archive_depuis_fichiers(fichier_precalcul, fichier_cache, dossier)
+    else:
+        bilan["avant_match"] = f"{fichier_precalcul} absent"
+    bilan["scores"] = complete_scores(dossier, fichier_historique, maintenant=maintenant)
+    bilan["archive"] = bilan_archive(dossier)
+    return bilan
 
 
 def main(argv=None):
