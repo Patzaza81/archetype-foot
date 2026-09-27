@@ -8,27 +8,59 @@ Pourquoi (27/09/2026). Aucun moteur (V0, spécifications ChatGPT, ARCHETYPE_FOOT
 réels avant d'être remplacé. Mesure du 27/09 sur 501 matchs : V2 annonce 81,9 % et réussit 63,3 %, exactement ce que
 prévoyait déjà le marché (62,8 %). Ce banc est la porte obligatoire avant tout branchement au pipeline.
 
-CE QUE LE BANC MESURE (critères acceptés par Patrick et par l'autre IA le 27/09) :
-  - pour chaque famille et chaque marché ayant assez de données : Brier et log-loss du modèle ET du marché (cotes sans
-    marge), écart modèle - marché avec intervalle de confiance à 95 % (bootstrap PAR MATCH : les marchés d'un même match
-    sont liés) ;
-  - calibration par tranche de probabilité annoncée ;
-  - résultats par taille d'échantillon (N au même lieu : 0-2, 3-4, 5+), par tranche de cote et par source ;
-  - ROI seulement comme mesure SECONDAIRE, sur les sélections d'une règle de décision fournie.
-VERDICTS (par groupe) :
-  - ÉCHANTILLON INSUFFISANT : moins de MIN_MATCHS matchs ou MIN_OBSERVATIONS observations -> aucune conclusion ;
-  - AVANTAGE MESURABLE : log-loss du modèle meilleure que celle du marché, intervalle entièrement sous 0 ;
-  - MOINS BON QUE LE MARCHÉ : intervalle entièrement au-dessus de 0 ;
-  - AUCUN AVANTAGE MESURABLE : sinon. Le moteur doit alors conclure « pas d'avantage mesurable -> pas de pari ».
+Le banc est INDÉPENDANT de tout moteur : il juge `modele(entree) -> {marche: probabilite}` et, facultativement,
+`selection(entree, probas) -> [marches]`. Un moteur s'adapte au banc, jamais l'inverse.
+
+DEUX VERDICTS SÉPARÉS (corrections du 27/09 demandées par le concepteur de la V3) :
+  1. PERFORMANCE VS MARCHÉ -- écarts Brier ET log-loss (modèle - marché sans marge), intervalles à 95 % par bootstrap
+     PAR MATCH (les marchés d'un même match sont liés) :
+       - ÉCHANTILLON INSUFFISANT : moins de MIN_MATCHS matchs ou MIN_OBSERVATIONS observations -> aucune conclusion ;
+       - MOINS BON QUE LE MARCHÉ : significativement moins bon sur AU MOINS UNE des deux mesures ;
+       - AVANTAGE MESURABLE : significativement moins bon sur AUCUNE et significativement meilleur sur au moins une ;
+       - AUCUN AVANTAGE MESURABLE : sinon. Le moteur doit alors conclure « pas d'avantage mesurable -> pas de pari ».
+  2. CALIBRATION -- par tranche de 10 points de probabilité annoncée : observations, annoncé, réel, écart et son
+     intervalle. Tranche d'au moins MIN_TRANCHE_CALIBRATION observations : CALIBRATION_ACCEPTABLE si l'écart absolu est
+     <= TOLERANCE_CALIBRATION (5 points), sinon CALIBRATION_HORS_TOLERANCE ; tranche plus petite : ÉCHANTILLON
+     INSUFFISANT (jamais déclarée mauvaise sur un petit échantillon). Verdict global : HORS_TOLERANCE si une tranche
+     suffisante l'est, ACCEPTABLE si toutes les tranches suffisantes le sont, sinon ÉCHANTILLON INSUFFISANT.
 Le marché n'est pas une vérité absolue : c'est la référence externe à battre.
+
+HIÉRARCHIE DU RAPPORT : marché, famille, taille d'échantillon (N au même lieu : 0-2, 3-4, 5+), tranche de cote, source,
+puis deux segments de lecture : niveau de division (1re division / division inférieure / non classée) et données
+disponibles (buts seules / enrichies Football-Data). Un groupe sous les seuils est marqué « informatif » : il n'est jamais
+décisionnel. La conclusion globale ne vient que du groupe global.
+
+AUCUNE DISCRIMINATION PAR DIVISION (règle du concepteur V3, 27/09) : le niveau de division sert UNIQUEMENT à découper le
+rapport, pour vérifier qu'un moteur n'est pas bon ou mauvais seulement dans un type de compétition. Il n'entre dans
+aucun calcul du banc (probabilités du marché, verdicts, seuils) et n'est pas transmis au moteur. Une compétition absente
+de la table ou ambiguë est « non classée » : aucun niveau deviné.
+
+VOLUME ABANDONNÉ (entonnoir par match, avec une règle de décision) : sans cote, erreur du moteur, abstention du moteur
+(aucune probabilité sur les marchés cotés ; motif facultatif via la clé « _abstention »), erreur de la règle, aucune
+sélection, sélectionné. Objectif : réduire les faux signaux, pas réduire les matchs -- ce décompte montre ce que la
+prudence d'un moteur fait perdre.
+
+CODES DE REJET (distincts, pour diagnostiquer un moteur) :
+  PAS_DE_COTE (match sans aucune cote exploitable, ou probabilité fournie pour un marché sans cote), ERREUR_MOTEUR (le
+  moteur lève une exception), MARCHÉ_NON_DISPONIBLE (le marché a une cote mais le moteur ne donne pas de probabilité :
+  absence explicite, jamais une valeur inventée), PROBABILITÉ_INVALIDE (hors de [0 ; 1] ou non numérique),
+  MARCHÉ_HORS_REGISTRE (nom de marché inconnu du banc). ÉCHANTILLON INSUFFISANT est un verdict de groupe. Une clé qui
+  commence par « _ » (ex. « _abstention ») est une métadonnée du moteur : jamais évaluée, jamais comptée en rejet.
+
+REGISTRE DES MARCHÉS (périmètre gelé) : 1X2, double chance, BTTS, plus/moins 0,5 à 5,5, buts d'équipe 0,5 et 1,5, cage
+inviolée, nombre exact de buts (0 à 5, 6+). Un marché n'est évalué que s'il a une cote dans la source : aucune
+probabilité de marché n'est créée pour un marché absent. PAS ENCORE RÉGLABLES : handicaps (étiquettes BetPawa
+incohérentes, constat du 27/09), mi-temps (aucun score de mi-temps dans les sources réglées, aucune cote relevée),
+corners et cartons (aucune cote relevée). Ils seront ajoutés quand ces données existeront réellement.
 
 RÈGLES DU PROTOCOLE :
   1. Aucune donnée postérieure au match : le jeu figé est construit avant les scores (empreinte SHA-256 vérifiée, refus
      si elle ne correspond pas) ; pour l'archive de test, tout match d'équipe daté du jour du match ou après fait écarter
-     le match (compté dans `ecartes_fuite`).
-  2. Le banc VALIDE, il ne sert pas à régler : les seuils ci-dessous sont fixés ici une fois pour toutes. Régler un
-     moteur jusqu'à ce qu'il passe ce banc invaliderait le test (voir evaluation/README.md).
-  3. Handicaps exclus : leurs étiquettes BetPawa sont incohérentes dans la collecte (constat du 27/09).
+     le match (compté dans `archive_ecartes_fuite`).
+  2. Le banc VALIDE, il ne sert pas à régler : les seuils ci-dessous sont fixés ici une fois pour toutes. Le jeu figé
+     est un jeu de VALIDATION, jamais d'entraînement (voir evaluation/README.md, règle n°6).
+  3. Verrou de non-régression : V2 sur le PERIMETRE_REFERENCE_2709 (marchés du premier banc) doit toujours redonner 548
+     sélections, 81,9 % annoncés, 63,3 % réels, ROI -6,2 % (tests/test_banc_historique.py).
 
 SOURCES :
   - « snapshot » : evaluation/snapshot_historique_moteur_v2_6_9.json + scores (503 matchs, 501 avec score). Contient les
@@ -36,12 +68,11 @@ SOURCES :
   - « archive » : data/archive_test/*.json.gz (archive_donnees_test.py), matchs testables AVEC score : listes complètes
     des matchs des deux équipes + assemblage Football-Data (mi-temps, tirs, corners...) quand il existe.
 
-BRANCHER UN MOTEUR : une fonction `modele(entree) -> {marche: probabilite}` (marchés de MARCHES, sous-ensemble permis).
 `entree` (même forme pour les deux sources) :
     id, date, competition, source, n_lieu (= min des matchs au même lieu des deux équipes),
     cotes {marche: cote}, equipe_dom / equipe_ext {nom, buts_marques_moy, buts_encaisses_moy, matchs_joues,
-    matchs (liste complète, archive seulement, sinon None)}, assemblage (archive seulement, sinon None).
-Une règle de décision (facultative) : `selection(entree, probas) -> [marches]`.
+    matchs (liste complète, archive seulement, sinon None)}, assemblage (archive seulement, sinon None),
+    football_data (True si l'archive contient des données Football-Data pour ce match, sinon False).
 
 Utilisation :
     python banc_historique.py                                   # compare les modèles de référence
@@ -71,12 +102,26 @@ DOSSIER_ARCHIVE = os.path.join(RACINE, "data", "archive_test")
 MIN_MATCHS = 100
 MIN_OBSERVATIONS = 200
 MIN_TRANCHE_CALIBRATION = 30
+TOLERANCE_CALIBRATION = 0.05
 NIVEAU_IC = 0.95
 TIRAGES_BOOTSTRAP = 1000
 GRAINE = 20260927
 EPS = 1e-6
 
-# --- marchés évalués : famille + règle de gain sur le score final (h = buts domicile, a = buts extérieur) -----------
+# Verdicts et codes (chaînes exactes, utilisées par les tests et les rapports)
+INSUFFISANT = "ÉCHANTILLON INSUFFISANT"
+AVANTAGE = "AVANTAGE MESURABLE"
+MOINS_BON = "MOINS BON QUE LE MARCHÉ"
+AUCUN_AVANTAGE = "AUCUN AVANTAGE MESURABLE"
+CAL_OK = "CALIBRATION_ACCEPTABLE"
+CAL_HORS = "CALIBRATION_HORS_TOLERANCE"
+PAS_DE_COTE = "PAS_DE_COTE"
+ERREUR_MOTEUR = "ERREUR_MOTEUR"
+NON_DISPONIBLE = "MARCHÉ_NON_DISPONIBLE"
+INVALIDE = "PROBABILITÉ_INVALIDE"
+HORS_REGISTRE = "MARCHÉ_HORS_REGISTRE"
+
+# --- registre des marchés : famille + règle de gain sur le score final (h = buts domicile, a = buts extérieur) -------
 MARCHES = {
     "victoire": ("resultat", lambda h, a: h > a),
     "nul": ("resultat", lambda h, a: h == a),
@@ -86,28 +131,108 @@ MARCHES = {
     "dc_12": ("double_chance", lambda h, a: h != a),
     "btts_oui": ("btts", lambda h, a: h > 0 and a > 0),
     "btts_non": ("btts", lambda h, a: h == 0 or a == 0),
+    "clean_sheet_dom": ("cage_inviolee", lambda h, a: a == 0),
+    "clean_sheet_dom_non": ("cage_inviolee", lambda h, a: a > 0),
+    "clean_sheet_ext": ("cage_inviolee", lambda h, a: h == 0),
+    "clean_sheet_ext_non": ("cage_inviolee", lambda h, a: h > 0),
 }
-for _x in range(5):
+for _x in range(6):
     MARCHES[f"over_{_x}_5"] = ("total_buts", (lambda x: lambda h, a: h + a > x)(_x))
     MARCHES[f"under_{_x}_5"] = ("total_buts", (lambda x: lambda h, a: h + a <= x)(_x))
+for _x in range(2):
+    MARCHES[f"buts_dom_over_{_x}_5"] = ("buts_domicile", (lambda x: lambda h, a: h > x)(_x))
+    MARCHES[f"buts_dom_under_{_x}_5"] = ("buts_domicile", (lambda x: lambda h, a: h <= x)(_x))
+    MARCHES[f"buts_ext_over_{_x}_5"] = ("buts_exterieur", (lambda x: lambda h, a: a > x)(_x))
+    MARCHES[f"buts_ext_under_{_x}_5"] = ("buts_exterieur", (lambda x: lambda h, a: a <= x)(_x))
+for _n in range(6):
+    MARCHES[f"exact_goals_{_n}"] = ("nombre_exact_buts", (lambda n: lambda h, a: h + a == n)(_n))
+MARCHES["exact_goals_6_plus"] = ("nombre_exact_buts", lambda h, a: h + a >= 6)
 
-GROUPES_MARCHE = [("victoire", "nul", "defaite"), ("btts_oui", "btts_non")] + \
-                 [(f"over_{x}_5", f"under_{x}_5") for x in range(5)]
+# Groupes d'issues complémentaires (chaque groupe est normalisé à 1 pour retirer la marge).
+GROUPES_MARCHE = ([("victoire", "nul", "defaite"), ("btts_oui", "btts_non")]
+                  + [(f"over_{x}_5", f"under_{x}_5") for x in range(6)]
+                  + [(f"buts_{c}_over_{x}_5", f"buts_{c}_under_{x}_5") for c in ("dom", "ext") for x in range(2)]
+                  + [tuple(f"exact_goals_{n}" for n in range(6)) + ("exact_goals_6_plus",)])
+# Cage inviolée : complément vendu (« non ») ou, à défaut, le marché de même événement (l'adversaire marque au moins 1).
+COMPLEMENT_CAGE = {"clean_sheet_dom": ("clean_sheet_dom_non", "buts_ext_over_0_5"),
+                   "clean_sheet_ext": ("clean_sheet_ext_non", "buts_dom_over_0_5")}
+
+# Niveau de division : SEGMENT DE LECTURE DU RAPPORT UNIQUEMENT (jamais un coefficient, jamais transmis au moteur).
+# Noms exacts des compétitions tels qu'ils apparaissent dans les sources. Ambigu ou inconnu -> « non classée ».
+PREMIERE_DIVISION = frozenset([
+    "Afrique du Sud : Première Ligue de Football", "Allemagne : Bundesliga", "Angleterre : Premier League",
+    "Argentine : Copa de la Liga Profesional 2e Tour", "Autriche : Bundesliga",
+    "Belgique : Pro Ligue", "Bhoutan : Première Ligue", "Bolivie : Primera Division",
+    "Bosnie-Herzégovine : Première Ligue", "Brésil : Série A", "Bulgarie : Parva Liga", "Canada : Première Ligue",
+    "Chili : Superliga", "Chine : Super Ligue", "Colombie : Première A Cloture", "Corée du Sud : K-Ligue",
+    "Croatie : HNL", "Danemark : Superligaen", "El Salvador : 1ère Division Ouverture", "Espagne : LaLiga",
+    "Etats-Unis : MLS", "France : Ligue 1 McDonald's", "Guatemala : Ligue Nationale Ouverture", "Géorgie : Ligue Erovnuli",
+    "Hongrie : NB I", "Iraq : Ligue Irakienne", "Irlande : Première Ligue", "Irlande du Nord : IFA Premiership",
+    "Israël : Ligat Al", "Italie : Serie A", "Japon : J1 Ligue", "Kazakhstan : Super Ligue", "Kosovo : Superliga",
+    "Lettonie : Virsliga", "Lituanie : A Lyga", "Monténégro : Prva Liga", "Ouzbékistan : Oliy Liga",
+    "Panama : Primera Division Ouverture", "Paraguay : Professionnel de la Division Clôture",
+    "Pays de Galles : Cymru Premier", "Pays-Bas : Eredivisie", "Pologne : Ekstraklasa", "Portugal : Primeira Liga",
+    "Pérou : Primera Division Cloture", "Roumanie : Liga 1", "Serbie : Super Ligue", "Slovaquie : Super Ligue",
+    "Slovénie : 1. SNL", "Suisse : Super Ligue", "Tanzanie : Ligue Kuu Bara", "Turquie : Super Ligue",
+    "Ukraine : Première Ligue", "Uruguay : Primera Division Cloture", "Venezuela : Primera Division Clausura",
+    "Zimbabwe : Premier Ligue", "Équateur : Première A", "Îles Féroé : Formuladeildin",
+    "République Dominicaine : IV Liga Mayor", "Finlande : Veikkausliiga Tour de Championnat",
+    "Islande : Úrvalsdeild Relegation Round", "Équateur : Première A Tour de Championnat",
+])
+DIVISION_INFERIEURE = frozenset([
+    "Allemagne : 2. Bundesliga", "Allemagne : Ligue 3", "Angleterre : Championnat", "Angleterre : League One",
+    "Angleterre : League Two", "Angleterre : Ligue Nationale", "Arménie : 1ère Division", "Belgique : 2e Division",
+    "Espagne : Segunda Division", "Finlande : Ykkösliiga", "France : Ligue 2 BKT", "Hongrie : NB II", "France : Ligue 3",
+    "Italie : Série B", "Italie : Série C Girone A", "Italie : Série C Girone B", "Pays-Bas : Eerste Divisie", "Pologne : 1. Ligue", "Slovénie : 2. SNL",
+    "Suisse : Challenge Ligue", "Turquie : TFF 1. Ligue",
+])
+PREMIERE, INFERIEURE, NON_CLASSEE = "1re division", "division inférieure", "non classée"
+
+
+def niveau_division(competition):
+    """Segment de lecture du rapport. Nom exact seulement : aucun niveau deviné (coupes, phases finales, compétitions
+    féminines ou continentales, noms ambigus -> « non classée »)."""
+    if competition in PREMIERE_DIVISION:
+        return PREMIERE
+    if competition in DIVISION_INFERIEURE:
+        return INFERIEURE
+    return NON_CLASSEE
+
+
+def donnees_disponibles(entree):
+    return "enrichies (Football-Data)" if entree.get("football_data") else "buts seules"
+
+
+# Marchés du premier banc (27/09) : périmètre du verrou de non-régression V2. Ne jamais le modifier.
+PERIMETRE_REFERENCE_2709 = frozenset(
+    ["victoire", "nul", "defaite", "dc_1X", "dc_X2", "dc_12", "btts_oui", "btts_non"]
+    + [f"{s}_{x}_5" for s in ("over", "under") for x in range(5)])
 
 
 def gagne(marche, h, a):
     return bool(MARCHES[marche][1](h, a))
 
 
+def _cote_ok(v):
+    return isinstance(v, (int, float)) and not isinstance(v, bool) and v > 1
+
+
 def probabilites_marche(cotes):
-    """Probabilités du marché SANS marge : chaque groupe d'issues complémentaires est normalisé à 1. La double chance est
-    déduite du 1X2 sans marge (ses propres cotes restent utilisées pour le ROI)."""
+    """Probabilités du marché SANS marge. Chaque groupe d'issues complémentaires est normalisé à 1 ; un groupe incomplet
+    ne donne rien (jamais de probabilité inventée). La double chance est déduite du 1X2 sans marge (ses propres cotes
+    restent utilisées pour le ROI)."""
     p = {}
     for groupe in GROUPES_MARCHE:
-        if all(isinstance(cotes.get(k), (int, float)) and cotes[k] > 1 for k in groupe):
+        if all(_cote_ok(cotes.get(k)) for k in groupe):
             s = sum(1 / cotes[k] for k in groupe)
             for k in groupe:
                 p[k] = (1 / cotes[k]) / s
+    for oui, complements in COMPLEMENT_CAGE.items():
+        non = next((c for c in complements if _cote_ok(cotes.get(c))), None)
+        if _cote_ok(cotes.get(oui)) and non:
+            s = 1 / cotes[oui] + 1 / cotes[non]
+            p[oui] = (1 / cotes[oui]) / s
+            p[oui + "_non"] = (1 / cotes[non]) / s
     if all(k in p for k in ("victoire", "nul", "defaite")):
         p["dc_1X"] = p["victoire"] + p["nul"]
         p["dc_X2"] = p["defaite"] + p["nul"]
@@ -159,7 +284,7 @@ def charge_snapshot(fichier_snapshot=FICHIER_SNAPSHOT, fichier_scores=FICHIER_SC
             "cotes": {k: v for k, v in (em.get("cotes") or {}).items() if k in MARCHES},
             "equipe_dom": _equipe_moyennes(d.get("nom"), d.get("buts_marques_moy"), d.get("buts_encaisses_moy"), nd),
             "equipe_ext": _equipe_moyennes(e.get("nom"), e.get("buts_marques_moy"), e.get("buts_encaisses_moy"), ne),
-            "assemblage": None,
+            "assemblage": None, "football_data": False,
         }
         out.append((entree, (sc["buts_dom"], sc["buts_ext"])))
     return out
@@ -168,15 +293,31 @@ def charge_snapshot(fichier_snapshot=FICHIER_SNAPSHOT, fichier_scores=FICHIER_SC
 # Cotes BetPawa brutes (cotes_manuelles) -> noms de MARCHES. Handicaps volontairement absents.
 _BETPAWA = {("1x2", "1"): "victoire", ("1x2", "N"): "nul", ("1x2", "2"): "defaite",
             ("double_chance", "1N"): "dc_1X", ("double_chance", "N2"): "dc_X2", ("double_chance", "12"): "dc_12",
-            ("btts", "Oui"): "btts_oui", ("btts", "Non"): "btts_non"}
+            ("btts", "Oui"): "btts_oui", ("btts", "Non"): "btts_non",
+            ("cages_inviolees_domicile", "oui"): "clean_sheet_dom",
+            ("cages_inviolees_domicile", "non"): "clean_sheet_dom_non",
+            ("cages_inviolees_exterieur", "oui"): "clean_sheet_ext",
+            ("cages_inviolees_exterieur", "non"): "clean_sheet_ext_non"}
 _OBSERVEES = {"1X2 - 1": "victoire", "1X2 - X": "nul", "1X2 - 2": "defaite", "Double chance - 1X": "dc_1X",
               "Double chance - X2": "dc_X2", "Double chance - 12": "dc_12", "BTTS - oui": "btts_oui",
-              "BTTS - non": "btts_non"}
-for _x in range(5):
+              "BTTS - non": "btts_non", "Cage inviolée - Domicile": "clean_sheet_dom",
+              "Encaisse au moins 1 but - Domicile": "clean_sheet_dom_non",   # complément de « Cage inviolée - Domicile »
+              "Cage inviolée - Extérieur": "clean_sheet_ext",
+              "Encaisse au moins 1 but - Extérieur": "clean_sheet_ext_non"}
+for _x in range(6):
     _BETPAWA[(f"over_under_{_x}.5", "plus")] = f"over_{_x}_5"
     _BETPAWA[(f"over_under_{_x}.5", "moins")] = f"under_{_x}_5"
     _OBSERVEES[f"Plus de {_x}.5 buts"] = f"over_{_x}_5"
     _OBSERVEES[f"Moins de {_x}.5 buts"] = f"under_{_x}_5"
+for _x in range(2):
+    for _cote, _nom, _libelle in (("dom", "domicile", "Domicile"), ("ext", "exterieur", "Extérieur")):
+        _BETPAWA[(f"over_under_{_nom}_{_x}.5", "plus")] = f"buts_{_cote}_over_{_x}_5"
+        _BETPAWA[(f"over_under_{_nom}_{_x}.5", "moins")] = f"buts_{_cote}_under_{_x}_5"
+        _OBSERVEES[f"Plus de {_x}.5 buts - {_libelle}"] = f"buts_{_cote}_over_{_x}_5"
+        _OBSERVEES[f"Moins de {_x}.5 buts - {_libelle}"] = f"buts_{_cote}_under_{_x}_5"
+for _n in range(6):
+    _BETPAWA[("nombre_exact_buts", str(_n))] = f"exact_goals_{_n}"
+_BETPAWA[("nombre_exact_buts", "6+")] = "exact_goals_6_plus"
 
 
 def cotes_archive(e):
@@ -184,11 +325,11 @@ def cotes_archive(e):
     cotes = {}
     for (groupe, issue), marche in _BETPAWA.items():
         v = ((e.get("cotes_betpawa") or {}).get(groupe) or {}).get(issue)
-        if isinstance(v, (int, float)) and v > 1:
+        if _cote_ok(v):
             cotes[marche] = v
     for nom, marche in _OBSERVEES.items():
         v = (e.get("cotes_observees") or {}).get(nom)
-        if marche not in cotes and isinstance(v, (int, float)) and v > 1:
+        if marche not in cotes and _cote_ok(v):
             cotes[marche] = v
     return cotes
 
@@ -223,7 +364,7 @@ def charge_archive(dossier=DOSSIER_ARCHIVE):
                 "source": "archive", "n_lieu": min(nd, ne), "cotes": cotes_archive(e),
                 "equipe_dom": _equipe_moyennes(e.get("domicile"), gf_d, ga_d, nd, md),
                 "equipe_ext": _equipe_moyennes(e.get("exterieur"), gf_e, ga_e, ne, mx),
-                "assemblage": e.get("assemblage"),
+                "assemblage": e.get("assemblage"), "football_data": bool(e.get("donnees_football_data")),
             }
             out.append((entree, (sc["buts_dom"], sc["buts_ext"])))
     return out, fuite
@@ -236,7 +377,7 @@ def _poisson(l, k):
 
 
 def probas_poisson(lh, la, max_buts=10):
-    """Probabilités de tous les marchés de MARCHES à partir de deux buts attendus (Poisson indépendant, grille
+    """Probabilités de tous les marchés du registre à partir de deux buts attendus (Poisson indépendant, grille
     normalisée)."""
     ph = [_poisson(lh, k) for k in range(max_buts + 1)]
     pa = [_poisson(la, k) for k in range(max_buts + 1)]
@@ -312,7 +453,7 @@ def selection_regle_v2(entree, probas):
     cands = []
     for marche, p in probas.items():
         c = entree["cotes"].get(marche)
-        if not c or not 1.26 <= c <= 1.74:
+        if marche not in MARCHES or p is None or not c or not 1.26 <= c <= 1.74:
             continue
         seuil = _edv_minimale(p)
         edv = 100 * (p * c - 1)
@@ -329,6 +470,16 @@ def selection_regle_v2(entree, probas):
         if len(retenus) == 3:
             break
     return retenus
+
+
+def restreint(fonction, perimetre):
+    """Enveloppe un modèle (ou une règle de décision) pour ne garder que les marchés d'un périmètre donné."""
+    def modele(entree, *args):
+        out = fonction(entree, *args)
+        if isinstance(out, dict):
+            return {k: v for k, v in out.items() if k in perimetre}
+        return [m for m in (out or []) if m in perimetre]
+    return modele
 
 
 # --- mesures ----------------------------------------------------------------------------------------------------------
@@ -348,31 +499,48 @@ def _tranche_cote(c):
 
 
 def observations(jeu, modele):
-    """Une observation par (match, marché) où le modèle ET le marché donnent une probabilité."""
-    obs, rejets = [], defaultdict(int)
+    """Une observation par (match, marché) où le modèle ET le marché donnent une probabilité. Tout le reste est compté
+    sous un code de rejet distinct (total et détail par marché)."""
+    obs = []
+    rejets = defaultdict(int)
+    detail = defaultdict(lambda: defaultdict(int))
     for entree, (h, a) in jeu:
         pm = probabilites_marche(entree["cotes"])
         if not pm:
-            rejets["sans cotes exploitables"] += 1
+            rejets[PAS_DE_COTE] += 1
+            detail[PAS_DE_COTE]["(match entier)"] += 1
             continue
         try:
             probas = modele(entree) or {}
         except Exception as e:  # un moteur qui plante sur un match : compté, jamais masqué
-            rejets[f"erreur du modèle : {type(e).__name__}"] += 1
+            rejets[ERREUR_MOTEUR] += 1
+            detail[ERREUR_MOTEUR][type(e).__name__] += 1
             continue
-        if not probas:
-            rejets["le modèle ne donne aucune probabilité"] += 1
-            continue
-        for marche, p in probas.items():
-            if marche not in MARCHES or marche not in pm:
+        for marche in probas:
+            if str(marche).startswith("_"):              # métadonnée du moteur (ex. « _abstention ») : ignorée
                 continue
-            if not isinstance(p, (int, float)) or not 0 <= p <= 1:
-                rejets["probabilité invalide"] += 1
+            if marche not in MARCHES:
+                rejets[HORS_REGISTRE] += 1
+                detail[HORS_REGISTRE][str(marche)] += 1
+            elif marche not in pm and probas[marche] is not None:
+                rejets[PAS_DE_COTE] += 1
+                detail[PAS_DE_COTE][marche] += 1
+        for marche, p_marche in pm.items():
+            p = probas.get(marche)
+            if p is None:
+                rejets[NON_DISPONIBLE] += 1
+                detail[NON_DISPONIBLE][marche] += 1
+                continue
+            if not isinstance(p, (int, float)) or isinstance(p, bool) or not 0 <= p <= 1:
+                rejets[INVALIDE] += 1
+                detail[INVALIDE][marche] += 1
                 continue
             obs.append({"match": entree["id"], "marche": marche, "famille": MARCHES[marche][0],
-                        "p": float(p), "pm": pm[marche], "y": 1.0 if gagne(marche, h, a) else 0.0,
-                        "cote": entree["cotes"].get(marche), "n": entree["n_lieu"], "source": entree["source"]})
-    return obs, dict(rejets)
+                        "p": float(p), "pm": p_marche, "y": 1.0 if gagne(marche, h, a) else 0.0,
+                        "cote": entree["cotes"].get(marche), "n": entree["n_lieu"], "source": entree["source"],
+                        "division": niveau_division(entree.get("competition")),
+                        "donnees": donnees_disponibles(entree)})
+    return obs, dict(rejets), {k: dict(v) for k, v in detail.items()}
 
 
 def _ll(p, y):
@@ -404,17 +572,18 @@ def _ic_par_match(obs, cle, tirages, graine):
     return moyennes[int(a * tirages)], moyennes[min(tirages - 1, int((1 - a) * tirages))]
 
 
-def verdict(n_matchs, n_obs, ic_ll):
-    if n_matchs < MIN_MATCHS or n_obs < MIN_OBSERVATIONS or ic_ll is None:
-        return "ÉCHANTILLON INSUFFISANT"
-    if ic_ll[1] < 0:
-        return "AVANTAGE MESURABLE"
-    if ic_ll[0] > 0:
-        return "MOINS BON QUE LE MARCHÉ"
-    return "AUCUN AVANTAGE MESURABLE"
+def verdict(n_matchs, n_obs, ic_ll, ic_br):
+    """Performance vs marché, sur les DEUX mesures (écarts modèle - marché : négatif = modèle meilleur)."""
+    if n_matchs < MIN_MATCHS or n_obs < MIN_OBSERVATIONS or ic_ll is None or ic_br is None:
+        return INSUFFISANT
+    if ic_ll[0] > 0 or ic_br[0] > 0:
+        return MOINS_BON
+    if ic_ll[1] < 0 or ic_br[1] < 0:
+        return AVANTAGE
+    return AUCUN_AVANTAGE
 
 
-def stats_groupe(obs, tirages=TIRAGES_BOOTSTRAP, graine=GRAINE, avec_ic=True):
+def stats_groupe(obs, tirages=TIRAGES_BOOTSTRAP, graine=GRAINE):
     if not obs:
         return None
     n = len(obs)
@@ -424,32 +593,48 @@ def stats_groupe(obs, tirages=TIRAGES_BOOTSTRAP, graine=GRAINE, avec_ic=True):
     ll_m = sum(_ll(o["p"], o["y"]) for o in obs) / n
     ll_k = sum(_ll(o["pm"], o["y"]) for o in obs) / n
     ic_ll = ic_br = None
-    if avec_ic and matchs >= 2:
+    if matchs >= 2:
         ic_ll = _ic_par_match(obs, lambda o: _ll(o["p"], o["y"]) - _ll(o["pm"], o["y"]), tirages, graine)
         ic_br = _ic_par_match(obs, lambda o: (o["p"] - o["y"]) ** 2 - (o["pm"] - o["y"]) ** 2, tirages, graine)
+    v = verdict(matchs, n, ic_ll, ic_br)
     return {"observations": n, "matchs": matchs, "taux_reel": sum(o["y"] for o in obs) / n,
             "p_moyenne_modele": sum(o["p"] for o in obs) / n, "p_moyenne_marche": sum(o["pm"] for o in obs) / n,
             "brier_modele": brier_m, "brier_marche": brier_k, "ecart_brier": brier_m - brier_k, "ic_ecart_brier": ic_br,
             "logloss_modele": ll_m, "logloss_marche": ll_k, "ecart_logloss": ll_m - ll_k, "ic_ecart_logloss": ic_ll,
-            "verdict": verdict(matchs, n, ic_ll)}
+            "verdict": v, "decisionnel": v != INSUFFISANT}
 
 
-def calibration(obs):
-    """Par tranche de 10 points de probabilité annoncée : annoncé vs réel. `ecart_max` sur les tranches assez remplies."""
+def statut_tranche(n, ecart):
+    """Statut de calibration d'une tranche : jamais « hors tolérance » sur un petit échantillon."""
+    if n < MIN_TRANCHE_CALIBRATION:
+        return INSUFFISANT
+    return CAL_OK if abs(ecart) <= TOLERANCE_CALIBRATION + 1e-12 else CAL_HORS
+
+
+def verdict_calibration(tranches):
+    suffisantes = [t for t in tranches if t["statut"] != INSUFFISANT]
+    if not suffisantes:
+        return INSUFFISANT
+    return CAL_HORS if any(t["statut"] == CAL_HORS for t in suffisantes) else CAL_OK
+
+
+def calibration(obs, tirages=TIRAGES_BOOTSTRAP, graine=GRAINE):
+    """Par tranche de 10 points de probabilité annoncée : observations, annoncé, réel, écart (annoncé - réel) et son
+    intervalle (bootstrap par match), statut ; puis verdict global de calibration."""
     tranches = defaultdict(list)
     for o in obs:
         tranches[min(9, int(o["p"] * 10))].append(o)
-    lignes, ecart_max = [], None
+    lignes = []
     for t in sorted(tranches):
         grp = tranches[t]
         annonce = sum(o["p"] for o in grp) / len(grp)
         reel = sum(o["y"] for o in grp) / len(grp)
-        marche = sum(o["pm"] for o in grp) / len(grp)
+        ecart = annonce - reel
         lignes.append({"tranche": f"{t * 10}-{t * 10 + 10} %", "n": len(grp), "annonce": annonce, "reel": reel,
-                       "marche": marche, "ecart": annonce - reel})
-        if len(grp) >= MIN_TRANCHE_CALIBRATION:
-            ecart_max = abs(annonce - reel) if ecart_max is None else max(ecart_max, abs(annonce - reel))
-    return {"tranches": lignes, "ecart_max_tranches_suffisantes": ecart_max}
+                       "marche": sum(o["pm"] for o in grp) / len(grp), "ecart": ecart,
+                       "ic_ecart": _ic_par_match(grp, lambda o: o["p"] - o["y"], tirages, graine),
+                       "statut": statut_tranche(len(grp), ecart)})
+    return {"tranches": lignes, "verdict": verdict_calibration(lignes)}
 
 
 def evalue_selection(jeu, modele, selection, tirages=TIRAGES_BOOTSTRAP, graine=GRAINE):
@@ -465,7 +650,7 @@ def evalue_selection(jeu, modele, selection, tirages=TIRAGES_BOOTSTRAP, graine=G
         pm = probabilites_marche(entree["cotes"])
         for marche in choix:
             c = entree["cotes"].get(marche)
-            if marche not in MARCHES or not c or marche not in probas:
+            if marche not in MARCHES or not c or probas.get(marche) is None:
                 continue
             y = 1.0 if gagne(marche, h, a) else 0.0
             paris.append({"match": entree["id"], "marche": marche, "p": probas[marche], "pm": pm.get(marche),
@@ -481,18 +666,60 @@ def evalue_selection(jeu, modele, selection, tirages=TIRAGES_BOOTSTRAP, graine=G
             "roi": sum(p["gain"] for p in paris) / n, "ic_roi": ic, "erreurs": dict(erreurs)}
 
 
+HIERARCHIE = (("par_marche", "marche"), ("par_famille", "famille"), ("par_n", "n"), ("par_cote", "cote"),
+              ("par_source", "source"), ("par_division", "division"), ("par_donnees", "donnees"))
+
+# Entonnoir « volume abandonné » : une seule étape par match, dans cet ordre.
+ETAPES_VOLUME = ("sans cote", "erreur du moteur", "abstention du moteur", "erreur de la règle", "aucune sélection",
+                 "sélectionné")
+
+
+def volume(jeu, modele, selection=None):
+    """Où chaque match s'arrête. Sans règle de décision, l'entonnoir s'arrête à « évalué »."""
+    etapes, motifs = defaultdict(int), defaultdict(int)
+    for entree, _ in jeu:
+        pm = probabilites_marche(entree["cotes"])
+        if not pm:
+            etapes["sans cote"] += 1
+            continue
+        try:
+            probas = modele(entree) or {}
+        except Exception:
+            etapes["erreur du moteur"] += 1
+            continue
+        utiles = [m for m in pm if isinstance(probas.get(m), (int, float)) and not isinstance(probas.get(m), bool)
+                  and 0 <= probas[m] <= 1]
+        if not utiles:
+            etapes["abstention du moteur"] += 1
+            motifs[str(probas.get("_abstention") or "sans motif")] += 1
+            continue
+        if selection is None:
+            etapes["évalué"] += 1
+            continue
+        try:
+            choix = [m for m in (selection(entree, probas) or []) if m in MARCHES and entree["cotes"].get(m)
+                     and probas.get(m) is not None]
+        except Exception:
+            etapes["erreur de la règle"] += 1
+            continue
+        etapes["sélectionné" if choix else "aucune sélection"] += 1
+    ordre = ETAPES_VOLUME if selection is not None else ETAPES_VOLUME[:3] + ("évalué",)
+    return {"matchs": len(jeu), "etapes": {k: etapes.get(k, 0) for k in ordre},
+            "motifs_abstention": dict(motifs)}
+
+
 def evalue(jeu, modele, selection=None, tirages=TIRAGES_BOOTSTRAP, graine=GRAINE):
-    obs, rejets = observations(jeu, modele)
-    rapport = {"matchs_du_jeu": len(jeu), "rejets": rejets, "global": stats_groupe(obs, tirages, graine),
-               "par_famille": {}, "par_marche": {}, "par_n": {}, "par_cote": {}, "par_source": {},
-               "calibration": calibration(obs) if obs else None}
-    for nom, cle, ic in (("par_famille", "famille", True), ("par_marche", "marche", True),
-                         ("par_n", "n", True), ("par_cote", "cote", True), ("par_source", "source", True)):
+    obs, rejets, detail = observations(jeu, modele)
+    rapport = {"matchs_du_jeu": len(jeu), "rejets": rejets, "rejets_detail": detail,
+               "global": stats_groupe(obs, tirages, graine),
+               "calibration": calibration(obs, tirages, graine) if obs else {"tranches": [], "verdict": INSUFFISANT}}
+    for nom, cle in HIERARCHIE:
         grp = defaultdict(list)
         for o in obs:
             k = _tranche_n(o["n"]) if cle == "n" else _tranche_cote(o["cote"]) if cle == "cote" else o[cle]
             grp[k].append(o)
-        rapport[nom] = {k: stats_groupe(v, tirages, graine, avec_ic=ic) for k, v in sorted(grp.items())}
+        rapport[nom] = {k: stats_groupe(v, tirages, graine) for k, v in sorted(grp.items())}
+    rapport["volume"] = volume(jeu, modele, selection)
     if selection is not None:
         rapport["selection"] = evalue_selection(jeu, modele, selection, tirages, graine)
     return rapport
@@ -513,28 +740,45 @@ def rapport_texte(nom, r):
     g = r["global"]
     if not g:
         return "\n".join(lignes + ["Aucune observation."])
-    lignes.append(f"GLOBAL : {g['verdict']} -- {g['observations']} observations sur {g['matchs']} matchs ; log-loss "
-                  f"modèle {g['logloss_modele']:.4f} vs marché {g['logloss_marche']:.4f} (écart {g['ecart_logloss']:+.4f}, "
-                  f"IC {_ic(g['ic_ecart_logloss'])}) ; Brier {g['brier_modele']:.4f} vs {g['brier_marche']:.4f}")
-    # La réussite moyenne n'a de sens que par marché : une famille mélange des issues complémentaires (victoire + nul +
-    # défaite = 100 %), sa moyenne est donc toujours la même. Elle n'est affichée que dans « Par marché ».
-    for titre, cle, avec_taux in (("Par famille", "par_famille", False), ("Par marché", "par_marche", True),
-                                  ("Par taille d'échantillon", "par_n", False),
-                                  ("Par tranche de cote", "par_cote", True), ("Par source", "par_source", False)):
+    lignes.append(f"PERFORMANCE VS MARCHÉ : {g['verdict']} -- {g['observations']} observations sur {g['matchs']} matchs")
+    lignes.append(f"   log-loss modèle {g['logloss_modele']:.4f} vs marché {g['logloss_marche']:.4f} "
+                  f"(écart {g['ecart_logloss']:+.4f}, IC {_ic(g['ic_ecart_logloss'])})")
+    lignes.append(f"   Brier    modèle {g['brier_modele']:.4f} vs marché {g['brier_marche']:.4f} "
+                  f"(écart {g['ecart_brier']:+.4f}, IC {_ic(g['ic_ecart_brier'])})")
+    cal = r.get("calibration") or {}
+    lignes.append(f"CALIBRATION : {cal.get('verdict', INSUFFISANT)} (tolérance {TOLERANCE_CALIBRATION * 100:.0f} points, "
+                  f"tranches d'au moins {MIN_TRANCHE_CALIBRATION} observations)")
+    for t in cal.get("tranches", []):
+        lignes.append(f"   {t['tranche']:<10} n={t['n']:<5} annoncé {_pct(t['annonce'])} réel {_pct(t['reel'])} "
+                      f"écart {100 * t['ecart']:+.1f} pts IC {_ic(t['ic_ecart'], 100, ' pts', 1)} -> {t['statut']}")
+    # Hiérarchie : marché, famille, N, cote, source. Un groupe sous les seuils est informatif, jamais décisionnel.
+    # La réussite moyenne n'a de sens que par marché ou tranche de cote : une famille mélange des issues
+    # complémentaires (victoire + nul + défaite = 100 %).
+    titres = {"par_marche": ("Par marché", True), "par_famille": ("Par famille", False),
+              "par_n": ("Par taille d'échantillon", False), "par_cote": ("Par tranche de cote", True),
+              "par_source": ("Par source", False),
+              "par_division": ("Par niveau de division (lecture seulement, aucun coefficient)", False),
+              "par_donnees": ("Par données disponibles", False)}
+    for nom_groupe, _ in HIERARCHIE:
+        titre, avec_taux = titres[nom_groupe]
         lignes.append(f"-- {titre}")
-        for k, s in r[cle].items():
-            ligne = (f"   {k:<16} {s['verdict']:<26} n={s['observations']:<5} matchs={s['matchs']:<4} "
-                     f"écart log-loss {s['ecart_logloss']:+.4f} IC {_ic(s['ic_ecart_logloss'])}")
+        for k, s in r[nom_groupe].items():
+            ligne = (f"   {k:<22} {s['verdict']:<26}{'' if s['decisionnel'] else ' (informatif)'} "
+                     f"n={s['observations']:<5} matchs={s['matchs']:<4} log-loss {s['ecart_logloss']:+.4f} "
+                     f"IC {_ic(s['ic_ecart_logloss'])} Brier {s['ecart_brier']:+.4f} IC {_ic(s['ic_ecart_brier'])}")
             if avec_taux:
                 ligne += (f" | réel {_pct(s['taux_reel'])} annoncé {_pct(s['p_moyenne_modele'])} "
                           f"marché {_pct(s['p_moyenne_marche'])}")
             lignes.append(ligne)
-    cal = r.get("calibration") or {}
-    lignes.append(f"-- Calibration (écart max sur tranches >= {MIN_TRANCHE_CALIBRATION} obs : "
-                  f"{_pct(cal.get('ecart_max_tranches_suffisantes'))})")
-    for t in cal.get("tranches", []):
-        lignes.append(f"   {t['tranche']:<10} n={t['n']:<5} annoncé {_pct(t['annonce'])} réel {_pct(t['reel'])} "
-                      f"marché {_pct(t['marche'])}")
+    for code, par_marche in (r.get("rejets_detail") or {}).items():
+        lignes.append(f"-- Rejets {code} : {par_marche}")
+    vol = r.get("volume")
+    if vol:
+        lignes.append(f"-- Volume abandonné : {vol['matchs']} matchs étudiés")
+        for k, v in vol["etapes"].items():
+            lignes.append(f"   {k:<22} {v}")
+        if vol["motifs_abstention"]:
+            lignes.append(f"   motifs d'abstention : {vol['motifs_abstention']}")
     sel = r.get("selection")
     if sel:
         if sel.get("selections"):
@@ -579,16 +823,24 @@ def main(argv=None):
     p.add_argument("--selection", default="regle_v2",
                    help="module:fonction, « regle_v2 » (défaut) ou « aucune »")
     p.add_argument("--source", choices=("snapshot", "archive", "tous"), default="snapshot")
+    p.add_argument("--perimetre", choices=("complet", "reference_2709"), default="complet",
+                   help="« reference_2709 » = marchés du premier banc (périmètre du verrou de non-régression)")
     p.add_argument("--tirages", type=int, default=TIRAGES_BOOTSTRAP)
     p.add_argument("--json", help="écrire le rapport complet dans ce fichier")
     a = p.parse_args(argv)
     jeu, infos = charge_jeu(a.source)
-    modeles = {a.modele: _charge_fonction(a.modele)} if a.modele else MODELES_REFERENCE
+    modeles = {a.modele: _charge_fonction(a.modele)} if a.modele else dict(MODELES_REFERENCE)
     selection = None if a.selection == "aucune" else selection_regle_v2 if a.selection == "regle_v2" \
         else _charge_fonction(a.selection)
-    print(f"Banc historique -- source {a.source} : {len(jeu)} matchs ; {infos}")
-    complet = {"source": a.source, "infos": infos, "seuils": {"min_matchs": MIN_MATCHS,
-               "min_observations": MIN_OBSERVATIONS, "niveau_ic": NIVEAU_IC, "tirages": a.tirages, "graine": GRAINE},
+    if a.perimetre == "reference_2709":
+        modeles = {nom: restreint(f, PERIMETRE_REFERENCE_2709) for nom, f in modeles.items()}
+        selection = restreint(selection, PERIMETRE_REFERENCE_2709) if selection else None
+    print(f"Banc historique -- source {a.source}, périmètre {a.perimetre} : {len(jeu)} matchs ; {infos}")
+    complet = {"source": a.source, "perimetre": a.perimetre, "infos": infos,
+               "seuils": {"min_matchs": MIN_MATCHS, "min_observations": MIN_OBSERVATIONS,
+                          "min_tranche_calibration": MIN_TRANCHE_CALIBRATION,
+                          "tolerance_calibration": TOLERANCE_CALIBRATION, "niveau_ic": NIVEAU_IC,
+                          "tirages": a.tirages, "graine": GRAINE},
                "modeles": {}}
     for nom, f in modeles.items():
         r = evalue(jeu, f, selection, a.tirages)
