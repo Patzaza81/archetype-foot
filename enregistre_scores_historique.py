@@ -146,6 +146,16 @@ def main():
         print(f"  {d} : {v['remplis']} / {v['sans_score_avant']}")
     for e in bilan["pages_en_echec"]:
         print(f"  ÉCHEC {e}", file=sys.stderr)
+    # AJOUT 27/09/2026 -- archive de test (archive_donnees_test.py, dossier data/archive_test/) : avant-match complet
+    # des matchs de precalcul.json, puis scores des matchs joués repris de l'historique qu'on vient d'écrire. Branché ici
+    # parce que cette étape tourne chaque nuit juste après precalcul.py et sa garde, et que data/ est déjà commité par
+    # le workflow. Isolé dans un try : un échec de l'archive ne fait jamais échouer l'enregistrement des scores.
+    try:
+        import archive_donnees_test
+        print(f"[archive de test] {archive_donnees_test.execution_nocturne()}")
+    except Exception as e:
+        print(f"[archive de test] AVERTISSEMENT : échec ({type(e).__name__}: {e}) -- scores de l'historique non "
+              f"concernés.", file=sys.stderr)
     return 0
 
 
