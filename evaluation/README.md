@@ -77,3 +77,31 @@ Avec 80 matchs, il détecte un défaut de calibration **important** et laisse pa
 La règle de lecture n°1 (« calibration globale sur `tous_les_marches` ») est **défectueuse par construction** : les marchés opposés d'un même match (plus/moins de buts, oui/non) s'annulent exactement dans la moyenne (si l'un gagne, l'autre perd, et leurs probabilités valent 1 ensemble). L'écart global vaut donc environ 0 quel que soit le modèle, avec un intervalle artificiellement étroit. **Cette règle n'a aucune valeur de preuve et n'est plus utilisée.** Restent valides, et sont les seuls utilisés pour conclure : la fiabilité **par tranche de probabilité**, le **Brier modèle contre marché** (règle n°2), l'écart de calibration des **choix publiés** et des **value bets** (dont les marchés ne sont pas complémentaires), et le ROI (règle n°3). Les règles 2 à 6 sont inchangées, en particulier l'interdiction de régler le moteur sur ce jeu.
 
 Premier rapport : `rapport_historique_2026-09-21.txt` (353 matchs avec score sur 503, scores issus de l'archive et de `historique_pronostics.json`, non recoupables entre eux : aucun match en commun).
+
+## Banc de test historique pour tout nouveau moteur (`banc_historique.py`, 27/09/2026)
+
+Porte obligatoire avant tout branchement d'un moteur au pipeline (V3 comprise). Un moteur = une fonction
+`modele(entree) -> {marche: probabilite}` ; une règle de décision facultative = `selection(entree, probas) -> [marches]`.
+
+```bash
+python banc_historique.py                                         # modèles de référence (marché, V2, moyenne, lissé)
+python banc_historique.py --modele mon_module:ma_fonction         # juger un moteur sur le jeu figé
+python banc_historique.py --modele m:f --selection m:g --source tous --json rapport.json
+```
+
+- **Sources** : `snapshot` (ce jeu figé, empreinte vérifiée, refus si elle diffère) et `archive` (`data/archive_test/`,
+  matchs testables avec score : listes complètes des matchs + Football-Data). Aucune donnée postérieure au match.
+- **Mesures** : Brier et log-loss du modèle et du marché sans marge, écart avec intervalle à 95 % (bootstrap par match),
+  par famille, par marché, par taille d'échantillon (N 0-2, 3-4, 5+), par tranche de cote, par source ; calibration par
+  tranche ; ROI des sélections en mesure secondaire. Handicaps exclus (étiquettes BetPawa incohérentes).
+- **Verdicts** : « ÉCHANTILLON INSUFFISANT » sous 100 matchs ou 200 observations (aucune conclusion), « AVANTAGE
+  MESURABLE » (écart de log-loss entièrement sous 0), « MOINS BON QUE LE MARCHÉ » (entièrement au-dessus), sinon « AUCUN
+  AVANTAGE MESURABLE » : le moteur doit alors conclure « pas d'avantage mesurable -> pas de pari ».
+- Les marchés complémentaires d'un même match (plus/moins, oui/non) portent la même information : c'est pourquoi
+  l'intervalle est calculé par match, et pourquoi la calibration par tranche est symétrique (voir l'erratum ci-dessus).
+- **Seuils fixés dans le code, jamais ajustés après lecture d'un résultat.** Régler un moteur jusqu'à ce qu'il passe ce
+  banc invaliderait la mesure (règle n°6).
+
+Mesure de référence du 27/09/2026 (501 matchs, verrouillée par `tests/test_banc_historique.py`) : V2 (λ produit) est
+« MOINS BON QUE LE MARCHÉ » (écart de log-loss +0,086, IC [+0,059 ; +0,114]) ; ses 548 sélections réussissent 63,3 %
+pour 81,9 % annoncés et 62,8 % prévus par le marché, ROI −6,2 %. Aucun des modèles de référence ne bat le marché.
