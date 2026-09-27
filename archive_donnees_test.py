@@ -28,6 +28,14 @@ test ») :
      cache_equipes_saison.json (saison en cours, même compétition : exactement ce que lit le moteur). Chaque équipe est
      retrouvée par l'ADRESSE EXACTE du match (« domicile-exterieur » = adresse équipe domicile + « - » + adresse équipe
      extérieur, dans la même compétition), jamais par ressemblance de nom. Pas de correspondance exacte = équipe ABSENTE.
+  8. AJOUT 27/09/2026 (SCHEMA_VERSION 2) -- données Football-Data : l'assemblage data/assemblage/equipes.json (matchs
+     Football-Data avec mi-temps, tirs, tirs cadrés, corners, cartons, xG ; complétés par Matchendirect) est lu par le
+     SEUL lecteur autorisé, contrat_moteur.py (charge_assemblage + equipe), et chaque match y est gardé en ENTIER, avec la
+     même règle anti-fuite. Constat du 27/09 : cet assemblage est collecté, vérifié et publié chaque nuit, mais aucun
+     moteur ne le lit encore (chantier B) ; l'archive le conserve dès maintenant pour que les futurs marchés mi-temps,
+     corners et cartons puissent être testés sur l'historique. Assemblage absent ou contrat rompu : le bloc
+     `assemblage` le dit (statut), le reste de l'enregistrement est écrit normalement. L'assemblage est reconstruit par
+     journal.yml APRÈS le pipeline : celui lu ici est donc celui de la nuit précédente (sa date est enregistrée).
 
 Utilisation :
     python archive_donnees_test.py --run --scores   # à la main : avant-match des matchs à venir + scores des matchs joués
@@ -36,6 +44,7 @@ Utilisation :
 from __future__ import annotations
 
 import argparse
+import copy
 import datetime
 import glob
 import gzip
@@ -44,7 +53,7 @@ import os
 import re
 import sys
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 DOSSIER = os.path.join("data", "archive_test")
 FICHIER_HISTORIQUE = "historique_pronostics.json"
 FICHIER_PRECALCUL = "precalcul.json"
@@ -125,6 +134,58 @@ def matchs_avant(matchs, date_match):
     return gardes, apres, invalides
 
 
+def matchs_complets_avant(matchs, date_match):
+    """Même règle que matchs_avant, mais chaque match est gardé EN ENTIER (tous ses champs : mi-temps, tirs, corners,
+    cartons, xG, source...) : c'est ce qui rend l'archive utilisable pour des marchés qui n'existent pas encore.
+    Renvoie (gardés, nb_retirés_après_date, nb_invalides)."""
+    gardes, apres, invalides = [], 0, 0
+    for m in matchs or []:
+        d = m.get("date") if isinstance(m, dict) else None
+        if not d or not _buts_valides(m):
+            invalides += 1
+            continue
+        if str(d) >= str(date_match):
+            apres += 1
+            continue
+        gardes.append(copy.deepcopy(m))
+    gardes.sort(key=lambda x: str(x["date"]))
+    return gardes, apres, invalides
+
+
+def _compte(matchs, *champs):
+    """Nombre de matchs où TOUS les champs donnés sont des nombres (ex. mi-temps, corners)."""
+    return sum(1 for m in matchs
+               if all(isinstance(m.get(c), (int, float)) and not isinstance(m.get(c), bool) for c in champs))
+
+
+def equipe_assemblage(doc, url_equipe, competition, date_match, lecteur=None):
+    """Bloc d'une équipe tiré de l'assemblage Football-Data (lu par contrat_moteur.equipe)."""
+    if doc is None:
+        return {"statut": "ASSEMBLAGE_INDISPONIBLE"}
+    if not url_equipe:
+        return {"statut": "ABSENTE", "raison": "adresse d'équipe inconnue"}
+    if lecteur is None:
+        import contrat_moteur
+        lecteur = contrat_moteur.equipe
+    eq = lecteur(doc, url_equipe, _comp_cle(competition))
+    if eq is None:
+        return {"statut": "ABSENTE", "raison": "équipe absente de l'assemblage"}
+    gardes, apres, invalides = matchs_complets_avant(eq.get("matchs"), date_match)
+    bloc = {k: v for k, v in eq.items() if k != "matchs"}
+    bloc.update({
+        "statut": "OK",
+        "matchs": gardes,
+        "nb_football_data": sum(1 for m in gardes if m.get("source") == "football-data"),
+        "nb_avec_mi_temps": _compte(gardes, "buts_marques_mi_temps", "buts_encaisses_mi_temps"),
+        "nb_avec_corners": _compte(gardes, "corners", "corners_concedes"),
+        "nb_avec_cartons": _compte(gardes, "cartons_jaunes", "cartons_rouges"),
+        "nb_avec_tirs": _compte(gardes, "tirs", "tirs_concedes"),
+        "matchs_retires_apres_date": apres,
+        "matchs_invalides": invalides,
+    })
+    return bloc
+
+
 def lit_score(texte):
     """« 2-1 » -> (2, 1). Tout autre format -> None (jamais de score deviné)."""
     if not isinstance(texte, str):
@@ -175,7 +236,24 @@ def _choix_moteur(s):
             "lambda_dom": bloc.get("lambda_dom"), "lambda_ext": bloc.get("lambda_ext"), "choix": choix}
 
 
-def construit_enregistrement(s, stats_equipes, details, maintenant, commit=None):
+def _bloc_assemblage(etat, details_match, competition, date_match):
+    """Bloc « assemblage » d'un enregistrement. etat = {"doc": document ou None, "statut": raison si None}."""
+    if etat is None:
+        return {"statut": "NON_LU"}
+    doc = etat.get("doc")
+    if doc is None:
+        return {"statut": etat.get("statut") or "ASSEMBLAGE_INDISPONIBLE"}
+    return {
+        "statut": "OK",
+        "genere_le": doc.get("genere_le"),
+        "version_contrat": doc.get("version_contrat"),
+        "saison_football_data": doc.get("saison_football_data"),
+        "equipe_dom": equipe_assemblage(doc, details_match.get("url_equipe_domicile"), competition, date_match),
+        "equipe_ext": equipe_assemblage(doc, details_match.get("url_equipe_exterieur"), competition, date_match),
+    }
+
+
+def construit_enregistrement(s, stats_equipes, details, maintenant, commit=None, assemblage=None):
     date_match = s.get("date")
     d = (details or {}).get(s.get("url_match")) or {}
     dom = _equipe(s.get("domicile"), s.get("competition"), stats_equipes, date_match, d.get("url_equipe_domicile"))
@@ -183,6 +261,10 @@ def construit_enregistrement(s, stats_equipes, details, maintenant, commit=None)
     cotes_betpawa = s.get("cotes_manuelles") or None
     cotes_obs = _cotes_observees(s)
     coup = coup_d_envoi_utc(date_match, s.get("heure_cameroun"))
+    bloc_fd = _bloc_assemblage(assemblage, d, s.get("competition"), date_match)
+    fd_ok = bloc_fd.get("statut") == "OK" and all(
+        (bloc_fd.get(cote) or {}).get("statut") == "OK" and (bloc_fd.get(cote) or {}).get("nb_football_data", 0) > 0
+        for cote in ("equipe_dom", "equipe_ext"))
     return {
         "schema_version": SCHEMA_VERSION,
         "match_id": s.get("match_id"),
@@ -201,9 +283,11 @@ def construit_enregistrement(s, stats_equipes, details, maintenant, commit=None)
         "cotes_observees": cotes_obs,
         "equipe_dom": dom,
         "equipe_ext": ext,
+        "assemblage": bloc_fd,
         "moteur_en_production": _choix_moteur(s),
         "testable": bool(dom["statut"] == "OK" and ext["statut"] == "OK" and dom["matchs"] and ext["matchs"]
                          and (cotes_betpawa or cotes_obs)),
+        "donnees_football_data": bool(fd_ok),
         "score": None,
     }
 
@@ -253,15 +337,16 @@ def lit_genere_le(texte):
         return None
 
 
-def archive_run(signaux, stats_equipes, details, dossier=DOSSIER, maintenant=None, commit=None):
-    """Enregistre l'avant-match de chaque match qui a des cotes. Renvoie le bilan du run."""
+def archive_run(signaux, stats_equipes, details, dossier=DOSSIER, maintenant=None, commit=None, assemblage=None):
+    """Enregistre l'avant-match de chaque match qui a des cotes. Renvoie le bilan du run.
+    assemblage = {"doc": assemblage Football-Data ou None, "statut": raison si None} (voir charge_assemblage_sur)."""
     maintenant = maintenant or datetime.datetime.now(datetime.timezone.utc)
     commit = commit if commit is not None else (os.environ.get("GITHUB_SHA") or "")[:7] or None
     par_date = {}
     for s in signaux:
         if s.get("match_id") and s.get("date") and _a_des_cotes(s):
             par_date.setdefault(s["date"], []).append(s)
-    bilan = {"ecrits": 0, "testables": 0, "figes_non_modifies": 0, "fichiers": 0}
+    bilan = {"ecrits": 0, "testables": 0, "avec_football_data": 0, "figes_non_modifies": 0, "fichiers": 0}
     for date_match, liste in sorted(par_date.items()):
         chemin = _chemin(dossier, date_match)
         donnees = charge_fichier(chemin)
@@ -272,10 +357,11 @@ def archive_run(signaux, stats_equipes, details, dossier=DOSSIER, maintenant=Non
             if not peut_mettre_a_jour(existant, date_match, coup, maintenant) or _plus_recent(existant, maintenant):
                 bilan["figes_non_modifies"] += 1
                 continue
-            e = construit_enregistrement(s, stats_equipes, details, maintenant, commit)
+            e = construit_enregistrement(s, stats_equipes, details, maintenant, commit, assemblage)
             donnees[s["match_id"]] = e
             bilan["ecrits"] += 1
             bilan["testables"] += int(e["testable"])
+            bilan["avec_football_data"] += int(e["donnees_football_data"])
             change = True
         if change:
             sauve_fichier(chemin, donnees)
@@ -369,8 +455,22 @@ def equipes_du_match(url_match, competition, index):
     return trouves[0] if len(trouves) == 1 else None
 
 
+def charge_assemblage_sur(fichier_assemblage=None):
+    """Assemblage Football-Data lu par contrat_moteur (seul lecteur autorisé). Jamais d'exception : un fichier absent ou
+    un contrat rompu donne {"doc": None, "statut": raison}, et l'archive continue sans ce bloc."""
+    try:
+        import contrat_moteur
+        doc = contrat_moteur.charge_assemblage(fichier_assemblage) if fichier_assemblage else \
+            contrat_moteur.charge_assemblage()
+        return {"doc": doc, "statut": "OK"}
+    except FileNotFoundError:
+        return {"doc": None, "statut": "ASSEMBLAGE_ABSENT"}
+    except Exception as e:
+        return {"doc": None, "statut": f"ASSEMBLAGE_REFUSE: {type(e).__name__}: {e}"[:300]}
+
+
 def archive_depuis_fichiers(fichier_precalcul=FICHIER_PRECALCUL, fichier_cache=FICHIER_CACHE_SAISON,
-                            dossier=DOSSIER, maintenant=None, commit=None):
+                            dossier=DOSSIER, maintenant=None, commit=None, fichier_assemblage=None):
     """Étape nocturne : relit ce que precalcul.py vient d'écrire et enregistre l'avant-match. L'heure de référence est
     celle où precalcul.json a été généré (genere_le), pas l'heure de cette étape : c'est l'heure réelle des données."""
     with open(fichier_precalcul, encoding="utf-8") as f:
@@ -394,29 +494,32 @@ def archive_depuis_fichiers(fichier_precalcul=FICHIER_PRECALCUL, fichier_cache=F
         stats[(s.get("domicile"), s.get("competition"))] = res_dom
         stats[(s.get("exterieur"), s.get("competition"))] = res_ext
         details[s.get("url_match")] = {"url_equipe_domicile": url_dom, "url_equipe_exterieur": url_ext}
-    return archive_run(signaux, stats, details, dossier=dossier, maintenant=maintenant, commit=commit)
+    return archive_run(signaux, stats, details, dossier=dossier, maintenant=maintenant, commit=commit,
+                       assemblage=charge_assemblage_sur(fichier_assemblage))
 
 
 def bilan_archive(dossier=DOSSIER):
-    total = testables = avec_score = testables_avec_score = 0
+    total = testables = avec_score = testables_avec_score = avec_fd = 0
     for chemin in sorted(glob.glob(os.path.join(dossier, "*.json.gz"))):
         for e in charge_fichier(chemin).values():
             total += 1
             testables += int(bool(e.get("testable")))
             avec_score += int(e.get("score") is not None)
             testables_avec_score += int(bool(e.get("testable")) and e.get("score") is not None)
+            avec_fd += int(bool(e.get("donnees_football_data")))
     return {"matchs": total, "testables": testables, "avec_score": avec_score,
-            "testables_avec_score": testables_avec_score}
+            "testables_avec_score": testables_avec_score, "avec_football_data": avec_fd}
 
 
 def execution_nocturne(fichier_precalcul=FICHIER_PRECALCUL, fichier_cache=FICHIER_CACHE_SAISON, dossier=DOSSIER,
-                       fichier_historique=FICHIER_HISTORIQUE, maintenant=None):
+                       fichier_historique=FICHIER_HISTORIQUE, maintenant=None, fichier_assemblage=None):
     """Point d'entrée appelé par enregistre_scores_historique.py après l'écriture des scores de l'historique :
     avant-match des matchs de precalcul.json (s'il existe), puis scores des matchs joués. Renvoie les bilans.
     `maintenant` (heure réelle par défaut) ne sert qu'aux scores ; l'avant-match prend l'heure de precalcul.json."""
     bilan = {}
     if os.path.exists(fichier_precalcul):
-        bilan["avant_match"] = archive_depuis_fichiers(fichier_precalcul, fichier_cache, dossier)
+        bilan["avant_match"] = archive_depuis_fichiers(fichier_precalcul, fichier_cache, dossier,
+                                                       fichier_assemblage=fichier_assemblage)
     else:
         bilan["avant_match"] = f"{fichier_precalcul} absent"
     bilan["scores"] = complete_scores(dossier, fichier_historique, maintenant=maintenant)
