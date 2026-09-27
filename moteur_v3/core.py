@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import Any, Mapping
 
 from .calibration import IsotonicCalibrator
-from .markets import derive_markets
+from .markets import derive_markets, pairwise_joint_probability
 from .model import build_model
 from .risk import goal_context_dispersion
 from .value import evaluate
@@ -79,7 +79,7 @@ def evaluate_match(
             "double_control_ok": ev.get("double_control_ok", False),
             "justification": ev.get("justification"),
             "conflicts_with": ev.get("conflicts_with", ()),
-            "joint_probability": ev.get("joint_probability", {}),
+            "joint_probability": {**joint_full_time, **ev.get("joint_probability", {})},
             "reliability": ev.get("reliability", 0),
         })
 
