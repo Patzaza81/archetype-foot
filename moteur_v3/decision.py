@@ -84,8 +84,6 @@ def decide(candidates: Sequence[Mapping], max_selections: int = 3):
         for s in selected:
             if c.get("conflicts_with") and s.market in set(c["conflicts_with"]):
                 blocked = True
-            if s.market in set(s.reason.split("\0")) if "\0" in s.reason else False:
-                blocked = True
             pair = (s.market, c["market"])
             joint = c.get("joint_probability", {}).get(pair)
             if joint is None:
