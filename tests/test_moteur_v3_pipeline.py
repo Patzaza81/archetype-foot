@@ -64,7 +64,7 @@ def test_cotes_converties_sans_invention():
 
 
 def test_competition_jamais_transmise_au_moteur():
-    assert set(mp.entree_v3(_enreg("m"))) == {"home_matches", "away_matches", "odds"}
+    assert set(mp.entree_v3(_enreg("m"))) == {"home_matches", "away_matches", "odds", "handicap_lines"}
 
 
 @pytest.mark.parametrize("e", [_enreg("a"), _enreg("b", date="2026-09-27", ko="2026-09-27T20:00:00Z"),
@@ -320,3 +320,97 @@ def test_calibration_refusee_sous_50_matchs(n):
     cal, matchs = mp.entraine_calibration(_joues(n), "2026-09-27")
     assert matchs == n and cal.fit_result.observations >= 300
     assert not cal.fit_result.ready and cal.fit_result.reason == "MATCHS_INSUFFISANTS" and cal.predict(0.5) is None
+
+
+# --- AJOUT 28/09/2026 : TOUS les marchés cotés par BetPawa calculés (handicaps, score exact, pair/impair, lignes hautes) --
+
+from moteur_v3.markets import gagne  # noqa: E402
+from moteur_v3.model import build_model as _build  # noqa: E402
+from moteur_v3.markets import derive_markets as _derive  # noqa: E402
+
+
+def _cotes_bp(**groupes):
+    return mp.cotes_etendues({"cotes_betpawa": groupes, "cotes_observees": {}})
+
+
+@pytest.mark.parametrize("groupes,attendu", [
+    ({"handicap_-0.5": {"domicile": 2.9, "exterieur": 1.4}}, {"handicap_0.5_1": 2.9, "handicap_0.5_2": 1.4}),
+    ({"score_exact": {"2-1": 8.5}, "pair_impair": {"pair": 1.8, "impair": 1.9}},
+     {"score_2_1": 8.5, "total_pair": 1.8, "total_impair": 1.9}),
+    ({"over_under_6.5": {"plus": 21.0, "moins": 1.01}, "over_under_domicile_2.5": {"plus": 4.0, "moins": 1.2}},
+     {"over_6_5": 21.0, "under_6_5": 1.01, "home_over_2_5": 4.0, "home_under_2_5": 1.2}),
+])
+def test_cotes_etendues_lues(groupes, attendu):
+    assert _cotes_bp(**groupes) == attendu
+
+
+@pytest.mark.parametrize("groupes", [
+    {"handicap_-1": {"domicile": 2.0, "exterieur": 1.8}},          # ligne entière (3 issues possibles) : ignorée
+    {"handicap_3choix_1": {"domicile": 2.0}},                     # autre forme de handicap : ignorée
+    {"score_exact": {"autre": 9.0, "1-0": 1.0}},                  # issue illisible et cote <= 1 : ignorées
+])
+def test_cotes_etendues_rien_d_invente(groupes):
+    assert _cotes_bp(**groupes) == {}
+
+
+def _probas():
+    e = _enreg("m")
+    return _derive(_build(e["equipe_dom"]["matchs"], e["equipe_ext"]["matchs"]), [0.5, -0.5, 1.5])
+
+
+@pytest.mark.parametrize("handicap,equivalent", [("handicap_0.5_1", "1x2_1"), ("handicap_-0.5_1", "dc_1X"),
+                                                 ("handicap_0.5_2", "dc_X2")])
+def test_handicap_meme_probabilite_que_le_marche_equivalent(handicap, equivalent):
+    p = _probas()
+    assert abs(p[handicap] - p[equivalent]) < 1e-12
+
+
+@pytest.mark.parametrize("handicap,different", [("handicap_1.5_1", "1x2_1"), ("handicap_-0.5_1", "1x2_1"),
+                                                ("handicap_0.5_2", "1x2_2")])
+def test_handicap_different_des_autres_marches(handicap, different):
+    p = _probas()
+    assert abs(p[handicap] - p[different]) > 1e-6
+
+
+@pytest.mark.parametrize("marche,score", [("score_2_1", (2, 1)), ("total_pair", (1, 1)), ("clean_home_no", (0, 1))])
+def test_resultat_reel_nouveaux_marches_gagnes(marche, score):
+    assert gagne(marche, *score) is True
+
+
+@pytest.mark.parametrize("marche,score", [("score_2_1", (1, 2)), ("total_pair", (2, 1)), ("clean_home_no", (1, 0))])
+def test_resultat_reel_nouveaux_marches_perdus(marche, score):
+    assert gagne(marche, *score) is False
+
+
+def test_resultat_reel_identique_au_banc_sur_tous_les_marches_communs():
+    import banc_historique as bh
+    for v3, banc in mp.V3_VERS_BANC.items():
+        for h in range(7):
+            for a in range(7):
+                assert gagne(v3, h, a) == bool(bh.gagne(banc, h, a)), (v3, h, a)
+
+
+def test_scores_et_parite_somment_correctement():
+    p = _probas()
+    assert abs(p["total_pair"] + p["total_impair"] - 1) < 1e-12
+    assert 0.9 < sum(v for k, v in p.items() if k.startswith("score_")) <= 1 + 1e-12
+
+
+@pytest.mark.parametrize("marche,site", [("handicap_0.5_1", "handicap_domicile_-0.5"),
+                                         ("handicap_-1.5_1", "handicap_domicile_1.5"),
+                                         ("handicap_-0.5_2", "handicap_exterieur_-0.5")])
+def test_nom_site_des_handicaps(marche, site):
+    assert mp.nom_site(marche) == site
+
+
+def test_couverture_signale_les_groupes_non_lus():
+    e = {"cotes_betpawa": {"1x2": {"1": 2.0}, "handicap_-0.5": {"domicile": 2.0}, "handicap_3choix_1": {"1": 3.0},
+                           "mi_temps_1x2": {"1": 3.0}}}
+    c = mp.couverture(e, {})
+    assert c["groupes_non_lus"] == ["handicap_3choix_1", "mi_temps_1x2"] and c["issues_betpawa"] == 4
+
+
+def test_journal_contient_le_diagnostic_de_tous_les_marches(tmp_path):
+    _, j = _lance(tmp_path, [_enreg("ok")], datetime.datetime(2026, 9, 28, 6, 0, tzinfo=datetime.timezone.utc))
+    lignes = j["ok"]["tous_les_marches"]
+    assert {l[0] for l in lignes} == set(mp.cotes_v3(_enreg("ok"))) and all(len(l) == 5 for l in lignes)
