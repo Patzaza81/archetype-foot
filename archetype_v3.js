@@ -2,7 +2,11 @@
 // la page Sélection Archetype, alimentée par les données V3 »). Seules différences, toutes marquées « V3 » :
 //   - CLE_MOTEUR = "moteur_v3" et données lues dans data/v3/pronostics_v3.json (écrit par moteur_v3_pipeline.py) ;
 //   - deux types de preuves propres à la V3 (double contrôle : saison et forme récente) ;
-//   - niveau « V3_NON_VALIDE » et message d'attente qui indique l'état de la calibration.
+//   - message d'attente qui indique l'état de la calibration.
+//   - CORRECTIF 28/09 (Patrick) : la V3 ne produit PAS de Favori / Value Bet / Coup de Poker. Elle retient 0 à 3
+//     sélections (une seule par exposition, triées par value décroissante) : un onglet par sélection réelle, sans
+//     remappage. Pas de confrontations directes (la V3 n'utilise pas le H2H) : le panneau montre ses deux vraies
+//     preuves (contrôle saison + forme récente). Les étoiles mesurent la taille de l'échantillon au même lieu.
 // Les pronostics V2 ne sont jamais lus ici : aucun mélange possible.
 //
 // archetype.js — présentation uniquement (réécriture complète du 20/09/2026).
@@ -13,15 +17,12 @@
 // estArchetypeGo(), echappeHtml() gardent leur nom, et chaque carte contient
 // un <details class="details-analyse"> (panier.js l'ouvre via "Voir l'analyse").
 
+// V3 : pas de rôles Favori / Value Bet / Coup de Poker -- un onglet par sélection réellement retenue par le moteur.
 const RANGS = [
-  { cle: "P1", classe: "rang-1", titre: "Favori du Modèle" },
-  { cle: "P2", classe: "rang-2", titre: "Value Bet" },
-  { cle: "P3", classe: "rang-3", titre: "Coup de Poker" },
+  { cle: "P1", classe: "rang-1", titre: "Sélection 1" },
+  { cle: "P2", classe: "rang-2", titre: "Sélection 2" },
+  { cle: "P3", classe: "rang-3", titre: "Sélection 3" },
 ];
-
-// Seuils de sélection des onglets (étape 6).
-const SEUIL_COUP_DE_POKER_COTE = 2.91;
-const SEUIL_COUP_DE_POKER_PROBA = 0.20;
 
 // "Forme récente" n'accepte que des preuves qui décrivent réellement la forme
 // (règle du 18/09/2026) : jamais une statistique de buts croisée (mélangeant les deux équipes en un
@@ -40,9 +41,13 @@ const TYPES_FORME_RECENTE = new Set([
 const PREUVE_META_V3 = Object.freeze({
   v3_controle_saison: Object.freeze({ icon: "shield-check", color: "#1565C0", label: "Contrôle saison" }),
   v3_forme_recente: Object.freeze({ icon: "trending-up", color: "#2E7D32", label: "Forme récente" }),
+  ev_percentage: Object.freeze({ icon: "cash", color: "#1B5E20", label: "Marge sur la cote" }),
 });
-// V3 : le moteur n'est pas encore validé -> une seule étoile, dit en clair.
-NIVEAU_VERS_CONFIANCE.V3_NON_VALIDE = { etoiles: 1, texte: "Moteur V3 non validé" };
+// V3 : étoiles = taille de l'échantillon au même lieu (équipe la moins fournie), la seule fiabilité que la V3 mesure.
+NIVEAU_VERS_CONFIANCE.V3_ECHANTILLON_FAIBLE = { etoiles: 1, texte: "3 ou 4 matchs au même lieu" };
+NIVEAU_VERS_CONFIANCE.V3_ECHANTILLON_UTILISABLE = { etoiles: 2, texte: "5 à 7 matchs au même lieu" };
+NIVEAU_VERS_CONFIANCE.V3_ECHANTILLON_SOLIDE = { etoiles: 3, texte: "8 ou 9 matchs au même lieu" };
+NIVEAU_VERS_CONFIANCE.V3_ECHANTILLON_TRES_SOLIDE = { etoiles: 4, texte: "10 matchs ou plus au même lieu" };
 
 const CLE_THEME_NUIT = "archetype_theme_nuit"; // même clé que theme.js
 let compteurCartes = 0;
@@ -68,31 +73,11 @@ function aAuMoinsUnCandidat(m) {
   return !!(sel.P1 || sel.P2 || sel.P3);
 }
 
-// remappeEnOngletsApp : transforme les candidats {P1, P2, P3} de precalcul_leger.json
-// en 3 onglets sémantiques {Favori du Modèle, Value Bet, Coup de Poker} selon les
-// règles métier de la maquette. Chaque candidat n'apparaît que dans un seul onglet.
+// remappeEnOngletsApp : nom conservé (même structure que archetype.js), mais la V3 garde l'ordre du moteur.
 function remappeEnOngletsApp(selectionBrute) {
-  const candidats = ["P1", "P2", "P3"].map((cle) => selectionBrute[cle]).filter(Boolean);
-  if (!candidats.length) return {};
-
-  // Favori du Modèle = plus forte probabilité du modèle.
-  const favori = candidats.reduce((best, c) =>
-    (Number(c.probabilite) || 0) > (Number(best.probabilite) || 0) ? c : best);
-
-  // Value Bet = meilleur EV parmi les candidats restants.
-  const restantsPourValue = candidats.filter((c) => c !== favori);
-  const value = restantsPourValue.length
-    ? restantsPourValue.reduce((best, c) =>
-        (Number(c.edv) || 0) > (Number(best.edv) || 0) ? c : best)
-    : null;
-
-  // Coup de Poker = premier candidat restant satisfaisant cote >= 2.91 et P >= 0.20.
-  const restantsPourPoker = candidats.filter((c) => c !== favori && c !== value);
-  const poker = restantsPourPoker.find((c) =>
-    (Number(c.cote) || 0) >= SEUIL_COUP_DE_POKER_COTE &&
-    (Number(c.probabilite) || 0) >= SEUIL_COUP_DE_POKER_PROBA) || null;
-
-  return { P1: favori, P2: value, P3: poker };
+  // V3 : aucun remappage en rôles. Les sélections restent dans l'ordre du moteur (value décroissante).
+  const sel = selectionBrute || {};
+  return { P1: sel.P1 || null, P2: sel.P2 || null, P3: sel.P3 || null };
 }
 
 function echappeHtml(x) {
@@ -133,7 +118,7 @@ function construitJauge(probabilite, classe) {
 
 function construitEtoiles(etoiles) {
   const n = Math.max(0, Math.min(5, Number(etoiles) || 0));
-  return `<span class="ax-etoiles" role="img" aria-label="Solidité : ${n} sur 5">` +
+  return `<span class="ax-etoiles" role="img" aria-label="Fiabilité des données : ${n} sur 5">` +
     `${"★".repeat(n)}<span class="ax-etoiles-vides">${"★".repeat(5 - n)}</span></span>`;
 }
 
@@ -164,7 +149,7 @@ function construitResume(selection, equipes) {
 function construitPanneau(info, c, equipes, idPanneau, idOnglet) {
   const preuves = (c.justification && Array.isArray(c.justification.preuves)) ? c.justification.preuves : [];
   const resume = c.justification && c.justification.resume ? c.justification.resume : "";
-  const h2h = preuves.find((p) => p && typeof p.type === "string" && p.type.startsWith("h2h_"));
+  const h2h = preuves.find((p) => p && p.type === "v3_controle_saison"); // V3 : contrôle saison à la place du H2H
   const forme = preuves.find((p) => p && typeof p.type === "string" && TYPES_FORME_RECENTE.has(p.type));
   const niveau = traduitNiveau(c.niveau);
   const el = document.createElement("div");
@@ -181,16 +166,17 @@ function construitPanneau(info, c, equipes, idPanneau, idOnglet) {
       `<div class="ax-preuves-liste">` +
         `<div class="ax-preuve"><span class="ax-icone">${ICONES.forme}</span><div><span class="ax-preuve-titre">Forme récente</span>` +
           `<span class="ax-preuve-texte">${echappeHtml(forme ? forme.texte : "Non disponible")}</span></div></div>` +
-        `<div class="ax-preuve"><span class="ax-icone">${ICONES.h2h}</span><div><span class="ax-preuve-titre">Confrontations directes</span>` +
+        `<div class="ax-preuve"><span class="ax-icone">${ICONES.h2h}</span><div><span class="ax-preuve-titre">Contrôle saison</span>` +
           `<span class="ax-preuve-texte">${echappeHtml(h2h ? h2h.texte : "Non disponible")}</span></div></div>` +
       `</div>` +
       `<div class="ax-proba">${construitJauge(c.probabilite, "")}` +
-        `<span class="ax-proba-legende">Probabilité du modèle</span>` +
-        `${construitEtoiles(niveau.etoiles)}<span class="ax-solidite">${/solidit/i.test(niveau.texte) ? "" : '<span class="ax-solidite-titre">Solidité :</span> '}${echappeHtml(niveau.texte)}</span></div>` +
+        `<span class="ax-proba-legende">Probabilité calibrée</span>` +
+        `${construitEtoiles(niveau.etoiles)}<span class="ax-solidite"><span class="ax-solidite-titre">Données :</span> ${echappeHtml(niveau.texte)}</span></div>` +
     `</div>` +
     `<ul class="ax-metriques">` +
       `<li title="Écart entre la probabilité calculée par le modèle et celle qui serait 'normale' vu la cote proposée."><span class="ax-icone">${ICONES.avantage}</span><strong>${formatPctSigne(c.edge)}</strong><span>Avantage potentiel</span></li>` +
       `<li title="Ce que rapporterait ce pari en moyenne si on le rejouait de nombreuses fois, selon le modèle."><span class="ax-icone">${ICONES.gain}</span><strong>${formatPctSigne(c.edv)}</strong><span>Gain potentiel</span></li>` +
+      `<li title="Moteur V3 expérimental."><span class="ax-icone">${ICONES.forme}</span><strong>V3</strong><span>Non validé</span></li>` +
     `</ul>`;
   return el;
 }
@@ -205,23 +191,10 @@ function construitPanneau(info, c, equipes, idPanneau, idOnglet) {
    6. le site ne recalcule rien : il lit resume, preuves et bibliotheque et les affiche. */
 const estNombre = (x) => typeof x === "number" && Number.isFinite(x);
 const fmtNombre = (x, dec) => x.toFixed(dec).replace(".", ",");
-const fmtPct = (x) => `${fmtNombre(x, 1)} %`;
-const fmtMatchs = (n) => `${n} match${n > 1 ? "s" : ""}`;
 
 function iconeAnalyse(nom) {
   const chemin = ICONES_ANALYSE[nom] || ICONES_ANALYSE.info;
   return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${chemin}</svg>`;
-}
-
-// Une ligne n'existe que si sa valeur est calculable.
-function lig(libelle, valeur, formate) { return estNombre(valeur) ? [libelle, formate(valeur)] : null; }
-
-function tableauLignes(titre, lignes, pied) {
-  const l = lignes.filter(Boolean);
-  if (!l.length) return "";
-  return `<div class="ax-tab"><h4 class="ax-tab-titre">${echappeHtml(titre)}</h4>` +
-    `<table class="ax-tab-lignes"><tbody>${l.map(([lib, val]) => `<tr><th scope="row">${echappeHtml(lib)}</th><td>${echappeHtml(val)}</td></tr>`).join("")}</tbody></table>` +
-    (pied ? `<p class="ax-tab-pied">${echappeHtml(pied)}</p>` : "") + `</div>`;
 }
 
 function tableauResume(resume) {
@@ -249,55 +222,10 @@ function tableauPreuves(preuves, b) {
   return `<div class="ax-tab"><h4 class="ax-tab-titre">Preuves du modèle</h4><ul class="ax-preuve-liste">${lignes.join("")}</ul></div>`;
 }
 
-function tableauForme(titre, b, domicile) {
-  const lignes = domicile ? [
-    lig("Série sans défaite", b.home_unbeaten_streak, fmtMatchs),
-    lig("Série sans victoire", b.home_winless_streak, fmtMatchs),
-    lig("Taux de victoire", b.home_win_rate, fmtPct),
-    lig("Taux de défaite", b.home_loss_rate, fmtPct),
-    lig("Matchs avec ≥1 but encaissé", b.home_concede_rate, fmtPct),
-  ] : [
-    lig("Série sans défaite", b.away_unbeaten_streak, fmtMatchs),
-    lig("Série sans victoire", b.away_winless_streak, fmtMatchs),
-    lig("Taux de victoire", b.away_win_rate, fmtPct),
-    lig("Taux de défaite", b.away_loss_rate, fmtPct),
-    lig("Matchs avec ≥1 but encaissé", b.away_concede_pct, fmtPct),
-    lig("Matchs avec ≥1 but marqué", b.away_score_rate, fmtPct),
-  ];
-  return tableauLignes(titre, lignes);
-}
-
-function tableauH2H(b) {
-  const total = b.h2h_total;
-  if (!estNombre(total) || total <= 0) return "";
-  const cible = estNombre(b.target_goals) ? fmtNombre(b.target_goals, 1) : null;
-  const lignes = [
-    estNombre(b.h2h_unbeaten_count) ? ["Domicile invaincu", `${b.h2h_unbeaten_count} / ${total}`] : null,
-    estNombre(b.h2h_draw_count) ? ["Matchs nuls", `${b.h2h_draw_count} / ${total}`] : null,
-    cible && estNombre(b.h2h_over_count)
-      ? [`Matchs > ${cible} buts`, `${b.h2h_over_count} / ${total}` + (estNombre(b.h2h_over_rate) ? ` (${fmtNombre(b.h2h_over_rate, 1)} %)` : "")]
-      : null,
-  ];
-  return tableauLignes("Confrontations directes", lignes, `${total} confrontation${total > 1 ? "s" : ""} analysée${total > 1 ? "s" : ""}`);
-}
-
-function tableauCombine(b) {
-  const cible = estNombre(b.target_goals) ? fmtNombre(b.target_goals, 1) : null;
-  const lignes = [
-    lig("Matchs > 1,5 but (combiné)", b.over_15_rate_combined, fmtPct),
-    // la ligne 1,5 est déjà couverte par over_15_rate_combined : pas de doublon
-    cible && b.target_goals !== 1.5 ? lig(`Matchs > ${cible} buts (combiné)`, b.over_rate_combined, fmtPct) : null,
-    lig("Moyenne buts encaissés", b.avg_goals_conceded_combined, (x) => fmtNombre(x, 2)),
-    lig("Les 2 équipes marquent", b.both_teams_score_rate, fmtPct),
-    lig("Matchs nuls (combiné)", b.draw_rate_combined, fmtPct),
-  ];
-  return tableauLignes("Métriques combinées", lignes);
-}
-
 // Solidité du pari (catégorie du moteur) ; « stabilité du calcul » seulement si le moteur a fait une analyse de
 // robustesse (jamais de « Non déterminée » affiché) ; points de vigilance : artefacts et avertissements du moteur.
 function construitFiabilite(c) {
-  const lignes = [`<div><dt>Solidité du pari</dt><dd>${echappeHtml(traduitNiveau(c.niveau).texte)}</dd></div>`];
+  const lignes = [`<div><dt>Données du moteur</dt><dd>${echappeHtml(traduitNiveau(c.niveau).texte)}</dd></div>`]; // V3
   if (c.robustesse === "STABLE" || c.robustesse === "INSTABLE") {
     lignes.push(`<div><dt>Stabilité du calcul</dt><dd>${echappeHtml(traduitRobustesse(c.robustesse))}</dd></div>`);
   }
@@ -318,10 +246,7 @@ function construitAnalyse(info, c, equipes) {
   return ouvre + tete +
     tableauResume(j.resume) +
     tableauPreuves(j.preuves, b) +
-    tableauForme(`Forme récente — ${equipes.domicile} (à domicile)`, b, true) +
-    tableauForme(`Forme récente — ${equipes.exterieur} (à l'extérieur)`, b, false) +
-    tableauH2H(b) +
-    tableauCombine(b) +
+    // V3 : pas de tableaux de la bibliothèque V2 (forme détaillée, H2H, métriques combinées) -- la V3 ne les produit pas.
     construitFiabilite(c) + `</div>`;
 }
 
@@ -364,7 +289,7 @@ function construitCarte(m, options) {
   const panneaux = document.createElement("div");
   panneaux.className = "ax-panneaux";
   const actifs = [];
-  RANGS.forEach((info) => {
+  RANGS.filter((info) => selection[info.cle]).forEach((info) => { // V3 : pas d'onglet vide « Non disponible »
     const c = selection[info.cle];
     const idOnglet = `ax-onglet-${id}-${info.cle}`, idPanneau = `ax-panneau-${id}-${info.cle}`;
     const bouton = document.createElement("button");
@@ -395,6 +320,7 @@ function construitCarte(m, options) {
     blocDetails.querySelectorAll(".ax-detail-rang").forEach((bloc) => { bloc.hidden = bloc.dataset.cle !== cible.dataset.cle; });
   };
   actifs.forEach(({ bouton, panneau }) => { bouton.addEventListener("click", () => active(bouton)); panneaux.appendChild(panneau); });
+  onglets.style.gridTemplateColumns = `repeat(${Math.max(1, actifs.length)},minmax(0,1fr))`; // V3 : 1 à 3 onglets
   if (actifs.length) { active(actifs[0].bouton); section.appendChild(onglets); section.appendChild(panneaux); }
 
   section.appendChild(resume);
@@ -483,7 +409,7 @@ function afficheSelections(matchs) {
   const cleTri = (m) => `${m.date || ""}${m.heure_cameroun || m.heure || ""}`;
   const retenus = regroupeMatchs(matchs).filter(aAuMoinsUnCandidat).sort((a, b) => cleTri(a).localeCompare(cleTri(b)));
   maj.textContent = retenus.length
-    ? `${retenus.length} match${retenus.length > 1 ? "s" : ""} analysé${retenus.length > 1 ? "s" : ""} aujourd'hui`
+    ? `${retenus.length} match${retenus.length > 1 ? "s" : ""} avec au moins une sélection V3` // V3 : J0 à J+3
     : "Aucune sélection pour le moment";
   if (!retenus.length) {
     racine.innerHTML = `<div class="ax-etat-vide"><strong>Aucune sélection pour le moment</strong>` +
