@@ -29,7 +29,7 @@ Format d'un match : {"date": "AAAA-MM-JJ", "lieu": "D" ou "E", "bm": buts marqu�
 (bm / be sont vus du côté de l'équipe dont c'est la liste).
 """
 
-VERSION_REGLE = "1.1.0"
+VERSION_REGLE = "1.2.0"
 
 MIN_MATCHS_LIEU = 3       # en dessous : pari écarté (échantillon trop petit)
 MIN_MATCHS_RECENTS = 5    # en dessous : pari écarté
@@ -42,6 +42,14 @@ MARCHES_COUVERTS = (
     "Moins de 2.5 buts", "Moins de 3.5 buts",
     "Plus de 2.5 buts", "Plus de 3.5 buts",
     "BTTS - oui",
+    # AJOUT version 1.2.0 (28/09/2026, décision de Patrick : « étendre la règle du 26/09 avec des seuils pour chaque
+    # marché »). Seuils écrits À L'AVANCE, par analogie avec ceux de la 1.0.0, jamais ajustés sur des résultats.
+    "Double chance - 12", "BTTS - non", "Plus de 1.5 buts", "Moins de 4.5 buts",
+    "Handicap domicile -1.5", "Handicap domicile +1.5", "Handicap extérieur -1.5", "Handicap extérieur +1.5",
+    "Buts domicile - plus de 0.5", "Buts domicile - plus de 1.5", "Buts domicile - moins de 0.5",
+    "Buts domicile - moins de 1.5", "Buts domicile - moins de 2.5",
+    "Buts extérieur - plus de 0.5", "Buts extérieur - plus de 1.5", "Buts extérieur - moins de 0.5",
+    "Buts extérieur - moins de 1.5", "Buts extérieur - moins de 2.5",
 )
 
 # Seuils (ne pas modifier sans validation sur données réelles et sans mettre à jour la doc)
@@ -56,6 +64,27 @@ SEUILS = {
     "plus_2_5": {"lieu_min": 0.60, "saison_min": 0.55, "buts_attendus_min": 2.9,
                  "recent_min_chacun": 3, "recent_min_total": 7},
     "plus_3_5": {"lieu_min": 0.50, "buts_attendus_min": 3.4, "recent_min_chacun": 3, "recent_min_total": 7},
+    # --- version 1.2.0 ---
+    "dc_12": {"nuls_lieu_max": 0.20, "nuls_saison_max": 0.25, "recent_nuls_max": 1},
+    "btts_non": {"btts_lieu_max": 0.40, "buts_attendus_faible_max": 1.1, "recent_btts_max": 2},
+    "plus_1_5": {"lieu_min": 0.75, "saison_min": 0.70, "buts_attendus_min": 2.4, "recent_min": 4},
+    "moins_4_5": {"lieu_min": 0.85, "buts_attendus_max": 3.2, "recent_min": 5},
+    # handicap -1,5 : gagner par 2 buts ou plus ; +1,5 : ne pas perdre par 2 buts ou plus
+    "handicap_moins_1_5": {"large_victoire_lieu_min": 0.40, "pts_par_match_min": 1.8,
+                           "adv_large_defaite_lieu_min": 0.35, "ecart_attendu_min": 1.0,
+                           "recent_larges_victoires_min": 2, "adv_recent_larges_defaites_min": 2},
+    "handicap_plus_1_5": {"large_defaite_lieu_max": 0.15, "adv_large_victoire_lieu_max": 0.20,
+                          "ecart_attendu_max": 0.5, "recent_larges_defaites_max": 1,
+                          "adv_recent_larges_victoires_max": 2},
+    # buts d'une équipe : part des matchs de l'équipe à son lieu au-dessus/en dessous de la ligne, part des matchs de
+    # l'adversaire à son lieu où il encaisse au-dessus/en dessous, buts attendus de l'équipe, forme récente (sur 6).
+    "equipe": {
+        ("plus", 0.5): {"eq": 0.80, "adv": 0.70, "saison": 0.75, "attendu": 1.2, "recent": 5, "recent_adv": 4},
+        ("plus", 1.5): {"eq": 0.60, "adv": 0.50, "saison": 0.50, "attendu": 1.9, "recent": 3, "recent_adv": 3},
+        ("moins", 0.5): {"eq": 0.50, "adv": 0.50, "saison": 0.40, "attendu": 0.6, "recent": 3, "recent_adv": 3},
+        ("moins", 1.5): {"eq": 0.70, "adv": 0.65, "saison": 0.65, "attendu": 1.0, "recent": 4, "recent_adv": 4},
+        ("moins", 2.5): {"eq": 0.85, "adv": 0.80, "saison": 0.80, "attendu": 1.6, "recent": 5, "recent_adv": 5},
+    },
     "btts": {"marque_lieu_min": 0.70, "encaisse_lieu_min": 0.60, "btts_lieu_min": 0.55, "buts_attendus_min": 1.0,
              "recent_marque_min": 4, "recent_encaisse_min": 4, "recent_lieu_marque_min": 2},
 }
@@ -87,6 +116,10 @@ def stats(matchs):
         "buts_encaisses": sum(m["be"] for m in matchs) / n,
         "plus_2_5": part(lambda m: m["bm"] + m["be"] > 2),
         "plus_3_5": part(lambda m: m["bm"] + m["be"] > 3),
+        "plus_1_5": part(lambda m: m["bm"] + m["be"] > 1),
+        "moins_4_5": part(lambda m: m["bm"] + m["be"] < 5),
+        "larges_victoires": part(lambda m: m["bm"] - m["be"] >= 2),
+        "larges_defaites": part(lambda m: m["be"] - m["bm"] >= 2),
         "moins_2_5": part(lambda m: m["bm"] + m["be"] < 3),
         "moins_3_5": part(lambda m: m["bm"] + m["be"] < 4),
         "btts": part(lambda m: m["bm"] > 0 and m["be"] > 0),
@@ -206,9 +239,87 @@ def controle_saison(marche, matchs_dom, matchs_ext, nom_dom="Domicile", nom_ext=
                 f"les deux marquent, chacun à son lieu : {_pct(dom_lieu['btts'])} / {_pct(ext_lieu['btts'])}")
         c.exige(min(att_dom, att_ext) >= s["buts_attendus_min"], f"buts attendus de chaque côté (moyennes simples) : {_dec(att_dom, 2)} / {_dec(att_ext, 2)}")
 
+    # ------------------------------------------------------------------ version 1.2.0
+    elif marche == "Double chance - 12":
+        s = SEUILS["dc_12"]
+        c.exige(dom_lieu["nuls"] <= s["nuls_lieu_max"] and ext_lieu["nuls"] <= s["nuls_lieu_max"],
+                f"nuls chacun à son lieu : {_pct(dom_lieu['nuls'])} / {_pct(ext_lieu['nuls'])}")
+        c.exige(dom_tout["nuls"] <= s["nuls_saison_max"] and ext_tout["nuls"] <= s["nuls_saison_max"],
+                f"nuls sur la saison : {_pct(dom_tout['nuls'])} / {_pct(ext_tout['nuls'])}")
+
+    elif marche == "BTTS - non":
+        s = SEUILS["btts_non"]
+        c.exige(dom_lieu["btts"] <= s["btts_lieu_max"] and ext_lieu["btts"] <= s["btts_lieu_max"],
+                f"les deux marquent, chacun à son lieu : {_pct(dom_lieu['btts'])} / {_pct(ext_lieu['btts'])}")
+        c.exige(min(att_dom, att_ext) <= s["buts_attendus_faible_max"],
+                f"buts attendus du côté le plus faible (moyennes simples) : {_dec(min(att_dom, att_ext), 2)}")
+
+    elif marche == "Plus de 1.5 buts":
+        s = SEUILS["plus_1_5"]
+        c.exige(dom_lieu["plus_1_5"] >= s["lieu_min"] and ext_lieu["plus_1_5"] >= s["lieu_min"],
+                f"+1,5 chacun à son lieu : {_pct(dom_lieu['plus_1_5'])} / {_pct(ext_lieu['plus_1_5'])}")
+        c.exige(dom_tout["plus_1_5"] >= s["saison_min"] and ext_tout["plus_1_5"] >= s["saison_min"],
+                f"saison complète +1,5 : {_pct(dom_tout['plus_1_5'])} / {_pct(ext_tout['plus_1_5'])}")
+        c.exige(total >= s["buts_attendus_min"], f"total attendu (moyennes simples) : {_dec(total, 2)} buts")
+
+    elif marche == "Moins de 4.5 buts":
+        s = SEUILS["moins_4_5"]
+        c.exige(dom_lieu["moins_4_5"] >= s["lieu_min"] and ext_lieu["moins_4_5"] >= s["lieu_min"],
+                f"-4,5 chacun à son lieu : {_pct(dom_lieu['moins_4_5'])} / {_pct(ext_lieu['moins_4_5'])}")
+        c.exige(total <= s["buts_attendus_max"], f"total attendu (moyennes simples) : {_dec(total, 2)} buts")
+
+    elif marche.startswith("Handicap "):
+        domicile = marche.startswith("Handicap domicile")
+        eq, adv, eq_tout = (dom_lieu, ext_lieu, dom_tout) if domicile else (ext_lieu, dom_lieu, ext_tout)
+        n_eq, n_adv = (nom_dom, nom_ext) if domicile else (nom_ext, nom_dom)
+        ecart = (att_dom - att_ext) if domicile else (att_ext - att_dom)
+        if marche.endswith("-1.5"):
+            s = SEUILS["handicap_moins_1_5"]
+            c.exige(eq["larges_victoires"] >= s["large_victoire_lieu_min"],
+                    f"{n_eq} gagne par 2 buts ou plus dans {_pct(eq['larges_victoires'])} de ses matchs à ce lieu")
+            c.exige(eq_tout["pts_par_match"] >= s["pts_par_match_min"],
+                    f"{n_eq} prend {_dec(eq_tout['pts_par_match'], 2)} pt/match sur la saison")
+            c.exige(adv["larges_defaites"] >= s["adv_large_defaite_lieu_min"],
+                    f"{n_adv} perd par 2 buts ou plus dans {_pct(adv['larges_defaites'])} de ses matchs à son lieu")
+            c.exige(ecart >= s["ecart_attendu_min"], f"écart de buts attendu (moyennes simples) : {_dec(ecart, 2)}")
+        else:
+            s = SEUILS["handicap_plus_1_5"]
+            c.exige(eq["larges_defaites"] <= s["large_defaite_lieu_max"],
+                    f"{n_eq} perd par 2 buts ou plus dans {_pct(eq['larges_defaites'])} de ses matchs à ce lieu")
+            c.exige(adv["larges_victoires"] <= s["adv_large_victoire_lieu_max"],
+                    f"{n_adv} gagne par 2 buts ou plus dans {_pct(adv['larges_victoires'])} de ses matchs à son lieu")
+            c.exige(-ecart <= s["ecart_attendu_max"],
+                    f"écart de buts attendu en faveur de {n_adv} (moyennes simples) : {_dec(-ecart, 2)}")
+
+    elif marche.startswith("Buts "):
+        domicile, sens, ligne = _lit_marche_equipe(marche)
+        s = SEUILS["equipe"][(sens, ligne)]
+        eq_l = [m for m in matchs_dom if m["lieu"] == "D"] if domicile else [m for m in matchs_ext if m["lieu"] == "E"]
+        adv_l = [m for m in matchs_ext if m["lieu"] == "E"] if domicile else [m for m in matchs_dom if m["lieu"] == "D"]
+        eq_t = matchs_dom if domicile else matchs_ext
+        n_eq, n_adv = (nom_dom, nom_ext) if domicile else (nom_ext, nom_dom)
+        att = att_dom if domicile else att_ext
+        cond = (lambda b: b > ligne) if sens == "plus" else (lambda b: b < ligne)
+        mot = f"{'plus' if sens == 'plus' else 'moins'} de {_dec(ligne, 1)} but{'s' if ligne > 2 else ''}"
+        p_eq = _compte(eq_l, lambda m: cond(m["bm"])) / len(eq_l)
+        p_adv = _compte(adv_l, lambda m: cond(m["be"])) / len(adv_l)
+        p_sai = _compte(eq_t, lambda m: cond(m["bm"])) / len(eq_t)
+        c.exige(p_eq >= s["eq"], f"{n_eq} marque {mot} dans {_pct(p_eq)} de ses matchs à ce lieu")
+        c.exige(p_adv >= s["adv"], f"{n_adv} encaisse {mot} dans {_pct(p_adv)} de ses matchs à son lieu")
+        c.exige(p_sai >= s["saison"], f"{n_eq} marque {mot} dans {_pct(p_sai)} de ses matchs de la saison")
+        c.exige(att >= s["attendu"] if sens == "plus" else att <= s["attendu"],
+                f"buts attendus de {n_eq} (moyennes simples) : {_dec(att, 2)}")
+
     else:
         c.exige(False, f"marché « {marche} » non couvert par la règle : pari écarté")
     return c.resultat()
+
+
+def _lit_marche_equipe(marche):
+    """« Buts domicile - plus de 1.5 » -> (True, "plus", 1.5)."""
+    qui, reste = marche[len("Buts "):].split(" - ")
+    sens, ligne = reste.split(" de ")
+    return qui == "domicile", sens, float(ligne)
 
 
 # ---------------------------------------------------------------------------
@@ -264,6 +375,60 @@ def controle_recent(marche, matchs_dom, matchs_ext, nom_dom="Domicile", nom_ext=
         c.exige(md >= s["recent_marque_min"] and me >= s["recent_marque_min"], f"marquent sur les 6 derniers : {md} / {me}")
         c.exige(ed >= s["recent_encaisse_min"] and ee >= s["recent_encaisse_min"], f"encaissent sur les 6 derniers : {ed} / {ee}")
         c.exige(ld >= s["recent_lieu_marque_min"] and le >= s["recent_lieu_marque_min"], f"marquent sur les 3 derniers au même lieu : {ld} / {le}")
+
+    # ------------------------------------------------------------------ version 1.2.0
+    elif marche == "Double chance - 12":
+        s = SEUILS["dc_12"]
+        a = _compte(d6, lambda m: m["bm"] == m["be"])
+        b = _compte(e6, lambda m: m["bm"] == m["be"])
+        c.exige(a <= s["recent_nuls_max"] and b <= s["recent_nuls_max"],
+                f"nuls sur les 6 derniers : {a} ({nom_dom}) / {b} ({nom_ext})")
+
+    elif marche == "BTTS - non":
+        s = SEUILS["btts_non"]
+        a = _compte(d6, lambda m: m["bm"] > 0 and m["be"] > 0)
+        b = _compte(e6, lambda m: m["bm"] > 0 and m["be"] > 0)
+        c.exige(a <= s["recent_btts_max"] and b <= s["recent_btts_max"],
+                f"les deux ont marqué sur les 6 derniers : {a} ({nom_dom}) / {b} ({nom_ext})")
+
+    elif marche in ("Plus de 1.5 buts", "Moins de 4.5 buts"):
+        plus = marche == "Plus de 1.5 buts"
+        mini = SEUILS["plus_1_5" if plus else "moins_4_5"]["recent_min"]
+        cond = (lambda m: m["bm"] + m["be"] > 1) if plus else (lambda m: m["bm"] + m["be"] < 5)
+        a, b = _compte(d6, cond), _compte(e6, cond)
+        c.exige(a >= mini and b >= mini,
+                f"{'au-dessus' if plus else 'sous'} de la ligne sur les 6 derniers : {a} ({nom_dom}) / {b} ({nom_ext})")
+
+    elif marche.startswith("Handicap "):
+        domicile = marche.startswith("Handicap domicile")
+        eq, adv, n_eq, n_adv = (d6, e6, nom_dom, nom_ext) if domicile else (e6, d6, nom_ext, nom_dom)
+        lv = _compte(eq, lambda m: m["bm"] - m["be"] >= 2)
+        ld = _compte(eq, lambda m: m["be"] - m["bm"] >= 2)
+        adv_lv = _compte(adv, lambda m: m["bm"] - m["be"] >= 2)
+        adv_ld = _compte(adv, lambda m: m["be"] - m["bm"] >= 2)
+        if marche.endswith("-1.5"):
+            s = SEUILS["handicap_moins_1_5"]
+            c.exige(lv >= s["recent_larges_victoires_min"],
+                    f"{n_eq} : {_nb(lv, 'victoire')} par 2 buts ou plus sur ses 6 derniers")
+            c.exige(adv_ld >= s["adv_recent_larges_defaites_min"],
+                    f"{n_adv} : {_nb(adv_ld, 'défaite')} par 2 buts ou plus sur ses 6 derniers")
+        else:
+            s = SEUILS["handicap_plus_1_5"]
+            c.exige(ld <= s["recent_larges_defaites_max"],
+                    f"{n_eq} : {_nb(ld, 'défaite')} par 2 buts ou plus sur ses 6 derniers")
+            c.exige(adv_lv <= s["adv_recent_larges_victoires_max"],
+                    f"{n_adv} : {_nb(adv_lv, 'victoire')} par 2 buts ou plus sur ses 6 derniers")
+
+    elif marche.startswith("Buts "):
+        domicile, sens, ligne = _lit_marche_equipe(marche)
+        s = SEUILS["equipe"][(sens, ligne)]
+        eq, adv, n_eq, n_adv = (d6, e6, nom_dom, nom_ext) if domicile else (e6, d6, nom_ext, nom_dom)
+        cond = (lambda b: b > ligne) if sens == "plus" else (lambda b: b < ligne)
+        a = _compte(eq, lambda m: cond(m["bm"]))
+        b = _compte(adv, lambda m: cond(m["be"]))
+        mot = f"{'plus' if sens == 'plus' else 'moins'} de {_dec(ligne, 1)} but{'s' if ligne > 2 else ''}"
+        c.exige(a >= s["recent"], f"{n_eq} marque {mot} dans {a} de ses 6 derniers")
+        c.exige(b >= s["recent_adv"], f"{n_adv} encaisse {mot} dans {b} de ses 6 derniers")
 
     else:
         c.exige(False, f"marché « {marche} » non couvert par la règle : pari écarté")
