@@ -7,6 +7,7 @@ from moteur_v3.decision import decide
 from moteur_v3.markets import derive_markets
 from moteur_v3.model import build_model
 from moteur_v3.value import evaluate
+from moteur_v3.risk import goal_context_dispersion, assess
 
 
 def rows(home=True, n=6):
@@ -63,6 +64,13 @@ def test_handicap_three_way_is_exhaustive():
     assert abs(p["handicap_1_1"] + p["handicap_1_X"] + p["handicap_1_2"] - 1) < 1e-9
 
 
+def test_dispersion_est_un_ratio_variance_moyenne():
+    m = build_model(rows(True, 6), rows(False, 6))
+    d = goal_context_dispersion(rows(True, 6) + rows(False, 6))
+    assert d is not None and d < 10
+    assert assess(d, 0.70).eligible
+
+
 def test_htft_comes_from_joint_convolution():
     m = build_model(
         [{**x, "buts_marques_mi_temps": 1, "buts_encaisses_mi_temps": 0} for x in rows(True, 6)],
@@ -71,6 +79,12 @@ def test_htft_comes_from_joint_convolution():
     p = derive_markets(m)
     assert all(f"htft_{ht}_{ft}" in p for ht in "1X2" for ft in "1X2")
     assert abs(sum(p[f"htft_{ht}_{ft}"] for ht in "1X2" for ft in "1X2") - 1) < 1e-9
+
+
+def test_handicap_negative_line_is_supported():
+    m = build_model(rows(True, 6), rows(False, 6))
+    p = derive_markets(m, [-1.5])
+    assert abs(p["handicap_-1.5_1"] + p["handicap_-1.5_X"] + p["handicap_-1.5_2"] - 1) < 1e-9
 
 
 def test_no_corner_or_card_fabrication():
