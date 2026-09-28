@@ -14,7 +14,7 @@ l'archive de test, dans un try : un échec ici ne bloque jamais le reste) :
      (listes complètes des matchs de chaque équipe, même compétition, cotes BetPawa). Aucun scraping supplémentaire.
   2. Calibration (obligatoire en V3) : apprise UNIQUEMENT sur les matchs de l'archive déjà joués, avec score, datés
      AVANT aujourd'hui. Jamais sur le jeu figé des 501 matchs (règle du 27/09 : jeu de contrôle, pas d'apprentissage).
-     Moins de 30 observations : pas de calibration, donc aucune sélection (règle V3).
+     Moins de 300 observations : pas de calibration, donc aucune sélection (règle V3).
   3. Double contrôle (obligatoire, regles_selection.double_controle, décidé le 26/09) : saison dans les deux sens +
      forme récente. Sa liste de raisons sert de justification. Marché non couvert par la règle : pas de double contrôle,
      donc pas de sélection.
