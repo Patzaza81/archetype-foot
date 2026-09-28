@@ -161,3 +161,81 @@ def test_pluriel_exact(k, attendu):
 @pytest.mark.parametrize("x,d,faux", [(1.71, 2, "1.71"), (2.2, 1, "2.2"), (4.25, 2, "4.25")])
 def test_jamais_de_point_decimal(x, d, faux):
     assert rs._dec(x, d) != faux and "," in rs._dec(x, d)
+
+
+# ---------------------------------------------------------------------------
+# Version 1.2.0 (28/09/2026) : nouveaux marchés. Cas construits : 3 qui passent / 3 qui échouent par famille.
+# ---------------------------------------------------------------------------
+LIEUX = "DEDEDEDE"
+
+
+def _eq(scores):
+    return _serie(scores, LIEUX)
+
+
+OFFENSIF = _eq([(3, 1), (2, 1), (3, 0), (2, 2), (4, 1), (2, 1), (3, 1), (2, 0)])       # marque beaucoup, gagne large
+PASSOIRE = _eq([(1, 3), (0, 2), (1, 3), (1, 2), (0, 3), (1, 2), (0, 2), (1, 3)])       # encaisse beaucoup, perd large
+FERME = _eq([(1, 0), (0, 0), (1, 0), (0, 1), (1, 0), (0, 0), (0, 1), (1, 0)])          # peu de buts
+NULS = _eq([(1, 1), (0, 0), (2, 2), (1, 1), (0, 0), (1, 1), (2, 2), (1, 1)])           # que des nuls
+SOLIDE = _eq([(1, 0), (2, 1), (1, 1), (2, 0), (1, 0), (1, 1), (2, 1), (1, 0)])         # ne perd jamais largement
+
+
+@pytest.mark.parametrize("marche,dom,ext", [
+    ("Double chance - 12", OFFENSIF, PASSOIRE),
+    ("BTTS - non", FERME, FERME),
+    ("Plus de 1.5 buts", OFFENSIF, PASSOIRE),
+])
+def test_v12_familles_generales_passent(marche, dom, ext):
+    assert rs.double_controle(marche, dom, ext)["retenu"] is True
+
+
+@pytest.mark.parametrize("marche,dom,ext", [
+    ("Double chance - 12", NULS, PASSOIRE),          # trop de nuls au lieu et récemment
+    ("BTTS - non", OFFENSIF, PASSOIRE),              # les deux marquent souvent
+    ("Plus de 1.5 buts", FERME, FERME),              # matchs fermés
+])
+def test_v12_familles_generales_echouent(marche, dom, ext):
+    assert rs.double_controle(marche, dom, ext)["retenu"] is False
+
+
+@pytest.mark.parametrize("marche,dom,ext", [
+    ("Moins de 4.5 buts", FERME, SOLIDE),
+    ("Handicap domicile -1.5", OFFENSIF, PASSOIRE),
+    ("Handicap domicile +1.5", SOLIDE, FERME),
+])
+def test_v12_totaux_et_handicaps_passent(marche, dom, ext):
+    assert rs.double_controle(marche, dom, ext)["retenu"] is True
+
+
+@pytest.mark.parametrize("marche,dom,ext", [
+    ("Handicap domicile -1.5", SOLIDE, SOLIDE),      # gagne mais jamais largement
+    ("Handicap domicile +1.5", PASSOIRE, OFFENSIF),  # perd souvent largement
+    ("Handicap extérieur -1.5", OFFENSIF, PASSOIRE), # l'extérieur est la passoire
+])
+def test_v12_handicaps_echouent(marche, dom, ext):
+    assert rs.double_controle(marche, dom, ext)["retenu"] is False
+
+
+@pytest.mark.parametrize("marche,dom,ext", [
+    ("Buts domicile - plus de 0.5", OFFENSIF, PASSOIRE),
+    ("Buts domicile - plus de 1.5", OFFENSIF, PASSOIRE),
+    ("Buts extérieur - moins de 1.5", OFFENSIF, FERME),
+])
+def test_v12_buts_d_une_equipe_passent(marche, dom, ext):
+    assert rs.double_controle(marche, dom, ext)["retenu"] is True
+
+
+@pytest.mark.parametrize("marche,dom,ext", [
+    ("Buts domicile - plus de 1.5", FERME, SOLIDE),       # le domicile marque peu
+    ("Buts extérieur - plus de 0.5", OFFENSIF, FERME),    # l'extérieur ne marque presque pas
+    ("Buts domicile - moins de 0.5", OFFENSIF, PASSOIRE), # le domicile marque toujours
+])
+def test_v12_buts_d_une_equipe_echouent(marche, dom, ext):
+    assert rs.double_controle(marche, dom, ext)["retenu"] is False
+
+
+def test_v12_seuils_1_0_inchanges():
+    """Les marchés de la version 1.0.0 gardent exactement leurs seuils."""
+    assert rs.SEUILS["victoire"]["pts_par_match_min"] == 1.60 and rs.SEUILS["double_chance"]["invaincu_lieu_min"] == 0.70
+    assert rs.SEUILS["moins_2_5"]["buts_attendus_max"] == 2.3 and rs.SEUILS["btts"]["marque_lieu_min"] == 0.70
+    assert rs.VERSION_REGLE == "1.2.0" and len(rs.MARCHES_COUVERTS) == 27

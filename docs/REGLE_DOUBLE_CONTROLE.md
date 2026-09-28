@@ -52,6 +52,37 @@ Buts attendus = moyenne (buts marqués par l'un au lieu, buts encaissés par l'a
 - Cas d'origine : York – Gillingham, « York ou nul ». Le pari passait les deux contrôles, mais Gillingham avait gagné 3 de ses 6 derniers matchs de championnat, exactement le maximum. Il aurait dû être écarté des combinés.
 - Code : `double_controle` renvoie `limite` et `marge_nulle` ; `choisir_pour_combine` applique l'exclusion.
 
+## Ajout de la version 1.2.0 (28/09/2026) — nouveaux marchés
+
+Décision de Patrick : étendre la règle aux autres marchés que la V3 calcule. Les seuils de la 1.0.0 ne changent pas.
+Les nouveaux seuils sont écrits **à l'avance, par analogie** avec ceux de la 1.0.0 : ils n'ont été ajustés sur aucun
+résultat et seront jugés, comme la V3, sur les matchs réels terminés. Mêmes principes : deux sens, saison + forme
+récente, au moins 3 matchs au lieu et 5 matchs récents.
+
+| Marché | Contrôle saison (deux sens) | Contrôle forme récente |
+|---|---|---|
+| Double chance 12 (pas de nul) | Chaque équipe ≤ 20 % de nuls à son lieu et ≤ 25 % sur la saison | ≤ 1 nul sur 6 pour chacune |
+| Les deux ne marquent pas (BTTS non) | « Les deux marquent » ≤ 40 % pour chaque équipe à son lieu ; buts attendus du côté le plus faible ≤ 1,1 | « Les deux ont marqué » ≤ 2 sur 6 pour chacune |
+| Plus de 1,5 buts | Chaque équipe ≥ 75 % à +1,5 à son lieu, ≥ 70 % sur la saison ; buts attendus ≥ 2,4 | ≥ 4 sur 6 pour chacune |
+| Moins de 4,5 buts | Chaque équipe ≥ 85 % à -4,5 à son lieu ; buts attendus ≤ 3,2 | ≥ 5 sur 6 pour chacune |
+| Handicap -1,5 (gagner par 2 buts ou plus) | Équipe : gagne par 2+ dans ≥ 40 % de ses matchs au lieu, ≥ 1,8 pt/match. Adversaire : perd par 2+ dans ≥ 35 % à son lieu. Écart de buts attendu ≥ 1,0 | Équipe ≥ 2 victoires par 2+ sur 6 ; adversaire ≥ 2 défaites par 2+ sur 6 |
+| Handicap +1,5 (ne pas perdre par 2 buts ou plus) | Équipe : perd par 2+ dans ≤ 15 % au lieu. Adversaire : gagne par 2+ dans ≤ 20 % à son lieu. Écart attendu en faveur de l'adversaire ≤ 0,5 | Équipe ≤ 1 défaite par 2+ sur 6 ; adversaire ≤ 2 victoires par 2+ sur 6 |
+| Buts d'une équipe | Part des matchs de l'équipe à son lieu au-dessus / en dessous de la ligne, part des matchs de l'adversaire à son lieu où il encaisse au-dessus / en dessous, même part sur la saison, buts attendus de l'équipe (tableau ci-dessous) | Équipe et adversaire sur leurs 6 derniers (tableau ci-dessous) |
+
+Buts d'une équipe (équipe au lieu / adversaire au lieu / saison / buts attendus / récent équipe / récent adversaire) :
+- plus de 0,5 : 80 % / 70 % / 75 % / ≥ 1,2 / 5 sur 6 / 4 sur 6
+- plus de 1,5 : 60 % / 50 % / 50 % / ≥ 1,9 / 3 sur 6 / 3 sur 6
+- moins de 0,5 : 50 % / 50 % / 40 % / ≤ 0,6 / 3 sur 6 / 3 sur 6
+- moins de 1,5 : 70 % / 65 % / 65 % / ≤ 1,0 / 4 sur 6 / 4 sur 6
+- moins de 2,5 : 85 % / 80 % / 80 % / ≤ 1,6 / 5 sur 6 / 5 sur 6
+
+Marchés équivalents (même pari, même règle) : handicap -0,5 = victoire ; handicap +0,5 = double chance ;
+« encaisse au moins un but » = l'adversaire marque plus de 0,5 ; « cage inviolée » = l'adversaire marque moins de 0,5.
+
+Restent **hors règle, donc jamais sélectionnés** : score exact, nombre exact de buts, pair / impair, match nul,
+handicaps ±2,5 et ±3,5, autres lignes de total et de buts d'une équipe. Raison : pas de lecture « football » simple
+qui les justifie, ou cote presque toujours hors de la fenêtre 1,26 – 1,74.
+
 ## Règles d'usage
 
 - La règle **filtre** : elle ne remplace ni le modèle de probabilité ni le prix (cote). Un pari doit aussi être cohérent avec la cote BetPawa.
@@ -63,3 +94,4 @@ Buts attendus = moyenne (buts marqués par l'un au lieu, buts encaissés par l'a
 
 `tests/test_regles_selection.py` rejoue 30 cas réels du 26/09/2026 : pour chacune des 5 familles, 3 paris qui doivent passer et 3 qui doivent être écartés, dont le cas Real Salt Lake. Il ajoute des cas construits : victoire refusée quand seul l'adversaire est faible, moins de 2,5 fermé d'un seul côté, échantillon trop petit, marché non couvert.
 Version 1.1.0 : le cas réel York (retenu mais limite), 3 adversaires en marge nulle et 3 sans, et l'exclusion des paris limites dans un combiné.
+Version 1.2.0 : pour chaque nouvelle famille, 3 cas construits qui passent et 3 qui échouent, et un test qui vérifie que les seuils de la 1.0.0 n'ont pas bougé.

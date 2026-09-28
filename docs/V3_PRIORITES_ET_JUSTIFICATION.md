@@ -31,12 +31,11 @@ Limites qui restent :
 - **Mi-temps** (1X2 MT, MT/fin, buts par mi-temps) : le moteur sait les calculer, mais l'archive n'a ni buts à la
   mi-temps ni cotes mi-temps. Aucun de ces marchés n'est calculable aujourd'hui.
 - **Corners, cartons** : pas de cotes, pas de données dans l'archive.
-- **Sélection** : un marché n'est sélectionnable que si la règle du double contrôle le couvre. Aujourd'hui, 9 marchés
-  seulement (1X2 1 et 2, double chance 1X et X2, -2,5, -3,5, +2,5, +3,5, BTTS oui). Les handicaps, les scores exacts,
-  le pair/impair, les buts d'une équipe, etc. sont calculés et diagnostiqués, mais jamais retenus. Étendre la règle
-  à ces marchés est une décision de Patrick (règle « très importante » du 26/09).
+- **Sélection** : un marché n'est sélectionnable que si la règle du double contrôle le couvre. Depuis la version 1.2.0
+  (28/09, décision de Patrick), 27 règles couvrent 35 marchés V3 (docs/REGLE_DOUBLE_CONTROLE.md). Restent hors règle :
+  score exact, nombre exact de buts, pair / impair, match nul, handicaps ±2,5 / ±3,5 et les autres lignes.
 
-## 3. Proposition : standard de justification V3 (non appliqué, à valider)
+## 3. Standard de justification V3 (validé par Patrick le 28/09, appliqué : `moteur_v3_pipeline.explication`)
 
 Même structure pour chaque sélection, quel que soit le marché. Tout est calculé par le pipeline et écrit dans
 `pronostics_v3.json` ; le site ne fait qu'afficher.

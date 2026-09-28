@@ -238,6 +238,19 @@ function construitFiabilite(c) {
     ? `<div class="ax-vigilance"><p class="ax-vigilance-titre">Points de vigilance</p><ul>${vigilance.map((t) => `<li>${echappeHtml(t)}</li>`).join("")}</ul></div>` : "");
 }
 
+// V3 (28/09/2026, standard de justification validé par Patrick) : alertes + 6 blocs chiffrés, dans l'ordre fourni par
+// le pipeline (Données, Buts attendus, Probabilité, Face à la cote, Contrôles, Pourquoi ce marché). Aucun calcul ici.
+function construitExplication(ex) {
+  if (!ex || !Array.isArray(ex.blocs) || !ex.blocs.length) return "";
+  const alertes = (Array.isArray(ex.alertes) ? ex.alertes : []).filter((t) => typeof t === "string" && t);
+  const tete = alertes.length
+    ? `<div class="ax-v3-alertes" role="note"><p class="ax-v3-alertes-titre">Alertes</p><ul>${alertes.map((t) => `<li>${echappeHtml(t)}</li>`).join("")}</ul></div>` : "";
+  const blocs = ex.blocs.map((b, i) =>
+    `<div class="ax-tab ax-v3-bloc"><h4 class="ax-tab-titre">${i + 1}. ${echappeHtml(b.titre)}</h4>` +
+    `<ul class="ax-v3-lignes">${(b.lignes || []).map((l) => `<li>${echappeHtml(l)}</li>`).join("")}</ul></div>`).join("");
+  return tete + blocs;
+}
+
 function construitAnalyse(info, c, equipes) {
   const j = c.justification || {};
   const b = j.bibliotheque && typeof j.bibliotheque === "object" ? j.bibliotheque : {};
@@ -246,6 +259,9 @@ function construitAnalyse(info, c, equipes) {
   if (!j.donnees_suffisantes) {
     return ouvre + tete + `<div class="ax-analyse-vide"><strong>Analyse non disponible</strong>` +
       `<p>Données historiques insuffisantes pour justifier ce marché.</p></div></div>`;
+  }
+  if (j.explication && Array.isArray(j.explication.blocs)) { // V3 : standard de justification
+    return ouvre + tete + tableauResume(j.resume) + construitExplication(j.explication) + construitFiabilite(c) + `</div>`;
   }
   return ouvre + tete +
     tableauResume(j.resume) +
