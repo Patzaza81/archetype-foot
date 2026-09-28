@@ -176,7 +176,21 @@ def test_lambda_nul_rejete_sans_planter():
         x["buts_encaisses"] = 0
     r = evaluate_match({"home_matches": home, "away_matches": away, "odds": ODDS})
     assert not r["selected"]
-    assert any("PROBABILITE_DEGENEREE" in v.reasons for v in r["values"].values())
+    # Lissage (28/09) : un zéro observé ne donne jamais une probabilité de 0 % ou 100 %.
+    assert r["model"].lambda_home > 0 and r["model"].lambda_away > 0
+    assert not any("PROBABILITE_DEGENEREE" in v.reasons for v in r["values"].values())
+
+
+@pytest.mark.parametrize("n,attendu", [(0, 1.35), (4, (4 * 3.0 + 4 * 1.35) / 8), (1000, (1000 * 3.0 + 4 * 1.35) / 1004)])
+def test_lissage_vers_la_reference(n, attendu):
+    from moteur_v3.model import _lisse
+    assert abs(_lisse(3.0, n) - attendu) < 1e-3
+
+
+@pytest.mark.parametrize("n_petit,n_grand", [(2, 12), (3, 10), (1, 6)])
+def test_petit_echantillon_plus_proche_de_la_reference(n_petit, n_grand):
+    from moteur_v3.model import MOYENNE_REFERENCE, _lisse
+    assert abs(_lisse(0.0, n_petit) - MOYENNE_REFERENCE) < abs(_lisse(0.0, n_grand) - MOYENNE_REFERENCE)
 
 
 def test_probabilite_nulle_rejetee_pas_exception():

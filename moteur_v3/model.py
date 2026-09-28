@@ -7,6 +7,13 @@ from typing import Any, Mapping, Sequence
 MAX_CONTEXT = 12
 MAX_GOALS = 12
 
+# Lissage des forces vers une référence commune (décision du 28/09/2026). Paramètres FIXÉS À L'AVANCE, jamais estimés
+# sur les 501 matchs du banc : MOYENNE_REFERENCE = 1,35 but par équipe et par match (ordre de grandeur fixe, déjà celui
+# du modèle de référence « λ lissé » de banc_historique.py) ; K_LISSAGE = 4 matchs fictifs. Un petit échantillon est
+# tiré vers la référence, un grand échantillon garde sa propre valeur. Aucun nom de compétition n'intervient.
+MOYENNE_REFERENCE = 1.35
+K_LISSAGE = 4.0
+
 
 @dataclass(frozen=True)
 class Sample:
@@ -130,6 +137,18 @@ def _lambda(attack: float | None, defense: float | None) -> float:
     return max(0.0, (float(attack) + float(defense)) / 2.0)
 
 
+def _lisse(valeur: float, n: int) -> float:
+    return (n * max(0.0, float(valeur)) + K_LISSAGE * MOYENNE_REFERENCE) / (n + K_LISSAGE)
+
+
+def _lambda_lisse(attaque: float, n_attaque: int, defense: float, n_defense: int) -> float:
+    """Buts attendus = attaque lissée x défense adverse lissée / référence (forces relatives). Toujours > 0 : un zéro
+    observé sur peu de matchs n'est jamais transformé en certitude."""
+    if not isfinite(float(attaque)) or not isfinite(float(defense)):
+        raise ValueError("lambda invalide")
+    return _lisse(attaque, n_attaque) * _lisse(defense, n_defense) / MOYENNE_REFERENCE
+
+
 def poisson(lam: float, k: int) -> float:
     if lam < 0 or not isfinite(lam):
         raise ValueError("lambda invalide")
@@ -178,8 +197,12 @@ def build_model(
     away_attack = _blend(es["attack"], pas.get("attack"), pw_a)
     home_defence = _blend(hs["defense"], phs.get("defense"), pw_h)
 
-    lh = _lambda(home_attack, away_defence)
-    la = _lambda(away_attack, home_defence)
+    if None in (home_attack, away_defence, away_attack, home_defence):
+        raise ValueError("Données insuffisantes pour lambda")
+    n_h = len(home) + (len(prev_h) if pw_h > 0 else 0)
+    n_a = len(away) + (len(prev_a) if pw_a > 0 else 0)
+    lh = _lambda_lisse(home_attack, n_h, away_defence, n_a)
+    la = _lambda_lisse(away_attack, n_a, home_defence, n_h)
     matrix = score_matrix(lh, la)
 
     # Les données de mi-temps doivent exister des deux côtés. La seconde
