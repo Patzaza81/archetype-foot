@@ -136,9 +136,10 @@ def _selection(marche="over_2_5"):
 
 def test_candidat_au_format_de_la_page_archetype():
     c = mp.candidat_site(_selection(), "P1", 6)
-    assert c["marche"] == "over_under_total_2.5_over" and abs(c["edv"] - 0.152) < 1e-12 and c["niveau"] == "V3_NON_VALIDE"
+    assert c["marche"] == "over_under_total_2.5_over" and abs(c["edv"] - 0.152) < 1e-12 and c["niveau"] == "V3_ECHANTILLON_UTILISABLE"
     j = c["justification"]
-    assert j["donnees_suffisantes"] and j["resume"] == "A marque ; B encaisse"
+    assert j["donnees_suffisantes"] and j["resume"].startswith("Probabilité calibrée 72 % contre 62 % selon la cote")
+    assert j["resume"] not in [p["texte"] for p in j["preuves"]]          # la synthèse ne recopie aucune preuve
     assert [p["type"] for p in j["preuves"]] == ["v3_controle_saison", "v3_forme_recente", "ev_percentage"]
     assert c["points_de_vigilance"] == [mp.VIGILANCE_V3]
 
@@ -176,3 +177,33 @@ def test_page_v3_copie_de_la_page_archetype():
     assert 'const CLE_MOTEUR = "moteur_v3"' in js and "data/v3/pronostics_v3.json" in js
     assert "precalcul_leger.json" not in js.split("fetch(")[-1]          # jamais les données V2
     assert "archetype_v3.js" in html and "archetype.css" in html and "expérimental" in html
+
+
+@pytest.mark.parametrize("n,niveau", [(3, "V3_ECHANTILLON_FAIBLE"), (4, "V3_ECHANTILLON_FAIBLE"),
+                                      (5, "V3_ECHANTILLON_UTILISABLE"), (7, "V3_ECHANTILLON_UTILISABLE"),
+                                      (8, "V3_ECHANTILLON_SOLIDE"), (12, "V3_ECHANTILLON_TRES_SOLIDE")])
+def test_fiabilite_affichee_selon_l_echantillon(n, niveau):
+    assert mp.niveau_echantillon(n) == niveau
+
+
+def test_page_v3_sans_roles_de_la_v2():
+    racine = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    with open(os.path.join(racine, "archetype_v3.js"), encoding="utf-8") as f:
+        js = f.read()
+    code = "\n".join(l for l in js.splitlines() if not l.lstrip().startswith("//"))
+    for role in ("Favori du Modèle", "Value Bet", "Coup de Poker", "Confrontations directes"):
+        assert role not in code
+    for niveau in ("V3_ECHANTILLON_FAIBLE", "V3_ECHANTILLON_UTILISABLE", "V3_ECHANTILLON_SOLIDE", "V3_ECHANTILLON_TRES_SOLIDE"):
+        assert niveau in code
+
+
+@pytest.mark.parametrize("lambdas,attendu", [((1.62, 1.1), "buts attendus par la V3 : 1,62 – 1,10"),
+                                             ((2.0, 0.85), "buts attendus par la V3 : 2,00 – 0,85"),
+                                             ((0.9, 1.4), "buts attendus par la V3 : 0,90 – 1,40")])
+def test_synthese_avec_les_buts_attendus_de_la_v3(lambdas, attendu):
+    assert attendu in mp.synthese(_selection(), lambdas)
+
+
+@pytest.mark.parametrize("lambdas", [None, (None, 1.2), (1.2, None)])
+def test_synthese_sans_buts_attendus_inconnus(lambdas):
+    assert "buts attendus" not in mp.synthese(_selection(), lambdas)

@@ -245,7 +245,34 @@ for _x in range(2):
 VIGILANCE_V3 = "Moteur V3 expérimental : pas encore validé sur 100 matchs réels."
 
 
-def candidat_site(sel, rang, n_min):
+def niveau_echantillon(n_min):
+    """Fiabilité affichée = taille de l'échantillon au même lieu de l'équipe la moins fournie (paliers de
+    moteur_v3.model._sample). La V3 ne sélectionne jamais sous 3 matchs."""
+    if n_min < 5:
+        return "V3_ECHANTILLON_FAIBLE"
+    if n_min < 8:
+        return "V3_ECHANTILLON_UTILISABLE"
+    if n_min < 10:
+        return "V3_ECHANTILLON_SOLIDE"
+    return "V3_ECHANTILLON_TRES_SOLIDE"
+
+
+def _pct_fr(x):
+    return f"{100 * x:.0f} %"
+
+
+def synthese(sel, lambdas=None):
+    """Résumé propre à la V3 (jamais une copie d'une preuve) : probabilité calibrée contre celle de la cote, double
+    contrôle, et buts attendus du modèle V3 lui-même (différents des « buts attendus » simples de la règle du double
+    contrôle, qui n'est qu'un filtre)."""
+    texte = (f"Probabilité calibrée {_pct_fr(sel['probabilite'])} contre {_pct_fr(1 / sel['cote'])} selon la cote ; "
+             f"double contrôle passé (saison et forme récente)")
+    if lambdas and None not in lambdas:
+        texte += f" ; buts attendus par la V3 : {lambdas[0]:.2f} – {lambdas[1]:.2f}".replace(".", ",")
+    return texte + "."
+
+
+def candidat_site(sel, rang, n_min, lambdas=None):
     """Une sélection V3 au format d'un candidat de la page « Sélections Archetype » (moteur_v2_6_9.selection.Px)."""
     preuves = []
     if sel["raisons_saison"]:
@@ -257,8 +284,8 @@ def candidat_site(sel, rang, n_min):
     vigilance = [VIGILANCE_V3] + (["Moins de 5 matchs au même lieu pour une des deux équipes."] if n_min < 5 else [])
     return {"marche": V3_VERS_SITE.get(sel["marche"], sel["marche"]), "marche_moteur": sel["marche"],
             "probabilite": sel["probabilite"], "cote": sel["cote"], "edge": sel["edge"], "edv": sel["edv"] / 100.0,
-            "niveau": "V3_NON_VALIDE", "robustesse": None, "points_de_vigilance": vigilance, "rang": rang,
-            "justification": {"resume": preuves[0]["texte"] if preuves else "", "preuves": preuves,
+            "niveau": niveau_echantillon(n_min), "robustesse": None, "points_de_vigilance": vigilance, "rang": rang,
+            "justification": {"resume": synthese(sel, lambdas), "preuves": preuves,
                               "donnees_suffisantes": True, "bibliotheque": {"ev_percentage": sel["edv"]}}}
 
 
@@ -266,7 +293,8 @@ def signal_site(x):
     """Un match au format d'un signal de precalcul_leger.json, avec le seul bloc moteur_v3."""
     n_min = min(x.get("n_dom") or 0, x.get("n_ext") or 0)
     rangs = ("P1", "P2", "P3")
-    selection = {rang: candidat_site(s, rang, n_min) for rang, s in zip(rangs, x["selections"])}
+    lambdas = (x.get("lambda_dom"), x.get("lambda_ext"))
+    selection = {rang: candidat_site(s, rang, n_min, lambdas) for rang, s in zip(rangs, x["selections"])}
     return {"match_id": x["match_id"], "date": x["date"], "heure_cameroun": x["heure"], "competition": x["competition"],
             "domicile": x["domicile"], "exterieur": x["exterieur"], "moteur_utilise": "moteur_v3",
             "moteur_v3": {"statut": "OK" if x["statut"] == "EVALUE" else x["statut"], "moteur": "moteur_v3",
