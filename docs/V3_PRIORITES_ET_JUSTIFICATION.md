@@ -27,13 +27,21 @@ Après : tous les marchés plein temps cotés par BetPawa sont calculés (jusqu'
 dans `bilan.couverture` les groupes BetPawa que la V3 ne sait pas lire (aucun sur l'archive du 28/09). Le journal
 `data/v3/journal/` garde le diagnostic COMPLET de chaque marché : cote, probabilité, marge, raisons de rejet.
 
+Ajout du 28/09 (décision de Patrick) : **handicap à 3 choix** BetPawa, lignes Domicile −2, −1, +1, +2, issues 1 / X / 2
+(12 marchés). Le scraper de nuit ne lisait pas ce bloc : lecture ajoutée dans `parse_betpawa_playwright.py` et
+`parse_betpawa_url.py`, sous la clé `handicap_3issues_L` (L = handicap du domicile). Clé volontairement différente de
+`handicap_3choix_N` (copier-coller) que le pont V2 lit : la V2 ne voit aucun changement (test d'isolation). Les autres
+lignes éventuellement cotées (±3…) sont ignorées par choix et notées dans `bilan.couverture.groupes_ignores_par_choix`.
+Les handicaps à 2 choix (±0,5 à ±3,5) restent calculés. Premières cotes à 3 choix : à partir du prochain run de nuit.
+
 Limites qui restent :
 - **Mi-temps** (1X2 MT, MT/fin, buts par mi-temps) : le moteur sait les calculer, mais l'archive n'a ni buts à la
   mi-temps ni cotes mi-temps. Aucun de ces marchés n'est calculable aujourd'hui.
 - **Corners, cartons** : pas de cotes, pas de données dans l'archive.
 - **Sélection** : un marché n'est sélectionnable que si la règle du double contrôle le couvre. Depuis la version 1.2.0
-  (28/09, décision de Patrick), 27 règles couvrent 35 marchés V3 (docs/REGLE_DOUBLE_CONTROLE.md). Restent hors règle :
-  score exact, nombre exact de buts, pair / impair, match nul, handicaps ±2,5 / ±3,5 et les autres lignes.
+  (28/09, décision de Patrick), 27 règles couvrent 41 marchés V3, dont 6 issues du handicap à 3 choix (docs/REGLE_DOUBLE_CONTROLE.md). Restent hors règle :
+  score exact, nombre exact de buts, pair / impair, match nul, handicaps ±2,5 / ±3,5, 6 issues du handicap à 3 choix
+  (les 4 « X » et les deux « gagne par 3 buts ou plus ») et les autres lignes.
 
 ## 3. Standard de justification V3 (validé par Patrick le 28/09, appliqué : `moteur_v3_pipeline.explication`)
 
@@ -67,7 +75,8 @@ Même structure pour chaque sélection, quel que soit le marché. Tout est calcu
 | Famille | Marchés V3 | Phrase de calcul |
 |---|---|---|
 | Résultat | 1X2, double chance | « Somme des scores où domicile > extérieur (ou ≥, ≠…) » |
-| Handicap | handicap ±0,5 à ±3,5 | « Somme des scores où buts domicile + L > buts extérieur » |
+| Handicap à 2 choix | handicap ±0,5 à ±3,5 | « Somme des scores où buts domicile + L > buts extérieur » |
+| Handicap à 3 choix | Domicile −2, −1, +1, +2 (1 / X / 2) | « Somme des scores où buts domicile + L >, = ou < buts extérieur » |
 | Total de buts | plus / moins de 0,5 à 7,5 | « Somme des scores avec au moins N buts (ou au plus N-1) » |
 | Nombre exact / parité | 0 à 6+, pair / impair | « Somme des scores dont le total vaut N (ou est pair) » |
 | Buts d'une équipe | plus / moins de 0,5 à 3,5 | « Probabilité que l'équipe marque au moins N buts avec ses buts attendus seuls » |
