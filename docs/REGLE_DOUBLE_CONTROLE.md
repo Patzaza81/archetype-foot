@@ -79,8 +79,23 @@ Buts d'une équipe (équipe au lieu / adversaire au lieu / saison / buts attendu
 Marchés équivalents (même pari, même règle) : handicap -0,5 = victoire ; handicap +0,5 = double chance ;
 « encaisse au moins un but » = l'adversaire marque plus de 0,5 ; « cage inviolée » = l'adversaire marque moins de 0,5.
 
+Handicap à 3 choix BetPawa (ajout du 28/09/2026, décision de Patrick ; aucun seuil nouveau, aucune règle nouvelle) :
+seules les issues identiques à un pari déjà couvert prennent sa règle.
+
+| Handicap à 3 choix | Issue | Pari réel | Règle appliquée |
+|---|---|---|---|
+| Domicile −1 | 1 | domicile gagne par 2 buts ou plus | Handicap domicile -1.5 |
+| Domicile −1 | 2 | extérieur ne perd pas | Double chance - X2 |
+| Domicile +1 | 1 | domicile ne perd pas | Double chance - 1X |
+| Domicile +1 | 2 | extérieur gagne par 2 buts ou plus | Handicap extérieur -1.5 |
+| Domicile −2 | 2 | extérieur ne perd pas par 2 buts ou plus | Handicap extérieur +1.5 |
+| Domicile +2 | 1 | domicile ne perd pas par 2 buts ou plus | Handicap domicile +1.5 |
+
+Hors règle (calculés, jamais sélectionnés) : les 4 issues X (écart exact de 1 ou 2 buts), Domicile −2 issue 1
+(domicile gagne par 3 buts ou plus), Domicile +2 issue 2 (extérieur gagne par 3 buts ou plus).
+
 Restent **hors règle, donc jamais sélectionnés** : score exact, nombre exact de buts, pair / impair, match nul,
-handicaps ±2,5 et ±3,5, autres lignes de total et de buts d'une équipe. Raison : pas de lecture « football » simple
+handicaps ±2,5 et ±3,5, issues du handicap à 3 choix listées ci-dessus, autres lignes de total et de buts d'une équipe. Raison : pas de lecture « football » simple
 qui les justifie, ou cote presque toujours hors de la fenêtre 1,26 – 1,74.
 
 ## Règles d'usage

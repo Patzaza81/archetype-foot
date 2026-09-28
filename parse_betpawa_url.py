@@ -56,6 +56,7 @@ LIGNES_OU = [f"{n}.5" for n in range(8)]  # 0.5 .. 7.5
 PREFIXES_OU = [f"Over {l}" for l in LIGNES_OU] + [f"Under {l}" for l in LIGNES_OU]
 LIGNES_HANDICAP = ["-2.5", "-1.5", "-0.5", "0.5", "1.5", "2.5"]
 PREFIXES_HANDICAP = LIGNES_HANDICAP + [f"+{l}" for l in LIGNES_HANDICAP if not l.startswith("-")]
+PREFIXES_HANDICAP_3 = [f"{c} {s}{n}" for c in ("Home", "Away") for s in "+-" for n in range(1, 6)]
 PREFIXES_SCORE = [f"{x}-{y}" for x in range(5) for y in range(5)]
 PREFIXES_NB_BUTS = [str(n) for n in range(6)] + ["6+"]
 
@@ -121,6 +122,23 @@ def parse_betpawa_url(texte, nom_domicile, nom_exterieur):
                 cle_ligne = pd[1:] if pd.startswith("+") else pd
                 cotes[f"handicap_{cle_ligne}"] = {"domicile": vd, "exterieur": ve}
                 i += 2
+            continue
+
+        # AJOUT 28/09/2026 (Patrick) -- « 3-Way Handicap | Full Time », étiquette et cote collées (« Home -217.05 » =
+        # « Home -2 » + 17.05). Trois lignes de texte par ligne de tableau (issues 1, X, 2). Clé « handicap_3issues_L »
+        # (L = handicap du domicile), lue par la V3 seulement -- voir parse_betpawa_playwright.py.
+        if titre == "3-Way Handicap | Full Time":
+            i += 1
+            for entete in ("- 1", "- X", "- 2"):
+                if i < len(lignes) and lignes[i] == entete:
+                    i += 1
+            while i + 2 < len(lignes):
+                lus = [_peler_prefixe(lignes[i + k], PREFIXES_HANDICAP_3) for k in range(3)]
+                if any(p is None for p, _ in lus) or not lus[0][0].startswith("Home"):
+                    break
+                ligne = int(lus[0][0].split(" ")[1])
+                cotes[f"handicap_3issues_{ligne}"] = {"1": lus[0][1], "X": lus[1][1], "2": lus[2][1]}
+                i += 3
             continue
 
         if titre == "Odd/Even | Full Time":

@@ -36,6 +36,7 @@ import glob
 import gzip
 import hashlib
 import json
+import math
 import os
 import sys
 from collections import Counter
@@ -96,11 +97,74 @@ DOUBLE_CONTROLE = {"1x2_1": "1X2 - 1", "1x2_2": "1X2 - 2", "dc_1X": "Double chan
                    "handicap_-1.5_2": "Handicap extérieur -1.5", "handicap_1.5_2": "Handicap extérieur +1.5",
                    # « encaisse au moins un but » = l'adversaire marque ; « cage inviolée » = l'adversaire ne marque pas
                    "clean_home_no": "Buts extérieur - plus de 0.5", "clean_away_no": "Buts domicile - plus de 0.5",
-                   "clean_home": "Buts extérieur - moins de 0.5", "clean_away": "Buts domicile - moins de 0.5"}
+                   "clean_home": "Buts extérieur - moins de 0.5", "clean_away": "Buts domicile - moins de 0.5",
+                   # AJOUT 28/09/2026 -- handicap à 3 choix (lignes V3 entières). Seules les issues identiques à un
+                   # pari déjà couvert prennent sa règle ; les issues « X » (écart exact) et « gagne par 3 buts ou
+                   # plus » n'ont pas de règle : calculées, jamais sélectionnables.
+                   "handicap_1_1": "Handicap domicile -1.5", "handicap_1_2": "Double chance - X2",
+                   "handicap_-1_1": "Double chance - 1X", "handicap_-1_2": "Handicap extérieur -1.5",
+                   "handicap_2_2": "Handicap extérieur +1.5", "handicap_-2_1": "Handicap domicile +1.5"}
 for _cote, _nom in (("home", "domicile"), ("away", "extérieur")):
     for _sens, _v3, _lignes in (("plus", "over", (0.5, 1.5)), ("moins", "under", (0.5, 1.5, 2.5))):
         for _l in _lignes:
             DOUBLE_CONTROLE[f"{_cote}_{_v3}_{str(_l).replace('.', '_')}"] = f"Buts {_nom} - {_sens} de {_l}"
+
+
+# AJOUT 28/09/2026 (Patrick) -- lignes du « Handicap à 3 choix » BetPawa intégrées à la V3 (handicap du DOMICILE,
+# convention BetPawa). Les autres lignes éventuellement cotées (±3…) sont ignorées par choix.
+HANDICAP_3_ISSUES_LIGNES = (-2, -1, 1, 2)
+
+
+def _signe(x):
+    """-1 -> « −1 », 1.5 -> « +1,5 »."""
+    return ("+" if x > 0 else "−" if x < 0 else "") + _jeton(abs(x)).replace(".", ",")
+
+
+def _buts(n):
+    return f"{n} but{'s' if n > 1 else ''}"
+
+
+def _ecart_min(m, dom, ext):
+    """Condition « buts domicile − buts extérieur ≥ m » en mots."""
+    if m >= 1:
+        return f"{dom} gagne" + (f" par {_buts(m)} ou plus" if m > 1 else "")
+    if m == 0:
+        return f"{dom} ne perd pas"
+    return f"{dom} ne perd pas par {_buts(1 - m)} ou plus"
+
+
+def _ecart_max(n, dom, ext):
+    """Condition « buts domicile − buts extérieur ≤ n » en mots."""
+    if n <= -1:
+        return f"{ext} gagne" + (f" par {_buts(-n)} ou plus" if n < -1 else "")
+    if n == 0:
+        return f"{ext} ne perd pas"
+    return f"{ext} ne perd pas par {_buts(n + 1)} ou plus"
+
+
+def sens_handicap(marche, dom="domicile", ext="extérieur"):
+    """Ce que le pari handicap V3 « handicap_{l}_{1|X|2} » demande, en mots (condition buts dom − l ? buts ext)."""
+    _, ligne, issue = marche.split("_")
+    l_ = float(ligne)
+    if issue == "1":
+        return _ecart_min(math.floor(l_) + 1, dom, ext)
+    if issue == "2":
+        return _ecart_max(math.ceil(l_) - 1, dom, ext)
+    if l_ == 0:
+        return "match nul"
+    return f"{dom if l_ > 0 else ext} gagne par exactement {_buts(int(abs(l_)))}"
+
+
+def libelle_handicap(marche, dom="Domicile", ext="Extérieur"):
+    """Libellé BetPawa + sens du pari. Ligne entière = handicap à 3 choix ; demi-ligne = handicap à 2 choix."""
+    _, ligne, issue = marche.split("_")
+    l_ = float(ligne)
+    sens = sens_handicap(marche, dom, ext)
+    if l_ == int(l_):
+        return f"Handicap 3 choix {dom} {_signe(-l_)} ({issue}) : {sens}"
+    if issue == "1":
+        return f"Handicap {dom} {_signe(-l_)} : {sens}"
+    return f"Handicap {ext} {_signe(l_)} : {sens}"
 
 
 def libelle(marche):
@@ -120,13 +184,7 @@ def libelle(marche):
         _, h, a = marche.split("_")
         return f"Score exact {h}-{a}"
     if marche.startswith("handicap_"):
-        _, ligne, cote_ = marche.split("_")
-        l_ = float(ligne)
-        if cote_ == "1":
-            return f"Domicile handicap {_jeton(-l_).replace('.', ',')}"
-        if cote_ == "2":
-            return f"Extérieur handicap {('+' if l_ > 0 else '') + _jeton(l_).replace('.', ',')}"
-        return f"Handicap {ligne} nul"
+        return libelle_handicap(marche)
     for prefixe, qui in (("home_", "Domicile marque "), ("away_", "Extérieur marque ")):
         if marche.startswith(prefixe):
             sens, ligne = marche[len(prefixe):].split("_", 1)
@@ -224,7 +282,13 @@ def cotes_etendues(enreg):
     for groupe, issues in bp.items():
         if not isinstance(issues, dict):
             continue
-        if groupe.startswith("handicap_") and not groupe.startswith("handicap_3choix"):
+        if groupe.startswith("handicap_3issues_"):
+            # Handicap à 3 choix, ligne L du DOMICILE : « 1 » = buts_dom + L > buts_ext -> V3 handicap_{-L}_1, etc.
+            L = _ligne(groupe[len("handicap_3issues_"):])
+            if L is not None and L in HANDICAP_3_ISSUES_LIGNES:
+                for issue in ("1", "X", "2"):
+                    met(f"handicap_{_jeton(-L)}_{issue}", issues.get(issue))
+        elif groupe.startswith("handicap_") and not groupe.startswith("handicap_3choix"):
             L = _ligne(groupe[len("handicap_"):])
             if L is not None and L != int(L):
                 met(f"handicap_{_jeton(-L)}_1", issues.get("domicile"))
@@ -288,12 +352,15 @@ GROUPES_BETPAWA_LUS = ("1x2", "double_chance", "btts", "cages_inviolees_domicile
 def couverture(enreg, cotes):
     """Diagnostic : issues cotées par BetPawa, marchés que la V3 a réellement calculés, groupes qu'elle ne sait pas lire."""
     bp = enreg.get("cotes_betpawa") or {}
-    non_lus = sorted(g for g in bp if not (
-        g in GROUPES_BETPAWA_LUS or g.startswith("over_under_")
+    ignores = sorted(g for g in bp if g.startswith("handicap_3issues_")
+                     and _ligne(g[len("handicap_3issues_"):]) not in HANDICAP_3_ISSUES_LIGNES)
+    non_lus = sorted(g for g in bp if g not in ignores and not (
+        g in GROUPES_BETPAWA_LUS or g.startswith("over_under_") or g.startswith("handicap_3issues_")
         or (g.startswith("handicap_") and not g.startswith("handicap_3choix")
             and _ligne(g[len("handicap_"):]) is not None and _ligne(g[len("handicap_"):]) % 1 != 0)))
     return {"issues_betpawa": sum(len(v) for v in bp.values() if isinstance(v, dict)),
-            "marches_cotes_calcules": len(cotes), "groupes_non_lus": non_lus}
+            "marches_cotes_calcules": len(cotes), "groupes_non_lus": non_lus,
+            "groupes_ignores_par_choix": ignores}
 
 
 def lignes_handicap(cotes):
@@ -456,6 +523,8 @@ def phrase_calcul(marche):
         l_ = float(ligne)
         if cote_ == "1":
             return f"Somme des scores où buts domicile {'−' if l_ > 0 else '+'} {_jeton(abs(l_)).replace('.', ',')} > buts extérieur."
+        if cote_ == "X":
+            return f"Somme des scores où buts domicile {'−' if l_ > 0 else '+'} {_jeton(abs(l_)).replace('.', ',')} = buts extérieur."
         return f"Somme des scores où buts extérieur {'+' if l_ > 0 else '−'} {_jeton(abs(l_)).replace('.', ',')} > buts domicile."
     if marche.startswith(("over_", "under_")):
         sens, ligne = marche.split("_", 1)
@@ -596,6 +665,8 @@ def nom_site(marche):
     if marche.startswith("handicap_"):
         _, ligne, cote_ = marche.split("_")
         l_ = float(ligne)
+        if l_ == int(l_):  # handicap à 3 choix : nom propre à la V3, libellé fourni par le champ « libelle »
+            return f"handicap3_domicile_{_jeton(-l_)}_{cote_}"
         if cote_ == "1":
             return f"handicap_domicile_{_jeton(-l_)}"
         if cote_ == "2":
@@ -636,7 +707,7 @@ VIGILANCE_APERCU = ("Aperçu NON calibré : la calibration n'a pas encore assez 
                     "sélection du moteur, seulement ce qu'il retiendrait si la calibration confirmait ses probabilités.")
 
 
-def candidat_site(sel, rang, n_min, lambdas=None, apercu=False):
+def candidat_site(sel, rang, n_min, lambdas=None, apercu=False, equipes=None):
     """Une sélection V3 au format d'un candidat de la page « Sélections Archetype » (moteur_v2_6_9.selection.Px)."""
     preuves = []
     if sel["raisons_saison"]:
@@ -648,7 +719,10 @@ def candidat_site(sel, rang, n_min, lambdas=None, apercu=False):
                              f"l'estimation {'NON calibrée' if apercu else 'calibrée'}."})
     vigilance = ([VIGILANCE_APERCU] if apercu else []) + [VIGILANCE_V3] + (
         ["Moins de 5 matchs au même lieu pour une des deux équipes."] if n_min < 5 else [])
-    return {"marche": nom_site(sel["marche"]), "marche_moteur": sel["marche"],
+    # Handicaps : libellé complet (ligne BetPawa + sens du pari) ; les autres marchés gardent traduction_marches.js.
+    libelle_site = (libelle_handicap(sel["marche"], *(equipes or ("Domicile", "Extérieur")))
+                    if sel["marche"].startswith("handicap_") else None)
+    return {"marche": nom_site(sel["marche"]), "marche_moteur": sel["marche"], "libelle": libelle_site,
             "probabilite": sel["probabilite"], "cote": sel["cote"], "edge": sel["edge"], "edv": sel["edv"] / 100.0,
             "niveau": niveau_echantillon(n_min), "robustesse": None, "points_de_vigilance": vigilance, "rang": rang,
             "apercu_non_calibre": apercu,
@@ -664,7 +738,8 @@ def signal_site(x):
     lambdas = (x.get("lambda_dom"), x.get("lambda_ext"))
     apercu = not x["selections"] and bool(x.get("apercu_non_calibre"))
     source = x["selections"] or x.get("apercu_non_calibre") or []
-    selection = {rang: candidat_site(s, rang, n_min, lambdas, apercu) for rang, s in zip(rangs, source)}
+    equipes = (x.get("domicile") or "Domicile", x.get("exterieur") or "Extérieur")
+    selection = {rang: candidat_site(s, rang, n_min, lambdas, apercu, equipes) for rang, s in zip(rangs, source)}
     return {"match_id": x["match_id"], "date": x["date"], "heure_cameroun": x["heure"], "competition": x["competition"],
             "domicile": x["domicile"], "exterieur": x["exterieur"], "moteur_utilise": "moteur_v3",
             "moteur_v3": {"statut": "OK" if x["statut"] == "EVALUE" else x["statut"], "moteur": "moteur_v3",
