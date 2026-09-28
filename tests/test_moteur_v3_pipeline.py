@@ -113,3 +113,66 @@ def test_execution_ecrit_le_fichier_et_ne_plante_jamais(tmp_path):
     assert statuts["sans_matchs"].startswith("NON_EVALUE")
     assert out["calibration"]["prete"] is False                      # 1 seul match joué : pas de calibration
     assert bilan["selections"] == 0 and "CALIBRATION_ABSENTE" in bilan["raisons_de_rejet"]
+
+
+# --- AJOUT 28/09/2026 : données V3 au format de la page « Sélections Archetype » (archetype_v3.js) ------------------
+
+@pytest.mark.parametrize("v3,site", [("1x2_1", "1x2_domicile"), ("dc_X2", "double_chance_X2"),
+                                     ("over_2_5", "over_under_total_2.5_over"), ("under_3_5", "over_under_total_3.5_under"),
+                                     ("btts_yes", "btts_oui"), ("home_over_0_5", "buts_equipe_domicile_0.5_over")])
+def test_noms_de_marches_lus_par_le_site(v3, site):
+    assert mp.V3_VERS_SITE[v3] == site
+
+
+@pytest.mark.parametrize("v3", ["1x2_2", "under_2_5", "away_under_1_5"])
+def test_aucun_nom_v3_brut_ne_part_vers_le_site(v3):
+    assert mp.V3_VERS_SITE[v3] != v3
+
+
+def _selection(marche="over_2_5"):
+    return {"marche": marche, "libelle": "x", "cote": 1.6, "probabilite": 0.72, "edge": 0.095, "edv": 15.2,
+            "justification": "j", "raisons_saison": ["✓ A marque", "✓ B encaisse"], "raisons_recent": ["✓ 5 / 6"]}
+
+
+def test_candidat_au_format_de_la_page_archetype():
+    c = mp.candidat_site(_selection(), "P1", 6)
+    assert c["marche"] == "over_under_total_2.5_over" and abs(c["edv"] - 0.152) < 1e-12 and c["niveau"] == "V3_NON_VALIDE"
+    j = c["justification"]
+    assert j["donnees_suffisantes"] and j["resume"] == "A marque ; B encaisse"
+    assert [p["type"] for p in j["preuves"]] == ["v3_controle_saison", "v3_forme_recente", "ev_percentage"]
+    assert c["points_de_vigilance"] == [mp.VIGILANCE_V3]
+
+
+@pytest.mark.parametrize("n_min,nb", [(3, 2), (4, 2), (5, 1)])
+def test_vigilance_petit_echantillon(n_min, nb):
+    assert len(mp.candidat_site(_selection(), "P1", n_min)["points_de_vigilance"]) == nb
+
+
+def test_signal_seul_bloc_moteur_v3_jamais_la_v2():
+    x = {"match_id": "m", "date": "2026-09-28", "heure": "19:00", "competition": "C", "domicile": "A",
+         "exterieur": "B", "statut": "EVALUE", "n_dom": 6, "n_ext": 6,
+         "selections": [_selection("over_2_5"), _selection("1x2_1")]}
+    s = mp.signal_site(x)
+    assert s["moteur_utilise"] == "moteur_v3" and "moteur_v2_6_9" not in s and "shrink_v1" not in s
+    assert set(s["moteur_v3"]["selection"]) == {"P1", "P2"} and s["moteur_v3"]["statut"] == "OK"
+    assert mp.signal_site({**x, "selections": []})["moteur_v3"]["selection"] == {}
+
+
+def test_execution_ecrit_les_signaux(tmp_path):
+    d, sortie = str(tmp_path / "archive"), str(tmp_path / "v3" / "pronostics_v3.json")
+    _ecrit(d, [_enreg("ok")])
+    mp.execution(dossier=d, fichier_sortie=sortie, maintenant=MAINTENANT)
+    with open(sortie, encoding="utf-8") as f:
+        out = json.load(f)
+    assert [s["match_id"] for s in out["signaux"]] == ["ok"] and out["signaux"][0]["moteur_utilise"] == "moteur_v3"
+
+
+def test_page_v3_copie_de_la_page_archetype():
+    racine = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    with open(os.path.join(racine, "archetype_v3.js"), encoding="utf-8") as f:
+        js = f.read()
+    with open(os.path.join(racine, "pronostics_v3.html"), encoding="utf-8") as f:
+        html = f.read()
+    assert 'const CLE_MOTEUR = "moteur_v3"' in js and "data/v3/pronostics_v3.json" in js
+    assert "precalcul_leger.json" not in js.split("fetch(")[-1]          # jamais les données V2
+    assert "archetype_v3.js" in html and "archetype.css" in html and "expérimental" in html
