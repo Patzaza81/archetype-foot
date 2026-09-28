@@ -207,3 +207,50 @@ def test_synthese_avec_les_buts_attendus_de_la_v3(lambdas, attendu):
 @pytest.mark.parametrize("lambdas", [None, (None, 1.2), (1.2, None)])
 def test_synthese_sans_buts_attendus_inconnus(lambdas):
     assert "buts attendus" not in mp.synthese(_selection(), lambdas)
+
+
+# --- AJOUT 28/09/2026 : aperçu NON calibré tant que la calibration n'est pas prête (décision de Patrick) -------------
+
+def _x(selections=(), apercu=()):
+    return {"match_id": "m", "date": "2026-09-28", "heure": "19:00", "competition": "C", "domicile": "A",
+            "exterieur": "B", "statut": "EVALUE", "n_dom": 6, "n_ext": 6, "lambda_dom": 1.5, "lambda_ext": 0.9,
+            "selections": list(selections), "apercu_non_calibre": list(apercu)}
+
+
+@pytest.mark.parametrize("apercu", [[_selection()], [_selection(), _selection("1x2_1")],
+                                    [_selection("dc_1X"), _selection("btts_yes"), _selection("home_over_0_5")]])
+def test_apercu_affiche_et_marque_non_calibre(apercu):
+    s = mp.signal_site(_x(apercu=apercu))["moteur_v3"]
+    assert s["apercu_non_calibre"] is True and len(s["selection"]) == len(apercu)
+    for c in s["selection"].values():
+        assert c["apercu_non_calibre"] is True and c["points_de_vigilance"][0] == mp.VIGILANCE_APERCU
+        assert c["justification"]["resume"].startswith("Probabilité NON calibrée")
+        assert "calibrée." not in c["justification"]["preuves"][-1]["texte"].replace("NON calibrée.", "")
+
+
+@pytest.mark.parametrize("x", [_x(selections=[_selection()], apercu=[_selection("1x2_1")]),  # vraie sélection : prioritaire
+                               _x(), _x(selections=[_selection()])])
+def test_pas_d_apercu_si_selection_ou_rien(x):
+    s = mp.signal_site(x)["moteur_v3"]
+    assert s["apercu_non_calibre"] is False
+    assert all(not c["apercu_non_calibre"] and mp.VIGILANCE_APERCU not in c["points_de_vigilance"]
+               and c["justification"]["resume"].startswith("Probabilité calibrée") for c in s["selection"].values())
+
+
+def test_apercu_seulement_sans_calibration(tmp_path):
+    d, sortie = str(tmp_path / "archive"), str(tmp_path / "v3" / "pronostics_v3.json")
+    _ecrit(d, [_enreg("ok")])
+    mp.execution(dossier=d, fichier_sortie=sortie, maintenant=MAINTENANT)
+    with open(sortie, encoding="utf-8") as f:
+        out = json.load(f)
+    assert out["calibration"]["prete"] is False and out["matchs"][0]["selections"] == []
+    assert "apercu_non_calibre" in out["matchs"][0] and "matchs_en_apercu_non_calibre" in out["bilan"]
+    for a in out["matchs"][0]["apercu_non_calibre"]:          # tous les autres contrôles restent appliqués
+        assert 1.26 <= a["cote"] <= 1.74 and a["probabilite"] >= 0.60 and a["justification"]
+
+
+def test_page_v3_affiche_l_apercu():
+    racine = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    with open(os.path.join(racine, "archetype_v3.js"), encoding="utf-8") as f:
+        js = f.read()
+    assert "apercu_non_calibre" in js and "Aperçu" in js and "Probabilité NON calibrée" in js
