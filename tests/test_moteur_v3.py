@@ -152,8 +152,10 @@ ODDS = {"1x2_1": 1.9, "1x2_X": 3.4, "1x2_2": 4.0, "dc_1X": 1.3, "over_2_5": 1.9,
 
 
 def _calibre():
-    c = IsotonicCalibrator()
-    c.fit([0.2, 0.4, 0.6, 0.8] * 20, [0, 0, 1, 1] * 20)
+    # Seuil abaissé ICI SEULEMENT (80 observations de test) : avec le défaut de 300, ce calibrateur ne serait jamais
+    # prêt et les tests « calibre » ne testeraient plus la calibration.
+    c = IsotonicCalibrator(minimum_observations=30)
+    assert c.fit([0.2, 0.4, 0.6, 0.8] * 20, [0, 0, 1, 1] * 20).ready
     return c
 
 
@@ -165,7 +167,6 @@ def test_evaluate_match_bout_en_bout_avec_cotes(odds, calibrator):
     assert all(v.market in odds for v in r["values"].values())
 
 
-@pytest.mark.parametrize("champ", ["buts_marques", "buts_encaisses"])
 def test_lambda_nul_rejete_sans_planter():
     home = rows(True, 5)
     away = rows(False, 5)
