@@ -12,6 +12,9 @@ parse_betpawa_url.py.
 import re
 
 
+RE_LIGNE_HANDICAP_3 = r"^(Home|Away) ([+-]\d+)$"
+
+
 def _lignes_non_vides(texte):
     return [l.strip() for l in texte.splitlines() if l.strip()]
 
@@ -111,6 +114,27 @@ def parse_betpawa_playwright(texte, nom_domicile, nom_exterieur):
                     i += 4
                 else:
                     break
+            continue
+
+        # AJOUT 28/09/2026 (Patrick) -- « Handicap à 3 choix | Fin de Match ». Une ligne de tableau = 6 lignes de texte :
+        # « Home -2 », cote 1, « Home -2 », cote X, « Away +2 », cote 2. Ligne = handicap du DOMICILE lu sur la 1re
+        # étiquette. Clé volontairement DIFFÉRENTE de « handicap_3choix_N » (copier-coller), que le pont V2 lit : la V2
+        # ne voit donc aucun changement, seule la V3 lit « handicap_3issues_L ».
+        if titre == "3-Way Handicap | Full Time":
+            i += 1
+            for entete in ("1", "X", "2"):
+                if i < len(lignes) and lignes[i] == entete:
+                    i += 1
+            while i + 5 < len(lignes):
+                m = re.match(RE_LIGNE_HANDICAP_3, lignes[i])
+                if not (m and m.group(1) == "Home" and all(re.match(RE_LIGNE_HANDICAP_3, lignes[i + k]) for k in (2, 4))):
+                    break
+                try:
+                    v1, vx, v2 = (float(lignes[i + k].replace(",", ".")) for k in (1, 3, 5))
+                except ValueError:
+                    break
+                cotes[f"handicap_3issues_{int(m.group(2))}"] = {"1": v1, "X": vx, "2": v2}
+                i += 6
             continue
 
         if titre == "Odd/Even | Full Time":
