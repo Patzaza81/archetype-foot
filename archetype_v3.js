@@ -18,6 +18,10 @@
 // un <details class="details-analyse"> (panier.js l'ouvre via "Voir l'analyse").
 
 // V3 : pas de rôles Favori / Value Bet / Coup de Poker -- un onglet par sélection réellement retenue par le moteur.
+// Aperçu non calibré (calibration pas encore prête) : onglet « Aperçu n » au lieu de « Sélection n ».
+function titreRang(info, c) {
+  return c && c.apercu_non_calibre ? info.titre.replace("Sélection", "Aperçu") : info.titre;
+}
 const RANGS = [
   { cle: "P1", classe: "rang-1", titre: "Sélection 1" },
   { cle: "P2", classe: "rang-2", titre: "Sélection 2" },
@@ -136,7 +140,7 @@ function construitResume(selection, equipes) {
     const texte = c.justification && c.justification.resume ? c.justification.resume : "";
     return `<div class="ax-resume-rang ax-${info.classe}" data-cle="${info.cle}">` +
       `<div class="ax-resume-corps">` +
-      `<div class="ax-resume-tete"><span class="ax-resume-etiquette">${echappeHtml(info.titre)}</span>` +
+      `<div class="ax-resume-tete"><span class="ax-resume-etiquette">${echappeHtml(titreRang(info, c))}</span>` +
       `<span class="ax-resume-cote">Cote <strong>${formatCote(c.cote)}</strong></span></div>` +
       `<h3 class="ax-resume-marche">${echappeHtml(traduitMarche(c.marche, equipes))}</h3>` +
       (texte ? `<p class="ax-resume-texte">${echappeHtml(texte)}</p>` : "") + `</div>` +
@@ -170,13 +174,13 @@ function construitPanneau(info, c, equipes, idPanneau, idOnglet) {
           `<span class="ax-preuve-texte">${echappeHtml(h2h ? h2h.texte : "Non disponible")}</span></div></div>` +
       `</div>` +
       `<div class="ax-proba">${construitJauge(c.probabilite, "")}` +
-        `<span class="ax-proba-legende">Probabilité calibrée</span>` +
+        `<span class="ax-proba-legende">${c.apercu_non_calibre ? "Probabilité NON calibrée" : "Probabilité calibrée"}</span>` +
         `${construitEtoiles(niveau.etoiles)}<span class="ax-solidite"><span class="ax-solidite-titre">Données :</span> ${echappeHtml(niveau.texte)}</span></div>` +
     `</div>` +
     `<ul class="ax-metriques">` +
       `<li title="Écart entre la probabilité calculée par le modèle et celle qui serait 'normale' vu la cote proposée."><span class="ax-icone">${ICONES.avantage}</span><strong>${formatPctSigne(c.edge)}</strong><span>Avantage potentiel</span></li>` +
       `<li title="Ce que rapporterait ce pari en moyenne si on le rejouait de nombreuses fois, selon le modèle."><span class="ax-icone">${ICONES.gain}</span><strong>${formatPctSigne(c.edv)}</strong><span>Gain potentiel</span></li>` +
-      `<li title="Moteur V3 expérimental."><span class="ax-icone">${ICONES.forme}</span><strong>V3</strong><span>Non validé</span></li>` +
+      `<li title="Moteur V3 expérimental."><span class="ax-icone">${ICONES.forme}</span><strong>V3</strong><span>${c.apercu_non_calibre ? "Aperçu" : "Non validé"}</span></li>` +
     `</ul>`;
   return el;
 }
@@ -237,7 +241,7 @@ function construitFiabilite(c) {
 function construitAnalyse(info, c, equipes) {
   const j = c.justification || {};
   const b = j.bibliotheque && typeof j.bibliotheque === "object" ? j.bibliotheque : {};
-  const tete = `<h3>${echappeHtml(info.titre)} — ${echappeHtml(traduitMarche(c.marche, equipes))}</h3>`;
+  const tete = `<h3>${echappeHtml(titreRang(info, c))} — ${echappeHtml(traduitMarche(c.marche, equipes))}</h3>`;
   const ouvre = `<div class="ax-detail-rang ax-${info.classe}" data-cle="${info.cle}" hidden>`;
   if (!j.donnees_suffisantes) {
     return ouvre + tete + `<div class="ax-analyse-vide"><strong>Analyse non disponible</strong>` +
@@ -301,7 +305,7 @@ function construitCarte(m, options) {
       onglets.appendChild(bouton); return;
     }
     bouton.setAttribute("aria-controls", idPanneau);
-    bouton.innerHTML = `<span>${echappeHtml(info.titre)}</span>`;
+    bouton.innerHTML = `<span>${echappeHtml(titreRang(info, c))}</span>`;
     const panneau = construitPanneau(info, c, equipes, idPanneau, idOnglet);
     onglets.appendChild(bouton); actifs.push({ bouton, panneau });
   });
@@ -408,8 +412,12 @@ function afficheSelections(matchs) {
   racine.innerHTML = "";
   const cleTri = (m) => `${m.date || ""}${m.heure_cameroun || m.heure || ""}`;
   const retenus = regroupeMatchs(matchs).filter(aAuMoinsUnCandidat).sort((a, b) => cleTri(a).localeCompare(cleTri(b)));
+  const enApercu = retenus.filter((m) => m[CLE_MOTEUR] && m[CLE_MOTEUR].apercu_non_calibre).length;
+  const selectionnes = retenus.length - enApercu;
   maj.textContent = retenus.length
-    ? `${retenus.length} match${retenus.length > 1 ? "s" : ""} avec au moins une sélection V3` // V3 : J0 à J+3
+    ? [selectionnes ? `${selectionnes} match${selectionnes > 1 ? "s" : ""} avec au moins une sélection V3` : "",
+       enApercu ? `${enApercu} match${enApercu > 1 ? "s" : ""} en aperçu NON calibré (calibration ${Number(CALIBRATION_V3 && CALIBRATION_V3.observations) || 0} / ${Number(CALIBRATION_V3 && CALIBRATION_V3.minimum_observations) || 300})` : ""]
+      .filter(Boolean).join(" · ")
     : "Aucune sélection pour le moment";
   if (!retenus.length) {
     racine.innerHTML = `<div class="ax-etat-vide"><strong>Aucune sélection pour le moment</strong>` +

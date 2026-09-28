@@ -1,0 +1,262 @@
+{
+ "moteur": "moteur_v3",
+ "statut": "EXPÉRIMENTAL — NON VALIDÉ",
+ "genere_le": "2026-09-28T03:29:46Z",
+ "calibration": {
+  "prete": false,
+  "observations": 0,
+  "matchs": 0,
+  "minimum_observations": 300,
+  "raison": "ECHANTILLON_INSUFFISANT"
+ },
+ "bilan": {
+  "matchs": 24,
+  "statuts": {
+   "EVALUE": 23,
+   "NON_EVALUE": 1
+  },
+  "selections": 0,
+  "matchs_avec_selection": 0,
+  "matchs_en_apercu_non_calibre": 4,
+  "raisons_de_rejet": {
+   "CALIBRATION_ABSENTE": 585,
+   "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT": 570,
+   "JUSTIFICATION_INSUFFISANTE": 570,
+   "VALUE_NON_ELIGIBLE": 570,
+   "COTE_HORS_FENETRE": 467,
+   "PROBABILITE_INF_60": 417,
+   "N_3_4_CONTROLE_STRICT_NON_SATISFAIT": 296,
+   "EDV_INSUFFISANTE": 136,
+   "SURDISPERSION_1_20_1_50_ET_P_INF_67": 120,
+   "N_LIEU_INF_3": 27,
+   "SURDISPERSION_SUP_1_50": 25
+  }
+ },
+ "signaux": [
+  {
+   "match_id": "9fz0b10b25bs80xbt4x2m7uvo",
+   "date": "2026-09-28",
+   "heure_cameroun": "18:00",
+   "competition": "Slovénie : 2. SNL",
+   "domicile": "NK Rudar Velenje",
+   "exterieur": "Dravinja",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": true,
+    "selection": {
+     "P1": {
+      "marche": "1x2_domicile",
+      "marche_moteur": "1x2_1",
+      "probabilite": 0.8154,
+      "cote": 1.54,
+      "edge": 0.16604834247091516,
+      "edv": 0.256,
+      "niveau": "V3_ECHANTILLON_FAIBLE",
+      "robustesse": null,
+      "points_de_vigilance": [
+       "Aperçu NON calibré : la calibration n'a pas encore assez de matchs joués. Ce n'est pas une sélection du moteur, seulement ce qu'il retiendrait si la calibration confirmait ses probabilités.",
+       "Moteur V3 expérimental : pas encore validé sur 100 matchs réels.",
+       "Moins de 5 matchs au même lieu pour une des deux équipes."
+      ],
+      "rang": "P1",
+      "apercu_non_calibre": true,
+      "justification": {
+       "resume": "Probabilité NON calibrée 82 % contre 65 % selon la cote ; double contrôle passé (saison et forme récente) ; buts attendus par la V3 : 2,74 – 0,63.",
+       "preuves": [
+        {
+         "type": "v3_controle_saison",
+         "texte": "NK Rudar Velenje gagne 100% de ses matchs à ce lieu (3) ; NK Rudar Velenje prend 1.71 pt/match sur la saison ; NK Rudar Velenje marque 3.0 but/match à ce lieu ; Dravinja gagne 0% à son lieu (4) ; Dravinja encaisse 2.2 but/match à son lieu"
+        },
+        {
+         "type": "v3_forme_recente",
+         "texte": "NK Rudar Velenje sur ses 6 derniers : 4 victoires, 2 défaites ; Dravinja sur ses 6 derniers : 1 victoires"
+        },
+        {
+         "type": "ev_percentage",
+         "valeur": 25.6,
+         "texte": "Le prix proposé laisse 25.6% de marge par rapport à l'estimation NON calibrée."
+        }
+       ],
+       "donnees_suffisantes": true,
+       "bibliotheque": {
+        "ev_percentage": 25.6
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "match_id": "7z20m5fazesz46fd48v9h1xqs",
+   "date": "2026-09-29",
+   "heure_cameroun": "19:45",
+   "competition": "Angleterre : Ligue Nationale",
+   "domicile": "Fylde",
+   "exterieur": "Carlisle",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": true,
+    "selection": {
+     "P1": {
+      "marche": "double_chance_1X",
+      "marche_moteur": "dc_1X",
+      "probabilite": 0.7185,
+      "cote": 1.6,
+      "edge": 0.09349478559928692,
+      "edv": 0.15,
+      "niveau": "V3_ECHANTILLON_FAIBLE",
+      "robustesse": null,
+      "points_de_vigilance": [
+       "Aperçu NON calibré : la calibration n'a pas encore assez de matchs joués. Ce n'est pas une sélection du moteur, seulement ce qu'il retiendrait si la calibration confirmait ses probabilités.",
+       "Moteur V3 expérimental : pas encore validé sur 100 matchs réels.",
+       "Moins de 5 matchs au même lieu pour une des deux équipes."
+      ],
+      "rang": "P1",
+      "apercu_non_calibre": true,
+      "justification": {
+       "resume": "Probabilité NON calibrée 72 % contre 62 % selon la cote ; double contrôle passé (saison et forme récente) ; buts attendus par la V3 : 1,49 – 1,11.",
+       "preuves": [
+        {
+         "type": "v3_controle_saison",
+         "texte": "Fylde invaincu 75% à ce lieu (4) ; Fylde prend 2.00 pt/match sur la saison ; Carlisle gagne 0% à son lieu ; Fylde marque 1.8 contre 0.8 pour Carlisle, chacun à son lieu"
+        },
+        {
+         "type": "v3_forme_recente",
+         "texte": "Fylde invaincu 5 fois sur ses 6 derniers ; Carlisle : 1 victoires sur ses 6 derniers"
+        },
+        {
+         "type": "ev_percentage",
+         "valeur": 15.0,
+         "texte": "Le prix proposé laisse 15.0% de marge par rapport à l'estimation NON calibrée."
+        }
+       ],
+       "donnees_suffisantes": true,
+       "bibliotheque": {
+        "ev_percentage": 15.0
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "match_id": "810sdl4oylhl44hjetpzce1as",
+   "date": "2026-09-29",
+   "heure_cameroun": "19:45",
+   "competition": "Angleterre : Ligue Nationale",
+   "domicile": "Hornchurch",
+   "exterieur": "Aldershot",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": true,
+    "selection": {
+     "P1": {
+      "marche": "over_under_total_3.5_under",
+      "marche_moteur": "under_3_5",
+      "probabilite": 0.9082,
+      "cote": 1.39,
+      "edge": 0.18879681973682672,
+      "edv": 0.262,
+      "niveau": "V3_ECHANTILLON_FAIBLE",
+      "robustesse": null,
+      "points_de_vigilance": [
+       "Aperçu NON calibré : la calibration n'a pas encore assez de matchs joués. Ce n'est pas une sélection du moteur, seulement ce qu'il retiendrait si la calibration confirmait ses probabilités.",
+       "Moteur V3 expérimental : pas encore validé sur 100 matchs réels.",
+       "Moins de 5 matchs au même lieu pour une des deux équipes."
+      ],
+      "rang": "P1",
+      "apercu_non_calibre": true,
+      "justification": {
+       "resume": "Probabilité NON calibrée 91 % contre 72 % selon la cote ; double contrôle passé (saison et forme récente) ; buts attendus par la V3 : 1,01 – 0,69.",
+       "preuves": [
+        {
+         "type": "v3_controle_saison",
+         "texte": "-3,5 chacun à son lieu : 100% / 100% ; buts attendus 1.65"
+        },
+        {
+         "type": "v3_forme_recente",
+         "texte": "sous la ligne sur les 6 derniers : 5 (Hornchurch) / 5 (Aldershot)"
+        },
+        {
+         "type": "ev_percentage",
+         "valeur": 26.2,
+         "texte": "Le prix proposé laisse 26.2% de marge par rapport à l'estimation NON calibrée."
+        }
+       ],
+       "donnees_suffisantes": true,
+       "bibliotheque": {
+        "ev_percentage": 26.2
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "match_id": "81ogjeojnzp73z644r68ki6ms",
+   "date": "2026-09-29",
+   "heure_cameroun": "19:45",
+   "competition": "Angleterre : Ligue Nationale",
+   "domicile": "Yeovil Town",
+   "exterieur": "Worthing",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": true,
+    "selection": {
+     "P1": {
+      "marche": "over_under_total_2.5_over",
+      "marche_moteur": "over_2_5",
+      "probabilite": 0.8289,
+      "cote": 1.44,
+      "edge": 0.13441556879115157,
+      "edv": 0.19399999999999998,
+      "niveau": "V3_ECHANTILLON_FAIBLE",
+      "robustesse": null,
+      "points_de_vigilance": [
+       "Aperçu NON calibré : la calibration n'a pas encore assez de matchs joués. Ce n'est pas une sélection du moteur, seulement ce qu'il retiendrait si la calibration confirmait ses probabilités.",
+       "Moteur V3 expérimental : pas encore validé sur 100 matchs réels.",
+       "Moins de 5 matchs au même lieu pour une des deux équipes."
+      ],
+      "rang": "P1",
+      "apercu_non_calibre": true,
+      "justification": {
+       "resume": "Probabilité NON calibrée 83 % contre 69 % selon la cote ; double contrôle passé (saison et forme récente) ; buts attendus par la V3 : 2,40 – 2,12.",
+       "preuves": [
+        {
+         "type": "v3_controle_saison",
+         "texte": "Yeovil Town à domicile : 80% de matchs à +2,5 ; Worthing à l'extérieur : 100% de matchs à +2,5 ; saison complète +2,5 : 60% / 80% ; buts attendus 4.25"
+        },
+        {
+         "type": "v3_forme_recente",
+         "texte": "au-dessus de la ligne sur les 6 derniers : 4 (Yeovil Town) / 5 (Worthing)"
+        },
+        {
+         "type": "ev_percentage",
+         "valeur": 19.4,
+         "texte": "Le prix proposé laisse 19.4% de marge par rapport à l'estimation NON calibrée."
+        }
+       ],
+       "donnees_suffisantes": true,
+       "bibliotheque": {
+        "ev_percentage": 19.4
+       }
+      }
+     }
+    }
+   }
+  }
+ ],
+ "note": "Fichier initial réduit (signaux avec aperçu seulement) ; le prochain run du pipeline le réécrit en entier."
+}
