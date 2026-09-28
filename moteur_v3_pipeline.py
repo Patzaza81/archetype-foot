@@ -43,7 +43,7 @@ from collections import Counter
 import banc_historique as bh
 import regles_selection as rs
 from moteur_v3 import evaluate_match
-from moteur_v3.calibration import IsotonicCalibrator
+from moteur_v3.calibration import CalibrationFit, IsotonicCalibrator
 from moteur_v3.decision import decide
 from moteur_v3.markets import derive_markets
 from moteur_v3.model import build_model
@@ -58,6 +58,10 @@ STATUT = "EXPÉRIMENTAL — NON VALIDÉ"
 # data/v3/journal/AAAA-MM-JJ.json. Après le coup d'envoi, l'entrée n'est plus jamais modifiée (execution() ne traite
 # que les matchs à venir). Le score se lit dans l'archive de test, par match_id.
 DOSSIER_JOURNAL = os.path.join("data", "v3", "journal")
+# AJOUT 28/09/2026 (décision de Patrick : « calibration à partir de 50 matchs minimum, 15 trop petit »). Les 300
+# observations du calibrateur sont des PARIS : un match coté en apporte ~25, tous liés au même score. 300 observations
+# pouvaient donc venir de 12 matchs seulement. La calibration exige désormais AUSSI 50 matchs joués distincts.
+MIN_MATCHS_CALIBRATION = 50
 FICHIERS_CODE_V3 = ("moteur_v3/*.py", "moteur_v3_pipeline.py", "regles_selection.py", "banc_historique.py")
 
 # Noms du banc (cotes de l'archive) -> noms du moteur V3. Les compléments de cage inviolée (« _non ») n'ont pas
@@ -191,6 +195,8 @@ def entraine_calibration(enregs, avant_le):
         matchs += vu
     cal = IsotonicCalibrator()
     cal.fit(ps, ys)
+    if cal.fit_result.ready and matchs < MIN_MATCHS_CALIBRATION:
+        cal.fit_result = CalibrationFit(False, cal.fit_result.observations, "MATCHS_INSUFFISANTS", ())
     return cal, matchs
 
 
@@ -391,7 +397,8 @@ def execution(dossier=DOSSIER_ARCHIVE, fichier_sortie=FICHIER_SORTIE, maintenant
         "moteur": "moteur_v3", "statut": STATUT, "genere_le": maintenant.strftime("%Y-%m-%dT%H:%M:%SZ"),
         "empreinte_code_v3": empreinte, "commit": commit,
         "calibration": {"prete": fit.ready, "observations": fit.observations, "matchs": matchs_calib,
-                        "minimum_observations": calibrateur.minimum_observations, "raison": fit.reason},
+                        "minimum_observations": calibrateur.minimum_observations,
+                        "minimum_matchs": MIN_MATCHS_CALIBRATION, "raison": fit.reason},
         "bilan": {"matchs": len(matchs), "statuts": dict(statuts),
                   "selections": sum(len(x["selections"]) for x in matchs),
                   "matchs_avec_selection": sum(1 for x in matchs if x["selections"]),
