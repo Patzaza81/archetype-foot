@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from .risk import assess
+
 
 ODDS_MIN = 1.26
 ODDS_MAX = 1.74
@@ -65,10 +67,8 @@ def evaluate(market: str, probability: float, odds: float, *,
         reasons.append("EDV_INSUFFISANTE")
 
     if dispersion is not None:
-        if dispersion > 8.0:
-            reasons.append("DISPERSION_SUP_8")
-        elif dispersion > 5.0 and p < 0.67:
-            reasons.append("DISPERSION_5_8_ET_P_INF_67")
+        risk = assess(dispersion, p)
+        reasons.extend(risk.reasons)
 
     # Une probabilité exactement 0/1 issue d'une distribution dégénérée n'est
     # jamais une preuve de certitude; elle est traitée comme un défaut du
