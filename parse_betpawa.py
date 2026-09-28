@@ -90,29 +90,28 @@ def parse_betpawa(texte, nom_domicile, nom_exterieur):
             # En-têtes Betpawa : 1 / X / 2.
             while i < len(lignes) and lignes[i] in {"1", "X", "2"}:
                 i += 1
-            # Chaque ligne est : Domicile -N / Nul -N / Extérieur +N, puis 3 cotes.
+            # Une ligne de tableau = 3 étiquettes + 3 cotes (issues 1, X, 2). La ligne est lue sur la 1re étiquette
+            # « Domicile ±N » (handicap du domicile, signe conservé). Les 2e et 3e étiquettes varient selon l'affichage
+            # (« Nul -2 » ou « Domicile -2 », « Extérieur +2 » ou « Extérieur -1 ») : seule leur forme est contrôlée.
+            # CORRECTIF 28/09/2026 : l'ancienne lecture (« Domicile -N / Nul -N / Extérieur +N » seulement) s'arrêtait
+            # à la première ligne « Domicile +1 » : les lignes +1 et +2 n'étaient jamais lues.
             while i + 5 < len(lignes):
                 labels = lignes[i], lignes[i + 2], lignes[i + 4]
-                if not (
-                    re.match(r"^Domicile\s+-\d+$", labels[0], re.I)
-                    and re.match(r"^Nul\s+-\d+$", labels[1], re.I)
-                    and re.match(r"^Extérieur\s+\+\d+$", labels[2], re.I)
-                ):
+                m1 = re.match(r"^Domicile\s+([+-]\d+)$", labels[0], re.I)
+                if not (m1 and all(re.match(r"^(Domicile|Nul|Extérieur)\s+[+-]\d+$", x, re.I) for x in labels[1:])):
                     break
                 try:
-                    # Conserver le signe : la ligne est le handicap réellement
-                    # appliqué au domicile (Domicile -2, Domicile +1, etc.).
-                    ligne = float(re.search(r"[+-]\d+$", labels[0]).group())
-                    if ligne not in (-2, -1, 1, 2):
-                        i += 6
-                        continue
-                    cotes[f"handicap_3issues_{int(ligne)}"] = {
-                        "1": float(lignes[i + 1].replace(",", ".")),
-                        "X": float(lignes[i + 3].replace(",", ".")),
-                        "2": float(lignes[i + 5].replace(",", ".")),
-                    }
-                except (ValueError, AttributeError):
+                    v1, vx, v2 = (float(lignes[i + k].replace(",", ".")) for k in (1, 3, 5))
+                except ValueError:
                     break
+                ligne = int(m1.group(1))
+                if ligne in (-2, -1, 1, 2):
+                    cotes[f"handicap_3issues_{ligne}"] = {"1": v1, "X": vx, "2": v2}
+                # V2 INCHANGÉE : le pont V2 (pont_moteur.py) lit « handicap_3choix_N ». On la produit exactement dans
+                # le seul cas où l'ancienne lecture la produisait (Domicile -N / Nul -N / Extérieur +N).
+                if (re.match(r"^Domicile\s+-\d+$", labels[0], re.I) and re.match(r"^Nul\s+-\d+$", labels[1], re.I)
+                        and re.match(r"^Extérieur\s+\+\d+$", labels[2], re.I)):
+                    cotes[f"handicap_3choix_{-ligne}"] = {"domicile": v1, "nul": vx, "exterieur": v2}
                 i += 6
             continue
 

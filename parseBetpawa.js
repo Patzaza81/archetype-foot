@@ -87,14 +87,19 @@ function parseBetpawa(texte, nomDomicile, nomExterieur) {
     if (titre === "Handicap À 3 Choix | Fin de Match") {
       i += 1;
       while (i < lignes.length && ["1", "X", "2"].includes(lignes[i])) i += 1;
+      // CORRECTIF 28/09/2026 : même lecture que parse_betpawa.py (lignes -2, -1, +1, +2 ; clé V2 inchangée).
       while (i + 5 < lignes.length) {
         const l1 = lignes[i], l2 = lignes[i + 2], l3 = lignes[i + 4];
-        if (!/^Domicile\s+-\d+$/i.test(l1) || !/^Nul\s+-\d+$/i.test(l2) || !/^Extérieur\s+\+\d+$/i.test(l3)) break;
-        const ligne = Number(l1.match(/[+-]\d+$/)[0]);
-        if (![ -2, -1, 1, 2 ].includes(ligne)) { i += 6; continue; }
+        const m1 = l1.match(/^Domicile\s+([+-]\d+)$/i);
+        const forme = /^(Domicile|Nul|Extérieur)\s+[+-]\d+$/i;
+        if (!m1 || !forme.test(l2) || !forme.test(l3)) break;
         const vd = versNombre(lignes[i + 1]), vn = versNombre(lignes[i + 3]), ve = versNombre(lignes[i + 5]);
         if (vd === null || vn === null || ve === null) break;
-        cotes[`handicap_3issues_${ligne}`] = { "1": vd, "X": vn, "2": ve };
+        const ligne = Number(m1[1]);
+        if ([-2, -1, 1, 2].includes(ligne)) cotes[`handicap_3issues_${ligne}`] = { "1": vd, "X": vn, "2": ve };
+        if (/^Domicile\s+-\d+$/i.test(l1) && /^Nul\s+-\d+$/i.test(l2) && /^Extérieur\s+\+\d+$/i.test(l3)) {
+          cotes[`handicap_3choix_${-ligne}`] = { domicile: vd, nul: vn, exterieur: ve };
+        }
         i += 6;
       }
       continue;
