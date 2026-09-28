@@ -43,6 +43,7 @@ import banc_historique as bh
 import regles_selection as rs
 from moteur_v3 import evaluate_match
 from moteur_v3.calibration import IsotonicCalibrator
+from moteur_v3.decision import decide
 from moteur_v3.markets import derive_markets
 from moteur_v3.model import build_model
 
@@ -218,15 +219,25 @@ def evalue_enregistrement(enreg, calibrateur):
                           "probabilite_brute": v.probability_raw, "probabilite": c["probability"],
                           "calibree": c["calibrated"], "edv": round(c["edv"], 1),
                           "raisons": sorted(set(v.reasons) | set(rejets.get(c["market"], ())))})
-    selections = [{"marche": s.market, "libelle": libelle(s.market), "cote": s.odds,
-                   "probabilite": round(s.probability, 4), "edge": s.edge, "edv": round(s.edv, 1),
-                   "justification": s.reason,
-                   "raisons_saison": evidence.get(s.market, {}).get("raisons_saison", []),
-                   "raisons_recent": evidence.get(s.market, {}).get("raisons_recent", [])}
-                  for s in r["selected"]]
+    def _format(liste):
+        return [{"marche": s.market, "libelle": libelle(s.market), "cote": s.odds,
+                 "probabilite": round(s.probability, 4), "edge": s.edge, "edv": round(s.edv, 1),
+                 "justification": s.reason,
+                 "raisons_saison": evidence.get(s.market, {}).get("raisons_saison", []),
+                 "raisons_recent": evidence.get(s.market, {}).get("raisons_recent", [])}
+                for s in liste]
+    selections = _format(r["selected"])
+    # APERÇU NON CALIBRÉ (décision de Patrick du 28/09 : voir les matchs pendant l'expérimentation). Tant que la
+    # calibration n'est pas prête, on rejoue la décision V3 en ignorant SEULEMENT le verrou « calibration absente » :
+    # tous les autres contrôles (value, double contrôle, justification, échantillon, dispersion, exposition) restent.
+    # Ce ne sont PAS des sélections : la page les affiche comme « aperçu non calibré ».
+    apercu = []
+    if not selections and (calibrateur is None or not calibrateur.fit_result.ready):
+        apercu = _format(decide([{**c, "calibrated": True} for c in r["candidates"]])[0])
     return {**base, "statut": "EVALUE", "lambda_dom": round(m.lambda_home, 3), "lambda_ext": round(m.lambda_away, 3),
             "n_dom": m.home_sample.current_n, "n_ext": m.away_sample.current_n,
-            "selections": selections, "candidats": candidats[:5], "tous_les_candidats": candidats}
+            "selections": selections, "apercu_non_calibre": apercu, "candidats": candidats[:5],
+            "tous_les_candidats": candidats}
 
 
 # Noms de marchés V3 -> noms lus par traduction_marches.js (ceux de la page « Sélections Archetype »).
@@ -261,18 +272,22 @@ def _pct_fr(x):
     return f"{100 * x:.0f} %"
 
 
-def synthese(sel, lambdas=None):
+def synthese(sel, lambdas=None, apercu=False):
     """Résumé propre à la V3 (jamais une copie d'une preuve) : probabilité calibrée contre celle de la cote, double
     contrôle, et buts attendus du modèle V3 lui-même (différents des « buts attendus » simples de la règle du double
     contrôle, qui n'est qu'un filtre)."""
-    texte = (f"Probabilité calibrée {_pct_fr(sel['probabilite'])} contre {_pct_fr(1 / sel['cote'])} selon la cote ; "
+    texte = (f"Probabilité {'NON calibrée' if apercu else 'calibrée'} {_pct_fr(sel['probabilite'])} contre {_pct_fr(1 / sel['cote'])} selon la cote ; "
              f"double contrôle passé (saison et forme récente)")
     if lambdas and None not in lambdas:
         texte += f" ; buts attendus par la V3 : {lambdas[0]:.2f} – {lambdas[1]:.2f}".replace(".", ",")
     return texte + "."
 
 
-def candidat_site(sel, rang, n_min, lambdas=None):
+VIGILANCE_APERCU = ("Aperçu NON calibré : la calibration n'a pas encore assez de matchs joués. Ce n'est pas une "
+                    "sélection du moteur, seulement ce qu'il retiendrait si la calibration confirmait ses probabilités.")
+
+
+def candidat_site(sel, rang, n_min, lambdas=None, apercu=False):
     """Une sélection V3 au format d'un candidat de la page « Sélections Archetype » (moteur_v2_6_9.selection.Px)."""
     preuves = []
     if sel["raisons_saison"]:
@@ -280,12 +295,15 @@ def candidat_site(sel, rang, n_min, lambdas=None):
     if sel["raisons_recent"]:
         preuves.append({"type": "v3_forme_recente", "texte": " ; ".join(r.lstrip("✓ ") for r in sel["raisons_recent"])})
     preuves.append({"type": "ev_percentage", "valeur": sel["edv"],
-                    "texte": f"Le prix proposé laisse {sel['edv']:.1f}% de marge par rapport à l'estimation calibrée."})
-    vigilance = [VIGILANCE_V3] + (["Moins de 5 matchs au même lieu pour une des deux équipes."] if n_min < 5 else [])
+                    "texte": f"Le prix proposé laisse {sel['edv']:.1f}% de marge par rapport à l'estimation "
+                             f"{'NON calibrée' if apercu else 'calibrée'}."})
+    vigilance = ([VIGILANCE_APERCU] if apercu else []) + [VIGILANCE_V3] + (
+        ["Moins de 5 matchs au même lieu pour une des deux équipes."] if n_min < 5 else [])
     return {"marche": V3_VERS_SITE.get(sel["marche"], sel["marche"]), "marche_moteur": sel["marche"],
             "probabilite": sel["probabilite"], "cote": sel["cote"], "edge": sel["edge"], "edv": sel["edv"] / 100.0,
             "niveau": niveau_echantillon(n_min), "robustesse": None, "points_de_vigilance": vigilance, "rang": rang,
-            "justification": {"resume": synthese(sel, lambdas), "preuves": preuves,
+            "apercu_non_calibre": apercu,
+            "justification": {"resume": synthese(sel, lambdas, apercu), "preuves": preuves,
                               "donnees_suffisantes": True, "bibliotheque": {"ev_percentage": sel["edv"]}}}
 
 
@@ -294,11 +312,13 @@ def signal_site(x):
     n_min = min(x.get("n_dom") or 0, x.get("n_ext") or 0)
     rangs = ("P1", "P2", "P3")
     lambdas = (x.get("lambda_dom"), x.get("lambda_ext"))
-    selection = {rang: candidat_site(s, rang, n_min, lambdas) for rang, s in zip(rangs, x["selections"])}
+    apercu = not x["selections"] and bool(x.get("apercu_non_calibre"))
+    source = x["selections"] or x.get("apercu_non_calibre") or []
+    selection = {rang: candidat_site(s, rang, n_min, lambdas, apercu) for rang, s in zip(rangs, source)}
     return {"match_id": x["match_id"], "date": x["date"], "heure_cameroun": x["heure"], "competition": x["competition"],
             "domicile": x["domicile"], "exterieur": x["exterieur"], "moteur_utilise": "moteur_v3",
             "moteur_v3": {"statut": "OK" if x["statut"] == "EVALUE" else x["statut"], "moteur": "moteur_v3",
-                          "statut_global": STATUT, "selection": selection}}
+                          "statut_global": STATUT, "apercu_non_calibre": apercu, "selection": selection}}
 
 
 def execution(dossier=DOSSIER_ARCHIVE, fichier_sortie=FICHIER_SORTIE, maintenant=None):
@@ -319,6 +339,7 @@ def execution(dossier=DOSSIER_ARCHIVE, fichier_sortie=FICHIER_SORTIE, maintenant
         "bilan": {"matchs": len(matchs), "statuts": dict(statuts),
                   "selections": sum(len(x["selections"]) for x in matchs),
                   "matchs_avec_selection": sum(1 for x in matchs if x["selections"]),
+                  "matchs_en_apercu_non_calibre": sum(1 for x in matchs if x.get("apercu_non_calibre")),
                   "raisons_de_rejet": dict(raisons.most_common())},
         "matchs": matchs,
         "signaux": [signal_site(x) for x in matchs],
