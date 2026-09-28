@@ -40,16 +40,15 @@ def test_previous_season_is_contextual_and_not_a_league_prior():
     assert m.diagnostics["h2h_used"] is False
 
 
-def test_zero_lambda_does_not_get_an_arbitrary_floor():
+def test_zero_donnees_ne_produisent_pas_une_certitude_artificielle():
     home = rows(True, 5)
     away = rows(False, 5)
     for r in home:
         r["buts_marques"] = 0
-        r["xg"] = 0.0
-        r["xg_concede"] = 1.0
     m = build_model(home, away)
-    assert m.lambda_home == 0.0
-    assert m.degenerate_home is True
+    assert m.lambda_home > 0
+    assert m.degenerate_home is False
+
 
 
 def test_exact_total_goals_is_exhaustive():
@@ -167,11 +166,14 @@ def test_evaluate_match_bout_en_bout_avec_cotes(odds, calibrator):
 
 
 @pytest.mark.parametrize("champ", ["buts_marques", "buts_encaisses"])
-def test_lambda_nul_rejete_sans_planter(champ):
+def test_lambda_nul_rejete_sans_planter():
     home = rows(True, 5)
+    away = rows(False, 5)
     for x in home:
-        x[champ] = 0
-    r = evaluate_match({"home_matches": home, "away_matches": rows(False, 5), "odds": ODDS})
+        x["buts_marques"] = 0
+    for x in away:
+        x["buts_encaisses"] = 0
+    r = evaluate_match({"home_matches": home, "away_matches": away, "odds": ODDS})
     assert not r["selected"]
     assert any("PROBABILITE_DEGENEREE" in v.reasons for v in r["values"].values())
 
