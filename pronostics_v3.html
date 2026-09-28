@@ -6,95 +6,23 @@
 <meta name="theme-color" content="#F6EFE2">
 <title>ARCHETYPE — Moteur V3 (expérimental)</title>
 <link rel="stylesheet" href="archetype.css?v=20260921e">
-<style>
-  .v3-alerte{margin:0 0 14px;padding:12px 14px;border-radius:14px;background:#FFF1D6;border:1px solid #E3B04B;font-size:14px;line-height:1.4}
-  .v3-bilan{margin:0 0 14px;padding:14px;border-radius:16px;background:#FFFBF3;border:1px solid #E6DCC8;font-size:14px;line-height:1.45}
-  .v3-bilan h2{margin:0 0 8px;font-size:16px}
-  .v3-bilan ul{margin:6px 0 0;padding-left:18px}
-  .v3-carte{padding:14px 16px;border-radius:18px;background:#FFFBF3;border:1px solid #E6DCC8}
-  .v3-equipes{font-size:16px;font-weight:800;margin:0 0 2px}
-  .v3-meta{font-size:12.5px;color:#5D6478;margin:0 0 10px}
-  .v3-sel{padding:10px 12px;border-radius:12px;background:#E6F4EA;border:1px solid #9CCFAA;margin:0 0 8px;font-size:14px}
-  .v3-cand{padding:8px 0;border-top:1px dashed #E6DCC8;font-size:13.5px}
-  .v3-cand:first-of-type{border-top:0}
-  .v3-raisons{color:#8A4B2A;font-size:12.5px;margin-top:2px}
-  .v3-vide{font-size:14px;color:#5D6478;margin:0 0 6px}
-  .theme-nuit .v3-alerte{background:#3A2E14;border-color:#8A6A22}
-  .theme-nuit .v3-bilan,.theme-nuit .v3-carte{background:#1A1E29;border-color:#2E3342}
-  .theme-nuit .v3-meta,.theme-nuit .v3-vide{color:#A9AEC2}
-  .theme-nuit .v3-sel{background:#15301F;border-color:#2F6B43}
-  .theme-nuit .v3-raisons{color:#E0A07A}
-</style>
 </head>
 <body class="ax-page">
 <script>try{if(localStorage.getItem("archetype_theme_nuit")==="1")document.body.classList.add("theme-nuit")}catch(e){}</script>
 <div class="ax-conteneur">
   <div class="ax-barre">
     <a class="ax-lien-accueil" href="index.html"><span aria-hidden="true">←</span> Accueil</a>
+    <button id="ax-bouton-theme" class="ax-bouton-theme" type="button" aria-label="Activer le mode nuit">☾</button>
   </div>
   <div class="ax-entete">
     <h1>ARCHETYPE</h1>
-    <p class="ax-bandeau">Moteur V3 — en parallèle du moteur principal</p>
+    <p class="ax-bandeau">Moteur V3 expérimental — non validé, séparé du moteur principal</p>
   </div>
-  <p class="v3-alerte"><strong>Expérimental, non validé.</strong> La V3 ne remplace pas les sélections du site. Elle ne sera
-    validée qu'après 100 matchs nouveaux avec score, jugés contre le marché.</p>
   <p id="maj" class="ax-maj" role="status" aria-live="polite">Chargement…</p>
-  <section id="bilan" class="v3-bilan" hidden></section>
-  <main id="matchs" class="ax-liste-matchs"></main>
+  <main id="matches" class="ax-liste-matchs"></main>
 </div>
-<script>
-const RAISONS = {
-  CALIBRATION_ABSENTE: "pas encore de calibration (pas assez de matchs joués dans l'archive)",
-  DISPERSION_SUP_8: "résultats de l'équipe trop irréguliers (seuil de dispersion 8 %)",
-  DISPERSION_5_8_ET_P_INF_67: "irrégularité moyenne et probabilité sous 67 %",
-  VALUE_NON_ELIGIBLE: "pas de value exploitable",
-  DOUBLE_CONTROLE_ECHOUE_OU_ABSENT: "double contrôle non passé (ou marché non couvert)",
-  JUSTIFICATION_INSUFFISANTE: "pas de justification directe",
-  COTE_HORS_FENETRE: "cote hors de 1,26 – 1,74",
-  PROBABILITE_INF_60: "probabilité sous 60 %",
-  EDV_INSUFFISANTE: "value insuffisante",
-  N_LIEU_INF_3: "moins de 3 matchs au même lieu",
-  N_3_4_CONTROLE_STRICT_NON_SATISFAIT: "3 ou 4 matchs au même lieu : contrôle renforcé non passé",
-  PROBABILITE_DEGENEREE: "probabilité 0 % ou 100 % (données trop pauvres)"
-};
-const t = r => RAISONS[r] || r;
-const pct = x => (100 * x).toFixed(1).replace(".", ",") + " %";
-const cote = x => Number(x).toFixed(2).replace(".", ",");
-const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-
-fetch("data/v3/pronostics_v3.json", {cache: "no-store"}).then(r => {
-  if (!r.ok) throw new Error("HTTP " + r.status);
-  return r.json();
-}).then(d => {
-  const g = new Date(d.genere_le);
-  document.getElementById("maj").textContent = "Calculé le " + g.toLocaleString("fr-FR", {timeZone: "Africa/Douala"});
-  const b = d.bilan, c = d.calibration;
-  const raisons = Object.entries(b.raisons_de_rejet || {}).slice(0, 6)
-    .map(([k, n]) => `<li>${esc(t(k))} : ${n}</li>`).join("");
-  const bilan = document.getElementById("bilan");
-  bilan.hidden = false;
-  bilan.innerHTML = `<h2>Bilan du run</h2>
-    ${b.matchs} matchs à venir · <strong>${b.selections} sélection(s)</strong> sur ${b.matchs_avec_selection} match(s)<br>
-    Calibration : ${c.prete ? "prête" : "pas encore prête"} (${c.observations} observations sur ${c.matchs} matchs joués, minimum ${c.minimum_observations})
-    ${raisons ? `<br>Ce qui bloque le plus (nombre de paris candidats) :<ul>${raisons}</ul>` : ""}`;
-  const zone = document.getElementById("matchs");
-  const avecSel = d.matchs.filter(m => m.selections.length), sans = d.matchs.filter(m => !m.selections.length).sort((a, b) => (a.statut === "EVALUE" ? 0 : 1) - (b.statut === "EVALUE" ? 0 : 1));
-  zone.innerHTML = [...avecSel, ...sans].map(m => {
-    const sels = m.selections.map(s => `<div class="v3-sel"><strong>${esc(s.libelle)}</strong> à ${cote(s.cote)} —
-      probabilité ${pct(s.probabilite)}, value ${String(s.edv).replace(".", ",")} %<br><small>${esc(s.justification)}</small></div>`).join("");
-    const cands = (m.candidats || []).slice(0, 3).map(k => `<div class="v3-cand">${esc(k.libelle)} à ${cote(k.cote)} —
-      ${pct(k.probabilite)}${k.calibree ? "" : " (non calibrée)"}, value ${String(k.edv).replace(".", ",")} %
-      <div class="v3-raisons">${k.raisons.map(t).map(esc).join(" · ")}</div></div>`).join("");
-    const etat = m.statut === "EVALUE" ? "" : `<p class="v3-vide">${m.statut === "SANS_COTE" ? "Aucune cote relevée." : "Non évalué : pas assez de matchs à domicile ou à l'extérieur."}</p>`;
-    return `<article class="v3-carte">
-      <p class="v3-equipes">${esc(m.domicile)} – ${esc(m.exterieur)}</p>
-      <p class="v3-meta">${esc(m.date)} ${esc(m.heure || "")} · ${esc(m.competition)}${m.n_dom != null ? ` · N ${m.n_dom}/${m.n_ext}` : ""}</p>
-      ${sels || (m.statut === "EVALUE" ? `<p class="v3-vide">Aucune sélection. Meilleurs candidats écartés :</p>${cands}` : etat)}
-    </article>`;
-  }).join("") || `<div class="ax-etat-vide"><strong>Aucun match à venir</strong><p>Le prochain run du pipeline remplira cette page.</p></div>`;
-}).catch(e => {
-  document.getElementById("maj").textContent = "Pas encore de résultat V3 : lance le pipeline (" + e.message + ").";
-});
-</script>
+<script src="traduction_marches.js"></script>
+<script src="ui_mappings.js?v=20260921e"></script>
+<script src="archetype_v3.js?v=20260928a"></script>
 </body>
 </html>
