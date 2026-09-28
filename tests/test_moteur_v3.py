@@ -92,7 +92,7 @@ def test_degenerate_probability_is_rejected():
 
 
 def test_calibrator_refuses_small_training_set():
-    c = IsotonicCalibrator(minimum_observations=30)
+    c = IsotonicCalibrator(minimum_observations=300)
     fit = c.fit([0.6] * 20, [1] * 20)
     assert not fit.ready
     assert c.predict(0.6) is None
