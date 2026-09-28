@@ -20,7 +20,7 @@ class IsotonicCalibrator:
     le match à calibrer.
     """
 
-    def __init__(self, minimum_observations: int = 30):
+    def __init__(self, minimum_observations: int = 300):
         if minimum_observations < 10:
             raise ValueError("minimum_observations_trop_faible")
         self.minimum_observations = minimum_observations
