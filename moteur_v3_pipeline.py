@@ -295,8 +295,8 @@ def candidat_site(sel, rang, n_min, lambdas=None, apercu=False):
     if sel["raisons_recent"]:
         preuves.append({"type": "v3_forme_recente", "texte": " ; ".join(r.lstrip("✓ ") for r in sel["raisons_recent"])})
     preuves.append({"type": "ev_percentage", "valeur": sel["edv"],
-                    "texte": f"Le prix proposé laisse {sel['edv']:.1f}% de marge par rapport à l'estimation "
-                             f"{'NON calibrée' if apercu else 'calibrée'}."})
+                    "texte": f"Le prix proposé laisse {sel['edv']:.1f}".replace(".", ",") + " % de marge par rapport à "
+                             f"l'estimation {'NON calibrée' if apercu else 'calibrée'}."})
     vigilance = ([VIGILANCE_APERCU] if apercu else []) + [VIGILANCE_V3] + (
         ["Moins de 5 matchs au même lieu pour une des deux équipes."] if n_min < 5 else [])
     return {"marche": V3_VERS_SITE.get(sel["marche"], sel["marche"]), "marche_moteur": sel["marche"],
