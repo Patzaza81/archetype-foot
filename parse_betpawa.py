@@ -100,11 +100,16 @@ def parse_betpawa(texte, nom_domicile, nom_exterieur):
                 ):
                     break
                 try:
-                    ligne = float(re.search(r"-\d+$", labels[0]).group()[1:])
-                    cotes[f"handicap_3choix_{int(ligne)}"] = {
-                        "domicile": float(lignes[i + 1].replace(",", ".")),
-                        "nul": float(lignes[i + 3].replace(",", ".")),
-                        "exterieur": float(lignes[i + 5].replace(",", ".")),
+                    # Conserver le signe : la ligne est le handicap réellement
+                    # appliqué au domicile (Domicile -2, Domicile +1, etc.).
+                    ligne = float(re.search(r"[+-]\d+$", labels[0]).group())
+                    if ligne not in (-2, -1, 1, 2):
+                        i += 6
+                        continue
+                    cotes[f"handicap_3issues_{int(ligne)}"] = {
+                        "1": float(lignes[i + 1].replace(",", ".")),
+                        "X": float(lignes[i + 3].replace(",", ".")),
+                        "2": float(lignes[i + 5].replace(",", ".")),
                     }
                 except (ValueError, AttributeError):
                     break
