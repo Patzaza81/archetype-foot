@@ -45,7 +45,7 @@ import regles_selection as rs
 from moteur_v3 import evaluate_match
 from moteur_v3.calibration import CalibrationFit, IsotonicCalibrator
 from moteur_v3.decision import decide
-from moteur_v3.markets import derive_markets
+from moteur_v3.markets import derive_markets, gagne
 from moteur_v3.model import build_model
 
 DOSSIER_ARCHIVE = os.path.join("data", "archive_test")
@@ -95,6 +95,21 @@ def libelle(marche):
              "exact_goals_6_plus": "6 buts ou plus"}
     if marche in fixes:
         return fixes[marche]
+    if marche in ("clean_home_no", "clean_away_no"):
+        return f"{'Domicile' if marche == 'clean_home_no' else 'Extérieur'} encaisse au moins un but"
+    if marche in ("total_pair", "total_impair"):
+        return f"Total de buts {'pair' if marche == 'total_pair' else 'impair'}"
+    if marche.startswith("score_"):
+        _, h, a = marche.split("_")
+        return f"Score exact {h}-{a}"
+    if marche.startswith("handicap_"):
+        _, ligne, cote_ = marche.split("_")
+        l_ = float(ligne)
+        if cote_ == "1":
+            return f"Domicile handicap {_jeton(-l_).replace('.', ',')}"
+        if cote_ == "2":
+            return f"Extérieur handicap {('+' if l_ > 0 else '') + _jeton(l_).replace('.', ',')}"
+        return f"Handicap {ligne} nul"
     for prefixe, qui in (("home_", "Domicile marque "), ("away_", "Extérieur marque ")):
         if marche.startswith(prefixe):
             sens, ligne = marche[len(prefixe):].split("_", 1)
@@ -109,8 +124,16 @@ def libelle(marche):
 
 def groupe_exposition(marche):
     """Une seule sélection par exposition : résultat, total de buts, BTTS, buts de chaque équipe."""
-    if marche.startswith(("1x2_", "dc_")):
+    if marche.startswith(("1x2_", "dc_", "handicap_")):
         return "resultat"
+    if marche.startswith("score_"):
+        return "score_exact"
+    if marche.startswith("total_"):
+        return "parite"
+    if marche == "clean_home_no":
+        return "buts_exterieur"
+    if marche == "clean_away_no":
+        return "buts_domicile"
     if marche.startswith(("over_", "under_", "exact_goals_")):
         return "total_buts"
     if marche.startswith("btts_"):
@@ -148,15 +171,124 @@ def preuves(enreg, marches):
     return out
 
 
+def _cote_ok(v):
+    return isinstance(v, (int, float)) and not isinstance(v, bool) and v > 1
+
+
+def _ligne(texte):
+    try:
+        return float(texte)
+    except (TypeError, ValueError):
+        return None
+
+
+def _jeton(x):
+    return f"{float(x):g}"
+
+
+def cotes_etendues(enreg):
+    """AJOUT 28/09/2026 (Patrick : « intégrer le calcul de tous les marchés ») -- marchés cotés par BetPawa que le
+    registre du banc ne lit pas : handicaps, score exact, pair/impair, total 6,5 / 7,5, buts d'une équipe 2,5 / 3,5,
+    « encaisse au moins un but ». Noms V3. Aucune cote inventée : seules les cotes > 1 relevées sont gardées.
+
+    Handicap BetPawa « handicap_L » : issue « domicile » = domicile avec L (gagne si buts_dom + L > buts_ext), issue
+    « exterieur » = l'autre côté (buts_dom + L < buts_ext). Vérifié le 28/09 sur l'archive : handicap -0,5 domicile
+    ~ cote 1X2 « 1 », +0,5 domicile ~ double chance 1X. La V3 écrit la condition « buts_dom - ligne > buts_ext » : la
+    ligne V3 vaut donc -L (handicap_{-L}_1 et handicap_{-L}_2)."""
+    bp = enreg.get("cotes_betpawa") or {}
+    ob = enreg.get("cotes_observees") or {}
+    out = {}
+
+    def met(nom, v):
+        if nom not in out and _cote_ok(v):
+            out[nom] = float(v)
+
+    for groupe, issues in bp.items():
+        if not isinstance(issues, dict):
+            continue
+        if groupe.startswith("handicap_") and not groupe.startswith("handicap_3choix"):
+            L = _ligne(groupe[len("handicap_"):])
+            if L is not None and L != int(L):
+                met(f"handicap_{_jeton(-L)}_1", issues.get("domicile"))
+                met(f"handicap_{_jeton(-L)}_2", issues.get("exterieur"))
+        elif groupe == "score_exact":
+            for score, v in issues.items():
+                parts = str(score).split("-")
+                if len(parts) == 2 and all(x.isdigit() for x in parts):
+                    met(f"score_{int(parts[0])}_{int(parts[1])}", v)
+        elif groupe == "pair_impair":
+            met("total_pair", issues.get("pair"))
+            met("total_impair", issues.get("impair"))
+        elif groupe.startswith("over_under_"):
+            reste = groupe[len("over_under_"):]
+            for prefixe, cible in (("domicile_", "home_"), ("exterieur_", "away_"), ("", "")):
+                if reste.startswith(prefixe) and _ligne(reste[len(prefixe):]) is not None:
+                    jeton = reste[len(prefixe):].replace(".", "_")
+                    met(f"{cible}over_{jeton}", issues.get("plus"))
+                    met(f"{cible}under_{jeton}", issues.get("moins"))
+                    break
+        elif groupe == "cages_inviolees_domicile":
+            met("clean_home_no", issues.get("non"))
+        elif groupe == "cages_inviolees_exterieur":
+            met("clean_away_no", issues.get("non"))
+    # Cotes observées en complément (même règle : BetPawa d'abord).
+    for nom, v in ob.items():
+        if nom.startswith("Handicap "):
+            morceaux = nom[len("Handicap "):].split(" - ")
+            L = _ligne(morceaux[0]) if len(morceaux) == 2 else None
+            if L is not None and L != int(L):
+                met(f"handicap_{_jeton(-L)}_{'1' if morceaux[1] == 'Domicile' else '2'}", v)
+        elif nom == "Total buts - pair":
+            met("total_pair", v)
+        elif nom == "Total buts - impair":
+            met("total_impair", v)
+        elif nom == "Encaisse au moins 1 but - Domicile":
+            met("clean_home_no", v)
+        elif nom == "Encaisse au moins 1 but - Extérieur":
+            met("clean_away_no", v)
+        elif nom.startswith(("Plus de ", "Moins de ")):
+            sens = "over" if nom.startswith("Plus") else "under"
+            corps = nom.split(" de ", 1)[1]
+            ligne, _, qui = corps.partition(" buts")
+            cible = {"": "", " - Domicile": "home_", " - Extérieur": "away_"}.get(qui)
+            if cible is not None and _ligne(ligne) is not None:
+                met(f"{cible}{sens}_{ligne.replace('.', '_')}", v)
+    return out
+
+
 def cotes_v3(enreg):
-    return {BANC_VERS_V3[k]: v for k, v in bh.cotes_archive(enreg).items() if k in BANC_VERS_V3}
+    cotes = {BANC_VERS_V3[k]: v for k, v in bh.cotes_archive(enreg).items() if k in BANC_VERS_V3}
+    for k, v in cotes_etendues(enreg).items():
+        cotes.setdefault(k, v)
+    return cotes
+
+
+GROUPES_BETPAWA_LUS = ("1x2", "double_chance", "btts", "cages_inviolees_domicile", "cages_inviolees_exterieur",
+                       "nombre_exact_buts", "score_exact", "pair_impair")
+
+
+def couverture(enreg, cotes):
+    """Diagnostic : issues cotées par BetPawa, marchés que la V3 a réellement calculés, groupes qu'elle ne sait pas lire."""
+    bp = enreg.get("cotes_betpawa") or {}
+    non_lus = sorted(g for g in bp if not (
+        g in GROUPES_BETPAWA_LUS or g.startswith("over_under_")
+        or (g.startswith("handicap_") and not g.startswith("handicap_3choix")
+            and _ligne(g[len("handicap_"):]) is not None and _ligne(g[len("handicap_"):]) % 1 != 0)))
+    return {"issues_betpawa": sum(len(v) for v in bp.values() if isinstance(v, dict)),
+            "marches_cotes_calcules": len(cotes), "groupes_non_lus": non_lus}
+
+
+def lignes_handicap(cotes):
+    """Lignes de handicap (convention V3) présentes dans les cotes du match."""
+    return sorted({float(k.split("_")[1]) for k in cotes if k.startswith("handicap_")})
 
 
 def entree_v3(enreg):
     """Dictionnaire d'entrée de evaluate_match. Volontairement SANS le nom de la compétition."""
+    cotes = cotes_v3(enreg)
     return {"home_matches": (enreg.get("equipe_dom") or {}).get("matchs") or [],
             "away_matches": (enreg.get("equipe_ext") or {}).get("matchs") or [],
-            "odds": cotes_v3(enreg)}
+            "odds": cotes, "handicap_lines": lignes_handicap(cotes)}
 
 
 def lit_archive(dossier=DOSSIER_ARCHIVE):
@@ -181,16 +313,19 @@ def entraine_calibration(enregs, avant_le):
         sc = _score(e)
         if sc is None or str(e.get("date")) >= avant_le:
             continue
+        entree = entree_v3(e)
         try:
-            probas = derive_markets(build_model(entree_v3(e)["home_matches"], entree_v3(e)["away_matches"]))
+            probas = derive_markets(build_model(entree["home_matches"], entree["away_matches"]),
+                                    entree["handicap_lines"])
         except ValueError:
             continue
-        cotes = cotes_v3(e)
+        cotes = entree["odds"]
         vu = False
         for m, p in probas.items():
-            if m in cotes and m in V3_VERS_BANC and 0 < p < 1:
+            issue = gagne(m, *sc)            # AJOUT 28/09 : tous les marchés plein temps cotés, pas seulement le banc
+            if m in cotes and issue is not None and 0 < p < 1:
                 ps.append(p)
-                ys.append(1 if bh.gagne(V3_VERS_BANC[m], *sc) else 0)
+                ys.append(1 if issue else 0)
                 vu = True
         matchs += vu
     cal = IsotonicCalibrator()
@@ -220,6 +355,7 @@ def evalue_enregistrement(enreg, calibrateur):
     entree = entree_v3(enreg)
     if not entree["odds"]:
         return {**base, "statut": "SANS_COTE", "selections": [], "candidats": []}
+    cover = couverture(enreg, entree["odds"])
     evidence = preuves(enreg, entree["odds"])
     try:
         r = evaluate_match(entree, calibrator=calibrateur, evidence=evidence)
@@ -250,7 +386,7 @@ def evalue_enregistrement(enreg, calibrateur):
     if not selections and (calibrateur is None or not calibrateur.fit_result.ready):
         apercu = _format(decide([{**c, "calibrated": True} for c in r["candidates"]])[0])
     return {**base, "statut": "EVALUE", "lambda_dom": round(m.lambda_home, 3), "lambda_ext": round(m.lambda_away, 3),
-            "n_dom": m.home_sample.current_n, "n_ext": m.away_sample.current_n,
+            "n_dom": m.home_sample.current_n, "n_ext": m.away_sample.current_n, "couverture": cover,
             "selections": selections, "apercu_non_calibre": apercu, "candidats": candidats[:5],
             "tous_les_candidats": candidats}
 
@@ -260,13 +396,28 @@ V3_VERS_SITE = {"1x2_1": "1x2_domicile", "1x2_X": "1x2_nul", "1x2_2": "1x2_exter
                 "dc_1X": "double_chance_1X", "dc_X2": "double_chance_X2", "dc_12": "double_chance_12",
                 "btts_yes": "btts_oui", "btts_no": "btts_non",
                 "clean_home": "cage_inviolee_domicile", "clean_away": "cage_inviolee_exterieur"}
-for _x in range(6):
+for _x in range(8):
     for _s in ("over", "under"):
         V3_VERS_SITE[f"{_s}_{_x}_5"] = f"over_under_total_{_x}.5_{_s}"
-for _x in range(2):
+V3_VERS_SITE.update({"clean_home_no": "encaisse_domicile", "clean_away_no": "encaisse_exterieur"})
+for _x in range(4):
     for _s in ("over", "under"):
         V3_VERS_SITE[f"home_{_s}_{_x}_5"] = f"buts_equipe_domicile_{_x}.5_{_s}"
         V3_VERS_SITE[f"away_{_s}_{_x}_5"] = f"buts_equipe_exterieur_{_x}.5_{_s}"
+
+
+def nom_site(marche):
+    """Nom lu par traduction_marches.js. Handicap V3 « handicap_{l}_1 » (buts_dom - l > buts_ext) = domicile avec
+    handicap -l ; « handicap_{l}_2 » = extérieur avec handicap +l."""
+    if marche.startswith("handicap_"):
+        _, ligne, cote_ = marche.split("_")
+        l_ = float(ligne)
+        if cote_ == "1":
+            return f"handicap_domicile_{_jeton(-l_)}"
+        if cote_ == "2":
+            return f"handicap_exterieur_{_jeton(l_)}"
+    return V3_VERS_SITE.get(marche, marche)
+
 
 VIGILANCE_V3 = "Moteur V3 expérimental : pas encore validé sur 100 matchs réels."
 
@@ -314,7 +465,7 @@ def candidat_site(sel, rang, n_min, lambdas=None, apercu=False):
                              f"l'estimation {'NON calibrée' if apercu else 'calibrée'}."})
     vigilance = ([VIGILANCE_APERCU] if apercu else []) + [VIGILANCE_V3] + (
         ["Moins de 5 matchs au même lieu pour une des deux équipes."] if n_min < 5 else [])
-    return {"marche": V3_VERS_SITE.get(sel["marche"], sel["marche"]), "marche_moteur": sel["marche"],
+    return {"marche": nom_site(sel["marche"]), "marche_moteur": sel["marche"],
             "probabilite": sel["probabilite"], "cote": sel["cote"], "edge": sel["edge"], "edv": sel["edv"] / 100.0,
             "niveau": niveau_echantillon(n_min), "robustesse": None, "points_de_vigilance": vigilance, "rang": rang,
             "apercu_non_calibre": apercu,
@@ -349,7 +500,12 @@ def empreinte_code(racine=None):
     return h.hexdigest()[:12]
 
 
-def journalise(matchs, calibration, maintenant, empreinte, commit=None, dossier=DOSSIER_JOURNAL):
+def _ligne_diag(c):
+    """Une ligne compacte du diagnostic complet : [marché, cote, probabilité, marge %, raisons de rejet]."""
+    return [c["marche"], c["cote"], round(c["probabilite"], 4), c["edv"], c["raisons"]]
+
+
+def journalise(matchs, calibration, maintenant, empreinte, commit=None, dossier=DOSSIER_JOURNAL, diagnostics=None):
     """Écrit le calcul V3 de chaque match À VENIR dans le journal de sa date (remplace le calcul précédent du même
     match). Les matchs déjà commencés ne sont pas dans `matchs` : leur entrée reste figée. Renvoie le nombre écrit."""
     calcule_le = maintenant.strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -372,11 +528,14 @@ def journalise(matchs, calibration, maintenant, empreinte, commit=None, dossier=
                 "calcule_le": calcule_le, "nb_calculs": int(ancien.get("nb_calculs") or 0) + 1,
                 "empreinte_code_v3": empreinte, "commit": commit,
                 "calibration": {k: calibration[k] for k in ("prete", "observations", "matchs")},
-                "statut_v3": STATUT}
+                "statut_v3": STATUT,
+                # AJOUT 28/09 : diagnostic de TOUS les marchés cotés (pas seulement les 5 meilleurs candidats).
+                "tous_les_marches": [_ligne_diag(c) for c in (diagnostics or {}).get(x["match_id"], [])]}
             ecrits += 1
         os.makedirs(dossier, exist_ok=True)
-        with open(chemin, "w", encoding="utf-8") as f:
-            json.dump(dict(sorted(donnees.items())), f, ensure_ascii=False, indent=1)
+        with open(chemin, "w", encoding="utf-8") as f:      # une ligne par match : compact et lisible dans git
+            f.write("{\n" + ",\n".join(f"{json.dumps(k)}: {json.dumps(v, ensure_ascii=False)}"
+                                        for k, v in sorted(donnees.items())) + "\n}\n")
     return ecrits
 
 
@@ -389,8 +548,8 @@ def execution(dossier=DOSSIER_ARCHIVE, fichier_sortie=FICHIER_SORTIE, maintenant
     matchs.sort(key=lambda x: (str(x["date"]), str(x["heure"] or ""), str(x["domicile"])))
     raisons = Counter(r for x in matchs for c in x.get("tous_les_candidats", []) for r in c["raisons"])
     statuts = Counter(x["statut"] if not x["statut"].startswith("NON_EVALUE") else "NON_EVALUE" for x in matchs)
-    for x in matchs:
-        x.pop("tous_les_candidats", None)
+    diagnostics = {x["match_id"]: x.pop("tous_les_candidats", []) for x in matchs}
+    non_lus = Counter(g for x in matchs for g in (x.get("couverture") or {}).get("groupes_non_lus", []))
     empreinte = empreinte_code()
     commit = (os.environ.get("GITHUB_SHA") or "")[:7] or None
     sortie = {
@@ -403,7 +562,12 @@ def execution(dossier=DOSSIER_ARCHIVE, fichier_sortie=FICHIER_SORTIE, maintenant
                   "selections": sum(len(x["selections"]) for x in matchs),
                   "matchs_avec_selection": sum(1 for x in matchs if x["selections"]),
                   "matchs_en_apercu_non_calibre": sum(1 for x in matchs if x.get("apercu_non_calibre")),
-                  "raisons_de_rejet": dict(raisons.most_common())},
+                  "raisons_de_rejet": dict(raisons.most_common()),
+                  "couverture": {"marches_cotes_calcules": sum((x.get("couverture") or {}).get(
+                                     "marches_cotes_calcules", 0) for x in matchs),
+                                 "issues_betpawa": sum((x.get("couverture") or {}).get("issues_betpawa", 0)
+                                                       for x in matchs),
+                                 "groupes_betpawa_non_lus": dict(non_lus.most_common())}},
         "matchs": matchs,
         "signaux": [signal_site(x) for x in matchs],
     }
@@ -412,7 +576,7 @@ def execution(dossier=DOSSIER_ARCHIVE, fichier_sortie=FICHIER_SORTIE, maintenant
         json.dump(sortie, f, ensure_ascii=False, indent=1)
     if dossier_journal is None:
         dossier_journal = os.path.join(os.path.dirname(fichier_sortie), "journal")
-    journal = journalise(matchs, sortie["calibration"], maintenant, empreinte, commit, dossier_journal)
+    journal = journalise(matchs, sortie["calibration"], maintenant, empreinte, commit, dossier_journal, diagnostics)
     return sortie["bilan"] | {"calibration": sortie["calibration"], "journal_ecrits": journal,
                               "empreinte_code_v3": empreinte}
 
