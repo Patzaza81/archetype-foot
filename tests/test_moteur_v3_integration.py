@@ -48,14 +48,11 @@ def test_double_controle_reellement_branche():
     assert b["1x2_1"]["double_control_ok"] and "Burgos" in b["1x2_1"]["justification"]
 
 
-def test_seul_le_filtre_de_dispersion_bloque_un_pari_qui_passe_tout_le_reste():
-    """Constat du 27/09 : calibration prête + double contrôle passé + value suffisante -> encore rejeté, uniquement par
-    DISPERSION_SUP_8 (coefficient de variation des buts, 60 à 120 % en pratique). Ce test échouera le jour où la
-    définition de la dispersion sera corrigée : c'est voulu, il faudra alors le remplacer."""
+def test_dispersion_n_est_plus_un_cv_en_pourcentage():
     r = mp.evalue_enregistrement(_reels()[YEOVIL], _calibrateur_identite())
     btts = next(c for c in r["tous_les_candidats"] if c["marche"] == "btts_yes")
-    assert set(btts["raisons"]) == {"DISPERSION_SUP_8", "VALUE_NON_ELIGIBLE"}
-    assert r["selections"] == []
+    assert "DISPERSION_SUP_8" not in btts["raisons"]
+    assert "SURDISPERSION_SUP_1_50" not in btts["raisons"]
 
 
 def test_match_sans_assez_de_matchs_non_evalue_sans_planter():
