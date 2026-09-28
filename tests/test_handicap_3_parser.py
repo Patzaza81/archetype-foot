@@ -107,3 +107,10 @@ def test_v3_normalisation_conserve_la_ligne_et_les_trois_issues():
     assert got["handicap_-2_1"] == 1.12
     assert got["handicap_-2_X"] == 5.00
     assert got["handicap_-2_2"] == 18.00
+
+
+def test_calibration_signature_dedoublonne_un_evenement_equivalent():
+    from moteur_v3_pipeline import _signature_evenement_calibration
+    assert _signature_evenement_calibration("handicap_1_1") == _signature_evenement_calibration("handicap_1.5_1")
+    assert _signature_evenement_calibration("handicap_-1_2") == _signature_evenement_calibration("dc_X2")
+    assert _signature_evenement_calibration("handicap_2_2") != _signature_evenement_calibration("dc_X2")
