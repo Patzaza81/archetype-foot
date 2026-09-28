@@ -407,6 +407,13 @@ function regroupeMatchs(matchs) {
 
 let CALIBRATION_V3 = null; // V3 : état de la calibration, affiché quand il n'y a aucune sélection
 
+// V3 (28/09/2026) : la calibration exige 50 matchs joués ET 300 observations ; on affiche les deux compteurs.
+function texteCalibration() {
+  const c = CALIBRATION_V3 || {};
+  return `calibration ${Number(c.matchs) || 0} / ${Number(c.minimum_matchs) || 50} matchs joués, ` +
+    `${Number(c.observations) || 0} / ${Number(c.minimum_observations) || 300} observations`;
+}
+
 function afficheSelections(matchs) {
   const racine = document.getElementById("matches"), maj = document.getElementById("maj");
   racine.innerHTML = "";
@@ -416,14 +423,14 @@ function afficheSelections(matchs) {
   const selectionnes = retenus.length - enApercu;
   maj.textContent = retenus.length
     ? [selectionnes ? `${selectionnes} match${selectionnes > 1 ? "s" : ""} avec au moins une sélection V3` : "",
-       enApercu ? `${enApercu} match${enApercu > 1 ? "s" : ""} en aperçu NON calibré (calibration ${Number(CALIBRATION_V3 && CALIBRATION_V3.observations) || 0} / ${Number(CALIBRATION_V3 && CALIBRATION_V3.minimum_observations) || 300})` : ""]
+       enApercu ? `${enApercu} match${enApercu > 1 ? "s" : ""} en aperçu NON calibré (${texteCalibration()})` : ""]
       .filter(Boolean).join(" · ")
     : "Aucune sélection pour le moment";
   if (!retenus.length) {
     racine.innerHTML = `<div class="ax-etat-vide"><strong>Aucune sélection pour le moment</strong>` +
       `<p>Aucun match ne remplit actuellement tous les critères du modèle. Le système préfère ne rien proposer plutôt que de forcer une sélection.</p>` +
       (CALIBRATION_V3 && !CALIBRATION_V3.prete
-        ? `<p>Moteur V3 : calibration en cours (${Number(CALIBRATION_V3.observations) || 0} / ${Number(CALIBRATION_V3.minimum_observations) || 300} observations de matchs joués). Aucune sélection n'est possible avant.</p>`
+        ? `<p>Moteur V3 : ${texteCalibration()}. Aucune sélection n'est possible avant.</p>`
         : "") + `</div>`;
     return;
   }
