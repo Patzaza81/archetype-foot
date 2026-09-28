@@ -46,7 +46,9 @@ from moteur_v3 import evaluate_match
 from moteur_v3.calibration import CalibrationFit, IsotonicCalibrator
 from moteur_v3.decision import decide
 from moteur_v3.markets import derive_markets, gagne
-from moteur_v3.model import build_model
+from moteur_v3.model import K_LISSAGE, MOYENNE_REFERENCE, _latest, _lisse, _strength, build_model
+from moteur_v3.risk import goal_context_dispersion
+from moteur_v3.value import ODDS_MAX, ODDS_MIN, edv_threshold
 
 DOSSIER_ARCHIVE = os.path.join("data", "archive_test")
 FICHIER_SORTIE = os.path.join("data", "v3", "pronostics_v3.json")
@@ -83,7 +85,22 @@ V3_VERS_BANC = {v: k for k, v in BANC_VERS_V3.items()}
 # Marchés V3 couverts par le double contrôle (regles_selection.MARCHES_COUVERTS).
 DOUBLE_CONTROLE = {"1x2_1": "1X2 - 1", "1x2_2": "1X2 - 2", "dc_1X": "Double chance - 1X",
                    "dc_X2": "Double chance - X2", "under_2_5": "Moins de 2.5 buts", "under_3_5": "Moins de 3.5 buts",
-                   "over_2_5": "Plus de 2.5 buts", "over_3_5": "Plus de 3.5 buts", "btts_yes": "BTTS - oui"}
+                   "over_2_5": "Plus de 2.5 buts", "over_3_5": "Plus de 3.5 buts", "btts_yes": "BTTS - oui",
+                   # AJOUT 28/09/2026 -- règle du double contrôle 1.2.0 (décision de Patrick : étendre la règle)
+                   "dc_12": "Double chance - 12", "btts_no": "BTTS - non",
+                   "over_1_5": "Plus de 1.5 buts", "under_4_5": "Moins de 4.5 buts",
+                   # handicaps : ±0,5 = mêmes paris que 1X2 / double chance, donc même règle
+                   "handicap_0.5_1": "1X2 - 1", "handicap_-0.5_1": "Double chance - 1X",
+                   "handicap_-0.5_2": "1X2 - 2", "handicap_0.5_2": "Double chance - X2",
+                   "handicap_1.5_1": "Handicap domicile -1.5", "handicap_-1.5_1": "Handicap domicile +1.5",
+                   "handicap_-1.5_2": "Handicap extérieur -1.5", "handicap_1.5_2": "Handicap extérieur +1.5",
+                   # « encaisse au moins un but » = l'adversaire marque ; « cage inviolée » = l'adversaire ne marque pas
+                   "clean_home_no": "Buts extérieur - plus de 0.5", "clean_away_no": "Buts domicile - plus de 0.5",
+                   "clean_home": "Buts extérieur - moins de 0.5", "clean_away": "Buts domicile - moins de 0.5"}
+for _cote, _nom in (("home", "domicile"), ("away", "extérieur")):
+    for _sens, _v3, _lignes in (("plus", "over", (0.5, 1.5)), ("moins", "under", (0.5, 1.5, 2.5))):
+        for _l in _lignes:
+            DOUBLE_CONTROLE[f"{_cote}_{_v3}_{str(_l).replace('.', '_')}"] = f"Buts {_nom} - {_sens} de {_l}"
 
 
 def libelle(marche):
@@ -113,7 +130,8 @@ def libelle(marche):
     for prefixe, qui in (("home_", "Domicile marque "), ("away_", "Extérieur marque ")):
         if marche.startswith(prefixe):
             sens, ligne = marche[len(prefixe):].split("_", 1)
-            return f"{qui}{'plus' if sens == 'over' else 'moins'} de {ligne.replace('_', ',')} but"
+            mot = "but" if float(ligne.replace("_", ".")) < 2 else "buts"
+            return f"{qui}{'plus' if sens == 'over' else 'moins'} de {ligne.replace('_', ',')} {mot}"
     if marche.startswith(("over_", "under_")):
         sens, ligne = marche.split("_", 1)
         return f"{'Plus' if sens == 'over' else 'Moins'} de {ligne.replace('_', ',')} buts"
@@ -377,18 +395,184 @@ def evalue_enregistrement(enreg, calibrateur):
                  "raisons_saison": evidence.get(s.market, {}).get("raisons_saison", []),
                  "raisons_recent": evidence.get(s.market, {}).get("raisons_recent", [])}
                 for s in liste]
-    selections = _format(r["selected"])
+    ctx = {"enreg": enreg, "entree": entree, "r": r, "evidence": evidence, "candidats": candidats,
+           "calibree": calibrateur is not None and calibrateur.fit_result.ready}
+    selections = [{**s_, "explication": explication(s_, ctx, apercu=False)} for s_ in _format(r["selected"])]
     # APERÇU NON CALIBRÉ (décision de Patrick du 28/09 : voir les matchs pendant l'expérimentation). Tant que la
     # calibration n'est pas prête, on rejoue la décision V3 en ignorant SEULEMENT le verrou « calibration absente » :
     # tous les autres contrôles (value, double contrôle, justification, échantillon, dispersion, exposition) restent.
     # Ce ne sont PAS des sélections : la page les affiche comme « aperçu non calibré ».
     apercu = []
     if not selections and (calibrateur is None or not calibrateur.fit_result.ready):
-        apercu = _format(decide([{**c, "calibrated": True} for c in r["candidates"]])[0])
+        apercu = [{**s_, "explication": explication(s_, ctx, apercu=True)}
+                  for s_ in _format(decide([{**c, "calibrated": True} for c in r["candidates"]])[0])]
     return {**base, "statut": "EVALUE", "lambda_dom": round(m.lambda_home, 3), "lambda_ext": round(m.lambda_away, 3),
             "n_dom": m.home_sample.current_n, "n_ext": m.away_sample.current_n, "couverture": cover,
             "selections": selections, "apercu_non_calibre": apercu, "candidats": candidats[:5],
             "tous_les_candidats": candidats}
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# STANDARD DE JUSTIFICATION V3 (validé par Patrick le 28/09/2026, docs/V3_PRIORITES_ET_JUSTIFICATION.md §3)
+# Résumé d'une ligne + alertes + 6 blocs toujours dans le même ordre : Données, Buts attendus, Probabilité,
+# Face à la cote, Contrôles, Pourquoi ce marché. Tout est calculé ici ; le site ne fait qu'afficher.
+# ---------------------------------------------------------------------------------------------------------------------
+RAISONS_FR = {
+    "CALIBRATION_ABSENTE": "calibration pas encore prête",
+    "VALUE_NON_ELIGIBLE": "pas de value exploitable",
+    "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT": "double contrôle non passé ou marché non couvert",
+    "JUSTIFICATION_INSUFFISANTE": "pas de justification",
+    "COTE_HORS_FENETRE": "cote hors de 1,26 – 1,74",
+    "PROBABILITE_INF_60": "probabilité sous 60 %",
+    "EDV_INSUFFISANTE": "marge insuffisante",
+    "N_LIEU_INF_3": "moins de 3 matchs au même lieu",
+    "N_3_4_CONTROLE_STRICT_NON_SATISFAIT": "3 ou 4 matchs au même lieu : contrôle renforcé non passé",
+    "SURDISPERSION_SUP_1_50": "résultats trop irréguliers (dispersion > 1,50)",
+    "SURDISPERSION_1_20_1_50_ET_P_INF_67": "résultats irréguliers et probabilité sous 67 %",
+    "DISPERSION_INSUFFISANTE": "dispersion non mesurable",
+    "PROBABILITE_DEGENEREE": "probabilité 0 % ou 100 %",
+}
+FAMILLES_FR = {"resultat": "résultat", "total_buts": "total de buts", "btts": "les deux marquent",
+               "buts_domicile": "buts du domicile", "buts_exterieur": "buts de l'extérieur",
+               "score_exact": "score exact", "parite": "pair / impair"}
+
+
+def _n2(x):
+    return f"{x:.2f}".replace(".", ",")
+
+
+def _p1(x):
+    return f"{100 * x:.1f} %".replace(".", ",")
+
+
+def phrase_calcul(marche):
+    """Bloc 3 : comment la probabilité est obtenue à partir du tableau des scores, selon la famille du marché."""
+    if marche.startswith(("1x2_", "dc_")):
+        cond = {"1x2_1": "domicile > extérieur", "1x2_X": "domicile = extérieur", "1x2_2": "extérieur > domicile",
+                "dc_1X": "domicile ≥ extérieur", "dc_X2": "extérieur ≥ domicile", "dc_12": "domicile ≠ extérieur"}[marche]
+        return f"Somme des scores où {cond}."
+    if marche.startswith("handicap_"):
+        _, ligne, cote_ = marche.split("_")
+        l_ = float(ligne)
+        if cote_ == "1":
+            return f"Somme des scores où buts domicile {'−' if l_ > 0 else '+'} {_jeton(abs(l_)).replace('.', ',')} > buts extérieur."
+        return f"Somme des scores où buts extérieur {'+' if l_ > 0 else '−'} {_jeton(abs(l_)).replace('.', ',')} > buts domicile."
+    if marche.startswith(("over_", "under_")):
+        sens, ligne = marche.split("_", 1)
+        n = int(float(ligne.replace("_", ".")) + 0.5)
+        return (f"Somme des scores avec au moins {n} buts." if sens == "over"
+                else f"Somme des scores avec au plus {n - 1} but{'s' if n - 1 > 1 else ''}.")
+    if marche.startswith("exact_goals_") or marche.startswith("total_"):
+        return "Somme des scores dont le total de buts correspond."
+    if marche.startswith(("home_", "away_")):
+        qui = "le domicile" if marche.startswith("home_") else "l'extérieur"
+        sens, ligne = marche.split("_", 2)[1:]
+        n = int(float(ligne.replace("_", ".")) + 0.5)
+        return (f"Probabilité que {qui} marque au moins {n} but{'s' if n > 1 else ''}, avec ses seuls buts attendus."
+                if sens == "over" else
+                f"Probabilité que {qui} marque au plus {n - 1} but{'s' if n - 1 > 1 else ''}, avec ses seuls buts attendus.")
+    if marche.startswith("btts_"):
+        return ("Probabilité que chaque équipe marque au moins un but." if marche == "btts_yes"
+                else "Probabilité qu'au moins une des deux équipes ne marque pas.")
+    if marche.startswith("clean_"):
+        qui = "l'extérieur" if marche.startswith("clean_home") else "le domicile"
+        return f"Probabilité que {qui} {'marque' if marche.endswith('_no') else 'ne marque pas'}."
+    if marche.startswith("score_"):
+        _, h, a = marche.split("_")
+        return f"Probabilité du score {h}-{a} : P(domicile marque {h}) × P(extérieur marque {a})."
+    return "Somme des scores concernés."
+
+
+def alertes(p, cote, n_min, lambdas, dispersion, apercu):
+    out = []
+    if apercu:
+        out.append("Aperçu non calibré : ce n'est pas une sélection du moteur.")
+    if n_min < 5:
+        out.append(f"Petit échantillon : {n_min} matchs au même lieu pour l'équipe la moins fournie.")
+    ecart = p - 1 / cote
+    if abs(ecart) > 0.12:
+        out.append(f"Écart inhabituel avec le marché : {'+' if ecart > 0 else '−'}{_p1(abs(ecart)).replace(' %', '')} points.")
+    total = sum(lambdas)
+    if total < 1.8 or total > 4.0:
+        out.append(f"Buts attendus extrêmes : {_n2(total)} buts au total.")
+    if dispersion is not None and 1.20 < dispersion <= 1.50:
+        out.append(f"Résultats irréguliers : dispersion {_n2(dispersion)}.")
+    return out
+
+
+def explication(sel, ctx, apercu):
+    """Justification standard d'une sélection (ou d'un aperçu) : alertes + 6 blocs chiffrés."""
+    e, entree, r = ctx["enreg"], ctx["entree"], ctx["r"]
+    model = r["model"]
+    dom, ext = e.get("domicile") or "Domicile", e.get("exterieur") or "Extérieur"
+    H, A = _latest(entree["home_matches"], True), _latest(entree["away_matches"], False)
+    sh, sa = _strength(H), _strength(A)
+    nh, na = len(H), len(A)
+    att_d, def_e = _lisse(sh["attack"], nh), _lisse(sa["defense"], na)
+    att_e, def_d = _lisse(sa["attack"], na), _lisse(sh["defense"], nh)
+    lh, la = model.lambda_home, model.lambda_away
+    scores = lambda L: ", ".join(f"{m['buts_marques']}-{m['buts_encaisses']}" for m in L)
+    p, cote, marche = sel["probabilite"], sel["cote"], sel["marche"]
+    impl = 1 / cote
+    seuil = edv_threshold(p)
+    disp = goal_context_dispersion(list(entree["home_matches"]) + list(entree["away_matches"]))
+    n_min = min(nh, na)
+    top = sorted(((model.score[h][a], h, a) for h in range(len(model.score)) for a in range(len(model.score))),
+                 reverse=True)[:2]
+    ev = ctx["evidence"].get(marche, {})
+    regle = DOUBLE_CONTROLE.get(marche)
+
+    blocs = [
+        {"titre": "Données", "lignes": [
+            f"{dom} à domicile ({nh}) : {scores(H)} → marque {_n2(sh['gf'])}, encaisse {_n2(sh['ga'])} par match.",
+            f"{ext} à l'extérieur ({na}) : {scores(A)} → marque {_n2(sa['gf'])}, encaisse {_n2(sa['ga'])} par match."]},
+        {"titre": "Buts attendus", "lignes": [
+            f"Lissage vers {_n2(MOYENNE_REFERENCE)} but : (n × moyenne + {K_LISSAGE:g} × {_n2(MOYENNE_REFERENCE)}) / (n + {K_LISSAGE:g}).",
+            f"{dom} : attaque {_n2(sh['attack'])} → {_n2(att_d)} ; défense {ext} {_n2(sa['defense'])} → {_n2(def_e)} ; "
+            f"{_n2(att_d)} × {_n2(def_e)} / {_n2(MOYENNE_REFERENCE)} = {_n2(lh)} buts.",
+            f"{ext} : attaque {_n2(sa['attack'])} → {_n2(att_e)} ; défense {dom} {_n2(sh['defense'])} → {_n2(def_d)} ; "
+            f"{_n2(att_e)} × {_n2(def_d)} / {_n2(MOYENNE_REFERENCE)} = {_n2(la)} buts."]},
+        {"titre": "Probabilité", "lignes": [
+            f"{libelle(marche)} : {_p1(p)}{' (non calibrée)' if apercu else ''}.",
+            phrase_calcul(marche),
+            "Scores les plus probables : " + ", ".join(f"{h}-{a} ({_p1(q)})" for q, h, a in top) + "."]},
+        {"titre": "Face à la cote", "lignes": [
+            f"Cote {_n2(cote)} → {_p1(impl)} selon le bookmaker ; écart {'+' if p >= impl else '−'}"
+            f"{_p1(abs(p - impl)).replace(' %', '')} points.",
+            f"Marge = {_n2(cote)} × {f'{p - impl:.3f}'.replace('.', ',')} = {'+' if sel['edv'] >= 0 else ''}{str(sel['edv']).replace('.', ',')} %"
+            + (f" (seuil {seuil:g} % à cette probabilité)." if seuil is not None else ".")]},
+        {"titre": "Contrôles", "lignes": [
+            f"Cote dans la fenêtre {_n2(ODDS_MIN)} – {_n2(ODDS_MAX)} : oui.",
+            f"Dispersion des buts : {_n2(disp) if disp is not None else 'non mesurable'}"
+            + (" (acceptée car probabilité ≥ 67 %)." if disp is not None and disp > 1.20 else " (accepté)."),
+            f"Double contrôle « {regle} » passé : " + " ; ".join(x.lstrip("✓ ") for x in ev.get("double_controle_raisons", [])) + "."
+            if regle else "Double contrôle : marché non couvert.",
+            (f"{n_min} matchs au même lieu : contrôle renforcé passé (probabilité ≥ 67 % et marge ≥ 7 %)."
+             if n_min < 5 else f"{n_min} matchs au même lieu : échantillon suffisant."),
+            "Calibration : pas encore prête (aperçu)." if apercu else "Calibration : prête."]},
+        {"titre": "Pourquoi ce marché", "lignes": alternatives(sel, ctx, apercu)},
+    ]
+    return {"alertes": alertes(p, cote, n_min, (lh, la), disp, apercu), "blocs": blocs}
+
+
+def alternatives(sel, ctx, apercu):
+    """Bloc 6 : famille du pari retenu + meilleurs paris des autres familles avec la raison exacte de leur rejet."""
+    groupe = groupe_exposition(sel["marche"])
+    lignes = [f"Un seul pari par famille ({FAMILLES_FR.get(groupe, groupe)}) : celui-ci est le plus probable des paris valides."]
+    vus = {groupe}
+    for c in ctx["candidats"]:
+        g = groupe_exposition(c["marche"])
+        if g in vus or c["marche"] == sel["marche"]:
+            continue
+        vus.add(g)
+        raisons = [x for x in c["raisons"] if not (apercu and x == "CALIBRATION_ABSENTE")]
+        motif = ("valide, mais moins bon que le pari retenu ou trop lié à lui" if not raisons
+                 else " ; ".join(RAISONS_FR.get(x, x) for x in raisons[:2]))
+        lignes.append(f"{c['libelle']} ({_n2(c['cote'])}, {_p1(c['probabilite'])}, marge "
+                      f"{'+' if c['edv'] >= 0 else ''}{str(c['edv']).replace('.', ',')} %) : {motif}.")
+        if len(lignes) >= 4:
+            break
+    return lignes
 
 
 # Noms de marchés V3 -> noms lus par traduction_marches.js (ceux de la page « Sélections Archetype »).
@@ -438,14 +622,13 @@ def _pct_fr(x):
     return f"{100 * x:.0f} %"
 
 
-def synthese(sel, lambdas=None, apercu=False):
-    """Résumé propre à la V3 (jamais une copie d'une preuve) : probabilité calibrée contre celle de la cote, double
-    contrôle, et buts attendus du modèle V3 lui-même (différents des « buts attendus » simples de la règle du double
-    contrôle, qui n'est qu'un filtre)."""
-    texte = (f"Probabilité {'NON calibrée' if apercu else 'calibrée'} {_pct_fr(sel['probabilite'])} contre {_pct_fr(1 / sel['cote'])} selon la cote ; "
-             f"double contrôle passé (saison et forme récente)")
-    if lambdas and None not in lambdas:
-        texte += f" ; buts attendus par la V3 : {lambdas[0]:.2f} – {lambdas[1]:.2f}".replace(".", ",")
+def synthese(sel, n_min=None, apercu=False):
+    """Résumé d'une ligne (standard de justification du 28/09) : probabilité contre cote, marge, échantillon."""
+    texte = (f"Probabilité {'NON calibrée' if apercu else 'calibrée'} {_pct_fr(sel['probabilite'])} contre "
+             f"{_pct_fr(1 / sel['cote'])} selon la cote {sel['cote']:.2f}".replace(".", ",")
+             + f" · marge {'+' if sel['edv'] >= 0 else ''}{sel['edv']:.1f} %".replace(".", ","))
+    if n_min is not None:
+        texte += f" · {n_min} matchs au même lieu"
     return texte + "."
 
 
@@ -469,7 +652,8 @@ def candidat_site(sel, rang, n_min, lambdas=None, apercu=False):
             "probabilite": sel["probabilite"], "cote": sel["cote"], "edge": sel["edge"], "edv": sel["edv"] / 100.0,
             "niveau": niveau_echantillon(n_min), "robustesse": None, "points_de_vigilance": vigilance, "rang": rang,
             "apercu_non_calibre": apercu,
-            "justification": {"resume": synthese(sel, lambdas, apercu), "preuves": preuves,
+            "justification": {"resume": synthese(sel, n_min, apercu), "preuves": preuves,
+                              "explication": sel.get("explication"),
                               "donnees_suffisantes": True, "bibliotheque": {"ev_percentage": sel["edv"]}}}
 
 
