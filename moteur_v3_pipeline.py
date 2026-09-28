@@ -18,9 +18,12 @@ l'archive de test, dans un try : un échec ici ne bloque jamais le reste) :
   3. Double contrôle (obligatoire, regles_selection.double_controle, décidé le 26/09) : saison dans les deux sens +
      forme récente. Sa liste de raisons sert de justification. Marché non couvert par la règle : pas de double contrôle,
      donc pas de sélection.
-  4. Évalue chaque match à venir avec moteur_v3.evaluate_match et écrit data/v3/pronostics_v3.json (lu par
-     pronostics_v3.html) : sélections, meilleurs candidats écartés avec la raison exacte, et un bilan chiffré de ce
-     qui bloque. data/ est commité par le workflow à chaque run.
+  4. Évalue chaque match à venir avec moteur_v3.evaluate_match et écrit data/v3/pronostics_v3.json : sélections,
+     meilleurs candidats écartés avec la raison exacte, bilan chiffré de ce qui bloque, et `signaux` au MÊME format que
+     precalcul_leger.json (bloc `moteur_v3` : statut + selection P1/P2/P3 avec justification). La page
+     pronostics_v3.html est une copie de la page « Sélections Archetype » (archetype_v3.js = archetype.js avec
+     CLE_MOTEUR = "moteur_v3") : même affichage, données V3 seulement, jamais mélangées avec la V2.
+     data/ est commité par le workflow à chaque run.
 
 Le nom de la compétition n'est JAMAIS transmis au moteur (règle « aucune discrimination par division »).
 
@@ -125,6 +128,8 @@ def preuves(enreg, marches):
             raisons = list(r["saison"]["raisons"]) + list(r["recent"]["raisons"])
             bloc["justification"] = " ; ".join(raisons) if r["retenu"] else None
             bloc["double_controle_raisons"] = raisons
+            bloc["raisons_saison"] = list(r["saison"]["raisons"])
+            bloc["raisons_recent"] = list(r["recent"]["raisons"])
         out[m] = bloc
     return out
 
@@ -199,8 +204,9 @@ def evalue_enregistrement(enreg, calibrateur):
     entree = entree_v3(enreg)
     if not entree["odds"]:
         return {**base, "statut": "SANS_COTE", "selections": [], "candidats": []}
+    evidence = preuves(enreg, entree["odds"])
     try:
-        r = evaluate_match(entree, calibrator=calibrateur, evidence=preuves(enreg, entree["odds"]))
+        r = evaluate_match(entree, calibrator=calibrateur, evidence=evidence)
     except ValueError as e:
         return {**base, "statut": f"NON_EVALUE : {e}", "selections": [], "candidats": []}
     m = r["model"]
@@ -213,11 +219,58 @@ def evalue_enregistrement(enreg, calibrateur):
                           "calibree": c["calibrated"], "edv": round(c["edv"], 1),
                           "raisons": sorted(set(v.reasons) | set(rejets.get(c["market"], ())))})
     selections = [{"marche": s.market, "libelle": libelle(s.market), "cote": s.odds,
-                   "probabilite": round(s.probability, 4), "edv": round(s.edv, 1), "justification": s.reason}
+                   "probabilite": round(s.probability, 4), "edge": s.edge, "edv": round(s.edv, 1),
+                   "justification": s.reason,
+                   "raisons_saison": evidence.get(s.market, {}).get("raisons_saison", []),
+                   "raisons_recent": evidence.get(s.market, {}).get("raisons_recent", [])}
                   for s in r["selected"]]
     return {**base, "statut": "EVALUE", "lambda_dom": round(m.lambda_home, 3), "lambda_ext": round(m.lambda_away, 3),
             "n_dom": m.home_sample.current_n, "n_ext": m.away_sample.current_n,
             "selections": selections, "candidats": candidats[:5], "tous_les_candidats": candidats}
+
+
+# Noms de marchés V3 -> noms lus par traduction_marches.js (ceux de la page « Sélections Archetype »).
+V3_VERS_SITE = {"1x2_1": "1x2_domicile", "1x2_X": "1x2_nul", "1x2_2": "1x2_exterieur",
+                "dc_1X": "double_chance_1X", "dc_X2": "double_chance_X2", "dc_12": "double_chance_12",
+                "btts_yes": "btts_oui", "btts_no": "btts_non",
+                "clean_home": "cage_inviolee_domicile", "clean_away": "cage_inviolee_exterieur"}
+for _x in range(6):
+    for _s in ("over", "under"):
+        V3_VERS_SITE[f"{_s}_{_x}_5"] = f"over_under_total_{_x}.5_{_s}"
+for _x in range(2):
+    for _s in ("over", "under"):
+        V3_VERS_SITE[f"home_{_s}_{_x}_5"] = f"buts_equipe_domicile_{_x}.5_{_s}"
+        V3_VERS_SITE[f"away_{_s}_{_x}_5"] = f"buts_equipe_exterieur_{_x}.5_{_s}"
+
+VIGILANCE_V3 = "Moteur V3 expérimental : pas encore validé sur 100 matchs réels."
+
+
+def candidat_site(sel, rang, n_min):
+    """Une sélection V3 au format d'un candidat de la page « Sélections Archetype » (moteur_v2_6_9.selection.Px)."""
+    preuves = []
+    if sel["raisons_saison"]:
+        preuves.append({"type": "v3_controle_saison", "texte": " ; ".join(r.lstrip("✓ ") for r in sel["raisons_saison"])})
+    if sel["raisons_recent"]:
+        preuves.append({"type": "v3_forme_recente", "texte": " ; ".join(r.lstrip("✓ ") for r in sel["raisons_recent"])})
+    preuves.append({"type": "ev_percentage", "valeur": sel["edv"],
+                    "texte": f"Le prix proposé laisse {sel['edv']:.1f}% de marge par rapport à l'estimation calibrée."})
+    vigilance = [VIGILANCE_V3] + (["Moins de 5 matchs au même lieu pour une des deux équipes."] if n_min < 5 else [])
+    return {"marche": V3_VERS_SITE.get(sel["marche"], sel["marche"]), "marche_moteur": sel["marche"],
+            "probabilite": sel["probabilite"], "cote": sel["cote"], "edge": sel["edge"], "edv": sel["edv"] / 100.0,
+            "niveau": "V3_NON_VALIDE", "robustesse": None, "points_de_vigilance": vigilance, "rang": rang,
+            "justification": {"resume": preuves[0]["texte"] if preuves else "", "preuves": preuves,
+                              "donnees_suffisantes": True, "bibliotheque": {"ev_percentage": sel["edv"]}}}
+
+
+def signal_site(x):
+    """Un match au format d'un signal de precalcul_leger.json, avec le seul bloc moteur_v3."""
+    n_min = min(x.get("n_dom") or 0, x.get("n_ext") or 0)
+    rangs = ("P1", "P2", "P3")
+    selection = {rang: candidat_site(s, rang, n_min) for rang, s in zip(rangs, x["selections"])}
+    return {"match_id": x["match_id"], "date": x["date"], "heure_cameroun": x["heure"], "competition": x["competition"],
+            "domicile": x["domicile"], "exterieur": x["exterieur"], "moteur_utilise": "moteur_v3",
+            "moteur_v3": {"statut": "OK" if x["statut"] == "EVALUE" else x["statut"], "moteur": "moteur_v3",
+                          "statut_global": STATUT, "selection": selection}}
 
 
 def execution(dossier=DOSSIER_ARCHIVE, fichier_sortie=FICHIER_SORTIE, maintenant=None):
@@ -240,6 +293,7 @@ def execution(dossier=DOSSIER_ARCHIVE, fichier_sortie=FICHIER_SORTIE, maintenant
                   "matchs_avec_selection": sum(1 for x in matchs if x["selections"]),
                   "raisons_de_rejet": dict(raisons.most_common())},
         "matchs": matchs,
+        "signaux": [signal_site(x) for x in matchs],
     }
     os.makedirs(os.path.dirname(fichier_sortie), exist_ok=True)
     with open(fichier_sortie, "w", encoding="utf-8") as f:
