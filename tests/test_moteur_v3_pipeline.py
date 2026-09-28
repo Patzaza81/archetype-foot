@@ -197,16 +197,16 @@ def test_page_v3_sans_roles_de_la_v2():
         assert niveau in code
 
 
-@pytest.mark.parametrize("lambdas,attendu", [((1.62, 1.1), "buts attendus par la V3 : 1,62 – 1,10"),
-                                             ((2.0, 0.85), "buts attendus par la V3 : 2,00 – 0,85"),
-                                             ((0.9, 1.4), "buts attendus par la V3 : 0,90 – 1,40")])
-def test_synthese_avec_les_buts_attendus_de_la_v3(lambdas, attendu):
-    assert attendu in mp.synthese(_selection(), lambdas)
+@pytest.mark.parametrize("n,attendu", [(3, "Probabilité calibrée 72 % contre 62 % selon la cote 1,60 · marge +15,2 % · 3 matchs au même lieu."),
+                                       (6, "· 6 matchs au même lieu."), (12, "· 12 matchs au même lieu.")])
+def test_resume_standard_une_ligne(n, attendu):
+    assert attendu in mp.synthese(_selection(), n)
 
 
-@pytest.mark.parametrize("lambdas", [None, (None, 1.2), (1.2, None)])
-def test_synthese_sans_buts_attendus_inconnus(lambdas):
-    assert "buts attendus" not in mp.synthese(_selection(), lambdas)
+@pytest.mark.parametrize("n", [None, 3, 12])
+def test_resume_sans_buts_attendus_ni_preuve(n):
+    t = mp.synthese(_selection(), n)
+    assert "buts attendus" not in t and "double contrôle" not in t and t.count(".") >= 1
 
 
 # --- AJOUT 28/09/2026 : aperçu NON calibré tant que la calibration n'est pas prête (décision de Patrick) -------------
@@ -414,3 +414,71 @@ def test_journal_contient_le_diagnostic_de_tous_les_marches(tmp_path):
     _, j = _lance(tmp_path, [_enreg("ok")], datetime.datetime(2026, 9, 28, 6, 0, tzinfo=datetime.timezone.utc))
     lignes = j["ok"]["tous_les_marches"]
     assert {l[0] for l in lignes} == set(mp.cotes_v3(_enreg("ok"))) and all(len(l) == 5 for l in lignes)
+
+
+# --- AJOUT 28/09/2026 : standard de justification V3 (6 blocs + alertes) et règle du double contrôle 1.2.0 -------------
+
+BLOCS = ["Données", "Buts attendus", "Probabilité", "Face à la cote", "Contrôles", "Pourquoi ce marché"]
+
+
+def _apercus_reels():
+    racine = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    with open(os.path.join(racine, "tests", "fixtures", "v3_matchs_reels_2709.json"), encoding="utf-8") as f:
+        enregs = json.load(f)["enregistrements"]
+    out = []
+    for e in enregs:
+        x = mp.evalue_enregistrement(e, None)
+        out += [(e, a) for a in x.get("apercu_non_calibre", [])]
+    return out
+
+
+def test_explication_six_blocs_dans_l_ordre():
+    ap = _apercus_reels()
+    assert ap, "au moins un aperçu attendu sur les vrais matchs du 27/09"
+    for _, a in ap:
+        ex = a["explication"]
+        assert [b["titre"] for b in ex["blocs"]] == BLOCS and all(b["lignes"] for b in ex["blocs"])
+        assert ex["alertes"][0].startswith("Aperçu non calibré")
+
+
+def test_explication_chiffres_coherents():
+    for e, a in _apercus_reels():
+        bloc = {b["titre"]: b["lignes"] for b in a["explication"]["blocs"]}
+        assert f"Cote {a['cote']:.2f}".replace(".", ",") in bloc["Face à la cote"][0]
+        assert f"{100 * a['probabilite']:.1f}".replace(".", ",") in bloc["Probabilité"][0]
+        assert e["domicile"] in bloc["Données"][0] and e["exterieur"] in bloc["Données"][1]
+
+
+@pytest.mark.parametrize("marche,attendu", [("1x2_1", "domicile > extérieur"), ("under_3_5", "au plus 3 buts"),
+                                            ("handicap_1.5_1", "buts domicile − 1,5 > buts extérieur")])
+def test_phrase_de_calcul_par_famille(marche, attendu):
+    assert attendu in mp.phrase_calcul(marche)
+
+
+@pytest.mark.parametrize("args,attendu", [((0.82, 1.52, 3, (3.5, 0.9), 1.3, True), 5),
+                                          ((0.72, 1.60, 4, (1.5, 1.1), 0.8, False), 1),
+                                          ((0.75, 1.44, 4, (2.4, 2.1), 0.9, False), 2)])
+def test_alertes_declenchees(args, attendu):
+    assert len(mp.alertes(*args)) == attendu
+
+
+@pytest.mark.parametrize("args", [(0.70, 1.55, 8, (1.4, 1.1), 0.9, False), (0.65, 1.62, 6, (1.6, 1.2), 1.1, False),
+                                  (0.68, 1.50, 10, (1.3, 1.3), 1.0, False)])
+def test_aucune_alerte_sur_un_cas_normal(args):
+    assert mp.alertes(*args) == []
+
+
+def test_tous_les_marches_regles_existent():
+    import regles_selection as rs
+    assert all(v in rs.MARCHES_COUVERTS for v in mp.DOUBLE_CONTROLE.values())
+
+
+@pytest.mark.parametrize("marche,regle", [("handicap_0.5_1", "1X2 - 1"), ("handicap_-0.5_2", "1X2 - 2"),
+                                          ("clean_home_no", "Buts extérieur - plus de 0.5")])
+def test_marches_equivalents_meme_regle(marche, regle):
+    assert mp.DOUBLE_CONTROLE[marche] == regle
+
+
+@pytest.mark.parametrize("marche", ["score_1_0", "exact_goals_2", "total_pair"])
+def test_marches_non_justifiables_restent_hors_regle(marche):
+    assert marche not in mp.DOUBLE_CONTROLE
