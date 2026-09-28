@@ -35,9 +35,8 @@ def _clean(matrix, home):
 
 
 def _handicap(matrix, line):
-    if line < 0:
-        raise ValueError("HANDICAP_LINE_DOIT_ETRE_NORMALISEE_POSITIVE")
-    # Convention contractuelle BetPawa: domicile - N / nul / extérieur + N.
+    # La ligne est celle observée chez BetPawa : elle peut être négative ou positive.
+    # Le calcul applique littéralement domicile - ligne face à extérieur, avec trois issues.
     return _result(tuple(
         tuple(p for p in row) for row in matrix
     )) if False else (
