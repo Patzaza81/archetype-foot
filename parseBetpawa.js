@@ -90,10 +90,11 @@ function parseBetpawa(texte, nomDomicile, nomExterieur) {
       while (i + 5 < lignes.length) {
         const l1 = lignes[i], l2 = lignes[i + 2], l3 = lignes[i + 4];
         if (!/^Domicile\s+-\d+$/i.test(l1) || !/^Nul\s+-\d+$/i.test(l2) || !/^Extérieur\s+\+\d+$/i.test(l3)) break;
-        const ligne = parseInt(l1.match(/-\d+$/)[0].slice(1), 10);
+        const ligne = Number(l1.match(/[+-]\d+$/)[0]);
+        if (![ -2, -1, 1, 2 ].includes(ligne)) { i += 6; continue; }
         const vd = versNombre(lignes[i + 1]), vn = versNombre(lignes[i + 3]), ve = versNombre(lignes[i + 5]);
         if (vd === null || vn === null || ve === null) break;
-        cotes[`handicap_3choix_${ligne}`] = { domicile: vd, nul: vn, exterieur: ve };
+        cotes[`handicap_3issues_${ligne}`] = { "1": vd, "X": vn, "2": ve };
         i += 6;
       }
       continue;
