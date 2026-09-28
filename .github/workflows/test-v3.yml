@@ -1,0 +1,22 @@
+name: V3 core tests
+
+on:
+  pull_request:
+    paths:
+      - "moteur_v3/**"
+      - "tests/test_moteur_v3.py"
+      - ".github/workflows/test-v3.yml"
+  push:
+    branches:
+      - "moteur-v3-core"
+
+jobs:
+  test-v3:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --upgrade pip pytest
+      - run: python -m pytest -q tests/test_moteur_v3.py tests/test_moteur_v3_integration.py tests/test_moteur_v3_pipeline.py
