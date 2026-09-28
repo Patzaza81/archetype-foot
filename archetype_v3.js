@@ -17,6 +17,12 @@
 // estArchetypeGo(), echappeHtml() gardent leur nom, et chaque carte contient
 // un <details class="details-analyse"> (panier.js l'ouvre via "Voir l'analyse").
 
+// AJOUT 28/09/2026 -- handicaps (2 et 3 choix) : libellé complet calculé par le pipeline V3 (ligne BetPawa + sens du
+// pari, avec les noms d'équipes). Les autres marchés passent par traduction_marches.js, inchangé.
+function nomMarcheV3(c, equipes) {
+  return c.libelle || traduitMarche(c.marche, equipes);
+}
+
 // V3 : pas de rôles Favori / Value Bet / Coup de Poker -- un onglet par sélection réellement retenue par le moteur.
 // Aperçu non calibré (calibration pas encore prête) : onglet « Aperçu n » au lieu de « Sélection n ».
 function titreRang(info, c) {
@@ -142,7 +148,7 @@ function construitResume(selection, equipes) {
       `<div class="ax-resume-corps">` +
       `<div class="ax-resume-tete"><span class="ax-resume-etiquette">${echappeHtml(titreRang(info, c))}</span>` +
       `<span class="ax-resume-cote">Cote <strong>${formatCote(c.cote)}</strong></span></div>` +
-      `<h3 class="ax-resume-marche">${echappeHtml(traduitMarche(c.marche, equipes))}</h3>` +
+      `<h3 class="ax-resume-marche">${echappeHtml(nomMarcheV3(c, equipes))}</h3>` +
       (texte ? `<p class="ax-resume-texte">${echappeHtml(texte)}</p>` : "") + `</div>` +
       `${construitJauge(c.probabilite, "ax-jauge-mini")}</div>`;
   }).join("");
@@ -161,7 +167,7 @@ function construitPanneau(info, c, equipes, idPanneau, idOnglet) {
   el.id = idPanneau; el.setAttribute("role", "tabpanel"); el.setAttribute("aria-labelledby", idOnglet);
   el.dataset.cle = info.cle;
   el.innerHTML =
-    `<h2 class="ax-marche">${echappeHtml(traduitMarche(c.marche, equipes))}</h2>` +
+    `<h2 class="ax-marche">${echappeHtml(nomMarcheV3(c, equipes))}</h2>` +
     `<div class="ax-ligne-cote">` +
       `<p class="ax-texte-resume">${echappeHtml(resume)}</p>` +
       `<div class="ax-badge-cote"><span>Cote</span><strong>${formatCote(c.cote)}</strong></div>` +
@@ -254,7 +260,7 @@ function construitExplication(ex) {
 function construitAnalyse(info, c, equipes) {
   const j = c.justification || {};
   const b = j.bibliotheque && typeof j.bibliotheque === "object" ? j.bibliotheque : {};
-  const tete = `<h3>${echappeHtml(titreRang(info, c))} — ${echappeHtml(traduitMarche(c.marche, equipes))}</h3>`;
+  const tete = `<h3>${echappeHtml(titreRang(info, c))} — ${echappeHtml(nomMarcheV3(c, equipes))}</h3>`;
   const ouvre = `<div class="ax-detail-rang ax-${info.classe}" data-cle="${info.cle}" hidden>`;
   if (!j.donnees_suffisantes) {
     return ouvre + tete + `<div class="ax-analyse-vide"><strong>Analyse non disponible</strong>` +
