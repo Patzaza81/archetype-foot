@@ -80,11 +80,11 @@ def test_match_passe_ou_joue(e):
 
 
 def test_calibration_seulement_sur_matchs_joues_avant_aujourdhui():
-    joues = [_enreg(f"j{i}", date="2026-09-20", score=(i % 3, 1)) for i in range(10)]
+    joues = [_enreg(f"j{i}", date="2026-09-20", score=(i % 3, 1)) for i in range(300)]
     exclus = [_enreg("jour", date="2026-09-27", score=(2, 0)), _enreg("futur", score=(1, 1)), _enreg("sans_score",
                                                                                                        date="2026-09-20")]
     cal, n = mp.entraine_calibration(joues + exclus, "2026-09-27")
-    assert n == 10 and cal.fit_result.ready
+    assert n == 300 and cal.fit_result.ready
     cal2, n2 = mp.entraine_calibration(exclus, "2026-09-27")
     assert n2 == 0 and not cal2.fit_result.ready
 
