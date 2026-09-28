@@ -1,7 +1,7 @@
 {
  "moteur": "moteur_v3",
  "statut": "EXPÉRIMENTAL — NON VALIDÉ",
- "genere_le": "2026-09-28T03:29:46Z",
+ "genere_le": "2026-09-28T04:17:01Z",
  "calibration": {
   "prete": false,
   "observations": 0,
@@ -10,29 +10,2461 @@
   "raison": "ECHANTILLON_INSUFFISANT"
  },
  "bilan": {
-  "matchs": 24,
+  "matchs": 25,
   "statuts": {
-   "EVALUE": 23,
-   "NON_EVALUE": 1
+   "NON_EVALUE": 3,
+   "EVALUE": 22
   },
   "selections": 0,
   "matchs_avec_selection": 0,
   "matchs_en_apercu_non_calibre": 4,
   "raisons_de_rejet": {
-   "CALIBRATION_ABSENTE": 585,
-   "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT": 570,
-   "JUSTIFICATION_INSUFFISANTE": 570,
-   "VALUE_NON_ELIGIBLE": 570,
-   "COTE_HORS_FENETRE": 467,
-   "PROBABILITE_INF_60": 417,
+   "CALIBRATION_ABSENTE": 560,
+   "VALUE_NON_ELIGIBLE": 546,
+   "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT": 545,
+   "JUSTIFICATION_INSUFFISANTE": 545,
+   "COTE_HORS_FENETRE": 447,
+   "PROBABILITE_INF_60": 399,
    "N_3_4_CONTROLE_STRICT_NON_SATISFAIT": 296,
-   "EDV_INSUFFISANTE": 136,
+   "EDV_INSUFFISANTE": 130,
    "SURDISPERSION_1_20_1_50_ET_P_INF_67": 120,
    "N_LIEU_INF_3": 27,
    "SURDISPERSION_SUP_1_50": 25
   }
  },
+ "matchs": [
+  {
+   "match_id": "8va26dyvf6f0hj6qjbbsw8t90",
+   "date": "2026-09-28",
+   "heure": null,
+   "competition": "Mexique : Liga MX Ouverture",
+   "domicile": "Club Necaxa",
+   "exterieur": "Club América",
+   "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
+   "selections": [],
+   "candidats": []
+  },
+  {
+   "match_id": "baho4mtiigm4o2yzx5be5qas4",
+   "date": "2026-09-28",
+   "heure": null,
+   "competition": "Etats-Unis : MLS",
+   "domicile": "Columbus",
+   "exterieur": "Inter Miami",
+   "statut": "EVALUE",
+   "lambda_dom": 1.581,
+   "lambda_ext": 1.972,
+   "n_dom": 12,
+   "n_ext": 12,
+   "selections": [],
+   "apercu_non_calibre": [],
+   "candidats": [
+    {
+     "marche": "1x2_2",
+     "libelle": "Victoire extérieur",
+     "cote": 1.98,
+     "probabilite_brute": 0.4705392317861887,
+     "probabilite": 0.4705392317861887,
+     "calibree": false,
+     "edv": -6.8,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "1x2_1",
+     "libelle": "Victoire domicile",
+     "cote": 2.92,
+     "probabilite_brute": 0.3124761882272687,
+     "probabilite": 0.3124761882272687,
+     "calibree": false,
+     "edv": -8.8,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_5_5",
+     "libelle": "Moins de 5,5 buts",
+     "cote": 1.07,
+     "probabilite_brute": 0.8505287178762593,
+     "probabilite": 0.8505287178762593,
+     "calibree": false,
+     "edv": -9.0,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "EDV_INSUFFISANTE",
+      "JUSTIFICATION_INSUFFISANTE",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_3_5",
+     "libelle": "Moins de 3,5 buts",
+     "cote": 1.73,
+     "probabilite_brute": 0.5252386367788382,
+     "probabilite": 0.5252386367788382,
+     "calibree": false,
+     "edv": -9.1,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_2_5",
+     "libelle": "Moins de 2,5 buts",
+     "cote": 2.92,
+     "probabilite_brute": 0.31115398395067717,
+     "probabilite": 0.31115398395067717,
+     "calibree": false,
+     "edv": -9.1,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "6ky80vuwl96c0rgco76a3slck",
+   "date": "2026-09-28",
+   "heure": null,
+   "competition": "Colombie : Première A Cloture",
+   "domicile": "Fortaleza",
+   "exterieur": "Dep. Tolima",
+   "statut": "EVALUE",
+   "lambda_dom": 1.263,
+   "lambda_ext": 1.016,
+   "n_dom": 12,
+   "n_ext": 12,
+   "selections": [],
+   "apercu_non_calibre": [],
+   "candidats": [
+    {
+     "marche": "1x2_1",
+     "libelle": "Victoire domicile",
+     "cote": 3.92,
+     "probabilite_brute": 0.42002977021869237,
+     "probabilite": 0.42002977021869237,
+     "calibree": false,
+     "edv": 64.7,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "dc_1X",
+     "libelle": "Double chance 1X",
+     "cote": 1.7,
+     "probabilite_brute": 0.7024706351714032,
+     "probabilite": 0.7024706351714032,
+     "calibree": false,
+     "edv": 19.4,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE"
+     ]
+    },
+    {
+     "marche": "under_1_5",
+     "libelle": "Moins de 1,5 buts",
+     "cote": 3.05,
+     "probabilite_brute": 0.33579461506881136,
+     "probabilite": 0.33579461506881136,
+     "calibree": false,
+     "edv": 2.4,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_2_5",
+     "libelle": "Moins de 2,5 buts",
+     "cote": 1.6,
+     "probabilite_brute": 0.6016939657768101,
+     "probabilite": 0.6016939657768101,
+     "calibree": false,
+     "edv": -3.7,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "EDV_INSUFFISANTE",
+      "JUSTIFICATION_INSUFFISANTE",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_4_5",
+     "libelle": "Moins de 4,5 buts",
+     "cote": 1.03,
+     "probabilite_brute": 0.9187192334443101,
+     "probabilite": 0.9187192334443101,
+     "calibree": false,
+     "edv": -5.4,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "EDV_INSUFFISANTE",
+      "JUSTIFICATION_INSUFFISANTE",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "9fz0b10b25bs80xbt4x2m7uvo",
+   "date": "2026-09-28",
+   "heure": "18:00",
+   "competition": "Slovénie : 2. SNL",
+   "domicile": "NK Rudar Velenje",
+   "exterieur": "Dravinja",
+   "statut": "EVALUE",
+   "lambda_dom": 2.743,
+   "lambda_ext": 0.626,
+   "n_dom": 3,
+   "n_ext": 4,
+   "selections": [],
+   "apercu_non_calibre": [
+    {
+     "marche": "1x2_1",
+     "libelle": "Victoire domicile",
+     "cote": 1.52,
+     "probabilite": 0.8154,
+     "edge": 0.15750425497945886,
+     "edv": 23.9,
+     "justification": "✓ NK Rudar Velenje gagne 100% de ses matchs à ce lieu (3) ; ✓ NK Rudar Velenje prend 1,71 pt/match sur la saison ; ✓ NK Rudar Velenje marque 3,0 but/match à ce lieu ; ✓ Dravinja gagne 0% à son lieu (4) ; ✓ Dravinja encaisse 2,2 but/match à son lieu ; ✓ NK Rudar Velenje sur ses 6 derniers : 4 victoires, 2 défaites ; ✓ Dravinja sur ses 6 derniers : 1 victoire",
+     "raisons_saison": [
+      "✓ NK Rudar Velenje gagne 100% de ses matchs à ce lieu (3)",
+      "✓ NK Rudar Velenje prend 1,71 pt/match sur la saison",
+      "✓ NK Rudar Velenje marque 3,0 but/match à ce lieu",
+      "✓ Dravinja gagne 0% à son lieu (4)",
+      "✓ Dravinja encaisse 2,2 but/match à son lieu"
+     ],
+     "raisons_recent": [
+      "✓ NK Rudar Velenje sur ses 6 derniers : 4 victoires, 2 défaites",
+      "✓ Dravinja sur ses 6 derniers : 1 victoire"
+     ]
+    }
+   ],
+   "candidats": [
+    {
+     "marche": "clean_home",
+     "libelle": "Domicile n'encaisse pas",
+     "cote": 2.43,
+     "probabilite_brute": 0.5344831753070592,
+     "probabilite": 0.5344831753070592,
+     "calibree": false,
+     "edv": 29.9,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "1x2_1",
+     "libelle": "Victoire domicile",
+     "cote": 1.52,
+     "probabilite_brute": 0.8153989918215642,
+     "probabilite": 0.8153989918215642,
+     "calibree": false,
+     "edv": 23.9,
+     "raisons": [
+      "CALIBRATION_ABSENTE"
+     ]
+    },
+    {
+     "marche": "btts_no",
+     "libelle": "Les deux équipes ne marquent pas toutes les deux",
+     "cote": 2.09,
+     "probabilite_brute": 0.5644561900417363,
+     "probabilite": 0.5644561900417363,
+     "calibree": false,
+     "edv": 18.0,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "home_over_1_5",
+     "libelle": "Domicile marque plus de 1,5 but",
+     "cote": 1.46,
+     "probabilite_brute": 0.7590104023272491,
+     "probabilite": 0.7590104023272491,
+     "calibree": false,
+     "edv": 10.8,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE"
+     ]
+    },
+    {
+     "marche": "dc_1X",
+     "libelle": "Double chance 1X",
+     "cote": 1.15,
+     "probabilite_brute": 0.9397536917488497,
+     "probabilite": 0.9397536917488497,
+     "calibree": false,
+     "edv": 8.1,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "3qaqtts1a2yqwuc2kc9cz3j10",
+   "date": "2026-09-28",
+   "heure": "19:30",
+   "competition": "Espagne : Segunda Division",
+   "domicile": "Leganes",
+   "exterieur": "Castellon",
+   "statut": "EVALUE",
+   "lambda_dom": 1.227,
+   "lambda_ext": 1.357,
+   "n_dom": 2,
+   "n_ext": 3,
+   "selections": [],
+   "apercu_non_calibre": [],
+   "candidats": [
+    {
+     "marche": "1x2_1",
+     "libelle": "Victoire domicile",
+     "cote": 3.08,
+     "probabilite_brute": 0.33727143262985226,
+     "probabilite": 0.33727143262985226,
+     "calibree": false,
+     "edv": 3.9,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "N_LIEU_INF_3",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "dc_12",
+     "libelle": "Double chance 12",
+     "cote": 1.34,
+     "probabilite_brute": 0.7358152188259626,
+     "probabilite": 0.7358152188259626,
+     "calibree": false,
+     "edv": -1.4,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "EDV_INSUFFISANTE",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "N_LIEU_INF_3",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_3_5",
+     "libelle": "Moins de 3,5 buts",
+     "cote": 1.33,
+     "probabilite_brute": 0.7394508938557431,
+     "probabilite": 0.7394508938557431,
+     "calibree": false,
+     "edv": -1.7,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "EDV_INSUFFISANTE",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "N_LIEU_INF_3",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_1_5",
+     "libelle": "Moins de 1,5 buts",
+     "cote": 3.62,
+     "probabilite_brute": 0.27046514157366175,
+     "probabilite": 0.27046514157366175,
+     "calibree": false,
+     "edv": -2.1,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "N_LIEU_INF_3",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "btts_no",
+     "libelle": "Les deux équipes ne marquent pas toutes les deux",
+     "cote": 2.06,
+     "probabilite_brute": 0.4751149569451819,
+     "probabilite": 0.4751149569451819,
+     "calibree": false,
+     "edv": -2.1,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "N_LIEU_INF_3",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "5aa7ywrv7i3cozj5pps76vml0",
+   "date": "2026-09-28",
+   "heure": "20:30",
+   "competition": "Paraguay : Professionnel de la Division Clôture",
+   "domicile": "San Lorenzo",
+   "exterieur": "Dep. Recoleta",
+   "statut": "EVALUE",
+   "lambda_dom": 1.005,
+   "lambda_ext": 1.145,
+   "n_dom": 12,
+   "n_ext": 12,
+   "selections": [],
+   "apercu_non_calibre": [],
+   "candidats": [
+    {
+     "marche": "under_1_5",
+     "libelle": "Moins de 1,5 buts",
+     "cote": 3.48,
+     "probabilite_brute": 0.3668671282794237,
+     "probabilite": 0.3668671282794237,
+     "calibree": false,
+     "edv": 27.7,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "exact_goals_0",
+     "libelle": "Exactement 0 buts",
+     "cote": 10.34,
+     "probabilite_brute": 0.11645719701426341,
+     "probabilite": 0.11645719701426341,
+     "calibree": false,
+     "edv": 20.4,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_2_5",
+     "libelle": "Moins de 2,5 buts",
+     "cote": 1.83,
+     "probabilite_brute": 0.6360867870204046,
+     "probabilite": 0.6360867870204046,
+     "calibree": false,
+     "edv": 16.4,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_0_5",
+     "libelle": "Moins de 0,5 buts",
+     "cote": 9.84,
+     "probabilite_brute": 0.11645719701426338,
+     "probabilite": 0.11645719701426338,
+     "calibree": false,
+     "edv": 14.6,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "btts_no",
+     "libelle": "Les deux équipes ne marquent pas toutes les deux",
+     "cote": 1.99,
+     "probabilite_brute": 0.5677332695580922,
+     "probabilite": 0.5677332695580922,
+     "calibree": false,
+     "edv": 13.0,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "5alzjynn9irsic5yo4l1fof84",
+   "date": "2026-09-28",
+   "heure": "23:00",
+   "competition": "Paraguay : Professionnel de la Division Clôture",
+   "domicile": "Libertad",
+   "exterieur": "Club Olimpia",
+   "statut": "EVALUE",
+   "lambda_dom": 1.581,
+   "lambda_ext": 1.128,
+   "n_dom": 12,
+   "n_ext": 12,
+   "selections": [],
+   "apercu_non_calibre": [],
+   "candidats": [
+    {
+     "marche": "1x2_1",
+     "libelle": "Victoire domicile",
+     "cote": 2.8,
+     "probabilite_brute": 0.47833562276874725,
+     "probabilite": 0.47833562276874725,
+     "calibree": false,
+     "edv": 33.9,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "away_under_0_5",
+     "libelle": "Extérieur marque moins de 0,5 but",
+     "cote": 3.42,
+     "probabilite_brute": 0.323751906394682,
+     "probabilite": 0.323751906394682,
+     "calibree": false,
+     "edv": 10.7,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "dc_1X",
+     "libelle": "Double chance 1X",
+     "cote": 1.51,
+     "probabilite_brute": 0.728436780694134,
+     "probabilite": 0.728436780694134,
+     "calibree": false,
+     "edv": 10.0,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE"
+     ]
+    },
+    {
+     "marche": "away_under_1_5",
+     "libelle": "Extérieur marque moins de 1,5 but",
+     "cote": 1.53,
+     "probabilite_brute": 0.6888721119397954,
+     "probabilite": 0.6888721119397954,
+     "calibree": false,
+     "edv": 5.4,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "EDV_INSUFFISANTE",
+      "JUSTIFICATION_INSUFFISANTE",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "dc_12",
+     "libelle": "Double chance 12",
+     "cote": 1.31,
+     "probabilite_brute": 0.7498988420746132,
+     "probabilite": 0.7498988420746132,
+     "calibree": false,
+     "edv": -1.8,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "EDV_INSUFFISANTE",
+      "JUSTIFICATION_INSUFFISANTE",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "5ttuyfb5dkbe059f3nuao7xn8",
+   "date": "2026-09-29",
+   "heure": null,
+   "competition": "Colombie : Première A Cloture",
+   "domicile": "Medellín",
+   "exterieur": "Millonarios FC",
+   "statut": "EVALUE",
+   "lambda_dom": 1.511,
+   "lambda_ext": 1.246,
+   "n_dom": 12,
+   "n_ext": 12,
+   "selections": [],
+   "apercu_non_calibre": [],
+   "candidats": [
+    {
+     "marche": "dc_12",
+     "libelle": "Double chance 12",
+     "cote": 1.35,
+     "probabilite_brute": 0.7474694581148739,
+     "probabilite": 0.7474694581148739,
+     "calibree": false,
+     "edv": 0.9,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "EDV_INSUFFISANTE",
+      "JUSTIFICATION_INSUFFISANTE",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "over_3_5",
+     "libelle": "Plus de 3,5 buts",
+     "cote": 3.36,
+     "probabilite_brute": 0.29844792892152694,
+     "probabilite": 0.29844792892152694,
+     "calibree": false,
+     "edv": 0.3,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "away_over_1_5",
+     "libelle": "Extérieur marque plus de 1,5 but",
+     "cote": 2.82,
+     "probabilite_brute": 0.35387137485229325,
+     "probabilite": 0.35387137485229325,
+     "calibree": false,
+     "edv": -0.2,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "over_1_5",
+     "libelle": "Plus de 1,5 buts",
+     "cote": 1.29,
+     "probabilite_brute": 0.7614481496787905,
+     "probabilite": 0.7614481496787905,
+     "calibree": false,
+     "edv": -1.8,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "EDV_INSUFFISANTE",
+      "JUSTIFICATION_INSUFFISANTE",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "over_4_5",
+     "libelle": "Plus de 4,5 buts",
+     "cote": 6.69,
+     "probabilite_brute": 0.1456456863469636,
+     "probabilite": 0.1456456863469636,
+     "calibree": false,
+     "edv": -2.6,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "8204510xl38a19seks8nwu2vo",
+   "date": "2026-09-29",
+   "heure": "19:00",
+   "competition": "Angleterre : Ligue Nationale",
+   "domicile": "Boreham Wood",
+   "exterieur": "Kidderminster",
+   "statut": "EVALUE",
+   "lambda_dom": 1.974,
+   "lambda_ext": 1.636,
+   "n_dom": 4,
+   "n_ext": 4,
+   "selections": [],
+   "apercu_non_calibre": [],
+   "candidats": [
+    {
+     "marche": "1x2_2",
+     "libelle": "Victoire extérieur",
+     "cote": 6.33,
+     "probabilite_brute": 0.32388556606542307,
+     "probabilite": 0.32388556606542307,
+     "calibree": false,
+     "edv": 105.0,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "dc_X2",
+     "libelle": "Double chance X2",
+     "cote": 2.75,
+     "probabilite_brute": 0.5399703084521272,
+     "probabilite": 0.5399703084521272,
+     "calibree": false,
+     "edv": 48.5,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "over_4_5",
+     "libelle": "Plus de 4,5 buts",
+     "cote": 4.04,
+     "probabilite_brute": 0.29551013612418797,
+     "probabilite": 0.29551013612418797,
+     "calibree": false,
+     "edv": 19.4,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "exact_goals_6_plus",
+     "libelle": "6 buts ou plus",
+     "cote": 7.48,
+     "probabilite_brute": 0.15728636582074454,
+     "probabilite": 0.15728636582074454,
+     "calibree": false,
+     "edv": 17.7,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "btts_yes",
+     "libelle": "Les deux équipes marquent",
+     "cote": 1.69,
+     "probabilite_brute": 0.693421081824119,
+     "probabilite": 0.693421081824119,
+     "calibree": false,
+     "edv": 17.2,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "7zdpryaphodxeg27zkcw8lrf8",
+   "date": "2026-09-29",
+   "heure": "19:45",
+   "competition": "Angleterre : Ligue Nationale",
+   "domicile": "Barrow",
+   "exterieur": "Scunthorpe Utd",
+   "statut": "EVALUE",
+   "lambda_dom": 1.689,
+   "lambda_ext": 1.102,
+   "n_dom": 4,
+   "n_ext": 5,
+   "selections": [],
+   "apercu_non_calibre": [],
+   "candidats": [
+    {
+     "marche": "1x2_1",
+     "libelle": "Victoire domicile",
+     "cote": 2.09,
+     "probabilite_brute": 0.5107712511294984,
+     "probabilite": 0.5107712511294984,
+     "calibree": false,
+     "edv": 6.8,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "dc_1X",
+     "libelle": "Double chance 1X",
+     "cote": 1.38,
+     "probabilite_brute": 0.7518580277031858,
+     "probabilite": 0.7518580277031858,
+     "calibree": false,
+     "edv": 3.8,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "EDV_INSUFFISANTE",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "dc_12",
+     "libelle": "Double chance 12",
+     "cote": 1.3,
+     "probabilite_brute": 0.7589132234263126,
+     "probabilite": 0.7589132234263126,
+     "calibree": false,
+     "edv": -1.3,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "EDV_INSUFFISANTE",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "btts_no",
+     "libelle": "Les deux équipes ne marquent pas toutes les deux",
+     "cote": 2.15,
+     "probabilite_brute": 0.45543699811386273,
+     "probabilite": 0.45543699811386273,
+     "calibree": false,
+     "edv": -2.1,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_2_5",
+     "libelle": "Moins de 2,5 buts",
+     "cote": 2.06,
+     "probabilite_brute": 0.47151627151122233,
+     "probabilite": 0.47151627151122233,
+     "calibree": false,
+     "edv": -2.9,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "801f0svwiji3faa41w18m11xw",
+   "date": "2026-09-29",
+   "heure": "19:45",
+   "competition": "Angleterre : Ligue Nationale",
+   "domicile": "Forest Green",
+   "exterieur": "Wealdstone",
+   "statut": "EVALUE",
+   "lambda_dom": 1.501,
+   "lambda_ext": 1.887,
+   "n_dom": 5,
+   "n_ext": 5,
+   "selections": [],
+   "apercu_non_calibre": [],
+   "candidats": [
+    {
+     "marche": "1x2_2",
+     "libelle": "Victoire extérieur",
+     "cote": 4.09,
+     "probabilite_brute": 0.4685369265413702,
+     "probabilite": 0.4685369265413702,
+     "calibree": false,
+     "edv": 91.6,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "dc_X2",
+     "libelle": "Double chance X2",
+     "cote": 2.2,
+     "probabilite_brute": 0.6912659900333082,
+     "probabilite": 0.6912659900333082,
+     "calibree": false,
+     "edv": 52.1,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "dc_12",
+     "libelle": "Double chance 12",
+     "cote": 1.25,
+     "probabilite_brute": 0.7772709365080618,
+     "probabilite": 0.7772709365080618,
+     "calibree": false,
+     "edv": -2.8,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "EDV_INSUFFISANTE",
+      "JUSTIFICATION_INSUFFISANTE",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "btts_yes",
+     "libelle": "Les deux équipes marquent",
+     "cote": 1.44,
+     "probabilite_brute": 0.6594054811814883,
+     "probabilite": 0.6594054811814883,
+     "calibree": false,
+     "edv": -5.0,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "EDV_INSUFFISANTE",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "over_1_5",
+     "libelle": "Plus de 1,5 buts",
+     "cote": 1.1,
+     "probabilite_brute": 0.8518343410618286,
+     "probabilite": 0.8518343410618286,
+     "calibree": false,
+     "edv": -6.3,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "EDV_INSUFFISANTE",
+      "JUSTIFICATION_INSUFFISANTE",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "7z20m5fazesz46fd48v9h1xqs",
+   "date": "2026-09-29",
+   "heure": "19:45",
+   "competition": "Angleterre : Ligue Nationale",
+   "domicile": "Fylde",
+   "exterieur": "Carlisle",
+   "statut": "EVALUE",
+   "lambda_dom": 1.493,
+   "lambda_ext": 1.108,
+   "n_dom": 4,
+   "n_ext": 4,
+   "selections": [],
+   "apercu_non_calibre": [
+    {
+     "marche": "dc_1X",
+     "libelle": "Double chance 1X",
+     "cote": 1.6,
+     "probabilite": 0.7185,
+     "edge": 0.09349478559928714,
+     "edv": 15.0,
+     "justification": "✓ Fylde invaincu 75% à ce lieu (4) ; ✓ Fylde prend 2,00 pt/match sur la saison ; ✓ Carlisle gagne 0% à son lieu ; ✓ Fylde marque 1,8 contre 0,8 pour Carlisle, chacun à son lieu ; ✓ Fylde invaincu 5 fois sur ses 6 derniers ; ✓ Carlisle : 1 victoire sur ses 6 derniers",
+     "raisons_saison": [
+      "✓ Fylde invaincu 75% à ce lieu (4)",
+      "✓ Fylde prend 2,00 pt/match sur la saison",
+      "✓ Carlisle gagne 0% à son lieu",
+      "✓ Fylde marque 1,8 contre 0,8 pour Carlisle, chacun à son lieu"
+     ],
+     "raisons_recent": [
+      "✓ Fylde invaincu 5 fois sur ses 6 derniers",
+      "✓ Carlisle : 1 victoire sur ses 6 derniers"
+     ]
+    }
+   ],
+   "candidats": [
+    {
+     "marche": "under_1_5",
+     "libelle": "Moins de 1,5 buts",
+     "cote": 5.49,
+     "probabilite_brute": 0.26720612777250374,
+     "probabilite": 0.26720612777250374,
+     "calibree": false,
+     "edv": 46.7,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_2_5",
+     "libelle": "Moins de 2,5 buts",
+     "cote": 2.63,
+     "probabilite_brute": 0.5181971559184274,
+     "probabilite": 0.5181971559184274,
+     "calibree": false,
+     "edv": 36.3,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "btts_no",
+     "libelle": "Les deux équipes ne marquent pas toutes les deux",
+     "cote": 2.82,
+     "probabilite_brute": 0.4806929597725056,
+     "probabilite": 0.4806929597725056,
+     "calibree": false,
+     "edv": 35.6,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "exact_goals_0",
+     "libelle": "Exactement 0 buts",
+     "cote": 18.26,
+     "probabilite_brute": 0.07420483877457035,
+     "probabilite": 0.07420483877457035,
+     "calibree": false,
+     "edv": 35.5,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "exact_goals_1",
+     "libelle": "Exactement 1 buts",
+     "cote": 6.78,
+     "probabilite_brute": 0.19300128899793345,
+     "probabilite": 0.19300128899793345,
+     "calibree": false,
+     "edv": 30.9,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "80d6x290k6hwmmivijt300ems",
+   "date": "2026-09-29",
+   "heure": "19:45",
+   "competition": "Angleterre : Ligue Nationale",
+   "domicile": "Gateshead",
+   "exterieur": "Altrincham",
+   "statut": "EVALUE",
+   "lambda_dom": 1.393,
+   "lambda_ext": 1.434,
+   "n_dom": 4,
+   "n_ext": 5,
+   "selections": [],
+   "apercu_non_calibre": [],
+   "candidats": [
+    {
+     "marche": "1x2_1",
+     "libelle": "Victoire domicile",
+     "cote": 4.1,
+     "probabilite_brute": 0.3650144136816599,
+     "probabilite": 0.3650144136816599,
+     "calibree": false,
+     "edv": 49.7,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "dc_1X",
+     "libelle": "Double chance 1X",
+     "cote": 2.1,
+     "probabilite_brute": 0.6163997830679049,
+     "probabilite": 0.6163997830679049,
+     "calibree": false,
+     "edv": 29.4,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_2_5",
+     "libelle": "Moins de 2,5 buts",
+     "cote": 2.15,
+     "probabilite_brute": 0.46319923188513346,
+     "probabilite": 0.46319923188513346,
+     "calibree": false,
+     "edv": -0.4,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_3_5",
+     "libelle": "Moins de 3,5 buts",
+     "cote": 1.44,
+     "probabilite_brute": 0.6860725268866015,
+     "probabilite": 0.6860725268866015,
+     "calibree": false,
+     "edv": -1.2,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "EDV_INSUFFISANTE",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "1x2_X",
+     "libelle": "Match nul",
+     "cote": 3.9,
+     "probabilite_brute": 0.25138536938624495,
+     "probabilite": 0.25138536938624495,
+     "calibree": false,
+     "edv": -2.0,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "7zplb3hwndxj6cm2tm729jims",
+   "date": "2026-09-29",
+   "heure": "19:45",
+   "competition": "Angleterre : Ligue Nationale",
+   "domicile": "Halifax",
+   "exterieur": "Boston Utd",
+   "statut": "EVALUE",
+   "lambda_dom": 1.648,
+   "lambda_ext": 1.434,
+   "n_dom": 5,
+   "n_ext": 4,
+   "selections": [],
+   "apercu_non_calibre": [],
+   "candidats": [
+    {
+     "marche": "over_4_5",
+     "libelle": "Plus de 4,5 buts",
+     "cote": 5.49,
+     "probabilite_brute": 0.19860902796432436,
+     "probabilite": 0.19860902796432436,
+     "calibree": false,
+     "edv": 9.0,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "over_3_5",
+     "libelle": "Plus de 3,5 buts",
+     "cote": 2.82,
+     "probabilite_brute": 0.37101671095552574,
+     "probabilite": 0.37101671095552574,
+     "calibree": false,
+     "edv": 4.6,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "dc_12",
+     "libelle": "Double chance 12",
+     "cote": 1.32,
+     "probabilite_brute": 0.76212303243346,
+     "probabilite": 0.76212303243346,
+     "calibree": false,
+     "edv": 0.6,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "EDV_INSUFFISANTE",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "over_2_5",
+     "libelle": "Plus de 2,5 buts",
+     "cote": 1.69,
+     "probabilite_brute": 0.5948151456075659,
+     "probabilite": 0.5948151456075659,
+     "calibree": false,
+     "edv": 0.5,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "1x2_2",
+     "libelle": "Victoire extérieur",
+     "cote": 2.94,
+     "probabilite_brute": 0.33464542920710055,
+     "probabilite": 0.33464542920710055,
+     "calibree": false,
+     "edv": -1.6,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "80p2vp74igccv7aa1nmv3kxlg",
+   "date": "2026-09-29",
+   "heure": "19:45",
+   "competition": "Angleterre : Ligue Nationale",
+   "domicile": "Hartlepool",
+   "exterieur": "Harrogate",
+   "statut": "EVALUE",
+   "lambda_dom": 1.458,
+   "lambda_ext": 1.349,
+   "n_dom": 4,
+   "n_ext": 4,
+   "selections": [],
+   "apercu_non_calibre": [],
+   "candidats": [
+    {
+     "marche": "1x2_1",
+     "libelle": "Victoire domicile",
+     "cote": 3.81,
+     "probabilite_brute": 0.39862199387802344,
+     "probabilite": 0.39862199387802344,
+     "calibree": false,
+     "edv": 51.9,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "dc_1X",
+     "libelle": "Double chance 1X",
+     "cote": 1.95,
+     "probabilite_brute": 0.6506440107061532,
+     "probabilite": 0.6506440107061532,
+     "calibree": false,
+     "edv": 26.9,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "dc_12",
+     "libelle": "Double chance 12",
+     "cote": 1.3,
+     "probabilite_brute": 0.7479779831718703,
+     "probabilite": 0.7479779831718703,
+     "calibree": false,
+     "edv": -2.8,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "EDV_INSUFFISANTE",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_2_5",
+     "libelle": "Moins de 2,5 buts",
+     "cote": 2.06,
+     "probabilite_brute": 0.46779994665219904,
+     "probabilite": 0.46779994665219904,
+     "calibree": false,
+     "edv": -3.6,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_5_5",
+     "libelle": "Moins de 5,5 buts",
+     "cote": 1.01,
+     "probabilite_brute": 0.9342823915585285,
+     "probabilite": 0.9342823915585285,
+     "calibree": false,
+     "edv": -5.6,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "EDV_INSUFFISANTE",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "810sdl4oylhl44hjetpzce1as",
+   "date": "2026-09-29",
+   "heure": "19:45",
+   "competition": "Angleterre : Ligue Nationale",
+   "domicile": "Hornchurch",
+   "exterieur": "Aldershot",
+   "statut": "EVALUE",
+   "lambda_dom": 1.006,
+   "lambda_ext": 0.685,
+   "n_dom": 4,
+   "n_ext": 5,
+   "selections": [],
+   "apercu_non_calibre": [
+    {
+     "marche": "under_3_5",
+     "libelle": "Moins de 3,5 buts",
+     "cote": 1.39,
+     "probabilite": 0.9082,
+     "edge": 0.18879681973682672,
+     "edv": 26.2,
+     "justification": "✓ -3,5 chacun à son lieu : 100% / 100% ; ✓ total attendu (moyennes simples) : 1,65 buts ; ✓ sous la ligne sur les 6 derniers : 5 (Hornchurch) / 5 (Aldershot)",
+     "raisons_saison": [
+      "✓ -3,5 chacun à son lieu : 100% / 100%",
+      "✓ total attendu (moyennes simples) : 1,65 buts"
+     ],
+     "raisons_recent": [
+      "✓ sous la ligne sur les 6 derniers : 5 (Hornchurch) / 5 (Aldershot)"
+     ]
+    }
+   ],
+   "candidats": [
+    {
+     "marche": "exact_goals_0",
+     "libelle": "Exactement 0 buts",
+     "cote": 13.04,
+     "probabilite_brute": 0.18442083625734754,
+     "probabilite": 0.18442083625734754,
+     "calibree": false,
+     "edv": 140.5,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_1_5",
+     "libelle": "Moins de 1,5 buts",
+     "cote": 4.04,
+     "probabilite_brute": 0.4961907108849951,
+     "probabilite": 0.4961907108849951,
+     "calibree": false,
+     "edv": 100.5,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "exact_goals_1",
+     "libelle": "Exactement 1 buts",
+     "cote": 5.22,
+     "probabilite_brute": 0.3117698746276476,
+     "probabilite": 0.3117698746276476,
+     "calibree": false,
+     "edv": 62.7,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_2_5",
+     "libelle": "Moins de 2,5 buts",
+     "cote": 2.06,
+     "probabilite_brute": 0.7597196501793113,
+     "probabilite": 0.7597196501793113,
+     "calibree": false,
+     "edv": 56.5,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "btts_no",
+     "libelle": "Les deux équipes ne marquent pas toutes les deux",
+     "cote": 2.24,
+     "probabilite_brute": 0.6855495656529476,
+     "probabilite": 0.6855495656529476,
+     "calibree": false,
+     "edv": 53.6,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "81cns2u2nrnrqixz0aie4hses",
+   "date": "2026-09-29",
+   "heure": "19:45",
+   "competition": "Angleterre : Ligue Nationale",
+   "domicile": "Woking",
+   "exterieur": "Solihull",
+   "statut": "EVALUE",
+   "lambda_dom": 2.726,
+   "lambda_ext": 1.327,
+   "n_dom": 5,
+   "n_ext": 4,
+   "selections": [],
+   "apercu_non_calibre": [],
+   "candidats": [
+    {
+     "marche": "exact_goals_6_plus",
+     "libelle": "6 buts ou plus",
+     "cote": 7.83,
+     "probabilite_brute": 0.22315096741633375,
+     "probabilite": 0.22315096741633375,
+     "calibree": false,
+     "edv": 74.7,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_SUP_1_50",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "over_5_5",
+     "libelle": "Plus de 5,5 buts",
+     "cote": 7.54,
+     "probabilite_brute": 0.22315096741633375,
+     "probabilite": 0.22315096741633375,
+     "calibree": false,
+     "edv": 68.3,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_SUP_1_50",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "over_4_5",
+     "libelle": "Plus de 4,5 buts",
+     "cote": 4.32,
+     "probabilite_brute": 0.38144911566289125,
+     "probabilite": 0.38144911566289125,
+     "calibree": false,
+     "edv": 64.8,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_SUP_1_50",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "over_3_5",
+     "libelle": "Plus de 3,5 buts",
+     "cote": 2.45,
+     "probabilite_brute": 0.5767499382863349,
+     "probabilite": 0.5767499382863349,
+     "calibree": false,
+     "edv": 41.3,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_SUP_1_50",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "1x2_1",
+     "libelle": "Victoire domicile",
+     "cote": 1.86,
+     "probabilite_brute": 0.6693663151866013,
+     "probabilite": 0.6693663151866013,
+     "calibree": false,
+     "edv": 24.5,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "SURDISPERSION_SUP_1_50",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "81ogjeojnzp73z644r68ki6ms",
+   "date": "2026-09-29",
+   "heure": "19:45",
+   "competition": "Angleterre : Ligue Nationale",
+   "domicile": "Yeovil Town",
+   "exterieur": "Worthing",
+   "statut": "EVALUE",
+   "lambda_dom": 2.399,
+   "lambda_ext": 2.123,
+   "n_dom": 5,
+   "n_ext": 4,
+   "selections": [],
+   "apercu_non_calibre": [
+    {
+     "marche": "over_2_5",
+     "libelle": "Plus de 2,5 buts",
+     "cote": 1.44,
+     "probabilite": 0.8289,
+     "edge": 0.13441556879115202,
+     "edv": 19.4,
+     "justification": "✓ Yeovil Town à domicile : 80% de matchs à +2,5 ; ✓ Worthing à l'extérieur : 100% de matchs à +2,5 ; ✓ saison complète +2,5 : 60% / 80% ; ✓ total attendu (moyennes simples) : 4,25 buts ; ✓ au-dessus de la ligne sur les 6 derniers : 4 (Yeovil Town) / 5 (Worthing)",
+     "raisons_saison": [
+      "✓ Yeovil Town à domicile : 80% de matchs à +2,5",
+      "✓ Worthing à l'extérieur : 100% de matchs à +2,5",
+      "✓ saison complète +2,5 : 60% / 80%",
+      "✓ total attendu (moyennes simples) : 4,25 buts"
+     ],
+     "raisons_recent": [
+      "✓ au-dessus de la ligne sur les 6 derniers : 4 (Yeovil Town) / 5 (Worthing)"
+     ]
+    }
+   ],
+   "candidats": [
+    {
+     "marche": "exact_goals_6_plus",
+     "libelle": "6 buts ou plus",
+     "cote": 6.61,
+     "probabilite_brute": 0.30079851376338473,
+     "probabilite": 0.30079851376338473,
+     "calibree": false,
+     "edv": 98.8,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "over_5_5",
+     "libelle": "Plus de 5,5 buts",
+     "cote": 6.53,
+     "probabilite_brute": 0.30079851376338473,
+     "probabilite": 0.30079851376338473,
+     "calibree": false,
+     "edv": 96.4,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "over_4_5",
+     "libelle": "Plus de 4,5 buts",
+     "cote": 3.82,
+     "probabilite_brute": 0.4720301644072756,
+     "probabilite": 0.4720301644072756,
+     "calibree": false,
+     "edv": 80.3,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "over_3_5",
+     "libelle": "Plus de 3,5 buts",
+     "cote": 2.24,
+     "probabilite_brute": 0.6613698581935219,
+     "probabilite": 0.6613698581935219,
+     "calibree": false,
+     "edv": 48.1,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "home_over_1_5",
+     "libelle": "Domicile marque plus de 1,5 but",
+     "cote": 1.73,
+     "probabilite_brute": 0.6912895962422384,
+     "probabilite": 0.6912895962422384,
+     "calibree": false,
+     "edv": 19.6,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "5t5lz4rwf4oiqf2m4n6c89qfo",
+   "date": "2026-09-29",
+   "heure": "21:30",
+   "competition": "Colombie : Première A Cloture",
+   "domicile": "Dep. Pereira",
+   "exterieur": "Santa Fe",
+   "statut": "EVALUE",
+   "lambda_dom": 1.033,
+   "lambda_ext": 1.546,
+   "n_dom": 12,
+   "n_ext": 11,
+   "selections": [],
+   "apercu_non_calibre": [],
+   "candidats": [
+    {
+     "marche": "1x2_1",
+     "libelle": "Victoire domicile",
+     "cote": 4.15,
+     "probabilite_brute": 0.2532806716322744,
+     "probabilite": 0.2532806716322744,
+     "calibree": false,
+     "edv": 5.1,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "dc_1X",
+     "libelle": "Double chance 1X",
+     "cote": 2.0,
+     "probabilite_brute": 0.5081712512278209,
+     "probabilite": 0.5081712512278209,
+     "calibree": false,
+     "edv": 1.6,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "over_3_5",
+     "libelle": "Plus de 3,5 buts",
+     "cote": 3.82,
+     "probabilite_brute": 0.25925214565438864,
+     "probabilite": 0.25925214565438864,
+     "calibree": false,
+     "edv": -1.0,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "dc_12",
+     "libelle": "Double chance 12",
+     "cote": 1.32,
+     "probabilite_brute": 0.7451094204044535,
+     "probabilite": 0.7451094204044535,
+     "calibree": false,
+     "edv": -1.6,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "EDV_INSUFFISANTE",
+      "JUSTIFICATION_INSUFFISANTE",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "over_0_5",
+     "libelle": "Plus de 0,5 buts",
+     "cote": 1.03,
+     "probabilite_brute": 0.9240855428940555,
+     "probabilite": 0.9240855428940555,
+     "calibree": false,
+     "edv": -4.8,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "EDV_INSUFFISANTE",
+      "JUSTIFICATION_INSUFFISANTE",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "b4hco6x8cvfy2u6jdejuvzmz8",
+   "date": "2026-09-30",
+   "heure": "00:30",
+   "competition": "Etats-Unis : MLS",
+   "domicile": "NY Red Bulls",
+   "exterieur": "St. Louis",
+   "statut": "EVALUE",
+   "lambda_dom": 1.517,
+   "lambda_ext": 1.841,
+   "n_dom": 12,
+   "n_ext": 12,
+   "selections": [],
+   "apercu_non_calibre": [],
+   "candidats": [
+    {
+     "marche": "1x2_1",
+     "libelle": "Victoire domicile",
+     "cote": 3.45,
+     "probabilite_brute": 0.319979471390788,
+     "probabilite": 0.319979471390788,
+     "calibree": false,
+     "edv": 10.4,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "dc_1X",
+     "libelle": "Double chance 1X",
+     "cote": 1.85,
+     "probabilite_brute": 0.5450546129782436,
+     "probabilite": 0.5450546129782436,
+     "calibree": false,
+     "edv": 0.8,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_3_5",
+     "libelle": "Moins de 3,5 buts",
+     "cote": 1.76,
+     "probabilite_brute": 0.5676912090355974,
+     "probabilite": 0.5676912090355974,
+     "calibree": false,
+     "edv": -0.1,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_4_5",
+     "libelle": "Moins de 4,5 buts",
+     "cote": 1.31,
+     "probabilite_brute": 0.7520659673953203,
+     "probabilite": 0.7520659673953203,
+     "calibree": false,
+     "edv": -1.5,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "EDV_INSUFFISANTE",
+      "JUSTIFICATION_INSUFFISANTE",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_2_5",
+     "libelle": "Moins de 2,5 buts",
+     "cote": 2.83,
+     "probabilite_brute": 0.34802795583261814,
+     "probabilite": 0.34802795583261814,
+     "calibree": false,
+     "edv": -1.5,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "5q4i03cw6vkhbdd387aipqw44",
+   "date": "2026-09-30",
+   "heure": "02:00",
+   "competition": "Colombie : Première A Cloture",
+   "domicile": "Atl. Nacional",
+   "exterieur": "Atl. Junior",
+   "statut": "EVALUE",
+   "lambda_dom": 1.778,
+   "lambda_ext": 0.644,
+   "n_dom": 12,
+   "n_ext": 12,
+   "selections": [],
+   "apercu_non_calibre": [],
+   "candidats": [
+    {
+     "marche": "exact_goals_0",
+     "libelle": "Exactement 0 buts",
+     "cote": 13.91,
+     "probabilite_brute": 0.08872423815718032,
+     "probabilite": 0.08872423815718032,
+     "calibree": false,
+     "edv": 23.4,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_1_5",
+     "libelle": "Moins de 1,5 buts",
+     "cote": 4.04,
+     "probabilite_brute": 0.3036340594712391,
+     "probabilite": 0.3036340594712391,
+     "calibree": false,
+     "edv": 22.7,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "btts_no",
+     "libelle": "Les deux équipes ne marquent pas toutes les deux",
+     "cote": 1.92,
+     "probabilite_brute": 0.6054080506255324,
+     "probabilite": 0.6054080506255324,
+     "calibree": false,
+     "edv": 16.2,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_2_5",
+     "libelle": "Moins de 2,5 buts",
+     "cote": 2.06,
+     "probabilite_brute": 0.5639137319515994,
+     "probabilite": 0.5639137319515994,
+     "calibree": false,
+     "edv": 16.2,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "exact_goals_1",
+     "libelle": "Exactement 1 buts",
+     "cote": 5.22,
+     "probabilite_brute": 0.21490982131405895,
+     "probabilite": 0.21490982131405895,
+     "calibree": false,
+     "edv": 12.2,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "82bts4aoh5tujxbu97f9djv9w",
+   "date": "2026-09-30",
+   "heure": "19:45",
+   "competition": "Angleterre : Ligue Nationale",
+   "domicile": "Eastleigh",
+   "exterieur": "Southend Utd",
+   "statut": "EVALUE",
+   "lambda_dom": 1.397,
+   "lambda_ext": 1.94,
+   "n_dom": 5,
+   "n_ext": 5,
+   "selections": [],
+   "apercu_non_calibre": [],
+   "candidats": [
+    {
+     "marche": "1x2_1",
+     "libelle": "Victoire domicile",
+     "cote": 4.1,
+     "probabilite_brute": 0.27710510702056135,
+     "probabilite": 0.27710510702056135,
+     "calibree": false,
+     "edv": 13.6,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "over_4_5",
+     "libelle": "Plus de 4,5 buts",
+     "cote": 4.54,
+     "probabilite_brute": 0.24421080045573904,
+     "probabilite": 0.24421080045573904,
+     "calibree": false,
+     "edv": 10.9,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "over_3_5",
+     "libelle": "Plus de 3,5 buts",
+     "cote": 2.45,
+     "probabilite_brute": 0.4278595578040314,
+     "probabilite": 0.4278595578040314,
+     "calibree": false,
+     "edv": 4.8,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "dc_1X",
+     "libelle": "Double chance 1X",
+     "cote": 2.1,
+     "probabilite_brute": 0.49760526769967406,
+     "probabilite": 0.49760526769967406,
+     "calibree": false,
+     "edv": 4.5,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "exact_goals_6_plus",
+     "libelle": "6 buts ou plus",
+     "cote": 8.52,
+     "probabilite_brute": 0.12163722106563599,
+     "probabilite": 0.12163722106563599,
+     "calibree": false,
+     "edv": 3.6,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "82nkuo94pah2l5uhc59jy1z4k",
+   "date": "2026-09-30",
+   "heure": "19:45",
+   "competition": "Angleterre : Ligue Nationale",
+   "domicile": "Tamworth",
+   "exterieur": "Sutton Utd",
+   "statut": "EVALUE",
+   "lambda_dom": 1.458,
+   "lambda_ext": 1.493,
+   "n_dom": 4,
+   "n_ext": 4,
+   "selections": [],
+   "apercu_non_calibre": [],
+   "candidats": [
+    {
+     "marche": "1x2_2",
+     "libelle": "Victoire extérieur",
+     "cote": 2.75,
+     "probabilite_brute": 0.38505226721046537,
+     "probabilite": 0.38505226721046537,
+     "calibree": false,
+     "edv": 5.9,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "dc_X2",
+     "libelle": "Double chance X2",
+     "cote": 1.65,
+     "probabilite_brute": 0.6303328448420726,
+     "probabilite": 0.6303328448420726,
+     "calibree": false,
+     "edv": 4.0,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "EDV_INSUFFISANTE",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "dc_12",
+     "libelle": "Double chance 12",
+     "cote": 1.3,
+     "probabilite_brute": 0.7547194223683927,
+     "probabilite": 0.7547194223683927,
+     "calibree": false,
+     "edv": -1.9,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "EDV_INSUFFISANTE",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "btts_no",
+     "libelle": "Les deux équipes ne marquent pas toutes les deux",
+     "cote": 2.35,
+     "probabilite_brute": 0.40520501389182295,
+     "probabilite": 0.40520501389182295,
+     "calibree": false,
+     "edv": -4.8,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_5_5",
+     "libelle": "Moins de 5,5 buts",
+     "cote": 1.03,
+     "probabilite_brute": 0.9209936525259226,
+     "probabilite": 0.9209936525259226,
+     "calibree": false,
+     "edv": -5.1,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "EDV_INSUFFISANTE",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "74c27pu61bt2vxs8lozjg4phw",
+   "date": "2026-10-01",
+   "heure": "02:00",
+   "competition": "Colombie : Première A Cloture",
+   "domicile": "Bogota",
+   "exterieur": "Once Caldas",
+   "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
+   "selections": [],
+   "candidats": []
+  },
+  {
+   "match_id": "alfcdy1y9whp5iqwus2s5hnh0",
+   "date": "2026-10-01",
+   "heure": "02:30",
+   "competition": "Etats-Unis : MLS",
+   "domicile": "S. Sounders",
+   "exterieur": "Sporting KC",
+   "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
+   "selections": [],
+   "candidats": []
+  }
+ ],
  "signaux": [
+  {
+   "match_id": "8va26dyvf6f0hj6qjbbsw8t90",
+   "date": "2026-09-28",
+   "heure_cameroun": null,
+   "competition": "Mexique : Liga MX Ouverture",
+   "domicile": "Club Necaxa",
+   "exterieur": "Club América",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "baho4mtiigm4o2yzx5be5qas4",
+   "date": "2026-09-28",
+   "heure_cameroun": null,
+   "competition": "Etats-Unis : MLS",
+   "domicile": "Columbus",
+   "exterieur": "Inter Miami",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "6ky80vuwl96c0rgco76a3slck",
+   "date": "2026-09-28",
+   "heure_cameroun": null,
+   "competition": "Colombie : Première A Cloture",
+   "domicile": "Fortaleza",
+   "exterieur": "Dep. Tolima",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
   {
    "match_id": "9fz0b10b25bs80xbt4x2m7uvo",
    "date": "2026-09-28",
@@ -51,9 +2483,9 @@
       "marche": "1x2_domicile",
       "marche_moteur": "1x2_1",
       "probabilite": 0.8154,
-      "cote": 1.54,
-      "edge": 0.16604834247091516,
-      "edv": 0.256,
+      "cote": 1.52,
+      "edge": 0.15750425497945886,
+      "edv": 0.239,
       "niveau": "V3_ECHANTILLON_FAIBLE",
       "robustesse": null,
       "points_de_vigilance": [
@@ -64,29 +2496,141 @@
       "rang": "P1",
       "apercu_non_calibre": true,
       "justification": {
-       "resume": "Probabilité NON calibrée 82 % contre 65 % selon la cote ; double contrôle passé (saison et forme récente) ; buts attendus par la V3 : 2,74 – 0,63.",
+       "resume": "Probabilité NON calibrée 82 % contre 66 % selon la cote ; double contrôle passé (saison et forme récente) ; buts attendus par la V3 : 2,74 – 0,63.",
        "preuves": [
         {
          "type": "v3_controle_saison",
-         "texte": "NK Rudar Velenje gagne 100% de ses matchs à ce lieu (3) ; NK Rudar Velenje prend 1.71 pt/match sur la saison ; NK Rudar Velenje marque 3.0 but/match à ce lieu ; Dravinja gagne 0% à son lieu (4) ; Dravinja encaisse 2.2 but/match à son lieu"
+         "texte": "NK Rudar Velenje gagne 100% de ses matchs à ce lieu (3) ; NK Rudar Velenje prend 1,71 pt/match sur la saison ; NK Rudar Velenje marque 3,0 but/match à ce lieu ; Dravinja gagne 0% à son lieu (4) ; Dravinja encaisse 2,2 but/match à son lieu"
         },
         {
          "type": "v3_forme_recente",
-         "texte": "NK Rudar Velenje sur ses 6 derniers : 4 victoires, 2 défaites ; Dravinja sur ses 6 derniers : 1 victoires"
+         "texte": "NK Rudar Velenje sur ses 6 derniers : 4 victoires, 2 défaites ; Dravinja sur ses 6 derniers : 1 victoire"
         },
         {
          "type": "ev_percentage",
-         "valeur": 25.6,
-         "texte": "Le prix proposé laisse 25.6% de marge par rapport à l'estimation NON calibrée."
+         "valeur": 23.9,
+         "texte": "Le prix proposé laisse 23,9 % de marge par rapport à l'estimation NON calibrée."
         }
        ],
        "donnees_suffisantes": true,
        "bibliotheque": {
-        "ev_percentage": 25.6
+        "ev_percentage": 23.9
        }
       }
      }
     }
+   }
+  },
+  {
+   "match_id": "3qaqtts1a2yqwuc2kc9cz3j10",
+   "date": "2026-09-28",
+   "heure_cameroun": "19:30",
+   "competition": "Espagne : Segunda Division",
+   "domicile": "Leganes",
+   "exterieur": "Castellon",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "5aa7ywrv7i3cozj5pps76vml0",
+   "date": "2026-09-28",
+   "heure_cameroun": "20:30",
+   "competition": "Paraguay : Professionnel de la Division Clôture",
+   "domicile": "San Lorenzo",
+   "exterieur": "Dep. Recoleta",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "5alzjynn9irsic5yo4l1fof84",
+   "date": "2026-09-28",
+   "heure_cameroun": "23:00",
+   "competition": "Paraguay : Professionnel de la Division Clôture",
+   "domicile": "Libertad",
+   "exterieur": "Club Olimpia",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "5ttuyfb5dkbe059f3nuao7xn8",
+   "date": "2026-09-29",
+   "heure_cameroun": null,
+   "competition": "Colombie : Première A Cloture",
+   "domicile": "Medellín",
+   "exterieur": "Millonarios FC",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "8204510xl38a19seks8nwu2vo",
+   "date": "2026-09-29",
+   "heure_cameroun": "19:00",
+   "competition": "Angleterre : Ligue Nationale",
+   "domicile": "Boreham Wood",
+   "exterieur": "Kidderminster",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "7zdpryaphodxeg27zkcw8lrf8",
+   "date": "2026-09-29",
+   "heure_cameroun": "19:45",
+   "competition": "Angleterre : Ligue Nationale",
+   "domicile": "Barrow",
+   "exterieur": "Scunthorpe Utd",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "801f0svwiji3faa41w18m11xw",
+   "date": "2026-09-29",
+   "heure_cameroun": "19:45",
+   "competition": "Angleterre : Ligue Nationale",
+   "domicile": "Forest Green",
+   "exterieur": "Wealdstone",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
    }
   },
   {
@@ -108,7 +2652,7 @@
       "marche_moteur": "dc_1X",
       "probabilite": 0.7185,
       "cote": 1.6,
-      "edge": 0.09349478559928692,
+      "edge": 0.09349478559928714,
       "edv": 0.15,
       "niveau": "V3_ECHANTILLON_FAIBLE",
       "robustesse": null,
@@ -124,16 +2668,16 @@
        "preuves": [
         {
          "type": "v3_controle_saison",
-         "texte": "Fylde invaincu 75% à ce lieu (4) ; Fylde prend 2.00 pt/match sur la saison ; Carlisle gagne 0% à son lieu ; Fylde marque 1.8 contre 0.8 pour Carlisle, chacun à son lieu"
+         "texte": "Fylde invaincu 75% à ce lieu (4) ; Fylde prend 2,00 pt/match sur la saison ; Carlisle gagne 0% à son lieu ; Fylde marque 1,8 contre 0,8 pour Carlisle, chacun à son lieu"
         },
         {
          "type": "v3_forme_recente",
-         "texte": "Fylde invaincu 5 fois sur ses 6 derniers ; Carlisle : 1 victoires sur ses 6 derniers"
+         "texte": "Fylde invaincu 5 fois sur ses 6 derniers ; Carlisle : 1 victoire sur ses 6 derniers"
         },
         {
          "type": "ev_percentage",
          "valeur": 15.0,
-         "texte": "Le prix proposé laisse 15.0% de marge par rapport à l'estimation NON calibrée."
+         "texte": "Le prix proposé laisse 15,0 % de marge par rapport à l'estimation NON calibrée."
         }
        ],
        "donnees_suffisantes": true,
@@ -143,6 +2687,54 @@
       }
      }
     }
+   }
+  },
+  {
+   "match_id": "80d6x290k6hwmmivijt300ems",
+   "date": "2026-09-29",
+   "heure_cameroun": "19:45",
+   "competition": "Angleterre : Ligue Nationale",
+   "domicile": "Gateshead",
+   "exterieur": "Altrincham",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "7zplb3hwndxj6cm2tm729jims",
+   "date": "2026-09-29",
+   "heure_cameroun": "19:45",
+   "competition": "Angleterre : Ligue Nationale",
+   "domicile": "Halifax",
+   "exterieur": "Boston Utd",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "80p2vp74igccv7aa1nmv3kxlg",
+   "date": "2026-09-29",
+   "heure_cameroun": "19:45",
+   "competition": "Angleterre : Ligue Nationale",
+   "domicile": "Hartlepool",
+   "exterieur": "Harrogate",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
    }
   },
   {
@@ -180,7 +2772,7 @@
        "preuves": [
         {
          "type": "v3_controle_saison",
-         "texte": "-3,5 chacun à son lieu : 100% / 100% ; buts attendus 1.65"
+         "texte": "-3,5 chacun à son lieu : 100% / 100% ; total attendu (moyennes simples) : 1,65 buts"
         },
         {
          "type": "v3_forme_recente",
@@ -189,7 +2781,7 @@
         {
          "type": "ev_percentage",
          "valeur": 26.2,
-         "texte": "Le prix proposé laisse 26.2% de marge par rapport à l'estimation NON calibrée."
+         "texte": "Le prix proposé laisse 26,2 % de marge par rapport à l'estimation NON calibrée."
         }
        ],
        "donnees_suffisantes": true,
@@ -199,6 +2791,22 @@
       }
      }
     }
+   }
+  },
+  {
+   "match_id": "81cns2u2nrnrqixz0aie4hses",
+   "date": "2026-09-29",
+   "heure_cameroun": "19:45",
+   "competition": "Angleterre : Ligue Nationale",
+   "domicile": "Woking",
+   "exterieur": "Solihull",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
    }
   },
   {
@@ -220,7 +2828,7 @@
       "marche_moteur": "over_2_5",
       "probabilite": 0.8289,
       "cote": 1.44,
-      "edge": 0.13441556879115157,
+      "edge": 0.13441556879115202,
       "edv": 0.19399999999999998,
       "niveau": "V3_ECHANTILLON_FAIBLE",
       "robustesse": null,
@@ -236,7 +2844,7 @@
        "preuves": [
         {
          "type": "v3_controle_saison",
-         "texte": "Yeovil Town à domicile : 80% de matchs à +2,5 ; Worthing à l'extérieur : 100% de matchs à +2,5 ; saison complète +2,5 : 60% / 80% ; buts attendus 4.25"
+         "texte": "Yeovil Town à domicile : 80% de matchs à +2,5 ; Worthing à l'extérieur : 100% de matchs à +2,5 ; saison complète +2,5 : 60% / 80% ; total attendu (moyennes simples) : 4,25 buts"
         },
         {
          "type": "v3_forme_recente",
@@ -245,7 +2853,7 @@
         {
          "type": "ev_percentage",
          "valeur": 19.4,
-         "texte": "Le prix proposé laisse 19.4% de marge par rapport à l'estimation NON calibrée."
+         "texte": "Le prix proposé laisse 19,4 % de marge par rapport à l'estimation NON calibrée."
         }
        ],
        "donnees_suffisantes": true,
@@ -256,7 +2864,118 @@
      }
     }
    }
+  },
+  {
+   "match_id": "5t5lz4rwf4oiqf2m4n6c89qfo",
+   "date": "2026-09-29",
+   "heure_cameroun": "21:30",
+   "competition": "Colombie : Première A Cloture",
+   "domicile": "Dep. Pereira",
+   "exterieur": "Santa Fe",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "b4hco6x8cvfy2u6jdejuvzmz8",
+   "date": "2026-09-30",
+   "heure_cameroun": "00:30",
+   "competition": "Etats-Unis : MLS",
+   "domicile": "NY Red Bulls",
+   "exterieur": "St. Louis",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "5q4i03cw6vkhbdd387aipqw44",
+   "date": "2026-09-30",
+   "heure_cameroun": "02:00",
+   "competition": "Colombie : Première A Cloture",
+   "domicile": "Atl. Nacional",
+   "exterieur": "Atl. Junior",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "82bts4aoh5tujxbu97f9djv9w",
+   "date": "2026-09-30",
+   "heure_cameroun": "19:45",
+   "competition": "Angleterre : Ligue Nationale",
+   "domicile": "Eastleigh",
+   "exterieur": "Southend Utd",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "82nkuo94pah2l5uhc59jy1z4k",
+   "date": "2026-09-30",
+   "heure_cameroun": "19:45",
+   "competition": "Angleterre : Ligue Nationale",
+   "domicile": "Tamworth",
+   "exterieur": "Sutton Utd",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "74c27pu61bt2vxs8lozjg4phw",
+   "date": "2026-10-01",
+   "heure_cameroun": "02:00",
+   "competition": "Colombie : Première A Cloture",
+   "domicile": "Bogota",
+   "exterieur": "Once Caldas",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "alfcdy1y9whp5iqwus2s5hnh0",
+   "date": "2026-10-01",
+   "heure_cameroun": "02:30",
+   "competition": "Etats-Unis : MLS",
+   "domicile": "S. Sounders",
+   "exterieur": "Sporting KC",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
   }
- ],
- "note": "Fichier initial réduit (signaux avec aperçu seulement) ; le prochain run du pipeline le réécrit en entier."
+ ]
 }

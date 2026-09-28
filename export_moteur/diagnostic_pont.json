@@ -1,22 +1,21 @@
 {
-  "genere_le": "2026-09-27T23:57:03Z",
-  "nb_signaux": 67,
-  "nb_exportes": 22,
+  "genere_le": "2026-09-28T04:16:18Z",
+  "nb_signaux": 66,
+  "nb_exportes": 21,
   "par_date": {
     "2026-09-28": 5,
     "2026-09-29": 12,
-    "2026-09-30": 4,
-    "2026-10-01": 1
+    "2026-09-30": 4
   },
   "rejets": {
-    "match_deja_commence_ou_termine": 4,
-    "pas_de_cotes_betpawa": 37,
-    "historique_indisponible": 4
+    "match_deja_commence_ou_termine": 7,
+    "pas_de_cotes_betpawa": 35,
+    "historique_indisponible": 3
   },
   "marches_ignores": {
-    "score_exact": 22,
-    "nombre_exact_buts": 22,
-    "pair_impair": 22,
+    "score_exact": 21,
+    "nombre_exact_buts": 21,
+    "pair_impair": 21,
     "handicap_-3.5 (hors périmètre moteur)": 3,
     "over_under_exterieur_2.5 (hors périmètre moteur)": 2,
     "cages_inviolees_exterieur.non (pas d'équivalent moteur)": 2,
@@ -26,8 +25,7 @@
   "fichiers": {
     "2026-09-28": "export_moteur/matchs_moteur_2026-09-28.json",
     "2026-09-29": "export_moteur/matchs_moteur_2026-09-29.json",
-    "2026-09-30": "export_moteur/matchs_moteur_2026-09-30.json",
-    "2026-10-01": "export_moteur/matchs_moteur_2026-10-01.json"
+    "2026-09-30": "export_moteur/matchs_moteur_2026-09-30.json"
   },
   "detail_rejets": [
     {
@@ -56,7 +54,7 @@
       "match": "Cali - R. Aguilas",
       "competition": "Colombie :\n                        Première A Cloture",
       "date": "2026-09-28",
-      "raison": "pas_de_cotes_betpawa"
+      "raison": "match_deja_commence_ou_termine"
     },
     {
       "match_id": "8dv6v7w54x5oakulzo5ul01sk",
@@ -70,14 +68,14 @@
       "match": "Club León - FC Juarez",
       "competition": "Mexique :\n                        Liga MX Ouverture",
       "date": "2026-09-28",
-      "raison": "historique_indisponible: domicile: aucun_match_saison_en_cours"
+      "raison": "match_deja_commence_ou_termine"
     },
     {
       "match_id": "8va26dyvf6f0hj6qjbbsw8t90",
       "match": "Club Necaxa - Club América",
       "competition": "Mexique :\n                        Liga MX Ouverture",
       "date": "2026-09-28",
-      "raison": "historique_indisponible: domicile: aucun_match_saison_en_cours"
+      "raison": "match_deja_commence_ou_termine"
     },
     {
       "match_id": "2i6dy9py00iwtopj6dj6gk9p0",
@@ -92,13 +90,6 @@
       "competition": "République Dominicaine :\n                        IV Liga Mayor",
       "date": "2026-09-28",
       "raison": "match_deja_commence_ou_termine"
-    },
-    {
-      "match_id": "c97s0tbr2l51darbak69titck",
-      "match": "Waterhouse - Treasure Beach",
-      "competition": "Jamaïque :\n                        Premier Ligue",
-      "date": "2026-09-28",
-      "raison": "pas_de_cotes_betpawa"
     },
     {
       "match_id": "8pn0opsssi027tinxsihp1gd0",
@@ -309,6 +300,13 @@
       "competition": "Etats-Unis :\n                        MLS",
       "date": "2026-10-01",
       "raison": "historique_indisponible: exterieur: saison_incoherente_avec_resultats_connus"
+    },
+    {
+      "match_id": "74c27pu61bt2vxs8lozjg4phw",
+      "match": "Bogota - Once Caldas",
+      "competition": "Colombie :\n                        Première A Cloture",
+      "date": "2026-10-01",
+      "raison": "historique_indisponible: domicile: historique jamais récupéré pour ce match"
     },
     {
       "match_id": "8fpt3c97mvsrtffvjp7ni49as",
