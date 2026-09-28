@@ -93,15 +93,21 @@ def _sample(n: int, previous_n: int, weight: float, xg_complete: bool) -> Sample
 
 
 def _strength(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    """Estime attaque/défense sans produit géométrique qui transforme un zéro en certitude.
+
+    Les buts restent la mesure principale. Quand xG/xGA est complet, ils sont
+    utilisés comme seconde mesure dans la même unité, par moyenne arithmétique.
+    Aucun paramètre n'est ajusté sur le banc historique.
+    """
     gf, ga = _mean(rows, "buts_marques"), _mean(rows, "buts_encaisses")
     xg_values = [m.get("xg") for m in rows]
     xga_values = [m.get("xg_concede") for m in rows]
     complete = bool(rows) and all(_num(v) for v in xg_values) and all(_num(v) for v in xga_values)
 
-    # xG/xGA ne sont pas ajoutés aux buts : quand ils sont complets, ils
-    # constituent une deuxième mesure de la même force offensive/défensive.
-    attack = sqrt(max(gf, 0) * max(_mean(rows, "xg"), 0)) if complete else gf
-    defense = sqrt(max(ga, 0) * max(_mean(rows, "xg_concede"), 0)) if complete else ga
+    xg = _mean(rows, "xg") if complete else None
+    xga = _mean(rows, "xg_concede") if complete else None
+    attack = (gf + xg) / 2.0 if gf is not None and xg is not None else gf
+    defense = (ga + xga) / 2.0 if ga is not None and xga is not None else ga
 
     return {
         "attack": attack,
@@ -117,9 +123,11 @@ def _strength(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
 def _lambda(attack: float | None, defense: float | None) -> float:
     if attack is None or defense is None:
         raise ValueError("Données insuffisantes pour lambda")
-    # Aucun plancher footballistique : zéro reste zéro. La sélection est
-    # bloquée plus loin si le modèle devient dégénéré.
-    return sqrt(max(0.0, attack) * max(0.0, defense))
+    if not isfinite(float(attack)) or not isfinite(float(defense)):
+        raise ValueError("lambda invalide")
+    # Estimation symétrique : force offensive de l'équipe et défense adverse
+    # contribuent à parts égales. Aucun plancher arbitraire n'est appliqué.
+    return max(0.0, (float(attack) + float(defense)) / 2.0)
 
 
 def poisson(lam: float, k: int) -> float:
