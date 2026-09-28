@@ -3,6 +3,11 @@ from __future__ import annotations
 from typing import Mapping
 
 
+LIGNES_TOTAL = (0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5)
+LIGNES_EQUIPE = (0.5, 1.5, 2.5, 3.5)
+MAX_SCORE_EXACT = 4
+
+
 def _event(matrix, predicate):
     return sum(p for h, row in enumerate(matrix) for a, p in enumerate(row) if predicate(h, a))
 
@@ -149,12 +154,13 @@ def derive_markets(model, handicap_lines: Mapping[str, float] | list[float] | tu
     by, bn = _btts(m)
     out["btts_yes"], out["btts_no"] = by, bn
 
-    for line in (0.5, 1.5, 2.5, 3.5, 4.5, 5.5):
+    # AJOUT 28/09/2026 (Patrick : « intégrer le calcul de tous les marchés ») : lignes 6,5 et 7,5 cotées par BetPawa.
+    for line in LIGNES_TOTAL:
         o, u = _ou(m, line)
         token = str(line).replace(".", "_")
         out[f"over_{token}"], out[f"under_{token}"] = o, u
 
-    for line in (0.5, 1.5):
+    for line in LIGNES_EQUIPE:  # AJOUT 28/09/2026 : 2,5 et 3,5 buts d'une équipe
         token = str(line).replace(".", "_")
         o, u = _team_ou(m, line, True)
         out[f"home_over_{token}"], out[f"home_under_{token}"] = o, u
@@ -162,6 +168,14 @@ def derive_markets(model, handicap_lines: Mapping[str, float] | list[float] | tu
         out[f"away_over_{token}"], out[f"away_under_{token}"] = o, u
 
     out["clean_home"], out["clean_away"] = _clean(m, True), _clean(m, False)
+    # AJOUT 28/09/2026 : compléments « encaisse au moins un but » (cotés par BetPawa).
+    out["clean_home_no"], out["clean_away_no"] = 1.0 - out["clean_home"], 1.0 - out["clean_away"]
+    # AJOUT 28/09/2026 : score exact (grille BetPawa 0-0 à 4-4) et parité du total de buts.
+    for h in range(MAX_SCORE_EXACT + 1):
+        for a in range(MAX_SCORE_EXACT + 1):
+            out[f"score_{h}_{a}"] = m[h][a]
+    out["total_pair"] = _event(m, lambda h, a: (h + a) % 2 == 0)
+    out["total_impair"] = 1.0 - out["total_pair"]
 
     for n in range(6):
         out[f"exact_goals_{n}"] = _event(m, lambda h, a, n=n: h + a == n)
@@ -214,6 +228,17 @@ def _predicate_for_market(market):
         return lambda h, a: a == 0
     if market == "clean_away":
         return lambda h, a: h == 0
+    if market == "clean_home_no":
+        return lambda h, a: a > 0
+    if market == "clean_away_no":
+        return lambda h, a: h > 0
+    if market.startswith("score_"):
+        _, sh, sa = market.split("_")
+        return lambda h, a, sh=int(sh), sa=int(sa): h == sh and a == sa
+    if market == "total_pair":
+        return lambda h, a: (h + a) % 2 == 0
+    if market == "total_impair":
+        return lambda h, a: (h + a) % 2 == 1
     if market.startswith("exact_goals_"):
         token = market.removeprefix("exact_goals_")
         if token == "6_plus":
@@ -230,6 +255,12 @@ def _predicate_for_market(market):
         if side == "2":
             return lambda h, a, line=line: h - line < a
     return None
+
+
+def gagne(market, h, a):
+    """Résultat réel d'un marché plein temps pour le score h-a (None si le marché n'est pas plein temps)."""
+    p = _predicate_for_market(market)
+    return None if p is None else bool(p(h, a))
 
 
 def pairwise_joint_probability(markets, matrix):
