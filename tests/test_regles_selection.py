@@ -148,3 +148,16 @@ def test_combine_ecarte_les_paris_limites_si_un_pari_propre_existe():
     assert rs.choisir_pour_combine([propre, limite, rejete]) == [propre]
     assert rs.choisir_pour_combine([limite, rejete]) == [limite]
     assert rs.choisir_pour_combine([rejete]) == []
+
+
+# --- AJOUT 28/09/2026 : textes affichés à la française (pluriel exact, virgule décimale) -----------------------------
+
+
+@pytest.mark.parametrize("k,attendu", [(0, "0 victoire"), (1, "1 victoire"), (2, "2 victoires")])
+def test_pluriel_exact(k, attendu):
+    assert rs._nb(k, "victoire") == attendu
+
+
+@pytest.mark.parametrize("x,d,faux", [(1.71, 2, "1.71"), (2.2, 1, "2.2"), (4.25, 2, "4.25")])
+def test_jamais_de_point_decimal(x, d, faux):
+    assert rs._dec(x, d) != faux and "," in rs._dec(x, d)

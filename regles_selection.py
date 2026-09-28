@@ -103,6 +103,16 @@ def _pct(x):
     return f"{x:.0%}"
 
 
+def _dec(x, d):
+    """Nombre à virgule, à la française (CORRECTIF 28/09/2026 : « 1.71 » affiché sur la page V3)."""
+    return f"{x:.{d}f}".replace(".", ",")
+
+
+def _nb(k, mot):
+    """« 0 victoire », « 1 victoire », « 2 victoires » (CORRECTIF 28/09/2026 : « 1 victoires »)."""
+    return f"{k} {mot}{'s' if k > 1 else ''}"
+
+
 class _Controle:
     def __init__(self):
         self.ok = True
@@ -141,11 +151,11 @@ def controle_saison(marche, matchs_dom, matchs_ext, nom_dom="Domicile", nom_ext=
             eq, adv, eq_tout, n_eq, n_adv = ext_lieu, dom_lieu, ext_tout, nom_ext, nom_dom
         # compétence de l'équipe choisie
         c.exige(eq["victoires"] >= s["victoires_lieu_min"], f"{n_eq} gagne {_pct(eq['victoires'])} de ses matchs à ce lieu ({eq['n']})")
-        c.exige(eq_tout["pts_par_match"] >= s["pts_par_match_min"], f"{n_eq} prend {eq_tout['pts_par_match']:.2f} pt/match sur la saison")
-        c.exige(eq["buts_marques"] >= s["buts_marques_lieu_min"], f"{n_eq} marque {eq['buts_marques']:.1f} but/match à ce lieu")
+        c.exige(eq_tout["pts_par_match"] >= s["pts_par_match_min"], f"{n_eq} prend {_dec(eq_tout['pts_par_match'], 2)} pt/match sur la saison")
+        c.exige(eq["buts_marques"] >= s["buts_marques_lieu_min"], f"{n_eq} marque {_dec(eq['buts_marques'], 1)} but/match à ce lieu")
         # faiblesse de l'adversaire
         c.exige(adv["victoires"] <= s["adv_victoires_lieu_max"], f"{n_adv} gagne {_pct(adv['victoires'])} à son lieu ({adv['n']})")
-        c.exige(adv["buts_encaisses"] >= s["adv_buts_encaisses_lieu_min"], f"{n_adv} encaisse {adv['buts_encaisses']:.1f} but/match à son lieu")
+        c.exige(adv["buts_encaisses"] >= s["adv_buts_encaisses_lieu_min"], f"{n_adv} encaisse {_dec(adv['buts_encaisses'], 1)} but/match à son lieu")
 
     elif marche in ("Double chance - 1X", "Double chance - X2"):
         s = SEUILS["double_chance"]
@@ -154,9 +164,9 @@ def controle_saison(marche, matchs_dom, matchs_ext, nom_dom="Domicile", nom_ext=
         else:
             eq, adv, eq_tout, n_eq, n_adv = ext_lieu, dom_lieu, ext_tout, nom_ext, nom_dom
         c.exige(eq["victoires"] + eq["nuls"] >= s["invaincu_lieu_min"], f"{n_eq} invaincu {_pct(eq['victoires'] + eq['nuls'])} à ce lieu ({eq['n']})")
-        c.exige(eq_tout["pts_par_match"] >= s["pts_par_match_min"], f"{n_eq} prend {eq_tout['pts_par_match']:.2f} pt/match sur la saison")
+        c.exige(eq_tout["pts_par_match"] >= s["pts_par_match_min"], f"{n_eq} prend {_dec(eq_tout['pts_par_match'], 2)} pt/match sur la saison")
         c.exige(adv["victoires"] <= s["adv_victoires_lieu_max"], f"{n_adv} gagne {_pct(adv['victoires'])} à son lieu")
-        c.exige(eq["buts_marques"] >= adv["buts_marques"], f"{n_eq} marque {eq['buts_marques']:.1f} contre {adv['buts_marques']:.1f} pour {n_adv}, chacun à son lieu")
+        c.exige(eq["buts_marques"] >= adv["buts_marques"], f"{n_eq} marque {_dec(eq['buts_marques'], 1)} contre {_dec(adv['buts_marques'], 1)} pour {n_adv}, chacun à son lieu")
 
     elif marche == "Moins de 2.5 buts":
         s = SEUILS["moins_2_5"]
@@ -164,13 +174,13 @@ def controle_saison(marche, matchs_dom, matchs_ext, nom_dom="Domicile", nom_ext=
         c.exige(ext_lieu["moins_2_5"] >= s["lieu_min"], f"{nom_ext} à l'extérieur : {_pct(ext_lieu['moins_2_5'])} de matchs à -2,5")
         c.exige(dom_tout["moins_2_5"] >= s["saison_min"] and ext_tout["moins_2_5"] >= s["saison_min"],
                 f"saison complète -2,5 : {_pct(dom_tout['moins_2_5'])} / {_pct(ext_tout['moins_2_5'])}")
-        c.exige(total <= s["buts_attendus_max"], f"buts attendus {total:.2f}")
+        c.exige(total <= s["buts_attendus_max"], f"total attendu (moyennes simples) : {_dec(total, 2)} buts")
 
     elif marche == "Moins de 3.5 buts":
         s = SEUILS["moins_3_5"]
         c.exige(dom_lieu["moins_3_5"] >= s["lieu_min"] and ext_lieu["moins_3_5"] >= s["lieu_min"],
                 f"-3,5 chacun à son lieu : {_pct(dom_lieu['moins_3_5'])} / {_pct(ext_lieu['moins_3_5'])}")
-        c.exige(total <= s["buts_attendus_max"], f"buts attendus {total:.2f}")
+        c.exige(total <= s["buts_attendus_max"], f"total attendu (moyennes simples) : {_dec(total, 2)} buts")
 
     elif marche == "Plus de 2.5 buts":
         s = SEUILS["plus_2_5"]
@@ -178,13 +188,13 @@ def controle_saison(marche, matchs_dom, matchs_ext, nom_dom="Domicile", nom_ext=
         c.exige(ext_lieu["plus_2_5"] >= s["lieu_min"], f"{nom_ext} à l'extérieur : {_pct(ext_lieu['plus_2_5'])} de matchs à +2,5")
         c.exige(dom_tout["plus_2_5"] >= s["saison_min"] and ext_tout["plus_2_5"] >= s["saison_min"],
                 f"saison complète +2,5 : {_pct(dom_tout['plus_2_5'])} / {_pct(ext_tout['plus_2_5'])}")
-        c.exige(total >= s["buts_attendus_min"], f"buts attendus {total:.2f}")
+        c.exige(total >= s["buts_attendus_min"], f"total attendu (moyennes simples) : {_dec(total, 2)} buts")
 
     elif marche == "Plus de 3.5 buts":
         s = SEUILS["plus_3_5"]
         c.exige(dom_lieu["plus_3_5"] >= s["lieu_min"] and ext_lieu["plus_3_5"] >= s["lieu_min"],
                 f"+3,5 chacun à son lieu : {_pct(dom_lieu['plus_3_5'])} / {_pct(ext_lieu['plus_3_5'])}")
-        c.exige(total >= s["buts_attendus_min"], f"buts attendus {total:.2f}")
+        c.exige(total >= s["buts_attendus_min"], f"total attendu (moyennes simples) : {_dec(total, 2)} buts")
 
     elif marche == "BTTS - oui":
         s = SEUILS["btts"]
@@ -194,7 +204,7 @@ def controle_saison(marche, matchs_dom, matchs_ext, nom_dom="Domicile", nom_ext=
                 f"encaissent chacun à son lieu : {_pct(dom_lieu['encaisse'])} / {_pct(ext_lieu['encaisse'])}")
         c.exige(dom_lieu["btts"] >= s["btts_lieu_min"] and ext_lieu["btts"] >= s["btts_lieu_min"],
                 f"les deux marquent, chacun à son lieu : {_pct(dom_lieu['btts'])} / {_pct(ext_lieu['btts'])}")
-        c.exige(min(att_dom, att_ext) >= s["buts_attendus_min"], f"buts attendus de chaque côté {att_dom:.2f} / {att_ext:.2f}")
+        c.exige(min(att_dom, att_ext) >= s["buts_attendus_min"], f"buts attendus de chaque côté (moyennes simples) : {_dec(att_dom, 2)} / {_dec(att_ext, 2)}")
 
     else:
         c.exige(False, f"marché « {marche} » non couvert par la règle : pari écarté")
@@ -220,8 +230,8 @@ def controle_recent(marche, matchs_dom, matchs_ext, nom_dom="Domicile", nom_ext=
         v = _compte(eq, lambda m: m["bm"] > m["be"])
         d = _compte(eq, lambda m: m["bm"] < m["be"])
         va = _compte(adv, lambda m: m["bm"] > m["be"])
-        c.exige(v >= s["recent_victoires_min"] and d <= s["recent_defaites_max"], f"{n_eq} sur ses 6 derniers : {v} victoires, {d} défaites")
-        c.exige(va <= s["adv_recent_victoires_max"], f"{n_adv} sur ses 6 derniers : {va} victoires")
+        c.exige(v >= s["recent_victoires_min"] and d <= s["recent_defaites_max"], f"{n_eq} sur ses 6 derniers : {_nb(v, 'victoire')}, {_nb(d, 'défaite')}")
+        c.exige(va <= s["adv_recent_victoires_max"], f"{n_adv} sur ses 6 derniers : {_nb(va, 'victoire')}")
 
     elif marche in ("Double chance - 1X", "Double chance - X2"):
         s = SEUILS["double_chance"]
@@ -229,7 +239,7 @@ def controle_recent(marche, matchs_dom, matchs_ext, nom_dom="Domicile", nom_ext=
         inv = _compte(eq, lambda m: m["bm"] >= m["be"])
         va = _compte(adv, lambda m: m["bm"] > m["be"])
         c.exige(inv >= s["recent_invaincu_min"], f"{n_eq} invaincu {inv} fois sur ses 6 derniers")
-        c.exige(va <= s["adv_recent_victoires_max"], f"{n_adv} : {va} victoires sur ses 6 derniers")
+        c.exige(va <= s["adv_recent_victoires_max"], f"{n_adv} : {_nb(va, 'victoire')} sur ses 6 derniers")
 
     elif marche in ("Moins de 2.5 buts", "Moins de 3.5 buts"):
         ligne = 2 if marche == "Moins de 2.5 buts" else 3
