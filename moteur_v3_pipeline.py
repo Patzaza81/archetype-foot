@@ -34,6 +34,7 @@ from __future__ import annotations
 import datetime
 import glob
 import gzip
+import hashlib
 import json
 import os
 import sys
@@ -50,6 +51,14 @@ from moteur_v3.model import build_model
 DOSSIER_ARCHIVE = os.path.join("data", "archive_test")
 FICHIER_SORTIE = os.path.join("data", "v3", "pronostics_v3.json")
 STATUT = "EXPÉRIMENTAL — NON VALIDÉ"
+# AJOUT 28/09/2026 (question de Patrick : « tout est-il archivé pour un contrôle sans ambiguïté ? ») -- JOURNAL V3.
+# pronostics_v3.json est réécrit à chaque run et un match en disparaît au coup d'envoi : ce qui était affiché avant le
+# match n'était retrouvable que dans l'historique git. Le journal garde, pour chaque match, le DERNIER calcul V3 fait
+# avant le coup d'envoi (sélections, aperçus, candidats, calibration, empreinte du code) dans
+# data/v3/journal/AAAA-MM-JJ.json. Après le coup d'envoi, l'entrée n'est plus jamais modifiée (execution() ne traite
+# que les matchs à venir). Le score se lit dans l'archive de test, par match_id.
+DOSSIER_JOURNAL = os.path.join("data", "v3", "journal")
+FICHIERS_CODE_V3 = ("moteur_v3/*.py", "moteur_v3_pipeline.py", "regles_selection.py", "banc_historique.py")
 
 # Noms du banc (cotes de l'archive) -> noms du moteur V3. Les compléments de cage inviolée (« _non ») n'ont pas
 # d'équivalent V3 : ils sont ignorés, jamais inventés.
@@ -321,7 +330,51 @@ def signal_site(x):
                           "statut_global": STATUT, "apercu_non_calibre": apercu, "selection": selection}}
 
 
-def execution(dossier=DOSSIER_ARCHIVE, fichier_sortie=FICHIER_SORTIE, maintenant=None):
+def empreinte_code(racine=None):
+    """Empreinte (12 caractères) du code qui a calculé les pronostics V3 : moteur, branchement, double contrôle, banc.
+    Même code = même empreinte ; une seule ligne changée = empreinte différente."""
+    racine = racine or os.path.dirname(os.path.abspath(__file__))
+    h = hashlib.sha256()
+    for motif in FICHIERS_CODE_V3:
+        for chemin in sorted(glob.glob(os.path.join(racine, motif))):
+            h.update(os.path.relpath(chemin, racine).replace(os.sep, "/").encode("utf-8") + b"\0")
+            with open(chemin, "rb") as f:
+                h.update(f.read() + b"\0")
+    return h.hexdigest()[:12]
+
+
+def journalise(matchs, calibration, maintenant, empreinte, commit=None, dossier=DOSSIER_JOURNAL):
+    """Écrit le calcul V3 de chaque match À VENIR dans le journal de sa date (remplace le calcul précédent du même
+    match). Les matchs déjà commencés ne sont pas dans `matchs` : leur entrée reste figée. Renvoie le nombre écrit."""
+    calcule_le = maintenant.strftime("%Y-%m-%dT%H:%M:%SZ")
+    par_date = {}
+    for x in matchs:
+        if x.get("match_id") and x.get("date"):
+            par_date.setdefault(str(x["date"]), []).append(x)
+    ecrits = 0
+    for date_match, liste in sorted(par_date.items()):
+        chemin = os.path.join(dossier, f"{date_match}.json")
+        donnees = {}
+        if os.path.exists(chemin):
+            with open(chemin, encoding="utf-8") as f:
+                donnees = json.load(f)
+        for x in liste:
+            ancien = donnees.get(x["match_id"]) or {}
+            donnees[x["match_id"]] = {
+                **{k: v for k, v in x.items() if k != "tous_les_candidats"},
+                "premier_calcul_le": ancien.get("premier_calcul_le") or calcule_le,
+                "calcule_le": calcule_le, "nb_calculs": int(ancien.get("nb_calculs") or 0) + 1,
+                "empreinte_code_v3": empreinte, "commit": commit,
+                "calibration": {k: calibration[k] for k in ("prete", "observations", "matchs")},
+                "statut_v3": STATUT}
+            ecrits += 1
+        os.makedirs(dossier, exist_ok=True)
+        with open(chemin, "w", encoding="utf-8") as f:
+            json.dump(dict(sorted(donnees.items())), f, ensure_ascii=False, indent=1)
+    return ecrits
+
+
+def execution(dossier=DOSSIER_ARCHIVE, fichier_sortie=FICHIER_SORTIE, maintenant=None, dossier_journal=None):
     maintenant = maintenant or datetime.datetime.now(datetime.timezone.utc)
     enregs = lit_archive(dossier)
     calibrateur, matchs_calib = entraine_calibration(enregs, maintenant.strftime("%Y-%m-%d"))
@@ -332,8 +385,11 @@ def execution(dossier=DOSSIER_ARCHIVE, fichier_sortie=FICHIER_SORTIE, maintenant
     statuts = Counter(x["statut"] if not x["statut"].startswith("NON_EVALUE") else "NON_EVALUE" for x in matchs)
     for x in matchs:
         x.pop("tous_les_candidats", None)
+    empreinte = empreinte_code()
+    commit = (os.environ.get("GITHUB_SHA") or "")[:7] or None
     sortie = {
         "moteur": "moteur_v3", "statut": STATUT, "genere_le": maintenant.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "empreinte_code_v3": empreinte, "commit": commit,
         "calibration": {"prete": fit.ready, "observations": fit.observations, "matchs": matchs_calib,
                         "minimum_observations": calibrateur.minimum_observations, "raison": fit.reason},
         "bilan": {"matchs": len(matchs), "statuts": dict(statuts),
@@ -347,7 +403,11 @@ def execution(dossier=DOSSIER_ARCHIVE, fichier_sortie=FICHIER_SORTIE, maintenant
     os.makedirs(os.path.dirname(fichier_sortie), exist_ok=True)
     with open(fichier_sortie, "w", encoding="utf-8") as f:
         json.dump(sortie, f, ensure_ascii=False, indent=1)
-    return sortie["bilan"] | {"calibration": sortie["calibration"]}
+    if dossier_journal is None:
+        dossier_journal = os.path.join(os.path.dirname(fichier_sortie), "journal")
+    journal = journalise(matchs, sortie["calibration"], maintenant, empreinte, commit, dossier_journal)
+    return sortie["bilan"] | {"calibration": sortie["calibration"], "journal_ecrits": journal,
+                              "empreinte_code_v3": empreinte}
 
 
 if __name__ == "__main__":

@@ -83,4 +83,7 @@ def test_isolation_la_v3_n_ecrit_que_son_fichier(tmp_path):
                  maintenant=MAINTENANT)
     apres = _empreintes(racine)
     assert {k: v for k, v in apres.items() if k in avant} == avant           # rien d'existant n'est modifié
-    assert set(apres) - set(avant) == {os.path.join("data", "v3", "pronostics_v3.json")}
+    nouveaux = set(apres) - set(avant)                                         # seulement data/v3/ (sortie + journal)
+    assert os.path.join("data", "v3", "pronostics_v3.json") in nouveaux
+    assert all(k.startswith(os.path.join("data", "v3", "")) for k in nouveaux)
+    assert any(k.startswith(os.path.join("data", "v3", "journal", "")) for k in nouveaux)
