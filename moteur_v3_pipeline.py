@@ -390,6 +390,21 @@ def _score(enreg):
     return (h, a) if isinstance(h, int) and isinstance(a, int) else None
 
 
+def _signature_evenement_calibration(marche, max_buts=20):
+    """Signature déterministe de l'événement FT pour éviter de compter deux fois le même pari.
+    
+    Exemple : un handicap 3 choix « issue 1 » peut être exactement le même événement
+    qu'un handicap 2 choix à -1,5. Les deux marchés restent disponibles à la sélection,
+    mais une seule observation alimente la calibration.
+    """
+    vrai = []
+    for h in range(max_buts + 1):
+        for a in range(max_buts + 1):
+            if gagne(marche, h, a) is True:
+                vrai.append((h, a))
+    return tuple(vrai)
+
+
 def entraine_calibration(enregs, avant_le):
     """Calibration isotone sur les matchs de l'archive JOUÉS avant `avant_le` (date AAAA-MM-JJ) : probabilité brute V3
     de chaque marché coté contre son résultat réel. Renvoie (calibrateur, nb_matchs)."""
@@ -406,12 +421,18 @@ def entraine_calibration(enregs, avant_le):
             continue
         cotes = entree["odds"]
         vu = False
+        signatures_vues = set()
         for m, p in probas.items():
-            issue = gagne(m, *sc)            # AJOUT 28/09 : tous les marchés plein temps cotés, pas seulement le banc
-            if m in cotes and issue is not None and 0 < p < 1:
-                ps.append(p)
-                ys.append(1 if issue else 0)
-                vu = True
+            issue = gagne(m, *sc)            # Tous les marchés FT cotés, pas seulement le banc.
+            if m not in cotes or issue is None or not (0 < p < 1):
+                continue
+            signature = _signature_evenement_calibration(m)
+            if not signature or signature in signatures_vues:
+                continue
+            signatures_vues.add(signature)
+            ps.append(p)
+            ys.append(1 if issue else 0)
+            vu = True
         matchs += vu
     cal = IsotonicCalibrator()
     cal.fit(ps, ys)
