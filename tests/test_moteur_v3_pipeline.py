@@ -254,3 +254,50 @@ def test_page_v3_affiche_l_apercu():
     with open(os.path.join(racine, "archetype_v3.js"), encoding="utf-8") as f:
         js = f.read()
     assert "apercu_non_calibre" in js and "Aperçu" in js and "Probabilité NON calibrée" in js
+
+
+# --- AJOUT 28/09/2026 : journal V3 figé au coup d'envoi + empreinte du code (contrôle sans ambiguïté) ------------------
+
+def _lance(tmp_path, enregs, maintenant):
+    d, sortie = str(tmp_path / "archive"), str(tmp_path / "v3" / "pronostics_v3.json")
+    _ecrit(d, enregs)
+    bilan = mp.execution(dossier=d, fichier_sortie=sortie, maintenant=maintenant)
+    chemin = tmp_path / "v3" / "journal" / "2026-09-28.json"
+    return bilan, (json.loads(chemin.read_text(encoding="utf-8")) if chemin.exists() else {})
+
+
+@pytest.mark.parametrize("heure", [6, 12, 17])          # avant le coup d'envoi (18:00 UTC) : le calcul est journalisé
+def test_journal_ecrit_avant_le_coup_d_envoi(tmp_path, heure):
+    t = datetime.datetime(2026, 9, 28, heure, 0, tzinfo=datetime.timezone.utc)
+    bilan, j = _lance(tmp_path, [_enreg("ok")], t)
+    e = j["ok"]
+    assert bilan["journal_ecrits"] == 1 and e["calcule_le"] == t.strftime("%Y-%m-%dT%H:%M:%SZ")
+    assert e["empreinte_code_v3"] == mp.empreinte_code() and e["statut"] == "EVALUE" and "apercu_non_calibre" in e
+    assert e["calibration"]["prete"] is False
+
+
+@pytest.mark.parametrize("heure", [18, 20, 23])         # coup d'envoi passé : l'entrée n'est plus jamais modifiée
+def test_journal_fige_apres_le_coup_d_envoi(tmp_path, heure):
+    avant = datetime.datetime(2026, 9, 28, 10, 0, tzinfo=datetime.timezone.utc)
+    _, j1 = _lance(tmp_path, [_enreg("ok")], avant)
+    apres = datetime.datetime(2026, 9, 28, heure, 0, tzinfo=datetime.timezone.utc)
+    _, j2 = _lance(tmp_path, [_enreg("ok")], apres)
+    assert j2 == j1 and j2["ok"]["calcule_le"] == "2026-09-28T10:00:00Z"
+
+
+def test_journal_garde_le_dernier_calcul_avant_match(tmp_path):
+    _lance(tmp_path, [_enreg("ok")], datetime.datetime(2026, 9, 28, 4, 0, tzinfo=datetime.timezone.utc))
+    _, j = _lance(tmp_path, [_enreg("ok")], datetime.datetime(2026, 9, 28, 16, 0, tzinfo=datetime.timezone.utc))
+    assert j["ok"]["premier_calcul_le"] == "2026-09-28T04:00:00Z" and j["ok"]["calcule_le"] == "2026-09-28T16:00:00Z"
+    assert j["ok"]["nb_calculs"] == 2
+
+
+def test_empreinte_change_si_le_code_change(tmp_path):
+    for nom in ("moteur_v3_pipeline.py", "regles_selection.py", "banc_historique.py"):
+        (tmp_path / nom).write_text("a = 1\n", encoding="utf-8")
+    (tmp_path / "moteur_v3").mkdir()
+    (tmp_path / "moteur_v3" / "model.py").write_text("K = 4\n", encoding="utf-8")
+    e1 = mp.empreinte_code(str(tmp_path))
+    assert mp.empreinte_code(str(tmp_path)) == e1                   # même code : même empreinte
+    (tmp_path / "moteur_v3" / "model.py").write_text("K = 5\n", encoding="utf-8")
+    assert mp.empreinte_code(str(tmp_path)) != e1                   # une ligne changée : empreinte différente
