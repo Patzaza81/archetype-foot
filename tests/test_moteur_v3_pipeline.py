@@ -301,3 +301,22 @@ def test_empreinte_change_si_le_code_change(tmp_path):
     assert mp.empreinte_code(str(tmp_path)) == e1                   # même code : même empreinte
     (tmp_path / "moteur_v3" / "model.py").write_text("K = 5\n", encoding="utf-8")
     assert mp.empreinte_code(str(tmp_path)) != e1                   # une ligne changée : empreinte différente
+
+
+# --- AJOUT 28/09/2026 : calibration seulement à partir de 50 matchs joués (décision de Patrick) -------------------------
+
+def _joues(n):
+    return [_enreg(f"j{i}", date="2026-09-20", score=(i % 3, (i // 3) % 2)) for i in range(n)]
+
+
+@pytest.mark.parametrize("n", [50, 60, 100])
+def test_calibration_prete_a_partir_de_50_matchs(n):
+    cal, matchs = mp.entraine_calibration(_joues(n), "2026-09-27")
+    assert matchs == n and cal.fit_result.ready and cal.predict(0.5) is not None
+
+
+@pytest.mark.parametrize("n", [34, 40, 49])            # >= 300 observations, mais moins de 50 matchs
+def test_calibration_refusee_sous_50_matchs(n):
+    cal, matchs = mp.entraine_calibration(_joues(n), "2026-09-27")
+    assert matchs == n and cal.fit_result.observations >= 300
+    assert not cal.fit_result.ready and cal.fit_result.reason == "MATCHS_INSUFFISANTS" and cal.predict(0.5) is None
