@@ -2,7 +2,7 @@
 
 Le fichier est volontairement descriptif : il ne lance aucun calibrage et ne
 lit aucun ancien système de tickets. Il rassemble le bilan du moteur principal
-moteur_v2_6_9 et celui de shrink_v1, actuellement en test.
+moteur_v2_6_9, moteur principal du système.
 """
 
 from __future__ import annotations
@@ -14,7 +14,6 @@ from typing import Any
 
 FICHIER_ETAT = "etat_systeme.json"
 FICHIER_BILAN = "bilan_archetype_model.json"
-FICHIER_BILAN_SHRINK = "bilan_shrink_v1.json"
 
 
 def _charge_json_ou_vide(chemin: str) -> Any:
@@ -29,7 +28,6 @@ def construit_etat() -> dict[str, Any]:
     return {
         "genere_le": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "bilan_comportemental": _charge_json_ou_vide(FICHIER_BILAN),
-        "bilan_shrink_v1": _charge_json_ou_vide(FICHIER_BILAN_SHRINK),
     }
 
 
