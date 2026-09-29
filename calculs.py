@@ -732,15 +732,9 @@ def construit_probabilites_marches(matrice, lignes_ou=(0.5, 1.5, 2.5, 3.5, 4.5),
 
 
 def calcule_ev(probabilite_modele, cote_observee):
-    """Règle N8 — EV = (cote x probabilité modèle AJUSTÉE) - 1.
+    """Règle N8 — EV = (cote × probabilité modèle) - 1. Aucun shrinkage empirique.
 
-    CORRECTIF (04/09/2026 soir) : applique désormais ajuste_probabilite()
-    en interne avant le calcul. Avant ce correctif, cette fonction utilisait
-    la probabilité brute du modèle -- ajuste_probabilite() existait dans ce
-    même fichier mais n'était appelée nulle part, rendant K_SHRINKAGE sans
-    aucun effet réel. probabilite_modele reçu ici reste la valeur BRUTE
-    (celle affichée telle quelle ailleurs, ex. LISTE_A/LISTE_B) -- c'est ce
-    point d'entrée qui resserre, pas l'appelant.
+    `probabilite_modele` est utilisée telle quelle, sans recalibrage implicite.
     """
     if cote_observee is None:
         return None
