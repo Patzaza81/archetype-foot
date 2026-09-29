@@ -148,9 +148,9 @@ jobs:
       # (scraping indisponible) ne doit jamais bloquer le pipeline --
       # continue-on-error, même logique que les autres étapes de
       # vérification/calcul de ce fichier.
-      - name: Vérifier les résultats réels d'archetype_model (SELECTED + COUNTERFACTUAL)
+      - name: Vérifier les résultats réels du moteur principal (SELECTED + COUNTERFACTUAL)
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
-        run: python verifie_resultats_archetype_model.py
+        run: python verifie_resultats.py
         continue-on-error: true
 
       # AJOUT 21/09/2026 -- évaluation du moteur : scores finaux des matchs des jeux d'évaluation (evaluation/snapshot_*.json).
