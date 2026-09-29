@@ -110,7 +110,7 @@ justification = { resume, preuves: [ { type, texte, valeur } ], donnees_suffisan
 ```
 
 - **NO DATA → NO GO** : un marché sans preuve *spécifique à ce marché* est rejeté avant sélection
-  (`JUSTIFICATION_INSUFFISANTE`, dans `archetype_model/main.py`). La preuve EV, valable pour tous les marchés,
+  (`JUSTIFICATION_INSUFFISANTE`). La preuve EV, valable pour tous les marchés,
   ne suffit jamais.
 - Une donnée n'est publiée que si elle est **calculable exactement** sur les historiques fournis (minimum 5 matchs
   au total, 3 par lieu). Les seuils sont dans le module.
@@ -195,7 +195,7 @@ seulement (des centaines de segments étant scrutés, une partie de ces gains vi
 | `precalcul_leger.json` | Version allégée lue par le site : choix retenus et leur justification |
 | `cache_equipes.json`, `cache_h2h.json`, `cache_classement.json`, `cache_betpawa.json` | Mémoires du scraping |
 | `historique_pronostics.json`, `archive/AAAA-MM.json` | Historique et archive des observations à régler |
-| `bilan_archetype_model.json`, `etat_systeme.json`, `data/audit_*.json` | Bilans et audit |
+| `etat_systeme.json`, `journal.json`, `data/controles/*.json` | État et suivi du moteur principal |
 | `config/*` | Paramètres calibrables, état et journaux de calibration |
 | `export_moteur/` | Entrées exactes du moteur (un fichier par date, écrasés à chaque run) et `diagnostic_pont.json` (matchs rejetés, avec la raison) |
 | `tickets_observes/`, `vrais_tickets/` | Tickets fictifs et réels, un fichier par mois |
