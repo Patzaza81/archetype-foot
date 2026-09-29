@@ -13,195 +13,25 @@
 - Préserver compatibilité + tests existants
 - Pas de suppression/modification clé sans validation
 
----
+# Instructions spécialisées — à lire selon la tâche
 
-# ⚠️ RAPPEL TRÈS IMPORTANT — RÈGLE DU DOUBLE CONTRÔLE (26/09/2026)
+Avant toute modification concernée, lire le document spécialisé correspondant :
+- Sélection, double contrôle, justification des marchés : `docs/CLAUDE_SELECTION.md`
+- Journal de rentabilité : `docs/CLAUDE_RENTABILITE.md`
+- Données, saisons, sources et contrat moteur : `docs/CLAUDE_DATA.md`
+- Archive de test, anti-fuite et évaluation : `docs/CLAUDE_ARCHIVE.md`
 
-Tout nouveau moteur de sélection DOIT appliquer `regles_selection.double_controle` avant de retenir un pari.
-Un pari n'est retenu que s'il passe les DEUX contrôles :
+## Règles de sécurité
 
-1. **Saison, dans les deux sens** : l'équipe à domicile jugée sur ses matchs à domicile ET l'équipe à l'extérieur sur ses matchs à l'extérieur, plus leur saison complète. Une victoire ne se justifie jamais par la seule faiblesse de l'adversaire.
-2. **Forme récente** : les 6 derniers matchs de chaque équipe et les 3 derniers au même lieu.
+- Les documents spécialisés font partie des instructions du projet : ne pas les ignorer lorsqu'une tâche relève de leur domaine.
+- En cas de modification d'une règle métier, mettre à jour simultanément le document spécialisé et les tests concernés.
+- Ne pas déplacer, supprimer ou modifier une règle spécialisée uniquement pour réduire la taille de ce fichier.
+- Les fichiers critiques du système restent inchangés par cette réorganisation documentaire.
+- Cette organisation ne modifie ni le code Python, ni les données, ni le pipeline, ni les tests : elle ne fait que répartir les instructions Claude.
 
-Ajouts du 26/09 au soir (version 1.1.0) :
-- **Seulement la même compétition** : les matchs utilisés sont ceux de la même compétition ou du même tournoi, jamais les coupes.
-- **Pari limite** (adversaire exactement au maximum de victoires récentes autorisé, cas York – Gillingham) : exclu d'un combiné dès qu'un pari propre est disponible.
+## Documentation complémentaire
 
-Détails, seuils et origine (cas Real Salt Lake – New England) : `docs/REGLE_DOUBLE_CONTROLE.md`. Tests : `tests/test_regles_selection.py`.
-
-# RÈGLE MAÎTRESSE — JUSTIFICATION DES MARCHÉS RETENUS
-
-Cette règle est permanente et ne doit jamais être oubliée, simplifiée ou contournée par Claude ou un autre agent.
-
-## Règle absolue
-
-**Chaque marché retenu doit correspondre à une justification précise qui explique pourquoi CE marché a été retenu.**
-
-La justification ne doit jamais être inventée, reconstruite après coup, générique ou choisie parce qu'une statistique disponible « fait joli ».
-
-La chaîne obligatoire est :
-
-**critère réel de sélection → marché retenu → justification correspondante**
-
-Il faut pouvoir remonter du marché publié au critère exact qui a imposé son choix.
-
-## Deux niveaux à conserver
-
-1. **Preuve spécifique au marché** : elle explique pourquoi le marché lui-même est cohérent avec les données réelles.
-2. **Cause de sélection finale** : elle explique pourquoi ce marché précis a été retenu parmi les candidats éligibles.
-
-Les deux doivent rester traçables. Une preuve EV générique ne remplace jamais une preuve spécifique au marché.
-
-## Contrat NO DATA → NO GO
-
-Si un marché n'a pas de preuve spécifique calculable sur les données réelles, il ne doit pas être retenu ni affiché comme choix.
-
-La sélection est souveraine : si un marché est sélectionné, cela signifie qu'il a déjà satisfait toutes les exigences de sélection. La justification ne constitue jamais un filtre supplémentaire et son absence ne peut jamais annuler rétroactivement un marché retenu. La justification doit simplement expliquer le choix à partir des éléments réellement disponibles.
-
-## Cause de sélection actuelle du moteur V2.6.9
-
-- **P1** : probabilité modèle la plus élevée parmi les marchés éligibles restants disposant d'une justification spécifique.
-- **P2** : EDV le plus élevé parmi les marchés éligibles restants disposant d'une justification spécifique, après retrait de P1.
-- **P3** : EDV le plus élevé parmi les marchés restants satisfaisant simultanément cote >= 2,91 et probabilité >= 20 %, avec justification spécifique.
-
-Ces causes doivent être produites par la même logique que la sélection, puis attachées au bloc justification du marché retenu.
-
-## Interdiction
-
-Ne jamais faire :
-
-**marché retenu → chercher ensuite une statistique quelconque → appeler cela justification.**
-
-Faire uniquement :
-
-**critère ayant réellement retenu le marché → justification exacte de ce critère et du marché.**
-
-Toute modification future de la sélection doit donc modifier simultanément son contrat de justification et ses tests.
-
-
-## Couverture obligatoire des familles de marchés
-
-La bibliothèque de justification doit couvrir tous les marchés réellement émis par moteur_v2_6_9 et reconnus par branchement_moteur.py :
-
-- 1X2 : victoire domicile, nul, victoire extérieure ;
-- Double chance : 1X, X2, 12 ;
-- BTTS : oui, non ;
-- Total de buts : over/under sur toutes les lignes réellement produites ;
-- Buts d'une équipe : over/under sur les lignes réellement produites ;
-- Cage inviolée : domicile, extérieur ;
-- Handicap : domicile/extérieur sur les lignes réellement produites.
-
-Aucun type ne doit être justifié par une preuve appartenant à un autre marché. En particulier :
-- une victoire sèche ne doit pas être justifiée par une simple série « sans défaite » ;
-- un handicap doit être justifié par la capacité historique à couvrir sa propre ligne ;
-- une cage inviolée doit être reliée à la capacité à ne pas concéder, pas simplement à une bonne forme ;
-- 1X2 nul et « pas de nul » doivent reposer sur des signaux opposés ;
-- les lignes Over/Under et les buts d'équipe doivent utiliser la ligne exacte du marché.
-
-## Style de la justification visible
-
-Le texte destiné à l'utilisateur ne doit pas ressembler à un journal de programme. Les noms techniques (EDV, market_family, selection_criterion, preuve_specifique_disponible, etc.) restent des données internes et ne doivent pas apparaître dans le discours utilisateur.
-
-La formulation doit :
-1. nommer naturellement l'équipe ou le contexte ;
-2. expliquer le mécanisme sportif qui soutient ce marché précis ;
-3. conserver les chiffres utiles ;
-4. varier l'angle selon la preuve disponible : forme à domicile/extérieur, faiblesse adverse, rythme de buts, historique direct, capacité à couvrir une ligne, solidité défensive, etc. ;
-5. éviter les phrases génériques interchangeables entre plusieurs marchés ;
-6. ne jamais transformer une statistique disponible en justification si cette statistique n'explique pas réellement le marché retenu.
-
-La variation doit être déterministe et fondée sur la preuve disponible, pas aléatoire : deux marchés opposés ne doivent jamais recevoir la même phrase simplement parce que le système dispose des mêmes chiffres.
-
-
-## Règle maîtresse — justification en conditions réelles
-
-- La justification doit restituer le chemin quantitatif réel ayant conduit au marché retenu. Elle ne doit jamais chercher après coup une statistique simplement compatible avec le marché.
-- Les données H2H sont affichées séparément à titre indicatif. Elles n'influencent ni le choix du marché ni sa justification. Une justification ne doit jamais devenir disponible uniquement grâce au H2H.
-- Pour un total de buts (+/- X,5), la preuve doit porter sur le **total du match** et suivre les données réellement utilisées par le moteur : buts marqués/encaissés dans le contexte domicile/extérieur, volume total observé, puis probabilité modèle du seuil exact.
-- Exemple réel Stockport–Peterborough du 26/09/2026 : le moteur utilise 3 matchs de Stockport à domicile et 3 matchs de Peterborough à l'extérieur. Ces six matchs produisent 4,00 buts en moyenne. Les moyennes de contexte sont Stockport 3,00 marqués / 2,33 encaissés à domicile et Peterborough 0,33 marqué / 2,33 encaissés à l'extérieur. Le moteur construit alors λ domicile = 2,67 et λ extérieur = 1,33, soit 4,00 buts attendus, puis 56,7 % pour +3,5. La justification doit suivre ce chemin, pas seulement afficher « 2,33 buts encaissés ».
-- Le texte visible doit rester naturel : expliquer pourquoi le seuil précis est soutenu, avec les données utiles et la probabilité du modèle, sans jargon interne inutile.
-
-
-# JOURNAL DE RENTABILITÉ (journal_rentabilite.py → journal.json → journal.html) — règles du 24/09/2026
-
-- **Ce n'est pas un moteur.** Le journal ne prédit rien : il règle les cotes BetPawa réellement relevées sur les scores
-  finaux. Il ne doit jamais importer ni recalculer `moteur_v2_6_9` ou `shrink_v1` ; il lit seulement leurs choix.
-- **Affichage : statistiques gagnantes uniquement.** Tout ROI négatif est calculé (statuts `A_EVITER`, `NEUTRE`) mais n'est
-  jamais affiché sur la page. La colonne « Niveau » (Prouvé / À surveiller / Non confirmé) est obligatoire : elle est le seul
-  garde-fou contre les gains dus au hasard.
-- **Conseil sur un match à venir = même championnat ET même marché.** Le segment championnat × marché doit être
-  `A_JOUER` ou `A_SURVEILLER`, et la cote du jour doit être comprise entre `cote_min` et `cote_max` du segment
-  (`verdict_marche`). Interdit : conseiller un match à partir d'une moyenne tous championnats ou d'une famille de
-  marchés (erreur corrigée le 24/09 : BTTS oui à 2,24 dans Trefelin – The New Saints, « justifié » par la moyenne
-  BTTS oui tous championnats à 1,73).
-- **Équipes à suivre** : fréquence ≥ 70 %, ≥ 5 matchs de l'équipe, marchés dont la fréquence générale est < 70 %.
-  La cote retenue est toujours celle du côté de l'équipe (domicile/extérieur).
-- **Handicaps de `historique_pronostics.json`** : ligne vue du domicile (`ligne_propre`). Toute cote de handicap
-  incohérente avec le 1X2 est retirée (`controle_coherence`), jamais corrigée.
-- **Pages** : `journal.html` et les pages de pronostics suivent le gabarit Archetype (`archetype.css`, classes `ax-`,
-  mode nuit `archetype_theme_nuit`). Après modification d'un `.js`/`.css`, changer le paramètre `?v=`.
-- **Tests** : toute fonction de comparaison ou de règlement du journal est testée sur au moins 3 cas qui doivent passer
-  et 3 qui doivent échouer (`tests/test_journal_rentabilite.py`).
-
-
-# DONNÉES DE SAISON (cache_equipes_saison.json) — règle du 24/09/2026
-
-- Une saison d'équipe n'est lue que dans la section dont le TITRE de compétition correspond (`scraper_details._section_competition`).
-  Interdit : ancrer sur un texte quelconque de la page (JavaScript compris) ou lire un tableau situé après le titre d'une
-  autre compétition. En cas de doute : aucune donnée (NO DATA → NO GO), jamais une autre compétition.
-- Toute saison lue est confrontée aux scores connus par les pages de match (`stats_saison_en_cours.controle_coherence`) ;
-  une contradiction fait refuser l'équipe. Le contrôle nocturne `controle_saisons.py` publie le taux d'erreur (page Système).
-- Toute modification de la lecture des pages se vérifie d'abord sur de vraies pages capturées (`diagnostic/`,
-  `tests/fixtures/pages_equipes/`), jamais sur des pages imaginées.
-
-
-# SOURCES DE DONNÉES — décisions du 24/09/2026
-
-- Football-Data.co.uk est la source principale des données d'équipes pour les 38 divisions qu'il publie
-  (saisons terminées : `archive_football_data.py`, immuables ; saison en cours : `collecte_football_data.py`).
-- Règle d'assemblage (précisée par Patrick le 24/09/2026) :
-  1. Championnat couvert par Football-Data : les matchs de Football-Data sont la base (données plus complètes : mi-temps,
-     tirs, corners, cartons, xG). Matchendirect ne sert qu'à ajouter les JOURS manquants, c'est-à-dire les matchs joués
-     après la dernière mise à jour de Football-Data (retard de 1 à 4 jours) ou absents de Football-Data.
-  2. Vérification des dates exactes, match par match : un match Matchendirect n'est ajouté que si l'équipe n'a AUCUN match
-     Football-Data contre le même adversaire à ± 1 jour. Le ± 1 jour est obligatoire : un match joué tard le soir en heure
-     locale (MLS, Brésil, Argentine…) peut porter la date du lendemain dans l'autre source. Jamais deux fois le même match.
-  3. Chaque match transmis au moteur porte sa source (football-data ou matchendirect) et sa date.
-  4. Championnat non couvert par Football-Data (Cymru Premier, Serie C, Eerste Divisie…) : Matchendirect seul, sous le
-     contrôle nocturne `controle_saisons.py`.
-  5. Un marché dont une donnée nécessaire manque (ex. corners d'un match venu de Matchendirect) est écarté.
-  6. Remplacement automatique (précisé par Patrick le 24/09/2026) : un match ajouté depuis Matchendirect n'est que
-     PROVISOIRE. Dès que Football-Data publie ce même match (même adversaire à ± 1 jour), c'est la version Football-Data qui
-     est utilisée et la version Matchendirect disparaît. Pour que ce soit toujours vrai, l'assemblage n'est jamais stocké
-     ni cumulé d'un run à l'autre : il est entièrement reconstruit à chaque run à partir des deux sources. Chaque match
-     Matchendirect porte « provisoire : true ».
-  Prérequis : correspondance des noms d'équipes (A3) et conservation de la date et de l'adversaire de chaque match
-  Matchendirect (aujourd'hui seuls les buts sont gardés).
-- Aucune comparaison de cotes entre bookmakers, aucune API externe. Aucune cote n'est collectée depuis Football-Data.
-- La collecte ne calcule rien : elle récupère, normalise, vérifie et transmet.
-- Le moteur ne lit les données d'équipes que par `contrat_moteur.py` (`charge_assemblage`, `equipe`) ; tout changement de
-  format passe par une nouvelle `VERSION_CONTRAT` + `docs/CONTRAT_MOTEUR.md` + `tests/test_contrat_moteur.py`.
-
-
-# ARCHIVE DE TEST (archive_donnees_test.py → data/archive_test/AAAA-MM-JJ.json.gz) — décision du 27/09/2026
-
-- **But** : pouvoir rejouer n'importe quel moteur (actuel ou futur) sur les matchs passés, uniquement avec ce qui était
-  connu avant le coup d'envoi. `historique_pronostics.json` ne suffit pas : il ne garde pas les statistiques d'équipe.
-- **Contenu obligatoire par match avec cotes** : liste complète des matchs de chaque équipe (saison en cours, même
-  compétition, domicile et extérieur : date, adversaire, buts), cotes BetPawa complètes + cotes observées, choix du moteur
-  en production, puis le score.
-- **Anti-fuite** : aucun match d'équipe daté du jour du match ou après. **Figé au coup d'envoi** : le dernier état avant le
-  coup d'envoi est gardé ; ensuite seul le score peut être écrit, et un score existant n'est jamais modifié.
-- **Ne jamais retirer ni alléger** ces champs pour gagner de la place : sans eux, les matchs deviennent inutilisables pour
-  tester un moteur. Toute donnée nouvelle utilisée par un moteur (mi-temps, corners, cartons, Football-Data…) doit aussi
-  être ajoutée à cette archive, avec un nouveau `SCHEMA_VERSION`.
-- **Tout nouveau moteur est jugé sur cette archive** (et sur Football-Data) avant tout branchement au pipeline : il doit
-  au minimum prédire aussi bien que le marché.
-- **Football-Data (SCHEMA_VERSION 2)** : l'assemblage `data/assemblage/equipes.json` est lu par `contrat_moteur.py`
-  (seul lecteur autorisé) et chaque match y est gardé EN ENTIER (mi-temps, tirs, corners, cartons, xG), même règle
-  anti-fuite. Constat du 27/09 : cet assemblage est publié chaque nuit mais **aucun moteur ne le lit encore**
-  (chantier B). Assemblage absent ou contrat rompu : le bloc `assemblage` porte la raison, le reste est écrit.
-- **Exécution** : chaque nuit, à la fin de `enregistre_scores_historique.py` (`execution_nocturne()`), donc après
-  `precalcul.py` et sa garde ; `data/` est déjà commité par le workflow. Chaque équipe est retrouvée par l'adresse
-  exacte du match dans `cache_equipes_saison.json`, jamais par ressemblance de nom.
-- Tests : `tests/test_archive_donnees_test.py` (3 cas qui passent et 3 qui échouent par règle).
+Les contrats et règles détaillées référencés par les documents spécialisés restent les sources de référence lorsqu'ils existent, notamment :
+- `docs/CONTRAT_MOTEUR.md`
+- `docs/REGLE_DOUBLE_CONTROLE.md`
+- `tests/`
