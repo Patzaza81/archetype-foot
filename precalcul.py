@@ -861,38 +861,7 @@ def _slim_pour_archive(s):
     la version site (pas besoin de LISTE_A/raison_non_traite pour un
     match déjà archivé, seulement de quoi calculer un ROI et vérifier).
 
-    CORRECTIF 06/09/2026 (Groupe 4, bug #1) -- TOUS_MARCHES_EVALUES était
-    absent d'ici alors que calcule_roi.calcule_calibrage() en dépend
-    entièrement pour recalibrer K_SHRINKAGE/SEUIL_EV_MIN : nb_triplets_
-    disponibles restait bloqué à 0 depuis le 04/09, aucune correction
-    possible. Remis en place SEULEMENT maintenant que #13 (pseudo-
-    réplication -- un match à 28 marchés ne comptait avant que pour 1 dans
-    la taille d'échantillon, comptera bien pour 28 marchés mais 1 seul
-    match distinct) est corrigé dans calcule_roi.py -- sinon on aurait
-    fait grossir un échantillon avec une méthode encore fausse."""
-    return {
-        "domicile": s.get("domicile"),
-        "exterieur": s.get("exterieur"),
-        "competition": s.get("competition"),
-        "match_id": s.get("match_id"),
-        "date": s.get("date"),
-        "heure": s.get("heure"),
-        "score": None,
-        "verdict_global": s.get("verdict_global"),
-        "motif_no_go": s.get("motif_no_go"),
-        "confiance": s.get("confiance"),
-        "source_cotes": s.get("source_cotes"),
-        "betpawa_url": s.get("betpawa_url"),
-        "model_version": s.get("model_version"),
-        "LISTE_B_liste_finale_apres_correlation": s.get("LISTE_B_liste_finale_apres_correlation"),
-        "TOUS_MARCHES_EVALUES": s.get("TOUS_MARCHES_EVALUES"),
-    }
-
-
-
-
-def _leger_pour_site(s):
-    """Version pour precalcul_leger.json -- tout ce que script.js affiche
+    TOUS_MARCHES_EVALUES est conservé dans l'archive pour l'audit descriptif des marchés évalués.\n    """Version pour precalcul_leger.json -- tout ce que script.js affiche
     SAUF marches et lambda (les deux champs les plus lourds, utilisés
     seulement par la section 'tous les marchés calculés'/détail du lambda
     dans 'voir les détails').
