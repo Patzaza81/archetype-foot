@@ -1,3 +1,20 @@
+# Config
+- Stack: Python 3.12, Git, GitHub, Netlify
+- Test: `pytest`
+- Git: `git status && git diff`
+
+# Agents
+- Sous-agent uniquement si tâche parallèle/isolable
+- Contexte minimal par sous-tâche
+- Revue du résultat avant intégration
+
+# Guardrails
+- Vérifier avant toute modification critique
+- Préserver compatibilité + tests existants
+- Pas de suppression/modification clé sans validation
+
+---
+
 # ⚠️ RAPPEL TRÈS IMPORTANT — RÈGLE DU DOUBLE CONTRÔLE (26/09/2026)
 
 Tout nouveau moteur de sélection DOIT appliquer `regles_selection.double_controle` avant de retenir un pari.
