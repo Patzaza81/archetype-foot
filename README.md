@@ -40,17 +40,11 @@ durent de 1 h 30 à 3 h 30, l'essentiel du temps étant la résolution BetPawa.
 | 2 | Liste J+2 et J+3 (non bloquante) | `scraper_semaine.py` | `matchs_semaine.json` |
 | 3 | Pré-calcul J0 → J+3 + résolution BetPawa + **moteur** | `precalcul.py` (→ `branchement_moteur.py`) | `precalcul.json` (complet), `precalcul_leger.json` (site), `export_moteur/` (entrées exactes du moteur), `matchs_*_filtre.json`, `historique_pronostics.json`, `archive/AAAA-MM.json` |
 | 4 | Garde : le pré-calcul a-t-il produit un résultat exploitable ? | (dans le workflow) | arrête le job sinon |
-| 5 | Vérification des résultats réels | `verifie_resultats_archetype_model.py` | règlement de l'archive (`SELECTED` / `COUNTERFACTUAL`) |
-| 6 | Tickets fictifs (mode observation) | `observe_tickets_archetype_model.py` | `tickets_observes/AAAA-MM.json` |
-| 7 | Tentative de vrais tickets (seuil réel, jamais assoupli) | `genere_tickets_reels_archetype_model.py` | `vrais_tickets/AAAA-MM.json` |
-| 8 | Bilan comportemental | `calcule_matrice_archetype_model.py` | `bilan_archetype_model.json` |
-| 9 | ~~Calibration adaptative~~ **désactivée** (elle réglait l'ancien modèle) | `calibre_archetype_model.py` | — |
-| 10 | État système pour la page Système | `construit_etat_systeme.py` | `etat_systeme.json` |
-| 11 | Commit et push du résultat | (dans le workflow) | mise à jour du dépôt |
-| 12 | Signalement des constats majeurs | `notifie_constat_majeur.py` | Issue GitHub, s'il y en a |
+| 5 | Vérification des résultats réels | `verifie_resultats.py` | règlement de l'archive (`SELECTED` / `COUNTERFACTUAL`) |
+| 6 | Scores du jeu d'évaluation | `evaluation_scores.py` | `evaluation/scores_*.json` |
+| 7 | Commit et push du résultat | (dans le workflow) | mise à jour du dépôt |
 
-Les étapes 4 à 12 ne tournent que pour un run planifié ou une relance complète. L'audit passif écrit en plus
-`data/audit_status.json`, `data/audit_telemetry.json` et `data/audit_odds_snapshots.json`.
+Les étapes 4 à 7 ne tournent que pour un run planifié ou une relance complète. Le journal de rentabilité est un workflow séparé et reconstruit `journal.json` puis `etat_systeme.json`.
 
 ⚠ Plusieurs étapes sont en `continue-on-error` : **un run vert ne prouve pas que tout a fonctionné**. Il faut
 inspecter les fichiers produits (règle de `ROADMAP.md`).
@@ -73,10 +67,7 @@ Sources : `matchendirect.fr` (listes, équipes, H2H, classements : HTTP simple a
 Règle de sécurité du matching BetPawa : **mieux vaut aucun match qu'un mauvais match** (aucune correspondance
 ambiguë n'est acceptée).
 
-`run_pipeline.py` et `calculs.py` forment l'**ancien moteur**. `archetype_model` est prioritaire ; l'ancien moteur ne
-sert de repli qu'en cas d'*erreur technique* (exception), jamais pour une décision métier normale. `precalcul.py` continue
-d'en calculer les champs historiques (listes A/B, Kelly, `verdict_global`…), que le site ne lit pas, et
-`scraper.py` en importe `aujourdhui_france()`.
+`run_pipeline.py` reste l'orchestrateur historique du flux manuel et `calculs.py` fournit encore des fonctions de préparation utilisées par ce flux. Ils ne constituent pas un second moteur de décision : le moteur de production est `moteur_v2_6_9.py`. Le nettoyage retire désormais le shrinkage empirique historique et l'ancien package `archetype_model`.
 
 ### 3.2 Le moteur : `moteur_v2_6_9.py`
 Le moteur du pipeline est `moteur_v2_6_9.py` (spec V2.6.2 + vérificateurs V1 à V12) : un couple de λ par match (moyenne
@@ -90,7 +81,7 @@ le code** : il n'y a plus de calibration adaptative. `python moteur_v2_6_9.py --
 | `branchement_moteur.py` | Exécute le moteur dans le pipeline et convertit sa sortie : nom canonique des marchés, justification, règle NO DATA → NO GO, sélection P1/P2/P3, archive |
 
 **Données d'entrée du moteur : `stats_saison_en_cours.py`.** Statistiques d'équipe = **saison en cours uniquement, matchs les
-plus récents** (12 par lieu, domicile pour l'équipe qui reçoit, extérieur pour la visiteuse), via le chargeur `archetype_model/data/loader.py`
+plus récents** (12 par lieu, domicile pour l'équipe qui reçoit, extérieur pour la visiteuse), via `data_saison_loader.py`
 (une requête, jamais de `?season=`, ordre chronologique). Cache distinct : `cache_equipes_saison.json`. Aucun repli sur la saison
 précédente (décision non négociable du 08/09/2026) : une équipe sans match cette saison est refusée. En début de saison les
 échantillons sont donc petits ; le moteur l'affiche (« Fenêtre d'analyse trop courte », visible dans les détails). L'ancien collecteur à
@@ -108,13 +99,7 @@ Le bloc produit sur chaque signal est `moteur_v2_6_9` (`moteur_utilise = "moteur
 complet. Les choix retenus sont archivés en `SELECTED`, les autres value bets en `COUNTERFACTUAL` (`model_version` =
 `moteur_v2_6_9`).
 
-**Ancien modèle `archetype_model/` — débranché puis nettoyé le 21/09/2026.** `archetype_model/main.py` (point d'entrée),
-`rattrapage_justification.py`, le repli sur l'ancien moteur et le test de bout en bout de l'ancien moteur sont **supprimés** ; les
-scénarios de l'ancien moteur ont quitté `audit_permanent.py`. Le dossier `archetype_model/` reste, car `precalcul.py` et le
-nouveau système en utilisent encore : `learning/` (archive, règlement des résultats, bilan), `h2h/` (confrontations directes),
-`data/odds_provider.py`. Les sous-paquets `poisson/`, `signals/`, `edv/`, `statistics/` ne sont plus appelés en production
-(`backtest/boucle_b.py` et l'audit s'en servent encore) : suppression à décider séparément. `tests/test_integrite_du_depot.py`
-vérifie que tout fichier compile, que tout module d'`archetype_model` s'importe et que tout script du workflow s'importe.
+**Ancien package `archetype_model/` — supprimé.** Les seuls services historiquement encore nécessaires ont été extraits vers des modules neutres (`archive.py`, `reglement.py`, `resultats.py`, `h2h.py`, `data_saison_loader.py`, `data_saison_validation.py`). Le cœur du moteur V3 reste indépendant de cet ancien package.
 
 ### 3.3 La bibliothèque de justification
 `bibliotheque_justification.py` (avec son enveloppe `justification.py`) écrit le texte que le site affiche : une
@@ -311,7 +296,7 @@ Décisions du propriétaire, documentées dans le code et dans `ROADMAP.md` (§4
   (`_section_competition`). Garde-fou dans `stats_saison_en_cours.py` : une saison qui contredit un score connu est
   refusée (`saison_incoherente_avec_resultats_connus`). Tests sur pages réelles : `tests/test_lecture_saison_pages_reelles.py`.
   `cache_equipes_saison.json` a été vidé le 24/09 pour forcer une relecture de toutes les équipes.
-  moteur dans `shrink_v1_utilise` ; la page était toujours vide (corrigé le 24/09).
+  
 
 ## 10. Documents du projet
 
