@@ -12,7 +12,7 @@ Règles de sécurité (décidées avant de connaître un seul résultat) :
   - un résultat n'est associé à un match que si LES DEUX équipes correspondent (même date si elle est donnée) ; en cas
     d'ambiguïté ou de doute, la ligne est rejetée et listée avec le meilleur candidat : jamais d'association devinée ;
   - équipes écrites dans l'ordre inverse : détectées, le score est inversé et un avertissement est émis ;
-  - le règlement est celui du pipeline (archetype_model.learning.reglement), dont la cohérence avec le moteur est testée ;
+  - le règlement est celui du pipeline (`reglement.py`), dont la cohérence avec le moteur est testée ;
   - aucune conclusion sur le ROI sous SEUIL_CONCLUSION_CHOIX choix (ROADMAP : 150 à 200 choix propres).
 
 Ce que mesure le rapport, du plus au moins « ce que le site affiche » :
