@@ -11,9 +11,10 @@ import json
 import math
 from pathlib import Path
 
-from archetype_model.audit import telemetry as tel
-from archetype_model.learning import archive as arch
-from archetype_model.learning import reglement as regl
+import pytest
+# audit legacy supprimé
+import archive as arch
+import reglement as regl
 
 
 # ----------------------------------------------------------------------
