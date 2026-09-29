@@ -3,8 +3,8 @@ name: Journal de rentabilité
 # AJOUT 24/09/2026 -- Workflow SÉPARÉ du pipeline quotidien, volontairement :
 # le journal (journal_rentabilite.py -> journal.json, lu par journal.html) doit rester
 # à jour même si le pipeline principal s'arrête (ex. échec de l'étape d'autotests). Il ne fait que LIRE les
-# fichiers déjà publiés (historique_pronostics.json, archive/, archive_shrink/, precalcul_*.json,
-# data/echantillon_betpawa_501.json) et n'écrit que journal.json et controle_saisons.json.
+# fichiers déjà publiés (historique_pronostics.json, archive/, precalcul_*.json,
+# data/echantillon_betpawa_501.json) et publie journal.json, etat_systeme.json et controle_saisons.json.
 #
 # Déclenchements :
 #   - juste après chaque fin du pipeline quotidien (réussi ou non) : données les plus fraîches ;
@@ -51,6 +51,10 @@ jobs:
 
       # AJOUT 24/09/2026 -- contrôle croisé des saisons d'équipes (lecture seule, écrit controle_saisons.json,
       # affiché sur la page Système). Un échec ne bloque pas la publication du journal.
+      # État système : construit après le journal pour conserver la page Système sans dépendre d'un ancien moteur.
+      - name: Construire l'état système
+        run: python construit_etat_systeme.py
+
       - name: Contrôler les données de saison (controle_saisons.json)
         run: python controle_saisons.py
         continue-on-error: true
@@ -80,7 +84,7 @@ jobs:
         run: |
           git config user.name "archetype-foot-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add journal.json
+          git add journal.json etat_systeme.json
           [ -f controle_saisons.json ] && git add controle_saisons.json
           [ -d data/correspondances ] && git add data/correspondances
           [ -d data/assemblage ] && git add data/assemblage
