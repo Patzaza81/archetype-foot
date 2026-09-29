@@ -5,7 +5,7 @@ Avant le correctif, 1x2_domicile / 1x2_exterieur étaient réglés comme une dou
 """
 import pytest
 
-from archetype_model.learning.reglement import evaluer_marche
+from reglement import evaluer_marche
 
 CAS = [
     # marché, buts_dom, buts_ext, statut attendu
