@@ -4,7 +4,7 @@
 stats_saison_en_cours.py -- statistiques d'équipe du moteur v2.6.9 : SAISON EN COURS UNIQUEMENT, matchs les PLUS RÉCENTS.
 
 Pourquoi ce module existe (21/09/2026). Le pont vers le moteur (pont_moteur.py) était alimenté par
-`scraper_details.recupere_gf_ga_avec_repli`, que `archetype_model/data/loader.py` écarte explicitement
+`scraper_details.recupere_gf_ga_avec_repli`, que le chargeur de saison écarte explicitement
 (décision de Patrick du 08/09/2026, « invariant non négociable v3 §4.1 », « à ne pas rouvrir sans lui en parler ») :
   1. elle COMPLÈTE avec la saison précédente quand la saison en cours est trop courte ; les matchs fusionnés ne portent
      plus de tag de saison, on ne peut plus les distinguer ;
