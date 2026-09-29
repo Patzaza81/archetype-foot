@@ -1,10 +1,4 @@
-"""construit_etat_systeme.py -- consolide les deux bilans comportementaux du système.
-
-Le fichier est volontairement descriptif : il ne lance aucun calibrage et ne
-lit aucun ancien système de tickets. Il rassemble le bilan du moteur principal
-moteur_v2_6_9, moteur principal du système.
-"""
-
+"""Consolide l'état descriptif du moteur principal à partir du journal de rentabilité."""
 from __future__ import annotations
 
 import datetime
@@ -13,29 +7,52 @@ from pathlib import Path
 from typing import Any
 
 FICHIER_ETAT = "etat_systeme.json"
-FICHIER_BILAN = "bilan_archetype_model.json"
-
-
-def _charge_json_ou_vide(chemin: str) -> Any:
-    path = Path(chemin)
-    if not path.exists():
-        return {}
-    with path.open("r", encoding="utf-8") as f:
-        return json.load(f)
+FICHIER_JOURNAL = "journal.json"
 
 
 def construit_etat() -> dict[str, Any]:
+    journal_path = Path(FICHIER_JOURNAL)
+    if not journal_path.exists():
+        bilan: dict[str, Any] = {}
+    else:
+        journal = json.loads(journal_path.read_text(encoding="utf-8"))
+        moteur = (journal.get("moteurs") or {}).get("moteur_v2_6_9") or {}
+        g = moteur.get("global") or {}
+        paris = int(g.get("paris") or 0)
+        gagnes = int(g.get("gagnes") or 0)
+        rembourses = int(g.get("rembourses") or 0)
+        par_famille = {}
+        for ligne in moteur.get("ligues") or []:
+            segment = ligne.get("segment")
+            if not segment:
+                continue
+            par_famille[segment] = {"resume": {
+                "observations": int(ligne.get("paris") or 0),
+                "gagnes": int(ligne.get("gagnes") or 0),
+                "perdus": max(0, int(ligne.get("paris") or 0) - int(ligne.get("gagnes") or 0) - int(ligne.get("rembourses") or 0)),
+                "roi_flat": ligne.get("roi"),
+            }}
+        bilan = {
+            "global": {
+                "observations": paris,
+                "gagnes": gagnes,
+                "perdus": max(0, paris - gagnes - rembourses),
+                "roi_flat": g.get("roi"),
+            },
+            "par_famille": par_famille,
+        }
     return {
         "genere_le": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-        "bilan_comportemental": _charge_json_ou_vide(FICHIER_BILAN),
+        "bilan_comportemental": bilan,
     }
 
 
 def main() -> None:
-    etat = construit_etat()
-    with open(FICHIER_ETAT, "w", encoding="utf-8") as f:
-        json.dump(etat, f, ensure_ascii=False, indent=2)
-    print("[etat systeme] etat_systeme.json généré -- deux bilans comportementaux consolidés.")
+    Path(FICHIER_ETAT).write_text(
+        json.dumps(construit_etat(), ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    print("[etat systeme] etat_systeme.json généré à partir du journal du moteur principal.")
 
 
 if __name__ == "__main__":
