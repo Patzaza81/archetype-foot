@@ -264,16 +264,3 @@ jobs:
           git diff --staged --quiet || git commit -m "Mise à jour pipeline"
           git pull --rebase origin main
           git push
-
-      # AJOUT 13/09/2026, demande explicite de Patrick ("qui me
-      # signalera ?") -- DOIT être la toute dernière étape du pipeline,
-      # après tous les scripts susceptibles d'avoir signalé un événement
-      # (calibre_archetype_model.py, genere_tickets_reels_archetype_model.py).
-      # Une nuit sans événement notable n'ouvre aucune Issue -- silence
-      # normal, pas une absence de fonctionnement.
-      - name: Notifier les constats majeurs (Issue GitHub, s'il y en a)
-        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python notifie_constat_majeur.py
-        continue-on-error: true
