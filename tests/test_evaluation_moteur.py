@@ -187,7 +187,7 @@ def test_contenu_du_snapshot(snapshot):
 
 
 def test_tout_marche_du_snapshot_est_reglable(snapshot):
-    from archetype_model.learning.reglement import evaluer_marche
+    from reglement import evaluer_marche
     marches = {l["marche"] for m in snapshot["matchs"] for l in m["inventaire"]}
     assert marches and all(evaluer_marche(mk, 2, 1).statut in ("WIN", "LOSS") for mk in marches)
 
