@@ -109,8 +109,7 @@ jobs:
       # résultat était réellement exploitable. Cette garde n'a PAS
       # continue-on-error : si elle échoue (exit 1), le job s'arrête ici,
       # aucune étape suivante ne s'exécute -- ni la vérification des
-      # résultats archetype_model, ni le bilan, ni la calibration, ni le
-      # commit. Choix assumé (décision Patrick) : sécurité avant
+      # vérification des résultats ni le commit. Choix assumé (décision Patrick) : sécurité avant
       # complétude -- ces étapes traitent de toute façon un arriéré, elles
       # rattraperont au prochain run réussi. scraper_semaine.py reste
       # volontairement HORS de cette garde (continue-on-error ci-dessus
