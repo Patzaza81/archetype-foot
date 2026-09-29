@@ -198,3 +198,19 @@ La bonne épuration consiste donc à :
 - puis supprimer le reste de `archetype_model`.
 
 Aucune suppression aveugle n'est justifiée.
+
+
+## 10. Résultat de l'épuration sur cette branche
+
+L'exécution de ce plan a été réalisée sur la branche `refactor/epuration-systeme-legacy`.
+
+- `moteur_shrink_pipeline.py`, `bilan_shrink_v1.py`, les modèles d'évaluation shrink, les archives shrink et les pages shrink ont été supprimés.
+- Les shrinkages empiriques historiques `K_SHRINKAGE` et `K_SHRINKAGE_LAMBDA` ont été retirés du calcul V2 ; les probabilités et lambdas sont désormais utilisés sans ce recalibrage empirique.
+- Les services encore nécessaires de l'ancien package ont été extraits vers des modules neutres : `archive.py`, `reglement.py`, `resultats.py`, `h2h.py`, `data_saison_loader.py`, `data_saison_validation.py`.
+- Le package `archetype_model/` et les scripts legacy associés ont été supprimés.
+- `verifie_resultats.py` remplace le script de vérification nommé d'après l'ancien moteur.
+- L'état système est désormais construit à partir du journal de rentabilité ; il n'attend plus de bilan produit par l'ancien moteur.
+- Le journal de rentabilité ne compare plus qu'au moteur principal.
+- V2 reste le moteur de production ; V3 reste isolée et expérimentale.
+
+La branche reste en revue : la suite `pytest` doit être exécutée par CI avant toute fusion dans `main`.
