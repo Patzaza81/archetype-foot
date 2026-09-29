@@ -668,7 +668,7 @@ def construit_signaux(matchs_bruts):
                 verdict_global = "NO_GO"
                 motif_no_go = (
                     "EV positif sur la probabilité brute, mais mise Kelly nulle une fois la "
-                    "probabilité resserrée (K_SHRINKAGE) -- pas d'edge réel après correction de "
+                    "probabilité modèle brute -- pas d'edge réel après correction de "
                     "la surconfiance mesurée du modèle."
                 )
 
