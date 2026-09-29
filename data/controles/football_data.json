@@ -1,22 +1,22 @@
 {
  "version": "1.0.0",
- "genere_le": "2026-09-28 11:52 UTC",
+ "genere_le": "2026-09-29 01:10 UTC",
  "critere": "au moins 98% de scores identiques sur les matchs communs",
  "limite": "Les noms d'équipes sont reliés (A3) à partir de matchs au score identique : une équipe dont TOUS les scores divergeraient ne serait jamais reliée, donc jamais comparée. Le taux est donc optimiste ; chaque désaccord listé reste un signal réel à examiner.",
  "resume": {
-  "matchs_football_data": 3737,
-  "matchs_communs_compares": 1073,
-  "accords": 1071,
+  "matchs_football_data": 3762,
+  "matchs_communs_compares": 1096,
+  "accords": 1094,
   "desaccords": 2,
-  "taux_accord": 0.9981,
+  "taux_accord": 0.9982,
   "critere_atteint": true,
   "communs_sans_pendant_unique": 1869,
   "ecart_de_date_jours": {
-   "-1": 115,
-   "0": 956,
+   "-1": 132,
+   "0": 962,
    "1": 2
   },
-  "doublons": 0,
+  "doublons": 1,
   "dates_invalides": 0,
   "dates_futures": 0
  },
@@ -38,7 +38,14 @@
    "score_matchendirect": "5-3"
   }
  ],
- "doublons": [],
+ "doublons": [
+  {
+   "division": "USA",
+   "match": "Seattle Sounders - Real Salt Lake",
+   "date": "2026-09-24",
+   "fois": 2
+  }
+ ],
  "dates_invalides": [],
  "dates_futures": []
 }
