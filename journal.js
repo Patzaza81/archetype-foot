@@ -7,7 +7,7 @@
 
   var MIN_MATCHS_AFFICHAGE = 10;
   var FIABILITE = { A_JOUER: "Prouvé", A_SURVEILLER: "À surveiller", NEUTRE: "Non confirmé" };
-  var NOMS_MOTEUR = { moteur_v2_6_9: "Moteur principal (v2.6.9)", shrink_v1: "Moteur shrink_v1" };
+  var NOMS_MOTEUR = { moteur_v2_6_9: "Moteur principal (v2.6.9)" };
   var RANG_LIB = { P1: "Favori du Modèle", P2: "Value Bet", P3: "Coup de Poker" };
   var ORDRE = { A_JOUER: 0, A_SURVEILLER: 1, NEUTRE: 2 };
 
@@ -71,7 +71,7 @@
       '<div class="jr-chiffre"><span>Marchés rentables</span><b class="pos">' + rentables.length + "</b></div>" +
       '<div class="jr-chiffre"><span>Prouvés ou à surveiller</span><b class="pos">' + nbFiables + "</b></div>" +
       '</div><p class="jr-aide" style="margin:10px 0 0">' + Object.keys(ligues).length + " championnat(s) avec au moins un marché rentable · période " + esc(p) + ".</p>" +
-      '<p class="jr-source"><b>D\'où viennent ces chiffres ?</b> D\'aucun moteur de prédiction. Chaque nuit, le script du journal prend les cotes BetPawa relevées avant chaque match terminé et les compare au score final : c\'est une comptabilité de résultats réels. Seule la rubrique « Moteurs » montre les choix des deux moteurs, classés avec ces mêmes résultats.</p>';
+      '<p class="jr-source"><b>D\'où viennent ces chiffres ?</b> D\'aucun moteur de prédiction. Chaque nuit, le script du journal prend les cotes BetPawa relevées avant chaque match terminé et les compare au score final : c\'est une comptabilité de résultats réels. Seule la rubrique « Moteurs » montre les choix du moteur principal, classés avec ces mêmes résultats.</p>';
   }
 
   /* ─────────── Scrutage : marchés rentables par championnat ─────────── */
