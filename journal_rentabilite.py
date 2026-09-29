@@ -12,10 +12,9 @@ et à 05:30 UTC en secours) :
    ce que BetPawa fait réellement payer : ROI à mise fixe, intervalle de confiance à 95 % (rééchantillonnage
    des MATCHS, les cotes d'un même match étant liées), stabilité entre la 1re et la 2e moitié chronologique.
 
-2. MOTEURS : ROI réel des sélections P1/P2/P3 de moteur_v2_6_9 (archive/) et de shrink_v1 (archive_shrink/),
-   uniquement sur les matchs cotés BetPawa, par championnat et par famille de marché.
+2. MOTEUR : ROI réel des sélections P1/P2/P3 de moteur_v2_6_9 (archive/), uniquement sur les matchs cotés BetPawa, par championnat et par famille de marché.
 
-3. CONSEILS : pour les matchs à venir cotés BetPawa (precalcul_leger.json / precalcul_shrink_leger.json), les
+3. CONSEILS : pour les matchs à venir cotés BetPawa (precalcul_leger.json), les
    marchés dont le segment championnat x marché est « A_JOUER » ou « A_SURVEILLER » et dont la cote du jour est dans la
    fourchette des cotes mesurées (voir verdict_marche), et les sélections de chaque moteur annotées de ce statut.
 
