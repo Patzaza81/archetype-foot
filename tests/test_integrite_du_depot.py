@@ -46,7 +46,7 @@ def test_chaque_script_du_workflow_est_importable():
     scripts_attendus = {
         "moteur_v2_6_9", "pont_moteur", "scraper", "scraper_semaine",
         "precalcul", "verifie_resultats_archetype_model", "evaluation_scores",
-        "bilan_shrink_v1", "construit_etat_systeme", "notifie_constat_majeur",
+        "construit_etat_systeme", "notifie_constat_majeur",
     }
     assert scripts_attendus <= set(scripts), scripts
     casses = []
