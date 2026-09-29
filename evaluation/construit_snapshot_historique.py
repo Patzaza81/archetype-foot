@@ -23,7 +23,7 @@ sys.path.insert(0, RACINE)
 sys.path.insert(0, os.path.join(RACINE, "evaluation"))
 import branchement_moteur as bm
 import pont_moteur
-from archetype_model.h2h import h2h_stats
+import h2h as h2h_stats
 from construit_snapshot import construit_match
 
 
