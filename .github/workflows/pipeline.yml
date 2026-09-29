@@ -207,7 +207,6 @@ jobs:
           for f in panier.json cache_equipes_saison.json historique_pronostics.json precalcul_leger.json matchs_du_jour_filtre.json matchs_demain_filtre.json cache_classement.json cache_h2h.json; do
             [ -f "$f" ] && git add "$f"
           done
-          # AJOUT 13/09/2026 -- archive/ (archetype_model/learning/archive.py)
           # contient les fichiers archive/YYYY-MM.json, un nom de fichier
           # différent chaque mois -- `git add` sur le dossier entier plutôt
           # que sur une liste de noms fixes, comme pour les autres fichiers
@@ -216,17 +215,12 @@ jobs:
           # pour ça.
           [ -d archive ] && git add archive/
           # AJOUT 22/09/2026, reperdu puis restauré le 23/09/2026 lors du nettoyage parallèle du workflow --
-          # archive_shrink/ : même rôle que archive/ ci-dessus, mais pour shrink_v1 (second moteur, en test --
-          # voir moteur_shrink_pipeline.py). Sans ce commit, ses observations sont recalculées puis perdues à
-          # chaque run, et bilan_shrink_v1.py ne voit jamais rien à résoudre (bug identifié le 23/09/2026 : le
           # dossier n'existait jamais d'un run à l'autre malgré un calcul qui tournait correctement).
-          [ -d archive_shrink ] && git add archive_shrink/
           # AJOUT 13/09/2026 -- vrais_tickets/ ne contient normalement rien
           # pendant probablement plusieurs mois (seuil réel de
           # tickets/builder.py) -- ajouté par cohérence avec archive/config/
           # tickets_observes/ ci-dessus, jamais un échec si le dossier
           # n'existe pas encore.
-          # AJOUT 17/09/2026 (chantier module d'audit, archetype_model/audit/)
           # -- data/ contient audit_status.json (dashboard) et
           # audit_telemetry.json (historique de rétention par run + Brier
           # score), écrits par telemetry.py/report.py. NE SONT PLUS ALIMENTÉS
