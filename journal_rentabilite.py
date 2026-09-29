@@ -43,10 +43,8 @@ from collections import defaultdict
 RACINE = os.path.dirname(os.path.abspath(__file__))
 FICHIER_ECHANTILLON = os.path.join(RACINE, "data", "echantillon_betpawa_501.json")
 FICHIER_HISTORIQUE = os.path.join(RACINE, "historique_pronostics.json")
-FICHIERS_PRECALCUL = {"moteur_v2_6_9": os.path.join(RACINE, "precalcul_leger.json"),
-                      "shrink_v1": os.path.join(RACINE, "precalcul_shrink_leger.json")}
-REPERTOIRES_ARCHIVE = {"moteur_v2_6_9": os.path.join(RACINE, "archive"),
-                       "shrink_v1": os.path.join(RACINE, "archive_shrink")}
+FICHIERS_PRECALCUL = {"moteur_v2_6_9": os.path.join(RACINE, "precalcul_leger.json")}
+REPERTOIRES_ARCHIVE = {"moteur_v2_6_9": os.path.join(RACINE, "archive")}
 FICHIER_SORTIE = os.path.join(RACINE, "journal.json")
 
 VERSION = "1.0.0"
