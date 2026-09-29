@@ -1,222 +1,74 @@
 {
  "moteur": "moteur_v3",
  "statut": "EXPÉRIMENTAL — NON VALIDÉ",
- "genere_le": "2026-09-28T09:34:57Z",
+ "genere_le": "2026-09-29T01:09:35Z",
  "empreinte_code_v3": "bad6a38987f8",
- "commit": "6c88edd",
+ "commit": "db060f0",
  "calibration": {
   "prete": false,
-  "observations": 0,
-  "matchs": 0,
+  "observations": 345,
+  "matchs": 7,
   "minimum_observations": 300,
   "minimum_matchs": 50,
-  "raison": "ECHANTILLON_INSUFFISANT"
+  "raison": "MATCHS_INSUFFISANTS"
  },
  "bilan": {
-  "matchs": 25,
+  "matchs": 32,
   "statuts": {
-   "NON_EVALUE": 2,
-   "EVALUE": 23
+   "EVALUE": 27,
+   "NON_EVALUE": 5
   },
   "selections": 0,
   "matchs_avec_selection": 0,
-  "matchs_en_apercu_non_calibre": 4,
+  "matchs_en_apercu_non_calibre": 5,
   "raisons_de_rejet": {
-   "CALIBRATION_ABSENTE": 1541,
-   "VALUE_NON_ELIGIBLE": 1517,
-   "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT": 1493,
-   "JUSTIFICATION_INSUFFISANTE": 1493,
-   "COTE_HORS_FENETRE": 1348,
-   "PROBABILITE_INF_60": 1237,
-   "N_3_4_CONTROLE_STRICT_NON_SATISFAIT": 817,
-   "SURDISPERSION_1_20_1_50_ET_P_INF_67": 357,
-   "EDV_INSUFFISANTE": 253,
-   "N_LIEU_INF_3": 74,
-   "SURDISPERSION_SUP_1_50": 71
+   "CALIBRATION_ABSENTE": 1876,
+   "VALUE_NON_ELIGIBLE": 1843,
+   "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT": 1817,
+   "JUSTIFICATION_INSUFFISANTE": 1817,
+   "COTE_HORS_FENETRE": 1636,
+   "PROBABILITE_INF_60": 1524,
+   "N_3_4_CONTROLE_STRICT_NON_SATISFAIT": 952,
+   "SURDISPERSION_1_20_1_50_ET_P_INF_67": 535,
+   "EDV_INSUFFISANTE": 288,
+   "SURDISPERSION_SUP_1_50": 138
   },
   "couverture": {
-   "marches_cotes_calcules": 1541,
-   "issues_betpawa": 1514,
+   "marches_cotes_calcules": 1876,
+   "issues_betpawa": 1897,
    "groupes_betpawa_non_lus": {}
   }
  },
  "matchs": [
   {
-   "match_id": "8va26dyvf6f0hj6qjbbsw8t90",
-   "date": "2026-09-28",
+   "match_id": "5alzjynn9irsic5yo4l1fof84",
+   "date": "2026-09-29",
    "heure": null,
-   "competition": "Mexique : Liga MX Ouverture",
-   "domicile": "Club Necaxa",
-   "exterieur": "Club América",
-   "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
-   "selections": [],
-   "candidats": []
-  },
-  {
-   "match_id": "baho4mtiigm4o2yzx5be5qas4",
-   "date": "2026-09-28",
-   "heure": null,
-   "competition": "Etats-Unis : MLS",
-   "domicile": "Columbus",
-   "exterieur": "Inter Miami",
+   "competition": "Paraguay : Professionnel de la Division Clôture",
+   "domicile": "Libertad",
+   "exterieur": "Club Olimpia",
    "statut": "EVALUE",
    "lambda_dom": 1.581,
-   "lambda_ext": 1.972,
+   "lambda_ext": 1.128,
    "n_dom": 12,
    "n_ext": 12,
    "couverture": {
-    "issues_betpawa": 0,
-    "marches_cotes_calcules": 22,
+    "issues_betpawa": 35,
+    "marches_cotes_calcules": 32,
     "groupes_non_lus": [],
-    "groupes_ignores_par_choix": []
+    "groupes_ignores_par_choix": [
+     "handicap_3issues_-3"
+    ]
    },
    "selections": [],
    "apercu_non_calibre": [],
    "candidats": [
     {
-     "marche": "under_6_5",
-     "libelle": "Moins de 6,5 buts",
-     "cote": 1.02,
-     "probabilite_brute": 0.930547752343247,
-     "probabilite": 0.930547752343247,
-     "calibree": false,
-     "edv": -5.1,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "EDV_INSUFFISANTE",
-      "JUSTIFICATION_INSUFFISANTE",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "1x2_2",
-     "libelle": "Victoire extérieur",
-     "cote": 1.98,
-     "probabilite_brute": 0.4705392317861887,
-     "probabilite": 0.4705392317861887,
-     "calibree": false,
-     "edv": -6.8,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "1x2_1",
-     "libelle": "Victoire domicile",
-     "cote": 2.92,
-     "probabilite_brute": 0.3124761882272687,
-     "probabilite": 0.3124761882272687,
-     "calibree": false,
-     "edv": -8.8,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "under_5_5",
-     "libelle": "Moins de 5,5 buts",
-     "cote": 1.07,
-     "probabilite_brute": 0.8505287178762593,
-     "probabilite": 0.8505287178762593,
-     "calibree": false,
-     "edv": -9.0,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "EDV_INSUFFISANTE",
-      "JUSTIFICATION_INSUFFISANTE",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "under_3_5",
-     "libelle": "Moins de 3,5 buts",
-     "cote": 1.73,
-     "probabilite_brute": 0.5252386367788382,
-     "probabilite": 0.5252386367788382,
-     "calibree": false,
-     "edv": -9.1,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    }
-   ]
-  },
-  {
-   "match_id": "6ky80vuwl96c0rgco76a3slck",
-   "date": "2026-09-28",
-   "heure": null,
-   "competition": "Colombie : Première A Cloture",
-   "domicile": "Fortaleza",
-   "exterieur": "Dep. Tolima",
-   "statut": "EVALUE",
-   "lambda_dom": 1.263,
-   "lambda_ext": 1.016,
-   "n_dom": 12,
-   "n_ext": 12,
-   "couverture": {
-    "issues_betpawa": 0,
-    "marches_cotes_calcules": 20,
-    "groupes_non_lus": [],
-    "groupes_ignores_par_choix": []
-   },
-   "selections": [],
-   "apercu_non_calibre": [],
-   "candidats": [
-    {
-     "marche": "1x2_1",
-     "libelle": "Victoire domicile",
-     "cote": 3.92,
-     "probabilite_brute": 0.42002977021869237,
-     "probabilite": 0.42002977021869237,
-     "calibree": false,
-     "edv": 64.7,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "dc_1X",
-     "libelle": "Double chance 1X",
-     "cote": 1.7,
-     "probabilite_brute": 0.7024706351714032,
-     "probabilite": 0.7024706351714032,
-     "calibree": false,
-     "edv": 19.4,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE"
-     ]
-    },
-    {
-     "marche": "under_1_5",
-     "libelle": "Moins de 1,5 buts",
-     "cote": 3.05,
-     "probabilite_brute": 0.33579461506881136,
-     "probabilite": 0.33579461506881136,
+     "marche": "handicap_1_1",
+     "libelle": "Handicap 3 choix Domicile −1 (1) : Domicile gagne par 2 buts ou plus",
+     "cote": 4.15,
+     "probabilite_brute": 0.24667568236485937,
+     "probabilite": 0.24667568236485937,
      "calibree": false,
      "edv": 2.4,
      "raisons": [
@@ -229,437 +81,47 @@
      ]
     },
     {
-     "marche": "under_2_5",
-     "libelle": "Moins de 2,5 buts",
-     "cote": 1.6,
-     "probabilite_brute": 0.6016939657768101,
-     "probabilite": 0.6016939657768101,
-     "calibree": false,
-     "edv": -3.7,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "EDV_INSUFFISANTE",
-      "JUSTIFICATION_INSUFFISANTE",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "under_4_5",
-     "libelle": "Moins de 4,5 buts",
-     "cote": 1.03,
-     "probabilite_brute": 0.9187192334443101,
-     "probabilite": 0.9187192334443101,
-     "calibree": false,
-     "edv": -5.4,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "COTE_HORS_FENETRE",
-      "EDV_INSUFFISANTE",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    }
-   ]
-  },
-  {
-   "match_id": "9fz0b10b25bs80xbt4x2m7uvo",
-   "date": "2026-09-28",
-   "heure": "18:00",
-   "competition": "Slovénie : 2. SNL",
-   "domicile": "NK Rudar Velenje",
-   "exterieur": "Dravinja",
-   "statut": "EVALUE",
-   "lambda_dom": 2.743,
-   "lambda_ext": 0.626,
-   "n_dom": 3,
-   "n_ext": 4,
-   "couverture": {
-    "issues_betpawa": 68,
-    "marches_cotes_calcules": 68,
-    "groupes_non_lus": [],
-    "groupes_ignores_par_choix": []
-   },
-   "selections": [],
-   "apercu_non_calibre": [
-    {
      "marche": "1x2_1",
      "libelle": "Victoire domicile",
-     "cote": 1.59,
-     "probabilite": 0.8154,
-     "edge": 0.1864681742115013,
-     "edv": 29.6,
-     "justification": "✓ NK Rudar Velenje gagne 100% de ses matchs à ce lieu (3) ; ✓ NK Rudar Velenje prend 1,71 pt/match sur la saison ; ✓ NK Rudar Velenje marque 3,0 but/match à ce lieu ; ✓ Dravinja gagne 0% à son lieu (4) ; ✓ Dravinja encaisse 2,2 but/match à son lieu ; ✓ NK Rudar Velenje sur ses 6 derniers : 4 victoires, 2 défaites ; ✓ Dravinja sur ses 6 derniers : 1 victoire",
-     "raisons_saison": [
-      "✓ NK Rudar Velenje gagne 100% de ses matchs à ce lieu (3)",
-      "✓ NK Rudar Velenje prend 1,71 pt/match sur la saison",
-      "✓ NK Rudar Velenje marque 3,0 but/match à ce lieu",
-      "✓ Dravinja gagne 0% à son lieu (4)",
-      "✓ Dravinja encaisse 2,2 but/match à son lieu"
-     ],
-     "raisons_recent": [
-      "✓ NK Rudar Velenje sur ses 6 derniers : 4 victoires, 2 défaites",
-      "✓ Dravinja sur ses 6 derniers : 1 victoire"
-     ],
-     "explication": {
-      "alertes": [
-       "Aperçu non calibré : ce n'est pas une sélection du moteur.",
-       "Petit échantillon : 3 matchs au même lieu pour l'équipe la moins fournie.",
-       "Écart inhabituel avec le marché : +18,6 points.",
-       "Résultats irréguliers : dispersion 1,34."
-      ],
-      "blocs": [
-       {
-        "titre": "Données",
-        "lignes": [
-         "NK Rudar Velenje à domicile (3) : 3-0, 4-1, 2-0 → marque 3,00, encaisse 0,33 par match.",
-         "Dravinja à l'extérieur (4) : 0-1, 0-2, 1-1, 1-5 → marque 0,50, encaisse 2,25 par match."
-        ]
-       },
-       {
-        "titre": "Buts attendus",
-        "lignes": [
-         "Lissage vers 1,35 but : (n × moyenne + 4 × 1,35) / (n + 4).",
-         "NK Rudar Velenje : attaque 3,00 → 2,06 ; défense Dravinja 2,25 → 1,80 ; 2,06 × 1,80 / 1,35 = 2,74 buts.",
-         "Dravinja : attaque 0,50 → 0,93 ; défense NK Rudar Velenje 0,33 → 0,91 ; 0,93 × 0,91 / 1,35 = 0,63 buts."
-        ]
-       },
-       {
-        "titre": "Probabilité",
-        "lignes": [
-         "Victoire domicile : 81,5 % (non calibrée).",
-         "Somme des scores où domicile > extérieur.",
-         "Scores les plus probables : 2-0 (12,9 %), 3-0 (11,8 %)."
-        ]
-       },
-       {
-        "titre": "Face à la cote",
-        "lignes": [
-         "Cote 1,59 → 62,9 % selon le bookmaker ; écart +18,6 points.",
-         "Marge = 1,59 × 0,186 = +29,6 % (seuil 5 % à cette probabilité)."
-        ]
-       },
-       {
-        "titre": "Contrôles",
-        "lignes": [
-         "Cote dans la fenêtre 1,26 – 1,74 : oui.",
-         "Dispersion des buts : 1,34 (acceptée car probabilité ≥ 67 %).",
-         "Double contrôle « 1X2 - 1 » passé : NK Rudar Velenje gagne 100% de ses matchs à ce lieu (3) ; NK Rudar Velenje prend 1,71 pt/match sur la saison ; NK Rudar Velenje marque 3,0 but/match à ce lieu ; Dravinja gagne 0% à son lieu (4) ; Dravinja encaisse 2,2 but/match à son lieu ; NK Rudar Velenje sur ses 6 derniers : 4 victoires, 2 défaites ; Dravinja sur ses 6 derniers : 1 victoire.",
-         "3 matchs au même lieu : contrôle renforcé passé (probabilité ≥ 67 % et marge ≥ 7 %).",
-         "Calibration : pas encore prête (aperçu)."
-        ]
-       },
-       {
-        "titre": "Pourquoi ce marché",
-        "lignes": [
-         "Un seul pari par famille (résultat) : celui-ci est le plus probable des paris valides.",
-         "Domicile n'encaisse pas (2,67, 53,4 %, marge +42,7 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert.",
-         "Score exact 4-0 (16,43, 8,1 %, marge +33,3 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert.",
-         "Domicile marque plus de 2,5 buts (2,52, 51,7 %, marge +30,2 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert."
-        ]
-       }
-      ]
-     }
-    }
-   ],
-   "candidats": [
-    {
-     "marche": "handicap_2.5_1",
-     "libelle": "Handicap Domicile −2,5 : Domicile gagne par 3 buts ou plus",
-     "cote": 4.48,
-     "probabilite_brute": 0.39157841423415773,
-     "probabilite": 0.39157841423415773,
+     "cote": 2.14,
+     "probabilite_brute": 0.47833562276874725,
+     "probabilite": 0.47833562276874725,
      "calibree": false,
-     "edv": 75.4,
+     "edv": 2.4,
      "raisons": [
       "CALIBRATION_ABSENTE",
       "COTE_HORS_FENETRE",
       "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
       "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
       "PROBABILITE_INF_60",
-      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
       "VALUE_NON_ELIGIBLE"
      ]
     },
     {
      "marche": "handicap_1.5_1",
      "libelle": "Handicap Domicile −1,5 : Domicile gagne par 2 buts ou plus",
-     "cote": 2.43,
-     "probabilite_brute": 0.6130601808306879,
-     "probabilite": 0.6130601808306879,
+     "cote": 4.13,
+     "probabilite_brute": 0.24667568236485937,
+     "probabilite": 0.24667568236485937,
      "calibree": false,
-     "edv": 49.0,
+     "edv": 1.9,
      "raisons": [
       "CALIBRATION_ABSENTE",
       "COTE_HORS_FENETRE",
       "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
       "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "clean_home",
-     "libelle": "Domicile n'encaisse pas",
-     "cote": 2.67,
-     "probabilite_brute": 0.5344831753070592,
-     "probabilite": 0.5344831753070592,
-     "calibree": false,
-     "edv": 42.7,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
       "PROBABILITE_INF_60",
-      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "score_4_0",
-     "libelle": "Score exact 4-0",
-     "cote": 16.43,
-     "probabilite_brute": 0.08115786193427575,
-     "probabilite": 0.08115786193427575,
-     "calibree": false,
-     "edv": 33.3,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "PROBABILITE_INF_60",
-      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "home_over_2_5",
-     "libelle": "Domicile marque plus de 2,5 buts",
-     "cote": 2.52,
-     "probabilite_brute": 0.5168119146334573,
-     "probabilite": 0.5168119146334573,
-     "calibree": false,
-     "edv": 30.2,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "PROBABILITE_INF_60",
-      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    }
-   ]
-  },
-  {
-   "match_id": "3qaqtts1a2yqwuc2kc9cz3j10",
-   "date": "2026-09-28",
-   "heure": "19:30",
-   "competition": "Espagne : Segunda Division",
-   "domicile": "Leganes",
-   "exterieur": "Castellon",
-   "statut": "EVALUE",
-   "lambda_dom": 1.227,
-   "lambda_ext": 1.357,
-   "n_dom": 2,
-   "n_ext": 3,
-   "couverture": {
-    "issues_betpawa": 77,
-    "marches_cotes_calcules": 74,
-    "groupes_non_lus": [],
-    "groupes_ignores_par_choix": [
-     "handicap_3issues_3"
-    ]
-   },
-   "selections": [],
-   "apercu_non_calibre": [],
-   "candidats": [
-    {
-     "marche": "1x2_1",
-     "libelle": "Victoire domicile",
-     "cote": 3.08,
-     "probabilite_brute": 0.33727143262985226,
-     "probabilite": 0.33727143262985226,
-     "calibree": false,
-     "edv": 3.9,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "N_LIEU_INF_3",
-      "PROBABILITE_INF_60",
-      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
       "VALUE_NON_ELIGIBLE"
      ]
     },
     {
      "marche": "handicap_0.5_1",
      "libelle": "Handicap Domicile −0,5 : Domicile gagne",
-     "cote": 2.96,
-     "probabilite_brute": 0.33727143262985226,
-     "probabilite": 0.33727143262985226,
+     "cote": 2.09,
+     "probabilite_brute": 0.47833562276874725,
+     "probabilite": 0.47833562276874725,
      "calibree": false,
-     "edv": -0.2,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "N_LIEU_INF_3",
-      "PROBABILITE_INF_60",
-      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "dc_12",
-     "libelle": "Double chance 12",
-     "cote": 1.34,
-     "probabilite_brute": 0.7358152188259626,
-     "probabilite": 0.7358152188259626,
-     "calibree": false,
-     "edv": -1.4,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "EDV_INSUFFISANTE",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "N_LIEU_INF_3",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "under_3_5",
-     "libelle": "Moins de 3,5 buts",
-     "cote": 1.33,
-     "probabilite_brute": 0.7394508938557431,
-     "probabilite": 0.7394508938557431,
-     "calibree": false,
-     "edv": -1.7,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "EDV_INSUFFISANTE",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "N_LIEU_INF_3",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "under_1_5",
-     "libelle": "Moins de 1,5 buts",
-     "cote": 3.62,
-     "probabilite_brute": 0.27046514157366175,
-     "probabilite": 0.27046514157366175,
-     "calibree": false,
-     "edv": -2.1,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "N_LIEU_INF_3",
-      "PROBABILITE_INF_60",
-      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    }
-   ]
-  },
-  {
-   "match_id": "5aa7ywrv7i3cozj5pps76vml0",
-   "date": "2026-09-28",
-   "heure": "21:00",
-   "competition": "Paraguay : Professionnel de la Division Clôture",
-   "domicile": "San Lorenzo",
-   "exterieur": "Dep. Recoleta",
-   "statut": "EVALUE",
-   "lambda_dom": 1.005,
-   "lambda_ext": 1.145,
-   "n_dom": 12,
-   "n_ext": 12,
-   "couverture": {
-    "issues_betpawa": 75,
-    "marches_cotes_calcules": 72,
-    "groupes_non_lus": [],
-    "groupes_ignores_par_choix": [
-     "handicap_3issues_3"
-    ]
-   },
-   "selections": [],
-   "apercu_non_calibre": [],
-   "candidats": [
-    {
-     "marche": "under_1_5",
-     "libelle": "Moins de 1,5 buts",
-     "cote": 3.48,
-     "probabilite_brute": 0.3668671282794237,
-     "probabilite": 0.3668671282794237,
-     "calibree": false,
-     "edv": 27.7,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "exact_goals_0",
-     "libelle": "Exactement 0 buts",
-     "cote": 10.34,
-     "probabilite_brute": 0.11645719701426341,
-     "probabilite": 0.11645719701426341,
-     "calibree": false,
-     "edv": 20.4,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "under_2_5",
-     "libelle": "Moins de 2,5 buts",
-     "cote": 1.83,
-     "probabilite_brute": 0.6360867870204046,
-     "probabilite": 0.6360867870204046,
-     "calibree": false,
-     "edv": 16.4,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "under_0_5",
-     "libelle": "Moins de 0,5 buts",
-     "cote": 9.84,
-     "probabilite_brute": 0.11645719701426338,
-     "probabilite": 0.11645719701426338,
-     "calibree": false,
-     "edv": 14.6,
+     "edv": -0.0,
      "raisons": [
       "CALIBRATION_ABSENTE",
       "COTE_HORS_FENETRE",
@@ -672,119 +134,11 @@
     {
      "marche": "btts_no",
      "libelle": "Les deux équipes ne marquent pas toutes les deux",
-     "cote": 1.99,
-     "probabilite_brute": 0.5677332695580922,
-     "probabilite": 0.5677332695580922,
+     "cote": 2.15,
+     "probabilite_brute": 0.4629164844673598,
+     "probabilite": 0.4629164844673598,
      "calibree": false,
-     "edv": 13.0,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    }
-   ]
-  },
-  {
-   "match_id": "5alzjynn9irsic5yo4l1fof84",
-   "date": "2026-09-28",
-   "heure": "23:15",
-   "competition": "Paraguay : Professionnel de la Division Clôture",
-   "domicile": "Libertad",
-   "exterieur": "Club Olimpia",
-   "statut": "EVALUE",
-   "lambda_dom": 1.581,
-   "lambda_ext": 1.128,
-   "n_dom": 12,
-   "n_ext": 12,
-   "couverture": {
-    "issues_betpawa": 80,
-    "marches_cotes_calcules": 80,
-    "groupes_non_lus": [],
-    "groupes_ignores_par_choix": []
-   },
-   "selections": [],
-   "apercu_non_calibre": [],
-   "candidats": [
-    {
-     "marche": "handicap_2_1",
-     "libelle": "Handicap 3 choix Domicile −2 (1) : Domicile gagne par 3 buts ou plus",
-     "cote": 16.38,
-     "probabilite_brute": 0.10150020709666756,
-     "probabilite": 0.10150020709666756,
-     "calibree": false,
-     "edv": 66.3,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "handicap_1_1",
-     "libelle": "Handicap 3 choix Domicile −1 (1) : Domicile gagne par 2 buts ou plus",
-     "cote": 6.19,
-     "probabilite_brute": 0.24667568236485937,
-     "probabilite": 0.24667568236485937,
-     "calibree": false,
-     "edv": 52.7,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "handicap_1.5_1",
-     "libelle": "Handicap Domicile −1,5 : Domicile gagne par 2 buts ou plus",
-     "cote": 5.88,
-     "probabilite_brute": 0.24667568236485937,
-     "probabilite": 0.24667568236485937,
-     "calibree": false,
-     "edv": 45.0,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "score_4_1",
-     "libelle": "Score exact 4-1",
-     "cote": 71.36,
-     "probabilite_brute": 0.01955545517627511,
-     "probabilite": 0.01955545517627511,
-     "calibree": false,
-     "edv": 39.5,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "score_4_0",
-     "libelle": "Score exact 4-0",
-     "cote": 80.0,
-     "probabilite_brute": 0.01733981247157399,
-     "probabilite": 0.01733981247157399,
-     "calibree": false,
-     "edv": 38.7,
+     "edv": -0.5,
      "raisons": [
       "CALIBRATION_ABSENTE",
       "COTE_HORS_FENETRE",
@@ -947,11 +301,11 @@
     {
      "marche": "1x2_2",
      "libelle": "Victoire extérieur",
-     "cote": 6.33,
+     "cote": 6.36,
      "probabilite_brute": 0.32388556606542307,
      "probabilite": 0.32388556606542307,
      "calibree": false,
-     "edv": 105.0,
+     "edv": 106.0,
      "raisons": [
       "CALIBRATION_ABSENTE",
       "COTE_HORS_FENETRE",
@@ -965,11 +319,11 @@
     {
      "marche": "handicap_-0.5_2",
      "libelle": "Handicap Extérieur −0,5 : Extérieur gagne",
-     "cote": 5.6,
+     "cote": 5.84,
      "probabilite_brute": 0.32388556606542307,
      "probabilite": 0.32388556606542307,
      "calibree": false,
-     "edv": 81.4,
+     "edv": 89.1,
      "raisons": [
       "CALIBRATION_ABSENTE",
       "COTE_HORS_FENETRE",
@@ -1058,42 +412,6 @@
      ]
     },
     {
-     "marche": "handicap_2_1",
-     "libelle": "Handicap 3 choix Domicile −2 (1) : Domicile gagne par 3 buts ou plus",
-     "cote": 9.0,
-     "probabilite_brute": 0.11959843890469951,
-     "probabilite": 0.11959843890469951,
-     "calibree": false,
-     "edv": 7.6,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "1x2_1",
-     "libelle": "Victoire domicile",
-     "cote": 2.1,
-     "probabilite_brute": 0.5107712511294984,
-     "probabilite": 0.5107712511294984,
-     "calibree": false,
-     "edv": 7.3,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
      "marche": "handicap_1.5_1",
      "libelle": "Handicap Domicile −1,5 : Domicile gagne par 2 buts ou plus",
      "cote": 3.89,
@@ -1112,18 +430,56 @@
      ]
     },
     {
+     "marche": "1x2_1",
+     "libelle": "Victoire domicile",
+     "cote": 2.09,
+     "probabilite_brute": 0.5107712511294984,
+     "probabilite": 0.5107712511294984,
+     "calibree": false,
+     "edv": 6.8,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "handicap_2_1",
+     "libelle": "Handicap 3 choix Domicile −2 (1) : Domicile gagne par 3 buts ou plus",
+     "cote": 8.73,
+     "probabilite_brute": 0.11959843890469951,
+     "probabilite": 0.11959843890469951,
+     "calibree": false,
+     "edv": 4.4,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
      "marche": "dc_1X",
      "libelle": "Double chance 1X",
-     "cote": 1.4,
+     "cote": 1.38,
      "probabilite_brute": 0.7518580277031858,
      "probabilite": 0.7518580277031858,
      "calibree": false,
-     "edv": 5.3,
+     "edv": 3.8,
      "raisons": [
       "CALIBRATION_ABSENTE",
       "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "EDV_INSUFFISANTE",
       "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT"
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "VALUE_NON_ELIGIBLE"
      ]
     }
    ]
@@ -1324,8 +680,8 @@
    "n_dom": 4,
    "n_ext": 4,
    "couverture": {
-    "issues_betpawa": 62,
-    "marches_cotes_calcules": 62,
+    "issues_betpawa": 71,
+    "marches_cotes_calcules": 71,
     "groupes_non_lus": [],
     "groupes_ignores_par_choix": []
    },
@@ -1334,10 +690,10 @@
     {
      "marche": "dc_1X",
      "libelle": "Double chance 1X",
-     "cote": 1.6,
+     "cote": 1.55,
      "probabilite": 0.7185,
-     "edge": 0.09349478559928714,
-     "edv": 15.0,
+     "edge": 0.07333349527670652,
+     "edv": 11.4,
      "justification": "✓ Fylde invaincu 75% à ce lieu (4) ; ✓ Fylde prend 2,00 pt/match sur la saison ; ✓ Carlisle gagne 0% à son lieu ; ✓ Fylde marque 1,8 contre 0,8 pour Carlisle, chacun à son lieu ; ✓ Fylde invaincu 5 fois sur ses 6 derniers ; ✓ Carlisle : 1 victoire sur ses 6 derniers",
      "raisons_saison": [
       "✓ Fylde invaincu 75% à ce lieu (4)",
@@ -1381,8 +737,8 @@
        {
         "titre": "Face à la cote",
         "lignes": [
-         "Cote 1,60 → 62,5 % selon le bookmaker ; écart +9,4 points.",
-         "Marge = 1,60 × 0,094 = +15,0 % (seuil 5 % à cette probabilité)."
+         "Cote 1,55 → 64,5 % selon le bookmaker ; écart +7,3 points.",
+         "Marge = 1,55 × 0,073 = +11,4 % (seuil 5 % à cette probabilité)."
         ]
        },
        {
@@ -1417,6 +773,24 @@
      "probabilite": 0.26720612777250374,
      "calibree": false,
      "edv": 46.7,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "exact_goals_0",
+     "libelle": "Exactement 0 buts",
+     "cote": 19.13,
+     "probabilite_brute": 0.07420483877457035,
+     "probabilite": 0.07420483877457035,
+     "calibree": false,
+     "edv": 42.0,
      "raisons": [
       "CALIBRATION_ABSENTE",
       "COTE_HORS_FENETRE",
@@ -1464,31 +838,13 @@
      ]
     },
     {
-     "marche": "exact_goals_0",
-     "libelle": "Exactement 0 buts",
-     "cote": 18.26,
-     "probabilite_brute": 0.07420483877457035,
-     "probabilite": 0.07420483877457035,
-     "calibree": false,
-     "edv": 35.5,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
      "marche": "exact_goals_1",
      "libelle": "Exactement 1 buts",
-     "cote": 6.78,
+     "cote": 6.61,
      "probabilite_brute": 0.19300128899793345,
      "probabilite": 0.19300128899793345,
      "calibree": false,
-     "edv": 30.9,
+     "edv": 27.6,
      "raisons": [
       "CALIBRATION_ABSENTE",
       "COTE_HORS_FENETRE",
@@ -2020,30 +1376,11 @@
     {
      "marche": "exact_goals_6_plus",
      "libelle": "6 buts ou plus",
-     "cote": 7.83,
+     "cote": 7.48,
      "probabilite_brute": 0.22315096741633375,
      "probabilite": 0.22315096741633375,
      "calibree": false,
-     "edv": 74.7,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "PROBABILITE_INF_60",
-      "SURDISPERSION_SUP_1_50",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "over_5_5",
-     "libelle": "Plus de 5,5 buts",
-     "cote": 7.54,
-     "probabilite_brute": 0.22315096741633375,
-     "probabilite": 0.22315096741633375,
-     "calibree": false,
-     "edv": 68.3,
+     "edv": 66.9,
      "raisons": [
       "CALIBRATION_ABSENTE",
       "COTE_HORS_FENETRE",
@@ -2063,6 +1400,25 @@
      "probabilite": 0.38144911566289125,
      "calibree": false,
      "edv": 64.8,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_SUP_1_50",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "handicap_1_1",
+     "libelle": "Handicap 3 choix Domicile −1 (1) : Domicile gagne par 2 buts ou plus",
+     "cote": 3.49,
+     "probabilite_brute": 0.46597703384069084,
+     "probabilite": 0.46597703384069084,
+     "calibree": false,
+     "edv": 62.6,
      "raisons": [
       "CALIBRATION_ABSENTE",
       "COTE_HORS_FENETRE",
@@ -2167,7 +1523,7 @@
          "Un seul pari par famille (buts du domicile) : celui-ci est le plus probable des paris valides.",
          "6 buts ou plus (6,61, 30,1 %, marge +98,8 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert.",
          "Score exact 3-4 (83,33, 2,1 %, marge +76,4 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert.",
-         "Handicap 3 choix Domicile −2 (1) : Domicile gagne par 3 buts ou plus (8,74, 14,2 %, marge +23,7 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert."
+         "Handicap 3 choix Domicile +1 (2) : Extérieur gagne par 2 buts ou plus (6,50, 19,4 %, marge +26,4 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert."
         ]
        }
       ]
@@ -2244,7 +1600,7 @@
          "Un seul pari par famille (total de buts) : celui-ci est le plus probable des paris valides.",
          "Score exact 3-4 (83,33, 2,1 %, marge +76,4 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert.",
          "Domicile marque plus de 2,5 buts (3,36, 43,0 %, marge +44,5 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert.",
-         "Handicap 3 choix Domicile −2 (1) : Domicile gagne par 3 buts ou plus (8,74, 14,2 %, marge +23,7 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert."
+         "Handicap 3 choix Domicile +1 (2) : Extérieur gagne par 2 buts ou plus (6,50, 19,4 %, marge +26,4 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert."
         ]
        }
       ]
@@ -2458,6 +1814,230 @@
    ]
   },
   {
+   "match_id": "8ehfbh42sedynj19dwi1n261g",
+   "date": "2026-09-29",
+   "heure": "22:00",
+   "competition": "El Salvador : 1ère Division Ouverture",
+   "domicile": "Atl. Balboa",
+   "exterieur": "Cacahuatique",
+   "statut": "EVALUE",
+   "lambda_dom": 0.812,
+   "lambda_ext": 0.553,
+   "n_dom": 5,
+   "n_ext": 4,
+   "couverture": {
+    "issues_betpawa": 67,
+    "marches_cotes_calcules": 67,
+    "groupes_non_lus": [],
+    "groupes_ignores_par_choix": []
+   },
+   "selections": [],
+   "apercu_non_calibre": [],
+   "candidats": [
+    {
+     "marche": "exact_goals_0",
+     "libelle": "Exactement 0 buts",
+     "cote": 7.48,
+     "probabilite_brute": 0.2552703501521202,
+     "probabilite": 0.2552703501521202,
+     "calibree": false,
+     "edv": 90.9,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_SUP_1_50",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_0_5",
+     "libelle": "Moins de 0,5 buts",
+     "cote": 7.27,
+     "probabilite_brute": 0.2552703501521202,
+     "probabilite": 0.2552703501521202,
+     "calibree": false,
+     "edv": 85.6,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_SUP_1_50",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_1_5",
+     "libelle": "Moins de 1,5 buts",
+     "cote": 2.89,
+     "probabilite_brute": 0.6038246801129163,
+     "probabilite": 0.6038246801129163,
+     "calibree": false,
+     "edv": 74.5,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "SURDISPERSION_SUP_1_50",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "score_0_0",
+     "libelle": "Score exact 0-0",
+     "cote": 5.76,
+     "probabilite_brute": 0.2552703501521202,
+     "probabilite": 0.2552703501521202,
+     "calibree": false,
+     "edv": 47.0,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_SUP_1_50",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "btts_no",
+     "libelle": "Les deux équipes ne marquent pas toutes les deux",
+     "cote": 1.79,
+     "probabilite_brute": 0.763717291010949,
+     "probabilite": 0.763717291010949,
+     "calibree": false,
+     "edv": 36.7,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "SURDISPERSION_SUP_1_50",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "dsa348ux857r3a9vlqvpte5uc",
+   "date": "2026-09-30",
+   "heure": "00:00",
+   "competition": "Canada : Première Ligue",
+   "domicile": "Atlético Ottawa",
+   "exterieur": "Cavalry",
+   "statut": "EVALUE",
+   "lambda_dom": 0.929,
+   "lambda_ext": 1.473,
+   "n_dom": 12,
+   "n_ext": 11,
+   "couverture": {
+    "issues_betpawa": 69,
+    "marches_cotes_calcules": 69,
+    "groupes_non_lus": [],
+    "groupes_ignores_par_choix": []
+   },
+   "selections": [],
+   "apercu_non_calibre": [],
+   "candidats": [
+    {
+     "marche": "under_1_5",
+     "libelle": "Moins de 1,5 buts",
+     "cote": 4.32,
+     "probabilite_brute": 0.30795752758490536,
+     "probabilite": 0.30795752758490536,
+     "calibree": false,
+     "edv": 33.0,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "exact_goals_0",
+     "libelle": "Exactement 0 buts",
+     "cote": 13.91,
+     "probabilite_brute": 0.09051658224246077,
+     "probabilite": 0.09051658224246077,
+     "calibree": false,
+     "edv": 25.9,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_2_5",
+     "libelle": "Moins de 2,5 buts",
+     "cote": 2.16,
+     "probabilite_brute": 0.5691282630462193,
+     "probabilite": 0.5691282630462193,
+     "calibree": false,
+     "edv": 22.9,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "exact_goals_1",
+     "libelle": "Exactement 1 buts",
+     "cote": 5.39,
+     "probabilite_brute": 0.21744094534244462,
+     "probabilite": 0.21744094534244462,
+     "calibree": false,
+     "edv": 17.2,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_3_5",
+     "libelle": "Moins de 3,5 buts",
+     "cote": 1.47,
+     "probabilite_brute": 0.778258311219316,
+     "probabilite": 0.778258311219316,
+     "calibree": false,
+     "edv": 14.4,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE"
+     ]
+    }
+   ]
+  },
+  {
    "match_id": "b4hco6x8cvfy2u6jdejuvzmz8",
    "date": "2026-09-30",
    "heure": "00:30",
@@ -2470,8 +2050,8 @@
    "n_dom": 12,
    "n_ext": 12,
    "couverture": {
-    "issues_betpawa": 75,
-    "marches_cotes_calcules": 72,
+    "issues_betpawa": 73,
+    "marches_cotes_calcules": 70,
     "groupes_non_lus": [],
     "groupes_ignores_par_choix": [
      "handicap_3issues_3"
@@ -2483,28 +2063,11 @@
     {
      "marche": "1x2_1",
      "libelle": "Victoire domicile",
-     "cote": 3.45,
+     "cote": 3.35,
      "probabilite_brute": 0.319979471390788,
      "probabilite": 0.319979471390788,
      "calibree": false,
-     "edv": 10.4,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "handicap_1_1",
-     "libelle": "Handicap 3 choix Domicile −1 (1) : Domicile gagne par 2 buts ou plus",
-     "cote": 6.87,
-     "probabilite_brute": 0.1499193336147362,
-     "probabilite": 0.1499193336147362,
-     "calibree": false,
-     "edv": 3.0,
+     "edv": 7.2,
      "raisons": [
       "CALIBRATION_ABSENTE",
       "COTE_HORS_FENETRE",
@@ -2517,11 +2080,11 @@
     {
      "marche": "handicap_0.5_1",
      "libelle": "Handicap Domicile −0,5 : Domicile gagne",
-     "cote": 3.17,
+     "cote": 3.2,
      "probabilite_brute": 0.319979471390788,
      "probabilite": 0.319979471390788,
      "calibree": false,
-     "edv": 1.4,
+     "edv": 2.4,
      "raisons": [
       "CALIBRATION_ABSENTE",
       "COTE_HORS_FENETRE",
@@ -2532,13 +2095,13 @@
      ]
     },
     {
-     "marche": "dc_1X",
-     "libelle": "Double chance 1X",
-     "cote": 1.85,
-     "probabilite_brute": 0.5450546129782436,
-     "probabilite": 0.5450546129782436,
+     "marche": "under_3_5",
+     "libelle": "Moins de 3,5 buts",
+     "cote": 1.76,
+     "probabilite_brute": 0.5676912090355974,
+     "probabilite": 0.5676912090355974,
      "calibree": false,
-     "edv": 0.8,
+     "edv": -0.1,
      "raisons": [
       "CALIBRATION_ABSENTE",
       "COTE_HORS_FENETRE",
@@ -2549,13 +2112,30 @@
      ]
     },
     {
-     "marche": "handicap_-0.5_1",
-     "libelle": "Handicap Domicile +0,5 : Domicile ne perd pas",
-     "cote": 1.85,
-     "probabilite_brute": 0.5450546129782435,
-     "probabilite": 0.5450546129782435,
+     "marche": "handicap_1_1",
+     "libelle": "Handicap 3 choix Domicile −1 (1) : Domicile gagne par 2 buts ou plus",
+     "cote": 6.62,
+     "probabilite_brute": 0.1499193336147362,
+     "probabilite": 0.1499193336147362,
      "calibree": false,
-     "edv": 0.8,
+     "edv": -0.8,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_2_5",
+     "libelle": "Moins de 2,5 buts",
+     "cote": 2.84,
+     "probabilite_brute": 0.34802795583261814,
+     "probabilite": 0.34802795583261814,
+     "calibree": false,
+     "edv": -1.2,
      "raisons": [
       "CALIBRATION_ABSENTE",
       "COTE_HORS_FENETRE",
@@ -2813,11 +2393,11 @@
     {
      "marche": "handicap_-1_2",
      "libelle": "Handicap 3 choix Domicile +1 (2) : Extérieur gagne par 2 buts ou plus",
-     "cote": 6.0,
+     "cote": 6.23,
      "probabilite_brute": 0.18495623802434114,
      "probabilite": 0.18495623802434114,
      "calibree": false,
-     "edv": 11.0,
+     "edv": 15.2,
      "raisons": [
       "CALIBRATION_ABSENTE",
       "COTE_HORS_FENETRE",
@@ -2831,11 +2411,11 @@
     {
      "marche": "1x2_2",
      "libelle": "Victoire extérieur",
-     "cote": 2.75,
+     "cote": 2.78,
      "probabilite_brute": 0.38505226721046537,
      "probabilite": 0.38505226721046537,
      "calibree": false,
-     "edv": 5.9,
+     "edv": 7.0,
      "raisons": [
       "CALIBRATION_ABSENTE",
       "COTE_HORS_FENETRE",
@@ -2923,6 +2503,23 @@
    "apercu_non_calibre": [],
    "candidats": [
     {
+     "marche": "handicap_1_1",
+     "libelle": "Handicap 3 choix Domicile −1 (1) : Domicile gagne par 2 buts ou plus",
+     "cote": 6.0,
+     "probabilite_brute": 0.17713983815711723,
+     "probabilite": 0.17713983815711723,
+     "calibree": false,
+     "edv": 6.3,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
      "marche": "1x2_1",
      "libelle": "Victoire domicile",
      "cote": 2.68,
@@ -2959,11 +2556,11 @@
     {
      "marche": "dc_12",
      "libelle": "Double chance 12",
-     "cote": 1.4,
+     "cote": 1.42,
      "probabilite_brute": 0.7314055553309533,
      "probabilite": 0.7314055553309533,
      "calibree": false,
-     "edv": 2.4,
+     "edv": 3.9,
      "raisons": [
       "CALIBRATION_ABSENTE",
       "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
@@ -2973,35 +2570,19 @@
      ]
     },
     {
-     "marche": "handicap_1_1",
-     "libelle": "Handicap 3 choix Domicile −1 (1) : Domicile gagne par 2 buts ou plus",
-     "cote": 5.75,
+     "marche": "handicap_1.5_1",
+     "libelle": "Handicap Domicile −1,5 : Domicile gagne par 2 buts ou plus",
+     "cote": 5.6,
      "probabilite_brute": 0.17713983815711723,
      "probabilite": 0.17713983815711723,
      "calibree": false,
-     "edv": 1.9,
+     "edv": -0.8,
      "raisons": [
       "CALIBRATION_ABSENTE",
       "COTE_HORS_FENETRE",
       "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
       "JUSTIFICATION_INSUFFISANTE",
       "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "dc_1X",
-     "libelle": "Double chance 1X",
-     "cote": 1.5,
-     "probabilite_brute": 0.6609694911226947,
-     "probabilite": 0.6609694911226947,
-     "calibree": false,
-     "edv": -0.9,
-     "raisons": [
-      "CALIBRATION_ABSENTE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "EDV_INSUFFISANTE",
-      "JUSTIFICATION_INSUFFISANTE",
       "VALUE_NON_ELIGIBLE"
      ]
     }
@@ -3017,209 +2598,1001 @@
    "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
    "selections": [],
    "candidats": []
+  },
+  {
+   "match_id": "5jn4ywx4i52pb6q6b2ukzc1lg",
+   "date": "2026-10-01",
+   "heure": "19:45",
+   "competition": "France : Ligue 3",
+   "domicile": "SC Bastia",
+   "exterieur": "US Orléans",
+   "statut": "EVALUE",
+   "lambda_dom": 0.817,
+   "lambda_ext": 1.733,
+   "n_dom": 4,
+   "n_ext": 4,
+   "couverture": {
+    "issues_betpawa": 71,
+    "marches_cotes_calcules": 71,
+    "groupes_non_lus": [],
+    "groupes_ignores_par_choix": []
+   },
+   "selections": [],
+   "apercu_non_calibre": [
+    {
+     "marche": "home_under_1_5",
+     "libelle": "Domicile marque moins de 1,5 but",
+     "cote": 1.47,
+     "probabilite": 0.8028,
+     "edge": 0.12251690523936432,
+     "edv": 18.0,
+     "justification": "✓ SC Bastia marque moins de 1,5 but dans 75% de ses matchs à ce lieu ; ✓ US Orléans encaisse moins de 1,5 but dans 75% de ses matchs à son lieu ; ✓ SC Bastia marque moins de 1,5 but dans 88% de ses matchs de la saison ; ✓ buts attendus de SC Bastia (moyennes simples) : 0,75 ; ✓ SC Bastia marque moins de 1,5 but dans 5 de ses 6 derniers ; ✓ US Orléans encaisse moins de 1,5 but dans 4 de ses 6 derniers",
+     "raisons_saison": [
+      "✓ SC Bastia marque moins de 1,5 but dans 75% de ses matchs à ce lieu",
+      "✓ US Orléans encaisse moins de 1,5 but dans 75% de ses matchs à son lieu",
+      "✓ SC Bastia marque moins de 1,5 but dans 88% de ses matchs de la saison",
+      "✓ buts attendus de SC Bastia (moyennes simples) : 0,75"
+     ],
+     "raisons_recent": [
+      "✓ SC Bastia marque moins de 1,5 but dans 5 de ses 6 derniers",
+      "✓ US Orléans encaisse moins de 1,5 but dans 4 de ses 6 derniers"
+     ],
+     "explication": {
+      "alertes": [
+       "Aperçu non calibré : ce n'est pas une sélection du moteur.",
+       "Petit échantillon : 4 matchs au même lieu pour l'équipe la moins fournie.",
+       "Écart inhabituel avec le marché : +12,3 points.",
+       "Résultats irréguliers : dispersion 1,33."
+      ],
+      "blocs": [
+       {
+        "titre": "Données",
+        "lignes": [
+         "SC Bastia à domicile (4) : 0-2, 2-3, 0-3, 1-1 → marque 0,75, encaisse 2,25 par match.",
+         "US Orléans à l'extérieur (4) : 2-0, 2-0, 1-1, 0-2 → marque 1,25, encaisse 0,75 par match."
+        ]
+       },
+       {
+        "titre": "Buts attendus",
+        "lignes": [
+         "Lissage vers 1,35 but : (n × moyenne + 4 × 1,35) / (n + 4).",
+         "SC Bastia : attaque 0,75 → 1,05 ; défense US Orléans 0,75 → 1,05 ; 1,05 × 1,05 / 1,35 = 0,82 buts.",
+         "US Orléans : attaque 1,25 → 1,30 ; défense SC Bastia 2,25 → 1,80 ; 1,30 × 1,80 / 1,35 = 1,73 buts."
+        ]
+       },
+       {
+        "titre": "Probabilité",
+        "lignes": [
+         "Domicile marque moins de 1,5 but : 80,3 % (non calibrée).",
+         "Probabilité que le domicile marque au plus 1 but, avec ses seuls buts attendus.",
+         "Scores les plus probables : 0-1 (13,5 %), 0-2 (11,7 %)."
+        ]
+       },
+       {
+        "titre": "Face à la cote",
+        "lignes": [
+         "Cote 1,47 → 68,0 % selon le bookmaker ; écart +12,3 points.",
+         "Marge = 1,47 × 0,123 = +18,0 % (seuil 5 % à cette probabilité)."
+        ]
+       },
+       {
+        "titre": "Contrôles",
+        "lignes": [
+         "Cote dans la fenêtre 1,26 – 1,74 : oui.",
+         "Dispersion des buts : 1,33 (acceptée car probabilité ≥ 67 %).",
+         "Double contrôle « Buts domicile - moins de 1.5 » passé : SC Bastia marque moins de 1,5 but dans 75% de ses matchs à ce lieu ; US Orléans encaisse moins de 1,5 but dans 75% de ses matchs à son lieu ; SC Bastia marque moins de 1,5 but dans 88% de ses matchs de la saison ; buts attendus de SC Bastia (moyennes simples) : 0,75 ; SC Bastia marque moins de 1,5 but dans 5 de ses 6 derniers ; US Orléans encaisse moins de 1,5 but dans 4 de ses 6 derniers.",
+         "4 matchs au même lieu : contrôle renforcé passé (probabilité ≥ 67 % et marge ≥ 7 %).",
+         "Calibration : pas encore prête (aperçu)."
+        ]
+       },
+       {
+        "titre": "Pourquoi ce marché",
+        "lignes": [
+         "Un seul pari par famille (buts du domicile) : celui-ci est le plus probable des paris valides.",
+         "Score exact 0-4 (84,17, 2,9 %, marge +147,2 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert.",
+         "Handicap 3 choix Domicile +1 (2) : Extérieur gagne par 2 buts ou plus (6,80, 33,5 %, marge +127,9 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert.",
+         "Domicile encaisse au moins un but (1,40, 82,3 %, marge +15,3 %) : double contrôle non passé ou marché non couvert ; pas de justification."
+        ]
+       }
+      ]
+     }
+    }
+   ],
+   "candidats": [
+    {
+     "marche": "score_0_4",
+     "libelle": "Score exact 0-4",
+     "cote": 84.17,
+     "probabilite_brute": 0.02936744763293846,
+     "probabilite": 0.02936744763293846,
+     "calibree": false,
+     "edv": 147.2,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "handicap_-1_2",
+     "libelle": "Handicap 3 choix Domicile +1 (2) : Extérieur gagne par 2 buts ou plus",
+     "cote": 6.8,
+     "probabilite_brute": 0.3351044949632882,
+     "probabilite": 0.3351044949632882,
+     "calibree": false,
+     "edv": 127.9,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "score_1_4",
+     "libelle": "Score exact 1-4",
+     "cote": 84.17,
+     "probabilite_brute": 0.02398341556689974,
+     "probabilite": 0.02398341556689974,
+     "calibree": false,
+     "edv": 101.9,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "score_0_3",
+     "libelle": "Score exact 0-3",
+     "cote": 29.17,
+     "probabilite_brute": 0.06777103299908876,
+     "probabilite": 0.06777103299908876,
+     "calibree": false,
+     "edv": 97.7,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "1x2_2",
+     "libelle": "Victoire extérieur",
+     "cote": 3.07,
+     "probabilite_brute": 0.5917013948220556,
+     "probabilite": 0.5917013948220556,
+     "calibree": false,
+     "edv": 81.7,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "fcn7v5kp80cf58nxeh52t5as",
+   "date": "2026-10-02",
+   "heure": "00:00",
+   "competition": "Brésil : Série A",
+   "domicile": "São Paulo",
+   "exterieur": "Santos SP",
+   "statut": "EVALUE",
+   "lambda_dom": 1.652,
+   "lambda_ext": 1.017,
+   "n_dom": 12,
+   "n_ext": 12,
+   "couverture": {
+    "issues_betpawa": 75,
+    "marches_cotes_calcules": 72,
+    "groupes_non_lus": [],
+    "groupes_ignores_par_choix": [
+     "handicap_3issues_-3"
+    ]
+   },
+   "selections": [],
+   "apercu_non_calibre": [],
+   "candidats": [
+    {
+     "marche": "handicap_2_1",
+     "libelle": "Handicap 3 choix Domicile −2 (1) : Domicile gagne par 3 buts ou plus",
+     "cote": 9.01,
+     "probabilite_brute": 0.12042776181628534,
+     "probabilite": 0.12042776181628534,
+     "calibree": false,
+     "edv": 8.5,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "handicap_1_1",
+     "libelle": "Handicap 3 choix Domicile −1 (1) : Domicile gagne par 2 buts ou plus",
+     "cote": 3.82,
+     "probabilite_brute": 0.2804922310748891,
+     "probabilite": 0.2804922310748891,
+     "calibree": false,
+     "edv": 7.1,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "1x2_1",
+     "libelle": "Victoire domicile",
+     "cote": 2.04,
+     "probabilite_brute": 0.5222840999102819,
+     "probabilite": 0.5222840999102819,
+     "calibree": false,
+     "edv": 6.5,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "handicap_0.5_1",
+     "libelle": "Handicap Domicile −0,5 : Domicile gagne",
+     "cote": 1.99,
+     "probabilite_brute": 0.5222840999102819,
+     "probabilite": 0.5222840999102819,
+     "calibree": false,
+     "edv": 3.9,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "handicap_1.5_1",
+     "libelle": "Handicap Domicile −1,5 : Domicile gagne par 2 buts ou plus",
+     "cote": 3.65,
+     "probabilite_brute": 0.2804922310748891,
+     "probabilite": 0.2804922310748891,
+     "calibree": false,
+     "edv": 2.4,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "aonw7yk1acofuou223m086hhw",
+   "date": "2026-10-02",
+   "heure": "00:00",
+   "competition": "Chili : Superliga",
+   "domicile": "U. Concepción",
+   "exterieur": "Huachipato",
+   "statut": "EVALUE",
+   "lambda_dom": 1.059,
+   "lambda_ext": 0.782,
+   "n_dom": 10,
+   "n_ext": 11,
+   "couverture": {
+    "issues_betpawa": 69,
+    "marches_cotes_calcules": 69,
+    "groupes_non_lus": [],
+    "groupes_ignores_par_choix": []
+   },
+   "selections": [],
+   "apercu_non_calibre": [],
+   "candidats": [
+    {
+     "marche": "exact_goals_0",
+     "libelle": "Exactement 0 buts",
+     "cote": 11.3,
+     "probabilite_brute": 0.1586606468449754,
+     "probabilite": 0.1586606468449754,
+     "calibree": false,
+     "edv": 79.3,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_1_5",
+     "libelle": "Moins de 1,5 buts",
+     "cote": 3.76,
+     "probabilite_brute": 0.4507529389131574,
+     "probabilite": 0.4507529389131574,
+     "calibree": false,
+     "edv": 69.5,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "score_0_0",
+     "libelle": "Score exact 0-0",
+     "cote": 9.17,
+     "probabilite_brute": 0.1586606468449754,
+     "probabilite": 0.1586606468449754,
+     "calibree": false,
+     "edv": 45.5,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "exact_goals_1",
+     "libelle": "Exactement 1 buts",
+     "cote": 4.87,
+     "probabilite_brute": 0.2920922920681819,
+     "probabilite": 0.2920922920681819,
+     "calibree": false,
+     "edv": 42.2,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_2_5",
+     "libelle": "Moins de 2,5 buts",
+     "cote": 1.92,
+     "probabilite_brute": 0.7196220907230788,
+     "probabilite": 0.7196220907230788,
+     "calibree": false,
+     "edv": 38.2,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "1xq9fqmq786baz55jjrzv90k4",
+   "date": "2026-10-02",
+   "heure": "01:30",
+   "competition": "Argentine : Copa de la Liga Profesional 2e Tour",
+   "domicile": "Boca Juniors",
+   "exterieur": "Union Santa Fe",
+   "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
+   "selections": [],
+   "candidats": []
+  },
+  {
+   "match_id": "22toh05cn45h3t6b04xl5h0k4",
+   "date": "2026-10-02",
+   "heure": "01:30",
+   "competition": "Argentine : Copa de la Liga Profesional 2e Tour",
+   "domicile": "Ind. Mendoza",
+   "exterieur": "Gimn La Plata",
+   "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
+   "selections": [],
+   "candidats": []
+  },
+  {
+   "match_id": "6r2ngy2ctpsa5gzytonht0ahg",
+   "date": "2026-10-02",
+   "heure": "01:45",
+   "competition": "Colombie : Première A Cloture",
+   "domicile": "Cali",
+   "exterieur": "Alianza Valledupar",
+   "statut": "EVALUE",
+   "lambda_dom": 1.635,
+   "lambda_ext": 0.597,
+   "n_dom": 12,
+   "n_ext": 12,
+   "couverture": {
+    "issues_betpawa": 74,
+    "marches_cotes_calcules": 71,
+    "groupes_non_lus": [],
+    "groupes_ignores_par_choix": [
+     "handicap_3issues_-3"
+    ]
+   },
+   "selections": [],
+   "apercu_non_calibre": [],
+   "candidats": [
+    {
+     "marche": "under_1_5",
+     "libelle": "Moins de 1,5 buts",
+     "cote": 3.06,
+     "probabilite_brute": 0.34687855584271887,
+     "probabilite": 0.34687855584271887,
+     "calibree": false,
+     "edv": 6.1,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "btts_no",
+     "libelle": "Les deux équipes ne marquent pas toutes les deux",
+     "cote": 1.63,
+     "probabilite_brute": 0.6380764943151271,
+     "probabilite": 0.6380764943151271,
+     "calibree": false,
+     "edv": 4.0,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "EDV_INSUFFISANTE",
+      "JUSTIFICATION_INSUFFISANTE",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_2_5",
+     "libelle": "Moins de 2,5 buts",
+     "cote": 1.69,
+     "probabilite_brute": 0.6141920239593488,
+     "probabilite": 0.6141920239593488,
+     "calibree": false,
+     "edv": 3.8,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "EDV_INSUFFISANTE",
+      "JUSTIFICATION_INSUFFISANTE",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_3_5",
+     "libelle": "Moins de 3,5 buts",
+     "cote": 1.25,
+     "probabilite_brute": 0.8130579809691086,
+     "probabilite": 0.8130579809691086,
+     "calibree": false,
+     "edv": 1.6,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "EDV_INSUFFISANTE",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "dc_1X",
+     "libelle": "Double chance 1X",
+     "cote": 1.14,
+     "probabilite_brute": 0.867328444312989,
+     "probabilite": 0.867328444312989,
+     "calibree": false,
+     "edv": -1.1,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "EDV_INSUFFISANTE",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "efhyo6jyb19ag7dvi3n7u4jkk",
+   "date": "2026-10-02",
+   "heure": "18:00",
+   "competition": "Norvège : OBOS-ligaen",
+   "domicile": "Ranheim",
+   "exterieur": "Egersund",
+   "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
+   "selections": [],
+   "candidats": []
+  },
+  {
+   "match_id": "3tfflbnf0emmp899fjete2has",
+   "date": "2026-10-02",
+   "heure": "19:30",
+   "competition": "Espagne : Segunda Division",
+   "domicile": "Eldense",
+   "exterieur": "Oviedo",
+   "statut": "EVALUE",
+   "lambda_dom": 1.067,
+   "lambda_ext": 1.478,
+   "n_dom": 3,
+   "n_ext": 3,
+   "couverture": {
+    "issues_betpawa": 72,
+    "marches_cotes_calcules": 72,
+    "groupes_non_lus": [],
+    "groupes_ignores_par_choix": []
+   },
+   "selections": [],
+   "apercu_non_calibre": [],
+   "candidats": [
+    {
+     "marche": "handicap_-2_2",
+     "libelle": "Handicap 3 choix Domicile +2 (2) : Extérieur gagne par 3 buts ou plus",
+     "cote": 15.43,
+     "probabilite_brute": 0.09071007422266966,
+     "probabilite": 0.09071007422266966,
+     "calibree": false,
+     "edv": 40.0,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "score_0_4",
+     "libelle": "Score exact 0-4",
+     "cote": 86.96,
+     "probabilite_brute": 0.015604258293698943,
+     "probabilite": 0.015604258293698943,
+     "calibree": false,
+     "edv": 35.7,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "handicap_-1_2",
+     "libelle": "Handicap 3 choix Domicile +1 (2) : Extérieur gagne par 2 buts ou plus",
+     "cote": 5.75,
+     "probabilite_brute": 0.23137049091014913,
+     "probabilite": 0.23137049091014913,
+     "calibree": false,
+     "edv": 33.0,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "score_1_4",
+     "libelle": "Score exact 1-4",
+     "cote": 78.09,
+     "probabilite_brute": 0.016644542179945543,
+     "probabilite": 0.016644542179945543,
+     "calibree": false,
+     "edv": 30.0,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "1x2_2",
+     "libelle": "Victoire extérieur",
+     "cote": 2.67,
+     "probabilite_brute": 0.4662948763208104,
+     "probabilite": 0.4662948763208104,
+     "calibree": false,
+     "edv": 24.5,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "jfci0vi70nc2uvpyvfjxbgno",
+   "date": "2026-10-02",
+   "heure": "19:45",
+   "competition": "Irlande : Première Ligue",
+   "domicile": "Dundalk",
+   "exterieur": "Bohemians",
+   "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
+   "selections": [],
+   "candidats": []
+  },
+  {
+   "match_id": "db9rvnkha5rkf56mbwkk221hw",
+   "date": "2026-10-02",
+   "heure": "20:00",
+   "competition": "Pays-Bas : Eerste Divisie",
+   "domicile": "Helmond",
+   "exterieur": "Heracles",
+   "statut": "EVALUE",
+   "lambda_dom": 1.9,
+   "lambda_ext": 2.215,
+   "n_dom": 4,
+   "n_ext": 4,
+   "couverture": {
+    "issues_betpawa": 72,
+    "marches_cotes_calcules": 69,
+    "groupes_non_lus": [],
+    "groupes_ignores_par_choix": [
+     "handicap_3issues_3"
+    ]
+   },
+   "selections": [],
+   "apercu_non_calibre": [
+    {
+     "marche": "btts_yes",
+     "libelle": "Les deux équipes marquent",
+     "cote": 1.62,
+     "probabilite": 0.7576,
+     "edge": 0.14030258935189344,
+     "edv": 22.7,
+     "justification": "✓ marquent chacun à son lieu : 100% / 75% ; ✓ encaissent chacun à son lieu : 100% / 100% ; ✓ les deux marquent, chacun à son lieu : 100% / 75% ; ✓ buts attendus de chaque côté (moyennes simples) : 1,88 / 2,25 ; ✓ marquent sur les 6 derniers : 5 / 5 ; ✓ encaissent sur les 6 derniers : 6 / 4 ; ✓ marquent sur les 3 derniers au même lieu : 3 / 2",
+     "raisons_saison": [
+      "✓ marquent chacun à son lieu : 100% / 75%",
+      "✓ encaissent chacun à son lieu : 100% / 100%",
+      "✓ les deux marquent, chacun à son lieu : 100% / 75%",
+      "✓ buts attendus de chaque côté (moyennes simples) : 1,88 / 2,25"
+     ],
+     "raisons_recent": [
+      "✓ marquent sur les 6 derniers : 5 / 5",
+      "✓ encaissent sur les 6 derniers : 6 / 4",
+      "✓ marquent sur les 3 derniers au même lieu : 3 / 2"
+     ],
+     "explication": {
+      "alertes": [
+       "Aperçu non calibré : ce n'est pas une sélection du moteur.",
+       "Petit échantillon : 4 matchs au même lieu pour l'équipe la moins fournie.",
+       "Écart inhabituel avec le marché : +14,0 points.",
+       "Buts attendus extrêmes : 4,11 buts au total.",
+       "Résultats irréguliers : dispersion 1,26."
+      ],
+      "blocs": [
+       {
+        "titre": "Données",
+        "lignes": [
+         "Helmond à domicile (4) : 1-1, 1-1, 4-2, 3-1 → marque 2,25, encaisse 1,25 par match.",
+         "Heracles à l'extérieur (4) : 4-3, 6-1, 3-1, 0-1 → marque 3,25, encaisse 1,50 par match."
+        ]
+       },
+       {
+        "titre": "Buts attendus",
+        "lignes": [
+         "Lissage vers 1,35 but : (n × moyenne + 4 × 1,35) / (n + 4).",
+         "Helmond : attaque 2,25 → 1,80 ; défense Heracles 1,50 → 1,43 ; 1,80 × 1,43 / 1,35 = 1,90 buts.",
+         "Heracles : attaque 3,25 → 2,30 ; défense Helmond 1,25 → 1,30 ; 2,30 × 1,30 / 1,35 = 2,21 buts."
+        ]
+       },
+       {
+        "titre": "Probabilité",
+        "lignes": [
+         "Les deux équipes marquent : 75,8 % (non calibrée).",
+         "Probabilité que chaque équipe marque au moins un but.",
+         "Scores les plus probables : 1-2 (7,6 %), 2-2 (7,2 %)."
+        ]
+       },
+       {
+        "titre": "Face à la cote",
+        "lignes": [
+         "Cote 1,62 → 61,7 % selon le bookmaker ; écart +14,0 points.",
+         "Marge = 1,62 × 0,140 = +22,7 % (seuil 5 % à cette probabilité)."
+        ]
+       },
+       {
+        "titre": "Contrôles",
+        "lignes": [
+         "Cote dans la fenêtre 1,26 – 1,74 : oui.",
+         "Dispersion des buts : 1,26 (acceptée car probabilité ≥ 67 %).",
+         "Double contrôle « BTTS - oui » passé : marquent chacun à son lieu : 100% / 75% ; encaissent chacun à son lieu : 100% / 100% ; les deux marquent, chacun à son lieu : 100% / 75% ; buts attendus de chaque côté (moyennes simples) : 1,88 / 2,25 ; marquent sur les 6 derniers : 5 / 5 ; encaissent sur les 6 derniers : 6 / 4 ; marquent sur les 3 derniers au même lieu : 3 / 2.",
+         "4 matchs au même lieu : contrôle renforcé passé (probabilité ≥ 67 % et marge ≥ 7 %).",
+         "Calibration : pas encore prête (aperçu)."
+        ]
+       },
+       {
+        "titre": "Pourquoi ce marché",
+        "lignes": [
+         "Un seul pari par famille (les deux marquent) : celui-ci est le plus probable des paris valides.",
+         "Handicap 3 choix Domicile −1 (1) : Domicile gagne par 2 buts ou plus (15,48, 17,7 %, marge +174,5 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert.",
+         "Score exact 3-1 (54,00, 4,1 %, marge +123,3 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert.",
+         "Plus de 5,5 buts (6,48, 23,3 %, marge +51,0 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert."
+        ]
+       }
+      ]
+     }
+    }
+   ],
+   "candidats": [
+    {
+     "marche": "handicap_1_1",
+     "libelle": "Handicap 3 choix Domicile −1 (1) : Domicile gagne par 2 buts ou plus",
+     "cote": 15.48,
+     "probabilite_brute": 0.1773547069803909,
+     "probabilite": 0.1773547069803909,
+     "calibree": false,
+     "edv": 174.5,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "score_3_1",
+     "libelle": "Score exact 3-1",
+     "cote": 54.0,
+     "probabilite_brute": 0.04134337563616543,
+     "probabilite": 0.04134337563616543,
+     "calibree": false,
+     "edv": 123.3,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "1x2_1",
+     "libelle": "Victoire domicile",
+     "cote": 6.43,
+     "probabilite_brute": 0.33940153041952026,
+     "probabilite": 0.33940153041952026,
+     "calibree": false,
+     "edv": 118.2,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "score_3_2",
+     "libelle": "Score exact 3-2",
+     "cote": 45.91,
+     "probabilite_brute": 0.045783960426716515,
+     "probabilite": 0.045783960426716515,
+     "calibree": false,
+     "edv": 110.2,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "score_3_3",
+     "libelle": "Score exact 3-3",
+     "cote": 57.13,
+     "probabilite_brute": 0.033800997944662306,
+     "probabilite": 0.033800997944662306,
+     "calibree": false,
+     "edv": 93.1,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "1x99tmsm4qc8nmrv7ktoqr0no",
+   "date": "2026-10-02",
+   "heure": "23:15",
+   "competition": "Argentine : Copa de la Liga Profesional 2e Tour",
+   "domicile": "Independiente",
+   "exterieur": "Instituto",
+   "statut": "EVALUE",
+   "lambda_dom": 1.016,
+   "lambda_ext": 0.767,
+   "n_dom": 12,
+   "n_ext": 12,
+   "couverture": {
+    "issues_betpawa": 72,
+    "marches_cotes_calcules": 72,
+    "groupes_non_lus": [],
+    "groupes_ignores_par_choix": []
+   },
+   "selections": [],
+   "apercu_non_calibre": [],
+   "candidats": [
+    {
+     "marche": "under_1_5",
+     "libelle": "Moins de 1,5 buts",
+     "cote": 2.51,
+     "probabilite_brute": 0.4681612003722798,
+     "probabilite": 0.4681612003722798,
+     "calibree": false,
+     "edv": 17.5,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_0_5",
+     "libelle": "Moins de 0,5 buts",
+     "cote": 6.5,
+     "probabilite_brute": 0.16827160209736658,
+     "probabilite": 0.16827160209736658,
+     "calibree": false,
+     "edv": 9.4,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_2_5",
+     "libelle": "Moins de 2,5 buts",
+     "cote": 1.48,
+     "probabilite_brute": 0.7353892116128535,
+     "probabilite": 0.7353892116128535,
+     "calibree": false,
+     "edv": 8.8,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE"
+     ]
+    },
+    {
+     "marche": "btts_no",
+     "libelle": "Les deux équipes ne marquent pas toutes les deux",
+     "cote": 1.65,
+     "probabilite_brute": 0.6585053383176138,
+     "probabilite": 0.6585053383176138,
+     "calibree": false,
+     "edv": 8.7,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "EDV_INSUFFISANTE",
+      "JUSTIFICATION_INSUFFISANTE",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "exact_goals_0",
+     "libelle": "Exactement 0 buts",
+     "cote": 6.3,
+     "probabilite_brute": 0.16827160209736663,
+     "probabilite": 0.16827160209736663,
+     "calibree": false,
+     "edv": 6.0,
+     "raisons": [
+      "CALIBRATION_ABSENTE",
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
   }
  ],
  "signaux": [
   {
-   "match_id": "8va26dyvf6f0hj6qjbbsw8t90",
-   "date": "2026-09-28",
-   "heure_cameroun": null,
-   "competition": "Mexique : Liga MX Ouverture",
-   "domicile": "Club Necaxa",
-   "exterieur": "Club América",
-   "moteur_utilise": "moteur_v3",
-   "moteur_v3": {
-    "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
-    "moteur": "moteur_v3",
-    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
-    "apercu_non_calibre": false,
-    "selection": {}
-   }
-  },
-  {
-   "match_id": "baho4mtiigm4o2yzx5be5qas4",
-   "date": "2026-09-28",
-   "heure_cameroun": null,
-   "competition": "Etats-Unis : MLS",
-   "domicile": "Columbus",
-   "exterieur": "Inter Miami",
-   "moteur_utilise": "moteur_v3",
-   "moteur_v3": {
-    "statut": "OK",
-    "moteur": "moteur_v3",
-    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
-    "apercu_non_calibre": false,
-    "selection": {}
-   }
-  },
-  {
-   "match_id": "6ky80vuwl96c0rgco76a3slck",
-   "date": "2026-09-28",
-   "heure_cameroun": null,
-   "competition": "Colombie : Première A Cloture",
-   "domicile": "Fortaleza",
-   "exterieur": "Dep. Tolima",
-   "moteur_utilise": "moteur_v3",
-   "moteur_v3": {
-    "statut": "OK",
-    "moteur": "moteur_v3",
-    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
-    "apercu_non_calibre": false,
-    "selection": {}
-   }
-  },
-  {
-   "match_id": "9fz0b10b25bs80xbt4x2m7uvo",
-   "date": "2026-09-28",
-   "heure_cameroun": "18:00",
-   "competition": "Slovénie : 2. SNL",
-   "domicile": "NK Rudar Velenje",
-   "exterieur": "Dravinja",
-   "moteur_utilise": "moteur_v3",
-   "moteur_v3": {
-    "statut": "OK",
-    "moteur": "moteur_v3",
-    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
-    "apercu_non_calibre": true,
-    "selection": {
-     "P1": {
-      "marche": "1x2_domicile",
-      "marche_moteur": "1x2_1",
-      "libelle": null,
-      "probabilite": 0.8154,
-      "cote": 1.59,
-      "edge": 0.1864681742115013,
-      "edv": 0.29600000000000004,
-      "niveau": "V3_ECHANTILLON_FAIBLE",
-      "robustesse": null,
-      "points_de_vigilance": [
-       "Aperçu NON calibré : la calibration n'a pas encore assez de matchs joués. Ce n'est pas une sélection du moteur, seulement ce qu'il retiendrait si la calibration confirmait ses probabilités.",
-       "Moteur V3 expérimental : pas encore validé sur 100 matchs réels.",
-       "Moins de 5 matchs au même lieu pour une des deux équipes."
-      ],
-      "rang": "P1",
-      "apercu_non_calibre": true,
-      "justification": {
-       "resume": "Probabilité NON calibrée 82 % contre 63 % selon la cote 1,59 · marge +29,6 % · 3 matchs au même lieu.",
-       "preuves": [
-        {
-         "type": "v3_controle_saison",
-         "texte": "NK Rudar Velenje gagne 100% de ses matchs à ce lieu (3) ; NK Rudar Velenje prend 1,71 pt/match sur la saison ; NK Rudar Velenje marque 3,0 but/match à ce lieu ; Dravinja gagne 0% à son lieu (4) ; Dravinja encaisse 2,2 but/match à son lieu"
-        },
-        {
-         "type": "v3_forme_recente",
-         "texte": "NK Rudar Velenje sur ses 6 derniers : 4 victoires, 2 défaites ; Dravinja sur ses 6 derniers : 1 victoire"
-        },
-        {
-         "type": "ev_percentage",
-         "valeur": 29.6,
-         "texte": "Le prix proposé laisse 29,6 % de marge par rapport à l'estimation NON calibrée."
-        }
-       ],
-       "explication": {
-        "alertes": [
-         "Aperçu non calibré : ce n'est pas une sélection du moteur.",
-         "Petit échantillon : 3 matchs au même lieu pour l'équipe la moins fournie.",
-         "Écart inhabituel avec le marché : +18,6 points.",
-         "Résultats irréguliers : dispersion 1,34."
-        ],
-        "blocs": [
-         {
-          "titre": "Données",
-          "lignes": [
-           "NK Rudar Velenje à domicile (3) : 3-0, 4-1, 2-0 → marque 3,00, encaisse 0,33 par match.",
-           "Dravinja à l'extérieur (4) : 0-1, 0-2, 1-1, 1-5 → marque 0,50, encaisse 2,25 par match."
-          ]
-         },
-         {
-          "titre": "Buts attendus",
-          "lignes": [
-           "Lissage vers 1,35 but : (n × moyenne + 4 × 1,35) / (n + 4).",
-           "NK Rudar Velenje : attaque 3,00 → 2,06 ; défense Dravinja 2,25 → 1,80 ; 2,06 × 1,80 / 1,35 = 2,74 buts.",
-           "Dravinja : attaque 0,50 → 0,93 ; défense NK Rudar Velenje 0,33 → 0,91 ; 0,93 × 0,91 / 1,35 = 0,63 buts."
-          ]
-         },
-         {
-          "titre": "Probabilité",
-          "lignes": [
-           "Victoire domicile : 81,5 % (non calibrée).",
-           "Somme des scores où domicile > extérieur.",
-           "Scores les plus probables : 2-0 (12,9 %), 3-0 (11,8 %)."
-          ]
-         },
-         {
-          "titre": "Face à la cote",
-          "lignes": [
-           "Cote 1,59 → 62,9 % selon le bookmaker ; écart +18,6 points.",
-           "Marge = 1,59 × 0,186 = +29,6 % (seuil 5 % à cette probabilité)."
-          ]
-         },
-         {
-          "titre": "Contrôles",
-          "lignes": [
-           "Cote dans la fenêtre 1,26 – 1,74 : oui.",
-           "Dispersion des buts : 1,34 (acceptée car probabilité ≥ 67 %).",
-           "Double contrôle « 1X2 - 1 » passé : NK Rudar Velenje gagne 100% de ses matchs à ce lieu (3) ; NK Rudar Velenje prend 1,71 pt/match sur la saison ; NK Rudar Velenje marque 3,0 but/match à ce lieu ; Dravinja gagne 0% à son lieu (4) ; Dravinja encaisse 2,2 but/match à son lieu ; NK Rudar Velenje sur ses 6 derniers : 4 victoires, 2 défaites ; Dravinja sur ses 6 derniers : 1 victoire.",
-           "3 matchs au même lieu : contrôle renforcé passé (probabilité ≥ 67 % et marge ≥ 7 %).",
-           "Calibration : pas encore prête (aperçu)."
-          ]
-         },
-         {
-          "titre": "Pourquoi ce marché",
-          "lignes": [
-           "Un seul pari par famille (résultat) : celui-ci est le plus probable des paris valides.",
-           "Domicile n'encaisse pas (2,67, 53,4 %, marge +42,7 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert.",
-           "Score exact 4-0 (16,43, 8,1 %, marge +33,3 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert.",
-           "Domicile marque plus de 2,5 buts (2,52, 51,7 %, marge +30,2 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert."
-          ]
-         }
-        ]
-       },
-       "donnees_suffisantes": true,
-       "bibliotheque": {
-        "ev_percentage": 29.6
-       }
-      }
-     }
-    }
-   }
-  },
-  {
-   "match_id": "3qaqtts1a2yqwuc2kc9cz3j10",
-   "date": "2026-09-28",
-   "heure_cameroun": "19:30",
-   "competition": "Espagne : Segunda Division",
-   "domicile": "Leganes",
-   "exterieur": "Castellon",
-   "moteur_utilise": "moteur_v3",
-   "moteur_v3": {
-    "statut": "OK",
-    "moteur": "moteur_v3",
-    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
-    "apercu_non_calibre": false,
-    "selection": {}
-   }
-  },
-  {
-   "match_id": "5aa7ywrv7i3cozj5pps76vml0",
-   "date": "2026-09-28",
-   "heure_cameroun": "21:00",
-   "competition": "Paraguay : Professionnel de la Division Clôture",
-   "domicile": "San Lorenzo",
-   "exterieur": "Dep. Recoleta",
-   "moteur_utilise": "moteur_v3",
-   "moteur_v3": {
-    "statut": "OK",
-    "moteur": "moteur_v3",
-    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
-    "apercu_non_calibre": false,
-    "selection": {}
-   }
-  },
-  {
    "match_id": "5alzjynn9irsic5yo4l1fof84",
-   "date": "2026-09-28",
-   "heure_cameroun": "23:15",
+   "date": "2026-09-29",
+   "heure_cameroun": null,
    "competition": "Paraguay : Professionnel de la Division Clôture",
    "domicile": "Libertad",
    "exterieur": "Club Olimpia",
@@ -3412,9 +3785,9 @@
       "marche_moteur": "dc_1X",
       "libelle": null,
       "probabilite": 0.7185,
-      "cote": 1.6,
-      "edge": 0.09349478559928714,
-      "edv": 0.15,
+      "cote": 1.55,
+      "edge": 0.07333349527670652,
+      "edv": 0.114,
       "niveau": "V3_ECHANTILLON_FAIBLE",
       "robustesse": null,
       "points_de_vigilance": [
@@ -3425,7 +3798,7 @@
       "rang": "P1",
       "apercu_non_calibre": true,
       "justification": {
-       "resume": "Probabilité NON calibrée 72 % contre 62 % selon la cote 1,60 · marge +15,0 % · 4 matchs au même lieu.",
+       "resume": "Probabilité NON calibrée 72 % contre 65 % selon la cote 1,55 · marge +11,4 % · 4 matchs au même lieu.",
        "preuves": [
         {
          "type": "v3_controle_saison",
@@ -3437,8 +3810,8 @@
         },
         {
          "type": "ev_percentage",
-         "valeur": 15.0,
-         "texte": "Le prix proposé laisse 15,0 % de marge par rapport à l'estimation NON calibrée."
+         "valeur": 11.4,
+         "texte": "Le prix proposé laisse 11,4 % de marge par rapport à l'estimation NON calibrée."
         }
        ],
        "explication": {
@@ -3473,8 +3846,8 @@
          {
           "titre": "Face à la cote",
           "lignes": [
-           "Cote 1,60 → 62,5 % selon le bookmaker ; écart +9,4 points.",
-           "Marge = 1,60 × 0,094 = +15,0 % (seuil 5 % à cette probabilité)."
+           "Cote 1,55 → 64,5 % selon le bookmaker ; écart +7,3 points.",
+           "Marge = 1,55 × 0,073 = +11,4 % (seuil 5 % à cette probabilité)."
           ]
          },
          {
@@ -3500,7 +3873,7 @@
        },
        "donnees_suffisantes": true,
        "bibliotheque": {
-        "ev_percentage": 15.0
+        "ev_percentage": 11.4
        }
       }
      }
@@ -3688,7 +4061,7 @@
            "Un seul pari par famille (buts du domicile) : celui-ci est le plus probable des paris valides.",
            "6 buts ou plus (6,61, 30,1 %, marge +98,8 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert.",
            "Score exact 3-4 (83,33, 2,1 %, marge +76,4 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert.",
-           "Handicap 3 choix Domicile −2 (1) : Domicile gagne par 3 buts ou plus (8,74, 14,2 %, marge +23,7 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert."
+           "Handicap 3 choix Domicile +1 (2) : Extérieur gagne par 2 buts ou plus (6,50, 19,4 %, marge +26,4 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert."
           ]
          }
         ]
@@ -3787,7 +4160,7 @@
            "Un seul pari par famille (total de buts) : celui-ci est le plus probable des paris valides.",
            "Score exact 3-4 (83,33, 2,1 %, marge +76,4 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert.",
            "Domicile marque plus de 2,5 buts (3,36, 43,0 %, marge +44,5 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert.",
-           "Handicap 3 choix Domicile −2 (1) : Domicile gagne par 3 buts ou plus (8,74, 14,2 %, marge +23,7 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert."
+           "Handicap 3 choix Domicile +1 (2) : Extérieur gagne par 2 buts ou plus (6,50, 19,4 %, marge +26,4 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert."
           ]
          }
         ]
@@ -3808,6 +4181,38 @@
    "competition": "Colombie : Première A Cloture",
    "domicile": "Dep. Pereira",
    "exterieur": "Santa Fe",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "8ehfbh42sedynj19dwi1n261g",
+   "date": "2026-09-29",
+   "heure_cameroun": "22:00",
+   "competition": "El Salvador : 1ère Division Ouverture",
+   "domicile": "Atl. Balboa",
+   "exterieur": "Cacahuatique",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "dsa348ux857r3a9vlqvpte5uc",
+   "date": "2026-09-30",
+   "heure_cameroun": "00:00",
+   "competition": "Canada : Première Ligue",
+   "domicile": "Atlético Ottawa",
+   "exterieur": "Cavalry",
    "moteur_utilise": "moteur_v3",
    "moteur_v3": {
     "statut": "OK",
@@ -3907,6 +4312,383 @@
    "moteur_utilise": "moteur_v3",
    "moteur_v3": {
     "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "5jn4ywx4i52pb6q6b2ukzc1lg",
+   "date": "2026-10-01",
+   "heure_cameroun": "19:45",
+   "competition": "France : Ligue 3",
+   "domicile": "SC Bastia",
+   "exterieur": "US Orléans",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": true,
+    "selection": {
+     "P1": {
+      "marche": "buts_equipe_domicile_1.5_under",
+      "marche_moteur": "home_under_1_5",
+      "libelle": null,
+      "probabilite": 0.8028,
+      "cote": 1.47,
+      "edge": 0.12251690523936432,
+      "edv": 0.18,
+      "niveau": "V3_ECHANTILLON_FAIBLE",
+      "robustesse": null,
+      "points_de_vigilance": [
+       "Aperçu NON calibré : la calibration n'a pas encore assez de matchs joués. Ce n'est pas une sélection du moteur, seulement ce qu'il retiendrait si la calibration confirmait ses probabilités.",
+       "Moteur V3 expérimental : pas encore validé sur 100 matchs réels.",
+       "Moins de 5 matchs au même lieu pour une des deux équipes."
+      ],
+      "rang": "P1",
+      "apercu_non_calibre": true,
+      "justification": {
+       "resume": "Probabilité NON calibrée 80 % contre 68 % selon la cote 1,47 · marge +18,0 % · 4 matchs au même lieu.",
+       "preuves": [
+        {
+         "type": "v3_controle_saison",
+         "texte": "SC Bastia marque moins de 1,5 but dans 75% de ses matchs à ce lieu ; US Orléans encaisse moins de 1,5 but dans 75% de ses matchs à son lieu ; SC Bastia marque moins de 1,5 but dans 88% de ses matchs de la saison ; buts attendus de SC Bastia (moyennes simples) : 0,75"
+        },
+        {
+         "type": "v3_forme_recente",
+         "texte": "SC Bastia marque moins de 1,5 but dans 5 de ses 6 derniers ; US Orléans encaisse moins de 1,5 but dans 4 de ses 6 derniers"
+        },
+        {
+         "type": "ev_percentage",
+         "valeur": 18.0,
+         "texte": "Le prix proposé laisse 18,0 % de marge par rapport à l'estimation NON calibrée."
+        }
+       ],
+       "explication": {
+        "alertes": [
+         "Aperçu non calibré : ce n'est pas une sélection du moteur.",
+         "Petit échantillon : 4 matchs au même lieu pour l'équipe la moins fournie.",
+         "Écart inhabituel avec le marché : +12,3 points.",
+         "Résultats irréguliers : dispersion 1,33."
+        ],
+        "blocs": [
+         {
+          "titre": "Données",
+          "lignes": [
+           "SC Bastia à domicile (4) : 0-2, 2-3, 0-3, 1-1 → marque 0,75, encaisse 2,25 par match.",
+           "US Orléans à l'extérieur (4) : 2-0, 2-0, 1-1, 0-2 → marque 1,25, encaisse 0,75 par match."
+          ]
+         },
+         {
+          "titre": "Buts attendus",
+          "lignes": [
+           "Lissage vers 1,35 but : (n × moyenne + 4 × 1,35) / (n + 4).",
+           "SC Bastia : attaque 0,75 → 1,05 ; défense US Orléans 0,75 → 1,05 ; 1,05 × 1,05 / 1,35 = 0,82 buts.",
+           "US Orléans : attaque 1,25 → 1,30 ; défense SC Bastia 2,25 → 1,80 ; 1,30 × 1,80 / 1,35 = 1,73 buts."
+          ]
+         },
+         {
+          "titre": "Probabilité",
+          "lignes": [
+           "Domicile marque moins de 1,5 but : 80,3 % (non calibrée).",
+           "Probabilité que le domicile marque au plus 1 but, avec ses seuls buts attendus.",
+           "Scores les plus probables : 0-1 (13,5 %), 0-2 (11,7 %)."
+          ]
+         },
+         {
+          "titre": "Face à la cote",
+          "lignes": [
+           "Cote 1,47 → 68,0 % selon le bookmaker ; écart +12,3 points.",
+           "Marge = 1,47 × 0,123 = +18,0 % (seuil 5 % à cette probabilité)."
+          ]
+         },
+         {
+          "titre": "Contrôles",
+          "lignes": [
+           "Cote dans la fenêtre 1,26 – 1,74 : oui.",
+           "Dispersion des buts : 1,33 (acceptée car probabilité ≥ 67 %).",
+           "Double contrôle « Buts domicile - moins de 1.5 » passé : SC Bastia marque moins de 1,5 but dans 75% de ses matchs à ce lieu ; US Orléans encaisse moins de 1,5 but dans 75% de ses matchs à son lieu ; SC Bastia marque moins de 1,5 but dans 88% de ses matchs de la saison ; buts attendus de SC Bastia (moyennes simples) : 0,75 ; SC Bastia marque moins de 1,5 but dans 5 de ses 6 derniers ; US Orléans encaisse moins de 1,5 but dans 4 de ses 6 derniers.",
+           "4 matchs au même lieu : contrôle renforcé passé (probabilité ≥ 67 % et marge ≥ 7 %).",
+           "Calibration : pas encore prête (aperçu)."
+          ]
+         },
+         {
+          "titre": "Pourquoi ce marché",
+          "lignes": [
+           "Un seul pari par famille (buts du domicile) : celui-ci est le plus probable des paris valides.",
+           "Score exact 0-4 (84,17, 2,9 %, marge +147,2 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert.",
+           "Handicap 3 choix Domicile +1 (2) : Extérieur gagne par 2 buts ou plus (6,80, 33,5 %, marge +127,9 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert.",
+           "Domicile encaisse au moins un but (1,40, 82,3 %, marge +15,3 %) : double contrôle non passé ou marché non couvert ; pas de justification."
+          ]
+         }
+        ]
+       },
+       "donnees_suffisantes": true,
+       "bibliotheque": {
+        "ev_percentage": 18.0
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "match_id": "fcn7v5kp80cf58nxeh52t5as",
+   "date": "2026-10-02",
+   "heure_cameroun": "00:00",
+   "competition": "Brésil : Série A",
+   "domicile": "São Paulo",
+   "exterieur": "Santos SP",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "aonw7yk1acofuou223m086hhw",
+   "date": "2026-10-02",
+   "heure_cameroun": "00:00",
+   "competition": "Chili : Superliga",
+   "domicile": "U. Concepción",
+   "exterieur": "Huachipato",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "1xq9fqmq786baz55jjrzv90k4",
+   "date": "2026-10-02",
+   "heure_cameroun": "01:30",
+   "competition": "Argentine : Copa de la Liga Profesional 2e Tour",
+   "domicile": "Boca Juniors",
+   "exterieur": "Union Santa Fe",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "22toh05cn45h3t6b04xl5h0k4",
+   "date": "2026-10-02",
+   "heure_cameroun": "01:30",
+   "competition": "Argentine : Copa de la Liga Profesional 2e Tour",
+   "domicile": "Ind. Mendoza",
+   "exterieur": "Gimn La Plata",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "6r2ngy2ctpsa5gzytonht0ahg",
+   "date": "2026-10-02",
+   "heure_cameroun": "01:45",
+   "competition": "Colombie : Première A Cloture",
+   "domicile": "Cali",
+   "exterieur": "Alianza Valledupar",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "efhyo6jyb19ag7dvi3n7u4jkk",
+   "date": "2026-10-02",
+   "heure_cameroun": "18:00",
+   "competition": "Norvège : OBOS-ligaen",
+   "domicile": "Ranheim",
+   "exterieur": "Egersund",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "3tfflbnf0emmp899fjete2has",
+   "date": "2026-10-02",
+   "heure_cameroun": "19:30",
+   "competition": "Espagne : Segunda Division",
+   "domicile": "Eldense",
+   "exterieur": "Oviedo",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "jfci0vi70nc2uvpyvfjxbgno",
+   "date": "2026-10-02",
+   "heure_cameroun": "19:45",
+   "competition": "Irlande : Première Ligue",
+   "domicile": "Dundalk",
+   "exterieur": "Bohemians",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "db9rvnkha5rkf56mbwkk221hw",
+   "date": "2026-10-02",
+   "heure_cameroun": "20:00",
+   "competition": "Pays-Bas : Eerste Divisie",
+   "domicile": "Helmond",
+   "exterieur": "Heracles",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
+    "apercu_non_calibre": true,
+    "selection": {
+     "P1": {
+      "marche": "btts_oui",
+      "marche_moteur": "btts_yes",
+      "libelle": null,
+      "probabilite": 0.7576,
+      "cote": 1.62,
+      "edge": 0.14030258935189344,
+      "edv": 0.22699999999999998,
+      "niveau": "V3_ECHANTILLON_FAIBLE",
+      "robustesse": null,
+      "points_de_vigilance": [
+       "Aperçu NON calibré : la calibration n'a pas encore assez de matchs joués. Ce n'est pas une sélection du moteur, seulement ce qu'il retiendrait si la calibration confirmait ses probabilités.",
+       "Moteur V3 expérimental : pas encore validé sur 100 matchs réels.",
+       "Moins de 5 matchs au même lieu pour une des deux équipes."
+      ],
+      "rang": "P1",
+      "apercu_non_calibre": true,
+      "justification": {
+       "resume": "Probabilité NON calibrée 76 % contre 62 % selon la cote 1,62 · marge +22,7 % · 4 matchs au même lieu.",
+       "preuves": [
+        {
+         "type": "v3_controle_saison",
+         "texte": "marquent chacun à son lieu : 100% / 75% ; encaissent chacun à son lieu : 100% / 100% ; les deux marquent, chacun à son lieu : 100% / 75% ; buts attendus de chaque côté (moyennes simples) : 1,88 / 2,25"
+        },
+        {
+         "type": "v3_forme_recente",
+         "texte": "marquent sur les 6 derniers : 5 / 5 ; encaissent sur les 6 derniers : 6 / 4 ; marquent sur les 3 derniers au même lieu : 3 / 2"
+        },
+        {
+         "type": "ev_percentage",
+         "valeur": 22.7,
+         "texte": "Le prix proposé laisse 22,7 % de marge par rapport à l'estimation NON calibrée."
+        }
+       ],
+       "explication": {
+        "alertes": [
+         "Aperçu non calibré : ce n'est pas une sélection du moteur.",
+         "Petit échantillon : 4 matchs au même lieu pour l'équipe la moins fournie.",
+         "Écart inhabituel avec le marché : +14,0 points.",
+         "Buts attendus extrêmes : 4,11 buts au total.",
+         "Résultats irréguliers : dispersion 1,26."
+        ],
+        "blocs": [
+         {
+          "titre": "Données",
+          "lignes": [
+           "Helmond à domicile (4) : 1-1, 1-1, 4-2, 3-1 → marque 2,25, encaisse 1,25 par match.",
+           "Heracles à l'extérieur (4) : 4-3, 6-1, 3-1, 0-1 → marque 3,25, encaisse 1,50 par match."
+          ]
+         },
+         {
+          "titre": "Buts attendus",
+          "lignes": [
+           "Lissage vers 1,35 but : (n × moyenne + 4 × 1,35) / (n + 4).",
+           "Helmond : attaque 2,25 → 1,80 ; défense Heracles 1,50 → 1,43 ; 1,80 × 1,43 / 1,35 = 1,90 buts.",
+           "Heracles : attaque 3,25 → 2,30 ; défense Helmond 1,25 → 1,30 ; 2,30 × 1,30 / 1,35 = 2,21 buts."
+          ]
+         },
+         {
+          "titre": "Probabilité",
+          "lignes": [
+           "Les deux équipes marquent : 75,8 % (non calibrée).",
+           "Probabilité que chaque équipe marque au moins un but.",
+           "Scores les plus probables : 1-2 (7,6 %), 2-2 (7,2 %)."
+          ]
+         },
+         {
+          "titre": "Face à la cote",
+          "lignes": [
+           "Cote 1,62 → 61,7 % selon le bookmaker ; écart +14,0 points.",
+           "Marge = 1,62 × 0,140 = +22,7 % (seuil 5 % à cette probabilité)."
+          ]
+         },
+         {
+          "titre": "Contrôles",
+          "lignes": [
+           "Cote dans la fenêtre 1,26 – 1,74 : oui.",
+           "Dispersion des buts : 1,26 (acceptée car probabilité ≥ 67 %).",
+           "Double contrôle « BTTS - oui » passé : marquent chacun à son lieu : 100% / 75% ; encaissent chacun à son lieu : 100% / 100% ; les deux marquent, chacun à son lieu : 100% / 75% ; buts attendus de chaque côté (moyennes simples) : 1,88 / 2,25 ; marquent sur les 6 derniers : 5 / 5 ; encaissent sur les 6 derniers : 6 / 4 ; marquent sur les 3 derniers au même lieu : 3 / 2.",
+           "4 matchs au même lieu : contrôle renforcé passé (probabilité ≥ 67 % et marge ≥ 7 %).",
+           "Calibration : pas encore prête (aperçu)."
+          ]
+         },
+         {
+          "titre": "Pourquoi ce marché",
+          "lignes": [
+           "Un seul pari par famille (les deux marquent) : celui-ci est le plus probable des paris valides.",
+           "Handicap 3 choix Domicile −1 (1) : Domicile gagne par 2 buts ou plus (15,48, 17,7 %, marge +174,5 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert.",
+           "Score exact 3-1 (54,00, 4,1 %, marge +123,3 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert.",
+           "Plus de 5,5 buts (6,48, 23,3 %, marge +51,0 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert."
+          ]
+         }
+        ]
+       },
+       "donnees_suffisantes": true,
+       "bibliotheque": {
+        "ev_percentage": 22.7
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "match_id": "1x99tmsm4qc8nmrv7ktoqr0no",
+   "date": "2026-10-02",
+   "heure_cameroun": "23:15",
+   "competition": "Argentine : Copa de la Liga Profesional 2e Tour",
+   "domicile": "Independiente",
+   "exterieur": "Instituto",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
     "moteur": "moteur_v3",
     "statut_global": "EXPÉRIMENTAL — NON VALIDÉ",
     "apercu_non_calibre": false,
