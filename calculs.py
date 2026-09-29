@@ -445,7 +445,7 @@ def decision_go_nogo(liste_a, liste_b, nb_marches_evalues,
 
     lambda_home / lambda_away : (06/09/2026 -- Groupe 3, correction #3)
     filet de sécurité EXPLICITE, pas un clamp silencieux dans calcule_lambda
-    -- si lambda (même après shrinkage, voir K_SHRINKAGE_LAMBDA) sort de
+    -- si lambda (même après shrinkage, voir ancien coefficient supprimé) sort de
     [LAMBDA_MIN_PLAUSIBLE, LAMBDA_MAX_PLAUSIBLE], NO_GO avec motif clair
     plutôt que d'utiliser une valeur dont plus personne ne peut dire si
     elle a un sens. None = information non fournie -> ignoré (identique
@@ -506,7 +506,7 @@ def calcule_lambda(gf_home_domicile, ga_home_domicile, gf_away_exterieur, ga_awa
         -- Groupe 3, correction #3) taille de l'échantillon domicile/
         extérieur derrière gf_home_domicile/gf_away_exterieur. Utilisée pour
         un shrinkage empirique bayésien vers ga_reference (voir
-        K_SHRINKAGE_LAMBDA) -- None -> aucun shrinkage appliqué, comportement
+        ancien shrinkage supprimé_LAMBDA) -- None -> aucun shrinkage appliqué, comportement
         identique à avant pour tout appelant qui ne les fournit pas.
     """
     ga_reference = get_ga_reference(pays, competition)
