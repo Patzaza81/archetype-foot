@@ -105,8 +105,8 @@ from cache_h2h import recupere_h2h_avec_cache, purge_entrees_expirees as purge_h
 from cache_betpawa import purge_matchs_joues as purge_betpawa_matchs_joues
 from resolution_betpawa_precalcul import resout_cotes_betpawa
 from scraper_details import recupere_details_match as _recupere_details_match_reelle
-from archetype_model.learning import archive as archetype_archive
-from archetype_model.h2h import h2h_stats as archetype_h2h_stats
+import archive as archetype_archive
+import h2h as archetype_h2h_stats
 
 _recupere_gf_ga_reelle = run_pipeline.recupere_gf_ga_avec_repli
 
