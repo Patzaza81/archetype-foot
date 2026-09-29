@@ -24,8 +24,8 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 
-from archetype_model.data import loader as _loader
-from archetype_model.data.validation import N_MAX_FENETRE
+import data_saison_loader as _loader
+from data_saison_validation import N_MAX_FENETRE
 
 FICHIER_CACHE_SAISON = "cache_equipes_saison.json"      # distinct de cache_equipes.json (données à repli, ancien format)
 SOURCE = "saison_en_cours_seule"
