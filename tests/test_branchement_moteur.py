@@ -19,8 +19,8 @@ import pytest
 import branchement_moteur as bm
 import moteur_v2_6_9 as moteur
 import pont_moteur
-from archetype_model.learning import archive
-from archetype_model.learning.reglement import evaluer_marche
+import archive
+from reglement import evaluer_marche
 
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 NOW = datetime.datetime(2026, 9, 21, 21, 0, tzinfo=datetime.timezone.utc)
