@@ -37,7 +37,7 @@ import sys
 import unicodedata
 from typing import Any, Dict, List, Optional, Tuple
 
-from archetype_model.learning.reglement import evaluer_marche
+from reglement import evaluer_marche
 
 SEUIL_CORRESPONDANCE = 0.85          # les DEUX équipes doivent atteindre ce score
 MARGE_AMBIGUITE = 0.03               # deux matchs à moins de 0,03 l'un de l'autre : ligne rejetée
