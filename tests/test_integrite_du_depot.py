@@ -21,11 +21,12 @@ def test_tout_fichier_python_compile(chemin, tmp_path):
 
 def test_chaque_script_du_workflow_est_importable():
     sys.path.insert(0, RACINE)
-    with open(os.path.join(RACINE, ".github", "workflows", "pipeline.yml"), encoding="utf-8") as f:
-        # On relève les commandes Python actives du workflow, qu'elles soient
-        # sur la même ligne que "run:" ou dans un bloc "run: |".
-        # Les lignes YAML commentées ne doivent jamais être considérées.
-        lignes_actives = [l for l in f.read().splitlines() if not l.lstrip().startswith("#")]
+    contenus = []
+    for nom_workflow in ("pipeline.yml", "journal.yml"):
+        with open(os.path.join(RACINE, ".github", "workflows", nom_workflow), encoding="utf-8") as f:
+            # Les lignes YAML commentées ne doivent jamais être considérées.
+            contenus.extend(l for l in f.read().splitlines() if not l.lstrip().startswith("#"))
+    lignes_actives = contenus
     scripts = sorted(set(
         re.findall(r"^\s*(?:run:\s*)?python\s+([A-Za-z_]\w*)\.py(?:\s+.*)?$", "\n".join(lignes_actives), re.M)
     ))
