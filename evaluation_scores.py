@@ -22,7 +22,7 @@ import os
 import sys
 from typing import Any, Callable, Dict, List, Optional
 
-from archetype_model.learning.resultats import _parse_score, _trouve_score
+from resultats import _parse_score, _trouve_score
 from run_pipeline import aujourdhui_france
 from scraper import fetch_html, parse_matches, url_resultat_foot
 
