@@ -872,6 +872,19 @@ def _slim_pour_archive(s):
         )
     return d
 
+def _leger_pour_site(s):
+    """Version allégée destinée au site : retire marches/lambda et conserve
+    uniquement le bloc canonique du moteur_v2_6_9 sous sa forme légère."""
+    d = dict(s)
+    d.pop("marches", None)
+    d.pop("lambda", None)
+    if isinstance(d.get(branchement_moteur.CLE_BLOC), dict):
+        d[branchement_moteur.CLE_BLOC] = branchement_moteur.bloc_leger(
+            d[branchement_moteur.CLE_BLOC]
+        )
+    return d
+
+
 def archive_precalcul(signaux, dates_a_archiver):
     """AJOUT 03/09/2026 (3e partie) -- accepte désormais un ENSEMBLE de
     dates (aujourd'hui + J+1), pas une seule date : voir docstring en tête
