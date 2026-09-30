@@ -205,6 +205,8 @@ def _v3_retrospective() -> dict[str, Any]:
     scores = _charge_scores_archive()
     total = wins = losses = pushes = 0
     mises = gains = 0.0
+    seen: set[tuple[str, str]] = set()
+    aujourd_hui = datetime.date.today().isoformat()
     par_marche: dict[str, dict[str, Any]] = {}
     par_date: dict[str, dict[str, Any]] = {}
     for path in sorted(DOSSIER_JOURNAL_V3.glob("*.json")):
@@ -215,6 +217,8 @@ def _v3_retrospective() -> dict[str, Any]:
             if not isinstance(match, dict):
                 continue
             mid = str(match.get("match_id") or "")
+            if str(match.get("date") or path.stem) > aujourd_hui:
+                continue
             score = scores.get(mid)
             if score is None:
                 continue
@@ -223,6 +227,10 @@ def _v3_retrospective() -> dict[str, Any]:
                 cote = _f(apercu.get("cote"))
                 if not marche or cote is None:
                     continue
+                cle = (mid, str(marche))
+                if cle in seen:
+                    continue
+                seen.add(cle)
                 resultat = _resultat_marche(marche, score)
                 if resultat is None:
                     continue
