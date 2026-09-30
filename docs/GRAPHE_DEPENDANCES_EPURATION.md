@@ -216,3 +216,5 @@ L'exécution de ce plan a été réalisée sur la branche `refactor/epuration-sy
 La branche reste en revue : la suite `pytest` doit être exécutée par CI avant toute fusion dans `main`.
 
 <!-- CI validation marker: code fixes validated after legacy cleanup. -->
+
+<!-- CI validation: restore Dixon-Coles constant. -->
