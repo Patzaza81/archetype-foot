@@ -251,16 +251,12 @@ ALIAS_PAYS = {
 BORNE_MIN_DEFENSE = 0.55
 BORNE_MAX_DEFENSE = 1.60
 
-# K_SHRINKAGE -- RÉGRESSION CORRIGÉE (04/09/2026 soir) : ce fichier avait
-# K_SHRINKAGE=1.0 (aucune correction) ET ajuste_probabilite() qui renvoyait p
 # inchangée -- la fonction existait mais n'était appelée nulle part dans le
-# pipeline, donc le shrinkage n'avait AUCUN effet réel quelle que soit sa
 # valeur. Régression confirmée accidentelle par Patrick.
 #
 # Valeur retenue (0.48) et seuil associé (0.02 ci-dessous) : PAS le calibrage
 # théorique poolé (k=0.254, voir historique de session) -- ce dernier,
 # combiné à FOURCHETTE_COTE_MAX=1.69, rend TOUT pari mathématiquement
-# impossible (même p=1.0 après ce shrinkage ne peut jamais atteindre l'EV
 # minimal à ces cotes -- vérifié par calcul, 0/125 candidats historiques
 # passeraient). k=0.48/seuil=0.02 est le réglage qui maximise le taux de
 # réussite réel sur les 63 paris (probabilité+cote réelle+résultat) qui
@@ -277,37 +273,28 @@ BORNE_MAX_DEFENSE = 1.60
 # rapidement -- recalculer cette valeur dès que l'échantillon dépasse une
 # quinzaine de paris par palier de k testé (voir calcule_roi.py, qui refait
 # cette recherche de grille automatiquement chaque nuit).
-K_SHRINKAGE = 0.48
 
 def ajuste_probabilite(p):
-    """Resserre la probabilité modèle vers 0.5 d'un facteur K_SHRINKAGE,
     pour corriger la surconfiance mesurée du modèle (voir historique de
     session -- écart constant d'environ 23 points entre le taux de
     réussite réel et la probabilité annoncée, sur deux échantillons
     indépendants). Appelée par calcule_ev() et kelly_stake() -- avant le
     04/09/2026, cette fonction existait mais n'était appelée nulle part,
-    rendant K_SHRINKAGE totalement sans effet quelle que soit sa valeur."""
-    return 0.5 + K_SHRINKAGE * (p - 0.5)
 
 
-# K_SHRINKAGE_LAMBDA -- AJOUT 06/09/2026 (Groupe 3, correction #3).
-# INDÉPENDANT de K_SHRINKAGE ci-dessus, à ne jamais confondre ni fusionner :
 # celui-ci agit AVANT Poisson, sur la moyenne brute de buts marqués
 # (gf_home_domicile/gf_away_exterieur) qui sert de base à lambda --
-# K_SHRINKAGE agit APRÈS Poisson, sur la probabilité finale d'un marché.
 #
 # Un échantillon à la limite du veto (n=8-9, CONFIANCE_LAMBDA_SEUILS
 # ["FAIBLE"]) peut refléter un résultat exceptionnel plutôt qu'un vrai
 # niveau (cas réel Module A : Vaduz II, n=1, un seul match 8-0, lambda=12.8
 # -- déjà neutralisé par le veto d'échantillon, mais le mécanisme lui-même
-# restait sans aucun garde-fou pour un cas futur à n=8-9). Shrinkage
 # empirique bayésien vers la référence de ligue (réutilise get_ga_reference
 # -- dans une ligue équilibrée, GF moyen = GA moyen sur l'ensemble des
 # équipes, donc une référence déjà calibrée sert aussi de cible pour
 # l'attaque) :
 #     lambda_base_shrunk = (n * lambda_base_brut + k * reference) / (n + k)
 # S'estompe automatiquement quand l'échantillon grossit (n grand ->
-# shrinkage négligeable) -- délibérément PAS un plafond dur, qui écraserait
 # un vrai écart de niveau : cas réel vérifié Module C, Celtic FC féminin,
 # n=10, gf_exterieur=2.9 sur 10 matchs cohérents (7,4,4,3,2,2,2,2,2,1 buts)
 # -- ce n'est pas du bruit, un clamp aurait dégradé le modèle au lieu de le
@@ -316,13 +303,10 @@ def ajuste_probabilite(p):
 # k=3 PROVISOIRE, choisi délibérément faible pour ne pas dénaturer un signal
 # comme Celtic (n=8 -> 27% de poids référence, n=10 -> 23%, n=20 -> 13%) --
 # À RECALIBRER SUR DONNÉES RÉELLES une fois le Groupe 4 (calibrage) en état
-# de le faire, exactement comme K_SHRINKAGE (0.48) l'a été. Ne pas
 # considérer cette valeur comme définitive.
-K_SHRINKAGE_LAMBDA = 3
 
 # LAMBDA_MIN_PLAUSIBLE / LAMBDA_MAX_PLAUSIBLE -- filet de sécurité EXPLICITE
 # (motif NO_GO visible dans decision_go_nogo), PAS un clamp silencieux : si
-# lambda dépasse ces bornes même après shrinkage, plus personne ne peut dire
 # si la valeur a un sens -- on refuse le pari plutôt que d'en inventer un.
 # Bornes volontairement larges pour ne pas rejeter à tort un vrai écart de
 # niveau (le cas Celtic ci-dessus, lambda=5.13, doit rester sous le plafond).
@@ -343,7 +327,6 @@ RHO_DIXON_COLES = -0.1
 
 # SEUIL_EV_MIN -- RÉGRESSION CORRIGÉE (04/09/2026 soir) : était retombé à
 # 0.05 (ancienne valeur Module 3 v6.3). Valeur retenue ici (0.02) fait
-# partie du même réglage empirique que K_SHRINKAGE ci-dessus (voir son
 # commentaire) -- les deux ont été recherchés ensemble sur la grille
 # (k, seuil_ev), pas indépendamment. Ne pas changer l'un sans l'autre sans
 # refaire le calcul.
@@ -544,7 +527,6 @@ def decision_go_nogo(liste_a, liste_b, nb_marches_evalues,
 
     lambda_home / lambda_away : (06/09/2026 -- Groupe 3, correction #3)
     filet de sécurité EXPLICITE, pas un clamp silencieux dans calcule_lambda
-    -- si lambda (même après shrinkage, voir K_SHRINKAGE_LAMBDA) sort de
     [LAMBDA_MIN_PLAUSIBLE, LAMBDA_MAX_PLAUSIBLE], NO_GO avec motif clair
     plutôt que d'utiliser une valeur dont plus personne ne peut dire si
     elle a un sens. None = information non fournie -> ignoré (identique
@@ -604,8 +586,6 @@ def calcule_lambda(gf_home_domicile, ga_home_domicile, gf_away_exterieur, ga_awa
     nb_matchs_domicile_utilises / nb_matchs_exterieur_utilises : (06/09/2026
         -- Groupe 3, correction #3) taille de l'échantillon domicile/
         extérieur derrière gf_home_domicile/gf_away_exterieur. Utilisée pour
-        un shrinkage empirique bayésien vers ga_reference (voir
-        K_SHRINKAGE_LAMBDA) -- None -> aucun shrinkage appliqué, comportement
         identique à avant pour tout appelant qui ne les fournit pas.
     """
     ga_reference = get_ga_reference(pays, competition)
@@ -629,7 +609,6 @@ def calcule_lambda(gf_home_domicile, ga_home_domicile, gf_away_exterieur, ga_awa
     def shrink_vers_reference(valeur_brute, n):
         if n is None:
             return valeur_brute
-        return (n * valeur_brute + K_SHRINKAGE_LAMBDA * ga_reference) / (n + K_SHRINKAGE_LAMBDA)
 
     lambda_home_base_brut = gf_home_domicile
     lambda_away_base_brut = gf_away_exterieur
@@ -843,7 +822,6 @@ def calcule_ev(probabilite_modele, cote_observee):
     CORRECTIF (04/09/2026 soir) : applique désormais ajuste_probabilite()
     en interne avant le calcul. Avant ce correctif, cette fonction utilisait
     la probabilité brute du modèle -- ajuste_probabilite() existait dans ce
-    même fichier mais n'était appelée nulle part, rendant K_SHRINKAGE sans
     aucun effet réel. probabilite_modele reçu ici reste la valeur BRUTE
     (celle affichée telle quelle ailleurs, ex. LISTE_A/LISTE_B) -- c'est ce
     point d'entrée qui resserre, pas l'appelant.
@@ -859,8 +837,6 @@ def kelly_stake(probabilite_modele, cote_observee):
     CORRECTIF (04/09/2026 soir) : la probabilité utilisée pour la mise
     Kelly elle-même est maintenant celle resserrée par ajuste_probabilite()
     -- avant ce correctif, le commentaire ici affirmait explicitement
-    l'inverse ("exactement celle du modèle, sans shrinkage"), ce qui était
-    de toute façon cohérent avec le reste du fichier à l'époque (shrinkage
     non branché), mais aurait été une incohérence dangereuse si seul
     calcule_ev() avait été corrigé sans toucher ce calcul : le filtre EV
     aurait jugé le pari sur la probabilité honnête, puis la mise aurait été
