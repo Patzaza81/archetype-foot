@@ -374,7 +374,11 @@ def test_l_ancien_modele_n_est_plus_appele_par_main():
     assert "applique_archetype_model(" not in source
     assert "archetype_model.main" not in source
     assert '"archetype_model"' not in source
-    assert importlib.util.find_spec("archetype_model.main") is None
+    try:
+        spec = importlib.util.find_spec("archetype_model.main")
+    except ModuleNotFoundError:
+        spec = None
+    assert spec is None
 
 # ═════════════ 10. REPRODUCTIBILITÉ : le fichier exporté rejoue le même calcul ═════════════
 def test_le_fichier_exporte_rejoue_exactement_le_meme_calcul(tmp_path):
