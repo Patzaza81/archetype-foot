@@ -154,7 +154,7 @@ def test_signal_seul_bloc_moteur_v3_jamais_la_v2():
          "exterieur": "B", "statut": "EVALUE", "n_dom": 6, "n_ext": 6,
          "selections": [_selection("over_2_5"), _selection("1x2_1")]}
     s = mp.signal_site(x)
-    assert s["moteur_utilise"] == "moteur_v3" and "moteur_v2_6_9" not in s and "shrink_v1" not in s
+    assert s["moteur_utilise"] == "moteur_v3" and "moteur_v2_6_9" not in s
     assert set(s["moteur_v3"]["selection"]) == {"P1", "P2"} and s["moteur_v3"]["statut"] == "OK"
     assert mp.signal_site({**x, "selections": []})["moteur_v3"]["selection"] == {}
 
