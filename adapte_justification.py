@@ -10,7 +10,7 @@ marché que le reste du système :
 
 - Pour les marchés SYMÉTRIQUES (le résultat ne dépend pas de qui est
   domicile/extérieur : Plus/Moins de X buts, BTTS, Pair/Impair, Nombre
-  exact de buts) -- réutilise calcule_roi.verifie_pari() TEL QUEL, pour ne
+  exact de buts) -- utilise la même définition de marché que le calcul moteur() TEL QUEL, pour ne
   jamais avoir deux définitions différentes du même marché dans le dépôt
   (une pour le calcul du pari, une pour sa justification). Vérifié :
   toutes les règles symétriques ci-dessus donnent le même résultat qu'on
@@ -36,7 +36,7 @@ jamais présenté comme une "série récente".
 
 from typing import List, Optional
 
-import calcule_roi
+import re
 from moteur_justification import (
     PreuveStatistique,
     TYPE_FREQUENCE_MARCHE,
@@ -50,6 +50,32 @@ from moteur_justification import (
 )
 
 MARCHES_SYMETRIQUES = {"OVER_UNDER_MATCH", "BTTS", "PAIR_IMPAIR", "NOMBRE_EXACT_BUTS"}
+
+_REGLES_FREQUENCE = [
+    (r"^1X2 - 1$", lambda x, y: x > y),
+    (r"^1X2 - X$", lambda x, y: x == y),
+    (r"^1X2 - 2$", lambda x, y: x < y),
+    (r"^Double chance - 1X$", lambda x, y: x >= y),
+    (r"^Double chance - 12$", lambda x, y: x != y),
+    (r"^Double chance - X2$", lambda x, y: x <= y),
+    (r"^BTTS - oui$", lambda x, y: x > 0 and y > 0),
+    (r"^BTTS - non$", lambda x, y: x == 0 or y == 0),
+    (r"^Plus de (\\d+(?:\\.\\d+)?) buts$", lambda x, y, l: (x + y) > float(l)),
+    (r"^Moins de (\\d+(?:\\.\\d+)?) buts$", lambda x, y, l: (x + y) < float(l)),
+    (r"^Total buts - pair$", lambda x, y: (x + y) % 2 == 0),
+    (r"^Total buts - impair$", lambda x, y: (x + y) % 2 == 1),
+    (r"^Nombre exact de buts 6\\+$", lambda x, y: (x + y) >= 6),
+    (r"^Nombre exact de buts (\\d+)$", lambda x, y, n: (x + y) == int(n)),
+]
+_REGLES_FREQUENCE_COMPILEES = [(re.compile(motif), fn) for motif, fn in _REGLES_FREQUENCE]
+
+def _verifie_pari_frequence(marche, buts_domicile, buts_exterieur):
+    for motif, fn in _REGLES_FREQUENCE_COMPILEES:
+        m = motif.match(marche or "")
+        if m:
+            return fn(buts_domicile, buts_exterieur, *m.groups())
+    return None
+
 
 # AJOUT 06/09/2026 (bug #41) -- même liste de marqueurs que calculs.py/
 # resolution_betpawa.py/scraper_betpawa.py (copie locale, choix
@@ -96,14 +122,14 @@ def _marche_sans_suffixe_cote(marche: str) -> str:
 
 def _frequence_sur_matchs(marche: str, matchs: List[dict]) -> Optional[tuple]:
     """Compte, sur une liste de matchs bruts {buts_marques, buts_encaisses},
-    combien vérifient réellement `marche` (réutilise calcule_roi.verifie_pari).
+    combien vérifient réellement `marche` (utilise la même définition de marché que le calcul moteur).
     Renvoie (occurrences, total) ou None si le marché n'est pas reconnu ou
     la liste est vide -- jamais un pourcentage inventé sur 0 match."""
     if not matchs:
         return None
     occurrences, total = 0, 0
     for m in matchs:
-        resultat = calcule_roi.verifie_pari(marche, m["buts_marques"], m["buts_encaisses"])
+        resultat = _verifie_pari_frequence(marche, m["buts_marques"], m["buts_encaisses"])
         if resultat is None:
             continue
         total += 1
