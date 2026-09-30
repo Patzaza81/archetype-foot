@@ -30,15 +30,16 @@ function moteurCarte(m, couleur) {
     ? `${num(c.observations)} / ${num(c.minimum_observations)} obs. · ${num(c.matchs)} / ${num(c.minimum_matchs)} matchs`
     : "Production active";
   const progress = v3 ? Math.min(100, (Number(c.observations||0)/Math.max(1,Number(c.minimum_observations||1)))*100) : 100;
+  const retro = m.retrospective || {};
   return `
     <article class="moteur-card ${couleur}">
       <div class="moteur-head"><div><span class="sur-titre">${v3 ? "MOTEUR EXPÉRIMENTAL" : "MOTEUR DE PRODUCTION"}</span><h2>${esc(m.nom)}</h2></div>
       <span class="pill ${v3 ? "pill-v3" : "pill-ok"}">${v3 ? "NON VALIDÉ" : "ACTIF"}</span></div>
-      <p class="moteur-note">${v3 ? "Suivi séparé : les aperçus non calibrés ne sont jamais présentés comme des performances réalisées." : "Référence de production. Les résultats sont suivis sur les paris effectivement réglés."}</p>
+      <p class="moteur-note">${v3 ? "Rétroactivité séparée : les aperçus réellement affichés sont réglés sur les scores archivés. Ils restent non calibrés et ne sont pas des sélections validées." : "Référence de production. Les résultats sont suivis sur les paris effectivement réglés."}</p>
       <div class="stats-hero">
         <div><b>${num(g.observations ?? g.matchs)}</b><small>${v3 ? "matchs suivis" : "paris réglés"}</small></div>
-        <div><b>${num(g.gagnes ?? g.selections ?? 0)}</b><small>${v3 ? "sélections" : "gagnés"}</small></div>
-        <div><b class="${roiClass(g.roi)}">${v3 ? "—" : pct(g.roi)}</b><small>${v3 ? "ROI validé" : "ROI flat"}</small></div>
+        <div><b>${num(v3 ? (retro.observations ?? 0) : (g.gagnes ?? 0))}</b><small>${v3 ? "aperçus réglés" : "gagnés"}</small></div>
+        <div><b class="${roiClass(v3 ? retro.roi_theorique : g.roi)}">${v3 ? pct(retro.roi_theorique) : pct(g.roi)}</b><small>${v3 ? "ROI théorique des aperçus" : "ROI flat"}</small></div>
       </div>
       <div class="progress-label"><span>${v3 ? "Progression calibration" : "État du moteur"}</span><strong>${v3 ? Math.round(progress)+" %" : "100 %"}</strong></div>
       ${bar(progress)}
@@ -85,6 +86,27 @@ function blocV3(m) {
   </section>`;
 }
 
+function blocV3Retro(m) {
+  const r = m.retrospective || {};
+  const rows = (r.par_marche || []).map(x => \`
+    <tr data-marche="${esc(x.marche).toLowerCase()}">
+      <td><strong>${esc(x.marche)}</strong></td><td>${num(x.observations)}</td><td>${num(x.gagnes)}</td><td>${num(x.perdus)}</td>
+      <td>${pct(x.taux_reussite)}</td><td class="${roiClass(x.roi)}">${pct(x.roi)}</td><td>${x.gain_net == null ? "—" : x.gain_net.toFixed(2).replace(".",",")}</td>
+    </tr>\`).join("");
+  const dates = (r.par_date || []).map(x => \`<tr><td><strong>${esc(x.date)}</strong></td><td>${num(x.observations)}</td><td>${num(x.gagnes)}</td><td>${num(x.perdus)}</td><td class="${roiClass(x.roi)}">${pct(x.roi)}</td></tr>\`).join("");
+  return \`<section class="section-card"><div class="section-title"><div><span class="sur-titre">RÉTROSPECTIVE · V3</span><h2>Ce que V3 a réellement pronostiqué</h2></div><span class="source-tag v3">Aperçus réglés</span></div>
+  <p class="section-sub">${esc(r.methode || "")}</p>
+  <div class="v3-summary">
+    <div><span>Aperçus réglés</span><b>${num(r.observations)}</b></div>
+    <div><span>Gagnés</span><b>${num(r.gagnes)}</b></div>
+    <div><span>Perdus</span><b>${num(r.perdus)}</b></div>
+    <div><span>Taux de réussite</span><b>${pct(r.taux_reussite)}</b></div>
+  </div>
+  <div class="table-wrap"><table class="market-table"><thead><tr><th>Marché</th><th>Obs.</th><th>Gagnés</th><th>Perdus</th><th>Réussite</th><th>ROI théorique</th><th>Net</th></tr></thead><tbody>${rows || '<tr><td colspan="7">Aucun aperçu réglé.</td></tr>'}</tbody></table></div>
+  <details class="details-control"><summary>Évolution par date</summary><div class="table-wrap"><table class="market-table"><thead><tr><th>Date</th><th>Obs.</th><th>Gagnés</th><th>Perdus</th><th>ROI</th></tr></thead><tbody>${dates || '<tr><td colspan="5">Aucune donnée.</td></tr>'}</tbody></table></div></details>
+  </section>\`;
+}
+
 function blocEvolution(m) {
   const hist = m.evolution || [];
   const rows = hist.map(x=>`<tr><td><strong>${esc(x.date)}</strong></td><td>${num(x.matchs)}</td><td>${num(x.evalues)}</td><td>${num(x.apercus)}</td><td>${num(x.selections)}</td></tr>`).join("");
@@ -99,7 +121,7 @@ function afficher(etat) {
   $("maj-systeme").textContent = etat.genere_le ? `État consolidé · ${new Date(etat.genere_le).toLocaleString("fr-FR")}` : "";
   $("contenu-systeme").innerHTML =
     moteurCarte(v2,"v2") + moteurCarte(v3,"v3") +
-    blocV2(v2) + blocV3(v3) + blocEvolution(v3) + blocControle();
+    blocV2(v2) + blocV3(v3) + blocV3Retro(v3) + blocEvolution(v3) + blocControle();
   bindSearch("search-v2","rows-v2"); bindSearch("search-v3","rows-v3");
   chargerControles();
 }
