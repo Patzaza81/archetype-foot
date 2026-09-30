@@ -857,29 +857,20 @@ def charge_matchs_fenetre():
 
 
 def _slim_pour_archive(s):
-    """Version pour historique_pronostics.json -- encore plus réduite que
-    la version site (pas besoin de LISTE_A/raison_non_traite pour un
-    match déjà archivé, seulement de quoi calculer un ROI et vérifier).
+    """Version légère pour precalcul_leger.json.
 
-    TOUS_MARCHES_EVALUES est conservé dans l'archive pour l'audit descriptif des marchés évalués.\n    """Version pour precalcul_leger.json -- tout ce que script.js affiche
-    SAUF marches et lambda (les deux champs les plus lourds, utilisés
-    seulement par la section 'tous les marchés calculés'/détail du lambda
-    dans 'voir les détails').
-
-    Le fichier léger reçoit uniquement le bloc canonique du moteur_v2_6_9
-    via branchement_moteur.bloc_leger(); aucun résultat de l'ancien moteur
-    n'est recopié."""
+    Retire les champs lourds marches et lambda tout en conservant
+    le bloc canonique du moteur_v2_6_9. Aucun résultat de l'ancien moteur
+    n'est recopié.
+    """
     d = dict(s)
     d.pop("marches", None)
     d.pop("lambda", None)
-    # AJOUT 21/09/2026 -- bloc du moteur du pipeline (moteur_v2_6_9) : statut + sélection P1/P2/P3 avec justification.
     if isinstance(d.get(branchement_moteur.CLE_BLOC), dict):
-        d[branchement_moteur.CLE_BLOC] = branchement_moteur.bloc_leger(d[branchement_moteur.CLE_BLOC])
-    # Ancien bloc archetype_model supprimé le 21/09/2026 :
-    # le site ne reçoit désormais que le bloc canonique moteur_v2_6_9.
-
+        d[branchement_moteur.CLE_BLOC] = branchement_moteur.bloc_leger(
+            d[branchement_moteur.CLE_BLOC]
+        )
     return d
-
 
 def archive_precalcul(signaux, dates_a_archiver):
     """AJOUT 03/09/2026 (3e partie) -- accepte désormais un ENSEMBLE de
