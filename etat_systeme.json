@@ -1,256 +1,1926 @@
 {
-  "genere_le": "2026-09-29T01:09:50.652289+00:00",
-  "bilan_comportemental": {
-    "global": {
-      "observations": 104,
-      "gagnes": 61,
-      "perdus": 43,
-      "somme_gains_flat_stake": -13.089999999999986,
-      "roi_flat": -0.1258653846153845
-    },
-    "par_famille": {
-      "GOALS_EQUIPE_DOMICILE": {
-        "resume": {
-          "observations": 2,
-          "gagnes": 2,
-          "perdus": 0,
-          "somme_gains_flat_stake": 0.77,
-          "roi_flat": 0.385
-        },
-        "par_niveau": {
-          "PREMIUM": {
-            "observations": 2,
-            "gagnes": 2,
-            "perdus": 0,
-            "somme_gains_flat_stake": 0.77,
-            "roi_flat": 0.385
-          }
-        }
+  "schema": "2.0",
+  "genere_le": "2026-09-30T08:19:21.457Z",
+  "moteurs": {
+    "moteur_v2_6_9": {
+      "nom": "moteur_v2_6_9",
+      "role": "PRODUCTION",
+      "statut": "ACTIF",
+      "global": {
+        "observations": 245,
+        "matchs": 156,
+        "gagnes": 128,
+        "perdus": 117,
+        "rembourses": 0,
+        "roi": -0.1612,
+        "reussite": 0.5224,
+        "cote_moyenne": 1.901,
+        "cote_min": 1.26,
+        "cote_max": 8.11,
+        "ic95": [
+          -0.2834,
+          -0.0341
+        ],
+        "roi_moitie_1": -0.2123,
+        "roi_moitie_2": -0.136
       },
-      "HANDICAP": {
-        "resume": {
-          "observations": 21,
-          "gagnes": 4,
-          "perdus": 17,
-          "somme_gains_flat_stake": -15.389999999999999,
-          "roi_flat": -0.7328571428571428
+      "par_marche": [
+        {
+          "marche": "1X2 - 1",
+          "observations": 1006,
+          "gagnes": 451,
+          "perdus": 555,
+          "roi": -0.0469,
+          "reussite": 0.4483,
+          "cote_moyenne": 2.666,
+          "statut": "NEUTRE"
         },
-        "par_niveau": {
-          "PREMIUM": {
-            "observations": 16,
-            "gagnes": 4,
-            "perdus": 12,
-            "somme_gains_flat_stake": -10.389999999999999,
-            "roi_flat": -0.6493749999999999
-          },
-          "TRES_FORT": {
-            "observations": 4,
-            "gagnes": 0,
-            "perdus": 4,
-            "somme_gains_flat_stake": -4,
-            "roi_flat": -1
-          },
-          "FORT": {
-            "observations": 1,
-            "gagnes": 0,
-            "perdus": 1,
-            "somme_gains_flat_stake": -1,
-            "roi_flat": -1
-          }
-        }
-      },
-      "GOALS_TOTAL": {
-        "resume": {
-          "observations": 42,
+        {
+          "marche": "1X2 - X",
+          "observations": 1006,
+          "gagnes": 244,
+          "perdus": 762,
+          "roi": -0.0919,
+          "reussite": 0.2425,
+          "cote_moyenne": 3.907,
+          "statut": "NEUTRE"
+        },
+        {
+          "marche": "1X2 - 2",
+          "observations": 1006,
+          "gagnes": 311,
+          "perdus": 695,
+          "roi": -0.1473,
+          "reussite": 0.3091,
+          "cote_moyenne": 3.808,
+          "statut": "A_EVITER"
+        },
+        {
+          "marche": "Double chance - 12",
+          "observations": 997,
+          "gagnes": 755,
+          "perdus": 242,
+          "roi": -0.036,
+          "reussite": 0.7573,
+          "cote_moyenne": 1.275,
+          "statut": "A_EVITER"
+        },
+        {
+          "marche": "Double chance - 1X",
+          "observations": 997,
+          "gagnes": 692,
+          "perdus": 305,
+          "roi": -0.0501,
+          "reussite": 0.6941,
+          "cote_moyenne": 1.449,
+          "statut": "A_EVITER"
+        },
+        {
+          "marche": "Double chance - X2",
+          "observations": 997,
+          "gagnes": 547,
+          "perdus": 450,
+          "roi": -0.124,
+          "reussite": 0.5486,
+          "cote_moyenne": 1.758,
+          "statut": "A_EVITER"
+        },
+        {
+          "marche": "Plus de 2.5 buts",
+          "observations": 990,
+          "gagnes": 546,
+          "perdus": 444,
+          "roi": -0.0292,
+          "reussite": 0.5515,
+          "cote_moyenne": 1.802,
+          "statut": "NEUTRE"
+        },
+        {
+          "marche": "Moins de 2.5 buts",
+          "observations": 990,
+          "gagnes": 444,
+          "perdus": 546,
+          "roi": -0.1117,
+          "reussite": 0.4485,
+          "cote_moyenne": 2.06,
+          "statut": "A_EVITER"
+        },
+        {
+          "marche": "BTTS - oui",
+          "observations": 987,
+          "gagnes": 567,
+          "perdus": 420,
+          "roi": -0.0059,
+          "reussite": 0.5745,
+          "cote_moyenne": 1.74,
+          "statut": "NEUTRE"
+        },
+        {
+          "marche": "BTTS - non",
+          "observations": 987,
+          "gagnes": 420,
+          "perdus": 567,
+          "roi": -0.1405,
+          "reussite": 0.4255,
+          "cote_moyenne": 2.044,
+          "statut": "A_EVITER"
+        },
+        {
+          "marche": "Plus de 1.5 buts",
+          "observations": 983,
+          "gagnes": 757,
+          "perdus": 226,
+          "roi": -0.0495,
+          "reussite": 0.7701,
+          "cote_moyenne": 1.242,
+          "statut": "A_EVITER"
+        },
+        {
+          "marche": "Moins de 3.5 buts",
+          "observations": 983,
+          "gagnes": 672,
+          "perdus": 311,
+          "roi": -0.057,
+          "reussite": 0.6836,
+          "cote_moyenne": 1.409,
+          "statut": "A_EVITER"
+        },
+        {
+          "marche": "Plus de 3.5 buts",
+          "observations": 983,
+          "gagnes": 311,
+          "perdus": 672,
+          "roi": -0.117,
+          "reussite": 0.3164,
+          "cote_moyenne": 3.007,
+          "statut": "A_EVITER"
+        },
+        {
+          "marche": "Moins de 1.5 buts",
+          "observations": 983,
+          "gagnes": 226,
+          "perdus": 757,
+          "roi": -0.1336,
+          "reussite": 0.2299,
+          "cote_moyenne": 4.026,
+          "statut": "A_EVITER"
+        },
+        {
+          "marche": "Moins de 4.5 buts",
+          "observations": 961,
+          "gagnes": 808,
+          "perdus": 153,
+          "roi": -0.046,
+          "reussite": 0.8408,
+          "cote_moyenne": 1.143,
+          "statut": "A_EVITER"
+        },
+        {
+          "marche": "Plus de 4.5 buts",
+          "observations": 961,
+          "gagnes": 153,
+          "perdus": 808,
+          "roi": -0.2123,
+          "reussite": 0.1592,
+          "cote_moyenne": 5.611,
+          "statut": "A_EVITER"
+        },
+        {
+          "marche": "Handicap -0.5 - Extérieur",
+          "observations": 931,
+          "gagnes": 511,
+          "perdus": 420,
+          "roi": -0.1062,
+          "reussite": 0.5489,
+          "cote_moyenne": 1.76,
+          "statut": "A_EVITER"
+        },
+        {
+          "marche": "Handicap -0.5 - Domicile",
+          "observations": 923,
+          "gagnes": 421,
+          "perdus": 502,
+          "roi": -0.0668,
+          "reussite": 0.4561,
+          "cote_moyenne": 2.283,
+          "statut": "NEUTRE"
+        },
+        {
+          "marche": "Handicap 0.5 - Domicile",
+          "observations": 878,
+          "gagnes": 588,
+          "perdus": 290,
+          "roi": -0.0659,
+          "reussite": 0.6697,
+          "cote_moyenne": 1.469,
+          "statut": "A_EVITER"
+        },
+        {
+          "marche": "Handicap 0.5 - Extérieur",
+          "observations": 849,
+          "gagnes": 285,
+          "perdus": 564,
+          "roi": -0.1473,
+          "reussite": 0.3357,
+          "cote_moyenne": 2.908,
+          "statut": "A_EVITER"
+        },
+        {
+          "marche": "Handicap -1.5 - Extérieur",
+          "observations": 762,
+          "gagnes": 571,
+          "perdus": 191,
+          "roi": -0.039,
+          "reussite": 0.7493,
+          "cote_moyenne": 1.329,
+          "statut": "NEUTRE"
+        },
+        {
+          "marche": "Handicap -1.5 - Domicile",
+          "observations": 760,
+          "gagnes": 191,
+          "perdus": 569,
+          "roi": -0.2035,
+          "reussite": 0.2513,
+          "cote_moyenne": 3.726,
+          "statut": "A_EVITER"
+        },
+        {
+          "marche": "Plus de 0.5 buts",
+          "observations": 691,
+          "gagnes": 639,
+          "perdus": 52,
+          "roi": -0.0403,
+          "reussite": 0.9247,
+          "cote_moyenne": 1.038,
+          "statut": "A_EVITER"
+        },
+        {
+          "marche": "Moins de 0.5 buts",
+          "observations": 691,
+          "gagnes": 52,
+          "perdus": 639,
+          "roi": -0.3175,
+          "reussite": 0.0753,
+          "cote_moyenne": 9.409,
+          "statut": "A_EVITER"
+        },
+        {
+          "marche": "Moins de 5.5 buts",
+          "observations": 653,
+          "gagnes": 606,
+          "perdus": 47,
+          "roi": -0.0233,
+          "reussite": 0.928,
+          "cote_moyenne": 1.054,
+          "statut": "A_EVITER"
+        },
+        {
+          "marche": "Plus de 5.5 buts",
+          "observations": 653,
+          "gagnes": 47,
+          "perdus": 606,
+          "roi": -0.4572,
+          "reussite": 0.072,
+          "cote_moyenne": 8.772,
+          "statut": "A_EVITER"
+        },
+        {
+          "marche": "Total buts - impair",
+          "observations": 488,
+          "gagnes": 264,
+          "perdus": 224,
+          "roi": 0.0208,
+          "reussite": 0.541,
+          "cote_moyenne": 1.887,
+          "statut": "A_SURVEILLER"
+        },
+        {
+          "marche": "Total buts - pair",
+          "observations": 488,
+          "gagnes": 224,
+          "perdus": 264,
+          "roi": -0.1766,
+          "reussite": 0.459,
+          "cote_moyenne": 1.795,
+          "statut": "A_EVITER"
+        },
+        {
+          "marche": "Handicap 1.5 - Domicile",
+          "observations": 484,
+          "gagnes": 384,
+          "perdus": 100,
+          "roi": -0.0533,
+          "reussite": 0.7934,
+          "cote_moyenne": 1.222,
+          "statut": "A_EVITER"
+        },
+        {
+          "marche": "Handicap 1.5 - Extérieur",
+          "observations": 483,
+          "gagnes": 100,
+          "perdus": 383,
+          "roi": -0.1596,
+          "reussite": 0.207,
+          "cote_moyenne": 4.599,
+          "statut": "NEUTRE"
+        },
+        {
+          "marche": "Handicap -2.5 - Domicile",
+          "observations": 282,
+          "gagnes": 50,
+          "perdus": 232,
+          "roi": -0.1512,
+          "reussite": 0.1773,
+          "cote_moyenne": 5.079,
+          "statut": "NEUTRE"
+        },
+        {
+          "marche": "Handicap -2.5 - Extérieur",
+          "observations": 281,
+          "gagnes": 231,
+          "perdus": 50,
+          "roi": -0.0247,
+          "reussite": 0.8221,
+          "cote_moyenne": 1.197,
+          "statut": "NEUTRE"
+        },
+        {
+          "marche": "Moins de 1.5 buts - Domicile",
+          "observations": 140,
+          "gagnes": 77,
+          "perdus": 63,
+          "roi": -0.0591,
+          "reussite": 0.55,
+          "cote_moyenne": 1.839,
+          "statut": "NEUTRE"
+        },
+        {
+          "marche": "Plus de 1.5 buts - Domicile",
+          "observations": 140,
+          "gagnes": 63,
+          "perdus": 77,
+          "roi": -0.123,
+          "reussite": 0.45,
+          "cote_moyenne": 2.118,
+          "statut": "NEUTRE"
+        },
+        {
+          "marche": "Cage inviolée - Domicile",
+          "observations": 139,
+          "gagnes": 39,
+          "perdus": 100,
+          "roi": -0.1594,
+          "reussite": 0.2806,
+          "cote_moyenne": 3.187,
+          "statut": "NEUTRE"
+        },
+        {
+          "marche": "Moins de 1.5 buts - Extérieur",
+          "observations": 135,
+          "gagnes": 89,
+          "perdus": 46,
+          "roi": -0.0341,
+          "reussite": 0.6593,
+          "cote_moyenne": 1.58,
+          "statut": "NEUTRE"
+        },
+        {
+          "marche": "Plus de 1.5 buts - Extérieur",
+          "observations": 135,
+          "gagnes": 46,
+          "perdus": 89,
+          "roi": -0.1704,
+          "reussite": 0.3407,
+          "cote_moyenne": 2.71,
+          "statut": "NEUTRE"
+        },
+        {
+          "marche": "Plus de 0.5 buts - Domicile",
+          "observations": 134,
+          "gagnes": 104,
+          "perdus": 30,
+          "roi": -0.0657,
+          "reussite": 0.7761,
+          "cote_moyenne": 1.224,
+          "statut": "NEUTRE"
+        },
+        {
+          "marche": "Moins de 0.5 buts - Domicile",
+          "observations": 134,
           "gagnes": 30,
-          "perdus": 12,
-          "somme_gains_flat_stake": 1.8299999999999992,
-          "roi_flat": 0.04357142857142855
+          "perdus": 104,
+          "roi": -0.2233,
+          "reussite": 0.2239,
+          "cote_moyenne": 4.031,
+          "statut": "NEUTRE"
         },
-        "par_niveau": {
-          "PREMIUM": {
-            "observations": 32,
-            "gagnes": 22,
-            "perdus": 10,
-            "somme_gains_flat_stake": -0.8799999999999992,
-            "roi_flat": -0.027499999999999976
-          },
-          "TRES_FORT": {
-            "observations": 2,
-            "gagnes": 2,
-            "perdus": 0,
-            "somme_gains_flat_stake": 1.02,
-            "roi_flat": 0.51
-          },
-          "FORT": {
-            "observations": 6,
-            "gagnes": 5,
-            "perdus": 1,
-            "somme_gains_flat_stake": 2.32,
-            "roi_flat": 0.38666666666666666
-          },
-          "ELIGIBLE": {
-            "observations": 1,
-            "gagnes": 0,
-            "perdus": 1,
-            "somme_gains_flat_stake": -1,
-            "roi_flat": -1
-          },
-          "CAT_A": {
-            "observations": 1,
-            "gagnes": 1,
-            "perdus": 0,
-            "somme_gains_flat_stake": 0.3700000000000001,
-            "roi_flat": 0.3700000000000001
-          }
-        }
-      },
-      "DOUBLE_CHANCE": {
-        "resume": {
-          "observations": 23,
-          "gagnes": 14,
-          "perdus": 9,
-          "somme_gains_flat_stake": -2.559999999999999,
-          "roi_flat": -0.11130434782608692
+        {
+          "marche": "Cage inviolée - Extérieur",
+          "observations": 133,
+          "gagnes": 29,
+          "perdus": 104,
+          "roi": -0.2158,
+          "reussite": 0.218,
+          "cote_moyenne": 4.18,
+          "statut": "NEUTRE"
         },
-        "par_niveau": {
-          "PREMIUM": {
-            "observations": 15,
-            "gagnes": 11,
-            "perdus": 4,
-            "somme_gains_flat_stake": 0.6599999999999993,
-            "roi_flat": 0.04399999999999995
-          },
-          "TRES_FORT": {
-            "observations": 5,
-            "gagnes": 1,
-            "perdus": 4,
-            "somme_gains_flat_stake": -3.4,
-            "roi_flat": -0.6799999999999999
-          },
-          "ELIGIBLE": {
-            "observations": 1,
-            "gagnes": 1,
-            "perdus": 0,
-            "somme_gains_flat_stake": 0.7,
-            "roi_flat": 0.7
-          },
-          "FORT": {
-            "observations": 1,
-            "gagnes": 0,
-            "perdus": 1,
-            "somme_gains_flat_stake": -1,
-            "roi_flat": -1
-          },
-          "CAT_A": {
-            "observations": 1,
-            "gagnes": 1,
-            "perdus": 0,
-            "somme_gains_flat_stake": 0.48,
-            "roi_flat": 0.48
-          }
-        }
-      },
-      "CLEAN_SHEET_DOMICILE": {
-        "resume": {
-          "observations": 2,
+        {
+          "marche": "Plus de 0.5 buts - Extérieur",
+          "observations": 131,
+          "gagnes": 95,
+          "perdus": 36,
+          "roi": -0.0466,
+          "reussite": 0.7252,
+          "cote_moyenne": 1.347,
+          "statut": "NEUTRE"
+        },
+        {
+          "marche": "Moins de 0.5 buts - Extérieur",
+          "observations": 131,
+          "gagnes": 36,
+          "perdus": 95,
+          "roi": -0.2408,
+          "reussite": 0.2748,
+          "cote_moyenne": 3.299,
+          "statut": "A_EVITER"
+        },
+        {
+          "marche": "Handicap 2.5 - Domicile",
+          "observations": 85,
+          "gagnes": 65,
+          "perdus": 20,
+          "roi": -0.1016,
+          "reussite": 0.7647,
+          "cote_moyenne": 1.182,
+          "statut": "NEUTRE"
+        },
+        {
+          "marche": "Handicap 2.5 - Extérieur",
+          "observations": 83,
+          "gagnes": 20,
+          "perdus": 63,
+          "roi": 0.1457,
+          "reussite": 0.241,
+          "cote_moyenne": 5.097,
+          "statut": "NEUTRE"
+        },
+        {
+          "marche": "Moins de 2.5 buts - Domicile",
+          "observations": 70,
+          "gagnes": 59,
+          "perdus": 11,
+          "roi": 0.0169,
+          "reussite": 0.8429,
+          "cote_moyenne": 1.262,
+          "statut": "NEUTRE"
+        },
+        {
+          "marche": "Plus de 2.5 buts - Domicile",
+          "observations": 70,
+          "gagnes": 11,
+          "perdus": 59,
+          "roi": -0.4307,
+          "reussite": 0.1571,
+          "cote_moyenne": 4.418,
+          "statut": "A_EVITER"
+        },
+        {
+          "marche": "Encaisse au moins 1 but - Domicile",
+          "observations": 68,
+          "gagnes": 49,
+          "perdus": 19,
+          "roi": -0.0171,
+          "reussite": 0.7206,
+          "cote_moyenne": 1.368,
+          "statut": "NEUTRE"
+        },
+        {
+          "marche": "Encaisse au moins 1 but - Extérieur",
+          "observations": 61,
+          "gagnes": 44,
+          "perdus": 17,
+          "roi": -0.1034,
+          "reussite": 0.7213,
+          "cote_moyenne": 1.26,
+          "statut": "NEUTRE"
+        },
+        {
+          "marche": "Plus de 2.5 buts - Extérieur",
+          "observations": 54,
+          "gagnes": 11,
+          "perdus": 43,
+          "roi": -0.0613,
+          "reussite": 0.2037,
+          "cote_moyenne": 5.587,
+          "statut": "NEUTRE"
+        },
+        {
+          "marche": "Moins de 2.5 buts - Extérieur",
+          "observations": 54,
+          "gagnes": 43,
+          "perdus": 11,
+          "roi": -0.0724,
+          "reussite": 0.7963,
+          "cote_moyenne": 1.179,
+          "statut": "NEUTRE"
+        },
+        {
+          "marche": "Moins de 3.5 buts - Domicile",
+          "observations": 26,
+          "gagnes": 24,
+          "perdus": 2,
+          "roi": -0.0062,
+          "reussite": 0.9231,
+          "cote_moyenne": 1.14,
+          "statut": "NEUTRE"
+        },
+        {
+          "marche": "Plus de 3.5 buts - Domicile",
+          "observations": 26,
           "gagnes": 2,
-          "perdus": 0,
-          "somme_gains_flat_stake": 0.9100000000000001,
-          "roi_flat": 0.45500000000000007
+          "perdus": 24,
+          "roi": -0.8542,
+          "reussite": 0.0769,
+          "cote_moyenne": 6.5,
+          "statut": "A_EVITER"
         },
-        "par_niveau": {
-          "PREMIUM": {
-            "observations": 2,
-            "gagnes": 2,
-            "perdus": 0,
-            "somme_gains_flat_stake": 0.9100000000000001,
-            "roi_flat": 0.45500000000000007
-          }
-        }
-      },
-      "BTTS": {
-        "resume": {
-          "observations": 11,
-          "gagnes": 7,
-          "perdus": 4,
-          "somme_gains_flat_stake": 0.04999999999999982,
-          "roi_flat": 0.00454545454545453
+        {
+          "marche": "Moins de 3.5 buts - Extérieur",
+          "observations": 17,
+          "gagnes": 14,
+          "perdus": 3,
+          "roi": -0.0959,
+          "reussite": 0.8235,
+          "cote_moyenne": 1.106,
+          "statut": "NEUTRE"
         },
-        "par_niveau": {
-          "FORT": {
-            "observations": 2,
-            "gagnes": 1,
-            "perdus": 1,
-            "somme_gains_flat_stake": -0.25,
-            "roi_flat": -0.125
-          },
-          "TRES_FORT": {
-            "observations": 4,
-            "gagnes": 3,
-            "perdus": 1,
-            "somme_gains_flat_stake": 0.5599999999999998,
-            "roi_flat": 0.13999999999999996
-          },
-          "ELIGIBLE": {
-            "observations": 1,
-            "gagnes": 0,
-            "perdus": 1,
-            "somme_gains_flat_stake": -1,
-            "roi_flat": -1
-          },
-          "PREMIUM": {
-            "observations": 3,
-            "gagnes": 2,
-            "perdus": 1,
-            "somme_gains_flat_stake": -0.13000000000000012,
-            "roi_flat": -0.04333333333333337
-          },
-          "CAT_C": {
-            "observations": 1,
-            "gagnes": 1,
-            "perdus": 0,
-            "somme_gains_flat_stake": 0.8700000000000001,
-            "roi_flat": 0.8700000000000001
-          }
-        }
-      },
-      "GOALS_EQUIPE_EXTERIEUR": {
-        "resume": {
-          "observations": 2,
-          "gagnes": 1,
+        {
+          "marche": "Plus de 3.5 buts - Extérieur",
+          "observations": 17,
+          "gagnes": 3,
+          "perdus": 14,
+          "roi": -0.1129,
+          "reussite": 0.1765,
+          "cote_moyenne": 6.957,
+          "statut": "NEUTRE"
+        },
+        {
+          "marche": "Moins de 6.5 buts",
+          "observations": 10,
+          "gagnes": 9,
           "perdus": 1,
-          "somme_gains_flat_stake": -0.56,
-          "roi_flat": -0.28
+          "roi": -0.024,
+          "reussite": 0.9,
+          "cote_moyenne": 1.099,
+          "statut": "NEUTRE"
         },
-        "par_niveau": {
-          "PREMIUM": {
-            "observations": 2,
-            "gagnes": 1,
-            "perdus": 1,
-            "somme_gains_flat_stake": -0.56,
-            "roi_flat": -0.28
-          }
-        }
-      },
-      "RESULT": {
-        "resume": {
-          "observations": 1,
+        {
+          "marche": "Plus de 6.5 buts",
+          "observations": 10,
           "gagnes": 1,
-          "perdus": 0,
-          "somme_gains_flat_stake": 1.8599999999999999,
-          "roi_flat": 1.8599999999999999
-        },
-        "par_niveau": {
-          "CAT_C": {
-            "observations": 1,
-            "gagnes": 1,
-            "perdus": 0,
-            "somme_gains_flat_stake": 1.8599999999999999,
-            "roi_flat": 1.8599999999999999
-          }
+          "perdus": 9,
+          "roi": -0.573,
+          "reussite": 0.1,
+          "cote_moyenne": 6.607,
+          "statut": "NEUTRE"
         }
-      }
+      ]
+    },
+    "moteur_v3": {
+      "nom": "moteur_v3",
+      "role": "EXPERIMENTAL",
+      "statut": "EXPÉRIMENTAL — NON VALIDÉ",
+      "genere_le": "2026-09-29T01:09:35Z",
+      "calibration": {
+        "prete": false,
+        "observations": 345,
+        "minimum_observations": 300,
+        "matchs": 7,
+        "minimum_matchs": 50,
+        "raison": "MATCHS_INSUFFISANTS"
+      },
+      "global": {
+        "matchs": 32,
+        "evalues": 27,
+        "non_evalues": 5,
+        "selections": 0,
+        "matchs_avec_selection": 0,
+        "apercus_non_calibres": 5,
+        "marches_cotes_calcules": 1876,
+        "issues_betpawa": 1897
+      },
+      "raisons_rejet": {
+        "CALIBRATION_ABSENTE": 1876,
+        "VALUE_NON_ELIGIBLE": 1843,
+        "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT": 1817,
+        "JUSTIFICATION_INSUFFISANTE": 1817,
+        "COTE_HORS_FENETRE": 1636,
+        "PROBABILITE_INF_60": 1524,
+        "N_3_4_CONTROLE_STRICT_NON_SATISFAIT": 952,
+        "SURDISPERSION_1_20_1_50_ET_P_INF_67": 535,
+        "EDV_INSUFFISANTE": 288,
+        "SURDISPERSION_SUP_1_50": 138
+      },
+      "par_marche": [
+        {
+          "marche": "handicap_1_1",
+          "calculs": 12,
+          "apercus": 12,
+          "selections": 0,
+          "probabilite_moyenne": 0.21344375526637302,
+          "edv_moyenne": 35.85
+        },
+        {
+          "marche": "1x2_1",
+          "calculs": 10,
+          "apercus": 10,
+          "selections": 0,
+          "probabilite_moyenne": 0.38571692082850023,
+          "edv_moyenne": 25.53
+        },
+        {
+          "marche": "handicap_1.5_1",
+          "calculs": 7,
+          "apercus": 7,
+          "selections": 0,
+          "probabilite_moyenne": 0.20859174804977426,
+          "edv_moyenne": 16.214285714285715
+        },
+        {
+          "marche": "handicap_0.5_1",
+          "calculs": 7,
+          "apercus": 7,
+          "selections": 0,
+          "probabilite_moyenne": 0.39338796501481565,
+          "edv_moyenne": 13.942857142857145
+        },
+        {
+          "marche": "btts_no",
+          "calculs": 7,
+          "apercus": 7,
+          "selections": 0,
+          "probabilite_moyenne": 0.6135523120231479,
+          "edv_moyenne": 22.04285714285714
+        },
+        {
+          "marche": "under_1_5",
+          "calculs": 7,
+          "apercus": 7,
+          "selections": 0,
+          "probabilite_moyenne": 0.3926307271528172,
+          "edv_moyenne": 38.57142857142857
+        },
+        {
+          "marche": "exact_goals_0",
+          "calculs": 7,
+          "apercus": 7,
+          "selections": 0,
+          "probabilite_moyenne": 0.14572415636086017,
+          "edv_moyenne": 58.28571428571428
+        },
+        {
+          "marche": "under_2_5",
+          "calculs": 7,
+          "apercus": 7,
+          "selections": 0,
+          "probabilite_moyenne": 0.5812100618634494,
+          "edv_moyenne": 17.857142857142854
+        },
+        {
+          "marche": "handicap_-1_2",
+          "calculs": 6,
+          "apercus": 6,
+          "selections": 0,
+          "probabilite_moyenne": 0.22049419069698625,
+          "edv_moyenne": 75.64999999999999
+        },
+        {
+          "marche": "1x2_2",
+          "calculs": 5,
+          "apercus": 5,
+          "selections": 0,
+          "probabilite_moyenne": 0.44709420619202495,
+          "edv_moyenne": 62.260000000000005
+        },
+        {
+          "marche": "exact_goals_1",
+          "calculs": 5,
+          "apercus": 5,
+          "selections": 0,
+          "probabilite_moyenne": 0.24584284447005328,
+          "edv_moyenne": 32.38000000000001
+        },
+        {
+          "marche": "over_4_5",
+          "calculs": 4,
+          "apercus": 4,
+          "selections": 0,
+          "probabilite_moyenne": 0.32407477712255756,
+          "edv_moyenne": 41.25
+        },
+        {
+          "marche": "dc_12",
+          "calculs": 3,
+          "apercus": 3,
+          "selections": 0,
+          "probabilite_moyenne": 0.7469993486264291,
+          "edv_moyenne": 1.8
+        },
+        {
+          "marche": "over_3_5",
+          "calculs": 3,
+          "apercus": 3,
+          "selections": 0,
+          "probabilite_moyenne": 0.30957226184381376,
+          "edv_moyenne": 1.2999999999999998
+        },
+        {
+          "marche": "score_0_3",
+          "calculs": 3,
+          "apercus": 3,
+          "selections": 0,
+          "probabilite_moyenne": 0.041777582591378426,
+          "edv_moyenne": 84.33333333333333
+        },
+        {
+          "marche": "handicap_2_1",
+          "calculs": 3,
+          "apercus": 3,
+          "selections": 0,
+          "probabilite_moyenne": 0.17284384844633469,
+          "edv_moyenne": 40.5
+        },
+        {
+          "marche": "dc_1X",
+          "calculs": 3,
+          "apercus": 3,
+          "selections": 0,
+          "probabilite_moyenne": 0.709119241081332,
+          "edv_moyenne": 1.4333333333333336
+        },
+        {
+          "marche": "score_1_4",
+          "calculs": 3,
+          "apercus": 3,
+          "selections": 0,
+          "probabilite_moyenne": 0.022471301183980497,
+          "edv_moyenne": 77.60000000000001
+        },
+        {
+          "marche": "score_0_0",
+          "calculs": 3,
+          "apercus": 3,
+          "selections": 0,
+          "probabilite_moyenne": 0.19945061108481435,
+          "edv_moyenne": 58.96666666666667
+        },
+        {
+          "marche": "under_3_5",
+          "calculs": 3,
+          "apercus": 3,
+          "selections": 0,
+          "probabilite_moyenne": 0.7196691670746741,
+          "edv_moyenne": 5.3
+        },
+        {
+          "marche": "over_2_5",
+          "calculs": 2,
+          "apercus": 2,
+          "selections": 0,
+          "probabilite_moyenne": 0.5574898272842145,
+          "edv_moyenne": 0.2
+        },
+        {
+          "marche": "handicap_-0.5_2",
+          "calculs": 2,
+          "apercus": 2,
+          "selections": 0,
+          "probabilite_moyenne": 0.3544689166379442,
+          "edv_moyenne": 46.15
+        },
+        {
+          "marche": "score_3_0",
+          "calculs": 2,
+          "apercus": 2,
+          "selections": 0,
+          "probabilite_moyenne": 0.028923132592684656,
+          "edv_moyenne": 31.65
+        },
+        {
+          "marche": "exact_goals_6_plus",
+          "calculs": 2,
+          "apercus": 2,
+          "selections": 0,
+          "probabilite_moyenne": 0.26197474058985926,
+          "edv_moyenne": 82.85
+        },
+        {
+          "marche": "under_0_5",
+          "calculs": 2,
+          "apercus": 2,
+          "selections": 0,
+          "probabilite_moyenne": 0.21177097612474338,
+          "edv_moyenne": 47.5
+        },
+        {
+          "marche": "score_0_4",
+          "calculs": 2,
+          "apercus": 2,
+          "selections": 0,
+          "probabilite_moyenne": 0.022485852963318703,
+          "edv_moyenne": 91.44999999999999
+        },
+        {
+          "marche": "away_over_1_5",
+          "calculs": 1,
+          "apercus": 1,
+          "selections": 0,
+          "probabilite_moyenne": 0.35387137485229325,
+          "edv_moyenne": -0.2
+        },
+        {
+          "marche": "score_1_3",
+          "calculs": 1,
+          "apercus": 1,
+          "selections": 0,
+          "probabilite_moyenne": 0.03897329807315631,
+          "edv_moyenne": 62.4
+        },
+        {
+          "marche": "handicap_3.5_2",
+          "calculs": 1,
+          "apercus": 1,
+          "selections": 0,
+          "probabilite_moyenne": 0.9833246026229414,
+          "edv_moyenne": 426.1
+        },
+        {
+          "marche": "score_1_0",
+          "calculs": 1,
+          "apercus": 1,
+          "selections": 0,
+          "probabilite_moyenne": 0.18548334313290427,
+          "edv_moyenne": 33
+        },
+        {
+          "marche": "handicap_2.5_1",
+          "calculs": 1,
+          "apercus": 1,
+          "selections": 0,
+          "probabilite_moyenne": 0.27850534461801923,
+          "edv_moyenne": 89.9
+        },
+        {
+          "marche": "over_5_5",
+          "calculs": 1,
+          "apercus": 1,
+          "selections": 0,
+          "probabilite_moyenne": 0.30079851376338473,
+          "edv_moyenne": 96.4
+        },
+        {
+          "marche": "score_3_4",
+          "calculs": 1,
+          "apercus": 1,
+          "selections": 0,
+          "probabilite_moyenne": 0.02116612095940959,
+          "edv_moyenne": 76.4
+        },
+        {
+          "marche": "score_4_3",
+          "calculs": 1,
+          "apercus": 1,
+          "selections": 0,
+          "probabilite_moyenne": 0.02391496783725499,
+          "edv_moyenne": 59.4
+        },
+        {
+          "marche": "handicap_-1_1",
+          "calculs": 1,
+          "apercus": 1,
+          "selections": 0,
+          "probabilite_moyenne": 0.508171251227821,
+          "edv_moyenne": -0.9
+        },
+        {
+          "marche": "dc_X2",
+          "calculs": 1,
+          "apercus": 1,
+          "selections": 0,
+          "probabilite_moyenne": 0.6303328448420726,
+          "edv_moyenne": 4
+        },
+        {
+          "marche": "handicap_-1.5_2",
+          "calculs": 1,
+          "apercus": 1,
+          "selections": 0,
+          "probabilite_moyenne": 0.18495623802434114,
+          "edv_moyenne": 3.6
+        },
+        {
+          "marche": "handicap_-2_2",
+          "calculs": 1,
+          "apercus": 1,
+          "selections": 0,
+          "probabilite_moyenne": 0.09071007422266966,
+          "edv_moyenne": 40
+        },
+        {
+          "marche": "score_3_1",
+          "calculs": 1,
+          "apercus": 1,
+          "selections": 0,
+          "probabilite_moyenne": 0.04134337563616543,
+          "edv_moyenne": 123.3
+        },
+        {
+          "marche": "score_3_2",
+          "calculs": 1,
+          "apercus": 1,
+          "selections": 0,
+          "probabilite_moyenne": 0.045783960426716515,
+          "edv_moyenne": 110.2
+        },
+        {
+          "marche": "score_3_3",
+          "calculs": 1,
+          "apercus": 1,
+          "selections": 0,
+          "probabilite_moyenne": 0.033800997944662306,
+          "edv_moyenne": 93.1
+        }
+      ],
+      "evolution": [
+        {
+          "date": "2026-09-29",
+          "matchs": 32,
+          "evalues": 27,
+          "apercus": 5,
+          "selections": 0
+        }
+      ]
     }
+  },
+  "bilan_comportemental": {
+    "nom": "moteur_v2_6_9",
+    "role": "PRODUCTION",
+    "statut": "ACTIF",
+    "global": {
+      "observations": 245,
+      "matchs": 156,
+      "gagnes": 128,
+      "perdus": 117,
+      "rembourses": 0,
+      "roi": -0.1612,
+      "reussite": 0.5224,
+      "cote_moyenne": 1.901,
+      "cote_min": 1.26,
+      "cote_max": 8.11,
+      "ic95": [
+        -0.2834,
+        -0.0341
+      ],
+      "roi_moitie_1": -0.2123,
+      "roi_moitie_2": -0.136
+    },
+    "par_marche": [
+      {
+        "marche": "1X2 - 1",
+        "observations": 1006,
+        "gagnes": 451,
+        "perdus": 555,
+        "roi": -0.0469,
+        "reussite": 0.4483,
+        "cote_moyenne": 2.666,
+        "statut": "NEUTRE"
+      },
+      {
+        "marche": "1X2 - X",
+        "observations": 1006,
+        "gagnes": 244,
+        "perdus": 762,
+        "roi": -0.0919,
+        "reussite": 0.2425,
+        "cote_moyenne": 3.907,
+        "statut": "NEUTRE"
+      },
+      {
+        "marche": "1X2 - 2",
+        "observations": 1006,
+        "gagnes": 311,
+        "perdus": 695,
+        "roi": -0.1473,
+        "reussite": 0.3091,
+        "cote_moyenne": 3.808,
+        "statut": "A_EVITER"
+      },
+      {
+        "marche": "Double chance - 12",
+        "observations": 997,
+        "gagnes": 755,
+        "perdus": 242,
+        "roi": -0.036,
+        "reussite": 0.7573,
+        "cote_moyenne": 1.275,
+        "statut": "A_EVITER"
+      },
+      {
+        "marche": "Double chance - 1X",
+        "observations": 997,
+        "gagnes": 692,
+        "perdus": 305,
+        "roi": -0.0501,
+        "reussite": 0.6941,
+        "cote_moyenne": 1.449,
+        "statut": "A_EVITER"
+      },
+      {
+        "marche": "Double chance - X2",
+        "observations": 997,
+        "gagnes": 547,
+        "perdus": 450,
+        "roi": -0.124,
+        "reussite": 0.5486,
+        "cote_moyenne": 1.758,
+        "statut": "A_EVITER"
+      },
+      {
+        "marche": "Plus de 2.5 buts",
+        "observations": 990,
+        "gagnes": 546,
+        "perdus": 444,
+        "roi": -0.0292,
+        "reussite": 0.5515,
+        "cote_moyenne": 1.802,
+        "statut": "NEUTRE"
+      },
+      {
+        "marche": "Moins de 2.5 buts",
+        "observations": 990,
+        "gagnes": 444,
+        "perdus": 546,
+        "roi": -0.1117,
+        "reussite": 0.4485,
+        "cote_moyenne": 2.06,
+        "statut": "A_EVITER"
+      },
+      {
+        "marche": "BTTS - oui",
+        "observations": 987,
+        "gagnes": 567,
+        "perdus": 420,
+        "roi": -0.0059,
+        "reussite": 0.5745,
+        "cote_moyenne": 1.74,
+        "statut": "NEUTRE"
+      },
+      {
+        "marche": "BTTS - non",
+        "observations": 987,
+        "gagnes": 420,
+        "perdus": 567,
+        "roi": -0.1405,
+        "reussite": 0.4255,
+        "cote_moyenne": 2.044,
+        "statut": "A_EVITER"
+      },
+      {
+        "marche": "Plus de 1.5 buts",
+        "observations": 983,
+        "gagnes": 757,
+        "perdus": 226,
+        "roi": -0.0495,
+        "reussite": 0.7701,
+        "cote_moyenne": 1.242,
+        "statut": "A_EVITER"
+      },
+      {
+        "marche": "Moins de 3.5 buts",
+        "observations": 983,
+        "gagnes": 672,
+        "perdus": 311,
+        "roi": -0.057,
+        "reussite": 0.6836,
+        "cote_moyenne": 1.409,
+        "statut": "A_EVITER"
+      },
+      {
+        "marche": "Plus de 3.5 buts",
+        "observations": 983,
+        "gagnes": 311,
+        "perdus": 672,
+        "roi": -0.117,
+        "reussite": 0.3164,
+        "cote_moyenne": 3.007,
+        "statut": "A_EVITER"
+      },
+      {
+        "marche": "Moins de 1.5 buts",
+        "observations": 983,
+        "gagnes": 226,
+        "perdus": 757,
+        "roi": -0.1336,
+        "reussite": 0.2299,
+        "cote_moyenne": 4.026,
+        "statut": "A_EVITER"
+      },
+      {
+        "marche": "Moins de 4.5 buts",
+        "observations": 961,
+        "gagnes": 808,
+        "perdus": 153,
+        "roi": -0.046,
+        "reussite": 0.8408,
+        "cote_moyenne": 1.143,
+        "statut": "A_EVITER"
+      },
+      {
+        "marche": "Plus de 4.5 buts",
+        "observations": 961,
+        "gagnes": 153,
+        "perdus": 808,
+        "roi": -0.2123,
+        "reussite": 0.1592,
+        "cote_moyenne": 5.611,
+        "statut": "A_EVITER"
+      },
+      {
+        "marche": "Handicap -0.5 - Extérieur",
+        "observations": 931,
+        "gagnes": 511,
+        "perdus": 420,
+        "roi": -0.1062,
+        "reussite": 0.5489,
+        "cote_moyenne": 1.76,
+        "statut": "A_EVITER"
+      },
+      {
+        "marche": "Handicap -0.5 - Domicile",
+        "observations": 923,
+        "gagnes": 421,
+        "perdus": 502,
+        "roi": -0.0668,
+        "reussite": 0.4561,
+        "cote_moyenne": 2.283,
+        "statut": "NEUTRE"
+      },
+      {
+        "marche": "Handicap 0.5 - Domicile",
+        "observations": 878,
+        "gagnes": 588,
+        "perdus": 290,
+        "roi": -0.0659,
+        "reussite": 0.6697,
+        "cote_moyenne": 1.469,
+        "statut": "A_EVITER"
+      },
+      {
+        "marche": "Handicap 0.5 - Extérieur",
+        "observations": 849,
+        "gagnes": 285,
+        "perdus": 564,
+        "roi": -0.1473,
+        "reussite": 0.3357,
+        "cote_moyenne": 2.908,
+        "statut": "A_EVITER"
+      },
+      {
+        "marche": "Handicap -1.5 - Extérieur",
+        "observations": 762,
+        "gagnes": 571,
+        "perdus": 191,
+        "roi": -0.039,
+        "reussite": 0.7493,
+        "cote_moyenne": 1.329,
+        "statut": "NEUTRE"
+      },
+      {
+        "marche": "Handicap -1.5 - Domicile",
+        "observations": 760,
+        "gagnes": 191,
+        "perdus": 569,
+        "roi": -0.2035,
+        "reussite": 0.2513,
+        "cote_moyenne": 3.726,
+        "statut": "A_EVITER"
+      },
+      {
+        "marche": "Plus de 0.5 buts",
+        "observations": 691,
+        "gagnes": 639,
+        "perdus": 52,
+        "roi": -0.0403,
+        "reussite": 0.9247,
+        "cote_moyenne": 1.038,
+        "statut": "A_EVITER"
+      },
+      {
+        "marche": "Moins de 0.5 buts",
+        "observations": 691,
+        "gagnes": 52,
+        "perdus": 639,
+        "roi": -0.3175,
+        "reussite": 0.0753,
+        "cote_moyenne": 9.409,
+        "statut": "A_EVITER"
+      },
+      {
+        "marche": "Moins de 5.5 buts",
+        "observations": 653,
+        "gagnes": 606,
+        "perdus": 47,
+        "roi": -0.0233,
+        "reussite": 0.928,
+        "cote_moyenne": 1.054,
+        "statut": "A_EVITER"
+      },
+      {
+        "marche": "Plus de 5.5 buts",
+        "observations": 653,
+        "gagnes": 47,
+        "perdus": 606,
+        "roi": -0.4572,
+        "reussite": 0.072,
+        "cote_moyenne": 8.772,
+        "statut": "A_EVITER"
+      },
+      {
+        "marche": "Total buts - impair",
+        "observations": 488,
+        "gagnes": 264,
+        "perdus": 224,
+        "roi": 0.0208,
+        "reussite": 0.541,
+        "cote_moyenne": 1.887,
+        "statut": "A_SURVEILLER"
+      },
+      {
+        "marche": "Total buts - pair",
+        "observations": 488,
+        "gagnes": 224,
+        "perdus": 264,
+        "roi": -0.1766,
+        "reussite": 0.459,
+        "cote_moyenne": 1.795,
+        "statut": "A_EVITER"
+      },
+      {
+        "marche": "Handicap 1.5 - Domicile",
+        "observations": 484,
+        "gagnes": 384,
+        "perdus": 100,
+        "roi": -0.0533,
+        "reussite": 0.7934,
+        "cote_moyenne": 1.222,
+        "statut": "A_EVITER"
+      },
+      {
+        "marche": "Handicap 1.5 - Extérieur",
+        "observations": 483,
+        "gagnes": 100,
+        "perdus": 383,
+        "roi": -0.1596,
+        "reussite": 0.207,
+        "cote_moyenne": 4.599,
+        "statut": "NEUTRE"
+      },
+      {
+        "marche": "Handicap -2.5 - Domicile",
+        "observations": 282,
+        "gagnes": 50,
+        "perdus": 232,
+        "roi": -0.1512,
+        "reussite": 0.1773,
+        "cote_moyenne": 5.079,
+        "statut": "NEUTRE"
+      },
+      {
+        "marche": "Handicap -2.5 - Extérieur",
+        "observations": 281,
+        "gagnes": 231,
+        "perdus": 50,
+        "roi": -0.0247,
+        "reussite": 0.8221,
+        "cote_moyenne": 1.197,
+        "statut": "NEUTRE"
+      },
+      {
+        "marche": "Moins de 1.5 buts - Domicile",
+        "observations": 140,
+        "gagnes": 77,
+        "perdus": 63,
+        "roi": -0.0591,
+        "reussite": 0.55,
+        "cote_moyenne": 1.839,
+        "statut": "NEUTRE"
+      },
+      {
+        "marche": "Plus de 1.5 buts - Domicile",
+        "observations": 140,
+        "gagnes": 63,
+        "perdus": 77,
+        "roi": -0.123,
+        "reussite": 0.45,
+        "cote_moyenne": 2.118,
+        "statut": "NEUTRE"
+      },
+      {
+        "marche": "Cage inviolée - Domicile",
+        "observations": 139,
+        "gagnes": 39,
+        "perdus": 100,
+        "roi": -0.1594,
+        "reussite": 0.2806,
+        "cote_moyenne": 3.187,
+        "statut": "NEUTRE"
+      },
+      {
+        "marche": "Moins de 1.5 buts - Extérieur",
+        "observations": 135,
+        "gagnes": 89,
+        "perdus": 46,
+        "roi": -0.0341,
+        "reussite": 0.6593,
+        "cote_moyenne": 1.58,
+        "statut": "NEUTRE"
+      },
+      {
+        "marche": "Plus de 1.5 buts - Extérieur",
+        "observations": 135,
+        "gagnes": 46,
+        "perdus": 89,
+        "roi": -0.1704,
+        "reussite": 0.3407,
+        "cote_moyenne": 2.71,
+        "statut": "NEUTRE"
+      },
+      {
+        "marche": "Plus de 0.5 buts - Domicile",
+        "observations": 134,
+        "gagnes": 104,
+        "perdus": 30,
+        "roi": -0.0657,
+        "reussite": 0.7761,
+        "cote_moyenne": 1.224,
+        "statut": "NEUTRE"
+      },
+      {
+        "marche": "Moins de 0.5 buts - Domicile",
+        "observations": 134,
+        "gagnes": 30,
+        "perdus": 104,
+        "roi": -0.2233,
+        "reussite": 0.2239,
+        "cote_moyenne": 4.031,
+        "statut": "NEUTRE"
+      },
+      {
+        "marche": "Cage inviolée - Extérieur",
+        "observations": 133,
+        "gagnes": 29,
+        "perdus": 104,
+        "roi": -0.2158,
+        "reussite": 0.218,
+        "cote_moyenne": 4.18,
+        "statut": "NEUTRE"
+      },
+      {
+        "marche": "Plus de 0.5 buts - Extérieur",
+        "observations": 131,
+        "gagnes": 95,
+        "perdus": 36,
+        "roi": -0.0466,
+        "reussite": 0.7252,
+        "cote_moyenne": 1.347,
+        "statut": "NEUTRE"
+      },
+      {
+        "marche": "Moins de 0.5 buts - Extérieur",
+        "observations": 131,
+        "gagnes": 36,
+        "perdus": 95,
+        "roi": -0.2408,
+        "reussite": 0.2748,
+        "cote_moyenne": 3.299,
+        "statut": "A_EVITER"
+      },
+      {
+        "marche": "Handicap 2.5 - Domicile",
+        "observations": 85,
+        "gagnes": 65,
+        "perdus": 20,
+        "roi": -0.1016,
+        "reussite": 0.7647,
+        "cote_moyenne": 1.182,
+        "statut": "NEUTRE"
+      },
+      {
+        "marche": "Handicap 2.5 - Extérieur",
+        "observations": 83,
+        "gagnes": 20,
+        "perdus": 63,
+        "roi": 0.1457,
+        "reussite": 0.241,
+        "cote_moyenne": 5.097,
+        "statut": "NEUTRE"
+      },
+      {
+        "marche": "Moins de 2.5 buts - Domicile",
+        "observations": 70,
+        "gagnes": 59,
+        "perdus": 11,
+        "roi": 0.0169,
+        "reussite": 0.8429,
+        "cote_moyenne": 1.262,
+        "statut": "NEUTRE"
+      },
+      {
+        "marche": "Plus de 2.5 buts - Domicile",
+        "observations": 70,
+        "gagnes": 11,
+        "perdus": 59,
+        "roi": -0.4307,
+        "reussite": 0.1571,
+        "cote_moyenne": 4.418,
+        "statut": "A_EVITER"
+      },
+      {
+        "marche": "Encaisse au moins 1 but - Domicile",
+        "observations": 68,
+        "gagnes": 49,
+        "perdus": 19,
+        "roi": -0.0171,
+        "reussite": 0.7206,
+        "cote_moyenne": 1.368,
+        "statut": "NEUTRE"
+      },
+      {
+        "marche": "Encaisse au moins 1 but - Extérieur",
+        "observations": 61,
+        "gagnes": 44,
+        "perdus": 17,
+        "roi": -0.1034,
+        "reussite": 0.7213,
+        "cote_moyenne": 1.26,
+        "statut": "NEUTRE"
+      },
+      {
+        "marche": "Plus de 2.5 buts - Extérieur",
+        "observations": 54,
+        "gagnes": 11,
+        "perdus": 43,
+        "roi": -0.0613,
+        "reussite": 0.2037,
+        "cote_moyenne": 5.587,
+        "statut": "NEUTRE"
+      },
+      {
+        "marche": "Moins de 2.5 buts - Extérieur",
+        "observations": 54,
+        "gagnes": 43,
+        "perdus": 11,
+        "roi": -0.0724,
+        "reussite": 0.7963,
+        "cote_moyenne": 1.179,
+        "statut": "NEUTRE"
+      },
+      {
+        "marche": "Moins de 3.5 buts - Domicile",
+        "observations": 26,
+        "gagnes": 24,
+        "perdus": 2,
+        "roi": -0.0062,
+        "reussite": 0.9231,
+        "cote_moyenne": 1.14,
+        "statut": "NEUTRE"
+      },
+      {
+        "marche": "Plus de 3.5 buts - Domicile",
+        "observations": 26,
+        "gagnes": 2,
+        "perdus": 24,
+        "roi": -0.8542,
+        "reussite": 0.0769,
+        "cote_moyenne": 6.5,
+        "statut": "A_EVITER"
+      },
+      {
+        "marche": "Moins de 3.5 buts - Extérieur",
+        "observations": 17,
+        "gagnes": 14,
+        "perdus": 3,
+        "roi": -0.0959,
+        "reussite": 0.8235,
+        "cote_moyenne": 1.106,
+        "statut": "NEUTRE"
+      },
+      {
+        "marche": "Plus de 3.5 buts - Extérieur",
+        "observations": 17,
+        "gagnes": 3,
+        "perdus": 14,
+        "roi": -0.1129,
+        "reussite": 0.1765,
+        "cote_moyenne": 6.957,
+        "statut": "NEUTRE"
+      },
+      {
+        "marche": "Moins de 6.5 buts",
+        "observations": 10,
+        "gagnes": 9,
+        "perdus": 1,
+        "roi": -0.024,
+        "reussite": 0.9,
+        "cote_moyenne": 1.099,
+        "statut": "NEUTRE"
+      },
+      {
+        "marche": "Plus de 6.5 buts",
+        "observations": 10,
+        "gagnes": 1,
+        "perdus": 9,
+        "roi": -0.573,
+        "reussite": 0.1,
+        "cote_moyenne": 6.607,
+        "statut": "NEUTRE"
+      }
+    ]
+  },
+  "bilan_v3": {
+    "nom": "moteur_v3",
+    "role": "EXPERIMENTAL",
+    "statut": "EXPÉRIMENTAL — NON VALIDÉ",
+    "genere_le": "2026-09-29T01:09:35Z",
+    "calibration": {
+      "prete": false,
+      "observations": 345,
+      "minimum_observations": 300,
+      "matchs": 7,
+      "minimum_matchs": 50,
+      "raison": "MATCHS_INSUFFISANTS"
+    },
+    "global": {
+      "matchs": 32,
+      "evalues": 27,
+      "non_evalues": 5,
+      "selections": 0,
+      "matchs_avec_selection": 0,
+      "apercus_non_calibres": 5,
+      "marches_cotes_calcules": 1876,
+      "issues_betpawa": 1897
+    },
+    "raisons_rejet": {
+      "CALIBRATION_ABSENTE": 1876,
+      "VALUE_NON_ELIGIBLE": 1843,
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT": 1817,
+      "JUSTIFICATION_INSUFFISANTE": 1817,
+      "COTE_HORS_FENETRE": 1636,
+      "PROBABILITE_INF_60": 1524,
+      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT": 952,
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67": 535,
+      "EDV_INSUFFISANTE": 288,
+      "SURDISPERSION_SUP_1_50": 138
+    },
+    "par_marche": [
+      {
+        "marche": "handicap_1_1",
+        "calculs": 12,
+        "apercus": 12,
+        "selections": 0,
+        "probabilite_moyenne": 0.21344375526637302,
+        "edv_moyenne": 35.85
+      },
+      {
+        "marche": "1x2_1",
+        "calculs": 10,
+        "apercus": 10,
+        "selections": 0,
+        "probabilite_moyenne": 0.38571692082850023,
+        "edv_moyenne": 25.53
+      },
+      {
+        "marche": "handicap_1.5_1",
+        "calculs": 7,
+        "apercus": 7,
+        "selections": 0,
+        "probabilite_moyenne": 0.20859174804977426,
+        "edv_moyenne": 16.214285714285715
+      },
+      {
+        "marche": "handicap_0.5_1",
+        "calculs": 7,
+        "apercus": 7,
+        "selections": 0,
+        "probabilite_moyenne": 0.39338796501481565,
+        "edv_moyenne": 13.942857142857145
+      },
+      {
+        "marche": "btts_no",
+        "calculs": 7,
+        "apercus": 7,
+        "selections": 0,
+        "probabilite_moyenne": 0.6135523120231479,
+        "edv_moyenne": 22.04285714285714
+      },
+      {
+        "marche": "under_1_5",
+        "calculs": 7,
+        "apercus": 7,
+        "selections": 0,
+        "probabilite_moyenne": 0.3926307271528172,
+        "edv_moyenne": 38.57142857142857
+      },
+      {
+        "marche": "exact_goals_0",
+        "calculs": 7,
+        "apercus": 7,
+        "selections": 0,
+        "probabilite_moyenne": 0.14572415636086017,
+        "edv_moyenne": 58.28571428571428
+      },
+      {
+        "marche": "under_2_5",
+        "calculs": 7,
+        "apercus": 7,
+        "selections": 0,
+        "probabilite_moyenne": 0.5812100618634494,
+        "edv_moyenne": 17.857142857142854
+      },
+      {
+        "marche": "handicap_-1_2",
+        "calculs": 6,
+        "apercus": 6,
+        "selections": 0,
+        "probabilite_moyenne": 0.22049419069698625,
+        "edv_moyenne": 75.64999999999999
+      },
+      {
+        "marche": "1x2_2",
+        "calculs": 5,
+        "apercus": 5,
+        "selections": 0,
+        "probabilite_moyenne": 0.44709420619202495,
+        "edv_moyenne": 62.260000000000005
+      },
+      {
+        "marche": "exact_goals_1",
+        "calculs": 5,
+        "apercus": 5,
+        "selections": 0,
+        "probabilite_moyenne": 0.24584284447005328,
+        "edv_moyenne": 32.38000000000001
+      },
+      {
+        "marche": "over_4_5",
+        "calculs": 4,
+        "apercus": 4,
+        "selections": 0,
+        "probabilite_moyenne": 0.32407477712255756,
+        "edv_moyenne": 41.25
+      },
+      {
+        "marche": "dc_12",
+        "calculs": 3,
+        "apercus": 3,
+        "selections": 0,
+        "probabilite_moyenne": 0.7469993486264291,
+        "edv_moyenne": 1.8
+      },
+      {
+        "marche": "over_3_5",
+        "calculs": 3,
+        "apercus": 3,
+        "selections": 0,
+        "probabilite_moyenne": 0.30957226184381376,
+        "edv_moyenne": 1.2999999999999998
+      },
+      {
+        "marche": "score_0_3",
+        "calculs": 3,
+        "apercus": 3,
+        "selections": 0,
+        "probabilite_moyenne": 0.041777582591378426,
+        "edv_moyenne": 84.33333333333333
+      },
+      {
+        "marche": "handicap_2_1",
+        "calculs": 3,
+        "apercus": 3,
+        "selections": 0,
+        "probabilite_moyenne": 0.17284384844633469,
+        "edv_moyenne": 40.5
+      },
+      {
+        "marche": "dc_1X",
+        "calculs": 3,
+        "apercus": 3,
+        "selections": 0,
+        "probabilite_moyenne": 0.709119241081332,
+        "edv_moyenne": 1.4333333333333336
+      },
+      {
+        "marche": "score_1_4",
+        "calculs": 3,
+        "apercus": 3,
+        "selections": 0,
+        "probabilite_moyenne": 0.022471301183980497,
+        "edv_moyenne": 77.60000000000001
+      },
+      {
+        "marche": "score_0_0",
+        "calculs": 3,
+        "apercus": 3,
+        "selections": 0,
+        "probabilite_moyenne": 0.19945061108481435,
+        "edv_moyenne": 58.96666666666667
+      },
+      {
+        "marche": "under_3_5",
+        "calculs": 3,
+        "apercus": 3,
+        "selections": 0,
+        "probabilite_moyenne": 0.7196691670746741,
+        "edv_moyenne": 5.3
+      },
+      {
+        "marche": "over_2_5",
+        "calculs": 2,
+        "apercus": 2,
+        "selections": 0,
+        "probabilite_moyenne": 0.5574898272842145,
+        "edv_moyenne": 0.2
+      },
+      {
+        "marche": "handicap_-0.5_2",
+        "calculs": 2,
+        "apercus": 2,
+        "selections": 0,
+        "probabilite_moyenne": 0.3544689166379442,
+        "edv_moyenne": 46.15
+      },
+      {
+        "marche": "score_3_0",
+        "calculs": 2,
+        "apercus": 2,
+        "selections": 0,
+        "probabilite_moyenne": 0.028923132592684656,
+        "edv_moyenne": 31.65
+      },
+      {
+        "marche": "exact_goals_6_plus",
+        "calculs": 2,
+        "apercus": 2,
+        "selections": 0,
+        "probabilite_moyenne": 0.26197474058985926,
+        "edv_moyenne": 82.85
+      },
+      {
+        "marche": "under_0_5",
+        "calculs": 2,
+        "apercus": 2,
+        "selections": 0,
+        "probabilite_moyenne": 0.21177097612474338,
+        "edv_moyenne": 47.5
+      },
+      {
+        "marche": "score_0_4",
+        "calculs": 2,
+        "apercus": 2,
+        "selections": 0,
+        "probabilite_moyenne": 0.022485852963318703,
+        "edv_moyenne": 91.44999999999999
+      },
+      {
+        "marche": "away_over_1_5",
+        "calculs": 1,
+        "apercus": 1,
+        "selections": 0,
+        "probabilite_moyenne": 0.35387137485229325,
+        "edv_moyenne": -0.2
+      },
+      {
+        "marche": "score_1_3",
+        "calculs": 1,
+        "apercus": 1,
+        "selections": 0,
+        "probabilite_moyenne": 0.03897329807315631,
+        "edv_moyenne": 62.4
+      },
+      {
+        "marche": "handicap_3.5_2",
+        "calculs": 1,
+        "apercus": 1,
+        "selections": 0,
+        "probabilite_moyenne": 0.9833246026229414,
+        "edv_moyenne": 426.1
+      },
+      {
+        "marche": "score_1_0",
+        "calculs": 1,
+        "apercus": 1,
+        "selections": 0,
+        "probabilite_moyenne": 0.18548334313290427,
+        "edv_moyenne": 33
+      },
+      {
+        "marche": "handicap_2.5_1",
+        "calculs": 1,
+        "apercus": 1,
+        "selections": 0,
+        "probabilite_moyenne": 0.27850534461801923,
+        "edv_moyenne": 89.9
+      },
+      {
+        "marche": "over_5_5",
+        "calculs": 1,
+        "apercus": 1,
+        "selections": 0,
+        "probabilite_moyenne": 0.30079851376338473,
+        "edv_moyenne": 96.4
+      },
+      {
+        "marche": "score_3_4",
+        "calculs": 1,
+        "apercus": 1,
+        "selections": 0,
+        "probabilite_moyenne": 0.02116612095940959,
+        "edv_moyenne": 76.4
+      },
+      {
+        "marche": "score_4_3",
+        "calculs": 1,
+        "apercus": 1,
+        "selections": 0,
+        "probabilite_moyenne": 0.02391496783725499,
+        "edv_moyenne": 59.4
+      },
+      {
+        "marche": "handicap_-1_1",
+        "calculs": 1,
+        "apercus": 1,
+        "selections": 0,
+        "probabilite_moyenne": 0.508171251227821,
+        "edv_moyenne": -0.9
+      },
+      {
+        "marche": "dc_X2",
+        "calculs": 1,
+        "apercus": 1,
+        "selections": 0,
+        "probabilite_moyenne": 0.6303328448420726,
+        "edv_moyenne": 4
+      },
+      {
+        "marche": "handicap_-1.5_2",
+        "calculs": 1,
+        "apercus": 1,
+        "selections": 0,
+        "probabilite_moyenne": 0.18495623802434114,
+        "edv_moyenne": 3.6
+      },
+      {
+        "marche": "handicap_-2_2",
+        "calculs": 1,
+        "apercus": 1,
+        "selections": 0,
+        "probabilite_moyenne": 0.09071007422266966,
+        "edv_moyenne": 40
+      },
+      {
+        "marche": "score_3_1",
+        "calculs": 1,
+        "apercus": 1,
+        "selections": 0,
+        "probabilite_moyenne": 0.04134337563616543,
+        "edv_moyenne": 123.3
+      },
+      {
+        "marche": "score_3_2",
+        "calculs": 1,
+        "apercus": 1,
+        "selections": 0,
+        "probabilite_moyenne": 0.045783960426716515,
+        "edv_moyenne": 110.2
+      },
+      {
+        "marche": "score_3_3",
+        "calculs": 1,
+        "apercus": 1,
+        "selections": 0,
+        "probabilite_moyenne": 0.033800997944662306,
+        "edv_moyenne": 93.1
+      }
+    ],
+    "evolution": [
+      {
+        "date": "2026-09-29",
+        "matchs": 32,
+        "evalues": 27,
+        "apercus": 5,
+        "selections": 0
+      }
+    ]
   }
 }
