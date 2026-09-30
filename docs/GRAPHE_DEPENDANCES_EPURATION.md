@@ -220,3 +220,5 @@ La branche reste en revue : la suite `pytest` doit être exécutée par CI avant
 <!-- CI validation: restore Dixon-Coles constant. -->
 
 <!-- CI validation: decoupler adapte_justification de calcule_roi. -->
+
+<!-- CI validation: réparer les tests de compatibilité après épuration. -->
