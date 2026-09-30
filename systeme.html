@@ -8,13 +8,36 @@
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="theme.css">
 <style>
-:root{--bg:#F7F1E7;--surface:#FFFDF8;--surface-2:#F1E9FA;--turquoise:#315CFF;--turquoise-active:#6547E8;--gold:#9A701B;--green:#2F855A;--red:#C53030;--text:#241B35;--text-secondary:#756B7D;--heure:#655B70;--categorie:#315CFF;--border:rgba(64,38,91,.14)}
-#maj-systeme{padding:0 0 8px;font-size:12px;color:var(--text-secondary)}.bloc-systeme{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px;box-shadow:0 5px 18px rgba(61,38,84,.06)}.bloc-systeme h2{margin:0 0 9px;font-size:15px;color:var(--text)}.grille-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:9px}.grille-stats .stat{background:var(--surface-2);border-radius:9px;padding:9px 10px}.grille-stats .etiquette{display:block;font-size:11px;color:var(--text-secondary);margin-bottom:3px}.grille-stats strong{font-size:17px;color:var(--text)}.tableau-systeme{width:100%;border-collapse:collapse;font-size:12px}.tableau-systeme th,.tableau-systeme td{text-align:left;padding:5px 7px;border-bottom:1px solid var(--border)}.tableau-systeme th{color:var(--text-secondary);font-weight:600}.etat-vide-systeme{color:var(--text-secondary);font-size:13px;font-style:italic}body{background:var(--bg);color:var(--text)}header{background:linear-gradient(135deg,rgba(49,92,255,.08),rgba(130,70,230,.08));border-bottom-color:rgba(49,92,255,.16)}header h1{color:var(--gold)}.nav-bouton{background:linear-gradient(135deg,#315CFF,#6547E8);color:#fff;border-color:transparent;box-shadow:0 5px 14px rgba(49,92,255,.16)}
+:root{--bg:#F7F1E7;--surface:#FFFDF8;--surface2:#F1E9FA;--blue:#315CFF;--violet:#6547E8;--gold:#9A701B;--green:#2F855A;--red:#C53030;--amber:#A66B00;--text:#241B35;--muted:#756B7D;--border:rgba(64,38,91,.13)}
+body{background:var(--bg);color:var(--text)}
+header{background:linear-gradient(135deg,rgba(49,92,255,.08),rgba(130,70,230,.08));border-bottom-color:rgba(49,92,255,.16)}
+header h1{color:var(--gold)}
+main{max-width:980px;margin:auto;padding:12px}
+.nav-bouton{display:inline-block;background:linear-gradient(135deg,var(--blue),var(--violet));color:#fff;border:0;box-shadow:0 5px 14px rgba(49,92,255,.16);margin-bottom:8px}
+#maj-systeme{font-size:12px;color:var(--muted);padding:2px 0 10px}
+.moteur-card,.section-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:0 6px 22px rgba(61,38,84,.055)}
+.moteur-card{border-top:3px solid var(--blue)}.moteur-card.v3{border-top-color:var(--violet)}
+.moteur-head,.section-title{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.moteur-head h2,.section-title h2{margin:2px 0 0;font-size:18px}.sur-titre{font-size:10px;font-weight:800;letter-spacing:.11em;color:var(--muted)}
+.pill,.source-tag{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:800;white-space:nowrap}.pill-ok{background:#E5F4EC;color:var(--green)}.pill-v3{background:#EEE9FF;color:#5B45B7}.pill-warn{background:#FFF0D5;color:var(--amber)}.source-tag{background:#E8F0FF;color:#315CFF}.source-tag.v3{background:#EEE9FF;color:#6547E8}
+.moteur-note,.section-sub{font-size:12px;line-height:1.45;color:var(--muted);margin:9px 0}
+.stats-hero,.v3-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.v3-summary{grid-template-columns:repeat(4,1fr)}
+.stats-hero>div,.v3-summary>div{background:var(--surface2);border-radius:10px;padding:9px}.stats-hero b,.v3-summary b{display:block;font-size:18px}.stats-hero small,.v3-summary span{display:block;font-size:10px;color:var(--muted);margin-top:3px}
+.positif{color:var(--green)!important}.negatif{color:var(--red)!important}
+.progress-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin:8px 0 4px}.bar{display:block;height:7px;border-radius:99px;background:#E8E1ED;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--violet));border-radius:inherit}.mini-line{font-size:10px;color:var(--muted);margin-top:6px}
+.section-title{align-items:center}.table-wrap{overflow-x:auto;margin-top:10px}.market-table{width:100%;border-collapse:collapse;font-size:11px;min-width:620px}.market-table th,.market-table td{text-align:left;padding:8px;border-bottom:1px solid var(--border);vertical-align:middle}.market-table th{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);background:rgba(241,233,250,.45)}.market-table td strong{font-weight:700}
+.market-search{width:100%;box-sizing:border-box;border:1px solid var(--border);border-radius:10px;padding:9px 10px;background:#fff;font:inherit;font-size:12px;outline:none;margin-top:8px}.market-search:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(49,92,255,.08)}
+.details-control{margin-top:10px;border-top:1px solid var(--border);padding-top:9px;font-size:12px}.details-control summary{cursor:pointer;font-weight:700}.reject-list{display:grid;gap:6px;margin-top:9px}.reject-row{display:flex;justify-content:space-between;gap:10px;padding:7px 9px;background:var(--surface2);border-radius:8px;font-size:11px}.control-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:10px}.control-card{background:var(--surface2);border-radius:10px;padding:10px}.control-card>div{display:flex;justify-content:space-between;align-items:center}.control-card>strong{display:block;font-size:18px;margin-top:8px}.control-card small{color:var(--muted);font-size:10px}.control-placeholder{font-size:12px;color:var(--muted)}
+@media(max-width:600px){main{padding:9px}.stats-hero{grid-template-columns:repeat(3,1fr)}.v3-summary{grid-template-columns:repeat(2,1fr)}.moteur-card,.section-card{padding:11px;border-radius:13px}.moteur-head h2,.section-title h2{font-size:16px}.control-grid{grid-template-columns:1fr}.market-table{font-size:10.5px}.market-table th,.market-table td{padding:7px 6px}}
 </style>
 </head>
 <body>
 <header><div class="header-top"><h1>Archetype Foot — Système</h1></div></header>
-<main><a href="index.html" class="nav-bouton">← Accueil</a><p id="maj-systeme">Chargement…</p><div id="contenu-systeme"></div></main>
-<script src="theme.js"></script><script src="systeme.js?v=20260924b"></script>
+<main>
+<a href="index.html" class="nav-bouton">← Accueil</a>
+<p id="maj-systeme">Chargement de l'état consolidé…</p>
+<div id="contenu-systeme"></div>
+</main>
+<script src="theme.js"></script>
+<script src="systeme.js?v=20260930a"></script>
 </body>
 </html>
