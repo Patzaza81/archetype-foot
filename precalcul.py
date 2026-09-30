@@ -863,7 +863,6 @@ def _slim_pour_archive(s):
 
     CORRECTIF 06/09/2026 (Groupe 4, bug #1) -- TOUS_MARCHES_EVALUES était
     absent d'ici alors que calcule_roi.calcule_calibrage() en dépend
-    entièrement pour recalibrer K_SHRINKAGE/SEUIL_EV_MIN : nb_triplets_
     disponibles restait bloqué à 0 depuis le 04/09, aucune correction
     possible. Remis en place SEULEMENT maintenant que #13 (pseudo-
     réplication -- un match à 28 marchés ne comptait avant que pour 1 dans
