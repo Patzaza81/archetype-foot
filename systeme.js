@@ -1,5 +1,5 @@
 // systeme.js — présentation uniquement, aucun calcul.
-// Affiche etat_systeme.json : bilan du moteur_v2_6_9 et suivi de shrink_v1.
+// Affiche etat_systeme.json : bilan du moteur_v2_6_9.
 
 function formatPctSysteme(x) {
   const n = Number(x);
@@ -24,28 +24,6 @@ function construitBlocGlobal(bilan) {
       <div class="stat"><span class="etiquette">Perdues</span><strong>${g.perdus ?? 0}</strong></div>
       <div class="stat"><span class="etiquette">ROI (mise flat)</span><strong>${g.roi_flat === null || g.roi_flat === undefined ? "—" : formatPctSysteme(g.roi_flat)}</strong></div>
     </div>`;
-  return div;
-}
-
-function construitBlocComparaison(bilanPrincipal, bilanShrink) {
-  const div = document.createElement("div");
-  div.className = "bloc-systeme";
-  const gP = (bilanPrincipal && bilanPrincipal.global) || {};
-  const gS = (bilanShrink && bilanShrink.global) || {};
-  const ligne = (label, a, b) => `<tr><td>${label}</td><td>${a}</td><td>${b}</td></tr>`;
-  const roiTxt = (g) => (g.roi_flat === null || g.roi_flat === undefined ? "—" : formatPctSysteme(g.roi_flat));
-  div.innerHTML = `
-    <h2>Comparaison des moteurs</h2>
-    <p class="ax-bandeau" style="margin-bottom:0.75rem;">shrink_v1 est en test. Ce tableau suit son évolution réelle au fil des matchs.</p>
-    <table class="tableau-systeme">
-      <thead><tr><th></th><th>moteur_v2_6_9 (actuel)</th><th>shrink_v1 (en test)</th></tr></thead>
-      <tbody>
-        ${ligne("Observations résolues", gP.observations ?? 0, gS.observations ?? 0)}
-        ${ligne("Gagnées", gP.gagnes ?? 0, gS.gagnes ?? 0)}
-        ${ligne("Perdues", gP.perdus ?? 0, gS.perdus ?? 0)}
-        ${ligne("ROI (mise flat)", roiTxt(gP), roiTxt(gS))}
-      </tbody>
-    </table>`;
   return div;
 }
 
@@ -74,7 +52,6 @@ function afficheEtatSysteme(etat) {
   maj.textContent = etat.genere_le ? `Dernière mise à jour : ${new Date(etat.genere_le).toLocaleString("fr-FR")}` : "";
 
   racine.appendChild(construitBlocGlobal(etat.bilan_comportemental));
-  racine.appendChild(construitBlocComparaison(etat.bilan_comportemental, etat.bilan_shrink_v1));
   racine.appendChild(construitTableauFamilles(etat.bilan_comportemental));
   if (window.__controleSaisons) racine.insertBefore(construitBlocControleSaisons(window.__controleSaisons), racine.firstChild);
   if (window.__controleFootballData) racine.insertBefore(construitBlocControleFootballData(window.__controleFootballData), racine.firstChild);
