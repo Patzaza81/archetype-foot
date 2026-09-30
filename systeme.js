@@ -1,137 +1,134 @@
-// systeme.js — présentation uniquement, aucun calcul.
-// Affiche etat_systeme.json : bilan du moteur_v2_6_9.
+// systeme.js — tableau de contrôle des deux moteurs. Aucun calcul métier.
+const $ = (id) => document.getElementById(id);
 
-function formatPctSysteme(x) {
+function pct(x, digits=1) {
   const n = Number(x);
-  return Number.isFinite(n) ? `${(n * 100).toFixed(1).replace(".", ",")} %` : "—";
+  return Number.isFinite(n) ? `${(n * 100).toFixed(digits).replace(".", ",")} %` : "—";
+}
+function num(x) {
+  const n = Number(x);
+  return Number.isFinite(n) ? n.toLocaleString("fr-FR") : "—";
+}
+function roiClass(x) {
+  const n = Number(x);
+  return !Number.isFinite(n) ? "" : n > 0 ? "positif" : n < 0 ? "negatif" : "";
+}
+function esc(x) {
+  return x == null ? "" : String(x).replace(/&/g,"&amp;").replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+}
+function bar(value, max=100) {
+  const n = Math.max(0, Math.min(max, Number(value)||0));
+  return `<span class="bar"><i style="width:${(n/max)*100}%"></i></span>`;
 }
 
-function echappeHtmlSysteme(x) {
-  return x === null || x === undefined ? "" : String(x)
-    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+function moteurCarte(m, couleur) {
+  const g = m.global || {};
+  const c = m.calibration || {};
+  const v3 = m.role === "EXPERIMENTAL";
+  const calibration = v3
+    ? `${num(c.observations)} / ${num(c.minimum_observations)} obs. · ${num(c.matchs)} / ${num(c.minimum_matchs)} matchs`
+    : "Production active";
+  const progress = v3 ? Math.min(100, (Number(c.observations||0)/Math.max(1,Number(c.minimum_observations||1)))*100) : 100;
+  return `
+    <article class="moteur-card ${couleur}">
+      <div class="moteur-head"><div><span class="sur-titre">${v3 ? "MOTEUR EXPÉRIMENTAL" : "MOTEUR DE PRODUCTION"}</span><h2>${esc(m.nom)}</h2></div>
+      <span class="pill ${v3 ? "pill-v3" : "pill-ok"}">${v3 ? "NON VALIDÉ" : "ACTIF"}</span></div>
+      <p class="moteur-note">${v3 ? "Suivi séparé : les aperçus non calibrés ne sont jamais présentés comme des performances réalisées." : "Référence de production. Les résultats sont suivis sur les paris effectivement réglés."}</p>
+      <div class="stats-hero">
+        <div><b>${num(g.observations ?? g.matchs)}</b><small>${v3 ? "matchs suivis" : "paris réglés"}</small></div>
+        <div><b>${num(g.gagnes ?? g.selections ?? 0)}</b><small>${v3 ? "sélections" : "gagnés"}</small></div>
+        <div><b class="${roiClass(g.roi)}">${v3 ? "—" : pct(g.roi)}</b><small>${v3 ? "ROI validé" : "ROI flat"}</small></div>
+      </div>
+      <div class="progress-label"><span>${v3 ? "Progression calibration" : "État du moteur"}</span><strong>${v3 ? Math.round(progress)+" %" : "100 %"}</strong></div>
+      ${bar(progress)}
+      <div class="mini-line">${esc(calibration)}</div>
+    </article>`;
 }
 
-function construitBlocGlobal(bilan) {
-  const g = (bilan && bilan.global) || {};
-  const div = document.createElement("div");
-  div.className = "bloc-systeme";
-  div.innerHTML = `
-    <h2>Bilan comportemental global</h2>
-    <div class="grille-stats">
-      <div class="stat"><span class="etiquette">Observations résolues</span><strong>${g.observations ?? 0}</strong></div>
-      <div class="stat"><span class="etiquette">Gagnées</span><strong>${g.gagnes ?? 0}</strong></div>
-      <div class="stat"><span class="etiquette">Perdues</span><strong>${g.perdus ?? 0}</strong></div>
-      <div class="stat"><span class="etiquette">ROI (mise flat)</span><strong>${g.roi_flat === null || g.roi_flat === undefined ? "—" : formatPctSysteme(g.roi_flat)}</strong></div>
-    </div>`;
-  return div;
+function blocControle() {
+  return `<section class="section-card compact"><div class="section-title"><div><span class="sur-titre">SURVEILLANCE</span><h2>Contrôles d'intégrité</h2></div></div>
+  <p class="section-sub">Les contrôles de saison et Football-Data restent indépendants des statistiques des moteurs.</p>
+  <div id="controles-systeme" class="control-grid"><div class="control-placeholder">Chargement des contrôles…</div></div></section>`;
 }
 
-function construitTableauFamilles(bilan) {
-  const parFamille = (bilan && bilan.par_famille) || {};
-  const familles = Object.keys(parFamille);
-  const div = document.createElement("div");
-  div.className = "bloc-systeme";
-  if (!familles.length) {
-    div.innerHTML = `<h2>Par famille de marché</h2><p class="etat-vide-systeme">Aucune observation résolue pour l'instant.</p>`;
-    return div;
-  }
-  const lignes = familles.map((famille) => {
-    const r = parFamille[famille].resume || {};
-    return `<tr><td>${echappeHtmlSysteme(famille)}</td><td>${r.observations ?? 0}</td><td>${r.gagnes ?? 0}</td><td>${r.perdus ?? 0}</td><td>${r.roi_flat === null || r.roi_flat === undefined ? "—" : formatPctSysteme(r.roi_flat)}</td></tr>`;
-  }).join("");
-  div.innerHTML = `<h2>Par famille de marché</h2>
-    <table class="tableau-systeme"><thead><tr><th>Famille</th><th>Obs.</th><th>Gagnées</th><th>Perdues</th><th>ROI</th></tr></thead><tbody>${lignes}</tbody></table>`;
-  return div;
+function blocV2(m) {
+  const rows = (m.par_marche || []).map(r => `
+    <tr data-marche="${esc(r.marche).toLowerCase()}">
+      <td><strong>${esc(r.marche)}</strong></td><td>${num(r.observations)}</td><td>${num(r.gagnes)}</td>
+      <td class="${roiClass(r.roi)}">${pct(r.roi)}</td><td>${pct(r.reussite)}</td><td>${esc(r.statut || "—")}</td>
+    </tr>`).join("");
+  return `<section class="section-card"><div class="section-title"><div><span class="sur-titre">MARCHÉS · V2</span><h2>Performance réalisée par marché</h2></div><span class="source-tag">Réglé</span></div>
+  <p class="section-sub">Uniquement les paris effectivement réglés. Aucun résultat V3 n'est mélangé à cette série.</p>
+  <input class="market-search" id="search-v2" placeholder="Rechercher un marché…" aria-label="Rechercher un marché V2">
+  <div class="table-wrap"><table class="market-table"><thead><tr><th>Marché</th><th>Paris</th><th>Gagnés</th><th>ROI</th><th>Réussite</th><th>Statut</th></tr></thead><tbody id="rows-v2">${rows || '<tr><td colspan="6">Aucune donnée.</td></tr>'}</tbody></table></div></section>`;
 }
 
-function afficheEtatSysteme(etat) {
-  const racine = document.getElementById("contenu-systeme");
-  const maj = document.getElementById("maj-systeme");
-  racine.innerHTML = "";
-  maj.textContent = etat.genere_le ? `Dernière mise à jour : ${new Date(etat.genere_le).toLocaleString("fr-FR")}` : "";
+function blocV3(m) {
+  const c = m.calibration || {}, g = m.global || {};
+  const rows = (m.par_marche || []).map(r => `
+    <tr data-marche="${esc(r.marche).toLowerCase()}">
+      <td><strong>${esc(r.marche)}</strong></td><td>${num(r.calculs)}</td><td>${num(r.apercus)}</td>
+      <td>${num(r.selections)}</td><td>${r.probabilite_moyenne == null ? "—" : pct(r.probabilite_moyenne)}</td><td>${r.edv_moyenne == null ? "—" : r.edv_moyenne.toFixed(2).replace(".",",")}</td>
+    </tr>`).join("");
+  const rejet = Object.entries(m.raisons_rejet || {}).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([k,v])=>`<div class="reject-row"><span>${esc(k)}</span><b>${num(v)}</b></div>`).join("");
+  return `<section class="section-card"><div class="section-title"><div><span class="sur-titre">MARCHÉS · V3</span><h2>Couverture et comportement expérimental</h2></div><span class="source-tag v3">Non calibré</span></div>
+  <div class="v3-summary">
+    <div><span>Matchs évalués</span><b>${num(g.evalues)} / ${num(g.matchs)}</b></div>
+    <div><span>Calculs de marchés</span><b>${num(g.marches_cotes_calcules)}</b></div>
+    <div><span>Aperçus</span><b>${num(g.apercus_non_calibres)}</b></div>
+    <div><span>Sélections validées</span><b>${num(g.selections)}</b></div>
+  </div>
+  <div class="table-wrap"><input class="market-search" id="search-v3" placeholder="Rechercher un marché…" aria-label="Rechercher un marché V3">
+  <table class="market-table"><thead><tr><th>Marché</th><th>Calculs</th><th>Aperçus</th><th>Sélections</th><th>P moy.</th><th>EDV moy.</th></tr></thead><tbody id="rows-v3">${rows || '<tr><td colspan="6">Aucune donnée.</td></tr>'}</tbody></table></div>
+  <details class="details-control"><summary>Pourquoi les candidats sont écartés</summary><div class="reject-list">${rejet || "Aucun rejet enregistré."}</div></details>
+  </section>`;
+}
 
-  racine.appendChild(construitBlocGlobal(etat.bilan_comportemental));
-  racine.appendChild(construitTableauFamilles(etat.bilan_comportemental));
-  if (window.__controleSaisons) racine.insertBefore(construitBlocControleSaisons(window.__controleSaisons), racine.firstChild);
-  if (window.__controleFootballData) racine.insertBefore(construitBlocControleFootballData(window.__controleFootballData), racine.firstChild);
+function blocEvolution(m) {
+  const hist = m.evolution || [];
+  const rows = hist.map(x=>`<tr><td><strong>${esc(x.date)}</strong></td><td>${num(x.matchs)}</td><td>${num(x.evalues)}</td><td>${num(x.apercus)}</td><td>${num(x.selections)}</td></tr>`).join("");
+  return `<section class="section-card"><div class="section-title"><div><span class="sur-titre">RÉTROSPECTIVE</span><h2>Évolution quotidienne du V3</h2></div></div>
+  <p class="section-sub">Historique réellement présent dans les journaux V3. Une sélection « aperçu » reste explicitement non calibrée.</p>
+  <div class="table-wrap"><table class="market-table"><thead><tr><th>Date</th><th>Matchs</th><th>Évalués</th><th>Aperçus</th><th>Sélections</th></tr></thead><tbody>${rows || '<tr><td colspan="5">Pas encore d’historique.</td></tr>'}</tbody></table></div></section>`;
+}
+
+function afficher(etat) {
+  const v2 = etat.moteurs?.moteur_v2_6_9 || etat.bilan_comportemental || {};
+  const v3 = etat.moteurs?.moteur_v3 || etat.bilan_v3 || {};
+  $("maj-systeme").textContent = etat.genere_le ? `État consolidé · ${new Date(etat.genere_le).toLocaleString("fr-FR")}` : "";
+  $("contenu-systeme").innerHTML =
+    moteurCarte(v2,"v2") + moteurCarte(v3,"v3") +
+    blocV2(v2) + blocV3(v3) + blocEvolution(v3) + blocControle();
+  bindSearch("search-v2","rows-v2"); bindSearch("search-v3","rows-v3");
+  chargerControles();
+}
+function bindSearch(inputId, rowsId) {
+  const input=$(inputId); if(!input) return;
+  input.addEventListener("input",()=>{const q=input.value.toLowerCase().trim(); $(rowsId)?.querySelectorAll("tr").forEach(tr=>tr.style.display=tr.dataset.marche?.includes(q)?"":"none");});
+}
+function chargerControles() {
+  Promise.all([
+    fetch(`controle_saisons.json?_=${Date.now()}`).then(r=>r.ok?r.json():null).catch(()=>null),
+    fetch(`data/controles/football_data.json?_=${Date.now()}`).then(r=>r.ok?r.json():null).catch(()=>null)
+  ]).then(([s,f])=>{
+    const root=$("controles-systeme"); if(!root)return;
+    root.innerHTML="";
+    if(s) root.appendChild(carteControle("Saisons",s.resume||{},s.genere_le));
+    if(f) root.appendChild(carteControle("Football-Data",f.resume||{},f.genere_le));
+    if(!root.children.length) root.innerHTML='<div class="control-placeholder">Contrôles indisponibles pour le moment.</div>';
+  });
+}
+function carteControle(t,r,date) {
+  const d=document.createElement("div"); d.className="control-card";
+  const ok=t==="Saisons" ? Number(r.incoherentes||0)===0 : !!r.critere_atteint;
+  d.innerHTML=`<div><b>${t}</b><span class="pill ${ok?"pill-ok":"pill-warn"}">${ok?"OK":"À contrôler"}</span></div>
+  <strong>${t==="Saisons"?num(r.verifiables):num(r.matchs_communs_compares)}</strong>
+  <small>${t==="Saisons"?"équipes vérifiables":"matchs comparés"} · ${esc(date||"")}</small>`;
+  return d;
 }
 
 fetch(`etat_systeme.json?_=${Date.now()}`)
-  .then((r) => { if (!r.ok) throw new Error(`etat_systeme.json introuvable (${r.status})`); return r.json(); })
-  .then(afficheEtatSysteme)
-  .catch((e) => {
-    document.getElementById("maj-systeme").textContent = "Erreur de chargement : " + e.message;
-    console.error(e);
-  });
-
-/* AJOUT 24/09/2026 — Contrôle des données de saison (controle_saisons.py, workflow journal.yml).
-   Bloc indépendant : il s'affiche même si etat_systeme.json est indisponible, et son échec n'affecte pas le reste. */
-function construitBlocControleSaisons(rapport) {
-  const div = document.createElement("section");
-  div.className = "bloc-systeme";
-  div.id = "bloc-controle-saisons";
-  const r = rapport.resume || {};
-  const taux = r.taux_incoherence === null || r.taux_incoherence === undefined ? "—" : formatPctSysteme(r.taux_incoherence);
-  const lignes = (rapport.incoherentes || []).map((l) => {
-    const manq = (l.manquants || []).map((m) =>
-      `${echappeHtmlSysteme(m.date.slice(8, 10) + "/" + m.date.slice(5, 7))} ${echappeHtmlSysteme(m.lieu === "domicile" ? "dom." : "ext.")} ` +
-      `contre ${echappeHtmlSysteme(m.adversaire)} (${echappeHtmlSysteme(m.score_equipe)})`).join("<br>");
-    return `<tr><td><b>${echappeHtmlSysteme(l.equipe)}</b><br><span style="color:var(--text-secondary)">${echappeHtmlSysteme(l.competition)}</span></td>` +
-      `<td>${l.matchs_enregistres}</td><td>${manq}</td></tr>`;
-  }).join("");
-  div.innerHTML = `<h2>Contrôle des données de saison</h2>
-    <p style="margin:0 0 9px;font-size:12.5px;color:var(--text-secondary)">Chaque match connu par les pages de match doit figurer dans la saison enregistrée de l'équipe (même compétition, même lieu, même score). Sinon la saison enregistrée est fausse et le moteur analyse l'équipe sur de mauvais chiffres. Contrôle du ${echappeHtmlSysteme(rapport.genere_le || "—")}.</p>
-    <div class="grille-stats">
-      <div class="stat"><span class="etiquette">Équipes vérifiables</span><strong>${r.verifiables ?? 0}</strong></div>
-      <div class="stat"><span class="etiquette">Cohérentes</span><strong style="color:var(--green)">${r.coherentes ?? 0}</strong></div>
-      <div class="stat"><span class="etiquette">Incohérentes</span><strong style="color:var(--red)">${r.incoherentes ?? 0}</strong></div>
-      <div class="stat"><span class="etiquette">Taux d'erreur</span><strong style="color:var(--red)">${taux}</strong></div>
-    </div>` + (lignes ? `<div style="overflow-x:auto;margin-top:10px"><table class="tableau-systeme"><thead><tr><th>Équipe</th><th>Matchs enregistrés</th><th>Match réel absent de la saison enregistrée</th></tr></thead><tbody>${lignes}</tbody></table></div>`
-      : `<p class="etat-vide-systeme">Aucune incohérence détectée.</p>`);
-  return div;
-}
-
-fetch(`controle_saisons.json?_=${Date.now()}`)
-  .then((r) => { if (!r.ok) throw new Error(`controle_saisons.json introuvable (${r.status})`); return r.json(); })
-  .then((rapport) => {
-    window.__controleSaisons = rapport;
-    const racine = document.getElementById("contenu-systeme");
-    const ancien = document.getElementById("bloc-controle-saisons");
-    if (ancien) ancien.remove();
-    racine.insertBefore(construitBlocControleSaisons(rapport), racine.firstChild);
-  })
-  .catch((e) => console.error(e));
-
-
-/* AJOUT 24/09/2026 — A4 : contrôle qualité Football-Data (controle_football_data.py). Bloc indépendant. */
-function construitBlocControleFootballData(rapport) {
-  const div = document.createElement("section");
-  div.className = "bloc-systeme";
-  div.id = "bloc-controle-football-data";
-  const r = rapport.resume || {};
-  const taux = r.taux_accord === null || r.taux_accord === undefined ? "—" : formatPctSysteme(r.taux_accord);
-  const lignes = (rapport.desaccords || []).map((d) =>
-    `<tr><td><b>${echappeHtmlSysteme(d.match)}</b><br><span style="color:var(--text-secondary)">${echappeHtmlSysteme(d.division)} · ${echappeHtmlSysteme(d.date_football_data)}</span></td>` +
-    `<td>${echappeHtmlSysteme(d.score_football_data)}</td><td>${echappeHtmlSysteme(d.score_matchendirect)} (${echappeHtmlSysteme(d.date_matchendirect)})</td></tr>`).join("");
-  div.innerHTML = `<h2>Contrôle des données Football-Data</h2>
-    <p style="margin:0 0 9px;font-size:12.5px;color:var(--text-secondary)">Scores Football-Data comparés à Matchendirect sur les matchs communs (mêmes équipes, date à ± 1 jour). ${echappeHtmlSysteme(rapport.critere || "")}. Contrôle du ${echappeHtmlSysteme(rapport.genere_le || "—")}.</p>
-    <div class="grille-stats">
-      <div class="stat"><span class="etiquette">Matchs comparés</span><strong>${r.matchs_communs_compares ?? 0}</strong></div>
-      <div class="stat"><span class="etiquette">Accord</span><strong style="color:${r.critere_atteint ? "var(--green)" : "var(--red)"}">${taux}</strong></div>
-      <div class="stat"><span class="etiquette">Désaccords</span><strong>${r.desaccords ?? 0}</strong></div>
-      <div class="stat"><span class="etiquette">Doublons / dates</span><strong>${(r.doublons ?? 0) + (r.dates_invalides ?? 0) + (r.dates_futures ?? 0)}</strong></div>
-    </div>` + (lignes ? `<div style="overflow-x:auto;margin-top:10px"><table class="tableau-systeme"><thead><tr><th>Match</th><th>Football-Data</th><th>Matchendirect</th></tr></thead><tbody>${lignes}</tbody></table></div>` : "");
-  return div;
-}
-
-fetch(`data/controles/football_data.json?_=${Date.now()}`)
-  .then((r) => { if (!r.ok) throw new Error(`football_data.json introuvable (${r.status})`); return r.json(); })
-  .then((rapport) => {
-    window.__controleFootballData = rapport;
-    const racine = document.getElementById("contenu-systeme");
-    const ancien = document.getElementById("bloc-controle-football-data");
-    if (ancien) ancien.remove();
-    racine.insertBefore(construitBlocControleFootballData(rapport), racine.firstChild);
-  })
-  .catch((e) => console.error(e));
+  .then(r=>{if(!r.ok)throw new Error(`etat_systeme.json introuvable (${r.status})`);return r.json();})
+  .then(afficher)
+  .catch(e=>{$("maj-systeme").textContent="Erreur de chargement : "+e.message;console.error(e);});
