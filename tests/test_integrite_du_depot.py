@@ -1,5 +1,6 @@
 """Intégrité du dépôt après nettoyage : compilation et import des composants réellement utilisés."""
 import glob
+import importlib
 import os
 import py_compile
 import re
