@@ -153,7 +153,6 @@ Hébergé sur Netlify (`netlify.toml` : publie la racine du dépôt, en-têtes a
 | `panier.html` — Panier | `panier.js` + ceux d'Archetype | `precalcul_leger.json` + panier du navigateur |
 | `systeme.html` — Bilan système | `systeme.js`, `style.css`, `theme.css` | `etat_systeme.json` |
 | `admin.html` — Audit / calibration | `admin.js`, `style.css`, `theme.css` | `data/audit_status.json`, `data/audit_telemetry.json`, `config/journal_promotion.jsonl` |
-| `archetype_shrink.html` et `pronostics_shrink.html` — Pronostics du second moteur | `archetype_shrink.js` + ceux d'Archetype (même gabarit, même carte) | `precalcul_shrink_leger.json` (bloc `shrink_v1`) |
 | `journal.html` — Journal de rentabilité | `journal.js`, `journal.css` + `archetype.css` | `journal.json` |
 | `presentation-site.html` | autonome | aucune (maquette temporaire) |
 
@@ -182,7 +181,6 @@ Conventions :
 match terminé est réglée sur le score final, et on calcule ce qu'aurait rapporté une mise de 1 à chaque fois (ROI).
 Sources : `data/echantillon_betpawa_501.json` (501 matchs figés, 09-20/09) + `historique_pronostics.json` (matchs à
 `source_cotes = "manuel"`, c'est-à-dire cotés BetPawa). Seule la rubrique « Moteurs » lit les choix des deux moteurs
-(`archive/`, `archive_shrink/`, `precalcul_*leger.json`), sans les recalculer.
 
 Workflow **séparé** : `.github/workflows/journal.yml`, lancé à la fin de chaque pipeline (réussi ou non) et à 05:30 UTC
 en secours ; lance `tests/test_journal_rentabilite.py` puis `journal_rentabilite.py`, et ne publie que `journal.json`.
@@ -313,8 +311,6 @@ Décisions du propriétaire, documentées dans le code et dans `ROADMAP.md` (§4
   (`_section_competition`). Garde-fou dans `stats_saison_en_cours.py` : une saison qui contredit un score connu est
   refusée (`saison_incoherente_avec_resultats_connus`). Tests sur pages réelles : `tests/test_lecture_saison_pages_reelles.py`.
   `cache_equipes_saison.json` a été vidé le 24/09 pour forcer une relecture de toutes les équipes.
-- **Page du second moteur** : `archetype_shrink.js` filtrait sur `moteur_utilise`, alors que le pipeline marque le second
-  moteur dans `shrink_v1_utilise` ; la page était toujours vide (corrigé le 24/09).
 
 ## 10. Documents du projet
 
