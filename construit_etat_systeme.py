@@ -7,7 +7,9 @@ réussite ne doit être présenté comme une performance validée.
 from __future__ import annotations
 
 import datetime
+import gzip
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -145,12 +147,122 @@ def _v3_evolution(doc: dict[str, Any]) -> list[dict[str, Any]]:
     return lignes
 
 
+def _charge_scores_archive() -> dict[str, tuple[int, int]]:
+    """Indexe uniquement les scores réellement archivés pour régler les aperçus V3."""
+    out: dict[str, tuple[int, int]] = {}
+    dossier = Path("data/archive_test")
+    for path in sorted(dossier.glob("*.json.gz")):
+        try:
+            with gzip.open(path, "rt", encoding="utf-8") as f:
+                doc = json.load(f)
+        except (OSError, EOFError, json.JSONDecodeError):
+            continue
+        if not isinstance(doc, dict):
+            continue
+        for match_id, rec in doc.items():
+            if not isinstance(rec, dict):
+                continue
+            score = rec.get("score") or {}
+            h, a = score.get("buts_dom"), score.get("buts_ext")
+            if isinstance(h, int) and isinstance(a, int):
+                out[str(match_id)] = (h, a)
+    return out
+
+
+def _resultat_marche(marche: str, score: tuple[int, int]) -> bool | None:
+    """Règle de règlement des marchés effectivement affichés en aperçu V3."""
+    h, a = score
+    total = h + a
+    if marche == "1x2_1": return h > a
+    if marche == "1x2_X": return h == a
+    if marche == "1x2_2": return h < a
+    if marche == "dc_1X": return h >= a
+    if marche == "dc_X2": return h <= a
+    if marche == "dc_12": return h != a
+    if marche == "btts_yes": return h > 0 and a > 0
+    if marche == "btts_no": return h == 0 or a == 0
+    m = re.fullmatch(r"(over|under)_(\d+)_5", marche)
+    if m:
+        seuil = int(m.group(2)) + 0.5
+        return total > seuil if m.group(1) == "over" else total < seuil
+    m = re.fullmatch(r"(home|away)_(over|under)_(\d+)_5", marche)
+    if m:
+        buts = h if m.group(1) == "home" else a
+        seuil = int(m.group(3)) + 0.5
+        return buts > seuil if m.group(2) == "over" else buts < seuil
+    m = re.fullmatch(r"handicap_(\d+(?:\.\d+)?)_(1|X|2)", marche)
+    if m:
+        ligne = float(m.group(1))
+        diff = h - a
+        if m.group(2) == "1": return diff > ligne
+        if m.group(2) == "X": return diff == ligne
+        return diff < ligne
+    return None
+
+
+def _v3_retrospective() -> dict[str, Any]:
+    """Règle l'historique des APERÇUS réellement affichés, sans les confondre avec des sélections validées."""
+    scores = _charge_scores_archive()
+    total = wins = losses = pushes = 0
+    mises = gains = 0.0
+    par_marche: dict[str, dict[str, Any]] = {}
+    par_date: dict[str, dict[str, Any]] = {}
+    for path in sorted(DOSSIER_JOURNAL_V3.glob("*.json")):
+        journal = _charge_json(path, {})
+        if not isinstance(journal, dict):
+            continue
+        for match in journal.values():
+            if not isinstance(match, dict):
+                continue
+            mid = str(match.get("match_id") or "")
+            score = scores.get(mid)
+            if score is None:
+                continue
+            for apercu in match.get("apercu_non_calibre") or []:
+                marche = apercu.get("marche")
+                cote = _f(apercu.get("cote"))
+                if not marche or cote is None:
+                    continue
+                resultat = _resultat_marche(marche, score)
+                if resultat is None:
+                    continue
+                total += 1
+                s = par_marche.setdefault(marche, {"marche": marche, "observations": 0, "gagnes": 0, "perdus": 0, "rembourses": 0, "mise": 0.0, "gain_net": 0.0})
+                d = par_date.setdefault(str(match.get("date") or path.stem), {"date": str(match.get("date") or path.stem), "observations": 0, "gagnes": 0, "perdus": 0, "rembourses": 0, "mise": 0.0, "gain_net": 0.0})
+                s["observations"] += 1; d["observations"] += 1; mises += 1.0; s["mise"] += 1.0; d["mise"] += 1.0
+                if resultat is True:
+                    wins += 1; s["gagnes"] += 1; d["gagnes"] += 1
+                    net = cote - 1.0; gains += net; s["gain_net"] += net; d["gain_net"] += net
+                elif resultat is False:
+                    losses += 1; s["perdus"] += 1; d["perdus"] += 1; s["gain_net"] -= 1.0; d["gain_net"] -= 1.0
+                else:
+                    pushes += 1; s["rembourses"] += 1; d["rembourses"] += 1
+    def finalize(s):
+        obs = s["observations"]
+        s["taux_reussite"] = round(s["gagnes"] / obs, 4) if obs else None
+        s["roi"] = round(s["gain_net"] / s["mise"], 4) if s["mise"] else None
+        s["gain_net"] = round(s["gain_net"], 3)
+        s.pop("mise", None)
+        return s
+    return {
+        "methode": "Aperçus V3 réellement affichés, réglés uniquement quand un score est présent dans data/archive_test. Mise théorique 1 unité par aperçu. Les aperçus restent non calibrés et ne constituent pas des sélections validées.",
+        "observations": total, "gagnes": wins, "perdus": losses, "rembourses": pushes,
+        "taux_reussite": round(wins / total, 4) if total else None,
+        "roi_theorique": round(gains / mises, 4) if mises else None,
+        "gain_net_theorique": round(gains, 3),
+        "par_marche": [finalize(v) for v in sorted(par_marche.values(), key=lambda x: (-x["observations"], x["marche"]))],
+        "par_date": [finalize(v) for v in sorted(par_date.values(), key=lambda x: x["date"])],
+    }
+
+
 def construit_v3() -> dict[str, Any]:
     doc = _charge_json(FICHIER_V3, {})
     calibration = doc.get("calibration") or {}
     bilan = doc.get("bilan") or {}
     couverture = bilan.get("couverture") or {}
     matchs = doc.get("matchs") or []
+
+    retro = _v3_retrospective()
 
     return {
         "nom": "moteur_v3",
@@ -178,6 +290,7 @@ def construit_v3() -> dict[str, Any]:
         "raisons_rejet": bilan.get("raisons_de_rejet") or {},
         "par_marche": _v3_marche_stats(doc),
         "evolution": _v3_evolution(doc),
+        "retrospective": retro,
     }
 
 
