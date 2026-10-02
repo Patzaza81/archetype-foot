@@ -33,9 +33,26 @@ def transition(rows, window=5):
         return {"rupture": False, "reprise": False, "avant": None, "apres": None}
     p0 = sum(bool(r.resultat) for r in previous) / len(previous)
     p1 = sum(bool(r.resultat) for r in recent) / len(recent)
+
     rupture = (p0 >= 0.70 and p1 <= 0.40) or (p0 <= 0.30 and p1 >= 0.60)
-    reprise = (p0 <= 0.40 and p1 >= 0.60) or (p0 >= 0.60 and p1 <= 0.40)
-    return {"rupture": rupture, "reprise": reprise, "avant": round(p0,4), "apres": round(p1,4)}
+
+    # Une reprise exige un vrai épisode intermédiaire de rupture :
+    # ancien régime stable -> phase opposée -> retour du régime initial.
+    reprise = False
+    if len(rows) >= 3 * window:
+        before = rows[-3*window:-2*window]
+        p_before = sum(bool(r.resultat) for r in before) / len(before)
+        reprise = (
+            (p_before >= 0.70 and p0 <= 0.40 and p1 >= 0.60)
+            or (p_before <= 0.30 and p0 >= 0.60 and p1 <= 0.40)
+        )
+
+    return {
+        "rupture": rupture,
+        "reprise": reprise,
+        "avant": round(p0,4),
+        "apres": round(p1,4),
+    }
 
 def analyser_sequences(rows):
     s = sequence(rows)

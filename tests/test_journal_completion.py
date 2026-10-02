@@ -29,3 +29,9 @@ def test_walk_forward_has_no_future_history():
     out=walk_forward(rows, min_history=5)
     assert out[0]["echantillon_avant"]==5
     assert out[0]["date_signal"]=="2026-09-06"
+
+
+def test_reprise_requires_intermediate_break():
+    rows=[h(i, True) for i in range(1,6)] + [h(i, False) for i in range(6,11)] + [h(i, True) for i in range(11,16)]
+    x=analyser_sequences(rows)
+    assert x["reprise"] is True

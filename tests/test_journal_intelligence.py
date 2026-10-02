@@ -59,3 +59,32 @@ def test_n1_snapshot_reader(tmp_path):
     assert result["disponible"] is True
     assert result["echantillon"]==1
     assert result["frequence"]==1.0
+
+
+def test_observation_survives_without_current_odds():
+    from journal.journal_observatoire import construire_fiche
+    records = [
+        {"date":"2026-09-01","match_id":"m1","domicile":"A","exterieur":"B","competition":"L",
+         "cotes_observees":{"BTTS - oui":1.8},"score":{"buts_dom":1,"buts_ext":1}},
+        {"date":"2026-09-05","match_id":"m2","domicile":"C","exterieur":"A","competition":"L",
+         "cotes_observees":{"BTTS - oui":1.9},"score":{"buts_dom":0,"buts_ext":1}},
+    ]
+    upcoming = {"date":"2026-09-10","match_id":"m3","domicile":"A","exterieur":"D","competition":"L"}
+    fiche = construire_fiche(upcoming, records)
+    assert any(o["marche"] == "BTTS - oui" for o in fiche["observations"])
+    assert all(o["date"] if "date" in o else True for o in fiche["observations"])
+
+
+def test_model_archive_is_grouped_without_losing_market_results():
+    from journal.journal_observatoire import _normaliser_archives_model
+    raw = [
+        {"match_id":"m1","date_match":"2026-09-01","heure_match":"18:00","equipe_dom":"A","equipe_ext":"B","competition":"L",
+         "marche":"btts_oui","cote":1.8,"resultat_statut":"RESOLVED","resultat_marche":"WIN","buts_marques":1,"buts_encaisses":1},
+        {"match_id":"m1","date_match":"2026-09-01","heure_match":"18:00","equipe_dom":"A","equipe_ext":"B","competition":"L",
+         "marche":"1x2_domicile","cote":2.1,"resultat_statut":"RESOLVED","resultat_marche":"LOSS","buts_marques":1,"buts_encaisses":1},
+    ]
+    rows = list(_normaliser_archives_model(raw))
+    assert len(rows) == 1
+    assert set(rows[0]["cotes_observees"]) == {"btts_oui", "1x2_domicile"}
+    assert rows[0]["resultats_marches"] == {"btts_oui": True, "1x2_domicile": False}
+    assert rows[0]["score"] == {"buts_dom": 1, "buts_ext": 1}

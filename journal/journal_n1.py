@@ -1,7 +1,6 @@
 from __future__ import annotations
 import csv, glob, os, re
-from collections import defaultdict
-from .journal_memoire import evaluer_marche
+from journal.journal_memoire import evaluer_marche
 
 def _norm(s):
     return re.sub(r"[^a-z0-9]+","",str(s or "").lower().encode("ascii","ignore").decode())
@@ -9,6 +8,16 @@ def _norm(s):
 def _num(v):
     try: return float(v)
     except (TypeError,ValueError): return None
+
+def _date_csv(v):
+    s = str(v or "").strip()
+    for fmt in ("%d/%m/%y", "%d/%m/%Y", "%Y-%m-%d"):
+        try:
+            import datetime
+            return datetime.datetime.strptime(s, fmt).date().isoformat()
+        except ValueError:
+            continue
+    return None
 
 def charger_n1(root="data/football_data/snapshots"):
     rows=[]
@@ -24,15 +33,25 @@ def charger_n1(root="data/football_data/snapshots"):
                         home,away=r.get("HomeTeam"),r.get("AwayTeam")
                         hg,ag=_num(r.get("FTHG")),_num(r.get("FTAG"))
                         if home and away and hg is not None and ag is not None:
-                            rows.append({"saison":saison,"home":home,"away":away,"hg":hg,"ag":ag,"competition":os.path.splitext(os.path.basename(path))[0]})
+                            rows.append({
+                                "date": _date_csv(r.get("Date")),
+                                "saison":saison,
+                                "home":home,
+                                "away":away,
+                                "hg":hg,
+                                "ag":ag,
+                                "competition":os.path.splitext(os.path.basename(path))[0],
+                            })
             except (OSError,csv.Error):
                 continue
     return rows
 
-def stats_equipe_marche(rows, team, market, contexte=None):
+def stats_equipe_marche(rows, team, market, contexte=None, target_date=None):
     target=_norm(team)
     out=[]
     for r in rows:
+        if target_date and r.get("date") and r["date"] >= str(target_date):
+            continue
         if contexte=="DOMICILE" and _norm(r["home"])!=target: continue
         if contexte=="EXTERIEUR" and _norm(r["away"])!=target: continue
         if contexte is None and target not in {_norm(r["home"]),_norm(r["away"])}: continue

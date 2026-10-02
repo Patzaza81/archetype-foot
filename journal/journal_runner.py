@@ -8,17 +8,16 @@ from .journal_sequences import analyser_sequences
 from .journal_anticipation import anticiper
 from .journal_persistance import taux_persistance
 from .journal_validation import resume_validation
-from .journal_radar import construire_radar
 
 def _price_compatibility(rows, cote):
-    if cote is None:
+    if cote is None or not rows:
         return None
     band = tranche_cote(cote)
     same = [r for r in rows if r.cote is not None and tranche_cote(r.cote) == band]
     if len(same) < 3:
         return None
     freq = sum(r.resultat for r in same) / len(same)
-    overall = sum(r.resultat for r in rows) / len(rows) if rows else 0
+    overall = sum(r.resultat for r in rows) / len(rows)
     return freq >= overall
 
 def _group(hist):
@@ -27,25 +26,37 @@ def _group(hist):
         grouped.setdefault((r.equipe, r.marche), []).append(r)
     return grouped
 
-def run(archive_dir="data/archive_test", out_dir="data", n1_dir="data/football_data/snapshots"):
+def historique_avant(records, target_date):
+    """Construit exclusivement l'information disponible avant target_date."""
+    return construire_historique(records, target_date=str(target_date))
+
+def run(archive_dir="archive", out_dir="data", n1_dir="data/football_data/snapshots"):
     records = charger_archives(archive_dir)
     scored = [r for r in records if isinstance(r.get("score"), dict)]
     upcoming = [r for r in records if r.get("score") is None]
     n1_rows = charger_n1(n1_dir)
+
+    # Mémoire globale : uniquement pour les sorties historiques déjà produites.
     hist = construire_historique(scored)
     grouped = _group(hist)
 
     fiches = []
     for match in sorted(upcoming, key=lambda x: (str(x.get("date")), str(x.get("match_id")))):
-        fiche = construire_fiche(match, records, historique=hist)
+        target_date = str(match.get("date") or "")
+        hist_before = historique_avant(scored, target_date)
+        grouped_before = _group(hist_before)
+        fiche = construire_fiche(match, records, historique=hist_before)
         anticipations = {}
         for obs in fiche["observations"]:
             key = f"{obs.get('equipe_reference')}|{obs.get('contexte')}|{obs.get('marche')}"
-            obs["sequence"] = analyser_sequences(
-                grouped.get((obs["equipe_reference"], obs["marche"]), [])
-            )
+            rows = grouped_before.get((obs["equipe_reference"], obs["marche"]), [])
+            obs["sequence"] = analyser_sequences(rows)
             obs["n1"] = stats_equipe_marche(
-                n1_rows, obs["equipe_reference"], obs["marche"], obs["contexte"]
+                n1_rows,
+                obs["equipe_reference"],
+                obs["marche"],
+                obs["contexte"],
+                target_date=target_date,
             )
             market_odds = (match.get("cotes_observees") or match.get("cotes_betpawa") or {})
             raw_cote = market_odds.get(obs["marche"])
@@ -53,9 +64,7 @@ def run(archive_dir="data/archive_test", out_dir="data", n1_dir="data/football_d
                 cote = float(raw_cote) if raw_cote is not None else None
             except (TypeError, ValueError):
                 cote = None
-            compatible = _price_compatibility(
-                grouped.get((obs["equipe_reference"], obs["marche"]), []), cote
-            )
+            compatible = _price_compatibility(rows, cote)
             ant = anticiper(
                 obs,
                 obs["n1"],
@@ -69,6 +78,9 @@ def run(archive_dir="data/archive_test", out_dir="data", n1_dir="data/football_d
                 else "PRIX_OBSERVE_SANS_REFERENCE" if cote is not None
                 else "EN_ATTENTE_DU_PRIX"
             )
+            ant["persistance"] = {
+                "historique": taux_persistance(rows) if rows else {}
+            }
             obs["statut_n1"] = "REFERENCE_DISPONIBLE" if obs["n1"]["disponible"] else "INDISPONIBLE"
             anticipations[key] = ant
         fiche["anticipations"] = anticipations
@@ -91,12 +103,48 @@ def run(archive_dir="data/archive_test", out_dir="data", n1_dir="data/football_d
         if len(rows) >= 5:
             validations[f"{key[0]}|{key[1]}"] = resume_validation(rows, min_history=5)
 
-    radar = construire_radar(fiches)
+    # Les validations sont des relectures walk-forward : aucune observation
+    # future n'entre dans le signal à la date simulée.
+    radar_items = []
+    for fiche in fiches:
+        ident = fiche
+        for obs in fiche["observations"]:
+            key = f"{obs.get('equipe_reference')}|{obs.get('contexte')}|{obs.get('marche')}"
+            ant = fiche.get("anticipations", {}).get(key, {})
+            radar_items.append({
+                "match_id": ident.get("match_id"),
+                "date": ident.get("date"),
+                "championnat": ident.get("competition"),
+                "domicile": ident.get("domicile"),
+                "exterieur": ident.get("exterieur"),
+                "equipe_reference": obs.get("equipe_reference"),
+                "contexte": obs.get("contexte"),
+                "marche": obs.get("marche"),
+                "regime": obs.get("regime"),
+                "niveau": obs.get("niveau"),
+                "frequence": obs.get("frequence"),
+                "frequence_recente": obs.get("frequence_recente"),
+                "sequence": obs.get("sequence"),
+                "n1": obs.get("n1"),
+                "statut": ant.get("statut", "EN_ATTENTE"),
+                "formulation": ant.get("formulation"),
+                "prix": ant.get("prix", "EN_ATTENTE_DU_PRIX"),
+                "cote": ant.get("cote"),
+                "tranche_cote": ant.get("tranche_cote"),
+                "persistance": ant.get("persistance", {}),
+            })
+    radar_items.sort(key=lambda x: (str(x["date"]), str(x["match_id"]), str(x["marche"])))
+    radar = {
+        "matchs": len({x["match_id"] for x in radar_items}),
+        "observations": len(radar_items),
+        "items": radar_items,
+    }
+
     generated = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     intelligence = {
         "schema_version": 1,
         "genere_le": generated,
-        "source": "data/archive_test",
+        "source": archive_dir,
         "anti_fuite": "strictement_avant_date_du_match",
         "n1_disponible": bool(n1_rows),
         "n1_source": "data/football_data/snapshots/*/raw/*.csv" if n1_rows else None,
