@@ -37,12 +37,12 @@ def run(archive_dir="data/archive_test", out_dir="data", n1_dir="data/football_d
 
     fiches = []
     for match in sorted(upcoming, key=lambda x: (str(x.get("date")), str(x.get("match_id")))):
-        fiche = construire_fiche(match, records)
+        fiche = construire_fiche(match, records, historique=hist)
         anticipations = {}
         for obs in fiche["observations"]:
             key = f"{obs.get('equipe_reference')}|{obs.get('contexte')}|{obs.get('marche')}"
             obs["sequence"] = analyser_sequences(
-                [r for r in hist if r.equipe == obs["equipe_reference"] and r.marche == obs["marche"]]
+                grouped.get((obs["equipe_reference"], obs["marche"]), [])
             )
             obs["n1"] = stats_equipe_marche(
                 n1_rows, obs["equipe_reference"], obs["marche"], obs["contexte"]
