@@ -1,9 +1,6 @@
 name: Pipeline quotidien Archetype Foot
 
 on:
-  push:
-    branches:
-      - main
   schedule:
     # MODIFIÉ 12/09/2026 (demande de Patrick) : passé de 00:00 à 21:00 UTC
     # (= 22:00 à Douala, Cameroun, UTC+1 -- heure locale visée, confirmée par
@@ -37,7 +34,7 @@ permissions:
   issues: write
 
 concurrency:
-  group: pipeline-archetype-foot-fix-${{ github.run_id }}
+  group: pipeline-archetype-foot
   cancel-in-progress: false
 
 jobs:
