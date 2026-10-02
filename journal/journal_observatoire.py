@@ -11,9 +11,9 @@ def charger_archives(dossier="data/archive_test"):
         if isinstance(doc, dict): records.extend(doc.values())
     return records
 
-def construire_fiche(match, records):
+def construire_fiche(match, records, historique=None):
     target = str(match.get("date") or "")
-    hist = construire_historique(records, target)
+    hist = historique if historique is not None else construire_historique(records, target)
     observations = []
     markets = set((match.get("cotes_observees") or match.get("cotes_betpawa") or {}).keys())
     for team, ctx in ((match.get("domicile"), "DOMICILE"), (match.get("exterieur"), "EXTERIEUR")):
