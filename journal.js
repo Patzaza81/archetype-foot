@@ -341,7 +341,7 @@
     });
   })();
 
-  fetch("journal_intelligence.json?t=" + Date.now(), { cache: "no-store" })
+  fetch("data/journal_intelligence.json?t=" + Date.now(), { cache: "no-store" })
     .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
     .then(afficherObservatoire)
     .catch(function () {
