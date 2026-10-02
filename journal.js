@@ -273,20 +273,33 @@
       '<div class="jr-chiffre"><span>Anticipations</span><b>' + (resume.anticipations || 0) + '</b></div>' +
       '<div class="jr-chiffre"><span>Observations radar</span><b>' + (radar.observations || 0) + '</b></div>' +
       '<div class="jr-chiffre"><span>Groupes validés</span><b>' + (resume.groupes_valides || 0) + '</b></div>' +
-      '</div>';
-    var items = (radar.items || []).slice(0, 80);
+      '</div>' +
+      '<p class="jr-aide">Les observations sont construites avant la date du match. Une cote absente laisse le comportement observable ; lorsqu’elle apparaît, elle devient une information de confirmation du prix.</p>';
+
+    var items = (radar.items || []).slice(0, 120);
     if (!items.length) {
       document.getElementById("observatoire-radar").innerHTML =
         '<div class="ax-etat-vide"><strong>Aucune anticipation disponible</strong><p>Le prochain passage nocturne alimentera automatiquement cet observatoire.</p></div>';
       return;
     }
+
     document.getElementById("observatoire-radar").innerHTML = items.map(function (x) {
       var prix = x.cote == null ? "Prix non observé" : "Cote " + cote(x.cote) + " · " + esc(x.prix);
+      var seq = x.sequence && x.sequence.sequence ? x.sequence.sequence.join(" ") : "—";
+      var n1 = x.n1 && x.n1.disponible ? (x.n1.echantillon + " obs. · " + pct(x.n1.frequence)) : "non disponible";
+      var pers = x.persistance && x.persistance.historique ? x.persistance.historique : {};
+      var persTxt = Object.keys(pers).length ? Object.keys(pers).map(function(k){ return k + " " + pct(pers[k]); }).join(" · ") : "—";
       return '<details class="jr-fiche">' +
         '<summary><span class="jr-fiche-nom">' + esc(x.domicile) + ' — ' + esc(x.exterieur) + '</span>' +
         '<span class="jr-fiche-info">' + esc(x.marche) + ' · ' + esc(x.regime || "INSUFFISANT") + ' · ' + esc(x.niveau || "INSUFFISANT") + '</span></summary>' +
-        '<div class="jr-lignes"><p><b>Équipe observée :</b> ' + esc(x.equipe_reference) + ' (' + esc(x.contexte) + ')</p>' +
-        '<p><b>État :</b> ' + esc(x.statut) + '</p><p><b>Prix :</b> ' + prix + '</p></div></details>';
+        '<div class="jr-lignes">' +
+        '<p><b>Observation :</b> ' + esc(x.equipe_reference) + ' (' + esc(x.contexte) + ') · fréquence ' + pct(x.frequence) + ' · récente ' + pct(x.frequence_recente) + '</p>' +
+        '<p><b>Séquence :</b> ' + esc(seq) + '</p>' +
+        '<p><b>Anticipation :</b> ' + esc(x.statut) + ' — ' + esc(x.formulation || "—") + '</p>' +
+        '<p><b>Référence N-1 :</b> ' + esc(n1) + '</p>' +
+        '<p><b>Persistance historique :</b> ' + esc(persTxt) + '</p>' +
+        '<p><b>Prix :</b> ' + prix + (x.tranche_cote ? ' · tranche ' + esc(x.tranche_cote) : '') + '</p>' +
+        '</div></details>';
     }).join("");
   }
 
