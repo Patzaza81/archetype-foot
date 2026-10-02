@@ -77,7 +77,6 @@ class MarcheObservation:
     equipe_reference: Optional[str] = None
     contexte: ContexteMarche = ContexteMarche.MATCH
     cote_tranche: Optional[str] = None
-    resultat_historique: Optional[bool] = None
     echantillon: int = 0
     frequence: Optional[float] = None
     sequence_actuelle: List[str] = field(default_factory=list)
