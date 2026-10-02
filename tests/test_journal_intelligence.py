@@ -59,3 +59,17 @@ def test_n1_snapshot_reader(tmp_path):
     assert result["disponible"] is True
     assert result["echantillon"]==1
     assert result["frequence"]==1.0
+
+
+def test_observation_survives_without_current_odds():
+    from journal.journal_observatoire import construire_fiche
+    records = [
+        {"date":"2026-09-01","match_id":"m1","domicile":"A","exterieur":"B","competition":"L",
+         "cotes_observees":{"BTTS - oui":1.8},"score":{"buts_dom":1,"buts_ext":1}},
+        {"date":"2026-09-05","match_id":"m2","domicile":"C","exterieur":"A","competition":"L",
+         "cotes_observees":{"BTTS - oui":1.9},"score":{"buts_dom":0,"buts_ext":1}},
+    ]
+    upcoming = {"date":"2026-09-10","match_id":"m3","domicile":"A","exterieur":"D","competition":"L"}
+    fiche = construire_fiche(upcoming, records)
+    assert any(o["marche"] == "BTTS - oui" for o in fiche["observations"])
+    assert all(o["date"] if "date" in o else True for o in fiche["observations"])
