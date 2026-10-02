@@ -25,6 +25,7 @@
 
     <nav class="jr-onglets" id="onglets" aria-label="Rubriques du journal">
       <button type="button" data-onglet="rentables">Marchés rentables</button>
+      <button type="button" data-onglet="comportements">Observatoire</button>
       <button type="button" data-onglet="equipes">Équipes à suivre</button>
       <button type="button" data-onglet="conseils">Conseils</button>
       <button type="button" data-onglet="moteurs">Moteurs</button>
@@ -40,6 +41,15 @@
           <button type="button" data-f="fiables">Prouvé et à surveiller</button>
         </div>
         <div id="rentables"></div>
+      </section>
+    </div>
+
+    <div class="jr-onglet" data-onglet="comportements" hidden>
+      <section class="ax-carte jr-bloc">
+        <h2 class="jr-titre">Observatoire comportemental</h2>
+        <p class="jr-aide">Cette couche est indépendante du moteur de décision. Elle observe les régimes, séquences, ruptures et persistance historiques, puis anticipe les comportements avant l’arrivée de la cote. La cote sert ensuite uniquement à confirmer ou écarter la compatibilité du prix.</p>
+        <div id="observatoire-resume"></div>
+        <div id="observatoire-radar"></div>
       </section>
     </div>
 
