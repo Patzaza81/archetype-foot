@@ -46,3 +46,16 @@ def test_price_bands_are_disjoint():
     assert tranche_cote(1.50)=="1.50-1.74"
     assert tranche_cote(2.00)=="2.00-2.49"
     assert tranche_cote(3.00)=="3.00+"
+
+
+def test_n1_snapshot_reader(tmp_path):
+    from journal.journal_n1 import charger_n1, stats_equipe_marche
+    snap=tmp_path/"2526"/"raw"
+    snap.mkdir(parents=True)
+    (tmp_path/"2526"/"_SNAPSHOT_COMPLETE.json").write_text("{}",encoding="utf-8")
+    (snap/"E0.csv").write_text("Date,HomeTeam,AwayTeam,FTHG,FTAG\n01/01/26,Alpha,Beta,2,1\n",encoding="utf-8")
+    rows=charger_n1(str(tmp_path))
+    result=stats_equipe_marche(rows,"Alpha","1X2 - 1","DOMICILE")
+    assert result["disponible"] is True
+    assert result["echantillon"]==1
+    assert result["frequence"]==1.0
