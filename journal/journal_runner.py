@@ -30,7 +30,7 @@ def historique_avant(records, target_date):
     """Construit exclusivement l'information disponible avant target_date."""
     return construire_historique(records, target_date=str(target_date))
 
-def run(archive_dir="data/archive_test", out_dir="data", n1_dir="data/football_data/snapshots"):
+def run(archive_dir="archive", out_dir="data", n1_dir="data/football_data/snapshots"):
     records = charger_archives(archive_dir)
     scored = [r for r in records if isinstance(r.get("score"), dict)]
     upcoming = [r for r in records if r.get("score") is None]
@@ -144,7 +144,7 @@ def run(archive_dir="data/archive_test", out_dir="data", n1_dir="data/football_d
     intelligence = {
         "schema_version": 1,
         "genere_le": generated,
-        "source": "data/archive_test",
+        "source": archive_dir,
         "anti_fuite": "strictement_avant_date_du_match",
         "n1_disponible": bool(n1_rows),
         "n1_source": "data/football_data/snapshots/*/raw/*.csv" if n1_rows else None,
