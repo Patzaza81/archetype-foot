@@ -73,3 +73,18 @@ def test_observation_survives_without_current_odds():
     fiche = construire_fiche(upcoming, records)
     assert any(o["marche"] == "BTTS - oui" for o in fiche["observations"])
     assert all(o["date"] if "date" in o else True for o in fiche["observations"])
+
+
+def test_model_archive_is_grouped_without_losing_market_results():
+    from journal.journal_observatoire import _normaliser_archives_model
+    raw = [
+        {"match_id":"m1","date_match":"2026-09-01","heure_match":"18:00","equipe_dom":"A","equipe_ext":"B","competition":"L",
+         "marche":"btts_oui","cote":1.8,"resultat_statut":"RESOLVED","resultat_marche":"WIN","buts_marques":1,"buts_encaisses":1},
+        {"match_id":"m1","date_match":"2026-09-01","heure_match":"18:00","equipe_dom":"A","equipe_ext":"B","competition":"L",
+         "marche":"1x2_domicile","cote":2.1,"resultat_statut":"RESOLVED","resultat_marche":"LOSS","buts_marques":1,"buts_encaisses":1},
+    ]
+    rows = list(_normaliser_archives_model(raw))
+    assert len(rows) == 1
+    assert set(rows[0]["cotes_observees"]) == {"btts_oui", "1x2_domicile"}
+    assert rows[0]["resultats_marches"] == {"btts_oui": True, "1x2_domicile": False}
+    assert rows[0]["score"] == {"buts_dom": 1, "buts_ext": 1}
