@@ -12,8 +12,8 @@ P1 = probabilité maximale, P2 = meilleur EV restant, P3 = coup de poker (cote �
 
 | Faiblesse mesurée sur 390 matchs | Correction | Module |
 |---|---|---|
-| Surconfiance : 52,8 % de réussite pour 65,1 % annoncés | Lissage des moyennes de buts vers 1,35 (K = 4), **fixé à l'avance** | `lissage.py` |
-| Aucune calibration (11 % annoncé / 16 % réel, 89 % / 84 %) | Calibration isotone (PAV), apprise sur matchs déjà joués, **≥ 300 observations ET ≥ 50 matchs**, marchés équivalents comptés une fois, sortie bornée à [1 % ; 99 %] | `calibration.py` |
+| Surconfiance : 52,8 % de réussite pour 65,1 % annoncés | Lissage des moyennes de buts vers une référence **par rôle** (domicile 1,50 / extérieur 1,20, K = 4), **fixé à l'avance** | `lissage.py` |
+| Aucune calibration (11 % annoncé / 16 % réel, 89 % / 84 %) | Calibration isotone (PAV), **≥ 300 observations ET ≥ 100 matchs**, inventaire complet obligatoire, blocs ≥ 30, correction pondérée n/(n+100), valable seulement pour le modèle et les dates qui l'ont produite ; probabilités rendues cohérentes (`coherence.py`) | `calibration.py`, `coherence.py` |
 | Value bets trop fréquentes, écarts au marché de 9 à 19 points | Alertes (écart > 12 pts, buts attendus extrêmes, probabilités non calibrées). **Sans effet sur la sélection.** | `risque.py` |
 
 Structure identique à celle du moteur V3 : un module par responsabilité, un orchestrateur (`core.py`), des paramètres nommés.
@@ -22,7 +22,10 @@ Structure identique à celle du moteur V3 : un module par responsabilité, un or
 - Les bornes V5 (moyenne de buts dans [0 ; 10]) sont contrôlées sur les valeurs **brutes** : une donnée aberrante n'est jamais rattrapée par le lissage.
 - Sans calibrateur, le moteur le déclare (`calibration.statut = "NON_CALIBRE"`, alerte « Probabilités non calibrées »). Il ne calibre jamais sur trop peu de matchs.
 - `analyser_match(..., lisser=False)` redonne exactement les résultats de la v2.6.9 (testé).
-- Aucun paramètre n'a été réglé sur les 501 matchs du banc : ils servent uniquement à mesurer.
+- Aucun paramètre n'a été réglé sur les 501 matchs du banc : ils servent uniquement à mesurer. Les références 1,50 / 1,20 sont des ordres de grandeur généraux, pas des mesures sur tes championnats.
+- Un calibrateur appris pour un autre modèle, ou sur des matchs non antérieurs au match analysé, est ignoré et signalé (`calibration.statut`).
+- R5 (profil asymétrique) reste évalué sur les moyennes brutes.
+- Voir `docs/AUDIT_MOTEUR_V2_6_10.md` pour les défauts corrigés et les limites restantes.
 
 ## Utilisation
 ```python
@@ -30,8 +33,9 @@ import moteur_v2_6_10 as moteur
 res = moteur.analyser_match(match, date_run, maintenant)                       # lissage seul
 res = moteur.analyser_match(match, date_run, maintenant, calibrateur=cal)      # lissage + calibration
 
-cal, diag = moteur.apprendre(observations)   # observations = [{match_id, marche, proba, gagne, date}] de matchs JOUÉS
-                                             # filtrer d'abord avec moteur.avant(observations, date_du_match)
+cal, diag = moteur.apprendre(observations, modele=moteur.signature_modele())
+    # observations = [{match_id, marche, proba, gagne, date}] de matchs JOUÉS, TOUS les marchés de l'inventaire (pas seulement
+    # les value bets), probabilités brutes du modèle courant ; filtrer d'abord avec moteur.avant(observations, date_du_match)
 ```
 
 ## Mesurer avant de brancher
@@ -39,6 +43,7 @@ cal, diag = moteur.apprendre(observations)   # observations = [{match_id, marche
 python -m pytest tests/test_moteur_v2_6_10.py
 python evaluation/compare_moteurs_v2.py evaluation/snapshot_historique_moteur_v2_6_9.json evaluation/scores_historique_moteur_v2_6_9.json
 python evaluation/compare_moteurs_v2.py SNAPSHOT SCORES --calibration-chrono 0.6
+python evaluation/compare_moteurs_v2.py SNAPSHOT SCORES --sensibilite     # lecture seule, ne jamais y choisir un paramètre
 ```
 Le second rejoue la v2.6.9 et la v2.6.10 sur les mêmes matchs et les mêmes scores. Le troisième apprend le calibrateur sur les
 60 % de matchs les plus anciens et mesure tout sur les 40 % restants.
@@ -50,11 +55,12 @@ intervalles qui ne se contredisent pas. Un ROI positif n'est pas exigé ni atten
 ## Brancher (une fois la mesure faite, décision du propriétaire)
 1. `branchement_moteur.py` : `import moteur_v2_6_10 as moteur` ; `NOM_MOTEUR`, `VERSION_MOTEUR`, `CONFIG_VERSION`.
 2. Site (`archetype.js`) : `CLE_MOTEUR` doit suivre `NOM_MOTEUR` (un test de contrat le vérifie).
-3. Étape nocturne qui apprend le calibrateur sur l'archive des matchs joués (`calibration.avant`) et le passe à `analyser_match`.
+3. Archiver l'**inventaire complet** (tous les marchés, probabilité brute) des matchs analysés, puis une étape nocturne qui apprend le calibrateur sur les matchs joués (`calibration.avant`) et le passe à `analyser_match`. L'archive actuelle (value bets / choix seulement) ne convient pas : elle biaiserait la calibration.
 4. Mettre à jour README, ROADMAP et CLAUDE.md.
 
 ## Limites connues
 - Poisson à buts indépendants : inchangé. Ton calibrage v2.7 suggérait que le Poisson n'apporte rien au-delà du marché recalibré ; la v2.6.10 ne prétend pas le contredire.
-- Une seule référence de buts (1,35) pour tous les championnats.
-- Les probabilités calibrées de marchés complémentaires ne somment pas exactement à 1.
+- Deux références de buts (domicile / extérieur) identiques pour tous les championnats.
+- Il y aura moins de value bets et de choix qu'avec la v2.6.9 : les seuils d'EV et de catégorie ont été posés sur des probabilités non corrigées. Le comparateur affiche le nombre de choix.
+- **Le marché prédit mieux que le modèle** (Brier 0,1860 contre 0,2004). Lissage et calibration ne rendent pas le modèle plus informatif : si la différence de Brier reste positive après comparaison, la sélection « value » n'a pas de fondement statistique (voir l'audit).
 - Pas de contrôle de corrélation entre les trois choix (V3 le fait par probabilités conjointes) : à faire dans `branchement_moteur.selectionne`, pas dans le moteur.
