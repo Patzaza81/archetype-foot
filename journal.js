@@ -264,6 +264,32 @@
       "<li>" + nbInc + " cote(s) de handicap incohérente(s) avec le 1X2 du même match ont été retirées (erreurs de relevé).</li></ul>";
   }
 
+  function afficherObservatoire(data) {
+    var resume = data.resume || {};
+    var radar = data.radar || {};
+    document.getElementById("observatoire-resume").innerHTML =
+      '<div class="jr-chiffres">' +
+      '<div class="jr-chiffre"><span>Matchs à venir</span><b>' + (resume.matchs_a_venir || 0) + '</b></div>' +
+      '<div class="jr-chiffre"><span>Anticipations</span><b>' + (resume.anticipations || 0) + '</b></div>' +
+      '<div class="jr-chiffre"><span>Observations radar</span><b>' + (radar.observations || 0) + '</b></div>' +
+      '<div class="jr-chiffre"><span>Groupes validés</span><b>' + (resume.groupes_valides || 0) + '</b></div>' +
+      '</div>';
+    var items = (radar.items || []).slice(0, 80);
+    if (!items.length) {
+      document.getElementById("observatoire-radar").innerHTML =
+        '<div class="ax-etat-vide"><strong>Aucune anticipation disponible</strong><p>Le prochain passage nocturne alimentera automatiquement cet observatoire.</p></div>';
+      return;
+    }
+    document.getElementById("observatoire-radar").innerHTML = items.map(function (x) {
+      var prix = x.cote == null ? "Prix non observé" : "Cote " + cote(x.cote) + " · " + esc(x.prix);
+      return '<details class="jr-fiche">' +
+        '<summary><span class="jr-fiche-nom">' + esc(x.domicile) + ' — ' + esc(x.exterieur) + '</span>' +
+        '<span class="jr-fiche-info">' + esc(x.marche) + ' · ' + esc(x.regime || "INSUFFISANT") + ' · ' + esc(x.niveau || "INSUFFISANT") + '</span></summary>' +
+        '<div class="jr-lignes"><p><b>Équipe observée :</b> ' + esc(x.equipe_reference) + ' (' + esc(x.contexte) + ')</p>' +
+        '<p><b>État :</b> ' + esc(x.statut) + '</p><p><b>Prix :</b> ' + prix + '</p></div></details>';
+    }).join("");
+  }
+
   function afficher(j) {
     document.getElementById("maj").textContent = "Mis à jour : " + (j.genere_le || "—");
     var rentables = ((j.segments || {}).ligue_marche || []).filter(positif);
@@ -314,6 +340,14 @@
       applique(suivant);
     });
   })();
+
+  fetch("journal_intelligence.json?t=" + Date.now(), { cache: "no-store" })
+    .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+    .then(afficherObservatoire)
+    .catch(function () {
+      document.getElementById("observatoire-resume").innerHTML =
+        '<p class="jr-aide">Observatoire en attente de sa première génération nocturne.</p>';
+    });
 
   fetch("journal.json?t=" + Date.now(), { cache: "no-store" })
     .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
