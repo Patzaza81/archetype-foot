@@ -4,21 +4,26 @@ def construire_radar(fiches):
     items = []
     for fiche in fiches:
         ident = fiche.get("identification", {})
-        for market, obs in fiche.get("observations_marches", fiche.get("observations", {})).items():
+        obs_list = fiche.get("observations", [])
+        for obs in obs_list:
             if not isinstance(obs, dict):
                 continue
-            ant = fiche.get("anticipations", {}).get(market, {})
+            key = f"{obs.get('equipe_reference')}|{obs.get('contexte')}|{obs.get('marche')}"
+            ant = fiche.get("anticipations", {}).get(key, {})
             items.append({
                 "match_id": ident.get("match_id"),
                 "date": ident.get("date"),
-                "championnat": ident.get("championnat"),
-                "domicile": ident.get("equipe_domicile"),
-                "exterieur": ident.get("equipe_exterieure"),
-                "marche": market,
-                "regime": obs.get("regime") or obs.get("regime_detecte"),
-                "niveau": obs.get("niveau") or obs.get("niveau_observation"),
+                "championnat": ident.get("competition"),
+                "domicile": ident.get("domicile"),
+                "exterieur": ident.get("exterieur"),
+                "equipe_reference": obs.get("equipe_reference"),
+                "contexte": obs.get("contexte"),
+                "marche": obs.get("marche"),
+                "regime": obs.get("regime"),
+                "niveau": obs.get("niveau"),
                 "statut": ant.get("statut", "EN_ATTENTE"),
                 "prix": ant.get("prix", "EN_ATTENTE_DU_PRIX"),
+                "cote": ant.get("cote"),
             })
     priority = {
         "COMPORTEMENT_EN_RENFORCEMENT": 0,
@@ -26,7 +31,7 @@ def construire_radar(fiches):
         "COMPORTEMENT_EN_AFFAIBLISSEMENT": 2,
         "INSUFFISANT": 3,
     }
-    items.sort(key=lambda x: priority.get(x["statut"], 9))
+    items.sort(key=lambda x: (priority.get(x["statut"], 9), str(x["date"]), str(x["match_id"])))
     return {
         "matchs": len({x["match_id"] for x in items}),
         "observations": len(items),
