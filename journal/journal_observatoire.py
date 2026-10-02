@@ -14,11 +14,37 @@ def charger_archives(dossier="data/archive_test"):
 def construire_fiche(match, records, historique=None):
     target = str(match.get("date") or "")
     hist = historique if historique is not None else construire_historique(records, target)
+
+    # Une absence de cote ne supprime jamais l'observation : on construit
+    # l'univers des marchés à partir des marchés historiques des deux équipes,
+    # puis on enrichit avec les marchés éventuellement cotés aujourd'hui.
+    current_markets = set(
+        (match.get("cotes_observees") or match.get("cotes_betpawa") or {}).keys()
+    )
+    teams = {str(match.get("domicile") or ""), str(match.get("exterieur") or "")} - {""}
+    historical_markets = {
+        r.marche for r in hist
+        if r.equipe in teams
+    }
+    markets = sorted(current_markets | historical_markets)
+
     observations = []
-    markets = set((match.get("cotes_observees") or match.get("cotes_betpawa") or {}).keys())
     for team, ctx in ((match.get("domicile"), "DOMICILE"), (match.get("exterieur"), "EXTERIEUR")):
         if not team: continue
-        for market in sorted(markets):
+        for market in markets:
             level, rows = resolve(hist, str(team), market, match.get("competition"), ctx)
-            observations.append({"equipe_reference":team,"contexte":ctx,"marche":market,"niveau_repli":level,**regime(rows)})
-    return {"match_id":match.get("match_id"),"date":target,"competition":match.get("competition"),"domicile":match.get("domicile"),"exterieur":match.get("exterieur"),"observations":observations}
+            observations.append({
+                "equipe_reference": team,
+                "contexte": ctx,
+                "marche": market,
+                "niveau_repli": level,
+                **regime(rows),
+            })
+    return {
+        "match_id": match.get("match_id"),
+        "date": target,
+        "competition": match.get("competition"),
+        "domicile": match.get("domicile"),
+        "exterieur": match.get("exterieur"),
+        "observations": observations,
+    }
