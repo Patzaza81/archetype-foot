@@ -1,0 +1,31 @@
+name: Journal comportemental — CI
+
+on:
+  push:
+    paths:
+      - "journal/**"
+      - "journal_schema.py"
+      - "tests/test_journal_*.py"
+  pull_request:
+    paths:
+      - "journal/**"
+      - "journal_schema.py"
+      - "tests/test_journal_*.py"
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Installer pytest
+        run: pip install pytest
+      - name: Tests du Journal
+        run: python -m pytest tests/test_journal_schema.py tests/test_journal_intelligence.py tests/test_journal_completion.py -q
+      - name: Compilation Python
+        run: python -m compileall -q journal journal_schema.py
