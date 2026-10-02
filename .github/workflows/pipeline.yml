@@ -37,7 +37,7 @@ permissions:
   issues: write
 
 concurrency:
-  group: pipeline-archetype-foot
+  group: pipeline-archetype-foot-fix-${{ github.run_id }}
   cancel-in-progress: false
 
 jobs:
