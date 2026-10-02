@@ -51,7 +51,11 @@ jobs:
 
       # AJOUT 24/09/2026 -- contrôle croisé des saisons d'équipes (lecture seule, écrit controle_saisons.json,
       # affiché sur la page Système). Un échec ne bloque pas la publication du journal.
-      # Nouvelle couche comportementale : indépendante du moteur V2 et de journal_rentabilite.py.\n      - name: Construire le Journal comportemental\n        run: python -m journal.journal_runner\n\n      - name: Contrôler les données de saison (controle_saisons.json)
+      # Nouvelle couche comportementale : indépendante du moteur V2 et de journal_rentabilite.py.
+      - name: Construire le Journal comportemental
+        run: python -m journal.journal_runner
+
+      - name: Contrôler les données de saison (controle_saisons.json)
         run: python controle_saisons.py
         continue-on-error: true
 
