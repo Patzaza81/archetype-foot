@@ -18,7 +18,7 @@ def sequence(rows, max_len=12):
     return {
         "sequence": symbols,
         "longueur": len(symbols),
-        "issue_dernier": "O" if vals[-1] else "N" if vals else None,
+        "issue_dernier": ("O" if vals[-1] else "N") if vals else None,
         "serie_actuelle": run_length,
         "type_serie": "SUCCES" if run_type is True else "ECHEC" if run_type is False else None,
     }
