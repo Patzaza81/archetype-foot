@@ -43,9 +43,12 @@ def observations_depuis_match(e):
     dom, ext = _num(score.get("buts_dom")), _num(score.get("buts_ext"))
     if dom is None or ext is None: return []
     markets = e.get("cotes_observees") or e.get("cotes_betpawa") or {}
+    known_results = e.get("resultats_marches") or {}
     out = []
     for market, cote in markets.items():
-        result = evaluer_marche(market, dom, ext)
+        result = known_results.get(market)
+        if result is None:
+            result = evaluer_marche(market, dom, ext)
         if result is None: continue
         try: c = float(cote)
         except (TypeError, ValueError): c = None
