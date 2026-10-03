@@ -2,22 +2,15 @@ name: Pipeline quotidien Archetype Foot
 
 on:
   schedule:
-    # MODIFIÉ 12/09/2026 (demande de Patrick) : passé de 00:00 à 21:00 UTC
-    # (= 22:00 à Douala, Cameroun, UTC+1 -- heure locale visée, confirmée par
-    # Patrick). 00:00 UTC est l'heure la plus demandée sur GitHub Actions
-    # (beaucoup de pipelines planifiés pile à minuit) -- le run réel du
-    # 12/09 a démarré à 02:28 UTC, soit 2h28 de retard sur les 00:00
-    # planifiés (confirmé par le log Actions fourni par Patrick).
     - cron: "0 21 * * *"
-
   workflow_dispatch:
     inputs:
       panier_id:
-        description: "Id du panier Supabase à analyser -- LAISSER VIDE pour relancer l'analyse complète du jour (équivalent du run planifié, sans attendre le prochain cron)"
+        description: "Id du panier Supabase à analyser -- LAISSER VIDE pour relancer l'analyse complète du jour"
         required: false
         type: string
       jours:
-        description: "21/09/2026 -- Fenêtre traitée : 4 = aujourd'hui + demain + J+2 + J+3 (défaut, comme le run planifié) ; 2 = aujourd'hui + demain seulement (validation rapide avant le run complet : saute aussi la liste J+2/J+3 et conserve les correspondances BetPawa de J+2/J+3)."
+        description: "Fenêtre traitée : 4 = aujourd'hui + demain + J+2 + J+3 ; 2 = aujourd'hui + demain"
         required: false
         type: choice
         default: "4"
@@ -25,7 +18,7 @@ on:
           - "4"
           - "2"
       limite_betpawa:
-        description: "03/09/2026 -- CORRECTIF : plus de limite par défaut (voir run #91, 33m37s total avec le filtre de compétitions actif, large marge sous les 6h de GitHub). VIDE = volume complet, utilisé aussi par le cron nocturne. Renseigne un nombre ici seulement si tu veux explicitement RE-plafonner (ex. pour un test)."
+        description: "VIDE = volume complet. Renseigner un nombre seulement pour plafonner explicitement."
         required: false
         type: string
 
@@ -52,22 +45,14 @@ jobs:
           pip install requests beautifulsoup4 pandas lxml playwright pytest
           playwright install --with-deps chromium
 
-      # AJOUT 21/09/2026 -- filet de sécurité AVANT tout scraping (quelques secondes, contre 1 h 30 à 3 h 30 de run) :
-      # autotests du moteur et du pont, puis suite de tests Python. Un échec arrête le job ici, avant de perdre un run
-      # entier sur un moteur cassé (ROADMAP P0.3). Volontairement SANS continue-on-error.
       - name: Autotests du moteur, du pont et suite Python
         run: |
           python moteur_v2_6_9.py --autotest
           python pont_moteur.py --autotest
           python -m pytest tests -q --ignore=tests/test_moteur_v3.py --ignore=tests/test_moteur_v3_integration.py --ignore=tests/test_moteur_v3_pipeline.py
 
-      # A1/A2 -- collecte Football-Data AVANT toute analyse.
-      # Les saisons passées sont immuables après leur premier téléchargement.
-      # La saison courante est rafraîchie seulement si le contenu source a changé.
-      # Aucun calcul de marché n'est effectué ici.
       - name: Collecter et normaliser Football-Data
         run: python collecte_football_data.py
-        # Une panne de Football-Data ne doit jamais bloquer les pronostics du jour.
         continue-on-error: true
 
       - name: Générer les listes brutes aujourd'hui + demain
@@ -78,23 +63,6 @@ jobs:
         run: python scraper_semaine.py --max-matchs 100000
         continue-on-error: true
 
-      # CORRECTIF 06/09/2026 (Groupe 1, bugs #23/#40/#22) -- scraper_betpawa.py
-      # lisait betpawa_urls.txt (ancien mécanisme manuel, retiré le 06/09 en
-      # même temps que betpawa.html/betpawa.js) et alimentait panier.json/
-      # data.json, un chemin mort en pratique tant que Supabase est configuré
-      # (data.json n'est plus lu par personne côté site -- voir script.js).
-      # Étape supprimée : le moteur automatique (precalcul.py, ci-dessous)
-      # couvre déjà tous les matchs J0-J+3 via resolution_betpawa_precalcul.py.
-
-      # CORRECTIF 03/09/2026 : plafond de 100 supprimé. Le run #91 (filtre
-      # de compétitions actif, cap à 100) a tourné en 33m37s total -- très
-      # loin des 6h de GitHub Actions, y compris en comptant que la fenêtre
-      # s'élargit désormais à J0 (aujourd'hui) en plus de J+1/J+2/J+3.
-      # PRECALCUL_LIMITE_BETPAWA vide/absent = pas de limite (comportement
-      # documenté dans resolution_betpawa_precalcul.py). Le champ
-      # limite_betpawa du workflow_dispatch, s'il est laissé vide (cas normal
-      # ET cas du cron, qui ne le fournit jamais), donne bien une chaîne
-      # vide ici -- pas besoin de "|| '100'" ni d'aucune valeur par défaut.
       - name: Pré-calcul J0/J+1/J+2/J+3 + résolution Betpawa (indépendant du panier)
         id: precalcul
         env:
@@ -103,62 +71,24 @@ jobs:
         run: python precalcul.py
         continue-on-error: true
 
-      # CORRECTIF 06/09/2026 (Groupe 2, bug #10) -- continue-on-error sur
-      # l'étape précalcul ci-dessus empêchait déjà le job de s'arrêter tout
-      # seul en cas de plantage, mais rien ne vérifiait ensuite que le
-      # résultat était réellement exploitable. Cette garde n'a PAS
-      # continue-on-error : si elle échoue (exit 1), le job s'arrête ici,
-      # aucune étape suivante ne s'exécute -- ni la vérification des
-      # résultats archetype_model, ni le bilan, ni la calibration, ni le
-      # commit. Choix assumé (décision Patrick) : sécurité avant
-      # complétude -- ces étapes traitent de toute façon un arriéré, elles
-      # rattraperont au prochain run réussi. scraper_semaine.py reste
-      # volontairement HORS de cette garde (continue-on-error ci-dessus
-      # non retiré) : une dégradation de la couverture J+2/J+3 n'est pas
-      # une donnée corrompue, contrairement à un échec de precalcul.py.
-      - name: Vérifier que le pré-calcul a réellement produit un résultat exploitable (uniquement si schedule/relance complète)
+      - name: Vérifier que le pré-calcul a réellement produit un résultat exploitable
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         run: |
           if [ "${{ steps.precalcul.outcome }}" != "success" ]; then
-            echo "ERREUR : l'étape précalcul a échoué (continue-on-error l'a seulement empêchée d'arrêter le job immédiatement) -- arrêt AVANT toute publication."
+            echo "ERREUR : l'étape précalcul a échoué -- arrêt AVANT publication."
             exit 1
           fi
           if [ ! -s precalcul_leger.json ]; then
-            echo "ERREUR : precalcul_leger.json absent ou vide après un précalcul pourtant marqué réussi -- arrêt AVANT publication."
+            echo "ERREUR : precalcul_leger.json absent ou vide -- arrêt AVANT publication."
             exit 1
           fi
-          echo "Pré-calcul vérifié OK -- precalcul_leger.json présent et non vide."
+          echo "Pré-calcul vérifié OK."
 
-      # RETIRÉ le 13/09/2026, décision de Patrick -- "Pipeline déclenché
-      # manuellement (panier Supabase)" (dispatch_pipeline.py),
-      # "Vérifier les scores des jours précédents" (verification_resultats.py)
-      # et "Calculer le ROI" (calcule_roi.py) : le panier n'utilise plus la
-      # saisie manuelle de cotes ni de run à la demande -- sa nouvelle
-      # fonction (afficher les sélections déjà calculées d'un match choisi,
-      # voir panier.html/panier.js) n'a plus besoin de ce backend. Fichiers
-      # laissés en place (dispatch_pipeline.py, run_pipeline.py,
-      # verification_resultats.py, calcule_roi.py) mais plus jamais
-      # appelés depuis ce pipeline -- suppression physique envisagée dans
-      # une passe séparée une fois confirmé que rien d'autre n'en dépend.
-
-      # Résout SELECTED et COUNTERFACTUAL avec la même fonction de
-      # règlement (reglement.py) -- doit tourner après l'archivage du run
-      # courant (déjà fait dans precalcul.py) pour pouvoir vérifier aussi
-      # les matchs qui viennent d'être joués cette nuit. Un échec
-      # (scraping indisponible) ne doit jamais bloquer le pipeline --
-      # continue-on-error, même logique que les autres étapes de
-      # vérification/calcul de ce fichier.
       - name: Vérifier les résultats réels d'archetype_model (SELECTED + COUNTERFACTUAL)
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         run: python verifie_resultats_archetype_model.py
         continue-on-error: true
 
-      # AJOUT 21/09/2026 -- évaluation du moteur : scores finaux des matchs des jeux d'évaluation (evaluation/snapshot_*.json).
-      # Une requête par date sur la page des résultats ; les scores trouvés sont conservés (evaluation/scores_*.json) et lus par
-      # `python evaluation_moteur.py evaluation/snapshot_X.json evaluation/scores_X.json`. Sans effet sur le reste du pipeline.
-      # RÉTABLI le 26/09/2026 -- écriture des scores dans historique_pronostics.json (supprimée par erreur avec
-      # verification_resultats.py le 13/09 : plus aucun score depuis le 18/09, journal figé). Une page de résultats
-      # Matchendirect par jour, seuls les matchs « TER » sont remplis, un score existant n'est jamais modifié.
       - name: Enregistrer les scores réels dans l'historique
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         run: python enregistre_scores_historique.py --jours 10
@@ -169,95 +99,47 @@ jobs:
         run: python evaluation_scores.py
         continue-on-error: true
 
-      # Consolidation descriptive du moteur_v2_6_9.
       - name: Consolider l'état système pour la page systeme.html
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         run: python construit_etat_systeme.py
         continue-on-error: true
 
-      - name: Commit et push du résultat (run planifié ou relance manuelle complète)
+      # CORRECTIF 03/10/2026 : le bloc précédent contenait un done sans boucle
+      # for correspondante. Cela faisait échouer Bash après tout le traitement.
+      - name: Commit et push du résultat
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         run: |
-          echo "=================================================="
-          echo "DIAGNOSTIC 18.1 -- AVANT git add"
-          echo "=================================================="
-          echo "--- pwd ---"
-          pwd
-          echo "--- ls -la du répertoire courant ---"
-          ls -la
-          echo "--- ls -la ciblé sur precalcul_leger.json ---"
-          ls -la precalcul_leger.json 2>&1 || echo "==> ABSENT DU DISQUE avant git add"
-          echo "--- git status --porcelain (avant) ---"
-          git status --porcelain
-          echo "=================================================="
+          set -e
 
           git config user.name "archetype-foot-bot"
           git config user.email "bot@users.noreply.github.com"
+
           git add data.json matchs_du_jour.json matchs_demain.json matchs_semaine.json precalcul.json cache_equipes.json cache_betpawa.json diagnostic_precalcul_betpawa.txt
-          # CORRECTIF 03/09/2026 : precalcul_leger.json (nouveau fichier depuis
-          # la session du 02/09, cf TRANSITION.md 17.5) était généré par
-          # precalcul.py mais absent de cette liste -- jamais commité, donc
-          # jamais servi par le site (404 permanent quel que soit le succès
-          # du run). Ajouté dans la boucle conditionnelle car le fichier peut
-          # ne pas exister si l'étape précalcul échoue (continue-on-error).
-          # AJOUT 03/09/2026 : matchs_du_jour_filtre.json et
-          # matchs_demain_filtre.json -- Patrick a signalé que le filtre de
-          # compétitions ne touchait que precalcul.json/precalcul_leger.json
-          # (le pipeline automatique), pas les listes affichées sur l'accueil
-          # pour la sélection manuelle du panier. Ces 2 nouveaux fichiers sont
-          # des copies filtrées de matchs_du_jour.json/matchs_demain.json,
-          # générées par precalcul.py -- les fichiers bruts restent
-          # committés tels quels juste au-dessus (run_pipeline.py en a besoin
-          # intacts pour résoudre un match ajouté manuellement au panier,
-          # même hors filtre).
-            [ -f "$f" ] && git add "$f"
+
+          # Fichiers générés conditionnellement.
+          for f in precalcul_leger.json matchs_du_jour_filtre.json matchs_demain_filtre.json; do
+            if [ -f "$f" ]; then
+              git add "$f"
+            fi
           done
-          # AJOUT 13/09/2026 -- archive/ (archetype_model/learning/archive.py)
-          # contient les fichiers archive/YYYY-MM.json, un nom de fichier
-          # différent chaque mois -- `git add` sur le dossier entier plutôt
-          # que sur une liste de noms fixes, comme pour les autres fichiers
-          # ci-dessus. Le dossier peut ne pas encore exister au tout premier
-          # run (aucun match archivé) -- ne jamais faire échouer le commit
-          # pour ça.
-          [ -d archive ] && git add archive/
-          # AJOUT 13/09/2026 -- vrais_tickets/ ne contient normalement rien
-          # pendant probablement plusieurs mois (seuil réel de
-          # tickets/builder.py) -- ajouté par cohérence avec archive/config/
-          # tickets_observes/ ci-dessus, jamais un échec si le dossier
-          # n'existe pas encore.
-          # AJOUT 17/09/2026 (chantier module d'audit, archetype_model/audit/)
-          # -- data/ contient audit_status.json (dashboard) et
-          # audit_telemetry.json (historique de rétention par run + Brier
-          # score), écrits par telemetry.py/report.py. NE SONT PLUS ALIMENTÉS
-          # depuis le 21/09/2026 (l'audit passif de l'ancien modèle n'est plus
-          # appelé) : admin.html affiche l'état figé au 20/09. Ligne conservée,
-          # sans effet tant que rien ne réécrit data/.
-          [ -d data ] && git add data/
-          # AJOUT 21/09/2026 -- export_moteur/ : entrées exactes du moteur (un fichier par date, écrasés à chaque run)
-          # et diagnostic_pont.json (matchs rejetés, avec la raison).
-          [ -d export_moteur ] && git add export_moteur/
-          # scores du jeu d'évaluation du moteur (evaluation/scores_*.json ; les snapshots, eux, sont figés et déjà commités)
-          [ -d evaluation ] && git add evaluation/
 
-          echo "=================================================="
-          echo "DIAGNOSTIC 18.1 -- APRÈS git add"
-          echo "=================================================="
-          echo "--- ls -la ciblé sur precalcul_leger.json ---"
-          ls -la precalcul_leger.json 2>&1 || echo "==> ABSENT DU DISQUE après git add"
-          echo "--- git status --porcelain (après add, avant commit) ---"
-          git status --porcelain
-          echo "=================================================="
+          [ -d archive ] && git add archive/ || true
+          [ -d data ] && git add data/ || true
+          [ -d export_moteur ] && git add export_moteur/ || true
+          [ -d evaluation ] && git add evaluation/ || true
 
-          git diff --staged --quiet || git commit -m "Mise à jour pipeline"
+          echo "--- fichiers staged ---"
+          git status --short
+
+          if git diff --cached --quiet; then
+            echo "Aucune modification à publier."
+            exit 0
+          fi
+
+          git commit -m "Mise à jour pipeline"
           git pull --rebase origin main
           git push
 
-      # AJOUT 13/09/2026, demande explicite de Patrick ("qui me
-      # signalera ?") -- DOIT être la toute dernière étape du pipeline,
-      # après tous les scripts susceptibles d'avoir signalé un événement
-      # (calibre_archetype_model.py, genere_tickets_reels_archetype_model.py).
-      # Une nuit sans événement notable n'ouvre aucune Issue -- silence
-      # normal, pas une absence de fonctionnement.
       - name: Notifier les constats majeurs (Issue GitHub, s'il y en a)
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         env:
