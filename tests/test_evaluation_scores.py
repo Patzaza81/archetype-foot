@@ -101,7 +101,12 @@ def test_chemin_des_scores():
 
 def test_le_workflow_recupere_les_scores_et_les_publie():
     txt = open(os.path.join(RACINE, ".github", "workflows", "pipeline.yml"), encoding="utf-8").read()
-    assert "run: python evaluation_scores.py" in txt and "[ -d evaluation ] && git add evaluation/" in txt
+    assert "run: python evaluation_scores.py" in txt
+    # Publication : soit l'ajout explicite du répertoire evaluation/, soit le « git add -A » introduit le 03/10/2026, qui capture
+    # tout ce que le pipeline a modifié (dont evaluation/). Le test vérifiait un texte précis du workflow, devenu obsolète.
+    assert "[ -d evaluation ] && git add evaluation/" in txt or "git add -A" in txt
+    # Les scores doivent être récupérés AVANT l'étape de commit, sinon ils ne seraient jamais publiés.
+    assert txt.index("run: python evaluation_scores.py") < txt.index("name: Commit et push du résultat")
 
 
 # ─────────── le jeu d'évaluation historique ───────────
