@@ -114,6 +114,9 @@ jobs:
           git config user.name "archetype-foot-bot"
           git config user.email "bot@users.noreply.github.com"
 
+          # Nettoyage des artefacts Python temporaires avant publication.
+          find . -type d -name "__pycache__" -prune -exec rm -rf {} +
+
           # Le pipeline génère plusieurs fichiers et répertoires. On capture
           # TOUTES les modifications, y compris celles ajoutées pendant les
           # dernières étapes, afin de ne jamais laisser de changements locaux
