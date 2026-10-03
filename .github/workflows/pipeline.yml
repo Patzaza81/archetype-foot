@@ -1,6 +1,9 @@
 name: Pipeline quotidien Archetype Foot
 
 on:
+  push:
+    paths:
+      - ".github/workflows/pipeline.yml"
   schedule:
     - cron: "0 21 * * *"
   workflow_dispatch:
