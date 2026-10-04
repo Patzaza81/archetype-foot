@@ -1,0 +1,38 @@
+name: CI migration v2.6.10
+
+# Vérification de la migration v2.6.9 -> v2.6.10 : autotests + suite Python complète.
+# Ne publie rien, ne touche pas à main, ne lance aucun scraping.
+
+on:
+  push:
+    branches:
+      - "migration-v2-6-10"
+  pull_request:
+    branches:
+      - "main"
+    paths:
+      - "moteur_v2_6_10/**"
+      - "moteur_v2_6_9.py"
+      - "branchement_moteur.py"
+      - "pont_moteur.py"
+      - "precalcul.py"
+      - "tests/**"
+      - "archetype.js"
+      - ".github/workflows/**"
+  workflow_dispatch:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Dépendances
+        run: pip install requests beautifulsoup4 pandas lxml playwright pytest
+      - name: Autotests moteur et pont
+        run: |
+          python pont_moteur.py --autotest
+      - name: Suite Python
+        run: python -m pytest tests -q -x --ignore=tests/test_moteur_v3.py --ignore=tests/test_moteur_v3_integration.py --ignore=tests/test_moteur_v3_pipeline.py
