@@ -43,12 +43,15 @@ def test_chaque_script_du_workflow_est_importable():
     scripts = sorted(set(
         re.findall(r"^\s*(?:run:\s*)?python\s+([A-Za-z_]\w*)\.py(?:\s+.*)?$", "\n".join(lignes_actives), re.M)
     ))
+    # Migration v2.6.10 : le moteur n'est plus un script (`python moteur_v2_6_9.py`) mais un paquet lancé avec
+    # `python -m moteur_v2_6_10 --autotest` (voir test_le_workflow_lance_l_autotest_du_moteur_v2_6_10).
     scripts_attendus = {
-        "moteur_v2_6_9", "pont_moteur", "scraper", "scraper_semaine",
+        "pont_moteur", "scraper", "scraper_semaine",
         "precalcul", "verifie_resultats_archetype_model", "evaluation_scores",
 "construit_etat_systeme", "notifie_constat_majeur",
     }
     assert scripts_attendus <= set(scripts), scripts
+    assert "moteur_v2_6_9" not in scripts
     casses = []
     for nom in scripts:
         try:
@@ -56,6 +59,13 @@ def test_chaque_script_du_workflow_est_importable():
         except Exception as e:
             casses.append(f"{nom} : {type(e).__name__}: {e}")
     assert not casses, casses
+
+
+def test_le_workflow_lance_l_autotest_du_moteur_v2_6_10():
+    with open(os.path.join(RACINE, ".github", "workflows", "pipeline.yml"), encoding="utf-8") as f:
+        actif = [l.strip() for l in f.read().splitlines() if not l.lstrip().startswith("#")]
+    assert "python -m moteur_v2_6_10 --autotest" in actif
+    assert not any("moteur_v2_6_9" in l for l in actif)
 
 
 def test_le_workflow_ne_lance_plus_la_calibration_de_l_ancien_modele():
