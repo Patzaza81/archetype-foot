@@ -6,18 +6,15 @@ Résultat : TOUS LES TESTS PASSENT
 FAILED tests/test_branchement_moteur.py::test_choix_retenus_avec_justification_specifique - AssertionError: assert ('double_chan...', None, None) == ('double_chan...micile', None)
 FAILED tests/test_branchement_moteur.py::test_no_data_no_go_un_marche_sans_preuve_specifique_est_rejete - AssertionError: assert {'marche': 'btts_non', 'motif': 'JUSTIFICATION_INSUFFISANTE'} in []
 FAILED tests/test_branchement_moteur.py::test_la_categorie_d_du_moteur_n_est_jamais_selectionnee_mais_archivee - AssertionError: assert '1x2_domicile' not in ['1x2_domicile']
-FAILED tests/test_branchement_moteur.py::test_exception_sur_un_match_donne_erreur_technique_sans_repli_et_sans_bloquer_les_autres - AssertionError: assert ('OK' == 'ERREUR_TECHNIQUE'
 FAILED tests/test_branchement_moteur.py::test_archive_selected_et_counterfactual - AssertionError: assert ({'1x2_domicil...le_chance_1X'} == {'1x2_domicil...le_chance_1X'}
-FAILED tests/test_branchement_moteur.py::test_precalcul_applique_le_moteur_et_allege_pour_le_site - AssertionError: assert ('moteur_v2_6_10' == 'moteur_v2_6_9'
-FAILED tests/test_branchement_moteur.py::test_le_fichier_exporte_rejoue_exactement_le_meme_calcul - AssertionError: assert ([('dc_1X', 0....4, True), ...] == [('dc_1X', 0...., False), ...]
 FAILED tests/test_echantillon_minimal.py::test_l_avertissement_du_moteur_est_visible_sur_le_choix - TypeError: 'NoneType' object is not subscriptable
 FAILED tests/test_integrite_du_depot.py::test_chaque_script_du_workflow_est_importable - AssertionError: ['collecte_football_data', 'construit_etat_systeme', 'enregistre_scores_historique', 'evaluation_scores', 'notifie_constat_majeur', 'pont_moteur', ...]
 FAILED tests/test_precalcul_main_fumee.py::test_main_de_bout_en_bout - AssertionError: assert ({'nom': 'mote...on': '2.6.10'} == {'nom': 'mote...ion': '2.6.9'}
 FAILED tests/test_precalcul_main_fumee.py::test_main_ecrit_l_export_les_caches_et_l_archive - AssertionError: assert (1 == 1 and 'moteur_v2_6_10' == 'moteur_v2_6_9'
-11 failed, 1129 passed in 20.69s
+8 failed, 1134 passed in 16.72s
 == pytest : detail (fin) ==
 _______________ test_choix_retenus_avec_justification_specifique _______________
-tests/test_branchement_moteur.py:212: in test_choix_retenus_avec_justification_specifique
+tests/test_branchement_moteur.py:223: in test_choix_retenus_avec_justification_specifique
 E   AssertionError: assert ('double_chan...', None, None) == ('double_chan...micile', None)
 E     
 E     At index 1 diff: None != '1x2_domicile'
@@ -30,16 +27,11 @@ E     +     None,
 E           None,
 E       )
 ________ test_no_data_no_go_un_marche_sans_preuve_specifique_est_rejete ________
-tests/test_branchement_moteur.py:226: in test_no_data_no_go_un_marche_sans_preuve_specifique_est_rejete
+tests/test_branchement_moteur.py:237: in test_no_data_no_go_un_marche_sans_preuve_specifique_est_rejete
 E   AssertionError: assert {'marche': 'btts_non', 'motif': 'JUSTIFICATION_INSUFFISANTE'} in []
 ____ test_la_categorie_d_du_moteur_n_est_jamais_selectionnee_mais_archivee _____
-tests/test_branchement_moteur.py:233: in test_la_categorie_d_du_moteur_n_est_jamais_selectionnee_mais_archivee
+tests/test_branchement_moteur.py:244: in test_la_categorie_d_du_moteur_n_est_jamais_selectionnee_mais_archivee
 E   AssertionError: assert '1x2_domicile' not in ['1x2_domicile']
-tests/test_branchement_moteur.py:297: in test_exception_sur_un_match_donne_erreur_technique_sans_repli_et_sans_bloquer_les_autres
-E   AssertionError: assert ('OK' == 'ERREUR_TECHNIQUE'
-E     
-E     - ERREUR_TECHNIQUE
-E     + OK)
 ___________________ test_archive_selected_et_counterfactual ____________________
 E   AssertionError: assert ({'1x2_domicil...le_chance_1X'} == {'1x2_domicil...le_chance_1X'}
 E     
@@ -58,121 +50,39 @@ E       {
 E           'm1',
 E     +     'm2',
 E       })
-___________ test_precalcul_applique_le_moteur_et_allege_pour_le_site ___________
-E   AssertionError: assert ('moteur_v2_6_10' == 'moteur_v2_6_9'
+___________ test_l_avertissement_du_moteur_est_visible_sur_le_choix ____________
+tests/test_echantillon_minimal.py:147: in test_l_avertissement_du_moteur_est_visible_sur_le_choix
+E   TypeError: 'NoneType' object is not subscriptable
+________________ test_chaque_script_du_workflow_est_importable _________________
+tests/test_integrite_du_depot.py:51: in test_chaque_script_du_workflow_est_importable
+E   AssertionError: ['collecte_football_data', 'construit_etat_systeme', 'enregistre_scores_historique', 'evaluation_scores', 'notifie_constat_majeur', 'pont_moteur', ...]
+E   assert {'construit_e...ecalcul', ...} <= {'collecte_fo..._moteur', ...}
+E     
+E     Extra items in the left set:
+E     'moteur_v2_6_9'
+__________________________ test_main_de_bout_en_bout ___________________________
+E   AssertionError: assert ({'nom': 'mote...on': '2.6.10'} == {'nom': 'mote...ion': '2.6.9'}
+E     
+E     Differing items:
+E     {'nom': 'moteur_v2_6_10'} != {'nom': 'moteur_v2_6_9'}
+E     {'version': '2.6.10'} != {'version': '2.6.9'}
+E     
+E     Full diff:
+E       {
+E     -     'nom': 'moteur_v2_6_9',
+E     ?                         ^
+E     +     'nom': 'moteur_v2_6_10',
+E     ?                         ^^
+E     -     'version': '2.6.9',
+E     ?                     ^
+E     +     'version': '2.6.10',
+E     ?                     ^^
+E       })
+_______________ test_main_ecrit_l_export_les_caches_et_l_archive _______________
+E   AssertionError: assert (1 == 1 and 'moteur_v2_6_10' == 'moteur_v2_6_9'
+E    +  where 1 = len(['2026-10.json'])
 E     
 E     - moteur_v2_6_9
 E     ?             ^
 E     + moteur_v2_6_10
 E     ?             ^^)
-___________ test_le_fichier_exporte_rejoue_exactement_le_meme_calcul ___________
-tests/test_branchement_moteur.py:390: in test_le_fichier_exporte_rejoue_exactement_le_meme_calcul
-E   AssertionError: assert ([('dc_1X', 0....4, True), ...] == [('dc_1X', 0...., False), ...]
-E     
-E     At index 0 diff: ('dc_1X', 0.168756631, True) != ('dc_1X', 0.105613272, True)
-E     
-E     Full diff:
-E       [
-E           (
-E               'dc_1X',
-E     -         0.105613272,
-E     ?            ^   ----
-E     +         0.168756631,
-E     ?            ^^^  ++
-E               True,
-E           ),
-E           (
-E               'dc_12',
-E     -         -0.000429906,
-E     +         0.031697728,
-E     +         False,
-E     +     ),
-E     +     (
-E     +         'under_3_5',
-E     +         -0.043197862,
-E               False,
-E           ),
-E           (
-E               'over_1_5',
-E     -         -0.025728786,
-E     -         False,
-E     -     ),
-E     -     (
-E     -         'under_3_5',
-E     -         -0.051296411,
-E     ?             ^^  - ^^
-E     +         -0.032948044,
-E     ?             ^   ^^^^
-E               False,
-E           ),
-E           (
-E               'victoire',
-E     -         -0.02135188,
-E     ?         -    ^ -- ^
-E     +         0.09283899,
-E     ?            + ^  ^^
-E     -         False,
-E     +         True,
-E           ),
-E           (
-E               'btts_non',
-E     -         -0.01668046,
-E     -         False,
-E     +         0.097772014,
-E     +         True,
-E           ),
-E           (
-E               'under_2_5',
-E     -         -0.079694649,
-E     +         -0.066826763,
-E               False,
-E           ),
-E           (
-E               'over_2_5',
-E     -         -0.022561501,
-E     ?             ^^ ^  ^^
-E     +         -0.036859152,
-E     ?             ^^^ ^  ^
-E               False,
-E           ),
-E           (
-E               'btts_oui',
-E     -         -0.115262835,
-E     +         -0.239253015,
-E               False,
-E           ),
-E           (
-E               'dc_X2',
-E     -         -0.152187533,
-E     +         -0.321632049,
-E     +         False,
-E     +     ),
-E     +     (
-E     +         'under_1_5',
-E     +         -0.117629891,
-E               False,
-E           ),
-E           (
-E               'over_3_5',
-E     -         -0.135270374,
-E     ?             ^  - ^^^
-E     +         -0.155205262,
-E     ?             ^   ^^^^
-E     -         False,
-E     -     ),
-E     -     (
-E     -         'under_1_5',
-E     -         -0.135678035,
-E               False,
-E           ),
-E           (
-E               'nul',
-E     -         -0.189382304,
-E     +         -0.282251246,
-E               False,
-E           ),
-E           (
-E               'defaite',
-E     -         -0.312170039,
-E     ?             ^^^^   ^
-E     +         -0.535600387,
