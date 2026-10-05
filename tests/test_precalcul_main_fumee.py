@@ -3,6 +3,8 @@
 Pourquoi : main() avait été modifié (moteur, statistiques saison en cours, option jours=2, export, purge) sans jamais être
 exécuté entièrement avant un run réel de plusieurs heures. Ce test l'exécute dans un dossier vide, avec des faux pour
 tout ce qui touche le réseau (BetPawa, pages d'équipe, H2H), et vérifie ce qui est écrit.
+
+Migration v2.6.9 -> v2.6.10 (05/10/2026) : le moteur actif attendu est moteur_v2_6_10.
 """
 import json
 import os
@@ -71,12 +73,12 @@ def test_main_de_bout_en_bout(monde):
     leger = json.load(open("precalcul_leger.json", encoding="utf-8"))
     ids = sorted(s["match_id"] for s in complet["signaux"])
     assert ids == ["a", "b", "c"], ids                                          # J+2 ("z") ignoré
-    assert complet["moteur"] == {"nom": "moteur_v2_6_9", "version": "2.6.9"} and leger["moteur"] == complet["moteur"]
+    assert complet["moteur"] == {"nom": "moteur_v2_6_10", "version": "2.6.10"} and leger["moteur"] == complet["moteur"]
     blocs = {s["match_id"]: s[bm.CLE_BLOC] for s in complet["signaux"]}
     assert blocs["a"]["statut"] == "OK" and blocs["a"]["nb_marches_evalues"] > 0
     assert blocs["b"]["statut"] == "NON_EXPORTABLE" and blocs["b"]["raison"].startswith("echantillon_insuffisant")
     assert blocs["c"]["statut"] == "NON_EXPORTABLE" and blocs["c"]["raison"] == "pas_de_cotes_betpawa"
-    assert all(s["moteur_utilise"] == "moteur_v2_6_9" and "archetype_model" not in s for s in complet["signaux"])
+    assert all(s["moteur_utilise"] == "moteur_v2_6_10" and "archetype_model" not in s and "moteur_v2_6_9" not in s for s in complet["signaux"])
     la = next(s for s in leger["signaux"] if s["match_id"] == "a")[bm.CLE_BLOC]
     assert "inventaire" not in la and la["statut"] == "OK"
 
@@ -91,7 +93,7 @@ def test_main_ecrit_l_export_les_caches_et_l_archive(monde):
     assert os.path.exists("export_moteur/diagnostic_pont.json") and os.path.exists("cache_equipes_saison.json")
     assert not os.path.exists("cache_equipes.json")                             # l'ancien cache à repli n'est pas touché
     archive = [f for f in os.listdir("archive")]
-    assert len(archive) == 1 and json.load(open(os.path.join("archive", archive[0]), encoding="utf-8"))[0]["model_version"] == "moteur_v2_6_9"
+    assert len(archive) == 1 and json.load(open(os.path.join("archive", archive[0]), encoding="utf-8"))[0]["model_version"] == "moteur_v2_6_10"
     assert precalcul.STATS_EQUIPES_VUES.keys() >= {("Alpha FC", COMP), ("Beta FC", COMP)} and ("Zeta FC", COMP) not in precalcul.STATS_EQUIPES_VUES
 
 
