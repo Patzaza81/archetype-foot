@@ -47,7 +47,7 @@ jobs:
 
       - name: Autotests du moteur, du pont et suite Python
         run: |
-          python moteur_v2_6_9.py --autotest
+          python -m moteur_v2_6_10 --autotest
           python pont_moteur.py --autotest
           python -m pytest tests -q --ignore=tests/test_moteur_v3.py --ignore=tests/test_moteur_v3_integration.py --ignore=tests/test_moteur_v3_pipeline.py
 
