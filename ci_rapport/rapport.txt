@@ -18,29 +18,153 @@ exit=0
 == autotest pont ==
 Résultat : TOUS LES TESTS PASSENT
 == pytest ==
-........................................................................ [  6%]
-........................................................................ [ 12%]
-........................................................................ [ 18%]
-........................................................................ [ 25%]
-........................................................................ [ 31%]
-........................................................................ [ 37%]
-........................................................................ [ 44%]
-........................................................................ [ 50%]
-........................................................................ [ 56%]
-........................................................................ [ 63%]
-........................................................................ [ 69%]
-........................................................................ [ 75%]
-........................................................................ [ 82%]
-..........................................................F............. [ 88%]
-........................................................................ [ 94%]
-............................................................             [100%]
-=================================== FAILURES ===================================
-______________ test_aucun_fichier_de_production_n_importe_v2_6_9 _______________
-tests/test_pas_de_dependance_v2_6_9.py:32: in test_aucun_fichier_de_production_n_importe_v2_6_9
-    assert not fautifs, f"imports de production de moteur_v2_6_9 : {fautifs}"
-E   AssertionError: imports de production de moteur_v2_6_9 : ['branchement_moteur.py', 'pont_moteur.py']
-E   assert not ['branchement_moteur.py', 'pont_moteur.py']
-=========================== short test summary info ============================
-FAILED tests/test_pas_de_dependance_v2_6_9.py::test_aucun_fichier_de_production_n_importe_v2_6_9 - AssertionError: imports de production de moteur_v2_6_9 : ['branchement_moteur.py', 'pont_moteur.py']
-assert not ['branchement_moteur.py', 'pont_moteur.py']
-1 failed, 1139 passed in 14.65s
+        'm1',
+  +     'm2',
+    })
+FAILED tests/test_branchement_moteur.py::test_precalcul_applique_le_moteur_et_allege_pour_le_site - AssertionError: assert ('moteur_v2_6_10' == 'moteur_v2_6_9'
+  
+  - moteur_v2_6_9
+  ?             ^
+  + moteur_v2_6_10
+  ?             ^^)
+FAILED tests/test_branchement_moteur.py::test_le_fichier_exporte_rejoue_exactement_le_meme_calcul - AssertionError: assert ([('dc_1X', 0....4, True), ...] == [('dc_1X', 0...., False), ...]
+  
+  At index 0 diff: ('dc_1X', 0.168756631, True) != ('dc_1X', 0.105613272, True)
+  
+  Full diff:
+    [
+        (
+            'dc_1X',
+  -         0.105613272,
+  ?            ^   ----
+  +         0.168756631,
+  ?            ^^^  ++
+            True,
+        ),
+        (
+            'dc_12',
+  -         -0.000429906,
+  +         0.031697728,
+  +         False,
+  +     ),
+  +     (
+  +         'under_3_5',
+  +         -0.043197862,
+            False,
+        ),
+        (
+            'over_1_5',
+  -         -0.025728786,
+  -         False,
+  -     ),
+  -     (
+  -         'under_3_5',
+  -         -0.051296411,
+  ?             ^^  - ^^
+  +         -0.032948044,
+  ?             ^   ^^^^
+            False,
+        ),
+        (
+            'victoire',
+  -         -0.02135188,
+  ?         -    ^ -- ^
+  +         0.09283899,
+  ?            + ^  ^^
+  -         False,
+  +         True,
+        ),
+        (
+            'btts_non',
+  -         -0.01668046,
+  -         False,
+  +         0.097772014,
+  +         True,
+        ),
+        (
+            'under_2_5',
+  -         -0.079694649,
+  +         -0.066826763,
+            False,
+        ),
+        (
+            'over_2_5',
+  -         -0.022561501,
+  ?             ^^ ^  ^^
+  +         -0.036859152,
+  ?             ^^^ ^  ^
+            False,
+        ),
+        (
+            'btts_oui',
+  -         -0.115262835,
+  +         -0.239253015,
+            False,
+        ),
+        (
+            'dc_X2',
+  -         -0.152187533,
+  +         -0.321632049,
+  +         False,
+  +     ),
+  +     (
+  +         'under_1_5',
+  +         -0.117629891,
+            False,
+        ),
+        (
+            'over_3_5',
+  -         -0.135270374,
+  ?             ^  - ^^^
+  +         -0.155205262,
+  ?             ^   ^^^^
+  -         False,
+  -     ),
+  -     (
+  -         'under_1_5',
+  -         -0.135678035,
+            False,
+        ),
+        (
+            'nul',
+  -         -0.189382304,
+  +         -0.282251246,
+            False,
+        ),
+        (
+            'defaite',
+  -         -0.312170039,
+  ?             ^^^^   ^
+  +         -0.535600387,
+  ?            + ^^   ^^
+            False,
+        ),
+    ])
+FAILED tests/test_echantillon_minimal.py::test_l_avertissement_du_moteur_est_visible_sur_le_choix - TypeError: 'NoneType' object is not subscriptable
+FAILED tests/test_pas_de_dependance_v2_6_9.py::test_aucun_fichier_de_production_n_importe_v2_6_9 - AssertionError: imports de production de moteur_v2_6_9 : ['pont_moteur.py']
+assert not ['pont_moteur.py']
+FAILED tests/test_precalcul_main_fumee.py::test_main_de_bout_en_bout - AssertionError: assert ({'nom': 'mote...on': '2.6.10'} == {'nom': 'mote...ion': '2.6.9'}
+  
+  Differing items:
+  {'version': '2.6.10'} != {'version': '2.6.9'}
+  {'nom': 'moteur_v2_6_10'} != {'nom': 'moteur_v2_6_9'}
+  
+  Full diff:
+    {
+  -     'nom': 'moteur_v2_6_9',
+  ?                         ^
+  +     'nom': 'moteur_v2_6_10',
+  ?                         ^^
+  -     'version': '2.6.9',
+  ?                     ^
+  +     'version': '2.6.10',
+  ?                     ^^
+    })
+FAILED tests/test_precalcul_main_fumee.py::test_main_ecrit_l_export_les_caches_et_l_archive - AssertionError: assert (1 == 1 and 'moteur_v2_6_10' == 'moteur_v2_6_9'
+ +  where 1 = len(['2026-10.json'])
+  
+  - moteur_v2_6_9
+  ?             ^
+  + moteur_v2_6_10
+  ?             ^^)
+11 failed, 1129 passed in 20.15s
