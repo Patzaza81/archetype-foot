@@ -37,7 +37,8 @@ let compteurCartes = 0;
 // Sens historique : match avec un candidat P1 minimum.
 // Clé du bloc produit par le moteur du pipeline (précalcul : branchement_moteur.CLE_BLOC). Changer de moteur = changer
 // cette seule constante, à condition de respecter le même contrat (selection.P1/P2/P3 avec justification).
-const CLE_MOTEUR = "moteur_v2_6_9";
+// Migration v2.6.9 -> v2.6.10 (05/10/2026) : le moteur actif est moteur_v2_6_10.
+const CLE_MOTEUR = "moteur_v2_6_10";
 
 function estArchetypeGo(m) {
   return !!(m && m.moteur_utilise === CLE_MOTEUR && m[CLE_MOTEUR] &&
