@@ -36,6 +36,10 @@ test ») :
      corners et cartons puissent être testés sur l'historique. Assemblage absent ou contrat rompu : le bloc
      `assemblage` le dit (statut), le reste de l'enregistrement est écrit normalement. L'assemblage est reconstruit par
      journal.yml APRÈS le pipeline : celui lu ici est donc celui de la nuit précédente (sa date est enregistrée).
+  9. MIGRATION v2.6.9 -> v2.6.10 (05/10/2026) : le bloc du moteur en production est lu sous la clé du moteur ACTIF
+     (`moteur_v2_6_10`) ; si elle est absente (precalcul.json écrit avant la migration), on relit l'ancienne clé
+     (`moteur_v2_6_9`). Le nom du moteur enregistré est celui du bloc trouvé : un enregistrement ne change jamais
+     d'auteur.
 
 Utilisation :
     python archive_donnees_test.py --run --scores   # à la main : avant-match des matchs à venir + scores des matchs joués
@@ -59,7 +63,8 @@ FICHIER_HISTORIQUE = "historique_pronostics.json"
 FICHIER_PRECALCUL = "precalcul.json"
 FICHIER_CACHE_SAISON = "cache_equipes_saison.json"
 DECALAGE_CAMEROUN = datetime.timedelta(hours=1)          # heure_cameroun = UTC+1, sans heure d'été
-CLE_BLOC_MOTEUR = "moteur_v2_6_9"
+CLE_BLOC_MOTEUR = "moteur_v2_6_10"                       # moteur actif (branchement_moteur.CLE_BLOC)
+CLES_BLOCS_MOTEUR = ("moteur_v2_6_10", "moteur_v2_6_9")  # lecture : l'actif d'abord, puis l'ancien (données d'avant migration)
 _SCORE = re.compile(r"^\s*(\d+)\s*-\s*(\d+)\s*$")
 
 
@@ -222,8 +227,17 @@ def _cotes_observees(s):
     return out
 
 
+def _bloc_moteur(s):
+    """(clé, bloc) du moteur en production dans ce signal : le moteur actif d'abord, sinon l'ancien (règle 9)."""
+    for cle in CLES_BLOCS_MOTEUR:
+        bloc = s.get(cle)
+        if isinstance(bloc, dict) and bloc:
+            return cle, bloc
+    return CLE_BLOC_MOTEUR, {}
+
+
 def _choix_moteur(s):
-    bloc = s.get(CLE_BLOC_MOTEUR) or {}
+    cle, bloc = _bloc_moteur(s)
     sel = bloc.get("selection") or {}
     choix = {}
     if isinstance(sel, dict):
@@ -231,7 +245,7 @@ def _choix_moteur(s):
             if isinstance(c, dict):
                 choix[role] = {k: c.get(k) for k in ("marche", "marche_moteur", "probabilite", "p_juste", "cote",
                                                      "edge", "edv") if k in c}
-    return {"moteur": bloc.get("moteur") or CLE_BLOC_MOTEUR, "version": bloc.get("version_moteur"),
+    return {"moteur": bloc.get("moteur") or cle, "version": bloc.get("version_moteur"),
             "statut": bloc.get("statut"), "raison": bloc.get("raison"),
             "lambda_dom": bloc.get("lambda_dom"), "lambda_ext": bloc.get("lambda_ext"), "choix": choix}
 
