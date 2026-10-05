@@ -1,0 +1,46 @@
+== autotest moteur_v2_6_10 ==
+  OK   handicap -1.5 + +1.5 = 1
+  OK   handicap_nul_X → non_reconnues
+  OK   match complet analysé (pas de SKIP)
+  OK   R4 : avertissement, pas artefact
+  OK   groupe unique rejeté → SKIP tracé
+  OK   V11 : intégration → SKIP
+  OK   Option 2 : EV = p·cote − 1
+  OK   Défaut : l'égalité sur la ligne perd
+  OK   identité du moteur
+  OK   sans calibrateur : NON_CALIBRE (jamais prétendu calibré)
+  OK   le résultat est un sur-ensemble du schéma historique
+  OK   NO DATA : données insuffisantes → SKIP, aucune sélection
+  OK   reproductibilité : deux exécutions identiques
+
+Résultat : TOUS LES TESTS PASSENT
+exit=0
+== autotest pont ==
+Résultat : TOUS LES TESTS PASSENT
+== pytest ==
+........................................................................ [  6%]
+........................................................................ [ 12%]
+........................................................................ [ 18%]
+........................................................................ [ 25%]
+........................................................................ [ 31%]
+........................................................................ [ 37%]
+........................................................................ [ 44%]
+........................................................................ [ 50%]
+........................................................................ [ 56%]
+........................................................................ [ 63%]
+........................................................................ [ 69%]
+........................................................................ [ 75%]
+........................................................................ [ 82%]
+..........................................................F............. [ 88%]
+........................................................................ [ 94%]
+............................................................             [100%]
+=================================== FAILURES ===================================
+______________ test_aucun_fichier_de_production_n_importe_v2_6_9 _______________
+tests/test_pas_de_dependance_v2_6_9.py:32: in test_aucun_fichier_de_production_n_importe_v2_6_9
+    assert not fautifs, f"imports de production de moteur_v2_6_9 : {fautifs}"
+E   AssertionError: imports de production de moteur_v2_6_9 : ['branchement_moteur.py', 'pont_moteur.py']
+E   assert not ['branchement_moteur.py', 'pont_moteur.py']
+=========================== short test summary info ============================
+FAILED tests/test_pas_de_dependance_v2_6_9.py::test_aucun_fichier_de_production_n_importe_v2_6_9 - AssertionError: imports de production de moteur_v2_6_9 : ['branchement_moteur.py', 'pont_moteur.py']
+assert not ['branchement_moteur.py', 'pont_moteur.py']
+1 failed, 1139 passed in 14.65s
