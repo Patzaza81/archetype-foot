@@ -18,6 +18,8 @@ exit=0
 == autotest pont ==
 Résultat : TOUS LES TESTS PASSENT
 == pytest ==
+  Full diff:
+    {
         'm1',
   +     'm2',
     })
@@ -141,13 +143,11 @@ FAILED tests/test_branchement_moteur.py::test_le_fichier_exporte_rejoue_exacteme
         ),
     ])
 FAILED tests/test_echantillon_minimal.py::test_l_avertissement_du_moteur_est_visible_sur_le_choix - TypeError: 'NoneType' object is not subscriptable
-FAILED tests/test_pas_de_dependance_v2_6_9.py::test_aucun_fichier_de_production_n_importe_v2_6_9 - AssertionError: imports de production de moteur_v2_6_9 : ['pont_moteur.py']
-assert not ['pont_moteur.py']
 FAILED tests/test_precalcul_main_fumee.py::test_main_de_bout_en_bout - AssertionError: assert ({'nom': 'mote...on': '2.6.10'} == {'nom': 'mote...ion': '2.6.9'}
   
   Differing items:
-  {'version': '2.6.10'} != {'version': '2.6.9'}
   {'nom': 'moteur_v2_6_10'} != {'nom': 'moteur_v2_6_9'}
+  {'version': '2.6.10'} != {'version': '2.6.9'}
   
   Full diff:
     {
@@ -167,4 +167,4 @@ FAILED tests/test_precalcul_main_fumee.py::test_main_ecrit_l_export_les_caches_e
   ?             ^
   + moteur_v2_6_10
   ?             ^^)
-11 failed, 1129 passed in 20.15s
+10 failed, 1130 passed in 20.64s
