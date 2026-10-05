@@ -3,56 +3,9 @@ Résultat : TOUS LES TESTS PASSENT
 == autotest pont ==
 Résultat : TOUS LES TESTS PASSENT
 == pytest : resume ==
-FAILED tests/test_branchement_moteur.py::test_choix_retenus_avec_justification_specifique - AssertionError: assert ('double_chan...', None, None) == ('double_chan...micile', None)
-FAILED tests/test_branchement_moteur.py::test_no_data_no_go_un_marche_sans_preuve_specifique_est_rejete - AssertionError: assert {'marche': 'btts_non', 'motif': 'JUSTIFICATION_INSUFFISANTE'} in []
-FAILED tests/test_branchement_moteur.py::test_la_categorie_d_du_moteur_n_est_jamais_selectionnee_mais_archivee - AssertionError: assert '1x2_domicile' not in ['1x2_domicile']
-FAILED tests/test_branchement_moteur.py::test_archive_selected_et_counterfactual - AssertionError: assert ({'1x2_domicil...le_chance_1X'} == {'1x2_domicil...le_chance_1X'}
-FAILED tests/test_echantillon_minimal.py::test_l_avertissement_du_moteur_est_visible_sur_le_choix - TypeError: 'NoneType' object is not subscriptable
 FAILED tests/test_integrite_du_depot.py::test_chaque_script_du_workflow_est_importable - AssertionError: ['collecte_football_data', 'construit_etat_systeme', 'enregistre_scores_historique', 'evaluation_scores', 'notifie_constat_majeur', 'pont_moteur', ...]
-FAILED tests/test_precalcul_main_fumee.py::test_main_de_bout_en_bout - AssertionError: assert ({'nom': 'mote...on': '2.6.10'} == {'nom': 'mote...ion': '2.6.9'}
-FAILED tests/test_precalcul_main_fumee.py::test_main_ecrit_l_export_les_caches_et_l_archive - AssertionError: assert (1 == 1 and 'moteur_v2_6_10' == 'moteur_v2_6_9'
-8 failed, 1134 passed in 16.72s
+1 failed, 1142 passed in 23.20s
 == pytest : detail (fin) ==
-_______________ test_choix_retenus_avec_justification_specifique _______________
-tests/test_branchement_moteur.py:223: in test_choix_retenus_avec_justification_specifique
-E   AssertionError: assert ('double_chan...', None, None) == ('double_chan...micile', None)
-E     
-E     At index 1 diff: None != '1x2_domicile'
-E     
-E     Full diff:
-E       (
-E           'double_chance_1X',
-E     -     '1x2_domicile',
-E     +     None,
-E           None,
-E       )
-________ test_no_data_no_go_un_marche_sans_preuve_specifique_est_rejete ________
-tests/test_branchement_moteur.py:237: in test_no_data_no_go_un_marche_sans_preuve_specifique_est_rejete
-E   AssertionError: assert {'marche': 'btts_non', 'motif': 'JUSTIFICATION_INSUFFISANTE'} in []
-____ test_la_categorie_d_du_moteur_n_est_jamais_selectionnee_mais_archivee _____
-tests/test_branchement_moteur.py:244: in test_la_categorie_d_du_moteur_n_est_jamais_selectionnee_mais_archivee
-E   AssertionError: assert '1x2_domicile' not in ['1x2_domicile']
-___________________ test_archive_selected_et_counterfactual ____________________
-E   AssertionError: assert ({'1x2_domicil...le_chance_1X'} == {'1x2_domicil...le_chance_1X'}
-E     
-E     Full diff:
-E       {
-E           '1x2_domicile',
-E           'double_chance_1X',
-E       } and 2 == 2 and {'m1', 'm2'} == {'m1'}
-E    +  where 2 = len([{'schema_version': 1, 'record_id': 'm1|double_chance_1X|', 'match_id': 'm1', 'date_match': '2026-09-22', ...}, {'schema_version': 1, 'record_id': 'm2|1x2_domicile|', 'match_id': 'm2', 'date_match': '2026-09-22', ...}])
-E     
-E     Extra items in the left set:
-E     'm2'
-E     
-E     Full diff:
-E       {
-E           'm1',
-E     +     'm2',
-E       })
-___________ test_l_avertissement_du_moteur_est_visible_sur_le_choix ____________
-tests/test_echantillon_minimal.py:147: in test_l_avertissement_du_moteur_est_visible_sur_le_choix
-E   TypeError: 'NoneType' object is not subscriptable
 ________________ test_chaque_script_du_workflow_est_importable _________________
 tests/test_integrite_du_depot.py:51: in test_chaque_script_du_workflow_est_importable
 E   AssertionError: ['collecte_football_data', 'construit_etat_systeme', 'enregistre_scores_historique', 'evaluation_scores', 'notifie_constat_majeur', 'pont_moteur', ...]
@@ -60,29 +13,3 @@ E   assert {'construit_e...ecalcul', ...} <= {'collecte_fo..._moteur', ...}
 E     
 E     Extra items in the left set:
 E     'moteur_v2_6_9'
-__________________________ test_main_de_bout_en_bout ___________________________
-E   AssertionError: assert ({'nom': 'mote...on': '2.6.10'} == {'nom': 'mote...ion': '2.6.9'}
-E     
-E     Differing items:
-E     {'nom': 'moteur_v2_6_10'} != {'nom': 'moteur_v2_6_9'}
-E     {'version': '2.6.10'} != {'version': '2.6.9'}
-E     
-E     Full diff:
-E       {
-E     -     'nom': 'moteur_v2_6_9',
-E     ?                         ^
-E     +     'nom': 'moteur_v2_6_10',
-E     ?                         ^^
-E     -     'version': '2.6.9',
-E     ?                     ^
-E     +     'version': '2.6.10',
-E     ?                     ^^
-E       })
-_______________ test_main_ecrit_l_export_les_caches_et_l_archive _______________
-E   AssertionError: assert (1 == 1 and 'moteur_v2_6_10' == 'moteur_v2_6_9'
-E    +  where 1 = len(['2026-10.json'])
-E     
-E     - moteur_v2_6_9
-E     ?             ^
-E     + moteur_v2_6_10
-E     ?             ^^)
