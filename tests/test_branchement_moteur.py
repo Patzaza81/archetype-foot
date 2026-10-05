@@ -9,6 +9,11 @@ Ce que ces tests verrouillent :
 
 Migration v2.6.9 -> v2.6.10 : les fonctions de calcul pur (matrice, probabilités, handicaps) viennent du noyau autonome
 `moteur_v2_6_10.noyau` ; le moteur complet (lissage, calibration optionnelle) est `moteur_v2_6_10`.
+
+Les cotes des fixtures ont été recalées sur le lissage de la v2.6.10 : à 10 matchs par lieu, les moyennes de buts sont
+ramenées vers la référence de leur rôle, donc la victoire du domicile n'est plus « value » à 1,55 (elle l'était avec les
+moyennes brutes). C'est l'effet voulu du lissage, pas une régression : les cotes ci-dessous recréent les mêmes situations
+(un favori value, un marché sans preuve, une catégorie D) avec les probabilités lissées.
 """
 import datetime
 import json
@@ -50,14 +55,20 @@ def stats():
     }
 
 
-def signal(un=1.55, dc=1.30, mid="t1", **extra):
-    cotes = {"1x2": {"1": un, "N": 3.7, "2": 4.6}, "double_chance": {"1N": dc, "N2": 2.3, "12": 1.28},
-             "btts": {"Oui": 1.95, "Non": 1.8}, "over_under_1.5": {"plus": 1.32, "moins": 3.3},
+def signal(un=1.75, dc=1.30, mid="t1", btts_non=2.02, nul=3.7, ext=4.6, **extra):
+    cotes = {"1x2": {"1": un, "N": nul, "2": ext}, "double_chance": {"1N": dc, "N2": 2.3, "12": 1.28},
+             "btts": {"Oui": 1.95, "Non": btts_non}, "over_under_1.5": {"plus": 1.32, "moins": 3.3},
              "over_under_2.5": {"plus": 2.0, "moins": 1.8}, "over_under_3.5": {"plus": 3.2, "moins": 1.3}}
     s = {"match_id": mid, "domicile": "Alpha FC", "exterieur": "Beta FC", "competition": COMP, "date": "2026-09-22",
          "heure": "20:45", "cotes_manuelles": cotes, "url_match": "https://x/m"}
     s.update(extra)
     return s
+
+
+def signal_categorie_d(mid="t1"):
+    """Victoire du domicile à 2,30 (marge 1X2 = 1,018) : EV très au-dessus de 30 % avec les probabilités lissées -> catégorie D.
+    La double chance 1X est mise à 1,22 (< 1,29, injouable) pour qu'elle ne soit pas candidate."""
+    return signal(un=2.30, dc=1.22, mid=mid, nul=3.0, ext=4.0)
 
 
 def analyse(sig=None, st=None, h2h=lambda s: H2H):
@@ -215,6 +226,13 @@ def test_le_site_retrouve_exactement_les_roles_du_backend():
     assert not ecarts, ecarts[:3]
 
 
+def test_le_site_lit_le_bloc_du_moteur_actif():
+    """Le site (archetype.js) et le backend doivent désigner le même bloc : sinon la page resterait vide."""
+    with open(os.path.join(RACINE, "archetype.js"), encoding="utf-8") as f:
+        source = f.read()
+    assert f'const CLE_MOTEUR = "{bm.CLE_BLOC}";' in source
+
+
 # ═══════ 5. ANALYSE D'UN SIGNAL : justification, NO DATA -> NO GO, catégorie D ═══════
 def test_choix_retenus_avec_justification_specifique():
     bloc, _ = analyse()
@@ -240,7 +258,7 @@ def test_no_data_no_go_un_marche_sans_preuve_specifique_est_rejete():
 
 
 def test_la_categorie_d_du_moteur_n_est_jamais_selectionnee_mais_archivee():
-    bloc, non_sel = analyse(signal(un=1.85, dc=1.22))
+    bloc, non_sel = analyse(signal_categorie_d())
     assert "1x2_domicile" not in [x["marche"] for x in bloc["candidats"]]
     d = [x for x in non_sel if x["marche"] == "1x2_domicile"]
     assert d and d[0]["categorie"] == "D"
@@ -324,7 +342,7 @@ def test_exception_sur_un_match_donne_erreur_technique_sans_repli_et_sans_bloque
 # ═══════════════════════════ 7. ARCHIVE ═══════════════════════════
 def test_archive_selected_et_counterfactual(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
-    sigs = [signal(mid="m1"), signal(mid="m2", un=1.85, dc=1.22)]
+    sigs = [signal(mid="m1"), signal_categorie_d(mid="m2")]
     arch = lambda s, b, n: bm.archive_bloc(s, b, n, archive)
     resume = bm.applique_moteur(sigs, stats(), maintenant=NOW, h2h_fetcher=lambda s: H2H, archiver=arch)
     recs = json.load(open(tmp_path / "archive" / "2026-09.json", encoding="utf-8"))
