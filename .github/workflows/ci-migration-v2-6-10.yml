@@ -27,11 +27,14 @@ jobs:
       - name: Tests (rapport complet, ne s'arrête pas au premier échec)
         run: |
           mkdir -p ci_rapport
+          python -m pytest tests -q -rf --tb=short -p no:cacheprovider --ignore=tests/test_moteur_v3.py --ignore=tests/test_moteur_v3_integration.py --ignore=tests/test_moteur_v3_pipeline.py > ci_rapport/pytest_complet.txt 2>&1 || true
           {
-            echo "== autotest moteur_v2_6_10 =="; python -m moteur_v2_6_10 --autotest 2>&1 | tail -n 15; echo "exit=${PIPESTATUS[0]}"
-            echo "== autotest pont =="; python pont_moteur.py --autotest 2>&1 | grep -E "ÉCHEC|Résultat|Traceback|Error" | head -n 30
-            echo "== pytest =="; python -m pytest tests -q -rf --tb=short -p no:cacheprovider --ignore=tests/test_moteur_v3.py --ignore=tests/test_moteur_v3_integration.py --ignore=tests/test_moteur_v3_pipeline.py 2>&1 | tail -n 150
+            echo "== autotest moteur_v2_6_10 =="; python -m moteur_v2_6_10 --autotest 2>&1 | grep -E "ÉCHEC|Résultat|Traceback|Error" | head -n 20
+            echo "== autotest pont =="; python pont_moteur.py --autotest 2>&1 | grep -E "ÉCHEC|Résultat|Traceback|Error" | head -n 20
+            echo "== pytest : resume =="; grep -E "^(FAILED|ERROR)| passed| failed" ci_rapport/pytest_complet.txt | cut -c1-260 | head -n 80
+            echo "== pytest : detail (fin) =="; grep -vE "^\s*[-+?]" ci_rapport/pytest_complet.txt | grep -E "^(E |tests/|____)" | cut -c1-260 | head -n 160
           } > ci_rapport/rapport.txt 2>&1 || true
+          rm -f ci_rapport/pytest_complet.txt
           cat ci_rapport/rapport.txt
       - name: Commit du rapport
         if: always()
@@ -44,5 +47,5 @@ jobs:
           git push origin HEAD:migration-v2-6-10 || true
       - name: Verdict
         run: |
-          grep -q "TOUS LES TESTS PASSENT" ci_rapport/rapport.txt || { echo "autotest KO"; exit 1; }
+          grep -q "Résultat : TOUS LES TESTS PASSENT" ci_rapport/rapport.txt || { echo "autotest KO"; exit 1; }
           ! grep -E "^FAILED|[0-9]+ failed" ci_rapport/rapport.txt
