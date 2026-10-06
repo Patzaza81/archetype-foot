@@ -1,4 +1,4 @@
-"""Branchement de moteur_v2_6_9.py (branchement_moteur.py + precalcul.applique_moteur_pipeline).
+"""Branchement de moteur_v2_6_10 (branchement_moteur.py + precalcul.applique_moteur_pipeline).
 
 Ce que ces tests verrouillent :
   - la nomenclature (chaque marché du moteur a UN nom canonique, compris par le règlement) ;
@@ -6,6 +6,14 @@ Ce que ces tests verrouillent :
     des scores que le règlement compte gagnants (détecte toute erreur de côté, de ligne ou de convention) ;
   - la sélection P1/P2/P3 et son CONTRAT avec le site (archetype.js, remappeEnOngletsApp) ;
   - NO DATA -> NO GO, catégorie D écartée, statuts d'erreur sans repli, archive, sortie allégée, reproductibilité.
+
+Migration v2.6.9 -> v2.6.10 : les fonctions de calcul pur (matrice, probabilités, handicaps) viennent du noyau autonome
+`moteur_v2_6_10.noyau` ; le moteur complet (lissage, calibration optionnelle) est `moteur_v2_6_10`.
+
+Les cotes des fixtures ont été recalées sur le lissage de la v2.6.10 : à 10 matchs par lieu, les moyennes de buts sont
+ramenées vers la référence de leur rôle, donc la victoire du domicile n'est plus « value » à 1,55 (elle l'était avec les
+moyennes brutes). C'est l'effet voulu du lissage, pas une régression : les cotes ci-dessous recréent les mêmes situations
+(un favori value, un marché sans preuve, une catégorie D) avec les probabilités lissées.
 """
 import datetime
 import json
@@ -17,7 +25,8 @@ import subprocess
 import pytest
 
 import branchement_moteur as bm
-import moteur_v2_6_10 as moteur
+import moteur_v2_6_10 as moteur_complet
+from moteur_v2_6_10 import noyau as moteur
 import pont_moteur
 from archetype_model.learning import archive
 from archetype_model.learning.reglement import evaluer_marche
@@ -46,9 +55,9 @@ def stats():
     }
 
 
-def signal(un=1.55, dc=1.30, mid="t1", **extra):
-    cotes = {"1x2": {"1": un, "N": 3.7, "2": 4.6}, "double_chance": {"1N": dc, "N2": 2.3, "12": 1.28},
-             "btts": {"Oui": 1.95, "Non": 1.8}, "over_under_1.5": {"plus": 1.32, "moins": 3.3},
+def signal(un=1.75, dc=1.30, mid="t1", btts_non=2.02, nul=3.7, ext=4.6, **extra):
+    cotes = {"1x2": {"1": un, "N": nul, "2": ext}, "double_chance": {"1N": dc, "N2": 2.3, "12": 1.28},
+             "btts": {"Oui": 1.95, "Non": btts_non}, "over_under_1.5": {"plus": 1.32, "moins": 3.3},
              "over_under_2.5": {"plus": 2.0, "moins": 1.8}, "over_under_3.5": {"plus": 3.2, "moins": 1.3}}
     s = {"match_id": mid, "domicile": "Alpha FC", "exterieur": "Beta FC", "competition": COMP, "date": "2026-09-22",
          "heure": "20:45", "cotes_manuelles": cotes, "url_match": "https://x/m"}
@@ -56,8 +65,21 @@ def signal(un=1.55, dc=1.30, mid="t1", **extra):
     return s
 
 
+def signal_categorie_d(mid="t1"):
+    """Victoire du domicile à 2,30 (marge 1X2 = 1,018) : EV très au-dessus de 30 % avec les probabilités lissées -> catégorie D.
+    La double chance 1X est mise à 1,22 (< 1,29, injouable) pour qu'elle ne soit pas candidate."""
+    return signal(un=2.30, dc=1.22, mid=mid, nul=3.0, ext=4.0)
+
+
 def analyse(sig=None, st=None, h2h=lambda s: H2H):
     return bm.analyse_signal(sig or signal(), stats() if st is None else st, NOW, h2h)
+
+
+# ═══════════════════════════ 0. IDENTITÉ DU MOTEUR ACTIF ═══════════════════════════
+def test_le_moteur_branche_est_la_v2_6_10():
+    assert bm.NOM_MOTEUR == "moteur_v2_6_10" and bm.VERSION_MOTEUR == "2.6.10" and bm.CLE_BLOC == "moteur_v2_6_10"
+    assert bm.CONFIG_VERSION == "constantes_v2_6_10"
+    assert bm.moteur is moteur_complet
 
 
 # ═══════════════════════════ 1. NOMENCLATURE ═══════════════════════════
@@ -204,6 +226,13 @@ def test_le_site_retrouve_exactement_les_roles_du_backend():
     assert not ecarts, ecarts[:3]
 
 
+def test_le_site_lit_le_bloc_du_moteur_actif():
+    """Le site (archetype.js) et le backend doivent désigner le même bloc : sinon la page resterait vide."""
+    with open(os.path.join(RACINE, "archetype.js"), encoding="utf-8") as f:
+        source = f.read()
+    assert f'const CLE_MOTEUR = "{bm.CLE_BLOC}";' in source
+
+
 # ═══════ 5. ANALYSE D'UN SIGNAL : justification, NO DATA -> NO GO, catégorie D ═══════
 def test_choix_retenus_avec_justification_specifique():
     bloc, _ = analyse()
@@ -229,7 +258,7 @@ def test_no_data_no_go_un_marche_sans_preuve_specifique_est_rejete():
 
 
 def test_la_categorie_d_du_moteur_n_est_jamais_selectionnee_mais_archivee():
-    bloc, non_sel = analyse(signal(un=1.85, dc=1.22))
+    bloc, non_sel = analyse(signal_categorie_d())
     assert "1x2_domicile" not in [x["marche"] for x in bloc["candidats"]]
     d = [x for x in non_sel if x["marche"] == "1x2_domicile"]
     assert d and d[0]["categorie"] == "D"
@@ -245,6 +274,14 @@ def test_h2h_indisponible_ne_fait_pas_perdre_le_match():
         raise RuntimeError("réseau")
     bloc, _ = analyse(h2h=casse)
     assert bloc["statut"] == "OK" and bloc["selection"]["P1"]["marche"] == "double_chance_1X"
+
+
+def test_le_bloc_porte_l_etat_de_calibration_et_les_alertes_de_la_v2_6_10():
+    bloc, _ = analyse()
+    assert bloc["moteur"] == "moteur_v2_6_10" and bloc["version_moteur"] == "2.6.10"
+    assert bloc["calibration"]["statut"] == "NON_CALIBRE"                      # jamais prétendu calibré sans calibrateur
+    assert "Probabilités non calibrées" in bloc["alertes"]
+    json.dumps(bloc)
 
 
 # ═══════════════ 6. STATUTS : refus explicites, jamais de repli ═══════════════
@@ -286,12 +323,12 @@ def test_un_match_reporte_est_saute_par_le_moteur():
 
 
 def test_exception_sur_un_match_donne_erreur_technique_sans_repli_et_sans_bloquer_les_autres(monkeypatch):
-    vrai = moteur.analyser_match
+    vrai = bm.moteur.analyser_match
     def piege(match, *a, **k):
         if match["id"] == "boom":
             raise ZeroDivisionError("panne simulée")
         return vrai(match, *a, **k)
-    monkeypatch.setattr(moteur, "analyser_match", piege)
+    monkeypatch.setattr(bm.moteur, "analyser_match", piege)
     sigs = [signal(mid="boom"), signal(mid="ok")]
     resume = bm.applique_moteur(sigs, stats(), maintenant=NOW, h2h_fetcher=lambda s: H2H)
     assert sigs[0][bm.CLE_BLOC]["statut"] == "ERREUR_TECHNIQUE" and "ZeroDivisionError" in sigs[0][bm.CLE_BLOC]["raison"]
@@ -305,7 +342,7 @@ def test_exception_sur_un_match_donne_erreur_technique_sans_repli_et_sans_bloque
 # ═══════════════════════════ 7. ARCHIVE ═══════════════════════════
 def test_archive_selected_et_counterfactual(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
-    sigs = [signal(mid="m1"), signal(mid="m2", un=1.85, dc=1.22)]
+    sigs = [signal(mid="m1"), signal_categorie_d(mid="m2")]
     arch = lambda s, b, n: bm.archive_bloc(s, b, n, archive)
     resume = bm.applique_moteur(sigs, stats(), maintenant=NOW, h2h_fetcher=lambda s: H2H, archiver=arch)
     recs = json.load(open(tmp_path / "archive" / "2026-09.json", encoding="utf-8"))
@@ -358,11 +395,12 @@ def test_precalcul_applique_le_moteur_et_allege_pour_le_site(tmp_path, monkeypat
     monkeypatch.setattr(precalcul, "STATS_EQUIPES_VUES", stats())
     monkeypatch.setattr(precalcul, "_h2h_pour_signal", lambda s: H2H)
     sigs = precalcul.applique_moteur_pipeline([signal(), signal(mid="x", cotes_manuelles=None)])
-    assert sigs[0]["moteur_utilise"] == "moteur_v2_6_9" and sigs[0]["moteur_v2_6_9"]["selection"]["P1"]["marche"] == "double_chance_1X"
-    assert sigs[1]["moteur_v2_6_9"]["statut"] == "NON_EXPORTABLE"
+    assert sigs[0]["moteur_utilise"] == "moteur_v2_6_10" and sigs[0]["moteur_v2_6_10"]["selection"]["P1"]["marche"] == "double_chance_1X"
+    assert sigs[1]["moteur_v2_6_10"]["statut"] == "NON_EXPORTABLE"
+    assert "moteur_v2_6_9" not in sigs[0]                                       # plus aucun bloc de l'ancien moteur dans le signal
     assert os.path.exists(tmp_path / "archive" / "2026-09.json")
     leger = precalcul._leger_pour_site(sigs[0])
-    assert "inventaire" not in leger["moteur_v2_6_9"] and leger["moteur_v2_6_9"]["selection"]["P1"]["justification"]["bibliotheque"]
+    assert "inventaire" not in leger["moteur_v2_6_10"] and leger["moteur_v2_6_10"]["selection"]["P1"]["justification"]["bibliotheque"]
 
 
 def test_l_ancien_modele_n_est_plus_appele_par_main():
@@ -382,8 +420,9 @@ def test_le_fichier_exporte_rejoue_exactement_le_meme_calcul(tmp_path):
     sig, st = signal(), stats()
     res = pont_moteur.exporte_matchs_moteur([sig], st, dossier=str(tmp_path), maintenant=NOW)
     assert res["nb_exportes"] == 1
-    match = moteur.charger_matchs(res["fichiers"]["2026-09-22"])[0]
-    rejoue = moteur.analyser_match(match, "2026-09-22", NOW)
+    with open(res["fichiers"]["2026-09-22"], encoding="utf-8") as f:
+        match = json.load(f)["matchs"][0]
+    rejoue = moteur_complet.analyser_match(match, "2026-09-22", NOW)           # même moteur que le pipeline (lissage compris)
     direct = bm.analyse_signal(sig, st, NOW, lambda s: H2H)[0]
     a = [(l["marche"], round(l["ev"], 9), l["is_value"]) for l in rejoue["inventaire"]]
     b = [(x["marche_moteur"], round(x["ev"], 9), x["is_value"]) for x in direct["inventaire"]]

@@ -12,17 +12,19 @@ et à 05:30 UTC en secours) :
    ce que BetPawa fait réellement payer : ROI à mise fixe, intervalle de confiance à 95 % (rééchantillonnage
    des MATCHS, les cotes d'un même match étant liées), stabilité entre la 1re et la 2e moitié chronologique.
 
-2. MOTEUR : ROI réel des sélections P1/P2/P3 de moteur_v2_6_9 (archive/),
-   uniquement sur les matchs cotés BetPawa, par championnat et par famille de marché.
+2. MOTEURS : ROI réel des sélections P1/P2/P3 (archive/), uniquement sur les matchs cotés BetPawa, par championnat et
+   par famille de marché, SÉPARÉ PAR MOTEUR (champ model_version des enregistrements) : moteur_v2_6_10 (moteur actif depuis
+   la migration du 05/10/2026) et moteur_v2_6_9 (historique, jamais mélangé au précédent pour ne pas fausser la
+   comparaison des deux périodes).
 
 3. CONSEILS : pour les matchs à venir cotés BetPawa (precalcul_leger.json), les
    marchés dont le segment championnat x marché est « A_JOUER » ou « A_SURVEILLER » et dont la cote du jour est dans la
-   fourchette des cotes mesurées (voir verdict_marche), et les sélections de chaque moteur annotées de ce statut.
+   fourchette des cotes mesurées (voir verdict_marche), et les sélections du moteur actif annotées de ce statut.
 
 4. ÉQUIPES À SUIVRE : marché passant dans >= 70 % des matchs d'une équipe (>= 5 matchs), voir construit_equipes_a_suivre.
 
 Aucun moteur de prédiction n'est utilisé ici : ce script ne fait que la comptabilité « cotes BetPawa relevées x
-scores finaux ». Seule la partie MOTEURS lit les choix des deux moteurs, sans les recalculer.
+scores finaux ». Seule la partie MOTEURS lit les choix des moteurs, sans les recalculer.
 
 Statuts d'un segment (règles fixes, publiées sur la page) :
   A_JOUER      : borne basse de l'IC 95 % > 0, ROI > 0 sur CHAQUE moitié, >= 40 matchs ;
@@ -44,8 +46,15 @@ from collections import defaultdict
 RACINE = os.path.dirname(os.path.abspath(__file__))
 FICHIER_ECHANTILLON = os.path.join(RACINE, "data", "echantillon_betpawa_501.json")
 FICHIER_HISTORIQUE = os.path.join(RACINE, "historique_pronostics.json")
-FICHIERS_PRECALCUL = {"moteur_v2_6_10": os.path.join(RACINE, "precalcul_leger.json")}
-REPERTOIRES_ARCHIVE = {"moteur_v2_6_10": os.path.join(RACINE, "archive")}
+MOTEUR_ACTIF = "moteur_v2_6_10"
+MOTEUR_HISTORIQUE = "moteur_v2_6_9"
+# Pronostics à venir : seul le moteur actif en produit (le bloc `moteur_v2_6_10` de precalcul_leger.json).
+FICHIERS_PRECALCUL = {MOTEUR_ACTIF: os.path.join(RACINE, "precalcul_leger.json")}
+# Performance réelle : un moteur par model_version, même dossier d'archive. Le moteur historique reçoit TOUT ce qui n'est pas
+# du moteur actif (y compris les enregistrements d'avant le champ model_version) : le comportement d'avant la migration
+# est conservé, et aucun enregistrement n'est compté dans les deux.
+REPERTOIRES_ARCHIVE = {MOTEUR_ACTIF: os.path.join(RACINE, "archive"), MOTEUR_HISTORIQUE: os.path.join(RACINE, "archive")}
+FILTRES_MODEL_VERSION = {MOTEUR_ACTIF: {"inclure": MOTEUR_ACTIF}, MOTEUR_HISTORIQUE: {"exclure": MOTEUR_ACTIF}}
 FICHIER_SORTIE = os.path.join(RACINE, "journal.json")
 
 VERSION = "1.0.0"
@@ -397,15 +406,26 @@ def construit_segments(paris):
 # =============================================================================
 
 
-def charge_selections_resolues(repertoire, ids_bp, model_version=None):
+def _retenu(r, inclure, exclure):
+    """Filtre par model_version : `inclure` = seulement ce moteur ; `exclure` = tout sauf ce moteur (y compris les
+    enregistrements sans model_version, comme avant la migration). Sans filtre : tout."""
+    version = r.get("model_version")
+    if inclure is not None and version != inclure:
+        return False
+    if exclure is not None and version == exclure:
+        return False
+    return True
+
+
+def charge_selections_resolues(repertoire, ids_bp, inclure=None, exclure=None):
     paris = []
     for chemin in sorted(glob.glob(os.path.join(repertoire, "*.json"))):
         for r in _lire_json(chemin, []) or []:
             if r.get("categorie") != "SELECTED" or r.get("resultat_statut") != "RESOLVED":
                 continue
-            if model_version is not None and r.get("model_version") != model_version:
-                continue
             if r.get("match_id") not in ids_bp:
+                continue
+            if not _retenu(r, inclure, exclure):
                 continue
             res = r.get("resultat_marche")
             try:
@@ -431,7 +451,7 @@ def charge_selections_resolues(repertoire, ids_bp, model_version=None):
 def construit_moteurs(ids_bp):
     out = {}
     for nom, rep in REPERTOIRES_ARCHIVE.items():
-        paris = charge_selections_resolues(rep, ids_bp, model_version=nom)
+        paris = charge_selections_resolues(rep, ids_bp, **FILTRES_MODEL_VERSION.get(nom, {}))
         if not paris:
             out[nom] = {"global": None, "ligues": [], "familles": [], "note": "Aucune sélection résolue sur un match coté BetPawa pour l'instant."}
             continue
@@ -599,7 +619,7 @@ def charge_tous_resultats(fichier_echantillon=FICHIER_ECHANTILLON, fichier_histo
     return list(matchs.values())
 
 
-def _prochains_matchs(aujourdhui, fichier=FICHIERS_PRECALCUL["moteur_v2_6_9"]):
+def _prochains_matchs(aujourdhui, fichier=FICHIERS_PRECALCUL[MOTEUR_ACTIF]):
     """(équipe, ligue) -> prochain match à venir, avec cotes BetPawa éventuelles."""
     out = {}
     for s in sorted((_lire_json(fichier, {}) or {}).get("signaux", []) or [], key=lambda x: (str(x.get("date")), str(x.get("heure")))):

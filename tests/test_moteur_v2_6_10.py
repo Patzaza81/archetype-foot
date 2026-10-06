@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
-"""Tests de moteur_v2_6_10 : lissage, calibration isotone, cohérence, alertes, et intégration avec moteur_v2_6_9.
+"""Tests de moteur_v2_6_10 : lissage, calibration isotone, cohérence, alertes, et intégration avec son noyau autonome.
 
 Les tests d'intégration vérifient des PROPRIÉTÉS (schéma conservé, probabilités moins extrêmes, calibration monotone et
 cohérente, sélection P1/P2/P3 inchangée dans sa forme), pas des valeurs numériques figées.
+
+Migration v2.6.9 → v2.6.10 : `base` désigne désormais `moteur_v2_6_10.noyau` (le cœur historique, transféré), et non plus
+le fichier `moteur_v2_6_9.py`. L'équivalence des deux est vérifiée par `tests/test_equivalence_noyau_v2_6_9.py`.
 """
 import copy
 import os
@@ -14,8 +17,8 @@ RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if RACINE not in sys.path:
     sys.path.insert(0, RACINE)
 
-import moteur_v2_6_9 as base  # noqa: E402
 import moteur_v2_6_10 as moteur  # noqa: E402
+from moteur_v2_6_10 import noyau as base  # noqa: E402
 from moteur_v2_6_10 import calibration as cal  # noqa: E402
 from moteur_v2_6_10 import coherence, lissage, risque  # noqa: E402
 
@@ -47,16 +50,16 @@ def proba(res, marche):
     return lignes(res)[marche]["proba_modele"]
 
 
-# ───────────────────────── contrat avec le moteur de base ─────────────────────────
-def test_le_moteur_de_base_expose_tout_ce_que_la_v2_6_10_utilise():
-    """Si une de ces fonctions est renommée dans moteur_v2_6_9, ce test échoue AVANT toute analyse, avec un nom clair."""
+# ───────────────────────── contrat avec le noyau ─────────────────────────
+def test_le_noyau_expose_tout_ce_que_la_v2_6_10_utilise():
+    """Si une de ces fonctions est renommée dans le noyau, ce test échoue AVANT toute analyse, avec un nom clair."""
     for nom in ("analyser_match", "resultat_vide", "evaluer_ligne", "statut_1x2", "statut_autres", "artefacts_marche",
                 "categorie_value", "attribuer_designations", "construire_verdict", "biais_asymetrique", "_cle_tri",
                 "GROUPES", "HANDICAP_ENTIER_REMBOURSE"):
-        assert hasattr(base, nom), f"moteur_v2_6_9.{nom} manquant"
+        assert hasattr(base, nom), f"moteur_v2_6_10.noyau.{nom} manquant"
 
 
-def test_le_moteur_de_base_n_est_pas_modifie():
+def test_le_noyau_garde_les_constantes_de_la_v2_6_9():
     assert base.LAMBDA_MIN == 0.05 and base.SEUIL_VALUE_EDGE_MIN == 0.03 and base.HANDICAP_ENTIER_REMBOURSE is False
     assert base.calcul_lambdas(1.5, 1.0, 1.0, 1.5) == (1.5, 1.0)
 
@@ -136,7 +139,7 @@ def test_valeur_aberrante_n_est_jamais_rattrapee_par_le_lissage():
     assert res["statut_global"] == "SKIP" and "V5" in (res["raison_skip"] or "")
 
 
-def test_equipe_invalide_laissee_au_moteur_de_base():
+def test_equipe_invalide_laissee_au_noyau():
     assert lissage.lisser_equipe({"nom": "A"}, "dom")[1] is None
     assert moteur.analyser_match(un_match(equipe_dom={"nom": "A"}))["statut_global"] == "SKIP"
 
@@ -164,7 +167,7 @@ def test_lissage_rend_les_probabilites_moins_extremes():
     assert lisse["lambda_dom"] < brut["lambda_dom"]
 
 
-def test_sans_lissage_on_retrouve_exactement_la_v2_6_9():
+def test_sans_lissage_on_retrouve_exactement_le_noyau_de_la_v2_6_9():
     m = un_match()
     a, b = base.analyser_match(copy.deepcopy(m)), moteur.analyser_match(copy.deepcopy(m), lisser=False)
     assert [(l["marche"], l["proba_modele"], l["ev"], l["categorie"]) for l in a["inventaire"]] == \

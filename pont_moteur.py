@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 """
 pont_moteur.py -- pont entre le moteur de scraping (archetype-foot) et
-moteur_v2_6_10 (moteur de value bets, même ossature avec lissage par rôle et alertes).
+moteur_v2_6_10 (moteur de value bets, Poisson à un couple de λ par match, noyau hérité de la v2.6.9).
 
-Ne scrape rien, ne modifie aucun fichier existant, n'importe rien du dépôt :
-il traduit ce que le scraping produit déjà vers le format d'entrée du moteur
-(Partie 2 de la spec V2.6.2).
+Ne scrape rien, ne modifie aucun fichier existant, n'importe rien du dépôt
+(hors `moteur_v2_6_10.noyau` dans l'autotest) : il traduit ce que le scraping
+produit déjà vers le format d'entrée du moteur (Partie 2 de la spec V2.6.2).
 
 CE QUI EST TRADUIT
     signal du pipeline (precalcul.py)      ->  match du moteur
@@ -15,7 +15,7 @@ CE QUI EST TRADUIT
     domicile / exterieur                       nom_dom / nom_ext, equipe_*.nom
     stats équipe domicile, à DOMICILE          equipe_dom.buts_marques_moy / buts_encaisses_moy
     stats équipe extérieure, à L'EXTÉRIEUR     equipe_ext.buts_marques_moy / buts_encaisses_moy
-    nb_domicile / nb_exterieur                 equipe_*.matchs_joues  (V4 / R4)
+    nb_domicile / nb_exterieur                 equipe_*.matchs_joues  (V4 / R4 ; effectif du lissage v2.6.10)
     cotes_manuelles (BetPawa, imbriquées)      cotes (clés plates du moteur)
     date                                       date_match (V11)
     heure == "REP"                             statut = "reporte" (V11)
@@ -27,15 +27,16 @@ DÉCISIONS (à contester si elles ne conviennent pas)
        pas conservées sous forme exploitable dans le signal, et une value bet
        calculée sur Bet365 n'est pas jouable sur BetPawa.
     2. Domicile = stats à domicile, extérieur = stats à l'extérieur : c'est le
-       couple que l'ancien moteur donnait à calcule_lambda(). Le moteur v2.6.9
-       ne distingue pas le lieu, il reçoit donc déjà la bonne moyenne.
+       couple que l'ancien moteur donnait à calcule_lambda(). Le moteur ne
+       distingue pas le lieu, il reçoit donc déjà la bonne moyenne. (Le lissage
+       v2.6.10 applique ensuite une référence propre à chaque rôle.)
     3. meta.fiabilite n'est JAMAIS posé : le moteur interdit de l'inférer, et rien
        dans le scraping ne prouve un « classement uniquement ».
     4. Un fichier par date de match (le moteur SKIP tout match dont date_match
-       diffère de --date, V11) : lancer le moteur une fois par fichier.
+       diffère de la date du run, V11) : analyser une fois par fichier.
 
 Sortie : export_moteur/matchs_moteur_<AAAA-MM-JJ>.json + diagnostic_pont.json
-    python moteur_v2_6_9.py export_moteur/matchs_moteur_2026-09-22.json --date 2026-09-22
+    python -m moteur_v2_6_10 export_moteur/matchs_moteur_2026-09-22.json --date 2026-09-22
 
     python pont_moteur.py --autotest
 """
@@ -56,11 +57,11 @@ DOSSIER_EXPORT = "export_moteur"
 PREFIXE_FICHIER = "matchs_moteur_"
 FICHIER_DIAGNOSTIC = "diagnostic_pont.json"
 
-# Périmètre de lecture du moteur (moteur_v2_6_10 (ossature héritée de v2.6.9), PARTIE 2). Hors périmètre :
+# Périmètre de lecture du moteur (moteur_v2_6_10.noyau). Hors périmètre :
 # ignoré ici et compté dans le diagnostic, plutôt que déversé dans « non_reconnues ».
 OU_X_MAX = 5              # over_X_5 / under_X_5, X = 0..5
 BUTS_EQUIPE_X_MAX = 1     # buts_dom_over_X_5 ..., X = 0..1
-HANDICAP_ABS_MAX = 3.0    # le moteur filtre ensuite selon LIGNES_ACTIVES (±2, ou ±3 avec --lignes-etendues)
+HANDICAP_ABS_MAX = 3.0    # le moteur filtre ensuite selon LIGNES_ACTIVES (±2, ou ±3 avec lignes étendues)
 
 _RE_HEURE = re.compile(r"^\d{1,2}:\d{2}$")
 _RE_OU = re.compile(r"^over_under_(\d+)\.5$")
@@ -296,7 +297,9 @@ def exporte_matchs_moteur(signaux: List[Dict[str, Any]], stats_equipes: Dict[Tup
 
 # ══════════════════════════════════════════════════════════════════════════
 # AUTOTEST -- vérifie la traduction contre la vraie sortie des parseurs du dépôt
-# et contre le vrai moteur (moteur_v2_6_9.py, dans le même dossier).
+# et contre le vrai noyau du moteur (moteur_v2_6_10.noyau).
+# Le noyau est utilisé ici (et non le moteur complet) : les assertions sur λ portent sur la TRADUCTION du pont ;
+# le lissage de la v2.6.10 (testé ailleurs) modifierait volontairement ces λ.
 # ══════════════════════════════════════════════════════════════════════════
 def autotest() -> int:
     ok = True
@@ -309,7 +312,7 @@ def autotest() -> int:
     print("Autotests pont_moteur -> moteur", VERSION_MOTEUR_CIBLE)
     ici = os.path.dirname(os.path.abspath(__file__))
     sys.path.insert(0, ici)
-    import moteur_v2_6_10 as moteur
+    from moteur_v2_6_10 import noyau as moteur
     from parse_betpawa import parse_betpawa
     from parse_betpawa_playwright import parse_betpawa_playwright
 
@@ -445,7 +448,7 @@ Extérieur +2
     check(abs(r["lambda_dom"] - (1.8 + 1.4) / 2) < 1e-9 and abs(r["lambda_ext"] - (1.2 + 1.0) / 2) < 1e-9,
           "λ : dom = (att dom-à-domicile + déf ext-à-l'extérieur)/2 ; ext = (att ext-à-l'extérieur + déf dom-à-domicile)/2")
     li = marches["handicap_dom_-1_0"]
-    check(abs(li["ev"] - (li["proba_modele"] * 2.90 - 1.0)) < 1e-12, "moteur : ligne entière -> égalité perdante (2.6.9)")
+    check(abs(li["ev"] - (li["proba_modele"] * 2.90 - 1.0)) < 1e-12, "moteur : ligne entière -> égalité perdante (3 issues)")
 
     # --- équipes ------------------------------------------------------------
     def leve(f, *a) -> str:
@@ -475,7 +478,7 @@ Extérieur +2
     check(match_vers_moteur(base, {})[1].startswith("historique_indisponible"), "sans historique : écarté avec raison")
     check(match_vers_moteur({**base, "date": None}, stats)[1] == "date_manquante", "sans date : écarté (V11 serait aveugle)")
 
-    # --- export bout en bout, relu par le vrai chargeur du moteur -----------
+    # --- export bout en bout, relu comme le fait le moteur ------------------
     with tempfile.TemporaryDirectory() as tmp:
         sigs = [base, {**base, "match_id": "m2", "date": "2026-09-23"}, {**base, "match_id": "m3", "heure": "TER"},
                 {**base, "match_id": "m4", "domicile": "Inconnu FC"}]
@@ -487,12 +490,15 @@ Extérieur +2
         check(res["nb_exportes"] == 2 and set(res["par_date"]) == {"2026-09-22", "2026-09-23"}, "export : un fichier par date de match")
         check(not os.path.exists(ancien), "export : fichiers d'une fenêtre précédente supprimés")
         check(res["rejets"] == {"match_deja_commence_ou_termine": 1, "historique_indisponible": 1}, f"export : rejets comptés ({res['rejets']})")
-        lus = moteur.charger_matchs(res["fichiers"]["2026-09-22"])
+        with open(res["fichiers"]["2026-09-22"], encoding="utf-8") as f:
+            exporte = json.load(f)
+        check(exporte["version_moteur_cible"] == VERSION_MOTEUR_CIBLE == "2.6.10", "export : version_moteur_cible = 2.6.10")
+        lus = exporte["matchs"]
         rr = moteur.analyser_match(lus[0], "2026-09-22", datetime.datetime(2026, 9, 21, 22, 0, tzinfo=datetime.timezone.utc))
         check(rr["statut_global"] != "SKIP" and not any("V11" in str(a) or "V8" in str(a) for a in rr["avertissements_cotes"] + rr["avertissements_match"]),
               "moteur relit le fichier exporté : pas de SKIP, pas d'alerte V8/V11")
         rd = moteur.analyser_match(lus[0], "2026-09-23")
-        check(rd["statut_global"] == "SKIP" and "V11" in (rd["raison_skip"] or ""), "moteur lancé avec la mauvaise --date : SKIP V11 (d'où un fichier par date)")
+        check(rd["statut_global"] == "SKIP" and "V11" in (rd["raison_skip"] or ""), "moteur lancé avec la mauvaise date : SKIP V11 (d'où un fichier par date)")
 
     print("\nRésultat :", "TOUS LES TESTS PASSENT" if ok else "AU MOINS UN TEST ÉCHOUE")
     return 0 if ok else 1
