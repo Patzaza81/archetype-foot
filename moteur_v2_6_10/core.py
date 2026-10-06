@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-"""moteur_v2_6_10 — le moteur v2.6.9 corrigé de ses points faibles mesurés, avec la même ossature.
+"""moteur_v2_6_10 — moteur de value bets autonome : le cœur historique de la v2.6.9 (`noyau`), corrigé de ses points faibles.
 
-Ce qui NE change PAS (tout vient de `moteur_v2_6_9`, importé tel quel, jamais copié) :
+Ce qui NE change PAS (tout vient de `moteur_v2_6_10.noyau`, transfert fidèle du cœur de la v2.6.9) :
     validations V1-V12, Poisson, marchés, value (edge, EV, seuils), statuts, artefacts R1-R3, catégories A-D,
     désignations, verdict, schéma du résultat. La sélection P1 / P2 / P3 (`branchement_moteur.selectionne`) lit
     toujours `inventaire` de la même façon : P1 = probabilité maximale, P2 = meilleur EV restant, P3 = coup de poker.
@@ -10,7 +10,7 @@ Ce qui change :
     1. LISSAGE des moyennes de buts avant le calcul, avec une référence propre à chaque rôle (domicile / extérieur).
     2. CALIBRATION isotone optionnelle. Un calibrateur n'est appliqué que s'il a été appris pour CE modèle (signature) et
        sur des matchs ANTÉRIEURS au match analysé. Les probabilités calibrées sont rendues cohérentes (`harmonise`) puis
-       edge / EV / statut / catégorie / désignations / verdict sont recalculés avec les fonctions du moteur de base.
+       edge / EV / statut / catégorie / désignations / verdict sont recalculés avec les fonctions du noyau.
     3. ALERTES : écart inhabituel avec le marché, buts attendus extrêmes, calibration absente ou ignorée. Sans effet sur
        la sélection.
     4. L'avertissement R5 (profil attaque/défense asymétrique) reste évalué sur les moyennes BRUTES : le lissage ne le
@@ -18,14 +18,15 @@ Ce qui change :
 
 Champs ajoutés au résultat : `moteur`, `version_moteur`, `modele`, `lissage`, `calibration`, `alertes`, et par marché
 `proba_brute` (probabilité avant calibration) et `alertes`.
+
+Autonomie : ce module n'importe PLUS `moteur_v2_6_9`. Un test (`tests/test_pas_de_dependance_v2_6_9.py`) l'impose.
 """
 from __future__ import annotations
 
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-import moteur_v2_6_9 as base
-
+from . import noyau as base
 from .calibration import CalibrateurIsotone
 from .coherence import harmonise
 from .lissage import PARAMETRES_PAR_DEFAUT, ParametresLissage, lisser_match
@@ -43,7 +44,7 @@ def signature_modele(lisser: bool = True, params: ParametresLissage = PARAMETRES
 
 
 def _realigne_r5(res: Dict[str, Any], trace: Optional[Dict[str, Any]]) -> None:
-    """R5 de la v2.6.9 est calculé sur les moyennes brutes ; le moteur de base ne voit ici que des moyennes lissées, qui
+    """R5 de la v2.6.9 est calculé sur les moyennes brutes ; le noyau ne voit ici que des moyennes lissées, qui
     gomment les profils asymétriques. On recalcule R5 sur les valeurs brutes (même fonction, mêmes seuils) et on remet
     l'avertissement à sa place habituelle (juste après R4) pour que l'affichage ne change pas."""
     if not trace or not trace.get("dom") or not trace.get("ext"):
@@ -84,7 +85,7 @@ def _probabilites_calibrees(res: Dict[str, Any], calibrateur: CalibrateurIsotone
 
 def _reevalue(res: Dict[str, Any], calibrateur: CalibrateurIsotone) -> None:
     """Recalcule le bloc « value » de `res` avec les probabilités calibrées et cohérentes, en réutilisant les fonctions du
-    moteur de base (mêmes seuils, mêmes statuts, mêmes catégories). Modifie `res` en place."""
+    noyau (mêmes seuils, mêmes statuts, mêmes catégories). Modifie `res` en place."""
     calibrees = _probabilites_calibrees(res, calibrateur)
     lignes: List[Dict[str, Any]] = []
     for ancienne in res["inventaire"]:
@@ -116,7 +117,7 @@ def _reevalue(res: Dict[str, Any], calibrateur: CalibrateurIsotone) -> None:
 def analyser_match(match: Dict[str, Any], date_run: str = "", maintenant: Optional[datetime] = None, *,
                    calibrateur: Optional[CalibrateurIsotone] = None, lisser: bool = True,
                    lissage_params: ParametresLissage = PARAMETRES_PAR_DEFAUT) -> Dict[str, Any]:
-    """Même contrat que `moteur_v2_6_9.analyser_match` (le résultat est un sur-ensemble du sien).
+    """Même contrat que l'ancien `moteur_v2_6_9.analyser_match` (le résultat en est un sur-ensemble).
 
     calibrateur    : calibrateur appris pour ce modèle (`signature_modele`) sur des matchs antérieurs au match analysé ;
                      sinon il est ignoré et `calibration.statut` le dit.

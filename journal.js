@@ -1,13 +1,16 @@
 /* journal.js — page Journal des marchés rentables (24/09/2026). Lit journal.json, produit chaque nuit par
    journal_rentabilite.py (workflow .github/workflows/journal.yml). Affichage seul, aucun calcul métier ici.
    Choix d'affichage (demande de Patrick) : seules les statistiques GAGNANTES sont montrées ; tout ce qui a un
-   ROI négatif est calculé par le script mais n'est pas affiché. */
+   ROI négatif est calculé par le script mais n'est pas affiché.
+   Migration v2.6.9 -> v2.6.10 (05/10/2026) : le moteur actif est moteur_v2_6_10 (sélections à venir) ; moteur_v2_6_9
+   reste affiché dans « Où les moteurs ont gagné » (résultats passés, jamais mélangés avec ceux du moteur actif). */
 (function () {
   "use strict";
 
   var MIN_MATCHS_AFFICHAGE = 10;
   var FIABILITE = { A_JOUER: "Prouvé", A_SURVEILLER: "À surveiller", NEUTRE: "Non confirmé" };
-  var NOMS_MOTEUR = { moteur_v2_6_10: "Moteur principal (v2.6.10)" };
+  var MOTEUR_ACTIF = "moteur_v2_6_10";
+  var NOMS_MOTEUR = { moteur_v2_6_10: "Moteur principal (v2.6.10)", moteur_v2_6_9: "Ancien moteur (v2.6.9)" };
   var RANG_LIB = { P1: "Favori du Modèle", P2: "Value Bet", P3: "Coup de Poker" };
   var ORDRE = { A_JOUER: 0, A_SURVEILLER: 1, NEUTRE: 2 };
 
@@ -231,7 +234,7 @@
         filtre(b.getAttribute("data-f"));
       });
     });
-    filtre("moteur_v2_6_10");
+    filtre(MOTEUR_ACTIF);
   }
 
   /* Résultats des moteurs : seulement les championnats / familles où ils ont gagné (ROI > 0, au moins 5 paris). */

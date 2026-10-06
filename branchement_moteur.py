@@ -1,19 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-branchement_moteur.py -- branche moteur_v2_6_10 sur le pipeline nocturne.
+branchement_moteur.py -- branche moteur_v2_6_10 (package autonome) sur le pipeline nocturne.
 
 Il REMPLACE l'ancien modèle (`archetype_model.main.analyse_match_complet`), qui n'est plus appelé nulle part
 dans le pipeline. Ce module ne calcule aucune probabilité : il fait le lien entre quatre contrats.
 
-    signal du pipeline ──pont_moteur──▶ match du moteur ──moteur_v2_6_9──▶ inventaire de marchés
+    signal du pipeline ──pont_moteur──▶ match du moteur ──moteur_v2_6_10──▶ inventaire de marchés
                                                                                    │
                        ┌───────────────────────────────────────────────────────────┘
                        ▼
     1. nom canonique du marché (celui que comprennent le règlement, la bibliothèque et le site)
     2. justification spécifique au marché (bibliotheque_justification.py) -- règle NO DATA -> NO GO
     3. sélection P1 / P2 / P3 (les trois onglets du site)
-    4. bloc `moteur_v2_6_9` du signal (lu par le site) + enregistrements d'archive (SELECTED / COUNTERFACTUAL)
+    4. bloc `moteur_v2_6_10` du signal (lu par le site) + enregistrements d'archive (SELECTED / COUNTERFACTUAL)
+
+MIGRATION v2.6.9 -> v2.6.10 : le moteur actif est `moteur_v2_6_10` (noyau historique + lissage par rôle + calibration
+optionnelle + alertes). Les contrats de ce module (D1-D6, nomenclature, sélection P1/P2/P3, forme du bloc) sont
+inchangés. Les résultats déjà archivés avec `moteur_v2_6_9` restent attribués à `moteur_v2_6_9` (audit statistique).
 
 DÉCISIONS (à contester si elles ne conviennent pas)
     D1. Candidat = value bet du moteur (`is_value`) hors catégorie D. La catégorie D (EV > 30 % ou deux
@@ -36,6 +40,9 @@ DÉCISIONS (à contester si elles ne conviennent pas)
         irréfutables le refusent (pas de cotes, match commencé/reporté, cotes inexploitables, validations V1-V12 du moteur).
     D5. Niveau de solidité affiché = catégorie du moteur (A, B, C) ; il n'y a pas d'analyse de robustesse par
         scénarios avec ce moteur : `robustesse` reste None et le site n'affiche pas de « stabilité du calcul ».
+    D7. Calibration : aucun calibrateur n'est branché ici. Tant qu'aucun n'a été appris sur assez de matchs, le moteur
+        rend `calibration.statut = NON_CALIBRE` et l'alerte « Probabilités non calibrées » : on ne prétend jamais que
+        les probabilités sont calibrées.
 
 Nomenclature canonique (moteur -> pipeline) : victoire/nul/defaite -> 1x2_domicile/1x2_nul/1x2_exterieur ;
 dc_1X/dc_X2/dc_12 -> double_chance_* ; over_X_5 -> over_under_total_X.5_over ; buts_dom_over_X_5 ->
@@ -54,8 +61,8 @@ import justification
 import moteur_v2_6_10 as moteur
 import pont_moteur
 
-NOM_MOTEUR = "moteur_v2_6_10"
-VERSION_MOTEUR = "2.6.10"
+NOM_MOTEUR = moteur.NOM_MOTEUR                 # "moteur_v2_6_10"
+VERSION_MOTEUR = moteur.VERSION_MOTEUR         # "2.6.10"
 CONFIG_VERSION = "constantes_v2_6_10"
 CLE_BLOC = NOM_MOTEUR            # clé du signal lue par le site (archetype.js : CLE_MOTEUR)
 
@@ -336,6 +343,8 @@ def analyse_signal(signal: Dict[str, Any], stats_equipes: Dict[Tuple[str, str], 
         "nb_marches_evalues": len(lignes), "nb_value": sum(1 for l in lignes if l["is_value"]),
         "candidats": justifies, "rejets": rejets, "selection": sel,
         "inventaire": _inventaire_compact(lignes),
+        # Migration v2.6.10 : champs ajoutés (lecture seule, sans effet sur la sélection).
+        "calibration": res.get("calibration"), "alertes": res.get("alertes") or [], "modele": res.get("modele"),
     }
     return bloc, non_selectionnes
 
@@ -348,7 +357,7 @@ def applique_moteur(signaux: List[Dict[str, Any]], stats_equipes: Dict[Tuple[str
                     h2h_fetcher: Optional[Callable[[Dict[str, Any]], List[Dict[str, Any]]]] = None,
                     archiver: Optional[Callable[[Dict[str, Any], Dict[str, Any], List[Dict[str, Any]]], Any]] = None
                     ) -> Dict[str, Any]:
-    """Pose sur chaque signal `moteur_utilise` et le bloc `moteur_v2_6_9`. Ne lève jamais : une exception sur un
+    """Pose sur chaque signal `moteur_utilise` et le bloc `moteur_v2_6_10`. Ne lève jamais : une exception sur un
     match devient ERREUR_TECHNIQUE (D4). Retourne un résumé imprimable."""
     maintenant = maintenant or datetime.datetime.now(datetime.timezone.utc)
     statuts: Dict[str, int] = {}

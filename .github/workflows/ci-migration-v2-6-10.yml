@@ -1,0 +1,51 @@
+name: CI migration v2.6.10
+
+# Vérification de la migration v2.6.9 -> v2.6.10 : autotests + suite Python complète.
+# Ne publie rien sur main, ne lance aucun scraping. Le rapport de test est commité sur la branche de migration.
+
+on:
+  push:
+    branches:
+      - "migration-v2-6-10"
+    paths-ignore:
+      - "ci_rapport/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Dépendances
+        run: pip install requests beautifulsoup4 pandas lxml playwright pytest
+      - name: Tests (rapport complet, ne s'arrête pas au premier échec)
+        run: |
+          mkdir -p ci_rapport
+          python -m pytest tests -q -rf --tb=short -p no:cacheprovider --ignore=tests/test_moteur_v3.py --ignore=tests/test_moteur_v3_integration.py --ignore=tests/test_moteur_v3_pipeline.py > ci_rapport/pytest_complet.txt 2>&1 || true
+          {
+            echo "== autotest moteur_v2_6_10 =="; python -m moteur_v2_6_10 --autotest 2>&1 | grep -E "ÉCHEC|Résultat|Traceback|Error" | head -n 20
+            echo "== autotest pont =="; python pont_moteur.py --autotest 2>&1 | grep -E "ÉCHEC|Résultat|Traceback|Error" | head -n 20
+            echo "== pytest : resume =="; grep -E "^(FAILED|ERROR)| passed| failed" ci_rapport/pytest_complet.txt | cut -c1-260 | head -n 80
+            echo "== pytest : detail (fin) =="; grep -vE "^\s*[-+?]" ci_rapport/pytest_complet.txt | grep -E "^(E |tests/|____)" | cut -c1-260 | head -n 160
+          } > ci_rapport/rapport.txt 2>&1 || true
+          rm -f ci_rapport/pytest_complet.txt
+          cat ci_rapport/rapport.txt
+      - name: Commit du rapport
+        if: always()
+        run: |
+          git config user.name "ci-migration"
+          git config user.email "ci-migration@users.noreply.github.com"
+          git add ci_rapport/rapport.txt
+          git commit -m "ci: rapport de test migration v2.6.10 [skip ci]" || echo "rien à commiter"
+          git pull --rebase origin migration-v2-6-10 || true
+          git push origin HEAD:migration-v2-6-10 || true
+      - name: Verdict
+        run: |
+          grep -q "Résultat : TOUS LES TESTS PASSENT" ci_rapport/rapport.txt || { echo "autotest KO"; exit 1; }
+          ! grep -E "^FAILED|[0-9]+ failed" ci_rapport/rapport.txt

@@ -1,5 +1,10 @@
 """Règle D6 (21/09/2026) : un match n'est analysé que si l'équipe qui reçoit a >= 2 matchs à domicile ET la visiteuse
->= 2 matchs à l'extérieur. Sinon refus explicite ; sinon le moteur tourne sans erreur, sur de petits échantillons aussi."""
+>= 2 matchs à l'extérieur. Sinon refus explicite ; sinon le moteur tourne sans erreur, sur de petits échantillons aussi.
+
+Migration v2.6.9 -> v2.6.10 (05/10/2026) : le moteur appelé est bm.moteur (moteur_v2_6_10). Le test qui exige un choix P1 à
+4 matchs par lieu utilise une cote de double chance recalée sur le lissage (à 4 matchs, la moitié du poids revient à la
+référence de rôle : la double chance à 1,30 n'est plus « value », à 1,50 elle l'est).
+"""
 import datetime
 import math
 import random
@@ -7,7 +12,6 @@ import random
 import pytest
 
 import branchement_moteur as bm
-import moteur_v2_6_10 as moteur
 import precalcul
 
 NOW = datetime.datetime(2026, 9, 21, 21, 0, tzinfo=datetime.timezone.utc)
@@ -33,6 +37,7 @@ def stats_n(nd, ne, seed=1, fort=True):
 
 COTES = {"1x2": {"1": 1.55, "N": 3.7, "2": 4.6}, "double_chance": {"1N": 1.30, "N2": 2.3, "12": 1.28}, "btts": {"Oui": 1.95, "Non": 1.8},
          "over_under_1.5": {"plus": 1.32, "moins": 3.3}, "over_under_2.5": {"plus": 2.0, "moins": 1.8}, "over_under_3.5": {"plus": 3.2, "moins": 1.3}}
+COTES_LISSAGE = {**COTES, "double_chance": {"1N": 1.50, "N2": 2.3, "12": 1.28}}
 
 
 def signal(cotes=COTES, mid="t1"):
@@ -67,7 +72,7 @@ def test_aucun_match_a_un_lieu_reste_refuse(nd, ne):
 def test_le_moteur_n_est_pas_appele_pour_un_match_refuse(monkeypatch):
     def piege(*a, **k):
         raise AssertionError("le moteur ne doit pas tourner sous le seuil")
-    monkeypatch.setattr(moteur, "analyser_match", piege)
+    monkeypatch.setattr(bm.moteur, "analyser_match", piege)
     assert bm.analyse_signal(signal(), stats_n(1, 5), NOW, lambda s: [])[0]["statut"] == "NON_EXPORTABLE"
 
 
@@ -141,7 +146,7 @@ def test_a_2_matchs_le_h2h_ne_justifie_plus_aucun_choix():
 
 def test_l_avertissement_du_moteur_est_visible_sur_le_choix():
     # 4 matchs par lieu : fenêtre toujours jugée courte par le moteur, mais la forme à domicile suffit à justifier 1X.
-    bloc, _ = bm.analyse_signal(signal(), stats_n(4, 4), NOW, lambda s: H2H_A_INVAINCU)
+    bloc, _ = bm.analyse_signal(signal(COTES_LISSAGE), stats_n(4, 4), NOW, lambda s: H2H_A_INVAINCU)
     assert bloc["statut"] == "OK" and "Fenêtre d'analyse trop courte" in bloc["avertissements"]
     p1 = bloc["selection"]["P1"]
     types = [pr["type"] for pr in p1["justification"]["preuves"]]
@@ -153,6 +158,6 @@ def test_l_avertissement_du_moteur_est_visible_sur_le_choix():
 def test_a_2_matchs_sans_h2h_les_value_bets_sont_rejetes_faute_de_preuve_et_comptes():
     # Documente la cohérence avec la règle NO DATA -> NO GO : la bibliothèque exige 3 matchs par lieu pour ses statistiques de
     # forme ; à 2 matchs, sans H2H, il y a analyse mais aucun choix, et chaque value bet est rejeté avec son motif.
-    bloc, _ = bm.analyse_signal(signal(), stats_n(2, 2), NOW, lambda s: [])
+    bloc, _ = bm.analyse_signal(signal(COTES_LISSAGE), stats_n(2, 2), NOW, lambda s: [])
     assert bloc["statut"] == "OK" and bloc["nb_value"] > 0 and bloc["selection"]["P1"] is None
     assert all(r["motif"] == bm.MOTIF_JUSTIFICATION for r in bloc["rejets"]) and len(bloc["rejets"]) + 0 >= 1
