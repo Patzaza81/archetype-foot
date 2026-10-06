@@ -82,11 +82,11 @@ d'en calculer les champs historiques (listes A/B, Kelly, `verdict_global`…), q
 Le moteur du pipeline est `moteur_v2_6_10` (spec V2.6.2 + vérificateurs V1 à V12) : un couple de λ par match (moyenne
 buts marqués / encaissés, domicile à domicile et extérieur à l'extérieur), matrice de Poisson, puis pour chaque marché coté :
 probabilité, edge, EV, statut, catégorie A à D (D = EV > 30 % ou deux artefacts, écartée). Ses constantes sont **fixes dans
-le code** : il n'y a plus de calibration adaptative. `python moteur_v2_6_10 --autotest` vérifie ses invariants.
+le code** : il n'y a plus de calibration adaptative. `python -m pytest tests/test_moteur_v2_6_10.py` vérifie ses invariants.
 
 | Fichier | Rôle |
 |---|---|
-| `pont_moteur.py` | Traduit un signal du pipeline (cotes BetPawa imbriquées, statistiques d'équipe) vers l'entrée du moteur ; exporte les entrées dans `export_moteur/` (un fichier par date : `python moteur_v2_6_10 export_moteur/matchs_moteur_AAAA-MM-JJ.json --date AAAA-MM-JJ` rejoue le calcul) |
+| `pont_moteur.py` | Traduit un signal du pipeline (cotes BetPawa imbriquées, statistiques d'équipe) vers l'entrée du moteur ; exporte les entrées dans `export_moteur/` (un fichier par date : `python -c "import moteur_v2_6_10 as m; m.analyser_match(...)" rejoue le calcul) |
 | `branchement_moteur.py` | Exécute le moteur dans le pipeline et convertit sa sortie : nom canonique des marchés, justification, règle NO DATA → NO GO, sélection P1/P2/P3, archive |
 
 **Données d'entrée du moteur : `stats_saison_en_cours.py`.** Statistiques d'équipe = **saison en cours uniquement, matchs les
@@ -320,7 +320,7 @@ Décisions du propriétaire, documentées dans le code et dans `ROADMAP.md` (§4
 | `DIALOGUE_IA_MATRICE.md` | Cahier des charges de la recalibration du moteur de sélection (15–18/09/2026) |
 | `requirements.txt` | Dépendances Python |
 | Run limité | Actions → *Pipeline quotidien* → Run workflow → `jours` = 2 : aujourd'hui + demain seulement (saute la liste J+2/J+3, garde les correspondances BetPawa de J+2/J+3) ; 4 = fenêtre complète (défaut, planifié) |
-| Autotests | `python moteur_v2_6_10 --autotest` · `python pont_moteur.py --autotest` · `python -m pytest tests -q` |
+| Autotests | `python -m pytest tests/test_moteur_v2_6_10.py` · `python pont_moteur.py --autotest` · `python -m pytest tests -q` |
 | Journal | `python journal_rentabilite.py` (écrit `journal.json`) · Actions → *Journal de rentabilité* → Run workflow |
 
 **Ancien journal de sessions.** `TRANSITION.md` (et sa copie `TRANSITION 4.md`) ont été supprimés le 21/09/2026 : 269 Ko
