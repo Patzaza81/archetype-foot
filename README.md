@@ -1,7 +1,7 @@
 # ARCHETYPE Foot
 
 Système d'analyse de matchs de football : collecte automatique des matchs et des cotes, modèle statistique
-(Poisson, `moteur_v2_6_9.py`), sélection de pronostics **justifiés par des données réelles**, et publication sur un site pensé pour
+(Poisson, `moteur_v2_6_10`), sélection de pronostics **justifiés par des données réelles**, et publication sur un site pensé pour
 le mobile (iPhone). Le tout tourne chaque nuit sur GitHub Actions et se publie sur Netlify.
 
 > Ce document décrit l'**architecture et les règles**, qui changent peu. L'état courant s'obtient avec
@@ -12,7 +12,7 @@ le mobile (iPhone). Le tout tourne chaque nuit sur GitHub Actions et se publie s
 ## 1. Vue d'ensemble
 
 ```
-matchendirect.fr ─┐                                   ┌─▶ pont_moteur.py ─▶ moteur_v2_6_9.py (le moteur)
+matchendirect.fr ─┐                                   ┌─▶ pont_moteur.py ─▶ moteur_v2_6_10.py (le moteur)
 betpawa.cm ───────┴─▶ SCRAPING ─▶ matchs_*.json ─▶ precalcul.py ─┤
                       (scraper*.py, resolution_betpawa*.py)      └─▶ bibliotheque_justification.py (les textes)
                                                                   │
@@ -78,15 +78,15 @@ sert de repli qu'en cas d'*erreur technique* (exception), jamais pour une décis
 d'en calculer les champs historiques (listes A/B, Kelly, `verdict_global`…), que le site ne lit pas, et
 `scraper.py` en importe `aujourdhui_france()`.
 
-### 3.2 Le moteur : `moteur_v2_6_9.py`
-Le moteur du pipeline est `moteur_v2_6_9.py` (spec V2.6.2 + vérificateurs V1 à V12) : un couple de λ par match (moyenne
+### 3.2 Le moteur : `moteur_v2_6_10.py`
+Le moteur du pipeline est `moteur_v2_6_10.py` (spec V2.6.2 + vérificateurs V1 à V12) : un couple de λ par match (moyenne
 buts marqués / encaissés, domicile à domicile et extérieur à l'extérieur), matrice de Poisson, puis pour chaque marché coté :
 probabilité, edge, EV, statut, catégorie A à D (D = EV > 30 % ou deux artefacts, écartée). Ses constantes sont **fixes dans
-le code** : il n'y a plus de calibration adaptative. `python moteur_v2_6_9.py --autotest` vérifie ses invariants.
+le code** : il n'y a plus de calibration adaptative. `python moteur_v2_6_10.py --autotest` vérifie ses invariants.
 
 | Fichier | Rôle |
 |---|---|
-| `pont_moteur.py` | Traduit un signal du pipeline (cotes BetPawa imbriquées, statistiques d'équipe) vers l'entrée du moteur ; exporte les entrées dans `export_moteur/` (un fichier par date : `python moteur_v2_6_9.py export_moteur/matchs_moteur_AAAA-MM-JJ.json --date AAAA-MM-JJ` rejoue le calcul) |
+| `pont_moteur.py` | Traduit un signal du pipeline (cotes BetPawa imbriquées, statistiques d'équipe) vers l'entrée du moteur ; exporte les entrées dans `export_moteur/` (un fichier par date : `python moteur_v2_6_10.py export_moteur/matchs_moteur_AAAA-MM-JJ.json --date AAAA-MM-JJ` rejoue le calcul) |
 | `branchement_moteur.py` | Exécute le moteur dans le pipeline et convertit sa sortie : nom canonique des marchés, justification, règle NO DATA → NO GO, sélection P1/P2/P3, archive |
 
 **Données d'entrée du moteur : `stats_saison_en_cours.py`.** Statistiques d'équipe = **saison en cours uniquement, matchs les
@@ -103,10 +103,10 @@ restants), **P3 coup de poker** (meilleur EV des restants avec cote ≥ 2,91 et 
 site ; aucun repli sur l'ancien moteur (une exception sur un match donne `ERREUR_TECHNIQUE`) ; solidité affichée = catégorie
 A/B/C.
 
-Le bloc produit sur chaque signal est `moteur_v2_6_9` (`moteur_utilise = "moteur_v2_6_9"`) : statut (`OK`, `SKIP`,
+Le bloc produit sur chaque signal est `moteur_v2_6_10` (`moteur_utilise = "moteur_v2_6_10"`) : statut (`OK`, `SKIP`,
 `NON_EXPORTABLE`, `ERREUR_TECHNIQUE`), verdict, λ, `selection` P1/P2/P3 avec justification, `candidats`, `rejets`, `inventaire`
 complet. Les choix retenus sont archivés en `SELECTED`, les autres value bets en `COUNTERFACTUAL` (`model_version` =
-`moteur_v2_6_9`).
+`moteur_v2_6_10`).
 
 **Ancien modèle `archetype_model/` — débranché puis nettoyé le 21/09/2026.** `archetype_model/main.py` (point d'entrée),
 `rattrapage_justification.py`, le repli sur l'ancien moteur et le test de bout en bout de l'ancien moteur sont **supprimés** ; les
@@ -161,7 +161,7 @@ cartes des deux pages : le panier est donc identique à la page principale, avec
 Chaque carte a trois onglets — **Favori du Modèle** (choix le plus probable), **Value Bet** (meilleur EV parmi les
 restants), **Coup de Poker** (cote ≥ 2,91 et probabilité ≥ 20 %) — réattribués depuis P1/P2/P3 par
 `remappeEnOngletsApp()` (mêmes règles que le moteur, vérifiées par un test de contrat). Le bloc lu est `signal[CLE_MOTEUR]`
-(`CLE_MOTEUR = "moteur_v2_6_9"` dans `archetype.js`) : changer de moteur = changer cette constante. Le bouton « Détails de l'analyse » ouvre des tableaux (synthèse, preuves avec icônes,
+(`CLE_MOTEUR = "moteur_v2_6_10"` dans `archetype.js`) : changer de moteur = changer cette constante. Le bouton « Détails de l'analyse » ouvre des tableaux (synthèse, preuves avec icônes,
 forme de chaque équipe, H2H, métriques combinées) alimentés par `justification.bibliotheque`.
 
 Règles d'affichage : jamais de tableau vide, jamais de « — » ni « N/A » (une valeur non calculable n'a pas de ligne),
@@ -281,7 +281,7 @@ Décisions du propriétaire, documentées dans le code et dans `ROADMAP.md` (§4
 - Les gros fichiers JSON sont recommités chaque nuit : le dépôt grossit vite (`.git` ≈ 71 Mo le 20/09).
 - Publication du résultat : un `git pull --rebase` en conflit sur les fichiers de données peut faire perdre un run entier
   (run n°129, voir `ROADMAP.md` P0.1). Éviter de pousser des données pendant qu'un run tourne.
-- **Le moteur v2.6.9 n'a aucune mesure de calibration** (Poisson indépendant, constantes non calibrées). Le rejeu du 20/09 donne 107 choix pour 71 matchs ; l'archive (`model_version = moteur_v2_6_9`) sert à mesurer, voir `ROADMAP.md` P2.6.
+- **Le moteur v2.6.9 n'a aucune mesure de calibration** (Poisson indépendant, constantes non calibrées). Le rejeu du 20/09 donne 107 choix pour 71 matchs ; l'archive (`model_version = moteur_v2_6_10`) sert à mesurer, voir `ROADMAP.md` P2.6.
 - L'archive grossit d'environ 0,9 Mo par jour (27 Mo par mois, un fichier par mois) ; le coût d'écriture reste faible.
 - La télémétrie d'audit passif et la calibration ne tournent plus : `data/audit_*.json` et `config/` sont figés au 20/09.
 - Les nouveaux textes de justification (nul, double chance 12, « les deux équipes marquent : non », lignes de buts,
@@ -320,7 +320,7 @@ Décisions du propriétaire, documentées dans le code et dans `ROADMAP.md` (§4
 | `DIALOGUE_IA_MATRICE.md` | Cahier des charges de la recalibration du moteur de sélection (15–18/09/2026) |
 | `requirements.txt` | Dépendances Python |
 | Run limité | Actions → *Pipeline quotidien* → Run workflow → `jours` = 2 : aujourd'hui + demain seulement (saute la liste J+2/J+3, garde les correspondances BetPawa de J+2/J+3) ; 4 = fenêtre complète (défaut, planifié) |
-| Autotests | `python moteur_v2_6_9.py --autotest` · `python pont_moteur.py --autotest` · `python -m pytest tests -q` |
+| Autotests | `python moteur_v2_6_10.py --autotest` · `python pont_moteur.py --autotest` · `python -m pytest tests -q` |
 | Journal | `python journal_rentabilite.py` (écrit `journal.json`) · Actions → *Journal de rentabilité* → Run workflow |
 
 **Ancien journal de sessions.** `TRANSITION.md` (et sa copie `TRANSITION 4.md`) ont été supprimés le 21/09/2026 : 269 Ko
