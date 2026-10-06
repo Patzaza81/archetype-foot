@@ -44,7 +44,7 @@ def test_chaque_script_du_workflow_est_importable():
         re.findall(r"^\s*(?:run:\s*)?python\s+([A-Za-z_]\w*)\.py(?:\s+.*)?$", "\n".join(lignes_actives), re.M)
     ))
     scripts_attendus = {
-        "moteur_v2_6_9", "pont_moteur", "scraper", "scraper_semaine",
+        "moteur_v2_6_9", "moteur_v2_6_10", "pont_moteur", "scraper", "scraper_semaine",
         "precalcul", "verifie_resultats_archetype_model", "evaluation_scores",
 "construit_etat_systeme", "notifie_constat_majeur",
     }
