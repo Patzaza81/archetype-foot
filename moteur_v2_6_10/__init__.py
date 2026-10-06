@@ -7,6 +7,12 @@ from .lissage import K_LISSAGE, PARAMETRES_PAR_DEFAUT, REF_BUTS_DOM, REF_BUTS_EX
 
 
 
-# Compatibilité : le pont et les tests historiques utilisent encore certains symboles publics de la v2.6.9\n# (charger_matchs, MARCHES_STANDARD, LIGNES_HANDICAP, etc.). Ils restent disponibles comme dépendances internes.\ndef __getattr__(name):\n    import moteur_v2_6_9 as _base\n    return getattr(_base, name)\n\n__all__ = ["analyser_match", "signature_modele", "NOM_MOTEUR", "VERSION_MOTEUR", "CalibrateurIsotone", "apprendre", "avant",
+# Compatibilité : le pont et les tests historiques utilisent encore certains symboles publics de la v2.6.9
+# (charger_matchs, MARCHES_STANDARD, LIGNES_HANDICAP, etc.). Ils restent disponibles comme dépendances internes.
+def __getattr__(name):
+    import moteur_v2_6_9 as _base
+    return getattr(_base, name)
+
+__all__ = ["analyser_match", "signature_modele", "NOM_MOTEUR", "VERSION_MOTEUR", "CalibrateurIsotone", "apprendre", "avant",
            "dedoublonne", "harmonise", "lisse", "lisser_match", "ParametresLissage", "PARAMETRES_PAR_DEFAUT", "K_LISSAGE",
            "REF_BUTS_DOM", "REF_BUTS_EXT"]
