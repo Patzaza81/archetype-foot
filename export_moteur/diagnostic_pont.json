@@ -1,182 +1,42 @@
 {
-  "genere_le": "2026-10-05T00:11:16Z",
-  "nb_signaux": 109,
-  "nb_exportes": 31,
+  "genere_le": "2026-10-06T02:41:15Z",
+  "nb_signaux": 269,
+  "nb_exportes": 90,
   "par_date": {
-    "2026-10-05": 12,
     "2026-10-06": 4,
     "2026-10-07": 8,
-    "2026-10-08": 7
+    "2026-10-08": 8,
+    "2026-10-09": 70
   },
   "rejets": {
-    "match_deja_commence_ou_termine": 5,
-    "pas_de_cotes_betpawa": 67,
-    "historique_indisponible": 6
+    "pas_de_cotes_betpawa": 151,
+    "match_deja_commence_ou_termine": 7,
+    "historique_indisponible": 21
   },
   "marches_ignores": {
-    "score_exact": 31,
-    "nombre_exact_buts": 31,
-    "pair_impair": 31,
-    "handicap_3issues_-1": 30,
-    "handicap_3issues_1": 30,
-    "handicap_3issues_-2": 26,
-    "handicap_3issues_2": 18,
-    "handicap_3issues_-3": 17,
-    "handicap_3issues_3": 3,
-    "cages_inviolees_exterieur.non (pas d'équivalent moteur)": 3,
-    "over_under_domicile_2.5 (hors périmètre moteur)": 2,
-    "cages_inviolees_domicile.non (pas d'équivalent moteur)": 2,
-    "over_under_domicile_3.5 (hors périmètre moteur)": 1,
-    "handicap_-3.5 (hors périmètre moteur)": 1,
-    "over_under_exterieur_2.5 (hors périmètre moteur)": 1
+    "pair_impair": 89,
+    "score_exact": 88,
+    "nombre_exact_buts": 88,
+    "handicap_3issues_-1": 87,
+    "handicap_3issues_1": 86,
+    "handicap_3issues_-2": 68,
+    "handicap_3issues_2": 54,
+    "handicap_3issues_-3": 37,
+    "cages_inviolees_exterieur.non (pas d'équivalent moteur)": 14,
+    "cages_inviolees_domicile.non (pas d'équivalent moteur)": 12,
+    "handicap_3issues_3": 11,
+    "handicap_-3.5 (hors périmètre moteur)": 8,
+    "over_under_exterieur_2.5 (hors périmètre moteur)": 8,
+    "over_under_domicile_2.5 (hors périmètre moteur)": 7,
+    "over_under_domicile_3.5 (hors périmètre moteur)": 5
   },
   "fichiers": {
-    "2026-10-05": "export_moteur/matchs_moteur_2026-10-05.json",
     "2026-10-06": "export_moteur/matchs_moteur_2026-10-06.json",
     "2026-10-07": "export_moteur/matchs_moteur_2026-10-07.json",
-    "2026-10-08": "export_moteur/matchs_moteur_2026-10-08.json"
+    "2026-10-08": "export_moteur/matchs_moteur_2026-10-08.json",
+    "2026-10-09": "export_moteur/matchs_moteur_2026-10-09.json"
   },
   "detail_rejets": [
-    {
-      "match_id": "23rxh9qy84rlza4vhjkp5kiz8",
-      "match": "Argentinos - Tigre",
-      "competition": "Argentine :\n                        Copa de la Liga Profesional 2e Tour",
-      "date": "2026-10-05",
-      "raison": "match_deja_commence_ou_termine"
-    },
-    {
-      "match_id": "6q26hbpfphbqi8fywvp2itatw",
-      "match": "A. Bucaraman - Atl. Junior",
-      "competition": "Colombie :\n                        Première A Cloture",
-      "date": "2026-10-05",
-      "raison": "match_deja_commence_ou_termine"
-    },
-    {
-      "match_id": "do62g02j7wtk1zxcc9hyt68lw",
-      "match": "Mouna - Yamoussoukro",
-      "competition": "Côte d'Ivoire :\n                        Liga 1",
-      "date": "2026-10-05",
-      "raison": "pas_de_cotes_betpawa"
-    },
-    {
-      "match_id": "8hk09duu5xziniwglul88qexg",
-      "match": "Inter - Fuerte",
-      "competition": "El Salvador :\n                        1ère Division Ouverture",
-      "date": "2026-10-05",
-      "raison": "pas_de_cotes_betpawa"
-    },
-    {
-      "match_id": "8hv3i0du24hunjwleh86sx3x0",
-      "match": "FAS - INCA-Aruba",
-      "competition": "El Salvador :\n                        1ère Division Ouverture",
-      "date": "2026-10-05",
-      "raison": "pas_de_cotes_betpawa"
-    },
-    {
-      "match_id": "5vovscylramxz9mppxfy6copg",
-      "match": "Guastatoya - Aurora",
-      "competition": "Guatemala :\n                        Ligue Nationale Ouverture",
-      "date": "2026-10-05",
-      "raison": "match_deja_commence_ou_termine"
-    },
-    {
-      "match_id": "5v1bdpq3hvkb5ae9q14ysp4b8",
-      "match": "Comunicaciones - Suchitepéquez",
-      "competition": "Guatemala :\n                        Ligue Nationale Ouverture",
-      "date": "2026-10-05",
-      "raison": "historique_indisponible: domicile: saison_incoherente_avec_resultats_connus"
-    },
-    {
-      "match_id": "eez4dc6bapgv003yrrrr7szkk",
-      "match": "Moss - Kongsvinger",
-      "competition": "Norvège :\n                        OBOS-ligaen",
-      "date": "2026-10-05",
-      "raison": "historique_indisponible: domicile: aucun_match_saison_en_cours"
-    },
-    {
-      "match_id": "60zfcmb7n7d51i2r4s5ivivbo",
-      "match": "R. Montevideo - Peñarol",
-      "competition": "Uruguay :\n                        Primera Division Cloture",
-      "date": "2026-10-05",
-      "raison": "match_deja_commence_ou_termine"
-    },
-    {
-      "match_id": "8duf7t6xc99mz6z05ui3mk7pw",
-      "match": "SONABEL - USCO",
-      "competition": "Burkina Faso :\n                        1ère Division",
-      "date": "2026-10-05",
-      "raison": "pas_de_cotes_betpawa"
-    },
-    {
-      "match_id": "9u1ipz6b6r9t92jgmqjvf1444",
-      "match": "Athletic - 345 FC",
-      "competition": "Îles Caïmans :\n                        CIFA Premier League",
-      "date": "2026-10-05",
-      "raison": "pas_de_cotes_betpawa"
-    },
-    {
-      "match_id": "9tn1dxa93fc2o1lzgz8fzdwr8",
-      "match": "Sunset - Bodden Town",
-      "competition": "Îles Caïmans :\n                        CIFA Premier League",
-      "date": "2026-10-05",
-      "raison": "pas_de_cotes_betpawa"
-    },
-    {
-      "match_id": "cbs2xs4miz6wriyetmvesjbpw",
-      "match": "Gardens - Portmore",
-      "competition": "Jamaïque :\n                        Premier Ligue",
-      "date": "2026-10-05",
-      "raison": "historique_indisponible: exterieur: aucun match à l’extérieur dans l'historique"
-    },
-    {
-      "match_id": "erztrhm89wc2gj0vxkm8o093o",
-      "match": "Ulaanbaatar - Ulaangom City",
-      "competition": "Mongolie :\n                        Premiere Ligue",
-      "date": "2026-10-05",
-      "raison": "pas_de_cotes_betpawa"
-    },
-    {
-      "match_id": "esbr8ac17klomkkrm6owy6vbo",
-      "match": "Hunters - Ward",
-      "competition": "Mongolie :\n                        Premiere Ligue",
-      "date": "2026-10-05",
-      "raison": "pas_de_cotes_betpawa"
-    },
-    {
-      "match_id": "8qcirog24ehs1bpkdo3s0x7v8",
-      "match": "Independiente - Árabe",
-      "competition": "Panama :\n                        Primera Division Ouverture",
-      "date": "2026-10-05",
-      "raison": "match_deja_commence_ou_termine"
-    },
-    {
-      "match_id": "cgtv0mq9krhkfh8r28vej43kk",
-      "match": "Altyn - Ahal",
-      "competition": "Turkménistan :\n                        Ýokary Ligue",
-      "date": "2026-10-05",
-      "raison": "pas_de_cotes_betpawa"
-    },
-    {
-      "match_id": "17mxbw96yzn6gfpxdj5k9fsb8",
-      "match": "Arkadag - Şagadam",
-      "competition": "Turkménistan :\n                        Ýokary Ligue",
-      "date": "2026-10-05",
-      "raison": "pas_de_cotes_betpawa"
-    },
-    {
-      "match_id": "cgdgbr5hope52ywbqud1p1jis",
-      "match": "Aşgabat - Merw",
-      "competition": "Turkménistan :\n                        Ýokary Ligue",
-      "date": "2026-10-05",
-      "raison": "pas_de_cotes_betpawa"
-    },
-    {
-      "match_id": "cglo6pxm3fhm4gvy36wh6nbx0",
-      "match": "Nebitçi - Köpetdag",
-      "competition": "Turkménistan :\n                        Ýokary Ligue",
-      "date": "2026-10-05",
-      "raison": "pas_de_cotes_betpawa"
-    },
     {
       "match_id": "9eew87dxkr13h3votc1r62az8",
       "match": "JS Kabylie - MC Alger",
@@ -192,6 +52,34 @@
       "raison": "pas_de_cotes_betpawa"
     },
     {
+      "match_id": "1z5kqqey453ncrlqpdhw1d3x0",
+      "match": "Estudiantes - Gim Mendoza",
+      "competition": "Argentine :\n                        Copa de la Liga Profesional 2e Tour",
+      "date": "2026-10-06",
+      "raison": "match_deja_commence_ou_termine"
+    },
+    {
+      "match_id": "205ess4m5lbqerv15w8zz3zmc",
+      "match": "V. Sarsfield - Platense",
+      "competition": "Argentine :\n                        Copa de la Liga Profesional 2e Tour",
+      "date": "2026-10-06",
+      "raison": "match_deja_commence_ou_termine"
+    },
+    {
+      "match_id": "23axvx0d1pik1gdlqmvpi000k",
+      "match": "Banfield - R. Central",
+      "competition": "Argentine :\n                        Copa de la Liga Profesional 2e Tour",
+      "date": "2026-10-06",
+      "raison": "match_deja_commence_ou_termine"
+    },
+    {
+      "match_id": "6p1rg7l87mf9raon6wc9pq1as",
+      "match": "Medellín - Santa Fe",
+      "competition": "Colombie :\n                        Première A Cloture",
+      "date": "2026-10-06",
+      "raison": "match_deja_commence_ou_termine"
+    },
+    {
       "match_id": "dof7mdcd8vlo5vb3gnwdismc4",
       "match": "Zoman - Korhogo",
       "competition": "Côte d'Ivoire :\n                        Liga 1",
@@ -199,11 +87,32 @@
       "raison": "pas_de_cotes_betpawa"
     },
     {
+      "match_id": "5bliixkj0to4zxvbb6nfper6c",
+      "match": "Cerro Porteño - CS 2 de Mayo",
+      "competition": "Paraguay :\n                        Professionnel de la Division Clôture",
+      "date": "2026-10-06",
+      "raison": "match_deja_commence_ou_termine"
+    },
+    {
+      "match_id": "6232tg2m4z7a34vo4b14ymhw4",
+      "match": "Nacional - Torque",
+      "competition": "Uruguay :\n                        Primera Division Cloture",
+      "date": "2026-10-06",
+      "raison": "match_deja_commence_ou_termine"
+    },
+    {
       "match_id": "6jesnq2tg1dijvqdj6hv8k45w",
       "match": "San Marcos - Diriangén",
       "competition": "Nicaragua :\n                        1ère Division Ouverture",
       "date": "2026-10-06",
-      "raison": "pas_de_cotes_betpawa"
+      "raison": "historique_indisponible: exterieur: aucun_match_saison_en_cours"
+    },
+    {
+      "match_id": "8rrqm6tzrc4uarbx81zq70e1g",
+      "match": "San Miguelito - Union Cocle",
+      "competition": "Panama :\n                        Primera Division Ouverture",
+      "date": "2026-10-06",
+      "raison": "match_deja_commence_ou_termine"
     },
     {
       "match_id": "cs8sypqk8vuq3tl2pr7mdlij8",
@@ -283,13 +192,6 @@
       "raison": "historique_indisponible: exterieur: aucun_match_saison_en_cours"
     },
     {
-      "match_id": "d24a5hifhah7k40e26s0t7f9w",
-      "match": "Forge - Pacific",
-      "competition": "Canada :\n                        Première Ligue",
-      "date": "2026-10-07",
-      "raison": "pas_de_cotes_betpawa"
-    },
-    {
       "match_id": "doxk7f1m304d1iftzluzde49g",
       "match": "Agboville - Adiaké",
       "competition": "Côte d'Ivoire :\n                        Liga 1",
@@ -325,11 +227,18 @@
       "raison": "pas_de_cotes_betpawa"
     },
     {
+      "match_id": "2s7r3zn32dc3rvd2v2nvt15g",
+      "match": "Mosul - Quwa",
+      "competition": "Iraq :\n                        Ligue Irakienne",
+      "date": "2026-10-07",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
       "match_id": "6jofu4ayq88s8zq6mf1us2zv8",
       "match": "UNAN - Real Estelí",
       "competition": "Nicaragua :\n                        1ère Division Ouverture",
       "date": "2026-10-07",
-      "raison": "pas_de_cotes_betpawa"
+      "raison": "historique_indisponible: exterieur: aucun_match_saison_en_cours"
     },
     {
       "match_id": "ex40pkwwbphsf0z1g3sxqrsb8",
@@ -374,6 +283,34 @@
       "raison": "pas_de_cotes_betpawa"
     },
     {
+      "match_id": "6n1m66zs9bsfhopsgm9c8s2z8",
+      "match": "UTS - RSB Berkane",
+      "competition": "Maroc :\n                        Botola Pro",
+      "date": "2026-10-08",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "6nogk5c2vh5pnz2o7168306xg",
+      "match": "AS Far Rabat - Widad Témara",
+      "competition": "Maroc :\n                        Botola Pro",
+      "date": "2026-10-08",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "6neguajuc3g6ott4rd6yh7z10",
+      "match": "RCA Zemamra - Hassania A.",
+      "competition": "Maroc :\n                        Botola Pro",
+      "date": "2026-10-08",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "6nyeh15xq8j6zm4utwag2ndhw",
+      "match": "Mas Maghrib - R. Casablanca",
+      "competition": "Maroc :\n                        Botola Pro",
+      "date": "2026-10-08",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
       "match_id": "4f92px0sf1loeurg54bkacmc4",
       "match": "HJK Helsinki - VPS",
       "competition": "Finlande :\n                        Veikkausliiga Tour de Championnat",
@@ -385,7 +322,7 @@
       "match": "Kuopion - AC Oulu",
       "competition": "Finlande :\n                        Veikkausliiga Tour de Championnat",
       "date": "2026-10-08",
-      "raison": "pas_de_cotes_betpawa"
+      "raison": "historique_indisponible: domicile: aucun_match_saison_en_cours"
     },
     {
       "match_id": "5ssxx2cubaxn0dzoqx8vhg45w",
@@ -479,6 +416,34 @@
       "raison": "pas_de_cotes_betpawa"
     },
     {
+      "match_id": "5s1p9sd128tzkokjc1evexous",
+      "match": "Arsenal - FK Dečić",
+      "competition": "Monténégro :\n                        Prva Liga",
+      "date": "2026-10-08",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "5qzjfme3w00jx8hda9rri0b2s",
+      "match": "Otrant-Olympic - Mladost DG",
+      "competition": "Monténégro :\n                        Prva Liga",
+      "date": "2026-10-08",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "5rcasaccfq5y5h0zd4a1oww0k",
+      "match": "Bokelj - Petrovac",
+      "competition": "Monténégro :\n                        Prva Liga",
+      "date": "2026-10-08",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "5qmo3342883cily0p8ptqlgr8",
+      "match": "Mornar - Jezero",
+      "competition": "Monténégro :\n                        Prva Liga",
+      "date": "2026-10-08",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
       "match_id": "4yalghm6ndqpfvo8unoyayck4",
       "match": "Thimphu - Paro",
       "competition": "Bhoutan :\n                        Première Ligue",
@@ -486,15 +451,8 @@
       "raison": "pas_de_cotes_betpawa"
     },
     {
-      "match_id": "8w1x5nrpqp6d6a75joxrcnoyc",
-      "match": "Muzinga - Young Star",
-      "competition": "Burundi :\n                        Ligue A",
-      "date": "2026-10-08",
-      "raison": "pas_de_cotes_betpawa"
-    },
-    {
-      "match_id": "2s7r3zn32dc3rvd2v2nvt15g",
-      "match": "Mosul - Quwa",
+      "match_id": "3e4amhwbm59clk3er8zer3tg",
+      "match": "Duhok - Al Zawraa",
       "competition": "Iraq :\n                        Ligue Irakienne",
       "date": "2026-10-08",
       "raison": "pas_de_cotes_betpawa"
@@ -502,6 +460,13 @@
     {
       "match_id": "3zx66jr4483dj5h13l8qv8d0",
       "match": "Maysan - Arbil",
+      "competition": "Iraq :\n                        Ligue Irakienne",
+      "date": "2026-10-08",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "3p1dwbhk1kfazweqf7773sic",
+      "match": "Talaba - Al Shorta",
       "competition": "Iraq :\n                        Ligue Irakienne",
       "date": "2026-10-08",
       "raison": "pas_de_cotes_betpawa"
@@ -563,15 +528,15 @@
       "raison": "pas_de_cotes_betpawa"
     },
     {
-      "match_id": "eytx0v4mfzejhsea6uu02o2s4",
-      "match": "NEC - Express",
+      "match_id": "eyhw6njg287tjpuq5em2gq2ac",
+      "match": "UPDF - BUL",
       "competition": "Ouganda :\n                        Premier Ligue",
       "date": "2026-10-08",
       "raison": "pas_de_cotes_betpawa"
     },
     {
-      "match_id": "eyhw6njg287tjpuq5em2gq2ac",
-      "match": "UPDF - BUL",
+      "match_id": "eytx0v4mfzejhsea6uu02o2s4",
+      "match": "NEC - Express",
       "competition": "Ouganda :\n                        Premier Ligue",
       "date": "2026-10-08",
       "raison": "pas_de_cotes_betpawa"
@@ -581,6 +546,748 @@
       "match": "Ngezi - Highlanders",
       "competition": "Zimbabwe :\n                        Premier Ligue",
       "date": "2026-10-08",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "9qazvs3sng7dnchpvidxhx6vo",
+      "match": "RC Lens - Lyon",
+      "competition": "France :\n                        Ligue 1 McDonald's",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "7nijw7p9j2hsasqjqge5ch2c4",
+      "match": "Malaga - Espanyol",
+      "competition": "Espagne :\n                        LaLiga",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "53hdtqrme0eged9icm4g3npxw",
+      "match": "W. Beveren - Lommel SK",
+      "competition": "Belgique :\n                        Pro Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "6o8afk344nfbclwlbtfkkjxuc",
+      "match": "Moghreb - FUS Rabat",
+      "competition": "Maroc :\n                        Botola Pro",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "dnci9f1hl2hl2szmfflfqkpw4",
+      "match": "Brunswick - Kiel",
+      "competition": "Allemagne :\n                        2. Bundesliga",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "dgh38pedpv3vujce0nzrqcwlw",
+      "match": "Jong AZ - Den Bosch",
+      "competition": "Pays-Bas :\n                        Eerste Divisie",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "66usiwi2upqe1szwu3130e3o4",
+      "match": "Nordsjaelland - OB",
+      "competition": "Danemark :\n                        Superligaen",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "5bvmdmcr7qf7j0cgaiglr3zmc",
+      "match": "Brann - Viking",
+      "competition": "Norvège :\n                        Eliteserien",
+      "date": "2026-10-09",
+      "raison": "historique_indisponible: domicile: aucun_match_saison_en_cours"
+    },
+    {
+      "match_id": "6aqxy6v421nxsac3vbjl5h6vo",
+      "match": "IFK Göteborg - Västerås",
+      "competition": "Suède :\n                        Allsvenskan",
+      "date": "2026-10-09",
+      "raison": "historique_indisponible: domicile: aucun_match_saison_en_cours"
+    },
+    {
+      "match_id": "7nyyykbovtx2rc3yuhiqa7nro",
+      "match": "Llapi Podujevë - Ballkani",
+      "competition": "Kosovo :\n                        Superliga",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "7nqozwtein80mb5anejk7tbf8",
+      "match": "KF Drita - Malisheva",
+      "competition": "Kosovo :\n                        Superliga",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "7wgfuv3zl4o8kxf43athxyuxg",
+      "match": "Arsenal D. - Dinamo Brest",
+      "competition": "Bélarus :\n                        Première Ligue",
+      "date": "2026-10-09",
+      "raison": "historique_indisponible: domicile: aucun_match_saison_en_cours"
+    },
+    {
+      "match_id": "5ypjzzp731n4mwcafkgygz0no",
+      "match": "Union Brescia - Pro Vercelli",
+      "competition": "Italie :\n                        Série C Girone A",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "1z7rzeri33ngqw3txr4rb97o4",
+      "match": "Brothers - Fortis",
+      "competition": "Bangladesh :\n                        Première Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "1yj7fgkqnm4ibozie8wetg8wk",
+      "match": "City Club - Chattogram",
+      "competition": "Bangladesh :\n                        Première Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "1yvw0y7txnwa13jw9p97lbm6s",
+      "match": "Mohammedan - Arambagh",
+      "competition": "Bangladesh :\n                        Première Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "1y7b37iovh4wmx9vjtp56jn6c",
+      "match": "Rahmatgonj - PWD",
+      "competition": "Bangladesh :\n                        Première Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "1xv9ife9aolk7ysovfy3hzims",
+      "match": "Bashundhara - Wanderers",
+      "competition": "Bangladesh :\n                        Première Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "bxhnnjb1nbbstmsrp0vdv71g4",
+      "match": "Čelik - Sarajevo",
+      "competition": "Bosnie-Herzégovine :\n                        Première Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "8k0kkw9q7t35172sozekqth5g",
+      "match": "Qingdao - Guoan",
+      "competition": "Chine :\n                        Super Ligue",
+      "date": "2026-10-09",
+      "raison": "historique_indisponible: exterieur: aucun_match_saison_en_cours"
+    },
+    {
+      "match_id": "8ie6k2pk6tfk8sqes880iuu50",
+      "match": "Zhejiang G. - Shanghai Port",
+      "competition": "Chine :\n                        Super Ligue",
+      "date": "2026-10-09",
+      "raison": "historique_indisponible: exterieur: aucun_match_saison_en_cours"
+    },
+    {
+      "match_id": "6s3ig25h3h0s9fo01lxn2hij8",
+      "match": "Alianza Valledupar - R. Aguilas",
+      "competition": "Colombie :\n                        Première A Cloture",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "eqnhqewn0ehdc4hrklfbyxxjo",
+      "match": "SP. San José - Cartaginés",
+      "competition": "Costa Rica :\n                        1ère Division Ouverture",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "5t3vx2vx25z22n8a91isngums",
+      "match": "Libertad - Leones del N.",
+      "competition": "Équateur :\n                        Première A Copa Sudamericana Play-off",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "eprsbva6j4ndm4vdydzfqd638",
+      "match": "Kapa - MP",
+      "competition": "Finlande :\n                        Ykkösliiga",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "8i6f3twzsbethn9b58kqhzd3o",
+      "match": "INCA-Aruba - Platense",
+      "competition": "El Salvador :\n                        1ère Division Ouverture",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "2o521pztfz9dbj7xhtwy7myac",
+      "match": "Platense - Juticalpa",
+      "competition": "Honduras :\n                        Ligue National Ouverture - 1er Tour",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "2oifxz1g22if3d2qi15km7tas",
+      "match": "Motagua - Choloma",
+      "competition": "Honduras :\n                        Ligue National Ouverture - 1er Tour",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "916guneoohe7f328k5ggoscgk",
+      "match": "Eastern - North District",
+      "competition": "Hong Kong :\n                        Premier Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "13s5yn7mnza3fhjaib3cajgus",
+      "match": "Isenmulang - Persebaya",
+      "competition": "Indonésie :\n                        Ligue 1",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "d6s5xmwmef1nwxfchqowezrx0",
+      "match": "Chadormalu - Kheybar",
+      "competition": "Iran :\n                        Première Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "d72qlxwjm8purw08c0idug36c",
+      "match": "Persepolis - SN Abadan",
+      "competition": "Iran :\n                        Première Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "1wsigs6w1uuxt8c9i6nkomdjo",
+      "match": "Kashima - Gamba",
+      "competition": "Japon :\n                        J1 Ligue",
+      "date": "2026-10-09",
+      "raison": "historique_indisponible: domicile: aucun_match_saison_en_cours"
+    },
+    {
+      "match_id": "1xqwi9zijc3jziha4nq8n5clw",
+      "match": "Kashiwa - Vissel Kobe",
+      "competition": "Japon :\n                        J1 Ligue",
+      "date": "2026-10-09",
+      "raison": "historique_indisponible: domicile: aucun_match_saison_en_cours"
+    },
+    {
+      "match_id": "3jz7ziteiqxgy23yezybuqo0k",
+      "match": "Gangwon - Bucheon",
+      "competition": "Corée du Sud :\n                        K-Ligue",
+      "date": "2026-10-09",
+      "raison": "historique_indisponible: domicile: aucun_match_saison_en_cours"
+    },
+    {
+      "match_id": "3kk0wsjnr8j7z3h0ejd2rb5zo",
+      "match": "Incheon Utd - Pohang S.",
+      "competition": "Corée du Sud :\n                        K-Ligue",
+      "date": "2026-10-09",
+      "raison": "historique_indisponible: exterieur: aucun_match_saison_en_cours"
+    },
+    {
+      "match_id": "3l3nyntww0rz4wvyl5joocges",
+      "match": "Séoul - Jeju Utd",
+      "competition": "Corée du Sud :\n                        K-Ligue",
+      "date": "2026-10-09",
+      "raison": "historique_indisponible: domicile: aucun_match_saison_en_cours"
+    },
+    {
+      "match_id": "criwq2t2mishjpz3qffaruhas",
+      "match": "Vanspor - Bandirmaspor",
+      "competition": "Turquie :\n                        TFF 1. Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "8vzv5v01g833lpc57bjvfon4k",
+      "match": "Puebla FC - Club León",
+      "competition": "Mexique :\n                        Liga MX Ouverture",
+      "date": "2026-10-09",
+      "raison": "historique_indisponible: domicile: aucun_match_saison_en_cours"
+    },
+    {
+      "match_id": "8wcudgcojk4k2b6ooechzapec",
+      "match": "Tigres - D. Toluca",
+      "competition": "Mexique :\n                        Liga MX Ouverture",
+      "date": "2026-10-09",
+      "raison": "historique_indisponible: domicile: aucun_match_saison_en_cours"
+    },
+    {
+      "match_id": "9uy6ew2mw5glmct3l7ii5jz84",
+      "match": "Araz - Kapaz",
+      "competition": "Azerbaïdjan :\n                        Première Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "9w9c1yq62zso6k0y2kwgd1w5w",
+      "match": "Neftchi PFK - Sabah",
+      "competition": "Azerbaïdjan :\n                        Première Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "85801rcmsi3foh6rsmmnfm3h0",
+      "match": "Fanja - Ibri",
+      "competition": "Oman :\n                        Division 1",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "85gpo3coy59heghjaobbpehp0",
+      "match": "Al-Musannah - Sohar",
+      "competition": "Oman :\n                        Division 1",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "3k6sq9lrqejetmvrfkzpq61g",
+      "match": "Petro Atl. - CR Caala",
+      "competition": "Angola :\n                        Girabola",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "4vrib70hhdshvmo0k51kcl7o4",
+      "match": "W. Krakow - Wisla Plock SA",
+      "competition": "Pologne :\n                        Ekstraklasa",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "324xfeckd4i8gq256253dqhw4",
+      "match": "Qatar - Al Rayyan",
+      "competition": "Qatar :\n                        Division 1",
+      "date": "2026-10-09",
+      "raison": "historique_indisponible: exterieur: aucun_match_saison_en_cours"
+    },
+    {
+      "match_id": "31tkrzuatztnueznmofoooe8k",
+      "match": "Al Sadd - Arabi",
+      "competition": "Qatar :\n                        Division 1",
+      "date": "2026-10-09",
+      "raison": "historique_indisponible: exterieur: saison_incoherente_avec_resultats_connus"
+    },
+    {
+      "match_id": "jyxutdzooqqij19udh7q2a6s",
+      "match": "Shelbourne - Sligo Rovers",
+      "competition": "Irlande :\n                        Première Ligue",
+      "date": "2026-10-09",
+      "raison": "historique_indisponible: domicile: aucun_match_saison_en_cours"
+    },
+    {
+      "match_id": "9920r9kxrbq87mhhyl9yebris",
+      "match": "Khalidiya - Muharraq",
+      "competition": "Bahreïn :\n                        Premiere Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "99a29fvmhzxyvpsveviklmaz8",
+      "match": "Malkiya - Riffa",
+      "competition": "Bahreïn :\n                        Premiere Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "anrjj5h0je768jxo9iq5tsduc",
+      "match": "Ratchaburi - Sukhothai",
+      "competition": "Thaïlande :\n                        1. Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "31r7cwdxhx0iyuywuqqwek5ck",
+      "match": "Cailungo - Libertas",
+      "competition": "Saint-Marin :\n                        Campionato Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "3270di3lvlrz5k4xju2wj807o",
+      "match": "La Fiorita - Murata",
+      "competition": "Saint-Marin :\n                        Campionato Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "318iqp0furseimusia6ay76dw",
+      "match": "Pennarossa - Folgore Falciano",
+      "competition": "Saint-Marin :\n                        Campionato Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "17njbns6908fyiyi9izioep04",
+      "match": "Cardiff MU - Trefelin",
+      "competition": "Pays de Galles :\n                        Cymru Premier",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "199l6wpj2vxipvu1ll3z7yfis",
+      "match": "Penybont - Barry Town",
+      "competition": "Pays de Galles :\n                        Cymru Premier",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "8uj5iaun0jy1186ek2hg9y4us",
+      "match": "Young Star - Bumamuru",
+      "competition": "Burundi :\n                        Ligue A",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "8twze1pqa3cso8xof9tjn8j6c",
+      "match": "Inter Star - Panthère",
+      "competition": "Burundi :\n                        Ligue A",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "8uu4km499v72g9xsnpvzobc44",
+      "match": "Musongati - Messager",
+      "competition": "Burundi :\n                        Ligue A",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "3oueklfec1ml7846plt3drjtg",
+      "match": "EEPCO - Adama City",
+      "competition": "Éthiopie :\n                        Première Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "3q2ou3blevzq1nvt0e0afg26s",
+      "match": "Halaba - Welwalo Adigrat",
+      "competition": "Éthiopie :\n                        Première Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "8jm3q2z7z58vp3j6aqdx9rm6s",
+      "match": "Juventus - Gauloise",
+      "competition": "Guadeloupe :\n                        Division d'Honneur",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "4wm8y3dozde9kcd302ew4zro",
+      "match": "Zakho - Newroz",
+      "competition": "Iraq :\n                        Ligue Irakienne",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "57n85519ayatcveyn948noyc",
+      "match": "Naft - Diyala",
+      "competition": "Iraq :\n                        Ligue Irakienne",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "4av9o9r0epu44yavaxvanytw",
+      "match": "Gharraf - Golan",
+      "competition": "Iraq :\n                        Ligue Irakienne",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "nqqd94b8wifoiwh35a3mcu8k",
+      "match": "Hussein - Al Arabi",
+      "competition": "Jordanie :\n                        Division 1",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "nyfamf96700mgb7efc0d04yc",
+      "match": "Al Jazeera - Al Wehdat",
+      "competition": "Jordanie :\n                        Division 1",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "3r7ujyrm6srut7wrs82ot49hw",
+      "match": "Nairobi Utd - Kenya Com",
+      "competition": "Kenya :\n                        Première Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "f03ukmxdvo2zom5ltcfwyb66s",
+      "match": "Tripoli - Ahed",
+      "competition": "Liban :\n                        Division 1",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "f0iy6rvpqkh5fkdm2q8ww5tsk",
+      "match": "Jwaya - Al Mabarrah",
+      "competition": "Liban :\n                        Division 1",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "2yecr8rlpv0bkjv20mj2ugro4",
+      "match": "Buru - Biss Buru",
+      "competition": "Maldives :\n                        Dhiraagu Dhivehi League",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "2ynz3f0tcx2c334omhhu9ri8k",
+      "match": "Odi - Gadhdhoo",
+      "competition": "Maldives :\n                        Dhiraagu Dhivehi League",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "errf04x0i1p7s9trwvdqc00es",
+      "match": "Colonial - Rivière-Pilote",
+      "competition": "Martinique :\n                        Division d'Honneur",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "es269hu3ltv89g6qle5idtus4",
+      "match": "Espoir - Saint Joseph",
+      "competition": "Martinique :\n                        Division d'Honneur",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "esyuf9zb3n6yv4w8mqqi9g3dg",
+      "match": "Franciscain - Inter",
+      "competition": "Martinique :\n                        Division d'Honneur",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "et9knl4lszv64g5u3t04g6vpw",
+      "match": "Golden Star - Samaritaine",
+      "competition": "Martinique :\n                        Division d'Honneur",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "eso8wds7l3bkqs3c9banedul0",
+      "match": "Morne - Trénelle",
+      "competition": "Martinique :\n                        Division d'Honneur",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "esdiitla84dd2q5z6betrantg",
+      "match": "Péléen - Lorrain",
+      "competition": "Martinique :\n                        Division d'Honneur",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "etkb1cd0joprv5x0jd17b2w44",
+      "match": "Golden Lion - Assaut",
+      "competition": "Martinique :\n                        Division d'Honneur",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "esnnbt3j5vc772i3pg3r6q0b8",
+      "match": "Khovd - Ward",
+      "competition": "Mongolie :\n                        Premiere Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "937mbsd5w5n7totf8zq75cbh0",
+      "match": "Baía de Pemba - Songo",
+      "competition": "Mozambique :\n                        Mocambola",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "92zksvlzuankzyidp5faba784",
+      "match": "Ferro Nacala - Sofala",
+      "competition": "Mozambique :\n                        Mocambola",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "6thm1kh2jdywxsqaqru7i4p3o",
+      "match": "I.S.P.E - Dagon",
+      "competition": "Myanmar :\n                        Ligue Nationale",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "6tteb3cxc6j22e1syh5ey88b8",
+      "match": "Sagaing Utd - Chinland",
+      "competition": "Myanmar :\n                        Ligue Nationale",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "ez5xb1qp3uz667fujdbdy8lqs",
+      "match": "Gaddafi - Uganda Police",
+      "competition": "Ouganda :\n                        Premier Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "ezhyn0l1hcti84kg6wd8bnris",
+      "match": "URA - Kampala City",
+      "competition": "Ouganda :\n                        Premier Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "5lzqyn0gcgcg066kuzi2bq9lg",
+      "match": "Kokand 1912 - Mash'al",
+      "competition": "Ouzbékistan :\n                        Oliy Liga",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "5njcpuscocc1nfg8qm1rsppn8",
+      "match": "Buxoro - Andijan",
+      "competition": "Ouzbékistan :\n                        Oliy Liga",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "5lgg0v0oqhaziv68qa4a9gsno",
+      "match": "Pakhtakor - Bunyodkor",
+      "competition": "Ouzbékistan :\n                        Oliy Liga",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "5p5qq975b36apdfr52m46svtg",
+      "match": "Nasaf - Samarqand",
+      "competition": "Ouzbékistan :\n                        Oliy Liga",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "8s4lk87l412a5wf5cbzcsygwk",
+      "match": "San Francisco - Universitario",
+      "competition": "Panama :\n                        Primera Division Ouverture",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "dj7xbnvfut40dqnd3g1eiu39w",
+      "match": "Saint-Denis - Saint-Leu",
+      "competition": "Réunion :\n                        D1 Promotionelle",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "6jn6be2zeqwr8g31vgqcp15g",
+      "match": "Kigali - Gicumbi",
+      "competition": "Rwanda :\n                        Premier League",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "6v4zrk9mgb8bdx0iah02jllg",
+      "match": "Gorilla - Rayon",
+      "competition": "Rwanda :\n                        Premier League",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "1sxjqvfpvtgvzstxoa5igpst0",
+      "match": "Lodge Patriots - Old Road Jets",
+      "competition": "Saint-Kitts-et-Nevis :\n                        Premier League",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "dz7az968hizczq1ce317v6zv8",
+      "match": "Parvoz - Khujand",
+      "competition": "Tadjikistan :\n                        Division",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "dznad0ll6v0hmndg10p6ljw2c",
+      "match": "Sardor - Eskhata",
+      "competition": "Tadjikistan :\n                        Division",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "6yudcl5hprnnc808r1jwlgc2c",
+      "match": "Kaohsiung Yangxin - Hualien",
+      "competition": "Taïwan :\n                        Mulan Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "6zag2wifht63qdzx8pxo5nspg",
+      "match": "AC Taipei - Valkyrie",
+      "competition": "Taïwan :\n                        Mulan Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "6zqjc8sbzaduye6q172c90rv8",
+      "match": "Sakura - Taipei Bravo",
+      "competition": "Taïwan :\n                        Mulan Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "705qyxti1qi1wd2jlmyk5pjx0",
+      "match": "Taichung Blue Whale - Hang Yuan",
+      "competition": "Taïwan :\n                        Mulan Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "1a65x91l3v045mhxanmet68lw",
+      "match": "Al Nasr - Kuwait",
+      "competition": "Koweït :\n                        Première Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "1b0d1sbch5a66g1njg76gg1zo",
+      "match": "Kazma - Arabi",
+      "competition": "Koweït :\n                        Première Ligue",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "jni1jzcmh41vje8q4xbe2m1g",
+      "match": "UD Santarem - Lusitano 1911",
+      "competition": "Portugal :\n                        Ligue 3  Groupe B",
+      "date": "2026-10-09",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "cakxx3336tg1mgnqgsy2ekges",
+      "match": "Roan - Buffaloes",
+      "competition": "Zambie :\n                        Super Ligue  Group B",
+      "date": "2026-10-09",
       "raison": "pas_de_cotes_betpawa"
     }
   ]
