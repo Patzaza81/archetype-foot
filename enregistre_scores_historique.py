@@ -158,7 +158,7 @@ def main():
               f"concernés.", file=sys.stderr)
     # AJOUT 27/09/2026 (décision de Patrick) -- moteur V3 EN PARALLÈLE, expérimental et non validé
     # (moteur_v3_pipeline.py) : lit l'archive de test qu'on vient d'écrire, écrit data/v3/pronostics_v3.json (page
-    # pronostics_v3.html). Ne remplace rien : moteur_v2_6_9 reste le moteur du site. Un échec ici ne bloque rien.
+    # pronostics_v3.html). Ne remplace rien : moteur_v2_6_10 est désormais le moteur du site. Un échec ici ne bloque rien.
     try:
         import moteur_v3_pipeline
         print(f"[moteur V3] {moteur_v3_pipeline.execution()}")
