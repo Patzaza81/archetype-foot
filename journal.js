@@ -7,7 +7,7 @@
 
   var MIN_MATCHS_AFFICHAGE = 10;
   var FIABILITE = { A_JOUER: "Prouvé", A_SURVEILLER: "À surveiller", NEUTRE: "Non confirmé" };
-  var NOMS_MOTEUR = { moteur_v2_6_9: "Moteur principal (v2.6.9)" };
+  var NOMS_MOTEUR = { moteur_v2_6_10: "Moteur principal (v2.6.10)" };
   var RANG_LIB = { P1: "Favori du Modèle", P2: "Value Bet", P3: "Coup de Poker" };
   var ORDRE = { A_JOUER: 0, A_SURVEILLER: 1, NEUTRE: 2 };
 
@@ -231,7 +231,7 @@
         filtre(b.getAttribute("data-f"));
       });
     });
-    filtre("moteur_v2_6_9");
+    filtre("moteur_v2_6_10");
   }
 
   /* Résultats des moteurs : seulement les championnats / familles où ils ont gagné (ROI > 0, au moins 5 paris). */

@@ -44,8 +44,8 @@ from collections import defaultdict
 RACINE = os.path.dirname(os.path.abspath(__file__))
 FICHIER_ECHANTILLON = os.path.join(RACINE, "data", "echantillon_betpawa_501.json")
 FICHIER_HISTORIQUE = os.path.join(RACINE, "historique_pronostics.json")
-FICHIERS_PRECALCUL = {"moteur_v2_6_9": os.path.join(RACINE, "precalcul_leger.json")}
-REPERTOIRES_ARCHIVE = {"moteur_v2_6_9": os.path.join(RACINE, "archive")}
+FICHIERS_PRECALCUL = {"moteur_v2_6_10": os.path.join(RACINE, "precalcul_leger.json")}
+REPERTOIRES_ARCHIVE = {"moteur_v2_6_10": os.path.join(RACINE, "archive")}
 FICHIER_SORTIE = os.path.join(RACINE, "journal.json")
 
 VERSION = "1.0.0"
@@ -397,11 +397,13 @@ def construit_segments(paris):
 # =============================================================================
 
 
-def charge_selections_resolues(repertoire, ids_bp):
+def charge_selections_resolues(repertoire, ids_bp, model_version=None):
     paris = []
     for chemin in sorted(glob.glob(os.path.join(repertoire, "*.json"))):
         for r in _lire_json(chemin, []) or []:
             if r.get("categorie") != "SELECTED" or r.get("resultat_statut") != "RESOLVED":
+                continue
+            if model_version is not None and r.get("model_version") != model_version:
                 continue
             if r.get("match_id") not in ids_bp:
                 continue
@@ -429,7 +431,7 @@ def charge_selections_resolues(repertoire, ids_bp):
 def construit_moteurs(ids_bp):
     out = {}
     for nom, rep in REPERTOIRES_ARCHIVE.items():
-        paris = charge_selections_resolues(rep, ids_bp)
+        paris = charge_selections_resolues(rep, ids_bp, model_version=nom)
         if not paris:
             out[nom] = {"global": None, "ligues": [], "familles": [], "note": "Aucune sélection résolue sur un match coté BetPawa pour l'instant."}
             continue

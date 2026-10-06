@@ -196,7 +196,7 @@ Un marché retenu sans preuve spécifique (pas seulement l'EV générique) est r
 Reste : 161 équipes sur 1 750 (Suède, Norvège, Estonie, Biélorussie, Japon, Corée du Sud…) sans aucun historique, cause non établie (hypothèse : format du sélecteur de saison des championnats à saison calendaire) ; scores du cache contredisant le classement pour quelques équipes (12 cas, ex. Manchester City) ; le pipeline ne détecte pas ces écarts. Piste : contrôle automatique « historique = classement officiel ».
 
 #### P1.8 Brancher le nouveau moteur d'analyse — **FAIT** et **VALIDÉ sur le run #135** (21/09) : 100 signaux avec bloc `moteur_v2_6_9`, 0 `ERREUR_TECHNIQUE`, export, archive et site conformes
-`moteur_v2_6_9.py` est le moteur du pipeline. Contrat avec le site, à respecter pour tout futur moteur :
+`moteur_v2_6_10` est désormais le moteur du pipeline. Contrat avec le site, à respecter pour tout futur moteur :
 - filtre d'affichage (page principale et panier) : `moteur_utilise === CLE_MOTEUR` et au moins un choix parmi P1, P2, P3 ; **le site ne vérifie pas `statut`** ;
 - par choix : `marche` (nom canonique), `cote`, `probabilite`, `edge`, `edv`, `niveau` (`CAT_A/B/C`), `robustesse` (`null` : pas d'analyse de robustesse), `points_de_vigilance`, `justification { resume, preuves[{type, texte, valeur}], donnees_suffisantes, bibliotheque }` ;
 - `_leger_pour_site` (`precalcul.py`) décide ce qui parvient au site ;

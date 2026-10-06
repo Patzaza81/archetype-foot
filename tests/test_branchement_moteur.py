@@ -17,7 +17,7 @@ import subprocess
 import pytest
 
 import branchement_moteur as bm
-import moteur_v2_6_9 as moteur
+import moteur_v2_6_10 as moteur
 import pont_moteur
 from archetype_model.learning import archive
 from archetype_model.learning.reglement import evaluer_marche
@@ -313,7 +313,7 @@ def test_archive_selected_et_counterfactual(tmp_path, monkeypatch):
     sel = [r for r in recs if r["categorie"] == "SELECTED"]
     assert {r["marche"] for r in sel} == {"double_chance_1X", "1x2_domicile"} and len(sel) == 2 and {r["match_id"] for r in sel} == {"m1"}
     assert any(r["categorie"] == "COUNTERFACTUAL" and r["match_id"] == "m2" and r["marche"] == "1x2_domicile" for r in recs)   # catégorie D
-    assert all(r["model_version"] == "moteur_v2_6_9" and r["resultat_statut"] == "PENDING" for r in recs)
+    assert all(r["model_version"] == "moteur_v2_6_10" and r["resultat_statut"] == "PENDING" for r in recs)
     assert any(r["categorie"] == "COUNTERFACTUAL" and r["marche"] == "btts_non" for r in recs)
     assert all(evaluer_marche(r["marche"], 1, 0).statut != "MARCHE_NON_RECONNU" for r in recs)
 

@@ -71,12 +71,12 @@ def test_main_de_bout_en_bout(monde):
     leger = json.load(open("precalcul_leger.json", encoding="utf-8"))
     ids = sorted(s["match_id"] for s in complet["signaux"])
     assert ids == ["a", "b", "c"], ids                                          # J+2 ("z") ignoré
-    assert complet["moteur"] == {"nom": "moteur_v2_6_9", "version": "2.6.9"} and leger["moteur"] == complet["moteur"]
+    assert complet["moteur"] == {"nom": "moteur_v2_6_10", "version": "2.6.10"} and leger["moteur"] == complet["moteur"]
     blocs = {s["match_id"]: s[bm.CLE_BLOC] for s in complet["signaux"]}
     assert blocs["a"]["statut"] == "OK" and blocs["a"]["nb_marches_evalues"] > 0
     assert blocs["b"]["statut"] == "NON_EXPORTABLE" and blocs["b"]["raison"].startswith("echantillon_insuffisant")
     assert blocs["c"]["statut"] == "NON_EXPORTABLE" and blocs["c"]["raison"] == "pas_de_cotes_betpawa"
-    assert all(s["moteur_utilise"] == "moteur_v2_6_9" and "archetype_model" not in s for s in complet["signaux"])
+    assert all(s["moteur_utilise"] == "moteur_v2_6_10" and "archetype_model" not in s for s in complet["signaux"])
     la = next(s for s in leger["signaux"] if s["match_id"] == "a")[bm.CLE_BLOC]
     assert "inventaire" not in la and la["statut"] == "OK"
 
@@ -91,7 +91,7 @@ def test_main_ecrit_l_export_les_caches_et_l_archive(monde):
     assert os.path.exists("export_moteur/diagnostic_pont.json") and os.path.exists("cache_equipes_saison.json")
     assert not os.path.exists("cache_equipes.json")                             # l'ancien cache à repli n'est pas touché
     archive = [f for f in os.listdir("archive")]
-    assert len(archive) == 1 and json.load(open(os.path.join("archive", archive[0]), encoding="utf-8"))[0]["model_version"] == "moteur_v2_6_9"
+    assert len(archive) == 1 and json.load(open(os.path.join("archive", archive[0]), encoding="utf-8"))[0]["model_version"] == "moteur_v2_6_10"
     assert precalcul.STATS_EQUIPES_VUES.keys() >= {("Alpha FC", COMP), ("Beta FC", COMP)} and ("Zeta FC", COMP) not in precalcul.STATS_EQUIPES_VUES
 
 

@@ -1,7 +1,6 @@
 # moteur_v2_6_10 — la v2.6.9 corrigée, même ossature P1 / P2 / P3
 
-**Statut : candidat, NON branché.** Rien dans le pipeline, le site ni les archives ne l'appelle. `moteur_v2_6_9.py` reste le
-moteur de production, intact (aucune ligne modifiée).
+**Statut : branché en production comme moteur lissé, calibration inactive tant que son jeu d'apprentissage n'atteint pas les garde-fous.** Le pipeline, le site et les archives utilisent désormais `moteur_v2_6_10`. La base `moteur_v2_6_9.py` reste intacte comme dépendance interne et référence historique.
 
 ## Ce qui ne change pas
 Tout vient de `moteur_v2_6_9`, importé tel quel : validations V1-V12, Poisson, marchés, edge / EV / seuils, statuts, artefacts
@@ -38,7 +37,7 @@ cal, diag = moteur.apprendre(observations, modele=moteur.signature_modele())
     # les value bets), probabilités brutes du modèle courant ; filtrer d'abord avec moteur.avant(observations, date_du_match)
 ```
 
-## Mesurer avant de brancher
+## Mesurer avant d'activer la calibration
 ```
 python -m pytest tests/test_moteur_v2_6_10.py
 python evaluation/compare_moteurs_v2.py evaluation/snapshot_historique_moteur_v2_6_9.json evaluation/scores_historique_moteur_v2_6_9.json
@@ -52,11 +51,12 @@ Les choix P1/P2/P3 y sont simulés **sans** le filtre de justification (identiqu
 Critère de bascule proposé : la v2.6.10 réduit l'écart de calibration et la différence de Brier avec le marché, avec des
 intervalles qui ne se contredisent pas. Un ROI positif n'est pas exigé ni attendu (non concluant sous 150 à 200 choix).
 
-## Brancher (une fois la mesure faite, décision du propriétaire)
-1. `branchement_moteur.py` : `import moteur_v2_6_10 as moteur` ; `NOM_MOTEUR`, `VERSION_MOTEUR`, `CONFIG_VERSION`.
-2. Site (`archetype.js`) : `CLE_MOTEUR` doit suivre `NOM_MOTEUR` (un test de contrat le vérifie).
-3. Archiver l'**inventaire complet** (tous les marchés, probabilité brute) des matchs analysés, puis une étape nocturne qui apprend le calibrateur sur les matchs joués (`calibration.avant`) et le passe à `analyser_match`. L'archive actuelle (value bets / choix seulement) ne convient pas : elle biaiserait la calibration.
-4. Mettre à jour README, ROADMAP et CLAUDE.md.
+## État de branchement
+1. `branchement_moteur.py`, `pont_moteur.py` et `archetype.js` utilisent désormais `moteur_v2_6_10`.
+2. Le lissage par rôle est actif avec les paramètres fixés à l'avance : K=4, référence domicile=1,50 et référence extérieur=1,20.
+3. La calibration isotone est volontairement inactive en production jusqu'à constitution d'un inventaire complet et atteinte des garde-fous documentés : au moins 300 observations et 100 matchs, avec antériorité temporelle stricte.
+4. `moteur_v2_6_9.py` reste intact comme dépendance interne de v2.6.10 et référence historique ; il n'est plus utilisé comme moteur de décision du pipeline.
+5. Le Journal filtre les archives résolues sur `model_version = moteur_v2_6_10` afin de ne pas mélanger les performances des deux générations.
 
 ## Limites connues
 - Poisson à buts indépendants : inchangé. Ton calibrage v2.7 suggérait que le Poisson n'apporte rien au-delà du marché recalibré ; la v2.6.10 ne prétend pas le contredire.

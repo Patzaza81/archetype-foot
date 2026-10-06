@@ -111,7 +111,7 @@ from archetype_model.h2h import h2h_stats as archetype_h2h_stats
 _recupere_gf_ga_reelle = run_pipeline.recupere_gf_ga_avec_repli
 
 
-# AJOUT 21/09/2026 -- branchement de moteur_v2_6_9.py (voir branchement_moteur.py et pont_moteur.py).
+# AJOUT 21/09/2026 -- branchement de moteur_v2_6_10.py (voir branchement_moteur.py et pont_moteur.py).
 # Ce collecteur (à repli sur la saison précédente, N plus anciens matchs) ne sert QU'À l'ancien calcul de
 # construit_signaux() ; il n'alimente PLUS le moteur : celui-ci lit STATS_EQUIPES_VUES, rempli plus bas par
 # charge_stats_saison() (saison en cours uniquement, matchs les plus récents -- stats_saison_en_cours.py).
@@ -894,17 +894,17 @@ def _leger_pour_site(s):
     seulement par la section 'tous les marchés calculés'/détail du lambda
     dans 'voir les détails').
 
-    Le fichier léger reçoit uniquement le bloc canonique du moteur_v2_6_9
+    Le fichier léger reçoit uniquement le bloc canonique du moteur_v2_6_10
     via branchement_moteur.bloc_leger(); aucun résultat de l'ancien moteur
     n'est recopié."""
     d = dict(s)
     d.pop("marches", None)
     d.pop("lambda", None)
-    # AJOUT 21/09/2026 -- bloc du moteur du pipeline (moteur_v2_6_9) : statut + sélection P1/P2/P3 avec justification.
+    # AJOUT 21/09/2026 -- bloc du moteur du pipeline (moteur_v2_6_10) : statut + sélection P1/P2/P3 avec justification.
     if isinstance(d.get(branchement_moteur.CLE_BLOC), dict):
         d[branchement_moteur.CLE_BLOC] = branchement_moteur.bloc_leger(d[branchement_moteur.CLE_BLOC])
     # Ancien bloc archetype_model supprimé le 21/09/2026 :
-    # le site ne reçoit désormais que le bloc canonique moteur_v2_6_9.
+    # le site ne reçoit désormais que le bloc canonique moteur_v2_6_10.
 
     return d
 
@@ -934,7 +934,7 @@ def archive_precalcul(signaux, dates_a_archiver):
 
 def signaux_exportables(signaux):
     """Signaux à exporter vers export_moteur/ : tous sauf ceux que le pipeline a refusés pour échantillon insuffisant
-    (règle D6 de branchement_moteur.py). Un fichier exporté rejoué avec moteur_v2_6_9.py ne doit jamais analyser un match
+    (règle D6 de branchement_moteur.py). Un fichier exporté rejoué avec moteur_v2_6_10.py ne doit jamais analyser un match
     que le pipeline a refusé."""
     return [s for s in signaux
             if not str((s.get(branchement_moteur.CLE_BLOC) or {}).get("raison", "")).startswith(branchement_moteur.MOTIF_ECHANTILLON)]
@@ -989,10 +989,10 @@ def charge_stats_saison(signaux, details=None, fonction=None):
 
 
 def applique_moteur_pipeline(signaux):
-    """AJOUT 21/09/2026 -- LE moteur du pipeline : moteur_v2_6_9.py, via branchement_moteur.py.
+    """AJOUT 21/09/2026 -- LE moteur du pipeline : moteur_v2_6_10.py, via branchement_moteur.py.
 
     Remplace l'ancien moteur ; aucune voie de fallback n'est conservée. Pose sur chaque
-    signal `moteur_utilise` = "moteur_v2_6_9" et le bloc `moteur_v2_6_9` (statut, verdict, sélection P1/P2/P3 avec
+    signal `moteur_utilise` = "moteur_v2_6_10" et le bloc `moteur_v2_6_10` (statut, verdict, sélection P1/P2/P3 avec
     justification, inventaire complet). Archive les choix retenus (SELECTED) et les value bets non retenus
     (COUNTERFACTUAL) dans archive/AAAA-MM.json. Ne fait AUCUN repli sur l'ancien moteur (règle du propriétaire) :
     une exception sur un match est un statut ERREUR_TECHNIQUE visible, jamais une décision inventée."""
@@ -1004,14 +1004,14 @@ def applique_moteur_pipeline(signaux):
     resume = branchement_moteur.applique_moteur(
         signaux, STATS_EQUIPES_VUES, h2h_fetcher=_h2h_pour_signal, archiver=archiver
     )
-    print(f"moteur_v2_6_9 -- statuts : {resume['statuts']}")
-    print(f"moteur_v2_6_9 -- raisons des refus : {resume['raisons']}")
-    print(f"moteur_v2_6_9 -- {resume['nb_matchs_avec_choix']} match(s) avec au moins un choix, "
+    print(f"moteur_v2_6_10 -- statuts : {resume['statuts']}")
+    print(f"moteur_v2_6_10 -- raisons des refus : {resume['raisons']}")
+    print(f"moteur_v2_6_10 -- {resume['nb_matchs_avec_choix']} match(s) avec au moins un choix, "
           f"{resume['nb_choix_retenus']} choix retenus, {resume['nb_archives']} observation(s) archivée(s), "
           f"{resume['nb_erreurs_archive']} erreur(s) d'archivage.")
     erreurs = [s for s in signaux if (s.get(branchement_moteur.CLE_BLOC) or {}).get("statut") == "ERREUR_TECHNIQUE"]
     for s in erreurs[:5]:
-        print(f"moteur_v2_6_9 -- ERREUR_TECHNIQUE {s.get('match_id')} : {s[branchement_moteur.CLE_BLOC]['raison']}",
+        print(f"moteur_v2_6_10 -- ERREUR_TECHNIQUE {s.get('match_id')} : {s[branchement_moteur.CLE_BLOC]['raison']}",
               file=sys.stderr)
     return signaux
 
@@ -1114,12 +1114,12 @@ def main():
           f"Betpawa : {compteurs_betpawa['betpawa_cotes_extraites']} match(s) "
           f"avec cotes réelles, {compteurs_betpawa['betpawa_tentes']} tenté(s).")
 
-    # AJOUT 21/09/2026 -- export des matchs au format de moteur_v2_6_9.py, un fichier par date dans export_moteur/
-    # (entrées EXACTES du moteur : `python moteur_v2_6_9.py export_moteur/matchs_moteur_AAAA-MM-JJ.json --date AAAA-MM-JJ`
+    # AJOUT 21/09/2026 -- export des matchs au format de moteur_v2_6_10.py, un fichier par date dans export_moteur/
+    # (entrées EXACTES du moteur : `python moteur_v2_6_10.py export_moteur/matchs_moteur_AAAA-MM-JJ.json --date AAAA-MM-JJ`
     # rejoue le calcul). Isolé dans un try : un échec ici ne doit jamais faire échouer un run par ailleurs réussi.
     try:
         # Seuls les matchs que le pipeline a réellement analysés sont exportés : rejouer un fichier exporté avec
-        # `python moteur_v2_6_9.py` ne doit jamais analyser un match que le pipeline a refusé (échantillon insuffisant).
+        # `python moteur_v2_6_10.py` ne doit jamais analyser un match que le pipeline a refusé (échantillon insuffisant).
         resume_pont = pont_moteur.exporte_matchs_moteur(signaux_exportables(signaux), STATS_EQUIPES_VUES)
         print(f"Export moteur : {resume_pont['nb_exportes']}/{resume_pont['nb_signaux']} match(s) "
               f"exporté(s) {resume_pont['par_date']} ; rejets : {resume_pont['rejets']}.")

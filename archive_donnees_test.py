@@ -59,7 +59,7 @@ FICHIER_HISTORIQUE = "historique_pronostics.json"
 FICHIER_PRECALCUL = "precalcul.json"
 FICHIER_CACHE_SAISON = "cache_equipes_saison.json"
 DECALAGE_CAMEROUN = datetime.timedelta(hours=1)          # heure_cameroun = UTC+1, sans heure d'été
-CLE_BLOC_MOTEUR = "moteur_v2_6_9"
+CLE_BLOC_MOTEUR = "moteur_v2_6_10"
 _SCORE = re.compile(r"^\s*(\d+)\s*-\s*(\d+)\s*$")
 
 

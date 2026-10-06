@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-branchement_moteur.py -- branche moteur_v2_6_9.py sur le pipeline nocturne.
+branchement_moteur.py -- branche moteur_v2_6_10 sur le pipeline nocturne.
 
 Il REMPLACE l'ancien modèle (`archetype_model.main.analyse_match_complet`), qui n'est plus appelé nulle part
 dans le pipeline. Ce module ne calcule aucune probabilité : il fait le lien entre quatre contrats.
@@ -51,12 +51,12 @@ import sys
 from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple
 
 import justification
-import moteur_v2_6_9 as moteur
+import moteur_v2_6_10 as moteur
 import pont_moteur
 
-NOM_MOTEUR = "moteur_v2_6_9"
-VERSION_MOTEUR = "2.6.9"
-CONFIG_VERSION = "constantes_v2_6_9"
+NOM_MOTEUR = "moteur_v2_6_10"
+VERSION_MOTEUR = "2.6.10"
+CONFIG_VERSION = "constantes_v2_6_10"
 CLE_BLOC = NOM_MOTEUR            # clé du signal lue par le site (archetype.js : CLE_MOTEUR)
 
 # D3 -- mêmes seuils que archetype.js (SEUIL_COUP_DE_POKER_COTE / SEUIL_COUP_DE_POKER_PROBA).

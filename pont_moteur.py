@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 pont_moteur.py -- pont entre le moteur de scraping (archetype-foot) et
-moteur_v2_6_9.py (moteur de value bets, Poisson à un couple de λ par match).
+moteur_v2_6_10 (moteur de value bets, même ossature avec lissage par rôle et alertes).
 
 Ne scrape rien, ne modifie aucun fichier existant, n'importe rien du dépôt :
 il traduit ce que le scraping produit déjà vers le format d'entrée du moteur
@@ -51,12 +51,12 @@ import sys
 import tempfile
 from typing import Any, Dict, List, Optional, Tuple
 
-VERSION_MOTEUR_CIBLE = "2.6.9"
+VERSION_MOTEUR_CIBLE = "2.6.10"
 DOSSIER_EXPORT = "export_moteur"
 PREFIXE_FICHIER = "matchs_moteur_"
 FICHIER_DIAGNOSTIC = "diagnostic_pont.json"
 
-# Périmètre de lecture du moteur (moteur_v2_6_9.py, PARTIE 2). Hors périmètre :
+# Périmètre de lecture du moteur (moteur_v2_6_10 (ossature héritée de v2.6.9), PARTIE 2). Hors périmètre :
 # ignoré ici et compté dans le diagnostic, plutôt que déversé dans « non_reconnues ».
 OU_X_MAX = 5              # over_X_5 / under_X_5, X = 0..5
 BUTS_EQUIPE_X_MAX = 1     # buts_dom_over_X_5 ..., X = 0..1
@@ -309,7 +309,7 @@ def autotest() -> int:
     print("Autotests pont_moteur -> moteur", VERSION_MOTEUR_CIBLE)
     ici = os.path.dirname(os.path.abspath(__file__))
     sys.path.insert(0, ici)
-    import moteur_v2_6_9 as moteur
+    import moteur_v2_6_10 as moteur
     from parse_betpawa import parse_betpawa
     from parse_betpawa_playwright import parse_betpawa_playwright
 

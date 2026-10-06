@@ -7,7 +7,7 @@ import random
 import pytest
 
 import branchement_moteur as bm
-import moteur_v2_6_9 as moteur
+import moteur_v2_6_10 as moteur
 import precalcul
 
 NOW = datetime.datetime(2026, 9, 21, 21, 0, tzinfo=datetime.timezone.utc)
