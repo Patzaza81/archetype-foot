@@ -3,13 +3,5 @@ Résultat : TOUS LES TESTS PASSENT
 == autotest pont ==
 Résultat : TOUS LES TESTS PASSENT
 == pytest : resume ==
-FAILED tests/test_integrite_du_depot.py::test_chaque_script_du_workflow_est_importable - AssertionError: ['collecte_football_data', 'construit_etat_systeme', 'enregistre_scores_historique', 'evaluation_scores', 'notifie_constat_majeur', 'pont_moteur', ...]
-1 failed, 1142 passed in 23.20s
+1144 passed in 20.26s
 == pytest : detail (fin) ==
-________________ test_chaque_script_du_workflow_est_importable _________________
-tests/test_integrite_du_depot.py:51: in test_chaque_script_du_workflow_est_importable
-E   AssertionError: ['collecte_football_data', 'construit_etat_systeme', 'enregistre_scores_historique', 'evaluation_scores', 'notifie_constat_majeur', 'pont_moteur', ...]
-E   assert {'construit_e...ecalcul', ...} <= {'collecte_fo..._moteur', ...}
-E     
-E     Extra items in the left set:
-E     'moteur_v2_6_9'
