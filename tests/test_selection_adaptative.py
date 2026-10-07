@@ -47,7 +47,7 @@ def candidate(mid, source, odds=1.5, p=0.72, rank=4, margin=0.08):
         "marche": "1X2 - 1",
         "cote": odds,
         "probabilite": p,
-        "marge_modele": p - 1 / odds,
+        "marge_modele": (p - 1 / odds) if p is not None else None,
         "marge_succes": margin,
         "rang_confiance": rank,
         "niveau_confiance": "PROUVE" if rank == 4 else "ETABLI",
