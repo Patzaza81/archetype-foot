@@ -702,9 +702,11 @@ def construit_journal(aujourdhui=None):
     matchs, diag = charge_matchs_betpawa()
     paris, inconnus, incoherentes = paris_depuis_matchs(matchs)
     segments = construit_segments(paris) if paris else {k: [] for k in DIMENSIONS}
-    conseils, pronostics = construit_conseils(segments, aujourdhui)
-    moteurs = construit_moteurs(ids_betpawa())
-    equipes = construit_equipes_a_suivre(charge_tous_resultats(), aujourdhui)
+    # Le Journal est volontairement indépendant des moteurs : ses publications
+    # reposent uniquement sur les matchs terminés, leurs cotes observées et les scores.
+    conseils = []
+    pronostics = {}
+    equipes = construit_equipes_a_suivre(charge_tous_resultats(), aujourdhui, prochains={})
     dates = sorted({m["date"] for m in matchs})
     compte = {dim: {st: sum(1 for s in lignes if s["statut"] == st) for st in ("A_JOUER", "A_SURVEILLER", "NEUTRE", "A_EVITER")}
               for dim, lignes in segments.items()}
@@ -726,8 +728,8 @@ def construit_journal(aujourdhui=None):
         "regles_equipes": {"min_matchs": MIN_MATCHS_EQUIPE, "seuil_frequence": SEUIL_FREQUENCE_EQUIPE,
                            "min_cotes_roi": MIN_COTES_ROI_EQUIPE},
         "pronostics": pronostics,
-        "moteurs": moteurs,
         "segments": segments,
+        "independance_moteurs": True,
     }
 
 
