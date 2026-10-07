@@ -9,7 +9,7 @@ function cote(x){return Number.isFinite(Number(x))&&x!==null?Number(x).toFixed(2
 /* ---------- Construction d'un ticket pour une cote totale choisie (2 à 20) ---------- */
 function tier(prod,target){
  for(var k=0;k<TOL.length;k++){
-  var lo=Math.max(MIN,target/(1+TOL[k])),hi=Math.min(MAX,target*(1+TOL[k]));
+  var lo=Math.max(MIN,target*(1-TOL[k])),hi=Math.min(MAX,target*(1+TOL[k]));
   if(prod>=lo-1e-9&&prod<=hi+1e-9)return k;
  }
  return -1;
