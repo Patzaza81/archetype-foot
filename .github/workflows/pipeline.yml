@@ -95,6 +95,14 @@ jobs:
         run: python enregistre_scores_historique.py --jours 10
         continue-on-error: true
 
+      - name: Produire les pronostics V3 en production parallèle
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+        run: python moteur_v3_pipeline.py
+
+      - name: Comparer V2.6.10 et V3 et publier le diagnostic
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+        run: python comparateur_moteurs.py
+
       - name: Récupérer les scores des matchs du jeu d'évaluation du moteur
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         run: python evaluation_scores.py
