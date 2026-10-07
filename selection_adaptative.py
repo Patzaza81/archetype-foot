@@ -450,12 +450,25 @@ def enrich(candidates: list[dict[str, Any]], history: dict[str, Any]) -> list[di
         c["niveau_confiance"] = tier
         c["rang_confiance"] = rank
 
-        # Classement déterministe : preuve empirique d'abord, puis marge réelle,
-        # puis avantage propre au modèle et enfin probabilité/EDV. Aucun coefficient
-        # arbitraire ne mélange ces grandeurs.
+        # Valeur estimée du choix, indépendante de l'historique : les moteurs font déjà
+        # le tri, l'historique n'est conservé qu'à titre d'information.
+        p_est = p
+        jm = c.get("journal_success_margin")
+        if p_est is None and c.get("source") == "journal" and q is not None and jm is not None:
+            p_est = min(0.99, max(0.01, q + jm))
+        c["probabilite_estimee"] = round(p_est, 6) if p_est is not None else None
+        c["ev_estime"] = round(p_est * odds - 1.0, 6) if p_est is not None and odds else None
+        rang_p = {"P1": 3, "P2": 2, "P3": 1}.get(norm(c.get("rang")), 0)
+        if rang_p == 0 and c.get("source") == "journal":
+            rang_p = 2 if c.get("niveau") == "A_JOUER" else 1
+        ev = c["ev_estime"]
+
+        # Classement déterministe : rang choisi par le moteur (P1 > P2 > P3), puis valeur
+        # estimée (probabilité × cote − 1), puis avantage propre au modèle, probabilité et EDV.
+        # Aucun coefficient arbitraire ne mélange ces grandeurs ; l'historique ne bloque rien.
         c["_ordre"] = (
-            rank,
-            c.get("marge_succes") if c.get("marge_succes") is not None else -999.0,
+            rang_p,
+            ev if ev is not None else -999.0,
             c.get("marge_modele") if c.get("marge_modele") is not None else -999.0,
             c.get("probabilite") if c.get("probabilite") is not None else -999.0,
             c.get("edv") if c.get("edv") is not None else -999.0,
@@ -512,9 +525,9 @@ def evolution(history: dict[str, Any]) -> dict[str, Any]:
         "marches": history.get("par_marche", {}),
         "avantage_par_marche": advantage_by_market(history),
         "criteres": {
-            "marge_succes": "borne basse Wilson 95 % du taux de réussite historique moins probabilité implicite 1/cote",
+            "marge_succes": "borne basse Wilson 95 % du taux de réussite historique moins probabilité implicite 1/cote (informatif, ne bloque plus la sélection)",
             "marge_modele": "probabilité du moteur moins probabilité implicite 1/cote",
-            "priorite": "preuve empirique > marge de succès > marge modèle > probabilité > EDV > taille d'échantillon",
+            "priorite": "rang du moteur (P1 > P2 > P3) > valeur estimée (probabilité × cote − 1) > avantage modèle > probabilité > EDV ; l'historique ne sert plus qu'à départager",
             "odds": [ODDS_MIN, ODDS_MAX],
         },
     }
@@ -535,7 +548,7 @@ def main() -> int:
     result = {
         "version": 1,
         "genere_le": dt.datetime.now(dt.timezone.utc).isoformat(),
-        "regle": "Les deux moteurs coexistent. Aucun moteur n'est éliminé. Le classement exploite leur avantage respectif et celui du Journal.",
+        "regle": "Les deux moteurs coexistent. Aucun moteur n'est éliminé. Le classement suit le tri des moteurs (P1/P2/P3) et la valeur estimée ; le Journal complète.",
         "sources": {
             source: {"disponibles": len([x for x in rows if x.get("source") == source]), "top": items}
             for source, items in sources.items()
