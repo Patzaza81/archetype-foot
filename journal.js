@@ -1,16 +1,9 @@
-/* journal.js — page Journal des marchés rentables (24/09/2026). Lit journal.json, produit chaque nuit par
-   journal_rentabilite.py (workflow .github/workflows/journal.yml). Affichage seul, aucun calcul métier ici.
-   Choix d'affichage (demande de Patrick) : seules les statistiques GAGNANTES sont montrées ; tout ce qui a un
-   ROI négatif est calculé par le script mais n'est pas affiché.
-   Migration v2.6.9 -> v2.6.10 (05/10/2026) : le moteur actif est moteur_v2_6_10 (sélections à venir) ; moteur_v2_6_9
-   reste affiché dans « Où les moteurs ont gagné » (résultats passés, jamais mélangés avec ceux du moteur actif). */
+/* Journal autonome : aucune décision de moteur n'est consommée ou publiée ici. */
 (function () {
   "use strict";
 
   var MIN_MATCHS_AFFICHAGE = 10;
   var FIABILITE = { A_JOUER: "Prouvé", A_SURVEILLER: "À surveiller", NEUTRE: "Non confirmé" };
-  var MOTEUR_ACTIF = "moteur_v2_6_10";
-  var NOMS_MOTEUR = { moteur_v2_6_10: "Moteur principal (v2.6.10)", moteur_v2_6_9: "Ancien moteur (v2.6.9)" };
   var RANG_LIB = { P1: "Favori du Modèle", P2: "Value Bet", P3: "Coup de Poker" };
   var ORDRE = { A_JOUER: 0, A_SURVEILLER: 1, NEUTRE: 2 };
 
@@ -206,72 +199,6 @@
     }).join("");
   }
 
-  function afficherSelectionsMoteurs(j) {
-    var zone = document.getElementById("selections-moteurs");
-    var pr = j.pronostics || {};
-    var html = "";
-    Object.keys(NOMS_MOTEUR).forEach(function (m) {
-      var sel = ((pr[m] || {}).selections || []).filter(function (x) {
-        return x.cotes_betpawa && (x.statut_journal === "A_JOUER" || x.statut_journal === "A_SURVEILLER") && x.preuve && x.preuve.roi > 0;
-      });
-      html += sel.length ? sel.map(function (x) {
-        return '<section class="ax-carte jr-selection" data-moteur="' + m + '">' + enteteMatch(x, x.ligue + " · " + NOMS_MOTEUR[m], x.statut_journal) +
-          '<div class="jr-conseil-corps"><div class="jr-marche"><span>' + esc(RANG_LIB[x.rang] || x.rang) + " · " + esc(lisible(x.marche)) +
-          '</span><span class="jr-cote">' + cote(x.cote) + "</span></div>" +
-          (x.justification ? '<div class="jr-preuve"><b>Raison du moteur :</b> ' + esc(x.justification) + "</div>" : "") +
-          '<div class="jr-preuve">' + preuveTexte(x.preuve) + "</div>" + lienBetpawa(x) + "</div></section>";
-      }).join("") : '<div class="ax-etat-vide jr-selection" data-moteur="' + m + '"><strong>Aucune sélection dans une zone rentable</strong><p>' +
-        esc(NOMS_MOTEUR[m]) + " n'a retenu aucun marché à venir dans un championnat et un marché rentables.</p></div>";
-    });
-    zone.innerHTML = html;
-    function filtre(m) {
-      zone.querySelectorAll(".jr-selection").forEach(function (el) { el.style.display = el.getAttribute("data-moteur") === m ? "" : "none"; });
-    }
-    document.querySelectorAll("#filtres-moteurs button").forEach(function (b) {
-      b.addEventListener("click", function () {
-        document.querySelectorAll("#filtres-moteurs button").forEach(function (x) { x.classList.remove("actif"); });
-        b.classList.add("actif");
-        filtre(b.getAttribute("data-f"));
-      });
-    });
-    filtre(MOTEUR_ACTIF);
-  }
-
-  /* Résultats des moteurs : seulement les championnats / familles où ils ont gagné (ROI > 0, au moins 5 paris). */
-  function afficherComparaisonMoteurs(d) {
-    var c = d.comparaison || {}, v2 = d.v2 || {}, v3 = d.v3 || {}, cal = d.calibration_v3 || {};
-    var accord = c.taux_accord_sur_matchs_communs == null ? "—" : (c.taux_accord_sur_matchs_communs * 100).toFixed(1).replace(".", ",") + " %";
-    var prete = cal.prete ? "Calibration V3 prête" : "Calibration V3 en attente";
-    document.getElementById("comparaison-moteurs").innerHTML =
-      '<div class="jr-chiffres">' +
-      '<div class="jr-chiffre"><span>Choix V2.6.10</span><b>' + (v2.choix || 0) + '</b></div>' +
-      '<div class="jr-chiffre"><span>Choix V3</span><b>' + (v3.choix || 0) + '</b></div>' +
-      '<div class="jr-chiffre"><span>Accord sur matchs communs</span><b>' + accord + '</b></div>' +
-      '<div class="jr-chiffre"><span>Matchs divergents</span><b>' + (c.divergence_marche || 0) + '</b></div>' +
-      '</div>' +
-      '<p class="jr-aide"><b>Statut :</b> production parallèle · ' + esc(prete) +
-      '. V2.6.10 reste le moteur actif ; la V3 est évaluée en parallèle et aucune promotion n’est automatique.</p>' +
-      '<details class="jr-fiche"><summary><span class="jr-fiche-nom">Répartition des marchés</span><span class="jr-fiche-info">V2.6.10 / V3</span></summary>' +
-      '<div class="jr-lignes"><p><b>V2.6.10 :</b> ' + esc(Object.keys(v2.marches || {}).slice(0, 8).join(" · ") || "aucun choix") + '</p>' +
-      '<p><b>V3 :</b> ' + esc(Object.keys(v3.marches || {}).slice(0, 8).join(" · ") || "aucun choix") + '</p></div></details>';
-  }
-
-  function afficherMoteurs(j) {
-    var m = j.moteurs || {};
-    var html = "";
-    Object.keys(NOMS_MOTEUR).forEach(function (k) {
-      var e = m[k] || {};
-      var lignes = [].concat(e.ligues || [], e.familles || []).filter(function (s) { return s.roi > 0 && s.paris >= 5; })
-        .sort(function (a, b) { return b.roi - a.roi; });
-      if (!lignes.length) return;
-      html += '<h3 class="jr-sous-titre">' + esc(NOMS_MOTEUR[k]) + "</h3>" + tableau(lignes, "Championnat ou famille", function (x) { return x; });
-    });
-    if (html) {
-      document.getElementById("moteurs").innerHTML = html;
-      document.getElementById("bloc-moteurs").hidden = false;
-    }
-  }
-
   function afficherRegles(j) {
     var d = j.donnees || {};
     var inc = d.cotes_incoherentes_retirees || {};
@@ -331,8 +258,6 @@
     afficherRentables(j, rentables);
     afficherEquipes(j);
     afficherConseils(j);
-    afficherSelectionsMoteurs(j);
-    afficherMoteurs(j);
     afficherRegles(j);
   }
 
@@ -382,11 +307,6 @@
       document.getElementById("observatoire-resume").innerHTML =
         '<p class="jr-aide">Observatoire en attente de sa première génération nocturne.</p>';
     });
-
-  fetch("data/comparaison_moteurs.json?t=" + Date.now(), { cache: "no-store" })
-    .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-    .then(afficherComparaisonMoteurs)
-    .catch(function () { /* le comparatif sera créé au prochain run */ });
 
   fetch("journal.json?t=" + Date.now(), { cache: "no-store" })
     .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
