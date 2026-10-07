@@ -4,7 +4,7 @@
 moteur_v3_pipeline.py -- BRANCHEMENT DU MOTEUR V3 EN PARALLÈLE (décision de Patrick du 27/09/2026 : « branche-moi la V3,
 je lance le run manuellement »).
 
-Statut : EXPÉRIMENTAL, NON VALIDÉ. La V3 tourne À CÔTÉ de moteur_v2_6_9 : elle ne remplace rien sur le site, ne modifie
+Statut : PRODUCTION PARALLÈLE. La V3 tourne à côté du moteur actif v2.6.10 : elle ne remplace pas automatiquement la décision principale, ne modifie
 ni precalcul.py, ni calculs.py, ni scraper_details.py, ni les pronostics publiés. Sa validation reste celle fixée le
 27/09 : 100 matchs NOUVEAUX avec score dans l'archive de test, jugés par banc_historique.py.
 
@@ -53,7 +53,7 @@ from moteur_v3.value import ODDS_MAX, ODDS_MIN, edv_threshold
 
 DOSSIER_ARCHIVE = os.path.join("data", "archive_test")
 FICHIER_SORTIE = os.path.join("data", "v3", "pronostics_v3.json")
-STATUT = "EXPÉRIMENTAL — NON VALIDÉ"
+STATUT = "PRODUCTION PARALLÈLE — CANDIDAT"
 # AJOUT 28/09/2026 (question de Patrick : « tout est-il archivé pour un contrôle sans ambiguïté ? ») -- JOURNAL V3.
 # pronostics_v3.json est réécrit à chaque run et un match en disparaît au coup d'envoi : ce qui était affiché avant le
 # match n'était retrouvable que dans l'historique git. Le journal garde, pour chaque match, le DERNIER calcul V3 fait
