@@ -721,11 +721,9 @@ def construit_journal(aujourdhui=None):
                    "avertissement": "Beaucoup de segments sont testés : quelques-uns sortent « à surveiller » par pur hasard. "
                                     "Seul « à jouer » repose sur une preuve statistique, et il est recalculé chaque nuit."},
         "comptage_statuts": compte,
-        "conseils": conseils,
         "equipes_a_suivre": equipes,
         "regles_equipes": {"min_matchs": MIN_MATCHS_EQUIPE, "seuil_frequence": SEUIL_FREQUENCE_EQUIPE,
                            "min_cotes_roi": MIN_COTES_ROI_EQUIPE},
-        "pronostics": pronostics,
         "segments": segments,
         "independance_moteurs": True,
     }
