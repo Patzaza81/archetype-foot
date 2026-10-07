@@ -248,7 +248,6 @@ def build(data: dict[str, Any]) -> dict[str, Any]:
     chosen8 = greedy(rows, 8, "normal")
     scenarios.append(ticket(chosen8 if len(chosen8) == 8 else [], "EQUILIBRE_8"))
 
-    chosen10 = beam_target(rows, 0 if False else 5, 10.0)
     # La cible de cote est une contrainte ; le nombre de matchs reste adaptatif, de 2 à 12.
     best_target = chosen10
     best_dist = float("inf")
