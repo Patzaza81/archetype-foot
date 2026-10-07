@@ -170,19 +170,53 @@ def plan_sizes(size: int, tickets: int) -> list[int]:
     return [base + 1 if i < extra else base for i in range(tickets)]
 
 
-def plan_partition(odds: list[float], tickets: int) -> list[list[int]]:
-    """Répartit les paris en `tickets` tickets disjoints aux cotes aussi proches que possible.
+STRATEGIES = ("COTES_EQUILIBREES", "SECURITE_EQUILIBREE", "SECURITE_GROUPEE", "LIGUES_SEPAREES")
 
-    Glouton « plus gros d'abord » sur le logarithme des cotes, avec capacité par ticket.
-    Déterministe : égalités départagées par l'indice."""
-    caps = plan_sizes(len(odds), tickets)
-    groups: list[list[int]] = [[] for _ in range(tickets)]
-    sums = [0.0] * tickets
-    for i in sorted(range(len(odds)), key=lambda i: (-math.log(odds[i]), i)):
-        j = min((j for j in range(tickets) if len(groups[j]) < caps[j]), key=lambda j: (sums[j], j))
+
+def _glouton(order: list[int], caps: list[int], poids: list[float], cout=None) -> list[list[int]]:
+    """Affecte chaque pari (dans l'ordre donné) au ticket non plein de plus petit coût.
+    Coût par défaut : somme des poids déjà dans le ticket. Égalités : plus petit indice de ticket."""
+    t = len(caps)
+    groups: list[list[int]] = [[] for _ in range(t)]
+    sums = [0.0] * t
+    for i in order:
+        libres = [j for j in range(t) if len(groups[j]) < caps[j]]
+        j = min(libres, key=(lambda j: (sums[j], j)) if cout is None else (lambda j: cout(groups, sums, j, i)))
         groups[j].append(i)
-        sums[j] += math.log(odds[i])
+        sums[j] += poids[i]
     return [sorted(g) for g in groups]
+
+
+def plan_partition(odds: list[float], tickets: int, probs: list[float] | None = None,
+                   comps: list[str] | None = None, strategie: str = "COTES_EQUILIBREES") -> list[list[int]]:
+    """Répartit les paris en `tickets` tickets disjoints selon une stratégie. Déterministe.
+
+    - COTES_EQUILIBREES : cotes de tickets aussi proches que possible (maximise le retour garanti) ;
+    - SECURITE_EQUILIBREE : probabilités de tickets aussi proches que possible ;
+    - SECURITE_GROUPEE : les paris les plus sûrs ensemble, les plus risqués ensemble ;
+    - LIGUES_SEPAREES : matchs d'une même compétition répartis dans des tickets différents."""
+    n_ = len(odds)
+    caps = plan_sizes(n_, tickets)
+    lo = [math.log(o) for o in odds]
+    if strategie == "COTES_EQUILIBREES" or probs is None:
+        return _glouton(sorted(range(n_), key=lambda i: (-lo[i], i)), caps, lo)
+    risque = [-math.log(p) for p in probs]
+    if strategie == "SECURITE_EQUILIBREE":
+        return _glouton(sorted(range(n_), key=lambda i: (-risque[i], i)), caps, risque)
+    if strategie == "SECURITE_GROUPEE":
+        ordre = sorted(range(n_), key=lambda i: (risque[i], i))
+        groups, k = [], 0
+        for c in caps:
+            groups.append(sorted(ordre[k:k + c]))
+            k += c
+        return groups
+    if strategie == "LIGUES_SEPAREES":
+        cs = comps or [""] * n_
+
+        def cout(groups, sums, j, i):
+            return (sum(1 for x in groups[j] if cs[x] == cs[i]), sums[j], j)
+        return _glouton(sorted(range(n_), key=lambda i: (-lo[i], i)), caps, lo, cout)
+    raise ValueError(f"stratégie inconnue : {strategie}")
 
 
 def plan_name(sizes: list[int], size: int) -> str:
@@ -196,15 +230,9 @@ def plan_name(sizes: list[int], size: int) -> str:
     return f"TICKETS_{t}_DE_{min(sizes)}_A_{max(sizes)}"
 
 
-def analyse_plan(probs: list[float], odds: list[float], tickets: int) -> dict[str, Any]:
-    """Un plan = les n paris répartis en `tickets` tickets disjoints.
-
-    Mise répartie au prorata de 1/cote du ticket : n'importe quel ticket gagnant rapporte alors
-    R = 1 / Σ(1/cote_ticket) par unité misée, et W tickets gagnants rapportent R·W.
-    Gagnants requis = plus petit W avec R·W ≥ 1. Une erreur fait perdre au plus un ticket,
-    donc `erreurs_garanties` = tickets − gagnants requis est garanti quelle que soit leur place."""
-    size = len(probs)
-    groups = plan_partition(odds, tickets)
+def evalue_repartition(groups: list[list[int]], probs: list[float], odds: list[float]) -> dict[str, Any]:
+    """Chiffres d'une répartition donnée : cotes et probabilités de tickets, retour garanti, erreurs garanties."""
+    tickets = len(groups)
     t_odds, t_probs = [], []
     for g in groups:
         o = 1.0
@@ -220,9 +248,6 @@ def analyse_plan(probs: list[float], odds: list[float], tickets: int) -> dict[st
     dist = poisson_binomial(t_probs)
     feasible = need <= tickets
     return {
-        "nom": plan_name([len(g) for g in groups], size),
-        "tickets": tickets,
-        "tailles": [len(g) for g in groups],
         "composition": [
             {"paris": g, "cote": round(t_odds[j], 4), "probabilite": round(t_probs[j], 6),
              "mise": round((1.0 / t_odds[j]) / inv, 4)}
@@ -233,6 +258,51 @@ def analyse_plan(probs: list[float], odds: list[float], tickets: int) -> dict[st
         "erreurs_garanties": tickets - need if feasible else None,
         "proba_profit": round(sum(dist[need:]), 4) if feasible else 0.0,
         "esperance_gain": round(ret * sum(t_probs) - 1.0, 4),
+    }
+
+
+def analyse_plan(probs: list[float], odds: list[float], tickets: int, comps: list[str] | None = None) -> dict[str, Any]:
+    """Un plan = les n paris répartis en `tickets` tickets disjoints.
+
+    Mise répartie au prorata de 1/cote du ticket : n'importe quel ticket gagnant rapporte alors
+    R = 1 / Σ(1/cote_ticket) par unité misée, et W tickets gagnants rapportent R·W.
+    Gagnants requis = plus petit W avec R·W ≥ 1. Une erreur fait perdre au plus un ticket,
+    donc `erreurs_garanties` = tickets − gagnants requis est garanti quelle que soit leur place.
+
+    Plusieurs répartitions (STRATEGIES) sont évaluées ; la meilleure est retenue : plus d'erreurs garanties,
+    puis plus de chances d'être rentable, puis plus de gain espéré. À égalité, la première stratégie
+    (cotes équilibrées) l'emporte. Les répartitions identiques ne sont comptées qu'une fois."""
+    size = len(probs)
+    vues: dict[tuple, str] = {}
+    candidats: list[tuple[str, dict[str, Any]]] = []
+    for strat in STRATEGIES:
+        groups = plan_partition(odds, tickets, probs, comps, strat)
+        cle = tuple(tuple(g) for g in groups)
+        if cle in vues:
+            continue
+        vues[cle] = strat
+        candidats.append((strat, evalue_repartition(groups, probs, odds)))
+
+    def cle_tri(c: tuple[str, dict[str, Any]]) -> tuple:
+        e = c[1]["erreurs_garanties"]
+        return (e if e is not None else -1, c[1]["proba_profit"], c[1]["esperance_gain"])
+    choisie = candidats[0]
+    for c in candidats[1:]:
+        if cle_tri(c) > cle_tri(choisie):
+            choisie = c
+    strat, ev = choisie
+    sizes = [len(t["paris"]) for t in ev["composition"]]
+    return {
+        "nom": plan_name(sizes, size),
+        "tickets": tickets,
+        "tailles": sizes,
+        "strategie": strat,
+        "variantes": [
+            {"strategie": s, "choisie": s == strat, "erreurs_garanties": e["erreurs_garanties"],
+             "proba_profit": e["proba_profit"], "esperance_gain": e["esperance_gain"]}
+            for s, e in candidats
+        ],
+        **ev,
     }
 
 
@@ -249,7 +319,8 @@ def analyse_ticket(rows: list[dict[str, Any]]) -> dict[str, Any] | None:
         return None
     dist = poisson_binomial(probs)
     counts = sorted({1, size} | set(range(2, size // 2 + 1)))
-    plans = [analyse_plan(probs, odds, t) for t in counts]
+    comps = [str(x.get("competition") or "") for x in rows]
+    plans = [analyse_plan(probs, odds, t, comps) for t in counts]
     best = max(plans, key=lambda p: p["esperance_gain"])
     positifs = [p for p in plans if p["esperance_gain"] > 0 and p["gagnants_requis"] is not None]
     regulier = max(positifs, key=lambda p: (p["proba_profit"], p["esperance_gain"])) if positifs else None
