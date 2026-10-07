@@ -258,7 +258,7 @@ def build(data: dict[str, Any]) -> dict[str, Any]:
     scenarios.append(ticket(chosen8 if len(chosen8) == 8 else [], "EQUILIBRE_8"))
 
     # La cible de cote est une contrainte ; le nombre de matchs reste adaptatif, de 2 à 12.
-    best_target = chosen10
+    best_target = []
     best_dist = float("inf")
     for size in range(2, MAX_MATCHES + 1):
         cand = beam_target(rows, size, 10.0)
