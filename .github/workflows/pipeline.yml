@@ -49,7 +49,7 @@ jobs:
         run: |
           python -m moteur_v2_6_10 --autotest
           python pont_moteur.py --autotest
-          python -m pytest tests -q --ignore=tests/test_moteur_v3.py --ignore=tests/test_moteur_v3_integration.py --ignore=tests/test_moteur_v3_pipeline.py
+          python -m pytest tests -q
 
       - name: Collecter et normaliser Football-Data
         run: python collecte_football_data.py
@@ -143,7 +143,12 @@ jobs:
             git commit --amend --no-edit
           fi
 
-          git pull --rebase --autostash origin main
+          # Un autre run peut avoir publié pendant le traitement (notamment un run
+          # de pipeline plus ancien). Les artefacts du run courant sont la version
+          # voulue pour les fichiers qu'il vient de générer : résolution automatique
+          # des conflits avec la version locale du commit rebased.
+          git fetch origin main
+          git pull --rebase -X theirs --autostash origin main
           git push origin HEAD:main
 
       - name: Notifier les constats majeurs (Issue GitHub, s'il y en a)
