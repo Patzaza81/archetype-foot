@@ -26,11 +26,10 @@ main{max-width:760px}.nav-bouton,.bouton{display:inline-block;background:linear-
 <section class="intro">
 <h2>Votre cote totale</h2>
 <p>Choisissez la cote totale visée, entre 2 et 20 : le ticket n’en sort jamais. Il est construit avec les choix des moteurs (P1/P2/P3) et le Journal, un seul pari par match, de 2 à 12 matchs.</p>
-<div class="cible"><input id="cible" type="text" inputmode="decimal" value="10" aria-label="Cote totale visée, entre 2 et 20" autocomplete="off"><button class="bouton" id="cible-ok" type="button" onclick="document.getElementById('cible-form').requestSubmit()">Générer</button></div>
+<form id="cible-form" class="cible"><input id="cible" type="text" inputmode="decimal" value="10" aria-label="Cote totale visée, entre 2 et 20" autocomplete="off"><button class="bouton" type="submit">Générer</button></form>
 <div class="rapides"><button type="button" data-cible="2">2</button><button type="button" data-cible="3">3</button><button type="button" data-cible="5">5</button><button type="button" data-cible="10">10</button><button type="button" data-cible="15">15</button><button type="button" data-cible="20">20</button></div>
 <div id="cible-msg" class="note"></div>
 <div id="ticket-cible"></div>
-<form id="cible-form" hidden></form>
 </section>
 <section class="intro">
 <h2>Comment les paris sont choisis</h2>
