@@ -94,5 +94,6 @@ jobs:
           [ -d data/assemblage ] && git add data/assemblage
           [ -d data/controles ] && git add data/controles
           git diff --staged --quiet || git commit -m "Journal de rentabilité"
-          git pull --rebase origin main
+          git fetch origin main
+          git pull --rebase -X theirs origin main
           git push
