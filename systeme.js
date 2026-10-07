@@ -97,6 +97,51 @@ function construitBlocIntelligenceSelection(d) {
   return div;
 }
 
+function construitBlocSuiviTickets(d) {
+  const b = d.bilan || {}, c = b.comptes || {}, sc = b.par_scenario || {}, src = b.par_source || {};
+  const pc = function(x) { return x == null ? "—" : formatPctSysteme(x); };
+  const lignesPlans = [];
+  Object.keys(sc).forEach(function(nom) {
+    const plans = sc[nom].plans || {};
+    Object.keys(plans).forEach(function(pn) {
+      const p = plans[pn];
+      lignesPlans.push("<tr><td>" + echappeHtmlSysteme(nom) + "</td><td>" + echappeHtmlSysteme(pn) + "</td><td>" + p.tickets_regles +
+        "</td><td>" + pc(p.proba_profit_prevue) + "</td><td>" + pc(p.taux_rentable_observe) + "</td><td>" + pc(p.esperance_prevue) + "</td><td>" + pc(p.roi_observe) + "</td></tr>");
+    });
+  });
+  const lignesScen = Object.keys(sc).map(function(nom) {
+    const x = sc[nom];
+    const err = Object.keys(x.erreurs || {}).map(function(k) { return k + " err. : " + x.erreurs[k]; }).join(" · ");
+    return "<tr><td>" + echappeHtmlSysteme(nom) + "</td><td>" + x.tickets_regles + "</td><td>" + String(x.justes_attendus).replace(".", ",") +
+      " / " + x.paris + "</td><td>" + x.justes_observes + " / " + x.paris + "</td><td>" + echappeHtmlSysteme(err) + "</td></tr>";
+  }).join("");
+  const lignesSrc = Object.keys(src).map(function(k) {
+    return "<tr><td>" + echappeHtmlSysteme(k) + "</td><td>" + src[k].paris + "</td><td>" + pc(src[k].proba_moyenne_estimee) + "</td><td>" + pc(src[k].taux_reussite) + "</td></tr>";
+  }).join("");
+  const recents = (d.recents || []).slice(0, 12).map(function(e) {
+    const r = e.resultat || {};
+    const res = e.statut === "RESOLVED" ? (r.paris_justes + " justes, " + r.erreurs + " erreur(s)") : (e.statut === "EXCLU" ? "exclu" : "en attente");
+    return "<tr><td>" + echappeHtmlSysteme(e.date) + "</td><td>" + echappeHtmlSysteme(e.scenario) + "</td><td>" + e.paris + "</td><td>" + echappeHtmlSysteme(res) + "</td></tr>";
+  }).join("");
+  const table = function(tete, lignes) { return lignes ? "<div style=\"overflow-x:auto;margin-top:10px\"><table class=\"tableau-systeme\"><thead><tr>" + tete.map(function(t) { return "<th>" + t + "</th>"; }).join("") + "</tr></thead><tbody>" + lignes + "</tbody></table></div>" : ""; };
+  const div = document.createElement("section");
+  div.className = "bloc-systeme";
+  div.innerHTML = "<h2>Suivi des tickets générés</h2>" +
+    "<p style=\"margin:0 0 9px;font-size:12.5px;color:var(--text-secondary)\">Chaque ticket généré est enregistré puis réglé avec les scores réels. On compare ce que le moteur prévoyait (paris justes, chance d'être rentable) à ce qui s'est passé. Les tickets à cote choisie dans le navigateur ne sont pas suivis.</p>" +
+    "<div class=\"grille-stats\">" +
+      "<div class=\"stat\"><span class=\"etiquette\">Enregistrés</span><strong>" + (c.total ?? 0) + "</strong></div>" +
+      "<div class=\"stat\"><span class=\"etiquette\">Réglés</span><strong>" + (c.regles ?? 0) + "</strong></div>" +
+      "<div class=\"stat\"><span class=\"etiquette\">En attente</span><strong>" + (c.en_attente ?? 0) + "</strong></div>" +
+      "<div class=\"stat\"><span class=\"etiquette\">Exclus</span><strong>" + (c.exclus ?? 0) + "</strong></div>" +
+    "</div>" +
+    table(["Scénario", "Réglés", "Justes prévus", "Justes observés", "Erreurs"], lignesScen) +
+    table(["Scénario", "Plan", "Réglés", "Rentable prévu", "Rentable observé", "Gain prévu", "ROI observé"], lignesPlans) +
+    table(["Source", "Paris", "Proba estimée", "Réussite"], lignesSrc) +
+    table(["Date", "Scénario", "Paris", "Résultat"], recents) +
+    "<p style=\"margin:9px 0 0;font-size:11.5px;color:var(--text-secondary)\">" + echappeHtmlSysteme(b.avertissement || "") + " « Rentable » = mise au moins remboursée.</p>";
+  return div;
+}
+
 function afficheEtatSysteme(etat) {
   const racine = document.getElementById("contenu-systeme");
   const maj = document.getElementById("maj-systeme");
@@ -107,6 +152,7 @@ function afficheEtatSysteme(etat) {
   racine.appendChild(construitTableauFamilles(etat.bilan_comportemental));
   if (etat.comparaison_moteurs && Object.keys(etat.comparaison_moteurs).length) racine.appendChild(construitBlocComparaisonMoteurs(etat.comparaison_moteurs));
   if (etat.selection_intelligence && Object.keys(etat.selection_intelligence).length) racine.appendChild(construitBlocIntelligenceSelection(etat.selection_intelligence));
+  if (etat.suivi_tickets && etat.suivi_tickets.bilan && Object.keys(etat.suivi_tickets.bilan).length) racine.appendChild(construitBlocSuiviTickets(etat.suivi_tickets));
   if (window.__controleSaisons) racine.insertBefore(construitBlocControleSaisons(window.__controleSaisons), racine.firstChild);
   if (window.__controleFootballData) racine.insertBefore(construitBlocControleFootballData(window.__controleFootballData), racine.firstChild);
 }
