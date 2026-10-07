@@ -18,6 +18,6 @@ function render(data){
 }
 fetch("data/tickets.json?_="+Date.now(),{cache:"no-store"}).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}).then(function(d){
  document.getElementById("maj").textContent=d.genere_le?"Dernière génération : "+new Date(d.genere_le).toLocaleString("fr-FR"):"";
- render(d);
+ var src=d.sources||{};var note=document.createElement("p");note.className="note";note.textContent="Pool actuel : V2.6.10 "+(src.moteur_v2_6_10||0)+" · V3 "+(src.moteur_v3||0)+" · Journal "+(src.journal||0)+" (maximum 10 par source).";document.getElementById("tickets").prepend(note);\n render(d);
 }).catch(function(e){document.getElementById("maj").textContent="Erreur de chargement : "+e.message;render({scenarios:[]});});
 })();
