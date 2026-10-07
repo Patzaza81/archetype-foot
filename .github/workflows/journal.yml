@@ -25,7 +25,6 @@ permissions:
 # Même groupe que le pipeline : jamais deux commits simultanés sur main.
 concurrency:
   group: pipeline-archetype-foot
-  queue: max
   cancel-in-progress: false
 
 jobs:
@@ -81,11 +80,20 @@ jobs:
         run: python controle_football_data.py
         continue-on-error: true
 
+      - name: Construire l intelligence de sélection multi-source
+        run: python selection_adaptative.py
+
+      - name: Générer les scénarios de tickets
+        run: python generateur_tickets.py
+
+      - name: Consolider l état système
+        run: python construit_etat_systeme.py
+
       - name: Publier journal.json et controle_saisons.json
         run: |
           git config user.name "archetype-foot-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add journal.json data/journal_intelligence.json data/journal_memoire.json data/journal_validation.json
+          git add journal.json data/journal_intelligence.json data/journal_memoire.json data/journal_validation.json data/selection_intelligence.json data/tickets.json etat_systeme.json
           [ -f controle_saisons.json ] && git add controle_saisons.json
           [ -d data/correspondances ] && git add data/correspondances
           [ -d data/assemblage ] && git add data/assemblage
