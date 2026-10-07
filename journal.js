@@ -67,7 +67,7 @@
       '<div class="jr-chiffre"><span>Marchés rentables</span><b class="pos">' + rentables.length + "</b></div>" +
       '<div class="jr-chiffre"><span>Prouvés ou à surveiller</span><b class="pos">' + nbFiables + "</b></div>" +
       '</div><p class="jr-aide" style="margin:10px 0 0">' + Object.keys(ligues).length + " championnat(s) avec au moins un marché rentable · période " + esc(p) + ".</p>" +
-      '<p class="jr-source"><b>D\'où viennent ces chiffres ?</b> D\'aucun moteur de prédiction. Chaque nuit, le script du journal prend les cotes BetPawa relevées avant chaque match terminé et les compare au score final : c\'est une comptabilité de résultats réels. Seule la rubrique « Moteurs » montre les choix des deux moteurs, classés avec ces mêmes résultats.</p>';
+      '<p class="jr-source"><b>D\'où viennent ces chiffres ?</b> D\'aucun moteur de prédiction. Chaque nuit, le script du journal prend les cotes BetPawa relevées avant chaque match terminé et les compare au score final : c\'est une comptabilité de résultats réels. Aucune rubrique moteur n’est publiée ici.</p>';
   }
 
   /* ─────────── Scrutage : marchés rentables par championnat ─────────── */
