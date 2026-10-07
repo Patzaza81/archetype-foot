@@ -238,6 +238,24 @@
   }
 
   /* Résultats des moteurs : seulement les championnats / familles où ils ont gagné (ROI > 0, au moins 5 paris). */
+  function afficherComparaisonMoteurs(d) {
+    var c = d.comparaison || {}, v2 = d.v2 || {}, v3 = d.v3 || {}, cal = d.calibration_v3 || {};
+    var accord = c.taux_accord_sur_matchs_communs == null ? "—" : (c.taux_accord_sur_matchs_communs * 100).toFixed(1).replace(".", ",") + " %";
+    var prete = cal.prete ? "Calibration V3 prête" : "Calibration V3 en attente";
+    document.getElementById("comparaison-moteurs").innerHTML =
+      '<div class="jr-chiffres">' +
+      '<div class="jr-chiffre"><span>Choix V2.6.10</span><b>' + (v2.choix || 0) + '</b></div>' +
+      '<div class="jr-chiffre"><span>Choix V3</span><b>' + (v3.choix || 0) + '</b></div>' +
+      '<div class="jr-chiffre"><span>Accord sur matchs communs</span><b>' + accord + '</b></div>' +
+      '<div class="jr-chiffre"><span>Matchs divergents</span><b>' + (c.divergence_marche || 0) + '</b></div>' +
+      '</div>' +
+      '<p class="jr-aide"><b>Statut :</b> production parallèle · ' + esc(prete) +
+      '. V2.6.10 reste le moteur actif ; la V3 est évaluée en parallèle et aucune promotion n’est automatique.</p>' +
+      '<details class="jr-fiche"><summary><span class="jr-fiche-nom">Répartition des marchés</span><span class="jr-fiche-info">V2.6.10 / V3</span></summary>' +
+      '<div class="jr-lignes"><p><b>V2.6.10 :</b> ' + esc(Object.keys(v2.marches || {}).slice(0, 8).join(" · ") || "aucun choix") + '</p>' +
+      '<p><b>V3 :</b> ' + esc(Object.keys(v3.marches || {}).slice(0, 8).join(" · ") || "aucun choix") + '</p></div></details>';
+  }
+
   function afficherMoteurs(j) {
     var m = j.moteurs || {};
     var html = "";
@@ -364,6 +382,11 @@
       document.getElementById("observatoire-resume").innerHTML =
         '<p class="jr-aide">Observatoire en attente de sa première génération nocturne.</p>';
     });
+
+  fetch("data/comparaison_moteurs.json?t=" + Date.now(), { cache: "no-store" })
+    .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+    .then(afficherComparaisonMoteurs)
+    .catch(function () { /* le comparatif sera créé au prochain run */ });
 
   fetch("journal.json?t=" + Date.now(), { cache: "no-store" })
     .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
