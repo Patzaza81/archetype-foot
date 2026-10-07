@@ -17,6 +17,7 @@ main{max-width:760px}.nav-bouton,.bouton{display:inline-block;background:linear-
 .cible{display:flex;gap:8px;align-items:center;margin:8px 0}.cible input{width:92px;font-size:18px;font-weight:700;text-align:center;padding:8px;border:1px solid var(--border);border-radius:9px;background:#fff;color:var(--text)}
 .rapides{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}.rapides button{background:var(--surface2);border:1px solid var(--border);border-radius:999px;padding:5px 11px;font-size:12px;color:var(--text);cursor:pointer}
 #cible-msg{min-height:16px;margin:6px 0}#ticket-cible .ticket{margin:8px 0 0}
+.analyse{border-top:1px solid var(--border);margin-top:10px;padding-top:8px}.analyse h3{margin:0 0 4px;font-size:14px}.fmt{padding:6px 0;border-bottom:1px solid var(--border)}.fmt:last-of-type{border-bottom:0}.fmt strong{font-size:12.5px}.fmt small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
 </style>
 </head>
 <body>
@@ -33,12 +34,13 @@ main{max-width:760px}.nav-bouton,.bouton{display:inline-block;background:linear-
 </section>
 <section class="intro">
 <h2>Comment les paris sont choisis</h2>
-<p>Les deux moteurs restent actifs et font le tri. Un choix est retenu quand sa probabilité estimée dépasse la probabilité implicite de la cote ; aucun historique minimal n’est exigé. À cote totale égale, la combinaison la plus probable est préférée. Aucun pari n’est ajouté pour remplir un quota.</p>
+<p>Les deux moteurs restent actifs et font le tri. Un choix est retenu quand sa probabilité estimée dépasse la probabilité implicite de la cote ; aucun historique minimal n’est exigé. À cote totale égale, la combinaison la plus probable est préférée. Aucun pari n’est ajouté pour remplir un quota. Chaque ticket indique sa marge d’erreur (combien de paris peuvent être faux) et sa rentabilité pour chaque plan de tickets séparés (ex. 12 paris en 4 tickets de 3 : avec 3 erreurs, il reste un ticket gagnant, rentable ou non selon les cotes).</p>
 <p id="pool-note" class="note"></p>
 </section>
 <div id="tickets"></div>
 </main>
 <script src="theme.js"></script>
-<script src="tickets.js?v=20261007b"></script>
+<script src="tickets_analyse.js?v=20261007d"></script>
+<script src="tickets.js?v=20261007d"></script>
 </body>
 </html>

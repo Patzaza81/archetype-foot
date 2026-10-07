@@ -15,6 +15,9 @@ FICHIER_ETAT = "etat_systeme.json"
 FICHIER_BILAN = "bilan_archetype_model.json"
 FICHIER_COMPARAISON = "data/comparaison_moteurs.json"
 FICHIER_SELECTION = "data/selection_intelligence.json"
+FICHIER_TICKETS_BILAN = "data/tickets_bilan.json"
+FICHIER_TICKETS_HISTORIQUE = "data/tickets_historique.json"
+TICKETS_RECENTS = 20
 
 
 def _charge_json_ou_vide(chemin: str) -> Any:
@@ -25,16 +28,43 @@ def _charge_json_ou_vide(chemin: str) -> Any:
         return json.load(f)
 
 
+def construit_suivi_tickets() -> dict[str, Any]:
+    """Bilan statistique des tickets + les derniers tickets (l'historique complet reste dans son fichier)."""
+    historique = _charge_json_ou_vide(FICHIER_TICKETS_HISTORIQUE)
+    if not isinstance(historique, list):
+        historique = []
+    recents = [
+        {
+            "date": e.get("date"), "scenario": e.get("scenario"), "statut": e.get("statut"),
+            "cote_totale": e.get("cote_totale"), "paris": len(e.get("jambes") or []),
+            "resultat": e.get("resultat"),
+        }
+        for e in historique[-TICKETS_RECENTS:][::-1]
+    ]
+    return {"bilan": _charge_json_ou_vide(FICHIER_TICKETS_BILAN), "recents": recents}
+
+
 def construit_etat() -> dict[str, Any]:
     return {
         "genere_le": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "bilan_comportemental": _charge_json_ou_vide(FICHIER_BILAN),
         "comparaison_moteurs": _charge_json_ou_vide(FICHIER_COMPARAISON),
         "selection_intelligence": _charge_json_ou_vide(FICHIER_SELECTION),
+        "suivi_tickets": construit_suivi_tickets(),
     }
 
 
+def met_a_jour_suivi_tickets() -> None:
+    """Enregistre et règle les tickets avant la consolidation. Un échec ne bloque jamais l'état système."""
+    try:
+        import suivi_tickets
+        suivi_tickets.main()
+    except Exception as e:  # noqa: BLE001
+        print(f"[etat systeme] suivi des tickets non mis à jour : {type(e).__name__}: {e}")
+
+
 def main() -> None:
+    met_a_jour_suivi_tickets()
     etat = construit_etat()
     with open(FICHIER_ETAT, "w", encoding="utf-8") as f:
         json.dump(etat, f, ensure_ascii=False, indent=2)

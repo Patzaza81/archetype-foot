@@ -92,3 +92,25 @@ La variation doit être déterministe et fondée sur la preuve disponible, pas a
 - Pour un total de buts (+/- X,5), la preuve porte sur le **total du match** et suit les données réellement utilisées par le moteur : buts marqués/encaissés dans le contexte domicile/extérieur, volume total observé, puis probabilité modèle du seuil exact.
 - Exemple réel Stockport–Peterborough du 26/09/2026 : 3 matchs de Stockport à domicile et 3 de Peterborough à l'extérieur ; moyenne 4,00 buts ; Stockport 3,00 marqués / 2,33 encaissés à domicile ; Peterborough 0,33 marqué / 2,33 encaissés à l'extérieur ; lambda domicile 2,67, extérieur 1,33 ; 56,7 % pour +3,5. La justification doit suivre ce chemin, pas seulement afficher « 2,33 buts encaissés ».
 - Le texte visible doit rester naturel : expliquer pourquoi le seuil précis est soutenu, avec les données utiles et la probabilité du modèle, sans jargon interne inutile.
+
+## Tickets : marge d'erreur et rentabilité — 07/10/2026
+
+Les deux moteurs (V2.6.10, V3) et le Journal fournissent chacun leurs paris au générateur de tickets (`generateur_tickets.py`). Cette règle n'en change ni la sélection ni l'éligibilité : elle ajoute une analyse à chaque ticket (`analyse` dans `data/tickets.json`, calculée aussi côté site par `tickets_analyse.js`).
+
+**Modèle : plans de tickets disjoints.** Les n paris sont répartis en t tickets séparés (ex. 12 paris en 4 tickets de 3). Plans testés : 1 combiné, 2 à n/2 tickets, n paris simples. Répartition équilibrée sur le logarithme des cotes (déterministe).
+- **Mise** au prorata de 1/cote du ticket : n'importe quel ticket gagnant rapporte alors R = 1 / Σ(1/cote_ticket) par unité misée ; W tickets gagnants rapportent R × W.
+- **Gagnants requis** = ceil(1/R). **Erreurs garanties** = t − gagnants requis : une erreur fait perdre au plus un ticket, donc ce nombre d'erreurs est couvert quelle que soit leur place. Avec 12 paris à 1,70 en 4×3, un ticket gagnant suffit (3 erreurs garanties) ; à 1,20 il en faut 3 (1 erreur).
+- **Chance d'être rentable** : loi du nombre de tickets gagnants (probabilité d'un ticket = produit des probabilités de ses paris, indépendance supposée). **Gain espéré** = R × Σ P_ticket − 1. « Rentable » = mise au moins remboursée.
+- `plan_marge_max` (plus d'erreurs garanties), `plan_le_plus_regulier` (plus de chances d'être rentable), `meilleur_plan` (gain espéré maximal, souvent le combiné, le plus risqué) : les deux premiers ne portent que sur les plans à gain espéré positif.
+
+Limites à ne pas masquer : indépendance supposée, probabilités des moteurs non recalibrées, le bookmaker doit accepter plusieurs tickets, et les erreurs garanties valent en cas de pire répartition : des erreurs groupées dans un même ticket coûtent moins.
+
+## Suivi statistique des tickets — 07/10/2026
+
+`suivi_tickets.py`, lancé au début de `construit_etat_systeme.py` (donc dans `pipeline.yml` et `journal.yml`, après `generateur_tickets.py`) :
+- `data/tickets_historique.json` : chaque ticket généré (clé `date|scénario`) avec ses paris, ses cotes, ses probabilités et l'analyse prévue. Une entrée est remplacée par la version la plus récente tant qu'elle est en attente et qu'aucun score n'est connu ; ensuite elle est figée.
+- Règlement avec les scores réels (`historique_pronostics.json`). Un pari annulé ou un marché non reconnu **exclut** le ticket (jamais compté comme perdu par défaut). Les libellés d'affichage acceptés sont en liste blanche.
+- `data/tickets_bilan.json`, repris dans `etat_systeme.json` (clé `suivi_tickets`) et affiché dans `systeme.html` : par scénario, paris justes prévus/observés, histogramme des erreurs ; par plan, chance d'être rentable prévue/observée, gain espéré/ROI observé ; par source (V2, V3, Journal), probabilité estimée/taux de réussite.
+- Non suivis : les tickets « VOTRE_TICKET_COTE_x » construits dans le navigateur. Petits échantillons : un écart n'est significatif qu'avec beaucoup de tickets réglés ; `journal.yml` doit lister `data/tickets_historique.json` et `data/tickets_bilan.json` dans son `git add` (sinon seul le pipeline quotidien les publie) ; des exécutions concurrentes des workflows peuvent écraser des entrées.
+
+Tests : `tests/test_generateur_tickets.py` (Python et JavaScript doivent donner le même calcul), `tests/test_suivi_tickets.py`.

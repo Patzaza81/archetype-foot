@@ -70,13 +70,40 @@ function legsHtml(sel){
  }).join("");
 }
 function badge(txt,cls){return '<span class="badge'+(cls?" "+cls:"")+'">'+txt+'</span>'}
+function gain(x){return (x>0?"+":"")+pct(x)}
+function planLabel(p,size){
+ if(p.nom==="COMBINE")return "Combiné ("+size+" paris, 1 ticket)";
+ if(p.nom==="SIMPLES")return "Paris simples ("+size+" tickets)";
+ var s=p.tailles||[],same=s.length&&s.every(function(x){return x===s[0]});
+ return p.tickets+" tickets "+(same?"de "+s[0]+" paris":"de "+Math.min.apply(null,s)+" à "+Math.max.apply(null,s)+" paris");
+}
+function analyseHtml(a){
+ if(!a||!a.plans||!a.plans.length)return "";
+ var size=a.paris,byName={};a.plans.forEach(function(p){byName[p.nom]=p});
+ var best=byName[a.meilleur_plan],reg=a.plan_le_plus_regulier?byName[a.plan_le_plus_regulier]:null,mg=a.plan_marge_max?byName[a.plan_marge_max]:null;
+ var h='<div class="analyse"><h3>Marge d’erreur et rentabilité</h3>';
+ h+='<div class="meta">'+badge(a.rentable?"Rentable selon les moteurs":"Non rentable selon les moteurs",a.rentable?"ok":"none")+badge("Justes attendus "+String(a.paris_justes_attendus).replace(".",",")+" / "+size)+badge("Taux estimé "+pct(a.taux_estime_moyen))+'</div>';
+ if(mg)h+='<p class="note">Plus grande marge d’erreur garantie : <strong>'+esc(planLabel(mg,size))+'</strong> ('+esc(mg.erreurs_garanties)+' erreurs tolérées).</p>';
+ if(reg)h+='<p class="note">Plan le plus régulier : <strong>'+esc(planLabel(reg,size))+'</strong>. Gain espéré maximal : <strong>'+esc(planLabel(best,size))+'</strong>.</p>';
+ else h+='<p class="note">Aucun plan à gain espéré positif.</p>';
+ a.plans.forEach(function(p){
+  var tag=(p.nom===a.meilleur_plan?" · gain max":"")+(p.nom===a.plan_le_plus_regulier?" · plus régulier":"")+(p.nom===a.plan_marge_max?" · marge max":"");
+  var ok=p.gagnants_requis!=null;
+  var cotes=(p.composition||[]).map(function(c){return cote(c.cote)}).join(" / ");
+  h+='<div class="fmt"><strong>'+esc(planLabel(p,size))+'</strong><small>'+esc(tag)+'</small><small>cotes des tickets : '+cotes+' · '+
+   (ok?'rentable dès '+esc(p.gagnants_requis)+' ticket(s) gagnant(s) sur '+p.tickets+' · erreurs garanties '+esc(p.erreurs_garanties):'non rentable : même tous les tickets gagnants ne rembourseraient pas la mise')+
+   ' · chance '+pct(p.proba_profit)+' · gain espéré '+gain(p.esperance_gain)+'</small></div>';
+ });
+ return h+'<p class="note">Mises réparties au prorata de 1/cote de chaque ticket. Hypothèses : paris indépendants, probabilités des moteurs non recalibrées, « rentable » = mise au moins remboursée. Le bookmaker doit accepter plusieurs tickets.</p></div>';
+}
 function ticketHtml(t){
  var m=t.metrics||{},ok=t.statut==="OK";
  var meta=badge(ok?"Ticket disponible":"Aucun ticket solide",ok?"ok":"none")+badge(esc(m.matchs||0)+" matchs")+badge("Cote "+cote(m.cote_totale));
  if(m.ecart_objectif!=null)meta+=badge("Écart cible "+cote(m.ecart_objectif));
  if(m.diversite_sources)meta+=badge(esc(m.diversite_sources)+" sources");
  var note=m.probabilite_independante_theorique!=null?'<p class="note">Probabilité théorique sous indépendance : '+pct(m.probabilite_independante_theorique)+' — ce n’est pas une probabilité jointe garantie.</p>':"";
- return '<h2>'+esc(t.scenario)+'</h2><div class="meta">'+meta+'</div>'+legsHtml(t.selection)+note;
+ var a=t.analyse||(ok&&window.ArchetypeAnalyse?window.ArchetypeAnalyse.analyse(t.selection||[]):null);
+ return '<h2>'+esc(t.scenario)+'</h2><div class="meta">'+meta+'</div>'+legsHtml(t.selection)+note+analyseHtml(a);
 }
 function renderScenarios(data){
  var root=document.getElementById("tickets");root.innerHTML="";

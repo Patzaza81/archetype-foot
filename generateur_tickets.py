@@ -117,7 +117,10 @@ def eligible(c: dict[str, Any], mode: str = "normal") -> bool:
 def dedupe(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     best: dict[tuple[str, str, str], dict[str, Any]] = {}
     for c in rows:
-        # Une même affiche/marché peut être proposée par V2, V3 et le Journal :\n        # on conserve chaque source pour laisser le ticket exploiter leur avantage respectif.\n        source = str(c.get("source") or c.get("moteur") or "inconnu").lower()\n        k = (match_key(c), str(c.get("marche") or "").lower(), source)
+        # Une même affiche/marché peut être proposée par V2, V3 et le Journal :
+        # on conserve chaque source pour laisser le ticket exploiter leur avantage respectif.
+        source = str(c.get("source") or c.get("moteur") or "inconnu").lower()
+        k = (match_key(c), str(c.get("marche") or "").lower(), source)
         old = best.get(k)
         if old is None or candidate_rank(c) > candidate_rank(old):
             best[k] = dict(c)
@@ -147,6 +150,123 @@ def tolerance_tier(product: float, target: float) -> int | None:
         if lo - 1e-9 <= product <= hi + 1e-9:
             return k
     return None
+
+
+def poisson_binomial(probs: list[float]) -> list[float]:
+    """Loi du nombre de paris justes : dist[k] = P(exactement k justes), paris supposés indépendants."""
+    dist = [1.0]
+    for p in probs:
+        nxt = [0.0] * (len(dist) + 1)
+        for k, v in enumerate(dist):
+            nxt[k] += v * (1.0 - p)
+            nxt[k + 1] += v * p
+        dist = nxt
+    return dist
+
+
+def plan_sizes(size: int, tickets: int) -> list[int]:
+    """Tailles équilibrées : les premiers tickets reçoivent un pari en plus."""
+    base, extra = divmod(size, tickets)
+    return [base + 1 if i < extra else base for i in range(tickets)]
+
+
+def plan_partition(odds: list[float], tickets: int) -> list[list[int]]:
+    """Répartit les paris en `tickets` tickets disjoints aux cotes aussi proches que possible.
+
+    Glouton « plus gros d'abord » sur le logarithme des cotes, avec capacité par ticket.
+    Déterministe : égalités départagées par l'indice."""
+    caps = plan_sizes(len(odds), tickets)
+    groups: list[list[int]] = [[] for _ in range(tickets)]
+    sums = [0.0] * tickets
+    for i in sorted(range(len(odds)), key=lambda i: (-math.log(odds[i]), i)):
+        j = min((j for j in range(tickets) if len(groups[j]) < caps[j]), key=lambda j: (sums[j], j))
+        groups[j].append(i)
+        sums[j] += math.log(odds[i])
+    return [sorted(g) for g in groups]
+
+
+def plan_name(sizes: list[int], size: int) -> str:
+    t = len(sizes)
+    if t == 1:
+        return "COMBINE"
+    if t == size:
+        return "SIMPLES"
+    if min(sizes) == max(sizes):
+        return f"TICKETS_{t}X{sizes[0]}"
+    return f"TICKETS_{t}_DE_{min(sizes)}_A_{max(sizes)}"
+
+
+def analyse_plan(probs: list[float], odds: list[float], tickets: int) -> dict[str, Any]:
+    """Un plan = les n paris répartis en `tickets` tickets disjoints.
+
+    Mise répartie au prorata de 1/cote du ticket : n'importe quel ticket gagnant rapporte alors
+    R = 1 / Σ(1/cote_ticket) par unité misée, et W tickets gagnants rapportent R·W.
+    Gagnants requis = plus petit W avec R·W ≥ 1. Une erreur fait perdre au plus un ticket,
+    donc `erreurs_garanties` = tickets − gagnants requis est garanti quelle que soit leur place."""
+    size = len(probs)
+    groups = plan_partition(odds, tickets)
+    t_odds, t_probs = [], []
+    for g in groups:
+        o = 1.0
+        p = 1.0
+        for i in g:
+            o *= odds[i]
+            p *= probs[i]
+        t_odds.append(o)
+        t_probs.append(p)
+    inv = sum(1.0 / o for o in t_odds)
+    ret = 1.0 / inv
+    need = math.ceil(1.0 / ret - 1e-12)
+    dist = poisson_binomial(t_probs)
+    feasible = need <= tickets
+    return {
+        "nom": plan_name([len(g) for g in groups], size),
+        "tickets": tickets,
+        "tailles": [len(g) for g in groups],
+        "composition": [
+            {"paris": g, "cote": round(t_odds[j], 4), "probabilite": round(t_probs[j], 6),
+             "mise": round((1.0 / t_odds[j]) / inv, 4)}
+            for j, g in enumerate(groups)
+        ],
+        "retour_garanti": round(ret, 4),
+        "gagnants_requis": need if feasible else None,
+        "erreurs_garanties": tickets - need if feasible else None,
+        "proba_profit": round(sum(dist[need:]), 4) if feasible else 0.0,
+        "esperance_gain": round(ret * sum(t_probs) - 1.0, 4),
+    }
+
+
+def analyse_ticket(rows: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """Marge d'erreur et rentabilité d'une sélection de n paris, pour chaque plan de tickets disjoints.
+
+    Exemple : 12 paris en 4 tickets de 3. Si 3 paris sont faux dans 3 tickets différents, il reste
+    1 ticket gagnant : rentable seulement si sa cote est assez haute (retour_garanti × gagnants ≥ 1).
+    Paris supposés indépendants ; probabilités des moteurs non recalibrées."""
+    probs = [proba(x) for x in rows]
+    odds = [n(x.get("cote")) for x in rows]
+    size = len(rows)
+    if size < 2 or any(p is None for p in probs) or any(not o or o <= 1 for o in odds):
+        return None
+    dist = poisson_binomial(probs)
+    counts = sorted({1, size} | set(range(2, size // 2 + 1)))
+    plans = [analyse_plan(probs, odds, t) for t in counts]
+    best = max(plans, key=lambda p: p["esperance_gain"])
+    positifs = [p for p in plans if p["esperance_gain"] > 0 and p["gagnants_requis"] is not None]
+    regulier = max(positifs, key=lambda p: (p["proba_profit"], p["esperance_gain"])) if positifs else None
+    marge = max(positifs, key=lambda p: (p["erreurs_garanties"], p["esperance_gain"])) if positifs else None
+    return {
+        "paris": size,
+        "hypotheses": "Paris supposés indépendants ; probabilités des moteurs non recalibrées ; "
+                      "le bookmaker doit accepter plusieurs tickets ; « profit » = mise au moins remboursée.",
+        "probabilite_bonnes": [round(v, 6) for v in dist],
+        "paris_justes_attendus": round(sum(probs), 4),
+        "taux_estime_moyen": round(sum(probs) / size, 4),
+        "plans": plans,
+        "meilleur_plan": best["nom"],
+        "plan_le_plus_regulier": regulier["nom"] if regulier else None,
+        "plan_marge_max": marge["nom"] if marge else None,
+        "rentable": best["esperance_gain"] > 0,
+    }
 
 
 def ticket_metrics(rows: list[dict[str, Any]], target: float | None = None) -> dict[str, Any]:
@@ -206,6 +326,7 @@ def ticket(rows: list[dict[str, Any]], scenario: str, target: float | None = Non
         "regle": "Un seul pari par match, aucun quota rempli artificiellement, maximum 12 matchs, cote totale entre 2 et 20.",
         "selection": [leg(x) for x in rows],
         "metrics": ticket_metrics(rows, target),
+        "analyse": analyse_ticket(rows) if rows else None,
     }
 
 
@@ -351,7 +472,7 @@ def build(data: dict[str, Any]) -> dict[str, Any]:
         "intervalle_cote_totale": [MIN_TARGET, MAX_TARGET],
         "cote_par_defaut": DEFAULT_TARGET,
         "tolerances": list(TOLERANCES),
-        "principe": "Deux moteurs coexistants + Journal. Les moteurs font le tri : un choix est retenu si sa probabilité estimée dépasse la probabilité implicite de la cote, sans historique minimal. La cote totale est choisie par le parieur, entre 2 et 20, jamais hors de cet intervalle.",
+        "principe": "Deux moteurs coexistants + Journal. Les moteurs font le tri : un choix est retenu si sa probabilité estimée dépasse la probabilité implicite de la cote, sans historique minimal. La cote totale est choisie par le parieur, entre 2 et 20, jamais hors de cet intervalle. Chaque ticket indique sa marge d'erreur et sa rentabilité par plan de tickets disjoints (ex. 12 paris en 4 tickets de 3).",
         "avertissement": "La cote totale d'un combiné est exacte comme produit des cotes observées ; la probabilité indépendante affichée n'est pas une probabilité jointe garantie.",
         "candidats_total": len(rows),
         "sources": {source: len((data.get("sources", {}).get(source, {}) or {}).get("top", []) or []) for source in ("moteur_v2_6_10", "moteur_v3", "journal")},
