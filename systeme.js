@@ -1,5 +1,5 @@
 // systeme.js — présentation uniquement, aucun calcul.
-// Affiche etat_systeme.json : bilan du moteur_v2_6_9.
+// Affiche l’état statistique du système et la comparaison V2.6.10 / V3.
 
 function formatPctSysteme(x) {
   const n = Number(x);
@@ -45,6 +45,24 @@ function construitTableauFamilles(bilan) {
   return div;
 }
 
+function construitBlocComparaisonMoteurs(d) {
+  const v2 = d.v2 || {}, v3 = d.v3 || {}, c = d.comparaison || {}, cal = d.calibration_v3 || {};
+  const pct = c.taux_accord_sur_matchs_communs == null ? "—" : (c.taux_accord_sur_matchs_communs * 100).toFixed(1).replace(".", ",") + " %";
+  const div = document.createElement("section");
+  div.className = "bloc-systeme";
+  div.innerHTML = `
+    <h2>Comparaison des moteurs</h2>
+    <p style="margin:0 0 9px;font-size:12.5px;color:var(--text-secondary)">V2.6.10 est le moteur actif. V3 fonctionne en production parallèle. Cette page est la seule publication du comparatif.</p>
+    <div class="grille-stats">
+      <div class="stat"><span class="etiquette">Choix V2.6.10</span><strong>${v2.choix ?? 0}</strong></div>
+      <div class="stat"><span class="etiquette">Choix V3</span><strong>${v3.choix ?? 0}</strong></div>
+      <div class="stat"><span class="etiquette">Accord marchés</span><strong>${pct}</strong></div>
+      <div class="stat"><span class="etiquette">Divergences</span><strong>${c.divergence_marche ?? 0}</strong></div>
+    </div>
+    <p style="margin:9px 0 0;font-size:12px;color:var(--text-secondary)">Calibration V3 : ${cal.prete ? "prête" : "en attente"} · Matchs communs : ${c.matchs_communs ?? 0}.</p>`;
+  return div;
+}
+
 function afficheEtatSysteme(etat) {
   const racine = document.getElementById("contenu-systeme");
   const maj = document.getElementById("maj-systeme");
@@ -53,6 +71,7 @@ function afficheEtatSysteme(etat) {
 
   racine.appendChild(construitBlocGlobal(etat.bilan_comportemental));
   racine.appendChild(construitTableauFamilles(etat.bilan_comportemental));
+  if (etat.comparaison_moteurs && Object.keys(etat.comparaison_moteurs).length) racine.appendChild(construitBlocComparaisonMoteurs(etat.comparaison_moteurs));
   if (window.__controleSaisons) racine.insertBefore(construitBlocControleSaisons(window.__controleSaisons), racine.firstChild);
   if (window.__controleFootballData) racine.insertBefore(construitBlocControleFootballData(window.__controleFootballData), racine.firstChild);
 }
