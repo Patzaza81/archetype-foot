@@ -185,79 +185,12 @@
     return x.betpawa_url ? '<a class="jr-lien" href="' + esc(x.betpawa_url) + '" target="_blank" rel="noopener">Ouvrir sur BetPawa →</a>' : "";
   }
 
-  function afficherConseils(j) {
-    var c = (j.conseils || []).filter(function (x) { return x.preuve && x.preuve.roi > 0; });
-    var zone = document.getElementById("conseils");
-    if (!c.length) {
-      zone.innerHTML = '<div class="ax-etat-vide"><strong>Aucun conseil pour le moment</strong><p>Aucun match à venir dans une zone rentable.</p></div>';
-      return;
-    }
-    zone.innerHTML = c.map(function (x) {
-      return '<section class="ax-carte">' + enteteMatch(x, x.ligue, x.statut_journal) +
-        '<div class="jr-conseil-corps"><div class="jr-marche"><span>' + esc(lisible(x.marche)) + '</span><span class="jr-cote">' + cote(x.cote) +
-        '</span></div><div class="jr-preuve">' + preuveTexte(x.preuve) + "</div>" + lienBetpawa(x) + "</div></section>";
-    }).join("");
-  }
-
-  function afficherRegles(j) {
-    var d = j.donnees || {};
-    var inc = d.cotes_incoherentes_retirees || {};
-    var nbInc = Object.keys(inc).reduce(function (a, k) { return a + inc[k]; }, 0);
-    document.getElementById("regles").innerHTML = '<ul class="jr-liste">' +
-      "<li>Chaque cote BetPawa relevée avant un match terminé est réglée sur le score final ; on calcule ce qu'aurait rapporté une mise de 1 à chaque fois (ROI).</li>" +
-      "<li>Seuls les marchés au ROI positif, sur au moins " + MIN_MATCHS_AFFICHAGE + " matchs, sont affichés. Les autres sont calculés mais masqués.</li>" +
-      "<li>" + fiabilite("A_JOUER") + " intervalle de confiance à 95 % entièrement positif, gagnant sur chaque moitié de la période, au moins 40 matchs.</li>" +
-      "<li>" + fiabilite("A_SURVEILLER") + " gagnant sur toute la période et sur chaque moitié, au moins 25 matchs : mise symbolique.</li>" +
-      "<li>" + fiabilite("NEUTRE") + " gagnant au total, mais trop peu de matchs ou une seule moitié gagnante : avec des centaines de marchés scrutés, une partie de ces gains vient forcément de la chance.</li>" +
-      "<li>" + nbInc + " cote(s) de handicap incohérente(s) avec le 1X2 du même match ont été retirées (erreurs de relevé).</li></ul>";
-  }
-
-  function afficherObservatoire(data) {
-    var resume = data.resume || {};
-    var radar = data.radar || {};
-    document.getElementById("observatoire-resume").innerHTML =
-      '<div class="jr-chiffres">' +
-      '<div class="jr-chiffre"><span>Matchs à venir</span><b>' + (resume.matchs_a_venir || 0) + '</b></div>' +
-      '<div class="jr-chiffre"><span>Anticipations</span><b>' + (resume.anticipations || 0) + '</b></div>' +
-      '<div class="jr-chiffre"><span>Observations radar</span><b>' + (radar.observations || 0) + '</b></div>' +
-      '<div class="jr-chiffre"><span>Groupes validés</span><b>' + (resume.groupes_valides || 0) + '</b></div>' +
-      '</div>' +
-      '<p class="jr-aide">Les observations sont construites avant la date du match. Une cote absente laisse le comportement observable ; lorsqu’elle apparaît, elle devient une information de confirmation du prix.</p>';
-
-    var items = (radar.items || []).slice(0, 120);
-    if (!items.length) {
-      document.getElementById("observatoire-radar").innerHTML =
-        '<div class="ax-etat-vide"><strong>Aucune anticipation disponible</strong><p>Le prochain passage nocturne alimentera automatiquement cet observatoire.</p></div>';
-      return;
-    }
-
-    document.getElementById("observatoire-radar").innerHTML = items.map(function (x) {
-      var prix = x.cote == null ? "Prix non observé" : "Cote " + cote(x.cote) + " · " + esc(x.prix);
-      var seq = x.sequence && x.sequence.sequence ? x.sequence.sequence.join(" ") : "—";
-      var n1 = x.n1 && x.n1.disponible ? (x.n1.echantillon + " obs. · " + pct(x.n1.frequence)) : "non disponible";
-      var pers = x.persistance && x.persistance.historique ? x.persistance.historique : {};
-      var persTxt = Object.keys(pers).length ? Object.keys(pers).map(function(k){ return k + " " + pct(pers[k]); }).join(" · ") : "—";
-      return '<details class="jr-fiche">' +
-        '<summary><span class="jr-fiche-nom">' + esc(x.domicile) + ' — ' + esc(x.exterieur) + '</span>' +
-        '<span class="jr-fiche-info">' + esc(x.marche) + ' · ' + esc(x.regime || "INSUFFISANT") + ' · ' + esc(x.niveau || "INSUFFISANT") + '</span></summary>' +
-        '<div class="jr-lignes">' +
-        '<p><b>Observation :</b> ' + esc(x.equipe_reference) + ' (' + esc(x.contexte) + ') · fréquence ' + pct(x.frequence) + ' · récente ' + pct(x.frequence_recente) + '</p>' +
-        '<p><b>Séquence :</b> ' + esc(seq) + '</p>' +
-        '<p><b>Anticipation :</b> ' + esc(x.statut) + ' — ' + esc(x.formulation || "—") + '</p>' +
-        '<p><b>Référence N-1 :</b> ' + esc(n1) + '</p>' +
-        '<p><b>Persistance historique :</b> ' + esc(persTxt) + '</p>' +
-        '<p><b>Prix :</b> ' + prix + (x.tranche_cote ? ' · tranche ' + esc(x.tranche_cote) : '') + '</p>' +
-        '</div></details>';
-    }).join("");
-  }
-
   function afficher(j) {
     document.getElementById("maj").textContent = "Mis à jour : " + (j.genere_le || "—");
     var rentables = ((j.segments || {}).ligue_marche || []).filter(positif);
     afficherResume(j, rentables);
     afficherRentables(j, rentables);
     afficherEquipes(j);
-    afficherConseils(j);
     afficherRegles(j);
   }
 
