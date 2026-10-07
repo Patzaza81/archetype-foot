@@ -10,7 +10,7 @@ Un pari n'est retenu que s'il passe les DEUX contrôles :
 
 Ajouts du 26/09 au soir (version 1.1.0) :
 - **Seulement la même compétition** : les matchs utilisés sont ceux de la même compétition ou du même tournoi, jamais les coupes.
-- **Pari limite** (adversaire exactement au maximum de victoires récentes autorisé , cas York – Gillingham) : exclu d'un combiné dès qu'un pari propre est disponible.
+- **Pari limite** (adversaire exactement au maximum de victoires récentes autorisé, cas York – Gillingham) : exclu d'un combiné dès qu'un pari propre est disponible.
 
 Détails, seuils et origine (cas Real Salt Lake – New England) : `docs/REGLE_DOUBLE_CONTROLE.md`. Tests : `tests/test_regles_selection.py`.
 
