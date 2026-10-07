@@ -69,9 +69,14 @@ function legsHtml(sel){
   return '<div class="leg"><span class="cote">'+cote(x.cote)+'</span><strong>'+esc(x.domicile)+" — "+esc(x.exterieur)+'</strong><span class="source">'+esc(x.source||"")+(x.rang?" · "+esc(x.rang):"")+'</span><small>'+det.join(" · ")+'</small></div>';
  }).join("");
 }
+function badge(txt,cls){return '<span class="badge'+(cls?" "+cls:"")+'">'+txt+'</span>'}
 function ticketHtml(t){
  var m=t.metrics||{},ok=t.statut==="OK";
- return '<h2>'+esc(t.scenario)+'</h2><div class="meta"><span class="badge '+(ok?"ok":"none")+'">'+(ok?"Ticket disponible":"Aucun ticket solide")+'</span><span class="badge">'+esc(m.matchs||0)+" matchs</span><span class="badge">Cote "+cote(m.cote_totale)+"</span>"+(m.ecart_objectif!=null?'<span class="badge">Écart cible '+cote(m.ecart_objectif)+'</span>':"")+(m.diversite_sources?'<span class="badge">'+esc(m.diversite_sources)+" sources</span>":"")+'</div>'+legsHtml(t.selection)+(m.probabilite_independante_theorique!=null?'<p class="note">Probabilité théorique sous indépendance : '+pct(m.probabilite_independante_theorique)+' — ce n’est pas une probabilité jointe garantie.</p>':"");
+ var meta=badge(ok?"Ticket disponible":"Aucun ticket solide",ok?"ok":"none")+badge(esc(m.matchs||0)+" matchs")+badge("Cote "+cote(m.cote_totale));
+ if(m.ecart_objectif!=null)meta+=badge("Écart cible "+cote(m.ecart_objectif));
+ if(m.diversite_sources)meta+=badge(esc(m.diversite_sources)+" sources");
+ var note=m.probabilite_independante_theorique!=null?'<p class="note">Probabilité théorique sous indépendance : '+pct(m.probabilite_independante_theorique)+' — ce n’est pas une probabilité jointe garantie.</p>':"";
+ return '<h2>'+esc(t.scenario)+'</h2><div class="meta">'+meta+'</div>'+legsHtml(t.selection)+note;
 }
 function renderScenarios(data){
  var root=document.getElementById("tickets");root.innerHTML="";
