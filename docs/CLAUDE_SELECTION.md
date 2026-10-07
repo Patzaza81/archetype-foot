@@ -10,7 +10,7 @@ Un pari n'est retenu que s'il passe les DEUX contrôles :
 
 Ajouts du 26/09 au soir (version 1.1.0) :
 - **Seulement la même compétition** : les matchs utilisés sont ceux de la même compétition ou du même tournoi, jamais les coupes.
-- **Pari limite** (adversaire exactement au maximum de victoires récentes autorisé, cas York – Gillingham) : exclu d'un combiné dès qu'un pari propre est disponible.
+- **Pari limite** (adversaire exactement au maximum de victoires récentes autorisé , cas York – Gillingham) : exclu d'un combiné dès qu'un pari propre est disponible.
 
 Détails, seuils et origine (cas Real Salt Lake – New England) : `docs/REGLE_DOUBLE_CONTROLE.md`. Tests : `tests/test_regles_selection.py`.
 
@@ -92,3 +92,15 @@ La variation doit être déterministe et fondée sur la preuve disponible, pas a
 - Pour un total de buts (+/- X,5), la preuve porte sur le **total du match** et suit les données réellement utilisées par le moteur : buts marqués/encaissés dans le contexte domicile/extérieur, volume total observé, puis probabilité modèle du seuil exact.
 - Exemple réel Stockport–Peterborough du 26/09/2026 : 3 matchs de Stockport à domicile et 3 de Peterborough à l'extérieur ; moyenne 4,00 buts ; Stockport 3,00 marqués / 2,33 encaissés à domicile ; Peterborough 0,33 marqué / 2,33 encaissés à l'extérieur ; lambda domicile 2,67, extérieur 1,33 ; 56,7 % pour +3,5. La justification doit suivre ce chemin, pas seulement afficher « 2,33 buts encaissés ».
 - Le texte visible doit rester naturel : expliquer pourquoi le seuil précis est soutenu, avec les données utiles et la probabilité du modèle, sans jargon interne inutile.
+
+## Tickets : marge d'erreur et rentabilité — 07/10/2026
+
+Les deux moteurs (V2.6.10, V3) et le Journal fournissent chacun leurs paris au générateur de tickets (`generateur_tickets.py`). Cette règle n'en change ni la sélection ni l'éligibilité : elle ajoute seulement une analyse à chaque ticket (`analyse` dans `data/tickets.json`, calculée aussi côté site par `tickets_analyse.js`).
+
+Pour chaque format de mise (paris simples, système k sur n avec k de n-3 à n, combiné) :
+- **Gain espéré** = e_k(probabilité × cote) / C(n, k) − 1 (mise répartie à parts égales sur les C(n, k) combinés).
+- **Bonnes requises** : plus petit nombre de paris justes qui rembourse la mise, estimé à la cote moyenne géométrique ; **erreurs tolérées** = n − bonnes requises.
+- **Chance de l'atteindre** : probabilité d'avoir au moins ce nombre de paris justes (loi du nombre de succès, paris supposés indépendants).
+- **Format le plus régulier** : parmi les formats à gain espéré positif, celui qui a le plus de chances d'atteindre ses bonnes requises. Le gain espéré maximal est presque toujours le combiné, qui est aussi le plus risqué.
+
+Limites à ne pas masquer : indépendance supposée, probabilités des moteurs non recalibrées, et tolérer des erreurs ne rend pas un ticket rentable (ex. 4 justes sur 6 ne suffit pas pour un système 4 sur 6 à cote 1,50). Tests : `tests/test_generateur_tickets.py` (la partie Python et la partie JavaScript doivent donner le même calcul).
