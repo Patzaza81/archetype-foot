@@ -152,6 +152,7 @@ Hébergé sur Netlify (`netlify.toml` : publie la racine du dépôt, en-têtes a
 | `archetype.html` — Pronostics | `archetype.js`, `archetype.css`, `traduction_marches.js`, `ui_mappings.js` | `precalcul_leger.json` |
 | `panier.html` — Panier | `panier.js` + ceux d'Archetype | `precalcul_leger.json` + panier du navigateur |
 | `systeme.html` — Bilan système | `systeme.js`, `style.css`, `theme.css` | `etat_systeme.json` |
+| `tickets.html` — Générateur de tickets | `tickets.js`, `style.css`, `theme.css` | `data/tickets.json` |
 | `admin.html` — Audit / calibration | `admin.js`, `style.css`, `theme.css` | `data/audit_status.json`, `data/audit_telemetry.json`, `config/journal_promotion.jsonl` |
 | `journal.html` — Journal de rentabilité | `journal.js`, `journal.css` + `archetype.css` | `journal.json` |
 | `presentation-site.html` | autonome | aucune (maquette temporaire) |
@@ -191,8 +192,6 @@ La page a une barre de rubriques (un bouton chacune, une seule affichée ; l'adr
 |---|---|---|
 | Marchés rentables | Pour chaque championnat, chaque marché au ROI positif (≥ 10 matchs) : gagnés/joués, cote moyenne, ROI, niveau | ROI négatifs calculés mais **jamais affichés** (choix du propriétaire) |
 | Équipes à suivre | Marché passant dans ≥ 70 % des matchs d'une équipe, sur ≥ 5 matchs ; prochain match et cote BetPawa | Marchés banals (≥ 70 % en général) exclus ; une équipe à moins de 5 matchs dans les données n'apparaît pas |
-| Conseils | Marchés des matchs à venir | **Même championnat, même marché**, segment « Prouvé » ou « À surveiller », et cote du jour dans la fourchette des cotes mesurées. Aucune moyenne « tous championnats » |
-| Moteurs | Choix P1/P2/P3 des deux moteurs situés dans une zone rentable ; championnats et familles où ils ont gagné | idem Conseils |
 | Méthode | Règles et qualité des données | — |
 
 Niveaux : **Prouvé** (`A_JOUER`) = IC 95 % entièrement positif, gagnant sur chaque moitié, ≥ 40 matchs ;
@@ -210,6 +209,9 @@ seulement (des centaines de segments étant scrutés, une partie de ces gains vi
 | `precalcul_leger.json` | Version allégée lue par le site : choix retenus et leur justification |
 | `cache_equipes.json`, `cache_h2h.json`, `cache_classement.json`, `cache_betpawa.json` | Mémoires du scraping |
 | `historique_pronostics.json`, `archive/AAAA-MM.json` | Historique et archive des observations à régler |
+| `data/selection_intelligence.json` | Top 10 par source, marge de succès et performance historique des moteurs |
+| `data/v3/historique_selection.json` | Historique résolu indépendant des sélections V3 |
+| `data/tickets.json` | Scénarios de tickets, maximum 12 matchs |
 | `bilan_archetype_model.json`, `etat_systeme.json`, `data/audit_*.json` | Bilans et audit |
 | `config/*` | Paramètres calibrables, état et journaux de calibration |
 | `export_moteur/` | Entrées exactes du moteur (un fichier par date, écrasés à chaque run) et `diagnostic_pont.json` (matchs rejetés, avec la raison) |
