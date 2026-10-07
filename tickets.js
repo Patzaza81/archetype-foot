@@ -70,13 +70,37 @@ function legsHtml(sel){
  }).join("");
 }
 function badge(txt,cls){return '<span class="badge'+(cls?" "+cls:"")+'">'+txt+'</span>'}
+function gain(x){return (x>0?"+":"")+pct(x)}
+function fmtLabel(f,size){
+ if(f.nom==="COMBINE")return "Combiné ("+size+" sur "+size+")";
+ if(f.nom==="SIMPLES")return "Paris simples";
+ return "Système "+f.paris_par_combine+" sur "+size;
+}
+function analyseHtml(a){
+ if(!a||!a.formats||!a.formats.length)return "";
+ var size=a.paris,byName={};a.formats.forEach(function(f){byName[f.nom]=f});
+ var best=byName[a.meilleur_format],reg=a.format_le_plus_regulier?byName[a.format_le_plus_regulier]:null;
+ var h='<div class="analyse"><h3>Marge d’erreur et rentabilité</h3>';
+ h+='<div class="meta">'+badge(a.rentable?"Rentable selon les moteurs":"Non rentable selon les moteurs",a.rentable?"ok":"none")+badge("Justes attendus "+String(a.paris_justes_attendus).replace(".",",")+" / "+size)+badge("Taux estimé "+pct(a.taux_estime_moyen))+badge("Seuil en simples "+pct(a.taux_requis_simples))+'</div>';
+ if(reg)h+='<p class="note">Format le plus régulier : <strong>'+esc(fmtLabel(reg,size))+'</strong>. ';
+ else h+='<p class="note">Aucun format à gain espéré positif. ';
+ h+='Gain espéré maximal : <strong>'+esc(fmtLabel(best,size))+'</strong> (le plus risqué).</p>';
+ a.formats.forEach(function(f){
+  var tag=(f.nom===a.meilleur_format?" · gain max":"")+(f.nom===a.format_le_plus_regulier?" · plus régulier":"");
+  h+='<div class="fmt"><strong>'+esc(fmtLabel(f,size))+'</strong><small>'+esc(tag)+'</small><small>'+
+   (f.combines>1?esc(f.combines)+' combinés · ':'')+'rentable dès '+esc(f.bonnes_requises)+' justes sur '+size+' · erreurs tolérées '+esc(f.erreurs_tolerees)+
+   ' · chance de l’atteindre '+pct(f.proba_atteindre)+' · gain espéré '+gain(f.esperance_gain)+'</small></div>';
+ });
+ return h+'<p class="note">Hypothèses : paris indépendants, probabilités des moteurs non recalibrées, « rentable dès » estimé à la cote moyenne. Vérifiez que votre bookmaker propose les systèmes.</p></div>';
+}
 function ticketHtml(t){
  var m=t.metrics||{},ok=t.statut==="OK";
  var meta=badge(ok?"Ticket disponible":"Aucun ticket solide",ok?"ok":"none")+badge(esc(m.matchs||0)+" matchs")+badge("Cote "+cote(m.cote_totale));
  if(m.ecart_objectif!=null)meta+=badge("Écart cible "+cote(m.ecart_objectif));
  if(m.diversite_sources)meta+=badge(esc(m.diversite_sources)+" sources");
  var note=m.probabilite_independante_theorique!=null?'<p class="note">Probabilité théorique sous indépendance : '+pct(m.probabilite_independante_theorique)+' — ce n’est pas une probabilité jointe garantie.</p>':"";
- return '<h2>'+esc(t.scenario)+'</h2><div class="meta">'+meta+'</div>'+legsHtml(t.selection)+note;
+ var a=t.analyse||(ok&&window.ArchetypeAnalyse?window.ArchetypeAnalyse.analyse(t.selection||[]):null);
+ return '<h2>'+esc(t.scenario)+'</h2><div class="meta">'+meta+'</div>'+legsHtml(t.selection)+note+analyseHtml(a);
 }
 function renderScenarios(data){
  var root=document.getElementById("tickets");root.innerHTML="";
