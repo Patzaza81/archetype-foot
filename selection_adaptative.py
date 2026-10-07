@@ -476,10 +476,41 @@ def top_by_source(rows: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]
     return grouped
 
 
+
+def advantage_by_market(history: dict[str, Any]) -> dict[str, Any]:
+    grouped: dict[str, dict[str, dict[str, Any]]] = defaultdict(dict)
+    for key, row in (history.get("par_marche") or {}).items():
+        grouped[str(row.get("marche") or key)][str(row.get("moteur") or "")] = row
+    out: dict[str, Any] = {}
+    for market, engines in sorted(grouped.items()):
+        a = engines.get(V2)
+        b = engines.get(V3)
+        if not a or not b or min(int(a.get("observations") or 0), int(b.get("observations") or 0)) < 10:
+            out[market] = {"statut": "DONNEES_INSUFFISANTES"}
+            continue
+        av = (float(a.get("borne_basse_95") or -1), float(a.get("roi") or -1), float(a.get("taux_reussite") or -1))
+        bv = (float(b.get("borne_basse_95") or -1), float(b.get("roi") or -1), float(b.get("taux_reussite") or -1))
+        if av > bv:
+            winner = V2
+        elif bv > av:
+            winner = V3
+        else:
+            winner = "EGALITE"
+        out[market] = {
+            "statut": "COMPARE",
+            "meilleur": winner,
+            "v2": a,
+            "v3": b,
+            "critere": "borne basse 95 % > ROI > taux de réussite, avec au moins 10 observations par moteur",
+        }
+    return out
+
+
 def evolution(history: dict[str, Any]) -> dict[str, Any]:
     return {
         "moteurs": history.get("par_moteur", {}),
         "marches": history.get("par_marche", {}),
+        "avantage_par_marche": advantage_by_market(history),
         "criteres": {
             "marge_succes": "borne basse Wilson 95 % du taux de réussite historique moins probabilité implicite 1/cote",
             "marge_modele": "probabilité du moteur moins probabilité implicite 1/cote",
