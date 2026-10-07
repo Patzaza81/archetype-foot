@@ -117,8 +117,17 @@ def sel(odds, probs):
     return [cand(i, o, p) for i, (o, p) in enumerate(zip(odds, probs))]
 
 
-def fmt(a, nom):
-    return next(f for f in a["formats"] if f["nom"] == nom)
+def plan(a, nom):
+    return next(p for p in a["plans"] if p["nom"] == nom)
+
+
+def retour(a_plan, odds, outcome):
+    """Retour réel par unité misée pour une issue (1 = pari juste) : somme des mises × cote des tickets gagnants."""
+    total = 0.0
+    for t in a_plan["composition"]:
+        if all(outcome[i] for i in t["paris"]):
+            total += t["mise"] * t["cote"]
+    return total
 
 
 def test_distribution_des_paris_justes_somme_a_un():
@@ -128,40 +137,83 @@ def test_distribution_des_paris_justes_somme_a_un():
     assert abs(a["paris_justes_attendus"] - (0.7 + 0.6 + 0.55 + 0.75)) < 1e-9
 
 
-def test_esperance_systeme_egale_enumeration_exacte():
-    odds, probs = [1.6, 1.9, 2.2, 1.5, 1.8], [0.66, 0.58, 0.5, 0.7, 0.6]
+def test_12_paris_donnent_les_plans_attendus_et_4_tickets_de_3_disjoints():
+    a = gt.analyse_ticket(sel([1.5 + 0.05 * i for i in range(12)], [0.7] * 12))
+    assert [p["tickets"] for p in a["plans"]] == [1, 2, 3, 4, 5, 6, 12]
+    p4 = plan(a, "TICKETS_4X3")
+    assert p4["tailles"] == [3, 3, 3, 3]
+    tous = sorted(i for t in p4["composition"] for i in t["paris"])
+    assert tous == list(range(12))                       # chaque pari dans un seul ticket
+    assert abs(sum(t["mise"] for t in p4["composition"]) - 1.0) < 1e-3
+
+
+def test_exemple_utilisateur_3_perdants_sur_12_restent_gagnants_en_4x3():
+    odds = [1.7] * 12                                     # ticket de 3 = 4,913 → retour 1,228 par ticket gagnant
+    a = gt.analyse_ticket(sel(odds, [0.7] * 12))
+    p4 = plan(a, "TICKETS_4X3")
+    assert p4["gagnants_requis"] == 1 and p4["erreurs_garanties"] == 3
+    for t_perdants in itertools.combinations(range(4), 3):   # 3 perdants dans 3 tickets différents : pire cas
+        outcome = [1] * 12
+        for j in t_perdants:
+            outcome[p4["composition"][j]["paris"][0]] = 0
+        assert retour(p4, odds, outcome) >= 1.0
+
+
+def test_erreurs_garanties_tiennent_pour_toute_issue_et_pas_une_de_plus():
+    odds = [1.6, 1.9, 2.2, 1.5, 1.8, 1.7]
+    a = gt.analyse_ticket(sel(odds, [0.66, 0.58, 0.5, 0.7, 0.6, 0.62]))
+    for p in a["plans"]:
+        if p["gagnants_requis"] is None:
+            continue
+        e = p["erreurs_garanties"]
+        for outcome in itertools.product([0, 1], repeat=6):
+            if outcome.count(0) <= e:
+                assert retour(p, odds, outcome) >= 1.0 - 1e-3
+        # une erreur de plus, bien placée (un seul pari faux par ticket), fait passer sous la mise
+        if e + 1 <= p["tickets"]:
+            outcome = [1] * 6
+            for t in p["composition"][: e + 1]:
+                outcome[t["paris"][0]] = 0
+            assert retour(p, odds, outcome) < 1.0
+
+
+def test_esperance_et_proba_profit_egalent_enumeration_exacte():
+    odds, probs = [1.6, 1.9, 2.2, 1.5, 1.8, 1.7], [0.66, 0.58, 0.5, 0.7, 0.6, 0.62]
     a = gt.analyse_ticket(sel(odds, probs))
-    n_, k = 5, 3
-    ev = -1.0
-    for outcome in itertools.product([0, 1], repeat=n_):
-        pr = 1.0
-        for ok, p in zip(outcome, probs):
-            pr *= p if ok else 1 - p
-        gain = 0.0
-        for combo in itertools.combinations(range(n_), k):
-            if all(outcome[i] for i in combo):
-                gain += pr * 1.0 * odds[combo[0]] * odds[combo[1]] * odds[combo[2]]
-        ev += gain / len(list(itertools.combinations(range(n_), k)))
-    assert abs(fmt(a, "SYSTEME_3_SUR_5")["esperance_gain"] - round(ev, 4)) < 1e-4
+    for p in a["plans"]:
+        ev, pr_profit = -1.0, 0.0
+        for outcome in itertools.product([0, 1], repeat=6):
+            pr = 1.0
+            for ok, q in zip(outcome, probs):
+                pr *= q if ok else 1 - q
+            r = retour(p, odds, outcome)
+            ev += pr * r
+            if r >= 1.0 - 1e-3:
+                pr_profit += pr
+        assert abs(p["esperance_gain"] - ev) < 2e-3
+        assert abs(p["proba_profit"] - pr_profit) < 2e-3
 
 
-@pytest.mark.parametrize("n_,k,cote,attendu", [
-    (6, 4, 1.5, 5),     # 4 justes sur 6 ne rembourse pas un système 4 sur 6 : il en faut 5
-    (12, 9, 1.5, 10),   # 9 justes sur 12 ne suffit pas : il en faut 10
-    (6, 1, 1.5, 4),     # en paris simples à 1,50, 4 justes sur 6 remboursent exactement
+@pytest.mark.parametrize("cote,tickets_attendus,erreurs", [
+    (1.7, 1, 3),   # tickets à 4,91 : un seul gagnant suffit
+    (1.3, 2, 2),   # tickets à 2,20 : retour 0,55 → 2 gagnants requis
+    (1.2, 3, 1),   # tickets à 1,73 : retour 0,43 → 3 gagnants requis
 ])
-def test_bonnes_requises_pour_ne_pas_perdre(n_, k, cote, attendu):
-    a = gt.analyse_ticket(sel([cote] * n_, [0.7] * n_))
-    nom = "SIMPLES" if k == 1 else f"SYSTEME_{k}_SUR_{n_}"
-    f = fmt(a, nom)
-    assert f["bonnes_requises"] == attendu
-    assert f["erreurs_tolerees"] == n_ - attendu
+def test_gagnants_requis_dependent_des_cotes(cote, tickets_attendus, erreurs):
+    p = plan(gt.analyse_ticket(sel([cote] * 12, [0.8] * 12)), "TICKETS_4X3")
+    assert p["gagnants_requis"] == tickets_attendus
+    assert p["erreurs_garanties"] == erreurs
+
+
+def test_cotes_tres_basses_exigent_tous_les_tickets_gagnants():
+    # Cotes ≤ 1,1 : tous les tickets doivent gagner, aucune erreur n'est garantie (le cas « impossible » n'existe pas : tous gagnants rapporte toujours > 1)
+    p = plan(gt.analyse_ticket(sel([1.1] * 4, [0.9] * 4)), "SIMPLES")
+    assert p["gagnants_requis"] == 4 and p["erreurs_garanties"] == 0
 
 
 def test_combine_ne_tolere_aucune_erreur():
-    a = gt.analyse_ticket(sel([1.5, 1.6, 1.7], [0.7, 0.7, 0.7]))
-    c = fmt(a, "COMBINE")
-    assert c["bonnes_requises"] == 3 and c["erreurs_tolerees"] == 0
+    p = plan(gt.analyse_ticket(sel([1.5, 1.6, 1.7], [0.7, 0.7, 0.7])), "COMBINE")
+    assert p["gagnants_requis"] == 1 and p["erreurs_garanties"] == 0
 
 
 @pytest.mark.parametrize("rows", [
@@ -172,7 +224,7 @@ def test_combine_ne_tolere_aucune_erreur():
 def test_ticket_sans_valeur_est_non_rentable(rows):
     a = gt.analyse_ticket(rows)
     assert a["rentable"] is False
-    assert a["format_le_plus_regulier"] is None
+    assert a["plan_le_plus_regulier"] is None and a["plan_marge_max"] is None
 
 
 @pytest.mark.parametrize("rows", [
@@ -183,7 +235,7 @@ def test_ticket_sans_valeur_est_non_rentable(rows):
 def test_ticket_avec_valeur_est_rentable(rows):
     a = gt.analyse_ticket(rows)
     assert a["rentable"] is True
-    assert a["format_le_plus_regulier"] is not None
+    assert a["plan_le_plus_regulier"] is not None and a["plan_marge_max"] is not None
 
 
 @pytest.mark.parametrize("rows", [
@@ -207,11 +259,16 @@ def test_build_ajoute_l_analyse_a_chaque_ticket_et_garde_le_journal_comme_source
     assert tickets
     for s in tickets:
         assert s["analyse"] and s["analyse"]["paris"] == len(s["selection"])
+        assert s["analyse"]["plans"]
 
 
 @pytest.mark.skipif(shutil.which("node") is None, reason="node absent")
-def test_python_et_javascript_calculent_la_meme_analyse(tmp_path):
-    rows = sel([1.5, 1.8, 2.0, 1.4, 1.65, 2.2], [0.7, 0.6, 0.55, 0.75, 0.62, 0.5])
+@pytest.mark.parametrize("odds,probs", [
+    ([1.5, 1.8, 2.0, 1.4, 1.65, 2.2], [0.7, 0.6, 0.55, 0.75, 0.62, 0.5]),
+    ([1.7, 1.6, 1.9, 1.3, 1.5, 2.1, 1.45, 1.8, 1.6, 1.75, 1.55, 1.4], [0.65] * 12),
+])
+def test_python_et_javascript_calculent_la_meme_analyse(tmp_path, odds, probs):
+    rows = sel(odds, probs)
     py = gt.analyse_ticket(rows)
     legs = [gt.leg(x) for x in rows]
     racine = Path(__file__).resolve().parent.parent
@@ -223,10 +280,11 @@ def test_python_et_javascript_calculent_la_meme_analyse(tmp_path):
     res = subprocess.run(["node", str(script), str(racine / "tickets_analyse.js"), json.dumps(legs)],
                          capture_output=True, text=True, check=True)
     js = json.loads(res.stdout)
-    assert js["meilleur_format"] == py["meilleur_format"]
-    assert js["format_le_plus_regulier"] == py["format_le_plus_regulier"]
-    assert js["rentable"] == py["rentable"]
-    for fp, fj in zip(py["formats"], js["formats"]):
-        assert fp["nom"] == fj["nom"] and fp["bonnes_requises"] == fj["bonnes_requises"]
+    for k in ("meilleur_plan", "plan_le_plus_regulier", "plan_marge_max", "rentable"):
+        assert js[k] == py[k]
+    assert len(py["plans"]) == len(js["plans"])
+    for fp, fj in zip(py["plans"], js["plans"]):
+        assert fp["nom"] == fj["nom"] and fp["gagnants_requis"] == fj["gagnants_requis"]
+        assert [t["paris"] for t in fp["composition"]] == [t["paris"] for t in fj["composition"]]
         assert abs(fp["esperance_gain"] - fj["esperance_gain"]) < 1e-3
-        assert abs(fp["proba_atteindre"] - fj["proba_atteindre"]) < 1e-3
+        assert abs(fp["proba_profit"] - fj["proba_profit"]) < 1e-3
