@@ -290,6 +290,7 @@ def build(data: dict[str, Any]) -> dict[str, Any]:
         "principe": "Deux moteurs coexistants + Journal. Aucun moteur n'est remplacé. Un ticket n'est publié que si ses jambes passent les critères de solidité disponibles.",
         "avertissement": "La cote totale d'un combiné est exacte comme produit des cotes observées ; la probabilité indépendante affichée n'est pas une probabilité jointe garantie.",
         "candidats_total": len(rows),
+        "sources": {source: len((data.get("sources", {}).get(source, {}) or {}).get("top", []) or []) for source in ("moteur_v2_6_10", "moteur_v3", "journal")},
         "scenarios": scenarios,
     }
 
