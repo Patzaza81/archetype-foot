@@ -84,3 +84,14 @@ def test_ticket_vide_est_signale_et_non_rempli():
     result = gt.ticket([], "TEST")
     assert result["statut"] == "AUCUN_TICKET_SOLIDE"
     assert result["selection"] == []
+
+
+def test_avantage_par_marche_exige_un_echantillon_minimum():
+    history = {
+        "par_marche": {
+            "moteur_v2_6_10|m": {"moteur": "moteur_v2_6_10", "marche": "m", "observations": 20, "borne_basse_95": .70, "roi": .10, "taux_reussite": .80},
+            "moteur_v3|m": {"moteur": "moteur_v3", "marche": "m", "observations": 20, "borne_basse_95": .62, "roi": .08, "taux_reussite": .75},
+        }
+    }
+    x = sa.advantage_by_market(history)["m"]
+    assert x["meilleur"] == "moteur_v2_6_10"
