@@ -215,8 +215,19 @@ def beam_target(rows: list[dict[str, Any]], size: int, target: float) -> list[di
 
     best_rows: list[dict[str, Any]] = []
     best_key = None
+    finals = []
     for indices, _ in states:
         chosen = [pool[i] for i in indices]
+        product = math.prod(float(x["cote"]) for x in chosen)
+        if target * 0.80 <= product <= target * 1.20:
+            finals.append((chosen, product))
+    if finals:
+        states = [(list(range(len(chosen))), product) for chosen, product in finals]
+        # Les indices locaux ne servent plus qu'à parcourir les combinaisons retenues.
+        final_rows = [chosen for chosen, _ in finals]
+    else:
+        final_rows = [[pool[i] for i in indices] for indices, _ in states]
+    for chosen in final_rows:
         product = math.prod(float(x["cote"]) for x in chosen)
         metrics = ticket_metrics(chosen, target)
         # Qualité minimale avant proximité : aucune combinaison faible ne bat une combinaison solide
