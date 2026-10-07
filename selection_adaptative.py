@@ -20,6 +20,8 @@ FULL_PRECALC = Path("precalcul.json")
 JOURNAL = Path("journal.json")
 ARCHIVE = Path("archive")
 OUT = Path("data/selection_intelligence.json")
+V3_HISTORY = Path("data/v3/historique_selection.json")
+HISTORIQUE = Path("historique_pronostics.json")
 
 ODDS_MIN = 1.26
 ODDS_MAX = 3.01
@@ -117,7 +119,97 @@ def iter_archive_records() -> list[dict[str, Any]]:
     return records
 
 
+
+def score_history() -> dict[str, tuple[int, int]]:
+    out: dict[str, tuple[int, int]] = {}
+    hist = load_json(HISTORIQUE, [])
+    if not isinstance(hist, list):
+        return out
+    for day in hist:
+        for m in (day.get("matchs") or []) if isinstance(day, dict) else []:
+            mid = norm(m.get("match_id"))
+            score = norm(m.get("score"))
+            if not mid or not score:
+                continue
+            parts = score.replace(":", "-").split("-")
+            if len(parts) != 2:
+                continue
+            try:
+                out[mid] = (int(parts[0]), int(parts[1]))
+            except ValueError:
+                continue
+    return out
+
+
+def sync_v3_history() -> list[dict[str, Any]]:
+    current = load_json(INPUTS[V3], {}) or {}
+    existing = load_json(V3_HISTORY, []) or []
+    if not isinstance(existing, list):
+        existing = []
+    index = {norm(x.get("record_id")): x for x in existing if isinstance(x, dict) and norm(x.get("record_id"))}
+    scores = score_history()
+
+    try:
+        from branchement_moteur import nom_canonique
+        from archetype_model.learning.reglement import evaluer_marche
+    except Exception:
+        nom_canonique = lambda x: x
+        evaluer_marche = None
+
+    for signal in current.get("signaux", []) or []:
+        if not isinstance(signal, dict):
+            continue
+        mid = norm(signal.get("match_id"))
+        if not mid:
+            continue
+        block = signal.get(V3) or {}
+        for rank in ("P1", "P2", "P3"):
+            c = (block.get("selection") or {}).get(rank)
+            if not isinstance(c, dict):
+                continue
+            market = norm(c.get("marche"))
+            rid = mid + "|" + market
+            rec = index.setdefault(rid, {
+                "record_id": rid,
+                "match_id": mid,
+                "date": norm(signal.get("date")),
+                "domicile": norm(signal.get("domicile")),
+                "exterieur": norm(signal.get("exterieur")),
+                "competition": norm(signal.get("competition")),
+                "marche": market,
+                "rang": rank,
+                "cote": num(c.get("cote")),
+                "probabilite": num(c.get("probabilite")),
+                "edge": num(c.get("edge")),
+                "edv": num(c.get("edv")),
+                "resultat_statut": "PENDING",
+            })
+            if rec.get("resultat_statut") == "RESOLVED":
+                continue
+            sc = scores.get(mid)
+            if not sc:
+                continue
+            canon = nom_canonique(market)
+            result = None
+            if evaluer_marche and canon:
+                try:
+                    result = evaluer_marche(canon, sc[0], sc[1]).statut
+                except Exception:
+                    result = None
+            if result in ("WIN", "LOSS"):
+                rec.update({
+                    "resultat_statut": "RESOLVED",
+                    "resultat_marche": result,
+                    "buts_dom": sc[0],
+                    "buts_ext": sc[1],
+                })
+    ordered = sorted(index.values(), key=lambda x: (str(x.get("date")), str(x.get("match_id")), str(x.get("marche"))))
+    V3_HISTORY.parent.mkdir(parents=True, exist_ok=True)
+    V3_HISTORY.write_text(json.dumps(ordered, ensure_ascii=False, indent=2), encoding="utf-8")
+    return ordered
+
 def build_history() -> dict[str, Any]:
+    v3_history = sync_v3_history()
     buckets: dict[tuple[str, str], dict[str, Any]] = defaultdict(
         lambda: {"n": 0, "wins": 0, "losses": 0, "profit": 0.0, "odds_sum": 0.0}
     )
@@ -154,6 +246,31 @@ def build_history() -> dict[str, Any]:
             b["odds_sum"] += odds
             b["profit"] += odds - 1 if result == "WIN" else -1.0
         g = by_engine[engine]
+        g["n"] += 1
+        g["wins"] += int(result == "WIN")
+        g["losses"] += int(result == "LOSS")
+        if odds and odds > 1:
+            g["profit"] += odds - 1 if result == "WIN" else -1.0
+
+
+    for r in v3_history:
+        if r.get("resultat_statut") != "RESOLVED":
+            continue
+        result = r.get("resultat_marche")
+        if result not in ("WIN", "LOSS"):
+            continue
+        market = norm(r.get("marche"))
+        if not market:
+            continue
+        b = buckets[(V3, market_key(market))]
+        b["n"] += 1
+        b["wins"] += int(result == "WIN")
+        b["losses"] += int(result == "LOSS")
+        odds = num(r.get("cote"))
+        if odds and odds > 1:
+            b["odds_sum"] += odds
+            b["profit"] += odds - 1 if result == "WIN" else -1.0
+        g = by_engine[V3]
         g["n"] += 1
         g["wins"] += int(result == "WIN")
         g["losses"] += int(result == "LOSS")
