@@ -695,7 +695,7 @@ def nom_site(marche):
     return V3_VERS_SITE.get(marche, marche)
 
 
-VIGILANCE_V3 = "Moteur V3 expérimental : pas encore validé sur 100 matchs réels."
+VIGILANCE_V3 = "Moteur V3 en production parallèle : candidat, non promu comme moteur principal."
 
 
 def niveau_echantillon(n_min):
