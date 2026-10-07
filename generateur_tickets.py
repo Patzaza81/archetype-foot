@@ -142,7 +142,7 @@ def clamp_target(t: Any) -> float:
 def tolerance_tier(product: float, target: float) -> int | None:
     """Plus petite fenêtre de proximité contenant la cote totale, toujours dans [2 ; 20]."""
     for k, tol in enumerate(TOLERANCES):
-        lo = max(MIN_TARGET, target / (1.0 + tol))
+        lo = max(MIN_TARGET, target * (1.0 - tol))
         hi = min(MAX_TARGET, target * (1.0 + tol))
         if lo - 1e-9 <= product <= hi + 1e-9:
             return k
