@@ -156,15 +156,8 @@ def main():
     except Exception as e:
         print(f"[archive de test] AVERTISSEMENT : échec ({type(e).__name__}: {e}) -- scores de l'historique non "
               f"concernés.", file=sys.stderr)
-    # AJOUT 27/09/2026 (décision de Patrick) -- moteur V3 EN PARALLÈLE, expérimental et non validé
-    # (moteur_v3_pipeline.py) : lit l'archive de test qu'on vient d'écrire, écrit data/v3/pronostics_v3.json (page
-    # pronostics_v3.html). Ne remplace rien : moteur_v2_6_10 est désormais le moteur du site. Un échec ici ne bloque rien.
-    try:
-        import moteur_v3_pipeline
-        print(f"[moteur V3] {moteur_v3_pipeline.execution()}")
-    except Exception as e:
-        print(f"[moteur V3] AVERTISSEMENT : échec ({type(e).__name__}: {e}) -- rien d'autre n'est concerné.",
-              file=sys.stderr)
+    # Le moteur V3 est exécuté par une étape dédiée du workflow : aucune dépendance
+    # silencieuse entre l'enregistrement des scores et la production V3.
     return 0
 
 
