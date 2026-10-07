@@ -704,8 +704,6 @@ def construit_journal(aujourdhui=None):
     segments = construit_segments(paris) if paris else {k: [] for k in DIMENSIONS}
     # Le Journal est volontairement indépendant des moteurs : ses publications
     # reposent uniquement sur les matchs terminés, leurs cotes observées et les scores.
-    conseils = []
-    pronostics = {}
     equipes = construit_equipes_a_suivre(charge_tous_resultats(), aujourdhui, prochains={})
     dates = sorted({m["date"] for m in matchs})
     compte = {dim: {st: sum(1 for s in lignes if s["statut"] == st) for st in ("A_JOUER", "A_SURVEILLER", "NEUTRE", "A_EVITER")}
@@ -741,7 +739,7 @@ def main():
     cg = d["cout_global_betpawa"] or {}
     print(f"[journal] {len(journal['equipes_a_suivre'])} couple(s) équipe x marché à suivre (>= 70 %).")
     print(f"[journal] {d['matchs']} matchs BetPawa terminés, {d['cotes_reglees']} cotes réglées, coût global BetPawa "
-          f"{cg.get('roi', 0):+.1%} -- {len(journal['conseils'])} conseil(s) pour les matchs à venir.")
+          f"{cg.get('roi', 0):+.1%}.")
     for dim, c in journal["comptage_statuts"].items():
         print(f"[journal] {dim}: {c}")
     if d["cotes_incoherentes_retirees"]:
