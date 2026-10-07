@@ -54,7 +54,17 @@ def construit_etat() -> dict[str, Any]:
     }
 
 
+def met_a_jour_suivi_tickets() -> None:
+    """Enregistre et règle les tickets avant la consolidation. Un échec ne bloque jamais l'état système."""
+    try:
+        import suivi_tickets
+        suivi_tickets.main()
+    except Exception as e:  # noqa: BLE001
+        print(f"[etat systeme] suivi des tickets non mis à jour : {type(e).__name__}: {e}")
+
+
 def main() -> None:
+    met_a_jour_suivi_tickets()
     etat = construit_etat()
     with open(FICHIER_ETAT, "w", encoding="utf-8") as f:
         json.dump(etat, f, ensure_ascii=False, indent=2)
