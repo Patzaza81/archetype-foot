@@ -28,6 +28,7 @@ permissions:
 
 concurrency:
   group: pipeline-archetype-foot
+  queue: max
   cancel-in-progress: false
 
 jobs:
