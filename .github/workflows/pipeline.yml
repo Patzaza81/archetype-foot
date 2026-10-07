@@ -133,10 +133,7 @@ jobs:
           # Nettoyage des artefacts Python temporaires avant publication.
           find . -type d -name "__pycache__" -prune -exec rm -rf {} +
 
-          # Le pipeline génère plusieurs fichiers et répertoires. On capture
-          # TOUTES les modifications, y compris celles ajoutées pendant les
-          # dernières étapes, afin de ne jamais laisser de changements locaux
-          # entre le commit et le rebase.
+          # Capturer toutes les sorties produites par le run.
           git add -A
 
           echo "--- état avant commit ---"
@@ -149,23 +146,38 @@ jobs:
 
           git commit -m "Mise à jour pipeline"
 
-          # Le commit local doit être propre avant le rebase. Si un fichier
-          # suivi a malgré tout été modifié entre git add et git commit,
-          # --autostash protège le workspace au lieu de faire échouer le run.
-          if [ -n "$(git status --porcelain)" ]; then
-            echo "Modifications résiduelles détectées après commit :"
-            git status --short
-            git add -A
-            git commit --amend --no-edit
-          fi
+          # Le run peut durer plusieurs heures : main peut donc avancer avant
+          # la publication. On resynchronise et réessaie plusieurs fois.
+          MON_COMMIT=$(git rev-parse HEAD)
 
-          # Un autre run peut avoir publié pendant le traitement (notamment un run
-          # de pipeline plus ancien). Les artefacts du run courant sont la version
-          # voulue pour les fichiers qu'il vient de générer : résolution automatique
-          # des conflits avec la version locale du commit rebased.
-          git fetch origin main
-          git pull --rebase -X theirs --autostash origin main
-          git push origin HEAD:main
+          for i in 1 2 3 4 5; do
+            echo "--- tentative de publication $i/5 ---"
+            git fetch origin main
+
+            if ! git rebase -X theirs origin/main; then
+              echo "Rebase impossible : repli sur origin/main + artefacts du run."
+              git rebase --abort || true
+              git reset --hard origin/main
+              git checkout "$MON_COMMIT" -- .
+              git add -A
+              git commit -m "Mise à jour pipeline" || true
+            fi
+
+            if git push origin HEAD:main; then
+              echo "Publication réussie."
+              exit 0
+            fi
+
+            echo "Push refusé (essai $i), nouvelle tentative."
+            git reset --hard origin/main
+            git checkout "$MON_COMMIT" -- .
+            git add -A
+            git commit -m "Mise à jour pipeline" || true
+            sleep $((i * 10))
+          done
+
+          echo "::error::Impossible de publier après 5 essais."
+          exit 1
 
       - name: Notifier les constats majeurs (Issue GitHub, s'il y en a)
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
