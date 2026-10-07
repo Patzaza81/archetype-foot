@@ -86,3 +86,11 @@ def test_build_publie_pool_et_respecte_intervalle():
         if t is not None:
             assert 2.0 - 1e-9 <= t <= 20.0 + 1e-9
     assert any(s["scenario"] == "OBJECTIF_COTE_10" for s in out["scenarios"])
+
+
+def test_meme_marche_conserve_les_sources_distinctes():
+    v2 = cand("same", 2.0, 0.56, source="moteur_v2_6_10")
+    v3 = cand("same", 2.0, 0.57, source="moteur_v3")
+    journal = cand("same", 2.0, None, source="journal", marge_succes=0.08, niveau="A_JOUER", rang=None)
+    rows = gt.dedupe([v2, v3, journal])
+    assert {x["source"] for x in rows} == {"moteur_v2_6_10", "moteur_v3", "journal"}
