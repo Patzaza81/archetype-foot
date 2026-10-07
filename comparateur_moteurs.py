@@ -3,7 +3,7 @@ import datetime as dt, json
 from pathlib import Path
 from typing import Any
 V2="moteur_v2_6_10"; V3="moteur_v3"
-V2_FILE=Path("precalcul_leger.json"); V3_FILE=Path("data/v3/pronostics_v3.json"); JOURNAL=Path("journal.json"); OUT=Path("data/comparaison_moteurs.json")
+V2_FILE=Path("precalcul_leger.json"); V3_FILE=Path("data/v3/pronostics_v3.json"); OUT=Path("data/comparaison_moteurs.json")
 def load(p:Path)->dict[str,Any]:
     if not p.exists() or not p.stat().st_size:return {}
     x=json.loads(p.read_text(encoding="utf-8")); return x if isinstance(x,dict) else {}
@@ -37,6 +37,6 @@ def compare(v2,v3):
     return {"matchs_communs":len(common),"matchs_v2_seulement":len(set(a)-set(b)),"matchs_v3_seulement":len(set(b)-set(a)),"accord_marche":agree,"divergence_marche":div,"taux_accord_sur_matchs_communs":round(agree/len(common),4) if common else None,"accords":agreements[:100],"divergences":divergences[:100]}
 def main():
     a=load(V2_FILE); b=load(V3_FILE); v2=[x for x in a.get("signaux",[]) if isinstance(x,dict)]; v3=[x for x in b.get("signaux",[]) if isinstance(x,dict)]; j=load(JOURNAL)
-    result={"genere_le":dt.datetime.now(dt.timezone.utc).isoformat(),"statut":"PRODUCTION_PARALLELE","moteur_actif":V2,"moteur_candidat":V3,"regle_promotion":"Aucune promotion automatique : la V3 doit démontrer un avantage réel sur des données hors échantillon.","v2":summary(v2,V2),"v3":summary(v3,V3),"comparaison":compare(v2,v3),"journal":{"disponible":bool(j),"moteurs":j.get("moteurs",{}),"pronostics":{k:{"selections":len((j.get("pronostics",{}).get(k,{}) or {}).get("selections",[]))} for k in (V2,V3) if k in (j.get("pronostics",{}) or {})}},"calibration_v3":b.get("calibration") or {}}
+    result={"genere_le":dt.datetime.now(dt.timezone.utc).isoformat(),"statut":"PRODUCTION_PARALLELE","moteur_actif":V2,"moteur_candidat":V3,"regle_promotion":"Aucune promotion automatique : la V3 doit démontrer un avantage réel sur des données hors échantillon.","v2":summary(v2,V2),"v3":summary(v3,V3),"comparaison":compare(v2,v3),"calibration_v3":b.get("calibration") or {}}
     OUT.parent.mkdir(parents=True,exist_ok=True); OUT.write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding="utf-8"); print(json.dumps({"v2_choix":result["v2"]["choix"],"v3_choix":result["v3"]["choix"],"accord":result["comparaison"]["accord_marche"],"divergence":result["comparaison"]["divergence_marche"]},ensure_ascii=False)); return 0
 if __name__=="__main__": raise SystemExit(main())
