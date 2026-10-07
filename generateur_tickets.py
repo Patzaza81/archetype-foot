@@ -117,7 +117,10 @@ def eligible(c: dict[str, Any], mode: str = "normal") -> bool:
 def dedupe(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     best: dict[tuple[str, str, str], dict[str, Any]] = {}
     for c in rows:
-        # Une même affiche/marché peut être proposée par V2, V3 et le Journal :\n        # on conserve chaque source pour laisser le ticket exploiter leur avantage respectif.\n        source = str(c.get("source") or c.get("moteur") or "inconnu").lower()\n        k = (match_key(c), str(c.get("marche") or "").lower(), source)
+        # Une même affiche/marché peut être proposée par V2, V3 et le Journal :
+        # on conserve chaque source pour laisser le ticket exploiter leur avantage respectif.
+        source = str(c.get("source") or c.get("moteur") or "inconnu").lower()
+        k = (match_key(c), str(c.get("marche") or "").lower(), source)
         old = best.get(k)
         if old is None or candidate_rank(c) > candidate_rank(old):
             best[k] = dict(c)
