@@ -28,7 +28,6 @@ permissions:
 
 concurrency:
   group: pipeline-archetype-foot
-  queue: max
   cancel-in-progress: false
 
 jobs:
@@ -107,6 +106,14 @@ jobs:
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         run: python evaluation_scores.py
         continue-on-error: true
+
+      - name: Construire l intelligence de sélection multi-source
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+        run: python selection_adaptative.py
+
+      - name: Générer les scénarios de tickets
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+        run: python generateur_tickets.py
 
       - name: Consolider l'état système pour la page systeme.html
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
