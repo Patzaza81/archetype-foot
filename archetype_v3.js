@@ -186,7 +186,7 @@ function construitPanneau(info, c, equipes, idPanneau, idOnglet) {
     `<ul class="ax-metriques">` +
       `<li title="Écart entre la probabilité calculée par le modèle et celle qui serait 'normale' vu la cote proposée."><span class="ax-icone">${ICONES.avantage}</span><strong>${formatPctSigne(c.edge)}</strong><span>Avantage potentiel</span></li>` +
       `<li title="Ce que rapporterait ce pari en moyenne si on le rejouait de nombreuses fois, selon le modèle."><span class="ax-icone">${ICONES.gain}</span><strong>${formatPctSigne(c.edv)}</strong><span>Gain potentiel</span></li>` +
-      `<li title="Moteur V3 expérimental."><span class="ax-icone">${ICONES.forme}</span><strong>V3</strong><span>${c.apercu_non_calibre ? "Aperçu" : "Non validé"}</span></li>` +
+      `<li title="Moteur V3 en production parallèle."><span class="ax-icone">${ICONES.forme}</span><strong>V3</strong><span>${c.apercu_non_calibre ? "Aperçu" : "Non validé"}</span></li>` +
     `</ul>`;
   return el;
 }
