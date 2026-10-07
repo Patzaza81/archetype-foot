@@ -34,7 +34,7 @@ def main() -> None:
     etat = construit_etat()
     with open(FICHIER_ETAT, "w", encoding="utf-8") as f:
         json.dump(etat, f, ensure_ascii=False, indent=2)
-    print("[etat systeme] etat_systeme.json généré -- bilan moteur_v2_6_9 consolidé.")
+    print("[etat systeme] etat_systeme.json généré -- état du moteur de production consolidé.")
 
 
 if __name__ == "__main__":
