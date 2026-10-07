@@ -13,6 +13,7 @@ from typing import Any
 
 FICHIER_ETAT = "etat_systeme.json"
 FICHIER_BILAN = "bilan_archetype_model.json"
+FICHIER_COMPARAISON = "data/comparaison_moteurs.json"
 
 
 def _charge_json_ou_vide(chemin: str) -> Any:
@@ -27,6 +28,7 @@ def construit_etat() -> dict[str, Any]:
     return {
         "genere_le": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "bilan_comportemental": _charge_json_ou_vide(FICHIER_BILAN),
+        "comparaison_moteurs": _charge_json_ou_vide(FICHIER_COMPARAISON),
     }
 
 
