@@ -63,6 +63,40 @@ function construitBlocComparaisonMoteurs(d) {
   return div;
 }
 
+
+function construitBlocIntelligenceSelection(d) {
+  const evo = d.evolution || {};
+  const moteurs = evo.moteurs || {};
+  const marches = evo.marches || {};
+  const lignes = Object.keys(moteurs).map(function(k) {
+    const x = moteurs[k] || {};
+    const taux = x.taux_reussite == null ? "—" : formatPctSysteme(x.taux_reussite);
+    const lcb = x.borne_basse_95 == null ? "—" : formatPctSysteme(x.borne_basse_95);
+    const roi = x.roi == null ? "—" : formatPctSysteme(x.roi);
+    return "<tr><td><b>" + echappeHtmlSysteme(k) + "</b></td><td>" + (x.observations ?? 0) +
+      "</td><td>" + taux + "</td><td>" + lcb + "</td><td>" + roi + "</td></tr>";
+  }).join("");
+  const familles = {};
+  Object.keys(marches).forEach(function(k) {
+    const x = marches[k] || {};
+    const fam = String(x.marche || "").split("_")[0] || "marché";
+    familles[fam] = (familles[fam] || 0) + Number(x.observations || 0);
+  });
+  const div = document.createElement("section");
+  div.className = "bloc-systeme";
+  div.innerHTML = "<h2>Intelligence de sélection</h2>" +
+    "<p style=\"margin:0 0 9px;font-size:12.5px;color:var(--text-secondary)\">Les deux moteurs coexistent. La sélection cherche où chacun apporte un avantage réel ; le Journal apporte une troisième source indépendante. La marge de succès utilise la borne basse Wilson à 95 % moins la probabilité implicite de la cote.</p>" +
+    "<div class=\"grille-stats\">" +
+      "<div class=\"stat\"><span class=\"etiquette\">Moteurs suivis</span><strong>" + Object.keys(moteurs).length + "</strong></div>" +
+      "<div class=\"stat\"><span class=\"etiquette\">Marchés suivis</span><strong>" + Object.keys(marches).length + "</strong></div>" +
+      "<div class=\"stat\"><span class=\"etiquette\">V2.6.10 résolu</span><strong>" + ((moteurs.moteur_v2_6_10 || {}).observations ?? 0) + "</strong></div>" +
+      "<div class=\"stat\"><span class=\"etiquette\">V3 résolu</span><strong>" + ((moteurs.moteur_v3 || {}).observations ?? 0) + "</strong></div>" +
+    "</div>" +
+    (lignes ? "<div style=\"overflow-x:auto;margin-top:10px\"><table class=\"tableau-systeme\"><thead><tr><th>Moteur</th><th>Résolus</th><th>Réussite</th><th>Borne 95 %</th><th>ROI</th></tr></thead><tbody>" + lignes + "</tbody></table></div>" : "") +
+    "<p style=\"margin:9px 0 0;font-size:11.5px;color:var(--text-secondary)\">Ordre de sélection : preuve empirique → marge de succès → marge modèle → probabilité → EDV → taille d'échantillon. Aucun coefficient arbitraire.</p>";
+  return div;
+}
+
 function afficheEtatSysteme(etat) {
   const racine = document.getElementById("contenu-systeme");
   const maj = document.getElementById("maj-systeme");
@@ -72,6 +106,7 @@ function afficheEtatSysteme(etat) {
   racine.appendChild(construitBlocGlobal(etat.bilan_comportemental));
   racine.appendChild(construitTableauFamilles(etat.bilan_comportemental));
   if (etat.comparaison_moteurs && Object.keys(etat.comparaison_moteurs).length) racine.appendChild(construitBlocComparaisonMoteurs(etat.comparaison_moteurs));
+  if (etat.selection_intelligence && Object.keys(etat.selection_intelligence).length) racine.appendChild(construitBlocIntelligenceSelection(etat.selection_intelligence));
   if (window.__controleSaisons) racine.insertBefore(construitBlocControleSaisons(window.__controleSaisons), racine.firstChild);
   if (window.__controleFootballData) racine.insertBefore(construitBlocControleFootballData(window.__controleFootballData), racine.firstChild);
 }
