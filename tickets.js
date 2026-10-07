@@ -77,7 +77,18 @@ function planLabel(p,size){
  var s=p.tailles||[],same=s.length&&s.every(function(x){return x===s[0]});
  return p.tickets+" tickets "+(same?"de "+s[0]+" paris":"de "+Math.min.apply(null,s)+" à "+Math.max.apply(null,s)+" paris");
 }
-function analyseHtml(a){
+var STRAT={COTES_EQUILIBREES:"cotes équilibrées",SECURITE_EQUILIBREE:"sécurité équilibrée",SECURITE_GROUPEE:"paris sûrs ensemble",LIGUES_SEPAREES:"ligues séparées"};
+function ticketsPlanHtml(p,sel){
+ if(!p.composition||!sel||!sel.length)return "";
+ var h='<details><summary>Voir les tickets ('+esc(STRAT[p.strategie]||p.strategie||"")+')</summary>';
+ p.composition.forEach(function(c,j){
+  h+='<div class="note"><strong>Ticket '+(j+1)+'</strong> · cote '+cote(c.cote)+' · mise '+pct(c.mise)+' · chance '+pct(c.probabilite)+'<br>'+
+   c.paris.map(function(i){var x=sel[i]||{};return esc(x.domicile)+' — '+esc(x.exterieur)+' : '+esc(x.marche)+' ('+cote(x.cote)+')'}).join('<br>')+'</div>';
+ });
+ if(p.variantes&&p.variantes.length>1)h+='<p class="note">Répartitions comparées : '+p.variantes.map(function(v){return esc(STRAT[v.strategie]||v.strategie)+' → chance '+pct(v.proba_profit)+(v.choisie?' (retenue)':'')}).join(' · ')+'</p>';
+ return h+'</details>';
+}
+function analyseHtml(a,sel){
  if(!a||!a.plans||!a.plans.length)return "";
  var size=a.paris,byName={};a.plans.forEach(function(p){byName[p.nom]=p});
  var best=byName[a.meilleur_plan],reg=a.plan_le_plus_regulier?byName[a.plan_le_plus_regulier]:null,mg=a.plan_marge_max?byName[a.plan_marge_max]:null;
@@ -92,7 +103,7 @@ function analyseHtml(a){
   var cotes=(p.composition||[]).map(function(c){return cote(c.cote)}).join(" / ");
   h+='<div class="fmt"><strong>'+esc(planLabel(p,size))+'</strong><small>'+esc(tag)+'</small><small>cotes des tickets : '+cotes+' · '+
    (ok?'rentable dès '+esc(p.gagnants_requis)+' ticket(s) gagnant(s) sur '+p.tickets+' · erreurs garanties '+esc(p.erreurs_garanties):'non rentable : même tous les tickets gagnants ne rembourseraient pas la mise')+
-   ' · chance '+pct(p.proba_profit)+' · gain espéré '+gain(p.esperance_gain)+'</small></div>';
+   ' · chance '+pct(p.proba_profit)+' · gain espéré '+gain(p.esperance_gain)+'</small>'+ticketsPlanHtml(p,sel)+'</div>';
  });
  return h+'<p class="note">Mises réparties au prorata de 1/cote de chaque ticket. Hypothèses : paris indépendants, probabilités des moteurs non recalibrées, « rentable » = mise au moins remboursée. Le bookmaker doit accepter plusieurs tickets.</p></div>';
 }
@@ -103,7 +114,7 @@ function ticketHtml(t){
  if(m.diversite_sources)meta+=badge(esc(m.diversite_sources)+" sources");
  var note=m.probabilite_independante_theorique!=null?'<p class="note">Probabilité théorique sous indépendance : '+pct(m.probabilite_independante_theorique)+' — ce n’est pas une probabilité jointe garantie.</p>':"";
  var a=t.analyse||(ok&&window.ArchetypeAnalyse?window.ArchetypeAnalyse.analyse(t.selection||[]):null);
- return '<h2>'+esc(t.scenario)+'</h2><div class="meta">'+meta+'</div>'+legsHtml(t.selection)+note+analyseHtml(a);
+ return '<h2>'+esc(t.scenario)+'</h2><div class="meta">'+meta+'</div>'+legsHtml(t.selection)+note+analyseHtml(a,t.selection);
 }
 function renderScenarios(data){
  var root=document.getElementById("tickets");root.innerHTML="";
