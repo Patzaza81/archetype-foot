@@ -28,7 +28,6 @@
       <button type="button" data-onglet="comportements">Observatoire</button>
       <button type="button" data-onglet="equipes">Équipes à suivre</button>
       <button type="button" data-onglet="conseils">Conseils</button>
-      <button type="button" data-onglet="moteurs">Moteurs</button>
       <button type="button" data-onglet="methode">Méthode</button>
     </nav>
 
@@ -71,25 +70,6 @@
         <p class="jr-aide">Un marché n'est conseillé que si, <b>dans le même championnat</b>, ce <b>même marché</b> a été rentable sur les matchs déjà joués (Prouvé ou À surveiller), et si la cote du jour est dans la fourchette des cotes sur lesquelles ce résultat a été mesuré. Aucune moyenne « tous championnats » n'est utilisée.</p>
       </section>
       <div id="conseils" class="ax-liste-matchs"></div>
-    </div>
-
-    <div class="jr-onglet" data-onglet="moteurs" hidden>
-      <section class="ax-carte jr-bloc">
-        <h2 class="jr-titre">Sélections du moteur dans les zones rentables</h2>
-        <p class="jr-aide">Choix P1 / P2 / P3 du moteur principal (v2.6.10) pour les matchs à venir, affichés seulement quand le même marché a été rentable dans le même championnat, à une cote comparable. Les résultats passés de l'ancien moteur (v2.6.9) restent consultables plus bas, séparés de ceux du moteur actuel.</p>
-        <div class="jr-filtres" id="filtres-moteurs">
-          <button type="button" class="actif" data-f="moteur_v2_6_10">Moteur principal</button>
-        </div>
-      </section>
-      <div id="selections-moteurs" class="ax-liste-matchs"></div>
-      <section class="ax-carte jr-bloc" id="bloc-moteurs" hidden>
-        <h2 class="jr-titre">Où les moteurs ont gagné</h2>
-        <div id="moteurs"></div>
-      </section>
-      <section class="ax-carte jr-bloc" id="bloc-comparaison-moteurs">
-        <h2 class="jr-titre">Comparatif V2.6.10 / V3</h2>
-        <div id="comparaison-moteurs"><p class="jr-aide">Comparatif en attente de la prochaine génération nocturne.</p></div>
-      </section>
     </div>
 
     <div class="jr-onglet" data-onglet="methode" hidden>
