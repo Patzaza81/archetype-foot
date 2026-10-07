@@ -152,6 +152,82 @@ def tolerance_tier(product: float, target: float) -> int | None:
     return None
 
 
+def poisson_binomial(probs: list[float]) -> list[float]:
+    """Loi du nombre de paris justes : dist[k] = P(exactement k justes), paris supposés indépendants."""
+    dist = [1.0]
+    for p in probs:
+        nxt = [0.0] * (len(dist) + 1)
+        for k, v in enumerate(dist):
+            nxt[k] += v * (1.0 - p)
+            nxt[k + 1] += v * p
+        dist = nxt
+    return dist
+
+
+def elementary_symmetric(values: list[float], kmax: int) -> list[float]:
+    e = [1.0] + [0.0] * kmax
+    for v in values:
+        for k in range(kmax, 0, -1):
+            e[k] += e[k - 1] * v
+    return e
+
+
+def format_name(k: int, size: int) -> str:
+    if k == size:
+        return "COMBINE"
+    if k == 1:
+        return "SIMPLES"
+    return f"SYSTEME_{k}_SUR_{size}"
+
+
+def analyse_ticket(rows: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """Marge d'erreur et rentabilité d'une sélection, pour chaque format de mise.
+
+    Format « k parmi n » : la mise est répartie à parts égales sur les C(n, k) combinés de k paris
+    (k = n : combiné, k = 1 : paris simples). Espérance de gain par unité misée = e_k(p·cote) / C(n, k) − 1.
+    « Bonnes requises » : plus petit nombre de paris justes qui rembourse la mise, estimé à la cote
+    moyenne géométrique de la sélection. Erreurs tolérées = n − bonnes requises."""
+    probs = [proba(x) for x in rows]
+    odds = [n(x.get("cote")) for x in rows]
+    size = len(rows)
+    if size < 2 or any(p is None for p in probs) or any(not o or o <= 1 for o in odds):
+        return None
+    dist = poisson_binomial(probs)
+    at_least = [sum(dist[m:]) for m in range(size + 1)]
+    geo = math.exp(sum(math.log(o) for o in odds) / size)
+    e = elementary_symmetric([p * o for p, o in zip(probs, odds)], size)
+    formats = []
+    for k in sorted({1} | set(range(max(2, size - 3), size + 1))):
+        combos = math.comb(size, k)
+        needed = next(m for m in range(k, size + 1) if math.comb(m, k) * geo ** k >= combos * (1 - 1e-12))
+        formats.append({
+            "nom": format_name(k, size),
+            "paris_par_combine": k,
+            "combines": combos,
+            "esperance_gain": round(e[k] / combos - 1.0, 4),
+            "bonnes_requises": needed,
+            "erreurs_tolerees": size - needed,
+            "proba_atteindre": round(at_least[needed], 4),
+        })
+    best = max(formats, key=lambda f: f["esperance_gain"])
+    # Gain espéré maximal = le plus risqué (combiné). Le format le plus régulier est celui qui,
+    # parmi les formats à gain espéré positif, a le plus de chances d'atteindre ses bonnes requises.
+    positifs = [f for f in formats if f["esperance_gain"] > 0]
+    regulier = max(positifs, key=lambda f: (f["proba_atteindre"], f["esperance_gain"])) if positifs else None
+    return {
+        "paris": size,
+        "hypotheses": "Paris supposés indépendants ; probabilités des moteurs non recalibrées ; bonnes requises estimées à la cote moyenne.",
+        "probabilite_bonnes": [round(v, 6) for v in dist],
+        "paris_justes_attendus": round(sum(probs), 4),
+        "taux_estime_moyen": round(sum(probs) / size, 4),
+        "taux_requis_simples": round(1.0 / geo, 4),
+        "formats": formats,
+        "meilleur_format": best["nom"],
+        "format_le_plus_regulier": regulier["nom"] if regulier else None,
+        "rentable": best["esperance_gain"] > 0,
+    }
+
+
 def ticket_metrics(rows: list[dict[str, Any]], target: float | None = None) -> dict[str, Any]:
     odds = [n(x.get("cote")) for x in rows]
     odds = [x for x in odds if x and x > 1]
@@ -209,6 +285,7 @@ def ticket(rows: list[dict[str, Any]], scenario: str, target: float | None = Non
         "regle": "Un seul pari par match, aucun quota rempli artificiellement, maximum 12 matchs, cote totale entre 2 et 20.",
         "selection": [leg(x) for x in rows],
         "metrics": ticket_metrics(rows, target),
+        "analyse": analyse_ticket(rows) if rows else None,
     }
 
 
@@ -354,7 +431,7 @@ def build(data: dict[str, Any]) -> dict[str, Any]:
         "intervalle_cote_totale": [MIN_TARGET, MAX_TARGET],
         "cote_par_defaut": DEFAULT_TARGET,
         "tolerances": list(TOLERANCES),
-        "principe": "Deux moteurs coexistants + Journal. Les moteurs font le tri : un choix est retenu si sa probabilité estimée dépasse la probabilité implicite de la cote, sans historique minimal. La cote totale est choisie par le parieur, entre 2 et 20, jamais hors de cet intervalle.",
+        "principe": "Deux moteurs coexistants + Journal. Les moteurs font le tri : un choix est retenu si sa probabilité estimée dépasse la probabilité implicite de la cote, sans historique minimal. La cote totale est choisie par le parieur, entre 2 et 20, jamais hors de cet intervalle. Chaque ticket indique sa marge d'erreur et sa rentabilité par format de mise.",
         "avertissement": "La cote totale d'un combiné est exacte comme produit des cotes observées ; la probabilité indépendante affichée n'est pas une probabilité jointe garantie.",
         "candidats_total": len(rows),
         "sources": {source: len((data.get("sources", {}).get(source, {}) or {}).get("top", []) or []) for source in ("moteur_v2_6_10", "moteur_v3", "journal")},
