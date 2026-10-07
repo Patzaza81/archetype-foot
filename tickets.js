@@ -71,27 +71,30 @@ function legsHtml(sel){
 }
 function badge(txt,cls){return '<span class="badge'+(cls?" "+cls:"")+'">'+txt+'</span>'}
 function gain(x){return (x>0?"+":"")+pct(x)}
-function fmtLabel(f,size){
- if(f.nom==="COMBINE")return "Combiné ("+size+" sur "+size+")";
- if(f.nom==="SIMPLES")return "Paris simples";
- return "Système "+f.paris_par_combine+" sur "+size;
+function planLabel(p,size){
+ if(p.nom==="COMBINE")return "Combiné ("+size+" paris, 1 ticket)";
+ if(p.nom==="SIMPLES")return "Paris simples ("+size+" tickets)";
+ var s=p.tailles||[],same=s.length&&s.every(function(x){return x===s[0]});
+ return p.tickets+" tickets "+(same?"de "+s[0]+" paris":"de "+Math.min.apply(null,s)+" à "+Math.max.apply(null,s)+" paris");
 }
 function analyseHtml(a){
- if(!a||!a.formats||!a.formats.length)return "";
- var size=a.paris,byName={};a.formats.forEach(function(f){byName[f.nom]=f});
- var best=byName[a.meilleur_format],reg=a.format_le_plus_regulier?byName[a.format_le_plus_regulier]:null;
+ if(!a||!a.plans||!a.plans.length)return "";
+ var size=a.paris,byName={};a.plans.forEach(function(p){byName[p.nom]=p});
+ var best=byName[a.meilleur_plan],reg=a.plan_le_plus_regulier?byName[a.plan_le_plus_regulier]:null,mg=a.plan_marge_max?byName[a.plan_marge_max]:null;
  var h='<div class="analyse"><h3>Marge d’erreur et rentabilité</h3>';
- h+='<div class="meta">'+badge(a.rentable?"Rentable selon les moteurs":"Non rentable selon les moteurs",a.rentable?"ok":"none")+badge("Justes attendus "+String(a.paris_justes_attendus).replace(".",",")+" / "+size)+badge("Taux estimé "+pct(a.taux_estime_moyen))+badge("Seuil en simples "+pct(a.taux_requis_simples))+'</div>';
- if(reg)h+='<p class="note">Format le plus régulier : <strong>'+esc(fmtLabel(reg,size))+'</strong>. ';
- else h+='<p class="note">Aucun format à gain espéré positif. ';
- h+='Gain espéré maximal : <strong>'+esc(fmtLabel(best,size))+'</strong> (le plus risqué).</p>';
- a.formats.forEach(function(f){
-  var tag=(f.nom===a.meilleur_format?" · gain max":"")+(f.nom===a.format_le_plus_regulier?" · plus régulier":"");
-  h+='<div class="fmt"><strong>'+esc(fmtLabel(f,size))+'</strong><small>'+esc(tag)+'</small><small>'+
-   (f.combines>1?esc(f.combines)+' combinés · ':'')+'rentable dès '+esc(f.bonnes_requises)+' justes sur '+size+' · erreurs tolérées '+esc(f.erreurs_tolerees)+
-   ' · chance de l’atteindre '+pct(f.proba_atteindre)+' · gain espéré '+gain(f.esperance_gain)+'</small></div>';
+ h+='<div class="meta">'+badge(a.rentable?"Rentable selon les moteurs":"Non rentable selon les moteurs",a.rentable?"ok":"none")+badge("Justes attendus "+String(a.paris_justes_attendus).replace(".",",")+" / "+size)+badge("Taux estimé "+pct(a.taux_estime_moyen))+'</div>';
+ if(mg)h+='<p class="note">Plus grande marge d’erreur garantie : <strong>'+esc(planLabel(mg,size))+'</strong> ('+esc(mg.erreurs_garanties)+' erreurs tolérées).</p>';
+ if(reg)h+='<p class="note">Plan le plus régulier : <strong>'+esc(planLabel(reg,size))+'</strong>. Gain espéré maximal : <strong>'+esc(planLabel(best,size))+'</strong>.</p>';
+ else h+='<p class="note">Aucun plan à gain espéré positif.</p>';
+ a.plans.forEach(function(p){
+  var tag=(p.nom===a.meilleur_plan?" · gain max":"")+(p.nom===a.plan_le_plus_regulier?" · plus régulier":"")+(p.nom===a.plan_marge_max?" · marge max":"");
+  var ok=p.gagnants_requis!=null;
+  var cotes=(p.composition||[]).map(function(c){return cote(c.cote)}).join(" / ");
+  h+='<div class="fmt"><strong>'+esc(planLabel(p,size))+'</strong><small>'+esc(tag)+'</small><small>cotes des tickets : '+cotes+' · '+
+   (ok?'rentable dès '+esc(p.gagnants_requis)+' ticket(s) gagnant(s) sur '+p.tickets+' · erreurs garanties '+esc(p.erreurs_garanties):'non rentable : même tous les tickets gagnants ne rembourseraient pas la mise')+
+   ' · chance '+pct(p.proba_profit)+' · gain espéré '+gain(p.esperance_gain)+'</small></div>';
  });
- return h+'<p class="note">Hypothèses : paris indépendants, probabilités des moteurs non recalibrées, « rentable dès » estimé à la cote moyenne. Vérifiez que votre bookmaker propose les systèmes.</p></div>';
+ return h+'<p class="note">Mises réparties au prorata de 1/cote de chaque ticket. Hypothèses : paris indépendants, probabilités des moteurs non recalibrées, « rentable » = mise au moins remboursée. Le bookmaker doit accepter plusieurs tickets.</p></div>';
 }
 function ticketHtml(t){
  var m=t.metrics||{},ok=t.statut==="OK";
