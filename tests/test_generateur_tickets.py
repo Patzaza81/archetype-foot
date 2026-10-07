@@ -288,3 +288,92 @@ def test_python_et_javascript_calculent_la_meme_analyse(tmp_path, odds, probs):
         assert [t["paris"] for t in fp["composition"]] == [t["paris"] for t in fj["composition"]]
         assert abs(fp["esperance_gain"] - fj["esperance_gain"]) < 1e-3
         assert abs(fp["proba_profit"] - fj["proba_profit"]) < 1e-3
+
+
+# ---------- Plusieurs répartitions par plan ----------
+def sel_comp(odds, probs, comps):
+    return [cand(i, o, p, competition=c) for i, (o, p, c) in enumerate(zip(odds, probs, comps))]
+
+
+@pytest.mark.parametrize("strat", gt.STRATEGIES)
+@pytest.mark.parametrize("t", [2, 3, 4])
+def test_chaque_strategie_donne_une_partition_valide(strat, t):
+    odds = [1.3 + 0.07 * i for i in range(12)]
+    probs = [0.85 - 0.02 * i for i in range(12)]
+    comps = ["A", "B", "C"] * 4
+    groups = gt.plan_partition(odds, t, probs, comps, strat)
+    assert sorted(i for g in groups for i in g) == list(range(12))
+    assert [len(g) for g in groups] == gt.plan_sizes(12, t)
+
+
+def test_ligues_separees_met_les_matchs_d_une_meme_ligue_dans_des_tickets_differents():
+    g = gt.plan_partition([1.5, 1.6, 1.7, 1.8], 2, [0.7] * 4, ["A", "A", "B", "B"], "LIGUES_SEPAREES")
+    for t in g:
+        assert len({["A", "A", "B", "B"][i] for i in t}) == 2
+
+
+def test_securite_groupee_rassemble_les_paris_les_plus_sürs():
+    g = gt.plan_partition([1.5] * 4, 2, [0.9, 0.5, 0.9, 0.5], ["x"] * 4, "SECURITE_GROUPEE")
+    assert g == [[0, 2], [1, 3]]
+
+
+def test_securite_equilibree_rapproche_les_probabilites_des_tickets():
+    probs = [0.9, 0.9, 0.5, 0.5]
+    odds = [1.5] * 4
+    eq = gt.plan_partition(odds, 2, probs, None, "SECURITE_EQUILIBREE")
+    gr = gt.plan_partition(odds, 2, probs, None, "SECURITE_GROUPEE")
+    ecart = lambda gs: abs(math.prod(probs[i] for i in gs[0]) - math.prod(probs[i] for i in gs[1]))
+    assert ecart(eq) < ecart(gr)
+
+
+def test_strategies_differentes_donnent_des_repartitions_differentes():
+    odds = [1.2, 1.2, 3.0, 3.0]
+    probs = [0.9, 0.9, 0.4, 0.4]
+    cotes = gt.plan_partition(odds, 2, probs, ["A"] * 4, "COTES_EQUILIBREES")
+    groupee = gt.plan_partition(odds, 2, probs, ["A"] * 4, "SECURITE_GROUPEE")
+    assert cotes != groupee
+
+
+def test_strategie_inconnue_refusee():
+    with pytest.raises(ValueError):
+        gt.plan_partition([1.5, 1.6], 2, [0.7, 0.7], None, "N_IMPORTE_QUOI")
+
+
+def test_le_plan_retient_la_meilleure_variante_et_n_en_perd_aucune():
+    odds = [1.25, 1.3, 1.9, 2.0, 1.4, 1.8, 1.55, 1.65, 1.35, 2.1, 1.45, 1.75]
+    probs = [0.85, 0.8, 0.55, 0.52, 0.78, 0.6, 0.7, 0.66, 0.8, 0.5, 0.75, 0.6]
+    a = gt.analyse_ticket(sel_comp(odds, probs, ["A", "A", "B", "B", "C", "C"] * 2))
+    for p in a["plans"]:
+        v = p["variantes"]
+        assert sum(1 for x in v if x["choisie"]) == 1
+        assert v[0]["strategie"] == "COTES_EQUILIBREES"
+        ch = next(x for x in v if x["choisie"])
+        cle = lambda x: (x["erreurs_garanties"] if x["erreurs_garanties"] is not None else -1, x["proba_profit"], x["esperance_gain"])
+        assert all(cle(ch) >= cle(x) for x in v)
+        assert p["strategie"] == ch["strategie"]
+    assert any(len(p["variantes"]) > 1 for p in a["plans"])
+
+
+def test_la_logique_existante_reste_identique_quand_toutes_les_variantes_sont_egales():
+    a = gt.analyse_ticket(sel([1.7] * 12, [0.7] * 12))
+    p4 = plan(a, "TICKETS_4X3")
+    assert p4["strategie"] == "COTES_EQUILIBREES" and len(p4["variantes"]) <= 4
+    assert p4["gagnants_requis"] == 1 and p4["erreurs_garanties"] == 3
+
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="node absent")
+def test_python_et_javascript_choisissent_les_memes_repartitions(tmp_path):
+    odds = [1.25, 1.3, 1.9, 2.0, 1.4, 1.8, 1.55, 1.65, 1.35, 2.1, 1.45, 1.75]
+    probs = [0.85, 0.8, 0.55, 0.52, 0.78, 0.6, 0.7, 0.66, 0.8, 0.5, 0.75, 0.6]
+    rows = sel_comp(odds, probs, ["A", "A", "B", "B", "C", "C"] * 2)
+    py = gt.analyse_ticket(rows)
+    legs = [gt.leg(x) for x in rows]
+    racine = Path(__file__).resolve().parent.parent
+    script = tmp_path / "run.js"
+    script.write_text("const a=require(process.argv[2]).analyse(JSON.parse(process.argv[3]));console.log(JSON.stringify(a));", encoding="utf-8")
+    res = subprocess.run(["node", str(script), str(racine / "tickets_analyse.js"), json.dumps(legs)], capture_output=True, text=True, check=True)
+    js = json.loads(res.stdout)
+    for fp, fj in zip(py["plans"], js["plans"]):
+        assert fp["strategie"] == fj["strategie"]
+        assert [t["paris"] for t in fp["composition"]] == [t["paris"] for t in fj["composition"]]
+        assert [v["strategie"] for v in fp["variantes"]] == [v["strategie"] for v in fj["variantes"]]
