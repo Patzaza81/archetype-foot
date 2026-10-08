@@ -263,7 +263,7 @@ def _candidate_features(candidate: dict[str, Any]) -> dict[str, str]:
     return feature_values(record)
 
 
-def discover_rules(records: Iterable[dict[str, Any]]) -> dict[str, Any]:
+def discover_rules(records: Iterable[dict[str, Any]], historical_rows: Iterable[dict[str, Any]] | None = None) -> dict[str, Any]:
     """Découvre et valide des règles de 1 à 3 dimensions.
 
     La recherche est bornée pour éviter l'extraction de coïncidences:
@@ -350,6 +350,10 @@ def discover_rules(records: Iterable[dict[str, Any]]) -> dict[str, Any]:
             else:
                 status = "SURVEILLER"
 
+            historical = None
+            if historical_rows is not None and key.get("market") and key.get("competition"):
+                historical = historical_support({"date": today.isoformat(), "marche": key["market"], "competition": key["competition"]}, historical_rows)
+
             discovered.append({
                 "id": _rule_id(conditions),
                 "conditions": key,
@@ -367,6 +371,7 @@ def discover_rules(records: Iterable[dict[str, Any]]) -> dict[str, Any]:
                 "lift_recent_vs_parent": round(recent_lift, 6) if recent_lift is not None else None,
                 "statut": status,
                 "specificite": len(conditions),
+                "historique_saison_precedente": historical,
             })
 
     # Déduplication par identifiant et priorité: active > surveiller > déclinante.
@@ -529,6 +534,8 @@ def apply_rules(candidate: dict[str, Any], intelligence: dict[str, Any]) -> dict
     candidate["calibrage_rang"] = rank
     candidate["calibrage_marge"] = margin
     candidate["calibrage_lift"] = lift
+    candidate["calibrage_historique_niveau"] = (historique or {}).get("niveau")
+    candidate["calibrage_historique_taux"] = (historique or {}).get("taux_reussite")
     return candidate
 
 
