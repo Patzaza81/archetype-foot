@@ -604,13 +604,30 @@ def enrich(candidates: list[dict[str, Any]], history: dict[str, Any], intelligen
             empirical_rate = c.get("historique_taux")
             empirical_roi = roi
             empirical_n = n
-        empirical_rank = 2 if empirical_n >= 5 and empirical_lower is not None else 0
+        sample_rank = 0
+        if c.get("source") == V3:
+            niveau_v3 = norm(c.get("niveau"))
+            sample_rank = {
+                "V3_ECHANTILLON_TRES_SOLIDE": 2,
+                "V3_ECHANTILLON_SOLIDE": 2,
+                "V3_ECHANTILLON_UTILISABLE": 1,
+                "V3_ECHANTILLON_FAIBLE": 0,
+            }.get(niveau_v3, 0)
+        empirical_rank = 3 if empirical_n >= 5 and empirical_lower is not None else sample_rank
+        c["preuve_niveau"] = (
+            "OBSERVEE"
+            if empirical_rank == 3
+            else "ECHANTILLON_V3"
+            if empirical_rank > 0
+            else "MODELE_NON_CALIBRE"
+        )
         c["_ordre"] = (
             empirical_rank,
             empirical_lower if empirical_lower is not None else -999.0,
             empirical_rate if empirical_rate is not None else -999.0,
             empirical_roi if empirical_roi is not None else -999.0,
             empirical_n,
+            sample_rank,
             int(c.get("calibrage_rang") or 0),
             c.get("calibrage_marge") if c.get("calibrage_marge") is not None else -999.0,
             c.get("calibrage_lift") if c.get("calibrage_lift") is not None else -999.0,
@@ -673,7 +690,7 @@ def evolution(history: dict[str, Any]) -> dict[str, Any]:
         "criteres": {
             "marge_succes": "borne basse Wilson 95 % du taux de réussite historique moins probabilité implicite 1/cote (informatif, ne bloque plus la sélection)",
             "marge_modele": "probabilité du moteur moins probabilité implicite 1/cote",
-            "priorite": "preuve observée (Journal équipe ou historique moteur : borne Wilson > taux > ROI > volume) > calibrage externe > rang P1/P2/P3 > valeur modèle ; les probabilités moteur non calibrées ne dominent plus une preuve réelle",
+            "priorite": "preuve observée (Journal équipe ou historique moteur) > niveau d'échantillon V3 > calibrage externe > rang P1/P2/P3 > valeur modèle ; une probabilité moteur non calibrée ne peut plus dominer une preuve réelle",
             "odds": [ODDS_MIN, ODDS_MAX],
         },
     }
@@ -712,6 +729,7 @@ def main() -> int:
                 x for x in rows
                 if x.get("journal_opportunity")
                 or int(x.get("historique_observations") or 0) >= 5
+                or str(x.get("niveau") or "").startswith("V3_ECHANTILLON_")
                 or x.get("calibrage_rang")
             ],
             key=lambda x: x["_ordre"],
