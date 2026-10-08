@@ -272,7 +272,7 @@ def discover_rules(records: Iterable[dict[str, Any]]) -> dict[str, Any]:
     """
     hist = _resolved_records(records)
     if not hist:
-        return {"version": 1, "statut": "AUCUNE_DONNEE", "rules": [], "compteurs": {}}
+        return {"version": 2, "statut": "AUCUNE_DONNEE", "rules": [], "compteurs": {}}
 
     feature_names = [x for x in BASE_FEATURES if x not in {"home_team", "away_team"}]
     # Les équipes exactes sont autorisées seulement en dimension simple ou avec
@@ -391,7 +391,7 @@ def discover_rules(records: Iterable[dict[str, Any]]) -> dict[str, Any]:
     )[:MAX_RULES]
 
     return {
-        "version": 1,
+        "version": 2,
         "statut": "OK",
         "parametres": {
             "observations_min": MIN_OBS,
@@ -407,6 +407,8 @@ def discover_rules(records: Iterable[dict[str, Any]]) -> dict[str, Any]:
             "regles_retenues": len(rules),
             "actives": sum(r["statut"] == "ACTIVE" for r in rules),
             "declinantes": sum(r["statut"] == "DECLINANTE" for r in rules),
+            "regles_championnat": sum("competition" in (r.get("conditions") or {}) for r in rules),
+            "regles_championnat_actives": sum(r["statut"] == "ACTIVE" and "competition" in (r.get("conditions") or {}) for r in rules),
         },
         "rules": rules,
     }
@@ -463,7 +465,7 @@ def apply_rules(candidate: dict[str, Any], intelligence: dict[str, Any]) -> dict
 def summarize(intelligence: dict[str, Any]) -> dict[str, Any]:
     rules = intelligence.get("rules") or []
     return {
-        "version": intelligence.get("version", 1),
+        "version": intelligence.get("version", 2),
         "statut": intelligence.get("statut"),
         "compteurs": intelligence.get("compteurs", {}),
         "actives": [
@@ -473,7 +475,7 @@ def summarize(intelligence: dict[str, Any]) -> dict[str, Any]:
                 "observations": r.get("observations"),
                 "taux_reussite": r.get("taux_reussite"),
                 "marge_vs_implicite": r.get("marge_vs_implicite"),
-                    "lift_vs_parent": r.get("lift_vs_parent"),
+                "lift_vs_parent": r.get("lift_vs_parent"),
                 "lift_recent_vs_parent": r.get("lift_recent_vs_parent"),
                 "conditions": r.get("conditions"),
             }
