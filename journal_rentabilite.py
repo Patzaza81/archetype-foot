@@ -814,12 +814,16 @@ def construit_opportunites_futures(matchs, aujourdhui=None, prochains=None):
 
 
 def construit_journal(aujourdhui=None):
+    aujourdhui = aujourdhui or _aujourdhui()
     matchs, diag = charge_matchs_betpawa()
     paris, inconnus, incoherentes = paris_depuis_matchs(matchs)
     segments = construit_segments(paris) if paris else {k: [] for k in DIMENSIONS}
     # Le Journal est volontairement indépendant des moteurs : ses publications
     # reposent uniquement sur les matchs terminés, leurs cotes observées et les scores.
-    matchs_tous = charge_tous_resultats()\n    prochains = _prochains_matchs(aujourdhui)\n    equipes = construit_equipes_a_suivre(matchs_tous, aujourdhui, prochains=prochains)\n    opportunites = construit_opportunites_futures(matchs_tous, aujourdhui, prochains=prochains)
+    matchs_tous = charge_tous_resultats()
+    prochains = _prochains_matchs(aujourdhui)
+    equipes = construit_equipes_a_suivre(matchs_tous, aujourdhui, prochains=prochains)
+    opportunites = construit_opportunites_futures(matchs_tous, aujourdhui, prochains=prochains)
     dates = sorted({m["date"] for m in matchs})
     compte = {dim: {st: sum(1 for s in lignes if s["statut"] == st) for st in ("A_JOUER", "A_SURVEILLER", "NEUTRE", "A_EVITER")}
               for dim, lignes in segments.items()}
@@ -836,7 +840,9 @@ def construit_journal(aujourdhui=None):
                    "avertissement": "Beaucoup de segments sont testés : quelques-uns sortent « à surveiller » par pur hasard. "
                                     "Seul « à jouer » repose sur une preuve statistique, et il est recalculé chaque nuit."},
         "comptage_statuts": compte,
-        "equipes_a_suivre": equipes,\n        "opportunites_futures": opportunites,\n        "regles_opportunites": {"min_matchs": MIN_MATCHS_OPPORTUNITE, "fenetre_recente": FENETRE_RECENTE, "seuil_emergence": SEUIL_EMERGENCE, "seuil_renforcement": SEUIL_RENFORCEMENT, "seuil_rupture": SEUIL_RUPTURE, "marge_min_tendance": MARGE_MIN_TENDANCE, "note": "Signal d observation, jamais un pronostic moteur."},
+        "equipes_a_suivre": equipes,
+        "opportunites_futures": opportunites,
+        "regles_opportunites": {"min_matchs": MIN_MATCHS_OPPORTUNITE, "fenetre_recente": FENETRE_RECENTE, "seuil_emergence": SEUIL_EMERGENCE, "seuil_renforcement": SEUIL_RENFORCEMENT, "seuil_rupture": SEUIL_RUPTURE, "marge_min_tendance": MARGE_MIN_TENDANCE, "note": "Signal d observation, jamais un pronostic moteur."},
         "regles_equipes": {"min_matchs": MIN_MATCHS_EQUIPE, "seuil_frequence": SEUIL_FREQUENCE_EQUIPE,
                            "min_cotes_roi": MIN_COTES_ROI_EQUIPE},
         "segments": segments,
