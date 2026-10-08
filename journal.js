@@ -212,12 +212,32 @@
       '</div>';
   }
 
+  function afficherOpportunites(j) {
+    var zone = document.getElementById("opportunites");
+    if (!zone) return;
+    var rows = j.opportunites_futures || [];
+    if (!rows.length) {
+      zone.innerHTML = '<p class="jr-vide">Aucune opportunité future suffisamment documentée pour l’instant.</p>';
+      return;
+    }
+    var ordre = { EMERGENCE: 0, RENFORCEMENT: 1, RUPTURE: 2 };
+    rows.sort(function(a,b){ return (ordre[a.statut]-ordre[b.statut]) || ((b.frequence_recente||0)-(a.frequence_recente||0)); });
+    zone.innerHTML = rows.map(function(o) {
+      var pm = o.prochain_match || {};
+      var badge = o.statut === "RUPTURE" ? "b-NEUTRE" : (o.statut === "EMERGENCE" ? "b-A_SURVEILLER" : "b-A_JOUER");
+      var prix = pm.cote_betpawa == null ? "Cote non disponible" : (pm.prix_compatible_historique === true ? "Prix dans la plage historique" : pm.prix_compatible_historique === false ? "Prix hors plage historique" : "Prix non comparable");
+      var roi = o.roi_betpawa == null ? "ROI BetPawa : insuffisant" : "ROI BetPawa : " + pct(o.roi_betpawa, true);
+      return '<details class="jr-equipe"><summary><div class="jr-eq-tete"><span class="jr-fiche-nom">' + esc(o.equipe) + '</span><span class="jr-badge ' + badge + '">' + esc(o.statut) + '</span></div><div class="jr-fiche-info">' + esc(o.ligue) + " · " + esc(o.marche) + " · tendance récente " + pct(o.frequence_recente) + '</div><div class="jr-eq-resume">' + esc(o.niveau) + " · " + esc(roi) + '</div></summary><div class="jr-eq-marche"><div class="jr-eq-detail"><b>Historique :</b> ' + o.observations + " matchs · global " + pct(o.frequence) + " · récent " + pct(o.frequence_recente) + (o.frequence_precedente == null ? "" : " · précédent " + pct(o.frequence_precedente)) + " · évolution " + pct(o.delta_recent, true) + '.</div><div class="jr-eq-prochain">Prochain match : ' + dateCourte(pm.date) + " à " + esc(pm.heure || "—") + " contre " + esc(pm.adversaire || "—") + " (" + esc(pm.lieu || "—") + ")" + (pm.cote_betpawa == null ? "" : " · cote " + cote(pm.cote_betpawa)) + " · " + esc(prix) + '</div><div class="jr-eq-detail"><b>Règle :</b> signal calculé hors moteur. Il sert à surveiller une configuration et peut disparaître si la tendance se dégrade.</div></div></details>';
+    }).join("");
+  }
+
   function afficher(j) {
     document.getElementById("maj").textContent = "Mis à jour : " + (j.genere_le || "—");
     var rentables = ((j.segments || {}).ligue_marche || []).filter(positif);
     afficherResume(j, rentables);
     afficherRentables(j, rentables);
     afficherEquipes(j);
+    afficherOpportunites(j);
     afficherRegles(j);
   }
 
