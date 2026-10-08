@@ -366,12 +366,107 @@ def journal_segment_map(journal: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return out
 
 
+def _journal_team_market_candidate(row: dict[str, Any]) -> dict[str, Any] | None:
+    """Transforme une observation équipe×marché du Journal en opportunité exploitable.
+
+    Le Journal reste indépendant du moteur : sa fréquence est une preuve descriptive,
+    jamais une probabilité moteur. Pour les calculs de tickets, la borne de Wilson
+    constitue volontairement l'estimation prudente ; la fréquence brute sert au
+    classement des opportunités.
+    """
+    pm = row.get("prochain_match") or {}
+    odds = num(pm.get("cote_betpawa"))
+    date = norm(pm.get("date"))
+    if not date or date < dt.datetime.now().date().isoformat() or not odds or odds <= 1:
+        return None
+    if odds > ODDS_MAX:
+        return None
+    wins = int(row.get("gagnes") or 0)
+    observations = int(row.get("joues") or 0)
+    frequency = num(row.get("frequence"))
+    if observations < 5 or frequency is None:
+        return None
+    lower = wilson_lower(wins, observations)
+    equipe = norm(row.get("equipe"))
+    adversaire = norm(pm.get("adversaire"))
+    lieu = norm(pm.get("lieu"))
+    if not equipe or not adversaire:
+        return None
+    if lieu == "domicile":
+        domicile, exterieur = equipe, adversaire
+    else:
+        domicile, exterieur = adversaire, equipe
+    market = norm(row.get("marche"))
+    q = implied(odds)
+    return {
+        "source": "journal",
+        "moteur": None,
+        "rang": None,
+        "match_id": None,
+        "date": date,
+        "heure": norm(pm.get("heure")),
+        "competition": norm(row.get("ligue")),
+        "domicile": domicile,
+        "exterieur": exterieur,
+        "marche": market,
+        "cote": odds,
+        "probabilite": None,
+        "probabilite_estimee": round(lower, 6) if lower is not None else None,
+        "probabilite_source": "JOURNAL_WILSON",
+        "probabilite_brute_journal": frequency,
+        "edge": None,
+        "edv": None,
+        "niveau": f"FORME_{wins}_SUR_{observations}",
+        "market_family": market_family(market),
+        "exposure_group": market_family(market),
+        "justification": (
+            f"{equipe} a réussi ce marché {wins}/{observations} fois "
+            f"({frequency:.1%}) ; borne prudente Wilson 95 % = "
+            f"{lower:.1%}."
+        ) if lower is not None else None,
+        "journal_roi": num(row.get("roi_betpawa")),
+        "journal_success_margin": round(lower - q, 6) if lower is not None and q is not None else None,
+        "journal_observations": observations,
+        "journal_frequency": frequency,
+        "journal_wins": wins,
+        "journal_lower_bound": lower,
+        "journal_team": equipe,
+        "journal_opportunity": True,
+        "betpawa_url": pm.get("betpawa_url"),
+    }
+
+
 def extract_journal_candidates(journal: dict[str, Any], full: dict[str, Any]) -> list[dict[str, Any]]:
+    """Récupère deux formes de valeur du Journal sans dépendre de TOUS_MARCHES_EVALUES.
+
+    1. équipes à suivre : équipe×marché récurrent + prochain match + cote ;
+    2. segments championnat×marché : conseil historique directement compatible avec la cote.
+
+    Le premier flux est essentiel : il survit même lorsque precalcul.json est allégé.
+    """
+    rows: list[dict[str, Any]] = []
+    seen: set[tuple[str, str, str]] = set()
+
+    for item in journal.get("equipes_a_suivre") or []:
+        if not isinstance(item, dict):
+            continue
+        c = _journal_team_market_candidate(item)
+        if not c:
+            continue
+        key = (
+            c["date"],
+            c["domicile"].lower() + "|" + c["exterieur"].lower(),
+            market_key(c["marche"]),
+        )
+        if key in seen:
+            continue
+        seen.add(key)
+        rows.append(c)
+
     segs = journal_segment_map(journal)
     if not segs:
-        return []
-    rows: list[dict[str, Any]] = []
-    seen: set[tuple[str, str]] = set()
+        return rows
+
     for signal in full.get("signaux", []) or []:
         if not isinstance(signal, dict):
             continue
@@ -392,7 +487,11 @@ def extract_journal_candidates(journal: dict[str, Any], full: dict[str, Any]) ->
                 continue
             if seg.get("cote_max") is not None and odds > float(seg["cote_max"]):
                 continue
-            key = (norm(signal.get("match_id")), market_key(market))
+            key = (
+                norm(signal.get("match_id")),
+                market_key(market),
+                "segment",
+            )
             if key in seen:
                 continue
             seen.add(key)
@@ -422,10 +521,10 @@ def extract_journal_candidates(journal: dict[str, Any], full: dict[str, Any]) ->
                 "journal_roi": roi,
                 "journal_success_margin": margin,
                 "journal_observations": seg.get("matchs"),
+                "journal_segment": True,
                 "betpawa_url": signal.get("betpawa_url"),
             })
     return rows
-
 
 def enrich(candidates: list[dict[str, Any]], history: dict[str, Any], intelligence: dict[str, Any] | None = None) -> list[dict[str, Any]]:
     for c in candidates:
@@ -444,19 +543,37 @@ def enrich(candidates: list[dict[str, Any]], history: dict[str, Any], intelligen
         c["historique_taux"] = h.get("taux_reussite")
         c["historique_borne_basse_95"] = lower
         c["historique_roi"] = roi
-        c["marge_succes"] = round(lower - q, 6) if lower is not None and q is not None else c.get("journal_success_margin")
+        c["marge_succes"] = (
+            round(lower - q, 6)
+            if lower is not None and q is not None
+            else c.get("journal_success_margin")
+        )
         tier, rank = confidence_tier(n, c.get("marge_succes"), roi if roi is not None else c.get("journal_roi"))
         if c.get("source") == "journal":
-            if c.get("niveau") == "A_JOUER" and c.get("journal_success_margin") is not None and c["journal_success_margin"] > 0:
+            if c.get("journal_team"):
+                # La fréquence équipe est une preuve descriptive, pas une garantie.
+                # On garde le rang de confiance distinct pour ne pas appeler 5/5 « prouvé ».
+                tier = f"FORME_{int(c.get('journal_wins') or 0)}_SUR_{int(c.get('journal_observations') or 0)}"
+                rank = 3 if int(c.get("journal_observations") or 0) >= 8 else 2
+            elif c.get("niveau") == "A_JOUER" and c.get("journal_success_margin") is not None and c["journal_success_margin"] > 0:
                 tier, rank = "PROUVE", 4
             elif c.get("niveau") == "A_SURVEILLER":
                 tier, rank = "SURVEILLER", 2
         c["niveau_confiance"] = tier
         c["rang_confiance"] = rank
 
-        # Valeur estimée du choix, indépendante de l'historique : les moteurs font déjà
-        # le tri, l'historique n'est conservé qu'à titre d'information.
+        # Pour les tickets, on n'utilise jamais la fréquence brute comme probabilité.
+        # Une équipe 5/5 est donc mise en avant comme preuve, mais son estimation
+        # mathématique reste prudente (borne Wilson 95 %).
         p_est = p
+        if c.get("journal_lower_bound") is not None:
+            p_est = c["journal_lower_bound"]
+            c["probabilite_source"] = "JOURNAL_WILSON"
+        elif n >= 10 and lower is not None:
+            p_est = lower
+            c["probabilite_source"] = "HISTORIQUE_MOTEUR_WILSON"
+        else:
+            c["probabilite_source"] = "MODELE_NON_CALIBRE"
         jm = c.get("journal_success_margin")
         if p_est is None and c.get("source") == "journal" and q is not None and jm is not None:
             p_est = min(0.99, max(0.01, q + jm))
@@ -473,11 +590,28 @@ def enrich(candidates: list[dict[str, Any]], history: dict[str, Any], intelligen
             rang_p = 2 if c.get("niveau") == "A_JOUER" else 1
         ev = c["ev_estime"]
 
-        # Classement déterministe : rang choisi par le moteur (P1 > P2 > P3), puis valeur
-        # estimée (probabilité × cote − 1), puis avantage propre au modèle, probabilité et EDV.
-        # Aucun coefficient arbitraire ne mélange ces grandeurs ; l'historique ne bloque rien.
+        # Classement multi-source : la preuve observée passe AVANT le rang P1/P2/P3.
+        # Aucun coefficient arbitraire : chaque niveau est une comparaison lexicographique.
+        # - Journal équipe : borne Wilson + fréquence + ROI + volume ;
+        # - moteur avec historique suffisant : borne Wilson + taux + ROI + volume ;
+        # - sinon seulement calibrage externe puis rang/valeur du moteur.
+        empirical_lower = c.get("journal_lower_bound")
+        empirical_rate = c.get("journal_frequency")
+        empirical_roi = c.get("journal_roi")
+        empirical_n = int(c.get("journal_observations") or 0)
+        if empirical_lower is None and n >= 10:
+            empirical_lower = lower
+            empirical_rate = c.get("historique_taux")
+            empirical_roi = roi
+            empirical_n = n
+        empirical_rank = 2 if empirical_n >= 5 and empirical_lower is not None else 0
         c["_ordre"] = (
-            c.get("calibrage_rang", 0),
+            empirical_rank,
+            empirical_lower if empirical_lower is not None else -999.0,
+            empirical_rate if empirical_rate is not None else -999.0,
+            empirical_roi if empirical_roi is not None else -999.0,
+            empirical_n,
+            int(c.get("calibrage_rang") or 0),
             c.get("calibrage_marge") if c.get("calibrage_marge") is not None else -999.0,
             c.get("calibrage_lift") if c.get("calibrage_lift") is not None else -999.0,
             rang_p,
@@ -485,7 +619,6 @@ def enrich(candidates: list[dict[str, Any]], history: dict[str, Any], intelligen
             c.get("marge_modele") if c.get("marge_modele") is not None else -999.0,
             c.get("probabilite") if c.get("probabilite") is not None else -999.0,
             c.get("edv") if c.get("edv") is not None else -999.0,
-            n,
             -float(odds or 99),
             c.get("match_id") or "",
             c.get("marche") or "",
@@ -540,7 +673,7 @@ def evolution(history: dict[str, Any]) -> dict[str, Any]:
         "criteres": {
             "marge_succes": "borne basse Wilson 95 % du taux de réussite historique moins probabilité implicite 1/cote (informatif, ne bloque plus la sélection)",
             "marge_modele": "probabilité du moteur moins probabilité implicite 1/cote",
-            "priorite": "rang du moteur (P1 > P2 > P3) > valeur estimée (probabilité × cote − 1) > avantage modèle > probabilité > EDV ; l'historique ne sert plus qu'à départager",
+            "priorite": "preuve observée (Journal équipe ou historique moteur : borne Wilson > taux > ROI > volume) > calibrage externe > rang P1/P2/P3 > valeur modèle ; les probabilités moteur non calibrées ne dominent plus une preuve réelle",
             "odds": [ODDS_MIN, ODDS_MAX],
         },
     }
@@ -574,6 +707,20 @@ def main() -> int:
         },
         "evolution": evolution(history),
         "calibrage_externe": summarize_calibrage(intelligence),
+        "opportunites": sorted(
+            [
+                x for x in rows
+                if x.get("journal_opportunity")
+                or int(x.get("historique_observations") or 0) >= 5
+                or x.get("calibrage_rang")
+            ],
+            key=lambda x: x["_ordre"],
+            reverse=True,
+        )[:20],
+        "comptage_opportunites": {
+            source: sum(1 for x in rows if x.get("source") == source)
+            for source in (V2, V3, "journal")
+        },
     }
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
