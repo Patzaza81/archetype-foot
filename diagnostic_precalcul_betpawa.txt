@@ -1,15 +1,15 @@
 --- Résumé ---
-betpawa_tentes : 1101
+betpawa_tentes : 1100
 betpawa_cache_hit : 378
-betpawa_trouves_frais : 214
+betpawa_trouves_frais : 223
 betpawa_ambigus : 11
-betpawa_non_trouves : 498
+betpawa_non_trouves : 488
 betpawa_titre_mismatch : 21
-betpawa_cotes_extraites : 571
+betpawa_cotes_extraites : 580
 betpawa_cotes_vides : 0
 betpawa_erreurs : 0
 betpawa_ignore_sans_playwright : False
-betpawa_duree_secondes : 5029
+betpawa_duree_secondes : 5183
 
 --- Détail ---
 CACHE HIT [JS Saoura - Olympique Akbou] -> https://www.betpawa.cm/event/38346760?filter=all
@@ -25,18 +25,14 @@ CACHE HIT [RCA Zemamra - Hassania A.] -> https://www.betpawa.cm/event/38539023?f
 TITRE NE CORRESPOND PAS [RCA Zemamra - Hassania A.] -- page chargée : 'Renaissance Zemamra - Hassania Union Sport Agadir' (https://www.betpawa.cm/event/38539023?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
   Entrée cache invalidée pour [RCA Zemamra - Hassania A. / 2026-10-08] -- une résolution fraîche sera retentée au prochain run.
 NON TROUVÉ [Mas Maghrib - R. Casablanca]
-[tamis 1 rejeté] [Bragantino SP - Mirassol] candidat unique score 1.00 mais date '07/10' != '08/10' -- passage au tamis 2.
-AMBIGU (tamis 3, aucune date ne correspond) [Bragantino SP - Mirassol] variante 'Bragantino SP' -- candidats vus : ['Red Bull Bragantino SP - Mirassol FC SP']
-[tamis 1 rejeté] [Internacional - Corinthians] candidat unique score 1.00 mais date '07/10' != '08/10' -- passage au tamis 2.
-AMBIGU (tamis 3, aucune date ne correspond) [Internacional - Corinthians] variante 'Internacional' -- candidats vus : ['SC Internacional RS - SC Corinthians SP']
-[tamis 1 rejeté] [Remo - Grêmio] candidat unique score 1.00 mais date '07/10' != '08/10' -- passage au tamis 2.
-AMBIGU (tamis 3, aucune date ne correspond) [Remo - Grêmio] variante 'Remo' -- candidats vus : ['Clube do Remo PA - Gremio FB Porto Alegrense RS']
-TROUVÉ (tamis 1) [Vitoria BA - Chapecoense] score 1.00 -> https://www.betpawa.cm/event/38110837?filter=all
-COTES OK [Vitoria BA - Chapecoense] 20 marché(s) depuis https://www.betpawa.cm/event/38110837?filter=all
-TROUVÉ (tamis 1) [Botafogo RJ - Vasco Da G.] score 0.88 -> https://www.betpawa.cm/event/38082825?filter=all
-COTES OK [Botafogo RJ - Vasco Da G.] 21 marché(s) depuis https://www.betpawa.cm/event/38082825?filter=all
-TROUVÉ (tamis 1) [Cruzeiro MG - São Paulo] score 0.88 -> https://www.betpawa.cm/event/38110838?filter=all
-COTES OK [Cruzeiro MG - São Paulo] 19 marché(s) depuis https://www.betpawa.cm/event/38110838?filter=all
+NON TROUVÉ [Bragantino SP - Mirassol]
+NON TROUVÉ [Internacional - Corinthians]
+NON TROUVÉ [Remo - Grêmio]
+NON TROUVÉ [Vitoria BA - Chapecoense]
+[tamis 1 rejeté] [Botafogo RJ - Vasco Da G.] candidat unique score 0.88 mais date None != '08/10' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Botafogo RJ - Vasco Da G.] variante 'Botafogo RJ' -- candidats vus : ['Botafogo FR RJ - CR Vasco da Gama RJ']
+[tamis 1 rejeté] [Cruzeiro MG - São Paulo] candidat unique score 0.88 mais date None != '08/10' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Cruzeiro MG - São Paulo] variante 'Cruzeiro MG' -- candidats vus : ['Cruzeiro EC MG - Sao Paulo FC SP']
 CACHE HIT [Santos SP - Flamengo] -> https://www.betpawa.cm/event/38082826?filter=all
 COTES OK [Santos SP - Flamengo] 21 marché(s) depuis https://www.betpawa.cm/event/38082826?filter=all
 CACHE HIT [Paranaense - Atl. Mineiro] -> https://www.betpawa.cm/event/38082828?filter=all
@@ -48,8 +44,8 @@ COTES OK [Palmeiras - Bahia] 20 marché(s) depuis https://www.betpawa.cm/event/3
 NON TROUVÉ [HJK Helsinki - VPS]
 CACHE HIT [Kuopion - AC Oulu] -> https://www.betpawa.cm/event/37777943?filter=all
 COTES OK [Kuopion - AC Oulu] 21 marché(s) depuis https://www.betpawa.cm/event/37777943?filter=all
-TROUVÉ (tamis 1) [Forge - Pacific] score 1.00 -> https://www.betpawa.cm/event/38539448?filter=all
-COTES OK [Forge - Pacific] 18 marché(s) depuis https://www.betpawa.cm/event/38539448?filter=all
+[tamis 1 rejeté] [Forge - Pacific] candidat unique score 1.00 mais date None != '08/10' -- passage au tamis 2.
+AMBIGU (tamis 3, aucune date ne correspond) [Forge - Pacific] variante 'Forge' -- candidats vus : ['Forge FC Hamilton - Pacific FC']
 CACHE HIT [Atl. Nacional - Dep. Tolima] -> https://www.betpawa.cm/event/38013042?filter=all
 COTES OK [Atl. Nacional - Dep. Tolima] 21 marché(s) depuis https://www.betpawa.cm/event/38013042?filter=all
 CACHE HIT [Fortaleza - Millonarios FC] -> https://www.betpawa.cm/event/38041078?filter=all
@@ -102,17 +98,15 @@ NON TROUVÉ [Ilbirs - Bars]
 NON TROUVÉ [Neftchi - Muras]
 NON TROUVÉ [Ozgon - Dordoi-Dynamo]
 TROUVÉ (tamis 1) [Akhaa Ahli - Nejmeh] score 1.00 -> https://www.betpawa.cm/event/38304234?filter=all
-COTES OK [Akhaa Ahli - Nejmeh] 2 marché(s) depuis https://www.betpawa.cm/event/38304234?filter=all
+COTES OK [Akhaa Ahli - Nejmeh] 18 marché(s) depuis https://www.betpawa.cm/event/38304234?filter=all
 CACHE HIT [Al Sahel - Tadamon Sour] -> https://www.betpawa.cm/event/38272287?filter=all
-COTES OK [Al Sahel - Tadamon Sour] 17 marché(s) depuis https://www.betpawa.cm/event/38272287?filter=all
+COTES OK [Al Sahel - Tadamon Sour] 18 marché(s) depuis https://www.betpawa.cm/event/38272287?filter=all
 CACHE HIT [Ansar - Al Hikma] -> https://www.betpawa.cm/event/38299266?filter=all
-COTES OK [Ansar - Al Hikma] 21 marché(s) depuis https://www.betpawa.cm/event/38299266?filter=all
+COTES OK [Ansar - Al Hikma] 22 marché(s) depuis https://www.betpawa.cm/event/38299266?filter=all
 CACHE HIT [Safa - Abaseya] -> https://www.betpawa.cm/event/38304232?filter=all
 COTES OK [Safa - Abaseya] 18 marché(s) depuis https://www.betpawa.cm/event/38304232?filter=all
 TROUVÉ (tamis 2, date confirmée 08/10) [Ferro Maputo - Vilanculo] -> https://www.betpawa.cm/event/38515684?filter=all
 COTES OK [Ferro Maputo - Vilanculo] 7 marché(s) depuis https://www.betpawa.cm/event/38515684?filter=all
-TROUVÉ (tamis 1) [UNAN - Real Estelí] score 1.00 -> https://www.betpawa.cm/event/38272306?filter=all
-COTES OK [UNAN - Real Estelí] 17 marché(s) depuis https://www.betpawa.cm/event/38272306?filter=all
 TROUVÉ (tamis 1) [Blacks Power - Vipers] score 1.00 -> https://www.betpawa.cm/event/38017689?filter=all
 COTES OK [Blacks Power - Vipers] 6 marché(s) depuis https://www.betpawa.cm/event/38017689?filter=all
 NON TROUVÉ [NEC - Express]
@@ -265,7 +259,8 @@ NON TROUVÉ [Platense - Juticalpa]
 NON TROUVÉ [Eastern - North District]
 CACHE HIT [Persik Kediri - Madura Utd.] -> https://www.betpawa.cm/event/38192030?filter=all
 COTES OK [Persik Kediri - Madura Utd.] 21 marché(s) depuis https://www.betpawa.cm/event/38192030?filter=all
-NON TROUVÉ [Isenmulang - Persebaya]
+TROUVÉ (tamis 1) [Isenmulang - Persebaya] score 1.00 -> https://www.betpawa.cm/event/38311179?filter=all
+COTES OK [Isenmulang - Persebaya] 17 marché(s) depuis https://www.betpawa.cm/event/38311179?filter=all
 NON TROUVÉ [Chadormalu - Kheybar]
 NON TROUVÉ [Persepolis - SN Abadan]
 CACHE HIT [Kashima - Gamba] -> https://www.betpawa.cm/event/38311460?filter=all
@@ -293,13 +288,15 @@ CACHE HIT [Tigres - D. Toluca] -> https://www.betpawa.cm/event/38351844?filter=a
 COTES OK [Tigres - D. Toluca] 21 marché(s) depuis https://www.betpawa.cm/event/38351844?filter=all
 CACHE HIT [Portadown - Glentoran] -> https://www.betpawa.cm/event/38321659?filter=all
 COTES OK [Portadown - Glentoran] 18 marché(s) depuis https://www.betpawa.cm/event/38321659?filter=all
-NON TROUVÉ [Araz - Kapaz]
-NON TROUVÉ [Neftchi PFK - Sabah]
+TROUVÉ (tamis 1) [Araz - Kapaz] score 1.00 -> https://www.betpawa.cm/event/38311388?filter=all
+COTES OK [Araz - Kapaz] 17 marché(s) depuis https://www.betpawa.cm/event/38311388?filter=all
+TROUVÉ (tamis 2, date confirmée 09/10) [Neftchi PFK - Sabah] -> https://www.betpawa.cm/event/38340096?filter=all
+COTES OK [Neftchi PFK - Sabah] 17 marché(s) depuis https://www.betpawa.cm/event/38340096?filter=all
 NON TROUVÉ [Fanja - Ibri]
 NON TROUVÉ [Al-Musannah - Sohar]
 NON TROUVÉ [Petro Atl. - CR Caala]
 CACHE HIT [Deportivo G. - Sport Huancayo] -> https://www.betpawa.cm/event/38292885?filter=all
-COTES OK [Deportivo G. - Sport Huancayo] 19 marché(s) depuis https://www.betpawa.cm/event/38292885?filter=all
+COTES OK [Deportivo G. - Sport Huancayo] 21 marché(s) depuis https://www.betpawa.cm/event/38292885?filter=all
 TROUVÉ (tamis 2, date confirmée 09/10) [W. Krakow - Wisla Plock SA] -> https://www.betpawa.cm/event/37635268?filter=all
 TITRE NE CORRESPOND PAS [W. Krakow - Wisla Plock SA] -- page chargée : 'Wieczysta Krakow - Wisla Plock' (https://www.betpawa.cm/event/37635268?filter=all) -- cotes NON extraites, match laissé sur Bet365 par défaut.
 CACHE HIT [Rakow C. - GKS Katowice] -> https://www.betpawa.cm/event/37666312?filter=all
@@ -348,9 +345,12 @@ NON TROUVÉ [Musongati - Messager]
 NON TROUVÉ [EEPCO - Adama City]
 NON TROUVÉ [Halaba - Welwalo Adigrat]
 NON TROUVÉ [Juventus - Gauloise]
-NON TROUVÉ [Zakho - Newroz]
-NON TROUVÉ [Naft - Diyala]
-NON TROUVÉ [Gharraf - Golan]
+TROUVÉ (tamis 1) [Zakho - Newroz] score 1.00 -> https://www.betpawa.cm/event/37711427?filter=all
+COTES OK [Zakho - Newroz] 17 marché(s) depuis https://www.betpawa.cm/event/37711427?filter=all
+TROUVÉ (tamis 1) [Naft - Diyala] score 1.00 -> https://www.betpawa.cm/event/37681045?filter=all
+COTES OK [Naft - Diyala] 17 marché(s) depuis https://www.betpawa.cm/event/37681045?filter=all
+TROUVÉ (tamis 2, date confirmée 09/10) [Gharraf - Golan] -> https://www.betpawa.cm/event/37681037?filter=all
+COTES OK [Gharraf - Golan] 17 marché(s) depuis https://www.betpawa.cm/event/37681037?filter=all
 NON TROUVÉ [Hussein - Al Arabi]
 NON TROUVÉ [Al Jazeera - Al Wehdat]
 NON TROUVÉ [Nairobi Utd - Kenya Com]
@@ -402,7 +402,8 @@ COTES OK [Lorient - Paris FC] 26 marché(s) depuis https://www.betpawa.cm/event/
 NON TROUVÉ [PSG - Le Mans]
 CACHE HIT [Clermont - Red Star] -> https://www.betpawa.cm/event/38254545?filter=all
 COTES OK [Clermont - Red Star] 21 marché(s) depuis https://www.betpawa.cm/event/38254545?filter=all
-NON TROUVÉ [Nantes - Reims]
+TROUVÉ (tamis 1) [Nantes - Reims] score 1.00 -> https://www.betpawa.cm/event/38254546?filter=all
+COTES OK [Nantes - Reims] 21 marché(s) depuis https://www.betpawa.cm/event/38254546?filter=all
 CACHE HIT [Saint-Étienne - Rodez] -> https://www.betpawa.cm/event/38282313?filter=all
 COTES OK [Saint-Étienne - Rodez] 19 marché(s) depuis https://www.betpawa.cm/event/38282313?filter=all
 CACHE HIT [Arsenal - Leeds United] -> https://www.betpawa.cm/event/38063512?filter=all
@@ -701,7 +702,7 @@ COTES OK [Vis Pesaro - Grosseto] 18 marché(s) depuis https://www.betpawa.cm/eve
 CACHE HIT [Ostia Mare - Pianese] -> https://www.betpawa.cm/event/38051193?filter=all
 COTES OK [Ostia Mare - Pianese] 17 marché(s) depuis https://www.betpawa.cm/event/38051193?filter=all
 CACHE HIT [Pineto - Reggiana] -> https://www.betpawa.cm/event/38212872?filter=all
-COTES OK [Pineto - Reggiana] 18 marché(s) depuis https://www.betpawa.cm/event/38212872?filter=all
+COTES OK [Pineto - Reggiana] 17 marché(s) depuis https://www.betpawa.cm/event/38212872?filter=all
 CACHE HIT [Spezia - Gubbio] -> https://www.betpawa.cm/event/38051196?filter=all
 COTES OK [Spezia - Gubbio] 18 marché(s) depuis https://www.betpawa.cm/event/38051196?filter=all
 NON TROUVÉ [Bari - Giugliano]
@@ -736,7 +737,8 @@ CACHE HIT [S. Shenhua - Yukun] -> https://www.betpawa.cm/event/36681654?filter=a
 COTES OK [S. Shenhua - Yukun] 19 marché(s) depuis https://www.betpawa.cm/event/36681654?filter=all
 CACHE HIT [Dep. Pereira - Cali] -> https://www.betpawa.cm/event/38041081?filter=all
 COTES OK [Dep. Pereira - Cali] 19 marché(s) depuis https://www.betpawa.cm/event/38041081?filter=all
-NON TROUVÉ [Atl. Junior - Bogota]
+TROUVÉ (tamis 2, date confirmée 10/10) [Atl. Junior - Bogota] -> https://www.betpawa.cm/event/38041079?filter=all
+COTES OK [Atl. Junior - Bogota] 20 marché(s) depuis https://www.betpawa.cm/event/38041079?filter=all
 NON TROUVÉ [San Carlos - Pérez Zeledón]
 CACHE HIT [Puntarenas - Alajuelense] -> https://www.betpawa.cm/event/38231828?filter=all
 COTES OK [Puntarenas - Alajuelense] 18 marché(s) depuis https://www.betpawa.cm/event/38231828?filter=all
@@ -834,7 +836,8 @@ COTES OK [Arema - Bhayangkara] 18 marché(s) depuis https://www.betpawa.cm/event
 NON TROUVÉ [Persita - Garudayaksa]
 CACHE HIT [PSIM - Persija] -> https://www.betpawa.cm/event/37676733?filter=all
 COTES OK [PSIM - Persija] 17 marché(s) depuis https://www.betpawa.cm/event/37676733?filter=all
-NON TROUVÉ [Bali United - Persijap]
+TROUVÉ (tamis 1) [Bali United - Persijap] score 1.00 -> https://www.betpawa.cm/event/38352365?filter=all
+COTES OK [Bali United - Persijap] 19 marché(s) depuis https://www.betpawa.cm/event/38352365?filter=all
 NON TROUVÉ [Paykan - Shams Azar]
 CACHE HIT [Hapoel Haifa - M. Petah Tikva] -> https://www.betpawa.cm/event/38351513?filter=all
 COTES OK [Hapoel Haifa - M. Petah Tikva] 17 marché(s) depuis https://www.betpawa.cm/event/38351513?filter=all
@@ -917,7 +920,8 @@ CACHE HIT [Limavady Utd - Ballymena Utd] -> https://www.betpawa.cm/event/3835212
 COTES OK [Limavady Utd - Ballymena Utd] 18 marché(s) depuis https://www.betpawa.cm/event/38352121?filter=all
 CACHE HIT [Linfield - Bangor] -> https://www.betpawa.cm/event/38351910?filter=all
 COTES OK [Linfield - Bangor] 17 marché(s) depuis https://www.betpawa.cm/event/38351910?filter=all
-NON TROUVÉ [Zira - Shamakhi]
+TROUVÉ (tamis 1) [Zira - Shamakhi] score 1.00 -> https://www.betpawa.cm/event/38352357?filter=all
+COTES OK [Zira - Shamakhi] 17 marché(s) depuis https://www.betpawa.cm/event/38352357?filter=all
 NON TROUVÉ [Soumgaït - Qabala]
 NON TROUVÉ [Saham - Sur]
 NON TROUVÉ [Dhofar - Smail]
@@ -1000,7 +1004,7 @@ COTES OK [Portuguesa - Dep. La Guaira] 17 marché(s) depuis https://www.betpawa.
 CACHE HIT [Dep. Tachira - UCV] -> https://www.betpawa.cm/event/38525612?filter=all
 COTES OK [Dep. Tachira - UCV] 18 marché(s) depuis https://www.betpawa.cm/event/38525612?filter=all
 CACHE HIT [Metropolitan - Rayo Zuliano] -> https://www.betpawa.cm/event/38525683?filter=all
-COTES OK [Metropolitan - Rayo Zuliano] 17 marché(s) depuis https://www.betpawa.cm/event/38525683?filter=all
+COTES OK [Metropolitan - Rayo Zuliano] 18 marché(s) depuis https://www.betpawa.cm/event/38525683?filter=all
 NON TROUVÉ [Hoang Anh - Da Nang]
 NON TROUVÉ [Hai Phong - Thanh Hoa]
 NON TROUVÉ [Nam Dinh - Phu Dong]
@@ -1052,8 +1056,10 @@ NON TROUVÉ [GDF - Ann's Grove]
 NON TROUVÉ [Police - Camptown]
 TROUVÉ (tamis 1) [07 Vestur - EB/Streymur] score 1.00 -> https://www.betpawa.cm/event/38351565?filter=all
 COTES OK [07 Vestur - EB/Streymur] 2 marché(s) depuis https://www.betpawa.cm/event/38351565?filter=all
-NON TROUVÉ [Al Mina'a Bassora - Gaz Al-Shamal]
-NON TROUVÉ [Kahrabaa - Karbala]
+TROUVÉ (tamis 2, date confirmée 10/10) [Al Mina'a Bassora - Gaz Al-Shamal] -> https://www.betpawa.cm/event/38520551?filter=all
+COTES OK [Al Mina'a Bassora - Gaz Al-Shamal] 17 marché(s) depuis https://www.betpawa.cm/event/38520551?filter=all
+TROUVÉ (tamis 1) [Kahrabaa - Karbala] score 1.00 -> https://www.betpawa.cm/event/37681047?filter=all
+COTES OK [Kahrabaa - Karbala] 17 marché(s) depuis https://www.betpawa.cm/event/37681047?filter=all
 NON TROUVÉ [Karma - Karkh]
 NON TROUVÉ [Ramtha SC - Doqarah]
 NON TROUVÉ [Salt - Al Faysali]
@@ -1243,7 +1249,8 @@ TROUVÉ (tamis 1) [Bochum - A. Bielefeld] score 1.00 -> https://www.betpawa.cm/e
 COTES OK [Bochum - A. Bielefeld] 21 marché(s) depuis https://www.betpawa.cm/event/37679676?filter=all
 TROUVÉ (tamis 1) [Hertha BSC - Greuther Fürth] score 1.00 -> https://www.betpawa.cm/event/37679674?filter=all
 COTES OK [Hertha BSC - Greuther Fürth] 25 marché(s) depuis https://www.betpawa.cm/event/37679674?filter=all
-NON TROUVÉ [Sankt Pauli - Karlsruher]
+TROUVÉ (tamis 1) [Sankt Pauli - Karlsruher] score 0.84 -> https://www.betpawa.cm/event/37710368?filter=all
+COTES OK [Sankt Pauli - Karlsruher] 20 marché(s) depuis https://www.betpawa.cm/event/37710368?filter=all
 TROUVÉ (tamis 1) [Akhmat - Baltika] score 1.00 -> https://www.betpawa.cm/event/37686079?filter=all
 COTES OK [Akhmat - Baltika] 19 marché(s) depuis https://www.betpawa.cm/event/37686079?filter=all
 TROUVÉ (tamis 2, date confirmée 11/10) [CSKA Moscou - Rodina Moskva] -> https://www.betpawa.cm/event/37717918?filter=all
@@ -1277,7 +1284,8 @@ TROUVÉ (tamis 1) [Motherwell FC - Celtic Glasgow] score 1.00 -> https://www.bet
 COTES OK [Motherwell FC - Celtic Glasgow] 30 marché(s) depuis https://www.betpawa.cm/event/38141551?filter=all
 TROUVÉ (tamis 1) [Aberdeen - St. Johnstone] score 1.00 -> https://www.betpawa.cm/event/38170313?filter=all
 COTES OK [Aberdeen - St. Johnstone] 21 marché(s) depuis https://www.betpawa.cm/event/38170313?filter=all
-NON TROUVÉ [Dynamo Kiev - Karpaty Lviv]
+TROUVÉ (tamis 1) [Dynamo Kiev - Karpaty Lviv] score 0.91 -> https://www.betpawa.cm/event/38231812?filter=all
+COTES OK [Dynamo Kiev - Karpaty Lviv] 20 marché(s) depuis https://www.betpawa.cm/event/38231812?filter=all
 TROUVÉ (tamis 1) [LNZ Cherkasy - Kudrivka] score 1.00 -> https://www.betpawa.cm/event/38200705?filter=all
 COTES OK [LNZ Cherkasy - Kudrivka] 20 marché(s) depuis https://www.betpawa.cm/event/38200705?filter=all
 TROUVÉ (tamis 2, date confirmée 11/10) [Bukovyna - Polessya] -> https://www.betpawa.cm/event/38200703?filter=all
