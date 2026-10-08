@@ -1,0 +1,1647 @@
+{
+  "version": 2,
+  "genere_le": "2026-10-08T01:00:36.004666+00:00",
+  "maximum_matchs": 12,
+  "maximum_par_source": 10,
+  "intervalle_cote_totale": [
+    2.0,
+    20.0
+  ],
+  "cote_par_defaut": 10.0,
+  "tolerances": [
+    0.05,
+    0.1,
+    0.25
+  ],
+  "principe": "Deux moteurs coexistants + Journal. Les moteurs font le tri : un choix est retenu si sa probabilité estimée dépasse la probabilité implicite de la cote, sans historique minimal. La cote totale est choisie par le parieur, entre 2 et 20, jamais hors de cet intervalle. Chaque ticket indique sa marge d'erreur et sa rentabilité par plan de tickets disjoints (ex. 12 paris en 4 tickets de 3).",
+  "avertissement": "La cote totale d'un combiné est exacte comme produit des cotes observées ; la probabilité indépendante affichée n'est pas une probabilité jointe garantie.",
+  "candidats_total": 20,
+  "sources": {
+    "moteur_v2_6_10": 10,
+    "moteur_v3": 10,
+    "journal": 0
+  },
+  "pool": [
+    {
+      "match_id": "1i0j3i9poom6l7z449tpoaoes",
+      "cle_match": "id:1i0j3i9poom6l7z449tpoaoes",
+      "date": "2026-10-10",
+      "heure": "15:00",
+      "competition": "Angleterre : League One",
+      "domicile": "Wycombe",
+      "exterieur": "Luton",
+      "marche": "over_under_total_2.5_over",
+      "cote": 1.68,
+      "probabilite": 0.8075,
+      "probabilite_estimee": 0.8075,
+      "ev_estime": 0.3566,
+      "marge_modele": 0.212262,
+      "marge_succes": null,
+      "niveau_confiance": "MODELE_SEUL",
+      "historique_observations": 0,
+      "source": "moteur_v3",
+      "moteur": "moteur_v3",
+      "rang": "P1",
+      "justification": "Probabilité calibrée 81 % contre 60 % selon la cote 1,68 · marge +35,7 % · 3 matchs au même lieu.",
+      "betpawa_url": null
+    },
+    {
+      "match_id": "1a9d1vfhci1vll1idjkasyrys",
+      "cle_match": "id:1a9d1vfhci1vll1idjkasyrys",
+      "date": "2026-10-10",
+      "heure": "15:00",
+      "competition": "Angleterre : Championnat",
+      "domicile": "Blackburn",
+      "exterieur": "Cardiff",
+      "marche": "1x2_domicile",
+      "cote": 2.67,
+      "probabilite": 0.4812635438519156,
+      "probabilite_estimee": 0.481264,
+      "ev_estime": 0.284974,
+      "marge_modele": 0.106732,
+      "marge_succes": -0.374532,
+      "niveau_confiance": "MODELE_SEUL",
+      "historique_observations": 1,
+      "source": "moteur_v2_6_10",
+      "moteur": "moteur_v2_6_10",
+      "rang": "P1",
+      "justification": "Cardiff cède la victoire dans 75.0% de ses derniers déplacements.",
+      "betpawa_url": "https://www.betpawa.cm/event/38196139?filter=all"
+    },
+    {
+      "match_id": "940y9omn7aet21jq3u0y0okk4",
+      "cle_match": "id:940y9omn7aet21jq3u0y0okk4",
+      "date": "2026-10-11",
+      "heure": "18:00",
+      "competition": "Bulgarie : Parva Liga",
+      "domicile": "CSKA 1948",
+      "exterieur": "CSKA Sofia",
+      "marche": "handicap_domicile_0.5",
+      "cote": 1.83,
+      "probabilite": 0.700661665883395,
+      "probabilite_estimee": 0.700662,
+      "ev_estime": 0.282211,
+      "marge_modele": 0.154214,
+      "marge_succes": null,
+      "niveau_confiance": "MODELE_SEUL",
+      "historique_observations": 0,
+      "source": "moteur_v2_6_10",
+      "moteur": "moteur_v2_6_10",
+      "rang": "P1",
+      "justification": "CSKA 1948 a couvert la ligne 0,5 dans 100.0% de ses dernières rencontres à domicile.",
+      "betpawa_url": "https://www.betpawa.cm/event/38071042?filter=all"
+    },
+    {
+      "match_id": "w4p60khh5a6244mmm8zdmpzo",
+      "cle_match": "id:w4p60khh5a6244mmm8zdmpzo",
+      "date": "2026-10-11",
+      "heure": "14:00",
+      "competition": "Italie : Série C Girone A",
+      "domicile": "Casarano",
+      "exterieur": "Salernitana",
+      "marche": "1x2_domicile",
+      "cote": 2.72,
+      "probabilite": 0.4707996368610254,
+      "probabilite_estimee": 0.4708,
+      "ev_estime": 0.280575,
+      "marge_modele": 0.103153,
+      "marge_succes": -0.367647,
+      "niveau_confiance": "MODELE_SEUL",
+      "historique_observations": 1,
+      "source": "moteur_v2_6_10",
+      "moteur": "moteur_v2_6_10",
+      "rang": "P1",
+      "justification": "Casarano s'impose dans 75.0% de ses récentes sorties à domicile.",
+      "betpawa_url": "https://www.betpawa.cm/event/38242058?filter=all"
+    },
+    {
+      "match_id": "dgtilrsjzd59kuzowmzrrumtw",
+      "cle_match": "id:dgtilrsjzd59kuzowmzrrumtw",
+      "date": "2026-10-09",
+      "heure": "19:00",
+      "competition": "Pays-Bas : Eerste Divisie",
+      "domicile": "NAC",
+      "exterieur": "MVV",
+      "marche": "btts_oui",
+      "cote": 1.61,
+      "probabilite": 0.7953,
+      "probabilite_estimee": 0.7953,
+      "ev_estime": 0.280433,
+      "marge_modele": 0.174182,
+      "marge_succes": null,
+      "niveau_confiance": "MODELE_SEUL",
+      "historique_observations": 0,
+      "source": "moteur_v3",
+      "moteur": "moteur_v3",
+      "rang": "P1",
+      "justification": "Probabilité calibrée 80 % contre 62 % selon la cote 1,61 · marge +28,0 % · 4 matchs au même lieu.",
+      "betpawa_url": null
+    },
+    {
+      "match_id": "u720uxkqqygun77zik8kliqc",
+      "cle_match": "id:u720uxkqqygun77zik8kliqc",
+      "date": "2026-10-11",
+      "heure": "00:30",
+      "competition": "Bolivie : Primera Division",
+      "domicile": "Bolívar",
+      "exterieur": "Blooming",
+      "marche": "btts_oui",
+      "cote": 2.15,
+      "probabilite": 0.5945627968750081,
+      "probabilite_estimee": 0.594563,
+      "ev_estime": 0.27831,
+      "marge_modele": 0.129447,
+      "marge_succes": null,
+      "niveau_confiance": "MODELE_SEUL",
+      "historique_observations": 0,
+      "source": "moteur_v2_6_10",
+      "moteur": "moteur_v2_6_10",
+      "rang": "P1",
+      "justification": "Efficacité croisée : les deux équipes ont trouvé le chemin des filets dans 73.7% de leurs matchs récents.",
+      "betpawa_url": "https://www.betpawa.cm/event/38535779?filter=all"
+    },
+    {
+      "match_id": "ajyndwnwkklgv45auinnyt3pw",
+      "cle_match": "id:ajyndwnwkklgv45auinnyt3pw",
+      "date": "2026-10-10",
+      "heure": "13:00",
+      "competition": "Allemagne : Ligue 3",
+      "domicile": "Würzburg",
+      "exterieur": "H. Rostock",
+      "marche": "double_chance_1X",
+      "cote": 1.76,
+      "probabilite": 0.7251427339165627,
+      "probabilite_estimee": 0.725143,
+      "ev_estime": 0.276251,
+      "marge_modele": 0.156961,
+      "marge_succes": null,
+      "niveau_confiance": "MODELE_SEUL",
+      "historique_observations": 0,
+      "source": "moteur_v2_6_10",
+      "moteur": "moteur_v2_6_10",
+      "rang": "P1",
+      "justification": "À domicile, Würzburg gagne 66.7% de ses rencontres récentes.",
+      "betpawa_url": "https://www.betpawa.cm/event/36650327?filter=all"
+    },
+    {
+      "match_id": "226294othn0n946j1ioxraqz8",
+      "cle_match": "id:226294othn0n946j1ioxraqz8",
+      "date": "2026-10-10",
+      "heure": "15:00",
+      "competition": "Écosse : Premier Ligue",
+      "domicile": "Glasgow Rangers",
+      "exterieur": "Kilmarnock FC",
+      "marche": "over_under_total_4.5_under",
+      "cote": 1.42,
+      "probabilite": 0.894962352989948,
+      "probabilite_estimee": 0.894962,
+      "ev_estime": 0.270847,
+      "marge_modele": 0.190737,
+      "marge_succes": null,
+      "niveau_confiance": "MODELE_SEUL",
+      "historique_observations": 0,
+      "source": "moteur_v2_6_10",
+      "moteur": "moteur_v2_6_10",
+      "rang": "P1",
+      "justification": "Rythme fermé : plus de 4,5 buts dans seulement 16.7% des matchs récents des deux équipes.",
+      "betpawa_url": "https://www.betpawa.cm/event/38141549?filter=all"
+    },
+    {
+      "match_id": "dffnoe6ygw9mqrcutia357uac",
+      "cle_match": "id:dffnoe6ygw9mqrcutia357uac",
+      "date": "2026-10-09",
+      "heure": "19:00",
+      "competition": "Pays-Bas : Eerste Divisie",
+      "domicile": "De Graafschap",
+      "exterieur": "Jong Utrecht",
+      "marche": "handicap_exterieur_1.5",
+      "cote": 1.54,
+      "probabilite": 0.8241159592654033,
+      "probabilite_estimee": 0.824116,
+      "ev_estime": 0.269139,
+      "marge_modele": 0.174765,
+      "marge_succes": null,
+      "niveau_confiance": "MODELE_SEUL",
+      "historique_observations": 0,
+      "source": "moteur_v2_6_10",
+      "moteur": "moteur_v2_6_10",
+      "rang": "P1",
+      "justification": "Jong Utrecht a couvert la ligne +1,5 dans 100.0% de ses dernières rencontres à l'extérieur.",
+      "betpawa_url": "https://www.betpawa.cm/event/38311269?filter=all"
+    },
+    {
+      "match_id": "3qb0alnf9bqwcq4e00vtvawic",
+      "cle_match": "id:3qb0alnf9bqwcq4e00vtvawic",
+      "date": "2026-10-09",
+      "heure": "19:00",
+      "competition": "France : Ligue 2 BKT",
+      "domicile": "Sochaux",
+      "exterieur": "US Boulogne",
+      "marche": "over_under_total_2.5_under",
+      "cote": 1.59,
+      "probabilite": 0.7959,
+      "probabilite_estimee": 0.7959,
+      "ev_estime": 0.265481,
+      "marge_modele": 0.166969,
+      "marge_succes": null,
+      "niveau_confiance": "MODELE_SEUL",
+      "historique_observations": 0,
+      "source": "moteur_v3",
+      "moteur": "moteur_v3",
+      "rang": "P1",
+      "justification": "Probabilité calibrée 80 % contre 63 % selon la cote 1,59 · marge +26,5 % · 3 matchs au même lieu.",
+      "betpawa_url": null
+    },
+    {
+      "match_id": "9ugu4jhqumqy0u5io2znx51xw",
+      "cle_match": "id:9ugu4jhqumqy0u5io2znx51xw",
+      "date": "2026-10-11",
+      "heure": "18:00",
+      "competition": "Égypte : Première Ligue",
+      "domicile": "El Zamalek",
+      "exterieur": "Al Ahly",
+      "marche": "handicap_domicile_0.5",
+      "cote": 1.82,
+      "probabilite": 0.6952710627248202,
+      "probabilite_estimee": 0.695271,
+      "ev_estime": 0.265393,
+      "marge_modele": 0.145821,
+      "marge_succes": null,
+      "niveau_confiance": "MODELE_SEUL",
+      "historique_observations": 0,
+      "source": "moteur_v2_6_10",
+      "moteur": "moteur_v2_6_10",
+      "rang": "P1",
+      "justification": "El Zamalek a couvert la ligne 0,5 dans 100.0% de ses dernières rencontres à domicile.",
+      "betpawa_url": "https://www.betpawa.cm/event/38362298?filter=all"
+    },
+    {
+      "match_id": "1aku8q8k7gw6uz31yeobutatw",
+      "cle_match": "id:1aku8q8k7gw6uz31yeobutatw",
+      "date": "2026-10-10",
+      "heure": "15:00",
+      "competition": "Angleterre : Championnat",
+      "domicile": "Bolton",
+      "exterieur": "Stoke",
+      "marche": "1x2_domicile",
+      "cote": 2.7,
+      "probabilite": 0.4670833848776745,
+      "probabilite_estimee": 0.467083,
+      "ev_estime": 0.261125,
+      "marge_modele": 0.096713,
+      "marge_succes": -0.37037,
+      "niveau_confiance": "MODELE_SEUL",
+      "historique_observations": 1,
+      "source": "moteur_v2_6_10",
+      "moteur": "moteur_v2_6_10",
+      "rang": "P1",
+      "justification": "Stoke cède la victoire dans 50.0% de ses derniers déplacements.",
+      "betpawa_url": "https://www.betpawa.cm/event/38196142?filter=all"
+    },
+    {
+      "match_id": "f287tju4ue83bnemqpl08328k",
+      "cle_match": "id:f287tju4ue83bnemqpl08328k",
+      "date": "2026-10-09",
+      "heure": "18:30",
+      "competition": "Suisse : Challenge Ligue",
+      "domicile": "Kriens",
+      "exterieur": "Wil",
+      "marche": "1x2_domicile",
+      "cote": 2.13,
+      "probabilite": 0.5905334479140109,
+      "probabilite_estimee": 0.590533,
+      "ev_estime": 0.257836,
+      "marge_modele": 0.12105,
+      "marge_succes": -0.469484,
+      "niveau_confiance": "MODELE_SEUL",
+      "historique_observations": 1,
+      "source": "moteur_v2_6_10",
+      "moteur": "moteur_v2_6_10",
+      "rang": "P1",
+      "justification": "Wil cède la victoire dans 50.0% de ses derniers déplacements.",
+      "betpawa_url": "https://www.betpawa.cm/event/37802511?filter=all"
+    },
+    {
+      "match_id": "bb4auw2l5ns3tv4o07a2dtez8",
+      "cle_match": "id:bb4auw2l5ns3tv4o07a2dtez8",
+      "date": "2026-10-10",
+      "heure": "18:00",
+      "competition": "Etats-Unis : MLS",
+      "domicile": "Toronto",
+      "exterieur": "Montreal",
+      "marche": "over_under_total_2.5_over",
+      "cote": 1.53,
+      "probabilite": 0.8206,
+      "probabilite_estimee": 0.8206,
+      "ev_estime": 0.255518,
+      "marge_modele": 0.167005,
+      "marge_succes": null,
+      "niveau_confiance": "MODELE_SEUL",
+      "historique_observations": 0,
+      "source": "moteur_v3",
+      "moteur": "moteur_v3",
+      "rang": "P1",
+      "justification": "Probabilité calibrée 82 % contre 65 % selon la cote 1,53 · marge +25,5 % · 12 matchs au même lieu.",
+      "betpawa_url": null
+    },
+    {
+      "match_id": "bdqbs0rj5km6cwhfulb16pvkk",
+      "cle_match": "id:bdqbs0rj5km6cwhfulb16pvkk",
+      "date": "2026-10-10",
+      "heure": "00:30",
+      "competition": "Etats-Unis : MLS",
+      "domicile": "NE Revolution",
+      "exterieur": "S. Sounders",
+      "marche": "over_under_total_3.5_under",
+      "cote": 1.6,
+      "probabilite": 0.7821,
+      "probabilite_estimee": 0.7821,
+      "ev_estime": 0.25136,
+      "marge_modele": 0.1571,
+      "marge_succes": null,
+      "niveau_confiance": "MODELE_SEUL",
+      "historique_observations": 0,
+      "source": "moteur_v3",
+      "moteur": "moteur_v3",
+      "rang": "P1",
+      "justification": "Probabilité calibrée 78 % contre 62 % selon la cote 1,60 · marge +25,1 % · 12 matchs au même lieu.",
+      "betpawa_url": null
+    },
+    {
+      "match_id": "dffnoe6ygw9mqrcutia357uac",
+      "cle_match": "id:dffnoe6ygw9mqrcutia357uac",
+      "date": "2026-10-09",
+      "heure": "19:00",
+      "competition": "Pays-Bas : Eerste Divisie",
+      "domicile": "De Graafschap",
+      "exterieur": "Jong Utrecht",
+      "marche": "handicap_exterieur_1.5",
+      "cote": 1.54,
+      "probabilite": 0.809,
+      "probabilite_estimee": 0.809,
+      "ev_estime": 0.24586,
+      "marge_modele": 0.159649,
+      "marge_succes": null,
+      "niveau_confiance": "MODELE_SEUL",
+      "historique_observations": 0,
+      "source": "moteur_v3",
+      "moteur": "moteur_v3",
+      "rang": "P1",
+      "justification": "Probabilité calibrée 81 % contre 65 % selon la cote 1,54 · marge +24,6 % · 4 matchs au même lieu.",
+      "betpawa_url": null
+    },
+    {
+      "match_id": "cflxnsrh8y2ozguiff7mhjdw4",
+      "cle_match": "id:cflxnsrh8y2ozguiff7mhjdw4",
+      "date": "2026-10-10",
+      "heure": "20:15",
+      "competition": "Islande : Úrvalsdeild Tour de Relégation",
+      "domicile": "Fram Rey",
+      "exterieur": "KR",
+      "marche": "over_under_total_3.5_over",
+      "cote": 1.37,
+      "probabilite": 0.9074,
+      "probabilite_estimee": 0.9074,
+      "ev_estime": 0.243138,
+      "marge_modele": 0.177473,
+      "marge_succes": null,
+      "niveau_confiance": "MODELE_SEUL",
+      "historique_observations": 0,
+      "source": "moteur_v3",
+      "moteur": "moteur_v3",
+      "rang": "P1",
+      "justification": "Probabilité calibrée 91 % contre 73 % selon la cote 1,37 · marge +24,3 % · 11 matchs au même lieu.",
+      "betpawa_url": null
+    },
+    {
+      "match_id": "dyegxwtrz1id3t7uarquuwqvo",
+      "cle_match": "id:dyegxwtrz1id3t7uarquuwqvo",
+      "date": "2026-10-11",
+      "heure": "13:30",
+      "competition": "Pologne : 1. Ligue",
+      "domicile": "LKS Lódz",
+      "exterieur": "Ruch Chorzow",
+      "marche": "buts_equipe_exterieur_1.5_under",
+      "cote": 1.53,
+      "probabilite": 0.8041,
+      "probabilite_estimee": 0.8041,
+      "ev_estime": 0.230273,
+      "marge_modele": 0.150505,
+      "marge_succes": null,
+      "niveau_confiance": "MODELE_SEUL",
+      "historique_observations": 0,
+      "source": "moteur_v3",
+      "moteur": "moteur_v3",
+      "rang": "P1",
+      "justification": "Probabilité calibrée 80 % contre 65 % selon la cote 1,53 · marge +23,0 % · 4 matchs au même lieu.",
+      "betpawa_url": null
+    },
+    {
+      "match_id": "d4am5z5mr6dkktofwoijf5sk",
+      "cle_match": "id:d4am5z5mr6dkktofwoijf5sk",
+      "date": "2026-10-11",
+      "heure": "15:00",
+      "competition": "Uruguay : Primera Division Cloture",
+      "domicile": "Juventud",
+      "exterieur": "R. Montevideo",
+      "marche": "over_under_total_2.5_under",
+      "cote": 1.64,
+      "probabilite": 0.7442,
+      "probabilite_estimee": 0.7442,
+      "ev_estime": 0.220488,
+      "marge_modele": 0.134444,
+      "marge_succes": null,
+      "niveau_confiance": "MODELE_SEUL",
+      "historique_observations": 0,
+      "source": "moteur_v3",
+      "moteur": "moteur_v3",
+      "rang": "P1",
+      "justification": "Probabilité calibrée 74 % contre 61 % selon la cote 1,64 · marge +22,0 % · 12 matchs au même lieu.",
+      "betpawa_url": null
+    },
+    {
+      "match_id": "1bk0wjqj56e1gcy3hwhnmsahg",
+      "cle_match": "id:1bk0wjqj56e1gcy3hwhnmsahg",
+      "date": "2026-10-10",
+      "heure": "15:00",
+      "competition": "Angleterre : Championnat",
+      "domicile": "Middlesbrough",
+      "exterieur": "Wolverhampton",
+      "marche": "over_under_total_2.5_over",
+      "cote": 1.61,
+      "probabilite": 0.7561,
+      "probabilite_estimee": 0.7561,
+      "ev_estime": 0.217321,
+      "marge_modele": 0.134982,
+      "marge_succes": null,
+      "niveau_confiance": "MODELE_SEUL",
+      "historique_observations": 0,
+      "source": "moteur_v3",
+      "moteur": "moteur_v3",
+      "rang": "P1",
+      "justification": "Probabilité calibrée 76 % contre 62 % selon la cote 1,61 · marge +21,7 % · 4 matchs au même lieu.",
+      "betpawa_url": null
+    }
+  ],
+  "scenarios_hors_intervalle": [
+    "PRUDENT_2",
+    "EQUILIBRE_8"
+  ],
+  "scenarios": [
+    {
+      "scenario": "PRUDENT_3",
+      "statut": "OK",
+      "regle": "Un seul pari par match, aucun quota rempli artificiellement, maximum 12 matchs, cote totale entre 2 et 20.",
+      "selection": [
+        {
+          "match_id": "cflxnsrh8y2ozguiff7mhjdw4",
+          "cle_match": "id:cflxnsrh8y2ozguiff7mhjdw4",
+          "date": "2026-10-10",
+          "heure": "20:15",
+          "competition": "Islande : Úrvalsdeild Tour de Relégation",
+          "domicile": "Fram Rey",
+          "exterieur": "KR",
+          "marche": "over_under_total_3.5_over",
+          "cote": 1.37,
+          "probabilite": 0.9074,
+          "probabilite_estimee": 0.9074,
+          "ev_estime": 0.243138,
+          "marge_modele": 0.177473,
+          "marge_succes": null,
+          "niveau_confiance": "MODELE_SEUL",
+          "historique_observations": 0,
+          "source": "moteur_v3",
+          "moteur": "moteur_v3",
+          "rang": "P1",
+          "justification": "Probabilité calibrée 91 % contre 73 % selon la cote 1,37 · marge +24,3 % · 11 matchs au même lieu.",
+          "betpawa_url": null
+        },
+        {
+          "match_id": "226294othn0n946j1ioxraqz8",
+          "cle_match": "id:226294othn0n946j1ioxraqz8",
+          "date": "2026-10-10",
+          "heure": "15:00",
+          "competition": "Écosse : Premier Ligue",
+          "domicile": "Glasgow Rangers",
+          "exterieur": "Kilmarnock FC",
+          "marche": "over_under_total_4.5_under",
+          "cote": 1.42,
+          "probabilite": 0.894962352989948,
+          "probabilite_estimee": 0.894962,
+          "ev_estime": 0.270847,
+          "marge_modele": 0.190737,
+          "marge_succes": null,
+          "niveau_confiance": "MODELE_SEUL",
+          "historique_observations": 0,
+          "source": "moteur_v2_6_10",
+          "moteur": "moteur_v2_6_10",
+          "rang": "P1",
+          "justification": "Rythme fermé : plus de 4,5 buts dans seulement 16.7% des matchs récents des deux équipes.",
+          "betpawa_url": "https://www.betpawa.cm/event/38141549?filter=all"
+        },
+        {
+          "match_id": "dffnoe6ygw9mqrcutia357uac",
+          "cle_match": "id:dffnoe6ygw9mqrcutia357uac",
+          "date": "2026-10-09",
+          "heure": "19:00",
+          "competition": "Pays-Bas : Eerste Divisie",
+          "domicile": "De Graafschap",
+          "exterieur": "Jong Utrecht",
+          "marche": "handicap_exterieur_1.5",
+          "cote": 1.54,
+          "probabilite": 0.8241159592654033,
+          "probabilite_estimee": 0.824116,
+          "ev_estime": 0.269139,
+          "marge_modele": 0.174765,
+          "marge_succes": null,
+          "niveau_confiance": "MODELE_SEUL",
+          "historique_observations": 0,
+          "source": "moteur_v2_6_10",
+          "moteur": "moteur_v2_6_10",
+          "rang": "P1",
+          "justification": "Jong Utrecht a couvert la ligne +1,5 dans 100.0% de ses dernières rencontres à l'extérieur.",
+          "betpawa_url": "https://www.betpawa.cm/event/38311269?filter=all"
+        }
+      ],
+      "metrics": {
+        "matchs": 3,
+        "cote_totale": 2.9959,
+        "ecart_objectif": null,
+        "marge_succes_min": null,
+        "marge_succes_moyenne": null,
+        "marge_modele_moyenne": 0.180992,
+        "probabilite_independante_theorique": 0.669255,
+        "ev_theorique": 1.005,
+        "sources": [
+          "moteur_v2_6_10",
+          "moteur_v3"
+        ],
+        "diversite_sources": 2,
+        "niveau_min": 0
+      },
+      "analyse": {
+        "paris": 3,
+        "hypotheses": "Paris supposés indépendants ; probabilités des moteurs non recalibrées ; le bookmaker doit accepter plusieurs tickets ; « profit » = mise au moins remboursée.",
+        "probabilite_bonnes": [
+          0.001711,
+          0.039356,
+          0.289678,
+          0.669255
+        ],
+        "paris_justes_attendus": 2.6265,
+        "taux_estime_moyen": 0.8755,
+        "plans": [
+          {
+            "nom": "COMBINE",
+            "tickets": 1,
+            "tailles": [
+              3
+            ],
+            "strategie": "COTES_EQUILIBREES",
+            "variantes": [
+              {
+                "strategie": "COTES_EQUILIBREES",
+                "choisie": true,
+                "erreurs_garanties": 0,
+                "proba_profit": 0.6693,
+                "esperance_gain": 1.005
+              }
+            ],
+            "composition": [
+              {
+                "paris": [
+                  0,
+                  1,
+                  2
+                ],
+                "cote": 2.9959,
+                "probabilite": 0.669255,
+                "mise": 1.0
+              }
+            ],
+            "retour_garanti": 2.9959,
+            "gagnants_requis": 1,
+            "erreurs_garanties": 0,
+            "proba_profit": 0.6693,
+            "esperance_gain": 1.005
+          },
+          {
+            "nom": "SIMPLES",
+            "tickets": 3,
+            "tailles": [
+              1,
+              1,
+              1
+            ],
+            "strategie": "COTES_EQUILIBREES",
+            "variantes": [
+              {
+                "strategie": "COTES_EQUILIBREES",
+                "choisie": true,
+                "erreurs_garanties": 0,
+                "proba_profit": 0.6693,
+                "esperance_gain": 0.2606
+              },
+              {
+                "strategie": "SECURITE_GROUPEE",
+                "choisie": false,
+                "erreurs_garanties": 0,
+                "proba_profit": 0.6693,
+                "esperance_gain": 0.2606
+              }
+            ],
+            "composition": [
+              {
+                "paris": [
+                  2
+                ],
+                "cote": 1.54,
+                "probabilite": 0.824116,
+                "mise": 0.3117
+              },
+              {
+                "paris": [
+                  1
+                ],
+                "cote": 1.42,
+                "probabilite": 0.894962,
+                "mise": 0.338
+              },
+              {
+                "paris": [
+                  0
+                ],
+                "cote": 1.37,
+                "probabilite": 0.9074,
+                "mise": 0.3503
+              }
+            ],
+            "retour_garanti": 0.48,
+            "gagnants_requis": 3,
+            "erreurs_garanties": 0,
+            "proba_profit": 0.6693,
+            "esperance_gain": 0.2606
+          }
+        ],
+        "meilleur_plan": "COMBINE",
+        "plan_le_plus_regulier": "COMBINE",
+        "plan_marge_max": "COMBINE",
+        "rentable": true
+      }
+    },
+    {
+      "scenario": "EQUILIBRE_4",
+      "statut": "OK",
+      "regle": "Un seul pari par match, aucun quota rempli artificiellement, maximum 12 matchs, cote totale entre 2 et 20.",
+      "selection": [
+        {
+          "match_id": "cflxnsrh8y2ozguiff7mhjdw4",
+          "cle_match": "id:cflxnsrh8y2ozguiff7mhjdw4",
+          "date": "2026-10-10",
+          "heure": "20:15",
+          "competition": "Islande : Úrvalsdeild Tour de Relégation",
+          "domicile": "Fram Rey",
+          "exterieur": "KR",
+          "marche": "over_under_total_3.5_over",
+          "cote": 1.37,
+          "probabilite": 0.9074,
+          "probabilite_estimee": 0.9074,
+          "ev_estime": 0.243138,
+          "marge_modele": 0.177473,
+          "marge_succes": null,
+          "niveau_confiance": "MODELE_SEUL",
+          "historique_observations": 0,
+          "source": "moteur_v3",
+          "moteur": "moteur_v3",
+          "rang": "P1",
+          "justification": "Probabilité calibrée 91 % contre 73 % selon la cote 1,37 · marge +24,3 % · 11 matchs au même lieu.",
+          "betpawa_url": null
+        },
+        {
+          "match_id": "226294othn0n946j1ioxraqz8",
+          "cle_match": "id:226294othn0n946j1ioxraqz8",
+          "date": "2026-10-10",
+          "heure": "15:00",
+          "competition": "Écosse : Premier Ligue",
+          "domicile": "Glasgow Rangers",
+          "exterieur": "Kilmarnock FC",
+          "marche": "over_under_total_4.5_under",
+          "cote": 1.42,
+          "probabilite": 0.894962352989948,
+          "probabilite_estimee": 0.894962,
+          "ev_estime": 0.270847,
+          "marge_modele": 0.190737,
+          "marge_succes": null,
+          "niveau_confiance": "MODELE_SEUL",
+          "historique_observations": 0,
+          "source": "moteur_v2_6_10",
+          "moteur": "moteur_v2_6_10",
+          "rang": "P1",
+          "justification": "Rythme fermé : plus de 4,5 buts dans seulement 16.7% des matchs récents des deux équipes.",
+          "betpawa_url": "https://www.betpawa.cm/event/38141549?filter=all"
+        },
+        {
+          "match_id": "dffnoe6ygw9mqrcutia357uac",
+          "cle_match": "id:dffnoe6ygw9mqrcutia357uac",
+          "date": "2026-10-09",
+          "heure": "19:00",
+          "competition": "Pays-Bas : Eerste Divisie",
+          "domicile": "De Graafschap",
+          "exterieur": "Jong Utrecht",
+          "marche": "handicap_exterieur_1.5",
+          "cote": 1.54,
+          "probabilite": 0.8241159592654033,
+          "probabilite_estimee": 0.824116,
+          "ev_estime": 0.269139,
+          "marge_modele": 0.174765,
+          "marge_succes": null,
+          "niveau_confiance": "MODELE_SEUL",
+          "historique_observations": 0,
+          "source": "moteur_v2_6_10",
+          "moteur": "moteur_v2_6_10",
+          "rang": "P1",
+          "justification": "Jong Utrecht a couvert la ligne +1,5 dans 100.0% de ses dernières rencontres à l'extérieur.",
+          "betpawa_url": "https://www.betpawa.cm/event/38311269?filter=all"
+        },
+        {
+          "match_id": "bb4auw2l5ns3tv4o07a2dtez8",
+          "cle_match": "id:bb4auw2l5ns3tv4o07a2dtez8",
+          "date": "2026-10-10",
+          "heure": "18:00",
+          "competition": "Etats-Unis : MLS",
+          "domicile": "Toronto",
+          "exterieur": "Montreal",
+          "marche": "over_under_total_2.5_over",
+          "cote": 1.53,
+          "probabilite": 0.8206,
+          "probabilite_estimee": 0.8206,
+          "ev_estime": 0.255518,
+          "marge_modele": 0.167005,
+          "marge_succes": null,
+          "niveau_confiance": "MODELE_SEUL",
+          "historique_observations": 0,
+          "source": "moteur_v3",
+          "moteur": "moteur_v3",
+          "rang": "P1",
+          "justification": "Probabilité calibrée 82 % contre 65 % selon la cote 1,53 · marge +25,5 % · 12 matchs au même lieu.",
+          "betpawa_url": null
+        }
+      ],
+      "metrics": {
+        "matchs": 4,
+        "cote_totale": 4.5838,
+        "ecart_objectif": null,
+        "marge_succes_min": null,
+        "marge_succes_moyenne": null,
+        "marge_modele_moyenne": 0.177495,
+        "probabilite_independante_theorique": 0.549191,
+        "ev_theorique": 1.5174,
+        "sources": [
+          "moteur_v2_6_10",
+          "moteur_v3"
+        ],
+        "diversite_sources": 2,
+        "niveau_min": 0
+      },
+      "analyse": {
+        "paris": 4,
+        "hypotheses": "Paris supposés indépendants ; probabilités des moteurs non recalibrées ; le bookmaker doit accepter plusieurs tickets ; « profit » = mise au moins remboursée.",
+        "probabilite_bonnes": [
+          0.000307,
+          0.008464,
+          0.084263,
+          0.357774,
+          0.549191
+        ],
+        "paris_justes_attendus": 3.4471,
+        "taux_estime_moyen": 0.8618,
+        "plans": [
+          {
+            "nom": "COMBINE",
+            "tickets": 1,
+            "tailles": [
+              4
+            ],
+            "strategie": "COTES_EQUILIBREES",
+            "variantes": [
+              {
+                "strategie": "COTES_EQUILIBREES",
+                "choisie": true,
+                "erreurs_garanties": 0,
+                "proba_profit": 0.5492,
+                "esperance_gain": 1.5174
+              }
+            ],
+            "composition": [
+              {
+                "paris": [
+                  0,
+                  1,
+                  2,
+                  3
+                ],
+                "cote": 4.5838,
+                "probabilite": 0.549191,
+                "mise": 1.0
+              }
+            ],
+            "retour_garanti": 4.5838,
+            "gagnants_requis": 1,
+            "erreurs_garanties": 0,
+            "proba_profit": 0.5492,
+            "esperance_gain": 1.5174
+          },
+          {
+            "nom": "TICKETS_2X2",
+            "tickets": 2,
+            "tailles": [
+              2,
+              2
+            ],
+            "strategie": "SECURITE_GROUPEE",
+            "variantes": [
+              {
+                "strategie": "COTES_EQUILIBREES",
+                "choisie": false,
+                "erreurs_garanties": 1,
+                "proba_profit": 0.933,
+                "esperance_gain": 0.5865
+              },
+              {
+                "strategie": "SECURITE_EQUILIBREE",
+                "choisie": false,
+                "erreurs_garanties": 1,
+                "proba_profit": 0.933,
+                "esperance_gain": 0.5863
+              },
+              {
+                "strategie": "SECURITE_GROUPEE",
+                "choisie": true,
+                "erreurs_garanties": 1,
+                "proba_profit": 0.9392,
+                "esperance_gain": 0.586
+              }
+            ],
+            "composition": [
+              {
+                "paris": [
+                  0,
+                  1
+                ],
+                "cote": 1.9454,
+                "probabilite": 0.812089,
+                "mise": 0.5477
+              },
+              {
+                "paris": [
+                  2,
+                  3
+                ],
+                "cote": 2.3562,
+                "probabilite": 0.67627,
+                "mise": 0.4523
+              }
+            ],
+            "retour_garanti": 1.0656,
+            "gagnants_requis": 1,
+            "erreurs_garanties": 1,
+            "proba_profit": 0.9392,
+            "esperance_gain": 0.586
+          },
+          {
+            "nom": "SIMPLES",
+            "tickets": 4,
+            "tailles": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "strategie": "COTES_EQUILIBREES",
+            "variantes": [
+              {
+                "strategie": "COTES_EQUILIBREES",
+                "choisie": true,
+                "erreurs_garanties": 1,
+                "proba_profit": 0.907,
+                "esperance_gain": 0.2594
+              },
+              {
+                "strategie": "SECURITE_EQUILIBREE",
+                "choisie": false,
+                "erreurs_garanties": 1,
+                "proba_profit": 0.907,
+                "esperance_gain": 0.2594
+              },
+              {
+                "strategie": "SECURITE_GROUPEE",
+                "choisie": false,
+                "erreurs_garanties": 1,
+                "proba_profit": 0.907,
+                "esperance_gain": 0.2594
+              }
+            ],
+            "composition": [
+              {
+                "paris": [
+                  2
+                ],
+                "cote": 1.54,
+                "probabilite": 0.824116,
+                "mise": 0.2372
+              },
+              {
+                "paris": [
+                  3
+                ],
+                "cote": 1.53,
+                "probabilite": 0.8206,
+                "mise": 0.2388
+              },
+              {
+                "paris": [
+                  1
+                ],
+                "cote": 1.42,
+                "probabilite": 0.894962,
+                "mise": 0.2573
+              },
+              {
+                "paris": [
+                  0
+                ],
+                "cote": 1.37,
+                "probabilite": 0.9074,
+                "mise": 0.2667
+              }
+            ],
+            "retour_garanti": 0.3654,
+            "gagnants_requis": 3,
+            "erreurs_garanties": 1,
+            "proba_profit": 0.907,
+            "esperance_gain": 0.2594
+          }
+        ],
+        "meilleur_plan": "COMBINE",
+        "plan_le_plus_regulier": "TICKETS_2X2",
+        "plan_marge_max": "TICKETS_2X2",
+        "rentable": true
+      }
+    },
+    {
+      "scenario": "EQUILIBRE_5",
+      "statut": "OK",
+      "regle": "Un seul pari par match, aucun quota rempli artificiellement, maximum 12 matchs, cote totale entre 2 et 20.",
+      "selection": [
+        {
+          "match_id": "cflxnsrh8y2ozguiff7mhjdw4",
+          "cle_match": "id:cflxnsrh8y2ozguiff7mhjdw4",
+          "date": "2026-10-10",
+          "heure": "20:15",
+          "competition": "Islande : Úrvalsdeild Tour de Relégation",
+          "domicile": "Fram Rey",
+          "exterieur": "KR",
+          "marche": "over_under_total_3.5_over",
+          "cote": 1.37,
+          "probabilite": 0.9074,
+          "probabilite_estimee": 0.9074,
+          "ev_estime": 0.243138,
+          "marge_modele": 0.177473,
+          "marge_succes": null,
+          "niveau_confiance": "MODELE_SEUL",
+          "historique_observations": 0,
+          "source": "moteur_v3",
+          "moteur": "moteur_v3",
+          "rang": "P1",
+          "justification": "Probabilité calibrée 91 % contre 73 % selon la cote 1,37 · marge +24,3 % · 11 matchs au même lieu.",
+          "betpawa_url": null
+        },
+        {
+          "match_id": "226294othn0n946j1ioxraqz8",
+          "cle_match": "id:226294othn0n946j1ioxraqz8",
+          "date": "2026-10-10",
+          "heure": "15:00",
+          "competition": "Écosse : Premier Ligue",
+          "domicile": "Glasgow Rangers",
+          "exterieur": "Kilmarnock FC",
+          "marche": "over_under_total_4.5_under",
+          "cote": 1.42,
+          "probabilite": 0.894962352989948,
+          "probabilite_estimee": 0.894962,
+          "ev_estime": 0.270847,
+          "marge_modele": 0.190737,
+          "marge_succes": null,
+          "niveau_confiance": "MODELE_SEUL",
+          "historique_observations": 0,
+          "source": "moteur_v2_6_10",
+          "moteur": "moteur_v2_6_10",
+          "rang": "P1",
+          "justification": "Rythme fermé : plus de 4,5 buts dans seulement 16.7% des matchs récents des deux équipes.",
+          "betpawa_url": "https://www.betpawa.cm/event/38141549?filter=all"
+        },
+        {
+          "match_id": "dffnoe6ygw9mqrcutia357uac",
+          "cle_match": "id:dffnoe6ygw9mqrcutia357uac",
+          "date": "2026-10-09",
+          "heure": "19:00",
+          "competition": "Pays-Bas : Eerste Divisie",
+          "domicile": "De Graafschap",
+          "exterieur": "Jong Utrecht",
+          "marche": "handicap_exterieur_1.5",
+          "cote": 1.54,
+          "probabilite": 0.8241159592654033,
+          "probabilite_estimee": 0.824116,
+          "ev_estime": 0.269139,
+          "marge_modele": 0.174765,
+          "marge_succes": null,
+          "niveau_confiance": "MODELE_SEUL",
+          "historique_observations": 0,
+          "source": "moteur_v2_6_10",
+          "moteur": "moteur_v2_6_10",
+          "rang": "P1",
+          "justification": "Jong Utrecht a couvert la ligne +1,5 dans 100.0% de ses dernières rencontres à l'extérieur.",
+          "betpawa_url": "https://www.betpawa.cm/event/38311269?filter=all"
+        },
+        {
+          "match_id": "dyegxwtrz1id3t7uarquuwqvo",
+          "cle_match": "id:dyegxwtrz1id3t7uarquuwqvo",
+          "date": "2026-10-11",
+          "heure": "13:30",
+          "competition": "Pologne : 1. Ligue",
+          "domicile": "LKS Lódz",
+          "exterieur": "Ruch Chorzow",
+          "marche": "buts_equipe_exterieur_1.5_under",
+          "cote": 1.53,
+          "probabilite": 0.8041,
+          "probabilite_estimee": 0.8041,
+          "ev_estime": 0.230273,
+          "marge_modele": 0.150505,
+          "marge_succes": null,
+          "niveau_confiance": "MODELE_SEUL",
+          "historique_observations": 0,
+          "source": "moteur_v3",
+          "moteur": "moteur_v3",
+          "rang": "P1",
+          "justification": "Probabilité calibrée 80 % contre 65 % selon la cote 1,53 · marge +23,0 % · 4 matchs au même lieu.",
+          "betpawa_url": null
+        },
+        {
+          "match_id": "3qb0alnf9bqwcq4e00vtvawic",
+          "cle_match": "id:3qb0alnf9bqwcq4e00vtvawic",
+          "date": "2026-10-09",
+          "heure": "19:00",
+          "competition": "France : Ligue 2 BKT",
+          "domicile": "Sochaux",
+          "exterieur": "US Boulogne",
+          "marche": "over_under_total_2.5_under",
+          "cote": 1.59,
+          "probabilite": 0.7959,
+          "probabilite_estimee": 0.7959,
+          "ev_estime": 0.265481,
+          "marge_modele": 0.166969,
+          "marge_succes": null,
+          "niveau_confiance": "MODELE_SEUL",
+          "historique_observations": 0,
+          "source": "moteur_v3",
+          "moteur": "moteur_v3",
+          "rang": "P1",
+          "justification": "Probabilité calibrée 80 % contre 63 % selon la cote 1,59 · marge +26,5 % · 3 matchs au même lieu.",
+          "betpawa_url": null
+        }
+      ],
+      "metrics": {
+        "matchs": 5,
+        "cote_totale": 7.2882,
+        "ecart_objectif": null,
+        "marge_succes_min": null,
+        "marge_succes_moyenne": null,
+        "marge_modele_moyenne": 0.17209,
+        "probabilite_independante_theorique": 0.428312,
+        "ev_theorique": 2.1216,
+        "sources": [
+          "moteur_v2_6_10",
+          "moteur_v3"
+        ],
+        "diversite_sources": 2,
+        "niveau_min": 0
+      },
+      "analyse": {
+        "paris": 5,
+        "hypotheses": "Paris supposés indépendants ; probabilités des moteurs non recalibrées ; le bookmaker doit accepter plusieurs tickets ; « profit » = mise au moins remboursée.",
+        "probabilite_bonnes": [
+          6.8e-05,
+          0.002121,
+          0.025272,
+          0.144653,
+          0.399573,
+          0.428312
+        ],
+        "paris_justes_attendus": 4.2265,
+        "taux_estime_moyen": 0.8453,
+        "plans": [
+          {
+            "nom": "COMBINE",
+            "tickets": 1,
+            "tailles": [
+              5
+            ],
+            "strategie": "COTES_EQUILIBREES",
+            "variantes": [
+              {
+                "strategie": "COTES_EQUILIBREES",
+                "choisie": true,
+                "erreurs_garanties": 0,
+                "proba_profit": 0.4283,
+                "esperance_gain": 2.1216
+              }
+            ],
+            "composition": [
+              {
+                "paris": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4
+                ],
+                "cote": 7.2882,
+                "probabilite": 0.428312,
+                "mise": 1.0
+              }
+            ],
+            "retour_garanti": 7.2882,
+            "gagnants_requis": 1,
+            "erreurs_garanties": 0,
+            "proba_profit": 0.4283,
+            "esperance_gain": 2.1216
+          },
+          {
+            "nom": "TICKETS_2_DE_2_A_3",
+            "tickets": 2,
+            "tailles": [
+              3,
+              2
+            ],
+            "strategie": "SECURITE_GROUPEE",
+            "variantes": [
+              {
+                "strategie": "COTES_EQUILIBREES",
+                "choisie": false,
+                "erreurs_garanties": 1,
+                "proba_profit": 0.8807,
+                "esperance_gain": 0.7507
+              },
+              {
+                "strategie": "SECURITE_GROUPEE",
+                "choisie": true,
+                "erreurs_garanties": 1,
+                "proba_profit": 0.8809,
+                "esperance_gain": 0.7577
+              }
+            ],
+            "composition": [
+              {
+                "paris": [
+                  0,
+                  1,
+                  2
+                ],
+                "cote": 2.9959,
+                "probabilite": 0.669255,
+                "mise": 0.4481
+              },
+              {
+                "paris": [
+                  3,
+                  4
+                ],
+                "cote": 2.4327,
+                "probabilite": 0.639983,
+                "mise": 0.5519
+              }
+            ],
+            "retour_garanti": 1.3425,
+            "gagnants_requis": 1,
+            "erreurs_garanties": 1,
+            "proba_profit": 0.8809,
+            "esperance_gain": 0.7577
+          },
+          {
+            "nom": "SIMPLES",
+            "tickets": 5,
+            "tailles": [
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "strategie": "COTES_EQUILIBREES",
+            "variantes": [
+              {
+                "strategie": "COTES_EQUILIBREES",
+                "choisie": true,
+                "erreurs_garanties": 1,
+                "proba_profit": 0.8279,
+                "esperance_gain": 0.2556
+              },
+              {
+                "strategie": "SECURITE_EQUILIBREE",
+                "choisie": false,
+                "erreurs_garanties": 1,
+                "proba_profit": 0.8279,
+                "esperance_gain": 0.2556
+              },
+              {
+                "strategie": "SECURITE_GROUPEE",
+                "choisie": false,
+                "erreurs_garanties": 1,
+                "proba_profit": 0.8279,
+                "esperance_gain": 0.2556
+              }
+            ],
+            "composition": [
+              {
+                "paris": [
+                  4
+                ],
+                "cote": 1.59,
+                "probabilite": 0.7959,
+                "mise": 0.1868
+              },
+              {
+                "paris": [
+                  2
+                ],
+                "cote": 1.54,
+                "probabilite": 0.824116,
+                "mise": 0.1929
+              },
+              {
+                "paris": [
+                  3
+                ],
+                "cote": 1.53,
+                "probabilite": 0.8041,
+                "mise": 0.1942
+              },
+              {
+                "paris": [
+                  1
+                ],
+                "cote": 1.42,
+                "probabilite": 0.894962,
+                "mise": 0.2092
+              },
+              {
+                "paris": [
+                  0
+                ],
+                "cote": 1.37,
+                "probabilite": 0.9074,
+                "mise": 0.2169
+              }
+            ],
+            "retour_garanti": 0.2971,
+            "gagnants_requis": 4,
+            "erreurs_garanties": 1,
+            "proba_profit": 0.8279,
+            "esperance_gain": 0.2556
+          }
+        ],
+        "meilleur_plan": "COMBINE",
+        "plan_le_plus_regulier": "TICKETS_2_DE_2_A_3",
+        "plan_marge_max": "TICKETS_2_DE_2_A_3",
+        "rentable": true
+      }
+    },
+    {
+      "scenario": "OBJECTIF_COTE_10",
+      "statut": "OK",
+      "regle": "Un seul pari par match, aucun quota rempli artificiellement, maximum 12 matchs, cote totale entre 2 et 20.",
+      "selection": [
+        {
+          "match_id": "1i0j3i9poom6l7z449tpoaoes",
+          "cle_match": "id:1i0j3i9poom6l7z449tpoaoes",
+          "date": "2026-10-10",
+          "heure": "15:00",
+          "competition": "Angleterre : League One",
+          "domicile": "Wycombe",
+          "exterieur": "Luton",
+          "marche": "over_under_total_2.5_over",
+          "cote": 1.68,
+          "probabilite": 0.8075,
+          "probabilite_estimee": 0.8075,
+          "ev_estime": 0.3566,
+          "marge_modele": 0.212262,
+          "marge_succes": null,
+          "niveau_confiance": "MODELE_SEUL",
+          "historique_observations": 0,
+          "source": "moteur_v3",
+          "moteur": "moteur_v3",
+          "rang": "P1",
+          "justification": "Probabilité calibrée 81 % contre 60 % selon la cote 1,68 · marge +35,7 % · 3 matchs au même lieu.",
+          "betpawa_url": null
+        },
+        {
+          "match_id": "dgtilrsjzd59kuzowmzrrumtw",
+          "cle_match": "id:dgtilrsjzd59kuzowmzrrumtw",
+          "date": "2026-10-09",
+          "heure": "19:00",
+          "competition": "Pays-Bas : Eerste Divisie",
+          "domicile": "NAC",
+          "exterieur": "MVV",
+          "marche": "btts_oui",
+          "cote": 1.61,
+          "probabilite": 0.7953,
+          "probabilite_estimee": 0.7953,
+          "ev_estime": 0.280433,
+          "marge_modele": 0.174182,
+          "marge_succes": null,
+          "niveau_confiance": "MODELE_SEUL",
+          "historique_observations": 0,
+          "source": "moteur_v3",
+          "moteur": "moteur_v3",
+          "rang": "P1",
+          "justification": "Probabilité calibrée 80 % contre 62 % selon la cote 1,61 · marge +28,0 % · 4 matchs au même lieu.",
+          "betpawa_url": null
+        },
+        {
+          "match_id": "226294othn0n946j1ioxraqz8",
+          "cle_match": "id:226294othn0n946j1ioxraqz8",
+          "date": "2026-10-10",
+          "heure": "15:00",
+          "competition": "Écosse : Premier Ligue",
+          "domicile": "Glasgow Rangers",
+          "exterieur": "Kilmarnock FC",
+          "marche": "over_under_total_4.5_under",
+          "cote": 1.42,
+          "probabilite": 0.894962352989948,
+          "probabilite_estimee": 0.894962,
+          "ev_estime": 0.270847,
+          "marge_modele": 0.190737,
+          "marge_succes": null,
+          "niveau_confiance": "MODELE_SEUL",
+          "historique_observations": 0,
+          "source": "moteur_v2_6_10",
+          "moteur": "moteur_v2_6_10",
+          "rang": "P1",
+          "justification": "Rythme fermé : plus de 4,5 buts dans seulement 16.7% des matchs récents des deux équipes.",
+          "betpawa_url": "https://www.betpawa.cm/event/38141549?filter=all"
+        },
+        {
+          "match_id": "dffnoe6ygw9mqrcutia357uac",
+          "cle_match": "id:dffnoe6ygw9mqrcutia357uac",
+          "date": "2026-10-09",
+          "heure": "19:00",
+          "competition": "Pays-Bas : Eerste Divisie",
+          "domicile": "De Graafschap",
+          "exterieur": "Jong Utrecht",
+          "marche": "handicap_exterieur_1.5",
+          "cote": 1.54,
+          "probabilite": 0.8241159592654033,
+          "probabilite_estimee": 0.824116,
+          "ev_estime": 0.269139,
+          "marge_modele": 0.174765,
+          "marge_succes": null,
+          "niveau_confiance": "MODELE_SEUL",
+          "historique_observations": 0,
+          "source": "moteur_v2_6_10",
+          "moteur": "moteur_v2_6_10",
+          "rang": "P1",
+          "justification": "Jong Utrecht a couvert la ligne +1,5 dans 100.0% de ses dernières rencontres à l'extérieur.",
+          "betpawa_url": "https://www.betpawa.cm/event/38311269?filter=all"
+        },
+        {
+          "match_id": "1bk0wjqj56e1gcy3hwhnmsahg",
+          "cle_match": "id:1bk0wjqj56e1gcy3hwhnmsahg",
+          "date": "2026-10-10",
+          "heure": "15:00",
+          "competition": "Angleterre : Championnat",
+          "domicile": "Middlesbrough",
+          "exterieur": "Wolverhampton",
+          "marche": "over_under_total_2.5_over",
+          "cote": 1.61,
+          "probabilite": 0.7561,
+          "probabilite_estimee": 0.7561,
+          "ev_estime": 0.217321,
+          "marge_modele": 0.134982,
+          "marge_succes": null,
+          "niveau_confiance": "MODELE_SEUL",
+          "historique_observations": 0,
+          "source": "moteur_v3",
+          "moteur": "moteur_v3",
+          "rang": "P1",
+          "justification": "Probabilité calibrée 76 % contre 62 % selon la cote 1,61 · marge +21,7 % · 4 matchs au même lieu.",
+          "betpawa_url": null
+        }
+      ],
+      "metrics": {
+        "matchs": 5,
+        "cote_totale": 9.5229,
+        "ecart_objectif": 0.4771,
+        "marge_succes_min": null,
+        "marge_succes_moyenne": null,
+        "marge_modele_moyenne": 0.177386,
+        "probabilite_independante_theorique": 0.358134,
+        "ev_theorique": 2.4105,
+        "sources": [
+          "moteur_v2_6_10",
+          "moteur_v3"
+        ],
+        "diversite_sources": 2,
+        "niveau_min": 0
+      },
+      "analyse": {
+        "paris": 5,
+        "hypotheses": "Paris supposés indépendants ; probabilités des moteurs non recalibrées ; le bookmaker doit accepter plusieurs tickets ; « profit » = mise au moins remboursée.",
+        "probabilite_bonnes": [
+          0.000178,
+          0.00433,
+          0.040644,
+          0.185167,
+          0.411547,
+          0.358134
+        ],
+        "paris_justes_attendus": 4.078,
+        "taux_estime_moyen": 0.8156,
+        "plans": [
+          {
+            "nom": "COMBINE",
+            "tickets": 1,
+            "tailles": [
+              5
+            ],
+            "strategie": "COTES_EQUILIBREES",
+            "variantes": [
+              {
+                "strategie": "COTES_EQUILIBREES",
+                "choisie": true,
+                "erreurs_garanties": 0,
+                "proba_profit": 0.3581,
+                "esperance_gain": 2.4105
+              }
+            ],
+            "composition": [
+              {
+                "paris": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4
+                ],
+                "cote": 9.5229,
+                "probabilite": 0.358134,
+                "mise": 1.0
+              }
+            ],
+            "retour_garanti": 9.5229,
+            "gagnants_requis": 1,
+            "erreurs_garanties": 0,
+            "proba_profit": 0.3581,
+            "esperance_gain": 2.4105
+          },
+          {
+            "nom": "TICKETS_2_DE_2_A_3",
+            "tickets": 2,
+            "tailles": [
+              3,
+              2
+            ],
+            "strategie": "SECURITE_EQUILIBREE",
+            "variantes": [
+              {
+                "strategie": "COTES_EQUILIBREES",
+                "choisie": false,
+                "erreurs_garanties": 1,
+                "proba_profit": 0.8388,
+                "esperance_gain": 0.819
+              },
+              {
+                "strategie": "SECURITE_EQUILIBREE",
+                "choisie": true,
+                "erreurs_garanties": 1,
+                "proba_profit": 0.8417,
+                "esperance_gain": 0.8354
+              }
+            ],
+            "composition": [
+              {
+                "paris": [
+                  2,
+                  3,
+                  4
+                ],
+                "cote": 3.5207,
+                "probabilite": 0.557664,
+                "mise": 0.4345
+              },
+              {
+                "paris": [
+                  0,
+                  1
+                ],
+                "cote": 2.7048,
+                "probabilite": 0.642205,
+                "mise": 0.5655
+              }
+            ],
+            "retour_garanti": 1.5297,
+            "gagnants_requis": 1,
+            "erreurs_garanties": 1,
+            "proba_profit": 0.8417,
+            "esperance_gain": 0.8354
+          },
+          {
+            "nom": "SIMPLES",
+            "tickets": 5,
+            "tailles": [
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "strategie": "COTES_EQUILIBREES",
+            "variantes": [
+              {
+                "strategie": "COTES_EQUILIBREES",
+                "choisie": true,
+                "erreurs_garanties": 1,
+                "proba_profit": 0.7697,
+                "esperance_gain": 0.2779
+              },
+              {
+                "strategie": "SECURITE_EQUILIBREE",
+                "choisie": false,
+                "erreurs_garanties": 1,
+                "proba_profit": 0.7697,
+                "esperance_gain": 0.2779
+              },
+              {
+                "strategie": "SECURITE_GROUPEE",
+                "choisie": false,
+                "erreurs_garanties": 1,
+                "proba_profit": 0.7697,
+                "esperance_gain": 0.2779
+              }
+            ],
+            "composition": [
+              {
+                "paris": [
+                  0
+                ],
+                "cote": 1.68,
+                "probabilite": 0.8075,
+                "mise": 0.1865
+              },
+              {
+                "paris": [
+                  1
+                ],
+                "cote": 1.61,
+                "probabilite": 0.7953,
+                "mise": 0.1946
+              },
+              {
+                "paris": [
+                  4
+                ],
+                "cote": 1.61,
+                "probabilite": 0.7561,
+                "mise": 0.1946
+              },
+              {
+                "paris": [
+                  3
+                ],
+                "cote": 1.54,
+                "probabilite": 0.824116,
+                "mise": 0.2035
+              },
+              {
+                "paris": [
+                  2
+                ],
+                "cote": 1.42,
+                "probabilite": 0.894962,
+                "mise": 0.2207
+              }
+            ],
+            "retour_garanti": 0.3134,
+            "gagnants_requis": 4,
+            "erreurs_garanties": 1,
+            "proba_profit": 0.7697,
+            "esperance_gain": 0.2779
+          }
+        ],
+        "meilleur_plan": "COMBINE",
+        "plan_le_plus_regulier": "TICKETS_2_DE_2_A_3",
+        "plan_marge_max": "TICKETS_2_DE_2_A_3",
+        "rentable": true
+      }
+    }
+  ],
+  "statut_global": "OK"
+}
