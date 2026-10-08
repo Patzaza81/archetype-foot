@@ -95,3 +95,19 @@ def test_avantage_par_marche_exige_un_echantillon_minimum():
     }
     x = sa.advantage_by_market(history)["m"]
     assert x["meilleur"] == "moteur_v2_6_10"
+
+
+def test_calibrage_externe_prime_les_candidats_sans_modifier_le_moteur():
+    rows = [
+        candidate("a", "moteur_v2_6_10", odds=1.60, p=0.72, rank=4),
+        candidate("b", "moteur_v2_6_10", odds=1.60, p=0.80, rank=4),
+    ]
+    rows[0]["calibrage_rang"] = 2
+    rows[0]["calibrage_marge"] = 0.04
+    rows[0]["calibrage_lift"] = 0.05
+    rows[1]["calibrage_rang"] = 0
+    rows[1]["calibrage_marge"] = None
+    rows[1]["calibrage_lift"] = None
+    import generateur_tickets as gt
+    assert gt.candidate_rank(rows[0]) > gt.candidate_rank(rows[1])
+    assert rows[0]["probabilite"] == 0.72
