@@ -16,7 +16,9 @@ Le générateur reçoit au maximum les 10 meilleurs candidats de chaque source. 
 
 La marge de succès est une mesure conservatrice :
 
-borne basse Wilson à 95 % du taux de réussite historique moins probabilité implicite de la cote.
+probabilité estimée moins probabilité implicite de la cote.
+
+Pour le Journal, la probabilité estimée est lissée : (victoires + 20 × fréquence générale du marché) / (observations + 20). Le fichier `config/journal_calibrage.json` permet de revenir à la borne basse Wilson à 95 % (`"mode": "wilson"`).
 
 La probabilité implicite est 1 / cote.
 

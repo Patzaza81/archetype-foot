@@ -3,6 +3,8 @@ from __future__ import annotations
 import datetime as dt
 import json
 import math
+import random
+import re
 from pathlib import Path
 from typing import Any
 
@@ -18,8 +20,14 @@ DEFAULT_TARGET = 10.0
 TOLERANCES = (0.05, 0.10, 0.25)
 ODDS_MIN = 1.26
 ODDS_MAX = 3.01
-BEAM_WIDTH = 600
-POOL_MAX = 30
+# DÉCISION DE PATRICK (08/10/2026) : le générateur fait lui-même le tri dans chaque source (V2.6.10 en P1 seulement, V3,
+# Journal) et retient 10 paris au maximum par source, donc 30 au maximum. Ces 30 sont à égalité : les tickets sont tirés
+# AU HASARD (graine = date du jour, enregistrée), sans règle de diversification de marchés, sans jamais réutiliser un
+# match dans les tickets du jour. Aucun quota n'est rempli de force.
+SOURCES = ("moteur_v2_6_10", "moteur_v3", "journal")
+MAX_PAR_SOURCE = 10
+POOL_MAX = MAX_PAR_SOURCE * len(SOURCES)
+TENTATIVES_TIRAGE = 4000
 
 
 def load(path: Path) -> dict[str, Any]:
@@ -417,6 +425,8 @@ def leg(x: dict[str, Any]) -> dict[str, Any]:
         "rang": x.get("rang"),
         "justification": x.get("justification"),
         "betpawa_url": x.get("betpawa_url"),
+        "aussi_propose_par": x.get("aussi_propose_par") or [],
+        "journal_calibrage": x.get("journal_calibrage"),
     }
 
 
@@ -424,7 +434,7 @@ def ticket(rows: list[dict[str, Any]], scenario: str, target: float | None = Non
     return {
         "scenario": scenario,
         "statut": "OK" if rows else "AUCUN_TICKET_SOLIDE",
-        "regle": "Un seul pari par match, aucun quota rempli artificiellement, maximum 12 matchs, cote totale entre 2 et 20.",
+        "regle": "Un seul pari par match, jamais le même match dans deux tickets du jour, tirage au hasard (graine = date), aucun quota rempli artificiellement, maximum 12 matchs, cote totale entre 2 et 20.",
         "selection": [leg(x) for x in rows],
         "metrics": ticket_metrics(rows, target),
         "analyse": analyse_ticket(rows) if rows else None,
@@ -440,123 +450,148 @@ def ordered_pool(rows: list[dict[str, Any]], mode: str) -> list[dict[str, Any]]:
     return pool
 
 
-def greedy(rows: list[dict[str, Any]], size: int, mode: str) -> list[dict[str, Any]]:
-    pool = ordered_pool(rows, mode)
+_TOTAL_JOURNAL = re.compile(r"^match à (plus|moins) de (\d+)[,.](\d+) buts$")
+
+
+def marche_canonique(c: dict[str, Any]) -> str:
+    """Nom de marché commun aux trois sources, pour reconnaître le MÊME pari proposé par deux sources.
+
+    Les moteurs écrivent « over_under_total_3.5_under », le Journal « Match à moins de 3,5 buts ». Seuls les marchés
+    dont l'équivalence est certaine sont traduits (totaux de buts, les deux équipes marquent, victoire et « ne perd pas »
+    d'une équipe donnée). Les autres gardent leur nom : ils ne seront jamais pris à tort pour un doublon."""
+    m = " ".join(str(c.get("marche") or "").split()).lower()
+    t = _TOTAL_JOURNAL.match(m)
+    if t:
+        return f"over_under_total_{t.group(2)}.{t.group(3)}_{'over' if t.group(1) == 'plus' else 'under'}"
+    if m == "les deux équipes marquent":
+        return "btts_oui"
+    if m == "au moins une équipe ne marque pas":
+        return "btts_non"
+    equipe = str(c.get("journal_team") or "").strip().lower()
+    dom = str(c.get("domicile") or "").strip().lower()
+    ext = str(c.get("exterieur") or "").strip().lower()
+    if equipe and m == "victoire":
+        return "1x2_domicile" if equipe == dom else "1x2_exterieur" if equipe == ext else m
+    if equipe and m.startswith("ne perd pas"):
+        return "double_chance_1X" if equipe == dom else "double_chance_X2" if equipe == ext else m
+    return m
+
+
+def pari_key(c: dict[str, Any]) -> tuple[str, str]:
+    return (match_key(c), marche_canonique(c))
+
+
+def candidats_source(data: dict[str, Any], source: str) -> list[dict[str, Any]]:
+    """Tous les candidats d'une source. `candidats` (liste complète) si présent, sinon `top` (ancien format).
+    V2.6.10 : uniquement le pronostic P1 (décision de Patrick du 08/10/2026)."""
+    bloc = (data.get("sources", {}).get(source, {}) or {})
+    rows = bloc.get("candidats")
+    if not isinstance(rows, list):
+        rows = bloc.get("top") or []
+    rows = [dict(x) for x in rows if isinstance(x, dict)]
+    if source == "moteur_v2_6_10":
+        rows = [x for x in rows if str(x.get("rang") or "").upper() == "P1"]
+    return rows
+
+
+def selection_par_source(data: dict[str, Any]) -> tuple[dict[str, list[dict[str, Any]]], int]:
+    """Tri fait par le générateur dans chaque source : paris jouables (cote 1,26–3,01, probabilité au moins égale à celle de
+    la cote), classés par `candidate_rank`, 10 au maximum par source. Un même pari (même match, même marché) n'existe
+    qu'une fois dans l'ensemble : il reste dans la source où il est le mieux classé, les autres le remplacent par leur
+    pari suivant s'il existe (sinon la place reste vide, rien n'est forcé). Renvoie aussi le nombre de jouables."""
+    listes = {s: [x for x in dedupe(candidats_source(data, s)) if eligible(x)] for s in SOURCES}
+    meilleur: dict[tuple[str, str], tuple[tuple[int, int], str]] = {}
+    for ordre, s in enumerate(SOURCES):
+        for idx, x in enumerate(listes[s]):
+            k = pari_key(x)
+            if k not in meilleur or (idx, ordre) < meilleur[k][0]:
+                meilleur[k] = ((idx, ordre), s)
+    retenus: dict[str, list[dict[str, Any]]] = {}
+    for s in SOURCES:
+        gardes = [x for x in listes[s] if meilleur[pari_key(x)][1] == s][:MAX_PAR_SOURCE]
+        for x in gardes:
+            k = pari_key(x)
+            x["aussi_propose_par"] = [t for t in SOURCES if t != s and any(pari_key(y) == k for y in listes[t])]
+        retenus[s] = gardes
+    return retenus, sum(len(v) for v in listes.values())
+
+
+def _tirer_matchs_distincts(dispo: list[dict[str, Any]], size: int, rnd: random.Random) -> list[dict[str, Any]]:
+    ordre = dispo[:]
+    rnd.shuffle(ordre)
     chosen: list[dict[str, Any]] = []
-    seen_matches: set[str] = set()
-    seen_groups: set[str] = set()
-    for c in pool:
-        mk = match_key(c)
-        if mk in seen_matches:
+    vus: set[str] = set()
+    for x in ordre:
+        mk = match_key(x)
+        if mk in vus:
             continue
-        group = str(c.get("exposure_group") or c.get("market_family") or "")
-        # La diversité de marchés est privilégiée sans devenir une interdiction
-        # : si le groupe manque, on accepte un doublon plutôt que d'inventer un pari.
-        if group and group in seen_groups and len(chosen) < size - 1:
-            continue
-        chosen.append(c)
-        seen_matches.add(mk)
-        if group:
-            seen_groups.add(group)
+        chosen.append(x)
+        vus.add(mk)
         if len(chosen) == size:
             break
-    # Deuxième passage : compléter seulement avec des candidats déjà jugés éligibles.
-    if len(chosen) < size:
-        for c in pool:
-            if len(chosen) == size:
-                break
-            if match_key(c) not in seen_matches:
-                chosen.append(c)
-                seen_matches.add(match_key(c))
     return chosen
 
 
-def beam_target(rows: list[dict[str, Any]], size: int, target: float) -> list[dict[str, Any]]:
-    """Meilleure combinaison de `size` matchs dont la cote totale est proche de `target`
-    (toujours dans [2 ; 20]) : à proximité égale, la plus forte probabilité conjointe,
-    donc la plus forte valeur espérée à cote totale donnée."""
-    target = clamp_target(target)
-    pool = ordered_pool(rows, "normal")[:POOL_MAX]
-    if size < 1 or len(pool) < size:
+def _disponibles(pool: list[dict[str, Any]], interdits: set[str]) -> list[dict[str, Any]]:
+    return [x for x in pool if match_key(x) not in interdits and (n(x.get("cote")) or 0) > 1]
+
+
+def tirage_ticket(pool: list[dict[str, Any]], size: int, graine: str, nom: str,
+                  interdits: set[str] | None = None, tentatives: int = TENTATIVES_TIRAGE) -> list[dict[str, Any]]:
+    """`size` paris sur `size` matchs différents, tirés AU HASARD dans `pool` (aucun classement, aucune règle de
+    diversification). Les matchs de `interdits` (déjà pris par un autre ticket du jour) sont exclus. La cote totale doit
+    être dans [2 ; 20] : sinon on retire. Même graine et même nom = même tirage. Rien de possible : liste vide."""
+    interdits = interdits or set()
+    dispo = _disponibles(pool, interdits)
+    if size < 1 or len({match_key(x) for x in dispo}) < size:
         return []
-    log_target = math.log(target)
-    log_cap = math.log(min(MAX_TARGET, target * (1.0 + TOLERANCES[-1])))
-
-    states: list[tuple[tuple[int, ...], float]] = [((), 0.0)]
-    for depth in range(1, size + 1):
-        goal = log_target * depth / size
-        nxt: list[tuple[tuple[int, ...], float]] = []
-        for indices, log_prod in states:
-            start = indices[-1] + 1 if indices else 0
-            used = {match_key(pool[i]) for i in indices}
-            for i in range(start, len(pool)):
-                if match_key(pool[i]) in used:
-                    continue
-                odds = n(pool[i].get("cote"))
-                if not odds or odds <= 1:
-                    continue
-                nlp = log_prod + math.log(odds)
-                if nlp > log_cap + 1e-12:
-                    continue
-                nxt.append((indices + (i,), nlp))
-        nxt.sort(key=lambda s: abs(s[1] - goal))
-        states = nxt[:BEAM_WIDTH]
-        if not states:
+    rnd = random.Random(f"{graine}|{nom}")
+    for _ in range(tentatives):
+        chosen = _tirer_matchs_distincts(dispo, size, rnd)
+        if len(chosen) < size:
             return []
-
-    best: list[dict[str, Any]] = []
-    best_key = None
-    for indices, log_prod in states:
-        tier = tolerance_tier(math.exp(log_prod), target)
-        if tier is None:
-            continue
-        chosen = [pool[i] for i in indices]
-        joint = sum(math.log(proba(x)) for x in chosen)
-        key = (-tier, joint, -abs(log_prod - log_target))
-        if best_key is None or key > best_key:
-            best_key, best = key, chosen
-    return best
+        produit = math.prod(float(x["cote"]) for x in chosen)
+        if MIN_TARGET - 1e-9 <= produit <= MAX_TARGET + 1e-9:
+            return chosen
+    return []
 
 
-def best_target_ticket(rows: list[dict[str, Any]], target: float) -> list[dict[str, Any]]:
-    """Le nombre de matchs reste adaptatif (2 à 12) ; la cote totale, elle, est imposée."""
+def tirage_cible(pool: list[dict[str, Any]], target: float, graine: str, nom: str,
+                 interdits: set[str] | None = None, tentatives: int = TENTATIVES_TIRAGE) -> list[dict[str, Any]]:
+    """Ticket dont la cote totale est proche de `target` (toujours dans [2 ; 20]) : taille (2 à 12) et paris tirés au
+    hasard ; on garde le premier tirage de la fenêtre de proximité la plus serrée trouvée. Rien de possible : liste vide."""
     target = clamp_target(target)
-    best: list[dict[str, Any]] = []
-    best_key = None
-    for size in range(2, MAX_MATCHES + 1):
-        cand = beam_target(rows, size, target)
-        if not cand:
+    interdits = interdits or set()
+    dispo = _disponibles(pool, interdits)
+    nb = len({match_key(x) for x in dispo})
+    if nb < 2:
+        return []
+    rnd = random.Random(f"{graine}|{nom}")
+    meilleur_tier: int | None = None
+    retenu: list[dict[str, Any]] = []
+    for _ in range(tentatives):
+        size = rnd.randint(2, min(MAX_MATCHES, nb))
+        chosen = _tirer_matchs_distincts(dispo, size, rnd)
+        if len(chosen) < size:
             continue
-        product = math.prod(float(x["cote"]) for x in cand)
-        tier = tolerance_tier(product, target)
-        if tier is None:
-            continue
-        joint = sum(math.log(proba(x)) for x in cand)
-        key = (-tier, joint, -abs(math.log(product / target)))
-        if best_key is None or key > best_key:
-            best_key, best = key, cand
-    return best
+        tier = tolerance_tier(math.prod(float(x["cote"]) for x in chosen), target)
+        if tier is not None and (meilleur_tier is None or tier < meilleur_tier):
+            meilleur_tier, retenu = tier, chosen
+            if tier == 0:
+                break
+    return retenu
 
 
-def build(data: dict[str, Any]) -> dict[str, Any]:
-    # Les trois sources fournissent au maximum 10 candidats chacune.
-    # Ils sont ensuite fusionnés sans traitement différencié dans le générateur.
-    rows: list[dict[str, Any]] = []
-    source_names = ("moteur_v2_6_10", "moteur_v3", "journal")
-    for source in source_names:
-        # Garde-fou : même si une source publie accidentellement plus de 10 lignes,
-        # le contrat d'entrée du générateur reste strictement limité à 10 par source.
-        rows.extend(((data.get("sources", {}).get(source, {}) or {}).get("top", []) or [])[:10])
-    rows = dedupe(rows)
-
-    # Sélection finale : les critères de classement existants restent inchangés.
-    # Les tickets ne peuvent utiliser que ces 15 meilleurs candidats.
-    pool_30 = ordered_pool(rows, "normal")[:POOL_MAX]
-    retenus = pool_30[:15]
-    rows = retenus
+def build(data: dict[str, Any], graine: str | None = None) -> dict[str, Any]:
+    # Le générateur trie lui-même chaque source (10 paris jouables au maximum chacune, 30 au total).
+    retenus, nb_jouables = selection_par_source(data)
+    pool = sorted([x for s in SOURCES for x in retenus[s]], key=candidate_rank, reverse=True)
+    rows = pool
+    graine = str(graine or data.get("graine_tirage") or dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d"))
 
     scenarios: list[dict[str, Any]] = []
     hors_intervalle: list[str] = []
+    interdits: set[str] = set()                     # un match n'est utilisé qu'une fois pour tous les tickets du jour
 
     def add(chosen: list[dict[str, Any]], name: str, target: float | None = None) -> None:
         t = ticket(chosen, name, target)
@@ -565,33 +600,34 @@ def build(data: dict[str, Any]) -> dict[str, Any]:
             hors_intervalle.append(name)
             return
         scenarios.append(t)
+        interdits.update(match_key(x) for x in chosen)
 
+    prudents = [x for x in pool if eligible(x, "prudent")]
     for size, name in ((2, "PRUDENT_2"), (3, "PRUDENT_3"), (4, "EQUILIBRE_4"), (5, "EQUILIBRE_5")):
-        chosen = greedy(rows, size, "prudent")
+        chosen = tirage_ticket(prudents, size, graine, name, interdits)
         add(chosen if len(chosen) == size else [], name)
 
-    chosen8 = greedy(rows, 8, "normal")
+    chosen8 = tirage_ticket(pool, 8, graine, "EQUILIBRE_8", interdits)
     add(chosen8 if len(chosen8) == 8 else [], "EQUILIBRE_8")
 
-    add(best_target_ticket(rows, DEFAULT_TARGET), "OBJECTIF_COTE_10", DEFAULT_TARGET)
+    add(tirage_cible(pool, DEFAULT_TARGET, graine, "OBJECTIF_COTE_10", interdits), "OBJECTIF_COTE_10", DEFAULT_TARGET)
 
-    pool = retenus
     return {
-        "version": 2,
+        "version": 3,
         "genere_le": dt.datetime.now(dt.timezone.utc).isoformat(),
+        "graine_tirage": graine,
+        "journal_calibrage": data.get("journal_calibrage"),
         "maximum_matchs": MAX_MATCHES,
-        "maximum_par_source": 10,
+        "maximum_par_source": MAX_PAR_SOURCE,
         "intervalle_cote_totale": [MIN_TARGET, MAX_TARGET],
         "cote_par_defaut": DEFAULT_TARGET,
         "tolerances": list(TOLERANCES),
-        "principe": "Deux moteurs coexistants + Journal. Les preuves observées (forme équipe du Journal et historique moteur) sont classées avant les probabilités moteur non calibrées. Pour un ticket, le Journal et un historique suffisant utilisent une borne Wilson prudente ; les probabilités moteur non calibrées restent signalées comme telles. La cote totale est choisie par le parieur, entre 2 et 20.",
+        "principe": "Trois sources : V2.6.10 (pronostic P1 seulement), V3 et Journal. Le générateur trie chaque source (paris jouables, classement) et retient 10 paris au maximum par source, 30 au total, sans doublon de pari. Ces 30 sont à égalité : les tickets sont tirés au hasard (graine = date du jour), sans règle de diversification de marchés, sans jamais réutiliser un match dans les tickets du jour. Aucun quota n'est rempli de force. La cote totale est choisie par le parieur, entre 2 et 20.",
         "avertissement": "La cote totale d'un combiné est exacte comme produit des cotes observées ; la probabilité indépendante affichée n'est pas une probabilité jointe garantie.",
-        "candidats_total": len(pool_30),
-        "candidats_receptionnes": len(rows) + (len(pool_30) - len(retenus)),
-        "candidats_retenus": len(retenus),
-        "minimum_retenus": 15,
-        "sources": {source: min(10, len((data.get("sources", {}).get(source, {}) or {}).get("top", []) or [])) for source in source_names},
-        "pool_30_receptionne": [leg(x) for x in pool_30],
+        "candidats_total": len(pool),
+        "candidats_receptionnes": nb_jouables,
+        "candidats_retenus": len(pool),
+        "sources": {s: len(retenus[s]) for s in SOURCES},
         "pool": [leg(x) for x in pool],
         "opportunites": [
             leg(x) for x in rows

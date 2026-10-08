@@ -24,7 +24,7 @@ def pool_sans_historique():
 
 def test_ticket_possible_sans_aucun_historique():
     rows = gt.dedupe(pool_sans_historique())
-    chosen = gt.best_target_ticket(rows, 10.0)
+    chosen = gt.tirage_cible(rows, 10.0, "2026-10-08", "T")
     assert chosen, "un ticket doit sortir sans historique"
     product = math.prod(float(x["cote"]) for x in chosen)
     assert 10 / 1.25 <= product <= 10 * 1.25
@@ -33,7 +33,7 @@ def test_ticket_possible_sans_aucun_historique():
 def test_cote_totale_toujours_entre_2_et_20():
     rows = gt.dedupe(pool_sans_historique())
     for target in (2, 2.5, 3, 5, 7.3, 10, 15, 19.9, 20):
-        chosen = gt.best_target_ticket(rows, target)
+        chosen = gt.tirage_cible(rows, target, "2026-10-08", "T")
         if chosen:
             product = math.prod(float(x["cote"]) for x in chosen)
             assert 2.0 - 1e-9 <= product <= 20.0 + 1e-9, (target, product)
@@ -45,7 +45,7 @@ def test_cible_hors_intervalle_est_ramenee_dans_2_20():
     assert gt.clamp_target("abc") == 10.0
     rows = gt.dedupe(pool_sans_historique())
     for target in (0.5, 35):
-        chosen = gt.best_target_ticket(rows, target)
+        chosen = gt.tirage_cible(rows, target, "2026-10-08", "T")
         if chosen:
             product = math.prod(float(x["cote"]) for x in chosen)
             assert 2.0 - 1e-9 <= product <= 20.0 + 1e-9
@@ -53,7 +53,7 @@ def test_cible_hors_intervalle_est_ramenee_dans_2_20():
 
 def test_un_seul_pari_par_match_et_12_max():
     rows = gt.dedupe(pool_sans_historique())
-    chosen = gt.best_target_ticket(rows, 20.0)
+    chosen = gt.tirage_cible(rows, 20.0, "2026-10-08", "T")
     assert len(chosen) <= 12
     assert len({gt.match_key(x) for x in chosen}) == len(chosen)
 
@@ -72,7 +72,8 @@ def test_journal_utilisable_via_sa_probabilite_estimee():
 
 
 def test_aucun_ticket_si_pool_insuffisant():
-    assert gt.best_target_ticket([cand(1, 2.0, 0.6)], 10.0) == []
+    assert gt.tirage_cible([cand(1, 2.0, 0.6)], 10.0, "g", "T") == []
+    assert gt.tirage_ticket([cand(1, 2.0, 0.6)], 2, "g", "T") == []
 
 
 def test_generateur_traite_les_sources_de_facon_identique():
@@ -93,34 +94,18 @@ def test_generateur_traite_les_sources_de_facon_identique():
     assert gt.candidate_rank(rows[0]) == gt.candidate_rank(rows[1]) == gt.candidate_rank(rows[2])
 
 
-def test_build_recoit_30_et_ne_retient_que_15_pour_les_tickets():
+def test_build_retient_10_par_source_soit_30_et_les_tickets_utilisent_les_30():
     top = []
-    for i in range(30):
-        x = cand(i, 1.30 + (i % 10) * 0.12, 0.58 + (i % 8) * 0.03,
-                 source=("moteur_v2_6_10", "moteur_v3", "journal")[i // 10],
-                 rang=("P1", "P2", "P3")[i % 3])
-        x.update({
-            "selection_evidence_rank": 0,
-            "selection_evidence_lower_bound": None,
-            "selection_evidence_rate": None,
-            "selection_evidence_roi": None,
-            "selection_evidence_observations": 0,
-            "selection_sample_rank": 0,
-            "selection_rank": {"P1": 3, "P2": 2, "P3": 1}[x["rang"]],
-        })
+    for i in range(60):
+        x = cand(i, 1.30 + (i % 10) * 0.12, 0.62 + (i % 8) * 0.03,
+                 source=("moteur_v2_6_10", "moteur_v3", "journal")[i // 20], rang="P1")
         top.append(x)
-    data = {
-        "sources": {
-            "moteur_v2_6_10": {"top": top[:10]},
-            "moteur_v3": {"top": top[10:20]},
-            "journal": {"top": top[20:30]},
-        }
-    }
-    out = gt.build(data)
-    assert out["candidats_total"] == 30
-    assert out["candidats_retenus"] == 15
-    assert len(out["pool_30_receptionne"]) == 30
-    assert len(out["pool"]) == 15
+    data = {"sources": {"moteur_v2_6_10": {"candidats": top[:20]}, "moteur_v3": {"candidats": top[20:40]},
+                        "journal": {"candidats": top[40:60]}}}
+    out = gt.build(data, graine="2026-10-08")
+    assert out["candidats_total"] == 30 and out["candidats_retenus"] == 30
+    assert out["sources"] == {"moteur_v2_6_10": 10, "moteur_v3": 10, "journal": 10}
+    assert len(out["pool"]) == 30 and out["graine_tirage"] == "2026-10-08"
     assert all(s["metrics"]["matchs"] <= 12 for s in out["scenarios"])
 
 
@@ -428,21 +413,147 @@ def test_python_et_javascript_choisissent_les_memes_repartitions(tmp_path):
         assert [v["strategie"] for v in fp["variantes"]] == [v["strategie"] for v in fj["variantes"]]
 
 
-def test_journal_5_sur_5_est_conserve_dans_le_pool_et_mis_en_avant():
-    j = cand(77, 1.60, None, source="journal", rang=None,
-             marge_succes=-0.04, niveau="FORME_5_SUR_5",
-             journal_frequency=1.0, journal_wins=5, journal_observations=5,
-             journal_lower_bound=0.5655, journal_roi=0.30,
-             probabilite_estimee=0.5655, probabilite_source="JOURNAL_WILSON",
-             journal_team="Equipe Forte", journal_opportunity=True)
+def test_journal_5_sur_5_entre_dans_le_pool_avec_la_probabilite_lissee_mais_pas_avec_wilson():
+    def journal(p, source_proba):
+        return cand(77, 1.60, None, source="journal", rang=None, marge_succes=p - 0.625, niveau="FORME_5_SUR_5",
+                    journal_frequency=1.0, journal_wins=5, journal_observations=5, journal_lower_bound=0.5655,
+                    journal_roi=0.30, probabilite_estimee=p, probabilite_source=source_proba,
+                    journal_team="Equipe Forte", journal_opportunity=True)
     v2 = cand(78, 1.60, 0.90, source="moteur_v2_6_10", rang="P1")
-    data = {
-        "sources": {
-            "moteur_v2_6_10": {"top": [v2]},
-            "moteur_v3": {"top": []},
-            "journal": {"top": [j]},
-        }
-    }
-    out = gt.build(data)
-    assert any(x["source"] == "journal" for x in out["opportunites"])
-    assert any(x["source"] == "journal" for x in out["pool"])
+    def donnees(j):
+        return {"sources": {"moteur_v2_6_10": {"candidats": [v2]}, "moteur_v3": {"candidats": []},
+                            "journal": {"candidats": [j]}}}
+    lisse = gt.build(donnees(journal(0.72, "JOURNAL_LISSE")))
+    assert any(x["source"] == "journal" for x in lisse["pool"])          # 72 % contre 62,5 % implicite : jouable
+    wilson = gt.build(donnees(journal(0.5655, "JOURNAL_WILSON")))
+    assert not any(x["source"] == "journal" for x in wilson["pool"])     # 56,6 % contre 62,5 % : non jouable (état initial)
+
+# --- AJOUT 08/10/2026 : tri par le générateur (10 par source), doublons remplacés, tirage au hasard ----------------------
+
+def _jour(mid, source, odds=1.60, p=0.70, marche="over_under_total_2.5_over", **kw):
+    return cand(mid, odds, p, source=source, rang="P1", marche=marche, **kw)
+
+
+@pytest.mark.parametrize("marche,attendu", [
+    ("Match à moins de 3,5 buts", "over_under_total_3.5_under"),
+    ("Match à plus de 2,5 buts", "over_under_total_2.5_over"),
+    ("Les deux équipes marquent", "btts_oui"),
+    ("over_under_total_2.5_over", "over_under_total_2.5_over"),      # nom moteur : inchangé
+])
+def test_marche_canonique_traduit_le_journal_et_laisse_les_moteurs(marche, attendu):
+    assert gt.marche_canonique({"marche": marche}) == attendu
+
+
+def test_marche_canonique_equipe_domicile_ou_exterieur():
+    base = {"domicile": "Alpha", "exterieur": "Beta"}
+    assert gt.marche_canonique({**base, "marche": "Victoire", "journal_team": "Alpha"}) == "1x2_domicile"
+    assert gt.marche_canonique({**base, "marche": "Ne perd pas (victoire ou nul)", "journal_team": "Beta"}) == "double_chance_X2"
+
+
+@pytest.mark.parametrize("marche,extra", [
+    ("Garde sa cage inviolée", {}),                       # équivalence incertaine : jamais traduit
+    ("Marque 2 buts ou plus", {}),
+    ("Victoire", {"journal_team": "Inconnue"}),            # équipe ni domicile ni extérieur
+])
+def test_marche_canonique_ne_traduit_pas_ce_qui_est_incertain(marche, extra):
+    c = {"marche": marche, "domicile": "Alpha", "exterieur": "Beta", **extra}
+    assert gt.marche_canonique(c) == marche.lower()
+
+
+def test_pari_key_meme_pari_et_paris_differents():
+    v3 = _jour(1, "moteur_v3", marche="over_under_total_2.5_over")
+    j = _jour(1, "journal", marche="Match à plus de 2,5 buts")
+    assert gt.pari_key(v3) == gt.pari_key(j)                                              # même pari, deux sources
+    assert gt.pari_key(v3) != gt.pari_key(_jour(1, "journal", marche="Match à plus de 3,5 buts"))   # autre ligne
+    assert gt.pari_key(v3) != gt.pari_key(_jour(2, "journal", marche="Match à plus de 2,5 buts"))   # autre match
+    assert gt.pari_key(v3) != gt.pari_key(_jour(1, "journal", marche="Match à moins de 2,5 buts"))  # sens opposé
+
+
+def test_v2_ne_garde_que_p1():
+    v2 = [cand(i, 1.6, 0.70, rang=("P1", "P2", "P3")[i % 3]) for i in range(9)]
+    retenus, _ = gt.selection_par_source({"sources": {"moteur_v2_6_10": {"candidats": v2}}})
+    assert len(retenus["moteur_v2_6_10"]) == 3 and all(x["rang"] == "P1" for x in retenus["moteur_v2_6_10"])
+
+
+def test_dix_par_source_au_maximum_et_rien_de_force():
+    v3 = [_jour(i, "moteur_v3") for i in range(15)]
+    journal = [_jour(100 + i, "journal") for i in range(3)]
+    retenus, jouables = gt.selection_par_source({"sources": {"moteur_v3": {"candidats": v3}, "journal": {"candidats": journal}}})
+    assert len(retenus["moteur_v3"]) == 10 and len(retenus["journal"]) == 3 and retenus["moteur_v2_6_10"] == []
+    assert jouables == 18
+
+
+def test_les_non_jouables_sont_exclus_avant_la_coupe():
+    jouables = [_jour(i, "journal", odds=1.60, p=0.70) for i in range(4)]
+    trop_chers = [_jour(10 + i, "journal", odds=3.50, p=0.90) for i in range(12)]       # cote hors 1,26–3,01
+    sans_valeur = [_jour(30 + i, "journal", odds=1.60, p=0.40) for i in range(12)]       # chance < cote
+    retenus, _ = gt.selection_par_source({"sources": {"journal": {"candidats": trop_chers + sans_valeur + jouables}}})
+    assert len(retenus["journal"]) == 4
+
+
+def test_doublon_reste_dans_la_meilleure_source_et_l_autre_prend_son_suivant():
+    commun_v3 = _jour(1, "moteur_v3", p=0.80, marche="over_under_total_2.5_over")
+    commun_j = _jour(1, "journal", p=0.72, marche="Match à plus de 2,5 buts")
+    suivant_j = _jour(2, "journal", p=0.66, marche="Match à moins de 3,5 buts")
+    for x in (commun_v3, commun_j, suivant_j):
+        x["selection_evidence_rank"] = 0
+    retenus, _ = gt.selection_par_source({"sources": {"moteur_v3": {"candidats": [commun_v3]},
+                                                      "journal": {"candidats": [commun_j, suivant_j]}}})
+    assert [x["marche"] for x in retenus["moteur_v3"]] == ["over_under_total_2.5_over"]
+    assert [x["marche"] for x in retenus["journal"]] == ["Match à moins de 3,5 buts"]     # le doublon est remplacé
+    assert retenus["moteur_v3"][0]["aussi_propose_par"] == ["journal"]
+
+
+def test_doublon_sans_remplacant_laisse_la_place_vide():
+    v3 = _jour(1, "moteur_v3", p=0.80)
+    j = _jour(1, "journal", p=0.62, marche="Match à plus de 2,5 buts")
+    retenus, _ = gt.selection_par_source({"sources": {"moteur_v3": {"candidats": [v3]}, "journal": {"candidats": [j]}}})
+    assert len(retenus["moteur_v3"]) == 1 and retenus["journal"] == []
+
+
+def _data_30():
+    sources = {}
+    for k, s in enumerate(gt.SOURCES):
+        sources[s] = {"candidats": [_jour(100 * k + i, s, odds=1.40 + 0.08 * (i % 8), p=0.78 + 0.01 * (i % 5))
+                                    for i in range(14)]}
+    return {"sources": sources, "journal_calibrage": "lisse"}
+
+
+def test_tirage_reproductible_avec_la_meme_graine_et_different_avec_une_autre():
+    pool = [_jour(i, "moteur_v3", odds=1.4 + 0.05 * (i % 9)) for i in range(30)]
+    a = gt.tirage_ticket(pool, 4, "2026-10-08", "T")
+    assert [x["match_id"] for x in a] == [x["match_id"] for x in gt.tirage_ticket(pool, 4, "2026-10-08", "T")]
+    autres = {tuple(x["match_id"] for x in gt.tirage_ticket(pool, 4, f"2026-10-{d:02d}", "T")) for d in range(1, 15)}
+    assert len(autres) > 1
+
+
+def test_tirage_exclut_les_matchs_interdits_et_garde_la_cote_dans_2_20():
+    pool = [_jour(i, "moteur_v3", odds=1.5) for i in range(8)]
+    interdits = {gt.match_key(pool[i]) for i in range(4)}
+    chosen = gt.tirage_ticket(pool, 4, "g", "T", interdits)
+    assert {x["match_id"] for x in chosen} == {"4", "5", "6", "7"}
+    assert gt.tirage_ticket(pool, 5, "g", "T", interdits) == []              # pas assez de matchs : rien de forcé
+    assert gt.tirage_ticket([_jour(i, "moteur_v3", odds=1.05) for i in range(3)], 2, "g", "T") == []   # produit < 2
+
+
+def test_build_n_utilise_jamais_un_match_deux_fois_dans_les_tickets_du_jour():
+    out = gt.build(_data_30(), graine="2026-10-08")
+    vus = [x["cle_match"] for s in out["scenarios"] for x in s["selection"]]
+    assert vus and len(vus) == len(set(vus))
+    assert out["graine_tirage"] == "2026-10-08" and out["journal_calibrage"] == "lisse"
+
+
+def test_build_est_reproductible_et_la_graine_change_les_tickets():
+    d = _data_30()
+    def compo(g):
+        return [[x["cle_match"] for x in s["selection"]] for s in gt.build(d, graine=g)["scenarios"]]
+    assert compo("2026-10-08") == compo("2026-10-08")
+    assert any(compo("2026-10-08") != compo(f"2026-10-{k:02d}") for k in range(9, 20))
+
+
+def test_aucune_regle_de_diversification_de_marches():
+    # tous les paris sont du même marché : les tickets sortent quand même
+    out = gt.build(_data_30(), graine="x")
+    tickets = [s for s in out["scenarios"] if s["selection"]]
+    assert tickets
+    assert any(len({l["marche"] for l in s["selection"]}) == 1 and len(s["selection"]) >= 2 for s in tickets)

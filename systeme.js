@@ -85,7 +85,7 @@ function construitBlocIntelligenceSelection(d) {
   const div = document.createElement("section");
   div.className = "bloc-systeme";
   div.innerHTML = "<h2>Intelligence de sélection</h2>" +
-    "<p style=\"margin:0 0 9px;font-size:12.5px;color:var(--text-secondary)\">Les deux moteurs coexistent. La sélection cherche où chacun apporte un avantage réel ; le Journal apporte une troisième source indépendante. La marge de succès utilise la borne basse Wilson à 95 % moins la probabilité implicite de la cote.</p>" +
+    "<p style=\"margin:0 0 9px;font-size:12.5px;color:var(--text-secondary)\">Les deux moteurs coexistent. La sélection cherche où chacun apporte un avantage réel ; le Journal apporte une troisième source indépendante. La marge de succès est la probabilité estimée moins la probabilité implicite de la cote. Pour le Journal, la probabilité est lissée (réglable ou retour à Wilson dans config/journal_calibrage.json).</p>" +
     "<div class=\"grille-stats\">" +
       "<div class=\"stat\"><span class=\"etiquette\">Moteurs suivis</span><strong>" + Object.keys(moteurs).length + "</strong></div>" +
       "<div class=\"stat\"><span class=\"etiquette\">Marchés suivis</span><strong>" + Object.keys(marches).length + "</strong></div>" +

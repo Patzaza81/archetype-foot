@@ -68,6 +68,34 @@ def wilson_lower(wins: int, n: int, z: float = 1.959963984540054) -> float | Non
     return (centre - spread) / den
 
 
+# Décision de Patrick du 08/10/2026 (test sans cotes sur 48 224 observations équipe×marché, walk-forward) : la borne
+# basse de Wilson sous-estimait le Journal (75 % annoncé pour 81 % réel). La probabilité du Journal est désormais la
+# fréquence de l'équipe lissée vers la fréquence générale du marché, avec 20 matchs fictifs :
+#   p = (réussites + 20 × fréquence_générale) / (matchs + 20)
+# Test hors échantillon : à p >= 70 %, 76,6 % annoncé pour 76,9 % réel. Wilson reste calculé (information, classement).
+JOURNAL_MATCHS_FICTIFS = 20
+
+# INTERRUPTEUR (exigence non négociable de Patrick, 08/10/2026) : le calibrage du Journal doit pouvoir revenir à sa
+# condition initiale (borne de Wilson) sans toucher au code. Fichier config/journal_calibrage.json : {"mode": "lisse"}
+# ou {"mode": "wilson"}. Fichier absent, illisible ou mode inconnu : "wilson" (l'état initial, le plus prudent).
+JOURNAL_CONFIG = Path("config/journal_calibrage.json")
+MODES_JOURNAL = ("lisse", "wilson")
+
+
+def journal_mode(path: Path = JOURNAL_CONFIG) -> str:
+    try:
+        mode = str(json.loads(path.read_text(encoding="utf-8")).get("mode", "")).strip().lower()
+    except (OSError, ValueError, AttributeError):
+        return "wilson"
+    return mode if mode in MODES_JOURNAL else "wilson"
+
+
+def journal_probabilite_lissee(wins: int, n: int, base: float | None, m: int = JOURNAL_MATCHS_FICTIFS) -> float | None:
+    if n <= 0 or base is None or not 0.0 <= base <= 1.0 or wins < 0 or wins > n:
+        return None
+    return (wins + m * base) / (n + m)
+
+
 def market_family(market: str) -> str:
     s = norm(market).lower()
     if s.startswith("1x2"):
@@ -366,7 +394,7 @@ def journal_segment_map(journal: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return out
 
 
-def _journal_team_market_candidate(row: dict[str, Any]) -> dict[str, Any] | None:
+def _journal_team_market_candidate(row: dict[str, Any], mode: str | None = None) -> dict[str, Any] | None:
     """Transforme une observation équipe×marché du Journal en opportunité exploitable.
 
     Le Journal reste indépendant du moteur : sa fréquence est une preuve descriptive,
@@ -387,6 +415,10 @@ def _journal_team_market_candidate(row: dict[str, Any]) -> dict[str, Any] | None
     if observations < 5 or frequency is None:
         return None
     lower = wilson_lower(wins, observations)
+    base_marche = num(row.get("frequence_generale"))
+    mode = mode or journal_mode()
+    lissee = journal_probabilite_lissee(wins, observations, base_marche) if mode == "lisse" else None
+    p_journal = lissee if lissee is not None else lower
     equipe = norm(row.get("equipe"))
     adversaire = norm(pm.get("adversaire"))
     lieu = norm(pm.get("lieu"))
@@ -411,8 +443,11 @@ def _journal_team_market_candidate(row: dict[str, Any]) -> dict[str, Any] | None
         "marche": market,
         "cote": odds,
         "probabilite": None,
-        "probabilite_estimee": round(lower, 6) if lower is not None else None,
-        "probabilite_source": "JOURNAL_WILSON",
+        "probabilite_estimee": round(p_journal, 6) if p_journal is not None else None,
+        "probabilite_source": "JOURNAL_LISSE" if lissee is not None else "JOURNAL_WILSON",
+        "journal_probabilite_lissee": round(lissee, 6) if lissee is not None else None,
+        "journal_calibrage": mode,
+        "journal_frequence_generale": base_marche,
         "probabilite_brute_journal": frequency,
         "edge": None,
         "edv": None,
@@ -421,11 +456,12 @@ def _journal_team_market_candidate(row: dict[str, Any]) -> dict[str, Any] | None
         "exposure_group": market_family(market),
         "justification": (
             f"{equipe} a réussi ce marché {wins}/{observations} fois "
-            f"({frequency:.1%}) ; borne prudente Wilson 95 % = "
-            f"{lower:.1%}."
-        ) if lower is not None else None,
+            f"({frequency:.1%}) ; probabilité estimée "
+            + (f"{lissee:.1%} (fréquence lissée vers la fréquence générale du marché {base_marche:.1%})."
+               if lissee is not None else f"{lower:.1%} (borne prudente Wilson 95 %, fréquence générale du marché absente).")
+        ) if p_journal is not None else None,
         "journal_roi": num(row.get("roi_betpawa")),
-        "journal_success_margin": round(lower - q, 6) if lower is not None and q is not None else None,
+        "journal_success_margin": round(p_journal - q, 6) if p_journal is not None and q is not None else None,
         "journal_observations": observations,
         "journal_frequency": frequency,
         "journal_wins": wins,
@@ -436,7 +472,7 @@ def _journal_team_market_candidate(row: dict[str, Any]) -> dict[str, Any] | None
     }
 
 
-def extract_journal_candidates(journal: dict[str, Any], full: dict[str, Any]) -> list[dict[str, Any]]:
+def extract_journal_candidates(journal: dict[str, Any], full: dict[str, Any], mode: str | None = None) -> list[dict[str, Any]]:
     """Récupère deux formes de valeur du Journal sans dépendre de TOUS_MARCHES_EVALUES.
 
     1. équipes à suivre : équipe×marché récurrent + prochain match + cote ;
@@ -446,11 +482,12 @@ def extract_journal_candidates(journal: dict[str, Any], full: dict[str, Any]) ->
     """
     rows: list[dict[str, Any]] = []
     seen: set[tuple[str, str, str]] = set()
+    mode = mode or journal_mode()
 
     for item in journal.get("equipes_a_suivre") or []:
         if not isinstance(item, dict):
             continue
-        c = _journal_team_market_candidate(item)
+        c = _journal_team_market_candidate(item, mode)
         if not c:
             continue
         key = (
@@ -566,7 +603,10 @@ def enrich(candidates: list[dict[str, Any]], history: dict[str, Any], intelligen
         # Une équipe 5/5 est donc mise en avant comme preuve, mais son estimation
         # mathématique reste prudente (borne Wilson 95 %).
         p_est = p
-        if c.get("journal_lower_bound") is not None:
+        if c.get("journal_probabilite_lissee") is not None:
+            p_est = c["journal_probabilite_lissee"]
+            c["probabilite_source"] = "JOURNAL_LISSE"
+        elif c.get("journal_lower_bound") is not None:
             p_est = c["journal_lower_bound"]
             c["probabilite_source"] = "JOURNAL_WILSON"
         elif n >= 10 and lower is not None:
@@ -727,8 +767,15 @@ def main() -> int:
         "version": 1,
         "genere_le": dt.datetime.now(dt.timezone.utc).isoformat(),
         "regle": "Les deux moteurs restent autonomes. Le deuxième calibrage intervient uniquement après leurs filtres et trie les candidats selon des configurations historiques découvertes automatiquement. Il ne modifie jamais les probabilités, coefficients ou décisions internes des moteurs.",
+        "journal_calibrage": journal_mode(),
         "sources": {
-            source: {"disponibles": len([x for x in rows if x.get("source") == source]), "top": items}
+            source: {
+                "disponibles": len([x for x in rows if x.get("source") == source]),
+                "top": items,
+                # Tous les candidats de la source, classés : le générateur de tickets fait lui-même le tri final
+                # (éligibilité, 10 par source, doublons). `top` reste pour les pages d'affichage.
+                "candidats": sorted([x for x in rows if x.get("source") == source], key=lambda x: x["_ordre"], reverse=True),
+            }
             for source, items in sources.items()
         },
         "evolution": evolution(history),
