@@ -111,3 +111,56 @@ def test_calibrage_externe_prime_les_candidats_sans_modifier_le_moteur():
     import generateur_tickets as gt
     assert gt.candidate_rank(rows[0]) > gt.candidate_rank(rows[1])
     assert rows[0]["probabilite"] == 0.72
+
+
+def test_journal_equipe_5_sur_5_devient_une_opportunite_sans_precalcul_detaille():
+    journal = {
+        "equipes_a_suivre": [{
+            "equipe": "Equipe Forte",
+            "ligue": "Ligue Test",
+            "marche": "Match à moins de 3,5 buts",
+            "gagnes": 5,
+            "joues": 5,
+            "frequence": 1.0,
+            "roi_betpawa": 0.30,
+            "prochain_match": {
+                "date": "2099-10-10",
+                "heure": "15:00",
+                "adversaire": "Adversaire",
+                "lieu": "domicile",
+                "cote_betpawa": 1.60,
+                "betpawa_url": "https://example.invalid/event"
+            }
+        }]
+    }
+    rows = sa.extract_journal_candidates(journal, {"signaux": []})
+    assert len(rows) == 1
+    assert rows[0]["journal_frequency"] == 1.0
+    assert rows[0]["journal_observations"] == 5
+    assert rows[0]["probabilite_source"] == "JOURNAL_WILSON"
+    assert rows[0]["probabilite_estimee"] < 1.0
+
+
+def test_preuve_journal_5_sur_5_passe_devant_un_modele_v2_non_calibre():
+    journal = {
+        "source": "journal",
+        "journal_team": "Equipe Forte",
+        "journal_frequency": 1.0,
+        "journal_wins": 5,
+        "journal_observations": 5,
+        "journal_lower_bound": sa.wilson_lower(5, 5),
+        "journal_roi": 0.30,
+        "cote": 1.60,
+        "rang": None,
+        "probabilite_estimee": sa.wilson_lower(5, 5),
+    }
+    v2 = {
+        "source": "moteur_v2_6_10",
+        "rang": "P1",
+        "cote": 1.60,
+        "probabilite": 0.90,
+        "probabilite_estimee": 0.90,
+        "historique_observations": 0,
+        "ev_estime": 0.44,
+    }
+    assert gt.candidate_rank(journal) > gt.candidate_rank(v2)
