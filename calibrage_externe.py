@@ -455,9 +455,15 @@ def historical_support(candidate: dict[str, Any], rows: Iterable[dict[str, Any]]
         return {"statut": "INDISPONIBLE", "saison": previous, "observations": 0}
 
     comp_norm = _norm(competition)
-    home = _s(candidate.get("domicile") or candidate.get("equipe_dom"))
-    away = _s(candidate.get("exterieur") or candidate.get("equipe_ext"))
-    side = _favorite_side(candidate)
+    aliases = {comp_norm}
+    try:
+        from archive_football_data import COMPETITIONS
+        for code, pair in COMPETITIONS.items():
+            if isinstance(pair, (tuple, list)) and len(pair) > 1:
+                if comp_norm in {_norm(pair[0]), _norm(pair[1])}:
+                    aliases.add(_norm(code))
+    except Exception:
+        pass
     values: list[bool] = []
     for row in rows:
         if not isinstance(row, dict) or _s(row.get("saison")) != previous:
@@ -465,7 +471,7 @@ def historical_support(candidate: dict[str, Any], rows: Iterable[dict[str, Any]]
         row_comp = _norm(row.get("competition"))
         # Les snapshots N1 utilisent principalement le code CSV (E0, D1...).
         # On accepte aussi un nom de championnat si un fournisseur l'a déjà normalisé.
-        if row_comp and comp_norm not in {row_comp, _norm(row.get("competition_nom"))}:
+        if row_comp and not ({row_comp, _norm(row.get("competition_nom"))} & aliases):
             # Une absence de nom exploitable ne doit jamais être transformée en correspondance.
             continue
         if not row.get("home") or not row.get("away"):
@@ -518,6 +524,7 @@ def apply_rules(candidate: dict[str, Any], intelligence: dict[str, Any]) -> dict
     )
     margin = _num(best.get("marge_vs_implicite"))
     lift = _num(best.get("lift_vs_parent"))
+    historique = best.get("historique_saison_precedente") or {}
     rank = 2
     candidate["calibrage_externe"] = {
         "statut": best.get("statut"),
