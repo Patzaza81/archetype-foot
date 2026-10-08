@@ -2,7 +2,7 @@
 "use strict";
 
 var MAXTICKETS=10,MIN=2,MAX=20,DEF=10,TOL=[0.05,0.10,0.25],TENTATIVES=4000,MAXLEGS=12;
-var DATA=null,OFF={};
+var DATA=null,CHK={};
 
 function esc(x){return x==null?"":String(x).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
 function pct(x){return Number.isFinite(Number(x))&&x!==null?(Number(x)*100).toFixed(1).replace(".",",")+" %":"—"}
@@ -205,9 +205,15 @@ function parseTarget(raw){
  return Number.isFinite(v)?v:NaN;
 }
 function cleLigne(x){return String(x.cle_match)+"|"+String(x.marche)}
-function selection(){
+/* Matchs utilisés par le moteur : ceux que le parieur a cochés ; s'il n'en a coché aucun (dans la liste affichée),
+   le moteur tire lui-même dans toute la liste. */
+function cochesListe(){
  var pool=(DATA&&DATA.pool)||[];
- return pool.filter(function(x){return !OFF[cleLigne(x)]});
+ return pool.filter(function(x){return CHK[cleLigne(x)]});
+}
+function selection(){
+ var pool=(DATA&&DATA.pool)||[],c=cochesListe();
+ return c.length?c:pool;
 }
 function build(raw,defile){
  var msg=document.getElementById("cible-msg"),out=document.getElementById("ticket-cible");
@@ -221,13 +227,13 @@ function build(raw,defile){
  var pool=selection();
  var matchs={};pool.forEach(function(x){matchs[x.cle_match]=1});
  if(Object.keys(matchs).length<2){
-  msg.textContent="Cochez au moins 2 matchs différents. Aucun ticket ne sera créé artificiellement.";
+  msg.textContent="Pas assez de matchs différents ("+Object.keys(matchs).length+"). Cochez-en davantage ou changez de dates. Aucun ticket ne sera créé artificiellement.";
   out.innerHTML="";return;
  }
  document.getElementById("tickets-multi").innerHTML="";document.getElementById("multi-msg").textContent="";
  var rows=tirageCible(pool,v);
  var t={scenario:"VOTRE_TICKET_COTE_"+String(v).replace(".",","),statut:rows.length?"OK":"AUCUN_TICKET_SOLIDE",selection:rows,metrics:metrics(rows,v)};
- msg.textContent=note||(rows.length?"Objectif "+cote(v)+" · "+rows.length+" paris tirés au hasard parmi vos matchs. Appuyez sur Générer pour un autre tirage.":"Vos matchs cochés ne permettent pas de s'approcher de "+cote(v)+". Cochez-en d'autres.");
+ msg.textContent=note||(rows.length?"Objectif "+cote(v)+" · "+rows.length+" paris tirés au hasard parmi "+(cochesListe().length?"vos matchs cochés":"tous les matchs de la liste")+". Appuyez sur Générer pour un autre tirage.":"Les matchs disponibles ne permettent pas de s'approcher de "+cote(v)+". Cochez-en d'autres.");
  out.innerHTML=ticketHtml(t,"Votre ticket");
  if(defile&&rows.length&&out.scrollIntoView)out.scrollIntoView({behavior:"smooth",block:"start"});
 }
@@ -246,16 +252,16 @@ function buildMulti(){
  try{localStorage.setItem("archetype_multi",n+","+k)}catch(e){}
  var pool=selection(),m={};pool.forEach(function(x){m[x.cle_match]=1});
  var dispo=Object.keys(m).length;
- if(dispo<k){msg.textContent="Il faut au moins "+k+" matchs différents cochés (vous en avez "+dispo+"). Aucun ticket ne sera créé artificiellement.";out.innerHTML="";return}
+ if(dispo<k){msg.textContent="Il faut au moins "+k+" matchs différents (vous en avez "+dispo+"). Cochez-en davantage ou changez de dates. Aucun ticket ne sera créé artificiellement.";out.innerHTML="";return}
  var liste=tirageTickets(pool,n,k);
  document.getElementById("ticket-cible").innerHTML="";
  if(!liste.length){
-  msg.textContent="Vos matchs cochés ne permettent pas de faire un ticket de "+k+" pronostics avec une cote entre 2 et 20. Cochez-en d'autres ou changez le nombre.";
+  msg.textContent="Les matchs disponibles ne permettent pas de faire un ticket de "+k+" pronostics avec une cote entre 2 et 20. Cochez-en d'autres ou changez le nombre.";
   out.innerHTML="";return;
  }
  msg.textContent=liste.length===n
   ?n+" ticket(s) de "+k+" pronostic(s), aucun match répété. Appuyez sur Générer pour un autre tirage."
-  :liste.length+" ticket(s) sur "+n+" demandés : pas assez de matchs cochés pour les autres ("+(n*k)+" matchs différents seraient nécessaires, vous en avez "+dispo+"). Rien n'est forcé.";
+  :liste.length+" ticket(s) sur "+n+" demandés : pas assez de matchs pour les autres ("+(n*k)+" matchs différents seraient nécessaires, vous en avez "+dispo+"). Rien n'est forcé.";
  out.innerHTML=liste.map(function(rows,i){
   return ticketHtml({scenario:"TICKET_"+(i+1),statut:"OK",selection:rows,metrics:metrics(rows,null)},"Ticket "+(i+1)+" sur "+liste.length);
  }).join("");
@@ -274,10 +280,10 @@ function init(){
  try{var mm=(localStorage.getItem("archetype_multi")||"").split(",");
   if(mm.length===2&&Number.isFinite(parseInt(mm[0],10))&&Number.isFinite(parseInt(mm[1],10))){document.getElementById("nb-tickets").value=String(entier(mm[0],1,MAXTICKETS));document.getElementById("nb-paris").value=String(entier(mm[1],1,MAXLEGS))}}catch(e){}
  document.getElementById("tout-cocher").addEventListener("click",function(){
-  ((DATA&&DATA.pool)||[]).forEach(function(x){delete OFF[cleLigne(x)]});renderMatchs();
+  ((DATA&&DATA.pool)||[]).forEach(function(x){CHK[cleLigne(x)]=1});renderMatchs();
  });
  document.getElementById("tout-decocher").addEventListener("click",function(){
-  ((DATA&&DATA.pool)||[]).forEach(function(x){OFF[cleLigne(x)]=1});renderMatchs();
+  ((DATA&&DATA.pool)||[]).forEach(function(x){delete CHK[cleLigne(x)]});renderMatchs();
  });
 }
 
@@ -309,7 +315,7 @@ function renderMatchs(){
  var html="",jour=null;
  pool.forEach(function(x){
   if(x.date!==jour){jour=x.date;html+='<div class="jour-titre">'+esc(jourLong(x.date))+'</div>'}
-  var k=cleLigne(x),coche=!OFF[k];
+  var k=cleLigne(x),coche=!!CHK[k];
   var proba=x.probabilite_estimee!=null?pct(x.probabilite_estimee):"—";
   html+='<label class="match-row"><input type="checkbox" data-k="'+esc(k)+'"'+(coche?" checked":"")+'>'+
    '<div class="corps"><div class="paris-top"><strong>'+esc(x.domicile)+" — "+esc(x.exterieur)+'</strong><span class="odds">'+cote(x.cote)+'</span></div>'+
@@ -319,16 +325,18 @@ function renderMatchs(){
  root.innerHTML=html;
  Array.prototype.forEach.call(root.querySelectorAll("input[data-k]"),function(c){
   c.addEventListener("change",function(){
-   if(c.checked)delete OFF[c.getAttribute("data-k")];else OFF[c.getAttribute("data-k")]=1;
+   if(c.checked)CHK[c.getAttribute("data-k")]=1;else delete CHK[c.getAttribute("data-k")];
    compteur();
   });
  });
  compteur();
 }
 function compteur(){
- var pool=(DATA&&DATA.pool)||[],sel=selection(),m={};
- sel.forEach(function(x){m[x.cle_match]=1});
- document.getElementById("compteur").textContent=sel.length+" pari(s) coché(s) sur "+pool.length+" · "+Object.keys(m).length+" match(s) différent(s)";
+ var pool=(DATA&&DATA.pool)||[],c=cochesListe(),m={};
+ selection().forEach(function(x){m[x.cle_match]=1});
+ document.getElementById("compteur").textContent=c.length
+  ?c.length+" pari(s) coché(s) sur "+pool.length+" · "+Object.keys(m).length+" match(s) différent(s). Le moteur n'utilisera que ceux-là."
+  :"Aucun pari coché : le moteur tire lui-même dans les "+pool.length+" paris de la liste ("+Object.keys(m).length+" matchs différents).";
 }
 
 var RAW=null;
@@ -340,7 +348,7 @@ function afficherPlage(id){
  var src=DATA.sources;
  document.getElementById("pool-note").textContent=
   "Paris retenus du "+plageLabel(p)+" : V2 "+(src.moteur_v2_6_10||0)+" · V3 "+(src.moteur_v3||0)+" · Journal "+(src.journal||0)+
-  " (30 au maximum). Décochez ceux que vous ne voulez pas.";
+  " (30 au maximum). Cochez les matchs que vous voulez ; si vous n'en cochez aucun, le moteur tire dans toute la liste.";
  Array.prototype.forEach.call(document.querySelectorAll("[data-plage]"),function(b){
   b.className=b.getAttribute("data-plage")===id?"chip active":"chip";
  });
