@@ -621,6 +621,15 @@ def enrich(candidates: list[dict[str, Any]], history: dict[str, Any], intelligen
             if empirical_rank > 0
             else "MODELE_NON_CALIBRE"
         )
+        # Contrat de normalisation : le générateur ne connaît pas la source.
+        # Toute différence V2/V3/Journal est résolue ici, avant l'entrée dans le générateur.
+        c["selection_evidence_rank"] = empirical_rank
+        c["selection_evidence_lower_bound"] = empirical_lower
+        c["selection_evidence_rate"] = empirical_rate
+        c["selection_evidence_roi"] = empirical_roi
+        c["selection_evidence_observations"] = empirical_n
+        c["selection_sample_rank"] = sample_rank
+        c["selection_rank"] = rang_p
         c["_ordre"] = (
             empirical_rank,
             empirical_lower if empirical_lower is not None else -999.0,
