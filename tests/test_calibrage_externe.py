@@ -130,3 +130,25 @@ def test_regle_surveillee_ne_passe_pas_le_filtre():
     out = ce.apply_rules(candidate, intelligence)
     assert out["calibrage_rang"] == 0
     assert out["calibrage_externe"]["statut"] == "AUCUN_PATTERN"
+
+
+def test_saison_precedente_renforce_sans_creer_une_selection():
+    rows = []
+    for i in range(30):
+        rows.append({
+            "saison": "2526",
+            "competition": "E0",
+            "home": f"H{i}",
+            "away": f"A{i}",
+            "hg": 2 if i < 22 else 0,
+            "ag": 0 if i < 22 else 2,
+        })
+    support = ce.historical_support({
+        "date": "2026-08-15",
+        "marche": "1X2 - 1",
+        "competition": "Premier League",
+    }, rows)
+    assert support["saison"] == "2526"
+    assert support["observations"] == 30
+    assert support["niveau"] == "FORT"
+    assert support["taux_reussite"] > 0.65
