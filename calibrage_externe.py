@@ -525,7 +525,7 @@ def apply_rules(candidate: dict[str, Any], intelligence: dict[str, Any]) -> dict
     margin = _num(best.get("marge_vs_implicite"))
     lift = _num(best.get("lift_vs_parent"))
     historique = best.get("historique_saison_precedente") or {}
-    rank = 2
+    rank = 3 if historique.get("niveau") == "FORT" else 2
     candidate["calibrage_externe"] = {
         "statut": best.get("statut"),
         "regle": best.get("id"),
@@ -562,6 +562,7 @@ def summarize(intelligence: dict[str, Any]) -> dict[str, Any]:
                 "lift_vs_parent": r.get("lift_vs_parent"),
                 "lift_recent_vs_parent": r.get("lift_recent_vs_parent"),
                 "conditions": r.get("conditions"),
+                "historique_saison_precedente": r.get("historique_saison_precedente"),
             }
             for r in rules if r.get("statut") == "ACTIVE"
         ][:50],
