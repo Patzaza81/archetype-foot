@@ -25,7 +25,7 @@ def charger_n1(root="data/football_data/snapshots"):
         rawdir=os.path.join(snapshot,"raw")
         if not os.path.isdir(rawdir) or not os.path.exists(os.path.join(snapshot,"_SNAPSHOT_COMPLETE.json")): continue
         saison=os.path.basename(snapshot)
-        for path in sorted(glob.glob(os.path.join(rawdir,"*.csv"))):
+        for path in sorted(glob.glob(os.path.join(rawdir,"**","*.csv"), recursive=True)):
             try:
                 with open(path,"r",encoding="utf-8-sig",errors="replace",newline="") as f:
                     reader=csv.DictReader(f)
