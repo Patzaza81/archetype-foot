@@ -28,6 +28,8 @@ main{max-width:720px;padding-bottom:40px}
 .help{font-size:12px;line-height:1.45;color:var(--tb-muted);margin:0}
 .target-row{display:flex;gap:8px;align-items:stretch;margin-top:12px}
 .target-input{min-width:0;flex:1;font-size:22px;font-weight:800;text-align:center;padding:9px;border:1px solid var(--tb-border);border-radius:10px;background:#fff;color:var(--tb-text)}
+.chip{border:1px solid var(--tb-border);background:var(--tb-card2);color:var(--tb-text);border-radius:999px;padding:8px 12px;font-weight:700;font-size:12px;cursor:pointer}
+.chip.active{background:var(--tb-text);color:#fff;border-color:var(--tb-text)}
 .quick{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .quick button{border:1px solid var(--tb-border);background:var(--tb-card2);color:var(--tb-text);border-radius:999px;padding:6px 11px;font-weight:700;font-size:12px}
 #cible-msg{min-height:17px;margin-top:8px}
@@ -77,6 +79,12 @@ footer-note{display:block;text-align:center;color:var(--tb-muted);font-size:10.5
   <a class="nav-bouton" href="index.html">← Accueil</a>
   <span class="help">Simple · 2 à 20</span>
  </div>
+
+ <section class="section">
+  <h2>Choisissez les dates</h2>
+  <p class="help">Chaque bouton cumule les jours indiqués. Les matchs déjà commencés sont exclus.</p>
+  <div id="plages" class="quick" aria-label="Plages de dates"></div>
+ </section>
 
  <section class="section">
   <div class="step">
@@ -141,6 +149,6 @@ footer-note{display:block;text-align:center;color:var(--tb-muted);font-size:10.5
 
 <script src="theme.js"></script>
 <script src="tickets_analyse.js?v=20261008"></script>
-<script src="tickets.js?v=20261008"></script>
+<script src="tickets.js?v=20261009"></script>
 </body>
 </html>

@@ -557,3 +557,109 @@ def test_aucune_regle_de_diversification_de_marches():
     tickets = [s for s in out["scenarios"] if s["selection"]]
     assert tickets
     assert any(len({l["marche"] for l in s["selection"]}) == 1 and len(s["selection"]) >= 2 for s in tickets)
+
+
+# ---------- plages de dates (4 plages cumulatives, heure du Cameroun) ----------
+import datetime as _dt
+
+MAINT = _dt.datetime(2026, 10, 8, 22, 0, tzinfo=gt.FUSEAU_CAMEROUN)
+
+
+@pytest.mark.parametrize("date,heure", [
+    ("2026-10-07", "20:00"),      # hier
+    ("2026-10-08", "15:00"),      # aujourd'hui, déjà joué
+    ("2026-10-08", "22:00"),      # aujourd'hui, commence maintenant
+])
+def test_match_deja_commence_est_exclu(date, heure):
+    assert gt.deja_commence({"date": date, "heure": heure}, MAINT) is True
+
+
+@pytest.mark.parametrize("date,heure", [
+    ("2026-10-09", "00:30"),      # demain
+    ("2026-10-08", "22:01"),      # aujourd'hui, pas encore commencé
+    ("2026-10-08", None),         # heure inconnue : gardé
+    ("2026-10-08", "abc"),        # heure illisible : gardé
+])
+def test_match_pas_commence_est_garde(date, heure):
+    assert gt.deja_commence({"date": date, "heure": heure}, MAINT) is False
+
+
+def test_dates_plages_quatre_jours_consecutifs():
+    assert gt.dates_plages(MAINT) == ["2026-10-08", "2026-10-09", "2026-10-10", "2026-10-11"]
+
+
+def _data_dates(par_jour=14):
+    jours = ["2026-10-08", "2026-10-09", "2026-10-10", "2026-10-11"]
+    sources = {}
+    mid = 0
+    for k, s in enumerate(gt.SOURCES):
+        liste = []
+        for j, jour in enumerate(jours):
+            for i in range(par_jour):
+                mid += 1
+                liste.append(_jour(mid, s, odds=1.40 + 0.08 * (i % 8), p=0.78 + 0.01 * (i % 5),
+                                   date=jour, heure="23:30"))
+        sources[s] = {"candidats": liste}
+    return {"sources": sources, "journal_calibrage": "lisse"}
+
+
+def test_donnees_plage_garde_les_dates_et_exclut_les_commences():
+    d = _data_dates(2)
+    d["sources"]["moteur_v3"]["candidats"].append(_jour(999, "moteur_v3", date="2026-10-08", heure="09:00"))
+    out = gt.donnees_plage(d, ["2026-10-08", "2026-10-09"], MAINT)
+    for s in gt.SOURCES:
+        assert {c["date"] for c in out["sources"][s]["candidats"]} <= {"2026-10-08", "2026-10-09"}
+    assert all(c["match_id"] != "999" for c in out["sources"]["moteur_v3"]["candidats"])
+    assert len(d["sources"]["moteur_v3"]["candidats"]) == 9      # l'original n'est pas modifié
+
+
+def test_build_plages_donne_quatre_plages_cumulatives_avec_dates():
+    r = gt.build_plages(_data_dates(), MAINT)
+    assert [p["fin"] for p in r["plages"]] == ["2026-10-08", "2026-10-09", "2026-10-10", "2026-10-11"]
+    assert all(p["debut"] == "2026-10-08" for p in r["plages"])
+    assert [len(p["dates"]) for p in r["plages"]] == [1, 2, 3, 4]
+    assert r["plage_par_defaut"] == r["plages"][-1]["id"]
+    assert r["jour_present"] == "2026-10-08"
+
+
+def test_chaque_plage_ne_contient_que_ses_dates_et_max_10_par_source():
+    r = gt.build_plages(_data_dates(), MAINT)
+    for p in r["plages"]:
+        assert {x["date"] for x in p["pool"]} <= set(p["dates"])
+        assert all(n <= 10 for n in p["sources"].values())
+        assert len(p["pool"]) <= 30
+
+
+def test_plage_plus_large_a_plus_de_choix_que_le_jour_seul():
+    r = gt.build_plages(_data_dates(4), MAINT)
+    assert len(r["plages"][0]["pool"]) < len(r["plages"][-1]["pool"]) == 30
+
+
+def test_aucun_match_reutilise_dans_une_plage():
+    r = gt.build_plages(_data_dates(), MAINT)
+    for p in r["plages"]:
+        cles = [x["cle_match"] for t in p["scenarios"] for x in t["selection"]]
+        assert len(cles) == len(set(cles))
+
+
+def test_le_haut_du_fichier_reprend_la_plage_la_plus_large_pour_le_suivi():
+    r = gt.build_plages(_data_dates(), MAINT)
+    assert r["scenarios"] == r["plages"][-1]["scenarios"]
+    assert r["pool"] == r["plages"][-1]["pool"]
+
+
+def test_jour_present_vide_ne_plante_pas_et_ne_force_rien():
+    d = _data_dates()
+    for s in gt.SOURCES:
+        d["sources"][s]["candidats"] = [c for c in d["sources"][s]["candidats"] if c["date"] != "2026-10-08"]
+    r = gt.build_plages(d, MAINT)
+    assert r["plages"][0]["pool"] == []
+    assert all(not t["selection"] for t in r["plages"][0]["scenarios"])
+    assert len(r["plages"][1]["pool"]) > 0
+
+
+def test_tirage_des_plages_reproductible_le_meme_jour():
+    a = gt.build_plages(_data_dates(), MAINT)
+    b = gt.build_plages(_data_dates(), MAINT)
+    assert [[x["cle_match"] for x in t["selection"]] for t in a["plages"][2]["scenarios"]] == \
+           [[x["cle_match"] for x in t["selection"]] for t in b["plages"][2]["scenarios"]]

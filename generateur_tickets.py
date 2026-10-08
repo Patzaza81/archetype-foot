@@ -21,13 +21,18 @@ TOLERANCES = (0.05, 0.10, 0.25)
 ODDS_MIN = 1.26
 ODDS_MAX = 3.01
 # DÉCISION DE PATRICK (08/10/2026) : le générateur fait lui-même le tri dans chaque source (V2.6.10 en P1 seulement, V3,
-# Journal) et retient 10 paris au maximum par source, donc 30 au maximum. Ces 30 sont à égalité : les tickets sont tirés
+# Journal) et retient 10 paris au maximum par source, donc 30 au maximum. Cela est fait pour 4 plages de dates cumulatives (jour présent, puis + 1 jour, + 2 jours, + 3 jours), les matchs commencés étant exclus. Ces 30 sont à égalité : les tickets sont tirés
 # AU HASARD (graine = date du jour, enregistrée), sans règle de diversification de marchés, sans jamais réutiliser un
 # match dans les tickets du jour. Aucun quota n'est rempli de force.
 SOURCES = ("moteur_v2_6_10", "moteur_v3", "journal")
 MAX_PAR_SOURCE = 10
 POOL_MAX = MAX_PAR_SOURCE * len(SOURCES)
 TENTATIVES_TIRAGE = 4000
+# DÉCISION DE PATRICK (08/10/2026) : 4 plages cumulatives à partir du jour présent (heure du Cameroun, UTC+1) :
+# jour présent ; jour présent + lendemain ; + surlendemain ; + J+3. Chaque plage a sa propre sélection (10 par source au
+# maximum) et ses propres tickets. Les matchs déjà commencés sont exclus. Les dates sont affichées, jamais « J0 ».
+NB_PLAGES = 4
+FUSEAU_CAMEROUN = dt.timezone(dt.timedelta(hours=1))
 
 
 def load(path: Path) -> dict[str, Any]:
@@ -641,6 +646,68 @@ def build(data: dict[str, Any], graine: str | None = None) -> dict[str, Any]:
     }
 
 
+def maintenant_cameroun() -> dt.datetime:
+    return dt.datetime.now(FUSEAU_CAMEROUN)
+
+
+def deja_commence(c: dict[str, Any], maintenant: dt.datetime) -> bool:
+    """Vrai si le match est passé ou a déjà commencé (date et heure du Cameroun). Heure absente ou illisible : on garde
+    le match tant que sa date n'est pas passée (jamais d'exclusion sur une information qu'on n'a pas)."""
+    jour = str(c.get("date") or "")
+    aujourdhui = maintenant.date().isoformat()
+    if not jour:
+        return False
+    if jour < aujourdhui:
+        return True
+    if jour > aujourdhui:
+        return False
+    m = re.match(r"^(\d{1,2}):(\d{2})", str(c.get("heure") or ""))
+    if not m:
+        return False
+    return (int(m.group(1)), int(m.group(2))) <= (maintenant.hour, maintenant.minute)
+
+
+def dates_plages(maintenant: dt.datetime) -> list[str]:
+    jour = maintenant.date()
+    return [(jour + dt.timedelta(days=i)).isoformat() for i in range(NB_PLAGES)]
+
+
+def donnees_plage(data: dict[str, Any], dates: list[str], maintenant: dt.datetime) -> dict[str, Any]:
+    """Copie des données ne gardant que les paris des dates de la plage, pas encore commencés."""
+    def garde(c: dict[str, Any]) -> bool:
+        return str(c.get("date") or "") in dates and not deja_commence(c, maintenant)
+
+    sources = {}
+    for nom, bloc in (data.get("sources") or {}).items():
+        nouveau = dict(bloc)
+        for cle in ("candidats", "top"):
+            if cle in bloc:
+                nouveau[cle] = [dict(c) for c in bloc.get(cle) or [] if garde(c)]
+        sources[nom] = nouveau
+    return {**data, "sources": sources}
+
+
+CLES_PLAGE = ("candidats_total", "candidats_receptionnes", "candidats_retenus", "sources", "pool",
+              "scenarios_hors_intervalle", "scenarios", "graine_tirage")
+
+
+def build_plages(data: dict[str, Any], maintenant: dt.datetime | None = None) -> dict[str, Any]:
+    """Une construction par plage. Le haut du fichier reprend la plus large (4 jours) : c'est elle que le suivi des
+    tickets enregistre. `plages` contient les quatre, chacune avec ses dates (ISO) pour l'affichage."""
+    maintenant = maintenant or maintenant_cameroun()
+    jours = dates_plages(maintenant)
+    plages: list[dict[str, Any]] = []
+    dernier: dict[str, Any] = {}
+    for n in range(1, NB_PLAGES + 1):
+        dates = jours[:n]
+        graine = f"{jours[0]}|{dates[0]}..{dates[-1]}"
+        r = build(donnees_plage(data, dates, maintenant), graine)
+        dernier = r
+        plages.append({"id": f"{dates[0]}..{dates[-1]}", "debut": dates[0], "fin": dates[-1], "dates": dates,
+                       **{k: r[k] for k in CLES_PLAGE}})
+    return {**dernier, "jour_present": jours[0], "plage_par_defaut": plages[-1]["id"], "plages": plages}
+
+
 def main() -> int:
     data = load(INPUT)
     if not data:
@@ -658,7 +725,7 @@ def main() -> int:
             "statut_global": "DONNEES_INDISPONIBLES",
         }
     else:
-        result = build(data)
+        result = build_plages(data)
         result["statut_global"] = "OK" if result["candidats_total"] else "AUCUNE_OPPORTUNITE_SOLIDE"
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")

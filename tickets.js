@@ -215,7 +215,7 @@ function renderOpportunities(data){
 
 function renderScenarios(data){
  var root=document.getElementById("tickets");root.innerHTML="";
- var list=((data&&data.scenarios)||[]).filter(function(t){return !/^OBJECTIF_COTE/.test(t.scenario)});
+ var list=((data&&data.scenarios)||[]).filter(function(t){return !/^OBJECTIF_COTE/.test(t.scenario)&&t.selection&&t.selection.length});
  if(!list.length){root.innerHTML='<div class="empty">Aucune autre proposition disponible pour le moment.</div>';return}
  list.forEach(function(t){
   var wrap=document.createElement("div");wrap.className="other-card";
@@ -265,20 +265,70 @@ function init(){
  build(inp.value);
 }
 
+function jourCourt(iso){
+ var d=new Date(iso+"T12:00:00");
+ return isNaN(d.getTime())?String(iso):d.toLocaleDateString("fr-FR",{weekday:"short",day:"numeric",month:"short"});
+}
+function plageLabel(p){
+ if(p.debut===p.fin)return jourCourt(p.debut);
+ var a=new Date(p.debut+"T12:00:00"),b=new Date(p.fin+"T12:00:00");
+ if(isNaN(a.getTime())||isNaN(b.getTime()))return p.debut+" → "+p.fin;
+ var mois=function(d){return d.toLocaleDateString("fr-FR",{month:"short"})};
+ return a.getDate()+(mois(a)!==mois(b)?" "+mois(a):"")+" → "+b.getDate()+" "+mois(b);
+}
+
+var RAW=null;
+function afficherPlage(id){
+ var plages=(RAW&&RAW.plages)||[];
+ var p=null;
+ plages.forEach(function(x){if(x.id===id)p=x});
+ DATA=p?{pool:p.pool||[],scenarios:p.scenarios||[],sources:p.sources||{},opportunites:RAW.opportunites||[],genere_le:RAW.genere_le}:RAW;
+ var src=DATA.sources||{};
+ document.getElementById("pool-note").textContent=
+  "Candidats retenus"+(p?" du "+plageLabel(p):"")+" : V2 "+(src.moteur_v2_6_10||0)+" · V3 "+(src.moteur_v3||0)+" · Journal "+(src.journal||0)+
+  ". Ne mélangez pas des tickets de plages différentes : un même match peut y figurer.";
+ Array.prototype.forEach.call(document.querySelectorAll("[data-plage]"),function(b){
+  b.className=b.getAttribute("data-plage")===id?"chip active":"chip";
+ });
+ try{localStorage.setItem("archetype_plage",id)}catch(e){}
+ renderScenarios(DATA);
+ var inp=document.getElementById("cible");
+ if(inp&&inp.value)buildSilencieux(inp.value);
+}
+function buildSilencieux(raw){
+ var top=window.scrollTo;window.scrollTo=function(){};
+ try{build(raw)}finally{window.scrollTo=top}
+}
+function renderPlages(){
+ var root=document.getElementById("plages");
+ if(!root)return;
+ var plages=(RAW&&RAW.plages)||[];
+ root.innerHTML="";
+ plages.forEach(function(p){
+  var b=document.createElement("button");
+  b.type="button";b.className="chip";b.setAttribute("data-plage",p.id);
+  b.textContent=plageLabel(p);
+  b.addEventListener("click",function(){afficherPlage(p.id)});
+  root.appendChild(b);
+ });
+}
+
 fetch("data/tickets.json?_="+Date.now(),{cache:"no-store"})
  .then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()})
  .then(function(d){
-  DATA=d;
+  RAW=d;DATA=d;
   document.getElementById("maj").textContent=d.genere_le?"Dernière génération : "+new Date(d.genere_le).toLocaleString("fr-FR"):"";
-  var src=d.sources||{};
-  document.getElementById("pool-note").textContent=
-   "Candidats retenus : V2 "+(src.moteur_v2_6_10||0)+" · V3 "+(src.moteur_v3||0)+" · Journal "+(src.journal||0)+
-   " · le classement privilégie désormais les preuves réelles.";
-  renderOpportunities(d);renderScenarios(d);init();
+  renderOpportunities(d);renderPlages();
+  var choix=d.plage_par_defaut;
+  try{var m=localStorage.getItem("archetype_plage");if(m&&(d.plages||[]).some(function(p){return p.id===m}))choix=m}catch(e){}
+  renderScenarios(d);init();
+  if((d.plages||[]).length)afficherPlage(choix);
+  else document.getElementById("pool-note").textContent="Aucune plage de dates disponible.";
  })
  .catch(function(e){
   document.getElementById("maj").textContent="Impossible de charger les tickets";
   document.getElementById("pool-note").textContent="Les données ne sont pas disponibles pour le moment.";
   DATA={pool:[],opportunites:[],scenarios:[]};renderOpportunities(DATA);renderScenarios(DATA);init();
  });
+
 })();
