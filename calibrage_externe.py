@@ -294,7 +294,7 @@ def discover_rules(records: Iterable[dict[str, Any]], historical_rows: Iterable[
         ("market", "odds_band", "competition"),
     ])
 
-    today = max((_date(r) for r in hist if _date(r)), default=dt.date.today())
+    today = dt.date.today()
     baselines = _baseline(hist)
     discovered: list[dict[str, Any]] = []
 
@@ -414,6 +414,8 @@ def discover_rules(records: Iterable[dict[str, Any]], historical_rows: Iterable[
             "declinantes": sum(r["statut"] == "DECLINANTE" for r in rules),
             "regles_championnat": sum("competition" in (r.get("conditions") or {}) for r in rules),
             "regles_championnat_actives": sum(r["statut"] == "ACTIVE" and "competition" in (r.get("conditions") or {}) for r in rules),
+            "regles_avec_historique_precedent": sum(bool(r.get("historique_saison_precedente")) for r in rules),
+            "regles_historique_fort": sum((r.get("historique_saison_precedente") or {}).get("niveau") == "FORT" for r in rules),
         },
         "rules": rules,
     }
