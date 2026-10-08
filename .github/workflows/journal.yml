@@ -8,7 +8,7 @@ name: Journal de rentabilité
 #
 # Déclenchements :
 #   - juste après chaque fin du pipeline quotidien (réussi ou non) : données les plus fraîches ;
-#   - filet de sécurité à 05:30 UTC (06:30 à Douala) si le pipeline n'a pas tourné ;
+#   - deuxième passage programmé à 05:07 UTC (06:07 à Douala) ; avec le retard habituel de GitHub (2 à 3 h) il part vers 9 h à Douala, pour les matchs de l après-midi ;
 #   - à la main (onglet Actions > Journal de rentabilité > Run workflow).
 
 on:
@@ -16,7 +16,7 @@ on:
     workflows: ["Pipeline quotidien Archetype Foot"]
     types: [completed]
   schedule:
-    - cron: "30 5 * * *"
+    - cron: "7 5 * * *"
   workflow_dispatch:
 
 permissions:
