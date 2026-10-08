@@ -414,6 +414,76 @@ def discover_rules(records: Iterable[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def _season_code_for_date(value: dt.date | None) -> str | None:
+    if value is None:
+        return None
+    start = value.year if value.month >= 7 else value.year - 1
+    return f"{start % 100:02d}{(start + 1) % 100:02d}"
+
+
+def _previous_season_code(value: dt.date | None) -> str | None:
+    current = _season_code_for_date(value)
+    if not current:
+        return None
+    start = 2000 + int(current[:2])
+    return f"{(start - 1) % 100:02d}{start % 100:02d}"
+
+
+def historical_support(candidate: dict[str, Any], rows: Iterable[dict[str, Any]]) -> dict[str, Any]:
+    """Mesure un appui de la saison précédente sans créer de fausses sélections.
+
+    Les snapshots Football-Data ne sont jamais considérés comme des sélections
+    du moteur : ils servent uniquement de validation historique du championnat
+    et du marché. Un historique seul ne peut donc pas activer un candidat.
+    """
+    target_date = _date(candidate)
+    previous = _previous_season_code(target_date)
+    market = _s(candidate.get("marche")).lower()
+    competition = _s(candidate.get("competition") or candidate.get("championnat") or candidate.get("ligue")).lower()
+    if not previous or not market or not competition:
+        return {"statut": "INDISPONIBLE", "saison": previous, "observations": 0}
+
+    try:
+        from journal.journal_n1 import _norm, _num
+        from journal.journal_memoire import evaluer_marche
+    except Exception:
+        return {"statut": "INDISPONIBLE", "saison": previous, "observations": 0}
+
+    comp_norm = _norm(competition)
+    home = _s(candidate.get("domicile") or candidate.get("equipe_dom"))
+    away = _s(candidate.get("exterieur") or candidate.get("equipe_ext"))
+    side = _favorite_side(candidate)
+    values: list[bool] = []
+    for row in rows:
+        if not isinstance(row, dict) or _s(row.get("saison")) != previous:
+            continue
+        row_comp = _norm(row.get("competition"))
+        # Les snapshots N1 utilisent principalement le code CSV (E0, D1...).
+        # On accepte aussi un nom de championnat si un fournisseur l'a déjà normalisé.
+        if row_comp and comp_norm not in {row_comp, _norm(row.get("competition_nom"))}:
+            # Une absence de nom exploitable ne doit jamais être transformée en correspondance.
+            continue
+        if not row.get("home") or not row.get("away"):
+            continue
+        result = evaluer_marche(market, row.get("hg"), row.get("ag"))
+        if result is not None:
+            values.append(bool(result))
+
+    out = {
+        "statut": "HISTORIQUE_SEUL" if values else "INDISPONIBLE",
+        "saison": previous,
+        "observations": len(values),
+        "taux_reussite": round(sum(values) / len(values), 6) if values else None,
+    }
+    # Pour une correspondance équipe/championnat, fournir une seconde mesure
+    # utile sans la confondre avec la performance du moteur.
+    if values and len(values) >= 20:
+        out["niveau"] = "FORT" if out["taux_reussite"] >= 0.65 else "FAIBLE" if out["taux_reussite"] < 0.50 else "NEUTRE"
+    else:
+        out["niveau"] = "INDICATIF" if values else None
+    return out
+
+
 def apply_rules(candidate: dict[str, Any], intelligence: dict[str, Any]) -> dict[str, Any]:
     """Évalue un candidat sans toucher à sa probabilité moteur."""
     features = _candidate_features(candidate)
