@@ -8,6 +8,8 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
+from calibrage_externe import apply_rules, discover_rules, summarize as summarize_calibrage
+
 V2 = "moteur_v2_6_10"
 V3 = "moteur_v3"
 ENGINES = (V2, V3)
@@ -20,6 +22,7 @@ FULL_PRECALC = Path("precalcul.json")
 JOURNAL = Path("journal.json")
 ARCHIVE = Path("archive")
 OUT = Path("data/selection_intelligence.json")
+CALIBRAGE_OUT = Path("data/calibrage_externe.json")
 V3_HISTORY = Path("data/v3/historique_selection.json")
 HISTORIQUE = Path("historique_pronostics.json")
 
@@ -423,7 +426,7 @@ def extract_journal_candidates(journal: dict[str, Any], full: dict[str, Any]) ->
     return rows
 
 
-def enrich(candidates: list[dict[str, Any]], history: dict[str, Any]) -> list[dict[str, Any]]:
+def enrich(candidates: list[dict[str, Any]], history: dict[str, Any], intelligence: dict[str, Any] | None = None) -> list[dict[str, Any]]:
     for c in candidates:
         odds = c.get("cote")
         q = implied(odds)
@@ -458,6 +461,12 @@ def enrich(candidates: list[dict[str, Any]], history: dict[str, Any]) -> list[di
             p_est = min(0.99, max(0.01, q + jm))
         c["probabilite_estimee"] = round(p_est, 6) if p_est is not None else None
         c["ev_estime"] = round(p_est * odds - 1.0, 6) if p_est is not None and odds else None
+        if intelligence:
+            apply_rules(c, intelligence)
+        else:
+            c.setdefault("calibrage_rang", 0)
+            c.setdefault("calibrage_marge", None)
+            c.setdefault("calibrage_lift", None)
         rang_p = {"P1": 3, "P2": 2, "P3": 1}.get(norm(c.get("rang")), 0)
         if rang_p == 0 and c.get("source") == "journal":
             rang_p = 2 if c.get("niveau") == "A_JOUER" else 1
@@ -467,6 +476,9 @@ def enrich(candidates: list[dict[str, Any]], history: dict[str, Any]) -> list[di
         # estimée (probabilité × cote − 1), puis avantage propre au modèle, probabilité et EDV.
         # Aucun coefficient arbitraire ne mélange ces grandeurs ; l'historique ne bloque rien.
         c["_ordre"] = (
+            c.get("calibrage_rang", 0),
+            c.get("calibrage_marge") if c.get("calibrage_marge") is not None else -999.0,
+            c.get("calibrage_lift") if c.get("calibrage_lift") is not None else -999.0,
             rang_p,
             ev if ev is not None else -999.0,
             c.get("marge_modele") if c.get("marge_modele") is not None else -999.0,
@@ -539,21 +551,27 @@ def main() -> int:
     journal = load_json(JOURNAL, {}) or {}
     full = load_json(FULL_PRECALC, {}) or {}
     history = build_history()
+    # Deuxième calibrage: apprentissage uniquement sur les sélections déjà produites
+    # et résolues par les moteurs. Il ne modifie aucune probabilité ni aucun seuil moteur.
+    intelligence = discover_rules(iter_archive_records())
+    CALIBRAGE_OUT.parent.mkdir(parents=True, exist_ok=True)
+    CALIBRAGE_OUT.write_text(json.dumps(intelligence, ensure_ascii=False, indent=2), encoding="utf-8")
 
     rows = extract_engine_candidates(v2, V2) + extract_engine_candidates(v3, V3)
     rows += extract_journal_candidates(journal, full)
-    rows = enrich(rows, history)
+    rows = enrich(rows, history, intelligence)
     sources = top_by_source(rows)
 
     result = {
         "version": 1,
         "genere_le": dt.datetime.now(dt.timezone.utc).isoformat(),
-        "regle": "Les deux moteurs coexistent. Aucun moteur n'est éliminé. Le classement suit le tri des moteurs (P1/P2/P3) et la valeur estimée ; le Journal complète.",
+        "regle": "Les deux moteurs restent autonomes. Le deuxième calibrage intervient uniquement après leurs filtres et trie les candidats selon des configurations historiques découvertes automatiquement. Il ne modifie jamais les probabilités, coefficients ou décisions internes des moteurs.",
         "sources": {
             source: {"disponibles": len([x for x in rows if x.get("source") == source]), "top": items}
             for source, items in sources.items()
         },
         "evolution": evolution(history),
+        "calibrage_externe": summarize_calibrage(intelligence),
     }
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
