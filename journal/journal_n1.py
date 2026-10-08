@@ -40,7 +40,7 @@ def charger_n1(root="data/football_data/snapshots"):
                                 "away":away,
                                 "hg":hg,
                                 "ag":ag,
-                                "competition":os.path.splitext(os.path.basename(path))[0],
+                                "competition":(r.get("League") or r.get("Div") or os.path.splitext(os.path.basename(path))[0]),
                             })
             except (OSError,csv.Error):
                 continue
