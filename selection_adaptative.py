@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from calibrage_externe import apply_rules, discover_rules, summarize as summarize_calibrage
+from journal.journal_n1 import charger_n1
 
 V2 = "moteur_v2_6_10"
 V3 = "moteur_v3"
@@ -553,7 +554,8 @@ def main() -> int:
     history = build_history()
     # Deuxième calibrage: apprentissage uniquement sur les sélections déjà produites
     # et résolues par les moteurs. Il ne modifie aucune probabilité ni aucun seuil moteur.
-    intelligence = discover_rules(iter_archive_records())
+    n1_rows = charger_n1("data/football_data/snapshots")
+    intelligence = discover_rules(iter_archive_records(), historical_rows=n1_rows)
     CALIBRAGE_OUT.parent.mkdir(parents=True, exist_ok=True)
     CALIBRAGE_OUT.write_text(json.dumps(intelligence, ensure_ascii=False, indent=2), encoding="utf-8")
 
