@@ -159,7 +159,7 @@ def feature_values(record: dict[str, Any]) -> dict[str, str]:
         "market_family": _market_family(record.get("marche")),
         "rank": _rank(record) or "INCONNU",
         "favorite_side": _favorite_side(record),
-        "competition": _s(record.get("competition")).lower() or "INCONNUE",
+        "competition": _s(record.get("competition") or record.get("championnat") or record.get("ligue") or record.get("league")).lower() or "INCONNUE",
         "home_team": _s(record.get("equipe_dom") or record.get("domicile")).lower() or "INCONNUE",
         "away_team": _s(record.get("equipe_ext") or record.get("exterieur")).lower() or "INCONNUE",
         "robustness": _s(record.get("robustesse") or record.get("niveau")).upper() or "INCONNUE",
@@ -281,6 +281,12 @@ def discover_rules(records: Iterable[dict[str, Any]]) -> dict[str, Any]:
     for size in range(1, MAX_FEATURES + 1):
         rule_specs.extend(itertools.combinations(feature_names, size))
     rule_specs.extend([
+        # Le championnat est une dimension de contexte prioritaire : une règle
+        # championnat+marché+cote doit battre le même marché au niveau global.
+        ("competition", "market"),
+        ("competition", "market", "odds_band"),
+        ("competition", "market", "probability_band"),
+        ("competition", "market", "favorite_side"),
         ("market", "odds_band", "home_team"),
         ("market", "odds_band", "away_team"),
         ("market", "odds_band", "favorite_side"),
@@ -308,6 +314,12 @@ def discover_rules(records: Iterable[dict[str, Any]]) -> dict[str, Any]:
             market = key.get("market")
             parent = baselines.get((engine, market)) if engine and market else None
             st = _stats(rows)
+            # Une règle spécifique à un championnat doit démontrer un avantage
+            # réel sur son parent global (même moteur + même marché). Sans parent
+            # exploitable, elle reste surveillée et ne peut pas être utilisée.
+            is_competition_rule = "competition" in key
+            if is_competition_rule and parent is None:
+                continue
             parent_lower = _num(parent.get("borne_basse_95")) if parent else None
             lift = (st["taux_reussite"] - parent["taux_reussite"]) if parent and parent.get("taux_reussite") is not None else None
             if lift is not None and lift < MIN_LIFT:
@@ -327,7 +339,11 @@ def discover_rules(records: Iterable[dict[str, Any]]) -> dict[str, Any]:
                 recent.get("borne_basse_95", 0.0) - recent_implied
                 if recent.get("observations", 0) and recent_implied is not None else None
             )
-            if recent.get("observations", 0) >= MIN_RECENT_OBS and recent_margin is not None and recent_margin >= MIN_RULE_MARGIN:
+            recent_lift = None
+            if recent.get("observations", 0) >= MIN_RECENT_OBS and parent:
+                # Le contrôle récent doit également rester supérieur au parent.
+                recent_lift = recent.get("taux_reussite") - parent.get("taux_reussite") if parent.get("taux_reussite") is not None and recent.get("taux_reussite") is not None else None
+            if recent.get("observations", 0) >= MIN_RECENT_OBS and recent_margin is not None and recent_margin >= MIN_RULE_MARGIN and (recent_lift is None or recent_lift >= MIN_LIFT):
                 status = "ACTIVE"
             elif recent.get("observations", 0) >= MIN_RECENT_OBS:
                 status = "DECLINANTE"
@@ -348,6 +364,7 @@ def discover_rules(records: Iterable[dict[str, Any]]) -> dict[str, Any]:
                 "observations_recentes": recent.get("observations", 0),
                 "taux_reussite_recent": recent.get("taux_reussite"),
                 "marge_recente_vs_implicite": round(recent_margin, 6) if recent_margin is not None else None,
+                "lift_recent_vs_parent": round(recent_lift, 6) if recent_lift is not None else None,
                 "statut": status,
                 "specificite": len(conditions),
             })
@@ -400,7 +417,7 @@ def apply_rules(candidate: dict[str, Any], intelligence: dict[str, Any]) -> dict
     features = _candidate_features(candidate)
     matches = [
         r for r in intelligence.get("rules", [])
-        if r.get("statut") in {"ACTIVE", "SURVEILLER"} and _rule_matches(r, features)
+        if r.get("statut") == "ACTIVE" and _rule_matches(r, features)
     ]
     if not matches:
         candidate["calibrage_externe"] = {
@@ -412,7 +429,6 @@ def apply_rules(candidate: dict[str, Any], intelligence: dict[str, Any]) -> dict
         candidate["calibrage_rang"] = 0
         return candidate
 
-    active = [r for r in matches if r.get("statut") == "ACTIVE"]
     best = max(
         matches,
         key=lambda r: (
@@ -425,7 +441,7 @@ def apply_rules(candidate: dict[str, Any], intelligence: dict[str, Any]) -> dict
     )
     margin = _num(best.get("marge_vs_implicite"))
     lift = _num(best.get("lift_vs_parent"))
-    rank = 2 if best.get("statut") == "ACTIVE" else 1
+    rank = 2
     candidate["calibrage_externe"] = {
         "statut": best.get("statut"),
         "regle": best.get("id"),
@@ -457,7 +473,9 @@ def summarize(intelligence: dict[str, Any]) -> dict[str, Any]:
                 "observations": r.get("observations"),
                 "taux_reussite": r.get("taux_reussite"),
                 "marge_vs_implicite": r.get("marge_vs_implicite"),
-                "lift_vs_parent": r.get("lift_vs_parent"),
+                    "lift_vs_parent": r.get("lift_vs_parent"),
+                "lift_recent_vs_parent": r.get("lift_recent_vs_parent"),
+                "conditions": r.get("conditions"),
             }
             for r in rules if r.get("statut") == "ACTIVE"
         ][:50],
