@@ -1,15 +1,50 @@
 {
  "version": "1.0.0",
- "genere_le": "2026-10-07 11:56 UTC",
+ "genere_le": "2026-10-08 04:13 UTC",
  "resume": {
-  "equipes_en_cache": 800,
-  "verifiables": 679,
-  "coherentes": 679,
-  "incoherentes": 0,
-  "non_verifiables": 75,
-  "sans_donnees": 46,
-  "taux_incoherence": 0.0
+  "equipes_en_cache": 1173,
+  "verifiables": 1011,
+  "coherentes": 1009,
+  "incoherentes": 2,
+  "non_verifiables": 98,
+  "sans_donnees": 64,
+  "taux_incoherence": 0.002
  },
  "methode": "Chaque match connu par les pages de match (même compétition, joué avant l'enregistrement) doit figurer dans la saison enregistrée de l'équipe (même lieu, mêmes buts). Sinon : INCOHERENTE.",
- "incoherentes": []
+ "incoherentes": [
+  {
+   "equipe": "chicago fire",
+   "competition": "etats-unis : mls",
+   "url": "https://www.matchendirect.fr/equipe/chicago-fire_apsqaaege20za4re5wm6bzq9a.html",
+   "enregistre_le": "2026-10-07",
+   "matchs_enregistres": 24,
+   "matchs_connus": 7,
+   "manquants": [
+    {
+     "date": "2026-10-06",
+     "adversaire": "V. Whitecaps",
+     "lieu": "domicile",
+     "score_equipe": "3-1"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "v whitecaps",
+   "competition": "etats-unis : mls",
+   "url": "https://www.matchendirect.fr/equipe/v-whitecaps_cdmq2tqfwo5td2ztv1s62bqlf.html",
+   "enregistre_le": "2026-10-07",
+   "matchs_enregistres": 23,
+   "matchs_connus": 6,
+   "manquants": [
+    {
+     "date": "2026-10-06",
+     "adversaire": "Chicago Fire",
+     "lieu": "extérieur",
+     "score_equipe": "1-3"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  }
+ ]
 }
