@@ -50,11 +50,12 @@ def test_decouvre_configuration_marche_cote_lieu():
 
 def test_configuration_devenue_fragile_est_declassee():
     rows = []
-    for i in range(40):
-        rows.append(rec(i, win=i < 36, date="2026-04-01", team="A"))
-    # Les 25 observations récentes cassent volontairement le pattern.
-    for i in range(40, 65):
-        rows.append(rec(i, win=False, date=f"2026-08-{(i - 39):02d}", team="A"))
+    for i in range(60):
+        rows.append(rec(i, win=i < 59, date="2026-04-01", team="A"))
+    # Les 25 observations récentes cassent volontairement le pattern,
+    # sans effacer immédiatement la force de l'historique complet.
+    for i in range(60, 85):
+        rows.append(rec(i, win=i < 65, date=f"2026-08-{(i - 59):02d}", team="A"))
     intelligence = ce.discover_rules(rows)
     declining = [r for r in intelligence["rules"] if r["statut"] == "DECLINANTE"]
     assert declining
