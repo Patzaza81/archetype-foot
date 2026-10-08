@@ -109,6 +109,8 @@ function legsHtml(rows){
    details.push("modèle non calibré");
   }else if(x.probabilite_source==="HISTORIQUE_MOTEUR_WILSON"){
    details.push("historique moteur "+pct(x.probabilite_estimee));
+  }else if(x.preuve_niveau==="ECHANTILLON_V3"){
+   details.push("V3 · échantillon exploitable");
   }else if(x.niveau_confiance){
    details.push(x.niveau_confiance==="MODELE_SEUL"?"Analyse moteur":"Confiance "+x.niveau_confiance);
   }
