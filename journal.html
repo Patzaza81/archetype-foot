@@ -27,6 +27,7 @@
       <button type="button" data-onglet="rentables">Marchés rentables</button>
       <button type="button" data-onglet="comportements">Observatoire</button>
       <button type="button" data-onglet="equipes">Équipes à suivre</button>
+      <button type="button" data-onglet="opportunites">Opportunités</button>
       <button type="button" data-onglet="methode">Méthode</button>
     </nav>
 
@@ -48,6 +49,14 @@
         <p class="jr-aide">Cette couche est indépendante du moteur de décision. Elle observe les régimes, séquences, ruptures et persistance historiques, puis anticipe les comportements avant l’arrivée de la cote. La cote sert ensuite uniquement à confirmer ou écarter la compatibilité du prix.</p>
         <div id="observatoire-resume"></div>
         <div id="observatoire-radar"></div>
+      </section>
+    </div>
+
+    <div class="jr-onglet" data-onglet="opportunites" hidden>
+      <section class="ax-carte jr-bloc">
+        <h2 class="jr-titre">Opportunités futures</h2>
+        <p class="jr-aide">Le Journal détecte en arrière-plan les émergences, renforcements et ruptures d’une équipe sur un marché. Une opportunité est un signal à surveiller, jamais un pronostic et jamais une modification du moteur.</p>
+        <div id="opportunites"></div>
       </section>
     </div>
 
