@@ -417,6 +417,7 @@ def leg(x: dict[str, Any]) -> dict[str, Any]:
         "calibrage_marge": x.get("calibrage_marge"),
         "calibrage_lift": x.get("calibrage_lift"),
         "probabilite_source": x.get("probabilite_source"),
+        "preuve_niveau": x.get("preuve_niveau"),
         "probabilite_brute_journal": x.get("probabilite_brute_journal"),
         "journal_frequency": x.get("journal_frequency"),
         "journal_wins": x.get("journal_wins"),
