@@ -75,6 +75,55 @@ def test_aucun_ticket_si_pool_insuffisant():
     assert gt.best_target_ticket([cand(1, 2.0, 0.6)], 10.0) == []
 
 
+def test_generateur_traite_les_sources_de_facon_identique():
+    base = cand(900, 1.60, 0.70, rang="P1")
+    base.update({
+        "selection_evidence_rank": 3,
+        "selection_evidence_lower_bound": 0.62,
+        "selection_evidence_rate": 0.80,
+        "selection_evidence_roi": 0.12,
+        "selection_evidence_observations": 10,
+        "selection_sample_rank": 0,
+        "selection_rank": 3,
+    })
+    rows = []
+    for source in ("moteur_v2_6_10", "moteur_v3", "journal"):
+        x = dict(base, source=source, moteur=source if source != "journal" else None)
+        rows.append(x)
+    assert gt.candidate_rank(rows[0]) == gt.candidate_rank(rows[1]) == gt.candidate_rank(rows[2])
+
+
+def test_build_recoit_30_et_ne_retient_que_15_pour_les_tickets():
+    top = []
+    for i in range(30):
+        x = cand(i, 1.30 + (i % 10) * 0.12, 0.58 + (i % 8) * 0.03,
+                 source=("moteur_v2_6_10", "moteur_v3", "journal")[i // 10],
+                 rang=("P1", "P2", "P3")[i % 3])
+        x.update({
+            "selection_evidence_rank": 0,
+            "selection_evidence_lower_bound": None,
+            "selection_evidence_rate": None,
+            "selection_evidence_roi": None,
+            "selection_evidence_observations": 0,
+            "selection_sample_rank": 0,
+            "selection_rank": {"P1": 3, "P2": 2, "P3": 1}[x["rang"]],
+        })
+        top.append(x)
+    data = {
+        "sources": {
+            "moteur_v2_6_10": {"top": top[:10]},
+            "moteur_v3": {"top": top[10:20]},
+            "journal": {"top": top[20:30]},
+        }
+    }
+    out = gt.build(data)
+    assert out["candidats_total"] == 30
+    assert out["candidats_retenus"] == 15
+    assert len(out["pool_30_receptionne"]) == 30
+    assert len(out["pool"]) == 15
+    assert all(s["metrics"]["matchs"] <= 12 for s in out["scenarios"])
+
+
 def test_build_publie_pool_et_respecte_intervalle():
     top = [dict(c, rang_confiance=0) for c in pool_sans_historique()]
     data = {"sources": {"moteur_v2_6_10": {"top": top[:10]}, "moteur_v3": {"top": top[10:]}, "journal": {"top": []}}}
