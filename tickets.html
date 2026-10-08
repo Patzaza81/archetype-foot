@@ -136,11 +136,33 @@ footer-note{display:block;text-align:center;color:var(--tb-muted);font-size:10.5
 
  <div id="ticket-cible"></div>
 
+ <section class="section">
+  <div class="step">
+   <span class="step-num">4</span>
+   <div style="flex:1">
+    <h2>Ou demandez plusieurs tickets</h2>
+    <p class="help">Indiquez le nombre de tickets et le nombre de pronostics par ticket. Le moteur tire au hasard dans vos matchs cochés, sans jamais réutiliser un match, chaque ticket ayant une cote totale entre 2 et 20.</p>
+    <form id="multi-form" class="target-row" style="align-items:flex-end">
+     <label style="flex:1;font-size:11px;color:var(--tb-muted)">Tickets
+      <input id="nb-tickets" class="target-input" type="text" inputmode="numeric" value="3" aria-label="Nombre de tickets" autocomplete="off" style="width:100%;box-sizing:border-box">
+     </label>
+     <label style="flex:1;font-size:11px;color:var(--tb-muted)">Pronostics par ticket
+      <input id="nb-paris" class="target-input" type="text" inputmode="numeric" value="4" aria-label="Nombre de pronostics par ticket" autocomplete="off" style="width:100%;box-sizing:border-box">
+     </label>
+     <button class="bouton" type="submit">Générer</button>
+    </form>
+    <p id="multi-msg" class="help" style="margin-top:8px"></p>
+   </div>
+  </div>
+ </section>
+
+ <div id="tickets-multi"></div>
+
  <footer-note>Les calculs, contrôles et comparaisons sont faits en arrière-plan. Cette page affiche uniquement les résultats utiles.</footer-note>
 </main>
 
 <script src="theme.js"></script>
 <script src="tickets_analyse.js?v=20261008"></script>
-<script src="tickets.js?v=20261010"></script>
+<script src="tickets.js?v=20261011"></script>
 </body>
 </html>

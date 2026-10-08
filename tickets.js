@@ -1,7 +1,7 @@
 (function(){
 "use strict";
 
-var MIN=2,MAX=20,DEF=10,TOL=[0.05,0.10,0.25],TENTATIVES=4000,MAXLEGS=12;
+var MAXTICKETS=10,MIN=2,MAX=20,DEF=10,TOL=[0.05,0.10,0.25],TENTATIVES=4000,MAXLEGS=12;
 var DATA=null,OFF={};
 
 function esc(x){return x==null?"":String(x).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
@@ -66,6 +66,34 @@ function tirageCible(pool,target,rnd,tentatives){
   if(t>=0&&(bestTier<0||t<bestTier)){bestTier=t;best=chosen;if(t===0)break}
  }
  return best;
+}
+/* Plusieurs tickets : n tickets de k paris, tirés au hasard dans les matchs cochés, aucun match utilisé deux fois
+   (ni dans un ticket, ni entre tickets). Chaque ticket a une cote totale entre 2 et 20. S'il n'y a pas la place pour
+   tous les tickets demandés, on s'arrête au dernier possible : rien n'est forcé. */
+function tirageTickets(pool,n,k,rnd,tentatives){
+ rnd=rnd||Math.random;tentatives=tentatives||TENTATIVES;
+ var utilises={},tickets=[];
+ var base=pool.filter(function(x){return Number(x.cote)>1});
+ for(var t=0;t<n;t++){
+  var dispo=base.filter(function(x){return !utilises[x.cle_match]});
+  var vus={};dispo.forEach(function(x){vus[x.cle_match]=1});
+  if(Object.keys(vus).length<k)break;
+  var trouve=null;
+  for(var i=0;i<tentatives&&!trouve;i++){
+   var ordre=melange(dispo,rnd),pris={},chosen=[];
+   for(var j=0;j<ordre.length&&chosen.length<k;j++){
+    if(pris[ordre[j].cle_match])continue;
+    pris[ordre[j].cle_match]=1;chosen.push(ordre[j]);
+   }
+   if(chosen.length<k)continue;
+   var prod=1;chosen.forEach(function(x){prod*=Number(x.cote)});
+   if(prod>=MIN-1e-9&&prod<=MAX+1e-9)trouve=chosen;
+  }
+  if(!trouve)break;
+  trouve.forEach(function(x){utilises[x.cle_match]=1});
+  tickets.push(trouve);
+ }
+ return tickets;
 }
 function metrics(rows,target){
  var prod=1,joint=1,okp=rows.length>0,src={};
@@ -196,11 +224,42 @@ function build(raw,defile){
   msg.textContent="Cochez au moins 2 matchs différents. Aucun ticket ne sera créé artificiellement.";
   out.innerHTML="";return;
  }
+ document.getElementById("tickets-multi").innerHTML="";document.getElementById("multi-msg").textContent="";
  var rows=tirageCible(pool,v);
  var t={scenario:"VOTRE_TICKET_COTE_"+String(v).replace(".",","),statut:rows.length?"OK":"AUCUN_TICKET_SOLIDE",selection:rows,metrics:metrics(rows,v)};
  msg.textContent=note||(rows.length?"Objectif "+cote(v)+" · "+rows.length+" paris tirés au hasard parmi vos matchs. Appuyez sur Générer pour un autre tirage.":"Vos matchs cochés ne permettent pas de s'approcher de "+cote(v)+". Cochez-en d'autres.");
  out.innerHTML=ticketHtml(t,"Votre ticket");
  if(defile&&rows.length&&out.scrollIntoView)out.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function entier(raw,min,max){
+ var v=parseInt(String(raw).replace(/\s/g,""),10);
+ if(!Number.isFinite(v))return NaN;
+ return Math.max(min,Math.min(max,v));
+}
+function buildMulti(){
+ var msg=document.getElementById("multi-msg"),out=document.getElementById("tickets-multi");
+ var n=entier(document.getElementById("nb-tickets").value,1,MAXTICKETS);
+ var k=entier(document.getElementById("nb-paris").value,1,MAXLEGS);
+ if(!Number.isFinite(n)||!Number.isFinite(k)){msg.textContent="Saisissez des nombres entiers (tickets : 1 à "+MAXTICKETS+", pronostics : 1 à "+MAXLEGS+").";out.innerHTML="";return}
+ document.getElementById("nb-tickets").value=String(n);document.getElementById("nb-paris").value=String(k);
+ try{localStorage.setItem("archetype_multi",n+","+k)}catch(e){}
+ var pool=selection(),m={};pool.forEach(function(x){m[x.cle_match]=1});
+ var dispo=Object.keys(m).length;
+ if(dispo<k){msg.textContent="Il faut au moins "+k+" matchs différents cochés (vous en avez "+dispo+"). Aucun ticket ne sera créé artificiellement.";out.innerHTML="";return}
+ var liste=tirageTickets(pool,n,k);
+ document.getElementById("ticket-cible").innerHTML="";
+ if(!liste.length){
+  msg.textContent="Vos matchs cochés ne permettent pas de faire un ticket de "+k+" pronostics avec une cote entre 2 et 20. Cochez-en d'autres ou changez le nombre.";
+  out.innerHTML="";return;
+ }
+ msg.textContent=liste.length===n
+  ?n+" ticket(s) de "+k+" pronostic(s), aucun match répété. Appuyez sur Générer pour un autre tirage."
+  :liste.length+" ticket(s) sur "+n+" demandés : pas assez de matchs cochés pour les autres ("+(n*k)+" matchs différents seraient nécessaires, vous en avez "+dispo+"). Rien n'est forcé.";
+ out.innerHTML=liste.map(function(rows,i){
+  return ticketHtml({scenario:"TICKET_"+(i+1),statut:"OK",selection:rows,metrics:metrics(rows,null)},"Ticket "+(i+1)+" sur "+liste.length);
+ }).join("");
+ if(out.scrollIntoView)out.scrollIntoView({behavior:"smooth",block:"start"});
 }
 
 function init(){
@@ -211,6 +270,9 @@ function init(){
  Array.prototype.forEach.call(document.querySelectorAll("[data-cible]"),function(b){
   b.addEventListener("click",function(){build(b.getAttribute("data-cible"),true)});
  });
+ document.getElementById("multi-form").addEventListener("submit",function(e){e.preventDefault();buildMulti()});
+ try{var mm=(localStorage.getItem("archetype_multi")||"").split(",");
+  if(mm.length===2&&Number.isFinite(parseInt(mm[0],10))&&Number.isFinite(parseInt(mm[1],10))){document.getElementById("nb-tickets").value=String(entier(mm[0],1,MAXTICKETS));document.getElementById("nb-paris").value=String(entier(mm[1],1,MAXLEGS))}}catch(e){}
  document.getElementById("tout-cocher").addEventListener("click",function(){
   ((DATA&&DATA.pool)||[]).forEach(function(x){delete OFF[cleLigne(x)]});renderMatchs();
  });
@@ -286,6 +348,8 @@ function afficherPlage(id){
  renderMatchs();
  document.getElementById("ticket-cible").innerHTML="";
  document.getElementById("cible-msg").textContent="";
+ document.getElementById("tickets-multi").innerHTML="";
+ document.getElementById("multi-msg").textContent="";
 }
 function renderPlages(){
  var root=document.getElementById("plages");
