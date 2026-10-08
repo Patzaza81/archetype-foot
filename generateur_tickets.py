@@ -542,8 +542,11 @@ def build(data: dict[str, Any]) -> dict[str, Any]:
     # Les trois sources fournissent au maximum 10 candidats chacune.
     # Ils sont ensuite fusionnés sans traitement différencié dans le générateur.
     rows: list[dict[str, Any]] = []
-    for source in ("moteur_v2_6_10", "moteur_v3", "journal"):
-        rows.extend((data.get("sources", {}).get(source, {}) or {}).get("top", []) or [])
+    source_names = ("moteur_v2_6_10", "moteur_v3", "journal")
+    for source in source_names:
+        # Garde-fou : même si une source publie accidentellement plus de 10 lignes,
+        # le contrat d'entrée du générateur reste strictement limité à 10 par source.
+        rows.extend(((data.get("sources", {}).get(source, {}) or {}).get("top", []) or [])[:10])
     rows = dedupe(rows)
 
     # Sélection finale : les critères de classement existants restent inchangés.
@@ -584,9 +587,10 @@ def build(data: dict[str, Any]) -> dict[str, Any]:
         "principe": "Deux moteurs coexistants + Journal. Les preuves observées (forme équipe du Journal et historique moteur) sont classées avant les probabilités moteur non calibrées. Pour un ticket, le Journal et un historique suffisant utilisent une borne Wilson prudente ; les probabilités moteur non calibrées restent signalées comme telles. La cote totale est choisie par le parieur, entre 2 et 20.",
         "avertissement": "La cote totale d'un combiné est exacte comme produit des cotes observées ; la probabilité indépendante affichée n'est pas une probabilité jointe garantie.",
         "candidats_total": len(pool_30),
+        "candidats_receptionnes": len(rows) + (len(pool_30) - len(retenus)),
         "candidats_retenus": len(retenus),
         "minimum_retenus": 15,
-        "sources": {source: len((data.get("sources", {}).get(source, {}) or {}).get("top", []) or []) for source in ("moteur_v2_6_10", "moteur_v3", "journal")},
+        "sources": {source: min(10, len((data.get("sources", {}).get(source, {}) or {}).get("top", []) or [])) for source in source_names},
         "pool_30_receptionne": [leg(x) for x in pool_30],
         "pool": [leg(x) for x in pool],
         "opportunites": [
