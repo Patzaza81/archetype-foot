@@ -377,3 +377,23 @@ def test_python_et_javascript_choisissent_les_memes_repartitions(tmp_path):
         assert fp["strategie"] == fj["strategie"]
         assert [t["paris"] for t in fp["composition"]] == [t["paris"] for t in fj["composition"]]
         assert [v["strategie"] for v in fp["variantes"]] == [v["strategie"] for v in fj["variantes"]]
+
+
+def test_journal_5_sur_5_est_conserve_dans_le_pool_et_mis_en_avant():
+    j = cand(77, 1.60, None, source="journal", rang=None,
+             marge_succes=-0.04, niveau="FORME_5_SUR_5",
+             journal_frequency=1.0, journal_wins=5, journal_observations=5,
+             journal_lower_bound=0.5655, journal_roi=0.30,
+             probabilite_estimee=0.5655, probabilite_source="JOURNAL_WILSON",
+             journal_team="Equipe Forte", journal_opportunity=True)
+    v2 = cand(78, 1.60, 0.90, source="moteur_v2_6_10", rang="P1")
+    data = {
+        "sources": {
+            "moteur_v2_6_10": {"top": [v2]},
+            "moteur_v3": {"top": []},
+            "journal": {"top": [j]},
+        }
+    }
+    out = gt.build(data)
+    assert any(x["source"] == "journal" for x in out["opportunites"])
+    assert any(x["source"] == "journal" for x in out["pool"])

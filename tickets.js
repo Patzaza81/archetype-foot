@@ -102,8 +102,19 @@ function badge(text){return '<span class="tag">'+esc(text)+'</span>'}
 function legsHtml(rows){
  return (rows||[]).map(function(x){
   var details=[marketLabel(x.marche)];
-  if(x.niveau_confiance)details.push(x.niveau_confiance==="MODELE_SEUL"?"Analyse moteur":"Confiance "+x.niveau_confiance);
-  if(x.marge_modele!=null)details.push("avantage "+pct(x.marge_modele));
+  if(x.journal_frequency!=null){
+   details.push("Journal "+pct(x.journal_frequency)+" ("+(x.journal_wins||0)+"/"+(x.journal_observations||0)+")");
+   if(x.journal_lower_bound!=null)details.push("borne prudente "+pct(x.journal_lower_bound));
+  }else if(x.probabilite_source==="MODELE_NON_CALIBRE"){
+   details.push("modèle non calibré");
+  }else if(x.probabilite_source==="HISTORIQUE_MOTEUR_WILSON"){
+   details.push("historique moteur "+pct(x.probabilite_estimee));
+  }else if(x.preuve_niveau==="ECHANTILLON_V3"){
+   details.push("V3 · échantillon exploitable");
+  }else if(x.niveau_confiance){
+   details.push(x.niveau_confiance==="MODELE_SEUL"?"Analyse moteur":"Confiance "+x.niveau_confiance);
+  }
+  if(x.marge_modele!=null)details.push("avantage modèle "+pct(x.marge_modele));
   return '<div class="paris">'+
    '<div class="paris-top"><strong>'+esc(x.domicile)+" — "+esc(x.exterieur)+'</strong><span class="odds">'+cote(x.cote)+'</span></div>'+
    '<div class="small">'+esc(details.join(" · "))+'</div>'+
@@ -176,6 +187,31 @@ function scenarioTitle(name){
  var map={PRUDENT_3:"Ticket prudent",EQUILIBRE_4:"Ticket équilibré",EQUILIBRE_5:"Ticket équilibré renforcé"};
  return map[name]||name.replace(/_/g," ");
 }
+
+function renderOpportunities(data){
+ var root=document.getElementById("opportunites");
+ if(!root)return;
+ var rows=(data&&data.opportunites)||[];
+ if(!rows.length){
+  root.innerHTML='<div class="empty">Aucune opportunité multi-source suffisamment documentée pour être mise en avant.</div>';
+  return;
+ }
+ root.innerHTML=rows.slice(0,10).map(function(x){
+  var evidence=x.journal_frequency!=null
+    ? "Journal : "+pct(x.journal_frequency)+" ("+(x.journal_wins||0)+"/"+(x.journal_observations||0)+")"
+    : (x.probabilite_source==="HISTORIQUE_MOTEUR_WILSON"
+       ? "Historique moteur : borne prudente "+pct(x.probabilite_estimee)
+       : "Moteur : signal non calibré");
+  if(x.journal_roi!=null)evidence+=" · ROI historique "+gain(x.journal_roi);
+  return '<div class="opportunity">'+
+    '<div class="paris-top"><strong>'+esc(x.domicile)+" — "+esc(x.exterieur)+'</strong><span class="odds">'+cote(x.cote)+'</span></div>'+
+    '<div class="small">'+esc(marketLabel(x.marche))+" · "+esc(sourceLabel(x.source))+'</div>'+
+    '<div class="small">'+esc(evidence)+'</div>'+
+    (x.justification?'<div class="small">'+esc(x.justification)+'</div>':"")+
+  '</div>';
+ }).join("");
+}
+
 function renderScenarios(data){
  var root=document.getElementById("tickets");root.innerHTML="";
  var list=((data&&data.scenarios)||[]).filter(function(t){return !/^OBJECTIF_COTE/.test(t.scenario)});
@@ -235,13 +271,13 @@ fetch("data/tickets.json?_="+Date.now(),{cache:"no-store"})
   document.getElementById("maj").textContent=d.genere_le?"Dernière génération : "+new Date(d.genere_le).toLocaleString("fr-FR"):"";
   var src=d.sources||{};
   document.getElementById("pool-note").textContent=
-   "Candidats disponibles : "+((src.moteur_v2_6_10||0)+(src.moteur_v3||0)+(src.journal||0))+
-   " · maximum "+(d.maximum_par_source||10)+" par source.";
-  renderScenarios(d);init();
+   "Candidats retenus : V2 "+(src.moteur_v2_6_10||0)+" · V3 "+(src.moteur_v3||0)+" · Journal "+(src.journal||0)+
+   " · le classement privilégie désormais les preuves réelles.";
+  renderOpportunities(d);renderScenarios(d);init();
  })
  .catch(function(e){
   document.getElementById("maj").textContent="Impossible de charger les tickets";
   document.getElementById("pool-note").textContent="Les données ne sont pas disponibles pour le moment.";
-  DATA={pool:[],scenarios:[]};renderScenarios(DATA);init();
+  DATA={pool:[],opportunites:[],scenarios:[]};renderOpportunities(DATA);renderScenarios(DATA);init();
  });
 })();

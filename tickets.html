@@ -54,6 +54,9 @@ summary{cursor:pointer;font-size:12px;font-weight:800;color:var(--tb-blue)}
 .other-card{margin-top:9px;border:1px solid var(--tb-border);border-radius:12px;padding:11px;background:var(--tb-card)}
 .other-card h3{font-size:14px;margin:0 0 4px}
 .other-card .meta{display:flex;gap:5px;flex-wrap:wrap}
+.opportunity{padding:11px 0;border-bottom:1px solid var(--tb-border)}
+.opportunity:last-child{border-bottom:0}
+.opportunity .small{font-size:11px;color:var(--tb-muted);line-height:1.4;margin-top:3px}
 .empty{padding:12px;background:var(--tb-card2);border-radius:10px;font-size:12px;color:var(--tb-muted)}
 footer-note{display:block;text-align:center;color:var(--tb-muted);font-size:10.5px;line-height:1.4;padding:8px 14px}
 @media(max-width:430px){
@@ -106,7 +109,7 @@ footer-note{display:block;text-align:center;color:var(--tb-muted);font-size:10.5
    </div>
   </div>
   <div class="explain" style="margin-top:11px">
-   <strong>À retenir :</strong> une cote élevée demande généralement plus de paris. La probabilité affichée est une estimation des moteurs, pas une garantie du résultat.
+   <strong>À retenir :</strong> les preuves réelles passent d'abord. Un 5/5 du Journal peut être mis en avant même si le moteur affiche un pourcentage plus élevé ; les pourcentages moteur sans historique suffisant sont explicitement traités comme non calibrés.
   </div>
   <p id="pool-note" class="help" style="margin-top:8px"></p>
  </section>
@@ -114,6 +117,17 @@ footer-note{display:block;text-align:center;color:var(--tb-muted);font-size:10.5
  <section class="section">
   <div class="step">
    <span class="step-num">3</span>
+   <div>
+    <h2>Meilleures opportunités détectées</h2>
+    <p class="help">Cette liste met en avant les preuves réelles du Journal et les historiques exploitables avant les simples pourcentages moteur non calibrés.</p>
+   </div>
+  </div>
+  <div id="opportunites"></div>
+ </section>
+
+ <section class="section">
+  <div class="step">
+   <span class="step-num">4</span>
    <div>
     <h2>Autres tickets disponibles</h2>
     <p class="help">Les autres propositions sont conservées ici pour ne pas encombrer l'écran principal.</p>
