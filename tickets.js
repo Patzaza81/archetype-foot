@@ -1,8 +1,8 @@
 (function(){
 "use strict";
 
-var MIN=2,MAX=20,DEF=10,TOL=[0.05,0.10,0.25],WIDTH=600,MAXLEGS=12;
-var DATA=null;
+var MIN=2,MAX=20,DEF=10,TOL=[0.05,0.10,0.25],TENTATIVES=4000,MAXLEGS=12;
+var DATA=null,OFF={};
 
 function esc(x){return x==null?"":String(x).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
 function pct(x){return Number.isFinite(Number(x))&&x!==null?(Number(x)*100).toFixed(1).replace(".",",")+" %":"—"}
@@ -31,7 +31,7 @@ function sourceLabel(s){
  return s||"Source";
 }
 
-/* ---------- Construction de la meilleure combinaison ---------- */
+/* ---------- Tirage au hasard dans les matchs cochés ---------- */
 function tier(prod,target){
  for(var k=0;k<TOL.length;k++){
   var lo=Math.max(MIN,target*(1-TOL[k])),hi=Math.min(MAX,target*(1+TOL[k]));
@@ -39,45 +39,33 @@ function tier(prod,target){
  }
  return -1;
 }
-function beam(pool,size,target){
- if(size<1||pool.length<size)return null;
- var logT=Math.log(target),logCap=Math.log(Math.min(MAX,target*(1+TOL[TOL.length-1])));
- var states=[{idx:[],lp:0}];
- for(var d=1;d<=size;d++){
-  var goal=logT*d/size,nxt=[];
-  states.forEach(function(s){
-   var start=s.idx.length?s.idx[s.idx.length-1]+1:0,used={};
-   s.idx.forEach(function(i){used[pool[i].cle_match]=1});
-   for(var i=start;i<pool.length;i++){
-    if(used[pool[i].cle_match])continue;
-    var o=Number(pool[i].cote);if(!(o>1))continue;
-    var lp=s.lp+Math.log(o);if(lp>logCap+1e-12)continue;
-    nxt.push({idx:s.idx.concat(i),lp:lp});
-   }
-  });
-  nxt.sort(function(a,b){return Math.abs(a.lp-goal)-Math.abs(b.lp-goal)});
-  states=nxt.slice(0,WIDTH);
-  if(!states.length)return null;
- }
- var best=null,bestKey=null;
- states.forEach(function(s){
-  var t=tier(Math.exp(s.lp),target);if(t<0)return;
-  var joint=0;s.idx.forEach(function(i){joint+=Math.log(Number(pool[i].probabilite_estimee))});
-  var key=[-t,joint,-Math.abs(s.lp-logT)];
-  if(!bestKey||key[0]>bestKey[0]||(key[0]===bestKey[0]&&(key[1]>bestKey[1]||(key[1]===bestKey[1]&&key[2]>bestKey[2])))){
-   bestKey=key;best=s.idx.map(function(i){return pool[i]});
-  }
- });
- return best?{rows:best,key:bestKey}:null;
+function melange(a,rnd){
+ var t=a.slice();
+ for(var i=t.length-1;i>0;i--){var j=Math.floor(rnd()*(i+1)),x=t[i];t[i]=t[j];t[j]=x}
+ return t;
 }
-function bestTicket(pool,target){
- var best=null;
- for(var size=2;size<=MAXLEGS;size++){
-  var r=beam(pool,size,target);if(!r)continue;
-  var k=r.key;
-  if(!best||k[0]>best.key[0]||(k[0]===best.key[0]&&(k[1]>best.key[1]||(k[1]===best.key[1]&&k[2]>best.key[2]))))best=r;
+/* Même principe que tirage_cible() de generateur_tickets.py : taille et paris tirés au hasard, un seul pari par match,
+   on garde le tirage de la fenêtre de proximité la plus serrée trouvée. Rien de possible : liste vide. */
+function tirageCible(pool,target,rnd,tentatives){
+ rnd=rnd||Math.random;tentatives=tentatives||TENTATIVES;
+ var dispo=pool.filter(function(x){return Number(x.cote)>1});
+ var vus={};dispo.forEach(function(x){vus[x.cle_match]=1});
+ var nb=Object.keys(vus).length;
+ if(nb<2)return [];
+ var bestTier=-1,best=[];
+ for(var n=0;n<tentatives;n++){
+  var size=2+Math.floor(rnd()*(Math.min(MAXLEGS,nb)-1));
+  var ordre=melange(dispo,rnd),pris={},chosen=[];
+  for(var i=0;i<ordre.length&&chosen.length<size;i++){
+   if(pris[ordre[i].cle_match])continue;
+   pris[ordre[i].cle_match]=1;chosen.push(ordre[i]);
+  }
+  if(chosen.length<size)continue;
+  var prod=1;chosen.forEach(function(x){prod*=Number(x.cote)});
+  var t=tier(prod,target);
+  if(t>=0&&(bestTier<0||t<bestTier)){bestTier=t;best=chosen;if(t===0)break}
  }
- return best?best.rows:[];
+ return best;
 }
 function metrics(rows,target){
  var prod=1,joint=1,okp=rows.length>0,src={};
@@ -184,56 +172,16 @@ function ticketHtml(t,title){
  return html;
 }
 
-function scenarioTitle(name){
- var map={PRUDENT_3:"Ticket prudent",EQUILIBRE_4:"Ticket équilibré",EQUILIBRE_5:"Ticket équilibré renforcé"};
- return map[name]||name.replace(/_/g," ");
-}
-
-function renderOpportunities(data){
- var root=document.getElementById("opportunites");
- if(!root)return;
- var rows=(data&&data.opportunites)||[];
- if(!rows.length){
-  root.innerHTML='<div class="empty">Aucune opportunité multi-source suffisamment documentée pour être mise en avant.</div>';
-  return;
- }
- root.innerHTML=rows.slice(0,10).map(function(x){
-  var evidence=x.journal_frequency!=null
-    ? "Journal : "+pct(x.journal_frequency)+" ("+(x.journal_wins||0)+"/"+(x.journal_observations||0)+")"
-    : (x.probabilite_source==="HISTORIQUE_MOTEUR_WILSON"
-       ? "Historique moteur : borne prudente "+pct(x.probabilite_estimee)
-       : "Moteur : signal non calibré");
-  if(x.journal_roi!=null)evidence+=" · ROI historique "+gain(x.journal_roi);
-  return '<div class="opportunity">'+
-    '<div class="paris-top"><strong>'+esc(x.domicile)+" — "+esc(x.exterieur)+'</strong><span class="odds">'+cote(x.cote)+'</span></div>'+
-    '<div class="small">'+esc(marketLabel(x.marche))+" · "+esc(sourceLabel(x.source))+'</div>'+
-    '<div class="small">'+esc(evidence)+'</div>'+
-    (x.justification?'<div class="small">'+esc(x.justification)+'</div>':"")+
-  '</div>';
- }).join("");
-}
-
-function renderScenarios(data){
- var root=document.getElementById("tickets");root.innerHTML="";
- var list=((data&&data.scenarios)||[]).filter(function(t){return !/^OBJECTIF_COTE/.test(t.scenario)&&t.selection&&t.selection.length});
- if(!list.length){root.innerHTML='<div class="empty">Aucune autre proposition disponible pour le moment.</div>';return}
- list.forEach(function(t){
-  var wrap=document.createElement("div");wrap.className="other-card";
-  var m=t.metrics||{};
-  wrap.innerHTML='<h3>'+esc(scenarioTitle(t.scenario))+'</h3>'+
-   '<div class="meta">'+badge((m.matchs||0)+" matchs")+badge("cote "+cote(m.cote_totale))+badge(pct(m.probabilite_independante_theorique)+" estimée")+'</div>'+
-   '<details><summary>Voir ce ticket</summary>'+legsHtml(t.selection||[])+
-   (t.selection&&t.selection.length>=2&&window.ArchetypeAnalyse?analysisDetails(window.ArchetypeAnalyse.analyse(t.selection),t.selection):"")+
-   '</details>';
-  root.appendChild(wrap);
- });
-}
-
 function parseTarget(raw){
  var v=parseFloat(String(raw).replace(",",".").replace(/\s/g,""));
  return Number.isFinite(v)?v:NaN;
 }
-function build(raw){
+function cleLigne(x){return String(x.cle_match)+"|"+String(x.marche)}
+function selection(){
+ var pool=(DATA&&DATA.pool)||[];
+ return pool.filter(function(x){return !OFF[cleLigne(x)]});
+}
+function build(raw,defile){
  var msg=document.getElementById("cible-msg"),out=document.getElementById("ticket-cible");
  var v=parseTarget(raw);
  if(!Number.isFinite(v)){msg.textContent="Saisissez une cote entre "+MIN+" et "+MAX+".";out.innerHTML="";return}
@@ -242,32 +190,43 @@ function build(raw){
  if(v>MAX){v=MAX;note="20 appliqué : la cote maximale est 20."}
  document.getElementById("cible").value=String(v).replace(".",",");
  try{localStorage.setItem("archetype_cote_cible",String(v))}catch(e){}
- var pool=(DATA&&DATA.pool)||[];
- if(!pool.length){
-  msg.textContent="Aucun candidat disponible. Aucun ticket ne sera créé artificiellement.";
+ var pool=selection();
+ var matchs={};pool.forEach(function(x){matchs[x.cle_match]=1});
+ if(Object.keys(matchs).length<2){
+  msg.textContent="Cochez au moins 2 matchs différents. Aucun ticket ne sera créé artificiellement.";
   out.innerHTML="";return;
  }
- var rows=bestTicket(pool,v);
+ var rows=tirageCible(pool,v);
  var t={scenario:"VOTRE_TICKET_COTE_"+String(v).replace(".",","),statut:rows.length?"OK":"AUCUN_TICKET_SOLIDE",selection:rows,metrics:metrics(rows,v)};
- msg.textContent=note||(rows.length?"Objectif "+cote(v)+" · "+rows.length+" paris sélectionnés.":"Aucune combinaison ne se rapproche suffisamment de "+cote(v)+".");
+ msg.textContent=note||(rows.length?"Objectif "+cote(v)+" · "+rows.length+" paris tirés au hasard parmi vos matchs. Appuyez sur Générer pour un autre tirage.":"Vos matchs cochés ne permettent pas de s'approcher de "+cote(v)+". Cochez-en d'autres.");
  out.innerHTML=ticketHtml(t,"Votre ticket");
- window.scrollTo({top:0,behavior:"smooth"});
+ if(defile&&rows.length&&out.scrollIntoView)out.scrollIntoView({behavior:"smooth",block:"start"});
 }
 
 function init(){
  var form=document.getElementById("cible-form"),inp=document.getElementById("cible"),start=DEF;
  try{var s=parseFloat(localStorage.getItem("archetype_cote_cible"));if(Number.isFinite(s)&&s>=MIN&&s<=MAX)start=s}catch(e){}
  inp.value=String(start).replace(".",",");
- form.addEventListener("submit",function(e){e.preventDefault();build(inp.value)});
+ form.addEventListener("submit",function(e){e.preventDefault();build(inp.value,true)});
  Array.prototype.forEach.call(document.querySelectorAll("[data-cible]"),function(b){
-  b.addEventListener("click",function(){build(b.getAttribute("data-cible"))});
+  b.addEventListener("click",function(){build(b.getAttribute("data-cible"),true)});
  });
- build(inp.value);
+ document.getElementById("tout-cocher").addEventListener("click",function(){
+  ((DATA&&DATA.pool)||[]).forEach(function(x){delete OFF[cleLigne(x)]});renderMatchs();
+ });
+ document.getElementById("tout-decocher").addEventListener("click",function(){
+  ((DATA&&DATA.pool)||[]).forEach(function(x){OFF[cleLigne(x)]=1});renderMatchs();
+ });
 }
 
+/* ---------- Dates et liste des matchs ---------- */
 function jourCourt(iso){
  var d=new Date(iso+"T12:00:00");
  return isNaN(d.getTime())?String(iso):d.toLocaleDateString("fr-FR",{weekday:"short",day:"numeric",month:"short"});
+}
+function jourLong(iso){
+ var d=new Date(iso+"T12:00:00");
+ return isNaN(d.getTime())?String(iso):d.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"});
 }
 function plageLabel(p){
  if(p.debut===p.fin)return jourCourt(p.debut);
@@ -277,34 +236,61 @@ function plageLabel(p){
  return a.getDate()+(mois(a)!==mois(b)?" "+mois(a):"")+" → "+b.getDate()+" "+mois(b);
 }
 
+function renderMatchs(){
+ var root=document.getElementById("matchs"),pool=((DATA&&DATA.pool)||[]).slice();
+ if(!pool.length){
+  root.innerHTML='<div class="empty">Aucun pari disponible pour ces dates. Le système n\'en ajoute pas de force.</div>';
+  document.getElementById("compteur").textContent="";
+  return;
+ }
+ pool.sort(function(a,b){return String(a.date).localeCompare(String(b.date))||String(a.heure||"").localeCompare(String(b.heure||""))});
+ var html="",jour=null;
+ pool.forEach(function(x){
+  if(x.date!==jour){jour=x.date;html+='<div class="jour-titre">'+esc(jourLong(x.date))+'</div>'}
+  var k=cleLigne(x),coche=!OFF[k];
+  var proba=x.probabilite_estimee!=null?pct(x.probabilite_estimee):"—";
+  html+='<label class="match-row"><input type="checkbox" data-k="'+esc(k)+'"'+(coche?" checked":"")+'>'+
+   '<div class="corps"><div class="paris-top"><strong>'+esc(x.domicile)+" — "+esc(x.exterieur)+'</strong><span class="odds">'+cote(x.cote)+'</span></div>'+
+   '<div class="small">'+esc((x.heure?x.heure+" · ":"")+marketLabel(x.marche))+" · chance estimée "+proba+'</div>'+
+   '<div>'+badge(sourceLabel(x.source))+(x.rang?badge(x.rang):"")+'</div></div></label>';
+ });
+ root.innerHTML=html;
+ Array.prototype.forEach.call(root.querySelectorAll("input[data-k]"),function(c){
+  c.addEventListener("change",function(){
+   if(c.checked)delete OFF[c.getAttribute("data-k")];else OFF[c.getAttribute("data-k")]=1;
+   compteur();
+  });
+ });
+ compteur();
+}
+function compteur(){
+ var pool=(DATA&&DATA.pool)||[],sel=selection(),m={};
+ sel.forEach(function(x){m[x.cle_match]=1});
+ document.getElementById("compteur").textContent=sel.length+" pari(s) coché(s) sur "+pool.length+" · "+Object.keys(m).length+" match(s) différent(s)";
+}
+
 var RAW=null;
 function afficherPlage(id){
- var plages=(RAW&&RAW.plages)||[];
  var p=null;
- plages.forEach(function(x){if(x.id===id)p=x});
- DATA=p?{pool:p.pool||[],scenarios:p.scenarios||[],sources:p.sources||{},opportunites:RAW.opportunites||[],genere_le:RAW.genere_le}:RAW;
- var src=DATA.sources||{};
+ ((RAW&&RAW.plages)||[]).forEach(function(x){if(x.id===id)p=x});
+ if(!p)return;
+ DATA={pool:p.pool||[],sources:p.sources||{}};
+ var src=DATA.sources;
  document.getElementById("pool-note").textContent=
-  "Candidats retenus"+(p?" du "+plageLabel(p):"")+" : V2 "+(src.moteur_v2_6_10||0)+" · V3 "+(src.moteur_v3||0)+" · Journal "+(src.journal||0)+
-  ". Ne mélangez pas des tickets de plages différentes : un même match peut y figurer.";
+  "Paris retenus du "+plageLabel(p)+" : V2 "+(src.moteur_v2_6_10||0)+" · V3 "+(src.moteur_v3||0)+" · Journal "+(src.journal||0)+
+  " (30 au maximum). Décochez ceux que vous ne voulez pas.";
  Array.prototype.forEach.call(document.querySelectorAll("[data-plage]"),function(b){
   b.className=b.getAttribute("data-plage")===id?"chip active":"chip";
  });
  try{localStorage.setItem("archetype_plage",id)}catch(e){}
- renderScenarios(DATA);
- var inp=document.getElementById("cible");
- if(inp&&inp.value)buildSilencieux(inp.value);
-}
-function buildSilencieux(raw){
- var top=window.scrollTo;window.scrollTo=function(){};
- try{build(raw)}finally{window.scrollTo=top}
+ renderMatchs();
+ document.getElementById("ticket-cible").innerHTML="";
+ document.getElementById("cible-msg").textContent="";
 }
 function renderPlages(){
  var root=document.getElementById("plages");
- if(!root)return;
- var plages=(RAW&&RAW.plages)||[];
  root.innerHTML="";
- plages.forEach(function(p){
+ ((RAW&&RAW.plages)||[]).forEach(function(p){
   var b=document.createElement("button");
   b.type="button";b.className="chip";b.setAttribute("data-plage",p.id);
   b.textContent=plageLabel(p);
@@ -316,19 +302,17 @@ function renderPlages(){
 fetch("data/tickets.json?_="+Date.now(),{cache:"no-store"})
  .then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()})
  .then(function(d){
-  RAW=d;DATA=d;
+  RAW=d;
   document.getElementById("maj").textContent=d.genere_le?"Dernière génération : "+new Date(d.genere_le).toLocaleString("fr-FR"):"";
-  renderOpportunities(d);renderPlages();
+  renderPlages();init();
   var choix=d.plage_par_defaut;
   try{var m=localStorage.getItem("archetype_plage");if(m&&(d.plages||[]).some(function(p){return p.id===m}))choix=m}catch(e){}
-  renderScenarios(d);init();
   if((d.plages||[]).length)afficherPlage(choix);
   else document.getElementById("pool-note").textContent="Aucune plage de dates disponible.";
  })
  .catch(function(e){
   document.getElementById("maj").textContent="Impossible de charger les tickets";
   document.getElementById("pool-note").textContent="Les données ne sont pas disponibles pour le moment.";
-  DATA={pool:[],opportunites:[],scenarios:[]};renderOpportunities(DATA);renderScenarios(DATA);init();
+  DATA={pool:[]};init();
  });
-
 })();

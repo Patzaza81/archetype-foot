@@ -22,12 +22,19 @@ main{max-width:720px;padding-bottom:40px}
 .nav-bouton{background:transparent;color:var(--tb-text);border:1px solid var(--tb-border);font-size:13px}
 .section{background:var(--tb-card);border:1px solid var(--tb-border);border-radius:15px;padding:15px;margin:11px 0;box-shadow:0 5px 18px rgba(61,38,84,.05)}
 .step{display:flex;gap:10px;align-items:flex-start}
+.step>div{min-width:0}
 .step-num{flex:0 0 27px;height:27px;border-radius:50%;display:grid;place-items:center;background:var(--tb-text);color:#fff;font-size:12px;font-weight:800}
 .section h2{font-size:17px;margin:0 0 5px}
 .section h3{font-size:14px;margin:0 0 5px}
 .help{font-size:12px;line-height:1.45;color:var(--tb-muted);margin:0}
 .target-row{display:flex;gap:8px;align-items:stretch;margin-top:12px}
 .target-input{min-width:0;flex:1;font-size:22px;font-weight:800;text-align:center;padding:9px;border:1px solid var(--tb-border);border-radius:10px;background:#fff;color:var(--tb-text)}
+.jour-titre{font-size:12px;font-weight:800;color:var(--tb-muted);margin:14px 0 2px;text-transform:capitalize}
+.match-row{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--tb-border);cursor:pointer}
+.match-row:last-child{border-bottom:0}
+.match-row input{flex:0 0 22px;width:22px;height:22px;margin-top:2px}
+.match-row .corps{flex:1;min-width:0}
+.match-row .small{font-size:11px;color:var(--tb-muted);line-height:1.4;margin-top:3px}
 .chip{border:1px solid var(--tb-border);background:var(--tb-card2);color:var(--tb-text);border-radius:999px;padding:8px 12px;font-weight:700;font-size:12px;cursor:pointer}
 .chip.active{background:var(--tb-text);color:#fff;border-color:var(--tb-text)}
 .quick{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
@@ -81,17 +88,38 @@ footer-note{display:block;text-align:center;color:var(--tb-muted);font-size:10.5
  </div>
 
  <section class="section">
-  <h2>Choisissez les dates</h2>
-  <p class="help">Chaque bouton cumule les jours indiqués. Les matchs déjà commencés sont exclus.</p>
-  <div id="plages" class="quick" aria-label="Plages de dates"></div>
+  <div class="step">
+   <span class="step-num">1</span>
+   <div style="flex:1">
+    <h2>Choisissez les dates</h2>
+    <p class="help">Le premier bouton contient les paris du jour. Chaque bouton suivant ajoute un jour et garde les 30 meilleurs paris de l'ensemble. Les matchs déjà commencés sont exclus.</p>
+    <div id="plages" class="quick" aria-label="Plages de dates"></div>
+   </div>
+  </div>
  </section>
 
  <section class="section">
   <div class="step">
-   <span class="step-num">1</span>
+   <span class="step-num">2</span>
+   <div style="flex:1">
+    <h2>Choisissez vos matchs</h2>
+    <p id="pool-note" class="help"></p>
+    <div class="quick">
+     <button type="button" id="tout-cocher">Tout cocher</button>
+     <button type="button" id="tout-decocher">Tout décocher</button>
+    </div>
+    <p id="compteur" class="help" style="margin-top:8px"></p>
+    <div id="matchs"></div>
+   </div>
+  </div>
+ </section>
+
+ <section class="section">
+  <div class="step">
+   <span class="step-num">3</span>
    <div style="flex:1">
     <h2>Choisissez votre cote totale</h2>
-    <p class="help">Indiquez la cote que vous souhaitez viser. ARCHETYPE cherche ensuite la meilleure combinaison disponible.</p>
+    <p class="help">Le moteur tire au hasard, parmi vos matchs cochés, une combinaison proche de cette cote. Un match n'est jamais utilisé deux fois. Rien n'est forcé.</p>
     <form id="cible-form" class="target-row">
      <input id="cible" class="target-input" type="text" inputmode="decimal" value="10" aria-label="Cote totale souhaitée" autocomplete="off">
      <button class="bouton" type="submit">Générer</button>
@@ -108,47 +136,11 @@ footer-note{display:block;text-align:center;color:var(--tb-muted);font-size:10.5
 
  <div id="ticket-cible"></div>
 
- <section class="section">
-  <div class="step">
-   <span class="step-num">2</span>
-   <div>
-    <h2>Comment le ticket est construit</h2>
-    <p class="help">Les moteurs V2.6.10 et V3 sélectionnent les paris. Le Journal peut aussi fournir des candidats. Le système ne rajoute pas de pari juste pour atteindre la cote.</p>
-   </div>
-  </div>
-  <div class="explain" style="margin-top:11px">
-   <strong>À retenir :</strong> les preuves réelles passent d'abord. Un 5/5 du Journal peut être mis en avant même si le moteur affiche un pourcentage plus élevé ; les pourcentages moteur sans historique suffisant sont explicitement traités comme non calibrés.
-  </div>
-  <p id="pool-note" class="help" style="margin-top:8px"></p>
- </section>
-
- <section class="section">
-  <div class="step">
-   <span class="step-num">3</span>
-   <div>
-    <h2>Meilleures opportunités détectées</h2>
-    <p class="help">Cette liste met en avant les preuves réelles du Journal et les historiques exploitables avant les simples pourcentages moteur non calibrés.</p>
-   </div>
-  </div>
-  <div id="opportunites"></div>
- </section>
-
- <section class="section">
-  <div class="step">
-   <span class="step-num">4</span>
-   <div>
-    <h2>Autres tickets disponibles</h2>
-    <p class="help">Les autres propositions sont conservées ici pour ne pas encombrer l'écran principal.</p>
-   </div>
-  </div>
-  <div id="tickets"></div>
- </section>
-
  <footer-note>Les calculs, contrôles et comparaisons sont faits en arrière-plan. Cette page affiche uniquement les résultats utiles.</footer-note>
 </main>
 
 <script src="theme.js"></script>
 <script src="tickets_analyse.js?v=20261008"></script>
-<script src="tickets.js?v=20261009"></script>
+<script src="tickets.js?v=20261010"></script>
 </body>
 </html>

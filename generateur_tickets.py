@@ -5,6 +5,7 @@ import json
 import math
 import random
 import re
+import unicodedata
 from pathlib import Path
 from typing import Any
 
@@ -117,16 +118,20 @@ def candidate_rank(c: dict[str, Any]) -> tuple:
     )
 
 
+def _nom_normalise(x: Any) -> str:
+    texte = unicodedata.normalize("NFKD", str(x or "")).encode("ascii", "ignore").decode().lower()
+    return re.sub(r"[^a-z0-9]+", " ", texte).strip()
+
+
 def match_key(c: dict[str, Any]) -> str:
+    """Clé d'un match, la même quelle que soit la source : date + équipes (noms normalisés). Les identifiants et les heures
+    ne servent pas, car le Journal n'en a pas (ou en a d'autres) et la même rencontre serait comptée deux fois.
+    Équipes absentes : on retombe sur l'identifiant."""
+    dom, ext = _nom_normalise(c.get("domicile")), _nom_normalise(c.get("exterieur"))
+    if dom and ext:
+        return "match:" + "|".join([str(c.get("date") or ""), dom, ext])
     mid = str(c.get("match_id") or "").strip()
-    if mid:
-        return "id:" + mid
-    return "match:" + "|".join([
-        str(c.get("date") or ""),
-        str(c.get("heure") or ""),
-        str(c.get("domicile") or "").lower(),
-        str(c.get("exterieur") or "").lower(),
-    ])
+    return "id:" + mid if mid else "match:" + str(c.get("date") or "") + "|" + dom + "|" + ext
 
 
 def eligible(c: dict[str, Any], mode: str = "normal") -> bool:

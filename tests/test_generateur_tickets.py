@@ -663,3 +663,40 @@ def test_tirage_des_plages_reproductible_le_meme_jour():
     b = gt.build_plages(_data_dates(), MAINT)
     assert [[x["cle_match"] for x in t["selection"]] for t in a["plages"][2]["scenarios"]] == \
            [[x["cle_match"] for x in t["selection"]] for t in b["plages"][2]["scenarios"]]
+
+
+# ---------- clé de match identique quelle que soit la source ----------
+def _m(**kw):
+    base = {"date": "2026-10-10", "domicile": "NE Revolution", "exterieur": "S. Sounders", "heure": "00:30"}
+    base.update(kw)
+    return base
+
+
+@pytest.mark.parametrize("autre", [
+    {"match_id": "abc123"},                                   # le moteur a un identifiant, le Journal non
+    {"domicile": "ne revolution", "exterieur": "S Sounders"},  # casse et ponctuation
+    {"heure": "01:30", "match_id": "zzz"},                    # autre heure et autre identifiant
+    {"domicile": "NÉ Revolution"},                             # accent
+])
+def test_meme_match_meme_cle_quelle_que_soit_la_source(autre):
+    assert gt.match_key(_m()) == gt.match_key(_m(**autre))
+
+
+@pytest.mark.parametrize("autre", [
+    {"exterieur": "Austin"},                                   # autre adversaire
+    {"date": "2026-10-11"},                                    # autre jour
+    {"domicile": "S. Sounders", "exterieur": "NE Revolution"}, # domicile et extérieur inversés
+])
+def test_matchs_differents_cles_differentes(autre):
+    assert gt.match_key(_m()) != gt.match_key(_m(**autre))
+
+
+def test_meme_match_journal_sans_id_et_moteur_avec_id_jamais_dans_le_meme_ticket():
+    pool = [_jour(1, "moteur_v3", odds=1.5, domicile="Alpha", exterieur="Beta", date="2026-10-10", match_id="id1"),
+            _jour(2, "journal", odds=1.5, domicile="Alpha", exterieur="Beta", date="2026-10-10", match_id=None,
+                  marche="Match à moins de 3,5 buts")] + \
+           [_jour(10 + i, "moteur_v3", odds=1.5, domicile=f"D{i}", exterieur=f"E{i}", date="2026-10-10") for i in range(6)]
+    for g in range(30):
+        chosen = gt.tirage_ticket(pool, 4, f"g{g}", "T")
+        cles = [gt.match_key(x) for x in chosen]
+        assert len(cles) == len(set(cles))
