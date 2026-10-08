@@ -92,13 +92,22 @@ def candidate_rank(c: dict[str, Any]) -> tuple:
         lower = n(c.get("historique_borne_basse_95"))
         rate = n(c.get("historique_taux"))
         roi = n(c.get("historique_roi"))
-    evidence = 2 if observations >= 5 and lower is not None else 0
+    sample_rank = 0
+    if c.get("source") == "moteur_v3":
+        sample_rank = {
+            "V3_ECHANTILLON_TRES_SOLIDE": 2,
+            "V3_ECHANTILLON_SOLIDE": 2,
+            "V3_ECHANTILLON_UTILISABLE": 1,
+            "V3_ECHANTILLON_FAIBLE": 0,
+        }.get(str(c.get("niveau") or ""), 0)
+    evidence = 3 if observations >= 5 and lower is not None else sample_rank
     return (
         evidence,
         lower if lower is not None else -999.0,
         rate if rate is not None else -999.0,
         roi if roi is not None else -999.0,
         observations,
+        sample_rank,
         int(c.get("calibrage_rang") or 0),
         n(c.get("calibrage_marge")) if c.get("calibrage_marge") is not None else -999.0,
         n(c.get("calibrage_lift")) if c.get("calibrage_lift") is not None else -999.0,
@@ -586,6 +595,7 @@ def build(data: dict[str, Any]) -> dict[str, Any]:
             leg(x) for x in rows
             if x.get("journal_opportunity")
             or int(x.get("historique_observations") or 0) >= 5
+            or str(x.get("niveau") or "").startswith("V3_ECHANTILLON_")
             or int(x.get("calibrage_rang") or 0) > 0
         ][:20],
         "scenarios_hors_intervalle": hors_intervalle,
