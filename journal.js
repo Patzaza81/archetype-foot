@@ -185,6 +185,33 @@
     return x.betpawa_url ? '<a class="jr-lien" href="' + esc(x.betpawa_url) + '" target="_blank" rel="noopener">Ouvrir sur BetPawa →</a>' : "";
   }
 
+  /* Affichage tolérant : le Journal principal reste indépendant de l'Observatoire. */
+  function afficherObservatoire(data) {
+    var zone = document.getElementById("observatoire-resume");
+    if (!zone) return;
+    var d = data && data.donnees ? data.donnees : {};
+    var c = data && data.comptage_statuts ? data.comptage_statuts : {};
+    var aJouer = Number((c.ligues || {}).A_JOUER || 0) + Number((c.marches || {}).A_JOUER || 0);
+    zone.innerHTML = '<div class="jr-chiffres">' +
+      '<div class="jr-chiffre"><span>Matchs observés</span><b>' + Number(d.matchs || 0) + '</b></div>' +
+      '<div class="jr-chiffre"><span>Cotes réglées</span><b>' + Number(d.cotes_reglees || 0) + '</b></div>' +
+      '<div class="jr-chiffre"><span>Segments prouvés</span><b>' + aJouer + '</b></div>' +
+      '</div><p class="jr-aide">Observatoire généré le ' + esc(data && data.genere_le || "—") + '. Les croisements et contrôles sont calculés en arrière-plan.</p>';
+  }
+
+  function afficherRegles(j) {
+    var zone = document.getElementById("regles");
+    if (!zone) return;
+    var r = j && j.regles ? j.regles : {};
+    zone.innerHTML = '<div class="jr-regles">' +
+      '<p><b>À jouer :</b> ' + esc(r.A_JOUER || "—") + '</p>' +
+      '<p><b>À surveiller :</b> ' + esc(r.A_SURVEILLER || "—") + '</p>' +
+      '<p><b>À éviter :</b> ' + esc(r.A_EVITER || "—") + '</p>' +
+      '<p><b>Neutre :</b> ' + esc(r.NEUTRE || "—") + '</p>' +
+      (r.avertissement ? '<p class="jr-aide">' + esc(r.avertissement) + '</p>' : '') +
+      '</div>';
+  }
+
   function afficher(j) {
     document.getElementById("maj").textContent = "Mis à jour : " + (j.genere_le || "—");
     var rentables = ((j.segments || {}).ligue_marche || []).filter(positif);
