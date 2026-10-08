@@ -57,7 +57,7 @@ REPERTOIRES_ARCHIVE = {MOTEUR_ACTIF: os.path.join(RACINE, "archive"), MOTEUR_HIS
 FILTRES_MODEL_VERSION = {MOTEUR_ACTIF: {"inclure": MOTEUR_ACTIF}, MOTEUR_HISTORIQUE: {"exclure": MOTEUR_ACTIF}}
 FICHIER_SORTIE = os.path.join(RACINE, "journal.json")
 
-VERSION = "1.0.0"
+VERSION = "1.1.0"
 MIN_MATCHS_JOUER = 40
 MIN_MATCHS_SURVEILLER = 25
 MIN_MATCHS_EVITER = 25
@@ -693,6 +693,121 @@ def construit_equipes_a_suivre(matchs, aujourdhui=None, prochains=None):
     return lignes
 
 
+
+# =============================================================================
+# 5 ter. Opportunités futures : émergence, renforcement et rupture
+# =============================================================================
+MIN_MATCHS_OPPORTUNITE = 8
+MIN_RECENT_OPPORTUNITE = 4
+FENETRE_RECENTE = 5
+SEUIL_EMERGENCE = 0.75
+SEUIL_RENFORCEMENT = 0.80
+SEUIL_RUPTURE = 0.50
+MARGE_MIN_TENDANCE = 0.10
+MAX_OPPORTUNITES = 30
+
+
+def _profil_tendance(matchs, equipe, ligue, nom_marche):
+    """Mesure une tendance équipe x marché sans utiliser le moteur."""
+    pair = []
+    lib_dom, lib_ext = MARCHES_EQUIPE[nom_marche]
+    for m in matchs:
+        if m["ligue"] != ligue:
+            continue
+        if m["domicile"] == equipe:
+            pair.append((m["date"], analyse_libelle(lib_dom)[1](*m["buts"]) == 1, m["cotes"].get(lib_dom)))
+        elif m["exterieur"] == equipe:
+            pair.append((m["date"], analyse_libelle(lib_ext)[1](*m["buts"]) == 1, m["cotes"].get(lib_ext)))
+    pair.sort(key=lambda x: str(x[0]))
+    if len(pair) < MIN_MATCHS_OPPORTUNITE:
+        return None
+    recent = pair[-FENETRE_RECENTE:]
+    previous = pair[:-FENETRE_RECENTE]
+    total_rate = sum(x[1] for x in pair) / len(pair)
+    recent_rate = sum(x[1] for x in recent) / len(recent)
+    previous_rate = sum(x[1] for x in previous) / len(previous) if previous else None
+    if len(recent) < MIN_RECENT_OPPORTUNITE:
+        return None
+    delta = recent_rate - previous_rate if previous_rate is not None else 0.0
+    roi_rows = [x for x in pair if x[2] and x[2] > 1]
+    roi = None
+    if len(roi_rows) >= MIN_COTES_ROI_EQUIPE:
+        profit = sum((x[2] - 1.0) if x[1] else -1.0 for x in roi_rows)
+        roi = profit / len(roi_rows)
+    return {"observations": len(pair), "recent_observations": len(recent),
+            "frequence": round(total_rate, 4), "frequence_recente": round(recent_rate, 4),
+            "frequence_precedente": round(previous_rate, 4) if previous_rate is not None else None,
+            "delta_recent": round(delta, 4), "roi_betpawa": round(roi, 4) if roi is not None else None,
+            "derniere_date": pair[-1][0]}
+
+
+def construit_opportunites_futures(matchs, aujourdhui=None, prochains=None):
+    """Produit des signaux d'observation, jamais des pronostics.
+
+    Une opportunité exige une équipe déjà documentée, une vraie accélération récente
+    ou une force persistante, et n'est publiée que si le prochain match existe.
+    Une rupture négative est conservée pour éviter de continuer à suivre aveuglément
+    une tendance devenue fragile.
+    """
+    aujourdhui = aujourdhui or _aujourdhui()
+    prochains = prochains if prochains is not None else _prochains_matchs(aujourdhui)
+    out = []
+    # Réutilise exactement les marchés déjà définis par le Journal.
+    for (equipe, ligue), pm in prochains.items():
+        for nom_marche in MARCHES_EQUIPE:
+            profil = _profil_tendance(matchs, equipe, ligue, nom_marche)
+            if not profil:
+                continue
+            recent = profil["frequence_recente"]
+            delta = profil["delta_recent"]
+            total = profil["frequence"]
+            if recent >= SEUIL_EMERGENCE and delta >= MARGE_MIN_TENDANCE:
+                statut, niveau = "EMERGENCE", "nouvelle tendance"
+            elif recent >= SEUIL_RENFORCEMENT and total >= SEUIL_EMERGENCE:
+                statut, niveau = "RENFORCEMENT", "tendance persistante"
+            elif recent < SEUIL_RUPTURE and total >= SEUIL_EMERGENCE:
+                statut, niveau = "RUPTURE", "tendance en baisse"
+            else:
+                continue
+            lib = MARCHES_EQUIPE[nom_marche][0 if pm["cote_equipe"] == "dom" else 1]
+            cote = pm["cotes"].get(lib)
+            prix_compatible = None
+            historique_cotes = []
+            for m in matchs:
+                if m["ligue"] != ligue:
+                    continue
+                if m["domicile"] == equipe:
+                    o = m["cotes"].get(MARCHES_EQUIPE[nom_marche][0])
+                elif m["exterieur"] == equipe:
+                    o = m["cotes"].get(MARCHES_EQUIPE[nom_marche][1])
+                else:
+                    continue
+                if o and o > 1:
+                    historique_cotes.append(o)
+            if cote and historique_cotes:
+                prix_compatible = min(historique_cotes) <= cote <= max(historique_cotes)
+            out.append({
+                "equipe": equipe, "ligue": ligue, "marche": nom_marche,
+                "statut": statut, "niveau": niveau,
+                "observations": profil["observations"],
+                "frequence": profil["frequence"],
+                "frequence_recente": profil["frequence_recente"],
+                "frequence_precedente": profil["frequence_precedente"],
+                "delta_recent": profil["delta_recent"],
+                "roi_betpawa": profil["roi_betpawa"],
+                "prochain_match": {
+                    "date": pm["date"], "heure": pm["heure"], "adversaire": pm["adversaire"],
+                    "lieu": "domicile" if pm["cote_equipe"] == "dom" else "extérieur",
+                    "cote_betpawa": cote, "prix_compatible_historique": prix_compatible,
+                    "betpawa_url": pm["betpawa_url"]
+                },
+                "avertissement": "Observation uniquement : le Journal ne transforme pas ce signal en pronostic."
+            })
+    ordre = {"EMERGENCE": 0, "RENFORCEMENT": 1, "RUPTURE": 2}
+    out.sort(key=lambda x: (ordre.get(x["statut"], 9), -x["frequence_recente"], -x["delta_recent"]))
+    return out[:MAX_OPPORTUNITES]
+
+
 # =============================================================================
 # 6. Assemblage
 # =============================================================================
@@ -704,7 +819,7 @@ def construit_journal(aujourdhui=None):
     segments = construit_segments(paris) if paris else {k: [] for k in DIMENSIONS}
     # Le Journal est volontairement indépendant des moteurs : ses publications
     # reposent uniquement sur les matchs terminés, leurs cotes observées et les scores.
-    equipes = construit_equipes_a_suivre(charge_tous_resultats(), aujourdhui, prochains={})
+    matchs_tous = charge_tous_resultats()\n    prochains = _prochains_matchs(aujourdhui)\n    equipes = construit_equipes_a_suivre(matchs_tous, aujourdhui, prochains=prochains)\n    opportunites = construit_opportunites_futures(matchs_tous, aujourdhui, prochains=prochains)
     dates = sorted({m["date"] for m in matchs})
     compte = {dim: {st: sum(1 for s in lignes if s["statut"] == st) for st in ("A_JOUER", "A_SURVEILLER", "NEUTRE", "A_EVITER")}
               for dim, lignes in segments.items()}
@@ -721,7 +836,7 @@ def construit_journal(aujourdhui=None):
                    "avertissement": "Beaucoup de segments sont testés : quelques-uns sortent « à surveiller » par pur hasard. "
                                     "Seul « à jouer » repose sur une preuve statistique, et il est recalculé chaque nuit."},
         "comptage_statuts": compte,
-        "equipes_a_suivre": equipes,
+        "equipes_a_suivre": equipes,\n        "opportunites_futures": opportunites,\n        "regles_opportunites": {"min_matchs": MIN_MATCHS_OPPORTUNITE, "fenetre_recente": FENETRE_RECENTE, "seuil_emergence": SEUIL_EMERGENCE, "seuil_renforcement": SEUIL_RENFORCEMENT, "seuil_rupture": SEUIL_RUPTURE, "marge_min_tendance": MARGE_MIN_TENDANCE, "note": "Signal d observation, jamais un pronostic moteur."},
         "regles_equipes": {"min_matchs": MIN_MATCHS_EQUIPE, "seuil_frequence": SEUIL_FREQUENCE_EQUIPE,
                            "min_cotes_roi": MIN_COTES_ROI_EQUIPE},
         "segments": segments,
