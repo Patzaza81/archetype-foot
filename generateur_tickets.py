@@ -76,19 +76,35 @@ def rang_moteur(c: dict[str, Any]) -> int:
 
 
 def candidate_rank(c: dict[str, Any]) -> tuple:
-    """Les moteurs font déjà le tri : rang P1/P2/P3, puis valeur estimée, puis probabilité.
-    L'historique ne bloque rien ; il ne sert qu'à départager."""
+    """Classe les opportunités par preuve avant de regarder le rang du moteur.
+
+    Une probabilité brute V2/V3 sans historique suffisant ne peut plus écraser
+    une preuve observée du Journal ou un historique moteur exploitable.
+    L'ordre est lexicographique : aucune pondération arbitraire.
+    """
     ev = ev_leg(c)
-    # Le moteur conserve son propre rang. Le deuxième calibrage intervient
-    # avant le rang moteur uniquement pour départager les candidats déjà filtrés.
+    lower = n(c.get("journal_lower_bound"))
+    rate = n(c.get("journal_frequency"))
+    roi = n(c.get("journal_roi"))
+    observations = int(c.get("journal_observations") or 0)
+    if lower is None and observations < 5:
+        observations = int(c.get("historique_observations") or 0)
+        lower = n(c.get("historique_borne_basse_95"))
+        rate = n(c.get("historique_taux"))
+        roi = n(c.get("historique_roi"))
+    evidence = 2 if observations >= 5 and lower is not None else 0
     return (
+        evidence,
+        lower if lower is not None else -999.0,
+        rate if rate is not None else -999.0,
+        roi if roi is not None else -999.0,
+        observations,
         int(c.get("calibrage_rang") or 0),
         n(c.get("calibrage_marge")) if c.get("calibrage_marge") is not None else -999.0,
         n(c.get("calibrage_lift")) if c.get("calibrage_lift") is not None else -999.0,
         rang_moteur(c),
         ev if ev is not None else -999.0,
         proba(c) or -999.0,
-        int(c.get("historique_observations") or 0),
         -(n(c.get("cote")) or 99.0),
     )
 
@@ -391,6 +407,15 @@ def leg(x: dict[str, Any]) -> dict[str, Any]:
         "calibrage_rang": x.get("calibrage_rang"),
         "calibrage_marge": x.get("calibrage_marge"),
         "calibrage_lift": x.get("calibrage_lift"),
+        "probabilite_source": x.get("probabilite_source"),
+        "probabilite_brute_journal": x.get("probabilite_brute_journal"),
+        "journal_frequency": x.get("journal_frequency"),
+        "journal_wins": x.get("journal_wins"),
+        "journal_observations": x.get("journal_observations"),
+        "journal_lower_bound": x.get("journal_lower_bound"),
+        "journal_roi": x.get("journal_roi"),
+        "journal_team": x.get("journal_team"),
+        "journal_opportunity": x.get("journal_opportunity"),
         "source": x.get("source"),
         "moteur": x.get("moteur"),
         "rang": x.get("rang"),
@@ -552,11 +577,17 @@ def build(data: dict[str, Any]) -> dict[str, Any]:
         "intervalle_cote_totale": [MIN_TARGET, MAX_TARGET],
         "cote_par_defaut": DEFAULT_TARGET,
         "tolerances": list(TOLERANCES),
-        "principe": "Deux moteurs coexistants + Journal. Les moteurs font le tri : un choix est retenu si sa probabilité estimée dépasse la probabilité implicite de la cote, sans historique minimal. La cote totale est choisie par le parieur, entre 2 et 20, jamais hors de cet intervalle. Chaque ticket indique sa marge d'erreur et sa rentabilité par plan de tickets disjoints (ex. 12 paris en 4 tickets de 3).",
+        "principe": "Deux moteurs coexistants + Journal. Les preuves observées (forme équipe du Journal et historique moteur) sont classées avant les probabilités moteur non calibrées. Pour un ticket, le Journal et un historique suffisant utilisent une borne Wilson prudente ; les probabilités moteur non calibrées restent signalées comme telles. La cote totale est choisie par le parieur, entre 2 et 20.",
         "avertissement": "La cote totale d'un combiné est exacte comme produit des cotes observées ; la probabilité indépendante affichée n'est pas une probabilité jointe garantie.",
         "candidats_total": len(rows),
         "sources": {source: len((data.get("sources", {}).get(source, {}) or {}).get("top", []) or []) for source in ("moteur_v2_6_10", "moteur_v3", "journal")},
         "pool": [leg(x) for x in pool],
+        "opportunites": [
+            leg(x) for x in rows
+            if x.get("journal_opportunity")
+            or int(x.get("historique_observations") or 0) >= 5
+            or int(x.get("calibrage_rang") or 0) > 0
+        ][:20],
         "scenarios_hors_intervalle": hors_intervalle,
         "scenarios": scenarios,
     }
@@ -574,6 +605,7 @@ def main() -> int:
             "cote_par_defaut": DEFAULT_TARGET,
             "candidats_total": 0,
             "pool": [],
+            "opportunites": [],
             "scenarios": [],
             "statut_global": "DONNEES_INDISPONIBLES",
         }
