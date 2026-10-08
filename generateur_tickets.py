@@ -46,11 +46,11 @@ def implied(odds: Any) -> float | None:
 
 
 def proba(c: dict[str, Any]) -> float | None:
-    """Probabilité estimée du choix : celle du moteur ; pour le Journal, celle du segment."""
+    """Probabilité normalisée du candidat, quelle que soit sa source."""
     p = n(c.get("probabilite"))
     if p is None:
         p = n(c.get("probabilite_estimee"))
-    if p is None and c.get("source") == "journal":
+    if p is None:
         q = implied(c.get("cote"))
         m = n(c.get("marge_succes"))
         if q is not None and m is not None:
@@ -69,38 +69,24 @@ def ev_leg(c: dict[str, Any]) -> float | None:
 
 
 def rang_moteur(c: dict[str, Any]) -> int:
-    r = {"P1": 3, "P2": 2, "P3": 1}.get(str(c.get("rang") or ""), 0)
-    if r == 0 and c.get("source") == "journal":
-        r = 2 if c.get("niveau") == "A_JOUER" else 1
-    return r
+    return int(c.get("selection_rank") or {"P1": 3, "P2": 2, "P3": 1}.get(
+        str(c.get("rang") or ""), 0
+    ))
 
 
 def candidate_rank(c: dict[str, Any]) -> tuple:
-    """Classe les opportunités par preuve avant de regarder le rang du moteur.
+    """Classe les candidats avec les critères existants, après normalisation.
 
-    Une probabilité brute V2/V3 sans historique suffisant ne peut plus écraser
-    une preuve observée du Journal ou un historique moteur exploitable.
-    L'ordre est lexicographique : aucune pondération arbitraire.
+    Le générateur ne consulte jamais la source. V2.6.10, V3 et Journal arrivent
+    sous le même contrat de sélection et sont comparés par la même clé lexicographique.
     """
     ev = ev_leg(c)
-    lower = n(c.get("journal_lower_bound"))
-    rate = n(c.get("journal_frequency"))
-    roi = n(c.get("journal_roi"))
-    observations = int(c.get("journal_observations") or 0)
-    if lower is None and observations < 5:
-        observations = int(c.get("historique_observations") or 0)
-        lower = n(c.get("historique_borne_basse_95"))
-        rate = n(c.get("historique_taux"))
-        roi = n(c.get("historique_roi"))
-    sample_rank = 0
-    if c.get("source") == "moteur_v3":
-        sample_rank = {
-            "V3_ECHANTILLON_TRES_SOLIDE": 2,
-            "V3_ECHANTILLON_SOLIDE": 2,
-            "V3_ECHANTILLON_UTILISABLE": 1,
-            "V3_ECHANTILLON_FAIBLE": 0,
-        }.get(str(c.get("niveau") or ""), 0)
-    evidence = 3 if observations >= 5 and lower is not None else sample_rank
+    lower = n(c.get("selection_evidence_lower_bound"))
+    rate = n(c.get("selection_evidence_rate"))
+    roi = n(c.get("selection_evidence_roi"))
+    observations = int(c.get("selection_evidence_observations") or 0)
+    sample_rank = int(c.get("selection_sample_rank") or 0)
+    evidence = int(c.get("selection_evidence_rank") or 0)
     return (
         evidence,
         lower if lower is not None else -999.0,
@@ -553,10 +539,18 @@ def best_target_ticket(rows: list[dict[str, Any]], target: float) -> list[dict[s
 
 
 def build(data: dict[str, Any]) -> dict[str, Any]:
+    # Les trois sources fournissent au maximum 10 candidats chacune.
+    # Ils sont ensuite fusionnés sans traitement différencié dans le générateur.
     rows: list[dict[str, Any]] = []
     for source in ("moteur_v2_6_10", "moteur_v3", "journal"):
         rows.extend((data.get("sources", {}).get(source, {}) or {}).get("top", []) or [])
     rows = dedupe(rows)
+
+    # Sélection finale : les critères de classement existants restent inchangés.
+    # Les tickets ne peuvent utiliser que ces 15 meilleurs candidats.
+    pool_30 = ordered_pool(rows, "normal")[:POOL_MAX]
+    retenus = pool_30[:15]
+    rows = retenus
 
     scenarios: list[dict[str, Any]] = []
     hors_intervalle: list[str] = []
@@ -578,7 +572,7 @@ def build(data: dict[str, Any]) -> dict[str, Any]:
 
     add(best_target_ticket(rows, DEFAULT_TARGET), "OBJECTIF_COTE_10", DEFAULT_TARGET)
 
-    pool = ordered_pool(rows, "normal")[:POOL_MAX]
+    pool = retenus
     return {
         "version": 2,
         "genere_le": dt.datetime.now(dt.timezone.utc).isoformat(),
@@ -589,8 +583,11 @@ def build(data: dict[str, Any]) -> dict[str, Any]:
         "tolerances": list(TOLERANCES),
         "principe": "Deux moteurs coexistants + Journal. Les preuves observées (forme équipe du Journal et historique moteur) sont classées avant les probabilités moteur non calibrées. Pour un ticket, le Journal et un historique suffisant utilisent une borne Wilson prudente ; les probabilités moteur non calibrées restent signalées comme telles. La cote totale est choisie par le parieur, entre 2 et 20.",
         "avertissement": "La cote totale d'un combiné est exacte comme produit des cotes observées ; la probabilité indépendante affichée n'est pas une probabilité jointe garantie.",
-        "candidats_total": len(rows),
+        "candidats_total": len(pool_30),
+        "candidats_retenus": len(retenus),
+        "minimum_retenus": 15,
         "sources": {source: len((data.get("sources", {}).get(source, {}) or {}).get("top", []) or []) for source in ("moteur_v2_6_10", "moteur_v3", "journal")},
+        "pool_30_receptionne": [leg(x) for x in pool_30],
         "pool": [leg(x) for x in pool],
         "opportunites": [
             leg(x) for x in rows
