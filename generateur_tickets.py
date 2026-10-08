@@ -79,7 +79,12 @@ def candidate_rank(c: dict[str, Any]) -> tuple:
     """Les moteurs font déjà le tri : rang P1/P2/P3, puis valeur estimée, puis probabilité.
     L'historique ne bloque rien ; il ne sert qu'à départager."""
     ev = ev_leg(c)
+    # Le moteur conserve son propre rang. Le deuxième calibrage intervient
+    # avant le rang moteur uniquement pour départager les candidats déjà filtrés.
     return (
+        int(c.get("calibrage_rang") or 0),
+        n(c.get("calibrage_marge")) if c.get("calibrage_marge") is not None else -999.0,
+        n(c.get("calibrage_lift")) if c.get("calibrage_lift") is not None else -999.0,
         rang_moteur(c),
         ev if ev is not None else -999.0,
         proba(c) or -999.0,
@@ -382,6 +387,10 @@ def leg(x: dict[str, Any]) -> dict[str, Any]:
         "marge_succes": x.get("marge_succes"),
         "niveau_confiance": x.get("niveau_confiance"),
         "historique_observations": x.get("historique_observations"),
+        "calibrage_externe": x.get("calibrage_externe"),
+        "calibrage_rang": x.get("calibrage_rang"),
+        "calibrage_marge": x.get("calibrage_marge"),
+        "calibrage_lift": x.get("calibrage_lift"),
         "source": x.get("source"),
         "moteur": x.get("moteur"),
         "rang": x.get("rang"),
