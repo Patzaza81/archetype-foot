@@ -132,6 +132,7 @@ Problème : `data/tickets.json` est réécrit à chaque exécution, donc la list
 - `bilan` : réussite réelle contre probabilité estimée, par source et par jour du match. `derniere_erreur` affiche toute erreur de lecture des scores.
 - Rattrapage depuis l'historique Git (si des exécutions ont été écrasées par des workflows concurrents) : `python suivi_selection_generateur.py --rattrapage`.
 - `journal.yml` doit lister le fichier dans son `git add` (fait) ; `pipeline.yml` utilise `git add -A`.
+- `scores_rattrapage.yml` règle aussi la sélection juste après avoir comblé les scores (étape dédiée + `git add` du fichier) : les résultats arrivent dès que les scores sont écrits, sans attendre le prochain pipeline.
 - Limite connue : `suivi_tickets.py` règle les tickets par `match_id` ; les paris du Journal n'en ont pas (`match_id` nul) et leurs libellés ne sont pas reconnus tels quels par son évaluateur, donc les tickets contenant un pari du Journal restent « PENDING ». L'archive de sélection ne dépend pas de ce défaut.
 
 Tests : `tests/test_selection_generateur.py` (cas qui passent et cas qui échouent par règle).
