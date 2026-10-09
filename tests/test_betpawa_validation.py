@@ -63,12 +63,12 @@ class BetpawaValidationTests(unittest.TestCase):
         self.assertIn("LEG_1_INVALID_ODDS", result["errors"])
 
     def test_missing_ticket_url_is_resolved_from_verified_scraping_cache(self):
+        candidate = leg(home="Toronto", away="Montreal")
+        candidate["date"] = "2026-10-10"
+        candidate["betpawa_url"] = None
         result = validate_ticket({
             "scenario": "CACHE_TEST",
-            "selection": [leg(
-                home="Toronto", away="Montreal", date="2026-10-10",
-                url=None
-            )],
+            "selection": [candidate],
         }, 1)
         self.assertEqual(result["selection"][0]["betpawa_url"],
                          "https://www.betpawa.cm/event/36682856?filter=all")
