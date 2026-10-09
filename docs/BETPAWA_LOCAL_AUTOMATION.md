@@ -47,4 +47,6 @@ Avec --click, il faut taper exactement CLICK SELECTIONS. Le navigateur s'ouvre, 
 - Plusieurs contrôles : le script refuse de deviner. Inspecter la page puis ajouter une correspondance ciblée et testée.
 - Si la cote source et la cote visible diffèrent, le script l'indique. La cote affichée par BetPawa est celle qui serait ajoutée ; vérifiez-la avant de poursuivre.
 
+Marchés actuellement ciblés : résultat 1X2 (domicile/nul/extérieur), double chance quand le côté est explicitement identifiable, total de buts du match (plus/moins de la ligne), et les deux équipes marquent (oui/non). Les autres marchés ne sont pas automatisés tant qu'une correspondance précise n'a pas été ajoutée et testée.
+
 Le générateur de tickets, le moteur statistique et le pipeline quotidien ne sont pas modifiés par cet outil.
