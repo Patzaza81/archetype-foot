@@ -135,7 +135,8 @@ def test_journal_equipe_5_sur_5_devient_une_opportunite_sans_precalcul_detaille(
             }
         }]
     }
-    rows = sa.extract_journal_candidates(journal, {"signaux": []})
+    # Mode explicite : le test ne dépend pas du réglage livré (config/journal_calibrage.json).
+    rows = sa.extract_journal_candidates(journal, {"signaux": []}, "wilson")
     assert len(rows) == 1
     assert rows[0]["journal_frequency"] == 1.0
     assert rows[0]["journal_observations"] == 5
@@ -259,4 +260,4 @@ def test_journal_mode_fichier_absent_donne_wilson(tmp_path):
 
 
 def test_le_fichier_de_configuration_livre_est_valide():
-    assert sa.journal_mode(Path("config/journal_calibrage.json")) in ("lisse", "wilson")
+    assert sa.journal_mode(Path("config/journal_calibrage.json")) in sa.MODES_JOURNAL
