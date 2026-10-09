@@ -57,11 +57,11 @@ def selection_target(leg: dict[str, Any]) -> tuple[list[str], list[str], str]:
 
     if market in {"victoire domicile", "victoire a domicile", "home win", "home"}:
         return ["1x2", "match result", "match winner", "full time result"], [
-            "home", "home win", "1"
+            "home", "home win", "1", home
         ], f"Victoire domicile ({home})"
     if market in {"victoire exterieur", "victoire a l exterieur", "away win", "away"}:
         return ["1x2", "match result", "match winner", "full time result"], [
-            "away", "away win", "2"
+            "away", "away win", "2", away
         ], f"Victoire extérieur ({away})"
     if market in {"match nul", "nul", "draw"}:
         return ["1x2", "match result", "match winner", "full time result"], [
