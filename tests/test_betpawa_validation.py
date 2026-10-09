@@ -92,11 +92,19 @@ class BetpawaValidationTests(unittest.TestCase):
         self.assertTrue(source.is_file(), "data/tickets.json must exist for integration test")
         original = json.loads(source.read_text(encoding="utf-8"))
         manifest = build_manifest(original)
-        self.assertEqual(manifest["tickets_requested"], len(original["pool"]))
-        self.assertEqual(manifest["tickets_checked"], min(15, len(original["pool"])))
-        self.assertTrue(all(t["selection_count"] == 1 for t in manifest["tickets"]))
+        # The real file contains both the six assembled scenarios and a
+        # 30-item candidate pool. The gateway must validate the assembled
+        # scenarios first, not silently reinterpret every pool item as a ticket.
+        scenarios = original["scenarios"]
+        self.assertEqual(manifest["tickets_requested"], len(scenarios))
+        self.assertEqual(manifest["tickets_checked"], min(15, len(scenarios)))
+        self.assertEqual(
+            [t["selection_count"] for t in manifest["tickets"]],
+            [len(s["selection"]) for s in scenarios[:15]],
+        )
         self.assertTrue(all(t["human_validation_required"] for t in manifest["tickets"]))
         self.assertTrue(all(not t["submission_automated"] for t in manifest["tickets"]))
+        self.assertTrue(any(t["status"] == "REJECTED" for t in manifest["tickets"]))
 
     def test_daily_cap_is_fifteen(self):
         raw = {"tickets": [{"selection": [leg(home=f"Home {i}", away=f"Away {i}")]} 
