@@ -1,13 +1,15 @@
 import unittest
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from betpawa_validation import build_manifest, validate_ticket
 
 
 def leg(home="Atl. Nacional", away="Dep. Tolima", odds=1.61):
     return {
-        "cle_match": "match:2026-10-09|atl nacional|dep tolima",
-        "date": "2026-10-09",
-        "heure": "02:20",
+        "cle_match": "match:test|atl nacional|dep tolima",
+        "date": "2026-10-11",
+        "heure": "23:59",
         "competition": "Colombie : Première A",
         "domicile": home,
         "exterieur": away,
@@ -43,6 +45,15 @@ class BetpawaValidationTests(unittest.TestCase):
         result = validate_ticket({"selection": [a, b]}, 1)
         self.assertEqual(result["status"], "REJECTED")
         self.assertIn("DUPLICATE_MATCH", result["errors"])
+
+    def test_kickoff_in_the_past_is_rejected(self):
+        a = leg()
+        a["date"] = "2026-10-09"
+        a["heure"] = "15:00"
+        now = datetime(2026, 10, 9, 20, 0, tzinfo=ZoneInfo("Africa/Douala"))
+        result = validate_ticket({"selection": [a]}, 1, now=now)
+        self.assertEqual(result["status"], "REJECTED")
+        self.assertIn("LEG_1_EVENT_EXPIRED", result["errors"])
 
     def test_invalid_odds_are_rejected(self):
         result = validate_ticket({"selection": [leg(odds=1.0)]}, 1)
