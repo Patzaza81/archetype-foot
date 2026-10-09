@@ -54,7 +54,7 @@ class BetpawaValidationTests(unittest.TestCase):
         self.assertIn("NO_SELECTION", result["errors"])
 
     def test_daily_cap_is_fifteen(self):
-        raw = {"tickets": [{"selection": [leg(home=f"Home {i}", away=f"Away {i}")}
+        raw = {"tickets": [{"selection": [leg(home=f"Home {i}", away=f"Away {i}")]} 
                             for i in range(20)]}
         manifest = build_manifest(raw)
         self.assertEqual(manifest["tickets_checked"], 15)
