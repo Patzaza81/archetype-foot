@@ -7,7 +7,7 @@
 /* ══════════ Page ══════════ */
 .ax-page{
   margin:0;
-  background:#F6EFE2;
+  background:#FFF5F9;
   color:#1A2340;
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   -webkit-text-size-adjust:100%;
@@ -26,12 +26,12 @@
 .ax-lien-accueil,.ax-bouton-theme{
   display:inline-flex;align-items:center;justify-content:center;gap:6px;
   min-height:44px;font:inherit;font-size:15px;font-weight:700;line-height:1;
-  border:0;cursor:pointer;text-decoration:none;color:#fff;background:#3568CC;
+  border:0;cursor:pointer;text-decoration:none;color:#fff;background:#D94F91;
 }
 .ax-lien-accueil{padding:0 16px;border-radius:999px}
 .ax-bouton-theme{width:44px;border-radius:50%;font-size:19px;padding:0}
 .ax-lien-accueil:focus-visible,.ax-bouton-theme:focus-visible{outline:3px solid #1A2340;outline-offset:2px}
-.ax-page.theme-nuit .ax-lien-accueil:focus-visible,.ax-page.theme-nuit .ax-bouton-theme:focus-visible{outline-color:#FFD75E}
+.ax-page.theme-nuit .ax-lien-accueil:focus-visible,.ax-page.theme-nuit .ax-bouton-theme:focus-visible{outline-color:#F29AC4}
 
 .ax-entete{text-align:center;margin:6px 0 12px}
 .ax-entete h1{
@@ -42,38 +42,38 @@
 .ax-page.theme-nuit .ax-entete h1{color:#E3B04B}
 .ax-bandeau{
   margin:0;padding:13px 16px;border-radius:18px;
-  background:linear-gradient(90deg,#3F6AD8,#6255C9);
+  background:linear-gradient(90deg,#D94F91,#B83272);
   color:#fff;font-size:15px;font-weight:600;line-height:1.3;
   box-shadow:0 6px 16px rgba(63,106,216,.22);
 }
-.ax-page.theme-nuit .ax-bandeau{background:linear-gradient(90deg,#2A4AA3,#4A3F96);box-shadow:0 6px 16px rgba(0,0,0,.4)}
+.ax-page.theme-nuit .ax-bandeau{background:linear-gradient(90deg,#B83272,#8F285C);box-shadow:0 6px 16px rgba(0,0,0,.4)}
 
 .ax-maj{margin:0 0 14px;text-align:center;font-size:14px;font-weight:600;color:#5D6478}
 .ax-page.theme-nuit .ax-maj{color:#A9AEC2}
 
 .ax-liste-matchs{display:grid;gap:18px}
 
-.ax-etat-vide{padding:22px 18px;border-radius:20px;background:#FFFBF3;border:1px solid #E4DCCB;text-align:center}
+.ax-etat-vide{padding:22px 18px;border-radius:20px;background:#FFFFFF;border:1px solid #F0D7E4;text-align:center}
 .ax-etat-vide strong{display:block;font-size:18px;margin-bottom:6px}
 .ax-etat-vide p{margin:0;color:#5D6478;font-size:15px}
-.ax-etat-vide .ax-retirer-bloc{margin-top:12px;min-height:40px;color:#5D6478;border-color:#E4DCCB}
+.ax-etat-vide .ax-retirer-bloc{margin-top:12px;min-height:40px;color:#5D6478;border-color:#F0D7E4}
 .ax-page.theme-nuit .ax-etat-vide{background:#1A1E29;border-color:#2E3342}
 .ax-page.theme-nuit .ax-etat-vide p{color:#A9AEC2}
 
 /* ══════════ Carte de match ══════════ */
 .ax-carte{
-  --ax-fond:#FFFBF3;
+  --ax-fond:#FFFFFF;
   --ax-texte:#1A2340;
   --ax-doux:#5D6478;
-  --ax-ligne:#E4DCCB;
+  --ax-ligne:#F0D7E4;
   --ax-vert:#1F7A44;
   --ax-or:#9E6B0C;   --ax-or-texte:#8A5E0A;
-  --ax-bleu:#3B71D6; --ax-bleu-texte:#2C5FBF;
-  --ax-violet:#6A4FC0; --ax-violet-texte:#5A3FB0;
+  --ax-bleu:#D94F91; --ax-bleu-texte:#B83272;
+  --ax-violet:#D94F91; --ax-violet-texte:#B83272;
   --ax-vide-fond:#DDD6C8; --ax-vide-texte:#5B5548;
   --ax-piste:#DDE9DF; --ax-anneau:#3FA36A; --ax-centre:#17403F;
   --ax-etoile:#E0A82E; --ax-etoile-vide:#D9D2C2;
-  --ax-bouton:#3568CC;
+  --ax-bouton:#D94F91;
   position:relative;
   overflow:hidden;
   border-radius:22px;
@@ -87,7 +87,7 @@
 }
 body.theme-nuit .ax-carte{
   --ax-fond:#1A1E29; --ax-texte:#F1EFF7; --ax-doux:#A9AEC2; --ax-ligne:#2E3342; --ax-vert:#5FD08A;
-  --ax-or-texte:#E3B04B; --ax-bleu-texte:#7FA6F5; --ax-violet-texte:#B7A2F2;
+  --ax-or-texte:#E3B04B; --ax-bleu-texte:#F29AC4; --ax-violet-texte:#F29AC4;
   --ax-vide-fond:#2A2E3B; --ax-vide-texte:#A9AEC2;
   --ax-piste:#2E3B36; --ax-etoile-vide:#3A3F50;
   box-shadow:0 10px 26px rgba(0,0,0,.45);
