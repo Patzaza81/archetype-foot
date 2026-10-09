@@ -102,7 +102,7 @@ def _extract_tickets(data: Any) -> list[dict[str, Any]]:
 def _cache_team_name(value: Any) -> str:
     value = unicodedata.normalize("NFKD", _text(value))
     value = "".join(ch for ch in value if not unicodedata.combining(ch)).lower()
-    words = re.sub(r"[^a-z0-9\\s]", " ", value).split()
+    words = re.sub(r"[^a-z0-9\s]", " ", value).split()
     ignored = {"fc", "ac", "cf", "sc", "afc", "cfc", "club", "el", "al"}
     return " ".join(word for word in words if word not in ignored)
 
