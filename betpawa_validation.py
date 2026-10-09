@@ -28,7 +28,7 @@ ALLOWED_STATUSES = {
     "GENERATED", "CHECKED", "READY_FOR_REVIEW",
     "USER_VALIDATED", "REJECTED", "EXPIRED",
 }
-URL_RE = re.compile(r"^https://(?:www\.)?betpawa\.cm/event/[A-Za-z0-9_-]+(?:\\?.*)?$")
+URL_RE = re.compile(r"^https://(?:www\.)?betpawa\.cm/event/[A-Za-z0-9_-]+(?:\?.*)?$")
 
 
 def _text(value: Any) -> str:
