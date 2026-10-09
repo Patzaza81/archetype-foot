@@ -1,10 +1,9 @@
 """Read-only live smoke tests for BetPawa's public UI.
 
 These tests never sign in, add selections, create a coupon, or submit a bet.
-They verify only whether the public browser controls used by ARCHETYPE remain
-available. BetPawa may change its UI or block automated traffic.
+They verify public browser controls only. BetPawa may change its UI or block
+automated traffic.
 """
-import os
 import pytest
 from playwright.sync_api import sync_playwright, expect
 
@@ -30,7 +29,7 @@ def new_page(browser):
 
 
 def test_booking_code_controls_are_visible(browser):
-    """Check the existing-code loading form without submitting a code."""
+    """Check the existing-code form without submitting any code."""
     page = new_page(browser)
     try:
         response = page.goto(BASE + "/search", wait_until="domcontentloaded", timeout=45_000)
@@ -39,14 +38,21 @@ def test_booking_code_controls_are_visible(browser):
         )
         code = page.locator("#bookingCode")
         expect(code).to_be_visible()
-        expect(code).to_have_attribute("placeholder", "Enter booking code")
-        expect(page.get_by_text("Load Betslip", exact=True)).to_be_visible()
+        expect(code).to_have_attribute("maxlength", "7")
+        expect(code).to_have_attribute("data-test-id", "bet-booking-code-input")
+        # Labels are localized, so check the submit control rather than English text.
+        form = code.locator("xpath=ancestor::form[1]")
+        if form.count():
+            expect(form.locator("button, input[type='submit']").first).to_be_visible()
+        else:
+            nearby = code.locator("xpath=..")
+            expect(nearby.locator("button").first).to_be_visible()
     finally:
         page.close()
 
 
 def test_match_search_controls_used_by_archtype_are_available(browser):
-    """Check search activation and text entry; deliberately do not select a match."""
+    """Check search activation and text entry; do not select a match."""
     page = new_page(browser)
     try:
         response = page.goto(
@@ -70,7 +76,6 @@ def test_match_search_controls_used_by_archtype_are_available(browser):
         assert match_field is not None, "No visible match-search input found after activating search"
         match_field.fill("Barcelona")
         expect(match_field).to_have_value("Barcelona")
-        # Observe whether the current suggestion locator exists; do not click any suggestion.
         suggestions = page.locator("[data-test-id='search-suggestions']")
         suggestions.wait_for(state="visible", timeout=8_000)
         assert suggestions.locator("li, [role='option']").count() > 0, (
