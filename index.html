@@ -13,7 +13,7 @@ body{display:flex!important;flex-direction:column!important}
 header{background:none!important;border-bottom:0!important;padding:10px 14px 0!important;position:relative;flex:none}
 header .header-top{justify-content:center}
 header h1{font-size:28px!important;text-align:center;margin:6px 0 0!important}
-header .bouton-mode-nuit{position:absolute;right:14px;top:8px;margin:0}
+.bouton-mode-nuit{position:fixed!important;top:calc(8px + env(safe-area-inset-top));right:calc(10px + env(safe-area-inset-right));margin:0!important;z-index:50}
 .haut{display:flex;gap:8px}
 .haut a{padding:7px 12px;border-radius:999px;background:linear-gradient(135deg,var(--af-violet),var(--af-blue));color:#fff;font-size:13px;font-weight:700;text-decoration:none;box-shadow:0 4px 12px rgba(8,127,120,.2)}
 main{flex:1;min-height:0;width:100%;max-width:640px;margin:0 auto;box-sizing:border-box;padding:8px 16px calc(12px + env(safe-area-inset-bottom));display:grid;grid-template-rows:1fr 1fr 1fr 1fr auto;gap:10px}
@@ -24,6 +24,7 @@ main{flex:1;min-height:0;width:100%;max-width:640px;margin:0 auto;box-sizing:bor
 .carte .ico{font-size:22px;margin-right:6px}
 .carte p{margin:2px 0 0;font-size:13px;line-height:1.3}
 .carte b{display:block;padding-top:6px;border-top:1px solid rgba(255,255,255,.3);font-size:13.5px}
+.badge{display:inline-block;vertical-align:middle;margin-left:8px;padding:3px 9px;border-radius:999px;background:#fff;color:#A8505C;font-size:11px;font-weight:800;letter-spacing:.02em}
 .rose{background:linear-gradient(160deg,#D98C92,#C0707A);box-shadow:0 6px 16px rgba(192,112,122,.25)}
 .t1{background:linear-gradient(160deg,var(--af-violet),var(--af-blue))}
 .t2{background:linear-gradient(160deg,var(--af-blue),var(--af-blue-violet))}
@@ -45,7 +46,7 @@ main{flex:1;min-height:0;width:100%;max-width:640px;margin:0 auto;box-sizing:bor
     <b>Accéder au Moteur V2 →</b>
   </a>
   <a class="carte rose" href="pronostics_v3.html">
-    <div><h2><span class="ico">🚀</span>Moteur V3</h2><p>Moteur parallèle expérimental.</p></div>
+    <div><h2><span class="ico">🚀</span>Moteur V3<span class="badge">Recommandé</span></h2><p>Notre moteur avancé de performance.</p></div>
     <b>Accéder au Moteur V3 →</b>
   </a>
   <div class="petites">
