@@ -73,6 +73,7 @@ function render(){
  const valid=/^https:\/\/(www\.)?betpawa\.cm\/event\/[A-Za-z0-9_-]+(?:\?.*)?$/.test(l.betpawa_url||"");
  return '<div class="leg"><span class="odds">'+fmt(l.cote)+'</span><div class="teams">'+(i+1)+'. '+esc(l.domicile)+' — '+esc(l.exterieur)+'</div><div class="market">'+esc(l.marche||"Marché non précisé")+'</div><div class="small">'+esc(l.competition)+' · '+esc(l.date)+' '+esc(l.heure)+'</div><div class="actions">'+(valid?'<a class="btn secondary" href="'+esc(l.betpawa_url)+'" target="_blank" rel="noopener noreferrer">Ouvrir événement BetPawa</a>':'<span class="small">Lien BetPawa absent ou invalide : sélection bloquée</span>')+'<button type="button" class="secondary copyLeg" data-index="'+i+'">Copier cette sélection</button></div></div>';
  }).join("");
+ if(!canPrepare){legs.querySelectorAll("a").forEach(a=>{a.removeAttribute("href");a.textContent="Ticket bloqué : lien désactivé";});}
  legs.querySelectorAll(".copyLeg").forEach(b=>b.addEventListener("click",async()=>{
  const l=t.selection[Number(b.dataset.index)];
  const txt=l.domicile+" — "+l.exterieur+" | "+l.marche+" | cote source "+fmt(l.cote);
