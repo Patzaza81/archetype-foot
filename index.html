@@ -9,19 +9,19 @@
 <link rel="stylesheet" href="theme.css">
 <style>
 :root {
-  --bg:#F7F1E7; --surface:#FFFDF8; --surface-2:#F1E9FA;
-  --turquoise:#315CFF; --turquoise-active:#6547E8; --gold:#9A701B;
+  --bg:#F7F1E7; --surface:#FFFDF8; --surface-2:#E0F3EF;
+  --turquoise:#087F78; --turquoise-active:#06645F; --gold:#9A701B;
   --green:#2F855A; --red:#C53030; --text:#241B35; --text-secondary:#756B7D;
-  --heure:#655B70; --categorie:#315CFF; --border:rgba(64,38,91,.14);
+  --heure:#655B70; --categorie:#087F78; --border:rgba(64,38,91,.14);
 }
 body{background:var(--bg);color:var(--text)}
-header{background:linear-gradient(135deg,rgba(49,92,255,.08),rgba(130,70,230,.08));border-bottom-color:rgba(49,92,255,.16)}
+header{background:linear-gradient(135deg,rgba(8,127,120,.09),rgba(23,154,141,.07));border-bottom-color:rgba(8,127,120,.20)}
 header h1{color:var(--gold)}
-.nav-pages a,.nav-bouton,.bouton-principal,#copier-btn{background:linear-gradient(135deg,#315CFF,#6547E8);color:#fff;border-color:transparent}
-.nav-pages a:active,.nav-bouton:active,.bouton-principal:active,#copier-btn:active{background:linear-gradient(135deg,#284DD8,#5635C8);color:#fff}
-.tabs button{background:#FFFDF8;color:var(--text);border-color:rgba(49,92,255,.16)}
-.tabs button.actif{background:linear-gradient(135deg,#315CFF,#6547E8);color:#fff;border-color:transparent}
-.bouton-secondaire{background:#FFFDF8;color:var(--text);border-color:rgba(49,92,255,.18)}
+.nav-pages a,.nav-bouton,.bouton-principal,#copier-btn{background:linear-gradient(135deg,#087F78,#06645F);color:#fff;border-color:transparent}
+.nav-pages a:active,.nav-bouton:active,.bouton-principal:active,#copier-btn:active{background:linear-gradient(135deg,#06645F,#044E4A);color:#fff}
+.tabs button{background:#FFFDF8;color:var(--text);border-color:rgba(8,127,120,.18)}
+.tabs button.actif{background:linear-gradient(135deg,#087F78,#06645F);color:#fff;border-color:transparent}
+.bouton-secondaire{background:#FFFDF8;color:var(--text);border-color:rgba(8,127,120,.20)}
 .match,#sortie-json,#ajout-manuel{background:var(--surface);border-color:var(--border);box-shadow:0 5px 18px rgba(61,38,84,.06)}
 .score,.proba-1,.details-niveau1 summary,.detail-sous-titre,.justification-titre{color:#6547E8}
 .pari-ligne.pari-en-or,.pari-en-or .pari-mise,header h1{color:var(--gold)}
@@ -33,19 +33,15 @@ header h1{color:var(--gold)}
   <div class="header-top"><h1>Archetype Foot</h1></div>
   <p id="maj">Chargement…</p>
   <div id="nav-pages" class="nav-pages">
-    <a id="nav-panier" href="panier.html">🧺 Panier (0)</a>
     <a id="nav-archetype" href="archetype.html">🎯 Sélections Archetype</a>
     <a id="nav-systeme" href="systeme.html">⚙️ Système</a>
     <a id="nav-journal" href="journal.html">📒 Journal</a>
+    <a id="nav-abonnement" href="abonnement.html">👤 Abonnement</a>
     <a id="nav-tickets" href="tickets.html">🎟️ Tickets</a>
     <a id="nav-v3" href="pronostics_v3.html">🧪 Moteur V3 (parallèle)</a>
   </div>
 </header>
 <main>
-  <div id="onglets-jour" class="tabs">
-    <button id="onglet-aujourdhui" class="actif" data-jour="aujourdhui">Aujourd'hui</button>
-    <button id="onglet-demain" data-jour="demain">Demain</button>
-  </div>
   <div id="liste"></div>
 </main>
 <script src="theme.js"></script>
