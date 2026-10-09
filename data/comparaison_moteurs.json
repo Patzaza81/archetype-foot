@@ -1,12 +1,12 @@
 {
-  "genere_le": "2026-10-09T02:27:04.191850+00:00",
+  "genere_le": "2026-10-09T04:02:40.747247+00:00",
   "statut": "PRODUCTION_PARALLELE",
   "moteur_actif": "moteur_v2_6_10",
   "moteur_candidat": "moteur_v3",
   "regle_promotion": "Aucune promotion automatique : la V3 doit démontrer un avantage réel sur des données hors échantillon.",
   "v2": {
-    "matchs_avec_selection": 259,
-    "choix": 405,
+    "matchs_avec_selection": 257,
+    "choix": 400,
     "marches": {
       "1x2_domicile": 56,
       "handicap_exterieur_1.5": 33,
@@ -16,14 +16,13 @@
       "double_chance_1X": 25,
       "handicap_exterieur_0.5": 24,
       "handicap_domicile_1.5": 23,
-      "over_under_total_3.5_over": 23,
-      "handicap_domicile_0.5": 21,
+      "over_under_total_3.5_over": 21,
       "double_chance_X2": 20,
-      "btts_oui": 13,
+      "handicap_domicile_0.5": 20,
       "over_under_total_1.5_over": 13,
-      "over_under_total_4.5_over": 13,
+      "btts_oui": 12,
+      "over_under_total_4.5_over": 12,
       "over_under_total_2.5_under": 11,
-      "over_under_total_4.5_under": 10,
       "1x2_nul": 9,
       "btts_non": 4,
       "buts_equipe_exterieur_0.5_over": 3,
@@ -41,16 +40,16 @@
     }
   },
   "v3": {
-    "matchs_avec_selection": 50,
-    "choix": 53,
+    "matchs_avec_selection": 49,
+    "choix": 51,
     "marches": {
       "over_under_total_3.5_under": 12,
-      "over_under_total_2.5_over": 11,
+      "over_under_total_2.5_over": 10,
       "1x2_domicile": 4,
       "over_under_total_2.5_under": 4,
-      "handicap3_domicile_1_1": 3,
       "over_under_total_1.5_over": 3,
       "double_chance_X2": 2,
+      "handicap3_domicile_1_1": 2,
       "handicap_exterieur_1.5": 2,
       "over_under_total_3.5_over": 2,
       "over_under_total_4.5_under": 2,
@@ -954,13 +953,21 @@
           "handicap_exterieur_1.5"
         ],
         "v3": []
+      },
+      {
+        "match_id": "id:5ypjzzp731n4mwcafkgygz0no",
+        "v2": [
+          "1x2_nul",
+          "handicap_exterieur_1.5"
+        ],
+        "v3": []
       }
     ]
   },
   "calibration_v3": {
     "prete": true,
-    "observations": 13408,
-    "matchs": 238,
+    "observations": 13593,
+    "matchs": 241,
     "minimum_observations": 300,
     "minimum_matchs": 50,
     "raison": "OK"
