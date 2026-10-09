@@ -98,7 +98,7 @@ def test_one_odds_click_adds_selection_to_betslip_without_betting(browser):
         page.wait_for_timeout(2_000)
 
         body_before = page.locator("body").inner_text(timeout=8_000)
-        assert re.search(r"betslip is empty|coupon est vide|coupon est vide", body_before, re.I), (
+        assert re.search(r"betslip is empty|coupon est vide|coupon de pari est vide", body_before, re.I), (
             "Could not confirm the starting betslip is empty; refusing to click an odds control."
         )
 
