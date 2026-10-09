@@ -8,68 +8,61 @@
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="theme.css">
 <style>
-header{background:none!important;border-bottom:0!important;padding:24px 14px 4px!important;position:relative}
+html,body{height:100vh;height:100dvh;margin:0!important;overflow:hidden}
+body{display:flex!important;flex-direction:column!important}
+header{background:none!important;border-bottom:0!important;padding:10px 14px 0!important;position:relative;flex:none}
 header .header-top{justify-content:center}
-header h1{font-size:34px!important;text-align:center;margin:0}
-header .bouton-mode-nuit{position:absolute;right:14px;top:18px;margin:0}
-main{max-width:640px;margin:0 auto;padding:18px 16px 40px;display:grid;gap:14px}
-.petites{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.carte{display:block;color:#fff;text-decoration:none;border-radius:20px;padding:16px;box-shadow:0 8px 20px rgba(6,100,95,.18)}
+header h1{font-size:28px!important;text-align:center;margin:6px 0 0!important}
+header .bouton-mode-nuit{position:absolute;right:14px;top:8px;margin:0}
+.haut{display:flex;gap:8px}
+.haut a{padding:7px 12px;border-radius:999px;background:linear-gradient(135deg,#5FB5AE,#1F8A84);color:#fff;font-size:13px;font-weight:700;text-decoration:none}
+main{flex:1;min-height:0;width:100%;max-width:640px;margin:0 auto;box-sizing:border-box;padding:8px 16px calc(12px + env(safe-area-inset-bottom));display:grid;grid-template-rows:1fr 1fr 1fr 1fr auto;gap:10px}
+.petites{display:grid;grid-template-columns:1fr 1fr;gap:10px;min-height:0}
+.carte{display:flex;flex-direction:column;justify-content:space-between;min-height:0;overflow:hidden;box-sizing:border-box;color:#fff;text-decoration:none;border-radius:18px;padding:10px 14px;box-shadow:0 6px 16px rgba(6,100,95,.18)}
 .carte:active{transform:scale(.98)}
-.carte .ico{font-size:28px}
-.carte h2{margin:6px 0 4px;font-size:22px;font-weight:800}
-.carte p{margin:0 0 12px;font-size:14px;line-height:1.4}
-.carte b{display:block;padding-top:10px;border-top:1px solid rgba(255,255,255,.3);font-size:15px}
+.carte h2{margin:0;font-size:20px;font-weight:800}
+.carte .ico{font-size:22px;margin-right:6px}
+.carte p{margin:2px 0 0;font-size:13px;line-height:1.3}
+.carte b{display:block;padding-top:6px;border-top:1px solid rgba(255,255,255,.3);font-size:13.5px}
 .rose{background:linear-gradient(160deg,#D98C92,#C0707A)}
 .t1{background:linear-gradient(160deg,#62B8B1,#2F938D)}
 .t2{background:linear-gradient(160deg,#55AEA7,#238A84)}
 .t3{background:linear-gradient(160deg,#47A29B,#187B75)}
-.bouton{display:block;margin:10px auto 0;width:100%;max-width:420px;text-align:center;padding:16px;border-radius:999px;background:linear-gradient(135deg,#5FB5AE,#1F8A84);color:#fff;font-weight:800;font-size:19px;text-decoration:none;border:2.5px solid #C49A3A}
-.bas{text-align:center;font-size:14px;margin:6px 0 0}
-.bas a{color:#06645F;font-weight:700;text-decoration:none}
+.bouton{display:block;width:100%;max-width:420px;margin:0 auto;box-sizing:border-box;text-align:center;padding:13px;border-radius:999px;background:linear-gradient(135deg,#5FB5AE,#1F8A84);color:#fff;font-weight:800;font-size:17px;text-decoration:none;border:2.5px solid #C49A3A}
 </style>
 </head>
 <body>
 <header>
+  <nav class="haut">
+    <a href="compte.html">👤 Compte</a>
+    <a href="abonnement.html">💳 Abonnement</a>
+  </nav>
   <div class="header-top"><h1>Archetype Foot</h1></div>
 </header>
 <main>
   <a class="carte rose" href="archetype.html">
-    <span class="ico">⚙️</span>
-    <h2>Moteur V2</h2>
-    <p>Moteur principal : sélections et justifications.</p>
+    <div><h2><span class="ico">⚙️</span>Moteur V2</h2><p>Moteur principal : sélections et justifications.</p></div>
     <b>Accéder au Moteur V2 →</b>
   </a>
   <a class="carte rose" href="pronostics_v3.html">
-    <span class="ico">🚀</span>
-    <h2>Moteur V3</h2>
-    <p>Moteur parallèle expérimental.</p>
+    <div><h2><span class="ico">🚀</span>Moteur V3</h2><p>Moteur parallèle expérimental.</p></div>
     <b>Accéder au Moteur V3 →</b>
   </a>
-
   <div class="petites">
     <a class="carte t1" href="tickets.html">
-      <span class="ico">🎟️</span>
-      <h2>Tickets</h2>
-      <p>Gérez vos tickets.</p>
+      <div><h2><span class="ico">🎟️</span>Tickets</h2><p>Gérez vos tickets.</p></div>
       <b>Voir vos tickets →</b>
     </a>
     <a class="carte t2" href="systeme.html">
-      <span class="ico">🛠️</span>
-      <h2>Système</h2>
-      <p>État du système.</p>
+      <div><h2><span class="ico">🛠️</span>Système</h2><p>État du système.</p></div>
       <b>Ouvrir →</b>
     </a>
   </div>
   <a class="carte t3" href="journal.html">
-    <span class="ico">📒</span>
-    <h2>Journal</h2>
-    <p>Suivez vos analyses et l'historique des paris.</p>
+    <div><h2><span class="ico">📒</span>Journal</h2><p>Suivez vos analyses et l'historique des paris.</p></div>
     <b>Ouvrir le journal →</b>
   </a>
-
   <a class="bouton" href="archetype.html">Accéder à vos sélections</a>
-  <p class="bas"><a href="compte.html">👤 Compte</a> &nbsp;·&nbsp; <a href="abonnement.html">💳 Abonnement</a></p>
 </main>
 <script src="theme.js"></script>
 </body>
