@@ -1,0 +1,31 @@
+name: BetPawa validation gateway tests
+
+on:
+  pull_request:
+    paths:
+      - "betpawa_validation.py"
+      - "tests/test_betpawa_validation.py"
+      - ".github/workflows/betpawa-validation-tests.yml"
+  push:
+    branches:
+      - "feature/betpawa-validation-architecture"
+    paths:
+      - "betpawa_validation.py"
+      - "tests/test_betpawa_validation.py"
+      - ".github/workflows/betpawa-validation-tests.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  betpawa-validation-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run isolated gateway unit tests
+        run: python -m unittest discover -s tests -p "test_betpawa_validation.py" -v
