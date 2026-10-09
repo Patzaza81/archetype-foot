@@ -23,6 +23,7 @@ button.primary{background:#087f78;color:#fff}button.secondary,a.btn{background:#
 <body>
 <h1>ARCHETYPE — Validation BetPawa</h1>
 <p id="summary" class="small">Chargement…</p>
+<p class="warn">Important : la cote affichée est un instantané du fichier, pas une cote BetPawa en direct. Ouvrez chaque événement et vérifiez les équipes, le marché, l'horaire et la cote avant toute validation. Cette page ne soumet aucun pari.</p>
 <div id="tickets"></div>
 <script>
 (function(){
@@ -46,13 +47,25 @@ function render(data){
      '<h2>'+esc(t.ticket_id)+'</h2>'+
      '<p class="small">'+esc(t.selection_count)+" sélection(s) · cote snapshot "+money(t.total_odds_snapshot)+'</p>'+
      legs+errors+
-     (ok?'<div class="actions"><button class="primary" data-id="'+esc(t.ticket_id)+'">Marquer comme vérifié manuellement</button></div>':"")+
+     (ok?'<div class="actions"><button class="primary" data-id="'+esc(t.ticket_id)+'">Confirmer mon contrôle manuel</button></div><p class="small">Le repère de contrôle est conservé uniquement dans le stockage local de cet appareil ; il ne modifie pas le manifeste et ne valide aucun pari.</p>':"")+
      '</section>';
  }).join("");
  root.querySelectorAll("button[data-id]").forEach(function(btn){
+   var key="archetype-betpawa-checked:"+String(data.generated_at||"unknown")+":"+btn.getAttribute("data-id");
+   try {
+     if(window.localStorage.getItem(key)==="1"){
+       btn.disabled=true;
+       btn.textContent="Contrôle noté sur cet appareil";
+     }
+   } catch (_) {}
    btn.addEventListener("click",function(){
-     btn.disabled=true;
-     btn.textContent="Vérifié manuellement";
+     try {
+       window.localStorage.setItem(key,"1");
+       btn.disabled=true;
+       btn.textContent="Contrôle noté sur cet appareil";
+     } catch (_) {
+       btn.textContent="Stockage indisponible — contrôle non enregistré";
+     }
    });
  });
 }
