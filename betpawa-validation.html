@@ -23,7 +23,8 @@ button.primary{background:#087f78;color:#fff}button.secondary,a.btn{background:#
 <body>
 <h1>ARCHETYPE — Validation BetPawa</h1>
 <p id="summary" class="small">Chargement…</p>
-<p class="warn">Important : la cote affichée est un instantané du fichier, pas une cote BetPawa en direct. Ouvrez chaque événement et vérifiez les équipes, le marché, l'horaire et la cote avant toute validation. Cette page ne soumet aucun pari.</p>
+<p class="warn">Les liens proviennent des URL déjà collectées par le scraping ARCHETYPE ou de son cache de correspondances confirmées : aucune URL d'événement n'est inventée. Les cotes affichées sont des instantanés, pas des cotes BetPawa en direct.</p>
+<section class="card"><strong>Contrôle dans le coupon BetPawa</strong><ol><li>Ouvrez le lien de chaque match et choisissez exactement le marché affiché.</li><li>Ajoutez chaque sélection au coupon BetPawa.</li><li>Ouvrez le bouton Coupon de BetPawa pour vérifier les matchs sélectionnés, les cotes réellement proposées, la cote totale et le montant de mise.</li><li>Si une équipe, un marché ou une cote diffère, corrigez ou retirez la sélection avant de décider.</li></ol><p class="small">ARCHETYPE prépare et contrôle les liens ; seul le coupon BetPawa confirme les cotes et le montant actuels. Aucun pari n'est soumis automatiquement.</p></section>
 <div id="tickets"></div>
 <script>
 (function(){
@@ -39,7 +40,7 @@ function render(data){
    var legs=(t.selection||[]).map(function(l){
      return '<div class="leg"><span class="odds">'+money(l.cote)+'</span><strong>'+esc(l.domicile)+" — "+esc(l.exterieur)+'</strong>'+
        '<div class="small">'+esc(l.marche)+" · "+esc(l.date)+" "+esc(l.heure)+" · "+esc(l.competition)+'</div>'+
-       (l.betpawa_url?'<div class="actions"><a class="btn" target="_blank" rel="noopener" href="'+esc(l.betpawa_url)+'">Ouvrir BetPawa</a></div>':"")+
+       (l.betpawa_url?'<div class="actions"><a class="btn" target="_blank" rel="noopener" href="'+esc(l.betpawa_url)+'">Ouvrir ce match sur BetPawa</a></div><div class="small">Lien : '+(l.betpawa_url_source==="scraping_cache"?"cache de scraping confirmé":"URL déjà présente dans la sélection")+'</div>':"")+
        '</div>';
    }).join("");
    var errors=(t.errors||[]).length?'<div class="warn">Bloqué : '+esc(t.errors.join(", "))+'</div>':"";
