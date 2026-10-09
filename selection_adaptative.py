@@ -11,6 +11,7 @@ from typing import Any
 from calibrage_externe import apply_rules, discover_rules, summarize as summarize_calibrage
 from journal.journal_n1 import charger_n1
 import journal_classement as jcl
+import journal_regularites as jrg
 
 V2 = "moteur_v2_6_10"
 V3 = "moteur_v3"
@@ -81,10 +82,8 @@ JOURNAL_MATCHS_FICTIFS = 20
 # ou {"mode": "wilson"}. Fichier absent, illisible ou mode inconnu : "wilson" (l'état initial, le plus prudent).
 JOURNAL_CONFIG = Path("config/journal_calibrage.json")
 MODES_JOURNAL = ("lisse", "wilson", "preuves", "regularites")
-# Mode « regularites » : le ROI n'est PAS un critère (V3 l'intègre déjà). Un pari du Journal est admissible si l'équipe a au
-# moins 5 matchs observés et si la cote ne dépasse pas ce plafond (filtre de risque testé : docs/BACKTEST_JOURNAL_PREUVES.md).
-# Classement : borne de Wilson, puis fréquence, puis nombre de matchs. Pas de seuil de probabilité vs cote.
-PLAFOND_COTE_REGULARITES = 1.8
+# Mode « regularites » (journal_regularites.py) : ni ROI ni gain espéré ; cote 1,26–1,56 ; indice de constance dès 6 matchs ;
+# probabilité des tickets = réussite observée par tranche de cote ; Wilson seulement pour le classement.
 
 
 def journal_mode(path: Path = JOURNAL_CONFIG) -> str:
@@ -479,10 +478,35 @@ def _journal_team_market_candidate(row: dict[str, Any], mode: str | None = None,
     if mode == "preuves":
         _applique_preuves(candidat, row, observations, wins, base_marche, classement)
     elif mode == "regularites":
-        candidat["probabilite_source"] = "JOURNAL_REGULARITE"
-        candidat["journal_admissible"] = odds <= PLAFOND_COTE_REGULARITES
-        candidat["journal_motifs_rejet"] = [] if candidat["journal_admissible"] else ["COTE_AU_DESSUS_DU_PLAFOND"]
+        _applique_regularites(candidat, row, observations, wins, odds, classement)
     return candidat
+
+
+def _applique_regularites(c: dict[str, Any], row: dict[str, Any], observations: int, wins: int, odds: float,
+                          stats: dict[str, Any] | None) -> None:
+    """Mode « regularites » : admissibilité (cote, constance), probabilité de ticket = réussite observée pour la tranche
+    de cote, affichage « x sur y ». Aucun ROI ni gain espéré. `stats` = journal_regularites.charge_taux()."""
+    taux, origine = jrg.taux_pour(odds, stats)
+    ok, motifs = jrg.evalue(wins, observations, row.get("gagnes_6"), row.get("joues_6"), odds)
+    if taux is None:
+        ok = False
+        motifs.append(jrg.MOTIF_TAUX)
+    c.update({
+        "probabilite_source": "JOURNAL_REGULARITE",
+        "probabilite_estimee": round(taux, 6) if taux is not None else None,
+        "journal_taux_observe": round(taux, 6) if taux is not None else None,
+        "journal_taux_origine": origine,
+        "journal_admissible": ok,
+        "journal_motifs_rejet": motifs,
+        "journal_gagnes_6": row.get("gagnes_6"),
+        "journal_joues_6": row.get("joues_6"),
+        "journal_indice_constance": jrg.indice_constance(wins, observations, row.get("gagnes_6"), row.get("joues_6")),
+        "journal_affichage": f"{wins} sur {observations}",
+        "journal_roi": None,
+        "journal_success_margin": None,
+        "justification": jrg.texte_affichage(c.get("journal_team") or "", wins, observations, row.get("gagnes_6"),
+                                             row.get("joues_6"), taux),
+    })
 
 
 def _applique_preuves(c: dict[str, Any], row: dict[str, Any], observations: int, wins: int,
@@ -551,6 +575,8 @@ def extract_journal_candidates(journal: dict[str, Any], full: dict[str, Any], mo
     rows: list[dict[str, Any]] = []
     seen: set[tuple[str, str, str]] = set()
     mode = mode or journal_mode()
+    if mode == "regularites" and classement is None:
+        classement = jrg.charge_taux(dt.datetime.now().date().isoformat())
     if mode == "preuves" and classement is None:
         classement = jcl.charge_calibrage(dt.datetime.now().date().isoformat())
     DIAGNOSTIC_CLASSEMENT.clear()
@@ -560,6 +586,15 @@ def extract_journal_candidates(journal: dict[str, Any], full: dict[str, Any], mo
             "observations_calibrage": (classement or {}).get("observations", 0), "pour_le": (classement or {}).get("pour_le"),
             "a": cal.get("a"), "b": cal.get("b"), "c": cal.get("c"), "modele": cal.get("modele"), "n": cal.get("n"),
             "erreur": (classement or {}).get("erreur"),
+        })
+
+    if mode == "regularites":
+        st = classement or {}
+        DIAGNOSTIC_CLASSEMENT.update({
+            "mode": "regularites", "paris_intervalle": (st.get("intervalle") or (0, 0))[1],
+            "taux_intervalle": (st["intervalle"][0] / st["intervalle"][1]) if (st.get("intervalle") or (0, 0))[1] else None,
+            "paris_par_tranche": {str(t): v[1] for t, v in (st.get("tranches") or {}).items()},
+            "erreur": st.get("erreur"),
         })
 
     for item in journal.get("equipes_a_suivre") or []:
@@ -577,6 +612,11 @@ def extract_journal_candidates(journal: dict[str, Any], full: dict[str, Any], mo
             continue
         seen.add(key)
         rows.append(c)
+
+    if mode == "regularites":
+        # Mode « regularites » : seuls les paris équipe×marché passent par les règles. Les segments championnat×marché
+        # reposent sur un ROI de segment, exclu de ce mode.
+        return rows
 
     segs = journal_segment_map(journal)
     if not segs:
@@ -699,6 +739,8 @@ def enrich(candidates: list[dict[str, Any]], history: dict[str, Any], intelligen
             p_est = min(0.99, max(0.01, q + jm))
         c["probabilite_estimee"] = round(p_est, 6) if p_est is not None else None
         c["ev_estime"] = round(p_est * odds - 1.0, 6) if p_est is not None and odds else None
+        if c.get("probabilite_source") == "JOURNAL_REGULARITE":
+            c["ev_estime"] = None   # mode « regularites » : aucun gain espéré
         if intelligence:
             apply_rules(c, intelligence)
         else:
