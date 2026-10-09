@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F7F1E7">
+<title>Mon compte — Archetype Foot</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="theme.css">
+<style>
+:root{--surface-2:#E0F3EF;--turquoise:#087F78;--turquoise-active:#06645F;--categorie:#087F78}
+header{background:linear-gradient(135deg,rgba(8,127,120,.09),rgba(21,152,141,.07))!important}
+.nav-pages a,.bouton-principal{background:linear-gradient(135deg,#087F78,#06645F)!important;color:white!important;border:0!important}
+main{max-width:560px;margin:auto;padding:18px 16px 38px}
+.hero-compte{padding:22px 18px;border-radius:18px;background:linear-gradient(145deg,#087F78,#06645F);color:#fff;margin-bottom:16px}
+.hero-compte h2{font-size:25px;margin:0 0 7px}.hero-compte p{margin:0;color:#E1F7F2;line-height:1.5}
+.carte{background:var(--surface);border:1px solid var(--border);border-radius:15px;padding:18px;margin:14px 0;box-shadow:0 6px 20px rgba(10,70,65,.06)}
+.carte h3{margin:0 0 12px;color:var(--turquoise);font-size:19px}
+.champ{display:block;margin:13px 0}.champ span{display:block;font-size:14px;font-weight:700;margin-bottom:6px}
+.champ input{box-sizing:border-box;width:100%;padding:13px;border:1px solid rgba(8,127,120,.3);border-radius:9px;background:#fffdf8;color:#241b35;font:inherit}
+.bouton-principal,.bouton-secondaire{display:block;width:100%;box-sizing:border-box;text-align:center;text-decoration:none;padding:13px;border-radius:10px;font:inherit;font-weight:750;cursor:pointer;margin-top:10px}
+.bouton-secondaire{background:#fffdf8;color:#087F78;border:1px solid rgba(8,127,120,.3)}
+.note{font-size:13px;line-height:1.55;color:var(--text-secondary)}
+#message-compte{margin-top:12px}
+</style>
+</head>
+<body>
+<header>
+ <div class="header-top"><h1>Archetype Foot</h1></div>
+ <p>Votre espace personnel</p>
+ <nav class="nav-pages" aria-label="Navigation principale">
+  <a href="index.html">⚽ Matchs</a><a href="archetype.html">🎯 Sélections</a>
+  <a href="systeme.html">⚙️ Système</a><a href="journal.html">📒 Journal</a>
+  <a href="abonnement.html">💳 Abonnement</a>
+ </nav>
+</header>
+<main>
+ <section class="hero-compte">
+  <h2>Heureux de vous revoir</h2>
+  <p>Connectez-vous à votre compte ou créez votre espace Archetype Foot en quelques étapes.</p>
+ </section>
+ <form id="connexion" class="carte">
+  <h3>Se connecter</h3>
+  <label class="champ"><span>Numéro de téléphone ou adresse Gmail</span><input id="identifiant" name="identifiant" autocomplete="username" placeholder="+237 6XX XX XX XX ou vous@gmail.com" required></label>
+  <label class="champ"><span>Mot de passe ou code de connexion</span><input id="secret" name="secret" type="password" autocomplete="current-password" placeholder="Votre mot de passe" required></label>
+  <button class="bouton-principal" type="submit">Se connecter</button>
+  <p id="message-compte" class="note" role="status" aria-live="polite">La connexion sera activée après raccordement au service sécurisé d’authentification.</p>
+ </form>
+ <section class="carte">
+  <h3>Vous n’avez pas encore de compte ?</h3>
+  <p class="note">Inscrivez-vous avec votre numéro de téléphone (recommandé) ou votre adresse Gmail.</p>
+  <a class="bouton-secondaire" href="inscription.html">Créer un compte · S’inscrire</a>
+ </section>
+</main>
+<script src="theme.js"></script>
+<script>
+document.getElementById("connexion").addEventListener("submit",function(e){
+ e.preventDefault();
+ document.getElementById("message-compte").textContent="La connexion n’est pas encore active : le service sécurisé doit être configuré. Aucun identifiant n’a été envoyé ni enregistré.";
+});
+</script>
+</body>
+</html>
