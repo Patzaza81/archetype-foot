@@ -62,6 +62,18 @@ class BetpawaValidationTests(unittest.TestCase):
         self.assertEqual(result["status"], "REJECTED")
         self.assertIn("LEG_1_INVALID_ODDS", result["errors"])
 
+    def test_missing_ticket_url_is_resolved_from_verified_scraping_cache(self):
+        result = validate_ticket({
+            "scenario": "CACHE_TEST",
+            "selection": [leg(
+                home="Toronto", away="Montreal", date="2026-10-10",
+                url=None
+            )],
+        }, 1)
+        self.assertEqual(result["selection"][0]["betpawa_url"],
+                         "https://www.betpawa.cm/event/36682856?filter=all")
+        self.assertEqual(result["selection"][0]["betpawa_url_source"], "scraping_cache")
+
     def test_pool_candidates_are_wrapped_for_review(self):
         manifest = build_manifest({"pool": [leg()]})
         self.assertEqual(manifest["tickets_checked"], 1)
@@ -104,6 +116,14 @@ class BetpawaValidationTests(unittest.TestCase):
         )
         self.assertTrue(all(t["human_validation_required"] for t in manifest["tickets"]))
         self.assertTrue(all(not t["submission_automated"] for t in manifest["tickets"]))
+        self.assertTrue(all(
+            leg["betpawa_url"].startswith("https://www.betpawa.cm/event/")
+            for ticket in manifest["tickets"] for leg in ticket["selection"]
+        ), "All real generator selections should resolve to existing scraper URLs")
+        self.assertTrue(any(
+            leg["betpawa_url_source"] == "scraping_cache"
+            for ticket in manifest["tickets"] for leg in ticket["selection"]
+        ), "Missing ticket URLs must be recovered from the verified scraping cache")
         self.assertTrue(any(t["status"] == "REJECTED" for t in manifest["tickets"]))
 
     def test_daily_cap_is_fifteen(self):
