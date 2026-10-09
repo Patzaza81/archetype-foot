@@ -9,6 +9,8 @@ on:
       - "betpawa_validation.py"
       - "tools/**"
       - "tests/test_betpawa_local_runner.py"
+      - "tests/test_betpawa_loop.py"
+      - "tools/run_betpawa_loop.py"
   workflow_dispatch:
 
 permissions:
@@ -31,4 +33,4 @@ jobs:
           python -m pip install pytest playwright
           python -m playwright install --with-deps chromium
       - name: Run local-runner unit tests and BetPawa browser smoke tests
-        run: python -m pytest -q -ra tests/test_betpawa_local_runner.py tests/test_betpawa_browser_smoke.py
+        run: python -m pytest -q -ra tests/test_betpawa_local_runner.py tests/test_betpawa_loop.py tests/test_betpawa_browser_smoke.py
