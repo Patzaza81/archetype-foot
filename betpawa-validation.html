@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ARCHETYPE — Validation BetPawa</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="theme.css">
+<style>
+body{max-width:760px;margin:auto;padding:14px}
+.card{border:1px solid #ddd;border-radius:14px;padding:14px;margin:10px 0;background:#fff}
+.status{display:inline-block;border-radius:999px;padding:4px 8px;font-size:11px;font-weight:700}
+.ready{background:#e8f5ee}.rejected{background:#fdecec}
+.leg{padding:10px 0;border-top:1px solid #eee}
+.leg:first-child{border-top:0}.odds{float:right;font-weight:800}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+button,a.btn{border:0;border-radius:9px;padding:10px 12px;font-weight:700;text-decoration:none;cursor:pointer}
+button.primary{background:#087f78;color:#fff}button.secondary,a.btn{background:#eee;color:#222}
+.small{font-size:11px;color:#666;line-height:1.45}
+.warn{font-size:12px;color:#9a3412;margin-top:8px}
+</style>
+</head>
+<body>
+<h1>ARCHETYPE — Validation BetPawa</h1>
+<p id="summary" class="small">Chargement…</p>
+<div id="tickets"></div>
+<script>
+(function(){
+"use strict";
+var root=document.getElementById("tickets");
+function esc(x){return String(x??"").replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])})}
+function money(x){return Number.isFinite(Number(x))?Number(x).toFixed(2):"—"}
+function render(data){
+ var list=Array.isArray(data.tickets)?data.tickets:[];
+ document.getElementById("summary").textContent=list.length+" ticket(s) contrôlé(s) · "+(data.tickets_ready||0)+" prêt(s) à vérifier";
+ root.innerHTML=list.map(function(t){
+   var ok=t.status==="READY_FOR_REVIEW";
+   var legs=(t.selection||[]).map(function(l){
+     return '<div class="leg"><span class="odds">'+money(l.cote)+'</span><strong>'+esc(l.domicile)+" — "+esc(l.exterieur)+'</strong>'+
+       '<div class="small">'+esc(l.marche)+" · "+esc(l.date)+" "+esc(l.heure)+" · "+esc(l.competition)+'</div>'+
+       (l.betpawa_url?'<div class="actions"><a class="btn" target="_blank" rel="noopener" href="'+esc(l.betpawa_url)+'">Ouvrir BetPawa</a></div>':"")+
+       '</div>';
+   }).join("");
+   var errors=(t.errors||[]).length?'<div class="warn">Bloqué : '+esc(t.errors.join(", "))+'</div>':"";
+   return '<section class="card"><span class="status '+(ok?"ready":"rejected")+'">'+esc(t.status)+'</span>'+
+     '<h2>'+esc(t.ticket_id)+'</h2>'+
+     '<p class="small">'+esc(t.selection_count)+" sélection(s) · cote snapshot "+money(t.total_odds_snapshot)+'</p>'+
+     legs+errors+
+     (ok?'<div class="actions"><button class="primary" data-id="'+esc(t.ticket_id)+'">Marquer comme vérifié manuellement</button></div>':"")+
+     '</section>';
+ }).join("");
+ root.querySelectorAll("button[data-id]").forEach(function(btn){
+   btn.addEventListener("click",function(){
+     btn.disabled=true;
+     btn.textContent="Vérifié manuellement";
+   });
+ });
+}
+fetch("data/betpawa_validation.json?_="+Date.now(),{cache:"no-store"})
+ .then(function(r){if(!r.ok)throw Error("data/betpawa_validation.json introuvable");return r.json()})
+ .then(render)
+ .catch(function(e){document.getElementById("summary").textContent=e.message});
+})();
+</script>
+</body>
+</html>
