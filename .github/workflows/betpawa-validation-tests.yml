@@ -32,4 +32,4 @@ jobs:
       - name: Smoke test manifest generation used by Netlify
         run: |
           python3 betpawa_validation.py --input data/tickets.json --output data/betpawa_validation.json
-          python3 -c "import json; d=json.load(open('data/betpawa_validation.json', encoding='utf-8')); assert d['tickets_checked'] == 6; assert d['manual_final_validation_required'] is True; assert d['submission_automated'] is False"
+          python3 -c "import json; s=json.load(open('data/tickets.json', encoding='utf-8')); d=json.load(open('data/betpawa_validation.json', encoding='utf-8')); assert d['tickets_checked'] == min(15, len(s['scenarios'])); assert d['manual_final_validation_required'] is True; assert d['submission_automated'] is False"
