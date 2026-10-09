@@ -89,12 +89,41 @@ def rang_moteur(c: dict[str, Any]) -> int:
     ))
 
 
+def journal_calibre(c: dict[str, Any]) -> bool:
+    """Pari du Journal évalué en mode « preuves » (journal_classement.py)."""
+    return str(c.get("source") or "").lower() == "journal" and c.get("probabilite_source") == "JOURNAL_CALIBRE"
+
+
+def rank_journal_calibre(c: dict[str, Any]) -> tuple:
+    """Ordre de priorité du mode « preuves », dans les mêmes positions que la clé commune : fiabilité démontrée (borne
+    basse calibrée), probabilité calibrée, espérance calibrée, stabilité historique, nombre de matchs. Un pari non
+    admissible n'a pas de preuve (rang 0, borne absente) : il passe après tous les autres."""
+    ok = c.get("journal_admissible") is True
+    low = n(c.get("journal_borne_basse_calibree"))
+    p, ev = proba(c), ev_leg(c)
+    stab = n(c.get("journal_stabilite"))
+    return (
+        3 if ok and low is not None else 0,
+        low if ok and low is not None else -999.0,
+        p if p is not None else -999.0,
+        ev if ev is not None else -999.0,
+        stab if stab is not None else -1.0,
+        int(c.get("journal_observations") or 0),
+        0, -999.0, -999.0, 0,
+        ev if ev is not None else -999.0,
+        p if p is not None else -999.0,
+        -(n(c.get("cote")) or 99.0),
+    )
+
+
 def candidate_rank(c: dict[str, Any]) -> tuple:
     """Classe les candidats avec les critères existants, après normalisation.
 
     Le générateur ne consulte jamais la source. V2.6.10, V3 et Journal arrivent
     sous le même contrat de sélection et sont comparés par la même clé lexicographique.
     """
+    if journal_calibre(c):
+        return rank_journal_calibre(c)
     ev = ev_leg(c)
     lower = n(c.get("selection_evidence_lower_bound"))
     rate = n(c.get("selection_evidence_rate"))
@@ -140,6 +169,10 @@ def eligible(c: dict[str, Any], mode: str = "normal") -> bool:
     Aucun historique minimal n'est exigé."""
     odds = n(c.get("cote"))
     if not odds or odds < ODDS_MIN or odds > ODDS_MAX:
+        return False
+    # Mode « preuves » du Journal : seul un pari ADMISSIBLE (borne basse calibrée >= probabilité implicite) entre dans le
+    # pool. Un pari rejeté ne peut jamais y revenir, ni par le classement ni par le tirage au sort des tickets.
+    if journal_calibre(c) and c.get("journal_admissible") is not True:
         return False
     m, p = marge(c), proba(c)
     if m is None or p is None:
@@ -505,6 +538,21 @@ def candidats_source(data: dict[str, Any], source: str) -> list[dict[str, Any]]:
     return rows
 
 
+def un_pari_par_match_journal(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Mode « preuves » : un seul pari du Journal par match (le mieux classé, `rows` est déjà classé) ; les marchés d'un même
+    match sont fortement liés. Les autres paris ne sont pas touchés."""
+    vus: set[str] = set()
+    out = []
+    for x in rows:
+        if journal_calibre(x):
+            k = match_key(x)
+            if k in vus:
+                continue
+            vus.add(k)
+        out.append(x)
+    return out
+
+
 def selection_par_source(data: dict[str, Any]) -> tuple[dict[str, list[dict[str, Any]]], int]:
     """Tri fait par le générateur dans chaque source : paris jouables (cote 1,26–3,01, probabilité au moins égale à celle de
     la cote), classés par `candidate_rank`, 10 au maximum par source. Un même pari (même match, même marché) n'existe
@@ -519,7 +567,7 @@ def selection_par_source(data: dict[str, Any]) -> tuple[dict[str, list[dict[str,
                 meilleur[k] = ((idx, ordre), s)
     retenus: dict[str, list[dict[str, Any]]] = {}
     for s in SOURCES:
-        gardes = [x for x in listes[s] if meilleur[pari_key(x)][1] == s][:MAX_PAR_SOURCE]
+        gardes = un_pari_par_match_journal([x for x in listes[s] if meilleur[pari_key(x)][1] == s])[:MAX_PAR_SOURCE]
         for x in gardes:
             k = pari_key(x)
             x["aussi_propose_par"] = [t for t in SOURCES if t != s and any(pari_key(y) == k for y in listes[t])]
