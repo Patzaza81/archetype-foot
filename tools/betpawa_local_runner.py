@@ -94,7 +94,7 @@ def selection_target(leg: dict[str, Any]) -> tuple[list[str], list[str], str]:
         direction = "under" if total.group(1) in {"moins de", "under"} else "over"
         line = total.group(2).replace(",", ".")
         direction_fr = "moins de" if direction == "under" else "plus de"
-        return ["total goals", "goals over under", "over under", "total buts", "total"], [
+        return ["total goals", "goals over under", "over under", "total buts"], [
             f"{direction} {line}", f"{direction} {line.replace('.0', '')}",
             f"{direction_fr} {line}", f"{direction_fr} {line.replace('.0', '')}"
         ], f"{direction_fr} {line} buts"
@@ -182,20 +182,24 @@ def find_odds_control(page: Any, item: dict[str, Any]) -> tuple[Any, str]:
             if not ODDS_RE.fullmatch(own_text):
                 continue
             current_odds = own_text.replace(",", ".")
-            for level in range(1, 7):
+            market_level = None
+            outcome_level = None
+            for level in range(1, 9):
                 parent = control.locator(f"xpath=ancestor::*[{level}]")
                 if not parent.count():
                     continue
                 context = parent.first.inner_text(timeout=500)
-                if not any(has_phrase(context, m) for m in item["markets"]):
-                    continue
-                if not any(has_phrase(context, o) for o in item["outcomes"]):
-                    continue
+                if outcome_level is None and any(has_phrase(context, o) for o in item["outcomes"]):
+                    outcome_level = level
+                if market_level is None and any(has_phrase(context, m) for m in item["markets"]):
+                    market_level = level
+                if market_level is not None and outcome_level is not None:
+                    break
+            # The outcome must be identifiable in a local row, and the market
+            # must be identifiable in that row or one of its wider ancestors.
+            if market_level is not None and outcome_level is not None and market_level >= outcome_level:
                 key = str(i)
-                old = matches.get(key)
-                if old is None or level < old[2]:
-                    matches[key] = (control, current_odds, level)
-                break
+                matches[key] = (control, current_odds, max(market_level, outcome_level))
         except Exception:
             continue
     if len(matches) != 1:
@@ -248,12 +252,19 @@ def click_ticket(plan: list[dict[str, Any]], profile_dir: Path) -> int:
                 print(f"Marché ARCHETYPE : {item['leg'].get('marche')}")
                 print(f"Cible UI : {item['label']} | cote source {source_odds} | "
                       f"cote BetPawa visible {current_odds}")
+                odds_changed = False
                 if source_odds is not None:
                     try:
-                        if abs(float(source_odds) - float(current_odds)) >= 0.005:
-                            print("ATTENTION : la cote a changé depuis la génération.")
+                        odds_changed = abs(float(source_odds) - float(current_odds)) >= 0.005
                     except (TypeError, ValueError):
                         pass
+                if odds_changed:
+                    print("ATTENTION : la cote a changé depuis la génération.")
+                    accept = input("Pour accepter explicitement la cote actuelle, tapez CLICK CURRENT ODDS ; sinon STOP : ").strip()
+                    if accept != "CLICK CURRENT ODDS":
+                        print("Sélection ignorée. Le navigateur reste ouvert pour inspection.")
+                        input("Appuyez sur Entrée pour fermer le navigateur… ")
+                        return 2
                 control.click(timeout=5000)
                 page.wait_for_timeout(700)
                 print("Clic effectué. Vérifiez visuellement que cette sélection figure dans le coupon.")
