@@ -245,7 +245,13 @@ def click_ticket(plan: list[dict[str, Any]], profile_dir: Path) -> int:
                 except Exception:
                     pass
                 page.wait_for_timeout(1200)
-                control, current_odds = find_odds_control(page, item)
+                try:
+                    control, current_odds = find_odds_control(page, item)
+                except Exception as exc:
+                    print(f"ARRÊT SANS CLIC POUR CETTE SÉLECTION : {exc}")
+                    print("Le navigateur reste ouvert pour inspecter le coupon.")
+                    input("Appuyez sur Entrée pour fermer le navigateur… ")
+                    return 2
                 source_odds = item["leg"].get("cote")
                 print(f"\n{item['index']}/{len(plan)} — {item['leg'].get('domicile')} — "
                       f"{item['leg'].get('exterieur')}")
