@@ -66,7 +66,8 @@ function textFor(t){
 function render(){
  const t=selected();const legs=$("legs");
  if(!t){legs.className="empty";legs.textContent="Aucun ticket sélectionné."; $("ticketSummary").textContent="";return;}
- $("ticketSummary").textContent=(t.selection_count||t.selection.length)+" sélection(s) · cote totale indicative "+fmt(t.total_odds_snapshot)+" · statut "+t.status;
+ const canPrepare=t.status==="READY_FOR_REVIEW";
+ $("ticketSummary").textContent=(t.selection_count||t.selection.length)+" sélection(s) · cote totale indicative "+fmt(t.total_odds_snapshot)+" · statut "+t.status+(canPrepare?"":" · BLOQUÉ : ne pas préparer ce ticket");
  legs.className="";
  legs.innerHTML=(t.selection||[]).map((l,i)=>{
  const valid=/^https:\/\/(www\.)?betpawa\.cm\/event\/[A-Za-z0-9_-]+(?:\?.*)?$/.test(l.betpawa_url||"");
@@ -77,7 +78,7 @@ function render(){
  const txt=l.domicile+" — "+l.exterieur+" | "+l.marche+" | cote source "+fmt(l.cote);
  await copyText(txt);
  }));
- $("openFirst").disabled=!(t.selection&&t.selection.length&&/^https:\/\/(www\.)?betpawa\.cm\/event\//.test(t.selection[0].betpawa_url||""));
+ $("openFirst").disabled=!(canPrepare&&t.selection&&t.selection.length&&/^https:\/\/(www\.)?betpawa\.cm\/event\//.test(t.selection[0].betpawa_url||""));
 }
 async function copyText(s){
  try{await navigator.clipboard.writeText(s);$("feedback").textContent="Copié. Vous pouvez coller le texte dans vos notes.";return true;}
@@ -97,7 +98,7 @@ async function load(){
  }catch(e){$("ticket").innerHTML='<option value="">Impossible de charger</option>';$("legs").className="empty";$("legs").textContent=e.message+" Vérifiez que la page est publiée et que le manifeste existe."; $("ticketSummary").textContent="";}
 }
 $("ticket").addEventListener("change",render);
-$("copy").addEventListener("click",async()=>{const t=selected();if(t)await copyText(textFor(t));});
+$("copy").addEventListener("click",async()=>{const t=selected();if(t&&t.status==="READY_FOR_REVIEW")await copyText(textFor(t));else $("feedback").textContent="Ticket bloqué : seules les sélections READY_FOR_REVIEW peuvent être préparées.";});
 $("openFirst").addEventListener("click",()=>{const t=selected();const url=t&&t.selection&&t.selection[0]&&t.selection[0].betpawa_url;if(url)window.open(url,"_blank","noopener,noreferrer");});
 $("checklist").addEventListener("click",async()=>copyText("CONTRÔLE AVANT PARI\n[ ] Équipes correctes\n[ ] Marchés et issues exacts\n[ ] Cotes vérifiées sur BetPawa\n[ ] Nombre de sélections correct\n[ ] Mise correcte\n[ ] Coupon relu intégralement\n[ ] Confirmation finale effectuée par moi-même"));
 load();
