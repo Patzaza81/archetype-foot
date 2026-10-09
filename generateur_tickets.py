@@ -89,12 +89,69 @@ def rang_moteur(c: dict[str, Any]) -> int:
     ))
 
 
+def journal_calibre(c: dict[str, Any]) -> bool:
+    """Pari du Journal évalué en mode « preuves » (journal_classement.py)."""
+    return str(c.get("source") or "").lower() == "journal" and c.get("probabilite_source") == "JOURNAL_CALIBRE"
+
+
+def journal_regularite(c: dict[str, Any]) -> bool:
+    """Pari du Journal évalué en mode « regularites » (sans ROI, plafond de cote)."""
+    return str(c.get("source") or "").lower() == "journal" and c.get("probabilite_source") == "JOURNAL_REGULARITE"
+
+
+def journal_filtre(c: dict[str, Any]) -> bool:
+    """Pari du Journal soumis à un filtre d'admissibilité (modes « preuves » et « regularites »)."""
+    return journal_calibre(c) or journal_regularite(c)
+
+
+def rank_journal_regularite(c: dict[str, Any]) -> tuple:
+    """Mode « regularites » : borne de Wilson, puis fréquence, puis nombre de matchs, puis cote la plus basse. Ni ROI ni
+    espérance. Un pari non admissible passe après tous les autres (et n'entre de toute façon pas dans le pool)."""
+    ok = c.get("journal_admissible") is True
+    low, freq = n(c.get("journal_lower_bound")), n(c.get("journal_frequency"))
+    return (
+        3 if ok and low is not None else 0,
+        low if ok and low is not None else -999.0,
+        freq if freq is not None else -999.0,
+        int(c.get("journal_observations") or 0),
+        0, 0, 0.0, -999.0, -999.0, 0,
+        -999.0, -999.0,
+        -(n(c.get("cote")) or 99.0),
+    )
+
+
+def rank_journal_calibre(c: dict[str, Any]) -> tuple:
+    """Ordre de priorité du mode « preuves », dans les mêmes positions que la clé commune : fiabilité démontrée (borne
+    basse calibrée), probabilité calibrée, espérance calibrée, stabilité historique, nombre de matchs. Un pari non
+    admissible n'a pas de preuve (rang 0, borne absente) : il passe après tous les autres."""
+    ok = c.get("journal_admissible") is True
+    low = n(c.get("journal_borne_basse_calibree"))
+    p, ev = proba(c), ev_leg(c)
+    stab = n(c.get("journal_stabilite"))
+    return (
+        3 if ok and low is not None else 0,
+        low if ok and low is not None else -999.0,
+        p if p is not None else -999.0,
+        ev if ev is not None else -999.0,
+        stab if stab is not None else -1.0,
+        int(c.get("journal_observations") or 0),
+        0, -999.0, -999.0, 0,
+        ev if ev is not None else -999.0,
+        p if p is not None else -999.0,
+        -(n(c.get("cote")) or 99.0),
+    )
+
+
 def candidate_rank(c: dict[str, Any]) -> tuple:
     """Classe les candidats avec les critères existants, après normalisation.
 
     Le générateur ne consulte jamais la source. V2.6.10, V3 et Journal arrivent
     sous le même contrat de sélection et sont comparés par la même clé lexicographique.
     """
+    if journal_calibre(c):
+        return rank_journal_calibre(c)
+    if journal_regularite(c):
+        return rank_journal_regularite(c)
     ev = ev_leg(c)
     lower = n(c.get("selection_evidence_lower_bound"))
     rate = n(c.get("selection_evidence_rate"))
@@ -141,9 +198,17 @@ def eligible(c: dict[str, Any], mode: str = "normal") -> bool:
     odds = n(c.get("cote"))
     if not odds or odds < ODDS_MIN or odds > ODDS_MAX:
         return False
+    # Mode « preuves » du Journal : seul un pari ADMISSIBLE (borne basse calibrée >= probabilité implicite) entre dans le
+    # pool. Un pari rejeté ne peut jamais y revenir, ni par le classement ni par le tirage au sort des tickets.
+    if journal_filtre(c) and c.get("journal_admissible") is not True:
+        return False
     m, p = marge(c), proba(c)
     if m is None or p is None:
         return False
+    if journal_regularite(c):
+        # Mode « regularites » : pas de condition « probabilité >= probabilité de la cote » ; et le Journal n'entre jamais
+        # dans les tickets « prudents » (qui exigent marge et probabilité >= 60 %, des critères de gain espéré).
+        return mode != "prudent"  # pas de condition « probabilité >= probabilité de la cote » : c'est elle qui choisissait les cotes hautes
     if mode == "prudent":
         return m >= 0.03 and p >= 0.60
     return m >= 0.0
@@ -400,6 +465,9 @@ def ticket_metrics(rows: list[dict[str, Any]], target: float | None = None) -> d
 
 def leg(x: dict[str, Any]) -> dict[str, Any]:
     p, ev = proba(x), ev_leg(x)
+    sans_roi = journal_regularite(x)   # mode « regularites » : ni gain espéré ni ROI dans le ticket
+    if sans_roi:
+        ev = None
     return {
         "match_id": x.get("match_id"),
         "cle_match": match_key(x),
@@ -428,7 +496,7 @@ def leg(x: dict[str, Any]) -> dict[str, Any]:
         "journal_wins": x.get("journal_wins"),
         "journal_observations": x.get("journal_observations"),
         "journal_lower_bound": x.get("journal_lower_bound"),
-        "journal_roi": x.get("journal_roi"),
+        "journal_roi": None if sans_roi else x.get("journal_roi"),
         "journal_team": x.get("journal_team"),
         "journal_opportunity": x.get("journal_opportunity"),
         "source": x.get("source"),
@@ -438,6 +506,8 @@ def leg(x: dict[str, Any]) -> dict[str, Any]:
         "betpawa_url": x.get("betpawa_url"),
         "aussi_propose_par": x.get("aussi_propose_par") or [],
         "journal_calibrage": x.get("journal_calibrage"),
+        **({"journal_affichage": x.get("journal_affichage"), "journal_taux_observe": x.get("journal_taux_observe")}
+           if sans_roi else {}),
     }
 
 
@@ -505,6 +575,21 @@ def candidats_source(data: dict[str, Any], source: str) -> list[dict[str, Any]]:
     return rows
 
 
+def un_pari_par_match_journal(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Mode « preuves » : un seul pari du Journal par match (le mieux classé, `rows` est déjà classé) ; les marchés d'un même
+    match sont fortement liés. Les autres paris ne sont pas touchés."""
+    vus: set[str] = set()
+    out = []
+    for x in rows:
+        if journal_filtre(x):
+            k = match_key(x)
+            if k in vus:
+                continue
+            vus.add(k)
+        out.append(x)
+    return out
+
+
 def selection_par_source(data: dict[str, Any]) -> tuple[dict[str, list[dict[str, Any]]], int]:
     """Tri fait par le générateur dans chaque source : paris jouables (cote 1,26–3,01, probabilité au moins égale à celle de
     la cote), classés par `candidate_rank`, 10 au maximum par source. Un même pari (même match, même marché) n'existe
@@ -519,7 +604,7 @@ def selection_par_source(data: dict[str, Any]) -> tuple[dict[str, list[dict[str,
                 meilleur[k] = ((idx, ordre), s)
     retenus: dict[str, list[dict[str, Any]]] = {}
     for s in SOURCES:
-        gardes = [x for x in listes[s] if meilleur[pari_key(x)][1] == s][:MAX_PAR_SOURCE]
+        gardes = un_pari_par_match_journal([x for x in listes[s] if meilleur[pari_key(x)][1] == s])[:MAX_PAR_SOURCE]
         for x in gardes:
             k = pari_key(x)
             x["aussi_propose_par"] = [t for t in SOURCES if t != s and any(pari_key(y) == k for y in listes[t])]
@@ -714,6 +799,31 @@ def build_plages(data: dict[str, Any], maintenant: dt.datetime | None = None) ->
     return {**dernier, "jour_present": jours[0], "plage_par_defaut": plages[-1]["id"], "plages": plages}
 
 
+SUIVI_REGULARITES = Path("data/suivi_journal_regularites.json")
+
+
+def suivi_regularites(result: dict[str, Any], path: Path = SUIVI_REGULARITES) -> dict[str, Any] | None:
+    """Mode « regularites » : note chaque jour la liste du Journal, puis renseigne les résultats des jours passés. Sans
+    pari de ce mode, rien n'est écrit. Une erreur est renvoyée dans le résultat, jamais masquée ni bloquante."""
+    picks = [x for x in result.get("pool") or [] if x.get("probabilite_source") == "JOURNAL_REGULARITE"]
+    if not picks:
+        return None
+    try:
+        import journal_regularites as jrg
+        import journal_rentabilite as jr
+        par_jour: dict[str, list[dict[str, Any]]] = {}
+        for x in picks:
+            par_jour.setdefault(str(x.get("date")), []).append(x)
+        data: dict[str, Any] = {}
+        for jour, liste in sorted(par_jour.items()):
+            data = jrg.enregistre_suivi(path, jour, liste)
+        resolus = jrg.resout_suivi(data, jr.charge_tous_resultats())
+        path.write_text(json.dumps(data, ensure_ascii=False, indent=1, sort_keys=True), encoding="utf-8")
+        return {"fichier": str(path), "resolus_ce_jour": resolus, **jrg.resume_suivi(data), "erreur": None}
+    except Exception as exc:  # noqa: BLE001 - le suivi ne doit jamais empêcher les tickets, mais l'erreur reste visible
+        return {"fichier": str(path), "erreur": f"{type(exc).__name__}: {exc}"}
+
+
 def main() -> int:
     data = load(INPUT)
     if not data:
@@ -733,6 +843,9 @@ def main() -> int:
     else:
         result = build_plages(data)
         result["statut_global"] = "OK" if result["candidats_total"] else "AUCUNE_OPPORTUNITE_SOLIDE"
+        suivi = suivi_regularites(result)
+        if suivi is not None:
+            result["suivi_regularites"] = suivi
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps({"candidats": result["candidats_total"], "scenarios": len(result["scenarios"])}, ensure_ascii=False))

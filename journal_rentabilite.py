@@ -641,6 +641,9 @@ def _prochains_matchs(aujourdhui, fichier=FICHIERS_PRECALCUL[MOTEUR_ACTIF]):
     return out
 
 
+NB_DERNIERS_MATCHS = 6   # fenêtre de l'indice de constance récente (mode « regularites »)
+
+
 def construit_equipes_a_suivre(matchs, aujourdhui=None, prochains=None):
     aujourdhui = aujourdhui or _aujourdhui()
     prochains = _prochains_matchs(aujourdhui) if prochains is None else prochains
@@ -678,9 +681,15 @@ def construit_equipes_a_suivre(matchs, aujourdhui=None, prochains=None):
             if freq < SEUIL_FREQUENCE_EQUIPE:
                 continue
             roi = sum(profits) / len(profits) if len(profits) >= MIN_COTES_ROI_EQUIPE else None
+            # Constance récente : réussites sur les 6 derniers matchs de l'équipe (ordre chronologique). Donnée ajoutée
+            # pour le mode « regularites » ; elle ne modifie aucun autre champ.
+            derniers = sorted(liste, key=lambda t: (t[0]["date"], str(t[0].get("match_id") or "")))[-NB_DERNIERS_MATCHS:]
+            gagnes_6 = sum(
+                analyse_libelle(lib_dom if ce == "dom" else lib_ext)[1](*m["buts"]) == 1 for m, ce in derniers)
             ligne = {"equipe": equipe, "ligue": ligue, "marche": nom, "gagnes": gagnes, "joues": len(liste),
                      "frequence": round(freq, 4), "frequence_generale": round(generale[nom], 4),
                      "roi_betpawa": round(roi, 4) if roi is not None else None, "paris_cotes": len(profits),
+                     "gagnes_6": int(gagnes_6), "joues_6": len(derniers),
                      "prochain_match": None}
             pm = prochains.get((equipe, ligue))
             if pm:

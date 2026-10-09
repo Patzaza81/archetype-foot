@@ -10,6 +10,8 @@ from typing import Any
 
 from calibrage_externe import apply_rules, discover_rules, summarize as summarize_calibrage
 from journal.journal_n1 import charger_n1
+import journal_classement as jcl
+import journal_regularites as jrg
 
 V2 = "moteur_v2_6_10"
 V3 = "moteur_v3"
@@ -79,7 +81,9 @@ JOURNAL_MATCHS_FICTIFS = 20
 # condition initiale (borne de Wilson) sans toucher au code. Fichier config/journal_calibrage.json : {"mode": "lisse"}
 # ou {"mode": "wilson"}. Fichier absent, illisible ou mode inconnu : "wilson" (l'état initial, le plus prudent).
 JOURNAL_CONFIG = Path("config/journal_calibrage.json")
-MODES_JOURNAL = ("lisse", "wilson")
+MODES_JOURNAL = ("lisse", "wilson", "preuves", "regularites")
+# Mode « regularites » (journal_regularites.py) : ni ROI ni gain espéré ; cote 1,26–1,56 ; indice de constance dès 6 matchs ;
+# probabilité des tickets = réussite observée par tranche de cote ; Wilson seulement pour le classement.
 
 
 def journal_mode(path: Path = JOURNAL_CONFIG) -> str:
@@ -394,7 +398,8 @@ def journal_segment_map(journal: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return out
 
 
-def _journal_team_market_candidate(row: dict[str, Any], mode: str | None = None) -> dict[str, Any] | None:
+def _journal_team_market_candidate(row: dict[str, Any], mode: str | None = None,
+                                   classement: dict[str, Any] | None = None) -> dict[str, Any] | None:
     """Transforme une observation équipe×marché du Journal en opportunité exploitable.
 
     Le Journal reste indépendant du moteur : sa fréquence est une preuve descriptive,
@@ -430,7 +435,7 @@ def _journal_team_market_candidate(row: dict[str, Any], mode: str | None = None)
         domicile, exterieur = adversaire, equipe
     market = norm(row.get("marche"))
     q = implied(odds)
-    return {
+    candidat = {
         "source": "journal",
         "moteur": None,
         "rang": None,
@@ -470,9 +475,96 @@ def _journal_team_market_candidate(row: dict[str, Any], mode: str | None = None)
         "journal_opportunity": True,
         "betpawa_url": pm.get("betpawa_url"),
     }
+    if mode == "preuves":
+        _applique_preuves(candidat, row, observations, wins, base_marche, classement)
+    elif mode == "regularites":
+        _applique_regularites(candidat, row, observations, wins, odds, classement)
+    return candidat
 
 
-def extract_journal_candidates(journal: dict[str, Any], full: dict[str, Any], mode: str | None = None) -> list[dict[str, Any]]:
+def _applique_regularites(c: dict[str, Any], row: dict[str, Any], observations: int, wins: int, odds: float,
+                          stats: dict[str, Any] | None) -> None:
+    """Mode « regularites » : admissibilité (cote, constance), probabilité de ticket = réussite observée pour la tranche
+    de cote, affichage « x sur y ». Aucun ROI ni gain espéré. `stats` = journal_regularites.charge_taux()."""
+    taux, origine = jrg.taux_pour(odds, stats)
+    ok, motifs = jrg.evalue(wins, observations, row.get("gagnes_6"), row.get("joues_6"), odds)
+    if taux is None:
+        ok = False
+        motifs.append(jrg.MOTIF_TAUX)
+    c.update({
+        "probabilite_source": "JOURNAL_REGULARITE",
+        "probabilite_estimee": round(taux, 6) if taux is not None else None,
+        "journal_taux_observe": round(taux, 6) if taux is not None else None,
+        "journal_taux_origine": origine,
+        "journal_admissible": ok,
+        "journal_motifs_rejet": motifs,
+        "journal_gagnes_6": row.get("gagnes_6"),
+        "journal_joues_6": row.get("joues_6"),
+        "journal_indice_constance": jrg.indice_constance(wins, observations, row.get("gagnes_6"), row.get("joues_6")),
+        "journal_affichage": f"{wins} sur {observations}",
+        "journal_roi": None,
+        "journal_success_margin": None,
+        "justification": jrg.texte_affichage(c.get("journal_team") or "", wins, observations, row.get("gagnes_6"),
+                                             row.get("joues_6"), taux),
+    })
+
+
+def _applique_preuves(c: dict[str, Any], row: dict[str, Any], observations: int, wins: int,
+                      base_marche: float | None, classement: dict[str, Any] | None) -> None:
+    """Mode « preuves » (journal_classement.py) : la probabilité annoncée est la probabilité CALIBRÉE sur les résultats
+    passés du Journal, et le pari n'est admissible que si sa borne basse couvre la probabilité implicite de la cote.
+    Sans calibrage (données absentes ou erreur), rien n'est admissible : jamais de pari présenté comme fiable sans preuve."""
+    classement = classement or {}
+    cal = classement.get("calibrage")
+    stab = (classement.get("stabilite") or {}).get((norm(row.get("equipe")), norm(row.get("ligue")), norm(row.get("marche"))))
+    lis = jcl.lissee(wins, observations, base_marche)
+    ev = jcl.evalue({"cote": c["cote"], "lissee": lis, "joues": observations, "stabilite": stab}, cal)
+    q = implied(c["cote"])
+    c["probabilite_source"] = "JOURNAL_CALIBRE"
+    c["journal_calibrage"] = "preuves"
+    c["journal_probabilite_lissee"] = round(lis, 6) if lis is not None else None
+    c["journal_admissible"] = bool(ev["admissible"])
+    c["journal_motifs_rejet"] = list(ev["motifs"])
+    c["journal_stabilite"] = round(stab, 6) if stab is not None else None
+    c["journal_borne_basse_calibree"] = round(ev["borne_basse"], 6) if ev["borne_basse"] is not None else None
+    if ev["p_cal"] is not None:
+        c["probabilite_estimee"] = round(ev["p_cal"], 6)
+        c["journal_success_margin"] = round(ev["p_cal"] - q, 6) if q is not None else None
+        c["justification"] = (
+            f"{c['journal_team']} a réussi ce marché {wins}/{observations} fois ({c['journal_frequency']:.1%}) ; "
+            f"probabilité calibrée sur les résultats passés du Journal : {ev['p_cal']:.1%} "
+            f"(borne basse {ev['borne_basse']:.1%}) contre {q:.1%} impliquée par la cote."
+            if q is not None else None
+        )
+    else:
+        c["journal_success_margin"] = None
+
+
+DIAGNOSTIC_CLASSEMENT: dict[str, Any] = {}
+
+
+def resume_classement(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    """Diagnostic du mode « preuves » : combien de paris du Journal sont admissibles, pourquoi les autres sont rejetés, et
+    les rejetés les plus proches du seuil (jamais publiés, seulement pour comprendre)."""
+    cj = [x for x in rows if x.get("probabilite_source") == "JOURNAL_CALIBRE"]
+    motifs: dict[str, int] = {}
+    for x in cj:
+        for m in x.get("journal_motifs_rejet") or []:
+            motifs[m] = motifs.get(m, 0) + 1
+    proches = sorted(
+        [x for x in cj if not x.get("journal_admissible") and x.get("journal_borne_basse_calibree") is not None],
+        key=lambda x: x["journal_borne_basse_calibree"] - 1.0 / x["cote"], reverse=True)[:5]
+    return {
+        "candidats": len(cj), "admissibles": sum(1 for x in cj if x.get("journal_admissible")), "motifs_de_rejet": motifs,
+        "plus_proches_du_seuil": [
+            {"match": f"{x['domicile']} - {x['exterieur']}", "marche": x["marche"], "cote": x["cote"],
+             "probabilite_calibree": x.get("probabilite_estimee"), "borne_basse": x["journal_borne_basse_calibree"],
+             "probabilite_implicite": round(1.0 / x["cote"], 6)} for x in proches],
+    }
+
+
+def extract_journal_candidates(journal: dict[str, Any], full: dict[str, Any], mode: str | None = None,
+                               classement: dict[str, Any] | None = None) -> list[dict[str, Any]]:
     """Récupère deux formes de valeur du Journal sans dépendre de TOUS_MARCHES_EVALUES.
 
     1. équipes à suivre : équipe×marché récurrent + prochain match + cote ;
@@ -483,11 +575,32 @@ def extract_journal_candidates(journal: dict[str, Any], full: dict[str, Any], mo
     rows: list[dict[str, Any]] = []
     seen: set[tuple[str, str, str]] = set()
     mode = mode or journal_mode()
+    if mode == "regularites" and classement is None:
+        classement = jrg.charge_taux(dt.datetime.now().date().isoformat())
+    if mode == "preuves" and classement is None:
+        classement = jcl.charge_calibrage(dt.datetime.now().date().isoformat())
+    DIAGNOSTIC_CLASSEMENT.clear()
+    if mode == "preuves":
+        cal = (classement or {}).get("calibrage") or {}
+        DIAGNOSTIC_CLASSEMENT.update({
+            "observations_calibrage": (classement or {}).get("observations", 0), "pour_le": (classement or {}).get("pour_le"),
+            "a": cal.get("a"), "b": cal.get("b"), "c": cal.get("c"), "modele": cal.get("modele"), "n": cal.get("n"),
+            "erreur": (classement or {}).get("erreur"),
+        })
+
+    if mode == "regularites":
+        st = classement or {}
+        DIAGNOSTIC_CLASSEMENT.update({
+            "mode": "regularites", "paris_intervalle": (st.get("intervalle") or (0, 0))[1],
+            "taux_intervalle": (st["intervalle"][0] / st["intervalle"][1]) if (st.get("intervalle") or (0, 0))[1] else None,
+            "paris_par_tranche": {str(t): v[1] for t, v in (st.get("tranches") or {}).items()},
+            "erreur": st.get("erreur"),
+        })
 
     for item in journal.get("equipes_a_suivre") or []:
         if not isinstance(item, dict):
             continue
-        c = _journal_team_market_candidate(item, mode)
+        c = _journal_team_market_candidate(item, mode, classement)
         if not c:
             continue
         key = (
@@ -499,6 +612,11 @@ def extract_journal_candidates(journal: dict[str, Any], full: dict[str, Any], mo
             continue
         seen.add(key)
         rows.append(c)
+
+    if mode == "regularites":
+        # Mode « regularites » : seuls les paris équipe×marché passent par les règles. Les segments championnat×marché
+        # reposent sur un ROI de segment, exclu de ce mode.
+        return rows
 
     segs = journal_segment_map(journal)
     if not segs:
@@ -603,7 +721,9 @@ def enrich(candidates: list[dict[str, Any]], history: dict[str, Any], intelligen
         # Une équipe 5/5 est donc mise en avant comme preuve, mais son estimation
         # mathématique reste prudente (borne Wilson 95 %).
         p_est = p
-        if c.get("journal_probabilite_lissee") is not None:
+        if c.get("probabilite_source") in ("JOURNAL_CALIBRE", "JOURNAL_REGULARITE"):
+            p_est = c.get("probabilite_estimee")
+        elif c.get("journal_probabilite_lissee") is not None:
             p_est = c["journal_probabilite_lissee"]
             c["probabilite_source"] = "JOURNAL_LISSE"
         elif c.get("journal_lower_bound") is not None:
@@ -619,6 +739,8 @@ def enrich(candidates: list[dict[str, Any]], history: dict[str, Any], intelligen
             p_est = min(0.99, max(0.01, q + jm))
         c["probabilite_estimee"] = round(p_est, 6) if p_est is not None else None
         c["ev_estime"] = round(p_est * odds - 1.0, 6) if p_est is not None and odds else None
+        if c.get("probabilite_source") == "JOURNAL_REGULARITE":
+            c["ev_estime"] = None   # mode « regularites » : aucun gain espéré
         if intelligence:
             apply_rules(c, intelligence)
         else:
@@ -639,7 +761,16 @@ def enrich(candidates: list[dict[str, Any]], history: dict[str, Any], intelligen
         empirical_rate = c.get("journal_frequency")
         empirical_roi = c.get("journal_roi")
         empirical_n = int(c.get("journal_observations") or 0)
-        if empirical_lower is None and n >= 10:
+        if c.get("probabilite_source") == "JOURNAL_CALIBRE":
+            # Mode « preuves » : fiabilité démontrée = borne basse calibrée (seulement si admissible), puis probabilité
+            # calibrée, puis espérance calibrée. Un pari non admissible n'a aucune preuve : il passe après tous les autres.
+            empirical_lower = c.get("journal_borne_basse_calibree") if c.get("journal_admissible") else None
+            empirical_rate = c.get("probabilite_estimee")
+            empirical_roi = c.get("ev_estime")
+        elif c.get("probabilite_source") == "JOURNAL_REGULARITE":
+            # Mode « regularites » : aucun ROI dans le classement (borne Wilson, fréquence, volume seulement).
+            empirical_roi = None
+        elif empirical_lower is None and n >= 10:
             empirical_lower = lower
             empirical_rate = c.get("historique_taux")
             empirical_roi = roi
@@ -761,6 +892,10 @@ def main() -> int:
     rows = extract_engine_candidates(v2, V2) + extract_engine_candidates(v3, V3)
     rows += extract_journal_candidates(journal, full)
     rows = enrich(rows, history, intelligence)
+    if DIAGNOSTIC_CLASSEMENT:
+        DIAGNOSTIC_CLASSEMENT.update(resume_classement(rows))
+        if DIAGNOSTIC_CLASSEMENT.get("erreur"):
+            print("ERREUR calibrage du Journal :", DIAGNOSTIC_CLASSEMENT["erreur"])      # visible dans les journaux du workflow
     sources = top_by_source(rows)
 
     result = {
@@ -768,6 +903,7 @@ def main() -> int:
         "genere_le": dt.datetime.now(dt.timezone.utc).isoformat(),
         "regle": "Les deux moteurs restent autonomes. Le deuxième calibrage intervient uniquement après leurs filtres et trie les candidats selon des configurations historiques découvertes automatiquement. Il ne modifie jamais les probabilités, coefficients ou décisions internes des moteurs.",
         "journal_calibrage": journal_mode(),
+        "journal_classement": dict(DIAGNOSTIC_CLASSEMENT),
         "sources": {
             source: {
                 "disponibles": len([x for x in rows if x.get("source") == source]),
