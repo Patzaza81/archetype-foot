@@ -93,14 +93,42 @@ def test_one_odds_click_adds_selection_to_betslip_without_betting(browser):
     try:
         goto_ok(page, BASE + "/events?categoryId=2&marketId=1X2")
 
-        # Let the SPA finish rendering live event cards and market prices.
         page.wait_for_load_state("networkidle", timeout=15_000)
-        page.wait_for_timeout(2_000)
+        page.wait_for_timeout(1_000)
 
         body_before = page.locator("body").inner_text(timeout=8_000)
         assert re.search(r"betslip is empty|coupon est vide|coupon de pari est vide", body_before, re.I), (
             "Could not confirm the starting betslip is empty; refusing to click an odds control."
         )
+
+        # The listing page does not reliably expose odds controls. Search for a
+        # match, open its event page, then test one market price there.
+        search_trigger = page.locator("[aria-label*='earch' i]").first
+        expect(search_trigger).to_be_visible()
+        search_trigger.click()
+        fields = page.locator("input[type='text'], input[type='search'], input:not([type])")
+        search_field = None
+        for i in range(fields.count()):
+            candidate = fields.nth(i)
+            if candidate.is_visible() and candidate.get_attribute("id") != "bookingCode":
+                search_field = candidate
+                break
+        assert search_field is not None, "No visible match-search input found."
+        search_field.fill("Barcelona")
+        suggestions = page.locator("[data-test-id='search-suggestions']")
+        suggestions.wait_for(state="visible", timeout=8_000)
+        match_option = None
+        for i in range(min(suggestions.locator("li, [role='option']").count(), 20)):
+            option = suggestions.locator("li, [role='option']").nth(i)
+            label = (option.inner_text(timeout=1_000) or "").strip()
+            if " - " in label:
+                match_option = option
+                break
+        assert match_option is not None, "No match suggestion found to open an event."
+        match_option.click()
+        page.wait_for_url(re.compile(r".*/event/.*"), timeout=15_000)
+        page.wait_for_load_state("domcontentloaded", timeout=10_000)
+        page.wait_for_timeout(1_500)
 
         # BetPawa's exact CSS classes may change. Prefer explicit test IDs,
         # then accessible button-like controls with a decimal odds-only label.
@@ -128,7 +156,7 @@ def test_one_odds_click_adds_selection_to_betslip_without_betting(browser):
         target.click()
         page.wait_for_timeout(1_500)
         body_after = page.locator("body").inner_text(timeout=8_000)
-        assert not re.search(r"betslip is empty|coupon est vide", body_after, re.I), (
+        assert not re.search(r"betslip is empty|coupon est vide|coupon de pari est vide", body_after, re.I), (
             f"Clicked odds {target_text}, but the page still reports an empty betslip."
         )
 
