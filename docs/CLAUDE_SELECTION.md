@@ -114,3 +114,10 @@ Limites à ne pas masquer : indépendance supposée, probabilités des moteurs n
 - Non suivis : les tickets « VOTRE_TICKET_COTE_x » construits dans le navigateur. Petits échantillons : un écart n'est significatif qu'avec beaucoup de tickets réglés ; `journal.yml` doit lister `data/tickets_historique.json` et `data/tickets_bilan.json` dans son `git add` (sinon seul le pipeline quotidien les publie) ; des exécutions concurrentes des workflows peuvent écraser des entrées.
 
 Tests : `tests/test_generateur_tickets.py` (Python et JavaScript doivent donner le même calcul), `tests/test_suivi_tickets.py`.
+
+## Générateur de tickets : V2 exclu (09/10/2026)
+
+- Sources du générateur : V3 et Journal, 15 paris au maximum chacune, 30 au maximum au total.
+- V2.6.10 est exclu du générateur (trop instable). Son moteur et son archive continuent de tourner.
+- Réintégration : ajouter `moteur_v2_6_10` à `SOURCES` dans `generateur_tickets.py` (et revoir `MAX_PAR_SOURCE`).
+- Tests : `test_v2_est_exclu_du_generateur`, `test_quinze_par_source_au_maximum_et_rien_de_force`.

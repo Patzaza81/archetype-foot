@@ -21,16 +21,17 @@ DEFAULT_TARGET = 10.0
 TOLERANCES = (0.05, 0.10, 0.25)
 ODDS_MIN = 1.26
 ODDS_MAX = 3.01
-# DÉCISION DE PATRICK (08/10/2026) : le générateur fait lui-même le tri dans chaque source (V2.6.10 en P1 seulement, V3,
-# Journal) et retient 10 paris au maximum par source, donc 30 au maximum. Cela est fait pour 4 plages de dates cumulatives (jour présent, puis + 1 jour, + 2 jours, + 3 jours), les matchs commencés étant exclus. Ces 30 sont à égalité : les tickets sont tirés
+# DÉCISION DE PATRICK (09/10/2026) : V2.6.10 est exclu du générateur (trop instable pour l'instant ; le moteur et son
+# archive continuent de tourner). Le générateur fait lui-même le tri dans chaque source (V3, Journal) et retient 15 paris
+# au maximum par source, donc 30 au maximum. Pour réintégrer V2 : l'ajouter à SOURCES. Cela est fait pour 4 plages de dates cumulatives (jour présent, puis + 1 jour, + 2 jours, + 3 jours), les matchs commencés étant exclus. Ces 30 sont à égalité : les tickets sont tirés
 # AU HASARD (graine = date du jour, enregistrée), sans règle de diversification de marchés, sans jamais réutiliser un
 # match dans les tickets du jour. Aucun quota n'est rempli de force.
-SOURCES = ("moteur_v2_6_10", "moteur_v3", "journal")
-MAX_PAR_SOURCE = 10
+SOURCES = ("moteur_v3", "journal")
+MAX_PAR_SOURCE = 15
 POOL_MAX = MAX_PAR_SOURCE * len(SOURCES)
 TENTATIVES_TIRAGE = 4000
 # DÉCISION DE PATRICK (08/10/2026) : 4 plages cumulatives à partir du jour présent (heure du Cameroun, UTC+1) :
-# jour présent ; jour présent + lendemain ; + surlendemain ; + J+3. Chaque plage a sa propre sélection (10 par source au
+# jour présent ; jour présent + lendemain ; + surlendemain ; + J+3. Chaque plage a sa propre sélection (15 par source au
 # maximum) et ses propres tickets. Les matchs déjà commencés sont exclus. Les dates sont affichées, jamais « J0 ».
 NB_PLAGES = 4
 FUSEAU_CAMEROUN = dt.timezone(dt.timedelta(hours=1))
@@ -632,7 +633,7 @@ def build(data: dict[str, Any], graine: str | None = None) -> dict[str, Any]:
         "intervalle_cote_totale": [MIN_TARGET, MAX_TARGET],
         "cote_par_defaut": DEFAULT_TARGET,
         "tolerances": list(TOLERANCES),
-        "principe": "Trois sources : V2.6.10 (pronostic P1 seulement), V3 et Journal. Le générateur trie chaque source (paris jouables, classement) et retient 10 paris au maximum par source, 30 au total, sans doublon de pari. Ces 30 sont à égalité : les tickets sont tirés au hasard (graine = date du jour), sans règle de diversification de marchés, sans jamais réutiliser un match dans les tickets du jour. Aucun quota n'est rempli de force. La cote totale est choisie par le parieur, entre 2 et 20.",
+        "principe": "Deux sources : V3 et Journal (V2.6.10 est exclu depuis le 09/10/2026). Le générateur trie chaque source (paris jouables, classement) et retient 15 paris au maximum par source, 30 au total, sans doublon de pari. Ces 30 sont à égalité : les tickets sont tirés au hasard (graine = date du jour), sans règle de diversification de marchés, sans jamais réutiliser un match dans les tickets du jour. Aucun quota n'est rempli de force. La cote totale est choisie par le parieur, entre 2 et 20.",
         "avertissement": "La cote totale d'un combiné est exacte comme produit des cotes observées ; la probabilité indépendante affichée n'est pas une probabilité jointe garantie.",
         "candidats_total": len(pool),
         "candidats_receptionnes": nb_jouables,
@@ -720,7 +721,7 @@ def main() -> int:
             "version": 2,
             "genere_le": dt.datetime.now(dt.timezone.utc).isoformat(),
             "maximum_matchs": MAX_MATCHES,
-            "maximum_par_source": 10,
+            "maximum_par_source": MAX_PAR_SOURCE,
             "intervalle_cote_totale": [MIN_TARGET, MAX_TARGET],
             "cote_par_defaut": DEFAULT_TARGET,
             "candidats_total": 0,

@@ -94,17 +94,16 @@ def test_generateur_traite_les_sources_de_facon_identique():
     assert gt.candidate_rank(rows[0]) == gt.candidate_rank(rows[1]) == gt.candidate_rank(rows[2])
 
 
-def test_build_retient_10_par_source_soit_30_et_les_tickets_utilisent_les_30():
+def test_build_retient_15_par_source_soit_30_et_les_tickets_utilisent_les_30():
     top = []
     for i in range(60):
         x = cand(i, 1.30 + (i % 10) * 0.12, 0.62 + (i % 8) * 0.03,
-                 source=("moteur_v2_6_10", "moteur_v3", "journal")[i // 20], rang="P1")
+                 source=("moteur_v3", "journal")[i // 30], rang="P1")
         top.append(x)
-    data = {"sources": {"moteur_v2_6_10": {"candidats": top[:20]}, "moteur_v3": {"candidats": top[20:40]},
-                        "journal": {"candidats": top[40:60]}}}
+    data = {"sources": {"moteur_v3": {"candidats": top[:30]}, "journal": {"candidats": top[30:60]}}}
     out = gt.build(data, graine="2026-10-08")
     assert out["candidats_total"] == 30 and out["candidats_retenus"] == 30
-    assert out["sources"] == {"moteur_v2_6_10": 10, "moteur_v3": 10, "journal": 10}
+    assert out["sources"] == {"moteur_v3": 15, "journal": 15}
     assert len(out["pool"]) == 30 and out["graine_tirage"] == "2026-10-08"
     assert all(s["metrics"]["matchs"] <= 12 for s in out["scenarios"])
 
@@ -469,18 +468,23 @@ def test_pari_key_meme_pari_et_paris_differents():
     assert gt.pari_key(v3) != gt.pari_key(_jour(1, "journal", marche="Match à moins de 2,5 buts"))  # sens opposé
 
 
-def test_v2_ne_garde_que_p1():
-    v2 = [cand(i, 1.6, 0.70, rang=("P1", "P2", "P3")[i % 3]) for i in range(9)]
-    retenus, _ = gt.selection_par_source({"sources": {"moteur_v2_6_10": {"candidats": v2}}})
-    assert len(retenus["moteur_v2_6_10"]) == 3 and all(x["rang"] == "P1" for x in retenus["moteur_v2_6_10"])
+def test_v2_est_exclu_du_generateur():
+    v2 = [cand(i, 1.6, 0.70, rang="P1") for i in range(9)]
+    v3 = [_jour(100 + i, "moteur_v3") for i in range(3)]
+    data = {"sources": {"moteur_v2_6_10": {"candidats": v2}, "moteur_v3": {"candidats": v3}}}
+    retenus, jouables = gt.selection_par_source(data)
+    assert gt.SOURCES == ("moteur_v3", "journal") and "moteur_v2_6_10" not in retenus
+    assert jouables == 3
+    out = gt.build(data)
+    assert all(x["source"] != "moteur_v2_6_10" for x in out["pool"]) and "moteur_v2_6_10" not in out["sources"]
 
 
-def test_dix_par_source_au_maximum_et_rien_de_force():
-    v3 = [_jour(i, "moteur_v3") for i in range(15)]
+def test_quinze_par_source_au_maximum_et_rien_de_force():
+    v3 = [_jour(i, "moteur_v3") for i in range(20)]
     journal = [_jour(100 + i, "journal") for i in range(3)]
     retenus, jouables = gt.selection_par_source({"sources": {"moteur_v3": {"candidats": v3}, "journal": {"candidats": journal}}})
-    assert len(retenus["moteur_v3"]) == 10 and len(retenus["journal"]) == 3 and retenus["moteur_v2_6_10"] == []
-    assert jouables == 18
+    assert len(retenus["moteur_v3"]) == 15 and len(retenus["journal"]) == 3
+    assert jouables == 23
 
 
 def test_les_non_jouables_sont_exclus_avant_la_coupe():
@@ -622,11 +626,11 @@ def test_build_plages_donne_quatre_plages_cumulatives_avec_dates():
     assert r["jour_present"] == "2026-10-08"
 
 
-def test_chaque_plage_ne_contient_que_ses_dates_et_max_10_par_source():
+def test_chaque_plage_ne_contient_que_ses_dates_et_max_15_par_source():
     r = gt.build_plages(_data_dates(), MAINT)
     for p in r["plages"]:
         assert {x["date"] for x in p["pool"]} <= set(p["dates"])
-        assert all(n <= 10 for n in p["sources"].values())
+        assert all(n <= 15 for n in p["sources"].values())
         assert len(p["pool"]) <= 30
 
 
