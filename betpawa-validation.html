@@ -3,77 +3,100 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>ARCHETYPE — Validation BetPawa</title>
+<meta name="theme-color" content="#087f78">
+<title>ARCHETYPE — Mes tickets</title>
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="theme.css">
 <style>
-body{max-width:760px;margin:auto;padding:14px}
-.card{border:1px solid #ddd;border-radius:14px;padding:14px;margin:10px 0;background:#fff}
-.status{display:inline-block;border-radius:999px;padding:4px 8px;font-size:11px;font-weight:700}
-.ready{background:#e8f5ee}.rejected{background:#fdecec}
-.leg{padding:10px 0;border-top:1px solid #eee}
-.leg:first-child{border-top:0}.odds{float:right;font-weight:800}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-button,a.btn{border:0;border-radius:9px;padding:10px 12px;font-weight:700;text-decoration:none;cursor:pointer}
-button.primary{background:#087f78;color:#fff}button.secondary,a.btn{background:#eee;color:#222}
-.small{font-size:11px;color:#666;line-height:1.45}
-.warn{font-size:12px;color:#9a3412;margin-top:8px}
+:root{--teal:#087f78;--gold:#d7a62a;--ink:#17333a;--muted:#5f7277;--line:#dce6e6;--bg:#f3f8f8}
+*{box-sizing:border-box}
+body{max-width:820px;margin:0 auto;padding:16px;background:var(--bg);color:var(--ink)}
+h1{font-size:clamp(23px,5vw,32px);line-height:1.15;margin:8px 0}
+h2{font-size:19px;margin:12px 0 6px}
+.intro{color:var(--muted);line-height:1.5}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:15px;margin:13px 0;box-shadow:0 3px 12px #17333a0a}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.status{display:inline-block;border-radius:999px;padding:5px 9px;font-size:11px;font-weight:800;background:#e6eeee}
+.status.ready{background:#e0f4ed;color:#12664c}
+.status.rejected{background:#fde8e6;color:#9d2822}
+.status.validated{background:#e6edff;color:#2447a2}
+.total{font-size:23px;font-weight:850;color:var(--teal);white-space:nowrap}
+.meta{font-size:12px;color:var(--muted);line-height:1.5}
+.leg{padding:12px 0;border-top:1px solid #e9eeee}
+.leg:first-of-type{margin-top:8px}
+.teams{font-weight:800;font-size:15px;padding-right:38px}
+.odds{float:right;font-weight:850;font-size:17px}
+.market{font-weight:650;margin:5px 0}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+button,a.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:10px;padding:12px 14px;font-size:14px;font-weight:800;text-decoration:none;cursor:pointer;min-height:44px}
+button.primary{background:var(--teal);color:#fff}
+button.reject{background:#fff0ef;color:#9d2822;border:1px solid #f3cfcb}
+a.btn{background:#edf3f3;color:#17434a}
+button:disabled{opacity:.75;cursor:default}
+.note{font-size:12px;line-height:1.5;color:var(--muted)}
+.warning{background:#fff8e8;border-left:4px solid var(--gold);padding:11px 12px;border-radius:8px;font-size:12px;line-height:1.5}
+.empty{padding:20px;text-align:center;color:var(--muted)}
 </style>
 </head>
 <body>
-<h1>ARCHETYPE — Validation BetPawa</h1>
-<p id="summary" class="small">Chargement…</p>
-<p class="warn">Les liens proviennent des URL déjà collectées par le scraping ARCHETYPE ou de son cache de correspondances confirmées : aucune URL d'événement n'est inventée. Les cotes affichées sont des instantanés, pas des cotes BetPawa en direct.</p>
-<section class="card"><strong>Contrôle dans le coupon BetPawa</strong><ol><li>Ouvrez le lien de chaque match et choisissez exactement le marché affiché.</li><li>Ajoutez chaque sélection au coupon BetPawa.</li><li>Ouvrez le bouton Coupon de BetPawa pour vérifier les matchs sélectionnés, les cotes réellement proposées, la cote totale et le montant de mise.</li><li>Si une équipe, un marché ou une cote diffère, corrigez ou retirez la sélection avant de décider.</li></ol><p class="small">ARCHETYPE prépare et contrôle les liens ; seul le coupon BetPawa confirme les cotes et le montant actuels. Aucun pari n'est soumis automatiquement.</p></section>
+<header>
+<p class="meta">ARCHETYPE FOOT · ESPACE DE VALIDATION</p>
+<h1>Mes tickets prêts à valider</h1>
+<p class="intro">Le système prépare chaque ticket complet. Examinez les sélections et la cote totale, puis validez ou rejetez le ticket en une seule action.</p>
+</header>
+<section class="card">
+<strong>Comment fonctionne votre validation ?</strong>
+<p class="note">« Valider ce ticket » enregistre votre décision dans ce navigateur. Avant de miser, vérifiez sur BetPawa que les marchés et les cotes sont toujours disponibles. Cette page ne transmet ni ne soumet de pari à BetPawa.</p>
+</section>
+<p class="warning">Les cotes affichées sont celles enregistrées lors de la génération, pas des cotes en direct. Un ticket incomplet, expiré ou dont un lien d’événement BetPawa n’a pas été confirmé est bloqué automatiquement.</p>
+<div id="summary" class="meta">Chargement des tickets…</div>
 <div id="tickets"></div>
 <script>
 (function(){
 "use strict";
 var root=document.getElementById("tickets");
-function esc(x){return String(x??"").replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])})}
-function money(x){return Number.isFinite(Number(x))?Number(x).toFixed(2):"—"}
+var summary=document.getElementById("summary");
+function esc(x){return String(x==null?"":x).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])})}
+function money(x){var n=Number(x);return Number.isFinite(n)?n.toFixed(2):"—"}
+function saved(key){try{return localStorage.getItem(key)||""}catch(_){return""}}
 function render(data){
  var list=Array.isArray(data.tickets)?data.tickets:[];
- document.getElementById("summary").textContent=list.length+" ticket(s) contrôlé(s) · "+(data.tickets_ready||0)+" prêt(s) à vérifier";
+ var stamp=String(data.generated_at||"unknown");
+ summary.textContent=list.length+" ticket(s) généré(s) · "+(data.tickets_ready||0)+" prêt(s) à valider · "+(data.tickets_rejected||0)+" bloqué(s)";
+ if(!list.length){root.innerHTML='<section class="card empty">Aucun ticket généré pour le moment. Relancez le générateur, puis rechargez cette page.</section>';return}
  root.innerHTML=list.map(function(t){
-   var ok=t.status==="READY_FOR_REVIEW";
-   var legs=(t.selection||[]).map(function(l){
-     return '<div class="leg"><span class="odds">'+money(l.cote)+'</span><strong>'+esc(l.domicile)+" — "+esc(l.exterieur)+'</strong>'+
-       '<div class="small">'+esc(l.marche)+" · "+esc(l.date)+" "+esc(l.heure)+" · "+esc(l.competition)+'</div>'+
-       (l.betpawa_url?'<div class="actions"><a class="btn" target="_blank" rel="noopener" href="'+esc(l.betpawa_url)+'">Ouvrir ce match sur BetPawa</a></div><div class="small">Lien : '+(l.betpawa_url_source==="scraping_cache"?"cache de scraping confirmé":"URL déjà présente dans la sélection")+'</div>':"")+
-       '</div>';
-   }).join("");
-   var errors=(t.errors||[]).length?'<div class="warn">Bloqué : '+esc(t.errors.join(", "))+'</div>':"";
-   return '<section class="card"><span class="status '+(ok?"ready":"rejected")+'">'+esc(t.status)+'</span>'+
-     '<h2>'+esc(t.ticket_id)+'</h2>'+
-     '<p class="small">'+esc(t.selection_count)+" sélection(s) · cote snapshot "+money(t.total_odds_snapshot)+'</p>'+
-     legs+errors+
-     (ok?'<div class="actions"><button class="primary" data-id="'+esc(t.ticket_id)+'">Confirmer mon contrôle manuel</button></div><p class="small">Le repère de contrôle est conservé uniquement dans le stockage local de cet appareil ; il ne modifie pas le manifeste et ne valide aucun pari.</p>':"")+
-     '</section>';
+  var status=t.status||"REJECTED";
+  var ok=status==="READY_FOR_REVIEW";
+  var key="archetype-ticket-decision:"+stamp+":"+String(t.ticket_id||"");
+  var decision=saved(key);
+  var shownStatus=decision==="VALIDATED"?"VALIDÉ PAR VOUS":decision==="REJECTED"?"REJETÉ PAR VOUS":status;
+  var statusClass=decision==="VALIDATED"?"validated":decision==="REJECTED"?"rejected":ok?"ready":"rejected";
+  var legs=(Array.isArray(t.selection)?t.selection:[]).map(function(l,i){
+   var url=String(l.betpawa_url||"");
+   var validUrl=/^https:\/\/(www\.)?betpawa\.cm\/event\/[A-Za-z0-9_-]+(?:\?.*)?$/.test(url);
+   return '<div class="leg"><span class="odds">'+money(l.cote)+'</span><div class="teams">'+(i+1)+'. '+esc(l.domicile)+' — '+esc(l.exterieur)+'</div><div class="market">'+esc(l.marche||"Marché non précisé")+'</div><div class="meta">'+esc(l.competition)+' · '+esc(l.date)+' '+esc(l.heure)+'</div>'+
+    (validUrl?'<div class="actions"><a class="btn" href="'+esc(url)+'" target="_blank" rel="noopener">Voir l’événement BetPawa</a></div>':'<div class="warning">Lien BetPawa non confirmé : ticket bloqué.</div>')+
+    '</div>';
+  }).join("");
+  var errors=(Array.isArray(t.errors)?t.errors:[]);
+  var warnings=(Array.isArray(t.warnings)?t.warnings:[]);
+  var decisions=ok&&!decision?'<div class="actions"><button class="primary" data-decision="VALIDATED" data-key="'+esc(key)+'">Valider ce ticket</button><button class="reject" data-decision="REJECTED" data-key="'+esc(key)+'">Rejeter ce ticket</button></div>':decision?'<p class="note">Votre décision est enregistrée sur cet appareil. Elle ne constitue pas une confirmation de pari par BetPawa.</p>':"";
+  return '<section class="card"><div class="top"><div><span class="status '+statusClass+'">'+esc(shownStatus)+'</span><h2>'+esc(t.scenario||t.ticket_id||"Ticket")+'</h2><div class="meta">'+esc(t.ticket_id||"")+' · '+esc(t.selection_count||0)+' sélection(s)</div></div><div><div class="meta">COTE TOTALE</div><div class="total">'+money(t.total_odds_snapshot)+'</div></div></div>'+
+   legs+(errors.length?'<div class="warning">Ticket bloqué : '+esc(errors.join(", "))+'</div>':"")+
+   (warnings.length?'<p class="note">À vérifier : '+esc(warnings.join(", "))+'</p>':"")+decisions+'</section>';
  }).join("");
- root.querySelectorAll("button[data-id]").forEach(function(btn){
-   var key="archetype-betpawa-checked:"+String(data.generated_at||"unknown")+":"+btn.getAttribute("data-id");
-   try {
-     if(window.localStorage.getItem(key)==="1"){
-       btn.disabled=true;
-       btn.textContent="Contrôle noté sur cet appareil";
-     }
-   } catch (_) {}
-   btn.addEventListener("click",function(){
-     try {
-       window.localStorage.setItem(key,"1");
-       btn.disabled=true;
-       btn.textContent="Contrôle noté sur cet appareil";
-     } catch (_) {
-       btn.textContent="Stockage indisponible — contrôle non enregistré";
-     }
-   });
+ root.querySelectorAll("button[data-decision]").forEach(function(btn){
+  btn.addEventListener("click",function(){
+   var action=btn.getAttribute("data-decision"),key=btn.getAttribute("data-key");
+   try{localStorage.setItem(key,action);render(data)}
+   catch(_){btn.textContent="Enregistrement impossible — réessayez";btn.disabled=true}
+  });
  });
 }
 fetch("data/betpawa_validation.json?_="+Date.now(),{cache:"no-store"})
- .then(function(r){if(!r.ok)throw Error("data/betpawa_validation.json introuvable");return r.json()})
+ .then(function(r){if(!r.ok)throw Error("Fichier de tickets introuvable : la génération Netlify doit se terminer correctement.");return r.json()})
  .then(render)
- .catch(function(e){document.getElementById("summary").textContent=e.message});
+ .catch(function(e){summary.textContent=e.message;root.innerHTML=""});
 })();
 </script>
 </body>
