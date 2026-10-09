@@ -1,4 +1,6 @@
+import json
 import unittest
+from pathlib import Path
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -84,6 +86,17 @@ class BetpawaValidationTests(unittest.TestCase):
         result = validate_ticket({"selection": []}, 1)
         self.assertEqual(result["status"], "REJECTED")
         self.assertIn("NO_SELECTION", result["errors"])
+
+    def test_real_generator_file_is_accepted_without_modifying_it(self):
+        source = Path(__file__).resolve().parents[1] / "data" / "tickets.json"
+        self.assertTrue(source.is_file(), "data/tickets.json must exist for integration test")
+        original = json.loads(source.read_text(encoding="utf-8"))
+        manifest = build_manifest(original)
+        self.assertEqual(manifest["tickets_requested"], len(original["pool"]))
+        self.assertEqual(manifest["tickets_checked"], min(15, len(original["pool"])))
+        self.assertTrue(all(t["selection_count"] == 1 for t in manifest["tickets"]))
+        self.assertTrue(all(t["human_validation_required"] for t in manifest["tickets"]))
+        self.assertTrue(all(not t["submission_automated"] for t in manifest["tickets"]))
 
     def test_daily_cap_is_fifteen(self):
         raw = {"tickets": [{"selection": [leg(home=f"Home {i}", away=f"Away {i}")]} 
