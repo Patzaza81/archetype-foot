@@ -121,3 +121,17 @@ Tests : `tests/test_generateur_tickets.py` (Python et JavaScript doivent donner 
 - V2.6.10 est exclu du générateur (trop instable). Son moteur et son archive continuent de tourner.
 - Réintégration : ajouter `moteur_v2_6_10` à `SOURCES` dans `generateur_tickets.py` (et revoir `MAX_PAR_SOURCE`).
 - Tests : `test_v2_est_exclu_du_generateur`, `test_quinze_par_source_au_maximum_et_rien_de_force`.
+
+## Archive de la sélection du générateur — 10/10/2026
+
+Problème : `data/tickets.json` est réécrit à chaque exécution, donc la liste des paris (V3 + Journal, 15 au maximum par source, par plage de dates) que le générateur a vraiment eue était perdue, et deux exécutions du même jour peuvent différer (ex. 09/10 : 11:50 UTC et 16:43 UTC).
+
+`suivi_selection_generateur.py`, lancé par `construit_etat_systeme.py` (après `generateur_tickets.py`, dans `pipeline.yml` et `journal.yml`) écrit `data/selection_generateur_historique.json` :
+- `executions` : une entrée par exécution dont la liste a changé (cote, probabilité, source, rang, plages où le pari figure). Jamais modifiée après coup.
+- `resultats` : score et WIN/LOSS par pari (identité = match + marché canonique + source), écrits une seule fois quand le match est terminé. Journal (sans `match_id`) : rapprochement par date + noms d'équipes normalisés (`match_key`) ; V3 : par `match_id`. Équipes inversées ou autre date = autre match. Marché non reconnu, match sans score, match introuvable : pas de résultat, jamais « perdu » par défaut.
+- `bilan` : réussite réelle contre probabilité estimée, par source et par jour du match. `derniere_erreur` affiche toute erreur de lecture des scores.
+- Rattrapage depuis l'historique Git (si des exécutions ont été écrasées par des workflows concurrents) : `python suivi_selection_generateur.py --rattrapage`.
+- `journal.yml` doit lister le fichier dans son `git add` (fait) ; `pipeline.yml` utilise `git add -A`.
+- Limite connue : `suivi_tickets.py` règle les tickets par `match_id` ; les paris du Journal n'en ont pas (`match_id` nul) et leurs libellés ne sont pas reconnus tels quels par son évaluateur, donc les tickets contenant un pari du Journal restent « PENDING ». L'archive de sélection ne dépend pas de ce défaut.
+
+Tests : `tests/test_selection_generateur.py` (cas qui passent et cas qui échouent par règle).

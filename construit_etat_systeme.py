@@ -63,7 +63,18 @@ def met_a_jour_suivi_tickets() -> None:
         print(f"[etat systeme] suivi des tickets non mis à jour : {type(e).__name__}: {e}")
 
 
+def met_a_jour_selection_generateur() -> None:
+    """Archive les paris sélectionnés par le générateur (data/selection_generateur_historique.json) et règle les matchs
+    terminés. Séparé du suivi des tickets : l'un ne peut pas empêcher l'autre, ni l'état système."""
+    try:
+        import suivi_selection_generateur
+        suivi_selection_generateur.main([])
+    except Exception as e:  # noqa: BLE001
+        print(f"[etat systeme] archive de la sélection du générateur non mise à jour : {type(e).__name__}: {e}")
+
+
 def main() -> None:
+    met_a_jour_selection_generateur()
     met_a_jour_suivi_tickets()
     etat = construit_etat()
     with open(FICHIER_ETAT, "w", encoding="utf-8") as f:

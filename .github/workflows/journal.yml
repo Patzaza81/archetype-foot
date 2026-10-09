@@ -94,6 +94,7 @@ jobs:
           git config user.name "archetype-foot-bot"
           git config user.email "bot@users.noreply.github.com"
           git add journal.json data/journal_intelligence.json data/journal_memoire.json data/journal_validation.json data/selection_intelligence.json data/tickets.json data/tickets_historique.json data/tickets_bilan.json data/v3/historique_selection.json etat_systeme.json
+          [ -f data/selection_generateur_historique.json ] && git add data/selection_generateur_historique.json
           [ -f controle_saisons.json ] && git add controle_saisons.json
           [ -d data/correspondances ] && git add data/correspondances
           [ -d data/assemblage ] && git add data/assemblage
