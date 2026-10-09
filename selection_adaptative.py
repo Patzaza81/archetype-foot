@@ -82,8 +82,8 @@ JOURNAL_MATCHS_FICTIFS = 20
 # ou {"mode": "wilson"}. Fichier absent, illisible ou mode inconnu : "wilson" (l'état initial, le plus prudent).
 JOURNAL_CONFIG = Path("config/journal_calibrage.json")
 MODES_JOURNAL = ("lisse", "wilson", "preuves", "regularites")
-# Mode « regularites » (journal_regularites.py) : ni ROI ni gain espéré ; cote 1,26–1,56 ; indice de constance dès 6 matchs ;
-# probabilité des tickets = réussite observée par tranche de cote ; Wilson seulement pour le classement.
+# Mode « regularites » (journal_regularites.py) : formule simple sans cote ni ROI ; chiffre = taux x réalisme du marché x
+# (1 - marge d'erreur) ; indice de constance dès 6 matchs ; probabilité des tickets = taux x réalisme.
 
 
 def journal_mode(path: Path = JOURNAL_CONFIG) -> str:
@@ -484,18 +484,27 @@ def _journal_team_market_candidate(row: dict[str, Any], mode: str | None = None,
 
 def _applique_regularites(c: dict[str, Any], row: dict[str, Any], observations: int, wins: int, odds: float,
                           stats: dict[str, Any] | None) -> None:
-    """Mode « regularites » : admissibilité (cote, constance), probabilité de ticket = réussite observée pour la tranche
-    de cote, affichage « x sur y ». Aucun ROI ni gain espéré. `stats` = journal_regularites.charge_taux()."""
-    taux, origine = jrg.taux_pour(odds, stats)
-    ok, motifs = jrg.evalue(wins, observations, row.get("gagnes_6"), row.get("joues_6"), odds)
-    if taux is None:
+    """Mode « regularites » : formule simple, sans cote ni ROI.
+    chiffre = taux de l'équipe x réalisme du marché x (1 - marge d'erreur) ; probabilité de ticket = taux x réalisme.
+    `stats` = journal_regularites.charge_realisme()."""
+    marche = c.get("marche") or ""
+    realisme, origine = jrg.realisme_pour(marche, stats)
+    ok, motifs = jrg.evalue(wins, observations, row.get("gagnes_6"), row.get("joues_6"))
+    taux = wins / observations if observations else 0.0
+    proba = chif = None
+    if realisme is None:
         ok = False
-        motifs.append(jrg.MOTIF_TAUX)
+        motifs.append(jrg.MOTIF_REALISME)
+    else:
+        proba = jrg.probabilite_ticket(taux, realisme)
+        chif = jrg.chiffre(taux, observations, realisme)
     c.update({
         "probabilite_source": "JOURNAL_REGULARITE",
-        "probabilite_estimee": round(taux, 6) if taux is not None else None,
-        "journal_taux_observe": round(taux, 6) if taux is not None else None,
-        "journal_taux_origine": origine,
+        "probabilite_estimee": round(proba, 6) if proba is not None else None,
+        "journal_realisme": round(realisme, 6) if realisme is not None else None,
+        "journal_realisme_origine": origine,
+        "journal_chiffre": round(chif, 6) if chif is not None else None,
+        "journal_marge_erreur": round(jrg.marge_erreur(taux, observations), 6),
         "journal_admissible": ok,
         "journal_motifs_rejet": motifs,
         "journal_gagnes_6": row.get("gagnes_6"),
@@ -505,7 +514,7 @@ def _applique_regularites(c: dict[str, Any], row: dict[str, Any], observations: 
         "journal_roi": None,
         "journal_success_margin": None,
         "justification": jrg.texte_affichage(c.get("journal_team") or "", wins, observations, row.get("gagnes_6"),
-                                             row.get("joues_6"), taux),
+                                             row.get("joues_6"), proba),
     })
 
 
@@ -576,7 +585,7 @@ def extract_journal_candidates(journal: dict[str, Any], full: dict[str, Any], mo
     seen: set[tuple[str, str, str]] = set()
     mode = mode or journal_mode()
     if mode == "regularites" and classement is None:
-        classement = jrg.charge_taux(dt.datetime.now().date().isoformat())
+        classement = jrg.charge_realisme(dt.datetime.now().date().isoformat())
     if mode == "preuves" and classement is None:
         classement = jcl.charge_calibrage(dt.datetime.now().date().isoformat())
     DIAGNOSTIC_CLASSEMENT.clear()
@@ -591,9 +600,10 @@ def extract_journal_candidates(journal: dict[str, Any], full: dict[str, Any], mo
     if mode == "regularites":
         st = classement or {}
         DIAGNOSTIC_CLASSEMENT.update({
-            "mode": "regularites", "paris_intervalle": (st.get("intervalle") or (0, 0))[1],
-            "taux_intervalle": (st["intervalle"][0] / st["intervalle"][1]) if (st.get("intervalle") or (0, 0))[1] else None,
-            "paris_par_tranche": {str(t): v[1] for t, v in (st.get("tranches") or {}).items()},
+            "mode": "regularites", "cas_passes": (st.get("total") or (0, 0.0, 0))[0],
+            "realisme_moyen": jrg.realisme_pour("", st)[0],
+            "realisme_par_marche": {m: round(v[2] / v[1], 3) for m, v in (st.get("marches") or {}).items()
+                                    if v[0] >= jrg.MIN_CAS_MARCHE and v[1] > 0},
             "erreur": st.get("erreur"),
         })
 

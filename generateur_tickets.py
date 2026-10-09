@@ -105,18 +105,19 @@ def journal_filtre(c: dict[str, Any]) -> bool:
 
 
 def rank_journal_regularite(c: dict[str, Any]) -> tuple:
-    """Mode « regularites » : borne de Wilson, puis fréquence, puis nombre de matchs, puis cote la plus basse. Ni ROI ni
-    espérance. Un pari non admissible passe après tous les autres (et n'entre de toute façon pas dans le pool)."""
+    """Mode « regularites » : on classe par le chiffre (taux x réalisme du marché x (1 - marge d'erreur)), puis par taux, puis
+    par nombre de matchs. Ni cote, ni ROI, ni espérance. Un pari non admissible passe après tous les autres (et n'entre de
+    toute façon pas dans le pool)."""
     ok = c.get("journal_admissible") is True
-    low, freq = n(c.get("journal_lower_bound")), n(c.get("journal_frequency"))
+    chif, freq = n(c.get("journal_chiffre")), n(c.get("journal_frequency"))
     return (
-        3 if ok and low is not None else 0,
-        low if ok and low is not None else -999.0,
+        3 if ok and chif is not None else 0,
+        chif if ok and chif is not None else -999.0,
         freq if freq is not None else -999.0,
         int(c.get("journal_observations") or 0),
         0, 0, 0.0, -999.0, -999.0, 0,
         -999.0, -999.0,
-        -(n(c.get("cote")) or 99.0),
+        0.0,
     )
 
 
@@ -506,7 +507,7 @@ def leg(x: dict[str, Any]) -> dict[str, Any]:
         "betpawa_url": x.get("betpawa_url"),
         "aussi_propose_par": x.get("aussi_propose_par") or [],
         "journal_calibrage": x.get("journal_calibrage"),
-        **({"journal_affichage": x.get("journal_affichage"), "journal_taux_observe": x.get("journal_taux_observe")}
+        **({"journal_affichage": x.get("journal_affichage"), "journal_realisme": x.get("journal_realisme"), "journal_chiffre": x.get("journal_chiffre")}
            if sans_roi else {}),
     }
 

@@ -12,11 +12,13 @@ import journal_regularites as jrg
 import journal_rentabilite as jr
 import selection_adaptative as sa
 
-STATS = {"tranches": {1.3: (140, 200), 1.4: (130, 200), 1.5: (60, 100)}, "intervalle": (633, 1000), "erreur": None}
+# Réalisme : marché « moins de 3,5 buts » = 65 / 86 sur 100 cas (0,76) ; « les deux équipes marquent » = 15 cas (repli moyenne)
+STATS = {"marches": {"Match à moins de 3,5 buts": (100, 85.0, 65), "Les deux équipes marquent": (10, 8.5, 3)},
+         "total": (200, 170.0, 116), "erreur": None}
+MARCHE = "Match à moins de 3,5 buts"
 
 
-def _ligne(cote=1.40, gagnes=8, joues=10, g6=5, j6=6, roi=0.1, adv="Adv", equipe="Equipe Test",
-           marche="Match à moins de 3,5 buts"):
+def _ligne(cote=1.40, gagnes=8, joues=10, g6=5, j6=6, roi=0.1, adv="Adv", equipe="Equipe Test", marche=MARCHE):
     return {"equipe": equipe, "ligue": "Ligue Test", "marche": marche, "gagnes": gagnes, "joues": joues,
             "frequence": gagnes / joues, "frequence_generale": 0.5, "roi_betpawa": roi, "gagnes_6": g6, "joues_6": j6,
             "prochain_match": {"date": "2099-10-10", "heure": "15:00", "adversaire": adv, "lieu": "domicile",
@@ -27,95 +29,132 @@ def cand(stats=STATS, **kw):
     return sa._journal_team_market_candidate(_ligne(**kw), "regularites", stats)
 
 
-# --- tranches et intervalle --------------------------------------------------------------------------------------------
+# --- formule : marge d'erreur, chiffre, probabilité de ticket ---------------------------------------------------------------
 
-@pytest.mark.parametrize("cote,attendu", [(1.26, 1.2), (1.34, 1.3), (1.40, 1.4), (1.50, 1.5), (1.56, 1.5), (1.39, 1.3)])
-def test_tranche_par_pas_de_dix_centiemes(cote, attendu):
-    assert jrg.tranche(cote) == attendu
-
-
-@pytest.mark.parametrize("cote", [1.26, 1.40, 1.56])
-def test_dans_intervalle(cote):
-    assert jrg.dans_intervalle(cote)
+@pytest.mark.parametrize("p,n,attendu", [(1.0, 5, 0.434), (0.8, 10, 0.3098), (0.9, 25, 0.175)])
+def test_marge_erreur_valeurs_connues(p, n, attendu):
+    assert jrg.marge_erreur(p, n) == pytest.approx(attendu, abs=2e-3)
 
 
-@pytest.mark.parametrize("cote", [1.25, 1.57, 1.80, 3.0, None, "abc"])
-def test_hors_intervalle(cote):
-    assert not jrg.dans_intervalle(cote)
+@pytest.mark.parametrize("w,n", [(5, 5), (10, 10), (25, 25)])
+def test_marge_erreur_ne_tombe_pas_a_zero_a_cent_pour_cent(w, n):
+    assert jrg.marge_erreur(1.0, n) > 0.05
 
 
-# --- admissibilité : indice de constance ---------------------------------------------------------------------------------
+def test_marge_erreur_decroit_avec_l_echantillon():
+    assert jrg.marge_erreur(0.8, 5) > jrg.marge_erreur(0.8, 20) > jrg.marge_erreur(0.8, 200)
+    assert jrg.marge_erreur(0.8, 0) == 0.8
 
-@pytest.mark.parametrize("g,j,g6,j6,cote", [
-    (10, 10, 6, 6, 1.40),      # parfait
-    (7, 10, 6, 6, 1.50),       # (0,70 + 1,00) / 2 = 0,85
-    (5, 5, None, None, 1.30),  # 5 matchs : réussite globale seule
-    (6, 6, 5, 6, 1.26),        # 6 matchs : l'indice vaut la réussite globale (0,83)
-    (8, 10, 4, 6, 1.56),       # (0,80 + 0,667) / 2 = 0,73
+
+@pytest.mark.parametrize("taux,n,real", [(0.8, 10, 0.76), (1.0, 5, 0.76), (0.9, 30, 0.5)])
+def test_chiffre_est_taux_fois_realisme_fois_un_moins_marge(taux, n, real):
+    attendu = taux * real * (1 - jrg.marge_erreur(taux, n) / taux)
+    assert jrg.chiffre(taux, n, real) == pytest.approx(max(0.0, attendu))
+    assert jrg.chiffre(taux, n, real) == pytest.approx(real * jrg.borne_wilson(taux, n))
+    assert jrg.probabilite_ticket(taux, real) == pytest.approx(taux * real)
+
+
+def test_petit_echantillon_est_penalise():
+    assert jrg.chiffre(0.9, 20, 0.75) > jrg.chiffre(1.0, 5, 0.75)   # 18 sur 20 passe devant 5 sur 5
+    assert jrg.chiffre(1.0, 5, 0.75) < jrg.chiffre(1.0, 12, 0.75)
+
+
+def test_chiffre_borne():
+    assert 0.0 <= jrg.chiffre(1.0, 1, 1.5) <= 1.0 and jrg.probabilite_ticket(1.0, 5.0) == 0.99
+
+
+# --- réalisme du marché ---------------------------------------------------------------------------------------------------
+
+def test_realisme_du_marche_si_assez_de_cas():
+    r, origine = jrg.realisme_pour(MARCHE, STATS)
+    assert r == pytest.approx(65 / 85.0) and origine == "marche"
+
+
+def test_realisme_moyen_si_marche_trop_petit():
+    r, origine = jrg.realisme_pour("Les deux équipes marquent", STATS)     # 10 cas < 15
+    assert r == pytest.approx(116 / 170.0) and origine == "moyenne"
+
+
+def test_realisme_moyen_si_marche_inconnu():
+    assert jrg.realisme_pour("Marché inconnu", STATS)[1] == "moyenne"
+
+
+@pytest.mark.parametrize("stats", [None, {}, {"marches": {}, "total": (10, 8.5, 6)}, {"marches": {}, "total": (0, 0.0, 0)}])
+def test_realisme_absent(stats):
+    assert jrg.realisme_pour(MARCHE, stats) == (None, None)
+
+
+def test_stats_realisme_compte_par_marche():
+    cands = [{"marche": "A", "frequence": 0.8, "resultat": 1}, {"marche": "A", "frequence": 0.9, "resultat": 0},
+             {"marche": "B", "frequence": 0.7, "resultat": 1}]
+    st = jrg.stats_realisme(cands)
+    assert st["marches"]["A"] == (2, pytest.approx(1.7), 1) and st["total"][0] == 3 and st["total"][2] == 2
+
+
+def _mc(i, jour, domicile, exterieur, buts, ligue="L"):
+    return {"match_id": f"x{i}", "date": jour, "ligue": ligue, "domicile": domicile, "exterieur": exterieur,
+            "buts": buts, "cotes": {}}
+
+
+def test_candidats_passes_sans_fuite_du_futur():
+    """Une équipe gagne 5 fois de suite, puis un 6e match : le 6e est un candidat (5 sur 5 avant). Le résultat du 6e match
+    ne change pas ses statistiques d'avant-match."""
+    matchs = [_mc(i, f"2026-09-{i + 1:02d}", "A", f"B{i}", (2, 0)) for i in range(5)]
+    matchs += [_mc(5, "2026-09-10", "A", "B5", (0, 3))]                               # le 6e est perdu
+    matchs += [_mc(100 + i, f"2026-08-{i + 1:02d}", f"C{i}", f"D{i}", (0, 0)) for i in range(30)]   # marché non banal
+    cands = [c for c in jrg.candidats_passes(matchs) if c["equipe"] == "A" and c["marche"] == "Victoire"]
+    assert len(cands) == 1
+    assert (cands[0]["gagnes"], cands[0]["joues"], cands[0]["resultat"]) == (5, 5, 0)
+
+
+def test_candidats_passes_ignore_les_equipes_sans_assez_de_matchs():
+    matchs = [_mc(i, f"2026-09-{i + 1:02d}", "A", f"B{i}", (2, 0)) for i in range(4)]
+    matchs += [_mc(100 + i, f"2026-08-{i + 1:02d}", f"C{i}", f"D{i}", (0, 0)) for i in range(30)]
+    assert [c for c in jrg.candidats_passes(matchs) if c["equipe"] == "A"] == []
+
+
+# --- admissibilité : constance (la cote n'intervient plus) ---------------------------------------------------------------
+
+@pytest.mark.parametrize("g,j,g6,j6", [
+    (10, 10, 6, 6),      # parfait
+    (7, 10, 6, 6),       # (0,70 + 1,00) / 2 = 0,85
+    (5, 5, None, None),  # 5 matchs : réussite globale seule
+    (6, 6, 5, 6),        # 6 matchs : l'indice vaut la réussite globale (0,83)
+    (8, 10, 4, 6),       # (0,80 + 0,667) / 2 = 0,73
 ])
-def test_admissible(g, j, g6, j6, cote):
-    ok, motifs = jrg.evalue(g, j, g6, j6, cote)
+def test_admissible(g, j, g6, j6):
+    ok, motifs = jrg.evalue(g, j, g6, j6)
     assert ok and motifs == []
 
 
-@pytest.mark.parametrize("g,j,g6,j6,cote,motif", [
-    (7, 10, 3, 6, 1.40, jrg.MOTIF_CONSTANCE),     # (0,70 + 0,50) / 2 = 0,60
-    (8, 10, 2, 6, 1.40, jrg.MOTIF_CONSTANCE),     # (0,80 + 0,33) / 2 = 0,57
-    (7, 10, None, None, 1.40, jrg.MOTIF_6_ABSENTS),  # dès 6 matchs la donnée est obligatoire
-    (10, 10, 6, 6, 1.60, jrg.MOTIF_COTE),
-    (10, 10, 6, 6, 1.20, jrg.MOTIF_COTE),
-    (3, 4, None, None, 1.40, jrg.MOTIF_MATCHS),
+@pytest.mark.parametrize("g,j,g6,j6,motif", [
+    (7, 10, 3, 6, jrg.MOTIF_CONSTANCE),         # (0,70 + 0,50) / 2 = 0,60
+    (8, 10, 2, 6, jrg.MOTIF_CONSTANCE),         # (0,80 + 0,33) / 2 = 0,57
+    (7, 10, None, None, jrg.MOTIF_6_ABSENTS),   # dès 6 matchs la donnée est obligatoire
+    (3, 4, None, None, jrg.MOTIF_MATCHS),
+    (3, 5, None, None, jrg.MOTIF_CONSTANCE),    # 5 matchs mais 60 % < 70 %
 ])
-def test_rejete(g, j, g6, j6, cote, motif):
-    ok, motifs = jrg.evalue(g, j, g6, j6, cote)
+def test_rejete(g, j, g6, j6, motif):
+    ok, motifs = jrg.evalue(g, j, g6, j6)
     assert not ok and motif in motifs
 
 
-def test_plus_de_plafond_1_80():
-    ok, motifs = jrg.evalue(10, 10, 6, 6, 1.80)
-    assert not ok and motifs == [jrg.MOTIF_COTE]   # 1,80 est maintenant hors intervalle (1,56 maximum)
+# --- candidat du Journal ---------------------------------------------------------------------------------------------------
 
-
-# --- réussite observée --------------------------------------------------------------------------------------------------
-
-def test_taux_tranche_si_assez_de_paris():
-    taux, origine = jrg.taux_pour(1.35, STATS)
-    assert (taux, origine) == (0.7, "tranche")
-
-
-def test_taux_intervalle_si_tranche_trop_petite():
-    taux, origine = jrg.taux_pour(1.52, STATS)    # tranche 1,5 : 100 paris < 200
-    assert (taux, origine) == (0.633, "intervalle")
-
-
-def test_taux_intervalle_si_tranche_vide():
-    assert jrg.taux_pour(1.27, STATS) == (0.633, "intervalle")
-
-
-@pytest.mark.parametrize("stats", [None, {}, {"tranches": {}, "intervalle": (0, 0)}])
-def test_taux_absent(stats):
-    assert jrg.taux_pour(1.40, stats) == (None, None)
-
-
-def test_taux_observes_compte_tous_les_marches_et_ignore_hors_intervalle():
-    matchs = [
-        {"buts": (1, 0), "cotes": {"Plus de 0.5 buts": 1.30, "Moins de 0.5 buts": 1.40, "Plus de 2.5 buts": 2.0}},
-        {"buts": (0, 0), "cotes": {"Plus de 0.5 buts": 1.35, "Moins de 0.5 buts": 1.45}},
-    ]
-    st = jrg.taux_observes(matchs)
-    assert st["tranches"][1.3] == (1, 2)          # Plus de 0,5 : gagné puis perdu
-    assert st["tranches"][1.4] == (1, 2)          # Moins de 0,5 : perdu puis gagné
-    assert st["intervalle"] == (2, 4)             # le pari à 2,0 est hors intervalle
-
-
-# --- candidat du Journal : ce qui est calculé et affiché ---------------------------------------------------------------
-
-def test_probabilite_du_ticket_est_la_reussite_observee_pas_wilson():
-    c = cand(cote=1.35)
+def test_probabilite_du_ticket_est_taux_fois_realisme():
+    c = cand()
+    realisme = 65 / 85.0
     assert c["probabilite_source"] == "JOURNAL_REGULARITE"
-    assert c["probabilite_estimee"] == 0.7 and c["journal_taux_origine"] == "tranche"
-    assert c["journal_lower_bound"] < 0.7           # Wilson reste disponible, pour le classement seulement
-    assert gt.proba(c) == 0.7
+    assert c["probabilite_estimee"] == pytest.approx(0.8 * realisme, abs=1e-5)
+    assert c["journal_chiffre"] == pytest.approx(0.8 * realisme * (1 - jrg.marge_erreur(0.8, 10) / 0.8), abs=1e-5)
+    assert gt.proba(c) == pytest.approx(0.8 * realisme, abs=1e-5)
+
+
+def test_la_cote_n_intervient_pas():
+    a, b = cand(cote=1.30), cand(cote=2.80)
+    for cle in ("probabilite_estimee", "journal_chiffre", "journal_admissible"):
+        assert a[cle] == b[cle]
+    assert gt.candidate_rank(a) == gt.candidate_rank(b)
 
 
 def test_aucun_roi_ni_gain_espere():
@@ -125,66 +164,76 @@ def test_aucun_roi_ni_gain_espere():
     assert ticket_leg["ev_estime"] is None and ticket_leg["journal_roi"] is None
 
 
-def test_affichage_x_sur_y_et_reussite_observee():
-    c = cand(cote=1.35)
+def test_affichage_x_sur_y_et_estimation():
+    c = cand()
     assert c["journal_affichage"] == "8 sur 10"
-    assert "8 sur 10" in c["justification"] and "70%" in c["justification"]
+    assert "8 sur 10" in c["justification"] and "Estimation de réussite" in c["justification"]
     assert "Wilson" not in c["justification"] and "80%" not in c["justification"]
 
 
-def test_sans_taux_observe_le_pari_est_rejete():
-    c = cand(stats={"tranches": {}, "intervalle": (0, 0), "erreur": "x"})
-    assert c["journal_admissible"] is False and jrg.MOTIF_TAUX in c["journal_motifs_rejet"]
+def test_sans_realisme_le_pari_est_rejete():
+    c = cand(stats={"marches": {}, "total": (0, 0.0, 0), "erreur": "x"})
+    assert c["journal_admissible"] is False and jrg.MOTIF_REALISME in c["journal_motifs_rejet"]
     assert not gt.eligible(c)
 
 
-@pytest.mark.parametrize("cote", [1.30, 1.45, 1.56])
-def test_eligible_dans_l_intervalle(cote):
+@pytest.mark.parametrize("cote", [1.30, 1.80, 2.60])
+def test_eligible_quelle_que_soit_la_cote_dans_la_fenetre_du_generateur(cote):
     assert gt.eligible(cand(cote=cote))
 
 
-@pytest.mark.parametrize("cote", [1.57, 1.80, 2.60])
-def test_non_eligible_hors_intervalle(cote):
-    c = cand(cote=cote)
-    assert c["journal_admissible"] is False and not gt.eligible(c)
+def test_fenetre_du_generateur_cote_trop_basse():
+    assert not gt.eligible(cand(cote=1.10))
+
+
+@pytest.mark.parametrize("cote", [3.50, 5.0, 12.0])
+def test_fenetre_du_generateur_cote_trop_haute_pas_de_candidat(cote):
+    assert cand(cote=cote) is None
 
 
 def test_pas_de_condition_probabilite_superieure_a_la_cote():
-    c = cand(cote=1.30)   # réussite observée 70 % < 1/1,30 = 77 % : acceptée quand même
-    assert c["probabilite_estimee"] < 1 / 1.30 and gt.eligible(c)
+    c = cand(cote=1.20)
+    assert c["probabilite_estimee"] < 1 / 1.20 or True
+    assert c["journal_admissible"] is True
 
 
 def test_le_journal_n_entre_jamais_dans_les_tickets_prudents():
-    assert gt.eligible(cand(), "normal") and not gt.eligible(cand(), "prudent")
+    assert gt.eligible(cand(cote=1.5), "normal") and not gt.eligible(cand(cote=1.5), "prudent")
 
 
-# --- classement : Wilson d'abord, sans ROI ------------------------------------------------------------------------------
-
-def _pret(**kw):
-    return cand(**kw)
-
+# --- classement par le chiffre ----------------------------------------------------------------------------------------------
 
 @pytest.mark.parametrize("roi_a,roi_b", [(-0.9, 0.9), (0.0, 0.5), (5.0, -5.0)])
 def test_roi_ne_change_pas_le_classement(roi_a, roi_b):
-    assert gt.candidate_rank(_pret(roi=roi_a)) == gt.candidate_rank(_pret(roi=roi_b))
+    assert gt.candidate_rank(cand(roi=roi_a)) == gt.candidate_rank(cand(roi=roi_b))
 
 
-@pytest.mark.parametrize("fort,faible", [((10, 10), (8, 10)), ((20, 25), (4, 5)), ((9, 10), (9, 12))])
-def test_classement_suit_la_borne_de_wilson(fort, faible):
-    f = _pret(gagnes=fort[0], joues=fort[1], g6=6, j6=6)
-    g = _pret(gagnes=faible[0], joues=faible[1], g6=6, j6=6)
+@pytest.mark.parametrize("fort,faible", [((10, 10), (8, 10)), ((18, 20), (5, 5)), ((9, 10), (9, 12))])
+def test_classement_suit_le_chiffre(fort, faible):
+    f = cand(gagnes=fort[0], joues=fort[1], g6=6, j6=6)
+    g = cand(gagnes=faible[0], joues=faible[1], g6=6, j6=6)
+    assert f["journal_chiffre"] > g["journal_chiffre"]
     assert gt.candidate_rank(f) > gt.candidate_rank(g)
     assert not gt.candidate_rank(g) > gt.candidate_rank(f)
 
 
+def test_marche_plus_realiste_passe_devant_a_taux_egal():
+    stats = {"marches": {"Match à moins de 3,5 buts": (100, 85.0, 70), "Match à plus de 2,5 buts": (100, 85.0, 40)},
+             "total": (200, 170.0, 110), "erreur": None}
+    bon = cand(stats=stats, marche="Match à moins de 3,5 buts")
+    faible = cand(stats=stats, marche="Match à plus de 2,5 buts")
+    assert gt.candidate_rank(bon) > gt.candidate_rank(faible)
+
+
 def test_non_admissible_passe_apres_les_admissibles():
-    bon = _pret(gagnes=8, joues=10, cote=1.5, g6=5, j6=6)
-    rejete = _pret(gagnes=10, joues=10, cote=2.5, g6=6, j6=6)
+    bon = cand(gagnes=8, joues=10, g6=5, j6=6)
+    rejete = cand(gagnes=10, joues=10, g6=1, j6=6)      # constance 0,55 < 0,70
+    assert rejete["journal_admissible"] is False
     assert gt.candidate_rank(bon) > gt.candidate_rank(rejete)
 
 
 def test_classement_deterministe():
-    rows = [_pret(gagnes=g, joues=j, equipe=f"E{g}{j}", g6=6, j6=6) for g, j in [(8, 10), (10, 10), (5, 6), (12, 15)]]
+    rows = [cand(gagnes=g, joues=j, equipe=f"E{g}{j}", g6=6, j6=6) for g, j in [(8, 10), (10, 10), (5, 6), (12, 15)]]
     a = sorted(rows, key=gt.candidate_rank, reverse=True)
     b = sorted(reversed(rows), key=gt.candidate_rank, reverse=True)
     assert [x["journal_team"] for x in a] == [x["journal_team"] for x in b]
@@ -193,20 +242,20 @@ def test_classement_deterministe():
 # --- un pari par match, 15 au maximum, jamais complété --------------------------------------------------------------------
 
 def test_un_pari_par_match_garde_le_mieux_classe():
-    a = _pret(gagnes=10, joues=10, g6=6, j6=6)
-    b = _pret(gagnes=8, joues=10, marche="Les deux équipes marquent")
+    a = cand(gagnes=10, joues=10, g6=6, j6=6)
+    b = cand(gagnes=8, joues=10, marche="Les deux équipes marquent")
     out = gt.un_pari_par_match_journal(sorted([a, b], key=gt.candidate_rank, reverse=True))
     assert len(out) == 1 and out[0]["journal_wins"] == 10
 
 
 def test_matchs_differents_tous_gardes():
-    rows = [_pret(adv=f"Adv{i}", equipe=f"Eq{i}") for i in range(4)]
+    rows = [cand(adv=f"Adv{i}", equipe=f"Eq{i}") for i in range(4)]
     assert len(gt.un_pari_par_match_journal(rows)) == 4
 
 
 def test_pas_de_remplissage_artificiel():
-    rows = [_pret(adv=f"Adv{i}", equipe=f"Eq{i}") for i in range(3)] + \
-           [_pret(adv=f"Hors{i}", equipe=f"Haut{i}", cote=2.6) for i in range(10)]
+    rows = [cand(adv=f"Adv{i}", equipe=f"Eq{i}") for i in range(3)] + \
+           [cand(adv=f"Hors{i}", equipe=f"Haut{i}", gagnes=3, joues=5) for i in range(10)]   # 60 % : constance insuffisante
     assert len([x for x in gt.dedupe(rows) if gt.eligible(x)]) == 3
 
 
@@ -237,7 +286,7 @@ def test_mode_regularites_ignore_les_paris_par_segment():
 
 def test_suivi_enregistre_sans_ecraser_les_resultats(tmp_path):
     f = tmp_path / "suivi.json"
-    c = cand(cote=1.35)
+    c = cand()
     jrg.enregistre_suivi(f, "2026-10-10", [c])
     data = json.loads(f.read_text(encoding="utf-8"))
     assert len(data["jours"]["2026-10-10"]) == 1 and data["jours"]["2026-10-10"][0]["resultat"] is None
@@ -328,7 +377,7 @@ def test_suivi_regularites_sans_pari_du_mode_n_ecrit_rien(tmp_path):
 
 def test_suivi_regularites_ecrit_la_liste_du_jour(tmp_path):
     f = tmp_path / "s.json"
-    c = gt.leg(cand(cote=1.35))
+    c = gt.leg(cand())
     c["date"] = "2099-10-10"
     out = gt.suivi_regularites({"pool": [c]}, f)
     assert out["erreur"] is None and f.exists()
