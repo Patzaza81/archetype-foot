@@ -161,6 +161,9 @@ def _normalise_selection(ticket: dict[str, Any]) -> list[dict[str, Any]]:
             "exterieur": _text(leg.get("exterieur")),
             "marche": _text(leg.get("marche")),
             "cote": _num(leg.get("cote")),
+            "journal_team": _text(leg.get("journal_team")),
+            "source": _text(leg.get("source")),
+            "moteur": _text(leg.get("moteur")),
             "betpawa_url": betpawa_url,
             "betpawa_url_source": url_source,
         })
