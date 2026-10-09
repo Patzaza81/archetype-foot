@@ -382,3 +382,15 @@ def test_suivi_regularites_ecrit_la_liste_du_jour(tmp_path):
     out = gt.suivi_regularites({"pool": [c]}, f)
     assert out["erreur"] is None and f.exists()
     assert json.loads(f.read_text(encoding="utf-8"))["jours"]["2099-10-10"][0]["equipe"] == "Equipe Test"
+
+
+def test_diagnostic_compte_les_paris_du_mode_regularites():
+    """Le diagnostic ne doit pas afficher 0 candidat quand le mode « regularites » est actif."""
+    rows = [
+        {"probabilite_source": "JOURNAL_REGULARITE", "journal_admissible": True, "cote": 1.5, "domicile": "A", "exterieur": "B", "marche": "m"},
+        {"probabilite_source": "JOURNAL_REGULARITE", "journal_admissible": False, "journal_motifs_rejet": ["X"], "cote": 1.5, "domicile": "C", "exterieur": "D", "marche": "m"},
+        {"probabilite_source": "MODELE_NON_CALIBRE", "cote": 1.5},
+    ]
+    from selection_adaptative import resume_classement
+    r = resume_classement(rows)
+    assert r["candidats"] == 2 and r["admissibles"] == 1 and r["motifs_de_rejet"] == {"X": 1}

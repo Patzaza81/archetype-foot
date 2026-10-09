@@ -555,7 +555,7 @@ DIAGNOSTIC_CLASSEMENT: dict[str, Any] = {}
 def resume_classement(rows: list[dict[str, Any]]) -> dict[str, Any]:
     """Diagnostic du mode « preuves » : combien de paris du Journal sont admissibles, pourquoi les autres sont rejetés, et
     les rejetés les plus proches du seuil (jamais publiés, seulement pour comprendre)."""
-    cj = [x for x in rows if x.get("probabilite_source") == "JOURNAL_CALIBRE"]
+    cj = [x for x in rows if x.get("probabilite_source") in ("JOURNAL_CALIBRE", "JOURNAL_REGULARITE")]
     motifs: dict[str, int] = {}
     for x in cj:
         for m in x.get("journal_motifs_rejet") or []:
