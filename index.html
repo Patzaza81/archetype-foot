@@ -3,50 +3,73 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#FCEAF2">
-<title>Archetype Foot — Moteurs</title>
+<meta name="theme-color" content="#F7F1E7">
+<title>Archetype Foot</title>
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="theme.css">
 <style>
-:root{--rose:#D94F91;--rose-fonce:#B83272;--fond:#FFF5F9;--surface:#FFFFFF;--texte:#29202A;--doux:#796A75;--ligne:#F0D7E4}
-body{background:var(--fond)!important;color:var(--texte)!important}
-header{background:linear-gradient(135deg,#FBE1ED,#FFF5F9)!important;border-bottom:1px solid var(--ligne)!important;padding:18px 14px 12px!important}
-header h1{color:var(--rose-fonce)!important;font-size:24px!important}
-#maj{font-size:12px!important;color:var(--doux)!important}
-.nav-pages a{background:var(--rose)!important;color:#fff!important;border:0!important;border-radius:10px!important}
-main{padding:16px 14px 32px}
-.moteurs{display:grid;gap:14px;max-width:640px;margin:0 auto}
-.moteur-carte{display:block;padding:20px 18px;border:1px solid var(--ligne);border-radius:18px;background:var(--surface);color:var(--texte);text-decoration:none;box-shadow:0 8px 24px rgba(143,45,91,.08)}
-.moteur-carte h2{margin:0 0 6px;color:var(--rose-fonce);font-size:21px}
-.moteur-carte p{margin:0;color:var(--doux);font-size:14px;line-height:1.5}
-.moteur-carte .ouvrir{display:inline-block;margin-top:14px;padding:9px 14px;border-radius:999px;background:var(--rose);color:#fff;font-weight:800;font-size:13px}
+header{background:none!important;border-bottom:0!important;padding:24px 14px 4px!important;position:relative}
+header .header-top{justify-content:center}
+header h1{font-size:34px!important;text-align:center;margin:0}
+header .bouton-mode-nuit{position:absolute;right:14px;top:18px;margin:0}
+main{max-width:640px;margin:0 auto;padding:18px 16px 40px;display:grid;gap:14px}
+.petites{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.carte{display:block;color:#fff;text-decoration:none;border-radius:20px;padding:16px;box-shadow:0 8px 20px rgba(6,100,95,.18)}
+.carte:active{transform:scale(.98)}
+.carte .ico{font-size:28px}
+.carte h2{margin:6px 0 4px;font-size:22px;font-weight:800}
+.carte p{margin:0 0 12px;font-size:14px;line-height:1.4}
+.carte b{display:block;padding-top:10px;border-top:1px solid rgba(255,255,255,.3);font-size:15px}
+.rose{background:linear-gradient(160deg,#D98C92,#C0707A)}
+.t1{background:linear-gradient(160deg,#62B8B1,#2F938D)}
+.t2{background:linear-gradient(160deg,#55AEA7,#238A84)}
+.t3{background:linear-gradient(160deg,#47A29B,#187B75)}
+.bouton{display:block;margin:10px auto 0;width:100%;max-width:420px;text-align:center;padding:16px;border-radius:999px;background:linear-gradient(135deg,#5FB5AE,#1F8A84);color:#fff;font-weight:800;font-size:19px;text-decoration:none;border:2.5px solid #C49A3A}
+.bas{text-align:center;font-size:14px;margin:6px 0 0}
+.bas a{color:#06645F;font-weight:700;text-decoration:none}
 </style>
 </head>
 <body>
 <header>
   <div class="header-top"><h1>Archetype Foot</h1></div>
-  <p id="maj">Choisis le moteur à consulter.</p>
-  <nav id="nav-pages" class="nav-pages" aria-label="Navigation principale">
-    <a href="journal.html">📒 Journal</a>
-    <a href="systeme.html">⚙️ Système</a>
-    <a href="compte.html">👤 Compte</a>
-    <a href="abonnement.html">💳 Abonnement</a>
-    <a href="tickets.html">🎟️ Tickets</a>
-  </nav>
 </header>
 <main>
-  <section class="moteurs" aria-label="Choisir un moteur">
-    <a class="moteur-carte" href="archetype.html">
-      <h2>Moteur V2</h2>
-      <p>Moteur principal — consulte ses sélections et leurs justifications.</p>
-      <span class="ouvrir">Ouvrir le moteur V2 →</span>
+  <a class="carte rose" href="archetype.html">
+    <span class="ico">⚙️</span>
+    <h2>Moteur V2</h2>
+    <p>Moteur principal : sélections et justifications.</p>
+    <b>Accéder au Moteur V2 →</b>
+  </a>
+  <a class="carte rose" href="pronostics_v3.html">
+    <span class="ico">🚀</span>
+    <h2>Moteur V3</h2>
+    <p>Moteur parallèle expérimental.</p>
+    <b>Accéder au Moteur V3 →</b>
+  </a>
+
+  <div class="petites">
+    <a class="carte t1" href="tickets.html">
+      <span class="ico">🎟️</span>
+      <h2>Tickets</h2>
+      <p>Gérez vos tickets.</p>
+      <b>Voir vos tickets →</b>
     </a>
-    <a class="moteur-carte" href="pronostics_v3.html">
-      <h2>Moteur V3</h2>
-      <p>Moteur parallèle expérimental, présenté séparément du moteur principal.</p>
-      <span class="ouvrir">Ouvrir le moteur V3 →</span>
+    <a class="carte t2" href="systeme.html">
+      <span class="ico">🛠️</span>
+      <h2>Système</h2>
+      <p>État du système.</p>
+      <b>Ouvrir →</b>
     </a>
-  </section>
+  </div>
+  <a class="carte t3" href="journal.html">
+    <span class="ico">📒</span>
+    <h2>Journal</h2>
+    <p>Suivez vos analyses et l'historique des paris.</p>
+    <b>Ouvrir le journal →</b>
+  </a>
+
+  <a class="bouton" href="archetype.html">Accéder à vos sélections</a>
+  <p class="bas"><a href="compte.html">👤 Compte</a> &nbsp;·&nbsp; <a href="abonnement.html">💳 Abonnement</a></p>
 </main>
 <script src="theme.js"></script>
 </body>
