@@ -20,6 +20,7 @@ import json
 import re
 from datetime import datetime, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 from typing import Any
 
 SCHEMA_VERSION = 1
@@ -118,10 +119,19 @@ def _normalise_selection(ticket: dict[str, Any]) -> list[dict[str, Any]]:
     return result
 
 
-def validate_ticket(ticket: dict[str, Any], index: int) -> dict[str, Any]:
+def validate_ticket(
+    ticket: dict[str, Any], index: int, now: datetime | None = None
+) -> dict[str, Any]:
     selection = _normalise_selection(ticket)
     errors: list[str] = []
     warnings: list[str] = []
+    local_tz = ZoneInfo("Africa/Douala")
+    if now is None:
+        current_local = datetime.now(local_tz)
+    elif now.tzinfo is None:
+        current_local = now.replace(tzinfo=local_tz)
+    else:
+        current_local = now.astimezone(local_tz)
 
     if not selection:
         errors.append("NO_SELECTION")
@@ -141,6 +151,20 @@ def validate_ticket(ticket: dict[str, Any], index: int) -> dict[str, Any]:
             errors.append(f"LEG_{i}_INVALID_ODDS")
         if not URL_RE.match(leg["betpawa_url"]):
             errors.append(f"LEG_{i}_INVALID_BETPAWA_URL")
+
+        # A fixture whose kickoff has passed must never be prepared as a new
+        # ticket. Input dates and times are interpreted in Cameroon local time.
+        if leg["date"] and leg["heure"]:
+            try:
+                kickoff = datetime.strptime(
+                    f'{leg["date"]} {leg["heure"]}', "%Y-%m-%d %H:%M"
+                ).replace(tzinfo=local_tz)
+                if kickoff <= current_local:
+                    errors.append(f"LEG_{i}_EVENT_EXPIRED")
+            except ValueError:
+                warnings.append(f"LEG_{i}_EVENT_TIME_UNPARSEABLE")
+        else:
+            warnings.append(f"LEG_{i}_EVENT_TIME_UNKNOWN")
 
     odds = 1.0
     odds_complete = bool(selection)
