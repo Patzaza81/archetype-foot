@@ -168,7 +168,7 @@ def test_affichage_x_sur_y_et_estimation():
     c = cand()
     assert c["journal_affichage"] == "8 sur 10"
     assert "8 sur 10" in c["justification"] and "Estimation de réussite" in c["justification"]
-    assert "Wilson" not in c["justification"] and "80%" not in c["justification"]
+    assert "Wilson" not in c["justification"] and "(80%)" in c["justification"] and "lissé" in c["justification"]
 
 
 def test_sans_realisme_le_pari_est_rejete():
@@ -394,3 +394,44 @@ def test_diagnostic_compte_les_paris_du_mode_regularites():
     from selection_adaptative import resume_classement
     r = resume_classement(rows)
     assert r["candidats"] == 2 and r["admissibles"] == 1 and r["motifs_de_rejet"] == {"X": 1}
+
+
+# --- pourcentage lissé (affichage seulement) -------------------------------------------------------------------------
+
+@pytest.mark.parametrize("w,n,base,attendu", [
+    (7, 7, 0.60, (7 + 10 * 0.60) / 17),       # 7 sur 7 : brut 100 %, lissé ~76 %
+    (10, 10, 0.60, (10 + 6.0) / 20),           # 10 sur 10 : 80 %
+    (0, 5, 0.50, (0 + 5.0) / 15),              # base tirée vers le bas
+    (8, 10, 0.80, 0.80),                       # taux = base : inchangé
+])
+def test_taux_lisse_valeurs(w, n, base, attendu):
+    assert jrg.taux_lisse(w, n, base) == pytest.approx(attendu)
+
+
+def test_taux_lisse_k_zero_donne_le_brut_et_plus_de_matchs_reduit_l_ecart():
+    assert jrg.taux_lisse(7, 7, 0.6, k=0) == pytest.approx(1.0)
+    assert jrg.taux_lisse(7, 7, 0.6) < jrg.taux_lisse(14, 14, 0.6) < 1.0
+
+
+@pytest.mark.parametrize("w,n,base,k", [(7, 7, None, 10), (7, 7, 0.6, -1), (0, 0, 0.6, 0), (7, -1, 0.6, 10)])
+def test_taux_lisse_entrees_invalides_donnent_none(w, n, base, k):
+    assert jrg.taux_lisse(w, n, base, k=k) is None
+
+
+def test_base_reelle_marche_puis_moyenne_puis_aucune():
+    stats = {"marches": {"A": (20, 17.0, 12), "B": (5, 4.0, 5)}, "total": (40, 34.0, 24), "erreur": None}
+    assert jrg.base_reelle_pour("A", stats) == (pytest.approx(0.6), "marche")
+    assert jrg.base_reelle_pour("B", stats) == (pytest.approx(0.6), "moyenne")      # < 15 cas : moyenne
+    assert jrg.base_reelle_pour("A", {"marches": {}, "total": (10, 8.0, 6), "erreur": None}) == (None, None)
+    assert jrg.base_reelle_pour("A", None) == (None, None)
+
+
+def test_candidat_expose_brut_et_lisse_sans_changer_le_classement():
+    c = cand()
+    assert c["journal_taux_brut"] == pytest.approx(0.8)
+    assert 0 < c["journal_taux_lisse"] < 1 and c["journal_k_lissage"] == jrg.K_LISSAGE
+    # le lissage ne sert qu'à l'affichage : probabilité et chiffre restent ceux de la formule
+    assert c["probabilite_estimee"] == pytest.approx(0.8 * c["journal_realisme"], abs=1e-5)
+    assert c["journal_chiffre"] == pytest.approx(jrg.chiffre(0.8, 10, c["journal_realisme"]), abs=1e-5)
+    leg = gt.leg(c)
+    assert leg["journal_taux_lisse"] == c["journal_taux_lisse"] and leg["journal_taux_brut"] == c["journal_taux_brut"]

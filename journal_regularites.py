@@ -32,7 +32,8 @@ MIN_MATCHS = 5
 SEUIL_REUSSITE = 0.70
 MATCHS_INDICE = 6          # l'indice « 6 derniers » s'applique dès 6 matchs
 MIN_CAS_MARCHE = 15        # en dessous, réalisme moyen de tous les marchés
-MIN_CAS_GLOBAL = 30        # en dessous, aucun réalisme fiable : aucun pari admissible
+MIN_CAS_GLOBAL = 30
+K_LISSAGE = 10  # matchs fictifs ajoutés à la réussite réelle du marché pour AFFICHER un pourcentage cohérent (n'agit pas sur le classement)        # en dessous, aucun réalisme fiable : aucun pari admissible
 
 MOTIF_MATCHS = "MATCHS_INSUFFISANTS"
 MOTIF_CONSTANCE = "CONSTANCE_INSUFFISANTE"
@@ -188,21 +189,43 @@ def charge_realisme(jusqu_a: str | None = None) -> dict[str, Any]:
     return stats_realisme(candidats_passes(matchs))
 
 
+def base_reelle_pour(marche: str, stats: dict[str, Any] | None) -> tuple[float | None, str | None]:
+    """(réussite RÉELLE du marché au match suivant, origine) — sert de point de départ au lissage d'affichage. Marché avec
+    moins de 15 cas : réussite réelle de tous les marchés ; moins de 30 cas au total : None."""
+    if not stats:
+        return None, None
+    n, _, reussis = stats.get("marches", {}).get(marche, (0, 0.0, 0))
+    if n >= MIN_CAS_MARCHE:
+        return reussis / n, "marche"
+    n, _, reussis = stats.get("total", (0, 0.0, 0))
+    if n >= MIN_CAS_GLOBAL:
+        return reussis / n, "moyenne"
+    return None, None
+
+
+def taux_lisse(gagnes: int, joues: int, base: float | None, k: int = K_LISSAGE) -> float | None:
+    """Pourcentage affiché : (gagnés + k x base) / (joués + k). 7 sur 7 reste 100 % en brut, mais le lissé tient compte de
+    la réussite réelle du marché. Affichage seulement : aucun classement ni critère n'en dépend."""
+    if base is None or joues < 0 or k < 0 or joues + k == 0:
+        return None
+    return (gagnes + k * base) / (joues + k)
+
+
 # --- affichage -----------------------------------------------------------------------------------------------------------
 
-def texte_affichage(equipe: str, gagnes: int, joues: int, gagnes_6: Any, joues_6: Any, taux_reel: float | None) -> str:
-    """« 8 sur 10 » + réussite réelle de ce type de pari. Jamais de fréquence brute ni de borne de Wilson en pourcentage."""
-    t = f"{equipe} : {gagnes} sur {joues} matchs sur ce marché"
+def texte_affichage(equipe: str, gagnes: int, joues: int, gagnes_6: Any, joues_6: Any, taux_reel: float | None,
+                    lisse: float | None = None) -> str:
+    """« 7 sur 7 (100 %) » + estimation lissée du marché. Jamais de borne de Wilson affichée."""
+    brut = f"{gagnes / joues:.0%}" if joues else "—"
+    t = f"{equipe} : {gagnes} sur {joues} matchs sur ce marché ({brut})"
     if joues >= MATCHS_INDICE and gagnes_6 is not None and joues_6:
-        t += f" ({int(gagnes_6)} sur {int(joues_6)} sur les derniers)"
+        t += f", {int(gagnes_6)} sur {int(joues_6)} sur les derniers"
+    if lisse is not None:
+        t += f". Pourcentage lissé : {lisse:.0%}"
     if taux_reel is not None:
-        t += f". Estimation de réussite pour ce match : {taux_reel:.0%}."
-    else:
-        t += "."
-    return t
+        t += f". Estimation de réussite pour ce match : {taux_reel:.0%}"
+    return t + "."
 
-
-# --- suivi quotidien -----------------------------------------------------------------------------------------------------
 
 def enregistre_suivi(path: Path, jour: str, picks: list[dict[str, Any]]) -> dict[str, Any]:
     """Ajoute (ou remplace) la liste du jour dans le fichier de suivi. Les paris déjà résolus ne sont pas touchés."""

@@ -507,7 +507,9 @@ def leg(x: dict[str, Any]) -> dict[str, Any]:
         "betpawa_url": x.get("betpawa_url"),
         "aussi_propose_par": x.get("aussi_propose_par") or [],
         "journal_calibrage": x.get("journal_calibrage"),
-        **({"journal_affichage": x.get("journal_affichage"), "journal_realisme": x.get("journal_realisme"), "journal_chiffre": x.get("journal_chiffre")}
+        **({"journal_affichage": x.get("journal_affichage"), "journal_realisme": x.get("journal_realisme"), "journal_chiffre": x.get("journal_chiffre"),
+           "journal_taux_brut": x.get("journal_taux_brut"), "journal_taux_lisse": x.get("journal_taux_lisse"),
+           "journal_base_marche": x.get("journal_base_marche"), "journal_k_lissage": x.get("journal_k_lissage")}
            if sans_roi else {}),
     }
 

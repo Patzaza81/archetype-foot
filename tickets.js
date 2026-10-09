@@ -121,6 +121,7 @@ function legsHtml(rows){
   if(x.journal_frequency!=null){
    details.push("Journal "+pct(x.journal_frequency)+" ("+(x.journal_wins||0)+"/"+(x.journal_observations||0)+")");
    if(x.probabilite_source==="JOURNAL_LISSE"&&x.probabilite_estimee!=null)details.push("probabilité estimée "+pct(x.probabilite_estimee));
+   else if(x.probabilite_source==="JOURNAL_REGULARITE"){if(x.journal_taux_lisse!=null)details.push("lissé "+pct(x.journal_taux_lisse))}
    else if(x.journal_lower_bound!=null)details.push("borne prudente "+pct(x.journal_lower_bound));
   }else if(x.probabilite_source==="MODELE_NON_CALIBRE"){
    details.push("modèle non calibré");

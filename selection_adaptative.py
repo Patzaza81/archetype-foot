@@ -489,6 +489,8 @@ def _applique_regularites(c: dict[str, Any], row: dict[str, Any], observations: 
     `stats` = journal_regularites.charge_realisme()."""
     marche = c.get("marche") or ""
     realisme, origine = jrg.realisme_pour(marche, stats)
+    base, _ = jrg.base_reelle_pour(marche, stats)
+    lisse = jrg.taux_lisse(wins, observations, base)
     ok, motifs = jrg.evalue(wins, observations, row.get("gagnes_6"), row.get("joues_6"))
     taux = wins / observations if observations else 0.0
     proba = chif = None
@@ -511,10 +513,14 @@ def _applique_regularites(c: dict[str, Any], row: dict[str, Any], observations: 
         "journal_joues_6": row.get("joues_6"),
         "journal_indice_constance": jrg.indice_constance(wins, observations, row.get("gagnes_6"), row.get("joues_6")),
         "journal_affichage": f"{wins} sur {observations}",
+        "journal_taux_brut": round(taux, 6),
+        "journal_taux_lisse": round(lisse, 6) if lisse is not None else None,
+        "journal_base_marche": round(base, 6) if base is not None else None,
+        "journal_k_lissage": jrg.K_LISSAGE,
         "journal_roi": None,
         "journal_success_margin": None,
         "justification": jrg.texte_affichage(c.get("journal_team") or "", wins, observations, row.get("gagnes_6"),
-                                             row.get("joues_6"), proba),
+                                             row.get("joues_6"), proba, lisse),
     })
 
 

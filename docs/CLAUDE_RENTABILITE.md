@@ -46,3 +46,14 @@ Autres règles :
 Mesures du 09/10 (14 jours, 351 régularités passées) : un taux affiché de 85 % se réalise à 58 % en moyenne (réalisme 0,68). Par marché : « moins de 3,5 buts » 0,75, « ne perd pas » 0,75, « plus de 2,5 buts » 0,72, « les deux équipes marquent » 0,68 ; faibles : « moins de 2,5 buts » 0,35 (17 cas), « marque 2 buts ou plus » 0,48, « au moins une équipe ne marque pas » 0,47. Classement des 15 par jour (59 paris) : formule 64 %, borne de Wilson seule 71 %, hasard 63 % (± 12 points : aucune différence démontrée entre les trois). Le suivi dira si le classement apporte quelque chose.
 
 Tests : `tests/test_journal_regularites.py`.
+
+### Affichage du pourcentage (mode « regularites », 09/10/2026) — affichage seulement
+- Chaque pari du Journal montre le pourcentage réel de l'équipe (7 sur 7 = 100 %) ET un pourcentage lissé :
+  `lissé = (gagnés + k × base) / (joués + k)`, `k = 10` (`K_LISSAGE`), `base` = réussite RÉELLE du marché au match suivant
+  (marché avec moins de 15 cas : moyenne de tous les marchés).
+- Champs : `journal_taux_brut`, `journal_taux_lisse`, `journal_base_marche`, `journal_k_lissage`. Front : « lissé xx % » dans `tickets.js`.
+- Le lissage n'entre ni dans le chiffre, ni dans le classement, ni dans la probabilité de ticket (inchangés). Mêmes 30 paris et mêmes
+  probabilités avant/après (vérifié).
+- k = 10 a été choisi pour que le lissé reste proche de « taux × réalisme » (7 sur 7 : 76 % contre 75 %). Sur 294 cas passés, le
+  meilleur k mesuré est plus grand (≥ 20) : le taux de l'équipe apporte peu au-delà de la réussite réelle du marché.
+
