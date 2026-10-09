@@ -56,16 +56,16 @@ def selection_target(leg: dict[str, Any]) -> tuple[list[str], list[str], str]:
     team = str(leg.get("journal_team") or "").strip()
 
     if market in {"victoire domicile", "victoire a domicile", "home win", "home"}:
-        return ["1x2", "match result", "match winner", "full time result"], [
-            "home", "home win", "1", home
+        return ["1x2", "match result", "match winner", "full time result", "resultat du match"], [
+            "home", "home win", "1", "domicile", "equipe a domicile", home
         ], f"Victoire domicile ({home})"
     if market in {"victoire exterieur", "victoire a l exterieur", "away win", "away"}:
         return ["1x2", "match result", "match winner", "full time result"], [
-            "away", "away win", "2", away
+            "away", "away win", "2", "exterieur", "equipe visiteuse", away
         ], f"Victoire extérieur ({away})"
     if market in {"match nul", "nul", "draw"}:
         return ["1x2", "match result", "match winner", "full time result"], [
-            "draw", "tie", "x"
+            "draw", "tie", "x", "nul", "match nul"
         ], "Match nul"
 
     if "ne perd pas" in market or "double chance" in market:
@@ -73,10 +73,10 @@ def selection_target(leg: dict[str, Any]) -> tuple[list[str], list[str], str]:
             outcome = ["12", "home or away"]
             label = "Double chance 12"
         elif team and home and normalise(team) == normalise(home):
-            outcome = ["1x", "home or draw", "home or tie"]
+            outcome = ["1x", "home or draw", "home or tie", "domicile ou nul", "nul ou domicile"]
             label = f"Double chance 1X ({home})"
         elif team and away and normalise(team) == normalise(away):
-            outcome = ["x2", "draw or away", "tie or away"]
+            outcome = ["x2", "draw or away", "tie or away", "nul ou exterieur", "exterieur ou nul"]
             label = f"Double chance X2 ({away})"
         elif re.search(r"\b1x\b", market):
             outcome, label = ["1x", "home or draw", "home or tie"], "Double chance 1X"
@@ -94,7 +94,7 @@ def selection_target(leg: dict[str, Any]) -> tuple[list[str], list[str], str]:
         direction = "under" if total.group(1) in {"moins de", "under"} else "over"
         line = total.group(2).replace(",", ".")
         direction_fr = "moins de" if direction == "under" else "plus de"
-        return ["total goals", "goals over under", "over under", "total buts"], [
+        return ["total goals", "goals over under", "over under", "total buts", "total de buts"], [
             f"{direction} {line}", f"{direction} {line.replace('.0', '')}",
             f"{direction_fr} {line}", f"{direction_fr} {line.replace('.0', '')}"
         ], f"{direction_fr} {line} buts"
@@ -111,9 +111,9 @@ def selection_target(leg: dict[str, Any]) -> tuple[list[str], list[str], str]:
         raise UnsafeSelection("BTTS sans issue explicite Oui/Non.")
 
     if market in {"1x", "double chance 1x"}:
-        return ["double chance"], ["1x", "home or draw", "home or tie"], "Double chance 1X"
+        return ["double chance"], ["1x", "home or draw", "home or tie", "domicile ou nul", "nul ou domicile"], "Double chance 1X"
     if market in {"x2", "double chance x2"}:
-        return ["double chance"], ["x2", "draw or away", "tie or away"], "Double chance X2"
+        return ["double chance"], ["x2", "draw or away", "tie or away", "nul ou exterieur", "exterieur ou nul"], "Double chance X2"
     if market in {"12", "double chance 12"}:
         return ["double chance"], ["12", "home or away"], "Double chance 12"
 
