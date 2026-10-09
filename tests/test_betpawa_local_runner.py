@@ -1,5 +1,6 @@
 import unittest
 
+from betpawa_validation import validate_ticket
 from tools.betpawa_local_runner import UnsafeSelection, selection_target, plan_ticket
 
 
@@ -48,6 +49,15 @@ class LocalBetPawaRunnerTests(unittest.TestCase):
     def test_unsupported_market_fails_closed(self):
         with self.assertRaises(UnsafeSelection):
             selection_target(leg("Handicap asiatique -0,5"))
+
+    def test_validation_manifest_preserves_journal_team_for_double_chance(self):
+        result = validate_ticket({
+            "selection": [leg(
+                "Ne perd pas (victoire ou nul)",
+                journal_team="Atl. Nacional",
+            )]
+        }, 1)
+        self.assertEqual(result["selection"][0]["journal_team"], "Atl. Nacional")
 
     def test_plan_rejects_non_betpawa_url(self):
         ticket = {"selection": [leg("Victoire domicile", betpawa_url="https://example.com/event/1")]}
