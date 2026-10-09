@@ -50,8 +50,9 @@ def _leg_key(leg: dict[str, Any]) -> str:
     date = _text(leg.get("date"))
     home = _text(leg.get("domicile")).lower()
     away = _text(leg.get("exterieur")).lower()
-    market = _text(leg.get("marche")).lower()
-    return "|".join((date, home, away, market))
+    # Match identity must not depend on the market: the same fixture cannot
+    # be duplicated in a ticket by selecting two different markets.
+    return "|".join((date, home, away))
 
 
 def _ticket_id(ticket: dict[str, Any], index: int) -> str:
