@@ -80,7 +80,11 @@ JOURNAL_MATCHS_FICTIFS = 20
 # condition initiale (borne de Wilson) sans toucher au code. Fichier config/journal_calibrage.json : {"mode": "lisse"}
 # ou {"mode": "wilson"}. Fichier absent, illisible ou mode inconnu : "wilson" (l'état initial, le plus prudent).
 JOURNAL_CONFIG = Path("config/journal_calibrage.json")
-MODES_JOURNAL = ("lisse", "wilson", "preuves")
+MODES_JOURNAL = ("lisse", "wilson", "preuves", "regularites")
+# Mode « regularites » : le ROI n'est PAS un critère (V3 l'intègre déjà). Un pari du Journal est admissible si l'équipe a au
+# moins 5 matchs observés et si la cote ne dépasse pas ce plafond (filtre de risque testé : docs/BACKTEST_JOURNAL_PREUVES.md).
+# Classement : borne de Wilson, puis fréquence, puis nombre de matchs. Pas de seuil de probabilité vs cote.
+PLAFOND_COTE_REGULARITES = 1.8
 
 
 def journal_mode(path: Path = JOURNAL_CONFIG) -> str:
@@ -474,6 +478,10 @@ def _journal_team_market_candidate(row: dict[str, Any], mode: str | None = None,
     }
     if mode == "preuves":
         _applique_preuves(candidat, row, observations, wins, base_marche, classement)
+    elif mode == "regularites":
+        candidat["probabilite_source"] = "JOURNAL_REGULARITE"
+        candidat["journal_admissible"] = odds <= PLAFOND_COTE_REGULARITES
+        candidat["journal_motifs_rejet"] = [] if candidat["journal_admissible"] else ["COTE_AU_DESSUS_DU_PLAFOND"]
     return candidat
 
 
@@ -673,7 +681,7 @@ def enrich(candidates: list[dict[str, Any]], history: dict[str, Any], intelligen
         # Une équipe 5/5 est donc mise en avant comme preuve, mais son estimation
         # mathématique reste prudente (borne Wilson 95 %).
         p_est = p
-        if c.get("probabilite_source") == "JOURNAL_CALIBRE":
+        if c.get("probabilite_source") in ("JOURNAL_CALIBRE", "JOURNAL_REGULARITE"):
             p_est = c.get("probabilite_estimee")
         elif c.get("journal_probabilite_lissee") is not None:
             p_est = c["journal_probabilite_lissee"]
@@ -717,6 +725,9 @@ def enrich(candidates: list[dict[str, Any]], history: dict[str, Any], intelligen
             empirical_lower = c.get("journal_borne_basse_calibree") if c.get("journal_admissible") else None
             empirical_rate = c.get("probabilite_estimee")
             empirical_roi = c.get("ev_estime")
+        elif c.get("probabilite_source") == "JOURNAL_REGULARITE":
+            # Mode « regularites » : aucun ROI dans le classement (borne Wilson, fréquence, volume seulement).
+            empirical_roi = None
         elif empirical_lower is None and n >= 10:
             empirical_lower = lower
             empirical_rate = c.get("historique_taux")

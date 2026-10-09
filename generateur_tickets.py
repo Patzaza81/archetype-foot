@@ -94,6 +94,32 @@ def journal_calibre(c: dict[str, Any]) -> bool:
     return str(c.get("source") or "").lower() == "journal" and c.get("probabilite_source") == "JOURNAL_CALIBRE"
 
 
+def journal_regularite(c: dict[str, Any]) -> bool:
+    """Pari du Journal évalué en mode « regularites » (sans ROI, plafond de cote)."""
+    return str(c.get("source") or "").lower() == "journal" and c.get("probabilite_source") == "JOURNAL_REGULARITE"
+
+
+def journal_filtre(c: dict[str, Any]) -> bool:
+    """Pari du Journal soumis à un filtre d'admissibilité (modes « preuves » et « regularites »)."""
+    return journal_calibre(c) or journal_regularite(c)
+
+
+def rank_journal_regularite(c: dict[str, Any]) -> tuple:
+    """Mode « regularites » : borne de Wilson, puis fréquence, puis nombre de matchs, puis cote la plus basse. Ni ROI ni
+    espérance. Un pari non admissible passe après tous les autres (et n'entre de toute façon pas dans le pool)."""
+    ok = c.get("journal_admissible") is True
+    low, freq = n(c.get("journal_lower_bound")), n(c.get("journal_frequency"))
+    return (
+        3 if ok and low is not None else 0,
+        low if ok and low is not None else -999.0,
+        freq if freq is not None else -999.0,
+        int(c.get("journal_observations") or 0),
+        0, 0, 0.0, -999.0, -999.0, 0,
+        -999.0, -999.0,
+        -(n(c.get("cote")) or 99.0),
+    )
+
+
 def rank_journal_calibre(c: dict[str, Any]) -> tuple:
     """Ordre de priorité du mode « preuves », dans les mêmes positions que la clé commune : fiabilité démontrée (borne
     basse calibrée), probabilité calibrée, espérance calibrée, stabilité historique, nombre de matchs. Un pari non
@@ -124,6 +150,8 @@ def candidate_rank(c: dict[str, Any]) -> tuple:
     """
     if journal_calibre(c):
         return rank_journal_calibre(c)
+    if journal_regularite(c):
+        return rank_journal_regularite(c)
     ev = ev_leg(c)
     lower = n(c.get("selection_evidence_lower_bound"))
     rate = n(c.get("selection_evidence_rate"))
@@ -172,11 +200,13 @@ def eligible(c: dict[str, Any], mode: str = "normal") -> bool:
         return False
     # Mode « preuves » du Journal : seul un pari ADMISSIBLE (borne basse calibrée >= probabilité implicite) entre dans le
     # pool. Un pari rejeté ne peut jamais y revenir, ni par le classement ni par le tirage au sort des tickets.
-    if journal_calibre(c) and c.get("journal_admissible") is not True:
+    if journal_filtre(c) and c.get("journal_admissible") is not True:
         return False
     m, p = marge(c), proba(c)
     if m is None or p is None:
         return False
+    if journal_regularite(c) and mode != "prudent":
+        return True  # pas de condition « probabilité >= probabilité de la cote » : c'est elle qui choisissait les cotes hautes
     if mode == "prudent":
         return m >= 0.03 and p >= 0.60
     return m >= 0.0
@@ -544,7 +574,7 @@ def un_pari_par_match_journal(rows: list[dict[str, Any]]) -> list[dict[str, Any]
     vus: set[str] = set()
     out = []
     for x in rows:
-        if journal_calibre(x):
+        if journal_filtre(x):
             k = match_key(x)
             if k in vus:
                 continue
