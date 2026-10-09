@@ -29,3 +29,7 @@ jobs:
           python-version: "3.12"
       - name: Run isolated gateway unit tests
         run: python -m unittest discover -s tests -p "test_betpawa_validation.py" -v
+      - name: Smoke test manifest generation used by Netlify
+        run: |
+          python3 betpawa_validation.py --input data/tickets.json --output data/betpawa_validation.json
+          python3 -c "import json; d=json.load(open('data/betpawa_validation.json', encoding='utf-8')); assert d['tickets_checked'] == 6; assert d['manual_final_validation_required'] is True; assert d['submission_automated'] is False"
