@@ -48,7 +48,9 @@ def selection_target(leg: dict[str, Any]) -> tuple[list[str], list[str], str]:
     Deliberately supports only markets with an explicit, unambiguous mapping.
     Unsupported/ambiguous labels fail closed instead of risking a wrong click.
     """
-    market = normalise(leg.get("marche"))
+    market_raw = str(leg.get("marche") or "").lower()
+    market_text = "".join(ch for ch in unicodedata.normalize("NFKD", market_raw) if not unicodedata.combining(ch))
+    market = normalise(market_raw)
     home = str(leg.get("domicile") or "").strip()
     away = str(leg.get("exterieur") or "").strip()
     team = str(leg.get("journal_team") or "").strip()
@@ -87,7 +89,7 @@ def selection_target(leg: dict[str, Any]) -> tuple[list[str], list[str], str]:
             )
         return ["double chance"], outcome, label
 
-    total = re.search(r"(?:match a |total )?(moins de|plus de|under|over)\s*(\d+(?:[.,]\d+)?)", market)
+    total = re.search(r"(?:match a |total )?(moins de|plus de|under|over)\s*(\d+(?:[.,]\d+)?)", market_text)
     if total:
         direction = "under" if total.group(1) in {"moins de", "under"} else "over"
         line = total.group(2).replace(",", ".")
@@ -189,7 +191,7 @@ def find_odds_control(page: Any, item: dict[str, Any]) -> tuple[Any, str]:
                     continue
                 if not any(has_phrase(context, o) for o in item["outcomes"]):
                     continue
-                key = str(control.evaluate("(e) => e.outerHTML"))
+                key = str(i)
                 old = matches.get(key)
                 if old is None or level < old[2]:
                     matches[key] = (control, current_odds, level)
