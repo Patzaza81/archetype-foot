@@ -334,3 +334,7 @@ git show c1ce4c9:TRANSITION.md
 ```
 
 Plusieurs commentaires du code citent encore « TRANSITION.md §N » : ce sont des renvois historiques, sans effet.
+
+## 11. Préparation locale du coupon BetPawa
+
+Pour cliquer les sélections d'un ticket dans un navigateur Chromium local, consulter [docs/BETPAWA_LOCAL_AUTOMATION.md](docs/BETPAWA_LOCAL_AUTOMATION.md). Le mode par défaut est sans clic ; l'ajout au coupon exige une confirmation explicite. Le script ne saisit aucune mise et ne confirme jamais le pari. Il nécessite un ordinateur Windows, macOS ou Linux, et ne s'exécute pas directement sur iPhone.
