@@ -22,21 +22,27 @@ Mode `preuves` (`journal_classement.py`, indépendant des moteurs V2 et V3) :
 - **Diagnostic** : `data/selection_intelligence.json` → `journal_classement` (modèle retenu, nombre d'admissibles, motifs de rejet, cinq rejetés les plus proches du seuil). Une erreur de calibrage est écrite dans ce diagnostic et dans les journaux du workflow, jamais masquée : le Journal devient alors non publiable.
 - **Backtest** : `python evaluation/backtest_journal_preuves.py` ; résultats et limites dans `docs/BACKTEST_JOURNAL_PREUVES.md`. Tests : `tests/test_journal_classement.py`.
 
-## Journal — mode « regularites » (sans ROI)
+## Journal — mode « regularites » (formule simple, sans cote ni ROI)
 
-Réglage : `config/journal_calibrage.json` → `{"mode": "regularites"}`. Retour arrière : `{"mode": "wilson"}` (défaut si le fichier est absent, illisible ou le mode inconnu). Code : `journal_regularites.py` (indépendant de V2/V3). Le ROI et le gain espéré ne sont PAS des critères du Journal (V3 les intègre déjà).
+Réglage : `config/journal_calibrage.json` → `{"mode": "regularites"}`. Retour arrière : `{"mode": "wilson"}` (défaut si le fichier est absent, illisible ou le mode inconnu). Code : `journal_regularites.py` (indépendant de V2/V3). Ni la cote ni le ROI ni le gain espéré ne sont des critères du Journal (V3 intègre déjà le ROI).
 
-Règles :
+Formule : `chiffre = taux de l'équipe x réalisme du marché x (1 - marge d'erreur relative)`, puis on classe par ce chiffre.
+- **Taux de l'équipe** : gagnés / joués sur le marché (8 sur 10 = 0,80).
+- **Réalisme du marché** : réussite RÉELLE de ce marché au match suivant ÷ taux affiché, mesuré sur toutes les régularités passées du marché (même règle d'entrée que le Journal, tous les matchs terminés, sans cote, sans fuite du futur : `candidats_passes`). Marché avec moins de 15 cas : réalisme moyen de tous les marchés. Moins de 30 cas au total : aucun pari admissible (`REALISME_ABSENT`). Recalculé à chaque exécution, jamais écrit en dur.
+- **Marge d'erreur** : taux moins sa borne basse à 95 % (Wilson). Elle ne tombe pas à zéro à 100 % : 5 sur 5 reste moins sûr que 18 sur 20. (Équivaut à `réalisme x borne basse`.)
+- **Probabilité utilisée pour les tickets** : `taux x réalisme` (sans la marge, qui sert au classement).
+
+Autres règles :
 1. Entrée (inchangée, `journal_rentabilite.py`) : au moins 5 matchs, réussite >= 70 %, marché non banal (< 70 % en général), prochain match avec cote.
-2. Cote : 1,26 à 1,56. Plus de plafond 1,80. Le filtre général 1,26–3,01 du générateur reste, redondant.
-3. Constance : dès 6 matchs, la moyenne « réussite globale » et « réussite sur les 6 derniers matchs » (champs `gagnes_6` / `joues_6`, ajoutés par `journal_rentabilite.py`, ordre chronologique) doit atteindre 70 %. À 6 matchs elle vaut la réussite globale. Avec 5 matchs, la réussite globale seule suffit. Donnée des 6 derniers absente (ancien `journal.json`) : pari rejeté (`DONNEE_6_DERNIERS_ABSENTE`), jamais présenté comme fiable.
-4. Classement (`rank_journal_regularite`) : borne de Wilson, puis fréquence, puis nombre de matchs, puis cote la plus basse. Aucun ROI.
-5. Liste : un seul pari par match, 15 au maximum, jamais complétée.
-6. Probabilité utilisée pour les tickets : réussite OBSERVÉE pour la tranche de cote (pas de 0,10), calculée sur TOUS les résultats passés (tous marchés, pas seulement le Journal), recalculée à chaque exécution ; moins de 200 paris dans la tranche : valeur de l'intervalle entier. Wilson ne sert qu'au classement.
-7. Aucun gain espéré ni ROI : `ev_estime` et `journal_roi` valent `null` pour ces paris (sélection, tickets). Les paris par segment championnat×marché (basés sur un ROI de segment) sont ignorés dans ce mode. Le Journal n'entre jamais dans les tickets « prudents ».
-8. Affichage : « x sur y » + réussite observée à cette cote ; ni fréquence brute ni Wilson en pourcentage.
-9. Suivi : `data/suivi_journal_regularites.json` (liste du jour + résultat réel des jours passés), mis à jour par `generateur_tickets.py`. `journal.yml` ne l'ajoute pas à son commit explicite ; `pipeline.yml` (`git add -A`) le fait.
+2. Constance : dès 6 matchs, la moyenne « réussite globale » et « réussite sur les 6 derniers matchs » (`gagnes_6` / `joues_6`, ajoutés par `journal_rentabilite.py`, ordre chronologique) doit atteindre 70 %. À 6 matchs elle vaut la réussite globale. Avec 5 matchs, la réussite globale seule suffit. Donnée absente : pari rejeté (`DONNEE_6_DERNIERS_ABSENTE`).
+3. Classement (`rank_journal_regularite`) : chiffre, puis taux, puis nombre de matchs. Aucune cote.
+4. Liste : un seul pari par match, 15 au maximum, jamais complétée.
+5. La fenêtre de cote 1,26–3,01 du générateur (`eligible`) reste une contrainte de tickets, pas un critère de sélection.
+6. `ev_estime` et `journal_roi` valent `null` pour ces paris ; les paris par segment (basés sur un ROI de segment) sont ignorés ; le Journal n'entre jamais dans les tickets « prudents ».
+7. Affichage : « x sur y » + estimation de réussite pour ce match (`taux x réalisme`). Ni fréquence brute ni borne de Wilson en pourcentage.
+8. Suivi : `data/suivi_journal_regularites.json` (liste du jour + résultat réel des jours passés), mis à jour par `generateur_tickets.py`. `journal.yml` ne l'ajoute pas à son commit explicite ; `pipeline.yml` (`git add -A`) le fait.
+9. Diagnostic : `data/selection_intelligence.json` → `journal_classement` (réalisme par marché, nombre de cas passés).
 
-Ce qui n'est pas prouvé : sur ces cotes, le Journal réussit comme n'importe quel pari de la même cote. La règle est seulement « moins mauvaise » que « wilson » (test du 09/10 : 9 paris, 22 % de réussite avec « wilson » contre 64 % sur 52 paris avec cote <= 1,8). Le suivi dit si la constance apporte quelque chose.
+Mesures du 09/10 (14 jours, 351 régularités passées) : un taux affiché de 85 % se réalise à 58 % en moyenne (réalisme 0,68). Par marché : « moins de 3,5 buts » 0,75, « ne perd pas » 0,75, « plus de 2,5 buts » 0,72, « les deux équipes marquent » 0,68 ; faibles : « moins de 2,5 buts » 0,35 (17 cas), « marque 2 buts ou plus » 0,48, « au moins une équipe ne marque pas » 0,47. Classement des 15 par jour (59 paris) : formule 64 %, borne de Wilson seule 71 %, hasard 63 % (± 12 points : aucune différence démontrée entre les trois). Le suivi dira si le classement apporte quelque chose.
 
 Tests : `tests/test_journal_regularites.py`.

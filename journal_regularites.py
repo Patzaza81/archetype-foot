@@ -1,16 +1,22 @@
-"""Journal — mode « regularites » : règles d'admissibilité et probabilité de ticket, SANS ROI.
+"""Journal — mode « regularites » : formule simple, SANS cote et SANS ROI.
 
 Indépendant de V2 et V3 (bibliothèque standard + journal_rentabilite uniquement).
 
-Règles (décidées par le propriétaire, voir docs/CLAUDE_RENTABILITE.md) :
-- entrée : au moins 5 matchs, réussite >= 70 %, marché non banal (construit par journal_rentabilite, inchangé) ;
-- cote entre 1,26 et 1,56 (plus de plafond 1,80) ;
-- indice de constance : dès 6 matchs, la moyenne « réussite globale » et « réussite sur les 6 derniers matchs » doit
-  atteindre 70 % ; avec 5 matchs, la réussite globale seule suffit ;
-- probabilité utilisée pour les tickets : réussite OBSERVÉE pour la tranche de cote (pas de 0,10), calculée sur TOUS les
-  résultats passés (pas seulement ceux du Journal) ; si la tranche a moins de 200 paris, valeur de l'intervalle entier ;
-  recalculée à chaque exécution, jamais écrite en dur ;
-- la borne de Wilson ne sert qu'au classement ; aucun ROI, aucun gain espéré.
+Formule (décidée par le propriétaire) :
+    chiffre = taux de réussite de l'équipe sur le marché  x  réalisme du marché  x  (1 - marge d'erreur relative)
+- taux de réussite de l'équipe : gagnés / joués (ex. 8 sur 10 = 0,80) ;
+- réalisme du marché : réussite RÉELLE de ce marché lors du match suivant, divisée par le taux affiché, mesurée sur toutes
+  les régularités passées de ce marché (même règle d'entrée que le Journal), recalculée à chaque exécution ; moins de
+  15 cas pour ce marché : réalisme moyen de tous les marchés ;
+- marge d'erreur : taux moins sa borne basse à 95 % (Wilson), qui pénalise les petits échantillons même à 100 %.
+On classe ensuite par ce chiffre. La probabilité utilisée pour les tickets est taux x réalisme (sans la marge).
+
+Autres règles :
+- entrée : au moins 5 matchs, réussite >= 70 %, marché non banal (journal_rentabilite, inchangé) ;
+- constance : dès 6 matchs, la moyenne « réussite globale » et « réussite sur les 6 derniers matchs » doit atteindre 70 % ;
+  avec 5 matchs, la réussite globale seule suffit ;
+- la cote n'intervient dans aucun calcul ni critère du Journal (l'intervalle 1,26–3,01 du générateur reste une contrainte
+  de tickets, pas un critère de sélection) ; aucun ROI, aucun gain espéré.
 """
 from __future__ import annotations
 
@@ -22,32 +28,16 @@ from typing import Any
 
 import journal_rentabilite as jr
 
-COTE_MIN = 1.26
-COTE_MAX = 1.56
 MIN_MATCHS = 5
 SEUIL_REUSSITE = 0.70
 MATCHS_INDICE = 6          # l'indice « 6 derniers » s'applique dès 6 matchs
-MIN_PARIS_TRANCHE = 200    # en dessous, on prend la valeur de l'intervalle entier
-PAS_TRANCHE = 0.10
+MIN_CAS_MARCHE = 15        # en dessous, réalisme moyen de tous les marchés
+MIN_CAS_GLOBAL = 30        # en dessous, aucun réalisme fiable : aucun pari admissible
 
-MOTIF_COTE = "COTE_HORS_INTERVALLE"
 MOTIF_MATCHS = "MATCHS_INSUFFISANTS"
 MOTIF_CONSTANCE = "CONSTANCE_INSUFFISANTE"
 MOTIF_6_ABSENTS = "DONNEE_6_DERNIERS_ABSENTE"
-MOTIF_TAUX = "TAUX_OBSERVE_ABSENT"
-
-
-def tranche(cote: float) -> float:
-    """Tranche de cote par pas de 0,10 (1,26 -> 1,2 ; 1,34 -> 1,3 ; 1,50 -> 1,5)."""
-    return round(math.floor(round(cote / PAS_TRANCHE, 6)) * PAS_TRANCHE, 1)
-
-
-def dans_intervalle(cote: Any) -> bool:
-    try:
-        c = float(cote)
-    except (TypeError, ValueError):
-        return False
-    return COTE_MIN <= c <= COTE_MAX
+MOTIF_REALISME = "REALISME_ABSENT"
 
 
 def indice_constance(gagnes: int, joues: int, gagnes_6: Any, joues_6: Any) -> float | None:
@@ -63,13 +53,12 @@ def indice_constance(gagnes: int, joues: int, gagnes_6: Any, joues_6: Any) -> fl
     return (globale + int(gagnes_6) / int(joues_6)) / 2.0
 
 
-def evalue(gagnes: int, joues: int, gagnes_6: Any, joues_6: Any, cote: Any) -> tuple[bool, list[str]]:
-    """(admissible, motifs de rejet). Toutes les conditions sont vérifiées pour que les motifs soient complets."""
+def evalue(gagnes: int, joues: int, gagnes_6: Any, joues_6: Any) -> tuple[bool, list[str]]:
+    """(admissible, motifs de rejet). La cote n'intervient pas. Toutes les conditions sont vérifiées pour que les motifs
+    soient complets."""
     motifs: list[str] = []
     if joues < MIN_MATCHS:
         motifs.append(MOTIF_MATCHS)
-    if not dans_intervalle(cote):
-        motifs.append(MOTIF_COTE)
     if joues >= MATCHS_INDICE:
         ind = indice_constance(gagnes, joues, gagnes_6, joues_6)
         if ind is None:
@@ -81,72 +70,133 @@ def evalue(gagnes: int, joues: int, gagnes_6: Any, joues_6: Any, cote: Any) -> t
     return (not motifs, motifs)
 
 
-# --- réussite observée par tranche de cote ------------------------------------------------------------------------------
+# --- formule simple : taux x réalisme x (1 - marge d'erreur) ------------------------------------------------------------
 
-def taux_observes(matchs: list[dict[str, Any]]) -> dict[str, Any]:
-    """Compte, sur TOUS les paris de TOUS les marchés dont la cote est dans l'intervalle, les réussites et les paris par
-    tranche. Un résultat nul (remboursé) n'est ni une réussite ni un échec : il est ignoré."""
-    par_tranche: dict[float, list[int]] = defaultdict(lambda: [0, 0])
-    total = [0, 0]
-    for m in matchs:
-        cotes = m.get("cotes") or {}
-        buts = m.get("buts")
-        if not cotes or not buts:
-            continue
-        for lib, o in cotes.items():
-            if not dans_intervalle(o):
-                continue
-            an = jr.analyse_libelle(lib)
-            if not an:
-                continue
-            r = an[1](*buts)
-            if r is None or r == 0:
-                continue
-            gagne = 1 if r == 1 else 0
-            t = tranche(float(o))
-            par_tranche[t][0] += gagne
-            par_tranche[t][1] += 1
-            total[0] += gagne
-            total[1] += 1
-    return {"tranches": {t: tuple(v) for t, v in sorted(par_tranche.items())}, "intervalle": tuple(total)}
+def borne_wilson(p: float, n: int, z: float = 1.959963984540054) -> float:
+    """Borne basse à 95 % du taux p observé sur n cas (Wilson). Contrairement à la marge classique 1,96 x racine(p(1-p)/n),
+    elle ne tombe pas à zéro quand p vaut 100 % : 5 sur 5 reste moins sûr que 18 sur 20."""
+    if n <= 0:
+        return 0.0
+    den = 1.0 + z * z / n
+    centre = p + z * z / (2.0 * n)
+    ecart = z * math.sqrt((p * (1.0 - p) + z * z / (4.0 * n)) / n)
+    return max(0.0, (centre - ecart) / den)
 
 
-def taux_pour(cote: float, stats: dict[str, Any] | None) -> tuple[float | None, str | None]:
-    """(réussite observée, origine) pour une cote : tranche si >= 200 paris, sinon intervalle entier."""
+def marge_erreur(p: float, n: int) -> float:
+    """Marge d'erreur à 95 % d'un taux p observé sur n cas : p moins sa borne basse. Plus n est petit, plus elle est grande."""
+    if n <= 0:
+        return p
+    return max(0.0, p - borne_wilson(p, n))
+
+
+def chiffre(taux: float, n: int, realisme: float) -> float:
+    """Le chiffre de classement : taux x réalisme x (1 - marge d'erreur relative) = réalisme x borne basse du taux.
+    Borné à [0, 1]."""
+    if taux <= 0 or n <= 0:
+        return 0.0
+    facteur = 1.0 - marge_erreur(taux, n) / taux
+    return max(0.0, min(1.0, taux * realisme * facteur))
+
+
+def probabilite_ticket(taux: float, realisme: float) -> float:
+    """Probabilité utilisée pour les tickets : taux x réalisme (sans la marge, qui sert au classement)."""
+    return max(0.01, min(0.99, taux * realisme))
+
+
+def candidats_passes(matchs: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Reconstruit, jour après jour et SANS fuite du futur, les paris que la règle d'entrée du Journal aurait retenus, avec
+    leur résultat réel au match suivant. Aucune cote n'est utilisée : tous les matchs terminés servent. Un résultat
+    remboursé est ignoré."""
+    marches = jr.MARCHES_EQUIPE
+    ordonnes = sorted(matchs, key=lambda m: (str(m.get("date")), str(m.get("match_id"))))
+    par_jour: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for m in ordonnes:
+        if m.get("buts"):
+            par_jour[str(m["date"])].append(m)
+    equipe: dict[tuple[str, str, str], list[int]] = defaultdict(lambda: [0, 0])
+    general: dict[str, list[int]] = defaultdict(lambda: [0, 0])
+    out: list[dict[str, Any]] = []
+
+    def issue(lib: str, buts: Any) -> Any:
+        an = jr.analyse_libelle(lib)
+        return an[1](*buts) if an else None
+
+    for jour in sorted(par_jour):
+        for m in par_jour[jour]:
+            for eq, cote_eq in ((m["domicile"], 0), (m["exterieur"], 1)):
+                for nom, libs in marches.items():
+                    g = general[nom]
+                    if g[1] == 0 or g[0] / g[1] >= jr.SEUIL_FREQUENCE_EQUIPE:
+                        continue
+                    w, n = equipe[(eq, m["ligue"], nom)]
+                    if n < jr.MIN_MATCHS_EQUIPE or w / n < jr.SEUIL_FREQUENCE_EQUIPE:
+                        continue
+                    r = issue(libs[cote_eq], m["buts"])
+                    if r is None or r == 0:
+                        continue
+                    out.append({"date": jour, "equipe": eq, "marche": nom, "gagnes": w, "joues": n,
+                                "frequence": w / n, "resultat": 1 if r == 1 else 0})
+        for m in par_jour[jour]:
+            for eq, cote_eq in ((m["domicile"], 0), (m["exterieur"], 1)):
+                for nom, libs in marches.items():
+                    r = issue(libs[cote_eq], m["buts"])
+                    if r is None:
+                        continue
+                    equipe[(eq, m["ligue"], nom)][1] += 1
+                    equipe[(eq, m["ligue"], nom)][0] += 1 if r == 1 else 0
+                    general[nom][1] += 1
+                    general[nom][0] += 1 if r == 1 else 0
+    return out
+
+
+def stats_realisme(candidats: list[dict[str, Any]]) -> dict[str, Any]:
+    """Par marché : nombre de cas, somme des taux affichés, nombre de réussites réelles. + total tous marchés."""
+    marches: dict[str, list[float]] = defaultdict(lambda: [0, 0.0, 0])
+    total = [0, 0.0, 0]
+    for c in candidats:
+        for acc in (marches[c["marche"]], total):
+            acc[0] += 1
+            acc[1] += c["frequence"]
+            acc[2] += c["resultat"]
+    return {"marches": {k: tuple(v) for k, v in marches.items()}, "total": tuple(total), "erreur": None}
+
+
+def realisme_pour(marche: str, stats: dict[str, Any] | None) -> tuple[float | None, str | None]:
+    """(réalisme, origine). Réalisme = réussite réelle / taux affiché. Marché avec moins de 15 cas : réalisme de tous les
+    marchés ; moins de 30 cas au total : None (aucun pari admissible)."""
     if not stats:
         return None, None
-    w, n = stats.get("tranches", {}).get(tranche(cote), (0, 0))
-    if n >= MIN_PARIS_TRANCHE:
-        return w / n, "tranche"
-    w, n = stats.get("intervalle", (0, 0))
-    if n > 0:
-        return w / n, "intervalle"
+    n, somme, reussis = stats.get("marches", {}).get(marche, (0, 0.0, 0))
+    if n >= MIN_CAS_MARCHE and somme > 0:
+        return reussis / somme, "marche"
+    n, somme, reussis = stats.get("total", (0, 0.0, 0))
+    if n >= MIN_CAS_GLOBAL and somme > 0:
+        return reussis / somme, "moyenne"
     return None, None
 
 
-def charge_taux(jusqu_a: str | None = None) -> dict[str, Any]:
-    """Lit les résultats passés (date < jusqu_a si fournie) et calcule les taux observés. Une erreur de lecture est
-    renvoyée dans « erreur » et jamais masquée : sans taux, aucun pari n'est admissible."""
+def charge_realisme(jusqu_a: str | None = None) -> dict[str, Any]:
+    """Lit les résultats passés (date < jusqu_a si fournie) et calcule le réalisme de chaque marché. Une erreur de lecture est
+    renvoyée dans « erreur » et jamais masquée : sans réalisme, aucun pari n'est admissible."""
     try:
         matchs = jr.charge_tous_resultats()
     except Exception as exc:  # noqa: BLE001 - l'erreur est exposée dans le diagnostic
-        return {"tranches": {}, "intervalle": (0, 0), "erreur": f"{type(exc).__name__}: {exc}"}
+        return {"marches": {}, "total": (0, 0.0, 0), "erreur": f"{type(exc).__name__}: {exc}"}
     if jusqu_a:
         matchs = [m for m in matchs if str(m.get("date") or "") < jusqu_a]
-    stats = taux_observes(matchs)
-    stats["erreur"] = None
-    return stats
+    return stats_realisme(candidats_passes(matchs))
 
 
 # --- affichage -----------------------------------------------------------------------------------------------------------
 
-def texte_affichage(equipe: str, gagnes: int, joues: int, gagnes_6: Any, joues_6: Any, taux: float | None) -> str:
-    """« 8 sur 10 » + réussite observée à cette cote. Jamais de fréquence brute ni de borne de Wilson en pourcentage."""
+def texte_affichage(equipe: str, gagnes: int, joues: int, gagnes_6: Any, joues_6: Any, taux_reel: float | None) -> str:
+    """« 8 sur 10 » + réussite réelle de ce type de pari. Jamais de fréquence brute ni de borne de Wilson en pourcentage."""
     t = f"{equipe} : {gagnes} sur {joues} matchs sur ce marché"
     if joues >= MATCHS_INDICE and gagnes_6 is not None and joues_6:
         t += f" ({int(gagnes_6)} sur {int(joues_6)} sur les derniers)"
-    if taux is not None:
-        t += f". À cette cote, ce type de pari réussit environ {taux:.0%} du temps."
+    if taux_reel is not None:
+        t += f". Estimation de réussite pour ce match : {taux_reel:.0%}."
     else:
         t += "."
     return t
