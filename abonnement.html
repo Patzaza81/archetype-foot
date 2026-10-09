@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#F7F1E7">
+<title>Abonnement — Archetype Foot</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="theme.css">
+<style>
+:root{--surface-2:#E0F3EF;--turquoise:#087F78;--turquoise-active:#06645F;--categorie:#087F78}
+header{background:linear-gradient(135deg,rgba(8,127,120,.09),rgba(21,152,141,.07))!important}
+.nav-pages a,.nav-bouton,.bouton-principal{background:linear-gradient(135deg,#087F78,#06645F)!important;color:#fff!important;border:0!important}
+main{padding:18px 16px 36px}
+.intro-abonnement{padding:22px 18px;border-radius:18px;background:linear-gradient(145deg,#087F78,#06645F);color:#fff;margin-bottom:18px}
+.intro-abonnement h2{margin:0 0 8px;font-size:25px}.intro-abonnement p{margin:0;color:#E1F7F2}
+.carte-abonnement{background:var(--surface);border:1px solid var(--border);border-radius:15px;padding:18px;margin:14px 0;box-shadow:0 6px 20px rgba(10,70,65,.06)}
+.carte-abonnement h3{margin:0 0 12px;color:var(--turquoise);font-size:18px}
+.champ{display:block;margin:12px 0}.champ span{display:block;font-size:14px;font-weight:650;margin-bottom:6px}
+.champ input{width:100%;padding:13px;border:1px solid rgba(8,127,120,.28);border-radius:9px;background:#fffdf8;color:#241b35;font:inherit}
+.option-connexion{width:100%;padding:13px;border:1px solid rgba(8,127,120,.24);border-radius:10px;background:#fffdf8;color:#155e59;font-weight:700;font-size:15px;margin:5px 0}
+.note{font-size:13px;color:var(--text-secondary);line-height:1.55}
+.moyen-paiement{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.moyen-paiement:last-child{border-bottom:0}.pastille{width:42px;height:42px;border-radius:11px;background:#DDF3EE;color:#087F78;display:grid;place-items:center;font-weight:800;flex:none}
+.avertissement{padding:12px;border-radius:10px;background:#FFF3D8;color:#705319;font-size:13px;line-height:1.5}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-top"><h1>Archetype Foot</h1></div>
+  <p id="maj">Votre espace membre</p>
+  <nav class="nav-pages" aria-label="Navigation principale">
+    <a href="index.html">⚽ Matchs</a>
+    <a href="archetype.html">🎯 Sélections</a>
+    <a href="systeme.html">⚙️ Système</a>
+    <a href="journal.html">📒 Journal</a>
+    <a href="tickets.html">🎟️ Tickets</a>
+  </nav>
+</header>
+<main>
+  <section class="intro-abonnement">
+    <h2>Votre compte Archetype Foot</h2>
+    <p>Créez votre espace membre et retrouvez vos informations au même endroit.</p>
+  </section>
+  <form id="form-compte" class="carte-abonnement">
+    <h3>Créer votre compte</h3>
+    <label class="champ"><span>Numéro de téléphone (méthode recommandée)</span><input id="telephone" name="telephone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+237 6XX XX XX XX" required></label>
+    <label class="champ"><span>Adresse Gmail (facultatif)</span><input id="email" name="email" type="email" autocomplete="email" placeholder="vous@gmail.com"></label>
+    <label class="champ"><span>Nom d’affichage (facultatif)</span><input id="nom" name="nom" autocomplete="name" placeholder="Votre nom"></label>
+    <button class="bouton-principal" type="submit">Continuer avec mon numéro</button>
+    <button class="option-connexion" id="continuer-gmail" type="button">Continuer avec Gmail</button>
+    <p class="note">La création réelle du compte nécessite l’activation d’un service d’authentification et l’envoi d’un code de vérification. Aucun mot de passe ni code secret ne vous sera demandé sur cette page.</p>
+    <p id="message-compte" class="note" role="status" aria-live="polite"></p>
+  </form>
+  <section class="carte-abonnement">
+    <h3>Modalités de paiement</h3>
+    <div class="moyen-paiement"><div class="pastille">M</div><div><strong>MTN Mobile Money</strong><div class="note">Paiement mobile à confirmer lors de l’activation du service.</div></div></div>
+    <div class="moyen-paiement"><div class="pastille">O</div><div><strong>Orange Money</strong><div class="note">Paiement mobile à confirmer lors de l’activation du service.</div></div></div>
+    <div class="moyen-paiement"><div class="pastille">G</div><div><strong>Autres moyens</strong><div class="note">Les moyens disponibles, tarifs, durée et conditions de renouvellement seront affichés clairement avant tout paiement.</div></div></div>
+    <p class="avertissement">Les paiements ne sont pas encore activés sur cette page. Aucun paiement ne sera demandé ou présenté comme effectué tant que le prestataire et les identifiants de paiement ne seront pas configurés.</p>
+  </section>
+</main>
+<script src="theme.js"></script>
+<script>
+const form=document.getElementById("form-compte");
+form.addEventListener("submit",function(e){e.preventDefault();document.getElementById("message-compte").textContent="La page de compte est prête visuellement, mais la vérification par SMS doit être reliée au service d’authentification avant de pouvoir créer un compte.";});
+document.getElementById("continuer-gmail").addEventListener("click",function(){document.getElementById("message-compte").textContent="La connexion Google doit être activée avec les identifiants OAuth du projet avant de pouvoir continuer.";});
+</script>
+</body>
+</html>
