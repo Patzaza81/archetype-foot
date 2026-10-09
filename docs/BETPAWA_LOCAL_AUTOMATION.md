@@ -23,6 +23,38 @@ Depuis la racine du dépôt, installer les dépendances :
     python -m pip install playwright
     python -m playwright install chromium
 
+## Boucle complète : générateur → coupon
+
+Le générateur de tickets n'est pas modifié. La passerelle utilise sa sortie officielle `data/tickets.json`, lance ensuite la validation BetPawa, puis remet le ticket validé au navigateur local.
+
+Pour générer les tickets du jour et afficher les tickets prêts :
+
+    python tools/run_betpawa_loop.py
+
+Pour choisir directement un ticket et préparer le coupon :
+
+    python tools/run_betpawa_loop.py --ticket-id AX-IDENTIFIANT --click
+
+Pour utiliser le dernier `data/tickets.json` sans relancer le générateur :
+
+    python tools/run_betpawa_loop.py --no-generate --ticket-id AX-IDENTIFIANT --click
+
+La séquence est donc strictement :
+
+    generateur_tickets.py
+            ↓
+    data/tickets.json
+            ↓
+    betpawa_validation.py
+            ↓
+    data/betpawa_validation.json
+            ↓
+    betpawa_local_runner.py
+            ↓
+    navigateur BetPawa → clic des sélections → coupon ouvert
+
+Aucun fichier du générateur n'est modifié par cette boucle.
+
 ## Prévisualisation
 
     python tools/betpawa_local_runner.py
