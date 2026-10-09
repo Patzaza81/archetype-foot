@@ -18,7 +18,9 @@ import argparse
 import hashlib
 import json
 import re
+import unicodedata
 from datetime import datetime, timezone
+from functools import lru_cache
 from pathlib import Path
 from zoneinfo import ZoneInfo
 from typing import Any
@@ -97,6 +99,50 @@ def _extract_tickets(data: Any) -> list[dict[str, Any]]:
     return []
 
 
+def _cache_team_name(value: Any) -> str:
+    value = unicodedata.normalize("NFKD", _text(value))
+    value = "".join(ch for ch in value if not unicodedata.combining(ch)).lower()
+    words = re.sub(r"[^a-z0-9\\s]", " ", value).split()
+    ignored = {"fc", "ac", "cf", "sc", "afc", "cfc", "club", "el", "al"}
+    return " ".join(word for word in words if word not in ignored)
+
+
+@lru_cache(maxsize=1)
+def _load_betpawa_cache() -> dict[str, Any]:
+    cache_file = Path(__file__).resolve().parent / "cache_betpawa.json"
+    try:
+        data = json.loads(cache_file.read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) else {}
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+
+def _resolve_betpawa_url(leg: dict[str, Any]) -> tuple[str, str]:
+    existing = _text(leg.get("betpawa_url"))
+    if URL_RE.match(existing):
+        return existing, "ticket_snapshot"
+
+    # Resolve only an exact team/date cache entry previously marked certain.
+    # Never guess an event URL from a team name or invent an event identifier.
+    date = _text(leg.get("date"))
+    home = _cache_team_name(leg.get("domicile"))
+    away = _cache_team_name(leg.get("exterieur"))
+    key = f"{home}||{away}||{date}"
+    record = _load_betpawa_cache().get(key)
+    if not isinstance(record, dict):
+        return "", "missing"
+    if record.get("confidence") != "certain" or _text(record.get("date")) != date:
+        return "", "missing"
+    if _cache_team_name(record.get("home_source")) != home:
+        return "", "missing"
+    if _cache_team_name(record.get("away_source")) != away:
+        return "", "missing"
+    url = _text(record.get("event_id"))
+    if not URL_RE.match(url):
+        return "", "missing"
+    return url, "scraping_cache"
+
+
 def _normalise_selection(ticket: dict[str, Any]) -> list[dict[str, Any]]:
     selection = ticket.get("selection")
     if not isinstance(selection, list):
@@ -105,6 +151,7 @@ def _normalise_selection(ticket: dict[str, Any]) -> list[dict[str, Any]]:
     for leg in selection:
         if not isinstance(leg, dict):
             continue
+        betpawa_url, url_source = _resolve_betpawa_url(leg)
         result.append({
             "cle_match": _leg_key(leg),
             "date": _text(leg.get("date")),
@@ -114,7 +161,8 @@ def _normalise_selection(ticket: dict[str, Any]) -> list[dict[str, Any]]:
             "exterieur": _text(leg.get("exterieur")),
             "marche": _text(leg.get("marche")),
             "cote": _num(leg.get("cote")),
-            "betpawa_url": _text(leg.get("betpawa_url")),
+            "betpawa_url": betpawa_url,
+            "betpawa_url_source": url_source,
         })
     return result
 
