@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F7F1E7">
+<title>Inscription — Archetype Foot</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="theme.css">
+<style>
+:root{--surface-2:#E0F3EF;--turquoise:#087F78;--turquoise-active:#06645F;--categorie:#087F78}
+header{background:linear-gradient(135deg,rgba(8,127,120,.09),rgba(21,152,141,.07))!important}
+.nav-pages a,.bouton-principal{background:linear-gradient(135deg,#087F78,#06645F)!important;color:#fff!important;border:0!important}
+main{max-width:560px;margin:auto;padding:18px 16px 38px}
+.hero{padding:22px 18px;border-radius:18px;background:linear-gradient(145deg,#087F78,#06645F);color:#fff;margin-bottom:16px}
+.hero h2{font-size:25px;margin:0 0 7px}.hero p{margin:0;color:#E1F7F2;line-height:1.5}
+.carte{background:var(--surface);border:1px solid var(--border);border-radius:15px;padding:18px;margin:14px 0;box-shadow:0 6px 20px rgba(10,70,65,.06)}
+.carte h3{margin:0 0 12px;color:var(--turquoise);font-size:19px}
+.champ{display:block;margin:13px 0}.champ span{display:block;font-size:14px;font-weight:700;margin-bottom:6px}
+.champ input{box-sizing:border-box;width:100%;padding:13px;border:1px solid rgba(8,127,120,.3);border-radius:9px;background:#fffdf8;color:#241b35;font:inherit}
+.bouton-principal,.bouton-secondaire{display:block;width:100%;box-sizing:border-box;text-align:center;text-decoration:none;padding:13px;border-radius:10px;font:inherit;font-weight:750;cursor:pointer;margin-top:10px}
+.bouton-secondaire{background:#fffdf8;color:#087F78;border:1px solid rgba(8,127,120,.3)}
+.note{font-size:13px;line-height:1.55;color:var(--text-secondary)}
+</style>
+</head>
+<body>
+<header>
+ <div class="header-top"><h1>Archetype Foot</h1></div>
+ <p>Créer votre compte</p>
+ <nav class="nav-pages" aria-label="Navigation principale">
+  <a href="compte.html">👤 Compte</a><a href="index.html">⚽ Matchs</a><a href="abonnement.html">💳 Abonnement</a>
+ </nav>
+</header>
+<main>
+ <section class="hero">
+  <h2>Bienvenue sur Archetype Foot</h2>
+  <p>Créez votre compte. Le numéro de téléphone est la méthode recommandée.</p>
+ </section>
+ <form id="inscription" class="carte">
+  <h3>Vos informations</h3>
+  <label class="champ"><span>Numéro de téléphone</span><input id="telephone" name="telephone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+237 6XX XX XX XX" required></label>
+  <label class="champ"><span>Adresse Gmail (facultatif)</span><input id="email" name="email" type="email" autocomplete="email" placeholder="vous@gmail.com"></label>
+  <label class="champ"><span>Nom d’affichage (facultatif)</span><input id="nom" name="nom" autocomplete="name" placeholder="Votre nom"></label>
+  <button class="bouton-principal" type="submit">Continuer avec mon numéro</button>
+  <button class="bouton-secondaire" id="google" type="button">Continuer avec Google</button>
+  <p id="message" class="note" role="status" aria-live="polite">La vérification SMS et la connexion Google nécessitent un service d’authentification configuré. Cette page ne crée pas encore de compte réel.</p>
+ </form>
+</main>
+<script src="theme.js"></script>
+<script>
+document.getElementById("inscription").addEventListener("submit",function(e){
+ e.preventDefault();
+ document.getElementById("message").textContent="Inscription non finalisée : la vérification sécurisée du numéro doit être activée avant la création du compte.";
+});
+document.getElementById("google").addEventListener("click",function(){
+ document.getElementById("message").textContent="La connexion Google sera disponible après configuration des identifiants OAuth.";
+});
+</script>
+</body>
+</html>
