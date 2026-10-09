@@ -154,6 +154,8 @@ def validate_ticket(ticket: dict[str, Any], index: int) -> dict[str, Any]:
         warnings.append("TOTAL_ODDS_NOT_CALCULABLE")
 
     expected = _num(ticket.get("cote_totale"))
+    if expected is None and isinstance(ticket.get("metrics"), dict):
+        expected = _num(ticket["metrics"].get("cote_totale"))
     if expected is not None and odds is not None and abs(expected - odds) > 0.02:
         errors.append("TOTAL_ODDS_MISMATCH")
 
@@ -179,7 +181,7 @@ def build_manifest(data: Any, max_tickets: int = MAX_TICKETS_PER_DAY) -> dict[st
     if max_tickets < 1:
         raise ValueError("max_tickets must be >= 1")
 
-    checked = [validate_ticket(t, i) for i, t in enumerate(raw[:max_tickets], 1)]
+    checked = [validate_ticket(t, i) for i, t in enumerate(raw[:min(max_tickets, MAX_TICKETS_PER_DAY)], 1)]
     return {
         "schema_version": SCHEMA_VERSION,
         "generated_at": datetime.now(timezone.utc).isoformat(),
