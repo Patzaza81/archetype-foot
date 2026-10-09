@@ -34,6 +34,27 @@ class BetpawaValidationTests(unittest.TestCase):
         self.assertEqual(result["status"], "REJECTED")
         self.assertIn("DUPLICATE_MATCH", result["errors"])
 
+    def test_same_fixture_different_markets_is_rejected_without_explicit_key(self):
+        a = leg()
+        b = leg()
+        a.pop("cle_match")
+        b.pop("cle_match")
+        b["marche"] = "Match à plus de 2,5 buts"
+        result = validate_ticket({"selection": [a, b]}, 1)
+        self.assertEqual(result["status"], "REJECTED")
+        self.assertIn("DUPLICATE_MATCH", result["errors"])
+
+    def test_invalid_odds_are_rejected(self):
+        result = validate_ticket({"selection": [leg(odds=1.0)]}, 1)
+        self.assertEqual(result["status"], "REJECTED")
+        self.assertIn("LEG_1_INVALID_ODDS", result["errors"])
+
+    def test_pool_candidates_are_wrapped_for_review(self):
+        manifest = build_manifest({"pool": [leg()]})
+        self.assertEqual(manifest["tickets_checked"], 1)
+        self.assertEqual(manifest["tickets"][0]["scenario"], "POOL_CANDIDATE")
+        self.assertEqual(manifest["tickets"][0]["status"], "READY_FOR_REVIEW")
+
     def test_bad_url_is_rejected(self):
         a = leg()
         a["betpawa_url"] = "https://example.com/event/1"
