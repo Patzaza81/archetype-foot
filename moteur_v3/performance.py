@@ -26,6 +26,23 @@ NIVEAUX = {4: ("SUR", "Sûr"), 3: ("RECOMMANDE", "Recommandé"), 2: ("ATTENTION"
            1: ("RISQUE", "Risqué"), 0: ("TRES_RISQUE", "Très risqué")}
 
 
+FENETRE = 7   # derniers matchs de chaque équipe, comme le Journal (« 7 matchs analysés »)
+
+
+def derniers_matchs(matchs: Sequence[Mapping[str, Any]], n: int = FENETRE) -> list[Mapping[str, Any]]:
+    """Les n derniers matchs d'une équipe, TOUS LIEUX CONFONDUS (décision de Patrick du 10/10 : domicile/extérieur ne
+    veut rien dire pour l'indice, c'est le marché qui donne la tendance). Matchs sans score valide écartés."""
+    ok = []
+    for m in matchs:
+        try:
+            if float(m["buts_marques"]) >= 0 and float(m["buts_encaisses"]) >= 0:
+                ok.append(m)
+        except (KeyError, TypeError, ValueError):
+            continue
+    ok.sort(key=lambda m: str(m.get("date") or ""))
+    return ok[-n:]
+
+
 def _ligne(jeton: str) -> float:
     return float(jeton.replace("_", "."))
 

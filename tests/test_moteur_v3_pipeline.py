@@ -506,3 +506,13 @@ def test_alternatives_indice_informatives_et_sans_effet_sur_la_selection():
             assert a["cote"] and 0 < a["probabilite"] < 1
         assert len(x.get("alternatives_indice", [])) <= 3
     assert vus > 0
+
+
+def test_indice_pour_utilise_les_7_derniers_matchs_tous_lieux():
+    ms = lambda eq: [{"date": f"2026-09-{i:02d}", "domicile": i % 2 == 0, "buts_marques": i % 4, "buts_encaisses": 1} for i in range(1, 10)]
+    ctx = {"entree": {"home_matches": ms("A"), "away_matches": ms("B")}}
+    p = mp.indice_pour({"marche": "over_2_5"}, ctx)
+    assert len(p["matchs_utilises"]["domicile"]) == 7 and len(p["matchs_utilises"]["exterieur"]) == 7
+    assert p["sur"] == 4 and 0 <= p["indice"] <= 4
+    assert mp.indice_pour({"marche": "score_2_1"}, ctx) is None
+    assert mp.indice_pour({"marche": "over_2_5"}, {"entree": {"home_matches": [], "away_matches": ms("B")}}) is None
