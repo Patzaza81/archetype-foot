@@ -132,6 +132,13 @@ function construitEtoiles(etoiles) {
     `${"★".repeat(n)}<span class="ax-etoiles-vides">${"★".repeat(5 - n)}</span></span>`;
 }
 
+// Texte de l'indice : « 3/4 · Recommandé » pour un marché des deux équipes (4 scénarios) ; pour un marché d'une seule
+// équipe (2 scénarios) une note sur 2 ne dit rien : on affiche le niveau et ce qui tient (« Tient en moyenne, pas dans le pire match »).
+function texteIndice(p) {
+  if (p.sur === 2 && p.phrase) return `${p.libelle || ""} · ${p.phrase.replace(/\.$/, "")}`;
+  return `${p.indice}/${p.sur || 4} · ${p.libelle || ""}`;
+}
+
 // Marchés valides écartés par V3, avec leur indice (information seulement, ne change pas la sélection).
 function construitAlternatives(c, equipes) {
   const alts = Array.isArray(c.alternatives_indice) ? c.alternatives_indice : [];
@@ -140,7 +147,7 @@ function construitAlternatives(c, equipes) {
     if (!p || typeof p.indice !== "number") return "";
     const classe = String(p.niveau || "").toLowerCase().replace(/_/g, "-");
     return `<li class="ax-indice-alt ax-indice-${echappeHtml(classe)}">Alternative : ${echappeHtml(nomMarcheV3(a, equipes))} ` +
-      `(cote ${formatCote(a.cote)}) · <strong>${echappeHtml(`${p.indice}/${p.sur || 4} · ${p.libelle || ""}`)}</strong></li>`;
+      `(cote ${formatCote(a.cote)}) · <strong>${echappeHtml(texteIndice(p))}</strong></li>`;
   }).join("");
   return lignes ? `<ul class="ax-indice-alts">${lignes}</ul>` : "";
 }
@@ -150,7 +157,7 @@ function construitIndice(c, compact, equipes) {
   const p = c && c.indice_performance;
   if (!p || typeof p.indice !== "number") return "";
   const classe = String(p.niveau || "").toLowerCase().replace(/_/g, "-");
-  const texte = `${p.indice}/${p.sur || 4} · ${p.libelle || ""}`;
+  const texte = texteIndice(p);
   return compact
     ? `<p class="ax-indice ax-indice-${echappeHtml(classe)} ax-indice-mini">Indice de performance : <strong>${echappeHtml(texte)}</strong></p>`
     : `<p class="ax-indice ax-indice-${echappeHtml(classe)}" title="Marché testé sur 4 scénarios (moyen et pire de chaque équipe). Information seulement.">` +

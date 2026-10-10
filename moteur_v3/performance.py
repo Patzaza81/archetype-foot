@@ -140,6 +140,23 @@ def niveau_pour(indice: int, sur: int) -> tuple[str, str]:
     return NIVEAUX[3] if part >= 0.75 else NIVEAUX[2] if part >= 0.5 else NIVEAUX[1] if indice > 0 else NIVEAUX[0]
 
 
+def phrase_indice(scenarios: Sequence[Mapping[str, Any]]) -> str:
+    """Phrase qui dit ce que l'indice signifie. Marché d'une seule équipe (2 scénarios) : on dit si le marché tient en
+    moyenne et dans le pire match, plutôt qu'une note sur 2. Marché des deux équipes : nombre de scénarios sur 4."""
+    v = [bool(x["valide"]) for x in scenarios]
+    if len(v) == 2:
+        moyen, pire = v
+        if moyen and pire:
+            return "Tient en moyenne et dans le pire match."
+        if moyen:
+            return "Tient en moyenne, mais pas dans le pire match."
+        if pire:
+            return "Ne tient pas en moyenne, mais tient dans le pire match."
+        return "Ne tient ni en moyenne ni dans le pire match."
+    n = sum(v)
+    return f"Validé dans {n} scénario{'s' if n > 1 else ''} sur {len(v)}."
+
+
 def indice_performance(marche: str, matchs_dom: Sequence[Mapping[str, Any]],
                        matchs_ext: Sequence[Mapping[str, Any]]) -> dict[str, Any] | None:
     """Indice de performance du marché (scénarios validés sur scénarios distincts) et détail. None si non calculable.
@@ -190,6 +207,7 @@ def indice_performance(marche: str, matchs_dom: Sequence[Mapping[str, Any]],
     sur = len(scenarios)
     niveau, libelle = niveau_pour(indice, sur)
     return {"version": 3, "indice": indice, "sur": sur, "niveau": niveau, "libelle": libelle,
+            "phrase": phrase_indice(scenarios),
             "moyenne_domicile": {"marque": round(md[0], 3), "encaisse": round(md[1], 3)},
             "moyenne_exterieur": {"marque": round(me[0], 3), "encaisse": round(me[1], 3)},
             "pire_domicile": None if not dd else {"marque": (pp[1][0] if de else pm[1]), "encaisse": (pp[1][1] if de else pm[2])},

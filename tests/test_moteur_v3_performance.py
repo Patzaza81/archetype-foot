@@ -142,3 +142,14 @@ def test_une_seule_equipe_sur_les_deux_scenarios_sur_2():
     assert indice_performance("away_over_2_5", _m((0, 0)), _m((1, 1), (0, 2)))["indice"] == 0           # 0/2
     assert indice_performance("clean_home", _m((1, 0)), _m((0, 1), (0, 0)))["indice"] == 2               # extérieur ne marque jamais
     assert indice_performance("clean_home", _m((1, 0)), _m((0, 1), (0, 0), (1, 0)))["indice"] == 1      # moyenne 0,33 ok, pire match (1 but) non
+
+
+def test_phrase_une_equipe_dit_ce_qui_tient():
+    d = _m((1, 1), (1, 2), (3, 3), (2, 2))
+    assert indice_performance("home_over_1_5", d, WOLVES)["phrase"] == "Tient en moyenne, mais pas dans le pire match."
+    assert indice_performance("home_over_0_5", _m((2, 0), (1, 0)), WOLVES)["phrase"] == "Tient en moyenne et dans le pire match."
+    assert indice_performance("home_over_3_5", _m((1, 0), (0, 0)), WOLVES)["phrase"] == "Ne tient ni en moyenne ni dans le pire match."
+
+
+def test_phrase_deux_equipes_compte_les_scenarios():
+    assert indice_performance("over_2_5", BORO, WOLVES)["phrase"] == "Validé dans 4 scénarios sur 4."

@@ -662,7 +662,8 @@ def lignes_indice_performance(perf, dom, ext):
     valident. Marché d'une seule équipe : 2 scénarios ; sinon 4. Détail : buts de chaque équipe, marge sur la ligne."""
     n, sur = perf["indice"], perf["sur"]
     md, me, pd, pe = perf["moyenne_domicile"], perf["moyenne_exterieur"], perf["pire_domicile"], perf["pire_exterieur"]
-    lignes = [f"Indice {n}/{sur} : {perf['libelle']}. Le marché est validé dans {n} scénario{'s' if n > 1 else ''} sur {sur}."]
+    lignes = [(f"Indice {n}/{sur} : {perf['libelle']}. Le marché est validé dans {n} scénario{'s' if n > 1 else ''} sur {sur}."
+               if sur != 2 else f"Indice : {perf['libelle']}. {perf['phrase']}")]
     if sur == 2:
         lignes.append("Ce marché ne dépend que d'une équipe : 2 scénarios (moyen et pire de cette équipe), l'autre équipe n'entre pas.")
     if pd:
@@ -681,7 +682,8 @@ def lignes_indice_performance(perf, dom, ext):
         suffixe = f" (total {_n2(total)})" if len(morceaux) == 2 else ""
         lignes.append(" / ".join(morceaux) + f"{suffixe} → marge {_marge_signee(s['marge'])} but : "
                       f"{'validé' if s['valide'] else 'non validé'}.")
-    lignes.append("Échelle : 100 % Sûr · 75 % Recommandé · 50 % Attention · 25 % Risqué (4/4, 3/4, 2/4, 1/4). Information seulement : "
+    lignes.append("Échelle (4 scénarios) : 4/4 Sûr · 3/4 Recommandé · 2/4 Attention · 1/4 Risqué. Marché d'une seule équipe : "
+                  "Sûr si tout tient, Attention si seulement la moyenne tient. Information seulement : "
                   "elle ne change ni la probabilité ni la sélection.")
     return lignes
 
