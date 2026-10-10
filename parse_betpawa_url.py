@@ -15,6 +15,8 @@ pas déployé sur le site -- c'est Claude qui récupère l'URL et fait tourner
 ce parseur à la demande, il n'y a pas de portage JS correspondant.
 """
 import re
+
+from equipe_betpawa import cote_de_l_equipe
 from datetime import date as _date
 
 
@@ -98,8 +100,7 @@ def parse_betpawa_url(texte, nom_domicile, nom_exterieur):
         m_equipe = re.match(r"^Over/Under \| (.+) \| Full Time$", titre)
         if m_equipe:
             nom = m_equipe.group(1)
-            prefixe = ("over_under_domicile" if nom == nom_domicile
-                       else "over_under_exterieur" if nom == nom_exterieur else None)
+            prefixe = {"domicile": "over_under_domicile", "exterieur": "over_under_exterieur"}.get(cote_de_l_equipe(nom, nom_domicile, nom_exterieur))
             paires, i = _lit_bloc(lignes, i + 1, PREFIXES_OU)
             if prefixe:
                 for label, valeur in paires.items():
@@ -152,9 +153,9 @@ def parse_betpawa_url(texte, nom_domicile, nom_exterieur):
             nom = m_cages.group(1)
             paires, i = _lit_bloc(lignes, i + 1, ["Yes", "No"])
             if len(paires) == 2:
-                if nom == nom_domicile:
+                if cote_de_l_equipe(nom, nom_domicile, nom_exterieur) == "domicile":
                     cotes["cages_inviolees_domicile"] = {"oui": paires["Yes"], "non": paires["No"]}
-                elif nom == nom_exterieur:
+                elif cote_de_l_equipe(nom, nom_domicile, nom_exterieur) == "exterieur":
                     cotes["cages_inviolees_exterieur"] = {"oui": paires["Yes"], "non": paires["No"]}
             continue
 

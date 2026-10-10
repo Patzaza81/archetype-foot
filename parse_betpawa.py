@@ -8,6 +8,8 @@ Les autres formes de handicap sont ignorées.
 """
 import json
 import re
+
+from equipe_betpawa import cote_de_l_equipe
 import sys
 
 
@@ -77,7 +79,7 @@ def parse_betpawa(texte, nom_domicile, nom_exterieur):
         m_equipe = re.match(r"^Plus de/Moins de \| (.+) \| Fin de [Mm]atch$", titre)
         if m_equipe:
             nom = m_equipe.group(1)
-            prefixe = "over_under_domicile" if nom == nom_domicile else ("over_under_exterieur" if nom == nom_exterieur else None)
+            prefixe = {"domicile": "over_under_domicile", "exterieur": "over_under_exterieur"}.get(cote_de_l_equipe(nom, nom_domicile, nom_exterieur))
             paires, i = _paires_jusqua_rupture(lignes, i + 1, r"^(Plus|Moins) de \d+\.5$")
             if prefixe:
                 for label, valeur in paires.items():
@@ -126,9 +128,9 @@ def parse_betpawa(texte, nom_domicile, nom_exterieur):
             nom = m_cages.group(1)
             paires, i = _paires(lignes, i + 1, 2)
             if len(paires) == 2:
-                if nom == nom_domicile:
+                if cote_de_l_equipe(nom, nom_domicile, nom_exterieur) == "domicile":
                     cotes["cages_inviolees_domicile"] = {"oui": paires.get("Oui"), "non": paires.get("Non")}
-                elif nom == nom_exterieur:
+                elif cote_de_l_equipe(nom, nom_domicile, nom_exterieur) == "exterieur":
                     cotes["cages_inviolees_exterieur"] = {"oui": paires.get("Oui"), "non": paires.get("Non")}
             continue
 
