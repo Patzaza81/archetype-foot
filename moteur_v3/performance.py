@@ -3,7 +3,7 @@
 Décision de Patrick (10/10/2026). Pour un marché donné, chaque équipe a deux profils, calculés sur ses matchs au même
 lieu (ceux de la justification) :
 - moyen : somme des buts marqués ÷ nombre de matchs, somme des buts encaissés ÷ nombre de matchs (moyennes simples) ;
-- pire : le match où l'équipe marque le moins favorablement pour CE marché (à égalité, le plus récent).
+- pire : le match qui éprouve le plus CE marché ; pour (pire, pire) on teste toutes les paires de matchs et on garde la plus dure (aucun scénario ne peut être pire).
 
 Les 2 × 2 profils donnent 4 scénarios de match. Dans chacun, seuls les buts MARQUÉS comptent : buts du domicile = ce
 que marque le domicile dans son profil, buts de l'extérieur = ce que marque l'extérieur dans le sien (correction de
@@ -85,44 +85,35 @@ def _buts(m: Mapping[str, Any]) -> tuple[float, float]:
     return float(m["buts_marques"]), float(m["buts_encaisses"])
 
 
-def _sens(marche: str, domicile: bool) -> int | None:
-    """+1 : plus l'équipe marque, plus le marché est favorable ; -1 : l'inverse ; None : pas monotone (ex. 12)."""
-    signes = set()
-    for autre in range(0, 7):
-        for g in range(0, 7):
-            f = (lambda x: marge(marche, x, autre)) if domicile else (lambda x: marge(marche, autre, x))
-            v = f(g + 1) - f(g)
-            if abs(v) > EPS:
-                signes.add(1 if v > 0 else -1)
-    return signes.pop() if len(signes) == 1 else None
+def _moyen(matchs: Sequence[Mapping[str, Any]]) -> tuple[float, float]:
+    n = len(matchs)
+    return sum(_buts(m)[0] for m in matchs) / n, sum(_buts(m)[1] for m in matchs) / n
 
 
-def profils(matchs: Sequence[Mapping[str, Any]], marche: str, domicile: bool) -> dict[str, Any] | None:
-    """Profils moyen et pire d'une équipe pour ce marché (règle de Patrick : seuls les buts MARQUÉS comptent dans un
-    scénario). `matchs` : ses matchs au même lieu, du plus ancien au plus récent.
-    - moyen : somme des buts marqués ÷ nombre de matchs ;
-    - pire : le match où elle marque le moins favorablement pour le marché (le moins de buts si plus de buts aide le
-      marché, le plus de buts sinon). À égalité de buts marqués, le plus récent. Marché non monotone (double chance
-      12) : le match dont le score est le moins favorable au marché."""
-    if not matchs or marge(marche, 0, 0) is None:
-        return None
-    sens = _sens(marche, domicile)
-    pire: tuple[float, float, float] | None = None
+def _pire(matchs, marche: str, domicile: bool, autre_buts: float):
+    """Match d'une équipe qui met le plus le marché à l'épreuve, face à `autre_buts` buts de l'adversaire : celui dont
+    la marge est la plus basse (seuls les buts marqués comptent). À égalité, le plus récent. None si non calculable."""
+    pire = None
     for m in matchs:
         gf, ga = _buts(m)
-        if sens is None:
-            cle = marge(marche, *((gf, ga) if domicile else (ga, gf)))
-            if cle is None:
-                return None
-        else:
-            if marge(marche, *((gf, ga) if domicile else (ga, gf))) is None:
-                return None
-            cle = sens * gf
-        if pire is None or cle <= pire[0]:
-            pire = (cle, gf, ga)
-    n = len(matchs)
-    moyen = (sum(_buts(m)[0] for m in matchs) / n, sum(_buts(m)[1] for m in matchs) / n)
-    return {"moyen": moyen, "pire": (pire[1], pire[2])}
+        mg = marge(marche, *((gf, autre_buts) if domicile else (autre_buts, gf)))
+        if mg is None:
+            return None
+        if pire is None or mg <= pire[0]:
+            pire = (mg, gf, ga)
+    return pire
+
+
+def profils(matchs: Sequence[Mapping[str, Any]], marche: str, domicile: bool, autre_buts: float | None = None) -> dict[str, Any] | None:
+    """Profils moyen et pire d'une équipe pour ce marché (règle de Patrick : seuls les buts MARQUÉS comptent).
+    - moyen : somme des buts marqués ÷ nombre de matchs ;
+    - pire : le match qui éprouve le plus le marché, face à `autre_buts` buts de l'adversaire (par défaut sa moyenne)."""
+    if not matchs or marge(marche, 0, 0) is None:
+        return None
+    moyen = _moyen(matchs)
+    ref = moyen[0] if autre_buts is None else autre_buts      # pas utilisé quand l'adversaire est lui aussi « moyen »
+    pire = _pire(matchs, marche, domicile, ref)
+    return None if pire is None else {"moyen": moyen, "pire": (pire[1], pire[2])}
 
 
 def croise(dom: tuple[float, float], ext: tuple[float, float]) -> tuple[float, float]:
@@ -132,21 +123,36 @@ def croise(dom: tuple[float, float], ext: tuple[float, float]) -> tuple[float, f
 
 def indice_performance(marche: str, matchs_dom: Sequence[Mapping[str, Any]],
                        matchs_ext: Sequence[Mapping[str, Any]]) -> dict[str, Any] | None:
-    """Indice de performance du marché (0 à 4 scénarios sur 4) et détail des scénarios. None si non calculable."""
-    pd, pe = profils(matchs_dom, marche, True), profils(matchs_ext, marche, False)
-    if pd is None or pe is None:
+    """Indice de performance du marché (0 à 4 scénarios sur 4) et détail des scénarios. None si non calculable.
+
+    Le pire scénario est le plus dur possible : pour (pire, pire) on teste TOUTES les paires (match du domicile, match de
+    l'extérieur) et on garde celle de marge minimale, donc aucun autre scénario ne peut être pire (même pour les marchés
+    où le pire d'une équipe dépend de l'autre, comme la double chance 12). Pour (pire, moyen) et (moyen, pire), le pire
+    match de l'équipe est celui de marge minimale face à la moyenne de l'adversaire."""
+    if not matchs_dom or not matchs_ext or marge(marche, 0, 0) is None:
         return None
+    md, me = _moyen(matchs_dom), _moyen(matchs_ext)
+    pp = None
+    for x in matchs_dom:
+        for y in matchs_ext:
+            mg = marge(marche, _buts(x)[0], _buts(y)[0])
+            if pp is None or mg <= pp[0]:
+                pp = (mg, _buts(x), _buts(y))
+    pm = _pire(matchs_dom, marche, True, me[0])
+    mp = _pire(matchs_ext, marche, False, md[0])
+    buts = {("moyen", "moyen"): (md[0], me[0]), ("pire", "moyen"): (pm[1], me[0]),
+            ("moyen", "pire"): (md[0], mp[1]), ("pire", "pire"): (pp[1][0], pp[2][0])}
     scenarios = []
     for sd, se in SCENARIOS:
-        hd, ae = croise(pd[sd], pe[se])
+        hd, ae = buts[(sd, se)]
         mg = marge(marche, hd, ae)
         scenarios.append({"domicile": sd, "exterieur": se, "buts_domicile": round(hd, 3), "buts_exterieur": round(ae, 3),
                           "marge": round(mg, 3), "valide": mg > EPS})
     indice = sum(1 for s in scenarios if s["valide"])
     niveau, libelle = NIVEAUX[indice]
-    return {"version": 1, "indice": indice, "sur": len(SCENARIOS), "niveau": niveau, "libelle": libelle,
-            "moyenne_domicile": {"marque": round(pd["moyen"][0], 3), "encaisse": round(pd["moyen"][1], 3)},
-            "moyenne_exterieur": {"marque": round(pe["moyen"][0], 3), "encaisse": round(pe["moyen"][1], 3)},
-            "pire_domicile": {"marque": pd["pire"][0], "encaisse": pd["pire"][1]},
-            "pire_exterieur": {"marque": pe["pire"][0], "encaisse": pe["pire"][1]},
+    return {"version": 2, "indice": indice, "sur": len(SCENARIOS), "niveau": niveau, "libelle": libelle,
+            "moyenne_domicile": {"marque": round(md[0], 3), "encaisse": round(md[1], 3)},
+            "moyenne_exterieur": {"marque": round(me[0], 3), "encaisse": round(me[1], 3)},
+            "pire_domicile": {"marque": pp[1][0], "encaisse": pp[1][1]},
+            "pire_exterieur": {"marque": pp[2][0], "encaisse": pp[2][1]},
             "scenarios": scenarios}

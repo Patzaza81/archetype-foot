@@ -86,3 +86,28 @@ def test_marge_coherente_avec_le_reglement_entier(marche):
         mg = marge(marche, h, a)
         assert mg is not None and mg != 0
         assert (mg > 0) == bool(gagne(marche, h, a)), (marche, h, a)
+
+
+JEUX = [(_m((3, 0), (0, 1), (3, 0)), _m((1, 0), (0, 3), (2, 1))), (BORO, WOLVES),
+        (_m((0, 0), (1, 1), (2, 0)), _m((1, 1), (0, 2), (3, 3), (0, 0)))]
+
+
+@pytest.mark.parametrize("marche", MARCHES)
+def test_aucun_scenario_n_est_pire_que_le_pire_scenario(marche):
+    for dom, ext in JEUX:
+        r = indice_performance(marche, dom, ext)
+        pire = r["scenarios"][3]["marge"]
+        for x, y in itertools.product(dom, ext):
+            assert marge(marche, x["buts_marques"], y["buts_marques"]) >= pire - 1e-9
+        assert pire == min(s["marge"] for s in r["scenarios"])
+
+
+def test_double_chance_12_pire_cas_est_le_nul_le_plus_proche():
+    r = indice_performance("dc_12", _m((2, 0), (1, 1)), _m((1, 0), (3, 3)))
+    assert (r["pire_domicile"]["marque"], r["pire_exterieur"]["marque"]) == (1, 1)
+    assert r["scenarios"][3]["valide"] is False
+
+
+def test_pire_exterieur_victoire_domicile_est_son_match_le_plus_prolifique():
+    r = indice_performance("1x2_1", _m((2, 0), (3, 0)), _m((0, 2), (3, 3), (1, 1)))
+    assert (r["pire_domicile"]["marque"], r["pire_exterieur"]["marque"]) == (2, 3)

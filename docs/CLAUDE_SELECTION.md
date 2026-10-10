@@ -142,7 +142,7 @@ Tests : `tests/test_selection_generateur.py` (cas qui passent et cas qui échoue
 
 Code : `moteur_v3/performance.py` ; affiché par `archetype_v3.js` (champ `indice_performance` de chaque candidat) et dans le 7e bloc de la justification.
 
-- Par équipe, sur ses matchs au même lieu (ceux de la justification) : **moyen** = somme des buts marqués ÷ nombre de matchs ; **pire** = le match où l'équipe marque le moins favorablement pour le marché (le moins de buts si marquer aide le marché, le plus de buts sinon ; à égalité, le plus récent).
+- Par équipe, sur ses matchs au même lieu (ceux de la justification) : **moyen** = somme des buts marqués ÷ nombre de matchs ; **pire** = le match qui éprouve le plus le marché. Pour (pire, pire) on teste toutes les paires (match du domicile, match de l'extérieur) et on garde la plus dure : aucun scénario ne peut être pire, pour tous les types de marchés (y compris la double chance 12). Pour (pire, moyen) et (moyen, pire), le pire match est celui de marge minimale face à la moyenne de l'adversaire.
 - 4 scénarios : (domicile moyen/pire) × (extérieur moyen/pire). **Seuls les buts marqués comptent** : buts domicile = ce que marque le domicile dans son profil, buts extérieur = ce que marque l'extérieur dans le sien (correction de Patrick du 10/10 ; les buts encaissés ne servent pas).
 - Un scénario valide le marché si sa marge contre la ligne est strictement > 0 (égalité exacte : non validé).
 - Indice = scénarios validés sur 4 : 4/4 Sûr · 3/4 Recommandé · 2/4 Attention · 1/4 Risqué · 0/4 « Très risqué » (niveau ajouté par Claude, non défini par Patrick).

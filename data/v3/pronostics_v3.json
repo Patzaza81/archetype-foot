@@ -1,8 +1,8 @@
 {
  "moteur": "moteur_v3",
  "statut": "PRODUCTION PARALLÈLE — CANDIDAT",
- "genere_le": "2026-10-10T07:42:24Z",
- "empreinte_code_v3": "fbcb58114cfb",
+ "genere_le": "2026-10-10T07:49:39Z",
+ "empreinte_code_v3": "9eb392fb6c50",
  "commit": null,
  "calibration": {
   "prete": true,
@@ -2108,7 +2108,7 @@
       "✓ au-dessus de la ligne sur les 6 derniers : 4 (Osnabrück) / 5 (D. Dresde)"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 1,
       "sur": 4,
       "niveau": "RISQUE",
@@ -2224,7 +2224,7 @@
         "lignes": [
          "Indice 1/4 : Risqué. Le marché est validé dans 1 scénario sur 4.",
          "Moyennes simples : Osnabrück à domicile marque 1,33, encaisse 2,33 ; D. Dresde à l'extérieur marque 1,67, encaisse 3,33.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Osnabrück 0-3 ; D. Dresde 0-3.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Osnabrück 0-3 ; D. Dresde 0-3.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Osnabrück moyen / D. Dresde moyen : 1,33 – 1,67 (total 3,00) → marge +0,50 but : validé.",
          "Osnabrück pire / D. Dresde moyen : 0,00 – 1,67 (total 1,67) → marge −0,83 but : non validé.",
@@ -4253,7 +4253,7 @@
       "✓ Nantes : 2 victoires sur ses 6 derniers"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 2,
       "sur": 4,
       "niveau": "ATTENTION",
@@ -4369,7 +4369,7 @@
         "lignes": [
          "Indice 2/4 : Attention. Le marché est validé dans 2 scénarios sur 4.",
          "Moyennes simples : Nantes à domicile marque 1,00, encaisse 2,00 ; Reims à l'extérieur marque 2,00, encaisse 0,67.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Nantes 2-5 ; Reims 0-0.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Nantes 2-5 ; Reims 0-0.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Nantes moyen / Reims moyen : 1,00 – 2,00 (total 3,00) → marge +1,50 but : validé.",
          "Nantes pire / Reims moyen : 2,00 – 2,00 (total 4,00) → marge +0,50 but : validé.",
@@ -4853,7 +4853,7 @@
       "✓ au-dessus de la ligne sur les 6 derniers : 5 (Würzburg) / 4 (H. Rostock)"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 2,
       "sur": 4,
       "niveau": "ATTENTION",
@@ -4968,7 +4968,7 @@
         "lignes": [
          "Indice 2/4 : Attention. Le marché est validé dans 2 scénarios sur 4.",
          "Moyennes simples : Würzburg à domicile marque 2,00, encaisse 0,67 ; H. Rostock à l'extérieur marque 2,00, encaisse 2,25.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Würzburg 1-0 ; H. Rostock 0-4.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Würzburg 1-0 ; H. Rostock 0-4.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Würzburg moyen / H. Rostock moyen : 2,00 – 2,00 (total 4,00) → marge +1,50 but : validé.",
          "Würzburg pire / H. Rostock moyen : 1,00 – 2,00 (total 3,00) → marge +0,50 but : validé.",
@@ -7065,7 +7065,7 @@
       "✓ NK Koper encaisse moins de 1,5 but dans 5 de ses 6 derniers"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 4,
       "sur": 4,
       "niveau": "SUR",
@@ -7083,8 +7083,8 @@
        "encaisse": 3.0
       },
       "pire_exterieur": {
-       "marque": 0.0,
-       "encaisse": 2.0
+       "marque": 1.0,
+       "encaisse": 0.0
       },
       "scenarios": [
        {
@@ -7107,7 +7107,7 @@
         "domicile": "moyen",
         "exterieur": "pire",
         "buts_domicile": 0.4,
-        "buts_exterieur": 0.0,
+        "buts_exterieur": 1.0,
         "marge": 1.1,
         "valide": true
        },
@@ -7115,7 +7115,7 @@
         "domicile": "pire",
         "exterieur": "pire",
         "buts_domicile": 1.0,
-        "buts_exterieur": 0.0,
+        "buts_exterieur": 1.0,
         "marge": 0.5,
         "valide": true
        }
@@ -7178,12 +7178,12 @@
         "lignes": [
          "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
          "Moyennes simples : NK Radomlje à domicile marque 0,40, encaisse 2,00 ; NK Koper à l'extérieur marque 1,00, encaisse 0,50.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : NK Radomlje 1-3 ; NK Koper 0-2.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : NK Radomlje 1-3 ; NK Koper 1-0.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "NK Radomlje moyen / NK Koper moyen : 0,40 – 1,00 (total 1,40) → marge +1,10 but : validé.",
          "NK Radomlje pire / NK Koper moyen : 1,00 – 1,00 (total 2,00) → marge +0,50 but : validé.",
-         "NK Radomlje moyen / NK Koper pire : 0,40 – 0,00 (total 0,40) → marge +1,10 but : validé.",
-         "NK Radomlje pire / NK Koper pire : 1,00 – 0,00 (total 1,00) → marge +0,50 but : validé.",
+         "NK Radomlje moyen / NK Koper pire : 0,40 – 1,00 (total 1,40) → marge +1,10 but : validé.",
+         "NK Radomlje pire / NK Koper pire : 1,00 – 1,00 (total 2,00) → marge +0,50 but : validé.",
          "Échelle : 4/4 Sûr · 3/4 Recommandé · 2/4 Attention · 1/4 Risqué. Information seulement : elle ne change ni la probabilité ni la sélection."
         ]
        }
@@ -8013,7 +8013,7 @@
       "✓ Jablonec : 1 victoire sur ses 6 derniers"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 2,
       "sur": 4,
       "niveau": "ATTENTION",
@@ -8128,7 +8128,7 @@
         "lignes": [
          "Indice 2/4 : Attention. Le marché est validé dans 2 scénarios sur 4.",
          "Moyennes simples : Zbrojovka à domicile marque 1,80, encaisse 1,00 ; Jablonec à l'extérieur marque 0,75, encaisse 1,25.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Zbrojovka 0-1 ; Jablonec 2-0.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Zbrojovka 0-1 ; Jablonec 2-0.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Zbrojovka moyen / Jablonec moyen : 1,80 – 0,75 (total 2,55) → marge +1,55 but : validé.",
          "Zbrojovka pire / Jablonec moyen : 0,00 – 0,75 (total 0,75) → marge −0,25 but : non validé.",
@@ -9322,7 +9322,7 @@
       "✓ sous la ligne sur les 6 derniers : 4 (Al Hazem) / 5 (Neom)"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 4,
       "sur": 4,
       "niveau": "SUR",
@@ -9438,7 +9438,7 @@
         "lignes": [
          "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
          "Moyennes simples : Al Hazem à domicile marque 0,67, encaisse 0,67 ; Neom à l'extérieur marque 1,33, encaisse 0,33.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Al Hazem 1-0 ; Neom 2-0.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Al Hazem 1-0 ; Neom 2-0.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Al Hazem moyen / Neom moyen : 0,67 – 1,33 (total 2,00) → marge +1,50 but : validé.",
          "Al Hazem pire / Neom moyen : 1,00 – 1,33 (total 2,33) → marge +1,17 but : validé.",
@@ -11584,7 +11584,7 @@
       "✓ sous la ligne sur les 6 derniers : 4 (Dundee Utd.) / 5 (Hibernian)"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 4,
       "sur": 4,
       "niveau": "SUR",
@@ -11699,7 +11699,7 @@
         "lignes": [
          "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
          "Moyennes simples : Dundee Utd. à domicile marque 0,67, encaisse 1,33 ; Hibernian à l'extérieur marque 1,67, encaisse 1,33.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Dundee Utd. 1-1 ; Hibernian 2-1.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Dundee Utd. 1-1 ; Hibernian 2-1.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Dundee Utd. moyen / Hibernian moyen : 0,67 – 1,67 (total 2,33) → marge +1,17 but : validé.",
          "Dundee Utd. pire / Hibernian moyen : 1,00 – 1,67 (total 2,67) → marge +0,83 but : validé.",
@@ -12062,7 +12062,7 @@
       "✓ Fleetwood : 1 victoire sur ses 6 derniers"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 1,
       "sur": 4,
       "niveau": "RISQUE",
@@ -12177,7 +12177,7 @@
         "lignes": [
          "Indice 1/4 : Risqué. Le marché est validé dans 1 scénario sur 4.",
          "Moyennes simples : Fleetwood à domicile marque 1,00, encaisse 0,75 ; Walsall à l'extérieur marque 1,50, encaisse 0,75.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Fleetwood 2-0 ; Walsall 0-0.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Fleetwood 2-0 ; Walsall 0-0.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Fleetwood moyen / Walsall moyen : 1,00 – 1,50 (total 2,50) → marge +1,00 but : validé.",
          "Fleetwood pire / Walsall moyen : 2,00 – 1,50 (total 3,50) → marge +0,00 but : non validé.",
@@ -13116,7 +13116,7 @@
       "✓ NK Brezice sur ses 6 derniers : 0 victoire"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 2,
       "sur": 4,
       "niveau": "ATTENTION",
@@ -13231,7 +13231,7 @@
         "lignes": [
          "Indice 2/4 : Attention. Le marché est validé dans 2 scénarios sur 4.",
          "Moyennes simples : Jesenice à domicile marque 2,40, encaisse 1,20 ; NK Brezice à l'extérieur marque 0,40, encaisse 2,00.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Jesenice 0-3 ; NK Brezice 1-2.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Jesenice 0-3 ; NK Brezice 1-2.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Jesenice moyen / NK Brezice moyen : 2,40 – 0,40 (total 2,80) → marge +1,50 but : validé.",
          "Jesenice pire / NK Brezice moyen : 0,00 – 0,40 (total 0,40) → marge −0,90 but : non validé.",
@@ -13363,7 +13363,7 @@
       "✓ sous de la ligne sur les 6 derniers : 5 (Leicester) / 6 (Peterborough)"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 4,
       "sur": 4,
       "niveau": "SUR",
@@ -13479,7 +13479,7 @@
         "lignes": [
          "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
          "Moyennes simples : Leicester à domicile marque 1,00, encaisse 2,00 ; Peterborough à l'extérieur marque 0,25, encaisse 2,00.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Leicester 2-0 ; Peterborough 1-1.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Leicester 2-0 ; Peterborough 1-1.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Leicester moyen / Peterborough moyen : 1,00 – 0,25 (total 1,25) → marge +3,25 but : validé.",
          "Leicester pire / Peterborough moyen : 2,00 – 0,25 (total 2,25) → marge +2,25 but : validé.",
@@ -13830,7 +13830,7 @@
       "✓ sous la ligne sur les 6 derniers : 4 (Livingston FC) / 6 (P. Thistle)"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 4,
       "sur": 4,
       "niveau": "SUR",
@@ -13945,7 +13945,7 @@
         "lignes": [
          "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
          "Moyennes simples : Livingston FC à domicile marque 1,40, encaisse 1,00 ; P. Thistle à l'extérieur marque 0,67, encaisse 0,67.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Livingston FC 2-2 ; P. Thistle 1-1.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Livingston FC 2-2 ; P. Thistle 1-1.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Livingston FC moyen / P. Thistle moyen : 1,40 – 0,67 (total 2,07) → marge +1,43 but : validé.",
          "Livingston FC pire / P. Thistle moyen : 2,00 – 0,67 (total 2,67) → marge +0,83 but : validé.",
@@ -14201,7 +14201,7 @@
       "✓ au-dessus de la ligne sur les 6 derniers : 4 (Middlesbrough) / 4 (Wolverhampton)"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 4,
       "sur": 4,
       "niveau": "SUR",
@@ -14318,7 +14318,7 @@
         "lignes": [
          "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
          "Moyennes simples : Middlesbrough à domicile marque 2,75, encaisse 1,75 ; Wolverhampton à l'extérieur marque 2,00, encaisse 1,75.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Middlesbrough 2-2 ; Wolverhampton 1-0.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Middlesbrough 2-2 ; Wolverhampton 1-0.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Middlesbrough moyen / Wolverhampton moyen : 2,75 – 2,00 (total 4,75) → marge +2,25 but : validé.",
          "Middlesbrough pire / Wolverhampton moyen : 2,00 – 2,00 (total 4,00) → marge +1,50 but : validé.",
@@ -16409,7 +16409,7 @@
       "✓ sous la ligne sur les 6 derniers : 5 (Virton) / 6 (Hasselt)"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 1,
       "sur": 4,
       "niveau": "RISQUE",
@@ -16524,7 +16524,7 @@
         "lignes": [
          "Indice 1/4 : Risqué. Le marché est validé dans 1 scénario sur 4.",
          "Moyennes simples : Virton à domicile marque 2,00, encaisse 0,33 ; Hasselt à l'extérieur marque 1,00, encaisse 1,33.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Virton 3-0 ; Hasselt 2-1.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Virton 3-0 ; Hasselt 2-1.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Virton moyen / Hasselt moyen : 2,00 – 1,00 (total 3,00) → marge +0,50 but : validé.",
          "Virton pire / Hasselt moyen : 3,00 – 1,00 (total 4,00) → marge −0,50 but : non validé.",
@@ -17086,7 +17086,7 @@
       "✓ au-dessus de la ligne sur les 6 derniers : 5 (Wycombe) / 3 (Luton)"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 3,
       "sur": 4,
       "niveau": "RECOMMANDE",
@@ -17203,7 +17203,7 @@
         "lignes": [
          "Indice 3/4 : Recommandé. Le marché est validé dans 3 scénarios sur 4.",
          "Moyennes simples : Wycombe à domicile marque 1,75, encaisse 2,00 ; Luton à l'extérieur marque 2,33, encaisse 3,33.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Wycombe 1-2 ; Luton 1-2.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Wycombe 1-2 ; Luton 1-2.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Wycombe moyen / Luton moyen : 1,75 – 2,33 (total 4,08) → marge +1,58 but : validé.",
          "Wycombe pire / Luton moyen : 1,00 – 2,33 (total 3,33) → marge +0,83 but : validé.",
@@ -20141,7 +20141,7 @@
       "✓ Lumezzane : 2 victoires sur ses 6 derniers"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 2,
       "sur": 4,
       "niveau": "ATTENTION",
@@ -20257,7 +20257,7 @@
         "lignes": [
          "Indice 2/4 : Attention. Le marché est validé dans 2 scénarios sur 4.",
          "Moyennes simples : Lumezzane à domicile marque 1,00, encaisse 1,00 ; AlbinoLeffe à l'extérieur marque 2,25, encaisse 1,25.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Lumezzane 2-2 ; AlbinoLeffe 0-0.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Lumezzane 2-2 ; AlbinoLeffe 0-0.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Lumezzane moyen / AlbinoLeffe moyen : 1,00 – 2,25 (total 3,25) → marge +1,75 but : validé.",
          "Lumezzane pire / AlbinoLeffe moyen : 2,00 – 2,25 (total 4,25) → marge +0,75 but : validé.",
@@ -20856,7 +20856,7 @@
       "✓ Lech Poznan : 2 victoires par 2 buts ou plus sur ses 6 derniers"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 1,
       "sur": 4,
       "niveau": "RISQUE",
@@ -20971,7 +20971,7 @@
         "lignes": [
          "Indice 1/4 : Risqué. Le marché est validé dans 1 scénario sur 4.",
          "Moyennes simples : Slask Wroclaw à domicile marque 1,50, encaisse 1,50 ; Lech Poznan à l'extérieur marque 2,00, encaisse 1,67.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Slask Wroclaw 0-0 ; Lech Poznan 3-2.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Slask Wroclaw 0-0 ; Lech Poznan 3-2.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Slask Wroclaw moyen / Lech Poznan moyen : 1,50 – 2,00 (total 3,50) → marge +1,00 but : validé.",
          "Slask Wroclaw pire / Lech Poznan moyen : 0,00 – 2,00 (total 2,00) → marge −0,50 but : non validé.",
@@ -22648,7 +22648,7 @@
       "✓ Servette : 2 victoires sur ses 6 derniers"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 4,
       "sur": 4,
       "niveau": "SUR",
@@ -22763,7 +22763,7 @@
         "lignes": [
          "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
          "Moyennes simples : Servette à domicile marque 0,75, encaisse 1,25 ; Sion à l'extérieur marque 3,00, encaisse 1,75.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Servette 2-1 ; Sion 2-1.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Servette 2-1 ; Sion 2-1.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Servette moyen / Sion moyen : 0,75 – 3,00 (total 3,75) → marge +2,75 but : validé.",
          "Servette pire / Sion moyen : 2,00 – 3,00 (total 5,00) → marge +1,50 but : validé.",
@@ -23016,7 +23016,7 @@
       "✓ au-dessus de la ligne sur les 6 derniers : 5 (Zurich) / 4 (Thoune)"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 4,
       "sur": 4,
       "niveau": "SUR",
@@ -23132,7 +23132,7 @@
         "lignes": [
          "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
          "Moyennes simples : Zurich à domicile marque 1,75, encaisse 2,00 ; Thoune à l'extérieur marque 2,60, encaisse 2,40.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Zurich 1-2 ; Thoune 2-1.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Zurich 1-2 ; Thoune 2-1.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Zurich moyen / Thoune moyen : 1,75 – 2,60 (total 4,35) → marge +1,85 but : validé.",
          "Zurich pire / Thoune moyen : 1,00 – 2,60 (total 3,60) → marge +1,10 but : validé.",
@@ -25890,7 +25890,7 @@
       "✓ Botev Plovdiv : 2 victoires par 2 buts ou plus sur ses 6 derniers"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 1,
       "sur": 4,
       "niveau": "RISQUE",
@@ -26005,7 +26005,7 @@
         "lignes": [
          "Indice 1/4 : Risqué. Le marché est validé dans 1 scénario sur 4.",
          "Moyennes simples : Botev Plovdiv à domicile marque 1,60, encaisse 1,20 ; Slavia Sofia à l'extérieur marque 1,25, encaisse 0,50.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Botev Plovdiv 3-2 ; Slavia Sofia 0-1.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Botev Plovdiv 3-2 ; Slavia Sofia 0-1.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Botev Plovdiv moyen / Slavia Sofia moyen : 1,60 – 1,25 (total 2,85) → marge +1,15 but : validé.",
          "Botev Plovdiv pire / Slavia Sofia moyen : 3,00 – 1,25 (total 4,25) → marge −0,25 but : non validé.",
@@ -26373,7 +26373,7 @@
       "✓ au-dessus de la ligne sur les 6 derniers : 4 (Toronto) / 3 (Montreal)"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 1,
       "sur": 4,
       "niveau": "RISQUE",
@@ -26489,7 +26489,7 @@
         "lignes": [
          "Indice 1/4 : Risqué. Le marché est validé dans 1 scénario sur 4.",
          "Moyennes simples : Toronto à domicile marque 2,17, encaisse 2,17 ; Montreal à l'extérieur marque 1,25, encaisse 2,58.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Toronto 1-1 ; Montreal 0-1.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Toronto 1-1 ; Montreal 0-1.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Toronto moyen / Montreal moyen : 2,17 – 1,25 (total 3,42) → marge +0,92 but : validé.",
          "Toronto pire / Montreal moyen : 1,00 – 1,25 (total 2,25) → marge −0,25 but : non validé.",
@@ -26865,7 +26865,7 @@
       "✓ sous la ligne sur les 6 derniers : 4 (Austria Vienne) / 5 (Sturm Graz)"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 3,
       "sur": 4,
       "niveau": "RECOMMANDE",
@@ -26980,7 +26980,7 @@
         "lignes": [
          "Indice 3/4 : Recommandé. Le marché est validé dans 3 scénarios sur 4.",
          "Moyennes simples : Austria Vienne à domicile marque 0,67, encaisse 1,33 ; Sturm Graz à l'extérieur marque 1,00, encaisse 1,75.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Austria Vienne 2-1 ; Sturm Graz 2-0.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Austria Vienne 2-1 ; Sturm Graz 2-0.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Austria Vienne moyen / Sturm Graz moyen : 0,67 – 1,00 (total 1,67) → marge +1,83 but : validé.",
          "Austria Vienne pire / Sturm Graz moyen : 2,00 – 1,00 (total 3,00) → marge +0,50 but : validé.",
@@ -27894,7 +27894,7 @@
       "✓ Boston River : 0 victoire sur ses 6 derniers"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 1,
       "sur": 4,
       "niveau": "RISQUE",
@@ -28009,7 +28009,7 @@
         "lignes": [
          "Indice 1/4 : Risqué. Le marché est validé dans 1 scénario sur 4.",
          "Moyennes simples : Montevideo à domicile marque 1,50, encaisse 0,58 ; Boston River à l'extérieur marque 0,92, encaisse 2,08.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Montevideo 0-0 ; Boston River 3-2.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Montevideo 0-0 ; Boston River 3-2.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Montevideo moyen / Boston River moyen : 1,50 – 0,92 (total 2,42) → marge +1,08 but : validé.",
          "Montevideo pire / Boston River moyen : 0,00 – 0,92 (total 0,92) → marge −0,42 but : non validé.",
@@ -28150,7 +28150,7 @@
       "✓ au-dessus de la ligne sur les 6 derniers : 6 (Saint-Étienne) / 4 (Rodez)"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 4,
       "sur": 4,
       "niveau": "SUR",
@@ -28266,7 +28266,7 @@
         "lignes": [
          "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
          "Moyennes simples : Saint-Étienne à domicile marque 3,33, encaisse 0,67 ; Rodez à l'extérieur marque 2,00, encaisse 2,67.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Saint-Étienne 3-1 ; Rodez 0-2.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Saint-Étienne 3-1 ; Rodez 0-2.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Saint-Étienne moyen / Rodez moyen : 3,33 – 2,00 (total 5,33) → marge +2,83 but : validé.",
          "Saint-Étienne pire / Rodez moyen : 3,00 – 2,00 (total 5,00) → marge +2,50 but : validé.",
@@ -28403,7 +28403,7 @@
       "✓ sous la ligne sur les 6 derniers : 4 (J. Bialystok) / 5 (Górnik Zabrze)"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 1,
       "sur": 4,
       "niveau": "RISQUE",
@@ -28518,7 +28518,7 @@
         "lignes": [
          "Indice 1/4 : Risqué. Le marché est validé dans 1 scénario sur 4.",
          "Moyennes simples : J. Bialystok à domicile marque 1,00, encaisse 1,50 ; Górnik Zabrze à l'extérieur marque 1,60, encaisse 0,40.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : J. Bialystok 2-1 ; Górnik Zabrze 3-1.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : J. Bialystok 2-1 ; Górnik Zabrze 3-1.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "J. Bialystok moyen / Górnik Zabrze moyen : 1,00 – 1,60 (total 2,60) → marge +0,90 but : validé.",
          "J. Bialystok pire / Górnik Zabrze moyen : 2,00 – 1,60 (total 3,60) → marge −0,10 but : non validé.",
@@ -30237,7 +30237,7 @@
       "✓ au-dessus de la ligne sur les 6 derniers : 6 (Fram Rey) / 4 (KR)"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 1,
       "sur": 4,
       "niveau": "RISQUE",
@@ -30353,7 +30353,7 @@
         "lignes": [
          "Indice 1/4 : Risqué. Le marché est validé dans 1 scénario sur 4.",
          "Moyennes simples : Fram Rey à domicile marque 2,67, encaisse 2,25 ; KR à l'extérieur marque 3,00, encaisse 2,54.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Fram Rey 0-0 ; KR 0-2.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Fram Rey 0-0 ; KR 0-2.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Fram Rey moyen / KR moyen : 2,67 – 3,00 (total 5,67) → marge +2,17 but : validé.",
          "Fram Rey pire / KR moyen : 0,00 – 3,00 (total 3,00) → marge −0,50 but : non validé.",
@@ -33814,7 +33814,7 @@
       "✓ Chaves : 1 victoire sur ses 6 derniers"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 4,
       "sur": 4,
       "niveau": "SUR",
@@ -33930,7 +33930,7 @@
         "lignes": [
          "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
          "Moyennes simples : Lourosa à domicile marque 2,00, encaisse 1,00 ; Chaves à l'extérieur marque 0,33, encaisse 2,33.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Lourosa 2-1 ; Chaves 1-2.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Lourosa 2-1 ; Chaves 1-2.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Lourosa moyen / Chaves moyen : 2,00 – 0,33 (total 2,33) → marge +2,17 but : validé.",
          "Lourosa pire / Chaves moyen : 2,00 – 0,33 (total 2,33) → marge +2,17 but : validé.",
@@ -34544,7 +34544,7 @@
       "✓ au-dessus de la ligne sur les 6 derniers : 5 (Akhmat) / 5 (Baltika)"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 4,
       "sur": 4,
       "niveau": "SUR",
@@ -34659,7 +34659,7 @@
         "lignes": [
          "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
          "Moyennes simples : Akhmat à domicile marque 2,75, encaisse 2,00 ; Baltika à l'extérieur marque 2,00, encaisse 1,00.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Akhmat 1-2 ; Baltika 1-2.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Akhmat 1-2 ; Baltika 1-2.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Akhmat moyen / Baltika moyen : 2,75 – 2,00 (total 4,75) → marge +3,25 but : validé.",
          "Akhmat pire / Baltika moyen : 1,00 – 2,00 (total 3,00) → marge +1,50 but : validé.",
@@ -36425,7 +36425,7 @@
       "✓ au-dessus de la ligne sur les 6 derniers : 4 (Grasshoppers) / 6 (Young Boys)"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 3,
       "sur": 4,
       "niveau": "RECOMMANDE",
@@ -36541,7 +36541,7 @@
         "lignes": [
          "Indice 3/4 : Recommandé. Le marché est validé dans 3 scénarios sur 4.",
          "Moyennes simples : Grasshoppers à domicile marque 1,75, encaisse 2,75 ; Young Boys à l'extérieur marque 3,50, encaisse 1,50.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Grasshoppers 1-4 ; Young Boys 2-2.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Grasshoppers 1-4 ; Young Boys 2-2.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Grasshoppers moyen / Young Boys moyen : 1,75 – 3,50 (total 5,25) → marge +1,75 but : validé.",
          "Grasshoppers pire / Young Boys moyen : 1,00 – 3,50 (total 4,50) → marge +1,00 but : validé.",
@@ -37635,7 +37635,7 @@
       "✓ LKS Lódz encaisse moins de 1,5 but dans 5 de ses 6 derniers"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 4,
       "sur": 4,
       "niveau": "SUR",
@@ -37649,8 +37649,8 @@
        "encaisse": 1.0
       },
       "pire_domicile": {
-       "marque": 1.0,
-       "encaisse": 2.0
+       "marque": 4.0,
+       "encaisse": 0.0
       },
       "pire_exterieur": {
        "marque": 1.0,
@@ -37668,7 +37668,7 @@
        {
         "domicile": "pire",
         "exterieur": "moyen",
-        "buts_domicile": 1.0,
+        "buts_domicile": 4.0,
         "buts_exterieur": 0.4,
         "marge": 1.1,
         "valide": true
@@ -37684,7 +37684,7 @@
        {
         "domicile": "pire",
         "exterieur": "pire",
-        "buts_domicile": 1.0,
+        "buts_domicile": 4.0,
         "buts_exterieur": 1.0,
         "marge": 0.5,
         "valide": true
@@ -37752,12 +37752,12 @@
         "lignes": [
          "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
          "Moyennes simples : LKS Lódz à domicile marque 2,25, encaisse 1,00 ; Ruch Chorzow à l'extérieur marque 0,40, encaisse 1,00.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : LKS Lódz 1-2 ; Ruch Chorzow 1-0.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : LKS Lódz 4-0 ; Ruch Chorzow 1-0.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "LKS Lódz moyen / Ruch Chorzow moyen : 2,25 – 0,40 (total 2,65) → marge +1,10 but : validé.",
-         "LKS Lódz pire / Ruch Chorzow moyen : 1,00 – 0,40 (total 1,40) → marge +1,10 but : validé.",
+         "LKS Lódz pire / Ruch Chorzow moyen : 4,00 – 0,40 (total 4,40) → marge +1,10 but : validé.",
          "LKS Lódz moyen / Ruch Chorzow pire : 2,25 – 1,00 (total 3,25) → marge +0,50 but : validé.",
-         "LKS Lódz pire / Ruch Chorzow pire : 1,00 – 1,00 (total 2,00) → marge +0,50 but : validé.",
+         "LKS Lódz pire / Ruch Chorzow pire : 4,00 – 1,00 (total 5,00) → marge +0,50 but : validé.",
          "Échelle : 4/4 Sûr · 3/4 Recommandé · 2/4 Attention · 1/4 Risqué. Information seulement : elle ne change ni la probabilité ni la sélection."
         ]
        }
@@ -38007,7 +38007,7 @@
       "✓ sous la ligne sur les 6 derniers : 5 (Renate) / 5 (GIANA Erminio)"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 4,
       "sur": 4,
       "niveau": "SUR",
@@ -38123,7 +38123,7 @@
         "lignes": [
          "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
          "Moyennes simples : Renate à domicile marque 0,25, encaisse 1,00 ; GIANA Erminio à l'extérieur marque 0,25, encaisse 0,75.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Renate 1-2 ; GIANA Erminio 1-1.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Renate 1-2 ; GIANA Erminio 1-1.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Renate moyen / GIANA Erminio moyen : 0,25 – 0,25 (total 0,50) → marge +3,00 but : validé.",
          "Renate pire / GIANA Erminio moyen : 1,00 – 0,25 (total 1,25) → marge +2,25 but : validé.",
@@ -41679,7 +41679,7 @@
       "✓ sous la ligne sur les 6 derniers : 4 (Juventud) / 4 (R. Montevideo)"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 1,
       "sur": 4,
       "niveau": "RISQUE",
@@ -41795,7 +41795,7 @@
         "lignes": [
          "Indice 1/4 : Risqué. Le marché est validé dans 1 scénario sur 4.",
          "Moyennes simples : Juventud à domicile marque 1,08, encaisse 1,25 ; R. Montevideo à l'extérieur marque 0,67, encaisse 0,83.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Juventud 2-0 ; R. Montevideo 2-2.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Juventud 2-0 ; R. Montevideo 2-2.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Juventud moyen / R. Montevideo moyen : 1,08 – 0,67 (total 1,75) → marge +0,75 but : validé.",
          "Juventud pire / R. Montevideo moyen : 2,00 – 0,67 (total 2,67) → marge −0,17 but : non validé.",
@@ -42734,7 +42734,7 @@
       "✓ Leganes sur ses 6 derniers : 2 victoires"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 4,
       "sur": 4,
       "niveau": "SUR",
@@ -42850,7 +42850,7 @@
         "lignes": [
          "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
          "Moyennes simples : Almería à domicile marque 2,50, encaisse 0,75 ; Leganes à l'extérieur marque 0,40, encaisse 1,40.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Almería 2-1 ; Leganes 1-0.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Almería 2-1 ; Leganes 1-0.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Almería moyen / Leganes moyen : 2,50 – 0,40 (total 2,90) → marge +1,60 but : validé.",
          "Almería pire / Leganes moyen : 2,00 – 0,40 (total 2,40) → marge +1,10 but : validé.",
@@ -42992,7 +42992,7 @@
       "✓ Real Sociedad : 0 victoire par 2 buts ou plus sur ses 6 derniers"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 4,
       "sur": 4,
       "niveau": "SUR",
@@ -43108,7 +43108,7 @@
         "lignes": [
          "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
          "Moyennes simples : Real Sociedad à domicile marque 0,67, encaisse 1,33 ; A Coruña à l'extérieur marque 1,67, encaisse 1,33.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Real Sociedad 2-1 ; A Coruña 1-1.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Real Sociedad 2-1 ; A Coruña 1-1.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Real Sociedad moyen / A Coruña moyen : 0,67 – 1,67 (total 2,33) → marge +2,50 but : validé.",
          "Real Sociedad pire / A Coruña moyen : 2,00 – 1,67 (total 3,67) → marge +1,17 but : validé.",
@@ -43854,7 +43854,7 @@
       "✓ au-dessus de la ligne sur les 6 derniers : 6 (Excelsior) / 5 (Groningen)"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 2,
       "sur": 4,
       "niveau": "ATTENTION",
@@ -43969,7 +43969,7 @@
         "lignes": [
          "Indice 2/4 : Attention. Le marché est validé dans 2 scénarios sur 4.",
          "Moyennes simples : Excelsior à domicile marque 1,33, encaisse 1,67 ; Groningen à l'extérieur marque 2,00, encaisse 2,33.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Excelsior 1-2 ; Groningen 1-1.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Excelsior 1-2 ; Groningen 1-1.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Excelsior moyen / Groningen moyen : 1,33 – 2,00 (total 3,33) → marge +0,83 but : validé.",
          "Excelsior pire / Groningen moyen : 1,00 – 2,00 (total 3,00) → marge +0,50 but : validé.",
@@ -47964,7 +47964,7 @@
       "✓ B36 Torshavn encaisse plus de 0,5 but dans 5 de ses 6 derniers"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 4,
       "sur": 4,
       "niveau": "SUR",
@@ -47982,8 +47982,8 @@
        "encaisse": 1.0
       },
       "pire_exterieur": {
-       "marque": 0.0,
-       "encaisse": 0.0
+       "marque": 1.0,
+       "encaisse": 2.0
       },
       "scenarios": [
        {
@@ -48006,7 +48006,7 @@
         "domicile": "moyen",
         "exterieur": "pire",
         "buts_domicile": 2.0,
-        "buts_exterieur": 0.0,
+        "buts_exterieur": 1.0,
         "marge": 1.5,
         "valide": true
        },
@@ -48014,7 +48014,7 @@
         "domicile": "pire",
         "exterieur": "pire",
         "buts_domicile": 1.0,
-        "buts_exterieur": 0.0,
+        "buts_exterieur": 1.0,
         "marge": 0.5,
         "valide": true
        }
@@ -48079,12 +48079,12 @@
         "lignes": [
          "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
          "Moyennes simples : Argir à domicile marque 2,00, encaisse 1,82 ; B36 Torshavn à l'extérieur marque 1,50, encaisse 1,50.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Argir 1-1 ; B36 Torshavn 0-0.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Argir 1-1 ; B36 Torshavn 1-2.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Argir moyen / B36 Torshavn moyen : 2,00 – 1,50 (total 3,50) → marge +1,50 but : validé.",
          "Argir pire / B36 Torshavn moyen : 1,00 – 1,50 (total 2,50) → marge +0,50 but : validé.",
-         "Argir moyen / B36 Torshavn pire : 2,00 – 0,00 (total 2,00) → marge +1,50 but : validé.",
-         "Argir pire / B36 Torshavn pire : 1,00 – 0,00 (total 1,00) → marge +0,50 but : validé.",
+         "Argir moyen / B36 Torshavn pire : 2,00 – 1,00 (total 3,00) → marge +1,50 but : validé.",
+         "Argir pire / B36 Torshavn pire : 1,00 – 1,00 (total 2,00) → marge +0,50 but : validé.",
          "Échelle : 4/4 Sûr · 3/4 Recommandé · 2/4 Attention · 1/4 Risqué. Information seulement : elle ne change ni la probabilité ni la sélection."
         ]
        }
@@ -50160,7 +50160,7 @@
       "✓ sous la ligne sur les 6 derniers : 5 (San Lorenzo) / 5 (Riestra)"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 3,
       "sur": 4,
       "niveau": "RECOMMANDE",
@@ -50276,7 +50276,7 @@
         "lignes": [
          "Indice 3/4 : Recommandé. Le marché est validé dans 3 scénarios sur 4.",
          "Moyennes simples : San Lorenzo à domicile marque 0,92, encaisse 1,00 ; Riestra à l'extérieur marque 0,25, encaisse 1,00.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : San Lorenzo 2-5 ; Riestra 1-1.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : San Lorenzo 2-5 ; Riestra 1-1.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "San Lorenzo moyen / Riestra moyen : 0,92 – 0,25 (total 1,17) → marge +1,33 but : validé.",
          "San Lorenzo pire / Riestra moyen : 2,00 – 0,25 (total 2,25) → marge +0,25 but : validé.",
@@ -51888,7 +51888,7 @@
       "✓ marquent sur les 3 derniers au même lieu : 3 / 3"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 4,
       "sur": 4,
       "niveau": "SUR",
@@ -51906,8 +51906,8 @@
        "encaisse": 2.0
       },
       "pire_exterieur": {
-       "marque": 2.0,
-       "encaisse": 2.0
+       "marque": 3.0,
+       "encaisse": 3.0
       },
       "scenarios": [
        {
@@ -51938,7 +51938,7 @@
         "domicile": "pire",
         "exterieur": "pire",
         "buts_domicile": 1.0,
-        "buts_exterieur": 2.0,
+        "buts_exterieur": 3.0,
         "marge": 0.5,
         "valide": true
        }
@@ -52005,12 +52005,12 @@
         "lignes": [
          "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
          "Moyennes simples : Arouca à domicile marque 2,33, encaisse 1,00 ; Estrela à l'extérieur marque 2,67, encaisse 2,33.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Arouca 1-2 ; Estrela 2-2.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Arouca 1-2 ; Estrela 3-3.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Arouca moyen / Estrela moyen : 2,33 – 2,67 (total 5,00) → marge +1,83 but : validé.",
          "Arouca pire / Estrela moyen : 1,00 – 2,67 (total 3,67) → marge +0,50 but : validé.",
          "Arouca moyen / Estrela pire : 2,33 – 2,00 (total 4,33) → marge +1,50 but : validé.",
-         "Arouca pire / Estrela pire : 1,00 – 2,00 (total 3,00) → marge +0,50 but : validé.",
+         "Arouca pire / Estrela pire : 1,00 – 3,00 (total 4,00) → marge +0,50 but : validé.",
          "Échelle : 4/4 Sûr · 3/4 Recommandé · 2/4 Attention · 1/4 Risqué. Information seulement : elle ne change ni la probabilité ni la sélection."
         ]
        }
@@ -52034,7 +52034,7 @@
       "✓ au-dessus de la ligne sur les 6 derniers : 5 (Arouca) / 6 (Estrela)"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 4,
       "sur": 4,
       "niveau": "SUR",
@@ -52150,7 +52150,7 @@
         "lignes": [
          "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
          "Moyennes simples : Arouca à domicile marque 2,33, encaisse 1,00 ; Estrela à l'extérieur marque 2,67, encaisse 2,33.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Arouca 1-2 ; Estrela 2-2.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Arouca 1-2 ; Estrela 2-2.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Arouca moyen / Estrela moyen : 2,33 – 2,67 (total 5,00) → marge +3,50 but : validé.",
          "Arouca pire / Estrela moyen : 1,00 – 2,67 (total 3,67) → marge +2,17 but : validé.",
@@ -57607,7 +57607,7 @@
       "✓ au-dessus de la ligne sur les 6 derniers : 5 (Picerno) / 4 (Cosenza)"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 4,
       "sur": 4,
       "niveau": "SUR",
@@ -57723,7 +57723,7 @@
         "lignes": [
          "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
          "Moyennes simples : Picerno à domicile marque 2,75, encaisse 2,00 ; Cosenza à l'extérieur marque 0,75, encaisse 3,25.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Picerno 2-1 ; Cosenza 0-1.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Picerno 2-1 ; Cosenza 0-1.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "Picerno moyen / Cosenza moyen : 2,75 – 0,75 (total 3,50) → marge +2,00 but : validé.",
          "Picerno pire / Cosenza moyen : 2,00 – 0,75 (total 2,75) → marge +1,25 but : validé.",
@@ -60497,7 +60497,7 @@
       "✓ au-dessus de la ligne sur les 6 derniers : 5 (TSV Havelse) / 5 (Würzburg)"
      ],
      "indice_performance": {
-      "version": 1,
+      "version": 2,
       "indice": 1,
       "sur": 4,
       "niveau": "RISQUE",
@@ -60614,7 +60614,7 @@
         "lignes": [
          "Indice 1/4 : Risqué. Le marché est validé dans 1 scénario sur 4.",
          "Moyennes simples : TSV Havelse à domicile marque 2,00, encaisse 2,50 ; Würzburg à l'extérieur marque 1,25, encaisse 3,25.",
-         "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : TSV Havelse 1-3 ; Würzburg 0-3.",
+         "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : TSV Havelse 1-3 ; Würzburg 0-3.",
          "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
          "TSV Havelse moyen / Würzburg moyen : 2,00 – 1,25 (total 3,25) → marge +0,75 but : validé.",
          "TSV Havelse pire / Würzburg moyen : 1,00 – 1,25 (total 2,25) → marge −0,25 but : non validé.",
@@ -62113,7 +62113,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 1,
        "sur": 4,
        "niveau": "RISQUE",
@@ -62246,7 +62246,7 @@
           "lignes": [
            "Indice 1/4 : Risqué. Le marché est validé dans 1 scénario sur 4.",
            "Moyennes simples : Osnabrück à domicile marque 1,33, encaisse 2,33 ; D. Dresde à l'extérieur marque 1,67, encaisse 3,33.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Osnabrück 0-3 ; D. Dresde 0-3.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Osnabrück 0-3 ; D. Dresde 0-3.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Osnabrück moyen / D. Dresde moyen : 1,33 – 1,67 (total 3,00) → marge +0,50 but : validé.",
            "Osnabrück pire / D. Dresde moyen : 0,00 – 1,67 (total 1,67) → marge −0,83 but : non validé.",
@@ -62697,7 +62697,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 2,
        "sur": 4,
        "niveau": "ATTENTION",
@@ -62830,7 +62830,7 @@
           "lignes": [
            "Indice 2/4 : Attention. Le marché est validé dans 2 scénarios sur 4.",
            "Moyennes simples : Nantes à domicile marque 1,00, encaisse 2,00 ; Reims à l'extérieur marque 2,00, encaisse 0,67.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Nantes 2-5 ; Reims 0-0.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Nantes 2-5 ; Reims 0-0.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Nantes moyen / Reims moyen : 1,00 – 2,00 (total 3,00) → marge +1,50 but : validé.",
            "Nantes pire / Reims moyen : 2,00 – 2,00 (total 4,00) → marge +0,50 but : validé.",
@@ -62929,7 +62929,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 2,
        "sur": 4,
        "niveau": "ATTENTION",
@@ -63061,7 +63061,7 @@
           "lignes": [
            "Indice 2/4 : Attention. Le marché est validé dans 2 scénarios sur 4.",
            "Moyennes simples : Würzburg à domicile marque 2,00, encaisse 0,67 ; H. Rostock à l'extérieur marque 2,00, encaisse 2,25.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Würzburg 1-0 ; H. Rostock 0-4.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Würzburg 1-0 ; H. Rostock 0-4.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Würzburg moyen / H. Rostock moyen : 2,00 – 2,00 (total 4,00) → marge +1,50 but : validé.",
            "Würzburg pire / H. Rostock moyen : 1,00 – 2,00 (total 3,00) → marge +0,50 but : validé.",
@@ -63447,7 +63447,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 4,
        "sur": 4,
        "niveau": "SUR",
@@ -63465,8 +63465,8 @@
         "encaisse": 3.0
        },
        "pire_exterieur": {
-        "marque": 0.0,
-        "encaisse": 2.0
+        "marque": 1.0,
+        "encaisse": 0.0
        },
        "scenarios": [
         {
@@ -63489,7 +63489,7 @@
          "domicile": "moyen",
          "exterieur": "pire",
          "buts_domicile": 0.4,
-         "buts_exterieur": 0.0,
+         "buts_exterieur": 1.0,
          "marge": 1.1,
          "valide": true
         },
@@ -63497,7 +63497,7 @@
          "domicile": "pire",
          "exterieur": "pire",
          "buts_domicile": 1.0,
-         "buts_exterieur": 0.0,
+         "buts_exterieur": 1.0,
          "marge": 0.5,
          "valide": true
         }
@@ -63577,12 +63577,12 @@
           "lignes": [
            "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
            "Moyennes simples : NK Radomlje à domicile marque 0,40, encaisse 2,00 ; NK Koper à l'extérieur marque 1,00, encaisse 0,50.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : NK Radomlje 1-3 ; NK Koper 0-2.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : NK Radomlje 1-3 ; NK Koper 1-0.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "NK Radomlje moyen / NK Koper moyen : 0,40 – 1,00 (total 1,40) → marge +1,10 but : validé.",
            "NK Radomlje pire / NK Koper moyen : 1,00 – 1,00 (total 2,00) → marge +0,50 but : validé.",
-           "NK Radomlje moyen / NK Koper pire : 0,40 – 0,00 (total 0,40) → marge +1,10 but : validé.",
-           "NK Radomlje pire / NK Koper pire : 1,00 – 0,00 (total 1,00) → marge +0,50 but : validé.",
+           "NK Radomlje moyen / NK Koper pire : 0,40 – 1,00 (total 1,40) → marge +1,10 but : validé.",
+           "NK Radomlje pire / NK Koper pire : 1,00 – 1,00 (total 2,00) → marge +0,50 but : validé.",
            "Échelle : 4/4 Sûr · 3/4 Recommandé · 2/4 Attention · 1/4 Risqué. Information seulement : elle ne change ni la probabilité ni la sélection."
           ]
          }
@@ -63740,7 +63740,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 2,
        "sur": 4,
        "niveau": "ATTENTION",
@@ -63872,7 +63872,7 @@
           "lignes": [
            "Indice 2/4 : Attention. Le marché est validé dans 2 scénarios sur 4.",
            "Moyennes simples : Zbrojovka à domicile marque 1,80, encaisse 1,00 ; Jablonec à l'extérieur marque 0,75, encaisse 1,25.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Zbrojovka 0-1 ; Jablonec 2-0.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Zbrojovka 0-1 ; Jablonec 2-0.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Zbrojovka moyen / Jablonec moyen : 1,80 – 0,75 (total 2,55) → marge +1,55 but : validé.",
            "Zbrojovka pire / Jablonec moyen : 0,00 – 0,75 (total 0,75) → marge −0,25 but : non validé.",
@@ -64115,7 +64115,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 4,
        "sur": 4,
        "niveau": "SUR",
@@ -64248,7 +64248,7 @@
           "lignes": [
            "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
            "Moyennes simples : Al Hazem à domicile marque 0,67, encaisse 0,67 ; Neom à l'extérieur marque 1,33, encaisse 0,33.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Al Hazem 1-0 ; Neom 2-0.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Al Hazem 1-0 ; Neom 2-0.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Al Hazem moyen / Neom moyen : 0,67 – 1,33 (total 2,00) → marge +1,50 but : validé.",
            "Al Hazem pire / Neom moyen : 1,00 – 1,33 (total 2,33) → marge +1,17 but : validé.",
@@ -64635,7 +64635,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 4,
        "sur": 4,
        "niveau": "SUR",
@@ -64767,7 +64767,7 @@
           "lignes": [
            "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
            "Moyennes simples : Dundee Utd. à domicile marque 0,67, encaisse 1,33 ; Hibernian à l'extérieur marque 1,67, encaisse 1,33.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Dundee Utd. 1-1 ; Hibernian 2-1.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Dundee Utd. 1-1 ; Hibernian 2-1.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Dundee Utd. moyen / Hibernian moyen : 0,67 – 1,67 (total 2,33) → marge +1,17 but : validé.",
            "Dundee Utd. pire / Hibernian moyen : 1,00 – 1,67 (total 2,67) → marge +0,83 but : validé.",
@@ -64850,7 +64850,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 1,
        "sur": 4,
        "niveau": "RISQUE",
@@ -64982,7 +64982,7 @@
           "lignes": [
            "Indice 1/4 : Risqué. Le marché est validé dans 1 scénario sur 4.",
            "Moyennes simples : Fleetwood à domicile marque 1,00, encaisse 0,75 ; Walsall à l'extérieur marque 1,50, encaisse 0,75.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Fleetwood 2-0 ; Walsall 0-0.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Fleetwood 2-0 ; Walsall 0-0.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Fleetwood moyen / Walsall moyen : 1,00 – 1,50 (total 2,50) → marge +1,00 but : validé.",
            "Fleetwood pire / Walsall moyen : 2,00 – 1,50 (total 3,50) → marge +0,00 but : non validé.",
@@ -65176,7 +65176,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 2,
        "sur": 4,
        "niveau": "ATTENTION",
@@ -65308,7 +65308,7 @@
           "lignes": [
            "Indice 2/4 : Attention. Le marché est validé dans 2 scénarios sur 4.",
            "Moyennes simples : Jesenice à domicile marque 2,40, encaisse 1,20 ; NK Brezice à l'extérieur marque 0,40, encaisse 2,00.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Jesenice 0-3 ; NK Brezice 1-2.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Jesenice 0-3 ; NK Brezice 1-2.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Jesenice moyen / NK Brezice moyen : 2,40 – 0,40 (total 2,80) → marge +1,50 but : validé.",
            "Jesenice pire / NK Brezice moyen : 0,00 – 0,40 (total 0,40) → marge −0,90 but : non validé.",
@@ -65359,7 +65359,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 4,
        "sur": 4,
        "niveau": "SUR",
@@ -65492,7 +65492,7 @@
           "lignes": [
            "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
            "Moyennes simples : Leicester à domicile marque 1,00, encaisse 2,00 ; Peterborough à l'extérieur marque 0,25, encaisse 2,00.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Leicester 2-0 ; Peterborough 1-1.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Leicester 2-0 ; Peterborough 1-1.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Leicester moyen / Peterborough moyen : 1,00 – 0,25 (total 1,25) → marge +3,25 but : validé.",
            "Leicester pire / Peterborough moyen : 2,00 – 0,25 (total 2,25) → marge +2,25 but : validé.",
@@ -65575,7 +65575,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 4,
        "sur": 4,
        "niveau": "SUR",
@@ -65707,7 +65707,7 @@
           "lignes": [
            "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
            "Moyennes simples : Livingston FC à domicile marque 1,40, encaisse 1,00 ; P. Thistle à l'extérieur marque 0,67, encaisse 0,67.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Livingston FC 2-2 ; P. Thistle 1-1.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Livingston FC 2-2 ; P. Thistle 1-1.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Livingston FC moyen / P. Thistle moyen : 1,40 – 0,67 (total 2,07) → marge +1,43 but : validé.",
            "Livingston FC pire / P. Thistle moyen : 2,00 – 0,67 (total 2,67) → marge +0,83 but : validé.",
@@ -65774,7 +65774,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 4,
        "sur": 4,
        "niveau": "SUR",
@@ -65908,7 +65908,7 @@
           "lignes": [
            "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
            "Moyennes simples : Middlesbrough à domicile marque 2,75, encaisse 1,75 ; Wolverhampton à l'extérieur marque 2,00, encaisse 1,75.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Middlesbrough 2-2 ; Wolverhampton 1-0.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Middlesbrough 2-2 ; Wolverhampton 1-0.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Middlesbrough moyen / Wolverhampton moyen : 2,75 – 2,00 (total 4,75) → marge +2,25 but : validé.",
            "Middlesbrough pire / Wolverhampton moyen : 2,00 – 2,00 (total 4,00) → marge +1,50 but : validé.",
@@ -66311,7 +66311,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 1,
        "sur": 4,
        "niveau": "RISQUE",
@@ -66443,7 +66443,7 @@
           "lignes": [
            "Indice 1/4 : Risqué. Le marché est validé dans 1 scénario sur 4.",
            "Moyennes simples : Virton à domicile marque 2,00, encaisse 0,33 ; Hasselt à l'extérieur marque 1,00, encaisse 1,33.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Virton 3-0 ; Hasselt 2-1.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Virton 3-0 ; Hasselt 2-1.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Virton moyen / Hasselt moyen : 2,00 – 1,00 (total 3,00) → marge +0,50 but : validé.",
            "Virton pire / Hasselt moyen : 3,00 – 1,00 (total 4,00) → marge −0,50 but : non validé.",
@@ -66558,7 +66558,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 3,
        "sur": 4,
        "niveau": "RECOMMANDE",
@@ -66692,7 +66692,7 @@
           "lignes": [
            "Indice 3/4 : Recommandé. Le marché est validé dans 3 scénarios sur 4.",
            "Moyennes simples : Wycombe à domicile marque 1,75, encaisse 2,00 ; Luton à l'extérieur marque 2,33, encaisse 3,33.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Wycombe 1-2 ; Luton 1-2.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Wycombe 1-2 ; Luton 1-2.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Wycombe moyen / Luton moyen : 1,75 – 2,33 (total 4,08) → marge +1,58 but : validé.",
            "Wycombe pire / Luton moyen : 1,00 – 2,33 (total 3,33) → marge +0,83 but : validé.",
@@ -67159,7 +67159,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 2,
        "sur": 4,
        "niveau": "ATTENTION",
@@ -67292,7 +67292,7 @@
           "lignes": [
            "Indice 2/4 : Attention. Le marché est validé dans 2 scénarios sur 4.",
            "Moyennes simples : Lumezzane à domicile marque 1,00, encaisse 1,00 ; AlbinoLeffe à l'extérieur marque 2,25, encaisse 1,25.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Lumezzane 2-2 ; AlbinoLeffe 0-0.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Lumezzane 2-2 ; AlbinoLeffe 0-0.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Lumezzane moyen / AlbinoLeffe moyen : 1,00 – 2,25 (total 3,25) → marge +1,75 but : validé.",
            "Lumezzane pire / AlbinoLeffe moyen : 2,00 – 2,25 (total 4,25) → marge +0,75 but : validé.",
@@ -67423,7 +67423,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 1,
        "sur": 4,
        "niveau": "RISQUE",
@@ -67555,7 +67555,7 @@
           "lignes": [
            "Indice 1/4 : Risqué. Le marché est validé dans 1 scénario sur 4.",
            "Moyennes simples : Slask Wroclaw à domicile marque 1,50, encaisse 1,50 ; Lech Poznan à l'extérieur marque 2,00, encaisse 1,67.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Slask Wroclaw 0-0 ; Lech Poznan 3-2.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Slask Wroclaw 0-0 ; Lech Poznan 3-2.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Slask Wroclaw moyen / Lech Poznan moyen : 1,50 – 2,00 (total 3,50) → marge +1,00 but : validé.",
            "Slask Wroclaw pire / Lech Poznan moyen : 0,00 – 2,00 (total 2,00) → marge −0,50 but : non validé.",
@@ -67878,7 +67878,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 4,
        "sur": 4,
        "niveau": "SUR",
@@ -68010,7 +68010,7 @@
           "lignes": [
            "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
            "Moyennes simples : Servette à domicile marque 0,75, encaisse 1,25 ; Sion à l'extérieur marque 3,00, encaisse 1,75.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Servette 2-1 ; Sion 2-1.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Servette 2-1 ; Sion 2-1.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Servette moyen / Sion moyen : 0,75 – 3,00 (total 3,75) → marge +2,75 but : validé.",
            "Servette pire / Sion moyen : 2,00 – 3,00 (total 5,00) → marge +1,50 but : validé.",
@@ -68077,7 +68077,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 4,
        "sur": 4,
        "niveau": "SUR",
@@ -68210,7 +68210,7 @@
           "lignes": [
            "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
            "Moyennes simples : Zurich à domicile marque 1,75, encaisse 2,00 ; Thoune à l'extérieur marque 2,60, encaisse 2,40.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Zurich 1-2 ; Thoune 2-1.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Zurich 1-2 ; Thoune 2-1.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Zurich moyen / Thoune moyen : 1,75 – 2,60 (total 4,35) → marge +1,85 but : validé.",
            "Zurich pire / Thoune moyen : 1,00 – 2,60 (total 3,60) → marge +1,10 but : validé.",
@@ -68645,7 +68645,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 1,
        "sur": 4,
        "niveau": "RISQUE",
@@ -68777,7 +68777,7 @@
           "lignes": [
            "Indice 1/4 : Risqué. Le marché est validé dans 1 scénario sur 4.",
            "Moyennes simples : Botev Plovdiv à domicile marque 1,60, encaisse 1,20 ; Slavia Sofia à l'extérieur marque 1,25, encaisse 0,50.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Botev Plovdiv 3-2 ; Slavia Sofia 0-1.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Botev Plovdiv 3-2 ; Slavia Sofia 0-1.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Botev Plovdiv moyen / Slavia Sofia moyen : 1,60 – 1,25 (total 2,85) → marge +1,15 but : validé.",
            "Botev Plovdiv pire / Slavia Sofia moyen : 3,00 – 1,25 (total 4,25) → marge −0,25 but : non validé.",
@@ -68875,7 +68875,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 1,
        "sur": 4,
        "niveau": "RISQUE",
@@ -69008,7 +69008,7 @@
           "lignes": [
            "Indice 1/4 : Risqué. Le marché est validé dans 1 scénario sur 4.",
            "Moyennes simples : Toronto à domicile marque 2,17, encaisse 2,17 ; Montreal à l'extérieur marque 1,25, encaisse 2,58.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Toronto 1-1 ; Montreal 0-1.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Toronto 1-1 ; Montreal 0-1.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Toronto moyen / Montreal moyen : 2,17 – 1,25 (total 3,42) → marge +0,92 but : validé.",
            "Toronto pire / Montreal moyen : 1,00 – 1,25 (total 2,25) → marge −0,25 but : non validé.",
@@ -69107,7 +69107,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 3,
        "sur": 4,
        "niveau": "RECOMMANDE",
@@ -69239,7 +69239,7 @@
           "lignes": [
            "Indice 3/4 : Recommandé. Le marché est validé dans 3 scénarios sur 4.",
            "Moyennes simples : Austria Vienne à domicile marque 0,67, encaisse 1,33 ; Sturm Graz à l'extérieur marque 1,00, encaisse 1,75.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Austria Vienne 2-1 ; Sturm Graz 2-0.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Austria Vienne 2-1 ; Sturm Graz 2-0.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Austria Vienne moyen / Sturm Graz moyen : 0,67 – 1,00 (total 1,67) → marge +1,83 but : validé.",
            "Austria Vienne pire / Sturm Graz moyen : 2,00 – 1,00 (total 3,00) → marge +0,50 but : validé.",
@@ -69401,7 +69401,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 1,
        "sur": 4,
        "niveau": "RISQUE",
@@ -69533,7 +69533,7 @@
           "lignes": [
            "Indice 1/4 : Risqué. Le marché est validé dans 1 scénario sur 4.",
            "Moyennes simples : Montevideo à domicile marque 1,50, encaisse 0,58 ; Boston River à l'extérieur marque 0,92, encaisse 2,08.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Montevideo 0-0 ; Boston River 3-2.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Montevideo 0-0 ; Boston River 3-2.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Montevideo moyen / Boston River moyen : 1,50 – 0,92 (total 2,42) → marge +1,08 but : validé.",
            "Montevideo pire / Boston River moyen : 0,00 – 0,92 (total 0,92) → marge −0,42 but : non validé.",
@@ -69584,7 +69584,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 4,
        "sur": 4,
        "niveau": "SUR",
@@ -69717,7 +69717,7 @@
           "lignes": [
            "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
            "Moyennes simples : Saint-Étienne à domicile marque 3,33, encaisse 0,67 ; Rodez à l'extérieur marque 2,00, encaisse 2,67.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Saint-Étienne 3-1 ; Rodez 0-2.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Saint-Étienne 3-1 ; Rodez 0-2.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Saint-Étienne moyen / Rodez moyen : 3,33 – 2,00 (total 5,33) → marge +2,83 but : validé.",
            "Saint-Étienne pire / Rodez moyen : 3,00 – 2,00 (total 5,00) → marge +2,50 but : validé.",
@@ -69768,7 +69768,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 1,
        "sur": 4,
        "niveau": "RISQUE",
@@ -69900,7 +69900,7 @@
           "lignes": [
            "Indice 1/4 : Risqué. Le marché est validé dans 1 scénario sur 4.",
            "Moyennes simples : J. Bialystok à domicile marque 1,00, encaisse 1,50 ; Górnik Zabrze à l'extérieur marque 1,60, encaisse 0,40.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : J. Bialystok 2-1 ; Górnik Zabrze 3-1.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : J. Bialystok 2-1 ; Górnik Zabrze 3-1.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "J. Bialystok moyen / Górnik Zabrze moyen : 1,00 – 1,60 (total 2,60) → marge +0,90 but : validé.",
            "J. Bialystok pire / Górnik Zabrze moyen : 2,00 – 1,60 (total 3,60) → marge −0,10 but : non validé.",
@@ -70254,7 +70254,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 1,
        "sur": 4,
        "niveau": "RISQUE",
@@ -70387,7 +70387,7 @@
           "lignes": [
            "Indice 1/4 : Risqué. Le marché est validé dans 1 scénario sur 4.",
            "Moyennes simples : Fram Rey à domicile marque 2,67, encaisse 2,25 ; KR à l'extérieur marque 3,00, encaisse 2,54.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Fram Rey 0-0 ; KR 0-2.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Fram Rey 0-0 ; KR 0-2.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Fram Rey moyen / KR moyen : 2,67 – 3,00 (total 5,67) → marge +2,17 but : validé.",
            "Fram Rey pire / KR moyen : 0,00 – 3,00 (total 3,00) → marge −0,50 but : non validé.",
@@ -71094,7 +71094,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 4,
        "sur": 4,
        "niveau": "SUR",
@@ -71227,7 +71227,7 @@
           "lignes": [
            "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
            "Moyennes simples : Lourosa à domicile marque 2,00, encaisse 1,00 ; Chaves à l'extérieur marque 0,33, encaisse 2,33.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Lourosa 2-1 ; Chaves 1-2.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Lourosa 2-1 ; Chaves 1-2.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Lourosa moyen / Chaves moyen : 2,00 – 0,33 (total 2,33) → marge +2,17 but : validé.",
            "Lourosa pire / Chaves moyen : 2,00 – 0,33 (total 2,33) → marge +2,17 but : validé.",
@@ -71374,7 +71374,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 4,
        "sur": 4,
        "niveau": "SUR",
@@ -71506,7 +71506,7 @@
           "lignes": [
            "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
            "Moyennes simples : Akhmat à domicile marque 2,75, encaisse 2,00 ; Baltika à l'extérieur marque 2,00, encaisse 1,00.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Akhmat 1-2 ; Baltika 1-2.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Akhmat 1-2 ; Baltika 1-2.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Akhmat moyen / Baltika moyen : 2,75 – 2,00 (total 4,75) → marge +3,25 but : validé.",
            "Akhmat pire / Baltika moyen : 1,00 – 2,00 (total 3,00) → marge +1,50 but : validé.",
@@ -71861,7 +71861,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 3,
        "sur": 4,
        "niveau": "RECOMMANDE",
@@ -71994,7 +71994,7 @@
           "lignes": [
            "Indice 3/4 : Recommandé. Le marché est validé dans 3 scénarios sur 4.",
            "Moyennes simples : Grasshoppers à domicile marque 1,75, encaisse 2,75 ; Young Boys à l'extérieur marque 3,50, encaisse 1,50.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Grasshoppers 1-4 ; Young Boys 2-2.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Grasshoppers 1-4 ; Young Boys 2-2.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Grasshoppers moyen / Young Boys moyen : 1,75 – 3,50 (total 5,25) → marge +1,75 but : validé.",
            "Grasshoppers pire / Young Boys moyen : 1,00 – 3,50 (total 4,50) → marge +1,00 but : validé.",
@@ -72253,7 +72253,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 4,
        "sur": 4,
        "niveau": "SUR",
@@ -72267,8 +72267,8 @@
         "encaisse": 1.0
        },
        "pire_domicile": {
-        "marque": 1.0,
-        "encaisse": 2.0
+        "marque": 4.0,
+        "encaisse": 0.0
        },
        "pire_exterieur": {
         "marque": 1.0,
@@ -72286,7 +72286,7 @@
         {
          "domicile": "pire",
          "exterieur": "moyen",
-         "buts_domicile": 1.0,
+         "buts_domicile": 4.0,
          "buts_exterieur": 0.4,
          "marge": 1.1,
          "valide": true
@@ -72302,7 +72302,7 @@
         {
          "domicile": "pire",
          "exterieur": "pire",
-         "buts_domicile": 1.0,
+         "buts_domicile": 4.0,
          "buts_exterieur": 1.0,
          "marge": 0.5,
          "valide": true
@@ -72387,12 +72387,12 @@
           "lignes": [
            "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
            "Moyennes simples : LKS Lódz à domicile marque 2,25, encaisse 1,00 ; Ruch Chorzow à l'extérieur marque 0,40, encaisse 1,00.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : LKS Lódz 1-2 ; Ruch Chorzow 1-0.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : LKS Lódz 4-0 ; Ruch Chorzow 1-0.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "LKS Lódz moyen / Ruch Chorzow moyen : 2,25 – 0,40 (total 2,65) → marge +1,10 but : validé.",
-           "LKS Lódz pire / Ruch Chorzow moyen : 1,00 – 0,40 (total 1,40) → marge +1,10 but : validé.",
+           "LKS Lódz pire / Ruch Chorzow moyen : 4,00 – 0,40 (total 4,40) → marge +1,10 but : validé.",
            "LKS Lódz moyen / Ruch Chorzow pire : 2,25 – 1,00 (total 3,25) → marge +0,50 but : validé.",
-           "LKS Lódz pire / Ruch Chorzow pire : 1,00 – 1,00 (total 2,00) → marge +0,50 but : validé.",
+           "LKS Lódz pire / Ruch Chorzow pire : 4,00 – 1,00 (total 5,00) → marge +0,50 but : validé.",
            "Échelle : 4/4 Sûr · 3/4 Recommandé · 2/4 Attention · 1/4 Risqué. Information seulement : elle ne change ni la probabilité ni la sélection."
           ]
          }
@@ -72454,7 +72454,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 4,
        "sur": 4,
        "niveau": "SUR",
@@ -72587,7 +72587,7 @@
           "lignes": [
            "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
            "Moyennes simples : Renate à domicile marque 0,25, encaisse 1,00 ; GIANA Erminio à l'extérieur marque 0,25, encaisse 0,75.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Renate 1-2 ; GIANA Erminio 1-1.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Renate 1-2 ; GIANA Erminio 1-1.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Renate moyen / GIANA Erminio moyen : 0,25 – 0,25 (total 0,50) → marge +3,00 but : validé.",
            "Renate pire / GIANA Erminio moyen : 1,00 – 0,25 (total 1,25) → marge +2,25 but : validé.",
@@ -73197,7 +73197,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 1,
        "sur": 4,
        "niveau": "RISQUE",
@@ -73330,7 +73330,7 @@
           "lignes": [
            "Indice 1/4 : Risqué. Le marché est validé dans 1 scénario sur 4.",
            "Moyennes simples : Juventud à domicile marque 1,08, encaisse 1,25 ; R. Montevideo à l'extérieur marque 0,67, encaisse 0,83.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Juventud 2-0 ; R. Montevideo 2-2.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Juventud 2-0 ; R. Montevideo 2-2.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Juventud moyen / R. Montevideo moyen : 1,08 – 0,67 (total 1,75) → marge +0,75 but : validé.",
            "Juventud pire / R. Montevideo moyen : 2,00 – 0,67 (total 2,67) → marge −0,17 but : non validé.",
@@ -73525,7 +73525,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 4,
        "sur": 4,
        "niveau": "SUR",
@@ -73658,7 +73658,7 @@
           "lignes": [
            "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
            "Moyennes simples : Almería à domicile marque 2,50, encaisse 0,75 ; Leganes à l'extérieur marque 0,40, encaisse 1,40.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Almería 2-1 ; Leganes 1-0.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Almería 2-1 ; Leganes 1-0.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Almería moyen / Leganes moyen : 2,50 – 0,40 (total 2,90) → marge +1,60 but : validé.",
            "Almería pire / Leganes moyen : 2,00 – 0,40 (total 2,40) → marge +1,10 but : validé.",
@@ -73709,7 +73709,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 4,
        "sur": 4,
        "niveau": "SUR",
@@ -73842,7 +73842,7 @@
           "lignes": [
            "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
            "Moyennes simples : Real Sociedad à domicile marque 0,67, encaisse 1,33 ; A Coruña à l'extérieur marque 1,67, encaisse 1,33.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Real Sociedad 2-1 ; A Coruña 1-1.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Real Sociedad 2-1 ; A Coruña 1-1.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Real Sociedad moyen / A Coruña moyen : 0,67 – 1,67 (total 2,33) → marge +2,50 but : validé.",
            "Real Sociedad pire / A Coruña moyen : 2,00 – 1,67 (total 3,67) → marge +1,17 but : validé.",
@@ -74021,7 +74021,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 2,
        "sur": 4,
        "niveau": "ATTENTION",
@@ -74153,7 +74153,7 @@
           "lignes": [
            "Indice 2/4 : Attention. Le marché est validé dans 2 scénarios sur 4.",
            "Moyennes simples : Excelsior à domicile marque 1,33, encaisse 1,67 ; Groningen à l'extérieur marque 2,00, encaisse 2,33.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Excelsior 1-2 ; Groningen 1-1.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Excelsior 1-2 ; Groningen 1-1.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Excelsior moyen / Groningen moyen : 1,33 – 2,00 (total 3,33) → marge +0,83 but : validé.",
            "Excelsior pire / Groningen moyen : 1,00 – 2,00 (total 3,00) → marge +0,50 but : validé.",
@@ -74907,7 +74907,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 4,
        "sur": 4,
        "niveau": "SUR",
@@ -74925,8 +74925,8 @@
         "encaisse": 1.0
        },
        "pire_exterieur": {
-        "marque": 0.0,
-        "encaisse": 0.0
+        "marque": 1.0,
+        "encaisse": 2.0
        },
        "scenarios": [
         {
@@ -74949,7 +74949,7 @@
          "domicile": "moyen",
          "exterieur": "pire",
          "buts_domicile": 2.0,
-         "buts_exterieur": 0.0,
+         "buts_exterieur": 1.0,
          "marge": 1.5,
          "valide": true
         },
@@ -74957,7 +74957,7 @@
          "domicile": "pire",
          "exterieur": "pire",
          "buts_domicile": 1.0,
-         "buts_exterieur": 0.0,
+         "buts_exterieur": 1.0,
          "marge": 0.5,
          "valide": true
         }
@@ -75039,12 +75039,12 @@
           "lignes": [
            "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
            "Moyennes simples : Argir à domicile marque 2,00, encaisse 1,82 ; B36 Torshavn à l'extérieur marque 1,50, encaisse 1,50.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Argir 1-1 ; B36 Torshavn 0-0.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Argir 1-1 ; B36 Torshavn 1-2.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Argir moyen / B36 Torshavn moyen : 2,00 – 1,50 (total 3,50) → marge +1,50 but : validé.",
            "Argir pire / B36 Torshavn moyen : 1,00 – 1,50 (total 2,50) → marge +0,50 but : validé.",
-           "Argir moyen / B36 Torshavn pire : 2,00 – 0,00 (total 2,00) → marge +1,50 but : validé.",
-           "Argir pire / B36 Torshavn pire : 1,00 – 0,00 (total 1,00) → marge +0,50 but : validé.",
+           "Argir moyen / B36 Torshavn pire : 2,00 – 1,00 (total 3,00) → marge +1,50 but : validé.",
+           "Argir pire / B36 Torshavn pire : 1,00 – 1,00 (total 2,00) → marge +0,50 but : validé.",
            "Échelle : 4/4 Sûr · 3/4 Recommandé · 2/4 Attention · 1/4 Risqué. Information seulement : elle ne change ni la probabilité ni la sélection."
           ]
          }
@@ -75441,7 +75441,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 3,
        "sur": 4,
        "niveau": "RECOMMANDE",
@@ -75574,7 +75574,7 @@
           "lignes": [
            "Indice 3/4 : Recommandé. Le marché est validé dans 3 scénarios sur 4.",
            "Moyennes simples : San Lorenzo à domicile marque 0,92, encaisse 1,00 ; Riestra à l'extérieur marque 0,25, encaisse 1,00.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : San Lorenzo 2-5 ; Riestra 1-1.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : San Lorenzo 2-5 ; Riestra 1-1.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "San Lorenzo moyen / Riestra moyen : 0,92 – 0,25 (total 1,17) → marge +1,33 but : validé.",
            "San Lorenzo pire / Riestra moyen : 2,00 – 0,25 (total 2,25) → marge +0,25 but : validé.",
@@ -75897,7 +75897,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 4,
        "sur": 4,
        "niveau": "SUR",
@@ -75915,8 +75915,8 @@
         "encaisse": 2.0
        },
        "pire_exterieur": {
-        "marque": 2.0,
-        "encaisse": 2.0
+        "marque": 3.0,
+        "encaisse": 3.0
        },
        "scenarios": [
         {
@@ -75947,7 +75947,7 @@
          "domicile": "pire",
          "exterieur": "pire",
          "buts_domicile": 1.0,
-         "buts_exterieur": 2.0,
+         "buts_exterieur": 3.0,
          "marge": 0.5,
          "valide": true
         }
@@ -76031,12 +76031,12 @@
           "lignes": [
            "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
            "Moyennes simples : Arouca à domicile marque 2,33, encaisse 1,00 ; Estrela à l'extérieur marque 2,67, encaisse 2,33.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Arouca 1-2 ; Estrela 2-2.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Arouca 1-2 ; Estrela 3-3.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Arouca moyen / Estrela moyen : 2,33 – 2,67 (total 5,00) → marge +1,83 but : validé.",
            "Arouca pire / Estrela moyen : 1,00 – 2,67 (total 3,67) → marge +0,50 but : validé.",
            "Arouca moyen / Estrela pire : 2,33 – 2,00 (total 4,33) → marge +1,50 but : validé.",
-           "Arouca pire / Estrela pire : 1,00 – 2,00 (total 3,00) → marge +0,50 but : validé.",
+           "Arouca pire / Estrela pire : 1,00 – 3,00 (total 4,00) → marge +0,50 but : validé.",
            "Échelle : 4/4 Sûr · 3/4 Recommandé · 2/4 Attention · 1/4 Risqué. Information seulement : elle ne change ni la probabilité ni la sélection."
           ]
          }
@@ -76065,7 +76065,7 @@
       "rang": "P2",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 4,
        "sur": 4,
        "niveau": "SUR",
@@ -76198,7 +76198,7 @@
           "lignes": [
            "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
            "Moyennes simples : Arouca à domicile marque 2,33, encaisse 1,00 ; Estrela à l'extérieur marque 2,67, encaisse 2,33.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Arouca 1-2 ; Estrela 2-2.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Arouca 1-2 ; Estrela 2-2.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Arouca moyen / Estrela moyen : 2,33 – 2,67 (total 5,00) → marge +3,50 but : validé.",
            "Arouca pire / Estrela moyen : 1,00 – 2,67 (total 3,67) → marge +2,17 but : validé.",
@@ -77145,7 +77145,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 4,
        "sur": 4,
        "niveau": "SUR",
@@ -77278,7 +77278,7 @@
           "lignes": [
            "Indice 4/4 : Sûr. Le marché est validé dans 4 scénarios sur 4.",
            "Moyennes simples : Picerno à domicile marque 2,75, encaisse 2,00 ; Cosenza à l'extérieur marque 0,75, encaisse 3,25.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : Picerno 2-1 ; Cosenza 0-1.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : Picerno 2-1 ; Cosenza 0-1.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "Picerno moyen / Cosenza moyen : 2,75 – 0,75 (total 3,50) → marge +2,00 but : validé.",
            "Picerno pire / Cosenza moyen : 2,00 – 0,75 (total 2,75) → marge +1,25 but : validé.",
@@ -77825,7 +77825,7 @@
       "rang": "P1",
       "apercu_non_calibre": false,
       "indice_performance": {
-       "version": 1,
+       "version": 2,
        "indice": 1,
        "sur": 4,
        "niveau": "RISQUE",
@@ -77959,7 +77959,7 @@
           "lignes": [
            "Indice 1/4 : Risqué. Le marché est validé dans 1 scénario sur 4.",
            "Moyennes simples : TSV Havelse à domicile marque 2,00, encaisse 2,50 ; Würzburg à l'extérieur marque 1,25, encaisse 3,25.",
-           "Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : TSV Havelse 1-3 ; Würzburg 0-3.",
+           "Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : TSV Havelse 1-3 ; Würzburg 0-3.",
            "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
            "TSV Havelse moyen / Würzburg moyen : 2,00 – 1,25 (total 3,25) → marge +0,75 but : validé.",
            "TSV Havelse pire / Würzburg moyen : 1,00 – 1,25 (total 2,25) → marge −0,25 but : non validé.",
