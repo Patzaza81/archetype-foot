@@ -55,6 +55,43 @@ def selection_target(leg: dict[str, Any]) -> tuple[list[str], list[str], str]:
     away = str(leg.get("exterieur") or "").strip()
     team = str(leg.get("journal_team") or "").strip()
 
+    # Canonical ARCHETYPE market codes are handled first. The ticket generator
+    # is intentionally untouched; this adapter translates its output to BetPawa UI labels.
+    if market in {"1x2 domicile", "1x2 1"}:
+        return ["1x2", "match result", "match winner", "full time result", "resultat du match"], [
+            "home", "home win", "1", "domicile", "equipe a domicile", home
+        ], f"Victoire domicile ({home})"
+    if market in {"1x2 nul", "1x2 x"}:
+        return ["1x2", "match result", "match winner", "full time result", "resultat du match"], [
+            "draw", "tie", "nul", "match nul", "x"
+        ], "Match nul"
+    if market in {"1x2 exterieur", "1x2 2"}:
+        return ["1x2", "match result", "match winner", "full time result", "resultat du match"], [
+            "away", "away win", "2", "exterieur", "equipe visiteuse", away
+        ], f"Victoire extérieur ({away})"
+
+    if market == "double chance 1x":
+        return ["double chance"], ["1x", "home or draw", "home or tie", "domicile ou nul", "nul ou domicile"], "Double chance 1X"
+    if market == "double chance x2":
+        return ["double chance"], ["x2", "draw or away", "tie or away", "nul ou exterieur", "exterieur ou nul"], "Double chance X2"
+    if market == "double chance 12":
+        return ["double chance"], ["12", "home or away"], "Double chance 12"
+
+    if market == "btts oui":
+        return ["both teams to score", "btts", "les deux equipes marquent"], ["yes", "oui", "btts yes"], "Les deux équipes marquent : oui"
+    if market == "btts non":
+        return ["both teams to score", "btts", "les deux equipes marquent"], ["no", "non", "btts no"], "Les deux équipes marquent : non"
+
+    canonical_total = re.fullmatch(r"over under total (\\d+(?:[.]\\d+)?) (over|under)", market)
+    if canonical_total:
+        line = canonical_total.group(1)
+        direction = canonical_total.group(2)
+        direction_fr = "moins de" if direction == "under" else "plus de"
+        return ["total goals", "goals over under", "over under", "total buts", "total de buts"], [
+            f"{direction} {line}", f"{direction} {line.replace('.0', '')}",
+            f"{direction_fr} {line}", f"{direction_fr} {line.replace('.0', '')}"
+        ], f"{direction_fr} {line} buts"
+
     if market in {"victoire domicile", "victoire a domicile", "home win", "home"}:
         return ["1x2", "match result", "match winner", "full time result", "resultat du match"], [
             "home", "home win", "1", "domicile", "equipe a domicile", home
