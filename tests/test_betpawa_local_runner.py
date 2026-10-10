@@ -1,7 +1,12 @@
 import unittest
 
 from betpawa_validation import validate_ticket
-from tools.betpawa_local_runner import UnsafeSelection, selection_target, plan_ticket
+from tools.betpawa_local_runner import (
+    UnsafeSelection,
+    selection_target,
+    plan_ticket,
+    read_coupon_status,
+)
 
 
 def leg(market, **extra):
@@ -16,7 +21,50 @@ def leg(market, **extra):
     return base
 
 
+class FakeLocator:
+    def __init__(self, text):
+        self.text = text
+
+    def inner_text(self, timeout=None):
+        return self.text
+
+
+class FakePage:
+    def __init__(self, text):
+        self.text = text
+
+    def locator(self, selector):
+        return FakeLocator(self.text)
+
+
 class LocalBetPawaRunnerTests(unittest.TestCase):
+    def test_coupon_status_reads_betpawa_displayed_prices_without_writing(self):
+        page = FakePage(
+            "Coupon de pari\n"
+            "8/8 sélections\n"
+            "Cote totale 12,84\n"
+            "Mise minimale : 100 FCFA\n"
+            "Mise : 500 FCFA\n"
+            "Gain potentiel : 6 420 FCFA\n"
+            "Mise maximale : 10 000 FCFA"
+        )
+        status = read_coupon_status(page)
+        self.assertEqual(status["selection_count"], 8)
+        self.assertAlmostEqual(status["total_odds"], 12.84)
+        self.assertEqual(status["minimum_stake"]["value"], 100.0)
+        self.assertEqual(status["minimum_stake"]["currency"], "FCFA")
+        self.assertEqual(status["current_stake"]["value"], 500.0)
+        self.assertEqual(status["potential_win"]["value"], 6420.0)
+        self.assertEqual(status["maximum_stake"]["value"], 10000.0)
+
+    def test_coupon_status_does_not_invent_missing_values(self):
+        status = read_coupon_status(FakePage("Coupon de pari\n3 sélections"))
+        self.assertEqual(status["selection_count"], 3)
+        self.assertIsNone(status["total_odds"])
+        self.assertIsNone(status["minimum_stake"])
+        self.assertIsNone(status["current_stake"])
+        self.assertIsNone(status["potential_win"])
+
     def test_home_win_maps_to_1x2_home(self):
         markets, outcomes, label = selection_target(leg("Victoire domicile"))
         self.assertIn("1x2", markets)
