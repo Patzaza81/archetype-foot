@@ -329,8 +329,7 @@ def print_coupon_status(status: dict[str, Any]) -> None:
                        ("maximum_stake", "Mise maximale"), ("potential_win", "Gain potentiel")):
         item = status.get(key)
         if item:
-            currency = f" {item['currency']}" if item.get("currency") else ""
-            print(f"{label} : {item['display']}{currency}")
+            print(f"{label} : {item['display']}")
         else:
             print(f"{label} : non détectée")
     print("--------------------------------------")
