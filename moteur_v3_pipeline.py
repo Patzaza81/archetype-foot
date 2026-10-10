@@ -664,9 +664,9 @@ def lignes_indice_performance(perf, dom, ext):
         f"Indice {n}/{sur} : {perf['libelle']}. Le marché est validé dans {n} scénario{'s' if n > 1 else ''} sur {sur}.",
         f"Moyennes simples : {dom} à domicile marque {_n2(md['marque'])}, encaisse {_n2(md['encaisse'])} ; "
         f"{ext} à l'extérieur marque {_n2(me['marque'])}, encaisse {_n2(me['encaisse'])}.",
-        f"Pire match pour ce marché (score de l'équipe d'abord) : {dom} {pd['marque']:g}-{pd['encaisse']:g} ; "
+        f"Pire match pour ce marché (buts marqués les plus défavorables ; score de l'équipe d'abord) : {dom} {pd['marque']:g}-{pd['encaisse']:g} ; "
         f"{ext} {pe['marque']:g}-{pe['encaisse']:g}.",
-        "Buts d'un scénario = moyenne de ce que l'équipe marque et de ce que l'adversaire encaisse."]
+        "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas."]
     for s in perf["scenarios"]:
         lignes.append(f"{dom} {s['domicile']} / {ext} {s['exterieur']} : {_n2(s['buts_domicile'])} – {_n2(s['buts_exterieur'])} "
                       f"(total {_n2(s['buts_domicile'] + s['buts_exterieur'])}) → marge {_marge_signee(s['marge'])} but : "

@@ -3,10 +3,11 @@
 Décision de Patrick (10/10/2026). Pour un marché donné, chaque équipe a deux profils, calculés sur ses matchs au même
 lieu (ceux de la justification) :
 - moyen : somme des buts marqués ÷ nombre de matchs, somme des buts encaissés ÷ nombre de matchs (moyennes simples) ;
-- pire : le match de l'échantillon le moins favorable à CE marché (à égalité, le plus récent).
+- pire : le match où l'équipe marque le moins favorablement pour CE marché (à égalité, le plus récent).
 
-Les 2 × 2 profils donnent 4 scénarios de match. Dans chacun, buts du domicile = (ce que marque le domicile + ce que
-l'extérieur encaisse) ÷ 2 ; buts de l'extérieur = (ce que marque l'extérieur + ce que le domicile encaisse) ÷ 2.
+Les 2 × 2 profils donnent 4 scénarios de match. Dans chacun, seuls les buts MARQUÉS comptent : buts du domicile = ce
+que marque le domicile dans son profil, buts de l'extérieur = ce que marque l'extérieur dans le sien (correction de
+Patrick du 10/10 : pire Virton 3-0 + Hasselt 2-1 = 3 + 2 = 5 buts).
 Un scénario valide le marché si sa marge (en buts, contre la ligne du marché) est strictement positive ; à égalité exacte
 avec la ligne il ne valide pas. L'indice est le nombre de scénarios qui valident : 4/4 Sûr, 3/4 Recommandé,
 2/4 Attention, 1/4 Risqué (0/4 : Très risqué, niveau ajouté, non défini par Patrick).
@@ -84,27 +85,49 @@ def _buts(m: Mapping[str, Any]) -> tuple[float, float]:
     return float(m["buts_marques"]), float(m["buts_encaisses"])
 
 
+def _sens(marche: str, domicile: bool) -> int | None:
+    """+1 : plus l'équipe marque, plus le marché est favorable ; -1 : l'inverse ; None : pas monotone (ex. 12)."""
+    signes = set()
+    for autre in range(0, 7):
+        for g in range(0, 7):
+            f = (lambda x: marge(marche, x, autre)) if domicile else (lambda x: marge(marche, autre, x))
+            v = f(g + 1) - f(g)
+            if abs(v) > EPS:
+                signes.add(1 if v > 0 else -1)
+    return signes.pop() if len(signes) == 1 else None
+
+
 def profils(matchs: Sequence[Mapping[str, Any]], marche: str, domicile: bool) -> dict[str, Any] | None:
-    """Profils moyen et pire d'une équipe pour ce marché. `matchs` : ses matchs au même lieu, du plus ancien au plus
-    récent. `domicile` : l'équipe joue à domicile dans le match à venir (et dans tous ces matchs)."""
-    if not matchs:
+    """Profils moyen et pire d'une équipe pour ce marché (règle de Patrick : seuls les buts MARQUÉS comptent dans un
+    scénario). `matchs` : ses matchs au même lieu, du plus ancien au plus récent.
+    - moyen : somme des buts marqués ÷ nombre de matchs ;
+    - pire : le match où elle marque le moins favorablement pour le marché (le moins de buts si plus de buts aide le
+      marché, le plus de buts sinon). À égalité de buts marqués, le plus récent. Marché non monotone (double chance
+      12) : le match dont le score est le moins favorable au marché."""
+    if not matchs or marge(marche, 0, 0) is None:
         return None
+    sens = _sens(marche, domicile)
     pire: tuple[float, float, float] | None = None
     for m in matchs:
         gf, ga = _buts(m)
-        mg = marge(marche, *((gf, ga) if domicile else (ga, gf)))
-        if mg is None:
-            return None
-        if pire is None or mg <= pire[0]:        # « <= » : à égalité on garde le plus récent
-            pire = (mg, gf, ga)
+        if sens is None:
+            cle = marge(marche, *((gf, ga) if domicile else (ga, gf)))
+            if cle is None:
+                return None
+        else:
+            if marge(marche, *((gf, ga) if domicile else (ga, gf))) is None:
+                return None
+            cle = sens * gf
+        if pire is None or cle <= pire[0]:
+            pire = (cle, gf, ga)
     n = len(matchs)
     moyen = (sum(_buts(m)[0] for m in matchs) / n, sum(_buts(m)[1] for m in matchs) / n)
     return {"moyen": moyen, "pire": (pire[1], pire[2])}
 
 
 def croise(dom: tuple[float, float], ext: tuple[float, float]) -> tuple[float, float]:
-    """Buts du domicile et de l'extérieur dans un scénario, à partir des profils (marque, encaisse) de chaque équipe."""
-    return (dom[0] + ext[1]) / 2.0, (ext[0] + dom[1]) / 2.0
+    """Buts du domicile et de l'extérieur dans un scénario : ce que chacun MARQUE dans son profil (règle de Patrick)."""
+    return dom[0], ext[0]
 
 
 def indice_performance(marche: str, matchs_dom: Sequence[Mapping[str, Any]],

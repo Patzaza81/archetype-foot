@@ -15,11 +15,21 @@ BORO = _m((2, 1), (3, 1), (4, 3), (2, 2))
 WOLVES = _m((3, 1), (2, 4), (2, 2), (1, 0))   # buts marqués/encaissés de Wolves à l'extérieur
 
 
-def test_exemple_boro_wolves_over_25_donne_3_sur_4():
+def test_exemple_virton_hasselt_under_35_donne_1_sur_4():
+    # pire Virton 3-0 (marque 3) et pire Hasselt 2-1 (marque 2) : 3 + 2 = 5 buts, non validé (règle de Patrick)
+    virton = _m((3, 0), (0, 1), (3, 0))
+    hasselt = _m((1, 0), (0, 3), (2, 1))
+    r = indice_performance("under_3_5", virton, hasselt)
+    assert (r["pire_domicile"]["marque"], r["pire_exterieur"]["marque"]) == (3.0, 2.0)
+    assert [(s["buts_domicile"], s["buts_exterieur"]) for s in r["scenarios"]] == [(2.0, 1.0), (3.0, 1.0), (2.0, 2.0), (3.0, 2.0)]
+    assert [s["valide"] for s in r["scenarios"]] == [True, False, False, False]
+    assert (r["indice"], r["libelle"]) == (1, "Risqué")
+
+
+def test_boro_wolves_over_25_seuls_les_buts_marques_comptent():
     r = indice_performance("over_2_5", BORO, WOLVES)
-    assert (r["indice"], r["libelle"]) == (3, "Recommandé")
-    totaux = [round(s["buts_domicile"] + s["buts_exterieur"], 3) for s in r["scenarios"]]
-    assert totaux == [4.125, 3.375, 2.75, 2.0]
+    assert [(s["buts_domicile"], s["buts_exterieur"]) for s in r["scenarios"]] == [(2.75, 2.0), (2.0, 2.0), (2.75, 1.0), (2.0, 1.0)]
+    assert r["indice"] == 4
 
 
 def test_moyennes_simples():
