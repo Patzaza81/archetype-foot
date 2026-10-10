@@ -94,6 +94,11 @@ jobs:
         run: python enregistre_scores_historique.py --jours 10
         continue-on-error: true
 
+      - name: Ajouter l indice de performance aux marchés V2
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+        run: python v2_indice.py
+        continue-on-error: true
+
       - name: Produire les pronostics V3 en production parallèle
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         run: python moteur_v3_pipeline.py

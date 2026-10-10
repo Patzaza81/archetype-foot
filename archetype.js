@@ -116,6 +116,21 @@ function construitJauge(probabilite, classe) {
     `<text class="ax-jauge-texte" x="50" y="51">${pct}%</text></svg></div>`;
 }
 
+// Indice de performance du marché (information seulement, calculé par le pipeline, aucun calcul ici).
+function texteIndice(p) {
+  if (p.sur === 2 && p.phrase) return `${p.libelle || ""} · ${p.phrase.replace(/\.$/, "")}`;
+  return `${p.indice}/${p.sur || 4} · ${p.libelle || ""}`;
+}
+function construitIndice(c, compact) {
+  const p = c && c.indice_performance;
+  if (!p || typeof p.indice !== "number") return "";
+  const classe = String(p.niveau || "").toLowerCase().replace(/_/g, "-");
+  const texte = texteIndice(p);
+  return compact
+    ? `<p class="ax-indice ax-indice-${echappeHtml(classe)} ax-indice-mini">Indice de performance : <strong>${echappeHtml(texte)}</strong></p>`
+    : `<p class="ax-indice ax-indice-${echappeHtml(classe)}" title="Marché testé sur 4 scénarios (moyen et pire de chaque équipe). Information seulement."><span class="ax-indice-titre">Indice de performance du marché</span><strong>${echappeHtml(texte)}</strong></p>`;
+}
+
 function construitEtoiles(etoiles) {
   const n = Math.max(0, Math.min(5, Number(etoiles) || 0));
   return `<span class="ax-etoiles" role="img" aria-label="Solidité : ${n} sur 5">` +
@@ -139,7 +154,7 @@ function construitResume(selection, equipes) {
       `<div class="ax-resume-tete"><span class="ax-resume-etiquette">${echappeHtml(info.titre)}</span>` +
       `<span class="ax-resume-cote">Cote <strong>${formatCote(c.cote)}</strong></span></div>` +
       `<h3 class="ax-resume-marche">${echappeHtml(traduitMarche(c.marche, equipes))}</h3>` +
-      (texte ? `<p class="ax-resume-texte">${echappeHtml(texte)}</p>` : "") + `</div>` +
+      (texte ? `<p class="ax-resume-texte">${echappeHtml(texte)}</p>` : "") + construitIndice(c, true) + `</div>` +
       `${construitJauge(c.probabilite, "ax-jauge-mini")}</div>`;
   }).join("");
   return div;
@@ -162,6 +177,7 @@ function construitPanneau(info, c, equipes, idPanneau, idOnglet) {
       `<p class="ax-texte-resume">${echappeHtml(resume)}</p>` +
       `<div class="ax-badge-cote"><span>Cote</span><strong>${formatCote(c.cote)}</strong></div>` +
     `</div>` +
+    construitIndice(c, false) +
     `<div class="ax-preuves">` +
       `<div class="ax-preuves-liste">` +
         `<div class="ax-preuve"><span class="ax-icone">${ICONES.forme}</span><div><span class="ax-preuve-titre">Forme récente</span>` +
