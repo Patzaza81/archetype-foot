@@ -48,7 +48,7 @@ from moteur_v3.calibration import CalibrationFit, IsotonicCalibrator
 from moteur_v3.decision import decide
 from moteur_v3.markets import derive_markets, gagne
 from moteur_v3.model import K_LISSAGE, MOYENNE_REFERENCE, _latest, _lisse, _strength, build_model
-from moteur_v3.performance import derniers_matchs, indice_performance
+from moteur_v3.performance import indice_performance
 from moteur_v3.risk import goal_context_dispersion
 from moteur_v3.value import ODDS_MAX, ODDS_MIN, edv_threshold
 
@@ -647,7 +647,7 @@ def explication(sel, ctx, apercu):
         {"titre": "Pourquoi ce marché", "lignes": alternatives(sel, ctx, apercu)},
     ]
     # AJOUT 10/10/2026 (Patrick) : 7e bloc, indice de performance du marché (information seulement).
-    perf = sel["indice_performance"] if "indice_performance" in sel else indice_pour(sel, ctx)
+    perf = sel["indice_performance"] if "indice_performance" in sel else indice_performance(marche, H, A)
     if perf:
         blocs.append({"titre": "Indice de performance", "lignes": lignes_indice_performance(perf, dom, ext)})
     return {"alertes": alertes(p, cote, n_min, (lh, la), disp, apercu), "blocs": blocs}
@@ -666,15 +666,10 @@ def lignes_indice_performance(perf, dom, ext):
                if sur != 2 else f"Indice : {perf['libelle']}. {perf['phrase']}")]
     if sur == 2:
         lignes.append("Ce marché ne dépend que d'une équipe : 2 scénarios (moyen et pire de cette équipe), l'autre équipe n'entre pas.")
-    mu = perf.get("matchs_utilises")
-    if mu:
-        fmt = lambda l: ", ".join(f"{a:g}-{b:g}" for a, b in l)
-        lignes.append(f"Matchs utilisés (7 derniers de chaque équipe, tous lieux, score de l'équipe d'abord) : "
-                      f"{dom} : {fmt(mu['domicile'])} ; {ext} : {fmt(mu['exterieur'])}.")
     if pd:
-        lignes.append(f"{dom} : moyenne simple {_n2(md['marque'])} marqué(s) par match ; pire match {pd['marque']:g}-{pd['encaisse']:g}.")
+        lignes.append(f"{dom} à domicile : moyenne simple {_n2(md['marque'])} marqué(s) par match ; pire match {pd['marque']:g}-{pd['encaisse']:g}.")
     if pe:
-        lignes.append(f"{ext} : moyenne simple {_n2(me['marque'])} marqué(s) par match ; pire match {pe['marque']:g}-{pe['encaisse']:g}.")
+        lignes.append(f"{ext} à l'extérieur : moyenne simple {_n2(me['marque'])} marqué(s) par match ; pire match {pe['marque']:g}-{pe['encaisse']:g}.")
     lignes.append("Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.")
     for s in perf["scenarios"]:
         morceaux, total = [], 0.0
@@ -694,15 +689,9 @@ def lignes_indice_performance(perf, dom, ext):
 
 
 def indice_pour(sel, ctx):
-    """Indice de performance d'une sélection : les 7 derniers matchs de chaque équipe, tous lieux confondus (décision de
-    Patrick du 10/10). Les scores utilisés sont joints au résultat pour que tout soit vérifiable."""
+    """Indice de performance d'une sélection, sur les mêmes matchs au même lieu que sa justification."""
     entree = ctx["entree"]
-    dom, ext = derniers_matchs(entree["home_matches"]), derniers_matchs(entree["away_matches"])
-    perf = indice_performance(sel["marche"], dom, ext)
-    if perf is not None:
-        perf["matchs_utilises"] = {"domicile": [[m["buts_marques"], m["buts_encaisses"]] for m in dom],
-                                   "exterieur": [[m["buts_marques"], m["buts_encaisses"]] for m in ext]}
-    return perf
+    return indice_performance(sel["marche"], _latest(entree["home_matches"], True), _latest(entree["away_matches"], False))
 
 
 def _avec_indice(sel, ctx):

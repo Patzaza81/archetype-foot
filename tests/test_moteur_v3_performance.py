@@ -153,34 +153,3 @@ def test_phrase_une_equipe_dit_ce_qui_tient():
 
 def test_phrase_deux_equipes_compte_les_scenarios():
     assert indice_performance("over_2_5", BORO, WOLVES)["phrase"] == "Validé dans 4 scénarios sur 4."
-
-
-def _d(*lignes):
-    return [{"date": d, "domicile": dom, "buts_marques": a, "buts_encaisses": b} for d, dom, a, b in lignes]
-
-
-def test_derniers_matchs_tous_lieux_confondus():
-    from moteur_v3.performance import derniers_matchs
-    ms = _d(("2026-08-01", True, 1, 0), ("2026-08-08", False, 2, 2), ("2026-08-15", True, 0, 1), ("2026-08-22", False, 3, 3))
-    r = derniers_matchs(ms, 3)
-    assert [m["date"] for m in r] == ["2026-08-08", "2026-08-15", "2026-08-22"]      # domicile ET extérieur mélangés
-    assert [m["domicile"] for m in r] == [False, True, False]
-    assert len(derniers_matchs(ms)) == 4                                              # moins de 7 : tous
-    assert derniers_matchs([]) == []
-
-
-def test_derniers_matchs_ecarte_les_scores_invalides_et_garde_les_7_plus_recents():
-    from moteur_v3.performance import derniers_matchs
-    ms = _d(*[(f"2026-09-{i:02d}", i % 2 == 0, i, 0) for i in range(1, 10)])
-    ms.append({"date": "2026-09-10", "domicile": True, "buts_marques": None, "buts_encaisses": 1})
-    ms.append({"date": "2026-09-11", "domicile": True, "buts_marques": -1, "buts_encaisses": 1})
-    r = derniers_matchs(ms)
-    assert len(r) == 7 and r[0]["date"] == "2026-09-03" and r[-1]["date"] == "2026-09-09"
-    assert derniers_matchs(ms, 2) != r and len(derniers_matchs(ms, 2)) == 2
-
-
-def test_le_lieu_des_matchs_ne_change_pas_l_indice():
-    a = _d(("2026-08-01", True, 3, 0), ("2026-08-08", False, 1, 1), ("2026-08-15", True, 2, 2))
-    b = _d(("2026-08-01", False, 3, 0), ("2026-08-08", True, 1, 1), ("2026-08-15", False, 2, 2))
-    from moteur_v3.performance import derniers_matchs
-    assert indice_performance("over_2_5", derniers_matchs(a), derniers_matchs(a)) == indice_performance("over_2_5", derniers_matchs(b), derniers_matchs(b))
