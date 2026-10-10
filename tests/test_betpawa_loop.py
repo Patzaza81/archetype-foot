@@ -13,7 +13,7 @@ class BetPawaLoopTests(unittest.TestCase):
             calls.append(command)
 
         with patch.object(run_betpawa_loop, "run", side_effect=fake_run), \
-             patch.object(run_betpawa_loop.TICKETS, "is_file", return_value=True), \
+             patch("pathlib.Path.is_file", return_value=True), \
              patch("subprocess.run") as subprocess_run:
             subprocess_run.return_value.returncode = 0
             with patch("sys.argv", [
@@ -38,7 +38,7 @@ class BetPawaLoopTests(unittest.TestCase):
             calls.append(command)
 
         with patch.object(run_betpawa_loop, "run", side_effect=fake_run), \
-             patch.object(run_betpawa_loop.TICKETS, "is_file", return_value=True), \
+             patch("pathlib.Path.is_file", return_value=True), \
              patch("subprocess.run") as subprocess_run:
             subprocess_run.return_value.returncode = 0
             with patch("sys.argv", [
