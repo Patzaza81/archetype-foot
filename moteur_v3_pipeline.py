@@ -48,6 +48,7 @@ from moteur_v3.calibration import CalibrationFit, IsotonicCalibrator
 from moteur_v3.decision import decide
 from moteur_v3.markets import derive_markets, gagne
 from moteur_v3.model import K_LISSAGE, MOYENNE_REFERENCE, _latest, _lisse, _strength, build_model
+from moteur_v3.performance import indice_performance
 from moteur_v3.risk import goal_context_dispersion
 from moteur_v3.value import ODDS_MAX, ODDS_MIN, edv_threshold
 
@@ -485,7 +486,8 @@ def evalue_enregistrement(enreg, calibrateur):
                 for s in liste]
     ctx = {"enreg": enreg, "entree": entree, "r": r, "evidence": evidence, "candidats": candidats,
            "calibree": calibrateur is not None and calibrateur.fit_result.ready}
-    selections = [{**s_, "explication": explication(s_, ctx, apercu=False)} for s_ in _format(r["selected"])]
+    selections = [{**s_, "explication": explication(s_, ctx, apercu=False)}
+                  for s_ in (_avec_indice(x, ctx) for x in _format(r["selected"]))]
     # APERÇU NON CALIBRÉ (décision de Patrick du 28/09 : voir les matchs pendant l'expérimentation). Tant que la
     # calibration n'est pas prête, on rejoue la décision V3 en ignorant SEULEMENT le verrou « calibration absente » :
     # tous les autres contrôles (value, double contrôle, justification, échantillon, dispersion, exposition) restent.
@@ -493,7 +495,7 @@ def evalue_enregistrement(enreg, calibrateur):
     apercu = []
     if not selections and (calibrateur is None or not calibrateur.fit_result.ready):
         apercu = [{**s_, "explication": explication(s_, ctx, apercu=True)}
-                  for s_ in _format(decide([{**c, "calibrated": True} for c in r["candidates"]])[0])]
+                  for s_ in (_avec_indice(x, ctx) for x in _format(decide([{**c, "calibrated": True} for c in r["candidates"]])[0]))]
     return {**base, "statut": "EVALUE", "lambda_dom": round(m.lambda_home, 3), "lambda_ext": round(m.lambda_away, 3),
             "n_dom": m.home_sample.current_n, "n_ext": m.away_sample.current_n, "couverture": cover,
             "selections": selections, "apercu_non_calibre": apercu, "candidats": candidats[:5],
@@ -642,7 +644,46 @@ def explication(sel, ctx, apercu):
             "Calibration : pas encore prête (aperçu)." if apercu else "Calibration : prête."]},
         {"titre": "Pourquoi ce marché", "lignes": alternatives(sel, ctx, apercu)},
     ]
+    # AJOUT 10/10/2026 (Patrick) : 7e bloc, indice de performance du marché (information seulement).
+    perf = sel["indice_performance"] if "indice_performance" in sel else indice_performance(marche, H, A)
+    if perf:
+        blocs.append({"titre": "Indice de performance", "lignes": lignes_indice_performance(perf, dom, ext)})
     return {"alertes": alertes(p, cote, n_min, (lh, la), disp, apercu), "blocs": blocs}
+
+
+def _marge_signee(x):
+    return f"{'+' if x >= 0 else '−'}{_n2(abs(x))}"
+
+
+def lignes_indice_performance(perf, dom, ext):
+    """Bloc 7 : indice de performance du marché = nombre de scénarios (moyen / pire de chaque équipe, croisés) qui le
+    valident. Détail de chaque scénario : buts de chaque équipe, marge sur la ligne du marché."""
+    n, sur = perf["indice"], perf["sur"]
+    md, me, pd, pe = perf["moyenne_domicile"], perf["moyenne_exterieur"], perf["pire_domicile"], perf["pire_exterieur"]
+    lignes = [
+        f"Indice {n}/{sur} : {perf['libelle']}. Le marché est validé dans {n} scénario{'s' if n > 1 else ''} sur {sur}.",
+        f"Moyennes simples : {dom} à domicile marque {_n2(md['marque'])}, encaisse {_n2(md['encaisse'])} ; "
+        f"{ext} à l'extérieur marque {_n2(me['marque'])}, encaisse {_n2(me['encaisse'])}.",
+        f"Pire match pour ce marché (score de l'équipe d'abord) : {dom} {pd['marque']:g}-{pd['encaisse']:g} ; "
+        f"{ext} {pe['marque']:g}-{pe['encaisse']:g}.",
+        "Buts d'un scénario = moyenne de ce que l'équipe marque et de ce que l'adversaire encaisse."]
+    for s in perf["scenarios"]:
+        lignes.append(f"{dom} {s['domicile']} / {ext} {s['exterieur']} : {_n2(s['buts_domicile'])} – {_n2(s['buts_exterieur'])} "
+                      f"(total {_n2(s['buts_domicile'] + s['buts_exterieur'])}) → marge {_marge_signee(s['marge'])} but : "
+                      f"{'validé' if s['valide'] else 'non validé'}.")
+    lignes.append("Échelle : 4/4 Sûr · 3/4 Recommandé · 2/4 Attention · 1/4 Risqué. Information seulement : "
+                  "elle ne change ni la probabilité ni la sélection.")
+    return lignes
+
+
+def indice_pour(sel, ctx):
+    """Indice de performance d'une sélection, sur les mêmes matchs au même lieu que sa justification."""
+    entree = ctx["entree"]
+    return indice_performance(sel["marche"], _latest(entree["home_matches"], True), _latest(entree["away_matches"], False))
+
+
+def _avec_indice(sel, ctx):
+    return {**sel, "indice_performance": indice_pour(sel, ctx)}
 
 
 def alternatives(sel, ctx, apercu):
@@ -746,7 +787,7 @@ def candidat_site(sel, rang, n_min, lambdas=None, apercu=False, equipes=None):
     return {"marche": nom_site(sel["marche"]), "marche_moteur": sel["marche"], "libelle": libelle_site,
             "probabilite": sel["probabilite"], "cote": sel["cote"], "edge": sel["edge"], "edv": sel["edv"] / 100.0,
             "niveau": niveau_echantillon(n_min), "robustesse": None, "points_de_vigilance": vigilance, "rang": rang,
-            "apercu_non_calibre": apercu,
+            "apercu_non_calibre": apercu, "indice_performance": sel.get("indice_performance"),
             "justification": {"resume": synthese(sel, n_min, apercu), "preuves": preuves,
                               "explication": sel.get("explication"),
                               "donnees_suffisantes": True, "bibliotheque": {"ev_percentage": sel["edv"]}}}

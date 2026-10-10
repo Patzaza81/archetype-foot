@@ -132,6 +132,18 @@ function construitEtoiles(etoiles) {
     `${"★".repeat(n)}<span class="ax-etoiles-vides">${"★".repeat(5 - n)}</span></span>`;
 }
 
+// Indice de performance du marché (calculé côté serveur, jamais ici) : « 3/4 · Recommandé ».
+function construitIndice(c, compact) {
+  const p = c && c.indice_performance;
+  if (!p || typeof p.indice !== "number") return "";
+  const classe = String(p.niveau || "").toLowerCase().replace(/_/g, "-");
+  const texte = `${p.indice}/${p.sur || 4} · ${p.libelle || ""}`;
+  return compact
+    ? `<p class="ax-indice ax-indice-${echappeHtml(classe)} ax-indice-mini">Indice de performance : <strong>${echappeHtml(texte)}</strong></p>`
+    : `<p class="ax-indice ax-indice-${echappeHtml(classe)}" title="Marché testé sur 4 scénarios (moyen et pire de chaque équipe). Information seulement.">` +
+      `<span class="ax-indice-titre">Indice de performance du marché</span><strong>${echappeHtml(texte)}</strong></p>`;
+}
+
 /* ───────────────────── blocs de la carte ───────────────────── */
 
 // Aperçu compact (carte repliée) : les 3 rangs, chacun avec marché, cote, probabilité et jauge.
@@ -149,7 +161,7 @@ function construitResume(selection, equipes) {
       `<div class="ax-resume-tete"><span class="ax-resume-etiquette">${echappeHtml(titreRang(info, c))}</span>` +
       `<span class="ax-resume-cote">Cote <strong>${formatCote(c.cote)}</strong></span></div>` +
       `<h3 class="ax-resume-marche">${echappeHtml(nomMarcheV3(c, equipes))}</h3>` +
-      (texte ? `<p class="ax-resume-texte">${echappeHtml(texte)}</p>` : "") + `</div>` +
+      (texte ? `<p class="ax-resume-texte">${echappeHtml(texte)}</p>` : "") + construitIndice(c, true) + `</div>` +
       `${construitJauge(c.probabilite, "ax-jauge-mini")}</div>`;
   }).join("");
   return div;
@@ -172,6 +184,7 @@ function construitPanneau(info, c, equipes, idPanneau, idOnglet) {
       `<p class="ax-texte-resume">${echappeHtml(resume)}</p>` +
       `<div class="ax-badge-cote"><span>Cote</span><strong>${formatCote(c.cote)}</strong></div>` +
     `</div>` +
+    construitIndice(c, false) +
     `<div class="ax-preuves">` +
       `<div class="ax-preuves-liste">` +
         `<div class="ax-preuve"><span class="ax-icone">${ICONES.forme}</span><div><span class="ax-preuve-titre">Forme récente</span>` +

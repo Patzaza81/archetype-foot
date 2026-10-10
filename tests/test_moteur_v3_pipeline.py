@@ -418,7 +418,7 @@ def test_journal_contient_le_diagnostic_de_tous_les_marches(tmp_path):
 
 # --- AJOUT 28/09/2026 : standard de justification V3 (6 blocs + alertes) et règle du double contrôle 1.2.0 -------------
 
-BLOCS = ["Données", "Buts attendus", "Probabilité", "Face à la cote", "Contrôles", "Pourquoi ce marché"]
+BLOCS = ["Données", "Buts attendus", "Probabilité", "Face à la cote", "Contrôles", "Pourquoi ce marché", "Indice de performance"]
 
 
 def _apercus_reels():
@@ -482,3 +482,12 @@ def test_marches_equivalents_meme_regle(marche, regle):
 @pytest.mark.parametrize("marche", ["score_1_0", "exact_goals_2", "total_pair"])
 def test_marches_non_justifiables_restent_hors_regle(marche):
     assert marche not in mp.DOUBLE_CONTROLE
+
+
+def test_candidat_site_porte_l_indice_de_performance():
+    ap = _apercus_reels()
+    for _, a in ap:
+        p = a["indice_performance"]
+        assert p is None or (0 <= p["indice"] <= 4 and p["sur"] == 4 and len(p["scenarios"]) == 4)
+        c = mp.candidat_site(a, "P1", 5, None, True, ("A", "B"))
+        assert c["indice_performance"] == p

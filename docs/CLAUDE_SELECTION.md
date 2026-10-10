@@ -136,3 +136,16 @@ Problème : `data/tickets.json` est réécrit à chaque exécution, donc la list
 - Limite connue : `suivi_tickets.py` règle les tickets par `match_id` ; les paris du Journal n'en ont pas (`match_id` nul) et leurs libellés ne sont pas reconnus tels quels par son évaluateur, donc les tickets contenant un pari du Journal restent « PENDING ». L'archive de sélection ne dépend pas de ce défaut.
 
 Tests : `tests/test_selection_generateur.py` (cas qui passent et cas qui échouent par règle).
+
+
+## Indice de performance du marché V3 — 10/10/2026
+
+Code : `moteur_v3/performance.py` ; affiché par `archetype_v3.js` (champ `indice_performance` de chaque candidat) et dans le 7e bloc de la justification.
+
+- Par équipe, sur ses matchs au même lieu (ceux de la justification) : **moyen** = somme des buts ÷ nombre de matchs ; **pire** = le match le moins favorable au marché (à égalité, le plus récent).
+- 4 scénarios : (domicile moyen/pire) × (extérieur moyen/pire). Buts domicile = (marqués dom + encaissés ext) ÷ 2 ; buts extérieur = (marqués ext + encaissés dom) ÷ 2.
+- Un scénario valide le marché si sa marge contre la ligne est strictement > 0 (égalité exacte : non validé).
+- Indice = scénarios validés sur 4 : 4/4 Sûr · 3/4 Recommandé · 2/4 Attention · 1/4 Risqué · 0/4 « Très risqué » (niveau ajouté par Claude, non défini par Patrick).
+- Information seulement : ne change ni la probabilité, ni la sélection, ni la calibration. Marchés sans marge continue (score exact, nombre exact de buts, pair/impair, handicap X) : pas d'indice.
+- Exemple de référence : Middlesbrough (dom. 2-1, 3-1, 4-3, 2-2) – Wolves (ext. 3-1, 2-4, 2-2, 1-0), plus de 2,5 buts → 3/4 Recommandé.
+- Tests : `tests/test_moteur_v3_performance.py`.

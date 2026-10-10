@@ -51,7 +51,7 @@ Même structure pour chaque sélection, quel que soit le marché. Tout est calcu
 **Résumé (carte repliée, 1 ligne)**
 « Probabilité 82 % (non calibrée) contre 66 % selon la cote 1,52 · marge +23,9 % · 3 matchs au même lieu »
 
-**Détails de l'analyse (6 blocs, toujours dans cet ordre)**
+**Détails de l'analyse (7 blocs, toujours dans cet ordre)**
 
 1. **Données** : matchs utilisés, scores inclus.
    « Rudar à domicile (3) : 3-0, 4-1, 2-0 → marque 3,00, encaisse 0,33. Dravinja à l'extérieur (4) : 0-1, 0-2, 1-1, 1-5 → marque 0,50, encaisse 2,25. »
@@ -62,6 +62,7 @@ Même structure pour chaque sélection, quel que soit le marché. Tout est calcu
    « 1,52 → 65,8 % ; écart +15,7 pts ; marge 1,52 × 0,157 = +23,9 % (seuil 5 % au-dessus de 71 %). »
 5. **Contrôles passés** : fenêtre de cote, dispersion (valeur), double contrôle (raisons), règle d'échantillon, état de la calibration.
 6. **Pourquoi ce marché** : les 3 meilleurs marchés des autres familles et la raison exacte de leur rejet (ou « dominé par … »).
+7. **Indice de performance** : scénarios moyen/pire des deux équipes croisés (voir `docs/CLAUDE_SELECTION.md`), affiché aussi sur la carte : 4/4 Sûr, 3/4 Recommandé, 2/4 Attention, 1/4 Risqué.
 
 **Alertes automatiques (affichées en tête si déclenchées)**
 - 3 ou 4 matchs au même lieu → « petit échantillon »
