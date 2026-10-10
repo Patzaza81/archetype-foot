@@ -429,7 +429,13 @@ function construitCarte(m, options) {
     section.classList.toggle("ax-replie", replie);
     section.setAttribute("aria-expanded", String(!replie));
   };
-  const bascule = () => applique(!section.classList.contains("ax-replie"));
+  // Après un pli / dépli, la carte garde la même position à l'écran : la page ne défile plus vers d'autres cartes.
+  const bascule = () => {
+    const avant = section.getBoundingClientRect().top;
+    applique(!section.classList.contains("ax-replie"));
+    const apres = section.getBoundingClientRect().top;
+    if (Math.abs(apres - avant) > 1) window.scrollBy(0, apres - avant);
+  };
   // Plus de bouton Plier / Déplier : toucher n'importe où sur la carte (pliée ou dépliée) la bascule.
   // Les boutons, liens, onglets et le texte sélectionné gardent leur propre comportement.
   section.addEventListener("click", (e) => {
@@ -506,7 +512,7 @@ function afficheSelections(matchs) {
     return;
   }
   // Un seul match est ouvert à l'arrivée ; les autres se déplient à la demande.
-  retenus.forEach((m, index) => racine.appendChild(construitCarte(m, { replie: index > 0 })));
+  retenus.forEach((m, index) => racine.appendChild(construitCarte(m, { replie: true })));
 }
 
 /* ───────────────── page Archetype : thème + chargement ───────────────── */
