@@ -337,12 +337,13 @@ body.theme-nuit .ax-ico{filter:brightness(1.7)}
 .ax-indice-alts{list-style:none;margin:6px 0 0;padding:0}
 .ax-indice-alt{padding:4px 12px;font-size:13px;color:var(--ax-doux)}
 
-/* Historique au même lieu : pastilles gagné / nul / perdu (domicile-extérieur) */
+/* Historique au même lieu : seul le nombre de buts de l'équipe suivie est coloré (vert gagné, orange nul, rouge perdu) */
 .ax-hist-bloc{margin:0 0 8px}
 .ax-hist{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:4px 0}
 .ax-hist-eq{font-weight:600;font-size:.85em;margin-right:4px}
-.ax-hist-liste{display:flex;flex-wrap:wrap;gap:4px}
-.ax-res{display:inline-block;min-width:38px;text-align:center;padding:2px 8px;border-radius:10px;font-size:.85em;font-weight:700;color:#fff}
-.ax-res-v{background:#2E7D32}
-.ax-res-n{background:#EF8A00}
-.ax-res-d{background:#C62828}
+.ax-hist-liste{display:flex;flex-wrap:wrap;gap:10px}
+.ax-res{font-variant-numeric:tabular-nums;font-size:.95em}
+.ax-but{font-weight:800}
+.ax-res-v{color:#2E7D32}
+.ax-res-n{color:#EF8A00}
+.ax-res-d{color:#C62828}

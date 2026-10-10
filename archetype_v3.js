@@ -286,8 +286,14 @@ const COULEUR_RES = { V: "ax-res-v", N: "ax-res-n", D: "ax-res-d" };
 function construitHistoriques(hist) {
   if (!Array.isArray(hist) || !hist.length) return "";
   const lignes = hist.map((h) => {
-    const pastilles = (h.matchs || []).map((m) =>
-      `<span class="ax-res ${COULEUR_RES[m.res] || ""}" title="${m.res === "V" ? "Gagné" : m.res === "N" ? "Nul" : "Perdu"}">${Number(m.dom)}-${Number(m.ext)}</span>`).join("");
+    const pastilles = (h.matchs || []).map((m) => {
+      const titre = m.res === "V" ? "Gagné" : m.res === "N" ? "Nul" : "Perdu";
+      const cl = `ax-but ${COULEUR_RES[m.res] || ""}`;
+      // Seul le nombre de buts de l'équipe suivie est coloré (domicile = 1er chiffre, extérieur = 2e).
+      const d = h.domicile ? `<span class="${cl}" title="${titre}">${Number(m.dom)}</span>` : `${Number(m.dom)}`;
+      const e = h.domicile ? `${Number(m.ext)}` : `<span class="${cl}" title="${titre}">${Number(m.ext)}</span>`;
+      return `<span class="ax-res">${d}-${e}</span>`;
+    }).join("");
     return `<div class="ax-hist"><span class="ax-hist-eq">${echappeHtml(h.equipe)} ${h.domicile ? "(domicile)" : "(extérieur)"}</span><span class="ax-hist-liste">${pastilles}</span></div>`;
   }).join("");
   return `<div class="ax-hist-bloc">${lignes}</div>`;
