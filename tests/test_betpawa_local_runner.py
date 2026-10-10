@@ -29,6 +29,23 @@ class LocalBetPawaRunnerTests(unittest.TestCase):
         self.assertIn("away", outcomes)
         self.assertIn("Dep. Tolima", label)
 
+    def test_canonical_generator_markets_are_translated(self):
+        cases = [
+            ("1x2_domicile", "Victoire domicile"),
+            ("1x2_nul", "Match nul"),
+            ("1x2_exterieur", "Victoire extérieur"),
+            ("double_chance_1X", "Double chance 1X"),
+            ("double_chance_X2", "Double chance X2"),
+            ("double_chance_12", "Double chance 12"),
+            ("btts_oui", "Les deux équipes marquent : oui"),
+            ("btts_non", "Les deux équipes marquent : non"),
+            ("over_under_total_2.5_over", "plus de 2.5 buts"),
+            ("over_under_total_3.5_under", "moins de 3.5 buts"),
+        ]
+        for market, expected in cases:
+            _, _, label = selection_target(leg(market))
+            self.assertEqual(label.lower(), expected.lower())
+
     def test_total_under_line_is_explicit(self):
         markets, outcomes, label = selection_target(leg("Match à moins de 3,5 buts"))
         self.assertIn("total goals", markets)
