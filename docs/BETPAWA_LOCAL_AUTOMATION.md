@@ -72,6 +72,8 @@ Avec --click, il faut taper exactement CLICK SELECTIONS. Le navigateur s'ouvre, 
 
 À la fin, le coupon reste affiché dans le navigateur. Contrôlez chaque équipe, chaque marché, chaque cote et le nombre total de sélections. La validation ou la soumission du pari reste entièrement manuelle.
 
+Après chaque clic, le script lit le texte visible du coupon en lecture seule et affiche les informations détectées : nombre de sélections, cote totale, mise minimale, mise actuelle, mise maximale et gain potentiel. Les valeurs absentes restent « non détectées » : aucune mise fixe n'est supposée et aucune valeur n'est inventée. L'état est également enregistré dans `data/betpawa_coupon_status.json` (modifiable avec `--coupon-status-output`). Le fichier est un instantané de ce qui était visible au moment de la lecture, pas une garantie de paiement ou de gain.
+
 ## Dépannage
 
 - Marché non pris en charge : le libellé ne possède pas encore de correspondance sûre. Ne pas élargir les sélecteurs au hasard.
