@@ -182,6 +182,7 @@ function construitResume(selection, equipes) {
       `<div class="ax-resume-tete"><span class="ax-resume-etiquette">${echappeHtml(titreRang(info, c))}</span>` +
       `<span class="ax-resume-cote">Cote <strong>${formatCote(c.cote)}</strong></span></div>` +
       `<h3 class="ax-resume-marche">${echappeHtml(nomMarcheV3(c, equipes))}</h3>` +
+      `<div class="ax-resume-etoiles">${construitEtoiles(traduitNiveau(c.niveau).etoiles)}</div>` +
       (texte ? `<p class="ax-resume-texte">${echappeHtml(texte)}</p>` : "") + construitIndice(c, true) + `</div>` +
       `${construitJauge(c.probabilite, "ax-jauge-mini")}</div>`;
   }).join("");
@@ -409,8 +410,6 @@ function construitCarte(m, options) {
 
   // Pied de carte : bouton « Détails de l'analyse » (secondaire) et bouton
   // « Plier » (principal), les deux alignés à droite.
-  const deplier = document.createElement("button");
-  deplier.type = "button"; deplier.className = "ax-deplier";
   const pied = document.createElement("div");
   pied.className = "ax-pied";
   const boutonDetails = document.createElement("button");
@@ -418,8 +417,6 @@ function construitCarte(m, options) {
   boutonDetails.textContent = "Détails de l'analyse";
   boutonDetails.setAttribute("aria-controls", idDetails);
   boutonDetails.setAttribute("aria-expanded", "false");
-  const plier = document.createElement("button");
-  plier.type = "button"; plier.className = "ax-plier";
 
   boutonDetails.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -430,21 +427,19 @@ function construitCarte(m, options) {
 
   const applique = (replie) => {
     section.classList.toggle("ax-replie", replie);
-    deplier.setAttribute("aria-expanded", String(!replie)); plier.setAttribute("aria-expanded", String(!replie));
-    deplier.innerHTML = `Déplier <span aria-hidden="true">⌄</span>`;
-    plier.innerHTML = `Plier <span aria-hidden="true">⌃</span>`;
+    section.setAttribute("aria-expanded", String(!replie));
   };
   const bascule = () => applique(!section.classList.contains("ax-replie"));
-  deplier.addEventListener("click", (e) => { e.stopPropagation(); bascule(); });
-  plier.addEventListener("click", bascule);
-  // Carte repliée : toucher n'importe où sur la carte la déplie (grande zone tactile).
+  // Plus de bouton Plier / Déplier : toucher n'importe où sur la carte (pliée ou dépliée) la bascule.
+  // Les boutons, liens, onglets et le texte sélectionné gardent leur propre comportement.
   section.addEventListener("click", (e) => {
-    if (section.classList.contains("ax-replie") && !e.target.closest("button, a, summary")) bascule();
+    if (e.target.closest("button, a, summary, [role=tab]")) return;
+    const sel = window.getSelection && window.getSelection();
+    if (sel && String(sel).length) return;
+    bascule();
   });
   applique(!!opt.replie);
-  section.querySelector(".ax-actions-tete").appendChild(deplier);
   pied.appendChild(boutonDetails);
-  pied.appendChild(plier);
   section.appendChild(pied);
 
   // Action facultative (ex. « Retirer » dans le panier) : toujours dans l'en-tête, carte dépliée comme
