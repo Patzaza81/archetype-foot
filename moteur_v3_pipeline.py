@@ -658,22 +658,30 @@ def _marge_signee(x):
 
 
 def lignes_indice_performance(perf, dom, ext):
-    """Bloc 7 : indice de performance du marché = nombre de scénarios (moyen / pire de chaque équipe, croisés) qui le
-    valident. Détail de chaque scénario : buts de chaque équipe, marge sur la ligne du marché."""
+    """Bloc 7 : indice de performance du marché = nombre de scénarios (moyen / pire des équipes concernées) qui le
+    valident. Marché d'une seule équipe : 2 scénarios ; sinon 4. Détail : buts de chaque équipe, marge sur la ligne."""
     n, sur = perf["indice"], perf["sur"]
     md, me, pd, pe = perf["moyenne_domicile"], perf["moyenne_exterieur"], perf["pire_domicile"], perf["pire_exterieur"]
-    lignes = [
-        f"Indice {n}/{sur} : {perf['libelle']}. Le marché est validé dans {n} scénario{'s' if n > 1 else ''} sur {sur}.",
-        f"Moyennes simples : {dom} à domicile marque {_n2(md['marque'])}, encaisse {_n2(md['encaisse'])} ; "
-        f"{ext} à l'extérieur marque {_n2(me['marque'])}, encaisse {_n2(me['encaisse'])}.",
-        f"Pire scénario (la paire de matchs qui éprouve le plus ce marché ; score de l'équipe d'abord) : {dom} {pd['marque']:g}-{pd['encaisse']:g} ; "
-        f"{ext} {pe['marque']:g}-{pe['encaisse']:g}.",
-        "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas."]
+    lignes = [f"Indice {n}/{sur} : {perf['libelle']}. Le marché est validé dans {n} scénario{'s' if n > 1 else ''} sur {sur}."]
+    if sur == 2:
+        lignes.append("Ce marché ne dépend que d'une équipe : 2 scénarios (moyen et pire de cette équipe), l'autre équipe n'entre pas.")
+    if pd:
+        lignes.append(f"{dom} à domicile : moyenne simple {_n2(md['marque'])} marqué(s) par match ; pire match {pd['marque']:g}-{pd['encaisse']:g}.")
+    if pe:
+        lignes.append(f"{ext} à l'extérieur : moyenne simple {_n2(me['marque'])} marqué(s) par match ; pire match {pe['marque']:g}-{pe['encaisse']:g}.")
+    lignes.append("Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.")
     for s in perf["scenarios"]:
-        lignes.append(f"{dom} {s['domicile']} / {ext} {s['exterieur']} : {_n2(s['buts_domicile'])} – {_n2(s['buts_exterieur'])} "
-                      f"(total {_n2(s['buts_domicile'] + s['buts_exterieur'])}) → marge {_marge_signee(s['marge'])} but : "
+        morceaux, total = [], 0.0
+        if s["domicile"]:
+            morceaux.append(f"{dom} {s['domicile']} : {_n2(s['buts_domicile'])}")
+            total += s["buts_domicile"]
+        if s["exterieur"]:
+            morceaux.append(f"{ext} {s['exterieur']} : {_n2(s['buts_exterieur'])}")
+            total += s["buts_exterieur"]
+        suffixe = f" (total {_n2(total)})" if len(morceaux) == 2 else ""
+        lignes.append(" / ".join(morceaux) + f"{suffixe} → marge {_marge_signee(s['marge'])} but : "
                       f"{'validé' if s['valide'] else 'non validé'}.")
-    lignes.append("Échelle : 4/4 Sûr · 3/4 Recommandé · 2/4 Attention · 1/4 Risqué. Information seulement : "
+    lignes.append("Échelle : 100 % Sûr · 75 % Recommandé · 50 % Attention · 25 % Risqué (4/4, 3/4, 2/4, 1/4). Information seulement : "
                   "elle ne change ni la probabilité ni la sélection.")
     return lignes
 

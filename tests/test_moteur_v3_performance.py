@@ -96,7 +96,7 @@ JEUX = [(_m((3, 0), (0, 1), (3, 0)), _m((1, 0), (0, 3), (2, 1))), (BORO, WOLVES)
 def test_aucun_scenario_n_est_pire_que_le_pire_scenario(marche):
     for dom, ext in JEUX:
         r = indice_performance(marche, dom, ext)
-        pire = r["scenarios"][3]["marge"]
+        pire = r["scenarios"][-1]["marge"]
         for x, y in itertools.product(dom, ext):
             assert marge(marche, x["buts_marques"], y["buts_marques"]) >= pire - 1e-9
         assert pire == min(s["marge"] for s in r["scenarios"])
@@ -111,3 +111,34 @@ def test_double_chance_12_pire_cas_est_le_nul_le_plus_proche():
 def test_pire_exterieur_victoire_domicile_est_son_match_le_plus_prolifique():
     r = indice_performance("1x2_1", _m((2, 0), (3, 0)), _m((0, 2), (3, 3), (1, 1)))
     assert (r["pire_domicile"]["marque"], r["pire_exterieur"]["marque"]) == (2, 3)
+
+
+MARCHES_UNE_EQUIPE = ["home_over_1.5", "home_under_2.5", "away_over_0.5", "away_under_1.5", "clean_home", "clean_away",
+                      "clean_home_no", "clean_away_no"]
+MARCHES_DEUX_EQUIPES = ["1x2_1", "dc_12", "btts_yes", "over_2_5", "under_3_5", "handicap_1_1"]
+
+
+@pytest.mark.parametrize("marche", MARCHES_UNE_EQUIPE)
+def test_marche_d_une_seule_equipe_a_2_scenarios(marche):
+    r = indice_performance(marche.replace(".", "_"), BORO, WOLVES) if marche.count("_") >= 3 else indice_performance(marche, BORO, WOLVES)
+    assert r is not None and r["sur"] == 2 and len(r["scenarios"]) == 2
+
+
+@pytest.mark.parametrize("marche", MARCHES_DEUX_EQUIPES)
+def test_marche_des_deux_equipes_garde_4_scenarios(marche):
+    assert indice_performance(marche, BORO, WOLVES)["sur"] == 4
+
+
+def test_domicile_plus_de_1_5_buts():
+    # Wycombe-like : moyenne 1,75 valide, pire match (1 but) ne valide pas -> 1/2
+    r = indice_performance("home_over_1_5", _m((1, 1), (1, 2), (3, 3), (2, 2)), _m((4, 3), (2, 5), (1, 2)))
+    assert (r["indice"], r["sur"], r["libelle"]) == (1, 2, "Attention")
+    assert [s["valide"] for s in r["scenarios"]] == [True, False]
+    assert r["pire_exterieur"] is None and r["scenarios"][0]["buts_exterieur"] is None
+
+
+def test_une_seule_equipe_sur_les_deux_scenarios_sur_2():
+    assert indice_performance("home_over_1_5", _m((3, 0), (2, 1)), _m((0, 0)))["libelle"] == "Sûr"      # 2/2
+    assert indice_performance("away_over_2_5", _m((0, 0)), _m((1, 1), (0, 2)))["indice"] == 0           # 0/2
+    assert indice_performance("clean_home", _m((1, 0)), _m((0, 1), (0, 0)))["indice"] == 2               # extérieur ne marque jamais
+    assert indice_performance("clean_home", _m((1, 0)), _m((0, 1), (0, 0), (1, 0)))["indice"] == 1      # moyenne 0,33 ok, pire match (1 but) non

@@ -121,15 +121,40 @@ def croise(dom: tuple[float, float], ext: tuple[float, float]) -> tuple[float, f
     return dom[0], ext[0]
 
 
+def _depend(marche: str, domicile: bool) -> bool:
+    """Le résultat du marché dépend-il des buts de cette équipe ? (ex. « domicile plus de 1,5 » ne dépend pas de l'extérieur)"""
+    for autre in range(0, 7):
+        for g in range(0, 6):
+            f = (lambda x: marge(marche, x, autre)) if domicile else (lambda x: marge(marche, autre, x))
+            if abs(f(g + 1) - f(g)) > EPS:
+                return True
+    return False
+
+
+def niveau_pour(indice: int, sur: int) -> tuple[str, str]:
+    """Niveau selon la part de scénarios validés : 100 % Sûr, ≥ 75 % Recommandé, ≥ 50 % Attention, > 0 Risqué, 0 Très risqué.
+    Sur 4 : 4/4 Sûr, 3/4 Recommandé, 2/4 Attention, 1/4 Risqué (échelle de Patrick). Sur 2 : 2/2 Sûr, 1/2 Attention."""
+    if indice >= sur:
+        return NIVEAUX[4]
+    part = indice / sur
+    return NIVEAUX[3] if part >= 0.75 else NIVEAUX[2] if part >= 0.5 else NIVEAUX[1] if indice > 0 else NIVEAUX[0]
+
+
 def indice_performance(marche: str, matchs_dom: Sequence[Mapping[str, Any]],
                        matchs_ext: Sequence[Mapping[str, Any]]) -> dict[str, Any] | None:
-    """Indice de performance du marché (0 à 4 scénarios sur 4) et détail des scénarios. None si non calculable.
+    """Indice de performance du marché (scénarios validés sur scénarios distincts) et détail. None si non calculable.
+
+    Marché qui dépend des deux équipes : 4 scénarios (moyen/pire de chacune). Marché qui ne dépend que d'UNE équipe
+    (ex. domicile plus de 1,5 buts, clean sheet) : 2 scénarios seulement, moyen et pire de cette équipe, l'autre n'entre pas.
 
     Le pire scénario est le plus dur possible : pour (pire, pire) on teste TOUTES les paires (match du domicile, match de
     l'extérieur) et on garde celle de marge minimale, donc aucun autre scénario ne peut être pire (même pour les marchés
     où le pire d'une équipe dépend de l'autre, comme la double chance 12). Pour (pire, moyen) et (moyen, pire), le pire
     match de l'équipe est celui de marge minimale face à la moyenne de l'adversaire."""
     if not matchs_dom or not matchs_ext or marge(marche, 0, 0) is None:
+        return None
+    dd, de = _depend(marche, True), _depend(marche, False)
+    if not (dd or de):
         return None
     md, me = _moyen(matchs_dom), _moyen(matchs_ext)
     pp = None
@@ -142,17 +167,31 @@ def indice_performance(marche: str, matchs_dom: Sequence[Mapping[str, Any]],
     mp = _pire(matchs_ext, marche, False, md[0])
     buts = {("moyen", "moyen"): (md[0], me[0]), ("pire", "moyen"): (pm[1], me[0]),
             ("moyen", "pire"): (md[0], mp[1]), ("pire", "pire"): (pp[1][0], pp[2][0])}
+    if dd and not de:
+        liste = (("moyen", None), ("pire", None))
+    elif de and not dd:
+        liste = ((None, "moyen"), (None, "pire"))
+    else:
+        liste = SCENARIOS
     scenarios = []
-    for sd, se in SCENARIOS:
-        hd, ae = buts[(sd, se)]
-        mg = marge(marche, hd, ae)
-        scenarios.append({"domicile": sd, "exterieur": se, "buts_domicile": round(hd, 3), "buts_exterieur": round(ae, 3),
+    for sd, se in liste:
+        hd, ae = buts[(sd or "moyen", se or "moyen")]
+        if sd is None:
+            hd = None
+        if se is None:
+            ae = None
+        # marché d'une seule équipe : l'autre n'intervient pas dans la marge (0 neutre)
+        mg = marge(marche, 0 if hd is None else hd, 0 if ae is None else ae)
+        scenarios.append({"domicile": sd, "exterieur": se,
+                          "buts_domicile": None if hd is None else round(hd, 3),
+                          "buts_exterieur": None if ae is None else round(ae, 3),
                           "marge": round(mg, 3), "valide": mg > EPS})
     indice = sum(1 for s in scenarios if s["valide"])
-    niveau, libelle = NIVEAUX[indice]
-    return {"version": 2, "indice": indice, "sur": len(SCENARIOS), "niveau": niveau, "libelle": libelle,
+    sur = len(scenarios)
+    niveau, libelle = niveau_pour(indice, sur)
+    return {"version": 3, "indice": indice, "sur": sur, "niveau": niveau, "libelle": libelle,
             "moyenne_domicile": {"marque": round(md[0], 3), "encaisse": round(md[1], 3)},
             "moyenne_exterieur": {"marque": round(me[0], 3), "encaisse": round(me[1], 3)},
-            "pire_domicile": {"marque": pp[1][0], "encaisse": pp[1][1]},
-            "pire_exterieur": {"marque": pp[2][0], "encaisse": pp[2][1]},
+            "pire_domicile": None if not dd else {"marque": (pp[1][0] if de else pm[1]), "encaisse": (pp[1][1] if de else pm[2])},
+            "pire_exterieur": None if not de else {"marque": (pp[2][0] if dd else mp[1]), "encaisse": (pp[2][1] if dd else mp[2])},
             "scenarios": scenarios}
