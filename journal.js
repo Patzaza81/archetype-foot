@@ -114,6 +114,19 @@
     });
   }
 
+  /* Indice de performance (calculé par journal_indice.py, jamais ici). 3/4 et 4/4 = « bon indice ». Marché d'une seule
+     équipe (2 scénarios) : phrase plutôt qu'une note sur 2. */
+  function indiceTexte(p) {
+    if (!p || typeof p.indice !== "number") return "";
+    return p.sur === 2 && p.phrase ? p.libelle + " · " + String(p.phrase).replace(/\.$/, "") : p.indice + "/" + p.sur + " · " + p.libelle;
+  }
+  function indiceBon(p) { return !!p && (p.niveau === "SUR" || p.niveau === "RECOMMANDE"); }
+  function indiceBadge(p) {
+    if (!p || typeof p.indice !== "number") return "";
+    return ' <span class="jr-indice jr-indice-' + esc(String(p.niveau || "").toLowerCase().replace(/_/g, "-")) +
+      '" title="Marché testé sur les scénarios moyen et pire de chaque équipe. Information seulement.">Indice ' + esc(indiceTexte(p)) + "</span>";
+  }
+
   /* ─────────── Équipes à suivre (marché récurrent >= 70 %) ─────────── */
   function afficherEquipes(j) {
     var lignes = j.equipes_a_suivre || [];
@@ -137,7 +150,7 @@
           : (l.roi_betpawa > 0 ? 'Rentable sur BetPawa : <span class="pos">' + pct(l.roi_betpawa, true) + "</span> sur " + l.paris_cotes + " cote(s) relevée(s)."
             : "Cote BetPawa souvent trop basse pour être rentable.");
         var cotePm = l.prochain_match && l.prochain_match.cote_betpawa ? ' <span class="jr-cote-pm">cote ' + cote(l.prochain_match.cote_betpawa) + "</span>" : "";
-        return '<div class="jr-eq-marche"><div class="jr-eq-ligne"><b>' + esc(l.marche) + "</b>" + cotePm + '<span class="jr-eq-freq">' +
+        return '<div class="jr-eq-marche"><div class="jr-eq-ligne"><b>' + esc(l.marche) + "</b>" + cotePm + indiceBadge(l.indice_performance) + '<span class="jr-eq-freq">' +
           l.gagnes + "/" + l.joues + " · " + pct(l.frequence) + "</span></div>" +
           '<div class="jr-eq-detail">En général : ' + pct(l.frequence_generale) + " des matchs. " + rent + "</div></div>";
       }).join("");
@@ -145,9 +158,13 @@
         esc(pm.adversaire) + " (" + esc(pm.lieu) + ")" + (pm.betpawa_url ? ' · <a class="jr-lien" href="' + esc(pm.betpawa_url) +
         '" target="_blank" rel="noopener">BetPawa →</a>' : "") + "</div>" : "";
       var resume = ls.map(function (l) { return l.marche + " " + pct(l.frequence); }).join(" · ");
-      return '<details class="jr-equipe" data-prochain="' + (pm ? 1 : 0) + '"><summary><div class="jr-eq-tete"><span class="jr-fiche-nom">' + esc(t.equipe) +
+      var bons = ls.filter(function (l) { return indiceBon(l.indice_performance); });
+      var resumeIndice = bons.length ? '<div class="jr-eq-bons">' + bons.map(function (l) {
+        return '<span class="jr-indice jr-indice-' + esc(String(l.indice_performance.niveau).toLowerCase().replace(/_/g, "-")) + '">' + esc(l.marche) + " · " + esc(indiceTexte(l.indice_performance)) + "</span>";
+      }).join(" ") + "</div>" : "";
+      return '<details class="jr-equipe" data-prochain="' + (pm ? 1 : 0) + '" data-bon="' + (bons.length ? 1 : 0) + '"><summary><div class="jr-eq-tete"><span class="jr-fiche-nom">' + esc(t.equipe) +
         '</span><span class="jr-badge b-A_JOUER">À suivre</span></div><div class="jr-fiche-info">' + esc(t.ligue) + " · " + t.joues + " matchs analysés</div>" +
-        '<div class="jr-eq-resume">' + esc(resume) + "</div>" + prochain + "</summary>" + marches + "</details>";
+        '<div class="jr-eq-resume">' + esc(resume) + "</div>" + resumeIndice + prochain + "</summary>" + marches + "</details>";
     }).join("");
     document.querySelectorAll("#filtres-equipes button").forEach(function (b) {
       b.addEventListener("click", function () {
@@ -155,7 +172,7 @@
         b.classList.add("actif");
         var f = b.getAttribute("data-f");
         zone.querySelectorAll(".jr-equipe").forEach(function (el) {
-          el.style.display = (f === "toutes" || el.getAttribute("data-prochain") === "1") ? "" : "none";
+          el.style.display = (f === "toutes" || (f === "bon" ? el.getAttribute("data-bon") === "1" && el.getAttribute("data-prochain") === "1" : el.getAttribute("data-prochain") === "1")) ? "" : "none";
         });
       });
     });

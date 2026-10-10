@@ -35,6 +35,7 @@ jobs:
       - name: Reconstruire le journal et les contrôles
         run: |
           python journal_rentabilite.py
+          python journal_indice.py || true
           python controle_saisons.py || true
       - name: Régler la sélection du générateur avec les scores obtenus
         run: python suivi_selection_generateur.py

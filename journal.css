@@ -96,3 +96,11 @@ body.theme-nuit .jr-onglets{--jo-fond:#0F1117;--jo-carte:#1A1E29;--jo-texte:#F1E
 .jr-equipe summary::after{content:"Voir le détail ⌄";display:block;margin-top:4px;font-size:12.5px;font-weight:700;color:var(--ax-bleu-texte)}
 .jr-equipe[open] summary::after{content:"Replier ⌃"}
 .jr-eq-resume{margin-top:4px;font-size:13px;font-weight:700;color:var(--ax-vert)}
+
+/* Indice de performance (information seulement) */
+.jr-indice{display:inline-block;font-size:12px;font-weight:800;border-radius:999px;padding:1px 8px;margin-left:6px;border:1px solid var(--ax-ligne);color:var(--ax-doux)}
+.jr-indice-sur,.jr-indice-recommande{color:#fff;background:var(--ax-vert);border-color:var(--ax-vert)}
+.jr-indice-attention{color:var(--ax-or-texte)}
+.jr-indice-risque,.jr-indice-tres-risque{color:#C0392B}
+.jr-eq-bons{margin:6px 0 0;display:flex;flex-wrap:wrap;gap:4px}
+.jr-eq-bons .jr-indice{margin-left:0}
