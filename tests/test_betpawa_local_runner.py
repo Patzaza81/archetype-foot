@@ -79,9 +79,9 @@ class LocalBetPawaRunnerTests(unittest.TestCase):
 
     def test_canonical_generator_markets_are_translated(self):
         cases = [
-            ("1x2_domicile", "Victoire domicile"),
+            ("1x2_domicile", "Victoire domicile (Atl. Nacional)"),
             ("1x2_nul", "Match nul"),
-            ("1x2_exterieur", "Victoire extérieur"),
+            ("1x2_exterieur", "Victoire extérieur (Dep. Tolima)"),
             ("double_chance_1X", "Double chance 1X"),
             ("double_chance_X2", "Double chance X2"),
             ("double_chance_12", "Double chance 12"),
