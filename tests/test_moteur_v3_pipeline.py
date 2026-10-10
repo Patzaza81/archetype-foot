@@ -506,3 +506,19 @@ def test_alternatives_indice_informatives_et_sans_effet_sur_la_selection():
             assert a["cote"] and 0 < a["probabilite"] < 1
         assert len(x.get("alternatives_indice", [])) <= 3
     assert vus > 0
+
+
+def test_historiques_ordre_domicile_exterieur_et_couleurs():
+    for e, a in _apercus_reels():
+        donnees = a["explication"]["blocs"][0]
+        hd, he = donnees["historiques"]
+        assert hd["domicile"] is True and he["domicile"] is False
+        for m in hd["matchs"] + he["matchs"]:
+            assert m["res"] in "VND"
+        # domicile : 1er chiffre = buts de l'équipe ; extérieur : 2e chiffre = buts de l'équipe, donc ordre inversé dans le texte
+        assert ", ".join(f"{m['dom']}-{m['ext']}" for m in hd["matchs"]) in donnees["lignes"][0]
+        assert ", ".join(f"{m['dom']}-{m['ext']}" for m in he["matchs"]) in donnees["lignes"][1]
+        for m in he["matchs"]:
+            assert m["res"] == ("V" if m["ext"] > m["dom"] else "N" if m["ext"] == m["dom"] else "D")
+        for m in hd["matchs"]:
+            assert m["res"] == ("V" if m["dom"] > m["ext"] else "N" if m["ext"] == m["dom"] else "D")

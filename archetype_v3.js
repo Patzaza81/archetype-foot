@@ -280,6 +280,19 @@ function construitFiabilite(c) {
 
 // V3 (28/09/2026, standard de justification validé par Patrick) : alertes + 6 blocs chiffrés, dans l'ordre fourni par
 // le pipeline (Données, Buts attendus, Probabilité, Face à la cote, Contrôles, Pourquoi ce marché). Aucun calcul ici.
+// Historique au même lieu : score en ordre domicile-extérieur, pastille verte (gagné), orange (nul), rouge (perdu)
+// du point de vue de l'équipe suivie. Aucun calcul : le pipeline fournit dom, ext et res.
+const COULEUR_RES = { V: "ax-res-v", N: "ax-res-n", D: "ax-res-d" };
+function construitHistoriques(hist) {
+  if (!Array.isArray(hist) || !hist.length) return "";
+  const lignes = hist.map((h) => {
+    const pastilles = (h.matchs || []).map((m) =>
+      `<span class="ax-res ${COULEUR_RES[m.res] || ""}" title="${m.res === "V" ? "Gagné" : m.res === "N" ? "Nul" : "Perdu"}">${Number(m.dom)}-${Number(m.ext)}</span>`).join("");
+    return `<div class="ax-hist"><span class="ax-hist-eq">${echappeHtml(h.equipe)} ${h.domicile ? "(domicile)" : "(extérieur)"}</span><span class="ax-hist-liste">${pastilles}</span></div>`;
+  }).join("");
+  return `<div class="ax-hist-bloc">${lignes}</div>`;
+}
+
 function construitExplication(ex) {
   if (!ex || !Array.isArray(ex.blocs) || !ex.blocs.length) return "";
   const alertes = (Array.isArray(ex.alertes) ? ex.alertes : []).filter((t) => typeof t === "string" && t);
@@ -287,6 +300,7 @@ function construitExplication(ex) {
     ? `<div class="ax-v3-alertes" role="note"><p class="ax-v3-alertes-titre">Alertes</p><ul>${alertes.map((t) => `<li>${echappeHtml(t)}</li>`).join("")}</ul></div>` : "";
   const blocs = ex.blocs.map((b, i) =>
     `<div class="ax-tab ax-v3-bloc"><h4 class="ax-tab-titre">${i + 1}. ${echappeHtml(b.titre)}</h4>` +
+    construitHistoriques(b.historiques) +
     `<ul class="ax-v3-lignes">${(b.lignes || []).map((l) => `<li>${echappeHtml(l)}</li>`).join("")}</ul></div>`).join("");
   return tete + blocs;
 }

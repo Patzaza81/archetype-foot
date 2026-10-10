@@ -336,3 +336,13 @@ body.theme-nuit .ax-ico{filter:brightness(1.7)}
 .ax-page.theme-nuit .ax-indice-risque strong,.ax-page.theme-nuit .ax-indice-tres-risque strong,body.theme-nuit .ax-indice-risque strong,body.theme-nuit .ax-indice-tres-risque strong{color:#FF8A7A}
 .ax-indice-alts{list-style:none;margin:6px 0 0;padding:0}
 .ax-indice-alt{padding:4px 12px;font-size:13px;color:var(--ax-doux)}
+
+/* Historique au même lieu : pastilles gagné / nul / perdu (domicile-extérieur) */
+.ax-hist-bloc{margin:0 0 8px}
+.ax-hist{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:4px 0}
+.ax-hist-eq{font-weight:600;font-size:.85em;margin-right:4px}
+.ax-hist-liste{display:flex;flex-wrap:wrap;gap:4px}
+.ax-res{display:inline-block;min-width:38px;text-align:center;padding:2px 8px;border-radius:10px;font-size:.85em;font-weight:700;color:#fff}
+.ax-res-v{background:#2E7D32}
+.ax-res-n{background:#EF8A00}
+.ax-res-d{background:#C62828}

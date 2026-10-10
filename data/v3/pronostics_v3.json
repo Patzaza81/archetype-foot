@@ -1,8 +1,8 @@
 {
  "moteur": "moteur_v3",
  "statut": "PRODUCTION PARALLÈLE — CANDIDAT",
- "genere_le": "2026-10-10T10:30:51Z",
- "empreinte_code_v3": "0f10776dbecc",
+ "genere_le": "2026-10-10T11:20:18Z",
+ "empreinte_code_v3": "6314e184fde5",
  "commit": null,
  "calibration": {
   "prete": true,
@@ -13,30 +13,30 @@
   "raison": "OK"
  },
  "bilan": {
-  "matchs": 597,
+  "matchs": 585,
   "statuts": {
-   "NON_EVALUE": 120,
-   "EVALUE": 477
+   "NON_EVALUE": 113,
+   "EVALUE": 472
   },
-  "selections": 40,
-  "matchs_avec_selection": 39,
+  "selections": 39,
+  "matchs_avec_selection": 38,
   "matchs_en_apercu_non_calibre": 0,
   "raisons_de_rejet": {
-   "VALUE_NON_ELIGIBLE": 32251,
-   "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT": 31740,
-   "JUSTIFICATION_INSUFFISANTE": 31740,
-   "COTE_HORS_FENETRE": 28666,
-   "PROBABILITE_INF_60": 27217,
-   "N_3_4_CONTROLE_STRICT_NON_SATISFAIT": 24683,
-   "N_LIEU_INF_3": 8522,
+   "VALUE_NON_ELIGIBLE": 31907,
+   "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT": 31396,
+   "JUSTIFICATION_INSUFFISANTE": 31396,
+   "COTE_HORS_FENETRE": 28358,
+   "PROBABILITE_INF_60": 26920,
+   "N_3_4_CONTROLE_STRICT_NON_SATISFAIT": 24339,
+   "N_LIEU_INF_3": 8384,
    "SURDISPERSION_SUP_1_50": 6736,
-   "SURDISPERSION_1_20_1_50_ET_P_INF_67": 6511,
-   "EDV_INSUFFISANTE": 4601,
-   "PROBABILITE_DEGENEREE": 1178
+   "SURDISPERSION_1_20_1_50_ET_P_INF_67": 6449,
+   "EDV_INSUFFISANTE": 4558,
+   "PROBABILITE_DEGENEREE": 1176
   },
   "couverture": {
-   "marches_cotes_calcules": 32657,
-   "issues_betpawa": 33257,
+   "marches_cotes_calcules": 32306,
+   "issues_betpawa": 32900,
    "groupes_betpawa_non_lus": {}
   }
  },
@@ -59,795 +59,6 @@
    "competition": "Chili : Superliga",
    "domicile": "U. Catolica",
    "exterieur": "Audax Ital.",
-   "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
-   "selections": [],
-   "candidats": []
-  },
-  {
-   "match_id": "an1i8bkvyb26oewuw9y8qdxqs",
-   "date": "2026-10-10",
-   "heure": "12:00",
-   "competition": "Thaïlande : 1. Ligue",
-   "domicile": "BG Pathum Utd",
-   "exterieur": "Ayutthaya Utd",
-   "statut": "EVALUE",
-   "lambda_dom": 1.344,
-   "lambda_ext": 1.403,
-   "n_dom": 1,
-   "n_ext": 1,
-   "couverture": {
-    "issues_betpawa": 69,
-    "marches_cotes_calcules": 69,
-    "groupes_non_lus": [],
-    "groupes_ignores_par_choix": []
-   },
-   "selections": [],
-   "apercu_non_calibre": [],
-   "alternatives_indice": [],
-   "candidats": [
-    {
-     "marche": "score_0_3",
-     "libelle": "Score exact 0-3",
-     "cote": 84.17,
-     "probabilite_brute": 0.02952180893125256,
-     "probabilite": 0.03991790794636884,
-     "calibree": true,
-     "edv": 236.0,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "N_LIEU_INF_3",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "handicap_-1_2",
-     "libelle": "Handicap 3 choix Domicile +1 (2) : Extérieur gagne par 2 buts ou plus",
-     "cote": 17.0,
-     "probabilite_brute": 0.17976169880858242,
-     "probabilite": 0.19409200686204256,
-     "calibree": true,
-     "edv": 230.0,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "N_LIEU_INF_3",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "1x2_2",
-     "libelle": "Victoire extérieur",
-     "cote": 6.55,
-     "probabilite_brute": 0.3858154235172803,
-     "probabilite": 0.42512365468840835,
-     "calibree": true,
-     "edv": 178.5,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "N_LIEU_INF_3",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "score_0_2",
-     "libelle": "Score exact 0-2",
-     "cote": 33.33,
-     "probabilite_brute": 0.06311408687266304,
-     "probabilite": 0.08256373242560977,
-     "calibree": true,
-     "edv": 175.2,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "N_LIEU_INF_3",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "score_1_3",
-     "libelle": "Score exact 1-3",
-     "cote": 50.0,
-     "probabilite_brute": 0.03967731120360344,
-     "probabilite": 0.05123736235141185,
-     "calibree": true,
-     "edv": 156.2,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "N_LIEU_INF_3",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    }
-   ]
-  },
-  {
-   "match_id": "dlm8x0fen8qaw6csbjcn1tdec",
-   "date": "2026-10-10",
-   "heure": "12:00",
-   "competition": "Allemagne : 2. Bundesliga",
-   "domicile": "Darmstadt",
-   "exterieur": "E. Cottbus",
-   "statut": "EVALUE",
-   "lambda_dom": 1.762,
-   "lambda_ext": 1.762,
-   "n_dom": 3,
-   "n_ext": 3,
-   "couverture": {
-    "issues_betpawa": 75,
-    "marches_cotes_calcules": 72,
-    "groupes_non_lus": [],
-    "groupes_ignores_par_choix": [
-     "handicap_3issues_-3"
-    ]
-   },
-   "selections": [],
-   "apercu_non_calibre": [],
-   "alternatives_indice": [],
-   "candidats": [
-    {
-     "marche": "score_0_4",
-     "libelle": "Score exact 0-4",
-     "cote": 86.0,
-     "probabilite_brute": 0.011840368667360737,
-     "probabilite": 0.020233240098444592,
-     "calibree": true,
-     "edv": 74.0,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "PROBABILITE_INF_60",
-      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "score_1_4",
-     "libelle": "Score exact 1-4",
-     "cote": 45.3,
-     "probabilite_brute": 0.02086339186496701,
-     "probabilite": 0.029413789226848522,
-     "calibree": true,
-     "edv": 33.2,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "PROBABILITE_INF_60",
-      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "score_0_3",
-     "libelle": "Score exact 0-3",
-     "cote": 35.83,
-     "probabilite_brute": 0.02687853079430036,
-     "probabilite": 0.03646927646183022,
-     "calibree": true,
-     "edv": 30.7,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "PROBABILITE_INF_60",
-      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "score_0_1",
-     "libelle": "Score exact 0-1",
-     "cote": 16.57,
-     "probabilite_brute": 0.051941847879007026,
-     "probabilite": 0.07724987400472826,
-     "calibree": true,
-     "edv": 28.0,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "PROBABILITE_INF_60",
-      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "score_2_4",
-     "libelle": "Score exact 2-4",
-     "cote": 47.74,
-     "probabilite_brute": 0.018381231714138736,
-     "probabilite": 0.026795816465548475,
-     "calibree": true,
-     "edv": 27.9,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "PROBABILITE_INF_60",
-      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    }
-   ]
-  },
-  {
-   "match_id": "a7vzt4u75leu8nmm3rdnyv190",
-   "date": "2026-10-10",
-   "heure": "12:00",
-   "competition": "Viêt-Nam : V Ligue 1",
-   "domicile": "Hai Phong",
-   "exterieur": "Thanh Hoa",
-   "statut": "EVALUE",
-   "lambda_dom": 1.403,
-   "lambda_ext": 1.783,
-   "n_dom": 1,
-   "n_ext": 1,
-   "couverture": {
-    "issues_betpawa": 69,
-    "marches_cotes_calcules": 69,
-    "groupes_non_lus": [],
-    "groupes_ignores_par_choix": []
-   },
-   "selections": [],
-   "apercu_non_calibre": [],
-   "alternatives_indice": [],
-   "candidats": [
-    {
-     "marche": "score_1_4",
-     "libelle": "Score exact 1-4",
-     "cote": 72.0,
-     "probabilite_brute": 0.024406032947668143,
-     "probabilite": 0.03324345856542775,
-     "calibree": true,
-     "edv": 139.4,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "N_LIEU_INF_3",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "score_0_4",
-     "libelle": "Score exact 0-4",
-     "cote": 80.8,
-     "probabilite_brute": 0.017392390455739024,
-     "probabilite": 0.02575287027254144,
-     "calibree": true,
-     "edv": 108.1,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "N_LIEU_INF_3",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "score_2_4",
-     "libelle": "Score exact 2-4",
-     "cote": 80.8,
-     "probabilite_brute": 0.01712399585780094,
-     "probabilite": 0.025616264448476294,
-     "calibree": true,
-     "edv": 107.0,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "N_LIEU_INF_3",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "handicap_-1_2",
-     "libelle": "Handicap 3 choix Domicile +1 (2) : Extérieur gagne par 2 buts ou plus",
-     "cote": 7.91,
-     "probabilite_brute": 0.252082026453672,
-     "probabilite": 0.25336374974593034,
-     "calibree": true,
-     "edv": 100.4,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "N_LIEU_INF_3",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "score_0_3",
-     "libelle": "Score exact 0-3",
-     "cote": 36.0,
-     "probabilite_brute": 0.03902880172082392,
-     "probabilite": 0.050849449331248804,
-     "calibree": true,
-     "edv": 83.1,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "N_LIEU_INF_3",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    }
-   ]
-  },
-  {
-   "match_id": "i20xyiuq7n2fcfz1t77rlxxw",
-   "date": "2026-10-10",
-   "heure": "12:00",
-   "competition": "Hongrie : NB II",
-   "domicile": "Kazincbarcika",
-   "exterieur": "Karcag",
-   "statut": "EVALUE",
-   "lambda_dom": 1.542,
-   "lambda_ext": 1.293,
-   "n_dom": 3,
-   "n_ext": 4,
-   "couverture": {
-    "issues_betpawa": 69,
-    "marches_cotes_calcules": 69,
-    "groupes_non_lus": [],
-    "groupes_ignores_par_choix": []
-   },
-   "selections": [],
-   "apercu_non_calibre": [],
-   "alternatives_indice": [],
-   "candidats": [
-    {
-     "marche": "score_3_3",
-     "libelle": "Score exact 3-3",
-     "cote": 56.0,
-     "probabilite_brute": 0.012927321152373931,
-     "probabilite": 0.023591913703391493,
-     "calibree": true,
-     "edv": 32.1,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "1x2_2",
-     "libelle": "Victoire extérieur",
-     "cote": 3.67,
-     "probabilite_brute": 0.31964009576569624,
-     "probabilite": 0.3312134950730493,
-     "calibree": true,
-     "edv": 21.6,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "score_1_4",
-     "libelle": "Score exact 1-4",
-     "cote": 80.8,
-     "probabilite_brute": 0.01054832999913081,
-     "probabilite": 0.015000075408188799,
-     "calibree": true,
-     "edv": 21.2,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "handicap_-1_2",
-     "libelle": "Handicap 3 choix Domicile +1 (2) : Extérieur gagne par 2 buts ou plus",
-     "cote": 8.2,
-     "probabilite_brute": 0.13822704860626972,
-     "probabilite": 0.1469380725931057,
-     "calibree": true,
-     "edv": 20.5,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "score_0_3",
-     "libelle": "Score exact 0-3",
-     "cote": 40.0,
-     "probabilite_brute": 0.0211629671925785,
-     "probabilite": 0.02972975596549055,
-     "calibree": true,
-     "edv": 18.9,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    }
-   ]
-  },
-  {
-   "match_id": "180p7eiu5161oj7d3o22lwj6c",
-   "date": "2026-10-10",
-   "heure": "12:00",
-   "competition": "Suède : Superettan",
-   "domicile": "Landskrona",
-   "exterieur": "Sandviken",
-   "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
-   "selections": [],
-   "candidats": []
-  },
-  {
-   "match_id": "dmzx2bh6np4viqjznm46dgv10",
-   "date": "2026-10-10",
-   "heure": "12:00",
-   "competition": "Allemagne : 2. Bundesliga",
-   "domicile": "Magdebourg",
-   "exterieur": "Hanovre",
-   "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
-   "selections": [],
-   "candidats": []
-  },
-  {
-   "match_id": "3pxdmvno90bnuwesbfn1b2uj8",
-   "date": "2026-10-10",
-   "heure": "12:00",
-   "competition": "Kenya : Première Ligue",
-   "domicile": "Mathare Utd",
-   "exterieur": "APS Bomet",
-   "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
-   "selections": [],
-   "candidats": []
-  },
-  {
-   "match_id": "dnp1ucljh9ryy5fah6v846lg4",
-   "date": "2026-10-10",
-   "heure": "12:00",
-   "competition": "Allemagne : 2. Bundesliga",
-   "domicile": "Osnabrück",
-   "exterieur": "D. Dresde",
-   "statut": "EVALUE",
-   "lambda_dom": 2.188,
-   "lambda_ext": 1.95,
-   "n_dom": 3,
-   "n_ext": 3,
-   "couverture": {
-    "issues_betpawa": 75,
-    "marches_cotes_calcules": 72,
-    "groupes_non_lus": [],
-    "groupes_ignores_par_choix": [
-     "handicap_3issues_3"
-    ]
-   },
-   "selections": [
-    {
-     "marche": "over_2_5",
-     "libelle": "Plus de 2,5 buts",
-     "cote": 1.53,
-     "probabilite": 0.7404,
-     "edge": 0.08681871000925223,
-     "edv": 13.3,
-     "justification": "✓ Osnabrück à domicile : 100% de matchs à +2,5 ; ✓ D. Dresde à l'extérieur : 100% de matchs à +2,5 ; ✓ saison complète +2,5 : 67% / 83% ; ✓ total attendu (moyennes simples) : 4,33 buts ; ✓ au-dessus de la ligne sur les 6 derniers : 4 (Osnabrück) / 5 (D. Dresde)",
-     "raisons_saison": [
-      "✓ Osnabrück à domicile : 100% de matchs à +2,5",
-      "✓ D. Dresde à l'extérieur : 100% de matchs à +2,5",
-      "✓ saison complète +2,5 : 67% / 83%",
-      "✓ total attendu (moyennes simples) : 4,33 buts"
-     ],
-     "raisons_recent": [
-      "✓ au-dessus de la ligne sur les 6 derniers : 4 (Osnabrück) / 5 (D. Dresde)"
-     ],
-     "indice_performance": {
-      "version": 3,
-      "indice": 1,
-      "sur": 4,
-      "niveau": "RISQUE",
-      "libelle": "Risqué",
-      "phrase": "Validé dans 1 scénario sur 4.",
-      "moyenne_domicile": {
-       "marque": 1.333,
-       "encaisse": 2.333
-      },
-      "moyenne_exterieur": {
-       "marque": 1.667,
-       "encaisse": 3.333
-      },
-      "pire_domicile": {
-       "marque": 0.0,
-       "encaisse": 3.0
-      },
-      "pire_exterieur": {
-       "marque": 0.0,
-       "encaisse": 3.0
-      },
-      "scenarios": [
-       {
-        "domicile": "moyen",
-        "exterieur": "moyen",
-        "buts_domicile": 1.333,
-        "buts_exterieur": 1.667,
-        "marge": 0.5,
-        "valide": true
-       },
-       {
-        "domicile": "pire",
-        "exterieur": "moyen",
-        "buts_domicile": 0.0,
-        "buts_exterieur": 1.667,
-        "marge": -0.833,
-        "valide": false
-       },
-       {
-        "domicile": "moyen",
-        "exterieur": "pire",
-        "buts_domicile": 1.333,
-        "buts_exterieur": 0.0,
-        "marge": -1.167,
-        "valide": false
-       },
-       {
-        "domicile": "pire",
-        "exterieur": "pire",
-        "buts_domicile": 0.0,
-        "buts_exterieur": 0.0,
-        "marge": -2.5,
-        "valide": false
-       }
-      ]
-     },
-     "explication": {
-      "alertes": [
-       "Petit échantillon : 3 matchs au même lieu pour l'équipe la moins fournie.",
-       "Buts attendus extrêmes : 4,14 buts au total."
-      ],
-      "blocs": [
-       {
-        "titre": "Données",
-        "lignes": [
-         "Osnabrück à domicile (3) : 0-3, 3-1, 1-3 → marque 1,33, encaisse 2,33 par match.",
-         "D. Dresde à l'extérieur (3) : 0-3, 3-5, 2-2 → marque 1,67, encaisse 3,33 par match."
-        ]
-       },
-       {
-        "titre": "Buts attendus",
-        "lignes": [
-         "Lissage vers 1,35 but : (n × moyenne + 4 × 1,35) / (n + 4).",
-         "Osnabrück : attaque 1,33 → 1,34 ; défense D. Dresde 3,33 → 2,20 ; 1,34 × 2,20 / 1,35 = 2,19 buts.",
-         "D. Dresde : attaque 1,67 → 1,49 ; défense Osnabrück 2,33 → 1,77 ; 1,49 × 1,77 / 1,35 = 1,95 buts."
-        ]
-       },
-       {
-        "titre": "Probabilité",
-        "lignes": [
-         "Plus de 2,5 buts : 74,0 %.",
-         "Somme des scores avec au moins 3 buts.",
-         "Scores les plus probables : 2-1 (7,4 %), 2-2 (7,3 %)."
-        ]
-       },
-       {
-        "titre": "Face à la cote",
-        "lignes": [
-         "Cote 1,53 → 65,4 % selon le bookmaker ; écart +8,7 points.",
-         "Marge = 1,53 × 0,087 = +13,3 % (seuil 5 % à cette probabilité)."
-        ]
-       },
-       {
-        "titre": "Contrôles",
-        "lignes": [
-         "Cote dans la fenêtre 1,26 – 1,74 : oui.",
-         "Dispersion des buts : 1,08 (accepté).",
-         "Double contrôle « Plus de 2.5 buts » passé : Osnabrück à domicile : 100% de matchs à +2,5 ; D. Dresde à l'extérieur : 100% de matchs à +2,5 ; saison complète +2,5 : 67% / 83% ; total attendu (moyennes simples) : 4,33 buts ; au-dessus de la ligne sur les 6 derniers : 4 (Osnabrück) / 5 (D. Dresde).",
-         "3 matchs au même lieu : contrôle renforcé passé (probabilité ≥ 67 % et marge ≥ 7 %).",
-         "Calibration : prête."
-        ]
-       },
-       {
-        "titre": "Pourquoi ce marché",
-        "lignes": [
-         "Un seul pari par famille (total de buts) : celui-ci est le plus probable des paris valides.",
-         "Score exact 4-3 (86,96, 2,7 %, marge +137,1 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert.",
-         "Handicap 3 choix Domicile −2 (1) : Domicile gagne par 3 buts ou plus (11,65, 13,7 %, marge +59,3 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert.",
-         "Les deux équipes marquent (1,46, 72,6 %, marge +6,0 %) : double contrôle non passé ou marché non couvert ; pas de justification."
-        ]
-       },
-       {
-        "titre": "Indice de performance",
-        "lignes": [
-         "Indice 1/4 : Risqué. Le marché est validé dans 1 scénario sur 4.",
-         "Osnabrück à domicile : moyenne simple 1,33 marqué(s) par match ; pire match 0-3.",
-         "D. Dresde à l'extérieur : moyenne simple 1,67 marqué(s) par match ; pire match 0-3.",
-         "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
-         "Osnabrück moyen : 1,33 / D. Dresde moyen : 1,67 (total 3,00) → marge +0,50 but : validé.",
-         "Osnabrück pire : 0,00 / D. Dresde moyen : 1,67 (total 1,67) → marge −0,83 but : non validé.",
-         "Osnabrück moyen : 1,33 / D. Dresde pire : 0,00 (total 1,33) → marge −1,17 but : non validé.",
-         "Osnabrück pire : 0,00 / D. Dresde pire : 0,00 (total 0,00) → marge −2,50 but : non validé.",
-         "Échelle (4 scénarios) : 4/4 Sûr · 3/4 Recommandé · 2/4 Attention · 1/4 Risqué. Marché d'une seule équipe : Sûr si tout tient, Attention si seulement la moyenne tient. Information seulement : elle ne change ni la probabilité ni la sélection."
-        ]
-       }
-      ]
-     }
-    }
-   ],
-   "apercu_non_calibre": [],
-   "alternatives_indice": [],
-   "candidats": [
-    {
-     "marche": "score_4_3",
-     "libelle": "Score exact 4-3",
-     "cote": 86.96,
-     "probabilite_brute": 0.018829327233424984,
-     "probabilite": 0.027268429751021027,
-     "calibree": true,
-     "edv": 137.1,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "score_3_4",
-     "libelle": "Score exact 3-4",
-     "cote": 86.96,
-     "probabilite_brute": 0.016774178226184624,
-     "probabilite": 0.02556291188926909,
-     "calibree": true,
-     "edv": 122.3,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "score_4_2",
-     "libelle": "Score exact 4-2",
-     "cote": 56.26,
-     "probabilite_brute": 0.02897549619628713,
-     "probabilite": 0.03920514477859318,
-     "calibree": true,
-     "edv": 120.6,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "score_4_0",
-     "libelle": "Score exact 4-0",
-     "cote": 76.09,
-     "probabilite_brute": 0.015247917223594445,
-     "probabilite": 0.025330133655278732,
-     "calibree": true,
-     "edv": 92.7,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "score_4_1",
-     "libelle": "Score exact 4-1",
-     "cote": 46.35,
-     "probabilite_brute": 0.029725947167872104,
-     "probabilite": 0.04018424297186717,
-     "calibree": true,
-     "edv": 86.3,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    }
-   ]
-  },
-  {
-   "match_id": "1jzmiyyff7o7l6ahb2brjeivo",
-   "date": "2026-10-10",
-   "heure": "12:00",
-   "competition": "Kazakhstan : Super Ligue",
-   "domicile": "Tobol",
-   "exterieur": "FC Astana",
-   "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
-   "selections": [],
-   "candidats": []
-  },
-  {
-   "match_id": "c141znoj67kbpwm8o03kzvz10",
-   "date": "2026-10-10",
-   "heure": "12:00",
-   "competition": "Lettonie : Virsliga",
-   "domicile": "Tukums",
-   "exterieur": "Riga FC",
-   "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
-   "selections": [],
-   "candidats": []
-  },
-  {
-   "match_id": "1iikk9zpfvcyu9cg6l1kgq3v8",
-   "date": "2026-10-10",
-   "heure": "12:00",
-   "competition": "Kazakhstan : Super Ligue",
-   "domicile": "Yelimay",
-   "exterieur": "Aktobe",
-   "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
-   "selections": [],
-   "candidats": []
-  },
-  {
-   "match_id": "9cjj5r8lhkgx39hmvi48htses",
-   "date": "2026-10-10",
-   "heure": "12:15",
-   "competition": "Lituanie : A Lyga",
-   "domicile": "Zalgiris",
-   "exterieur": "Suduva",
    "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
    "selections": [],
    "candidats": []
@@ -2816,9 +2027,53 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Nantes",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 0,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 5,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "V"
+           }
+          ]
+         },
+         {
+          "equipe": "Reims",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 0,
+            "ext": 0,
+            "res": "N"
+           },
+           {
+            "dom": 1,
+            "ext": 4,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "V"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Nantes à domicile (3) : 0-1, 2-5, 1-0 → marque 1,00, encaisse 2,00 par match.",
-         "Reims à l'extérieur (3) : 0-0, 4-1, 2-1 → marque 2,00, encaisse 0,67 par match."
+         "Reims à l'extérieur (3) : 0-0, 1-4, 1-2 → marque 2,00, encaisse 0,67 par match."
         ]
        },
        {
@@ -3551,9 +2806,58 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Würzburg",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 4,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "V"
+           }
+          ]
+         },
+         {
+          "equipe": "H. Rostock",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 2,
+            "ext": 3,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 4,
+            "res": "V"
+           },
+           {
+            "dom": 4,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Würzburg à domicile (3) : 4-0, 1-2, 1-0 → marque 2,00, encaisse 0,67 par match.",
-         "H. Rostock à l'extérieur (4) : 3-2, 4-2, 0-4, 1-1 → marque 2,00, encaisse 2,25 par match."
+         "H. Rostock à l'extérieur (4) : 2-3, 2-4, 4-0, 1-1 → marque 2,00, encaisse 2,25 par match."
         ]
        },
        {
@@ -5761,9 +5065,78 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "NK Radomlje",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 0,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 3,
+            "res": "D"
+           },
+           {
+            "dom": 0,
+            "ext": 0,
+            "res": "N"
+           },
+           {
+            "dom": 0,
+            "ext": 3,
+            "res": "D"
+           }
+          ]
+         },
+         {
+          "equipe": "NK Koper",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 0,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 0,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 0,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 0,
+            "ext": 1,
+            "res": "V"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "NK Radomlje à domicile (5) : 0-2, 1-2, 1-3, 0-0, 0-3 → marque 0,40, encaisse 2,00 par match.",
-         "NK Koper à l'extérieur (6) : 2-0, 1-1, 0-2, 1-0, 1-0, 1-0 → marque 1,00, encaisse 0,50 par match."
+         "NK Koper à l'extérieur (6) : 0-2, 1-1, 2-0, 0-1, 0-1, 0-1 → marque 1,00, encaisse 0,50 par match."
         ]
        },
        {
@@ -6717,9 +6090,68 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Zbrojovka",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 3,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 0,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 3,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "V"
+           }
+          ]
+         },
+         {
+          "equipe": "Jablonec",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 0,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "D"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Zbrojovka à domicile (5) : 3-1, 0-1, 3-2, 1-0, 2-1 → marque 1,80, encaisse 1,00 par match.",
-         "Jablonec à l'extérieur (4) : 2-0, 0-2, 1-1, 0-2 → marque 0,75, encaisse 1,25 par match."
+         "Jablonec à l'extérieur (4) : 0-2, 2-0, 1-1, 2-0 → marque 0,75, encaisse 1,25 par match."
         ]
        },
        {
@@ -8038,9 +7470,53 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Al Hazem",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 0,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "V"
+           }
+          ]
+         },
+         {
+          "equipe": "Neom",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 0,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 0,
+            "ext": 2,
+            "res": "V"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Al Hazem à domicile (3) : 0-1, 1-1, 1-0 → marque 0,67, encaisse 0,67 par match.",
-         "Neom à l'extérieur (3) : 2-0, 0-1, 2-0 → marque 1,33, encaisse 0,33 par match."
+         "Neom à l'extérieur (3) : 0-2, 1-0, 0-2 → marque 1,33, encaisse 0,33 par match."
         ]
        },
        {
@@ -10319,9 +9795,53 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Dundee Utd.",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 0,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           }
+          ]
+         },
+         {
+          "equipe": "Hibernian",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "D"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Dundee Utd. à domicile (3) : 1-1, 0-2, 1-1 → marque 0,67, encaisse 1,33 par match.",
-         "Hibernian à l'extérieur (3) : 2-1, 2-1, 1-2 → marque 1,67, encaisse 1,33 par match."
+         "Hibernian à l'extérieur (3) : 1-2, 1-2, 2-1 → marque 1,67, encaisse 1,33 par match."
         ]
        },
        {
@@ -10801,9 +10321,63 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Fleetwood",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 0,
+            "ext": 0,
+            "res": "N"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "D"
+           }
+          ]
+         },
+         {
+          "equipe": "Walsall",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 0,
+            "ext": 3,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 2,
+            "res": "N"
+           },
+           {
+            "dom": 0,
+            "ext": 0,
+            "res": "N"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Fleetwood à domicile (4) : 0-0, 1-1, 2-0, 1-2 → marque 1,00, encaisse 0,75 par match.",
-         "Walsall à l'extérieur (4) : 3-0, 2-2, 0-0, 1-1 → marque 1,50, encaisse 0,75 par match."
+         "Walsall à l'extérieur (4) : 0-3, 2-2, 0-0, 1-1 → marque 1,50, encaisse 0,75 par match."
         ]
        },
        {
@@ -11995,9 +11569,73 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Jesenice",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 0,
+            "ext": 3,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 3,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 3,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 5,
+            "ext": 0,
+            "res": "V"
+           }
+          ]
+         },
+         {
+          "equipe": "NK Brezice",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 4,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "D"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Jesenice à domicile (5) : 0-3, 1-1, 3-1, 3-1, 5-0 → marque 2,40, encaisse 1,20 par match.",
-         "NK Brezice à l'extérieur (5) : 1-2, 0-1, 1-2, 0-4, 0-1 → marque 0,40, encaisse 2,00 par match."
+         "NK Brezice à l'extérieur (5) : 2-1, 1-0, 2-1, 4-0, 1-0 → marque 0,40, encaisse 2,00 par match."
         ]
        },
        {
@@ -12311,9 +11949,58 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Leicester",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 0,
+            "ext": 4,
+            "res": "D"
+           }
+          ]
+         },
+         {
+          "equipe": "Peterborough",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 4,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "D"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Leicester à domicile (3) : 1-2, 2-0, 0-4 → marque 1,00, encaisse 2,00 par match.",
-         "Peterborough à l'extérieur (4) : 0-2, 0-4, 1-1, 0-1 → marque 0,25, encaisse 2,00 par match."
+         "Peterborough à l'extérieur (4) : 2-0, 4-0, 1-1, 1-0 → marque 0,25, encaisse 2,00 par match."
         ]
        },
        {
@@ -12781,9 +12468,63 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Livingston FC",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 0,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 2,
+            "res": "N"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "D"
+           }
+          ]
+         },
+         {
+          "equipe": "P. Thistle",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 0,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "D"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Livingston FC à domicile (5) : 2-0, 2-0, 0-1, 2-2, 1-2 → marque 1,40, encaisse 1,00 par match.",
-         "P. Thistle à l'extérieur (3) : 1-0, 1-1, 0-1 → marque 0,67, encaisse 0,67 par match."
+         "P. Thistle à l'extérieur (3) : 0-1, 1-1, 1-0 → marque 0,67, encaisse 0,67 par match."
         ]
        },
        {
@@ -13157,9 +12898,63 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Middlesbrough",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 3,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 4,
+            "ext": 3,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 2,
+            "res": "N"
+           }
+          ]
+         },
+         {
+          "equipe": "Wolverhampton",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 1,
+            "ext": 3,
+            "res": "V"
+           },
+           {
+            "dom": 4,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 2,
+            "res": "N"
+           },
+           {
+            "dom": 0,
+            "ext": 1,
+            "res": "V"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Middlesbrough à domicile (4) : 2-1, 3-1, 4-3, 2-2 → marque 2,75, encaisse 1,75 par match.",
-         "Wolverhampton à l'extérieur (4) : 3-1, 2-4, 2-2, 1-0 → marque 2,00, encaisse 1,75 par match."
+         "Wolverhampton à l'extérieur (4) : 1-3, 4-2, 2-2, 0-1 → marque 2,00, encaisse 1,75 par match."
         ]
        },
        {
@@ -15448,9 +15243,53 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Virton",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 3,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 0,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 3,
+            "ext": 0,
+            "res": "V"
+           }
+          ]
+         },
+         {
+          "equipe": "Hasselt",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 0,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 3,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "V"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Virton à domicile (3) : 3-0, 0-1, 3-0 → marque 2,00, encaisse 0,33 par match.",
-         "Hasselt à l'extérieur (3) : 1-0, 0-3, 2-1 → marque 1,00, encaisse 1,33 par match."
+         "Hasselt à l'extérieur (3) : 0-1, 3-0, 1-2 → marque 1,00, encaisse 1,33 par match."
         ]
        },
        {
@@ -16133,9 +15972,58 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Wycombe",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 3,
+            "ext": 3,
+            "res": "N"
+           },
+           {
+            "dom": 2,
+            "ext": 2,
+            "res": "N"
+           }
+          ]
+         },
+         {
+          "equipe": "Luton",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 3,
+            "ext": 4,
+            "res": "V"
+           },
+           {
+            "dom": 5,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "D"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Wycombe à domicile (4) : 1-1, 1-2, 3-3, 2-2 → marque 1,75, encaisse 2,00 par match.",
-         "Luton à l'extérieur (3) : 4-3, 2-5, 1-2 → marque 2,33, encaisse 3,33 par match."
+         "Luton à l'extérieur (3) : 3-4, 5-2, 2-1 → marque 2,33, encaisse 3,33 par match."
         ]
        },
        {
@@ -19280,9 +19168,63 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Lumezzane",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 2,
+            "res": "N"
+           },
+           {
+            "dom": 0,
+            "ext": 0,
+            "res": "N"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "D"
+           }
+          ]
+         },
+         {
+          "equipe": "AlbinoLeffe",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 0,
+            "ext": 0,
+            "res": "N"
+           },
+           {
+            "dom": 3,
+            "ext": 5,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "V"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Lumezzane à domicile (4) : 1-0, 2-2, 0-0, 1-2 → marque 1,00, encaisse 1,00 par match.",
-         "AlbinoLeffe à l'extérieur (4) : 2-1, 0-0, 5-3, 2-1 → marque 2,25, encaisse 1,25 par match."
+         "AlbinoLeffe à l'extérieur (4) : 1-2, 0-0, 3-5, 1-2 → marque 2,25, encaisse 1,25 par match."
         ]
        },
        {
@@ -20066,9 +20008,58 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Slask Wroclaw",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 0,
+            "ext": 0,
+            "res": "N"
+           },
+           {
+            "dom": 3,
+            "ext": 3,
+            "res": "N"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "D"
+           }
+          ]
+         },
+         {
+          "equipe": "Lech Poznan",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 3,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "D"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Slask Wroclaw à domicile (4) : 2-1, 0-0, 3-3, 1-2 → marque 1,50, encaisse 1,50 par match.",
-         "Lech Poznan à l'extérieur (3) : 2-1, 3-2, 1-2 → marque 2,00, encaisse 1,67 par match."
+         "Lech Poznan à l'extérieur (3) : 1-2, 2-3, 2-1 → marque 2,00, encaisse 1,67 par match."
         ]
        },
        {
@@ -21939,9 +21930,63 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Servette",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 0,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 0,
+            "ext": 2,
+            "res": "D"
+           }
+          ]
+         },
+         {
+          "equipe": "Sion",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 4,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 0,
+            "ext": 3,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 5,
+            "res": "V"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Servette à domicile (4) : 0-1, 2-1, 1-1, 0-2 → marque 0,75, encaisse 1,25 par match.",
-         "Sion à l'extérieur (4) : 2-4, 2-1, 3-0, 5-2 → marque 3,00, encaisse 1,75 par match."
+         "Sion à l'extérieur (4) : 4-2, 1-2, 0-3, 2-5 → marque 3,00, encaisse 1,75 par match."
         ]
        },
        {
@@ -22377,9 +22422,68 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Zurich",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 4,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "V"
+           }
+          ]
+         },
+         {
+          "equipe": "Thoune",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 1,
+            "ext": 3,
+            "res": "V"
+           },
+           {
+            "dom": 4,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 3,
+            "ext": 4,
+            "res": "V"
+           },
+           {
+            "dom": 3,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "V"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Zurich à domicile (4) : 2-1, 1-2, 2-4, 2-1 → marque 1,75, encaisse 2,00 par match.",
-         "Thoune à l'extérieur (5) : 3-1, 2-4, 4-3, 2-3, 2-1 → marque 2,60, encaisse 2,40 par match."
+         "Thoune à l'extérieur (5) : 1-3, 4-2, 3-4, 3-2, 1-2 → marque 2,60, encaisse 2,40 par match."
         ]
        },
        {
@@ -25275,9 +25379,68 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Botev Plovdiv",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 3,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 3,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "V"
+           }
+          ]
+         },
+         {
+          "equipe": "Slavia Sofia",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 0,
+            "ext": 3,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 0,
+            "ext": 1,
+            "res": "V"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Botev Plovdiv à domicile (5) : 1-1, 1-0, 3-2, 1-3, 2-0 → marque 1,60, encaisse 1,20 par match.",
-         "Slavia Sofia à l'extérieur (4) : 0-1, 3-0, 1-1, 1-0 → marque 1,25, encaisse 0,50 par match."
+         "Slavia Sofia à l'extérieur (4) : 1-0, 0-3, 1-1, 0-1 → marque 1,25, encaisse 0,50 par match."
         ]
        },
        {
@@ -25829,9 +25992,143 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Toronto",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 3,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 3,
+            "ext": 3,
+            "res": "N"
+           },
+           {
+            "dom": 3,
+            "ext": 3,
+            "res": "N"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 2,
+            "ext": 4,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 3,
+            "ext": 3,
+            "res": "N"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 4,
+            "ext": 4,
+            "res": "N"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "V"
+           }
+          ]
+         },
+         {
+          "equipe": "Montreal",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 3,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 0,
+            "ext": 3,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 4,
+            "ext": 3,
+            "res": "D"
+           },
+           {
+            "dom": 3,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 3,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 4,
+            "ext": 4,
+            "res": "N"
+           },
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 7,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "D"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Toronto à domicile (12) : 3-2, 1-1, 3-3, 3-3, 1-2, 1-1, 2-4, 2-1, 3-3, 1-1, 4-4, 2-1 → marque 2,17, encaisse 2,17 par match.",
-         "Montreal à l'extérieur (12) : 0-3, 3-0, 1-2, 3-4, 0-3, 1-3, 4-4, 0-1, 2-1, 1-7, 0-2, 0-1 → marque 1,25, encaisse 2,58 par match."
+         "Montreal à l'extérieur (12) : 3-0, 0-3, 2-1, 4-3, 3-0, 3-1, 4-4, 1-0, 1-2, 7-1, 2-0, 1-0 → marque 1,25, encaisse 2,58 par match."
         ]
        },
        {
@@ -26324,9 +26621,58 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Austria Vienne",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 0,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 0,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "V"
+           }
+          ]
+         },
+         {
+          "equipe": "Sturm Graz",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 0,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 3,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 3,
+            "ext": 0,
+            "res": "D"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Austria Vienne à domicile (3) : 0-2, 0-1, 2-1 → marque 0,67, encaisse 1,33 par match.",
-         "Sturm Graz à l'extérieur (4) : 1-1, 2-0, 1-3, 0-3 → marque 1,00, encaisse 1,75 par match."
+         "Sturm Graz à l'extérieur (4) : 1-1, 0-2, 3-1, 3-0 → marque 1,00, encaisse 1,75 par match."
         ]
        },
        {
@@ -27362,9 +27708,143 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Montevideo",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 3,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 0,
+            "ext": 0,
+            "res": "N"
+           },
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 3,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "V"
+           }
+          ]
+         },
+         {
+          "equipe": "Boston River",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 4,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 3,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 3,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 3,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 3,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "D"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Montevideo à domicile (12) : 2-1, 3-0, 1-2, 1-0, 1-0, 1-1, 0-0, 2-0, 1-1, 3-0, 1-1, 2-1 → marque 1,50, encaisse 0,58 par match.",
-         "Boston River à l'extérieur (12) : 0-2, 1-4, 1-2, 0-3, 1-1, 0-3, 0-1, 2-1, 3-2, 0-1, 2-3, 1-2 → marque 0,92, encaisse 2,08 par match."
+         "Boston River à l'extérieur (12) : 2-0, 4-1, 2-1, 3-0, 1-1, 3-0, 1-0, 1-2, 2-3, 1-0, 3-2, 2-1 → marque 0,92, encaisse 2,08 par match."
         ]
        },
        {
@@ -27752,9 +28232,53 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Saint-Étienne",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 3,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 4,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 3,
+            "ext": 1,
+            "res": "V"
+           }
+          ]
+         },
+         {
+          "equipe": "Rodez",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 5,
+            "res": "V"
+           },
+           {
+            "dom": 4,
+            "ext": 1,
+            "res": "D"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Saint-Étienne à domicile (3) : 3-1, 4-0, 3-1 → marque 3,33, encaisse 0,67 par match.",
-         "Rodez à l'extérieur (3) : 0-2, 5-2, 1-4 → marque 2,00, encaisse 2,67 par match."
+         "Rodez à l'extérieur (3) : 2-0, 2-5, 4-1 → marque 2,00, encaisse 2,67 par match."
         ]
        },
        {
@@ -28006,9 +28530,68 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "J. Bialystok",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 0,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 3,
+            "res": "D"
+           }
+          ]
+         },
+         {
+          "equipe": "Górnik Zabrze",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 1,
+            "ext": 3,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 0,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 0,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 0,
+            "ext": 0,
+            "res": "N"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "J. Bialystok à domicile (4) : 1-0, 0-2, 2-1, 1-3 → marque 1,00, encaisse 1,50 par match.",
-         "Górnik Zabrze à l'extérieur (5) : 3-1, 2-1, 1-0, 2-0, 0-0 → marque 1,60, encaisse 0,40 par match."
+         "Górnik Zabrze à l'extérieur (5) : 1-3, 1-2, 0-1, 0-2, 0-0 → marque 1,60, encaisse 0,40 par match."
         ]
        },
        {
@@ -29857,9 +30440,138 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Fram Rey",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 3,
+            "ext": 3,
+            "res": "N"
+           },
+           {
+            "dom": 3,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 5,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 3,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 4,
+            "ext": 3,
+            "res": "V"
+           },
+           {
+            "dom": 0,
+            "ext": 5,
+            "res": "D"
+           },
+           {
+            "dom": 6,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 0,
+            "ext": 0,
+            "res": "N"
+           },
+           {
+            "dom": 2,
+            "ext": 5,
+            "res": "D"
+           },
+           {
+            "dom": 3,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 2,
+            "res": "N"
+           },
+           {
+            "dom": 1,
+            "ext": 3,
+            "res": "D"
+           }
+          ]
+         },
+         {
+          "equipe": "KR",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 2,
+            "ext": 6,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 4,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 3,
+            "res": "V"
+           },
+           {
+            "dom": 6,
+            "ext": 3,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 3,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 3,
+            "ext": 3,
+            "res": "N"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 2,
+            "ext": 5,
+            "res": "V"
+           },
+           {
+            "dom": 3,
+            "ext": 5,
+            "res": "V"
+           },
+           {
+            "dom": 3,
+            "ext": 1,
+            "res": "D"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Fram Rey à domicile (12) : 3-3, 3-1, 5-1, 3-2, 4-3, 0-5, 6-1, 0-0, 2-5, 3-1, 2-2, 1-3 → marque 2,67, encaisse 2,25 par match.",
-         "KR à l'extérieur (11) : 6-2, 4-1, 3-2, 3-6, 0-2, 2-3, 3-3, 1-1, 5-2, 5-3, 1-3 → marque 3,00, encaisse 2,55 par match."
+         "KR à l'extérieur (11) : 2-6, 1-4, 2-3, 6-3, 2-0, 3-2, 3-3, 1-1, 2-5, 3-5, 3-1 → marque 3,00, encaisse 2,55 par match."
         ]
        },
        {
@@ -33466,9 +34178,53 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Lourosa",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 2,
+            "res": "N"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "V"
+           }
+          ]
+         },
+         {
+          "equipe": "Chaves",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 4,
+            "ext": 0,
+            "res": "D"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Lourosa à domicile (3) : 2-0, 2-2, 2-1 → marque 2,00, encaisse 1,00 par match.",
-         "Chaves à l'extérieur (3) : 0-1, 1-2, 0-4 → marque 0,33, encaisse 2,33 par match."
+         "Chaves à l'extérieur (3) : 1-0, 2-1, 4-0 → marque 0,33, encaisse 2,33 par match."
         ]
        },
        {
@@ -34332,9 +35088,63 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Akhmat",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 4,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 3,
+            "ext": 3,
+            "res": "N"
+           },
+           {
+            "dom": 3,
+            "ext": 2,
+            "res": "V"
+           }
+          ]
+         },
+         {
+          "equipe": "Baltika",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 0,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 0,
+            "ext": 3,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 2,
+            "res": "N"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Akhmat à domicile (4) : 1-2, 4-1, 3-3, 3-2 → marque 2,75, encaisse 2,00 par match.",
-         "Baltika à l'extérieur (4) : 1-2, 2-0, 3-0, 2-2 → marque 2,00, encaisse 1,00 par match."
+         "Baltika à l'extérieur (4) : 2-1, 0-2, 0-3, 2-2 → marque 2,00, encaisse 1,00 par match."
         ]
        },
        {
@@ -36230,9 +37040,63 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Grasshoppers",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 1,
+            "ext": 4,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 2,
+            "res": "N"
+           },
+           {
+            "dom": 2,
+            "ext": 5,
+            "res": "D"
+           }
+          ]
+         },
+         {
+          "equipe": "Young Boys",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 0,
+            "ext": 6,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 2,
+            "res": "N"
+           },
+           {
+            "dom": 2,
+            "ext": 4,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 2,
+            "res": "N"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Grasshoppers à domicile (4) : 1-4, 2-0, 2-2, 2-5 → marque 1,75, encaisse 2,75 par match.",
-         "Young Boys à l'extérieur (4) : 6-0, 2-2, 4-2, 2-2 → marque 3,50, encaisse 1,50 par match."
+         "Young Boys à l'extérieur (4) : 0-6, 2-2, 2-4, 2-2 → marque 3,50, encaisse 1,50 par match."
         ]
        },
        {
@@ -37563,9 +38427,68 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "LKS Lódz",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 4,
+            "ext": 0,
+            "res": "V"
+           }
+          ]
+         },
+         {
+          "equipe": "Ruch Chorzow",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 0,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 0,
+            "ext": 0,
+            "res": "N"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "LKS Lódz à domicile (4) : 2-1, 1-2, 2-1, 4-0 → marque 2,25, encaisse 1,00 par match.",
-         "Ruch Chorzow à l'extérieur (5) : 0-2, 1-1, 1-0, 0-2, 0-0 → marque 0,40, encaisse 1,00 par match."
+         "Ruch Chorzow à l'extérieur (5) : 2-0, 1-1, 0-1, 2-0, 0-0 → marque 0,40, encaisse 1,00 par match."
         ]
        },
        {
@@ -38131,9 +39054,63 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Renate",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 0,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 0,
+            "ext": 0,
+            "res": "N"
+           },
+           {
+            "dom": 0,
+            "ext": 1,
+            "res": "D"
+           }
+          ]
+         },
+         {
+          "equipe": "GIANA Erminio",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 0,
+            "ext": 0,
+            "res": "N"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Renate à domicile (4) : 0-1, 1-2, 0-0, 0-1 → marque 0,25, encaisse 1,00 par match.",
-         "GIANA Erminio à l'extérieur (4) : 0-1, 0-1, 1-1, 0-0 → marque 0,25, encaisse 0,75 par match."
+         "GIANA Erminio à l'extérieur (4) : 1-0, 1-0, 1-1, 0-0 → marque 0,25, encaisse 0,75 par match."
         ]
        },
        {
@@ -41901,9 +42878,143 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Juventud",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 0,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 5,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 3,
+            "res": "D"
+           },
+           {
+            "dom": 0,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 0,
+            "ext": 0,
+            "res": "N"
+           }
+          ]
+         },
+         {
+          "equipe": "R. Montevideo",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 0,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 0,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 0,
+            "ext": 0,
+            "res": "N"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 2,
+            "res": "N"
+           },
+           {
+            "dom": 0,
+            "ext": 0,
+            "res": "N"
+           },
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 0,
+            "ext": 0,
+            "res": "N"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "D"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Juventud à domicile (12) : 0-1, 1-2, 1-0, 1-1, 2-1, 2-0, 2-5, 1-3, 0-1, 2-0, 1-1, 0-0 → marque 1,08, encaisse 1,25 par match.",
-         "R. Montevideo à l'extérieur (12) : 1-0, 2-1, 1-0, 0-2, 0-0, 1-1, 0-1, 2-2, 0-0, 0-1, 0-0, 1-2 → marque 0,67, encaisse 0,83 par match."
+         "R. Montevideo à l'extérieur (12) : 0-1, 1-2, 0-1, 2-0, 0-0, 1-1, 1-0, 2-2, 0-0, 1-0, 0-0, 2-1 → marque 0,67, encaisse 0,83 par match."
         ]
        },
        {
@@ -42965,9 +44076,68 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Almería",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 3,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 3,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "V"
+           }
+          ]
+         },
+         {
+          "equipe": "Leganes",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 0,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 0,
+            "ext": 0,
+            "res": "N"
+           },
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 4,
+            "ext": 0,
+            "res": "D"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Almería à domicile (4) : 3-0, 3-2, 2-0, 2-1 → marque 2,50, encaisse 0,75 par match.",
-         "Leganes à l'extérieur (5) : 1-1, 1-0, 0-0, 0-2, 0-4 → marque 0,40, encaisse 1,40 par match."
+         "Leganes à l'extérieur (5) : 1-1, 0-1, 0-0, 2-0, 4-0 → marque 0,40, encaisse 1,40 par match."
         ]
        },
        {
@@ -43291,9 +44461,53 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Real Sociedad",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 0,
+            "ext": 0,
+            "res": "N"
+           },
+           {
+            "dom": 0,
+            "ext": 3,
+            "res": "D"
+           }
+          ]
+         },
+         {
+          "equipe": "A Coruña",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 2,
+            "ext": 3,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Real Sociedad à domicile (3) : 2-1, 0-0, 0-3 → marque 0,67, encaisse 1,33 par match.",
-         "A Coruña à l'extérieur (3) : 1-1, 3-2, 1-1 → marque 1,67, encaisse 1,33 par match."
+         "A Coruña à l'extérieur (3) : 1-1, 2-3, 1-1 → marque 1,67, encaisse 1,33 par match."
         ]
        },
        {
@@ -44225,9 +45439,53 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Excelsior",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "D"
+           }
+          ]
+         },
+         {
+          "equipe": "Groningen",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 1,
+            "ext": 4,
+            "res": "V"
+           },
+           {
+            "dom": 5,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Excelsior à domicile (3) : 1-2, 2-1, 1-2 → marque 1,33, encaisse 1,67 par match.",
-         "Groningen à l'extérieur (3) : 4-1, 1-5, 1-1 → marque 2,00, encaisse 2,33 par match."
+         "Groningen à l'extérieur (3) : 1-4, 5-1, 1-1 → marque 2,00, encaisse 2,33 par match."
         ]
        },
        {
@@ -48351,9 +49609,138 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Argir",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 1,
+            "ext": 4,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 3,
+            "res": "D"
+           },
+           {
+            "dom": 3,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 3,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 3,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 3,
+            "ext": 4,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           }
+          ]
+         },
+         {
+          "equipe": "B36 Torshavn",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 0,
+            "ext": 0,
+            "res": "N"
+           },
+           {
+            "dom": 2,
+            "ext": 2,
+            "res": "N"
+           },
+           {
+            "dom": 0,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 4,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 4,
+            "ext": 4,
+            "res": "N"
+           },
+           {
+            "dom": 3,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 2,
+            "res": "N"
+           },
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 0,
+            "ext": 0,
+            "res": "N"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "D"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Argir à domicile (11) : 2-0, 2-0, 1-1, 1-4, 2-3, 3-2, 3-1, 1-2, 3-2, 3-4, 1-1 → marque 2,00, encaisse 1,82 par match.",
-         "B36 Torshavn à l'extérieur (12) : 0-0, 2-2, 1-0, 4-1, 2-1, 4-4, 0-3, 2-2, 0-2, 2-1, 0-0, 1-2 → marque 1,50, encaisse 1,50 par match."
+         "B36 Torshavn à l'extérieur (12) : 0-0, 2-2, 0-1, 1-4, 1-2, 4-4, 3-0, 2-2, 2-0, 1-2, 0-0, 2-1 → marque 1,50, encaisse 1,50 par match."
         ]
        },
        {
@@ -50565,9 +51952,143 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "San Lorenzo",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 2,
+            "ext": 5,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 0,
+            "ext": 0,
+            "res": "N"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 0,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 0,
+            "ext": 2,
+            "res": "D"
+           }
+          ]
+         },
+         {
+          "equipe": "Riestra",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 0,
+            "ext": 0,
+            "res": "N"
+           },
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 0,
+            "ext": 0,
+            "res": "N"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 0,
+            "ext": 0,
+            "res": "N"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 0,
+            "ext": 0,
+            "res": "N"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "San Lorenzo à domicile (12) : 1-0, 2-0, 1-1, 2-5, 1-0, 0-0, 1-2, 1-0, 0-2, 1-0, 1-0, 0-2 → marque 0,92, encaisse 1,00 par match.",
-         "Riestra à l'extérieur (12) : 1-1, 0-1, 0-0, 0-1, 0-2, 0-2, 0-0, 1-2, 0-2, 0-0, 1-1, 0-0 → marque 0,25, encaisse 1,00 par match."
+         "Riestra à l'extérieur (12) : 1-1, 1-0, 0-0, 1-0, 2-0, 2-0, 0-0, 2-1, 2-0, 0-0, 1-1, 0-0 → marque 0,25, encaisse 1,00 par match."
         ]
        },
        {
@@ -52309,9 +53830,53 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Arouca",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 4,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "D"
+           }
+          ]
+         },
+         {
+          "equipe": "Estrela",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 2,
+            "ext": 2,
+            "res": "N"
+           },
+           {
+            "dom": 2,
+            "ext": 3,
+            "res": "V"
+           },
+           {
+            "dom": 3,
+            "ext": 3,
+            "res": "N"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Arouca à domicile (3) : 4-0, 2-1, 1-2 → marque 2,33, encaisse 1,00 par match.",
-         "Estrela à l'extérieur (3) : 2-2, 3-2, 3-3 → marque 2,67, encaisse 2,33 par match."
+         "Estrela à l'extérieur (3) : 2-2, 2-3, 3-3 → marque 2,67, encaisse 2,33 par match."
         ]
        },
        {
@@ -52455,9 +54020,53 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Arouca",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 4,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "D"
+           }
+          ]
+         },
+         {
+          "equipe": "Estrela",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 2,
+            "ext": 2,
+            "res": "N"
+           },
+           {
+            "dom": 2,
+            "ext": 3,
+            "res": "V"
+           },
+           {
+            "dom": 3,
+            "ext": 3,
+            "res": "N"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Arouca à domicile (3) : 4-0, 2-1, 1-2 → marque 2,33, encaisse 1,00 par match.",
-         "Estrela à l'extérieur (3) : 2-2, 3-2, 3-3 → marque 2,67, encaisse 2,33 par match."
+         "Estrela à l'extérieur (3) : 2-2, 2-3, 3-3 → marque 2,67, encaisse 2,33 par match."
         ]
        },
        {
@@ -58078,9 +59687,63 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Picerno",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 3,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 4,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 4,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "V"
+           }
+          ]
+         },
+         {
+          "equipe": "Cosenza",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 3,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 4,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 5,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "D"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "Picerno à domicile (4) : 3-2, 4-1, 2-4, 2-1 → marque 2,75, encaisse 2,00 par match.",
-         "Cosenza à l'extérieur (4) : 1-3, 0-4, 2-5, 0-1 → marque 0,75, encaisse 3,25 par match."
+         "Cosenza à l'extérieur (4) : 3-1, 4-0, 5-2, 1-0 → marque 0,75, encaisse 3,25 par match."
         ]
        },
        {
@@ -60994,9 +62657,63 @@
       "blocs": [
        {
         "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "TSV Havelse",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 2,
+            "ext": 3,
+            "res": "D"
+           },
+           {
+            "dom": 3,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 2,
+            "res": "N"
+           },
+           {
+            "dom": 1,
+            "ext": 3,
+            "res": "D"
+           }
+          ]
+         },
+         {
+          "equipe": "Würzburg",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 2,
+            "ext": 2,
+            "res": "N"
+           },
+           {
+            "dom": 3,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 6,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "D"
+           }
+          ]
+         }
+        ],
         "lignes": [
          "TSV Havelse à domicile (4) : 2-3, 3-2, 2-2, 1-3 → marque 2,00, encaisse 2,50 par match.",
-         "Würzburg à l'extérieur (4) : 2-2, 0-3, 2-6, 1-2 → marque 1,25, encaisse 3,25 par match."
+         "Würzburg à l'extérieur (4) : 2-2, 3-0, 6-2, 2-1 → marque 1,25, encaisse 3,25 par match."
         ]
        },
        {
@@ -62174,368 +63891,6 @@
    }
   },
   {
-   "match_id": "an1i8bkvyb26oewuw9y8qdxqs",
-   "date": "2026-10-10",
-   "heure_cameroun": "12:00",
-   "competition": "Thaïlande : 1. Ligue",
-   "domicile": "BG Pathum Utd",
-   "exterieur": "Ayutthaya Utd",
-   "moteur_utilise": "moteur_v3",
-   "moteur_v3": {
-    "statut": "OK",
-    "moteur": "moteur_v3",
-    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
-    "apercu_non_calibre": false,
-    "selection": {}
-   }
-  },
-  {
-   "match_id": "dlm8x0fen8qaw6csbjcn1tdec",
-   "date": "2026-10-10",
-   "heure_cameroun": "12:00",
-   "competition": "Allemagne : 2. Bundesliga",
-   "domicile": "Darmstadt",
-   "exterieur": "E. Cottbus",
-   "moteur_utilise": "moteur_v3",
-   "moteur_v3": {
-    "statut": "OK",
-    "moteur": "moteur_v3",
-    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
-    "apercu_non_calibre": false,
-    "selection": {}
-   }
-  },
-  {
-   "match_id": "a7vzt4u75leu8nmm3rdnyv190",
-   "date": "2026-10-10",
-   "heure_cameroun": "12:00",
-   "competition": "Viêt-Nam : V Ligue 1",
-   "domicile": "Hai Phong",
-   "exterieur": "Thanh Hoa",
-   "moteur_utilise": "moteur_v3",
-   "moteur_v3": {
-    "statut": "OK",
-    "moteur": "moteur_v3",
-    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
-    "apercu_non_calibre": false,
-    "selection": {}
-   }
-  },
-  {
-   "match_id": "i20xyiuq7n2fcfz1t77rlxxw",
-   "date": "2026-10-10",
-   "heure_cameroun": "12:00",
-   "competition": "Hongrie : NB II",
-   "domicile": "Kazincbarcika",
-   "exterieur": "Karcag",
-   "moteur_utilise": "moteur_v3",
-   "moteur_v3": {
-    "statut": "OK",
-    "moteur": "moteur_v3",
-    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
-    "apercu_non_calibre": false,
-    "selection": {}
-   }
-  },
-  {
-   "match_id": "180p7eiu5161oj7d3o22lwj6c",
-   "date": "2026-10-10",
-   "heure_cameroun": "12:00",
-   "competition": "Suède : Superettan",
-   "domicile": "Landskrona",
-   "exterieur": "Sandviken",
-   "moteur_utilise": "moteur_v3",
-   "moteur_v3": {
-    "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
-    "moteur": "moteur_v3",
-    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
-    "apercu_non_calibre": false,
-    "selection": {}
-   }
-  },
-  {
-   "match_id": "dmzx2bh6np4viqjznm46dgv10",
-   "date": "2026-10-10",
-   "heure_cameroun": "12:00",
-   "competition": "Allemagne : 2. Bundesliga",
-   "domicile": "Magdebourg",
-   "exterieur": "Hanovre",
-   "moteur_utilise": "moteur_v3",
-   "moteur_v3": {
-    "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
-    "moteur": "moteur_v3",
-    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
-    "apercu_non_calibre": false,
-    "selection": {}
-   }
-  },
-  {
-   "match_id": "3pxdmvno90bnuwesbfn1b2uj8",
-   "date": "2026-10-10",
-   "heure_cameroun": "12:00",
-   "competition": "Kenya : Première Ligue",
-   "domicile": "Mathare Utd",
-   "exterieur": "APS Bomet",
-   "moteur_utilise": "moteur_v3",
-   "moteur_v3": {
-    "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
-    "moteur": "moteur_v3",
-    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
-    "apercu_non_calibre": false,
-    "selection": {}
-   }
-  },
-  {
-   "match_id": "dnp1ucljh9ryy5fah6v846lg4",
-   "date": "2026-10-10",
-   "heure_cameroun": "12:00",
-   "competition": "Allemagne : 2. Bundesliga",
-   "domicile": "Osnabrück",
-   "exterieur": "D. Dresde",
-   "moteur_utilise": "moteur_v3",
-   "moteur_v3": {
-    "statut": "OK",
-    "moteur": "moteur_v3",
-    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
-    "apercu_non_calibre": false,
-    "selection": {
-     "P1": {
-      "marche": "over_under_total_2.5_over",
-      "marche_moteur": "over_2_5",
-      "libelle": null,
-      "probabilite": 0.7404,
-      "cote": 1.53,
-      "edge": 0.08681871000925223,
-      "edv": 0.133,
-      "niveau": "V3_ECHANTILLON_FAIBLE",
-      "robustesse": null,
-      "points_de_vigilance": [
-       "Moteur V3 en production parallèle : candidat, non promu comme moteur principal.",
-       "Moins de 5 matchs au même lieu pour une des deux équipes."
-      ],
-      "rang": "P1",
-      "apercu_non_calibre": false,
-      "indice_performance": {
-       "version": 3,
-       "indice": 1,
-       "sur": 4,
-       "niveau": "RISQUE",
-       "libelle": "Risqué",
-       "phrase": "Validé dans 1 scénario sur 4.",
-       "moyenne_domicile": {
-        "marque": 1.333,
-        "encaisse": 2.333
-       },
-       "moyenne_exterieur": {
-        "marque": 1.667,
-        "encaisse": 3.333
-       },
-       "pire_domicile": {
-        "marque": 0.0,
-        "encaisse": 3.0
-       },
-       "pire_exterieur": {
-        "marque": 0.0,
-        "encaisse": 3.0
-       },
-       "scenarios": [
-        {
-         "domicile": "moyen",
-         "exterieur": "moyen",
-         "buts_domicile": 1.333,
-         "buts_exterieur": 1.667,
-         "marge": 0.5,
-         "valide": true
-        },
-        {
-         "domicile": "pire",
-         "exterieur": "moyen",
-         "buts_domicile": 0.0,
-         "buts_exterieur": 1.667,
-         "marge": -0.833,
-         "valide": false
-        },
-        {
-         "domicile": "moyen",
-         "exterieur": "pire",
-         "buts_domicile": 1.333,
-         "buts_exterieur": 0.0,
-         "marge": -1.167,
-         "valide": false
-        },
-        {
-         "domicile": "pire",
-         "exterieur": "pire",
-         "buts_domicile": 0.0,
-         "buts_exterieur": 0.0,
-         "marge": -2.5,
-         "valide": false
-        }
-       ]
-      },
-      "alternatives_indice": [],
-      "justification": {
-       "resume": "Probabilité calibrée 74 % contre 65 % selon la cote 1,53 · marge +13,3 % · 3 matchs au même lieu.",
-       "preuves": [
-        {
-         "type": "v3_controle_saison",
-         "texte": "Osnabrück à domicile : 100% de matchs à +2,5 ; D. Dresde à l'extérieur : 100% de matchs à +2,5 ; saison complète +2,5 : 67% / 83% ; total attendu (moyennes simples) : 4,33 buts"
-        },
-        {
-         "type": "v3_forme_recente",
-         "texte": "au-dessus de la ligne sur les 6 derniers : 4 (Osnabrück) / 5 (D. Dresde)"
-        },
-        {
-         "type": "ev_percentage",
-         "valeur": 13.3,
-         "texte": "Le prix proposé laisse 13,3 % de marge par rapport à l'estimation calibrée."
-        }
-       ],
-       "explication": {
-        "alertes": [
-         "Petit échantillon : 3 matchs au même lieu pour l'équipe la moins fournie.",
-         "Buts attendus extrêmes : 4,14 buts au total."
-        ],
-        "blocs": [
-         {
-          "titre": "Données",
-          "lignes": [
-           "Osnabrück à domicile (3) : 0-3, 3-1, 1-3 → marque 1,33, encaisse 2,33 par match.",
-           "D. Dresde à l'extérieur (3) : 0-3, 3-5, 2-2 → marque 1,67, encaisse 3,33 par match."
-          ]
-         },
-         {
-          "titre": "Buts attendus",
-          "lignes": [
-           "Lissage vers 1,35 but : (n × moyenne + 4 × 1,35) / (n + 4).",
-           "Osnabrück : attaque 1,33 → 1,34 ; défense D. Dresde 3,33 → 2,20 ; 1,34 × 2,20 / 1,35 = 2,19 buts.",
-           "D. Dresde : attaque 1,67 → 1,49 ; défense Osnabrück 2,33 → 1,77 ; 1,49 × 1,77 / 1,35 = 1,95 buts."
-          ]
-         },
-         {
-          "titre": "Probabilité",
-          "lignes": [
-           "Plus de 2,5 buts : 74,0 %.",
-           "Somme des scores avec au moins 3 buts.",
-           "Scores les plus probables : 2-1 (7,4 %), 2-2 (7,3 %)."
-          ]
-         },
-         {
-          "titre": "Face à la cote",
-          "lignes": [
-           "Cote 1,53 → 65,4 % selon le bookmaker ; écart +8,7 points.",
-           "Marge = 1,53 × 0,087 = +13,3 % (seuil 5 % à cette probabilité)."
-          ]
-         },
-         {
-          "titre": "Contrôles",
-          "lignes": [
-           "Cote dans la fenêtre 1,26 – 1,74 : oui.",
-           "Dispersion des buts : 1,08 (accepté).",
-           "Double contrôle « Plus de 2.5 buts » passé : Osnabrück à domicile : 100% de matchs à +2,5 ; D. Dresde à l'extérieur : 100% de matchs à +2,5 ; saison complète +2,5 : 67% / 83% ; total attendu (moyennes simples) : 4,33 buts ; au-dessus de la ligne sur les 6 derniers : 4 (Osnabrück) / 5 (D. Dresde).",
-           "3 matchs au même lieu : contrôle renforcé passé (probabilité ≥ 67 % et marge ≥ 7 %).",
-           "Calibration : prête."
-          ]
-         },
-         {
-          "titre": "Pourquoi ce marché",
-          "lignes": [
-           "Un seul pari par famille (total de buts) : celui-ci est le plus probable des paris valides.",
-           "Score exact 4-3 (86,96, 2,7 %, marge +137,1 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert.",
-           "Handicap 3 choix Domicile −2 (1) : Domicile gagne par 3 buts ou plus (11,65, 13,7 %, marge +59,3 %) : cote hors de 1,26 – 1,74 ; double contrôle non passé ou marché non couvert.",
-           "Les deux équipes marquent (1,46, 72,6 %, marge +6,0 %) : double contrôle non passé ou marché non couvert ; pas de justification."
-          ]
-         },
-         {
-          "titre": "Indice de performance",
-          "lignes": [
-           "Indice 1/4 : Risqué. Le marché est validé dans 1 scénario sur 4.",
-           "Osnabrück à domicile : moyenne simple 1,33 marqué(s) par match ; pire match 0-3.",
-           "D. Dresde à l'extérieur : moyenne simple 1,67 marqué(s) par match ; pire match 0-3.",
-           "Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.",
-           "Osnabrück moyen : 1,33 / D. Dresde moyen : 1,67 (total 3,00) → marge +0,50 but : validé.",
-           "Osnabrück pire : 0,00 / D. Dresde moyen : 1,67 (total 1,67) → marge −0,83 but : non validé.",
-           "Osnabrück moyen : 1,33 / D. Dresde pire : 0,00 (total 1,33) → marge −1,17 but : non validé.",
-           "Osnabrück pire : 0,00 / D. Dresde pire : 0,00 (total 0,00) → marge −2,50 but : non validé.",
-           "Échelle (4 scénarios) : 4/4 Sûr · 3/4 Recommandé · 2/4 Attention · 1/4 Risqué. Marché d'une seule équipe : Sûr si tout tient, Attention si seulement la moyenne tient. Information seulement : elle ne change ni la probabilité ni la sélection."
-          ]
-         }
-        ]
-       },
-       "donnees_suffisantes": true,
-       "bibliotheque": {
-        "ev_percentage": 13.3
-       }
-      }
-     }
-    }
-   }
-  },
-  {
-   "match_id": "1jzmiyyff7o7l6ahb2brjeivo",
-   "date": "2026-10-10",
-   "heure_cameroun": "12:00",
-   "competition": "Kazakhstan : Super Ligue",
-   "domicile": "Tobol",
-   "exterieur": "FC Astana",
-   "moteur_utilise": "moteur_v3",
-   "moteur_v3": {
-    "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
-    "moteur": "moteur_v3",
-    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
-    "apercu_non_calibre": false,
-    "selection": {}
-   }
-  },
-  {
-   "match_id": "c141znoj67kbpwm8o03kzvz10",
-   "date": "2026-10-10",
-   "heure_cameroun": "12:00",
-   "competition": "Lettonie : Virsliga",
-   "domicile": "Tukums",
-   "exterieur": "Riga FC",
-   "moteur_utilise": "moteur_v3",
-   "moteur_v3": {
-    "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
-    "moteur": "moteur_v3",
-    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
-    "apercu_non_calibre": false,
-    "selection": {}
-   }
-  },
-  {
-   "match_id": "1iikk9zpfvcyu9cg6l1kgq3v8",
-   "date": "2026-10-10",
-   "heure_cameroun": "12:00",
-   "competition": "Kazakhstan : Super Ligue",
-   "domicile": "Yelimay",
-   "exterieur": "Aktobe",
-   "moteur_utilise": "moteur_v3",
-   "moteur_v3": {
-    "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
-    "moteur": "moteur_v3",
-    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
-    "apercu_non_calibre": false,
-    "selection": {}
-   }
-  },
-  {
-   "match_id": "9cjj5r8lhkgx39hmvi48htses",
-   "date": "2026-10-10",
-   "heure_cameroun": "12:15",
-   "competition": "Lituanie : A Lyga",
-   "domicile": "Zalgiris",
-   "exterieur": "Suduva",
-   "moteur_utilise": "moteur_v3",
-   "moteur_v3": {
-    "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
-    "moteur": "moteur_v3",
-    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
-    "apercu_non_calibre": false,
-    "selection": {}
-   }
-  },
-  {
    "match_id": "87jqbg79d1q6c8h0gsl9tlpn8",
    "date": "2026-10-10",
    "heure_cameroun": "12:30",
@@ -63116,9 +64471,53 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Nantes",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 0,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 5,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "V"
+             }
+            ]
+           },
+           {
+            "equipe": "Reims",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 0,
+              "ext": 0,
+              "res": "N"
+             },
+             {
+              "dom": 1,
+              "ext": 4,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "V"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Nantes à domicile (3) : 0-1, 2-5, 1-0 → marque 1,00, encaisse 2,00 par match.",
-           "Reims à l'extérieur (3) : 0-0, 4-1, 2-1 → marque 2,00, encaisse 0,67 par match."
+           "Reims à l'extérieur (3) : 0-0, 1-4, 1-2 → marque 2,00, encaisse 0,67 par match."
           ]
          },
          {
@@ -63349,9 +64748,58 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Würzburg",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 4,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "V"
+             }
+            ]
+           },
+           {
+            "equipe": "H. Rostock",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 2,
+              "ext": 3,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 4,
+              "res": "V"
+             },
+             {
+              "dom": 4,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Würzburg à domicile (3) : 4-0, 1-2, 1-0 → marque 2,00, encaisse 0,67 par match.",
-           "H. Rostock à l'extérieur (4) : 3-2, 4-2, 0-4, 1-1 → marque 2,00, encaisse 2,25 par match."
+           "H. Rostock à l'extérieur (4) : 2-3, 2-4, 4-0, 1-1 → marque 2,00, encaisse 2,25 par match."
           ]
          },
          {
@@ -63848,9 +65296,78 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "NK Radomlje",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 0,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 3,
+              "res": "D"
+             },
+             {
+              "dom": 0,
+              "ext": 0,
+              "res": "N"
+             },
+             {
+              "dom": 0,
+              "ext": 3,
+              "res": "D"
+             }
+            ]
+           },
+           {
+            "equipe": "NK Koper",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 0,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 0,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 0,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 0,
+              "ext": 1,
+              "res": "V"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "NK Radomlje à domicile (5) : 0-2, 1-2, 1-3, 0-0, 0-3 → marque 0,40, encaisse 2,00 par match.",
-           "NK Koper à l'extérieur (6) : 2-0, 1-1, 0-2, 1-0, 1-0, 1-0 → marque 1,00, encaisse 0,50 par match."
+           "NK Koper à l'extérieur (6) : 0-2, 1-1, 2-0, 0-1, 0-1, 0-1 → marque 1,00, encaisse 0,50 par match."
           ]
          },
          {
@@ -64143,9 +65660,68 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Zbrojovka",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 3,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 0,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 3,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "V"
+             }
+            ]
+           },
+           {
+            "equipe": "Jablonec",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 0,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "D"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Zbrojovka à domicile (5) : 3-1, 0-1, 3-2, 1-0, 2-1 → marque 1,80, encaisse 1,00 par match.",
-           "Jablonec à l'extérieur (4) : 2-0, 0-2, 1-1, 0-2 → marque 0,75, encaisse 1,25 par match."
+           "Jablonec à l'extérieur (4) : 0-2, 2-0, 1-1, 2-0 → marque 0,75, encaisse 1,25 par match."
           ]
          },
          {
@@ -64521,9 +66097,53 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Al Hazem",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 0,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "V"
+             }
+            ]
+           },
+           {
+            "equipe": "Neom",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 0,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 0,
+              "ext": 2,
+              "res": "V"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Al Hazem à domicile (3) : 0-1, 1-1, 1-0 → marque 0,67, encaisse 0,67 par match.",
-           "Neom à l'extérieur (3) : 2-0, 0-1, 2-0 → marque 1,33, encaisse 0,33 par match."
+           "Neom à l'extérieur (3) : 0-2, 1-0, 0-2 → marque 1,33, encaisse 0,33 par match."
           ]
          },
          {
@@ -65042,9 +66662,53 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Dundee Utd.",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 0,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             }
+            ]
+           },
+           {
+            "equipe": "Hibernian",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "D"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Dundee Utd. à domicile (3) : 1-1, 0-2, 1-1 → marque 0,67, encaisse 1,33 par match.",
-           "Hibernian à l'extérieur (3) : 2-1, 2-1, 1-2 → marque 1,67, encaisse 1,33 par match."
+           "Hibernian à l'extérieur (3) : 1-2, 1-2, 2-1 → marque 1,67, encaisse 1,33 par match."
           ]
          },
          {
@@ -65390,9 +67054,63 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Fleetwood",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 0,
+              "ext": 0,
+              "res": "N"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "D"
+             }
+            ]
+           },
+           {
+            "equipe": "Walsall",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 0,
+              "ext": 3,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 2,
+              "res": "N"
+             },
+             {
+              "dom": 0,
+              "ext": 0,
+              "res": "N"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Fleetwood à domicile (4) : 0-0, 1-1, 2-0, 1-2 → marque 1,00, encaisse 0,75 par match.",
-           "Walsall à l'extérieur (4) : 3-0, 2-2, 0-0, 1-1 → marque 1,50, encaisse 0,75 par match."
+           "Walsall à l'extérieur (4) : 0-3, 2-2, 0-0, 1-1 → marque 1,50, encaisse 0,75 par match."
           ]
          },
          {
@@ -65784,9 +67502,73 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Jesenice",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 0,
+              "ext": 3,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 3,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 3,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 5,
+              "ext": 0,
+              "res": "V"
+             }
+            ]
+           },
+           {
+            "equipe": "NK Brezice",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 4,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "D"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Jesenice à domicile (5) : 0-3, 1-1, 3-1, 3-1, 5-0 → marque 2,40, encaisse 1,20 par match.",
-           "NK Brezice à l'extérieur (5) : 1-2, 0-1, 1-2, 0-4, 0-1 → marque 0,40, encaisse 2,00 par match."
+           "NK Brezice à l'extérieur (5) : 2-1, 1-0, 2-1, 4-0, 1-0 → marque 0,40, encaisse 2,00 par match."
           ]
          },
          {
@@ -65970,9 +67752,58 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Leicester",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 0,
+              "ext": 4,
+              "res": "D"
+             }
+            ]
+           },
+           {
+            "equipe": "Peterborough",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 4,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "D"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Leicester à domicile (3) : 1-2, 2-0, 0-4 → marque 1,00, encaisse 2,00 par match.",
-           "Peterborough à l'extérieur (4) : 0-2, 0-4, 1-1, 0-1 → marque 0,25, encaisse 2,00 par match."
+           "Peterborough à l'extérieur (4) : 2-0, 4-0, 1-1, 1-0 → marque 0,25, encaisse 2,00 par match."
           ]
          },
          {
@@ -66187,9 +68018,63 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Livingston FC",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 0,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 2,
+              "res": "N"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "D"
+             }
+            ]
+           },
+           {
+            "equipe": "P. Thistle",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 0,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "D"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Livingston FC à domicile (5) : 2-0, 2-0, 0-1, 2-2, 1-2 → marque 1,40, encaisse 1,00 par match.",
-           "P. Thistle à l'extérieur (3) : 1-0, 1-1, 0-1 → marque 0,67, encaisse 0,67 par match."
+           "P. Thistle à l'extérieur (3) : 0-1, 1-1, 1-0 → marque 0,67, encaisse 0,67 par match."
           ]
          },
          {
@@ -66456,9 +68341,63 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Middlesbrough",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 3,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 4,
+              "ext": 3,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 2,
+              "res": "N"
+             }
+            ]
+           },
+           {
+            "equipe": "Wolverhampton",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 1,
+              "ext": 3,
+              "res": "V"
+             },
+             {
+              "dom": 4,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 2,
+              "res": "N"
+             },
+             {
+              "dom": 0,
+              "ext": 1,
+              "res": "V"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Middlesbrough à domicile (4) : 2-1, 3-1, 4-3, 2-2 → marque 2,75, encaisse 1,75 par match.",
-           "Wolverhampton à l'extérieur (4) : 3-1, 2-4, 2-2, 1-0 → marque 2,00, encaisse 1,75 par match."
+           "Wolverhampton à l'extérieur (4) : 1-3, 4-2, 2-2, 0-1 → marque 2,00, encaisse 1,75 par match."
           ]
          },
          {
@@ -66993,9 +68932,53 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Virton",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 3,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 0,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 3,
+              "ext": 0,
+              "res": "V"
+             }
+            ]
+           },
+           {
+            "equipe": "Hasselt",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 0,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 3,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "V"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Virton à domicile (3) : 3-0, 0-1, 3-0 → marque 2,00, encaisse 0,33 par match.",
-           "Hasselt à l'extérieur (3) : 1-0, 0-3, 2-1 → marque 1,00, encaisse 1,33 par match."
+           "Hasselt à l'extérieur (3) : 0-1, 3-0, 1-2 → marque 1,00, encaisse 1,33 par match."
           ]
          },
          {
@@ -67310,9 +69293,58 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Wycombe",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 3,
+              "ext": 3,
+              "res": "N"
+             },
+             {
+              "dom": 2,
+              "ext": 2,
+              "res": "N"
+             }
+            ]
+           },
+           {
+            "equipe": "Luton",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 3,
+              "ext": 4,
+              "res": "V"
+             },
+             {
+              "dom": 5,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "D"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Wycombe à domicile (4) : 1-1, 1-2, 3-3, 2-2 → marque 1,75, encaisse 2,00 par match.",
-           "Luton à l'extérieur (3) : 4-3, 2-5, 1-2 → marque 2,33, encaisse 3,33 par match."
+           "Luton à l'extérieur (3) : 3-4, 5-2, 2-1 → marque 2,33, encaisse 3,33 par match."
           ]
          },
          {
@@ -67978,9 +70010,63 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Lumezzane",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 2,
+              "res": "N"
+             },
+             {
+              "dom": 0,
+              "ext": 0,
+              "res": "N"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "D"
+             }
+            ]
+           },
+           {
+            "equipe": "AlbinoLeffe",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 0,
+              "ext": 0,
+              "res": "N"
+             },
+             {
+              "dom": 3,
+              "ext": 5,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "V"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Lumezzane à domicile (4) : 1-0, 2-2, 0-0, 1-2 → marque 1,00, encaisse 1,00 par match.",
-           "AlbinoLeffe à l'extérieur (4) : 2-1, 0-0, 5-3, 2-1 → marque 2,25, encaisse 1,25 par match."
+           "AlbinoLeffe à l'extérieur (4) : 1-2, 0-0, 3-5, 1-2 → marque 2,25, encaisse 1,25 par match."
           ]
          },
          {
@@ -68309,9 +70395,58 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Slask Wroclaw",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 0,
+              "ext": 0,
+              "res": "N"
+             },
+             {
+              "dom": 3,
+              "ext": 3,
+              "res": "N"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "D"
+             }
+            ]
+           },
+           {
+            "equipe": "Lech Poznan",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 3,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "D"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Slask Wroclaw à domicile (4) : 2-1, 0-0, 3-3, 1-2 → marque 1,50, encaisse 1,50 par match.",
-           "Lech Poznan à l'extérieur (3) : 2-1, 3-2, 1-2 → marque 2,00, encaisse 1,67 par match."
+           "Lech Poznan à l'extérieur (3) : 1-2, 2-3, 2-1 → marque 2,00, encaisse 1,67 par match."
           ]
          },
          {
@@ -68832,9 +70967,63 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Servette",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 0,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 0,
+              "ext": 2,
+              "res": "D"
+             }
+            ]
+           },
+           {
+            "equipe": "Sion",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 4,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 0,
+              "ext": 3,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 5,
+              "res": "V"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Servette à domicile (4) : 0-1, 2-1, 1-1, 0-2 → marque 0,75, encaisse 1,25 par match.",
-           "Sion à l'extérieur (4) : 2-4, 2-1, 3-0, 5-2 → marque 3,00, encaisse 1,75 par match."
+           "Sion à l'extérieur (4) : 4-2, 1-2, 0-3, 2-5 → marque 3,00, encaisse 1,75 par match."
           ]
          },
          {
@@ -69034,9 +71223,68 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Zurich",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 4,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "V"
+             }
+            ]
+           },
+           {
+            "equipe": "Thoune",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 1,
+              "ext": 3,
+              "res": "V"
+             },
+             {
+              "dom": 4,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 3,
+              "ext": 4,
+              "res": "V"
+             },
+             {
+              "dom": 3,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "V"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Zurich à domicile (4) : 2-1, 1-2, 2-4, 2-1 → marque 1,75, encaisse 2,00 par match.",
-           "Thoune à l'extérieur (5) : 3-1, 2-4, 4-3, 2-3, 2-1 → marque 2,60, encaisse 2,40 par match."
+           "Thoune à l'extérieur (5) : 1-3, 4-2, 3-4, 3-2, 1-2 → marque 2,60, encaisse 2,40 par match."
           ]
          },
          {
@@ -69669,9 +71917,68 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Botev Plovdiv",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 3,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 3,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "V"
+             }
+            ]
+           },
+           {
+            "equipe": "Slavia Sofia",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 0,
+              "ext": 3,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 0,
+              "ext": 1,
+              "res": "V"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Botev Plovdiv à domicile (5) : 1-1, 1-0, 3-2, 1-3, 2-0 → marque 1,60, encaisse 1,20 par match.",
-           "Slavia Sofia à l'extérieur (4) : 0-1, 3-0, 1-1, 1-0 → marque 1,25, encaisse 0,50 par match."
+           "Slavia Sofia à l'extérieur (4) : 1-0, 0-3, 1-1, 0-1 → marque 1,25, encaisse 0,50 par match."
           ]
          },
          {
@@ -69902,9 +72209,143 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Toronto",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 3,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 3,
+              "ext": 3,
+              "res": "N"
+             },
+             {
+              "dom": 3,
+              "ext": 3,
+              "res": "N"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 2,
+              "ext": 4,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 3,
+              "ext": 3,
+              "res": "N"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 4,
+              "ext": 4,
+              "res": "N"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "V"
+             }
+            ]
+           },
+           {
+            "equipe": "Montreal",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 3,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 0,
+              "ext": 3,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 4,
+              "ext": 3,
+              "res": "D"
+             },
+             {
+              "dom": 3,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 3,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 4,
+              "ext": 4,
+              "res": "N"
+             },
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 7,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "D"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Toronto à domicile (12) : 3-2, 1-1, 3-3, 3-3, 1-2, 1-1, 2-4, 2-1, 3-3, 1-1, 4-4, 2-1 → marque 2,17, encaisse 2,17 par match.",
-           "Montreal à l'extérieur (12) : 0-3, 3-0, 1-2, 3-4, 0-3, 1-3, 4-4, 0-1, 2-1, 1-7, 0-2, 0-1 → marque 1,25, encaisse 2,58 par match."
+           "Montreal à l'extérieur (12) : 3-0, 0-3, 2-1, 4-3, 3-0, 3-1, 4-4, 1-0, 1-2, 7-1, 2-0, 1-0 → marque 1,25, encaisse 2,58 par match."
           ]
          },
          {
@@ -70135,9 +72576,58 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Austria Vienne",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 0,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 0,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "V"
+             }
+            ]
+           },
+           {
+            "equipe": "Sturm Graz",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 0,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 3,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 3,
+              "ext": 0,
+              "res": "D"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Austria Vienne à domicile (3) : 0-2, 0-1, 2-1 → marque 0,67, encaisse 1,33 par match.",
-           "Sturm Graz à l'extérieur (4) : 1-1, 2-0, 1-3, 0-3 → marque 1,00, encaisse 1,75 par match."
+           "Sturm Graz à l'extérieur (4) : 1-1, 0-2, 3-1, 3-0 → marque 1,00, encaisse 1,75 par match."
           ]
          },
          {
@@ -70562,9 +73052,143 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Montevideo",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 3,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 0,
+              "ext": 0,
+              "res": "N"
+             },
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 3,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "V"
+             }
+            ]
+           },
+           {
+            "equipe": "Boston River",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 4,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 3,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 3,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 3,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 3,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "D"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Montevideo à domicile (12) : 2-1, 3-0, 1-2, 1-0, 1-0, 1-1, 0-0, 2-0, 1-1, 3-0, 1-1, 2-1 → marque 1,50, encaisse 0,58 par match.",
-           "Boston River à l'extérieur (12) : 0-2, 1-4, 1-2, 0-3, 1-1, 0-3, 0-1, 2-1, 3-2, 0-1, 2-3, 1-2 → marque 0,92, encaisse 2,08 par match."
+           "Boston River à l'extérieur (12) : 2-0, 4-1, 2-1, 3-0, 1-1, 3-0, 1-0, 1-2, 2-3, 1-0, 3-2, 2-1 → marque 0,92, encaisse 2,08 par match."
           ]
          },
          {
@@ -70748,9 +73372,53 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Saint-Étienne",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 3,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 4,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 3,
+              "ext": 1,
+              "res": "V"
+             }
+            ]
+           },
+           {
+            "equipe": "Rodez",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 5,
+              "res": "V"
+             },
+             {
+              "dom": 4,
+              "ext": 1,
+              "res": "D"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Saint-Étienne à domicile (3) : 3-1, 4-0, 3-1 → marque 3,33, encaisse 0,67 par match.",
-           "Rodez à l'extérieur (3) : 0-2, 5-2, 1-4 → marque 2,00, encaisse 2,67 par match."
+           "Rodez à l'extérieur (3) : 2-0, 2-5, 4-1 → marque 2,00, encaisse 2,67 par match."
           ]
          },
          {
@@ -70933,9 +73601,68 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "J. Bialystok",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 0,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 3,
+              "res": "D"
+             }
+            ]
+           },
+           {
+            "equipe": "Górnik Zabrze",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 1,
+              "ext": 3,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 0,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 0,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 0,
+              "ext": 0,
+              "res": "N"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "J. Bialystok à domicile (4) : 1-0, 0-2, 2-1, 1-3 → marque 1,00, encaisse 1,50 par match.",
-           "Górnik Zabrze à l'extérieur (5) : 3-1, 2-1, 1-0, 2-0, 0-0 → marque 1,60, encaisse 0,40 par match."
+           "Górnik Zabrze à l'extérieur (5) : 1-3, 1-2, 0-1, 0-2, 0-0 → marque 1,60, encaisse 0,40 par match."
           ]
          },
          {
@@ -71422,9 +74149,138 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Fram Rey",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 3,
+              "ext": 3,
+              "res": "N"
+             },
+             {
+              "dom": 3,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 5,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 3,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 4,
+              "ext": 3,
+              "res": "V"
+             },
+             {
+              "dom": 0,
+              "ext": 5,
+              "res": "D"
+             },
+             {
+              "dom": 6,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 0,
+              "ext": 0,
+              "res": "N"
+             },
+             {
+              "dom": 2,
+              "ext": 5,
+              "res": "D"
+             },
+             {
+              "dom": 3,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 2,
+              "res": "N"
+             },
+             {
+              "dom": 1,
+              "ext": 3,
+              "res": "D"
+             }
+            ]
+           },
+           {
+            "equipe": "KR",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 2,
+              "ext": 6,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 4,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 3,
+              "res": "V"
+             },
+             {
+              "dom": 6,
+              "ext": 3,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 3,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 3,
+              "ext": 3,
+              "res": "N"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 2,
+              "ext": 5,
+              "res": "V"
+             },
+             {
+              "dom": 3,
+              "ext": 5,
+              "res": "V"
+             },
+             {
+              "dom": 3,
+              "ext": 1,
+              "res": "D"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Fram Rey à domicile (12) : 3-3, 3-1, 5-1, 3-2, 4-3, 0-5, 6-1, 0-0, 2-5, 3-1, 2-2, 1-3 → marque 2,67, encaisse 2,25 par match.",
-           "KR à l'extérieur (11) : 6-2, 4-1, 3-2, 3-6, 0-2, 2-3, 3-3, 1-1, 5-2, 5-3, 1-3 → marque 3,00, encaisse 2,55 par match."
+           "KR à l'extérieur (11) : 2-6, 1-4, 2-3, 6-3, 2-0, 3-2, 3-3, 1-1, 2-5, 3-5, 3-1 → marque 3,00, encaisse 2,55 par match."
           ]
          },
          {
@@ -72395,9 +75251,53 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Lourosa",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 2,
+              "res": "N"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "V"
+             }
+            ]
+           },
+           {
+            "equipe": "Chaves",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 4,
+              "ext": 0,
+              "res": "D"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Lourosa à domicile (3) : 2-0, 2-2, 2-1 → marque 2,00, encaisse 1,00 par match.",
-           "Chaves à l'extérieur (3) : 0-1, 1-2, 0-4 → marque 0,33, encaisse 2,33 par match."
+           "Chaves à l'extérieur (3) : 1-0, 2-1, 4-0 → marque 0,33, encaisse 2,33 par match."
           ]
          },
          {
@@ -72676,9 +75576,63 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Akhmat",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 4,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 3,
+              "ext": 3,
+              "res": "N"
+             },
+             {
+              "dom": 3,
+              "ext": 2,
+              "res": "V"
+             }
+            ]
+           },
+           {
+            "equipe": "Baltika",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 0,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 0,
+              "ext": 3,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 2,
+              "res": "N"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Akhmat à domicile (4) : 1-2, 4-1, 3-3, 3-2 → marque 2,75, encaisse 2,00 par match.",
-           "Baltika à l'extérieur (4) : 1-2, 2-0, 3-0, 2-2 → marque 2,00, encaisse 1,00 par match."
+           "Baltika à l'extérieur (4) : 2-1, 0-2, 0-3, 2-2 → marque 2,00, encaisse 1,00 par match."
           ]
          },
          {
@@ -73297,9 +76251,63 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Grasshoppers",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 1,
+              "ext": 4,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 2,
+              "res": "N"
+             },
+             {
+              "dom": 2,
+              "ext": 5,
+              "res": "D"
+             }
+            ]
+           },
+           {
+            "equipe": "Young Boys",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 0,
+              "ext": 6,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 2,
+              "res": "N"
+             },
+             {
+              "dom": 2,
+              "ext": 4,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 2,
+              "res": "N"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Grasshoppers à domicile (4) : 1-4, 2-0, 2-2, 2-5 → marque 1,75, encaisse 2,75 par match.",
-           "Young Boys à l'extérieur (4) : 6-0, 2-2, 4-2, 2-2 → marque 3,50, encaisse 1,50 par match."
+           "Young Boys à l'extérieur (4) : 0-6, 2-2, 2-4, 2-2 → marque 3,50, encaisse 1,50 par match."
           ]
          },
          {
@@ -73869,9 +76877,68 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "LKS Lódz",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 4,
+              "ext": 0,
+              "res": "V"
+             }
+            ]
+           },
+           {
+            "equipe": "Ruch Chorzow",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 0,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 0,
+              "ext": 0,
+              "res": "N"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "LKS Lódz à domicile (4) : 2-1, 1-2, 2-1, 4-0 → marque 2,25, encaisse 1,00 par match.",
-           "Ruch Chorzow à l'extérieur (5) : 0-2, 1-1, 1-0, 0-2, 0-0 → marque 0,40, encaisse 1,00 par match."
+           "Ruch Chorzow à l'extérieur (5) : 2-0, 1-1, 0-1, 2-0, 0-0 → marque 0,40, encaisse 1,00 par match."
           ]
          },
          {
@@ -74135,9 +77202,63 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Renate",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 0,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 0,
+              "ext": 0,
+              "res": "N"
+             },
+             {
+              "dom": 0,
+              "ext": 1,
+              "res": "D"
+             }
+            ]
+           },
+           {
+            "equipe": "GIANA Erminio",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 0,
+              "ext": 0,
+              "res": "N"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Renate à domicile (4) : 0-1, 1-2, 0-0, 0-1 → marque 0,25, encaisse 1,00 par match.",
-           "GIANA Erminio à l'extérieur (4) : 0-1, 0-1, 1-1, 0-0 → marque 0,25, encaisse 0,75 par match."
+           "GIANA Erminio à l'extérieur (4) : 1-0, 1-0, 1-1, 0-0 → marque 0,25, encaisse 0,75 par match."
           ]
          },
          {
@@ -74880,9 +78001,143 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Juventud",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 0,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 5,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 3,
+              "res": "D"
+             },
+             {
+              "dom": 0,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 0,
+              "ext": 0,
+              "res": "N"
+             }
+            ]
+           },
+           {
+            "equipe": "R. Montevideo",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 0,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 0,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 0,
+              "ext": 0,
+              "res": "N"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 2,
+              "res": "N"
+             },
+             {
+              "dom": 0,
+              "ext": 0,
+              "res": "N"
+             },
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 0,
+              "ext": 0,
+              "res": "N"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "D"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Juventud à domicile (12) : 0-1, 1-2, 1-0, 1-1, 2-1, 2-0, 2-5, 1-3, 0-1, 2-0, 1-1, 0-0 → marque 1,08, encaisse 1,25 par match.",
-           "R. Montevideo à l'extérieur (12) : 1-0, 2-1, 1-0, 0-2, 0-0, 1-1, 0-1, 2-2, 0-0, 0-1, 0-0, 1-2 → marque 0,67, encaisse 0,83 par match."
+           "R. Montevideo à l'extérieur (12) : 0-1, 1-2, 0-1, 2-0, 0-0, 1-1, 1-0, 2-2, 0-0, 1-0, 0-0, 2-1 → marque 0,67, encaisse 0,83 par match."
           ]
          },
          {
@@ -75276,9 +78531,68 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Almería",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 3,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 3,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "V"
+             }
+            ]
+           },
+           {
+            "equipe": "Leganes",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 0,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 0,
+              "ext": 0,
+              "res": "N"
+             },
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 4,
+              "ext": 0,
+              "res": "D"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Almería à domicile (4) : 3-0, 3-2, 2-0, 2-1 → marque 2,50, encaisse 0,75 par match.",
-           "Leganes à l'extérieur (5) : 1-1, 1-0, 0-0, 0-2, 0-4 → marque 0,40, encaisse 1,40 par match."
+           "Leganes à l'extérieur (5) : 1-1, 0-1, 0-0, 2-0, 4-0 → marque 0,40, encaisse 1,40 par match."
           ]
          },
          {
@@ -75528,9 +78842,53 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Real Sociedad",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 0,
+              "ext": 0,
+              "res": "N"
+             },
+             {
+              "dom": 0,
+              "ext": 3,
+              "res": "D"
+             }
+            ]
+           },
+           {
+            "equipe": "A Coruña",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 2,
+              "ext": 3,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Real Sociedad à domicile (3) : 2-1, 0-0, 0-3 → marque 0,67, encaisse 1,33 par match.",
-           "A Coruña à l'extérieur (3) : 1-1, 3-2, 1-1 → marque 1,67, encaisse 1,33 par match."
+           "A Coruña à l'extérieur (3) : 1-1, 2-3, 1-1 → marque 1,67, encaisse 1,33 par match."
           ]
          },
          {
@@ -75841,9 +79199,53 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Excelsior",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "D"
+             }
+            ]
+           },
+           {
+            "equipe": "Groningen",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 1,
+              "ext": 4,
+              "res": "V"
+             },
+             {
+              "dom": 5,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Excelsior à domicile (3) : 1-2, 2-1, 1-2 → marque 1,33, encaisse 1,67 par match.",
-           "Groningen à l'extérieur (3) : 4-1, 1-5, 1-1 → marque 2,00, encaisse 2,33 par match."
+           "Groningen à l'extérieur (3) : 1-4, 5-1, 1-1 → marque 2,00, encaisse 2,33 par match."
           ]
          },
          {
@@ -76710,9 +80112,138 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Argir",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 1,
+              "ext": 4,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 3,
+              "res": "D"
+             },
+             {
+              "dom": 3,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 3,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 3,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 3,
+              "ext": 4,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             }
+            ]
+           },
+           {
+            "equipe": "B36 Torshavn",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 0,
+              "ext": 0,
+              "res": "N"
+             },
+             {
+              "dom": 2,
+              "ext": 2,
+              "res": "N"
+             },
+             {
+              "dom": 0,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 4,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 4,
+              "ext": 4,
+              "res": "N"
+             },
+             {
+              "dom": 3,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 2,
+              "res": "N"
+             },
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 0,
+              "ext": 0,
+              "res": "N"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "D"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Argir à domicile (11) : 2-0, 2-0, 1-1, 1-4, 2-3, 3-2, 3-1, 1-2, 3-2, 3-4, 1-1 → marque 2,00, encaisse 1,82 par match.",
-           "B36 Torshavn à l'extérieur (12) : 0-0, 2-2, 1-0, 4-1, 2-1, 4-4, 0-3, 2-2, 0-2, 2-1, 0-0, 1-2 → marque 1,50, encaisse 1,50 par match."
+           "B36 Torshavn à l'extérieur (12) : 0-0, 2-2, 0-1, 1-4, 1-2, 4-4, 3-0, 2-2, 2-0, 1-2, 0-0, 2-1 → marque 1,50, encaisse 1,50 par match."
           ]
          },
          {
@@ -77245,9 +80776,143 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "San Lorenzo",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 2,
+              "ext": 5,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 0,
+              "ext": 0,
+              "res": "N"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 0,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 0,
+              "ext": 2,
+              "res": "D"
+             }
+            ]
+           },
+           {
+            "equipe": "Riestra",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 0,
+              "ext": 0,
+              "res": "N"
+             },
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 0,
+              "ext": 0,
+              "res": "N"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 0,
+              "ext": 0,
+              "res": "N"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 0,
+              "ext": 0,
+              "res": "N"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "San Lorenzo à domicile (12) : 1-0, 2-0, 1-1, 2-5, 1-0, 0-0, 1-2, 1-0, 0-2, 1-0, 1-0, 0-2 → marque 0,92, encaisse 1,00 par match.",
-           "Riestra à l'extérieur (12) : 1-1, 0-1, 0-0, 0-1, 0-2, 0-2, 0-0, 1-2, 0-2, 0-0, 1-1, 0-0 → marque 0,25, encaisse 1,00 par match."
+           "Riestra à l'extérieur (12) : 1-1, 1-0, 0-0, 1-0, 2-0, 2-0, 0-0, 2-1, 2-0, 0-0, 1-1, 0-0 → marque 0,25, encaisse 1,00 par match."
           ]
          },
          {
@@ -77704,9 +81369,53 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Arouca",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 4,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "D"
+             }
+            ]
+           },
+           {
+            "equipe": "Estrela",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 2,
+              "ext": 2,
+              "res": "N"
+             },
+             {
+              "dom": 2,
+              "ext": 3,
+              "res": "V"
+             },
+             {
+              "dom": 3,
+              "ext": 3,
+              "res": "N"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Arouca à domicile (3) : 4-0, 2-1, 1-2 → marque 2,33, encaisse 1,00 par match.",
-           "Estrela à l'extérieur (3) : 2-2, 3-2, 3-3 → marque 2,67, encaisse 2,33 par match."
+           "Estrela à l'extérieur (3) : 2-2, 2-3, 3-3 → marque 2,67, encaisse 2,33 par match."
           ]
          },
          {
@@ -77873,9 +81582,53 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Arouca",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 4,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "D"
+             }
+            ]
+           },
+           {
+            "equipe": "Estrela",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 2,
+              "ext": 2,
+              "res": "N"
+             },
+             {
+              "dom": 2,
+              "ext": 3,
+              "res": "V"
+             },
+             {
+              "dom": 3,
+              "ext": 3,
+              "res": "N"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Arouca à domicile (3) : 4-0, 2-1, 1-2 → marque 2,33, encaisse 1,00 par match.",
-           "Estrela à l'extérieur (3) : 2-2, 3-2, 3-3 → marque 2,67, encaisse 2,33 par match."
+           "Estrela à l'extérieur (3) : 2-2, 2-3, 3-3 → marque 2,67, encaisse 2,33 par match."
           ]
          },
          {
@@ -78955,9 +82708,63 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Picerno",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 3,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 4,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 4,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "V"
+             }
+            ]
+           },
+           {
+            "equipe": "Cosenza",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 3,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 4,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 5,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "D"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "Picerno à domicile (4) : 3-2, 4-1, 2-4, 2-1 → marque 2,75, encaisse 2,00 par match.",
-           "Cosenza à l'extérieur (4) : 1-3, 0-4, 2-5, 0-1 → marque 0,75, encaisse 3,25 par match."
+           "Cosenza à l'extérieur (4) : 3-1, 4-0, 5-2, 1-0 → marque 0,75, encaisse 3,25 par match."
           ]
          },
          {
@@ -79704,9 +83511,63 @@
         "blocs": [
          {
           "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "TSV Havelse",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 2,
+              "ext": 3,
+              "res": "D"
+             },
+             {
+              "dom": 3,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 2,
+              "res": "N"
+             },
+             {
+              "dom": 1,
+              "ext": 3,
+              "res": "D"
+             }
+            ]
+           },
+           {
+            "equipe": "Würzburg",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 2,
+              "ext": 2,
+              "res": "N"
+             },
+             {
+              "dom": 3,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 6,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "D"
+             }
+            ]
+           }
+          ],
           "lignes": [
            "TSV Havelse à domicile (4) : 2-3, 3-2, 2-2, 1-3 → marque 2,00, encaisse 2,50 par match.",
-           "Würzburg à l'extérieur (4) : 2-2, 0-3, 2-6, 1-2 → marque 1,25, encaisse 3,25 par match."
+           "Würzburg à l'extérieur (4) : 2-2, 3-0, 6-2, 2-1 → marque 1,25, encaisse 3,25 par match."
           ]
          },
          {

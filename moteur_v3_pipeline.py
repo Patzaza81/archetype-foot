@@ -605,7 +605,17 @@ def explication(sel, ctx, apercu):
     att_d, def_e = _lisse(sh["attack"], nh), _lisse(sa["defense"], na)
     att_e, def_d = _lisse(sa["attack"], na), _lisse(sh["defense"], nh)
     lh, la = model.lambda_home, model.lambda_away
-    scores = lambda L: ", ".join(f"{m['buts_marques']}-{m['buts_encaisses']}" for m in L)
+    # Scores toujours dans l'ordre d'affichage d'un match : domicile en premier, extérieur en second.
+    # L'équipe qui joue à l'extérieur voit donc ses propres buts en 2e position.
+    def scores(L, domicile):
+        return ", ".join(f"{m['buts_marques']}-{m['buts_encaisses']}" if domicile
+                         else f"{m['buts_encaisses']}-{m['buts_marques']}" for m in L)
+
+    def historique(L, domicile, equipe):
+        res = lambda m: "V" if m["buts_marques"] > m["buts_encaisses"] else ("N" if m["buts_marques"] == m["buts_encaisses"] else "D")
+        return {"equipe": equipe, "domicile": domicile, "matchs": [
+            {"dom": int(m["buts_marques"] if domicile else m["buts_encaisses"]),
+             "ext": int(m["buts_encaisses"] if domicile else m["buts_marques"]), "res": res(m)} for m in L]}
     p, cote, marche = sel["probabilite"], sel["cote"], sel["marche"]
     impl = 1 / cote
     seuil = edv_threshold(p)
@@ -617,9 +627,9 @@ def explication(sel, ctx, apercu):
     regle = DOUBLE_CONTROLE.get(marche)
 
     blocs = [
-        {"titre": "Données", "lignes": [
-            f"{dom} à domicile ({nh}) : {scores(H)} → marque {_n2(sh['gf'])}, encaisse {_n2(sh['ga'])} par match.",
-            f"{ext} à l'extérieur ({na}) : {scores(A)} → marque {_n2(sa['gf'])}, encaisse {_n2(sa['ga'])} par match."]},
+        {"titre": "Données", "historiques": [historique(H, True, dom), historique(A, False, ext)], "lignes": [
+            f"{dom} à domicile ({nh}) : {scores(H, True)} → marque {_n2(sh['gf'])}, encaisse {_n2(sh['ga'])} par match.",
+            f"{ext} à l'extérieur ({na}) : {scores(A, False)} → marque {_n2(sa['gf'])}, encaisse {_n2(sa['ga'])} par match."]},
         {"titre": "Buts attendus", "lignes": [
             f"Lissage vers {_n2(MOYENNE_REFERENCE)} but : (n × moyenne + {K_LISSAGE:g} × {_n2(MOYENNE_REFERENCE)}) / (n + {K_LISSAGE:g}).",
             f"{dom} : attaque {_n2(sh['attack'])} → {_n2(att_d)} ; défense {ext} {_n2(sa['defense'])} → {_n2(def_e)} ; "
