@@ -496,9 +496,11 @@ def evalue_enregistrement(enreg, calibrateur):
     if not selections and (calibrateur is None or not calibrateur.fit_result.ready):
         apercu = [{**s_, "explication": explication(s_, ctx, apercu=True)}
                   for s_ in (_avec_indice(x, ctx) for x in _format(decide([{**c, "calibrated": True} for c in r["candidates"]])[0]))]
+    alternatives = alternatives_indice(candidats, selections or apercu, ctx, (base.get("domicile"), base.get("exterieur")))
     return {**base, "statut": "EVALUE", "lambda_dom": round(m.lambda_home, 3), "lambda_ext": round(m.lambda_away, 3),
             "n_dom": m.home_sample.current_n, "n_ext": m.away_sample.current_n, "couverture": cover,
-            "selections": selections, "apercu_non_calibre": apercu, "candidats": candidats[:5],
+            "selections": selections, "apercu_non_calibre": apercu, "alternatives_indice": alternatives,
+            "candidats": candidats[:5],
             "tous_les_candidats": candidats}
 
 
@@ -686,6 +688,26 @@ def _avec_indice(sel, ctx):
     return {**sel, "indice_performance": indice_pour(sel, ctx)}
 
 
+def alternatives_indice(candidats, retenus, ctx, equipes, max_alt=3):
+    """Marchés valides mais écartés (dominés ou trop liés), avec leur indice de performance. Information seulement :
+    ne change jamais la sélection. Au plus `max_alt`, les plus probables d'abord, au format d'un candidat du site."""
+    pris = {x["marche"] for x in retenus}
+    sortie = []
+    for c in sorted(candidats, key=lambda c: c["probabilite"], reverse=True):
+        if c["marche"] in pris or any(r_ != "CALIBRATION_ABSENTE" for r_ in c["raisons"]):
+            continue
+        perf = indice_pour(c, ctx)
+        if perf is None:
+            continue
+        sortie.append({"marche": nom_site(c["marche"]), "marche_moteur": c["marche"],
+                       "libelle": (libelle_handicap(c["marche"], *(equipes[0] or "Domicile", equipes[1] or "Extérieur"))
+                                   if c["marche"].startswith("handicap_") else None),
+                       "cote": c["cote"], "probabilite": c["probabilite"], "indice_performance": perf})
+        if len(sortie) >= max_alt:
+            break
+    return sortie
+
+
 def alternatives(sel, ctx, apercu):
     """Bloc 6 : famille du pari retenu + meilleurs paris des autres familles avec la raison exacte de leur rejet."""
     groupe = groupe_exposition(sel["marche"])
@@ -769,7 +791,7 @@ VIGILANCE_APERCU = ("Aperçu NON calibré : la calibration n'a pas encore assez 
                     "sélection du moteur, seulement ce qu'il retiendrait si la calibration confirmait ses probabilités.")
 
 
-def candidat_site(sel, rang, n_min, lambdas=None, apercu=False, equipes=None):
+def candidat_site(sel, rang, n_min, lambdas=None, apercu=False, equipes=None, alternatives_indice=None):
     """Une sélection V3 au format d'un candidat de la page « Sélections Archetype » (moteur_v2_6_9.selection.Px)."""
     preuves = []
     if sel["raisons_saison"]:
@@ -788,6 +810,7 @@ def candidat_site(sel, rang, n_min, lambdas=None, apercu=False, equipes=None):
             "probabilite": sel["probabilite"], "cote": sel["cote"], "edge": sel["edge"], "edv": sel["edv"] / 100.0,
             "niveau": niveau_echantillon(n_min), "robustesse": None, "points_de_vigilance": vigilance, "rang": rang,
             "apercu_non_calibre": apercu, "indice_performance": sel.get("indice_performance"),
+            "alternatives_indice": alternatives_indice or [],
             "justification": {"resume": synthese(sel, n_min, apercu), "preuves": preuves,
                               "explication": sel.get("explication"),
                               "donnees_suffisantes": True, "bibliotheque": {"ev_percentage": sel["edv"]}}}
@@ -801,7 +824,7 @@ def signal_site(x):
     apercu = not x["selections"] and bool(x.get("apercu_non_calibre"))
     source = x["selections"] or x.get("apercu_non_calibre") or []
     equipes = (x.get("domicile") or "Domicile", x.get("exterieur") or "Extérieur")
-    selection = {rang: candidat_site(s, rang, n_min, lambdas, apercu, equipes) for rang, s in zip(rangs, source)}
+    selection = {rang: candidat_site(s, rang, n_min, lambdas, apercu, equipes, x.get("alternatives_indice")) for rang, s in zip(rangs, source)}
     return {"match_id": x["match_id"], "date": x["date"], "heure_cameroun": x["heure"], "competition": x["competition"],
             "domicile": x["domicile"], "exterieur": x["exterieur"], "moteur_utilise": "moteur_v3",
             "moteur_v3": {"statut": "OK" if x["statut"] == "EVALUE" else x["statut"], "moteur": "moteur_v3",

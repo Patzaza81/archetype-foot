@@ -491,3 +491,18 @@ def test_candidat_site_porte_l_indice_de_performance():
         assert p is None or (0 <= p["indice"] <= 4 and p["sur"] == 4 and len(p["scenarios"]) == 4)
         c = mp.candidat_site(a, "P1", 5, None, True, ("A", "B"))
         assert c["indice_performance"] == p
+
+
+def test_alternatives_indice_informatives_et_sans_effet_sur_la_selection():
+    vus = 0
+    for e in json.load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "tests", "fixtures", "v3_matchs_reels_2709.json"), encoding="utf-8"))["enregistrements"]:
+        x = mp.evalue_enregistrement(e, None)
+        if x.get("statut") != "EVALUE":
+            continue
+        retenus = {s["marche"] for s in (x["selections"] or x["apercu_non_calibre"])}
+        for a in x.get("alternatives_indice", []):
+            vus += 1
+            assert a["marche_moteur"] not in retenus and 0 <= a["indice_performance"]["indice"] <= 4
+            assert a["cote"] and 0 < a["probabilite"] < 1
+        assert len(x.get("alternatives_indice", [])) <= 3
+    assert vus > 0

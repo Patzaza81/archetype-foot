@@ -1,8 +1,8 @@
 {
  "moteur": "moteur_v3",
  "statut": "PRODUCTION PARALLÈLE — CANDIDAT",
- "genere_le": "2026-10-10T07:49:39Z",
- "empreinte_code_v3": "9eb392fb6c50",
+ "genere_le": "2026-10-10T08:10:47Z",
+ "empreinte_code_v3": "00271a7db4fc",
  "commit": null,
  "calibration": {
   "prete": true,
@@ -13,30 +13,30 @@
   "raison": "OK"
  },
  "bilan": {
-  "matchs": 616,
+  "matchs": 614,
   "statuts": {
    "NON_EVALUE": 126,
-   "EVALUE": 490
+   "EVALUE": 488
   },
   "selections": 40,
   "matchs_avec_selection": 39,
   "matchs_en_apercu_non_calibre": 0,
   "raisons_de_rejet": {
-   "VALUE_NON_ELIGIBLE": 33168,
-   "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT": 32660,
-   "JUSTIFICATION_INSUFFISANTE": 32660,
-   "COTE_HORS_FENETRE": 29484,
-   "PROBABILITE_INF_60": 27981,
-   "N_3_4_CONTROLE_STRICT_NON_SATISFAIT": 25449,
-   "N_LIEU_INF_3": 9073,
-   "SURDISPERSION_SUP_1_50": 6892,
+   "VALUE_NON_ELIGIBLE": 33024,
+   "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT": 32515,
+   "JUSTIFICATION_INSUFFISANTE": 32515,
+   "COTE_HORS_FENETRE": 29355,
+   "PROBABILITE_INF_60": 27863,
+   "N_3_4_CONTROLE_STRICT_NON_SATISFAIT": 25309,
+   "N_LIEU_INF_3": 9005,
+   "SURDISPERSION_SUP_1_50": 6815,
    "SURDISPERSION_1_20_1_50_ET_P_INF_67": 6686,
-   "EDV_INSUFFISANTE": 4743,
-   "PROBABILITE_DEGENEREE": 1203
+   "EDV_INSUFFISANTE": 4721,
+   "PROBABILITE_DEGENEREE": 1202
   },
   "couverture": {
-   "marches_cotes_calcules": 33584,
-   "issues_betpawa": 34190,
+   "marches_cotes_calcules": 33439,
+   "issues_betpawa": 34042,
    "groupes_betpawa_non_lus": {}
   }
  },
@@ -64,234 +64,6 @@
    "candidats": []
   },
   {
-   "match_id": "91v9lvfzrqwosutn4hfnayi38",
-   "date": "2026-10-10",
-   "heure": "09:00",
-   "competition": "Hong Kong : Premier Ligue",
-   "domicile": "Kitchee SC",
-   "exterieur": "Hong Kong",
-   "statut": "EVALUE",
-   "lambda_dom": 2.182,
-   "lambda_ext": 1.485,
-   "n_dom": 1,
-   "n_ext": 2,
-   "couverture": {
-    "issues_betpawa": 71,
-    "marches_cotes_calcules": 68,
-    "groupes_non_lus": [],
-    "groupes_ignores_par_choix": [
-     "handicap_3issues_-3"
-    ]
-   },
-   "selections": [],
-   "apercu_non_calibre": [],
-   "candidats": [
-    {
-     "marche": "1x2_2",
-     "libelle": "Victoire extérieur",
-     "cote": 15.4,
-     "probabilite_brute": 0.2599027494967287,
-     "probabilite": 0.2581853177393085,
-     "calibree": true,
-     "edv": 297.6,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "N_LIEU_INF_3",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "score_2_3",
-     "libelle": "Score exact 2-3",
-     "cote": 83.33,
-     "probabilite_brute": 0.03321629641491742,
-     "probabilite": 0.04473803098877074,
-     "calibree": true,
-     "edv": 272.8,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "N_LIEU_INF_3",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "score_1_3",
-     "libelle": "Score exact 1-3",
-     "cote": 84.17,
-     "probabilite_brute": 0.030449524780537706,
-     "probabilite": 0.04112828003768391,
-     "calibree": true,
-     "edv": 246.2,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "N_LIEU_INF_3",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "score_0_2",
-     "libelle": "Score exact 0-2",
-     "cote": 84.17,
-     "probabilite_brute": 0.028186963002807163,
-     "probabilite": 0.0381763614812084,
-     "calibree": true,
-     "edv": 221.3,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "N_LIEU_INF_3",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "handicap_1_2",
-     "libelle": "Handicap 3 choix Domicile −1 (2) : Extérieur ne perd pas",
-     "cote": 6.0,
-     "probabilite_brute": 0.4650795272691706,
-     "probabilite": 0.4857303732518261,
-     "calibree": true,
-     "edv": 191.4,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "N_LIEU_INF_3",
-      "PROBABILITE_INF_60",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    }
-   ]
-  },
-  {
-   "match_id": "91ircrkbtfeqrnniygw4jmuc4",
-   "date": "2026-10-10",
-   "heure": "09:00",
-   "competition": "Hong Kong : Premier Ligue",
-   "domicile": "Wofoo Tai Po FC",
-   "exterieur": "Kowloon City",
-   "statut": "EVALUE",
-   "lambda_dom": 2.907,
-   "lambda_ext": 1.293,
-   "n_dom": 3,
-   "n_ext": 4,
-   "couverture": {
-    "issues_betpawa": 77,
-    "marches_cotes_calcules": 77,
-    "groupes_non_lus": [],
-    "groupes_ignores_par_choix": []
-   },
-   "selections": [],
-   "apercu_non_calibre": [],
-   "candidats": [
-    {
-     "marche": "score_4_3",
-     "libelle": "Score exact 4-3",
-     "cote": 58.33,
-     "probabilite_brute": 0.016077974974129498,
-     "probabilite": 0.025456730205247347,
-     "calibree": true,
-     "edv": 48.5,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "PROBABILITE_INF_60",
-      "SURDISPERSION_SUP_1_50",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "over_4_5",
-     "libelle": "Plus de 4,5 buts",
-     "cote": 3.05,
-     "probabilite_brute": 0.41016609486651634,
-     "probabilite": 0.4631122842743559,
-     "calibree": true,
-     "edv": 41.2,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "PROBABILITE_INF_60",
-      "SURDISPERSION_SUP_1_50",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "over_5_5",
-     "libelle": "Plus de 5,5 buts",
-     "cote": 5.22,
-     "probabilite_brute": 0.24684832138548393,
-     "probabilite": 0.2501371088452581,
-     "calibree": true,
-     "edv": 30.6,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "PROBABILITE_INF_60",
-      "SURDISPERSION_SUP_1_50",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "exact_goals_6_plus",
-     "libelle": "6 buts ou plus",
-     "cote": 5.04,
-     "probabilite_brute": 0.24684832138548393,
-     "probabilite": 0.2501371088452581,
-     "calibree": true,
-     "edv": 26.1,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "PROBABILITE_INF_60",
-      "SURDISPERSION_SUP_1_50",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    },
-    {
-     "marche": "score_3_3",
-     "libelle": "Score exact 3-3",
-     "cote": 37.5,
-     "probabilite_brute": 0.022124042738336187,
-     "probabilite": 0.03074341723126569,
-     "calibree": true,
-     "edv": 15.3,
-     "raisons": [
-      "COTE_HORS_FENETRE",
-      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
-      "JUSTIFICATION_INSUFFISANTE",
-      "N_3_4_CONTROLE_STRICT_NON_SATISFAIT",
-      "PROBABILITE_INF_60",
-      "SURDISPERSION_SUP_1_50",
-      "VALUE_NON_ELIGIBLE"
-     ]
-    }
-   ]
-  },
-  {
    "match_id": "14kxa0mx9wjkrcnl1h308mwic",
    "date": "2026-10-10",
    "heure": "09:30",
@@ -311,6 +83,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_2_1",
@@ -424,6 +197,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_0",
@@ -537,6 +311,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_1_4",
@@ -683,6 +458,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_6_plus",
@@ -796,6 +572,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -910,6 +687,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -1045,6 +823,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_1_4",
@@ -1148,6 +927,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_1_1",
@@ -1266,6 +1046,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_6_plus",
@@ -1374,6 +1155,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -1489,6 +1271,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -1607,6 +1390,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -1722,6 +1506,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -1835,6 +1620,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_1_4",
@@ -1948,6 +1734,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_3",
@@ -2238,6 +2025,7 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_3",
@@ -2390,6 +2178,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -2495,6 +2284,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_-1_2",
@@ -2626,6 +2416,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_1_3",
@@ -2741,6 +2532,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_2_4",
@@ -2846,6 +2638,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_0",
@@ -2970,6 +2763,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -3078,6 +2872,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_3",
@@ -3188,6 +2983,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_2",
@@ -3303,6 +3099,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -3416,6 +3213,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "clean_home",
@@ -3526,6 +3324,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -3636,6 +3435,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -3750,6 +3550,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_-1_2",
@@ -3868,6 +3669,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -3983,6 +3785,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -4098,6 +3901,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -4383,6 +4187,136 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [
+    {
+     "marche": "handicap_exterieur_0.5",
+     "marche_moteur": "handicap_0.5_2",
+     "libelle": "Handicap Reims +0,5 : Reims ne perd pas",
+     "cote": 1.67,
+     "probabilite": 0.7725445829085967,
+     "indice_performance": {
+      "version": 2,
+      "indice": 2,
+      "sur": 4,
+      "niveau": "ATTENTION",
+      "libelle": "Attention",
+      "moyenne_domicile": {
+       "marque": 1.0,
+       "encaisse": 2.0
+      },
+      "moyenne_exterieur": {
+       "marque": 2.0,
+       "encaisse": 0.667
+      },
+      "pire_domicile": {
+       "marque": 2.0,
+       "encaisse": 5.0
+      },
+      "pire_exterieur": {
+       "marque": 0.0,
+       "encaisse": 0.0
+      },
+      "scenarios": [
+       {
+        "domicile": "moyen",
+        "exterieur": "moyen",
+        "buts_domicile": 1.0,
+        "buts_exterieur": 2.0,
+        "marge": 1.5,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "moyen",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 2.0,
+        "marge": 0.5,
+        "valide": true
+       },
+       {
+        "domicile": "moyen",
+        "exterieur": "pire",
+        "buts_domicile": 1.0,
+        "buts_exterieur": 0.0,
+        "marge": -0.5,
+        "valide": false
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "pire",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 0.0,
+        "marge": -1.5,
+        "valide": false
+       }
+      ]
+     }
+    },
+    {
+     "marche": "handicap3_domicile_-1_2",
+     "marche_moteur": "handicap_1_2",
+     "libelle": "Handicap 3 choix Nantes −1 (2) : Reims ne perd pas",
+     "cote": 1.64,
+     "probabilite": 0.7725445829085967,
+     "indice_performance": {
+      "version": 2,
+      "indice": 2,
+      "sur": 4,
+      "niveau": "ATTENTION",
+      "libelle": "Attention",
+      "moyenne_domicile": {
+       "marque": 1.0,
+       "encaisse": 2.0
+      },
+      "moyenne_exterieur": {
+       "marque": 2.0,
+       "encaisse": 0.667
+      },
+      "pire_domicile": {
+       "marque": 2.0,
+       "encaisse": 5.0
+      },
+      "pire_exterieur": {
+       "marque": 0.0,
+       "encaisse": 0.0
+      },
+      "scenarios": [
+       {
+        "domicile": "moyen",
+        "exterieur": "moyen",
+        "buts_domicile": 1.0,
+        "buts_exterieur": 2.0,
+        "marge": 1.5,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "moyen",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 2.0,
+        "marge": 0.5,
+        "valide": true
+       },
+       {
+        "domicile": "moyen",
+        "exterieur": "pire",
+        "buts_domicile": 1.0,
+        "buts_exterieur": 0.0,
+        "marge": -0.5,
+        "valide": false
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "pire",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 0.0,
+        "marge": -1.5,
+        "valide": false
+       }
+      ]
+     }
+    }
+   ],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -4493,6 +4427,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -4613,6 +4548,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -4721,6 +4657,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_-1_2",
@@ -4982,6 +4919,7 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_1",
@@ -5090,6 +5028,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -5193,6 +5132,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_1_1",
@@ -5306,6 +5246,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -5419,6 +5360,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -5523,6 +5465,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -5633,6 +5576,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -5741,6 +5685,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_1_4",
@@ -5867,6 +5812,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_6_plus",
@@ -5985,6 +5931,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -6102,6 +6049,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -6217,6 +6165,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_2_0",
@@ -6330,6 +6279,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -6443,6 +6393,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_3",
@@ -6574,6 +6525,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_2_4",
@@ -6703,6 +6655,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -6821,6 +6774,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_2",
@@ -6929,6 +6883,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_2",
@@ -7192,6 +7147,7 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -7297,6 +7253,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_1",
@@ -7410,6 +7367,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_2",
@@ -7528,6 +7486,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -7636,6 +7595,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -7751,6 +7711,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_1_3",
@@ -7866,6 +7827,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -8142,6 +8104,7 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -8250,6 +8213,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -8388,6 +8352,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_1_0",
@@ -8506,6 +8471,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_6_plus",
@@ -8619,6 +8585,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -8738,6 +8705,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -8848,6 +8816,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_0",
@@ -8966,6 +8935,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_4",
@@ -9079,6 +9049,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -9189,6 +9160,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -9452,6 +9424,7 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -9558,6 +9531,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -9664,6 +9638,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -9784,6 +9759,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -9905,6 +9881,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -10026,6 +10003,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -10139,6 +10117,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_-2_2",
@@ -10244,6 +10223,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -10357,6 +10337,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_2_1",
@@ -10467,6 +10448,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_1_4",
@@ -10577,6 +10559,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_2_0",
@@ -10692,6 +10675,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_2_4",
@@ -10805,6 +10789,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_1",
@@ -10913,6 +10898,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_2",
@@ -11016,6 +11002,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -11124,6 +11111,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_1_1",
@@ -11237,6 +11225,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_2_3",
@@ -11340,6 +11329,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -11459,6 +11449,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -11713,6 +11704,7 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -11821,6 +11813,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -11936,6 +11929,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -12191,6 +12185,136 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [
+    {
+     "marche": "handicap_exterieur_0.5",
+     "marche_moteur": "handicap_0.5_2",
+     "libelle": "Handicap Walsall +0,5 : Walsall ne perd pas",
+     "cote": 1.57,
+     "probabilite": 0.6980067883456363,
+     "indice_performance": {
+      "version": 2,
+      "indice": 1,
+      "sur": 4,
+      "niveau": "RISQUE",
+      "libelle": "Risqué",
+      "moyenne_domicile": {
+       "marque": 1.0,
+       "encaisse": 0.75
+      },
+      "moyenne_exterieur": {
+       "marque": 1.5,
+       "encaisse": 0.75
+      },
+      "pire_domicile": {
+       "marque": 2.0,
+       "encaisse": 0.0
+      },
+      "pire_exterieur": {
+       "marque": 0.0,
+       "encaisse": 0.0
+      },
+      "scenarios": [
+       {
+        "domicile": "moyen",
+        "exterieur": "moyen",
+        "buts_domicile": 1.0,
+        "buts_exterieur": 1.5,
+        "marge": 1.0,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "moyen",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 1.5,
+        "marge": 0.0,
+        "valide": false
+       },
+       {
+        "domicile": "moyen",
+        "exterieur": "pire",
+        "buts_domicile": 1.0,
+        "buts_exterieur": 0.0,
+        "marge": -0.5,
+        "valide": false
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "pire",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 0.0,
+        "marge": -1.5,
+        "valide": false
+       }
+      ]
+     }
+    },
+    {
+     "marche": "double_chance_X2",
+     "marche_moteur": "dc_X2",
+     "libelle": null,
+     "cote": 1.55,
+     "probabilite": 0.6980067883456363,
+     "indice_performance": {
+      "version": 2,
+      "indice": 1,
+      "sur": 4,
+      "niveau": "RISQUE",
+      "libelle": "Risqué",
+      "moyenne_domicile": {
+       "marque": 1.0,
+       "encaisse": 0.75
+      },
+      "moyenne_exterieur": {
+       "marque": 1.5,
+       "encaisse": 0.75
+      },
+      "pire_domicile": {
+       "marque": 2.0,
+       "encaisse": 0.0
+      },
+      "pire_exterieur": {
+       "marque": 0.0,
+       "encaisse": 0.0
+      },
+      "scenarios": [
+       {
+        "domicile": "moyen",
+        "exterieur": "moyen",
+        "buts_domicile": 1.0,
+        "buts_exterieur": 1.5,
+        "marge": 1.0,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "moyen",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 1.5,
+        "marge": 0.0,
+        "valide": false
+       },
+       {
+        "domicile": "moyen",
+        "exterieur": "pire",
+        "buts_domicile": 1.0,
+        "buts_exterieur": 0.0,
+        "marge": -0.5,
+        "valide": false
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "pire",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 0.0,
+        "marge": -1.5,
+        "valide": false
+       }
+      ]
+     }
+    }
+   ],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -12298,6 +12422,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -12404,6 +12529,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_2",
@@ -12530,6 +12656,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_2_1",
@@ -12649,6 +12776,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -12754,6 +12882,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -12869,6 +12998,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -12984,6 +13114,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -13245,6 +13376,72 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [
+    {
+     "marche": "handicap_domicile_-0.5",
+     "marche_moteur": "handicap_0.5_1",
+     "libelle": "Handicap Jesenice −0,5 : Jesenice gagne",
+     "cote": 1.61,
+     "probabilite": 0.7149720714189544,
+     "indice_performance": {
+      "version": 2,
+      "indice": 2,
+      "sur": 4,
+      "niveau": "ATTENTION",
+      "libelle": "Attention",
+      "moyenne_domicile": {
+       "marque": 2.4,
+       "encaisse": 1.2
+      },
+      "moyenne_exterieur": {
+       "marque": 0.4,
+       "encaisse": 2.0
+      },
+      "pire_domicile": {
+       "marque": 0.0,
+       "encaisse": 3.0
+      },
+      "pire_exterieur": {
+       "marque": 1.0,
+       "encaisse": 2.0
+      },
+      "scenarios": [
+       {
+        "domicile": "moyen",
+        "exterieur": "moyen",
+        "buts_domicile": 2.4,
+        "buts_exterieur": 0.4,
+        "marge": 1.5,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "moyen",
+        "buts_domicile": 0.0,
+        "buts_exterieur": 0.4,
+        "marge": -0.9,
+        "valide": false
+       },
+       {
+        "domicile": "moyen",
+        "exterieur": "pire",
+        "buts_domicile": 2.4,
+        "buts_exterieur": 1.0,
+        "marge": 0.9,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "pire",
+        "buts_domicile": 0.0,
+        "buts_exterieur": 1.0,
+        "marge": -1.5,
+        "valide": false
+       }
+      ]
+     }
+    }
+   ],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -13493,6 +13690,7 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -13606,6 +13804,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -13710,6 +13909,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_2",
@@ -13959,6 +14159,7 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -14069,6 +14270,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_3",
@@ -14332,6 +14534,72 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [
+    {
+     "marche": "btts_oui",
+     "marche_moteur": "btts_yes",
+     "libelle": null,
+     "cote": 1.55,
+     "probabilite": 0.7342346630603128,
+     "indice_performance": {
+      "version": 2,
+      "indice": 4,
+      "sur": 4,
+      "niveau": "SUR",
+      "libelle": "Sûr",
+      "moyenne_domicile": {
+       "marque": 2.75,
+       "encaisse": 1.75
+      },
+      "moyenne_exterieur": {
+       "marque": 2.0,
+       "encaisse": 1.75
+      },
+      "pire_domicile": {
+       "marque": 2.0,
+       "encaisse": 2.0
+      },
+      "pire_exterieur": {
+       "marque": 1.0,
+       "encaisse": 0.0
+      },
+      "scenarios": [
+       {
+        "domicile": "moyen",
+        "exterieur": "moyen",
+        "buts_domicile": 2.75,
+        "buts_exterieur": 2.0,
+        "marge": 1.5,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "moyen",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 2.0,
+        "marge": 1.5,
+        "valide": true
+       },
+       {
+        "domicile": "moyen",
+        "exterieur": "pire",
+        "buts_domicile": 2.75,
+        "buts_exterieur": 1.0,
+        "marge": 0.5,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "pire",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 1.0,
+        "marge": 0.5,
+        "valide": true
+       }
+      ]
+     }
+    }
+   ],
    "candidats": [
     {
      "marche": "score_4_3",
@@ -14440,6 +14708,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -14553,6 +14822,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -14661,6 +14931,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -14769,6 +15040,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_2",
@@ -14879,6 +15151,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -14992,6 +15265,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -15104,6 +15378,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_1_4",
@@ -15228,6 +15503,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -15348,6 +15624,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -15456,6 +15733,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "away_under_0_5",
@@ -15566,6 +15844,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_6_plus",
@@ -15692,6 +15971,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_1_3",
@@ -15807,6 +16087,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -15947,6 +16228,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -16050,6 +16332,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -16158,6 +16441,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -16282,6 +16566,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_1",
@@ -16538,6 +16823,7 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -16648,6 +16934,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -16756,6 +17043,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_2.5_2",
@@ -16858,6 +17146,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_2.5_2",
@@ -16964,6 +17253,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_2_4",
@@ -17217,6 +17507,72 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [
+    {
+     "marche": "btts_oui",
+     "marche_moteur": "btts_yes",
+     "libelle": null,
+     "cote": 1.52,
+     "probabilite": 0.7665776112996142,
+     "indice_performance": {
+      "version": 2,
+      "indice": 4,
+      "sur": 4,
+      "niveau": "SUR",
+      "libelle": "Sûr",
+      "moyenne_domicile": {
+       "marque": 1.75,
+       "encaisse": 2.0
+      },
+      "moyenne_exterieur": {
+       "marque": 2.333,
+       "encaisse": 3.333
+      },
+      "pire_domicile": {
+       "marque": 2.0,
+       "encaisse": 2.0
+      },
+      "pire_exterieur": {
+       "marque": 1.0,
+       "encaisse": 2.0
+      },
+      "scenarios": [
+       {
+        "domicile": "moyen",
+        "exterieur": "moyen",
+        "buts_domicile": 1.75,
+        "buts_exterieur": 2.333,
+        "marge": 1.25,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "moyen",
+        "buts_domicile": 1.0,
+        "buts_exterieur": 2.333,
+        "marge": 0.5,
+        "valide": true
+       },
+       {
+        "domicile": "moyen",
+        "exterieur": "pire",
+        "buts_domicile": 1.75,
+        "buts_exterieur": 1.0,
+        "marge": 0.5,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "pire",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 1.0,
+        "marge": 0.5,
+        "valide": true
+       }
+      ]
+     }
+    }
+   ],
    "candidats": [
     {
      "marche": "exact_goals_6_plus",
@@ -17325,6 +17681,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -17434,6 +17791,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -17539,6 +17897,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_2_1",
@@ -17652,6 +18011,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -17765,6 +18125,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -17880,6 +18241,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_6_plus",
@@ -17995,6 +18357,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_3",
@@ -18103,6 +18466,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -18206,6 +18570,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -18324,6 +18689,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_6_plus",
@@ -18437,6 +18803,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -18555,6 +18922,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -18668,6 +19036,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_2",
@@ -18771,6 +19140,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -18879,6 +19249,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_1",
@@ -18994,6 +19365,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_2",
@@ -19114,6 +19486,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_2_0",
@@ -19227,6 +19600,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -19335,6 +19709,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_2",
@@ -19454,6 +19829,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -19564,6 +19940,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -19677,6 +20054,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_1_3",
@@ -19787,6 +20165,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_1_3",
@@ -19902,6 +20281,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_2_4",
@@ -20015,6 +20395,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -20271,6 +20652,72 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [
+    {
+     "marche": "handicap_exterieur_0.5",
+     "marche_moteur": "handicap_0.5_2",
+     "libelle": "Handicap AlbinoLeffe +0,5 : AlbinoLeffe ne perd pas",
+     "cote": 1.52,
+     "probabilite": 0.7074478203604262,
+     "indice_performance": {
+      "version": 2,
+      "indice": 2,
+      "sur": 4,
+      "niveau": "ATTENTION",
+      "libelle": "Attention",
+      "moyenne_domicile": {
+       "marque": 1.0,
+       "encaisse": 1.0
+      },
+      "moyenne_exterieur": {
+       "marque": 2.25,
+       "encaisse": 1.25
+      },
+      "pire_domicile": {
+       "marque": 2.0,
+       "encaisse": 2.0
+      },
+      "pire_exterieur": {
+       "marque": 0.0,
+       "encaisse": 0.0
+      },
+      "scenarios": [
+       {
+        "domicile": "moyen",
+        "exterieur": "moyen",
+        "buts_domicile": 1.0,
+        "buts_exterieur": 2.25,
+        "marge": 1.75,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "moyen",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 2.25,
+        "marge": 0.75,
+        "valide": true
+       },
+       {
+        "domicile": "moyen",
+        "exterieur": "pire",
+        "buts_domicile": 1.0,
+        "buts_exterieur": 0.0,
+        "marge": -0.5,
+        "valide": false
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "pire",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 0.0,
+        "marge": -1.5,
+        "valide": false
+       }
+      ]
+     }
+    }
+   ],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -20395,6 +20842,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -20508,6 +20956,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -20616,6 +21065,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -20724,6 +21174,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_-2_2",
@@ -20985,6 +21436,72 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [
+    {
+     "marche": "handicap3_domicile_2_1",
+     "marche_moteur": "handicap_-2_1",
+     "libelle": "Handicap 3 choix Slask Wroclaw +2 (1) : Slask Wroclaw ne perd pas par 2 buts ou plus",
+     "cote": 1.46,
+     "probabilite": 0.7415006640519021,
+     "indice_performance": {
+      "version": 2,
+      "indice": 1,
+      "sur": 4,
+      "niveau": "RISQUE",
+      "libelle": "Risqué",
+      "moyenne_domicile": {
+       "marque": 1.5,
+       "encaisse": 1.5
+      },
+      "moyenne_exterieur": {
+       "marque": 2.0,
+       "encaisse": 1.667
+      },
+      "pire_domicile": {
+       "marque": 0.0,
+       "encaisse": 0.0
+      },
+      "pire_exterieur": {
+       "marque": 3.0,
+       "encaisse": 2.0
+      },
+      "scenarios": [
+       {
+        "domicile": "moyen",
+        "exterieur": "moyen",
+        "buts_domicile": 1.5,
+        "buts_exterieur": 2.0,
+        "marge": 1.0,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "moyen",
+        "buts_domicile": 0.0,
+        "buts_exterieur": 2.0,
+        "marge": -0.5,
+        "valide": false
+       },
+       {
+        "domicile": "moyen",
+        "exterieur": "pire",
+        "buts_domicile": 1.5,
+        "buts_exterieur": 3.0,
+        "marge": 0.0,
+        "valide": false
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "pire",
+        "buts_domicile": 0.0,
+        "buts_exterieur": 3.0,
+        "marge": -1.5,
+        "valide": false
+       }
+      ]
+     }
+    }
+   ],
    "candidats": [
     {
      "marche": "score_3_0",
@@ -21095,6 +21612,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_6_plus",
@@ -21213,6 +21731,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_2",
@@ -21333,6 +21852,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -21446,6 +21966,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -21558,6 +22079,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "btts_no",
@@ -21671,6 +22193,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_2_0",
@@ -21800,6 +22323,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -21908,6 +22432,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_1_3",
@@ -22023,6 +22548,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -22131,6 +22657,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -22260,6 +22787,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_0",
@@ -22384,6 +22912,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_2_1",
@@ -22499,6 +23028,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -22777,6 +23307,72 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [
+    {
+     "marche": "handicap_exterieur_0.5",
+     "marche_moteur": "handicap_0.5_2",
+     "libelle": "Handicap Sion +0,5 : Sion ne perd pas",
+     "cote": 1.44,
+     "probabilite": 0.7437042711106421,
+     "indice_performance": {
+      "version": 2,
+      "indice": 4,
+      "sur": 4,
+      "niveau": "SUR",
+      "libelle": "Sûr",
+      "moyenne_domicile": {
+       "marque": 0.75,
+       "encaisse": 1.25
+      },
+      "moyenne_exterieur": {
+       "marque": 3.0,
+       "encaisse": 1.75
+      },
+      "pire_domicile": {
+       "marque": 2.0,
+       "encaisse": 1.0
+      },
+      "pire_exterieur": {
+       "marque": 2.0,
+       "encaisse": 1.0
+      },
+      "scenarios": [
+       {
+        "domicile": "moyen",
+        "exterieur": "moyen",
+        "buts_domicile": 0.75,
+        "buts_exterieur": 3.0,
+        "marge": 2.75,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "moyen",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 3.0,
+        "marge": 1.5,
+        "valide": true
+       },
+       {
+        "domicile": "moyen",
+        "exterieur": "pire",
+        "buts_domicile": 0.75,
+        "buts_exterieur": 2.0,
+        "marge": 1.75,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "pire",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 2.0,
+        "marge": 0.5,
+        "valide": true
+       }
+      ]
+     }
+    }
+   ],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -22885,6 +23481,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_2",
@@ -23146,6 +23743,7 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_4",
@@ -23254,6 +23852,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_0",
@@ -23362,6 +23961,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_0",
@@ -23480,6 +24080,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_0",
@@ -23600,6 +24201,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_2_0",
@@ -23715,6 +24317,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_2",
@@ -23828,6 +24431,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_2_5",
@@ -23940,6 +24544,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_2",
@@ -24057,6 +24662,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_2",
@@ -24173,6 +24779,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_2",
@@ -24281,6 +24888,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_1",
@@ -24396,6 +25004,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_3",
@@ -24504,6 +25113,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_3.5_2",
@@ -24602,6 +25212,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -24712,6 +25323,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_1_0",
@@ -24827,6 +25439,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_2",
@@ -24958,6 +25571,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_1",
@@ -25076,6 +25690,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_0",
@@ -25189,6 +25804,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_2_3",
@@ -25302,6 +25918,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_1_1",
@@ -25422,6 +26039,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_1_4",
@@ -25530,6 +26148,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -25637,6 +26256,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "clean_home",
@@ -25755,6 +26375,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -26019,6 +26640,72 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [
+    {
+     "marche": "handicap_exterieur_1.5",
+     "marche_moteur": "handicap_1.5_2",
+     "libelle": "Handicap Slavia Sofia +1,5 : Slavia Sofia ne perd pas par 2 buts ou plus",
+     "cote": 1.38,
+     "probabilite": 0.8108364287623214,
+     "indice_performance": {
+      "version": 2,
+      "indice": 1,
+      "sur": 4,
+      "niveau": "RISQUE",
+      "libelle": "Risqué",
+      "moyenne_domicile": {
+       "marque": 1.6,
+       "encaisse": 1.2
+      },
+      "moyenne_exterieur": {
+       "marque": 1.25,
+       "encaisse": 0.5
+      },
+      "pire_domicile": {
+       "marque": 3.0,
+       "encaisse": 2.0
+      },
+      "pire_exterieur": {
+       "marque": 0.0,
+       "encaisse": 1.0
+      },
+      "scenarios": [
+       {
+        "domicile": "moyen",
+        "exterieur": "moyen",
+        "buts_domicile": 1.6,
+        "buts_exterieur": 1.25,
+        "marge": 1.15,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "moyen",
+        "buts_domicile": 3.0,
+        "buts_exterieur": 1.25,
+        "marge": -0.25,
+        "valide": false
+       },
+       {
+        "domicile": "moyen",
+        "exterieur": "pire",
+        "buts_domicile": 1.6,
+        "buts_exterieur": 0.0,
+        "marge": -0.1,
+        "valide": false
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "pire",
+        "buts_domicile": 3.0,
+        "buts_exterieur": 0.0,
+        "marge": -1.5,
+        "valide": false
+       }
+      ]
+     }
+    }
+   ],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -26127,6 +26814,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -26246,6 +26934,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_2_4",
@@ -26503,6 +27192,7 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_3",
@@ -26606,6 +27296,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -26730,6 +27421,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_2_4",
@@ -26994,6 +27686,7 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -27102,6 +27795,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_1.5_1",
@@ -27207,6 +27901,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_4",
@@ -27317,6 +28012,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_2",
@@ -27430,6 +28126,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_3",
@@ -27543,6 +28240,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_2",
@@ -27663,6 +28361,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -27768,6 +28467,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_4",
@@ -28023,6 +28723,136 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [
+    {
+     "marche": "double_chance_1X",
+     "marche_moteur": "dc_1X",
+     "libelle": null,
+     "cote": 1.34,
+     "probabilite": 0.8385145998223724,
+     "indice_performance": {
+      "version": 2,
+      "indice": 1,
+      "sur": 4,
+      "niveau": "RISQUE",
+      "libelle": "Risqué",
+      "moyenne_domicile": {
+       "marque": 1.5,
+       "encaisse": 0.583
+      },
+      "moyenne_exterieur": {
+       "marque": 0.917,
+       "encaisse": 2.083
+      },
+      "pire_domicile": {
+       "marque": 0.0,
+       "encaisse": 0.0
+      },
+      "pire_exterieur": {
+       "marque": 3.0,
+       "encaisse": 2.0
+      },
+      "scenarios": [
+       {
+        "domicile": "moyen",
+        "exterieur": "moyen",
+        "buts_domicile": 1.5,
+        "buts_exterieur": 0.917,
+        "marge": 1.083,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "moyen",
+        "buts_domicile": 0.0,
+        "buts_exterieur": 0.917,
+        "marge": -0.417,
+        "valide": false
+       },
+       {
+        "domicile": "moyen",
+        "exterieur": "pire",
+        "buts_domicile": 1.5,
+        "buts_exterieur": 3.0,
+        "marge": -1.0,
+        "valide": false
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "pire",
+        "buts_domicile": 0.0,
+        "buts_exterieur": 3.0,
+        "marge": -2.5,
+        "valide": false
+       }
+      ]
+     }
+    },
+    {
+     "marche": "handicap_domicile_0.5",
+     "marche_moteur": "handicap_-0.5_1",
+     "libelle": "Handicap Montevideo +0,5 : Montevideo ne perd pas",
+     "cote": 1.34,
+     "probabilite": 0.8385145998223724,
+     "indice_performance": {
+      "version": 2,
+      "indice": 1,
+      "sur": 4,
+      "niveau": "RISQUE",
+      "libelle": "Risqué",
+      "moyenne_domicile": {
+       "marque": 1.5,
+       "encaisse": 0.583
+      },
+      "moyenne_exterieur": {
+       "marque": 0.917,
+       "encaisse": 2.083
+      },
+      "pire_domicile": {
+       "marque": 0.0,
+       "encaisse": 0.0
+      },
+      "pire_exterieur": {
+       "marque": 3.0,
+       "encaisse": 2.0
+      },
+      "scenarios": [
+       {
+        "domicile": "moyen",
+        "exterieur": "moyen",
+        "buts_domicile": 1.5,
+        "buts_exterieur": 0.917,
+        "marge": 1.083,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "moyen",
+        "buts_domicile": 0.0,
+        "buts_exterieur": 0.917,
+        "marge": -0.417,
+        "valide": false
+       },
+       {
+        "domicile": "moyen",
+        "exterieur": "pire",
+        "buts_domicile": 1.5,
+        "buts_exterieur": 3.0,
+        "marge": -1.0,
+        "valide": false
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "pire",
+        "buts_domicile": 0.0,
+        "buts_exterieur": 3.0,
+        "marge": -2.5,
+        "valide": false
+       }
+      ]
+     }
+    }
+   ],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -28280,6 +29110,7 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_3",
@@ -28532,6 +29363,7 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -28642,6 +29474,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -28745,6 +29578,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_-1_2",
@@ -28855,6 +29689,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -28981,6 +29816,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_2",
@@ -29091,6 +29927,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -29204,6 +30041,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_0_5",
@@ -29309,6 +30147,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -29424,6 +30263,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_2_4",
@@ -29572,6 +30412,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_2_1",
@@ -29683,6 +30524,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_-1_2",
@@ -29791,6 +30633,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_0_5",
@@ -29891,6 +30734,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -30006,6 +30850,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_4.5_2",
@@ -30119,6 +30964,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "over_5_5",
@@ -30367,6 +31213,7 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "over_6_5",
@@ -30468,6 +31315,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -30576,6 +31424,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_0_5",
@@ -30684,6 +31533,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_1",
@@ -30788,6 +31638,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -30894,6 +31745,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -30997,6 +31849,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -31099,6 +31952,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_2",
@@ -31213,6 +32067,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -31313,6 +32168,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -31429,6 +32285,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_2_3",
@@ -31532,6 +32389,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_0",
@@ -31640,6 +32498,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_2",
@@ -31743,6 +32602,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_2_1",
@@ -31859,6 +32719,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_1_3",
@@ -31964,6 +32825,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_2_1",
@@ -32089,6 +32951,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -32197,6 +33060,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -32302,6 +33166,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_3",
@@ -32405,6 +33270,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -32539,6 +33405,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_2",
@@ -32647,6 +33514,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -32765,6 +33633,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_-2_2",
@@ -32890,6 +33759,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -33000,6 +33870,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_1_0",
@@ -33115,6 +33986,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -33234,6 +34106,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -33352,6 +34225,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_2_4",
@@ -33465,6 +34339,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_6_plus",
@@ -33573,6 +34448,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -33683,6 +34559,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_2",
@@ -33944,6 +34821,136 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [
+    {
+     "marche": "double_chance_1X",
+     "marche_moteur": "dc_1X",
+     "libelle": null,
+     "cote": 1.34,
+     "probabilite": 0.8004310045317166,
+     "indice_performance": {
+      "version": 2,
+      "indice": 4,
+      "sur": 4,
+      "niveau": "SUR",
+      "libelle": "Sûr",
+      "moyenne_domicile": {
+       "marque": 2.0,
+       "encaisse": 1.0
+      },
+      "moyenne_exterieur": {
+       "marque": 0.333,
+       "encaisse": 2.333
+      },
+      "pire_domicile": {
+       "marque": 2.0,
+       "encaisse": 1.0
+      },
+      "pire_exterieur": {
+       "marque": 1.0,
+       "encaisse": 2.0
+      },
+      "scenarios": [
+       {
+        "domicile": "moyen",
+        "exterieur": "moyen",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 0.333,
+        "marge": 2.167,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "moyen",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 0.333,
+        "marge": 2.167,
+        "valide": true
+       },
+       {
+        "domicile": "moyen",
+        "exterieur": "pire",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 1.0,
+        "marge": 1.5,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "pire",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 1.0,
+        "marge": 1.5,
+        "valide": true
+       }
+      ]
+     }
+    },
+    {
+     "marche": "handicap_domicile_0.5",
+     "marche_moteur": "handicap_-0.5_1",
+     "libelle": "Handicap Lourosa +0,5 : Lourosa ne perd pas",
+     "cote": 1.34,
+     "probabilite": 0.8004310045317166,
+     "indice_performance": {
+      "version": 2,
+      "indice": 4,
+      "sur": 4,
+      "niveau": "SUR",
+      "libelle": "Sûr",
+      "moyenne_domicile": {
+       "marque": 2.0,
+       "encaisse": 1.0
+      },
+      "moyenne_exterieur": {
+       "marque": 0.333,
+       "encaisse": 2.333
+      },
+      "pire_domicile": {
+       "marque": 2.0,
+       "encaisse": 1.0
+      },
+      "pire_exterieur": {
+       "marque": 1.0,
+       "encaisse": 2.0
+      },
+      "scenarios": [
+       {
+        "domicile": "moyen",
+        "exterieur": "moyen",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 0.333,
+        "marge": 2.167,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "moyen",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 0.333,
+        "marge": 2.167,
+        "valide": true
+       },
+       {
+        "domicile": "moyen",
+        "exterieur": "pire",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 1.0,
+        "marge": 1.5,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "pire",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 1.0,
+        "marge": 1.5,
+        "valide": true
+       }
+      ]
+     }
+    }
+   ],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -34057,6 +35064,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_1",
@@ -34186,6 +35194,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_3",
@@ -34294,6 +35303,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -34410,6 +35420,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -34673,6 +35684,7 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_6_plus",
@@ -34781,6 +35793,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_1_1",
@@ -34896,6 +35909,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -35022,6 +36036,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_3",
@@ -35154,6 +36169,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -35264,6 +36280,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -35379,6 +36396,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -35503,6 +36521,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_1",
@@ -35616,6 +36635,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -35721,6 +36741,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -35834,6 +36855,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -35949,6 +36971,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -36075,6 +37098,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -36180,6 +37204,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -36295,6 +37320,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -36555,6 +37581,136 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [
+    {
+     "marche": "1x2_exterieur",
+     "marche_moteur": "1x2_2",
+     "libelle": null,
+     "cote": 1.54,
+     "probabilite": 0.717689217339633,
+     "indice_performance": {
+      "version": 2,
+      "indice": 2,
+      "sur": 4,
+      "niveau": "ATTENTION",
+      "libelle": "Attention",
+      "moyenne_domicile": {
+       "marque": 1.75,
+       "encaisse": 2.75
+      },
+      "moyenne_exterieur": {
+       "marque": 3.5,
+       "encaisse": 1.5
+      },
+      "pire_domicile": {
+       "marque": 2.0,
+       "encaisse": 5.0
+      },
+      "pire_exterieur": {
+       "marque": 2.0,
+       "encaisse": 2.0
+      },
+      "scenarios": [
+       {
+        "domicile": "moyen",
+        "exterieur": "moyen",
+        "buts_domicile": 1.75,
+        "buts_exterieur": 3.5,
+        "marge": 1.25,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "moyen",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 3.5,
+        "marge": 1.0,
+        "valide": true
+       },
+       {
+        "domicile": "moyen",
+        "exterieur": "pire",
+        "buts_domicile": 1.75,
+        "buts_exterieur": 2.0,
+        "marge": -0.25,
+        "valide": false
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "pire",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 2.0,
+        "marge": -0.5,
+        "valide": false
+       }
+      ]
+     }
+    },
+    {
+     "marche": "handicap_exterieur_-0.5",
+     "marche_moteur": "handicap_-0.5_2",
+     "libelle": "Handicap Young Boys −0,5 : Young Boys gagne",
+     "cote": 1.52,
+     "probabilite": 0.717689217339633,
+     "indice_performance": {
+      "version": 2,
+      "indice": 2,
+      "sur": 4,
+      "niveau": "ATTENTION",
+      "libelle": "Attention",
+      "moyenne_domicile": {
+       "marque": 1.75,
+       "encaisse": 2.75
+      },
+      "moyenne_exterieur": {
+       "marque": 3.5,
+       "encaisse": 1.5
+      },
+      "pire_domicile": {
+       "marque": 2.0,
+       "encaisse": 5.0
+      },
+      "pire_exterieur": {
+       "marque": 2.0,
+       "encaisse": 2.0
+      },
+      "scenarios": [
+       {
+        "domicile": "moyen",
+        "exterieur": "moyen",
+        "buts_domicile": 1.75,
+        "buts_exterieur": 3.5,
+        "marge": 1.25,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "moyen",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 3.5,
+        "marge": 1.0,
+        "valide": true
+       },
+       {
+        "domicile": "moyen",
+        "exterieur": "pire",
+        "buts_domicile": 1.75,
+        "buts_exterieur": 2.0,
+        "marge": -0.25,
+        "valide": false
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "pire",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 2.0,
+        "marge": -0.5,
+        "valide": false
+       }
+      ]
+     }
+    }
+   ],
    "candidats": [
     {
      "marche": "over_5_5",
@@ -36676,6 +37832,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_2_0",
@@ -36816,6 +37973,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -36942,6 +38100,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_2",
@@ -37055,6 +38214,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_1_4",
@@ -37160,6 +38320,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -37270,6 +38431,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_0",
@@ -37383,6 +38545,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_2",
@@ -37509,6 +38672,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_1_4",
@@ -37766,6 +38930,200 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [
+    {
+     "marche": "handicap3_domicile_1_1",
+     "marche_moteur": "handicap_-1_1",
+     "libelle": "Handicap 3 choix LKS Lódz +1 (1) : LKS Lódz ne perd pas",
+     "cote": 1.41,
+     "probabilite": 0.7734028756687695,
+     "indice_performance": {
+      "version": 2,
+      "indice": 4,
+      "sur": 4,
+      "niveau": "SUR",
+      "libelle": "Sûr",
+      "moyenne_domicile": {
+       "marque": 2.25,
+       "encaisse": 1.0
+      },
+      "moyenne_exterieur": {
+       "marque": 0.4,
+       "encaisse": 1.0
+      },
+      "pire_domicile": {
+       "marque": 1.0,
+       "encaisse": 2.0
+      },
+      "pire_exterieur": {
+       "marque": 1.0,
+       "encaisse": 0.0
+      },
+      "scenarios": [
+       {
+        "domicile": "moyen",
+        "exterieur": "moyen",
+        "buts_domicile": 2.25,
+        "buts_exterieur": 0.4,
+        "marge": 2.35,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "moyen",
+        "buts_domicile": 1.0,
+        "buts_exterieur": 0.4,
+        "marge": 1.1,
+        "valide": true
+       },
+       {
+        "domicile": "moyen",
+        "exterieur": "pire",
+        "buts_domicile": 2.25,
+        "buts_exterieur": 1.0,
+        "marge": 1.75,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "pire",
+        "buts_domicile": 1.0,
+        "buts_exterieur": 1.0,
+        "marge": 0.5,
+        "valide": true
+       }
+      ]
+     }
+    },
+    {
+     "marche": "double_chance_1X",
+     "marche_moteur": "dc_1X",
+     "libelle": null,
+     "cote": 1.4,
+     "probabilite": 0.7734028756687695,
+     "indice_performance": {
+      "version": 2,
+      "indice": 4,
+      "sur": 4,
+      "niveau": "SUR",
+      "libelle": "Sûr",
+      "moyenne_domicile": {
+       "marque": 2.25,
+       "encaisse": 1.0
+      },
+      "moyenne_exterieur": {
+       "marque": 0.4,
+       "encaisse": 1.0
+      },
+      "pire_domicile": {
+       "marque": 1.0,
+       "encaisse": 2.0
+      },
+      "pire_exterieur": {
+       "marque": 1.0,
+       "encaisse": 0.0
+      },
+      "scenarios": [
+       {
+        "domicile": "moyen",
+        "exterieur": "moyen",
+        "buts_domicile": 2.25,
+        "buts_exterieur": 0.4,
+        "marge": 2.35,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "moyen",
+        "buts_domicile": 1.0,
+        "buts_exterieur": 0.4,
+        "marge": 1.1,
+        "valide": true
+       },
+       {
+        "domicile": "moyen",
+        "exterieur": "pire",
+        "buts_domicile": 2.25,
+        "buts_exterieur": 1.0,
+        "marge": 1.75,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "pire",
+        "buts_domicile": 1.0,
+        "buts_exterieur": 1.0,
+        "marge": 0.5,
+        "valide": true
+       }
+      ]
+     }
+    },
+    {
+     "marche": "handicap_domicile_0.5",
+     "marche_moteur": "handicap_-0.5_1",
+     "libelle": "Handicap LKS Lódz +0,5 : LKS Lódz ne perd pas",
+     "cote": 1.4,
+     "probabilite": 0.7734028756687695,
+     "indice_performance": {
+      "version": 2,
+      "indice": 4,
+      "sur": 4,
+      "niveau": "SUR",
+      "libelle": "Sûr",
+      "moyenne_domicile": {
+       "marque": 2.25,
+       "encaisse": 1.0
+      },
+      "moyenne_exterieur": {
+       "marque": 0.4,
+       "encaisse": 1.0
+      },
+      "pire_domicile": {
+       "marque": 1.0,
+       "encaisse": 2.0
+      },
+      "pire_exterieur": {
+       "marque": 1.0,
+       "encaisse": 0.0
+      },
+      "scenarios": [
+       {
+        "domicile": "moyen",
+        "exterieur": "moyen",
+        "buts_domicile": 2.25,
+        "buts_exterieur": 0.4,
+        "marge": 2.35,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "moyen",
+        "buts_domicile": 1.0,
+        "buts_exterieur": 0.4,
+        "marge": 1.1,
+        "valide": true
+       },
+       {
+        "domicile": "moyen",
+        "exterieur": "pire",
+        "buts_domicile": 2.25,
+        "buts_exterieur": 1.0,
+        "marge": 1.75,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "pire",
+        "buts_domicile": 1.0,
+        "buts_exterieur": 1.0,
+        "marge": 0.5,
+        "valide": true
+       }
+      ]
+     }
+    }
+   ],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -37879,6 +39237,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_2",
@@ -38137,6 +39496,72 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [
+    {
+     "marche": "handicap_exterieur_1.5",
+     "marche_moteur": "handicap_1.5_2",
+     "libelle": "Handicap GIANA Erminio +1,5 : GIANA Erminio ne perd pas par 2 buts ou plus",
+     "cote": 1.26,
+     "probabilite": 0.8809775128243674,
+     "indice_performance": {
+      "version": 2,
+      "indice": 4,
+      "sur": 4,
+      "niveau": "SUR",
+      "libelle": "Sûr",
+      "moyenne_domicile": {
+       "marque": 0.25,
+       "encaisse": 1.0
+      },
+      "moyenne_exterieur": {
+       "marque": 0.25,
+       "encaisse": 0.75
+      },
+      "pire_domicile": {
+       "marque": 1.0,
+       "encaisse": 2.0
+      },
+      "pire_exterieur": {
+       "marque": 0.0,
+       "encaisse": 0.0
+      },
+      "scenarios": [
+       {
+        "domicile": "moyen",
+        "exterieur": "moyen",
+        "buts_domicile": 0.25,
+        "buts_exterieur": 0.25,
+        "marge": 1.5,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "moyen",
+        "buts_domicile": 1.0,
+        "buts_exterieur": 0.25,
+        "marge": 0.75,
+        "valide": true
+       },
+       {
+        "domicile": "moyen",
+        "exterieur": "pire",
+        "buts_domicile": 0.25,
+        "buts_exterieur": 0.0,
+        "marge": 1.25,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "pire",
+        "buts_domicile": 1.0,
+        "buts_exterieur": 0.0,
+        "marge": 0.5,
+        "valide": true
+       }
+      ]
+     }
+    }
+   ],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -38245,6 +39670,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_6_plus",
@@ -38353,6 +39779,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_2",
@@ -38463,6 +39890,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_2_4",
@@ -38582,6 +40010,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_2_4",
@@ -38690,6 +40119,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -38805,6 +40235,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -38914,6 +40345,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -39024,6 +40456,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -39139,6 +40572,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_2_4",
@@ -39257,6 +40691,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_1",
@@ -39370,6 +40805,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_0",
@@ -39488,6 +40924,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_2_1",
@@ -39601,6 +41038,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -39709,6 +41147,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_2_4",
@@ -39824,6 +41263,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -39944,6 +41384,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_3",
@@ -40064,6 +41505,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_2_1",
@@ -40182,6 +41624,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_2",
@@ -40295,6 +41738,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -40411,6 +41855,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -40524,6 +41969,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_6_plus",
@@ -40632,6 +42078,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_2_4",
@@ -40762,6 +42209,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_4",
@@ -40870,6 +42318,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_6_plus",
@@ -40985,6 +42434,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -41104,6 +42554,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_2",
@@ -41213,6 +42664,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_2",
@@ -41326,6 +42778,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_X",
@@ -41437,6 +42890,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_2",
@@ -41544,6 +42998,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_2_1",
@@ -41809,6 +43264,7 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -41914,6 +43370,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_1",
@@ -42017,6 +43474,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -42130,6 +43588,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_1",
@@ -42243,6 +43702,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "over_3_5",
@@ -42351,6 +43811,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_1",
@@ -42460,6 +43921,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -42589,6 +44051,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_1",
@@ -42864,6 +44327,72 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [
+    {
+     "marche": "handicap_domicile_-0.5",
+     "marche_moteur": "handicap_0.5_1",
+     "libelle": "Handicap Almería −0,5 : Almería gagne",
+     "cote": 1.62,
+     "probabilite": 0.687382580534437,
+     "indice_performance": {
+      "version": 2,
+      "indice": 4,
+      "sur": 4,
+      "niveau": "SUR",
+      "libelle": "Sûr",
+      "moyenne_domicile": {
+       "marque": 2.5,
+       "encaisse": 0.75
+      },
+      "moyenne_exterieur": {
+       "marque": 0.4,
+       "encaisse": 1.4
+      },
+      "pire_domicile": {
+       "marque": 2.0,
+       "encaisse": 1.0
+      },
+      "pire_exterieur": {
+       "marque": 1.0,
+       "encaisse": 0.0
+      },
+      "scenarios": [
+       {
+        "domicile": "moyen",
+        "exterieur": "moyen",
+        "buts_domicile": 2.5,
+        "buts_exterieur": 0.4,
+        "marge": 1.6,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "moyen",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 0.4,
+        "marge": 1.1,
+        "valide": true
+       },
+       {
+        "domicile": "moyen",
+        "exterieur": "pire",
+        "buts_domicile": 2.5,
+        "buts_exterieur": 1.0,
+        "marge": 1.0,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "pire",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 1.0,
+        "marge": 0.5,
+        "valide": true
+       }
+      ]
+     }
+    }
+   ],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -43122,6 +44651,72 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [
+    {
+     "marche": "handicap_exterieur_1.5",
+     "marche_moteur": "handicap_1.5_2",
+     "libelle": "Handicap A Coruña +1,5 : A Coruña ne perd pas par 2 buts ou plus",
+     "cote": 1.48,
+     "probabilite": 0.8271825085490848,
+     "indice_performance": {
+      "version": 2,
+      "indice": 4,
+      "sur": 4,
+      "niveau": "SUR",
+      "libelle": "Sûr",
+      "moyenne_domicile": {
+       "marque": 0.667,
+       "encaisse": 1.333
+      },
+      "moyenne_exterieur": {
+       "marque": 1.667,
+       "encaisse": 1.333
+      },
+      "pire_domicile": {
+       "marque": 2.0,
+       "encaisse": 1.0
+      },
+      "pire_exterieur": {
+       "marque": 1.0,
+       "encaisse": 1.0
+      },
+      "scenarios": [
+       {
+        "domicile": "moyen",
+        "exterieur": "moyen",
+        "buts_domicile": 0.667,
+        "buts_exterieur": 1.667,
+        "marge": 2.5,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "moyen",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 1.667,
+        "marge": 1.167,
+        "valide": true
+       },
+       {
+        "domicile": "moyen",
+        "exterieur": "pire",
+        "buts_domicile": 0.667,
+        "buts_exterieur": 1.0,
+        "marge": 1.833,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "pire",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 1.0,
+        "marge": 0.5,
+        "valide": true
+       }
+      ]
+     }
+    }
+   ],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -43232,6 +44827,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -43345,6 +44941,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_6_plus",
@@ -43469,6 +45066,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -43577,6 +45175,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_2_1",
@@ -43706,6 +45305,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_0",
@@ -43983,6 +45583,7 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -44091,6 +45692,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -44209,6 +45811,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_0",
@@ -44349,6 +45952,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -44469,6 +46073,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_2_0",
@@ -44617,6 +46222,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -44752,6 +46358,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -44860,6 +46467,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -44990,6 +46598,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_1_3",
@@ -45110,6 +46719,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -45225,6 +46835,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_3",
@@ -45343,6 +46954,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_2",
@@ -45451,6 +47063,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_0",
@@ -45565,6 +47178,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -45683,6 +47297,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -45798,6 +47413,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_6_plus",
@@ -45916,6 +47532,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -46031,6 +47648,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -46151,6 +47769,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -46259,6 +47878,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -46367,6 +47987,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -46471,6 +48092,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -46589,6 +48211,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_-1_2",
@@ -46705,6 +48328,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_2",
@@ -46818,6 +48442,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -46926,6 +48551,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -47039,6 +48665,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_1_1",
@@ -47147,6 +48774,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -47255,6 +48883,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_1",
@@ -47375,6 +49004,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_2_1",
@@ -47488,6 +49118,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -47617,6 +49248,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_1_3",
@@ -47725,6 +49357,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -47833,6 +49466,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -48093,6 +49727,7 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_2",
@@ -48201,6 +49836,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -48320,6 +49956,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_3",
@@ -48441,6 +50078,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -48556,6 +50194,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_2_1",
@@ -48664,6 +50303,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_6_plus",
@@ -48769,6 +50409,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -48882,6 +50523,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_0",
@@ -48990,6 +50632,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -49101,6 +50744,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_-1_2",
@@ -49214,6 +50858,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_0",
@@ -49317,6 +50962,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_0",
@@ -49435,6 +51081,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -49543,6 +51190,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_1_4",
@@ -49656,6 +51304,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_0",
@@ -49769,6 +51418,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_6_plus",
@@ -49882,6 +51532,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_0",
@@ -50024,6 +51675,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_1",
@@ -50290,6 +51942,7 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_0_5",
@@ -50408,6 +52061,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -50508,6 +52162,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -50611,6 +52266,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_2",
@@ -50724,6 +52380,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -50837,6 +52494,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -50951,6 +52609,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -51061,6 +52720,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_0",
@@ -51192,6 +52852,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_0",
@@ -51312,6 +52973,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_2",
@@ -51415,6 +53077,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -51530,6 +53193,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "away_under_0_5",
@@ -51635,6 +53299,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -51748,6 +53413,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "over_5_5",
@@ -52164,6 +53830,7 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_6_plus",
@@ -52272,6 +53939,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_-2_2",
@@ -52380,6 +54048,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -52498,6 +54167,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "btts_no",
@@ -52614,6 +54284,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -52719,6 +54390,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_0",
@@ -52822,6 +54494,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_0",
@@ -52925,6 +54598,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -53030,6 +54704,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_1_3",
@@ -53133,6 +54808,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -53238,6 +54914,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -53341,6 +55018,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -53456,6 +55134,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_6_plus",
@@ -53559,6 +55238,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_6_plus",
@@ -53662,6 +55342,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_0",
@@ -53768,6 +55449,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -53871,6 +55553,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -53974,6 +55657,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_0",
@@ -54082,6 +55766,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -54185,6 +55870,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -54287,6 +55973,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -54392,6 +56079,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -54497,6 +56185,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -54602,6 +56291,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -54705,6 +56395,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_2_4",
@@ -54813,6 +56504,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -54925,6 +56617,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_0",
@@ -55033,6 +56726,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -55151,6 +56845,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_6_plus",
@@ -55264,6 +56959,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_1_3",
@@ -55401,6 +57097,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -55516,6 +57213,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_2",
@@ -55635,6 +57333,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_2",
@@ -55755,6 +57454,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -55868,6 +57568,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -55981,6 +57682,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -56100,6 +57802,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -56215,6 +57918,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -56325,6 +58029,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_1",
@@ -56438,6 +58143,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_2_5",
@@ -56568,6 +58274,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "handicap_-1_2",
@@ -56687,6 +58394,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -56805,6 +58513,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_6_plus",
@@ -56918,6 +58627,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_4",
@@ -57031,6 +58741,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -57144,6 +58855,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -57257,6 +58969,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_2",
@@ -57365,6 +59078,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -57478,6 +59192,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -57737,6 +59452,7 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_6_plus",
@@ -57845,6 +59561,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -57964,6 +59681,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -58069,6 +59787,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -58187,6 +59906,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -58292,6 +60012,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_6_plus",
@@ -58421,6 +60142,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -58536,6 +60258,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -58644,6 +60367,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "under_1_5",
@@ -58747,6 +60471,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -58855,6 +60580,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_1_3",
@@ -58967,6 +60693,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_2",
@@ -59075,6 +60802,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -59178,6 +60906,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_4",
@@ -59298,6 +61027,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_2_4",
@@ -59423,6 +61153,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_0",
@@ -59526,6 +61257,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_4_0",
@@ -59639,6 +61371,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_2",
@@ -59752,6 +61485,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_6_plus",
@@ -59870,6 +61604,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "away_under_0_5",
@@ -60018,6 +61753,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -60142,6 +61878,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_6_plus",
@@ -60250,6 +61987,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "exact_goals_6_plus",
@@ -60365,6 +62103,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_0_3",
@@ -60628,6 +62367,72 @@
     }
    ],
    "apercu_non_calibre": [],
+   "alternatives_indice": [
+    {
+     "marche": "btts_oui",
+     "marche_moteur": "btts_yes",
+     "libelle": null,
+     "cote": 1.48,
+     "probabilite": 0.7498966670638418,
+     "indice_performance": {
+      "version": 2,
+      "indice": 2,
+      "sur": 4,
+      "niveau": "ATTENTION",
+      "libelle": "Attention",
+      "moyenne_domicile": {
+       "marque": 2.0,
+       "encaisse": 2.5
+      },
+      "moyenne_exterieur": {
+       "marque": 1.25,
+       "encaisse": 3.25
+      },
+      "pire_domicile": {
+       "marque": 1.0,
+       "encaisse": 3.0
+      },
+      "pire_exterieur": {
+       "marque": 0.0,
+       "encaisse": 3.0
+      },
+      "scenarios": [
+       {
+        "domicile": "moyen",
+        "exterieur": "moyen",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 1.25,
+        "marge": 0.75,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "moyen",
+        "buts_domicile": 1.0,
+        "buts_exterieur": 1.25,
+        "marge": 0.5,
+        "valide": true
+       },
+       {
+        "domicile": "moyen",
+        "exterieur": "pire",
+        "buts_domicile": 2.0,
+        "buts_exterieur": 0.0,
+        "marge": -0.5,
+        "valide": false
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "pire",
+        "buts_domicile": 1.0,
+        "buts_exterieur": 0.0,
+        "marge": -0.5,
+        "valide": false
+       }
+      ]
+     }
+    }
+   ],
    "candidats": [
     {
      "marche": "score_4_2",
@@ -60736,6 +62541,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_2",
@@ -60843,6 +62649,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_X",
@@ -60949,6 +62756,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_2",
@@ -61061,6 +62869,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "score_3_0",
@@ -61169,6 +62978,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_2",
@@ -61278,6 +63088,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_2",
@@ -61388,6 +63199,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_2",
@@ -61528,6 +63340,7 @@
    },
    "selections": [],
    "apercu_non_calibre": [],
+   "alternatives_indice": [],
    "candidats": [
     {
      "marche": "1x2_1",
@@ -61660,38 +63473,6 @@
    "moteur_utilise": "moteur_v3",
    "moteur_v3": {
     "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
-    "moteur": "moteur_v3",
-    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
-    "apercu_non_calibre": false,
-    "selection": {}
-   }
-  },
-  {
-   "match_id": "91v9lvfzrqwosutn4hfnayi38",
-   "date": "2026-10-10",
-   "heure_cameroun": "09:00",
-   "competition": "Hong Kong : Premier Ligue",
-   "domicile": "Kitchee SC",
-   "exterieur": "Hong Kong",
-   "moteur_utilise": "moteur_v3",
-   "moteur_v3": {
-    "statut": "OK",
-    "moteur": "moteur_v3",
-    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
-    "apercu_non_calibre": false,
-    "selection": {}
-   }
-  },
-  {
-   "match_id": "91ircrkbtfeqrnniygw4jmuc4",
-   "date": "2026-10-10",
-   "heure_cameroun": "09:00",
-   "competition": "Hong Kong : Premier Ligue",
-   "domicile": "Wofoo Tai Po FC",
-   "exterieur": "Kowloon City",
-   "moteur_utilise": "moteur_v3",
-   "moteur_v3": {
-    "statut": "OK",
     "moteur": "moteur_v3",
     "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
     "apercu_non_calibre": false,
@@ -62169,6 +63950,7 @@
         }
        ]
       },
+      "alternatives_indice": [],
       "justification": {
        "resume": "Probabilité calibrée 74 % contre 65 % selon la cote 1,53 · marge +13,3 % · 3 matchs au même lieu.",
        "preuves": [
@@ -62753,6 +64535,136 @@
         }
        ]
       },
+      "alternatives_indice": [
+       {
+        "marche": "handicap_exterieur_0.5",
+        "marche_moteur": "handicap_0.5_2",
+        "libelle": "Handicap Reims +0,5 : Reims ne perd pas",
+        "cote": 1.67,
+        "probabilite": 0.7725445829085967,
+        "indice_performance": {
+         "version": 2,
+         "indice": 2,
+         "sur": 4,
+         "niveau": "ATTENTION",
+         "libelle": "Attention",
+         "moyenne_domicile": {
+          "marque": 1.0,
+          "encaisse": 2.0
+         },
+         "moyenne_exterieur": {
+          "marque": 2.0,
+          "encaisse": 0.667
+         },
+         "pire_domicile": {
+          "marque": 2.0,
+          "encaisse": 5.0
+         },
+         "pire_exterieur": {
+          "marque": 0.0,
+          "encaisse": 0.0
+         },
+         "scenarios": [
+          {
+           "domicile": "moyen",
+           "exterieur": "moyen",
+           "buts_domicile": 1.0,
+           "buts_exterieur": 2.0,
+           "marge": 1.5,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "moyen",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 2.0,
+           "marge": 0.5,
+           "valide": true
+          },
+          {
+           "domicile": "moyen",
+           "exterieur": "pire",
+           "buts_domicile": 1.0,
+           "buts_exterieur": 0.0,
+           "marge": -0.5,
+           "valide": false
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "pire",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 0.0,
+           "marge": -1.5,
+           "valide": false
+          }
+         ]
+        }
+       },
+       {
+        "marche": "handicap3_domicile_-1_2",
+        "marche_moteur": "handicap_1_2",
+        "libelle": "Handicap 3 choix Nantes −1 (2) : Reims ne perd pas",
+        "cote": 1.64,
+        "probabilite": 0.7725445829085967,
+        "indice_performance": {
+         "version": 2,
+         "indice": 2,
+         "sur": 4,
+         "niveau": "ATTENTION",
+         "libelle": "Attention",
+         "moyenne_domicile": {
+          "marque": 1.0,
+          "encaisse": 2.0
+         },
+         "moyenne_exterieur": {
+          "marque": 2.0,
+          "encaisse": 0.667
+         },
+         "pire_domicile": {
+          "marque": 2.0,
+          "encaisse": 5.0
+         },
+         "pire_exterieur": {
+          "marque": 0.0,
+          "encaisse": 0.0
+         },
+         "scenarios": [
+          {
+           "domicile": "moyen",
+           "exterieur": "moyen",
+           "buts_domicile": 1.0,
+           "buts_exterieur": 2.0,
+           "marge": 1.5,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "moyen",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 2.0,
+           "marge": 0.5,
+           "valide": true
+          },
+          {
+           "domicile": "moyen",
+           "exterieur": "pire",
+           "buts_domicile": 1.0,
+           "buts_exterieur": 0.0,
+           "marge": -0.5,
+           "valide": false
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "pire",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 0.0,
+           "marge": -1.5,
+           "valide": false
+          }
+         ]
+        }
+       }
+      ],
       "justification": {
        "resume": "Probabilité calibrée 77 % contre 60 % selon la cote 1,68 · marge +29,8 % · 3 matchs au même lieu.",
        "preuves": [
@@ -62985,6 +64897,7 @@
         }
        ]
       },
+      "alternatives_indice": [],
       "justification": {
        "resume": "Probabilité calibrée 67 % contre 62 % selon la cote 1,62 · marge +8,8 % · 3 matchs au même lieu.",
        "preuves": [
@@ -63503,6 +65416,7 @@
         }
        ]
       },
+      "alternatives_indice": [],
       "justification": {
        "resume": "Probabilité calibrée 84 % contre 74 % selon la cote 1,36 · marge +14,4 % · 5 matchs au même lieu.",
        "preuves": [
@@ -63796,6 +65710,7 @@
         }
        ]
       },
+      "alternatives_indice": [],
       "justification": {
        "resume": "Probabilité calibrée 74 % contre 68 % selon la cote 1,46 · marge +8,0 % · 4 matchs au même lieu.",
        "preuves": [
@@ -64171,6 +66086,7 @@
         }
        ]
       },
+      "alternatives_indice": [],
       "justification": {
        "resume": "Probabilité calibrée 82 % contre 71 % selon la cote 1,41 · marge +16,2 % · 3 matchs au même lieu.",
        "preuves": [
@@ -64691,6 +66607,7 @@
         }
        ]
       },
+      "alternatives_indice": [],
       "justification": {
        "resume": "Probabilité calibrée 72 % contre 67 % selon la cote 1,49 · marge +7,1 % · 3 matchs au même lieu.",
        "preuves": [
@@ -64906,6 +66823,136 @@
         }
        ]
       },
+      "alternatives_indice": [
+       {
+        "marche": "handicap_exterieur_0.5",
+        "marche_moteur": "handicap_0.5_2",
+        "libelle": "Handicap Walsall +0,5 : Walsall ne perd pas",
+        "cote": 1.57,
+        "probabilite": 0.6980067883456363,
+        "indice_performance": {
+         "version": 2,
+         "indice": 1,
+         "sur": 4,
+         "niveau": "RISQUE",
+         "libelle": "Risqué",
+         "moyenne_domicile": {
+          "marque": 1.0,
+          "encaisse": 0.75
+         },
+         "moyenne_exterieur": {
+          "marque": 1.5,
+          "encaisse": 0.75
+         },
+         "pire_domicile": {
+          "marque": 2.0,
+          "encaisse": 0.0
+         },
+         "pire_exterieur": {
+          "marque": 0.0,
+          "encaisse": 0.0
+         },
+         "scenarios": [
+          {
+           "domicile": "moyen",
+           "exterieur": "moyen",
+           "buts_domicile": 1.0,
+           "buts_exterieur": 1.5,
+           "marge": 1.0,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "moyen",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 1.5,
+           "marge": 0.0,
+           "valide": false
+          },
+          {
+           "domicile": "moyen",
+           "exterieur": "pire",
+           "buts_domicile": 1.0,
+           "buts_exterieur": 0.0,
+           "marge": -0.5,
+           "valide": false
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "pire",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 0.0,
+           "marge": -1.5,
+           "valide": false
+          }
+         ]
+        }
+       },
+       {
+        "marche": "double_chance_X2",
+        "marche_moteur": "dc_X2",
+        "libelle": null,
+        "cote": 1.55,
+        "probabilite": 0.6980067883456363,
+        "indice_performance": {
+         "version": 2,
+         "indice": 1,
+         "sur": 4,
+         "niveau": "RISQUE",
+         "libelle": "Risqué",
+         "moyenne_domicile": {
+          "marque": 1.0,
+          "encaisse": 0.75
+         },
+         "moyenne_exterieur": {
+          "marque": 1.5,
+          "encaisse": 0.75
+         },
+         "pire_domicile": {
+          "marque": 2.0,
+          "encaisse": 0.0
+         },
+         "pire_exterieur": {
+          "marque": 0.0,
+          "encaisse": 0.0
+         },
+         "scenarios": [
+          {
+           "domicile": "moyen",
+           "exterieur": "moyen",
+           "buts_domicile": 1.0,
+           "buts_exterieur": 1.5,
+           "marge": 1.0,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "moyen",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 1.5,
+           "marge": 0.0,
+           "valide": false
+          },
+          {
+           "domicile": "moyen",
+           "exterieur": "pire",
+           "buts_domicile": 1.0,
+           "buts_exterieur": 0.0,
+           "marge": -0.5,
+           "valide": false
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "pire",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 0.0,
+           "marge": -1.5,
+           "valide": false
+          }
+         ]
+        }
+       }
+      ],
       "justification": {
        "resume": "Probabilité calibrée 70 % contre 63 % selon la cote 1,59 · marge +11,0 % · 4 matchs au même lieu.",
        "preuves": [
@@ -65232,6 +67279,72 @@
         }
        ]
       },
+      "alternatives_indice": [
+       {
+        "marche": "handicap_domicile_-0.5",
+        "marche_moteur": "handicap_0.5_1",
+        "libelle": "Handicap Jesenice −0,5 : Jesenice gagne",
+        "cote": 1.61,
+        "probabilite": 0.7149720714189544,
+        "indice_performance": {
+         "version": 2,
+         "indice": 2,
+         "sur": 4,
+         "niveau": "ATTENTION",
+         "libelle": "Attention",
+         "moyenne_domicile": {
+          "marque": 2.4,
+          "encaisse": 1.2
+         },
+         "moyenne_exterieur": {
+          "marque": 0.4,
+          "encaisse": 2.0
+         },
+         "pire_domicile": {
+          "marque": 0.0,
+          "encaisse": 3.0
+         },
+         "pire_exterieur": {
+          "marque": 1.0,
+          "encaisse": 2.0
+         },
+         "scenarios": [
+          {
+           "domicile": "moyen",
+           "exterieur": "moyen",
+           "buts_domicile": 2.4,
+           "buts_exterieur": 0.4,
+           "marge": 1.5,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "moyen",
+           "buts_domicile": 0.0,
+           "buts_exterieur": 0.4,
+           "marge": -0.9,
+           "valide": false
+          },
+          {
+           "domicile": "moyen",
+           "exterieur": "pire",
+           "buts_domicile": 2.4,
+           "buts_exterieur": 1.0,
+           "marge": 0.9,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "pire",
+           "buts_domicile": 0.0,
+           "buts_exterieur": 1.0,
+           "marge": -1.5,
+           "valide": false
+          }
+         ]
+        }
+       }
+      ],
       "justification": {
        "resume": "Probabilité calibrée 72 % contre 60 % selon la cote 1,68 · marge +20,1 % · 5 matchs au même lieu.",
        "preuves": [
@@ -65415,6 +67528,7 @@
         }
        ]
       },
+      "alternatives_indice": [],
       "justification": {
        "resume": "Probabilité calibrée 83 % contre 75 % selon la cote 1,34 · marge +10,6 % · 3 matchs au même lieu.",
        "preuves": [
@@ -65631,6 +67745,7 @@
         }
        ]
       },
+      "alternatives_indice": [],
       "justification": {
        "resume": "Probabilité calibrée 79 % contre 72 % selon la cote 1,38 · marge +9,7 % · 3 matchs au même lieu.",
        "preuves": [
@@ -65830,6 +67945,72 @@
         }
        ]
       },
+      "alternatives_indice": [
+       {
+        "marche": "btts_oui",
+        "marche_moteur": "btts_yes",
+        "libelle": null,
+        "cote": 1.55,
+        "probabilite": 0.7342346630603128,
+        "indice_performance": {
+         "version": 2,
+         "indice": 4,
+         "sur": 4,
+         "niveau": "SUR",
+         "libelle": "Sûr",
+         "moyenne_domicile": {
+          "marque": 2.75,
+          "encaisse": 1.75
+         },
+         "moyenne_exterieur": {
+          "marque": 2.0,
+          "encaisse": 1.75
+         },
+         "pire_domicile": {
+          "marque": 2.0,
+          "encaisse": 2.0
+         },
+         "pire_exterieur": {
+          "marque": 1.0,
+          "encaisse": 0.0
+         },
+         "scenarios": [
+          {
+           "domicile": "moyen",
+           "exterieur": "moyen",
+           "buts_domicile": 2.75,
+           "buts_exterieur": 2.0,
+           "marge": 1.5,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "moyen",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 2.0,
+           "marge": 1.5,
+           "valide": true
+          },
+          {
+           "domicile": "moyen",
+           "exterieur": "pire",
+           "buts_domicile": 2.75,
+           "buts_exterieur": 1.0,
+           "marge": 0.5,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "pire",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 1.0,
+           "marge": 0.5,
+           "valide": true
+          }
+         ]
+        }
+       }
+      ],
       "justification": {
        "resume": "Probabilité calibrée 75 % contre 61 % selon la cote 1,63 · marge +22,8 % · 4 matchs au même lieu.",
        "preuves": [
@@ -66367,6 +68548,7 @@
         }
        ]
       },
+      "alternatives_indice": [],
       "justification": {
        "resume": "Probabilité calibrée 73 % contre 67 % selon la cote 1,50 · marge +10,0 % · 3 matchs au même lieu.",
        "preuves": [
@@ -66614,6 +68796,72 @@
         }
        ]
       },
+      "alternatives_indice": [
+       {
+        "marche": "btts_oui",
+        "marche_moteur": "btts_yes",
+        "libelle": null,
+        "cote": 1.52,
+        "probabilite": 0.7665776112996142,
+        "indice_performance": {
+         "version": 2,
+         "indice": 4,
+         "sur": 4,
+         "niveau": "SUR",
+         "libelle": "Sûr",
+         "moyenne_domicile": {
+          "marque": 1.75,
+          "encaisse": 2.0
+         },
+         "moyenne_exterieur": {
+          "marque": 2.333,
+          "encaisse": 3.333
+         },
+         "pire_domicile": {
+          "marque": 2.0,
+          "encaisse": 2.0
+         },
+         "pire_exterieur": {
+          "marque": 1.0,
+          "encaisse": 2.0
+         },
+         "scenarios": [
+          {
+           "domicile": "moyen",
+           "exterieur": "moyen",
+           "buts_domicile": 1.75,
+           "buts_exterieur": 2.333,
+           "marge": 1.25,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "moyen",
+           "buts_domicile": 1.0,
+           "buts_exterieur": 2.333,
+           "marge": 0.5,
+           "valide": true
+          },
+          {
+           "domicile": "moyen",
+           "exterieur": "pire",
+           "buts_domicile": 1.75,
+           "buts_exterieur": 1.0,
+           "marge": 0.5,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "pire",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 1.0,
+           "marge": 0.5,
+           "valide": true
+          }
+         ]
+        }
+       }
+      ],
       "justification": {
        "resume": "Probabilité calibrée 79 % contre 61 % selon la cote 1,63 · marge +28,5 % · 3 matchs au même lieu.",
        "preuves": [
@@ -67215,6 +69463,72 @@
         }
        ]
       },
+      "alternatives_indice": [
+       {
+        "marche": "handicap_exterieur_0.5",
+        "marche_moteur": "handicap_0.5_2",
+        "libelle": "Handicap AlbinoLeffe +0,5 : AlbinoLeffe ne perd pas",
+        "cote": 1.52,
+        "probabilite": 0.7074478203604262,
+        "indice_performance": {
+         "version": 2,
+         "indice": 2,
+         "sur": 4,
+         "niveau": "ATTENTION",
+         "libelle": "Attention",
+         "moyenne_domicile": {
+          "marque": 1.0,
+          "encaisse": 1.0
+         },
+         "moyenne_exterieur": {
+          "marque": 2.25,
+          "encaisse": 1.25
+         },
+         "pire_domicile": {
+          "marque": 2.0,
+          "encaisse": 2.0
+         },
+         "pire_exterieur": {
+          "marque": 0.0,
+          "encaisse": 0.0
+         },
+         "scenarios": [
+          {
+           "domicile": "moyen",
+           "exterieur": "moyen",
+           "buts_domicile": 1.0,
+           "buts_exterieur": 2.25,
+           "marge": 1.75,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "moyen",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 2.25,
+           "marge": 0.75,
+           "valide": true
+          },
+          {
+           "domicile": "moyen",
+           "exterieur": "pire",
+           "buts_domicile": 1.0,
+           "buts_exterieur": 0.0,
+           "marge": -0.5,
+           "valide": false
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "pire",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 0.0,
+           "marge": -1.5,
+           "valide": false
+          }
+         ]
+        }
+       }
+      ],
       "justification": {
        "resume": "Probabilité calibrée 71 % contre 66 % selon la cote 1,52 · marge +7,5 % · 4 matchs au même lieu.",
        "preuves": [
@@ -67479,6 +69793,72 @@
         }
        ]
       },
+      "alternatives_indice": [
+       {
+        "marche": "handicap3_domicile_2_1",
+        "marche_moteur": "handicap_-2_1",
+        "libelle": "Handicap 3 choix Slask Wroclaw +2 (1) : Slask Wroclaw ne perd pas par 2 buts ou plus",
+        "cote": 1.46,
+        "probabilite": 0.7415006640519021,
+        "indice_performance": {
+         "version": 2,
+         "indice": 1,
+         "sur": 4,
+         "niveau": "RISQUE",
+         "libelle": "Risqué",
+         "moyenne_domicile": {
+          "marque": 1.5,
+          "encaisse": 1.5
+         },
+         "moyenne_exterieur": {
+          "marque": 2.0,
+          "encaisse": 1.667
+         },
+         "pire_domicile": {
+          "marque": 0.0,
+          "encaisse": 0.0
+         },
+         "pire_exterieur": {
+          "marque": 3.0,
+          "encaisse": 2.0
+         },
+         "scenarios": [
+          {
+           "domicile": "moyen",
+           "exterieur": "moyen",
+           "buts_domicile": 1.5,
+           "buts_exterieur": 2.0,
+           "marge": 1.0,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "moyen",
+           "buts_domicile": 0.0,
+           "buts_exterieur": 2.0,
+           "marge": -0.5,
+           "valide": false
+          },
+          {
+           "domicile": "moyen",
+           "exterieur": "pire",
+           "buts_domicile": 1.5,
+           "buts_exterieur": 3.0,
+           "marge": 0.0,
+           "valide": false
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "pire",
+           "buts_domicile": 0.0,
+           "buts_exterieur": 3.0,
+           "marge": -1.5,
+           "valide": false
+          }
+         ]
+        }
+       }
+      ],
       "justification": {
        "resume": "Probabilité calibrée 74 % contre 68 % selon la cote 1,48 · marge +9,7 % · 3 matchs au même lieu.",
        "preuves": [
@@ -67934,6 +70314,72 @@
         }
        ]
       },
+      "alternatives_indice": [
+       {
+        "marche": "handicap_exterieur_0.5",
+        "marche_moteur": "handicap_0.5_2",
+        "libelle": "Handicap Sion +0,5 : Sion ne perd pas",
+        "cote": 1.44,
+        "probabilite": 0.7437042711106421,
+        "indice_performance": {
+         "version": 2,
+         "indice": 4,
+         "sur": 4,
+         "niveau": "SUR",
+         "libelle": "Sûr",
+         "moyenne_domicile": {
+          "marque": 0.75,
+          "encaisse": 1.25
+         },
+         "moyenne_exterieur": {
+          "marque": 3.0,
+          "encaisse": 1.75
+         },
+         "pire_domicile": {
+          "marque": 2.0,
+          "encaisse": 1.0
+         },
+         "pire_exterieur": {
+          "marque": 2.0,
+          "encaisse": 1.0
+         },
+         "scenarios": [
+          {
+           "domicile": "moyen",
+           "exterieur": "moyen",
+           "buts_domicile": 0.75,
+           "buts_exterieur": 3.0,
+           "marge": 2.75,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "moyen",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 3.0,
+           "marge": 1.5,
+           "valide": true
+          },
+          {
+           "domicile": "moyen",
+           "exterieur": "pire",
+           "buts_domicile": 0.75,
+           "buts_exterieur": 2.0,
+           "marge": 1.75,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "pire",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 2.0,
+           "marge": 0.5,
+           "valide": true
+          }
+         ]
+        }
+       }
+      ],
       "justification": {
        "resume": "Probabilité calibrée 74 % contre 68 % selon la cote 1,47 · marge +9,3 % · 4 matchs au même lieu.",
        "preuves": [
@@ -68133,6 +70579,7 @@
         }
        ]
       },
+      "alternatives_indice": [],
       "justification": {
        "resume": "Probabilité calibrée 79 % contre 73 % selon la cote 1,37 · marge +8,3 % · 4 matchs au même lieu.",
        "preuves": [
@@ -68701,6 +71148,72 @@
         }
        ]
       },
+      "alternatives_indice": [
+       {
+        "marche": "handicap_exterieur_1.5",
+        "marche_moteur": "handicap_1.5_2",
+        "libelle": "Handicap Slavia Sofia +1,5 : Slavia Sofia ne perd pas par 2 buts ou plus",
+        "cote": 1.38,
+        "probabilite": 0.8108364287623214,
+        "indice_performance": {
+         "version": 2,
+         "indice": 1,
+         "sur": 4,
+         "niveau": "RISQUE",
+         "libelle": "Risqué",
+         "moyenne_domicile": {
+          "marque": 1.6,
+          "encaisse": 1.2
+         },
+         "moyenne_exterieur": {
+          "marque": 1.25,
+          "encaisse": 0.5
+         },
+         "pire_domicile": {
+          "marque": 3.0,
+          "encaisse": 2.0
+         },
+         "pire_exterieur": {
+          "marque": 0.0,
+          "encaisse": 1.0
+         },
+         "scenarios": [
+          {
+           "domicile": "moyen",
+           "exterieur": "moyen",
+           "buts_domicile": 1.6,
+           "buts_exterieur": 1.25,
+           "marge": 1.15,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "moyen",
+           "buts_domicile": 3.0,
+           "buts_exterieur": 1.25,
+           "marge": -0.25,
+           "valide": false
+          },
+          {
+           "domicile": "moyen",
+           "exterieur": "pire",
+           "buts_domicile": 1.6,
+           "buts_exterieur": 0.0,
+           "marge": -0.1,
+           "valide": false
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "pire",
+           "buts_domicile": 3.0,
+           "buts_exterieur": 0.0,
+           "marge": -1.5,
+           "valide": false
+          }
+         ]
+        }
+       }
+      ],
       "justification": {
        "resume": "Probabilité calibrée 81 % contre 72 % selon la cote 1,39 · marge +12,7 % · 4 matchs au même lieu.",
        "preuves": [
@@ -68931,6 +71444,7 @@
         }
        ]
       },
+      "alternatives_indice": [],
       "justification": {
        "resume": "Probabilité calibrée 81 % contre 65 % selon la cote 1,53 · marge +24,7 % · 12 matchs au même lieu.",
        "preuves": [
@@ -69163,6 +71677,7 @@
         }
        ]
       },
+      "alternatives_indice": [],
       "justification": {
        "resume": "Probabilité calibrée 74 % contre 68 % selon la cote 1,46 · marge +8,2 % · 3 matchs au même lieu.",
        "preuves": [
@@ -69457,6 +71972,136 @@
         }
        ]
       },
+      "alternatives_indice": [
+       {
+        "marche": "double_chance_1X",
+        "marche_moteur": "dc_1X",
+        "libelle": null,
+        "cote": 1.34,
+        "probabilite": 0.8385145998223724,
+        "indice_performance": {
+         "version": 2,
+         "indice": 1,
+         "sur": 4,
+         "niveau": "RISQUE",
+         "libelle": "Risqué",
+         "moyenne_domicile": {
+          "marque": 1.5,
+          "encaisse": 0.583
+         },
+         "moyenne_exterieur": {
+          "marque": 0.917,
+          "encaisse": 2.083
+         },
+         "pire_domicile": {
+          "marque": 0.0,
+          "encaisse": 0.0
+         },
+         "pire_exterieur": {
+          "marque": 3.0,
+          "encaisse": 2.0
+         },
+         "scenarios": [
+          {
+           "domicile": "moyen",
+           "exterieur": "moyen",
+           "buts_domicile": 1.5,
+           "buts_exterieur": 0.917,
+           "marge": 1.083,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "moyen",
+           "buts_domicile": 0.0,
+           "buts_exterieur": 0.917,
+           "marge": -0.417,
+           "valide": false
+          },
+          {
+           "domicile": "moyen",
+           "exterieur": "pire",
+           "buts_domicile": 1.5,
+           "buts_exterieur": 3.0,
+           "marge": -1.0,
+           "valide": false
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "pire",
+           "buts_domicile": 0.0,
+           "buts_exterieur": 3.0,
+           "marge": -2.5,
+           "valide": false
+          }
+         ]
+        }
+       },
+       {
+        "marche": "handicap_domicile_0.5",
+        "marche_moteur": "handicap_-0.5_1",
+        "libelle": "Handicap Montevideo +0,5 : Montevideo ne perd pas",
+        "cote": 1.34,
+        "probabilite": 0.8385145998223724,
+        "indice_performance": {
+         "version": 2,
+         "indice": 1,
+         "sur": 4,
+         "niveau": "RISQUE",
+         "libelle": "Risqué",
+         "moyenne_domicile": {
+          "marque": 1.5,
+          "encaisse": 0.583
+         },
+         "moyenne_exterieur": {
+          "marque": 0.917,
+          "encaisse": 2.083
+         },
+         "pire_domicile": {
+          "marque": 0.0,
+          "encaisse": 0.0
+         },
+         "pire_exterieur": {
+          "marque": 3.0,
+          "encaisse": 2.0
+         },
+         "scenarios": [
+          {
+           "domicile": "moyen",
+           "exterieur": "moyen",
+           "buts_domicile": 1.5,
+           "buts_exterieur": 0.917,
+           "marge": 1.083,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "moyen",
+           "buts_domicile": 0.0,
+           "buts_exterieur": 0.917,
+           "marge": -0.417,
+           "valide": false
+          },
+          {
+           "domicile": "moyen",
+           "exterieur": "pire",
+           "buts_domicile": 1.5,
+           "buts_exterieur": 3.0,
+           "marge": -1.0,
+           "valide": false
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "pire",
+           "buts_domicile": 0.0,
+           "buts_exterieur": 3.0,
+           "marge": -2.5,
+           "valide": false
+          }
+         ]
+        }
+       }
+      ],
       "justification": {
        "resume": "Probabilité calibrée 84 % contre 74 % selon la cote 1,35 · marge +13,2 % · 12 matchs au même lieu.",
        "preuves": [
@@ -69640,6 +72285,7 @@
         }
        ]
       },
+      "alternatives_indice": [],
       "justification": {
        "resume": "Probabilité calibrée 76 % contre 70 % selon la cote 1,43 · marge +9,2 % · 3 matchs au même lieu.",
        "preuves": [
@@ -69824,6 +72470,7 @@
         }
        ]
       },
+      "alternatives_indice": [],
       "justification": {
        "resume": "Probabilité calibrée 76 % contre 70 % selon la cote 1,42 · marge +7,2 % · 4 matchs au même lieu.",
        "preuves": [
@@ -70310,6 +72957,7 @@
         }
        ]
       },
+      "alternatives_indice": [],
       "justification": {
        "resume": "Probabilité calibrée 89 % contre 73 % selon la cote 1,37 · marge +21,3 % · 11 matchs au même lieu.",
        "preuves": [
@@ -71150,6 +73798,136 @@
         }
        ]
       },
+      "alternatives_indice": [
+       {
+        "marche": "double_chance_1X",
+        "marche_moteur": "dc_1X",
+        "libelle": null,
+        "cote": 1.34,
+        "probabilite": 0.8004310045317166,
+        "indice_performance": {
+         "version": 2,
+         "indice": 4,
+         "sur": 4,
+         "niveau": "SUR",
+         "libelle": "Sûr",
+         "moyenne_domicile": {
+          "marque": 2.0,
+          "encaisse": 1.0
+         },
+         "moyenne_exterieur": {
+          "marque": 0.333,
+          "encaisse": 2.333
+         },
+         "pire_domicile": {
+          "marque": 2.0,
+          "encaisse": 1.0
+         },
+         "pire_exterieur": {
+          "marque": 1.0,
+          "encaisse": 2.0
+         },
+         "scenarios": [
+          {
+           "domicile": "moyen",
+           "exterieur": "moyen",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 0.333,
+           "marge": 2.167,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "moyen",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 0.333,
+           "marge": 2.167,
+           "valide": true
+          },
+          {
+           "domicile": "moyen",
+           "exterieur": "pire",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 1.0,
+           "marge": 1.5,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "pire",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 1.0,
+           "marge": 1.5,
+           "valide": true
+          }
+         ]
+        }
+       },
+       {
+        "marche": "handicap_domicile_0.5",
+        "marche_moteur": "handicap_-0.5_1",
+        "libelle": "Handicap Lourosa +0,5 : Lourosa ne perd pas",
+        "cote": 1.34,
+        "probabilite": 0.8004310045317166,
+        "indice_performance": {
+         "version": 2,
+         "indice": 4,
+         "sur": 4,
+         "niveau": "SUR",
+         "libelle": "Sûr",
+         "moyenne_domicile": {
+          "marque": 2.0,
+          "encaisse": 1.0
+         },
+         "moyenne_exterieur": {
+          "marque": 0.333,
+          "encaisse": 2.333
+         },
+         "pire_domicile": {
+          "marque": 2.0,
+          "encaisse": 1.0
+         },
+         "pire_exterieur": {
+          "marque": 1.0,
+          "encaisse": 2.0
+         },
+         "scenarios": [
+          {
+           "domicile": "moyen",
+           "exterieur": "moyen",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 0.333,
+           "marge": 2.167,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "moyen",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 0.333,
+           "marge": 2.167,
+           "valide": true
+          },
+          {
+           "domicile": "moyen",
+           "exterieur": "pire",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 1.0,
+           "marge": 1.5,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "pire",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 1.0,
+           "marge": 1.5,
+           "valide": true
+          }
+         ]
+        }
+       }
+      ],
       "justification": {
        "resume": "Probabilité calibrée 80 % contre 74 % selon la cote 1,35 · marge +8,1 % · 3 matchs au même lieu.",
        "preuves": [
@@ -71430,6 +74208,7 @@
         }
        ]
       },
+      "alternatives_indice": [],
       "justification": {
        "resume": "Probabilité calibrée 83 % contre 73 % selon la cote 1,37 · marge +13,2 % · 4 matchs au même lieu.",
        "preuves": [
@@ -71917,6 +74696,136 @@
         }
        ]
       },
+      "alternatives_indice": [
+       {
+        "marche": "1x2_exterieur",
+        "marche_moteur": "1x2_2",
+        "libelle": null,
+        "cote": 1.54,
+        "probabilite": 0.717689217339633,
+        "indice_performance": {
+         "version": 2,
+         "indice": 2,
+         "sur": 4,
+         "niveau": "ATTENTION",
+         "libelle": "Attention",
+         "moyenne_domicile": {
+          "marque": 1.75,
+          "encaisse": 2.75
+         },
+         "moyenne_exterieur": {
+          "marque": 3.5,
+          "encaisse": 1.5
+         },
+         "pire_domicile": {
+          "marque": 2.0,
+          "encaisse": 5.0
+         },
+         "pire_exterieur": {
+          "marque": 2.0,
+          "encaisse": 2.0
+         },
+         "scenarios": [
+          {
+           "domicile": "moyen",
+           "exterieur": "moyen",
+           "buts_domicile": 1.75,
+           "buts_exterieur": 3.5,
+           "marge": 1.25,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "moyen",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 3.5,
+           "marge": 1.0,
+           "valide": true
+          },
+          {
+           "domicile": "moyen",
+           "exterieur": "pire",
+           "buts_domicile": 1.75,
+           "buts_exterieur": 2.0,
+           "marge": -0.25,
+           "valide": false
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "pire",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 2.0,
+           "marge": -0.5,
+           "valide": false
+          }
+         ]
+        }
+       },
+       {
+        "marche": "handicap_exterieur_-0.5",
+        "marche_moteur": "handicap_-0.5_2",
+        "libelle": "Handicap Young Boys −0,5 : Young Boys gagne",
+        "cote": 1.52,
+        "probabilite": 0.717689217339633,
+        "indice_performance": {
+         "version": 2,
+         "indice": 2,
+         "sur": 4,
+         "niveau": "ATTENTION",
+         "libelle": "Attention",
+         "moyenne_domicile": {
+          "marque": 1.75,
+          "encaisse": 2.75
+         },
+         "moyenne_exterieur": {
+          "marque": 3.5,
+          "encaisse": 1.5
+         },
+         "pire_domicile": {
+          "marque": 2.0,
+          "encaisse": 5.0
+         },
+         "pire_exterieur": {
+          "marque": 2.0,
+          "encaisse": 2.0
+         },
+         "scenarios": [
+          {
+           "domicile": "moyen",
+           "exterieur": "moyen",
+           "buts_domicile": 1.75,
+           "buts_exterieur": 3.5,
+           "marge": 1.25,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "moyen",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 3.5,
+           "marge": 1.0,
+           "valide": true
+          },
+          {
+           "domicile": "moyen",
+           "exterieur": "pire",
+           "buts_domicile": 1.75,
+           "buts_exterieur": 2.0,
+           "marge": -0.25,
+           "valide": false
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "pire",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 2.0,
+           "marge": -0.5,
+           "valide": false
+          }
+         ]
+        }
+       }
+      ],
       "justification": {
        "resume": "Probabilité calibrée 74 % contre 64 % selon la cote 1,56 · marge +15,0 % · 4 matchs au même lieu.",
        "preuves": [
@@ -72309,6 +75218,200 @@
         }
        ]
       },
+      "alternatives_indice": [
+       {
+        "marche": "handicap3_domicile_1_1",
+        "marche_moteur": "handicap_-1_1",
+        "libelle": "Handicap 3 choix LKS Lódz +1 (1) : LKS Lódz ne perd pas",
+        "cote": 1.41,
+        "probabilite": 0.7734028756687695,
+        "indice_performance": {
+         "version": 2,
+         "indice": 4,
+         "sur": 4,
+         "niveau": "SUR",
+         "libelle": "Sûr",
+         "moyenne_domicile": {
+          "marque": 2.25,
+          "encaisse": 1.0
+         },
+         "moyenne_exterieur": {
+          "marque": 0.4,
+          "encaisse": 1.0
+         },
+         "pire_domicile": {
+          "marque": 1.0,
+          "encaisse": 2.0
+         },
+         "pire_exterieur": {
+          "marque": 1.0,
+          "encaisse": 0.0
+         },
+         "scenarios": [
+          {
+           "domicile": "moyen",
+           "exterieur": "moyen",
+           "buts_domicile": 2.25,
+           "buts_exterieur": 0.4,
+           "marge": 2.35,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "moyen",
+           "buts_domicile": 1.0,
+           "buts_exterieur": 0.4,
+           "marge": 1.1,
+           "valide": true
+          },
+          {
+           "domicile": "moyen",
+           "exterieur": "pire",
+           "buts_domicile": 2.25,
+           "buts_exterieur": 1.0,
+           "marge": 1.75,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "pire",
+           "buts_domicile": 1.0,
+           "buts_exterieur": 1.0,
+           "marge": 0.5,
+           "valide": true
+          }
+         ]
+        }
+       },
+       {
+        "marche": "double_chance_1X",
+        "marche_moteur": "dc_1X",
+        "libelle": null,
+        "cote": 1.4,
+        "probabilite": 0.7734028756687695,
+        "indice_performance": {
+         "version": 2,
+         "indice": 4,
+         "sur": 4,
+         "niveau": "SUR",
+         "libelle": "Sûr",
+         "moyenne_domicile": {
+          "marque": 2.25,
+          "encaisse": 1.0
+         },
+         "moyenne_exterieur": {
+          "marque": 0.4,
+          "encaisse": 1.0
+         },
+         "pire_domicile": {
+          "marque": 1.0,
+          "encaisse": 2.0
+         },
+         "pire_exterieur": {
+          "marque": 1.0,
+          "encaisse": 0.0
+         },
+         "scenarios": [
+          {
+           "domicile": "moyen",
+           "exterieur": "moyen",
+           "buts_domicile": 2.25,
+           "buts_exterieur": 0.4,
+           "marge": 2.35,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "moyen",
+           "buts_domicile": 1.0,
+           "buts_exterieur": 0.4,
+           "marge": 1.1,
+           "valide": true
+          },
+          {
+           "domicile": "moyen",
+           "exterieur": "pire",
+           "buts_domicile": 2.25,
+           "buts_exterieur": 1.0,
+           "marge": 1.75,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "pire",
+           "buts_domicile": 1.0,
+           "buts_exterieur": 1.0,
+           "marge": 0.5,
+           "valide": true
+          }
+         ]
+        }
+       },
+       {
+        "marche": "handicap_domicile_0.5",
+        "marche_moteur": "handicap_-0.5_1",
+        "libelle": "Handicap LKS Lódz +0,5 : LKS Lódz ne perd pas",
+        "cote": 1.4,
+        "probabilite": 0.7734028756687695,
+        "indice_performance": {
+         "version": 2,
+         "indice": 4,
+         "sur": 4,
+         "niveau": "SUR",
+         "libelle": "Sûr",
+         "moyenne_domicile": {
+          "marque": 2.25,
+          "encaisse": 1.0
+         },
+         "moyenne_exterieur": {
+          "marque": 0.4,
+          "encaisse": 1.0
+         },
+         "pire_domicile": {
+          "marque": 1.0,
+          "encaisse": 2.0
+         },
+         "pire_exterieur": {
+          "marque": 1.0,
+          "encaisse": 0.0
+         },
+         "scenarios": [
+          {
+           "domicile": "moyen",
+           "exterieur": "moyen",
+           "buts_domicile": 2.25,
+           "buts_exterieur": 0.4,
+           "marge": 2.35,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "moyen",
+           "buts_domicile": 1.0,
+           "buts_exterieur": 0.4,
+           "marge": 1.1,
+           "valide": true
+          },
+          {
+           "domicile": "moyen",
+           "exterieur": "pire",
+           "buts_domicile": 2.25,
+           "buts_exterieur": 1.0,
+           "marge": 1.75,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "pire",
+           "buts_domicile": 1.0,
+           "buts_exterieur": 1.0,
+           "marge": 0.5,
+           "valide": true
+          }
+         ]
+        }
+       }
+      ],
       "justification": {
        "resume": "Probabilité calibrée 78 % contre 66 % selon la cote 1,52 · marge +18,8 % · 4 matchs au même lieu.",
        "preuves": [
@@ -72510,6 +75613,72 @@
         }
        ]
       },
+      "alternatives_indice": [
+       {
+        "marche": "handicap_exterieur_1.5",
+        "marche_moteur": "handicap_1.5_2",
+        "libelle": "Handicap GIANA Erminio +1,5 : GIANA Erminio ne perd pas par 2 buts ou plus",
+        "cote": 1.26,
+        "probabilite": 0.8809775128243674,
+        "indice_performance": {
+         "version": 2,
+         "indice": 4,
+         "sur": 4,
+         "niveau": "SUR",
+         "libelle": "Sûr",
+         "moyenne_domicile": {
+          "marque": 0.25,
+          "encaisse": 1.0
+         },
+         "moyenne_exterieur": {
+          "marque": 0.25,
+          "encaisse": 0.75
+         },
+         "pire_domicile": {
+          "marque": 1.0,
+          "encaisse": 2.0
+         },
+         "pire_exterieur": {
+          "marque": 0.0,
+          "encaisse": 0.0
+         },
+         "scenarios": [
+          {
+           "domicile": "moyen",
+           "exterieur": "moyen",
+           "buts_domicile": 0.25,
+           "buts_exterieur": 0.25,
+           "marge": 1.5,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "moyen",
+           "buts_domicile": 1.0,
+           "buts_exterieur": 0.25,
+           "marge": 0.75,
+           "valide": true
+          },
+          {
+           "domicile": "moyen",
+           "exterieur": "pire",
+           "buts_domicile": 0.25,
+           "buts_exterieur": 0.0,
+           "marge": 1.25,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "pire",
+           "buts_domicile": 1.0,
+           "buts_exterieur": 0.0,
+           "marge": 0.5,
+           "valide": true
+          }
+         ]
+        }
+       }
+      ],
       "justification": {
        "resume": "Probabilité calibrée 89 % contre 79 % selon la cote 1,27 · marge +12,9 % · 4 matchs au même lieu.",
        "preuves": [
@@ -73253,6 +76422,7 @@
         }
        ]
       },
+      "alternatives_indice": [],
       "justification": {
        "resume": "Probabilité calibrée 74 % contre 60 % selon la cote 1,67 · marge +23,5 % · 12 matchs au même lieu.",
        "preuves": [
@@ -73581,6 +76751,72 @@
         }
        ]
       },
+      "alternatives_indice": [
+       {
+        "marche": "handicap_domicile_-0.5",
+        "marche_moteur": "handicap_0.5_1",
+        "libelle": "Handicap Almería −0,5 : Almería gagne",
+        "cote": 1.62,
+        "probabilite": 0.687382580534437,
+        "indice_performance": {
+         "version": 2,
+         "indice": 4,
+         "sur": 4,
+         "niveau": "SUR",
+         "libelle": "Sûr",
+         "moyenne_domicile": {
+          "marque": 2.5,
+          "encaisse": 0.75
+         },
+         "moyenne_exterieur": {
+          "marque": 0.4,
+          "encaisse": 1.4
+         },
+         "pire_domicile": {
+          "marque": 2.0,
+          "encaisse": 1.0
+         },
+         "pire_exterieur": {
+          "marque": 1.0,
+          "encaisse": 0.0
+         },
+         "scenarios": [
+          {
+           "domicile": "moyen",
+           "exterieur": "moyen",
+           "buts_domicile": 2.5,
+           "buts_exterieur": 0.4,
+           "marge": 1.6,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "moyen",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 0.4,
+           "marge": 1.1,
+           "valide": true
+          },
+          {
+           "domicile": "moyen",
+           "exterieur": "pire",
+           "buts_domicile": 2.5,
+           "buts_exterieur": 1.0,
+           "marge": 1.0,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "pire",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 1.0,
+           "marge": 0.5,
+           "valide": true
+          }
+         ]
+        }
+       }
+      ],
       "justification": {
        "resume": "Probabilité calibrée 69 % contre 61 % selon la cote 1,64 · marge +12,7 % · 4 matchs au même lieu.",
        "preuves": [
@@ -73765,6 +77001,72 @@
         }
        ]
       },
+      "alternatives_indice": [
+       {
+        "marche": "handicap_exterieur_1.5",
+        "marche_moteur": "handicap_1.5_2",
+        "libelle": "Handicap A Coruña +1,5 : A Coruña ne perd pas par 2 buts ou plus",
+        "cote": 1.48,
+        "probabilite": 0.8271825085490848,
+        "indice_performance": {
+         "version": 2,
+         "indice": 4,
+         "sur": 4,
+         "niveau": "SUR",
+         "libelle": "Sûr",
+         "moyenne_domicile": {
+          "marque": 0.667,
+          "encaisse": 1.333
+         },
+         "moyenne_exterieur": {
+          "marque": 1.667,
+          "encaisse": 1.333
+         },
+         "pire_domicile": {
+          "marque": 2.0,
+          "encaisse": 1.0
+         },
+         "pire_exterieur": {
+          "marque": 1.0,
+          "encaisse": 1.0
+         },
+         "scenarios": [
+          {
+           "domicile": "moyen",
+           "exterieur": "moyen",
+           "buts_domicile": 0.667,
+           "buts_exterieur": 1.667,
+           "marge": 2.5,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "moyen",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 1.667,
+           "marge": 1.167,
+           "valide": true
+          },
+          {
+           "domicile": "moyen",
+           "exterieur": "pire",
+           "buts_domicile": 0.667,
+           "buts_exterieur": 1.0,
+           "marge": 1.833,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "pire",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 1.0,
+           "marge": 0.5,
+           "valide": true
+          }
+         ]
+        }
+       }
+      ],
       "justification": {
        "resume": "Probabilité calibrée 83 % contre 68 % selon la cote 1,48 · marge +22,4 % · 3 matchs au même lieu.",
        "preuves": [
@@ -74077,6 +77379,7 @@
         }
        ]
       },
+      "alternatives_indice": [],
       "justification": {
        "resume": "Probabilité calibrée 69 % contre 63 % selon la cote 1,58 · marge +8,9 % · 3 matchs au même lieu.",
        "preuves": [
@@ -74963,6 +78266,7 @@
         }
        ]
       },
+      "alternatives_indice": [],
       "justification": {
        "resume": "Probabilité calibrée 80 % contre 75 % selon la cote 1,33 · marge +5,8 % · 11 matchs au même lieu.",
        "preuves": [
@@ -75497,6 +78801,7 @@
         }
        ]
       },
+      "alternatives_indice": [],
       "justification": {
        "resume": "Probabilité calibrée 80 % contre 75 % selon la cote 1,34 · marge +7,2 % · 12 matchs au même lieu.",
        "preuves": [
@@ -75953,6 +79258,7 @@
         }
        ]
       },
+      "alternatives_indice": [],
       "justification": {
        "resume": "Probabilité calibrée 71 % contre 58 % selon la cote 1,73 · marge +23,3 % · 3 matchs au même lieu.",
        "preuves": [
@@ -76121,6 +79427,7 @@
         }
        ]
       },
+      "alternatives_indice": [],
       "justification": {
        "resume": "Probabilité calibrée 86 % contre 78 % selon la cote 1,28 · marge +9,6 % · 3 matchs au même lieu.",
        "preuves": [
@@ -77201,6 +80508,7 @@
         }
        ]
       },
+      "alternatives_indice": [],
       "justification": {
        "resume": "Probabilité calibrée 89 % contre 78 % selon la cote 1,29 · marge +14,4 % · 4 matchs au même lieu.",
        "preuves": [
@@ -77881,6 +81189,72 @@
         }
        ]
       },
+      "alternatives_indice": [
+       {
+        "marche": "btts_oui",
+        "marche_moteur": "btts_yes",
+        "libelle": null,
+        "cote": 1.48,
+        "probabilite": 0.7498966670638418,
+        "indice_performance": {
+         "version": 2,
+         "indice": 2,
+         "sur": 4,
+         "niveau": "ATTENTION",
+         "libelle": "Attention",
+         "moyenne_domicile": {
+          "marque": 2.0,
+          "encaisse": 2.5
+         },
+         "moyenne_exterieur": {
+          "marque": 1.25,
+          "encaisse": 3.25
+         },
+         "pire_domicile": {
+          "marque": 1.0,
+          "encaisse": 3.0
+         },
+         "pire_exterieur": {
+          "marque": 0.0,
+          "encaisse": 3.0
+         },
+         "scenarios": [
+          {
+           "domicile": "moyen",
+           "exterieur": "moyen",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 1.25,
+           "marge": 0.75,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "moyen",
+           "buts_domicile": 1.0,
+           "buts_exterieur": 1.25,
+           "marge": 0.5,
+           "valide": true
+          },
+          {
+           "domicile": "moyen",
+           "exterieur": "pire",
+           "buts_domicile": 2.0,
+           "buts_exterieur": 0.0,
+           "marge": -0.5,
+           "valide": false
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "pire",
+           "buts_domicile": 1.0,
+           "buts_exterieur": 0.0,
+           "marge": -0.5,
+           "valide": false
+          }
+         ]
+        }
+       }
+      ],
       "justification": {
        "resume": "Probabilité calibrée 79 % contre 65 % selon la cote 1,55 · marge +22,1 % · 4 matchs au même lieu.",
        "preuves": [

@@ -149,3 +149,4 @@ Code : `moteur_v3/performance.py` ; affiché par `archetype_v3.js` (champ `indic
 - Information seulement : ne change ni la probabilité, ni la sélection, ni la calibration. Marchés sans marge continue (score exact, nombre exact de buts, pair/impair, handicap X) : pas d'indice.
 - Exemple de référence : Virton (3-0, 0-1, 3-0) – Hasselt (1-0, 0-3, 2-1), moins de 3,5 buts : pire = 3 + 2 = 5 buts → 1/4 Risqué.
 - Tests : `tests/test_moteur_v3_performance.py`.
+- Alternatives (ajout du 10/10) : sous l'indice du pari retenu, la carte affiche jusqu'à 3 marchés valides mais écartés par V3 (dominés ou trop liés), avec leur propre indice, par exemple « Alternative : Les deux équipes marquent (cote 1,52) · 4/4 · Sûr ». Champ `alternatives_indice`. Information seulement : la sélection ne change jamais.

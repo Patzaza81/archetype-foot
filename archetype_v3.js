@@ -132,8 +132,21 @@ function construitEtoiles(etoiles) {
     `${"★".repeat(n)}<span class="ax-etoiles-vides">${"★".repeat(5 - n)}</span></span>`;
 }
 
+// Marchés valides écartés par V3, avec leur indice (information seulement, ne change pas la sélection).
+function construitAlternatives(c, equipes) {
+  const alts = Array.isArray(c.alternatives_indice) ? c.alternatives_indice : [];
+  const lignes = alts.map((a) => {
+    const p = a && a.indice_performance;
+    if (!p || typeof p.indice !== "number") return "";
+    const classe = String(p.niveau || "").toLowerCase().replace(/_/g, "-");
+    return `<li class="ax-indice-alt ax-indice-${echappeHtml(classe)}">Alternative : ${echappeHtml(nomMarcheV3(a, equipes))} ` +
+      `(cote ${formatCote(a.cote)}) · <strong>${echappeHtml(`${p.indice}/${p.sur || 4} · ${p.libelle || ""}`)}</strong></li>`;
+  }).join("");
+  return lignes ? `<ul class="ax-indice-alts">${lignes}</ul>` : "";
+}
+
 // Indice de performance du marché (calculé côté serveur, jamais ici) : « 3/4 · Recommandé ».
-function construitIndice(c, compact) {
+function construitIndice(c, compact, equipes) {
   const p = c && c.indice_performance;
   if (!p || typeof p.indice !== "number") return "";
   const classe = String(p.niveau || "").toLowerCase().replace(/_/g, "-");
@@ -141,7 +154,8 @@ function construitIndice(c, compact) {
   return compact
     ? `<p class="ax-indice ax-indice-${echappeHtml(classe)} ax-indice-mini">Indice de performance : <strong>${echappeHtml(texte)}</strong></p>`
     : `<p class="ax-indice ax-indice-${echappeHtml(classe)}" title="Marché testé sur 4 scénarios (moyen et pire de chaque équipe). Information seulement.">` +
-      `<span class="ax-indice-titre">Indice de performance du marché</span><strong>${echappeHtml(texte)}</strong></p>`;
+      `<span class="ax-indice-titre">Indice de performance du marché</span><strong>${echappeHtml(texte)}</strong></p>` +
+      construitAlternatives(c, equipes);
 }
 
 /* ───────────────────── blocs de la carte ───────────────────── */
@@ -184,7 +198,7 @@ function construitPanneau(info, c, equipes, idPanneau, idOnglet) {
       `<p class="ax-texte-resume">${echappeHtml(resume)}</p>` +
       `<div class="ax-badge-cote"><span>Cote</span><strong>${formatCote(c.cote)}</strong></div>` +
     `</div>` +
-    construitIndice(c, false) +
+    construitIndice(c, false, equipes) +
     `<div class="ax-preuves">` +
       `<div class="ax-preuves-liste">` +
         `<div class="ax-preuve"><span class="ax-icone">${ICONES.forme}</span><div><span class="ax-preuve-titre">Forme récente</span>` +
