@@ -276,13 +276,13 @@ def _extract_money(text: str, patterns: list[str]) -> dict[str, Any] | None:
 def read_coupon_status(page: Any) -> dict[str, Any]:
     """Read-only snapshot of values currently displayed by the BetPawa coupon."""
     text = page.locator("body").inner_text(timeout=8_000)
-    compact = re.sub(r"[ \\t]+", " ", text)
+    compact = re.sub(r"[ \t]+", " ", text)
 
     selection_count = None
     for pattern in (
-        r"\\b(\\d+)\\s*/\\s*(\\d+)\\s*(?:sélections?|selections?)\\b",
-        r"\\b(\\d+)\\s*(?:sélections?|selections?)\\b",
-        r"\\b(\\d+)\\s*(?:bets?|paris?)\\b",
+        r"\b(\d+)\s*/\s*(\d+)\s*(?:sélections?|selections?)\b",
+        r"\b(\d+)\s*(?:sélections?|selections?)\b",
+        r"\b(\d+)\s*(?:bets?|paris?)\b",
     ):
         match = re.search(pattern, compact, re.IGNORECASE)
         if match:
@@ -290,7 +290,7 @@ def read_coupon_status(page: Any) -> dict[str, Any]:
             break
 
     total_odds = None
-    match = re.search(r"(?:cote|odds|total odds|cote totale)\\s*[:\\-]?\\s*(\\d{1,4}[.,]\\d{1,3})", compact, re.IGNORECASE)
+    match = re.search(r"(?:cote|odds|total odds|cote totale)\s*[:\-]?\s*(\d{1,4}[.,]\d{1,3})", compact, re.IGNORECASE)
     if match:
         try:
             total_odds = float(match.group(1).replace(",", "."))
@@ -298,16 +298,16 @@ def read_coupon_status(page: Any) -> dict[str, Any]:
             pass
 
     minimum_stake = _extract_money(compact, [
-        r"(?:mise minimale|min(?:imum)?\\.?\\s*mise|min(?:imum)?\\s*stake)\\s*[:\\-]?\\s*([0-9][0-9\\s.,]*(?:FCFA|XAF|CFA)?)",
+        r"(?:mise minimale|min(?:imum)?\.?\s*mise|min(?:imum)?\s*stake)\s*[:\-]?\s*([0-9][0-9\s.,]*(?:FCFA|XAF|CFA)?)",
     ])
     current_stake = _extract_money(compact, [
-        r"(?:mise|stake)\\s*[:\\-]?\\s*([0-9][0-9\\s.,]*(?:FCFA|XAF|CFA)?)",
+        r"(?:mise|stake)\s*[:\-]?\s*([0-9][0-9\s.,]*(?:FCFA|XAF|CFA)?)",
     ])
     potential_win = _extract_money(compact, [
-        r"(?:gain potentiel|gain possible|potential win|potential payout|possible win|retour potentiel)\\s*[:\\-]?\\s*([0-9][0-9\\s.,]*(?:FCFA|XAF|CFA)?)",
+        r"(?:gain potentiel|gain possible|potential win|potential payout|possible win|retour potentiel)\s*[:\-]?\s*([0-9][0-9\s.,]*(?:FCFA|XAF|CFA)?)",
     ])
     maximum_stake = _extract_money(compact, [
-        r"(?:mise maximale|max(?:imum)?\\.?\\s*mise|max(?:imum)?\\s*stake)\\s*[:\\-]?\\s*([0-9][0-9\\s.,]*(?:FCFA|XAF|CFA)?)",
+        r"(?:mise maximale|max(?:imum)?\.?\s*mise|max(?:imum)?\s*stake)\s*[:\-]?\s*([0-9][0-9\s.,]*(?:FCFA|XAF|CFA)?)",
     ])
 
     return {
@@ -322,7 +322,7 @@ def read_coupon_status(page: Any) -> dict[str, Any]:
 
 
 def print_coupon_status(status: dict[str, Any]) -> None:
-    print("\\n--- COUPON BETPAWA (LECTURE SEULE) ---")
+    print("\n--- COUPON BETPAWA (LECTURE SEULE) ---")
     print(f"Sélections : {status.get('selection_count') if status.get('selection_count') is not None else 'non détecté'}")
     print(f"Cote totale BetPawa : {status.get('total_odds') if status.get('total_odds') is not None else 'non détectée'}")
     for key, label in (("minimum_stake", "Mise minimale"), ("current_stake", "Mise actuelle"),
