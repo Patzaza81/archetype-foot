@@ -82,7 +82,17 @@ def selection_target(leg: dict[str, Any]) -> tuple[list[str], list[str], str]:
     if market == "btts non":
         return ["both teams to score", "btts", "les deux equipes marquent"], ["no", "non", "btts no"], "Les deux équipes marquent : non"
 
-    canonical_total = re.fullmatch(r"over under total (\\d+(?:[.]\\d+)?) (over|under)", market)
+    canonical_total = re.fullmatch(r"over_under_total_(\d+(?:[.,]\d+)?)_(over|under)", market_raw)
+    if canonical_total:
+        line = canonical_total.group(1).replace(",", ".")
+        direction = canonical_total.group(2)
+        direction_fr = "moins de" if direction == "under" else "plus de"
+        return ["total goals", "goals over under", "over under", "total buts", "total de buts"], [
+            f"{direction} {line}", f"{direction} {line.replace('.0', '')}",
+            f"{direction_fr} {line}", f"{direction_fr} {line.replace('.0', '')}"
+        ], f"{direction_fr} {line} buts"
+
+    canonical_total = re.fullmatch(r"over under total (\d+(?:[.]\d+)?) (over|under)", market)
     if canonical_total:
         line = canonical_total.group(1)
         direction = canonical_total.group(2)
