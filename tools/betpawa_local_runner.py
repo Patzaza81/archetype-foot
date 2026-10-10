@@ -248,7 +248,100 @@ def find_odds_control(page: Any, item: dict[str, Any]) -> tuple[Any, str]:
     return control, current_odds
 
 
-def click_ticket(plan: list[dict[str, Any]], profile_dir: Path) -> int:
+def _extract_money(text: str, patterns: list[str]) -> dict[str, Any] | None:
+    """Extract a money amount from visible coupon text without writing to the UI."""
+    for pattern in patterns:
+        match = re.search(pattern, text, re.IGNORECASE | re.MULTILINE)
+        if not match:
+            continue
+        raw = match.group(1).strip()
+        number = re.sub(r"[^\d,.-]", "", raw).replace(" ", "")
+        if "," in number and "." in number:
+            if number.rfind(",") > number.rfind("."):
+                number = number.replace(".", "").replace(",", ".")
+            else:
+                number = number.replace(",", "")
+        elif "," in number:
+            number = number.replace(",", ".")
+        try:
+            value = float(number)
+        except ValueError:
+            continue
+        currency_match = re.search(r"(?:FCFA|XAF|CFA|francs?)", raw, re.IGNORECASE)
+        return {"display": raw, "value": value,
+                "currency": currency_match.group(0).upper() if currency_match else None}
+    return None
+
+
+def read_coupon_status(page: Any) -> dict[str, Any]:
+    """Read-only snapshot of values currently displayed by the BetPawa coupon."""
+    text = page.locator("body").inner_text(timeout=8_000)
+    compact = re.sub(r"[ \\t]+", " ", text)
+
+    selection_count = None
+    for pattern in (
+        r"\\b(\\d+)\\s*/\\s*(\\d+)\\s*(?:sélections?|selections?)\\b",
+        r"\\b(\\d+)\\s*(?:sélections?|selections?)\\b",
+        r"\\b(\\d+)\\s*(?:bets?|paris?)\\b",
+    ):
+        match = re.search(pattern, compact, re.IGNORECASE)
+        if match:
+            selection_count = int(match.group(1))
+            break
+
+    total_odds = None
+    match = re.search(r"(?:cote|odds|total odds|cote totale)\\s*[:\\-]?\\s*(\\d{1,4}[.,]\\d{1,3})", compact, re.IGNORECASE)
+    if match:
+        try:
+            total_odds = float(match.group(1).replace(",", "."))
+        except ValueError:
+            pass
+
+    minimum_stake = _extract_money(compact, [
+        r"(?:mise minimale|min(?:imum)?\\.?\\s*mise|min(?:imum)?\\s*stake)\\s*[:\\-]?\\s*([0-9][0-9\\s.,]*(?:FCFA|XAF|CFA)?)",
+    ])
+    current_stake = _extract_money(compact, [
+        r"(?:mise|stake)\\s*[:\\-]?\\s*([0-9][0-9\\s.,]*(?:FCFA|XAF|CFA)?)",
+    ])
+    potential_win = _extract_money(compact, [
+        r"(?:gain potentiel|gain possible|potential win|potential payout|possible win|retour potentiel)\\s*[:\\-]?\\s*([0-9][0-9\\s.,]*(?:FCFA|XAF|CFA)?)",
+    ])
+    maximum_stake = _extract_money(compact, [
+        r"(?:mise maximale|max(?:imum)?\\.?\\s*mise|max(?:imum)?\\s*stake)\\s*[:\\-]?\\s*([0-9][0-9\\s.,]*(?:FCFA|XAF|CFA)?)",
+    ])
+
+    return {
+        "selection_count": selection_count,
+        "total_odds": total_odds,
+        "minimum_stake": minimum_stake,
+        "current_stake": current_stake,
+        "maximum_stake": maximum_stake,
+        "potential_win": potential_win,
+        "source": "visible BetPawa coupon text",
+    }
+
+
+def print_coupon_status(status: dict[str, Any]) -> None:
+    print("\\n--- COUPON BETPAWA (LECTURE SEULE) ---")
+    print(f"Sélections : {status.get('selection_count') if status.get('selection_count') is not None else 'non détecté'}")
+    print(f"Cote totale BetPawa : {status.get('total_odds') if status.get('total_odds') is not None else 'non détectée'}")
+    for key, label in (("minimum_stake", "Mise minimale"), ("current_stake", "Mise actuelle"),
+                       ("maximum_stake", "Mise maximale"), ("potential_win", "Gain potentiel")):
+        item = status.get(key)
+        if item:
+            currency = f" {item['currency']}" if item.get("currency") else ""
+            print(f"{label} : {item['display']}{currency}")
+        else:
+            print(f"{label} : non détectée")
+    print("--------------------------------------")
+
+
+def save_coupon_status(status: dict[str, Any], output_path: Path) -> None:
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(status, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def click_ticket(plan: list[dict[str, Any]], profile_dir: Path, coupon_status_output: Path) -> int:
     try:
         from playwright.sync_api import sync_playwright
     except ImportError as exc:
@@ -363,7 +456,7 @@ def main(argv: list[str] | None = None) -> int:
         print("Confirmation non reçue. Aucun clic effectué.")
         return 1
     try:
-        return click_ticket(plan, args.profile_dir)
+        return click_ticket(plan, args.profile_dir, args.coupon_status_output)
     except Exception as exc:
         print(f"ARRÊT : {exc}", file=sys.stderr)
         print("Vérifiez le coupon manuellement avant toute autre action.")
