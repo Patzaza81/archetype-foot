@@ -125,6 +125,13 @@ jobs:
         run: python construit_etat_systeme.py
         continue-on-error: true
 
+      # AJOUT 11/10/2026 : archive de l'indice de performance (V2, V3, Journal) -> data/indices/ (voir docs/CLAUDE_ARCHIVE.md).
+      # Après le générateur et l'état système (le suivi du générateur est à jour). Ne bloque jamais le pipeline.
+      - name: Archiver l'indice de performance des paris (V2, V3, Journal)
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+        run: python archive_indices.py
+        continue-on-error: true
+
       # CORRECTIF 03/10/2026 : le bloc précédent contenait un done sans boucle
       # for correspondante. Cela faisait échouer Bash après tout le traitement.
       - name: Commit et push du résultat
