@@ -20,6 +20,7 @@ Avant toute modification concernée, lire le document spécialisé correspondant
 - Journal de rentabilité : `docs/CLAUDE_RENTABILITE.md`
 - Données, saisons, sources et contrat moteur : `docs/CLAUDE_DATA.md`
 - Archive de test, anti-fuite et évaluation : `docs/CLAUDE_ARCHIVE.md`
+- Corners et cartons (modèle, preuves, limites) : `docs/CORNERS_CARTONS.md`
 
 ## Règles de sécurité
 
