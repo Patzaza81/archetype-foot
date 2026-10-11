@@ -10,15 +10,84 @@
     "lift_minimal": 0.01
   },
   "compteurs": {
-    "observations_resolues": 609,
-    "regles_decouvertes": 0,
-    "regles_retenues": 0,
-    "actives": 0,
+    "observations_resolues": 861,
+    "regles_decouvertes": 3,
+    "regles_retenues": 3,
+    "actives": 3,
     "declinantes": 0,
     "regles_championnat": 0,
     "regles_championnat_actives": 0,
     "regles_avec_historique_precedent": 0,
     "regles_historique_fort": 0
   },
-  "rules": []
+  "rules": [
+    {
+      "id": "edv_band=0.20-0.25 + favorite_side=INCONNU + market_family=GOALS",
+      "conditions": {
+        "edv_band": "0.20-0.25",
+        "favorite_side": "INCONNU",
+        "market_family": "GOALS"
+      },
+      "observations": 59,
+      "gagnes": 32,
+      "taux_reussite": 0.542373,
+      "borne_basse_95": 0.416578,
+      "roi": 0.049661,
+      "cote_moyenne": 2.61,
+      "marge_vs_implicite": 0.033436,
+      "lift_vs_parent": null,
+      "observations_recentes": 59,
+      "taux_reussite_recent": 0.542373,
+      "marge_recente_vs_implicite": 0.033436,
+      "lift_recent_vs_parent": null,
+      "statut": "ACTIVE",
+      "specificite": 3,
+      "historique_saison_precedente": null
+    },
+    {
+      "id": "edv_band=0.20-0.25 + market_family=GOALS + robustness=CAT_C",
+      "conditions": {
+        "edv_band": "0.20-0.25",
+        "market_family": "GOALS",
+        "robustness": "CAT_C"
+      },
+      "observations": 62,
+      "gagnes": 32,
+      "taux_reussite": 0.516129,
+      "borne_basse_95": 0.394475,
+      "roi": 0.070161,
+      "cote_moyenne": 2.7387,
+      "marge_vs_implicite": 0.029338,
+      "lift_vs_parent": null,
+      "observations_recentes": 62,
+      "taux_reussite_recent": 0.516129,
+      "marge_recente_vs_implicite": 0.029338,
+      "lift_recent_vs_parent": null,
+      "statut": "ACTIVE",
+      "specificite": 3,
+      "historique_saison_precedente": null
+    },
+    {
+      "id": "edv_band=0.20-0.25 + market_family=GOALS",
+      "conditions": {
+        "edv_band": "0.20-0.25",
+        "market_family": "GOALS"
+      },
+      "observations": 73,
+      "gagnes": 39,
+      "taux_reussite": 0.534247,
+      "borne_basse_95": 0.420989,
+      "roi": 0.045616,
+      "cote_moyenne": 2.5437,
+      "marge_vs_implicite": 0.027861,
+      "lift_vs_parent": null,
+      "observations_recentes": 73,
+      "taux_reussite_recent": 0.534247,
+      "marge_recente_vs_implicite": 0.027861,
+      "lift_recent_vs_parent": null,
+      "statut": "ACTIVE",
+      "specificite": 2,
+      "historique_saison_precedente": null
+    }
+  ]
 }
