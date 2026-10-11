@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F8F3E8">
+<title>ARCHETYPE — Corners &amp; Cartons</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="theme.css">
+<style>
+:root{
+ --cc-bg:#f8f3e8;--cc-card:#fffdf8;--cc-card2:#f4efe5;--cc-blue:#087F78;--cc-violet:#06645F;--cc-gold:#8f6b1c;
+ --cc-text:#241b35;--cc-muted:#756b7d;--cc-border:rgba(64,38,91,.13);--cc-bar:rgba(8,127,120,.16);--cc-bar-fort:#087F78;
+}
+body.theme-nuit{--cc-bg:#0E1018;--cc-card:#171A25;--cc-card2:#131722;--cc-text:#F4F2F7;--cc-muted:#a9a4b4;--cc-border:rgba(255,255,255,.12);--cc-gold:#B98A28;--cc-bar:rgba(21,152,141,.22)}
+body{background:var(--cc-bg);color:var(--cc-text)}
+header h1{color:var(--cc-gold);margin-bottom:3px}
+main{max-width:720px;margin:0 auto;padding:0 14px 40px}
+.nav-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0}
+.nav-bouton{display:inline-flex;align-items:center;border:1px solid var(--cc-border);border-radius:999px;padding:7px 12px;font-size:13px;font-weight:700;text-decoration:none;color:var(--cc-text)}
+.section{background:var(--cc-card);border:1px solid var(--cc-border);border-radius:15px;padding:14px;margin:11px 0;box-shadow:0 5px 18px rgba(61,38,84,.05)}
+.section h2{font-size:16px;margin:0 0 5px}
+.help{font-size:12px;line-height:1.45;color:var(--cc-muted);margin:0}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 0}
+.chip{border:1px solid var(--cc-border);background:var(--cc-card2);color:var(--cc-text);border-radius:999px;padding:8px 12px;font-weight:700;font-size:12px;cursor:pointer}
+.chip.actif{background:var(--cc-text);color:var(--cc-bg);border-color:var(--cc-text)}
+.match{background:var(--cc-card);border:1px solid var(--cc-border);border-radius:14px;padding:12px;margin:10px 0}
+.match-tete{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.match-tete strong{font-size:14.5px}
+.meta{font-size:11px;color:var(--cc-muted);margin-top:2px;line-height:1.4}
+.tag{display:inline-block;background:var(--cc-card2);border-radius:999px;padding:3px 8px;font-size:10.5px;font-weight:700;white-space:nowrap}
+.tag.bonne{color:#2f855a}.tag.moyenne{color:#a07a14}.tag.faible{color:#c53030}
+.attendu{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:10px 0 6px}
+.attendu div{background:var(--cc-card2);border-radius:10px;padding:7px 4px;text-align:center}
+.attendu b{display:block;font-size:15px}.attendu span{display:block;font-size:10px;color:var(--cc-muted);margin-top:1px}
+.titre-bloc{font-size:11px;font-weight:800;color:var(--cc-muted);margin:10px 0 3px;text-transform:uppercase;letter-spacing:.03em}
+.ligne{display:grid;grid-template-columns:92px 1fr 44px;gap:8px;align-items:center;padding:3px 0;font-size:12.5px}
+.ligne .barre{height:8px;border-radius:999px;background:var(--cc-bar);overflow:hidden}
+.ligne .barre i{display:block;height:100%;background:var(--cc-bar-fort);border-radius:999px}
+.ligne b{text-align:right}
+.deux{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.deux .ligne{grid-template-columns:50px 1fr 38px}
+table{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:8px}
+th,td{text-align:right;padding:5px 3px;border-bottom:1px solid var(--cc-border)}th:first-child,td:first-child{text-align:left}
+.vide{padding:12px;background:var(--cc-card2);border-radius:10px;font-size:12px;color:var(--cc-muted);margin-top:10px}
+</style>
+</head>
+<body>
+<header>
+ <div class="header-top"><h1>Corners &amp; Cartons</h1></div>
+ <p id="maj">Chargement…</p>
+</header>
+<main>
+ <div class="nav-row">
+  <a class="nav-bouton" href="index.html">← Accueil</a>
+  <span class="help">Rubrique séparée des moteurs V2 et V3</span>
+ </div>
+
+ <section class="section">
+  <h2>Comment lire cette page</h2>
+  <p class="help">Chaque ligne donne la probabilité que le total soit <b>supérieur</b> à la ligne (« Plus de 9,5 » = 10 corners ou plus). « Moins de » est le complément. Les cartons comptent jaunes + rouges. Le modèle part de la moyenne du championnat et ajuste selon les deux équipes. Aucune cote corners ou cartons n'est relevée pour l'instant : ce sont des probabilités, pas des paris retenus.</p>
+ </section>
+
+ <section class="section" id="bilan">
+  <h2>Bilan des prévisions réglées</h2>
+  <div id="bilan-corps"></div>
+ </section>
+
+ <section class="section">
+  <h2>Prévisions</h2>
+  <div class="chips" id="onglets" role="tablist" aria-label="Marché"></div>
+  <div class="chips" id="dates" aria-label="Dates"></div>
+  <div id="matchs"></div>
+  <p class="help" id="refus" style="margin-top:10px"></p>
+ </section>
+</main>
+<script src="corners_cartons.js"></script>
+<script src="theme.js"></script>
+</body>
+</html>

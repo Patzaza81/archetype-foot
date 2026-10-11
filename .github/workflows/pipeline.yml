@@ -132,6 +132,13 @@ jobs:
         run: python archive_indices.py
         continue-on-error: true
 
+      # AJOUT 11/10/2026 : rubrique Corners & Cartons (modèle propre, séparé de V2/V3 ; voir docs/CORNERS_CARTONS.md).
+      # Lit Football-Data (collecté plus haut) et precalcul.json ; écrit data/corners_cartons*.json. Ne bloque jamais le pipeline.
+      - name: Produire les probabilités corners et cartons
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+        run: python corners_cartons.py
+        continue-on-error: true
+
       # CORRECTIF 03/10/2026 : le bloc précédent contenait un done sans boucle
       # for correspondante. Cela faisait échouer Bash après tout le traitement.
       - name: Commit et push du résultat

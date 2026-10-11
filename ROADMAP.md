@@ -84,6 +84,12 @@ score depuis le 18/09, journal figé à 638 matchs. Rétablie par `enregistre_sc
 lendemain pour les matchs tardifs, score existant jamais modifié ; 10 tests). Rattrapage (`scores_rattrapage.yml`) :
 822 matchs sur 921 remplis pour le 18/09-25/09 (99 restants dont 18 reportés) ; journal passé à 848 matchs BetPawa.
 
+### Corners & cartons — modèle branché le 11/10/2026 (Chantier B, partie corners/cartons)
+
+`corners_cartons.py` (rubrique séparée, page `corners_cartons.html`) : modèle propre aux corners, cartons et carton rouge, backtesté sur
+7 093 matchs, règlement et bilan automatiques. Détail, preuves et limites : `docs/CORNERS_CARTONS.md`. **Reste (chantier C)** : relevé des cotes
+BetPawa corners/cartons ; sans cote, aucune sélection ni ticket.
+
 ### Chantier C — BetPawa (en dernier)
 
 Couverture (28 % des matchs J0-J+3 au 24/09) et relevé des cotes mi-temps / corners.
