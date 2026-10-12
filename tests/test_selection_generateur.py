@@ -99,9 +99,16 @@ def test_autre_date_ou_equipes_inversees_ne_sont_pas_le_meme_match():
 
 
 def test_marche_non_reconnu_reste_sans_resultat():
-    p = pari("A", "B", "handicap3_domicile_1_1", "moteur_v3", match_id="z")
+    # 12/10/2026 (audit) : ce test utilisait « handicap3_domicile_1_1 », désormais reconnu (voir le test suivant).
+    p = pari("A", "B", "marche_inconnu_9_5", "moteur_v3", match_id="z")
     arch = regle([p], [match("A", "B", 2, 0, match_id="z")])
     assert resultat(arch) is None and arch["resultats"] == {}
+
+
+def test_handicap_a_trois_choix_est_desormais_regle():
+    p = pari("A", "B", "handicap3_domicile_1_1", "moteur_v3", match_id="z")
+    arch = regle([p], [match("A", "B", 2, 0, match_id="z")])
+    assert resultat(arch) == "WIN"   # domicile +1 : 3 > 0
 
 
 def test_match_sans_score_reste_sans_resultat():

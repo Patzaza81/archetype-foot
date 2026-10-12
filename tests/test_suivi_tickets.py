@@ -191,3 +191,76 @@ def test_construit_suivi_tickets_garde_les_20_derniers(tmp_path, monkeypatch):
     out = ces.construit_suivi_tickets()
     assert len(out["recents"]) == 20 and out["recents"][0]["date"] == "2026-10-30" and out["recents"][0]["paris"] == 2
     assert out["bilan"] == {}
+
+
+# --- AJOUT 12/10/2026 (audit) : règlement des paris du Journal (sans match_id) et du handicap à 3 choix ---------------
+
+def _jambe_journal(marche, dom="Queen's Park", ext="Inverness CT", date="2026-10-13", team=None):
+    return {"match_id": None, "date": date, "domicile": dom, "exterieur": ext, "marche": marche, "cote": 1.3,
+            "probabilite_estimee": 0.75, "source": "journal", "rang": None, "journal_team": team}
+
+
+MATCHS = [{"match_id": "z9", "date": "2026-10-13", "domicile": "QUEEN'S PARK", "exterieur": "Inverness Ct", "buts": (1, 2)}]
+
+
+def _regle_jambes(jambes, matchs=MATCHS, equipes=None):
+    entry = {"cle": "k", "scenario": "S", "date": "2026-10-13", "statut": "PENDING", "jambes": jambes,
+             "analyse": {"plans": []}, "resultat": None}
+    return st.regle(entry, {}, st.evaluateur_defaut(), st.index_par_nom(matchs), equipes)
+
+
+@pytest.mark.parametrize("marche,team,attendu", [
+    ("Match à moins de 3,5 buts", None, "WIN"),          # 1-2 : 3 buts
+    ("Les deux équipes marquent", None, "WIN"),
+    ("Ne perd pas (victoire ou nul)", "Inverness CT", "WIN"),  # extérieur gagne : X2
+])
+def test_pari_du_journal_retrouve_par_date_et_noms_et_regle(marche, team, attendu):
+    e = _regle_jambes([_jambe_journal(marche, team=team)])
+    assert e["statut"] == "RESOLVED" and e["jambes"][0]["resultat"] == attendu
+
+
+@pytest.mark.parametrize("jambe", [
+    _jambe_journal("Match à moins de 3,5 buts", dom="Inverness CT", ext="Queen's Park"),  # équipes inversées
+    _jambe_journal("Match à moins de 3,5 buts", date="2026-10-12"),                        # autre date
+    _jambe_journal("Match à moins de 3,5 buts", ext="Ross County"),                         # autre adversaire
+])
+def test_pari_du_journal_sans_match_correspondant_reste_en_attente(jambe):
+    e = _regle_jambes([jambe])
+    assert e["statut"] == "PENDING" and e["jambes"][0]["resultat"] is None
+
+
+def test_ne_perd_pas_sans_equipe_connue_n_est_jamais_devine():
+    e = _regle_jambes([_jambe_journal("Ne perd pas (victoire ou nul)")])
+    assert e["statut"] == "EXCLU"   # non reconnu : exclu des statistiques, jamais compté perdu
+
+
+def test_equipe_du_journal_retrouvee_dans_l_archive_de_selection():
+    equipes = st.equipes_journal({"executions": [{"paris": [
+        {"date": "2026-10-13", "domicile": "Queen's Park", "exterieur": "Inverness CT",
+         "marche": "Ne perd pas (victoire ou nul)", "journal_team": "Queen's Park"}]}]})
+    e = _regle_jambes([_jambe_journal("Ne perd pas (victoire ou nul)")], equipes=equipes)
+    assert e["jambes"][0]["resultat"] == "LOSS"   # domicile perd 1-2 : 1X perdant
+
+
+@pytest.mark.parametrize("marche,h,a,attendu", [
+    ("handicap3_domicile_1_1", 2, 2, "WIN"),    # domicile +1 : 3 > 2
+    ("handicap3_domicile_1_X", 0, 1, "WIN"),    # 1 = 1
+    ("handicap3_domicile_-2_2", 2, 1, "WIN"),   # domicile -2 : 0 < 1
+    ("handicap3_domicile_1_1", 0, 1, "LOSS"),   # 1 = 1, pas >
+    ("handicap3_domicile_-2_1", 2, 1, "LOSS"),  # 0 < 1
+    ("handicap3_domicile_1_2", 2, 2, "LOSS"),   # 3 > 2
+])
+def test_handicap_a_trois_choix_est_regle(marche, h, a, attendu):
+    assert st.evaluateur_defaut()(marche, h, a) == attendu
+
+
+def test_handicap3_inconnu_reste_non_reconnu():
+    assert st.evaluateur_defaut()("handicap3_domicile_1_Z", 1, 0) is None
+
+
+def test_un_ticket_exclu_est_reevalue():
+    entry = {"cle": "k", "scenario": "S", "date": "2026-10-13", "statut": "EXCLU", "resultat": {"raison": "x"},
+             "jambes": [{"match_id": "a", "marche": "handicap3_domicile_1_1", "source": "moteur_v3", "date": "2026-10-13"}],
+             "analyse": {"plans": []}}
+    e = st.regle(entry, {"a": (2, 2)}, st.evaluateur_defaut())
+    assert e["statut"] == "RESOLVED" and e["resultat"]["paris_justes"] == 1
