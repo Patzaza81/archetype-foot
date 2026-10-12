@@ -98,13 +98,13 @@ jobs:
         run: |
           git config user.name "archetype-foot-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add journal.json data/journal_intelligence.json data/journal_memoire.json data/journal_validation.json data/selection_intelligence.json data/tickets.json data/tickets_historique.json data/tickets_bilan.json data/v3/historique_selection.json etat_systeme.json
-          [ -f data/selection_generateur_historique.json ] && git add data/selection_generateur_historique.json
-          [ -f controle_saisons.json ] && git add controle_saisons.json
-          [ -d data/correspondances ] && git add data/correspondances
-          [ -d data/assemblage ] && git add data/assemblage
-          [ -d data/controles ] && git add data/controles
+          # CORRECTIF 12/10/2026 : liste de fichiers remplacée par les dossiers/fichiers produits. L'ancienne liste oubliait
+          # data/suivi_journal_regularites.json (ajouté le 11/10) : un fichier modifié mais non indexé fait refuser
+          # `git pull --rebase` ("You have unstaged changes") et l'étape échouait après tout le calcul.
+          git add -A data journal.json etat_systeme.json controle_saisons.json
           git diff --staged --quiet || git commit -m "Journal de rentabilité"
+          # Filet : tout reste non indexé (fichier régénéré au prochain run) ne doit jamais bloquer le rebase.
+          git stash push -u -q || true
           git fetch origin main
           git pull --rebase -X theirs origin main
           git push
