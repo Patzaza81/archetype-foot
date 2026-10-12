@@ -169,17 +169,29 @@ jobs:
           # la publication. On resynchronise et réessaie plusieurs fois.
           MON_COMMIT=$(git rev-parse HEAD)
 
+          # CORRECTIF 12/10/2026 (audit) : le repli faisait `git checkout "$MON_COMMIT" -- .`, qui réécrit TOUS les
+          # fichiers avec leur version du début du run. Un correctif de code fusionné sur main pendant le run (1 à 3 h)
+          # aurait été annulé en silence. On ne remet plus que les fichiers que CE run a produits ou modifiés.
+          FICHIERS_DU_RUN=$(mktemp)
+          git diff --name-only -z "$MON_COMMIT~1" "$MON_COMMIT" > "$FICHIERS_DU_RUN"
+          remet_artefacts_du_run() {
+            git reset --hard origin/main
+            if [ -s "$FICHIERS_DU_RUN" ]; then
+              # Fichiers supprimés par le run : absents de MON_COMMIT, on les ignore (ils restent tels quels sur main).
+              xargs -0 -a "$FICHIERS_DU_RUN" sh -c 'for f; do git cat-file -e "'"$MON_COMMIT"':$f" 2>/dev/null && git checkout "'"$MON_COMMIT"'" -- "$f"; done; true' sh
+            fi
+            git add -A
+            git commit -m "Mise à jour pipeline" || true
+          }
+
           for i in 1 2 3 4 5; do
             echo "--- tentative de publication $i/5 ---"
             git fetch origin main
 
             if ! git rebase -X theirs origin/main; then
-              echo "Rebase impossible : repli sur origin/main + artefacts du run."
+              echo "Rebase impossible : repli sur origin/main + artefacts du run (seuls les fichiers produits par le run)."
               git rebase --abort || true
-              git reset --hard origin/main
-              git checkout "$MON_COMMIT" -- .
-              git add -A
-              git commit -m "Mise à jour pipeline" || true
+              remet_artefacts_du_run
             fi
 
             if git push origin HEAD:main; then
@@ -188,10 +200,7 @@ jobs:
             fi
 
             echo "Push refusé (essai $i), nouvelle tentative."
-            git reset --hard origin/main
-            git checkout "$MON_COMMIT" -- .
-            git add -A
-            git commit -m "Mise à jour pipeline" || true
+            remet_artefacts_du_run
             sleep $((i * 10))
           done
 

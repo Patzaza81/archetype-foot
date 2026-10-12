@@ -18,6 +18,7 @@ from selection_adaptative import load_json, norm, num, score_history
 TICKETS = Path("data/tickets.json")
 HISTORIQUE = Path("data/tickets_historique.json")
 BILAN = Path("data/tickets_bilan.json")
+RE_HANDICAP3 = re.compile(r"^handicap3_domicile_(-?\d+(?:\.\d+)?)_(1|X|2)$")
 LIBELLE_SUR = re.compile(r"^(1x2 - [1x2]|double chance - (1x|x2|12)|btts - (oui|non)|(plus|moins) de \d+(\.\d+)? buts)$")
 
 
@@ -41,7 +42,19 @@ def evaluateur_defaut() -> Callable[[str, int, int], str | None]:
     except Exception:
         evaluer_libelle = None
 
+    try:
+        from moteur_v3.markets import gagne as gagne_v3
+    except Exception:
+        gagne_v3 = None
+
     def ev(marche: str, h: int, a: int) -> str | None:
+        # AJOUT 12/10/2026 (audit) : « handicap3_domicile_{t}_{issue} » (nom produit par moteur_v3_pipeline.nom_site pour
+        # le handicap à 3 choix) n'était reconnu par aucun évaluateur : 2 tickets sur 8 réglés étaient EXCLUS pour ce seul
+        # motif. Il correspond à la clé V3 « handicap_{-t}_{issue} », réglée par la V3 elle-même.
+        m3 = RE_HANDICAP3.match(marche or "")
+        if m3 and gagne_v3:
+            r = gagne_v3(f"handicap_{-float(m3.group(1)):g}_{m3.group(2)}", h, a)
+            return None if r is None else ("WIN" if r else "LOSS")
         for nom in (marche, nom_canonique(marche)):
             if not nom:
                 continue
@@ -74,7 +87,10 @@ def cle(scenario: str, legs: list[dict[str, Any]]) -> str:
 
 
 def jambe(x: dict[str, Any]) -> dict[str, Any]:
-    return {k: x.get(k) for k in ("match_id", "marche", "cote", "probabilite_estimee", "source", "rang", "domicile", "exterieur", "date")} | {"resultat": None}
+    # AJOUT 12/10/2026 (audit) : « journal_team » est gardé pour régler « Victoire » / « Ne perd pas » du Journal
+    # (le libellé seul ne dit pas de quelle équipe il s'agit).
+    return {k: x.get(k) for k in ("match_id", "marche", "cote", "probabilite_estimee", "source", "rang", "domicile", "exterieur", "date",
+                                  "journal_team")} | {"resultat": None}
 
 
 def snapshot_analyse(a: dict[str, Any] | None) -> dict[str, Any] | None:
@@ -125,14 +141,74 @@ def regle_plan(plan: dict[str, Any], gagnantes: list[bool]) -> dict[str, Any]:
             "profit": round(retour - 1.0, 4), "rentable": retour >= 1.0 - 1e-3}
 
 
-def regle(entry: dict[str, Any], scores: dict[str, Any], evaluer: Callable[[str, int, int], str | None]) -> dict[str, Any]:
-    """Règle un ticket. EXCLU si un pari est annulé/non reconnu (les cotes ne sont plus celles du plan)."""
-    if entry.get("statut") in ("RESOLVED", "EXCLU"):
+def index_par_nom(matchs: list[dict[str, Any]] | None) -> dict[tuple, tuple[int, int]]:
+    """Matchs terminés indexés par (date, domicile, extérieur) normalisés -- même clé que l'archive de sélection
+    (suivi_selection_generateur.index_matchs). Équipes inversées = autre match."""
+    import generateur_tickets as gt
+    out: dict[tuple, tuple[int, int]] = {}
+    for m in matchs or []:
+        b = m.get("buts")
+        if not b:
+            continue
+        out[(norm(m.get("date")), gt._nom_normalise(m.get("domicile")), gt._nom_normalise(m.get("exterieur")))] = (int(b[0]), int(b[1]))
+    return out
+
+
+def equipes_journal(archive_selection: dict[str, Any] | None) -> dict[tuple, str]:
+    """(date, domicile, extérieur, marché) -> équipe suivie, lue dans l'archive des paris du générateur. Sert aux tickets
+    enregistrés avant le 12/10 (leurs jambes n'ont pas « journal_team »)."""
+    import generateur_tickets as gt
+    out: dict[tuple, str] = {}
+    for e in (archive_selection or {}).get("executions") or []:
+        for p in e.get("paris") or []:
+            if p.get("journal_team"):
+                out[(norm(p.get("date")), gt._nom_normalise(p.get("domicile")), gt._nom_normalise(p.get("exterieur")),
+                     norm(p.get("marche")))] = p["journal_team"]
+    return out
+
+
+def _score_jambe(j: dict[str, Any], scores: dict[str, Any], par_nom: dict[tuple, tuple[int, int]] | None):
+    sc = scores.get(norm(j.get("match_id")))
+    if sc or not par_nom:
+        return sc
+    import generateur_tickets as gt
+    return par_nom.get((norm(j.get("date")), gt._nom_normalise(j.get("domicile")), gt._nom_normalise(j.get("exterieur"))))
+
+
+def _evalue_jambe(j: dict[str, Any], h: int, a: int, evaluer: Callable[[str, int, int], str | None],
+                  equipes: dict[tuple, str] | None) -> str | None:
+    """Nom tel quel, puis nom canonique (libellés du Journal : « Match à moins de 3,5 buts », « Ne perd pas »...)."""
+    s = evaluer(norm(j.get("marche")), h, a)
+    if s in ("WIN", "LOSS") or str(j.get("source") or "").lower() != "journal":
+        return s
+    import generateur_tickets as gt
+    p = dict(j)
+    if not p.get("journal_team") and equipes:
+        p["journal_team"] = equipes.get((norm(j.get("date")), gt._nom_normalise(j.get("domicile")),
+                                         gt._nom_normalise(j.get("exterieur")), norm(j.get("marche"))))
+    canon = gt.marche_canonique(p)
+    essais = [canon] + ([canon[:-2] + canon[-2:].upper()] if canon.startswith("double_chance_") else [])
+    for nom in essais:
+        r = evaluer(nom, h, a)
+        if r in ("WIN", "LOSS"):
+            return r
+    return s
+
+
+def regle(entry: dict[str, Any], scores: dict[str, Any], evaluer: Callable[[str, int, int], str | None],
+          par_nom: dict[tuple, tuple[int, int]] | None = None, equipes: dict[tuple, str] | None = None) -> dict[str, Any]:
+    """Règle un ticket. EXCLU si un pari est annulé/non reconnu (les cotes ne sont plus celles du plan).
+
+    CORRECTIF 12/10/2026 (audit) : les paris du Journal n'ont pas de match_id ; ils sont retrouvés par date + noms
+    (`par_nom`) et leur libellé est traduit en nom canonique. Avant, tout ticket contenant un pari du Journal restait
+    PENDING pour toujours (limite notée dans docs/CLAUDE_SELECTION.md)."""
+    # Un ticket EXCLU est réévalué : l'exclusion venait d'un marché non reconnu, et le règlement est déterministe.
+    if entry.get("statut") == "RESOLVED":
         return entry
     statuts: list[str | None] = []
     for j in entry["jambes"]:
-        sc = scores.get(norm(j.get("match_id")))
-        s = evaluer(norm(j.get("marche")), sc[0], sc[1]) if sc else None
+        sc = _score_jambe(j, scores, par_nom)
+        s = _evalue_jambe(j, sc[0], sc[1], evaluer, equipes) if sc else None
         j["resultat"] = s if sc else None
         statuts.append(s if sc else "SANS_SCORE")
     if any(s not in ("WIN", "LOSS", "SANS_SCORE") for s in statuts):
@@ -140,6 +216,7 @@ def regle(entry: dict[str, Any], scores: dict[str, Any], evaluer: Callable[[str,
         entry["resultat"] = {"raison": "pari annulé ou marché non reconnu"}
         return entry
     if any(s == "SANS_SCORE" for s in statuts):
+        entry["statut"], entry["resultat"] = "PENDING", None   # un ancien EXCLU redevient en attente
         return entry
     gagnantes = [s == "WIN" for s in statuts]
     plans = (entry.get("analyse") or {}).get("plans") or []
@@ -221,9 +298,12 @@ def bilan(historique: list[dict[str, Any]], maintenant: str) -> dict[str, Any]:
 
 
 def met_a_jour(tickets: dict[str, Any], historique: list[dict[str, Any]], scores: dict[str, Any],
-               evaluer: Callable[[str, int, int], str | None], maintenant: str) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+               evaluer: Callable[[str, int, int], str | None], maintenant: str,
+               matchs: list[dict[str, Any]] | None = None, archive_selection: dict[str, Any] | None = None
+               ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     h = enregistre(historique, tickets, scores, maintenant)
-    h = [regle(e, scores, evaluer) for e in h]
+    par_nom, equipes = index_par_nom(matchs), equipes_journal(archive_selection)
+    h = [regle(e, scores, evaluer, par_nom, equipes) for e in h]
     return h, bilan(h, maintenant)
 
 
@@ -233,7 +313,14 @@ def main() -> int:
     ancien = load_json(HISTORIQUE, []) or []
     if not isinstance(ancien, list):
         ancien = []
-    h, b = met_a_jour(tickets, ancien, score_history(), evaluateur_defaut(), maintenant)
+    try:  # matchs terminés de toutes sources, pour retrouver les paris du Journal (sans match_id) par date + noms
+        import journal_rentabilite as jr
+        matchs = jr.charge_tous_resultats()
+    except Exception as exc:  # noqa: BLE001 - les paris avec match_id restent réglés ; l'erreur est affichée
+        print(f"[suivi tickets] matchs terminés non lus : {type(exc).__name__}: {exc}")
+        matchs = []
+    archive_selection = load_json(Path("data/selection_generateur_historique.json"), {}) or {}
+    h, b = met_a_jour(tickets, ancien, score_history(), evaluateur_defaut(), maintenant, matchs, archive_selection)
     HISTORIQUE.parent.mkdir(parents=True, exist_ok=True)
     HISTORIQUE.write_text(json.dumps(h, ensure_ascii=False, indent=2), encoding="utf-8")
     BILAN.write_text(json.dumps(b, ensure_ascii=False, indent=2), encoding="utf-8")
