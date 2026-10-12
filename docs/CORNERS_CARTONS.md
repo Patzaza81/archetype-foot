@@ -69,3 +69,9 @@ Perte logarithmique sur les 60 % de matchs les plus récents (plus bas = mieux) 
 - `bilan` : taux annoncé contre taux observé, perte log, comparée à la moyenne de la division seule, par famille. Une
   famille ne se juge qu'avec un échantillon suffisant (comme V2/V3 : 150-200 lignes propres).
 - Rapprochement des noms : pays + compétition exacts (`data/correspondances/equipes.json`), jamais le nom de ligue seul.
+
+## Indice x/4 et « choix du match » (12/10/2026, v1.2.0)
+Code : `indice_corners_cartons.py` ; champs `indices` et `choix` de chaque match de `data/corners_cartons.json`. Même logique que l'indice des buts, sur les TOTAUX (lignes par équipe et carton rouge : pas d'indice).
+- Par équipe : ses 5 derniers matchs au même lieu (5 = choix de Claude, à valider par Patrick) ; total d'un match = pour + contre. Moyen = moyenne ; pire = le total le plus défavorable au pari (le plus petit pour « Plus », le plus grand pour « Moins »). 4 scénarios, total = moyenne des deux totaux, marge strictement > 0 pour valider. Moins de 3 matchs : pas d'indice.
+- Choix du match : meilleur indice, puis meilleure probabilité, parmi les paris Plus/Moins des lignes totales dont la probabilité est ≤ 80 % (seuil = choix de Claude : au-delà la cote juste est < 1,25). Sans ce plafond, le choix tombait toujours sur la ligne extrême (Moins de 12,5 corners).
+- Information seulement : ne change ni la probabilité ni le bilan ; la cote BetPawa (quand relevée) s'affiche dans la bannière.

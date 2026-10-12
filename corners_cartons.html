@@ -51,6 +51,11 @@ main{max-width:640px;margin:0 auto;padding:0 14px 48px}
 .cel .info b{color:var(--cc-text)}
 .cel.top{background:var(--cc-main-bg);border-color:var(--cc-main)}
 .cel.top .cote{color:var(--cc-main)}
+.ind{display:inline-block;margin-top:4px;font-size:10px;font-weight:800;border-radius:999px;padding:1px 7px;background:var(--cc-card);color:var(--cc-muted)}
+.ind.n4{color:#2f855a}.ind.n3{color:var(--cc-main)}.ind.n2{color:#a07a14}.ind.n1,.ind.n0{color:#c53030}
+.choix{margin:12px 0 2px;padding:10px 12px;border-radius:14px;background:var(--cc-main-bg);border:1px solid var(--cc-main);display:flex;flex-direction:column;gap:2px}
+.choix-t{font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--cc-main)}
+.choix b{font-size:16px}.choix-d{font-size:11.5px;color:var(--cc-muted)}
 .equipes{margin-top:10px}
 .equipes summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(--cc-main);padding:6px 0;list-style:none}
 .equipes summary::-webkit-details-marker{display:none}
@@ -77,7 +82,7 @@ th,td{text-align:right;padding:5px 3px;border-bottom:1px solid var(--cc-line)}th
   <summary>Comment lire cette page</summary>
   <div class="corps">
    <p class="help">Pour chaque ligne : <b>Plus</b> = le total dépasse la ligne (« Plus de 9,5 » = 10 corners ou plus), <b>Moins</b> = il reste en dessous. Dans chaque case : la <b>cote BetPawa</b> en gros, puis la probabilité du <b>modèle</b> et le <b>seuil</b> (1 ÷ cote = probabilité qu'il faut pour ne pas perdre à long terme).</p>
-   <p class="help" style="margin-top:6px">Case colorée = la probabilité du modèle dépasse le seuil. C'est un signal à regarder, pas un pari retenu : le modèle ne bat la moyenne du championnat que de très peu et n'a pas encore été comparé au marché sur des matchs réglés. Cartons = jaunes + rouges (un rouge compte un carton ; la règle de comptage de BetPawa n'est pas vérifiée).</p>
+   <p class="help" style="margin-top:6px"><b>x/4</b> = indice comme pour les buts : sur 4 scénarios (moyen / pire match de chaque équipe, 5 derniers à domicile ou à l'extérieur), combien valident le pari. <b>Meilleur choix</b> = meilleur indice puis meilleure probabilité, hors paris à plus de 80 % (cote trop basse). Case colorée = la probabilité du modèle dépasse le seuil. C'est un signal à regarder, pas un pari retenu : le modèle ne bat la moyenne du championnat que de très peu et n'a pas encore été comparé au marché sur des matchs réglés. Cartons = jaunes + rouges (un rouge compte un carton ; la règle de comptage de BetPawa n'est pas vérifiée).</p>
    <div class="leg"><span><i class="pastille"></i>Modèle au-dessus du seuil</span><span>« – » : cote non relevée</span></div>
   </div>
  </details>

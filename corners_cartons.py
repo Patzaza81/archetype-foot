@@ -47,13 +47,15 @@ import re
 import unicodedata
 from collections import defaultdict
 
+from indice_corners_cartons import historique, indices_et_choix
+
 RACINE = os.path.dirname(os.path.abspath(__file__))
 DOSSIER_NORMALISE = os.path.join(RACINE, "data", "football_data", "normalized")
 FICHIER_CORRESPONDANCES = os.path.join(RACINE, "data", "correspondances", "equipes.json")
 FICHIER_PRECALCUL = os.path.join(RACINE, "precalcul.json")
 FICHIER_SORTIE = os.path.join(RACINE, "data", "corners_cartons.json")
 FICHIER_ARCHIVE = os.path.join(RACINE, "data", "corners_cartons_archive.json")
-VERSION = "1.1.0"
+VERSION = "1.2.0"
 
 PRIOR_LIGUE = 20          # matchs fictifs tirant la moyenne d'une division vers la moyenne de toutes les divisions
 MIN_TAUX_ROUGE = 0.02     # plancher : une probabilité de carton rouge nulle n'a pas de sens
@@ -459,6 +461,7 @@ def main(aujourdhui=None):
         return 0
     aujourdhui = aujourdhui or datetime.datetime.now(datetime.timezone.utc).date()
     modeles, div_rouge, pool_rouge = construit_modeles(matchs)
+    hist_genres = {g: historique(matchs, lambda m, g=g: _comptes(m, g)) for g in ("corners", "cartons")}
     idx_comp, idx_eq = construit_index(_lire(FICHIER_CORRESPONDANCES, {}))
     archive = _lire(FICHIER_ARCHIVE, {}) or {}
 
@@ -506,6 +509,9 @@ def main(aujourdhui=None):
                  "competition": " ".join(str(s.get("competition") or "").split()), "division": div,
                  "domicile": s["domicile"], "exterieur": s["exterieur"], "nom_fd_domicile": nd, "nom_fd_exterieur": ne,
                  "previsions": prev["previsions"], "base_ligue": prev["base_ligue"]}
+        indices, choix = indices_et_choix(prev["previsions"], hist_genres, div, nd, ne)
+        if choix:
+            fiche["indices"], fiche["choix"] = indices, choix
         cotes = cotes_du_match(s.get("cotes_corners_cartons"), prev["previsions"])
         if cotes:
             fiche["cotes"] = cotes

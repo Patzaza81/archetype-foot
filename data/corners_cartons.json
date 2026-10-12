@@ -1,6 +1,6 @@
 {
- "version": "1.0.0",
- "genere_le": "2026-10-12 12:58 UTC",
+ "version": "1.2.0",
+ "genere_le": "2026-10-12 16:28 UTC",
  "saison_football_data": "2627",
  "matchs_football_data_utilises": 3855,
  "parametres": {
@@ -18,7 +18,8 @@
   }
  },
  "definition_cartons": "jaunes + rouges (un rouge compte pour un carton)",
- "note": "Probabilités seules : aucune cote corners/cartons n'est relevée, donc aucun pari retenu.",
+ "note": "Cotes BetPawa affichées à titre d'information, quand BetPawa publie un marché équivalent. Aucune espérance de gain, aucun pari retenu : le modèle n'a pas encore été comparé au marché.",
+ "matchs_avec_cotes": 0,
  "refus": {
   "equipes_non_reliees_a_football_data": 280,
   "corners_cartons_non_publies_pour_ce_championnat": 28
@@ -105,6 +106,76 @@
      2.195,
      2.871
     ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "9.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 4
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 4
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "11.5",
+     "cote": "moins",
+     "proba": 0.7775,
+     "indice": 4,
+     "niveau": "Sûr",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 5
+    },
+    "cartons": {
+     "ligne": "6.5",
+     "cote": "moins",
+     "proba": 0.7375,
+     "indice": 4,
+     "niveau": "Sûr",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 5
+    }
    }
   },
   {
@@ -263,6 +334,76 @@
      2.195,
      2.871
     ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 3
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 4,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "5.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 1
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "11.5",
+     "cote": "moins",
+     "proba": 0.7915,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 4
+    },
+    "cartons": {
+     "ligne": "3.5",
+     "cote": "plus",
+     "proba": 0.7714,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 4
+    }
    }
   },
   {
@@ -421,6 +562,76 @@
      2.096,
      2.096
     ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 0,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 4
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 4,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 4
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "11.5",
+     "cote": "moins",
+     "proba": 0.7374,
+     "indice": 4,
+     "niveau": "Sûr",
+     "matchs_domicile": 3,
+     "matchs_exterieur": 3
+    },
+    "cartons": {
+     "ligne": "2.5",
+     "cote": "plus",
+     "proba": 0.7905,
+     "indice": 4,
+     "niveau": "Sûr",
+     "matchs_domicile": 3,
+     "matchs_exterieur": 3
+    }
    }
   },
   {
@@ -500,6 +711,76 @@
      1.796,
      2.17
     ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 4
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 4
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 4
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "11.5",
+     "cote": "moins",
+     "proba": 0.7761,
+     "indice": 4,
+     "niveau": "Sûr",
+     "matchs_domicile": 3,
+     "matchs_exterieur": 3
+    },
+    "cartons": {
+     "ligne": "5.5",
+     "cote": "moins",
+     "proba": 0.7891,
+     "indice": 4,
+     "niveau": "Sûr",
+     "matchs_domicile": 3,
+     "matchs_exterieur": 3
+    }
    }
   },
   {
@@ -816,6 +1097,76 @@
      2.195,
      2.871
     ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "8.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "9.5": {
+      "plus": 0,
+      "moins": 4
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 4
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 4
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 4,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "5.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 1
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "10.5",
+     "cote": "moins",
+     "proba": 0.7284,
+     "indice": 4,
+     "niveau": "Sûr",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 3
+    },
+    "cartons": {
+     "ligne": "3.5",
+     "cote": "plus",
+     "proba": 0.7663,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 3
+    }
    }
   },
   {
@@ -895,6 +1246,76 @@
      1.892,
      2.452
     ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "9.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 3
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 4,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 0
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "10.5",
+     "cote": "moins",
+     "proba": 0.718,
+     "indice": 2,
+     "niveau": "Attention",
+     "matchs_domicile": 3,
+     "matchs_exterieur": 3
+    },
+    "cartons": {
+     "ligne": "5.5",
+     "cote": "moins",
+     "proba": 0.7102,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 3,
+     "matchs_exterieur": 3
+    }
    }
   },
   {
@@ -974,6 +1395,76 @@
      1.818,
      2.122
     ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 4,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "10.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "11.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "12.5": {
+      "plus": 1,
+      "moins": 0
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 4,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 3
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "8.5",
+     "cote": "plus",
+     "proba": 0.7056,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 4
+    },
+    "cartons": {
+     "ligne": "2.5",
+     "cote": "plus",
+     "proba": 0.7834,
+     "indice": 4,
+     "niveau": "Sûr",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 4
+    }
    }
   },
   {
@@ -1053,6 +1544,76 @@
      1.818,
      2.122
     ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 3
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "12.5",
+     "cote": "moins",
+     "proba": 0.7349,
+     "indice": 4,
+     "niveau": "Sûr",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 4
+    },
+    "cartons": {
+     "ligne": "2.5",
+     "cote": "plus",
+     "proba": 0.7578,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 4
+    }
    }
   },
   {
@@ -1132,6 +1693,76 @@
      1.818,
      2.122
     ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "10.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 1
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 2
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "8.5",
+     "cote": "plus",
+     "proba": 0.72,
+     "indice": 2,
+     "niveau": "Attention",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 4
+    },
+    "cartons": {
+     "ligne": "2.5",
+     "cote": "plus",
+     "proba": 0.7923,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 4
+    }
    }
   },
   {
@@ -1211,6 +1842,76 @@
      1.818,
      2.122
     ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 3
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "12.5",
+     "cote": "moins",
+     "proba": 0.7387,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 4
+    },
+    "cartons": {
+     "ligne": "5.5",
+     "cote": "moins",
+     "proba": 0.7843,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 4
+    }
    }
   },
   {
@@ -1290,6 +1991,76 @@
      1.818,
      2.122
     ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 3
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 4
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 4
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "7.5",
+     "cote": "plus",
+     "proba": 0.7958,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 3,
+     "matchs_exterieur": 4
+    },
+    "cartons": {
+     "ligne": "4.5",
+     "cote": "moins",
+     "proba": 0.6602,
+     "indice": 4,
+     "niveau": "Sûr",
+     "matchs_domicile": 3,
+     "matchs_exterieur": 4
+    }
    }
   },
   {
@@ -1369,6 +2140,76 @@
      1.818,
      2.122
     ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "10.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 2
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 4
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "7.5",
+     "cote": "plus",
+     "proba": 0.7861,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 4
+    },
+    "cartons": {
+     "ligne": "4.5",
+     "cote": "moins",
+     "proba": 0.6736,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 4
+    }
    }
   },
   {
@@ -1448,6 +2289,76 @@
      1.84,
      1.937
     ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 0,
+      "moins": 0
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 3
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 4,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "12.5",
+     "cote": "moins",
+     "proba": 0.799,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 4
+    },
+    "cartons": {
+     "ligne": "2.5",
+     "cote": "plus",
+     "proba": 0.7328,
+     "indice": 4,
+     "niveau": "Sûr",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 4
+    }
    }
   },
   {
@@ -1527,6 +2438,76 @@
      1.818,
      2.122
     ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 4
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "12.5",
+     "cote": "moins",
+     "proba": 0.725,
+     "indice": 4,
+     "niveau": "Sûr",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 4
+    },
+    "cartons": {
+     "ligne": "5.5",
+     "cote": "moins",
+     "proba": 0.7984,
+     "indice": 4,
+     "niveau": "Sûr",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 4
+    }
    }
   },
   {
@@ -1606,6 +2587,76 @@
      1.818,
      2.122
     ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 4,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 0
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 3
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "12.5",
+     "cote": "moins",
+     "proba": 0.7423,
+     "indice": 4,
+     "niveau": "Sûr",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 4
+    },
+    "cartons": {
+     "ligne": "2.5",
+     "cote": "plus",
+     "proba": 0.751,
+     "indice": 4,
+     "niveau": "Sûr",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 4
+    }
    }
   },
   {
@@ -1685,6 +2736,76 @@
      1.818,
      2.122
     ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 3
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 1
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "12.5",
+     "cote": "moins",
+     "proba": 0.747,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 4
+    },
+    "cartons": {
+     "ligne": "2.5",
+     "cote": "plus",
+     "proba": 0.7746,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 4
+    }
    }
   },
   {
@@ -1764,6 +2885,76 @@
      1.818,
      2.122
     ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 4,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 4,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "10.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "11.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 1
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "8.5",
+     "cote": "plus",
+     "proba": 0.7173,
+     "indice": 4,
+     "niveau": "Sûr",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 4
+    },
+    "cartons": {
+     "ligne": "2.5",
+     "cote": "plus",
+     "proba": 0.7161,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 4
+    }
    }
   },
   {
@@ -1843,6 +3034,76 @@
      1.818,
      2.122
     ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 4,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "10.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 2
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "8.5",
+     "cote": "plus",
+     "proba": 0.7127,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 4
+    },
+    "cartons": {
+     "ligne": "5.5",
+     "cote": "moins",
+     "proba": 0.7973,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 4
+    }
    }
   },
   {
@@ -1922,6 +3183,76 @@
      1.818,
      2.122
     ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 3
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 4,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "12.5",
+     "cote": "moins",
+     "proba": 0.7018,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 4
+    },
+    "cartons": {
+     "ligne": "2.5",
+     "cote": "plus",
+     "proba": 0.7297,
+     "indice": 4,
+     "niveau": "Sûr",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 4
+    }
    }
   },
   {
@@ -2001,6 +3332,76 @@
      1.792,
      2.037
     ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 3
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "12.5",
+     "cote": "moins",
+     "proba": 0.7282,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 3,
+     "matchs_exterieur": 3
+    },
+    "cartons": {
+     "ligne": "2.5",
+     "cote": "plus",
+     "proba": 0.7303,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 3,
+     "matchs_exterieur": 3
+    }
    }
   }
  ]

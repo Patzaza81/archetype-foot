@@ -27,7 +27,7 @@
   function virgule(x, n) { return x.toFixed(n).replace(".", ","); }
 
   // Une case : cote en gros, puis modèle et seuil. cote absente -> « – ».
-  function cellule(p, cote, seuil, top) {
+  function cellule(p, cote, seuil, top, ind) {
     var c = el("div", "cel" + (top ? " top" : ""));
     c.appendChild(el("span", "cote" + (cote ? "" : " nc"), cote ? virgule(cote, 2) : "–"));
     var info = el("span", "info");
@@ -36,30 +36,41 @@
     info.appendChild(m);
     if (cote) info.appendChild(document.createTextNode(" · seuil " + pct(seuil)));
     c.appendChild(info);
+    if (ind !== undefined && ind !== null) c.appendChild(el("span", "ind n" + ind, ind + "/4"));
     return c;
   }
 
   // Une ligne = libellé + case Plus + case Moins (ou Oui / Non).
-  function rangee(g, libelle, pPlus, cotes, cles) {
+  function rangee(g, libelle, pPlus, cotes, cles, ind) {
+    ind = ind || {};
     var c = cotes || {};
     var k1 = cles[0], k2 = cles[1];
     g.appendChild(el("div", "lib", libelle));
-    g.appendChild(cellule(pPlus, c[k1], c["seuil_" + k1], c.modele_au_dessus === k1));
-    g.appendChild(cellule(1 - pPlus, c[k2], c["seuil_" + k2], c.modele_au_dessus === k2));
+    g.appendChild(cellule(pPlus, c[k1], c["seuil_" + k1], c.modele_au_dessus === k1, ind[k1]));
+    g.appendChild(cellule(1 - pPlus, c[k2], c["seuil_" + k2], c.modele_au_dessus === k2, ind[k2]));
   }
 
-  function grille(t1, t2, lignes, cotesZone, prefixe) {
+  function grille(t1, t2, lignes, cotesZone, prefixe, indZone) {
     var g = el("div", "grille");
     g.appendChild(el("div", "tete", ""));
     g.appendChild(el("div", "tete", t1));
     g.appendChild(el("div", "tete", t2));
     Object.keys(lignes).sort(function (a, b) { return parseFloat(a) - parseFloat(b); }).forEach(function (l) {
-      rangee(g, prefixe + ligneNum(l), lignes[l], cotesZone ? cotesZone[l] : null, ["plus", "moins"]);
+      rangee(g, prefixe + ligneNum(l), lignes[l], cotesZone ? cotesZone[l] : null, ["plus", "moins"], indZone ? indZone[l] : null);
     });
     return g;
   }
 
   function aDesCotes(m) { return !!(m.cotes && (m.cotes.corners || m.cotes.cartons || m.cotes.rouge)); }
+
+  function banniere(m, genre, cg) {
+    var ch = m.choix[genre], b = el("div", "choix");
+    var cote = cg.total && cg.total[ch.ligne] && cg.total[ch.ligne][ch.cote];
+    b.appendChild(el("span", "choix-t", "Meilleur choix"));
+    b.appendChild(el("b", "", (ch.cote === "plus" ? "Plus de " : "Moins de ") + ligneNum(ch.ligne) + " " + genre));
+    b.appendChild(el("span", "choix-d", pct(ch.proba) + " · " + ch.indice + "/4 " + ch.niveau + (cote ? " · cote " + virgule(cote, 2) : "")));
+    return b;
+  }
 
   function carteMatch(m) {
     var c = el("article", "match");
@@ -101,7 +112,8 @@
     c.appendChild(att);
 
     c.appendChild(el("div", "titre-bloc", "Total " + unite));
-    c.appendChild(grille("Plus", "Moins", f.total, cg.total, ""));
+    if (m.choix && m.choix[etat.onglet]) c.insertBefore(banniere(m, etat.onglet, cg), att);
+    c.appendChild(grille("Plus", "Moins", f.total, cg.total, "", m.indices && m.indices[etat.onglet]));
 
     var det = el("details", "equipes");
     det.appendChild(el("summary", "", "Par équipe"));
