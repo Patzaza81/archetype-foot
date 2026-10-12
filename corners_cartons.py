@@ -23,8 +23,10 @@ PARAMÈTRES MESURÉS (voir PARAMETRES) :
   « cartons » = jaunes + rouges, un rouge compte pour un carton.
 
 LIMITE ASSUMÉE (backtest) : l'ajustement par équipe n'améliore la log-perte que de 0,003 (corners) à 0,005 (cartons)
-par rapport à la seule moyenne de la division. Ces marchés dépendent surtout du championnat. Aucune cote corners /
-cartons n'est relevée (chantier C) : ce module produit des probabilités, jamais d'EV ni de pari retenu.
+par rapport à la seule moyenne de la division. Ces marchés dépendent surtout du championnat.
+COTES (12/10/2026) : les cotes BetPawa équivalentes à un marché du modèle sont relevées à part (parse_corners_cartons_betpawa.py,
+clé `cotes_corners_cartons` du signal) et AFFICHÉES avec leur seuil 1 / cote. Ce module ne calcule toujours ni EV ni pari retenu :
+le modèle n'a pas été comparé au marché (voir docs/CORNERS_CARTONS.md).
 
 Données : data/football_data/normalized/<saison la plus récente>/*.jsonl (saison en cours seule, jamais la précédente).
 Un match sans corners ou sans cartons publiés est ignoré pour le marché concerné (règle du 24/09/2026).
@@ -51,7 +53,7 @@ FICHIER_CORRESPONDANCES = os.path.join(RACINE, "data", "correspondances", "equip
 FICHIER_PRECALCUL = os.path.join(RACINE, "precalcul.json")
 FICHIER_SORTIE = os.path.join(RACINE, "data", "corners_cartons.json")
 FICHIER_ARCHIVE = os.path.join(RACINE, "data", "corners_cartons_archive.json")
-VERSION = "1.0.0"
+VERSION = "1.1.0"
 
 PRIOR_LIGUE = 20          # matchs fictifs tirant la moyenne d'une division vers la moyenne de toutes les divisions
 MIN_TAUX_ROUGE = 0.02     # plancher : une probabilité de carton rouge nulle n'a pas de sens
@@ -287,6 +289,61 @@ def prevoit_match(modeles, div_rouge, pool_rouge, div, dom, ext):
 
 
 # ------------------------------------------------------------------------------------------------------------------
+# Cotes BetPawa (AJOUT 12/10/2026) : affichage d'information. Jamais d'EV, jamais de pari retenu (docs/CORNERS_CARTONS.md).
+# ------------------------------------------------------------------------------------------------------------------
+def _cote_ok(v):
+    return isinstance(v, (int, float)) and not isinstance(v, bool) and v > 1.0
+
+
+def _ligne_cotes(p_plus, brut, cles=("plus", "moins")):
+    """Une ligne : cotes disponibles, seuil de rentabilité (1 / cote) de chaque côté et côté pour lequel la probabilité du
+    modèle dépasse ce seuil (au plus un des deux, car les seuils d'un même marché somment plus de 1)."""
+    probas = {"plus": p_plus, "moins": 1.0 - p_plus, "oui": p_plus, "non": 1.0 - p_plus}
+    sortie, au_dessus = {}, None
+    for c in cles:
+        v = brut.get(c)
+        if not _cote_ok(v):
+            continue
+        seuil = 1.0 / v
+        sortie[c] = v
+        sortie["seuil_" + c] = round(seuil, 4)
+        if probas[c] > seuil:
+            au_dessus = c
+    if not any(c in sortie for c in cles):
+        return None
+    sortie["modele_au_dessus"] = au_dessus
+    return sortie
+
+
+def cotes_du_match(brutes, previsions):
+    """Cotes BetPawa rangées comme les prévisions (genre -> zone -> ligne), seulement pour les lignes que le modèle calcule
+    ET pour lesquelles BetPawa publie une cote équivalente (parse_corners_cartons_betpawa.py). None si aucune."""
+    if not isinstance(brutes, dict):
+        return None
+    out = {}
+    for genre in ("corners", "cartons"):
+        bloc = {}
+        p = PARAMETRES[genre]
+        for zone, lignes in (("total", p["lignes_total"]), ("domicile", p["lignes_equipe"]), ("exterieur", p["lignes_equipe"])):
+            for l in lignes:
+                brut = brutes.get(f"{genre}_{zone}_{l:g}")
+                p_plus = previsions[genre][zone].get(f"{l:g}")
+                if not isinstance(brut, dict) or p_plus is None:
+                    continue
+                ligne = _ligne_cotes(p_plus, brut)
+                if ligne:
+                    bloc.setdefault(zone, {})[f"{l:g}"] = ligne
+        if bloc:
+            out[genre] = bloc
+    brut = brutes.get("rouge_match")
+    if isinstance(brut, dict):
+        ligne = _ligne_cotes(previsions["rouge"]["oui"], brut, cles=("oui", "non"))
+        if ligne:
+            out["rouge"] = ligne
+    return out or None
+
+
+# ------------------------------------------------------------------------------------------------------------------
 # Rapprochement des matchs à venir avec les équipes Football-Data
 # ------------------------------------------------------------------------------------------------------------------
 def _nom_competition(c):
@@ -449,6 +506,10 @@ def main(aujourdhui=None):
                  "competition": " ".join(str(s.get("competition") or "").split()), "division": div,
                  "domicile": s["domicile"], "exterieur": s["exterieur"], "nom_fd_domicile": nd, "nom_fd_exterieur": ne,
                  "previsions": prev["previsions"], "base_ligue": prev["base_ligue"]}
+        cotes = cotes_du_match(s.get("cotes_corners_cartons"), prev["previsions"])
+        if cotes:
+            fiche["cotes"] = cotes
+            fiche["cotes_prises_le"] = s.get("prepared_at")
         liste.append(fiche)
         ancien = archive.get(s["match_id"])
         if not (ancien and ancien.get("reglement")):
@@ -459,7 +520,9 @@ def main(aujourdhui=None):
            "matchs_football_data_utilises": len(matchs),
            "parametres": {g: {k: v for k, v in PARAMETRES[g].items() if k.startswith(("k", "c", "alpha"))} for g in PARAMETRES},
            "definition_cartons": "jaunes + rouges (un rouge compte pour un carton)",
-           "note": "Probabilités seules : aucune cote corners/cartons n'est relevée, donc aucun pari retenu.",
+           "note": "Cotes BetPawa affichées à titre d'information, quand BetPawa publie un marché équivalent. Aucune espérance de gain, "
+                   "aucun pari retenu : le modèle n'a pas encore été comparé au marché.",
+           "matchs_avec_cotes": sum(1 for f in liste if f.get("cotes")),
            "refus": dict(refus), "bilan": bilan(archive), "matchs": liste}
     _ecrire(FICHIER_SORTIE, doc)
     _ecrire(FICHIER_ARCHIVE, archive)

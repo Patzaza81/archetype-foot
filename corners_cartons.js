@@ -6,7 +6,7 @@
     { id: "cartons", titre: "Cartons" },
     { id: "rouge", titre: "Carton rouge" }
   ];
-  var etat = { doc: null, onglet: "corners", date: "tout" };
+  var etat = { doc: null, onglet: "corners", date: "tout", seulCotes: false };
 
   function el(tag, classe, texte) {
     var e = document.createElement(tag);
@@ -24,30 +24,42 @@
     return t.charAt(0).toUpperCase() + t.slice(1);
   }
 
-  function barre(p) {
-    var b = el("div", "barre");
-    var i = el("i");
-    i.style.width = Math.max(2, Math.min(100, Math.round(p * 100))) + "%";
-    b.appendChild(i);
-    return b;
+  function virgule(x, n) { return x.toFixed(n).replace(".", ","); }
+
+  // Une case : cote en gros, puis modèle et seuil. cote absente -> « – ».
+  function cellule(p, cote, seuil, top) {
+    var c = el("div", "cel" + (top ? " top" : ""));
+    c.appendChild(el("span", "cote" + (cote ? "" : " nc"), cote ? virgule(cote, 2) : "–"));
+    var info = el("span", "info");
+    var m = el("b", "", pct(p));
+    info.appendChild(document.createTextNode("Modèle "));
+    info.appendChild(m);
+    if (cote) info.appendChild(document.createTextNode(" · seuil " + pct(seuil)));
+    c.appendChild(info);
+    return c;
   }
 
-  function ligne(libelle, p) {
-    var l = el("div", "ligne");
-    l.appendChild(el("span", "", libelle));
-    l.appendChild(barre(p));
-    l.appendChild(el("b", "", pct(p)));
-    return l;
+  // Une ligne = libellé + case Plus + case Moins (ou Oui / Non).
+  function rangee(g, libelle, pPlus, cotes, cles) {
+    var c = cotes || {};
+    var k1 = cles[0], k2 = cles[1];
+    g.appendChild(el("div", "lib", libelle));
+    g.appendChild(cellule(pPlus, c[k1], c["seuil_" + k1], c.modele_au_dessus === k1));
+    g.appendChild(cellule(1 - pPlus, c[k2], c["seuil_" + k2], c.modele_au_dessus === k2));
   }
 
-  function blocLignes(titre, dico, deux) {
-    var w = el("div");
-    w.appendChild(el("div", "titre-bloc", titre));
-    Object.keys(dico).sort(function (a, b) { return parseFloat(a) - parseFloat(b); }).forEach(function (l) {
-      w.appendChild(ligne((deux ? "+" : "Plus de ") + ligneNum(l), dico[l]));
+  function grille(t1, t2, lignes, cotesZone, prefixe) {
+    var g = el("div", "grille");
+    g.appendChild(el("div", "tete", ""));
+    g.appendChild(el("div", "tete", t1));
+    g.appendChild(el("div", "tete", t2));
+    Object.keys(lignes).sort(function (a, b) { return parseFloat(a) - parseFloat(b); }).forEach(function (l) {
+      rangee(g, prefixe + ligneNum(l), lignes[l], cotesZone ? cotesZone[l] : null, ["plus", "moins"]);
     });
-    return w;
+    return g;
   }
+
+  function aDesCotes(m) { return !!(m.cotes && (m.cotes.corners || m.cotes.cartons || m.cotes.rouge)); }
 
   function carteMatch(m) {
     var c = el("article", "match");
@@ -61,31 +73,46 @@
     tag.title = "Selon le nombre de matchs déjà joués par les deux équipes";
     tete.appendChild(tag);
     c.appendChild(tete);
+    var cotes = m.cotes || {};
 
     if (etat.onglet === "rouge") {
       var r = pv.rouge;
-      var att = el("div", "attendu");
-      [["Carton rouge", pct(r.oui)], ["Pas de rouge", pct(1 - r.oui)], ["Rouges / match (champ.)", r.taux_division.toFixed(2).replace(".", ",")]]
-        .forEach(function (x) { var d = el("div"); d.appendChild(el("b", "", x[1])); d.appendChild(el("span", "", x[0])); att.appendChild(d); });
-      c.appendChild(att);
+      c.appendChild(el("div", "titre-bloc", "Un joueur expulsé dans le match"));
+      var gr = el("div", "grille");
+      gr.appendChild(el("div", "tete", ""));
+      gr.appendChild(el("div", "tete", "Oui"));
+      gr.appendChild(el("div", "tete", "Non"));
+      rangee(gr, "Rouge", r.oui, cotes.rouge, ["oui", "non"]);
+      c.appendChild(gr);
+      c.appendChild(el("p", "sans", "Moyenne du championnat : " + virgule(r.taux_division, 2) + " rouge par match."));
       return c;
     }
 
     var f = pv[etat.onglet];
+    var cg = cotes[etat.onglet] || {};
     var unite = etat.onglet === "corners" ? "corners" : "cartons";
-    var att2 = el("div", "attendu");
-    [[f.attendu_domicile, m.domicile], [f.attendu_total, "Total " + unite], [f.attendu_exterieur, m.exterieur]].forEach(function (x) {
+    var att = el("div", "attendu");
+    [[f.attendu_domicile, m.domicile], [f.attendu_total, "Total attendu"], [f.attendu_exterieur, m.exterieur]].forEach(function (x) {
       var d = el("div");
-      d.appendChild(el("b", "", x[0].toFixed(1).replace(".", ",")));
-      d.appendChild(el("span", "", x[1]));
-      att2.appendChild(d);
+      d.appendChild(el("b", "", virgule(x[0], 1)));
+      d.appendChild(document.createTextNode(" " + x[1]));
+      att.appendChild(d);
     });
-    c.appendChild(att2);
-    c.appendChild(blocLignes("Total " + unite, f.total, false));
-    var duo = el("div", "deux");
-    duo.appendChild(blocLignes(m.domicile, f.domicile, true));
-    duo.appendChild(blocLignes(m.exterieur, f.exterieur, true));
-    c.appendChild(duo);
+    c.appendChild(att);
+
+    c.appendChild(el("div", "titre-bloc", "Total " + unite));
+    c.appendChild(grille("Plus", "Moins", f.total, cg.total, ""));
+
+    var det = el("details", "equipes");
+    det.appendChild(el("summary", "", "Par équipe"));
+    det.appendChild(el("div", "titre-bloc", m.domicile));
+    det.appendChild(grille("Plus", "Moins", f.domicile, cg.domicile, ""));
+    det.appendChild(el("div", "titre-bloc", m.exterieur));
+    det.appendChild(grille("Plus", "Moins", f.exterieur, cg.exterieur, ""));
+    det.appendChild(el("p", "sans", "Cote relevée seulement quand BetPawa publie le même marché : « 7+ » pour Plus de 6,5 corners, « 0-1 » pour Moins de 1,5 carton."));
+    c.appendChild(det);
+
+    if (!aDesCotes(m)) c.appendChild(el("p", "sans", "Cotes non relevées pour ce match : probabilités du modèle seules."));
     return c;
   }
 
@@ -131,7 +158,7 @@
     var dates = [];
     etat.doc.matchs.forEach(function (m) { if (dates.indexOf(m.date) < 0) dates.push(m.date); });
     dates.sort();
-    [["tout", "Toutes les dates"]].concat(dates.map(function (d) { return [d, jourLisible(d)]; })).forEach(function (x) {
+    [["tout", "Tout"]].concat(dates.map(function (d) { return [d, jourLisible(d)]; })).forEach(function (x) {
       var b = el("button", "chip" + (etat.date === x[0] ? " actif" : ""), x[1]);
       b.type = "button";
       b.addEventListener("click", function () { etat.date = x[0]; rend(); });
@@ -139,19 +166,32 @@
     });
   }
 
+  function rendOptions() {
+    var z = document.getElementById("options");
+    z.textContent = "";
+    var b = el("button", "chip" + (etat.seulCotes ? " actif" : ""), "Avec cotes seulement");
+    b.type = "button";
+    b.addEventListener("click", function () { etat.seulCotes = !etat.seulCotes; rend(); });
+    z.appendChild(b);
+  }
+
   function rendMatchs() {
     var z = document.getElementById("matchs");
     z.textContent = "";
-    var liste = etat.doc.matchs.filter(function (m) { return etat.date === "tout" || m.date === etat.date; });
+    var liste = etat.doc.matchs.filter(function (m) {
+      return (etat.date === "tout" || m.date === etat.date) && (!etat.seulCotes || aDesCotes(m));
+    });
     if (!liste.length) {
-      z.appendChild(el("div", "vide", "Aucun match à afficher pour cette date."));
+      z.appendChild(el("div", "vide", etat.seulCotes
+        ? "Aucune cote corners/cartons relevée pour ces matchs. Les cotes apparaissent après la prochaine mise à jour des données BetPawa."
+        : "Aucun match à afficher pour cette date."));
       return;
     }
     var jour = null;
     liste.forEach(function (m) {
       if (m.date !== jour) {
         jour = m.date;
-        z.appendChild(el("div", "titre-bloc", jourLisible(m.date)));
+        z.appendChild(el("div", "jour", jourLisible(m.date)));
       }
       z.appendChild(carteMatch(m));
     });
@@ -169,7 +209,7 @@
     document.getElementById("refus").textContent = parts.length ? "Matchs écartés : " + parts.join(" · ") + "." : "";
   }
 
-  function rend() { rendOnglets(); rendDates(); rendMatchs(); }
+  function rend() { rendOnglets(); rendDates(); rendOptions(); rendMatchs(); }
 
   function init(doc) {
     etat.doc = doc;

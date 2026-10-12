@@ -37,6 +37,7 @@ from resolution_betpawa import resoudre_match
 from cache_betpawa import cherche_dans_cache, enregistre_correspondance, invalide_entree
 from scraper_betpawa import recupere_page, meilleur_parsing, titre_correspond
 from parse_betpawa_url import extrait_meta
+from parse_corners_cartons_betpawa import parse_corners_cartons_betpawa
 
 FICHIER_DIAGNOSTIC = "diagnostic_precalcul_betpawa.txt"
 
@@ -79,6 +80,7 @@ def resout_cotes_betpawa(fenetre):
         "betpawa_titre_mismatch": 0,
         "betpawa_cotes_extraites": 0,
         "betpawa_cotes_vides": 0,
+        "betpawa_cotes_corners_cartons": 0,
         "betpawa_erreurs": 0,
         "betpawa_ignore_sans_playwright": False,
         "betpawa_duree_secondes": 0,
@@ -192,6 +194,18 @@ def resout_cotes_betpawa(fenetre):
                     continue
 
                 cotes = meilleur_parsing(texte, domicile, exterieur)
+
+                # AJOUT 12/10/2026 : cotes corners / cartons, rangées À PART (jamais dans cotes_manuelles : V2, V3 et leur
+                # couverture ne voient rien). Lues seulement par corners_cartons.py. Ne peut jamais faire échouer le run.
+                try:
+                    cotes_cc = parse_corners_cartons_betpawa(texte, domicile, exterieur)
+                except Exception as e:
+                    cotes_cc = {}
+                    etapes.append(f"ERREUR cotes corners/cartons [{domicile} - {exterieur}] : {e}")
+                if cotes_cc:
+                    m["cotes_corners_cartons"] = cotes_cc
+                    compteurs["betpawa_cotes_corners_cartons"] += 1
+                    etapes.append(f"COTES CORNERS/CARTONS OK [{domicile} - {exterieur}] {len(cotes_cc)} ligne(s)")
 
                 if cotes:
                     m["cotes_manuelles"] = cotes

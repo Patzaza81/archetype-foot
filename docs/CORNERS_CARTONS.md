@@ -44,9 +44,17 @@ Perte logarithmique sur les 60 % de matchs les plus récents (plus bas = mieux) 
 
 - L'ajustement par équipe n'améliore que de 0,003 (corners) à 0,005 (cartons) : ces marchés dépendent surtout du
   championnat. Entre 3 et 12 matchs joués par équipe, la formule ne bat pas clairement la moyenne de la division.
-- **Aucune cote corners / cartons n'est relevée** (chantier C) : le module produit des probabilités, jamais d'EV, de value
-  bet ni de pari retenu. Ne pas brancher ces marchés au générateur de tickets avant d'avoir (1) des cotes BetPawa,
-  (2) un bilan réglé suffisant (`bilan` de `data/corners_cartons.json`), (3) la comparaison au marché.
+- **Cotes BetPawa (12/10/2026, v1.1.0) : affichage seulement.** `parse_corners_cartons_betpawa.py` relève les cotes
+  (module séparé, appelé par `resolution_betpawa_precalcul.py`), rangées dans `cotes_corners_cartons` du match, JAMAIS dans
+  `cotes_manuelles` (sinon la couverture V3 `issues_betpawa` / `groupes_non_lus` serait faussée). Seules les cotes
+  strictement équivalentes à un marché du modèle sont gardées : total corners/« bookings » Plus/Moins, équipe « 7+ » =
+  Plus de 6,5 corners, équipe « 0-1 » = Moins de 1,5 carton, « Player Sent Off » = carton rouge. La page affiche cote,
+  probabilité du modèle et seuil (1 ÷ cote) ; `modele_au_dessus` colore la case où le modèle dépasse le seuil.
+  Les cotes n'apparaissent qu'après le premier passage du pipeline suivant ; vérifier alors le compteur
+  `betpawa_cotes_corners_cartons` et le diagnostic (le format texte de ces marchés vient d'une page réelle lue hors
+  pipeline, pas encore confirmé dans le pipeline). Règle de comptage « Bookings » de BetPawa non vérifiée.
+- **Toujours interdit** : EV, value bet, pari retenu, branchement au générateur de tickets, tant qu'il n'y a pas (1) un
+  bilan réglé suffisant (`bilan` de `data/corners_cartons.json`) et (2) une comparaison au marché sur matchs réglés.
 - Seules les divisions dont Football-Data publie corners ET cartons sont couvertes (les 22 divisions principales). Les
   championnats supplémentaires (Argentine, Brésil, USA, Chine, Scandinavie…) n'ont pas ces champs : matchs écartés avec la
   raison `corners_cartons_non_publies_pour_ce_championnat`. Un match Matchendirect n'apporte jamais de corners ni de
