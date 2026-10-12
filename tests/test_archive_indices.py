@@ -41,7 +41,7 @@ def doc_vide():
 def test_indice_4_sur_4_quand_les_quatre_scenarios_valident():
     l = ligne(match(), "1x2_1")
     assert (l["indice"], l["sur"], l["niveau"]) == (4, 4, "SUR")
-    assert l["n_domicile"] == 4 and l["n_exterieur"] == 4 and len(l["scenarios"]) == 4 and l["version_indice"] == 3
+    assert l["n_domicile"] == 4 and l["n_exterieur"] == 4 and len(l["scenarios"]) == 4 and l["version_indice"] == 4
 
 
 def test_indice_bas_quand_le_marche_est_contraire_aux_matchs():

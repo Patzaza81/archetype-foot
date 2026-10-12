@@ -677,10 +677,11 @@ def lignes_indice_performance(perf, dom, ext):
     if sur == 2:
         lignes.append("Ce marché ne dépend que d'une équipe : 2 scénarios (moyen et pire de cette équipe), l'autre équipe n'entre pas.")
     if pd:
-        lignes.append(f"{dom} à domicile : moyenne simple {_n2(md['marque'])} marqué(s) par match ; pire match {pd['marque']:g}-{pd['encaisse']:g}.")
+        lignes.append(f"{dom} à domicile : moyenne simple {_n2(md['marque'])} marqué(s) et {_n2(md['encaisse'])} encaissé(s) ; pire score {pd['marque']:g}-{pd['encaisse']:g}.")
     if pe:
-        lignes.append(f"{ext} à l'extérieur : moyenne simple {_n2(me['marque'])} marqué(s) par match ; pire match {pe['marque']:g}-{pe['encaisse']:g}.")
-    lignes.append("Buts d'un scénario = ce que chaque équipe marque dans son profil (moyen ou pire) ; les buts encaissés ne comptent pas.")
+        lignes.append(f"{ext} à l'extérieur : moyenne simple {_n2(me['marque'])} marqué(s) et {_n2(me['encaisse'])} encaissé(s) ; pire score {pe['encaisse']:g}-{pe['marque']:g}.")
+    lignes.append("Pire score = le score réel qui met le plus le marché en difficulté (peu importe domicile ou extérieur) ; moyen = moyenne de tous les scores. "
+                  "Buts d'un scénario = moyenne de ce que l'équipe marque et de ce que l'adversaire encaisse.")
     for s in perf["scenarios"]:
         morceaux, total = [], 0.0
         if s["domicile"]:
