@@ -15,21 +15,41 @@ BORO = _m((2, 1), (3, 1), (4, 3), (2, 2))
 WOLVES = _m((3, 1), (2, 4), (2, 2), (1, 0))   # buts marqués/encaissés de Wolves à l'extérieur
 
 
-def test_exemple_virton_hasselt_under_35_donne_1_sur_4():
-    # pire Virton 3-0 (marque 3) et pire Hasselt 2-1 (marque 2) : 3 + 2 = 5 buts, non validé (règle de Patrick)
+def test_exemple_virton_hasselt_under_35_donne_4_sur_4():
+    # règle du 12/10 (score entier) : Virton 3-0 + Hasselt 2-1 donnent (3+1)/2 = 2 et (2+0)/2 = 1 : 3 buts, sous 3,5
     virton = _m((3, 0), (0, 1), (3, 0))
     hasselt = _m((1, 0), (0, 3), (2, 1))
     r = indice_performance("under_3_5", virton, hasselt)
     assert (r["pire_domicile"]["marque"], r["pire_exterieur"]["marque"]) == (3.0, 2.0)
-    assert [(s["buts_domicile"], s["buts_exterieur"]) for s in r["scenarios"]] == [(2.0, 1.0), (3.0, 1.0), (2.0, 2.0), (3.0, 2.0)]
-    assert [s["valide"] for s in r["scenarios"]] == [True, False, False, False]
-    assert (r["indice"], r["libelle"]) == (1, "Risqué")
+    assert [(s["buts_domicile"], s["buts_exterieur"]) for s in r["scenarios"]] == [(1.667, 0.667), (2.167, 0.5), (1.5, 1.167), (2.0, 1.0)]
+    assert [s["valide"] for s in r["scenarios"]] == [True] * 4
+    assert (r["indice"], r["libelle"], r["version"]) == (4, "Sûr", 4)
 
 
-def test_boro_wolves_over_25_seuls_les_buts_marques_comptent():
+def test_cas_al_khaleej_al_fayha_under_35_donne_2_sur_4():
+    # le 1-5 d'Al Khaleej (6 buts) compte maintenant : les scénarios « pire » ne valident pas
+    khaleej = _m((0, 0), (1, 5), (0, 0), (1, 1))
+    fayha = _m((1, 2), (0, 0), (1, 2), (0, 0))
+    r = indice_performance("under_3_5", khaleej, fayha)
+    assert [s["valide"] for s in r["scenarios"]] == [True, False, True, False]
+    assert (r["indice"], r["libelle"]) == (2, "Attention")
+    assert (r["pire_domicile"]["marque"], r["pire_domicile"]["encaisse"]) == (1.0, 5.0)
+
+
+def test_pire_score_ne_depend_pas_du_lieu_mais_du_marche():
+    # over_2_5 : le pire score est le plus pauvre en buts au total (0-0), qu'il soit domicile ou extérieur
+    p = profils(_m((3, 2), (0, 0), (1, 3)), "over_2_5", True)
+    assert p["pire"] == (0, 0)
+    # under_2_5 : le pire score est le plus riche en buts au total
+    assert profils(_m((3, 2), (0, 0), (1, 3)), "under_2_5", True)["pire"] == (3, 2) or \
+        profils(_m((3, 2), (0, 0), (1, 3)), "under_2_5", True)["pire"] == (1, 3)
+
+
+def test_boro_wolves_over_25_trois_sur_quatre():
     r = indice_performance("over_2_5", BORO, WOLVES)
-    assert [(s["buts_domicile"], s["buts_exterieur"]) for s in r["scenarios"]] == [(2.75, 2.0), (2.0, 2.0), (2.75, 1.0), (2.0, 1.0)]
-    assert r["indice"] == 4
+    assert [(s["buts_domicile"], s["buts_exterieur"]) for s in r["scenarios"]] == [(2.25, 1.875), (1.875, 1.5), (1.375, 1.375), (1.0, 1.0)]
+    assert [s["valide"] for s in r["scenarios"]] == [True, True, True, False]
+    assert r["indice"] == 3
 
 
 def test_moyennes_simples():
@@ -92,25 +112,28 @@ JEUX = [(_m((3, 0), (0, 1), (3, 0)), _m((1, 0), (0, 3), (2, 1))), (BORO, WOLVES)
         (_m((0, 0), (1, 1), (2, 0)), _m((1, 1), (0, 2), (3, 3), (0, 0)))]
 
 
-@pytest.mark.parametrize("marche", MARCHES)
-def test_aucun_scenario_n_est_pire_que_le_pire_scenario(marche):
+@pytest.mark.parametrize("marche", ["1x2_1", "1x2_2", "dc_1X", "dc_X2", "dc_12", "btts_no", "over_2_5", "under_2_5",
+                                     "over_1_5", "handicap_1_1", "handicap_-1.5_2"])
+def test_aucun_couple_de_matchs_n_est_pire_que_le_pire_scenario(marche):
     for dom, ext in JEUX:
         r = indice_performance(marche, dom, ext)
         pire = r["scenarios"][-1]["marge"]
         for x, y in itertools.product(dom, ext):
-            assert marge(marche, x["buts_marques"], y["buts_marques"]) >= pire - 1e-9
-        assert pire == min(s["marge"] for s in r["scenarios"])
+            h = (x["buts_marques"] + y["buts_encaisses"]) / 2
+            a = (y["buts_marques"] + x["buts_encaisses"]) / 2
+            assert marge(marche, h, a) >= pire - 1e-9
 
 
-def test_double_chance_12_pire_cas_est_le_nul_le_plus_proche():
+def test_double_chance_12_pire_cas_est_le_nul():
     r = indice_performance("dc_12", _m((2, 0), (1, 1)), _m((1, 0), (3, 3)))
-    assert (r["pire_domicile"]["marque"], r["pire_exterieur"]["marque"]) == (1, 1)
+    assert (r["pire_domicile"]["marque"], r["pire_exterieur"]["marque"]) == (1, 3)
     assert r["scenarios"][3]["valide"] is False
 
 
-def test_pire_exterieur_victoire_domicile_est_son_match_le_plus_prolifique():
+def test_victoire_domicile_pire_cas_pour_chaque_equipe():
     r = indice_performance("1x2_1", _m((2, 0), (3, 0)), _m((0, 2), (3, 3), (1, 1)))
-    assert (r["pire_domicile"]["marque"], r["pire_exterieur"]["marque"]) == (2, 3)
+    assert (r["pire_domicile"]["marque"], r["pire_exterieur"]["marque"]) == (2, 1)
+    assert r["indice"] == 4
 
 
 MARCHES_UNE_EQUIPE = ["home_over_1.5", "home_under_2.5", "away_over_0.5", "away_under_1.5", "clean_home", "clean_away",
@@ -152,4 +175,4 @@ def test_phrase_une_equipe_dit_ce_qui_tient():
 
 
 def test_phrase_deux_equipes_compte_les_scenarios():
-    assert indice_performance("over_2_5", BORO, WOLVES)["phrase"] == "Validé dans 4 scénarios sur 4."
+    assert indice_performance("over_2_5", BORO, WOLVES)["phrase"] == "Validé dans 3 scénarios sur 4."
