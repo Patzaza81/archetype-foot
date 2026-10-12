@@ -3,6 +3,11 @@ import datetime as dt
 import calibrage_externe as ce
 
 
+def jour_recent(il_y_a_jours):
+    """Date relative à aujourd'hui : la fenêtre récente (RECENT_DAYS) glisse chaque jour, des dates fixes finissent par en sortir."""
+    return (dt.date.today() - dt.timedelta(days=il_y_a_jours)).isoformat()
+
+
 def rec(i, *, win=True, date="2026-08-01", odds=1.60, market="1X2 - 1", engine="moteur_v2_6_10", team="A", competition="Ligue A"):
     return {
         "match_id": f"m{i}",
@@ -26,7 +31,7 @@ def rec(i, *, win=True, date="2026-08-01", odds=1.60, market="1X2 - 1", engine="
 def test_decouvre_configuration_marche_cote_lieu():
     rows = []
     for i in range(50):
-        rows.append(rec(i, win=i < 46, date=f"2026-07-{(i % 28) + 1:02d}", team="A"))
+        rows.append(rec(i, win=i < 46, date=jour_recent((i % 28) + 1), team="A"))
     for i in range(50, 100):
         rows.append(rec(i, win=i < 80, odds=1.80, team="C"))
     intelligence = ce.discover_rules(rows)
@@ -52,11 +57,11 @@ def test_decouvre_configuration_marche_cote_lieu():
 def test_configuration_devenue_fragile_est_declassee():
     rows = []
     for i in range(60):
-        rows.append(rec(i, win=i < 59, date="2026-04-01", team="A"))
+        rows.append(rec(i, win=i < 59, date=jour_recent(150), team="A"))
     # Les 25 observations récentes cassent volontairement le pattern,
     # sans effacer immédiatement la force de l'historique complet.
     for i in range(60, 85):
-        rows.append(rec(i, win=i < 65, date=f"2026-08-{(i - 59):02d}", team="A"))
+        rows.append(rec(i, win=i < 65, date=jour_recent(i - 59), team="A"))
     intelligence = ce.discover_rules(rows)
     declining = [r for r in intelligence["rules"] if r["statut"] == "DECLINANTE"]
     assert declining
