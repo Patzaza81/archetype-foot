@@ -74,6 +74,8 @@ data/selection_intelligence.json conserve :
 
 Le V3 possède une archive indépendante data/v3/historique_selection.json. Ses résultats sont résolus uniquement lorsque le score réel est disponible.
 
+Correctif 12/10/2026 (audit) : jusqu'à cette date l'archive n'était JAMAIS réglée (113/113 PENDING, 82 avec score connu) : le règlement ne visait que les matchs encore dans pronostics_v3.json, et nom_canonique() renvoyait None pour les noms déjà canoniques. Tout enregistrement PENDING est désormais réglé. Effet : la V3 sort de « MODELE_SEUL » pour les marchés à 10 observations ou plus (classement par preuve observée, probabilite_source = HISTORIQUE_MOTEUR_WILSON).
+
 ## Tickets
 
 Le générateur publie plusieurs scénarios :

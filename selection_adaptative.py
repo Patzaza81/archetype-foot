@@ -220,25 +220,38 @@ def sync_v3_history() -> list[dict[str, Any]]:
                 "edv": num(c.get("edv")),
                 "resultat_statut": "PENDING",
             })
-            if rec.get("resultat_statut") == "RESOLVED":
+
+    # CORRECTIF 12/10/2026 (audit), deux défauts cumulés qui laissaient l'archive à 113/113 PENDING (82 avec score
+    # connu) et donnaient à la V3 0 observation dans l'historique :
+    # 1. le règlement n'était tenté que pour les matchs encore présents dans pronostics_v3.json ; un match joué sort de
+    #    la fenêtre et n'était donc jamais revu. On règle désormais TOUT enregistrement PENDING de l'archive ;
+    # 2. les marchés de l'archive sont déjà au nom canonique (« double_chance_1X ») : nom_canonique() renvoie None et
+    #    rien n'était évalué. On essaie le nom converti PUIS le nom tel quel.
+    for rec in index.values():
+        if rec.get("resultat_statut") == "RESOLVED":
+            continue
+        sc = scores.get(norm(rec.get("match_id")))
+        market = norm(rec.get("marche"))
+        if not sc or not market or not evaluer_marche:
+            continue
+        result = None
+        for nom in (nom_canonique(market), market):
+            if not nom:
                 continue
-            sc = scores.get(mid)
-            if not sc:
+            try:
+                statut = evaluer_marche(nom, sc[0], sc[1]).statut
+            except Exception:
                 continue
-            canon = nom_canonique(market)
-            result = None
-            if evaluer_marche and canon:
-                try:
-                    result = evaluer_marche(canon, sc[0], sc[1]).statut
-                except Exception:
-                    result = None
-            if result in ("WIN", "LOSS"):
-                rec.update({
-                    "resultat_statut": "RESOLVED",
-                    "resultat_marche": result,
-                    "buts_dom": sc[0],
-                    "buts_ext": sc[1],
-                })
+            if statut in ("WIN", "LOSS"):
+                result = statut
+                break
+        if result in ("WIN", "LOSS"):
+            rec.update({
+                "resultat_statut": "RESOLVED",
+                "resultat_marche": result,
+                "buts_dom": sc[0],
+                "buts_ext": sc[1],
+            })
     ordered = sorted(index.values(), key=lambda x: (str(x.get("date")), str(x.get("match_id")), str(x.get("marche"))))
     V3_HISTORY.parent.mkdir(parents=True, exist_ok=True)
     V3_HISTORY.write_text(json.dumps(ordered, ensure_ascii=False, indent=2), encoding="utf-8")
