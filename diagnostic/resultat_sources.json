@@ -1,76 +1,78 @@
 [
  {
-  "url": "https://www.football-data.co.uk/new/ARG.csv",
-  "code": 200,
-  "url_finale": "https://football-data.co.uk/new/ARG.csv",
-  "octets": 875018,
-  "type": "text/csv",
+  "url": "https://fr.besoccer.com/equipe/matchs/manchester-city",
+  "code": 403,
+  "url_finale": "https://fr.besoccer.com/equipe/matchs/manchester-city",
+  "octets": 9,
+  "type": "text/plain; charset=utf-8",
   "signes_blocage": [],
-  "fichier": "diagnostic/sources/www_football_data_co_uk_new_arg_csv.csv",
-  "csv_colonnes": [
-   "ï»¿Country",
-   "League",
-   "Season",
-   "Date",
-   "Time",
-   "Home",
-   "Away",
-   "HG",
-   "AG",
-   "Res",
-   "PSCH",
-   "PSCD",
-   "PSCA",
-   "MaxCH",
-   "MaxCD",
-   "MaxCA",
-   "AvgCH",
-   "AvgCD",
-   "AvgCA",
-   "BFECH",
-   "BFECD",
-   "BFECA",
-   "B365CH",
-   "B365CD",
-   "B365CA"
-  ],
-  "csv_lignes": 6385
+  "fichier": "diagnostic/sources/fr_besoccer_com_equipe_matchs_manchester_city.html"
  },
  {
-  "url": "https://www.football-data.co.uk/new/JPN.csv",
-  "code": 200,
-  "url_finale": "https://football-data.co.uk/new/JPN.csv",
-  "octets": 573813,
-  "type": "text/csv",
+  "url": "https://fr.besoccer.com/equipe/matchs/the-new-saints-fc",
+  "code": 403,
+  "url_finale": "https://fr.besoccer.com/equipe/matchs/the-new-saints-fc",
+  "octets": 9,
+  "type": "text/plain; charset=utf-8",
   "signes_blocage": [],
-  "fichier": "diagnostic/sources/www_football_data_co_uk_new_jpn_csv.csv",
-  "csv_colonnes": [
-   "ï»¿Country",
-   "League",
-   "Season",
-   "Date",
-   "Time",
-   "Home",
-   "Away",
-   "HG",
-   "AG",
-   "Res",
-   "PSCH",
-   "PSCD",
-   "PSCA",
-   "MaxCH",
-   "MaxCD",
-   "MaxCA",
-   "AvgCH",
-   "AvgCD",
-   "AvgCA",
-   "BFECH",
-   "BFECD",
-   "BFECA",
-   "B365CH",
-   "B365CD",
-   "B365CA"
+  "fichier": "diagnostic/sources/fr_besoccer_com_equipe_matchs_the_new_saints_fc.html"
+ },
+ {
+  "url": "https://www.sofascore.com/football/team/manchester-city/17",
+  "code": 403,
+  "url_finale": "https://www.sofascore.com/football/team/manchester-city/17",
+  "octets": 48,
+  "type": "application/json",
+  "signes_blocage": [],
+  "fichier": "diagnostic/sources/www_sofascore_com_football_team_manchester_city_17.html"
+ },
+ {
+  "url": "https://api.sofascore.com/api/v1/search/all?q=manchester%20city",
+  "code": 403,
+  "url_finale": "https://api.sofascore.com/api/v1/search/all?q=manchester%20city",
+  "octets": 48,
+  "type": "application/json",
+  "signes_blocage": [],
+  "fichier": "diagnostic/sources/api_sofascore_com_api_v1_search_all_q_manchester_20city.html"
+ },
+ {
+  "url": "https://api.sofascore.com/api/v1/team/17/events/last/0",
+  "code": 403,
+  "url_finale": "https://api.sofascore.com/api/v1/team/17/events/last/0",
+  "octets": 48,
+  "type": "application/json",
+  "signes_blocage": [],
+  "fichier": "diagnostic/sources/api_sofascore_com_api_v1_team_17_events_last_0.html"
+ },
+ {
+  "url": "https://www.livescore.com/fr/football/team/manchester-city/",
+  "code": 404,
+  "url_finale": "https://www.livescore.com/fr/football/team/manchester-city/",
+  "octets": 31510,
+  "type": "text/html; charset=utf-8",
+  "signes_blocage": [
+   "captcha"
   ],
-  "csv_lignes": 4603
+  "fichier": "diagnostic/sources/www_livescore_com_fr_football_team_manchester_city_.html"
+ },
+ {
+  "url": "https://www.livescore.com/fr/football/ligue-des-champions/",
+  "code": 404,
+  "url_finale": "https://www.livescore.com/fr/football/ligue-des-champions/",
+  "octets": 31510,
+  "type": "text/html; charset=utf-8",
+  "signes_blocage": [
+   "captcha"
+  ],
+  "fichier": "diagnostic/sources/www_livescore_com_fr_football_ligue_des_champions_.html"
+ },
+ {
+  "url": "https://prod-public-api.livescore.com/v1/api/app/date/soccer/20261013/1?MCC=INT&countryCode=CM",
+  "code": 200,
+  "url_finale": "https://prod-public-api.livescore.com/v1/api/app/date/soccer/20261013/1?MCC=INT&countryCode=CM",
+  "octets": 138856,
+  "type": "application/json",
+  "signes_blocage": [],
+  "fichier": "diagnostic/sources/prod_public_api_livescore_com_v1_api_app_date_soccer_20261013_1_mcc_int_countrycode_cm.html"
  }
 ]
