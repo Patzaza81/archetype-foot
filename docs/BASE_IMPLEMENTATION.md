@@ -43,11 +43,13 @@ Les écarts restent dans l'erreur de simulation. Différences de méthode :
 
 La conclusion est inchangée : 99,7 % tient la cible de 0,5 %, borne haute comprise.
 
-## 3. Précisions d'implémentation (à valider)
+## 3. Précisions d'implémentation — décisions finales du 13/10/2026
+
+**Décision : les deux adaptations ci-dessous sont acceptées pour l'implémentation v4.** Elles clarifient la représentation des données et la population effectivement suivie ; elles ne modifient ni H1, ni les cotes, ni les seuils statistiques, ni les points de contrôle. Le protocole source reste conservé tel quel pour la traçabilité.
 
 Deux points du texte du protocole ne pouvaient pas être appliqués à la lettre. **Ils doivent être validés ou refusés.**
 
-| § | Texte du protocole | Implémentation | Raison (preuve) |
+| § | Texte du protocole | Règle d'implémentation retenue | Raison (preuve) |
 |---|---|---|---|
 | 5.1 | empreinte score = « le champ `score` seul » | empreinte du **résultat** (`buts_dom`, `buts_ext`) | le pipeline réécrit l'horodatage `score.ecrit_le` sans changer le score : 120 fausses alertes sur l'archive actuelle avec la définition littérale, 0 avec celle-ci |
 | 6.2 | A(B2) : « les **deux** équipes ont au moins 5 matchs » | **au moins une** des deux équipes, ou pari effectivement proposé par le Journal | le Journal suit une seule équipe. Avec « les deux », 4 des 13 paris réellement proposés auraient été jugés « non admissibles », ce qui est contradictoire |
@@ -76,3 +78,11 @@ Le registre d'empreintes, reconstruit depuis l'historique Git de `main`, montre 
 - **Statut B0 : NON ÉVALUÉ.** La période de test a commencé le 13/10 ; aucun match n'a encore 7 jours.
 - 54 matchs de H1 dans la période de test, tous `NON_REGLE`.
 - Aucun point de contrôle atteint.
+
+
+## 6. Décision de livraison
+
+- Les deux précisions de la section 3 sont validées pour cette branche isolée.
+- Les résultats de test et de simulation sont documentés ; B0 reste **NON ÉVALUÉ** tant que les points de contrôle ne sont pas atteints.
+- Le défaut d'archive concernant trois matchs reste hors périmètre et n'est pas corrigé ici.
+- Cette validation ne vaut **ni fusion dans `main`, ni ouverture de PR, ni exécution de workflow, ni publication du site**. Toute mise en production exige une décision distincte après les futurs points de contrôle et une revue du diff.
