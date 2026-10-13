@@ -1,0 +1,54 @@
+name: Moteur v2r (autonome)
+
+# A DEPLACER vers .github/workflows/v2r.yml (le droit d'ecrire dans .github/workflows manque a l'outil).
+# Isole : lit data/archive_test (alimentee par le scraping existant), ecrit uniquement data/v2r/.
+# Ne modifie ni V2, ni V3, ni Europe. Chaque jour : regle les paris finis, choisit les paris des matchs a venir
+# avec les regles figees ; le lundi, reentraine APRES avoir regle et fige une nouvelle version.
+on:
+  schedule:
+    - cron: "50 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pipeline-archetype-foot
+  cancel-in-progress: false
+
+jobs:
+  moteur-v2r:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Installer les dependances
+        run: pip install requests beautifulsoup4 pandas lxml pytest
+
+      - name: Tests v2r
+        run: python -m pytest tests/test_moteur_v2r.py tests/test_echantillon_v2r.py tests/test_integration_v2r.py tests/test_v2r_autonome.py -q
+
+      - name: Executer v2r (reglage, choix, reentrainement du lundi)
+        run: python -m moteur_v2r.execution --dossier data/v2r
+
+      - name: Publier data/v2r
+        run: |
+          set -e
+          git config user.name "archetype-foot-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data/v2r
+          if git diff --cached --quiet; then echo "Aucune modification."; exit 0; fi
+          git commit -m "Mise a jour moteur v2r"
+          for i in 1 2 3 4 5; do
+            git fetch origin main
+            git rebase -X theirs origin/main || { git rebase --abort || true; git reset --hard origin/main; git checkout "$GITHUB_SHA" -- data/v2r 2>/dev/null || true; }
+            if git push origin HEAD:main; then exit 0; fi
+            sleep $((i * 10))
+          done
+          echo "::error::Publication impossible"; exit 1
