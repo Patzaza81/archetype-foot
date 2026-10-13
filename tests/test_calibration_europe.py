@@ -127,3 +127,46 @@ def test_page_europe_lit_les_donnees_europe_et_pas_celles_de_v3():
     import pathlib
     h = (pathlib.Path(__file__).parent.parent / "pronostics_europe.html").read_text(encoding="utf-8")
     assert "data/europe/pronostics_europe.json" in h and h.index("window.fetch") < h.index('src="archetype_v3.js')
+
+
+# --- matchs sans aperçu : toujours affichés avec leur raison ---------------------------------------------------------------
+def _sig(statut, **kw):
+    return {"match_id": "m", "date": "2026-10-14", "heure": "21:00", "competition": "Europe : Ligue Europa Phase de Ligue",
+            "domicile": "Rome", "exterieur": "Real", "statut": statut, "selections": [], "apercu_non_calibre": [], **kw}
+
+
+def test_non_evalue_dit_quel_club_manque_de_quoi():
+    a = ce.autre_match(_sig("NON_EVALUE : EUROPE_INSUFFISANT", couverture={"europe_dom_domicile": 0, "europe_ext_exterieur": 5,
+                                                                          "ligue_dom_domicile": 4, "ligue_ext_exterieur": 1}))
+    assert a["etat"].startswith("Non évalué")
+    assert a["lignes"] == ["Rome : 0 match européen à domicile (3 minimum)", "Real : 1 match de championnat à l'extérieur (3 minimum)"]
+
+
+def test_evalue_sans_apercu_donne_les_causes_en_francais():
+    a = ce.autre_match(_sig("EVALUE", lambda_dom=1.8, lambda_ext=0.9, proches=[
+        {"libelle": "Plus de 1,5 but", "cote": 1.45, "probabilite": 0.72,
+         "raisons": ["CALIBRATION_ABSENTE", "VALUE_NON_ELIGIBLE", "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT", "SURDISPERSION_SUP_1_50"]}]))
+    assert a["etat"].startswith("Évalué") and "Buts attendus : 1.8 – 0.9" in a["lignes"][0]
+    assert "double contrôle non passé" in a["lignes"][1] and "dispersion > 1,50" in a["lignes"][1] and "calibration" not in a["lignes"][1]
+
+
+def test_sans_cote_et_sans_marche_dans_la_fenetre():
+    assert ce.autre_match(_sig("SANS_COTE"))["etat"] == "Pas de cotes BetPawa"
+    assert ce.autre_match(_sig("EVALUE", lambda_dom=1, lambda_ext=1, proches=[]))["lignes"][-1].startswith("Aucun marché coté dans la fenêtre")
+
+
+def test_chaque_match_est_soit_apercu_soit_dans_autres(tmp_path):
+    import json
+    ent = tmp_path / "e.json"
+    ent.write_text(json.dumps({"matchs": [match_coherent(1), match(2, nb=2), match(3, cotes={})]}))
+    p = tmp_path / "p.json"
+    ce.execution(str(ent), str(tmp_path / "s.json"), aujourdhui=datetime.date(2026, 10, 13), site=str(p))
+    d = json.loads(p.read_text())
+    assert len(d["signaux"]) + len(d["autres"]) == 3 and len(d["signaux"]) == 1
+    assert {a["etat"] for a in d["autres"]} == {"Non évalué : historique insuffisant", "Pas de cotes BetPawa"}
+
+
+def test_page_contient_la_zone_et_le_script_des_autres_matchs():
+    import pathlib
+    h = (pathlib.Path(__file__).parent.parent / "pronostics_europe.html").read_text(encoding="utf-8")
+    assert 'id="autres"' in h and "europe_autres.js" in h

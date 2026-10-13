@@ -24,7 +24,7 @@ from moteur_europe.preuves import preuves_europe
 from moteur_v3.calibration import CalibrationFit, IsotonicCalibrator
 from moteur_v3.decision import decide
 from moteur_v3.markets import derive_markets, gagne
-from moteur_v3_pipeline import MIN_MATCHS_CALIBRATION, _signature_evenement_calibration, libelle
+from moteur_v3_pipeline import MIN_MATCHS_CALIBRATION, RAISONS_FR, _signature_evenement_calibration, libelle
 
 
 def score_joue(m):
@@ -88,6 +88,8 @@ def evalue_match_europe(m, calibrateur):
                       "probabilite_brute": v.probability_raw, "probabilite": c["probability"], "calibree": c["calibrated"],
                       "edv": round(c["edv"], 1), "raisons": sorted(set(v.reasons) | set(rejets.get(c["market"], ())))})
 
+    cands_tous = list(cands)
+
     def fmt(liste):
         return [{"marche": s.market, "libelle": libelle(s.market), "cote": s.odds, "probabilite": round(s.probability, 4),
                  "edge": s.edge, "edv": round(s.edv, 1), "justification": s.reason,
@@ -99,7 +101,8 @@ def evalue_match_europe(m, calibrateur):
     if not selections and not pret:     # aperçu NON calibré : ce n'est pas une sélection
         apercu = fmt(decide([{**c, "calibrated": True} for c in r["candidates"]])[0])
     mod = r["model"]
-    return {**base, "statut": "EVALUE", "lambda_dom": round(mod.lambda_home, 3), "lambda_ext": round(mod.lambda_away, 3),
+    proches = sorted((c for c in cands_tous if 1.26 <= c["cote"] <= 1.74), key=lambda c: c["probabilite"], reverse=True)[:3]
+    return {**base, "statut": "EVALUE", "proches": proches, "lambda_dom": round(mod.lambda_home, 3), "lambda_ext": round(mod.lambda_away, 3),
             "calibree": pret, "n_dom": mod.home_sample.current_n, "n_ext": mod.away_sample.current_n,
             "selections": selections, "apercu_non_calibre": apercu, "candidats": cands[:5]}
 
@@ -125,6 +128,41 @@ def execution(entrees="data/europe/entrees_europe.json", sortie="data/europe/sig
     return bilan
 
 
+RAISONS_MASQUEES = {"CALIBRATION_ABSENTE", "VALUE_NON_ELIGIBLE"}      # conséquences, pas des causes
+MANQUES = (("europe_dom_domicile", "domicile", "match européen à domicile", "domicile"),
+           ("europe_ext_exterieur", "exterieur", "match européen à l'extérieur", "exterieur"),
+           ("ligue_dom_domicile", "domicile", "match de championnat à domicile", "domicile"),
+           ("ligue_ext_exterieur", "exterieur", "match de championnat à l'extérieur", "exterieur"))
+
+
+def _pl(n, mot):
+    return f"{n} {mot}" if n < 2 else f"{n} {mot.replace('match ', 'matchs ', 1)}"
+
+
+def autre_match(x):
+    """Un match SANS aperçu, expliqué en français : pourquoi aucun pronostic (données manquantes ou filtres)."""
+    base = {k: x.get(k) for k in ("match_id", "date", "heure", "competition", "domicile", "exterieur")}
+    lignes = []
+    if x["statut"] == "SANS_COTE":
+        return {**base, "etat": "Pas de cotes BetPawa", "lignes": ["Aucune cote relevée pour ce match."]}
+    if x["statut"].startswith("NON_EVALUE"):
+        cv = x.get("couverture") or {}
+        for cle, cote, mot, _ in MANQUES:
+            n = cv.get(cle)
+            if isinstance(n, int) and n < 3:
+                equipe = x.get(cote)
+                lignes.append(f"{equipe} : {_pl(n, mot)} (3 minimum)")
+        return {**base, "etat": "Non évalué : historique insuffisant", "lignes": lignes or [x["statut"]]}
+    lignes.append(f"Buts attendus : {x.get('lambda_dom')} – {x.get('lambda_ext')}")
+    for c in x.get("proches", []):
+        causes = [RAISONS_FR.get(r, r) for r in c["raisons"] if r not in RAISONS_MASQUEES]
+        lignes.append(f"{c['libelle']} · cote {str(c['cote']).replace('.', ',')} · probabilité {round(100 * c['probabilite'])} % · refusé : "
+                      + (" ; ".join(causes) if causes else "aucun défaut, en attente de calibration"))
+    if not x.get("proches"):
+        lignes.append("Aucun marché coté dans la fenêtre 1,26 – 1,74.")
+    return {**base, "etat": "Évalué : aucun marché ne passe tous les filtres", "lignes": lignes}
+
+
 def ecrit_pour_le_site(signaux, bilan, cal, nb_matchs, chemin):
     """Même format que data/v3/pronostics_v3.json : la page pronostics_europe.html réutilise archetype_v3.js tel quel."""
     from moteur_v3_pipeline import signal_site
@@ -134,7 +172,8 @@ def ecrit_pour_le_site(signaux, bilan, cal, nb_matchs, chemin):
               "calibration": {"prete": fit.ready, "observations": fit.observations, "matchs": nb_matchs,
                               "minimum_observations": cal.minimum_observations, "minimum_matchs": MIN_MATCHS_CALIBRATION,
                               "raison": fit.reason},
-              "bilan": bilan, "signaux": [signal_site(x) for x in signaux]}
+              "bilan": bilan, "signaux": [signal_site(x) for x in signaux if x["selections"] or x.get("apercu_non_calibre")],
+              "autres": [autre_match(x) for x in signaux if not (x["selections"] or x.get("apercu_non_calibre"))]}
     os.makedirs(os.path.dirname(chemin) or ".", exist_ok=True)
     with open(chemin, "w", encoding="utf-8") as f:
         json.dump(sortie, f, ensure_ascii=False, indent=1)
