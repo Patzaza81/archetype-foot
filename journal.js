@@ -146,7 +146,7 @@
       var ls = parEquipe[cle], t = ls[0], pm = null;
       ls.forEach(function (l) { if (l.prochain_match) pm = l.prochain_match; });
       var marches = ls.map(function (l) {
-        var rent = l.roi_betpawa == null ? "Cotes : pas encore assez de relevés."
+        var rent = l.roi_betpawa == null ? "Cote : pas encore assez de relevés."
           : (l.roi_betpawa > 0 ? 'Rentabilité observée : <span class="pos">' + pct(l.roi_betpawa, true) + "</span> sur " + l.paris_cotes + " cote(s) relevée(s)."
             : "Rendement insuffisant sur la période observée.");
         var cotePm = l.prochain_match && l.prochain_match.cote_betpawa ? ' <span class="jr-cote-pm">cote ' + cote(l.prochain_match.cote_betpawa) + "</span>" : "";
@@ -155,7 +155,8 @@
           '<div class="jr-eq-detail">En général : ' + pct(l.frequence_generale) + " des matchs. " + rent + "</div></div>";
       }).join("");
       var prochain = pm ? '<div class="jr-eq-prochain">Prochain match : ' + dateCourte(pm.date) + " à " + esc(pm.heure || "—") + " contre " +
-        esc(pm.adversaire) + " (" + esc(pm.lieu) + ")" + "" + "</div>" : "";
+        esc(pm.adversaire) + " (" + esc(pm.lieu) + ")" + (pm.betpawa_url ? ' · <a class="jr-lien" href="' + esc(pm.betpawa_url) +
+        '" target="_blank" rel="noopener">Voir la cote →</a>' : "") + "</div>" : "";
       var resume = ls.map(function (l) { return l.marche + " " + pct(l.frequence); }).join(" · ");
       var bons = ls.filter(function (l) { return indiceBon(l.indice_performance); });
       var resumeIndice = bons.length ? '<div class="jr-eq-bons">' + bons.map(function (l) {
@@ -198,7 +199,7 @@
       '<div class="ax-match-bas"><p class="ax-competition">' + esc(sousTitre) + "</p>" + fiabilite(st) + "</div></div>";
   }
   function lienBetpawa(x) {
-    return "";
+    return x.betpawa_url ? '<a class="jr-lien" href="' + esc(x.betpawa_url) + '" target="_blank" rel="noopener">Voir la cote →</a>' : "";
   }
 
   /* Affichage tolérant : le Journal principal reste indépendant de l'Observatoire. */
@@ -242,7 +243,7 @@
       var pm = o.prochain_match || {};
       var badge = o.statut === "RUPTURE" ? "b-NEUTRE" : (o.statut === "EMERGENCE" ? "b-A_SURVEILLER" : "b-A_JOUER");
       var prix = pm.cote_betpawa == null ? "Cote non disponible" : (pm.prix_compatible_historique === true ? "Prix dans la plage historique" : pm.prix_compatible_historique === false ? "Prix hors plage historique" : "Prix non comparable");
-      var roi = o.roi_betpawa == null ? "ROI : insuffisant" : "ROI : " + pct(o.roi_betpawa, true);
+      var roi = o.roi_betpawa == null ? "ROI : insuffisant" : "ROI BetPawa : " + pct(o.roi_betpawa, true);
       return '<details class="jr-equipe"><summary><div class="jr-eq-tete"><span class="jr-fiche-nom">' + esc(o.equipe) + '</span><span class="jr-badge ' + badge + '">' + esc(o.statut) + '</span></div><div class="jr-fiche-info">' + esc(o.ligue) + " · " + esc(o.marche) + " · tendance récente " + pct(o.frequence_recente) + '</div><div class="jr-eq-resume">' + esc(o.niveau) + " · " + esc(roi) + '</div></summary><div class="jr-eq-marche"><div class="jr-eq-detail"><b>Historique :</b> ' + o.observations + " matchs · global " + pct(o.frequence) + " · récent " + pct(o.frequence_recente) + (o.frequence_precedente == null ? "" : " · précédent " + pct(o.frequence_precedente)) + " · évolution " + pct(o.delta_recent, true) + '.</div><div class="jr-eq-prochain">Prochain match : ' + dateCourte(pm.date) + " à " + esc(pm.heure || "—") + " contre " + esc(pm.adversaire || "—") + " (" + esc(pm.lieu || "—") + ")" + (pm.cote_betpawa == null ? "" : " · cote " + cote(pm.cote_betpawa)) + " · " + esc(prix) + '</div><div class="jr-eq-detail"><b>Règle :</b> signal calculé hors moteur. Il sert à surveiller une configuration et peut disparaître si la tendance se dégrade.</div></div></details>';
     }).join("");
   }
