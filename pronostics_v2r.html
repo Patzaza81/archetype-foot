@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FCEAF2">
+<title>Archetype Foot — Moteur V2R</title>
+<link rel="stylesheet" href="archetype.css?v=20261010v2idx">
+<link rel="stylesheet" href="af-barre.css">
+<link rel="stylesheet" href="af-pronostics.css">
+</head>
+<body class="ax-page af-fond af-v3">
+<script>try{if(localStorage.getItem("archetype_theme_nuit")==="1")document.body.classList.add("theme-nuit")}catch(e){}</script>
+<div class="af-barre">
+  <div class="af-barre-in">
+    <a class="af-logo" href="index.html" aria-label="Archetype Foot, accueil"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M4 36 18 4h6l12 32h-7l-3-8H14l-3 8z" fill="#087F78"/><path d="M16 22h8l-4-11z" fill="#F7F1E7"/><path d="M27 4h9L22 30l-3-6z" fill="#C49A3A"/></svg><span><b>ARCHETYPE</b><i>FOOT</i></span></a>
+    <nav class="af-nav" aria-label="Navigation principale">
+      <a href="index.html">Accueil</a>
+      <a href="pronostics_v3.html">Moteur V3</a>
+      <a href="pronostics_europe.html">Europe</a>
+      <a href="pronostics_v2r.html" aria-current="page">V2R</a>
+      <a href="archetype.html">Moteur V2</a>
+      <a href="tickets.html">Tickets</a>
+      <a href="journal.html">Journal</a>
+      <a href="corners_cartons.html">Corners &amp; cartons</a>
+      <a href="systeme.html">Système</a>
+    </nav>
+    <div class="af-actions">
+      <button id="ax-bouton-theme" class="af-bouton-icone" type="button" aria-label="Activer le mode nuit">☾</button>
+      <a class="af-compte" href="compte.html" aria-label="Mon compte"><span aria-hidden="true">👤</span><span>Mon compte</span></a>
+    </div>
+  </div>
+</div>
+<div class="ax-conteneur">
+  <div class="ax-entete">
+    <h1>MOTEUR V2R</h1>
+    <p class="ax-bandeau">V2 reconstruit — cellules (marché, cote, profil de buts) rentables sur l'échantillon — expérimental</p>
+  </div>
+  <p id="maj" class="ax-maj" role="status" aria-live="polite">Chargement…</p>
+  <section id="v2r-statut"></section>
+  <section id="v2r-bilan"></section>
+  <h2 class="v2r-titre">Paris à venir</h2>
+  <main id="v2r-avenir" class="ax-liste-matchs"></main>
+  <h2 class="v2r-titre">En cours</h2>
+  <div id="v2r-encours" class="ax-liste-matchs"></div>
+  <h2 class="v2r-titre">Paris réglés</h2>
+  <div id="v2r-regles" class="ax-liste-matchs"></div>
+</div>
+<style>
+.v2r-titre{font-size:15px;margin:22px 4px 8px;opacity:.85}
+.v2r-statut{margin:10px 14px;padding:10px 12px;border-radius:12px;font-size:13px;font-weight:700;border:1px solid var(--ax-ligne)}
+.v2r-statut.observation{background:rgba(224,168,46,.15)}
+.v2r-statut.actif{background:rgba(63,163,106,.18)}
+.v2r-statut.non_rentable{background:rgba(217,79,145,.15)}
+.v2r-statut small{display:block;font-weight:400;margin-top:4px;opacity:.85}
+.v2r-bilan{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:8px 14px}
+.v2r-bilan div{border:1px solid var(--ax-ligne);border-radius:12px;padding:8px;text-align:center;font-size:11px}
+.v2r-bilan strong{display:block;font-size:17px}
+.v2r-carte{border:1px solid var(--ax-ligne);border-radius:14px;margin:8px 14px;padding:10px 12px;background:var(--ax-fond)}
+.v2r-haut{display:flex;justify-content:space-between;gap:8px;font-size:12px;opacity:.8}
+.v2r-carte h3{font-size:15px;margin:4px 0}
+.v2r-ligne{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px}
+.v2r-cote{font-weight:800}
+.v2r-info{font-size:12px;opacity:.8;margin-top:4px}
+.v2r-badge{padding:2px 8px;border-radius:999px;font-size:12px;font-weight:800}
+.v2r-WIN{background:rgba(63,163,106,.25)}.v2r-LOSS{background:rgba(217,79,145,.22)}.v2r-PUSH{background:rgba(160,160,160,.25)}
+.v2r-vide{margin:6px 18px;font-size:13px;opacity:.7}
+</style>
+<script src="archetype_v2r.js?v=20261013a"></script>
+<script src="drapeaux.js"></script>
+</body>
+</html>
