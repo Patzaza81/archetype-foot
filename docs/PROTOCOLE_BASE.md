@@ -1,8 +1,9 @@
-# Protocole BASE / SUPER BASE — version 3
+# Protocole BASE / SUPER BASE — version 4
 
 - **Version 1** : commit `92d708a`, 12/10/2026 à 23 h 46 UTC. Elle déclare l'hypothèse H1 et fixe les tranches de cote. **Ces deux éléments sont inchangés en version 2.**
 - **Version 2** : 13/10/2026. Corrections demandées par la première revue (§ 13). Seules les règles de méthode et de décision changent. Aucun résultat de la période de test (matchs à partir du 13/10, 0 h UTC) n'a été consulté pour écrire cette version.
 - **Version 3** : 13/10/2026. Correction ciblée de la règle de décision de B0 (§ 9.2, 9.3, 9.5) et de la méthode d'intervalle (§ 7), demandée par la seconde revue. Rien d'autre ne change. Aucun résultat de la période de test n'a été consulté.
+- **Version 4** : 13/10/2026. Niveau des intervalles de B0 recalé par une simulation plus précise (§ 9.3, 9.5). Rien d'autre ne change. Aucun résultat de la période de test n'a été consulté.
 - **Statut** : PROJET, en validation finale. Aucun code n'est écrit avant validation explicite.
 - **Périmètre** : couche d'analyse en lecture seule. Elle ne modifie ni V2.6.10, ni V3, ni le Journal, ni les indices existants, ni `main`. La future implémentation reste sur sa branche dédiée et n'écrit que dans `data/base/`.
 
@@ -186,20 +187,27 @@ Un filtre qui gagne la comparaison générale mais pas celle à population égal
 
 **Correction de la version 2** : la v2 affirmait qu'avec des intervalles à 99 % aux deux contrôles, le risque global restait au plus de 1 %. Cette garantie n'était pas établie : elle supposait des intervalles à couverture exacte, ce que le bootstrap par jour ne fournit pas avec peu de jours (§ 9.5). La règle est remplacée par la suivante.
 
-**Règle** : à chacun des deux contrôles, intervalles **à 99,5 %** (bilatéraux), calculés par les **deux** méthodes du § 7.
+**Règle (version 4)** : à chacun des deux contrôles, intervalles **à 99,7 %** (bilatéraux), calculés par les **deux** méthodes du § 7.
 - VALIDÉ exige que les deux bornes basses soient > 0 ;
 - DÉFAVORABLE exige que les deux bornes hautes soient < 0.
 
-**Correction du risque global (Bonferroni)** : chaque contrôle admet au plus 0,25 % de risque de VALIDÉ à tort et 0,25 % de DÉFAVORABLE à tort. Sur deux contrôles, la somme de ces risques donne au plus 0,5 % pour un VALIDÉ à tort, et au plus 1 % pour une conclusion fausse dans un sens ou dans l'autre. Cette somme reste valable même si les deux contrôles sont liés (C2 contient les matchs de C1). Elle suppose que chaque intervalle atteint sa couverture annoncée : c'est l'objet du § 9.5.
+**Pourquoi 99,7 % et pas 99,5 %** : la somme des risques des deux contrôles (Bonferroni) suppose que chaque intervalle a exactement la couverture annoncée. Ce n'est pas le cas ici, parce que le gain d'un pari est asymétrique (−1 en cas de perte, +0,27 à +0,39 en cas de gain). Une simulation de 200 000 tirages (§ 9.5) donne, à 99,5 %, un risque de VALIDÉ à tort de **0,69 %**, au-dessus de la cible. Le niveau est donc fixé par simulation : 99,7 % est le premier niveau testé dont la borne haute de l'intervalle de confiance du risque simulé reste sous 0,5 %.
+
+**Risque global, sous les hypothèses de la simulation (§ 9.5)** :
+- VALIDÉ à tort : 0,455 % (intervalle de confiance à 95 % de la simulation : 0,426 – 0,485 %), donc sous 0,5 % ;
+- DÉFAVORABLE à tort : 0,19 % (0,17 – 0,21 %) ;
+- conclusion fausse dans un sens ou dans l'autre : au plus environ 0,7 %.
+
+La règle complète exige aussi le bootstrap. Une condition ajoutée ne peut que réduire ces risques : les chiffres ci-dessus, obtenus avec la seule méthode de Student, en sont des majorants.
 
 | Statut | Condition |
 |---|---|
 | NON ÉVALUÉ | moins de 150 matchs réglés ou moins de 21 jours |
 | EN COURS | assez de matchs pour afficher, point de contrôle pas encore atteint |
-| NON CONCLUANT | le contrôle de sensibilité (§ 4.3) change la conclusion, ou plus de 5 % des matchs admis de la fenêtre sont sans résultat (`SUSPENDU` ou `RESULTAT_MANQUANT`) |
-| DÉFAVORABLE | bornes hautes à 99,5 % < 0 par les deux méthodes |
+| NON CONCLUANT | le contrôle de sensibilité (§ 4.3) change la conclusion, ou plus de 5 % des matchs admis de la fenêtre sont sans résultat (`SUSPENDU` ou `RESULTAT_MANQUANT`), ou la simulation refaite au point de contrôle donne une borne haute du risque supérieure à 0,5 % (§ 9.5) |
+| DÉFAVORABLE | bornes hautes à 99,7 % < 0 par les deux méthodes |
 | NEUTRE | ni DÉFAVORABLE ni VALIDÉ |
-| **VALIDÉ** | bornes basses à 99,5 % > 0 par les deux méthodes |
+| **VALIDÉ** | bornes basses à 99,7 % > 0 par les deux méthodes |
 
 Un statut VALIDÉ n'est pas une garantie. Il redevient NEUTRE si le point de contrôle suivant ne le confirme pas. Il n'existe que deux contrôles : aucun troisième contrôle ne peut être ajouté sans nouvelle version du protocole et nouvelle correction du risque.
 
@@ -211,28 +219,44 @@ Un statut VALIDÉ n'est pas une garantie. Il redevient NEUTRE si le point de con
 
 ### 9.5 Méthode d'intervalle : vérification et limites
 
-**Vérification par simulation (13/10/2026, script hors dépôt, à reproduire par l'implémentation)** :
-- Hypothèse simulée : ROI réel nul. Chaque pari gagne avec une probabilité de 1 ÷ cote. Les cotes sont tirées dans la distribution réelle de H1 avant le test. Le nombre de matchs par jour suit une loi de Poisson de moyenne 19,5. Les jours sont indépendants.
-- Mesure : part des simulations où la règle déclare VALIDÉ à l'un des deux contrôles. Cible : au plus 0,5 %.
+**Modèle de simulation (13/10/2026, scripts hors dépôt, à reproduire par l'implémentation)** :
+- ROI réel nul : chaque pari gagne avec une probabilité de 1 ÷ cote.
+- Cotes tirées dans la distribution réelle de H1 avant le test.
+- Nombre de matchs par jour : loi de Poisson de moyenne 19,5 (au moins 3).
+- Jours indépendants.
+- Mesure : part des simulations où la règle déclare VALIDÉ à l'un des deux contrôles. Cible : au plus 0,5 %, **borne haute de l'intervalle de confiance de la simulation comprise**.
 
-| Jours aux contrôles | Bootstrap seul | Student par grappes seul | Les deux (règle retenue) | Simulations |
-|---|---|---|---|---|
-| 16 et 32 | 1,88 % | 0,85 % | 0,85 % | 6 000 |
-| **20 et 40** | 1,45 % | 0,53 % | **0,53 %** | 6 000 |
+**Résultats (Student par grappes seul, 200 000 simulations par ligne, intervalle de confiance exact à 95 %)** :
 
-À titre de comparaison, la règle de la v2 (99 % aux deux contrôles), avec le bootstrap seul, donnait 2,9 % de VALIDÉ à tort pour une garantie annoncée de 1 % (16 et 32 jours, 3 000 simulations).
+| Jours aux contrôles | Niveau par contrôle | VALIDÉ à tort | Intervalle de la simulation |
+|---|---|---|---|
+| 20 et 40 | 99,5 % | 0,688 % | 0,652 – 0,725 % |
+| 25 et 50 | 99,5 % | 0,661 % | 0,626 – 0,698 % |
+| 30 et 60 | 99,5 % | 0,665 % | 0,630 – 0,702 % |
+| 20 et 40 | 99,6 % | 0,544 % | 0,512 – 0,577 % |
+| **20 et 40** | **99,7 %** | **0,455 %** | **0,426 – 0,485 %** |
 
-**Conclusions** :
-- Le bootstrap percentile par jour **sous-estime l'incertitude** avec 16 à 40 jours : seul, il ne tient pas la cible. Il est gardé comme seconde condition et pour l'affichage, jamais comme seul critère.
-- L'intervalle de Student par grappes tient la cible à 20 et 40 jours (0,53 %, avec une erreur de simulation d'environ ± 0,1 point). D'où les minimums de jours du § 9.2.
+**Correction de la version 3** : le chiffre de 0,53 % annoncé en v3 venait de seulement 6 000 simulations. Avec 200 000, le risque réel de la règle v3 (99,5 %) est de 0,69 %. Ajouter des jours ne règle pas le problème (0,66 % à 30 et 60 jours) : c'est l'asymétrie des gains, pas le nombre de jours, qui fait dépasser la cible.
 
-**Puissance (même simulation, contrôles à 16 et 32 jours)** : si le ROI réel était de +5 %, la règle conclurait VALIDÉ dans environ 30 % des cas ; à +3 %, dans environ 8 %. Un avantage réel modeste a donc de grandes chances de rester NEUTRE. **NEUTRE ne veut pas dire « pas d'avantage »**, seulement « avantage non démontré ».
+**Bootstrap par jour (6 000 simulations, v3)** : seul, il donnait 1,45 % de VALIDÉ à tort à 99,5 % avec 20 et 40 jours. Il sous-estime l'incertitude avec si peu de jours. Il reste une seconde condition et un affichage, jamais un critère seul.
+
+**Puissance de la règle v4** (Student seul, 20 000 simulations ; c'est un majorant pour la règle complète) :
+
+| ROI réel | Chance de conclure VALIDÉ à C1 ou C2 |
+|---|---|
+| +3 % | 9 % au plus |
+| +5 % | 34 % au plus |
+| +8 % | 86 % au plus |
+
+Un avantage réel modeste a de grandes chances de rester NEUTRE. **NEUTRE veut dire « avantage non démontré », pas « aucun avantage ».**
 
 **Limites qui restent** :
-- Les jours sont supposés indépendants. Une dépendance d'une semaine à l'autre (même championnat, même tendance) rendrait les intervalles trop étroits.
-- La simulation suppose un ROI réel constant dans le temps.
-- Les intervalles de Student reposent sur une approximation normale. Elle est raisonnable ici parce que le gain d'un pari est borné (entre −1 et +0,39 dans H1), mais elle n'est pas exacte.
-- L'erreur de simulation (environ ± 0,1 point à 0,5 %) ne permet pas d'affirmer que le risque est strictement sous 0,5 %. Elle permet d'affirmer qu'il en est proche.
+- La garantie de 0,5 % vaut **sous le modèle de simulation**, pas dans l'absolu. Elle ne couvre pas :
+  - une dépendance d'une semaine à l'autre (les jours sont supposés indépendants) ;
+  - un ROI qui varie dans le temps ;
+  - une distribution de cotes très différente de celle observée avant le test.
+- Le seuil de 99,7 % est propre à H1 (cotes 1,27 à 1,39). Une autre hypothèse, avec d'autres cotes, devra refaire cette simulation.
+- **L'implémentation refait la simulation à chaque point de contrôle**, avec la distribution des cotes et le nombre de jours réellement observés. Si la borne haute du risque simulé dépasse 0,5 %, le point de contrôle est déclaré NON CONCLUANT au lieu de VALIDÉ.
 
 ## 10. État de départ reproduit depuis les archives (description seulement)
 
@@ -295,7 +319,7 @@ Aucun indice n'est un critère SUPER BASE au départ. Un indice ne peut le deven
 1. Sa version est figée et déclarée dans une nouvelle version de ce protocole, avant le test.
 2. Il est calculable avant le match pour tous les matchs de la BASE parente, pas seulement pour les sélections.
 3. Sa BASE parente est VALIDÉE.
-4. Sur les matchs postérieurs à sa déclaration, le sous-ensemble filtré par l'indice bat sa BASE parente **à population égale** (§ 8) : écart de ROI positif selon la règle du § 9.3 (deux méthodes, 99,5 %, au plus deux contrôles fixés à l'avance avec minimums de jours).
+4. Sur les matchs postérieurs à sa déclaration, le sous-ensemble filtré par l'indice bat sa BASE parente **à population égale** (§ 8) : écart de ROI positif selon la règle du § 9.3 (deux méthodes, au plus deux contrôles fixés à l'avance avec minimums de jours, niveau recalé par simulation pour cet écart).
 
 Tant que ces conditions ne sont pas remplies, l'indice reste affiché comme information, avec le statut NON ÉVALUÉ.
 
@@ -318,7 +342,7 @@ Tant que ces conditions ne sont pas remplies, l'indice reste affiché comme info
   - un statut ne change qu'à un point de contrôle ;
   - le contrôle de sensibilité ;
   - la reproduction des chiffres du § 10 ;
-  - la simulation du § 9.5 (même tableau, à l'erreur de simulation près).
+  - la simulation du § 9.5 (même tableau, à l'erreur de simulation près), puis sa reprise automatique à chaque point de contrôle.
 - **Pas de workflow programmé** : GitHub ne lance les tâches programmées que depuis la branche principale, et cette branche ne doit pas changer. Le calcul est relancé à la demande ; la traçabilité repose sur l'historique Git (§ 5).
 - **Aucune page du site** avant le point de contrôle C1.
 
@@ -339,6 +363,12 @@ Tant que ces conditions ne sont pas remplies, l'indice reste affiché comme info
 | Point de la revue | Correction | Section |
 |---|---|---|
 | Risque global faux en v2 | 99,5 % à chaque contrôle, Bonferroni explicite, deux méthodes d'intervalle exigées, minimums de 20 et 40 jours, vérification par simulation et limites | § 7, 9.2, 9.3, 9.5, 11.2 |
+
+### Correction apportée en version 4
+
+| Point de la revue | Correction | Section |
+|---|---|---|
+| 0,53 % ± 0,1 ne prouve pas la limite de 0,5 % | simulation de 200 000 tirages : 99,5 % donne en fait 0,69 % ; niveau porté à 99,7 % (0,455 %, borne haute 0,485 %) ; simulation refaite à chaque point de contrôle ; limites précisées | § 9.3, 9.5, 11.2, 12 |
 
 ## 14. Ce que ce protocole ne permet pas d'affirmer
 
