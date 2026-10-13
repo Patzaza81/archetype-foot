@@ -121,7 +121,7 @@
     det.appendChild(grille("Plus", "Moins", f.domicile, cg.domicile, ""));
     det.appendChild(el("div", "titre-bloc", m.exterieur));
     det.appendChild(grille("Plus", "Moins", f.exterieur, cg.exterieur, ""));
-    det.appendChild(el("p", "sans", "Cote relevée seulement quand BetPawa publie le même marché : « 7+ » pour Plus de 6,5 corners, « 0-1 » pour Moins de 1,5 carton."));
+    det.appendChild(el("p", "sans", "Cote relevée seulement quand le même marché est disponible : « 7+ » pour Plus de 6,5 corners, « 0-1 » pour Moins de 1,5 carton."));
     c.appendChild(det);
 
     if (!aDesCotes(m)) c.appendChild(el("p", "sans", "Cotes non relevées pour ce match : probabilités du modèle seules."));
@@ -195,7 +195,7 @@
     });
     if (!liste.length) {
       z.appendChild(el("div", "vide", etat.seulCotes
-        ? "Aucune cote corners/cartons relevée pour ces matchs. Les cotes apparaissent après la prochaine mise à jour des données BetPawa."
+        ? "Aucune cote corners/cartons relevée pour ces matchs. Les cotes apparaissent après la prochaine mise à jour des données."
         : "Aucun match à afficher pour cette date."));
       return;
     }
