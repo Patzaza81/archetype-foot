@@ -1,0 +1,56 @@
+name: Moteur Europe (LdC, Europa League, Conférence)
+
+# Isolé du pipeline principal : lit data/archive_test (cotes BetPawa déjà résolues), recharge l'historique des clubs
+# sur Matchendirect, entraîne le calibrateur Europe et écrit data/europe/pronostics_europe.json (page pronostics_europe.html).
+# Ne modifie aucun autre fichier que data/europe/.
+on:
+  schedule:
+    - cron: "40 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pipeline-archetype-foot
+  cancel-in-progress: false
+
+jobs:
+  moteur-europe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Installer les dépendances
+        run: pip install requests beautifulsoup4 pandas lxml pytest
+
+      - name: Tests du moteur Europe
+        run: python -m pytest tests/test_moteur_europe.py tests/test_collecte_europe.py tests/test_calibration_europe.py -q
+
+      - name: Collecter l'historique des clubs (matchs à venir et joués)
+        run: python collecte_europe.py --inclure-joues
+
+      - name: Calibrer et produire les pronostics Europe
+        run: python calibration_europe.py
+
+      - name: Publier data/europe
+        run: |
+          set -e
+          git config user.name "archetype-foot-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data/europe
+          if git diff --cached --quiet; then echo "Aucune modification."; exit 0; fi
+          git commit -m "Mise à jour moteur Europe"
+          for i in 1 2 3 4 5; do
+            git fetch origin main
+            git rebase -X theirs origin/main || { git rebase --abort || true; git reset --hard origin/main; git checkout "$GITHUB_SHA" -- data/europe 2>/dev/null || true; }
+            if git push origin HEAD:main; then exit 0; fi
+            sleep $((i * 10))
+          done
+          echo "::error::Publication impossible"; exit 1
