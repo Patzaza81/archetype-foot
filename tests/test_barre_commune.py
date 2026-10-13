@@ -53,3 +53,17 @@ PRESENTATION_AUTORISEE = {
 def test_scripts_de_la_page_inchanges(page, attendus):
     scripts = [re.sub(r"\?.*$", "", x) for x in re.findall(r'<script src="([^"]+)"', lit(page))]
     assert scripts == attendus + PRESENTATION_AUTORISEE.get(page, [])
+
+
+def test_accueil_publie_et_ancienne_adresse_redirigee():
+    """La nouvelle page d'accueil est index.html : plus de mention « prototype », indexable, et l'ancienne
+    adresse accueil-prototype.html renvoie vers l'accueil. Les liens de l'ancien accueil restent tous présents."""
+    s = lit("index.html")
+    assert "non publié" not in s and 'content="noindex"' not in s
+    assert "<title>Archetype Foot</title>" in s
+    for h in ("archetype.html", "pronostics_v3.html", "tickets.html", "journal.html", "systeme.html",
+              "corners_cartons.html", "compte.html", "abonnement.html"):
+        assert f'href="{h}"' in s, h
+    assert 'url=index.html' in lit("accueil-prototype.html")
+    for page in PAGES:
+        assert 'href="accueil-prototype.html"' not in lit(page), page
