@@ -880,15 +880,113 @@ def execute(source: Source, maintenant: dt.datetime, sortie: Path = SORTIE, n_si
     return etat
 
 
+# =======================================================================================================================
+# Passage automatique (tâche planifiée) : détecte les seuils C1/C2 et commite data/base/ sur la branche dédiée
+# =======================================================================================================================
+
+BRANCHE_BASE = "base-implementation"
+BRANCHES_INTERDITES = {"main", "master"}
+
+
+class RefusAuto(RuntimeError):
+    pass
+
+
+def _g(depot: Path, *args: str, ok: bool = False) -> subprocess.CompletedProcess:
+    r = subprocess.run(["git", "-C", str(depot), *args], capture_output=True, text=True)
+    if r.returncode and not ok:
+        raise RefusAuto(f"git {' '.join(args)} : {r.stderr.strip()[:300]}")
+    return r
+
+
+def _contenu_utile(chemin: Path) -> Any:
+    """Contenu d'un fichier de sortie sans son horodatage de calcul : un passage qui ne change rien ne crée pas de commit."""
+    if not chemin.exists():
+        return None
+    if chemin.suffix != ".json":
+        return chemin.read_text(encoding="utf-8")
+    d = json.loads(chemin.read_text(encoding="utf-8"))
+    if isinstance(d, dict):
+        d = {k: v for k, v in d.items() if k != "calcule_le"}
+    return d
+
+
+def passage_automatique(depot: str | Path = ".", branche: str = BRANCHE_BASE, ref_donnees: str = "origin/main",
+                        maintenant: dt.datetime | None = None, tentatives: int = 3, n_sim: int = SIMULATIONS_CONTROLE,
+                        b: int = TIRAGES_BOOTSTRAP, profondeur: int = 1000) -> dict[str, Any]:
+    """Un passage complet, sûr à relancer autant de fois qu'on veut :
+    1. se met exactement sur `origin/<branche>` (refuse main, refuse un arbre de travail modifié) ;
+    2. lit les données de `origin/main` et déclenche C1 / C2 si et seulement si leur seuil est atteint (§ 9.2) ;
+    3. commite UNIQUEMENT data/base/ et pousse sur `<branche>`. Push refusé (passage concurrent) : on repart de la
+       version distante et on recommence ; un point de contrôle déjà présent n'est jamais recalculé (ajout seul)."""
+    depot = Path(depot)
+    if branche in BRANCHES_INTERDITES:
+        raise RefusAuto(f"branche interdite : {branche}")
+    import fcntl
+    import os
+    git_dir = Path(_g(depot, "rev-parse", "--absolute-git-dir").stdout.strip())
+    verrou = open(git_dir / "base_protocole.lock", "w")      # deux passages simultanés sur la même machine
+    try:
+        fcntl.flock(verrou, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError:
+        return {"resultat": "DEJA_EN_COURS"}
+    try:
+        if _g(depot, "status", "--porcelain").stdout.strip():
+            raise RefusAuto("arbre de travail modifié : passage automatique refusé")
+        for essai in range(1, tentatives + 1):
+            _g(depot, "fetch", "-q", f"--depth={profondeur}", "origin", "main", ok=True)
+            _g(depot, "fetch", "-q", "origin", branche)
+            _g(depot, "checkout", "-q", "-B", branche, f"origin/{branche}")
+            sortie = depot / "data/base"
+            avant = {p.name: _contenu_utile(p) for p in sortie.glob("*") if p.is_file()} if sortie.exists() else {}
+            moment = maintenant or dt.datetime.now(dt.timezone.utc)
+            cwd = Path.cwd()
+            try:
+                os.chdir(depot)
+                etat = execute(Source(ref_donnees, "."), moment, Path("data/base"), n_sim=n_sim, b=b)
+            finally:
+                os.chdir(cwd)
+            apres = {p.name: _contenu_utile(p) for p in sortie.glob("*") if p.is_file()}
+            if apres == avant:
+                _g(depot, "checkout", "-q", "--", ".", ok=True)
+                return {"resultat": "AUCUN_CHANGEMENT", "statut_B0": etat["statut_B0"],
+                        "points": etat["points_de_controle_atteints"], "essai": essai}
+            _g(depot, "add", "-A", "data/base")
+            hors = [f for f in _g(depot, "diff", "--cached", "--name-only").stdout.split() if not f.startswith("data/base/")]
+            if hors:
+                raise RefusAuto(f"fichiers hors data/base/ : {hors}")
+            points = ",".join(etat["points_de_controle_atteints"]) or "aucun"
+            _g(depot, "-c", "user.name=archetype-base-bot", "-c", "user.email=bot@users.noreply.github.com", "commit", "-q",
+               "-m", f"BASE : passage automatique {moment:%Y-%m-%d %H:%M} UTC (statut {etat['statut_B0']}, points {points})")
+            if _g(depot, "push", "-q", "origin", f"HEAD:refs/heads/{branche}", ok=True).returncode == 0:
+                return {"resultat": "PUBLIE_SUR_BRANCHE", "statut_B0": etat["statut_B0"],
+                        "points": etat["points_de_controle_atteints"], "essai": essai,
+                        "commit": _g(depot, "rev-parse", "HEAD").stdout.strip()}
+            _g(depot, "reset", "-q", "--hard", f"origin/{branche}")      # passage concurrent : on recommence
+        raise RefusAuto(f"push refusé {tentatives} fois")
+    finally:
+        fcntl.flock(verrou, fcntl.LOCK_UN)
+        verrou.close()
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     p.add_argument("--ref", default="origin/main")
     p.add_argument("--maintenant", default=None, help="instant de calcul ISO (par défaut : maintenant)")
     p.add_argument("--reproduction", action="store_true")
     p.add_argument("--simulation", action="store_true")
+    p.add_argument("--auto", action="store_true", help="passage automatique : seuils, commit data/base/, push sur la branche dédiée")
     a = p.parse_args(argv)
     maintenant = instant(a.maintenant) if a.maintenant else dt.datetime.now(dt.timezone.utc)
     source = Source(a.ref)
+    if a.auto:
+        try:
+            r = passage_automatique(".", BRANCHE_BASE, a.ref, instant(a.maintenant) if a.maintenant else None)
+        except RefusAuto as exc:
+            print(json.dumps({"resultat": "REFUS", "raison": str(exc)}, ensure_ascii=False))
+            return 2
+        print(json.dumps(r, ensure_ascii=False))
+        return 0
     if a.reproduction:
         print(json.dumps(reproduction(source, maintenant), ensure_ascii=False, indent=1, default=str))
         return 0

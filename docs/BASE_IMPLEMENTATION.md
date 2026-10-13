@@ -86,3 +86,27 @@ Le registre d'empreintes, reconstruit depuis l'historique Git de `main`, montre 
 - Les résultats de test et de simulation sont documentés ; B0 reste **NON ÉVALUÉ** tant que les points de contrôle ne sont pas atteints.
 - Le défaut d'archive concernant trois matchs reste hors périmètre et n'est pas corrigé ici.
 - Cette validation ne vaut **ni fusion dans `main`, ni ouverture de PR, ni exécution de workflow, ni publication du site**. Toute mise en production exige une décision distincte après les futurs points de contrôle et une revue du diff.
+
+## 6. Déclenchement automatique de C1 et C2 (13/10/2026)
+
+**Mécanismes examinés** :
+
+| Mécanisme | Possible sans toucher `main` ? | Raison |
+|---|---|---|
+| Workflow GitHub programmé (`schedule`) | non | GitHub ne lit ce déclencheur que dans les workflows de la branche principale |
+| Workflow lancé après le pipeline (`workflow_run`) | non | même limite (branche principale seulement) |
+| Fonction programmée Netlify | non | Netlify déploie `main` : ce serait une mise en production |
+| **Tâche planifiée Claude** (session quotidienne qui lance `--auto` sur la branche) | **oui** | ne dépend que de la branche dédiée ; lit `origin/main` sans la modifier |
+
+**Ce qui détecte les seuils** : le code (`execute` → `prefixe`), pas la tâche planifiée. La tâche ne fait que lancer le passage chaque jour. C1 et C2 sont évalués sur les premiers jours complets qui remplissent les conditions : le résultat ne dépend pas du jour où le passage tourne.
+
+**Protections, toutes testées** :
+- aucun point de contrôle avant son seuil (299 matchs, ou 19 jours, ou matchs de moins de 7 jours : rien) ;
+- jamais deux C1 : ajout seul, relance sans effet, reprise depuis la version distante si un autre passage a publié entre-temps ;
+- verrou local contre deux passages simultanés ;
+- refus de `main` et d'un arbre de travail modifié ;
+- commit limité à `data/base/`.
+
+**Limites** :
+- La tâche planifiée dépend du service de tâches de Claude. Si un passage échoue, le suivant rattrape (le calcul est complet à chaque fois).
+- Le registre d'empreintes suppose des passages réguliers. Un long arrêt rapprocherait la « première observation » de la date de reprise ; l'historique Git de `main` limite ce risque (§ 5.2).

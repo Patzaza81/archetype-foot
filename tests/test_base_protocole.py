@@ -340,3 +340,144 @@ def test_reproduction_des_chiffres_du_paragraphe_10():
     ex = r["exploration"]
     assert ex["B1"]["retenus"]["matchs"] == 15 and ex["B2"]["retenus"]["matchs"] == 13
     assert ex["B4"]["retenus"]["matchs"] == 175 and ex["B4"]["non_retenus"] == 78
+
+
+# --- Déclenchement automatique des points de contrôle (passage planifié) -----------------------------------------------
+
+def _run(*args, cwd):
+    return subprocess.run(list(args), cwd=cwd, check=True, capture_output=True, text=True).stdout.strip()
+
+
+def _depot_avec_origine(tmp_path, archive):
+    """origine nue + clone de travail ; main porte l'archive, la branche dédiée part de main."""
+    origine, travail = tmp_path / "origine.git", tmp_path / "travail"
+    _run("git", "init", "-q", "--bare", "-b", "main", str(origine), cwd=tmp_path)
+    _run("git", "clone", "-q", str(origine), str(travail), cwd=tmp_path)
+    _run("git", "checkout", "-q", "-b", "main", cwd=travail)
+    _ecrit(travail, archive)
+    (travail / "README").write_text("x")
+    _run("git", "add", "-A", cwd=travail)
+    _run("git", "-c", "user.email=t@t", "-c", "user.name=t", "commit", "-qm", "archive", cwd=travail)
+    _run("git", "push", "-q", "origin", "main", cwd=travail)
+    _run("git", "push", "-q", "origin", f"main:refs/heads/{bp.BRANCHE_BASE}", cwd=travail)
+    return origine, travail
+
+
+def _ajoute_sur_main(travail, archive):
+    _run("git", "checkout", "-q", "-B", "maj", "origin/main", cwd=travail)
+    _ecrit(travail, archive)
+    _run("git", "add", "-A", cwd=travail)
+    _run("git", "-c", "user.email=t@t", "-c", "user.name=t", "commit", "-qm", "nuit", cwd=travail)
+    _run("git", "push", "-q", "origin", "HEAD:main", cwd=travail)
+    _run("git", "checkout", "-q", bp.BRANCHE_BASE, cwd=travail) if _run("git", "branch", "--list", bp.BRANCHE_BASE, cwd=travail) else None
+
+
+def _controles_distants(travail):
+    _run("git", "fetch", "-q", "origin", bp.BRANCHE_BASE, cwd=travail)
+    r = subprocess.run(["git", "show", f"origin/{bp.BRANCHE_BASE}:data/base/points_de_controle.json"], cwd=travail,
+                       capture_output=True, text=True)
+    return json.loads(r.stdout) if r.returncode == 0 else []
+
+
+AUTO = {"n_sim": 1000, "b": 1000}
+QUAND = dt.datetime(2026, 12, 20, tzinfo=UTC)
+
+
+def test_auto_ne_declenche_pas_avant_le_seuil_puis_declenche_c1_une_seule_fois(tmp_path):
+    # 299 matchs réglés sur 20 jours : un de moins que le seuil
+    archive = _archive_test(jours=20, par_jour=15, p=0.8)
+    premier = sorted(archive)[0]
+    mid = sorted(archive[premier])[0]
+    archive[premier][mid]["score"] = {}
+    _, travail = _depot_avec_origine(tmp_path, archive)
+    r1 = bp.passage_automatique(travail, maintenant=QUAND, **AUTO)
+    assert r1["resultat"] == "PUBLIE_SUR_BRANCHE" and r1["points"] == []
+    assert _controles_distants(travail) == []
+    # le score manquant arrive : 300 matchs réglés et 20 jours -> C1 se déclenche seul
+    archive[premier][mid]["score"] = {"buts_dom": 1, "buts_ext": 0}
+    _ajoute_sur_main(travail, {premier: archive[premier]})
+    r2 = bp.passage_automatique(travail, maintenant=QUAND, **AUTO)
+    assert r2["points"] == ["C1"] and [c["point"] for c in _controles_distants(travail)] == ["C1"]
+    # relancé : rien ne change, pas de second C1
+    r3 = bp.passage_automatique(travail, maintenant=QUAND, **AUTO)
+    assert r3["resultat"] == "AUCUN_CHANGEMENT" and [c["point"] for c in _controles_distants(travail)] == ["C1"]
+
+
+@pytest.mark.parametrize("jours,par_jour,attendu", [
+    (20, 15, ["C1"]),      # 300 matchs, 20 jours : seuil atteint
+    (19, 16, []),          # 304 matchs, 19 jours : minimum de jours non atteint
+    (40, 15, ["C1", "C2"]),  # 600 matchs, 40 jours : C2 aussi
+    (39, 16, ["C1"]),      # 624 matchs, 39 jours : pas encore C2
+])
+def test_seuils_exacts_des_points_de_controle(tmp_path, jours, par_jour, attendu):
+    racine = tmp_path / "d"
+    _ecrit(racine, _archive_test(jours=jours, par_jour=par_jour, p=0.8))
+    e = bp.execute(bp.Source(None, racine), QUAND, racine / "data/base", **AUTO)
+    assert e["points_de_controle_atteints"] == attendu
+
+
+def test_c1_porte_sur_les_premiers_jours_meme_si_le_calcul_est_tardif(tmp_path):
+    racine = tmp_path / "d"
+    _ecrit(racine, _archive_test(jours=45, par_jour=15, p=0.8))
+    bp.execute(bp.Source(None, racine), QUAND, racine / "data/base", **AUTO)
+    c = json.loads((racine / "data/base/points_de_controle.json").read_text())
+    assert (c[0]["point"], c[0]["jours"], c[0]["B0"]["matchs"]) == ("C1", 20, 300)
+    assert (c[1]["point"], c[1]["jours"], c[1]["B0"]["matchs"]) == ("C2", 40, 600)
+
+
+def test_aucun_point_de_controle_pour_des_matchs_de_moins_de_7_jours(tmp_path):
+    racine = tmp_path / "d"
+    _ecrit(racine, _archive_test(jours=25, par_jour=15, p=0.8))
+    fin = dt.datetime(2026, 10, 13, tzinfo=UTC) + dt.timedelta(days=25)   # le dernier jour vient d'être joué
+    e = bp.execute(bp.Source(None, racine), fin, racine / "data/base", **AUTO)
+    assert e["points_de_controle_atteints"] == []          # 18 jours seulement ont 7 jours d'âge
+
+
+def test_passages_concurrents_un_seul_c1(tmp_path, monkeypatch):
+    archive = _archive_test(jours=20, par_jour=15, p=0.8)
+    origine, a = _depot_avec_origine(tmp_path, archive)
+    b = tmp_path / "b"
+    _run("git", "clone", "-q", str(origine), str(b), cwd=tmp_path)
+    vrai = bp.execute
+    etat = {"fait": False}
+
+    def execute_avec_concurrent(*args, **kw):
+        if not etat["fait"]:                   # pendant le calcul de B, A publie son C1
+            etat["fait"] = True
+            monkeypatch.setattr(bp, "execute", vrai)
+            # autre instant : commit différent (deux passages au même instant produisent le même commit, sans doublon)
+            bp.passage_automatique(a, maintenant=QUAND + dt.timedelta(minutes=1), **AUTO)
+            monkeypatch.setattr(bp, "execute", execute_avec_concurrent)
+        return vrai(*args, **kw)
+
+    monkeypatch.setattr(bp, "execute", execute_avec_concurrent)
+    r = bp.passage_automatique(b, maintenant=QUAND, **AUTO)
+    assert r["essai"] == 2, r                               # premier push refusé, reprise depuis la version distante
+    assert r["resultat"] == "AUCUN_CHANGEMENT"              # C1 déjà publié par A : jamais recalculé
+    assert [c["point"] for c in _controles_distants(b)] == ["C1"]
+
+
+def test_passage_refuse_main_et_un_arbre_modifie(tmp_path):
+    _, travail = _depot_avec_origine(tmp_path, _archive_test(jours=3, par_jour=2))
+    with pytest.raises(bp.RefusAuto):
+        bp.passage_automatique(travail, branche="main", maintenant=QUAND, **AUTO)
+    (travail / "README").write_text("modifié")
+    with pytest.raises(bp.RefusAuto, match="arbre de travail"):
+        bp.passage_automatique(travail, maintenant=QUAND, **AUTO)
+
+
+def test_verrou_empeche_deux_passages_simultanes(tmp_path):
+    import fcntl
+    _, travail = _depot_avec_origine(tmp_path, _archive_test(jours=3, par_jour=2))
+    git_dir = Path(_run("git", "rev-parse", "--absolute-git-dir", cwd=travail))
+    with open(git_dir / "base_protocole.lock", "w") as f:
+        fcntl.flock(f, fcntl.LOCK_EX)
+        assert bp.passage_automatique(travail, maintenant=QUAND, **AUTO) == {"resultat": "DEJA_EN_COURS"}
+
+
+def test_passage_ne_commite_que_data_base(tmp_path):
+    _, travail = _depot_avec_origine(tmp_path, _archive_test(jours=20, par_jour=15, p=0.8))
+    r = bp.passage_automatique(travail, maintenant=QUAND, **AUTO)
+    fichiers = _run("git", "show", "--name-only", "--format=", r["commit"], cwd=travail).split()
+    assert fichiers and all(f.startswith("data/base/") for f in fichiers)
+    assert _run("git", "rev-parse", "origin/main", cwd=travail) != r["commit"]       # main intact

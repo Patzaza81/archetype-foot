@@ -180,7 +180,8 @@ Un filtre qui gagne la comparaison générale mais pas celle à population égal
 - **C1** : B0 atteint **300 matchs** admis et réglés **et 20 jours de matchs distincts** dans cette fenêtre.
 - **C2** : B0 atteint **600 matchs** admis et réglés **et 40 jours de matchs distincts** dans cette fenêtre.
 - Les minimums de jours sont nouveaux en version 3 : les intervalles regroupés par jour ne sont fiables qu'avec assez de jours (§ 9.5).
-- Ordre de grandeur : environ 19 matchs admis par jour de match dans H1 d'après l'archive. C1 vers le 10 novembre, C2 vers le 1er décembre (fenêtre de 7 jours comprise). Ce n'est pas une promesse.
+- **Déclenchement automatique (13/10/2026)** : aucune date n'est fixée. Un passage automatique quotidien (§ 12) vérifie les seuils sur les données réelles et lance C1, puis C2, **dès que** leurs conditions sont remplies. Les dates du type « vers le 10 novembre » données plus tôt n'étaient que des estimations, jamais des règles.
+- Les conditions restent celles du protocole : nombre de matchs réglés **et** nombre de jours de matchs distincts **et** 7 jours d'âge. Le minimum de jours n'est pas une date : c'est une condition de validité des intervalles (§ 9.5). Avec 16 jours au lieu de 20, le risque de VALIDÉ à tort monte à 0,85 %.
 - Un statut ne change qu'à un point de contrôle. Les tableaux peuvent être consultés à tout moment, mais s'arrêter au premier bon chiffre fausserait le test.
 
 ### 9.3 Statuts de B0 (hypothèse principale)
@@ -343,7 +344,14 @@ Tant que ces conditions ne sont pas remplies, l'indice reste affiché comme info
   - le contrôle de sensibilité ;
   - la reproduction des chiffres du § 10 ;
   - la simulation du § 9.5 (même tableau, à l'erreur de simulation près), puis sa reprise automatique à chaque point de contrôle.
-- **Pas de workflow programmé** : GitHub ne lance les tâches programmées que depuis la branche principale, et cette branche ne doit pas changer. Le calcul est relancé à la demande ; la traçabilité repose sur l'historique Git (§ 5).
+- **Pas de workflow GitHub** : GitHub ne lance les tâches programmées (et les déclenchements après un autre workflow) que depuis la branche principale, et cette branche ne doit pas changer.
+- **Passage automatique** : une tâche planifiée Claude, quotidienne, lance `python base_protocole.py --auto` sur la branche dédiée. Ce passage :
+  - se place exactement sur `origin/base-implementation` et refuse `main` ou un arbre de travail modifié ;
+  - lit les données de `origin/main`, déclenche C1 ou C2 seulement si leur seuil est atteint ;
+  - commite **uniquement** `data/base/` et pousse sur la branche dédiée ;
+  - se protège des passages simultanés (verrou local, reprise depuis la version distante si un autre passage a publié entre-temps) ;
+  - ne recalcule jamais un point de contrôle déjà enregistré (ajout seul).
+- La traçabilité repose sur l'historique Git (§ 5).
 - **Aucune page du site** avant le point de contrôle C1.
 
 ## 13. Corrections apportées en version 2
