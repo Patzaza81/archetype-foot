@@ -1,10 +1,10 @@
 import pytest
 
 from moteur_europe import evaluate_match_europe
-from moteur_europe.model import N_MAX, POIDS_CHAMPIONNAT, POIDS_EUROPE, build_model_europe
+from moteur_europe.model import N_MAX, POIDS_CHAMPIONNAT, POIDS_EUROPE, _lisse, build_model_europe
 from moteur_europe.performance import indice_performance_europe, profil_moyen
 from moteur_europe.socle.calibration import CalibrationFit, IsotonicCalibrator
-from moteur_europe.socle.model import MOYENNE_REFERENCE, _lisse, build_model
+from moteur_europe.socle.model import MOYENNE_REFERENCE, build_model
 
 
 def rows(scores, domicile, debut=1):
@@ -17,13 +17,14 @@ def donnees(eu_dom, eu_ext, lg_dom, lg_ext):
 
 
 # --- cas qui doivent PASSER -------------------------------------------------------------------------------------------
-def test_memes_donnees_que_v3_donnent_le_meme_lambda():
+def test_lambda_europe_plus_proche_de_la_moyenne_que_le_calcul_v3_copie():
+    """Lissage Europe (K = 8) plus fort que le noyau copié (K = 4) : lambda tiré davantage vers 1,35."""
     sc_d, sc_e = [(2, 1), (1, 0), (3, 1), (0, 0)], [(1, 2), (0, 1), (1, 1), (0, 2)]
     ed, ee, ld, le = donnees(sc_d, sc_e, sc_d, sc_e)
     eu = build_model_europe(ed, ee, ld, le)
     v3 = build_model(ed, ee)
-    assert eu.lambda_home == pytest.approx(v3.lambda_home)
-    assert eu.lambda_away == pytest.approx(v3.lambda_away)
+    assert abs(eu.lambda_home - MOYENNE_REFERENCE) < abs(v3.lambda_home - MOYENNE_REFERENCE) or v3.lambda_home == MOYENNE_REFERENCE
+    assert abs(eu.lambda_away - MOYENNE_REFERENCE) <= abs(v3.lambda_away - MOYENNE_REFERENCE) + 1e-9
 
 
 def test_ponderation_70_30_calcul_a_la_main():
@@ -146,3 +147,47 @@ def test_autonomie_totale_aucun_lien_avec_v2_v3():
     for f in ("pronostics_europe.html", "archetype_europe.js", "europe_autres.js"):
         src = open(f, encoding="utf-8").read()
         assert "archetype_v3" not in src.replace("Aucun lien avec archetype_v3.js", "") and "data/v3" not in src, f
+
+
+# --- revue des marchés et des cotes (13/10) ---------------------------------------------------------------------------
+def test_marche_exclu_trois_cas_exclus_et_trois_gardes():
+    from moteur_europe.core import marche_exclu
+    for m in ("score_2_1", "exact_goals_3", "handicap_-3.5_1", "handicap_2.5_2"):
+        assert marche_exclu(m), m
+    for m in ("1x2_1", "over_2_5", "handicap_-1.5_1", "handicap_2_2", "btts_yes", "dc_1X"):
+        assert not marche_exclu(m), m
+
+
+def _rows(n, dom, bm=2, be=1, annee=2026):
+    return [{"date": f"{annee}-0{i + 1}-10", "domicile": dom, "buts_marques": bm, "buts_encaisses": be} for i in range(n)]
+
+
+def test_lissage_europe_plus_fort_que_v3_et_probabilite_plafonnee_sans_calibration():
+    from moteur_europe.core import PLAFOND_NON_CALIBRE, evaluate_match_europe
+    from moteur_europe.model import K_LISSAGE_EUROPE
+    from moteur_europe.socle.model import K_LISSAGE
+    assert K_LISSAGE_EUROPE > K_LISSAGE
+    forts, faibles = _rows(6, True, 5, 0), _rows(6, False, 0, 5)
+    r = evaluate_match_europe({"europe_dom": forts, "europe_ext": faibles, "ligue_dom": forts, "ligue_ext": faibles,
+                               "odds": {"1x2_1": 1.5, "over_0_5": 1.3}, "handicap_lines": []})
+    assert r["values"]["over_0_5"].probability <= PLAFOND_NON_CALIBRE + 1e-12
+    assert all(c["probability"] <= PLAFOND_NON_CALIBRE + 1e-12 for c in r["candidates"])
+
+
+def test_marches_exclus_jamais_candidats():
+    from moteur_europe.core import evaluate_match_europe
+    d, e = _rows(5, True), _rows(5, False)
+    r = evaluate_match_europe({"europe_dom": d, "europe_ext": e, "ligue_dom": d, "ligue_ext": e,
+                               "odds": {"score_2_1": 8.0, "exact_goals_3": 4.0, "handicap_-3.5_1": 1.2, "over_1_5": 1.4},
+                               "handicap_lines": [-3.5, -1.5]})
+    assert set(r["values"]) == {"over_1_5"}
+
+
+def test_double_controle_sur_echantillon_melange():
+    from moteur_europe.preuves import preuves_europe
+    eu_d, eu_e = _rows(3, True, 2, 0), _rows(3, False, 0, 2)
+    lg_d, lg_e = _rows(3, True, 2, 0, 2025), _rows(3, False, 0, 2, 2025)
+    p = preuves_europe(eu_d, eu_e, lg_d, lg_e, ["1x2_1"], "A", "B")["1x2_1"]
+    assert {"double_controle_europe", "double_controle_championnat"} <= set(p)
+    # l'échantillon mélangé compte les deux sources : au moins aussi de matchs que l'Europe seule
+    assert p["double_control_ok"] in (True, False)

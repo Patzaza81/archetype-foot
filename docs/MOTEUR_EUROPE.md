@@ -64,3 +64,10 @@ Limite repérée : `precalcul.py` ne laisse passer que « ... Phase de Ligue ».
 
 ## Autonomie (décision de Patrick, 13/10)
 Les moteurs V2 et V3 ne doivent intervenir ni de près ni de loin. Le moteur Europe est un moteur indépendant : tout le code qu'il empruntait a été copié dans `moteur_europe/` (`socle/` = calcul, `regles.py` = double contrôle, `rendu.py` = explications et format du site, `cotes_archive.py`, `scraper_matchendirect.py`), la page utilise `archetype_europe.js` et la clé `moteur_europe`. Un test (`test_autonomie_totale_aucun_lien_avec_v2_v3`) échoue si un import V2/V3 réapparaît. Conséquence : un changement futur sur V3 n'affecte plus l'Europe, et inversement. Seule dépendance restante : lecture (sans écriture) des matchs et cotes BetPawa de `data/archive_test/`, produits par le pipeline de collecte.
+
+## Revue des marchés et du choix des cotes (13/10, validée par Patrick)
+- Collecte inchangée (bloc commun à tous les moteurs) : le moteur Europe lit seulement.
+- Double contrôle sur l'échantillon mélangé (Europe + championnat réunis), seuils inchangés. Europe seule et championnat seul restent calculés pour information.
+- Lissage Europe K = 8 (V3 : 4), fixé à l'avance. Tant que le calibrateur n'est pas prêt, probabilité plafonnée à 80 %.
+- Marchés jamais calculés : score exact, nombre exact de buts, handicaps au-delà de ±2. Fenêtre de cotes 1,26–1,74 conservée.
+- Effet mesuré sur les 29 matchs évaluables : aperçus passés de 5 à 7, probabilités maximales 80 %.

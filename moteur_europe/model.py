@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Mapping, Sequence
 
-from .socle.model import (GoalModel, MOYENNE_REFERENCE, _lisse, _sample, _strength, _valid, score_matrix)
+from .socle.model import (GoalModel, MOYENNE_REFERENCE, _sample, _strength, _valid, score_matrix)
 
 # Décision de Patrick (13/10/2026) : derniers matchs européens 70 %, derniers matchs du championnat 30 %.
 # 3 matchs minimum, 6 maximum, par source et au MÊME LIEU (principe V3). Constantes fixées à l'avance, jamais ajustées
@@ -11,6 +11,15 @@ POIDS_EUROPE = 0.70
 POIDS_CHAMPIONNAT = 0.30
 N_MIN = 3
 N_MAX = 6
+# Lissage Europe (décision 13/10) : 3 à 6 matchs par source seulement, donc plus fort que la V3 (K = 4). K fixé à
+# l'avance (= taille maximale d'une source + 2), jamais ajusté sur des résultats.
+K_LISSAGE_EUROPE = 8.0
+
+
+def _lisse(valeur: float, n: int) -> float:
+    return (n * max(0.0, float(valeur)) + K_LISSAGE_EUROPE * MOYENNE_REFERENCE) / (n + K_LISSAGE_EUROPE)
+
+
 assert abs(POIDS_EUROPE + POIDS_CHAMPIONNAT - 1.0) < 1e-12
 
 
