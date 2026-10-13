@@ -13,7 +13,7 @@ Ce qu'il ajoute :
 Règles : NO DATA -> NO GO (jamais de date inventée, jamais de championnat deviné si ambigu) ; saison précédente
 acceptée seulement si le site l'a vraiment servie (page différente de la saison courante).
 
-Utilisation :  python collecte_europe.py [--archive data/archive_test] [--sortie data/europe/entrees_europe.json]
+Utilisation :  python collecte_europe.py [--archive data/archive_test] [--sortie data/europe/entrees_europe.json] [--inclure-joues]
 """
 from __future__ import annotations
 
@@ -209,8 +209,15 @@ def matchs_europeens_a_venir(enregs):
     return [e for e in enregs if competition_europeenne(e.get("competition")) and _non_joue(e)]
 
 
+def matchs_europeens(enregs, inclure_joues=False):
+    """À venir seulement, ou aussi les matchs joués (nécessaires à l'entraînement du calibrateur)."""
+    if not inclure_joues:
+        return matchs_europeens_a_venir(enregs)
+    return [e for e in enregs if competition_europeenne(e.get("competition"))]
+
+
 def execution(archive="data/archive_test", sortie="data/europe/entrees_europe.json", cache="data/europe/cache_clubs.json",
-              fetch=sd.fetch_html, pause=1.0, aujourdhui=None):
+              fetch=sd.fetch_html, pause=1.0, aujourdhui=None, inclure_joues=False):
     aujourdhui = aujourdhui or datetime.date.today()
     jour = aujourdhui.isoformat()
     cache_donnees = {}
@@ -233,12 +240,13 @@ def execution(archive="data/archive_test", sortie="data/europe/entrees_europe.js
         return donnees
 
     sorties = []
-    for e in matchs_europeens_a_venir(lit_archive(archive)):
+    for e in matchs_europeens(lit_archive(archive), inclure_joues):
         dom, ext = e.get("equipe_dom") or {}, e.get("equipe_ext") or {}
         hd, he = club(dom.get("url_equipe"), e.get("domicile")), club(ext.get("url_equipe"), e.get("exterieur"))
         entree, n = construit_entree_europe(e, hd, he)
         sorties.append({"match_id": e.get("match_id"), "date": e.get("date"), "competition_code": competition_europeenne(e.get("competition")),
-                        "domicile": e.get("domicile"), "exterieur": e.get("exterieur"), "couverture": n,
+                        "domicile": e.get("domicile"), "exterieur": e.get("exterieur"), "couverture": n, "score": e.get("score"),
+                        "coup_d_envoi_utc": e.get("coup_d_envoi_utc"),
                         "meta_dom": hd["meta"], "meta_ext": he["meta"], "entree": entree})
     bilan = {"genere_le": jour, "matchs": len(sorties), "evaluables": sum(1 for s in sorties if s["couverture"]["evaluable"])}
     for chemin, contenu in ((sortie, {"bilan": bilan, "matchs": sorties}), (cache, cache_donnees)):
@@ -253,8 +261,9 @@ def main():
     p.add_argument("--archive", default="data/archive_test")
     p.add_argument("--sortie", default="data/europe/entrees_europe.json")
     p.add_argument("--cache", default="data/europe/cache_clubs.json")
+    p.add_argument("--inclure-joues", action="store_true")
     a = p.parse_args()
-    print(json.dumps(execution(a.archive, a.sortie, a.cache), ensure_ascii=False))
+    print(json.dumps(execution(a.archive, a.sortie, a.cache, inclure_joues=a.inclure_joues), ensure_ascii=False))
     return 0
 
 

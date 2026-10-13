@@ -20,7 +20,7 @@ Calibrateur Europe séparé, appris seulement sur des matchs européens joués a
 
 ## Reste à faire avant tout usage
 1. Collecte de l'historique européen par club : écrite (`collecte_europe.py`, voir plus bas), à tester en réel hors de cet environnement.
-2. Archive de test avant-match européenne, puis entraînement du calibrateur.
+2. Attendre des matchs européens joués dans l'archive (aucun à ce jour : les 50 matchs vont du 13 au 15/10), puis lancer la calibration.
 3. Validation sur ≥ 100 matchs nouveaux avant tout verdict (règle du 27/09).
 
 ## Collecte des données européennes (`collecte_europe.py`)
@@ -42,3 +42,13 @@ Limites connues :
 - Les tours de qualification portent le même titre que la phase de ligue sur la page club : impossible de les séparer.
 - Utiliser la saison précédente contredit la règle V3 « pas de saison précédente » : décision à confirmer.
 - Le scraping réel n'a pas pu être testé ici (Matchendirect bloqué depuis cet environnement) : validé sur pages enregistrées et faux fetch.
+
+## Calibration et signaux (`calibration_europe.py`)
+
+Chaîne : `python collecte_europe.py --inclure-joues` puis `python calibration_europe.py` -> `data/europe/signaux_europe.json`.
+- Calibrateur Europe entraîné sur les matchs européens joués STRICTEMENT avant aujourd'hui (historiques déjà coupés avant la date de chaque match). Seuils V3 : >= 300 observations ET >= 50 matchs.
+- Matchs à venir : sélections, "aperçu non calibré" tant que la calibration n'est pas prête (comme V3, ce n'est pas une sélection), 5 meilleurs candidats avec leurs raisons de rejet.
+- Statuts : `EVALUE`, `SANS_COTE`, `NON_EVALUE : <raison>` (moins de 3 matchs au bon lieu, etc.).
+- Test hors ligne sur l'archive réelle (pages simulées) : 50 matchs lus, 0 évaluable, calibration `ECHANTILLON_INSUFFISANT`. La chaîne tourne ; la couverture réelle reste à mesurer avec Matchendirect.
+
+Limite repérée : `precalcul.py` ne laisse passer que « ... Phase de Ligue ». Les barrages et phases à élimination directe (dès février 2027) n'entreront pas dans l'archive tant que cette liste blanche n'est pas élargie. Non modifié ici (fichier de production).
