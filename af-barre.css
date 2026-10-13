@@ -1,0 +1,34 @@
+/* af-barre.css — barre de navigation commune (prototype d'accueil, branche accueil-prototype).
+   Classes préfixées « af- » : aucune collision avec les styles des pages (ax-, style.css, journal.css...).
+   Couleurs = valeurs de theme.css (--af-*), redéfinies ici pour les pages qui ne chargent pas theme.css.
+   Mode nuit : body.theme-nuit, même clé de stockage que le reste du site (archetype_theme_nuit).
+   Ce fichier ne touche à rien d'autre que la barre et le fond de page : aucun bloc de pronostic n'est restylé. */
+body{--afb-fond:#F7F1E7;--afb-surface:#FFFFFF;--afb-texte:#17141B;--afb-doux:#5B6763;--afb-ligne:rgba(8,127,120,.16);--afb-accent:#087F78;--afb-or:#C49A3A}
+body.theme-nuit{--afb-fond:#0E1018;--afb-surface:#171A25;--afb-texte:#F4F2F7;--afb-doux:#A9B3B8;--afb-ligne:rgba(21,152,141,.28);--afb-accent:#2BB3A6}
+body.af-fond{background:var(--afb-fond)}
+
+.af-barre{position:sticky;top:0;z-index:30;background:var(--afb-surface);border-bottom:1px solid var(--afb-ligne);padding-top:env(safe-area-inset-top);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:15px;line-height:1.4;color:var(--afb-texte)}
+.af-barre *{box-sizing:border-box}
+.af-barre-in{max-width:1180px;margin:0 auto;padding:0 16px;display:flex;align-items:center;gap:16px;min-height:60px}
+.af-logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--afb-texte);flex:none}
+.af-logo svg{width:32px;height:32px}
+.af-logo span{display:flex;flex-direction:column;line-height:1;font-weight:800;letter-spacing:.06em}
+.af-logo b{font-size:16px}.af-logo i{font-style:normal;font-size:12px;color:var(--afb-accent);letter-spacing:.14em}
+.af-nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;flex:1;min-width:0}
+.af-nav::-webkit-scrollbar{display:none}
+.af-nav a{white-space:nowrap;text-decoration:none;font-size:14px;font-weight:600;color:var(--afb-doux);padding:8px 10px;border-bottom:2px solid transparent}
+.af-nav a[aria-current="page"]{color:var(--afb-accent);border-bottom-color:var(--afb-accent)}
+.af-actions{display:flex;align-items:center;gap:8px;flex:none}
+.af-bouton-icone{width:38px;height:38px;min-height:0;border-radius:50%;border:1px solid var(--afb-ligne);background:var(--afb-surface);color:var(--afb-texte);font-size:16px;cursor:pointer;display:grid;place-items:center;padding:0;margin:0;box-shadow:none}
+.af-compte{display:flex;align-items:center;gap:6px;text-decoration:none;font-size:14px;font-weight:600;padding:7px 12px;border:1px solid var(--afb-ligne);border-radius:999px;color:var(--afb-texte)}
+.af-barre :focus-visible{outline:3px solid var(--afb-or);outline-offset:2px}
+@media (max-width:860px){.af-compte span:last-child{display:none}}
+@media (max-width:520px){
+  .af-barre-in{flex-wrap:wrap;gap:4px 10px;padding-block:6px}
+  .af-nav{order:3;flex-basis:100%}
+  .af-actions{margin-left:auto}
+}
+
+/* La barre gère déjà la zone de l'encoche : le conteneur qui la suit ne la rajoute pas. */
+.af-barre + .ax-conteneur{padding-top:12px}
