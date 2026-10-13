@@ -1,0 +1,132 @@
+import pytest
+
+from moteur_europe import evaluate_match_europe
+from moteur_europe.model import N_MAX, POIDS_CHAMPIONNAT, POIDS_EUROPE, build_model_europe
+from moteur_europe.performance import indice_performance_europe, profil_moyen
+from moteur_v3.calibration import CalibrationFit, IsotonicCalibrator
+from moteur_v3.model import MOYENNE_REFERENCE, _lisse, build_model
+
+
+def rows(scores, domicile, debut=1):
+    return [{"date": f"2026-0{(debut + i) // 28 + 1}-{(debut + i) % 28 + 1:02d}", "domicile": domicile,
+             "buts_marques": gf, "buts_encaisses": ga} for i, (gf, ga) in enumerate(scores)]
+
+
+def donnees(eu_dom, eu_ext, lg_dom, lg_ext):
+    return rows(eu_dom, True), rows(eu_ext, False), rows(lg_dom, True), rows(lg_ext, False)
+
+
+# --- cas qui doivent PASSER -------------------------------------------------------------------------------------------
+def test_memes_donnees_que_v3_donnent_le_meme_lambda():
+    sc_d, sc_e = [(2, 1), (1, 0), (3, 1), (0, 0)], [(1, 2), (0, 1), (1, 1), (0, 2)]
+    ed, ee, ld, le = donnees(sc_d, sc_e, sc_d, sc_e)
+    eu = build_model_europe(ed, ee, ld, le)
+    v3 = build_model(ed, ee)
+    assert eu.lambda_home == pytest.approx(v3.lambda_home)
+    assert eu.lambda_away == pytest.approx(v3.lambda_away)
+
+
+def test_ponderation_70_30_calcul_a_la_main():
+    ed, ee, ld, le = donnees([(3, 1)] * 4, [(1, 3)] * 4, [(1, 1)] * 5, [(1, 1)] * 5)
+    m = build_model_europe(ed, ee, ld, le)
+    att_d = POIDS_EUROPE * _lisse(3, 4) + POIDS_CHAMPIONNAT * _lisse(1, 5)
+    def_e = POIDS_EUROPE * _lisse(3, 4) + POIDS_CHAMPIONNAT * _lisse(1, 5)
+    assert m.lambda_home == pytest.approx(att_d * def_e / MOYENNE_REFERENCE)
+
+
+def test_le_lambda_est_entre_les_deux_sources_et_plus_proche_de_l_europe():
+    ed, ee, ld, le = donnees([(3, 1)] * 4, [(1, 3)] * 4, [(1, 1)] * 5, [(1, 1)] * 5)
+    m = build_model_europe(ed, ee, ld, le)
+    eu, lg = m.diagnostics["lambda_europe_seule"][0], m.diagnostics["lambda_championnat_seul"][0]
+    assert lg < m.lambda_home < eu
+    assert eu - m.lambda_home < m.lambda_home - lg
+
+
+def test_maximum_6_matchs_les_plus_recents_par_source():
+    sc = [(0, 0)] * 4 + [(2, 1)] * 6          # 10 matchs : les 6 derniers seulement
+    ed, ee, ld, le = donnees(sc, [(1, 1)] * 3, sc, [(1, 1)] * 3)
+    d = build_model_europe(ed, ee, ld, le).diagnostics
+    assert d["europe_dom_n"] == N_MAX == 6 and d["championnat_dom_n"] == 6
+    assert d["europe_dom_dates"] == [m["date"] for m in ed[-6:]]
+
+
+def test_minimum_3_suffit():
+    ed, ee, ld, le = donnees([(1, 0)] * 3, [(0, 1)] * 3, [(1, 0)] * 3, [(0, 1)] * 3)
+    assert build_model_europe(ed, ee, ld, le).lambda_home > 0
+
+
+# --- cas qui doivent ÉCHOUER -------------------------------------------------------------------------------------------
+def test_europe_moins_de_3_au_meme_lieu_refuse():
+    ed, ee, ld, le = donnees([(1, 0)] * 2, [(0, 1)] * 4, [(1, 0)] * 4, [(0, 1)] * 4)
+    with pytest.raises(ValueError, match="EUROPE_INSUFFISANT"):
+        build_model_europe(ed, ee, ld, le)
+
+
+def test_championnat_moins_de_3_refuse():
+    ed, ee, ld, le = donnees([(1, 0)] * 4, [(0, 1)] * 4, [(1, 0)] * 4, [(0, 1)] * 2)
+    with pytest.raises(ValueError, match="CHAMPIONNAT_INSUFFISANT"):
+        build_model_europe(ed, ee, ld, le)
+
+
+def test_les_matchs_a_l_autre_lieu_ne_comptent_pas():
+    ed = rows([(1, 0)] * 2, True) + rows([(1, 0)] * 5, False, debut=10)   # 2 à domicile seulement
+    _, ee, ld, le = donnees([], [(0, 1)] * 4, [(1, 0)] * 4, [(0, 1)] * 4)
+    with pytest.raises(ValueError, match="EUROPE_INSUFFISANT"):
+        build_model_europe(ed, ee, ld, le)
+
+
+def test_pas_de_selection_sans_calibration():
+    ed, ee, ld, le = donnees([(3, 0)] * 6, [(0, 2)] * 6, [(3, 0)] * 6, [(0, 2)] * 6)
+    cotes = {"1x2_1": 1.40, "over_1_5": 1.30, "btts_no": 1.60}
+    r = evaluate_match_europe({"europe_dom": ed, "europe_ext": ee, "ligue_dom": ld, "ligue_ext": le, "odds": cotes})
+    assert r["selected"] == []
+    assert any("CALIBRATION_ABSENTE" in reasons for _, reasons in r["rejected"])
+
+
+def test_pas_de_selection_sans_double_controle():
+    ed, ee, ld, le = donnees([(3, 0)] * 6, [(0, 2)] * 6, [(3, 0)] * 6, [(0, 2)] * 6)
+    cal = IsotonicCalibrator()
+    cal.fit_result = CalibrationFit(True, 400, "OK", ((0.0, 0.0), (1.0, 1.0)))
+    r = evaluate_match_europe({"europe_dom": ed, "europe_ext": ee, "ligue_dom": ld, "ligue_ext": le,
+                               "odds": {"1x2_1": 1.40}}, calibrator=cal)
+    assert r["selected"] == []
+    assert any("DOUBLE_CONTROLE_ECHOUE_OU_ABSENT" in reasons for _, reasons in r["rejected"])
+
+
+def test_chemin_complet_avec_calibration_et_preuves():
+    ed, ee, ld, le = donnees([(2, 1)] * 6, [(1, 2)] * 6, [(2, 1)] * 6, [(1, 2)] * 6)
+    cal = IsotonicCalibrator()
+    cal.fit_result = CalibrationFit(True, 400, "OK", ((0.0, 0.0), (1.0, 1.0)))
+    ev = {"dc_1X": {"double_control_ok": True, "justification": "test", "exposure_group": "resultat"}}
+    r = evaluate_match_europe({"europe_dom": ed, "europe_ext": ee, "ligue_dom": ld, "ligue_ext": le,
+                               "odds": {"dc_1X": 1.45}}, calibrator=cal, evidence=ev)
+    assert [s.market for s in r["selected"]] == ["dc_1X"]
+    perf = r["indices_performance"]["dc_1X"]
+    assert perf["sur"] == 4 and perf["indice"] == 4
+
+
+def test_surdispersion_bloque_meme_avec_tout_le_reste():
+    ed, ee, ld, le = donnees([(3, 0)] * 6, [(0, 2)] * 6, [(3, 0)] * 6, [(0, 2)] * 6)
+    cal = IsotonicCalibrator()
+    cal.fit_result = CalibrationFit(True, 400, "OK", ((0.0, 0.0), (1.0, 1.0)))
+    ev = {"1x2_1": {"double_control_ok": True, "justification": "test", "exposure_group": "resultat"}}
+    r = evaluate_match_europe({"europe_dom": ed, "europe_ext": ee, "ligue_dom": ld, "ligue_ext": le,
+                               "odds": {"1x2_1": 1.40}}, calibrator=cal, evidence=ev)
+    assert r["selected"] == []
+
+
+# --- indice de performance -------------------------------------------------------------------------------------------
+def test_profil_moyen_pondere():
+    eu, lg = rows([(4, 0)] * 3, True), rows([(0, 2)] * 3, True)
+    assert profil_moyen(eu, lg) == pytest.approx((0.7 * 4, 0.3 * 2))
+
+
+def test_pire_scenario_cherche_dans_europe_et_championnat():
+    ed = rows([(1, 0)] * 3, True)
+    ee = rows([(0, 1)] * 3, False)
+    ld = rows([(1, 0)] * 2 + [(1, 5)], True)       # un 1-5 en championnat doit compter dans le pire match
+    le = rows([(0, 1)] * 3, False)
+    perf = indice_performance_europe("under_3_5", ed, ld, ee, le)
+    assert perf["indice"] < 4
+    perf_ok = indice_performance_europe("under_3_5", ed, rows([(1, 0)] * 3, True), ee, le)
+    assert perf_ok["indice"] == 4
