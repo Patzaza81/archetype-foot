@@ -46,9 +46,9 @@ button:disabled{opacity:.75;cursor:default}
 </header>
 <section class="card">
 <strong>Comment fonctionne votre validation ?</strong>
-<p class="note">« Valider ce ticket » enregistre votre décision dans ce navigateur. Avant de miser, vérifiez sur BetPawa que les marchés et les cotes sont toujours disponibles. Cette page ne transmet ni ne soumet de pari à BetPawa.</p>
+<p class="note">« Valider ce ticket » enregistre votre décision dans ce navigateur. Avant de miser, vérifiez que les marchés et les cotes sont toujours disponibles. Cette page ne transmet ni ne soumet de pari.</p>
 </section>
-<p class="warning">Les cotes affichées sont celles enregistrées lors de la génération, pas des cotes en direct. Un ticket incomplet, expiré ou dont un lien d’événement BetPawa n’a pas été confirmé est bloqué automatiquement.</p>
+<p class="warning">Les cotes affichées sont celles enregistrées lors de la génération, pas des cotes en direct. Un ticket incomplet, expiré ou dont le lien de cote n’a pas été confirmé est bloqué automatiquement.</p>
 <div id="summary" class="meta">Chargement des tickets…</div>
 <div id="tickets"></div>
 <script>
@@ -75,12 +75,12 @@ function render(data){
    var url=String(l.betpawa_url||"");
    var validUrl=/^https:\/\/(www\.)?betpawa\.cm\/event\/[A-Za-z0-9_-]+(?:\?.*)?$/.test(url);
    return '<div class="leg"><span class="odds">'+money(l.cote)+'</span><div class="teams">'+(i+1)+'. '+esc(l.domicile)+' — '+esc(l.exterieur)+'</div><div class="market">'+esc(l.marche||"Marché non précisé")+'</div><div class="meta">'+esc(l.competition)+' · '+esc(l.date)+' '+esc(l.heure)+'</div>'+
-    (validUrl?'<div class="actions"><a class="btn" href="'+esc(url)+'" target="_blank" rel="noopener">Voir l’événement BetPawa</a></div>':'<div class="warning">Lien BetPawa non confirmé : ticket bloqué.</div>')+
+    (validUrl?'<div class="note">Lien de cote vérifié en interne.</div>':'<div class="warning">Lien de cote non confirmé : ticket bloqué.</div>')+
     '</div>';
   }).join("");
   var errors=(Array.isArray(t.errors)?t.errors:[]);
   var warnings=(Array.isArray(t.warnings)?t.warnings:[]);
-  var decisions=ok&&!decision?'<div class="actions"><button class="primary" data-decision="VALIDATED" data-key="'+esc(key)+'">Valider ce ticket</button><button class="reject" data-decision="REJECTED" data-key="'+esc(key)+'">Rejeter ce ticket</button></div>':decision?'<p class="note">Votre décision est enregistrée sur cet appareil. Elle ne constitue pas une confirmation de pari par BetPawa.</p>':"";
+  var decisions=ok&&!decision?'<div class="actions"><button class="primary" data-decision="VALIDATED" data-key="'+esc(key)+'">Valider ce ticket</button><button class="reject" data-decision="REJECTED" data-key="'+esc(key)+'">Rejeter ce ticket</button></div>':decision?'<p class="note">Votre décision est enregistrée sur cet appareil. Elle ne constitue pas une confirmation de pari auprès d’un opérateur.</p>':"";
   return '<section class="card"><div class="top"><div><span class="status '+statusClass+'">'+esc(shownStatus)+'</span><h2>'+esc(t.scenario||t.ticket_id||"Ticket")+'</h2><div class="meta">'+esc(t.ticket_id||"")+' · '+esc(t.selection_count||0)+' sélection(s)</div></div><div><div class="meta">COTE TOTALE</div><div class="total">'+money(t.total_odds_snapshot)+'</div></div></div>'+
    legs+(errors.length?'<div class="warning">Ticket bloqué : '+esc(errors.join(", "))+'</div>':"")+
    (warnings.length?'<p class="note">À vérifier : '+esc(warnings.join(", "))+'</p>':"")+decisions+'</section>';
