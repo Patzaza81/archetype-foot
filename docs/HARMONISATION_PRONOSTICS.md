@@ -23,7 +23,30 @@ Couche de présentation séparée, chargée **après** `archetype.css` :
 | `tests/test_harmonisation_pronostics.py` | nouveau : périmètre de la couche, aucun masquage, panier exclu, script des drapeaux limité au libellé |
 | `tests/test_barre_commune.py` | adapté : scripts métier identiques et dans le même ordre ; seuls `drapeaux.js` et `af-drapeaux-cartes.js` sont autorisés en plus, après eux |
 
-## Ce qui change à l'écran
+## Présentation façon accueil (13/10, demande de Patrick)
+
+Les cartes reprennent la présentation des lignes de ticket de l'accueil, en CSS seul (grille et `display:contents`), sans modifier le HTML produit par les scripts :
+
+- **En-tête** :
+  - heure et date dans une colonne à gauche ;
+  - à droite : drapeau et compétition en gris, puis les deux équipes en gras.
+- **Onglets** : P1/P2/P3 en pastilles.
+  - Onglet actif : sarcelle.
+  - Onglet disponible : fond clair.
+  - Onglet vide : contour pointillé, texte lisible.
+- **Sélection, carte repliée et dépliée** :
+  - ligne sur fond gris-vert clair ;
+  - marché en sarcelle, cote en gros à droite ;
+  - justification et indice en dessous.
+- **Bandeau** : couleur exacte du bandeau de l'accueil (`#0F2A28`).
+
+Vérifié de nouveau à 390, 414 et 1 280 px, en clair et en nuit :
+
+- **Données** : texte, HTML et cotes identiques ;
+- **Fonctionnement** : 0 erreur, 0 débordement ; onglets, dépliage, détails et mode nuit fonctionnent ;
+- **Noms d'équipe** : 0 nom coupé de 320 à 1 280 px.
+
+## Ce qui change à l'écran (première version)
 
 - Rose (#D94F91) remplacé par le sarcelle de l'accueil (#087F78 / #06645F), fond crème, cartes blanches.
 - Rayons ramenés de 22 px à 14 px (cartes) et de 12–14 px à 10 px (blocs, boutons), ombres plus légères.
