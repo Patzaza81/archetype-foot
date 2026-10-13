@@ -143,3 +143,46 @@ def test_execution_complete_hors_ligne(tmp_path):
     html = page("the_new_saints")
     b = ce.execution("data/archive_test", str(tmp_path / "s.json"), str(tmp_path / "c.json"), fetch=lambda u: html, pause=0, aujourdhui=AUJ)
     assert b["matchs"] == 50 and 0 <= b["evaluables"] <= 50
+
+
+# --- liens d'équipes fournis à la main ------------------------------------------------------------------------------------
+URL = "https://www.matchendirect.fr/equipe/man-city_abc.html"
+
+
+def test_lien_manuel_utilise_quand_l_archive_n_a_pas_de_lien():
+    assert ce.lien_equipe({"url_equipe": None}, "Man City", {"Man City": URL}) == URL
+    assert ce.lien_equipe({}, " Man City ", {"Man City": URL}) == URL
+    assert ce.lien_equipe(None, "Man City", {"Man City": URL}) == URL
+
+
+def test_lien_de_l_archive_garde_la_priorite():
+    assert ce.lien_equipe({"url_equipe": "https://x/archive"}, "Man City", {"Man City": URL}) == "https://x/archive"
+
+
+def test_lien_absent_ou_nom_inconnu_donne_none():
+    assert ce.lien_equipe({}, "PSG", {"Man City": URL}) is None
+    assert ce.lien_equipe({}, None, {"Man City": URL}) is None
+    assert ce.lien_equipe({}, "PSG", {}) is None
+
+
+def test_fichier_de_liens_refuse_les_urls_invalides(tmp_path):
+    import json
+    f = tmp_path / "l.json"
+    f.write_text(json.dumps({"_aide": "texte", "Man City": URL, "PSG": "", "Hearts": "https://autre-site.com/hearts",
+                             "Brann": "http://www.matchendirect.fr/equipe/brann.html", "Dortmund": "n'importe quoi"}))
+    assert ce.lit_liens(str(f)) == {"Man City": URL}
+    assert ce.lit_liens(str(tmp_path / "absent.json")) == {}
+
+
+def test_execution_charge_le_club_dont_le_lien_vient_du_fichier(tmp_path):
+    html = page("the_new_saints")
+    vus = []
+    ce.execution("data/archive_test", str(tmp_path / "s.json"), str(tmp_path / "c.json"),
+                 fetch=lambda u: vus.append(u) or html, pause=0, aujourdhui=AUJ,
+                 liens={"Man City": URL, "PSG": "https://www.matchendirect.fr/equipe/psg_x.html"})
+    assert URL in vus and "https://www.matchendirect.fr/equipe/psg_x.html" in vus
+
+
+def test_diagnostic_rubriques_nationales_dans_meta():
+    r = ce.charge_club("https://x/e.html", "The New Saints", fetch=lambda u: page("the_new_saints"), aujourdhui=AUJ)
+    assert "Cymru Premier" in r["meta"]["rubriques_avec_matchs"] and r["meta"]["rubriques_nationales"]

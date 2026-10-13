@@ -128,7 +128,8 @@ def lit_page_equipe(html, nom_equipe, date_reference=None, saison="courante"):
     else:
         raison = "CHAMPIONNAT_INTROUVABLE"
     return {"europe": _dedoublonne(europe), "championnat": _dedoublonne(championnat), "championnat_titre": titre_champ,
-            "europe_titres": titres_europe, "sans_date": sans_date, "raison_championnat": raison}
+            "europe_titres": titres_europe, "sans_date": sans_date, "raison_championnat": raison,
+            "rubriques_nationales": nationaux, "rubriques_avec_matchs": sorted(candidats)}
 
 
 def _signature(page):
@@ -143,7 +144,8 @@ def charge_club(url_equipe, nom_equipe, fetch=sd.fetch_html, avec_saison_precede
     cur = lit_page_equipe(fetch(url_equipe), nom_equipe, date_reference=aujourdhui, saison=actuelle)
     meta = {"saison_precedente": "non_demandee", "sans_date": cur["sans_date"],
             "championnat_titre": cur["championnat_titre"], "raison_championnat": cur["raison_championnat"],
-            "europe_titres": cur["europe_titres"]}
+            "europe_titres": cur["europe_titres"], "rubriques_nationales": cur.get("rubriques_nationales", []),
+            "rubriques_avec_matchs": cur.get("rubriques_avec_matchs", [])}
     europe, champ = list(cur["europe"]), list(cur["championnat"])
     if avec_saison_precedente:
         fin = datetime.date(int(precedente[-4:]), *SAISON_PRECEDENTE_FIN)   # les « JJ/MM » sont lus avant cette date
@@ -216,10 +218,29 @@ def matchs_europeens(enregs, inclure_joues=False):
     return [e for e in enregs if competition_europeenne(e.get("competition"))]
 
 
+FICHIER_LIENS = "data/europe/liens_equipes.json"
+
+
+def lit_liens(chemin=FICHIER_LIENS):
+    """{nom d'équipe: url Matchendirect} fournis à la main pour les clubs dont l'archive n'a pas le lien.
+    Un nom absent ou une url vide est ignoré ; l'archive garde la priorité si elle a déjà le lien."""
+    if not chemin or not os.path.exists(chemin):
+        return {}
+    with open(chemin, encoding="utf-8") as f:
+        brut = json.load(f)
+    return {str(nom).strip(): str(url).strip() for nom, url in brut.items()
+            if not str(nom).startswith("_") and str(url or "").strip().startswith("https://www.matchendirect.fr/equipe/")}
+
+
+def lien_equipe(equipe_archive, nom, liens):
+    return (equipe_archive or {}).get("url_equipe") or (liens or {}).get(str(nom or "").strip())
+
+
 def execution(archive="data/archive_test", sortie="data/europe/entrees_europe.json", cache="data/europe/cache_clubs.json",
-              fetch=sd.fetch_html, pause=1.0, aujourdhui=None, inclure_joues=False):
+              fetch=sd.fetch_html, pause=1.0, aujourdhui=None, inclure_joues=False, liens=None):
     aujourdhui = aujourdhui or datetime.date.today()
     jour = aujourdhui.isoformat()
+    liens = lit_liens() if liens is None else liens
     cache_donnees = {}
     if os.path.exists(cache):
         with open(cache, encoding="utf-8") as f:
@@ -242,7 +263,8 @@ def execution(archive="data/archive_test", sortie="data/europe/entrees_europe.js
     sorties = []
     for e in matchs_europeens(lit_archive(archive), inclure_joues):
         dom, ext = e.get("equipe_dom") or {}, e.get("equipe_ext") or {}
-        hd, he = club(dom.get("url_equipe"), e.get("domicile")), club(ext.get("url_equipe"), e.get("exterieur"))
+        hd = club(lien_equipe(dom, e.get("domicile"), liens), e.get("domicile"))
+        he = club(lien_equipe(ext, e.get("exterieur"), liens), e.get("exterieur"))
         entree, n = construit_entree_europe(e, hd, he)
         sorties.append({"match_id": e.get("match_id"), "date": e.get("date"), "competition_code": competition_europeenne(e.get("competition")),
                         "domicile": e.get("domicile"), "exterieur": e.get("exterieur"), "couverture": n, "score": e.get("score"),
