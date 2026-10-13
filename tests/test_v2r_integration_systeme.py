@@ -41,9 +41,12 @@ def test_tache_nocturne_appelle_v2r_dans_un_try():
     assert src.index("archive_donnees_test.execution_nocturne()") < i      # après l'archive dont v2r lit les données
 
 
-def test_fichier_publie_a_les_champs_lus_par_la_page():
+def test_fichier_publie_a_les_champs_lus_par_la_page(tmp_path):
+    import datetime
     import json
-    d = json.load(open(RACINE / "data" / "v2r" / "pronostics_v2r.json"))
+    from moteur_v2r.donnees import charge
+    X.execute(charge(str(RACINE), a_venir=True), str(tmp_path), datetime.datetime.now(datetime.timezone.utc))
+    d = json.load(open(tmp_path / "pronostics_v2r.json"))
     for k in ("statut", "bilan", "regles_version", "regles_cellules", "a_venir", "en_cours", "reglees", "genere_le"):
         assert k in d, k
     for l in d["a_venir"]:
