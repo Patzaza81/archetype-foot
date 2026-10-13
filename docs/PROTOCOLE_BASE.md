@@ -1,8 +1,9 @@
-# Protocole BASE / SUPER BASE — version 2
+# Protocole BASE / SUPER BASE — version 3
 
 - **Version 1** : commit `92d708a`, 12/10/2026 à 23 h 46 UTC. Elle déclare l'hypothèse H1 et fixe les tranches de cote. **Ces deux éléments sont inchangés en version 2.**
 - **Version 2** : 13/10/2026. Corrections demandées par la première revue (§ 13). Seules les règles de méthode et de décision changent. Aucun résultat de la période de test (matchs à partir du 13/10, 0 h UTC) n'a été consulté pour écrire cette version.
-- **Statut** : PROJET, en seconde revue. Aucun code n'est écrit avant validation explicite.
+- **Version 3** : 13/10/2026. Correction ciblée de la règle de décision de B0 (§ 9.2, 9.3, 9.5) et de la méthode d'intervalle (§ 7), demandée par la seconde revue. Rien d'autre ne change. Aucun résultat de la période de test n'a été consulté.
+- **Statut** : PROJET, en validation finale. Aucun code n'est écrit avant validation explicite.
 - **Périmètre** : couche d'analyse en lecture seule. Elle ne modifie ni V2.6.10, ni V3, ni le Journal, ni les indices existants, ni `main`. La future implémentation reste sur sa branche dédiée et n'écrit que dans `data/base/`.
 
 ## 1. Principe
@@ -147,7 +148,7 @@ Ces configurations sont **exploratoires**. Elles ne peuvent jamais recevoir le s
 |---|---|
 | Matchs | matchs distincts admis et réglés |
 | ROI (mesure principale) | (Σ gains − Σ mises) ÷ Σ mises ; mise fixe de 1 ; cote réelle de chaque pari |
-| Intervalle du ROI | bootstrap par jour de match (10 000 tirages, graine fixe), parce que les matchs d'un même jour ne sont pas indépendants |
+| Intervalle du ROI | deux méthodes, toutes deux regroupées par jour de match parce que les matchs d'un même jour ne sont pas indépendants : (1) bootstrap par jour, percentile, 100 000 tirages, graine fixe ; (2) intervalle de Student par grappes (estimateur ratio, erreur type par linéarisation, loi de Student à J − 1 degrés de liberté, J = nombre de jours). Voir § 9.5 pour leur usage et leurs limites |
 | Réussite | gagnés ÷ réglés, intervalle de Wilson |
 | Probabilité implicite brute moyenne | moyenne de 1 ÷ cote |
 | Marge du marché | moyenne de (1 ÷ cote moins + 1 ÷ cote plus − 1), information seulement |
@@ -175,31 +176,63 @@ Un filtre qui gagne la comparaison générale mais pas celle à population égal
 ### 9.2 Points de contrôle de B0 (fixés à l'avance)
 
 - Un point de contrôle ne porte que sur les matchs joués **au moins 7 jours avant** le calcul. Les matchs plus récents, qui n'ont pas encore eu le temps de recevoir leur score, n'y entrent pas.
-- **C1** : B0 atteint 300 matchs admis et réglés dans cette fenêtre.
-- **C2** : B0 atteint 600 matchs admis et réglés dans cette fenêtre.
-- Ordre de grandeur : environ 550 à 600 matchs par mois dans H1 d'après l'archive. C1 vers fin octobre, C2 vers mi-novembre. Ce n'est pas une promesse.
+- **C1** : B0 atteint **300 matchs** admis et réglés **et 20 jours de matchs distincts** dans cette fenêtre.
+- **C2** : B0 atteint **600 matchs** admis et réglés **et 40 jours de matchs distincts** dans cette fenêtre.
+- Les minimums de jours sont nouveaux en version 3 : les intervalles regroupés par jour ne sont fiables qu'avec assez de jours (§ 9.5).
+- Ordre de grandeur : environ 19 matchs admis par jour de match dans H1 d'après l'archive. C1 vers le 10 novembre, C2 vers le 1er décembre (fenêtre de 7 jours comprise). Ce n'est pas une promesse.
 - Un statut ne change qu'à un point de contrôle. Les tableaux peuvent être consultés à tout moment, mais s'arrêter au premier bon chiffre fausserait le test.
 
 ### 9.3 Statuts de B0 (hypothèse principale)
 
-Intervalles **à 99 % à chaque point de contrôle**. Avec deux points de contrôle, le risque total de déclarer VALIDÉ une zone qui ne l'est pas reste au plus de 1 %.
+**Correction de la version 2** : la v2 affirmait qu'avec des intervalles à 99 % aux deux contrôles, le risque global restait au plus de 1 %. Cette garantie n'était pas établie : elle supposait des intervalles à couverture exacte, ce que le bootstrap par jour ne fournit pas avec peu de jours (§ 9.5). La règle est remplacée par la suivante.
+
+**Règle** : à chacun des deux contrôles, intervalles **à 99,5 %** (bilatéraux), calculés par les **deux** méthodes du § 7.
+- VALIDÉ exige que les deux bornes basses soient > 0 ;
+- DÉFAVORABLE exige que les deux bornes hautes soient < 0.
+
+**Correction du risque global (Bonferroni)** : chaque contrôle admet au plus 0,25 % de risque de VALIDÉ à tort et 0,25 % de DÉFAVORABLE à tort. Sur deux contrôles, la somme de ces risques donne au plus 0,5 % pour un VALIDÉ à tort, et au plus 1 % pour une conclusion fausse dans un sens ou dans l'autre. Cette somme reste valable même si les deux contrôles sont liés (C2 contient les matchs de C1). Elle suppose que chaque intervalle atteint sa couverture annoncée : c'est l'objet du § 9.5.
 
 | Statut | Condition |
 |---|---|
 | NON ÉVALUÉ | moins de 150 matchs réglés ou moins de 21 jours |
 | EN COURS | assez de matchs pour afficher, point de contrôle pas encore atteint |
 | NON CONCLUANT | le contrôle de sensibilité (§ 4.3) change la conclusion, ou plus de 5 % des matchs admis de la fenêtre sont sans résultat (`SUSPENDU` ou `RESULTAT_MANQUANT`) |
-| DÉFAVORABLE | borne haute du ROI à 99 % < 0 |
+| DÉFAVORABLE | bornes hautes à 99,5 % < 0 par les deux méthodes |
 | NEUTRE | ni DÉFAVORABLE ni VALIDÉ |
-| **VALIDÉ** | borne basse du ROI à 99 % > 0 |
+| **VALIDÉ** | bornes basses à 99,5 % > 0 par les deux méthodes |
 
-Un statut VALIDÉ n'est pas une garantie. Il redevient NEUTRE si le point de contrôle suivant ne le confirme pas.
+Un statut VALIDÉ n'est pas une garantie. Il redevient NEUTRE si le point de contrôle suivant ne le confirme pas. Il n'existe que deux contrôles : aucun troisième contrôle ne peut être ajouté sans nouvelle version du protocole et nouvelle correction du risque.
 
 ### 9.4 Statuts de B1 à B4 (exploration)
 
 - Intervalles affichés à 95 %, sans correction : ils servent à repérer des pistes, pas à décider.
 - Statuts possibles : NON ÉVALUÉ, EN COURS, **SIGNAL EXPLORATOIRE** (ROI > 0 et les deux comparaisons du § 8 positives), SANS SIGNAL.
 - Un SIGNAL EXPLORATOIRE n'autorise rien : il justifie seulement de déclarer la configuration comme hypothèse principale dans une version suivante.
+
+### 9.5 Méthode d'intervalle : vérification et limites
+
+**Vérification par simulation (13/10/2026, script hors dépôt, à reproduire par l'implémentation)** :
+- Hypothèse simulée : ROI réel nul. Chaque pari gagne avec une probabilité de 1 ÷ cote. Les cotes sont tirées dans la distribution réelle de H1 avant le test. Le nombre de matchs par jour suit une loi de Poisson de moyenne 19,5. Les jours sont indépendants.
+- Mesure : part des simulations où la règle déclare VALIDÉ à l'un des deux contrôles. Cible : au plus 0,5 %.
+
+| Jours aux contrôles | Bootstrap seul | Student par grappes seul | Les deux (règle retenue) | Simulations |
+|---|---|---|---|---|
+| 16 et 32 | 1,88 % | 0,85 % | 0,85 % | 6 000 |
+| **20 et 40** | 1,45 % | 0,53 % | **0,53 %** | 6 000 |
+
+À titre de comparaison, la règle de la v2 (99 % aux deux contrôles), avec le bootstrap seul, donnait 2,9 % de VALIDÉ à tort pour une garantie annoncée de 1 % (16 et 32 jours, 3 000 simulations).
+
+**Conclusions** :
+- Le bootstrap percentile par jour **sous-estime l'incertitude** avec 16 à 40 jours : seul, il ne tient pas la cible. Il est gardé comme seconde condition et pour l'affichage, jamais comme seul critère.
+- L'intervalle de Student par grappes tient la cible à 20 et 40 jours (0,53 %, avec une erreur de simulation d'environ ± 0,1 point). D'où les minimums de jours du § 9.2.
+
+**Puissance (même simulation, contrôles à 16 et 32 jours)** : si le ROI réel était de +5 %, la règle conclurait VALIDÉ dans environ 30 % des cas ; à +3 %, dans environ 8 %. Un avantage réel modeste a donc de grandes chances de rester NEUTRE. **NEUTRE ne veut pas dire « pas d'avantage »**, seulement « avantage non démontré ».
+
+**Limites qui restent** :
+- Les jours sont supposés indépendants. Une dépendance d'une semaine à l'autre (même championnat, même tendance) rendrait les intervalles trop étroits.
+- La simulation suppose un ROI réel constant dans le temps.
+- Les intervalles de Student reposent sur une approximation normale. Elle est raisonnable ici parce que le gain d'un pari est borné (entre −1 et +0,39 dans H1), mais elle n'est pas exacte.
+- L'erreur de simulation (environ ± 0,1 point à 0,5 %) ne permet pas d'affirmer que le risque est strictement sous 0,5 %. Elle permet d'affirmer qu'il en est proche.
 
 ## 10. État de départ reproduit depuis les archives (description seulement)
 
@@ -262,7 +295,7 @@ Aucun indice n'est un critère SUPER BASE au départ. Un indice ne peut le deven
 1. Sa version est figée et déclarée dans une nouvelle version de ce protocole, avant le test.
 2. Il est calculable avant le match pour tous les matchs de la BASE parente, pas seulement pour les sélections.
 3. Sa BASE parente est VALIDÉE.
-4. Sur les matchs postérieurs à sa déclaration, le sous-ensemble filtré par l'indice bat sa BASE parente **à population égale** (§ 8) : borne basse à 99 % de l'écart de ROI > 0.
+4. Sur les matchs postérieurs à sa déclaration, le sous-ensemble filtré par l'indice bat sa BASE parente **à population égale** (§ 8) : écart de ROI positif selon la règle du § 9.3 (deux méthodes, 99,5 %, au plus deux contrôles fixés à l'avance avec minimums de jours).
 
 Tant que ces conditions ne sont pas remplies, l'indice reste affiché comme information, avec le statut NON ÉVALUÉ.
 
@@ -284,7 +317,8 @@ Tant que ces conditions ne sont pas remplies, l'indice reste affiché comme info
   - le registre d'empreintes : ajout seul, et détection d'une modification ;
   - un statut ne change qu'à un point de contrôle ;
   - le contrôle de sensibilité ;
-  - la reproduction des chiffres du § 10.
+  - la reproduction des chiffres du § 10 ;
+  - la simulation du § 9.5 (même tableau, à l'erreur de simulation près).
 - **Pas de workflow programmé** : GitHub ne lance les tâches programmées que depuis la branche principale, et cette branche ne doit pas changer. Le calcul est relancé à la demande ; la traçabilité repose sur l'historique Git (§ 5).
 - **Aucune page du site** avant le point de contrôle C1.
 
@@ -299,6 +333,12 @@ Tant que ces conditions ne sont pas remplies, l'indice reste affiché comme info
 | 5. Seuil de 150 matchs | seuil d'affichage seulement ; décision par les intervalles | § 9.1 |
 | 6. Résultats manquants | 5 statuts distincts, aucune perte par défaut, contrôle de sensibilité | § 4.3 |
 | 7. Reproduction des chiffres | refaite depuis les archives, écarts documentés | § 10 |
+
+### Correction apportée en version 3
+
+| Point de la revue | Correction | Section |
+|---|---|---|
+| Risque global faux en v2 | 99,5 % à chaque contrôle, Bonferroni explicite, deux méthodes d'intervalle exigées, minimums de 20 et 40 jours, vérification par simulation et limites | § 7, 9.2, 9.3, 9.5, 11.2 |
 
 ## 14. Ce que ce protocole ne permet pas d'affirmer
 
