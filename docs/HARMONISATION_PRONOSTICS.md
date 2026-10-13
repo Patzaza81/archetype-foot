@@ -63,9 +63,10 @@ Elles se trouvent dans `docs/apercus/harmonisation/` :
 
 ## Défauts restants (non corrigés, préexistants)
 
-- À 390 px, un nom d'équipe long est coupé au milieu du mot (« Bandirmaspo / r »).
-  - C'était déjà le cas avant ; la règle `overflow-wrap:anywhere` vient de `archetype.css`.
-  - Pour corriger, il faut réduire la police du nom ou couper le nom ; ce choix est à valider.
+- ~~Noms d'équipe coupés au milieu d'un mot~~ : **corrigé**. La cause était commune aux deux couches : colonne horaire fixe de 84 px et nom à 17 px.
+  - Mesure avant correction : à 360 px, jusqu'à 13 noms coupés sur 138 en V2 (14 avec la couche `ax-accueil-theme.css`) et 3 sur 40 en V3. À 390 px : 5 en V2, 1 en V3.
+  - Correction, téléphone uniquement : horaire à 58 px, marges réduites, taille du nom proportionnelle à l'écran (14 à 17 px), `overflow-wrap:break-word`.
+  - Résultat mesuré : 0 nom coupé à 360, 390, 414 et 1 280 px, cartes repliées et dépliées. L'heure reste sur une ligne et aucun texte n'est masqué.
 - `systeme.html` déborde de 10 px à 390 px. `betpawa-validation.html` et `presentation-site.html` n'ont pas de mode nuit.
 - Huit pages basées sur `theme.js` n'ont pas encore la barre commune.
 - Le drapeau anglais, écossais ou gallois (séquence d'étiquettes) peut s'afficher comme un drapeau noir sur certains anciens Android ou Windows 10.

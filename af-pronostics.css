@@ -75,3 +75,16 @@ body:is(.af-v2,.af-v3).theme-nuit .ax-carte{
 
 /* Drapeau du pays du championnat (inséré par af-drapeaux-cartes.js, jamais celui d'une équipe) */
 :is(.af-v2,.af-v3) .af-drapeau{display:inline-block;margin-right:5px;font-size:13px;line-height:1;vertical-align:-1px}
+
+/* Noms d'équipe : jamais coupés au milieu d'un mot sur téléphone.
+   Cause : colonne horaire fixe (84 px) + nom à 17 px → « Middlesbrough » ne tenait pas dans sa colonne.
+   Correction : horaire plus étroit, écarts réduits, taille du nom proportionnelle à l'écran (14–17 px).
+   Rien n'est masqué ni tronqué : un nom plus long que tout l'espace disponible passe à la ligne (break-word). */
+@media (max-width:599px){
+  :is(.af-v2,.af-v3) .ax-carte .ax-match{padding-left:12px;padding-right:12px}
+  :is(.af-v2,.af-v3) .ax-carte .ax-ligne-match{gap:6px}
+  :is(.af-v2,.af-v3) .ax-carte .ax-horaire{min-width:58px}
+  :is(.af-v2,.af-v3) .ax-carte .ax-equipe{font-size:clamp(14px,4.15vw,17px);overflow-wrap:break-word;hyphens:manual}
+  :is(.af-v2,.af-v3) .ax-carte.ax-replie .ax-equipe{font-size:clamp(14px,3.95vw,15.5px)}
+  :is(.af-v2,.af-v3) .ax-carte.ax-replie .ax-horaire{min-width:58px}
+}
