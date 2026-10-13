@@ -79,6 +79,8 @@ body.theme-nuit .hero{background:linear-gradient(110deg,var(--surface) 0 60%,tra
 .match .ligne1 b{color:var(--texte);margin-right:8px}
 .match .equipes{font-weight:700;overflow-wrap:anywhere}
 .match .plus{font-size:12px;color:var(--doux)}
+.jours{display:inline-block;margin-bottom:3px;padding:1px 8px;border-radius:999px;background:var(--surface-2);color:var(--accent);font-size:11.5px;font-weight:700}
+.jours.auj{background:var(--accent);color:#fff}
 .cote small{display:block;font-size:11px;color:var(--doux)}
 .cote b{font-size:20px}
 .voir{padding:9px 12px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;font-weight:700;font-size:13px;text-decoration:none;white-space:nowrap}
@@ -106,7 +108,7 @@ body.theme-nuit .hero{background:linear-gradient(110deg,var(--surface) 0 60%,tra
 .bandeau .conteneur{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:24px;align-items:center}
 .citation{font-size:19px;font-weight:600;line-height:1.35;margin:0}
 .citation small{display:block;margin-top:8px;font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--af-gold-light)}
-.piliers{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;text-align:center}
+.piliers{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;text-align:center}
 .piliers b{display:block;font-size:14px;margin-bottom:3px}
 .piliers span{font-size:12px;color:#B9CFCB}
 footer{background:#0A1E1C;color:#B9CFCB;padding-block:20px calc(20px + env(safe-area-inset-bottom));font-size:13px}
@@ -165,9 +167,9 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer a{text-decoration:non
     <div>
       <div class="surtitre">Analyses · Statistiques · Résultats publiés</div>
       <h1>Des analyses chiffrées, <em>des résultats vérifiables</em></h1>
-      <p class="intro">ARCHETYPE Foot analyse chaque jour les matchs cotés sur BetPawa, propose des tickets et publie ensuite le résultat de chaque pari, gagné ou perdu. Vous décidez seul de jouer.</p>
+      <p class="intro">ARCHETYPE Foot analyse chaque jour les matchs cotés sur BetPawa avec des modèles statistiques, sans intelligence artificielle. Il propose des tickets, puis publie le résultat de chaque pari, gagné ou perdu. Vous décidez seul de jouer.</p>
       <div class="boutons">
-        <a class="btn plein" href="tickets.html">Voir les tickets du jour</a>
+        <a class="btn plein" href="tickets.html">Voir les tickets</a>
         <a class="btn vide" href="#methode">Découvrir la méthode</a>
       </div>
       <div class="chiffres" id="chiffres" aria-live="polite">
@@ -192,9 +194,10 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer a{text-decoration:non
 
 <main class="conteneur grille">
   <section class="carte" aria-labelledby="titre-tickets">
-    <div class="entete"><h2 id="titre-tickets">Les tickets du jour</h2><span class="date" id="date-jour"></span></div>
+    <div class="entete"><h2 id="titre-tickets">Les tickets proposés</h2><span class="date" id="date-jour"></span></div>
     <div class="onglets"><span class="onglet">Football</span><span class="onglet-note">Seul sport analysé aujourd'hui</span></div>
     <div id="liste-tickets"><div class="vide-etat">Chargement des tickets…</div></div>
+    <p class="note">Chaque ticket peut regrouper des matchs de plusieurs jours : la date de chaque ticket est indiquée.</p>
     <a class="lien-tous" href="tickets.html">Voir tous les tickets et composer le vôtre →</a>
   </section>
 
@@ -211,7 +214,10 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer a{text-decoration:non
       <dl class="details" id="details">
         <dt>Nombre de sélections</dt><dd class="num" id="d-n">—</dd>
         <dt>Cote globale</dt><dd class="num" id="d-cote">—</dd>
-        <dt>Gain si gagnant, pour 1 000 FCFA misés</dt><dd class="num" id="d-gain">—</dd>
+        <dt>Matchs joués</dt><dd class="num" id="d-dates">—</dd>
+        <dt>Retour total si gagnant (mise de 1 000 FCFA comprise)</dt><dd class="num" id="d-gain">—</dd>
+        <dt>Bénéfice net si gagnant</dt><dd class="num" id="d-net">—</dd>
+        <dt>Si perdant</dt><dd class="num">− 1 000 FCFA</dd>
         <dt>Statut</dt><dd><span class="statut">En attente</span></dd>
       </dl>
       <div class="bloc-legal"><span aria-hidden="true">⚠</span><span>Un ticket combiné est perdu dès qu'une sélection est perdue. Ne misez que ce que vous pouvez perdre. Réservé aux 18 ans et plus.</span></div>
@@ -235,6 +241,7 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer a{text-decoration:non
   <div class="conteneur">
     <p class="citation">« L'analyse n'est pas une garantie : elle sert à décider en connaissance de cause. »<small>ARCHETYPE FOOT</small></p>
     <div class="piliers">
+      <div><b>Sans IA</b><span>Modèles statistiques, aucune intelligence artificielle dans les calculs</span></div>
       <div><b>Données réelles</b><span>Cotes BetPawa et scores relevés chaque jour</span></div>
       <div><b>Résultats publiés</b><span>Pertes comprises, rien n'est effacé</span></div>
       <div><b>Méthode testée</b><span>Chaque règle est mesurée sur des matchs passés</span></div>
@@ -278,6 +285,15 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer a{text-decoration:non
     try { return typeof traduitMarche === "function" ? traduitMarche(x.marche, {domicile: x.domicile, exterieur: x.exterieur}) : x.marche; }
     catch (e) { return x.marche; }
   }
+  var JOUR_PRESENT = null;
+  function jourCourt(iso){ return new Date(iso + "T12:00:00").toLocaleDateString("fr-FR", {weekday:"short", day:"numeric", month:"numeric"}); }
+  function dates(t){ return (t.selection || []).map(function(x){ return x.date; }).filter(Boolean).sort(); }
+  function libelleDates(t){
+    var d = dates(t); if (!d.length) return "";
+    var a = d[0], b = d[d.length - 1];
+    if (a === b) return a === JOUR_PRESENT ? "Aujourd'hui" : jourCourt(a);
+    return jourCourt(a) + " → " + jourCourt(b);
+  }
   var NOMS = {PRUDENT_2:"Prudent", PRUDENT_3:"Prudent", EQUILIBRE_4:"Équilibré", EQUILIBRE_5:"Équilibré", EQUILIBRE_8:"Équilibré", OBJECTIF_COTE_10:"Objectif cote 10"};
 
   // Chiffres du bandeau : réussite RÉELLEMENT observée (paris réglés), jamais une probabilité de modèle.
@@ -300,18 +316,28 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer a{text-decoration:non
     var m = t.metrics || {}, n = (t.selection || []).length, c = m.cote_totale;
     texte("d-n", n || "—");
     texte("d-cote", c ? fr.format(c) : "—");
+    texte("d-dates", libelleDates(t) || "—");
     texte("d-gain", c ? entier.format(Math.round(c * 1000)) + " FCFA" : "—");
+    texte("d-net", c ? "+ " + entier.format(Math.round((c - 1) * 1000)) + " FCFA" : "—");
     Array.prototype.forEach.call(liste.querySelectorAll(".ticket"), function(el){ el.setAttribute("aria-selected", el.dataset.cle === t.scenario ? "true" : "false"); });
   }
   fetch("data/tickets.json", {cache: "no-store"}).then(function(r){ return r.json(); }).then(function(d){
-    if (d.jour_present) texte("date-jour", new Date(d.jour_present + "T12:00:00").toLocaleDateString("fr-FR", {weekday:"long", day:"numeric", month:"long", year:"numeric"}));
+    JOUR_PRESENT = d.jour_present || null;
     var tickets = (d.scenarios || []).filter(function(t){ return t.statut === "OK" && (t.selection || []).length; });
+    // Les tickets couvrent plusieurs jours (plage du générateur) : on affiche la période réelle, jamais « du jour ».
+    var toutes = [].concat.apply([], tickets.map(dates)).sort();
+    if (toutes.length) {
+      var j1 = toutes[0], j2 = toutes[toutes.length - 1];
+      texte("date-jour", j1 === j2 ? "Matchs du " + jourCourt(j1) : "Matchs du " + jourCourt(j1) + " au " + jourCourt(j2));
+    }
+    tickets.sort(function(a, b){ var x = dates(a)[0] || "", y = dates(b)[0] || ""; return x < y ? -1 : x > y ? 1 : 0; });
     if (!tickets.length) { liste.innerHTML = '<div class="vide-etat">Aucun ticket aujourd\'hui : le générateur ne force jamais un ticket quand les paris manquent.</div>'; return; }
     liste.innerHTML = tickets.map(function(t){
-      var sel = t.selection, p = sel[0], c = (t.metrics || {}).cote_totale;
+      var sel = t.selection.slice().sort(function(a, b){ return (a.date + (a.heure || "")) < (b.date + (b.heure || "")) ? -1 : 1; }), p = sel[0], c = (t.metrics || {}).cote_totale;
       return '<div class="ticket" role="button" tabindex="0" data-cle="' + echappe(t.scenario) + '">' +
         '<div class="badge"><b class="num">' + sel.length + '</b><small>' + (sel.length > 1 ? "sélections" : "sélection") + '</small></div>' +
-        '<div class="match"><div class="ligne1"><b class="num">' + echappe(p.heure || "") + '</b>' + echappe(NOMS[t.scenario] || t.scenario) + ' · ' + echappe(p.competition || "") + '</div>' +
+        '<div class="match"><span class="jours' + (libelleDates(t) === "Aujourd'hui" ? " auj" : "") + '">' + echappe(libelleDates(t)) + '</span>' +
+        '<div class="ligne1"><b class="num">' + echappe(jourCourt(p.date)) + ' ' + echappe(p.heure || "") + '</b>' + echappe(NOMS[t.scenario] || t.scenario) + ' · ' + echappe(p.competition || "") + '</div>' +
         '<div class="equipes">' + echappe(p.domicile) + ' – ' + echappe(p.exterieur) + '</div>' +
         '<div class="plus">' + echappe(marche(p)) + (sel.length > 1 ? " · + " + (sel.length - 1) + " autre" + (sel.length > 2 ? "s" : "") + " match" + (sel.length > 2 ? "s" : "") : "") + '</div></div>' +
         '<div class="cote"><small>Cote globale</small><b class="num">' + (c ? fr.format(c) : "—") + '</b></div>' +
