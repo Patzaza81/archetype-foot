@@ -69,7 +69,19 @@ body.theme-nuit .hero{background:linear-gradient(110deg,var(--surface) 0 60%,tra
 .onglets{display:flex;gap:8px;margin:14px 0 6px}
 .onglet{padding:7px 14px;border-radius:999px;font-size:13px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff}
 .onglet-note{font-size:12px;color:var(--doux);align-self:center}
-.ticket{display:grid;grid-template-columns:62px minmax(0,1fr) auto auto;gap:14px;align-items:center;padding:14px 0;border-top:1px solid var(--ligne);cursor:pointer}
+.ticket{padding:14px 0;border-top:1px solid var(--ligne);cursor:pointer}
+.tete{display:grid;grid-template-columns:62px minmax(0,1fr) auto auto;gap:14px;align-items:center}
+.titre-ticket{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:0}
+.titre-ticket b{font-size:16px}
+.selections{list-style:none;margin:10px 0 0 76px;padding:0;display:grid;gap:8px}
+.sel{display:grid;grid-template-columns:62px minmax(0,1fr) auto;gap:10px;align-items:start;padding:8px 10px;border-radius:9px;background:var(--surface-2)}
+.quand{font-size:12px;font-weight:700;line-height:1.35}
+.quoi{display:flex;flex-direction:column;min-width:0}
+.comp{font-size:12px;color:var(--doux);overflow-wrap:anywhere}
+.drapeau{margin-right:5px;font-size:14px}
+.sel .equipes{font-weight:700;font-size:14px;overflow-wrap:anywhere}
+.pari{font-size:12.5px;color:var(--accent)}
+.cote-sel{font-weight:700;font-size:14px}
 .ticket[aria-selected="true"] .badge{outline:2px solid var(--accent)}
 .badge{border-radius:10px;background:var(--surface-2);text-align:center;padding:7px 4px}
 .badge b{display:block;font-size:18px;color:var(--accent)}
@@ -131,8 +143,10 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer a{text-decoration:non
   .nav{order:3;flex-basis:100%}
   .actions{margin-left:auto}
   .chiffres{grid-template-columns:1fr}
-  .ticket{grid-template-columns:54px minmax(0,1fr) auto}
-  .ticket .voir{display:none}
+  .tete{grid-template-columns:54px minmax(0,1fr) auto}
+  .tete .voir{display:none}
+  .selections{margin-left:0}
+  .sel{grid-template-columns:52px minmax(0,1fr) auto}
   .etapes ol{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
@@ -197,7 +211,7 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer a{text-decoration:non
     <div class="entete"><h2 id="titre-tickets">Les tickets proposés</h2><span class="date" id="date-jour"></span></div>
     <div class="onglets"><span class="onglet">Football</span><span class="onglet-note">Seul sport analysé aujourd'hui</span></div>
     <div id="liste-tickets"><div class="vide-etat">Chargement des tickets…</div></div>
-    <p class="note">Chaque ticket peut regrouper des matchs de plusieurs jours : la date de chaque ticket est indiquée.</p>
+    <p class="note">Un ticket peut regrouper des matchs de plusieurs jours : chaque sélection indique sa date et son heure. Le drapeau est celui du pays du championnat, pas celui des équipes.</p>
     <a class="lien-tous" href="tickets.html">Voir tous les tickets et composer le vôtre →</a>
   </section>
 
@@ -259,6 +273,7 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer a{text-decoration:non
 </footer>
 
 <script src="traduction_marches.js"></script>
+<script src="drapeaux.js"></script>
 <script>
 (function(){
   "use strict";
@@ -333,15 +348,23 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer a{text-decoration:non
     tickets.sort(function(a, b){ var x = dates(a)[0] || "", y = dates(b)[0] || ""; return x < y ? -1 : x > y ? 1 : 0; });
     if (!tickets.length) { liste.innerHTML = '<div class="vide-etat">Aucun ticket aujourd\'hui : le générateur ne force jamais un ticket quand les paris manquent.</div>'; return; }
     liste.innerHTML = tickets.map(function(t){
-      var sel = t.selection.slice().sort(function(a, b){ return (a.date + (a.heure || "")) < (b.date + (b.heure || "")) ? -1 : 1; }), p = sel[0], c = (t.metrics || {}).cote_totale;
+      var sel = t.selection.slice().sort(function(a, b){ return (a.date + (a.heure || "")) < (b.date + (b.heure || "")) ? -1 : 1; }), c = (t.metrics || {}).cote_totale;
+      // Toutes les sélections sont listées, chacune avec sa date, son heure et le drapeau du pays de SON championnat.
+      var lignes = sel.map(function(x){
+        var dr = typeof drapeauCompetition === "function" ? drapeauCompetition(x.competition) : {symbole: ""};
+        var nomComp = String(x.competition || "").replace(/\s+/g, " ").trim();
+        return '<li class="sel"><span class="quand num">' + echappe(jourCourt(x.date)) + '<br>' + echappe(x.heure || "") + '</span>' +
+          '<span class="quoi"><span class="comp">' + (dr.symbole ? '<span class="drapeau" role="img" aria-label="' + echappe(dr.pays) + '">' + dr.symbole + '</span>' : '') + echappe(nomComp) + '</span>' +
+          '<span class="equipes">' + echappe(x.domicile) + ' – ' + echappe(x.exterieur) + '</span>' +
+          '<span class="pari">' + echappe(marche(x)) + '</span></span>' +
+          '<span class="cote-sel num">' + (x.cote ? fr.format(x.cote) : "—") + '</span></li>';
+      }).join("");
       return '<div class="ticket" role="button" tabindex="0" data-cle="' + echappe(t.scenario) + '">' +
-        '<div class="badge"><b class="num">' + sel.length + '</b><small>' + (sel.length > 1 ? "sélections" : "sélection") + '</small></div>' +
-        '<div class="match"><span class="jours' + (libelleDates(t) === "Aujourd'hui" ? " auj" : "") + '">' + echappe(libelleDates(t)) + '</span>' +
-        '<div class="ligne1"><b class="num">' + echappe(jourCourt(p.date)) + ' ' + echappe(p.heure || "") + '</b>' + echappe(NOMS[t.scenario] || t.scenario) + ' · ' + echappe(p.competition || "") + '</div>' +
-        '<div class="equipes">' + echappe(p.domicile) + ' – ' + echappe(p.exterieur) + '</div>' +
-        '<div class="plus">' + echappe(marche(p)) + (sel.length > 1 ? " · + " + (sel.length - 1) + " autre" + (sel.length > 2 ? "s" : "") + " match" + (sel.length > 2 ? "s" : "") : "") + '</div></div>' +
+        '<div class="tete"><div class="badge"><b class="num">' + sel.length + '</b><small>' + (sel.length > 1 ? "sélections" : "sélection") + '</small></div>' +
+        '<div class="titre-ticket"><b>' + echappe(NOMS[t.scenario] || t.scenario) + '</b><span class="jours' + (libelleDates(t) === "Aujourd'hui" ? " auj" : "") + '">' + echappe(libelleDates(t)) + '</span></div>' +
         '<div class="cote"><small>Cote globale</small><b class="num">' + (c ? fr.format(c) : "—") + '</b></div>' +
-        '<a class="voir" href="tickets.html">Voir le ticket →</a></div>';
+        '<a class="voir" href="tickets.html">Voir le ticket →</a></div>' +
+        '<ol class="selections">' + lignes + '</ol></div>';
     }).join("");
     Array.prototype.forEach.call(liste.querySelectorAll(".ticket"), function(el, i){
       function choisit(e){ if (e.target.closest("a")) return; details(tickets[i]); }
