@@ -52,3 +52,12 @@ Chaîne : `python collecte_europe.py --inclure-joues` puis `python calibration_e
 - Test hors ligne sur l'archive réelle (pages simulées) : 50 matchs lus, 0 évaluable, calibration `ECHANTILLON_INSUFFISANT`. La chaîne tourne ; la couverture réelle reste à mesurer avec Matchendirect.
 
 Limite repérée : `precalcul.py` ne laisse passer que « ... Phase de Ligue ». Les barrages et phases à élimination directe (dès février 2027) n'entreront pas dans l'archive tant que cette liste blanche n'est pas élargie. Non modifié ici (fichier de production).
+
+## Sources complémentaires (diagnostic du 13/10, depuis GitHub Actions)
+- BeSoccer : 403. Sofascore : 403 (site et API). Inutilisables.
+- Livescore : le flux public « tous les matchs d'un jour » répond 200. Utilisé comme complément : `source_livescore.py`.
+- `python source_livescore.py --jours 75` télécharge les jours passés manquants dans `data/europe/livescore/` (un fichier par jour, figé). Seuls les matchs terminés (FT) sont gardés ; prolongation/tirs au but écartés.
+- `collecte_europe.py` complète l'historique Matchendirect avec les matchs Livescore absents (même club à ± 1 jour = même match, aucune ligne Matchendirect modifiée ni retirée). Le cache Matchendirect reste pur.
+- Rapprochement des clubs : nom normalisé identique ou alias explicite (`data/europe/alias_livescore.json`). Un club non rapproché est listé avec des suggestions dans le bilan (`livescore.equipes_non_appariees`), jamais deviné.
+- Les tours de qualification, jeunes, féminines, coupes nationales et amicaux sont exclus côté Livescore comme côté Matchendirect.
+- Écart avec la décision du 24/09 (« aucune API externe ») : demandé explicitement par Patrick le 13/10 pour les matchs européens. Le flux n'est pas documenté : il peut changer sans préavis.

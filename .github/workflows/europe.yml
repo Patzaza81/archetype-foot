@@ -31,7 +31,11 @@ jobs:
         run: pip install requests beautifulsoup4 pandas lxml pytest
 
       - name: Tests du moteur Europe
-        run: python -m pytest tests/test_moteur_europe.py tests/test_collecte_europe.py tests/test_calibration_europe.py -q
+        run: python -m pytest tests/test_moteur_europe.py tests/test_collecte_europe.py tests/test_calibration_europe.py tests/test_source_livescore.py -q
+
+      - name: Récupérer les résultats Livescore (jours passés, source complémentaire)
+        continue-on-error: true
+        run: python source_livescore.py --jours 75
 
       - name: Collecter l'historique des clubs (matchs à venir et joués)
         run: python collecte_europe.py --inclure-joues

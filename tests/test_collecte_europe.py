@@ -186,3 +186,50 @@ def test_execution_charge_le_club_dont_le_lien_vient_du_fichier(tmp_path):
 def test_diagnostic_rubriques_nationales_dans_meta():
     r = ce.charge_club("https://x/e.html", "The New Saints", fetch=lambda u: page("the_new_saints"), aujourdhui=AUJ)
     assert "Cymru Premier" in r["meta"]["rubriques_avec_matchs"] and r["meta"]["rubriques_nationales"]
+
+
+# --- complément Livescore dans la collecte --------------------------------------------------------------------------------
+def _mini_archive(tmp_path, n=3):
+    import gzip
+    import json
+    d = tmp_path / "arch"
+    d.mkdir()
+    enregs = ce.matchs_europeens_a_venir(ce.lit_archive("data/archive_test"))[:n]
+    with gzip.open(d / "2026-10-15.json.gz", "wt", encoding="utf-8") as f:
+        json.dump({e["match_id"]: e for e in enregs}, f)
+    return str(d)
+
+
+def _index_ls(tmp_path, matchs):
+    import json
+    import source_livescore as sl
+    d = tmp_path / "ls"
+    d.mkdir()
+    (d / "2026-10-01.json").write_text(json.dumps(matchs))
+    return sl.charge_index(str(d))
+
+
+def test_livescore_complete_un_club_sans_lien_matchendirect(tmp_path):
+    def mm(date, dom, ext, a, b):
+        return {"date": date, "pays": "Latvia", "stage": "Virsliga", "dom": dom, "ext": ext, "buts_dom": a, "buts_ext": b}
+    idx = _index_ls(tmp_path, [mm("2026-09-01", "Riga FC", "A", 1, 0), mm("2026-09-08", "Riga FC", "B", 2, 2), mm("2026-09-15", "Riga FC", "C", 0, 1)])
+    import json
+    b = ce.execution(_mini_archive(tmp_path), str(tmp_path / "s.json"), str(tmp_path / "c.json"), fetch=lambda u: page("the_new_saints"),
+                     pause=0, aujourdhui=AUJ, liens={}, livescore=idx, alias={})
+    assert b["livescore"]["actif"] and isinstance(b["livescore"]["equipes_non_appariees"], dict)
+    assert len(b["livescore"]["equipes_non_appariees"]) > 0               # les autres clubs de l'archive ne sont pas dans cet index
+
+
+def test_livescore_absent_ne_change_rien(tmp_path):
+    b = ce.execution(_mini_archive(tmp_path), str(tmp_path / "s.json"), str(tmp_path / "c.json"), fetch=lambda u: page("the_new_saints"),
+                     pause=0, aujourdhui=AUJ, liens={}, livescore={}, alias={})
+    assert b["livescore"] == {"actif": False, "equipes_non_appariees": {}}
+
+
+def test_le_cache_matchendirect_n_est_pas_pollue_par_livescore(tmp_path):
+    import json
+    idx = _index_ls(tmp_path, [{"date": "2026-09-01", "pays": "Wales", "stage": "Cymru Premier", "dom": "The New Saints", "ext": "Z", "buts_dom": 5, "buts_ext": 0}])
+    c = tmp_path / "c.json"
+    ce.execution(_mini_archive(tmp_path), str(tmp_path / "s.json"), str(c), fetch=lambda u: page("the_new_saints"), pause=0, aujourdhui=AUJ,
+                 liens={}, livescore=idx, alias={})
+    assert all(m.get("source") != "livescore" for v in json.loads(c.read_text()).values() for g in ("europe", "championnat") for m in v["donnees"][g])
