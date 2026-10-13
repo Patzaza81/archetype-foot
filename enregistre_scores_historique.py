@@ -156,6 +156,15 @@ def main():
     except Exception as e:
         print(f"[archive de test] AVERTISSEMENT : échec ({type(e).__name__}: {e}) -- scores de l'historique non "
               f"concernés.", file=sys.stderr)
+    # AJOUT 13/10/2026 -- moteur v2r (moteur_v2r/, écrit seulement data/v2r/, affiché par pronostics_v2r.html) : règle son
+    # carnet puis choisit les paris des matchs à venir, juste après l'archive de test dont il lit les données. Isolé dans
+    # un try : un échec de v2r ne fait jamais échouer l'enregistrement des scores. Le lundi, v2r réentraîne ses règles.
+    try:
+        from moteur_v2r.execution import passage_nocturne
+        print(f"[v2r] {passage_nocturne()}")
+    except Exception as e:
+        print(f"[v2r] AVERTISSEMENT : échec ({type(e).__name__}: {e}) -- scores de l'historique non concernés.",
+              file=sys.stderr)
     # Le moteur V3 est exécuté par une étape dédiée du workflow : aucune dépendance
     # silencieuse entre l'enregistrement des scores et la production V3.
     return 0
