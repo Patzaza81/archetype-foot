@@ -4,7 +4,7 @@ import random
 import pytest
 
 import calibration_europe as ce
-from moteur_v3.calibration import CalibrationFit, IsotonicCalibrator
+from moteur_europe.socle.calibration import CalibrationFit, IsotonicCalibrator
 
 COTES = {"1x2_1": 2.0, "1x2_X": 3.3, "1x2_2": 3.5, "dc_1X": 1.45, "dc_X2": 1.9, "over_1_5": 1.4, "over_2_5": 1.95,
          "under_3_5": 1.35, "btts_yes": 1.8, "btts_no": 1.9}
@@ -36,7 +36,7 @@ def test_calibration_prete_avec_assez_de_matchs():
 
 
 def test_calibration_utilise_la_meme_chaine_que_v3_pour_les_seuils():
-    from moteur_v3_pipeline import MIN_MATCHS_CALIBRATION
+    from moteur_europe.rendu import MIN_MATCHS_CALIBRATION
     assert MIN_MATCHS_CALIBRATION == 50
 
 
@@ -113,8 +113,8 @@ def test_format_site_identique_a_v3(tmp_path):
     ce.execution(str(ent), str(tmp_path / "s.json"), aujourdhui=datetime.date(2026, 10, 13), site=str(p))
     d = json.loads(p.read_text())
     sig = d["signaux"][0]
-    assert sig["moteur_utilise"] == "moteur_v3" and sig["moteur_v3"]["apercu_non_calibre"] is True
-    assert sig["moteur_v3"]["selection"]["P1"]["apercu_non_calibre"] is True
+    assert sig["moteur_utilise"] == "moteur_europe" and sig["moteur_europe"]["apercu_non_calibre"] is True
+    assert sig["moteur_europe"]["selection"]["P1"]["apercu_non_calibre"] is True
     assert d["calibration"]["prete"] is False and d["calibration"]["minimum_matchs"] == 50
 
 
@@ -126,7 +126,7 @@ def test_marche_hors_fenetre_de_cotes_jamais_propose():
 def test_page_europe_lit_les_donnees_europe_et_pas_celles_de_v3():
     import pathlib
     h = (pathlib.Path(__file__).parent.parent / "pronostics_europe.html").read_text(encoding="utf-8")
-    assert "data/europe/pronostics_europe.json" in h and h.index("window.fetch") < h.index('src="archetype_v3.js')
+    assert 'data/europe/pronostics_europe.json' in open('archetype_europe.js', encoding='utf-8').read() and 'archetype_europe.js' in h and 'archetype_v3' not in h and 'data/v3' not in h
 
 
 # --- matchs sans aperçu : toujours affichés avec leur raison ---------------------------------------------------------------

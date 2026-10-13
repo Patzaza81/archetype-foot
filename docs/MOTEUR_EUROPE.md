@@ -40,7 +40,7 @@ Module isolé : il n'est branché sur aucun workflow et ne modifie aucun scraper
 Limites connues :
 - Couverture : sur l'archive de test, 1 match sur 50 avait ≥ 3 matchs européens au bon lieu pour les deux clubs (saison courante seule).
 - Les tours de qualification portent le même titre que la phase de ligue sur la page club : impossible de les séparer.
-- Utiliser la saison précédente contredit la règle V3 « pas de saison précédente » : décision à confirmer.
+- Saison précédente : AUTORISÉE pour compenser le manque de matchs (décision de Patrick, 13/10). La règle V3 « pas de saison précédente » ne s'applique pas à l'Europe.
 - Le scraping réel n'a pas pu être testé ici (Matchendirect bloqué depuis cet environnement) : validé sur pages enregistrées et faux fetch.
 
 ## Calibration et signaux (`calibration_europe.py`)
@@ -61,3 +61,6 @@ Limite repérée : `precalcul.py` ne laisse passer que « ... Phase de Ligue ».
 - Rapprochement des clubs : nom normalisé identique ou alias explicite (`data/europe/alias_livescore.json`). Un club non rapproché est listé avec des suggestions dans le bilan (`livescore.equipes_non_appariees`), jamais deviné.
 - Les tours de qualification, jeunes, féminines, coupes nationales et amicaux sont exclus côté Livescore comme côté Matchendirect.
 - Écart avec la décision du 24/09 (« aucune API externe ») : demandé explicitement par Patrick le 13/10 pour les matchs européens. Le flux n'est pas documenté : il peut changer sans préavis.
+
+## Autonomie (décision de Patrick, 13/10)
+Les moteurs V2 et V3 ne doivent intervenir ni de près ni de loin. Le moteur Europe est un moteur indépendant : tout le code qu'il empruntait a été copié dans `moteur_europe/` (`socle/` = calcul, `regles.py` = double contrôle, `rendu.py` = explications et format du site, `cotes_archive.py`, `scraper_matchendirect.py`), la page utilise `archetype_europe.js` et la clé `moteur_europe`. Un test (`test_autonomie_totale_aucun_lien_avec_v2_v3`) échoue si un import V2/V3 réapparaît. Conséquence : un changement futur sur V3 n'affecte plus l'Europe, et inversement. Seule dépendance restante : lecture (sans écriture) des matchs et cotes BetPawa de `data/archive_test/`, produits par le pipeline de collecte.

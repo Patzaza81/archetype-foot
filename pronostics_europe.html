@@ -46,14 +46,7 @@
 </style>
 <script src="traduction_marches.js"></script>
 <script src="ui_mappings.js?v=20260921e"></script>
-<script>
-/* Même présentation que la page V3 (archetype_v3.js inchangé) : seule la source des données change. */
-(function () {
-  var f = window.fetch;
-  window.fetch = function (u, o) { return f(String(u).replace("data/v3/pronostics_v3.json", "data/europe/pronostics_europe.json"), o); };
-})();
-</script>
-<script src="archetype_v3.js?v=20261010v2idx"></script>
+<script src="archetype_europe.js?v=20261013a"></script>
 <script src="europe_autres.js"></script>
 <script src="drapeaux.js"></script>
 <script src="af-drapeaux-cartes.js"></script>

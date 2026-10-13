@@ -5,7 +5,7 @@ Seule différence : le profil « moyen » d'une équipe est la moyenne pondéré
 possible. Information seulement."""
 from __future__ import annotations
 
-from moteur_v3.performance import _depend, _indice_deux_equipes, _indice_une_equipe, _moyen, marge
+from .socle.performance import _depend, _indice_deux_equipes, _indice_une_equipe, _moyen, marge
 
 from .model import POIDS_CHAMPIONNAT, POIDS_EUROPE, derniers
 

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Mapping, Sequence
 
-from moteur_v3.model import (GoalModel, MOYENNE_REFERENCE, _lisse, _sample, _strength, _valid, score_matrix)
+from .socle.model import (GoalModel, MOYENNE_REFERENCE, _lisse, _sample, _strength, _valid, score_matrix)
 
 # Décision de Patrick (13/10/2026) : derniers matchs européens 70 %, derniers matchs du championnat 30 %.
 # 3 matchs minimum, 6 maximum, par source et au MÊME LIEU (principe V3). Constantes fixées à l'avance, jamais ajustées

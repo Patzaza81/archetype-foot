@@ -5,8 +5,8 @@ qui doit le passer pour que le pari soit retenu. Le même contrôle sur le champ
 d'information (`double_controle_championnat`), non bloquant (CONTROLE_CHAMPIONNAT_BLOQUANT = False)."""
 from __future__ import annotations
 
-import regles_selection as rs
-from moteur_v3_pipeline import DOUBLE_CONTROLE, groupe_exposition
+from . import regles as rs
+from .rendu import DOUBLE_CONTROLE, groupe_exposition
 
 CONTROLE_CHAMPIONNAT_BLOQUANT = False
 MAX_CONTROLE = 12

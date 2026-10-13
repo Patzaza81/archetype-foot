@@ -29,7 +29,7 @@ import time
 
 from bs4 import BeautifulSoup
 
-import scraper_details as sd
+from moteur_europe import scraper_matchendirect as sd
 
 CODES = (("ldc", "ligue des champions"), ("el", "ligue europa"), ("ecl", "ligue conference"))
 # Compétitions de clubs seulement : jeunes, féminines et qualifications sont refusées (adversaires d'un autre niveau).
@@ -178,7 +178,7 @@ def compte_lieu(rows, domicile):
 
 def construit_entree_europe(enreg, hist_dom, hist_ext):
     """Entrée de moteur_europe.evaluate_match_europe : historiques (avant le match) + cotes BetPawa de l'archive."""
-    from moteur_v3_pipeline import cotes_v3, lignes_handicap
+    from moteur_europe.rendu import cotes_v3, lignes_handicap
     d = enreg["date"]
     cotes = cotes_v3(enreg)
     entree = {"europe_dom": avant(hist_dom["europe"], d), "europe_ext": avant(hist_ext["europe"], d),

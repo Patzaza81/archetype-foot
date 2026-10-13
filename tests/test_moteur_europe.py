@@ -3,8 +3,8 @@ import pytest
 from moteur_europe import evaluate_match_europe
 from moteur_europe.model import N_MAX, POIDS_CHAMPIONNAT, POIDS_EUROPE, build_model_europe
 from moteur_europe.performance import indice_performance_europe, profil_moyen
-from moteur_v3.calibration import CalibrationFit, IsotonicCalibrator
-from moteur_v3.model import MOYENNE_REFERENCE, _lisse, build_model
+from moteur_europe.socle.calibration import CalibrationFit, IsotonicCalibrator
+from moteur_europe.socle.model import MOYENNE_REFERENCE, _lisse, build_model
 
 
 def rows(scores, domicile, debut=1):
@@ -130,3 +130,19 @@ def test_pire_scenario_cherche_dans_europe_et_championnat():
     assert perf["indice"] < 4
     perf_ok = indice_performance_europe("under_3_5", ed, rows([(1, 0)] * 3, True), ee, le)
     assert perf_ok["indice"] == 4
+
+
+def test_autonomie_totale_aucun_lien_avec_v2_v3():
+    """Le moteur Europe ne doit importer ni V2 ni V3 : tout est copié dans moteur_europe/."""
+    import glob, re
+    interdits = re.compile(r"^\s*(from|import)\s+(moteur_v3|moteur_v3_pipeline|regles_selection|scraper_details|banc_historique|"
+                           r"precalcul|calculs)\b", re.M)
+    fichiers = glob.glob("moteur_europe/**/*.py", recursive=True) + ["collecte_europe.py", "calibration_europe.py",
+                                                                       "source_livescore.py"]
+    for f in fichiers:
+        src = open(f, encoding="utf-8").read()
+        assert not interdits.search(src), f
+        assert not re.search(r"^\s*from\s+moteur_v3", src, re.M), f
+    for f in ("pronostics_europe.html", "archetype_europe.js", "europe_autres.js"):
+        src = open(f, encoding="utf-8").read()
+        assert "archetype_v3" not in src.replace("Aucun lien avec archetype_v3.js", "") and "data/v3" not in src, f

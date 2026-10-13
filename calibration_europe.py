@@ -21,10 +21,10 @@ import sys
 from moteur_europe import evaluate_match_europe
 from moteur_europe.model import build_model_europe
 from moteur_europe.preuves import preuves_europe
-from moteur_v3.calibration import CalibrationFit, IsotonicCalibrator
-from moteur_v3.decision import decide
-from moteur_v3.markets import derive_markets, gagne
-from moteur_v3_pipeline import MIN_MATCHS_CALIBRATION, RAISONS_FR, _signature_evenement_calibration, libelle
+from moteur_europe.socle.calibration import CalibrationFit, IsotonicCalibrator
+from moteur_europe.socle.decision import decide
+from moteur_europe.socle.markets import derive_markets, gagne
+from moteur_europe.rendu import MIN_MATCHS_CALIBRATION, RAISONS_FR, _signature_evenement_calibration, libelle
 
 
 def score_joue(m):
@@ -165,7 +165,7 @@ def autre_match(x):
 
 def ecrit_pour_le_site(signaux, bilan, cal, nb_matchs, chemin):
     """Même format que data/v3/pronostics_v3.json : la page pronostics_europe.html réutilise archetype_v3.js tel quel."""
-    from moteur_v3_pipeline import signal_site
+    from moteur_europe.rendu import signal_site
     signaux = sorted(signaux, key=lambda x: (str(x["date"]), str(x.get("heure") or ""), str(x["domicile"])))
     fit = cal.fit_result
     sortie = {"moteur": "moteur_europe", "genere_le": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),

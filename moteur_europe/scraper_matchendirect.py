@@ -1,0 +1,851 @@
+"""
+scraper_details.py — Enrichissement matchendirect : classement dom/ext,
+forme + H2H + cotes (page face-a-face), 20 derniers résultats (page
+statistique). Tout en HTTP simple — aucune de ces pages n'a jamais renvoyé
+d'erreur 406 ni de blocage, contrairement à BeSoccer (abandonné).
+"""
+
+import io
+import re
+import time
+
+import pandas as pd
+import requests
+from bs4 import BeautifulSoup
+
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (compatible; ArchetypeFootBot/1.0; +https://github.com/)"
+}
+
+
+def fetch_html(url, retries=3, delay=2):
+    last_err = None
+    for _ in range(retries):
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=15)
+            resp.raise_for_status()
+            return resp.text
+        except requests.RequestException as e:
+            last_err = e
+            time.sleep(delay)
+    raise RuntimeError(f"Échec de récupération de {url} après {retries} tentatives: {last_err}")
+
+
+# --------------------------------------------------------------------------
+# Détails de match + URL statistique réelle — fonctionne, testé le 24/08.
+# --------------------------------------------------------------------------
+
+def recupere_details_match(url_match):
+    html = fetch_html(url_match)
+    soup = BeautifulSoup(html, "html.parser")
+
+    resultat = {"lieu": None, "meteo": None, "arbitre": None, "diffuseur": None,
+                "url_statistique": None, "url_equipe_domicile": None, "url_equipe_exterieur": None}
+
+    lien_stat = soup.select_one("a[href*='/statistique/']")
+    if lien_stat:
+        href = lien_stat.get("href", "")
+        resultat["url_statistique"] = href if href.startswith("http") else "https://www.matchendirect.fr" + href
+
+    urls_equipe_vues = []
+    for a in soup.select("a[href*='/equipe/']"):
+        href = a.get("href", "")
+        href_abs = href if href.startswith("http") else "https://www.matchendirect.fr" + href
+        if href_abs not in urls_equipe_vues:
+            urls_equipe_vues.append(href_abs)
+        if len(urls_equipe_vues) >= 2:
+            break
+    if len(urls_equipe_vues) >= 1:
+        resultat["url_equipe_domicile"] = urls_equipe_vues[0]
+    if len(urls_equipe_vues) >= 2:
+        resultat["url_equipe_exterieur"] = urls_equipe_vues[1]
+
+    texte_page = soup.get_text("\n", strip=True)
+    for ligne in texte_page.split("\n"):
+        if ligne.startswith("🏟"):
+            resultat["lieu"] = ligne.lstrip("🏟").strip()
+        elif ligne.startswith("🌡"):
+            resultat["meteo"] = ligne.lstrip("🌡").strip()
+        elif ligne.startswith("📣"):
+            resultat["arbitre"] = ligne.lstrip("📣").strip()
+        elif ligne.startswith("📺"):
+            resultat["diffuseur"] = ligne.lstrip("📺").strip()
+
+    return resultat
+
+
+COLONNES_CLASSEMENT = ["Pts", "J", "V", "N", "D", "BP", "BC", "Diff"]
+
+
+def recupere_classement(url_classement_base):
+    variantes = {
+        "general": url_classement_base,
+        "domicile": url_classement_base + "?p=home",
+        "exterieur": url_classement_base + "?p=away",
+    }
+    resultat = {}
+    for cle, url in variantes.items():
+        html = fetch_html(url)
+        try:
+            tables = pd.read_html(io.StringIO(html))
+        except ValueError as e:
+            raise RuntimeError(f"Aucun tableau trouvé sur {url} ({cle})") from e
+
+        for t in tables:
+            if isinstance(t.columns, pd.MultiIndex):
+                t.columns = t.columns.get_level_values(-1)
+
+        table = next((t for t in tables if all(c in t.columns for c in COLONNES_CLASSEMENT)), None)
+        if table is None:
+            raise RuntimeError(
+                f"Tableau de classement introuvable sur {url} ({cle}). "
+                f"Colonnes vues : {[list(t.columns) for t in tables]}"
+            )
+
+        lignes = []
+        for _, ligne in table.iterrows():
+            pts_brut = ligne["Pts"]
+            if isinstance(pts_brut, str) and not pts_brut.strip().lstrip("-").isdigit():
+                continue
+
+            nom_equipe = None
+            for col in table.columns:
+                val = ligne[col]
+                if isinstance(val, str) and not val.strip().lstrip("-").isdigit():
+                    nom_equipe = val.strip()
+                    break
+            try:
+                lignes.append({
+                    "equipe": nom_equipe,
+                    "pts": int(ligne["Pts"]), "j": int(ligne["J"]), "v": int(ligne["V"]),
+                    "n": int(ligne["N"]), "d": int(ligne["D"]), "bp": int(ligne["BP"]),
+                    "bc": int(ligne["BC"]), "diff": int(ligne["Diff"]),
+                })
+            except (ValueError, TypeError):
+                continue
+        resultat[cle] = lignes
+    return resultat
+
+
+def _extrait_matchs_scores(soup, ancre_regex, max_matchs=20):
+    ancre = soup.find(string=re.compile(ancre_regex))
+    if ancre is None:
+        return []
+
+    matchs = []
+    conteneur = ancre.find_parent()
+    if conteneur is None:
+        return []
+
+    for element in conteneur.find_all_next():
+        if len(matchs) >= max_matchs:
+            break
+        if element.name in ("h2", "h3"):
+            break
+        if element.name == "a":
+            href = element.get("href", "")
+            if "/live-score/" in href or "/foot-score/" in href:
+                texte = element.get_text(" ", strip=True)
+                m = re.search(r"(\d+)\s*-\s*(\d+)", texte)
+                if m:
+                    avant = texte[:m.start()].strip()
+                    apres = texte[m.end():].strip()
+                    if avant and apres:
+                        matchs.append({
+                            "domicile_brut": avant,
+                            "exterieur_brut": apres,
+                            "buts_domicile": int(m.group(1)),
+                            "buts_exterieur": int(m.group(2)),
+                            "url_match": href,
+                        })
+    return matchs
+
+
+def recupere_h2h(url_match_face_a_face, max_confrontations=20):
+    html = fetch_html(url_match_face_a_face)
+    soup = BeautifulSoup(html, "html.parser")
+    return _extrait_matchs_scores(soup, r"Confrontations entre les deux équipes", max_matchs=max_confrontations)
+
+
+def _parse_table_matchs(soup, ancre_regex, max_matchs=20):
+    ancre = soup.find(string=re.compile(ancre_regex))
+    if ancre is None:
+        return []
+
+    table = ancre.find_parent().find_next("table")
+    if table is None:
+        return []
+
+    matchs = []
+    for tr in table.find_all("tr"):
+        if len(matchs) >= max_matchs:
+            break
+
+        lien_match = None
+        for a in tr.find_all("a"):
+            href = a.get("href", "")
+            texte_lien = a.get_text(" ", strip=True)
+            if ("/live-score/" in href or "/foot-score/" in href) and " - " in texte_lien \
+                    and not re.search(r"\d+\s*-\s*\d+", texte_lien):
+                lien_match = a
+                break
+        if lien_match is None:
+            continue
+
+        noms = [n.strip() for n in lien_match.get_text(" ", strip=True).split(" - ")]
+        if len(noms) != 2:
+            continue
+
+        texte_ligne = tr.get_text(" ", strip=True)
+        m = re.search(r"(\d+)\s*-\s*(\d+)", texte_ligne)
+        if not m:
+            continue
+
+        liens_ligne = tr.find_all("a")
+        lien_competition = liens_ligne[-1] if liens_ligne and liens_ligne[-1] is not lien_match else None
+        competition = lien_competition.get_text(strip=True) if lien_competition else None
+
+        matchs.append({
+            "domicile_brut": noms[0],
+            "exterieur_brut": noms[1],
+            "buts_domicile": int(m.group(1)),
+            "buts_exterieur": int(m.group(2)),
+            "url_match": lien_match.get("href", ""),
+            "competition": competition,
+        })
+    return matchs
+
+
+def recupere_20_derniers_resultats(url_statistique, nom_equipe_1, nom_equipe_2):
+    html = fetch_html(url_statistique)
+    soup = BeautifulSoup(html, "html.parser")
+
+    resultat = {}
+    for nom in (nom_equipe_1, nom_equipe_2):
+        ancre_regex = rf"20 derniers résultats de {re.escape(nom)}"
+        resultat[nom] = _parse_table_matchs(soup, ancre_regex, max_matchs=20)
+
+    if not resultat[nom_equipe_1] and not resultat[nom_equipe_2]:
+        raise RuntimeError(
+            f"Aucun résultat trouvé sur {url_statistique} pour {nom_equipe_1} ni {nom_equipe_2} — "
+            "structure probablement différente de celle observée."
+        )
+    return resultat
+
+
+# --------------------------------------------------------------------------
+# Cotes — Bet365 uniquement (26/08). Voir docstring de la fonction pour le
+# changement de méthode et la cause du bug précédent enfin confirmée.
+# --------------------------------------------------------------------------
+
+LIGNES_OVER_UNDER_CONNUES = [0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5]
+
+TITRES_MARCHES_CONNUS = [
+    "Cotes 1N2",
+    "Double chance",
+    "Les 2 équipes marquent",
+    "Mi-temps - Résultat",
+] + [f"{l} Plus / Moins" for l in LIGNES_OVER_UNDER_CONNUES]
+_REGEX_AUTRE_TITRE = re.compile(
+    r"^(" + "|".join(re.escape(t) for t in TITRES_MARCHES_CONNUS) + r")$"
+)
+
+BOOKMAKER_FIXE = "bet365"
+
+
+def recupere_cotes_marches(url_match_face_a_face):
+    """
+    Retourne les cotes d'UN SEUL bookmaker fixe (Bet365), pour tous les
+    marchés 1x2/double_chance/btts/over_under (0.5-7.5). dict simple
+    (plus de tuple avec diagnostics -- inutile maintenant, la méthode
+    n'a plus de mode de repli ambigu à surveiller).
+
+    CHANGEMENT DE MÉTHODE (26/08) -- abandon du multi-bookmaker et de
+    "minimum du panel" (approximation Betpawa), décision explicite.
+    Cause du bug précédent confirmée en récupérant le vrai HTML : le nom
+    de chaque bookmaker n'existe QUE dans l'attribut alt de son logo
+    (<img alt="bet365 logo">), jamais comme texte visible. Le correctif
+    25/08bis cherchait un "séparateur texte" entre bookmakers -- ça ne
+    pouvait pas fonctionner ; ce qu'il détectait comme séparateur était
+    probablement le caractère "-" (cote indisponible), cassant le
+    comptage par paquets sur la quasi-totalité des lignes.
+
+    Nouvelle méthode : ancrer directement sur l'image du bookmaker fixe
+    (recherche par attribut alt), puis lire les valeurs qui suivent
+    immédiatement jusqu'à la prochaine image ou la fin de section. Une
+    valeur "-" devient None pour CETTE seule sélection, sans invalider
+    le reste du marché. Bookmaker absent d'une section -> marché entier
+    à None, jamais deviné.
+
+    Choix de Bet365 : seul bookmaker observé présent sur toutes les
+    lignes over/under, y compris les plus hautes (6.5, 7.5).
+    """
+    html = fetch_html(url_match_face_a_face)
+    soup = BeautifulSoup(html, "html.parser")
+
+    marches = {}
+    definitions = [
+        ("1x2", "Cotes 1N2", ["1", "N", "2"]),
+        ("double_chance", "Double chance", ["1N", "12", "N2"]),
+        ("btts", "Les 2 équipes marquent", ["Oui", "Non"]),
+    ] + [
+        (f"over_under_{l}", f"{l} Plus / Moins", ["plus", "moins"])
+        for l in LIGNES_OVER_UNDER_CONNUES
+    ]
+
+    for nom_marche, titre_attendu, selections in definitions:
+        # CORRECTIF (26/08bis) : un même titre de marché peut apparaître DEUX FOIS
+        # sur la page -- une fois dans un widget d'aperçu en haut (sans Bet365),
+        # une fois dans le tableau complet plus bas (avec Bet365). Confirmé sur
+        # HTML réel (Valence-Real Betis, 25/08/2026) : "Mi-temps - Résultat"
+        # apparaît une première fois dans l'aperçu (4 bookmakers, pas de Bet365)
+        # puis une seconde fois dans le tableau complet (avec Bet365). soup.find()
+        # ancrait sur la PREMIÈRE occurrence -- si un jour l'aperçu affiche un
+        # marché qu'on exploite réellement (1N2, BTTS, une ligne O/U), la marche
+        # find_all_next() sans limite dérive depuis l'aperçu à travers tout le
+        # contenu intermédiaire (Détails du match, Pronostic...) jusqu'au
+        # prochain titre reconnu -- pouvant renvoyer la cote Bet365 d'un AUTRE
+        # marché, réelle mais associée à la mauvaise sélection, sans jamais lever
+        # d'erreur. Cause probable du bug de cote invraisemblable (voir
+        # TRANSITION.md, bug ouvert Gil Vicente-Casa Pia). Le tableau complet
+        # étant structurellement le DERNIER endroit où un titre de marché
+        # apparaît sur la page, on ancre désormais sur la dernière occurrence.
+        titres = soup.find_all(string=lambda s: s and s.strip() == titre_attendu)
+        titre = titres[-1] if titres else None
+        if titre is None:
+            marches[nom_marche] = None
+            continue
+
+        logo_bookmaker = None
+        for element in titre.find_all_next():
+            if isinstance(element, str):
+                if _REGEX_AUTRE_TITRE.match(element.strip()):
+                    break
+                continue
+            if element.name == "img":
+                alt = (element.get("alt") or "").lower()
+                if BOOKMAKER_FIXE in alt:
+                    logo_bookmaker = element
+                    break
+
+        if logo_bookmaker is None:
+            marches[nom_marche] = None
+            continue
+
+        valeurs = []
+        for texte_brut in logo_bookmaker.find_all_next(string=True, limit=20):
+            texte = texte_brut.strip()
+            if not texte:
+                continue
+            if _REGEX_AUTRE_TITRE.match(texte):
+                break
+            if re.fullmatch(r"\d+[.,]\d{2}", texte):
+                valeurs.append(float(texte.replace(",", ".")))
+            elif texte == "-":
+                valeurs.append(None)
+            else:
+                break
+            if len(valeurs) >= len(selections):
+                break
+
+        marches[nom_marche] = (
+            dict(zip(selections, valeurs)) if len(valeurs) == len(selections) else None
+        )
+
+    return marches
+
+
+# --------------------------------------------------------------------------
+# Classement universel via l'URL du match (25/08).
+# --------------------------------------------------------------------------
+
+def recupere_classement_du_match(url_match, nom_competition=None):
+    # AJOUT 03/09/2026 -- nom_competition accepté mais IGNORÉ ici : ce
+    # paramètre ne sert qu'à la clé de cache (voir cache_classement.py et
+    # precalcul.py), pas au scraping lui-même, qui ne dépend que de l'URL.
+    # Ajouté en second paramètre OPTIONNEL pour que l'appel direct depuis
+    # run_pipeline.py (flux panier manuel, sans passer par precalcul.py)
+    # continue de fonctionner qu'il passe 1 ou 2 arguments.
+    url = url_match + "?p=classement"
+    html = fetch_html(url)
+    try:
+        tables = pd.read_html(io.StringIO(html))
+    except ValueError as e:
+        raise RuntimeError(f"Aucun tableau de classement trouvé sur {url}") from e
+
+    for t in tables:
+        if isinstance(t.columns, pd.MultiIndex):
+            t.columns = t.columns.get_level_values(-1)
+
+    table = next((t for t in tables if all(c in t.columns for c in COLONNES_CLASSEMENT)), None)
+    if table is None:
+        raise RuntimeError(
+            f"Tableau de classement introuvable sur {url}. "
+            f"Colonnes vues : {[list(t.columns) for t in tables]}"
+        )
+
+    lignes = []
+    for _, ligne in table.iterrows():
+        pts_brut = ligne["Pts"]
+        if isinstance(pts_brut, str) and not pts_brut.strip().lstrip("-").isdigit():
+            continue
+        nom_equipe = None
+        for col in table.columns:
+            val = ligne[col]
+            if isinstance(val, str) and not val.strip().lstrip("-").isdigit():
+                nom_equipe = val.strip()
+                break
+        try:
+            lignes.append({
+                "equipe": nom_equipe,
+                "pts": int(ligne["Pts"]), "j": int(ligne["J"]), "v": int(ligne["V"]),
+                "n": int(ligne["N"]), "d": int(ligne["D"]), "bp": int(ligne["BP"]),
+                "bc": int(ligne["BC"]), "diff": int(ligne["Diff"]),
+            })
+        except (ValueError, TypeError):
+            continue
+    return lignes
+
+
+def trouve_equipe_dans_classement(classement, nom_equipe):
+    """NON UTILISÉE ACTUELLEMENT dans le pipeline (aucun appelant trouvé
+    dans tout le dépôt au 05/09/2026) -- calcule_ratio_classement()
+    (calculs.py) fait sa propre recherche via _memes_equipes_ratio().
+    Corrigée quand même par cohérence, au cas où elle serait réutilisée
+    plus tard -- même bug/même correctif que _memes_equipes ci-dessous."""
+    nom_norm = nom_equipe.strip().lower()
+    for ligne in classement:
+        eq_norm = (ligne["equipe"] or "").strip().lower()
+        if eq_norm == nom_norm:
+            return ligne
+        if eq_norm in nom_norm or nom_norm in eq_norm:
+            mots_en_trop = (set(eq_norm.split()) - set(nom_norm.split())) | \
+                           (set(nom_norm.split()) - set(eq_norm.split()))
+            if mots_en_trop & _MARQUEURS_RESERVE_EQUIPE:
+                continue
+            return ligne
+    return None
+
+
+def _normalise_texte(s):
+    return re.sub(r"\s+", " ", s or "").strip().lower()
+
+
+# CORRECTIF 05/09/2026 -- même bug que celui trouvé et corrigé dans
+# resolution_betpawa.py (ratio_ressemblance) : "n1 in n2 or n2 in n1"
+# confond une équipe et sa réserve/jeunes (ex. 'Real Madrid' vs 'Real
+# Madrid Castilla'). Utilisée ici pour retrouver la ligne d'une équipe
+# dans un classement ou un historique H2H -- un faux positif fait
+# pointer sur la mauvaise ligne (mauvaise position, mauvais historique
+# de buts). Même liste de marqueurs que resolution_betpawa.py.
+_MARQUEURS_RESERVE_EQUIPE = {"b", "ii", "iii", "castilla", "atletic", "reserve",
+                             "reservas", "u23", "u21", "u20", "u19", "juvenil"}
+
+
+def _memes_equipes(nom1, nom2):
+    n1, n2 = _normalise_texte(nom1), _normalise_texte(nom2)
+    if n1 == n2:
+        return True
+    if n1 in n2 or n2 in n1:
+        mots_en_trop = (set(n1.split()) - set(n2.split())) | (set(n2.split()) - set(n1.split()))
+        if mots_en_trop & _MARQUEURS_RESERVE_EQUIPE:
+            return False
+        return True
+    return False
+
+
+def _saison_actuelle_et_precedente():
+    from datetime import date
+    aujourd_hui = date.today()
+    if aujourd_hui.month >= 7:
+        debut = aujourd_hui.year
+    else:
+        debut = aujourd_hui.year - 1
+    actuelle = f"{debut}/{debut + 1}"
+    precedente = f"{debut - 1}/{debut}"
+    return actuelle, precedente
+
+
+_MOTS_GENERIQUES_COMPETITION = {
+    "league", "ligue", "liga", "lig", "liiga", "cup", "coupe", "division",
+    "championship", "premiere", "premiere", "first", "serie",
+}
+# CORRECTIF 05/09/2026 -- '1'/'2' retirés de cette liste : ce sont des
+# chiffres distinctifs (Ligue 1 vs Ligue 2 = deux compétitions FRANÇAISES
+# différentes), pas des connecteurs génériques comme 'league'/'cup'. Les
+# garder ici comme "génériques" les faisait disparaître AVANT même le
+# repli sur les mots courts dans _mots_significatifs, ce qui provoquait
+# une collision confirmée entre Ligue 1 et Ligue 2 (les deux ne gardaient
+# plus que le mot 'ligue' en commun après filtrage).
+#
+# CORRECTIF 05/09/2026 (bis) -- 'serie' AJOUTÉ à cette liste : trouvé en
+# testant le correctif ci-dessus sur des cas non couverts par les 12 cas
+# de TRANSITION.md 21.9. 'serie' (palier italien/espagnol, équivalent de
+# 'division' déjà générique ici) restait comme mot commun entre un
+# championnat et une coupe du MÊME pays/palier (ex. "Serie C Girone C"
+# vs "Coupe Italie Serie C") -- confirmé faux positif par test :
+# _competitions_correspondent('serie c girone c', 'coupe italie serie c')
+# renvoyait True (mot commun restant : 'serie') alors que ce sont deux
+# compétitions différentes (championnat vs coupe). Le veto girone/groupe
+# ne s'applique pas ici car un seul des deux côtés se termine par un
+# identifiant de groupe explicite. Avec 'serie' générique, le repli à
+# trois niveaux fait son travail normalement (ex: 'girone' vs 'italie'
+# ne se recoupent plus).
+
+
+def _mots_significatifs(partie_competition):
+    """Retire les mots génériques ('league'/'ligue'/'liga'/'cup'/'coupe'...)
+    qui varient d'une langue à l'autre sans rien dire de LA compétition
+    précise -- ne garde que ce qui la distingue vraiment ('chinese',
+    'super', 'premier', un nom propre...).
+
+    CORRECTIF 05/09/2026 (deux bugs préexistants débusqués ensemble par les
+    tests, corrigés ensemble puisqu'ils viennent du même repli) :
+
+    1) Jetons d'une seule lettre ('c', 'b'...) désormais exclus -- confirmé
+       en prod (Giugliano-Sorrente, Italie Serie C) : le 'c' isolé de
+       'Série C' (palier) suffisait à matcher n'importe quelle section
+       contenant aussi un 'c' isolé, y compris une Coupe d'Italie Serie C
+       (compétition totalement différente d'un championnat).
+
+    2) '1'/'2' étaient dans _MOTS_GENERIQUES_COMPETITION -- 'Ligue 1' et
+       'Ligue 2' (France, DEUX compétitions différentes) matchaient déjà à
+       tort AVANT ce correctif : les deux mots retirés (générique 'ligue'
+       + chiffre), l'ancien repli sur 'tout est vide -> mots bruts'
+       réintroduisait alors 'ligue' des DEUX côtés, collision garantie.
+       Nouveau repli à trois niveaux : mots significatifs non-génériques
+       ET longs (>1 caractère) en priorité ; à défaut, mots non-génériques
+       même courts (garde '1'/'2' pour distinguer Ligue 1/Ligue 2 sans
+       jamais réintroduire un mot générique déjà écarté) ; en tout dernier
+       recours seulement (tout était générique, ex. 'Superliga' seul),
+       les mots bruts.
+    """
+    sans_generiques = [m for m in partie_competition.split() if m not in _MOTS_GENERIQUES_COMPETITION]
+    significatifs = [m for m in sans_generiques if len(m) > 1]
+    if significatifs:
+        return set(significatifs)
+    if sans_generiques:
+        return set(sans_generiques)
+    return set(partie_competition.split())
+
+
+def _partie_competition(nom_competition):
+    """Retire le préfixe pays ('Denmark :', 'Danemark :', etc.) -- il diffère
+    presque toujours entre Betpawa (anglais) et matchendirect (français ou
+    langue locale), et n'apporte rien à la comparaison : on cherche la même
+    équipe sur SA PROPRE page matchendirect, le pays est donc déjà garanti
+    correct par construction."""
+    return _normalise_texte(nom_competition.split(":", 1)[-1])
+
+
+_MOTIF_IDENTIFIANT_GROUPE = re.compile(
+    r"\b(?:girone|group|groupe|gruppo|grupo)\s+([a-z0-9]+)$|(?<!\d)\b([12])$"
+)
+
+
+def _identifiant_groupe(partie_competition):
+    """Extrait l'identifiant de sous-groupe final ('girone b' -> 'b',
+    'ligue 1' -> '1'), ou None si le nom ne se termine pas par un tel
+    motif. Utilisé pour départager deux noms de compétition par ailleurs
+    identiques ou très proches (ex. 'Primera RFEF Groupe 1' vs 'Groupe 2')
+    -- voir _competitions_correspondent."""
+    m = _MOTIF_IDENTIFIANT_GROUPE.search(partie_competition)
+    if not m:
+        return None
+    return m.group(1) or m.group(2)
+
+
+def _competitions_correspondent(cible, candidat):
+    if not cible or not candidat:
+        return False
+    # CORRECTIF 05/09/2026 -- veto explicite AVANT toute autre règle : si
+    # les deux noms se terminent par un identifiant de groupe/girone
+    # explicite et qu'ils diffèrent, ce sont deux compétitions distinctes,
+    # point final -- même si tous les autres mots concordent par ailleurs
+    # (confirmé nécessaire : 'Primera RFEF Groupe 1' vs 'Groupe 2'
+    # partagent 3 mots significatifs, l'overlap seul les aurait fait
+    # matcher à tort malgré le numéro de groupe différent).
+    id_cible, id_candidat = _identifiant_groupe(cible), _identifiant_groupe(candidat)
+    if id_cible is not None and id_candidat is not None and id_cible != id_candidat:
+        return False
+    if cible in candidat or candidat in cible:
+        return True
+    return bool(_mots_significatifs(cible) & _mots_significatifs(candidat))
+
+
+# ---------------------------------------------------------------------------------------------------------------
+# CORRECTIF 24/09/2026 -- choix de la section de compétition sur une page équipe (voir _extrait_historique_competition)
+# ---------------------------------------------------------------------------------------------------------------
+_MARQUEURS_AUTRE_COMPETITION = {
+    "coupe", "coppa", "cup", "copa", "pokal", "taca", "trophee", "trophy", "supercoupe", "supercoppa", "supercopa",
+    "amicaux", "amical", "amicales", "friendly", "friendlies", "femmes", "feminine", "feminin", "women", "womens",
+    "u17", "u18", "u19", "u20", "u21", "u23", "jeunes", "reserve", "reserves", "qualifications", "barrages", "playoffs",
+}
+
+
+def _mots_sans_accents(texte):
+    import unicodedata
+    t = unicodedata.normalize("NFKD", str(texte or "")).encode("ascii", "ignore").decode("ascii").lower()
+    return set(re.findall(r"[a-z0-9]+", t))
+
+
+def _sans_accents(texte):
+    import unicodedata
+    return unicodedata.normalize("NFKD", str(texte or "")).encode("ascii", "ignore").decode("ascii").lower()
+
+
+def _score_titre_competition(cible, candidat):
+    """Score d'un titre de compétition de la page pour la compétition cible (parties après « : », normalisées).
+    None = refusé : si _competitions_correspondent le refuse (comparaison faite sans accents), ou si le titre ajoute
+    un marqueur d'une autre compétition absent de la cible (coupe, amicaux, femmes, jeunes...)."""
+    c, d = _sans_accents(cible), _sans_accents(candidat)
+    if not _competitions_correspondent(c, d):
+        return None
+    a, b = _mots_sans_accents(c), _mots_sans_accents(d)
+    if (b - a) & _MARQUEURS_AUTRE_COMPETITION:
+        return None
+    if c == d:
+        return 1000
+    score = 10 * len(a & b) - 3 * len(b - a) - len(a - b)
+    if c in d or d in c:
+        score += 50
+    return score
+
+
+def _titres_competition(soup):
+    """Titres de compétition de la page, dans l'ordre : (élément, partie après « : »)."""
+    out = []
+    for h in soup.find_all(["h2", "h3", "h4"]):
+        texte = _normalise_texte(h.get_text(" ", strip=True))
+        if ":" in texte:
+            out.append((h, _partie_competition(texte)))
+    return out
+
+
+def _table_avec_matchs(t):
+    return t.name == "table" and any(
+        "/live-score/" in a.get("href", "") or "/foot-score/" in a.get("href", "") for a in t.find_all("a"))
+
+
+def _section_competition(soup, cible):
+    """(titre_retenu, tableau_de_matchs) de la compétition cible ; (None, None) si aucun titre ne convient ;
+    (titre, None) si la section du titre ne contient pas de tableau de matchs."""
+    titres = _titres_competition(soup)
+    notes = [(sc, i) for i, (_, partie) in enumerate(titres)
+             for sc in [_score_titre_competition(cible, partie)] if sc is not None]
+    if not notes:
+        return None, None
+    _, i = max(notes, key=lambda x: (x[0], -x[1]))
+    h, partie = titres[i]
+    suivants = {id(t[0]) for t in titres[i + 1:]}
+    for el in h.next_elements:
+        if id(el) in suivants:
+            return partie, None                      # section suivante atteinte sans tableau
+        if getattr(el, "name", None) == "table" and _table_avec_matchs(el):
+            return partie, el
+    return partie, None
+
+
+def _date_ligne(tr, date_reference=None):
+    """A3 bis (24/09/2026) -- date ISO d'une ligne de la page équipe. La page n'affiche que « JJ/MM » (ou une heure
+    « HH:MM » pour un match du jour) : l'année retenue est celle qui donne la date la plus récente NON FUTURE par rapport
+    à la date de lecture (les lignes lues ont un score, donc sont déjà jouées). Aucune autre hypothèse."""
+    import datetime as _dt
+    ref = date_reference or _dt.datetime.now(_dt.timezone.utc).date()
+    span = tr.find("span", class_=re.compile(r"lm2_time"))
+    texte = span.get_text(strip=True) if span else ""
+    if re.fullmatch(r"\d{1,2}:\d{2}", texte):
+        return ref.isoformat()
+    m = re.fullmatch(r"(\d{1,2})/(\d{1,2})", texte)
+    if not m:
+        return None
+    jour, mois = int(m.group(1)), int(m.group(2))
+    for annee in (ref.year, ref.year - 1):
+        try:
+            d = _dt.date(annee, mois, jour)
+        except ValueError:
+            continue
+        if d <= ref + _dt.timedelta(days=1):
+            return d.isoformat()
+    return None
+
+
+def _extrait_historique_competition(soup, nom_competition, nom_equipe, max_matchs=10, diag_libelle=None,
+                                    date_reference=None):
+    # CORRECTIF (26/08) : l'égalité stricte texte-complet ('Denmark :
+    # Superliga' vs 'Danemark : Superligaen' sur la vraie page matchendirect,
+    # confirmé en conditions réelles) échouait pour TOUT match venant de
+    # Betpawa, pas seulement les cas rares -- le préfixe pays et
+    # l'orthographe locale de la compétition ne correspondent jamais
+    # exactement d'une source à l'autre. Remplacé par une comparaison sur le
+    # nom de compétition seul (préfixe pays retiré des deux côtés).
+    # CORRECTIF COMPLÉMENTAIRE (26/08, cas Qingdao) : la seule inclusion de
+    # sous-chaîne ne suffisait pas non plus -- 'Chinese Super League' vs
+    # 'Super Ligue' (vraie page matchendirect) diffèrent par la traduction
+    # du mot 'league'/'ligue' lui-même, pas juste par l'ordre ou le pays.
+    # Ajout d'une comparaison par mots significatifs communs (voir
+    # _competitions_correspondent). Risque de faux positif jugé faible :
+    # comme pour le premier correctif, on ne compare qu'un petit nombre de
+    # rubriques (2 à 5) sur la page d'UNE équipe déjà identifiée avec
+    # certitude, jamais entre équipes différentes.
+    #
+    # AJOUT DIAGNOSTIC 03/09/2026 (18.8) -- diag_libelle est un simple tag de
+    # log (ex. "Newcastle | saison 2025/2026"), aucune incidence sur la
+    # logique : uniquement des print() sur les chemins d'échec, pour savoir
+    # OÙ ça casse (ancre introuvable ? table introuvable ? table trouvée
+    # mais 0 ligne reconnue ?) sans toucher au comportement existant.
+    #
+    # CORRECTIF 04/09/2026 (18.8, cause principale, 36 équipes sur 50) :
+    # find_next("table") s'arrêtait sur un petit tableau décoratif (icône
+    # flèche + cloche d'alerte, 1-4 lignes <tr>, aucun lien /live-score/)
+    # que matchendirect insère entre le titre de la compétition et le vrai
+    # tableau de matchs -- confirmé en récupérant la vraie page Cagliari en
+    # direct (la vraie table Serie A, avec 2 matchs à score, arrivait juste
+    # après ce tableau décoratif). On avance maintenant de tableau en
+    # tableau jusqu'à en trouver un contenant au moins un lien /live-score/
+    # ou /foot-score/, avec une limite de 4 tableaux pour ne pas déborder
+    # sur la section d'une AUTRE compétition plus bas sur la page si aucun
+    # vrai tableau de matchs n'existe ici.
+    # CORRECTIF 24/09/2026 (cause confirmée sur 8 vraies pages capturées, diagnostic/resultat_capture.json) :
+    # l'ancre était le PREMIER texte de la page contenant « : » et un mot en commun avec la compétition, n'importe où
+    # (y compris du JavaScript), puis on prenait le premier tableau de matchs qui suivait, sans vérifier qu'il
+    # appartenait à cette compétition. Résultats faux constatés : The New Saints (ancre = un <script>, tableau lu =
+    # « Monde : Matchs Amicaux », Glentoran 1-1 enregistré comme sa saison de Cymru Premier), Colwyn Bay (idem),
+    # Salernitana / Cosenza / Pineto (« Coppa Italia Série C » lue à la place de « Série C », le mot accentué
+    # « série » n'étant pas reconnu comme générique), Aston Villa féminines (« Matchs Amicaux Femmes »).
+    # Désormais : (1) seuls les TITRES de compétition (h2/h3/h4 contenant « : ») sont candidats ; (2) parmi ceux qui
+    # correspondent, on prend le MEILLEUR (_score_titre_competition), et un titre qui ajoute une coupe, des amicaux,
+    # une catégorie féminine ou de jeunes absente de la cible est refusé ; (3) le tableau lu doit se trouver AVANT le
+    # titre de compétition suivant (sinon il appartient à une autre compétition). Aucun titre valable -> None
+    # (pas de données plutôt que de fausses données : NO DATA -> NO GO).
+    cible = _partie_competition(nom_competition)
+    titre, table = _section_competition(soup, cible)
+    if titre is None:
+        if diag_libelle:
+            print(f"[DIAG 18.8] {diag_libelle} -- aucun TITRE de compétition correspondant à {cible!r} sur la page.")
+        return None
+    if table is None:
+        if diag_libelle:
+            print(f"[DIAG 18.8] {diag_libelle} -- titre {titre!r} trouvé mais aucun tableau de matchs dans sa section.")
+        return []
+
+    matchs = []
+    for tr in table.find_all("tr"):
+        liens_avec_score = [a for a in tr.find_all("a") if re.search(r"\d+\s*-\s*\d+", a.get_text(" ", strip=True))]
+        if not liens_avec_score:
+            continue
+        texte = liens_avec_score[0].get_text(" ", strip=True)
+        m = re.match(r"^(.*?)\s+(\d+)\s*-\s*(\d+)\s+(.*)$", texte)
+        if not m:
+            continue
+        nom_dom, buts_dom, buts_ext, nom_ext = m.group(1).strip(), int(m.group(2)), int(m.group(3)), m.group(4).strip()
+
+        # A3 bis (24/09/2026) : date, adversaire et lien du match sont gardés (vérification des dates exactes lors de
+        # l'assemblage avec Football-Data). Les champs de buts sont inchangés.
+        details = {"date": _date_ligne(tr, date_reference), "url_match": liens_avec_score[0].get("href")}
+        if _memes_equipes(nom_equipe, nom_dom):
+            matchs.append(dict({"domicile": True, "buts_marques": buts_dom, "buts_encaisses": buts_ext},
+                               adversaire=nom_ext, **details))
+        elif _memes_equipes(nom_equipe, nom_ext):
+            matchs.append(dict({"domicile": False, "buts_marques": buts_ext, "buts_encaisses": buts_dom},
+                               adversaire=nom_dom, **details))
+
+    if diag_libelle and not matchs:
+        nb_lignes = len(table.find_all("tr"))
+        print(f"[DIAG 18.8] {diag_libelle} -- ancre ET table (contenant un lien "
+              f"/live-score/ ou /foot-score/) trouvées, mais 0 match reconnu sur "
+              f"{nb_lignes} ligne(s) <tr>. Format de ligne différent de celui "
+              f"attendu par le regex.")
+
+    return matchs
+
+
+def recupere_gf_ga_avec_repli(url_equipe, nom_equipe, nom_competition, max_matchs=10):
+    """CORRECTIF 06/09/2026 -- le repli vers la saison précédente
+    (`?season=X` sur l'URL de l'équipe) s'est révélé peu fiable en
+    conditions réelles : testé sur 3 équipes jamais consultées avant
+    (Troyes, Marseille, RC Lens), le paramètre a fonctionné pour UNE
+    seule (Marseille) et a été silencieusement ignoré pour les deux
+    autres (page renvoyée identique à la saison en cours, sans erreur).
+    Comportement du site non déterministe -- pas un bug ponctuel à
+    corriger une fois, un vrai aléa à détecter à chaque appel.
+
+    Détection : on compare l'historique extrait de la tentative "saison
+    précédente" à celui déjà obtenu pour la saison actuelle. S'ils sont
+    identiques (mêmes matchs, dans le même ordre), le paramètre de
+    saison a été ignoré par le site -- on jette cette tentative plutôt
+    que de compter deux fois les mêmes matchs. On ne devine jamais :
+    soit le site renvoie vraiment autre chose et on l'utilise, soit non
+    et on ignore, exactement comme avant ce correctif dans ce cas-là."""
+    saison_actuelle, saison_precedente = _saison_actuelle_et_precedente()
+
+    matchs_domicile, matchs_exterieur = [], []
+    historique_saison_actuelle = None
+
+    for saison in (saison_actuelle, saison_precedente):
+        if len(matchs_domicile) >= max_matchs and len(matchs_exterieur) >= max_matchs:
+            break
+        url = url_equipe if saison == saison_actuelle else f"{url_equipe}?season={saison.replace('/', '%2F')}"
+        # AJOUT DIAGNOSTIC 03/09/2026 (18.8), COMPLÉTÉ 07/09/2026 -- l'URL
+        # réellement fetchée est désormais incluse dans le tag de log. Sans
+        # elle, une "ancre INTROUVABLE" ne permettait pas de vérifier après
+        # coup si la page récupérée était la bonne : confirmé en session
+        # (analyse des logs du run #104) que matchendirect peut exposer
+        # plusieurs pages /equipe/ différentes partageant le même nom
+        # affiché (ex. équipe masculine vs équipe féminine du même club),
+        # ce qui rendrait une "ancre introuvable" indiscernable d'une
+        # vraie absence de donnée sans pouvoir rejouer l'URL exacte.
+        # Pur ajout de contexte dans le log -- aucune incidence sur la
+        # logique existante (voir _extrait_historique_competition).
+        diag_libelle = f"{nom_equipe} | {nom_competition!r} | saison {saison} | url={url!r}"
+        try:
+            html = fetch_html(url)
+        except RuntimeError as e:
+            print(f"[DIAG 18.8] {diag_libelle} -- fetch_html a échoué sur "
+                  f"{url!r} ({e}), saison ignorée.")
+            continue
+        soup = BeautifulSoup(html, "html.parser")
+        historique = _extrait_historique_competition(
+            soup, nom_competition, nom_equipe, max_matchs, diag_libelle=diag_libelle
+        )
+        if historique is None:
+            continue
+
+        if saison == saison_actuelle:
+            historique_saison_actuelle = historique
+        elif historique == historique_saison_actuelle:
+            # CORRECTIF 06/09/2026 -- le site a renvoyé exactement la même
+            # page que pour la saison actuelle : le paramètre ?season= a
+            # été ignoré cette fois-ci. On ne compte pas ces matchs deux
+            # fois -- ni ne les compte du tout, puisqu'ils ne sont pas
+            # vraiment de la saison précédente.
+            print(f"[DIAG 18.8] {diag_libelle} -- paramètre de saison IGNORÉ par le site "
+                  f"(page identique à la saison actuelle) -- tentative écartée.")
+            continue
+
+        for m in historique:
+            if m["domicile"] and len(matchs_domicile) < max_matchs:
+                matchs_domicile.append(m)
+            elif not m["domicile"] and len(matchs_exterieur) < max_matchs:
+                matchs_exterieur.append(m)
+
+    if not matchs_domicile and not matchs_exterieur:
+        return {"raison_non_traite": "aucun_match_joue_saison_actuelle_ou_precedente"}
+
+    resultat = {"nb_domicile": len(matchs_domicile), "nb_exterieur": len(matchs_exterieur)}
+    if matchs_domicile:
+        resultat["gf_domicile"] = sum(m["buts_marques"] for m in matchs_domicile) / len(matchs_domicile)
+        resultat["ga_domicile"] = sum(m["buts_encaisses"] for m in matchs_domicile) / len(matchs_domicile)
+    if matchs_exterieur:
+        resultat["gf_exterieur"] = sum(m["buts_marques"] for m in matchs_exterieur) / len(matchs_exterieur)
+        resultat["ga_exterieur"] = sum(m["buts_encaisses"] for m in matchs_exterieur) / len(matchs_exterieur)
+    # AJOUT 04/09/2026 (soir) -- expose les listes brutes match-par-match
+    # (déjà calculées ci-dessus, jusqu'ici jetées après la moyenne). Sert au
+    # moteur de justification (moteur_justification.py) pour compter de
+    # vraies occurrences (ex. "Over 2.5 : 7/8") au lieu d'inventer un
+    # pourcentage à partir de gf_domicile/ga_domicile. Champs additionnels
+    # uniquement -- ne change rien à ce qui existait avant pour les appelants
+    # qui ne lisent que gf_*/ga_*/nb_*.
+    resultat["matchs_domicile_bruts"] = matchs_domicile
+    resultat["matchs_exterieur_bruts"] = matchs_exterieur
+    return resultat

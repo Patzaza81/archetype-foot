@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from typing import Any, Mapping
 
-from moteur_v3.calibration import IsotonicCalibrator
-from moteur_v3.decision import decide
-from moteur_v3.markets import derive_markets, pairwise_joint_probability
-from moteur_v3.risk import goal_context_dispersion
-from moteur_v3.value import evaluate
+from .socle.calibration import IsotonicCalibrator
+from .socle.decision import decide
+from .socle.markets import derive_markets, pairwise_joint_probability
+from .socle.risk import goal_context_dispersion
+from .socle.value import evaluate
 
 from .model import build_model_europe, derniers
 from .performance import indice_performance_europe
