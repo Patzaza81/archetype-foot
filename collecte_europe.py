@@ -247,6 +247,7 @@ def execution(archive="data/archive_test", sortie="data/europe/entrees_europe.js
         sorties.append({"match_id": e.get("match_id"), "date": e.get("date"), "competition_code": competition_europeenne(e.get("competition")),
                         "domicile": e.get("domicile"), "exterieur": e.get("exterieur"), "couverture": n, "score": e.get("score"),
                         "coup_d_envoi_utc": e.get("coup_d_envoi_utc"),
+                        "heure": e.get("heure_cameroun"), "competition": e.get("competition"),
                         "meta_dom": hd["meta"], "meta_ext": he["meta"], "entree": entree})
     bilan = {"genere_le": jour, "matchs": len(sorties), "evaluables": sum(1 for s in sorties if s["couverture"]["evaluable"])}
     for chemin, contenu in ((sortie, {"bilan": bilan, "matchs": sorties}), (cache, cache_donnees)):

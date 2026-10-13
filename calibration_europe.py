@@ -5,7 +5,8 @@ Entrée : la liste `matchs` de data/europe/entrees_europe.json (collecte_europe.
   - entraîne le calibrateur Europe sur les matchs européens JOUÉS strictement avant `avant_le` (historiques déjà coupés
     avant la date de chaque match par la collecte) : mêmes seuils que V3, ≥ 300 observations ET ≥ 50 matchs distincts ;
   - évalue chaque match à venir : sélections, aperçu non calibré (comme V3), candidats écartés avec leurs raisons.
-Sans calibration prête : aucune sélection (règle V3). NO DATA -> NO GO.
+Sans calibration prête : aucune sélection (règle V3), mais l'aperçu non calibré est publié au format de la page V3
+(data/europe/pronostics_europe.json -> pronostics_europe.html). NO DATA -> NO GO.
 
 Usage : python calibration_europe.py [--entrees data/europe/entrees_europe.json] [--sortie data/europe/signaux_europe.json]
 """
@@ -68,6 +69,7 @@ def entraine_calibration_europe(matchs, avant_le):
 def evalue_match_europe(m, calibrateur):
     """Un match à venir. Ne lève jamais : l'erreur est rendue dans `statut`."""
     base = {k: m.get(k) for k in ("match_id", "date", "competition_code", "domicile", "exterieur", "couverture")}
+    base["heure"], base["competition"] = m.get("heure"), m.get("competition") or m.get("competition_code")
     e = m["entree"]
     if not e["odds"]:
         return {**base, "statut": "SANS_COTE", "selections": [], "candidats": []}
@@ -89,6 +91,8 @@ def evalue_match_europe(m, calibrateur):
     def fmt(liste):
         return [{"marche": s.market, "libelle": libelle(s.market), "cote": s.odds, "probabilite": round(s.probability, 4),
                  "edge": s.edge, "edv": round(s.edv, 1), "justification": s.reason,
+                 "raisons_saison": evidence.get(s.market, {}).get("raisons_saison", []),
+                 "raisons_recent": evidence.get(s.market, {}).get("raisons_recent", []),
                  "indice_performance": r["indices_performance"].get(s.market)} for s in liste]
     selections = fmt(r["selected"])
     apercu = []
@@ -96,10 +100,12 @@ def evalue_match_europe(m, calibrateur):
         apercu = fmt(decide([{**c, "calibrated": True} for c in r["candidates"]])[0])
     mod = r["model"]
     return {**base, "statut": "EVALUE", "lambda_dom": round(mod.lambda_home, 3), "lambda_ext": round(mod.lambda_away, 3),
-            "calibree": pret, "selections": selections, "apercu_non_calibre": apercu, "candidats": cands[:5]}
+            "calibree": pret, "n_dom": mod.home_sample.current_n, "n_ext": mod.away_sample.current_n,
+            "selections": selections, "apercu_non_calibre": apercu, "candidats": cands[:5]}
 
 
-def execution(entrees="data/europe/entrees_europe.json", sortie="data/europe/signaux_europe.json", aujourdhui=None):
+def execution(entrees="data/europe/entrees_europe.json", sortie="data/europe/signaux_europe.json", aujourdhui=None,
+              site="data/europe/pronostics_europe.json"):
     aujourdhui = aujourdhui or datetime.date.today()
     with open(entrees, encoding="utf-8") as f:
         matchs = json.load(f)["matchs"]
@@ -114,15 +120,33 @@ def execution(entrees="data/europe/entrees_europe.json", sortie="data/europe/sig
     os.makedirs(os.path.dirname(sortie) or ".", exist_ok=True)
     with open(sortie, "w", encoding="utf-8") as f:
         json.dump({"bilan": bilan, "signaux": signaux}, f, ensure_ascii=False)
+    if site:
+        ecrit_pour_le_site(signaux, bilan, cal, nb, site)
     return bilan
+
+
+def ecrit_pour_le_site(signaux, bilan, cal, nb_matchs, chemin):
+    """Même format que data/v3/pronostics_v3.json : la page pronostics_europe.html réutilise archetype_v3.js tel quel."""
+    from moteur_v3_pipeline import signal_site
+    signaux = sorted(signaux, key=lambda x: (str(x["date"]), str(x.get("heure") or ""), str(x["domicile"])))
+    fit = cal.fit_result
+    sortie = {"moteur": "moteur_europe", "genere_le": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+              "calibration": {"prete": fit.ready, "observations": fit.observations, "matchs": nb_matchs,
+                              "minimum_observations": cal.minimum_observations, "minimum_matchs": MIN_MATCHS_CALIBRATION,
+                              "raison": fit.reason},
+              "bilan": bilan, "signaux": [signal_site(x) for x in signaux]}
+    os.makedirs(os.path.dirname(chemin) or ".", exist_ok=True)
+    with open(chemin, "w", encoding="utf-8") as f:
+        json.dump(sortie, f, ensure_ascii=False, indent=1)
 
 
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--entrees", default="data/europe/entrees_europe.json")
     p.add_argument("--sortie", default="data/europe/signaux_europe.json")
+    p.add_argument("--site", default="data/europe/pronostics_europe.json")
     a = p.parse_args()
-    print(json.dumps(execution(a.entrees, a.sortie), ensure_ascii=False))
+    print(json.dumps(execution(a.entrees, a.sortie, site=a.site), ensure_ascii=False))
     return 0
 
 

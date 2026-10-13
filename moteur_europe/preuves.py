@@ -32,6 +32,7 @@ def preuves_europe(europe_dom, europe_ext, ligue_dom, ligue_ext, marches, dom="D
             ok = bool(r["retenu"]) and (bool(champ["retenu"]) or not CONTROLE_CHAMPIONNAT_BLOQUANT)
             raisons = list(r["saison"]["raisons"]) + list(r["recent"]["raisons"])
             bloc.update(double_control_ok=ok, justification=" ; ".join(raisons) if ok else None,
-                        double_controle_raisons=raisons, double_controle_championnat=bool(champ["retenu"]))
+                        double_controle_raisons=raisons, double_controle_championnat=bool(champ["retenu"]),
+                        raisons_saison=list(r["saison"]["raisons"]), raisons_recent=list(r["recent"]["raisons"]))
         out[m] = bloc
     return out

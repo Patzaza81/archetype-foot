@@ -86,5 +86,44 @@ def test_execution_de_bout_en_bout(tmp_path):
     import json
     ent = tmp_path / "e.json"
     ent.write_text(json.dumps({"matchs": joues(60) + [match(500, date="2026-10-15")]}))
-    b = ce.execution(str(ent), str(tmp_path / "s.json"), aujourdhui=datetime.date(2026, 10, 13))
+    b = ce.execution(str(ent), str(tmp_path / "s.json"), aujourdhui=datetime.date(2026, 10, 13), site=str(tmp_path / "p.json"))
     assert b["matchs_a_venir"] == 1 and b["calibration"]["prete"] and b["calibration"]["matchs"] == 60
+
+
+# --- pronostics visibles sans calibration (format de la page V3) -----------------------------------------------------------
+def match_coherent(i=1, cotes=None):
+    m = match(i, cotes=cotes or {"dc_1X": 1.45, "1x2_1": 1.5, "over_1_5": 1.3, "btts_yes": 1.6})
+    e = m["entree"]
+    e["europe_dom"], e["ligue_dom"] = hist([(2, 1)] * 6, True), hist([(2, 1)] * 6, True)
+    e["europe_ext"], e["ligue_ext"] = hist([(1, 2)] * 6, False), hist([(1, 2)] * 6, False)
+    m["heure"], m["competition"] = "21:00", "Europe : Ligue des Champions Phase de Ligue"
+    return m
+
+
+def test_apercu_non_calibre_produit_sans_attendre_la_calibration():
+    r = ce.evalue_match_europe(match_coherent(), None)
+    assert r["selections"] == [] and [a["marche"] for a in r["apercu_non_calibre"]] == ["dc_1X"]
+
+
+def test_format_site_identique_a_v3(tmp_path):
+    import json
+    ent = tmp_path / "e.json"
+    ent.write_text(json.dumps({"matchs": [match_coherent()]}))
+    p = tmp_path / "p.json"
+    ce.execution(str(ent), str(tmp_path / "s.json"), aujourdhui=datetime.date(2026, 10, 13), site=str(p))
+    d = json.loads(p.read_text())
+    sig = d["signaux"][0]
+    assert sig["moteur_utilise"] == "moteur_v3" and sig["moteur_v3"]["apercu_non_calibre"] is True
+    assert sig["moteur_v3"]["selection"]["P1"]["apercu_non_calibre"] is True
+    assert d["calibration"]["prete"] is False and d["calibration"]["minimum_matchs"] == 50
+
+
+def test_marche_hors_fenetre_de_cotes_jamais_propose():
+    r = ce.evalue_match_europe(match_coherent(cotes={"1x2_1": 1.1, "dc_1X": 1.1}), None)
+    assert r["apercu_non_calibre"] == []
+
+
+def test_page_europe_lit_les_donnees_europe_et_pas_celles_de_v3():
+    import pathlib
+    h = (pathlib.Path(__file__).parent.parent / "pronostics_europe.html").read_text(encoding="utf-8")
+    assert "data/europe/pronostics_europe.json" in h and h.index("window.fetch") < h.index('src="archetype_v3.js')
