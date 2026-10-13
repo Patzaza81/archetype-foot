@@ -1,0 +1,77 @@
+/* af-pronostics.css — harmonisation visuelle des cartes V2 / V3 avec la page d'accueil (branche accueil-prototype).
+   Couche de présentation SEULE : aucune règle ne masque, n'ajoute ni ne déplace un contenu ; seuls couleurs,
+   bordures, rayons, ombres et typographie changent. Portée : body.af-v2 (archetype.html) et body.af-v3
+   (pronostics_v3.html). Le panier et les autres pages qui chargent archetype.css ne sont pas concernés.
+   Couleurs = jetons de theme.css (--af-*) utilisés par l'accueil. Mode nuit = body.theme-nuit. */
+
+/* ══════════ Page ══════════ */
+body:is(.af-v2,.af-v3).theme-nuit{background:#0E1018;color:#F4F2F7}
+body:is(.af-v2,.af-v3){color:#17141B;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+
+:is(.af-v2,.af-v3) .ax-entete h1{color:#087F78;font-size:clamp(26px,7vw,34px);font-weight:800;letter-spacing:.02em}
+:is(.af-v2,.af-v3).theme-nuit .ax-entete h1{color:#2BB3A6}
+:is(.af-v2,.af-v3) .ax-bandeau{border-radius:12px;padding:12px 16px;background:linear-gradient(135deg,#087F78,#06645F);box-shadow:0 6px 16px rgba(8,127,120,.22)}
+:is(.af-v2,.af-v3).theme-nuit .ax-bandeau{background:linear-gradient(135deg,#0F3B37,#0B2624);box-shadow:none;border:1px solid rgba(21,152,141,.28)}
+:is(.af-v2,.af-v3) .ax-maj{color:#5B6763}
+:is(.af-v2,.af-v3).theme-nuit .ax-maj{color:#A9B3B8}
+:is(.af-v2,.af-v3) .ax-liste-matchs{gap:14px}
+:is(.af-v2,.af-v3) .ax-etat-vide{border-radius:14px;border-color:rgba(8,127,120,.16)}
+:is(.af-v2,.af-v3).theme-nuit .ax-etat-vide{background:#171A25;border-color:rgba(21,152,141,.28)}
+:is(.af-v2,.af-v3).theme-nuit .ax-etat-vide p{color:#A9B3B8}
+
+/* ══════════ Carte : jetons ══════════ */
+body:is(.af-v2,.af-v3) .ax-carte{
+  --ax-fond:#FFFFFF; --ax-texte:#17141B; --ax-doux:#5B6763; --ax-ligne:rgba(8,127,120,.16);
+  --ax-vert:#1F7A44;
+  --ax-or:#9A701B;     --ax-or-texte:#7D5A12;
+  --ax-bleu:#087F78;   --ax-bleu-texte:#06645F;
+  --ax-violet:#06645F; --ax-violet-texte:#06645F;
+  --ax-vide-fond:#E6EEEC; --ax-vide-texte:#5B6763;
+  --ax-piste:#DCEDEA; --ax-anneau:#15988D; --ax-centre:#0F3B37;
+  --ax-etoile:#C49A3A; --ax-etoile-vide:#DDD8CC;
+  --ax-bouton:#087F78;
+  border-radius:14px;
+  box-shadow:0 4px 14px rgba(15,42,40,.08);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+body:is(.af-v2,.af-v3).theme-nuit .ax-carte{
+  --ax-fond:#171A25; --ax-texte:#F4F2F7; --ax-doux:#A9B3B8; --ax-ligne:rgba(21,152,141,.28);
+  --ax-vert:#5FD08A;
+  --ax-or-texte:#E3B04B; --ax-bleu-texte:#2BB3A6; --ax-violet-texte:#5CC9BE;
+  --ax-vide-fond:#1E2230; --ax-vide-texte:#A9B3B8;
+  --ax-piste:#22302E; --ax-centre:#0F3B37;
+  --ax-etoile-vide:#3A3F50;
+  box-shadow:0 4px 14px rgba(0,0,0,.35);
+}
+
+/* ══════════ Carte : éléments ══════════ */
+:is(.af-v2,.af-v3) .ax-equipe{font-weight:700}
+:is(.af-v2,.af-v3) .ax-horaire strong{font-weight:800;font-variant-numeric:tabular-nums}
+:is(.af-v2,.af-v3) .ax-marche{font-weight:800;letter-spacing:-.01em}
+
+/* Onglets : même contenu, ton de l'accueil ; le rang actif garde son repère blanc */
+:is(.af-v2,.af-v3) .ax-onglet{font-weight:700}
+:is(.af-v2,.af-v3) .ax-onglet.ax-actif{font-weight:800}
+
+/* Cote : pastille dorée claire, chiffres alignés (valeurs inchangées) */
+:is(.af-v2,.af-v3) .ax-badge-cote{border-radius:10px;background:#F5E9CC;color:#3D2C06;border:1px solid rgba(154,112,27,.35)}
+:is(.af-v2,.af-v3).theme-nuit .ax-badge-cote{background:#2E2715;color:#F3D58C;border-color:rgba(196,154,58,.45)}
+:is(.af-v2,.af-v3) .ax-badge-cote strong,
+:is(.af-v2,.af-v3) .ax-resume-cote strong{font-variant-numeric:tabular-nums}
+
+/* Blocs internes : rayons alignés sur l'accueil (10 px) */
+:is(.af-v2,.af-v3) .ax-tab,
+:is(.af-v2,.af-v3) .ax-vigilance,
+:is(.af-v2,.af-v3) .ax-analyse-vide,
+:is(.af-v2,.af-v3) .ax-indice{border-radius:10px}
+:is(.af-v2,.af-v3) .ax-tab-titre,
+:is(.af-v2,.af-v3) .ax-vigilance-titre{letter-spacing:.08em}
+
+/* Bouton « Détails de l'analyse » : contour sarcelle, comme les boutons secondaires de l'accueil */
+:is(.af-v2,.af-v3) .ax-bouton-details{border-width:1.5px;border-radius:10px;font-size:14px;min-height:44px}
+:is(.af-v2,.af-v3) .ax-deplier,
+:is(.af-v2,.af-v3) .ax-plier{border-radius:10px}
+:is(.af-v2,.af-v3) :is(.ax-onglet,.ax-bouton-details,.ax-details summary,.ax-retirer):focus-visible{outline-color:#C49A3A}
+
+/* Drapeau du pays du championnat (inséré par af-drapeaux-cartes.js, jamais celui d'une équipe) */
+:is(.af-v2,.af-v3) .af-drapeau{display:inline-block;margin-right:5px;font-size:13px;line-height:1;vertical-align:-1px}

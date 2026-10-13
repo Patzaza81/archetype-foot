@@ -39,7 +39,15 @@ def test_liens_de_la_barre_vers_des_pages_existantes(page):
         assert os.path.exists(os.path.join(RACINE, h)), h
 
 
+# Seuls ajouts autorisés : la couche de présentation des drapeaux (harmonisation V2/V3), chargée APRÈS
+# les scripts métier, sur V2 et V3 uniquement. Aucun script métier ne change, ni d'ordre ni de nom.
+PRESENTATION_AUTORISEE = {
+    "archetype.html": ["drapeaux.js", "af-drapeaux-cartes.js"],
+    "pronostics_v3.html": ["drapeaux.js", "af-drapeaux-cartes.js"],
+}
+
+
 @pytest.mark.parametrize("page,attendus", SCRIPTS_ATTENDUS.items())
 def test_scripts_de_la_page_inchanges(page, attendus):
     scripts = [re.sub(r"\?.*$", "", x) for x in re.findall(r'<script src="([^"]+)"', lit(page))]
-    assert scripts == attendus
+    assert scripts == attendus + PRESENTATION_AUTORISEE.get(page, [])
