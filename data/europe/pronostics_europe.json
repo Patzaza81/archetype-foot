@@ -1,6 +1,6 @@
 {
  "moteur": "moteur_europe",
- "genere_le": "2026-10-13T16:24:06Z",
+ "genere_le": "2026-10-13T19:34:37Z",
  "calibration": {
   "prete": false,
   "observations": 0,
@@ -12,7 +12,7 @@
  "bilan": {
   "genere_le": "2026-10-13",
   "matchs_a_venir": 50,
-  "evalues": 29,
+  "evalues": 33,
   "selections": 0,
   "calibration": {
    "prete": false,
@@ -75,6 +75,65 @@
        "donnees_suffisantes": true,
        "bibliotheque": {
         "ev_percentage": 26.2
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "match_id": "5j9f7ilgouelxpnxn58ibj2fo",
+   "date": "2026-10-14",
+   "heure_cameroun": "20:00",
+   "competition": "Europe : Ligue des Champions Phase de Ligue",
+   "domicile": "Bodo/Glimt",
+   "exterieur": "Dortmund",
+   "moteur_utilise": "moteur_europe",
+   "moteur_europe": {
+    "statut": "OK",
+    "moteur": "moteur_europe",
+    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
+    "apercu_non_calibre": true,
+    "selection": {
+     "P1": {
+      "marche": "handicap3_domicile_2_1",
+      "marche_moteur": "handicap_-2_1",
+      "libelle": "Handicap 3 choix Bodo/Glimt +2 (1) : Bodo/Glimt ne perd pas par 2 buts ou plus",
+      "probabilite": 0.9183,
+      "cote": 1.27,
+      "edge": 0.1309223611045257,
+      "edv": 0.166,
+      "niveau": "V3_ECHANTILLON_UTILISABLE",
+      "robustesse": null,
+      "points_de_vigilance": [
+       "Aperçu NON calibré : la calibration n'a pas encore assez de matchs joués. Ce n'est pas une sélection du moteur, seulement ce qu'il retiendrait si la calibration confirmait ses probabilités.",
+       "Moteur V3 en production parallèle : candidat, non promu comme moteur principal."
+      ],
+      "rang": "P1",
+      "apercu_non_calibre": true,
+      "indice_performance": null,
+      "alternatives_indice": [],
+      "justification": {
+       "resume": "Probabilité NON calibrée 92 % contre 79 % selon la cote 1,27 · marge +16,6 % · 5 matchs au même lieu.",
+       "preuves": [
+        {
+         "type": "v3_controle_saison",
+         "texte": "Bodo/Glimt perd par 2 buts ou plus dans 0% de ses matchs à ce lieu ; Dortmund gagne par 2 buts ou plus dans 20% de ses matchs à son lieu ; écart de buts attendu en faveur de Dortmund (moyennes simples) : -0,80"
+        },
+        {
+         "type": "v3_forme_recente",
+         "texte": "Bodo/Glimt : 1 défaite par 2 buts ou plus sur ses 6 derniers ; Dortmund : 2 victoires par 2 buts ou plus sur ses 6 derniers"
+        },
+        {
+         "type": "ev_percentage",
+         "valeur": 16.6,
+         "texte": "Le prix proposé laisse 16,6 % de marge par rapport à l'estimation NON calibrée."
+        }
+       ],
+       "explication": null,
+       "donnees_suffisantes": true,
+       "bibliotheque": {
+        "ev_percentage": 16.6
        }
       }
      }
@@ -566,31 +625,18 @@
    ]
   },
   {
-   "match_id": "5j9f7ilgouelxpnxn58ibj2fo",
-   "date": "2026-10-14",
-   "heure": "20:00",
-   "competition": "Europe : Ligue des Champions Phase de Ligue",
-   "domicile": "Bodo/Glimt",
-   "exterieur": "Dortmund",
-   "etat": "Non évalué : historique insuffisant",
-   "lignes": [
-    "Bodo/Glimt : 0 match européen à domicile (3 minimum)",
-    "Dortmund : 0 match européen à l'extérieur (3 minimum)",
-    "Bodo/Glimt : 0 match de championnat à domicile (3 minimum)",
-    "Dortmund : 2 matchs de championnat à l'extérieur (3 minimum)"
-   ]
-  },
-  {
    "match_id": "5imykiim94uvnwx5nextzyl1w",
    "date": "2026-10-14",
    "heure": "20:00",
    "competition": "Europe : Ligue des Champions Phase de Ligue - des équipes Françaises",
    "domicile": "Man City",
    "exterieur": "PSG",
-   "etat": "Non évalué : historique insuffisant",
+   "etat": "Évalué : aucun marché ne passe tous les filtres",
    "lignes": [
-    "Man City : 0 match européen à domicile (3 minimum)",
-    "PSG : 0 match européen à l'extérieur (3 minimum)"
+    "Buts attendus : 1.405 – 1.332",
+    "Moins de 3,5 buts · cote 1,66 · probabilité 71 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
+    "Double chance 1X · cote 1,27 · probabilité 64 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
+    "Double chance X2 · cote 1,56 · probabilité 61 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification"
    ]
   },
   {
@@ -716,9 +762,12 @@
    "competition": "Europe : Ligue Conférence Phase de Ligue",
    "domicile": "Mjällby",
    "exterieur": "Inter Escaldes",
-   "etat": "Non évalué : historique insuffisant",
+   "etat": "Évalué : aucun marché ne passe tous les filtres",
    "lignes": [
-    "Mjällby : 0 match de championnat à domicile (3 minimum)"
+    "Buts attendus : 1.593 – 1.769",
+    "Domicile marque moins de 2,5 buts · cote 1,53 · probabilité 79 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
+    "Plus de 2,5 buts · cote 1,68 · probabilité 65 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; résultats irréguliers et probabilité sous 67 %",
+    "Moins de 3,5 buts · cote 1,47 · probabilité 57 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; probabilité sous 60 % ; résultats irréguliers et probabilité sous 67 %"
    ]
   },
   {
@@ -948,10 +997,12 @@
    "competition": "Europe : Ligue Conférence Phase de Ligue",
    "domicile": "Hearts",
    "exterieur": "Nordsjaelland",
-   "etat": "Non évalué : historique insuffisant",
+   "etat": "Évalué : aucun marché ne passe tous les filtres",
    "lignes": [
-    "Hearts : 0 match européen à domicile (3 minimum)",
-    "Nordsjaelland : 0 match européen à l'extérieur (3 minimum)"
+    "Buts attendus : 1.466 – 1.419",
+    "Moins de 3,5 buts · cote 1,51 · probabilité 67 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé",
+    "Double chance 1X · cote 1,62 · probabilité 63 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé",
+    "Double chance X2 · cote 1,27 · probabilité 61 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé"
    ]
   },
   {
