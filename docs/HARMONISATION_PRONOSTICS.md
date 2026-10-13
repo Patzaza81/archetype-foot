@@ -93,3 +93,38 @@ Elles se trouvent dans `docs/apercus/harmonisation/` :
 - `systeme.html` déborde de 10 px à 390 px. `betpawa-validation.html` et `presentation-site.html` n'ont pas de mode nuit.
 - Huit pages basées sur `theme.js` n'ont pas encore la barre commune.
 - Le drapeau anglais, écossais ou gallois (séquence d'étiquettes) peut s'afficher comme un drapeau noir sur certains anciens Android ou Windows 10.
+
+## Journal et panier (13/10)
+
+Même identité visuelle, structure et fonctionnement conservés. Seule la présentation change (CSS et drapeaux).
+
+**Panier** (`body.af-panier`)
+- Mêmes cartes façon accueil que V2.
+- Le bouton « Retirer » devient une pastille discrète sous les équipes.
+- Un match sans sélection s'affiche dans une carte blanche alignée à gauche.
+
+**Journal** (`body.af-journal`, fichier `af-journal.css` en plus)
+- Titres en noir.
+- Chiffres clés en tuiles claires.
+- Rubriques et filtres en pastilles sarcelle.
+- Fiches championnats et équipes sur fond gris-vert clair.
+- Tableaux avec chiffres alignés.
+- Badges : couleurs de sens conservées (à jouer, à surveiller, à éviter).
+- Cartes de conseil : en-tête façon ticket, marché en sarcelle, cote à droite.
+
+**Correctifs inclus**
+- **Barre des rubriques du Journal** : elle passait sous la barre de navigation commune quand on faisait défiler la page (93 px cachés sur iPhone). Ce défaut venait de l'ajout de la barre commune. Elle se colle maintenant juste dessous.
+- **Tableaux « Marchés rentables »** : sur iPhone, ils dépassaient l'écran (colonne « Niveau » coupée : +23 px à 390 px, +53 px à 360 px). Ils tiennent maintenant dans l'écran : 0 px de 360 à 414 px. Aucune colonne n'est retirée.
+
+**Vérification** à 390, 414 et 1 280 px, en clair et en nuit, avec un panier de test de 3 matchs avec sélection et 1 match inconnu.
+
+| Contrôle | Journal | Panier |
+|---|---|---|
+| Texte et HTML identiques à avant | ✅ | ✅ |
+| Cotes identiques | — | ✅ |
+| Fonctionnement | 5 rubriques ; filtres (74 → 15 → 74 fiches ; 674 / 166 / 66 équipes) ; fiche dépliable | dépliage ; détails ; « Retirer » (4 → 2 matchs stockés) |
+| Bouton mode nuit | ✅ | ✅ |
+| Erreurs JavaScript | 0 | 0 |
+| Débordement de la page | 0 | 0 |
+
+Suite `pytest` : 1 927 réussis.

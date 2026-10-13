@@ -19,7 +19,8 @@
     });
   }
   function demarre() {
-    var liste = document.getElementById("matches");
+    // Liste des cartes : #matches (V2, V3), #panier-cartes (panier), main du Journal — toutes en main.ax-liste-matchs.
+    var liste = document.querySelector("main.ax-liste-matchs");
     if (!liste) return;
     decore(liste);
     // Les cartes sont construites après le chargement des données : on décore au fil des ajouts.

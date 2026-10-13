@@ -1,0 +1,100 @@
+/* af-journal.css — Journal présenté avec l'identité de l'accueil (branche de travail, prototype).
+   Chargé après journal.css et af-pronostics.css, uniquement sur journal.html (body.af-journal).
+   Présentation SEULE : rubriques, filtres, tableaux, fiches, badges et cartes de conseil gardent leur structure
+   et leur fonctionnement ; aucun contenu n'est masqué, ajouté ou déplacé. Les couleurs viennent des jetons
+   de carte (--ax-*, définis par af-pronostics.css) : le mode nuit suit. */
+
+/* ══════════ Titres et textes ══════════ */
+body.af-journal .jr-titre{margin:0 0 6px;font-size:20px;font-weight:800;letter-spacing:-.01em;color:var(--ax-texte)}
+body.af-journal .jr-aide{font-size:14px;line-height:1.5;color:var(--ax-doux)}
+body.af-journal .jr-sous-titre{font-size:16px;font-weight:700;color:var(--ax-texte)}
+body.af-journal .jr-source{border:0;border-radius:10px;background:var(--ax-surface2);font-size:13.5px;line-height:1.5}
+
+/* ══════════ Chiffres clés : tuiles claires, chiffres en gras (comme les indicateurs de l'accueil) ══════════ */
+body.af-journal .jr-chiffres{gap:8px}
+body.af-journal .jr-chiffre{border:0;border-radius:10px;background:var(--ax-surface2);padding:12px 14px}
+body.af-journal .jr-chiffre span{font-size:12.5px;font-weight:600;line-height:1.3;color:var(--ax-doux)}
+body.af-journal .jr-chiffre b{margin-top:4px;font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--ax-texte)}
+body.af-journal .jr-chiffre b.pos{color:var(--ax-vert)}
+
+/* ══════════ Rubriques (barre collante) et filtres : pastilles de l'accueil ══════════
+   Correctif : la barre des rubriques se colle SOUS la barre de navigation commune (93 px sur téléphone, 61 px
+   au-delà de 520 px) au lieu de passer derrière elle. */
+body.af-journal .jr-onglets{--jo-fond:#F7F1E7;--jo-carte:#FFFFFF;--jo-texte:#17141B;--jo-ligne:rgba(8,127,120,.18);
+  top:calc(env(safe-area-inset-top,0px) + 93px);z-index:6;padding:10px 2px}
+body.af-journal.theme-nuit .jr-onglets{--jo-fond:#0E1018;--jo-carte:#171A25;--jo-texte:#F4F2F7;--jo-ligne:rgba(21,152,141,.30)}
+@media (min-width:521px){body.af-journal .jr-onglets{top:calc(env(safe-area-inset-top,0px) + 61px)}}
+body.af-journal .jr-onglets button{min-height:40px;font-size:14px;font-weight:700}
+body.af-journal .jr-onglets button.actif{font-weight:800}
+body.af-journal .jr-filtres{gap:6px}
+body.af-journal .jr-filtres button{min-height:38px;border-color:var(--ax-ligne);background:var(--ax-surface2);font-size:13.5px}
+body.af-journal .jr-filtres button.actif{background:linear-gradient(135deg,#087F78,#06645F);border-color:transparent;color:#fff}
+body.af-journal :is(.jr-onglets button,.jr-filtres button,.jr-plus,.jr-fiche summary,.jr-equipe summary,.jr-lien):focus-visible{outline:3px solid #C49A3A;outline-offset:2px}
+
+/* ══════════ Fiches championnats et équipes : lignes sur fond clair, comme les sélections de l'accueil ══════════ */
+body.af-journal .jr-fiche,
+body.af-journal .jr-equipe{border:0;border-radius:10px;background:var(--ax-surface2);padding:12px 14px;margin-top:8px}
+body.af-journal .jr-fiche-nom{font-size:15.5px;font-weight:700;color:var(--ax-texte)}
+body.af-journal .jr-fiche-info{font-size:13px;font-weight:500;line-height:1.4;color:var(--ax-doux)}
+body.af-journal .jr-fiche summary::after,
+body.af-journal .jr-equipe summary::after{color:var(--ax-accent-texte)}
+body.af-journal .jr-eq-resume{font-size:13.5px;font-weight:600;line-height:1.45}
+body.af-journal .jr-eq-prochain{color:var(--ax-accent-texte)}
+body.af-journal .jr-eq-marche{border-top-color:var(--ax-ligne)}
+body.af-journal .jr-eq-ligne{font-size:14.5px;line-height:1.4}
+body.af-journal .jr-eq-freq{font-variant-numeric:tabular-nums}
+body.af-journal .jr-cote-pm{background:var(--ax-accent);font-variant-numeric:tabular-nums}
+
+/* ══════════ Tableaux ══════════ */
+body.af-journal .jr-table-wrap{margin-top:8px;border-radius:8px;background:var(--ax-fond)}
+body.af-journal .jr-table{font-size:13.5px;font-variant-numeric:tabular-nums}
+body.af-journal .jr-table th{font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ax-doux)}
+body.af-journal .jr-table td{color:var(--ax-texte)}
+body.af-journal .jr-table th:first-child,
+body.af-journal .jr-table td:first-child{padding-left:8px}
+body.af-journal .jr-table th:last-child,
+body.af-journal .jr-table td:last-child{padding-right:8px}
+
+/* ══════════ Badges : couleurs de sens conservées (à jouer, à surveiller, à éviter), forme de l'accueil ══════════ */
+body.af-journal .jr-badge{font-weight:700;letter-spacing:.01em}
+body.af-journal :is(.b-NEUTRE,.b-INCONNU,.b-COTE_NON_BETPAWA){background:var(--ax-surface2);color:var(--ax-doux);box-shadow:inset 0 0 0 1px var(--ax-ligne)}
+body.af-journal .jr-indice{font-weight:700}
+
+/* ══════════ Cartes de conseil : marché en sarcelle, cote à droite (ligne de ticket de l'accueil) ══════════ */
+body.af-journal .jr-conseil-corps{padding:0 14px 14px}
+body.af-journal .jr-marche{border-radius:10px;background:var(--ax-surface2);color:var(--ax-accent-texte);font-size:16px;font-weight:700;padding:11px 12px}
+body.af-journal .jr-marche .jr-cote{font-size:22px;font-weight:800;color:var(--ax-texte);font-variant-numeric:tabular-nums}
+body.af-journal .jr-preuve{font-size:14px;line-height:1.5}
+body.af-journal .jr-lien{color:var(--ax-accent-texte)}
+
+/* ══════════ Boutons et alertes ══════════ */
+body.af-journal .jr-plus{min-height:40px;padding:0 16px;border:1.5px solid var(--ax-accent);border-radius:10px;background:transparent;color:var(--ax-accent-texte)}
+body.af-journal .jr-alerte{border-radius:10px;border-color:var(--ax-ligne);background:var(--ax-surface2);font-weight:500;line-height:1.5}
+
+/* ══════════ Tableaux sur téléphone : tenir dans l'écran sans défilement horizontal ══════════
+   Avant cette couche, le tableau dépassait déjà de 23 px à 390 px (colonne « Niveau » coupée). Ici, marges et
+   en-têtes resserrés : aucune colonne retirée, aucun texte réduit sous 12 px. */
+@media (max-width:520px){
+  body.af-journal .jr-bloc{padding:14px 12px}
+  body.af-journal .jr-fiche{padding:11px 8px}
+  body.af-journal .jr-table{font-size:13px}
+  body.af-journal .jr-table th{font-size:12px;letter-spacing:0;text-transform:none}
+  body.af-journal .jr-table th,
+  body.af-journal .jr-table td{padding:7px 3px}
+  body.af-journal .jr-table th:first-child,
+  body.af-journal .jr-table td:first-child{min-width:84px;padding-left:6px}
+  body.af-journal .jr-table th:last-child,
+  body.af-journal .jr-table td:last-child{padding-right:4px}
+  body.af-journal .jr-badge-court{padding:2px 6px;font-size:11px}
+}
+@media (max-width:374px){
+  body.af-journal .jr-bloc{padding:14px 10px}
+  body.af-journal .jr-fiche{padding:10px 6px}
+  body.af-journal .jr-table{font-size:12.5px}
+  body.af-journal .jr-table th{font-size:11.5px}
+  body.af-journal .jr-table th,
+  body.af-journal .jr-table td{padding:6px 2px}
+  body.af-journal .jr-table th:first-child,
+  body.af-journal .jr-table td:first-child{min-width:72px;padding-left:5px}
+  body.af-journal .jr-badge-court{padding:2px 5px}
+}
