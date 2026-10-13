@@ -6,14 +6,30 @@
 <meta name="theme-color" content="#FCEAF2">
 <title>Archetype Foot — Moteur V3</title>
 <link rel="stylesheet" href="archetype.css?v=20261010v2idx">
+<link rel="stylesheet" href="af-barre.css">
+<link rel="stylesheet" href="af-pronostics.css">
 </head>
-<body class="ax-page">
+<body class="ax-page af-fond af-v3">
 <script>try{if(localStorage.getItem("archetype_theme_nuit")==="1")document.body.classList.add("theme-nuit")}catch(e){}</script>
-<div class="ax-conteneur">
-  <div class="ax-barre">
-    <a class="ax-lien-accueil" href="index.html"><span aria-hidden="true">←</span> Accueil</a>
-    <button id="ax-bouton-theme" class="ax-bouton-theme" type="button" aria-label="Activer le mode nuit">☾</button>
+<div class="af-barre">
+  <div class="af-barre-in">
+    <a class="af-logo" href="accueil-prototype.html" aria-label="Archetype Foot, accueil"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M4 36 18 4h6l12 32h-7l-3-8H14l-3 8z" fill="#087F78"/><path d="M16 22h8l-4-11z" fill="#F7F1E7"/><path d="M27 4h9L22 30l-3-6z" fill="#C49A3A"/></svg><span><b>ARCHETYPE</b><i>FOOT</i></span></a>
+    <nav class="af-nav" aria-label="Navigation principale">
+      <a href="accueil-prototype.html">Accueil</a>
+      <a href="pronostics_v3.html" aria-current="page">Moteur V3</a>
+      <a href="archetype.html">Moteur V2</a>
+      <a href="tickets.html">Tickets</a>
+      <a href="journal.html">Journal</a>
+      <a href="corners_cartons.html">Corners &amp; cartons</a>
+      <a href="systeme.html">Système</a>
+    </nav>
+    <div class="af-actions">
+      <button id="ax-bouton-theme" class="af-bouton-icone" type="button" aria-label="Activer le mode nuit">☾</button>
+      <a class="af-compte" href="compte.html"><span aria-hidden="true">👤</span><span>Mon compte</span></a>
+    </div>
   </div>
+</div>
+<div class="ax-conteneur">
   <div class="ax-entete">
     <h1>MOTEUR V3</h1>
     <p class="ax-bandeau">Moteur parallèle expérimental — distinct du moteur principal</p>
@@ -24,5 +40,7 @@
 <script src="traduction_marches.js"></script>
 <script src="ui_mappings.js?v=20260921e"></script>
 <script src="archetype_v3.js?v=20261010v2idx"></script>
+<script src="drapeaux.js"></script>
+<script src="af-drapeaux-cartes.js"></script>
 </body>
 </html>

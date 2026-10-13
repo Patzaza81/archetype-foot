@@ -1,0 +1,160 @@
+/* af-pronostics.css — cartes V2 / V3 présentées comme les lignes de l'accueil (branche de travail, prototype).
+   Couche de présentation SEULE, chargée après archetype.css :
+   - aucune règle ne masque, n'ajoute ni ne supprime un contenu (vérifié par tests/test_harmonisation_pronostics.py) ;
+   - le HTML produit par archetype.js / archetype_v3.js n'est pas modifié : la mise en ligne façon accueil
+     (heure à gauche, compétition, équipes, marché en sarcelle, cote à droite) est obtenue par grille CSS ;
+   - portée : body.af-v2 (archetype.html), body.af-v3 (pronostics_v3.html), body.af-panier (panier.html)
+     et body.af-journal (journal.html, complété par af-journal.css pour ses éléments propres).
+   Couleurs = jetons de l'accueil (theme.css --af-*). Mode nuit = body.theme-nuit.
+   Toutes les règles de carte commencent par « body:is(.af-v2,…) .ax-carte » (spécificité ≥ 0,3,1) pour passer
+   devant archetype.css (max 0,3,0) sans !important. */
+
+/* ══════════ Page ══════════ */
+body:is(.af-v2,.af-v3,.af-panier,.af-journal){color:#17141B;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal).theme-nuit{background:#0E1018;color:#F4F2F7}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-entete h1{color:#087F78;font-size:clamp(26px,7vw,34px);font-weight:800;letter-spacing:.02em}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal).theme-nuit .ax-entete h1{color:#2BB3A6}
+/* Bandeau : couleur exacte du bandeau de l'accueil (--bandeau) */
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-bandeau{border-radius:12px;padding:12px 16px;background:#0F2A28;box-shadow:none;font-weight:600}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal).theme-nuit .ax-bandeau{background:#0A1716;border:1px solid rgba(21,152,141,.28)}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-maj{color:#5B6763}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal).theme-nuit .ax-maj{color:#A9B3B8}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-liste-matchs{gap:14px}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-etat-vide{border-radius:14px;border-color:rgba(8,127,120,.16)}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal).theme-nuit .ax-etat-vide{background:#171A25;border-color:rgba(21,152,141,.28)}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal).theme-nuit .ax-etat-vide p{color:#A9B3B8}
+
+/* ══════════ Carte : jetons ══════════ */
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte{
+  --ax-fond:#FFFFFF; --ax-texte:#17141B; --ax-doux:#5B6763; --ax-ligne:rgba(8,127,120,.16);
+  --ax-surface2:#F1F6F4; --ax-accent:#087F78; --ax-accent-2:#06645F; --ax-accent-texte:#087F78;
+  --ax-vert:#1F7A44;
+  --ax-or:#9A701B;     --ax-or-texte:#7D5A12;
+  --ax-bleu:#087F78;   --ax-bleu-texte:#06645F;
+  --ax-violet:#06645F; --ax-violet-texte:#06645F;
+  --ax-vide-fond:transparent; --ax-vide-texte:#5B6763;
+  --ax-piste:#DCEDEA; --ax-anneau:#15988D; --ax-centre:#0F3B37;
+  --ax-etoile:#C49A3A; --ax-etoile-vide:#DDD8CC;
+  --ax-bouton:#087F78;
+  border-radius:14px;
+  box-shadow:0 2px 10px rgba(15,42,40,.06);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal).theme-nuit .ax-carte{
+  --ax-fond:#171A25; --ax-texte:#F4F2F7; --ax-doux:#A9B3B8; --ax-ligne:rgba(21,152,141,.28);
+  --ax-surface2:#1E2230; --ax-accent:#2BB3A6; --ax-accent-2:#15988D; --ax-accent-texte:#2BB3A6;
+  --ax-vert:#5FD08A;
+  --ax-or-texte:#E3B04B; --ax-bleu-texte:#2BB3A6; --ax-violet-texte:#5CC9BE;
+  --ax-vide-texte:#A9B3B8;
+  --ax-piste:#22302E; --ax-centre:#0F3B37;
+  --ax-etoile-vide:#3A3F50;
+  box-shadow:0 2px 12px rgba(0,0,0,.35);
+}
+
+/* ══════════ En-tête du match : comme une ligne de ticket de l'accueil ══════════
+   [ 18:00      ] 🇩🇪 Allemagne : Ligue 3
+   [ Mar 13 oct ] TSV Havelse
+                  Würzburg
+   Les conteneurs intermédiaires passent en display:contents : leurs enfants (déjà présents) se placent
+   dans la grille de .ax-match. Rien n'est ajouté ni retiré. */
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-match{
+  display:grid;grid-template-columns:74px minmax(0,1fr);
+  grid-template-areas:"heure compet" "heure dom" "heure ext" "heure actions";
+  column-gap:12px;row-gap:2px;align-items:start;padding:14px 14px 12px}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte.ax-replie .ax-match{padding:14px 14px 12px}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-ligne-match,
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-match-bas{display:contents}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-horaire{grid-area:heure;display:grid;justify-items:start;align-content:start;text-align:left;min-width:0;gap:1px}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-horaire strong{font-size:17px;font-weight:800;line-height:1.15;font-variant-numeric:tabular-nums}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-horaire span{font-size:12.5px;font-weight:700;line-height:1.25;color:var(--ax-texte);white-space:nowrap}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-competition{grid-area:compet;margin:0 0 2px;font-size:13.5px;font-weight:500;line-height:1.3;color:var(--ax-doux)}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-equipe{font-size:16.5px;font-weight:700;line-height:1.25;text-align:left;overflow-wrap:break-word}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte.ax-replie .ax-equipe{font-size:16px}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-dom{grid-area:dom}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-ext{grid-area:ext}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-actions-tete{grid-area:actions;justify-self:start}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-match-bas > .jr-badge{grid-area:actions;justify-self:start;margin-top:4px}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .af-drapeau{display:inline-block;margin-right:6px;font-size:14px;line-height:1;vertical-align:-1px}
+
+/* ══════════ Onglets P1 / P2 / P3 : pastilles, comme « Football » sur l'accueil ══════════ */
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-onglets{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 12px}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-onglet{
+  flex:0 1 auto;flex-direction:row;align-items:baseline;gap:6px;
+  min-height:38px;padding:8px 14px;border-radius:999px;
+  border:1px solid var(--ax-ligne);background:var(--ax-surface2);color:var(--ax-texte);
+  font-size:13.5px;font-weight:700;line-height:1.2;box-shadow:none}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-onglet.ax-actif{background:linear-gradient(135deg,var(--ax-accent),var(--ax-accent-2));border-color:transparent;color:#fff;font-weight:800}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal).theme-nuit .ax-carte .ax-onglet.ax-actif{background:linear-gradient(135deg,#087F78,#06645F)}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-onglet.ax-vide{background:transparent;border-style:dashed;color:var(--ax-vide-texte);font-weight:600}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-onglet small{font-size:11.5px;font-weight:600}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-onglet:focus-visible{outline:3px solid #C49A3A;outline-offset:2px}
+
+/* ══════════ Aperçu replié : une ligne de sélection façon accueil ══════════ */
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-resume{border-top:0;padding:0 14px 14px}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-resume-rang{align-items:flex-end;gap:10px;padding:11px 12px;border-left:0;border-radius:10px;background:var(--ax-surface2)}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-resume-rang + .ax-resume-rang{border-top:0;margin-top:8px}
+/* Corps de la ligne : étiquette et marché à gauche, cote à droite sur deux lignes (comme l'accueil) ;
+   le reste (étoiles, justification, indice) sur toute la largeur. Simple placement en grille. */
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-resume-corps{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:12px}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-resume-corps > *{grid-column:1 / -1}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-resume-tete{display:contents}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-resume-etiquette{grid-column:1}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-resume-cote{grid-column:2;grid-row:1 / span 2;align-self:center}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-resume-corps > .ax-resume-marche{grid-column:1}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-resume-etiquette{font-size:11px;letter-spacing:.08em;color:var(--ax-doux)}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-resume-cote{display:grid;justify-items:end;font-size:11px;line-height:1.1;color:var(--ax-doux)}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-resume-cote strong{font-size:20px;font-weight:800;line-height:1.1;color:var(--ax-texte);font-variant-numeric:tabular-nums}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-resume-marche{margin:2px 0 0;font-size:16px;font-weight:700;line-height:1.3;color:var(--ax-accent-texte)}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-resume-texte{margin:4px 0 0;font-size:13.5px;line-height:1.4;color:var(--ax-doux)}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-indice-mini{display:block;margin:8px 0 0;padding:6px 10px;border:0;border-radius:8px;background:var(--ax-fond);font-size:13px;line-height:1.4}
+
+/* ══════════ Panneau déplié ══════════ */
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-panneaux{border-top:1px solid var(--ax-ligne)}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-panneau{padding:14px 14px 4px}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-marche{margin:0 0 10px;padding:0;border:0;font-size:clamp(19px,5.4vw,22px);font-weight:800;line-height:1.2;letter-spacing:-.01em;color:var(--ax-accent-texte)}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-ligne-cote{align-items:flex-start;gap:12px;padding:11px 12px;border:0;border-radius:10px;background:var(--ax-surface2)}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-texte-resume{font-size:14.5px;line-height:1.45}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-badge-cote{flex-direction:column;align-items:flex-end;gap:0;padding:0;border:0;border-radius:0;background:transparent;color:var(--ax-texte)}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-badge-cote span{font-size:11.5px;font-weight:600;color:var(--ax-doux)}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-badge-cote strong{font-size:26px;font-weight:800;line-height:1.05;font-variant-numeric:tabular-nums}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-indice{display:grid;justify-content:start;gap:2px;margin-top:10px;padding:9px 12px;border:0;border-radius:10px;background:var(--ax-surface2);font-size:13.5px;line-height:1.4}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-preuves{border-bottom-color:var(--ax-ligne)}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-metriques li{font-size:15px}
+
+/* Détails de l'analyse */
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-details{margin:4px 14px 0}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-tab,
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-vigilance,
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-analyse-vide{border-radius:10px}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-tab-titre,
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-vigilance-titre{letter-spacing:.08em}
+
+/* Pied : bouton secondaire de l'accueil (contour sarcelle) */
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-pied{padding:10px 14px 14px}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-bouton-details{min-height:44px;padding:0 18px;border:1.5px solid var(--ax-accent);border-radius:10px;color:var(--ax-accent-texte);font-size:14.5px}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte :is(.ax-bouton-details,.ax-details summary,.ax-retirer):focus-visible{outline-color:#C49A3A}
+
+/* ══════════ Écrans larges ══════════ */
+@media (min-width:600px){
+  body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-match,
+  body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte.ax-replie .ax-match{grid-template-columns:86px minmax(0,1fr);column-gap:18px;padding:18px 20px 14px}
+  body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-equipe,
+  body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte.ax-replie .ax-equipe{font-size:18px}
+  body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-horaire strong{font-size:19px}
+  body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-onglets{padding:0 20px 14px}
+  body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-resume{padding:0 20px 18px}
+  body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-resume-rang{padding:13px 16px}
+  body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-panneau{padding:18px 20px 6px}
+  body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-details{margin:4px 20px 0}
+  body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-pied{padding:12px 20px 18px}
+}
+
+/* ══════════ Panier : bouton « Retirer » et match sans sélection ══════════ */
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-carte .ax-actions-tete{margin-top:6px}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-retirer{min-height:34px;padding:0 14px;border:1px solid rgba(8,127,120,.28);border-radius:999px;background:transparent;color:#5B6763;font-size:13px;font-weight:700}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal).theme-nuit .ax-retirer{border-color:rgba(21,152,141,.4);color:#A9B3B8}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-retirer:focus-visible{outline:3px solid #C49A3A;outline-offset:2px}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-etat-vide{padding:16px;background:#FFFFFF;text-align:left;box-shadow:0 2px 10px rgba(15,42,40,.06)}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-etat-vide strong{font-size:16.5px;font-weight:700;color:#17141B}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal).theme-nuit .ax-etat-vide strong{color:#F4F2F7}
+body:is(.af-v2,.af-v3,.af-panier,.af-journal) .ax-etat-vide .ax-retirer-bloc{margin-top:12px}
