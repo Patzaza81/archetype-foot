@@ -264,3 +264,63 @@ def test_un_ticket_exclu_est_reevalue():
              "analyse": {"plans": []}}
     e = st.regle(entry, {"a": (2, 2)}, st.evaluateur_defaut())
     assert e["statut"] == "RESOLVED" and e["resultat"]["paris_justes"] == 1
+
+
+# --- Tickets du même jour suivis en plus des tickets mélangés (14/10/2026) -------------------------------------------
+
+def _legs_dates(dates, base=0):
+    return [{"match_id": str(base + i), "date": d, "domicile": f"A{base + i}", "exterieur": "B", "marche": "W", "cote": 1.7,
+             "probabilite_estimee": 0.7, "source": "moteur_v3", "rang": "P1"} for i, d in enumerate(dates)]
+
+
+def _ticket(legs, scenario="PRUDENT_2"):
+    return {"scenario": scenario, "statut": "OK", "selection": legs, "metrics": {"cote_totale": 2.9}, "analyse": gt.analyse_ticket(legs)}
+
+
+def _tickets_avec_plage(large, jour):
+    return {"genere_le": MAINT, "scenarios": [_ticket(large)], "plages": [{"scenarios": [_ticket(jour)]}]}
+
+
+def test_ticket_du_jour_different_du_large_est_suivi_en_plus():
+    t = _tickets_avec_plage(_legs_dates(["2026-10-14", "2026-10-15"]), _legs_dates(["2026-10-14", "2026-10-14"], base=10))
+    h = st.enregistre([], t, {}, MAINT)
+    assert sorted(e["cle"] for e in h) == ["2026-10-14|PRUDENT_2", "2026-10-14|PRUDENT_2|jour"]
+
+
+def test_portee_meme_jour_et_melange():
+    t = _tickets_avec_plage(_legs_dates(["2026-10-14", "2026-10-15"]), _legs_dates(["2026-10-14", "2026-10-14"], base=10))
+    par_cle = {e["cle"]: e["portee"] for e in st.enregistre([], t, {}, MAINT)}
+    assert par_cle == {"2026-10-14|PRUDENT_2": "melange", "2026-10-14|PRUDENT_2|jour": "meme_jour"}
+
+
+def test_enregistrement_avec_plage_est_idempotent():
+    t = _tickets_avec_plage(_legs_dates(["2026-10-14", "2026-10-15"]), _legs_dates(["2026-10-14", "2026-10-14"], base=10))
+    h1 = st.enregistre([], t, {}, MAINT)
+    assert st.enregistre(copy.deepcopy(h1), t, {}, MAINT) == h1
+
+
+def test_ticket_du_jour_identique_au_large_n_est_pas_compte_deux_fois():
+    legs = _legs_dates(["2026-10-14", "2026-10-14"])
+    h = st.enregistre([], _tickets_avec_plage(legs, copy.deepcopy(legs)), {}, MAINT)
+    assert [e["cle"] for e in h] == ["2026-10-14|PRUDENT_2"] and h[0]["portee"] == "meme_jour"
+
+
+def test_sans_plages_le_comportement_historique_est_inchange():
+    h = st.enregistre([], {"genere_le": MAINT, "scenarios": [_ticket(_legs_dates(["2026-10-14", "2026-10-15"]))]}, {}, MAINT)
+    assert [e["cle"] for e in h] == ["2026-10-14|PRUDENT_2"]
+
+
+def test_ticket_du_jour_non_ok_ou_sans_analyse_n_est_pas_suivi():
+    large = _legs_dates(["2026-10-14", "2026-10-15"])
+    vide = {"scenario": "PRUDENT_2", "statut": "AUCUN_TICKET_SOLIDE", "selection": [], "metrics": {}, "analyse": None}
+    h = st.enregistre([], {"genere_le": MAINT, "scenarios": [_ticket(large)], "plages": [{"scenarios": [vide]}]}, {}, MAINT)
+    assert [e["cle"] for e in h] == ["2026-10-14|PRUDENT_2"]
+
+
+def test_bilan_separe_meme_jour_et_melange():
+    jour = _legs_dates(["2026-10-14", "2026-10-14"], base=10)
+    t = _tickets_avec_plage(_legs_dates(["2026-10-14", "2026-10-15"]), jour)
+    scores = {str(i): (1, 0) for i in list(range(2)) + [10, 11]}
+    h, b = st.met_a_jour(t, [], scores, ev, MAINT)
+    assert b["par_portee"]["meme_jour"]["tickets_regles"] == 1 and b["par_portee"]["meme_jour"]["gagnants"] == 1
+    assert b["par_portee"]["melange"]["tickets_regles"] == 1 and b["par_portee"]["melange"]["paris"] == 2

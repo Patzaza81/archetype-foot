@@ -103,15 +103,45 @@ def a_un_score(entry: dict[str, Any], scores: dict[str, Any]) -> bool:
     return any(norm(j.get("match_id")) in scores for j in entry.get("jambes", []))
 
 
+def portee(legs: list[dict[str, Any]]) -> str:
+    """« meme_jour » : tous les matchs du ticket sont du même jour ; « melange » : dates différentes."""
+    return "meme_jour" if len({norm(x.get("date"))[:10] for x in legs}) <= 1 else "melange"
+
+
+def _empreinte(legs: list[dict[str, Any]]) -> frozenset:
+    return frozenset((norm(x.get("match_id")) or norm(x.get("domicile")), norm(x.get("marche"))) for x in legs)
+
+
+def tickets_a_suivre(tickets: dict[str, Any]) -> list[tuple[str, dict[str, Any]]]:
+    """(clé, ticket) à enregistrer. Ajout 14/10/2026 (demande de Patrick) : en plus des tickets de la plus large plage
+    (clés inchangées, `date|scénario`), on suit ceux de la plage du seul jour présent (clé `date|scénario|jour`), qui
+    sont tous du même jour. Un ticket du jour identique (mêmes paris) à celui de la plage large n'est pas compté deux fois."""
+    out: list[tuple[str, dict[str, Any]]] = []
+    larges: dict[str, frozenset] = {}
+    for t in tickets.get("scenarios", []) or []:
+        sel = t.get("selection") or []
+        if t.get("statut") == "OK" and sel and t.get("analyse"):
+            k = cle(t["scenario"], sel)
+            larges[t["scenario"]] = _empreinte(sel)
+            out.append((k, t))
+    plages = tickets.get("plages") or []
+    if plages:
+        for t in plages[0].get("scenarios", []) or []:
+            sel = t.get("selection") or []
+            if t.get("statut") != "OK" or not sel or not t.get("analyse"):
+                continue
+            if larges.get(t["scenario"]) == _empreinte(sel):
+                continue
+            out.append((cle(t["scenario"], sel) + "|jour", t))
+    return out
+
+
 def enregistre(historique: list[dict[str, Any]], tickets: dict[str, Any], scores: dict[str, Any], maintenant: str) -> list[dict[str, Any]]:
     """Ajoute les tickets du jour. Une entrée encore PENDING et sans score connu est remplacée par la version
     la plus récente ; dès qu'un score existe ou que le ticket est réglé, elle est figée."""
     index = {e["cle"]: e for e in historique if isinstance(e, dict) and e.get("cle")}
-    for t in tickets.get("scenarios", []) or []:
+    for k, t in tickets_a_suivre(tickets):
         sel = t.get("selection") or []
-        if t.get("statut") != "OK" or not sel or not t.get("analyse"):
-            continue
-        k = cle(t["scenario"], sel)
         old = index.get(k)
         if old and (old.get("statut") != "PENDING" or a_un_score(old, scores)):
             continue
@@ -119,6 +149,7 @@ def enregistre(historique: list[dict[str, Any]], tickets: dict[str, Any], scores
             "cle": k,
             "scenario": t["scenario"],
             "date": date_min(sel),
+            "portee": portee(sel),
             "genere_le": tickets.get("genere_le") or maintenant,
             "statut": "PENDING",
             "cote_totale": (t.get("metrics") or {}).get("cote_totale"),
@@ -126,7 +157,7 @@ def enregistre(historique: list[dict[str, Any]], tickets: dict[str, Any], scores
             "analyse": snapshot_analyse(t["analyse"]),
             "resultat": None,
         }
-    return sorted(index.values(), key=lambda e: (e["date"], e["scenario"]))
+    return sorted(index.values(), key=lambda e: (e["date"], e["scenario"], e["cle"]))
 
 
 def regle_plan(plan: dict[str, Any], gagnantes: list[bool]) -> dict[str, Any]:
@@ -232,6 +263,7 @@ def regle(entry: dict[str, Any], scores: dict[str, Any], evaluer: Callable[[str,
 def bilan(historique: list[dict[str, Any]], maintenant: str) -> dict[str, Any]:
     comptes = {"total": len(historique), "regles": 0, "en_attente": 0, "exclus": 0}
     par_scenario: dict[str, dict[str, Any]] = {}
+    par_portee: dict[str, dict[str, int]] = {}
     legs_vus: dict[tuple, dict[str, Any]] = {}
     for e in historique:
         st = e.get("statut")
@@ -248,6 +280,11 @@ def bilan(historique: list[dict[str, Any]], maintenant: str) -> dict[str, Any]:
         s = par_scenario.setdefault(e["scenario"], {"tickets": 0, "justes_attendus": 0.0, "justes_observes": 0,
                                                     "paris": 0, "erreurs": {}, "plans": {}})
         res = e["resultat"]
+        pp = par_portee.setdefault(e.get("portee") or portee(e["jambes"]), {"tickets_regles": 0, "gagnants": 0, "paris": 0, "justes": 0})
+        pp["tickets_regles"] += 1
+        pp["gagnants"] += 1 if res["erreurs"] == 0 else 0
+        pp["paris"] += len(e["jambes"])
+        pp["justes"] += res["paris_justes"]
         s["tickets"] += 1
         s["paris"] += analyse.get("paris") or len(e["jambes"])
         s["justes_attendus"] += analyse.get("paris_justes_attendus") or 0.0
@@ -293,7 +330,7 @@ def bilan(historique: list[dict[str, Any]], maintenant: str) -> dict[str, Any]:
         d["proba"] += num(j["probabilite_estimee"]) or 0.0
     sources = {k: {"paris": d["paris"], "taux_reussite": round(d["justes"] / d["paris"], 4),
                    "proba_moyenne_estimee": round(d["proba"] / d["paris"], 4)} for k, d in sorted(par_source.items())}
-    return {"version": 1, "genere_le": maintenant, "comptes": comptes, "par_scenario": scenarios, "par_source": sources,
+    return {"version": 1, "genere_le": maintenant, "comptes": comptes, "par_scenario": scenarios, "par_portee": dict(sorted(par_portee.items())), "par_source": sources,
             "avertissement": "Petits échantillons : un écart entre prévu et observé n'est significatif qu'avec beaucoup de tickets réglés."}
 
 

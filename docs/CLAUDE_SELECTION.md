@@ -115,6 +115,13 @@ Limites à ne pas masquer : indépendance supposée, probabilités des moteurs n
 
 Tests : `tests/test_generateur_tickets.py` (Python et JavaScript doivent donner le même calcul), `tests/test_suivi_tickets.py`.
 
+## Suivi des tickets du même jour — 14/10/2026
+
+- Constat : le générateur construit déjà une plage « jour présent seul », mais le suivi n'enregistrait que la plus large (4 jours). Les tickets suivis mélangeaient donc des matchs de 4 dates (ex. ticket « 13/10 » avec des matchs du 13 au 16/10) et n'étaient réglés qu'au dernier match.
+- `suivi_tickets.tickets_a_suivre` : tickets de la plage large (clés inchangées `date|scénario`) + tickets de la plage du jour seul (clé `date|scénario|jour`). Un ticket du jour identique (mêmes paris) à celui de la plage large n'est pas compté deux fois.
+- Chaque entrée a `portee` : `meme_jour` ou `melange` (déduit des dates des paris). Le bilan ajoute `par_portee` (tickets réglés, gagnants, paris justes/total).
+- Aucune règle de sélection, de seuil ni de génération n'est modifiée. Tests : `tests/test_suivi_tickets.py` (section « même jour »).
+
 ## Générateur de tickets : V2 exclu (09/10/2026)
 
 - Sources du générateur : V3 et Journal, 15 paris au maximum chacune, 30 au maximum au total.
