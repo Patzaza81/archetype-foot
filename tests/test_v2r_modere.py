@@ -106,3 +106,23 @@ def test_execution_publie_les_variantes_et_une_erreur_ne_bloque_pas(monkeypatch)
         monkeypatch.setattr(MOD, "met_a_jour", casse)
         s2 = X.execute(joues() + [a_venir], d, datetime.datetime(2026, 10, 13, 13, 0, tzinfo=UTC))
         assert s2["modere"] == dict(erreur="ValueError: test") and len(s2["a_venir"]) == 1
+
+
+# ---- page : le pari d'origine reste inchangé, le pari modéré est affiché dessous
+def test_page_affiche_le_pari_modere_sous_le_pari_d_origine():
+    import pathlib
+    racine = pathlib.Path(__file__).parent.parent
+    js = (racine / "archetype_v2r.js").read_text(encoding="utf-8")
+    h = (racine / "pronostics_v2r.html").read_text(encoding="utf-8")
+    corps = js[js.index("function v2rCarte"):js.index("function v2rListe")]
+    assert corps.index("v2rMarche(l)") < corps.index("roi_cellule") < corps.index("v2rBlocModere(l, mode)")   # sous le pari d'origine
+    assert "Pari modéré associé" in js and ".v2r-modere{" in h and "data/v2r/pronostics_v2r.json" in js
+    assert "if (!m || m.erreur) return null" in js                                      # variantes indisponibles : rien d'affiché
+
+
+def test_variantes_publient_a_venir_en_cours_et_reglees():
+    with tempfile.TemporaryDirectory() as d:
+        m = match("m", "2026-10-14", h=None, a=None, kickoff="2026-10-14T18:00:00Z", cotes={"BTTS - non": 1.8})
+        s = MOD.met_a_jour([m], ligne_officielle("BTTS - non", 1.8), d, datetime.datetime(2026, 10, 14, 12, 0, tzinfo=UTC))
+        for cle in ("1_cran", "2_crans"):
+            assert set(s[cle]) == {"bilan", "a_venir", "en_cours", "reglees"} and len(s[cle]["a_venir"]) == 1

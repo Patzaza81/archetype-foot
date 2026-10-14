@@ -73,5 +73,6 @@ def met_a_jour(matchs, carnet_officiel, dossier, maintenant):
         sortie[f"{k}_cran" if k == 1 else f"{k}_crans"] = dict(
             bilan=K.bilan(c),
             a_venir=sorted([l for l in c.values() if not l["fige"]], key=cle),
+            en_cours=sorted([l for l in c.values() if l["fige"] and l["resultat"] is None], key=cle),
             reglees=sorted([l for l in c.values() if l["resultat"] is not None], key=cle, reverse=True)[:150])
     return sortie

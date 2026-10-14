@@ -37,16 +37,52 @@ function v2rMarche(l) {
   if ((r = m.match(/^(Plus|Moins) de (.+) buts$/))) return `${r[1]} de ${virg(r[2])} buts`;
   return virg(m);
 }
+// --- Paris modérés (moteur_v2r/modere.py) : affichés SOUS le pari d'origine, qui reste inchangé.
+let v2rModeres = null;        // {match_id: {1: ligne, 2: ligne}} ; null = variantes indisponibles (rien n'est affiché)
+let v2rPlancher = 1.4;
+function v2rIndexModeres(d) {
+  const m = d && d.modere; if (!m || m.erreur) return null;
+  const idx = {};
+  [[1, m["1_cran"]], [2, m["2_crans"]]].forEach(([k, b]) => {
+    if (!b) return;
+    ["a_venir", "en_cours", "reglees"].forEach((liste) => (b[liste] || []).forEach((l) => { (idx[l.match_id] = idx[l.match_id] || {})[k] = l; }));
+  });
+  return idx;
+}
+function v2rUnites(x) {
+  const n = Number(x); if (!Number.isFinite(n)) return "—";
+  return `${n >= 0 ? "+" : "−"}${Math.abs(n).toFixed(2).replace(".", ",")} u`;
+}
+function v2rBadge(l) {
+  return l.resultat ? `<span class="v2r-badge v2r-${v2rEchappe(l.resultat)}">${l.resultat === "WIN" ? "GAGNÉ" : l.resultat === "LOSS" ? "PERDU" : "REMBOURSÉ"}</span>` : "";
+}
+function v2rLigneModere(k, l, mode) {
+  const nom = k === 0 ? "1 et 2 crans" : k === 1 ? "1 cran" : "2 crans";
+  if (!l) return mode === "avenir" ? `<div class="v2r-ligne v2r-modere-vide"><span><b>${nom}</b> · aucun pari (cote sous ${v2rCote(v2rPlancher)})</span></div>` : "";
+  const meme = l.marche === l.marche_v2r;
+  const gain = l.resultat ? ` <small>${v2rUnites(l.profit)}</small>` : "";
+  return `<div class="v2r-ligne"><span><b>${nom}</b> · ${v2rEchappe(v2rMarche(l))}${meme ? " <small>(pas de version modérée)</small>" : ""}</span>` +
+    `<span><span class="v2r-cote">Cote ${v2rCote(l.cote)}</span> ${v2rBadge(l)}${gain}</span></div>`;
+}
+function v2rBlocModere(l, mode) {
+  if (!v2rModeres) return "";
+  const m = v2rModeres[l.match_id] || {};
+  const sansVersion = (x) => x && x.marche === x.marche_v2r;          // famille sans marché plus prudent : pari gardé tel quel
+  const lignes = sansVersion(m[1]) && sansVersion(m[2]) ? v2rLigneModere(0, m[1], mode)
+    : v2rLigneModere(1, m[1], mode) + v2rLigneModere(2, m[2], mode);
+  return lignes ? `<div class="v2r-modere"><div class="v2r-modere-titre">Pari modéré associé</div>${lignes}</div>` : "";
+}
 function v2rCarte(l, mode) {
   const score = Array.isArray(l.score) ? `${l.score[0]} - ${l.score[1]}` : "";
-  const badge = l.resultat ? `<span class="v2r-badge v2r-${v2rEchappe(l.resultat)}">${l.resultat === "WIN" ? "GAGNÉ" : l.resultat === "LOSS" ? "PERDU" : "REMBOURSÉ"}</span>` : "";
-  const profit = l.resultat ? ` · ${v2rPct(l.profit, true).replace(" %", "")} u` : "";
+  const badge = v2rBadge(l);
+  const profit = l.resultat ? ` · ${v2rUnites(l.profit)}` : "";
   return `<article class="v2r-carte">` +
     `<div class="v2r-haut"><span>${v2rEchappe(l.competition)}</span><span>${v2rEchappe(v2rHeure(l.coup_d_envoi_utc))}</span></div>` +
     `<h3>${v2rEchappe(l.domicile)} – ${v2rEchappe(l.exterieur)}${score ? ` <small>(${score})</small>` : ""}</h3>` +
     `<div class="v2r-ligne"><span>${v2rEchappe(v2rMarche(l))}</span><span class="v2r-cote">Cote ${v2rCote(l.cote)}</span></div>` +
     `<div class="v2r-ligne v2r-info"><span>ROI de la cellule sur l'échantillon : ${v2rPct(l.roi_cellule, true)} · buts attendus ${v2rEchappe((l.buts_attendus || []).join(" / "))}</span>${badge}</div>` +
     (mode === "regle" && profit ? `<div class="v2r-info">Mise 1 u${profit}</div>` : "") +
+    v2rBlocModere(l, mode) +
     `</article>`;
 }
 function v2rListe(id, liste, mode, vide) {
@@ -55,6 +91,8 @@ function v2rListe(id, liste, mode, vide) {
 }
 function v2rAffiche(d) {
   const b = d.bilan || {};
+  v2rModeres = v2rIndexModeres(d);
+  if (d.modere && Number.isFinite(Number(d.modere.plancher))) v2rPlancher = Number(d.modere.plancher);
   const noms = { observation: "OBSERVATION — ne pas miser", actif: "ACTIF — rentabilité démontrée", non_rentable: "NON RENTABLE — ne pas miser" };
   document.getElementById("v2r-statut").innerHTML =
     `<div class="v2r-statut ${v2rEchappe(d.statut)}">${v2rEchappe(noms[d.statut] || d.statut)}` +
