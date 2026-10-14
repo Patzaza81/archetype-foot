@@ -28,6 +28,8 @@ function v2rMarche(l) {
   const virg = (t) => t.replace(/(\d)\.(\d)/g, "$1,$2");
   let r;
   if ((r = m.match(/^1X2 - (1|X|2)$/))) return r[1] === "1" ? `Victoire ${dom}` : r[1] === "X" ? "Match nul" : `Victoire ${ext}`;
+  if ((r = m.match(/^Double chance - (1X|X2|12)$/))) return r[1] === "1X" ? `${dom} ou match nul` : r[1] === "X2" ? `Match nul ou ${ext}` : `${dom} ou ${ext} (pas de nul)`;
+  if ((r = m.match(/^Cage inviolée - (Domicile|Extérieur)$/))) return `${r[1] === "Domicile" ? dom : ext} garde sa cage inviolée`;
   if (m === "BTTS - oui") return "Les deux équipes marquent";
   if (m === "BTTS - non") return "Une des deux équipes ne marque pas";
   if (m === "Total buts - pair") return "Total de buts pair";

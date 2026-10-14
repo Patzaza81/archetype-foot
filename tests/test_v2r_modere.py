@@ -20,9 +20,38 @@ def test_frere_cas_qui_passent():
     assert MOD.frere("Plus de 1.5 buts", 2) == "Plus de 0.5 buts"                       # ligne minimale 0,5
 
 
+def test_frere_nouveaux_equivalents_cas_qui_passent():
+    assert MOD.frere("BTTS - oui", 1) == "Plus de 1.5 buts" and MOD.frere("BTTS - oui", 2) == "Plus de 1.5 buts"
+    assert MOD.frere("Cage inviolée - Domicile", 1) == "Moins de 1.5 buts - Extérieur"   # domicile cage inviolée = extérieur à 0
+    assert MOD.frere("Cage inviolée - Extérieur", 2) == "Moins de 2.5 buts - Domicile"
+    assert MOD.candidats("1X2 - X", 1) == ["Double chance - 1X", "Double chance - X2"]
+
+
 def test_frere_cas_qui_echouent():
-    for lib in ("BTTS - oui", "Total buts - pair", "Cage inviolée - Domicile", "1X2 - X", "libellé inconnu"):
+    for lib in ("BTTS - non", "Total buts - pair", "Total buts - impair", "Encaisse au moins 1 but - Domicile",
+                "1X2 - X", "libellé inconnu"):
         assert MOD.frere(lib, 1) is None, lib
+    for lib in ("BTTS - non", "Total buts - pair", "Encaisse au moins 1 but - Domicile"):
+        assert MOD.candidats(lib, 1) == [], lib
+
+
+def test_nul_choisit_la_double_chance_la_plus_proche_du_plancher():
+    nul = pari("1X2 - X", 4.43)
+    assert MOD.variante(nul, {"Double chance - 1X": 1.61, "Double chance - X2": 1.55}, 1)["marche"] == "Double chance - X2"
+    assert MOD.variante(nul, {"Double chance - 1X": 1.30, "Double chance - X2": 1.52}, 2)["marche"] == "Double chance - X2"
+    assert MOD.variante(nul, {"Double chance - 1X": 1.40, "Double chance - X2": 1.30}, 1)["cote"] == 1.40
+    assert MOD.variante(nul, {"Double chance - 1X": 1.30, "Double chance - X2": 1.35}, 1) is None   # rien, pas de repli sur le nul
+    assert MOD.variante(nul, {"Double chance - 1X": 1.39}, 2) is None
+    assert MOD.variante(nul, {}, 1)["marche"] == "1X2 - X"                                            # double chances non cotées : nul gardé
+
+
+def test_les_deux_marquent_oui_et_cage_inviolee_sous_le_plancher_ou_non():
+    assert MOD.variante(pari("BTTS - oui", 2.0), {"Plus de 1.5 buts": 1.45}, 1)["marche"] == "Plus de 1.5 buts"
+    assert MOD.variante(pari("BTTS - oui", 2.0), {"Plus de 1.5 buts": 1.25}, 1) is None
+    v = MOD.variante(pari("Cage inviolée - Domicile", 2.3), {"Moins de 1.5 buts - Extérieur": 1.60, "Moins de 2.5 buts - Extérieur": 1.2}, 1)
+    assert v["marche"] == "Moins de 1.5 buts - Extérieur"
+    assert MOD.variante(pari("Cage inviolée - Domicile", 2.3), {"Moins de 2.5 buts - Extérieur": 1.2}, 2) is None
+    assert MOD.variante(pari("BTTS - non", 1.8), {"Plus de 1.5 buts": 1.2}, 1)["marche"] == "BTTS - non"   # sans équivalent : gardé
 
 
 # ---- plancher de cote

@@ -5,8 +5,10 @@ marché de la même famille, k crans plus prudent (k = 1 ou 2), puis applique un
 inférieure à 1,40, on ne propose RIEN (jamais de repli sur le pari d'origine).
 
 Familles avec version modérée : total de buts et buts d'une équipe (Plus de L -> Plus de L-k, Moins de L -> Moins de L+k,
-ligne minimale 0,5), handicap (ligne + k), 1X2 victoire -> double chance. Les autres marchés (les deux marquent,
-pair/impair, cage inviolée, nul) n'ont pas de version modérée : ils sont gardés tels quels, sous le même plancher.
+ligne minimale 0,5), handicap (ligne + k), 1X2 victoire -> double chance, nul -> double chance (domicile ou extérieur),
+les deux marquent « oui » -> Plus de 1,5 buts, cage inviolée -> Moins de (0,5+k) buts de l'adversaire. Sans version
+modérée (aucun marché plus sûr n'est logiquement équivalent) : les deux marquent « non », pair/impair, « encaisse au
+moins 1 but » : ils sont gardés tels quels, sous le même plancher.
 Si le marché modéré n'est pas coté pour le match, le pari d'origine est gardé (sous le plancher).
 
 Chaque variante a son propre carnet (data/v2r/modere1/carnet.json, data/v2r/modere2/carnet.json), écrit avec les mêmes
@@ -32,15 +34,35 @@ def frere(lib, k):
     m = re.fullmatch(r"Handicap (-?\d+(?:\.\d+)?) - (Domicile|Extérieur)", lib)
     if m:
         return f"Handicap {float(m[1]) + k:g} - {m[2]}"
-    return {"1X2 - 1": "Double chance - 1X", "1X2 - 2": "Double chance - X2"}.get(lib)
+    m = re.fullmatch(r"Cage inviolée - (Domicile|Extérieur)", lib)
+    if m:                                    # cage inviolée d'une équipe = l'adversaire marque 0 -> ligne de buts de l'adversaire
+        adverse = "Extérieur" if m[1] == "Domicile" else "Domicile"
+        return f"Moins de {0.5 + k:g} buts - {adverse}"
+    return {"1X2 - 1": "Double chance - 1X", "1X2 - 2": "Double chance - X2",
+            "BTTS - oui": "Plus de 1.5 buts"}.get(lib)   # les deux marquent => au moins 2 buts
+
+
+def candidats(lib, k):
+    """Libellés plus prudents (même famille, gagnants dans tous les cas où le pari d'origine gagne). Le nul a deux
+    équivalents (double chance avec le domicile ou avec l'extérieur) : le choix se fait dans `variante`."""
+    if lib == "1X2 - X":
+        return ["Double chance - 1X", "Double chance - X2"]
+    f = frere(lib, k)
+    return [f] if f else []
 
 
 def variante(pick, cotes, k, plancher=PLANCHER_COTE):
-    """Pari modéré à k crans, ou None si la cote finale est sous le plancher. `cotes` : cotes du match {libellé: cote}."""
+    """Pari modéré à k crans, ou None si la cote finale est sous le plancher. `cotes` : cotes du match {libellé: cote}.
+    Nul : parmi les deux doubles chances cotées, celle dont la cote est la plus proche du plancher en restant au-dessus ;
+    aucune au-dessus du plancher -> rien (jamais de repli sur le nul)."""
     lib, cote = pick["marche"], pick["cote"]
-    f = frere(lib, k)
-    if f and f in cotes:
-        lib, cote = f, cotes[f]
+    cotes_dispo = [(c, cotes[c]) for c in candidats(lib, k) if c in cotes]
+    if lib == "1X2 - X" and cotes_dispo:
+        cotes_dispo = sorted((c for c in cotes_dispo if c[1] >= plancher), key=lambda c: (c[1], c[0]))
+        if not cotes_dispo:
+            return None
+    if cotes_dispo:
+        lib, cote = cotes_dispo[0]
     if cote < plancher:
         return None
     v = dict(pick)
