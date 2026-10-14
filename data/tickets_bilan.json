@@ -1,43 +1,44 @@
 {
   "version": 1,
-  "genere_le": "2026-10-13T22:35:28.086339+00:00",
+  "genere_le": "2026-10-14T01:43:22.180486+00:00",
   "comptes": {
-    "total": 33,
-    "regles": 11,
-    "en_attente": 22,
+    "total": 38,
+    "regles": 13,
+    "en_attente": 25,
     "exclus": 0
   },
   "par_scenario": {
     "EQUILIBRE_4": {
-      "tickets_regles": 2,
-      "paris": 8,
-      "justes_attendus": 6.48,
-      "justes_observes": 5,
+      "tickets_regles": 3,
+      "paris": 12,
+      "justes_attendus": 9.69,
+      "justes_observes": 9,
       "erreurs": {
+        "0": 1,
         "1": 1,
         "2": 1
       },
       "plans": {
         "COMBINE": {
-          "tickets_regles": 2,
-          "taux_rentable_observe": 0.0,
-          "proba_profit_prevue": 0.4284,
-          "roi_observe": -1.0,
-          "esperance_prevue": 0.7016
+          "tickets_regles": 3,
+          "taux_rentable_observe": 0.3333,
+          "proba_profit_prevue": 0.422,
+          "roi_observe": 0.7098,
+          "esperance_prevue": 0.8341
         },
         "SIMPLES": {
-          "tickets_regles": 2,
-          "taux_rentable_observe": 0.5,
-          "proba_profit_prevue": 0.836,
-          "roi_observe": -0.1259,
-          "esperance_prevue": 0.1399
+          "tickets_regles": 3,
+          "taux_rentable_observe": 0.6667,
+          "proba_profit_prevue": 0.8316,
+          "roi_observe": 0.0827,
+          "esperance_prevue": 0.1605
         },
         "TICKETS_2X2": {
-          "tickets_regles": 2,
-          "taux_rentable_observe": 0.0,
-          "proba_profit_prevue": 0.6645,
-          "roi_observe": -0.5351,
-          "esperance_prevue": 0.2931
+          "tickets_regles": 3,
+          "taux_rentable_observe": 0.3333,
+          "proba_profit_prevue": 0.7348,
+          "roi_observe": 0.0569,
+          "esperance_prevue": 0.3418
         }
       }
     },
@@ -187,27 +188,27 @@
       }
     },
     "PRUDENT_2": {
-      "tickets_regles": 1,
-      "paris": 2,
-      "justes_attendus": 1.59,
-      "justes_observes": 2,
+      "tickets_regles": 2,
+      "paris": 4,
+      "justes_attendus": 3.03,
+      "justes_observes": 4,
       "erreurs": {
-        "0": 1
+        "0": 2
       },
       "plans": {
         "COMBINE": {
-          "tickets_regles": 1,
+          "tickets_regles": 2,
           "taux_rentable_observe": 1.0,
-          "proba_profit_prevue": 0.6302,
-          "roi_observe": 1.1384,
-          "esperance_prevue": 0.3477
+          "proba_profit_prevue": 0.5736,
+          "roi_observe": 1.4292,
+          "esperance_prevue": 0.377
         },
         "SIMPLES": {
-          "tickets_regles": 1,
+          "tickets_regles": 2,
           "taux_rentable_observe": 1.0,
-          "proba_profit_prevue": 0.6302,
-          "roi_observe": 0.4547,
-          "esperance_prevue": 0.1549
+          "proba_profit_prevue": 0.5736,
+          "roi_observe": 0.5516,
+          "esperance_prevue": 0.1702
         }
       }
     }
@@ -219,9 +220,9 @@
       "proba_moyenne_estimee": 0.7435
     },
     "moteur_v3": {
-      "paris": 21,
-      "taux_reussite": 0.6667,
-      "proba_moyenne_estimee": 0.7871
+      "paris": 25,
+      "taux_reussite": 0.72,
+      "proba_moyenne_estimee": 0.7849
     }
   },
   "avertissement": "Petits échantillons : un écart entre prévu et observé n'est significatif qu'avec beaucoup de tickets réglés."
