@@ -81,6 +81,7 @@ def variante(pick, cotes, k, plancher=PLANCHER_COTE):
     if cote < plancher:
         return None
     v = dict(pick)
+    v.pop("forme", None)                # l'affichage des derniers scores se fait sur le pari officiel : pas de copie dans les carnets modérés
     v.update(marche=lib, cote=cote, marche_v2r=pick["marche"], cote_v2r=pick["cote"], crans=k)
     return v
 

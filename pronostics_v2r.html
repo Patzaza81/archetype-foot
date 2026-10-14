@@ -39,12 +39,14 @@
   <p id="maj" class="ax-maj" role="status" aria-live="polite">Chargement…</p>
   <section id="v2r-statut"></section>
   <section id="v2r-bilan"></section>
-  <h2 class="v2r-titre">Paris à venir</h2>
-  <main id="v2r-avenir" class="ax-liste-matchs"></main>
-  <h2 class="v2r-titre">En cours</h2>
-  <div id="v2r-encours" class="ax-liste-matchs"></div>
-  <h2 class="v2r-titre">Paris réglés</h2>
-  <div id="v2r-regles" class="ax-liste-matchs"></div>
+  <main class="ax-liste-matchs v2r-tout">
+    <h2 class="v2r-titre">Paris à venir</h2>
+    <div id="v2r-avenir" class="ax-liste-matchs"></div>
+    <h2 class="v2r-titre">En cours</h2>
+    <div id="v2r-encours" class="ax-liste-matchs"></div>
+    <h2 class="v2r-titre">Paris réglés</h2>
+    <div id="v2r-regles" class="ax-liste-matchs"></div>
+  </main>
 </div>
 <style>
 .v2r-titre{font-size:15px;margin:22px 4px 8px;opacity:.85}
@@ -56,9 +58,11 @@
 .v2r-bilan{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:8px 14px}
 .v2r-bilan div{border:1px solid var(--ax-ligne);border-radius:12px;padding:8px;text-align:center;font-size:11px}
 .v2r-bilan strong{display:block;font-size:17px}
-.v2r-carte{border:1px solid var(--ax-ligne);border-radius:14px;margin:8px 14px;padding:10px 12px;background:var(--ax-fond)}
-.v2r-haut{display:flex;justify-content:space-between;gap:8px;font-size:12px;opacity:.8}
-.v2r-carte h3{font-size:15px;margin:4px 0}
+.v2r-tout{display:block}
+.v2r-corps{padding:6px 14px 12px}
+.v2r-score{font-size:13px;margin-bottom:4px}
+.v2r-hist-titre{font-size:11px;font-weight:700;opacity:.75;margin-bottom:4px}
+.v2r-lieu{font-size:9px;opacity:.6;margin-left:2px;vertical-align:super}
 .v2r-ligne{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px}
 .v2r-cote{font-weight:800}
 .v2r-info{font-size:12px;opacity:.8;margin-top:4px}
@@ -70,11 +74,12 @@
 .theme-nuit .v2r-modere-titre{color:#4FD1C5}
 .v2r-modere .v2r-ligne{padding:3px 0;font-size:14px}
 .v2r-modere .v2r-cote{font-size:15px;white-space:nowrap}
-.v2r-modere small{font-size:11px;font-weight:400;opacity:.8}
+.v2r-modere small{font-size:11px;font-weight:400;opacity:.8;white-space:nowrap}
 .v2r-modere-vide{opacity:.75}
 .v2r-super{display:inline-block;padding:1px 7px;border-radius:999px;background:#B7791F;color:#fff;font-size:11px;font-weight:800;letter-spacing:.03em;white-space:nowrap}
 </style>
-<script src="archetype_v2r.js?v=20261014b"></script>
+<script src="archetype_v2r.js?v=20261014c"></script>
 <script src="drapeaux.js"></script>
+<script src="af-drapeaux-cartes.js"></script>
 </body>
 </html>

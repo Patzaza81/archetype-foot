@@ -26,3 +26,10 @@
 - **Carnets** : `indice_pct` et `super_favori` sont écrits dans la ligne du carnet modéré avant le coup d'envoi (figés ensuite). `pronostics_v2r.json` publie, par variante, `super_favori` : `seuil`, `bilan` (paris SUPER FAVORI réglés seuls), `a_venir` (nombre). Page : badge « SUPER FAVORI · 80 % », sinon « indice 62 % ».
 - **Preuve** (test hors échantillon 09 au 13/10, règles apprises sur les jours précédents) : indice >= 75 % -> 1 cran 10 paris, 90 % de réussite, ROI +67 % ; 2 crans 10 paris, 80 %, ROI +77 %. **Échantillon trop petit pour conclure** : seul le carnet compte (statut observation tant que < 300 réglés). Le BTTS non n'a presque aucun historique de test : à surveiller.
 - Tests : `tests/test_v2r_super_favori.py`.
+
+## Affichage de la page V2R (14/10/2026)
+
+- **Même carte que les autres moteurs** (classes partagées `ax-carte`, `ax-match`, `ax-horaire`, `ax-competition`, `ax-details`) : heure du Cameroun en gras avec la date dessous, drapeau du pays du championnat (`drapeaux.js` + `af-drapeaux-cartes.js`), carte repliée au départ, un toucher la déplie ou la replie.
+- **Repliée** : en-tête, pari d'origine (inchangé) et pari modéré dessous. **Dépliée** : en plus, rubrique « Derniers matchs » des deux équipes (6 derniers matchs tous lieux, du plus récent au plus ancien, score écrit domicile-extérieur, buts de l'équipe suivie en vert gagné / orange nul / rouge perdu, D ou E = lieu du match, adversaire et date au toucher).
+- **Données** : `forme` ({domicile, exterieur}) est écrit dans la ligne du carnet officiel (`moteur_v2r/pronostics.py`), pas dans les carnets modérés. Les paris écrits avant cette date n'ont pas de `forme` : message « Derniers scores indisponibles » ; les paris à venir sont réécrits chaque nuit avant le coup d'envoi et la reçoivent.
+- Tests : `tests/test_v2r_affichage.py`.

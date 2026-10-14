@@ -80,22 +80,76 @@ function v2rBlocModere(l, mode) {
     : v2rLigneModere(1, m[1], mode) + v2rLigneModere(2, m[2], mode);
   return lignes ? `<div class="v2r-modere"><div class="v2r-modere-titre">Pari modéré associé</div>${lignes}</div>` : "";
 }
+// Date / heure du Cameroun (UTC+1) : même présentation que les autres moteurs (heure en gras, date dessous).
+function v2rHoraire(ko) {
+  const d = ko ? new Date(ko) : null; if (!d || Number.isNaN(d.getTime())) return { heure: "—", date: "" };
+  const c = new Date(d.getTime() + 3600000);
+  return { heure: c.toISOString().slice(11, 16).replace(":", "h"), date: v2rDate(c.toISOString().slice(0, 10)) };
+}
+// Derniers matchs de chaque équipe (moteur_v2r/pronostics.py : forme). Même rendu que les autres moteurs (.ax-hist) :
+// score écrit domicile-extérieur, seuls les buts de l'équipe suivie sont colorés (vert gagné, orange nul, rouge perdu).
+function v2rHistorique(l) {
+  const f = l.forme; if (!f) return "";
+  const bloc = (nom, liste) => {
+    if (!Array.isArray(liste) || !liste.length) return "";
+    const pastilles = liste.map((x) => {
+      const bm = Number(x.bm), be = Number(x.be); if (!Number.isFinite(bm) || !Number.isFinite(be)) return "";
+      const res = bm > be ? "ax-res-v" : bm === be ? "ax-res-n" : "ax-res-d";
+      const titre = `${bm > be ? "Gagné" : bm === be ? "Nul" : "Perdu"} · ${x.lieu === "D" ? "à domicile" : "à l'extérieur"}${x.adversaire ? " contre " + x.adversaire : ""}${x.date ? " · " + x.date : ""}`;
+      const suivi = `<span class="ax-but ${res}" title="${v2rEchappe(titre)}">${x.lieu === "D" ? bm : be}</span>`;
+      const autre = x.lieu === "D" ? be : bm;
+      return `<span class="ax-res">${x.lieu === "D" ? suivi + "-" + autre : autre + "-" + suivi}<small class="v2r-lieu">${x.lieu}</small></span>`;
+    }).join("");
+    return pastilles ? `<div class="ax-hist"><span class="ax-hist-eq">${v2rEchappe(nom)}</span><span class="ax-hist-liste">${pastilles}</span></div>` : "";
+  };
+  const corps = bloc(l.domicile || "Domicile", f.domicile) + bloc(l.exterieur || "Extérieur", f.exterieur);
+  return corps ? `<div class="ax-hist-bloc"><div class="v2r-hist-titre">Derniers matchs (du plus récent au plus ancien)</div>${corps}</div>` : "";
+}
 function v2rCarte(l, mode) {
   const score = Array.isArray(l.score) ? `${l.score[0]} - ${l.score[1]}` : "";
   const badge = v2rBadge(l);
   const profit = l.resultat ? ` · ${v2rUnites(l.profit)}` : "";
-  return `<article class="v2r-carte">` +
-    `<div class="v2r-haut"><span>${v2rEchappe(l.competition)}</span><span>${v2rEchappe(v2rHeure(l.coup_d_envoi_utc))}</span></div>` +
-    `<h3>${v2rEchappe(l.domicile)} – ${v2rEchappe(l.exterieur)}${score ? ` <small>(${score})</small>` : ""}</h3>` +
-    `<div class="v2r-ligne"><span>${v2rEchappe(v2rMarche(l))}</span><span class="v2r-cote">Cote ${v2rCote(l.cote)}</span></div>` +
-    `<div class="v2r-ligne v2r-info"><span>ROI de la cellule sur l'échantillon : ${v2rPct(l.roi_cellule, true)} · buts attendus ${v2rEchappe((l.buts_attendus || []).join(" / "))}</span>${badge}</div>` +
-    (mode === "regle" && profit ? `<div class="v2r-info">Mise 1 u${profit}</div>` : "") +
-    v2rBlocModere(l, mode) +
-    `</article>`;
+  const h = v2rHoraire(l.coup_d_envoi_utc);
+  const section = document.createElement("section");
+  section.className = "ax-carte ax-replie v2r-ax";
+  section.setAttribute("aria-expanded", "false");
+  const histo = v2rHistorique(l);
+  section.innerHTML =
+    `<div class="ax-match"><div class="ax-ligne-match">` +
+      `<span class="ax-equipe ax-dom">${v2rEchappe(l.domicile)}</span>` +
+      `<div class="ax-horaire"><strong>${v2rEchappe(h.heure)}</strong><span>${v2rEchappe(h.date)}</span></div>` +
+      `<span class="ax-equipe ax-ext">${v2rEchappe(l.exterieur)}</span></div>` +
+      `<div class="ax-match-bas"><p class="ax-competition">${v2rEchappe(String(l.competition || "").replace(/\s+/g, " ").trim())}</p><div class="ax-actions-tete"></div></div>` +
+    `</div>` +
+    `<div class="v2r-corps">` +
+      (score ? `<div class="v2r-score">Score final <strong>${v2rEchappe(score)}</strong></div>` : "") +
+      `<div class="v2r-ligne"><span>${v2rEchappe(v2rMarche(l))}</span><span class="v2r-cote">Cote ${v2rCote(l.cote)}</span></div>` +
+      `<div class="v2r-ligne v2r-info"><span>ROI de la cellule sur l'échantillon : ${v2rPct(l.roi_cellule, true)} · buts attendus ${v2rEchappe((l.buts_attendus || []).join(" / "))}</span>${badge}</div>` +
+      (mode === "regle" && profit ? `<div class="v2r-info">Mise 1 u${profit}</div>` : "") +
+      v2rBlocModere(l, mode) +
+    `</div>` +
+    `<details class="ax-details" open><summary class="ax-summary-cache" tabindex="-1">Derniers scores</summary><div class="ax-details-corps">` +
+      (histo || `<p class="v2r-vide">Derniers scores indisponibles pour ce pari (écrit avant l'ajout de cette rubrique).</p>`) +
+    `</div></details>`;
+  // Comme les autres moteurs : carte repliée au départ ; toucher la carte la déplie (derniers scores visibles) ou la replie.
+  section.addEventListener("click", (e) => {
+    if (e.target.closest("button, a, summary")) return;
+    const sel = window.getSelection && window.getSelection();
+    if (sel && String(sel).length) return;
+    const avant = section.getBoundingClientRect().top;
+    const replie = !section.classList.contains("ax-replie");
+    section.classList.toggle("ax-replie", replie);
+    section.setAttribute("aria-expanded", String(!replie));
+    const apres = section.getBoundingClientRect().top;
+    if (Math.abs(apres - avant) > 1) window.scrollBy(0, apres - avant);
+  });
+  return section;
 }
 function v2rListe(id, liste, mode, vide) {
   const el = document.getElementById(id); if (!el) return;
-  el.innerHTML = liste && liste.length ? liste.map((l) => v2rCarte(l, mode)).join("") : `<p class="v2r-vide">${v2rEchappe(vide)}</p>`;
+  el.innerHTML = "";
+  if (liste && liste.length) liste.forEach((l) => el.appendChild(v2rCarte(l, mode)));
+  else el.innerHTML = `<p class="v2r-vide">${v2rEchappe(vide)}</p>`;
 }
 function v2rAffiche(d) {
   const b = d.bilan || {};
