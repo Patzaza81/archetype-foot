@@ -29,11 +29,37 @@ Changer un paramètre de `CONFIG` exige d'incrémenter `VERSION_METHODE` (`regle
 - **ECART A TRANCHER** : `data/v2r/regles/regles_2026-10-14.json` indique `entraine_sur = 889` et `jusqu_au = 2026-10-13` : les règles en production **incluent déjà les matchs du 13/10**. Si l'intention était de les exclure, ces règles ne respectent pas la définition ci-dessus. Cela ne fausse pas le carnet (ses paris sont des matchs du 14/10 et après, figés avant le coup d'envoi) mais le 13/10 ne peut plus servir de test avec ces règles : `backtest.py` réentraîne avant le jour testé pour cette raison. Règles figées : on ne les réécrit pas sans décision de Patrick.
 - **Taille** : 889 matchs, c'est peu pour des cellules à 4 dimensions (41 cellules retenues, chacune sur 10 paris ou un peu plus).
 
+## Données de l'échantillon (mesurées le 14/10/2026 par `python -m moteur_v2r.sensibilite`)
+
+- **Contenu** : 889 matchs réglés, du 28/09/2026 au 13/10/2026, 119 championnats, en moyenne 33,8 marchés cotés par match. Les 889 ont les historiques des deux équipes.
+- **Matchs par jour** : 28/09: 6 · 29/09: 14 · 30/09: 7 · 01/10: 2 · 02/10: 5 · 03/10: 93 · 04/10: 63 · 05/10: 16 · 06/10: 2 · 07/10: 13 · 08/10: 16 · 09/10: 96 · 10/10: 258 · 11/10: 213 · 12/10: 50 · 13/10: 35. Quatre jours (03/10, 09/10, 10/10, 11/10) pèsent 74 % de l'échantillon (3 jours de week-end plus un vendredi) : les cellules reflètent surtout les championnats de ces jours-là.
+- **Règles du 13/10** : 851 matchs, jusqu'au 12/10, 43 cellules. **Règles du 14/10** : 889 matchs, jusqu'au 13/10, 41 cellules.
+- **Cellules du 14/10** : 41 cellules, 628 paris au total ; 10 à 52 paris par cellule (médiane 12) ; 22 cellules sur 12 paris ou moins ; ROI de cellule de +31 % à +129 % (médiane +44 %). Marchés les plus fréquents : 1X2 nul (6), BTTS non (5), Plus de 4.5 buts (5), Moins de 0.5 buts (3).
+
+## Test de sensibilité (test à l'aveugle, un paramètre à la fois)
+
+Méthode : moteur officiel rejoué du 06/10 au 13/10 (8 jours), règles réapprises avant chaque jour avec les seuls matchs précédents ; ROI sur le pari officiel, IC95 par match. **Limites** : réentraînement quotidien (production : le lundi), premiers jours testés avec très peu de matchs d'entraînement, tests non indépendants (mêmes matchs).
+
+| Paramètre testé | Paris | ROI | IC95 |
+|---|---|---|---|
+| Base (10 paris, ROI 30 %, tranche 0,25) | 196 | +6,5 % | −14 % à +28 % |
+| min_paris = 5 | 425 | −8,5 % | −23 % à +7 % |
+| min_paris = 20 | 60 | −15,5 % | −47 % à +23 % |
+| roi_min = 0 % | 609 | −8,1 % | −18 % à +1 % |
+| roi_min = 15 % | 424 | −4,0 % | −15 % à +9 % |
+| roi_min = 45 % | 89 | +8,5 % | −27 % à +44 % |
+| tranche 0,20 | 179 | −2,3 % | −20 % à +16 % |
+| tranche 0,50 | 255 | −5,2 % | −23 % à +14 % |
+
+Lecture (faits, pas opinions) : tous les IC95 contiennent 0 ; le ROI est positif seulement pour la base et roi_min = 45 %, et il change de signe dès qu'on bouge un paramètre ; aucune valeur ne se distingue du hasard sur 8 jours. Les coupures de buts (2,5/2,9 et 2,4/3,0) et le modèle de Poisson n'ont pas été testés : `sensibilite.rejoue_avec` accepte `coupures_ligue` et `coupures_match` pour le faire.
+
+Pour refaire ces mesures ou ajouter un essai : `python -m moteur_v2r.sensibilite` (outil d'étude, ne modifie ni le moteur ni les fichiers de `data/v2r/`).
+
 ## Limites connues de la méthode (constatées dans le code, pas des opinions)
 
 - Les cellules sont retenues sur leur ROI **sur l'échantillon qui les a produites** : un ROI élevé sur peu de paris (surtout à grosse cote) peut venir du hasard. Un ROI sur échantillon n'est pas une preuve prédictive.
 - Le choix du « meilleur ROI de cellule » parmi plusieurs marchés d'un match favorise les cellules chanceuses.
-- Aucun test de sensibilité des paramètres ci-dessus n'est archivé.
+- Le test de sensibilité du 14/10/2026 (ci-dessus) ne couvre que min_paris, roi_min et la largeur de tranche, sur 8 jours.
 
 ## A compléter par Patrick
 
