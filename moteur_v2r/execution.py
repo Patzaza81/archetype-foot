@@ -9,7 +9,7 @@ import datetime
 import json
 import os
 
-from . import carnet as K, pronostics as P, regles as R
+from . import carnet as K, modere as MOD, pronostics as P, regles as R
 from .donnees import charge
 
 
@@ -45,13 +45,20 @@ def execute(matchs, dossier, maintenant):
                 propositions.append(carnet[pick["match_id"]])
     K.sauve(carnet, dossier)
 
+    # 4) variantes « marché modéré » (carnets séparés, ne modifient ni le carnet officiel ni les règles). Une erreur
+    # est écrite dans le fichier publié (jamais masquée) et ne bloque pas v2r.
+    try:
+        modere = MOD.met_a_jour(matchs, carnet, dossier, maintenant)
+    except Exception as e:  # noqa: BLE001
+        modere = dict(erreur=f"{type(e).__name__}: {e}")
+
     bilan = K.bilan(carnet)
     sortie = dict(genere_le=maintenant.isoformat(), statut=bilan["statut"],
                   avertissement=("OBSERVATION : ne pas miser avant %d paris réglés avec borne basse IC95 > 0" % K.SEUIL_PARIS)
                   if bilan["statut"] != "actif" else None,
                   regles_version=regles["version"] if regles else None, regles_nouvelles=nouvelle,
                   regles_cellules=len(regles["cellules"]) if regles else 0, regles_reglees_aujourdhui=reglés,
-                  bilan=bilan,
+                  bilan=bilan, modere=modere,
                   a_venir=sorted([l for l in carnet.values() if not l["fige"]], key=lambda l: (l["coup_d_envoi_utc"], l["match_id"])),
                   en_cours=sorted([l for l in carnet.values() if l["fige"] and l["resultat"] is None], key=lambda l: (l["coup_d_envoi_utc"], l["match_id"])),
                   reglees=sorted([l for l in carnet.values() if l["resultat"] is not None], key=lambda l: (l["coup_d_envoi_utc"], l["match_id"]), reverse=True)[:150])
