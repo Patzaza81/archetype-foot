@@ -28,6 +28,15 @@ def _charge_json_ou_vide(chemin: str) -> Any:
         return json.load(f)
 
 
+def _portee(jambes: list) -> str | None:
+    """Anciennes entrées sans champ `portee` : déduite des dates des paris."""
+    try:
+        import suivi_tickets
+        return suivi_tickets.portee(jambes) if jambes else None
+    except Exception:  # noqa: BLE001 - affichage seulement
+        return None
+
+
 def construit_suivi_tickets() -> dict[str, Any]:
     """Bilan statistique des tickets + les derniers tickets (l'historique complet reste dans son fichier)."""
     historique = _charge_json_ou_vide(FICHIER_TICKETS_HISTORIQUE)
@@ -36,7 +45,7 @@ def construit_suivi_tickets() -> dict[str, Any]:
     recents = [
         {
             "date": e.get("date"), "scenario": e.get("scenario"), "statut": e.get("statut"),
-            "cote_totale": e.get("cote_totale"), "paris": len(e.get("jambes") or []),
+            "portee": e.get("portee") or _portee(e.get("jambes") or []), "cote_totale": e.get("cote_totale"), "paris": len(e.get("jambes") or []),
             "resultat": e.get("resultat"),
         }
         for e in historique[-TICKETS_RECENTS:][::-1]

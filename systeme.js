@@ -118,10 +118,17 @@ function construitBlocSuiviTickets(d) {
   const lignesSrc = Object.keys(src).map(function(k) {
     return "<tr><td>" + echappeHtmlSysteme(k) + "</td><td>" + src[k].paris + "</td><td>" + pc(src[k].proba_moyenne_estimee) + "</td><td>" + pc(src[k].taux_reussite) + "</td></tr>";
   }).join("");
+  const noms = { meme_jour: "Même jour", melange: "Dates mélangées" };
+  const pp = b.par_portee || {};
+  const lignesPortee = Object.keys(pp).map(function(k) {
+    const x = pp[k];
+    return "<tr><td>" + echappeHtmlSysteme(noms[k] || k) + "</td><td>" + x.tickets_regles + "</td><td>" + x.gagnants + " / " + x.tickets_regles +
+      "</td><td>" + x.justes + " / " + x.paris + "</td></tr>";
+  }).join("");
   const recents = (d.recents || []).slice(0, 12).map(function(e) {
     const r = e.resultat || {};
     const res = e.statut === "RESOLVED" ? (r.paris_justes + " justes, " + r.erreurs + " erreur(s)") : (e.statut === "EXCLU" ? "exclu" : "en attente");
-    return "<tr><td>" + echappeHtmlSysteme(e.date) + "</td><td>" + echappeHtmlSysteme(e.scenario) + "</td><td>" + e.paris + "</td><td>" + echappeHtmlSysteme(res) + "</td></tr>";
+    return "<tr><td>" + echappeHtmlSysteme(e.date) + "</td><td>" + echappeHtmlSysteme(e.scenario) + "</td><td>" + echappeHtmlSysteme(noms[e.portee] || "—") + "</td><td>" + e.paris + "</td><td>" + echappeHtmlSysteme(res) + "</td></tr>";
   }).join("");
   const table = function(tete, lignes) { return lignes ? "<div style=\"overflow-x:auto;margin-top:10px\"><table class=\"tableau-systeme\"><thead><tr>" + tete.map(function(t) { return "<th>" + t + "</th>"; }).join("") + "</tr></thead><tbody>" + lignes + "</tbody></table></div>" : ""; };
   const div = document.createElement("section");
@@ -134,10 +141,11 @@ function construitBlocSuiviTickets(d) {
       "<div class=\"stat\"><span class=\"etiquette\">En attente</span><strong>" + (c.en_attente ?? 0) + "</strong></div>" +
       "<div class=\"stat\"><span class=\"etiquette\">Exclus</span><strong>" + (c.exclus ?? 0) + "</strong></div>" +
     "</div>" +
+    table(["Type de ticket", "Réglés", "Tickets gagnants", "Paris justes"], lignesPortee) +
     table(["Scénario", "Réglés", "Justes prévus", "Justes observés", "Erreurs"], lignesScen) +
     table(["Scénario", "Plan", "Réglés", "Rentable prévu", "Rentable observé", "Gain prévu", "ROI observé"], lignesPlans) +
     table(["Source", "Paris", "Proba estimée", "Réussite"], lignesSrc) +
-    table(["Date", "Scénario", "Paris", "Résultat"], recents) +
+    table(["Date", "Scénario", "Type", "Paris", "Résultat"], recents) +
     "<p style=\"margin:9px 0 0;font-size:11.5px;color:var(--text-secondary)\">" + echappeHtmlSysteme(b.avertissement || "") + " « Rentable » = mise au moins remboursée.</p>";
   return div;
 }
