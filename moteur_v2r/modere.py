@@ -5,7 +5,7 @@ marché de la même famille, k crans plus prudent (k = 1 ou 2), puis applique un
 inférieure à 1,40, on ne propose RIEN (jamais de repli sur le pari d'origine).
 
 Familles avec version modérée : total de buts et buts d'une équipe (Plus de L -> Plus de L-k, Moins de L -> Moins de L+k,
-ligne minimale 0,5), handicap (ligne + k), 1X2 victoire -> double chance, nul -> double chance (domicile ou extérieur),
+ligne minimale 0,5), handicap (plus sûr de k : ligne + k pour le domicile, - k pour l'extérieur, car la ligne affichée est celle du domicile), 1X2 victoire -> double chance, nul -> handicap +2 (= +1,5) de l'outsider,
 les deux marquent « oui » -> Plus de 1,5 buts, cage inviolée -> Moins de (0,5+k) buts de l'adversaire. Sans version
 modérée (aucun marché plus sûr n'est logiquement équivalent) : les deux marquent « non », pair/impair, « encaisse au
 moins 1 but » : ils sont gardés tels quels, sous le même plancher.
@@ -35,8 +35,8 @@ def frere(lib, k):
         nouvelle = max(0.5, ligne - k) if sens == "Plus" else ligne + k
         return f"{sens} de {nouvelle:g} buts{suffixe}"
     m = re.fullmatch(r"Handicap (-?\d+(?:\.\d+)?) - (Domicile|Extérieur)", lib)
-    if m:
-        return f"Handicap {float(m[1]) + k:g} - {m[2]}"
+    if m:       # la ligne affichée est celle du DOMICILE (journal_rentabilite.ligne_propre) : l'extérieur reçoit -L
+        return f"Handicap {float(m[1]) + (k if m[2] == 'Domicile' else -k):g} - {m[2]}"
     m = re.fullmatch(r"Cage inviolée - (Domicile|Extérieur)", lib)
     if m:                                    # cage inviolée d'une équipe = l'adversaire marque 0 -> ligne de buts de l'adversaire
         adverse = "Extérieur" if m[1] == "Domicile" else "Domicile"
@@ -45,25 +45,37 @@ def frere(lib, k):
             "BTTS - oui": "Plus de 1.5 buts"}.get(lib)   # les deux marquent => au moins 2 buts
 
 
-def candidats(lib, k):
-    """Libellés plus prudents (même famille, gagnants dans tous les cas où le pari d'origine gagne). Le nul a deux
-    équivalents (double chance avec le domicile ou avec l'extérieur) : le choix se fait dans `variante`."""
+def outsider(cotes):
+    """Équipe à la plus grosse cote 1X2 (« Domicile » ou « Extérieur »). Cotes égales : Domicile. None si une cote manque."""
+    d, e = cotes.get("1X2 - 1"), cotes.get("1X2 - 2")
+    if d is None or e is None:
+        return None
+    return "Domicile" if d >= e else "Extérieur"
+
+
+def handicap_plus_2(cotes):
+    """Libellé du handicap « +2 » de l'outsider. Le +2 à trois issues (gagné si l'équipe ne perd pas de 2 buts ou plus)
+    est le même pari que le +1,5 : c'est celui coté par BetPawa. Ligne affichée = ligne du domicile : Domicile +1,5,
+    ou Extérieur -1,5 (l'extérieur reçoit +1,5)."""
+    o = outsider(cotes)
+    return None if o is None else ("Handicap 1.5 - Domicile" if o == "Domicile" else "Handicap -1.5 - Extérieur")
+
+
+def candidats(lib, k, cotes=None):
+    """Libellés plus prudents (même famille, gagnants dans tous les cas où le pari d'origine gagne). Le nul a pour
+    équivalent le handicap +2 (= +1,5) de l'équipe à la plus grosse cote (décision de Patrick, 14/10), identique à 1 et 2 crans."""
     if lib == "1X2 - X":
-        return ["Double chance - 1X", "Double chance - X2"]
+        h = handicap_plus_2(cotes or {})
+        return [h] if h else []
     f = frere(lib, k)
     return [f] if f else []
 
 
 def variante(pick, cotes, k, plancher=PLANCHER_COTE):
     """Pari modéré à k crans, ou None si la cote finale est sous le plancher. `cotes` : cotes du match {libellé: cote}.
-    Nul : parmi les deux doubles chances cotées, celle dont la cote est la plus proche du plancher en restant au-dessus ;
-    aucune au-dessus du plancher -> rien (jamais de repli sur le nul)."""
+    Nul : handicap +2 (= +1,5) de l'outsider ; cote sous le plancher -> rien (jamais de repli sur le nul ni sur la double chance)."""
     lib, cote = pick["marche"], pick["cote"]
-    cotes_dispo = [(c, cotes[c]) for c in candidats(lib, k) if c in cotes]
-    if lib == "1X2 - X" and cotes_dispo:
-        cotes_dispo = sorted((c for c in cotes_dispo if c[1] >= plancher), key=lambda c: (c[1], c[0]))
-        if not cotes_dispo:
-            return None
+    cotes_dispo = [(c, cotes[c]) for c in candidats(lib, k, cotes) if c in cotes]
     if cotes_dispo:
         lib, cote = cotes_dispo[0]
     if cote < plancher:

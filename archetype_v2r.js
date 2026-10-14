@@ -34,7 +34,10 @@ function v2rMarche(l) {
   if (m === "BTTS - non") return "Une des deux équipes ne marque pas";
   if (m === "Total buts - pair") return "Total de buts pair";
   if (m === "Total buts - impair") return "Total de buts impair";
-  if ((r = m.match(/^Handicap (.+) - (Domicile|Extérieur)$/))) return `${r[2] === "Domicile" ? dom : ext} · handicap ${virg(r[1])}`;
+  if ((r = m.match(/^Handicap (.+) - (Domicile|Extérieur)$/))) {      // ligne affichée = ligne du domicile ; l'extérieur reçoit l'inverse
+    const x = r[2] === "Domicile" ? Number(r[1]) : -Number(r[1]);
+    return `${r[2] === "Domicile" ? dom : ext} · handicap ${x > 0 ? "+" : x < 0 ? "−" : ""}${virg(String(Math.abs(x)))}`;
+  }
   if ((r = m.match(/^(Plus|Moins) de (.+) buts - (Domicile|Extérieur)$/))) return `${r[3] === "Domicile" ? dom : ext} : ${r[1].toLowerCase()} de ${virg(r[2])} buts`;
   if ((r = m.match(/^(Plus|Moins) de (.+) buts$/))) return `${r[1]} de ${virg(r[2])} buts`;
   return virg(m);

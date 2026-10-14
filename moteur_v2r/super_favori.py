@@ -29,7 +29,8 @@ def fonction(lib):
         x = float(m[1])
         if x == int(x):
             return None
-        return (lambda h, a: h - a + x) if m[2] == "Domicile" else (lambda h, a: a - h + x)
+        # la ligne affichée est celle du DOMICILE (journal_rentabilite.ligne_propre) : l'extérieur reçoit -x
+        return (lambda h, a: h - a + x) if m[2] == "Domicile" else (lambda h, a: a - h - x)
     m = re.fullmatch(r"Cage inviolée - (Domicile|Extérieur)", lib)
     if m:
         return (lambda h, a: .5 - a) if m[1] == "Domicile" else (lambda h, a: .5 - h)

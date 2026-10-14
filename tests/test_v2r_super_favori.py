@@ -58,6 +58,19 @@ def test_btts_handicap_buts_equipe_cage_passent_et_echouent():
     assert SF.statut("Cage inviolée - Domicile", d, e) == dict(indice_pct=100.0, super_favori=True)
 
 
+def test_handicap_exterieur_utilise_la_ligne_du_domicile():
+    # « Handicap -1.5 - Extérieur » = l'extérieur reçoit +1,5 ; « Handicap 1.5 - Extérieur » = l'extérieur donne 1,5
+    d, _ = hist([(1, 0)] * 4, []); _, e = hist([], [(0, 1)] * 4)            # domicile gagne de 1 : l'extérieur perd de 1 à chaque fois
+    assert SF.statut("Handicap -1.5 - Extérieur", d, e) == dict(indice_pct=100.0, super_favori=True)
+    assert SF.statut("Handicap -0.5 - Extérieur", d, e)["indice_pct"] == 0.0                       # l'extérieur reçoit +0,5 : perd quand le domicile gagne
+    assert not SF.statut("Handicap 1.5 - Extérieur", d, e)["super_favori"]   # l'extérieur doit gagner par 2 : 0 %
+    assert not SF.statut("Handicap 0.5 - Extérieur", d, e)["super_favori"]
+    d, _ = hist([(0, 3)] * 4, []); _, e = hist([], [(3, 0)] * 4)
+    assert SF.statut("Handicap 1.5 - Extérieur", d, e) == dict(indice_pct=100.0, super_favori=True)   # l'extérieur gagne de 3
+    assert SF.statut("Handicap -1.5 - Extérieur", d, e)["super_favori"]
+    assert not SF.statut("Handicap 1.5 - Domicile", d, e)["super_favori"]
+
+
 def test_marches_sans_indice_et_echantillon_trop_petit():
     d, _ = hist([(2, 1)] * 4, []); _, e = hist([], [(1, 2)] * 4)
     for lib in ("1X2 - X", "Total buts - pair", "Total buts - impair", "Encaisse au moins 1 but - Domicile",

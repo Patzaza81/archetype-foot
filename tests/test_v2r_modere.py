@@ -15,7 +15,9 @@ UTC = datetime.timezone.utc
 def test_frere_cas_qui_passent():
     assert MOD.frere("Plus de 5.5 buts", 2) == "Plus de 3.5 buts"                       # exemple Villarreal – Naples
     assert MOD.frere("Moins de 2.5 buts - Domicile", 1) == "Moins de 3.5 buts - Domicile"
-    assert MOD.frere("Handicap -1.5 - Extérieur", 1) == "Handicap -0.5 - Extérieur"
+    assert MOD.frere("Handicap -1.5 - Domicile", 1) == "Handicap -0.5 - Domicile"        # domicile : ligne + k
+    assert MOD.frere("Handicap 0.5 - Extérieur", 1) == "Handicap -0.5 - Extérieur"       # extérieur : ligne affichée = celle du domicile, donc - k
+    assert MOD.frere("Handicap -1.5 - Extérieur", 1) == "Handicap -2.5 - Extérieur"      # l'extérieur reçoit +1,5 -> +2,5 (plus sûr)
     assert MOD.frere("1X2 - 2", 2) == "Double chance - X2"
     assert MOD.frere("Plus de 1.5 buts", 2) == "Plus de 0.5 buts"                       # ligne minimale 0,5
 
@@ -24,7 +26,8 @@ def test_frere_nouveaux_equivalents_cas_qui_passent():
     assert MOD.frere("BTTS - oui", 1) == "Plus de 1.5 buts" and MOD.frere("BTTS - oui", 2) == "Plus de 1.5 buts"
     assert MOD.frere("Cage inviolée - Domicile", 1) == "Moins de 1.5 buts - Extérieur"   # domicile cage inviolée = extérieur à 0
     assert MOD.frere("Cage inviolée - Extérieur", 2) == "Moins de 2.5 buts - Domicile"
-    assert MOD.candidats("1X2 - X", 1) == ["Double chance - 1X", "Double chance - X2"]
+    assert MOD.candidats("1X2 - X", 1, {"1X2 - 1": 3.4, "1X2 - 2": 1.9}) == ["Handicap 1.5 - Domicile"]
+    assert MOD.candidats("1X2 - X", 2, {"1X2 - 1": 1.9, "1X2 - 2": 3.4}) == ["Handicap -1.5 - Extérieur"]
 
 
 def test_frere_cas_qui_echouent():
@@ -35,14 +38,18 @@ def test_frere_cas_qui_echouent():
         assert MOD.candidats(lib, 1) == [], lib
 
 
-def test_nul_choisit_la_double_chance_la_plus_proche_du_plancher():
+def test_nul_devient_le_handicap_plus_2_de_l_outsider():
     nul = pari("1X2 - X", 4.43)
-    assert MOD.variante(nul, {"Double chance - 1X": 1.61, "Double chance - X2": 1.55}, 1)["marche"] == "Double chance - X2"
-    assert MOD.variante(nul, {"Double chance - 1X": 1.30, "Double chance - X2": 1.52}, 2)["marche"] == "Double chance - X2"
-    assert MOD.variante(nul, {"Double chance - 1X": 1.40, "Double chance - X2": 1.30}, 1)["cote"] == 1.40
-    assert MOD.variante(nul, {"Double chance - 1X": 1.30, "Double chance - X2": 1.35}, 1) is None   # rien, pas de repli sur le nul
-    assert MOD.variante(nul, {"Double chance - 1X": 1.39}, 2) is None
-    assert MOD.variante(nul, {}, 1)["marche"] == "1X2 - X"                                            # double chances non cotées : nul gardé
+    dom_outsider = {"1X2 - 1": 3.40, "1X2 - 2": 1.95, "Handicap 1.5 - Domicile": 1.46, "Handicap -1.5 - Extérieur": 6.0}
+    ext_outsider = {"1X2 - 1": 1.80, "1X2 - 2": 4.10, "Handicap 1.5 - Domicile": 1.05, "Handicap -1.5 - Extérieur": 1.52}
+    v = MOD.variante(nul, dom_outsider, 1)
+    assert v["marche"] == "Handicap 1.5 - Domicile" and v["cote"] == 1.46 and v["marche_v2r"] == "1X2 - X"
+    assert MOD.variante(nul, ext_outsider, 2)["marche"] == "Handicap -1.5 - Extérieur"               # l'extérieur reçoit +1,5
+    assert MOD.variante(nul, dict(dom_outsider, **{"Handicap 1.5 - Domicile": 1.40}), 1)["cote"] == 1.40   # pile au plancher : gardé
+    assert MOD.variante(nul, dict(dom_outsider, **{"Handicap 1.5 - Domicile": 1.39}), 1) is None          # sous le plancher : rien
+    assert MOD.variante(nul, dict(ext_outsider, **{"Handicap -1.5 - Extérieur": 1.20, "Double chance - X2": 1.9}), 2) is None   # pas de repli (ni nul, ni double chance)
+    assert MOD.variante(nul, {"1X2 - 1": 2.5, "1X2 - 2": 2.5, "Handicap 1.5 - Domicile": 1.50}, 1)["marche"] == "Handicap 1.5 - Domicile"  # cotes égales : domicile
+    assert MOD.variante(nul, {"Double chance - 1X": 1.6}, 1)["marche"] == "1X2 - X"                  # 1X2 absent / handicap non coté : nul gardé
 
 
 def test_les_deux_marquent_oui_et_cage_inviolee_sous_le_plancher_ou_non():
