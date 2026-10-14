@@ -7,7 +7,7 @@
 <title>ARCHETYPE — Journal des marchés rentables</title>
 <link rel="stylesheet" href="archetype.css?v=20261010plie1">
 <link rel="stylesheet" href="af-barre.css">
-<link rel="stylesheet" href="journal.css?v=20261010idx1">
+<link rel="stylesheet" href="journal.css?v=20261014a">
 <link rel="stylesheet" href="af-pronostics.css">
 <link rel="stylesheet" href="af-journal.css">
 </head>
@@ -78,7 +78,7 @@
     </div>
 
     <div class="jr-onglet" data-onglet="equipes" hidden>
-      <section class="ax-carte jr-bloc">
+      <section class="ax-carte jr-bloc jr-intro-equipes">
         <h2 class="jr-titre">Équipes à suivre</h2>
         <p class="jr-aide">Équipes dont un marché précis passe dans au moins 70 % de leurs matchs, sur au moins 5 matchs terminés présents dans les données (domicile et extérieur). Une équipe qui n'a pas encore 5 matchs dans les données n'apparaît pas, même si ses résultats sont bons. Les marchés trop banals (qui passent déjà dans 70 % des matchs en général) sont exclus.</p>
         <div class="jr-filtres" id="filtres-equipes">
@@ -86,8 +86,8 @@
           <button type="button" data-f="prochain">Avec un match à venir</button>
           <button type="button" data-f="bon">Indice 3/4 ou 4/4</button>
         </div>
-        <div id="equipes"></div>
       </section>
+      <div id="equipes" class="jr-equipes-jours"></div>
     </div>
 
     <div class="jr-onglet" data-onglet="methode" hidden>
@@ -98,7 +98,7 @@
     </div>
   </main>
 </div>
-<script src="journal.js?v=20261010idx1"></script>
+<script src="journal.js?v=20261014a"></script>
 <script src="drapeaux.js"></script>
 <script src="af-drapeaux-cartes.js"></script>
 </body>

@@ -57,3 +57,10 @@ Tests : `tests/test_journal_regularites.py`.
 - k = 10 a été choisi pour que le lissé reste proche de « taux × réalisme » (7 sur 7 : 76 % contre 75 %). Sur 294 cas passés, le
   meilleur k mesuré est plus grand (≥ 20) : le taux de l'équipe apporte peu au-delà de la réussite réelle du marché.
 
+
+## Affichage « Équipes à suivre » par jour (14/10/2026, demande de Patrick)
+
+- Page `journal.html`, rubrique « Équipes à suivre » (`journal.js`, `afficherEquipes`) : les équipes sont **classées par jour de leur prochain match, puis par heure**. Un titre par jour (« Aujourd'hui », « Demain », puis la date) avec le nombre de matchs et d'équipes à suivre.
+- **Une carte par match**, même présentation que les moteurs (heure du Cameroun en gras, date dessous, drapeau du championnat, carte repliée au départ, un toucher la déplie et montre le détail des marchés de chaque équipe, la cote et le lien vers BetPawa). Les deux équipes d'un même match partagent la carte. Un match du jour déjà commencé est signalé, pas masqué.
+- **Équipes sans match connu** : regroupées à la fin (« Sans match connu »). Les filtres « Avec un match à venir » et « Indice 3/4 ou 4/4 » sont conservés.
+- Affichage seulement : aucune règle de sélection, fréquence ni indice ne change (`journal_rentabilite.py` inchangé). Tests : `tests/test_journal_equipes_par_jour.py`.

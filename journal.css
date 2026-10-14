@@ -104,3 +104,15 @@ body.theme-nuit .jr-onglets{--jo-fond:#0F1117;--jo-carte:#1A1E29;--jo-texte:#F1E
 .jr-indice-risque,.jr-indice-tres-risque{color:#C0392B}
 .jr-eq-bons{margin:6px 0 0;display:flex;flex-wrap:wrap;gap:4px}
 .jr-eq-bons .jr-indice{margin-left:0}
+
+/* Équipes à suivre par jour (14/10/2026) : une carte par match, même présentation que les moteurs. */
+.jr-equipes-jours{display:grid;gap:14px;margin-top:14px}
+.jr-jour-groupe{display:grid;gap:14px}
+.jr-jour{margin:10px 4px 0;font-size:16px;font-weight:900;display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 10px}
+.jr-jour small{font-size:12px;font-weight:600;color:var(--ax-doux)}
+.jr-match-corps{padding:6px 14px 12px}
+.jr-eq-corps + .jr-eq-corps{margin-top:10px;padding-top:10px;border-top:1px solid var(--ax-ligne)}
+.jr-eq-detail-eq + .jr-eq-detail-eq{margin-top:12px}
+.jr-eq-detail-nom{font-weight:800;font-size:14px}
+.jr-eq-passe{margin:0 0 6px;font-size:12.5px;font-weight:700;color:var(--ax-doux)}
+.jr-passe .ax-horaire strong{opacity:.65}

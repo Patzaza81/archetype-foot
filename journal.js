@@ -127,52 +127,143 @@
       '" title="Marché testé sur les scénarios moyen et pire de chaque équipe. Information seulement.">Indice ' + esc(indiceTexte(p)) + "</span>";
   }
 
-  /* ─────────── Équipes à suivre (marché récurrent >= 70 %) ─────────── */
+  /* ─────────── Équipes à suivre (marché récurrent >= 70 %) ───────────
+     Classées PAR JOUR de leur prochain match (puis par heure), une carte par match, même présentation que les moteurs
+     (heure, date, drapeau du championnat, carte repliée qui se déplie au toucher). Les deux équipes d'un même match
+     partagent la même carte. Les équipes sans match connu sont regroupées à la fin. Aucun calcul métier ici. */
+  var JOURS = ["dim", "lun", "mar", "mer", "jeu", "ven", "sam"], MOIS = ["janv", "févr", "mars", "avr", "mai", "juin", "juil", "août", "sept", "oct", "nov", "déc"];
+  function jourLisible(iso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ""));
+    if (!m) return esc(iso);
+    var d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], 12));
+    var t = JOURS[d.getUTCDay()] + " " + (+m[3]) + " " + MOIS[+m[2] - 1];
+    return t.charAt(0).toUpperCase() + t.slice(1);
+  }
+  function maintenantCameroun() { return new Date(Date.now() + 3600000).toISOString().slice(0, 16).replace("T", " "); }   // « AAAA-MM-JJ HH:MM », heure du Cameroun
+  function etiquetteJour(iso, aujourdhui) {
+    var demain = new Date(Date.parse(aujourdhui + "T12:00:00Z") + 86400000).toISOString().slice(0, 10);
+    return (iso === aujourdhui ? "Aujourd'hui · " : iso === demain ? "Demain · " : "") + jourLisible(iso);
+  }
+  /* Regroupe les lignes (équipe × marché) en matchs : { cle, date, heure, dom, ext, ligue, equipes: [{equipe, ligue, lignes}] } triés par date puis heure. */
+  function groupeParMatch(lignes) {
+    var matchs = {}, ordre = [], sans = {}, ordreSans = [];
+    lignes.forEach(function (l) {
+      var pm = l.prochain_match;
+      if (!pm || !pm.date) {
+        var c0 = l.equipe + " | " + l.ligue;
+        if (!sans[c0]) { sans[c0] = { equipe: l.equipe, ligue: l.ligue, lignes: [] }; ordreSans.push(c0); }
+        sans[c0].lignes.push(l); return;
+      }
+      var chez = pm.lieu === "domicile", dom = chez ? l.equipe : pm.adversaire, ext = chez ? pm.adversaire : l.equipe;
+      var cle = [pm.date, pm.heure || "", dom, ext].join("|");
+      if (!matchs[cle]) { matchs[cle] = { cle: cle, date: pm.date, heure: pm.heure || "", dom: dom, ext: ext, ligue: l.ligue, equipes: {}, ordreEq: [] }; ordre.push(cle); }
+      var m = matchs[cle];
+      if (!m.equipes[l.equipe]) { m.equipes[l.equipe] = { equipe: l.equipe, ligue: l.ligue, joues: l.joues, lignes: [] }; m.ordreEq.push(l.equipe); }
+      m.equipes[l.equipe].lignes.push(l);
+    });
+    var liste = ordre.map(function (c) {
+      var m = matchs[c]; m.equipes = m.ordreEq.map(function (e) { return m.equipes[e]; }); return m;
+    }).sort(function (a, b) { return (a.date + " " + a.heure).localeCompare(b.date + " " + b.heure) || a.dom.localeCompare(b.dom); });
+    return { matchs: liste, sans: ordreSans.map(function (c) { return sans[c]; }) };
+  }
+  function blocMarches(ls) {
+    return ls.map(function (l) {
+      var rent = l.roi_betpawa == null ? "Cote : pas encore assez de relevés."
+        : (l.roi_betpawa > 0 ? 'Rentabilité observée : <span class="pos">' + pct(l.roi_betpawa, true) + "</span> sur " + l.paris_cotes + " cote(s) relevée(s)."
+          : "Rendement insuffisant sur la période observée.");
+      var cotePm = l.prochain_match && l.prochain_match.cote_betpawa ? ' <span class="jr-cote-pm">cote ' + cote(l.prochain_match.cote_betpawa) + "</span>" : "";
+      return '<div class="jr-eq-marche"><div class="jr-eq-ligne"><b>' + esc(l.marche) + "</b>" + cotePm + indiceBadge(l.indice_performance) + '<span class="jr-eq-freq">' +
+        l.gagnes + "/" + l.joues + " · " + pct(l.frequence) + "</span></div>" +
+        '<div class="jr-eq-detail">En général : ' + pct(l.frequence_generale) + " des matchs. " + rent + "</div></div>";
+    }).join("");
+  }
+  function resumeEquipe(eq) {
+    var resume = eq.lignes.map(function (l) { return l.marche + " " + pct(l.frequence); }).join(" · ");
+    var bons = eq.lignes.filter(function (l) { return indiceBon(l.indice_performance); });
+    var badges = bons.length ? '<div class="jr-eq-bons">' + bons.map(function (l) {
+      return '<span class="jr-indice jr-indice-' + esc(String(l.indice_performance.niveau).toLowerCase().replace(/_/g, "-")) + '">' + esc(l.marche) + " · " + esc(indiceTexte(l.indice_performance)) + "</span>";
+    }).join(" ") + "</div>" : "";
+    return { resume: resume, badges: badges, bon: bons.length > 0 };
+  }
+  function carteMatch(m, maintenant) {
+    var passe = (m.date + " " + (m.heure || "23:59")) < maintenant;
+    var bon = false, lien = "";
+    var corps = m.equipes.map(function (eq) {
+      var r = resumeEquipe(eq); if (r.bon) bon = true;
+      return '<div class="jr-eq-corps"><div class="jr-eq-tete"><span class="jr-fiche-nom">' + esc(eq.equipe) + '</span><span class="jr-badge b-A_JOUER">À suivre</span></div>' +
+        '<div class="jr-fiche-info">' + eq.joues + " matchs analysés</div><div class=\"jr-eq-resume\">" + esc(r.resume) + "</div>" + r.badges + "</div>";
+    }).join("");
+    var details = m.equipes.map(function (eq) {
+      var u = ""; eq.lignes.forEach(function (l) { if (l.prochain_match && l.prochain_match.betpawa_url) u = l.prochain_match.betpawa_url; });
+      return '<div class="jr-eq-detail-eq"><div class="jr-eq-detail-nom">' + esc(eq.equipe) + "</div>" + blocMarches(eq.lignes) +
+        (u ? '<a class="jr-lien" href="' + esc(u) + '" target="_blank" rel="noopener">Voir la cote →</a>' : "") + "</div>";
+    }).join("");
+    var s = document.createElement("section");
+    s.className = "ax-carte ax-replie jr-match" + (passe ? " jr-passe" : "");
+    s.setAttribute("aria-expanded", "false");
+    s.setAttribute("data-prochain", "1"); s.setAttribute("data-bon", bon ? "1" : "0");
+    s.innerHTML = '<div class="ax-match"><div class="ax-ligne-match"><span class="ax-equipe ax-dom">' + esc(m.dom) + "</span>" +
+      '<div class="ax-horaire"><strong>' + esc(m.heure || "—") + "</strong><span>" + esc(jourLisible(m.date)) + "</span></div>" +
+      '<span class="ax-equipe ax-ext">' + esc(m.ext) + "</span></div>" +
+      '<div class="ax-match-bas"><p class="ax-competition">' + esc(m.ligue) + "</p><div class=\"ax-actions-tete\"></div></div></div>" +
+      '<div class="jr-match-corps">' + (passe ? '<p class="jr-eq-passe">Match déjà commencé ou terminé.</p>' : "") + corps + "</div>" +
+      '<details class="ax-details" open><summary class="ax-summary-cache" tabindex="-1">Détail des marchés</summary><div class="ax-details-corps">' + details + "</div></details>";
+    s.addEventListener("click", function (e) {
+      if (e.target.closest("button, a, summary")) return;
+      var sel = window.getSelection && window.getSelection();
+      if (sel && String(sel).length) return;
+      var avant = s.getBoundingClientRect().top;
+      var replie = !s.classList.contains("ax-replie");
+      s.classList.toggle("ax-replie", replie); s.setAttribute("aria-expanded", String(!replie));
+      var apres = s.getBoundingClientRect().top;
+      if (Math.abs(apres - avant) > 1) window.scrollBy(0, apres - avant);
+    });
+    return s;
+  }
   function afficherEquipes(j) {
     var lignes = j.equipes_a_suivre || [];
     var zone = document.getElementById("equipes");
     var r = j.regles_equipes || {};
+    zone.innerHTML = "";
     if (!lignes.length) {
       zone.innerHTML = '<p class="jr-vide">Aucune équipe n\'atteint encore 70 % sur un marché avec au moins ' + (r.min_matchs || 5) + " matchs.</p>";
       return;
     }
-    var parEquipe = {}, ordre = [];
-    lignes.forEach(function (l) {
-      var cle = l.equipe + " | " + l.ligue;
-      if (!parEquipe[cle]) { parEquipe[cle] = []; ordre.push(cle); }
-      parEquipe[cle].push(l);
+    var g = groupeParMatch(lignes), maintenant = maintenantCameroun(), aujourdhui = maintenant.slice(0, 10);
+    var jours = [], parJour = {};
+    g.matchs.forEach(function (m) { if (!parJour[m.date]) { parJour[m.date] = []; jours.push(m.date); } parJour[m.date].push(m); });
+    jours.forEach(function (d) {
+      var groupe = document.createElement("div"); groupe.className = "jr-jour-groupe";
+      var nbEq = parJour[d].reduce(function (n, m) { return n + m.equipes.length; }, 0);
+      groupe.innerHTML = '<h3 class="jr-jour">' + esc(etiquetteJour(d, aujourdhui)) + "<small>" + parJour[d].length + " match" + (parJour[d].length > 1 ? "s" : "") +
+        " · " + nbEq + " équipe" + (nbEq > 1 ? "s" : "") + " à suivre</small></h3>";
+      parJour[d].forEach(function (m) { groupe.appendChild(carteMatch(m, maintenant)); });
+      zone.appendChild(groupe);
     });
-    zone.innerHTML = ordre.map(function (cle) {
-      var ls = parEquipe[cle], t = ls[0], pm = null;
-      ls.forEach(function (l) { if (l.prochain_match) pm = l.prochain_match; });
-      var marches = ls.map(function (l) {
-        var rent = l.roi_betpawa == null ? "Cote : pas encore assez de relevés."
-          : (l.roi_betpawa > 0 ? 'Rentabilité observée : <span class="pos">' + pct(l.roi_betpawa, true) + "</span> sur " + l.paris_cotes + " cote(s) relevée(s)."
-            : "Rendement insuffisant sur la période observée.");
-        var cotePm = l.prochain_match && l.prochain_match.cote_betpawa ? ' <span class="jr-cote-pm">cote ' + cote(l.prochain_match.cote_betpawa) + "</span>" : "";
-        return '<div class="jr-eq-marche"><div class="jr-eq-ligne"><b>' + esc(l.marche) + "</b>" + cotePm + indiceBadge(l.indice_performance) + '<span class="jr-eq-freq">' +
-          l.gagnes + "/" + l.joues + " · " + pct(l.frequence) + "</span></div>" +
-          '<div class="jr-eq-detail">En général : ' + pct(l.frequence_generale) + " des matchs. " + rent + "</div></div>";
+    if (g.sans.length) {
+      var groupe = document.createElement("div"); groupe.className = "jr-jour-groupe jr-sans";
+      groupe.innerHTML = '<h3 class="jr-jour">Sans match connu<small>' + g.sans.length + " équipe" + (g.sans.length > 1 ? "s" : "") + " à suivre</small></h3>";
+      var bloc = document.createElement("section"); bloc.className = "ax-carte jr-bloc";
+      bloc.innerHTML = g.sans.map(function (eq) {
+        var rs = resumeEquipe(eq);
+        return '<details class="jr-equipe" data-prochain="0" data-bon="' + (rs.bon ? 1 : 0) + '"><summary><div class="jr-eq-tete"><span class="jr-fiche-nom">' + esc(eq.equipe) +
+          '</span><span class="jr-badge b-A_JOUER">À suivre</span></div><div class="jr-fiche-info">' + esc(eq.ligue) + " · " + eq.lignes[0].joues + " matchs analysés</div>" +
+          '<div class="jr-eq-resume">' + esc(rs.resume) + "</div>" + rs.badges + "</summary>" + blocMarches(eq.lignes) + "</details>";
       }).join("");
-      var prochain = pm ? '<div class="jr-eq-prochain">Prochain match : ' + dateCourte(pm.date) + " à " + esc(pm.heure || "—") + " contre " +
-        esc(pm.adversaire) + " (" + esc(pm.lieu) + ")" + (pm.betpawa_url ? ' · <a class="jr-lien" href="' + esc(pm.betpawa_url) +
-        '" target="_blank" rel="noopener">Voir la cote →</a>' : "") + "</div>" : "";
-      var resume = ls.map(function (l) { return l.marche + " " + pct(l.frequence); }).join(" · ");
-      var bons = ls.filter(function (l) { return indiceBon(l.indice_performance); });
-      var resumeIndice = bons.length ? '<div class="jr-eq-bons">' + bons.map(function (l) {
-        return '<span class="jr-indice jr-indice-' + esc(String(l.indice_performance.niveau).toLowerCase().replace(/_/g, "-")) + '">' + esc(l.marche) + " · " + esc(indiceTexte(l.indice_performance)) + "</span>";
-      }).join(" ") + "</div>" : "";
-      return '<details class="jr-equipe" data-prochain="' + (pm ? 1 : 0) + '" data-bon="' + (bons.length ? 1 : 0) + '"><summary><div class="jr-eq-tete"><span class="jr-fiche-nom">' + esc(t.equipe) +
-        '</span><span class="jr-badge b-A_JOUER">À suivre</span></div><div class="jr-fiche-info">' + esc(t.ligue) + " · " + t.joues + " matchs analysés</div>" +
-        '<div class="jr-eq-resume">' + esc(resume) + "</div>" + resumeIndice + prochain + "</summary>" + marches + "</details>";
-    }).join("");
+      groupe.appendChild(bloc); zone.appendChild(groupe);
+    }
     document.querySelectorAll("#filtres-equipes button").forEach(function (b) {
       b.addEventListener("click", function () {
         document.querySelectorAll("#filtres-equipes button").forEach(function (x) { x.classList.remove("actif"); });
         b.classList.add("actif");
         var f = b.getAttribute("data-f");
-        zone.querySelectorAll(".jr-equipe").forEach(function (el) {
-          el.style.display = (f === "toutes" || (f === "bon" ? el.getAttribute("data-bon") === "1" && el.getAttribute("data-prochain") === "1" : el.getAttribute("data-prochain") === "1")) ? "" : "none";
+        zone.querySelectorAll("[data-prochain]").forEach(function (el) {
+          var ok = f === "toutes" || (f === "bon" ? el.getAttribute("data-bon") === "1" && el.getAttribute("data-prochain") === "1" : el.getAttribute("data-prochain") === "1");
+          el.style.display = ok ? "" : "none";
+        });
+        zone.querySelectorAll(".jr-jour-groupe").forEach(function (gr) {
+          var visibles = Array.prototype.some.call(gr.querySelectorAll("[data-prochain]"), function (el) { return el.style.display !== "none"; });
+          gr.style.display = visibles ? "" : "none";
         });
       });
     });
