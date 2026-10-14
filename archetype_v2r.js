@@ -63,7 +63,10 @@ function v2rLigneModere(k, l, mode) {
   if (!l) return mode === "avenir" ? `<div class="v2r-ligne v2r-modere-vide"><span><b>${nom}</b> · aucun pari (cote sous ${v2rCote(v2rPlancher)})</span></div>` : "";
   const meme = l.marche === l.marche_v2r;
   const gain = l.resultat ? ` <small>${v2rUnites(l.profit)}</small>` : "";
-  return `<div class="v2r-ligne"><span><b>${nom}</b> · ${v2rEchappe(v2rMarche(l))}${meme ? " <small>(pas de version modérée)</small>" : ""}</span>` +
+  const ind = Number.isFinite(Number(l.indice_pct)) && l.indice_pct !== null ? Number(l.indice_pct) : null;
+  const super_ = l.super_favori ? ` <span class="v2r-super">SUPER FAVORI · ${v2rEchappe(String(Math.round(ind)))} %</span>`
+    : ind !== null ? ` <small>indice ${v2rEchappe(String(Math.round(ind)))} %</small>` : "";
+  return `<div class="v2r-ligne"><span><b>${nom}</b> · ${v2rEchappe(v2rMarche(l))}${meme ? " <small>(pas de version modérée)</small>" : ""}${super_}</span>` +
     `<span><span class="v2r-cote">Cote ${v2rCote(l.cote)}</span> ${v2rBadge(l)}${gain}</span></div>`;
 }
 function v2rBlocModere(l, mode) {

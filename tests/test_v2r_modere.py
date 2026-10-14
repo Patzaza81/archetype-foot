@@ -154,4 +154,4 @@ def test_variantes_publient_a_venir_en_cours_et_reglees():
         m = match("m", "2026-10-14", h=None, a=None, kickoff="2026-10-14T18:00:00Z", cotes={"BTTS - non": 1.8})
         s = MOD.met_a_jour([m], ligne_officielle("BTTS - non", 1.8), d, datetime.datetime(2026, 10, 14, 12, 0, tzinfo=UTC))
         for cle in ("1_cran", "2_crans"):
-            assert set(s[cle]) == {"bilan", "a_venir", "en_cours", "reglees"} and len(s[cle]["a_venir"]) == 1
+            assert set(s[cle]) == {"bilan", "a_venir", "en_cours", "reglees", "super_favori"} and len(s[cle]["a_venir"]) == 1

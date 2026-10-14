@@ -11,6 +11,8 @@ modérée (aucun marché plus sûr n'est logiquement équivalent) : les deux mar
 moins 1 but » : ils sont gardés tels quels, sous le même plancher.
 Si le marché modéré n'est pas coté pour le match, le pari d'origine est gardé (sous le plancher).
 
+Chaque pari modéré reçoit aussi son indice en % et le statut SUPER FAVORI (>= 75 %, moteur_v2r/super_favori.py).
+
 Chaque variante a son propre carnet (data/v2r/modere1/carnet.json, data/v2r/modere2/carnet.json), écrit avec les mêmes
 règles que le carnet officiel (avant le coup d'envoi, figé ensuite, score ajouté une seule fois). Le carnet officiel et
 les règles de v2r ne sont jamais modifiés. Les gains affichés sont des gains de carnet : seuls comptent les paris faits
@@ -19,6 +21,7 @@ import os
 import re
 
 from . import carnet as K
+from . import super_favori as SF
 
 PLANCHER_COTE = 1.40
 CRANS = (1, 2)
@@ -89,6 +92,7 @@ def met_a_jour(matchs, carnet_officiel, dossier, maintenant):
                 if mid in c and not c[mid]["fige"]:
                     del c[mid]              # devenu inférieur au plancher avant le coup d'envoi : on ne propose rien
                 continue
+            v.update(SF.statut(v["marche"], par_id[mid]["hd"], par_id[mid]["he"]))   # indice % + SUPER FAVORI (>= 75 %)
             K.enregistre(c, v, maintenant)
         K.sauve(c, d)
         cle = lambda l: (l["coup_d_envoi_utc"], l["match_id"])  # noqa: E731
@@ -97,4 +101,7 @@ def met_a_jour(matchs, carnet_officiel, dossier, maintenant):
             a_venir=sorted([l for l in c.values() if not l["fige"]], key=cle),
             en_cours=sorted([l for l in c.values() if l["fige"] and l["resultat"] is None], key=cle),
             reglees=sorted([l for l in c.values() if l["resultat"] is not None], key=cle, reverse=True)[:150])
+        sf = {mid: l for mid, l in c.items() if l.get("super_favori")}
+        sortie[f"{k}_cran" if k == 1 else f"{k}_crans"]["super_favori"] = dict(
+            seuil=SF.SEUIL, bilan=K.bilan(sf), a_venir=sum(1 for l in sf.values() if not l["fige"]))
     return sortie
