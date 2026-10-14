@@ -490,11 +490,18 @@ function texteCalibration() {
     `${Number(c.observations) || 0} / ${Number(c.minimum_observations) || 300} observations`;
 }
 
+// Les matchs des jours PASSÉS ne s'affichent plus (date du Cameroun, UTC+1) : un match d'hier reste dans le fichier tant que
+// le moteur n'a pas tourné, mais n'a plus rien à faire sur la page. Ceux d'aujourd'hui restent, même commencés.
+function dateDuJourCameroun(maintenantMs) { return new Date((maintenantMs == null ? Date.now() : maintenantMs) + 3600000).toISOString().slice(0, 10); }
+function matchsNonPasses(matchs, aujourdhui) {
+  const jour = aujourdhui || dateDuJourCameroun();
+  return (Array.isArray(matchs) ? matchs : []).filter((m) => !m || !m.date || String(m.date) >= jour);
+}
 function afficheSelections(matchs) {
   const racine = document.getElementById("matches"), maj = document.getElementById("maj");
   racine.innerHTML = "";
   const cleTri = (m) => `${m.date || ""}${m.heure_cameroun || m.heure || ""}`;
-  const retenus = regroupeMatchs(matchs).filter(aAuMoinsUnCandidat).sort((a, b) => cleTri(a).localeCompare(cleTri(b)));
+  const retenus = regroupeMatchs(matchsNonPasses(matchs)).filter(aAuMoinsUnCandidat).sort((a, b) => cleTri(a).localeCompare(cleTri(b)));
   const enApercu = retenus.filter((m) => m[CLE_MOTEUR] && m[CLE_MOTEUR].apercu_non_calibre).length;
   const selectionnes = retenus.length - enApercu;
   maj.textContent = retenus.length
