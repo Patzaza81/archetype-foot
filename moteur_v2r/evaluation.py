@@ -1,4 +1,8 @@
-"""Évaluation chronologique (walk-forward) : à chaque bloc, calibration + seuil appris UNIQUEMENT sur le passé.
+"""ATTENTION (14/10/2026) : ce module évalue l'ANCIEN modèle (calibration + Poisson), PAS le moteur v2r à cellules.
+Pour tester v2r : python -m moteur_v2r.backtest AAAA-MM-JJ [...] (moteur_v2r/backtest.py). Ici ne servent plus que
+les outils de règlement (lignes, roi, bootstrap).
+
+Évaluation chronologique (walk-forward) : à chaque bloc, calibration + seuil appris UNIQUEMENT sur le passé.
 Sortie : ROI hors échantillon, intervalle bootstrap par match, comparaison au hasard (tout parier)."""
 import random
 

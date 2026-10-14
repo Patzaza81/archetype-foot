@@ -7,7 +7,9 @@
 - **Règles figées** : `data/v2r/regles/regles_AAAA-MM-JJ.json`, jamais réécrites. Réentraînement le lundi, APRÈS le règlement du carnet. Changer la méthode = incrémenter `VERSION_METHODE` (`regles.py`) et mettre à jour ce document et les tests.
 - **Carnet** (`data/v2r/carnet.json`) : un pari par match, écrit avant le coup d'envoi, figé ensuite, score ajouté une seule fois.
 - **Statut** : `observation` (< 300 paris réglés, ne pas miser), `actif` (>= 300 réglés ET borne basse de l'IC95 du ROI > 0), `non_rentable` sinon. Le ROI sur échantillon (+56 %) n'est PAS une preuve prédictive ; seul le carnet compte.
-- **Évaluation** : `python -m moteur_v2r.evaluation` (walk-forward) et `python -m moteur_v2r.integration` (ROI sur échantillon, non prédictif).
+- **Évaluation** : `python -m moteur_v2r.backtest 2026-10-13 [autres jours]` = test à l'aveugle du VRAI moteur v2r (règles apprises avant chaque jour, paris officiels + modérés 1 et 2 crans + SUPER FAVORI, ROI et IC95). `moteur_v2r.evaluation` teste l'ANCIEN modèle (calibration/Poisson), pas v2r : ne pas l'utiliser pour juger v2r. `python -m moteur_v2r.integration` : ROI sur échantillon, non prédictif.
+- **Test à l'aveugle 09 au 13/10** (archive, règles réapprises chaque jour, production = le lundi) : v2r 185 paris +7,4 % (IC95 -15 % à +31 %) ; 1 cran 123 paris +19,4 % (-1 % à +42 %) ; 2 crans 78 paris +22,2 % (+2 % à +41 %). Variantes et seuils choisis en regardant ces mêmes jours : l'intervalle est optimiste. Seul le carnet fait foi.
+- **Archive** : la taille varie avec le calendrier (week-end 280 à 350 matchs, lundi/mardi 50 à 60) et 10 à 25 % des matchs d'un jour n'ont pas encore de score au moment du test : ce n'est pas un bug.
 - Tests : `tests/test_moteur_v2r.py`, `test_echantillon_v2r.py`, `test_integration_v2r.py`, `test_v2r_autonome.py`, `test_v2r_integration_systeme.py`, `test_v2r_modere.py`.
 
 ## Variantes « marché modéré » (14/10/2026, `moteur_v2r/modere.py`)
