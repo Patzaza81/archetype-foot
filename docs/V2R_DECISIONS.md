@@ -21,6 +21,14 @@ Ce document sépare ce qui est vérifiable dans le code de ce qui reste à docum
 
 Changer un paramètre de `CONFIG` exige d'incrémenter `VERSION_METHODE` (`regles.py`), de mettre à jour ce document, `docs/V2R.md` et les tests.
 
+## Échantillon de conception (décrit par Patrick, 14/10/2026 ; chiffres vérifiés dans le dépôt)
+
+- **Définition (Patrick)** : tous les matchs du système ARCHETYPE avec les cotes des différents marchés, les historiques des deux équipes pour chaque match et les résultats ; **les matchs d'hier (13/10) exclus**.
+- **Dans le code** (`donnees.charge`) : matchs de `data/archive_test/` avec score, cotes observées et historiques des deux équipes, un historique étant limité aux matchs antérieurs au match.
+- **Taille réelle** : 889 matchs, du 28/09/2026 au 13/10/2026 (16 jours, très inégaux : 16 matchs le 08/10, 258 le 10/10, 50 le 12/10, 35 le 13/10). Avant le 13/10 : 854 matchs.
+- **ECART A TRANCHER** : `data/v2r/regles/regles_2026-10-14.json` indique `entraine_sur = 889` et `jusqu_au = 2026-10-13` : les règles en production **incluent déjà les matchs du 13/10**. Si l'intention était de les exclure, ces règles ne respectent pas la définition ci-dessus. Cela ne fausse pas le carnet (ses paris sont des matchs du 14/10 et après, figés avant le coup d'envoi) mais le 13/10 ne peut plus servir de test avec ces règles : `backtest.py` réentraîne avant le jour testé pour cette raison. Règles figées : on ne les réécrit pas sans décision de Patrick.
+- **Taille** : 889 matchs, c'est peu pour des cellules à 4 dimensions (41 cellules retenues, chacune sur 10 paris ou un peu plus).
+
 ## Limites connues de la méthode (constatées dans le code, pas des opinions)
 
 - Les cellules sont retenues sur leur ROI **sur l'échantillon qui les a produites** : un ROI élevé sur peu de paris (surtout à grosse cote) peut venir du hasard. Un ROI sur échantillon n'est pas une preuve prédictive.
