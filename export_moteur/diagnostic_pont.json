@@ -1,33 +1,34 @@
 {
-  "genere_le": "2026-10-14T01:40:03Z",
+  "genere_le": "2026-10-14T04:19:03Z",
   "nb_signaux": 778,
-  "nb_exportes": 288,
+  "nb_exportes": 275,
   "par_date": {
-    "2026-10-14": 35,
+    "2026-10-14": 34,
     "2026-10-15": 13,
-    "2026-10-16": 52,
-    "2026-10-17": 188
+    "2026-10-16": 53,
+    "2026-10-17": 175
   },
   "rejets": {
-    "pas_de_cotes_betpawa": 383,
-    "historique_indisponible": 107
+    "pas_de_cotes_betpawa": 395,
+    "historique_indisponible": 106,
+    "match_deja_commence_ou_termine": 2
   },
   "marches_ignores": {
-    "score_exact": 283,
-    "pair_impair": 280,
-    "handicap_3issues_-1": 276,
-    "nombre_exact_buts": 274,
-    "handicap_3issues_1": 271,
-    "handicap_3issues_-2": 229,
-    "cages_inviolees_domicile.non (pas d'équivalent moteur)": 215,
-    "cages_inviolees_exterieur.non (pas d'équivalent moteur)": 212,
-    "handicap_3issues_2": 170,
-    "over_under_domicile_2.5 (hors périmètre moteur)": 140,
-    "over_under_exterieur_2.5 (hors périmètre moteur)": 128,
-    "handicap_3issues_-3": 101,
-    "over_under_domicile_3.5 (hors périmètre moteur)": 76,
-    "handicap_3issues_3": 44,
-    "over_under_exterieur_3.5 (hors périmètre moteur)": 35
+    "score_exact": 269,
+    "pair_impair": 267,
+    "handicap_3issues_-1": 263,
+    "handicap_3issues_1": 260,
+    "nombre_exact_buts": 260,
+    "handicap_3issues_-2": 218,
+    "cages_inviolees_domicile.non (pas d'équivalent moteur)": 204,
+    "cages_inviolees_exterieur.non (pas d'équivalent moteur)": 202,
+    "handicap_3issues_2": 163,
+    "over_under_domicile_2.5 (hors périmètre moteur)": 131,
+    "over_under_exterieur_2.5 (hors périmètre moteur)": 122,
+    "handicap_3issues_-3": 93,
+    "over_under_domicile_3.5 (hors périmètre moteur)": 68,
+    "handicap_3issues_3": 41,
+    "over_under_exterieur_3.5 (hors périmètre moteur)": 32
   },
   "fichiers": {
     "2026-10-14": "export_moteur/matchs_moteur_2026-10-14.json",
@@ -202,6 +203,13 @@
       "match": "A. Bucaraman - R. Aguilas",
       "competition": "Colombie :\n                        Première A Cloture",
       "date": "2026-10-14",
+      "raison": "match_deja_commence_ou_termine"
+    },
+    {
+      "match_id": "6ppyavgzgrkuny00je8967cpg",
+      "match": "Millonarios FC - Once Caldas",
+      "competition": "Colombie :\n                        Première A Cloture",
+      "date": "2026-10-14",
       "raison": "pas_de_cotes_betpawa"
     },
     {
@@ -209,7 +217,7 @@
       "match": "Cartaginés - Puntarenas",
       "competition": "Costa Rica :\n                        1ère Division Ouverture",
       "date": "2026-10-14",
-      "raison": "historique_indisponible: domicile: aucun_match_saison_en_cours"
+      "raison": "match_deja_commence_ou_termine"
     },
     {
       "match_id": "er04rbapcylczcrlu4ve1ttzo",
@@ -1276,13 +1284,6 @@
       "raison": "pas_de_cotes_betpawa"
     },
     {
-      "match_id": "p1jn7y3syg3lvzuzcyf636l0",
-      "match": "Al-Baqaa - Salt",
-      "competition": "Jordanie :\n                        Division 1",
-      "date": "2026-10-16",
-      "raison": "pas_de_cotes_betpawa"
-    },
-    {
       "match_id": "29q4a0j2tz73m2ltvu1tecefo",
       "match": "Kelantan RW - Imigresen",
       "competition": "Malaisie :\n                        Super Ligue",
@@ -1472,9 +1473,51 @@
       "raison": "pas_de_cotes_betpawa"
     },
     {
+      "match_id": "3rvvnye95rm0qqt2eszpi8s2c",
+      "match": "Metz - Sochaux",
+      "competition": "France :\n                        Ligue 2 BKT",
+      "date": "2026-10-17",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "3s77ha1xotycli45cuo2sdvro",
+      "match": "Nantes - USL Dunkerque",
+      "competition": "France :\n                        Ligue 2 BKT",
+      "date": "2026-10-17",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "3simje5ku8uwnx0q8brnjq784",
+      "match": "Red Star - Saint-Étienne",
+      "competition": "France :\n                        Ligue 2 BKT",
+      "date": "2026-10-17",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "4hxbc4v9rbvzofyoku22ebbpw",
+      "match": "Everton - Chelsea",
+      "competition": "Angleterre :\n                        Premier League",
+      "date": "2026-10-17",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
       "match_id": "4iyiiuk7cxberkv3t2myuv95g",
       "match": "Man City - Ipswich Town",
       "competition": "Angleterre :\n                        Premier League",
+      "date": "2026-10-17",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "4javirh6ixq84grdzlciafdw4",
+      "match": "Newcastle - Aston Villa",
+      "competition": "Angleterre :\n                        Premier League",
+      "date": "2026-10-17",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "7rok8grdb96ofrabvw5pkyxhw",
+      "match": "Valence - Ath. Bilbao",
+      "competition": "Espagne :\n                        LaLiga",
       "date": "2026-10-17",
       "raison": "pas_de_cotes_betpawa"
     },
@@ -1489,6 +1532,13 @@
       "match_id": "7eo2ijrllczgf000h57c3reok",
       "match": "Rome - Genoa",
       "competition": "Italie :\n                        Serie A",
+      "date": "2026-10-17",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "5jjcl13h2hxwrx0xa9fqxlbf8",
+      "match": "Elversberg - Augsbourg",
+      "competition": "Allemagne :\n                        Bundesliga",
       "date": "2026-10-17",
       "raison": "pas_de_cotes_betpawa"
     },
@@ -1514,8 +1564,57 @@
       "raison": "pas_de_cotes_betpawa"
     },
     {
+      "match_id": "an09vtj26jcuqqt71dr5yy2ac",
+      "match": "Telstar - Feyenoord",
+      "competition": "Pays-Bas :\n                        Eredivisie",
+      "date": "2026-10-17",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "cpwrhwahzyljgxc6jc9gadl3o",
+      "match": "Erzurumspor - Eyupspor",
+      "competition": "Turquie :\n                        Super Ligue",
+      "date": "2026-10-17",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "coc42itxw56irq6mzvxku8tn8",
+      "match": "Amed - Konyaspor",
+      "competition": "Turquie :\n                        Super Ligue",
+      "date": "2026-10-17",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "1jjlya6a8kl4100fkokeuyoes",
+      "match": "Millwall - Lincoln",
+      "competition": "Angleterre :\n                        Championnat",
+      "date": "2026-10-17",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "1k6nrdxdbmll4xj586nnkn7kk",
+      "match": "Southampton - Bolton",
+      "competition": "Angleterre :\n                        Championnat",
+      "date": "2026-10-17",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "8a8attwrs4j5lv8gf241ipdec",
+      "match": "Diriyah - Al Taawon",
+      "competition": "Arabie Saoudite :\n                        Première Division",
+      "date": "2026-10-17",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
       "match_id": "5jy9j3qj5wuadt83upcsveivo",
       "match": "QRM - US Orléans",
+      "competition": "France :\n                        Ligue 3",
+      "date": "2026-10-17",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "5kk93z4ejgzl151cureln4jdg",
+      "match": "Valenciennes - Amiens",
       "competition": "France :\n                        Ligue 3",
       "date": "2026-10-17",
       "raison": "pas_de_cotes_betpawa"
@@ -1621,13 +1720,6 @@
     {
       "match_id": "bs1sxlv3v1cis1pebfve35xxw",
       "match": "Atlanta Utd - Inter Miami",
-      "competition": "Etats-Unis :\n                        MLS",
-      "date": "2026-10-17",
-      "raison": "pas_de_cotes_betpawa"
-    },
-    {
-      "match_id": "bt1xgak63jurjz4wxl3uacefo",
-      "match": "New York City - Los Angeles",
       "competition": "Etats-Unis :\n                        MLS",
       "date": "2026-10-17",
       "raison": "pas_de_cotes_betpawa"
@@ -2368,13 +2460,6 @@
       "raison": "pas_de_cotes_betpawa"
     },
     {
-      "match_id": "e0hxiapdn2kzi2kmk4yro8sgk",
-      "match": "Polonia Bytom - C. Glogow",
-      "competition": "Pologne :\n                        1. Ligue",
-      "date": "2026-10-17",
-      "raison": "pas_de_cotes_betpawa"
-    },
-    {
       "match_id": "359zyeysu5vptpgjc45i4lnh0",
       "match": "Lusail City - Shamal",
       "competition": "Qatar :\n                        Division 1",
@@ -2406,6 +2491,13 @@
       "match_id": "9at80argfflf8r55a696ghzis",
       "match": "Riffa - East Riffa",
       "competition": "Bahreïn :\n                        Premiere Ligue",
+      "date": "2026-10-17",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "31h83vapilkfdy1fn0ekemvbo",
+      "match": "G. Morton - Queen's Park",
+      "competition": "Écosse :\n                        Première Division",
       "date": "2026-10-17",
       "raison": "pas_de_cotes_betpawa"
     },
