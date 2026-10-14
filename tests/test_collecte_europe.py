@@ -142,7 +142,10 @@ def test_entree_non_evaluable_si_un_seul_lieu_manque():
 def test_execution_complete_hors_ligne(tmp_path):
     html = page("the_new_saints")
     b = ce.execution("data/archive_test", str(tmp_path / "s.json"), str(tmp_path / "c.json"), fetch=lambda u: html, pause=0, aujourdhui=AUJ)
-    assert b["matchs"] == 50 and 0 <= b["evaluables"] <= 50
+    # Le nombre de matchs européens à venir de l'archive réelle change chaque jour (50 en 'dur' faisait échouer le pipeline
+    # dès qu'il y en avait moins) : on compare à ce que contient l'archive.
+    attendus = len(ce.matchs_europeens(ce.lit_archive("data/archive_test"), False))
+    assert attendus > 0 and b["matchs"] == attendus and 0 <= b["evaluables"] <= attendus
 
 
 # --- liens d'équipes fournis à la main ------------------------------------------------------------------------------------
