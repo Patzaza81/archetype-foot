@@ -63,6 +63,7 @@ FICHIER_HISTORIQUE = "historique_pronostics.json"
 FICHIER_PRECALCUL = "precalcul.json"
 FICHIER_CACHE_SAISON = "cache_equipes_saison.json"
 FICHIER_CACHE_CLASSEMENT = "cache_classement.json"
+CLASSEMENT_MAX_AGE_HEURES = 36
 DECALAGE_CAMEROUN = datetime.timedelta(hours=1)          # heure_cameroun = UTC+1, sans heure d'été
 CLE_BLOC_MOTEUR = "moteur_v2_6_10"                       # moteur actif (branchement_moteur.CLE_BLOC)
 CLES_BLOCS_MOTEUR = ("moteur_v2_6_10", "moteur_v2_6_9")  # lecture : l'actif d'abord, puis l'ancien (données d'avant migration)
@@ -268,14 +269,27 @@ def _bloc_assemblage(etat, details_match, competition, date_match):
     }
 
 
-def _ajoute_classement(equipe, nom_equipe, competition, cache_classement):
+def _classement_frais(entree, reference):
+    """Un cache absent, mal horodaté ou vieux de plus de 36 h ne fournit aucun rang."""
+    if not isinstance(entree, dict) or not isinstance(entree.get("resultat"), list):
+        return False
+    try:
+        horodatage = datetime.datetime.fromisoformat(str(entree.get("horodatage")))
+        if horodatage.tzinfo is None:
+            horodatage = horodatage.replace(tzinfo=datetime.timezone.utc)
+        ref = reference if reference.tzinfo else reference.replace(tzinfo=datetime.timezone.utc)
+        age = ref - horodatage.astimezone(datetime.timezone.utc)
+        return datetime.timedelta(0) <= age <= datetime.timedelta(hours=CLASSEMENT_MAX_AGE_HEURES)
+    except (TypeError, ValueError):
+        return False
+
+
+def _ajoute_classement(equipe, nom_equipe, competition, cache_classement, reference):
     """Conserve le rang exact du tableau Matchendirect, sans le recalculer ni faire de rapprochement flou."""
     entree = (cache_classement or {}).get(_comp_cle(competition))
-    if not isinstance(entree, dict):
+    if not _classement_frais(entree, reference):
         return equipe
     lignes = entree.get("resultat")
-    if not isinstance(lignes, list):
-        return equipe
     nom = " ".join(str(nom_equipe or "").split()).casefold()
     if not nom:
         return equipe
@@ -298,8 +312,8 @@ def construit_enregistrement(s, stats_equipes, details, maintenant, commit=None,
     d = (details or {}).get(s.get("url_match")) or {}
     dom = _equipe(s.get("domicile"), s.get("competition"), stats_equipes, date_match, d.get("url_equipe_domicile"))
     ext = _equipe(s.get("exterieur"), s.get("competition"), stats_equipes, date_match, d.get("url_equipe_exterieur"))
-    _ajoute_classement(dom, s.get("domicile"), s.get("competition"), cache_classement)
-    _ajoute_classement(ext, s.get("exterieur"), s.get("competition"), cache_classement)
+    _ajoute_classement(dom, s.get("domicile"), s.get("competition"), cache_classement, maintenant)
+    _ajoute_classement(ext, s.get("exterieur"), s.get("competition"), cache_classement, maintenant)
     cotes_betpawa = s.get("cotes_manuelles") or None
     cotes_obs = _cotes_observees(s)
     coup = coup_d_envoi_utc(date_match, s.get("heure_cameroun"))
@@ -536,7 +550,7 @@ def archive_depuis_fichiers(fichier_precalcul=FICHIER_PRECALCUL, fichier_cache=F
             classement_cache = {
                 _comp_cle(comp): entree
                 for comp, entree in brut_classement.items()
-                if isinstance(entree, dict) and isinstance(entree.get("resultat"), list)
+                if _classement_frais(entree, maintenant)
             } if isinstance(brut_classement, dict) else {}
         except (OSError, json.JSONDecodeError):
             classement_cache = {}
