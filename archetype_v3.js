@@ -305,10 +305,25 @@ function construitExplication(ex) {
   const alertes = (Array.isArray(ex.alertes) ? ex.alertes : []).filter((t) => typeof t === "string" && t);
   const tete = alertes.length
     ? `<div class="ax-v3-alertes" role="note"><p class="ax-v3-alertes-titre">Alertes</p><ul>${alertes.map((t) => `<li>${echappeHtml(t)}</li>`).join("")}</ul></div>` : "";
-  const blocs = ex.blocs.map((b, i) =>
-    `<div class="ax-tab ax-v3-bloc"><h4 class="ax-tab-titre">${i + 1}. ${echappeHtml(b.titre)}</h4>` +
-    construitHistoriques(b.historiques) +
-    `<ul class="ax-v3-lignes">${(b.lignes || []).map((l) => `<li>${echappeHtml(l)}</li>`).join("")}</ul></div>`).join("");
+  const blocs = ex.blocs.map((b, i) => {
+    const titre = `<h4 class="ax-tab-titre">${i + 1}. ${echappeHtml(b.titre)}</h4>`;
+    // Bloc 7 « Indice de performance » : afficher uniquement les marchés intermédiaires
+    // présents pour ce match, avec un indice de 3/4 ou 4/4. Ce bloc est informatif :
+    // il ne modifie ni les sélections du moteur ni les autres parties de l'analyse.
+    if (i === 6 && /indice de performance/i.test(String(b.titre || ""))) {
+      const lignes = (Array.isArray(b.lignes) ? b.lignes : []).filter((l) =>
+        typeof l === "string" && /(?:^|\\D)(?:3|4)\\s*\\/\\s*4(?:\\D|$)/.test(l)
+      );
+      return `<div class="ax-tab ax-v3-bloc">${titre}` +
+        (lignes.length
+          ? `<ul class="ax-v3-lignes">${lignes.map((l) => `<li>${echappeHtml(l)}</li>`).join("")}</ul>`
+          : `<p class="ax-v3-lignes">RAS</p>`) +
+        `</div>`;
+    }
+    return `<div class="ax-tab ax-v3-bloc">${titre}` +
+      construitHistoriques(b.historiques) +
+      `<ul class="ax-v3-lignes">${(b.lignes || []).map((l) => `<li>${echappeHtml(l)}</li>`).join("")}</ul></div>`;
+  }).join("");
   return tete + blocs;
 }
 
