@@ -743,11 +743,12 @@ def alternatives(sel, ctx, apercu):
     probabilite = _p1(sel["probabilite"])
     implicite = _p1(1 / sel["cote"])
     ecart = 100 * (sel["probabilite"] - 1 / sel["cote"])
+    ecart_fmt = f"{abs(ecart):.1f}".replace(".", ",")
     marge = f"{'+' if sel['edv'] >= 0 else ''}{sel['edv']:.1f}".replace(".", ",")
     if apercu:
         return [f"Aperçu non calibré : probabilité {probabilite}, contre {implicite} selon la cote ; marge estimée {marge} %. Aucune sélection confirmée."]
     return [
-        f"Marché retenu : {probabilite} estimés contre {implicite} selon la cote ({'+' if ecart >= 0 else '−'}{abs(ecart):.1f} points).".replace(".", ",", 1),
+        f"Probabilité estimée : {probabilite}, contre {implicite} selon la cote (écart de {'+' if ecart >= 0 else '−'}{ecart_fmt} points).",
         f"Marge estimée : {marge} %. Le marché a passé les contrôles requis et est le meilleur choix admissible de la famille « {FAMILLES_FR.get(groupe, groupe)} »."
     ]
 
