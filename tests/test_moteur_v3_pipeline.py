@@ -546,3 +546,14 @@ def test_rubrique_donnees_signale_classement_absent_sans_l_inventer():
         source = f.read()
     assert "Classement :" in source
     assert "non disponible dans les données V3" in source
+
+
+def test_buts_attendus_et_classement_affiches_sans_formule():
+    apercus = _apercus_reels()
+    assert apercus
+    for _, candidat in apercus:
+        blocs = {b["titre"]: b["lignes"] for b in candidat["explication"]["blocs"]}
+        buts = " ".join(blocs["Buts attendus"])
+        assert "buts marqués attendus" in buts and "buts encaissés attendus" in buts
+        assert "lissage" not in buts.lower() and "lambda" not in buts.lower()
+        assert any(ligne.startswith("Classement :") for ligne in blocs["Données"])
