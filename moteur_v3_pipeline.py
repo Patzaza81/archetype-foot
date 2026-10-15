@@ -631,11 +631,8 @@ def explication(sel, ctx, apercu):
             f"{dom} à domicile ({nh}) : {scores(H, True)} → marque {_n2(sh['gf'])}, encaisse {_n2(sh['ga'])} par match.",
             f"{ext} à l'extérieur ({na}) : {scores(A, False)} → marque {_n2(sa['gf'])}, encaisse {_n2(sa['ga'])} par match."]},
         {"titre": "Buts attendus", "lignes": [
-            f"Lissage vers {_n2(MOYENNE_REFERENCE)} but : (n × moyenne + {K_LISSAGE:g} × {_n2(MOYENNE_REFERENCE)}) / (n + {K_LISSAGE:g}).",
-            f"{dom} : attaque {_n2(sh['attack'])} → {_n2(att_d)} ; défense {ext} {_n2(sa['defense'])} → {_n2(def_e)} ; "
-            f"{_n2(att_d)} × {_n2(def_e)} / {_n2(MOYENNE_REFERENCE)} = {_n2(lh)} buts.",
-            f"{ext} : attaque {_n2(sa['attack'])} → {_n2(att_e)} ; défense {dom} {_n2(sh['defense'])} → {_n2(def_d)} ; "
-            f"{_n2(att_e)} × {_n2(def_d)} / {_n2(MOYENNE_REFERENCE)} = {_n2(la)} buts."]},
+            f"{dom} — buts marqués attendus : {_n2(lh)} ; buts encaissés attendus : {_n2(la)}.",
+            f"{ext} — buts marqués attendus : {_n2(la)} ; buts encaissés attendus : {_n2(lh)}."]},
         {"titre": "Probabilité", "lignes": [
             f"{libelle(marche)} : {_p1(p)}{' (non calibrée)' if apercu else ''}.",
             phrase_calcul(marche),
