@@ -37,7 +37,11 @@ def _couleur(tag):
     if m:
         return m.group(1).lower()
     classes = tag.get("class", []) if tag else []
-    candidats = [c.lower() for c in classes if re.search(r"(zone|rank|position|legend|color|colour|bg-|background|classement)", c, re.I)]
+    # Les pages peuvent nommer une même zone sur la légende et la ligne
+    # (ex. "legend-zone europe" / "europe"). On compare les classes utiles,
+    # en ignorant les marqueurs structurels génériques.
+    generiques = {"legend", "legend-zone", "zone-legend", "classement", "row", "table-row"}
+    candidats = [c.lower() for c in classes if c.lower() not in generiques]
     return "|".join(candidats) or None
 
 
