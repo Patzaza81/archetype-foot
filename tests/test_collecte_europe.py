@@ -177,13 +177,25 @@ def test_fichier_de_liens_refuse_les_urls_invalides(tmp_path):
     assert ce.lit_liens(str(tmp_path / "absent.json")) == {}
 
 
-def test_execution_charge_le_club_dont_le_lien_vient_du_fichier(tmp_path):
-    html = page("the_new_saints")
+def test_execution_charge_le_club_dont_le_lien_vient_du_fichier(tmp_path, monkeypatch):
+    import copy
+
+    # Le test doit fournir des liens manuels aux équipes réellement présentes dans
+    # l'archive de test, sans dépendre de son contenu évolutif.
+    e = copy.deepcopy(_enreg_avec_cotes())
+    e["equipe_dom"] = dict(e.get("equipe_dom") or {})
+    e["equipe_ext"] = dict(e.get("equipe_ext") or {})
+    e["equipe_dom"].pop("url_equipe", None)
+    e["equipe_ext"].pop("url_equipe", None)
+    monkeypatch.setattr(ce, "lit_archive", lambda dossier: [e])
+
+    url_dom = URL
+    url_ext = "https://www.matchendirect.fr/equipe/psg_x.html"
     vus = []
     ce.execution("data/archive_test", str(tmp_path / "s.json"), str(tmp_path / "c.json"),
-                 fetch=lambda u: vus.append(u) or html, pause=0, aujourdhui=AUJ,
-                 liens={"Man City": URL, "PSG": "https://www.matchendirect.fr/equipe/psg_x.html"})
-    assert URL in vus and "https://www.matchendirect.fr/equipe/psg_x.html" in vus
+                 fetch=lambda u: vus.append(u) or page("the_new_saints"), pause=0, aujourdhui=AUJ,
+                 liens={e["domicile"]: url_dom, e["exterieur"]: url_ext})
+    assert url_dom in vus and url_ext in vus
 
 
 def test_diagnostic_rubriques_nationales_dans_meta():
