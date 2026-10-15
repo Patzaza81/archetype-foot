@@ -522,3 +522,27 @@ def test_historiques_ordre_domicile_exterieur_et_couleurs():
             assert m["res"] == ("V" if m["ext"] > m["dom"] else "N" if m["ext"] == m["dom"] else "D")
         for m in hd["matchs"]:
             assert m["res"] == ("V" if m["dom"] > m["ext"] else "N" if m["ext"] == m["dom"] else "D")
+
+
+def test_justification_marche_courte_et_chiffree():
+    lignes = mp.alternatives(_selection(), {"candidats": []}, False)
+    assert len(lignes) == 2
+    assert "72,0 %" in lignes[0] and "62,5 %" in lignes[0]
+    assert "9,5 points" in lignes[0]
+    assert "contrôles requis" in lignes[1]
+    assert "valide, mais moins bon" not in " ".join(lignes)
+
+
+def test_justification_apercu_indique_absence_de_calibration():
+    lignes = mp.alternatives(_selection(), {"candidats": []}, True)
+    assert len(lignes) == 1
+    assert "non calibré" in lignes[0]
+    assert "Aucune sélection confirmée" in lignes[0]
+
+
+def test_rubrique_donnees_signale_classement_absent_sans_l_inventer():
+    racine = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    with open(os.path.join(racine, "moteur_v3_pipeline.py"), encoding="utf-8") as f:
+        source = f.read()
+    assert "Classement :" in source
+    assert "non disponible dans les données V3" in source
