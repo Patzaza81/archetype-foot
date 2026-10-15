@@ -626,16 +626,24 @@ def explication(sel, ctx, apercu):
     ev = ctx["evidence"].get(marche, {})
     regle = DOUBLE_CONTROLE.get(marche)
 
+    def rang_equipe(donnees):
+        # N'afficher un rang que s'il est explicitement présent dans l'archive.
+        for cle in ("classement", "rang", "position", "league_position"):
+            valeur = donnees.get(cle)
+            if isinstance(valeur, (int, str)) and str(valeur).strip():
+                return str(valeur).strip()
+        return None
+
+    rang_dom = rang_equipe(e.get("equipe_dom") or {})
+    rang_ext = rang_equipe(e.get("equipe_ext") or {})
     blocs = [
         {"titre": "Données", "historiques": [historique(H, True, dom), historique(A, False, ext)], "lignes": [
             f"{dom} à domicile ({nh}) : {scores(H, True)} → marque {_n2(sh['gf'])}, encaisse {_n2(sh['ga'])} par match.",
-            f"{ext} à l'extérieur ({na}) : {scores(A, False)} → marque {_n2(sa['gf'])}, encaisse {_n2(sa['ga'])} par match."]},
+            f"{ext} à l'extérieur ({na}) : {scores(A, False)} → marque {_n2(sa['gf'])}, encaisse {_n2(sa['ga'])} par match.",
+            f"Classement : {dom} {rang_dom if rang_dom else 'non disponible dans les données V3'} ; {ext} {rang_ext if rang_ext else 'non disponible dans les données V3'}."]},
         {"titre": "Buts attendus", "lignes": [
-            f"Lissage vers {_n2(MOYENNE_REFERENCE)} but : (n × moyenne + {K_LISSAGE:g} × {_n2(MOYENNE_REFERENCE)}) / (n + {K_LISSAGE:g}).",
-            f"{dom} : attaque {_n2(sh['attack'])} → {_n2(att_d)} ; défense {ext} {_n2(sa['defense'])} → {_n2(def_e)} ; "
-            f"{_n2(att_d)} × {_n2(def_e)} / {_n2(MOYENNE_REFERENCE)} = {_n2(lh)} buts.",
-            f"{ext} : attaque {_n2(sa['attack'])} → {_n2(att_e)} ; défense {dom} {_n2(sh['defense'])} → {_n2(def_d)} ; "
-            f"{_n2(att_e)} × {_n2(def_d)} / {_n2(MOYENNE_REFERENCE)} = {_n2(la)} buts."]},
+            f"{dom} — buts marqués attendus : {_n2(lh)} ; buts encaissés attendus : {_n2(la)}.",
+            f"{ext} — buts marqués attendus : {_n2(la)} ; buts encaissés attendus : {_n2(lh)}."]},
         {"titre": "Probabilité", "lignes": [
             f"{libelle(marche)} : {_p1(p)}{' (non calibrée)' if apercu else ''}.",
             phrase_calcul(marche),
@@ -730,23 +738,19 @@ def alternatives_indice(candidats, retenus, ctx, equipes, max_alt=3):
 
 
 def alternatives(sel, ctx, apercu):
-    """Bloc 6 : famille du pari retenu + meilleurs paris des autres familles avec la raison exacte de leur rejet."""
+    """Bloc 6 : justification courte, fondée sur les chiffres du marché retenu."""
     groupe = groupe_exposition(sel["marche"])
-    lignes = [f"Un seul pari par famille ({FAMILLES_FR.get(groupe, groupe)}) : celui-ci est le plus probable des paris valides."]
-    vus = {groupe}
-    for c in ctx["candidats"]:
-        g = groupe_exposition(c["marche"])
-        if g in vus or c["marche"] == sel["marche"]:
-            continue
-        vus.add(g)
-        raisons = [x for x in c["raisons"] if not (apercu and x == "CALIBRATION_ABSENTE")]
-        motif = ("valide, mais moins bon que le pari retenu ou trop lié à lui" if not raisons
-                 else " ; ".join(RAISONS_FR.get(x, x) for x in raisons[:2]))
-        lignes.append(f"{c['libelle']} ({_n2(c['cote'])}, {_p1(c['probabilite'])}, marge "
-                      f"{'+' if c['edv'] >= 0 else ''}{str(c['edv']).replace('.', ',')} %) : {motif}.")
-        if len(lignes) >= 4:
-            break
-    return lignes
+    probabilite = _p1(sel["probabilite"])
+    implicite = _p1(1 / sel["cote"])
+    ecart = 100 * (sel["probabilite"] - 1 / sel["cote"])
+    ecart_fmt = f"{abs(ecart):.1f}".replace(".", ",")
+    marge = f"{'+' if sel['edv'] >= 0 else ''}{sel['edv']:.1f}".replace(".", ",")
+    if apercu:
+        return [f"Aperçu non calibré : probabilité {probabilite}, contre {implicite} selon la cote ; marge estimée {marge} %. Aucune sélection confirmée."]
+    return [
+        f"Probabilité estimée : {probabilite}, contre {implicite} selon la cote (écart de {'+' if ecart >= 0 else '−'}{ecart_fmt} points).",
+        f"Marge estimée : {marge} %. Le marché a passé les contrôles requis et est le meilleur choix admissible de la famille « {FAMILLES_FR.get(groupe, groupe)} »."
+    ]
 
 
 # Noms de marchés V3 -> noms lus par traduction_marches.js (ceux de la page « Sélections Archetype »).

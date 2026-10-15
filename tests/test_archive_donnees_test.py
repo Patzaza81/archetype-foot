@@ -406,6 +406,64 @@ def test_archive_avec_football_data_bout_en_bout(tmp_path):
     assert adt.bilan_archive(dossier)["avec_football_data"] == 1
 
 
+def test_classement_perime_refuse(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    cache = _cache("pescara", "spezia")
+    for e in cache.values():
+        e["resultat"] = stats_ok()
+    (tmp_path / "cache.json").write_text(json.dumps(cache))
+    (tmp_path / "cache_classement.json").write_text(json.dumps({
+        "italie : série c": {
+            "horodatage": "2026-09-25T01:00:00+00:00",
+            "resultat": [{"equipe": "Pescara"}, {"equipe": "Spezia"}],
+        },
+    }))
+    s = signal("m-rang-vieux", "Pescara", "Spezia")
+    (tmp_path / "precalcul.json").write_text(json.dumps({
+        "genere_le": "2026-09-27 01:00 UTC", "signaux": [s]
+    }))
+    dossier = str(tmp_path / "archive_test")
+    adt.archive_depuis_fichiers(
+        str(tmp_path / "precalcul.json"), str(tmp_path / "cache.json"), dossier,
+        maintenant=t(27, 1), commit="rank-stale-test"
+    )
+    enreg = adt.charge_fichier(os.path.join(dossier, "2026-09-27.json.gz"))["m-rang-vieux"]
+    assert "rang" not in enreg["equipe_dom"]
+    assert "rang" not in enreg["equipe_ext"]
+
+
+def test_archive_conserve_rangs_du_cache_matchendirect(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    cache = _cache("pescara", "spezia")
+    for e in cache.values():
+        e["resultat"] = stats_ok()
+    (tmp_path / "cache.json").write_text(json.dumps(cache))
+    (tmp_path / "cache_classement.json").write_text(json.dumps({
+        "italie : série c": {
+            "horodatage": "2026-09-27T01:00:00+00:00",
+            "resultat": [
+                {"equipe": "Spezia", "pts": 10},
+                {"equipe": "Pescara", "pts": 8},
+            ],
+        },
+    }))
+    s = signal("m-rang", "Pescara", "Spezia")
+    s["competition"], s["url_match"] = COMP, URL.format("pescara-spezia")
+    (tmp_path / "precalcul.json").write_text(json.dumps({
+        "genere_le": "2026-09-27 01:00 UTC", "signaux": [s]
+    }))
+    dossier = str(tmp_path / "archive_test")
+    adt.archive_depuis_fichiers(
+        str(tmp_path / "precalcul.json"), str(tmp_path / "cache.json"), dossier,
+        maintenant=t(27, 1), commit="rank-test"
+    )
+    enreg = adt.charge_fichier(os.path.join(dossier, "2026-09-27.json.gz"))["m-rang"]
+    assert enreg["equipe_dom"]["rang"] == 2
+    assert enreg["equipe_ext"]["rang"] == 1
+    assert enreg["equipe_dom"]["classement_source"] == "Matchendirect"
+    assert enreg["equipe_dom"]["classement_competition"] == "Italie : Série C"
+
+
 def test_archive_sans_assemblage_ecrit_quand_meme(tmp_path):
     cache = _cache("pescara", "spezia")
     for e in cache.values():

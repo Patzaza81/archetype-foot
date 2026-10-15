@@ -62,6 +62,8 @@ DOSSIER = os.path.join("data", "archive_test")
 FICHIER_HISTORIQUE = "historique_pronostics.json"
 FICHIER_PRECALCUL = "precalcul.json"
 FICHIER_CACHE_SAISON = "cache_equipes_saison.json"
+FICHIER_CACHE_CLASSEMENT = "cache_classement.json"
+CLASSEMENT_MAX_AGE_HEURES = 36
 DECALAGE_CAMEROUN = datetime.timedelta(hours=1)          # heure_cameroun = UTC+1, sans heure d'été
 CLE_BLOC_MOTEUR = "moteur_v2_6_10"                       # moteur actif (branchement_moteur.CLE_BLOC)
 CLES_BLOCS_MOTEUR = ("moteur_v2_6_10", "moteur_v2_6_9")  # lecture : l'actif d'abord, puis l'ancien (données d'avant migration)
@@ -267,11 +269,51 @@ def _bloc_assemblage(etat, details_match, competition, date_match):
     }
 
 
-def construit_enregistrement(s, stats_equipes, details, maintenant, commit=None, assemblage=None):
+def _classement_frais(entree, reference):
+    """Un cache absent, mal horodaté ou vieux de plus de 36 h ne fournit aucun rang."""
+    if not isinstance(entree, dict) or not isinstance(entree.get("resultat"), list):
+        return False
+    try:
+        horodatage = datetime.datetime.fromisoformat(str(entree.get("horodatage")))
+        if horodatage.tzinfo is None:
+            horodatage = horodatage.replace(tzinfo=datetime.timezone.utc)
+        ref = reference if reference.tzinfo else reference.replace(tzinfo=datetime.timezone.utc)
+        age = ref - horodatage.astimezone(datetime.timezone.utc)
+        return datetime.timedelta(0) <= age <= datetime.timedelta(hours=CLASSEMENT_MAX_AGE_HEURES)
+    except (TypeError, ValueError):
+        return False
+
+
+def _ajoute_classement(equipe, nom_equipe, competition, cache_classement, reference):
+    """Conserve le rang exact du tableau Matchendirect, sans le recalculer ni faire de rapprochement flou."""
+    entree = (cache_classement or {}).get(_comp_cle(competition))
+    if not _classement_frais(entree, reference):
+        return equipe
+    lignes = entree.get("resultat")
+    nom = " ".join(str(nom_equipe or "").split()).casefold()
+    if not nom:
+        return equipe
+    for rang, ligne in enumerate(lignes, start=1):
+        if not isinstance(ligne, dict):
+            continue
+        nom_classement = " ".join(str(ligne.get("equipe") or "").split()).casefold()
+        if nom_classement == nom:
+            equipe["rang"] = rang
+            equipe["classement_competition"] = " ".join(str(competition or "").split())
+            equipe["classement_source"] = "Matchendirect"
+            equipe["classement_horodatage"] = entree.get("horodatage")
+            return equipe
+    return equipe
+
+
+def construit_enregistrement(s, stats_equipes, details, maintenant, commit=None, assemblage=None,
+                             cache_classement=None):
     date_match = s.get("date")
     d = (details or {}).get(s.get("url_match")) or {}
     dom = _equipe(s.get("domicile"), s.get("competition"), stats_equipes, date_match, d.get("url_equipe_domicile"))
     ext = _equipe(s.get("exterieur"), s.get("competition"), stats_equipes, date_match, d.get("url_equipe_exterieur"))
+    _ajoute_classement(dom, s.get("domicile"), s.get("competition"), cache_classement, maintenant)
+    _ajoute_classement(ext, s.get("exterieur"), s.get("competition"), cache_classement, maintenant)
     cotes_betpawa = s.get("cotes_manuelles") or None
     cotes_obs = _cotes_observees(s)
     coup = coup_d_envoi_utc(date_match, s.get("heure_cameroun"))
@@ -351,7 +393,8 @@ def lit_genere_le(texte):
         return None
 
 
-def archive_run(signaux, stats_equipes, details, dossier=DOSSIER, maintenant=None, commit=None, assemblage=None):
+def archive_run(signaux, stats_equipes, details, dossier=DOSSIER, maintenant=None, commit=None, assemblage=None,
+                cache_classement=None):
     """Enregistre l'avant-match de chaque match qui a des cotes. Renvoie le bilan du run.
     assemblage = {"doc": assemblage Football-Data ou None, "statut": raison si None} (voir charge_assemblage_sur)."""
     maintenant = maintenant or datetime.datetime.now(datetime.timezone.utc)
@@ -371,7 +414,7 @@ def archive_run(signaux, stats_equipes, details, dossier=DOSSIER, maintenant=Non
             if not peut_mettre_a_jour(existant, date_match, coup, maintenant) or _plus_recent(existant, maintenant):
                 bilan["figes_non_modifies"] += 1
                 continue
-            e = construit_enregistrement(s, stats_equipes, details, maintenant, commit, assemblage)
+            e = construit_enregistrement(s, stats_equipes, details, maintenant, commit, assemblage, cache_classement)
             donnees[s["match_id"]] = e
             bilan["ecrits"] += 1
             bilan["testables"] += int(e["testable"])
@@ -499,6 +542,18 @@ def archive_depuis_fichiers(fichier_precalcul=FICHIER_PRECALCUL, fichier_cache=F
         with open(fichier_cache, encoding="utf-8") as f:
             cache = json.load(f)
     index = index_cache_saison(cache)
+    classement_cache = {}
+    if os.path.exists(FICHIER_CACHE_CLASSEMENT):
+        try:
+            with open(FICHIER_CACHE_CLASSEMENT, encoding="utf-8") as f:
+                brut_classement = json.load(f)
+            classement_cache = {
+                _comp_cle(comp): entree
+                for comp, entree in brut_classement.items()
+                if _classement_frais(entree, maintenant)
+            } if isinstance(brut_classement, dict) else {}
+        except (OSError, json.JSONDecodeError):
+            classement_cache = {}
     stats, details = {}, {}
     for s in signaux:
         paire = equipes_du_match(s.get("url_match"), s.get("competition"), index)
@@ -509,7 +564,7 @@ def archive_depuis_fichiers(fichier_precalcul=FICHIER_PRECALCUL, fichier_cache=F
         stats[(s.get("exterieur"), s.get("competition"))] = res_ext
         details[s.get("url_match")] = {"url_equipe_domicile": url_dom, "url_equipe_exterieur": url_ext}
     return archive_run(signaux, stats, details, dossier=dossier, maintenant=maintenant, commit=commit,
-                       assemblage=charge_assemblage_sur(fichier_assemblage))
+                       assemblage=charge_assemblage_sur(fichier_assemblage), cache_classement=classement_cache)
 
 
 def bilan_archive(dossier=DOSSIER):
