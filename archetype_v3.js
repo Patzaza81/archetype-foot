@@ -312,7 +312,7 @@ function construitExplication(ex) {
     // il ne modifie ni les sélections du moteur ni les autres parties de l'analyse.
     if (i === 6 && /indice de performance/i.test(String(b.titre || ""))) {
       const lignes = (Array.isArray(b.lignes) ? b.lignes : []).filter((l) =>
-        typeof l === "string" && /(?:^|\\D)(?:3|4)\\s*\\/\\s*4(?:\\D|$)/.test(l)
+        typeof l === "string" && /(?:^|\D)(?:3|4)\s*\/\s*4(?:\D|$)/.test(l)
       );
       return `<div class="ax-tab ax-v3-bloc">${titre}` +
         (lignes.length
