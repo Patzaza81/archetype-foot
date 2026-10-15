@@ -626,10 +626,21 @@ def explication(sel, ctx, apercu):
     ev = ctx["evidence"].get(marche, {})
     regle = DOUBLE_CONTROLE.get(marche)
 
+    def rang_equipe(donnees):
+        # N'afficher un rang que s'il est explicitement présent dans l'archive.
+        for cle in ("classement", "rang", "position", "league_position"):
+            valeur = donnees.get(cle)
+            if isinstance(valeur, (int, str)) and str(valeur).strip():
+                return str(valeur).strip()
+        return None
+
+    rang_dom = rang_equipe(e.get("equipe_dom") or {})
+    rang_ext = rang_equipe(e.get("equipe_ext") or {})
     blocs = [
         {"titre": "Données", "historiques": [historique(H, True, dom), historique(A, False, ext)], "lignes": [
             f"{dom} à domicile ({nh}) : {scores(H, True)} → marque {_n2(sh['gf'])}, encaisse {_n2(sh['ga'])} par match.",
-            f"{ext} à l'extérieur ({na}) : {scores(A, False)} → marque {_n2(sa['gf'])}, encaisse {_n2(sa['ga'])} par match."]},
+            f"{ext} à l'extérieur ({na}) : {scores(A, False)} → marque {_n2(sa['gf'])}, encaisse {_n2(sa['ga'])} par match.",
+            f"Classement : {dom} {rang_dom if rang_dom else 'non disponible dans les données V3'} ; {ext} {rang_ext if rang_ext else 'non disponible dans les données V3'}."]},
         {"titre": "Buts attendus", "lignes": [
             f"{dom} — buts marqués attendus : {_n2(lh)} ; buts encaissés attendus : {_n2(la)}.",
             f"{ext} — buts marqués attendus : {_n2(la)} ; buts encaissés attendus : {_n2(lh)}."]},
