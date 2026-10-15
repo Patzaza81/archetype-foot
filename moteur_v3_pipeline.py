@@ -727,23 +727,18 @@ def alternatives_indice(candidats, retenus, ctx, equipes, max_alt=3):
 
 
 def alternatives(sel, ctx, apercu):
-    """Bloc 6 : famille du pari retenu + meilleurs paris des autres familles avec la raison exacte de leur rejet."""
+    """Bloc 6 : justification courte, fondée sur les chiffres du marché retenu."""
     groupe = groupe_exposition(sel["marche"])
-    lignes = [f"Un seul pari par famille ({FAMILLES_FR.get(groupe, groupe)}) : celui-ci est le plus probable des paris valides."]
-    vus = {groupe}
-    for c in ctx["candidats"]:
-        g = groupe_exposition(c["marche"])
-        if g in vus or c["marche"] == sel["marche"]:
-            continue
-        vus.add(g)
-        raisons = [x for x in c["raisons"] if not (apercu and x == "CALIBRATION_ABSENTE")]
-        motif = ("valide, mais moins bon que le pari retenu ou trop lié à lui" if not raisons
-                 else " ; ".join(RAISONS_FR.get(x, x) for x in raisons[:2]))
-        lignes.append(f"{c['libelle']} ({_n2(c['cote'])}, {_p1(c['probabilite'])}, marge "
-                      f"{'+' if c['edv'] >= 0 else ''}{str(c['edv']).replace('.', ',')} %) : {motif}.")
-        if len(lignes) >= 4:
-            break
-    return lignes
+    probabilite = _p1(sel["probabilite"])
+    implicite = _p1(1 / sel["cote"])
+    ecart = 100 * (sel["probabilite"] - 1 / sel["cote"])
+    marge = f"{'+' if sel['edv'] >= 0 else ''}{sel['edv']:.1f}".replace(".", ",")
+    if apercu:
+        return [f"Aperçu non calibré : probabilité {probabilite}, contre {implicite} selon la cote ; marge estimée {marge} %. Aucune sélection confirmée."]
+    return [
+        f"Marché retenu : {probabilite} estimés contre {implicite} selon la cote ({'+' if ecart >= 0 else '−'}{abs(ecart):.1f} points).".replace(".", ",", 1),
+        f"Marge estimée : {marge} %. Le marché a passé les contrôles requis et est le meilleur choix admissible de la famille « {FAMILLES_FR.get(groupe, groupe)} »."
+    ]
 
 
 # Noms de marchés V3 -> noms lus par traduction_marches.js (ceux de la page « Sélections Archetype »).
