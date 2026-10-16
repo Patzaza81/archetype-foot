@@ -111,7 +111,8 @@ function mvCarte(l, mode) {
       (histo || `<p class="mv-vide">Derniers scores indisponibles pour ce pronostic.</p>`) +
     `</div></details>`;
   section.addEventListener("click", (e) => {      // carte repliée au départ ; un toucher la déplie ou la replie
-    if (e.target.closest("button, a, summary")) return;
+    if (e.target.closest("button, a")) return;
+    if (e.target.closest("summary")) e.preventDefault();
     const sel = window.getSelection && window.getSelection();
     if (sel && String(sel).length) return;
     const avant = section.getBoundingClientRect().top;
