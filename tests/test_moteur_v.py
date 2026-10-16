@@ -426,15 +426,15 @@ def test_forme_cas_qui_echouent_pas_d_inversion_ni_de_mauvaise_lettre():
 
 def test_chance_cas_qui_passent():
     t = _node("mvChance({cote:1.68,p_honnete:0.543})")
-    assert "<b>54</b> passent" in t and "il en faudrait 60" in t and "mv-rente-non" in t and "−90 F" in t.replace("\u2212", "−")
+    assert "<b>54</b> sur 100" in t and "Cote trop basse" in t and "mv-rente-non" in t and "−90 F" in t.replace("\u2212", "−")
     t2 = _node("mvChance({cote:1.30,p_honnete:0.85})")
-    assert "la cote paie assez" in t2 and "mv-rente-oui" in t2
-    assert "impossible de juger" in _node("mvChance({cote:3.45,p_honnete:null})")
+    assert "Cote correcte" in t2 and "mv-rente-oui" in t2
+    assert "Cote non évaluée" in _node("mvChance({cote:3.45,p_honnete:null})")
 
 
 def test_chance_cas_qui_echouent_pas_de_signal_contradictoire():
     t = _node("mvChance({cote:1.30,p_honnete:0.748})")                    # 74,8 % < 77 % : sous le seuil
-    assert "la cote paie assez" not in t and "mv-rente-oui" not in t and "⚠" in t
+    assert "Cote correcte" not in t and "mv-rente-oui" not in t and "⚠" in t
     assert "mv-sous" not in t and "mv-sur" not in t                       # la barre n'est plus rouge/verte : elle est neutre, le jugement est dans la phrase
     assert "mv-rente-non" not in _node("mvChance({cote:1.30,p_honnete:0.85})")
     assert _node("mvChance({cote:1,p_honnete:0.9})").strip() == ""
@@ -461,3 +461,12 @@ def test_page_allegee_donne_buts_attendus_et_lecture_du_pari():
         _jeu(d)
         l = json.load(open(os.path.join(d, "pronostics_v.json")))["a_venir"][0]
         assert len(l["attendus"]) == 2 and all(x > 0 for x in l["attendus"]) and len(l["lecture"]) == 2 and "marches" not in l
+
+
+def test_message_de_rentabilite_court():
+    for expr in ("mvChance({cote:1.68,p_honnete:0.543})", "mvChance({cote:1.30,p_honnete:0.85})"):
+        import re
+        phrase = re.search(r'class="mv-rente [^"]*">(.*?)</div>', _node(expr), re.S).group(1)
+        assert len(re.sub(r"<[^>]+>", "", phrase)) <= 50                     # une ligne, pas un paragraphe
+    assert len(re.sub(r"<[^>]+>", "", re.search(r'class="mv-rente [^"]*">(.*?)</div>', _node("mvChance({cote:3.45,p_honnete:null})"), re.S).group(1))) <= 50
+    assert "Passe souvent" not in _node("mvChance({cote:1.68,p_honnete:0.543})")   # le verdict TRÈS PROBABLE / INCERTAIN le dit déjà

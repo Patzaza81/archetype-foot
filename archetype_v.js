@@ -58,16 +58,16 @@ function mvChance(p) {
   const cote = Number(p.cote); if (!Number.isFinite(cote) || cote <= 1) return "";
   const seuil = Math.round(100 / cote);
   if (p.p_honnete == null) {
-    return `<div class="mv-chance"><div class="mv-rente mv-rente-inconnu">Aucune mesure de réussite à cette cote (trop haute) : impossible de juger ce pari. Il faudrait en gagner ${seuil} sur 100 pour ne pas perdre.</div></div>`;
+    return `<div class="mv-chance"><div class="mv-rente mv-rente-inconnu">Cote non évaluée (trop haute) : seuil ${seuil} sur 100.</div></div>`;
   }
   const r = Math.round(p.p_honnete * 100), sous = r < seuil;
   const gain = Math.round(((p.p_honnete * cote - 1) * 1000) / 10) * 10;
   const verdict = sous
-    ? `⚠ Passe souvent, mais la cote est trop basse : il en faudrait ${seuil} sur 100 pour ne pas perdre. En moyenne <b>${mvFcfa(gain)}</b> pour 1 000 F misés (estimation).`
-    : `✔ Passe souvent et la cote paie assez : en moyenne <b>${mvFcfa(gain)}</b> pour 1 000 F misés (estimation, à confirmer).`;
-  return `<div class="mv-chance"><div>Sur 100 paris comme celui-ci, environ <b>${r}</b> passent.</div>` +
+    ? `⚠ Cote trop basse : <b>${mvFcfa(gain)}</b> par 1 000 F misés`
+    : `✔ Cote correcte : <b>${mvFcfa(gain)}</b> par 1 000 F misés`;
+  return `<div class="mv-chance"><div>Réussite mesurée : <b>${r}</b> sur 100</div>` +
     `<div class="mv-jauge" aria-hidden="true"><i style="width:${r}%"></i><b style="left:${seuil}%"></b></div>` +
-    `<div class="mv-legende">Barre = réussite mesurée · trait noir = seuil pour ne pas perdre (${seuil})</div>` +
+    `<div class="mv-legende">Trait noir = seuil pour ne pas perdre (${seuil})</div>` +
     `<div class="mv-rente ${sous ? "mv-rente-non" : "mv-rente-oui"}">${verdict}</div></div>`;
 }
 function mvAlerteTexte(a, l) {
@@ -82,9 +82,9 @@ function mvAlerteTexte(a, l) {
 }
 function mvPourquoi(l) {
   const lignes = [];
-  if (Array.isArray(l.attendus)) lignes.push(`Buts attendus par le moteur : <b>${mvEchappe(l.domicile)} ${mvFr(l.attendus[0])}</b> – <b>${mvFr(l.attendus[1])} ${mvEchappe(l.exterieur)}</b>`);
-  if (Array.isArray(l.lecture)) lignes.push(`Ce pari serait passé dans ${mvPct0(l.lecture[0])} des derniers matchs de ${mvEchappe(l.domicile)} à domicile et ${mvPct0(l.lecture[1])} de ceux de ${mvEchappe(l.exterieur)} à l'extérieur`);
-  if (Number(l.n_matchs_lieu) > 0 && Number(l.n_matchs_lieu) < 6) lignes.push(`<span class="mv-prudence">Attention : seulement ${Number(l.n_matchs_lieu)} matchs au même lieu pour juger</span>`);
+  if (Array.isArray(l.attendus)) lignes.push(`Buts attendus : <b>${mvEchappe(l.domicile)} ${mvFr(l.attendus[0])}</b> – <b>${mvFr(l.attendus[1])} ${mvEchappe(l.exterieur)}</b>`);
+  if (Array.isArray(l.lecture)) lignes.push(`Déjà passé : ${mvPct0(l.lecture[0])} (${mvEchappe(l.domicile)} à dom.) · ${mvPct0(l.lecture[1])} (${mvEchappe(l.exterieur)} à l'ext.)`);
+  if (Number(l.n_matchs_lieu) > 0 && Number(l.n_matchs_lieu) < 6) lignes.push(`<span class="mv-prudence">Peu de recul : ${Number(l.n_matchs_lieu)} matchs seulement</span>`);
   return lignes.length ? `<div class="mv-pourquoi">${lignes.map((x) => `<div>${x}</div>`).join("")}</div>` : "";
 }
 function mvHistorique(l) {
@@ -133,7 +133,7 @@ function mvCarte(l, mode) {
   const p = l.principal || {};
   const autres = Array.isArray(l.autres) ? l.autres : [];
   const blocAutres = `<div class="mv-autres"><div class="mv-autres-titre">Autres paris possibles</div>` +
-    (autres.length ? autres.map((x) => mvLigneAutre(x, l)).join("") : `<div class="mv-info">Aucun autre pari ne ressort assez.</div>`) + `</div>`;
+    (autres.length ? autres.map((x) => mvLigneAutre(x, l)).join("") : `<div class="mv-info">Aucun autre pari.</div>`) + `</div>`;
   const alertes = (Array.isArray(l.alertes) ? l.alertes : []).filter((a) => !a.startsWith("musique") || /:rupture$/.test(a)).map((a) => mvAlerteTexte(a, l));
   const blocAlertes = alertes.length ? `<div class="mv-alerte">⚠ ${alertes.map(mvEchappe).join("<br>⚠ ")}</div>` : "";
   section.innerHTML =
@@ -209,14 +209,14 @@ function mvFiltres() {
 }
 function mvAffiche(d) {
   const b = d.bilan || {};
-  const noms = { observation: "EN OBSERVATION — ne mise pas d'argent réel pour l'instant", controle_ok: "CONTRÔLE OK — les réussites annoncées sont tenues (rentabilité non démontrée)", gel: "GEL — une réussite annoncée n'est pas tenue : ne pas miser" };
+  const noms = { observation: "EN OBSERVATION — ne mise pas encore", controle_ok: "CONTRÔLE OK — les réussites annoncées sont tenues (rentabilité non démontrée)", gel: "GEL — une réussite annoncée n'est pas tenue : ne pas miser" };
   const gele = Array.isArray(b.niveaux_geles) && b.niveaux_geles.length ? ` Verdicts gelés : ${b.niveaux_geles.map((n) => (MV_VERDICT[n] || [n])[0]).join(", ")}.` : "";
   document.getElementById("mv-statut").innerHTML =
     `<div class="mv-statut ${mvEchappe(d.statut)}">${mvEchappe(noms[d.statut] || d.statut)}` +
     `<small>${mvEchappe(d.avertissement || "Réussite réelle comparée à la réussite annoncée pour chaque verdict.")}${mvEchappe(gele)}</small></div>`;
   document.getElementById("mv-bilan").innerHTML = mvTableauBilan(b);
-  const zones = Array.isArray(d.zones) ? d.zones.map((z) => `cote ${mvCote(z.cote_min)}–${mvCote(z.cote_max)} → ${mvPct0(z.fiabilite)} de réussite (${(MV_VERDICT[z.niveau] || [z.niveau])[0].toLowerCase()})`).join(" · ") : "";
-  document.getElementById("mv-zones").innerHTML = zones ? `<p class="mv-info" style="margin:6px 14px"><b>Comment lire :</b> la réussite annoncée vient de ce qui s'est vraiment passé sur 440 matchs passés, selon la cote — ${zones}. Au-dessus de 1,81 : non évalué. Plus la cote est haute, moins le pari passe.</p>` : "";
+  const zones = Array.isArray(d.zones) ? d.zones.map((z) => `${mvCote(z.cote_min)}–${mvCote(z.cote_max)} → ${mvPct0(z.fiabilite)}`).join(" · ") : "";
+  document.getElementById("mv-zones").innerHTML = zones ? `<p class="mv-info" style="margin:6px 14px"><b>Réussite mesurée sur 440 matchs passés :</b> ${zones}. Au-dessus de 1,81 : non évalué.</p>` : "";
   mvDonnees = d;
   mvFiltres();
   mvRendAvenir();
