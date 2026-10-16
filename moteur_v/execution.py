@@ -10,7 +10,7 @@ from . import carnet as K, historique as H, modele as M, pronostics as P
 from .donnees import charge
 
 AVERTISSEMENT = ("Les réussites annoncées viennent de 440 matchs passés (28/09 au 14/10) et ne sont pas encore confirmées par les paris de v. "
-                 "Attends au moins 100 paris réglés avant de miser. Les paris RISQUÉS et NON ÉVALUÉS perdent de l'argent sur la durée.")
+                 "Attends au moins 100 paris réglés avant de miser. Les paris INCERTAINS et NON ÉVALUÉS perdent de l'argent sur la durée.")
 
 
 def _allege(l):

@@ -426,18 +426,28 @@ def test_forme_cas_qui_echouent_pas_d_inversion_ni_de_mauvaise_lettre():
 
 def test_chance_cas_qui_passent():
     t = _node("mvChance({cote:1.68,p_honnete:0.543})")
-    assert "<b>54</b> passent" in t and "<b>60</b>" in t and "Sous le seuil" in t and "−90 F" in t.replace("\u2212", "−")
+    assert "<b>54</b> passent" in t and "il en faudrait 60" in t and "mv-rente-non" in t and "−90 F" in t.replace("\u2212", "−")
     t2 = _node("mvChance({cote:1.30,p_honnete:0.85})")
-    assert "Au-dessus du seuil" in t2 and "mv-sur" in t2
-    assert "Pas de mesure de réussite" in _node("mvChance({cote:3.45,p_honnete:null})")
+    assert "la cote paie assez" in t2 and "mv-rente-oui" in t2
+    assert "impossible de juger" in _node("mvChance({cote:3.45,p_honnete:null})")
 
 
-def test_chance_cas_qui_echouent_jamais_de_promesse_de_gain():
+def test_chance_cas_qui_echouent_pas_de_signal_contradictoire():
+    t = _node("mvChance({cote:1.30,p_honnete:0.748})")                    # 74,8 % < 77 % : sous le seuil
+    assert "la cote paie assez" not in t and "mv-rente-oui" not in t and "⚠" in t
+    assert "mv-sous" not in t and "mv-sur" not in t                       # la barre n'est plus rouge/verte : elle est neutre, le jugement est dans la phrase
+    assert "mv-rente-non" not in _node("mvChance({cote:1.30,p_honnete:0.85})")
+    assert _node("mvChance({cote:1,p_honnete:0.9})").strip() == ""
     for expr in ("mvChance({cote:1.30,p_honnete:0.748})", "mvChance({cote:1.68,p_honnete:0.543})", "mvChance({cote:3.45,p_honnete:null})"):
         t = _node(expr).lower()
         assert "rentable" not in t and "sûr de gagner" not in t and "garanti" not in t
-    assert "Au-dessus" not in _node("mvChance({cote:1.30,p_honnete:0.748})")        # 74,8 % < 77 % : sous le seuil
-    assert _node("mvChance({cote:1,p_honnete:0.9})").strip() == ""                    # cote invalide : rien d'affiché
+
+
+def test_mot_du_verdict_decrit_la_chance_pas_la_rentabilite():
+    assert "TRÈS PROBABLE" in _node("mvVerdict('SÛR')") and "PROBABLE" in _node("mvVerdict('MOYEN')")
+    assert "INCERTAIN" in _node("mvVerdict('RISQUÉ')") and "NON ÉVALUÉ" in _node("mvVerdict('NON CALIBRÉ')")
+    for n in ("SÛR", "MOYEN", "RISQUÉ", "NON CALIBRÉ"):
+        assert "SOLIDE" not in _node("mvVerdict(%r)" % n)                   # « solide » laissait croire à un pari à jouer
 
 
 def test_alertes_en_clair():
