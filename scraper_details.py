@@ -356,6 +356,23 @@ def recupere_cotes_marches(url_match_face_a_face):
 
 
 # --------------------------------------------------------------------------
+# Zones de classement Matchendirect (observation uniquement, sans effet moteur).
+# --------------------------------------------------------------------------
+
+def recupere_zones_classement_du_match(url_match):
+    """Extrait les zones européennes/relégation sans toucher au classement existant.
+
+    Le résultat est volontairement séparé de recupere_classement_du_match,
+    dont le format historique (liste de lignes) reste inchangé.
+    """
+    from contexte_classement import extraire_zones_classement
+
+    url = url_match + "?p=classement"
+    html = fetch_html(url)
+    return extraire_zones_classement(html)
+
+
+# --------------------------------------------------------------------------
 # Classement universel via l'URL du match (25/08).
 # --------------------------------------------------------------------------
 
