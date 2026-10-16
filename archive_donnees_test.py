@@ -174,7 +174,11 @@ def equipe_assemblage(doc, url_equipe, competition, date_match, lecteur=None):
     if lecteur is None:
         import contrat_moteur
         lecteur = contrat_moteur.equipe
-    eq = lecteur(doc, url_equipe, _comp_cle(competition))
+    # Le contrat utilise la clé de cache normalisée en minuscules (espaces seulement).
+    # Ne pas utiliser _comp_cle ici : sa canonicalisation des « : » sert au cache de classement,
+    # mais ne correspond pas à la clé exacte cle_cache de l'assemblage.
+    comp_assemblage = " ".join(str(competition or "").split()).lower()
+    eq = lecteur(doc, url_equipe, comp_assemblage)
     if eq is None:
         return {"statut": "ABSENTE", "raison": "équipe absente de l'assemblage"}
     gardes, apres, invalides = matchs_complets_avant(eq.get("matchs"), date_match)
