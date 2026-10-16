@@ -7,7 +7,7 @@ import sys
 import tempfile
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from moteur_v import carnet as K, coeur as C, execution as X, marches as MK, modele as M, pronostics as P  # noqa: E402
+from moteur_v import carnet as K, coeur as C, execution as X, historique as HI, marches as MK, modele as M, pronostics as P  # noqa: E402
 
 UTC = datetime.timezone.utc
 RACINE = pathlib.Path(__file__).parent.parent
@@ -257,3 +257,91 @@ def test_historique_documente_et_reference():
         assert (RACINE / "evaluation" / "moteur_v" / f).exists(), f
     ids = json.load(open(RACINE / "evaluation" / "moteur_v" / "jeu_reglage_ids.json"))
     assert len(ids) == 440 and len(set(ids)) == 440                      # jeu de réglage figé : 440 matchs distincts
+
+
+# ---------------------------------------------------------------- historique durable (append-only)
+def _jeu(d):
+    entrees = [entree("A", "B", hist(), hist(), date="2026-10-10")]
+    t0 = datetime.datetime(2026, 10, 14, 10, 0, tzinfo=UTC)
+    X.execute([match("m1", "2026-10-14", kickoff="2026-10-14T18:00:00Z")], entrees, d, t0)
+    return entrees, t0
+
+
+def _n(d, sous):
+    return sum(len(HI.lit(f)) for f in HI._fichiers(d, sous))
+
+
+def test_historique_version_ecrite_une_fois_puis_pas_de_doublon():
+    with tempfile.TemporaryDirectory() as d:
+        entrees, t0 = _jeu(d)
+        assert _n(d, "versions") == 1
+        X.execute([match("m1", "2026-10-14", kickoff="2026-10-14T18:00:00Z")], entrees, d, t0 + datetime.timedelta(hours=1))
+        assert _n(d, "versions") == 1                      # pronostic identique : rien de nouveau
+
+
+def test_historique_nouvelle_version_si_le_pronostic_change():
+    with tempfile.TemporaryDirectory() as d:
+        entrees, t0 = _jeu(d)
+        m = match("m1", "2026-10-14", kickoff="2026-10-14T18:00:00Z")
+        m["cotes"] = {"Plus de 1.5 buts": 1.34, "Moins de 4.5 buts": 1.27, "BTTS - oui": 1.9}       # la cote bouge avant le match
+        X.execute([m], entrees, d, t0 + datetime.timedelta(hours=1))
+        v = [o for f in HI._fichiers(d, "versions") for o in HI.lit(f)]
+        assert len(v) == 2 and v[0]["signature"] != v[1]["signature"]
+
+
+def test_historique_reglement_archive_une_seule_fois_avec_le_detail():
+    with tempfile.TemporaryDirectory() as d:
+        entrees, _ = _jeu(d)
+        t1 = datetime.datetime(2026, 10, 14, 23, 0, tzinfo=UTC)
+        m = match("m1", "2026-10-14", h=2, a=1, kickoff="2026-10-14T18:00:00Z")
+        X.execute([m], entrees, d, t1)
+        X.execute([m], entrees, d, t1 + datetime.timedelta(days=1))
+        X.execute([m], entrees, d, t1 + datetime.timedelta(days=2))
+        r = [o for f in HI._fichiers(d, "reglements") for o in HI.lit(f)]
+        assert len(r) == 1 and r[0]["score"] == [2, 1] and r[0]["resultat"] in ("WIN", "LOSS")
+        assert r[0]["marches"] and {"pf", "ps", "pm", "c"} <= set(r[0]["marches"][0]) and r[0]["lambdas"]["force"]
+        assert r[0]["parametres_version"] == M.PARAMETRES_VERSION
+        assert HI.verifie(d) == []
+
+
+def test_historique_ne_reecrit_jamais_le_passe():
+    with tempfile.TemporaryDirectory() as d:
+        entrees, _ = _jeu(d)
+        f = HI._fichiers(d, "versions")[0]
+        avant = open(f, encoding="utf-8").read()
+        t1 = datetime.datetime(2026, 10, 14, 23, 0, tzinfo=UTC)
+        X.execute([match("m1", "2026-10-14", h=2, a=1, kickoff="2026-10-14T18:00:00Z")], entrees, d, t1)
+        assert open(f, encoding="utf-8").read().startswith(avant)          # le passé est intact, on n'a fait qu'ajouter
+        b = HI.lit(os.path.join(d, "historique", "bilans.jsonl"))
+        assert len(b) >= 2 and b[-1]["bilan"]["principal"]["regles"] == 1 and b[0]["bilan"]["principal"]["regles"] == 0
+
+
+def test_historique_bilan_identique_pas_de_doublon():
+    with tempfile.TemporaryDirectory() as d:
+        entrees, t0 = _jeu(d)
+        n = _n(d, "versions")
+        X.execute([match("m1", "2026-10-14", kickoff="2026-10-14T18:00:00Z")], entrees, d, t0 + datetime.timedelta(hours=2))
+        assert len(HI.lit(os.path.join(d, "historique", "bilans.jsonl"))) == 1 and _n(d, "versions") == n
+
+
+def test_historique_verifie_detecte_les_anomalies():
+    with tempfile.TemporaryDirectory() as d:
+        entrees, _ = _jeu(d)
+        t1 = datetime.datetime(2026, 10, 14, 23, 0, tzinfo=UTC)
+        X.execute([match("m1", "2026-10-14", h=2, a=1, kickoff="2026-10-14T18:00:00Z")], entrees, d, t1)
+        f = HI._fichiers(d, "reglements")[0]
+        ligne = open(f, encoding="utf-8").read()
+        open(f, "a", encoding="utf-8").write(ligne)                         # doublon
+        assert any("deux fois" in p for p in HI.verifie(d))
+        open(f, "w", encoding="utf-8").write("{pas du json\n")
+        assert any("illisible" in p for p in HI.verifie(d))
+
+
+def test_historique_page_allegee_et_documente():
+    with tempfile.TemporaryDirectory() as d:
+        entrees, t0 = _jeu(d)
+        s = json.load(open(os.path.join(d, "pronostics_v.json")))
+        assert s["a_venir"] and "marches" not in s["a_venir"][0] and "lambdas" not in s["a_venir"][0]
+        assert "marches" in json.load(open(os.path.join(d, "carnet.json")))["m1"]
+    doc = (RACINE / "docs" / "MOTEUR_V.md").read_text(encoding="utf-8")
+    assert "data/v/historique" in doc and "bilans.jsonl" in doc

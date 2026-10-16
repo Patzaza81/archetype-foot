@@ -28,6 +28,14 @@
 - Sortie publiée : `data/v/pronostics_v.json`. Bilan par rôle (principal / autres) et par niveau : réglés, réussite, fiabilité annoncée, écart, IC95 Wilson, ROI.
 - **Statuts** : `observation` (< 100 paris principaux réglés : ne pas miser) ; `controle_ok` (>= 100 réglés, fiabilités tenues) ; `gel` (un niveau SÛR/MOYEN/RISQUÉ a une réussite réelle inférieure de plus de 10 points à sa fiabilité annoncée, sur >= 50 paris). **Aucun statut ne dit « rentable »** : le ROI au carnet est affiché, pas jugé.
 
+## Historique durable (pour analyse)
+Le carnet est l'état du jour ; l'historique en est la mémoire. Règle : **on ajoute, on ne réécrit jamais** (`moteur_v/historique.py`, fichiers `.jsonl`, une ligne = un fait). Il est écrit par `moteur_v/execution.py` à chaque passage et committé par les workflows avec `data/`. Le moteur ne le relit jamais pour décider un pronostic.
+- `data/v/historique/versions/AAAA-MM.jsonl` : chaque version d'un pronostic avant le coup d'envoi (principal, autres, niveau, cote, `vu_le`). Écrite seulement si le pronostic change (signature = principal, autres, version des paramètres).
+- `data/v/historique/reglements/AAAA-MM.jsonl` : chaque match réglé, **une seule fois** : pronostic figé, score, résultat et profit de chaque pari, **tous les marchés lus** avec probabilités (`pf` force, `ps` calcul simple, `pm` mixte), cote, scores de lieu `sh`/`sa`, coefficient `k`, lambdas des deux modèles, contexte (écarts de points et de rang), alertes, version des paramètres. C'est la base pour refaire toute analyse (calibration, seuils, rôle de chaque modèle) sans rejouer le passé.
+- `data/v/historique/bilans.jsonl` : un instantané du bilan (par rôle et par niveau) à chaque changement ; sert à voir la dérive de la calibration dans le temps.
+- Contrôle d'intégrité : `historique.verifie(dossier)` (fichier illisible, match réglé deux fois, réglé sans score). Ne jamais éditer ces fichiers à la main ; une correction se fait par une nouvelle ligne.
+- Limite : les matchs réglés avant le 16/10/2026 n'ont pas le détail « tous les marchés » (le carnet ne le contenait pas) ; le détail commence avec le premier passage de cette version.
+
 ## Ce que les mesures disent (à ne pas oublier)
 - Le pourcentage des fréquences brutes n'apporte rien en plus de la cote (coefficient ≈ 0). Le modèle (forces + calcul simple) a une erreur de prédiction meilleure que les fréquences brutes (0,603 contre 0,669) mais pas meilleure que la cote seule (0,586).
 - La cote surestime les chances d'environ 4 à 6 points (marge du bookmaker) : à cotes 1,26–1,37, le seuil de rentabilité est ~77 % pour 75 % de réussite mesurée.

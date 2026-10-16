@@ -162,9 +162,10 @@ def proposer(cands, lam_force, lam_simple, seuil_autres=SEUIL_AUTRES, max_autres
     for x in cands:
         if x["cote"] < cote_min - 1e-9:
             continue
-        pm = (proba_marche(x["pred"], *lam_force) + proba_marche(x["pred"], *lam_simple)) / 2
+        pf, ps = proba_marche(x["pred"], *lam_force), proba_marche(x["pred"], *lam_simple)
+        pm = (pf + ps) / 2
         p, nom = zone_fiabilite(x["cote"])
-        liste.append(dict(x, p_modele=pm, p_honnete=p, niveau=nom, sig=_signature(x["pred"])))
+        liste.append(dict(x, p_modele=pm, p_force=pf, p_simple=ps, p_honnete=p, niveau=nom, sig=_signature(x["pred"])))
     if not liste:
         return None
     liste.sort(key=lambda d: (-round(d["p_modele"], 9), d["cote"]))
@@ -178,7 +179,7 @@ def proposer(cands, lam_force, lam_simple, seuil_autres=SEUIL_AUTRES, max_autres
         autres.append(d)
         if len(autres) >= max_autres:
             break
-    return {"principal": principal, "autres": autres}
+    return {"principal": principal, "autres": autres, "tous": liste}   # « tous » : chaque marché lu avec ses probabilités (historique)
 
 
 def alerte_contexte(marche, ep, er):
