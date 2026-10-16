@@ -261,3 +261,48 @@ def test_journal_mode_fichier_absent_donne_wilson(tmp_path):
 
 def test_le_fichier_de_configuration_livre_est_valide():
     assert sa.journal_mode(Path("config/journal_calibrage.json")) in sa.MODES_JOURNAL
+
+
+# --- AJOUT 12/10/2026 (audit) : règlement de l'archive V3 (data/v3/historique_selection.json) --------------------------
+
+def _archive_v3(tmp_path, monkeypatch, records, signaux, scores):
+    hist = tmp_path / "hist.json"
+    hist.write_text(json.dumps(records), encoding="utf-8")
+    src = tmp_path / "v3.json"
+    src.write_text(json.dumps({"signaux": signaux}), encoding="utf-8")
+    monkeypatch.setattr(sa, "V3_HISTORY", hist)
+    monkeypatch.setitem(sa.INPUTS, sa.V3, src)
+    monkeypatch.setattr(sa, "score_history", lambda: scores)
+    return {r["record_id"]: r for r in sa.sync_v3_history()}
+
+
+def _rec(mid, marche):
+    return {"record_id": f"{mid}|{marche}", "match_id": mid, "date": "2026-10-09", "marche": marche, "rang": "P1",
+            "cote": 1.4, "probabilite": 0.8, "resultat_statut": "PENDING"}
+
+
+@pytest.mark.parametrize("marche,score,attendu", [
+    ("double_chance_1X", (1, 1), "WIN"),               # nom déjà canonique : nom_canonique() renvoie None
+    ("over_under_total_3.5_under", (2, 2), "LOSS"),
+    ("buts_equipe_domicile_1.5_under", (1, 0), "WIN"),
+])
+def test_match_sorti_de_la_fenetre_est_regle(tmp_path, monkeypatch, marche, score, attendu):
+    out = _archive_v3(tmp_path, monkeypatch, [_rec("m1", marche)], [], {"m1": score})
+    r = out[f"m1|{marche}"]
+    assert r["resultat_statut"] == "RESOLVED" and r["resultat_marche"] == attendu
+
+
+@pytest.mark.parametrize("records,scores", [
+    ([_rec("m1", "double_chance_1X")], {}),                          # pas de score
+    ([_rec("m1", "marche_inconnu")], {"m1": (1, 0)}),                # marché non reconnu
+    ([_rec("m1", "double_chance_1X")], {"autre": (1, 0)}),           # score d'un autre match
+])
+def test_pari_sans_score_ou_non_reconnu_reste_pending(tmp_path, monkeypatch, records, scores):
+    out = _archive_v3(tmp_path, monkeypatch, records, [], scores)
+    assert all(r["resultat_statut"] == "PENDING" for r in out.values())
+
+
+def test_resultat_regle_n_est_jamais_modifie(tmp_path, monkeypatch):
+    rec = dict(_rec("m1", "double_chance_1X"), resultat_statut="RESOLVED", resultat_marche="LOSS")
+    out = _archive_v3(tmp_path, monkeypatch, [rec], [], {"m1": (1, 0)})
+    assert out["m1|double_chance_1X"]["resultat_marche"] == "LOSS"
