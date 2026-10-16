@@ -125,10 +125,27 @@
   function updateDateOptions(cards) {
     const select = document.getElementById("af-date-select");
     if (!select) return;
-    const prior = select.value;
+    const prior = selectedDate || select.value;
     const dates = Array.from(new Set(cards.map(cardDate).filter(Boolean))).sort();
-    const markup = '<option value="">Choisir une date…</option>' + dates.map(d => '<option value="'+d+'">'+readable(d)+'</option>').join("");
-    if (select.innerHTML !== markup) select.innerHTML = markup;
+    const counts = new Map(dates.map(date => [date, cards.filter(card =>
+      cardDate(card) === date && (!selectedChampionship || cardChampionship(card) === selectedChampionship)
+    ).length]));
+    const expected = [{value:"", label:"Choisir une date…"}, ...dates.map(date => ({
+      value: date,
+      label: readable(date) + " — " + (counts.get(date) || 0) + " pronostic(s)"
+    }))];
+    const current = Array.from(select.options, option => ({value:option.value, label:option.textContent}));
+    if (current.length !== expected.length || current.some((option,index) =>
+      option.value !== expected[index].value || option.label !== expected[index].label
+    )) {
+      const options = expected.map(item => {
+        const option = document.createElement("option");
+        option.value = item.value;
+        option.textContent = item.label;
+        return option;
+      });
+      select.replaceChildren(...options);
+    }
     if (dates.includes(prior)) select.value = prior;
     else if (selectedDate && !dates.includes(selectedDate)) { selectedDate = ""; mode = "all"; }
   }
@@ -162,7 +179,24 @@
     const championshipSelect = bar.querySelector("#af-championship-select");
     if (championshipSelect) championshipSelect.value = selectedChampionship;
     const count = bar.querySelector("#af-date-count");
-    if (count) count.textContent = cards.length ? shown+" pronostic(s) affiché(s) sur "+cards.length+" carte(s) chargée(s)" : "Aucun pronostic chargé pour le moment";
+    if (count) {
+      if (!cards.length) {
+        count.textContent = "Aucun pronostic chargé pour le moment";
+      } else {
+        const championshipSuffix = selectedChampionship ? " — " + selectedChampionship : "";
+        if (mode === "date" && selectedDate) {
+          count.textContent = shown + " pronostic(s) pour le " + readable(selectedDate) + championshipSuffix;
+        } else if (mode === "today") {
+          count.textContent = shown + " pronostic(s) aujourd’hui" + championshipSuffix;
+        } else if (mode === "tomorrow") {
+          count.textContent = shown + " pronostic(s) demain" + championshipSuffix;
+        } else if (selectedChampionship) {
+          count.textContent = shown + " pronostic(s) disponible(s) — " + selectedChampionship;
+        } else {
+          count.textContent = shown + " pronostic(s) affiché(s) sur " + cards.length + " carte(s) chargée(s)";
+        }
+      }
+    }
   }
   function scheduleRefresh() {
     if (refreshQueued) return;
