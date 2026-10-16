@@ -62,14 +62,16 @@ function mvHistorique(l) {
       const bm = Number(x.bm), be = Number(x.be); if (!Number.isFinite(bm) || !Number.isFinite(be)) return "";
       const res = bm > be ? "ax-res-v" : bm === be ? "ax-res-n" : "ax-res-d";
       const titre = `${bm > be ? "Gagné" : bm === be ? "Nul" : "Perdu"} · ${x.lieu === "D" ? "à domicile" : "à l'extérieur"}${x.adversaire ? " contre " + x.adversaire : ""}${x.date ? " · " + x.date : ""}`;
-      const suivi = `<span class="ax-but ${res}" title="${mvEchappe(titre)}">${x.lieu === "D" ? bm : be}</span>`;
-      const autre = x.lieu === "D" ? be : bm;
+      // bm = buts marqués par l'équipe, be = buts encaissés. Score écrit comme au tableau d'affichage (domicile-extérieur) ;
+      // le chiffre coloré est TOUJOURS celui de l'équipe (corrigé le 16/10/2026 : à l'extérieur, c'était le chiffre de l'adversaire).
+      const suivi = `<span class="ax-but ${res}" title="${mvEchappe(titre)}">${bm}</span>`;
+      const autre = be;
       return `<span class="ax-res">${x.lieu === "D" ? suivi + "-" + autre : autre + "-" + suivi}<small class="mv-lieu">${x.lieu}</small></span>`;
     }).join("");
     return pastilles ? `<div class="ax-hist"><span class="ax-hist-eq">${mvEchappe(nom)}</span><span class="ax-hist-liste">${pastilles}</span></div>` : "";
   };
   const corps = bloc(l.domicile || "Domicile", f.domicile) + bloc(l.exterieur || "Extérieur", f.exterieur);
-  return corps ? `<div class="ax-hist-bloc"><div class="mv-hist-titre">Derniers matchs (du plus récent au plus ancien)</div>${corps}</div>` : "";
+  return corps ? `<div class="ax-hist-bloc"><div class="mv-hist-titre">Derniers matchs (du plus récent au plus ancien)</div><div class="mv-info" style="margin:0 0 6px">Score comme au tableau (domicile – extérieur). Chiffre en couleur = buts de l'équipe : vert gagné, orange nul, rouge perdu. D = joué à domicile, E = à l'extérieur. Tous lieux confondus (le moteur, lui, ne lit que les matchs au même lieu).</div>${corps}</div>` : "";
 }
 function mvContexte(l) {
   const c = l.contexte || {}, morceaux = [];

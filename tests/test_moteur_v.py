@@ -394,3 +394,31 @@ def test_plancher_documente_et_page():
     assert "plancher" in doc.lower() and "PLANCHER_PRINCIPAL" in doc
     assert 'id="mv-sans"' in (RACINE / "pronostics_v.html").read_text(encoding="utf-8")
     assert "mv-sans" in (RACINE / "archetype_v.js").read_text(encoding="utf-8")
+
+
+# ---------------------------------------------------------------- affichage des derniers scores (corrigé le 16/10/2026)
+def _rend(lieu, bm, be):
+    import re
+    import subprocess
+    js = (RACINE / "archetype_v.js").read_text(encoding="utf-8")
+    a, b = js.index("function mvEchappe"), js.index("function mvContexte")
+    prog = js[a:b] + ("\nconst l={domicile:'A',exterieur:'B',forme:{domicile:[{lieu:%r,bm:%d,be:%d,date:'2026-10-01',adversaire:'X'}],exterieur:[]}};"
+                      "console.log(mvHistorique(l));" % (lieu, bm, be))
+    out = subprocess.run(["node", "-e", prog], capture_output=True, text=True, check=True).stdout
+    m = re.search(r'<span class="ax-res">(.*?)<small', out)
+    col = re.search(r'ax-but (ax-res-[vnd])[^>]*>(\d+)<', out)
+    txt = re.sub(r"<[^>]+>", "", m.group(1))
+    return txt, col.group(2), col.group(1)
+
+
+def test_affichage_scores_cas_qui_passent():
+    assert _rend("D", 2, 0) == ("2-0", "2", "ax-res-v")          # gagné à domicile : son score à gauche
+    assert _rend("E", 5, 0) == ("0-5", "5", "ax-res-v")          # gagné à l'extérieur : le tableau affiche 0-5, son 5 en couleur
+    assert _rend("E", 1, 2) == ("2-1", "1", "ax-res-d")          # perdu à l'extérieur : 2-1 au tableau, son 1 en rouge
+
+
+def test_affichage_scores_cas_qui_echouent_l_ancien_affichage_inverse():
+    assert _rend("E", 5, 0) != ("5-0", "0", "ax-res-v")          # ancien rendu : 5-0 avec le 0 (adversaire) en vert
+    assert _rend("E", 0, 4)[1] != "4"                            # le chiffre coloré n'est jamais celui de l'adversaire
+    assert _rend("D", 0, 1) != ("1-0", "1", "ax-res-v")          # une défaite n'est jamais affichée comme une victoire
+    assert _rend("E", 1, 1) == ("1-1", "1", "ax-res-n")          # nul : orange
