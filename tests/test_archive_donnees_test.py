@@ -413,7 +413,7 @@ def test_classement_perime_refuse(tmp_path, monkeypatch):
         e["resultat"] = stats_ok()
     (tmp_path / "cache.json").write_text(json.dumps(cache))
     (tmp_path / "cache_classement.json").write_text(json.dumps({
-        "italie : série c": {
+        "italie : série c girone a": {
             "horodatage": "2026-09-25T01:00:00+00:00",
             "resultat": [{"equipe": "Pescara"}, {"equipe": "Spezia"}],
         },
@@ -439,7 +439,7 @@ def test_archive_conserve_rangs_du_cache_matchendirect(tmp_path, monkeypatch):
         e["resultat"] = stats_ok()
     (tmp_path / "cache.json").write_text(json.dumps(cache))
     (tmp_path / "cache_classement.json").write_text(json.dumps({
-        "italie : série c": {
+        "italie : série c girone a": {
             "horodatage": "2026-09-27T01:00:00+00:00",
             "resultat": [
                 {"equipe": "Spezia", "pts": 10},
