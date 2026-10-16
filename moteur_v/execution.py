@@ -20,19 +20,28 @@ def execute(matchs, entrees, dossier, maintenant):
     scores = {m["id"]: (m["h"], m["a"]) for m in matchs if m["h"] is not None}
     regles = K.regle(carnet, scores)
     forces, classements = M.Forces(entrees), M.Classements(entrees)
+    sans, retraits = [], []
     for m in matchs:
         if m["h"] is not None or not m.get("kickoff"):
             continue
-        K.enregistre(carnet, P.proposer(m, forces, classements), maintenant)
+        l = P.proposer(m, forces, classements)
+        if l and l.get("sans_pronostic"):
+            if K.avant_coup_d_envoi(l, maintenant):
+                sans.append(l)
+                if K.retire(carnet, l["match_id"]):
+                    retraits.append(l)
+            continue
+        K.enregistre(carnet, l, maintenant)
     K.sauve(carnet, dossier)
     b = K.bilan(carnet)
-    ajouts = H.enregistre(dossier, carnet, b, maintenant, M.PARAMETRES_VERSION)   # historique : on ajoute, on ne réécrit jamais
+    ajouts = H.enregistre(dossier, carnet, b, maintenant, M.PARAMETRES_VERSION, retraits)   # historique : on ajoute, on ne réécrit jamais
     allege = lambda l: {k: v for k, v in l.items() if k not in ("marches", "lambdas")}   # la page n'a pas besoin du détail complet
     cle = lambda l: (l["coup_d_envoi_utc"], l["match_id"])
     sortie = dict(genere_le=maintenant.isoformat(), statut=b["statut"],
                   avertissement=AVERTISSEMENT if b["statut"] != "controle_ok" else None,
                   parametres_version=M.PARAMETRES_VERSION, zones=[dict(cote_min=a, cote_max=b_, fiabilite=p, niveau=n) for a, b_, p, n in M.FIABILITE_ZONES],
-                  reglees_aujourdhui=regles, bilan=b, historique_ajouts=ajouts,
+                  reglees_aujourdhui=regles, bilan=b, historique_ajouts=ajouts, plancher_principal=M.PLANCHER_PRINCIPAL,
+                  sans_pronostic=sorted(sans, key=cle),
                   a_venir=sorted([allege(l) for l in carnet.values() if not l["fige"]], key=cle),
                   en_cours=sorted([allege(l) for l in carnet.values() if l["fige"] and l["resultat"] is None], key=cle),
                   reglees=sorted([allege(l) for l in carnet.values() if l["resultat"] is not None], key=cle, reverse=True)[:150])

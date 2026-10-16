@@ -7,8 +7,9 @@ from collections import defaultdict
 from .coeur import COTE_MIN, MIN_MATCHS
 from .marches import cote_cote
 
-PARAMETRES_VERSION = "2026-10-16"
+PARAMETRES_VERSION = "2026-10-16b"
 PRIOR_FORCE = 3.0                       # matchs fictifs qui ramènent une force d'équipe vers 1 (peu de matchs = peu de confiance)
+PLANCHER_PRINCIPAL = 0.50                # sous ce score, aucun pronostic principal : « aucun pronostic fiable » (ajouté le 16/10/2026b)
 SEUIL_AUTRES = 0.70                     # score modèle minimal pour figurer dans « autres »
 MAX_AUTRES = 5
 VETO_POINTS = -0.30                     # écart de points par match / 3 défavorable au côté parié (1X2, double chance) -> alerte
@@ -152,7 +153,7 @@ def _signature(pred, n=8):
     return tuple(bool(pred(h, a)) for h in range(n) for a in range(n))
 
 
-def proposer(cands, lam_force, lam_simple, seuil_autres=SEUIL_AUTRES, max_autres=MAX_AUTRES, cote_min=COTE_MIN):
+def proposer(cands, lam_force, lam_simple, seuil_autres=SEUIL_AUTRES, max_autres=MAX_AUTRES, cote_min=COTE_MIN, plancher=PLANCHER_PRINCIPAL):
     """PRONOSTIC PRINCIPAL (plus fort score du modèle ; la cote ne choisit pas) + rubrique AUTRES (pronostics aussi acceptables :
     score >= seuil_autres, cote >= cote_min, marché différent du principal et des autres déjà listés ; deux marchés qui gagnent
     exactement sur les mêmes scores sont fusionnés, ex. Handicap +0.5 domicile = Double chance 1X). None si une estimation manque."""
@@ -170,6 +171,8 @@ def proposer(cands, lam_force, lam_simple, seuil_autres=SEUIL_AUTRES, max_autres
         return None
     liste.sort(key=lambda d: (-round(d["p_modele"], 9), d["cote"]))
     principal = liste[0]
+    if principal["p_modele"] < plancher - 1e-9:        # même le meilleur pari est sous le plancher : on ne propose rien
+        return {"principal": None, "autres": [], "tous": liste, "meilleur_score": principal["p_modele"]}
     vus = {principal["sig"]}
     autres = []
     for d in liste[1:]:

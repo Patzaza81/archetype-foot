@@ -30,6 +30,10 @@ def proposer(m, forces, classements):
     r = M.proposer(cands, lf, ls)
     if r is None:
         return None
+    if r["principal"] is None:      # aucun pari ne atteint le plancher : le match est listé « sans pronostic fiable », jamais au carnet
+        return dict(match_id=m["id"], date=m["date"], coup_d_envoi_utc=m.get("kickoff"), competition=m["ligue"], domicile=m.get("dom"),
+                    exterieur=m.get("ext"), sans_pronostic=True, meilleur_score=round(r["meilleur_score"], 4), n_marches=len(r["tous"]),
+                    parametres_version=M.PARAMETRES_VERSION)
     ep = M.ecart_points(m["hd"], m["he"], m["date"])
     er = classements.ecart_rang(m["ligue"], m["date"], m["dom"], m["ext"])
     pr = r["principal"]

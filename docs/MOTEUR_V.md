@@ -23,6 +23,12 @@
 - **Alertes (information, jamais un filtre)** : musique instable / pic / rupture ; côté parié (1X2, double chance) très défavorisé aux points (écart de points par match / 3 <= −0,30) ou au classement (écart de rang normalisé <= −0,40).
 - **Classement** : reconstruit sans fuite depuis les historiques archivés (partiel : médiane 11 équipes connues par championnat). À remplacer par le vrai classement dès qu'il est archivé à chaque match. L'écart de points et l'écart de rang sont corrélés à 0,94 : ils portent la même information.
 
+## Plancher du pronostic principal (version 2026-10-16b)
+- `PLANCHER_PRINCIPAL = 0,50` (`modele.py`). Si même le meilleur pari du modèle a un score sous 50 %, **aucun pronostic principal** : le match n'entre pas au carnet, il est listé sur la page sous « Sans pronostic fiable » (`sans_pronostic` dans `pronostics_v.json`).
+- Origine : le 16/10/2026, Alashkert – Syunik affichait « Match nul ou Syunik » (cote 3,45) avec un score de 17 % : le moteur n'avait que 3 paris lisibles, tous très bas, et prenait le moins mauvais. Défaut de conception (aucun minimum), corrigé. Sur 261 pronostics du jour, 1 seul était concerné.
+- Un pronostic déjà écrit mais non figé qui passe sous le plancher est **retiré** du carnet ; l'ancienne version et le retrait restent dans `historique/versions/` (ligne `retire: true`).
+- Le plancher ne touche ni le test à l'aveugle (règles S et V), ni les zones de fiabilité.
+
 ## Carnet et statut
 - `data/v/carnet.json` : un pronostic par match, écrit **avant le coup d'envoi**, figé ensuite, score ajouté une seule fois. Principal et autres sont réglés séparément. **Sans coup d'envoi connu : jamais écrit** (garde contre les cotes prises en cours de jeu : 38 matchs de l'archive de test en avaient).
 - Sortie publiée : `data/v/pronostics_v.json`. Bilan par rôle (principal / autres) et par niveau : réglés, réussite, fiabilité annoncée, écart, IC95 Wilson, ROI.

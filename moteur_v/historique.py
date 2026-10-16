@@ -78,6 +78,14 @@ def ajoute_versions(dossier, carnet, maintenant):
     return n
 
 
+def ajoute_retraits(dossier, retraits, maintenant):
+    """Un pronostic déjà écrit puis retiré (devenu sous le plancher) : le fait est archivé, l'ancienne version reste dans versions/."""
+    recs = [dict(match_id=r["match_id"], signature="retire", vu_le=maintenant.isoformat(), retire=True, meilleur_score=r.get("meilleur_score"),
+                 date=r["date"], coup_d_envoi_utc=r["coup_d_envoi_utc"], competition=r["competition"], domicile=r["domicile"],
+                 exterieur=r["exterieur"], parametres_version=r.get("parametres_version")) for r in retraits]
+    return _ajoute(_dossier(dossier, "versions", _mois(maintenant.isoformat()) + ".jsonl"), recs) if recs else 0
+
+
 def ajoute_reglements(dossier, carnet):
     """Archive chaque match réglé une seule fois (jamais deux fois le même match_id)."""
     deja = {o["match_id"] for f in _fichiers(dossier, "reglements") for o in lit(f)}
@@ -101,8 +109,8 @@ def ajoute_bilan(dossier, bilan, maintenant, parametres_version):
     return _ajoute(chemin, [dict(le=maintenant.isoformat(), parametres_version=parametres_version, bilan=bilan)])
 
 
-def enregistre(dossier, carnet, bilan, maintenant, parametres_version):
-    return dict(versions=ajoute_versions(dossier, carnet, maintenant), reglements=ajoute_reglements(dossier, carnet),
+def enregistre(dossier, carnet, bilan, maintenant, parametres_version, retraits=()):
+    return dict(versions=ajoute_versions(dossier, carnet, maintenant) + ajoute_retraits(dossier, retraits, maintenant), reglements=ajoute_reglements(dossier, carnet),
                 bilans=ajoute_bilan(dossier, bilan, maintenant, parametres_version))
 
 
