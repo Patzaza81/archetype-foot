@@ -35,6 +35,15 @@ def enregistre(carnet, ligne, maintenant):
     return True
 
 
+def retire(carnet, match_id):
+    """Retire un pronostic encore modifiable (non figé, non réglé) devenu sans pronostic fiable. Retourne True si retiré."""
+    l = carnet.get(match_id)
+    if l is None or l["fige"] or l["resultat"] is not None:
+        return False
+    del carnet[match_id]
+    return True
+
+
 def fige(carnet, maintenant):
     for l in carnet.values():
         if not l["fige"] and not avant_coup_d_envoi(l, maintenant):

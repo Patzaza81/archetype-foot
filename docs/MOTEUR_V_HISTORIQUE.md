@@ -71,3 +71,6 @@ Règles du test à l'aveugle (gelées le 16/10/2026) : **S** (calibré >= 0,76 +
 
 ## 8. Historique durable (ajouté le 16/10/2026)
 Le carnet est écrasé chaque nuit ; l'historique `data/v/historique/` (versions, règlements complets, instantanés du bilan) n'est jamais réécrit. Détail dans `docs/MOTEUR_V.md`, section « Historique durable ». Les matchs réglés avant cette date n'ont pas le détail des marchés.
+
+## 9. Plancher du principal (16/10/2026b)
+Défaut découvert sur la page : un principal à 17 % (Alashkert – Syunik). Correction : plancher de 50 % (voir `docs/MOTEUR_V.md`). Version des paramètres : `2026-10-16b`. Les règles S et V du test à l'aveugle ne sont pas modifiées.

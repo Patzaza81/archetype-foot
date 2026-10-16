@@ -129,6 +129,17 @@ function mvListe(id, liste, mode, vide) {
   if (liste && liste.length) liste.forEach((l) => el.appendChild(mvCarte(l, mode)));
   else el.innerHTML = `<p class="mv-vide">${mvEchappe(vide)}</p>`;
 }
+function mvSans(liste, plancher) {
+  const el = document.getElementById("mv-sans"); if (!el) return;
+  if (!(liste && liste.length)) { el.innerHTML = `<p class="mv-vide">Aucun match écarté.</p>`; return; }
+  el.innerHTML = `<p class="mv-info" style="margin:0 14px 6px">Le meilleur pari du modèle reste sous ${mvPct0(plancher == null ? 0.5 : plancher)} : aucun pronostic n'est proposé.</p>` +
+    liste.map((l) => {
+      const h = mvHoraire(l.coup_d_envoi_utc, l.date);
+      return `<div class="mv-corps"><div class="mv-ligne"><span><b>${mvEchappe(l.domicile)}</b> – <b>${mvEchappe(l.exterieur)}</b></span>` +
+        `<span class="mv-info">${mvEchappe(h.date)} ${mvEchappe(h.heure)}</span></div>` +
+        `<div class="mv-info">${mvEchappe(String(l.competition || "").replace(/\s+/g, " ").trim())} · meilleur score du modèle ${mvPct0(l.meilleur_score)} · aucun pronostic fiable</div></div>`;
+    }).join("");
+}
 function mvTableauBilan(b) {
   if (!(((b.principal || {}).regles) > 0)) return `<p class="mv-info" style="margin:8px 14px">Aucun pronostic réglé pour l'instant : le tableau de fiabilité par niveau apparaîtra avec les premiers résultats.</p>`;
   const niveaux = ["SÛR", "MOYEN", "RISQUÉ", "NON CALIBRÉ"];
@@ -153,6 +164,7 @@ function mvAffiche(d) {
   const zones = Array.isArray(d.zones) ? d.zones.map((z) => `${mvCote(z.cote_min)}–${mvCote(z.cote_max)} : ${mvEchappe(z.niveau)} ${mvPct0(z.fiabilite)}`).join(" · ") : "";
   document.getElementById("mv-zones").innerHTML = zones ? `<p class="mv-info" style="margin:6px 14px">Fiabilité mesurée par zone de cote (440 matchs passés) — ${zones}. Au-dessus de 1,81 : non calibré, à éviter.</p>` : "";
   mvListe("mv-avenir", d.a_venir, "avenir", "Aucun pronostic à venir.");
+  mvSans(d.sans_pronostic, d.plancher_principal);
   mvListe("mv-encours", d.en_cours, "encours", "Aucun match en cours.");
   mvListe("mv-regles", d.reglees, "regle", "Aucun pronostic réglé pour l'instant.");
   const g = d.genere_le ? new Date(d.genere_le) : null;

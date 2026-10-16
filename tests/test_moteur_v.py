@@ -345,3 +345,52 @@ def test_historique_page_allegee_et_documente():
         assert "marches" in json.load(open(os.path.join(d, "carnet.json")))["m1"]
     doc = (RACINE / "docs" / "MOTEUR_V.md").read_text(encoding="utf-8")
     assert "data/v/historique" in doc and "bilans.jsonl" in doc
+
+
+# ---------------------------------------------------------------- plancher du pronostic principal (16/10/2026b)
+def _un_pari(lam):
+    return M.proposer([cand("Plus de 0.5 buts", 1.60, lambda h, a: h + a >= 1)], lam, lam)
+
+
+def test_plancher_cas_qui_passent_un_principal_est_propose():
+    assert _un_pari((1.5, 1.2))["principal"]["p_modele"] > 0.9                    # très probable
+    assert _un_pari((0.5, 0.4))["principal"] is not None                          # ~0.59 : au-dessus du plancher
+    r = M.proposer([cand("Plus de 0.5 buts", 1.60, lambda h, a: h + a >= 1)], (0.35, 0.35), (0.35, 0.35))   # 1-exp(-0.7)=0.503
+    assert r["principal"] is not None and r["principal"]["p_modele"] >= M.PLANCHER_PRINCIPAL
+
+
+def test_plancher_cas_qui_echouent_aucun_principal():
+    for lam in ((0.3, 0.3), (0.1, 0.1), (0.0, 0.0)):                              # 0.45, 0.18, 0.0
+        r = _un_pari(lam)
+        assert r["principal"] is None and r["autres"] == [] and r["meilleur_score"] < M.PLANCHER_PRINCIPAL
+    r = M.proposer([cand("Plus de 4.5 buts", 6.0, lambda h, a: h + a >= 5)], (1.5, 1.2), (1.5, 1.2))
+    assert r["principal"] is None                                                 # pari rare : score très bas
+
+
+def test_plancher_le_match_sans_pronostic_n_entre_pas_au_carnet_et_un_ancien_pronostic_est_retire():
+    entrees = [entree("A", "B", hist(), hist(), date="2026-10-10")]
+    with tempfile.TemporaryDirectory() as d:
+        t0 = datetime.datetime(2026, 10, 14, 10, 0, tzinfo=UTC)
+        m = match("m1", "2026-10-14", kickoff="2026-10-14T18:00:00Z")
+        X.execute([m], entrees, d, t0)
+        assert "m1" in json.load(open(os.path.join(d, "carnet.json")))
+        pauvre = dict(m, hd=hist(8, 0, 0), he=hist(8, 0, 0), cotes={"Plus de 1.5 buts": 1.30})        # plus aucun but : tout est sous le plancher
+        s = X.execute([pauvre], entrees, d, t0 + datetime.timedelta(hours=1))
+        assert "m1" not in json.load(open(os.path.join(d, "carnet.json")))                       # retiré (non figé)
+        assert [x["match_id"] for x in s["sans_pronostic"]] == ["m1"] and s["a_venir"] == []
+        v = [o for f in HI._fichiers(d, "versions") for o in HI.lit(f)]
+        assert any(o.get("retire") for o in v) and len(v) >= 2                                   # l'ancienne version et le retrait restent archivés
+        assert HI.verifie(d) == []
+
+
+def test_plancher_retire_ne_touche_pas_un_pronostic_fige_ou_regle():
+    c = {"a": {"fige": True, "resultat": None}, "b": {"fige": False, "resultat": "WIN"}, "c": {"fige": False, "resultat": None}}
+    assert K.retire(c, "a") is False and K.retire(c, "b") is False and K.retire(c, "inconnu") is False
+    assert K.retire(c, "c") is True and "c" not in c and "a" in c and "b" in c
+
+
+def test_plancher_documente_et_page():
+    doc = (RACINE / "docs" / "MOTEUR_V.md").read_text(encoding="utf-8")
+    assert "plancher" in doc.lower() and "PLANCHER_PRINCIPAL" in doc
+    assert 'id="mv-sans"' in (RACINE / "pronostics_v.html").read_text(encoding="utf-8")
+    assert "mv-sans" in (RACINE / "archetype_v.js").read_text(encoding="utf-8")
