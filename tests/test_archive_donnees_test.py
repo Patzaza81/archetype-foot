@@ -461,7 +461,7 @@ def test_archive_conserve_rangs_du_cache_matchendirect(tmp_path, monkeypatch):
     assert enreg["equipe_dom"]["rang"] == 2
     assert enreg["equipe_ext"]["rang"] == 1
     assert enreg["equipe_dom"]["classement_source"] == "Matchendirect"
-    assert enreg["equipe_dom"]["classement_competition"] == "Italie : Série C"
+    assert enreg["equipe_dom"]["classement_competition"] == "Italie : Série C Girone A"
 
 
 def test_archive_sans_assemblage_ecrit_quand_meme(tmp_path):
