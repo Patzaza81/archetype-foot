@@ -68,3 +68,6 @@ Règles du test à l'aveugle (gelées le 16/10/2026) : **S** (calibré >= 0,76 +
 - Intégrer la règle « Sûr » au moteur de production (elle n'existe que dans le script d'évaluation).
 - Seuils bruts 75/72/77 % d'origine : non appliqués en production (section 2).
 - **Données à corriger** : archiver le vrai classement à chaque match (le classement de v est reconstruit, partiel) ; horodater la prise de chaque cote et rejeter celles prises après le coup d'envoi.
+
+## 8. Historique durable (ajouté le 16/10/2026)
+Le carnet est écrasé chaque nuit ; l'historique `data/v/historique/` (versions, règlements complets, instantanés du bilan) n'est jamais réécrit. Détail dans `docs/MOTEUR_V.md`, section « Historique durable ». Les matchs réglés avant cette date n'ont pas le détail des marchés.

@@ -25,7 +25,9 @@ def proposer(m, forces, classements):
         return None
     # lambdas_simples attend les scores de chaque équipe de SON point de vue (marqués, encaissés) : lignes brutes, PAS orientées
     # (corrigé le 16/10/2026 : une version utilisait les lignes orientées et inversait marqués/encaissés de l'équipe extérieure).
-    r = M.proposer(cands, forces.lambdas(m["date"], m["dom"], m["ext"]), M.lambdas_simples(rd[-C.FENETRE:], re_[-C.FENETRE:]))
+    lf = forces.lambdas(m["date"], m["dom"], m["ext"])
+    ls = M.lambdas_simples(rd[-C.FENETRE:], re_[-C.FENETRE:])
+    r = M.proposer(cands, lf, ls)
     if r is None:
         return None
     ep = M.ecart_points(m["hd"], m["he"], m["date"])
@@ -36,4 +38,7 @@ def proposer(m, forces, classements):
                 exterieur=m.get("ext"), n_matchs_lieu=n_min, principal=_pari(pr), autres=[_pari(d) for d in r["autres"]],
                 contexte=dict(ecart_points=None if ep is None else round(ep, 3), ecart_rang=None if er is None else round(er, 3)),
                 alertes=alertes, parametres_version=M.PARAMETRES_VERSION,
+                lambdas=dict(force=[round(x, 4) for x in lf], simple=[round(x, 4) for x in ls]),
+                marches=[dict(m=d["marche"], c=d["cote"], pf=round(d["p_force"], 4), ps=round(d["p_simple"], 4), pm=round(d["p_modele"], 4),
+                              sh=round(d["sH"], 4), sa=round(d["sA"], 4), k=d["k"]) for d in r["tous"]],
                 forme=dict(domicile=forme(m["hd"]), exterieur=forme(m["he"])))
