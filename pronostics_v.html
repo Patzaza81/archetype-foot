@@ -36,7 +36,7 @@
 <div class="ax-conteneur">
   <div class="ax-entete">
     <h1>MOTEUR V</h1>
-    <p class="ax-bandeau">Moteur froid : scores historiques au même lieu, force des adversaires, écart de points et de rang — fiabilité mesurée, expérimental</p>
+    <p class="ax-bandeau">Moteur expérimental : il lit les derniers résultats de chaque équipe au même lieu, le niveau des adversaires et le classement, puis te dit combien de paris comme celui-ci passent vraiment</p>
   </div>
   <p id="maj" class="ax-maj" role="status" aria-live="polite">Chargement…</p>
   <section id="mv-statut"></section>
@@ -44,6 +44,7 @@
   <section id="mv-zones"></section>
   <main class="ax-liste-matchs mv-tout">
     <h2 class="mv-titre">Paris à venir</h2>
+    <div id="mv-filtres" class="mv-filtres" role="group" aria-label="Filtrer par verdict"></div>
     <div id="mv-avenir" class="ax-liste-matchs"></div>
     <h2 class="mv-titre">Sans pronostic fiable</h2>
     <div id="mv-sans" class="ax-liste-matchs"></div>
@@ -80,8 +81,27 @@
 .theme-nuit .mv-autres-titre{color:#4FD1C5}
 .mv-autres .mv-ligne{padding:3px 0}
 .mv-alerte{margin-top:6px;font-size:12px;padding:4px 8px;border-radius:8px;background:rgba(224,168,46,.18)}
-.mv-lieu{font-size:9px;opacity:.6;margin-left:2px;vertical-align:super}
-.mv-hist-titre{font-size:11px;font-weight:700;opacity:.75;margin-bottom:4px}
+.mv-lieu{font-size:10px;opacity:.65;margin-left:4px}
+.mv-hist-titre{font-size:12px;font-weight:700;opacity:.8;margin-bottom:4px}
+.mv-filtres{display:flex;flex-wrap:wrap;gap:6px;margin:0 14px 10px}
+.mv-filtre{font:inherit;font-size:12px;font-weight:700;padding:6px 10px;border-radius:999px;border:1px solid var(--ax-ligne);background:transparent;color:inherit;cursor:pointer}
+.mv-filtre.mv-actif{background:#087F78;border-color:#087F78;color:#fff}
+.mv-chance{margin-top:8px;font-size:13px}
+.mv-jauge{position:relative;height:8px;border-radius:99px;background:rgba(128,128,128,.25);margin:4px 0 8px;overflow:visible}
+.mv-jauge i{display:block;height:100%;border-radius:99px}
+.mv-jauge i.mv-sur{background:#3FA36A}.mv-jauge i.mv-sous{background:#D94F91}
+.mv-jauge b{position:absolute;top:-4px;width:3px;height:16px;background:currentColor;border-radius:2px;margin-left:-1px}
+.mv-pourquoi{margin-top:8px;font-size:12px;opacity:.9}.mv-pourquoi div{margin-top:3px}
+.mv-prudence{font-weight:700;color:#B86E00}
+.theme-nuit .mv-prudence{color:#F2B24C}
+.mv-sous-titre{display:block;font-size:11px;opacity:.7;font-weight:400}
+.mv-tech{margin-top:8px;font-size:12px}.mv-tech summary{cursor:pointer;font-weight:700;opacity:.75}
+.mv-forme-eq{margin:6px 0}
+.mv-puces{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:3px}
+.mv-puce{display:inline-flex;align-items:baseline;gap:2px;font-weight:700;font-size:14px}
+.mv-adv{display:none}
+.mv-lettre{display:inline-block;width:18px;height:18px;line-height:18px;text-align:center;border-radius:50%;font-size:11px;font-style:normal;font-weight:800;color:#fff;margin-right:2px}
+.mv-l-G{background:#2E7D32}.mv-l-N{background:#EF8A00}.mv-l-P{background:#C62828}
 </style>
 <script src="archetype_v.js?v=20261016a"></script>
 <script src="drapeaux.js"></script>
