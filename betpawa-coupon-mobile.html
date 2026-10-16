@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#087f78">
+<title>ARCHETYPE — Préparation coupon BetPawa</title>
+<style>
+:root{--teal:#087f78;--gold:#d7a62a;--ink:#17333a;--muted:#5f7277;--line:#dce6e6;--bg:#f3f8f8}
+*{box-sizing:border-box}body{margin:0 auto;padding:16px;max-width:760px;background:var(--bg);color:var(--ink);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+h1{font-size:clamp(24px,6vw,32px);line-height:1.15;margin:8px 0}h2{font-size:18px;margin:0 0 8px}
+.meta{color:var(--muted);font-size:13px}.card{background:white;border:1px solid var(--line);border-radius:15px;padding:15px;margin:12px 0}
+.notice{background:#fff8e8;border-left:4px solid var(--gold);padding:12px;border-radius:8px;font-size:13px}
+label{display:block;font-weight:750;margin:10px 0 5px}input,select{width:100%;min-height:46px;border:1px solid #b8caca;border-radius:10px;padding:10px;font-size:17px;background:white;color:var(--ink)}
+button,.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:11px 14px;border:0;border-radius:10px;background:var(--teal);color:white;font-weight:800;font-size:14px;text-decoration:none;cursor:pointer}
+button.secondary,.btn.secondary{background:#e9f0f0;color:var(--ink)}button:disabled{opacity:.45}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.leg{padding:12px 0;border-top:1px solid #e9eeee}.leg:first-child{border-top:0}.teams{font-weight:800}.market{font-weight:650}.odds{float:right;color:var(--teal);font-weight:850}
+.small{font-size:12px;color:var(--muted)}.hidden{display:none}.empty{padding:20px;text-align:center;color:var(--muted)}
+</style>
+</head>
+<body>
+<p class="meta">ARCHETYPE FOOT · OUTIL MOBILE</p>
+<h1>Préparer mon coupon BetPawa</h1>
+<p class="meta">Utilisable sur iPhone. Le générateur et les tickets sources ne sont jamais modifiés.</p>
+<div class="notice"><strong>Limite technique :</strong> cet outil organise le ticket et ouvre les événements BetPawa. Il ne peut pas ajouter lui-même les marchés au coupon depuis une page web externe, ni fabriquer un Booking Code BetPawa. Vous devez choisir chaque marché sur BetPawa, vérifier le coupon et confirmer vous-même.</div>
+<section class="card">
+<h2>1. Mise du ticket</h2>
+<label for="stake">Mise souhaitée (FCFA)</label>
+<input id="stake" type="number" min="1" step="1" inputmode="numeric" placeholder="Saisir le montant">
+<p class="small">La mise reste vide par défaut : aucun montant n'est supposé ou envoyé à BetPawa.</p>
+<label for="ticket">Ticket à préparer</label>
+<select id="ticket"><option value="">Chargement des tickets…</option></select>
+<div id="ticketSummary" class="meta"></div>
+<div class="actions"><button id="copy" type="button">Copier le récapitulatif</button><button id="openFirst" class="secondary" type="button">Ouvrir le 1er événement</button></div>
+<p id="feedback" class="small" role="status" aria-live="polite"></p>
+</section>
+<section class="card">
+<h2>2. Sélections du ticket</h2>
+<div id="legs" class="empty">Chargement…</div>
+</section>
+<section class="card">
+<h2>3. Contrôle avant confirmation</h2>
+<ul>
+<li>Le nombre de sélections correspond au ticket ARCHETYPE.</li>
+<li>Chaque équipe, marché et issue est exactement celui prévu.</li>
+<li>Les cotes actuelles correspondent ou vous avez accepté leur changement.</li>
+<li>La mise totale affichée est celle que vous avez saisie.</li>
+<li>Vous confirmez vous-même le pari sur BetPawa.</li>
+</ul>
+<div class="actions"><button id="checklist" class="secondary" type="button">Copier la liste de contrôle</button></div>
+</section>
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+let manifest=null, tickets=[];
+function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function fmt(v){const n=Number(v);return Number.isFinite(n)?n.toFixed(2):"—";}
+function selected(){return tickets.find(t=>t.ticket_id===$("ticket").value)||null;}
+function textFor(t){
+ const stake=$("stake").value.trim();
+ const out=["ARCHETYPE — RÉCAPITULATIF DU TICKET", "Ticket : "+(t.ticket_id||"—"),"Sélections : "+(t.selection_count||t.selection.length),"Cote totale indicative : "+fmt(t.total_odds_snapshot),"Mise (FCFA) : "+(stake||"NON RENSEIGNÉE"),"","À vérifier manuellement sur BetPawa :"];
+ (t.selection||[]).forEach((l,i)=>out.push((i+1)+". "+l.domicile+" — "+l.exterieur+" | "+l.marche+" | cote source "+fmt(l.cote)+" | "+(l.date||"")+" "+(l.heure||"")+" | "+(l.betpawa_url||"LIEN MANQUANT")));
+ return out.join("\n");
+}
+function render(){
+ const t=selected();const legs=$("legs");
+ if(!t){legs.className="empty";legs.textContent="Aucun ticket sélectionné."; $("ticketSummary").textContent="";return;}
+ const canPrepare=t.status==="READY_FOR_REVIEW";
+ $("ticketSummary").textContent=(t.selection_count||t.selection.length)+" sélection(s) · cote totale indicative "+fmt(t.total_odds_snapshot)+" · statut "+t.status+(canPrepare?"":" · BLOQUÉ : ne pas préparer ce ticket");
+ legs.className="";
+ legs.innerHTML=(t.selection||[]).map((l,i)=>{
+ const valid=/^https:\/\/(www\.)?betpawa\.cm\/event\/[A-Za-z0-9_-]+(?:\?.*)?$/.test(l.betpawa_url||"");
+ return '<div class="leg"><span class="odds">'+fmt(l.cote)+'</span><div class="teams">'+(i+1)+'. '+esc(l.domicile)+' — '+esc(l.exterieur)+'</div><div class="market">'+esc(l.marche||"Marché non précisé")+'</div><div class="small">'+esc(l.competition)+' · '+esc(l.date)+' '+esc(l.heure)+'</div><div class="actions">'+(valid?'<a class="btn secondary" href="'+esc(l.betpawa_url)+'" target="_blank" rel="noopener noreferrer">Ouvrir événement BetPawa</a>':'<span class="small">Lien BetPawa absent ou invalide : sélection bloquée</span>')+'<button type="button" class="secondary copyLeg" data-index="'+i+'">Copier cette sélection</button></div></div>';
+ }).join("");
+ if(!canPrepare){legs.querySelectorAll("a").forEach(a=>{a.removeAttribute("href");a.textContent="Ticket bloqué : lien désactivé";});}
+ legs.querySelectorAll(".copyLeg").forEach(b=>b.addEventListener("click",async()=>{
+ const l=t.selection[Number(b.dataset.index)];
+ const txt=l.domicile+" — "+l.exterieur+" | "+l.marche+" | cote source "+fmt(l.cote);
+ await copyText(txt);
+ }));
+ $("openFirst").disabled=!(canPrepare&&t.selection&&t.selection.length&&/^https:\/\/(www\.)?betpawa\.cm\/event\//.test(t.selection[0].betpawa_url||""));
+}
+async function copyText(s){
+ try{await navigator.clipboard.writeText(s);$("feedback").textContent="Copié. Vous pouvez coller le texte dans vos notes.";return true;}
+ catch(e){$("feedback").textContent="Copie automatique refusée par le navigateur. Sélectionnez et copiez le texte manuellement.";return false;}
+}
+async function load(){
+ try{
+ const r=await fetch("data/betpawa_validation.json",{cache:"no-store"});
+ if(!r.ok)throw new Error("Fichier de tickets indisponible ("+r.status+").");
+ manifest=await r.json();
+ tickets=Array.isArray(manifest.tickets)?manifest.tickets:[];
+ $("ticket").innerHTML="";
+ if(!tickets.length){$("ticket").add(new Option("Aucun ticket disponible",""));$("legs").className="empty";$("legs").textContent="Aucun ticket disponible. Générez d'abord les tickets ARCHETYPE.";return;}
+ tickets.forEach((t,i)=>$("ticket").add(new Option((i+1)+". "+t.ticket_id+" — "+t.status+" — "+(t.selection_count||0)+" sélection(s)",t.ticket_id)));
+ const ready=tickets.find(t=>t.status==="READY_FOR_REVIEW");
+ $("ticket").value=(ready||tickets[0]).ticket_id;render();
+ }catch(e){$("ticket").innerHTML='<option value="">Impossible de charger</option>';$("legs").className="empty";$("legs").textContent=e.message+" Vérifiez que la page est publiée et que le manifeste existe."; $("ticketSummary").textContent="";}
+}
+$("ticket").addEventListener("change",render);
+$("copy").addEventListener("click",async()=>{const t=selected();if(t&&t.status==="READY_FOR_REVIEW")await copyText(textFor(t));else $("feedback").textContent="Ticket bloqué : seules les sélections READY_FOR_REVIEW peuvent être préparées.";});
+$("openFirst").addEventListener("click",()=>{const t=selected();const url=t&&t.selection&&t.selection[0]&&t.selection[0].betpawa_url;if(url)window.open(url,"_blank","noopener,noreferrer");});
+$("checklist").addEventListener("click",async()=>copyText("CONTRÔLE AVANT PARI\n[ ] Équipes correctes\n[ ] Marchés et issues exacts\n[ ] Cotes vérifiées sur BetPawa\n[ ] Nombre de sélections correct\n[ ] Mise correcte\n[ ] Coupon relu intégralement\n[ ] Confirmation finale effectuée par moi-même"));
+load();
+})();
+</script>
+</body>
+</html>
