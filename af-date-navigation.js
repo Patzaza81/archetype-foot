@@ -74,7 +74,8 @@
     if (!select) return;
     const prior = select.value;
     const dates = Array.from(new Set(cards.map(cardDate).filter(Boolean))).sort();
-    select.innerHTML = '<option value="">Choisir une date…</option>' + dates.map(d => '<option value="'+d+'">'+readable(d)+'</option>').join("");
+    const markup = '<option value="">Choisir une date…</option>' + dates.map(d => '<option value="'+d+'">'+readable(d)+'</option>').join("");
+    if (select.innerHTML !== markup) select.innerHTML = markup;
     if (dates.includes(prior)) select.value = prior;
     else if (selectedDate && !dates.includes(selectedDate)) { selectedDate = ""; mode = "all"; }
   }
