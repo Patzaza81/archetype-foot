@@ -228,7 +228,7 @@ def test_page_v_branchee():
     for ident in ("mv-statut", "mv-bilan", "mv-zones", "mv-avenir", "mv-encours", "mv-regles"):
         assert f'id="{ident}"' in html and ident in js
     assert "archetype_v.js" in html and "data/v/pronostics_v.json" in js
-    assert "Autres pronostics acceptables" in js and "fiabilité mesurée" in js
+    assert "Autres paris possibles" in js and "réussite mesurée" in js
     assert "pronostics_v.html" in (RACINE / "index.html").read_text(encoding="utf-8")
 
 
@@ -396,29 +396,58 @@ def test_plancher_documente_et_page():
     assert "mv-sans" in (RACINE / "archetype_v.js").read_text(encoding="utf-8")
 
 
-# ---------------------------------------------------------------- affichage des derniers scores (corrigé le 16/10/2026)
-def _rend(lieu, bm, be):
-    import re
+# ---------------------------------------------------------------- présentation pour un parieur (16/10/2026)
+def _node(expr):
     import subprocess
     js = (RACINE / "archetype_v.js").read_text(encoding="utf-8")
-    a, b = js.index("function mvEchappe"), js.index("function mvContexte")
-    prog = js[a:b] + ("\nconst l={domicile:'A',exterieur:'B',forme:{domicile:[{lieu:%r,bm:%d,be:%d,date:'2026-10-01',adversaire:'X'}],exterieur:[]}};"
-                      "console.log(mvHistorique(l));" % (lieu, bm, be))
-    out = subprocess.run(["node", "-e", prog], capture_output=True, text=True, check=True).stdout
-    m = re.search(r'<span class="ax-res">(.*?)<small', out)
-    col = re.search(r'ax-but (ax-res-[vnd])[^>]*>(\d+)<', out)
-    txt = re.sub(r"<[^>]+>", "", m.group(1))
-    return txt, col.group(2), col.group(1)
+    prog = js[js.index("function mvEchappe"):js.index("function mvListe")] + "\nconsole.log(" + expr + ");"
+    return subprocess.run(["node", "-e", prog], capture_output=True, text=True, check=True).stdout
 
 
-def test_affichage_scores_cas_qui_passent():
-    assert _rend("D", 2, 0) == ("2-0", "2", "ax-res-v")          # gagné à domicile : son score à gauche
-    assert _rend("E", 5, 0) == ("0-5", "5", "ax-res-v")          # gagné à l'extérieur : le tableau affiche 0-5, son 5 en couleur
-    assert _rend("E", 1, 2) == ("2-1", "1", "ax-res-d")          # perdu à l'extérieur : 2-1 au tableau, son 1 en rouge
+def _puce(lieu, bm, be):
+    import re
+    out = _node("mvHistorique({domicile:'A',exterieur:'B',forme:{domicile:[{lieu:%r,bm:%d,be:%d,date:'2026-10-01',adversaire:'X'}],exterieur:[]}})" % (lieu, bm, be))
+    m = re.search(r'mv-l-([GNP])">[GNP]</i> (\d+-\d+)<small class="mv-lieu">(dom\.|ext\.)', out)
+    return m.groups()
 
 
-def test_affichage_scores_cas_qui_echouent_l_ancien_affichage_inverse():
-    assert _rend("E", 5, 0) != ("5-0", "0", "ax-res-v")          # ancien rendu : 5-0 avec le 0 (adversaire) en vert
-    assert _rend("E", 0, 4)[1] != "4"                            # le chiffre coloré n'est jamais celui de l'adversaire
-    assert _rend("D", 0, 1) != ("1-0", "1", "ax-res-v")          # une défaite n'est jamais affichée comme une victoire
-    assert _rend("E", 1, 1) == ("1-1", "1", "ax-res-n")          # nul : orange
+def test_forme_toujours_ecrite_du_point_de_vue_de_l_equipe_cas_qui_passent():
+    assert _puce("D", 2, 0) == ("G", "2-0", "dom.")
+    assert _puce("E", 5, 0) == ("G", "5-0", "ext.")       # gagné à l'extérieur : 5-0, plus d'inversion
+    assert _puce("E", 1, 2) == ("P", "1-2", "ext.")
+
+
+def test_forme_cas_qui_echouent_pas_d_inversion_ni_de_mauvaise_lettre():
+    assert _puce("E", 0, 4) != ("G", "4-0", "ext.") and _puce("E", 0, 4)[0] == "P"
+    assert _puce("D", 0, 1)[0] != "G"
+    assert _puce("E", 1, 1) == ("N", "1-1", "ext.")
+    assert _puce("D", 3, 3)[1] == "3-3"
+
+
+def test_chance_cas_qui_passent():
+    t = _node("mvChance({cote:1.68,p_honnete:0.543})")
+    assert "<b>54</b> passent" in t and "<b>60</b>" in t and "Sous le seuil" in t and "−90 F" in t.replace("\u2212", "−")
+    t2 = _node("mvChance({cote:1.30,p_honnete:0.85})")
+    assert "Au-dessus du seuil" in t2 and "mv-sur" in t2
+    assert "Pas de mesure de réussite" in _node("mvChance({cote:3.45,p_honnete:null})")
+
+
+def test_chance_cas_qui_echouent_jamais_de_promesse_de_gain():
+    for expr in ("mvChance({cote:1.30,p_honnete:0.748})", "mvChance({cote:1.68,p_honnete:0.543})", "mvChance({cote:3.45,p_honnete:null})"):
+        t = _node(expr).lower()
+        assert "rentable" not in t and "sûr de gagner" not in t and "garanti" not in t
+    assert "Au-dessus" not in _node("mvChance({cote:1.30,p_honnete:0.748})")        # 74,8 % < 77 % : sous le seuil
+    assert _node("mvChance({cote:1,p_honnete:0.9})").strip() == ""                    # cote invalide : rien d'affiché
+
+
+def test_alertes_en_clair():
+    assert "très défavorisé" in _node("mvAlerteTexte('côté parié très défavorisé aux points',{})")
+    assert "cassée" in _node("mvAlerteTexte('musique dom:rupture',{domicile:'Abha',exterieur:'Z'})") and "Abha" in _node("mvAlerteTexte('musique dom:rupture',{domicile:'Abha',exterieur:'Z'})")
+    assert "Z" in _node("mvAlerteTexte('musique ext:pic',{domicile:'Abha',exterieur:'Z'})")
+
+
+def test_page_allegee_donne_buts_attendus_et_lecture_du_pari():
+    with tempfile.TemporaryDirectory() as d:
+        _jeu(d)
+        l = json.load(open(os.path.join(d, "pronostics_v.json")))["a_venir"][0]
+        assert len(l["attendus"]) == 2 and all(x > 0 for x in l["attendus"]) and len(l["lecture"]) == 2 and "marches" not in l

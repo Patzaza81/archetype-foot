@@ -9,8 +9,21 @@ import os
 from . import carnet as K, historique as H, modele as M, pronostics as P
 from .donnees import charge
 
-AVERTISSEMENT = ("OBSERVATION : fiabilités mesurées sur 440 matchs passés (28/09 au 14/10), pas encore sur le carnet. "
-                 "Ne pas miser avant 100 paris principaux réglés ; les niveaux RISQUÉ et NON CALIBRÉ perdent à la cote.")
+AVERTISSEMENT = ("Les réussites annoncées viennent de 440 matchs passés (28/09 au 14/10) et ne sont pas encore confirmées par les paris de v. "
+                 "Attends au moins 100 paris réglés avant de miser. Les paris RISQUÉS et NON ÉVALUÉS perdent de l'argent sur la durée.")
+
+
+def _allege(l):
+    """Version pour la page : sans le détail de tous les marchés, mais avec deux repères lisibles par un parieur :
+    « attendus » = buts attendus (moyenne des deux estimations), « lecture » = fréquence du pari principal chez chaque équipe au lieu."""
+    d = {k: v for k, v in l.items() if k not in ("marches", "lambdas")}
+    lam = l.get("lambdas")
+    if lam:
+        d["attendus"] = [round((lam["force"][i] + lam["simple"][i]) / 2, 2) for i in (0, 1)]
+    mm = next((x for x in l.get("marches", []) if x["m"] == l["principal"]["marche"]), None)
+    if mm:
+        d["lecture"] = [mm["sh"], mm["sa"]]
+    return d
 
 
 def execute(matchs, entrees, dossier, maintenant):
@@ -35,7 +48,7 @@ def execute(matchs, entrees, dossier, maintenant):
     K.sauve(carnet, dossier)
     b = K.bilan(carnet)
     ajouts = H.enregistre(dossier, carnet, b, maintenant, M.PARAMETRES_VERSION, retraits)   # historique : on ajoute, on ne réécrit jamais
-    allege = lambda l: {k: v for k, v in l.items() if k not in ("marches", "lambdas")}   # la page n'a pas besoin du détail complet
+    allege = lambda l: _allege(l)
     cle = lambda l: (l["coup_d_envoi_utc"], l["match_id"])
     sortie = dict(genere_le=maintenant.isoformat(), statut=b["statut"],
                   avertissement=AVERTISSEMENT if b["statut"] != "controle_ok" else None,
