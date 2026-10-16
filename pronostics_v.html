@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FCEAF2">
+<title>Archetype Foot — Moteur V</title>
+<link rel="stylesheet" href="archetype.css?v=20261010v2idx">
+<link rel="stylesheet" href="af-barre.css">
+<link rel="stylesheet" href="af-pronostics.css">
+</head>
+<body class="ax-page af-fond af-v3">
+<script>try{if(localStorage.getItem("archetype_theme_nuit")==="1")document.body.classList.add("theme-nuit")}catch(e){}</script>
+<div class="af-barre">
+  <div class="af-barre-in">
+    <a class="af-logo" href="index.html" aria-label="Archetype Foot, accueil"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M4 36 18 4h6l12 32h-7l-3-8H14l-3 8z" fill="#087F78"/><path d="M16 22h8l-4-11z" fill="#F7F1E7"/><path d="M27 4h9L22 30l-3-6z" fill="#C49A3A"/></svg><span><b>ARCHETYPE</b><i>FOOT</i></span></a>
+    <nav class="af-nav" aria-label="Navigation principale">
+      <a href="index.html">Accueil</a>
+      <a href="pronostics_v3.html">Moteur V3</a>
+      <a href="pronostics_europe.html">Europe</a>
+      <a href="pronostics_v2r.html">V2R</a>
+      <a href="pronostics_v.html" aria-current="page">V</a>
+      <a href="archetype.html">Moteur V2</a>
+      <a href="tickets.html">Tickets</a>
+      <a href="journal.html">Journal</a>
+      <a href="corners_cartons.html">Corners &amp; cartons</a>
+      <a href="systeme.html">Système</a>
+    </nav>
+    <div class="af-actions">
+      <button id="ax-bouton-theme" class="af-bouton-icone" type="button" aria-label="Activer le mode nuit">☾</button>
+      <a class="af-compte" href="compte.html" aria-label="Mon compte"><span aria-hidden="true">👤</span><span>Mon compte</span></a>
+    </div>
+  </div>
+</div>
+<div class="ax-conteneur">
+  <div class="ax-entete">
+    <h1>MOTEUR V</h1>
+    <p class="ax-bandeau">Moteur froid : scores historiques au même lieu, force des adversaires, écart de points et de rang — fiabilité mesurée, expérimental</p>
+  </div>
+  <p id="maj" class="ax-maj" role="status" aria-live="polite">Chargement…</p>
+  <section id="mv-statut"></section>
+  <section id="mv-bilan"></section>
+  <section id="mv-zones"></section>
+  <main class="ax-liste-matchs mv-tout">
+    <h2 class="mv-titre">Paris à venir</h2>
+    <div id="mv-avenir" class="ax-liste-matchs"></div>
+    <h2 class="mv-titre">En cours</h2>
+    <div id="mv-encours" class="ax-liste-matchs"></div>
+    <h2 class="mv-titre">Paris réglés</h2>
+    <div id="mv-regles" class="ax-liste-matchs"></div>
+  </main>
+</div>
+<style>
+.mv-titre{font-size:15px;margin:22px 4px 8px;opacity:.85}
+.mv-statut{margin:10px 14px;padding:10px 12px;border-radius:12px;font-size:13px;font-weight:700;border:1px solid var(--ax-ligne)}
+.mv-statut.observation{background:rgba(224,168,46,.15)}
+.mv-statut.controle_ok{background:rgba(63,163,106,.18)}
+.mv-statut.gel{background:rgba(217,79,145,.2)}
+.mv-statut small{display:block;font-weight:400;margin-top:4px;opacity:.85}
+.mv-table{width:calc(100% - 28px);margin:8px 14px;border-collapse:collapse;font-size:12px}
+.mv-table th,.mv-table td{border:1px solid var(--ax-ligne);padding:5px 6px;text-align:center}
+.mv-table th{font-size:11px;opacity:.8}
+.mv-tout{display:block}
+.mv-corps{padding:6px 14px 12px}
+.mv-score{font-size:13px;margin-bottom:4px}
+.mv-ligne{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px}
+.mv-principal{padding:6px 0;font-size:15px;font-weight:700}
+.mv-cote{font-weight:800;white-space:nowrap}
+.mv-info{font-size:12px;opacity:.8;margin-top:4px}
+.mv-vide{margin:6px 18px;font-size:13px;opacity:.7}
+.mv-niv{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.03em;white-space:nowrap}
+.mv-niv-SUR{background:rgba(63,163,106,.28)}.mv-niv-MOYEN{background:rgba(224,168,46,.3)}.mv-niv-RISQUE{background:rgba(217,79,145,.25)}.mv-niv-NC{background:rgba(160,160,160,.3)}
+.mv-badge{padding:2px 8px;border-radius:999px;font-size:12px;font-weight:800}
+.mv-WIN{background:rgba(63,163,106,.25)}.mv-LOSS{background:rgba(217,79,145,.22)}
+.mv-autres{margin-top:10px;padding:8px 10px;border-radius:10px;border:1px solid rgba(8,127,120,.45);border-left:5px solid #087F78;background:rgba(8,127,120,.12)}
+.mv-autres-titre{font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#087F78;margin-bottom:4px}
+.theme-nuit .mv-autres-titre{color:#4FD1C5}
+.mv-autres .mv-ligne{padding:3px 0}
+.mv-alerte{margin-top:6px;font-size:12px;padding:4px 8px;border-radius:8px;background:rgba(224,168,46,.18)}
+.mv-lieu{font-size:9px;opacity:.6;margin-left:2px;vertical-align:super}
+.mv-hist-titre{font-size:11px;font-weight:700;opacity:.75;margin-bottom:4px}
+</style>
+<script src="archetype_v.js?v=20261016a"></script>
+<script src="drapeaux.js"></script>
+<script src="af-drapeaux-cartes.js"></script>
+</body>
+</html>
