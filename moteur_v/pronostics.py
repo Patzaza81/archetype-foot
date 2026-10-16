@@ -23,8 +23,9 @@ def proposer(m, forces, classements):
     n_min, cands = C.analyse(rd, re_, m["cotes"])
     if not cands:
         return None
-    rh, ra = C.orienter(rd[-C.FENETRE:], re_[-C.FENETRE:])
-    r = M.proposer(cands, forces.lambdas(m["date"], m["dom"], m["ext"]), M.lambdas_simples(rh, ra))
+    # lambdas_simples attend les scores de chaque équipe de SON point de vue (marqués, encaissés) : lignes brutes, PAS orientées
+    # (corrigé le 16/10/2026 : une version utilisait les lignes orientées et inversait marqués/encaissés de l'équipe extérieure).
+    r = M.proposer(cands, forces.lambdas(m["date"], m["dom"], m["ext"]), M.lambdas_simples(rd[-C.FENETRE:], re_[-C.FENETRE:]))
     if r is None:
         return None
     ep = M.ecart_points(m["hd"], m["he"], m["date"])

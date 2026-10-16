@@ -80,6 +80,29 @@ def test_proba_marche():
     assert abs(s - 1) < 1e-6
 
 
+def test_lambdas_simples_point_de_vue_de_chaque_equipe():
+    assert M.lambdas_simples([(3, 0)] * 6, [(0, 2)] * 6) == (2.5, 0.05)        # dom marque 3 / encaisse 0 ; ext marque 0 / encaisse 2
+    assert M.lambdas_simples([(1, 1)] * 6, [(2, 0)] * 6) == (0.5, 1.5)         # ext marque 2 / encaisse 0 : λdom=(1+0)/2, λext=(2+1)/2
+    assert M.lambdas_simples([(0, 0)] * 4, [(0, 0)] * 4) == (0.05, 0.05)       # plancher
+
+
+def test_pronostics_utilise_les_lignes_brutes_pour_le_calcul_simple():
+    # Garde-fou de la régression du 16/10/2026 : l'équipe extérieure marque beaucoup et encaisse peu -> λext élevé, pas inversé.
+    cap = {}
+    orig = M.lambdas_simples
+    M.lambdas_simples = lambda rh, ra: cap.setdefault("lam", orig(rh, ra))
+    try:
+        m = dict(id="z", date="2026-10-14", ligue="L1", h=None, a=None, cotes={"Plus de 1.5 buts": 1.3}, dom="A", ext="B",
+                 kickoff="2026-10-14T18:00:00Z", hd=[hm(f"2026-09-{1 + i:02d}", i % 2 == 0, 1, 1) for i in range(8)],
+                 he=[hm(f"2026-09-{1 + i:02d}", i % 2 == 0, 3, 0) for i in range(8)])
+        entrees = [entree("A", "B", m["hd"], m["he"], date="2026-10-10")]
+        P.proposer(m, M.Forces(entrees), M.Classements(entrees))
+    finally:
+        M.lambdas_simples = orig
+    ld, le = cap["lam"]
+    assert abs(ld - 0.5) < 1e-9 and abs(le - 2.0) < 1e-9                          # λdom=(1+0)/2, λext=(3+1)/2 : pas (1.5, 1.0)
+
+
 # ---------------------------------------------------------------- fiabilité par zone
 def test_zones():
     assert M.zone_fiabilite(1.30) == (0.748, "SÛR") and M.zone_fiabilite(1.40)[1] == "MOYEN" and M.zone_fiabilite(1.81)[1] == "RISQUÉ"
@@ -221,3 +244,16 @@ def test_independance_v_ne_depend_d_aucun_autre_moteur():
         t = f.read_text(encoding="utf-8")
         for interdit in ("moteur_v2r", "moteur_v3", "moteur_europe", "moteur_v2_6", "journal_rentabilite"):
             assert interdit not in t, f"{f.name} dépend de {interdit}"
+
+
+def test_historique_documente_et_reference():
+    h = (RACINE / "docs" / "MOTEUR_V_HISTORIQUE.md").read_text(encoding="utf-8")
+    for titre in ("Cahier des charges", "Tests subis et résultats", "Erreurs découvertes", "Valeurs de référence", "Comment suivre v", "Décisions ouvertes"):
+        assert titre in h, titre
+    assert "CLAUDE.md" not in h and "docs/MOTEUR_V.md" in h
+    assert "MOTEUR_V_HISTORIQUE.md" in (RACINE / "CLAUDE.md").read_text(encoding="utf-8")
+    assert "MOTEUR_V_HISTORIQUE.md" in (RACINE / "docs" / "MOTEUR_V.md").read_text(encoding="utf-8")
+    for f in ("jeu_reglage_ids.json", "test_aveugle.py", "rejoue_niveaux.py"):
+        assert (RACINE / "evaluation" / "moteur_v" / f).exists(), f
+    ids = json.load(open(RACINE / "evaluation" / "moteur_v" / "jeu_reglage_ids.json"))
+    assert len(ids) == 440 and len(set(ids)) == 440                      # jeu de réglage figé : 440 matchs distincts

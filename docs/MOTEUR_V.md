@@ -1,5 +1,7 @@
 # Moteur v
 
+> Conception, tests subis, résultats et suivi : voir `docs/MOTEUR_V_HISTORIQUE.md` (à lire avant toute modification).
+
 - **Code** : `moteur_v/` (stdlib seulement). **Page** : `pronostics_v.html` + `archetype_v.js` (menu « V »). **Données** : `data/v/`.
 - **Autonome** : lit seulement `data/archive_test/` (cotes BetPawa, historiques, scores) ; écrit seulement `data/v/`. Ne dépend d'aucun autre moteur (test `test_independance_v_ne_depend_d_aucun_autre_moteur`).
 - **Exécution** : chaque nuit, à la fin de `enregistre_scores_historique.py` (`moteur_v.execution.passage_nocturne`, dans un `try` : jamais bloquant, après v2r). À la main : `python -m moteur_v.execution`.
