@@ -483,7 +483,7 @@ def _comp_cle(c):
     # Canonise aussi les espaces autour du séparateur pays/compétition :
     # Matchendirect peut écrire « Italie : Série C » ou « Italie: Série C ».
     texte = " ".join(str(c or "").split()).lower()
-    return re.sub(r"\\s*:\\s*", ": ", texte).strip()
+    return re.sub(r"\s*:\s*", ": ", texte).strip()
 
 
 def index_cache_saison(cache):
