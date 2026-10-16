@@ -48,22 +48,27 @@ function mvNiveau(n) { return mvVerdict(n); }
 function mvBadge(p) {
   return p && p.resultat ? `<span class="mv-badge mv-${mvEchappe(p.resultat)}">${p.resultat === "WIN" ? "GAGNÉ" : "PERDU"}</span>` : "";
 }
-const MV_VERDICT = { "SÛR": ["SOLIDE", "SUR"], "MOYEN": ["MOYEN", "MOYEN"], "RISQUÉ": ["RISQUÉ", "RISQUE"] };
+// Le mot décrit la CHANCE que le pari passe, jamais sa rentabilité (un pari très probable peut être mal payé : voir mvChance).
+const MV_VERDICT = { "SÛR": ["TRÈS PROBABLE", "SUR"], "MOYEN": ["PROBABLE", "MOYEN"], "RISQUÉ": ["INCERTAIN", "RISQUE"] };
 function mvVerdict(n) { const v = MV_VERDICT[n] || ["NON ÉVALUÉ", "NC"]; return `<span class="mv-niv mv-niv-${v[1]}">${v[0]}</span>`; }
 function mvFr(x, d) { const n = Number(x); return Number.isFinite(n) ? n.toFixed(d == null ? 1 : d).replace(".", ",") : "—"; }
 function mvFcfa(x) { return `${x >= 0 ? "+" : "−"}${Math.abs(x).toLocaleString("fr-FR")} F`; }
-// Bloc « chances » : ce que le parieur veut savoir — combien de paris passent, et combien il en faut pour ne pas perdre.
+// Bloc « chances » : deux questions séparées, deux réponses séparées — (1) est-ce que ça passe souvent ? (2) est-ce que la cote paie assez ?
 function mvChance(p) {
   const cote = Number(p.cote); if (!Number.isFinite(cote) || cote <= 1) return "";
   const seuil = Math.round(100 / cote);
   if (p.p_honnete == null) {
-    return `<div class="mv-chance"><b>Pas de mesure de réussite à cette cote</b> (cote trop haute) : on ne sait pas si ce pari est bon. Il faudrait en gagner ${seuil} sur 100 pour ne pas perdre.</div>`;
+    return `<div class="mv-chance"><div class="mv-rente mv-rente-inconnu">Aucune mesure de réussite à cette cote (trop haute) : impossible de juger ce pari. Il faudrait en gagner ${seuil} sur 100 pour ne pas perdre.</div></div>`;
   }
   const r = Math.round(p.p_honnete * 100), sous = r < seuil;
   const gain = Math.round(((p.p_honnete * cote - 1) * 1000) / 10) * 10;
-  return `<div class="mv-chance"><div class="mv-jauge" aria-hidden="true"><i class="${sous ? "mv-sous" : "mv-sur"}" style="width:${r}%"></i><b style="left:${seuil}%"></b></div>` +
-    `<div>Sur 100 paris comme celui-ci, environ <b>${r}</b> passent. Pour ne pas perdre, il en faut <b>${seuil}</b>.</div>` +
-    `<div class="mv-info">${sous ? "Sous le seuil" : "Au-dessus du seuil"} : en moyenne <b>${mvFcfa(gain)}</b> pour 1 000 F misés (estimation).</div></div>`;
+  const verdict = sous
+    ? `⚠ Passe souvent, mais la cote est trop basse : il en faudrait ${seuil} sur 100 pour ne pas perdre. En moyenne <b>${mvFcfa(gain)}</b> pour 1 000 F misés (estimation).`
+    : `✔ Passe souvent et la cote paie assez : en moyenne <b>${mvFcfa(gain)}</b> pour 1 000 F misés (estimation, à confirmer).`;
+  return `<div class="mv-chance"><div>Sur 100 paris comme celui-ci, environ <b>${r}</b> passent.</div>` +
+    `<div class="mv-jauge" aria-hidden="true"><i style="width:${r}%"></i><b style="left:${seuil}%"></b></div>` +
+    `<div class="mv-legende">Barre = réussite mesurée · trait noir = seuil pour ne pas perdre (${seuil})</div>` +
+    `<div class="mv-rente ${sous ? "mv-rente-non" : "mv-rente-oui"}">${verdict}</div></div>`;
 }
 function mvAlerteTexte(a, l) {
   let r;
@@ -190,8 +195,8 @@ function mvTableauBilan(b) {
     ligne("principal", "Principal") + ligne("autres", "Autres") + `</table>`;
 }
 let mvDonnees = null, mvFiltre = "tous";
-const MV_FILTRES = [["tous", "Tous", () => true], ["solide", "Solides", (l) => (l.principal || {}).niveau === "SÛR"],
-  ["moyen", "Moyens", (l) => (l.principal || {}).niveau === "MOYEN"], ["risque", "Risqués / non évalués", (l) => !["SÛR", "MOYEN"].includes((l.principal || {}).niveau)]];
+const MV_FILTRES = [["tous", "Tous", () => true], ["solide", "Très probables", (l) => (l.principal || {}).niveau === "SÛR"],
+  ["moyen", "Probables", (l) => (l.principal || {}).niveau === "MOYEN"], ["risque", "Incertains / non évalués", (l) => !["SÛR", "MOYEN"].includes((l.principal || {}).niveau)]];
 function mvRendAvenir() {
   const f = MV_FILTRES.find((x) => x[0] === mvFiltre) || MV_FILTRES[0];
   mvListe("mv-avenir", ((mvDonnees || {}).a_venir || []).filter(f[2]), "avenir", "Aucun pari dans cette catégorie.");
