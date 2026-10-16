@@ -165,6 +165,15 @@ def main():
     except Exception as e:
         print(f"[v2r] AVERTISSEMENT : échec ({type(e).__name__}: {e}) -- scores de l'historique non concernés.",
               file=sys.stderr)
+    # AJOUT 16/10/2026 -- moteur v (moteur_v/, écrit seulement data/v/, affiché par pronostics_v.html) : fige et règle son carnet
+    # puis écrit principal + « autres » des matchs à venir, avant le coup d'envoi. Isolé dans un try : un échec de v ne fait
+    # jamais échouer l'enregistrement des scores ni v2r. Autonome : lit seulement data/archive_test.
+    try:
+        from moteur_v.execution import passage_nocturne as passage_nocturne_v
+        print(f"[v] {passage_nocturne_v()}")
+    except Exception as e:
+        print(f"[v] AVERTISSEMENT : échec ({type(e).__name__}: {e}) -- scores de l'historique non concernés.",
+              file=sys.stderr)
     # Le moteur V3 est exécuté par une étape dédiée du workflow : aucune dépendance
     # silencieuse entre l'enregistrement des scores et la production V3.
     return 0

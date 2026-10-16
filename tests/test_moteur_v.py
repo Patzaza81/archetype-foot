@@ -1,0 +1,223 @@
+"""Tests du moteur v : marchés, verrou d'échantillon, forces, choix principal + autres, fiabilité par zone, carnet, exécution, page."""
+import datetime
+import json
+import os
+import pathlib
+import sys
+import tempfile
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from moteur_v import carnet as K, coeur as C, execution as X, marches as MK, modele as M, pronostics as P  # noqa: E402
+
+UTC = datetime.timezone.utc
+RACINE = pathlib.Path(__file__).parent.parent
+
+
+def hm(date, dom, bm, be, adv="X"):
+    return dict(date=date, domicile=dom, buts_marques=bm, buts_encaisses=be, adversaire=adv)
+
+
+# ---------------------------------------------------------------- marchés : 3 qui passent / 3 qui échouent
+def test_marches_cas_qui_passent():
+    assert MK.gagne("1X2 - 1", 2, 1) is True and MK.gagne("1X2 - X", 1, 1) is True and MK.gagne("1X2 - 2", 0, 3) is True
+    assert MK.gagne("Plus de 2.5 buts", 2, 1) is True and MK.gagne("Moins de 3.5 buts", 1, 1) is True
+    assert MK.gagne("Handicap -1.5 - Extérieur", 1, 0) is True            # l'extérieur reçoit +1,5 : 0+1,5 > 1
+    assert MK.gagne("BTTS - non", 2, 0) is True and MK.gagne("Cage inviolée - Domicile", 1, 0) is True
+
+
+def test_marches_cas_qui_echouent():
+    assert MK.gagne("1X2 - 1", 1, 1) is False and MK.gagne("Plus de 2.5 buts", 1, 1) is False
+    assert MK.gagne("Handicap -1.5 - Domicile", 2, 1) is False            # il faut gagner d'au moins 2 buts
+    assert MK.gagne("Handicap -1.5 - Extérieur", 3, 0) is False
+    assert MK.gagne("BTTS - oui", 2, 0) is False
+    assert MK.gagne("Total buts - pair", 1, 1) is None                      # non lu
+    assert MK.market_def("Handicap 2.5 - Domicile") is None                 # handicap extrême exclu
+
+
+def test_cote_cote():
+    assert MK.cote_cote("1X2 - 1") == 1 and MK.cote_cote("Double chance - X2") == -1 and MK.cote_cote("Plus de 2.5 buts") == 0
+
+
+# ---------------------------------------------------------------- verrou d'échantillon (règle de Patrick, inchangeable)
+def test_coef_k_et_exclusion():
+    assert C.coef_k(3) is None and C.coef_k(4) == 0.8 and C.coef_k(5) == 0.9 and C.coef_k(6) == 1.0 and C.coef_k(12) == 1.0
+
+
+def test_match_exclu_si_une_equipe_a_moins_de_4_matchs_au_lieu():
+    six = [(2, 1)] * 6
+    n, c = C.analyse(six, [(1, 1)] * 3, {"BTTS - oui": 1.9})
+    assert n == 3 and c is None                                             # une équipe à 3 : match exclu
+    n, c = C.analyse(six, [(1, 1)] * 4, {"BTTS - oui": 1.9})
+    assert n == 4 and c[0]["k"] == 0.8 and abs(c[0]["final_moy"] - 0.8) < 1e-9
+    assert C.analyse(six, six, {"BTTS - oui": 1.2}) == (6, [])               # cote < 1,26 écartée
+
+
+def test_lignes_sans_fuite_du_futur():
+    hist = [hm("2026-09-01", True, 2, 0), hm("2026-09-10", True, 3, 1), hm("2026-09-20", True, 0, 0), hm("2026-09-15", False, 1, 1)]
+    assert C.lignes(hist, True, "2026-09-20") == [(2, 0), (3, 1)]            # le match du jour et le futur exclus, lieu respecté
+    assert C.lignes(hist, False, "2026-09-20") == [(1, 1)]
+    assert C.lignes(hist, True, "2026-09-01") == []
+
+
+# ---------------------------------------------------------------- forces : pas de fuite, bon sens
+def entree(nom_d, nom_e, matchs_d, matchs_e, date="2026-09-05", comp="L1"):
+    return dict(date=date, competition=comp, domicile=nom_d, exterieur=nom_e,
+                equipe_dom=dict(nom=nom_d, matchs=matchs_d), equipe_ext=dict(nom=nom_e, matchs=matchs_e))
+
+
+def test_forces_sans_fuite_et_sens():
+    e = entree("A", "B", [hm("2026-08-01", True, 3, 0, "B")], [])
+    f = M.Forces([e])
+    assert f.lambdas("2026-08-01", "A", "B") is None                         # aucun match connu avant le 01/08 (le match du jour exclu)
+    ld, le = f.lambdas("2026-08-02", "A", "B")
+    assert ld > le                                                           # A a battu B 3-0 : A plus fort
+    assert f.lambdas("2026-08-02", "Z", "A") is None                         # équipe inconnue
+
+
+def test_proba_marche():
+    assert abs(M.proba_marche(lambda h, a: h + a >= 1, 1.5, 1.0) - (1 - 2.718281828 ** -2.5)) < 1e-6
+    s = sum(M.proba_marche(f, 1.4, 1.1) for f in (lambda h, a: h > a, lambda h, a: h == a, lambda h, a: h < a))
+    assert abs(s - 1) < 1e-6
+
+
+# ---------------------------------------------------------------- fiabilité par zone
+def test_zones():
+    assert M.zone_fiabilite(1.30) == (0.748, "SÛR") and M.zone_fiabilite(1.40)[1] == "MOYEN" and M.zone_fiabilite(1.81)[1] == "RISQUÉ"
+    assert M.zone_fiabilite(2.20) == (None, "NON CALIBRÉ") and M.zone_fiabilite(1.20) == (None, "NON CALIBRÉ")
+    assert M.zone_fiabilite(1.3)[0] > M.zone_fiabilite(1.4)[0] > M.zone_fiabilite(1.6)[0]
+
+
+# ---------------------------------------------------------------- principal + autres
+def cand(m, cote, f):
+    return {"marche": m, "cote": cote, "pred": f}
+
+
+CS = [cand("Plus de 0.5 buts", 1.30, lambda h, a: h + a >= 1), cand("Plus de 1.5 buts", 1.50, lambda h, a: h + a >= 2),
+      cand("Moins de 4.5 buts", 1.28, lambda h, a: h + a <= 4), cand("Moins de 4.5 buts copie", 1.35, lambda h, a: h + a <= 4),
+      cand("Plus de 5.5 buts", 6.0, lambda h, a: h + a >= 6), cand("Cote trop basse", 1.10, lambda h, a: True)]
+
+
+def test_proposer_cas_qui_passent():
+    r = M.proposer(CS, (1.5, 1.2), (1.5, 1.2))
+    assert r["principal"]["marche"] == "Plus de 0.5 buts"                    # le plus probable, même à cote basse
+    assert sum("4.5" in d["marche"] for d in [r["principal"]] + r["autres"]) == 1   # doublon fusionné
+    assert all(d["sig"] != r["principal"]["sig"] for d in r["autres"])
+    p = [d["p_modele"] for d in r["autres"]]
+    assert p == sorted(p, reverse=True)
+    r2 = M.proposer([cand("Plus de 0.5 buts", 1.60, lambda h, a: h + a >= 1), cand("Moins de 4.5 buts", 1.30, lambda h, a: h + a >= 5)], (1.5, 1.2), (1.5, 1.2))
+    assert r2["principal"]["cote"] == 1.60 and r2["principal"]["niveau"] == "RISQUÉ"   # la cote n'impose pas le choix
+
+
+def test_proposer_cas_qui_echouent():
+    r = M.proposer(CS, (1.5, 1.2), (1.5, 1.2))
+    assert all(d["p_modele"] >= 0.70 for d in r["autres"]) and all(d["marche"] != "Plus de 5.5 buts" for d in r["autres"])
+    assert all(d["marche"] != "Cote trop basse" for d in [r["principal"]] + r["autres"])
+    assert len(M.proposer(CS, (1.5, 1.2), (1.5, 1.2), seuil_autres=0.0, max_autres=1)["autres"]) <= 1
+    assert M.proposer(CS, None, (1.5, 1.2)) is None and M.proposer(CS, (1.5, 1.2), None) is None
+    assert M.proposer([cand("x", 1.10, lambda h, a: True)], (1.5, 1.2), (1.5, 1.2)) is None
+
+
+def test_alertes_contexte():
+    assert M.alerte_contexte("1X2 - 1", -0.5, None) and M.alerte_contexte("1X2 - 2", 0.5, None) and M.alerte_contexte("Double chance - 1X", None, -0.4)
+    assert not M.alerte_contexte("1X2 - 1", 0.4, 0.4) and not M.alerte_contexte("Plus de 2.5 buts", -0.9, -0.9) and not M.alerte_contexte("1X2 - 1", None, None)
+
+
+# ---------------------------------------------------------------- carnet
+def ligne(mid, ko, principal="Plus de 1.5 buts", autres=("Moins de 4.5 buts",)):
+    pari = lambda m, c=1.5: dict(marche=m, cote=c, p_modele=.8, p_honnete=.748, niveau="SÛR", resultat=None, profit=None)
+    return dict(match_id=mid, coup_d_envoi_utc=ko, principal=pari(principal), autres=[pari(a) for a in autres])
+
+
+def test_carnet_ecrit_avant_ko_fige_et_regle_une_fois():
+    t0 = datetime.datetime(2026, 10, 14, 10, 0, tzinfo=UTC)
+    c = {}
+    assert K.enregistre(c, ligne("a", "2026-10-14T18:00:00Z"), t0)
+    assert not K.enregistre(c, ligne("b", "2026-10-14T09:00:00Z"), t0)        # coup d'envoi déjà passé : refusé
+    assert not K.enregistre(c, ligne("c", None), t0)                           # coup d'envoi inconnu : refusé
+    t1 = datetime.datetime(2026, 10, 14, 19, 0, tzinfo=UTC)
+    K.fige(c, t1)
+    assert c["a"]["fige"] and not K.enregistre(c, ligne("a", "2026-10-14T18:00:00Z", "BTTS - oui"), t1)   # figé : jamais réécrit
+    assert K.regle(c, {"a": (2, 1)}) == 1
+    assert c["a"]["principal"]["resultat"] == "WIN" and c["a"]["autres"][0]["resultat"] == "WIN" and c["a"]["profit"] == 0.5
+    assert K.regle(c, {"a": (0, 0)}) == 0 and c["a"]["principal"]["resultat"] == "WIN"                   # réglé une seule fois
+
+
+def test_carnet_ne_regle_pas_une_ligne_non_figee():
+    t0 = datetime.datetime(2026, 10, 14, 10, 0, tzinfo=UTC)
+    c = {}
+    K.enregistre(c, ligne("a", "2026-10-14T18:00:00Z"), t0)
+    assert K.regle(c, {"a": (2, 1)}) == 0 and c["a"]["resultat"] is None
+
+
+def test_bilan_statuts_et_gel():
+    assert K.bilan({})["statut"] == "observation"
+    def l(i, niveau, gagne):
+        d = ligne(f"m{i}", "2026-10-14T18:00:00Z"); d["principal"].update(niveau=niveau, p_honnete=.75, resultat="WIN" if gagne else "LOSS", profit=.5 if gagne else -1.0)
+        d["autres"] = []; d["resultat"] = d["principal"]["resultat"]; return d
+    ok = {f"m{i}": l(i, "SÛR", i % 4 != 0) for i in range(60)}                 # 75 % réel pour 75 % annoncé
+    assert K.bilan(ok)["statut"] == "observation" and K.bilan(ok)["niveaux_geles"] == []
+    mauvais = {f"m{i}": l(i, "SÛR", i % 2 == 0) for i in range(60)}            # 50 % réel pour 75 % annoncé, 60 paris : gel
+    assert K.bilan(mauvais)["statut"] == "gel" and K.bilan(mauvais)["niveaux_geles"] == ["SÛR"]
+    peu = {f"m{i}": l(i, "SÛR", False) for i in range(30)}                      # 30 paris perdus : pas assez pour geler
+    assert K.bilan(peu)["statut"] == "observation"
+
+
+# ---------------------------------------------------------------- exécution de bout en bout (données synthétiques)
+def hist(n=8, marque=2, encaisse=1):
+    return [hm(f"2026-09-{1 + i:02d}", i % 2 == 0, marque, encaisse, "Z") for i in range(n)]
+
+
+def match(mid, date, h=None, a=None, kickoff=None):
+    return dict(id=mid, date=date, ligue="L1", h=h, a=a, cotes={"Plus de 1.5 buts": 1.30, "Moins de 4.5 buts": 1.28, "BTTS - oui": 1.9},
+                dom="A", ext="B", kickoff=kickoff, hd=hist(), he=hist())
+
+
+def test_execution_de_bout_en_bout():
+    entrees = [entree("A", "B", hist(), hist(), date="2026-10-10")]
+    with tempfile.TemporaryDirectory() as d:
+        t0 = datetime.datetime(2026, 10, 14, 10, 0, tzinfo=UTC)
+        s = X.execute([match("m1", "2026-10-14", kickoff="2026-10-14T18:00:00Z"), match("m2", "2026-10-14", kickoff=None)], entrees, d, t0)
+        assert len(s["a_venir"]) == 1 and s["a_venir"][0]["match_id"] == "m1"          # sans coup d'envoi : jamais écrit
+        assert s["a_venir"][0]["principal"]["marche"] in ("Plus de 1.5 buts", "Moins de 4.5 buts", "BTTS - oui")
+        assert s["statut"] == "observation" and s["avertissement"]
+        t1 = datetime.datetime(2026, 10, 14, 23, 0, tzinfo=UTC)
+        s2 = X.execute([match("m1", "2026-10-14", h=2, a=1, kickoff="2026-10-14T18:00:00Z")], entrees, d, t1)
+        assert s2["reglees_aujourdhui"] == 1 and len(s2["reglees"]) == 1 and s2["a_venir"] == []
+        assert s2["reglees"][0]["principal"]["resultat"] in ("WIN", "LOSS")
+        assert json.load(open(os.path.join(d, "pronostics_v.json")))["parametres_version"] == M.PARAMETRES_VERSION
+
+
+def test_passage_nocturne_ne_leve_jamais(monkeypatch=None):
+    r = X.passage_nocturne(dossier=os.path.join(tempfile.gettempdir(), "v_test_inexistant", "x"))
+    assert isinstance(r, (dict, str))
+
+
+def test_pronostics_exclut_un_match_a_moins_de_4_matchs_au_lieu():
+    m = match("x", "2026-10-14", kickoff="2026-10-14T18:00:00Z")
+    m["hd"] = hist(2)
+    assert P.proposer(m, M.Forces([]), M.Classements([])) is None
+
+
+# ---------------------------------------------------------------- page et branchement
+def test_page_v_branchee():
+    html = (RACINE / "pronostics_v.html").read_text(encoding="utf-8")
+    js = (RACINE / "archetype_v.js").read_text(encoding="utf-8")
+    for ident in ("mv-statut", "mv-bilan", "mv-zones", "mv-avenir", "mv-encours", "mv-regles"):
+        assert f'id="{ident}"' in html and ident in js
+    assert "archetype_v.js" in html and "data/v/pronostics_v.json" in js
+    assert "Autres pronostics acceptables" in js and "fiabilité mesurée" in js
+    assert "pronostics_v.html" in (RACINE / "index.html").read_text(encoding="utf-8")
+
+
+def test_hook_nocturne_present_et_isole():
+    src = (RACINE / "enregistre_scores_historique.py").read_text(encoding="utf-8")
+    i = src.index("from moteur_v.execution import passage_nocturne")
+    assert "try:" in src[i - 300:i] and "except Exception" in src[i:i + 400]
+    assert "moteur_v2r.execution" in src                                     # v2r inchangé
+
+
+def test_independance_v_ne_depend_d_aucun_autre_moteur():
+    for f in (RACINE / "moteur_v").glob("*.py"):
+        t = f.read_text(encoding="utf-8")
+        for interdit in ("moteur_v2r", "moteur_v3", "moteur_europe", "moteur_v2_6", "journal_rentabilite"):
+            assert interdit not in t, f"{f.name} dépend de {interdit}"
