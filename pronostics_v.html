@@ -82,13 +82,11 @@
 .mv-hist-titre{font-size:11px;font-weight:700;opacity:.75;margin-bottom:4px}
 
 /* Moteur V : aperçu compact et dépliage par toucher sur toute la plaque */
-.mv-ax{cursor:pointer;-webkit-tap-highlight-color:rgba(8,127,120,.12);touch-action:manipulation}
-.mv-ax.ax-replie .mv-corps>*{display:none}
-.mv-ax.ax-replie .mv-corps>.mv-ligne.mv-principal{display:flex}
-.mv-ax.ax-replie>.ax-details{display:none}
-.mv-ax:not(.ax-replie){cursor:pointer}
-.mv-ax:focus-visible{outline:3px solid #C49A3A;outline-offset:2px}
-
+body.af-v3 .ax-carte.mv-ax.ax-replie{cursor:pointer;-webkit-tap-highlight-color:rgba(8,127,120,.12);touch-action:manipulation}
+body.af-v3 .ax-carte.mv-ax.ax-replie .mv-corps>*{display:none}
+body.af-v3 .ax-carte.mv-ax.ax-replie .mv-corps>.mv-ligne.mv-principal{display:flex}
+body.af-v3 .ax-carte.mv-ax.ax-replie>.ax-details{display:none}
+body.af-v3 .ax-carte.mv-ax:focus-visible{outline:3px solid #C49A3A;outline-offset:2px}
 </style>
 <script src="archetype_v.js?v=20261016b"></script>
 <script src="drapeaux.js"></script>
