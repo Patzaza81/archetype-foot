@@ -9,8 +9,7 @@ import os
 from . import carnet as K, historique as H, modele as M, pronostics as P
 from .donnees import charge
 
-AVERTISSEMENT = ("Les réussites annoncées viennent de 440 matchs passés (28/09 au 14/10) et ne sont pas encore confirmées par les paris de v. "
-                 "Attends au moins 100 paris réglés avant de miser. Les paris INCERTAINS et NON ÉVALUÉS perdent de l'argent sur la durée.")
+AVERTISSEMENT = "Chiffres calculés sur 440 matchs passés, pas encore confirmés par les paris de v. Attends 100 paris réglés."
 
 
 def _allege(l):
