@@ -42,8 +42,8 @@ def test_liens_de_la_barre_vers_des_pages_existantes(page):
 # Seuls ajouts autorisés : la couche de présentation des drapeaux (harmonisation V2/V3), chargée APRÈS
 # les scripts métier (V2, V3, Journal, panier). Aucun script métier ne change, ni d'ordre ni de nom.
 PRESENTATION_AUTORISEE = {
-    "archetype.html": ["drapeaux.js", "af-drapeaux-cartes.js"],
-    "pronostics_v3.html": ["drapeaux.js", "af-drapeaux-cartes.js"],
+    "archetype.html": ["drapeaux.js", "af-drapeaux-cartes.js", "af-date-navigation.js"],
+    "pronostics_v3.html": ["drapeaux.js", "af-drapeaux-cartes.js", "af-date-navigation.js"],
     "journal.html": ["drapeaux.js", "af-drapeaux-cartes.js"],
     "panier.html": ["drapeaux.js", "af-drapeaux-cartes.js"],
 }
