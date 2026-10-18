@@ -53,3 +53,11 @@ Preuves brutes : `docs/validation_matrice_2026-10-18.json` (sortie de `python -m
 - Règles préenregistrées pour ce test futur : `docs/regles_gelees_matrice_2026-10-16.json` (4 726 règles, gelées au 2026-10-16, empreinte `4e0a242a…`, non modifiables : le chargeur refuse tout fichier modifié).
 - Commande : `python -m matrice_scenarios.validate --evaluate-frozen docs/regles_gelees_matrice_2026-10-16.json --from-date 2026-10-18 --output rapport.json`
 - La matrice continue de découvrir des combinaisons nouvelles (20 000 candidats échantillonnés, 1 250 règles distinctes) ; les règles gelées ne sont qu'un jeu de test, pas une liste fermée.
+
+## 7. Réglage orienté rentabilité (demande du 18/10)
+- Données : 7 622 matchs Football-Data avec cotes d'ouverture Bet365 (substitut, pas des cotes du run), 2025-07 → 2026-05. Marchés : 1X2 et Over/Under 2,5.
+- Procédure fixée avant le test (`matrice_scenarios/tuning.py`) : règles découvertes sur l'apprentissage (4 587 matchs) ; gardées si ROI > 0 en apprentissage ET en validation (1 522 matchs), effectifs ≥ 60/40, classées par ROI de validation moins 1,28 erreur-type ; 34 règles retenues ; test unique sur 1 513 matchs (22/03 → 31/05).
+- **Test (substitut)** : 1 499 paris, ROI **−3,5 %** [−8,7 % ; +2,3 %]. Nul « marché » (procédure rejouée sur scores permutés, 100 tirages) : ROI moyen −2,7 %, p = 0,56. Rien ne bat le hasard.
+- **Test réel sur l'archive BetPawa (cotes du run, jamais vue)** : 1 199 paris, ROI **−8,0 %** [−14,3 % ; −0,3 %]. Paris : 884 over 2,5, 251 nuls, 48 under 2,5, 16 victoires extérieur.
+- Conclusion : le réglage n'a pas produit de règle rentable. Le ROI se dégrade du test (−3,5 %) à l'archive (−8,0 %), signe que la sélection n'a appris que du bruit. Aucune règle activée.
+- Fichiers : `docs/reglage_rentabilite_2026-10-18.json` (règles et chiffres), `docs/run_reglage_rentabilite.py.txt` (script exact).

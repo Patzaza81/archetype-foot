@@ -1,0 +1,13 @@
+import json,sys,time
+from matrice_scenarios import core
+from matrice_scenarios.football_data import load_football_data
+from matrice_scenarios.tuning import run_tuning, evaluate_tuned_on
+fd,_=load_football_data(with_proxy_odds=True)
+rec=[r for r in fd if r['target_odds']]
+t=time.time()
+res=run_tuning(rec,max_candidates=int(sys.argv[3]),repetitions=int(sys.argv[1]))
+print('tuning',round(time.time()-t),'s',flush=True)
+arch,_=core.load_dataset('data/archive_test')
+res['forward_archive']=evaluate_tuned_on(res['chosen'],arch)
+json.dump(res,open(sys.argv[2],'w'),ensure_ascii=False,indent=1,default=float)
+s=dict(res);s.pop('chosen');print(json.dumps(s,ensure_ascii=False,indent=1,default=float))
