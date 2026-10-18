@@ -100,6 +100,10 @@ def test_loads_resolved_archive_test_records_without_inventing_odds(tmp_path):
             {"date": "2026-03-10", "buts_marques": 9, "buts_encaisses": 0, "domicile": True},
         ]},
         "equipe_ext": {"statut": "OK", "rang": 8, "matchs": []},
+        "cotes_betpawa": {"1x2": {"1": 1.7, "N": 3.2, "2": 4.1},
+                          "double_chance": {"1N": 1.25, "N2": 2.1},
+                          "btts": {"Oui": 1.9},
+                          "over_under_2.5": {"moins": 1.6, "plus": 2.3}},
         "cotes_observees": {"label_inconnu": 1.4},
     }
     path = tmp_path / "2026-03-10.json.gz"
@@ -112,5 +116,8 @@ def test_loads_resolved_archive_test_records_without_inventing_odds(tmp_path):
     assert len(rows[0]["home_history"]) == 2  # filtre temporel appliqué par build_features
     features = build_features(rows[0])
     assert features["home_history_n"] == 1
-    assert "home_odds" not in features
+    assert features["home_odds"] == 1.7
+    assert rows[0]["target_odds"]["home_not_lose"] == 1.25
+    assert rows[0]["target_odds"]["both_score"] == 1.9
+    assert rows[0]["target_odds"]["under_2_5"] == 1.6
     assert diag["archive_unresolved_or_missing_score"] == 0
