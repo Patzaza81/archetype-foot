@@ -585,9 +585,14 @@ def run_experiment(records: list[dict], max_candidates: int = DEFAULT_MAX_CANDID
     feature_map = {str(r["match_id"]): build_features(r) for r in clean}
     scenarios = discover_scenarios(train, feature_map, max_candidates=max_candidates)
     baseline_by_target = {}
-    for target in TARGETS:
-        ys = [outcome(r, target) for r in train]
-        baseline_by_target[target] = sum(ys) / len(ys) if ys else None
+    split_baselines = {}
+    for split_name, split_rows in (("train", train), ("validation", validation), ("test", test)):
+        split_baselines[split_name] = {}
+        for target in TARGETS:
+            ys = [outcome(r, target) for r in split_rows]
+            split_baselines[split_name][target] = sum(ys) / len(ys) if ys else None
+            if split_name == "train":
+                baseline_by_target[target] = split_baselines[split_name][target]
     scored = []
     pvals = []
     for s in scenarios:
@@ -608,9 +613,16 @@ def run_experiment(records: list[dict], max_candidates: int = DEFAULT_MAX_CANDID
             vr["n"] >= MIN_EVAL_SUPPORT and te["n"] >= MIN_EVAL_SUPPORT
             and vr["hit_rate"] is not None and te["hit_rate"] is not None
         )
+        validation_base = split_baselines["validation"][s["target"]]
+        test_base = split_baselines["test"][s["target"]]
         candidates.append({
             "scenario": s, "train": tr, "validation": vr, "test": te,
-            "train_baseline": base, "p_approx": p, "q_bh_approx": q,
+            "train_baseline": base,
+            "validation_baseline": validation_base,
+            "validation_lift": (vr["hit_rate"] - validation_base) if vr["hit_rate"] is not None and validation_base is not None else None,
+            "test_baseline": test_base,
+            "test_lift": (te["hit_rate"] - test_base) if te["hit_rate"] is not None and test_base is not None else None,
+            "p_approx": p, "q_bh_approx": q,
             "status": "A_VALIDER" if eligible else "ECHANTILLON_INSUFFISANT",
             "promotion_allowed": False,
             "interpretation": "Exploratoire uniquement; la p-value est une approximation de tri, pas une preuve."
@@ -635,6 +647,7 @@ def run_experiment(records: list[dict], max_candidates: int = DEFAULT_MAX_CANDID
             "auto_promotion": False, "production_changes": False,
         },
         "baseline_by_target": baseline_by_target,
+        "baseline_by_split": split_baselines,
         "scenarios_tested": len(scenarios),
         "scenarios_with_minimum_train_support": len(scored),
         "candidates": candidates,
