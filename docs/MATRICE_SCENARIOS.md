@@ -6,9 +6,10 @@ La matrice est un laboratoire indépendant et en lecture seule. Elle ne modifie 
 
 ## Lancement
 
-Le format d'entrée est volontairement explicite et normalisé. La matrice ne lit pas encore automatiquement les archives de production : les différents fichiers du dépôt n'ont pas tous le même contrat et ne doivent pas être rapprochés par ressemblance de noms.
+Le format normalisé est disponible pour les jeux de recherche. Un adaptateur direct lit aussi `data/archive_test/*.json.gz` (SCHEMA_VERSION 2), uniquement les matchs résolus avec score, et récupère l'historique d'équipe conservé avant-match. Il ne devine pas les cotes à partir de libellés de marché non validés.
 
 \`\`\`bash
+python -m matrice_scenarios.cli data/archive_test --output rapport_matrice_scenarios.json --max-candidates 5000
 python -m matrice_scenarios.cli chemin/vers/matchs_normalises.json --output rapport_matrice_scenarios.json --max-candidates 5000
 pytest -q tests/test_matrice_scenarios.py
 \`\`\`
