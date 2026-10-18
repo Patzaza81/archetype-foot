@@ -6,7 +6,7 @@ La matrice est un laboratoire indépendant et en lecture seule. Elle ne modifie 
 
 ## Lancement
 
-Le format normalisé est disponible pour les jeux de recherche. Un adaptateur direct lit aussi `data/archive_test/*.json.gz` (SCHEMA_VERSION 2), uniquement les matchs résolus avec score, et récupère l'historique d'équipe conservé avant-match. Il ne devine pas les cotes à partir de libellés de marché non validés.
+Le format normalisé est disponible pour les jeux de recherche. Un adaptateur direct lit aussi `data/archive_test/*.json.gz` (SCHEMA_VERSION 2), uniquement les matchs résolus avec score, et récupère l'historique d'équipe conservé avant-match. Il mappe les cotes 1X2, double chance, BTTS, totaux et buts par équipe uniquement via les clés exactes de `parse_betpawa.py` / `moteur_europe/cotes_archive.py` ; tout marché non mappé reste sans cote.
 
 \`\`\`bash
 python -m matrice_scenarios.cli data/archive_test --output rapport_matrice_scenarios.json --max-candidates 5000
