@@ -662,10 +662,22 @@ def run_experiment(records: list[dict], max_candidates: int = DEFAULT_MAX_CANDID
         c["scenario"]["scenario_id"],
     ))
     digest_input = "\n".join(f'{r["match_id"]}|{r["date"]}|{r["home_goals"]}|{r["away_goals"]}' for r in clean)
+    coverage = {
+        "matches": len(clean),
+        "home_history_available": sum(bool(feature_map[str(r["match_id"])].get("home_history_n", 0)) for r in clean),
+        "away_history_available": sum(bool(feature_map[str(r["match_id"])].get("away_history_n", 0)) for r in clean),
+        "both_ranks_available": sum("rank_gap" in feature_map[str(r["match_id"])] for r in clean),
+        "head_to_head_available": sum(feature_map[str(r["match_id"])].get("h2h_n", 0) > 0 for r in clean),
+        "full_1x2_odds_available": sum(all(_num(r.get(k)) and r[k] > 1 for k in ("home_odds", "draw_odds", "away_odds")) for r in clean),
+        "target_odds_by_market": {target: sum(_num((r.get("target_odds") or {}).get(target)) and (r.get("target_odds") or {}).get(target) > 1 for r in clean) for target in TARGETS},
+        "league_counts": dict(Counter(str(r.get("league") or "INCONNUE") for r in clean)),
+    }
     return {
         "schema_version": SCHEMA_VERSION,
         "mode": "EXPERIMENTAL_READ_ONLY",
         "dataset_sha256": hashlib.sha256(digest_input.encode()).hexdigest(),
+        "coverage": coverage,
+        "scenario_complexity_counts": dict(Counter(c["scenario"].get("complexity", 1) for c in candidates)),
         "dataset": {"matches": len(clean), "rejected": dict(rejected),
                     "train_n": len(train), "validation_n": len(validation), "test_n": len(test)},
         "rules": {
