@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import gzip
 import json
 from pathlib import Path
 
@@ -86,3 +87,30 @@ def test_experiment_is_read_only_and_chronological():
     assert report["dataset"]["train_n"] + report["dataset"]["validation_n"] + report["dataset"]["test_n"] == 120
     assert report["rules"]["auto_promotion"] is False
     assert all(c["promotion_allowed"] is False for c in report["candidates"])
+
+
+
+def test_loads_resolved_archive_test_records_without_inventing_odds(tmp_path):
+    match = {
+        "match_id": "archive-1", "date": "2026-03-10", "competition": "Ligue Test",
+        "domicile": "Alpha", "exterieur": "Beta",
+        "score": {"buts_dom": 2, "buts_ext": 1},
+        "equipe_dom": {"statut": "OK", "rang": 3, "matchs": [
+            {"date": "2026-03-09", "buts_marques": 1, "buts_encaisses": 0, "domicile": False},
+            {"date": "2026-03-10", "buts_marques": 9, "buts_encaisses": 0, "domicile": True},
+        ]},
+        "equipe_ext": {"statut": "OK", "rang": 8, "matchs": []},
+        "cotes_observees": {"label_inconnu": 1.4},
+    }
+    path = tmp_path / "2026-03-10.json.gz"
+    with gzip.open(path, "wt", encoding="utf-8") as stream:
+        json.dump({"archive-1": match}, stream)
+    rows, diag = load_dataset(tmp_path)
+    assert len(rows) == 1
+    assert rows[0]["home_goals"] == 2
+    assert rows[0]["home_history"][0]["venue"] == "away"
+    assert len(rows[0]["home_history"]) == 2  # filtre temporel appliqué par build_features
+    features = build_features(rows[0])
+    assert features["home_history_n"] == 1
+    assert "home_odds" not in features
+    assert diag["archive_unresolved_or_missing_score"] == 0
