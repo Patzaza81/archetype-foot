@@ -121,14 +121,17 @@ def _record_from_archive(item: Any) -> dict | None:
     if not _valid_score(hg) or not _valid_score(ag):
         return None
     home, away = item.get("equipe_dom") or {}, item.get("equipe_ext") or {}
+    target_odds = _archive_target_odds(item)
     return {
         "match_id": item.get("match_id"), "date": item.get("date"),
         "league": item.get("competition") or item.get("competition_brute"),
         "home_team": item.get("domicile"), "away_team": item.get("exterieur"),
         "home_goals": hg, "away_goals": ag,
         "home_rank": home.get("rang"), "away_rank": away.get("rang"),
+        "home_odds": target_odds.get("home_win"), "draw_odds": target_odds.get("draw"),
+        "away_odds": target_odds.get("away_win"),
         "home_history": _archive_history(home), "away_history": _archive_history(away),
-        "target_odds": _archive_target_odds(item),
+        "target_odds": target_odds,
         "source_archive": "data/archive_test",
     }
 
