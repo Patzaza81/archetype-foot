@@ -60,7 +60,7 @@ Exemple de structure (valeurs illustratives pour décrire le format, pas une pre
 - Classement : écart signé (positif = domicile mieux classé), écart absolu et rangs si disponibles.
 - Historique par fenêtres 2, 3, 5, 8 et 10 : buts pour/contre, différence de buts, taux de marquer, concéder, gagner, ne pas perdre et Over 2,5.
 - Séquences : séries de défaites, de non-défaites, de buts marqués, de matchs sans but ; dernier résultat, défaite précédente à domicile/extérieur, défaite lourde, match précédent sans but, match précédent à 2+ buts, 3+ buts encaissés, mauvaise série sur 3 matchs et candidat de reprise.
-- Splits domicile/extérieur quand la source les renseigne.
+- Splits domicile/extérieur quand la source les renseigne ; confrontations directes historiques uniquement sur les noms normalisés exacts et les dates antérieures au match.
 - Cotes et probabilités implicites 1X2 normalisées sans marge, utilisées comme variables explicatives, pas comme certitude.
 - Championnat exact et variables numériques documentées \`pre_*\`.
 
