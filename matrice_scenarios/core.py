@@ -361,7 +361,6 @@ def _condition_value(features: dict, condition: dict) -> bool:
     if op == "gt": return value > threshold
     if op == "lt": return value < threshold
     if op == "between": return threshold[0] <= value <= threshold[1]
-    if op == "eq": return value == threshold
     return False
 
 
