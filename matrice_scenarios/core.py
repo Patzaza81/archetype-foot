@@ -271,7 +271,7 @@ def _feature_conditions(feature_rows: list[dict]) -> list[dict]:
 
 def discover_scenarios(records: list[dict], features_by_id: dict[str, dict] | None = None,
                        max_candidates: int = DEFAULT_MAX_CANDIDATES) -> list[dict]:
-    """Découvre des règles unaires puis paires; limite explicite contre l'explosion combinatoire."""
+    """Découvre des règles simples et croisées avec un budget explicite et reproductible."""
     if max_candidates < 1:
         return []
     rows = sorted(records, key=lambda r: (str(r["date"]), str(r["match_id"])))
@@ -279,40 +279,49 @@ def discover_scenarios(records: list[dict], features_by_id: dict[str, dict] | No
         features_by_id = {str(r["match_id"]): build_features(r) for r in rows}
     features = [features_by_id[str(r["match_id"])] for r in rows]
     atomic = _feature_conditions(features)
-    # Prioritize conditions that actually define a nontrivial subset of the discovery set.
     eligible = []
-    for c in atomic:
-        n = sum(_condition_value(f, c) for f in features)
-        if MIN_DISCOVERY_SUPPORT <= n <= len(rows) * 0.95:
-            eligible.append((c, n))
-    eligible.sort(key=lambda item: (abs(item[1] / max(1, len(rows)) - 0.5), item[0]["feature"], item[0]["op"], str(item[0]["value"])))
-    eligible = eligible[:min(len(eligible), max_candidates)]
-    scenarios = []
-    for target in TARGETS:
-        for c, n in eligible:
-            scenarios.append({"scenario_id": _scenario_id(target, [c]), "target": target,
-                              "conditions": [c], "discovery_support": n, "complexity": 1})
-            if len(scenarios) >= max_candidates:
-                return scenarios
-    # Pair only features that are distinct, then rank by support. Never combine two thresholds
-    # of the same feature: that mostly creates disguised intervals and redundant rules.
-    pairs = []
-    pair_limit = max(0, max_candidates - len(scenarios))
+    for condition in atomic:
+        support = sum(_condition_value(f, condition) for f in features)
+        if MIN_DISCOVERY_SUPPORT <= support <= len(rows) * 0.95:
+            eligible.append((condition, support))
+    eligible.sort(key=lambda item: (
+        abs(item[1] / max(1, len(rows)) - 0.5),
+        item[0]["feature"], item[0]["op"], str(item[0]["value"])
+    ))
+    if not eligible:
+        return []
+    # Réserver explicitement une partie du budget aux interactions, au lieu de laisser
+    # les règles simples monopoliser tout le calcul.
+    unary_budget = max(1, max_candidates // 2)
+    pair_budget = max_candidates - unary_budget
+    unary_rules = []
+    for condition, support in eligible:
+        for target in TARGETS:
+            unary_rules.append({
+                "scenario_id": _scenario_id(target, [condition]), "target": target,
+                "conditions": [condition], "discovery_support": support, "complexity": 1,
+            })
+            if len(unary_rules) >= unary_budget:
+                break
+        if len(unary_rules) >= unary_budget:
+            break
+    scenarios = list(unary_rules)
+    if pair_budget <= 0 or len(eligible) < 2:
+        return scenarios[:max_candidates]
+    pair_rules = []
+    # Iterate lazily; no giant intermediate list. Different features only.
     for (c1, _), (c2, _) in itertools.combinations(eligible, 2):
         if c1["feature"] == c2["feature"]:
             continue
-        pairs.append((c1, c2))
-        if len(pairs) >= pair_limit:
-            break
-    for target in TARGETS:
-        for c1, c2 in pairs:
-            conds = sorted([c1, c2], key=lambda c: (c["feature"], c["op"], str(c["value"])))
-            scenarios.append({"scenario_id": _scenario_id(target, conds), "target": target,
-                              "conditions": conds, "complexity": 2})
-            if len(scenarios) >= max_candidates:
-                return scenarios
-    return scenarios
-
+        conditions = sorted([c1, c2], key=lambda c: (c["feature"], c["op"], str(c["value"])))
+        for target in TARGETS:
+            pair_rules.append({
+                "scenario_id": _scenario_id(target, conditions), "target": target,
+                "conditions": conditions, "complexity": 2,
+            })
+            if len(pair_rules) >= pair_budget:
+                return scenarios + pair_rules
+    return scenarios + pair_rules
 
 def _scenario_id(target: str, conditions: list[dict]) -> str:
     payload = json.dumps({"target": target, "conditions": conditions}, sort_keys=True, separators=(",", ":"))
