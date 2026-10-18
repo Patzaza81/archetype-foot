@@ -80,6 +80,38 @@ def _archive_history(team_block: Any) -> list[dict]:
     return out
 
 
+def _archive_target_odds(item: dict) -> dict[str, float]:
+    """Mapping explicite depuis les clés réelles de parse_betpawa.py / cotes_archive.py."""
+    raw = item.get("cotes_betpawa") or {}
+    observed = item.get("cotes_observees") or {}
+    mapping = {
+        "home_win": (("1x2", "1"), "1X2 - 1"),
+        "draw": (("1x2", "N"), "1X2 - X"),
+        "away_win": (("1x2", "2"), "1X2 - 2"),
+        "home_not_lose": (("double_chance", "1N"), "Double chance - 1X"),
+        "away_not_lose": (("double_chance", "N2"), "Double chance - X2"),
+        "both_score": (("btts", "Oui"), "BTTS - oui"),
+        "under_2_5": (("over_under_2.5", "moins"), "Moins de 2.5 buts"),
+        "under_3_5": (("over_under_3.5", "moins"), "Moins de 3.5 buts"),
+        "over_1_5": (("over_under_1.5", "plus"), "Plus de 1.5 buts"),
+        "over_2_5": (("over_under_2.5", "plus"), "Plus de 2.5 buts"),
+        "home_scores_1plus": (("over_under_domicile_0.5", "plus"), "Plus de 0.5 buts - Domicile"),
+        "home_scores_2plus": (("over_under_domicile_1.5", "plus"), "Plus de 1.5 buts - Domicile"),
+        "home_scores_3plus": (("over_under_domicile_2.5", "plus"), "Plus de 2.5 buts - Domicile"),
+        "away_scores_1plus": (("over_under_exterieur_0.5", "plus"), "Plus de 0.5 buts - Extérieur"),
+        "away_scores_2plus": (("over_under_exterieur_1.5", "plus"), "Plus de 1.5 buts - Extérieur"),
+        "away_scores_3plus": (("over_under_exterieur_2.5", "plus"), "Plus de 2.5 buts - Extérieur"),
+    }
+    result = {}
+    for target, ((group, issue), observed_label) in mapping.items():
+        value = (raw.get(group) or {}).get(issue)
+        if not _num(value) or value <= 1:
+            value = observed.get(observed_label)
+        if _num(value) and value > 1:
+            result[target] = float(value)
+    return result
+
+
 def _record_from_archive(item: Any) -> dict | None:
     """Convertit un enregistrement SCHEMA_VERSION 2 de archive_donnees_test.py."""
     if not isinstance(item, dict) or not isinstance(item.get("score"), dict):
@@ -96,7 +128,7 @@ def _record_from_archive(item: Any) -> dict | None:
         "home_goals": hg, "away_goals": ag,
         "home_rank": home.get("rang"), "away_rank": away.get("rang"),
         "home_history": _archive_history(home), "away_history": _archive_history(away),
-        # No odds are inferred here: archive market labels need an explicit, tested mapping.
+        "target_odds": _archive_target_odds(item),
         "source_archive": "data/archive_test",
     }
 
