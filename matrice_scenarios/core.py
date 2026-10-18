@@ -6,6 +6,7 @@ avant le coup d'envoi. Les historiques d'équipes doivent contenir des matchs da
 """
 from __future__ import annotations
 
+import gzip
 import hashlib
 import itertools
 import json
@@ -62,27 +63,82 @@ def validate_record(record: Any) -> tuple[bool, str]:
     return True, "OK"
 
 
-def load_dataset(path: str | Path) -> tuple[list[dict], dict]:
-    """Charge JSON-array, objet {matches:[...]}, ou JSONL; dédoublonne strictement par match_id.
+def _archive_history(team_block: Any) -> list[dict]:
+    if not isinstance(team_block, dict) or team_block.get("statut") != "OK":
+        return []
+    out = []
+    for match in team_block.get("matchs") or []:
+        if not isinstance(match, dict):
+            continue
+        out.append({
+            "date": match.get("date"),
+            "goals_for": match.get("buts_marques"),
+            "goals_against": match.get("buts_encaisses"),
+            "venue": "home" if match.get("domicile") is True else "away",
+            "opponent_rank": match.get("rang_adversaire"),
+        })
+    return out
 
-    En cas de doublon avec scores contradictoires, toutes les occurrences de cet ID sont
-    exclues. Sinon la première occurrence valide est conservée, sans écrasement silencieux.
+
+def _record_from_archive(item: Any) -> dict | None:
+    """Convertit un enregistrement SCHEMA_VERSION 2 de archive_donnees_test.py."""
+    if not isinstance(item, dict) or not isinstance(item.get("score"), dict):
+        return None
+    score = item["score"]
+    hg, ag = score.get("buts_dom"), score.get("buts_ext")
+    if not _valid_score(hg) or not _valid_score(ag):
+        return None
+    home, away = item.get("equipe_dom") or {}, item.get("equipe_ext") or {}
+    return {
+        "match_id": item.get("match_id"), "date": item.get("date"),
+        "league": item.get("competition") or item.get("competition_brute"),
+        "home_team": item.get("domicile"), "away_team": item.get("exterieur"),
+        "home_goals": hg, "away_goals": ag,
+        "home_rank": home.get("rang"), "away_rank": away.get("rang"),
+        "home_history": _archive_history(home), "away_history": _archive_history(away),
+        # No odds are inferred here: archive market labels need an explicit, tested mapping.
+        "source_archive": "data/archive_test",
+    }
+
+
+def load_dataset(path: str | Path) -> tuple[list[dict], dict]:
+    """Charge JSON, JSONL ou directement le dossier data/archive_test/*.json.gz.
+
+    Les archives non résolues sont comptées, jamais transformées en scores imaginés.
+    Les doublons à scores contradictoires sont exclus ; les doublons identiques gardent
+    la première occurrence et sont comptés.
     """
     p = Path(path)
-    raw = p.read_text(encoding="utf-8")
-    if not raw.strip():
-        payload = []
-    else:
-        try:
-            payload = json.loads(raw)
-            if isinstance(payload, dict):
-                payload = payload.get("matches", [])
-        except json.JSONDecodeError:
-            payload = [json.loads(line) for line in raw.splitlines() if line.strip()]
-    if not isinstance(payload, list):
-        raise ValueError("Le fichier doit contenir une liste JSON, {matches:[...]} ou du JSONL.")
-    by_id: dict[str, list[dict]] = {}
     rejected = Counter()
+    archive_unresolved = 0
+    if p.is_dir():
+        payload = []
+        for file in sorted(p.glob("*.json.gz")):
+            with gzip.open(file, "rt", encoding="utf-8") as stream:
+                document = json.load(stream)
+            if not isinstance(document, dict):
+                rejected["ARCHIVE_FORMAT_INVALIDE"] += 1
+                continue
+            for item in document.values():
+                converted = _record_from_archive(item)
+                if converted is None:
+                    archive_unresolved += 1
+                    continue
+                payload.append(converted)
+    else:
+        raw = p.read_text(encoding="utf-8")
+        if not raw.strip():
+            payload = []
+        else:
+            try:
+                payload = json.loads(raw)
+                if isinstance(payload, dict):
+                    payload = payload.get("matches", [])
+            except json.JSONDecodeError:
+                payload = [json.loads(line) for line in raw.splitlines() if line.strip()]
+    if not isinstance(payload, list):
+        raise ValueError("Le fichier doit contenir une liste JSON, {matches:[...]}, du JSONL ou un dossier archive_test.")
+    by_id: dict[str, list[dict]] = {}
     for row in payload:
         ok, reason = validate_record(row)
         if not ok:
@@ -105,9 +161,9 @@ def load_dataset(path: str | Path) -> tuple[list[dict], dict]:
     return rows, {
         "input_rows": len(payload), "unique_matches": len(rows),
         "duplicate_rows": duplicates, "conflicting_match_ids": conflicts,
+        "archive_unresolved_or_missing_score": archive_unresolved,
         "rejected": dict(rejected),
     }
-
 
 def _history_before(history: list, match_date: str) -> list[dict]:
     """Seuls les matchs strictement antérieurs à la date du match cible sont admissibles."""
