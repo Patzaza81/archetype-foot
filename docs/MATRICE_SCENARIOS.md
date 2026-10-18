@@ -102,3 +102,13 @@ Cibles : 1X2, double chance sans défaite, buts d'équipe (1+, 2+, 3+), les deux
 ## Principe immuable
 
 Les scénarios sont des hypothèses qui peuvent être inventées, combinées, transformées, testées puis abandonnées. Un exemple humain n'est jamais une règle standard imposée au système. L'absence de données donne « inconnu », jamais une supposition.
+
+
+## Validation statistique (module isolé, lecture seule)
+
+- `matrice_scenarios/football_data.py` : adaptateur Football-Data, résultats seulement, aucune cote lue.
+- `matrice_scenarios/validation.py` : moteur vectorisé (numpy), permutations imbriquées (nuls « marché » et « libre »), max-T, un pari par match, bootstrap par jour, verdict à critères fixés d'avance.
+- `matrice_scenarios/validate.py` : CLI `python -m matrice_scenarios.validate` (walk-forward archive, walk-forward Football-Data, transfert de règles gelées, `--freeze-forward`, `--evaluate-frozen`).
+- Preuve exigée : ≥ 56 jours, ≥ 300 paris réglés, ROI > 0, IC95 par jour excluant 0, p marché ≤ 0,05, ≥ 2/3 des blocs de dates positifs. Sinon DONNEES_INSUFFISANTES, NON_CONCLUANT ou NON_RENTABLE.
+- Résultats : `docs/RAPPORT_VALIDATION_MATRICE_2026-10-18.md`. Tests : `tests/test_matrice_validation.py`.
+- Toujours `promotion_allowed=false`, aucune liaison aux moteurs, au Journal ni au pipeline.
