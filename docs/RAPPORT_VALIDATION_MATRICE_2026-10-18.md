@@ -61,3 +61,9 @@ Preuves brutes : `docs/validation_matrice_2026-10-18.json` (sortie de `python -m
 - **Test réel sur l'archive BetPawa (cotes du run, jamais vue)** : 1 199 paris, ROI **−8,0 %** [−14,3 % ; −0,3 %]. Paris : 884 over 2,5, 251 nuls, 48 under 2,5, 16 victoires extérieur.
 - Conclusion : le réglage n'a pas produit de règle rentable. Le ROI se dégrade du test (−3,5 %) à l'archive (−8,0 %), signe que la sélection n'a appris que du bruit. Aucune règle activée.
 - Fichiers : `docs/reglage_rentabilite_2026-10-18.json` (règles et chiffres), `docs/run_reglage_rentabilite.py.txt` (script exact).
+
+## 8. Croisements « marqué contre encaissé adverse » (approche de Patrick), 8 marchés
+- Code : `matrice_scenarios/croisements.py` ; chiffres : `docs/croisements_2026-10-18.json`. Famille fixée d'avance (une formule par marché, 5 derniers matchs au même lieu, ≥ 4 requis). Seuil = top 20 % du score sur les 60 % de dates les plus anciennes ; mesure sur la suite.
+- Contre le taux de base (Football-Data, 5 390 matchs de test, 22/03 → 16/10) : victoire domicile 56,9 % contre 43,4 % de base, victoire extérieur 40,0 % contre 30,4 %, Over 2,5 60,9 % contre 54,9 %, Under 2,5 51,5 % contre 45,1 %, domicile marque 81,9 % contre 79,2 %. Les deux marquent (57,5 % contre 57,1 %) et nul (27,7 % contre 26,2 %) : quasi rien.
+- Contre la cote (ROI) : Football-Data avec cotes Bet365 de substitut, ~300 paris par marché, ROI entre −9,9 % et +4,7 %, tous intervalles incluant 0. Archive BetPawa : 40 à 82 paris par marché, ROI entre −16,4 % et +5,1 %, intervalles très larges (historique réduit : 634 matchs avec ≥ 4 matchs au même lieu).
+- Conclusion : le croisement bat nettement le taux de base mais pas démontrablement le prix. Pas de preuve de rentabilité.
