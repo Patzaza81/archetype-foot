@@ -75,6 +75,7 @@ def _archive_history(team_block: Any) -> list[dict]:
             "goals_for": match.get("buts_marques"),
             "goals_against": match.get("buts_encaisses"),
             "venue": "home" if match.get("domicile") is True else "away",
+            "opponent": match.get("adversaire"),
             "opponent_rank": match.get("rang_adversaire"),
         })
     return out
@@ -298,6 +299,33 @@ def build_features(record: dict) -> dict[str, Any]:
     }
     features.update(_team_features("home", home_hist))
     features.update(_team_features("away", away_hist))
+    # Head-to-head is joined only on exact normalized team names and prior dates.
+    def norm_name(value):
+        return " ".join(str(value or "").split()).casefold()
+    home_name, away_name = norm_name(record["home_team"]), norm_name(record["away_team"])
+    h2h = []
+    seen_h2h = set()
+    for match in home_hist:
+        if norm_name(match.get("opponent")) == away_name:
+            key = (match["date"], match["goals_for"], match["goals_against"])
+            if key not in seen_h2h:
+                seen_h2h.add(key)
+                h2h.append((match["date"], match["goals_for"], match["goals_against"]))
+    for match in away_hist:
+        if norm_name(match.get("opponent")) == home_name:
+            # Away team's goals-for/against are reversed into current home-team orientation.
+            key = (match["date"], match["goals_against"], match["goals_for"])
+            if key not in seen_h2h:
+                seen_h2h.add(key)
+                h2h.append(key)
+    h2h.sort(key=lambda item: item[0])
+    features["h2h_n"] = float(len(h2h))
+    if h2h:
+        features["h2h_home_score_rate"] = sum(h >= 1 for _, h, _ in h2h) / len(h2h) * 100
+        features["h2h_away_score_rate"] = sum(a >= 1 for _, _, a in h2h) / len(h2h) * 100
+        features["h2h_home_not_lose_rate"] = sum(h >= a for _, h, a in h2h) / len(h2h) * 100
+        features["h2h_home_win_rate"] = sum(h > a for _, h, a in h2h) / len(h2h) * 100
+        features["h2h_over_2_5_rate"] = sum(h + a >= 3 for _, h, a in h2h) / len(h2h) * 100
     hr, ar = record.get("home_rank"), record.get("away_rank")
     if _num(hr) and _num(ar) and hr > 0 and ar > 0:
         features["rank_gap"] = float(ar - hr)  # positif = domicile mieux classé (rang inférieur)
