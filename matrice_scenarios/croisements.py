@@ -29,13 +29,16 @@ def _stats(rows: list[dict]) -> dict[str, float]:
             "gf": sum(h["goals_for"] for h in rows) / n, "ga": sum(h["goals_against"] for h in rows) / n}
 
 
-def scores(record: dict) -> dict[str, float] | None:
+def scores(record: dict, min_same: int = MIN_SAME_VENUE) -> dict[str, float] | None:
     day = str(record["date"])[:10]
     h = _last_same_venue(record.get("home_history") or [], "home", day)
     a = _last_same_venue(record.get("away_history") or [], "away", day)
-    if len(h) < MIN_SAME_VENUE or len(a) < MIN_SAME_VENUE:
+    if len(h) < min_same or len(a) < min_same:
         return None
-    hs, as_ = _stats(h), _stats(a)
+    return _formulas(_stats(h), _stats(a))
+
+
+def _formulas(hs: dict[str, float], as_: dict[str, float]) -> dict[str, float]:
     diff = (hs["gf"] - hs["ga"]) - (as_["gf"] - as_["ga"])
     total = (hs["gf"] + hs["ga"] + as_["gf"] + as_["ga"]) / 2
     return {

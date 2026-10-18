@@ -67,3 +67,8 @@ Preuves brutes : `docs/validation_matrice_2026-10-18.json` (sortie de `python -m
 - Contre le taux de base (Football-Data, 5 390 matchs de test, 22/03 → 16/10) : victoire domicile 56,9 % contre 43,4 % de base, victoire extérieur 40,0 % contre 30,4 %, Over 2,5 60,9 % contre 54,9 %, Under 2,5 51,5 % contre 45,1 %, domicile marque 81,9 % contre 79,2 %. Les deux marquent (57,5 % contre 57,1 %) et nul (27,7 % contre 26,2 %) : quasi rien.
 - Contre la cote (ROI) : Football-Data avec cotes Bet365 de substitut, ~300 paris par marché, ROI entre −9,9 % et +4,7 %, tous intervalles incluant 0. Archive BetPawa : 40 à 82 paris par marché, ROI entre −16,4 % et +5,1 %, intervalles très larges (historique réduit : 634 matchs avec ≥ 4 matchs au même lieu).
 - Conclusion : le croisement bat nettement le taux de base mais pas démontrablement le prix. Pas de preuve de rentabilité.
+
+## 9. Outil d'analyse d'un match (`python -m matrice_scenarios.analyse_match`)
+- Entrée : 3 à 5 scores récents par équipe (buts de l'équipe d'abord, au même lieu que le match) et, en option, les cotes. Sortie : probabilité calibrée par marché, cote d'équilibre, écart au taux de base, lecture de la cote donnée.
+- Calibration : `docs/calibration_croisements.json` (14 048 matchs Football-Data, résultats seulement ; tranches fixées sur les 60 % les plus anciens). Qualité hors échantillon (Brier contre taux de base, 5 635 matchs) : victoire domicile +2,9 %, victoire extérieur +2,3 %, Over/Under 2,5 +1,0 %, domicile marque +0,7 %, extérieur marque +0,4 %, nul +0,1 %, les deux marquent +0,04 %.
+- Limite connue : la tranche la plus haute plafonne (victoire extérieur 45 %), elle sous-estime les cas extrêmes comme Zwolle - Go Ahead Eagles.
