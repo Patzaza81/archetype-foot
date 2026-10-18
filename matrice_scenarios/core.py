@@ -156,6 +156,32 @@ def _team_features(prefix: str, history: list[dict]) -> dict[str, float]:
     f[f"{prefix}_score_streak"] = float(_streak(history, lambda m: m["goals_for"] >= 1))
     f[f"{prefix}_failed_score_streak"] = float(_streak(history, lambda m: m["goals_for"] == 0))
     f[f"{prefix}_concede_streak"] = float(_streak(history, lambda m: m["goals_against"] >= 1))
+    # Dynamic transitions: what happened immediately before this fixture?
+    last = history[-1]
+    f[f"{prefix}_after_loss"] = float(last["goals_for"] < last["goals_against"])
+    f[f"{prefix}_after_draw"] = float(last["goals_for"] == last["goals_against"])
+    f[f"{prefix}_after_win"] = float(last["goals_for"] > last["goals_against"])
+    f[f"{prefix}_after_away_loss"] = float(
+        str(last.get("venue", "")).lower() == "away" and last["goals_for"] < last["goals_against"]
+    )
+    f[f"{prefix}_after_home_loss"] = float(
+        str(last.get("venue", "")).lower() == "home" and last["goals_for"] < last["goals_against"]
+    )
+    f[f"{prefix}_after_heavy_loss"] = float(last["goals_against"] - last["goals_for"] >= 3)
+    f[f"{prefix}_after_scoreless"] = float(last["goals_for"] == 0)
+    f[f"{prefix}_after_scoring_2plus"] = float(last["goals_for"] >= 2)
+    f[f"{prefix}_after_conceding_3plus"] = float(last["goals_against"] >= 3)
+    recent3 = history[-3:]
+    f[f"{prefix}_bad_run_3"] = float(len(recent3) == 3 and sum(
+        m["goals_for"] < m["goals_against"] for m in recent3
+    ) >= 2)
+    f[f"{prefix}_recovery_candidate_3"] = float(len(recent3) == 3 and
+        sum(m["goals_for"] < m["goals_against"] for m in recent3) >= 2 and
+        last["goals_for"] >= 1)
+    f[f"{prefix}_alternating_results_3"] = float(len(recent3) == 3 and len({
+        1 if m["goals_for"] > m["goals_against"] else (-1 if m["goals_for"] < m["goals_against"] else 0)
+        for m in recent3
+    }) >= 2)
     # Venue-specific splits, when the source labels prior fixtures as home/away.
     for venue in ("home", "away"):
         subset = [m for m in history if str(m.get("venue", "")).lower() == venue]
@@ -234,9 +260,11 @@ def _wilson(successes: int, n: int, z: float = 1.959963984540054) -> tuple[float
 
 def _condition_value(features: dict, condition: dict) -> bool:
     value = features.get(condition["feature"])
+    op, threshold = condition["op"], condition["value"]
+    if op == "eq":
+        return value == threshold
     if not _num(value):
         return False
-    op, threshold = condition["op"], condition["value"]
     if op == "ge": return value >= threshold
     if op == "le": return value <= threshold
     if op == "gt": return value > threshold
@@ -254,6 +282,11 @@ def _feature_conditions(feature_rows: list[dict]) -> list[dict]:
     numeric = sorted({k for row in feature_rows for k, v in row.items()
                       if k not in {"match_id", "date", "league", "home_team", "away_team"} and _num(v)})
     conditions = []
+    # League identity is an explicit categorical dimension, not an assumed numeric ranking.
+    league_counts = Counter(str(row.get("league") or "INCONNUE") for row in feature_rows)
+    for league, count in sorted(league_counts.items()):
+        if count >= MIN_DISCOVERY_SUPPORT and count <= len(feature_rows) * 0.95:
+            conditions.append({"feature": "league", "op": "eq", "value": league})
     for name in numeric:
         values = [row[name] for row in feature_rows if _num(row.get(name))]
         if len(values) < MIN_DISCOVERY_SUPPORT:
