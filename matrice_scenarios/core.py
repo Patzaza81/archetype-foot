@@ -8,15 +8,15 @@ from __future__ import annotations
 
 import gzip
 import hashlib
-import itertools
 import json
 import math
+import random
 from collections import Counter
-from datetime import date
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 TARGETS = (
     "home_not_lose", "away_not_lose", "home_win", "away_win", "draw",
     "home_scores_1plus", "home_scores_2plus", "home_scores_3plus",
@@ -26,7 +26,12 @@ TARGETS = (
 WINDOWS = (2, 3, 5, 8, 10)
 MIN_DISCOVERY_SUPPORT = 30
 MIN_EVAL_SUPPORT = 30
-DEFAULT_MAX_CANDIDATES = 5000
+# 16 cibles par règle : 5000 scénarios ne donnaient que ~300 règles, moins que le nombre de variables.
+DEFAULT_MAX_CANDIDATES = 20000
+# Graine fixe : l'échantillonnage des interactions est déterministe et ne dépend que de la découverte.
+DISCOVERY_SEED = 20261018
+# Critères de sélection gelés a priori ; ils n'utilisent jamais le segment test.
+SELECTION_CRITERIA = {"train_q_bh_max": 0.10, "validation_min_n": MIN_EVAL_SUPPORT, "validation_lift_min_exclusive": 0.0}
 _THRESHOLDS = (0, 1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25, 30, 40, 50, 60, 70, 75, 80, 90, 100)
 
 
@@ -45,6 +50,35 @@ def _as_date(value: Any) -> date | None:
         return None
 
 
+def _parse_ts(value: Any) -> datetime | None:
+    """Horodatage ISO 8601 -> datetime UTC (accepte 'Z' et '+00:00'); None si absent ou illisible."""
+    if not isinstance(value, str) or not value.strip():
+        return None
+    try:
+        parsed = datetime.fromisoformat(value.strip().replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def prematch_timing_issue(record: dict) -> str | None:
+    """Raison du refus si la capture (cotes, classement, historique) n'est pas PROUVÉE antérieure
+    au coup d'envoi ; None sinon. Les sources normalisées sans `snapshot_at` suivent le contrat
+    documenté (la provenance pré-match y est déclarée par l'appelant, la matrice ne peut pas la prouver)."""
+    if "snapshot_at" not in record:
+        return None
+    snapshot, kickoff = _parse_ts(record.get("snapshot_at")), _parse_ts(record.get("kickoff_at"))
+    if snapshot is None:
+        return "CAPTURE_SANS_HORODATAGE"
+    if kickoff is None:
+        return "COUP_D_ENVOI_ABSENT"
+    if snapshot >= kickoff:
+        return "CAPTURE_APRES_COUP_D_ENVOI"
+    return None
+
+
 def validate_record(record: Any) -> tuple[bool, str]:
     """Valide la structure minimale; les enregistrements ambigus sont refusés, jamais devinés."""
     if not isinstance(record, dict):
@@ -60,6 +94,9 @@ def validate_record(record: Any) -> tuple[bool, str]:
         return False, "SCORE_ABSENT_OU_INVALIDE"
     if not isinstance(record.get("home_history", []), list) or not isinstance(record.get("away_history", []), list):
         return False, "HISTORIQUE_INVALIDE"
+    timing = prematch_timing_issue(record)
+    if timing:
+        return False, timing
     return True, "OK"
 
 
@@ -123,12 +160,21 @@ def _record_from_archive(item: Any) -> dict | None:
         return None
     home, away = item.get("equipe_dom") or {}, item.get("equipe_ext") or {}
     target_odds = _archive_target_odds(item)
+    kickoff = _parse_ts(item.get("coup_d_envoi_utc"))
+
+    def _timed_rank(team: dict) -> Any:
+        # Un classement n'est gardé que si son horodatage prouve qu'il précède le coup d'envoi.
+        stamp = _parse_ts(team.get("classement_horodatage"))
+        return team.get("rang") if (stamp is not None and kickoff is not None and stamp < kickoff) else None
+
     return {
         "match_id": item.get("match_id"), "date": item.get("date"),
         "league": item.get("competition") or item.get("competition_brute"),
         "home_team": item.get("domicile"), "away_team": item.get("exterieur"),
         "home_goals": hg, "away_goals": ag,
-        "home_rank": home.get("rang"), "away_rank": away.get("rang"),
+        "snapshot_at": (item.get("run") or {}).get("pris_le"),
+        "kickoff_at": item.get("coup_d_envoi_utc"),
+        "home_rank": _timed_rank(home), "away_rank": _timed_rank(away),
         "home_odds": target_odds.get("home_win"), "draw_odds": target_odds.get("draw"),
         "away_odds": target_odds.get("away_win"),
         "home_history": _archive_history(home), "away_history": _archive_history(away),
@@ -174,32 +220,55 @@ def load_dataset(path: str | Path) -> tuple[list[dict], dict]:
                 payload = [json.loads(line) for line in raw.splitlines() if line.strip()]
     if not isinstance(payload, list):
         raise ValueError("Le fichier doit contenir une liste JSON, {matches:[...]}, du JSONL ou un dossier archive_test.")
-    by_id: dict[str, list[dict]] = {}
+    valid = []
     for row in payload:
         ok, reason = validate_record(row)
         if not ok:
             rejected[reason] += 1
             continue
-        by_id.setdefault(str(row["match_id"]), []).append(row)
-    rows = []
-    conflicts = 0
-    duplicates = 0
-    for mid, versions in by_id.items():
-        if len(versions) > 1:
-            duplicates += len(versions) - 1
-            signatures = {(v["date"], v["home_team"], v["away_team"], v["home_goals"], v["away_goals"]) for v in versions}
-            if len(signatures) > 1:
-                conflicts += 1
-                rejected["DOUBLON_CONTRADICTOIRE"] += len(versions)
-                continue
-        rows.append(versions[0])
-    rows.sort(key=lambda r: (str(r["date"]), str(r["match_id"])))
+        valid.append(row)
+    rows, duplicates, conflicts, date_shifted = _dedupe(valid, rejected)
     return rows, {
         "input_rows": len(payload), "unique_matches": len(rows),
         "duplicate_rows": duplicates, "conflicting_match_ids": conflicts,
+        "date_shifted_duplicates": date_shifted,
         "archive_unresolved_or_missing_score": archive_unresolved,
         "rejected": dict(rejected),
     }
+
+
+def _dup_signature(record: dict) -> tuple:
+    """Identité d'un match pour détecter les vraies contradictions.
+
+    Pour une source horodatée (archive), la date peut légitimement différer d'une copie à l'autre
+    (même match listé sur deux jours) : le choix de la copie se fait alors sur la preuve pré-match,
+    et seule une différence d'équipes ou de score est une contradiction. Sans horodatage, la date
+    reste dans la signature (comportement strict d'origine)."""
+    base = (record["home_team"], record["away_team"], record["home_goals"], record["away_goals"])
+    return base if "snapshot_at" in record else (record["date"],) + base
+
+
+def _dedupe(valid: list[dict], rejected: Counter) -> tuple[list[dict], int, int, int]:
+    """Un match par match_id. Copies identiques : on garde la capture la plus tardive encore
+    antérieure au coup d'envoi (ou la première si la source n'est pas horodatée). Copies
+    contradictoires : toutes exclues et comptées. Retourne (lignes, doublons, conflits, doublons à date décalée)."""
+    by_id: dict[str, list[dict]] = {}
+    for row in valid:
+        by_id.setdefault(str(row["match_id"]), []).append(row)
+    rows, duplicates, conflicts, date_shifted = [], 0, 0, 0
+    for versions in by_id.values():
+        if len(versions) > 1:
+            duplicates += len(versions) - 1
+            if len({_dup_signature(v) for v in versions}) > 1:
+                conflicts += 1
+                rejected["DOUBLON_CONTRADICTOIRE"] += len(versions)
+                continue
+            if len({str(v["date"])[:10] for v in versions}) > 1:
+                date_shifted += 1
+        timed = [v for v in versions if "snapshot_at" in v]
+        rows.append(max(timed, key=lambda v: _parse_ts(v["snapshot_at"])) if timed else versions[0])
+    rows.sort(key=lambda r: (str(r["date"]), str(r["match_id"])))
+    return rows, duplicates, conflicts, date_shifted
 
 def _history_before(history: list, match_date: str) -> list[dict]:
     """Seuls les matchs strictement antérieurs à la date du match cible sont admissibles."""
@@ -274,6 +343,21 @@ def _team_features(prefix: str, history: list[dict]) -> dict[str, float]:
         1 if m["goals_for"] > m["goals_against"] else (-1 if m["goals_for"] < m["goals_against"] else 0)
         for m in recent3
     }) >= 2)
+    # Lieu du match précédent et séries à domicile / à l'extérieur (« retour à domicile » = dernier
+    # match à l'extérieur). Sans étiquette de lieu fiable, ces variables sont absentes : jamais devinées.
+    def venue_of(m: dict) -> str | None:
+        label = str(m.get("venue", "")).lower()
+        return label if label in ("home", "away") else None
+    if venue_of(last):
+        f[f"{prefix}_last_venue_away"] = float(venue_of(last) == "away")
+        f[f"{prefix}_last_venue_home"] = float(venue_of(last) == "home")
+        f[f"{prefix}_away_streak"] = float(_streak(history, lambda m: venue_of(m) == "away"))
+        f[f"{prefix}_home_streak"] = float(_streak(history, lambda m: venue_of(m) == "home"))
+    # Marquer malgré les défaites : part des défaites des 5 derniers matchs où l'équipe a marqué.
+    losses_5 = [m for m in history[-5:] if m["goals_for"] < m["goals_against"]]
+    f[f"{prefix}_loss_count_5"] = float(len(losses_5))
+    if losses_5:
+        f[f"{prefix}_score_in_loss_rate_5"] = sum(m["goals_for"] >= 1 for m in losses_5) / len(losses_5) * 100
     # Venue-specific splits, when the source labels prior fixtures as home/away.
     for venue in ("home", "away"):
         subset = [m for m in history if str(m.get("venue", "")).lower() == venue]
@@ -420,114 +504,153 @@ def _feature_conditions(feature_rows: list[dict]) -> list[dict]:
     return conditions
 
 
+def _condition_mask(features: list[dict], condition: dict) -> int:
+    """Masque de bits (un bit par match de découverte) des matchs qui vérifient la condition."""
+    mask = 0
+    for index, row in enumerate(features):
+        if _condition_value(row, condition):
+            mask |= 1 << index
+    return mask
+
+
+def _rule_conditions(*conditions: dict) -> list[dict]:
+    return sorted(conditions, key=lambda c: (c["feature"], c["op"], str(c["value"])))
+
+
 def discover_scenarios(records: list[dict], features_by_id: dict[str, dict] | None = None,
                        max_candidates: int = DEFAULT_MAX_CANDIDATES) -> list[dict]:
-    """Découvre règles simples, paires et triplets avec support et budget explicites."""
+    """Découvre règles simples, paires et triplets avec support et budget explicites.
+
+    Le budget (en scénarios = règle x cible) est réparti 40 % / 40 % / 20 %. Les règles simples
+    sont prises en tourniquet sur toutes les variables ; les paires et triplets sont échantillonnés
+    de façon déterministe (graine fixe) dans l'ensemble des conditions admissibles, jamais en
+    tronquant un produit cartésien trié. Deux règles qui sélectionnent exactement les mêmes matchs
+    de découverte ne comptent qu'une fois. Seuls les matchs de découverte sont lus."""
     if max_candidates < 1:
         return []
     rows = sorted(records, key=lambda r: (str(r["date"]), str(r["match_id"])))
     if features_by_id is None:
         features_by_id = {str(r["match_id"]): build_features(r) for r in rows}
     features = [features_by_id[str(r["match_id"])] for r in rows]
-    atomic = _feature_conditions(features)
-    eligible = []
-    for condition in atomic:
-        support = sum(_condition_value(f, condition) for f in features)
-        if MIN_DISCOVERY_SUPPORT <= support <= len(rows) * 0.95:
-            eligible.append((condition, support))
-    eligible.sort(key=lambda item: (
-        abs(item[1] / max(1, len(rows)) - 0.5),
-        item[0]["feature"], item[0]["op"], str(item[0]["value"])
-    ))
-    if not eligible:
+    n_rows = len(rows)
+    max_support = n_rows * 0.95
+    pool = []  # (condition, support, masque) ; une seule condition par ensemble de matchs
+    seen_masks: set[int] = set()
+    for condition in _feature_conditions(features):
+        mask = _condition_mask(features, condition)
+        support = mask.bit_count()
+        if MIN_DISCOVERY_SUPPORT <= support <= max_support and mask not in seen_masks:
+            seen_masks.add(mask)
+            pool.append((condition, support, mask))
+    pool.sort(key=lambda item: (abs(item[1] / max(1, n_rows) - 0.5),
+                                item[0]["feature"], item[0]["op"], str(item[0]["value"])))
+    if not pool:
         return []
 
     unary_budget = max(1, max_candidates * 4 // 10)
     pair_budget = max_candidates * 4 // 10
     triple_budget = max_candidates - unary_budget - pair_budget
-    scenarios = []
-    for condition, support in eligible:
+    scenarios: list[dict] = []
+
+    def add_rule(conditions: list[dict], support: int, complexity: int, limit: int, out: list[dict]) -> None:
         for target in TARGETS:
-            scenarios.append({
-                "scenario_id": _scenario_id(target, [condition]), "target": target,
-                "conditions": [condition], "discovery_support": support, "complexity": 1,
-            })
-            if len(scenarios) >= unary_budget:
+            if len(out) >= limit:
+                return
+            out.append({"scenario_id": _scenario_id(target, conditions), "target": target,
+                        "conditions": conditions, "discovery_support": support, "complexity": complexity})
+
+    # Règles simples : tourniquet sur les variables (ordre des variables mélangé par hachage),
+    # les conditions de chaque variable allant de la plus équilibrée à la moins équilibrée.
+    per_feature: dict[str, list[tuple[dict, int, int]]] = {}
+    for item in pool:
+        per_feature.setdefault(item[0]["feature"], []).append(item)
+    feature_order = sorted(per_feature, key=lambda name: hashlib.sha256(f"{DISCOVERY_SEED}|{name}".encode()).hexdigest())
+    unary: list[dict] = []
+    rank = 0
+    while len(unary) < unary_budget and any(len(per_feature[name]) > rank for name in feature_order):
+        for name in feature_order:
+            if len(per_feature[name]) > rank:
+                condition, support, _mask = per_feature[name][rank]
+                add_rule([condition], support, 1, unary_budget, unary)
+            if len(unary) >= unary_budget:
                 break
-        if len(scenarios) >= unary_budget:
-            break
-    if pair_budget <= 0 or len(eligible) < 2:
+        rank += 1
+    scenarios.extend(unary)
+    if pair_budget <= 0 or len(pool) < 2:
         return scenarios[:max_candidates]
 
-    pair_conditions = []
-    pair_rules = []
-    seen_pairs = set()
-    for (c1, _), (c2, _) in itertools.combinations(eligible, 2):
+    rng = random.Random(DISCOVERY_SEED)
+    accepted_masks: set[int] = set()
+    pair_rules: list[tuple[list[dict], int, int]] = []
+    pair_rows: list[dict] = []
+    attempts, max_attempts = 0, 60 * max(1, pair_budget)
+    while len(pair_rows) < pair_budget and attempts < max_attempts:
+        attempts += 1
+        (c1, _, m1), (c2, _, m2) = rng.choice(pool), rng.choice(pool)
         if c1["feature"] == c2["feature"]:
             continue
-        conditions = sorted([c1, c2], key=lambda c: (c["feature"], c["op"], str(c["value"])))
-        key = tuple(json.dumps(c, sort_keys=True) for c in conditions)
-        if key in seen_pairs:
+        mask = m1 & m2
+        support = mask.bit_count()
+        if support < MIN_DISCOVERY_SUPPORT or support > max_support or mask in accepted_masks or mask in seen_masks:
             continue
-        seen_pairs.add(key)
-        support = sum(all(_condition_value(f, cond) for cond in conditions) for f in features)
-        if support < MIN_DISCOVERY_SUPPORT or support > len(rows) * 0.95:
-            continue
-        pair_conditions.append((conditions, support))
-        for target in TARGETS:
-            pair_rules.append({
-                "scenario_id": _scenario_id(target, conditions), "target": target,
-                "conditions": conditions, "discovery_support": support, "complexity": 2,
-            })
-            if len(pair_rules) >= pair_budget:
-                break
-        if len(pair_rules) >= pair_budget:
-            break
-    scenarios.extend(pair_rules)
-    if triple_budget <= 0 or not pair_conditions:
+        accepted_masks.add(mask)
+        conditions = _rule_conditions(c1, c2)
+        pair_rules.append((conditions, support, mask))
+        add_rule(conditions, support, 2, pair_budget, pair_rows)
+    scenarios.extend(pair_rows)
+    if triple_budget <= 0 or not pair_rules:
         return scenarios[:max_candidates]
 
-    triple_rules = []
-    seen_triples = set()
-    # Bounded, deterministic extension of supported pairs; no exhaustive Cartesian product.
-    for pair, _pair_support in pair_conditions:
-        used = {c["feature"] for c in pair}
-        for third, _ in eligible:
-            if third["feature"] in used:
-                continue
-            conditions = sorted(pair + [third], key=lambda c: (c["feature"], c["op"], str(c["value"])))
-            key = tuple(json.dumps(c, sort_keys=True) for c in conditions)
-            if key in seen_triples:
-                continue
-            seen_triples.add(key)
-            support = sum(all(_condition_value(f, cond) for cond in conditions) for f in features)
-            if support < MIN_DISCOVERY_SUPPORT or support > len(rows) * 0.95:
-                continue
-            for target in TARGETS:
-                triple_rules.append({
-                    "scenario_id": _scenario_id(target, conditions), "target": target,
-                    "conditions": conditions, "discovery_support": support, "complexity": 3,
-                })
-                if len(triple_rules) >= triple_budget:
-                    break
-            if len(triple_rules) >= triple_budget:
-                break
-        if len(triple_rules) >= triple_budget:
-            break
-    scenarios.extend(triple_rules)
+    triple_rows: list[dict] = []
+    attempts, max_attempts = 0, 60 * max(1, triple_budget)
+    while len(triple_rows) < triple_budget and attempts < max_attempts:
+        attempts += 1
+        pair, _support, pair_mask = rng.choice(pair_rules)
+        third, _s3, m3 = rng.choice(pool)
+        if third["feature"] in {c["feature"] for c in pair}:
+            continue
+        mask = pair_mask & m3
+        support = mask.bit_count()
+        if support < MIN_DISCOVERY_SUPPORT or support > max_support or mask in accepted_masks or mask in seen_masks:
+            continue
+        accepted_masks.add(mask)
+        add_rule(_rule_conditions(*pair, third), support, 3, triple_budget, triple_rows)
+    scenarios.extend(triple_rows)
     return scenarios[:max_candidates]
+
 
 def _scenario_id(target: str, conditions: list[dict]) -> str:
     payload = json.dumps({"target": target, "conditions": conditions}, sort_keys=True, separators=(",", ":"))
     return hashlib.sha256(payload.encode()).hexdigest()[:16]
 
 
-def evaluate_scenario(scenario: dict, records: list[dict], features_by_id: dict[str, dict]) -> dict:
+def _select_rows(scenario: dict, records: list[dict], features_by_id: dict[str, dict]) -> list[dict]:
     selected = []
     for row in records:
         f = features_by_id.get(str(row["match_id"]))
         if f and scenario_matches(f, scenario):
-            selected.append((row, outcome(row, scenario["target"])))
+            selected.append(row)
+    return selected
+
+
+_ONE_X_TWO = {"home_win": "home_odds", "draw": "draw_odds", "away_win": "away_odds"}
+
+
+def _market_probability(row: dict, target: str, odds: float) -> tuple[float, str]:
+    """Probabilité implicite de la cote réelle. 1X2 : normalisée sans marge avec les trois cotes
+    de CE match. Autres marchés : 1/cote brute, marge du bookmaker incluse (donc plus exigeante
+    pour le scénario que la probabilité sans marge)."""
+    if target in _ONE_X_TWO:
+        trio = [row.get(k) for k in ("home_odds", "draw_odds", "away_odds")]
+        if all(_num(x) and x > 1 for x in trio):
+            return (1 / odds) / sum(1 / x for x in trio), "1x2_sans_marge"
+    return 1 / odds, "brute_avec_marge"
+
+
+def evaluate_scenario(scenario: dict, records: list[dict], features_by_id: dict[str, dict],
+                      selected_rows: list[dict] | None = None, include_match_ids: bool = True) -> dict:
+    rows = _select_rows(scenario, records, features_by_id) if selected_rows is None else selected_rows
+    selected = [(row, outcome(row, scenario["target"])) for row in rows]
     n = len(selected)
     wins = sum(y for _, y in selected)
     lo, hi = _wilson(wins, n)
@@ -537,27 +660,55 @@ def evaluate_scenario(scenario: dict, records: list[dict], features_by_id: dict[
         "n": n, "wins": wins, "losses": n - wins,
         "hit_rate": wins / n if n else None, "wilson_95": [lo, hi],
         "leagues": len({str(r.get("league") or "INCONNUE") for r, _ in selected}),
-        "match_ids": [str(r["match_id"]) for r, _ in selected],
     }
-    # Economic result only when an odds field explicitly corresponds to this target.
-    # Never derive/invent an odds price from an unrelated market.
-    returns = []
+    if include_match_ids:
+        result["match_ids"] = [str(r["match_id"]) for r, _ in selected]
+    # Résultat économique uniquement avec la cote réelle de CETTE cible ; jamais de cote déduite
+    # d'un autre marché. Mise plate de 1 : gain net = cote - 1, perte = -1.
+    returns, odds_list, implied, odds_wins = [], [], [], 0
+    basis = "aucune_cote"
     for row, won in selected:
         odds = (row.get("target_odds") or {}).get(scenario["target"])
         if _num(odds) and odds > 1:
             returns.append(float(odds) - 1 if won else -1.0)
-    result["roi"] = sum(returns) / len(returns) if returns else None
-    result["roi_n"] = len(returns)
+            odds_list.append(float(odds))
+            probability, basis = _market_probability(row, scenario["target"], float(odds))
+            implied.append(probability)
+            odds_wins += won
+    k = len(returns)
+    result["roi"] = sum(returns) / k if k else None
+    result["roi_n"] = k
+    result["settled_bets"] = k
+    result["mean_odds"] = sum(odds_list) / k if k else None
+    result["hit_rate_with_odds"] = odds_wins / k if k else None
+    result["market_implied_rate"] = sum(implied) / k if k else None
+    result["market_implied_basis"] = basis
+    result["edge_vs_market"] = (odds_wins / k - sum(implied) / k) if k else None
+    if k >= 2:
+        mean = sum(returns) / k
+        se = math.sqrt(sum((x - mean) ** 2 for x in returns) / (k - 1)) / math.sqrt(k)
+        result["roi_ci95"] = [mean - 1.959963984540054 * se, mean + 1.959963984540054 * se]
+    else:
+        result["roi_ci95"] = None
     return result
 
 
 def _split_chronologically(records: list[dict]) -> tuple[list[dict], list[dict], list[dict]]:
+    """60/20/20 chronologique. Les deux coupures sont alignées sur des changements de date (le couple
+    de frontières le plus proche des cibles) : aucun jour n'est partagé entre deux segments, sinon des résultats
+    du jour servent à choisir des règles évaluées sur des matchs joués le même jour."""
     rows = sorted(records, key=lambda r: (str(r["date"]), str(r["match_id"])))
     if len(rows) < 5:
         return rows, [], []
-    a = max(1, int(len(rows) * 0.60))
-    b = max(a + 1, int(len(rows) * 0.80))
-    b = min(b, len(rows) - 1)
+    target_a, target_b = int(len(rows) * 0.60), int(len(rows) * 0.80)
+    boundaries = [i for i in range(1, len(rows)) if str(rows[i]["date"])[:10] != str(rows[i - 1]["date"])[:10]]
+    if len(boundaries) >= 2:
+        a, b = min(((x, y) for x in boundaries for y in boundaries if y > x),
+                   key=lambda pair: (abs(pair[0] - target_a) + abs(pair[1] - target_b), pair))
+        return rows[:a], rows[a:b], rows[b:]
+    # Moins de trois dates distinctes : découpe par rang, la fuite de jour est alors inévitable.
+    a = max(1, target_a)
+    b = min(max(a + 1, target_b), len(rows) - 1)
     return rows[:a], rows[a:b], rows[b:]
 
 
@@ -590,41 +741,141 @@ def _binomial_p_approx(wins: int, n: int, baseline: float) -> float:
     return min(1.0, max(0.0, 2 * tail))
 
 
-def run_experiment(records: list[dict], max_candidates: int = DEFAULT_MAX_CANDIDATES) -> dict:
-    """Découverte train-only, choix sur validation, mesure finale sur test chronologique."""
+_DYNAMIC_MARKERS = ("after_", "bad_run", "recovery", "alternating", "streak")
+_NON_FEATURE_KEYS = {"match_id", "date", "league", "home_team", "away_team"}
+
+
+def _clean_records(records: list[dict]) -> tuple[list[dict], Counter]:
+    """Validation structurelle + preuve pré-match + dédoublonnage, identiques pour toutes les entrées."""
+    rejected: Counter = Counter()
     valid = []
-    rejected = Counter()
     for row in records:
         ok, reason = validate_record(row)
-        if ok: valid.append(row)
-        else: rejected[reason] += 1
-    # Reuse loader's duplicate policy for in-memory inputs too.
-    by_id: dict[str, list[dict]] = {}
-    for r in valid: by_id.setdefault(str(r["match_id"]), []).append(r)
-    clean = []
-    for mid, versions in by_id.items():
-        sig = {(v["date"], v["home_team"], v["away_team"], v["home_goals"], v["away_goals"]) for v in versions}
-        if len(sig) > 1:
-            rejected["DOUBLON_CONTRADICTOIRE"] += len(versions)
+        if ok:
+            valid.append(row)
         else:
-            clean.append(versions[0])
-    clean.sort(key=lambda r: (str(r["date"]), str(r["match_id"])))
+            rejected[reason] += 1
+    clean, _dups, _conflicts, _shifted = _dedupe(valid, rejected)
+    return clean, rejected
+
+
+def _exploration_diagnostics(scenarios: list[dict], train_features: list[dict]) -> dict:
+    """Ce qui a réellement été exploré, pour ne jamais confondre budget et couverture."""
+    all_features = {k for row in train_features for k, v in row.items() if k not in _NON_FEATURE_KEYS and _num(v)}
+    used_features = {c["feature"] for s in scenarios for c in s["conditions"]}
+    by_complexity = {}
+    for complexity in (1, 2, 3):
+        group = [s for s in scenarios if s.get("complexity", 1) == complexity]
+        rule_conditions = {json.dumps(s["conditions"], sort_keys=True): s["conditions"] for s in group}
+        rules = set(rule_conditions)
+        condition_counts = Counter(json.dumps(c, sort_keys=True) for conds in rule_conditions.values() for c in conds)
+        rule_count = max(1, len(rules))
+        by_complexity[str(complexity)] = {
+            "scenarios": len(group), "distinct_rules": len(rules),
+            "distinct_features": len({c["feature"] for s in group for c in s["conditions"]}),
+            "most_used_condition_share_of_rules": (max(condition_counts.values()) / rule_count) if group else None,
+        }
+    dynamic_rules = {json.dumps(s["conditions"], sort_keys=True) for s in scenarios
+                     if any(any(m in c["feature"] for m in _DYNAMIC_MARKERS) for c in s["conditions"])}
+    return {
+        "by_complexity": by_complexity,
+        "numeric_features_available": len(all_features),
+        "numeric_features_used_in_rules": len(used_features & all_features),
+        "numeric_features_never_used": sorted(all_features - used_features),
+        "rules_with_dynamic_feature": len(dynamic_rules),
+        "note": "Échantillon déterministe et borné ; ce n'est pas l'exploration de toutes les combinaisons possibles.",
+    }
+
+
+def _compact(candidate: dict) -> dict:
+    s, tr, va, te = candidate["scenario"], candidate["train"], candidate["validation"], candidate["test"]
+
+    def part(r: dict) -> dict:
+        return {k: r.get(k) for k in ("n", "hit_rate", "wilson_95", "settled_bets", "mean_odds", "roi", "roi_ci95",
+                                      "market_implied_rate", "market_implied_basis", "edge_vs_market")}
+    return {
+        "scenario_id": s["scenario_id"], "target": s["target"], "complexity": s["complexity"],
+        "conditions": s["conditions"], "q_bh_train": candidate["q_bh_approx"],
+        "train": {"n": tr["n"], "hit_rate": tr["hit_rate"], "baseline": candidate["train_baseline"]},
+        "validation": {**part(va), "baseline": candidate["validation_baseline"], "lift": candidate["validation_lift"]},
+        "test": {**part(te), "baseline": candidate["test_baseline"], "lift": candidate["test_lift"]},
+    }
+
+
+def _test_outcome_stats(group: list[dict]) -> dict:
+    """Résultats test d'un groupe de scénarios déjà choisis ; le test n'a servi à aucun choix."""
+    measured = [c for c in group if c["test"]["n"] > 0 and c["test_lift"] is not None]
+    lifts = [c["test_lift"] for c in measured]
+    with_roi = [c for c in measured if c["test"]["settled_bets"] >= MIN_EVAL_SUPPORT and c["test"]["roi"] is not None]
+    return {
+        "scenarios": len(group), "with_test_matches": len(measured),
+        "test_lift_positive": sum(x > 0 for x in lifts),
+        "share_test_lift_positive": (sum(x > 0 for x in lifts) / len(lifts)) if lifts else None,
+        "mean_test_lift": (sum(lifts) / len(lifts)) if lifts else None,
+        "test_wilson_low_above_baseline": sum(
+            1 for c in measured if c["test"]["wilson_95"][0] is not None and c["test"]["wilson_95"][0] > c["test_baseline"]),
+        "with_min_settled_bets": len(with_roi),
+        "roi_positive_with_min_settled_bets": sum(c["test"]["roi"] > 0 for c in with_roi),
+        "roi_ci95_low_above_zero": sum(1 for c in with_roi if c["test"]["roi_ci95"] and c["test"]["roi_ci95"][0] > 0),
+        "mean_roi_with_min_settled_bets": (sum(c["test"]["roi"] for c in with_roi) / len(with_roi)) if with_roi else None,
+        "mean_edge_vs_market": (sum(c["test"]["edge_vs_market"] for c in with_roi) / len(with_roi)) if with_roi else None,
+        "edge_vs_market_positive": sum(c["test"]["edge_vs_market"] > 0 for c in with_roi),
+    }
+
+
+def _uses_market_features(candidate: dict) -> bool:
+    """Vrai si la règle lit une cote ou une probabilité de marché (information déjà dans le prix)."""
+    return any(c["feature"].startswith("market_") or c["feature"].endswith("_odds")
+               for c in candidate["scenario"]["conditions"])
+
+
+def _selection_summary(candidates: list[dict], top: int = 20) -> dict:
+    selected = [c for c in candidates if c["selected_on_validation"]]
+    control = [c for c in candidates if c["status"] == "A_VALIDER" and not c["selected_on_validation"]]
+    return {
+        "criteria": dict(SELECTION_CRITERIA),
+        "selected": len(selected),
+        "distinct_rules": len({json.dumps(c["scenario"]["conditions"], sort_keys=True) for c in selected}),
+        "by_target": dict(Counter(c["scenario"]["target"] for c in selected)),
+        "selected_test": _test_outcome_stats(selected),
+        "selected_with_market_features_test": _test_outcome_stats([c for c in selected if _uses_market_features(c)]),
+        "selected_without_market_features_test": _test_outcome_stats([c for c in selected if not _uses_market_features(c)]),
+        "control_not_selected_test": _test_outcome_stats(control),
+        "top_by_validation_lift": [_compact(c) for c in selected[:top]],
+        "interpretation": ("Un scénario sélectionné sur validation n'est prometteur que si son rendement test dépasse "
+                           "nettement celui du groupe témoin ; sinon la sélection ne transmet aucune information."),
+    }
+
+
+def run_experiment(records: list[dict], max_candidates: int = DEFAULT_MAX_CANDIDATES,
+                   detail_top: int = 200) -> dict:
+    """Découverte train-only, choix sur validation, mesure finale sur test chronologique."""
+    clean, rejected = _clean_records(records)
     train, validation, test = _split_chronologically(clean)
     feature_map = {str(r["match_id"]): build_features(r) for r in clean}
     scenarios = discover_scenarios(train, feature_map, max_candidates=max_candidates)
-    baseline_by_target = {}
     split_baselines = {}
     for split_name, split_rows in (("train", train), ("validation", validation), ("test", test)):
         split_baselines[split_name] = {}
         for target in TARGETS:
             ys = [outcome(r, target) for r in split_rows]
             split_baselines[split_name][target] = sum(ys) / len(ys) if ys else None
-            if split_name == "train":
-                baseline_by_target[target] = split_baselines[split_name][target]
+    baseline_by_target = dict(split_baselines["train"])
+    cache: dict[tuple[str, str], list[dict]] = {}
+
+    def evaluate(s: dict, split_name: str, split_rows: list[dict], with_ids: bool = False) -> dict:
+        key = (json.dumps(s["conditions"], sort_keys=True), split_name)
+        if key not in cache:
+            cache[key] = _select_rows(s, split_rows, feature_map)
+        result = evaluate_scenario(s, split_rows, feature_map, selected_rows=cache[key], include_match_ids=with_ids)
+        for repeated in ("scenario_id", "target", "conditions", "complexity"):
+            result.pop(repeated, None)  # déjà portés par `scenario` ; évite de les répéter 3 fois par candidat
+        return result
+
     scored = []
     pvals = []
     for s in scenarios:
-        tr = evaluate_scenario(s, train, feature_map)
+        tr = evaluate(s, "train", train)
         if tr["n"] < MIN_DISCOVERY_SUPPORT or tr["hit_rate"] is None:
             continue
         base = baseline_by_target[s["target"]]
@@ -634,8 +885,8 @@ def run_experiment(records: list[dict], max_candidates: int = DEFAULT_MAX_CANDID
     adjusted = _bh_adjust(pvals)
     candidates = []
     for (s, tr, p), q in zip(scored, adjusted):
-        vr = evaluate_scenario(s, validation, feature_map)
-        te = evaluate_scenario(s, test, feature_map)
+        vr = evaluate(s, "validation", validation)
+        te = evaluate(s, "test", test)
         base = baseline_by_target[s["target"]]
         eligible = (
             vr["n"] >= MIN_EVAL_SUPPORT and te["n"] >= MIN_EVAL_SUPPORT
@@ -643,24 +894,40 @@ def run_experiment(records: list[dict], max_candidates: int = DEFAULT_MAX_CANDID
         )
         validation_base = split_baselines["validation"][s["target"]]
         test_base = split_baselines["test"][s["target"]]
+        validation_lift = (vr["hit_rate"] - validation_base) if vr["hit_rate"] is not None and validation_base is not None else None
+        # Sélection gelée : train + validation uniquement. Le test n'entre dans aucun critère.
+        selected = bool(
+            eligible and validation_lift is not None
+            and q <= SELECTION_CRITERIA["train_q_bh_max"]
+            and vr["n"] >= SELECTION_CRITERIA["validation_min_n"]
+            and validation_lift > SELECTION_CRITERIA["validation_lift_min_exclusive"]
+        )
         candidates.append({
             "scenario": s, "train": tr, "validation": vr, "test": te,
             "train_baseline": base,
             "validation_baseline": validation_base,
-            "validation_lift": (vr["hit_rate"] - validation_base) if vr["hit_rate"] is not None and validation_base is not None else None,
+            "validation_lift": validation_lift,
             "test_baseline": test_base,
             "test_lift": (te["hit_rate"] - test_base) if te["hit_rate"] is not None and test_base is not None else None,
             "p_approx": p, "q_bh_approx": q,
             "status": "A_VALIDER" if eligible else "ECHANTILLON_INSUFFISANT",
+            "selected_on_validation": selected,
             "promotion_allowed": False,
             "interpretation": "Exploratoire uniquement; la p-value est une approximation de tri, pas une preuve."
         })
+    # Tri sur la validation seule, par écart au taux de base (et non par taux brut, qui favoriserait
+    # les cibles banales comme « plus de 1,5 but »).
     candidates.sort(key=lambda c: (
         c["status"] != "A_VALIDER",
-        -(c["validation"]["hit_rate"] or 0),
+        -(c["validation_lift"] if c["validation_lift"] is not None else -1.0),
         -(c["validation"]["n"]),
         c["scenario"]["scenario_id"],
     ))
+    # Les listes de matchs ne sont conservées que pour les meilleurs candidats : elles pèsent
+    # ~20 Ko par candidat et rendaient le rapport inutilisable (108 Mo pour 5000 scénarios).
+    for c in candidates[:detail_top]:
+        for split_name, split_rows in (("train", train), ("validation", validation), ("test", test)):
+            c[split_name]["match_ids"] = [str(r["match_id"]) for r in cache[(json.dumps(c["scenario"]["conditions"], sort_keys=True), split_name)]]
     digest_input = "\n".join(f'{r["match_id"]}|{r["date"]}|{r["home_goals"]}|{r["away_goals"]}' for r in clean)
     coverage = {
         "matches": len(clean),
@@ -672,16 +939,28 @@ def run_experiment(records: list[dict], max_candidates: int = DEFAULT_MAX_CANDID
         "target_odds_by_market": {target: sum(_num((r.get("target_odds") or {}).get(target)) and (r.get("target_odds") or {}).get(target) > 1 for r in clean) for target in TARGETS},
         "league_counts": dict(Counter(str(r.get("league") or "INCONNUE") for r in clean)),
     }
+
+    def span(rows: list[dict]) -> dict:
+        dates = sorted({str(r["date"])[:10] for r in rows})
+        return {"first": dates[0] if dates else None, "last": dates[-1] if dates else None, "days": len(dates)}
+
     return {
         "schema_version": SCHEMA_VERSION,
         "mode": "EXPERIMENTAL_READ_ONLY",
         "dataset_sha256": hashlib.sha256(digest_input.encode()).hexdigest(),
         "coverage": coverage,
         "scenario_complexity_counts": dict(Counter(c["scenario"].get("complexity", 1) for c in candidates)),
+        "exploration": _exploration_diagnostics(scenarios, [feature_map[str(r["match_id"])] for r in train]),
         "dataset": {"matches": len(clean), "rejected": dict(rejected),
-                    "train_n": len(train), "validation_n": len(validation), "test_n": len(test)},
+                    "train_n": len(train), "validation_n": len(validation), "test_n": len(test),
+                    "split_dates": {"train": span(train), "validation": span(validation), "test": span(test)},
+                    "days_shared_between_splits": len(
+                        ({str(r["date"])[:10] for r in train} & {str(r["date"])[:10] for r in validation})
+                        | ({str(r["date"])[:10] for r in validation} & {str(r["date"])[:10] for r in test})
+                        | ({str(r["date"])[:10] for r in train} & {str(r["date"])[:10] for r in test}))},
         "rules": {
             "strict_pre_match_history": True, "chronological_split": [0.60, 0.20, 0.20],
+            "split_boundaries": "alignées sur un changement de date",
             "min_discovery_support": MIN_DISCOVERY_SUPPORT, "min_eval_support": MIN_EVAL_SUPPORT,
             "multiple_testing": "Benjamini-Hochberg; approximate p-values used for triage only",
             "auto_promotion": False, "production_changes": False,
@@ -690,5 +969,43 @@ def run_experiment(records: list[dict], max_candidates: int = DEFAULT_MAX_CANDID
         "baseline_by_split": split_baselines,
         "scenarios_tested": len(scenarios),
         "scenarios_with_minimum_train_support": len(scored),
+        "selection": _selection_summary(candidates),
         "candidates": candidates,
+    }
+
+
+def _date_aligned_prefix(rows: list[dict], fraction: float) -> int:
+    """Taille de préfixe la plus proche de `fraction`, terminée à une frontière de date."""
+    boundaries = [i for i in range(1, len(rows)) if str(rows[i]["date"])[:10] != str(rows[i - 1]["date"])[:10]]
+    boundaries.append(len(rows))
+    target = int(len(rows) * fraction)
+    return min(boundaries, key=lambda i: (abs(i - target), i))
+
+
+def walk_forward(records: list[dict], fractions: tuple[float, ...] = (0.6, 0.8, 1.0),
+                 max_candidates: int = DEFAULT_MAX_CANDIDATES) -> dict:
+    """Validation chronologique glissante à origines croissantes. Chaque pli rejoue toute la chaîne
+    (découverte, sélection gelée, test) sur le préfixe chronologique ; son test final est le dernier
+    segment du préfixe, donc postérieur à tout ce qui a servi à choisir. Les tests des plis sont disjoints."""
+    clean, _rejected = _clean_records(records)
+    folds = []
+    for fraction in fractions:
+        prefix = clean[:_date_aligned_prefix(clean, fraction)]
+        report = run_experiment(prefix, max_candidates=max_candidates, detail_top=0)
+        _train, _validation, test = _split_chronologically(prefix)
+        test_days = sorted({str(r["date"])[:10] for r in test})
+        selection = report["selection"]
+        folds.append({
+            "fraction": fraction, "matches_in_prefix": len(prefix),
+            "split": {k: report["dataset"][k] for k in ("train_n", "validation_n", "test_n")},
+            "test_days": [test_days[0], test_days[-1]] if test_days else None,
+            "selected": selection["selected"], "distinct_rules": selection["distinct_rules"],
+            "selected_test": selection["selected_test"],
+            "selected_without_market_features_test": selection["selected_without_market_features_test"],
+            "control_not_selected_test": selection["control_not_selected_test"],
+        })
+    return {
+        "mode": "WALK_FORWARD_EXPANDING", "fractions": list(fractions),
+        "folds": folds,
+        "note": "Peu de jours distincts : ces plis ne sont pas des saisons indépendantes ; lecture indicative uniquement.",
     }

@@ -8,30 +8,33 @@ La matrice est un laboratoire indépendant et en lecture seule. Elle ne modifie 
 
 Le format normalisé est disponible pour les jeux de recherche. Un adaptateur direct lit aussi `data/archive_test/*.json.gz` (SCHEMA_VERSION 2), uniquement les matchs résolus avec score, et récupère l'historique d'équipe conservé avant-match. Il mappe les cotes 1X2, double chance, BTTS, totaux et buts par équipe uniquement via les clés exactes de `parse_betpawa.py` / `moteur_europe/cotes_archive.py` ; tout marché non mappé reste sans cote.
 
-\`\`\`bash
-python -m matrice_scenarios.cli data/archive_test --output rapport_matrice_scenarios.json --max-candidates 5000
-python -m matrice_scenarios.cli chemin/vers/matchs_normalises.json --output rapport_matrice_scenarios.json --max-candidates 5000
+**Preuve pré-match (archive).** Un match n'est utilisé que si sa capture (`run.pris_le`, qui porte cotes, classement et historique) est strictement antérieure à son coup d'envoi (`coup_d_envoi_utc`). Sont exclus et comptés dans `rejected` : `CAPTURE_APRES_COUP_D_ENVOI`, `COUP_D_ENVOI_ABSENT` (antériorité non démontrable) et `CAPTURE_SANS_HORODATAGE`. Un classement n'est gardé que si `classement_horodatage` précède le coup d'envoi ; sinon le rang est ignoré. Les jeux normalisés fournis sans `snapshot_at` suivent le contrat ci-dessous : leur provenance pré-match est déclarée par l'appelant, la matrice ne peut pas la prouver.
+
+```bash
+python -m matrice_scenarios.cli data/archive_test --output rapport_matrice_scenarios.json --walk-forward
+python -m matrice_scenarios.cli chemin/vers/matchs_normalises.json --output rapport_matrice_scenarios.json --max-candidates 20000
 pytest -q tests/test_matrice_scenarios.py
-\`\`\`
+```
 
 Le fichier d'entrée peut être :
 - un tableau JSON de matchs ;
-- un objet JSON \`{"matches": [...]}\` ;
+- un objet JSON `{"matches": [...]}` ;
 - un fichier JSONL, un match JSON par ligne.
 
 ## Contrat d'un match normalisé
 
-Champs obligatoires : \`match_id\`, \`date\` (AAAA-MM-JJ), \`home_team\`, \`away_team\`, \`home_goals\`, \`away_goals\`. Le score final sert uniquement à évaluer la cible, jamais à construire les variables pré-match.
+Champs obligatoires : `match_id`, `date` (AAAA-MM-JJ), `home_team`, `away_team`, `home_goals`, `away_goals`. Le score final sert uniquement à évaluer la cible, jamais à construire les variables pré-match.
 
 Champs facultatifs :
-- \`league\`, \`home_rank\`, \`away_rank\`, \`home_odds\`, \`draw_odds\`, \`away_odds\` ;
-- \`home_history\` et \`away_history\`, listes chronologiques ou non de matchs antérieurs. Chaque élément contient \`date\`, \`goals_for\`, \`goals_against\`, et éventuellement \`venue\` (\`home\` ou \`away\`) et \`opponent_rank\` ;
-- \`target_odds\`, dictionnaire des cotes réellement observées avant le coup d'envoi, indexé par l'identifiant exact de la cible ;
-- \`prematch_features\`, signaux numériques pré-match dont le nom commence par \`pre_\`. Chaque variable ajoutée doit avoir une provenance documentée et être connue avant le coup d'envoi.
+- `league`, `home_rank`, `away_rank`, `home_odds`, `draw_odds`, `away_odds` ;
+- `home_history` et `away_history`, listes chronologiques ou non de matchs antérieurs. Chaque élément contient `date`, `goals_for`, `goals_against`, et éventuellement `venue` (`home` ou `away`) et `opponent_rank` ;
+- `snapshot_at` et `kickoff_at` (ISO 8601, facultatifs) : si `snapshot_at` est présent, la capture doit précéder `kickoff_at`, sinon le match est refusé ;
+- `target_odds`, dictionnaire des cotes réellement observées avant le coup d'envoi, indexé par l'identifiant exact de la cible ;
+- `prematch_features`, signaux numériques pré-match dont le nom commence par `pre_`. Chaque variable ajoutée doit avoir une provenance documentée et être connue avant le coup d'envoi.
 
 Exemple de structure (valeurs illustratives pour décrire le format, pas une preuve ni un résultat historique) :
 
-\`\`\`json
+```json
 {
   "match_id": "source-id-unique",
   "date": "2026-10-01",
@@ -53,7 +56,7 @@ Exemple de structure (valeurs illustratives pour décrire le format, pas une pre
   "target_odds": {"home_not_lose": 1.25},
   "prematch_features": {"pre_rest_days_home": 6}
 }
-\`\`\`
+```
 
 ## Variables générées
 
@@ -62,32 +65,36 @@ Exemple de structure (valeurs illustratives pour décrire le format, pas une pre
 - Séquences : séries de défaites, de non-défaites, de buts marqués, de matchs sans but ; dernier résultat, défaite précédente à domicile/extérieur, défaite lourde, match précédent sans but, match précédent à 2+ buts, 3+ buts encaissés, mauvaise série sur 3 matchs et candidat de reprise.
 - Splits domicile/extérieur quand la source les renseigne ; confrontations directes historiques uniquement sur les noms normalisés exacts et les dates antérieures au match.
 - Cotes et probabilités implicites 1X2 normalisées sans marge, utilisées comme variables explicatives, pas comme certitude.
-- Championnat exact et variables numériques documentées \`pre_*\`.
+- Championnat exact et variables numériques documentées `pre_*`.
 
 Les variables d'historique sont recalculées en ignorant systématiquement toute rencontre datée le jour du match cible ou après. Les variables de classement et de cote présentes au niveau du match doivent, elles aussi, correspondre à l'état pré-match ; la matrice ne peut pas vérifier seule la provenance externe de ces champs.
 
 ## Recherche et cibles
 
-La première version génère des conditions numériques \`>=\` / \`<=\`, des conditions exactes de championnat et des combinaisons à deux conditions portant sur des variables distinctes. Le budget de calcul réserve environ la moitié des candidats aux interactions. Les seuils sont tirés d'une grille interprétable et de quantiles du seul segment d'entraînement. Le nombre de scénarios explorés est limité explicitement : le système ne prétend pas épuiser toutes les combinaisons possibles.
+La recherche génère des conditions numériques `>=` / `<=`, des conditions exactes de championnat, et des combinaisons de deux ou trois conditions portant sur des variables distinctes. Le budget (`--max-candidates`, 20 000 par défaut, compté en scénarios = règle × cible) est réparti 40 % règles simples, 40 % paires, 20 % triplets. Les règles simples sont prises en tourniquet sur toutes les variables ; les paires et triplets sont échantillonnés de façon déterministe (graine fixe `DISCOVERY_SEED`) parmi toutes les conditions admissibles, jamais en tronquant un produit cartésien trié (cette troncature faisait partir 100 % des paires d'une même condition). Deux règles qui sélectionnent exactement les mêmes matchs de découverte ne comptent qu'une fois. Les seuils sont tirés d'une grille interprétable et de quantiles du seul segment de découverte. Le rapport publie `exploration` (règles distinctes, variables utilisées et jamais utilisées, part de la condition la plus répétée, règles dynamiques) : le budget n'est pas la couverture, et le système ne prétend pas épuiser toutes les combinaisons possibles.
 
 Cibles : 1X2, double chance sans défaite, buts d'équipe (1+, 2+, 3+), les deux équipes marquent et totaux de buts 1,5 / 2,5 / 3,5. D'autres cibles ne sont ajoutées que lorsque les scores et les cotes correspondantes peuvent être réglés sans ambiguïté.
 
 ## Validation et statut
 
-- Dédoublonnage par \`match_id\`. Des doublons dont les scores ou l'identité de match se contredisent sont exclus et comptés.
-- Séparation chronologique : 60 % découverte, 20 % validation, 20 % test final. Aucun mélange aléatoire.
-- Support minimum de découverte : 30 matchs déclenchés. Support minimum sur chacun des segments validation et test : 15 matchs ; en dessous, le scénario reste \`ECHANTILLON_INSUFFISANT\`.
+- Dédoublonnage par `match_id`. Des copies dont les équipes ou le score se contredisent sont exclues et comptées. Pour l'archive, un même match listé deux jours (date décalée) n'est pas une contradiction : la copie conservée est la capture la plus tardive encore antérieure au coup d'envoi (`date_shifted_duplicates`).
+- Séparation chronologique : 60 % découverte, 20 % validation, 20 % test final, avec des coupures alignées sur un changement de date (aucun jour partagé entre deux segments ; `days_shared_between_splits` doit valoir 0). Aucun mélange aléatoire.
+- Support minimum de découverte : 30 matchs déclenchés. Support minimum sur chacun des segments validation et test : 30 matchs ; en dessous, le scénario reste `ECHANTILLON_INSUFFISANT`.
 - Intervalle de Wilson à 95 % pour le taux de réussite.
+- Par scénario et par segment : effectif, taux de réussite, Wilson, nombre de paris réglés (`settled_bets`, cote réelle de la cible exacte), cote moyenne réelle (`mean_odds`), ROI net à mise plate (`roi`) et son intervalle approximatif à 95 % (`roi_ci95`), taux implicite du marché (`market_implied_rate`) et écart (`edge_vs_market`). Le taux implicite est sans marge pour le 1X2 (trois cotes du match) et brut, marge incluse, pour les autres marchés. Le taux de base du segment est comparé via `*_lift`.
+- Sélection gelée (`selected_on_validation`) : q Benjamini-Hochberg de découverte ≤ 0,10, au moins 30 matchs en validation et écart positif au taux de base en validation. Le test n'entre dans aucun critère ni dans le tri (tri par écart au taux de base en validation). Le rapport compare le test des scénarios retenus à un groupe témoin (candidats non retenus), avec et sans variables de marché (`selection`).
+- Validation glissante (`--walk-forward`) : trois origines croissantes (60 %, 80 %, 100 % de la chronologie), chaque pli rejouant découverte, sélection et test sur son préfixe ; les segments test des plis sont disjoints. Avec peu de jours distincts ce ne sont pas des saisons indépendantes.
+- Les listes de matchs ne sont conservées que pour les 200 meilleurs candidats (le rapport pesait 108 Mo pour 5 000 scénarios).
 - Correction Benjamini-Hochberg sur les valeurs p approximatives pour limiter les faux positifs. Ces p-values sont un outil de tri seulement : elles ne constituent pas une preuve de significativité finale.
-- ROI calculé uniquement quand une cote \`target_odds\` explicite et valide existe pour la cible exacte. Aucune cote n'est inventée ou substituée.
-- \`A_VALIDER\` signifie uniquement que les deux segments ont un support minimal, pas que le scénario est rentable, significatif ou promu.
-- \`promotion_allowed\` reste toujours faux dans cette version. La validation finale exige revue humaine, volume suffisant, comparaison au taux de base et au marché, et test hors échantillon gelé.
+- ROI calculé uniquement quand une cote `target_odds` explicite et valide existe pour la cible exacte. Aucune cote n'est inventée ou substituée.
+- `A_VALIDER` signifie uniquement que les deux segments ont un support minimal, pas que le scénario est rentable, significatif ou promu.
+- `promotion_allowed` reste toujours faux dans cette version. La validation finale exige revue humaine, volume suffisant, comparaison au taux de base et au marché, et test hors échantillon gelé.
 
 ## Limites connues à traiter avant la production
 
-1. Adapter et tester un convertisseur à chaque source réelle (archive de test, archives de pronostics, résultats, cotes) ; ne pas joindre les données sur des noms approximatifs.
-2. Mesurer les observations manquantes, la qualité des identifiants, les scores contradictoires et la date exacte des instantanés de cotes/classement.
-3. Passer à une validation walk-forward à plusieurs origines et à une estimation par match pour tenir compte des marchés corrélés.
+1. Adapter et tester un convertisseur à chaque source réelle (archives de pronostics, résultats, cotes) ; ne pas joindre les données sur des noms approximatifs. Seul l'adaptateur `data/archive_test` est implémenté et vérifié.
+2. Mesurer les observations manquantes, la qualité des identifiants et les scores contradictoires sur chaque nouvelle source. Pour l'archive, la date de capture est prouvée par `run.pris_le` et `classement_horodatage` ; une source sans horodatage ne permet pas de prouver l'antériorité.
+3. Étendre la validation glissante à des périodes réellement indépendantes (saisons, ligues) et ajouter une estimation par match pour tenir compte des marchés corrélés (les 16 cibles d'une même règle ne sont pas indépendantes).
 4. Ajouter les tests de permutation, la stabilité par saison/ligue et la comparaison au marché avec intervalles par match.
 5. Étendre prudemment au-delà des paires de conditions, avec recherche beam/association ou arbres peu profonds et budget déterministe ; ne pas faire une recherche exhaustive exponentielle.
 6. Ne jamais connecter la sortie au générateur de tickets ou au pipeline avant un banc historique indépendant, un jeu final jamais utilisé et une décision explicite.
