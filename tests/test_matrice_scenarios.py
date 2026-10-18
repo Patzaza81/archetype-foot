@@ -121,3 +121,16 @@ def test_loads_resolved_archive_test_records_without_inventing_odds(tmp_path):
     assert rows[0]["target_odds"]["both_score"] == 1.9
     assert rows[0]["target_odds"]["under_2_5"] == 1.6
     assert diag["archive_unresolved_or_missing_score"] == 0
+
+
+
+def test_head_to_head_uses_only_exact_names_and_prior_matches():
+    r = record(1, "2026-03-10", 1, 0, home_history=[
+        {"date": "2026-03-01", "goals_for": 2, "goals_against": 1, "venue": "home", "opponent": "Away1"}
+    ], away_history=[
+        {"date": "2026-03-02", "goals_for": 0, "goals_against": 1, "venue": "away", "opponent": "Home1"}
+    ])
+    f = build_features(r)
+    assert f["h2h_n"] == 2
+    assert f["h2h_home_score_rate"] == 100
+    assert f["h2h_home_not_lose_rate"] == 100
