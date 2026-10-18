@@ -76,9 +76,13 @@ def test_evaluation_never_invents_odds():
 def test_experiment_is_read_only_and_chronological():
     rows = []
     for i in range(1, 61):
-        rows.append(record(i, f"2026-{1 + (i-1)//28:02d}-{1 + (i-1)%28:02d}", int(i % 3 != 0), int(i % 4 == 0)))
+        r = record(i, f"2026-{1 + (i-1)//28:02d}-{1 + (i-1)%28:02d}",
+                   int(i % 3 != 0), int(i % 4 == 0), hr=1 + i % 20, ar=1 + (i * 7) % 20)
+        r["home_odds"] = 1.25 + (i % 10) * 0.1
+        rows.append(r)
     report = run_experiment(rows, max_candidates=100)
     assert report["mode"] == "EXPERIMENTAL_READ_ONLY"
+    assert report["scenarios_tested"] > 0
     assert report["dataset"]["train_n"] + report["dataset"]["validation_n"] + report["dataset"]["test_n"] == 60
     assert report["rules"]["auto_promotion"] is False
     assert all(c["promotion_allowed"] is False for c in report["candidates"])
