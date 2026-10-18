@@ -42,6 +42,24 @@ def _int_or_none(value: Any) -> int | None:
     return number if number >= 0 else None
 
 
+def _float_or_none(value: Any) -> float | None:
+    try:
+        number = float(str(value).strip())
+    except (TypeError, ValueError):
+        return None
+    return number if number > 1.0 else None
+
+
+def _proxy_odds(row: dict) -> dict:
+    """Cotes d'OUVERTURE Bet365 (colonnes B365*), seulement pour l'option explicite `with_proxy_odds`.
+
+    Ce n'est PAS une cote du run (autre bookmaker que BetPawa, aucun horodatage de capture) : substitut de travail
+    pour régler les règles, jamais une preuve de rentabilité."""
+    pairs = {"home_win": "B365H", "draw": "B365D", "away_win": "B365A", "over_2_5": "B365>2.5", "under_2_5": "B365<2.5"}
+    out = {k: _float_or_none(row.get(col)) for k, col in pairs.items()}
+    return {k: v for k, v in out.items() if v is not None}
+
+
 def _country_by_code(root: Path) -> dict[str, tuple[str, str]]:
     """code de compétition -> (pays, compétition), lu dans les catalogues du dépôt."""
     mapping: dict[str, tuple[str, str]] = {}
@@ -73,7 +91,8 @@ def _raw_rows(root: Path, countries: dict[str, tuple[str, str]]) -> tuple[list[d
                 stats["SANS_SCORE_OU_INCOMPLET"] += 1
                 continue
             rows.append({"code": code, "country": country, "competition": competition, "date": day,
-                         "home": home, "away": away, "hg": hg, "ag": ag, "source": f"snapshot:{path.parent.parent.name}"})
+                         "home": home, "away": away, "hg": hg, "ag": ag, "source": f"snapshot:{path.parent.parent.name}",
+                         "odds": _proxy_odds(row)})
     for path in sorted(root.glob("snapshots/*/nouvelles_ligues/raw/*.csv")):
         code = path.stem
         for row in _read_csv(path):
@@ -108,7 +127,7 @@ def _normalized_rows(root: Path, countries: dict[str, tuple[str, str]]) -> tuple
     return rows, stats
 
 
-def load_football_data(root: str | Path = "data/football_data", *, until: str | None = None) -> tuple[list[dict], dict]:
+def load_football_data(root: str | Path = "data/football_data", *, until: str | None = None, with_proxy_odds: bool = False) -> tuple[list[dict], dict]:
     """Charge toutes les archives Football-Data en enregistrements de la matrice.
 
     `until` (AAAA-MM-JJ, inclus) écarte tout match plus récent : sert à geler une période avant un test externe.
@@ -151,8 +170,11 @@ def load_football_data(root: str | Path = "data/football_data", *, until: str | 
             "league": f'{r["country"]} : {r["competition"]}', "home_team": r["home"], "away_team": r["away"],
             "home_goals": r["hg"], "away_goals": r["ag"],
             "home_history": history[(r["country"], r["home"])], "away_history": history[(r["country"], r["away"])],
-            "target_odds": {}, "source_archive": "football_data",
+            "target_odds": dict(r.get("odds") or {}) if with_proxy_odds else {}, "source_archive": "football_data",
         })
+        if with_proxy_odds and {"home_win", "draw", "away_win"} <= set(records[-1]["target_odds"]):
+            o = records[-1]["target_odds"]
+            records[-1].update({"home_odds": o["home_win"], "draw_odds": o["draw"], "away_odds": o["away_win"]})
     by_league = Counter(rec["league"] for rec in records)
     months = Counter(rec["date"][:7] for rec in records)
     return records, {
@@ -162,5 +184,5 @@ def load_football_data(root: str | Path = "data/football_data", *, until: str | 
         "first_date": records[0]["date"] if records else None, "last_date": records[-1]["date"] if records else None,
         "matches_by_month": dict(sorted(months.items())),
         "prematch_proof": "dates strictement antérieures uniquement ; aucun horodatage de capture disponible pour cette source",
-        "odds_used": False,
+        "odds_used": bool(with_proxy_odds), "odds_note": "cotes d'ouverture Bet365 (substitut, pas des cotes du run)" if with_proxy_odds else None,
     }
