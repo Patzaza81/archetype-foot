@@ -360,7 +360,7 @@ def _feature_conditions(feature_rows: list[dict]) -> list[dict]:
 
 def discover_scenarios(records: list[dict], features_by_id: dict[str, dict] | None = None,
                        max_candidates: int = DEFAULT_MAX_CANDIDATES) -> list[dict]:
-    """Découvre des règles simples et croisées avec un budget explicite et reproductible."""
+    """Découvre règles simples, paires et triplets avec support et budget explicites."""
     if max_candidates < 1:
         return []
     rows = sorted(records, key=lambda r: (str(r["date"]), str(r["match_id"])))
@@ -379,38 +379,81 @@ def discover_scenarios(records: list[dict], features_by_id: dict[str, dict] | No
     ))
     if not eligible:
         return []
-    # Réserver explicitement une partie du budget aux interactions, au lieu de laisser
-    # les règles simples monopoliser tout le calcul.
-    unary_budget = max(1, max_candidates // 2)
-    pair_budget = max_candidates - unary_budget
-    unary_rules = []
+
+    unary_budget = max(1, max_candidates * 4 // 10)
+    pair_budget = max_candidates * 4 // 10
+    triple_budget = max_candidates - unary_budget - pair_budget
+    scenarios = []
     for condition, support in eligible:
         for target in TARGETS:
-            unary_rules.append({
+            scenarios.append({
                 "scenario_id": _scenario_id(target, [condition]), "target": target,
                 "conditions": [condition], "discovery_support": support, "complexity": 1,
             })
-            if len(unary_rules) >= unary_budget:
+            if len(scenarios) >= unary_budget:
                 break
-        if len(unary_rules) >= unary_budget:
+        if len(scenarios) >= unary_budget:
             break
-    scenarios = list(unary_rules)
     if pair_budget <= 0 or len(eligible) < 2:
         return scenarios[:max_candidates]
+
+    pair_conditions = []
     pair_rules = []
-    # Iterate lazily; no giant intermediate list. Different features only.
+    seen_pairs = set()
     for (c1, _), (c2, _) in itertools.combinations(eligible, 2):
         if c1["feature"] == c2["feature"]:
             continue
         conditions = sorted([c1, c2], key=lambda c: (c["feature"], c["op"], str(c["value"])))
+        key = tuple(json.dumps(c, sort_keys=True) for c in conditions)
+        if key in seen_pairs:
+            continue
+        seen_pairs.add(key)
+        support = sum(all(_condition_value(f, cond) for cond in conditions) for f in features)
+        if support < MIN_DISCOVERY_SUPPORT or support > len(rows) * 0.95:
+            continue
+        pair_conditions.append((conditions, support))
         for target in TARGETS:
             pair_rules.append({
                 "scenario_id": _scenario_id(target, conditions), "target": target,
-                "conditions": conditions, "complexity": 2,
+                "conditions": conditions, "discovery_support": support, "complexity": 2,
             })
             if len(pair_rules) >= pair_budget:
-                return scenarios + pair_rules
-    return scenarios + pair_rules
+                break
+        if len(pair_rules) >= pair_budget:
+            break
+    scenarios.extend(pair_rules)
+    if triple_budget <= 0 or not pair_conditions:
+        return scenarios[:max_candidates]
+
+    triple_rules = []
+    seen_triples = set()
+    # Bounded, deterministic extension of supported pairs; no exhaustive Cartesian product.
+    for pair, _pair_support in pair_conditions:
+        used = {c["feature"] for c in pair}
+        for third, _ in eligible:
+            if third["feature"] in used:
+                continue
+            conditions = sorted(pair + [third], key=lambda c: (c["feature"], c["op"], str(c["value"])))
+            key = tuple(json.dumps(c, sort_keys=True) for c in conditions)
+            if key in seen_triples:
+                continue
+            seen_triples.add(key)
+            support = sum(all(_condition_value(f, cond) for cond in conditions) for f in features)
+            if support < MIN_DISCOVERY_SUPPORT or support > len(rows) * 0.95:
+                continue
+            for target in TARGETS:
+                triple_rules.append({
+                    "scenario_id": _scenario_id(target, conditions), "target": target,
+                    "conditions": conditions, "discovery_support": support, "complexity": 3,
+                })
+                if len(triple_rules) >= triple_budget:
+                    break
+            if len(triple_rules) >= triple_budget:
+                break
+        if len(triple_rules) >= triple_budget:
+            break
+    scenarios.extend(triple_rules)
+    return scenarios[:max_candidates]
 
 def _scenario_id(target: str, conditions: list[dict]) -> str:
     payload = json.dumps({"target": target, "conditions": conditions}, sort_keys=True, separators=(",", ":"))
