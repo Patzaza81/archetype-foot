@@ -283,7 +283,11 @@ def ecrire_page() -> dict[str, Any]:
     prm = json.loads(PARAMETRES.read_text(encoding="utf-8"))
     courbes, supers = courbes_calibration(), set(prm["supers"])
     out = {}
+    dt = __import__("datetime")
+    veille = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=1)).strftime("%Y-%m-%d")      # la page n'affiche que les matchs à venir
     for p in preparer_tout(charger_matchs(), courbes):
+        if str(p["date"]) < veille:
+            continue
         juger_candidats(p["candidats"], prm["seuils"])
         v = verdict(p, supers, prm.get("adaptation_active", False))
         out[p["match_id"]] = {"statut": v["statut"], "origine": v["origine"], "fragile": v["fragile"], "niveau_opportunite": v["niveau_opportunite"],

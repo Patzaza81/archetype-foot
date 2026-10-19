@@ -4,6 +4,8 @@
 // Même carte que la page V3 (mêmes classes ax-*) : carte REPLIÉE au départ, un toucher la déplie ; au premier plan le MARCHÉ et sa COTE ;
 // la tendance tient en une phrase pour le parieur ; les chiffres complets sont dans « Détails de l'analyse ».
 // Aucun lien avec V2, V3, V2R, Europe ni le générateur de tickets.
+let JUGES = {};   // verdicts des 5 juges par match (data/comportement/juges.json), facultatif
+const NOMS_JUGES = { contrarien: "Contrarien", premiers_principes: "Premiers principes", expansionniste: "Expansionniste", outsider: "Outsider", executant: "Exécutant" };
 const CLE_THEME_NUIT = "archetype_theme_nuit"; // même clé que theme.js
 
 const echappeHtml = (x) => (x === null || x === undefined ? "" : String(x)
@@ -115,6 +117,24 @@ function construitDetails(m, idDetails) {
   return details;
 }
 
+// Opportunité réelle repérée par les 5 juges (règles, sans IA) : SUPER MARCHÉ (famille validée à l'apprentissage) ou signal exploratoire.
+function construitOpportunite(m) {
+  const j = JUGES[m.match_id], o = j && j.opportunite;
+  if (!o || !j.niveau_opportunite) return null;
+  const super_ = j.niveau_opportunite === "super";
+  const memePari = j.pronostic && j.pronostic.libelle === o.libelle;
+  const pastilles = Object.keys(NOMS_JUGES).map((k) => `<li class="${o.juges && o.juges[k] ? "ax-ok" : "ax-non"}">${NOMS_JUGES[k]}</li>`).join("");
+  const div = document.createElement("div");
+  div.className = `ax-opp ${super_ ? "ax-opp-super" : "ax-opp-explo"}`;
+  div.innerHTML = `<div class="ax-opp-tete"><span class="ax-opp-etiquette">${super_ ? "★ SUPER MARCHÉ" : "Signal exploratoire"}</span>` +
+    `<span class="ax-opp-cote">Cote <strong>${formatCote(o.cote)}</strong></span></div>` +
+    `<h3 class="ax-opp-marche">${echappeHtml(o.libelle)}</h3>` +
+    `<p class="ax-opp-texte">${super_ ? "Les 5 juges valident ce marché, d'une famille rentable à l'apprentissage (non confirmée sur la 2e moitié de l'archive)." : "Les 5 juges valident ce marché, mais sa famille n'a pas encore fait ses preuves."}` +
+    `${memePari ? " C'est aussi le pronostic principal." : ""} Opportunité observée, sans garantie.</p>` +
+    `<ul class="ax-opp-juges" aria-label="Verdict des 5 juges">${pastilles}</ul>`;
+  return div;
+}
+
 function construitCarte(m) {
   const id = ++compteurCartes, idDetails = `ax-details-${id}`;
   const section = document.createElement("section");
@@ -153,7 +173,10 @@ function construitCarte(m) {
   onglets.style.gridTemplateColumns = `repeat(${Math.min(3, Math.max(1, actifs.length))},minmax(0,1fr))`;
   if (actifs.length > 3) onglets.classList.add("ax-onglets-defilent");
   active(actifs[0].bouton);
-  section.appendChild(onglets); section.appendChild(panneaux); section.appendChild(resume); section.appendChild(blocDetails);
+  section.appendChild(onglets); section.appendChild(panneaux); section.appendChild(resume);
+  const opp = construitOpportunite(m);
+  if (opp) { section.classList.add(opp.classList.contains("ax-opp-super") ? "ax-carte-super" : "ax-carte-explo"); section.appendChild(opp); }
+  section.appendChild(blocDetails);
 
   const pied = document.createElement("div");
   pied.className = "ax-pied";
@@ -224,8 +247,9 @@ function installeThemeNuit() {
 
 installeThemeNuit();
 if (document.getElementById("matches")) {
+  const juges = fetch(`data/comportement/juges.json?_=${Date.now()}`).then((r) => (r.ok ? r.json() : null)).then((d) => { JUGES = (d && d.matchs) || {}; }).catch(() => { JUGES = {}; });
   fetch(`data/comportement/pronostics_comportement.json?_=${Date.now()}`)
     .then((r) => { if (!r.ok) throw new Error(`données introuvables (${r.status})`); return r.json(); })
-    .then(afficheSelections)
+    .then((d) => juges.then(() => afficheSelections(d)))
     .catch((e) => { document.getElementById("maj").textContent = "Données du moteur alpha indisponibles : " + e.message; console.error(e); });
 }

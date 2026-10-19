@@ -198,3 +198,11 @@ Affiché en plus du pick principal : parmi les marchés qui **suivent la tendanc
 - Mesure : 48 % de réussite pour une cote moyenne ≈ 2,0, rendement −11 %. Aucune règle testée ne bat les cotes (E) ; aucune zone famille × cote n'a de rendement positif (G : 0 cellule sur 52 après correction ; −22 % à partir de la cote 3, favori/outsider net).
 - Le modèle surestime les outsiders (1X2 cote ≥ 3,97 : 13 % réels, 27 % annoncés par le modèle, 18 % par le marché) : le pari n'est donc jamais présenté comme le meilleur pari du match, et la carte affiche sa réussite observée et un rendement négatif.
 - Hors tickets, comme tout le moteur alpha. Le fichier de paramètres change (nouvelle empreinte dans le journal gelé). Le journal gelé enregistre toutes les sélections : le pari risqué y figure (`role` = risque) à partir de maintenant, ce qui permet de le juger hors échantillon sur des matchs jamais vus.
+
+
+## Juges du super pronostic (20/10/2026, lecture seule, hors tickets)
+
+- Module `matrice_scenarios/juges.py` (déterministe, **sans IA**) : 5 juges (contrarien, premiers principes, expansionniste, outsider, exécutant) relisent chaque candidat d'alpha. Seuils mesurés sur la 1re moitié de l'archive (`docs/juges_parametres.json`), jamais posés.
+- Sortie : `data/comportement/juges.json` (étape de nuit dans `pipeline.yml`, `continue-on-error`). La page alpha l'affiche : carte **SUPER MARCHÉ** (or) si les 5 juges valident et que la famille était rentable à l'apprentissage, sinon **Signal exploratoire** (pointillé).
+- Backtest (`docs/juges_backtest.json`, coupe au 12/10) : le pronostic reste celui d'alpha (l'adaptation du marché faisait pire, donc désactivée) ; **aucune famille « super » n'est confirmée sur la 2e moitié** (réussite 56,9 %, rendement −10,7 %). Affichage = opportunité observée, sans garantie. La preuve viendra des pronostics gelés une fois réglés.
+- Tests : `tests/test_juges.py`. Captures : `docs/captures_juges/`.
