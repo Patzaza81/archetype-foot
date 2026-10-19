@@ -177,3 +177,41 @@ def test_cotes_non_fiables():
     assert not _cf({"run": {"pris_le": "2026-10-05T00:11:00Z"}})                                                   # coup d'envoi absent
     assert not _cf({"coup_d_envoi_utc": "2026-10-05T20:00:00Z", "run": {"pris_le": "2026-10-05T21:30:00Z"}})      # cotes en direct
     assert not _cf({"coup_d_envoi_utc": "", "run": {}})
+
+
+# ── Pari risqué : marché à plus grosse cote qui suit la tendance ──────────────
+from matrice_scenarios.page_comportement import suit_la_tendance as _st, candidats_risque as _cr
+
+_PR = {"favori": "domicile", "buts": "offensif", "deux_marquent": 0.60}
+_PP = {"seuil_btts_haut": 0.56, "seuil_btts_bas": 0.51}
+
+
+def test_suit_la_tendance_cas_valides():
+    assert _st("1x2", "1", _PR, _PP) and _st("double_chance", "1N", _PR, _PP)
+    assert _st("over_under_2.5", "plus", _PR, _PP) and _st("btts", "Oui", _PR, _PP)
+    assert _st("handicap_-1.5", "domicile", _PR, _PP) and _st("handicap_3issues_1", "1", _PR, _PP)
+    assert _st("handicap_1.5", "exterieur", {**_PR, "favori": "extérieur"}, _PP)
+
+
+def test_suit_la_tendance_cas_rejetes():
+    assert not _st("1x2", "2", _PR, _PP) and not _st("double_chance", "N2", _PR, _PP)
+    assert not _st("over_under_2.5", "moins", _PR, _PP) and not _st("btts", "Non", _PR, _PP)
+    assert not _st("1x2", "1", {**_PR, "favori": "équilibré"}, _PP)
+    assert not _st("btts", "Oui", {**_PR, "deux_marquent": 0.53}, _PP)            # entre les deux seuils : pas de tendance
+    assert not _st("nombre_exact_buts", "3", _PR, _PP)
+
+
+def test_candidats_risque_exige_cote_plus_haute_et_autre_evenement():
+    principal = {"groupe": "double_chance", "selection": "1N", "cote": 1.3}
+    marches = [{"groupe": "1x2", "selection": "1", "cote": 1.9, "probabilite": 0.5},              # valide
+               {"groupe": "double_chance", "selection": "1N", "cote": 1.3, "probabilite": 0.8},   # même événement que le principal
+               {"groupe": "over_under_2.5", "selection": "plus", "cote": 1.2, "probabilite": 0.5},  # sous le plancher
+               {"groupe": "over_under_2.5", "selection": "moins", "cote": 2.0, "probabilite": 0.4}]  # contre la tendance
+    assert [(x["groupe"], x["selection"]) for x in _cr(marches, principal, _PR, _PP)] == [("1x2", "1")]
+
+
+def test_pari_risque_absent_sans_seuil_et_present_avec():
+    assert all(s["role"] != "risque" for s in P.analyser_match(_match(COTES), PARAMS)["selections"])
+    r = P.analyser_match(_match(COTES), {**PARAMS, "seuil_risque": 0.0})
+    risques = [s for s in r["selections"] if s["role"] == "risque"]
+    assert len(risques) <= 1 and all(s["cote"] > r["selections"][0]["cote"] and s["tendance"] == "Pari risqué" for s in risques)

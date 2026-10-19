@@ -191,3 +191,10 @@ Mesures (archive de 1 256 matchs ; réglage 60 % anciens, test 40 % récents) :
 - **Diversification forcée** : coûte de la réussite (−2,4 points pour la meilleure variante) pour un gain faible ; non appliquée. Le lift brut sur la fréquence de base perd 17 points.
 - **Rendement** : −4,2 % (flat, cotes réelles), 0,0 % sur le test récent : pas d'avantage prouvé contre les cotes. Le moteur est présenté comme une aide à la lecture du match.
 - Non appliqués (à décider) : filtres de cohérence entre marchés (écartent surtout des picks gagnants, 85,7 %), exclusion des handicaps (réussite 68,6 % contre 70,1 %, pas de preuve).
+
+### Pari risqué (conseil du 19/10/2026, sur demande du propriétaire)
+
+Affiché en plus du pick principal : parmi les marchés qui **suivent la tendance** du match (côté du favori, total conforme ouvert/fermé, les deux marquent), cotés ≥ 1,26, plus chers que le principal et d'un autre événement, on prend celui qui maximise probabilité × cote, sous un seuil de probabilité mesuré (`seuil_risque` dans `docs/parametres_comportement.json`, commande `python -m matrice_scenarios.page_comportement --seuil-risque` : plus petite probabilité à partir de laquelle ces marchés réussissent au moins une fois sur deux, 1re moitié de l'archive ; 2e moitié : 53,5 % sur 1 745 cas).
+- Mesure : 48 % de réussite pour une cote moyenne ≈ 2,0, rendement −11 %. Aucune règle testée ne bat les cotes (E) ; aucune zone famille × cote n'a de rendement positif (G : 0 cellule sur 52 après correction ; −22 % à partir de la cote 3, favori/outsider net).
+- Le modèle surestime les outsiders (1X2 cote ≥ 3,97 : 13 % réels, 27 % annoncés par le modèle, 18 % par le marché) : le pari n'est donc jamais présenté comme le meilleur pari du match, et la carte affiche sa réussite observée et un rendement négatif.
+- Hors tickets, comme tout le moteur alpha. Le fichier de paramètres change (nouvelle empreinte dans le journal gelé). Le journal gelé enregistre toutes les sélections : le pari risqué y figure (`role` = risque) à partir de maintenant, ce qui permet de le juger hors échantillon sur des matchs jamais vus.

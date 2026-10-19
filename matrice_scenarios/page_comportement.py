@@ -138,7 +138,32 @@ def cotes_fiables(m: dict[str, Any]) -> bool:
     return bool(ko) and not (pris and pris > ko)
 
 
-def analyser_match(m: dict[str, Any], p: dict[str, Any], collecte: list | None = None) -> dict[str, Any]:
+def suit_la_tendance(groupe: str, selection: str, prof: dict[str, Any], p: dict[str, float]) -> bool:
+    """Le marché va dans le sens du profil du match : côté du favori, total de buts conforme (ouvert -> plus, fermé -> moins), les deux marquent."""
+    f, s = prof["favori"], str(selection)
+    if groupe == "1x2":
+        return (f == "domicile" and s == "1") or (f == "extérieur" and s == "2")
+    if groupe == "double_chance":
+        return (f == "domicile" and s == "1N") or (f == "extérieur" and s == "N2")
+    if groupe.startswith("handicap_3issues_"):
+        return (f == "domicile" and s == "1") or (f == "extérieur" and s == "2")
+    if groupe.startswith("handicap_"):
+        return (f == "domicile" and s == "domicile") or (f == "extérieur" and s == "exterieur")
+    if re.fullmatch(r"over_under_\d+(\.\d+)?", groupe):
+        return (prof["buts"] == "offensif" and s == "plus") or (prof["buts"] == "défensif" and s == "moins")
+    if groupe == "btts":
+        return (prof["deux_marquent"] >= p["seuil_btts_haut"] and s == "Oui") or (prof["deux_marquent"] <= p["seuil_btts_bas"] and s == "Non")
+    return False
+
+
+def candidats_risque(marches: list[dict[str, Any]], principal: dict[str, Any], prof: dict[str, Any], p: dict[str, float]) -> list[dict[str, Any]]:
+    """Marchés qui suivent la tendance, cotés au moins comme le plancher, plus chers que le principal, d'un autre événement que lui."""
+    ev = evenement(principal["groupe"], principal["selection"])
+    return [x for x in marches if x["cote"] >= COTE_MIN and x["cote"] > principal["cote"] and suit_la_tendance(x["groupe"], x["selection"], prof, p)
+            and evenement(x["groupe"], x["selection"]) != ev]
+
+
+def analyser_match(m: dict[str, Any], p: dict[str, Any], collecte: list | None = None, collecte_risque: list | None = None) -> dict[str, Any]:
     base = {"match_id": m["match_id"], "date": m["date"], "heure": m.get("heure_cameroun"), "competition": m.get("competition"),
             "domicile": m["domicile"], "exterieur": m["exterieur"], "score": m.get("score_final"), "selections": [], "tendances": []}
     a = m.get("assemblage") or {}
@@ -179,9 +204,18 @@ def analyser_match(m: dict[str, Any], p: dict[str, Any], collecte: list | None =
         if meilleur["probabilite"] >= seuil:
             vus.add(evenement(meilleur["groupe"], meilleur["selection"]))
             choix.append(dict(meilleur, role="tendance"))
+    cands = candidats_risque(marches, principal, prof, p)
+    if collecte_risque is not None and m.get("score_final"):
+        for x in cands:
+            collecte_risque.append({"date": m["date"], "probabilite": x["probabilite"],
+                                    "gagne": bool(S.test_du_marche(x["groupe"], x["selection"])(m["score_final"]["buts_dom"], m["score_final"]["buts_ext"]))})
+    seuil_r = p.get("seuil_risque")
+    pool = [x for x in cands if seuil_r is not None and x["probabilite"] >= seuil_r]
+    if pool:                                                             # le plus rentable selon le modèle : probabilité × cote
+        choix.append(dict(max(pool, key=lambda x: (round(x["probabilite"] * x["cote"], 6), x["cote"])), role="risque"))
     sel = []
     for i, c in enumerate(choix, 1):
-        s = {"rang": i, "role": c["role"], "tendance": TENDANCES.get(c["tendance"] or "", ("Autre",))[0], "libelle": libelle_parieur(c["groupe"], c["selection"], m["domicile"], m["exterieur"], c["libelle"]), "cote": c["cote"],
+        s = {"rang": i, "role": c["role"], "tendance": "Pari risqué" if c["role"] == "risque" else TENDANCES.get(c["tendance"] or "", ("Autre",))[0], "libelle": libelle_parieur(c["groupe"], c["selection"], m["domicile"], m["exterieur"], c["libelle"]), "cote": c["cote"],
              "probabilite": round(c["probabilite"], 3), "groupe": c["groupe"], "choix": c["selection"],
              "raison": raison_du_pick(c["groupe"], c["selection"], prof, m["domicile"], m["exterieur"])}
         if m.get("score_final"):
@@ -283,13 +317,41 @@ def calculer_seuils_tendances() -> dict:
     return verif
 
 
+def calculer_seuil_risque() -> dict:
+    """Seuil de probabilité du pari risqué, mesuré sur la 1re moitié des matchs joués : la plus petite probabilité à partir de laquelle les
+    marchés candidats ont réussi au moins une fois sur deux (« plus probable qu'improbable »), sur 40 cas minimum. Jugé sur la 2e moitié."""
+    P = json.loads(PARAMS.read_text(encoding="utf-8"))
+    P.pop("seuil_risque", None)
+    coll: list = []
+    for m in charger_matchs():
+        analyser_match(m, P, None, coll)
+    coupe = sorted(c["date"] for c in coll)[len(coll) // 2]
+    app = sorted((c for c in coll if c["date"] < coupe), key=lambda c: -c["probabilite"])
+    seuil, gagnes = None, 0
+    for i, c in enumerate(app, 1):
+        gagnes += c["gagne"]
+        if i >= 40 and gagnes / i >= 0.5:
+            seuil = c["probabilite"]
+    te = [c for c in coll if c["date"] >= coupe and seuil is not None and c["probabilite"] >= seuil]
+    verif = {"jour_de_coupe": coupe, "apprentissage": len(app), "seuil": None if seuil is None else round(seuil, 3),
+             "test": {"cas": len(te), "reussite": round(sum(c["gagne"] for c in te) / len(te), 3) if te else None}}
+    if seuil is not None:
+        P["seuil_risque"], P["validation_seuil_risque"] = seuil, verif
+        PARAMS.write_text(json.dumps(P, ensure_ascii=False, indent=1), encoding="utf-8")
+    print(json.dumps(verif, ensure_ascii=False, indent=1))
+    return verif
+
+
 def construire() -> dict[str, Any]:
     p = json.loads(PARAMS.read_text(encoding="utf-8"))
     matchs = [analyser_match(m, p) for m in charger_matchs()]
     perf = json.loads((ROOT / "docs" / "recalage_familles.json").read_text(encoding="utf-8"))["resultats_archive"]["sans_recalage"]
     sec = [x for m in matchs for x in m["selections"] if x["role"] == "tendance" and "gagne" in x]
     secondaires = {"matchs": len(sec), "reussite": round(sum(x["gagne"] for x in sec) / len(sec), 4)} if sec else None
-    return {"moteur": "comportement", "statut": "OK", "genere_le": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
+    ri = [x for m in matchs for x in m["selections"] if x["role"] == "risque" and "gagne" in x]
+    risque = {"matchs": len(ri), "reussite": round(sum(x["gagne"] for x in ri) / len(ri), 4), "cote_moyenne": round(sum(x["cote"] for x in ri) / len(ri), 2),
+              "rendement": round(sum((x["cote"] - 1) if x["gagne"] else -1 for x in ri) / len(ri), 4)} if ri else None
+    return {"moteur": "comportement", "statut": "OK", "pari_risque_archive": risque, "genere_le": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
             "promotion_allowed": False, "cote_min": COTE_MIN,
             "performance_archive": {"matchs": perf["n"], "reussite": perf["reussite"], "ic95": perf["ic95_jours"], "annonce_moyenne": perf["annonce"],
                                     "note": "La probabilité du modèle est surestimée d'environ 10 points : se fier à la réussite mesurée."},
@@ -304,6 +366,9 @@ def ecrire_page() -> dict[str, Any]:
 
 
 if __name__ == "__main__":
+    if "--seuil-risque" in sys.argv:
+        calculer_seuil_risque()
+        sys.exit(0)
     if "--seuils" in sys.argv:
         calculer_seuils()
         calculer_seuils_tendances()
