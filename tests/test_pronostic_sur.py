@@ -8,12 +8,12 @@ def an(**probas):
 
 def test_picks_most_probable_market_inside_the_odds_window():
     a = an(over_1_5=0.80, under_4_5=0.86, home_not_lose=0.75)
-    assert P.choisir(a, {"over_1_5": 1.30, "under_4_5": 1.27, "home_not_lose": 1.34})["marche"] == "under_4_5"
+    assert P.choisir(a, {"over_1_5": 1.30, "under_4_5": 1.27, "home_not_lose": 1.60})["marche"] == "under_4_5"
     assert P.choisir(a, {"over_1_5": 1.30, "under_4_5": 1.25, "home_not_lose": 1.34})["marche"] == "over_1_5"  # 1,25 est exclu
     assert P.choisir(a, {"over_1_5": 1.12, "under_4_5": 1.10, "home_not_lose": 1.30})["marche"] == "home_not_lose"  # 1,10 et 1,12 exclus
     assert P.choisir(a, {"over_1_5": 1.26})["cote"] == 1.26  # 1,26 inclus
-    assert P.choisir(a, {"under_4_5": 1.36}) is None and P.choisir(a, {"under_4_5": 1.35})["cote"] == 1.35  # plafond 1,35 inclus
-    assert P.choisir(a, {"under_4_5": 3.50}, cote_max=float("inf"))["cote"] == 3.50  # plafond modifiable
+    assert P.choisir(a, {"under_4_5": 3.50})["cote"] == 3.50  # aucun plafond par défaut
+    assert P.choisir(a, {"under_4_5": 1.36}, cote_max=1.35) is None  # plafond possible mais jamais imposé
 
 
 def test_no_pick_when_nothing_is_in_the_window_or_no_odds():
@@ -37,3 +37,20 @@ def test_betpawa_odds_mapping_and_outcomes():
     r = {"home_goals": 3, "away_goals": 2}
     assert outcome(r, "under_4_5") == 0 and outcome(r, "under_5_5") == 1 and outcome(r, "over_1_5") == 1
     assert outcome({"home_goals": 2, "away_goals": 2}, "under_4_5") == 1 and outcome({"home_goals": 0, "away_goals": 0}, "over_1_5") == 0
+
+
+def test_every_match_with_recent_matches_gets_a_pick_and_fallback_uses_all_venues():
+    import json
+    cal = json.loads(P.A.CALIBRATION_FILE.read_text(encoding="utf-8"))
+    def eq(rows):
+        return {"matchs": [{"date": f"2026-0{i + 1}-10", "buts_marques": gf, "buts_encaisses": ga, "domicile": dom} for i, (gf, ga, dom) in enumerate(rows)]}
+    cotes = {"over_under_1.5": {"plus": 1.30}, "over_under_3.5": {"moins": 1.40}}
+    full = eq([(2, 1, True), (1, 0, True), (3, 1, True)])
+    r = P.pronostic_complet(full, eq([(0, 1, False), (1, 1, False), (2, 2, False)]), cotes, "2026-09-01", cal)
+    assert r and r["series"] == "même lieu" and r["cote"] >= 1.26
+    mixed = eq([(2, 1, True), (1, 0, False), (3, 1, False)])  # un seul match à domicile : repli sur tous lieux
+    r2 = P.pronostic_complet(mixed, eq([(0, 1, True), (1, 1, True), (2, 2, False)]), cotes, "2026-09-01", cal)
+    assert r2 and r2["series"] == "tous lieux"
+    assert P.pronostic_complet(eq([(1, 0, True)] * 2), full, cotes, "2026-09-01", cal) is None  # moins de 3 matchs
+    assert P.pronostic_complet(full, full, {"over_under_1.5": {"plus": 1.10}}, "2026-09-01", cal) is None  # aucune cote d'au moins 1,26
+    assert P.pronostic_complet(full, full, cotes, "2026-01-01", cal) is None  # rien avant la date : pas de fuite du futur
