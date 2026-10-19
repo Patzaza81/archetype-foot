@@ -43,6 +43,7 @@ function construitJauge(probabilite, classe) {
 // Nom court de l'onglet : « Principal », puis la tendance du pari.
 function etiquette(s) {
   if (s.role === "principal") return "Principal";
+  if (s.role === "risque") return "Pari risqué";
   const t = String(s.tendance || "");
   if (t === "Résultat") return "Résultat";
   if (t === "Buts du match") return "Total buts";
@@ -50,7 +51,15 @@ function etiquette(s) {
   return t.startsWith("Buts de ") ? "Buts équipe" : t;
 }
 // La phrase « parieur » de la tendance qui a produit ce pari (absente pour les anciennes données : repli sur le texte chiffré).
+let REUSSITE = null;
+let RISQUE = null;
+function phraseRisque() {
+  if (!RISQUE) return "Pari risqué : pas de gain démontré.";
+  return `Pari risqué : ${formatPct(RISQUE.reussite)} de réussite observée sur ${RISQUE.matchs} cas (cote moyenne ${formatCote(RISQUE.cote_moyenne)}), rendement négatif.`;
+}
 function tendanceDe(m, s) {
+  if (s.role === "risque") return `${s.raison || ""}${s.raison ? " · " : ""}${phraseRisque()}`;
+  if (s.raison) return s.raison;
   const t = (m.tendances || []).find((x) => x.titre === s.tendance || x.cle === s.tendance);
   return t ? (t.court || t.texte || "") : "";
 }
@@ -64,14 +73,14 @@ function construitResume(m) {
   div.className = "ax-resume";
   div.innerHTML = m.selections.map((s, i) => {
     const texte = tendanceDe(m, s), fin = issue(s);
-    return `<div class="ax-resume-rang ax-${CLASSES[i]}" data-cle="${i}">` +
+    return `<div class="ax-resume-rang ax-${CLASSES[Math.min(i, CLASSES.length - 1)]}" data-cle="${i}">` +
       `<div class="ax-resume-corps">` +
       `<div class="ax-resume-tete"><span class="ax-resume-etiquette">${echappeHtml(etiquette(s))}</span>` +
       `<span class="ax-resume-cote">Cote <strong>${formatCote(s.cote)}</strong></span></div>` +
       `<h3 class="ax-resume-marche">${echappeHtml(s.libelle)}</h3>` +
       (texte ? `<p class="ax-resume-texte">${echappeHtml(texte)}</p>` : "") +
       (fin ? `<p class="ax-resume-texte"><strong>${fin}</strong></p>` : "") + `</div>` +
-      `${construitJauge(s.probabilite, "ax-jauge-mini")}</div>`;
+      `</div>`;
   }).join("");
   return div;
 }
@@ -82,14 +91,14 @@ function construitPanneau(m, s, i, idPanneau, idOnglet) {
     `<div class="ax-preuve"><span class="ax-icone">${ICONE_TENDANCE[t.cle] || ICONES.forme}</span><div>` +
     `<span class="ax-preuve-titre">${echappeHtml(t.titre)}</span><span class="ax-preuve-texte">${echappeHtml(t.court)}</span></div></div>`).join("");
   const el = document.createElement("div");
-  el.className = `ax-panneau ax-${CLASSES[i]}`;
+  el.className = `ax-panneau ax-${CLASSES[Math.min(i, CLASSES.length - 1)]}`;
   el.id = idPanneau; el.setAttribute("role", "tabpanel"); el.setAttribute("aria-labelledby", idOnglet); el.dataset.cle = String(i);
   el.innerHTML =
     `<h2 class="ax-marche">${echappeHtml(s.libelle)}</h2>` +
     `<div class="ax-ligne-cote"><p class="ax-texte-resume">${echappeHtml(tendanceDe(m, s))}</p>` +
     `<div class="ax-badge-cote"><span>Cote</span><strong>${formatCote(s.cote)}</strong></div></div>` +
     `<div class="ax-preuves"><div class="ax-preuves-liste">${lignes}</div>` +
-    `<div class="ax-proba">${construitJauge(s.probabilite, "")}<span class="ax-proba-legende">Probabilité du modèle</span>` +
+    `<div class="ax-proba"><strong class="ax-reussite">${REUSSITE ? formatPct(REUSSITE.reussite) : "—"}</strong><span class="ax-proba-legende">Réussite observée du moteur (sans garantie)</span>` +
     (issue(s) ? `<span class="ax-solidite"><span class="ax-solidite-titre">Résultat :</span> ${issue(s)}</span>` : "") + `</div></div>`;
   return el;
 }
@@ -126,7 +135,7 @@ function construitCarte(m) {
   const actifs = m.selections.map((s, i) => {
     const idO = `ax-onglet-${id}-${i}`, idP = `ax-panneau-${id}-${i}`;
     const bouton = document.createElement("button");
-    bouton.type = "button"; bouton.id = idO; bouton.className = `ax-onglet ax-${CLASSES[i]}`;
+    bouton.type = "button"; bouton.id = idO; bouton.className = `ax-onglet ax-${CLASSES[Math.min(i, CLASSES.length - 1)]}`;
     bouton.setAttribute("role", "tab"); bouton.setAttribute("aria-controls", idP); bouton.dataset.cle = String(i);
     bouton.innerHTML = `<span>${echappeHtml(etiquette(s))}</span>`;
     onglets.appendChild(bouton);
@@ -181,8 +190,10 @@ function afficheSelections(d) {
   const retenus = (d.matchs || []).filter((m) => m.statut === "OK" && m.date >= jour && (m.selections || []).length).sort((a, b) => cleTri(a).localeCompare(cleTri(b)));
   maj.textContent = retenus.length ? `${retenus.length} match${retenus.length > 1 ? "s" : ""} avec au moins un pronostic · cote minimale ${formatCote(d.cote_min)}` : "Aucun pronostic pour le moment";
   const p = d.performance_archive;
+  REUSSITE = p || null;
+  RISQUE = d.pari_risque_archive || null;
   if (p && perf) {
-    perf.textContent = `Réussite réelle : ${formatPct(p.reussite)} sur ${p.matchs} matchs (${Math.round(p.ic95[0] * 100)}–${Math.round(p.ic95[1] * 100)} %). Les % affichés sont surestimés d'environ 10 points.`;
+    perf.textContent = `Réussite réelle : ${formatPct(p.reussite)} sur ${p.matchs} matchs (${Math.round(p.ic95[0] * 100)}–${Math.round(p.ic95[1] * 100)} %). Chaque pick est une aide à la lecture du match, pas une garantie de gain.`;
   }
   racine.innerHTML = "";
   if (!retenus.length) {

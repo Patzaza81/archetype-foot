@@ -12,7 +12,7 @@ def _equipe(buts, domicile):
 
 
 def _match(cotes, dom=None, ext=None):
-    return {"match_id": "x", "date": "2026-10-19", "heure_cameroun": "16:00", "competition": "Test", "domicile": "A", "exterieur": "B", "score_final": None,
+    return {"match_id": "x", "date": "2026-10-19", "heure_cameroun": "16:00", "competition": "Test", "domicile": "A", "exterieur": "B", "score_final": None, "coup_d_envoi_utc": "2026-10-19T15:00:00Z", "run": {"pris_le": "2026-10-19T06:00:00Z"},
             "cotes_betpawa": cotes, "assemblage": {"equipe_dom": _equipe(dom or [(3, 0), (2, 0), (3, 1), (2, 1)], True), "equipe_ext": _equipe(ext or [(0, 2), (0, 3), (1, 2), (0, 1)], False)}}
 
 
@@ -122,3 +122,96 @@ def test_libelle_parieur_marches_sans_equipe_gardent_le_libelle_du_moteur():
     assert _lp("btts", "Oui", "A", "B", "Les deux marquent : oui") == "Les deux marquent : oui"
     assert _lp("over_under_2.5", "plus", "A", "B", "Plus de 2,5 buts") == "Plus de 2,5 buts"
     assert _lp("1x2", "inconnu", "A", "B", "défaut") == "défaut"
+
+
+# ── Raison propre au pick ─────────────────────────────────────────────────────
+from matrice_scenarios.page_comportement import raison_du_pick as _rp
+_PROF = {"buts_attendus": (1.9, 0.8), "total_attendu": 2.7, "victoire_dom": 0.5, "nul": 0.25, "victoire_ext": 0.25, "deux_marquent": 0.52}
+
+
+def test_raison_du_pick_cas_valides():
+    assert _rp("over_under_2.5", "plus", _PROF, "A", "B") == "2,7 buts attendus dans le match"
+    assert _rp("over_under_domicile_1.5", "plus", _PROF, "A", "B") == "A : 1,9 but attendu"
+    assert _rp("cages_inviolees_exterieur", "non", _PROF, "A", "B") == "A : 1,9 but attendu"      # l'extérieur encaisse si A marque
+    assert _rp("cages_inviolees_domicile", "non", _PROF, "A", "B") == "B : 0,8 but attendu"
+    assert _rp("btts", "Oui", _PROF, "A", "B") == "Les deux marquent : 52 % selon le modèle"
+
+
+def test_raison_du_pick_ne_contredit_jamais_le_pick():
+    for g, s in (("over_under_4.5", "moins"), ("over_under_1.5", "plus")):
+        txt = _rp(g, s, _PROF, "A", "B")
+        assert "ouvert" not in txt and "fermé" not in txt
+
+
+def test_raison_du_pick_resultats_et_handicaps_donnent_les_trois_issues():
+    assert _rp("handicap_1.5", "domicile", _PROF, "A", "B") == "A 50 % · nul 25 % · B 25 %"
+    assert _rp("double_chance", "12", _PROF, "A", "B") == "A 50 % · nul 25 % · B 25 %"
+    assert _rp("handicap_3issues_2", "1", _PROF, "A", "B") == "A 50 % · nul 25 % · B 25 %"
+
+
+# ── Cohérence avec le profil et fiabilité des cotes (conseil du 19/10/2026) ───
+from matrice_scenarios.page_comportement import contredit_le_profil as _cp, cotes_fiables as _cf
+
+
+def test_contradiction_detectee():
+    assert _cp("over_under_1.5", "plus", "défensif")
+    assert _cp("over_under_4.5", "moins", "offensif")
+    assert _cp("over_under_2.5", "plus", "défensif")
+
+
+def test_pas_de_contradiction():
+    assert not _cp("over_under_1.5", "plus", "offensif")
+    assert not _cp("over_under_4.5", "moins", "défensif")
+    assert not _cp("over_under_2.5", "plus", "équilibré")
+    assert not _cp("over_under_domicile_1.5", "plus", "défensif")      # total d'équipe : non concerné
+    assert not _cp("double_chance", "12", "offensif")
+
+
+def test_cotes_fiables_cas_valides():
+    assert _cf({"coup_d_envoi_utc": "2026-10-05T20:00:00Z", "run": {"pris_le": "2026-10-05T00:11:00Z"}})
+    assert _cf({"coup_d_envoi_utc": "2026-10-05T20:00:00Z", "run": {}})
+    assert _cf({"coup_d_envoi_utc": "2026-10-05T20:00:00Z"})
+
+
+def test_cotes_non_fiables():
+    assert not _cf({"run": {"pris_le": "2026-10-05T00:11:00Z"}})                                                   # coup d'envoi absent
+    assert not _cf({"coup_d_envoi_utc": "2026-10-05T20:00:00Z", "run": {"pris_le": "2026-10-05T21:30:00Z"}})      # cotes en direct
+    assert not _cf({"coup_d_envoi_utc": "", "run": {}})
+
+
+# ── Pari risqué : marché à plus grosse cote qui suit la tendance ──────────────
+from matrice_scenarios.page_comportement import suit_la_tendance as _st, candidats_risque as _cr
+
+_PR = {"favori": "domicile", "buts": "offensif", "deux_marquent": 0.60}
+_PP = {"seuil_btts_haut": 0.56, "seuil_btts_bas": 0.51}
+
+
+def test_suit_la_tendance_cas_valides():
+    assert _st("1x2", "1", _PR, _PP) and _st("double_chance", "1N", _PR, _PP)
+    assert _st("over_under_2.5", "plus", _PR, _PP) and _st("btts", "Oui", _PR, _PP)
+    assert _st("handicap_-1.5", "domicile", _PR, _PP) and _st("handicap_3issues_1", "1", _PR, _PP)
+    assert _st("handicap_1.5", "exterieur", {**_PR, "favori": "extérieur"}, _PP)
+
+
+def test_suit_la_tendance_cas_rejetes():
+    assert not _st("1x2", "2", _PR, _PP) and not _st("double_chance", "N2", _PR, _PP)
+    assert not _st("over_under_2.5", "moins", _PR, _PP) and not _st("btts", "Non", _PR, _PP)
+    assert not _st("1x2", "1", {**_PR, "favori": "équilibré"}, _PP)
+    assert not _st("btts", "Oui", {**_PR, "deux_marquent": 0.53}, _PP)            # entre les deux seuils : pas de tendance
+    assert not _st("nombre_exact_buts", "3", _PR, _PP)
+
+
+def test_candidats_risque_exige_cote_plus_haute_et_autre_evenement():
+    principal = {"groupe": "double_chance", "selection": "1N", "cote": 1.3}
+    marches = [{"groupe": "1x2", "selection": "1", "cote": 1.9, "probabilite": 0.5},              # valide
+               {"groupe": "double_chance", "selection": "1N", "cote": 1.3, "probabilite": 0.8},   # même événement que le principal
+               {"groupe": "over_under_2.5", "selection": "plus", "cote": 1.2, "probabilite": 0.5},  # sous le plancher
+               {"groupe": "over_under_2.5", "selection": "moins", "cote": 2.0, "probabilite": 0.4}]  # contre la tendance
+    assert [(x["groupe"], x["selection"]) for x in _cr(marches, principal, _PR, _PP)] == [("1x2", "1")]
+
+
+def test_pari_risque_absent_sans_seuil_et_present_avec():
+    assert all(s["role"] != "risque" for s in P.analyser_match(_match(COTES), PARAMS)["selections"])
+    r = P.analyser_match(_match(COTES), {**PARAMS, "seuil_risque": 0.0})
+    risques = [s for s in r["selections"] if s["role"] == "risque"]
+    assert len(risques) <= 1 and all(s["cote"] > r["selections"][0]["cote"] and s["tendance"] == "Pari risqué" for s in risques)
