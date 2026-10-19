@@ -126,3 +126,10 @@ Les scénarios sont des hypothèses qui peuvent être inventées, combinées, tr
 - Jusqu'à 5 onglets (principal + une sélection par autre tendance qui passe les filtres).
 - Mesure sur l'archive jouée : pronostics des autres tendances 66 à 71 % de réussite selon la tendance, comparable au principal (69,5 %).
 - Menu : lien « Comportement » ajouté aux pages qui ont le menu des moteurs (index, V2, V3, V2R, V, Europe, Journal, Panier).
+
+### Clôture du chantier « Comportement » (19/10, suivi des propositions du conseil)
+- Seuil par tendance, mesuré (plus de seuil global) : plus petite probabilité à partir de laquelle les pronostics de la tendance ont réussi au moins autant que les pronostics principaux (66,7 % sur la 1re moitié de l'archive, 40 cas minimum). Sans tel seuil, la tendance ne propose pas de pronostic secondaire.
+- Résultat sur la 2e moitié (jamais vue) : Résultat 63,7 % (342 cas), Buts du match 66,8 % (307 cas). Buts du domicile, buts de l'extérieur, les deux marquent : aucun seuil ne tient la cible → pas de pronostic secondaire pour ces tendances (elles restent affichées comme explication).
+- Existence d'une tendance d'équipe (classe la plus probable ≥ tertile haut, 0,361) : validée sur les 40 % de Football-Data non utilisés, effet très faible (35,8 % au-dessus du seuil contre 34,2 % en dessous). À ne pas surinterpréter.
+- Limites : volumes faibles (quelques centaines de cas), probabilités du modèle surestimées d'environ 10 points, réussite du principal 69,5 % (IC 66–74 %) pour une cote moyenne de 1,39, sous le seuil de rentabilité (~72 %).
+- Prochaine étape unique : suivi en conditions réelles sur de nouveaux matchs, moteur figé.

@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 from matrice_scenarios import page_comportement as P
 
-PARAMS = {"seuil_btts_haut": 0.565, "seuil_btts_bas": 0.509, "seuil_secondaire": 0.6}
+PARAMS = {"seuil_btts_haut": 0.565, "seuil_btts_bas": 0.509, "seuil_secondaire": 0.6, "seuil_buts_equipe": 0.361}
 
 
 def _equipe(buts, domicile):
@@ -82,3 +82,21 @@ def test_pas_de_doublon_d_evenement_dans_un_match():
     r = P.analyser_match(_match({**COTES, "over_under_domicile_0.5": {"plus": 1.3, "moins": 3.5}, "cages_inviolees_exterieur": {"oui": 3.2, "non": 1.31}}), PARAMS)
     ev = [P.evenement(s["groupe"], s["choix"]) for s in r["selections"]]
     assert len(ev) == len(set(ev))
+
+
+def test_seuil_par_tendance_bloque_les_secondaires():
+    p = {**PARAMS, "seuil_secondaire": 0.0, "seuils_tendance": {k: 2.0 for k in P.TENDANCES}}
+    r = P.analyser_match(_match(COTES), p)
+    assert [s["role"] for s in r["selections"]] == ["principal"]
+
+
+def test_seuil_par_tendance_zero_laisse_passer():
+    p = {**PARAMS, "seuil_secondaire": 0.0, "seuils_tendance": {k: 0.0 for k in P.TENDANCES}}
+    assert len(P.analyser_match(_match(COTES), p)["selections"]) >= 2
+
+
+def test_tendance_non_nette_sans_pronostic_secondaire():
+    p = {**PARAMS, "seuil_secondaire": 0.0, "seuil_buts_equipe": 2.0}      # aucune tendance d'équipe ne peut être nette
+    r = P.analyser_match(_match(COTES), p)
+    assert all(s["tendance"] not in ("Buts du domicile", "Buts de l'extérieur") or s["role"] == "principal" for s in r["selections"])
+    assert all(t.get("nette") is False for t in r["tendances"] if t["cle"] in ("dom_buts", "ext_buts"))

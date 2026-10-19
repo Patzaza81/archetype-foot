@@ -59,7 +59,9 @@ def tendances_du_match(prof: dict[str, Any], dom: str, ext: str, p: dict[str, fl
         d = [marg[0], marg[1], marg[2], sum(marg[3:])]
         meilleur = max(range(4), key=lambda k: d[k])
         lib = ["aucun but", "1 but", "2 buts", "3 buts ou plus"][meilleur]
-        out.append({"cle": cle, "titre": f"Buts de {nom}", "texte": f"{lib} le plus probable ({pc(d[meilleur])}) · 0 but {pc(d[0])} · 2 buts ou plus {pc(d[2] + d[3])}."})
+        nette = d[meilleur] >= p["seuil_buts_equipe"]
+        out.append({"cle": cle, "titre": f"Buts de {nom}", "nette": nette,
+                    "texte": (f"{lib} le plus probable ({pc(d[meilleur])})" if nette else "Pas de tendance nette") + f" · 0 but {pc(d[0])} · 2 buts ou plus {pc(d[2] + d[3])}."})
     if prof["buts"] != "équilibré":
         out.append({"cle": "buts", "titre": "Buts du match", "texte": f"Match {prof['buts']} : {_fr(prof['total_attendu'])} buts attendus."})
     if prof["deux_marquent"] >= p["seuil_btts_haut"]:
@@ -71,7 +73,7 @@ def tendances_du_match(prof: dict[str, Any], dom: str, ext: str, p: dict[str, fl
     return out
 
 
-def analyser_match(m: dict[str, Any], p: dict[str, float]) -> dict[str, Any]:
+def analyser_match(m: dict[str, Any], p: dict[str, Any], collecte: list | None = None) -> dict[str, Any]:
     base = {"match_id": m["match_id"], "date": m["date"], "heure": m.get("heure_cameroun"), "competition": m.get("competition"),
             "domicile": m["domicile"], "exterieur": m["exterieur"], "score": m.get("score_final"), "selections": [], "tendances": []}
     a = m.get("assemblage") or {}
@@ -94,13 +96,19 @@ def analyser_match(m: dict[str, Any], p: dict[str, float]) -> dict[str, Any]:
         return {**base, "statut": "AUCUN_MARCHE_COTE_1_26"}
     choix = [dict(principal, role="principal")]
     vus = {evenement(principal["groupe"], principal["selection"])}
-    for cle in [t["cle"] for t in tend if t["cle"] in TENDANCES]:
-        if principal["tendance"] == cle:
+    for t in tend:
+        cle = t["cle"]
+        if cle not in TENDANCES or principal["tendance"] == cle or t.get("nette") is False:
             continue
-        cand = [x for x in eligibles if x["tendance"] == cle and x["probabilite"] >= p["seuil_secondaire"]
-                and evenement(x["groupe"], x["selection"]) not in vus]
-        if cand:
-            meilleur = max(cand, key=lambda x: (round(x["probabilite"], 6), x["cote"]))
+        seuil = p.get("seuils_tendance", {}).get(cle, p["seuil_secondaire"])
+        cand = [x for x in eligibles if x["tendance"] == cle and evenement(x["groupe"], x["selection"]) not in vus]
+        if not cand:
+            continue
+        meilleur = max(cand, key=lambda x: (round(x["probabilite"], 6), x["cote"]))
+        if collecte is not None and m.get("score_final"):
+            collecte.append({"date": m["date"], "tendance": cle, "probabilite": meilleur["probabilite"],
+                             "gagne": bool(S.test_du_marche(meilleur["groupe"], meilleur["selection"])(m["score_final"]["buts_dom"], m["score_final"]["buts_ext"]))})
+        if meilleur["probabilite"] >= seuil:
             vus.add(evenement(meilleur["groupe"], meilleur["selection"]))
             choix.append(dict(meilleur, role="tendance"))
     sel = []
@@ -130,7 +138,7 @@ def calculer_seuils() -> None:
     from .football_data import load_football_data
     P = json.loads(PARAMS.read_text(encoding="utf-8"))
     fd, _ = load_football_data()
-    valeurs, ecarts = [], []
+    valeurs, ecarts, modales = [], [], []
     for r in sorted(fd, key=lambda r: r["date"])[: int(len(fd) * 0.6) : 3]:
         d = [(x["goals_for"], x["goals_against"]) for x in sorted([x for x in r["home_history"] if x["venue"] == "home" and str(x["date"])[:10] < r["date"]], key=lambda x: x["date"])[-5:]]
         e = [(x["goals_for"], x["goals_against"]) for x in sorted([x for x in r["away_history"] if x["venue"] == "away" and str(x["date"])[:10] < r["date"]], key=lambda x: x["date"])[-5:]]
@@ -138,13 +146,71 @@ def calculer_seuils() -> None:
             g = C.grille(*C.buts_attendus(d, e), C.RHO)
             valeurs.append(C.proba(g, lambda i, j: i >= 1 and j >= 1))
             ecarts.append(abs(C.proba(g, lambda i, j: i > j) - C.proba(g, lambda i, j: i < j)))
+            for idx in (0, 1):
+                marg = [sum(row[k] for row in g) if idx else sum(g[k]) for k in range(len(g))]
+                d4 = [marg[0], marg[1], marg[2], sum(marg[3:])]
+                modales.append(max(d4))
+    modales.sort()
     valeurs.sort()
     ecarts.sort()
     probs = sorted(p["probabilite"] for m in charger_archive() if (p := pick(m, None)))
-    P.update({"seuil_btts_bas": valeurs[len(valeurs) // 3], "seuil_btts_haut": valeurs[2 * len(valeurs) // 3],
+    seuil_equipe = modales[2 * len(modales) // 3]
+    # validation sur les 40 % de Football-Data jamais utilisés : la classe la plus probable sort-elle plus souvent au-dessus du seuil ?
+    hors = {"au_dessus": [0, 0], "en_dessous": [0, 0]}
+    for r in sorted(fd, key=lambda r: r["date"])[int(len(fd) * 0.6):]:
+        d = [(x["goals_for"], x["goals_against"]) for x in sorted([x for x in r["home_history"] if x["venue"] == "home" and str(x["date"])[:10] < r["date"]], key=lambda x: x["date"])[-5:]]
+        e = [(x["goals_for"], x["goals_against"]) for x in sorted([x for x in r["away_history"] if x["venue"] == "away" and str(x["date"])[:10] < r["date"]], key=lambda x: x["date"])[-5:]]
+        if len(d) < 3 or len(e) < 3:
+            continue
+        g = C.grille(*C.buts_attendus(d, e), C.RHO)
+        for idx, reel in ((0, r["home_goals"]), (1, r["away_goals"])):
+            marg = [sum(row[k] for row in g) if idx else sum(g[k]) for k in range(len(g))]
+            d4 = [marg[0], marg[1], marg[2], sum(marg[3:])]
+            m = max(range(4), key=lambda k: d4[k])
+            cl = min(reel, 3)
+            h = hors["au_dessus" if d4[m] >= seuil_equipe else "en_dessous"]
+            h[0] += 1
+            h[1] += int(cl == m)
+    P.update({"seuil_buts_equipe": seuil_equipe,
+              "validation_seuil_buts_equipe": {k: {"cas": v[0], "classe_la_plus_probable_sortie": round(v[1] / v[0], 3)} for k, v in hors.items()},
+              "seuil_btts_bas": valeurs[len(valeurs) // 3], "seuil_btts_haut": valeurs[2 * len(valeurs) // 3],
               "seuil_secondaire": probs[len(probs) // 4], "seuil_ecart_favori": ecarts[2 * len(ecarts) // 3], "seuils_page": "tertiles BTTS (Football-Data) ; quartile bas des pronostics principaux (archive)"})
     PARAMS.write_text(json.dumps(P, ensure_ascii=False, indent=1), encoding="utf-8")
-    print({k: round(P[k], 3) for k in ("seuil_btts_bas", "seuil_btts_haut", "seuil_secondaire", "seuil_ecart_favori")})
+    print({k: round(P[k], 3) for k in ("seuil_btts_bas", "seuil_btts_haut", "seuil_secondaire", "seuil_ecart_favori", "seuil_buts_equipe")}, P["validation_seuil_buts_equipe"])
+
+
+def calculer_seuils_tendances() -> dict:
+    """Seuil par tendance mesuré sur la 1re moitié des matchs joués de l'archive : la plus petite probabilité à partir de laquelle les
+    pronostics de cette tendance ont réussi AU MOINS AUTANT que les pronostics principaux (même moitié), sur 40 cas minimum.
+    Sans tel seuil, la tendance ne propose pas de pronostic secondaire. Jugé ensuite sur la 2e moitié (jamais vue)."""
+    P = json.loads(PARAMS.read_text(encoding="utf-8"))
+    P.pop("seuils_tendance", None)
+    coll: list = []
+    principaux: list = []
+    for m in charger_matchs():
+        r = analyser_match(m, {**P, "seuil_secondaire": 0.0}, coll)
+        if r["selections"] and "gagne" in r["selections"][0]:
+            principaux.append((m["date"], r["selections"][0]["gagne"]))
+    jours = sorted(c["date"] for c in coll)
+    coupe = jours[len(jours) // 2]
+    cible = sum(g for d, g in principaux if d < coupe) / sum(1 for d, g in principaux if d < coupe)
+    seuils, verif = {}, {"cible_principaux_apprentissage": round(cible, 3), "jour_de_coupe": coupe}
+    for cle in TENDANCES:
+        app = sorted((c for c in coll if c["tendance"] == cle and c["date"] < coupe), key=lambda c: -c["probabilite"])
+        seuil, gagnes = None, 0
+        for i, c in enumerate(app, 1):                       # du plus probable au moins probable
+            gagnes += c["gagne"]
+            if i >= 40 and gagnes / i >= cible:
+                seuil = c["probabilite"]
+        te = [c for c in coll if c["tendance"] == cle and c["date"] >= coupe]
+        seuils[cle] = seuil if seuil is not None else 2.0    # 2,0 : aucun pronostic secondaire pour cette tendance
+        au = [c for c in te if c["probabilite"] >= seuils[cle]]
+        verif[cle] = {"seuil": None if seuil is None else round(seuil, 3), "apprentissage": len(app),
+                      "test": {"cas": len(au), "reussite": round(sum(c["gagne"] for c in au) / len(au), 3) if au else None}}
+    P["seuils_tendance"], P["validation_seuils_tendance"] = seuils, verif
+    PARAMS.write_text(json.dumps(P, ensure_ascii=False, indent=1), encoding="utf-8")
+    print(json.dumps(verif, ensure_ascii=False, indent=1))
+    return verif
 
 
 def construire() -> dict[str, Any]:
@@ -163,6 +229,7 @@ def construire() -> dict[str, Any]:
 if __name__ == "__main__":
     if "--seuils" in sys.argv:
         calculer_seuils()
+        calculer_seuils_tendances()
     SORTIE.parent.mkdir(parents=True, exist_ok=True)
     d = construire()
     SORTIE.write_text(json.dumps(d, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")

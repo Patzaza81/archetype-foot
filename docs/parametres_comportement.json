@@ -14,5 +14,67 @@
  "seuil_btts_haut": 0.5649037667995218,
  "seuil_secondaire": 0.7485941162500986,
  "seuils_page": "tertiles BTTS (Football-Data) ; quartile bas des pronostics principaux (archive)",
- "seuil_ecart_favori": 0.20159104898220293
+ "seuil_ecart_favori": 0.20159104898220293,
+ "seuil_buts_equipe": 0.36138726371216584,
+ "validation_seuil_buts_equipe": {
+  "au_dessus": {
+   "cas": 4152,
+   "classe_la_plus_probable_sortie": 0.358
+  },
+  "en_dessous": {
+   "cas": 8430,
+   "classe_la_plus_probable_sortie": 0.342
+  }
+ },
+ "validation_seuils_tendance": {
+  "cible_principaux_apprentissage": 0.667,
+  "jour_de_coupe": "2026-10-11",
+  "resultat": {
+   "seuil": 0.567,
+   "apprentissage": 206,
+   "test": {
+    "cas": 342,
+    "reussite": 0.637
+   }
+  },
+  "dom_buts": {
+   "seuil": null,
+   "apprentissage": 28,
+   "test": {
+    "cas": 0,
+    "reussite": null
+   }
+  },
+  "ext_buts": {
+   "seuil": null,
+   "apprentissage": 98,
+   "test": {
+    "cas": 0,
+    "reussite": null
+   }
+  },
+  "buts": {
+   "seuil": 0.226,
+   "apprentissage": 236,
+   "test": {
+    "cas": 307,
+    "reussite": 0.668
+   }
+  },
+  "deux_marquent": {
+   "seuil": null,
+   "apprentissage": 312,
+   "test": {
+    "cas": 0,
+    "reussite": null
+   }
+  }
+ },
+ "seuils_tendance": {
+  "resultat": 0.5669534118186332,
+  "dom_buts": 2.0,
+  "ext_buts": 2.0,
+  "buts": 0.2255287960364654,
+  "deux_marquent": 2.0
+ }
 }
