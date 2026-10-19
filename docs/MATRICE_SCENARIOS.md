@@ -113,7 +113,7 @@ Les scénarios sont des hypothèses qui peuvent être inventées, combinées, tr
 - Résultats : `docs/RAPPORT_VALIDATION_MATRICE_2026-10-18.md`. Tests : `tests/test_matrice_validation.py`.
 - Toujours `promotion_allowed=false`, aucune liaison aux moteurs, au Journal ni au pipeline.
 
-## Page « Moteur Comportement » (19/10/2026)
+## Page « Moteur alpha (ex-Comportement) » (19/10/2026)
 - Page : `pronostics_comportement.html` + `archetype_comportement.js` + `af-comportement.css` (même habillage que les autres moteurs). Elle lit `data/comportement/pronostics_comportement.json`.
 - Données : `python -m matrice_scenarios.page_comportement` (lecture de `data/archive_test/`, comme la V3). `--seuils` recalcule les seuils mesurés (`docs/parametres_comportement.json`).
 - Contenu par match : tendances (résultat, buts, deux marquent, scores extrêmes), pronostic principal, puis le meilleur pronostic de chaque autre tendance présente, si cote ≥ 1,26 et probabilité ≥ quartile bas des pronostics principaux (mesuré). 3 onglets au plus.

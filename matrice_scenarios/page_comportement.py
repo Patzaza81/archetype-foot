@@ -1,4 +1,4 @@
-"""Données de la page « Moteur Comportement » : tendances du match + pronostic principal + pronostics des autres tendances.
+"""Données de la page « Moteur alpha (ex-Comportement) » : tendances du match + pronostic principal + pronostics des autres tendances.
 
 Lecture seule : lit data/archive_test/ (comme le moteur V3), écrit data/comportement/pronostics_comportement.json.
 Rien n'est branché au pipeline, ni à V2/V3/V2R/Europe/Journal. Usage : python -m matrice_scenarios.page_comportement [--seuils]

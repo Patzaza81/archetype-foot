@@ -1,4 +1,4 @@
-// archetype_comportement.js — page du moteur « Comportement » (19/10/2026). Présentation uniquement : le navigateur ne calcule rien,
+// archetype_comportement.js — page du moteur alpha (19/10/2026). Présentation uniquement : le navigateur ne calcule rien,
 // tout vient de data/comportement/pronostics_comportement.json (écrit par python -m matrice_scenarios.page_comportement).
 // Même habillage que les autres moteurs (classes ax-*). Aucun lien avec V2, V3, V2R, Europe, Journal ni le pipeline.
 const echappe = (x) => String(x ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -95,5 +95,5 @@ function affiche(d) {
   fetch(`data/comportement/pronostics_comportement.json?_=${Date.now()}`)
     .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then(affiche)
-    .catch(() => { maj.textContent = "Données du moteur Comportement indisponibles."; });
+    .catch(() => { maj.textContent = "Données du moteur alpha indisponibles."; });
 })();
