@@ -64,3 +64,49 @@ def evaluer() -> dict:
 if __name__ == "__main__":
     import json
     print(json.dumps(evaluer(), ensure_ascii=False, indent=1))
+
+
+def evaluer_bloc(bookmaker: str = "ps", moment: str = "cloture") -> dict:
+    """Même jugement, sur le bloc de saisons (matchs + cotes d'ouverture ou de clôture, Pinnacle par défaut). Test = 40 % les plus récents.
+    Ajoute le handicap asiatique sur les lignes en .5 (pas de remboursement possible)."""
+    from . import bloc_saisons as B
+    bloc = B.charger()
+    matchs = bloc["liste"]
+    hist: dict = {}
+    for m in matchs:
+        hist.setdefault(m["domicile"], []).append((m["date"], True, m["buts_dom"], m["buts_ext"]))
+        hist.setdefault(m["exterieur"], []).append((m["date"], False, m["buts_ext"], m["buts_dom"]))
+
+    def avant(eq: str, lieu: bool, jour: str) -> list[tuple[int, int]]:
+        return [(g, c) for d, dom, g, c in sorted(x for x in hist[eq] if x[0] < jour and x[1] == lieu)[-5:]]
+    lignes = []
+    for m in matchs:
+        d, e = avant(m["domicile"], True, m["date"]), avant(m["exterieur"], False, m["date"])
+        if len(d) >= 3 and len(e) >= 3:
+            lignes.append((m, d, e))
+    test = lignes[int(len(lignes) * 0.6):]
+    cle1, cle2, cleah = f"1x2_{moment}", f"plus_moins_2_5_{moment}", "handicap_asiatique_ouverture"
+    acc = {"1x2": [0.0, 0.0, 0], "ou": [0.0, 0.0, 0], "ah": [0.0, 0.0, 0]}
+    for m, d, e in test:
+        g = C.grille(*C.buts_attendus(d, e), C.RHO)
+        gd, ge = m["buts_dom"], m["buts_ext"]
+        c1 = m["cotes"].get(cle1, {}).get(bookmaker)
+        if c1:
+            mk = _sans_marge(*c1)
+            pm = [C.proba(g, lambda i, j: i > j), C.proba(g, lambda i, j: i == j), C.proba(g, lambda i, j: i < j)]
+            k = 0 if gd > ge else (1 if gd == ge else 2)
+            acc["1x2"][0] += math.log(pm[k]); acc["1x2"][1] += math.log(mk[k]); acc["1x2"][2] += 1
+        c2 = m["cotes"].get(cle2, {}).get(bookmaker)
+        if c2:
+            po, y = C.proba(g, lambda i, j: i + j > 2.5), int(gd + ge > 2.5)
+            acc["ou"][0] += (po - y) ** 2; acc["ou"][1] += (_sans_marge(*c2)[0] - y) ** 2; acc["ou"][2] += 1
+        ah = m["cotes"].get(cleah, {})
+        c3 = ah.get(bookmaker)
+        if c3 and abs(ah["ligne_domicile"] * 2) % 2 == 1:          # ligne en .5 : pas de remboursement
+            h = ah["ligne_domicile"]
+            pd = C.proba(g, lambda i, j: i + h > j)
+            y = int(gd + h > ge)
+            acc["ah"][0] += (pd - y) ** 2; acc["ah"][1] += (_sans_marge(*c3)[0] - y) ** 2; acc["ah"][2] += 1
+    r = lambda k: {"matchs": acc[k][2], "modele": round(acc[k][0] / acc[k][2], 4), "marche": round(acc[k][1] / acc[k][2], 4)} if acc[k][2] else None
+    return {"bloc": bloc["saisons"], "bookmaker": bookmaker, "moment": moment, "matchs_test": len(test),
+            "1x2_loglik (plus haut = mieux)": r("1x2"), "plus_moins_2_5_brier (plus bas = mieux)": r("ou"), "handicap_asiatique_demi_ligne_brier (plus bas = mieux)": r("ah")}

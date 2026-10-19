@@ -38,6 +38,8 @@ Les colonnes de cotes Football-Data restent dans le CSV brut. Elles ne sont
 pas interprétées comme cotes d'ouverture/clôture par cette couche. Le chantier
 des cotes du run prendra ses propres relevés horodatés.
 
+**Décision de Patrick (19/10/2026), qui LÈVE la règle du 24/09 pour l'évaluation et le calibrage** : les colonnes de cotes des CSV bruts Football-Data (Bet365, Pinnacle, Betfair, moyenne, maximum ; ouverture et clôture ; 1X2, plus/moins 2,5, handicap asiatique) peuvent être lues par des modules d'évaluation séparés (bancs de test, blocs de saisons : `matrice_scenarios/bloc_saisons.py`, `matrice_scenarios/banc_cotes_football_data.py`) pour juger et calibrer les moteurs. Inchangé : la couche de collecte ne normalise ni ne transmet aucune cote, et `contrat_moteur.py` n'en donne aucune à un moteur ; un pronostic n'est jamais calculé à partir d'une cote Football-Data.
+
 ## Consommation
 
 Le moteur d'analyse pourra lire `data/football_data/normalized/` sans
@@ -113,6 +115,7 @@ de retard (constat du 24/09). Une source en panne est notée dans `last_run.erro
 
 **Décision de Patrick (24/09/2026) : aucune cote n'est collectée ici** (pas de comparaison de cotes entre bookmakers,
 aucune API). Les colonnes de cotes des CSV restent dans les fichiers bruts et ne sont jamais utilisées.
+**Décision de Patrick (19/10/2026), qui LÈVE la règle du 24/09 pour l'évaluation et le calibrage** : les colonnes de cotes des CSV bruts Football-Data (Bet365, Pinnacle, Betfair, moyenne, maximum ; ouverture et clôture ; 1X2, plus/moins 2,5, handicap asiatique) peuvent être lues par des modules d'évaluation séparés (bancs de test, blocs de saisons : `matrice_scenarios/bloc_saisons.py`, `matrice_scenarios/banc_cotes_football_data.py`) pour juger et calibrer les moteurs. Inchangé : la couche de collecte ne normalise ni ne transmet aucune cote, et `contrat_moteur.py` n'en donne aucune à un moteur ; un pronostic n'est jamais calculé à partir d'une cote Football-Data.
 Règle d'assemblage (précisée par Patrick le 24/09/2026) :
 1. Championnat couvert par Football-Data : les matchs de Football-Data sont la base (données plus complètes : mi-temps,
    tirs, corners, cartons, xG). Matchendirect ne sert qu'à ajouter les JOURS manquants, c'est-à-dire les matchs joués
