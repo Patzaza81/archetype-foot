@@ -179,7 +179,8 @@ def mesurer_seuils(prep: list[dict]) -> dict[str, Any]:
     princ = [c for p in prep for c in p["candidats"] if c["principal"]]
     ecarts = sorted(c["ecart_cote"] for p in prep for c in p["candidats"])
     return {"q1_contrarien": quartile_bas([c["j1"] for c in princ]), "q1_outsider": quartile_bas([c["j4"] for c in princ]),
-            "q99_ecart_cote": ecarts[int(len(ecarts) * 0.99)] if ecarts else None, "pronostics_principaux": len(princ)}
+            "q99_ecart_cote": ecarts[int(len(ecarts) * 0.99)] if ecarts else None,
+            "q1_proba": quartile_bas([c["p_calibree"] for c in princ]), "pronostics_principaux": len(princ)}
 
 
 def juger_candidats(cands: list[dict], seuils: dict[str, Any]) -> None:
@@ -310,9 +311,11 @@ def super_marche(p: dict[str, Any], seuils: dict[str, Any]) -> dict[str, Any] | 
     cands, G, scen = p["candidats"], p["_G"], p["_scen"]
     princ = next((c for c in cands if c["principal"]), None)
     sures = [c for c in cands if not c["dangereux"] and c["probabilite"] > 0]
+    proba_min = seuils.get("q1_proba") or 0.0           # un super marché n'est pas un pari de loterie : au moins la probabilité que joue alpha lui-même (quartile bas des principaux)
+    sures = [c for c in sures if c["p_calibree"] >= proba_min]
     sure_ref = princ["sure"] if princ else 0.0          # se démarquer = aussi sûr que le pronostic d'alpha face aux scénarios, et mieux payé
     cote_ref = princ["cote"] if princ else COTE_MIN
-    reels = [c for c in cands if c.get("combine") and c["nb_juges"] == len(JUGES) and c["sure"] >= sure_ref and c["cote"] > cote_ref]
+    reels = [c for c in cands if c.get("combine") and c["nb_juges"] == len(JUGES) and c["sure"] >= sure_ref and c["cote"] > cote_ref and c["p_calibree"] >= proba_min]
     if reels:                                              # combiné réel (cote trouvée sur Betpawa) : passe avant tout
         o = max(reels, key=lambda c: (c["valeur"], c["cote"]))
         return {"type": "combine", "jambes": [jambe(o)], "cote_combine": o["cote"], "cote_min": COTE_MIN, "juges": o["juges"], "raison": raison(o, princ, p)}
@@ -339,7 +342,7 @@ def super_marche(p: dict[str, Any], seuils: dict[str, Any]) -> dict[str, Any] | 
         return {"type": "combine", "jambes": [jambe(A), jambe(B)], "cote_combine": "a_verifier", "cote_min": COTE_MIN,
                 "juges": {"contrarien": True, "premiers_principes": True, "expansionniste": True, "outsider": True, "executant": True}}
     ref = princ["valeur"] if princ else float("-inf")
-    autres = [c for c in cands if not c["principal"] and not c.get("combine") and c["nb_juges"] == len(JUGES) and c["valeur"] > ref and c["sure"] >= sure_ref and c["cote"] > cote_ref]
+    autres = [c for c in cands if not c["principal"] and not c.get("combine") and c["nb_juges"] == len(JUGES) and c["valeur"] > ref and c["sure"] >= sure_ref and c["cote"] > cote_ref and c["p_calibree"] >= proba_min]
     if autres:
         o = max(autres, key=lambda c: (c["valeur"], c["cote"]))
         return {"type": "simple", "jambes": [jambe(o)], "cote_combine": None, "cote_min": COTE_MIN, "juges": o["juges"], "raison": raison(o, princ, p)}
