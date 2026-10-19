@@ -1,15 +1,271 @@
 {
  "version": "1.0.0",
- "genere_le": "2026-10-18 09:31 UTC",
+ "genere_le": "2026-10-19 00:05 UTC",
  "resume": {
-  "equipes_en_cache": 895,
-  "verifiables": 684,
-  "coherentes": 684,
-  "incoherentes": 0,
-  "non_verifiables": 137,
-  "sans_donnees": 74,
-  "taux_incoherence": 0.0
+  "equipes_en_cache": 890,
+  "verifiables": 696,
+  "coherentes": 681,
+  "incoherentes": 15,
+  "non_verifiables": 127,
+  "sans_donnees": 67,
+  "taux_incoherence": 0.0216
  },
  "methode": "Chaque match connu par les pages de match (même compétition, joué avant l'enregistrement) doit figurer dans la saison enregistrée de l'équipe (même lieu, mêmes buts). Sinon : INCOHERENTE.",
- "incoherentes": []
+ "incoherentes": [
+  {
+   "equipe": "medellin",
+   "competition": "colombie : première a cloture",
+   "url": "https://www.matchendirect.fr/equipe/medellin_bzpygd5fja0tbb2x8daphil1l.html",
+   "enregistre_le": "2026-10-18",
+   "matchs_enregistres": 24,
+   "matchs_connus": 8,
+   "manquants": [
+    {
+     "date": "2026-10-17",
+     "adversaire": "Once Caldas",
+     "lieu": "domicile",
+     "score_equipe": "0-2"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "once caldas",
+   "competition": "colombie : première a cloture",
+   "url": "https://www.matchendirect.fr/equipe/once-caldas_1m0l6lfeg2gpncu6xjz21pv9n.html",
+   "enregistre_le": "2026-10-18",
+   "matchs_enregistres": 24,
+   "matchs_connus": 8,
+   "manquants": [
+    {
+     "date": "2026-10-17",
+     "adversaire": "Medellín",
+     "lieu": "extérieur",
+     "score_equipe": "2-0"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "fuerte",
+   "competition": "el salvador : 1ère division ouverture",
+   "url": "https://www.matchendirect.fr/equipe/fuerte_9xexl82aun7asrdt8k28bgavo.html",
+   "enregistre_le": "2026-10-18",
+   "matchs_enregistres": 16,
+   "matchs_connus": 9,
+   "manquants": [
+    {
+     "date": "2026-10-17",
+     "adversaire": "Metapan",
+     "lieu": "extérieur",
+     "score_equipe": "2-3"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "metapan",
+   "competition": "el salvador : 1ère division ouverture",
+   "url": "https://www.matchendirect.fr/equipe/metapan_e29381coimf4lo8rx156vzhb0.html",
+   "enregistre_le": "2026-10-18",
+   "matchs_enregistres": 15,
+   "matchs_connus": 8,
+   "manquants": [
+    {
+     "date": "2026-10-17",
+     "adversaire": "Fuerte",
+     "lieu": "domicile",
+     "score_equipe": "3-2"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "dc united",
+   "competition": "etats-unis : mls",
+   "url": "https://www.matchendirect.fr/equipe/dc-united_5qw82lpi6fio4fbljihlyyulb.html",
+   "enregistre_le": "2026-10-18",
+   "matchs_enregistres": 24,
+   "matchs_connus": 8,
+   "manquants": [
+    {
+     "date": "2026-10-17",
+     "adversaire": "Orlando City",
+     "lieu": "extérieur",
+     "score_equipe": "1-4"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "houston",
+   "competition": "etats-unis : mls",
+   "url": "https://www.matchendirect.fr/equipe/houston_69m5c06m9up1j8vf8ulnb80xu.html",
+   "enregistre_le": "2026-10-18",
+   "matchs_enregistres": 24,
+   "matchs_connus": 9,
+   "manquants": [
+    {
+     "date": "2026-10-17",
+     "adversaire": "Dallas",
+     "lieu": "domicile",
+     "score_equipe": "2-2"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "la galaxy",
+   "competition": "etats-unis : mls",
+   "url": "https://www.matchendirect.fr/equipe/la-galaxy_6qr5y32dthc4dqycckwmfj1si.html",
+   "enregistre_le": "2026-10-18",
+   "matchs_enregistres": 24,
+   "matchs_connus": 8,
+   "manquants": [
+    {
+     "date": "2026-10-17",
+     "adversaire": "San Diego",
+     "lieu": "domicile",
+     "score_equipe": "2-2"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "montreal",
+   "competition": "etats-unis : mls",
+   "url": "https://www.matchendirect.fr/equipe/montreal_oisd4xgg4qxt18c7tikdejbe.html",
+   "enregistre_le": "2026-10-18",
+   "matchs_enregistres": 24,
+   "matchs_connus": 9,
+   "manquants": [
+    {
+     "date": "2026-10-17",
+     "adversaire": "S. Sounders",
+     "lieu": "extérieur",
+     "score_equipe": "1-1"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "nashville sc",
+   "competition": "etats-unis : mls",
+   "url": "https://www.matchendirect.fr/equipe/nashville-sc_1oogd0fpwledjm2ycsuv7afze.html",
+   "enregistre_le": "2026-10-18",
+   "matchs_enregistres": 24,
+   "matchs_connus": 8,
+   "manquants": [
+    {
+     "date": "2026-10-17",
+     "adversaire": "San Jose E.",
+     "lieu": "extérieur",
+     "score_equipe": "1-1"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "portland",
+   "competition": "etats-unis : mls",
+   "url": "https://www.matchendirect.fr/equipe/portland_77o8sorlijzpr0t4s7231zzxp.html",
+   "enregistre_le": "2026-10-18",
+   "matchs_enregistres": 24,
+   "matchs_connus": 9,
+   "manquants": [
+    {
+     "date": "2026-10-17",
+     "adversaire": "Colorado",
+     "lieu": "domicile",
+     "score_equipe": "0-0"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "real salt lake",
+   "competition": "etats-unis : mls",
+   "url": "https://www.matchendirect.fr/equipe/real-salt-lake_29zyafx618w7tvp34n53pzwwb.html",
+   "enregistre_le": "2026-10-18",
+   "matchs_enregistres": 24,
+   "matchs_connus": 10,
+   "manquants": [
+    {
+     "date": "2026-10-17",
+     "adversaire": "Sporting KC",
+     "lieu": "extérieur",
+     "score_equipe": "3-1"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "san diego",
+   "competition": "etats-unis : mls",
+   "url": "https://www.matchendirect.fr/equipe/san-diego_74lhmgpfmledj7a1h58wuar6c.html",
+   "enregistre_le": "2026-10-18",
+   "matchs_enregistres": 24,
+   "matchs_connus": 8,
+   "manquants": [
+    {
+     "date": "2026-10-17",
+     "adversaire": "LA Galaxy",
+     "lieu": "extérieur",
+     "score_equipe": "2-2"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "toronto",
+   "competition": "etats-unis : mls",
+   "url": "https://www.matchendirect.fr/equipe/toronto_28teusnamw1ujgh5di1auf2f7.html",
+   "enregistre_le": "2026-10-18",
+   "matchs_enregistres": 24,
+   "matchs_connus": 9,
+   "manquants": [
+    {
+     "date": "2026-10-17",
+     "adversaire": "NY Red Bulls",
+     "lieu": "extérieur",
+     "score_equipe": "2-0"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "v whitecaps",
+   "competition": "etats-unis : mls",
+   "url": "https://www.matchendirect.fr/equipe/v-whitecaps_cdmq2tqfwo5td2ztv1s62bqlf.html",
+   "enregistre_le": "2026-10-18",
+   "matchs_enregistres": 24,
+   "matchs_connus": 9,
+   "manquants": [
+    {
+     "date": "2026-10-17",
+     "adversaire": "Austin",
+     "lieu": "extérieur",
+     "score_equipe": "2-1"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "d toluca",
+   "competition": "mexique : liga mx ouverture",
+   "url": "https://www.matchendirect.fr/equipe/d-toluca_3390h9hdgoxzzofnrpyktanuz.html",
+   "enregistre_le": "2026-10-18",
+   "matchs_enregistres": 12,
+   "matchs_connus": 6,
+   "manquants": [
+    {
+     "date": "2026-10-17",
+     "adversaire": "Atletico San L",
+     "lieu": "domicile",
+     "score_equipe": "1-1"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  }
+ ]
 }
