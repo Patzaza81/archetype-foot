@@ -85,3 +85,8 @@ Preuves brutes : `docs/validation_matrice_2026-10-18.json` (sortie de `python -m
 - Choix : marché le plus probable avec cote ≥ 1,26, sans plafond.
 - Backtest archive jouée (1 064 matchs) : réussite 69,5 % (cote moyenne 1,39), annoncé 79,0 % → trop confiant de ~10 points. Ancienne règle sur le même échantillon : 65,6 %. Écart de 3 points, non prouvé significatif.
 - Aucune règle activée, rien branché à la production.
+## 12. Conseil de modèles (`conseil.py`, expérimental, non retenu)
+- Transposition de l'architecture « LLM Council » en 4 conseillers statistiques (croisement, Poisson, court terme, extérieur) + contradicteur (désaccord) + président (4 modes).
+- Archive jouée, 1 064 matchs, réussite : Poisson seul 69,5 % ; moyenne 66,6 % ; prudent (pire avis) 66,6 % ; unanime 65,0 %. Le conseil fait moins bien.
+- Le désaccord ne prédit pas l'échec (réussite par tiers de désaccord : 68,1 % / 69,3 % / 71,3 %).
+- Conclusion : le mode par défaut reste Poisson seul. Module conservé en lecture seule pour de futurs conseillers.
