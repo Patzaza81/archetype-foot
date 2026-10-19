@@ -223,130 +223,61 @@ def verdict(p: dict[str, Any], supers: set[str], adapter: bool = False) -> dict[
             "fragile": bool(choix is not None and choix["dangereux"])}
 
 
-# ---------------------------------------------------------------- super marché (logique de Patrick)
+# ---------------------------------------------------------------- super pronostic : la lecture du parieur (méthode de Patrick, 19/10/2026)
+
+def signaux(mj: dict[str, Any]) -> dict[str, Any]:
+    """Ce que la page affiche déjà pour le match (tendances d'alpha) : match ouvert/fermé, les deux marquent, scores extrêmes."""
+    t = {x["cle"]: x for x in mj.get("tendances") or []}
+    court = lambda k: (t.get(k) or {}).get("court") or ""
+    buts = "ouvert" if "ouvert" in court("buts") else ("ferme" if "fermé" in court("buts") else None)
+    btts = "oui" if "marquent souvent" in court("deux_marquent") else ("non" if "risque de ne pas marquer" in court("deux_marquent") else None)
+    return {"buts": buts, "btts": btts, "extremes": "extremes" in t, "textes": {k: (v.get("texte") or "") for k, v in t.items()}}
+
+
+def jambe_buts_valide(groupe: str, sel: str, sig: dict[str, Any]) -> bool:
+    """La jambe « buts » du combiné va dans le sens de ce que la page affiche : match ouvert -> plus de 1,5 / 2,5 ; fermé -> moins de 2,5 / 3,5 / 4,5
+    (seulement 3,5 et 4,5 si les séries montrent un score extrême) ; les deux marquent selon la tendance."""
+    import re
+    m = re.fullmatch(r"dc_total_(\d+\.5)", groupe)
+    if m:
+        ligne = float(m.group(1))
+        if sig["buts"] == "ouvert":
+            return sel.endswith("|plus") and ligne in (1.5, 2.5)
+        if sig["buts"] == "ferme":
+            return sel.endswith("|moins") and ligne in ((3.5, 4.5) if sig["extremes"] else (2.5, 3.5, 4.5))
+        return False
+    if groupe == "dc_btts":
+        return (sel.endswith("|Oui") and sig["btts"] == "oui") or (sel.endswith("|Non") and sig["btts"] == "non")
+    return False
+
+
+def super_pronostic(p: dict[str, Any], mj: dict[str, Any]) -> dict[str, Any] | None:
+    """Le parieur lit ce que la page affiche, puis adapte le marché d'alpha : il cumule deux statistiques qui vont dans le même sens
+    (le résultat que la page propose + la tendance de buts), avec la cote du combiné TROUVÉE sur Betpawa (sans cote, pas de pari),
+    et seulement si le combiné paie plus que le pronostic principal. Sinon : rien, le principal reste tel quel."""
+    sig = signaux(mj)
+    princ = next((s for s in mj.get("selections") or [] if s.get("role") == "principal"), None)
+    if not princ:
+        return None
+    issues = {s.get("choix") for s in mj.get("selections") or [] if s.get("groupe") == "double_chance"}      # le résultat que la page propose
+    valides = [c for c in p["candidats"] if c.get("combine") and c["groupe"].startswith("dc_") and c["selection"].split("|")[0] in issues
+               and jambe_buts_valide(c["groupe"], c["selection"], sig) and c["cote"] > princ["cote"]
+               and not (c["selection"].startswith("12|") and (sig["buts"] == "ferme" or sig["btts"] == "non"))]      # « pas de nul » ne va pas avec un match fermé
+    if not valides:
+        return None
+    c = max(valides, key=lambda x: (x["probabilite"], x["cote"]))
+    res, buts = sig["textes"].get("resultat", ""), (sig["textes"].get("buts") if c["groupe"].startswith("dc_total") else sig["textes"].get("deux_marquent", ""))
+    t = [x for x in (res, buts) if x]
+    t.append(f"Les deux paris vont dans le même sens : combiné {c['libelle'].lower()}, trouvé sur Betpawa à {_virgule(c['cote'])} (le principal paie {_virgule(princ['cote'])}).")
+    return {"type": "combine", "jambes": [jambe(c)], "cote_combine": c["cote"], "cote_min": COTE_MIN, "raison": " ".join(t)}
+
 
 def _virgule(x: float) -> str:
     return str(round(float(x), 2)).replace(".", ",")
 
 
-def _pl(n: int, mot: str) -> str:
-    return f"{n} {mot}{'s' if n > 1 else ''}"
-
-
-def _forme(nom: str, ms: list) -> dict:
-    n = len(ms)
-    return {"nom": nom, "n": n, "pour": sum(a for a, _ in ms), "contre": sum(b for _, b in ms), "sans_marquer": sum(1 for a, _ in ms if a == 0),
-            "sans_encaisser": sum(1 for _, b in ms if b == 0), "v": sum(1 for a, b in ms if a > b), "nul": sum(1 for a, b in ms if a == b),
-            "d": sum(1 for a, b in ms if a < b), "total": sum(a + b for a, b in ms)}
-
-
-def _arguments(c: dict, p: dict) -> str:
-    """Les chiffres des derniers matchs des deux équipes qui soutiennent CE marché (ce que le parieur lit dans les résultats)."""
-    import re
-    sd, se = p.get("series_buts") or {}, {}
-    if not sd:
-        return ""
-    D, E = _forme(p["domicile"], sd["domicile"]), _forme(p["exterieur"], sd["exterieur"])
-    if not D["n"] or not E["n"]:
-        return ""
-    g, sel = c["groupe"], c["selection"]
-    out: list[str] = []
-    m = re.fullmatch(r"over_under_(domicile_|exterieur_)?(\d+\.5)", g)
-    if m:
-        ligne, moins = float(m.group(2)), sel == "moins"
-        ok = (lambda x: x < ligne) if moins else (lambda x: x > ligne)
-        if not m.group(1):
-            for F in (D, E):
-                if ok(F["total"] / F["n"]):
-                    out.append(f"{F['nom']} : {_virgule(F['total'] / F['n'])} buts par match sur ses {F['n']} derniers matchs.")
-        else:
-            T, O = (D, E) if m.group(1) == "domicile_" else (E, D)
-            if ok(T["pour"] / T["n"]):
-                out.append(f"{T['nom']} {'n' + chr(39) + 'a marqué que' if moins else 'a marqué'} {_pl(T['pour'], 'but')} en {T['n']} matchs.")
-            if ok(O["contre"] / O["n"]):
-                out.append(f"{O['nom']} {'n' + chr(39) + 'a encaissé que' if moins else 'a encaissé'} {_pl(O['contre'], 'but')} en {O['n']} matchs.")
-        return " ".join(out)
-    if g == "btts":
-        for F in (D, E):
-            if sel == "Non" and F["sans_marquer"] > 0:
-                out.append(f"{F['nom']} n'a pas marqué dans {F['sans_marquer']} de ses {F['n']} derniers matchs.")
-            if sel == "Oui" and F["n"] - F["sans_marquer"] > F["n"] / 2:
-                out.append(f"{F['nom']} a marqué dans {F['n'] - F['sans_marquer']} de ses {F['n']} derniers matchs.")
-        return " ".join(out)
-    m = re.fullmatch(r"cages_inviolees_(domicile|exterieur)", g)
-    if m:
-        T = E if m.group(1) == "domicile" else D                 # la cage de l'un est inviolée si l'autre ne marque pas
-        if sel == "oui" and T["sans_marquer"] > 0:
-            return f"{T['nom']} n'a pas marqué dans {T['sans_marquer']} de ses {T['n']} derniers matchs."
-        if sel == "non" and T["n"] - T["sans_marquer"] > T["n"] / 2:
-            return f"{T['nom']} a marqué dans {T['n'] - T['sans_marquer']} de ses {T['n']} derniers matchs."
-        return ""
-    return (f"{D['nom']} : {D['v']}V {D['nul']}N {D['d']}D sur ses {D['n']} derniers matchs. {E['nom']} : {E['v']}V {E['nul']}N {E['d']}D sur ses {E['n']}.")
-
-
-def raison(c: dict, princ: dict | None, p: dict) -> str:
-    """Justification de parieur : les chiffres des derniers matchs qui soutiennent ce pari, puis son prix face au principal."""
-    t = []
-    if c.get("combine"):
-        t.append(f"Deux paris qui vont dans le même sens : {c['libelle'].lower()}.")
-    a = _arguments(c, p)
-    if a:
-        t.append(a)
-    if princ:
-        t.append(f"Cote {_virgule(c['cote'])} contre {_virgule(princ['cote'])} pour le pronostic principal.")
-    return " ".join(t)
-
-
 def jambe(c: dict) -> dict:
     return {k: c[k] for k in ("groupe", "selection", "libelle", "famille", "cote")}
-
-
-def super_marche(p: dict[str, Any], seuils: dict[str, Any]) -> dict[str, Any] | None:
-    """Un marché qui se démarque, sinon rien. Deux formes :
-    - COMBINÉ : deux jambes de familles différentes qui vont dans le même sens (la probabilité d'avoir les deux dépasse le produit des
-      probabilités : seuil naturel, aucune constante), chaque jambe non dangereuse, et le combiné survit aux scénarios (juges 1 et 4).
-      La cote du combiné n'est pas dans nos données : à vérifier sur Betpawa (minimum 1,26).
-    - SIMPLE : un autre marché que celui d'alpha qui passe les 5 juges et paie mieux que lui après calibration (valeur supérieure).
-    Le combiné passe en premier ; jamais le marché d'alpha tel quel."""
-    cands, G, scen = p["candidats"], p["_G"], p["_scen"]
-    princ = next((c for c in cands if c["principal"]), None)
-    sures = [c for c in cands if not c["dangereux"] and c["probabilite"] > 0]
-    proba_min = seuils.get("q1_proba") or 0.0           # un super marché n'est pas un pari de loterie : au moins la probabilité que joue alpha lui-même (quartile bas des principaux)
-    sures = [c for c in sures if c["p_calibree"] >= proba_min]
-    sure_ref = princ["sure"] if princ else 0.0          # se démarquer = aussi sûr que le pronostic d'alpha face aux scénarios, et mieux payé
-    cote_ref = princ["cote"] if princ else COTE_MIN
-    reels = [c for c in cands if c.get("combine") and c["nb_juges"] == len(JUGES) and c["sure"] >= sure_ref and c["cote"] > cote_ref and c["p_calibree"] >= proba_min]
-    if reels:                                              # combiné réel (cote trouvée sur Betpawa) : passe avant tout
-        o = max(reels, key=lambda c: (c["valeur"], c["cote"]))
-        return {"type": "combine", "jambes": [jambe(o)], "cote_combine": o["cote"], "cote_min": COTE_MIN, "juges": o["juges"], "raison": raison(o, princ, p)}
-    meilleur = None
-    for a in range(len(sures) if COMBINES else 0):
-        for b in range(a + 1, len(sures)):
-            A, B = sures[a], sures[b]
-            if A["famille"] == B["famille"] or A["groupe"] == B["groupe"]:
-                continue
-            WA, WB = A["_W"], B["_W"]
-            W = WA & WB
-            pj, pa, pb = float(G[W].sum()), float(G[WA].sum()), float(G[WB].sum())
-            if pj <= pa * pb or pj >= min(pa, pb) - 1e-9:       # pas dans le même sens, ou une jambe contient l'autre (le combiné = une seule jambe)
-                continue
-            s_ = {k: masse_perte(G, W, v) for k, v in scen.items()}
-            j1 = 1 - max(s_[k] for k in ("favori_creuse", "match_s_ouvre", "nul"))
-            j4 = 1 - max(s_[k] for k in ("equipe_muette", "score_extreme") if k in s_)
-            if j1 < seuils["q1_contrarien"] or j4 < seuils["q1_outsider"] or min(j1, j4) < sure_ref or A["cote"] * B["cote"] <= cote_ref:
-                continue
-            if meilleur is None or pj > meilleur[0]:
-                meilleur = (pj, A, B, j1, j4)
-    if meilleur:
-        pj, A, B, j1, j4 = meilleur
-        return {"type": "combine", "jambes": [jambe(A), jambe(B)], "cote_combine": "a_verifier", "cote_min": COTE_MIN,
-                "juges": {"contrarien": True, "premiers_principes": True, "expansionniste": True, "outsider": True, "executant": True}}
-    ref = princ["valeur"] if princ else float("-inf")
-    autres = [c for c in cands if not c["principal"] and not c.get("combine") and c["nb_juges"] == len(JUGES) and c["valeur"] > ref and c["sure"] >= sure_ref and c["cote"] > cote_ref and c["p_calibree"] >= proba_min]
-    if autres:
-        o = max(autres, key=lambda c: (c["valeur"], c["cote"]))
-        return {"type": "simple", "jambes": [jambe(o)], "cote_combine": None, "cote_min": COTE_MIN, "juges": o["juges"], "raison": raison(o, princ, p)}
-    return None
 
 
 # ---------------------------------------------------------------- chargement et statistiques
@@ -458,6 +389,7 @@ def ecrire_page() -> dict[str, Any]:
     prm = json.loads(PARAMETRES.read_text(encoding="utf-8"))
     courbes, supers = courbes_calibration(), set(prm["supers"])
     out = {}
+    mjs = {x["match_id"]: x for x in json.loads((ROOT / "data" / "comportement" / "pronostics_comportement.json").read_text(encoding="utf-8"))["matchs"]}
     dt = __import__("datetime")
     veille = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=1)).strftime("%Y-%m-%d")      # la page n'affiche que les matchs à venir
     for p in preparer_tout(charger_matchs(), courbes):
@@ -466,7 +398,7 @@ def ecrire_page() -> dict[str, Any]:
         juger_candidats(p["candidats"], prm["seuils"])
         v = verdict(p, supers, prm.get("adaptation_active", False))
         out[p["match_id"]] = {"statut": v["statut"], "origine": v["origine"], "fragile": v["fragile"], "niveau_opportunite": v["niveau_opportunite"],
-                              "pronostic": resume(v["pronostic"]), "super": super_marche(p, prm["seuils"])}
+                              "pronostic": resume(v["pronostic"]), "super": super_pronostic(p, mjs.get(p["match_id"]) or {})}
     d = {"genere_le": __import__("datetime").datetime.now(__import__("datetime").timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
          "supers": prm["supers"], "jour_de_coupe": prm["jour_de_coupe"], "promotion_allowed": False, "matchs": out}
     SORTIE.write_text(json.dumps(d, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")

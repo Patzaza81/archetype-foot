@@ -62,87 +62,55 @@ def test_dangereux_si_un_juge_cle_echoue():
     assert juge([cand(cote=1.1)])[0]["dangereux"]
 
 
-def _p(cands, G, scen):
-    for c in cands:
-        c.setdefault("principal", False)
-    J.juger_candidats(cands, {"q1_contrarien": 0, "q1_outsider": 0, "q99_ecart_cote": 1})
-    return {"candidats": cands, "_G": G, "_scen": scen}
+def mj(buts="Match ouvert : beaucoup de buts (3,0 attendus)", btts=None, extremes=False, dc="12", cote_princ=1.28):
+    t = [{"cle": "resultat", "court": "Match serré, pas de favori net", "texte": "Match équilibré : A 36 % · nul 26 % · B 38 %."}]
+    if buts:
+        t.append({"cle": "buts", "court": buts, "texte": "Match offensif : 3,0 buts attendus."})
+    if btts:
+        t.append({"cle": "deux_marquent", "court": btts, "texte": "Les deux équipes marquent souvent dans les séries croisées."})
+    if extremes:
+        t.append({"cle": "extremes", "texte": "Séries avec un score extrême."})
+    return {"tendances": t, "selections": [{"role": "principal", "groupe": "over_under_1.5", "choix": "plus", "cote": cote_princ, "libelle": "Plus de 1,5 buts"},
+                                          {"role": "tendance", "groupe": "double_chance", "choix": dc, "cote": 1.3, "libelle": "x"}]}
 
 
-def test_super_marche_rien_si_aucun_ne_se_demarque():
-    import numpy as np
-    G = np.full((3, 3), 1 / 9)
-    assert J.super_marche(_p([], G, {"nul": np.eye(3, dtype=bool)}), {"q1_contrarien": 0, "q1_outsider": 0}) is None
+def combo(g, sel, cote, proba=0.6):
+    return {"groupe": g, "selection": sel, "libelle": J.libelle_combine(g, sel), "famille": "combine", "cote": cote, "probabilite": proba, "combine": True}
 
 
-def test_super_marche_combine_meme_sens():
-    import numpy as np
-    G = np.zeros((4, 4)); G[0, 0] = .3; G[1, 0] = .3; G[0, 1] = .1; G[1, 1] = .1; G[2, 0] = .2
-    i, j = np.meshgrid(range(4), range(4), indexing="ij")
-    A = cand(groupe="double_chance", famille="double_chance", selection="1N", libelle="1N", cote=1.3, j1=1, j4=1, sure=1, dangereux=False, principal=False, _W=(i >= j))
-    B = cand(groupe="over_under_2.5", famille="over_under", selection="moins", libelle="m2.5", cote=1.4, j1=1, j4=1, sure=1, dangereux=False, principal=False, _W=(i + j < 3))
-    pr = cand(groupe="1x2", famille="1x2", selection="1", libelle="1", cote=1.28, j1=0.8, j4=0.8, sure=0.8, dangereux=False, principal=True, _W=(i > j))
-    r = J.super_marche(_p([A, B, pr], G, {"nul": i == j}), {"q1_contrarien": 0, "q1_outsider": 0})
-    assert r is None or r["type"] in ("combine", "simple")      # jamais le marché d'alpha tel quel
-    assert not r or all(x["libelle"] != "1" for x in r["jambes"])
+def test_super_combine_match_ouvert_et_resultat_propose():
+    r = J.super_pronostic({"candidats": [combo("dc_total_1.5", "12|plus", 1.62)]}, mj())
+    assert r and r["type"] == "combine" and r["cote_combine"] == 1.62 and "Betpawa" in r["raison"]
 
 
-def test_super_marche_refuse_jambe_dangereuse():
-    import numpy as np
-    G = np.full((3, 3), 1 / 9)
-    i, j = np.meshgrid(range(3), range(3), indexing="ij")
-    A = cand(groupe="a", famille="a", selection="x", libelle="a", cote=1.1, sure=1, principal=False, _W=(i >= j))
-    B = cand(groupe="b", famille="b", selection="x", libelle="b", cote=1.1, sure=1, principal=False, _W=(i + j < 3))
-    assert J.super_marche(_p([A, B], G, {"nul": i == j}), {"q1_contrarien": 0, "q1_outsider": 0}) is None
+def test_super_combine_match_ferme_moins_de_buts():
+    r = J.super_pronostic({"candidats": [combo("dc_total_3.5", "1N|moins", 1.45), combo("dc_total_1.5", "1N|plus", 1.7)]},
+                          mj(buts="Match fermé : peu de buts (2,2 attendus)", dc="1N"))
+    assert r and r["jambes"][0]["selection"] == "1N|moins"
 
 
-def test_combine_reel_passe_avant_le_simple():
-    import numpy as np
-    G = np.full((3, 3), 1 / 9)
-    i, j = np.meshgrid(range(3), range(3), indexing="ij")
-    pr = cand(groupe="1x2", famille="1x2", selection="1", libelle="1", cote=1.3, j1=0.8, j4=0.8, principal=True, _W=(i > j))
-    co = cand(groupe="dc_total_1.5", famille="combine", selection="1N|plus", libelle="DC+1,5", cote=1.96, j1=0.95, j4=0.95, principal=False, combine=True, valeur=0.2, _W=(i >= j))
-    r = J.super_marche(_p([pr, co], G, {"nul": i == j}), {"q1_contrarien": 0, "q1_outsider": 0})
-    assert r and r["type"] == "combine" and r["cote_combine"] == 1.96
+def test_super_rien_pas_de_nul_avec_match_ferme():
+    assert J.super_pronostic({"candidats": [combo("dc_total_3.5", "12|moins", 1.8)]}, mj(buts="Match fermé : peu de buts (2,2 attendus)")) is None
 
 
-def test_combine_moins_paye_que_le_principal_est_ecarte():
-    import numpy as np
-    G = np.full((3, 3), 1 / 9)
-    i, j = np.meshgrid(range(3), range(3), indexing="ij")
-    pr = cand(groupe="1x2", famille="1x2", selection="1", libelle="1", cote=2.0, j1=0.8, j4=0.8, principal=True, _W=(i > j))
-    co = cand(groupe="dc_btts", famille="combine", selection="1N|Oui", libelle="x", cote=1.5, j1=0.95, j4=0.95, principal=False, combine=True, valeur=0.2, _W=(i >= j))
-    assert J.super_marche(_p([pr, co], G, {"nul": i == j}), {"q1_contrarien": 0, "q1_outsider": 0}) is None
+def test_super_combine_les_deux_marquent():
+    r = J.super_pronostic({"candidats": [combo("dc_btts", "12|Oui", 1.9)]}, mj(buts=None, btts="Les deux équipes marquent souvent"))
+    assert r and r["jambes"][0]["groupe"] == "dc_btts"
 
 
-def test_combine_dangereux_est_ecarte():
-    import numpy as np
-    G = np.full((3, 3), 1 / 9)
-    i, j = np.meshgrid(range(3), range(3), indexing="ij")
-    pr = cand(groupe="1x2", famille="1x2", selection="1", libelle="1", cote=1.3, j1=0.8, j4=0.8, principal=True, _W=(i > j))
-    co = cand(groupe="dc_btts", famille="combine", selection="1N|Oui", libelle="x", cote=3.0, j1=0.1, j4=0.95, principal=False, combine=True, valeur=0.2, _W=(i >= j))
-    assert J.super_marche(_p([pr, co], G, {"nul": i == j}), {"q1_contrarien": 0.5, "q1_outsider": 0}) is None
+def test_super_rien_sans_cote_combine_trouvee():
+    assert J.super_pronostic({"candidats": []}, mj()) is None
 
 
-P = {"domicile": "Alpha", "exterieur": "Beta", "series_buts": {"domicile": [(0, 1), (2, 0), (1, 1)], "exterieur": [(3, 2), (4, 1), (2, 2)]}}
+def test_super_rien_si_le_combine_ne_paie_pas_plus_que_le_principal():
+    assert J.super_pronostic({"candidats": [combo("dc_total_1.5", "12|plus", 1.4)]}, mj(cote_princ=1.5)) is None
 
 
-def test_arguments_btts_non_cite_les_equipes_muettes():
-    t = J._arguments({"groupe": "btts", "selection": "Non"}, P)
-    assert "Alpha n'a pas marqué dans 1 de ses 3" in t and "Beta" not in t
+def test_super_rien_si_les_buts_vont_a_l_inverse_de_la_page():
+    assert J.super_pronostic({"candidats": [combo("dc_total_2.5", "12|moins", 1.8)]}, mj()) is None          # page : match ouvert
+    assert J.super_pronostic({"candidats": [combo("dc_total_2.5", "12|plus", 1.8)]}, mj(buts="Match fermé : peu de buts (2,2 attendus)")) is None
+    assert J.super_pronostic({"candidats": [combo("dc_total_2.5", "12|moins", 1.8)]}, mj(buts="Match fermé : peu de buts (2,2 attendus)", extremes=True)) is None   # extrême : 3,5 ou 4,5 seulement
 
 
-def test_arguments_moins_de_buts_equipe_ne_cite_que_ce_qui_soutient():
-    t = J._arguments({"groupe": "over_under_exterieur_1.5", "selection": "moins"}, P)
-    assert "Alpha n'a encaissé que 2 buts" in t and "Beta" not in t         # Beta marque 9 en 3 matchs : n'appuie pas « moins »
-
-
-def test_arguments_plus_de_buts_total():
-    t = J._arguments({"groupe": "over_under_2.5", "selection": "plus"}, P)
-    assert "Beta : 4,67" in t and "Alpha" not in t
-
-
-def test_arguments_rien_si_rien_ne_soutient():
-    assert J._arguments({"groupe": "over_under_domicile_0.5", "selection": "moins"}, P) == ""
-    assert J._arguments({"groupe": "btts", "selection": "Oui"}, P).count("Beta") == 1
-    assert J._arguments({"groupe": "btts", "selection": "Non"}, {**P, "series_buts": {"domicile": [(1, 0)], "exterieur": [(2, 2)]}}) == ""
+def test_super_rien_si_le_resultat_n_est_pas_celui_de_la_page():
+    assert J.super_pronostic({"candidats": [combo("dc_total_1.5", "1N|plus", 1.7)]}, mj(dc="12")) is None
