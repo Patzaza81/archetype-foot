@@ -59,3 +59,17 @@ def test_bilan_ne_compte_que_les_matchs_geles_et_termines(tmp_path):
     K.resultats(j, [_m("a", "2026-10-19T15:00:00Z", {"buts_dom": 3, "buts_ext": 0})])
     b = K.bilan(j, ecrire=False)
     assert b["pronostics_geles"] == 2 and b["matchs_termines"] == 1 and b["en_attente"] == 1
+
+
+def test_variable_archive_est_utilisee(tmp_path, monkeypatch):
+    import gzip
+    from matrice_scenarios import page_comportement as PC
+    (tmp_path / "2026-10-30.json.gz").write_bytes(gzip.compress(json.dumps({"z": {"match_id": "z", "date": "2026-10-30"}}).encode()))
+    monkeypatch.setenv("COMPORTEMENT_ARCHIVE", str(tmp_path))
+    assert [m["match_id"] for m in PC.charger_matchs()] == ["z"]
+
+
+def test_sans_variable_archive_du_depot(monkeypatch):
+    from matrice_scenarios import page_comportement as PC
+    monkeypatch.delenv("COMPORTEMENT_ARCHIVE", raising=False)
+    assert len(PC.charger_matchs()) > 1000

@@ -139,3 +139,8 @@ Les scénarios sont des hypothèses qui peuvent être inventées, combinées, tr
 - Commandes : `python -m matrice_scenarios.suivi_comportement geler | resultats | bilan | tout`. Un match dont le coup d'envoi est passé n'est jamais gelé.
 - `bilan_suivi.json` : réussite calculée uniquement sur les pronostics gelés (le vrai test hors échantillon).
 - Pas automatisé : à lancer chaque jour (geler avant les matchs, résultats ensuite). Aucun lien avec le pipeline.
+
+### Lancement automatique (19/10)
+- `python -m matrice_scenarios.suivi_comportement quotidien` : récupère l'archive la plus récente de `origin/main` (copie temporaire, rien n'est fusionné ni modifié sur main), gèle les nouveaux pronostics, enregistre les résultats connus, met à jour `bilan_suivi.json` et les données de la page. Idempotent. Ne fait ni commit ni push.
+- Planification : tâche programmée deux fois par jour (≈ 01:27 et 07:27 heure de Douala), après la chaîne de collecte (21:00 UTC) et le journal (05:07 UTC). Elle committe et pousse uniquement sur la branche `matrice-decouverte-scenarios`.
+- Les workflows GitHub planifiés ne tournent que depuis la branche par défaut (main) : on ne les utilise pas, main reste intouché.

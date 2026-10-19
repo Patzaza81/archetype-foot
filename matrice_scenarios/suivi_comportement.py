@@ -10,7 +10,10 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
+import shutil
 import subprocess
+import tempfile
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -106,8 +109,32 @@ def bilan(journal: Path = JOURNAL, ecrire: bool = True) -> dict[str, Any]:
     return out
 
 
+def quotidien(branche_donnees: str = "origin/main") -> dict[str, Any]:
+    """Lancement automatique : lit l'archive la plus récente de `branche_donnees` (sans la fusionner ni la modifier), gèle les nouveaux
+    pronostics, enregistre les résultats connus, met à jour le bilan. Ne fait ni commit ni push (voir docs)."""
+    git = lambda *a: subprocess.run(["git", *a], cwd=P.ROOT, capture_output=True, text=True, timeout=300)
+    git("fetch", "origin", branche_donnees.split("/")[-1])
+    tmp = tempfile.mkdtemp(prefix="archive_main_")
+    wt = os.path.join(tmp, "wt")
+    try:
+        r = git("worktree", "add", "--detach", wt, branche_donnees)
+        if r.returncode != 0:
+            raise RuntimeError(f"worktree impossible : {r.stderr.strip()}")
+        os.environ["COMPORTEMENT_ARCHIVE"] = os.path.join(wt, "data", "archive_test")
+        gele, resultat = geler(), resultats()
+        page = P.ecrire_page()                                   # la page lit le même archive que le suivi
+        return {"geles": gele, "resultats": resultat, "page_matchs": len(page["matchs"]), "bilan": bilan()}
+    finally:
+        os.environ.pop("COMPORTEMENT_ARCHIVE", None)
+        git("worktree", "remove", "--force", wt)
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "tout"
+    if cmd == "quotidien":
+        print(json.dumps(quotidien(), ensure_ascii=False, indent=1))
+        raise SystemExit(0)
     if cmd in ("geler", "tout"):
         print("gelés :", geler())
     if cmd in ("resultats", "tout"):

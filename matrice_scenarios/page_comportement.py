@@ -8,7 +8,9 @@ from __future__ import annotations
 import glob
 import gzip
 import json
+import os
 import sys
+from pathlib import Path
 from datetime import datetime, timezone
 from typing import Any
 
@@ -123,7 +125,8 @@ def analyser_match(m: dict[str, Any], p: dict[str, Any], collecte: list | None =
 
 def charger_matchs() -> list[dict[str, Any]]:
     out = []
-    for f in sorted(glob.glob(str(ROOT / "data" / "archive_test" / "*.json.gz"))):
+    dossier = os.environ.get("COMPORTEMENT_ARCHIVE") or str(ROOT / "data" / "archive_test")     # variable : lire l'archive d'une autre copie (ex. main)
+    for f in sorted(glob.glob(str(Path(dossier) / "*.json.gz"))):
         for x in json.load(gzip.open(f)).values():
             sc = x.get("score") or {}
             x["score_final"] = {"buts_dom": sc["buts_dom"], "buts_ext": sc["buts_ext"]} if sc.get("buts_dom") is not None else None
@@ -226,12 +229,17 @@ def construire() -> dict[str, Any]:
             "seuil_secondaire": p["seuil_secondaire"], "pronostics_autres_tendances_archive": secondaires, "matchs": matchs}
 
 
+def ecrire_page() -> dict[str, Any]:
+    SORTIE.parent.mkdir(parents=True, exist_ok=True)
+    d = construire()
+    SORTIE.write_text(json.dumps(d, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    return d
+
+
 if __name__ == "__main__":
     if "--seuils" in sys.argv:
         calculer_seuils()
         calculer_seuils_tendances()
-    SORTIE.parent.mkdir(parents=True, exist_ok=True)
-    d = construire()
-    SORTIE.write_text(json.dumps(d, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    d = ecrire_page()
     ok = sum(m["statut"] == "OK" for m in d["matchs"])
     print(len(d["matchs"]), "matchs,", ok, "avec pronostic,", sum(len(m["selections"]) for m in d["matchs"]), "sélections")
