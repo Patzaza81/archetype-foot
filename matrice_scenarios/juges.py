@@ -223,8 +223,8 @@ def verdict(p: dict[str, Any], supers: set[str], adapter: bool = False) -> dict[
 
 # ---------------------------------------------------------------- super marché (logique de Patrick)
 
-SCENARIOS_TEXTE = {"favori_creuse": "le favori creuse l'écart", "match_s_ouvre": "le match s'ouvre", "nul": "un nul tombe",
-                   "equipe_muette": "une équipe ne marque pas", "score_extreme": "un score extrême tombe"}
+SCENARIOS_TEXTE = {"favori_creuse": "le favori gagne largement", "match_s_ouvre": "le match devient très ouvert", "nul": "le match finit nul",
+                   "equipe_muette": "une équipe ne marque pas", "score_extreme": "le score est très élevé"}
 
 
 def _virgule(x: float) -> str:
@@ -241,15 +241,15 @@ def _appui(c: dict, p: dict) -> str | None:
         sujet, att = {None: ("le match", tot), "domicile_": (p["domicile"], ba[0]), "exterieur_": (p["exterieur"], ba[1])}[m.group(1)]
         if (c["selection"] == "moins" and att < ligne) or (c["selection"] == "plus" and att > ligne):
             pl = "s" if att >= 1.5 else ""
-            return (f"{sujet} : {_virgule(att)} but{pl} attendu{pl}, de quoi appuyer ce marché." if m.group(1) else f"{_virgule(att)} buts attendus au total, de quoi appuyer ce marché.")
+            return (f"{sujet} devrait marquer environ {_virgule(att)} but{pl} : ce pari colle à ça." if m.group(1) else f"On attend environ {_virgule(att)} buts dans ce match : ce pari colle à ça.")
     m = re.fullmatch(r"cages_inviolees_(domicile|exterieur)", c["groupe"])
     if m and ba:
         att = ba[1] if m.group(1) == "domicile" else ba[0]          # la cage du domicile est inviolée si l'extérieur ne marque pas
         equipe = p["exterieur"] if m.group(1) == "domicile" else p["domicile"]
         if (c["selection"] == "oui" and att < 1.0) or (c["selection"] == "non" and att >= 1.0):
-            return f"{equipe} : {_virgule(att)} but attendu seulement." if c["selection"] == "oui" else f"{equipe} : {_virgule(att)} but attendu, il peut trouver la faille."
+            return f"{equipe} devrait marquer environ {_virgule(att)} but seulement." if c["selection"] == "oui" else f"{equipe} devrait marquer environ {_virgule(att)} but : il peut trouver la faille."
     if c["groupe"] == "btts" and tot is not None:
-        return f"{_virgule(tot)} buts attendus au total, un match où les deux équipes {'marquent' if c['selection'] == 'Oui' else 'ne marquent pas toutes les deux'}." if (
+        return f"On attend environ {_virgule(tot)} buts : {'les deux équipes devraient marquer' if c['selection'] == 'Oui' else 'une des deux équipes devrait rester muette'}." if (
             (c["selection"] == "Oui" and tot >= 2.5) or (c["selection"] == "Non" and tot < 2.5)) else None
     return None
 
@@ -258,15 +258,16 @@ def raison(c: dict, princ: dict | None, p: dict) -> str:
     """Justification de parieur : pourquoi CE marché est retenu, en positif (aucune mention des juges, aucun découragement)."""
     t = []
     if c.get("combine"):
-        t.append(f"Deux statistiques dans le même sens : {c['libelle'].lower()}, cote du combiné trouvée sur Betpawa.")
+        t.append(f"Deux paris qui vont dans le même sens : {c['libelle'].lower()}. La cote du combiné existe bien sur Betpawa.")
     if princ:
-        t.append(f"Cote {_virgule(c['cote'])} contre {_virgule(princ['cote'])} pour le principal ({princ['libelle'].lower()}) : meilleur rendement pour une sûreté au moins égale.")
+        nom = __import__("re").sub(r"\s*\((1N|N2|12)\)", "", princ["libelle"]).lower()
+        t.append(f"Ce pari paie {_virgule(c['cote'])} au lieu de {_virgule(princ['cote'])} pour le pronostic principal ({nom}), avec une sécurité au moins aussi bonne.")
     a = _appui(c, p)
     if a:
         t.append(a)
     sol = [k for k, v in sorted((c.get("pertes_par_scenario") or {}).items(), key=lambda kv: kv[1]) if k in SCENARIOS_TEXTE][:2]
     if sol:
-        t.append(f"Il reste bien placé même si {' ou si '.join(SCENARIOS_TEXTE[k] for k in sol)}.")
+        t.append(f"Il reste valable même si {' ou si '.join(SCENARIOS_TEXTE[k] for k in sol)}.")
     return " ".join(t)
 
 
