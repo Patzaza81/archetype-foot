@@ -144,3 +144,9 @@ Les scénarios sont des hypothèses qui peuvent être inventées, combinées, tr
 - `python -m matrice_scenarios.suivi_comportement quotidien` : récupère l'archive la plus récente de `origin/main` (copie temporaire, rien n'est fusionné ni modifié sur main), gèle les nouveaux pronostics, enregistre les résultats connus, met à jour `bilan_suivi.json` et les données de la page. Idempotent. Ne fait ni commit ni push.
 - Planification : tâche programmée deux fois par jour (≈ 01:27 et 07:27 heure de Douala), après la chaîne de collecte (21:00 UTC) et le journal (05:07 UTC). Elle committe et pousse uniquement sur la branche `matrice-decouverte-scenarios`.
 - Les workflows GitHub planifiés ne tournent que depuis la branche par défaut (main) : on ne les utilise pas, main reste intouché.
+
+### Banc contre le marché sur Football-Data (19/10)
+- Les fichiers bruts de Football-Data contiennent des cotes (Bet365, Pinnacle, Betfair, moyenne/max ; ouverture et clôture ; 1X2, plus/moins 2,5, handicap asiatique). Dans nos données locales : 7 622 matchs avec cotes 1X2 et plus/moins 2,5 (Bet365 ouverture).
+- Elles sont lues uniquement pour JUGER le moteur (`python -m matrice_scenarios.banc_cotes_football_data`), jamais pour calculer un pronostic. La décision du 24/09 (aucune cote collectée par la couche de données) reste valable pour la collecte et les moteurs.
+- Résultat (1 624 matchs de test, jamais utilisés pour le réglage) : 1X2, log-vraisemblance modèle −1,046 contre marché −0,996 ; plus/moins 2,5, Brier modèle 0,2493 contre marché 0,2416 : le moteur est moins bon que le marché. Règle « plus probable, cote ≥ 1,26 » sur ces 5 marchés : 53,2 % de réussite (annoncé 56,2 %), cote moyenne 1,83, ROI à plat −5,2 %.
+- Lecture : avec 5 marchés en concurrence, la surestimation est de 3 points ; avec la vingtaine de groupes BetPawa elle est de 10 points → le biais vient du nombre de marchés mis en concurrence.
