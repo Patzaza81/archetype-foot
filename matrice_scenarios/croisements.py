@@ -47,10 +47,24 @@ def _formulas(hs: dict[str, float], as_: dict[str, float]) -> dict[str, float]:
         "both_score": min(hs["scored"], as_["conceded"]) + min(as_["scored"], hs["conceded"]),
         "over_2_5": total, "under_2_5": -total,
         "home_win": diff, "away_win": -diff, "draw": -abs(diff),
+        # marchés « sûrs » (cotes basses) : même logique de croisement
+        "home_not_lose": diff, "away_not_lose": -diff, "over_1_5": total, "under_3_5": -total, "under_4_5": -total, "under_5_5": -total,
     }
 
 
 MARKETS = ("home_scores_1plus", "away_scores_1plus", "both_score", "over_2_5", "under_2_5", "home_win", "away_win", "draw")
+SAFE_MARKETS = ("home_not_lose", "away_not_lose", "over_1_5", "under_3_5", "under_4_5", "under_5_5")
+ALL_MARKETS = MARKETS + SAFE_MARKETS
+
+
+def outcome(record: dict, market: str) -> int:
+    """Comme core.outcome, avec Under 4,5 et Under 5,5 en plus."""
+    goals = record["home_goals"] + record["away_goals"]
+    if market == "under_4_5":
+        return int(goals <= 4)
+    if market == "under_5_5":
+        return int(goals <= 5)
+    return core.outcome(record, market)
 
 
 def wilson(wins: int, n: int) -> list[float] | None:

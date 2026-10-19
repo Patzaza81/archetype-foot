@@ -72,3 +72,7 @@ Preuves brutes : `docs/validation_matrice_2026-10-18.json` (sortie de `python -m
 - Entrée : 3 à 5 scores récents par équipe (buts de l'équipe d'abord, au même lieu que le match) et, en option, les cotes. Sortie : probabilité calibrée par marché, cote d'équilibre, écart au taux de base, lecture de la cote donnée.
 - Calibration : `docs/calibration_croisements.json` (14 048 matchs Football-Data, résultats seulement ; tranches fixées sur les 60 % les plus anciens). Qualité hors échantillon (Brier contre taux de base, 5 635 matchs) : victoire domicile +2,9 %, victoire extérieur +2,3 %, Over/Under 2,5 +1,0 %, domicile marque +0,7 %, extérieur marque +0,4 %, nul +0,1 %, les deux marquent +0,04 %.
 - Limite connue : la tranche la plus haute plafonne (victoire extérieur 45 %), elle sous-estime les cas extrêmes comme Zwolle - Go Ahead Eagles.
+
+## 10. Pronostic « le plus sûr » (`matrice_scenarios/pronostic_sur.py`)
+- Règle : parmi les marchés dont la cote BetPawa est entre 1,10 et 1,25, retenir le plus probable selon le modèle de croisements (marchés ajoutés : double chance, Over 1,5, Under 3,5 / 4,5 / 5,5).
+- Archive jouée (calibration Football-Data seule, donc indépendante) : 898 pronostics, 81,8 % de réussite (IC95 79,2 à 84,2 %), 82,0 % annoncé par le modèle, ROI −4,6 % (cote moyenne ≈ 1,18, équilibre ≈ 85 %).

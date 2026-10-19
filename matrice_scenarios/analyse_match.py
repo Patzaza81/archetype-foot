@@ -16,8 +16,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from . import core
-from .croisements import MARKETS, _formulas, _stats, scores
+from .croisements import ALL_MARKETS as MARKETS, _formulas, _stats, outcome, scores
 from .football_data import load_football_data
 
 CALIBRATION_FILE = Path(__file__).resolve().parent.parent / "docs" / "calibration_croisements.json"
@@ -40,12 +39,12 @@ def calibrer(records: list[dict]) -> dict[str, Any]:
     def fit(sample: list, market: str) -> dict[str, Any]:
         values = sorted(s[market] for _, s in sample)
         edges = sorted({values[int(len(values) * k / BINS)] for k in range(1, BINS)})
-        base = sum(core.outcome(r, market) for r, _ in sample) / len(sample)
+        base = sum(outcome(r, market) for r, _ in sample) / len(sample)
         wins, counts = [0] * (len(edges) + 1), [0] * (len(edges) + 1)
         for r, s in sample:
             b = _bin(edges, s[market])
             counts[b] += 1
-            wins[b] += core.outcome(r, market)
+            wins[b] += outcome(r, market)
         return {"edges": edges, "n": counts, "base_rate": base,
                 "rate": [(w + SMOOTH * base) / (c + SMOOTH) for w, c in zip(wins, counts)]}
 
@@ -55,7 +54,7 @@ def calibrer(records: list[dict]) -> dict[str, Any]:
         half = fit(train, m)
         brier_model = brier_base = 0.0
         for r, s in test:
-            y = core.outcome(r, m)
+            y = outcome(r, m)
             brier_model += (half["rate"][_bin(half["edges"], s[m])] - y) ** 2
             brier_base += (half["base_rate"] - y) ** 2
         final = fit(rows, m)
