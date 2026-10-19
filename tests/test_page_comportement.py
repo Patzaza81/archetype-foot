@@ -100,3 +100,25 @@ def test_tendance_non_nette_sans_pronostic_secondaire():
     r = P.analyser_match(_match(COTES), p)
     assert all(s["tendance"] not in ("Buts du domicile", "Buts de l'extérieur") or s["role"] == "principal" for s in r["selections"])
     assert all(t.get("nette") is False for t in r["tendances"] if t["cle"] in ("dom_buts", "ext_buts"))
+
+
+# ── Intitulés pour le parieur (équipes par leur nom) ──────────────────────────
+from matrice_scenarios.page_comportement import libelle_parieur as _lp
+
+
+def test_libelle_parieur_cas_valides():
+    assert _lp("1x2", "1", "M. Tel", "Beitar", "x") == "M. Tel gagne"
+    assert _lp("double_chance", "N2", "A", "B", "x") == "B ne perd pas (N2)"
+    assert _lp("handicap_-1.5", "exterieur", "M. Hollyhock", "B", "x") == "B +1,5 (handicap)"
+    assert _lp("handicap_-1.5", "domicile", "M. Hollyhock", "B", "x") == "M. Hollyhock -1,5 (handicap)"
+    assert _lp("handicap_3issues_2", "2", "A", "B", "x") == "B -2 (handicap 3 issues)"
+
+
+def test_libelle_parieur_ne_touche_pas_au_nom_de_l_equipe():
+    assert "M. Hollyhock" in _lp("handicap_1.5", "domicile", "M. Hollyhock", "B", "x")
+
+
+def test_libelle_parieur_marches_sans_equipe_gardent_le_libelle_du_moteur():
+    assert _lp("btts", "Oui", "A", "B", "Les deux marquent : oui") == "Les deux marquent : oui"
+    assert _lp("over_under_2.5", "plus", "A", "B", "Plus de 2,5 buts") == "Plus de 2,5 buts"
+    assert _lp("1x2", "inconnu", "A", "B", "défaut") == "défaut"

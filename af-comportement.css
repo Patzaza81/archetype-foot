@@ -1,6 +1,5 @@
-/* Moteur alpha : bloc « tendances du match » pleine largeur (nouveau fichier, aucune autre feuille n'est modifiée). */
-.af-comportement .ax-carte > .ax-preuves { display: block; padding: 4px 16px 12px; }
-.af-comportement .ax-carte > .ax-preuves .ax-preuves-liste { display: block; width: 100%; max-width: none; }
-.af-comportement .ax-carte > .ax-preuves .ax-preuve { display: block; padding: 8px 0; }
-.af-comportement .ax-carte > .ax-preuves .ax-preuve > div { display: block; }
-.af-comportement .ax-preuve-titre { display: block; font-weight: 700; }
+/* Moteur alpha : la page reprend le thème de V3 (body.af-v3). Ici seulement ce que V3 n'a pas : jusqu'à 5 onglets (défilement horizontal) et la ligne de réussite mesurée. */
+.af-alpha .ax-onglets.ax-onglets-defilent { display: flex; overflow-x: auto; gap: 8px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.af-alpha .ax-onglets.ax-onglets-defilent::-webkit-scrollbar { display: none; }
+.af-alpha .ax-onglets.ax-onglets-defilent .ax-onglet { flex: 0 0 auto; min-width: 7.5em; }
+.af-alpha #perf { font-size: 0.92rem; line-height: 1.35; }
