@@ -565,7 +565,7 @@
   },
   "schema_version": 2,
   "source": "football-data.co.uk",
-  "updated_at_utc": "2026-10-17T23:02:05.898219+00:00",
+  "updated_at_utc": "2026-10-18T23:01:21.978615+00:00",
   "historical_policy": "completed seasons are managed by archive_football_data.py snapshots",
   "current_season_policy": "download only when the source changed (ETag/Last-Modified, then SHA-256)",
   "sources": {
@@ -670,6 +670,12 @@
       "last_modified": "Fri, 16 Oct 2026 06:42:24 GMT",
       "sha256": "461f5e8fd164deef8733708bd4265e41ada7da31dcebe97e968d6c436edc5f7a",
       "checked_at_utc": "2026-10-16T07:27:29.888341+00:00"
+    },
+    "https://football-data.co.uk/new/BRA.csv": {
+      "etag": "\"9da6f-65db540fdf0f7\"",
+      "last_modified": "Tue, 13 Oct 2026 09:15:21 GMT",
+      "sha256": "048a023131699c857061dd8559fbc115eee4420e5a7cb10c47c4b7cd25c29df1",
+      "checked_at_utc": "2026-10-18T23:00:29.613236+00:00"
     }
   },
   "current_season": "2627",
@@ -679,8 +685,8 @@
     "discovered": 38,
     "downloaded": 0,
     "updated": 0,
-    "unchanged": 0,
-    "sources_not_modified": 17,
+    "unchanged": 1,
+    "sources_not_modified": 16,
     "errors": {}
   }
 }

@@ -1,8 +1,8 @@
 {
  "bilan": {
   "avertissement": "Petits échantillons : le taux observé n'est significatif qu'avec beaucoup de paris réglés.",
-  "executions": 40,
-  "genere_le": "2026-10-18T09:32:00.421447+00:00",
+  "executions": 41,
+  "genere_le": "2026-10-19T00:03:13.354188+00:00",
   "par_jour_du_match": {
    "2026-10-09": {
     "cote_moyenne": 1.668,
@@ -69,24 +69,24 @@
     "taux_reussite": 0.6129
    },
    "2026-10-17": {
-    "cote_moyenne": 1.446,
+    "cote_moyenne": 1.46,
     "paris": 49,
-    "proba_moyenne_estimee": 0.7791,
-    "regles": 45,
-    "reussis": 26,
-    "taux_reussite": 0.5778
+    "proba_moyenne_estimee": 0.7773,
+    "regles": 48,
+    "reussis": 27,
+    "taux_reussite": 0.5625
    },
    "2026-10-18": {
-    "cote_moyenne": null,
+    "cote_moyenne": 1.415,
     "paris": 39,
-    "proba_moyenne_estimee": null,
-    "regles": 0,
-    "reussis": 0,
-    "taux_reussite": null
+    "proba_moyenne_estimee": 0.797,
+    "regles": 33,
+    "reussis": 20,
+    "taux_reussite": 0.6061
    },
    "2026-10-19": {
     "cote_moyenne": null,
-    "paris": 8,
+    "paris": 26,
     "proba_moyenne_estimee": null,
     "regles": 0,
     "reussis": 0,
@@ -94,7 +94,23 @@
    },
    "2026-10-20": {
     "cote_moyenne": null,
-    "paris": 10,
+    "paris": 19,
+    "proba_moyenne_estimee": null,
+    "regles": 0,
+    "reussis": 0,
+    "taux_reussite": null
+   },
+   "2026-10-21": {
+    "cote_moyenne": null,
+    "paris": 1,
+    "proba_moyenne_estimee": null,
+    "regles": 0,
+    "reussis": 0,
+    "taux_reussite": null
+   },
+   "2026-10-22": {
+    "cote_moyenne": null,
+    "paris": 1,
     "proba_moyenne_estimee": null,
     "regles": 0,
     "reussis": 0,
@@ -103,12 +119,12 @@
   },
   "par_source": {
    "journal": {
-    "cote_moyenne": 1.544,
-    "paris": 216,
-    "proba_moyenne_estimee": 0.6995,
-    "regles": 170,
-    "reussis": 103,
-    "taux_reussite": 0.6059
+    "cote_moyenne": 1.53,
+    "paris": 232,
+    "proba_moyenne_estimee": 0.711,
+    "regles": 191,
+    "reussis": 116,
+    "taux_reussite": 0.6073
    },
    "moteur_v2_6_10": {
     "cote_moyenne": 1.923,
@@ -119,16 +135,16 @@
     "taux_reussite": 0.4286
    },
    "moteur_v3": {
-    "cote_moyenne": 1.48,
-    "paris": 145,
-    "proba_moyenne_estimee": 0.7883,
-    "regles": 117,
-    "reussis": 74,
-    "taux_reussite": 0.6325
+    "cote_moyenne": 1.479,
+    "paris": 158,
+    "proba_moyenne_estimee": 0.7871,
+    "regles": 132,
+    "reussis": 82,
+    "taux_reussite": 0.6212
    }
   },
-  "paris_distincts": 389,
-  "paris_regles": 315
+  "paris_distincts": 418,
+  "paris_regles": 351
  },
  "derniere_erreur": null,
  "executions": [
@@ -50148,6 +50164,1142 @@
     "2026-10-18..2026-10-20": 30,
     "2026-10-18..2026-10-21": 30
    }
+  },
+  {
+   "empreinte": "bbc4917998da47df",
+   "genere_le": "2026-10-19T00:03:12.938582+00:00",
+   "jour_present": "2026-10-19",
+   "paris": [
+    {
+     "competition": "Brésil : Série A",
+     "cote": 1.4,
+     "date": "2026-10-19",
+     "domicile": "Remo",
+     "ev_estime": 0.07212,
+     "exterieur": "Bragantino SP",
+     "heure": "",
+     "id": "match:2026-10-19|remo|bragantino sp|over_under_total_3.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_3.5_under",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": 0.051514,
+     "match_id": "22lg4gatfc1tci9sgtwqgrthw",
+     "niveau_confiance": "MODELE_SEUL",
+     "plages": [
+      "2026-10-19..2026-10-19",
+      "2026-10-19..2026-10-20",
+      "2026-10-19..2026-10-21",
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.7658,
+     "probabilite_source": "MODELE_NON_CALIBRE",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Paraguay : Professionnel de la Division Clôture",
+     "cote": 1.7,
+     "date": "2026-10-19",
+     "domicile": "Trinidense",
+     "ev_estime": 0.50008,
+     "exterieur": "Libertad",
+     "heure": "",
+     "id": "match:2026-10-19|trinidense|libertad|handicap3_domicile_2_1|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "handicap3_domicile_2_1",
+     "marche_canonique": "handicap3_domicile_2_1",
+     "marge_modele": 0.294165,
+     "match_id": "5guyqdjwmbuj7x117ez3luuc4",
+     "niveau_confiance": "MODELE_SEUL",
+     "plages": [
+      "2026-10-19..2026-10-19",
+      "2026-10-19..2026-10-20",
+      "2026-10-19..2026-10-21",
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.8824,
+     "probabilite_source": "MODELE_NON_CALIBRE",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Colombie : Première A Cloture",
+     "cote": 2.06,
+     "date": "2026-10-19",
+     "domicile": "Dep. Pasto",
+     "ev_estime": null,
+     "exterieur": "Alianza Valledupar",
+     "heure": "02:05",
+     "id": "match:2026-10-19|dep pasto|alianza valledupar|over_under_total_2.5_over|journal",
+     "journal_observations": 6,
+     "journal_team": "Alianza Valledupar",
+     "journal_wins": 5,
+     "marche": "Match à plus de 2,5 buts",
+     "marche_canonique": "over_under_total_2.5_over",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_5_SUR_6",
+     "plages": [
+      "2026-10-19..2026-10-19"
+     ],
+     "probabilite_estimee": 0.587036,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Ukraine : Première Ligue",
+     "cote": 1.32,
+     "date": "2026-10-19",
+     "domicile": "FC Kharkiv",
+     "ev_estime": 0.121076,
+     "exterieur": "Livyi Bereh",
+     "heure": "11:00",
+     "id": "match:2026-10-19|fc kharkiv|livyi bereh|over_under_total_3.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_3.5_under",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": 0.091724,
+     "match_id": "17ch4xqxpm5hlckhcfgxt6ivo",
+     "niveau_confiance": "MODELE_SEUL",
+     "plages": [
+      "2026-10-19..2026-10-19",
+      "2026-10-19..2026-10-20",
+      "2026-10-19..2026-10-21",
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.8493,
+     "probabilite_source": "MODELE_NON_CALIBRE",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Monténégro : Prva Liga",
+     "cote": 1.5,
+     "date": "2026-10-19",
+     "domicile": "Petrovac",
+     "ev_estime": null,
+     "exterieur": "Otrant-Olympic",
+     "heure": "14:00",
+     "id": "match:2026-10-19|petrovac|otrant olympic|double_chance_X2|journal",
+     "journal_observations": 5,
+     "journal_team": "Otrant-Olympic",
+     "journal_wins": 4,
+     "marche": "Ne perd pas (victoire ou nul)",
+     "marche_canonique": "double_chance_X2",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_4_SUR_5",
+     "plages": [
+      "2026-10-19..2026-10-19"
+     ],
+     "probabilite_estimee": 0.631901,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Turquie : TFF 1. Ligue",
+     "cote": 1.54,
+     "date": "2026-10-19",
+     "domicile": "Fatih Karagumruk",
+     "ev_estime": null,
+     "exterieur": "Keciorengucu",
+     "heure": "15:00",
+     "id": "match:2026-10-19|fatih karagumruk|keciorengucu|double_chance_X2|journal",
+     "journal_observations": 5,
+     "journal_team": "Keciorengucu",
+     "journal_wins": 5,
+     "marche": "Ne perd pas (victoire ou nul)",
+     "marche_canonique": "double_chance_X2",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_5_SUR_5",
+     "plages": [
+      "2026-10-19..2026-10-19",
+      "2026-10-19..2026-10-20",
+      "2026-10-19..2026-10-21",
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.789876,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Turquie : TFF 1. Ligue",
+     "cote": 1.31,
+     "date": "2026-10-19",
+     "domicile": "Manisa FK",
+     "ev_estime": 0.11219,
+     "exterieur": "Muğlaspor",
+     "heure": "15:00",
+     "id": "match:2026-10-19|manisa fk|muglaspor|over_under_total_3.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_3.5_under",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": 0.085641,
+     "match_id": "cxroadsp5z9vwlfa26ak6ick4",
+     "niveau_confiance": "MODELE_SEUL",
+     "plages": [
+      "2026-10-19..2026-10-19",
+      "2026-10-19..2026-10-20",
+      "2026-10-19..2026-10-21",
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.849,
+     "probabilite_source": "MODELE_NON_CALIBRE",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Arabie Saoudite : Première Division",
+     "cote": 1.58,
+     "date": "2026-10-19",
+     "domicile": "Al Fayha",
+     "ev_estime": null,
+     "exterieur": "Al Ahli",
+     "heure": "16:05",
+     "id": "match:2026-10-19|al fayha|al ahli|over_under_total_3.5_under|journal",
+     "journal_observations": 5,
+     "journal_team": "Al Fayha",
+     "journal_wins": 5,
+     "marche": "Match à moins de 3,5 buts",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_5_SUR_5",
+     "plages": [
+      "2026-10-19..2026-10-19"
+     ],
+     "probabilite_estimee": 0.784308,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Arabie Saoudite : Première Division",
+     "cote": 1.36,
+     "date": "2026-10-19",
+     "domicile": "Abha",
+     "ev_estime": null,
+     "exterieur": "Al Kholood",
+     "heure": "16:20",
+     "id": "match:2026-10-19|abha|al kholood|over_under_total_3.5_under|journal",
+     "journal_observations": 5,
+     "journal_team": "Abha",
+     "journal_wins": 5,
+     "marche": "Match à moins de 3,5 buts",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_5_SUR_5",
+     "plages": [
+      "2026-10-19..2026-10-19",
+      "2026-10-19..2026-10-20",
+      "2026-10-19..2026-10-21",
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.784308,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Monténégro : Prva Liga",
+     "cote": 1.51,
+     "date": "2026-10-19",
+     "domicile": "Sutjeska",
+     "ev_estime": null,
+     "exterieur": "Bokelj",
+     "heure": "17:00",
+     "id": "match:2026-10-19|sutjeska|bokelj|over_under_total_2.5_under|journal",
+     "journal_observations": 5,
+     "journal_team": "Sutjeska",
+     "journal_wins": 5,
+     "marche": "Match à moins de 2,5 buts",
+     "marche_canonique": "over_under_total_2.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_5_SUR_5",
+     "plages": [
+      "2026-10-19..2026-10-19"
+     ],
+     "probabilite_estimee": 0.577611,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Italie : Serie A",
+     "cote": 1.28,
+     "date": "2026-10-19",
+     "domicile": "Monza",
+     "ev_estime": null,
+     "exterieur": "Cagliari",
+     "heure": "17:30",
+     "id": "match:2026-10-19|monza|cagliari|over_under_total_3.5_under|journal",
+     "journal_observations": 5,
+     "journal_team": "Cagliari",
+     "journal_wins": 5,
+     "marche": "Match à moins de 3,5 buts",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_5_SUR_5",
+     "plages": [
+      "2026-10-19..2026-10-19",
+      "2026-10-19..2026-10-20",
+      "2026-10-19..2026-10-21",
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.784308,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Égypte : Première Ligue",
+     "cote": 1.26,
+     "date": "2026-10-19",
+     "domicile": "Al Masry",
+     "ev_estime": 0.071126,
+     "exterieur": "Abu Qair Semad",
+     "heure": "18:00",
+     "id": "match:2026-10-19|al masry|abu qair semad|buts_equipe_domicile_2.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "buts_equipe_domicile_2.5_under",
+     "marche_canonique": "buts_equipe_domicile_2.5_under",
+     "marge_modele": 0.056449,
+     "match_id": "9yhaxkcgu123yoeeseaa8y0b8",
+     "niveau_confiance": "MODELE_SEUL",
+     "plages": [
+      "2026-10-19..2026-10-19"
+     ],
+     "probabilite_estimee": 0.8501,
+     "probabilite_source": "MODELE_NON_CALIBRE",
+     "rang": "P2",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Égypte : Première Ligue",
+     "cote": 1.63,
+     "date": "2026-10-19",
+     "domicile": "Al Masry",
+     "ev_estime": 0.181098,
+     "exterieur": "Abu Qair Semad",
+     "heure": "18:00",
+     "id": "match:2026-10-19|al masry|abu qair semad|over_under_total_2.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_2.5_under",
+     "marche_canonique": "over_under_total_2.5_under",
+     "marge_modele": 0.111103,
+     "match_id": "9yhaxkcgu123yoeeseaa8y0b8",
+     "niveau_confiance": "MODELE_SEUL",
+     "plages": [
+      "2026-10-19..2026-10-19",
+      "2026-10-19..2026-10-20",
+      "2026-10-19..2026-10-21",
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.7246,
+     "probabilite_source": "MODELE_NON_CALIBRE",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Turquie : TFF 1. Ligue",
+     "cote": 1.56,
+     "date": "2026-10-19",
+     "domicile": "Bursaspor",
+     "ev_estime": null,
+     "exterieur": "Pendikspor",
+     "heure": "18:00",
+     "id": "match:2026-10-19|bursaspor|pendikspor|over_under_total_2.5_over|journal",
+     "journal_observations": 5,
+     "journal_team": "Bursaspor",
+     "journal_wins": 5,
+     "marche": "Match à plus de 2,5 buts",
+     "marche_canonique": "over_under_total_2.5_over",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_5_SUR_5",
+     "plages": [
+      "2026-10-19..2026-10-19"
+     ],
+     "probabilite_estimee": 0.704443,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Turquie : TFF 1. Ligue",
+     "cote": 1.68,
+     "date": "2026-10-19",
+     "domicile": "Esenler Erokspor",
+     "ev_estime": 0.389528,
+     "exterieur": "Mardin 1969",
+     "heure": "18:00",
+     "id": "match:2026-10-19|esenler erokspor|mardin 1969|buts_equipe_domicile_1.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "buts_equipe_domicile_1.5_under",
+     "marche_canonique": "buts_equipe_domicile_1.5_under",
+     "marge_modele": 0.231862,
+     "match_id": "cxfbp3wiy4bui7xw8g7ilq4gk",
+     "niveau_confiance": "MODELE_SEUL",
+     "plages": [
+      "2026-10-19..2026-10-19"
+     ],
+     "probabilite_estimee": 0.8271,
+     "probabilite_source": "MODELE_NON_CALIBRE",
+     "rang": "P2",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Turquie : TFF 1. Ligue",
+     "cote": 1.74,
+     "date": "2026-10-19",
+     "domicile": "Esenler Erokspor",
+     "ev_estime": 0.408182,
+     "exterieur": "Mardin 1969",
+     "heure": "18:00",
+     "id": "match:2026-10-19|esenler erokspor|mardin 1969|handicap_exterieur_0.5|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "handicap_exterieur_0.5",
+     "marche_canonique": "handicap_exterieur_0.5",
+     "marge_modele": 0.234587,
+     "match_id": "cxfbp3wiy4bui7xw8g7ilq4gk",
+     "niveau_confiance": "MODELE_SEUL",
+     "plages": [
+      "2026-10-19..2026-10-19",
+      "2026-10-19..2026-10-20",
+      "2026-10-19..2026-10-21",
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.8093,
+     "probabilite_source": "MODELE_NON_CALIBRE",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Turquie : TFF 1. Ligue",
+     "cote": 1.29,
+     "date": "2026-10-19",
+     "domicile": "Esenler Erokspor",
+     "ev_estime": null,
+     "exterieur": "Mardin 1969",
+     "heure": "18:00",
+     "id": "match:2026-10-19|esenler erokspor|mardin 1969|over_under_total_3.5_under|journal",
+     "journal_observations": 5,
+     "journal_team": "Mardin 1969",
+     "journal_wins": 5,
+     "marche": "Match à moins de 3,5 buts",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_5_SUR_5",
+     "plages": [
+      "2026-10-19..2026-10-19",
+      "2026-10-19..2026-10-20",
+      "2026-10-19..2026-10-21",
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.784308,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Danemark : Superligaen",
+     "cote": 1.58,
+     "date": "2026-10-19",
+     "domicile": "Viborg",
+     "ev_estime": 0.115322,
+     "exterieur": "Midtjylland",
+     "heure": "18:00",
+     "id": "match:2026-10-19|viborg|midtjylland|double_chance_1x|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "double_chance_1X",
+     "marche_canonique": "double_chance_1x",
+     "marge_modele": 0.072989,
+     "match_id": "68ogiogsc438ubhsqcs4e7y1g",
+     "niveau_confiance": "MODELE_SEUL",
+     "plages": [
+      "2026-10-19..2026-10-19",
+      "2026-10-19..2026-10-20",
+      "2026-10-19..2026-10-21",
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.7059,
+     "probabilite_source": "MODELE_NON_CALIBRE",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Danemark : Superligaen",
+     "cote": 1.44,
+     "date": "2026-10-19",
+     "domicile": "Viborg",
+     "ev_estime": null,
+     "exterieur": "Midtjylland",
+     "heure": "18:00",
+     "id": "match:2026-10-19|viborg|midtjylland|double_chance_X2|journal",
+     "journal_observations": 5,
+     "journal_team": "Midtjylland",
+     "journal_wins": 5,
+     "marche": "Ne perd pas (victoire ou nul)",
+     "marche_canonique": "double_chance_X2",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_5_SUR_5",
+     "plages": [
+      "2026-10-19..2026-10-19",
+      "2026-10-19..2026-10-20",
+      "2026-10-19..2026-10-21",
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.789876,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Pays-Bas : Eerste Divisie",
+     "cote": 1.35,
+     "date": "2026-10-19",
+     "domicile": "Jong PSV",
+     "ev_estime": null,
+     "exterieur": "FC Dordrecht",
+     "heure": "19:00",
+     "id": "match:2026-10-19|jong psv|fc dordrecht|btts_oui|journal",
+     "journal_observations": 5,
+     "journal_team": "Jong PSV",
+     "journal_wins": 5,
+     "marche": "Les deux équipes marquent",
+     "marche_canonique": "btts_oui",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_5_SUR_5",
+     "plages": [
+      "2026-10-19..2026-10-19"
+     ],
+     "probabilite_estimee": 0.690713,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Pays-Bas : Eerste Divisie",
+     "cote": 1.49,
+     "date": "2026-10-19",
+     "domicile": "Jong Utrecht",
+     "ev_estime": null,
+     "exterieur": "Roda",
+     "heure": "19:00",
+     "id": "match:2026-10-19|jong utrecht|roda|over_under_total_3.5_under|journal",
+     "journal_observations": 6,
+     "journal_team": "Roda",
+     "journal_wins": 6,
+     "marche": "Match à moins de 3,5 buts",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_6_SUR_6",
+     "plages": [
+      "2026-10-19..2026-10-19",
+      "2026-10-19..2026-10-20",
+      "2026-10-19..2026-10-21",
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.784308,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Italie : Série C Girone A",
+     "cote": 1.3,
+     "date": "2026-10-19",
+     "domicile": "Cittadella",
+     "ev_estime": null,
+     "exterieur": "Arzignano",
+     "heure": "19:30",
+     "id": "match:2026-10-19|cittadella|arzignano|over_under_total_3.5_under|journal",
+     "journal_observations": 6,
+     "journal_team": "Cittadella",
+     "journal_wins": 6,
+     "marche": "Match à moins de 3,5 buts",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_6_SUR_6",
+     "plages": [
+      "2026-10-19..2026-10-19",
+      "2026-10-19..2026-10-20",
+      "2026-10-19..2026-10-21",
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.784308,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Italie : Série C Girone A",
+     "cote": 1.34,
+     "date": "2026-10-19",
+     "domicile": "Dolomiti",
+     "ev_estime": 0.082586,
+     "exterieur": "Trento",
+     "heure": "19:30",
+     "id": "match:2026-10-19|dolomiti|trento|handicap3_domicile_2_1|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "handicap3_domicile_2_1",
+     "marche_canonique": "handicap3_domicile_2_1",
+     "marge_modele": 0.061631,
+     "match_id": "6081wgq44iq44ikhj8zytc178",
+     "niveau_confiance": "MODELE_SEUL",
+     "plages": [
+      "2026-10-19..2026-10-19",
+      "2026-10-19..2026-10-20",
+      "2026-10-19..2026-10-21"
+     ],
+     "probabilite_estimee": 0.8079,
+     "probabilite_source": "MODELE_NON_CALIBRE",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Portugal : Primeira Liga",
+     "cote": 1.29,
+     "date": "2026-10-19",
+     "domicile": "Braga",
+     "ev_estime": null,
+     "exterieur": "Gil Vicente",
+     "heure": "20:15",
+     "id": "match:2026-10-19|braga|gil vicente|over_under_total_3.5_under|journal",
+     "journal_observations": 5,
+     "journal_team": "Braga",
+     "journal_wins": 4,
+     "marche": "Match à moins de 3,5 buts",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_4_SUR_5",
+     "plages": [
+      "2026-10-19..2026-10-19"
+     ],
+     "probabilite_estimee": 0.627447,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Argentine : Copa de la Liga Profesional 2e Tour",
+     "cote": 1.52,
+     "date": "2026-10-19",
+     "domicile": "Newells OB",
+     "ev_estime": null,
+     "exterieur": "Córdoba SdE",
+     "heure": "23:00",
+     "id": "match:2026-10-19|newells ob|cordoba sde|over_under_total_2.5_under|journal",
+     "journal_observations": 5,
+     "journal_team": "Newells OB",
+     "journal_wins": 5,
+     "marche": "Match à moins de 2,5 buts",
+     "marche_canonique": "over_under_total_2.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_5_SUR_5",
+     "plages": [
+      "2026-10-19..2026-10-19"
+     ],
+     "probabilite_estimee": 0.577611,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Arabie Saoudite : Première Division",
+     "cote": 1.44,
+     "date": "2026-10-20",
+     "domicile": "Diriyah",
+     "ev_estime": null,
+     "exterieur": "Al Riyadh",
+     "heure": "16:00",
+     "id": "match:2026-10-20|diriyah|al riyadh|over_under_total_3.5_under|journal",
+     "journal_observations": 5,
+     "journal_team": "Diriyah",
+     "journal_wins": 5,
+     "marche": "Match à moins de 3,5 buts",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_5_SUR_5",
+     "plages": [
+      "2026-10-19..2026-10-20"
+     ],
+     "probabilite_estimee": 0.784308,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Arabie Saoudite : Première Division",
+     "cote": 1.61,
+     "date": "2026-10-20",
+     "domicile": "Al Nassr",
+     "ev_estime": 0.252258,
+     "exterieur": "Neom",
+     "heure": "19:00",
+     "id": "match:2026-10-20|al nassr|neom|over_under_total_3.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_3.5_under",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": 0.156682,
+     "match_id": "8cgzxbnxsfkgt9x7rtkdxxzbo",
+     "niveau_confiance": "MODELE_SEUL",
+     "plages": [
+      "2026-10-19..2026-10-20",
+      "2026-10-19..2026-10-21",
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.7778,
+     "probabilite_source": "MODELE_NON_CALIBRE",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Angleterre : League One",
+     "cote": 1.54,
+     "date": "2026-10-20",
+     "domicile": "Blackpool",
+     "ev_estime": 0.124046,
+     "exterieur": "Milton Keynes",
+     "heure": "19:45",
+     "id": "match:2026-10-20|blackpool|milton keynes|over_under_total_2.5_over|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_2.5_over",
+     "marche_canonique": "over_under_total_2.5_over",
+     "marge_modele": 0.080549,
+     "match_id": "1mhsyrxbpth2k1egb66wn6xhw",
+     "niveau_confiance": "MODELE_SEUL",
+     "plages": [
+      "2026-10-19..2026-10-20",
+      "2026-10-19..2026-10-21",
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.7299,
+     "probabilite_source": "MODELE_NON_CALIBRE",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Angleterre : League One",
+     "cote": 1.27,
+     "date": "2026-10-20",
+     "domicile": "Burton Albion",
+     "ev_estime": null,
+     "exterieur": "Bradford",
+     "heure": "19:45",
+     "id": "match:2026-10-20|burton albion|bradford|over_under_total_3.5_under|journal",
+     "journal_observations": 7,
+     "journal_team": "Bradford",
+     "journal_wins": 7,
+     "marche": "Match à moins de 3,5 buts",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_7_SUR_7",
+     "plages": [
+      "2026-10-19..2026-10-20",
+      "2026-10-19..2026-10-21",
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.784308,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Écosse : Première Division",
+     "cote": 1.28,
+     "date": "2026-10-20",
+     "domicile": "Dunfermline",
+     "ev_estime": null,
+     "exterieur": "P. Thistle",
+     "heure": "19:45",
+     "id": "match:2026-10-20|dunfermline|p thistle|over_under_total_3.5_under|journal",
+     "journal_observations": 6,
+     "journal_team": "P. Thistle",
+     "journal_wins": 6,
+     "marche": "Match à moins de 3,5 buts",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_6_SUR_6",
+     "plages": [
+      "2026-10-19..2026-10-20",
+      "2026-10-19..2026-10-21",
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.784308,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Angleterre : League Two",
+     "cote": 1.41,
+     "date": "2026-10-20",
+     "domicile": "Exeter City",
+     "ev_estime": 0.196949,
+     "exterieur": "Crewe",
+     "heure": "19:45",
+     "id": "match:2026-10-20|exeter city|crewe|buts_equipe_exterieur_1.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "buts_equipe_exterieur_1.5_under",
+     "marche_canonique": "buts_equipe_exterieur_1.5_under",
+     "marge_modele": 0.13968,
+     "match_id": "1qahrzc4q1yuy8phmdldlj7kk",
+     "niveau_confiance": "MODELE_SEUL",
+     "plages": [
+      "2026-10-19..2026-10-20",
+      "2026-10-19..2026-10-21",
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.8489,
+     "probabilite_source": "MODELE_NON_CALIBRE",
+     "rang": "P2",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Angleterre : League Two",
+     "cote": 1.48,
+     "date": "2026-10-20",
+     "domicile": "Exeter City",
+     "ev_estime": null,
+     "exterieur": "Crewe",
+     "heure": "19:45",
+     "id": "match:2026-10-20|exeter city|crewe|double_chance_X2|journal",
+     "journal_observations": 8,
+     "journal_team": "Crewe",
+     "journal_wins": 8,
+     "marche": "Ne perd pas (victoire ou nul)",
+     "marche_canonique": "double_chance_X2",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_8_SUR_8",
+     "plages": [
+      "2026-10-19..2026-10-20",
+      "2026-10-19..2026-10-21",
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.789876,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Angleterre : League Two",
+     "cote": 1.71,
+     "date": "2026-10-20",
+     "domicile": "Exeter City",
+     "ev_estime": 0.432809,
+     "exterieur": "Crewe",
+     "heure": "19:45",
+     "id": "match:2026-10-20|exeter city|crewe|over_under_total_2.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_2.5_under",
+     "marche_canonique": "over_under_total_2.5_under",
+     "marge_modele": 0.253105,
+     "match_id": "1qahrzc4q1yuy8phmdldlj7kk",
+     "niveau_confiance": "MODELE_SEUL",
+     "plages": [
+      "2026-10-19..2026-10-20",
+      "2026-10-19..2026-10-21",
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.8379,
+     "probabilite_source": "MODELE_NON_CALIBRE",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Irlande du Nord : IFA Premiership",
+     "cote": 1.68,
+     "date": "2026-10-20",
+     "domicile": "Larne",
+     "ev_estime": null,
+     "exterieur": "Linfield",
+     "heure": "19:45",
+     "id": "match:2026-10-20|larne|linfield|double_chance_X2|journal",
+     "journal_observations": 7,
+     "journal_team": "Linfield",
+     "journal_wins": 7,
+     "marche": "Ne perd pas (victoire ou nul)",
+     "marche_canonique": "double_chance_X2",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_7_SUR_7",
+     "plages": [
+      "2026-10-19..2026-10-20",
+      "2026-10-19..2026-10-21",
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.789876,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Angleterre : League One",
+     "cote": 1.3,
+     "date": "2026-10-20",
+     "domicile": "Luton",
+     "ev_estime": 0.09733,
+     "exterieur": "Barnsley",
+     "heure": "19:45",
+     "id": "match:2026-10-20|luton|barnsley|over_under_total_4.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_4.5_under",
+     "marche_canonique": "over_under_total_4.5_under",
+     "marge_modele": 0.074869,
+     "match_id": "1oepe4u8lzi09h21wm195tx5g",
+     "niveau_confiance": "MODELE_SEUL",
+     "plages": [
+      "2026-10-19..2026-10-20",
+      "2026-10-19..2026-10-21",
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.8441,
+     "probabilite_source": "MODELE_NON_CALIBRE",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Angleterre : League Two",
+     "cote": 1.73,
+     "date": "2026-10-20",
+     "domicile": "Northampton",
+     "ev_estime": 0.200966,
+     "exterieur": "Tranmere",
+     "heure": "19:45",
+     "id": "match:2026-10-20|northampton|tranmere|over_under_total_2.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_2.5_under",
+     "marche_canonique": "over_under_total_2.5_under",
+     "marge_modele": 0.116165,
+     "match_id": "1qyfuopm4ul575wy9es477t3o",
+     "niveau_confiance": "MODELE_SEUL",
+     "plages": [
+      "2026-10-19..2026-10-20",
+      "2026-10-19..2026-10-21",
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.6942,
+     "probabilite_source": "MODELE_NON_CALIBRE",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Angleterre : League One",
+     "cote": 1.39,
+     "date": "2026-10-20",
+     "domicile": "Notts County",
+     "ev_estime": null,
+     "exterieur": "S. Wednesday",
+     "heure": "19:45",
+     "id": "match:2026-10-20|notts county|s wednesday|double_chance_X2|journal",
+     "journal_observations": 6,
+     "journal_team": "S. Wednesday",
+     "journal_wins": 6,
+     "marche": "Ne perd pas (victoire ou nul)",
+     "marche_canonique": "double_chance_X2",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_6_SUR_6",
+     "plages": [
+      "2026-10-19..2026-10-20",
+      "2026-10-19..2026-10-21",
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.789876,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Angleterre : League One",
+     "cote": 1.26,
+     "date": "2026-10-20",
+     "domicile": "Oxford Utd",
+     "ev_estime": null,
+     "exterieur": "Wigan Ath",
+     "heure": "19:45",
+     "id": "match:2026-10-20|oxford utd|wigan ath|double_chance_1X|journal",
+     "journal_observations": 5,
+     "journal_team": "Oxford Utd",
+     "journal_wins": 5,
+     "marche": "Ne perd pas (victoire ou nul)",
+     "marche_canonique": "double_chance_1X",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_5_SUR_5",
+     "plages": [
+      "2026-10-19..2026-10-20",
+      "2026-10-19..2026-10-21",
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.789876,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Angleterre : League Two",
+     "cote": 1.49,
+     "date": "2026-10-20",
+     "domicile": "Walsall",
+     "ev_estime": 0.224333,
+     "exterieur": "Oldham",
+     "heure": "19:45",
+     "id": "match:2026-10-20|walsall|oldham|buts_equipe_exterieur_1.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "buts_equipe_exterieur_1.5_under",
+     "marche_canonique": "buts_equipe_exterieur_1.5_under",
+     "marge_modele": 0.150559,
+     "match_id": "1ry00mc7xusp9hvpve932hlp0",
+     "niveau_confiance": "MODELE_SEUL",
+     "plages": [
+      "2026-10-19..2026-10-20",
+      "2026-10-19..2026-10-21",
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.8217,
+     "probabilite_source": "MODELE_NON_CALIBRE",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Angleterre : League Two",
+     "cote": 1.39,
+     "date": "2026-10-20",
+     "domicile": "Walsall",
+     "ev_estime": null,
+     "exterieur": "Oldham",
+     "heure": "19:45",
+     "id": "match:2026-10-20|walsall|oldham|double_chance_1X|journal",
+     "journal_observations": 7,
+     "journal_team": "Walsall",
+     "journal_wins": 7,
+     "marche": "Ne perd pas (victoire ou nul)",
+     "marche_canonique": "double_chance_1X",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_7_SUR_7",
+     "plages": [
+      "2026-10-19..2026-10-20",
+      "2026-10-19..2026-10-21",
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.789876,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Espagne : LaLiga",
+     "cote": 1.32,
+     "date": "2026-10-21",
+     "domicile": "Levante",
+     "ev_estime": null,
+     "exterieur": "Ath. Bilbao",
+     "heure": "19:00",
+     "id": "match:2026-10-21|levante|ath bilbao|double_chance_X2|journal",
+     "journal_observations": 5,
+     "journal_team": "Ath. Bilbao",
+     "journal_wins": 5,
+     "marche": "Ne perd pas (victoire ou nul)",
+     "marche_canonique": "double_chance_X2",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_5_SUR_5",
+     "plages": [
+      "2026-10-19..2026-10-21",
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.789876,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Europe : Ligue Europa Phase de Ligue",
+     "cote": 1.66,
+     "date": "2026-10-22",
+     "domicile": "Omónia Nicosie",
+     "ev_estime": 0.21844,
+     "exterieur": "Benfica",
+     "heure": "20:00",
+     "id": "match:2026-10-22|omonia nicosie|benfica|encaisse_exterieur|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "encaisse_exterieur",
+     "marche_canonique": "encaisse_exterieur",
+     "marge_modele": 0.13159,
+     "match_id": "e1dbos16cta51907oy4gu2oes",
+     "niveau_confiance": "MODELE_SEUL",
+     "plages": [
+      "2026-10-19..2026-10-22"
+     ],
+     "probabilite_estimee": 0.734,
+     "probabilite_source": "MODELE_NON_CALIBRE",
+     "rang": "P1",
+     "source": "moteur_v3"
+    }
+   ],
+   "plages": {
+    "2026-10-19..2026-10-19": 25,
+    "2026-10-19..2026-10-20": 30,
+    "2026-10-19..2026-10-21": 30,
+    "2026-10-19..2026-10-22": 30
+   }
   }
  ],
  "resultats": {
@@ -51656,6 +52808,11 @@
    "resultat": "LOSS",
    "score": "3-2"
   },
+  "match:2026-10-17|ne revolution|chicago fire|over_under_total_2.5_over|journal": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "LOSS",
+   "score": "1-0"
+  },
   "match:2026-10-17|okzhetpes|kyzyl zhar sk|handicap_domicile_-0.5|moteur_v3": {
    "regle_le": "2026-10-18T01:39:14.584285+00:00",
    "resultat": "WIN",
@@ -51666,6 +52823,11 @@
    "resultat": "LOSS",
    "score": "2-2"
   },
+  "match:2026-10-17|portland|colorado|buts_equipe_domicile_1.5_over|moteur_v3": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "LOSS",
+   "score": "0-0"
+  },
   "match:2026-10-17|potenza|catane|over_under_total_2.5_over|moteur_v3": {
    "regle_le": "2026-10-18T01:39:14.584285+00:00",
    "resultat": "WIN",
@@ -51675,6 +52837,11 @@
    "regle_le": "2026-10-18T01:39:14.584285+00:00",
    "resultat": "LOSS",
    "score": "5-0"
+  },
+  "match:2026-10-17|san jose e|nashville sc|double_chance_1X|journal": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "WIN",
+   "score": "1-1"
   },
   "match:2026-10-17|sivasspor|sariyer gk|double_chance_1X|journal": {
    "regle_le": "2026-10-18T01:39:14.584285+00:00",
@@ -51725,6 +52892,171 @@
    "regle_le": "2026-10-18T01:39:14.584285+00:00",
    "resultat": "WIN",
    "score": "3-1"
+  },
+  "match:2026-10-18|a bucaraman|america cali|double_chance_1X|journal": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "WIN",
+   "score": "1-1"
+  },
+  "match:2026-10-18|a puerto c|monagas sc|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "LOSS",
+   "score": "3-3"
+  },
+  "match:2026-10-18|al fateh|al khaleej|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "LOSS",
+   "score": "2-3"
+  },
+  "match:2026-10-18|al shorta|karkh|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "WIN",
+   "score": "1-1"
+  },
+  "match:2026-10-18|arbil|mosul|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "WIN",
+   "score": "0-1"
+  },
+  "match:2026-10-18|arenas getxo|merida|buts_equipe_domicile_1.5_under|moteur_v3": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "WIN",
+   "score": "0-4"
+  },
+  "match:2026-10-18|banska bystric|z podbrezova|over_under_total_2.5_over|moteur_v3": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "LOSS",
+   "score": "1-0"
+  },
+  "match:2026-10-18|cerro porteno|cs ameliano|over_under_total_3.5_under|moteur_v3": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "LOSS",
+   "score": "2-2"
+  },
+  "match:2026-10-18|cincinnati|columbus|over_under_total_2.5_over|moteur_v3": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "LOSS",
+   "score": "0-2"
+  },
+  "match:2026-10-18|estudiantes m|metropolitan|double_chance_X2|journal": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "WIN",
+   "score": "2-2"
+  },
+  "match:2026-10-18|estudiantes m|metropolitan|handicap3_domicile_-2_2|moteur_v3": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "WIN",
+   "score": "2-2"
+  },
+  "match:2026-10-18|estudiantes m|metropolitan|handicap_exterieur_1.5|moteur_v3": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "WIN",
+   "score": "2-2"
+  },
+  "match:2026-10-18|estudiantes m|metropolitan|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "LOSS",
+   "score": "2-2"
+  },
+  "match:2026-10-18|fk decic|buducnost|over_under_total_2.5_under|moteur_v3": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "WIN",
+   "score": "0-1"
+  },
+  "match:2026-10-18|jablonec|v plzen|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "LOSS",
+   "score": "2-3"
+  },
+  "match:2026-10-18|juve stabia|sudtirol|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "WIN",
+   "score": "3-0"
+  },
+  "match:2026-10-18|kisvarda|ferencvaros|over_under_total_3.5_under|moteur_v3": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "WIN",
+   "score": "1-1"
+  },
+  "match:2026-10-18|kocaelispor|goztepe|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "WIN",
+   "score": "1-2"
+  },
+  "match:2026-10-18|liverpool m|penarol|double_chance_X2|journal": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "LOSS",
+   "score": "1-0"
+  },
+  "match:2026-10-18|msk zilina|dunajska s|over_under_total_2.5_over|moteur_v3": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "WIN",
+   "score": "2-3"
+  },
+  "match:2026-10-18|not forest|arsenal|buts_equipe_exterieur_2.5_under|moteur_v3": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "WIN",
+   "score": "0-1"
+  },
+  "match:2026-10-18|novi pazar|fk imt|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "WIN",
+   "score": "1-2"
+  },
+  "match:2026-10-18|ospitaletto|pergolettese|double_chance_X2|journal": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "WIN",
+   "score": "2-3"
+  },
+  "match:2026-10-18|ospitaletto|pergolettese|over_under_total_2.5_under|moteur_v3": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "LOSS",
+   "score": "2-3"
+  },
+  "match:2026-10-18|panaitolikos|olympiakos|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "WIN",
+   "score": "0-2"
+  },
+  "match:2026-10-18|paok|iraklis 1908|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "WIN",
+   "score": "2-1"
+  },
+  "match:2026-10-18|real valladolid|eldense|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "LOSS",
+   "score": "2-3"
+  },
+  "match:2026-10-18|slaven|d zagreb|btts_oui|moteur_v3": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "WIN",
+   "score": "1-5"
+  },
+  "match:2026-10-18|spartak moscou|rubin|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "LOSS",
+   "score": "4-0"
+  },
+  "match:2026-10-18|ucv|portuguesa|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "WIN",
+   "score": "0-0"
+  },
+  "match:2026-10-18|zeleznicar p|partizan belgrad|over_under_total_2.5_over|moteur_v3": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "LOSS",
+   "score": "1-0"
+  },
+  "match:2026-10-18|zeleznicar p|partizan belgrad|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "WIN",
+   "score": "1-0"
+  },
+  "match:2026-10-18|zwolle|go ahead eagles|buts_equipe_exterieur_1.5_over|moteur_v3": {
+   "regle_le": "2026-10-19T00:03:13.354188+00:00",
+   "resultat": "LOSS",
+   "score": "4-1"
   }
  },
  "version": 1
