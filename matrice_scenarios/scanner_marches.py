@@ -39,11 +39,15 @@ def test_du_marche(groupe: str, selection: str) -> Test | None:
     m = re.fullmatch(r"over_under_(domicile_|exterieur_)?(\d+(?:\.\d+)?)", groupe)
     if m and s in ("plus", "moins"):
         ligne = float(m.group(2))
+        if ligne != int(ligne) + 0.5:      # ligne entière : un score pile sur la ligne est remboursé, non modélisé -> non lu
+            return None
         qui = {None: lambda i, j: i + j, "domicile_": lambda i, j: i, "exterieur_": lambda i, j: j}[m.group(1)]
         return (lambda i, j: qui(i, j) > ligne) if s == "plus" else (lambda i, j: qui(i, j) < ligne)
     m = re.fullmatch(r"handicap_(-?\d+(?:\.\d+)?)", groupe)          # 2 issues, ligne appliquée au domicile
     if m and s in ("domicile", "exterieur"):
         h = float(m.group(1))
+        if h != int(h) + 0.5 and h != int(h) - 0.5:
+            return None                    # ligne entière à 2 issues : remboursement possible, non modélisé -> non lu
         return (lambda i, j: i + h > j) if s == "domicile" else (lambda i, j: i + h < j)
     m = re.fullmatch(r"handicap_3issues_(-?\d+)", groupe)            # 3 issues, ligne entière appliquée au domicile
     if m and s in ("1", "X", "2"):

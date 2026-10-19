@@ -61,9 +61,9 @@ def proba(g: list[list[float]], test) -> float:
     return sum(p for i, row in enumerate(g) for j, p in enumerate(row) if test(i, j))
 
 
-def profil(dom: list[tuple[int, int]], ext: list[tuple[int, int]], rang_dom: int | None = None, rang_ext: int | None = None, **params) -> dict[str, Any]:
+def profil(dom: list[tuple[int, int]], ext: list[tuple[int, int]], rang_dom: int | None = None, rang_ext: int | None = None, *, rho: float = RHO, **params) -> dict[str, Any]:
     lam_d, lam_e = buts_attendus(dom, ext, rang_dom, rang_ext, **params)
-    g = grille(lam_d, lam_e, params.get("rho", RHO))
+    g = grille(lam_d, lam_e, rho)
     p1, pn, p2 = proba(g, lambda i, j: i > j), proba(g, lambda i, j: i == j), proba(g, lambda i, j: i < j)
     total = lam_d + lam_e
     if p1 >= _P["seuil_favori_dom"] and p1 > p2:

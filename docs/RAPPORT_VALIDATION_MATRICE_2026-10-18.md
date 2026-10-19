@@ -90,3 +90,10 @@ Preuves brutes : `docs/validation_matrice_2026-10-18.json` (sortie de `python -m
 - Archive jouée, 1 064 matchs, réussite : Poisson seul 69,5 % ; moyenne 66,6 % ; prudent (pire avis) 66,6 % ; unanime 65,0 %. Le conseil fait moins bien.
 - Le désaccord ne prédit pas l'échec (réussite par tiers de désaccord : 68,1 % / 69,3 % / 71,3 %).
 - Conclusion : le mode par défaut reste Poisson seul. Module conservé en lecture seule pour de futurs conseillers.
+
+## 13. Corrections issues de l'avis des 5 agents (19/10)
+- Corrigé : `profil(rho=…)` plantait ; lignes entières (totaux, handicaps à 2 issues) désormais non lues (remboursement non modélisé ; absentes de l'archive).
+- Backtest versionné : `python -m matrice_scenarios.backtest_comportement` (IC95 par rééchantillonnage des journées).
+- Recalage par famille appris sur Football-Data : sans effet sur le biais (annoncé 79,4 % pour 68,8 % réel, contre 79,0 % / 69,5 % sans recalage). Le biais vient de la sélection du maximum, pas du modèle.
+- Recalage de la probabilité annoncée du pick, marche avant (1re moitié des picks → 2e) : annoncé 79,1 % → 67,1 % (courbe unique) ou 68,5 % (par famille) pour 71,9 % réel ; Brier 0,2108 → 0,2074 / 0,2060. Amélioration faible et instable : la 1re moitié réussit moins bien que la 2e.
+- IC95 de la réussite (par journées) : 65,5 % – 74,2 %. Les écarts de 1 à 3 points ne sont pas distinguables du hasard.
