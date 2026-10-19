@@ -74,5 +74,6 @@ Preuves brutes : `docs/validation_matrice_2026-10-18.json` (sortie de `python -m
 - Limite connue : la tranche la plus haute plafonne (victoire extérieur 45 %), elle sous-estime les cas extrêmes comme Zwolle - Go Ahead Eagles.
 
 ## 10. Pronostic « le plus sûr » (`matrice_scenarios/pronostic_sur.py`)
-- Règle : parmi les marchés dont la cote BetPawa est entre 1,10 et 1,25, retenir le plus probable selon le modèle de croisements (marchés ajoutés : double chance, Over 1,5, Under 3,5 / 4,5 / 5,5).
-- Archive jouée (calibration Football-Data seule, donc indépendante) : 898 pronostics, 81,8 % de réussite (IC95 79,2 à 84,2 %), 82,0 % annoncé par le modèle, ROI −4,6 % (cote moyenne ≈ 1,18, équilibre ≈ 85 %).
+- Règle (corrigée à la demande de Patrick) : cotes 1,10 à 1,25 EXCLUES (pas de marge de gain) ; parmi les marchés BetPawa à partir de 1,26, retenir le plus probable selon le modèle de croisements (marchés ajoutés : double chance, Over 1,5, Under 3,5 / 4,5 / 5,5).
+- Archive jouée (calibration Football-Data seule, donc indépendante), réussite selon le plafond de cote : 1,26 à 1,30 : 73,7 % (414) ; 1,26 à 1,35 : 73,7 % (636, annoncé 73,6 %) ; 1,26 à 1,40 : 71,5 % ; 1,26 à 1,50 : 69,7 % ; sans plafond : 66,0 % (958, annoncé 75,0 %).
+- Plafond par défaut : 1,35, retenu parce que la réussite (priorité) y est la meilleure et calibrée. Au-delà, le modèle est trop confiant. ROI à 1,26-1,35 : −3,9 %.

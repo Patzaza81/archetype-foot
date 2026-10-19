@@ -8,22 +8,24 @@ def an(**probas):
 
 def test_picks_most_probable_market_inside_the_odds_window():
     a = an(over_1_5=0.80, under_4_5=0.86, home_not_lose=0.75)
-    assert P.choisir(a, {"over_1_5": 1.20, "under_4_5": 1.15, "home_not_lose": 1.22})["marche"] == "under_4_5"
-    assert P.choisir(a, {"over_1_5": 1.20, "under_4_5": 1.05, "home_not_lose": 1.22})["marche"] == "over_1_5"  # 1,05 est hors fenêtre
-    assert P.choisir(a, {"over_1_5": 1.10, "under_4_5": 1.40, "home_not_lose": 1.30})["marche"] == "over_1_5"  # 1,10 inclus
-    assert P.choisir(a, {"over_1_5": 1.25})["cote"] == 1.25  # 1,25 inclus
+    assert P.choisir(a, {"over_1_5": 1.30, "under_4_5": 1.27, "home_not_lose": 1.34})["marche"] == "under_4_5"
+    assert P.choisir(a, {"over_1_5": 1.30, "under_4_5": 1.25, "home_not_lose": 1.34})["marche"] == "over_1_5"  # 1,25 est exclu
+    assert P.choisir(a, {"over_1_5": 1.12, "under_4_5": 1.10, "home_not_lose": 1.30})["marche"] == "home_not_lose"  # 1,10 et 1,12 exclus
+    assert P.choisir(a, {"over_1_5": 1.26})["cote"] == 1.26  # 1,26 inclus
+    assert P.choisir(a, {"under_4_5": 1.36}) is None and P.choisir(a, {"under_4_5": 1.35})["cote"] == 1.35  # plafond 1,35 inclus
+    assert P.choisir(a, {"under_4_5": 3.50}, cote_max=float("inf"))["cote"] == 3.50  # plafond modifiable
 
 
 def test_no_pick_when_nothing_is_in_the_window_or_no_odds():
     a = an(over_1_5=0.80, under_4_5=0.86)
-    assert P.choisir(a, {"over_1_5": 1.26, "under_4_5": 1.09}) is None
+    assert P.choisir(a, {"over_1_5": 1.25, "under_4_5": 1.09}) is None
     assert P.choisir(a, {}) is None
     assert P.choisir(a, {"under_5_5": 1.2}) is None  # marché inconnu du modèle
 
 
 def test_tie_goes_to_higher_odds_and_pick_carries_breakeven():
     a = an(over_1_5=0.80, under_4_5=0.80)
-    p = P.choisir(a, {"over_1_5": 1.12, "under_4_5": 1.22})
+    p = P.choisir(a, {"over_1_5": 1.28, "under_4_5": 1.34})
     assert p["marche"] == "under_4_5" and p["cote_equilibre"] == 1.25
 
 
