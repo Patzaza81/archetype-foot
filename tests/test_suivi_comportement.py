@@ -73,3 +73,54 @@ def test_sans_variable_archive_du_depot(monkeypatch):
     from matrice_scenarios import page_comportement as PC
     monkeypatch.delenv("COMPORTEMENT_ARCHIVE", raising=False)
     assert len(PC.charger_matchs()) > 1000
+
+
+# --- intégration pipeline (moteur alpha, production parallèle, hors tickets) ---
+def _pipeline_yml() -> str:
+    from pathlib import Path
+    return (Path(__file__).resolve().parent.parent / ".github" / "workflows" / "pipeline.yml").read_text(encoding="utf-8")
+
+
+def test_pipeline_mode_ne_touche_pas_a_git(monkeypatch):
+    import subprocess
+    from matrice_scenarios import suivi_comportement as S
+    monkeypatch.setattr(S, "geler", lambda *a, **k: 0)
+    monkeypatch.setattr(S, "resultats", lambda *a, **k: 0)
+    monkeypatch.setattr(S, "bilan", lambda *a, **k: {})
+    monkeypatch.setattr(S.P, "ecrire_page", lambda *a, **k: {"matchs": []})
+    monkeypatch.setattr(subprocess, "run", lambda *a, **k: (_ for _ in ()).throw(AssertionError("git appelé")))
+    assert S.pipeline() == {"geles": 0, "resultats": 0, "page_matchs": 0, "bilan": {}}
+
+
+def test_etape_alpha_est_dans_le_pipeline_nocturne_et_ne_peut_pas_le_casser():
+    y = _pipeline_yml()
+    i = y.index("Moteur alpha en production parallèle")
+    bloc = y[i: y.index("      - name:", i + 10)]
+    assert "continue-on-error: true" in bloc and "suivi_comportement pipeline" in bloc
+    assert "github.event_name == 'schedule'" in bloc                                  # jamais sur un run de panier
+    assert y.index("moteur_v3_pipeline.py") < i < y.index("python generateur_tickets.py")
+
+
+def test_alpha_nest_pas_une_source_de_tickets():
+    import generateur_tickets as G
+    assert set(G.SOURCES) == {"moteur_v3", "journal"} and not any("alpha" in s or "comportement" in s for s in G.SOURCES)
+
+
+# --- cas qui doivent échouer ---
+def test_une_etape_sans_continue_on_error_serait_refusee():
+    y = _pipeline_yml().replace("        continue-on-error: true\n        run: python -m matrice_scenarios.suivi_comportement pipeline",
+                                "        run: python -m matrice_scenarios.suivi_comportement pipeline")
+    i = y.index("Moteur alpha en production parallèle")
+    assert "continue-on-error: true" not in y[i: y.index("      - name:", i + 10)]       # le contrôle ci-dessus détecte bien l'absence
+
+
+def test_commande_inconnue_ne_lance_rien(capsys):
+    import subprocess, sys
+    r = subprocess.run([sys.executable, "-m", "matrice_scenarios.suivi_comportement", "nimporte"], capture_output=True, text=True, timeout=120)
+    assert r.returncode == 0 and r.stdout.strip() == ""                          # commande inconnue : rien n'est exécuté, rien n'est écrit
+
+
+def test_le_pipeline_reste_hors_du_mode_panier():
+    y = _pipeline_yml()
+    i = y.index("Moteur alpha en production parallèle")
+    assert "panier_id == ''" in y[i: i + 400]

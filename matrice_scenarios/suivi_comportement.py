@@ -109,9 +109,20 @@ def bilan(journal: Path = JOURNAL, ecrire: bool = True) -> dict[str, Any]:
     return out
 
 
+def _passage() -> dict[str, Any]:
+    gele, resultat = geler(), resultats()
+    page = P.ecrire_page()                                   # la page lit le même archive que le suivi
+    return {"geles": gele, "resultats": resultat, "page_matchs": len(page["matchs"]), "bilan": bilan()}
+
+
+def pipeline() -> dict[str, Any]:
+    """Passage dans le pipeline nocturne (comme V3) : lit l'archive du dossier de travail, sans git. Le commit est fait par le pipeline."""
+    return _passage()
+
+
 def quotidien(branche_donnees: str = "origin/main") -> dict[str, Any]:
-    """Lancement automatique : lit l'archive la plus récente de `branche_donnees` (sans la fusionner ni la modifier), gèle les nouveaux
-    pronostics, enregistre les résultats connus, met à jour le bilan. Ne fait ni commit ni push (voir docs)."""
+    """Lancement automatique hors pipeline : lit l'archive la plus récente de `branche_donnees` (sans la fusionner ni la modifier), gèle les
+    nouveaux pronostics, enregistre les résultats connus, met à jour le bilan. Ne fait ni commit ni push (voir docs)."""
     git = lambda *a: subprocess.run(["git", *a], cwd=P.ROOT, capture_output=True, text=True, timeout=300)
     git("fetch", "origin", branche_donnees.split("/")[-1])
     tmp = tempfile.mkdtemp(prefix="archive_main_")
@@ -121,9 +132,7 @@ def quotidien(branche_donnees: str = "origin/main") -> dict[str, Any]:
         if r.returncode != 0:
             raise RuntimeError(f"worktree impossible : {r.stderr.strip()}")
         os.environ["COMPORTEMENT_ARCHIVE"] = os.path.join(wt, "data", "archive_test")
-        gele, resultat = geler(), resultats()
-        page = P.ecrire_page()                                   # la page lit le même archive que le suivi
-        return {"geles": gele, "resultats": resultat, "page_matchs": len(page["matchs"]), "bilan": bilan()}
+        return _passage()
     finally:
         os.environ.pop("COMPORTEMENT_ARCHIVE", None)
         git("worktree", "remove", "--force", wt)
@@ -134,6 +143,9 @@ if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "tout"
     if cmd == "quotidien":
         print(json.dumps(quotidien(), ensure_ascii=False, indent=1))
+        raise SystemExit(0)
+    if cmd == "pipeline":
+        print(json.dumps(pipeline(), ensure_ascii=False, indent=1))
         raise SystemExit(0)
     if cmd in ("geler", "tout"):
         print("gelés :", geler())

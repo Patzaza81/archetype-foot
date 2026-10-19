@@ -138,12 +138,13 @@ Les scénarios sont des hypothèses qui peuvent être inventées, combinées, tr
 - Journal en ajout seul : `data/comportement/journal_comportement.jsonl` (une ligne « pronostic » figée avant le coup d'envoi, puis une ligne « resultat » ; aucune ligne n'est jamais modifiée). Chaque pronostic porte l'heure de gel, le commit du code et l'empreinte des paramètres.
 - Commandes : `python -m matrice_scenarios.suivi_comportement geler | resultats | bilan | tout`. Un match dont le coup d'envoi est passé n'est jamais gelé.
 - `bilan_suivi.json` : réussite calculée uniquement sur les pronostics gelés (le vrai test hors échantillon).
-- Pas automatisé : à lancer chaque jour (geler avant les matchs, résultats ensuite). Aucun lien avec le pipeline.
+- Lancement : voir « Lancement automatique » ci-dessous (étape du pipeline nocturne depuis le 19/10/2026).
 
 ### Lancement automatique (19/10)
 - `python -m matrice_scenarios.suivi_comportement quotidien` : récupère l'archive la plus récente de `origin/main` (copie temporaire, rien n'est fusionné ni modifié sur main), gèle les nouveaux pronostics, enregistre les résultats connus, met à jour `bilan_suivi.json` et les données de la page. Idempotent. Ne fait ni commit ni push.
-- Planification : tâche programmée deux fois par jour (≈ 01:27 et 07:27 heure de Douala), après la chaîne de collecte (21:00 UTC) et le journal (05:07 UTC). Elle committe et pousse uniquement sur la branche `matrice-decouverte-scenarios`.
-- Les workflows GitHub planifiés ne tournent que depuis la branche par défaut (main) : on ne les utilise pas, main reste intouché.
+- **Intégration au pipeline (19/10/2026, sur ordre de Patrick)** : `python -m matrice_scenarios.suivi_comportement pipeline` est une étape du pipeline nocturne (`.github/workflows/pipeline.yml`, après la comparaison V2/V3), avec `continue-on-error: true` : une panne d'alpha ne peut pas arrêter le pipeline. Elle lit l'archive du dossier de travail (sans git), gèle les nouveaux pronostics, enregistre les résultats, met à jour `bilan_suivi.json` et la page. Le commit « Mise à jour pipeline » publie `data/comportement/` avec le reste. Ne tourne jamais sur un run de panier.
+- **Statut : production parallèle**, comme V3 : page, données et journal publiés, **hors tickets** (`generateur_tickets.SOURCES` = V3 et Journal seulement), hors fichier de comparaison V2/V3, aucune cote en entrée du moteur. Une entrée dans les tickets exige une décision séparée de Patrick et une preuve de rentabilité (seuil ≈ 72 % pour une cote moyenne de 1,39 ; observé : 69,5 % sur l'archive, IC95 65,5–74,2 %).
+- L'ancienne tâche programmée « Suivi Comportement » (branche `matrice-decouverte-scenarios`) est désactivée : deux écrivains sur le journal en ajout seul le feraient diverger. La commande `quotidien` (archive de `origin/main` dans une copie temporaire) reste disponible pour un lancement manuel.
 
 ### Banc contre le marché sur Football-Data (19/10)
 - Les fichiers bruts de Football-Data contiennent des cotes (Bet365, Pinnacle, Betfair, moyenne/max ; ouverture et clôture ; 1X2, plus/moins 2,5, handicap asiatique). Dans nos données locales : 7 622 matchs avec cotes 1X2 et plus/moins 2,5 (Bet365 ouverture).
