@@ -84,7 +84,7 @@ def test_super_combine_match_ouvert_et_resultat_propose():
 
 
 def test_super_combine_match_ferme_moins_de_buts():
-    r = J.super_pronostic({"candidats": [combo("dc_total_3.5", "1N|moins", 1.45), combo("dc_total_1.5", "1N|plus", 1.7)]},
+    r = J.super_pronostic({"candidats": [combo("dc_total_3.5", "1N|moins", 1.45), combo("dc_total_1.5", "1N|plus", 1.7)], "domicile": "A", "exterieur": "B"},
                           mj(buts="Match fermé : peu de buts (2,2 attendus)", dc="1N"))
     assert r and r["jambes"][0]["selection"] == "1N|moins"
 
@@ -114,3 +114,18 @@ def test_super_rien_si_les_buts_vont_a_l_inverse_de_la_page():
 
 def test_super_rien_si_le_resultat_n_est_pas_celui_de_la_page():
     assert J.super_pronostic({"candidats": [combo("dc_total_1.5", "1N|plus", 1.7)]}, mj(dc="12")) is None
+
+
+def test_justification_simple():
+    m = mj()
+    m["tendances"][0]["texte"] = "Match équilibré : A 36 % · nul 26 % · B 38 %."
+    m["tendances"][1]["court"] = "Match ouvert : beaucoup de buts (3,0 attendus)"
+    r = J.super_pronostic({"candidats": [combo("dc_total_1.5", "12|plus", 1.9)], "domicile": "A", "exterieur": "B"}, m)
+    assert r["raison"] == ("Le match s'annonce ouvert : environ 3,0 buts attendus. Le match nul est peu probable (26 %). "
+                           "On joue les deux ensemble : pas de nul + plus de 1,5 buts. Cote 1,9 sur Betpawa, contre 1,28 pour le pronostic principal.")
+
+
+def test_justification_equipe_qui_ne_perd_pas():
+    m = mj(buts="Match fermé : peu de buts (2,2 attendus)", dc="N2")
+    r = J.super_pronostic({"candidats": [combo("dc_total_3.5", "N2|moins", 1.8)], "domicile": "A", "exterieur": "B"}, m)
+    assert "B ne devrait pas perdre." in r["raison"] and "fermé : environ 2,2" in r["raison"]

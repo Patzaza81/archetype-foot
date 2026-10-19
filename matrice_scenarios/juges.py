@@ -266,9 +266,20 @@ def super_pronostic(p: dict[str, Any], mj: dict[str, Any]) -> dict[str, Any] | N
     if not valides:
         return None
     c = max(valides, key=lambda x: (x["probabilite"], x["cote"]))
-    res, buts = sig["textes"].get("resultat", ""), (sig["textes"].get("buts") if c["groupe"].startswith("dc_total") else sig["textes"].get("deux_marquent", ""))
-    t = [x for x in (res, buts) if x]
-    t.append(f"Les deux paris vont dans le même sens : combiné {c['libelle'].lower()}, trouvé sur Betpawa à {_virgule(c['cote'])} (le principal paie {_virgule(princ['cote'])}).")
+    import re
+    issue = c["selection"].split("|")[0]
+    nul = re.search(r"nul (\d+) %", sig["textes"].get("resultat", ""))
+    t = []
+    if c["groupe"].startswith("dc_total"):
+        att = re.search(r"\(([\d,]+) attendus\)", next((x.get("court") or "" for x in mj.get("tendances") or [] if x["cle"] == "buts"), ""))
+        t.append(f"Le match s'annonce {'ouvert' if sig['buts'] == 'ouvert' else 'fermé'}" + (f" : environ {att.group(1)} buts attendus." if att else "."))
+    else:
+        t.append("Les deux équipes marquent souvent." if sig["btts"] == "oui" else "Une des deux équipes risque de ne pas marquer.")
+    if issue == "12":
+        t.append("Le match nul est peu probable" + (f" ({nul.group(1)} %)." if nul else "."))
+    else:
+        t.append(f"{p['domicile'] if issue == '1N' else p['exterieur']} ne devrait pas perdre.")
+    t.append(f"On joue les deux ensemble : {c['libelle'].lower()}. Cote {_virgule(c['cote'])} sur Betpawa, contre {_virgule(princ['cote'])} pour le pronostic principal.")
     return {"type": "combine", "jambes": [jambe(c)], "cote_combine": c["cote"], "cote_min": COTE_MIN, "raison": " ".join(t)}
 
 
