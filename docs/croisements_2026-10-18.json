@@ -1,0 +1,311 @@
+{
+ "football_data_proxy_odds": {
+  "matches_with_history": 13262,
+  "train": 7872,
+  "test": 5390,
+  "test_first_day": "2026-03-22",
+  "markets": {
+   "home_scores_1plus": {
+    "threshold": 1.8,
+    "picks": 1980,
+    "hit_rate": 0.8187,
+    "base_rate_test": 0.7918,
+    "hit_ci95": [
+     0.8011,
+     0.835
+    ],
+    "breakeven_odds": 1.221
+   },
+   "away_scores_1plus": {
+    "threshold": 1.6,
+    "picks": 2145,
+    "hit_rate": 0.7501,
+    "base_rate_test": 0.7156,
+    "hit_ci95": [
+     0.7314,
+     0.768
+    ],
+    "breakeven_odds": 1.333
+   },
+   "both_score": {
+    "threshold": 1.4,
+    "picks": 2569,
+    "hit_rate": 0.5749,
+    "base_rate_test": 0.5709,
+    "hit_ci95": [
+     0.5557,
+     0.5939
+    ],
+    "breakeven_odds": 1.739
+   },
+   "over_2_5": {
+    "threshold": 3.2,
+    "picks": 1367,
+    "hit_rate": 0.6086,
+    "base_rate_test": 0.5492,
+    "hit_ci95": [
+     0.5825,
+     0.6342
+    ],
+    "breakeven_odds": 1.643,
+    "with_odds": {
+     "bets": 326,
+     "mean_odds": 1.664,
+     "roi": -0.0669,
+     "roi_ci95_naif": [
+      -0.1559,
+      0.0222
+     ]
+    }
+   },
+   "under_2_5": {
+    "threshold": -2.2,
+    "picks": 1027,
+    "hit_rate": 0.5151,
+    "base_rate_test": 0.4508,
+    "hit_ci95": [
+     0.4845,
+     0.5455
+    ],
+    "breakeven_odds": 1.941,
+    "with_odds": {
+     "bets": 303,
+     "mean_odds": 1.886,
+     "roi": -0.0324,
+     "roi_ci95_naif": [
+      -0.1389,
+      0.074
+     ]
+    }
+   },
+   "home_win": {
+    "threshold": 1.6,
+    "picks": 1224,
+    "hit_rate": 0.5686,
+    "base_rate_test": 0.4345,
+    "hit_ci95": [
+     0.5407,
+     0.5961
+    ],
+    "breakeven_odds": 1.759,
+    "with_odds": {
+     "bets": 324,
+     "mean_odds": 1.738,
+     "roi": -0.0085,
+     "roi_ci95_naif": [
+      -0.1049,
+      0.0878
+     ]
+    }
+   },
+   "away_win": {
+    "threshold": 0.4,
+    "picks": 1024,
+    "hit_rate": 0.4004,
+    "base_rate_test": 0.3037,
+    "hit_ci95": [
+     0.3708,
+     0.4307
+    ],
+    "breakeven_odds": 2.498,
+    "with_odds": {
+     "bets": 307,
+     "mean_odds": 2.508,
+     "roi": -0.099,
+     "roi_ci95_naif": [
+      -0.2351,
+      0.0372
+     ]
+    }
+   },
+   "draw": {
+    "threshold": -0.4,
+    "picks": 1214,
+    "hit_rate": 0.2768,
+    "base_rate_test": 0.2618,
+    "hit_ci95": [
+     0.2523,
+     0.3026
+    ],
+    "breakeven_odds": 3.613,
+    "with_odds": {
+     "bets": 338,
+     "mean_odds": 3.564,
+     "roi": 0.047,
+     "roi_ci95_naif": [
+      -0.127,
+      0.2211
+     ]
+    }
+   }
+  }
+ },
+ "archive_betpawa": {
+  "matches_with_history": 634,
+  "train": 370,
+  "test": 264,
+  "test_first_day": "2026-10-12",
+  "markets": {
+   "home_scores_1plus": {
+    "threshold": 1.8,
+    "picks": 82,
+    "hit_rate": 0.8659,
+    "base_rate_test": 0.7879,
+    "hit_ci95": [
+     0.7755,
+     0.9234
+    ],
+    "breakeven_odds": 1.155,
+    "with_odds": {
+     "bets": 61,
+     "mean_odds": 1.198,
+     "roi": 0.0215,
+     "roi_ci95_naif": [
+      -0.0962,
+      0.1392
+     ]
+    }
+   },
+   "away_scores_1plus": {
+    "threshold": 1.75,
+    "picks": 50,
+    "hit_rate": 0.74,
+    "base_rate_test": 0.7045,
+    "hit_ci95": [
+     0.6045,
+     0.8413
+    ],
+    "breakeven_odds": 1.351,
+    "with_odds": {
+     "bets": 37,
+     "mean_odds": 1.253,
+     "roi": -0.0751,
+     "roi_ci95_naif": [
+      -0.2503,
+      0.1
+     ]
+    }
+   },
+   "both_score": {
+    "threshold": 1.5,
+    "picks": 69,
+    "hit_rate": 0.5217,
+    "base_rate_test": 0.5417,
+    "hit_ci95": [
+     0.4059,
+     0.6353
+    ],
+    "breakeven_odds": 1.917,
+    "with_odds": {
+     "bets": 69,
+     "mean_odds": 1.635,
+     "roi": -0.1636,
+     "roi_ci95_naif": [
+      -0.3584,
+      0.0312
+     ]
+    }
+   },
+   "over_2_5": {
+    "threshold": 3.3,
+    "picks": 56,
+    "hit_rate": 0.6071,
+    "base_rate_test": 0.5379,
+    "hit_ci95": [
+     0.4763,
+     0.7242
+    ],
+    "breakeven_odds": 1.647,
+    "with_odds": {
+     "bets": 55,
+     "mean_odds": 1.531,
+     "roi": -0.1009,
+     "roi_ci95_naif": [
+      -0.3009,
+      0.0991
+     ]
+    }
+   },
+   "under_2_5": {
+    "threshold": -2.2,
+    "picks": 62,
+    "hit_rate": 0.5161,
+    "base_rate_test": 0.4621,
+    "hit_ci95": [
+     0.3945,
+     0.6359
+    ],
+    "breakeven_odds": 1.938,
+    "with_odds": {
+     "bets": 61,
+     "mean_odds": 1.838,
+     "roi": -0.1302,
+     "roi_ci95_naif": [
+      -0.349,
+      0.0887
+     ]
+    }
+   },
+   "home_win": {
+    "threshold": 1.75,
+    "picks": 40,
+    "hit_rate": 0.675,
+    "base_rate_test": 0.4545,
+    "hit_ci95": [
+     0.5202,
+     0.7992
+    ],
+    "breakeven_odds": 1.481,
+    "with_odds": {
+     "bets": 40,
+     "mean_odds": 1.668,
+     "roi": 0.0375,
+     "roi_ci95_naif": [
+      -0.2029,
+      0.2779
+     ]
+    }
+   },
+   "away_win": {
+    "threshold": 0.6,
+    "picks": 50,
+    "hit_rate": 0.48,
+    "base_rate_test": 0.3106,
+    "hit_ci95": [
+     0.348,
+     0.6149
+    ],
+    "breakeven_odds": 2.083,
+    "with_odds": {
+     "bets": 50,
+     "mean_odds": 2.374,
+     "roi": 0.0318,
+     "roi_ci95_naif": [
+      -0.309,
+      0.3726
+     ]
+    }
+   },
+   "draw": {
+    "threshold": -0.4,
+    "picks": 71,
+    "hit_rate": 0.2958,
+    "base_rate_test": 0.2348,
+    "hit_ci95": [
+     0.2023,
+     0.4102
+    ],
+    "breakeven_odds": 3.381,
+    "with_odds": {
+     "bets": 71,
+     "mean_odds": 3.581,
+     "roi": 0.0507,
+     "roi_ci95_naif": [
+      -0.333,
+      0.4344
+     ]
+    }
+   }
+  }
+ }
+}

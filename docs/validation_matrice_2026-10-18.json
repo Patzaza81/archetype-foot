@@ -1,0 +1,5626 @@
+{
+ "schema_version": 1,
+ "mode": "VALIDATION_STATISTIQUE_READ_ONLY",
+ "promotion_allowed": false,
+ "data": {
+  "archive_loading": {
+   "input_rows": 1493,
+   "unique_matches": 1359,
+   "duplicate_rows": 20,
+   "conflicting_match_ids": 0,
+   "date_shifted_duplicates": 20,
+   "archive_unresolved_or_missing_score": 697,
+   "rejected": {
+    "COUP_D_ENVOI_ABSENT": 65,
+    "CAPTURE_APRES_COUP_D_ENVOI": 48,
+    "EQUIPES_IDENTIQUES": 1
+   }
+  },
+  "football_data": {
+   "source": "data/football_data (résultats seulement ; aucune cote lue)",
+   "matches": 16558,
+   "duplicate_rows": 0,
+   "conflicting_matches": 0,
+   "rejected": {
+    "SANS_SCORE_OU_INCOMPLET": 1
+   },
+   "leagues": 38,
+   "first_date": "2025-01-23",
+   "last_date": "2026-10-16",
+   "prematch_proof": "dates strictement antérieures uniquement ; aucun horodatage de capture disponible pour cette source",
+   "odds_used": false
+  },
+  "football_data_matches_by_month": {
+   "2025-01": 30,
+   "2025-02": 143,
+   "2025-03": 232,
+   "2025-04": 395,
+   "2025-05": 391,
+   "2025-06": 207,
+   "2025-07": 409,
+   "2025-08": 1333,
+   "2025-09": 1158,
+   "2025-10": 1175,
+   "2025-11": 1210,
+   "2025-12": 896,
+   "2026-01": 938,
+   "2026-02": 1199,
+   "2026-03": 1230,
+   "2026-04": 1445,
+   "2026-05": 1047,
+   "2026-06": 52,
+   "2026-07": 281,
+   "2026-08": 1179,
+   "2026-09": 1172,
+   "2026-10": 436
+  },
+  "archive_first_day": "2026-09-28",
+  "freeze_cutoff": "2026-09-27"
+ },
+ "archive_walk_forward": {
+  "mode": "ARCHIVE_WALK_FORWARD_NESTED_PERMUTATION",
+  "repetitions": 1000,
+  "folds": [
+   {
+    "fraction": 0.6,
+    "matches_in_prefix": 862,
+    "split": {
+     "train": 352,
+     "validation": 280,
+     "test": 230
+    },
+    "test_days": [
+     "2026-10-11",
+     "2026-10-11"
+    ],
+    "scenarios_tested": 20000,
+    "distinct_rules": 1250,
+    "selected": 119,
+    "observed": {
+     "selected": 119.0,
+     "mean_test_lift": 0.18122773587689772,
+     "mean_test_roi": 0.009270716753810032,
+     "max_test_roi": 0.35589743589743594,
+     "portfolio_picks": 230.0,
+     "portfolio_excess": 0.1372211720226843,
+     "portfolio_roi": -0.03239130434782607
+    },
+    "permutation_marche": {
+     "selected": {
+      "observed": 119.0,
+      "null_mean": 120.143,
+      "null_p95": 225.0999999999999,
+      "p": 0.43756243756243757
+     },
+     "mean_test_lift": {
+      "observed": 0.18122773587689772,
+      "null_draws_with_selection": 1000,
+      "null_mean": 0.14046682879947509,
+      "null_p95": 0.18617427570581163,
+      "p": 0.061938061938061936
+     },
+     "mean_test_roi": {
+      "observed": 0.009270716753810032,
+      "null_draws_with_selection": 1000,
+      "null_mean": -0.03977456848312451,
+      "null_p95": 0.01980230153211432,
+      "p": 0.08691308691308691
+     },
+     "max_test_roi": {
+      "observed": 0.35589743589743594,
+      "null_draws_with_selection": 1000,
+      "null_mean": 0.25907599905995504,
+      "null_p95": 0.49344791666666654,
+      "p": 0.19880119880119881
+     },
+     "portfolio_picks": {
+      "observed": 230.0,
+      "null_mean": 228.882,
+      "null_p95": 230.0,
+      "p": 0.9790209790209791
+     },
+     "portfolio_excess": {
+      "observed": 0.1372211720226843,
+      "null_draws_with_selection": 1000,
+      "null_mean": 0.13796901415249072,
+      "null_p95": 0.1845657658288408,
+      "p": 0.5244755244755245
+     },
+     "portfolio_roi": {
+      "observed": -0.03239130434782607,
+      "null_draws_with_selection": 1000,
+      "null_mean": -0.04037121038242613,
+      "null_p95": 0.044247162859248325,
+      "p": 0.43156843156843155
+     }
+    },
+    "permutation_libre": {
+     "selected": {
+      "observed": 119.0,
+      "null_mean": 0.02,
+      "null_p95": 0.0,
+      "p": 0.000999000999000999
+     },
+     "mean_test_lift": {
+      "observed": 0.18122773587689772,
+      "null_draws_with_selection": 18,
+      "null_mean": 0.043039638501905036,
+      "null_p95": 0.1595652173913043,
+      "p": 0.05263157894736842
+     },
+     "mean_test_roi": {
+      "observed": 0.009270716753810032,
+      "null_draws_with_selection": 18,
+      "null_mean": 0.19306068238773783,
+      "null_p95": 1.480531249999999,
+      "p": 0.2631578947368421
+     },
+     "max_test_roi": {
+      "observed": 0.35589743589743594,
+      "null_draws_with_selection": 18,
+      "null_mean": 0.19306068238773783,
+      "null_p95": 1.480531249999999,
+      "p": 0.15789473684210525
+     },
+     "portfolio_picks": {
+      "observed": 230.0,
+      "null_mean": 0.426,
+      "null_p95": 0.0,
+      "p": 0.000999000999000999
+     },
+     "portfolio_excess": {
+      "observed": 0.1372211720226843,
+      "null_draws_with_selection": 18,
+      "null_mean": -0.005085409311372601,
+      "null_p95": 0.1193749999999999,
+      "p": 0.10526315789473684
+     },
+     "portfolio_roi": {
+      "observed": -0.03239130434782607,
+      "null_draws_with_selection": 18,
+      "null_mean": -0.14291163449901348,
+      "null_p95": 1.480531249999999,
+      "p": 0.42105263157894735
+     }
+    },
+    "portfolio_test": {
+     "picks": 230,
+     "matches_in_segment": 230,
+     "distinct_matches": 230,
+     "hit_rate": 0.6478260869565218,
+     "excess_over_base": {
+      "n": 230,
+      "mean": 0.1372211720226843,
+      "ci95": null,
+      "days": 1
+     },
+     "by_target": {
+      "home_win": 38,
+      "away_not_lose": 83,
+      "away_win": 65,
+      "home_not_lose": 44
+     },
+     "excess_by_league": {
+      "groups": 0,
+      "positive": 0,
+      "share_positive": null,
+      "min_n_per_group": 15,
+      "by_group": {}
+     },
+     "excess_by_period": {
+      "groups": 1,
+      "positive": 1,
+      "share_positive": 1.0,
+      "min_n_per_group": 15,
+      "by_group": {
+       "2026-S41": {
+        "n": 230,
+        "mean": 0.1372211720226843
+       }
+      }
+     },
+     "settled_bets": 230,
+     "mean_odds": 1.7126086956521738,
+     "roi": {
+      "n": 230,
+      "mean": -0.03239130434782607,
+      "ci95": null,
+      "days": 1
+     },
+     "roi_by_league": {
+      "groups": 0,
+      "positive": 0,
+      "share_positive": null,
+      "min_n_per_group": 15,
+      "by_group": {}
+     },
+     "roi_by_period": {
+      "groups": 1,
+      "positive": 0,
+      "share_positive": 0.0,
+      "min_n_per_group": 15,
+      "by_group": {
+       "2026-S41": {
+        "n": 230,
+        "mean": -0.03239130434782607
+       }
+      }
+     }
+    }
+   },
+   {
+    "fraction": 0.8,
+    "matches_in_prefix": 1101,
+    "split": {
+     "train": 632,
+     "validation": 230,
+     "test": 239
+    },
+    "test_days": [
+     "2026-10-12",
+     "2026-10-16"
+    ],
+    "scenarios_tested": 20000,
+    "distinct_rules": 1250,
+    "selected": 420,
+    "observed": {
+     "selected": 420.0,
+     "mean_test_lift": 0.10504481423046905,
+     "mean_test_roi": -0.02022076601989513,
+     "max_test_roi": 0.8133333333333332,
+     "portfolio_picks": 238.0,
+     "portfolio_excess": 0.14357793326535637,
+     "portfolio_roi": -0.002436974789915989
+    },
+    "permutation_marche": {
+     "selected": {
+      "observed": 420.0,
+      "null_mean": 616.811,
+      "null_p95": 1014.2499999999998,
+      "p": 0.7862137862137862
+     },
+     "mean_test_lift": {
+      "observed": 0.10504481423046905,
+      "null_draws_with_selection": 1000,
+      "null_mean": 0.08004627076128268,
+      "null_p95": 0.11125200135912074,
+      "p": 0.08291708291708291
+     },
+     "mean_test_roi": {
+      "observed": -0.02022076601989513,
+      "null_draws_with_selection": 1000,
+      "null_mean": -0.0665618408633023,
+      "null_p95": -0.019746833618425205,
+      "p": 0.053946053946053944
+     },
+     "max_test_roi": {
+      "observed": 0.8133333333333332,
+      "null_draws_with_selection": 1000,
+      "null_mean": 0.4382418288452472,
+      "null_p95": 0.7090291501976284,
+      "p": 0.028971028971028972
+     },
+     "portfolio_picks": {
+      "observed": 238.0,
+      "null_mean": 238.147,
+      "null_p95": 239.0,
+      "p": 1.0
+     },
+     "portfolio_excess": {
+      "observed": 0.14357793326535637,
+      "null_draws_with_selection": 1000,
+      "null_mean": 0.11858233230092864,
+      "null_p95": 0.16501529482085717,
+      "p": 0.21578421578421578
+     },
+     "portfolio_roi": {
+      "observed": -0.002436974789915989,
+      "null_draws_with_selection": 1000,
+      "null_mean": -0.04174212562849408,
+      "null_p95": 0.05118277310924369,
+      "p": 0.2517482517482518
+     }
+    },
+    "permutation_libre": {
+     "selected": {
+      "observed": 420.0,
+      "null_mean": 0.006,
+      "null_p95": 0.0,
+      "p": 0.000999000999000999
+     },
+     "mean_test_lift": {
+      "observed": 0.10504481423046905,
+      "null_draws_with_selection": 4,
+      "null_mean": 0.04243373034121177,
+      "null_p95": 0.09394647309919277,
+      "p": 0.2
+     },
+     "mean_test_roi": {
+      "observed": -0.02022076601989513,
+      "null_draws_with_selection": 4,
+      "null_mean": -0.1276940337952121,
+      "null_p95": 0.2324395321038249,
+      "p": 0.4
+     },
+     "max_test_roi": {
+      "observed": 0.8133333333333332,
+      "null_draws_with_selection": 4,
+      "null_mean": -0.12049570647931307,
+      "null_p95": 0.23536448087431672,
+      "p": 0.2
+     },
+     "portfolio_picks": {
+      "observed": 238.0,
+      "null_mean": 0.163,
+      "null_p95": 0.0,
+      "p": 0.000999000999000999
+     },
+     "portfolio_excess": {
+      "observed": 0.14357793326535637,
+      "null_draws_with_selection": 4,
+      "null_mean": 0.04756961181917317,
+      "null_p95": 0.0914969781496978,
+      "p": 0.2
+     },
+     "portfolio_roi": {
+      "observed": -0.002436974789915989,
+      "null_draws_with_selection": 4,
+      "null_mean": -0.12847939068100359,
+      "null_p95": 0.2333623655913976,
+      "p": 0.4
+     }
+    },
+    "portfolio_test": {
+     "picks": 238,
+     "matches_in_segment": 239,
+     "distinct_matches": 238,
+     "hit_rate": 0.5462184873949579,
+     "excess_over_base": {
+      "n": 238,
+      "mean": 0.14357793326535637,
+      "ci95": [
+       0.08526756221096674,
+       0.20564463733465016
+      ],
+      "days": 5
+     },
+     "by_target": {
+      "away_win": 134,
+      "home_not_lose": 29,
+      "home_win": 68,
+      "home_scores_2plus": 6,
+      "home_scores_1plus": 1
+     },
+     "excess_by_league": {
+      "groups": 1,
+      "positive": 1,
+      "share_positive": 1.0,
+      "min_n_per_group": 15,
+      "by_group": {
+       "Etats-Unis : MLS": {
+        "n": 15,
+        "mean": 0.23514644351464437
+       }
+      }
+     },
+     "excess_by_period": {
+      "groups": 1,
+      "positive": 1,
+      "share_positive": 1.0,
+      "min_n_per_group": 15,
+      "by_group": {
+       "2026-S42": {
+        "n": 238,
+        "mean": 0.14357793326535637
+       }
+      }
+     },
+     "settled_bets": 238,
+     "mean_odds": 2.093781512605042,
+     "roi": {
+      "n": 238,
+      "mean": -0.002436974789915989,
+      "ci95": [
+       -0.17411764705882354,
+       0.17187996894409951
+      ],
+      "days": 5
+     },
+     "roi_by_league": {
+      "groups": 1,
+      "positive": 1,
+      "share_positive": 1.0,
+      "min_n_per_group": 15,
+      "by_group": {
+       "Etats-Unis : MLS": {
+        "n": 15,
+        "mean": 0.23933333333333331
+       }
+      }
+     },
+     "roi_by_period": {
+      "groups": 1,
+      "positive": 0,
+      "share_positive": 0.0,
+      "min_n_per_group": 15,
+      "by_group": {
+       "2026-S42": {
+        "n": 238,
+        "mean": -0.002436974789915989
+       }
+      }
+     }
+    }
+   },
+   {
+    "fraction": 1.0,
+    "matches_in_prefix": 1359,
+    "split": {
+     "train": 862,
+     "validation": 239,
+     "test": 258
+    },
+    "test_days": [
+     "2026-10-17",
+     "2026-10-17"
+    ],
+    "scenarios_tested": 20000,
+    "distinct_rules": 1250,
+    "selected": 778,
+    "observed": {
+     "selected": 778.0,
+     "mean_test_lift": 0.05488416745547335,
+     "mean_test_roi": -0.11465719291056117,
+     "max_test_roi": 0.46900000000000003,
+     "portfolio_picks": 258.0,
+     "portfolio_excess": 0.08301784748512712,
+     "portfolio_roi": -0.0301937984496124
+    },
+    "permutation_marche": {
+     "selected": {
+      "observed": 778.0,
+      "null_mean": 672.024,
+      "null_p95": 1030.1499999999999,
+      "p": 0.2827172827172827
+     },
+     "mean_test_lift": {
+      "observed": 0.05488416745547335,
+      "null_draws_with_selection": 1000,
+      "null_mean": 0.06786458097849135,
+      "null_p95": 0.09272829827800712,
+      "p": 0.8021978021978022
+     },
+     "mean_test_roi": {
+      "observed": -0.11465719291056117,
+      "null_draws_with_selection": 1000,
+      "null_mean": -0.0835009358498955,
+      "null_p95": -0.041018031254387195,
+      "p": 0.8871128871128872
+     },
+     "max_test_roi": {
+      "observed": 0.46900000000000003,
+      "null_draws_with_selection": 1000,
+      "null_mean": 0.40863280797612445,
+      "null_p95": 0.7131875,
+      "p": 0.2787212787212787
+     },
+     "portfolio_picks": {
+      "observed": 258.0,
+      "null_mean": 258.0,
+      "null_p95": 258.0,
+      "p": 1.0
+     },
+     "portfolio_excess": {
+      "observed": 0.08301784748512712,
+      "null_draws_with_selection": 1000,
+      "null_mean": 0.11939928489874407,
+      "null_p95": 0.16774232317769364,
+      "p": 0.8881118881118881
+     },
+     "portfolio_roi": {
+      "observed": -0.0301937984496124,
+      "null_draws_with_selection": 1000,
+      "null_mean": -0.05845662790697675,
+      "null_p95": 0.034517441860465105,
+      "p": 0.2817182817182817
+     }
+    },
+    "permutation_libre": {
+     "selected": {
+      "observed": 778.0,
+      "null_mean": 0.014,
+      "null_p95": 0.0,
+      "p": 0.000999000999000999
+     },
+     "mean_test_lift": {
+      "observed": 0.05488416745547335,
+      "null_draws_with_selection": 12,
+      "null_mean": 0.002369527756350497,
+      "null_p95": 0.0914205954645045,
+      "p": 0.15384615384615385
+     },
+     "mean_test_roi": {
+      "observed": -0.11465719291056117,
+      "null_draws_with_selection": 12,
+      "null_mean": -0.099430940179201,
+      "null_p95": 1.250999999999998,
+      "p": 0.3076923076923077
+     },
+     "max_test_roi": {
+      "observed": 0.46900000000000003,
+      "null_draws_with_selection": 12,
+      "null_mean": -0.09698150234851317,
+      "null_p95": 1.250999999999998,
+      "p": 0.15384615384615385
+     },
+     "portfolio_picks": {
+      "observed": 258.0,
+      "null_mean": 0.473,
+      "null_p95": 0.0,
+      "p": 0.000999000999000999
+     },
+     "portfolio_excess": {
+      "observed": 0.08301784748512712,
+      "null_draws_with_selection": 12,
+      "null_mean": -0.010225175438549219,
+      "null_p95": 0.09324618736383435,
+      "p": 0.15384615384615385
+     },
+     "portfolio_roi": {
+      "observed": -0.0301937984496124,
+      "null_draws_with_selection": 12,
+      "null_mean": -0.2157777986448094,
+      "null_p95": 1.178640624999998,
+      "p": 0.15384615384615385
+     }
+    },
+    "portfolio_test": {
+     "picks": 258,
+     "matches_in_segment": 258,
+     "distinct_matches": 258,
+     "hit_rate": 0.562015503875969,
+     "excess_over_base": {
+      "n": 258,
+      "mean": 0.08301784748512712,
+      "ci95": null,
+      "days": 1
+     },
+     "by_target": {
+      "home_scores_2plus": 58,
+      "home_win": 123,
+      "away_not_lose": 67,
+      "away_win": 9,
+      "home_not_lose": 1
+     },
+     "excess_by_league": {
+      "groups": 0,
+      "positive": 0,
+      "share_positive": null,
+      "min_n_per_group": 15,
+      "by_group": {}
+     },
+     "excess_by_period": {
+      "groups": 1,
+      "positive": 1,
+      "share_positive": 1.0,
+      "min_n_per_group": 15,
+      "by_group": {
+       "2026-S42": {
+        "n": 258,
+        "mean": 0.08301784748512712
+       }
+      }
+     },
+     "settled_bets": 258,
+     "mean_odds": 2.0243023255813952,
+     "roi": {
+      "n": 258,
+      "mean": -0.0301937984496124,
+      "ci95": null,
+      "days": 1
+     },
+     "roi_by_league": {
+      "groups": 0,
+      "positive": 0,
+      "share_positive": null,
+      "min_n_per_group": 15,
+      "by_group": {}
+     },
+     "roi_by_period": {
+      "groups": 1,
+      "positive": 0,
+      "share_positive": 0.0,
+      "min_n_per_group": 15,
+      "by_group": {
+       "2026-S42": {
+        "n": 258,
+        "mean": -0.0301937984496124
+       }
+      }
+     }
+    }
+   }
+  ],
+  "rejected": {}
+ },
+ "football_data_walk_forward": {
+  "mode": "FOOTBALL_DATA_MONTHLY_WALK_FORWARD",
+  "repetitions": 200,
+  "folds": [
+   {
+    "month": "2025-09",
+    "split": {
+     "train": 2349,
+     "validation": 791,
+     "test": 1158
+    },
+    "train_last_day": "2025-08-16",
+    "validation_last_day": "2025-08-31",
+    "scenarios_tested": 20000,
+    "distinct_rules": 1250,
+    "selected": 972,
+    "observed": {
+     "selected": 972.0,
+     "mean_test_lift": 0.03396147638307984,
+     "mean_test_roi": 0.0,
+     "max_test_roi": 0.0,
+     "portfolio_picks": 1158.0,
+     "portfolio_excess": 0.06236781897202313,
+     "portfolio_roi": 0.0
+    },
+    "permutation_libre": {
+     "selected": {
+      "observed": 972.0,
+      "null_mean": 7.545,
+      "null_p95": 23.199999999999932,
+      "p": 0.004975124378109453
+     },
+     "mean_test_lift": {
+      "observed": 0.03396147638307984,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.08256480160363655,
+      "null_p95": 0.1925194300518135,
+      "p": 0.7810945273631841
+     },
+     "mean_test_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     },
+     "max_test_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     },
+     "portfolio_picks": {
+      "observed": 1158.0,
+      "null_mean": 490.06,
+      "null_p95": 1152.0,
+      "p": 0.03980099502487562
+     },
+     "portfolio_excess": {
+      "observed": 0.06236781897202313,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.053703384134634116,
+      "null_p95": 0.20432318652849743,
+      "p": 0.263681592039801
+     },
+     "portfolio_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     }
+    },
+    "portfolio_test": {
+     "picks": 1158,
+     "matches_in_segment": 1158,
+     "distinct_matches": 1158,
+     "hit_rate": 0.501727115716753,
+     "excess_over_base": {
+      "n": 1158,
+      "mean": 0.06236781897202313,
+      "ci95": [
+       0.0434620631048748,
+       0.09374296848015212
+      ],
+      "days": 27
+     },
+     "by_target": {
+      "under_3_5": 36,
+      "home_scores_2plus": 252,
+      "away_scores_2plus": 118,
+      "away_not_lose": 249,
+      "home_not_lose": 73,
+      "away_win": 215,
+      "over_2_5": 27,
+      "home_scores_3plus": 105,
+      "home_win": 83
+     },
+     "excess_by_league": {
+      "groups": 38,
+      "positive": 26,
+      "share_positive": 0.6842105263157895,
+      "min_n_per_group": 10,
+      "by_group": {
+       "Argentina : Liga Profesional": {
+        "n": 48,
+        "mean": 0.12084412780656299
+       },
+       "Austria : Bundesliga": {
+        "n": 18,
+        "mean": -0.17698138553060835
+       },
+       "Belgium : Jupiler Pro League": {
+        "n": 27,
+        "mean": -0.060257148340049894
+       },
+       "Brazil : Serie A": {
+        "n": 35,
+        "mean": -0.024056254626202797
+       },
+       "China : Super League": {
+        "n": 22,
+        "mean": 0.39452818338828705
+       },
+       "Denmark : Superliga": {
+        "n": 18,
+        "mean": -0.03195164075993092
+       },
+       "England : Championship": {
+        "n": 43,
+        "mean": -0.055348033899666624
+       },
+       "England : League One": {
+        "n": 46,
+        "mean": -0.038841330630021764
+       },
+       "England : League Two": {
+        "n": 48,
+        "mean": -0.023477979274611382
+       },
+       "England : National League": {
+        "n": 76,
+        "mean": 0.14705481319880015
+       },
+       "England : Premier League": {
+        "n": 30,
+        "mean": 0.13986758779504896
+       },
+       "Finland : Veikkausliiga": {
+        "n": 18,
+        "mean": 0.08050278257532145
+       },
+       "France : Ligue 1": {
+        "n": 27,
+        "mean": -0.015416106953239932
+       },
+       "France : Ligue 2": {
+        "n": 37,
+        "mean": 0.0950613826261495
+       },
+       "Germany : 2. Bundesliga": {
+        "n": 27,
+        "mean": 0.14802021365061094
+       },
+       "Germany : Bundesliga": {
+        "n": 27,
+        "mean": 0.10932002814558944
+       },
+       "Greece : Super League": {
+        "n": 21,
+        "mean": -0.0605724154946953
+       },
+       "Ireland : Premier Division": {
+        "n": 16,
+        "mean": 0.09801381692573405
+       },
+       "Italy : Serie A": {
+        "n": 30,
+        "mean": -0.057599309153713286
+       },
+       "Italy : Serie B": {
+        "n": 36,
+        "mean": 0.05121377854538476
+       },
+       "Japan : J1 League": {
+        "n": 38,
+        "mean": 0.0831515316789383
+       },
+       "Mexico : Liga MX": {
+        "n": 38,
+        "mean": 0.21450322697936558
+       },
+       "Netherlands : Eredivisie": {
+        "n": 29,
+        "mean": 0.13480435947829197
+       },
+       "Norway : Eliteserien": {
+        "n": 23,
+        "mean": 0.07986032890290608
+       },
+       "Poland : Ekstraklasa": {
+        "n": 28,
+        "mean": 0.12978040957315576
+       },
+       "Portugal : Primeira Liga": {
+        "n": 29,
+        "mean": 0.0641712822345304
+       },
+       "Romania : Superliga": {
+        "n": 26,
+        "mean": 0.014381559718347295
+       },
+       "Russia : Premier League": {
+        "n": 24,
+        "mean": 0.14054404145077723
+       },
+       "SC3 : SC3": {
+        "n": 15,
+        "mean": -0.0474956822107081
+       },
+       "Scotland : Championship": {
+        "n": 19,
+        "mean": 0.18761930733569682
+       },
+       "Scotland : League One": {
+        "n": 15,
+        "mean": 0.061427748992515845
+       },
+       "Scotland : Premiership": {
+        "n": 15,
+        "mean": 0.11652274035693728
+       },
+       "Spain : La Liga": {
+        "n": 39,
+        "mean": 0.0057791948983658935
+       },
+       "Spain : La Liga 2": {
+        "n": 46,
+        "mean": 0.010118645340542173
+       },
+       "Sweden : Allsvenskan": {
+        "n": 24,
+        "mean": 0.09484743811168683
+       },
+       "Switzerland : Super League": {
+        "n": 14,
+        "mean": -0.08506044905008635
+       },
+       "Turkey : Super Lig": {
+        "n": 31,
+        "mean": 0.03852582316563598
+       },
+       "USA : MLS": {
+        "n": 55,
+        "mean": 0.1307583608101743
+       }
+      }
+     },
+     "excess_by_period": {
+      "groups": 5,
+      "positive": 5,
+      "share_positive": 1.0,
+      "min_n_per_group": 10,
+      "by_group": {
+       "2025-S36": {
+        "n": 70,
+        "mean": 0.0861213915618061
+       },
+       "2025-S37": {
+        "n": 313,
+        "mean": 0.026753739784910642
+       },
+       "2025-S38": {
+        "n": 328,
+        "mean": 0.06317399637726948
+       },
+       "2025-S39": {
+        "n": 397,
+        "mean": 0.07820527879650052
+       },
+       "2025-S40": {
+        "n": 50,
+        "mean": 0.12101899827288429
+       }
+      }
+     }
+    }
+   },
+   {
+    "month": "2025-10",
+    "split": {
+     "train": 3213,
+     "validation": 1085,
+     "test": 1175
+    },
+    "train_last_day": "2025-09-09",
+    "validation_last_day": "2025-09-30",
+    "scenarios_tested": 20000,
+    "distinct_rules": 1250,
+    "selected": 1799,
+    "observed": {
+     "selected": 1799.0,
+     "mean_test_lift": 0.03948949711909238,
+     "mean_test_roi": 0.0,
+     "max_test_roi": 0.0,
+     "portfolio_picks": 1175.0,
+     "portfolio_excess": 0.07120977818017203,
+     "portfolio_roi": 0.0
+    },
+    "permutation_libre": {
+     "selected": {
+      "observed": 1799.0,
+      "null_mean": 8.76,
+      "null_p95": 35.099999999999966,
+      "p": 0.004975124378109453
+     },
+     "mean_test_lift": {
+      "observed": 0.03948949711909238,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.08807119775154675,
+      "null_p95": 0.20340248226950355,
+      "p": 0.7562189054726368
+     },
+     "mean_test_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     },
+     "max_test_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     },
+     "portfolio_picks": {
+      "observed": 1175.0,
+      "null_mean": 485.51,
+      "null_p95": 1175.0,
+      "p": 0.07462686567164178
+     },
+     "portfolio_excess": {
+      "observed": 0.07120977818017203,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.06871233332568513,
+      "null_p95": 0.22541312056737586,
+      "p": 0.31840796019900497
+     },
+     "portfolio_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     }
+    },
+    "portfolio_test": {
+     "picks": 1175,
+     "matches_in_segment": 1175,
+     "distinct_matches": 1175,
+     "hit_rate": 0.48936170212765956,
+     "excess_over_base": {
+      "n": 1175,
+      "mean": 0.07120977818017203,
+      "ci95": [
+       0.04501724276185172,
+       0.100260835943176
+      ],
+      "days": 30
+     },
+     "by_target": {
+      "home_win": 305,
+      "away_scores_2plus": 79,
+      "away_win": 396,
+      "away_not_lose": 170,
+      "home_scores_2plus": 89,
+      "home_scores_3plus": 8,
+      "under_2_5": 45,
+      "home_not_lose": 51,
+      "under_3_5": 13,
+      "home_scores_1plus": 5,
+      "over_2_5": 6,
+      "both_score": 8
+     },
+     "excess_by_league": {
+      "groups": 38,
+      "positive": 29,
+      "share_positive": 0.7631578947368421,
+      "min_n_per_group": 10,
+      "by_group": {
+       "Argentina : Liga Profesional": {
+        "n": 48,
+        "mean": 0.13863475177304968
+       },
+       "Austria : Bundesliga": {
+        "n": 18,
+        "mean": 0.04141843971631207
+       },
+       "Belgium : Jupiler Pro League": {
+        "n": 25,
+        "mean": 0.04874893617021277
+       },
+       "Brazil : Serie A": {
+        "n": 55,
+        "mean": 0.005214700193423595
+       },
+       "China : Super League": {
+        "n": 22,
+        "mean": 0.35531914893617017
+       },
+       "Denmark : Superliga": {
+        "n": 18,
+        "mean": 0.19115839243498822
+       },
+       "England : Championship": {
+        "n": 53,
+        "mean": 0.10920915295062227
+       },
+       "England : League One": {
+        "n": 46,
+        "mean": 0.10240518038852914
+       },
+       "England : League Two": {
+        "n": 49,
+        "mean": -0.06940512375162831
+       },
+       "England : National League": {
+        "n": 46,
+        "mean": 0.14891766882516186
+       },
+       "England : Premier League": {
+        "n": 30,
+        "mean": 0.03914893617021278
+       },
+       "Finland : Veikkausliiga": {
+        "n": 21,
+        "mean": 0.09288753799392098
+       },
+       "France : Ligue 1": {
+        "n": 36,
+        "mean": 0.062033096926713945
+       },
+       "France : Ligue 2": {
+        "n": 40,
+        "mean": -0.05914893617021275
+       },
+       "Germany : 2. Bundesliga": {
+        "n": 29,
+        "mean": 0.07266324284666177
+       },
+       "Germany : Bundesliga": {
+        "n": 28,
+        "mean": 0.10039513677811553
+       },
+       "Greece : Super League": {
+        "n": 21,
+        "mean": 0.10322188449848024
+       },
+       "Ireland : Premier Division": {
+        "n": 16,
+        "mean": -0.10617021276595745
+       },
+       "Italy : Serie A": {
+        "n": 40,
+        "mean": 0.00872340425531914
+       },
+       "Italy : Serie B": {
+        "n": 43,
+        "mean": -0.08261256803562592
+       },
+       "Japan : J1 League": {
+        "n": 30,
+        "mean": 0.09792907801418436
+       },
+       "Mexico : Liga MX": {
+        "n": 36,
+        "mean": 0.08607565011820333
+       },
+       "Netherlands : Eredivisie": {
+        "n": 28,
+        "mean": 0.22142857142857147
+       },
+       "Norway : Eliteserien": {
+        "n": 27,
+        "mean": 0.10351457840819546
+       },
+       "Poland : Ekstraklasa": {
+        "n": 29,
+        "mean": -0.04689655172413792
+       },
+       "Portugal : Primeira Liga": {
+        "n": 19,
+        "mean": 0.32071668533034714
+       },
+       "Romania : Superliga": {
+        "n": 26,
+        "mean": 0.05073649754500819
+       },
+       "Russia : Premier League": {
+        "n": 25,
+        "mean": 0.10750638297872342
+       },
+       "SC3 : SC3": {
+        "n": 10,
+        "mean": -0.013446808510638297
+       },
+       "Scotland : Championship": {
+        "n": 22,
+        "mean": -0.06502901353965183
+       },
+       "Scotland : League One": {
+        "n": 16,
+        "mean": 0.16377659574468084
+       },
+       "Scotland : Premiership": {
+        "n": 23,
+        "mean": -0.06201665124884364
+       },
+       "Spain : La Liga": {
+        "n": 31,
+        "mean": -0.10215511324639669
+       },
+       "Spain : La Liga 2": {
+        "n": 44,
+        "mean": 0.053694390715667284
+       },
+       "Sweden : Allsvenskan": {
+        "n": 24,
+        "mean": 0.3310638297872341
+       },
+       "Switzerland : Super League": {
+        "n": 24,
+        "mean": 0.062056737588652496
+       },
+       "Turkey : Super Lig": {
+        "n": 30,
+        "mean": 0.07035460992907802
+       },
+       "USA : MLS": {
+        "n": 47,
+        "mean": 0.21790855590765057
+       }
+      }
+     },
+     "excess_by_period": {
+      "groups": 5,
+      "positive": 5,
+      "share_positive": 1.0,
+      "min_n_per_group": 10,
+      "by_group": {
+       "2025-S40": {
+        "n": 341,
+        "mean": 0.03237037499220067
+       },
+       "2025-S41": {
+        "n": 67,
+        "mean": 0.1378088281994284
+       },
+       "2025-S42": {
+        "n": 320,
+        "mean": 0.0911968085106383
+       },
+       "2025-S43": {
+        "n": 344,
+        "mean": 0.07643493320138546
+       },
+       "2025-S44": {
+        "n": 103,
+        "mean": 0.07692625490601115
+       }
+      }
+     }
+    }
+   },
+   {
+    "month": "2025-11",
+    "split": {
+     "train": 4136,
+     "validation": 1337,
+     "test": 1210
+    },
+    "train_last_day": "2025-09-27",
+    "validation_last_day": "2025-10-31",
+    "scenarios_tested": 20000,
+    "distinct_rules": 1250,
+    "selected": 2293,
+    "observed": {
+     "selected": 2293.0,
+     "mean_test_lift": 0.04524676186075498,
+     "mean_test_roi": 0.0,
+     "max_test_roi": 0.0,
+     "portfolio_picks": 1210.0,
+     "portfolio_excess": 0.08110784257739044,
+     "portfolio_roi": 0.0
+    },
+    "permutation_libre": {
+     "selected": {
+      "observed": 2293.0,
+      "null_mean": 28.375,
+      "null_p95": 82.09999999999997,
+      "p": 0.004975124378109453
+     },
+     "mean_test_lift": {
+      "observed": 0.04524676186075498,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0713095504324877,
+      "null_p95": 0.1544320857252421,
+      "p": 0.6517412935323383
+     },
+     "mean_test_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     },
+     "max_test_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     },
+     "portfolio_picks": {
+      "observed": 1210.0,
+      "null_mean": 966.035,
+      "null_p95": 1210.0,
+      "p": 0.27860696517412936
+     },
+     "portfolio_excess": {
+      "observed": 0.08110784257739044,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.03084462708487764,
+      "null_p95": 0.06375905282893579,
+      "p": 0.03482587064676617
+     },
+     "portfolio_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     }
+    },
+    "portfolio_test": {
+     "picks": 1210,
+     "matches_in_segment": 1210,
+     "distinct_matches": 1210,
+     "hit_rate": 0.5206611570247934,
+     "excess_over_base": {
+      "n": 1210,
+      "mean": 0.08110784257739044,
+      "ci95": [
+       0.049254905122032365,
+       0.10891624216906606
+      ],
+      "days": 29
+     },
+     "by_target": {
+      "under_2_5": 56,
+      "home_win": 422,
+      "away_win": 78,
+      "away_not_lose": 255,
+      "under_3_5": 6,
+      "away_scores_2plus": 230,
+      "home_scores_2plus": 102,
+      "over_2_5": 26,
+      "away_scores_3plus": 15,
+      "both_score": 15,
+      "away_scores_1plus": 5
+     },
+     "excess_by_league": {
+      "groups": 36,
+      "positive": 27,
+      "share_positive": 0.75,
+      "min_n_per_group": 10,
+      "by_group": {
+       "Argentina : Liga Profesional": {
+        "n": 54,
+        "mean": 0.2307774700500347
+       },
+       "Austria : Bundesliga": {
+        "n": 24,
+        "mean": -0.0055096447467803955
+       },
+       "Belgium : Jupiler Pro League": {
+        "n": 31,
+        "mean": -0.04406825765486686
+       },
+       "Brazil : Serie A": {
+        "n": 63,
+        "mean": -0.03823954103484986
+       },
+       "China : Super League": {
+        "n": 13,
+        "mean": 0.11818181322171138
+       },
+       "Denmark : Superliga": {
+        "n": 23,
+        "mean": 0.1772188285122747
+       },
+       "England : Championship": {
+        "n": 70,
+        "mean": 0.06975205710956028
+       },
+       "England : League One": {
+        "n": 43,
+        "mean": -0.03728618871333987
+       },
+       "England : League Two": {
+        "n": 48,
+        "mean": 0.12704888793329397
+       },
+       "England : National League": {
+        "n": 61,
+        "mean": 0.20968702777487333
+       },
+       "England : Premier League": {
+        "n": 40,
+        "mean": 0.00028924942016601564
+       },
+       "France : Ligue 1": {
+        "n": 36,
+        "mean": 0.08461891445848677
+       },
+       "France : Ligue 2": {
+        "n": 23,
+        "mean": 0.009342433317847874
+       },
+       "Germany : 2. Bundesliga": {
+        "n": 34,
+        "mean": 0.07462323851445142
+       },
+       "Germany : Bundesliga": {
+        "n": 35,
+        "mean": 0.2643683510167258
+       },
+       "Greece : Super League": {
+        "n": 28,
+        "mean": 0.24755017246518815
+       },
+       "Italy : Serie A": {
+        "n": 39,
+        "mean": 0.011739770571390787
+       },
+       "Italy : Serie B": {
+        "n": 40,
+        "mean": 0.06752065271139145
+       },
+       "Japan : J1 League": {
+        "n": 20,
+        "mean": -0.038016533851623534
+       },
+       "Mexico : Liga MX": {
+        "n": 27,
+        "mean": -0.06066728521276404
+       },
+       "Netherlands : Eredivisie": {
+        "n": 34,
+        "mean": -0.05865338006440331
+       },
+       "Norway : Eliteserien": {
+        "n": 32,
+        "mean": 0.13778408523648977
+       },
+       "Poland : Ekstraklasa": {
+        "n": 32,
+        "mean": -0.025748973712325096
+       },
+       "Portugal : Primeira Liga": {
+        "n": 25,
+        "mean": 0.14409916520118712
+       },
+       "Romania : Superliga": {
+        "n": 29,
+        "mean": 0.05611284847917228
+       },
+       "Russia : Premier League": {
+        "n": 30,
+        "mean": 0.0019834647576014203
+       },
+       "SC3 : SC3": {
+        "n": 20,
+        "mean": 0.039049583673477176
+       },
+       "Scotland : Championship": {
+        "n": 18,
+        "mean": 0.12024792863263024
+       },
+       "Scotland : League One": {
+        "n": 20,
+        "mean": 0.09574380069971085
+       },
+       "Scotland : Premiership": {
+        "n": 22,
+        "mean": 0.2138617526401173
+       },
+       "Spain : La Liga": {
+        "n": 38,
+        "mean": 0.12579381465911865
+       },
+       "Spain : La Liga 2": {
+        "n": 55,
+        "mean": -0.0033358443867076526
+       },
+       "Sweden : Allsvenskan": {
+        "n": 16,
+        "mean": 0.15552685596048832
+       },
+       "Switzerland : Super League": {
+        "n": 24,
+        "mean": 0.11711432536443074
+       },
+       "Turkey : Super Lig": {
+        "n": 33,
+        "mean": 0.21898321400989185
+       },
+       "USA : MLS": {
+        "n": 19,
+        "mean": 0.15645933308099447
+       }
+      }
+     },
+     "excess_by_period": {
+      "groups": 5,
+      "positive": 5,
+      "share_positive": 1.0,
+      "min_n_per_group": 10,
+      "by_group": {
+       "2025-S44": {
+        "n": 222,
+        "mean": 0.13225001324941446
+       },
+       "2025-S45": {
+        "n": 362,
+        "mean": 0.036514308571156874
+       },
+       "2025-S46": {
+        "n": 78,
+        "mean": 0.15994913761432356
+       },
+       "2025-S47": {
+        "n": 260,
+        "mean": 0.10332167331988995
+       },
+       "2025-S48": {
+        "n": 288,
+        "mean": 0.05633034401883682
+       }
+      }
+     }
+    }
+   },
+   {
+    "month": "2025-12",
+    "split": {
+     "train": 5026,
+     "validation": 1657,
+     "test": 896
+    },
+    "train_last_day": "2025-10-19",
+    "validation_last_day": "2025-11-30",
+    "scenarios_tested": 20000,
+    "distinct_rules": 1250,
+    "selected": 2626,
+    "observed": {
+     "selected": 2626.0,
+     "mean_test_lift": 0.03866919124061638,
+     "mean_test_roi": 0.0,
+     "max_test_roi": 0.0,
+     "portfolio_picks": 896.0,
+     "portfolio_excess": 0.08452994304908705,
+     "portfolio_roi": 0.0
+    },
+    "permutation_libre": {
+     "selected": {
+      "observed": 2626.0,
+      "null_mean": 30.3,
+      "null_p95": 109.24999999999991,
+      "p": 0.004975124378109453
+     },
+     "mean_test_lift": {
+      "observed": 0.03866919124061638,
+      "null_draws_with_selection": 192,
+      "null_mean": 0.009146760148081587,
+      "null_p95": 0.034418774563201894,
+      "p": 0.025906735751295335
+     },
+     "mean_test_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 192,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     },
+     "max_test_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 192,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     },
+     "portfolio_picks": {
+      "observed": 896.0,
+      "null_mean": 713.61,
+      "null_p95": 896.0,
+      "p": 0.4228855721393035
+     },
+     "portfolio_excess": {
+      "observed": 0.08452994304908705,
+      "null_draws_with_selection": 192,
+      "null_mean": 0.00865071294410507,
+      "null_p95": 0.03540454817096887,
+      "p": 0.0051813471502590676
+     },
+     "portfolio_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 192,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     }
+    },
+    "portfolio_test": {
+     "picks": 896,
+     "matches_in_segment": 896,
+     "distinct_matches": 896,
+     "hit_rate": 0.5334821428571429,
+     "excess_over_base": {
+      "n": 896,
+      "mean": 0.08452994304908705,
+      "ci95": [
+       0.05965334764516303,
+       0.10841454633381932
+      ],
+      "days": 27
+     },
+     "by_target": {
+      "away_not_lose": 285,
+      "home_scores_2plus": 137,
+      "home_scores_3plus": 27,
+      "home_win": 311,
+      "away_win": 72,
+      "away_scores_2plus": 52,
+      "over_2_5": 11,
+      "home_not_lose": 1
+     },
+     "excess_by_league": {
+      "groups": 28,
+      "positive": 23,
+      "share_positive": 0.8214285714285714,
+      "min_n_per_group": 10,
+      "by_group": {
+       "Austria : Bundesliga": {
+        "n": 13,
+        "mean": 0.22295671930679908
+       },
+       "Belgium : Jupiler Pro League": {
+        "n": 32,
+        "mean": 0.09730746410787106
+       },
+       "Brazil : Serie A": {
+        "n": 20,
+        "mean": 0.09575891792774201
+       },
+       "England : Championship": {
+        "n": 72,
+        "mean": -0.14476377558377054
+       },
+       "England : League One": {
+        "n": 61,
+        "mean": 0.08875511073675312
+       },
+       "England : League Two": {
+        "n": 60,
+        "mean": 0.08811382899681727
+       },
+       "England : National League": {
+        "n": 44,
+        "mean": 0.12048497254198248
+       },
+       "England : Premier League": {
+        "n": 56,
+        "mean": 0.25093669231448856
+       },
+       "France : Ligue 1": {
+        "n": 18,
+        "mean": 0.1726190365023083
+       },
+       "France : Ligue 2": {
+        "n": 17,
+        "mean": -0.030527845901601455
+       },
+       "Germany : 2. Bundesliga": {
+        "n": 27,
+        "mean": 0.041046612792544894
+       },
+       "Germany : Bundesliga": {
+        "n": 27,
+        "mean": -0.06865907322477412
+       },
+       "Greece : Super League": {
+        "n": 21,
+        "mean": 0.3395514353400185
+       },
+       "Italy : Serie A": {
+        "n": 37,
+        "mean": 0.030164079086200613
+       },
+       "Italy : Serie B": {
+        "n": 41,
+        "mean": 0.10616288170581911
+       },
+       "Japan : J1 League": {
+        "n": 10,
+        "mean": -0.06830358207225799
+       },
+       "Netherlands : Eredivisie": {
+        "n": 27,
+        "mean": 0.21928735905223423
+       },
+       "Poland : Ekstraklasa": {
+        "n": 14,
+        "mean": 0.1257971812571798
+       },
+       "Portugal : Primeira Liga": {
+        "n": 35,
+        "mean": 0.2571428439446858
+       },
+       "Romania : Superliga": {
+        "n": 26,
+        "mean": 0.17814215731162292
+       },
+       "SC3 : SC3": {
+        "n": 20,
+        "mean": -0.06646206229925156
+       },
+       "Scotland : Championship": {
+        "n": 20,
+        "mean": 0.08755579143762589
+       },
+       "Scotland : League One": {
+        "n": 19,
+        "mean": 0.02737311077745337
+       },
+       "Scotland : Premiership": {
+        "n": 34,
+        "mean": 0.10405723750591278
+       },
+       "Spain : La Liga": {
+        "n": 32,
+        "mean": 0.09336633700877428
+       },
+       "Spain : La Liga 2": {
+        "n": 33,
+        "mean": 0.025128504543593437
+       },
+       "Switzerland : Super League": {
+        "n": 22,
+        "mean": 0.06848619065501473
+       },
+       "Turkey : Super Lig": {
+        "n": 29,
+        "mean": 0.1443965409336419
+       }
+      }
+     },
+     "excess_by_period": {
+      "groups": 5,
+      "positive": 5,
+      "share_positive": 1.0,
+      "min_n_per_group": 10,
+      "by_group": {
+       "2025-S49": {
+        "n": 258,
+        "mean": 0.06912287804045418
+       },
+       "2025-S50": {
+        "n": 255,
+        "mean": 0.05634627698683271
+       },
+       "2025-S51": {
+        "n": 201,
+        "mean": 0.1126676765247364
+       },
+       "2025-S52": {
+        "n": 121,
+        "mean": 0.12191003696484999
+       },
+       "2026-S01": {
+        "n": 61,
+        "mean": 0.10064767789645274
+       }
+      }
+     }
+    }
+   },
+   {
+    "month": "2026-01",
+    "split": {
+     "train": 5695,
+     "validation": 1884,
+     "test": 938
+    },
+    "train_last_day": "2025-11-02",
+    "validation_last_day": "2025-12-30",
+    "scenarios_tested": 20000,
+    "distinct_rules": 1250,
+    "selected": 2917,
+    "observed": {
+     "selected": 2917.0,
+     "mean_test_lift": 0.05050194507804016,
+     "mean_test_roi": 0.0,
+     "max_test_roi": 0.0,
+     "portfolio_picks": 938.0,
+     "portfolio_excess": 0.0876450754845066,
+     "portfolio_roi": 0.0
+    },
+    "permutation_libre": {
+     "selected": {
+      "observed": 2917.0,
+      "null_mean": 77.61,
+      "null_p95": 216.14999999999995,
+      "p": 0.004975124378109453
+     },
+     "mean_test_lift": {
+      "observed": 0.05050194507804016,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.02627685321554878,
+      "null_p95": 0.07466399113956591,
+      "p": 0.11940298507462686
+     },
+     "mean_test_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     },
+     "max_test_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     },
+     "portfolio_picks": {
+      "observed": 938.0,
+      "null_mean": 923.265,
+      "null_p95": 938.0,
+      "p": 0.5671641791044776
+     },
+     "portfolio_excess": {
+      "observed": 0.0876450754845066,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.012325570305043061,
+      "null_p95": 0.03643235622270785,
+      "p": 0.004975124378109453
+     },
+     "portfolio_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     }
+    },
+    "portfolio_test": {
+     "picks": 938,
+     "matches_in_segment": 938,
+     "distinct_matches": 938,
+     "hit_rate": 0.48507462686567165,
+     "excess_over_base": {
+      "n": 938,
+      "mean": 0.0876450754845066,
+      "ci95": [
+       0.06570954283724693,
+       0.11185626273646622
+      ],
+      "days": 31
+     },
+     "by_target": {
+      "home_scores_3plus": 115,
+      "home_win": 364,
+      "away_win": 187,
+      "away_not_lose": 150,
+      "away_scores_2plus": 38,
+      "home_scores_2plus": 44,
+      "away_scores_1plus": 1,
+      "home_scores_1plus": 3,
+      "home_not_lose": 4,
+      "under_2_5": 32
+     },
+     "excess_by_league": {
+      "groups": 27,
+      "positive": 25,
+      "share_positive": 0.9259259259259259,
+      "min_n_per_group": 10,
+      "by_group": {
+       "Argentina : Liga Profesional": {
+        "n": 32,
+        "mean": 0.17330756783485413
+       },
+       "Belgium : Jupiler Pro League": {
+        "n": 20,
+        "mean": 0.004744128137826919
+       },
+       "Brazil : Serie A": {
+        "n": 10,
+        "mean": 0.31609807461500167
+       },
+       "England : Championship": {
+        "n": 69,
+        "mean": 0.0015296145625736403
+       },
+       "England : League One": {
+        "n": 72,
+        "mean": 0.0035536523080534404
+       },
+       "England : League Two": {
+        "n": 62,
+        "mean": 0.14364811129147007
+       },
+       "England : National League": {
+        "n": 45,
+        "mean": 0.02537312706311544
+       },
+       "England : Premier League": {
+        "n": 49,
+        "mean": 0.04484138622575877
+       },
+       "France : Ligue 1": {
+        "n": 31,
+        "mean": 0.11751151132968164
+       },
+       "France : Ligue 2": {
+        "n": 36,
+        "mean": 0.055318639096286565
+       },
+       "Germany : 2. Bundesliga": {
+        "n": 24,
+        "mean": -0.10727613046765327
+       },
+       "Germany : Bundesliga": {
+        "n": 42,
+        "mean": 0.11036652503978639
+       },
+       "Greece : Super League": {
+        "n": 22,
+        "mean": 0.1550688073039055
+       },
+       "Italy : Serie A": {
+        "n": 58,
+        "mean": 0.10819056553059611
+       },
+       "Italy : Serie B": {
+        "n": 38,
+        "mean": 0.10052181741124705
+       },
+       "Mexico : Liga MX": {
+        "n": 33,
+        "mean": 0.09843638494159236
+       },
+       "Netherlands : Eredivisie": {
+        "n": 30,
+        "mean": 0.027185497681299846
+       },
+       "Portugal : Primeira Liga": {
+        "n": 33,
+        "mean": 0.21874393567894446
+       },
+       "Romania : Superliga": {
+        "n": 21,
+        "mean": 0.12752562903222583
+       },
+       "SC3 : SC3": {
+        "n": 17,
+        "mean": 0.1301266735090929
+       },
+       "Scotland : Championship": {
+        "n": 16,
+        "mean": -0.16151386499404907
+       },
+       "Scotland : League One": {
+        "n": 17,
+        "mean": 0.25404489215682535
+       },
+       "Scotland : Premiership": {
+        "n": 25,
+        "mean": 0.16904050588607789
+       },
+       "Spain : La Liga": {
+        "n": 43,
+        "mean": 0.08236226751360783
+       },
+       "Spain : La Liga 2": {
+        "n": 49,
+        "mean": 0.2093468433131977
+       },
+       "Switzerland : Super League": {
+        "n": 16,
+        "mean": 0.14285713154822588
+       },
+       "Turkey : Super Lig": {
+        "n": 24,
+        "mean": 0.08835286895434062
+       }
+      }
+     },
+     "excess_by_period": {
+      "groups": 5,
+      "positive": 5,
+      "share_positive": 1.0,
+      "min_n_per_group": 10,
+      "by_group": {
+       "2026-S01": {
+        "n": 144,
+        "mean": 0.07624081356657876
+       },
+       "2026-S02": {
+        "n": 114,
+        "mean": 0.048367179407362355
+       },
+       "2026-S03": {
+        "n": 216,
+        "mean": 0.07691205913821857
+       },
+       "2026-S04": {
+        "n": 247,
+        "mean": 0.09824503155855033
+       },
+       "2026-S05": {
+        "n": 217,
+        "mean": 0.11446551903052264
+       }
+      }
+     }
+    }
+   },
+   {
+    "month": "2026-02",
+    "split": {
+     "train": 6395,
+     "validation": 2122,
+     "test": 1199
+    },
+    "train_last_day": "2025-11-23",
+    "validation_last_day": "2026-01-31",
+    "scenarios_tested": 20000,
+    "distinct_rules": 1250,
+    "selected": 3067,
+    "observed": {
+     "selected": 3067.0,
+     "mean_test_lift": 0.045388197717192734,
+     "mean_test_roi": 0.0,
+     "max_test_roi": 0.0,
+     "portfolio_picks": 1199.0,
+     "portfolio_excess": 0.09727037872643746,
+     "portfolio_roi": 0.0
+    },
+    "permutation_libre": {
+     "selected": {
+      "observed": 3067.0,
+      "null_mean": 73.72,
+      "null_p95": 183.14999999999995,
+      "p": 0.004975124378109453
+     },
+     "mean_test_lift": {
+      "observed": 0.045388197717192734,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.022038909495492153,
+      "null_p95": 0.05175732601176091,
+      "p": 0.09950248756218906
+     },
+     "mean_test_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     },
+     "max_test_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     },
+     "portfolio_picks": {
+      "observed": 1199.0,
+      "null_mean": 1155.655,
+      "null_p95": 1199.0,
+      "p": 0.6417910447761194
+     },
+     "portfolio_excess": {
+      "observed": 0.09727037872643746,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.018568296418935627,
+      "null_p95": 0.04083118791865711,
+      "p": 0.004975124378109453
+     },
+     "portfolio_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     }
+    },
+    "portfolio_test": {
+     "picks": 1199,
+     "matches_in_segment": 1199,
+     "distinct_matches": 1199,
+     "hit_rate": 0.554628857381151,
+     "excess_over_base": {
+      "n": 1199,
+      "mean": 0.09727037872643746,
+      "ci95": [
+       0.07068692785646086,
+       0.12130121522698609
+      ],
+      "days": 28
+     },
+     "by_target": {
+      "under_3_5": 69,
+      "home_win": 387,
+      "away_not_lose": 175,
+      "away_win": 207,
+      "home_scores_2plus": 100,
+      "away_scores_2plus": 147,
+      "home_not_lose": 102,
+      "away_scores_3plus": 10,
+      "home_scores_1plus": 2
+     },
+     "excess_by_league": {
+      "groups": 32,
+      "positive": 24,
+      "share_positive": 0.75,
+      "min_n_per_group": 10,
+      "by_group": {
+       "Argentina : Liga Profesional": {
+        "n": 72,
+        "mean": 0.11208414079414473
+       },
+       "Austria : Bundesliga": {
+        "n": 18,
+        "mean": -0.027198596133126154
+       },
+       "Belgium : Jupiler Pro League": {
+        "n": 32,
+        "mean": 0.04433381650596857
+       },
+       "Brazil : Serie A": {
+        "n": 27,
+        "mean": 0.06570289642722518
+       },
+       "Denmark : Superliga": {
+        "n": 18,
+        "mean": 0.2401074916124344
+       },
+       "England : Championship": {
+        "n": 62,
+        "mean": 0.01907503172274559
+       },
+       "England : League One": {
+        "n": 64,
+        "mean": 0.1517931572161615
+       },
+       "England : League Two": {
+        "n": 68,
+        "mean": 0.0389540243674727
+       },
+       "England : National League": {
+        "n": 69,
+        "mean": 0.1563017441742662
+       },
+       "England : Premier League": {
+        "n": 42,
+        "mean": 0.09499979728744143
+       },
+       "France : Ligue 1": {
+        "n": 36,
+        "mean": 0.10480955905384487
+       },
+       "France : Ligue 2": {
+        "n": 35,
+        "mean": -0.026712740319115774
+       },
+       "Germany : 2. Bundesliga": {
+        "n": 36,
+        "mean": -0.023700308468606737
+       },
+       "Germany : Bundesliga": {
+        "n": 35,
+        "mean": 0.14671749813216073
+       },
+       "Greece : Super League": {
+        "n": 29,
+        "mean": -0.02490581828972389
+       },
+       "Ireland : Premier Division": {
+        "n": 18,
+        "mean": 0.19562598235077328
+       },
+       "Italy : Serie A": {
+        "n": 40,
+        "mean": 0.06741033717989922
+       },
+       "Italy : Serie B": {
+        "n": 49,
+        "mean": 0.15460161955989138
+       },
+       "Mexico : Liga MX": {
+        "n": 35,
+        "mean": 0.08075776696205139
+       },
+       "Netherlands : Eredivisie": {
+        "n": 38,
+        "mean": -0.06347395165970451
+       },
+       "Poland : Ekstraklasa": {
+        "n": 37,
+        "mean": 0.044924819791639176
+       },
+       "Portugal : Primeira Liga": {
+        "n": 37,
+        "mean": 0.23756282877277685
+       },
+       "Romania : Superliga": {
+        "n": 39,
+        "mean": 0.14802933503419924
+       },
+       "SC3 : SC3": {
+        "n": 22,
+        "mean": -0.05038289725780487
+       },
+       "Scotland : Championship": {
+        "n": 17,
+        "mean": -0.05592896131908193
+       },
+       "Scotland : League One": {
+        "n": 20,
+        "mean": -0.0467055931687355
+       },
+       "Scotland : Premiership": {
+        "n": 29,
+        "mean": 0.3050818155551779
+       },
+       "Spain : La Liga": {
+        "n": 40,
+        "mean": 0.2193911537528038
+       },
+       "Spain : La Liga 2": {
+        "n": 44,
+        "mean": 0.09951474246653644
+       },
+       "Switzerland : Super League": {
+        "n": 31,
+        "mean": 0.17398907196137212
+       },
+       "Turkey : Super Lig": {
+        "n": 36,
+        "mean": 0.18019645743899876
+       },
+       "USA : MLS": {
+        "n": 19,
+        "mean": 0.23251832629504957
+       }
+      }
+     },
+     "excess_by_period": {
+      "groups": 5,
+      "positive": 5,
+      "share_positive": 1.0,
+      "min_n_per_group": 10,
+      "by_group": {
+       "2026-S05": {
+        "n": 64,
+        "mean": 0.2075166767463088
+       },
+       "2026-S06": {
+        "n": 274,
+        "mean": 0.1135983102730591
+       },
+       "2026-S07": {
+        "n": 303,
+        "mean": 0.09286065729144383
+       },
+       "2026-S08": {
+        "n": 314,
+        "mean": 0.07035320968764602
+       },
+       "2026-S09": {
+        "n": 244,
+        "mean": 0.09013316707044351
+       }
+      }
+     }
+    }
+   },
+   {
+    "month": "2026-03",
+    "split": {
+     "train": 7234,
+     "validation": 2482,
+     "test": 1230
+    },
+    "train_last_day": "2025-12-19",
+    "validation_last_day": "2026-02-28",
+    "scenarios_tested": 20000,
+    "distinct_rules": 1250,
+    "selected": 3352,
+    "observed": {
+     "selected": 3352.0,
+     "mean_test_lift": 0.03623112225939338,
+     "mean_test_roi": 0.0,
+     "max_test_roi": 0.0,
+     "portfolio_picks": 1229.0,
+     "portfolio_excess": 0.06565387076580786,
+     "portfolio_roi": 0.0
+    },
+    "permutation_libre": {
+     "selected": {
+      "observed": 3352.0,
+      "null_mean": 58.125,
+      "null_p95": 174.04999999999998,
+      "p": 0.004975124378109453
+     },
+     "mean_test_lift": {
+      "observed": 0.03623112225939338,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.036145215634142816,
+      "null_p95": 0.11199707263736457,
+      "p": 0.3333333333333333
+     },
+     "mean_test_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     },
+     "max_test_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     },
+     "portfolio_picks": {
+      "observed": 1229.0,
+      "null_mean": 1127.255,
+      "null_p95": 1229.0,
+      "p": 0.48756218905472637
+     },
+     "portfolio_excess": {
+      "observed": 0.06565387076580786,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.021979170672426784,
+      "null_p95": 0.0483847608120223,
+      "p": 0.024875621890547265
+     },
+     "portfolio_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     }
+    },
+    "portfolio_test": {
+     "picks": 1229,
+     "matches_in_segment": 1230,
+     "distinct_matches": 1229,
+     "hit_rate": 0.51586655817738,
+     "excess_over_base": {
+      "n": 1229,
+      "mean": 0.06565387076580786,
+      "ci95": [
+       0.032629502918310335,
+       0.09739498560897775
+      ],
+      "days": 29
+     },
+     "by_target": {
+      "under_2_5": 40,
+      "away_not_lose": 413,
+      "away_win": 138,
+      "home_scores_3plus": 85,
+      "home_not_lose": 29,
+      "away_scores_2plus": 65,
+      "home_win": 374,
+      "home_scores_2plus": 64,
+      "both_score": 21
+     },
+     "excess_by_league": {
+      "groups": 35,
+      "positive": 25,
+      "share_positive": 0.7142857142857143,
+      "min_n_per_group": 10,
+      "by_group": {
+       "Argentina : Liga Profesional": {
+        "n": 60,
+        "mean": 0.17235772411028544
+       },
+       "Austria : Bundesliga": {
+        "n": 24,
+        "mean": 0.007215438410639763
+       },
+       "Belgium : Jupiler Pro League": {
+        "n": 28,
+        "mean": 0.12340301115597997
+       },
+       "Brazil : Serie A": {
+        "n": 40,
+        "mean": -0.040853677317500114
+       },
+       "China : Super League": {
+        "n": 24,
+        "mean": 0.11409213704367478
+       },
+       "Denmark : Superliga": {
+        "n": 18,
+        "mean": 0.052122846245765686
+       },
+       "England : Championship": {
+        "n": 50,
+        "mean": -0.08658537089824676
+       },
+       "England : League One": {
+        "n": 63,
+        "mean": 0.046664075245932926
+       },
+       "England : League Two": {
+        "n": 68,
+        "mean": 0.09445240655366112
+       },
+       "England : National League": {
+        "n": 80,
+        "mean": 0.08933942131698132
+       },
+       "England : Premier League": {
+        "n": 32,
+        "mean": 0.07705791480839252
+       },
+       "France : Ligue 1": {
+        "n": 31,
+        "mean": 0.13731968883545168
+       },
+       "France : Ligue 2": {
+        "n": 28,
+        "mean": 0.21321137036596025
+       },
+       "Germany : 2. Bundesliga": {
+        "n": 30,
+        "mean": -0.005555567145347595
+       },
+       "Germany : Bundesliga": {
+        "n": 31,
+        "mean": 0.20427484233533183
+       },
+       "Greece : Super League": {
+        "n": 27,
+        "mean": 0.168714236330103
+       },
+       "Ireland : Premier Division": {
+        "n": 22,
+        "mean": 0.24501107362183658
+       },
+       "Italy : Serie A": {
+        "n": 36,
+        "mean": 0.08249773209293683
+       },
+       "Italy : Serie B": {
+        "n": 52,
+        "mean": -0.008333340860330142
+       },
+       "Mexico : Liga MX": {
+        "n": 39,
+        "mean": 0.018157171133237008
+       },
+       "Netherlands : Eredivisie": {
+        "n": 32,
+        "mean": 0.029395317658782005
+       },
+       "Norway : Eliteserien": {
+        "n": 12,
+        "mean": -0.0344851054251194
+       },
+       "Poland : Ekstraklasa": {
+        "n": 33,
+        "mean": -0.0671594115820798
+       },
+       "Portugal : Primeira Liga": {
+        "n": 29,
+        "mean": 0.04897672605925593
+       },
+       "Romania : Superliga": {
+        "n": 28,
+        "mean": -0.09282811039260455
+       },
+       "Russia : Premier League": {
+        "n": 27,
+        "mean": 0.1477868010600408
+       },
+       "SC3 : SC3": {
+        "n": 26,
+        "mean": 0.14731080887409356
+       },
+       "Scotland : Championship": {
+        "n": 21,
+        "mean": -0.046380192041397095
+       },
+       "Scotland : League One": {
+        "n": 23,
+        "mean": 0.09925767973713252
+       },
+       "Scotland : Premiership": {
+        "n": 16,
+        "mean": -0.12825204245746136
+       },
+       "Spain : La Liga": {
+        "n": 36,
+        "mean": 0.1235094740986824
+       },
+       "Spain : La Liga 2": {
+        "n": 53,
+        "mean": -0.022564820523531932
+       },
+       "Switzerland : Super League": {
+        "n": 27,
+        "mean": 0.15621799727280936
+       },
+       "Turkey : Super Lig": {
+        "n": 28,
+        "mean": 0.09683506882616452
+       },
+       "USA : MLS": {
+        "n": 55,
+        "mean": 0.11015520393848419
+       }
+      }
+     },
+     "excess_by_period": {
+      "groups": 5,
+      "positive": 5,
+      "share_positive": 1.0,
+      "min_n_per_group": 10,
+      "by_group": {
+       "2026-S09": {
+        "n": 89,
+        "mean": 0.13864071549994222
+       },
+       "2026-S10": {
+        "n": 323,
+        "mean": 0.1265523831818495
+       },
+       "2026-S11": {
+        "n": 355,
+        "mean": 0.04350394253999414
+       },
+       "2026-S12": {
+        "n": 379,
+        "mean": 0.029272573958286193
+       },
+       "2026-S13": {
+        "n": 76,
+        "mean": 0.0028241243409483055
+       }
+      }
+     }
+    }
+   },
+   {
+    "month": "2026-04",
+    "split": {
+     "train": 8242,
+     "validation": 2704,
+     "test": 1445
+    },
+    "train_last_day": "2026-01-24",
+    "validation_last_day": "2026-03-31",
+    "scenarios_tested": 20000,
+    "distinct_rules": 1250,
+    "selected": 3812,
+    "observed": {
+     "selected": 3812.0,
+     "mean_test_lift": 0.03791909174254285,
+     "mean_test_roi": 0.0,
+     "max_test_roi": 0.0,
+     "portfolio_picks": 1444.0,
+     "portfolio_excess": 0.0956344810466687,
+     "portfolio_roi": 0.0
+    },
+    "permutation_libre": {
+     "selected": {
+      "observed": 3812.0,
+      "null_mean": 36.91,
+      "null_p95": 124.39999999999986,
+      "p": 0.004975124378109453
+     },
+     "mean_test_lift": {
+      "observed": 0.03791909174254285,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.04432490144491407,
+      "null_p95": 0.12510777411868917,
+      "p": 0.4228855721393035
+     },
+     "mean_test_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     },
+     "max_test_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     },
+     "portfolio_picks": {
+      "observed": 1444.0,
+      "null_mean": 1169.705,
+      "null_p95": 1444.0,
+      "p": 0.29850746268656714
+     },
+     "portfolio_excess": {
+      "observed": 0.0956344810466687,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.026492361716050433,
+      "null_p95": 0.07098363093733069,
+      "p": 0.04477611940298507
+     },
+     "portfolio_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     }
+    },
+    "portfolio_test": {
+     "picks": 1444,
+     "matches_in_segment": 1445,
+     "distinct_matches": 1444,
+     "hit_rate": 0.5221606648199446,
+     "excess_over_base": {
+      "n": 1444,
+      "mean": 0.0956344810466687,
+      "ci95": [
+       0.07468562801850519,
+       0.11433622599061212
+      ],
+      "days": 30
+     },
+     "by_target": {
+      "home_win": 464,
+      "away_not_lose": 202,
+      "away_win": 349,
+      "home_not_lose": 70,
+      "under_2_5": 111,
+      "home_scores_3plus": 106,
+      "away_scores_1plus": 64,
+      "home_scores_2plus": 37,
+      "away_scores_2plus": 31,
+      "home_scores_1plus": 2,
+      "away_scores_3plus": 8
+     },
+     "excess_by_league": {
+      "groups": 37,
+      "positive": 30,
+      "share_positive": 0.8108108108108109,
+      "min_n_per_group": 10,
+      "by_group": {
+       "Argentina : Liga Profesional": {
+        "n": 60,
+        "mean": 0.11118799149990082
+       },
+       "Austria : Bundesliga": {
+        "n": 30,
+        "mean": -0.10929642617702484
+       },
+       "Belgium : Jupiler Pro League": {
+        "n": 38,
+        "mean": 0.10247677878329628
+       },
+       "Brazil : Serie A": {
+        "n": 50,
+        "mean": 0.057910033464431764
+       },
+       "China : Super League": {
+        "n": 40,
+        "mean": 0.10913494378328323
+       },
+       "Denmark : Superliga": {
+        "n": 30,
+        "mean": 0.04558246831099192
+       },
+       "England : Championship": {
+        "n": 73,
+        "mean": 0.04770346169602381
+       },
+       "England : League One": {
+        "n": 74,
+        "mean": 0.15308145453801025
+       },
+       "England : League Two": {
+        "n": 66,
+        "mean": 0.03641606144832842
+       },
+       "England : National League": {
+        "n": 64,
+        "mean": 0.19686418492347002
+       },
+       "England : Premier League": {
+        "n": 30,
+        "mean": 0.03291810651620229
+       },
+       "Finland : Veikkausliiga": {
+        "n": 26,
+        "mean": -0.04256055561395792
+       },
+       "France : Ligue 1": {
+        "n": 35,
+        "mean": 0.053603556326457434
+       },
+       "France : Ligue 2": {
+        "n": 36,
+        "mean": 0.13465974231561026
+       },
+       "Germany : 2. Bundesliga": {
+        "n": 36,
+        "mean": 0.08135332332717048
+       },
+       "Germany : Bundesliga": {
+        "n": 36,
+        "mean": 0.1875240264667405
+       },
+       "Greece : Super League": {
+        "n": 23,
+        "mean": -0.039837521055470344
+       },
+       "Ireland : Premier Division": {
+        "n": 23,
+        "mean": 0.024071006671242092
+       },
+       "Italy : Serie A": {
+        "n": 40,
+        "mean": 0.2685640141367912
+       },
+       "Italy : Serie B": {
+        "n": 41,
+        "mean": 0.1818212496071327
+       },
+       "Mexico : Liga MX": {
+        "n": 46,
+        "mean": 0.08191665294377701
+       },
+       "Netherlands : Eredivisie": {
+        "n": 27,
+        "mean": 0.03419197599093119
+       },
+       "Norway : Eliteserien": {
+        "n": 36,
+        "mean": 0.21484044442574182
+       },
+       "Poland : Ekstraklasa": {
+        "n": 36,
+        "mean": -0.04611688107252121
+       },
+       "Portugal : Primeira Liga": {
+        "n": 38,
+        "mean": 0.09182298183441162
+       },
+       "Romania : Superliga": {
+        "n": 32,
+        "mean": -0.013797578401863575
+       },
+       "Russia : Premier League": {
+        "n": 40,
+        "mean": 0.13955017179250717
+       },
+       "SC3 : SC3": {
+        "n": 20,
+        "mean": 0.22245674580335617
+       },
+       "Scotland : Championship": {
+        "n": 22,
+        "mean": 0.20150990919633346
+       },
+       "Scotland : League One": {
+        "n": 21,
+        "mean": -0.06014170391219003
+       },
+       "Scotland : Premiership": {
+        "n": 18,
+        "mean": 0.18638985024558175
+       },
+       "Spain : La Liga": {
+        "n": 40,
+        "mean": -0.04126297757029533
+       },
+       "Spain : La Liga 2": {
+        "n": 52,
+        "mean": 0.20849081530020788
+       },
+       "Sweden : Allsvenskan": {
+        "n": 39,
+        "mean": 0.05270162454018226
+       },
+       "Switzerland : Super League": {
+        "n": 18,
+        "mean": 0.24229142566521963
+       },
+       "Turkey : Super Lig": {
+        "n": 38,
+        "mean": 0.09100345796660374
+       },
+       "USA : MLS": {
+        "n": 70,
+        "mean": 0.1259120089667184
+       }
+      }
+     },
+     "excess_by_period": {
+      "groups": 5,
+      "positive": 4,
+      "share_positive": 0.8,
+      "min_n_per_group": 10,
+      "by_group": {
+       "2026-S14": {
+        "n": 274,
+        "mean": 0.10540751971467568
+       },
+       "2026-S15": {
+        "n": 402,
+        "mean": 0.07240269010636344
+       },
+       "2026-S16": {
+        "n": 320,
+        "mean": 0.08969074236229062
+       },
+       "2026-S17": {
+        "n": 412,
+        "mean": 0.12716262700777609
+       },
+       "2026-S18": {
+        "n": 36,
+        "mean": -0.027316418786843617
+       }
+      }
+     }
+    }
+   },
+   {
+    "month": "2026-05",
+    "split": {
+     "train": 9247,
+     "validation": 3144,
+     "test": 1047
+    },
+    "train_last_day": "2026-02-20",
+    "validation_last_day": "2026-04-30",
+    "scenarios_tested": 20000,
+    "distinct_rules": 1250,
+    "selected": 3678,
+    "observed": {
+     "selected": 3678.0,
+     "mean_test_lift": 0.025858425707642345,
+     "mean_test_roi": 0.0,
+     "max_test_roi": 0.0,
+     "portfolio_picks": 1047.0,
+     "portfolio_excess": 0.06740594214787342,
+     "portfolio_roi": 0.0
+    },
+    "permutation_libre": {
+     "selected": {
+      "observed": 3678.0,
+      "null_mean": 72.74,
+      "null_p95": 200.14999999999995,
+      "p": 0.004975124378109453
+     },
+     "mean_test_lift": {
+      "observed": 0.025858425707642345,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.03010857032866857,
+      "null_p95": 0.06623694715444273,
+      "p": 0.4079601990049751
+     },
+     "mean_test_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     },
+     "max_test_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     },
+     "portfolio_picks": {
+      "observed": 1047.0,
+      "null_mean": 992.96,
+      "null_p95": 1047.0,
+      "p": 0.6467661691542289
+     },
+     "portfolio_excess": {
+      "observed": 0.06740594214787342,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.021039292015639414,
+      "null_p95": 0.043441943119795066,
+      "p": 0.01990049751243781
+     },
+     "portfolio_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     }
+    },
+    "portfolio_test": {
+     "picks": 1047,
+     "matches_in_segment": 1047,
+     "distinct_matches": 1047,
+     "hit_rate": 0.5186246418338109,
+     "excess_over_base": {
+      "n": 1047,
+      "mean": 0.06740594214787342,
+      "ci95": [
+       0.0419257724365132,
+       0.09173064523915851
+      ],
+      "days": 28
+     },
+     "by_target": {
+      "home_scores_2plus": 180,
+      "away_not_lose": 287,
+      "home_not_lose": 20,
+      "home_win": 292,
+      "away_win": 213,
+      "home_scores_3plus": 15,
+      "under_2_5": 40
+     },
+     "excess_by_league": {
+      "groups": 33,
+      "positive": 25,
+      "share_positive": 0.7575757575757576,
+      "min_n_per_group": 10,
+      "by_group": {
+       "Argentina : Liga Profesional": {
+        "n": 30,
+        "mean": 0.12228588660558065
+       },
+       "Austria : Bundesliga": {
+        "n": 18,
+        "mean": 0.015281761686007181
+       },
+       "Belgium : Jupiler Pro League": {
+        "n": 33,
+        "mean": -0.008798588405955921
+       },
+       "Brazil : Serie A": {
+        "n": 48,
+        "mean": -0.006347500408689181
+       },
+       "China : Super League": {
+        "n": 56,
+        "mean": 0.01857347626771246
+       },
+       "Denmark : Superliga": {
+        "n": 18,
+        "mean": 0.046057518985536366
+       },
+       "England : Championship": {
+        "n": 12,
+        "mean": 0.17908309400081635
+       },
+       "England : League One": {
+        "n": 12,
+        "mean": 0.24498567978541055
+       },
+       "England : League Two": {
+        "n": 12,
+        "mean": 0.260267436504364
+       },
+       "England : Premier League": {
+        "n": 41,
+        "mean": 0.10033312657984292
+       },
+       "Finland : Veikkausliiga": {
+        "n": 32,
+        "mean": 0.05673949420452118
+       },
+       "France : Ligue 1": {
+        "n": 29,
+        "mean": -0.10005598540963798
+       },
+       "France : Ligue 2": {
+        "n": 18,
+        "mean": 0.22004669242435032
+       },
+       "Germany : 2. Bundesliga": {
+        "n": 27,
+        "mean": 0.09788106988977503
+       },
+       "Germany : Bundesliga": {
+        "n": 27,
+        "mean": -0.04552689967332063
+       },
+       "Greece : Super League": {
+        "n": 31,
+        "mean": 0.030501895373867403
+       },
+       "Ireland : Premier Division": {
+        "n": 33,
+        "mean": -0.00442823406421777
+       },
+       "Italy : Serie A": {
+        "n": 40,
+        "mean": 0.09288443252444267
+       },
+       "Italy : Serie B": {
+        "n": 20,
+        "mean": -0.055396369099617
+       },
+       "Mexico : Liga MX": {
+        "n": 14,
+        "mean": 0.11829717670168195
+       },
+       "Netherlands : Eredivisie": {
+        "n": 27,
+        "mean": 0.15133185077596595
+       },
+       "Norway : Eliteserien": {
+        "n": 40,
+        "mean": 0.16855300664901735
+       },
+       "Poland : Ekstraklasa": {
+        "n": 36,
+        "mean": 0.073782237039672
+       },
+       "Portugal : Primeira Liga": {
+        "n": 27,
+        "mean": 0.10117088975729766
+       },
+       "Romania : Superliga": {
+        "n": 32,
+        "mean": 0.030026264488697052
+       },
+       "Russia : Premier League": {
+        "n": 24,
+        "mean": 0.09547118842601776
+       },
+       "Scotland : Premiership": {
+        "n": 24,
+        "mean": -0.06984240561723709
+       },
+       "Spain : La Liga": {
+        "n": 50,
+        "mean": 0.11281757414340973
+       },
+       "Spain : La Liga 2": {
+        "n": 55,
+        "mean": -0.0035773212259465996
+       },
+       "Sweden : Allsvenskan": {
+        "n": 41,
+        "mean": 0.19812705095221356
+       },
+       "Switzerland : Super League": {
+        "n": 24,
+        "mean": 0.07282712683081627
+       },
+       "Turkey : Super Lig": {
+        "n": 27,
+        "mean": 0.19176483154296875
+       },
+       "USA : MLS": {
+        "n": 74,
+        "mean": 0.033790238000251153
+       }
+      }
+     },
+     "excess_by_period": {
+      "groups": 5,
+      "positive": 5,
+      "share_positive": 1.0,
+      "min_n_per_group": 10,
+      "by_group": {
+       "2026-S18": {
+        "n": 280,
+        "mean": 0.046827671570437296
+       },
+       "2026-S19": {
+        "n": 260,
+        "mean": 0.1003306155021374
+       },
+       "2026-S20": {
+        "n": 287,
+        "mean": 0.03347543515394789
+       },
+       "2026-S21": {
+        "n": 150,
+        "mean": 0.11298949380715688
+       },
+       "2026-S22": {
+        "n": 70,
+        "mean": 0.06886341997555324
+       }
+      }
+     }
+    }
+   },
+   {
+    "month": "2026-08",
+    "split": {
+     "train": 10384,
+     "validation": 3387,
+     "test": 1179
+    },
+    "train_last_day": "2026-03-14",
+    "validation_last_day": "2026-07-31",
+    "scenarios_tested": 20000,
+    "distinct_rules": 1250,
+    "selected": 4097,
+    "observed": {
+     "selected": 4097.0,
+     "mean_test_lift": 0.03624314909152695,
+     "mean_test_roi": 0.0,
+     "max_test_roi": 0.0,
+     "portfolio_picks": 1179.0,
+     "portfolio_excess": 0.09168865900104384,
+     "portfolio_roi": 0.0
+    },
+    "permutation_libre": {
+     "selected": {
+      "observed": 4097.0,
+      "null_mean": 86.01,
+      "null_p95": 210.39999999999986,
+      "p": 0.004975124378109453
+     },
+     "mean_test_lift": {
+      "observed": 0.03624314909152695,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.03190259539426726,
+      "null_p95": 0.06552307630743442,
+      "p": 0.24875621890547264
+     },
+     "mean_test_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     },
+     "max_test_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     },
+     "portfolio_picks": {
+      "observed": 1179.0,
+      "null_mean": 1122.45,
+      "null_p95": 1177.0,
+      "p": 0.004975124378109453
+     },
+     "portfolio_excess": {
+      "observed": 0.09168865900104384,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.026171781558091425,
+      "null_p95": 0.0478362670797035,
+      "p": 0.014925373134328358
+     },
+     "portfolio_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     }
+    },
+    "portfolio_test": {
+     "picks": 1179,
+     "matches_in_segment": 1179,
+     "distinct_matches": 1179,
+     "hit_rate": 0.549618320610687,
+     "excess_over_base": {
+      "n": 1179,
+      "mean": 0.09168865900104384,
+      "ci95": [
+       0.06206634192132931,
+       0.12215200952561095
+      ],
+      "days": 30
+     },
+     "by_target": {
+      "under_2_5": 73,
+      "away_win": 174,
+      "home_scores_3plus": 42,
+      "home_scores_2plus": 164,
+      "home_win": 281,
+      "away_not_lose": 331,
+      "away_scores_2plus": 50,
+      "over_2_5": 35,
+      "home_not_lose": 27,
+      "both_score": 2
+     },
+     "excess_by_league": {
+      "groups": 36,
+      "positive": 26,
+      "share_positive": 0.7222222222222222,
+      "min_n_per_group": 10,
+      "by_group": {
+       "Argentina : Liga Profesional": {
+        "n": 76,
+        "mean": 0.12998302476970772
+       },
+       "Austria : Bundesliga": {
+        "n": 26,
+        "mean": 0.12256148973336586
+       },
+       "Belgium : Jupiler Pro League": {
+        "n": 33,
+        "mean": 0.23422519998116928
+       },
+       "Brazil : Serie A": {
+        "n": 39,
+        "mean": 0.1489745760575319
+       },
+       "China : Super League": {
+        "n": 40,
+        "mean": 0.13649278767406942
+       },
+       "Denmark : Superliga": {
+        "n": 28,
+        "mean": 0.14482611949954713
+       },
+       "England : Championship": {
+        "n": 36,
+        "mean": -0.02424371325307422
+       },
+       "England : League One": {
+        "n": 35,
+        "mean": 0.08590815322739738
+       },
+       "England : League Two": {
+        "n": 36,
+        "mean": -0.04829893675115374
+       },
+       "England : National League": {
+        "n": 59,
+        "mean": 0.03494774007191092
+       },
+       "England : Premier League": {
+        "n": 20,
+        "mean": -0.06017811819911003
+       },
+       "Finland : Veikkausliiga": {
+        "n": 30,
+        "mean": 0.027961547672748565
+       },
+       "France : Ligue 1": {
+        "n": 18,
+        "mean": -0.06158703317244848
+       },
+       "France : Ligue 2": {
+        "n": 36,
+        "mean": 0.01573838127983941
+       },
+       "Germany : 2. Bundesliga": {
+        "n": 27,
+        "mean": 0.0227751053041882
+       },
+       "Greece : Super League": {
+        "n": 13,
+        "mean": 0.20193123129697946
+       },
+       "Ireland : Premier Division": {
+        "n": 17,
+        "mean": -0.02484658097519594
+       },
+       "Italy : Serie A": {
+        "n": 20,
+        "mean": 0.08027989789843559
+       },
+       "Italy : Serie B": {
+        "n": 20,
+        "mean": -0.0017811760306358337
+       },
+       "Japan : J1 League": {
+        "n": 40,
+        "mean": 0.16933841966092586
+       },
+       "Mexico : Liga MX": {
+        "n": 36,
+        "mean": -0.018400719182358846
+       },
+       "Netherlands : Eredivisie": {
+        "n": 33,
+        "mean": 0.21733877830433124
+       },
+       "Norway : Eliteserien": {
+        "n": 28,
+        "mean": 0.04634677991271019
+       },
+       "Poland : Ekstraklasa": {
+        "n": 36,
+        "mean": 0.10317123391562039
+       },
+       "Portugal : Primeira Liga": {
+        "n": 33,
+        "mean": 0.1836430425896789
+       },
+       "Romania : Superliga": {
+        "n": 37,
+        "mean": 0.12782247485341253
+       },
+       "SC3 : SC3": {
+        "n": 25,
+        "mean": 0.18720949649810792
+       },
+       "Scotland : Championship": {
+        "n": 20,
+        "mean": -0.10144190043210984
+       },
+       "Scotland : League One": {
+        "n": 24,
+        "mean": -0.018306477616230648
+       },
+       "Scotland : Premiership": {
+        "n": 18,
+        "mean": 0.25652624252769685
+       },
+       "Spain : La Liga": {
+        "n": 30,
+        "mean": 0.10528696527083715
+       },
+       "Spain : La Liga 2": {
+        "n": 33,
+        "mean": 0.012259999459440058
+       },
+       "Sweden : Allsvenskan": {
+        "n": 37,
+        "mean": 0.13685440896330653
+       },
+       "Switzerland : Super League": {
+        "n": 21,
+        "mean": 0.36326184159233454
+       },
+       "Turkey : Super Lig": {
+        "n": 27,
+        "mean": -0.06584362299353988
+       },
+       "USA : MLS": {
+        "n": 76,
+        "mean": 0.13278424681017273
+       }
+      }
+     },
+     "excess_by_period": {
+      "groups": 6,
+      "positive": 6,
+      "share_positive": 1.0,
+      "min_n_per_group": 10,
+      "by_group": {
+       "2026-S31": {
+        "n": 107,
+        "mean": 0.11523308625845151
+       },
+       "2026-S32": {
+        "n": 186,
+        "mean": 0.13702608845246736
+       },
+       "2026-S33": {
+        "n": 226,
+        "mean": 0.11502923216439981
+       },
+       "2026-S34": {
+        "n": 299,
+        "mean": 0.04005151124901596
+       },
+       "2026-S35": {
+        "n": 320,
+        "mean": 0.08966814843006432
+       },
+       "2026-S36": {
+        "n": 41,
+        "mean": 0.0882517182972373
+       }
+      }
+     }
+    }
+   },
+   {
+    "month": "2026-09",
+    "split": {
+     "train": 11221,
+     "validation": 3729,
+     "test": 1172
+    },
+    "train_last_day": "2026-04-05",
+    "validation_last_day": "2026-08-31",
+    "scenarios_tested": 20000,
+    "distinct_rules": 1250,
+    "selected": 3926,
+    "observed": {
+     "selected": 3926.0,
+     "mean_test_lift": 0.03319953420833405,
+     "mean_test_roi": 0.0,
+     "max_test_roi": 0.0,
+     "portfolio_picks": 1172.0,
+     "portfolio_excess": 0.06483913265143239,
+     "portfolio_roi": 0.0
+    },
+    "permutation_libre": {
+     "selected": {
+      "observed": 3926.0,
+      "null_mean": 108.2,
+      "null_p95": 251.04999999999998,
+      "p": 0.004975124378109453
+     },
+     "mean_test_lift": {
+      "observed": 0.03319953420833405,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0310085851268699,
+      "null_p95": 0.06768921670667327,
+      "p": 0.3333333333333333
+     },
+     "mean_test_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     },
+     "max_test_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     },
+     "portfolio_picks": {
+      "observed": 1172.0,
+      "null_mean": 1152.555,
+      "null_p95": 1172.0,
+      "p": 0.835820895522388
+     },
+     "portfolio_excess": {
+      "observed": 0.06483913265143239,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.024513615930257755,
+      "null_p95": 0.04456297012408336,
+      "p": 0.009950248756218905
+     },
+     "portfolio_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     }
+    },
+    "portfolio_test": {
+     "picks": 1172,
+     "matches_in_segment": 1172,
+     "distinct_matches": 1172,
+     "hit_rate": 0.5238907849829352,
+     "excess_over_base": {
+      "n": 1172,
+      "mean": 0.06483913265143239,
+      "ci95": [
+       0.037607927481591585,
+       0.09918188758992794
+      ],
+      "days": 29
+     },
+     "by_target": {
+      "home_scores_2plus": 334,
+      "under_2_5": 52,
+      "away_win": 210,
+      "away_not_lose": 278,
+      "home_not_lose": 48,
+      "away_scores_2plus": 75,
+      "home_win": 158,
+      "away_scores_3plus": 13,
+      "both_score": 3,
+      "under_3_5": 1
+     },
+     "excess_by_league": {
+      "groups": 37,
+      "positive": 29,
+      "share_positive": 0.7837837837837838,
+      "min_n_per_group": 10,
+      "by_group": {
+       "Argentina : Liga Profesional": {
+        "n": 47,
+        "mean": 0.09037106151276446
+       },
+       "Austria : Bundesliga": {
+        "n": 15,
+        "mean": 0.11450512011845906
+       },
+       "Belgium : Jupiler Pro League": {
+        "n": 30,
+        "mean": 0.1328213835755984
+       },
+       "Brazil : Serie A": {
+        "n": 33,
+        "mean": 0.11443788987217528
+       },
+       "China : Super League": {
+        "n": 11,
+        "mean": -0.004731617190621116
+       },
+       "Denmark : Superliga": {
+        "n": 20,
+        "mean": 0.048421500623226164
+       },
+       "England : Championship": {
+        "n": 59,
+        "mean": -0.01370972799042524
+       },
+       "England : League One": {
+        "n": 52,
+        "mean": 0.03408046296009651
+       },
+       "England : League Two": {
+        "n": 58,
+        "mean": 0.0015152369079918697
+       },
+       "England : National League": {
+        "n": 73,
+        "mean": -0.03853616424619335
+       },
+       "England : Premier League": {
+        "n": 30,
+        "mean": 0.0894766757885615
+       },
+       "Finland : Veikkausliiga": {
+        "n": 18,
+        "mean": -0.006020105547375149
+       },
+       "France : Ligue 1": {
+        "n": 27,
+        "mean": 0.01943496200773451
+       },
+       "France : Ligue 2": {
+        "n": 27,
+        "mean": -0.03596259101673409
+       },
+       "Germany : 2. Bundesliga": {
+        "n": 27,
+        "mean": 0.02183668260221128
+       },
+       "Germany : Bundesliga": {
+        "n": 27,
+        "mean": 0.15194033914142185
+       },
+       "Greece : Super League": {
+        "n": 22,
+        "mean": -0.19046696614135394
+       },
+       "Ireland : Premier Division": {
+        "n": 16,
+        "mean": 0.2795968372374773
+       },
+       "Italy : Serie A": {
+        "n": 30,
+        "mean": 0.1836461822191874
+       },
+       "Italy : Serie B": {
+        "n": 30,
+        "mean": 0.022127409279346467
+       },
+       "Japan : J1 League": {
+        "n": 40,
+        "mean": -0.020264510810375214
+       },
+       "Mexico : Liga MX": {
+        "n": 34,
+        "mean": -0.057518571615219116
+       },
+       "Netherlands : Eredivisie": {
+        "n": 30,
+        "mean": 0.1580773611863454
+       },
+       "Norway : Eliteserien": {
+        "n": 24,
+        "mean": 0.16531570131580034
+       },
+       "Poland : Ekstraklasa": {
+        "n": 31,
+        "mean": 0.10698556996160938
+       },
+       "Portugal : Primeira Liga": {
+        "n": 29,
+        "mean": 0.1363422361941173
+       },
+       "Romania : Superliga": {
+        "n": 24,
+        "mean": 0.1587030626833439
+       },
+       "SC3 : SC3": {
+        "n": 15,
+        "mean": 0.03458475470542908
+       },
+       "Scotland : Championship": {
+        "n": 19,
+        "mean": 0.0348482022159978
+       },
+       "Scotland : League One": {
+        "n": 15,
+        "mean": 0.1955631305774053
+       },
+       "Scotland : Premiership": {
+        "n": 23,
+        "mean": 0.16334025756172513
+       },
+       "Spain : La Liga": {
+        "n": 39,
+        "mean": 0.07405705558948028
+       },
+       "Spain : La Liga 2": {
+        "n": 44,
+        "mean": 0.1641133993186734
+       },
+       "Sweden : Allsvenskan": {
+        "n": 26,
+        "mean": 0.08466788782523228
+       },
+       "Switzerland : Super League": {
+        "n": 27,
+        "mean": 0.3039754805741487
+       },
+       "Turkey : Super Lig": {
+        "n": 27,
+        "mean": 0.035709765222337514
+       },
+       "USA : MLS": {
+        "n": 73,
+        "mean": 0.047349104326065275
+       }
+      }
+     },
+     "excess_by_period": {
+      "groups": 5,
+      "positive": 4,
+      "share_positive": 0.8,
+      "min_n_per_group": 10,
+      "by_group": {
+       "2026-S36": {
+        "n": 356,
+        "mean": 0.06735820452986138
+       },
+       "2026-S37": {
+        "n": 349,
+        "mean": 0.0355868018032145
+       },
+       "2026-S38": {
+        "n": 379,
+        "mean": 0.09361126059592556
+       },
+       "2026-S39": {
+        "n": 72,
+        "mean": 0.06112532959216171
+       },
+       "2026-S40": {
+        "n": 16,
+        "mean": -0.01797141693532467
+       }
+      }
+     }
+    }
+   },
+   {
+    "month": "2026-10",
+    "split": {
+     "train": 12106,
+     "validation": 4016,
+     "test": 436
+    },
+    "train_last_day": "2026-04-24",
+    "validation_last_day": "2026-09-30",
+    "scenarios_tested": 20000,
+    "distinct_rules": 1250,
+    "selected": 3867,
+    "observed": {
+     "selected": 3867.0,
+     "mean_test_lift": 0.04597090016955764,
+     "mean_test_roi": 0.0,
+     "max_test_roi": 0.0,
+     "portfolio_picks": 436.0,
+     "portfolio_excess": 0.13141781406118236,
+     "portfolio_roi": 0.0
+    },
+    "permutation_libre": {
+     "selected": {
+      "observed": 3867.0,
+      "null_mean": 133.605,
+      "null_p95": 297.15,
+      "p": 0.004975124378109453
+     },
+     "mean_test_lift": {
+      "observed": 0.04597090016955764,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.024255825057110915,
+      "null_p95": 0.048725087519797185,
+      "p": 0.07960199004975124
+     },
+     "mean_test_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     },
+     "max_test_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     },
+     "portfolio_picks": {
+      "observed": 436.0,
+      "null_mean": 435.07,
+      "null_p95": 436.0,
+      "p": 0.9353233830845771
+     },
+     "portfolio_excess": {
+      "observed": 0.13141781406118236,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.02772457120828471,
+      "null_p95": 0.06350738714799421,
+      "p": 0.004975124378109453
+     },
+     "portfolio_roi": {
+      "observed": 0.0,
+      "null_draws_with_selection": 200,
+      "null_mean": 0.0,
+      "null_p95": 0.0,
+      "p": 1.0
+     }
+    },
+    "portfolio_test": {
+     "picks": 436,
+     "matches_in_segment": 436,
+     "distinct_matches": 436,
+     "hit_rate": 0.5848623853211009,
+     "excess_over_base": {
+      "n": 436,
+      "mean": 0.13141781406118236,
+      "ci95": [
+       0.08067537962750934,
+       0.17135975889360408
+      ],
+      "days": 16
+     },
+     "by_target": {
+      "away_scores_2plus": 52,
+      "away_win": 53,
+      "away_not_lose": 41,
+      "home_scores_2plus": 169,
+      "under_3_5": 25,
+      "home_win": 69,
+      "under_2_5": 26,
+      "home_not_lose": 1
+     },
+     "excess_by_league": {
+      "groups": 15,
+      "positive": 13,
+      "share_positive": 0.8666666666666667,
+      "min_n_per_group": 10,
+      "by_group": {
+       "Argentina : Liga Profesional": {
+        "n": 31,
+        "mean": 0.1977656272149855
+       },
+       "Brazil : Serie A": {
+        "n": 22,
+        "mean": 0.07464554499496114
+       },
+       "England : Championship": {
+        "n": 24,
+        "mean": 0.008792053908109665
+       },
+       "England : League One": {
+        "n": 15,
+        "mean": 0.24480122327804565
+       },
+       "England : League Two": {
+        "n": 20,
+        "mean": 0.1699541315436363
+       },
+       "England : National League": {
+        "n": 23,
+        "mean": 0.21629437674646793
+       },
+       "England : Premier League": {
+        "n": 10,
+        "mean": 0.2697247713804245
+       },
+       "Italy : Serie A": {
+        "n": 10,
+        "mean": -0.038532108068466187
+       },
+       "Italy : Serie B": {
+        "n": 10,
+        "mean": -0.06467889249324799
+       },
+       "Japan : J1 League": {
+        "n": 10,
+        "mean": 0.05642201900482178
+       },
+       "Poland : Ekstraklasa": {
+        "n": 10,
+        "mean": 0.13944954574108123
+       },
+       "SC3 : SC3": {
+        "n": 10,
+        "mean": 0.16926605701446534
+       },
+       "Scotland : League One": {
+        "n": 10,
+        "mean": 0.1766055107116699
+       },
+       "Spain : La Liga 2": {
+        "n": 22,
+        "mean": 0.05275229703296314
+       },
+       "USA : MLS": {
+        "n": 33,
+        "mean": 0.1565888271187291
+       }
+      }
+     },
+     "excess_by_period": {
+      "groups": 3,
+      "positive": 3,
+      "share_positive": 1.0,
+      "min_n_per_group": 10,
+      "by_group": {
+       "2026-S40": {
+        "n": 59,
+        "mean": 0.1353988546436116
+       },
+       "2026-S41": {
+        "n": 314,
+        "mean": 0.13954304130214035
+       },
+       "2026-S42": {
+        "n": 63,
+        "mean": 0.0871923736163548
+       }
+      }
+     }
+    }
+   }
+  ],
+  "pooled": {
+   "mean_test_lift": {
+    "observed": 0.03905660771481447,
+    "folds_used": 12,
+    "null_draws": 200,
+    "null_mean": 0.04155908604698042,
+    "null_p95": 0.060333459664111015,
+    "p": 0.6019900497512438
+   },
+   "portfolio_excess": {
+    "observed": 0.08339756138863545,
+    "folds_used": 12,
+    "null_draws": 200,
+    "null_mean": 0.028461709979396784,
+    "null_p95": 0.04607041591059825,
+    "p": 0.004975124378109453
+   }
+  },
+  "folds_with_p_le_0_05": 1,
+  "note": "Plis à fenêtre croissante : leurs données d'apprentissage se recoupent, donc la statistique poolée est indicative. Pas de cotes : aucun ROI."
+ },
+ "frozen_rules": {
+  "cutoff": "2026-09-27",
+  "matches_used": 16106,
+  "train": 12070,
+  "validation": 4036,
+  "last_train_day": "2026-04-23",
+  "last_validation_day": "2026-09-27",
+  "scenarios_tested": 20000,
+  "distinct_rules": 1250,
+  "scenarios_frozen": 4509,
+  "sha256": "24a6e37d1d5b2860f8d12cebe282a7296652807a2941f8bb207e20b1c965355b"
+ },
+ "transfer_to_archive": {
+  "matches": 1359,
+  "rejected": {},
+  "frozen_scenarios": 4509,
+  "family_size_lift": 4191,
+  "family_size_roi": 4114,
+  "span_days": 20,
+  "first_day": "2026-09-28",
+  "last_day": "2026-10-17",
+  "permutation_marche": {
+   "mean_lift": {
+    "observed": 0.04216733829445932,
+    "p": 0.049475262368815595
+   },
+   "scenarios_adjusted_p_lift_le_0_05": 0,
+   "max_z_lift": {
+    "observed": 6.425158348897791,
+    "null_p95": 6.831485377174143
+   },
+   "mean_roi": {
+    "observed": -0.10090525709142634,
+    "null_mean": -0.09475788149493297,
+    "p": 0.7346326836581709
+   },
+   "scenarios_adjusted_p_roi_le_0_05": 0,
+   "max_t_roi": {
+    "observed": 2.783915102671561,
+    "null_p95": 4.207954565253869
+   },
+   "portfolio_excess": {
+    "observed": 0.07737260819727963,
+    "p": 0.22538730634682658
+   },
+   "portfolio_roi": {
+    "observed": -0.06578366445916117,
+    "null_mean": -0.08750258646063282,
+    "null_p95": -0.0453421633554084,
+    "p": 0.2013993003498251
+   }
+  },
+  "permutation_libre": {
+   "mean_lift": {
+    "observed": 0.04216733829445932,
+    "p": 0.0004997501249375312
+   },
+   "scenarios_adjusted_p_lift_le_0_05": 73,
+   "max_z_lift": {
+    "observed": 6.425158348897791,
+    "null_p95": 4.351022862887359
+   },
+   "mean_roi": {
+    "observed": -0.10090525709142634,
+    "null_mean": -0.08593468828883442,
+    "p": 0.9390304847576212
+   },
+   "scenarios_adjusted_p_roi_le_0_05": 0,
+   "max_t_roi": {
+    "observed": 2.783915102671561,
+    "null_p95": 4.619823266111948
+   },
+   "portfolio_excess": {
+    "observed": 0.07737260819727963,
+    "p": 0.0004997501249375312
+   },
+   "portfolio_roi": {
+    "observed": -0.06578366445916117,
+    "null_mean": -0.10931059970566594,
+    "null_p95": -0.06303863134657839,
+    "p": 0.063968015992004
+   }
+  },
+  "portfolio": {
+   "picks": 1359,
+   "matches_in_segment": 1359,
+   "distinct_matches": 1359,
+   "hit_rate": 0.5408388520971302,
+   "excess_over_base": {
+    "n": 1359,
+    "mean": 0.07737260819727963,
+    "ci95": [
+     0.04316078891617597,
+     0.11018549405404705
+    ],
+    "days": 20
+   },
+   "by_target": {
+    "away_not_lose": 264,
+    "home_not_lose": 98,
+    "away_win": 191,
+    "both_score": 101,
+    "home_scores_2plus": 204,
+    "home_win": 246,
+    "under_3_5": 17,
+    "away_scores_2plus": 153,
+    "under_2_5": 59,
+    "home_scores_3plus": 25,
+    "over_2_5": 1
+   },
+   "excess_by_league": {
+    "groups": 23,
+    "positive": 14,
+    "share_positive": 0.6086956521739131,
+    "min_n_per_group": 15,
+    "by_group": {
+     "Allemagne : Bundesliga": {
+      "n": 15,
+      "mean": -0.11861662987490804
+     },
+     "Allemagne : Ligue 3": {
+      "n": 19,
+      "mean": -0.05665930831493744
+     },
+     "Angleterre : Championnat": {
+      "n": 33,
+      "mean": -0.08212366490512182
+     },
+     "Angleterre : League One": {
+      "n": 25,
+      "mean": -0.18010301692420896
+     },
+     "Angleterre : League Two": {
+      "n": 30,
+      "mean": -0.06779494726514593
+     },
+     "Angleterre : Ligue Nationale": {
+      "n": 32,
+      "mean": 0.06778881530537159
+     },
+     "Argentine : Copa de la Liga Profesional 2e Tour": {
+      "n": 35,
+      "mean": 0.11228844738778515
+     },
+     "Brésil : Série A": {
+      "n": 26,
+      "mean": 0.21715628007018734
+     },
+     "Colombie : Première A Cloture": {
+      "n": 24,
+      "mean": 0.1553225410841305
+     },
+     "Espagne : Première Division RFEF Groupe 1": {
+      "n": 33,
+      "mean": -0.004838673712845891
+     },
+     "Espagne : Segunda Division": {
+      "n": 22,
+      "mean": -0.028162418890895713
+     },
+     "Etats-Unis : MLS": {
+      "n": 34,
+      "mean": 0.19257239319568892
+     },
+     "France : Ligue 2 BKT": {
+      "n": 17,
+      "mean": 0.1301995411851275
+     },
+     "France : Ligue 3": {
+      "n": 16,
+      "mean": 0.16455114054451803
+     },
+     "Guatemala : Ligue Nationale Ouverture": {
+      "n": 16,
+      "mean": 0.10821376011773362
+     },
+     "Irlande du Nord : IFA Premiership": {
+      "n": 17,
+      "mean": -0.06492663290481755
+     },
+     "Italie : Série B": {
+      "n": 17,
+      "mean": 0.0815045665065143
+     },
+     "Italie : Série C Girone A": {
+      "n": 55,
+      "mean": 0.08775168907619238
+     },
+     "Mexique : Liga MX Ouverture": {
+      "n": 15,
+      "mean": 0.14383124846700998
+     },
+     "Paraguay : Professionnel de la Division Clôture": {
+      "n": 15,
+      "mean": 0.1591366200637724
+     },
+     "Pays-Bas : Eerste Divisie": {
+      "n": 22,
+      "mean": 0.0515084621044886
+     },
+     "Turquie : TFF 1. Ligue": {
+      "n": 16,
+      "mean": -0.12214863870493006
+     },
+     "Uruguay : Primera Division Cloture": {
+      "n": 19,
+      "mean": 0.0226559776925758
+     }
+    }
+   },
+   "excess_by_period": {
+    "groups": 3,
+    "positive": 3,
+    "share_positive": 1.0,
+    "min_n_per_group": 15,
+    "by_group": {
+     "2026-S40": {
+      "n": 189,
+      "mean": 0.020821410078216546
+     },
+     "2026-S41": {
+      "n": 673,
+      "mean": 0.09429623871236499
+     },
+     "2026-S42": {
+      "n": 497,
+      "mean": 0.07596128648269307
+     }
+    }
+   },
+   "settled_bets": 1359,
+   "mean_odds": 1.9926637233259747,
+   "roi": {
+    "n": 1359,
+    "mean": -0.06578366445916117,
+    "ci95": [
+     -0.13522441312481198,
+     -0.0008112519778084922
+    ],
+    "days": 20
+   },
+   "roi_by_league": {
+    "groups": 23,
+    "positive": 10,
+    "share_positive": 0.43478260869565216,
+    "min_n_per_group": 15,
+    "by_group": {
+     "Allemagne : Bundesliga": {
+      "n": 15,
+      "mean": -0.5346666666666666
+     },
+     "Allemagne : Ligue 3": {
+      "n": 19,
+      "mean": -0.24157894736842103
+     },
+     "Angleterre : Championnat": {
+      "n": 33,
+      "mean": -0.38363636363636366
+     },
+     "Angleterre : League One": {
+      "n": 25,
+      "mean": -0.5115999999999999
+     },
+     "Angleterre : League Two": {
+      "n": 30,
+      "mean": -0.19133333333333338
+     },
+     "Angleterre : Ligue Nationale": {
+      "n": 32,
+      "mean": -0.10437500000000002
+     },
+     "Argentine : Copa de la Liga Profesional 2e Tour": {
+      "n": 35,
+      "mean": 0.07228571428571429
+     },
+     "Brésil : Série A": {
+      "n": 26,
+      "mean": 0.18769230769230766
+     },
+     "Colombie : Première A Cloture": {
+      "n": 24,
+      "mean": -0.024999999999999994
+     },
+     "Espagne : Première Division RFEF Groupe 1": {
+      "n": 33,
+      "mean": -0.06303030303030302
+     },
+     "Espagne : Segunda Division": {
+      "n": 22,
+      "mean": -0.2595454545454545
+     },
+     "Etats-Unis : MLS": {
+      "n": 34,
+      "mean": 0.1670588235294118
+     },
+     "France : Ligue 2 BKT": {
+      "n": 17,
+      "mean": 0.1388235294117647
+     },
+     "France : Ligue 3": {
+      "n": 16,
+      "mean": 0.14499999999999996
+     },
+     "Guatemala : Ligue Nationale Ouverture": {
+      "n": 16,
+      "mean": 0.2693749999999999
+     },
+     "Irlande du Nord : IFA Premiership": {
+      "n": 17,
+      "mean": -0.37941176470588234
+     },
+     "Italie : Série B": {
+      "n": 17,
+      "mean": 0.1035294117647059
+     },
+     "Italie : Série C Girone A": {
+      "n": 55,
+      "mean": 0.020727272727272726
+     },
+     "Mexique : Liga MX Ouverture": {
+      "n": 15,
+      "mean": 0.07466666666666667
+     },
+     "Paraguay : Professionnel de la Division Clôture": {
+      "n": 15,
+      "mean": 0.03199999999999999
+     },
+     "Pays-Bas : Eerste Divisie": {
+      "n": 22,
+      "mean": -0.2109090909090909
+     },
+     "Turquie : TFF 1. Ligue": {
+      "n": 16,
+      "mean": -0.50375
+     },
+     "Uruguay : Primera Division Cloture": {
+      "n": 19,
+      "mean": -0.18052631578947373
+     }
+    }
+   },
+   "roi_by_period": {
+    "groups": 3,
+    "positive": 0,
+    "share_positive": 0.0,
+    "min_n_per_group": 15,
+    "by_group": {
+     "2026-S40": {
+      "n": 189,
+      "mean": -0.18714285714285717
+     },
+     "2026-S41": {
+      "n": 673,
+      "mean": -0.035824665676077276
+     },
+     "2026-S42": {
+      "n": 497,
+      "mean": -0.06020120724346078
+     }
+    }
+   }
+  },
+  "portfolio_by_date_block": [
+   {
+    "from": "2026-09-28",
+    "to": "2026-10-04",
+    "picks": 189,
+    "excess_over_base": 0.020821410078216546,
+    "roi": -0.18714285714285717
+   },
+   {
+    "from": "2026-10-05",
+    "to": "2026-10-10",
+    "picks": 443,
+    "excess_over_base": 0.06801907523956169,
+    "roi": -0.0789841986455982
+   },
+   {
+    "from": "2026-10-11",
+    "to": "2026-10-17",
+    "picks": 727,
+    "excess_over_base": 0.09777397208279819,
+    "roi": -0.026189821182943614
+   }
+  ],
+  "best_by_lift": [
+   {
+    "conditions": [
+     {
+      "feature": "away_after_scoring_2plus",
+      "op": "ge",
+      "value": 1
+     },
+     {
+      "feature": "away_gf_avg_8",
+      "op": "ge",
+      "value": 2
+     }
+    ],
+    "target": "away_scores_3plus",
+    "complexity": 2,
+    "priority_validation_lift": 0.09587069916627045,
+    "n": 194,
+    "hit_rate": 0.30412371134020616,
+    "base_rate": 0.14275202354672553,
+    "lift": 0.16137168779348063,
+    "z_lift": 6.425158348897791,
+    "p_adj_lift_marche": 0.18290854572713644,
+    "settled": 90,
+    "roi": -0.018777777777777734,
+    "t_roi": -0.10667373342956703,
+    "p_adj_roi_marche": 1.0
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_gf_avg_10",
+      "op": "ge",
+      "value": 1.8
+     },
+     {
+      "feature": "home_concede_streak",
+      "op": "le",
+      "value": 6
+     }
+    ],
+    "target": "away_scores_3plus",
+    "complexity": 2,
+    "priority_validation_lift": 0.07235900311677901,
+    "n": 262,
+    "hit_rate": 0.2786259541984733,
+    "base_rate": 0.14275202354672553,
+    "lift": 0.13587393065174777,
+    "z_lift": 6.286984851109111,
+    "p_adj_lift_marche": 0.25687156421789104,
+    "settled": 126,
+    "roi": -0.059365079365079315,
+    "t_roi": -0.39922405124201965,
+    "p_adj_roi_marche": 1.0
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_goal_diff_avg_5",
+      "op": "ge",
+      "value": 1
+     },
+     {
+      "feature": "home_concede_rate_5",
+      "op": "ge",
+      "value": 60
+     },
+     {
+      "feature": "home_score_in_loss_rate_5",
+      "op": "le",
+      "value": 75
+     }
+    ],
+    "target": "away_win",
+    "complexity": 3,
+    "priority_validation_lift": 0.1449159501130099,
+    "n": 142,
+    "hit_rate": 0.5563380281690141,
+    "base_rate": 0.31199411331861665,
+    "lift": 0.24434391485039747,
+    "z_lift": 6.284582373473693,
+    "p_adj_lift_marche": 0.26786606696651677,
+    "settled": 141,
+    "roi": 0.06787234042553189,
+    "t_roi": 0.7527524966216989,
+    "p_adj_roi_marche": 1.0
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_win_rate_10",
+      "op": "ge",
+      "value": 42.857
+     }
+    ],
+    "target": "away_win",
+    "complexity": 1,
+    "priority_validation_lift": 0.06959763866986413,
+    "n": 470,
+    "hit_rate": 0.44468085106382976,
+    "base_rate": 0.31199411331861665,
+    "lift": 0.1326867377452131,
+    "z_lift": 6.20879282519525,
+    "p_adj_lift_marche": 0.3073463268365817,
+    "settled": 469,
+    "roi": -0.02974413646055436,
+    "t_roi": -0.5115561588514207,
+    "p_adj_roi_marche": 1.0
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_after_conceding_3plus",
+      "op": "le",
+      "value": 0
+     },
+     {
+      "feature": "away_win_rate_8",
+      "op": "ge",
+      "value": 75
+     }
+    ],
+    "target": "away_win",
+    "complexity": 2,
+    "priority_validation_lift": 0.1447294216156006,
+    "n": 126,
+    "hit_rate": 0.5634920634920635,
+    "base_rate": 0.31199411331861665,
+    "lift": 0.25149795017344684,
+    "z_lift": 6.0932703171938325,
+    "p_adj_lift_marche": 0.4002998500749625,
+    "settled": 125,
+    "roi": 0.04551999999999997,
+    "t_roi": 0.4966423837419758,
+    "p_adj_roi_marche": 1.0
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_goal_diff_avg_10",
+      "op": "ge",
+      "value": 0.3
+     }
+    ],
+    "target": "away_win",
+    "complexity": 1,
+    "priority_validation_lift": 0.07313391599762303,
+    "n": 437,
+    "hit_rate": 0.4462242562929062,
+    "base_rate": 0.31199411331861665,
+    "lift": 0.13423014297428953,
+    "z_lift": 6.05649683017902,
+    "p_adj_lift_marche": 0.42978510744627685,
+    "settled": 436,
+    "roi": -0.06302752293577979,
+    "t_roi": -1.1392093289792296,
+    "p_adj_roi_marche": 1.0
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_gf_avg_10",
+      "op": "ge",
+      "value": 1.3
+     },
+     {
+      "feature": "away_not_lose_rate_8",
+      "op": "ge",
+      "value": 87.5
+     }
+    ],
+    "target": "away_win",
+    "complexity": 2,
+    "priority_validation_lift": 0.09445669434287329,
+    "n": 215,
+    "hit_rate": 0.49767441860465117,
+    "base_rate": 0.31199411331861665,
+    "lift": 0.18568030528603452,
+    "z_lift": 5.876460136885631,
+    "p_adj_lift_marche": 0.567216391804098,
+    "settled": 214,
+    "roi": -0.0009345794392523415,
+    "t_roi": -0.01231552822780976,
+    "p_adj_roi_marche": 1.0
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_after_conceding_3plus",
+      "op": "le",
+      "value": 0
+     },
+     {
+      "feature": "away_win_rate_8",
+      "op": "ge",
+      "value": 75
+     }
+    ],
+    "target": "away_scores_3plus",
+    "complexity": 2,
+    "priority_validation_lift": 0.10907234525680543,
+    "n": 126,
+    "hit_rate": 0.3253968253968254,
+    "base_rate": 0.14275202354672553,
+    "lift": 0.18264480185009987,
+    "z_lift": 5.860682822008862,
+    "p_adj_lift_marche": 0.5832083958020989,
+    "settled": 68,
+    "roi": -0.04941176470588237,
+    "t_roi": -0.24962862357392046,
+    "p_adj_roi_marche": 1.0
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_goal_diff_avg_10",
+      "op": "ge",
+      "value": 0.3
+     }
+    ],
+    "target": "away_not_lose",
+    "complexity": 1,
+    "priority_validation_lift": 0.07846583811084873,
+    "n": 437,
+    "hit_rate": 0.7070938215102975,
+    "base_rate": 0.5688005886681383,
+    "lift": 0.13829323284215922,
+    "z_lift": 5.837441608417058,
+    "p_adj_lift_marche": 0.6061969015492253,
+    "settled": 430,
+    "roi": -0.029325581395348833,
+    "t_roi": -0.9204753337284259,
+    "p_adj_roi_marche": 1.0
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_after_scoring_2plus",
+      "op": "ge",
+      "value": 1
+     },
+     {
+      "feature": "away_gf_avg_8",
+      "op": "ge",
+      "value": 2
+     }
+    ],
+    "target": "away_win",
+    "complexity": 2,
+    "priority_validation_lift": 0.09796398951683516,
+    "n": 194,
+    "hit_rate": 0.4948453608247423,
+    "base_rate": 0.31199411331861665,
+    "lift": 0.18285124750612564,
+    "z_lift": 5.49704782795362,
+    "p_adj_lift_marche": 0.8670664667666167,
+    "settled": 193,
+    "roi": 0.03150259067357515,
+    "t_roi": 0.32865416027394645,
+    "p_adj_roi_marche": 1.0
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_goal_diff_avg_5",
+      "op": "ge",
+      "value": 1
+     },
+     {
+      "feature": "home_concede_rate_5",
+      "op": "ge",
+      "value": 60
+     },
+     {
+      "feature": "home_score_in_loss_rate_5",
+      "op": "le",
+      "value": 75
+     }
+    ],
+    "target": "away_scores_3plus",
+    "complexity": 3,
+    "priority_validation_lift": 0.11732104992001785,
+    "n": 142,
+    "hit_rate": 0.3028169014084507,
+    "base_rate": 0.14275202354672553,
+    "lift": 0.16006487786172516,
+    "z_lift": 5.452502192050178,
+    "p_adj_lift_marche": 0.8940529735132434,
+    "settled": 73,
+    "roi": -0.0556164383561644,
+    "t_roi": -0.2813394505778617,
+    "p_adj_roi_marche": 1.0
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_concede_rate_8",
+      "op": "ge",
+      "value": 75
+     },
+     {
+      "feature": "home_goal_diff_avg_10",
+      "op": "ge",
+      "value": 0
+     }
+    ],
+    "target": "home_win",
+    "complexity": 2,
+    "priority_validation_lift": 0.05025175568656809,
+    "n": 352,
+    "hit_rate": 0.5738636363636364,
+    "base_rate": 0.4311994113318617,
+    "lift": 0.14266422503177467,
+    "z_lift": 5.404646769381922,
+    "p_adj_lift_marche": 0.912543728135932,
+    "settled": 352,
+    "roi": -0.020710227272727266,
+    "t_roi": -0.41831089526601645,
+    "p_adj_roi_marche": 1.0
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_gf_avg_10",
+      "op": "ge",
+      "value": 1.8
+     },
+     {
+      "feature": "home_concede_streak",
+      "op": "le",
+      "value": 6
+     }
+    ],
+    "target": "away_win",
+    "complexity": 2,
+    "priority_validation_lift": 0.07717856296302461,
+    "n": 262,
+    "hit_rate": 0.46564885496183206,
+    "base_rate": 0.31199411331861665,
+    "lift": 0.1536547416432154,
+    "z_lift": 5.368183284082163,
+    "p_adj_lift_marche": 0.9305347326336831,
+    "settled": 262,
+    "roi": -0.012061068702290043,
+    "t_roi": -0.1496319908270468,
+    "p_adj_roi_marche": 1.0
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_gf_avg_10",
+      "op": "ge",
+      "value": 1.5
+     }
+    ],
+    "target": "away_win",
+    "complexity": 1,
+    "priority_validation_lift": 0.049159977171156166,
+    "n": 535,
+    "hit_rate": 0.41869158878504675,
+    "base_rate": 0.31199411331861665,
+    "lift": 0.1066974754664301,
+    "z_lift": 5.3267431720309,
+    "p_adj_lift_marche": 0.9450274862568716,
+    "settled": 534,
+    "roi": -0.04949438202247189,
+    "t_roi": -0.8798917385873001,
+    "p_adj_roi_marche": 1.0
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_after_conceding_3plus",
+      "op": "le",
+      "value": 0
+     },
+     {
+      "feature": "away_win_rate_8",
+      "op": "ge",
+      "value": 75
+     }
+    ],
+    "target": "away_scores_2plus",
+    "complexity": 2,
+    "priority_validation_lift": 0.1270346803665161,
+    "n": 126,
+    "hit_rate": 0.5873015873015873,
+    "base_rate": 0.36423841059602646,
+    "lift": 0.22306317670556086,
+    "z_lift": 5.203231411691886,
+    "p_adj_lift_marche": 0.9740129935032483,
+    "settled": 70,
+    "roi": 0.11471428571428573,
+    "t_roi": 1.003888214641481,
+    "p_adj_roi_marche": 1.0
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_goal_diff_avg_5",
+      "op": "ge",
+      "value": 1
+     },
+     {
+      "feature": "home_concede_rate_5",
+      "op": "ge",
+      "value": 60
+     },
+     {
+      "feature": "home_score_in_loss_rate_5",
+      "op": "le",
+      "value": 75
+     }
+    ],
+    "target": "away_scores_2plus",
+    "complexity": 3,
+    "priority_validation_lift": 0.09876525031470262,
+    "n": 142,
+    "hit_rate": 0.5704225352112676,
+    "base_rate": 0.36423841059602646,
+    "lift": 0.20618412461524116,
+    "z_lift": 5.105748065229142,
+    "p_adj_lift_marche": 0.9860069965017492,
+    "settled": 78,
+    "roi": 0.07897435897435899,
+    "t_roi": 0.7347199362272272,
+    "p_adj_roi_marche": 1.0
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_goal_diff_avg_2",
+      "op": "le",
+      "value": 1
+     },
+     {
+      "feature": "home_goal_diff_avg_5",
+      "op": "ge",
+      "value": 0
+     }
+    ],
+    "target": "home_not_lose",
+    "complexity": 2,
+    "priority_validation_lift": 0.04895527343618311,
+    "n": 501,
+    "hit_rate": 0.7924151696606786,
+    "base_rate": 0.6880058866813834,
+    "lift": 0.10440928297929519,
+    "z_lift": 5.0441582038601585,
+    "p_adj_lift_marche": 0.9900049975012494,
+    "settled": 493,
+    "roi": -0.004604462474645032,
+    "t_roi": -0.19129628353850095,
+    "p_adj_roi_marche": 1.0
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_win_rate_10",
+      "op": "ge",
+      "value": 40
+     }
+    ],
+    "target": "away_win",
+    "complexity": 1,
+    "priority_validation_lift": 0.04253277892974927,
+    "n": 569,
+    "hit_rate": 0.4094903339191564,
+    "base_rate": 0.31199411331861665,
+    "lift": 0.09749622060053975,
+    "z_lift": 5.019663874309119,
+    "p_adj_lift_marche": 0.991504247876062,
+    "settled": 568,
+    "roi": -0.07725352112676055,
+    "t_roi": -1.423297546105406,
+    "p_adj_roi_marche": 1.0
+   },
+   {
+    "conditions": [
+     {
+      "feature": "home_gf_avg_5",
+      "op": "ge",
+      "value": 1.5
+     },
+     {
+      "feature": "home_score_rate_8",
+      "op": "ge",
+      "value": 80
+     }
+    ],
+    "target": "home_scores_2plus",
+    "complexity": 2,
+    "priority_validation_lift": 0.11737498934104129,
+    "n": 310,
+    "hit_rate": 0.5903225806451613,
+    "base_rate": 0.4495952906548933,
+    "lift": 0.140727289990268,
+    "z_lift": 4.980893135114224,
+    "p_adj_lift_marche": 0.993503248375812,
+    "settled": 155,
+    "roi": -0.014516129032258058,
+    "t_roi": -0.1896941028301638,
+    "p_adj_roi_marche": 1.0
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_home_gf_avg",
+      "op": "ge",
+      "value": 3
+     },
+     {
+      "feature": "home_win_rate_10",
+      "op": "le",
+      "value": 80
+     }
+    ],
+    "target": "away_win",
+    "complexity": 2,
+    "priority_validation_lift": 0.17948804230525578,
+    "n": 61,
+    "hit_rate": 0.6065573770491803,
+    "base_rate": 0.31199411331861665,
+    "lift": 0.2945632637305637,
+    "z_lift": 4.965628484357185,
+    "p_adj_lift_marche": 0.9940029985007496,
+    "settled": 60,
+    "roi": 0.10966666666666663,
+    "t_roi": 0.8201740127050273,
+    "p_adj_roi_marche": 1.0
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_not_lose_rate_10",
+      "op": "le",
+      "value": 70
+     },
+     {
+      "feature": "home_win_rate_5",
+      "op": "ge",
+      "value": 70
+     }
+    ],
+    "target": "home_win",
+    "complexity": 2,
+    "priority_validation_lift": 0.11824137303564286,
+    "n": 67,
+    "hit_rate": 0.7313432835820896,
+    "base_rate": 0.4311994113318617,
+    "lift": 0.30014387225022787,
+    "z_lift": 4.960755063260216,
+    "p_adj_lift_marche": 0.9940029985007496,
+    "settled": 67,
+    "roi": 0.04402985074626865,
+    "t_roi": 0.5168133840669051,
+    "p_adj_roi_marche": 1.0
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_win_rate_10",
+      "op": "ge",
+      "value": 12
+     },
+     {
+      "feature": "home_goal_diff_avg_10",
+      "op": "le",
+      "value": -0.667
+     }
+    ],
+    "target": "away_win",
+    "complexity": 2,
+    "priority_validation_lift": 0.08274765869766748,
+    "n": 221,
+    "hit_rate": 0.4660633484162896,
+    "base_rate": 0.31199411331861665,
+    "lift": 0.15406923509767295,
+    "z_lift": 4.9435938841472185,
+    "p_adj_lift_marche": 0.9945027486256871,
+    "settled": 220,
+    "roi": -0.09359090909090907,
+    "t_roi": -1.2447869641633642,
+    "p_adj_roi_marche": 1.0
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_ga_avg_10",
+      "op": "le",
+      "value": 1.1
+     },
+     {
+      "feature": "away_home_not_lose_rate",
+      "op": "ge",
+      "value": 75
+     }
+    ],
+    "target": "away_win",
+    "complexity": 2,
+    "priority_validation_lift": 0.09475167130657708,
+    "n": 332,
+    "hit_rate": 0.4367469879518072,
+    "base_rate": 0.31199411331861665,
+    "lift": 0.12475287463319057,
+    "z_lift": 4.906257370843077,
+    "p_adj_lift_marche": 0.9965017491254373,
+    "settled": 331,
+    "roi": -0.07477341389728098,
+    "t_roi": -1.1738409529162508,
+    "p_adj_roi_marche": 1.0
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_win_rate_10",
+      "op": "ge",
+      "value": 42.857
+     }
+    ],
+    "target": "away_not_lose",
+    "complexity": 1,
+    "priority_validation_lift": 0.06754671085712527,
+    "n": 470,
+    "hit_rate": 0.6808510638297872,
+    "base_rate": 0.5688005886681383,
+    "lift": 0.1120504751616489,
+    "z_lift": 4.905051067599377,
+    "p_adj_lift_marche": 0.9965017491254373,
+    "settled": 461,
+    "roi": -0.05019522776572665,
+    "t_roi": -1.559718032459908,
+    "p_adj_roi_marche": 1.0
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_ga_avg_10",
+      "op": "le",
+      "value": 1.1
+     },
+     {
+      "feature": "away_home_not_lose_rate",
+      "op": "ge",
+      "value": 75
+     }
+    ],
+    "target": "away_not_lose",
+    "complexity": 2,
+    "priority_validation_lift": 0.10851316384243581,
+    "n": 332,
+    "hit_rate": 0.7018072289156626,
+    "base_rate": 0.5688005886681383,
+    "lift": 0.1330066402475243,
+    "z_lift": 4.893541400701482,
+    "p_adj_lift_marche": 0.9965017491254373,
+    "settled": 323,
+    "roi": -0.026160990712074297,
+    "t_roi": -0.7107038768093747,
+    "p_adj_roi_marche": 1.0
+   }
+  ],
+  "best_by_roi": [
+   {
+    "conditions": [
+     {
+      "feature": "home_away_ga_avg",
+      "op": "le",
+      "value": 1.222
+     },
+     {
+      "feature": "home_over_2_5_rate_10",
+      "op": "ge",
+      "value": 75
+     }
+    ],
+    "target": "home_scores_1plus",
+    "complexity": 2,
+    "priority_validation_lift": 0.10554706691259363,
+    "n": 37,
+    "hit_rate": 0.8648648648648649,
+    "base_rate": 0.7696835908756439,
+    "lift": 0.09518127398922105,
+    "z_lift": 1.3750985407679404,
+    "p_adj_lift_marche": 1.0,
+    "settled": 9,
+    "roi": 0.08333333333333336,
+    "t_roi": 4.642383454426302,
+    "p_adj_roi_marche": null
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_over_2_5_rate_8",
+      "op": "le",
+      "value": 20
+     },
+     {
+      "feature": "home_away_score_rate",
+      "op": "le",
+      "value": 60
+     }
+    ],
+    "target": "under_3_5",
+    "complexity": 2,
+    "priority_validation_lift": 0.06426776830966652,
+    "n": 35,
+    "hit_rate": 0.9428571428571428,
+    "base_rate": 0.6799116997792495,
+    "lift": 0.26294544307789336,
+    "z_lift": 3.3345598259642233,
+    "p_adj_lift_marche": 1.0,
+    "settled": 30,
+    "roi": 0.16933333333333334,
+    "t_roi": 2.783915102671561,
+    "p_adj_roi_marche": 0.4577711144427786
+   },
+   {
+    "conditions": [
+     {
+      "feature": "home_away_n",
+      "op": "ge",
+      "value": 10
+     },
+     {
+      "feature": "home_win_rate_5",
+      "op": "ge",
+      "value": 60
+     }
+    ],
+    "target": "home_scores_1plus",
+    "complexity": 2,
+    "priority_validation_lift": 0.04269090292013089,
+    "n": 61,
+    "hit_rate": 0.8524590163934426,
+    "base_rate": 0.7696835908756439,
+    "lift": 0.0827754255177987,
+    "z_lift": 1.5354928028987913,
+    "p_adj_lift_marche": 1.0,
+    "settled": 25,
+    "roi": 0.1424,
+    "t_roi": 2.7296795822912414,
+    "p_adj_roi_marche": null
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_concede_streak",
+      "op": "ge",
+      "value": 10
+     },
+     {
+      "feature": "home_history_n",
+      "op": "ge",
+      "value": 7.0
+     }
+    ],
+    "target": "home_scores_2plus",
+    "complexity": 2,
+    "priority_validation_lift": 0.16143363291490165,
+    "n": 30,
+    "hit_rate": 0.6333333333333333,
+    "base_rate": 0.4495952906548933,
+    "lift": 0.18373804267844002,
+    "z_lift": 2.0230553527848185,
+    "p_adj_lift_marche": 1.0,
+    "settled": 19,
+    "roi": 0.37052631578947365,
+    "t_roi": 2.4471800110092694,
+    "p_adj_roi_marche": null
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_over_2_5_rate_8",
+      "op": "le",
+      "value": 20
+     },
+     {
+      "feature": "home_away_score_rate",
+      "op": "le",
+      "value": 60
+     },
+     {
+      "feature": "home_over_2_5_rate_5",
+      "op": "ge",
+      "value": 1
+     }
+    ],
+    "target": "under_3_5",
+    "complexity": 3,
+    "priority_validation_lift": 0.053498537540435764,
+    "n": 30,
+    "hit_rate": 0.9333333333333333,
+    "base_rate": 0.6799116997792495,
+    "lift": 0.25342163355408387,
+    "z_lift": 2.9753849096380067,
+    "p_adj_lift_marche": 1.0,
+    "settled": 26,
+    "roi": 0.1619230769230769,
+    "t_roi": 2.3160230981499765,
+    "p_adj_roi_marche": null
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_ga_avg_10",
+      "op": "le",
+      "value": 1.3
+     },
+     {
+      "feature": "away_score_rate_10",
+      "op": "le",
+      "value": 90
+     },
+     {
+      "feature": "home_win_rate_5",
+      "op": "le",
+      "value": 0
+     }
+    ],
+    "target": "away_scores_1plus",
+    "complexity": 3,
+    "priority_validation_lift": 0.04111305484198091,
+    "n": 75,
+    "hit_rate": 0.84,
+    "base_rate": 0.7071376011773363,
+    "lift": 0.1328623988226637,
+    "z_lift": 2.528418433453521,
+    "p_adj_lift_marche": 1.0,
+    "settled": 35,
+    "roi": 0.1394285714285714,
+    "t_roi": 2.2082764516105904,
+    "p_adj_roi_marche": 0.8685657171414293
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_over_2_5_rate_8",
+      "op": "le",
+      "value": 40
+     },
+     {
+      "feature": "home_after_scoring_2plus",
+      "op": "ge",
+      "value": 1
+     }
+    ],
+    "target": "home_not_lose",
+    "complexity": 2,
+    "priority_validation_lift": 0.019549648151841237,
+    "n": 148,
+    "hit_rate": 0.8378378378378378,
+    "base_rate": 0.6880058866813834,
+    "lift": 0.14983195115645442,
+    "z_lift": 3.9342868000869586,
+    "p_adj_lift_marche": 1.0,
+    "settled": 143,
+    "roi": 0.09559440559440559,
+    "t_roi": 2.124323366745339,
+    "p_adj_roi_marche": 0.9085457271364318
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_away_n",
+      "op": "ge",
+      "value": 10
+     },
+     {
+      "feature": "home_win_rate_10",
+      "op": "ge",
+      "value": 25
+     }
+    ],
+    "target": "home_scores_1plus",
+    "complexity": 2,
+    "priority_validation_lift": 0.011297157576251604,
+    "n": 155,
+    "hit_rate": 0.8451612903225807,
+    "base_rate": 0.7696835908756439,
+    "lift": 0.07547769944693683,
+    "z_lift": 2.2318548635343003,
+    "p_adj_lift_marche": 1.0,
+    "settled": 68,
+    "roi": 0.09220588235294115,
+    "t_roi": 1.9113526965789425,
+    "p_adj_roi_marche": 0.9780109945027486
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_concede_streak",
+      "op": "ge",
+      "value": 6
+     },
+     {
+      "feature": "away_gf_avg_8",
+      "op": "ge",
+      "value": 1
+     },
+     {
+      "feature": "away_score_streak",
+      "op": "le",
+      "value": 2
+     }
+    ],
+    "target": "home_scores_2plus",
+    "complexity": 3,
+    "priority_validation_lift": 0.06772795915603635,
+    "n": 67,
+    "hit_rate": 0.6417910447761194,
+    "base_rate": 0.4495952906548933,
+    "lift": 0.19219575412122608,
+    "z_lift": 3.162490599765598,
+    "p_adj_lift_marche": 1.0,
+    "settled": 40,
+    "roi": 0.25449999999999995,
+    "t_roi": 1.9030474573347196,
+    "p_adj_roi_marche": 0.9785107446276862
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_after_heavy_loss",
+      "op": "ge",
+      "value": 1
+     }
+    ],
+    "target": "home_scores_2plus",
+    "complexity": 1,
+    "priority_validation_lift": 0.048595306094811885,
+    "n": 88,
+    "hit_rate": 0.6136363636363636,
+    "base_rate": 0.4495952906548933,
+    "lift": 0.16404107298147036,
+    "z_lift": 3.0934420881284423,
+    "p_adj_lift_marche": 1.0,
+    "settled": 50,
+    "roi": 0.2414,
+    "t_roi": 1.853198446881789,
+    "p_adj_roi_marche": 0.9850074962518741
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_away_not_lose_rate",
+      "op": "ge",
+      "value": 66.667
+     },
+     {
+      "feature": "h2h_home_not_lose_rate",
+      "op": "le",
+      "value": 80
+     }
+    ],
+    "target": "away_scores_2plus",
+    "complexity": 2,
+    "priority_validation_lift": 0.09774396499360893,
+    "n": 38,
+    "hit_rate": 0.5526315789473685,
+    "base_rate": 0.36423841059602646,
+    "lift": 0.188393168351342,
+    "z_lift": 2.4133312378280936,
+    "p_adj_lift_marche": 1.0,
+    "settled": 19,
+    "roi": 0.4852631578947369,
+    "t_roi": 1.8278996812099255,
+    "p_adj_roi_marche": null
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_away_gf_avg",
+      "op": "le",
+      "value": 0.8
+     },
+     {
+      "feature": "home_concede_rate_8",
+      "op": "le",
+      "value": 62.5
+     }
+    ],
+    "target": "home_not_lose",
+    "complexity": 2,
+    "priority_validation_lift": 0.07652639233788783,
+    "n": 112,
+    "hit_rate": 0.8839285714285714,
+    "base_rate": 0.6880058866813834,
+    "lift": 0.195922684747188,
+    "z_lift": 4.475323745124156,
+    "p_adj_lift_marche": 1.0,
+    "settled": 108,
+    "roi": 0.07305555555555555,
+    "t_roi": 1.8192061927573429,
+    "p_adj_roi_marche": 0.9885057471264368
+   },
+   {
+    "conditions": [
+     {
+      "feature": "home_home_gf_avg",
+      "op": "ge",
+      "value": 1.2
+     },
+     {
+      "feature": "home_home_n",
+      "op": "ge",
+      "value": 10
+     }
+    ],
+    "target": "home_scores_1plus",
+    "complexity": 2,
+    "priority_validation_lift": 0.01483803755515023,
+    "n": 169,
+    "hit_rate": 0.863905325443787,
+    "base_rate": 0.7696835908756439,
+    "lift": 0.09422173456814309,
+    "z_lift": 2.909215502057141,
+    "p_adj_lift_marche": 1.0,
+    "settled": 70,
+    "roi": 0.08185714285714288,
+    "t_roi": 1.7568905906605021,
+    "p_adj_roi_marche": 0.992503748125937
+   },
+   {
+    "conditions": [
+     {
+      "feature": "h2h_over_2_5_rate",
+      "op": "le",
+      "value": 25
+     },
+     {
+      "feature": "home_home_ga_avg",
+      "op": "ge",
+      "value": 1
+     },
+     {
+      "feature": "home_not_lose_rate_8",
+      "op": "ge",
+      "value": 20
+     }
+    ],
+    "target": "draw",
+    "complexity": 3,
+    "priority_validation_lift": 0.016715776343799393,
+    "n": 86,
+    "hit_rate": 0.36046511627906974,
+    "base_rate": 0.2568064753495217,
+    "lift": 0.10365864092954802,
+    "z_lift": 2.200395724815835,
+    "p_adj_lift_marche": 1.0,
+    "settled": 86,
+    "roi": 0.3409302325581396,
+    "t_roi": 1.7318942193158322,
+    "p_adj_roi_marche": 0.9940029985007496
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_not_lose_rate_3",
+      "op": "ge",
+      "value": 66.667
+     },
+     {
+      "feature": "away_over_2_5_rate_10",
+      "op": "le",
+      "value": 60
+     },
+     {
+      "feature": "home_goal_diff_avg_5",
+      "op": "le",
+      "value": 0.25
+     }
+    ],
+    "target": "under_2_5",
+    "complexity": 3,
+    "priority_validation_lift": 0.060157425136582954,
+    "n": 166,
+    "hit_rate": 0.6024096385542169,
+    "base_rate": 0.46431199411331864,
+    "lift": 0.13809764444089828,
+    "z_lift": 3.567626673366053,
+    "p_adj_lift_marche": 1.0,
+    "settled": 164,
+    "roi": 0.1299390243902439,
+    "t_roi": 1.730976155718364,
+    "p_adj_roi_marche": 0.9945027486256871
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_home_ga_avg",
+      "op": "ge",
+      "value": 2
+     },
+     {
+      "feature": "home_goal_diff_avg_10",
+      "op": "le",
+      "value": 0.25
+     }
+    ],
+    "target": "home_scores_2plus",
+    "complexity": 2,
+    "priority_validation_lift": 0.09022795915603643,
+    "n": 127,
+    "hit_rate": 0.5275590551181102,
+    "base_rate": 0.4495952906548933,
+    "lift": 0.0779637644632169,
+    "z_lift": 1.7662115233583944,
+    "p_adj_lift_marche": 1.0,
+    "settled": 68,
+    "roi": 0.19308823529411762,
+    "t_roi": 1.7089086682923529,
+    "p_adj_roi_marche": 0.9965017491254373
+   },
+   {
+    "conditions": [
+     {
+      "feature": "h2h_home_score_rate",
+      "op": "le",
+      "value": 75
+     },
+     {
+      "feature": "h2h_home_win_rate",
+      "op": "le",
+      "value": 20
+     },
+     {
+      "feature": "home_win_rate_3",
+      "op": "le",
+      "value": 50
+     }
+    ],
+    "target": "draw",
+    "complexity": 3,
+    "priority_validation_lift": 0.029932902803102623,
+    "n": 75,
+    "hit_rate": 0.38666666666666666,
+    "base_rate": 0.2568064753495217,
+    "lift": 0.12986019131714494,
+    "z_lift": 2.574261884566786,
+    "p_adj_lift_marche": 1.0,
+    "settled": 75,
+    "roi": 0.3340000000000001,
+    "t_roi": 1.6965690567480136,
+    "p_adj_roi_marche": 0.9975012493753124
+   },
+   {
+    "conditions": [
+     {
+      "feature": "h2h_over_2_5_rate",
+      "op": "le",
+      "value": 25
+     },
+     {
+      "feature": "home_home_ga_avg",
+      "op": "ge",
+      "value": 1
+     }
+    ],
+    "target": "draw",
+    "complexity": 2,
+    "priority_validation_lift": 0.01596934648660514,
+    "n": 87,
+    "hit_rate": 0.3563218390804598,
+    "base_rate": 0.2568064753495217,
+    "lift": 0.09951536373093806,
+    "z_lift": 2.1246911913069413,
+    "p_adj_lift_marche": 1.0,
+    "settled": 87,
+    "roi": 0.3255172413793104,
+    "t_roi": 1.6677146852631402,
+    "p_adj_roi_marche": 0.9980009995002499
+   },
+   {
+    "conditions": [
+     {
+      "feature": "h2h_over_2_5_rate",
+      "op": "le",
+      "value": 40
+     },
+     {
+      "feature": "home_score_streak",
+      "op": "le",
+      "value": 8
+     }
+    ],
+    "target": "draw",
+    "complexity": 2,
+    "priority_validation_lift": 0.007312503787599289,
+    "n": 133,
+    "hit_rate": 0.3458646616541353,
+    "base_rate": 0.2568064753495217,
+    "lift": 0.0890581863046136,
+    "z_lift": 2.3509626159143515,
+    "p_adj_lift_marche": 1.0,
+    "settled": 133,
+    "roi": 0.2509774436090226,
+    "t_roi": 1.6489659472580396,
+    "p_adj_roi_marche": 0.9980009995002499
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_away_not_lose_rate",
+      "op": "ge",
+      "value": 76.923
+     },
+     {
+      "feature": "home_not_lose_rate_8",
+      "op": "ge",
+      "value": 1
+     }
+    ],
+    "target": "away_scores_2plus",
+    "complexity": 2,
+    "priority_validation_lift": 0.050619095950931725,
+    "n": 266,
+    "hit_rate": 0.4699248120300752,
+    "base_rate": 0.36423841059602646,
+    "lift": 0.10568640143404873,
+    "z_lift": 3.5819532636796425,
+    "p_adj_lift_marche": 1.0,
+    "settled": 146,
+    "roi": 0.15904109589041096,
+    "t_roi": 1.5835579714136798,
+    "p_adj_roi_marche": 0.999000499750125
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_gf_avg_5",
+      "op": "le",
+      "value": 1.333
+     },
+     {
+      "feature": "away_score_rate_10",
+      "op": "le",
+      "value": 80
+     },
+     {
+      "feature": "home_ga_avg_3",
+      "op": "le",
+      "value": 0.667
+     }
+    ],
+    "target": "home_scores_1plus",
+    "complexity": 3,
+    "priority_validation_lift": 0.00487378555185658,
+    "n": 106,
+    "hit_rate": 0.8490566037735849,
+    "base_rate": 0.7696835908756439,
+    "lift": 0.07937301289794108,
+    "z_lift": 1.9409182526215767,
+    "p_adj_lift_marche": 1.0,
+    "settled": 44,
+    "roi": 0.08613636363636362,
+    "t_roi": 1.5780803899784512,
+    "p_adj_roi_marche": 0.999000499750125
+   },
+   {
+    "conditions": [
+     {
+      "feature": "h2h_over_2_5_rate",
+      "op": "ge",
+      "value": 40
+     },
+     {
+      "feature": "home_failed_score_streak",
+      "op": "le",
+      "value": 1
+     },
+     {
+      "feature": "home_goal_diff_avg_8",
+      "op": "ge",
+      "value": 0.25
+     }
+    ],
+    "target": "home_scores_1plus",
+    "complexity": 3,
+    "priority_validation_lift": 0.049347489283033785,
+    "n": 46,
+    "hit_rate": 0.782608695652174,
+    "base_rate": 0.7696835908756439,
+    "lift": 0.012925104776530083,
+    "z_lift": 0.20820657203984738,
+    "p_adj_lift_marche": 1.0,
+    "settled": 16,
+    "roi": 0.1275,
+    "t_roi": 1.5750446223547434,
+    "p_adj_roi_marche": null
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_home_gf_avg",
+      "op": "ge",
+      "value": 3
+     },
+     {
+      "feature": "home_win_rate_10",
+      "op": "le",
+      "value": 80
+     }
+    ],
+    "target": "away_scores_1plus",
+    "complexity": 2,
+    "priority_validation_lift": 0.09205938618758625,
+    "n": 61,
+    "hit_rate": 0.8852459016393442,
+    "base_rate": 0.7071376011773363,
+    "lift": 0.17810830046200798,
+    "z_lift": 3.0567878884121455,
+    "p_adj_lift_marche": 1.0,
+    "settled": 27,
+    "roi": 0.09851851851851852,
+    "t_roi": 1.5493119212327058,
+    "p_adj_roi_marche": null
+   },
+   {
+    "conditions": [
+     {
+      "feature": "home_loss_streak",
+      "op": "ge",
+      "value": 3
+     }
+    ],
+    "target": "away_win",
+    "complexity": 1,
+    "priority_validation_lift": 0.07680322235360798,
+    "n": 95,
+    "hit_rate": 0.5263157894736842,
+    "base_rate": 0.31199411331861665,
+    "lift": 0.21432167615506753,
+    "z_lift": 4.508775616467212,
+    "p_adj_lift_marche": 1.0,
+    "settled": 95,
+    "roi": 0.2118947368421053,
+    "t_roi": 1.521806412407524,
+    "p_adj_roi_marche": 0.9995002498750625
+   },
+   {
+    "conditions": [
+     {
+      "feature": "away_not_lose_rate_10",
+      "op": "ge",
+      "value": 80
+     },
+     {
+      "feature": "home_concede_rate_5",
+      "op": "le",
+      "value": 50
+     }
+    ],
+    "target": "home_scores_3plus",
+    "complexity": 2,
+    "priority_validation_lift": 0.03362297044910545,
+    "n": 43,
+    "hit_rate": 0.3023255813953488,
+    "base_rate": 0.21339220014716703,
+    "lift": 0.08893338124818179,
+    "z_lift": 1.423412048101226,
+    "p_adj_lift_marche": 1.0,
+    "settled": 18,
+    "roi": 0.6799999999999999,
+    "t_roi": 1.4424935909985872,
+    "p_adj_roi_marche": null
+   }
+  ]
+ },
+ "decision": {
+  "verdict": "DONNEES_INSUFFISANTES",
+  "criteria": {
+   "echantillon_independant_et_gele": true,
+   "paris_regles_min": true,
+   "duree_min_jours": false,
+   "roi_positif": false,
+   "ic95_bootstrap_roi_exclut_zero": false,
+   "p_permutation_marche": false,
+   "stabilite_dans_le_temps": false
+  },
+  "detail": {
+   "required": {
+    "settled_picks": 300,
+    "span_days": 56,
+    "positive_block_share": 0.6666666666666666,
+    "alpha": 0.05
+   },
+   "positive_block_share": 0.0,
+   "settled_bets": 1359,
+   "span_days": 20,
+   "roi": {
+    "n": 1359,
+    "mean": -0.06578366445916117,
+    "ci95": [
+     -0.13522441312481198,
+     -0.0008112519778084922
+    ],
+    "days": 20
+   },
+   "p_roi_marche": 0.2013993003498251
+  }
+ }
+}

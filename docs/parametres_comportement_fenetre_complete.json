@@ -1,0 +1,84 @@
+{
+ "mu_dom": 1.4939487422876128,
+ "mu_ext": 1.2017085904129094,
+ "cap": null,
+ "shrink": 4,
+ "rho": -0.05,
+ "source": "Football-Data résultats, 60% premiers (apprentissage)",
+ "matchs_apprentissage": 8428,
+ "loglik_test": -2.9962512490934508,
+ "seuil_buts_defensif": 2.5201878093430063,
+ "seuil_buts_offensif": 2.803095298942475,
+ "seuil_favori_dom": 0.4620733127094382,
+ "seuil_favori_ext": 0.33213483867450194,
+ "seuils": "tertiles mesurés sur l'apprentissage",
+ "fenetre": null,
+ "version": "alpha-2 : historique complet (fenêtre mesurée sur Football-Data, 10/2026) ; ancien réglage à 5 matchs conservé dans parametres_comportement_fenetre5.json",
+ "seuil_buts_equipe": 0.3614883783284233,
+ "validation_seuil_buts_equipe": {
+  "au_dessus": {
+   "cas": 3941,
+   "classe_la_plus_probable_sortie": 0.375
+  },
+  "en_dessous": {
+   "cas": 8641,
+   "classe_la_plus_probable_sortie": 0.343
+  }
+ },
+ "seuil_btts_bas": 0.5058214861098337,
+ "seuil_btts_haut": 0.5625342784007457,
+ "seuil_secondaire": 0.747535939326116,
+ "seuil_ecart_favori": 0.20279312311679143,
+ "seuils_page": "tertiles BTTS (Football-Data) ; quartile bas des pronostics principaux (archive)",
+ "seuils_tendance": {
+  "resultat": 0.45693051720654676,
+  "dom_buts": 2.0,
+  "ext_buts": 0.6241394729951704,
+  "buts": 0.6526439063116742,
+  "deux_marquent": 2.0
+ },
+ "validation_seuils_tendance": {
+  "cible_principaux_apprentissage": 0.656,
+  "jour_de_coupe": "2026-10-11",
+  "resultat": {
+   "seuil": 0.457,
+   "apprentissage": 205,
+   "test": {
+    "cas": 346,
+    "reussite": 0.633
+   }
+  },
+  "dom_buts": {
+   "seuil": null,
+   "apprentissage": 36,
+   "test": {
+    "cas": 0,
+    "reussite": null
+   }
+  },
+  "ext_buts": {
+   "seuil": 0.624,
+   "apprentissage": 93,
+   "test": {
+    "cas": 178,
+    "reussite": 0.663
+   }
+  },
+  "buts": {
+   "seuil": 0.653,
+   "apprentissage": 236,
+   "test": {
+    "cas": 241,
+    "reussite": 0.676
+   }
+  },
+  "deux_marquent": {
+   "seuil": null,
+   "apprentissage": 315,
+   "test": {
+    "cas": 0,
+    "reussite": null
+   }
+  }
+ }
+}

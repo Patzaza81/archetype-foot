@@ -22,6 +22,7 @@ Avant toute modification concernée, lire le document spécialisé correspondant
 - Archive de test, anti-fuite et évaluation : `docs/CLAUDE_ARCHIVE.md`
 - Corners et cartons (modèle, preuves, limites) : `docs/CORNERS_CARTONS.md`
 - Moteur v (conception, tests subis, résultats, suivi) : `docs/MOTEUR_V.md` et `docs/MOTEUR_V_HISTORIQUE.md`
+- Matrice expérimentale de découverte de scénarios (isolée, non branchée en production) : `docs/MATRICE_SCENARIOS.md`
 
 ## Règles de sécurité
 

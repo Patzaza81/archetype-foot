@@ -1,0 +1,633 @@
+{
+ "split": {
+  "train": 4587,
+  "validation": 1522,
+  "test": 1513,
+  "train_last_day": "2026-02-01",
+  "validation_last_day": "2026-03-21",
+  "test_first_day": "2026-03-22",
+  "test_last_day": "2026-05-31"
+ },
+ "tuning": {
+  "min_settled_train": 60,
+  "min_settled_validation": 40,
+  "train_roi_min": 0.0,
+  "validation_roi_min": 0.0,
+  "score": "roi_validation - 1.28 * erreur_standard",
+  "max_rules": 100
+ },
+ "scenarios_tested": 8000,
+ "rules_selected": 34,
+ "test": {
+  "picks": 1499,
+  "roi": -0.03519679905176958,
+  "hit_rate": 0.49966644429619744,
+  "mean_odds": 2.0781654405784735,
+  "bootstrap_by_day": {
+   "n": 1499,
+   "mean": -0.03519679905176958,
+   "ci95": [
+    -0.08698344555383206,
+    0.023247192022685877
+   ],
+   "days": 59
+  }
+ },
+ "null_market": {
+  "draws": 100,
+  "mean_roi": -0.02700586979152785,
+  "p95_roi": 0.02343787078974031,
+  "p": 0.5643564356435643
+ },
+ "chosen": [
+  {
+   "conditions": [
+    {
+     "feature": "h2h_home_win_rate",
+     "op": "ge",
+     "value": 60
+    },
+    {
+     "feature": "home_ga_avg_2",
+     "op": "ge",
+     "value": 2
+    }
+   ],
+   "target": "over_2_5"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "home_after_draw",
+     "op": "ge",
+     "value": 1
+    },
+    {
+     "feature": "home_gf_avg_8",
+     "op": "ge",
+     "value": 1.25
+    },
+    {
+     "feature": "market_away_prob",
+     "op": "ge",
+     "value": 34.435
+    }
+   ],
+   "target": "under_2_5"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "home_home_not_lose_rate",
+     "op": "ge",
+     "value": 75
+    },
+    {
+     "feature": "home_score_rate_5",
+     "op": "le",
+     "value": 80
+    }
+   ],
+   "target": "over_2_5"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "away_loss_streak",
+     "op": "ge",
+     "value": 2
+    }
+   ],
+   "target": "draw"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "home_after_draw",
+     "op": "ge",
+     "value": 1
+    },
+    {
+     "feature": "home_gf_avg_8",
+     "op": "ge",
+     "value": 1.25
+    },
+    {
+     "feature": "market_away_prob",
+     "op": "ge",
+     "value": 34.435
+    }
+   ],
+   "target": "draw"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "away_away_gf_avg",
+     "op": "ge",
+     "value": 1.333
+    },
+    {
+     "feature": "away_home_ga_avg",
+     "op": "le",
+     "value": 1.333
+    },
+    {
+     "feature": "away_score_rate_3",
+     "op": "ge",
+     "value": 66.667
+    }
+   ],
+   "target": "over_2_5"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "h2h_over_2_5_rate",
+     "op": "ge",
+     "value": 1
+    },
+    {
+     "feature": "home_goal_diff_avg_2",
+     "op": "ge",
+     "value": 0.5
+    }
+   ],
+   "target": "over_2_5"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "away_concede_rate_3",
+     "op": "le",
+     "value": 40
+    },
+    {
+     "feature": "home_win_rate_10",
+     "op": "le",
+     "value": 90
+    }
+   ],
+   "target": "over_2_5"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "away_concede_rate_8",
+     "op": "ge",
+     "value": 30
+    },
+    {
+     "feature": "away_home_ga_avg",
+     "op": "ge",
+     "value": 0.75
+    },
+    {
+     "feature": "market_fav_gap",
+     "op": "ge",
+     "value": 40
+    }
+   ],
+   "target": "over_2_5"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "away_concede_rate_8",
+     "op": "ge",
+     "value": 30
+    },
+    {
+     "feature": "market_fav_gap",
+     "op": "ge",
+     "value": 40
+    }
+   ],
+   "target": "over_2_5"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "home_home_ga_avg",
+     "op": "le",
+     "value": 1.667
+    },
+    {
+     "feature": "home_over_2_5_rate_2",
+     "op": "le",
+     "value": 0
+    }
+   ],
+   "target": "over_2_5"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "away_not_lose_rate_10",
+     "op": "le",
+     "value": 60
+    },
+    {
+     "feature": "away_score_rate_5",
+     "op": "le",
+     "value": 80
+    },
+    {
+     "feature": "home_away_n",
+     "op": "ge",
+     "value": 12
+    }
+   ],
+   "target": "over_2_5"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "away_concede_rate_8",
+     "op": "ge",
+     "value": 30
+    },
+    {
+     "feature": "away_not_lose_rate_8",
+     "op": "ge",
+     "value": 1
+    },
+    {
+     "feature": "market_fav_gap",
+     "op": "ge",
+     "value": 40
+    }
+   ],
+   "target": "over_2_5"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "away_ga_avg_2",
+     "op": "ge",
+     "value": 2
+    },
+    {
+     "feature": "home_not_lose_rate_8",
+     "op": "ge",
+     "value": 25
+    }
+   ],
+   "target": "draw"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "away_history_n",
+     "op": "ge",
+     "value": 11.0
+    },
+    {
+     "feature": "draw_odds",
+     "op": "le",
+     "value": 3.25
+    }
+   ],
+   "target": "over_2_5"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "away_score_rate_2",
+     "op": "le",
+     "value": 50
+    },
+    {
+     "feature": "home_concede_rate_10",
+     "op": "le",
+     "value": 75
+    }
+   ],
+   "target": "over_2_5"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "away_concede_rate_8",
+     "op": "le",
+     "value": 50
+    },
+    {
+     "feature": "away_goal_diff_avg_3",
+     "op": "le",
+     "value": 2
+    }
+   ],
+   "target": "over_2_5"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "away_odds",
+     "op": "ge",
+     "value": 4.5
+    },
+    {
+     "feature": "away_over_2_5_rate_8",
+     "op": "ge",
+     "value": 40
+    }
+   ],
+   "target": "over_2_5"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "home_after_draw",
+     "op": "ge",
+     "value": 1
+    }
+   ],
+   "target": "draw"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "away_away_gf_avg",
+     "op": "le",
+     "value": 1.333
+    },
+    {
+     "feature": "h2h_home_score_rate",
+     "op": "le",
+     "value": 0
+    }
+   ],
+   "target": "draw"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "h2h_over_2_5_rate",
+     "op": "ge",
+     "value": 1
+    },
+    {
+     "feature": "home_concede_streak",
+     "op": "ge",
+     "value": 2
+    },
+    {
+     "feature": "home_goal_diff_avg_2",
+     "op": "ge",
+     "value": 0.5
+    }
+   ],
+   "target": "draw"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "away_home_ga_avg",
+     "op": "le",
+     "value": 1.667
+    },
+    {
+     "feature": "away_score_rate_5",
+     "op": "le",
+     "value": 75
+    },
+    {
+     "feature": "home_goal_diff_avg_5",
+     "op": "le",
+     "value": 0
+    }
+   ],
+   "target": "over_2_5"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "home_over_2_5_rate_5",
+     "op": "le",
+     "value": 25
+    },
+    {
+     "feature": "home_score_rate_8",
+     "op": "le",
+     "value": 70
+    }
+   ],
+   "target": "over_2_5"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "home_goal_diff_avg_5",
+     "op": "ge",
+     "value": 0
+    },
+    {
+     "feature": "market_draw_prob",
+     "op": "ge",
+     "value": 26.619
+    }
+   ],
+   "target": "draw"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "away_after_conceding_3plus",
+     "op": "ge",
+     "value": 1
+    },
+    {
+     "feature": "away_home_gf_avg",
+     "op": "ge",
+     "value": 1.167
+    }
+   ],
+   "target": "draw"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "away_home_not_lose_rate",
+     "op": "le",
+     "value": 62.5
+    },
+    {
+     "feature": "draw_odds",
+     "op": "ge",
+     "value": 3.9
+    },
+    {
+     "feature": "home_score_rate_8",
+     "op": "ge",
+     "value": 60
+    }
+   ],
+   "target": "draw"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "home_gf_avg_8",
+     "op": "ge",
+     "value": 1.75
+    },
+    {
+     "feature": "market_fav_gap",
+     "op": "le",
+     "value": 12
+    }
+   ],
+   "target": "under_2_5"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "away_away_gf_avg",
+     "op": "le",
+     "value": 1.333
+    },
+    {
+     "feature": "away_not_lose_rate_5",
+     "op": "ge",
+     "value": 50
+    },
+    {
+     "feature": "h2h_home_score_rate",
+     "op": "le",
+     "value": 0
+    }
+   ],
+   "target": "draw"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "home_gf_avg_8",
+     "op": "ge",
+     "value": 1
+    },
+    {
+     "feature": "home_not_lose_rate_8",
+     "op": "le",
+     "value": 50
+    },
+    {
+     "feature": "home_win_rate_2",
+     "op": "ge",
+     "value": 1
+    }
+   ],
+   "target": "draw"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "away_over_2_5_rate_8",
+     "op": "ge",
+     "value": 62.5
+    },
+    {
+     "feature": "home_score_in_loss_rate_5",
+     "op": "ge",
+     "value": 30
+    },
+    {
+     "feature": "home_score_rate_10",
+     "op": "ge",
+     "value": 100
+    }
+   ],
+   "target": "away_win"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "away_score_streak",
+     "op": "ge",
+     "value": 12
+    },
+    {
+     "feature": "home_away_gf_avg",
+     "op": "ge",
+     "value": 1
+    }
+   ],
+   "target": "away_win"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "home_gf_avg_8",
+     "op": "ge",
+     "value": 1.75
+    },
+    {
+     "feature": "market_fav_gap",
+     "op": "le",
+     "value": 12
+    }
+   ],
+   "target": "draw"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "home_over_2_5_rate_5",
+     "op": "ge",
+     "value": 50
+    },
+    {
+     "feature": "home_win_rate_8",
+     "op": "le",
+     "value": 0
+    }
+   ],
+   "target": "away_win"
+  },
+  {
+   "conditions": [
+    {
+     "feature": "away_ga_avg_10",
+     "op": "ge",
+     "value": 2
+    },
+    {
+     "feature": "home_loss_count_5",
+     "op": "le",
+     "value": 2
+    },
+    {
+     "feature": "market_draw_prob",
+     "op": "le",
+     "value": 23.685
+    }
+   ],
+   "target": "draw"
+  }
+ ],
+ "forward_archive": {
+  "matches": 1359,
+  "picks": 1199,
+  "roi": -0.07972477064220183,
+  "hit_rate": 0.4670558798999166,
+  "mean_odds": 2.25210175145955,
+  "bootstrap_by_day": {
+   "n": 1199,
+   "mean": -0.07972477064220183,
+   "ci95": [
+    -0.14331210222016647,
+    -0.0033781465272204195
+   ],
+   "days": 20
+  },
+  "picks_by_target": {
+   "over_2_5": 884,
+   "draw": 251,
+   "under_2_5": 48,
+   "away_win": 16
+  },
+  "first_day": "2026-09-28",
+  "last_day": "2026-10-17"
+ }
+}
