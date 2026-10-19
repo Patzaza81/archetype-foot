@@ -34,6 +34,7 @@ from .page_comportement import PARAMS, charger_matchs, contredit_le_profil, cote
 PARAMETRES = ROOT / "docs" / "juges_parametres.json"
 BACKTEST = ROOT / "docs" / "juges_backtest.json"
 SORTIE = ROOT / "data" / "comportement" / "juges.json"
+COMBINES = False          # combinés suspendus : leur cote Betpawa n'est pas collectée ; sans cote trouvée, le marché est suspendu (règle de Patrick)
 SUPPORT_MIN = 30          # minimum de support du projet (docs/MATRICE_SCENARIOS.md)
 JUGES = ("contrarien", "premiers_principes", "expansionniste", "outsider", "executant")
 
@@ -193,7 +194,7 @@ def super_marche(p: dict[str, Any], seuils: dict[str, Any]) -> dict[str, Any] | 
     sure_ref = princ["sure"] if princ else 0.0          # se démarquer = aussi sûr que le pronostic d'alpha face aux scénarios, et mieux payé
     cote_ref = princ["cote"] if princ else COTE_MIN
     meilleur = None
-    for a in range(len(sures)):
+    for a in range(len(sures) if COMBINES else 0):
         for b in range(a + 1, len(sures)):
             A, B = sures[a], sures[b]
             if A["famille"] == B["famille"] or A["groupe"] == B["groupe"]:

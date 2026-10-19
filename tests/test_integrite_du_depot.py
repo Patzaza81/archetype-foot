@@ -75,7 +75,7 @@ def test_le_workflow_ne_lance_plus_la_calibration_de_l_ancien_modele():
 
 
 # Parité avec l'environnement du workflow.
-PAQUETS_DU_WORKFLOW = {"requests", "bs4", "pandas", "lxml", "playwright", "pytest"}
+PAQUETS_DU_WORKFLOW = {"requests", "bs4", "pandas", "numpy", "lxml", "playwright", "pytest"}
 
 
 def _imports_des_tests():

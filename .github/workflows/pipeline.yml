@@ -42,7 +42,7 @@ jobs:
 
       - name: Installer les dépendances
         run: |
-          pip install requests beautifulsoup4 pandas lxml playwright pytest
+          pip install requests beautifulsoup4 pandas numpy lxml playwright pytest
           playwright install --with-deps chromium
 
       - name: Autotests du moteur, du pont et suite Python

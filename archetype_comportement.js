@@ -45,6 +45,7 @@ function construitJauge(probabilite, classe) {
 // Nom court de l'onglet : « Principal », puis la tendance du pari.
 function etiquette(s) {
   if (s.role === "principal") return "Principal";
+  if (s.role === "super") return "Super marché";
   if (s.role === "risque") return "Pari risqué";
   const t = String(s.tendance || "");
   if (t === "Résultat") return "Résultat";
@@ -100,7 +101,7 @@ function construitPanneau(m, s, i, idPanneau, idOnglet) {
     `<div class="ax-ligne-cote"><p class="ax-texte-resume">${echappeHtml(tendanceDe(m, s))}</p>` +
     `<div class="ax-badge-cote"><span>Cote</span><strong>${formatCote(s.cote)}</strong></div></div>` +
     `<div class="ax-preuves"><div class="ax-preuves-liste">${lignes}</div>` +
-    `<div class="ax-proba"><strong class="ax-reussite">${REUSSITE ? formatPct(REUSSITE.reussite) : "—"}</strong><span class="ax-proba-legende">Réussite observée du moteur (sans garantie)</span>` +
+    `<div class="ax-proba">${s.role === "super" ? `<span class="ax-proba-legende">Super marché : aucune réussite mesurée à ce jour</span>` : `<strong class="ax-reussite">${REUSSITE ? formatPct(REUSSITE.reussite) : "—"}</strong><span class="ax-proba-legende">Réussite observée du moteur (sans garantie)</span>`}` +
     (issue(s) ? `<span class="ax-solidite"><span class="ax-solidite-titre">Résultat :</span> ${issue(s)}</span>` : "") + `</div></div>`;
   return el;
 }
@@ -117,23 +118,17 @@ function construitDetails(m, idDetails) {
   return details;
 }
 
-// SUPER MARCHÉ (5 juges, règles, sans IA) : un combiné de deux jambes qui vont dans le même sens, ou un autre marché qui se démarque. Sinon rien.
-function construitOpportunite(m) {
+// SUPER MARCHÉ (5 juges, règles, sans IA) : un autre marché, coté sur Betpawa, qui se démarque du pronostic principal. Sinon rien.
+// Il apparaît comme un onglet de plus de la carte (même présentation que « Principal », « Résultat »...).
+function avecSuperMarche(m) {
   const j = JUGES[m.match_id], o = j && j.super;
-  if (!o || !(o.jambes || []).length) return null;
-  const combine = o.type === "combine";
-  const jambes = o.jambes.map((x) => `<li><span>${echappeHtml(x.libelle)}</span><strong>Cote ${formatCote(x.cote)}</strong></li>`).join("");
-  const pastilles = Object.keys(NOMS_JUGES).map((k) => `<li class="ax-ok">${NOMS_JUGES[k]}</li>`).join("");
-  const div = document.createElement("div");
-  div.className = "ax-opp ax-opp-super";
-  div.innerHTML = `<div class="ax-opp-tete"><span class="ax-opp-etiquette">★ SUPER MARCHÉ${combine ? " · COMBINÉ" : ""}</span></div>` +
-    `<ul class="ax-opp-jambes">${jambes}</ul>` +
-    `<p class="ax-opp-texte">${combine ? `Deux statistiques dans le même sens. Cote du combiné à vérifier sur Betpawa (minimum ${formatCote(o.cote_min)}).` : "Un marché qui se démarque du pronostic principal."} Opportunité observée, sans garantie.</p>` +
-    `<ul class="ax-opp-juges" aria-label="Verdict des 5 juges">${pastilles}</ul>`;
-  return div;
+  if (!o || o.type !== "simple" || !(o.jambes || []).length) return m;
+  const x = o.jambes[0];
+  return { ...m, selections: [...m.selections, { role: "super", libelle: x.libelle, cote: x.cote, tendance: "Super marché", raison: "Validé par les 5 juges : aussi sûr que le principal face aux scénarios qui font perdre, et mieux payé. Sans garantie." }] };
 }
 
-function construitCarte(m) {
+function construitCarte(m0) {
+  const m = avecSuperMarche(m0);
   const id = ++compteurCartes, idDetails = `ax-details-${id}`;
   const section = document.createElement("section");
   section.className = "ax-carte";
@@ -172,8 +167,6 @@ function construitCarte(m) {
   if (actifs.length > 3) onglets.classList.add("ax-onglets-defilent");
   active(actifs[0].bouton);
   section.appendChild(onglets); section.appendChild(panneaux); section.appendChild(resume);
-  const opp = construitOpportunite(m);
-  if (opp) { section.classList.add("ax-carte-super"); section.appendChild(opp); }
   section.appendChild(blocDetails);
 
   const pied = document.createElement("div");

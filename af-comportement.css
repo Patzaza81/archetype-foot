@@ -6,23 +6,3 @@
 
 .af-alpha .ax-reussite { font-size: 1.8rem; line-height: 1; white-space: nowrap; color: var(--af-vert, #0f766e); }
 .af-alpha .ax-proba { text-align: center; }
-
-/* Juges du super pronostic : SUPER MARCHÉ = or/ambre (ni turquoise, ni rose V2/V3), signal exploratoire = discret. Clair + nuit, mobile d'abord. */
-.af-alpha .ax-carte { --ax-super: #B7791F; --ax-super-fond: #FFF6E0; --ax-super-texte: #6B4A0B; }
-.af-alpha.theme-nuit .ax-carte { --ax-super: #E3B04B; --ax-super-fond: #2A2212; --ax-super-texte: #F3D48A; }
-.af-alpha .ax-carte.ax-carte-super { border: 2px solid var(--ax-super); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ax-super) 22%, transparent), 0 4px 16px rgba(183,121,31,.25); }
-.af-alpha .ax-opp { margin: 0 14px 14px; padding: 12px 14px; border-radius: 12px; }
-.af-alpha .ax-opp-super { background: var(--ax-super-fond); border: 1.5px solid var(--ax-super); color: var(--ax-super-texte); }
-.af-alpha .ax-opp-explo { background: transparent; border: 1.5px dashed var(--ax-doux, #5B6763); color: var(--ax-doux, #5B6763); }
-.af-alpha .ax-opp-tete { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-weight: 800; font-size: .8rem; letter-spacing: .04em; text-transform: uppercase; }
-.af-alpha .ax-opp-super .ax-opp-etiquette { background: var(--ax-super); color: #fff; padding: 3px 9px; border-radius: 999px; }
-.af-alpha.theme-nuit .ax-opp-super .ax-opp-etiquette { color: #1b1403; }
-.af-alpha .ax-opp-marche { margin: 8px 0 4px; font-size: 1.1rem; line-height: 1.25; color: inherit; }
-.af-alpha .ax-opp-texte { margin: 0 0 8px; font-size: .88rem; line-height: 1.35; }
-.af-alpha .ax-opp-juges { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; font-size: .75rem; }
-.af-alpha .ax-opp-juges li { padding: 2px 8px; border-radius: 999px; border: 1px solid currentColor; }
-.af-alpha .ax-opp-juges li.ax-ok::before { content: "✓ "; }
-.af-alpha .ax-opp-juges li.ax-non { opacity: .45; text-decoration: line-through; }
-.af-alpha .ax-opp-jambes { list-style: none; margin: 8px 0 4px; padding: 0; display: grid; gap: 6px; }
-.af-alpha .ax-opp-jambes li { display: flex; justify-content: space-between; gap: 10px; font-size: 1.02rem; font-weight: 700; line-height: 1.25; }
-.af-alpha .ax-opp-jambes li + li::before { content: "+"; margin-right: 6px; }

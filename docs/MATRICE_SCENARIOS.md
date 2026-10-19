@@ -203,6 +203,6 @@ Affiché en plus du pick principal : parmi les marchés qui **suivent la tendanc
 ## Juges du super pronostic (20/10/2026, lecture seule, hors tickets)
 
 - Module `matrice_scenarios/juges.py` (déterministe, **sans IA**) : 5 juges (contrarien, premiers principes, expansionniste, outsider, exécutant) relisent chaque candidat d'alpha. Seuils mesurés sur la 1re moitié de l'archive (`docs/juges_parametres.json`), jamais posés.
-- Sortie : `data/comportement/juges.json` (étape de nuit dans `pipeline.yml`, `continue-on-error`). La page alpha l'affiche : carte **SUPER MARCHÉ** (or) si les 5 juges valident et que la famille était rentable à l'apprentissage, sinon **Signal exploratoire** (pointillé).
+- Sortie : `data/comportement/juges.json` (étape de nuit dans `pipeline.yml`, `continue-on-error`). Super marché = un autre marché coté sur Betpawa qui passe les 5 juges, est aussi sûr que le principal d'alpha face aux scénarios et mieux payé ; affiché comme un onglet de la carte. Sinon rien. Les combinés (deux jambes dans le même sens) sont suspendus : leur cote Betpawa n'est pas collectée (`COMBINES = False` dans `juges.py`).
 - Backtest (`docs/juges_backtest.json`, coupe au 12/10) : le pronostic reste celui d'alpha (l'adaptation du marché faisait pire, donc désactivée) ; **aucune famille « super » n'est confirmée sur la 2e moitié** (réussite 56,9 %, rendement −10,7 %). Affichage = opportunité observée, sans garantie. La preuve viendra des pronostics gelés une fois réglés.
 - Tests : `tests/test_juges.py`. Captures : `docs/captures_juges/`.
