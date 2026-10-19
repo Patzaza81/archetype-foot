@@ -66,10 +66,8 @@ def profil(dom: list[tuple[int, int]], ext: list[tuple[int, int]], rang_dom: int
     g = grille(lam_d, lam_e, rho)
     p1, pn, p2 = proba(g, lambda i, j: i > j), proba(g, lambda i, j: i == j), proba(g, lambda i, j: i < j)
     total = lam_d + lam_e
-    if p1 >= _P["seuil_favori_dom"] and p1 > p2:
-        favori = "domicile"
-    elif p2 >= _P["seuil_favori_ext"] and p2 > p1:
-        favori = "extérieur"
+    if abs(p1 - p2) >= _P["seuil_ecart_favori"]:      # favori seulement si l'écart de victoire est dans le tiers supérieur mesuré
+        favori = "domicile" if p1 > p2 else "extérieur"
     else:
         favori = "équilibré"
     extremes = [f"{team} {g_}-{c}" for team, rows in (("domicile", dom), ("extérieur", ext)) for g_, c in rows if g_ >= 5 or c >= 5 or abs(g_ - c) >= 4]
