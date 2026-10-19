@@ -163,7 +163,8 @@ def preparer(m: dict[str, Any], courbes: dict[str, list]) -> dict[str, Any] | No
     return {"match_id": m["match_id"], "date": m["date"], "heure": m.get("heure_cameroun"), "competition": m.get("competition"),
             "domicile": m["domicile"], "exterieur": m["exterieur"], "scores_extremes": prof["scores_extremes"],
             "series": {"domicile": len(dom), "exterieur": len(ext)}, "candidats": cands, "tendance_buts": prof["buts"], "favori": prof["favori"], "_G": G, "_scen": scen,
-            "total_attendu": prof["total_attendu"], "buts_attendus": prof["buts_attendus"]}
+            "total_attendu": prof["total_attendu"], "buts_attendus": prof["buts_attendus"],
+            "series_buts": {"domicile": list(dom), "exterieur": list(ext)}}
 
 
 # ---------------------------------------------------------------- seuils mesurés et jugement
@@ -223,51 +224,75 @@ def verdict(p: dict[str, Any], supers: set[str], adapter: bool = False) -> dict[
 
 # ---------------------------------------------------------------- super marché (logique de Patrick)
 
-SCENARIOS_TEXTE = {"favori_creuse": "le favori gagne largement", "match_s_ouvre": "le match devient très ouvert", "nul": "le match finit nul",
-                   "equipe_muette": "une équipe ne marque pas", "score_extreme": "le score est très élevé"}
-
-
 def _virgule(x: float) -> str:
     return str(round(float(x), 2)).replace(".", ",")
 
 
-def _appui(c: dict, p: dict) -> str | None:
-    """Ce que le match montre en faveur du marché (buts attendus du profil), seulement quand c'est dans le sens du marché."""
+def _pl(n: int, mot: str) -> str:
+    return f"{n} {mot}{'s' if n > 1 else ''}"
+
+
+def _forme(nom: str, ms: list) -> dict:
+    n = len(ms)
+    return {"nom": nom, "n": n, "pour": sum(a for a, _ in ms), "contre": sum(b for _, b in ms), "sans_marquer": sum(1 for a, _ in ms if a == 0),
+            "sans_encaisser": sum(1 for _, b in ms if b == 0), "v": sum(1 for a, b in ms if a > b), "nul": sum(1 for a, b in ms if a == b),
+            "d": sum(1 for a, b in ms if a < b), "total": sum(a + b for a, b in ms)}
+
+
+def _arguments(c: dict, p: dict) -> str:
+    """Les chiffres des derniers matchs des deux équipes qui soutiennent CE marché (ce que le parieur lit dans les résultats)."""
     import re
-    m = re.fullmatch(r"over_under_(domicile_|exterieur_)?(\d+\.5)", c["groupe"])
-    ba, tot = p.get("buts_attendus"), p.get("total_attendu")
-    if m and ba and tot is not None:
-        ligne = float(m.group(2))
-        sujet, att = {None: ("le match", tot), "domicile_": (p["domicile"], ba[0]), "exterieur_": (p["exterieur"], ba[1])}[m.group(1)]
-        if (c["selection"] == "moins" and att < ligne) or (c["selection"] == "plus" and att > ligne):
-            pl = "s" if att >= 1.5 else ""
-            return (f"{sujet} devrait marquer environ {_virgule(att)} but{pl} : ce pari colle à ça." if m.group(1) else f"On attend environ {_virgule(att)} buts dans ce match : ce pari colle à ça.")
-    m = re.fullmatch(r"cages_inviolees_(domicile|exterieur)", c["groupe"])
-    if m and ba:
-        att = ba[1] if m.group(1) == "domicile" else ba[0]          # la cage du domicile est inviolée si l'extérieur ne marque pas
-        equipe = p["exterieur"] if m.group(1) == "domicile" else p["domicile"]
-        if (c["selection"] == "oui" and att < 1.0) or (c["selection"] == "non" and att >= 1.0):
-            return f"{equipe} devrait marquer environ {_virgule(att)} but seulement." if c["selection"] == "oui" else f"{equipe} devrait marquer environ {_virgule(att)} but : il peut trouver la faille."
-    if c["groupe"] == "btts" and tot is not None:
-        return f"On attend environ {_virgule(tot)} buts : {'les deux équipes devraient marquer' if c['selection'] == 'Oui' else 'une des deux équipes devrait rester muette'}." if (
-            (c["selection"] == "Oui" and tot >= 2.5) or (c["selection"] == "Non" and tot < 2.5)) else None
-    return None
+    sd, se = p.get("series_buts") or {}, {}
+    if not sd:
+        return ""
+    D, E = _forme(p["domicile"], sd["domicile"]), _forme(p["exterieur"], sd["exterieur"])
+    if not D["n"] or not E["n"]:
+        return ""
+    g, sel = c["groupe"], c["selection"]
+    out: list[str] = []
+    m = re.fullmatch(r"over_under_(domicile_|exterieur_)?(\d+\.5)", g)
+    if m:
+        ligne, moins = float(m.group(2)), sel == "moins"
+        ok = (lambda x: x < ligne) if moins else (lambda x: x > ligne)
+        if not m.group(1):
+            for F in (D, E):
+                if ok(F["total"] / F["n"]):
+                    out.append(f"{F['nom']} : {_virgule(F['total'] / F['n'])} buts par match sur ses {F['n']} derniers matchs.")
+        else:
+            T, O = (D, E) if m.group(1) == "domicile_" else (E, D)
+            if ok(T["pour"] / T["n"]):
+                out.append(f"{T['nom']} {'n' + chr(39) + 'a marqué que' if moins else 'a marqué'} {_pl(T['pour'], 'but')} en {T['n']} matchs.")
+            if ok(O["contre"] / O["n"]):
+                out.append(f"{O['nom']} {'n' + chr(39) + 'a encaissé que' if moins else 'a encaissé'} {_pl(O['contre'], 'but')} en {O['n']} matchs.")
+        return " ".join(out)
+    if g == "btts":
+        for F in (D, E):
+            if sel == "Non" and F["sans_marquer"] > 0:
+                out.append(f"{F['nom']} n'a pas marqué dans {F['sans_marquer']} de ses {F['n']} derniers matchs.")
+            if sel == "Oui" and F["n"] - F["sans_marquer"] > F["n"] / 2:
+                out.append(f"{F['nom']} a marqué dans {F['n'] - F['sans_marquer']} de ses {F['n']} derniers matchs.")
+        return " ".join(out)
+    m = re.fullmatch(r"cages_inviolees_(domicile|exterieur)", g)
+    if m:
+        T = E if m.group(1) == "domicile" else D                 # la cage de l'un est inviolée si l'autre ne marque pas
+        if sel == "oui" and T["sans_marquer"] > 0:
+            return f"{T['nom']} n'a pas marqué dans {T['sans_marquer']} de ses {T['n']} derniers matchs."
+        if sel == "non" and T["n"] - T["sans_marquer"] > T["n"] / 2:
+            return f"{T['nom']} a marqué dans {T['n'] - T['sans_marquer']} de ses {T['n']} derniers matchs."
+        return ""
+    return (f"{D['nom']} : {D['v']}V {D['nul']}N {D['d']}D sur ses {D['n']} derniers matchs. {E['nom']} : {E['v']}V {E['nul']}N {E['d']}D sur ses {E['n']}.")
 
 
 def raison(c: dict, princ: dict | None, p: dict) -> str:
-    """Justification de parieur : pourquoi CE marché est retenu, en positif (aucune mention des juges, aucun découragement)."""
+    """Justification de parieur : les chiffres des derniers matchs qui soutiennent ce pari, puis son prix face au principal."""
     t = []
     if c.get("combine"):
-        t.append(f"Deux paris qui vont dans le même sens : {c['libelle'].lower()}. La cote du combiné existe bien sur Betpawa.")
-    if princ:
-        nom = __import__("re").sub(r"\s*\((1N|N2|12)\)", "", princ["libelle"]).lower()
-        t.append(f"Ce pari paie {_virgule(c['cote'])} au lieu de {_virgule(princ['cote'])} pour le pronostic principal ({nom}), avec une sécurité au moins aussi bonne.")
-    a = _appui(c, p)
+        t.append(f"Deux paris qui vont dans le même sens : {c['libelle'].lower()}.")
+    a = _arguments(c, p)
     if a:
         t.append(a)
-    sol = [k for k, v in sorted((c.get("pertes_par_scenario") or {}).items(), key=lambda kv: kv[1]) if k in SCENARIOS_TEXTE][:2]
-    if sol:
-        t.append(f"Il reste valable même si {' ou si '.join(SCENARIOS_TEXTE[k] for k in sol)}.")
+    if princ:
+        t.append(f"Cote {_virgule(c['cote'])} contre {_virgule(princ['cote'])} pour le pronostic principal.")
     return " ".join(t)
 
 

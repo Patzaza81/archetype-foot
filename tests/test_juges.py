@@ -122,3 +122,27 @@ def test_combine_dangereux_est_ecarte():
     pr = cand(groupe="1x2", famille="1x2", selection="1", libelle="1", cote=1.3, j1=0.8, j4=0.8, principal=True, _W=(i > j))
     co = cand(groupe="dc_btts", famille="combine", selection="1N|Oui", libelle="x", cote=3.0, j1=0.1, j4=0.95, principal=False, combine=True, valeur=0.2, _W=(i >= j))
     assert J.super_marche(_p([pr, co], G, {"nul": i == j}), {"q1_contrarien": 0.5, "q1_outsider": 0}) is None
+
+
+P = {"domicile": "Alpha", "exterieur": "Beta", "series_buts": {"domicile": [(0, 1), (2, 0), (1, 1)], "exterieur": [(3, 2), (4, 1), (2, 2)]}}
+
+
+def test_arguments_btts_non_cite_les_equipes_muettes():
+    t = J._arguments({"groupe": "btts", "selection": "Non"}, P)
+    assert "Alpha n'a pas marqué dans 1 de ses 3" in t and "Beta" not in t
+
+
+def test_arguments_moins_de_buts_equipe_ne_cite_que_ce_qui_soutient():
+    t = J._arguments({"groupe": "over_under_exterieur_1.5", "selection": "moins"}, P)
+    assert "Alpha n'a encaissé que 2 buts" in t and "Beta" not in t         # Beta marque 9 en 3 matchs : n'appuie pas « moins »
+
+
+def test_arguments_plus_de_buts_total():
+    t = J._arguments({"groupe": "over_under_2.5", "selection": "plus"}, P)
+    assert "Beta : 4,67" in t and "Alpha" not in t
+
+
+def test_arguments_rien_si_rien_ne_soutient():
+    assert J._arguments({"groupe": "over_under_domicile_0.5", "selection": "moins"}, P) == ""
+    assert J._arguments({"groupe": "btts", "selection": "Oui"}, P).count("Beta") == 1
+    assert J._arguments({"groupe": "btts", "selection": "Non"}, {**P, "series_buts": {"domicile": [(1, 0)], "exterieur": [(2, 2)]}}) == ""
