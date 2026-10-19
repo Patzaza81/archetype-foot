@@ -124,7 +124,7 @@ function avecSuperMarche(m) {
   const j = JUGES[m.match_id], o = j && j.super;
   if (!o || !(o.jambes || []).length) return m;
   const x = o.jambes[0];
-  return { ...m, selections: [...m.selections, { role: "super", libelle: x.libelle, cote: x.cote, tendance: "Super marché", combine: o.type === "combine", raison: `${o.type === "combine" ? "Deux statistiques dans le même sens, cote du combiné trouvée sur Betpawa. " : ""}Validé par les 5 juges : aussi sûr que le principal face aux scénarios qui font perdre, et mieux payé. Sans garantie.` }] };
+  return { ...m, selections: [...m.selections, { role: "super", libelle: x.libelle, cote: x.cote, tendance: "Super marché", combine: o.type === "combine", raison: o.raison || "Marché qui se démarque du principal. Sans garantie." }] };
 }
 
 function construitCarte(m0) {

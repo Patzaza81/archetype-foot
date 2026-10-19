@@ -13,3 +13,11 @@
 .af-alpha.theme-nuit .ax-onglet.ax-super-onglet.ax-actif { color: #1b1403; }
 .af-alpha .ax-panneau.ax-panneau-super .ax-marche { color: var(--ax-or-texte); }
 .af-alpha .ax-panneau.ax-panneau-super { border-top: 3px solid var(--ax-or); }
+
+/* Onglet Super marché : jaune vif, souligné (demande de Patrick 19/10/2026) */
+body.af-alpha .ax-carte .ax-onglets .ax-onglet.ax-super-onglet,
+body.af-alpha .ax-carte .ax-onglets .ax-onglet.ax-super-onglet.ax-actif {
+  background: #FFD60A !important; border: 2px solid #E0B800 !important; color: #1B1403 !important;
+  text-decoration: underline !important; text-decoration-thickness: 2px; text-underline-offset: 4px; font-weight: 800;
+}
+body.af-alpha .ax-carte .ax-onglets .ax-onglet.ax-super-onglet.ax-actif { box-shadow: 0 0 0 3px rgba(255,214,10,.45) !important; }

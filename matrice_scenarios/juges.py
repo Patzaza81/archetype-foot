@@ -222,6 +222,26 @@ def verdict(p: dict[str, Any], supers: set[str], adapter: bool = False) -> dict[
 
 # ---------------------------------------------------------------- super marché (logique de Patrick)
 
+SCENARIOS_TEXTE = {"favori_creuse": "le favori qui creuse l'écart", "match_s_ouvre": "un match qui s'ouvre", "nul": "un match nul",
+                   "equipe_muette": "une équipe qui ne marque pas", "score_extreme": "un score extrême comme dans les séries"}
+
+
+def raison(c: dict, princ: dict | None) -> str:
+    """Justification de parieur : pourquoi CE marché plutôt que le principal (aucune mention des juges)."""
+    pires = {k: v for k, v in (c.get("pertes_par_scenario") or {}).items() if k in SCENARIOS_TEXTE}
+    risque = SCENARIOS_TEXTE[max(pires, key=pires.get)] if pires else None
+    t = []
+    if c.get("combine"):
+        t.append(f"Deux statistiques dans le même sens ({c['libelle']}), cote du combiné trouvée sur Betpawa.")
+    if princ:
+        t.append(f"Il paie {str(round(c['cote'], 2)).replace('.', ',')} contre {str(round(princ['cote'], 2)).replace('.', ',')} pour le principal ({princ['libelle'].lower()}), "
+                 "et il tient au moins aussi bien dans les cas qui font perdre ce match.")
+    if risque:
+        t.append(f"Son principal risque : {risque}.")
+    t.append("Sans garantie.")
+    return " ".join(t)
+
+
 def jambe(c: dict) -> dict:
     return {k: c[k] for k in ("groupe", "selection", "libelle", "famille", "cote")}
 
@@ -241,7 +261,7 @@ def super_marche(p: dict[str, Any], seuils: dict[str, Any]) -> dict[str, Any] | 
     reels = [c for c in cands if c.get("combine") and c["nb_juges"] == len(JUGES) and c["sure"] >= sure_ref and c["cote"] > cote_ref]
     if reels:                                              # combiné réel (cote trouvée sur Betpawa) : passe avant tout
         o = max(reels, key=lambda c: (c["valeur"], c["cote"]))
-        return {"type": "combine", "jambes": [jambe(o)], "cote_combine": o["cote"], "cote_min": COTE_MIN, "juges": o["juges"]}
+        return {"type": "combine", "jambes": [jambe(o)], "cote_combine": o["cote"], "cote_min": COTE_MIN, "juges": o["juges"], "raison": raison(o, princ)}
     meilleur = None
     for a in range(len(sures) if COMBINES else 0):
         for b in range(a + 1, len(sures)):
@@ -268,7 +288,7 @@ def super_marche(p: dict[str, Any], seuils: dict[str, Any]) -> dict[str, Any] | 
     autres = [c for c in cands if not c["principal"] and not c.get("combine") and c["nb_juges"] == len(JUGES) and c["valeur"] > ref and c["sure"] >= sure_ref and c["cote"] > cote_ref]
     if autres:
         o = max(autres, key=lambda c: (c["valeur"], c["cote"]))
-        return {"type": "simple", "jambes": [jambe(o)], "cote_combine": None, "cote_min": COTE_MIN, "juges": o["juges"]}
+        return {"type": "simple", "jambes": [jambe(o)], "cote_combine": None, "cote_min": COTE_MIN, "juges": o["juges"], "raison": raison(o, princ)}
     return None
 
 
