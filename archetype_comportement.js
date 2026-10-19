@@ -50,6 +50,7 @@ function etiquette(s) {
   return t.startsWith("Buts de ") ? "Buts équipe" : t;
 }
 // La phrase « parieur » de la tendance qui a produit ce pari (absente pour les anciennes données : repli sur le texte chiffré).
+let REUSSITE = null;
 function tendanceDe(m, s) {
   if (s.raison) return s.raison;
   const t = (m.tendances || []).find((x) => x.titre === s.tendance || x.cle === s.tendance);
@@ -72,7 +73,7 @@ function construitResume(m) {
       `<h3 class="ax-resume-marche">${echappeHtml(s.libelle)}</h3>` +
       (texte ? `<p class="ax-resume-texte">${echappeHtml(texte)}</p>` : "") +
       (fin ? `<p class="ax-resume-texte"><strong>${fin}</strong></p>` : "") + `</div>` +
-      `${construitJauge(s.probabilite, "ax-jauge-mini")}</div>`;
+      `</div>`;
   }).join("");
   return div;
 }
@@ -90,7 +91,7 @@ function construitPanneau(m, s, i, idPanneau, idOnglet) {
     `<div class="ax-ligne-cote"><p class="ax-texte-resume">${echappeHtml(tendanceDe(m, s))}</p>` +
     `<div class="ax-badge-cote"><span>Cote</span><strong>${formatCote(s.cote)}</strong></div></div>` +
     `<div class="ax-preuves"><div class="ax-preuves-liste">${lignes}</div>` +
-    `<div class="ax-proba">${construitJauge(s.probabilite, "")}<span class="ax-proba-legende">Probabilité du modèle</span>` +
+    `<div class="ax-proba"><strong class="ax-reussite">${REUSSITE ? formatPct(REUSSITE.reussite) : "—"}</strong><span class="ax-proba-legende">Réussite observée du moteur (sans garantie)</span>` +
     (issue(s) ? `<span class="ax-solidite"><span class="ax-solidite-titre">Résultat :</span> ${issue(s)}</span>` : "") + `</div></div>`;
   return el;
 }
@@ -182,8 +183,9 @@ function afficheSelections(d) {
   const retenus = (d.matchs || []).filter((m) => m.statut === "OK" && m.date >= jour && (m.selections || []).length).sort((a, b) => cleTri(a).localeCompare(cleTri(b)));
   maj.textContent = retenus.length ? `${retenus.length} match${retenus.length > 1 ? "s" : ""} avec au moins un pronostic · cote minimale ${formatCote(d.cote_min)}` : "Aucun pronostic pour le moment";
   const p = d.performance_archive;
+  REUSSITE = p || null;
   if (p && perf) {
-    perf.textContent = `Réussite réelle : ${formatPct(p.reussite)} sur ${p.matchs} matchs (${Math.round(p.ic95[0] * 100)}–${Math.round(p.ic95[1] * 100)} %). Les % affichés sont surestimés d'environ 10 points.`;
+    perf.textContent = `Réussite réelle : ${formatPct(p.reussite)} sur ${p.matchs} matchs (${Math.round(p.ic95[0] * 100)}–${Math.round(p.ic95[1] * 100)} %). Chaque pick est une aide à la lecture du match, pas une garantie de gain.`;
   }
   racine.innerHTML = "";
   if (!retenus.length) {

@@ -12,7 +12,7 @@ def _equipe(buts, domicile):
 
 
 def _match(cotes, dom=None, ext=None):
-    return {"match_id": "x", "date": "2026-10-19", "heure_cameroun": "16:00", "competition": "Test", "domicile": "A", "exterieur": "B", "score_final": None,
+    return {"match_id": "x", "date": "2026-10-19", "heure_cameroun": "16:00", "competition": "Test", "domicile": "A", "exterieur": "B", "score_final": None, "coup_d_envoi_utc": "2026-10-19T15:00:00Z", "run": {"pris_le": "2026-10-19T06:00:00Z"},
             "cotes_betpawa": cotes, "assemblage": {"equipe_dom": _equipe(dom or [(3, 0), (2, 0), (3, 1), (2, 1)], True), "equipe_ext": _equipe(ext or [(0, 2), (0, 3), (1, 2), (0, 1)], False)}}
 
 
@@ -147,3 +147,33 @@ def test_raison_du_pick_resultats_et_handicaps_donnent_les_trois_issues():
     assert _rp("handicap_1.5", "domicile", _PROF, "A", "B") == "A 50 % · nul 25 % · B 25 %"
     assert _rp("double_chance", "12", _PROF, "A", "B") == "A 50 % · nul 25 % · B 25 %"
     assert _rp("handicap_3issues_2", "1", _PROF, "A", "B") == "A 50 % · nul 25 % · B 25 %"
+
+
+# ── Cohérence avec le profil et fiabilité des cotes (conseil du 19/10/2026) ───
+from matrice_scenarios.page_comportement import contredit_le_profil as _cp, cotes_fiables as _cf
+
+
+def test_contradiction_detectee():
+    assert _cp("over_under_1.5", "plus", "défensif")
+    assert _cp("over_under_4.5", "moins", "offensif")
+    assert _cp("over_under_2.5", "plus", "défensif")
+
+
+def test_pas_de_contradiction():
+    assert not _cp("over_under_1.5", "plus", "offensif")
+    assert not _cp("over_under_4.5", "moins", "défensif")
+    assert not _cp("over_under_2.5", "plus", "équilibré")
+    assert not _cp("over_under_domicile_1.5", "plus", "défensif")      # total d'équipe : non concerné
+    assert not _cp("double_chance", "12", "offensif")
+
+
+def test_cotes_fiables_cas_valides():
+    assert _cf({"coup_d_envoi_utc": "2026-10-05T20:00:00Z", "run": {"pris_le": "2026-10-05T00:11:00Z"}})
+    assert _cf({"coup_d_envoi_utc": "2026-10-05T20:00:00Z", "run": {}})
+    assert _cf({"coup_d_envoi_utc": "2026-10-05T20:00:00Z"})
+
+
+def test_cotes_non_fiables():
+    assert not _cf({"run": {"pris_le": "2026-10-05T00:11:00Z"}})                                                   # coup d'envoi absent
+    assert not _cf({"coup_d_envoi_utc": "2026-10-05T20:00:00Z", "run": {"pris_le": "2026-10-05T21:30:00Z"}})      # cotes en direct
+    assert not _cf({"coup_d_envoi_utc": "", "run": {}})

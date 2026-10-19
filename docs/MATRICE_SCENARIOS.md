@@ -178,3 +178,16 @@ Découpe chronologique du bloc Football-Data : 4 060 matchs anciens pour régler
   Le code lit la fenêtre dans `comportement.FENETRE` (`None` = tout l'historique disponible, aucun plafond).
 - **Procédure d'acceptation d'un futur calibrage** : gain de Brier > 0,001, p corrigé Benjamini-Hochberg < 5 %, même signe sur au moins 3 blocs chronologiques sur 4, calibrage glissant appris avant la période jugée.
 - **Limites** : 2 saisons seulement ; marchés autres que 1X2, plus/moins 2,5 et handicap demi-ligne non jugeables contre une cote ; archive = 20 jours.
+
+## Crédibilité du moteur alpha — conseil du 19/10/2026 (après usage réel)
+
+Constat : picks répétitifs, contradictions avec le profil affiché, probabilités par pick non crédibles (98 % pour « Trinidense +4 »).
+
+Mesures (archive de 1 256 matchs ; réglage 60 % anciens, test 40 % récents) :
+- **Contradictions** (« Plus de » en match fermé, « Moins de » en match ouvert) : 13,6 % des picks. Les écarter ne coûte rien (réussite 74,8 % → 75,0 %). **Appliqué** : `contredit_le_profil` (totaux de buts du match).
+- **Cotes non fiables** : coup d'envoi absent (n = 39) = 48,7 % de réussite ; cotes prises après le coup d'envoi (n = 33) = 66,7 %. Le « Trinidense +4 » (98 %) vient de cotes en direct. **Appliqué** : `cotes_fiables`, statut `NON_EVALUE : COTES_NON_FIABLES`.
+- **Convention des handicaps confirmée** : h = K pour `handicap_3issues_K` (χ² faibles ; h = K±1 : 41 à 148) et signe h = K pour les handicaps à 2 issues. L'hypothèse d'un décalage était fausse ; le code n'a pas changé.
+- **Probabilités par pick** : AUC 0,52 (réglage) et 0,50 (test) — elles ne distinguent pas les picks qui réussissent de ceux qui échouent ; surestimation de 15 points dans la tranche haute. Aucune recalibration par famille ne passe le critère (gain de Brier > 0,001, BH). **Appliqué** : l'affichage ne montre plus de % par pick mais la réussite observée du moteur.
+- **Diversification forcée** : coûte de la réussite (−2,4 points pour la meilleure variante) pour un gain faible ; non appliquée. Le lift brut sur la fréquence de base perd 17 points.
+- **Rendement** : −4,2 % (flat, cotes réelles), 0,0 % sur le test récent : pas d'avantage prouvé contre les cotes. Le moteur est présenté comme une aide à la lecture du match.
+- Non appliqués (à décider) : filtres de cohérence entre marchés (écartent surtout des picks gagnants, 85,7 %), exclusion des handicaps (réussite 68,6 % contre 70,1 %, pas de preuve).

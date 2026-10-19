@@ -125,6 +125,19 @@ def raison_du_pick(groupe: str, selection: str, prof: dict[str, Any], dom: str, 
     return f"{dom} {pc(prof['victoire_dom'])} · nul {pc(prof['nul'])} · {ext} {pc(prof['victoire_ext'])}"
 
 
+def contredit_le_profil(groupe: str, selection: str, buts: str) -> bool:
+    """Total de buts du match qui va à l'encontre du profil : « Plus de » dans un match fermé, « Moins de » dans un match ouvert."""
+    if not re.fullmatch(r"over_under_\d+(\.\d+)?", groupe):
+        return False
+    return (buts == "défensif" and selection == "plus") or (buts == "offensif" and selection == "moins")
+
+
+def cotes_fiables(m: dict[str, Any]) -> bool:
+    """Cotes relevées avant le coup d'envoi, coup d'envoi connu : sinon ce sont des cotes en direct ou non datées (mesuré : 49 % de réussite sans coup d'envoi)."""
+    ko, pris = m.get("coup_d_envoi_utc"), (m.get("run") or {}).get("pris_le")
+    return bool(ko) and not (pris and pris > ko)
+
+
 def analyser_match(m: dict[str, Any], p: dict[str, Any], collecte: list | None = None) -> dict[str, Any]:
     base = {"match_id": m["match_id"], "date": m["date"], "heure": m.get("heure_cameroun"), "competition": m.get("competition"),
             "domicile": m["domicile"], "exterieur": m["exterieur"], "score": m.get("score_final"), "selections": [], "tendances": []}
@@ -134,9 +147,12 @@ def analyser_match(m: dict[str, Any], p: dict[str, Any], collecte: list | None =
         return {**base, "statut": "NON_EVALUE : HISTORIQUE_INSUFFISANT"}
     if not m.get("cotes_betpawa"):
         return {**base, "statut": "NON_EVALUE : COTES_ABSENTES"}
+    if not cotes_fiables(m):
+        return {**base, "statut": "NON_EVALUE : COTES_NON_FIABLES"}
     dom, ext = h
     prof = C.profil(dom, ext)
     marches, non_lus = S.scanner(prof["grille"], m["cotes_betpawa"])
+    marches = [x for x in marches if not contredit_le_profil(x["groupe"], x["selection"], prof["buts"])]
     for x in marches:
         x["tendance"] = tendance_de(x["groupe"])
     eligibles = [x for x in marches if x["cote"] >= COTE_MIN]
