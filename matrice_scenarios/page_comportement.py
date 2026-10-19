@@ -4,6 +4,7 @@ Lecture seule : lit data/archive_test/ (comme le moteur V3), écrit data/comport
 Rien n'est branché au pipeline, ni à V2/V3/V2R/Europe/Journal. Usage : python -m matrice_scenarios.page_comportement [--seuils]
 """
 from __future__ import annotations
+import re
 
 import glob
 import gzip
@@ -47,14 +48,18 @@ def _fr(x: float) -> str:
 
 
 def tendances_du_match(prof: dict[str, Any], dom: str, ext: str, p: dict[str, float]) -> list[dict[str, str]]:
+    """`texte` : version chiffrée (détails). `court` : une phrase pour le parieur (absente quand il n'y a pas de tendance à signaler)."""
     out = []
     pc = lambda x: f"{round(100 * x)} %"
     if prof["favori"] == "domicile":
-        out.append({"cle": "resultat", "titre": "Résultat", "texte": f"{dom} favori : {pc(prof['victoire_dom'])} de victoire contre {pc(prof['victoire_ext'])}."})
+        out.append({"cle": "resultat", "titre": "Résultat", "court": f"{dom} favori ({pc(prof['victoire_dom'])})",
+                    "texte": f"{dom} favori : {pc(prof['victoire_dom'])} de victoire contre {pc(prof['victoire_ext'])}."})
     elif prof["favori"] == "extérieur":
-        out.append({"cle": "resultat", "titre": "Résultat", "texte": f"{ext} favori : {pc(prof['victoire_ext'])} de victoire contre {pc(prof['victoire_dom'])}."})
+        out.append({"cle": "resultat", "titre": "Résultat", "court": f"{ext} favori ({pc(prof['victoire_ext'])})",
+                    "texte": f"{ext} favori : {pc(prof['victoire_ext'])} de victoire contre {pc(prof['victoire_dom'])}."})
     else:
-        out.append({"cle": "resultat", "titre": "Résultat", "texte": f"Match équilibré : {dom} {pc(prof['victoire_dom'])} · nul {pc(prof['nul'])} · {ext} {pc(prof['victoire_ext'])}."})
+        out.append({"cle": "resultat", "titre": "Résultat", "court": "Match serré, pas de favori net",
+                    "texte": f"Match équilibré : {dom} {pc(prof['victoire_dom'])} · nul {pc(prof['nul'])} · {ext} {pc(prof['victoire_ext'])}."})
     g = prof["grille"]
     for cle, nom, idx in (("dom_buts", dom, 0), ("ext_buts", ext, 1)):
         marg = [sum(row[k] for row in g) if idx else sum(g[k]) for k in range(len(g))]
@@ -62,17 +67,43 @@ def tendances_du_match(prof: dict[str, Any], dom: str, ext: str, p: dict[str, fl
         meilleur = max(range(4), key=lambda k: d[k])
         lib = ["aucun but", "1 but", "2 buts", "3 buts ou plus"][meilleur]
         nette = d[meilleur] >= p["seuil_buts_equipe"]
-        out.append({"cle": cle, "titre": f"Buts de {nom}", "nette": nette,
-                    "texte": (f"{lib} le plus probable ({pc(d[meilleur])})" if nette else "Pas de tendance nette") + f" · 0 but {pc(d[0])} · 2 buts ou plus {pc(d[2] + d[3])}."})
+        entree = {"cle": cle, "titre": f"Buts de {nom}", "nette": nette,
+                  "texte": (f"{lib} le plus probable ({pc(d[meilleur])})" if nette else "Pas de tendance nette") + f" · 0 but {pc(d[0])} · 2 buts ou plus {pc(d[2] + d[3])}."}
+        if nette:
+            entree["court"] = f"{nom} : {lib} probable ({pc(d[meilleur])})"
+        out.append(entree)
     if prof["buts"] != "équilibré":
-        out.append({"cle": "buts", "titre": "Buts du match", "texte": f"Match {prof['buts']} : {_fr(prof['total_attendu'])} buts attendus."})
+        ouvert = prof["buts"] == "offensif"
+        out.append({"cle": "buts", "titre": "Buts du match",
+                    "court": ("Match ouvert : beaucoup de buts" if ouvert else "Match fermé : peu de buts") + f" ({_fr(prof['total_attendu'])} attendus)",
+                    "texte": f"Match {prof['buts']} : {_fr(prof['total_attendu'])} buts attendus."})
     if prof["deux_marquent"] >= p["seuil_btts_haut"]:
-        out.append({"cle": "deux_marquent", "titre": "Les deux marquent", "texte": "Les deux équipes marquent souvent dans les séries croisées."})
+        out.append({"cle": "deux_marquent", "titre": "Les deux marquent", "court": "Les deux équipes marquent souvent",
+                    "texte": "Les deux équipes marquent souvent dans les séries croisées."})
     elif prof["deux_marquent"] <= p["seuil_btts_bas"]:
-        out.append({"cle": "deux_marquent", "titre": "Les deux marquent", "texte": "Une des deux équipes risque de ne pas marquer."})
+        out.append({"cle": "deux_marquent", "titre": "Les deux marquent", "court": "Une équipe risque de ne pas marquer",
+                    "texte": "Une des deux équipes risque de ne pas marquer."})
     if prof["scores_extremes"]:
         out.append({"cle": "extremes", "titre": "Scores extrêmes", "texte": "Séries avec un score extrême : " + ", ".join(prof["scores_extremes"][:3]) + "."})
     return out
+
+
+def libelle_parieur(groupe: str, selection: str, dom: str, ext: str, defaut: str) -> str:
+    """Intitulé du marché tel qu'on le lit sur un coupon : les équipes par leur nom."""
+    s = str(selection)
+    if groupe == "1x2":
+        return {"1": f"{dom} gagne", "N": "Match nul", "2": f"{ext} gagne"}.get(s, defaut)
+    if groupe == "double_chance":
+        return {"1N": f"{dom} ne perd pas (1N)", "N2": f"{ext} ne perd pas (N2)", "12": "Pas de match nul (12)"}.get(s, defaut)
+    m = re.fullmatch(r"handicap_(-?\d+(?:\.\d+)?)", groupe)
+    if m and s in ("domicile", "exterieur"):
+        h = float(m.group(1)) if s == "domicile" else -float(m.group(1))
+        return f"{dom if s == 'domicile' else ext} {format(h, '+g').replace('.', ',')} (handicap)"
+    m = re.fullmatch(r"handicap_3issues_(-?\d+)", groupe)
+    if m and s in ("1", "X", "2"):
+        k = int(m.group(1))
+        return {"1": f"{dom} {k:+d} (handicap 3 issues)", "X": f"Nul avec handicap {k:+d} sur {dom}", "2": f"{ext} {-k:+d} (handicap 3 issues)"}[s]
+    return defaut
 
 
 def analyser_match(m: dict[str, Any], p: dict[str, Any], collecte: list | None = None) -> dict[str, Any]:
@@ -115,7 +146,7 @@ def analyser_match(m: dict[str, Any], p: dict[str, Any], collecte: list | None =
             choix.append(dict(meilleur, role="tendance"))
     sel = []
     for i, c in enumerate(choix, 1):
-        s = {"rang": i, "role": c["role"], "tendance": TENDANCES.get(c["tendance"] or "", ("Autre",))[0], "libelle": c["libelle"], "cote": c["cote"],
+        s = {"rang": i, "role": c["role"], "tendance": TENDANCES.get(c["tendance"] or "", ("Autre",))[0], "libelle": libelle_parieur(c["groupe"], c["selection"], m["domicile"], m["exterieur"], c["libelle"]), "cote": c["cote"],
              "probabilite": round(c["probabilite"], 3), "groupe": c["groupe"], "choix": c["selection"]}
         if m.get("score_final"):
             s["gagne"] = bool(S.test_du_marche(c["groupe"], c["selection"])(m["score_final"]["buts_dom"], m["score_final"]["buts_ext"]))
