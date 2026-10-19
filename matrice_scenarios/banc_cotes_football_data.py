@@ -112,7 +112,7 @@ def evaluer_bloc(bookmaker: str = "ps", moment: str = "cloture") -> dict:
             "1x2_loglik (plus haut = mieux)": r("1x2"), "plus_moins_2_5_brier (plus bas = mieux)": r("ou"), "handicap_asiatique_demi_ligne_brier (plus bas = mieux)": r("ah")}
 
 
-def evaluer_bloc_grand_test(bookmaker: str = "moy", moment: str = "cloture", min_test: int = 10000) -> dict:
+def evaluer_bloc_grand_test(bookmaker: str = "moy", moment: str = "cloture", min_test: int = 10000, fenetre: int | None = C.FENETRE) -> dict:
     """Jugement sur AU MOINS `min_test` matchs jamais vus : on règle (mu, shrink, rho) sur la tranche la plus ancienne seulement,
     et tout le reste du bloc sert de test. Écart modèle-marché apparié par match (moyenne ± erreur-type), pas seulement deux moyennes."""
     from . import bloc_saisons as B
@@ -125,7 +125,7 @@ def evaluer_bloc_grand_test(bookmaker: str = "moy", moment: str = "cloture", min
         v.sort()
 
     def avant(eq: str, lieu: bool, jour: str) -> list[tuple[int, int]]:
-        return [(g, c) for d, dom, g, c in hist[eq] if d < jour and dom == lieu][-5:]
+        return [(g, c) for d, dom, g, c in hist[eq] if d < jour and dom == lieu][(0 if fenetre is None else -fenetre):]
     lignes = []
     for m in matchs:
         d, e = avant(m["domicile"], True, m["date"]), avant(m["exterieur"], False, m["date"])
@@ -145,7 +145,7 @@ def evaluer_bloc_grand_test(bookmaker: str = "moy", moment: str = "cloture", min
             g = C.grille(*C.buts_attendus(d, e, mu_dom=mu_d, mu_ext=mu_e, shrink=sh), rho)
             t += math.log(max(g[min(m["buts_dom"], 10)][min(m["buts_ext"], 10)], 1e-12))
         return t / len(sample)
-    sh, rho = max(((ll(app[::2], s, r), s, r) for s in (1, 2, 4, 6, 8, 12) for r in (-0.15, -0.1, -0.05, 0.0, 0.05)))[1:]
+    ll_reglage, sh, rho = max(((ll(app[::2], s, r), s, r) for s in (1, 2, 4, 6, 8, 12) for r in (-0.15, -0.1, -0.05, 0.0, 0.05)))
     cle1, cle2, cleah = f"1x2_{moment}", f"plus_moins_2_5_{moment}", "handicap_asiatique_ouverture"
     diffs = {"1x2": [], "ou": [], "ah": []}
     for m, d, e in test:
@@ -176,5 +176,5 @@ def evaluer_bloc_grand_test(bookmaker: str = "moy", moment: str = "cloture", min
         se = (sum((v - mo) ** 2 for v in x) / (n - 1) / n) ** 0.5
         return {"matchs": n, "ecart_moyen (>0 = modele meilleur)": round(mo, 5), "erreur_type": round(se, 5), "z": round(mo / se, 1)}
     return {"apprentissage": len(app), "test": len(test), "date_debut_test": test[0][0]["date"], "mu_dom": round(mu_d, 3), "mu_ext": round(mu_e, 3),
-            "shrink": sh, "rho": rho, "bookmaker": bookmaker, "moment": moment,
+            "fenetre": fenetre, "loglik_reglage": round(ll_reglage, 4), "shrink": sh, "rho": rho, "bookmaker": bookmaker, "moment": moment,
             "1x2_logloss": r(diffs["1x2"]), "plus_moins_2_5_brier": r(diffs["ou"]), "handicap_asiatique_demi_ligne_brier": r(diffs["ah"])}

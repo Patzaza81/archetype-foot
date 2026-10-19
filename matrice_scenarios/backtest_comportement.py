@@ -25,9 +25,10 @@ PAS_APPRENTISSAGE = 3          # un match sur 3 pour l'apprentissage (vitesse)
 
 
 def historiques(dom: dict, ext: dict, jour: str):
-    d, e = derniers_matchs(dom, True, jour), derniers_matchs(ext, False, jour)
+    n = lambda eq: len(eq["matchs"]) if C.FENETRE is None else C.FENETRE      # sans fenêtre : tout l'historique disponible
+    d, e = derniers_matchs(dom, True, jour, n=n(dom)), derniers_matchs(ext, False, jour, n=n(ext))
     if len(d) < 3 or len(e) < 3:
-        d, e = derniers_matchs(dom, True, jour, meme_lieu=False), derniers_matchs(ext, False, jour, meme_lieu=False)
+        d, e = derniers_matchs(dom, True, jour, meme_lieu=False, n=n(dom)), derniers_matchs(ext, False, jour, meme_lieu=False, n=n(ext))
         if len(d) < 3 or len(e) < 3:
             return None
     return d, e
@@ -64,8 +65,8 @@ def apprendre_courbes(selections: list[tuple[str, str]]) -> dict[str, list]:
     fd, _ = load_football_data()
     lignes = []
     for r in sorted(fd, key=lambda r: r["date"]):
-        d = [(x["goals_for"], x["goals_against"]) for x in sorted([x for x in r["home_history"] if x["venue"] == "home" and str(x["date"])[:10] < r["date"]], key=lambda x: x["date"])[-5:]]
-        e = [(x["goals_for"], x["goals_against"]) for x in sorted([x for x in r["away_history"] if x["venue"] == "away" and str(x["date"])[:10] < r["date"]], key=lambda x: x["date"])[-5:]]
+        d = [(x["goals_for"], x["goals_against"]) for x in sorted([x for x in r["home_history"] if x["venue"] == "home" and str(x["date"])[:10] < r["date"]], key=lambda x: x["date"])[C.DEBUT:]]
+        e = [(x["goals_for"], x["goals_against"]) for x in sorted([x for x in r["away_history"] if x["venue"] == "away" and str(x["date"])[:10] < r["date"]], key=lambda x: x["date"])[C.DEBUT:]]
         if len(d) >= 3 and len(e) >= 3:
             lignes.append((d, e, r["home_goals"], r["away_goals"]))
     train = lignes[: int(len(lignes) * 0.6)][::PAS_APPRENTISSAGE]

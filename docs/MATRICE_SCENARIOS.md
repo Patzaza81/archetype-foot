@@ -157,3 +157,23 @@ Les scénarios sont des hypothèses qui peuvent être inventées, combinées, tr
 - `bloc_saisons.entree(bloc, match, n)` : historique strictement antérieur au match, sans fuite (testé).
 - Saison 2425 : absente du dépôt et non téléchargeable depuis cet environnement (le réseau n'autorise pas football-data.co.uk). Il faut lancer `archive_football_data.py` là où le réseau est ouvert (workflow GitHub) ou fournir les CSV ; le bloc se reconstruit ensuite avec `SOURCES["2425"]`.
 - Jugement du moteur Comportement contre le marché moyen (5 624 matchs de test, 40 % les plus récents) : 1X2 clôture −1,055 contre −1,003 ; plus/moins 2,5 Brier 0,2478 contre 0,2385 ; handicap asiatique (demi-lignes) 0,2693 contre 0,2492. Le moteur est moins bon que le marché sur les trois.
+
+## Réglage du moteur alpha — tous les marchés (conseil du 19/10/2026)
+
+Méthode : la grille de scores donne tous les marchés, donc la log-vraisemblance du score exact et le calibrage par famille se jugent sur les SCORES, sans cote.
+Découpe chronologique du bloc Football-Data : 4 060 matchs anciens pour régler, 10 000 suivants pour tester (`evaluer_bloc_grand_test`). Cotes : jugement seulement.
+
+- **Calibrage par famille (10 000 matchs)** : bien calibrés = 1X2, double chance, totaux par équipe, handicaps demi-lignes, handicap 3 issues (biais ≤ ~1 point).
+  À corriger : « plus de 2,5 » sous-estimé de 2,7 points, BTTS « oui » de 1,4 point. Sans signal : pair/impair, nombre exact de buts, score exact (gain ≤ 0,2 % sur la fréquence de base).
+- **Découpage par championnat** : refusé. Dispersion réelle entre championnats (0,009) inférieure à l'erreur-type par championnat (0,010 à 0,030).
+- **Structure** (log-vraisemblance du score exact, test 10 000) : fenêtre complète +0,0165 ± 0,0023 par rapport à 5 matchs (confirmé sur l'archive : +0,008 ± 0,003 pour 8 à 12 matchs) ;
+  force d'équipe type Dixon-Coles +0,033 ± 0,003. Sans effet : moyenne ou avantage du terrain par championnat, re-réglage de shrink/rho, binomiale négative.
+- **Contre le marché (cote moyenne de clôture, 10 000 matchs)** : l'écart reste défavorable partout. 1X2 : −0,052 (fenêtre 5), −0,042 (fenêtre complète), −0,029 (Dixon-Coles).
+  Dixon-Coles n'apporte aucune information que le marché n'a pas (poids de mélange négatif ou instable).
+- **Sélection** : la fenêtre complète ne change pas la réussite de la règle (substitut p ≤ 1/1,26 sur 10 000 matchs : 76,56 % contre 76,78 %, IC95 −1,3 à +1,0 point ;
+  archive BetPawa : 67,95 % contre 69,6 %, écart apparié −1,6 point, IC95 −2,6 à 0,0). Calibrage par famille ou pénalité d'incertitude : aucun effet distinguable sur l'archive.
+- **Décision** : le réglage de production reste à 5 matchs (empreinte des paramètres inchangée, journal gelé intact). La variante « historique complet » est prête :
+  `docs/parametres_comportement_fenetre_complete.json` (clé `fenetre: null`). Pour l'activer : copier ce fichier sur `parametres_comportement.json`, relancer `python -m matrice_scenarios.page_comportement --seuils`.
+  Le code lit la fenêtre dans `comportement.FENETRE` (`None` = tout l'historique disponible, aucun plafond).
+- **Procédure d'acceptation d'un futur calibrage** : gain de Brier > 0,001, p corrigé Benjamini-Hochberg < 5 %, même signe sur au moins 3 blocs chronologiques sur 4, calibrage glissant appris avant la période jugée.
+- **Limites** : 2 saisons seulement ; marchés autres que 1X2, plus/moins 2,5 et handicap demi-ligne non jugeables contre une cote ; archive = 20 jours.

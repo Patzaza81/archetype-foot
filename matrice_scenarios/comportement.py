@@ -19,6 +19,8 @@ _P = json.loads((Path(__file__).resolve().parent.parent / "docs" / "parametres_c
 MU_DOM, MU_EXT = _P["mu_dom"], _P["mu_ext"]
 SHRINK = _P["shrink"]
 CAP = _P["cap"]                  # None : aucun plafond de buts (les données n'en demandent pas)
+FENETRE = _P.get("fenetre", 5)    # None : tout l'historique disponible (aucun plafond) ; sinon nombre des derniers matchs
+DEBUT = 0 if FENETRE is None else -FENETRE   # `liste[DEBUT:]` = les matchs retenus
 RANK_K = 0.0                     # classement non activé tant que les chiffres ne le justifient pas
 RHO = _P["rho"]
 GRID = 11                        # scores de 0 à 10 buts par équipe

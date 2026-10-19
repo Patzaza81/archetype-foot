@@ -143,8 +143,8 @@ def calculer_seuils() -> None:
     fd, _ = load_football_data()
     valeurs, ecarts, modales = [], [], []
     for r in sorted(fd, key=lambda r: r["date"])[: int(len(fd) * 0.6) : 3]:
-        d = [(x["goals_for"], x["goals_against"]) for x in sorted([x for x in r["home_history"] if x["venue"] == "home" and str(x["date"])[:10] < r["date"]], key=lambda x: x["date"])[-5:]]
-        e = [(x["goals_for"], x["goals_against"]) for x in sorted([x for x in r["away_history"] if x["venue"] == "away" and str(x["date"])[:10] < r["date"]], key=lambda x: x["date"])[-5:]]
+        d = [(x["goals_for"], x["goals_against"]) for x in sorted([x for x in r["home_history"] if x["venue"] == "home" and str(x["date"])[:10] < r["date"]], key=lambda x: x["date"])[C.DEBUT:]]
+        e = [(x["goals_for"], x["goals_against"]) for x in sorted([x for x in r["away_history"] if x["venue"] == "away" and str(x["date"])[:10] < r["date"]], key=lambda x: x["date"])[C.DEBUT:]]
         if len(d) >= 3 and len(e) >= 3:
             g = C.grille(*C.buts_attendus(d, e), C.RHO)
             valeurs.append(C.proba(g, lambda i, j: i >= 1 and j >= 1))
@@ -161,8 +161,8 @@ def calculer_seuils() -> None:
     # validation sur les 40 % de Football-Data jamais utilisés : la classe la plus probable sort-elle plus souvent au-dessus du seuil ?
     hors = {"au_dessus": [0, 0], "en_dessous": [0, 0]}
     for r in sorted(fd, key=lambda r: r["date"])[int(len(fd) * 0.6):]:
-        d = [(x["goals_for"], x["goals_against"]) for x in sorted([x for x in r["home_history"] if x["venue"] == "home" and str(x["date"])[:10] < r["date"]], key=lambda x: x["date"])[-5:]]
-        e = [(x["goals_for"], x["goals_against"]) for x in sorted([x for x in r["away_history"] if x["venue"] == "away" and str(x["date"])[:10] < r["date"]], key=lambda x: x["date"])[-5:]]
+        d = [(x["goals_for"], x["goals_against"]) for x in sorted([x for x in r["home_history"] if x["venue"] == "home" and str(x["date"])[:10] < r["date"]], key=lambda x: x["date"])[C.DEBUT:]]
+        e = [(x["goals_for"], x["goals_against"]) for x in sorted([x for x in r["away_history"] if x["venue"] == "away" and str(x["date"])[:10] < r["date"]], key=lambda x: x["date"])[C.DEBUT:]]
         if len(d) < 3 or len(e) < 3:
             continue
         g = C.grille(*C.buts_attendus(d, e), C.RHO)
