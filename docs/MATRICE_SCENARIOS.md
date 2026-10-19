@@ -133,3 +133,9 @@ Les scénarios sont des hypothèses qui peuvent être inventées, combinées, tr
 - Existence d'une tendance d'équipe (classe la plus probable ≥ tertile haut, 0,361) : validée sur les 40 % de Football-Data non utilisés, effet très faible (35,8 % au-dessus du seuil contre 34,2 % en dessous). À ne pas surinterpréter.
 - Limites : volumes faibles (quelques centaines de cas), probabilités du modèle surestimées d'environ 10 points, réussite du principal 69,5 % (IC 66–74 %) pour une cote moyenne de 1,39, sous le seuil de rentabilité (~72 %).
 - Prochaine étape unique : suivi en conditions réelles sur de nouveaux matchs, moteur figé.
+
+### Suivi et archivage (19/10)
+- Journal en ajout seul : `data/comportement/journal_comportement.jsonl` (une ligne « pronostic » figée avant le coup d'envoi, puis une ligne « resultat » ; aucune ligne n'est jamais modifiée). Chaque pronostic porte l'heure de gel, le commit du code et l'empreinte des paramètres.
+- Commandes : `python -m matrice_scenarios.suivi_comportement geler | resultats | bilan | tout`. Un match dont le coup d'envoi est passé n'est jamais gelé.
+- `bilan_suivi.json` : réussite calculée uniquement sur les pronostics gelés (le vrai test hors échantillon).
+- Pas automatisé : à lancer chaque jour (geler avant les matchs, résultats ensuite). Aucun lien avec le pipeline.
