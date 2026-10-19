@@ -76,4 +76,12 @@ Preuves brutes : `docs/validation_matrice_2026-10-18.json` (sortie de `python -m
 ## 10. Pronostic « le plus sûr » (`matrice_scenarios/pronostic_sur.py`)
 - Règle (corrigée à la demande de Patrick) : cotes 1,10 à 1,25 EXCLUES (pas de marge de gain) ; parmi les marchés BetPawa à partir de 1,26, retenir le plus probable selon le modèle de croisements (marchés ajoutés : double chance, Over 1,5, Under 3,5 / 4,5 / 5,5).
 - Archive jouée (calibration Football-Data seule, donc indépendante), réussite selon le plafond de cote : 1,26 à 1,30 : 73,7 % (414) ; 1,26 à 1,35 : 73,7 % (636, annoncé 73,6 %) ; 1,26 à 1,40 : 71,5 % ; 1,26 à 1,50 : 69,7 % ; sans plafond : 66,0 % (958, annoncé 75,0 %).
-- Plafond par défaut : 1,35, retenu parce que la réussite (priorité) y est la meilleure et calibrée. Au-delà, le modèle est trop confiant. ROI à 1,26-1,35 : −3,9 %.
+- Plafond 1,35 : abandonné (demande de Patrick : aucune borne haute, règle = marché le plus probable avec cote ≥ 1,26). Sans plafond : 66,0 % de réussite (annoncé 75,0 %).
+
+
+## 11. Système en deux étapes (`comportement.py`, `scanner_marches.py`)
+- Étape 1, sans cote : buts attendus par croisement (marqués / encaissés adverses), scores extrêmes plafonnés à 4 buts, retour vers la moyenne (2 matchs). Profil : favori, niveau de buts, deux marquent, scores extrêmes signalés. Classement : prévu (`rank_k`), désactivé faute de preuve.
+- Étape 2 : lecture de TOUTES les sélections de `cotes_betpawa` (1X2, double chance, BTTS, totaux, totaux par équipe, handicaps 2 et 3 issues, cages inviolées, nombre exact, pair/impair, score exact). Ce qui n'est pas lu est listé, jamais ignoré.
+- Choix : marché le plus probable avec cote ≥ 1,26, sans plafond.
+- Backtest archive jouée (1 064 matchs) : réussite 68,7 % (cote moyenne 1,39), annoncé 79,4 % → trop confiant de ~10 points. Ancienne règle sur le même échantillon : 65,6 %. Écart de 3 points, non prouvé significatif.
+- Aucune règle activée, rien branché à la production.
