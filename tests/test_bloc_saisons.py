@@ -56,3 +56,15 @@ def test_bloc_construit_coherent():
         pytest.skip("bloc non construit")
     assert b["matchs"] == len(b["liste"]) > 10000 and b["du"] <= b["au"]
     assert len({m["id"] for m in b["liste"]}) == b["matchs"]
+
+
+def test_grand_test_exige_assez_de_matchs():
+    from matrice_scenarios.banc_cotes_football_data import evaluer_bloc_grand_test
+    assert "erreur" in evaluer_bloc_grand_test(min_test=10**6)
+
+
+def test_grand_test_10000_matchs_sans_chevauchement():
+    from matrice_scenarios.banc_cotes_football_data import evaluer_bloc_grand_test
+    r = evaluer_bloc_grand_test(min_test=10000)
+    assert r["test"] == 10000 and r["apprentissage"] >= 500
+    assert r["1x2_logloss"]["matchs"] > 5000
