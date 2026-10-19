@@ -94,3 +94,31 @@ def test_super_marche_refuse_jambe_dangereuse():
     A = cand(groupe="a", famille="a", selection="x", libelle="a", cote=1.1, sure=1, principal=False, _W=(i >= j))
     B = cand(groupe="b", famille="b", selection="x", libelle="b", cote=1.1, sure=1, principal=False, _W=(i + j < 3))
     assert J.super_marche(_p([A, B], G, {"nul": i == j}), {"q1_contrarien": 0, "q1_outsider": 0}) is None
+
+
+def test_combine_reel_passe_avant_le_simple():
+    import numpy as np
+    G = np.full((3, 3), 1 / 9)
+    i, j = np.meshgrid(range(3), range(3), indexing="ij")
+    pr = cand(groupe="1x2", famille="1x2", selection="1", libelle="1", cote=1.3, j1=0.8, j4=0.8, principal=True, _W=(i > j))
+    co = cand(groupe="dc_total_1.5", famille="combine", selection="1N|plus", libelle="DC+1,5", cote=1.96, j1=0.95, j4=0.95, principal=False, combine=True, valeur=0.2, _W=(i >= j))
+    r = J.super_marche(_p([pr, co], G, {"nul": i == j}), {"q1_contrarien": 0, "q1_outsider": 0})
+    assert r and r["type"] == "combine" and r["cote_combine"] == 1.96
+
+
+def test_combine_moins_paye_que_le_principal_est_ecarte():
+    import numpy as np
+    G = np.full((3, 3), 1 / 9)
+    i, j = np.meshgrid(range(3), range(3), indexing="ij")
+    pr = cand(groupe="1x2", famille="1x2", selection="1", libelle="1", cote=2.0, j1=0.8, j4=0.8, principal=True, _W=(i > j))
+    co = cand(groupe="dc_btts", famille="combine", selection="1N|Oui", libelle="x", cote=1.5, j1=0.95, j4=0.95, principal=False, combine=True, valeur=0.2, _W=(i >= j))
+    assert J.super_marche(_p([pr, co], G, {"nul": i == j}), {"q1_contrarien": 0, "q1_outsider": 0}) is None
+
+
+def test_combine_dangereux_est_ecarte():
+    import numpy as np
+    G = np.full((3, 3), 1 / 9)
+    i, j = np.meshgrid(range(3), range(3), indexing="ij")
+    pr = cand(groupe="1x2", famille="1x2", selection="1", libelle="1", cote=1.3, j1=0.8, j4=0.8, principal=True, _W=(i > j))
+    co = cand(groupe="dc_btts", famille="combine", selection="1N|Oui", libelle="x", cote=3.0, j1=0.1, j4=0.95, principal=False, combine=True, valeur=0.2, _W=(i >= j))
+    assert J.super_marche(_p([pr, co], G, {"nul": i == j}), {"q1_contrarien": 0.5, "q1_outsider": 0}) is None

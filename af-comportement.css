@@ -6,3 +6,10 @@
 
 .af-alpha .ax-reussite { font-size: 1.8rem; line-height: 1; white-space: nowrap; color: var(--af-vert, #0f766e); }
 .af-alpha .ax-proba { text-align: center; }
+
+/* Super marché : même charte, accent « or » déjà présent dans les jetons de la carte (--ax-or), jamais le rose V2/V3. */
+.af-alpha .ax-onglet.ax-super-onglet { border: 2px solid var(--ax-or); }
+.af-alpha .ax-onglet.ax-super-onglet.ax-actif { background: var(--ax-or); border-color: var(--ax-or); color: #fff; }
+.af-alpha.theme-nuit .ax-onglet.ax-super-onglet.ax-actif { color: #1b1403; }
+.af-alpha .ax-panneau.ax-panneau-super .ax-marche { color: var(--ax-or-texte); }
+.af-alpha .ax-panneau.ax-panneau-super { border-top: 3px solid var(--ax-or); }

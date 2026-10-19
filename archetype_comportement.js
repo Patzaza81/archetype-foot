@@ -45,7 +45,7 @@ function construitJauge(probabilite, classe) {
 // Nom court de l'onglet : « Principal », puis la tendance du pari.
 function etiquette(s) {
   if (s.role === "principal") return "Principal";
-  if (s.role === "super") return "Super marché";
+  if (s.role === "super") return "★ Super marché";
   if (s.role === "risque") return "Pari risqué";
   const t = String(s.tendance || "");
   if (t === "Résultat") return "Résultat";
@@ -94,7 +94,7 @@ function construitPanneau(m, s, i, idPanneau, idOnglet) {
     `<div class="ax-preuve"><span class="ax-icone">${ICONE_TENDANCE[t.cle] || ICONES.forme}</span><div>` +
     `<span class="ax-preuve-titre">${echappeHtml(t.titre)}</span><span class="ax-preuve-texte">${echappeHtml(t.court)}</span></div></div>`).join("");
   const el = document.createElement("div");
-  el.className = `ax-panneau ax-${CLASSES[Math.min(i, CLASSES.length - 1)]}`;
+  el.className = `ax-panneau ax-${CLASSES[Math.min(i, CLASSES.length - 1)]}${s.role === "super" ? " ax-panneau-super" : ""}`;
   el.id = idPanneau; el.setAttribute("role", "tabpanel"); el.setAttribute("aria-labelledby", idOnglet); el.dataset.cle = String(i);
   el.innerHTML =
     `<h2 class="ax-marche">${echappeHtml(s.libelle)}</h2>` +
@@ -122,9 +122,9 @@ function construitDetails(m, idDetails) {
 // Il apparaît comme un onglet de plus de la carte (même présentation que « Principal », « Résultat »...).
 function avecSuperMarche(m) {
   const j = JUGES[m.match_id], o = j && j.super;
-  if (!o || o.type !== "simple" || !(o.jambes || []).length) return m;
+  if (!o || !(o.jambes || []).length) return m;
   const x = o.jambes[0];
-  return { ...m, selections: [...m.selections, { role: "super", libelle: x.libelle, cote: x.cote, tendance: "Super marché", raison: "Validé par les 5 juges : aussi sûr que le principal face aux scénarios qui font perdre, et mieux payé. Sans garantie." }] };
+  return { ...m, selections: [...m.selections, { role: "super", libelle: x.libelle, cote: x.cote, tendance: "Super marché", combine: o.type === "combine", raison: `${o.type === "combine" ? "Deux statistiques dans le même sens, cote du combiné trouvée sur Betpawa. " : ""}Validé par les 5 juges : aussi sûr que le principal face aux scénarios qui font perdre, et mieux payé. Sans garantie.` }] };
 }
 
 function construitCarte(m0) {
@@ -148,7 +148,7 @@ function construitCarte(m0) {
   const actifs = m.selections.map((s, i) => {
     const idO = `ax-onglet-${id}-${i}`, idP = `ax-panneau-${id}-${i}`;
     const bouton = document.createElement("button");
-    bouton.type = "button"; bouton.id = idO; bouton.className = `ax-onglet ax-${CLASSES[Math.min(i, CLASSES.length - 1)]}`;
+    bouton.type = "button"; bouton.id = idO; bouton.className = `ax-onglet ax-${CLASSES[Math.min(i, CLASSES.length - 1)]}${s.role === "super" ? " ax-super-onglet" : ""}`;
     bouton.setAttribute("role", "tab"); bouton.setAttribute("aria-controls", idP); bouton.dataset.cle = String(i);
     bouton.innerHTML = `<span>${echappeHtml(etiquette(s))}</span>`;
     onglets.appendChild(bouton);

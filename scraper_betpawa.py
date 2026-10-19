@@ -171,6 +171,14 @@ def meilleur_parsing(texte, domicile, exterieur):
             meilleur_nom, meilleur_resultat = nom, resultat
 
     print(f"  Format retenu : {meilleur_nom or 'aucun'} ({len(meilleur_resultat)} marché(s))")
+    if meilleur_resultat:                      # AJOUT 19/10/2026 : marchés combinés (groupes nouveaux, rien d'existant modifié)
+        try:
+            from parse_combines_betpawa import parse_combines
+            combines = parse_combines(texte)
+            meilleur_resultat.update({g: v for g, v in combines.items() if g not in meilleur_resultat})
+            print(f"  Combinés lus : {sum(len(v) for v in combines.values())} cote(s)")
+        except Exception as e:
+            print(f"  Combinés non lus : {e}")
     return meilleur_resultat
 
 

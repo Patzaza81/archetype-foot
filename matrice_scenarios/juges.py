@@ -71,6 +71,35 @@ def masse_perte(grille: np.ndarray, gagne: np.ndarray, scen: np.ndarray) -> floa
     return float((grille * scen * ~gagne).sum())
 
 
+def test_combine(groupe: str, selection: str):
+    """Marchés COMBINÉS de Betpawa (lus par parse_combines_betpawa.py) : « 1N|plus » = double chance 1N ET plus de la ligne, etc."""
+    import re
+    m = re.fullmatch(r"(dc|1x2)_(total_(\d+\.5)|btts)", groupe)
+    if not m or "|" not in selection:
+        return None
+    issue, autre = selection.split("|", 1)
+    r = {"dc": {"1N": lambda i, j: i >= j, "N2": lambda i, j: i <= j, "12": lambda i, j: i != j},
+         "1x2": {"1": lambda i, j: i > j, "N": lambda i, j: i == j, "2": lambda i, j: i < j}}[m.group(1)].get(issue)
+    if r is None:
+        return None
+    if m.group(3):
+        if autre not in ("plus", "moins"):
+            return None
+        ligne = float(m.group(3))
+        return lambda i, j: r(i, j) and ((i + j > ligne) if autre == "plus" else (i + j < ligne))
+    if autre not in ("Oui", "Non"):
+        return None
+    return lambda i, j: r(i, j) and ((i >= 1 and j >= 1) if autre == "Oui" else (i == 0 or j == 0))
+
+
+def libelle_combine(groupe: str, selection: str) -> str:
+    issue, autre = selection.split("|", 1)
+    nom = {"1N": "Domicile ne perd pas", "N2": "Extérieur ne perd pas", "12": "Pas de nul", "1": "Victoire domicile", "N": "Match nul", "2": "Victoire extérieur"}[issue]
+    if "total" in groupe:
+        return f"{nom} + {'plus' if autre == 'plus' else 'moins'} de {groupe.split('_')[-1].replace('.', ',')} buts"
+    return f"{nom} + les deux marquent : {'oui' if autre == 'Oui' else 'non'}"
+
+
 # ---------------------------------------------------------------- préparation d'un match
 
 def preparer(m: dict[str, Any], courbes: dict[str, list]) -> dict[str, Any] | None:
@@ -110,6 +139,22 @@ def preparer(m: dict[str, Any], courbes: dict[str, list]) -> dict[str, Any] | No
                    "j1": round(min(j1), 4) if j1 else None, "j4": round(min(j4), 4) if j4 else None,
                    "ecart_cote": round(x["probabilite"] - 1 / x["cote"], 4), "pertes_par_scenario": {k: round(v, 3) for k, v in s.items()},
                    "principal": x is principal, "_W": W}
+    for g, sels in (m.get("cotes_betpawa") or {}).items():          # combinés : seulement ceux dont la cote Betpawa est trouvée
+        if not isinstance(sels, dict) or not (g.startswith("dc_") or g.startswith("1x2_")):
+            continue
+        for sel, cote in sels.items():
+            t = test_combine(g, sel)
+            if t is None or not isinstance(cote, (int, float)) or cote < COTE_MIN:
+                continue
+            W = np.array([[bool(t(i, j)) for j in range(len(G))] for i in range(len(G))])
+            pj = float(G[W].sum())
+            sc_ = {k: masse_perte(G, W, v) for k, v in scen.items()}
+            j1 = 1 - max(sc_[k] for k in ("favori_creuse", "match_s_ouvre", "nul"))
+            j4 = 1 - max(sc_[k] for k in ("equipe_muette", "score_extreme") if k in sc_)
+            fam = "combine"
+            vus[frozenset([("combine", g, sel)])] = {"groupe": g, "selection": sel, "libelle": libelle_combine(g, sel), "famille": fam, "cote": float(cote),
+                   "probabilite": round(pj, 4), "p_calibree": round(pj, 4), "valeur": round(pj * float(cote) - 1, 4), "j1": round(j1, 4), "j4": round(j4, 4),
+                   "ecart_cote": round(pj - 1 / float(cote), 4), "pertes_par_scenario": {k: round(v, 3) for k, v in sc_.items()}, "principal": False, "_W": W, "combine": True}
     cands = list(vus.values())
     sc = m.get("score_final")
     if sc:
@@ -193,6 +238,10 @@ def super_marche(p: dict[str, Any], seuils: dict[str, Any]) -> dict[str, Any] | 
     sures = [c for c in cands if not c["dangereux"] and c["probabilite"] > 0]
     sure_ref = princ["sure"] if princ else 0.0          # se démarquer = aussi sûr que le pronostic d'alpha face aux scénarios, et mieux payé
     cote_ref = princ["cote"] if princ else COTE_MIN
+    reels = [c for c in cands if c.get("combine") and c["nb_juges"] == len(JUGES) and c["sure"] >= sure_ref and c["cote"] > cote_ref]
+    if reels:                                              # combiné réel (cote trouvée sur Betpawa) : passe avant tout
+        o = max(reels, key=lambda c: (c["valeur"], c["cote"]))
+        return {"type": "combine", "jambes": [jambe(o)], "cote_combine": o["cote"], "cote_min": COTE_MIN, "juges": o["juges"]}
     meilleur = None
     for a in range(len(sures) if COMBINES else 0):
         for b in range(a + 1, len(sures)):
@@ -216,7 +265,7 @@ def super_marche(p: dict[str, Any], seuils: dict[str, Any]) -> dict[str, Any] | 
         return {"type": "combine", "jambes": [jambe(A), jambe(B)], "cote_combine": "a_verifier", "cote_min": COTE_MIN,
                 "juges": {"contrarien": True, "premiers_principes": True, "expansionniste": True, "outsider": True, "executant": True}}
     ref = princ["valeur"] if princ else float("-inf")
-    autres = [c for c in cands if not c["principal"] and c["nb_juges"] == len(JUGES) and c["valeur"] > ref and c["sure"] >= sure_ref and c["cote"] > cote_ref]
+    autres = [c for c in cands if not c["principal"] and not c.get("combine") and c["nb_juges"] == len(JUGES) and c["valeur"] > ref and c["sure"] >= sure_ref and c["cote"] > cote_ref]
     if autres:
         o = max(autres, key=lambda c: (c["valeur"], c["cote"]))
         return {"type": "simple", "jambes": [jambe(o)], "cote_combine": None, "cote_min": COTE_MIN, "juges": o["juges"]}
