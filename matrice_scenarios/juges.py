@@ -108,7 +108,7 @@ def preparer(m: dict[str, Any], courbes: dict[str, list]) -> dict[str, Any] | No
                    "probabilite": round(x["probabilite"], 4), "p_calibree": round(p_cal, 4), "valeur": round(p_cal * x["cote"] - 1, 4),
                    "j1": round(min(j1), 4) if j1 else None, "j4": round(min(j4), 4) if j4 else None,
                    "ecart_cote": round(x["probabilite"] - 1 / x["cote"], 4), "pertes_par_scenario": {k: round(v, 3) for k, v in s.items()},
-                   "principal": x is principal}
+                   "principal": x is principal, "_W": W}
     cands = list(vus.values())
     sc = m.get("score_final")
     if sc:
@@ -116,7 +116,7 @@ def preparer(m: dict[str, Any], courbes: dict[str, list]) -> dict[str, Any] | No
             c["gagne"] = bool(S.test_du_marche(c["groupe"], c["selection"])(sc["buts_dom"], sc["buts_ext"]))
     return {"match_id": m["match_id"], "date": m["date"], "heure": m.get("heure_cameroun"), "competition": m.get("competition"),
             "domicile": m["domicile"], "exterieur": m["exterieur"], "scores_extremes": prof["scores_extremes"],
-            "series": {"domicile": len(dom), "exterieur": len(ext)}, "candidats": cands, "tendance_buts": prof["buts"], "favori": prof["favori"]}
+            "series": {"domicile": len(dom), "exterieur": len(ext)}, "candidats": cands, "tendance_buts": prof["buts"], "favori": prof["favori"], "_G": G, "_scen": scen}
 
 
 # ---------------------------------------------------------------- seuils mesurés et jugement
@@ -172,6 +172,54 @@ def verdict(p: dict[str, Any], supers: set[str], adapter: bool = False) -> dict[
         niveau = "super" if opp["famille"] in supers else "exploratoire"
     return {"statut": statut, "origine": origine, "pronostic": choix, "opportunite": opp, "niveau_opportunite": niveau,
             "fragile": bool(choix is not None and choix["dangereux"])}
+
+
+# ---------------------------------------------------------------- super marché (logique de Patrick)
+
+def jambe(c: dict) -> dict:
+    return {k: c[k] for k in ("groupe", "selection", "libelle", "famille", "cote")}
+
+
+def super_marche(p: dict[str, Any], seuils: dict[str, Any]) -> dict[str, Any] | None:
+    """Un marché qui se démarque, sinon rien. Deux formes :
+    - COMBINÉ : deux jambes de familles différentes qui vont dans le même sens (la probabilité d'avoir les deux dépasse le produit des
+      probabilités : seuil naturel, aucune constante), chaque jambe non dangereuse, et le combiné survit aux scénarios (juges 1 et 4).
+      La cote du combiné n'est pas dans nos données : à vérifier sur Betpawa (minimum 1,26).
+    - SIMPLE : un autre marché que celui d'alpha qui passe les 5 juges et paie mieux que lui après calibration (valeur supérieure).
+    Le combiné passe en premier ; jamais le marché d'alpha tel quel."""
+    cands, G, scen = p["candidats"], p["_G"], p["_scen"]
+    princ = next((c for c in cands if c["principal"]), None)
+    sures = [c for c in cands if not c["dangereux"] and c["probabilite"] > 0]
+    sure_ref = princ["sure"] if princ else 0.0          # se démarquer = aussi sûr que le pronostic d'alpha face aux scénarios, et mieux payé
+    cote_ref = princ["cote"] if princ else COTE_MIN
+    meilleur = None
+    for a in range(len(sures)):
+        for b in range(a + 1, len(sures)):
+            A, B = sures[a], sures[b]
+            if A["famille"] == B["famille"] or A["groupe"] == B["groupe"]:
+                continue
+            WA, WB = A["_W"], B["_W"]
+            W = WA & WB
+            pj, pa, pb = float(G[W].sum()), float(G[WA].sum()), float(G[WB].sum())
+            if pj <= pa * pb or pj >= min(pa, pb) - 1e-9:       # pas dans le même sens, ou une jambe contient l'autre (le combiné = une seule jambe)
+                continue
+            s_ = {k: masse_perte(G, W, v) for k, v in scen.items()}
+            j1 = 1 - max(s_[k] for k in ("favori_creuse", "match_s_ouvre", "nul"))
+            j4 = 1 - max(s_[k] for k in ("equipe_muette", "score_extreme") if k in s_)
+            if j1 < seuils["q1_contrarien"] or j4 < seuils["q1_outsider"] or min(j1, j4) < sure_ref or A["cote"] * B["cote"] <= cote_ref:
+                continue
+            if meilleur is None or pj > meilleur[0]:
+                meilleur = (pj, A, B, j1, j4)
+    if meilleur:
+        pj, A, B, j1, j4 = meilleur
+        return {"type": "combine", "jambes": [jambe(A), jambe(B)], "cote_combine": "a_verifier", "cote_min": COTE_MIN,
+                "juges": {"contrarien": True, "premiers_principes": True, "expansionniste": True, "outsider": True, "executant": True}}
+    ref = princ["valeur"] if princ else float("-inf")
+    autres = [c for c in cands if not c["principal"] and c["nb_juges"] == len(JUGES) and c["valeur"] > ref and c["sure"] >= sure_ref and c["cote"] > cote_ref]
+    if autres:
+        o = max(autres, key=lambda c: (c["valeur"], c["cote"]))
+        return {"type": "simple", "jambes": [jambe(o)], "cote_combine": None, "cote_min": COTE_MIN, "juges": o["juges"]}
+    return None
 
 
 # ---------------------------------------------------------------- chargement et statistiques
@@ -291,7 +339,7 @@ def ecrire_page() -> dict[str, Any]:
         juger_candidats(p["candidats"], prm["seuils"])
         v = verdict(p, supers, prm.get("adaptation_active", False))
         out[p["match_id"]] = {"statut": v["statut"], "origine": v["origine"], "fragile": v["fragile"], "niveau_opportunite": v["niveau_opportunite"],
-                              "pronostic": resume(v["pronostic"]), "opportunite": resume(v["opportunite"])}
+                              "pronostic": resume(v["pronostic"]), "super": super_marche(p, prm["seuils"])}
     d = {"genere_le": __import__("datetime").datetime.now(__import__("datetime").timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
          "supers": prm["supers"], "jour_de_coupe": prm["jour_de_coupe"], "promotion_allowed": False, "matchs": out}
     SORTIE.write_text(json.dumps(d, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")

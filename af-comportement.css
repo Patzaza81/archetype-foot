@@ -23,3 +23,6 @@
 .af-alpha .ax-opp-juges li { padding: 2px 8px; border-radius: 999px; border: 1px solid currentColor; }
 .af-alpha .ax-opp-juges li.ax-ok::before { content: "✓ "; }
 .af-alpha .ax-opp-juges li.ax-non { opacity: .45; text-decoration: line-through; }
+.af-alpha .ax-opp-jambes { list-style: none; margin: 8px 0 4px; padding: 0; display: grid; gap: 6px; }
+.af-alpha .ax-opp-jambes li { display: flex; justify-content: space-between; gap: 10px; font-size: 1.02rem; font-weight: 700; line-height: 1.25; }
+.af-alpha .ax-opp-jambes li + li::before { content: "+"; margin-right: 6px; }

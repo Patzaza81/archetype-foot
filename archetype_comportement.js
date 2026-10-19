@@ -117,20 +117,18 @@ function construitDetails(m, idDetails) {
   return details;
 }
 
-// Opportunité réelle repérée par les 5 juges (règles, sans IA) : SUPER MARCHÉ (famille validée à l'apprentissage) ou signal exploratoire.
+// SUPER MARCHÉ (5 juges, règles, sans IA) : un combiné de deux jambes qui vont dans le même sens, ou un autre marché qui se démarque. Sinon rien.
 function construitOpportunite(m) {
-  const j = JUGES[m.match_id], o = j && j.opportunite;
-  if (!o || !j.niveau_opportunite) return null;
-  const super_ = j.niveau_opportunite === "super";
-  const memePari = j.pronostic && j.pronostic.libelle === o.libelle;
-  const pastilles = Object.keys(NOMS_JUGES).map((k) => `<li class="${o.juges && o.juges[k] ? "ax-ok" : "ax-non"}">${NOMS_JUGES[k]}</li>`).join("");
+  const j = JUGES[m.match_id], o = j && j.super;
+  if (!o || !(o.jambes || []).length) return null;
+  const combine = o.type === "combine";
+  const jambes = o.jambes.map((x) => `<li><span>${echappeHtml(x.libelle)}</span><strong>Cote ${formatCote(x.cote)}</strong></li>`).join("");
+  const pastilles = Object.keys(NOMS_JUGES).map((k) => `<li class="ax-ok">${NOMS_JUGES[k]}</li>`).join("");
   const div = document.createElement("div");
-  div.className = `ax-opp ${super_ ? "ax-opp-super" : "ax-opp-explo"}`;
-  div.innerHTML = `<div class="ax-opp-tete"><span class="ax-opp-etiquette">${super_ ? "★ SUPER MARCHÉ" : "Signal exploratoire"}</span>` +
-    `<span class="ax-opp-cote">Cote <strong>${formatCote(o.cote)}</strong></span></div>` +
-    `<h3 class="ax-opp-marche">${echappeHtml(o.libelle)}</h3>` +
-    `<p class="ax-opp-texte">${super_ ? "Les 5 juges valident ce marché, d'une famille rentable à l'apprentissage (non confirmée sur la 2e moitié de l'archive)." : "Les 5 juges valident ce marché, mais sa famille n'a pas encore fait ses preuves."}` +
-    `${memePari ? " C'est aussi le pronostic principal." : ""} Opportunité observée, sans garantie.</p>` +
+  div.className = "ax-opp ax-opp-super";
+  div.innerHTML = `<div class="ax-opp-tete"><span class="ax-opp-etiquette">★ SUPER MARCHÉ${combine ? " · COMBINÉ" : ""}</span></div>` +
+    `<ul class="ax-opp-jambes">${jambes}</ul>` +
+    `<p class="ax-opp-texte">${combine ? `Deux statistiques dans le même sens. Cote du combiné à vérifier sur Betpawa (minimum ${formatCote(o.cote_min)}).` : "Un marché qui se démarque du pronostic principal."} Opportunité observée, sans garantie.</p>` +
     `<ul class="ax-opp-juges" aria-label="Verdict des 5 juges">${pastilles}</ul>`;
   return div;
 }
@@ -175,7 +173,7 @@ function construitCarte(m) {
   active(actifs[0].bouton);
   section.appendChild(onglets); section.appendChild(panneaux); section.appendChild(resume);
   const opp = construitOpportunite(m);
-  if (opp) { section.classList.add(opp.classList.contains("ax-opp-super") ? "ax-carte-super" : "ax-carte-explo"); section.appendChild(opp); }
+  if (opp) { section.classList.add("ax-carte-super"); section.appendChild(opp); }
   section.appendChild(blocDetails);
 
   const pied = document.createElement("div");
