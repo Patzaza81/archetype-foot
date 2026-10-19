@@ -162,7 +162,8 @@ def preparer(m: dict[str, Any], courbes: dict[str, list]) -> dict[str, Any] | No
             c["gagne"] = bool(S.test_du_marche(c["groupe"], c["selection"])(sc["buts_dom"], sc["buts_ext"]))
     return {"match_id": m["match_id"], "date": m["date"], "heure": m.get("heure_cameroun"), "competition": m.get("competition"),
             "domicile": m["domicile"], "exterieur": m["exterieur"], "scores_extremes": prof["scores_extremes"],
-            "series": {"domicile": len(dom), "exterieur": len(ext)}, "candidats": cands, "tendance_buts": prof["buts"], "favori": prof["favori"], "_G": G, "_scen": scen}
+            "series": {"domicile": len(dom), "exterieur": len(ext)}, "candidats": cands, "tendance_buts": prof["buts"], "favori": prof["favori"], "_G": G, "_scen": scen,
+            "total_attendu": prof["total_attendu"], "buts_attendus": prof["buts_attendus"]}
 
 
 # ---------------------------------------------------------------- seuils mesurés et jugement
@@ -222,23 +223,50 @@ def verdict(p: dict[str, Any], supers: set[str], adapter: bool = False) -> dict[
 
 # ---------------------------------------------------------------- super marché (logique de Patrick)
 
-SCENARIOS_TEXTE = {"favori_creuse": "le favori qui creuse l'écart", "match_s_ouvre": "un match qui s'ouvre", "nul": "un match nul",
-                   "equipe_muette": "une équipe qui ne marque pas", "score_extreme": "un score extrême comme dans les séries"}
+SCENARIOS_TEXTE = {"favori_creuse": "le favori creuse l'écart", "match_s_ouvre": "le match s'ouvre", "nul": "un nul tombe",
+                   "equipe_muette": "une équipe ne marque pas", "score_extreme": "un score extrême tombe"}
 
 
-def raison(c: dict, princ: dict | None) -> str:
-    """Justification de parieur : pourquoi CE marché plutôt que le principal (aucune mention des juges)."""
-    pires = {k: v for k, v in (c.get("pertes_par_scenario") or {}).items() if k in SCENARIOS_TEXTE}
-    risque = SCENARIOS_TEXTE[max(pires, key=pires.get)] if pires else None
+def _virgule(x: float) -> str:
+    return str(round(float(x), 2)).replace(".", ",")
+
+
+def _appui(c: dict, p: dict) -> str | None:
+    """Ce que le match montre en faveur du marché (buts attendus du profil), seulement quand c'est dans le sens du marché."""
+    import re
+    m = re.fullmatch(r"over_under_(domicile_|exterieur_)?(\d+\.5)", c["groupe"])
+    ba, tot = p.get("buts_attendus"), p.get("total_attendu")
+    if m and ba and tot is not None:
+        ligne = float(m.group(2))
+        sujet, att = {None: ("le match", tot), "domicile_": (p["domicile"], ba[0]), "exterieur_": (p["exterieur"], ba[1])}[m.group(1)]
+        if (c["selection"] == "moins" and att < ligne) or (c["selection"] == "plus" and att > ligne):
+            pl = "s" if att >= 1.5 else ""
+            return (f"{sujet} : {_virgule(att)} but{pl} attendu{pl}, de quoi appuyer ce marché." if m.group(1) else f"{_virgule(att)} buts attendus au total, de quoi appuyer ce marché.")
+    m = re.fullmatch(r"cages_inviolees_(domicile|exterieur)", c["groupe"])
+    if m and ba:
+        att = ba[1] if m.group(1) == "domicile" else ba[0]          # la cage du domicile est inviolée si l'extérieur ne marque pas
+        equipe = p["exterieur"] if m.group(1) == "domicile" else p["domicile"]
+        if (c["selection"] == "oui" and att < 1.0) or (c["selection"] == "non" and att >= 1.0):
+            return f"{equipe} : {_virgule(att)} but attendu seulement." if c["selection"] == "oui" else f"{equipe} : {_virgule(att)} but attendu, il peut trouver la faille."
+    if c["groupe"] == "btts" and tot is not None:
+        return f"{_virgule(tot)} buts attendus au total, un match où les deux équipes {'marquent' if c['selection'] == 'Oui' else 'ne marquent pas toutes les deux'}." if (
+            (c["selection"] == "Oui" and tot >= 2.5) or (c["selection"] == "Non" and tot < 2.5)) else None
+    return None
+
+
+def raison(c: dict, princ: dict | None, p: dict) -> str:
+    """Justification de parieur : pourquoi CE marché est retenu, en positif (aucune mention des juges, aucun découragement)."""
     t = []
     if c.get("combine"):
-        t.append(f"Deux statistiques dans le même sens ({c['libelle']}), cote du combiné trouvée sur Betpawa.")
+        t.append(f"Deux statistiques dans le même sens : {c['libelle'].lower()}, cote du combiné trouvée sur Betpawa.")
     if princ:
-        t.append(f"Il paie {str(round(c['cote'], 2)).replace('.', ',')} contre {str(round(princ['cote'], 2)).replace('.', ',')} pour le principal ({princ['libelle'].lower()}), "
-                 "et il tient au moins aussi bien dans les cas qui font perdre ce match.")
-    if risque:
-        t.append(f"Son principal risque : {risque}.")
-    t.append("Sans garantie.")
+        t.append(f"Cote {_virgule(c['cote'])} contre {_virgule(princ['cote'])} pour le principal ({princ['libelle'].lower()}) : meilleur rendement pour une sûreté au moins égale.")
+    a = _appui(c, p)
+    if a:
+        t.append(a)
+    sol = [k for k, v in sorted((c.get("pertes_par_scenario") or {}).items(), key=lambda kv: kv[1]) if k in SCENARIOS_TEXTE][:2]
+    if sol:
+        t.append(f"Il reste bien placé même si {' ou si '.join(SCENARIOS_TEXTE[k] for k in sol)}.")
     return " ".join(t)
 
 
@@ -261,7 +289,7 @@ def super_marche(p: dict[str, Any], seuils: dict[str, Any]) -> dict[str, Any] | 
     reels = [c for c in cands if c.get("combine") and c["nb_juges"] == len(JUGES) and c["sure"] >= sure_ref and c["cote"] > cote_ref]
     if reels:                                              # combiné réel (cote trouvée sur Betpawa) : passe avant tout
         o = max(reels, key=lambda c: (c["valeur"], c["cote"]))
-        return {"type": "combine", "jambes": [jambe(o)], "cote_combine": o["cote"], "cote_min": COTE_MIN, "juges": o["juges"], "raison": raison(o, princ)}
+        return {"type": "combine", "jambes": [jambe(o)], "cote_combine": o["cote"], "cote_min": COTE_MIN, "juges": o["juges"], "raison": raison(o, princ, p)}
     meilleur = None
     for a in range(len(sures) if COMBINES else 0):
         for b in range(a + 1, len(sures)):
@@ -288,7 +316,7 @@ def super_marche(p: dict[str, Any], seuils: dict[str, Any]) -> dict[str, Any] | 
     autres = [c for c in cands if not c["principal"] and not c.get("combine") and c["nb_juges"] == len(JUGES) and c["valeur"] > ref and c["sure"] >= sure_ref and c["cote"] > cote_ref]
     if autres:
         o = max(autres, key=lambda c: (c["valeur"], c["cote"]))
-        return {"type": "simple", "jambes": [jambe(o)], "cote_combine": None, "cote_min": COTE_MIN, "juges": o["juges"], "raison": raison(o, princ)}
+        return {"type": "simple", "jambes": [jambe(o)], "cote_combine": None, "cote_min": COTE_MIN, "juges": o["juges"], "raison": raison(o, princ, p)}
     return None
 
 
