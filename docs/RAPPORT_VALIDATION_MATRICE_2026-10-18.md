@@ -80,8 +80,8 @@ Preuves brutes : `docs/validation_matrice_2026-10-18.json` (sortie de `python -m
 
 
 ## 11. Système en deux étapes (`comportement.py`, `scanner_marches.py`)
-- Étape 1, sans cote : buts attendus par croisement (marqués / encaissés adverses), scores extrêmes plafonnés à 4 buts, retour vers la moyenne (2 matchs). Profil : favori, niveau de buts, deux marquent, scores extrêmes signalés. Classement : prévu (`rank_k`), désactivé faute de preuve.
+- Étape 1, sans cote : buts attendus par croisement (marqués / encaissés adverses), aucun plafond de buts (les données n’en demandent pas), retour vers la moyenne pondéré à 4 matchs ; tous les paramètres et seuils sont mesurés sur Football-Data (`docs/parametres_comportement.json`). Profil : favori, niveau de buts, deux marquent, scores extrêmes signalés. Classement : prévu (`rank_k`), désactivé faute de preuve.
 - Étape 2 : lecture de TOUTES les sélections de `cotes_betpawa` (1X2, double chance, BTTS, totaux, totaux par équipe, handicaps 2 et 3 issues, cages inviolées, nombre exact, pair/impair, score exact). Ce qui n'est pas lu est listé, jamais ignoré.
 - Choix : marché le plus probable avec cote ≥ 1,26, sans plafond.
-- Backtest archive jouée (1 064 matchs) : réussite 68,7 % (cote moyenne 1,39), annoncé 79,4 % → trop confiant de ~10 points. Ancienne règle sur le même échantillon : 65,6 %. Écart de 3 points, non prouvé significatif.
+- Backtest archive jouée (1 064 matchs) : réussite 69,5 % (cote moyenne 1,39), annoncé 79,0 % → trop confiant de ~10 points. Ancienne règle sur le même échantillon : 65,6 %. Écart de 3 points, non prouvé significatif.
 - Aucune règle activée, rien branché à la production.

@@ -12,10 +12,10 @@ def test_grille_somme_un():
     assert sum(map(sum, g)) == pytest.approx(1.0)
 
 
-def test_scores_extremes_plafonnes():
+def test_aucun_plafond_de_buts():
     a = C.buts_attendus([(9, 0), (1, 1), (1, 1)], [(1, 1)] * 3)
     b = C.buts_attendus([(4, 0), (1, 1), (1, 1)], [(1, 1)] * 3)
-    assert a == b
+    assert C.CAP is None and a[0] > b[0]
 
 
 @pytest.mark.parametrize("groupe,sel,score,attendu", [

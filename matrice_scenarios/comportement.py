@@ -11,21 +11,26 @@ from __future__ import annotations
 import math
 from typing import Any
 
-MU_DOM, MU_EXT = 1.50, 1.20      # moyennes de référence (buts par match à domicile / à l'extérieur) ; ajustées par `calibrer_parametres`
-SHRINK = 2.0                     # poids (en matchs) de la moyenne de référence : peu de matchs -> on se rapproche de la référence
-CAP = 4                          # un score extrême est plafonné à CAP buts par match
-RANK_K = 0.0                     # effet du classement (0 = désactivé) ; activé seulement si les chiffres le justifient
-RHO = 0.0                        # correction Dixon-Coles des petits scores (0 = aucun)
+import json
+from pathlib import Path
+
+# Paramètres MESURÉS sur les résultats Football-Data (docs/parametres_comportement.json), jamais posés à la main.
+_P = json.loads((Path(__file__).resolve().parent.parent / "docs" / "parametres_comportement.json").read_text(encoding="utf-8"))
+MU_DOM, MU_EXT = _P["mu_dom"], _P["mu_ext"]
+SHRINK = _P["shrink"]
+CAP = _P["cap"]                  # None : aucun plafond de buts (les données n'en demandent pas)
+RANK_K = 0.0                     # classement non activé tant que les chiffres ne le justifient pas
+RHO = _P["rho"]
 GRID = 11                        # scores de 0 à 10 buts par équipe
 
 
-def _moyenne_robuste(valeurs: list[int], mu: float, shrink: float, cap: int) -> float:
-    capped = [min(v, cap) for v in valeurs]
+def _moyenne_robuste(valeurs: list[int], mu: float, shrink: float, cap: int | None) -> float:
+    capped = [v if cap is None else min(v, cap) for v in valeurs]
     return (sum(capped) + shrink * mu) / (len(capped) + shrink)
 
 
 def buts_attendus(dom: list[tuple[int, int]], ext: list[tuple[int, int]], rang_dom: int | None = None, rang_ext: int | None = None, *,
-                  mu_dom: float = MU_DOM, mu_ext: float = MU_EXT, shrink: float = SHRINK, cap: int = CAP, rank_k: float = RANK_K) -> tuple[float, float]:
+                  mu_dom: float = MU_DOM, mu_ext: float = MU_EXT, shrink: float = SHRINK, cap: int | None = CAP, rank_k: float = RANK_K) -> tuple[float, float]:
     """Croisement : le domicile marque ~ (ce qu'il marque + ce que l'extérieur encaisse) / 2, et réciproquement."""
     att_d = _moyenne_robuste([g for g, _ in dom], mu_dom, shrink, cap)
     def_d = _moyenne_robuste([c for _, c in dom], mu_ext, shrink, cap)   # buts que le domicile encaisse (référence : buts de l'extérieur)
@@ -61,9 +66,9 @@ def profil(dom: list[tuple[int, int]], ext: list[tuple[int, int]], rang_dom: int
     g = grille(lam_d, lam_e, params.get("rho", RHO))
     p1, pn, p2 = proba(g, lambda i, j: i > j), proba(g, lambda i, j: i == j), proba(g, lambda i, j: i < j)
     total = lam_d + lam_e
-    if p1 >= 0.50 and p1 - p2 >= 0.25:
+    if p1 >= _P["seuil_favori_dom"] and p1 > p2:
         favori = "domicile"
-    elif p2 >= 0.45 and p2 - p1 >= 0.20:
+    elif p2 >= _P["seuil_favori_ext"] and p2 > p1:
         favori = "extérieur"
     else:
         favori = "équilibré"
@@ -71,7 +76,7 @@ def profil(dom: list[tuple[int, int]], ext: list[tuple[int, int]], rang_dom: int
     return {
         "buts_attendus": (round(lam_d, 2), round(lam_e, 2)), "total_attendu": round(total, 2),
         "victoire_dom": round(p1, 3), "nul": round(pn, 3), "victoire_ext": round(p2, 3), "favori": favori,
-        "buts": "offensif" if total >= 3.0 else ("défensif" if total <= 2.2 else "équilibré"),
+        "buts": "offensif" if total >= _P["seuil_buts_offensif"] else ("défensif" if total <= _P["seuil_buts_defensif"] else "équilibré"),
         "deux_marquent": round(proba(g, lambda i, j: i >= 1 and j >= 1), 3),
         "scores_extremes": extremes, "grille": g,
     }
