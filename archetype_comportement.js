@@ -51,6 +51,7 @@ function etiquette(s) {
 }
 // La phrase « parieur » de la tendance qui a produit ce pari (absente pour les anciennes données : repli sur le texte chiffré).
 function tendanceDe(m, s) {
+  if (s.raison) return s.raison;
   const t = (m.tendances || []).find((x) => x.titre === s.tendance || x.cle === s.tendance);
   return t ? (t.court || t.texte || "") : "";
 }

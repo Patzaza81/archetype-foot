@@ -122,3 +122,28 @@ def test_libelle_parieur_marches_sans_equipe_gardent_le_libelle_du_moteur():
     assert _lp("btts", "Oui", "A", "B", "Les deux marquent : oui") == "Les deux marquent : oui"
     assert _lp("over_under_2.5", "plus", "A", "B", "Plus de 2,5 buts") == "Plus de 2,5 buts"
     assert _lp("1x2", "inconnu", "A", "B", "défaut") == "défaut"
+
+
+# ── Raison propre au pick ─────────────────────────────────────────────────────
+from matrice_scenarios.page_comportement import raison_du_pick as _rp
+_PROF = {"buts_attendus": (1.9, 0.8), "total_attendu": 2.7, "victoire_dom": 0.5, "nul": 0.25, "victoire_ext": 0.25, "deux_marquent": 0.52}
+
+
+def test_raison_du_pick_cas_valides():
+    assert _rp("over_under_2.5", "plus", _PROF, "A", "B") == "2,7 buts attendus dans le match"
+    assert _rp("over_under_domicile_1.5", "plus", _PROF, "A", "B") == "A : 1,9 but attendu"
+    assert _rp("cages_inviolees_exterieur", "non", _PROF, "A", "B") == "A : 1,9 but attendu"      # l'extérieur encaisse si A marque
+    assert _rp("cages_inviolees_domicile", "non", _PROF, "A", "B") == "B : 0,8 but attendu"
+    assert _rp("btts", "Oui", _PROF, "A", "B") == "Les deux marquent : 52 % selon le modèle"
+
+
+def test_raison_du_pick_ne_contredit_jamais_le_pick():
+    for g, s in (("over_under_4.5", "moins"), ("over_under_1.5", "plus")):
+        txt = _rp(g, s, _PROF, "A", "B")
+        assert "ouvert" not in txt and "fermé" not in txt
+
+
+def test_raison_du_pick_resultats_et_handicaps_donnent_les_trois_issues():
+    assert _rp("handicap_1.5", "domicile", _PROF, "A", "B") == "A 50 % · nul 25 % · B 25 %"
+    assert _rp("double_chance", "12", _PROF, "A", "B") == "A 50 % · nul 25 % · B 25 %"
+    assert _rp("handicap_3issues_2", "1", _PROF, "A", "B") == "A 50 % · nul 25 % · B 25 %"

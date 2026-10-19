@@ -106,6 +106,25 @@ def libelle_parieur(groupe: str, selection: str, dom: str, ext: str, defaut: str
     return defaut
 
 
+def raison_du_pick(groupe: str, selection: str, prof: dict[str, Any], dom: str, ext: str) -> str:
+    """Une phrase pour le parieur, propre au pick (jamais une tendance qui le contredit) ; chiffres issus de la grille du match."""
+    pc = lambda x: f"{round(100 * x)} %"
+    lam = prof.get("buts_attendus") or (None, None)
+    tot = _fr(prof["total_attendu"])
+    if re.fullmatch(r"over_under_\d+(\.\d+)?", groupe):
+        return f"{tot} buts attendus dans le match"
+    m = re.fullmatch(r"over_under_(domicile|exterieur)_\d+(\.\d+)?", groupe)
+    if m:
+        dom_ = m.group(1) == "domicile"
+        return f"{dom if dom_ else ext} : {_fr(lam[0] if dom_ else lam[1])} but attendu" if lam[0] is not None else f"{tot} buts attendus dans le match"
+    if groupe == "btts":
+        return f"Les deux marquent : {pc(prof['deux_marquent'])} selon le modèle"
+    if groupe.startswith("cages_inviolees"):
+        marqueur_dom = groupe.endswith("exterieur")     # cage de l'extérieur : c'est le domicile qui doit marquer
+        return f"{dom if marqueur_dom else ext} : {_fr(lam[0] if marqueur_dom else lam[1])} but attendu" if lam[0] is not None else f"{tot} buts attendus dans le match"
+    return f"{dom} {pc(prof['victoire_dom'])} · nul {pc(prof['nul'])} · {ext} {pc(prof['victoire_ext'])}"
+
+
 def analyser_match(m: dict[str, Any], p: dict[str, Any], collecte: list | None = None) -> dict[str, Any]:
     base = {"match_id": m["match_id"], "date": m["date"], "heure": m.get("heure_cameroun"), "competition": m.get("competition"),
             "domicile": m["domicile"], "exterieur": m["exterieur"], "score": m.get("score_final"), "selections": [], "tendances": []}
@@ -147,7 +166,8 @@ def analyser_match(m: dict[str, Any], p: dict[str, Any], collecte: list | None =
     sel = []
     for i, c in enumerate(choix, 1):
         s = {"rang": i, "role": c["role"], "tendance": TENDANCES.get(c["tendance"] or "", ("Autre",))[0], "libelle": libelle_parieur(c["groupe"], c["selection"], m["domicile"], m["exterieur"], c["libelle"]), "cote": c["cote"],
-             "probabilite": round(c["probabilite"], 3), "groupe": c["groupe"], "choix": c["selection"]}
+             "probabilite": round(c["probabilite"], 3), "groupe": c["groupe"], "choix": c["selection"],
+             "raison": raison_du_pick(c["groupe"], c["selection"], prof, m["domicile"], m["exterieur"])}
         if m.get("score_final"):
             s["gagne"] = bool(S.test_du_marche(c["groupe"], c["selection"])(m["score_final"]["buts_dom"], m["score_final"]["buts_ext"]))
         sel.append(s)
