@@ -1,0 +1,452 @@
+{
+ "jour_de_coupe": "2026-10-12",
+ "matchs_apprentissage": 616,
+ "matchs_test": 568,
+ "seuils": {
+  "q1_contrarien": 0.7705,
+  "q1_outsider": 0.8498,
+  "q99_ecart_cote": 0.1662,
+  "pronostics_principaux": 616
+ },
+ "adaptation_active": false,
+ "decision_adaptation_apprentissage": {
+  "adaptations": {
+   "n": 325,
+   "reussite": 0.6062,
+   "cote_moyenne": 1.538,
+   "rendement": -0.1012,
+   "ic95_reussite": [
+    0.4957,
+    0.6543
+   ],
+   "ic95_rendement": [
+    -0.2411,
+    -0.032
+   ]
+  },
+  "alpha_sur_ces_matchs": {
+   "n": 325,
+   "reussite": 0.6646,
+   "cote_moyenne": 1.437,
+   "rendement": -0.0434,
+   "ic95_reussite": [
+    0.6115,
+    0.7031
+   ],
+   "ic95_rendement": [
+    -0.1156,
+    -0.0003
+   ]
+  }
+ },
+ "supers": [
+  "handicap",
+  "over_under",
+  "over_under_domicile"
+ ],
+ "detail_apprentissage_par_famille": {
+  "btts": {
+   "n": 95,
+   "reussite": 0.4105,
+   "cote_moyenne": 2.438,
+   "rendement": -0.0124,
+   "ic95_reussite": [
+    0.3358,
+    0.6562
+   ],
+   "ic95_rendement": [
+    -0.1906,
+    0.5507
+   ]
+  },
+  "double_chance": {
+   "n": 31,
+   "reussite": 0.5484,
+   "cote_moyenne": 1.46,
+   "rendement": -0.2035,
+   "ic95_reussite": [
+    0.3333,
+    0.7083
+   ],
+   "ic95_rendement": [
+    -0.5407,
+    0.0512
+   ]
+  },
+  "cages_inviolees_domicile": {
+   "n": 21,
+   "reussite": 0.2381,
+   "cote_moyenne": 3.054,
+   "rendement": -0.2986,
+   "ic95_reussite": [
+    0.0,
+    0.2647
+   ],
+   "ic95_rendement": [
+    -1.0,
+    -0.2247
+   ]
+  },
+  "handicap_3issues": {
+   "n": 25,
+   "reussite": 0.72,
+   "cote_moyenne": 1.438,
+   "rendement": 0.0104,
+   "ic95_reussite": [
+    0.4737,
+    0.9
+   ],
+   "ic95_rendement": [
+    -0.3312,
+    0.2289
+   ]
+  },
+  "over_under": {
+   "n": 61,
+   "reussite": 0.5574,
+   "cote_moyenne": 1.911,
+   "rendement": 0.0752,
+   "ic95_reussite": [
+    0.5,
+    0.6667
+   ],
+   "ic95_rendement": [
+    -0.061,
+    0.2674
+   ]
+  },
+  "handicap": {
+   "n": 44,
+   "reussite": 0.7727,
+   "cote_moyenne": 1.37,
+   "rendement": 0.0507,
+   "ic95_reussite": [
+    0.5263,
+    0.8727
+   ],
+   "ic95_rendement": [
+    -0.2765,
+    0.2054
+   ]
+  },
+  "over_under_domicile": {
+   "n": 34,
+   "reussite": 0.7059,
+   "cote_moyenne": 1.644,
+   "rendement": 0.0438,
+   "ic95_reussite": [
+    0.5,
+    0.7692
+   ],
+   "ic95_rendement": [
+    -0.22,
+    0.0908
+   ]
+  },
+  "over_under_exterieur": {
+   "n": 44,
+   "reussite": 0.4545,
+   "cote_moyenne": 2.182,
+   "rendement": -0.1641,
+   "ic95_reussite": [
+    0.3158,
+    1.0
+   ],
+   "ic95_rendement": [
+    -0.4068,
+    0.68
+   ]
+  },
+  "cages_inviolees_exterieur": {
+   "n": 1,
+   "reussite": 0.0,
+   "cote_moyenne": 2.19,
+   "rendement": -1.0,
+   "ic95_reussite": [
+    0.0,
+    0.0
+   ],
+   "ic95_rendement": [
+    -1.0,
+    -1.0
+   ]
+  }
+ },
+ "apprentissage": {
+  "alpha_brut": {
+   "n": 616,
+   "reussite": 0.6737,
+   "cote_moyenne": 1.395,
+   "rendement": -0.0634,
+   "ic95_reussite": [
+    0.6538,
+    0.7053
+   ],
+   "ic95_rendement": [
+    -0.0947,
+    -0.0076
+   ]
+  },
+  "juges_pronostic": {
+   "n": 616,
+   "reussite": 0.6737,
+   "cote_moyenne": 1.395,
+   "rendement": -0.0634,
+   "ic95_reussite": [
+    0.6538,
+    0.7053
+   ],
+   "ic95_rendement": [
+    -0.0947,
+    -0.0076
+   ]
+  },
+  "alpha_sur_les_memes_matchs": {
+   "n": 616,
+   "reussite": 0.6737,
+   "cote_moyenne": 1.395,
+   "rendement": -0.0634,
+   "ic95_reussite": [
+    0.6538,
+    0.7053
+   ],
+   "ic95_rendement": [
+    -0.0947,
+    -0.0076
+   ]
+  },
+  "pas_de_pari": 0,
+  "matchs": 616,
+  "adaptations": {
+   "juges": {
+    "n": 0
+   },
+   "alpha_sur_ces_matchs": {
+    "n": 0
+   }
+  },
+  "fragiles": {
+   "n": 330,
+   "reussite": 0.6636,
+   "cote_moyenne": 1.442,
+   "rendement": -0.0457,
+   "ic95_reussite": [
+    0.6124,
+    0.6962
+   ],
+   "ic95_rendement": [
+    -0.1214,
+    0.0007
+   ]
+  },
+  "non_fragiles": {
+   "n": 286,
+   "reussite": 0.6853,
+   "cote_moyenne": 1.34,
+   "rendement": -0.0838,
+   "ic95_reussite": [
+    0.6689,
+    0.7727
+   ],
+   "ic95_rendement": [
+    -0.1077,
+    0.0346
+   ]
+  },
+  "information_variante_adaptation": {
+   "n": 325,
+   "reussite": 0.6062,
+   "cote_moyenne": 1.538,
+   "rendement": -0.1012,
+   "ic95_reussite": [
+    0.4957,
+    0.6543
+   ],
+   "ic95_rendement": [
+    -0.2411,
+    -0.032
+   ]
+  },
+  "super_marche": {
+   "n": 139,
+   "reussite": 0.6619,
+   "cote_moyenne": 1.674,
+   "rendement": 0.0598,
+   "ic95_reussite": [
+    0.6,
+    0.6827
+   ],
+   "ic95_rendement": [
+    0.0081,
+    0.078
+   ]
+  },
+  "signal_exploratoire": {
+   "n": 217,
+   "reussite": 0.4562,
+   "cote_moyenne": 2.19,
+   "rendement": -0.1001,
+   "ic95_reussite": [
+    0.3883,
+    0.6436
+   ],
+   "ic95_rendement": [
+    -0.217,
+    0.2441
+   ]
+  },
+  "opportunite_toutes_familles": {
+   "n": 356,
+   "reussite": 0.5365,
+   "cote_moyenne": 1.988,
+   "rendement": -0.0377,
+   "ic95_reussite": [
+    0.5,
+    0.6289
+   ],
+   "ic95_rendement": [
+    -0.1052,
+    0.1519
+   ]
+  }
+ },
+ "test": {
+  "alpha_brut": {
+   "n": 568,
+   "reussite": 0.7236,
+   "cote_moyenne": 1.349,
+   "rendement": -0.0268,
+   "ic95_reussite": [
+    0.6657,
+    0.7496
+   ],
+   "ic95_rendement": [
+    -0.0908,
+    0.0053
+   ]
+  },
+  "juges_pronostic": {
+   "n": 568,
+   "reussite": 0.7236,
+   "cote_moyenne": 1.349,
+   "rendement": -0.0268,
+   "ic95_reussite": [
+    0.6657,
+    0.7496
+   ],
+   "ic95_rendement": [
+    -0.0908,
+    0.0053
+   ]
+  },
+  "alpha_sur_les_memes_matchs": {
+   "n": 568,
+   "reussite": 0.7236,
+   "cote_moyenne": 1.349,
+   "rendement": -0.0268,
+   "ic95_reussite": [
+    0.6657,
+    0.7496
+   ],
+   "ic95_rendement": [
+    -0.0908,
+    0.0053
+   ]
+  },
+  "pas_de_pari": 0,
+  "matchs": 568,
+  "adaptations": {
+   "juges": {
+    "n": 0
+   },
+   "alpha_sur_ces_matchs": {
+    "n": 0
+   }
+  },
+  "fragiles": {
+   "n": 280,
+   "reussite": 0.7393,
+   "cote_moyenne": 1.364,
+   "rendement": 0.0093,
+   "ic95_reussite": [
+    0.6968,
+    0.7748
+   ],
+   "ic95_rendement": [
+    -0.0585,
+    0.1076
+   ]
+  },
+  "non_fragiles": {
+   "n": 288,
+   "reussite": 0.7083,
+   "cote_moyenne": 1.336,
+   "rendement": -0.0618,
+   "ic95_reussite": [
+    0.5826,
+    0.7474
+   ],
+   "ic95_rendement": [
+    -0.2337,
+    -0.0089
+   ]
+  },
+  "information_variante_adaptation": {
+   "n": 279,
+   "reussite": 0.6308,
+   "cote_moyenne": 1.48,
+   "rendement": -0.0858,
+   "ic95_reussite": [
+    0.4865,
+    0.706
+   ],
+   "ic95_rendement": [
+    -0.2903,
+    0.0295
+   ]
+  },
+  "super_marche": {
+   "n": 144,
+   "reussite": 0.5694,
+   "cote_moyenne": 1.667,
+   "rendement": -0.1073,
+   "ic95_reussite": [
+    0.4681,
+    0.6455
+   ],
+   "ic95_rendement": [
+    -0.2448,
+    0.003
+   ]
+  },
+  "signal_exploratoire": {
+   "n": 219,
+   "reussite": 0.4795,
+   "cote_moyenne": 2.246,
+   "rendement": -0.036,
+   "ic95_reussite": [
+    0.403,
+    0.5097
+   ],
+   "ic95_rendement": [
+    -0.1949,
+    0.0496
+   ]
+  },
+  "opportunite_toutes_familles": {
+   "n": 363,
+   "reussite": 0.5152,
+   "cote_moyenne": 2.016,
+   "rendement": -0.0643,
+   "ic95_reussite": [
+    0.4421,
+    0.5502
+   ],
+   "ic95_rendement": [
+    -0.2108,
+    0.0133
+   ]
+  }
+ },
+ "note": "Seuils et familles « super » mesurés sur la 1re moitié ; la 2e moitié n'a servi qu'au jugement. Probabilité calibrée par les courbes Football-Data (résultats seuls). Cotes BetPawa réelles de l'archive jouée ; marchés combinés (double chance + total) absents des cotes parsées."
+}
