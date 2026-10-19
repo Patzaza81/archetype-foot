@@ -22,7 +22,7 @@ Avant toute modification concernée, lire le document spécialisé correspondant
 - Archive de test, anti-fuite et évaluation : `docs/CLAUDE_ARCHIVE.md`
 - Corners et cartons (modèle, preuves, limites) : `docs/CORNERS_CARTONS.md`
 - Moteur v (conception, tests subis, résultats, suivi) : `docs/MOTEUR_V.md` et `docs/MOTEUR_V_HISTORIQUE.md`
-- Matrice expérimentale de découverte de scénarios (isolée, non branchée en production) : `docs/MATRICE_SCENARIOS.md`
+- Matrice de découverte de scénarios et moteur alpha (production parallèle depuis le 19/10/2026 : pronostics et journal gelé chaque nuit, hors tickets, sans cote en entrée) : `docs/MATRICE_SCENARIOS.md`
 
 ## Règles de sécurité
 

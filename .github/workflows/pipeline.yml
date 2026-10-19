@@ -107,6 +107,11 @@ jobs:
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         run: python comparateur_moteurs.py
 
+      - name: Moteur alpha en production parallèle (pronostics et journal gelé, hors tickets)
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+        continue-on-error: true
+        run: python -m matrice_scenarios.suivi_comportement pipeline
+
       - name: Récupérer les scores des matchs du jeu d'évaluation du moteur
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         run: python evaluation_scores.py
