@@ -119,3 +119,10 @@ Les scénarios sont des hypothèses qui peuvent être inventées, combinées, tr
 - Contenu par match : tendances (résultat, buts, deux marquent, scores extrêmes), pronostic principal, puis le meilleur pronostic de chaque autre tendance présente, si cote ≥ 1,26 et probabilité ≥ quartile bas des pronostics principaux (mesuré). 3 onglets au plus.
 - Bandeau : réussite mesurée (69,5 %, intervalle 66–74 %) ; la probabilité du modèle est surestimée d'environ 10 points.
 - Rien n'est branché à V2/V3/V2R/Europe/Journal/pipeline ; `promotion_allowed=false`. Les menus des autres pages ne sont pas modifiés (pas de lien vers cette page depuis elles).
+
+### Mise à jour 19/10 (avis du conseil sur les variantes)
+- Tendances ajoutées : buts du domicile et buts de l'extérieur (probabilité de 0, 1, 2, 3+ buts, tirée de la grille). « Les deux marquent » ne contient plus que le BTTS ; les cages inviolées sont rangées avec les buts de l'équipe concernée (cage de l'extérieur inviolée = le domicile ne marque pas).
+- Pas de doublon : deux sélections qui gagnent sur exactement les mêmes scores sont le même événement (`evenement()`), on garde un seul.
+- Jusqu'à 5 onglets (principal + une sélection par autre tendance qui passe les filtres).
+- Mesure sur l'archive jouée : pronostics des autres tendances 66 à 71 % de réussite selon la tendance, comparable au principal (69,5 %).
+- Menu : lien « Comportement » ajouté aux pages qui ont le menu des moteurs (index, V2, V3, V2R, V, Europe, Journal, Panier).

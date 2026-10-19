@@ -20,8 +20,10 @@ PARAMS = ROOT / "docs" / "parametres_comportement.json"
 SORTIE = ROOT / "data" / "comportement" / "pronostics_comportement.json"
 TENDANCES = {
     "resultat": ("Résultat", ("1x2", "double_chance", "handicap", "handicap_3issues")),
-    "buts": ("Buts du match", ("over_under", "over_under_domicile", "over_under_exterieur", "pair_impair", "nombre_exact_buts")),
-    "deux_marquent": ("Les deux marquent", ("btts", "cages_inviolees_domicile", "cages_inviolees_exterieur")),
+    "dom_buts": ("Buts du domicile", ("over_under_domicile", "cages_inviolees_exterieur")),
+    "ext_buts": ("Buts de l'extérieur", ("over_under_exterieur", "cages_inviolees_domicile")),
+    "buts": ("Buts du match", ("over_under", "pair_impair", "nombre_exact_buts")),
+    "deux_marquent": ("Les deux marquent", ("btts",)),
 }
 
 
@@ -29,6 +31,13 @@ def tendance_de(groupe: str) -> str | None:
     from .recalage import famille
     f = famille(groupe)
     return next((k for k, (_, fams) in TENDANCES.items() if f in fams), None)
+
+
+def evenement(groupe: str, selection: str, n: int = C.GRID) -> frozenset | None:
+    """Ensemble des scores qui font gagner la sélection : deux sélections au même ensemble sont le MÊME événement (ex. « domicile
+    plus de 0,5 » et « cage de l'extérieur non inviolée »)."""
+    t = S.test_du_marche(groupe, selection)
+    return frozenset((i, j) for i in range(n) for j in range(n) if t(i, j)) if t else None
 
 
 def _fr(x: float) -> str:
@@ -44,6 +53,13 @@ def tendances_du_match(prof: dict[str, Any], dom: str, ext: str, p: dict[str, fl
         out.append({"cle": "resultat", "titre": "Résultat", "texte": f"{ext} favori : {pc(prof['victoire_ext'])} de victoire contre {pc(prof['victoire_dom'])}."})
     else:
         out.append({"cle": "resultat", "titre": "Résultat", "texte": f"Match équilibré : {dom} {pc(prof['victoire_dom'])} · nul {pc(prof['nul'])} · {ext} {pc(prof['victoire_ext'])}."})
+    g = prof["grille"]
+    for cle, nom, idx in (("dom_buts", dom, 0), ("ext_buts", ext, 1)):
+        marg = [sum(row[k] for row in g) if idx else sum(g[k]) for k in range(len(g))]
+        d = [marg[0], marg[1], marg[2], sum(marg[3:])]
+        meilleur = max(range(4), key=lambda k: d[k])
+        lib = ["aucun but", "1 but", "2 buts", "3 buts ou plus"][meilleur]
+        out.append({"cle": cle, "titre": f"Buts de {nom}", "texte": f"{lib} le plus probable ({pc(d[meilleur])}) · 0 but {pc(d[0])} · 2 buts ou plus {pc(d[2] + d[3])}."})
     if prof["buts"] != "équilibré":
         out.append({"cle": "buts", "titre": "Buts du match", "texte": f"Match {prof['buts']} : {_fr(prof['total_attendu'])} buts attendus."})
     if prof["deux_marquent"] >= p["seuil_btts_haut"]:
@@ -77,12 +93,18 @@ def analyser_match(m: dict[str, Any], p: dict[str, float]) -> dict[str, Any]:
     if not principal:
         return {**base, "statut": "AUCUN_MARCHE_COTE_1_26"}
     choix = [dict(principal, role="principal")]
+    vus = {evenement(principal["groupe"], principal["selection"])}
     for cle in [t["cle"] for t in tend if t["cle"] in TENDANCES]:
-        cand = [x for x in eligibles if x["tendance"] == cle and x["probabilite"] >= p["seuil_secondaire"] and (x["groupe"], x["selection"]) != (principal["groupe"], principal["selection"])]
-        if cand and principal["tendance"] != cle:
-            choix.append(dict(max(cand, key=lambda x: (round(x["probabilite"], 6), x["cote"])), role="tendance"))
+        if principal["tendance"] == cle:
+            continue
+        cand = [x for x in eligibles if x["tendance"] == cle and x["probabilite"] >= p["seuil_secondaire"]
+                and evenement(x["groupe"], x["selection"]) not in vus]
+        if cand:
+            meilleur = max(cand, key=lambda x: (round(x["probabilite"], 6), x["cote"]))
+            vus.add(evenement(meilleur["groupe"], meilleur["selection"]))
+            choix.append(dict(meilleur, role="tendance"))
     sel = []
-    for i, c in enumerate(choix[:3], 1):
+    for i, c in enumerate(choix, 1):
         s = {"rang": i, "role": c["role"], "tendance": TENDANCES.get(c["tendance"] or "", ("Autre",))[0], "libelle": c["libelle"], "cote": c["cote"],
              "probabilite": round(c["probabilite"], 3), "groupe": c["groupe"], "choix": c["selection"]}
         if m.get("score_final"):
@@ -129,11 +151,13 @@ def construire() -> dict[str, Any]:
     p = json.loads(PARAMS.read_text(encoding="utf-8"))
     matchs = [analyser_match(m, p) for m in charger_matchs()]
     perf = json.loads((ROOT / "docs" / "recalage_familles.json").read_text(encoding="utf-8"))["resultats_archive"]["sans_recalage"]
+    sec = [x for m in matchs for x in m["selections"] if x["role"] == "tendance" and "gagne" in x]
+    secondaires = {"matchs": len(sec), "reussite": round(sum(x["gagne"] for x in sec) / len(sec), 4)} if sec else None
     return {"moteur": "comportement", "statut": "OK", "genere_le": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
             "promotion_allowed": False, "cote_min": COTE_MIN,
             "performance_archive": {"matchs": perf["n"], "reussite": perf["reussite"], "ic95": perf["ic95_jours"], "annonce_moyenne": perf["annonce"],
                                     "note": "La probabilité du modèle est surestimée d'environ 10 points : se fier à la réussite mesurée."},
-            "seuil_secondaire": p["seuil_secondaire"], "matchs": matchs}
+            "seuil_secondaire": p["seuil_secondaire"], "pronostics_autres_tendances_archive": secondaires, "matchs": matchs}
 
 
 if __name__ == "__main__":

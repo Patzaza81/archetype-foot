@@ -9,7 +9,7 @@ const fDate = (iso) => {
   const t = d.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" }).replace(/\./g, "").trim();
   return t.charAt(0).toUpperCase() + t.slice(1);
 };
-const CLASSES = ["rang-1", "rang-2", "rang-3"];
+const CLASSES = ["rang-1", "rang-2", "rang-3", "rang-3", "rang-3"];
 let compteur = 0;
 
 function jauge(p) {
@@ -58,7 +58,7 @@ function carte(m) {
   section.insertAdjacentHTML("beforeend", tendances(m));
   const onglets = document.createElement("div");
   onglets.className = "ax-onglets"; onglets.setAttribute("role", "tablist"); onglets.setAttribute("aria-label", "Pronostics du match");
-  onglets.style.gridTemplateColumns = `repeat(${m.selections.length},minmax(0,1fr))`;
+  onglets.style.gridTemplateColumns = `repeat(${Math.min(3, m.selections.length)},minmax(0,1fr))`;
   const zone = document.createElement("div");
   zone.className = "ax-panneaux";
   const actifs = m.selections.map((s) => {
@@ -84,7 +84,7 @@ function affiche(d) {
   const retenus = (d.matchs || []).filter((m) => m.statut === "OK" && m.selections.length).sort((a, b) => `${a.date}${a.heure || ""}`.localeCompare(`${b.date}${b.heure || ""}`));
   maj.textContent = retenus.length ? `${retenus.length} matchs avec pronostic · cote minimale ${fCote(d.cote_min)} · généré le ${d.genere_le}` : "Aucun pronostic pour le moment";
   const p = d.performance_archive;
-  if (p) perf.textContent = `Réussite mesurée sur ${p.matchs} matchs joués : ${(p.reussite * 100).toFixed(1).replace(".", ",")} % (intervalle ${(p.ic95[0] * 100).toFixed(0)}–${(p.ic95[1] * 100).toFixed(0)} %). ${p.note}`;
+  if (p) perf.textContent = `Réussite mesurée sur ${p.matchs} matchs joués : ${(p.reussite * 100).toFixed(1).replace(".", ",")} % (intervalle ${(p.ic95[0] * 100).toFixed(0)}–${(p.ic95[1] * 100).toFixed(0)} %). ${p.note}` + (d.pronostics_autres_tendances_archive ? ` Pronostics des autres tendances : ${(d.pronostics_autres_tendances_archive.reussite * 100).toFixed(0)} % sur ${d.pronostics_autres_tendances_archive.matchs} cas.` : "");
   racine.innerHTML = "";
   retenus.forEach((m) => racine.appendChild(carte(m)));
 }

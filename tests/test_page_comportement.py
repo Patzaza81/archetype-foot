@@ -53,7 +53,7 @@ def test_resultat_connu_marque_gagne_perdu():
 
 
 @pytest.mark.parametrize("g,t", [("1x2", "resultat"), ("handicap_-1.5", "resultat"), ("over_under_2.5", "buts"),
-                                 ("over_under_domicile_1.5", "buts"), ("btts", "deux_marquent"), ("score_exact", None)])
+                                 ("over_under_domicile_1.5", "dom_buts"), ("over_under_exterieur_0.5", "ext_buts"), ("cages_inviolees_exterieur", "dom_buts"), ("cages_inviolees_domicile", "ext_buts"), ("btts", "deux_marquent"), ("score_exact", None)])
 def test_tendance_de(g, t):
     assert P.tendance_de(g) == t
 
@@ -65,3 +65,20 @@ def test_json_genere_coherent():
     d = json.loads(f.read_text(encoding="utf-8"))
     assert d["promotion_allowed"] is False
     assert all(s["cote"] >= d["cote_min"] for m in d["matchs"] for s in m["selections"])
+
+
+@pytest.mark.parametrize("g1,s1,g2,s2,egal", [
+    ("over_under_domicile_0.5", "plus", "cages_inviolees_exterieur", "non", True),      # domicile marque = cage de l'extérieur violée
+    ("over_under_exterieur_0.5", "moins", "cages_inviolees_domicile", "oui", True),
+    ("btts", "Oui", "over_under_2.5", "plus", False),
+    ("1x2", "1", "double_chance", "1N", False),
+    ("1x2", "N", "handicap_3issues_0", "X", True),
+    ("over_under_domicile_1.5", "plus", "over_under_exterieur_1.5", "plus", False)])
+def test_evenement_equivalent(g1, s1, g2, s2, egal):
+    assert (P.evenement(g1, s1) == P.evenement(g2, s2)) is egal
+
+
+def test_pas_de_doublon_d_evenement_dans_un_match():
+    r = P.analyser_match(_match({**COTES, "over_under_domicile_0.5": {"plus": 1.3, "moins": 3.5}, "cages_inviolees_exterieur": {"oui": 3.2, "non": 1.31}}), PARAMS)
+    ev = [P.evenement(s["groupe"], s["choix"]) for s in r["selections"]]
+    assert len(ev) == len(set(ev))
