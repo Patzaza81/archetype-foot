@@ -1,0 +1,360 @@
+{
+ "coupe": "2026-10-09",
+ "jours_apprentissage": 10,
+ "jours_test": 11,
+ "parametres_apprentissage": {
+  "marges": {
+   "defaut": 1.0,
+   "total_plus": {
+    "1.5": 2.0,
+    "2.5": 1.0,
+    "3.5": 1.0,
+    "4.5": 1.0
+   },
+   "total_moins": {
+    "1.5": 1.0,
+    "2.5": 1.0,
+    "3.5": 1.5,
+    "4.5": 1.5
+   },
+   "equipe_plus": {
+    "0.5": 2.0,
+    "1.5": 1.0,
+    "2.5": 1.0
+   },
+   "equipe_moins": {
+    "0.5": 1.0,
+    "1.5": 1.0,
+    "2.5": 1.0
+   },
+   "handicap_1_5": 1.0
+  },
+  "seuils_resultat": {
+   "dom_gagne": 0.5,
+   "ext_gagne": 0.75,
+   "dom_ne_perd_pas": 1.0,
+   "ext_ne_perd_pas": 0.5,
+   "nul": 0.5
+  },
+  "provisoire": [
+   "total_plus_3.5",
+   "total_plus_4.5",
+   "equipe_moins_0.5",
+   "equipe_moins_1.5",
+   "dom_ne_perd_pas"
+  ]
+ },
+ "test": {
+  "matchs_rejoues": 707,
+  "onglets": {
+   "buts": {
+    "propositions": 167,
+    "reussite": 0.5988,
+    "rendement": -0.1265,
+    "marches": [
+     {
+      "marche": "Plus de 2,5 buts",
+      "n": 68,
+      "reussite": 0.5441,
+      "base": 0.529,
+      "rendement": -0.1965,
+      "cote_moyenne": 1.506
+     },
+     {
+      "marche": "Moins de 3,5 buts",
+      "n": 39,
+      "reussite": 0.6667,
+      "base": 0.6662,
+      "rendement": -0.1128,
+      "cote_moyenne": 1.339
+     },
+     {
+      "marche": "Moins de 4,5 buts",
+      "n": 26,
+      "reussite": 0.7308,
+      "base": 0.8006,
+      "rendement": -0.0169,
+      "cote_moyenne": 1.343
+     },
+     {
+      "marche": "Les deux marquent : non",
+      "n": 19,
+      "reussite": 0.4737,
+      "base": 0.447,
+      "rendement": -0.1242,
+      "cote_moyenne": 1.992
+     },
+     {
+      "marche": "Plus de 3,5 buts",
+      "n": 6,
+      "reussite": 0.5,
+      "base": 0.3338,
+      "rendement": 0.03,
+      "cote_moyenne": 1.98
+     },
+     {
+      "marche": "Moins de 2,5 buts",
+      "n": 5,
+      "reussite": 0.6,
+      "base": 0.471,
+      "rendement": -0.11,
+      "cote_moyenne": 1.596
+     },
+     {
+      "marche": "Plus de 1,5 buts",
+      "n": 4,
+      "reussite": 0.75,
+      "base": 0.7666,
+      "rendement": -0.0475,
+      "cote_moyenne": 1.29
+     }
+    ]
+   },
+   "equipes": {
+    "propositions": 902,
+    "reussite": 0.6596,
+    "rendement": -0.081,
+    "marches": [
+     {
+      "marche": "Pas de nul (12)",
+      "n": 441,
+      "reussite": 0.7143,
+      "base": 0.7383,
+      "rendement": -0.0688,
+      "cote_moyenne": 1.303
+     },
+     {
+      "marche": "Victoire domicile",
+      "n": 114,
+      "reussite": 0.5,
+      "base": 0.43,
+      "rendement": -0.1336,
+      "cote_moyenne": 1.876
+     },
+     {
+      "marche": "Handicap +1,5 extérieur",
+      "n": 106,
+      "reussite": 0.7264,
+      "base": 0.7921,
+      "rendement": 0.0043,
+      "cote_moyenne": 1.386
+     },
+     {
+      "marche": "Handicap +1,5 domicile",
+      "n": 65,
+      "reussite": 0.6923,
+      "base": 0.8713,
+      "rendement": -0.0151,
+      "cote_moyenne": 1.409
+     },
+     {
+      "marche": "Extérieur ne perd pas (N2)",
+      "n": 45,
+      "reussite": 0.5111,
+      "base": 0.57,
+      "rendement": -0.2687,
+      "cote_moyenne": 1.513
+     },
+     {
+      "marche": "Moins de 2,5 buts du domicile",
+      "n": 32,
+      "reussite": 0.7188,
+      "base": 0.7822,
+      "rendement": -0.0197,
+      "cote_moyenne": 1.373
+     },
+     {
+      "marche": "Domicile ne perd pas (1N)",
+      "n": 26,
+      "reussite": 0.7692,
+      "base": 0.6917,
+      "rendement": 0.0404,
+      "cote_moyenne": 1.354
+     },
+     {
+      "marche": "Victoire extérieur",
+      "n": 23,
+      "reussite": 0.4783,
+      "base": 0.3083,
+      "rendement": -0.1213,
+      "cote_moyenne": 2.216
+     },
+     {
+      "marche": "Moins de 2,5 buts de l'extérieur",
+      "n": 16,
+      "reussite": 0.75,
+      "base": 0.8586,
+      "rendement": 0.005,
+      "cote_moyenne": 1.329
+     },
+     {
+      "marche": "Match nul",
+      "n": 13,
+      "reussite": 0.1538,
+      "base": 0.2617,
+      "rendement": -0.4769,
+      "cote_moyenne": 3.749
+     },
+     {
+      "marche": "Plus de 1,5 buts du domicile",
+      "n": 12,
+      "reussite": 0.5,
+      "base": 0.4512,
+      "rendement": -0.2242,
+      "cote_moyenne": 1.588
+     },
+     {
+      "marche": "Moins de 1,5 buts du domicile",
+      "n": 4,
+      "reussite": 0.0,
+      "base": 0.5488,
+      "rendement": -1.0,
+      "cote_moyenne": 1.558
+     },
+     {
+      "marche": "Moins de 1,5 buts de l'extérieur",
+      "n": 3,
+      "reussite": 1.0,
+      "base": 0.6238,
+      "rendement": 0.32,
+      "cote_moyenne": 1.32
+     },
+     {
+      "marche": "Plus de 1,5 buts de l'extérieur",
+      "n": 2,
+      "reussite": 0.5,
+      "base": 0.3762,
+      "rendement": -0.36,
+      "cote_moyenne": 1.45
+     }
+    ]
+   },
+   "multigoals": {
+    "propositions": 1605,
+    "reussite": 0.6704,
+    "rendement": null,
+    "marches": [
+     {
+      "marche": "Multigoals 1-4",
+      "n": 583,
+      "reussite": 0.7513,
+      "base": 0.7496,
+      "rendement": null,
+      "cote_moyenne": null
+     },
+     {
+      "marche": "Multigoals 2-5",
+      "n": 407,
+      "reussite": 0.6929,
+      "base": 0.6931,
+      "rendement": null,
+      "cote_moyenne": null
+     },
+     {
+      "marche": "Multigoals 2-4",
+      "n": 276,
+      "reussite": 0.5507,
+      "base": 0.5672,
+      "rendement": null,
+      "cote_moyenne": null
+     },
+     {
+      "marche": "Multigoals 1-3",
+      "n": 222,
+      "reussite": 0.6486,
+      "base": 0.6153,
+      "rendement": null,
+      "cote_moyenne": null
+     },
+     {
+      "marche": "Multigoals 3-6",
+      "n": 64,
+      "reussite": 0.5469,
+      "base": 0.505,
+      "rendement": null,
+      "cote_moyenne": null
+     },
+     {
+      "marche": "Multigoals 3-5",
+      "n": 39,
+      "reussite": 0.5128,
+      "base": 0.4554,
+      "rendement": null,
+      "cote_moyenne": null
+     },
+     {
+      "marche": "Multigoals 2-3",
+      "n": 8,
+      "reussite": 0.125,
+      "base": 0.4328,
+      "rendement": null,
+      "cote_moyenne": null
+     },
+     {
+      "marche": "Multigoals 1-2",
+      "n": 3,
+      "reussite": 0.6667,
+      "base": 0.4201,
+      "rendement": null,
+      "cote_moyenne": null
+     },
+     {
+      "marche": "Multigoals 3-4",
+      "n": 3,
+      "reussite": 0.6667,
+      "base": 0.3296,
+      "rendement": null,
+      "cote_moyenne": null
+     }
+    ]
+   },
+   "multiscores": {
+    "propositions": 1012,
+    "reussite": 0.2204,
+    "rendement": null,
+    "marches": [
+     {
+      "marche": "Match nul",
+      "n": 355,
+      "reussite": 0.2592,
+      "base": 0.2617,
+      "rendement": null,
+      "cote_moyenne": null
+     },
+     {
+      "marche": "1:0 / 2:0 / 3:0",
+      "n": 264,
+      "reussite": 0.2614,
+      "base": 0.1994,
+      "rendement": null,
+      "cote_moyenne": null
+     },
+     {
+      "marche": "2:1 / 3:1 / 4:1",
+      "n": 157,
+      "reussite": 0.1274,
+      "base": 0.1202,
+      "rendement": null,
+      "cote_moyenne": null
+     },
+     {
+      "marche": "0:1 / 0:2 / 0:3",
+      "n": 152,
+      "reussite": 0.1908,
+      "base": 0.1471,
+      "rendement": null,
+      "cote_moyenne": null
+     },
+     {
+      "marche": "1:2 / 1:3 / 1:4",
+      "n": 84,
+      "reussite": 0.1548,
+      "base": 0.1033,
+      "rendement": null,
+      "cote_moyenne": null
+     }
+    ]
+   }
+  }
+ }
+}
