@@ -565,7 +565,7 @@
   },
   "schema_version": 2,
   "source": "football-data.co.uk",
-  "updated_at_utc": "2026-10-19T20:31:28.901071+00:00",
+  "updated_at_utc": "2026-10-20T00:14:18.074564+00:00",
   "historical_policy": "completed seasons are managed by archive_football_data.py snapshots",
   "current_season_policy": "download only when the source changed (ETag/Last-Modified, then SHA-256)",
   "sources": {
@@ -682,11 +682,13 @@
   "odds_policy": "no odds collected (decision of 24/09/2026: no bookmaker comparison, no API)",
   "last_run": {
     "season": "2627",
-    "discovered": 38,
+    "discovered": 22,
     "downloaded": 0,
     "updated": 0,
     "unchanged": 0,
-    "sources_not_modified": 17,
-    "errors": {}
+    "sources_not_modified": 1,
+    "errors": {
+      "supplementaires": "HTTPSConnectionPool(host='www.football-data.co.uk', port=443): Read timed out. (read timeout=30)"
+    }
   }
 }
