@@ -1,64 +1,66 @@
 {
-  "genere_le": "2026-10-20T01:20:10.010972+00:00",
+  "genere_le": "2026-10-20T14:14:37.743076+00:00",
   "statut": "PRODUCTION_PARALLELE",
   "moteur_actif": "moteur_v2_6_10",
   "moteur_candidat": "moteur_v3",
   "regle_promotion": "Aucune promotion automatique : la V3 doit démontrer un avantage réel sur des données hors échantillon.",
   "v2": {
-    "matchs_avec_selection": 72,
-    "choix": 130,
+    "matchs_avec_selection": 80,
+    "choix": 140,
     "marches": {
-      "1x2_domicile": 14,
-      "buts_equipe_exterieur_1.5_under": 10,
-      "over_under_total_3.5_under": 10,
-      "handicap_exterieur_1.5": 9,
-      "handicap_domicile_1.5": 8,
+      "1x2_domicile": 16,
+      "over_under_total_3.5_under": 11,
+      "handicap_domicile_1.5": 10,
+      "buts_equipe_exterieur_1.5_under": 9,
+      "over_under_total_3.5_over": 9,
+      "handicap_domicile_0.5": 8,
+      "handicap_exterieur_1.5": 8,
+      "buts_equipe_domicile_0.5_over": 7,
       "1x2_exterieur": 6,
       "1x2_nul": 6,
-      "buts_equipe_domicile_0.5_over": 6,
       "double_chance_1X": 6,
-      "handicap_domicile_0.5": 6,
-      "over_under_total_3.5_over": 6,
-      "over_under_total_4.5_over": 5,
-      "over_under_total_4.5_under": 5,
-      "btts_non": 4,
+      "over_under_total_4.5_over": 6,
+      "over_under_total_4.5_under": 6,
+      "btts_oui": 4,
       "buts_equipe_domicile_1.5_under": 4,
-      "double_chance_X2": 4,
-      "cage_inviolee_exterieur": 3,
+      "over_under_total_2.5_over": 4,
+      "btts_non": 3,
       "handicap_exterieur_0.5": 3,
-      "over_under_total_2.5_under": 3,
-      "btts_oui": 2,
-      "buts_equipe_exterieur_0.5_over": 2,
-      "over_under_total_2.5_over": 2,
+      "cage_inviolee_exterieur": 2,
+      "double_chance_X2": 2,
+      "over_under_total_2.5_under": 2,
       "buts_equipe_domicile_0.5_under": 1,
       "buts_equipe_domicile_1.5_over": 1,
-      "buts_equipe_exterieur_0.5_under": 1,
       "buts_equipe_exterieur_1.5_over": 1,
       "cage_inviolee_domicile": 1,
-      "over_under_total_1.5_over": 1
+      "handicap_domicile_-0.5": 1,
+      "handicap_exterieur_-0.5": 1,
+      "over_under_total_1.5_over": 1,
+      "over_under_total_5.5_under": 1
     }
   },
   "v3": {
-    "matchs_avec_selection": 15,
-    "choix": 16,
+    "matchs_avec_selection": 19,
+    "choix": 21,
     "marches": {
       "over_under_total_3.5_under": 5,
+      "over_under_total_2.5_over": 4,
+      "over_under_total_2.5_under": 4,
       "buts_equipe_exterieur_1.5_under": 3,
-      "over_under_total_2.5_over": 2,
-      "over_under_total_2.5_under": 2,
       "buts_equipe_domicile_1.5_over": 1,
+      "buts_equipe_domicile_1.5_under": 1,
       "double_chance_X2": 1,
       "encaisse_exterieur": 1,
       "over_under_total_4.5_under": 1
     }
   },
   "comparaison": {
-    "matchs_communs": 210,
-    "matchs_v2_seulement": 206,
+    "matchs_communs": 222,
+    "matchs_v2_seulement": 205,
     "matchs_v3_seulement": 0,
     "accord_marche": 6,
-    "divergence_marche": 66,
-    "taux_accord_sur_matchs_communs": 0.0286,
+    "divergence_marche": 79,
+    "taux_accord_sur_matchs_communs": 0.027,
     "accords": [
       {
         "match_id": "id:1oepe4u8lzi09h21wm195tx5g",
@@ -107,10 +109,31 @@
         "v3": []
       },
       {
+        "match_id": "id:18m9mlr1i5wmg5m2sowgl1ul0",
+        "v2": [
+          "btts_oui",
+          "over_under_total_1.5_over"
+        ],
+        "v3": []
+      },
+      {
+        "match_id": "id:19vv5jswu8lekx2bmvf4opvys",
+        "v2": [
+          "over_under_total_3.5_under"
+        ],
+        "v3": []
+      },
+      {
         "match_id": "id:19x3wu6tttn1dwrh6b8tincpg",
         "v2": [
-          "double_chance_X2",
           "handicap_exterieur_1.5"
+        ],
+        "v3": []
+      },
+      {
+        "match_id": "id:1a8pkao0oal5f7x4tyhel1gd0",
+        "v2": [
+          "1x2_domicile"
         ],
         "v3": []
       },
@@ -119,6 +142,13 @@
         "v2": [
           "btts_oui",
           "buts_equipe_domicile_0.5_over"
+        ],
+        "v3": []
+      },
+      {
+        "match_id": "id:1buzv5ni8cq243kf8vum7q784",
+        "v2": [
+          "1x2_domicile"
         ],
         "v3": []
       },
@@ -155,22 +185,41 @@
       {
         "match_id": "id:1n4s3kfbxgda1jvs1njeu70us",
         "v2": [
-          "handicap_domicile_0.5"
+          "handicap_domicile_0.5",
+          "handicap_domicile_1.5"
+        ],
+        "v3": []
+      },
+      {
+        "match_id": "id:1ng8tku5wpf4vijez1u24ywpg",
+        "v2": [
+          "over_under_total_2.5_over",
+          "over_under_total_3.5_over",
+          "over_under_total_4.5_over"
         ],
         "v3": []
       },
       {
         "match_id": "id:1nrp4elihdj05d2umtitvy61g",
         "v2": [
-          "buts_equipe_exterieur_1.5_under",
+          "1x2_nul",
+          "handicap_domicile_0.5",
           "handicap_domicile_1.5"
+        ],
+        "v3": []
+      },
+      {
+        "match_id": "id:1o354rrdfjat842w7kfkomdjo",
+        "v2": [
+          "over_under_total_4.5_under"
         ],
         "v3": []
       },
       {
         "match_id": "id:1oz1jh318ji73l97ur456gkk4",
         "v2": [
-          "1x2_domicile"
+          "1x2_domicile",
+          "handicap_domicile_-0.5"
         ],
         "v3": []
       },
@@ -278,6 +327,20 @@
         "v3": []
       },
       {
+        "match_id": "id:36j20bwin1nebuusnsy7oe590",
+        "v2": [
+          "handicap_domicile_0.5"
+        ],
+        "v3": []
+      },
+      {
+        "match_id": "id:38ojyy1ko5qo8eblj9ennu4no",
+        "v2": [
+          "over_under_total_5.5_under"
+        ],
+        "v3": []
+      },
+      {
         "match_id": "id:3ts5ywv9e5hagp9ocipld045w",
         "v2": [
           "1x2_domicile",
@@ -336,6 +399,14 @@
         ]
       },
       {
+        "match_id": "id:5ihzifvp7jpk0uongiwovzok4",
+        "v2": [],
+        "v3": [
+          "buts_equipe_domicile_1.5_under",
+          "over_under_total_2.5_under"
+        ]
+      },
+      {
         "match_id": "id:66brskzw2e20lmlqxcu9y3v2s",
         "v2": [
           "over_under_total_2.5_over",
@@ -348,7 +419,7 @@
         "match_id": "id:6xu11g6f0sy9lpoimqnasktg4",
         "v2": [
           "1x2_domicile",
-          "buts_equipe_exterieur_0.5_under"
+          "over_under_total_3.5_over"
         ],
         "v3": []
       },
@@ -371,7 +442,7 @@
       {
         "match_id": "id:7i2uipgklu0zsbsymtnplxiqc",
         "v2": [
-          "over_under_total_1.5_over",
+          "btts_oui",
           "over_under_total_3.5_over",
           "over_under_total_4.5_over"
         ],
@@ -389,17 +460,15 @@
         "match_id": "id:8d3ka8tp0cewk7ky4j80weluc",
         "v2": [
           "1x2_nul",
-          "btts_non",
-          "over_under_total_4.5_under"
+          "buts_equipe_exterieur_1.5_under",
+          "handicap_domicile_1.5"
         ],
         "v3": []
       },
       {
         "match_id": "id:8deusbi2orgjrk10wuh7nk178",
         "v2": [
-          "buts_equipe_domicile_1.5_under",
-          "cage_inviolee_exterieur",
-          "double_chance_X2"
+          "buts_equipe_domicile_1.5_under"
         ],
         "v3": []
       },
@@ -428,6 +497,24 @@
         ]
       },
       {
+        "match_id": "id:8fbi6f4rcgt20vxbhhl53s9hw",
+        "v2": [
+          "buts_equipe_domicile_0.5_over",
+          "over_under_total_4.5_under"
+        ],
+        "v3": []
+      },
+      {
+        "match_id": "id:8fmwl5pd6xe1hw39367gbx8us",
+        "v2": [
+          "1x2_exterieur",
+          "handicap_exterieur_-0.5"
+        ],
+        "v3": [
+          "over_under_total_2.5_over"
+        ]
+      },
+      {
         "match_id": "id:95wwaez0s0y5lgg289myy702c",
         "v2": [
           "over_under_total_3.5_over"
@@ -437,15 +524,13 @@
       {
         "match_id": "id:9z7hsr6uibdmyqivijesuwsgk",
         "v2": [
-          "1x2_domicile",
-          "over_under_total_2.5_under"
+          "1x2_domicile"
         ],
         "v3": []
       },
       {
         "match_id": "id:9zxnl0u5cfnd92u3tbhdcjsb8",
         "v2": [
-          "buts_equipe_exterieur_1.5_under",
           "handicap_domicile_1.5"
         ],
         "v3": []
@@ -453,8 +538,7 @@
       {
         "match_id": "id:a7t297d7xwm5swon9my95r0us",
         "v2": [
-          "buts_equipe_exterieur_1.5_over",
-          "double_chance_X2"
+          "buts_equipe_exterieur_1.5_over"
         ],
         "v3": [
           "buts_equipe_domicile_1.5_over"
@@ -486,7 +570,7 @@
       {
         "match_id": "id:cngbkmq6o60gt3zty6odito9g",
         "v2": [
-          "buts_equipe_exterieur_0.5_over",
+          "double_chance_X2",
           "handicap_exterieur_0.5"
         ],
         "v3": []
@@ -495,6 +579,21 @@
         "match_id": "id:cre9s2199w3u1l7r7nzv4ahas",
         "v2": [
           "1x2_exterieur"
+        ],
+        "v3": []
+      },
+      {
+        "match_id": "id:crqedtscavgdinvaab88z65uc",
+        "v2": [],
+        "v3": [
+          "over_under_total_2.5_under"
+        ]
+      },
+      {
+        "match_id": "id:csfc6714x55eyh8uq0q7n0a38",
+        "v2": [
+          "over_under_total_2.5_over",
+          "over_under_total_3.5_over"
         ],
         "v3": []
       },
@@ -552,7 +651,9 @@
           "1x2_domicile",
           "double_chance_1X"
         ],
-        "v3": []
+        "v3": [
+          "over_under_total_2.5_over"
+        ]
       },
       {
         "match_id": "id:dribvjqx5h3m87uh5kt2k1jpw",
@@ -625,8 +726,8 @@
   },
   "calibration_v3": {
     "prete": true,
-    "observations": 98078,
-    "matchs": 1557,
+    "observations": 98279,
+    "matchs": 1560,
     "minimum_observations": 300,
     "minimum_matchs": 50,
     "raison": "OK"
