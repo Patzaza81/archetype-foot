@@ -1,7 +1,7 @@
 {
  "version_protocole": 4,
- "calcule_le": "2026-10-19T09:49:51.371797+00:00",
- "commit_source": "ae2186edbda9a96095862409fc912762deec890e",
+ "calcule_le": "2026-10-20T09:49:11.944712+00:00",
+ "commit_source": "ecebf77e0eacaffad808b1a489e067c648f16712",
  "hypothese": {
   "marche": "Moins de 3,5 buts",
   "cote_min": 1.27,
@@ -11,16 +11,102 @@
  "statut_B0": "NON_EVALUE",
  "points_de_controle_atteints": [],
  "B0_fenetre": {
-  "matchs": 0,
-  "jours": 0
+  "matchs": 1,
+  "jours": 1,
+  "roi": -1.0,
+  "reussite": 0.0,
+  "reussite_intervalle_95": [
+   0.0,
+   0.793451
+  ],
+  "probabilite_implicite_brute_moyenne": 0.724638,
+  "cote_moyenne": 1.38,
+  "marge_marche_moyenne": 0.081781,
+  "niveau_intervalle": 0.997,
+  "roi_intervalle_student": null,
+  "roi_intervalle_bootstrap": null
  },
- "tranches_information": {},
- "exploration": {},
+ "tranches_information": {
+  "H1-a": {
+   "matchs": 0,
+   "jours": 0
+  },
+  "H1-b": {
+   "matchs": 1,
+   "jours": 1,
+   "roi": -1.0,
+   "reussite": 0.0,
+   "reussite_intervalle_95": [
+    0.0,
+    0.793451
+   ],
+   "probabilite_implicite_brute_moyenne": 0.724638,
+   "cote_moyenne": 1.38,
+   "marge_marche_moyenne": 0.081781,
+   "niveau_intervalle": 0.95,
+   "roi_intervalle_student": null,
+   "roi_intervalle_bootstrap": null
+  }
+ },
+ "exploration": {
+  "B1": {
+   "statut": "NON_EVALUE",
+   "admissibles": 0,
+   "retenus": {
+    "matchs": 0,
+    "jours": 0
+   },
+   "non_retenus": 0,
+   "ecart_general": null,
+   "ecart_general_intervalle_95": null,
+   "ecart_population_egale": null,
+   "ecart_population_egale_intervalle_95": null
+  },
+  "B2": {
+   "statut": "NON_EVALUE",
+   "admissibles": 0,
+   "retenus": {
+    "matchs": 0,
+    "jours": 0
+   },
+   "non_retenus": 0,
+   "ecart_general": null,
+   "ecart_general_intervalle_95": null,
+   "ecart_population_egale": null,
+   "ecart_population_egale_intervalle_95": null
+  },
+  "B3": {
+   "statut": "NON_EVALUE",
+   "admissibles": 0,
+   "retenus": {
+    "matchs": 0,
+    "jours": 0
+   },
+   "non_retenus": 0,
+   "ecart_general": null,
+   "ecart_general_intervalle_95": null,
+   "ecart_population_egale": null,
+   "ecart_population_egale_intervalle_95": null
+  },
+  "B4": {
+   "statut": "NON_EVALUE",
+   "admissibles": 1,
+   "retenus": {
+    "matchs": 0,
+    "jours": 0
+   },
+   "non_retenus": 1,
+   "ecart_general": null,
+   "ecart_general_intervalle_95": null,
+   "ecart_population_egale": null,
+   "ecart_population_egale_intervalle_95": null
+  }
+ },
  "admission": {
   "statuts": {
    "ANNULE": 1,
-   "NON_REGLE": 78,
-   "REGLE": 193
+   "NON_REGLE": 89,
+   "REGLE": 207
   },
   "liste_sans_resultat": {
    "NON_REGLE": [
@@ -44,32 +130,16 @@
     "3q0hjdl7h6o5spi9rnwuadd78",
     "43ix7b0pj5wxfaoewju9kw178",
     "xt3khtcvbvqspfgc8hwuk5ck",
-    "ettap7fzky9549paikbx23rx0",
-    "5h6svepqj4u3fzs1lczc7g5ck",
-    "61gmi4p4350zbf0aphw2vhwk4",
     "6156yp4px439fhhw7qru0pst0",
     "cgl9gk12jk6fy40xnvxlrygb8",
-    "etgam9snatfgor0px9nllyb6c",
-    "60sjf22e597zsgyhfhp8tao7o",
-    "17ch4xqxpm5hlckhcfgxt6ivo",
-    "e0h2d3ws3ucppgrbbsutcm5n8",
-    "cw39aa2s5ebv1896aijb13dw4",
-    "cxroadsp5z9vwlfa26ak6ick4",
-    "670d8p90k1l2nln1pepiqf7kk",
-    "7zw4f51n4c1fhbsrvcmk474es",
+    "811oykjjjwguro54hfoyse8es",
     "80ka0cx8c5v406jjej1ax2j2s",
     "8av2rh9f3fgs5mfh7q505yuxg",
-    "7e1r3wzqqcpbwhfnxtp8ades4",
-    "6gamxnk70ghqlb6d0sj4ggsus",
-    "cxfbp3wiy4bui7xw8g7ilq4gk",
     "1f3zxohhlyz8y8kr3z64e60ic",
-    "1032nmhfyse8j8q027v47fmdw",
-    "5zxh1n8g2cbxng97k5pmfwx04",
-    "60tgb9i5hjf7iub1opkwl7thw",
-    "ivpx6tasphpwi51mg58p3o5w",
-    "3fmoftuuvdlofzla1s2jf1gr8",
     "cf454w79sixlv62suudir1c0k",
     "6vgz3m6bncxl3cdhflh2xn2ms",
+    "923fbrqxjuro48f5t8vnp8yl0",
+    "etgam9snatfgor0px9nllyb6c",
     "92t5sglo49xtc5l1sf18ax2qc",
     "1m67ypm7r6nno0lsetmly6238",
     "1n4s3kfbxgda1jvs1njeu70us",
@@ -86,7 +156,6 @@
     "93j3cklwtedekmrawxo522710",
     "64m0t9l6yzkuqkf66i0qioaok",
     "23gpus8w3bpg9ugoys679tus4",
-    "24he5vq74ixq2j86avzi9ndp0",
     "2546o90ns61df74pr7cxbo6j8",
     "25fj874q8x5peh8gsp5h6x2qc",
     "25quorm9bhsnttxexivtfmxhw",
@@ -94,21 +163,49 @@
     "a10vswr5y8qcgwwglvdrtyntg",
     "7hgicmswfftkufl1i5nk1gcus",
     "1c2yi4d0f2h2baduqpstcj66s",
+    "1cgzr4a0glp577ko55py38u8k",
     "1cv112rdtum1wka7sw6c2sqac",
+    "8ecstewv325218gie5ae1lhqs",
     "cls17n7p3c9jkehmgcuqcq9ec",
     "cm3zez6o2a9j3kqfsw2h177dg",
-    "cnfe8o805h0icimvzv1j2hlp0",
     "cnr56vcp94fr3k2jxz34cvx90",
     "co2u2pz7fjjlokmmo3e26tmok",
     "cqqt3h7oypemmeehmmodcw5xw",
-    "cre9s2199w3u1l7r7nzv4ahas"
+    "cre9s2199w3u1l7r7nzv4ahas",
+    "auvtztn0nbtr79jzobmt5nrx0",
+    "3r3dexmqg4cl5q7z7gmap5zx0",
+    "3rmkm52nc5rd90vz5bhlej8yc",
+    "3s7fbkiy3l321sfvq8unnro5w",
+    "3tctncf2tbszkagawstq86044",
+    "4gpo8d0qh5hhucerumdq73dhw",
+    "18ax551fq5ga97vfo4ctqo0es",
+    "w2gkfv6kg22csf3ob3c05tsk",
+    "51wi5vpol3947se8xou1myaz8",
+    "95wwaez0s0y5lgg289myy702c",
+    "1hsowkzib0aqkl4e4koqudp1w",
+    "d148yoj0heurg36fay7pivlsk",
+    "66brskzw2e20lmlqxcu9y3v2s",
+    "b4k1augi4dovp3vimv3limk9g",
+    "3ts5ywv9e5hagp9ocipld045w",
+    "3v1jdwk40pvhdim8xjwfquzo4",
+    "3vd22joyoj5ayxezgb5vdvuok",
+    "dsxh6hcsyknuhyyb7y775v6z8",
+    "wqd7fdnzup7u7f1xwtphpn2s",
+    "53xt1xhw7d0pybf04gmb8hb10",
+    "dt2gi74sxetpl49ukartcycyc",
+    "7i2uipgklu0zsbsymtnplxiqc",
+    "cu6tlwxavsml17mw7x0vr9dzo",
+    "roon3oc0s71gbl9qcjskmkno",
+    "7sbpcvmyv61mng0ccrb4h1iqc",
+    "410zcktw2vokv28m1clopoe1g",
+    "4ipzk8jywz5ibv3h788cmcahg"
    ],
    "ANNULE": [
     "8twciinwdgueyozx5kxz2qqdw"
    ]
   },
   "exclusions": {
-   "RELEVE_APRES_COUP_D_ENVOI": 23,
+   "RELEVE_APRES_COUP_D_ENVOI": 25,
    "HORODATAGE_ABSENT": 7,
    "MODIFICATION_DETECTEE": 1
   },
@@ -118,6 +215,7 @@
     "41rljdem1f0d3xyi0vedntzx0",
     "5ssxx2cubaxn0dzoqx8vhg45w",
     "5w0eer88std4hdoat623yp2c4",
+    "6156yp4px439fhhw7qru0pst0",
     "6lapsvdk8kekwpn9w5k7taluc",
     "6lu1zey60g2q935i9o49dop3o",
     "6mnfi9zboxo64mxowo43i37dg",
@@ -131,6 +229,7 @@
     "8lmpwm215kvhe2qjtgojkn7kk",
     "8qpd50ivpn2bnfpmbsxz29vkk",
     "8rezb8jnfe9algx1zka0pvi1g",
+    "8twciinwdgueyozx5kxz2qqdw",
     "8x2olz7e0ndcvlrjdav7fhfys",
     "a9b7h01ed12bi7mp8yd91s6qc",
     "bv9lxfpo5e575g6mkvluci6ms",
@@ -180,7 +279,7 @@
    {
     "match_id": "64m0t9l6yzkuqkf66i0qioaok",
     "releves": 2,
-    "garde": "2026-10-18T23:52:00+00:00"
+    "garde": "2026-10-20T01:15:00+00:00"
    },
    {
     "match_id": "3ovo9xvoyfhvkr7pbkfqrfqc4",
@@ -196,6 +295,11 @@
     "match_id": "60sjf22e597zsgyhfhp8tao7o",
     "releves": 2,
     "garde": "2026-10-18T23:52:00+00:00"
+   },
+   {
+    "match_id": "etgam9snatfgor0px9nllyb6c",
+    "releves": 2,
+    "garde": "2026-10-20T01:15:00+00:00"
    }
   ]
  },
