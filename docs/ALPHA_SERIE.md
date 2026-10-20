@@ -1,6 +1,6 @@
 # Moteur alpha « séries » (`alpha_serie/`)
 
-Nouvelle logique de Patrick, codée à côté de l'ancien alpha (`matrice_scenarios/`), qu'elle ne modifie pas. **Non branchée au pipeline** : aucune sortie de production, aucun ticket. Mise en service seulement sur ordre de Patrick.
+**C'est LE moteur alpha** (20/10/2026, ordre de Patrick). L'ancien alpha de `matrice_scenarios/` est supprimé ; ses données historiques restent en archive dans `data/comportement/` et `docs/parametres_comportement*.json`. Branché au pipeline nocturne (`python -m alpha_serie.suivi pipeline`, `continue-on-error`, hors tickets) : gèle les pronostics avant le coup d'envoi (`data/alpha_serie/journal.jsonl`, ajout seul), enregistre les résultats (`bilan.json`), publie la page (`pronostics.json`).
 
 ## Méthodologie (sacrée — ne pas modifier sans Patrick)
 1. **Séries** au même lieu (domicile pour l'équipe à domicile, extérieur pour l'autre), strictement avant le jour du match, 4 à 7 matchs. Moins de 4 pour l'une des deux équipes : match exclu.
@@ -23,6 +23,7 @@ Nouvelle logique de Patrick, codée à côté de l'ancien alpha (`matrice_scenar
 ## Commandes
 - `python -m alpha_serie.calibration` : recalcule `alpha_serie/parametres.json`.
 - `python -m alpha_serie.backtest` : calibre sur la 1re moitié des jours, rejoue la 2e, écrit `docs/alpha_serie_backtest.json`.
+- `python -m alpha_serie.suivi [pipeline|geler|resultats|bilan|page]` : suivi nocturne.
 - Tests : `tests/test_alpha_serie.py`.
 
 ## Résultat du backtest au 20/10/2026 (marche avant, 707 matchs rejoués, coupe au 09/10)

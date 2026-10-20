@@ -1,15 +1,13 @@
-"""Scanner TOUS les marchés BetPawa d'un match avec la distribution de scores du profil (comportement.py), puis choisir.
+"""Lecture des marchés Betpawa : condition sur le score final (i = buts du domicile, j = buts de l'extérieur) et libellé français.
 
-Marchés lus sans exception : 1X2, double chance, les deux marquent, totaux (0,5 à 8,5), totaux par équipe, handicaps à 2 issues
-(lignes en .5) et à 3 issues (lignes entières), cages inviolées, nombre exact de buts, pair/impair, score exact.
-Un groupe ou une sélection inconnu n'est jamais ignoré en silence : il est listé dans `non_lus`.
+Groupes lus : 1X2, double chance, les deux marquent, totaux, totaux par équipe, handicaps (2 et 3 issues), cages inviolées, nombre exact de buts,
+pair/impair, score exact. Un groupe ou une sélection inconnu renvoie None : il n'est jamais deviné.
 """
 from __future__ import annotations
 
 import re
 from typing import Any, Callable
 
-from .comportement import proba
 
 Test = Callable[[int, int], bool]
 
@@ -82,26 +80,3 @@ def libelle(groupe: str, selection: str) -> str:
     if m:
         return f"Handicap 3 issues domicile {int(m.group(1)):+d} : {{'1': 'domicile', 'X': 'nul', '2': 'extérieur'}}[s]".replace("{'1': 'domicile', 'X': 'nul', '2': 'extérieur'}[s]", {"1": "domicile", "X": "nul", "2": "extérieur"}[s])
     return f"{groupe} {s}"
-
-
-def scanner(grille: list[list[float]], cotes_betpawa: dict | None) -> tuple[list[dict[str, Any]], list[str]]:
-    """Toutes les sélections cotées du match avec leur probabilité. Retourne (marchés, non_lus)."""
-    marches, non_lus = [], []
-    for groupe, selections in (cotes_betpawa or {}).items():
-        if not isinstance(selections, dict):
-            non_lus.append(groupe)
-            continue
-        for selection, cote in selections.items():
-            test = test_du_marche(groupe, selection)
-            if test is None or not isinstance(cote, (int, float)) or cote <= 1:
-                non_lus.append(f"{groupe}:{selection}")
-                continue
-            p = proba(grille, test)
-            marches.append({"groupe": groupe, "selection": str(selection), "libelle": libelle(groupe, selection), "cote": float(cote), "probabilite": p})
-    return marches, non_lus
-
-
-def choisir(marches: list[dict[str, Any]], cote_min: float = 1.26) -> dict[str, Any] | None:
-    """Le marché le plus probable parmi ceux dont la cote est d'au moins `cote_min` ; à égalité, la cote la plus haute."""
-    ok = [m for m in marches if m["cote"] >= cote_min]
-    return max(ok, key=lambda m: (round(m["probabilite"], 6), m["cote"])) if ok else None
