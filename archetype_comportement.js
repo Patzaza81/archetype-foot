@@ -17,7 +17,18 @@ function formatDate(iso) {
   return t.charAt(0).toUpperCase() + t.slice(1);
 }
 // Jour courant à Douala (les dates des matchs sont à l'heure du Cameroun) : on n'affiche que les matchs d'aujourd'hui et à venir.
-const aujourdhui = () => new Date().toLocaleDateString("en-CA", { timeZone: "Africa/Douala" });
+// Ne pas dépendre du rendu local de "en-CA" (Safari peut retourner MM/DD/YYYY).
+// Le JSON utilise strictement YYYY-MM-DD : les deux formats doivent être identiques.
+const aujourdhui = () => {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Africa/Douala",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  }).formatToParts(new Date());
+  const valeurs = Object.fromEntries(parts.filter((p) => p.type !== "literal").map((p) => [p.type, p.value]));
+  return `${valeurs.year}-${valeurs.month}-${valeurs.day}`;
+};
 let compteurCartes = 0;
 
 function tableau(onglet, lignes) {
