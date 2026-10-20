@@ -11,7 +11,7 @@ import json
 from collections import defaultdict
 from pathlib import Path
 
-from matrice_scenarios.scanner_marches import test_du_marche
+from .marches import test_du_marche
 
 from . import calibration as C, coeur, parametres as P
 

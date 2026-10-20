@@ -1,17 +1,14 @@
-// archetype_comportement.js — page du moteur alpha (refonte du 19/10/2026, demande de Patrick : « même thème et présentation que V3 »).
-// Présentation uniquement : le navigateur ne calcule rien, tout vient de data/comportement/pronostics_comportement.json
-// (écrit par python -m matrice_scenarios.suivi_comportement pipeline).
-// Même carte que la page V3 (mêmes classes ax-*) : carte REPLIÉE au départ, un toucher la déplie ; au premier plan le MARCHÉ et sa COTE ;
-// la tendance tient en une phrase pour le parieur ; les chiffres complets sont dans « Détails de l'analyse ».
-// Aucun lien avec V2, V3, V2R, Europe ni le générateur de tickets.
-let JUGES = {};   // verdicts des 5 juges par match (data/comportement/juges.json), facultatif
-const NOMS_JUGES = { contrarien: "Contrarien", premiers_principes: "Premiers principes", expansionniste: "Expansionniste", outsider: "Outsider", executant: "Exécutant" };
+// archetype_comportement.js — page du moteur alpha « séries » (remplace l'ancien alpha le 20/10/2026, demande de Patrick).
+// Présentation uniquement : le navigateur ne calcule rien, tout vient de data/alpha_serie/pronostics.json
+// (écrit par python -m alpha_serie.suivi pipeline). Même carte que la page V3 (classes ax-*), repliée au départ ; trois onglets par match :
+// marchés de buts, marchés d'équipes, multiscores. Seuls les marchés retenus figurent dans les tableaux ; le registre des exclus est dans « Détails ».
 const CLE_THEME_NUIT = "archetype_theme_nuit"; // même clé que theme.js
+const NOMS_ONGLETS = [["buts", "Buts"], ["equipes", "Équipes"], ["multiscores", "Multiscores"]];
 
 const echappeHtml = (x) => (x === null || x === undefined ? "" : String(x)
   .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;"));
-const formatCote = (x) => { const n = Number(x); return Number.isFinite(n) ? n.toFixed(2).replace(".", ",") : "—"; };
-const formatPct = (x) => `${(Number(x) * 100).toFixed(1).replace(".", ",")} %`;
+const formatCote = (x) => { const n = Number(x); return Number.isFinite(n) && x !== null ? n.toFixed(2).replace(".", ",") : "à lire"; };
+const formatPct = (x) => (x === null || x === undefined || !Number.isFinite(Number(x)) ? "—" : `${Math.round(Number(x) * 100)} %`);
 function formatDate(iso) {
   if (!iso) return "";
   const d = new Date(`${iso}T12:00:00`);
@@ -21,114 +18,34 @@ function formatDate(iso) {
 }
 // Jour courant à Douala (les dates des matchs sont à l'heure du Cameroun) : on n'affiche que les matchs d'aujourd'hui et à venir.
 const aujourdhui = () => new Date().toLocaleDateString("en-CA", { timeZone: "Africa/Douala" });
-
-const ICONES = {
-  forme: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V11h4v9H4zm6 0V4h4v16h-4zm6 0v-6h4v6h-4z"/></svg>',
-  balle: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 3.2 3.1 2.2-1.2 3.7h-3.8L8.9 7.4 12 5.2zM6 10l2.6 1.9-1 3.1-3-.4A8 8 0 0 1 6 10zm12 0a8 8 0 0 1 2.4 4.6l-3 .4-1-3.1L18 10zm-8.1 6.4h4.2l1 2.9a8 8 0 0 1-6.2 0l1-2.9z"/></svg>',
-  but: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21v-6h4v6H3zm7 0v-10h4v10h-4zm7 0V7h4v14h-4zM4 9l6-5 4 3 6-5v3l-6 5-4-3-6 4V9z"/></svg>',
-};
-const ICONE_TENDANCE = { resultat: ICONES.forme, dom_buts: ICONES.balle, ext_buts: ICONES.balle, buts: ICONES.but, deux_marquent: ICONES.but };
-const CLASSES = ["rang-1", "rang-2", "rang-3", "rang-3", "rang-3"];
 let compteurCartes = 0;
 
-function construitJauge(probabilite, classe) {
-  const n = Number(probabilite); if (!Number.isFinite(n)) return "";
-  const v = Math.max(0, Math.min(1, n)), r = 42, c = 2 * Math.PI * r, pct = Math.round(v * 100);
-  return `<div class="ax-jauge ${classe || ""}" role="img" aria-label="Probabilité du modèle : ${pct} %">` +
-    `<svg viewBox="0 0 100 100" aria-hidden="true">` +
-    `<circle class="ax-jauge-fond" cx="50" cy="50" r="${r}"></circle>` +
-    `<circle class="ax-jauge-valeur" cx="50" cy="50" r="${r}" stroke-dasharray="${(c * v).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 50 50)"></circle>` +
-    `<circle class="ax-jauge-centre" cx="50" cy="50" r="33"></circle>` +
-    `<text class="ax-jauge-texte" x="50" y="51">${pct}%</text></svg></div>`;
+function tableau(onglet, lignes) {
+  if (!lignes.length) return `<p class="ax-texte-resume">Aucun marché retenu dans cet onglet pour ce match.</p>`;
+  if (onglet === "multiscores") {
+    return `<table class="ax-table"><thead><tr><th>Groupe de scores</th><th>Scénarios</th><th>Valeur</th><th>Cote</th></tr></thead><tbody>` +
+      lignes.map((s) => `<tr><td>${echappeHtml(s.marche)}</td><td>${Number(s.scenarios)}/${Number(s.sur)}</td><td>${formatPct(s.valeur)}</td><td>${formatCote(s.cote)}</td></tr>`).join("") + `</tbody></table>`;
+  }
+  return `<table class="ax-table"><thead><tr><th>Marché</th><th>Offensive</th><th>Défensive</th><th>Valeur</th><th>Cote</th></tr></thead><tbody>` +
+    lignes.map((s) => `<tr><td>${echappeHtml(s.marche)}${s.alerte ? `<span class="ax-alerte" title="${echappeHtml(s.alerte)}"> ⚠</span>` : ""}</td>` +
+      `<td>${formatPct(s.offensive)}</td><td>${formatPct(s.defensive)}</td><td>${formatPct(s.valeur)}</td><td>${formatCote(s.cote)}</td></tr>`).join("") + `</tbody></table>`;
 }
 
-// Nom court de l'onglet : « Principal », puis la tendance du pari.
-function etiquette(s) {
-  if (s.role === "principal") return "Principal";
-  if (s.role === "super") return "★ Super marché";
-  if (s.role === "risque") return "Pari risqué";
-  const t = String(s.tendance || "");
-  if (t === "Résultat") return "Résultat";
-  if (t === "Buts du match") return "Total buts";
-  if (t === "Les deux marquent") return "2 marquent";
-  return t.startsWith("Buts de ") ? "Buts équipe" : t;
-}
-// La phrase « parieur » de la tendance qui a produit ce pari (absente pour les anciennes données : repli sur le texte chiffré).
-let REUSSITE = null;
-let RISQUE = null;
-function phraseRisque() {
-  if (!RISQUE) return "Pari risqué : pas de gain démontré.";
-  return `Pari risqué : ${formatPct(RISQUE.reussite)} de réussite observée sur ${RISQUE.matchs} cas (cote moyenne ${formatCote(RISQUE.cote_moyenne)}), rendement négatif.`;
-}
-function tendanceDe(m, s) {
-  if (s.role === "risque") return `${s.raison || ""}${s.raison ? " · " : ""}${phraseRisque()}`;
-  if (s.raison) return s.raison;
-  const t = (m.tendances || []).find((x) => x.titre === s.tendance || x.cle === s.tendance);
-  return t ? (t.court || t.texte || "") : "";
-}
-function issue(s) {
-  if (s.gagne === undefined || s.gagne === null) return "";
-  return s.gagne ? "✔ Gagné" : "✘ Perdu";
-}
-
-function construitResume(m) {
-  const div = document.createElement("div");
-  div.className = "ax-resume";
-  div.innerHTML = m.selections.map((s, i) => {
-    const texte = tendanceDe(m, s), fin = issue(s);
-    return `<div class="ax-resume-rang ax-${CLASSES[Math.min(i, CLASSES.length - 1)]}" data-cle="${i}">` +
-      `<div class="ax-resume-corps">` +
-      `<div class="ax-resume-tete"><span class="ax-resume-etiquette">${echappeHtml(etiquette(s))}</span>` +
-      `<span class="ax-resume-cote">Cote <strong>${formatCote(s.cote)}</strong></span></div>` +
-      `<h3 class="ax-resume-marche">${echappeHtml(s.libelle)}</h3>` +
-      (texte ? `<p class="ax-resume-texte">${echappeHtml(texte)}</p>` : "") +
-      (fin ? `<p class="ax-resume-texte"><strong>${fin}</strong></p>` : "") + `</div>` +
-      `</div>`;
-  }).join("");
-  return div;
-}
-
-// Carte dépliée : le marché et la cote d'abord, puis les tendances du match (une ligne chacune).
-function construitPanneau(m, s, i, idPanneau, idOnglet) {
-  const lignes = (m.tendances || []).filter((t) => t.court).map((t) =>
-    `<div class="ax-preuve"><span class="ax-icone">${ICONE_TENDANCE[t.cle] || ICONES.forme}</span><div>` +
-    `<span class="ax-preuve-titre">${echappeHtml(t.titre)}</span><span class="ax-preuve-texte">${echappeHtml(t.court)}</span></div></div>`).join("");
-  const el = document.createElement("div");
-  el.className = `ax-panneau ax-${CLASSES[Math.min(i, CLASSES.length - 1)]}${s.role === "super" ? " ax-panneau-super" : ""}`;
-  el.id = idPanneau; el.setAttribute("role", "tabpanel"); el.setAttribute("aria-labelledby", idOnglet); el.dataset.cle = String(i);
-  el.innerHTML =
-    `<h2 class="ax-marche">${echappeHtml(s.libelle)}</h2>` +
-    `<div class="ax-ligne-cote"><p class="ax-texte-resume">${echappeHtml(tendanceDe(m, s))}</p>` +
-    `<div class="ax-badge-cote"><span>Cote</span><strong>${formatCote(s.cote)}</strong></div></div>` +
-    `<div class="ax-preuves"><div class="ax-preuves-liste">${lignes}</div>` +
-    `<div class="ax-proba">${s.role === "super" ? `<span class="ax-proba-legende">Super marché : aucune réussite mesurée à ce jour</span>` : `<strong class="ax-reussite">${REUSSITE ? formatPct(REUSSITE.reussite) : "—"}</strong><span class="ax-proba-legende">Réussite observée du moteur (sans garantie)</span>`}` +
-    (issue(s) ? `<span class="ax-solidite"><span class="ax-solidite-titre">Résultat :</span> ${issue(s)}</span>` : "") + `</div></div>`;
-  return el;
-}
-
-// « Détails de l'analyse » : les chiffres complets pour qui veut vérifier.
 function construitDetails(m, idDetails) {
   const details = document.createElement("details");
   details.className = "details-analyse ax-details";
   details.id = idDetails;
-  const lignes = (m.tendances || []).map((t) => `<li><strong>${echappeHtml(t.titre)}</strong> — ${echappeHtml(t.texte)}</li>`).join("");
-  const sr = m.series ? `<p class="ax-preuve-texte">Séries analysées : ${Number(m.series.domicile)} derniers matchs du domicile, ${Number(m.series.exterieur)} de l'extérieur.</p>` : "";
+  const sc = (l) => (l || []).map(([h, a]) => `${Number(h)}-${Number(a)}`).join(" · ");
+  const rej = (m.rejetes || []).map((r) => `<li><strong>${echappeHtml(r.marche)}</strong> — ${echappeHtml(r.raison)}</li>`).join("");
+  const niv = m.niveaux ? `Buts attendus : domicile ${Number(m.niveaux.dom).toFixed(2)}, extérieur ${Number(m.niveaux.ext).toFixed(2)}, total ${Number(m.niveaux.total).toFixed(2)}. ` : "";
   details.innerHTML = `<summary class="ax-summary-cache" tabindex="-1">Détails de l'analyse</summary><div class="ax-details-corps">` +
-    `<div class="ax-tab"><h4 class="ax-tab-titre">Tendances du match (chiffres)</h4><ul class="ax-v3-lignes">${lignes}</ul>${sr}</div></div>`;
+    `<div class="ax-tab"><h4 class="ax-tab-titre">Scénarios appariés (${Number(m.n_domicile)} matchs à domicile, ${Number(m.n_exterieur)} à l'extérieur, k = ${Number(m.k)})</h4>` +
+    `<p class="ax-preuve-texte">${niv}</p><p class="ax-preuve-texte">Offensive : ${sc(m.scenarios_offensifs)}</p><p class="ax-preuve-texte">Défensive : ${sc(m.scenarios_defensifs)}</p></div>` +
+    `<div class="ax-tab"><h4 class="ax-tab-titre">Marchés exclus et raison</h4><ul class="ax-v3-lignes">${rej || "<li>Aucun</li>"}</ul></div></div>`;
   return details;
 }
 
-// SUPER MARCHÉ (5 juges, règles, sans IA) : un autre marché, coté sur Betpawa, qui se démarque du pronostic principal. Sinon rien.
-// Il apparaît comme un onglet de plus de la carte (même présentation que « Principal », « Résultat »...).
-function avecSuperMarche(m) {
-  const j = JUGES[m.match_id], o = j && j.super;
-  if (!o || !(o.jambes || []).length) return m;
-  const x = o.jambes[0];
-  return { ...m, selections: [...m.selections, { role: "super", libelle: x.libelle, cote: x.cote, tendance: "Super marché", combine: o.type === "combine", raison: o.raison || "Marché qui se démarque du principal. Sans garantie." }] };
-}
-
-function construitCarte(m0) {
-  const m = avecSuperMarche(m0);
+function construitCarte(m) {
   const id = ++compteurCartes, idDetails = `ax-details-${id}`;
   const section = document.createElement("section");
   section.className = "ax-carte";
@@ -140,34 +57,33 @@ function construitCarte(m0) {
       `<span class="ax-equipe ax-ext">${echappeHtml(m.exterieur)}</span></div>` +
       `<div class="ax-match-bas"><p class="ax-competition">${echappeHtml(String(m.competition || "").replace(/\s+/g, " ").trim() + score)}</p><div class="ax-actions-tete"></div></div>` +
     `</div>`;
-
   const onglets = document.createElement("div");
-  onglets.className = "ax-onglets"; onglets.setAttribute("role", "tablist"); onglets.setAttribute("aria-label", "Choix du pronostic");
+  onglets.className = "ax-onglets"; onglets.setAttribute("role", "tablist"); onglets.setAttribute("aria-label", "Choix de l'onglet");
   const panneaux = document.createElement("div");
   panneaux.className = "ax-panneaux";
-  const actifs = m.selections.map((s, i) => {
+  const actifs = NOMS_ONGLETS.map(([cle, nom], i) => {
+    const lignes = (m.onglets && m.onglets[cle]) || [];
     const idO = `ax-onglet-${id}-${i}`, idP = `ax-panneau-${id}-${i}`;
     const bouton = document.createElement("button");
-    bouton.type = "button"; bouton.id = idO; bouton.className = `ax-onglet ax-${CLASSES[Math.min(i, CLASSES.length - 1)]}${s.role === "super" ? " ax-super-onglet" : ""}`;
-    bouton.setAttribute("role", "tab"); bouton.setAttribute("aria-controls", idP); bouton.dataset.cle = String(i);
-    bouton.innerHTML = `<span>${echappeHtml(etiquette(s))}</span>`;
+    bouton.type = "button"; bouton.id = idO; bouton.className = `ax-onglet ax-rang-${Math.min(i + 1, 3)}`;
+    bouton.setAttribute("role", "tab"); bouton.setAttribute("aria-controls", idP);
+    bouton.innerHTML = `<span>${nom} (${lignes.length})</span>`;
     onglets.appendChild(bouton);
-    return { bouton, panneau: construitPanneau(m, s, i, idP, idO) };
+    const panneau = document.createElement("div");
+    panneau.className = `ax-panneau ax-rang-${Math.min(i + 1, 3)}`; panneau.id = idP; panneau.setAttribute("role", "tabpanel"); panneau.setAttribute("aria-labelledby", idO);
+    panneau.innerHTML = tableau(cle, lignes);
+    panneaux.appendChild(panneau);
+    return { bouton, panneau, n: lignes.length };
   });
-  const resume = construitResume(m), blocDetails = construitDetails(m, idDetails);
-  const active = (cible) => {
-    actifs.forEach(({ bouton, panneau }) => {
-      const oui = bouton === cible;
-      bouton.classList.toggle("ax-actif", oui); bouton.setAttribute("aria-selected", String(oui)); bouton.tabIndex = oui ? 0 : -1; panneau.hidden = !oui;
-    });
-    resume.querySelectorAll(".ax-resume-rang").forEach((l) => { l.hidden = l.dataset.cle !== cible.dataset.cle; });
-  };
-  actifs.forEach(({ bouton, panneau }) => { bouton.addEventListener("click", () => active(bouton)); panneaux.appendChild(panneau); });
-  onglets.style.gridTemplateColumns = `repeat(${Math.min(3, Math.max(1, actifs.length))},minmax(0,1fr))`;
-  if (actifs.length > 3) onglets.classList.add("ax-onglets-defilent");
-  active(actifs[0].bouton);
-  section.appendChild(onglets); section.appendChild(panneaux); section.appendChild(resume);
-  section.appendChild(blocDetails);
+  onglets.style.gridTemplateColumns = "repeat(3,minmax(0,1fr))";
+  const active = (cible) => actifs.forEach(({ bouton, panneau }) => {
+    const oui = bouton === cible;
+    bouton.classList.toggle("ax-actif", oui); bouton.setAttribute("aria-selected", String(oui)); bouton.tabIndex = oui ? 0 : -1; panneau.hidden = !oui;
+  });
+  actifs.forEach(({ bouton }) => bouton.addEventListener("click", () => active(bouton)));
+  active((actifs.find((a) => a.n) || actifs[0]).bouton);
+  const blocDetails = construitDetails(m, idDetails);
+  section.appendChild(onglets); section.appendChild(panneaux); section.appendChild(blocDetails);
 
   const pied = document.createElement("div");
   pied.className = "ax-pied";
@@ -182,9 +98,8 @@ function construitCarte(m0) {
     boutonDetails.setAttribute("aria-expanded", String(blocDetails.open));
   });
   const applique = (replie) => { section.classList.toggle("ax-replie", replie); section.setAttribute("aria-expanded", String(!replie)); };
-  // Toucher n'importe où sur la carte la plie / la déplie ; la carte garde sa position à l'écran.
   section.addEventListener("click", (e) => {
-    if (e.target.closest("button, a, summary, [role=tab]")) return;
+    if (e.target.closest("button, a, summary, [role=tab], table")) return;
     const sel = window.getSelection && window.getSelection();
     if (sel && String(sel).length) return;
     const avant = section.getBoundingClientRect().top;
@@ -192,7 +107,7 @@ function construitCarte(m0) {
     const apres = section.getBoundingClientRect().top;
     if (Math.abs(apres - avant) > 1) window.scrollBy(0, apres - avant);
   });
-  applique(true);                                   // repliée au départ, comme V3
+  applique(true);
   pied.appendChild(boutonDetails); section.appendChild(pied);
   return section;
 }
@@ -201,18 +116,19 @@ function afficheSelections(d) {
   const racine = document.getElementById("matches"), maj = document.getElementById("maj"), perf = document.getElementById("perf");
   const jour = aujourdhui();
   const cleTri = (m) => `${m.date || ""}${m.heure || ""}`;
-  const retenus = (d.matchs || []).filter((m) => m.statut === "OK" && m.date >= jour && (m.selections || []).length).sort((a, b) => cleTri(a).localeCompare(cleTri(b)));
-  maj.textContent = retenus.length ? `${retenus.length} match${retenus.length > 1 ? "s" : ""} avec au moins un pronostic · cote minimale ${formatCote(d.cote_min)}` : "Aucun pronostic pour le moment";
-  const p = d.performance_archive;
-  REUSSITE = p || null;
-  RISQUE = d.pari_risque_archive || null;
-  if (p && perf) {
-    perf.textContent = `Réussite réelle : ${formatPct(p.reussite)} sur ${p.matchs} matchs (${Math.round(p.ic95[0] * 100)}–${Math.round(p.ic95[1] * 100)} %). Chaque pick est une aide à la lecture du match, pas une garantie de gain.`;
+  const aUnMarche = (m) => Object.values(m.onglets || {}).some((l) => (l || []).length);
+  const retenus = (d.matchs || []).filter((m) => m.statut === "analyse" && m.date >= jour && aUnMarche(m)).sort((a, b) => cleTri(a).localeCompare(cleTri(b)));
+  maj.textContent = retenus.length ? `${retenus.length} match${retenus.length > 1 ? "s" : ""} avec au moins un marché retenu · cote minimale ${formatCote(d.cote_min)} (buts et équipes)` : "Aucun pronostic pour le moment";
+  const b = d.bilan_gele;
+  if (perf) {
+    const lignes = b ? NOMS_ONGLETS.map(([c, nom]) => ((b.onglets || {})[c] || {}).cas ? `${nom} : ${formatPct(b.onglets[c].reussite)} sur ${b.onglets[c].cas} cas` : "").filter(Boolean) : [];
+    perf.textContent = lignes.length ? `Réussite réelle (pronostics gelés avant le match) — ${lignes.join(" · ")}. Aucune rentabilité démontrée.` :
+      "Aucun résultat sur des pronostics gelés pour l'instant : la réussite réelle s'affichera ici. Aucune rentabilité démontrée.";
   }
   racine.innerHTML = "";
   if (!retenus.length) {
     racine.innerHTML = `<div class="ax-etat-vide"><strong>Aucun pronostic pour le moment</strong>` +
-      `<p>Aucun match à venir ne remplit les critères du moteur (marché le plus probable avec une cote d'au moins ${formatCote(d.cote_min)}).</p></div>`;
+      `<p>Aucun match à venir ne respecte les normes du moteur (les deux branches à 50 % au moins et la marge de niveau).</p></div>`;
     return;
   }
   retenus.forEach((m) => racine.appendChild(construitCarte(m)));
@@ -238,9 +154,8 @@ function installeThemeNuit() {
 
 installeThemeNuit();
 if (document.getElementById("matches")) {
-  const juges = fetch(`data/comportement/juges.json?_=${Date.now()}`).then((r) => (r.ok ? r.json() : null)).then((d) => { JUGES = (d && d.matchs) || {}; }).catch(() => { JUGES = {}; });
-  fetch(`data/comportement/pronostics_comportement.json?_=${Date.now()}`)
+  fetch(`data/alpha_serie/pronostics.json?_=${Date.now()}`)
     .then((r) => { if (!r.ok) throw new Error(`données introuvables (${r.status})`); return r.json(); })
-    .then((d) => juges.then(() => afficheSelections(d)))
+    .then(afficheSelections)
     .catch((e) => { document.getElementById("maj").textContent = "Données du moteur alpha indisponibles : " + e.message; console.error(e); });
 }

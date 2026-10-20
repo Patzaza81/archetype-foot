@@ -16,7 +16,7 @@ from __future__ import annotations
 import re
 from typing import Callable
 
-from matrice_scenarios.scanner_marches import libelle, test_du_marche
+from .marches import libelle, test_du_marche
 
 from . import parametres as P
 
