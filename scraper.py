@@ -69,6 +69,21 @@ def convertit_heure_cameroun(heure, date_label):
     return dt_cameroun.strftime("%H:%M")
 
 
+def convertit_date_cameroun(heure, date_label):
+    """Renvoie la date locale du coup d'envoi au Cameroun à partir de
+    la date et de l'heure françaises de Matchendirect. La date source est
+    conservée séparément pour audit. Aucun décalage n'est appliqué si
+    l'heure n'est pas exploitable."""
+    if not heure or not RE_HEURE.match(heure) or not date_label:
+        return date_label
+    from zoneinfo import ZoneInfo
+    h, m = (int(x) for x in heure.split(":"))
+    dt_paris = datetime.datetime.strptime(date_label, "%Y-%m-%d").replace(
+        hour=h, minute=m, tzinfo=ZoneInfo("Europe/Paris")
+    )
+    return dt_paris.astimezone(ZoneInfo("Africa/Douala")).date().isoformat()
+
+
 def url_resultat_foot(date_obj):
     """URL "demain"/"hier" du site, construite depuis une date. Format
     DD-MM-YYYY confirmé via la nav réelle du site (liens "Demain"/"Hier")."""
@@ -156,7 +171,11 @@ def parse_matches(html, max_matchs=20, date_label=None):
         if entree["domicile"] is None or entree["exterieur"] is None:
             continue
         if date_label:
-            entree["date"] = date_label
+            # La page source est datée en heure française. Garder cette date
+            # comme provenance, mais utiliser la date du coup d'envoi au
+            # Cameroun pour le moteur, l'affichage et le tri calendaires.
+            entree["date_source"] = date_label
+            entree["date"] = convertit_date_cameroun(entree["heure"], date_label)
         # AJOUT (04/09/2026 soir) -- "heure" est recopiée telle quelle depuis
         # matchendirect.fr, qui affiche systématiquement l'heure française
         # (Europe/Paris) -- vérifié en croisant Pau-Sochaux (affiché "20:00"
