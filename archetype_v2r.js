@@ -105,21 +105,14 @@ function v2rHistorique(l) {
   const corps = bloc(l.domicile || "Domicile", f.domicile) + bloc(l.exterieur || "Extérieur", f.exterieur);
   return corps ? `<div class="ax-hist-bloc"><div class="v2r-hist-titre">Derniers matchs (du plus récent au plus ancien)</div>${corps}</div>` : "";
 }
-// Explique la décision avec les métadonnées exactes de la cellule ayant sélectionné le marché.
+// Explication courte : le critère décisif et les données historiques de la cellule.
 function v2rExplication(l) {
   const roi = Number(l && l.roi_cellule);
-  const rendement = Number.isFinite(roi) ? (roi >= 0 ? "+" : "−") + Math.abs(roi * 100).toFixed(1).replace(".", ",") + " %" : "non disponible";
+  const rendement = Number.isFinite(roi) ? (roi >= 0 ? "+" : "−") + Math.abs(roi * 100).toFixed(1).replace(".", ",") + " %" : "indisponible";
   const n = Number(l && l.cellule_n);
-  const echantillon = Number.isFinite(n) ? `${n} paris historiques` : "effectif historique indisponible";
-  const tr = Array.isArray(l && l.cellule_tranche_cote) ? `${v2rCote(l.cellule_tranche_cote[0])} à moins de ${v2rCote(l.cellule_tranche_cote[1])}` : "tranche indisponible";
-  const classe = (x, a, b) => x === 0 ? a : x === 1 ? b : "élevée";
-  const cl = l && l.cellule_classe_ligue;
-  const cm = l && l.cellule_classe_match;
-  const ligue = cl === 0 ? "basse (moins de 2,5 buts/match)" : cl === 1 ? "moyenne (2,5 à moins de 2,9)" : cl === 2 ? "élevée (2,9 ou plus)" : "indisponible";
-  const match = cm === 0 ? "basse (moins de 2,4 buts attendus)" : cm === 1 ? "moyenne (2,4 à moins de 3,0)" : cm === 2 ? "élevée (3,0 ou plus)" : "indisponible";
-  const ba = Array.isArray(l && l.buts_attendus) ? `${v2rCote(l.buts_attendus[0])} pour ${v2rEchappe(l.domicile)} et ${v2rCote(l.buts_attendus[1])} pour ${v2rEchappe(l.exterieur)}` : "indisponibles";
-  const dates = l && l.regles_jusqu_au ? `Les données d'entraînement vont jusqu'au ${v2rEchappe(l.regles_jusqu_au)}.` : "";
-  return `<div class="v2r-explication"><strong>Pourquoi ce choix ?</strong><p>V2R estime les buts à ${ba}. Cela place le match dans une classe de buts ${match} ; la classe historique du championnat est ${ligue}.</p><p>La matrice a une case pour le marché « ${v2rEchappe(l.marche)} », la tranche de cote ${tr}, la classe du championnat et celle du match. Cette case a été retenue avec ${echantillon} et un ROI historique de ${v2rEchappe(rendement)}. V2R l'a préférée aux autres cases admissibles parce que son ROI est le plus élevé pour ce match.</p><p>Règles : ${v2rEchappe(l.regles_version || "version indisponible")}. ${dates} Ces statistiques passées ne garantissent pas le résultat futur.</p></div>`;
+  const echantillon = Number.isFinite(n) ? `${n} paris` : "effectif inconnu";
+  const tr = Array.isArray(l && l.cellule_tranche_cote) ? `${v2rCote(l.cellule_tranche_cote[0])}–${v2rCote(l.cellule_tranche_cote[1])}` : "inconnue";
+  return `<div class="v2r-explication"><strong>Pourquoi ce choix ?</strong><p>La matrice retient ce marché car sa case admissible présente le meilleur ROI historique pour ce match : <b>${v2rEchappe(rendement)}</b> sur ${v2rEchappe(echantillon)}, pour la tranche de cote ${v2rEchappe(tr)}. Les résultats passés ne garantissent pas le prochain.</p></div>`;
 }
 function v2rCarte(l, mode) {
   const score = Array.isArray(l.score) ? `${l.score[0]} - ${l.score[1]}` : "";
