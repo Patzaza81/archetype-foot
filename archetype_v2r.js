@@ -138,8 +138,7 @@ function v2rCarte(l, mode) {
     `<div class="v2r-corps">` +
       (score ? `<div class="v2r-score">Score final <strong>${v2rEchappe(score)}</strong></div>` : "") +
       `<div class="v2r-ligne"><span>${v2rEchappe(v2rMarche(l))}</span><span class="v2r-cote">Cote ${v2rCote(l.cote)}</span></div>` +
-      v2rExplication(l) +
-      `<div class="v2r-ligne v2r-info"><span>ROI de la cellule sur l'échantillon : ${v2rPct(l.roi_cellule, true)} · buts attendus ${v2rEchappe((l.buts_attendus || []).join(" / "))}</span>${badge}</div>` +
+      `<div class="v2r-ligne v2r-info"><span>Historique de la cellule : ROI ${v2rPct(l.roi_cellule, true)} · ${l.cellule_n == null ? "effectif indisponible" : Number(l.cellule_n) + " paris"} · cote ${Array.isArray(l.cellule_tranche_cote) ? v2rCote(l.cellule_tranche_cote[0]) + "–" + v2rCote(l.cellule_tranche_cote[1]) : "—"} · buts attendus ${v2rEchappe((l.buts_attendus || []).join(" / "))}</span>${badge}</div>` +
       (mode === "regle" && profit ? `<div class="v2r-info">Mise 1 u${profit}</div>` : "") +
       v2rBlocModere(l, mode) +
     `</div>` +
