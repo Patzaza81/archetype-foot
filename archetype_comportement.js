@@ -1,13 +1,16 @@
 // archetype_comportement.js — page du moteur alpha « séries » (remplace l'ancien alpha le 20/10/2026, demande de Patrick).
 // Présentation uniquement : le navigateur ne calcule rien, tout vient de data/alpha_serie/pronostics.json
-// (écrit par python -m alpha_serie.suivi pipeline). Même carte que la page V3 (classes ax-*), repliée au départ ; trois onglets par match :
-// marchés de buts, marchés d'équipes, multiscores. Seuls les marchés retenus figurent dans les tableaux ; le registre des exclus est dans « Détails ».
+// (écrit par python -m alpha_serie.suivi pipeline). Même carte que la page V3 (classes ax-*) ; trois onglets par match :
+// marchés de buts, marchés d'équipes, multiscores. Seuls les marchés retenus figurent dans les listes ; le registre des exclus est dans « Détails ».
+// Affichage (22/10/2026) : carte repliée = le meilleur marché de chaque onglet est lisible dès l'entrée (aperçu .ax-resume) ;
+// carte dépliée = une ligne par marché, pensée pour l'écran du téléphone (plus de tableau à 5 colonnes) ; alertes écrites en toutes lettres.
 const CLE_THEME_NUIT = "archetype_theme_nuit"; // même clé que theme.js
 const NOMS_ONGLETS = [["buts", "Buts"], ["equipes", "Équipes"], ["multiscores", "Multiscores"]];
 
 const echappeHtml = (x) => (x === null || x === undefined ? "" : String(x)
   .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;"));
-const formatCote = (x) => { const n = Number(x); return Number.isFinite(n) && x !== null ? n.toFixed(2).replace(".", ",") : "à lire"; };
+const aUneCote = (x) => x !== null && x !== undefined && Number.isFinite(Number(x));
+const formatCote = (x) => (aUneCote(x) ? Number(x).toFixed(2).replace(".", ",") : "à lire");
 const formatPct = (x) => (x === null || x === undefined || !Number.isFinite(Number(x)) ? "—" : `${Math.round(Number(x) * 100)} %`);
 function formatDate(iso) {
   if (!iso) return "";
@@ -31,21 +34,60 @@ const aujourdhui = () => {
 };
 let compteurCartes = 0;
 
-function tableau(onglet, lignes) {
-  if (!lignes.length) return `<p class="ax-texte-resume">Aucun marché retenu dans cet onglet pour ce match.</p>`;
-  if (onglet === "multiscores") {
-    return `<table class="ax-table"><thead><tr><th>Groupe de scores</th><th>Scénarios</th><th>Valeur</th><th>Cote</th></tr></thead><tbody>` +
-      lignes.map((s) => `<tr><td>${echappeHtml(s.marche)}</td><td>${Number(s.scenarios)}/${Number(s.sur)}</td><td>${formatPct(s.valeur)}</td><td>${formatCote(s.cote)}</td></tr>`).join("") + `</tbody></table>`;
-  }
-  return `<table class="ax-table"><thead><tr><th>Marché</th><th>Offensive</th><th>Défensive</th><th>Valeur</th><th>Cote</th></tr></thead><tbody>` +
-    lignes.map((s) => `<tr><td>${echappeHtml(s.marche)}${s.alerte ? `<span class="ax-alerte" title="${echappeHtml(s.alerte)}"> ⚠</span>` : ""}</td>` +
-      `<td>${formatPct(s.offensive)}</td><td>${formatPct(s.defensive)}</td><td>${formatPct(s.valeur)}</td><td>${formatCote(s.cote)}</td></tr>`).join("") + `</tbody></table>`;
+// Marchés d'un onglet, du plus fort au plus faible (valeur décroissante ; à valeur égale l'ordre du fichier est conservé).
+const lignesDe = (m, cle) => ((m.onglets && m.onglets[cle]) || []).slice().sort((a, b) => (Number(b.valeur) || 0) - (Number(a.valeur) || 0));
+const pluriel = (n, mot) => `${n} ${mot}${n > 1 ? "s" : ""}`;
+const detailBranches = (cle, s) => (cle === "multiscores"
+  ? `${pluriel(Number(s.scenarios), "scénario")} sur ${Number(s.sur)}`
+  : `Offensive ${formatPct(s.offensive)} · Défensive ${formatPct(s.defensive)}`);
+
+// ── Carte dépliée : une ligne par marché (nom, valeur, cote, branches, alerte) ──
+function ligneMarche(cle, s) {
+  const pct = Number.isFinite(Number(s.valeur)) && s.valeur !== null ? Math.max(0, Math.min(100, Math.round(Number(s.valeur) * 100))) : null;
+  const barre = pct === null ? "" : `<span class="ax-mk-barre" aria-hidden="true"><i style="--v:${pct}"></i></span>`;
+  const cote = aUneCote(s.cote)
+    ? `<span class="ax-mk-cote"><small>Cote</small><strong>${formatCote(s.cote)}</strong></span>`
+    : `<span class="ax-mk-cote ax-mk-cote-lire"><small>Cote</small><strong>à lire</strong></span>`;
+  const branches = cle === "multiscores"
+    ? `<span>${pluriel(Number(s.scenarios), "scénario")} sur ${Number(s.sur)}</span>`
+    : `<span>Offensive <b>${formatPct(s.offensive)}</b></span><span>Défensive <b>${formatPct(s.defensive)}</b></span>`;
+  const alerte = s.alerte ? `<p class="ax-mk-alerte"><span aria-hidden="true">⚠</span> ${echappeHtml(s.alerte)}</p>` : "";
+  return `<li class="ax-mk"><span class="ax-mk-nom">${echappeHtml(s.marche)}</span>${cote}` +
+    `<div class="ax-mk-valeur">${barre}<b>${formatPct(s.valeur)}</b><small>valeur</small></div>` +
+    `<p class="ax-mk-branches">${branches}</p>${alerte}</li>`;
 }
 
-function construitDetails(m, idDetails) {
-  const details = document.createElement("details");
-  details.className = "details-analyse ax-details";
-  details.id = idDetails;
+function liste(cle, lignes) {
+  if (!lignes.length) return `<p class="ax-texte-resume">Aucun marché retenu dans cet onglet pour ce match.</p>`;
+  const legende = cle === "multiscores"
+    ? "Valeur : part des scénarios qui reviennent sur ce groupe de scores, ajustée à la taille de l'échantillon."
+    : "Valeur : part des scénarios qui valident le marché (moyenne des deux branches, ajustée à la taille de l'échantillon). Offensive et Défensive : la part dans chaque branche.";
+  return `<ul class="ax-mk-liste">${lignes.map((s) => ligneMarche(cle, s)).join("")}</ul><p class="ax-mk-legende">${legende}</p>`;
+}
+
+// ── Carte repliée : le meilleur marché de chaque onglet, visible dès l'entrée ──
+function construitResume(m) {
+  const racine = document.createElement("div");
+  racine.className = "ax-resume";
+  NOMS_ONGLETS.forEach(([cle, nom], i) => {
+    const l = lignesDe(m, cle);
+    if (!l.length) return;
+    const s = l[0];
+    const plus = l.length > 1 ? `<span class="ax-resume-plus"> · +${l.length - 1} autre${l.length > 2 ? "s" : ""}</span>` : "";
+    const cote = aUneCote(s.cote) ? `<strong>${formatCote(s.cote)}</strong>` : `<strong class="ax-cote-lire">à lire</strong>`;
+    const alerte = s.alerte ? `<p class="ax-resume-alerte"><span aria-hidden="true">⚠</span> ${echappeHtml(s.alerte)}</p>` : "";
+    const rang = document.createElement("div");
+    rang.className = `ax-resume-rang ax-rang-${Math.min(i + 1, 3)}`;
+    rang.innerHTML = `<div class="ax-resume-corps"><div class="ax-resume-tete">` +
+      `<span class="ax-resume-etiquette">${nom}${plus}</span><span class="ax-resume-cote">Cote${cote}</span></div>` +
+      `<p class="ax-resume-marche">${echappeHtml(s.marche)}</p>` +
+      `<p class="ax-resume-texte">Valeur <b>${formatPct(s.valeur)}</b> · ${detailBranches(cle, s)}</p>${alerte}</div>`;
+    racine.appendChild(rang);
+  });
+  return racine;
+}
+
+function remplitDetails(details, m) {
   const sc = (l) => (l || []).map(([h, a]) => `${Number(h)}-${Number(a)}`).join(" · ");
   const rej = (m.rejetes || []).map((r) => `<li><strong>${echappeHtml(r.marche)}</strong> — ${echappeHtml(r.raison)}</li>`).join("");
   const niv = m.niveaux ? `Buts attendus : domicile ${Number(m.niveaux.dom).toFixed(2)}, extérieur ${Number(m.niveaux.ext).toFixed(2)}, total ${Number(m.niveaux.total).toFixed(2)}. ` : "";
@@ -53,7 +95,6 @@ function construitDetails(m, idDetails) {
     `<div class="ax-tab"><h4 class="ax-tab-titre">Scénarios appariés (${Number(m.n_domicile)} matchs à domicile, ${Number(m.n_exterieur)} à l'extérieur, k = ${Number(m.k)})</h4>` +
     `<p class="ax-preuve-texte">${niv}</p><p class="ax-preuve-texte">Offensive : ${sc(m.scenarios_offensifs)}</p><p class="ax-preuve-texte">Défensive : ${sc(m.scenarios_defensifs)}</p></div>` +
     `<div class="ax-tab"><h4 class="ax-tab-titre">Marchés exclus et raison</h4><ul class="ax-v3-lignes">${rej || "<li>Aucun</li>"}</ul></div></div>`;
-  return details;
 }
 
 function construitCarte(m) {
@@ -73,31 +114,49 @@ function construitCarte(m) {
   const panneaux = document.createElement("div");
   panneaux.className = "ax-panneaux";
   const actifs = NOMS_ONGLETS.map(([cle, nom], i) => {
-    const lignes = (m.onglets && m.onglets[cle]) || [];
+    const lignes = lignesDe(m, cle);
     const idO = `ax-onglet-${id}-${i}`, idP = `ax-panneau-${id}-${i}`;
     const bouton = document.createElement("button");
-    bouton.type = "button"; bouton.id = idO; bouton.className = `ax-onglet ax-rang-${Math.min(i + 1, 3)}`;
+    bouton.type = "button"; bouton.id = idO; bouton.className = `ax-onglet ax-rang-${Math.min(i + 1, 3)}${lignes.length ? "" : " ax-vide"}`;
     bouton.setAttribute("role", "tab"); bouton.setAttribute("aria-controls", idP);
     bouton.innerHTML = `<span>${nom} (${lignes.length})</span>`;
     onglets.appendChild(bouton);
     const panneau = document.createElement("div");
     panneau.className = `ax-panneau ax-rang-${Math.min(i + 1, 3)}`; panneau.id = idP; panneau.setAttribute("role", "tabpanel"); panneau.setAttribute("aria-labelledby", idO);
-    panneau.innerHTML = tableau(cle, lignes);
+    panneau.hidden = true;
     panneaux.appendChild(panneau);
-    return { bouton, panneau, n: lignes.length };
+    return { cle, bouton, panneau, lignes, n: lignes.length };
   });
-  onglets.style.gridTemplateColumns = "repeat(3,minmax(0,1fr))";
-  const active = (cible) => actifs.forEach(({ bouton, panneau }) => {
-    const oui = bouton === cible;
-    bouton.classList.toggle("ax-actif", oui); bouton.setAttribute("aria-selected", String(oui)); bouton.tabIndex = oui ? 0 : -1; panneau.hidden = !oui;
-  });
-  actifs.forEach(({ bouton }) => bouton.addEventListener("click", () => active(bouton)));
-  active((actifs.find((a) => a.n) || actifs[0]).bouton);
-  const blocDetails = construitDetails(m, idDetails);
-  section.appendChild(onglets); section.appendChild(panneaux); section.appendChild(blocDetails);
+  const blocDetails = document.createElement("details");
+  blocDetails.className = "details-analyse ax-details"; blocDetails.id = idDetails;
+  section.appendChild(onglets); section.appendChild(construitResume(m)); section.appendChild(panneaux); section.appendChild(blocDetails);
+
+  // Le contenu lourd (listes de marchés, registre des exclus) n'est construit qu'au premier dépliage : la page reste fluide sur téléphone.
+  let pret = false;
+  const prepare = () => {
+    if (pret) return;
+    pret = true;
+    actifs.forEach(({ cle, panneau, lignes }) => { panneau.innerHTML = liste(cle, lignes); });
+    remplitDetails(blocDetails, m);
+  };
+  let courant = (actifs.find((a) => a.n) || actifs[0]);
+  const applique = (replie) => {
+    if (!replie) prepare();
+    section.classList.toggle("ax-replie", replie);
+    section.setAttribute("aria-expanded", String(!replie));
+    actifs.forEach((a) => {
+      const oui = !replie && a === courant;
+      a.bouton.classList.toggle("ax-actif", oui); a.bouton.setAttribute("aria-selected", String(oui));
+      a.bouton.tabIndex = a === courant ? 0 : -1; a.panneau.hidden = !oui;
+    });
+  };
+  // Une pression sur un onglet déplie la carte sur cet onglet (avant : la carte restait fermée et rien ne se passait).
+  actifs.forEach((a) => a.bouton.addEventListener("click", () => { courant = a; applique(false); }));
 
   const pied = document.createElement("div");
   pied.className = "ax-pied";
+  const boutonReplier = document.createElement("button");
+  boutonReplier.type = "button"; boutonReplier.className = "ax-bouton-replier"; boutonReplier.textContent = "Replier";
   const boutonDetails = document.createElement("button");
   boutonDetails.type = "button"; boutonDetails.className = "ax-bouton-details";
   boutonDetails.textContent = "Détails de l'analyse";
@@ -108,19 +167,37 @@ function construitCarte(m) {
     boutonDetails.textContent = blocDetails.open ? "Masquer les détails" : "Détails de l'analyse";
     boutonDetails.setAttribute("aria-expanded", String(blocDetails.open));
   });
-  const applique = (replie) => { section.classList.toggle("ax-replie", replie); section.setAttribute("aria-expanded", String(!replie)); };
-  section.addEventListener("click", (e) => {
-    if (e.target.closest("button, a, summary, [role=tab], table")) return;
-    const sel = window.getSelection && window.getSelection();
-    if (sel && String(sel).length) return;
+  // Bascule en gardant l'en-tête du match au même endroit de l'écran ; en repliant, on remonte à l'en-tête s'il est sorti de l'écran.
+  const bascule = (replie) => {
     const avant = section.getBoundingClientRect().top;
-    applique(!section.classList.contains("ax-replie"));
+    applique(replie);
     const apres = section.getBoundingClientRect().top;
     if (Math.abs(apres - avant) > 1) window.scrollBy(0, apres - avant);
+    const haut = section.getBoundingClientRect().top;
+    if (replie && haut < 0) window.scrollBy(0, haut - 8);
+  };
+  boutonReplier.addEventListener("click", (e) => { e.stopPropagation(); bascule(true); });
+  section.addEventListener("click", (e) => {
+    if (e.target.closest("button, a, summary, [role=tab], .ax-mk-liste, .ax-details")) return;
+    const sel = window.getSelection && window.getSelection();
+    if (sel && String(sel).length) return;
+    bascule(!section.classList.contains("ax-replie"));
   });
   applique(true);
-  pied.appendChild(boutonDetails); section.appendChild(pied);
+  pied.appendChild(boutonReplier); pied.appendChild(boutonDetails); section.appendChild(pied);
   return section;
+}
+
+// ── Bilan réel : trois pastilles lisibles d'un coup d'œil (avant : une longue phrase grise) ──
+function afficheBilan(b, perf) {
+  if (!perf) return;
+  const tuiles = b ? NOMS_ONGLETS.map(([c, nom]) => {
+    const o = (b.onglets || {})[c];
+    return o && o.cas ? `<div class="ax-perf-tuile"><span class="ax-perf-nom">${nom}</span><strong>${formatPct(o.reussite)}</strong><small>sur ${Number(o.cas)} cas</small></div>` : "";
+  }).join("") : "";
+  perf.innerHTML = tuiles
+    ? `<p class="ax-perf-titre">Réussite réelle — pronostics gelés avant le match</p><div class="ax-perf-grille">${tuiles}</div><p class="ax-perf-note">Aucune rentabilité démontrée.</p>`
+    : `<p class="ax-perf-note">Aucun résultat sur des pronostics gelés pour l'instant : la réussite réelle s'affichera ici. Aucune rentabilité démontrée.</p>`;
 }
 
 function afficheSelections(d) {
@@ -129,13 +206,10 @@ function afficheSelections(d) {
   const cleTri = (m) => `${m.date || ""}${m.heure || ""}`;
   const aUnMarche = (m) => Object.values(m.onglets || {}).some((l) => (l || []).length);
   const retenus = (d.matchs || []).filter((m) => m.statut === "analyse" && m.date >= jour && aUnMarche(m)).sort((a, b) => cleTri(a).localeCompare(cleTri(b)));
-  maj.textContent = retenus.length ? `${retenus.length} match${retenus.length > 1 ? "s" : ""} avec au moins un marché retenu · cote minimale ${formatCote(d.cote_min)} (buts et équipes)` : "Aucun pronostic pour le moment";
-  const b = d.bilan_gele;
-  if (perf) {
-    const lignes = b ? NOMS_ONGLETS.map(([c, nom]) => ((b.onglets || {})[c] || {}).cas ? `${nom} : ${formatPct(b.onglets[c].reussite)} sur ${b.onglets[c].cas} cas` : "").filter(Boolean) : [];
-    perf.textContent = lignes.length ? `Réussite réelle (pronostics gelés avant le match) — ${lignes.join(" · ")}. Aucune rentabilité démontrée.` :
-      "Aucun résultat sur des pronostics gelés pour l'instant : la réussite réelle s'affichera ici. Aucune rentabilité démontrée.";
-  }
+  maj.innerHTML = retenus.length
+    ? `<strong>${pluriel(retenus.length, "match")}</strong> avec au moins un marché retenu · cote minimale ${formatCote(d.cote_min)} (buts et équipes)`
+    : "Aucun pronostic pour le moment";
+  afficheBilan(d.bilan_gele, perf);
   racine.innerHTML = "";
   if (!retenus.length) {
     racine.innerHTML = `<div class="ax-etat-vide"><strong>Aucun pronostic pour le moment</strong>` +
