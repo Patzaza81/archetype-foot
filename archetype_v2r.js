@@ -105,6 +105,13 @@ function v2rHistorique(l) {
   const corps = bloc(l.domicile || "Domicile", f.domicile) + bloc(l.exterieur || "Extérieur", f.exterieur);
   return corps ? `<div class="ax-hist-bloc"><div class="v2r-hist-titre">Derniers matchs (du plus récent au plus ancien)</div>${corps}</div>` : "";
 }
+// Explication fondée sur le mécanisme réel de sélection : la forme récente est affichée à titre de contexte,
+// mais le choix V2R provient de la meilleure cellule admissible observée dans les règles figées.
+function v2rExplication(l) {
+  const roi = Number(l && l.roi_cellule);
+  const rendement = Number.isFinite(roi) ? (roi >= 0 ? "+" : "−") + Math.abs(roi * 100).toFixed(1).replace(".", ",") + " %" : "non disponible";
+  return `<div class="v2r-explication"><strong>Pourquoi ce choix ?</strong><p>Parmi les marchés disponibles, V2R a retenu celui dont les situations comparables ont affiché le meilleur rendement dans les données ayant servi à établir ses règles (${v2rEchappe(rendement)}).</p><p>Les derniers scores donnent du contexte, mais ne suffisent pas à justifier ce choix. Un résultat passé ne garantit pas le résultat de ce match.</p></div>`;
+}
 function v2rCarte(l, mode) {
   const score = Array.isArray(l.score) ? `${l.score[0]} - ${l.score[1]}` : "";
   const badge = v2rBadge(l);
@@ -124,6 +131,7 @@ function v2rCarte(l, mode) {
     `<div class="v2r-corps">` +
       (score ? `<div class="v2r-score">Score final <strong>${v2rEchappe(score)}</strong></div>` : "") +
       `<div class="v2r-ligne"><span>${v2rEchappe(v2rMarche(l))}</span><span class="v2r-cote">Cote ${v2rCote(l.cote)}</span></div>` +
+      v2rExplication(l) +
       `<div class="v2r-ligne v2r-info"><span>ROI de la cellule sur l'échantillon : ${v2rPct(l.roi_cellule, true)} · buts attendus ${v2rEchappe((l.buts_attendus || []).join(" / "))}</span>${badge}</div>` +
       (mode === "regle" && profit ? `<div class="v2r-info">Mise 1 u${profit}</div>` : "") +
       v2rBlocModere(l, mode) +
