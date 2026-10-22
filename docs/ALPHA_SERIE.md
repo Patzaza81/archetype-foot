@@ -33,6 +33,12 @@ Chiffres rapportés tels quels, **aucune rentabilité démontrée** (archive de 
 - Marché par marché, la réussite des marchés admis est proche de leur réussite de base (par exemple Pas de nul 71 % contre 74 %, Victoire domicile 50 % contre 43 %).
 - Multigoals et multiscores : jugés en réussite seule, sans cote dans l'archive. Le groupe « Match nul » est admis très souvent (355 fois) à 26 %, comme sa base.
 
+## Affichage de la page (22/10/2026)
+- Carte repliée : le meilleur marché de chaque onglet (valeur, cote ou « cote à lire », alerte) est visible sans clic. Un clic sur un onglet déplie la carte.
+- Carte dépliée : une ligne par marché (nom, cote, barre de valeur, branches offensive/défensive, alerte écrite). Plus de tableau : il débordait sur téléphone.
+- En tête : nombre de matchs, puis bilan réel en trois pastilles (« Aucune rentabilité démontrée »). Aucun seuil dans l'affichage : la barre est proportionnelle à la valeur.
+- Tests : `tests/test_alpha_affichage.py`.
+
 ## Points ouverts
 - Les enjeux (légende de zones Matchendirect) ne sont pas collectés.
 - Aucune norme de niveau mesurée pour les multigoals (marge d'un but par borne par défaut).
