@@ -105,6 +105,15 @@ function v2rHistorique(l) {
   const corps = bloc(l.domicile || "Domicile", f.domicile) + bloc(l.exterieur || "Extérieur", f.exterieur);
   return corps ? `<div class="ax-hist-bloc"><div class="v2r-hist-titre">Derniers matchs (du plus récent au plus ancien)</div>${corps}</div>` : "";
 }
+// Explication courte : le critère décisif et les données historiques de la cellule.
+function v2rExplication(l) {
+  const roi = Number(l && l.roi_cellule);
+  const rendement = Number.isFinite(roi) ? (roi >= 0 ? "+" : "−") + Math.abs(roi * 100).toFixed(1).replace(".", ",") + " %" : "indisponible";
+  const n = Number(l && l.cellule_n);
+  const echantillon = Number.isFinite(n) ? `${n} paris` : "effectif inconnu";
+  const tr = Array.isArray(l && l.cellule_tranche_cote) ? `${v2rCote(l.cellule_tranche_cote[0])}–${v2rCote(l.cellule_tranche_cote[1])}` : "inconnue";
+  return `<div class="v2r-explication"><strong>Pourquoi ce choix ?</strong><p>Sur ${v2rEchappe(echantillon)} comparables, cette option a généré historiquement <b>${v2rEchappe(rendement)} de gain net pour 100 unités misées</b> (cotes ${v2rEchappe(tr)}). La matrice la privilégie car ses résultats passés sont les meilleurs parmi les options admissibles. Cela ne garantit pas le prochain résultat.</p></div>`;
+}
 function v2rCarte(l, mode) {
   const score = Array.isArray(l.score) ? `${l.score[0]} - ${l.score[1]}` : "";
   const badge = v2rBadge(l);
@@ -124,6 +133,7 @@ function v2rCarte(l, mode) {
     `<div class="v2r-corps">` +
       (score ? `<div class="v2r-score">Score final <strong>${v2rEchappe(score)}</strong></div>` : "") +
       `<div class="v2r-ligne"><span>${v2rEchappe(v2rMarche(l))}</span><span class="v2r-cote">Cote ${v2rCote(l.cote)}</span></div>` +
+      v2rExplication(l) +
       `<div class="v2r-ligne v2r-info"><span>ROI de la cellule sur l'échantillon : ${v2rPct(l.roi_cellule, true)} · buts attendus ${v2rEchappe((l.buts_attendus || []).join(" / "))}</span>${badge}</div>` +
       (mode === "regle" && profit ? `<div class="v2r-info">Mise 1 u${profit}</div>` : "") +
       v2rBlocModere(l, mode) +
