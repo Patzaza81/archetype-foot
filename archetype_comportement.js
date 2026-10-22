@@ -92,7 +92,7 @@ function ligneMarche(cle, s, m) {
     ? `<span>Arrivé dans <b>${Number(s.scenarios)}</b> des <b>${Number(s.sur)}</b> comparaisons de matchs</span>`
     : `<span>Sur les buts marqués : <b>${formatPct(s.offensive)}</b></span><span>Sur les buts encaissés : <b>${formatPct(s.defensive)}</b></span>`;
   const alerte = s.alerte ? `<p class="ax-mk-alerte"><span aria-hidden="true">⚠</span> ${echappeHtml(s.alerte)}</p>` : "";
-  return `<li class="ax-mk"><span class="ax-mk-nom">${echappeHtml(libelleClair(s.marche, m.domicile, m.exterieur))}</span>${cote}` +
+  return `<li class="ax-mk"><span class="ax-mk-nom">${afMarcheHtml(s.marche, libelleClair(s.marche, m.domicile, m.exterieur))}</span>${cote}` +
     `<div class="ax-mk-valeur">${barre}<b>${formatPct(s.valeur)}</b><small>valeur</small></div>` +
     `<p class="ax-mk-branches">${branches}</p>${alerte}</li>`;
 }
@@ -120,7 +120,7 @@ function construitResume(m) {
     rang.className = `ax-resume-rang ax-rang-${Math.min(i + 1, 3)}`;
     rang.innerHTML = `<div class="ax-resume-corps"><div class="ax-resume-tete">` +
       `<span class="ax-resume-etiquette">${nom}${plus}</span><span class="ax-resume-cote">Cote${cote}</span></div>` +
-      `<p class="ax-resume-marche">${echappeHtml(libelleClair(s.marche, m.domicile, m.exterieur))}</p>` +
+      `<p class="ax-resume-marche">${afMarcheHtml(s.marche, libelleClair(s.marche, m.domicile, m.exterieur))}</p>` +
       `<p class="ax-resume-texte">Valeur <b>${formatPct(s.valeur)}</b> · ${detailBranches(cle, s)}</p>${alerte}</div>`;
     racine.appendChild(rang);
   });

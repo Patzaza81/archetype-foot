@@ -38,6 +38,31 @@
     var ligne = parseFloat(m[1]), dom = m[2] === "Domicile", propre = dom ? ligne : -ligne;
     return "Handicap " + (dom ? "domicile " : "extérieur ") + (propre > 0 ? "+" : "") + String(propre).replace(".", ",");
   }
+  // Explication simple d'un marché (22/10/2026), sans nom d'équipe : « Plus de 5.5 buts » -> « Au moins 6 buts dans le match ».
+  // S'appuie sur traduction_marches.js ; marché inconnu : aucune explication (le nom d'origine reste seul affiché).
+  function explication(lib) {
+    var m = String(lib || "").trim(), r, d = "Domicile", e = "Extérieur";
+    if (typeof phraseTotalButs !== "function") return "";
+    if ((r = /^1X2 - (1|X|2)$/.exec(m))) return r[1] === "1" ? "Victoire du domicile" : r[1] === "X" ? "Match nul" : "Victoire de l'extérieur";
+    if ((r = /^Double chance - (1X|X2|12)$/.exec(m))) return r[1] === "1X" ? "Le domicile ne perd pas (victoire ou nul)" : r[1] === "X2" ? "L'extérieur ne perd pas (victoire ou nul)" : "Pas de match nul";
+    if (m === "BTTS - oui") return "Les deux équipes marquent";
+    if (m === "BTTS - non") return "Au moins une équipe ne marque pas";
+    if (m === "Total buts - pair") return "Nombre total de buts pair (0, 2, 4…)";
+    if (m === "Total buts - impair") return "Nombre total de buts impair (1, 3, 5…)";
+    if ((r = /^Cage inviolée - (Domicile|Extérieur)$/.exec(m))) return (r[1] === "Domicile" ? "Le domicile" : "L'extérieur") + " n'encaisse aucun but";
+    if ((r = /^Encaisse au moins (\d+) but - (Domicile|Extérieur)$/.exec(m))) return (r[2] === "Domicile" ? "Le domicile" : "L'extérieur") + " encaisse au moins " + r[1] + " but";
+    if ((r = /^Handicap (-?\d+(?:\.\d+)?) - (Domicile|Extérieur)$/.exec(m))) {
+      var x = r[2] === "Domicile" ? parseFloat(r[1]) : -parseFloat(r[1]);
+      return phraseHandicap(x, r[2] === "Domicile" ? "Le domicile" : "L'extérieur") + " (handicap " + (x > 0 ? "+" : "") + String(x).replace(".", ",") + ")";
+    }
+    if ((r = /^(Plus|Moins) de (\d+(?:\.\d+)?) buts - (Domicile|Extérieur)$/.exec(m))) return phraseButsEquipe(r[3] === "Domicile" ? "Le domicile" : "L'extérieur", r[1] === "Plus" ? "over" : "under", r[2]);
+    if ((r = /^(Plus|Moins) de (\d+(?:\.\d+)?) buts?$/.exec(m))) return phraseTotalButs(r[1] === "Plus" ? "over" : "under", r[2]);
+    return "";
+  }
+  function marcheHtml(brut) {
+    var nom = lisible(brut), ex = explication(brut);
+    return typeof afMarcheHtml === "function" ? afMarcheHtml(nom, ex) : esc(nom);
+  }
   function dateCourte(iso) {
     var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ""));
     return m ? m[3] + "/" + m[2] : esc(iso);
@@ -48,7 +73,7 @@
     var html = '<div class="jr-table-wrap"><table class="jr-table"><thead><tr><th>' + esc(titre) +
       "</th><th>Gagnés</th><th>Cote</th><th>ROI</th><th>Niveau</th></tr></thead><tbody>";
     lignes.forEach(function (s) {
-      html += '<tr data-fiable="' + (fiable(s) ? 1 : 0) + '"><td>' + esc(nom(s.segment)) + "</td><td>" + gagnesTxt(s) + "<br><small>" + pct(s.reussite) + "</small>" +
+      html += '<tr data-fiable="' + (fiable(s) ? 1 : 0) + '"><td>' + marcheHtml(nom(s.segment)) + "</td><td>" + gagnesTxt(s) + "<br><small>" + pct(s.reussite) + "</small>" +
         "</td><td>" + cote(s.cote_moyenne) + '</td><td class="pos">' + pct(s.roi, true) + "</td><td>" + fiabiliteCourte(s.statut) + "</td></tr>";
     });
     return html + "</tbody></table></div>";
@@ -88,13 +113,13 @@
     if (generaux.length) {
       html += '<details class="jr-fiche" data-fiables="' + generaux.filter(fiable).length + '" open><summary><span class="jr-fiche-nom">Tous championnats confondus</span>' +
         '<span class="jr-fiche-info">' + generaux.length + " marché(s) rentable(s)</span></summary>" +
-        '<div class="jr-lignes" data-tous="1">' + tableau(generaux, "Marché", lisible) + "</div></details>";
+        '<div class="jr-lignes" data-tous="1">' + tableau(generaux, "Marché", function (seg) { return seg; }) + "</div></details>";
     }
     ligues.forEach(function (lg) {
       html += '<details class="jr-fiche" data-fiables="' + lg.fiables + '"><summary><span class="jr-fiche-nom">' + esc(lg.nom) + "</span>" +
         '<span class="jr-fiche-info">' + lg.marches.length + " marché(s) rentable(s)" + (lg.fiables ? " · " + lg.fiables + " prouvé(s) ou à surveiller" : "") +
         " · meilleur : " + esc(lisible(String(lg.meilleur.segment).split(" | ")[1])) + " " + pct(lg.meilleur.roi, true) + "</span></summary>" +
-        tableau(lg.marches, "Marché", function (seg) { return lisible(String(seg).split(" | ")[1]); }) + "</details>";
+        tableau(lg.marches, "Marché", function (seg) { return String(seg).split(" | ")[1]; }) + "</details>";
     });
     var zone = document.getElementById("rentables");
     zone.innerHTML = html || '<p class="jr-vide">Aucun marché rentable pour l\'instant.</p>';

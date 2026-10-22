@@ -153,7 +153,7 @@ function construitResume(selection, equipes) {
       `<div class="ax-resume-corps">` +
       `<div class="ax-resume-tete"><span class="ax-resume-etiquette">${echappeHtml(info.titre)}</span>` +
       `<span class="ax-resume-cote">Cote <strong>${formatCote(c.cote)}</strong></span></div>` +
-      `<h3 class="ax-resume-marche">${echappeHtml(traduitMarche(c.marche, equipes))}</h3>` +
+      `<h3 class="ax-resume-marche">${marcheAvecExplication(nomOrigineMarche(c.marche, equipes), traduitMarche(c.marche, equipes))}</h3>` +
       (texte ? `<p class="ax-resume-texte">${echappeHtml(texte)}</p>` : "") + construitIndice(c, true) + `</div>` +
       `${construitJauge(c.probabilite, "ax-jauge-mini")}</div>`;
   }).join("");
@@ -172,7 +172,7 @@ function construitPanneau(info, c, equipes, idPanneau, idOnglet) {
   el.id = idPanneau; el.setAttribute("role", "tabpanel"); el.setAttribute("aria-labelledby", idOnglet);
   el.dataset.cle = info.cle;
   el.innerHTML =
-    `<h2 class="ax-marche">${echappeHtml(traduitMarche(c.marche, equipes))}</h2>` +
+    `<h2 class="ax-marche">${marcheAvecExplication(nomOrigineMarche(c.marche, equipes), traduitMarche(c.marche, equipes))}</h2>` +
     `<div class="ax-ligne-cote">` +
       `<p class="ax-texte-resume">${echappeHtml(resume)}</p>` +
       `<div class="ax-badge-cote"><span>Cote</span><strong>${formatCote(c.cote)}</strong></div>` +

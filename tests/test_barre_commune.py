@@ -49,10 +49,20 @@ PRESENTATION_AUTORISEE = {
 }
 
 
+# Présentation commune « nom du marché + phrase simple » (22/10/2026) : chargée AVANT les scripts métier
+# (elle ne fait que fabriquer du HTML ; aucun script métier ne change). Journal : traduction_marches.js sert aux phrases.
+PRESENTATION_AVANT = {
+    "archetype.html": ["af-marche-affichage.js"],
+    "pronostics_v3.html": ["af-marche-affichage.js"],
+    "journal.html": ["af-marche-affichage.js", "traduction_marches.js"],
+    "panier.html": ["af-marche-affichage.js"],
+}
+
+
 @pytest.mark.parametrize("page,attendus", SCRIPTS_ATTENDUS.items())
 def test_scripts_de_la_page_inchanges(page, attendus):
     scripts = [re.sub(r"\?.*$", "", x) for x in re.findall(r'<script src="([^"]+)"', lit(page))]
-    assert scripts == attendus + PRESENTATION_AUTORISEE.get(page, [])
+    assert scripts == PRESENTATION_AVANT.get(page, []) + attendus + PRESENTATION_AUTORISEE.get(page, [])
 
 
 def test_accueil_publie_et_ancienne_adresse_redirigee():

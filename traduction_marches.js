@@ -93,6 +93,34 @@ function traduitMarche(marche, equipes) {
   return marche.replace(/_/g, " ");
 }
 
+// ── Nom d'origine du marché (code V2 -> nom court comme sur le moteur V2R), affiché en gras au-dessus de l'explication ──
+// 22/10/2026 : présentation commune « nom + phrase simple dessous » ; ne change aucun calcul, traduitMarche() reste inchangée.
+function nomOrigineMarche(marche, equipes) {
+  const dom = (equipes && equipes.domicile) || "Domicile", ext = (equipes && equipes.exterieur) || "Extérieur";
+  const m = String(marche || ""), pt = (x) => String(x).replace(",", ".");
+  let r;
+  if (m === "1x2_domicile") return `Victoire ${dom}`;
+  if (m === "1x2_nul") return "Match nul";
+  if (m === "1x2_exterieur") return `Victoire ${ext}`;
+  if ((r = m.match(/^double_chance_(1X|X2|12)$/))) return `Double chance ${r[1]}`;
+  if (m === "btts_oui") return "BTTS - oui";
+  if (m === "btts_non") return "BTTS - non";
+  if (m === "over_2_5") return "Plus de 2.5 buts";
+  if ((r = m.match(/^over_under_total_(-?\d+(?:\.\d+)?)_(over|under)$/))) return `${r[2] === "over" ? "Plus" : "Moins"} de ${pt(r[1])} buts`;
+  if (m === "cage_inviolee_domicile") return "Cage inviolée - Domicile";
+  if (m === "cage_inviolee_exterieur") return "Cage inviolée - Extérieur";
+  if (m === "encaisse_domicile") return "Encaisse au moins 1 but - Domicile";
+  if (m === "encaisse_exterieur") return "Encaisse au moins 1 but - Extérieur";
+  if ((r = m.match(/^buts_equipe_(domicile|exterieur)_(-?\d+(?:\.\d+)?)_(over|under)$/))) return `${r[1] === "domicile" ? dom : ext} ${r[3] === "over" ? "marque +" : "marque moins de "}${pt(r[2])} buts`;
+  if ((r = m.match(/^handicap_(domicile|exterieur)_(-?\d+(?:\.\d+)?)$/))) return `Handicap ${(parseFloat(r[2]) > 0 ? "+" : "") + pt(r[2])} - ${r[1] === "domicile" ? "Domicile" : "Extérieur"}`;
+  return m.replace(/_/g, " ");
+}
+// HTML d'un pronostic : nom d'origine en gras + explication simple dessous (identiques : une seule ligne). Échappé.
+function marcheAvecExplication(titre, explication) {
+  if (typeof afMarcheHtml === "function") return afMarcheHtml(titre, explication);
+  return String(explication || titre || "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
 // AJOUT 17/09/2026 (Patrick, jargon technique pas toujours compris) --
 // texte simplifié, mais garde l'esprit du commentaire d'origine :
 // "niveau" reste un palier du filtre, jamais une probabilité de gain --
@@ -158,5 +186,5 @@ function construitPhraseConfirmation(marche, confirmation, equipes) {
 }
 
 if (typeof module !== "undefined") {
-  module.exports = { clarifieLibelle, phraseTotalButs, phraseButsEquipe, phraseHandicap, traduitMarche, traduitNiveau, traduitPalierH2H, traduitRobustesse, construitPhraseConfirmation };
+  module.exports = { clarifieLibelle, phraseTotalButs, phraseButsEquipe, phraseHandicap, traduitMarche, traduitNiveau, traduitPalierH2H, traduitRobustesse, construitPhraseConfirmation, nomOrigineMarche, marcheAvecExplication };
 }

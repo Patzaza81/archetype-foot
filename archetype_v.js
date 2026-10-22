@@ -114,13 +114,13 @@ function mvDetailsTechniques(l) {
   return `<details class="mv-tech"><summary>Détails techniques</summary>${lignes.map((x) => `<div class="mv-info">${x}</div>`).join("")}</details>`;
 }
 function mvLignePari(p, l, principal) {
-  const lib = mvEchappe(mvMarche(p.marche, l.domicile, l.exterieur));
+  const lib = marcheAvecExplication(p.marche, mvMarche(p.marche, l.domicile, l.exterieur));
   return `<div class="mv-ligne ${principal ? "mv-principal" : ""}"><span>${lib}</span>` +
     `<span><span class="mv-cote">Cote ${mvCote(p.cote)}</span> ${mvBadge(p)}</span></div>` +
     (p.resultat ? `<div class="mv-info">Pour 1 de mise : ${mvUnites(p.profit).replace(" u", "")}</div>` : "");
 }
 function mvLigneAutre(p, l) {
-  const lib = mvEchappe(mvMarche(p.marche, l.domicile, l.exterieur));
+  const lib = marcheAvecExplication(p.marche, mvMarche(p.marche, l.domicile, l.exterieur));
   const r = p.p_honnete == null ? "non évalué" : `réussite mesurée ${mvPct0(p.p_honnete)}`;
   return `<div class="mv-ligne"><span>${lib}<small class="mv-sous-titre">${mvEchappe(r)}</small></span>` +
     `<span><span class="mv-cote">Cote ${mvCote(p.cote)}</span> ${mvVerdict(p.niveau)} ${mvBadge(p)}</span></div>`;
