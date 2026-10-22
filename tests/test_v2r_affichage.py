@@ -58,8 +58,9 @@ def test_page_utilise_la_meme_carte_que_les_autres_moteurs():
     assert "Derniers scores indisponibles" in js
     assert "function v2rExplication(l)" in js
     assert "cellule_n" in js and "cellule_tranche_cote" in js
-    assert "meilleur ROI historique pour ce match" in js
-    assert "Les résultats passés ne garantissent pas le prochain" in js                                                      # anciens paris sans forme : message, pas d'erreur
+    assert "gain net pour 100 unités misées" in js
+    assert "meilleurs parmi les options admissibles" in js
+    assert "Cela ne garantit pas le prochain résultat" in js                                                      # anciens paris sans forme : message, pas d'erreur
     assert corps.index("v2rBlocModere(l, mode)") < corps.index("ax-details")                         # pari modéré toujours sous le pari d'origine
 
 
