@@ -24,6 +24,18 @@ function marketLabel(m){
  if(map[m])return map[m];
  return String(m||"Pari").replace(/_/g," ");
 }
+/* Présentation commune (22/10/2026) : nom du marché en gras + phrase simple dessous, comme sur le moteur V2R.
+   Présentation seulement : marketLabel() et les données ne changent pas. Marché sans explication connue : nom seul. */
+function marcheTicketHtml(x){
+ var m=String(x.marche||""),eq={domicile:x.domicile,exterieur:x.exterieur},nom=marketLabel(m),ex="";
+ try{
+  var code=/^[a-z0-9_.\-]+$/.test(m);
+  if(code&&typeof nomOrigineMarche==="function"&&nom===m.replace(/_/g," "))nom=nomOrigineMarche(m,eq);
+  if(code&&typeof traduitMarche==="function"){var t=traduitMarche(m,eq);if(t!==m.replace(/_/g," "))ex=t}
+  else if(!code&&typeof clarifieLibelle==="function")ex=clarifieLibelle(m,eq);
+ }catch(e){ex=""}
+ return typeof afMarcheHtml==="function"?afMarcheHtml(nom,ex):esc(nom);
+}
 function sourceLabel(s){
  if(s==="moteur_v2_6_10")return "Moteur V2.6.10";
  if(s==="moteur_v3")return "Moteur V3";
@@ -117,7 +129,7 @@ function badge(text){return '<span class="tag">'+esc(text)+'</span>'}
 
 function legsHtml(rows){
  return (rows||[]).map(function(x){
-  var details=[marketLabel(x.marche)];
+  var details=[];
   if(x.journal_frequency!=null){
    details.push("Journal "+pct(x.journal_frequency)+" ("+(x.journal_wins||0)+"/"+(x.journal_observations||0)+")");
    if(x.probabilite_source==="JOURNAL_LISSE"&&x.probabilite_estimee!=null)details.push("probabilité estimée "+pct(x.probabilite_estimee));
@@ -135,7 +147,7 @@ function legsHtml(rows){
   if(x.marge_modele!=null)details.push("avantage modèle "+pct(x.marge_modele));
   return '<div class="paris">'+
    '<div class="paris-top"><strong>'+esc(x.domicile)+" — "+esc(x.exterieur)+'</strong><span class="odds">'+cote(x.cote)+'</span></div>'+
-   '<div class="small">'+esc(details.join(" · "))+'</div>'+
+   '<div class="small">'+marcheTicketHtml(x)+(details.length?'<span style="display:block;margin-top:2px">'+esc(details.join(" · "))+'</span>':"")+'</div>'+
    '<div>'+badge(sourceLabel(x.source))+(x.rang?badge(x.rang):"")+'</div>'+
    (x.justification?'<div class="small">'+esc(x.justification)+'</div>':"")+
   '</div>';
@@ -320,7 +332,7 @@ function renderMatchs(){
   var proba=x.probabilite_estimee!=null?pct(x.probabilite_estimee):"—";
   html+='<label class="match-row"><input type="checkbox" data-k="'+esc(k)+'"'+(coche?" checked":"")+'>'+
    '<div class="corps"><div class="paris-top"><strong>'+esc(x.domicile)+" — "+esc(x.exterieur)+'</strong><span class="odds">'+cote(x.cote)+'</span></div>'+
-   '<div class="small">'+esc((x.heure?x.heure+" · ":"")+marketLabel(x.marche))+" · chance estimée "+proba+'</div>'+
+   '<div class="small">'+marcheTicketHtml(x)+'<span style="display:block;margin-top:2px">'+esc((x.heure?x.heure+" · ":"")+"chance estimée "+proba)+'</span></div>'+
    '<div>'+badge(sourceLabel(x.source))+(x.rang?badge(x.rang):"")+'</div></div></label>';
  });
  root.innerHTML=html;

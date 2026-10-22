@@ -22,6 +22,10 @@
 function nomMarcheV3(c, equipes) {
   return c.libelle ? clarifieLibelle(c.libelle, equipes) : traduitMarche(c.marche, equipes);
 }
+// Présentation commune (22/10/2026) : nom d'origine en gras + phrase simple dessous, comme sur le moteur V2R.
+function marcheV3Html(c, equipes) {
+  return marcheAvecExplication(c.libelle ? c.libelle : nomOrigineMarche(c.marche, equipes), nomMarcheV3(c, equipes));
+}
 
 // V3 : pas de rôles Favori / Value Bet / Coup de Poker -- un onglet par sélection réellement retenue par le moteur.
 // Aperçu non calibré (calibration pas encore prête) : onglet « Aperçu n » au lieu de « Sélection n ».
@@ -181,7 +185,7 @@ function construitResume(selection, equipes) {
       `<div class="ax-resume-corps">` +
       `<div class="ax-resume-tete"><span class="ax-resume-etiquette">${echappeHtml(titreRang(info, c))}</span>` +
       `<span class="ax-resume-cote">Cote <strong>${formatCote(c.cote)}</strong></span></div>` +
-      `<h3 class="ax-resume-marche">${echappeHtml(nomMarcheV3(c, equipes))}</h3>` +
+      `<h3 class="ax-resume-marche">${marcheV3Html(c, equipes)}</h3>` +
       `<div class="ax-resume-etoiles">${construitEtoiles(traduitNiveau(c.niveau).etoiles)}</div>` +
       (texte ? `<p class="ax-resume-texte">${echappeHtml(texte)}</p>` : "") + construitIndice(c, true) + `</div>` +
       `${construitJauge(c.probabilite, "ax-jauge-mini")}</div>`;
@@ -201,7 +205,7 @@ function construitPanneau(info, c, equipes, idPanneau, idOnglet) {
   el.id = idPanneau; el.setAttribute("role", "tabpanel"); el.setAttribute("aria-labelledby", idOnglet);
   el.dataset.cle = info.cle;
   el.innerHTML =
-    `<h2 class="ax-marche">${echappeHtml(nomMarcheV3(c, equipes))}</h2>` +
+    `<h2 class="ax-marche">${marcheV3Html(c, equipes)}</h2>` +
     `<div class="ax-ligne-cote">` +
       `<p class="ax-texte-resume">${echappeHtml(resume)}</p>` +
       `<div class="ax-badge-cote"><span>Cote</span><strong>${formatCote(c.cote)}</strong></div>` +
