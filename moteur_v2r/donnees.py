@@ -19,6 +19,12 @@ def charge(racine=RACINE, a_venir=False):
         for m in it:
             A[m["match_id"]] = m
     out = []
+    def rang(equipe):
+        for cle in ("classement", "rang", "position", "league_position"):
+            v = (equipe or {}).get(cle)
+            if isinstance(v, (int, str)) and str(v).strip():
+                return str(v).strip()
+        return None
     for m in A.values():
         sc = m.get("score") or {}
         joue = sc.get("buts_dom") is not None
@@ -33,6 +39,7 @@ def charge(racine=RACINE, a_venir=False):
         out.append(dict(
             id=m["match_id"], date=m["date"], ligue=m["competition"], h=sc.get("buts_dom"), a=sc.get("buts_ext"), cotes=c,
             dom=m.get("domicile"), ext=m.get("exterieur"), kickoff=m.get("coup_d_envoi_utc"),
+            rang_dom=rang(m.get("equipe_dom")), rang_ext=rang(m.get("equipe_ext")),
             hd=[x for x in m["equipe_dom"]["matchs"] if x["date"] < m["date"]],
             he=[x for x in m["equipe_ext"]["matchs"] if x["date"] < m["date"]]))
     out.sort(key=lambda m: (m["date"], m["id"]))
