@@ -41,7 +41,7 @@ function clarifieLibelle(texte, equipes) {
   // Handicap 3 choix : privilégier la structure du libellé source plutôt que sa phrase descriptive potentiellement contradictoire.
   if ((r = t.match(/^Handicap 3 choix (.+?) [−+]?([\d,]+) \\((1|2|3)\\)\\s*:/))) {
     const equipeHandicap = r[1].trim();
-    const ligne = Number(r[2].replace(",", "."));
+    const ligne = Number(r[2].replace("−", "-").replace(",", "."));
     const choix = r[3];
     if (equipeHandicap === d && choix === "1" && ligne > 0) return d + " ne perd pas par " + _butsN(ligne) + " ou plus";
     if (equipeHandicap === d && choix === "1" && ligne < 0) return d + " gagne par " + _butsN(Math.abs(ligne) + 1) + " d’écart ou plus";
