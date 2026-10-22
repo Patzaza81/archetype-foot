@@ -117,6 +117,13 @@ jobs:
         run: python evaluation_scores.py
         continue-on-error: true
 
+      # AJOUT 22/10/2026 : onglet « Meilleures sélections » (V2 et V3). Recalibrage hebdomadaire AUTOMATIQUE à partir des paris
+      # gelés et de leurs résultats (voir meilleures_selections/regles.py). Après les scores, avant la publication. Ne bloque jamais.
+      - name: Meilleures sélections V2 et V3 (recalibrage hebdomadaire automatique)
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+        run: python -m meilleures_selections.suivi pipeline
+        continue-on-error: true
+
       - name: Construire l intelligence de sélection multi-source
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         run: python selection_adaptative.py
