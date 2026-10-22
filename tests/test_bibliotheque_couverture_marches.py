@@ -44,8 +44,8 @@ def test_x2_et_1x2_exterieur_ne_plantent_plus():
     b = ext((1, 0), (1, 0), (1, 0))
     # MAJ 24/09/2026 : depuis le 23/09 (89b7e9c), X2 et 1x2_exterieur ont des preuves distinctes. X2 peut être justifié
     # par la fragilité de l'équipe À DOMICILE (Alpha) ; la victoire sèche extérieure par le taux de victoire de Bravo.
-    attendu = {"double_chance_X2": "Alpha présente 100.0% de défaites récentes à domicile",
-               "1x2_exterieur": "Bravo gagne 100.0%"}
+    attendu = {"double_chance_X2": "Alpha présente 100 % de défaites récentes à domicile",
+               "1x2_exterieur": "Bravo gagne 100 %"}
     for marche in ("double_chance_X2", "1x2_exterieur"):
         r = just(marche, a, b, h2h((0, 1), (0, 1), (0, 1), (1, 1)))
         assert r["resume"] is not None
@@ -66,17 +66,17 @@ def test_h2h_ne_justifie_jamais_x2():
 
 # ────────────────────────────── btts_non ──────────────────────────────
 def test_btts_non_matchs_fermes_produit_un_texte():
-    assert "Match fermé" in resume("btts_non", dom((2, 0), (1, 0), (3, 0)), ext((0, 1), (0, 2), (0, 1)))
+    assert "Seulement" in resume("btts_non", dom((2, 0), (1, 0), (3, 0)), ext((0, 1), (0, 2), (0, 1)))
 
 
 def test_btts_non_attaque_visiteuse_muette():
     r = resume("btts_non", dom((1, 1), (2, 1), (1, 2)), ext((0, 2), (0, 1), (0, 3)))
-    assert r is not None and "Bravo" in r and "n'a marqué que dans 0.0%" in r
+    assert r is not None and "Bravo" in r and "a marqué dans seulement 0 %" in r
 
 
 def test_btts_non_defense_solide_a_domicile():
     r = resume("btts_non", dom((2, 0), (3, 0), (1, 0)), ext((1, 1), (1, 2), (2, 1)))
-    assert r is not None and "Alpha a gardé sa cage inviolée lors de 100.0%" in r
+    assert r is not None and "Alpha n'a encaissé aucun but dans 100 %" in r
 
 
 def test_btts_non_refuse_quand_tout_le_monde_marque():
@@ -94,12 +94,12 @@ def test_btts_non_refuse_juste_au_dessus_du_seuil():
 
 # ─────────────────────────── double_chance_12 ───────────────────────────
 def test_dc12_peu_de_nuls_produit_un_texte():
-    assert "Peu de nuls" in resume("double_chance_12", dom((2, 0), (0, 1), (3, 1)), ext((0, 2), (1, 0), (2, 1)))
+    assert "Peu de matchs nuls" in resume("double_chance_12", dom((2, 0), (0, 1), (3, 1)), ext((0, 2), (1, 0), (2, 1)))
 
 
 def test_dc12_un_nul_sur_six_est_accepte():
     r = resume("double_chance_12", dom((1, 1), (2, 0), (0, 1)), ext((0, 2), (1, 0), (2, 1)))
-    assert r is not None and "16.7%" in r
+    assert r is not None and "17 %" in r
 
 
 def test_dc12_h2h_ne_justifie_pas_le_marche():
@@ -123,7 +123,7 @@ def test_dc12_refuse_un_h2h_de_4_duels():
 # ───────────────────────────── 1x2_nul ─────────────────────────────
 def test_nul_taux_de_nuls_eleve():
     r = resume("1x2_nul", dom((1, 1), (0, 0), (2, 0)), ext((1, 1), (0, 2), (2, 2)))
-    assert r is not None and r.startswith("Nuls fréquents : 66.7%")
+    assert r is not None and r.startswith("Beaucoup de matchs nuls : 67 %")
 
 
 def test_nul_h2h_ne_justifie_pas_le_marche():
@@ -151,22 +151,22 @@ def test_nul_refuse_h2h_trop_court_ou_peu_serre():
 # ─────────────────────── buts d'une équipe : over / under ───────────────────────
 def test_equipe_domicile_over_attaque_en_forme():
     r = resume("buts_equipe_domicile_1.5_over", dom((2, 0), (3, 1), (2, 2)), ext((1, 0), (0, 1), (1, 1)))
-    assert r is not None and r.startswith("Attaque en forme : Alpha a inscrit plus de 1,5 buts dans 100.0%") and "à domicile" in r
+    assert r is not None and r.startswith("Alpha a marqué au moins 2 buts dans 100 %") and "à domicile" in r
 
 
 def test_equipe_domicile_over_defense_adverse_fragile():
     r = resume("buts_equipe_domicile_1.5_over", dom((1, 0), (0, 1), (1, 1)), ext((0, 2), (1, 3), (0, 2)))
-    assert r is not None and r.startswith("Défense adverse fragile : Bravo a concédé plus de 1,5 buts dans 100.0%") and "en déplacement" in r
+    assert r is not None and r.startswith("Bravo a encaissé au moins 2 buts dans 100 %") and "en déplacement" in r
 
 
 def test_equipe_exterieur_over_utilise_bien_la_visiteuse():
     r = resume("buts_equipe_exterieur_1.5_over", dom((1, 0), (0, 1), (1, 1)), ext((2, 0), (3, 1), (2, 2)))
-    assert r is not None and r.startswith("Attaque en forme : Bravo a inscrit plus de 1,5 buts") and "en déplacement" in r
+    assert r is not None and r.startswith("Bravo a marqué au moins 2 buts") and "en déplacement" in r
 
 
 def test_equipe_exterieur_over_defense_de_l_equipe_a_domicile():
     r = resume("buts_equipe_exterieur_0.5_over", dom((0, 1), (1, 2), (0, 1)), ext((0, 1), (0, 1), (0, 1)))
-    assert r is not None and "Défense adverse fragile : Alpha a concédé plus de 0,5 buts" in r and "à domicile" in r
+    assert r is not None and "Alpha a encaissé au moins 1 but" in r and "à domicile" in r
 
 
 def test_equipe_over_refuse_si_les_deux_taux_sont_bas():
@@ -184,17 +184,17 @@ def test_equipe_over_refuse_sous_3_matchs_par_lieu():
 
 def test_equipe_domicile_under_attaque_limitee():
     r = resume("buts_equipe_domicile_1.5_under", dom((1, 0), (0, 1), (1, 1)), ext((1, 0), (2, 1), (3, 0)))
-    assert r is not None and r.startswith("Attaque limitée : Alpha n'a inscrit plus de 1,5 buts que dans 0.0%")
+    assert r is not None and r.startswith("Alpha a marqué 2 buts ou plus dans seulement 0 %")
 
 
 def test_equipe_domicile_under_defense_adverse_solide():
     r = resume("buts_equipe_domicile_1.5_under", dom((3, 0), (2, 1), (4, 0)), ext((0, 1), (1, 0), (0, 0)))
-    assert r is not None and r.startswith("Défense adverse solide : Bravo n'a concédé plus de 1,5 buts que dans 0.0%")
+    assert r is not None and r.startswith("Bravo a encaissé 2 buts ou plus dans seulement 0 %")
 
 
 def test_equipe_exterieur_under_visiteuse_muette():
     r = resume("buts_equipe_exterieur_0.5_under", dom((2, 2), (3, 3), (1, 2)), ext((0, 1), (0, 2), (0, 0)))
-    assert r is not None and "Attaque limitée : Bravo n'a inscrit plus de 0,5 buts que dans 0.0%" in r
+    assert r is not None and "Bravo a marqué 1 but ou plus dans seulement 0 %" in r
 
 
 def test_equipe_under_refuse_quand_les_taux_sont_hauts():
@@ -215,19 +215,19 @@ def test_total_over_2_5_rythme_offensif():
     a, b = dom((2, 1), (3, 0), (1, 2)), ext((2, 2), (1, 3), (3, 1))
     r = resume("over_under_total_2.5_over", a, b)
     # MAJ 24/09/2026 : formulation humanisée le 23/09 ; on verrouille la ligne exacte et le taux, pas la tournure.
-    assert r is not None and "2,5 buts" in r and "100.0%" in r
+    assert r is not None and "3 buts" in r and "100 %" in r
 
 
 def test_total_over_3_5_a_83_pourcent():
     a, b = dom((3, 1), (2, 2), (4, 0)), ext((2, 2), (3, 1), (1, 1))
     r = resume("over_under_total_3.5_over", a, b)
-    assert r is not None and "83.3%" in r
+    assert r is not None and "83 %" in r
 
 
 def test_total_over_0_5_et_ligne_ancienne_over_2_5():
     a, b = dom((1, 0), (2, 0), (1, 1)), ext((0, 1), (1, 1), (2, 0))
     r = resume("over_under_total_0.5_over", a, b)
-    assert r is not None and "0,5 buts" in r and "100.0%" in r
+    assert r is not None and "1 but" in r and "100 %" in r
     assert resume("over_2.5", dom((2, 1), (3, 0), (1, 2)), ext((2, 2), (1, 3), (3, 1))) is not None
 
 
@@ -246,13 +246,13 @@ def test_total_over_refuse_sous_5_matchs_combines():
 def test_total_under_2_5_rythme_ferme():
     a, b = dom((1, 0), (0, 1), (1, 1)), ext((0, 0), (1, 0), (0, 1))
     r = resume("over_under_total_2.5_under", a, b)
-    assert r is not None and r.startswith("Rythme fermé : plus de 2,5 buts dans seulement 0.0%")
+    assert r is not None and r.startswith("Peu de buts : 3 buts ou plus dans seulement 0 %")
 
 
 def test_total_under_3_5_et_4_5():
     a, b = dom((1, 0), (0, 1), (2, 1)), ext((0, 0), (1, 0), (0, 2))
-    assert "plus de 3,5 buts dans seulement 0.0%" in resume("over_under_total_3.5_under", a, b)
-    assert "plus de 4,5 buts dans seulement 0.0%" in resume("over_under_total_4.5_under", a, b)
+    assert "4 buts ou plus dans seulement 0 %" in resume("over_under_total_3.5_under", a, b)
+    assert "5 buts ou plus dans seulement 0 %" in resume("over_under_total_4.5_under", a, b)
 
 
 def test_total_under_h2h_ne_justifie_pas_le_marche():
@@ -310,9 +310,9 @@ def test_total_under_refuse_h2h_ouvert():
 
 def test_ligne_1_5_garde_sa_logique_d_origine():
     a, b = dom((2, 1), (3, 0), (1, 2)), ext((2, 2), (1, 3), (3, 1))
-    assert resume("over_under_total_1.5_over", a, b).startswith("Rythme offensif : plus de 1.5 but inscrit dans 100.0%")
+    assert resume("over_under_total_1.5_over", a, b).startswith("Au moins 2 buts ont été marqués dans 100 %")
     a, b = dom((0, 0), (1, 0), (0, 0)), ext((0, 0), (0, 0), (0, 1))
-    assert resume("over_under_total_1.5_under", a, b).startswith("Rythme fermé : plus de 1.5 but dans seulement 0.0%")
+    assert resume("over_under_total_1.5_under", a, b).startswith("Peu de buts : 2 buts ou plus dans seulement 0 %")
 
 
 
@@ -320,12 +320,12 @@ def test_ligne_1_5_garde_sa_logique_d_origine():
 # ─────────────────────────────── clean sheet ───────────────────────────────
 def test_clean_sheet_domicile_est_justifiable():
     r = resume("cage_inviolee_domicile", dom((1, 0), (2, 0), (0, 0)), ext((0, 1), (0, 2), (0, 1)))
-    assert r is not None and "Alpha" in r and "100.0%" in r
+    assert r is not None and "Alpha" in r and "100 %" in r
 
 
 def test_clean_sheet_exterieur_est_justifiable():
     r = resume("cage_inviolee_exterieur", dom((0, 1), (0, 2), (0, 0)), ext((1, 0), (2, 0), (0, 0)))
-    assert r is not None and "Bravo" in r and "100.0%" in r
+    assert r is not None and "Bravo" in r and "100 %" in r
 
 
 def test_clean_sheet_ne_recycle_pas_une_preuve_de_match_gagne():
@@ -413,7 +413,7 @@ def test_la_preuve_ev_seule_ne_suffit_jamais():
 def test_l_api_publique_expose_les_nouveaux_marches():
     a, b = dom((2, 0), (1, 0), (3, 0)), ext((0, 1), (0, 2), (0, 1))
     r = justification.construit_justification("btts_non", a, b, h2h=[], nom_domicile="Alpha", nom_exterieur="Bravo", odds_scraped=1.6, market_prob_pct=72)
-    assert r["preuve_specifique_disponible"] is True and "Match fermé" in r["resume"]
+    assert r["preuve_specifique_disponible"] is True and "Seulement" in r["resume"]
 
 
 def test_un_meme_texte_ne_sert_pas_deux_marches_opposes():
@@ -442,6 +442,6 @@ def test_stockport_peterborough_over_3_5_suit_le_chemin_reel_du_moteur():
     assert r["bibliotheque"]["avg_total_goals_combined"] == 4.0
     assert r["bibliotheque"]["avg_goals_scored_combined"] == 1.67
     assert r["bibliotheque"]["avg_goals_conceded_combined"] == 2.33
-    assert r["resume"].startswith("Les matchs de référence portent le total moyen à 4.00 buts.")
-    assert "56.7%" in r["resume"]
+    assert r["resume"].startswith("Dans les derniers matchs des deux équipes, il y a en moyenne 4.00 buts par match.")
+    assert "57 %" in r["resume"]
     assert "H2H" not in r["resume"]

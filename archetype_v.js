@@ -42,8 +42,8 @@ function mvMarche(marche, dom0, ext0) {
     const sens = mm >= 1 ? `${eq} gagne${mm > 1 ? ` par ${b(mm)} d'écart ou plus` : ""}` : mm === 0 ? `${eq} ne perd pas` : `${eq} ne perd pas par ${b(1 - mm)} d'écart ou plus`;
     return `${sens} (handicap ${x > 0 ? "+" : x < 0 ? "−" : ""}${virg(String(Math.abs(x)))})`;
   }
-  if ((r = m.match(/^(Plus|Moins) de (.+) buts - (Domicile|Extérieur)$/))) return `${r[3] === "Domicile" ? dom : ext} : ${r[1].toLowerCase()} de ${virg(r[2])} buts`;
-  if ((r = m.match(/^(Plus|Moins) de (.+) buts$/))) return `${r[1]} de ${virg(r[2])} buts`;
+  if ((r = m.match(/^(Plus|Moins) de (.+) buts - (Domicile|Extérieur)$/))) return phraseButsEquipe(r[3] === "Domicile" ? dom : ext, r[1] === "Plus" ? "over" : "under", r[2]);
+  if ((r = m.match(/^(Plus|Moins) de (.+) buts$/))) return phraseTotalButs(r[1] === "Plus" ? "over" : "under", r[2]);
   return virg(m);
 }
 function mvNiveau(n) { return mvVerdict(n); }

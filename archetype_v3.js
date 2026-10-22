@@ -20,7 +20,7 @@
 // AJOUT 28/09/2026 -- handicaps (2 et 3 choix) : libellé complet calculé par le pipeline V3 (ligne BetPawa + sens du
 // pari, avec les noms d'équipes). Les autres marchés passent par traduction_marches.js, inchangé.
 function nomMarcheV3(c, equipes) {
-  return c.libelle || traduitMarche(c.marche, equipes);
+  return c.libelle ? clarifieLibelle(c.libelle, equipes) : traduitMarche(c.marche, equipes);
 }
 
 // V3 : pas de rôles Favori / Value Bet / Coup de Poker -- un onglet par sélection réellement retenue par le moteur.

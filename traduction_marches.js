@@ -1,5 +1,46 @@
 // traduction_marches.js — présentation des marchés, sans calcul ni décision.
 
+// ── Mots simples pour tout le monde (22/10/2026, demande de Patrick) : « Plus de 2,5 buts » = « Au moins 3 buts dans le match » ──
+const _butsN = (n) => `${n} but${n > 1 ? "s" : ""}`;
+const _auMoins = (ligne) => Math.floor(Number(String(ligne).replace(",", "."))) + 1;   // 1,5 -> 2 ; 2,5 -> 3 ; 0,5 -> 1
+function phraseTotalButs(sens, ligne) {                 // total du match
+  const n = _auMoins(ligne);
+  if (sens === "over") return `Au moins ${_butsN(n)} dans le match`;
+  return n - 1 === 0 ? "Aucun but dans le match" : `${_butsN(n - 1)} au maximum dans le match`;
+}
+function phraseButsEquipe(equipe, sens, ligne) {         // buts d'une équipe
+  const n = _auMoins(ligne);
+  if (sens === "over") return `${equipe} marque au moins ${_butsN(n)}`;
+  return n - 1 === 0 ? `${equipe} ne marque pas` : `${equipe} marque ${_butsN(n - 1)} au maximum`;
+}
+function phraseHandicap(ligne, equipe) {                 // buts marqués + ligne > buts encaissés, du point de vue de l'équipe
+  const m = Math.floor(-ligne) + 1;
+  if (m >= 1) return `${equipe} gagne${m > 1 ? ` par ${_butsN(m)} d'écart ou plus` : ""}`;
+  return m === 0 ? `${equipe} ne perd pas` : `${equipe} ne perd pas par ${_butsN(1 - m)} d'écart ou plus`;
+}
+// Libellés « texte » des moteurs V3 / Europe (écrits par le pipeline, jamais modifiés) -> mots simples. Inconnu : renvoyé tel quel.
+function clarifieLibelle(texte, equipes) {
+  const t = String(texte || ""), d = (equipes && equipes.domicile) || "L'équipe à domicile", e = (equipes && equipes.exterieur) || "L'équipe à l'extérieur";
+  let r;
+  const fixes = {
+    "Victoire domicile": `${d} gagne`, "Victoire extérieur": `${e} gagne`, "Match nul": "Match nul (égalité, quel que soit le score)",
+    "Double chance 1X": `${d} ne perd pas (victoire ou nul)`, "Double chance X2": `${e} ne perd pas (victoire ou nul)`,
+    "Double chance 12": "Pas de match nul (l'une des deux équipes gagne)",
+    "Les deux équipes marquent": "Les deux équipes marquent (au moins 1 but chacune)",
+    "Les deux équipes ne marquent pas toutes les deux": "Au moins une équipe ne marque pas",
+    "Domicile n'encaisse pas": `${d} n'encaisse aucun but`, "Extérieur n'encaisse pas": `${e} n'encaisse aucun but`,
+    "Domicile encaisse au moins un but": `${d} encaisse au moins 1 but`, "Extérieur encaisse au moins un but": `${e} encaisse au moins 1 but`,
+    "Total de buts pair": "Nombre total de buts pair (0, 2, 4…)", "Total de buts impair": "Nombre total de buts impair (1, 3, 5…)",
+    "6 buts ou plus": "6 buts ou plus dans le match",
+  };
+  if (fixes[t]) return fixes[t];
+  if ((r = t.match(/^Score exact (\d+)-(\d+)$/))) return `Score exact : ${d} ${r[1]}-${r[2]} ${e}`;
+  if ((r = t.match(/^Exactement (\d+) buts?$/))) return `Exactement ${_butsN(Number(r[1]))} dans le match`;
+  if ((r = t.match(/^(Plus|Moins) de ([\d,.]+) buts?$/))) return phraseTotalButs(r[1] === "Plus" ? "over" : "under", r[2]);
+  if ((r = t.match(/^(Domicile|Extérieur) marque (plus|moins) de ([\d,.]+) buts?$/))) return phraseButsEquipe(r[1] === "Domicile" ? d : e, r[2] === "plus" ? "over" : "under", r[3]);
+  return t;
+}
+
 function traduitMarche(marche, equipes) {
   const dom = equipes.domicile || "Domicile";
   const ext = equipes.exterieur || "Extérieur";
@@ -15,12 +56,12 @@ function traduitMarche(marche, equipes) {
   if (marche === "btts_oui") return "Les deux équipes marquent";
   if (marche === "btts_non") return "Une des deux équipes ne marque pas";
 
-  if (marche === "over_2_5") return "Plus de 2,5 buts";
+  if (marche === "over_2_5") return phraseTotalButs("over", 2.5);
   {
     const m = marche.match(/^over_under_total_(-?\d+(?:\.\d+)?)_(over|under)$/);
     if (m) {
       const ligne = m[1].replace(".", ",");
-      return m[2] === "over" ? `Plus de ${ligne} buts` : `Moins de ${ligne} buts`;
+      return phraseTotalButs(m[2], ligne);
     }
   }
 
@@ -34,11 +75,7 @@ function traduitMarche(marche, equipes) {
     if (m) {
       const equipe = m[1] === "domicile" ? dom : ext;
       const ligne = m[2].replace(".", ",");
-      if (m[2] === "0.5" && m[3] === "under") return `${equipe} garde sa cage inviolée`;
-      if (m[2] === "0.5" && m[3] === "over") return `${equipe} marque au moins un but`;
-      return m[3] === "over"
-        ? `${equipe} marque plus de ${ligne} but(s)`
-        : `${equipe} marque moins de ${ligne} but(s)`;
+      return phraseButsEquipe(equipe, m[3], ligne);
     }
   }
 
@@ -49,9 +86,7 @@ function traduitMarche(marche, equipes) {
       const equipe = m[1] === "domicile" ? dom : ext;
       const ligneNum = parseFloat(m[2]);
       const ligneAffichee = (ligneNum > 0 ? "+" : "") + m[2].replace(".", ",");
-      const L = parseFloat(m[2]), mm = Math.floor(-L) + 1, b = (n) => `${n} but${n > 1 ? "s" : ""}`;
-      const sens = mm >= 1 ? `${equipe} gagne${mm > 1 ? ` par ${b(mm)} d'écart ou plus` : ""}` : mm === 0 ? `${equipe} ne perd pas` : `${equipe} ne perd pas par ${b(1 - mm)} d'écart ou plus`;
-      return `${sens} (handicap ${ligneAffichee})`;
+      return `${phraseHandicap(ligneNum, equipe)} (handicap ${ligneAffichee})`;
     }
   }
 
@@ -123,5 +158,5 @@ function construitPhraseConfirmation(marche, confirmation, equipes) {
 }
 
 if (typeof module !== "undefined") {
-  module.exports = { traduitMarche, traduitNiveau, traduitPalierH2H, traduitRobustesse, construitPhraseConfirmation };
+  module.exports = { clarifieLibelle, phraseTotalButs, phraseButsEquipe, phraseHandicap, traduitMarche, traduitNiveau, traduitPalierH2H, traduitRobustesse, construitPhraseConfirmation };
 }
