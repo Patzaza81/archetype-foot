@@ -1,0 +1,29 @@
+/* Onglet « Meilleures sélections » (V2 et V3). Portée : body.ax-page. Couleurs : variables de archetype.css. */
+body.ax-page .ms-onglets{display:flex;gap:8px;margin:12px 0;padding:4px;background:var(--ax-vide-fond,#eee);border-radius:14px}
+body.ax-page .ms-onglet{flex:1 1 0;min-height:44px;padding:8px 10px;border:0;border-radius:11px;background:transparent;color:var(--ax-texte);font:inherit;font-weight:600;font-size:15px;cursor:pointer}
+body.ax-page .ms-onglet.ms-actif{background:var(--ax-bouton,#D94F91);color:#fff}
+body.ax-page .ms-onglet:focus-visible{outline:3px solid var(--ax-bleu-texte,#B83272);outline-offset:2px}
+body.ax-page .ms-panneau{display:grid;gap:14px;margin-bottom:24px}
+body.ax-page .ms-bloc{padding:14px;border:1px solid var(--ax-ligne);border-radius:14px;background:var(--ax-fond);color:var(--ax-texte)}
+body.ax-page .ms-bloc h2{margin:0 0 6px;font-size:20px}
+body.ax-page .ms-bloc h3{margin:0 0 10px;font-size:17px}
+body.ax-page .ms-bloc p{margin:6px 0;line-height:1.45}
+body.ax-page .ms-meta,body.ax-page .ms-note,body.ax-page .ms-quand{color:var(--ax-doux);font-size:13px}
+body.ax-page .ms-bilan{margin:0;padding-left:18px;display:grid;gap:8px;line-height:1.45}
+body.ax-page .ms-carte{margin:0 0 12px;padding:12px;border:1px solid var(--ax-ligne);border-radius:12px;display:grid;gap:8px}
+body.ax-page .ms-carte.ms-confirme{border-color:var(--ax-vert);border-width:2px}
+body.ax-page .ms-tete{display:flex;gap:10px;align-items:flex-start}
+body.ax-page .ms-rang{flex:none;width:30px;height:30px;border-radius:50%;background:var(--ax-centre,#17403F);color:#fff;display:grid;place-items:center;font-weight:700;font-size:14px}
+body.ax-page .ms-match{flex:1 1 auto;min-width:0;display:grid;gap:2px;overflow-wrap:anywhere}
+body.ax-page .ms-badge{flex:none;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700}
+body.ax-page .ms-b-conf{background:var(--ax-vert);color:#fff}
+body.ax-page .ms-b-obs{background:var(--ax-etoile,#E0A82E);color:#1A2340}
+body.ax-page .ms-marche{margin:0;font-size:18px;font-weight:700;overflow-wrap:anywhere}
+body.ax-page .ms-chiffres{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+body.ax-page .ms-chiffres li{padding:8px;border-radius:10px;background:var(--ax-vide-fond,#eee);display:grid;gap:2px;text-align:center}
+body.ax-page .ms-chiffres span{font-size:12px;color:var(--ax-doux)}
+body.ax-page .ms-chiffres strong{font-size:18px}
+body.ax-page .ms-groupe{margin:0;color:var(--ax-doux);font-size:13px}
+body.ax-page .ms-vide{padding:18px;border:1px dashed var(--ax-ligne);border-radius:14px;text-align:center;color:var(--ax-texte)}
+body.ax-page .ms-regle summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
+body.ax-page .ms-regle ul{padding-left:18px;display:grid;gap:6px}
