@@ -250,3 +250,11 @@ def test_sortie_json_complete(tmp_path):
     for cle in ("calibre_le", "prochain_recalibrage", "groupes", "hors_echantillon", "bilan_historique", "rejeu", "selections", "m_tests", "seuil_confirme", "seuil_observation"):
         assert cle in s
     assert len(s["selections"]) == 1 and s["selections"][0]["rang"] == 1
+
+
+def test_nombre_de_tests_possibles_suit_la_structure():
+    assert regles.nb_tests_possibles() == 2 * (7 * 5 + 3 * 3) == 88
+    assert regles.nb_paliers("nul") == 0 and regles.nb_paliers("cage") == 3 and regles.nb_paliers("handicap") == 5
+    c = regles.calibrer(serie("under_2_5", 0.9))
+    assert c["m_tests"] == 88 and c["seuil_confirme"] == pytest.approx(1 / 88)
+    assert regles.calibrer([])["m_tests"] == 88                      # indépendant de la quantité de données
