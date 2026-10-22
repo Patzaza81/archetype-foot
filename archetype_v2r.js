@@ -113,6 +113,12 @@ function v2rDonneesMatch(l) {
  const b=Array.isArray(l.buts_attendus)?l.buts_attendus:[], ss=Array.isArray(p.scores)?p.scores:[];
  return '<div class="v2r-donnees"><b>Données du match (informatives)</b>'+eq(l.domicile,d.domicile,c.domicile)+eq(l.exterieur,d.exterieur,c.exterieur)+'<div class="v2r-donnees-eq"><b>Buts attendus</b><div>'+v2rEchappe(l.domicile||'Domicile')+': '+fmt(b[0])+' marqué(s) / '+fmt(b[1])+' encaissé(s)</div><div>'+v2rEchappe(l.exterieur||'Extérieur')+': '+fmt(b[1])+' marqué(s) / '+fmt(b[0])+' encaissé(s)</div></div><div class="v2r-donnees-eq"><b>Probabilités du modèle V2R</b><div>Probabilité du marché affiché : '+pct(p.marche)+'</div><div>Scores exacts les plus probables : '+(ss.length?ss.map(s=>v2rEchappe(s.score)+' ('+pct(s.probabilite)+')').join(' · '):'non disponibles')+'</div></div></div>';
 }
+function v2rExplication(l) {
+  const roi=Number(l&&l.roi_cellule), rendement=Number.isFinite(roi)?(roi>=0?'+':'−')+Math.abs(roi*100).toFixed(1).replace('.',',')+' %':'indisponible';
+  const n=Number(l&&l.cellule_n), echantillon=Number.isFinite(n)?n+' paris':'effectif inconnu';
+  const tr=Array.isArray(l&&l.cellule_tranche_cote)?v2rCote(l.cellule_tranche_cote[0])+'–'+v2rCote(l.cellule_tranche_cote[1]):'inconnue';
+  return '<div class="v2r-explication"><strong>Pourquoi ce choix ?</strong><p>Sur '+v2rEchappe(echantillon)+' comparables, cette option a généré historiquement <b>'+v2rEchappe(rendement)+' de gain net pour 100 unités misées</b> (cotes '+v2rEchappe(tr)+'). La matrice la privilégie car ses résultats passés sont les meilleurs parmi les options admissibles. Cela ne garantit pas le prochain résultat.</p></div>';
+}
 function v2rCarte(l, mode) {
   const score = Array.isArray(l.score) ? `${l.score[0]} - ${l.score[1]}` : "";
   const badge = v2rBadge(l);
@@ -132,6 +138,7 @@ function v2rCarte(l, mode) {
     `<div class="v2r-corps">` +
       (score ? `<div class="v2r-score">Score final <strong>${v2rEchappe(score)}</strong></div>` : "") +
       `<div class="v2r-ligne"><span>${v2rEchappe(v2rMarche(l))}</span><span class="v2r-cote">Cote ${v2rCote(l.cote)}</span></div>` +
+      v2rExplication(l) +
       `<div class="v2r-ligne v2r-info"><span>ROI de la cellule sur l'échantillon : ${v2rPct(l.roi_cellule, true)} · buts attendus ${v2rEchappe((l.buts_attendus || []).join(" / "))}</span>${badge}</div>` +
       (mode === "regle" && profit ? `<div class="v2r-info">Mise 1 u${profit}</div>` : "") +
       v2rBlocModere(l, mode) +
