@@ -23,8 +23,15 @@ function v2rDate(iso) {
   const t = d.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" }).replace(/\./g, "").trim();
   return t.charAt(0).toUpperCase() + t.slice(1);
 }
+function v2rNomMarche(l) {
+  const m = String(l.marche || l.marche_v2r || ""), dom = l.domicile || "Domicile", ext = l.exterieur || "Extérieur";
+  let r;
+  if ((r = m.match(/^Plus de (\\d+(?:[.,]\\d+)?) buts - (Domicile|Extérieur|Exterieur)$/i))) return `${r[2].toLowerCase().startsWith("dom") ? dom : ext} marque +${r[1].replace(".", ",")} buts`;
+  if ((r = m.match(/^Moins de (\\d+(?:[.,]\\d+)?) buts - (Domicile|Extérieur|Exterieur)$/i))) return `${r[2].toLowerCase().startsWith("dom") ? dom : ext} marque moins de ${r[1].replace(".", ",")} buts`;
+  return m || "Marché indisponible";
+}
 function v2rMarche(l) {
-  const m = String(l.marche || ""), dom = l.domicile || "Domicile", ext = l.exterieur || "Extérieur";
+  const m = String(l.marche || l.marche_v2r || ""), dom = l.domicile || "Domicile", ext = l.exterieur || "Extérieur";
   const virg = (t) => t.replace(/(\d)\.(\d)/g, "$1,$2");
   let r;
   if ((r = m.match(/^1X2 - (1|X|2)$/))) return r[1] === "1" ? `Victoire ${dom}` : r[1] === "X" ? "Match nul" : `Victoire ${ext}`;
@@ -40,7 +47,7 @@ function v2rMarche(l) {
     const sens = mm >= 1 ? `${eq} gagne${mm > 1 ? ` par ${b(mm)} d'écart ou plus` : ""}` : mm === 0 ? `${eq} ne perd pas` : `${eq} ne perd pas par ${b(1 - mm)} d'écart ou plus`;
     return `${sens} (handicap ${x > 0 ? "+" : x < 0 ? "−" : ""}${virg(String(Math.abs(x)))})`;
   }
-  if ((r = m.match(/^(Plus|Moins) de (.+) buts - (Domicile|Extérieur)$/))) return phraseButsEquipe(r[3] === "Domicile" ? dom : ext, r[1] === "Plus" ? "over" : "under", r[2]);
+  if ((r = m.match(/^(Plus|Moins) de (.+) buts - (Domicile|Extérieur|Exterieur)$/))) { const eq = r[3].toLowerCase().startsWith("dom") ? dom : ext; const n = Math.floor(Number(String(r[2]).replace(",", "."))) + 1; return r[1] === "Plus" ? `${eq} marque au moins ${n === 1 ? "un" : n} but${n > 1 ? "s" : ""} dans ce match` : n === 1 ? `${eq} ne marque pas dans ce match` : `${eq} marque ${n - 1} but${n - 1 > 1 ? "s" : ""} au maximum dans ce match`; }
   if ((r = m.match(/^(Plus|Moins) de (.+) buts$/))) return phraseTotalButs(r[1] === "Plus" ? "over" : "under", r[2]);
   // Libellé français déjà naturel : conserver le titre original et donner une explication distincte.
   if ((r = m.match(/^(.+?) marque (\d+) but(?:s)? au maximum$/i))) return `${r[1]} ne marque pas plus de ${r[2]} but${Number(r[2]) > 1 ? "s" : ""} (moins de ${Number(r[2]) + 0.5} but${Number(r[2]) + 0.5 > 1 ? "s" : ""} au total pour cette équipe)`;
@@ -74,7 +81,7 @@ function v2rLigneModere(k, l, mode) {
   const ind = Number.isFinite(Number(l.indice_pct)) && l.indice_pct !== null ? Number(l.indice_pct) : null;
   const super_ = l.super_favori ? ` <span class="v2r-super">SUPER FAVORI · ${v2rEchappe(String(Math.round(ind)))} %</span>`
     : ind !== null ? ` <small>indice ${v2rEchappe(String(Math.round(ind)))} %</small>` : "";
-  return `<div class="v2r-ligne"><span><b>${nom}</b> · <strong class="v2r-marche-nom">${v2rEchappe(l.marche || l.marche_v2r || "Marché indisponible")}</strong><small class="v2r-marche-explication">${v2rEchappe(v2rMarche(l))}</small>${meme ? " <small>(pas de version modérée)</small>" : ""}${super_}</span>` +
+  return `<div class="v2r-ligne"><span><b>${nom}</b> · <strong class="v2r-marche-nom">${v2rEchappe(v2rNomMarche(l))}</strong><small class="v2r-marche-explication">${v2rEchappe(v2rMarche(l))}</small>${meme ? " <small>(pas de version modérée)</small>" : ""}${super_}</span>` +
     `<span><span class="v2r-cote">Cote ${v2rCote(l.cote)}</span> ${v2rBadge(l)}${gain}</span></div>`;
 }
 function v2rBlocModere(l, mode) {
@@ -136,7 +143,7 @@ function v2rCarte(l, mode) {
     `</div>` +
     `<div class="v2r-corps">` +
       (score ? `<div class="v2r-score">Score final <strong>${v2rEchappe(score)}</strong></div>` : "") +
-      `<div class="v2r-ligne"><span class="v2r-marche-bloc"><strong class="v2r-marche-nom">${v2rEchappe(l.marche || "Marché indisponible")}</strong><small class="v2r-marche-explication">${v2rEchappe(v2rMarche(l))}</small></span><span class="v2r-cote">Cote ${v2rCote(l.cote)}</span></div>` +
+      `<div class="v2r-ligne"><span class="v2r-marche-bloc"><strong class="v2r-marche-nom">${v2rEchappe(v2rNomMarche(l))}</strong><small class="v2r-marche-explication">${v2rEchappe(v2rMarche(l))}</small></span><span class="v2r-cote">Cote ${v2rCote(l.cote)}</span></div>` +
       `<div class="v2r-ligne v2r-info"><span>Historique de la cellule : ROI ${v2rPct(l.roi_cellule, true)} · ${l.cellule_n == null ? "effectif indisponible" : Number(l.cellule_n) + " paris"} · cote ${Array.isArray(l.cellule_tranche_cote) ? v2rCote(l.cellule_tranche_cote[0]) + "–" + v2rCote(l.cellule_tranche_cote[1]) : "—"} · buts attendus ${v2rEchappe((l.buts_attendus || []).join(" / "))}</span>${badge}</div>` +
       (mode === "regle" && profit ? `<div class="v2r-info">Mise 1 u${profit}</div>` : "") +
       v2rBlocModere(l, mode) +
