@@ -39,6 +39,9 @@ def proposer(m, regles, tab=None):
     if not cand:
         return None
     roi, lib, o = sorted(cand, key=lambda t: (-t[0], t[1]))[0]
+    tr = I.cle(dict(lib=lib, o=o, profil=prof))[1]
+    cellule = next((c for c in regles["cellules"] if (c["lib"], c["tr"], c["cl"], c["cm"]) == (lib, tr, prof[0], prof[1])), {})
+    pas = regles["config"]["pas_cote"]
     grille = M.grille(ld, le)
     scores = sorted(((grille[h][a], h, a) for h in range(len(grille)) for a in range(len(grille[h]))), reverse=True)[:2]
     proba_marche = M.probas(grille, [lib]).get(lib, (None, None))[0]
@@ -51,6 +54,9 @@ def proposer(m, regles, tab=None):
                     moyenne_encaisses=round(be / n, 2) if n else None)
     return dict(match_id=m["id"], date=m["date"], coup_d_envoi_utc=m.get("kickoff"), competition=m["ligue"],
                 domicile=m.get("dom"), exterieur=m.get("ext"), marche=lib, cote=o, roi_cellule=round(roi, 4),
+                cellule_n=cellule.get("n"), cellule_tranche_cote=[round(1 + tr * pas, 2), round(1 + (tr + 1) * pas, 2)],
+                cellule_classe_ligue=prof[0], cellule_classe_match=prof[1],
+                regles_entraine_sur=regles.get("entraine_sur"), regles_jusqu_au=regles.get("jusqu_au"),
                 buts_attendus=[round(ld, 2), round(le, 2)], profil_buts=list(prof), regles_version=regles["version"],
                 forme=dict(domicile=forme(m["hd"]), exterieur=forme(m["he"])),
                 donnees_lieu=dict(domicile=resume_lieu(m["hd"], True), exterieur=resume_lieu(m["he"], False)),
