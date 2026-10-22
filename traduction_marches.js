@@ -38,16 +38,6 @@ function clarifieLibelle(texte, equipes) {
   if ((r = t.match(/^Exactement (\d+) buts?$/))) return `Exactement ${_butsN(Number(r[1]))} dans le match`;
   if ((r = t.match(/^(Plus|Moins) de ([\d,.]+) buts?$/))) return phraseTotalButs(r[1] === "Plus" ? "over" : "under", r[2]);
   if ((r = t.match(/^(Domicile|Extérieur) marque (plus|moins) de ([\d,.]+) buts?$/))) return phraseButsEquipe(r[1] === "Domicile" ? d : e, r[2] === "plus" ? "over" : "under", r[3]);
-  // Handicap 3 choix : privilégier la structure du libellé source plutôt que sa phrase descriptive potentiellement contradictoire.
-  if ((r = t.match(/^Handicap 3 choix (.+?) [−+]?([\d,]+) \\((1|2|3)\\)\\s*:/))) {
-    const equipeHandicap = r[1].trim();
-    const ligne = Number(r[2].replace("−", "-").replace(",", "."));
-    const choix = r[3];
-    if (equipeHandicap === d && choix === "1" && ligne > 0) return d + " ne perd pas par " + _butsN(ligne) + " ou plus";
-    if (equipeHandicap === d && choix === "1" && ligne < 0) return d + " gagne par " + _butsN(Math.abs(ligne) + 1) + " d’écart ou plus";
-    if (equipeHandicap === d && choix === "2" && ligne < 0) return e + " ne perd pas par " + _butsN(Math.abs(ligne)) + " ou plus";
-    if (equipeHandicap === d && choix === "2" && ligne > 0) return e + " gagne par " + _butsN(Math.floor(ligne) + 1) + " d’écart ou plus";
-  }
   return t;
 }
 
