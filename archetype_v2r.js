@@ -105,6 +105,14 @@ function v2rHistorique(l) {
   const corps = bloc(l.domicile || "Domicile", f.domicile) + bloc(l.exterieur || "Extérieur", f.exterieur);
   return corps ? `<div class="ax-hist-bloc"><div class="v2r-hist-titre">Derniers matchs (du plus récent au plus ancien)</div>${corps}</div>` : "";
 }
+function v2rDonneesMatch(l) {
+ const d=l.donnees_lieu||{}, c=l.classement||{}, p=l.probabilites||{};
+ const fmt=x=>x==null||!Number.isFinite(Number(x))?'—':Number(x).toFixed(2).replace('.',',');
+ const pct=x=>x==null||!Number.isFinite(Number(x))?'—':(Number(x)*100).toFixed(1).replace('.',',')+' %';
+ const eq=(nom,x,r)=>{if(!x)return ''; const ms=Array.isArray(x.matchs)?x.matchs:[]; const ss=ms.map(m=>{const bm=Number(m.bm),be=Number(m.be);return Number.isFinite(bm)&&Number.isFinite(be)?(m.lieu==='D'?bm+'-'+be:be+'-'+bm):''}).filter(Boolean); return '<div class="v2r-donnees-eq"><b>'+v2rEchappe(nom)+(x.n?' ('+x.n+')':'')+'</b><div>Scores au même lieu : '+(ss.length?ss.map(v2rEchappe).join(' · '):'données insuffisantes')+'</div><div>Moyenne : '+fmt(x.moyenne_marques)+' marqué(s) / '+fmt(x.moyenne_encaisses)+' encaissé(s)</div><div>Classement : '+(r==null||r===''?'non disponible':v2rEchappe(r))+'</div></div>';};
+ const b=Array.isArray(l.buts_attendus)?l.buts_attendus:[], ss=Array.isArray(p.scores)?p.scores:[];
+ return '<div class="v2r-donnees"><b>Données du match (informatives)</b>'+eq(l.domicile,d.domicile,c.domicile)+eq(l.exterieur,d.exterieur,c.exterieur)+'<div class="v2r-donnees-eq"><b>Buts attendus</b><div>'+v2rEchappe(l.domicile||'Domicile')+': '+fmt(b[0])+' marqué(s) / '+fmt(b[1])+' encaissé(s)</div><div>'+v2rEchappe(l.exterieur||'Extérieur')+': '+fmt(b[1])+' marqué(s) / '+fmt(b[0])+' encaissé(s)</div></div><div class="v2r-donnees-eq"><b>Probabilités du modèle V2R</b><div>Probabilité du marché affiché : '+pct(p.marche)+'</div><div>Scores exacts les plus probables : '+(ss.length?ss.map(s=>v2rEchappe(s.score)+' ('+pct(s.probabilite)+')').join(' · '):'non disponibles')+'</div></div></div>';
+}
 function v2rCarte(l, mode) {
   const score = Array.isArray(l.score) ? `${l.score[0]} - ${l.score[1]}` : "";
   const badge = v2rBadge(l);
@@ -130,6 +138,7 @@ function v2rCarte(l, mode) {
     `</div>` +
     `<details class="ax-details" open><summary class="ax-summary-cache" tabindex="-1">Derniers scores</summary><div class="ax-details-corps">` +
       (histo || `<p class="v2r-vide">Derniers scores indisponibles pour ce pari (écrit avant l'ajout de cette rubrique).</p>`) +
+      v2rDonneesMatch(l) +
     `</div></details>`;
   // Comme les autres moteurs : carte repliée au départ ; toucher la carte la déplie (derniers scores visibles) ou la replie.
   section.addEventListener("click", (e) => {
