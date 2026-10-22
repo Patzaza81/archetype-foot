@@ -43,8 +43,8 @@ function v2rMarche(l) {
   if ((r = m.match(/^(Plus|Moins) de (.+) buts - (Domicile|Extérieur)$/))) return phraseButsEquipe(r[3] === "Domicile" ? dom : ext, r[1] === "Plus" ? "over" : "under", r[2]);
   if ((r = m.match(/^(Plus|Moins) de (.+) buts$/))) return phraseTotalButs(r[1] === "Plus" ? "over" : "under", r[2]);
   // Libellé français déjà naturel : conserver le titre original et donner une explication distincte.
-  if ((r = m.match(/^(.+?) marque (\\d+) but(?:s)? au maximum$/i))) return `${r[1]} ne marque pas plus de ${r[2]} but${Number(r[2]) > 1 ? "s" : ""} (moins de ${Number(r[2]) + 0.5} but${Number(r[2]) + 0.5 > 1 ? "s" : ""} au total pour cette équipe)`;
-  if ((r = m.match(/^(.+?) marque moins de (\\d+(?:[.,]\\d+)?) buts?$/i))) return `${r[1]} doit marquer moins de ${r[2]} but(s)`;
+  if ((r = m.match(/^(.+?) marque (\d+) but(?:s)? au maximum$/i))) return `${r[1]} ne marque pas plus de ${r[2]} but${Number(r[2]) > 1 ? "s" : ""} (moins de ${Number(r[2]) + 0.5} but${Number(r[2]) + 0.5 > 1 ? "s" : ""} au total pour cette équipe)`;
+  if ((r = m.match(/^(.+?) marque moins de (\d+(?:[.,]\d+)?) buts?$/i))) return `${r[1]} doit marquer moins de ${r[2]} but(s)`;
   return virg(m);
 }
 // --- Paris modérés (moteur_v2r/modere.py) : affichés SOUS le pari d'origine, qui reste inchangé.
