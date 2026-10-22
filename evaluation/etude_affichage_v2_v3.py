@@ -117,9 +117,17 @@ for mo in ("V2", "V3"):
            comb("Indice maximal, 80 % et +, 3 étoiles", lambda r: mx(r) and round(r["pct"]*100) >= 80 and r["etoiles"] == 3),
            comb("Indice maximal, 80 % et +, 3 étoiles ou plus", lambda r: mx(r) and round(r["pct"]*100) >= 80 and r["etoiles"] >= 3), ""]
     md += ["### 8. Par type de marché\n"]
-    fam = lambda r: ("Handicap" if "andicap" in r["marche"] else "Moins de buts" if r["marche"].startswith(("Moins", "Under")) else
-                     "Plus de buts" if r["marche"].startswith(("Plus", "Over")) else "Double chance" if "ouble chance" in r["marche"] or "ne perd pas" in r["marche"] else
-                     "Victoire" if r["marche"].startswith(("Victoire", "Domicile", "Extérieur")) else "Les deux équipes marquent" if "deux" in r["marche"].lower() else "Autres")
+    def fam(r):
+        s_ = r["marche"].lower()
+        if "handicap" in s_: return "Handicap"
+        if "buts_equipe" in s_ or ((" marque " in s_) and ("plus de" in s_ or "moins de" in s_)): return "Buts d'une équipe"
+        if "cage" in s_ or "encaisse" in s_: return "Cage inviolée / encaisse"
+        if "double" in s_ or "ne perd pas" in s_: return "Double chance"
+        if "btts" in s_ or "deux" in s_: return "Les deux équipes marquent"
+        if s_.startswith("1x2") or "victoire" in s_ or "nul" in s_: return "Victoire / nul"
+        if s_.endswith("_under") or s_.startswith("moins"): return "Total de buts : moins de"
+        if s_.endswith("_over") or s_.startswith("plus"): return "Total de buts : plus de"
+        return "Autres"
     md += [table(L, fam, None, "Marché") + "\n"]
 md += ["\n---\n\n## Limites de lecture\n",
        "- Période courte (V2 : 24 jours, V3 : 17 jours) : les sous-groupes de moins de 30 paris sont à lire avec prudence ; l'intervalle 95 % (Wilson) donne la marge.",
