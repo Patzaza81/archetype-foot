@@ -335,12 +335,33 @@ def test_clean_sheet_ne_recycle_pas_une_preuve_de_match_gagne():
 # ─────────────────────────────── handicap ───────────────────────────────
 def test_handicap_domicile_est_justifiable_sur_sa_ligne():
     r = resume("handicap_domicile_1.0", dom((3, 0), (2, 0), (2, 1)), ext((0, 1), (0, 2), (1, 1)))
-    assert r is not None and "Alpha" in r and "ligne +1" in r and "100.0%" in r
+    assert r is not None and "Alpha" in r and "ne perd pas" in r and "3 de ses 3" in r and "100 %" in r
 
 
 def test_handicap_exterieur_est_justifiable_sur_sa_ligne():
     r = resume("handicap_exterieur_1.0", dom((0, 1), (0, 2), (1, 1)), ext((3, 0), (2, 0), (2, 1)))
-    assert r is not None and "Bravo" in r and "ligne +1" in r and "100.0%" in r
+    assert r is not None and "Bravo" in r and "ne perd pas" in r and "3 de ses 3" in r and "100 %" in r
+
+
+# Sens du handicap en mots simples : 3 cas qui doivent passer, 3 qui doivent échouer
+def test_sens_handicap_en_mots_simples():
+    from bibliotheque_justification import sens_handicap_equipe as f
+    assert f(1.5, "Madura") == "Madura ne perd pas par 2 buts d'écart ou plus"
+    assert f(0.5, "Madura") == "Madura ne perd pas"
+    assert f(-1.5, "Madura") == "Madura gagne par 2 buts d'écart ou plus"
+    assert f(-0.5, "Madura") == "Madura gagne"
+    assert f(2.5, "Madura") == "Madura ne perd pas par 3 buts d'écart ou plus"
+
+
+def test_handicap_phrase_madura_5_sur_5():
+    r = resume("handicap_domicile_1.5", dom((0, 1), (1, 2), (0, 1), (1, 2), (0, 1)), ext((0, 1), (0, 2), (1, 1)))
+    assert r is not None and "ne perd pas par 2 buts d'écart ou plus" in r and "5 de ses 5" in r and "couvert" not in r
+
+
+def test_handicap_phrase_refusee_si_taux_faible_ou_ligne_dure():
+    assert resume("handicap_domicile_-1.5", dom((1, 0), (0, 1), (1, 1)), ext((0, 0), (0, 1), (1, 1))) is None
+    assert resume("handicap_domicile_1.5", dom((0, 3), (0, 4), (1, 0)), ext((0, 0), (0, 1), (1, 1))) is None
+    assert resume("handicap_exterieur_-0.5", dom((1, 0), (2, 0), (1, 0)), ext((0, 1), (0, 2), (0, 1))) is None
 
 
 def test_handicap_ne_recycle_pas_une_simple_forme():

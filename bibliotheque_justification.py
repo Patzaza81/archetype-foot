@@ -83,6 +83,20 @@ def _team_goals_line(market):
     return (m.group(1), float(m.group(2)), m.group(3)) if m else None
 
 
+def sens_handicap_equipe(ligne, equipe):
+    """Ce que demande un handicap, en mots simples, du point de vue de l'équipe (buts marqués + ligne > buts encaissés).
+    +0,5 -> « X ne perd pas » ; +1,5 -> « X ne perd pas par 2 buts d'écart ou plus » ; -0,5 -> « X gagne » ;
+    -1,5 -> « X gagne par 2 buts d'écart ou plus »."""
+    import math
+    m = math.floor(-ligne) + 1  # écart minimal (buts marqués - encaissés) pour couvrir le handicap
+    buts = lambda n: f"{n} but{'s' if n > 1 else ''}"
+    if m >= 1:
+        return f"{equipe} gagne" + (f" par {buts(m)} d'écart ou plus" if m > 1 else "")
+    if m == 0:
+        return f"{equipe} ne perd pas"
+    return f"{equipe} ne perd pas par {buts(1 - m)} d'écart ou plus"
+
+
 def _handicap_line(market):
     """handicap_(domicile|exterieur)_L -> (côté, ligne) ou None."""
     import re
@@ -149,6 +163,8 @@ def construit_donnees(
         "opp_over_rate": None,
         "clean_sheet_rate": None,
         "handicap_cover_rate": None,
+        "handicap_n": None,
+        "handicap_k": None,
         "target_handicap": None,
         "h2h_home_win_count": None,
         "h2h_away_win_count": None,
@@ -231,10 +247,9 @@ def construit_donnees(
         equipe_ms = a_dom if cote_marche == "domicile" else b_ext
         data["target_handicap"] = ligne_handicap
         if len(equipe_ms) >= MIN_ROLE_MATCHES:
-            data["handicap_cover_rate"] = _pct(
-                sum(m["buts_marques"] + ligne_handicap > m["buts_encaisses"] for m in equipe_ms),
-                len(equipe_ms),
-            )
+            data["handicap_n"] = len(equipe_ms)
+            data["handicap_k"] = sum(m["buts_marques"] + ligne_handicap > m["buts_encaisses"] for m in equipe_ms)
+            data["handicap_cover_rate"] = _pct(data["handicap_k"], data["handicap_n"])
     return data
 
 
@@ -495,10 +510,10 @@ def construit_justification_bibliotheque(
         equipe = a if cote_marche == "domicile" else b
         lieu = "à domicile" if cote_marche == "domicile" else "à l'extérieur"
         taux = d["handicap_cover_rate"]
-        txt = f"{ligne_handicap:+g}".replace("+0", "0").replace(".", ",")
         if taux is not None and taux >= 70:
+            n, k = d["handicap_n"], d["handicap_k"]
             preuves.append(_proof(
-                f"{equipe} a couvert la ligne {txt} dans {taux:.1f}% de ses dernières rencontres {lieu}.",
+                f"{sens_handicap_equipe(ligne_handicap, equipe)} : c'est le cas dans {k} de ses {n} dernières rencontres {lieu} ({taux:.0f} %).",
                 type="handicap_cover_rate", valeur=taux, ligne=ligne_handicap,
             ))
     elif _team_goals_line(marche):
