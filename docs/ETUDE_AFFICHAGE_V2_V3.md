@@ -212,8 +212,14 @@ Date : 22/10/2026. Pour chaque pari proposé par le moteur (gelé avant le match
 
 | Marché | Paris | Gagnés | Perdus | Réussite | Intervalle 95 % |
 |---|---:|---:|---:|---:|---:|
-| Autres | 958 | 444 | 514 | 46.3 % | 43–50 % |
+| Buts d'une équipe | 246 | 134 | 112 | 54.5 % | 48–61 % |
+| Cage inviolée / encaisse | 22 | 8 | 14 | 36.4 % | 20–57 % |
+| Double chance | 91 | 44 | 47 | 48.4 % | 38–58 % |
 | Handicap | 249 | 135 | 114 | 54.2 % | 48–60 % |
+| Les deux équipes marquent | 48 | 19 | 29 | 39.6 % | 27–54 % |
+| Total de buts : moins de | 170 | 106 | 64 | 62.4 % | 55–69 % |
+| Total de buts : plus de | 204 | 74 | 130 | 36.3 % | 30–43 % |
+| Victoire / nul | 177 | 59 | 118 | 33.3 % | 27–41 % |
 
 
 ---
@@ -390,12 +396,14 @@ Date : 22/10/2026. Pour chaque pari proposé par le moteur (gelé avant le match
 
 | Marché | Paris | Gagnés | Perdus | Réussite | Intervalle 95 % |
 |---|---:|---:|---:|---:|---:|
+| Buts d'une équipe | 30 | 19 | 11 | 63.3 % | 46–78 % |
+| Cage inviolée / encaisse | 4 | 1 | 3 | 25.0 % | 5–70 % |
 | Double chance | 8 | 4 | 4 | 50.0 % | 22–78 % |
 | Handicap | 19 | 12 | 7 | 63.2 % | 41–81 % |
 | Les deux équipes marquent | 7 | 4 | 3 | 57.1 % | 25–84 % |
-| Moins de buts | 50 | 40 | 10 | 80.0 % | 67–89 % |
-| Plus de buts | 35 | 19 | 16 | 54.3 % | 38–70 % |
-| Victoire | 39 | 22 | 17 | 56.4 % | 41–71 % |
+| Total de buts : moins de | 50 | 40 | 10 | 80.0 % | 67–89 % |
+| Total de buts : plus de | 35 | 19 | 16 | 54.3 % | 38–70 % |
+| Victoire / nul | 5 | 2 | 3 | 40.0 % | 12–77 % |
 
 
 ---
