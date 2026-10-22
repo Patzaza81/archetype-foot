@@ -55,7 +55,10 @@ def test_page_utilise_la_meme_carte_que_les_autres_moteurs():
     assert "af-drapeaux-cartes.js" in html and "drapeaux.js" in html                                 # drapeau du pays du championnat
     assert 'class="ax-liste-matchs v2r-tout"' in html and html.count("<main") == 1                  # le script drapeaux observe main.ax-liste-matchs
     assert corps.index("ax-horaire") < corps.index("v2r-corps") < corps.index("ax-details")        # en-tête, pari, puis derniers scores
-    assert "Derniers scores indisponibles" in js                                                      # anciens paris sans forme : message, pas d'erreur
+    assert "Derniers scores indisponibles" in js
+    assert "function v2rExplication(l)" in js
+    assert "meilleur rendement dans les données ayant servi à établir ses règles" in js
+    assert "ne suffisent pas à justifier ce choix" in js                                                      # anciens paris sans forme : message, pas d'erreur
     assert corps.index("v2rBlocModere(l, mode)") < corps.index("ax-details")                         # pari modéré toujours sous le pari d'origine
 
 
