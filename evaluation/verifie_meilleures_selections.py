@@ -38,7 +38,7 @@ def independant(d, m):
                 break
     return sorties
 
-m = len(regles.MOTEURS) * len(regles.FAMILLES) * regles.NB_PALIERS
+m = 2 * (7 * 5 + 3 * 3)   # 2 moteurs x (7 familles à 2 équipes x 5 paliers + 3 familles à 1 équipe x 3 paliers), écrit à la main
 ref = independant(df, m)
 mod = {(g["moteur"], g["famille"]): (g["statut"], g["palier"], g["n"]) for g in regles.calibrer(paris)["groupes"]}
 print("1) Admission indépendante vs module :", "IDENTIQUE" if ref == mod else f"DIFFÉRENT\n   indépendant={ref}\n   module={mod}")

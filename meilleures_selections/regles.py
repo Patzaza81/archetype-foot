@@ -9,7 +9,7 @@ statistiquement meilleur que ce que les cotes exigent. Aucune constante tirée d
   - le test = probabilité (loi binomiale exacte, base = moyenne des 1/cote) d'obtenir au moins autant de paris gagnés
     par hasard pur ; le résultat doit en plus dépasser la base dans CHAQUE moitié chronologique (précédent alpha_serie)
     et le rendement à mise égale doit être positif ;
-  - les seuils de probabilité viennent du NOMBRE de tests POSSIBLES (m = moteurs x familles x paliers, fixé par la structure
+  - les seuils de probabilité viennent du NOMBRE de tests POSSIBLES (m = somme sur les moteurs et les familles des paliers atteignables, fixé par la structure
     et non par la quantité de données, pour qu'un début d'historique ne relâche pas la règle) : « confirmé » = au plus une
     fausse admission attendue sur l'ensemble (p <= 1/m) ; « en observation » = p <= 1/racine(m).
 Quand les données changent (m, n, résultats), les groupes entrent et sortent sans intervention.
@@ -23,7 +23,19 @@ from typing import Any, Iterable, Mapping, Sequence
 
 PERIODE_JOURS = 7  # recalibrage hebdomadaire (demande de Patrick)
 MOTEURS = ("V2", "V3")
-NB_PALIERS = 5     # un indice va de 0 à 4 sur 4 : au plus 5 paliers distincts par famille
+
+
+def nb_paliers(fam: str) -> int:
+    """Paliers d'indice réellement possibles pour une famille (moteur_v3/performance.py) : marché d'une seule équipe = 2 scénarios
+    (indice 0 à 2, donc 3 paliers) ; marché à deux équipes = 4 scénarios (indice 0 à 4, donc 5 paliers). Le nul n'a pas d'indice : aucun test."""
+    if fam == "nul":
+        return 0
+    return 3 if fam in ("equipe_moins", "equipe_plus", "cage") else 5
+
+
+def nb_tests_possibles() -> int:
+    """Nombre de tests possibles, fixé par la structure (moteurs x familles x paliers atteignables), jamais par la quantité de données."""
+    return len(MOTEURS) * sum(nb_paliers(f) for f in FAMILLES)
 
 FAMILLES = {
     "total_moins": "Total de buts : moins de",
@@ -148,7 +160,7 @@ def candidats(paris: Iterable[Mapping[str, Any]]) -> list[dict[str, Any]]:
 def calibrer(paris: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
     """Recalibrage complet à partir des seuls paris fournis (déjà résolus). Retourne les groupes admis et le détail des tests."""
     cands = candidats(paris)
-    m = len(MOTEURS) * len(FAMILLES) * NB_PALIERS
+    m = nb_tests_possibles()
     seuil_confirme = 1.0 / m if m else 0.0
     seuil_observation = 1.0 / math.sqrt(m) if m else 0.0
     tests = []
