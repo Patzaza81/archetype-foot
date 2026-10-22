@@ -71,19 +71,6 @@ function libelleClair(marche, dom, ext) {
   }
   if ((r = m.match(/^Exactement (\d+)(\+)? buts$/))) return r[2] ? `${butsN(Number(r[1]))} ou plus dans le match` : `Exactement ${butsN(Number(r[1]))} dans le match`;
   if ((r = m.match(/^Score exact (\d+)-(\d+)$/))) return `Score exact : ${d} ${r[1]}-${r[2]} ${e}`;
-  // Accepte aussi les clés canoniques du moteur, pas seulement les libellés déjà traduits.
-  if ((r = m.match(/^over_under_total_(-?\d+(?:\.\d+)?)_(over|under)$/))) {
-    const n = auMoins(nombre(r[1]));
-    return r[2] === "over" ? `Au moins ${butsN(n)} dans le match` : (n - 1 === 0 ? "Aucun but dans le match" : `${butsN(n - 1)} au maximum dans le match`);
-  }
-  if ((r = m.match(/^buts_equipe_(domicile|exterieur)_(-?\d+(?:\.\d+)?)_(over|under)$/))) {
-    const eq = r[1] === "domicile" ? d : e, n = auMoins(nombre(r[2]));
-    return r[3] === "over" ? `${eq} marque au moins ${butsN(n)}` : (n - 1 === 0 ? `${eq} ne marque pas` : `${eq} marque ${butsN(n - 1)} au maximum`);
-  }
-  if (m === "cage_inviolee_domicile") return `${d} n’encaisse aucun but`;
-  if (m === "cage_inviolee_exterieur") return `${e} n’encaisse aucun but`;
-  if (m === "encaisse_domicile") return `${d} encaisse au moins un but`;
-  if (m === "encaisse_exterieur") return `${e} encaisse au moins un but`;
   return m;
 }
 
