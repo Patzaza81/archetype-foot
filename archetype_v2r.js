@@ -36,7 +36,9 @@ function v2rMarche(l) {
   if (m === "Total buts - impair") return "Total de buts impair";
   if ((r = m.match(/^Handicap (.+) - (Domicile|Extérieur)$/))) {      // ligne affichée = ligne du domicile ; l'extérieur reçoit l'inverse
     const x = r[2] === "Domicile" ? Number(r[1]) : -Number(r[1]);
-    return `${r[2] === "Domicile" ? dom : ext} · handicap ${x > 0 ? "+" : x < 0 ? "−" : ""}${virg(String(Math.abs(x)))}`;
+    const eq = r[2] === "Domicile" ? dom : ext, mm = Math.floor(-x) + 1, b = (n) => `${n} but${n > 1 ? "s" : ""}`;
+    const sens = mm >= 1 ? `${eq} gagne${mm > 1 ? ` par ${b(mm)} d'écart ou plus` : ""}` : mm === 0 ? `${eq} ne perd pas` : `${eq} ne perd pas par ${b(1 - mm)} d'écart ou plus`;
+    return `${sens} (handicap ${x > 0 ? "+" : x < 0 ? "−" : ""}${virg(String(Math.abs(x)))})`;
   }
   if ((r = m.match(/^(Plus|Moins) de (.+) buts - (Domicile|Extérieur)$/))) return `${r[3] === "Domicile" ? dom : ext} : ${r[1].toLowerCase()} de ${virg(r[2])} buts`;
   if ((r = m.match(/^(Plus|Moins) de (.+) buts$/))) return `${r[1]} de ${virg(r[2])} buts`;

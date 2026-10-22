@@ -49,7 +49,9 @@ function traduitMarche(marche, equipes) {
       const equipe = m[1] === "domicile" ? dom : ext;
       const ligneNum = parseFloat(m[2]);
       const ligneAffichee = (ligneNum > 0 ? "+" : "") + m[2].replace(".", ",");
-      return `${equipe} avec un handicap de ${ligneAffichee}`;
+      const L = parseFloat(m[2]), mm = Math.floor(-L) + 1, b = (n) => `${n} but${n > 1 ? "s" : ""}`;
+      const sens = mm >= 1 ? `${equipe} gagne${mm > 1 ? ` par ${b(mm)} d'écart ou plus` : ""}` : mm === 0 ? `${equipe} ne perd pas` : `${equipe} ne perd pas par ${b(1 - mm)} d'écart ou plus`;
+      return `${sens} (handicap ${ligneAffichee})`;
     }
   }
 
