@@ -58,13 +58,14 @@ def paris_resolus(dossier_archive: str = DOSSIER_ARCHIVE, dossier_journal: str =
             dom, ext = _series(a, m["date"])
             ip = s.get("indice_performance") or indice_performance(s["marche"], dom, ext)
             paris.append({"moteur": "V3", "date": m["date"], "match_id": mid, "marche": s["marche"], "cote": s.get("cote"),
-                          "indice": (ip or {}).get("indice"), "sur": (ip or {}).get("sur"), "gagne": int(g)})
+                          "probabilite": s.get("probabilite"), "indice": (ip or {}).get("indice"), "sur": (ip or {}).get("sur"), "gagne": int(g)})
     for mid, a in arch.items():
         mep = a.get("moteur_en_production") or {}
         sc = _score(a)
         if sc is None or not mep.get("choix"):
             continue
         dom, ext = _series(a, a["date"])
+        version = str(mep.get("version") or "")
         for c in mep["choix"].values():
             mk3 = marche_v3(str(c.get("marche_moteur") or ""))
             g = gagne(mk3, *sc) if mk3 else None
@@ -75,6 +76,7 @@ def paris_resolus(dossier_archive: str = DOSSIER_ARCHIVE, dossier_journal: str =
                 continue
             ip = indice_performance(mk3, dom, ext)
             paris.append({"moteur": "V2", "date": a["date"], "match_id": mid, "marche": mk3, "cote": c["cote"],
+                          "probabilite": c.get("probabilite"), "version": version,
                           "indice": (ip or {}).get("indice"), "sur": (ip or {}).get("sur"), "gagne": int(g)})
     return paris
 

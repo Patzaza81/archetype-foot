@@ -8,6 +8,8 @@ Onglet ajouté aux pages Moteur V2 et Moteur V3 : les sélections du jour qui ap
 - **Base d'un pari** = 1 / cote. **Test** = probabilité exacte (loi binomiale) d'obtenir au moins autant de paris gagnés par pur hasard.
 - Un ensemble est admis s'il : gagne plus que sa base, rapporte à mise égale, et dépasse sa base dans **chacune des deux moitiés chronologiques**.
 - **Confirmé** : p <= 1/m. **En observation** : p <= 1/racine(m). m = paliers réellement atteignables sur les deux moteurs (88 : 7 familles à deux équipes × 5 paliers + 3 familles d'une équipe × 3 paliers, par moteur ; le nul n'a pas d'indice), fixé par la structure, jamais par la quantité de données.
+- **Échantillon V2** : seulement la version du moteur en production (celle du pari le plus récent, aujourd'hui 2.6.10) ; une nouvelle version repart de ses propres paris.
+- **Un pari par match et par famille** dans le calibrage (celui de plus forte probabilité affichée) : les paris d'un même match ne sont pas indépendants.
 - Par (moteur, famille) : l'ensemble admis **le plus large** (aucun choix sur le gain).
 - Classement : confirmés d'abord, puis p le plus bas, puis indice, probabilité, cote.
 - Recalibrage : tous les 7 jours (sur les paris strictement antérieurs au jour). Un type qui cesse de gagner sort ; un autre peut entrer.

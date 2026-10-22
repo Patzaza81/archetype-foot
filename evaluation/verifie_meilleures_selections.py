@@ -7,10 +7,17 @@ import numpy as np, pandas as pd
 from scipy.stats import binom
 from meilleures_selections import donnees, regles, suivi
 
-paris = donnees.paris_resolus()
+tous = donnees.paris_resolus()
+df0 = pd.DataFrame(tous)
+v2 = df0[df0.moteur == "V2"]
+version = v2.loc[v2.date.idxmax(), "version"]                       # version du pari V2 le plus récent
+paris = [p for p in tous if p["moteur"] != "V2" or p.get("version") == version]
+print(f"0) Version V2 retenue : {version} ; paris V2 retirés : {len(tous) - len(paris)}")
 df = pd.DataFrame(paris)
 df["fam"] = df["marche"].map(regles.famille)
 df = df[df.fam.notna() & df.indice.notna() & df.cote.gt(1)].copy()
+df["probabilite"] = df.probabilite.fillna(0.0)
+df = df.sort_values(["probabilite", "marche", "cote"], ascending=[False, True, True]).drop_duplicates(["moteur", "match_id", "fam"])  # un pari par match et famille
 df["niv"] = df.indice / df.sur
 df["gain"] = np.where(df.gagne == 1, df.cote - 1, -1.0)
 echecs = []

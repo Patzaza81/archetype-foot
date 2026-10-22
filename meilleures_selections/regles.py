@@ -97,6 +97,37 @@ def _utilisable(p: Mapping[str, Any]) -> bool:
             and isinstance(p.get("cote"), (int, float)) and p["cote"] > 1 and p.get("gagne") in (0, 1, True, False))
 
 
+def version_courante(paris: Sequence[Mapping[str, Any]], moteur: str = "V2") -> str | None:
+    """Version du moteur qui produit les paris les plus récents (celle d'aujourd'hui). None si les paris ne portent aucune version."""
+    vus = [(_jour(p), str(p["version"])) for p in paris if p.get("moteur") == moteur and p.get("version")]
+    return max(vus)[1] if vus else None
+
+
+def garde_version_courante(paris: Sequence[Mapping[str, Any]]) -> list[Mapping[str, Any]]:
+    """Retire les paris V2 d'une version de moteur plus ancienne que celle en production : seuls comptent les paris que ce moteur produira.
+    V3 et les paris sans information de version restent. Quand une nouvelle version sort, l'échantillon V2 repart donc de ses propres paris."""
+    v = version_courante(paris, "V2")
+    return [p for p in paris if p.get("moteur") != "V2" or not p.get("version") or v is None or str(p["version"]) == v]
+
+
+def un_pari_par_match_et_famille(paris: Sequence[Mapping[str, Any]]) -> list[Mapping[str, Any]]:
+    """Les paris d'un même match ne sont pas indépendants : pour un même (moteur, match, famille) on garde UN pari, celui de plus forte
+    probabilité affichée (connue avant le match, donc sans lien avec le résultat). Sans identifiant de match, aucun regroupement."""
+    meilleurs: dict[tuple, Mapping[str, Any]] = {}
+    sans_id = []
+    for p in paris:
+        f = famille(p.get("marche"))
+        if p.get("match_id") in (None, "") or f is None:
+            sans_id.append(p)
+            continue
+        cle = (p.get("moteur"), p["match_id"], f)
+        cur = meilleurs.get(cle)
+        rang = (-(p.get("probabilite") or 0.0), str(p.get("marche")), p.get("cote") or 0.0)
+        if cur is None or rang < (-(cur.get("probabilite") or 0.0), str(cur.get("marche")), cur.get("cote") or 0.0):
+            meilleurs[cle] = p
+    return sans_id + list(meilleurs.values())
+
+
 def queue_binomiale(k: int, n: int, p: float) -> float:
     """P(X >= k) pour X ~ Binomiale(n, p), calcul exact (somme en logarithmes). p est borné à ]0, 1[."""
     if k <= 0:
@@ -159,6 +190,7 @@ def candidats(paris: Iterable[Mapping[str, Any]]) -> list[dict[str, Any]]:
 
 def calibrer(paris: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
     """Recalibrage complet à partir des seuls paris fournis (déjà résolus). Retourne les groupes admis et le détail des tests."""
+    paris = un_pari_par_match_et_famille([p for p in paris if _utilisable(p)])
     cands = candidats(paris)
     m = nb_tests_possibles()
     seuil_confirme = 1.0 / m if m else 0.0
@@ -180,7 +212,7 @@ def calibrer(paris: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
                 admis.append(min(ok, key=lambda t: t["palier"]))   # le plus large des ensembles qui passent : aucun choix sur le gain
                 break
     return {"m_tests": m, "nb_tests_realises": len(cands), "seuil_confirme": seuil_confirme, "seuil_observation": seuil_observation,
-            "nb_paris": len([p for p in paris if _utilisable(p)]),
+            "nb_paris": len(paris),
             "groupes": admis, "tests": tests}
 
 

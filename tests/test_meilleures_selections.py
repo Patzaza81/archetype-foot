@@ -258,3 +258,61 @@ def test_nombre_de_tests_possibles_suit_la_structure():
     c = regles.calibrer(serie("under_2_5", 0.9))
     assert c["m_tests"] == 88 and c["seuil_confirme"] == pytest.approx(1 / 88)
     assert regles.calibrer([])["m_tests"] == 88                      # indépendant de la quantité de données
+
+
+# ───────────── version du moteur V2 et un pari par match ─────────────
+def v2(i, version, mid="m", marche="over_2_5", prob=0.7):
+    return {**pari(i, marche, "V2"), "version": version, "match_id": mid, "probabilite": prob}
+
+
+def test_version_courante_est_celle_du_pari_le_plus_recent():
+    paris = [v2(0, "2.6.9"), v2(5, "2.6.9"), v2(4, "2.6.10"), v2(9, "2.6.10")]
+    assert regles.version_courante(paris) == "2.6.10"
+    assert regles.version_courante([pari(0)]) is None                     # V3 sans version
+
+
+def test_garde_version_courante_retire_l_ancienne_version_seulement_en_v2():
+    v3 = pari(3)                                                         # V3 : jamais touché
+    sans_version = {**pari(2, moteur="V2"), "match_id": "z"}             # V2 sans information de version : conservé
+    paris = [v2(0, "2.6.9"), v2(1, "2.6.9"), v2(6, "2.6.10"), v3, sans_version]
+    gardes = regles.garde_version_courante(paris)
+    assert [p.get("version") for p in gardes if p["moteur"] == "V2" and p.get("version")] == ["2.6.10"]
+    assert v3 in gardes and sans_version in gardes and len(gardes) == 3
+
+
+def test_garde_version_courante_sans_aucune_version_ne_retire_rien():
+    paris = [pari(i, moteur="V2") for i in range(5)]
+    assert regles.garde_version_courante(paris) == paris
+
+
+def test_un_pari_par_match_garde_la_meilleure_probabilite():
+    a, b = v2(0, "x", "M1", "over_1_5", 0.60), v2(0, "x", "M1", "over_2_5", 0.80)
+    out = regles.un_pari_par_match_et_famille([a, b])
+    assert out == [b]                                                    # même match, même famille : 1 seul pari, le plus probable
+
+
+def test_un_pari_par_match_ne_fusionne_pas_ce_qui_est_different():
+    memes_familles = [v2(0, "x", "M1", "over_1_5", 0.6), v2(0, "x", "M2", "over_1_5", 0.6)]           # 2 matchs
+    autres_familles = [v2(0, "x", "M1", "over_1_5", 0.6), v2(0, "x", "M1", "under_3_5", 0.6)]         # 2 familles
+    autres_moteurs = [v2(0, "x", "M1", "over_1_5", 0.6), {**pari(0, "over_1_5", "V3"), "match_id": "M1"}]
+    sans_id = [pari(0), pari(0)]                                                                    # pas d'identifiant : rien n'est regroupé
+    for lot in (memes_familles, autres_familles, autres_moteurs, sans_id):
+        assert len(regles.un_pari_par_match_et_famille(lot)) == 2
+
+
+def test_la_deduplication_est_deterministe_et_sans_lien_avec_le_resultat():
+    a, b = {**v2(0, "x", "M1", "over_1_5", 0.7), "gagne": 1}, {**v2(0, "x", "M1", "over_2_5", 0.7), "gagne": 0}   # égalité de probabilité
+    r1 = regles.un_pari_par_match_et_famille([a, b])
+    r2 = regles.un_pari_par_match_et_famille([b, a])
+    assert r1 == r2 and len(r1) == 1
+
+
+def test_calibrer_compte_un_pari_par_match():
+    # 40 matchs, chacun avec 3 paris « plus de » : après regroupement il reste 40 paris, pas 120
+    paris = []
+    for m in range(40):
+        for k, ligne in enumerate(("over_0_5", "over_1_5", "over_2_5")):
+            paris.append({**pari(m % 28, ligne, "V2", 1.5, 4, 4, int(m % 10 != 0)), "match_id": f"M{m}", "probabilite": 0.9 - 0.1 * k})
+    c = regles.calibrer(paris)
+    assert c["nb_paris"] == 40
+    assert all(t["n"] <= 40 for t in c["tests"])

@@ -3,7 +3,7 @@
  "calibre_le": "2026-10-22",
  "prochain_recalibrage": "2026-10-29",
  "recalibre_aujourdhui": true,
- "nb_paris_calibrage": 1364,
+ "nb_paris_calibrage": 1183,
  "m_tests": 88,
  "seuil_confirme": 0.011363636363636364,
  "seuil_observation": 0.10660035817780521,
@@ -11,16 +11,16 @@
   {
    "moteur": "V2",
    "famille": "total_plus",
-   "palier": 0.75,
+   "palier": 0.5,
    "statut": "observation",
    "stable_dans_le_temps": true,
-   "n": 36,
-   "gagnes": 29,
-   "reussite": 0.8055555555555556,
-   "base": 0.6708343897847053,
-   "rendement": 0.22833333333333336,
-   "erreur_type_rendement": 0.10642196634452362,
-   "p": 0.05701664682501912
+   "n": 38,
+   "gagnes": 28,
+   "reussite": 0.7368421052631579,
+   "base": 0.6239634624370842,
+   "rendement": 0.19236842105263158,
+   "erreur_type_rendement": 0.12543547712037556,
+   "p": 0.10025931866142627
   },
   {
    "moteur": "V3",
@@ -48,13 +48,13 @@
    "p": 0.0755128440992206
   },
   "V2": {
-   "n": 36,
-   "gagnes": 29,
-   "reussite": 0.8055555555555556,
-   "base": 0.6708343897847053,
-   "rendement": 0.22833333333333336,
-   "erreur_type_rendement": 0.10642196634452362,
-   "p": 0.05701664682501912
+   "n": 44,
+   "gagnes": 32,
+   "reussite": 0.7272727272727273,
+   "base": 0.6025935009075761,
+   "rendement": 0.23045454545454544,
+   "erreur_type_rendement": 0.12434052444639307,
+   "p": 0.05990113749120467
   }
  },
  "hors_echantillon": {
@@ -78,299 +78,29 @@
   }
  },
  "rejeu": {
-  "nb_recalibrages": 3,
+  "nb_recalibrages": 2,
   "bilan": {
    "confirme": {
-    "n": 0,
-    "gagnes": 0,
-    "reussite": null,
-    "base": null,
-    "rendement": null,
-    "erreur_type_rendement": null,
-    "p": 1.0
+    "n": 10,
+    "gagnes": 7,
+    "reussite": 0.7,
+    "base": 0.7234533077279768,
+    "rendement": -0.017000000000000015,
+    "erreur_type_rendement": 0.21664640930942441,
+    "p": 0.7108934339705695
    },
    "observation": {
-    "n": 21,
-    "gagnes": 16,
-    "reussite": 0.7619047619047619,
-    "base": 0.7034258587143548,
-    "rendement": 0.10714285714285712,
-    "erreur_type_rendement": 0.14107435198899781,
-    "p": 0.37568319758041274
+    "n": 83,
+    "gagnes": 53,
+    "reussite": 0.6385542168674698,
+    "base": 0.6619134965812696,
+    "rendement": -0.02325301204819278,
+    "erreur_type_rendement": 0.08385406849185635,
+    "p": 0.7170355396459137
    }
   }
  },
  "selections": [
-  {
-   "moteur": "V2",
-   "match_id": "csquu3woz3mp89gvqpkrxikno",
-   "date": "2026-10-24",
-   "heure": "17:00",
-   "competition": "Turquie :\n                        Super Ligue",
-   "domicile": "Samsunspor",
-   "exterieur": "Amed",
-   "rang_moteur": "P1",
-   "marche": "over_1_5",
-   "marche_affiche": "over_under_total_1.5_over",
-   "libelle": null,
-   "cote": 1.29,
-   "probabilite": 0.8318027310537012,
-   "indice": 4,
-   "sur": 4,
-   "groupe": {
-    "moteur": "V2",
-    "famille": "total_plus",
-    "palier": 0.75,
-    "statut": "observation",
-    "n": 36,
-    "gagnes": 29,
-    "reussite": 0.8055555555555556,
-    "base": 0.6708343897847053,
-    "rendement": 0.22833333333333336,
-    "p": 0.05701664682501912
-   },
-   "rang": 1
-  },
-  {
-   "moteur": "V2",
-   "match_id": "4lpv8sflfhjjzuchmwc3ra044",
-   "date": "2026-10-25",
-   "heure": "16:00",
-   "competition": "Angleterre :\n                        Premier League",
-   "domicile": "Crystal Palace",
-   "exterieur": "Newcastle",
-   "rang_moteur": "P1",
-   "marche": "over_2_5",
-   "marche_affiche": "over_under_total_2.5_over",
-   "libelle": null,
-   "cote": 1.62,
-   "probabilite": 0.6602601118038801,
-   "indice": 4,
-   "sur": 4,
-   "groupe": {
-    "moteur": "V2",
-    "famille": "total_plus",
-    "palier": 0.75,
-    "statut": "observation",
-    "n": 36,
-    "gagnes": 29,
-    "reussite": 0.8055555555555556,
-    "base": 0.6708343897847053,
-    "rendement": 0.22833333333333336,
-    "p": 0.05701664682501912
-   },
-   "rang": 2
-  },
-  {
-   "moteur": "V2",
-   "match_id": "27nc47v30k2o7o6ncqurzqtck",
-   "date": "2026-10-25",
-   "heure": "09:00",
-   "competition": "Japon :\n                        J1 Ligue",
-   "domicile": "Kawasaki F.",
-   "exterieur": "Fagiano",
-   "rang_moteur": "P1",
-   "marche": "over_2_5",
-   "marche_affiche": "over_under_total_2.5_over",
-   "libelle": null,
-   "cote": 1.74,
-   "probabilite": 0.6351899874121291,
-   "indice": 4,
-   "sur": 4,
-   "groupe": {
-    "moteur": "V2",
-    "famille": "total_plus",
-    "palier": 0.75,
-    "statut": "observation",
-    "n": 36,
-    "gagnes": 29,
-    "reussite": 0.8055555555555556,
-    "base": 0.6708343897847053,
-    "rendement": 0.22833333333333336,
-    "p": 0.05701664682501912
-   },
-   "rang": 3
-  },
-  {
-   "moteur": "V2",
-   "match_id": "63dbi2lkt59tt16v39mpy82s4",
-   "date": "2026-10-25",
-   "heure": "00:30",
-   "competition": "Guatemala :\n                        Ligue Nationale Ouverture",
-   "domicile": "Suchitepéquez",
-   "exterieur": "Aurora",
-   "rang_moteur": "P1",
-   "marche": "over_1_5",
-   "marche_affiche": "over_under_total_1.5_over",
-   "libelle": null,
-   "cote": 1.29,
-   "probabilite": 0.8239958219516368,
-   "indice": 3,
-   "sur": 4,
-   "groupe": {
-    "moteur": "V2",
-    "famille": "total_plus",
-    "palier": 0.75,
-    "statut": "observation",
-    "n": 36,
-    "gagnes": 29,
-    "reussite": 0.8055555555555556,
-    "base": 0.6708343897847053,
-    "rendement": 0.22833333333333336,
-    "p": 0.05701664682501912
-   },
-   "rang": 4
-  },
-  {
-   "moteur": "V2",
-   "match_id": "1ndp8jigs5d0fyjsxopchku1g",
-   "date": "2026-10-24",
-   "heure": "12:30",
-   "competition": "Angleterre :\n                        Championnat",
-   "domicile": "Portsmouth",
-   "exterieur": "Millwall",
-   "rang_moteur": "P1",
-   "marche": "over_1_5",
-   "marche_affiche": "over_under_total_1.5_over",
-   "libelle": null,
-   "cote": 1.33,
-   "probabilite": 0.8137407243938306,
-   "indice": 3,
-   "sur": 4,
-   "groupe": {
-    "moteur": "V2",
-    "famille": "total_plus",
-    "palier": 0.75,
-    "statut": "observation",
-    "n": 36,
-    "gagnes": 29,
-    "reussite": 0.8055555555555556,
-    "base": 0.6708343897847053,
-    "rendement": 0.22833333333333336,
-    "p": 0.05701664682501912
-   },
-   "rang": 5
-  },
-  {
-   "moteur": "V2",
-   "match_id": "45bvxv6ljrui99fp8cw68gpp0",
-   "date": "2026-10-25",
-   "heure": "15:00",
-   "competition": "Espagne :\n                        Segunda Division",
-   "domicile": "Sabadell",
-   "exterieur": "Tenerife",
-   "rang_moteur": "P1",
-   "marche": "over_1_5",
-   "marche_affiche": "over_under_total_1.5_over",
-   "libelle": null,
-   "cote": 1.49,
-   "probabilite": 0.7854094417800117,
-   "indice": 3,
-   "sur": 4,
-   "groupe": {
-    "moteur": "V2",
-    "famille": "total_plus",
-    "palier": 0.75,
-    "statut": "observation",
-    "n": 36,
-    "gagnes": 29,
-    "reussite": 0.8055555555555556,
-    "base": 0.6708343897847053,
-    "rendement": 0.22833333333333336,
-    "p": 0.05701664682501912
-   },
-   "rang": 6
-  },
-  {
-   "moteur": "V2",
-   "match_id": "27by2ku56c666dyvypya070gk",
-   "date": "2026-10-24",
-   "heure": "07:00",
-   "competition": "Japon :\n                        J1 Ligue",
-   "domicile": "Tokyo Verdy",
-   "exterieur": "Fukuoka",
-   "rang_moteur": "P1",
-   "marche": "over_1_5",
-   "marche_affiche": "over_under_total_1.5_over",
-   "libelle": null,
-   "cote": 1.56,
-   "probabilite": 0.7574594868363463,
-   "indice": 3,
-   "sur": 4,
-   "groupe": {
-    "moteur": "V2",
-    "famille": "total_plus",
-    "palier": 0.75,
-    "statut": "observation",
-    "n": 36,
-    "gagnes": 29,
-    "reussite": 0.8055555555555556,
-    "base": 0.6708343897847053,
-    "rendement": 0.22833333333333336,
-    "p": 0.05701664682501912
-   },
-   "rang": 7
-  },
-  {
-   "moteur": "V2",
-   "match_id": "crhbvnp5bfppip4wfpx6hdxxw",
-   "date": "2026-10-25",
-   "heure": "18:00",
-   "competition": "Turquie :\n                        Super Ligue",
-   "domicile": "Goztepe",
-   "exterieur": "Corum FK",
-   "rang_moteur": "P1",
-   "marche": "over_2_5",
-   "marche_affiche": "over_under_total_2.5_over",
-   "libelle": null,
-   "cote": 1.67,
-   "probabilite": 0.6873309708432886,
-   "indice": 3,
-   "sur": 4,
-   "groupe": {
-    "moteur": "V2",
-    "famille": "total_plus",
-    "palier": 0.75,
-    "statut": "observation",
-    "n": 36,
-    "gagnes": 29,
-    "reussite": 0.8055555555555556,
-    "base": 0.6708343897847053,
-    "rendement": 0.22833333333333336,
-    "p": 0.05701664682501912
-   },
-   "rang": 8
-  },
-  {
-   "moteur": "V2",
-   "match_id": "66brskzw2e20lmlqxcu9y3v2s",
-   "date": "2026-10-23",
-   "heure": "18:30",
-   "competition": "Autriche :\n                        Bundesliga",
-   "domicile": "Altach",
-   "exterieur": "Austria Vienne",
-   "rang_moteur": "P1",
-   "marche": "over_2_5",
-   "marche_affiche": "over_under_total_2.5_over",
-   "libelle": null,
-   "cote": 1.84,
-   "probabilite": 0.6080852986899206,
-   "indice": 3,
-   "sur": 4,
-   "groupe": {
-    "moteur": "V2",
-    "famille": "total_plus",
-    "palier": 0.75,
-    "statut": "observation",
-    "n": 36,
-    "gagnes": 29,
-    "reussite": 0.8055555555555556,
-    "base": 0.6708343897847053,
-    "rendement": 0.22833333333333336,
-    "p": 0.05701664682501912
-   },
-   "rang": 9
-  },
   {
    "moteur": "V3",
    "match_id": "32zrugvuy4kof5tj5ch4trytw",
@@ -399,7 +129,7 @@
     "rendement": 0.1568,
     "p": 0.0755128440992206
    },
-   "rang": 10
+   "rang": 1
   },
   {
    "moteur": "V3",
@@ -429,7 +159,7 @@
     "rendement": 0.1568,
     "p": 0.0755128440992206
    },
-   "rang": 11
+   "rang": 2
   },
   {
    "moteur": "V3",
@@ -459,7 +189,7 @@
     "rendement": 0.1568,
     "p": 0.0755128440992206
    },
-   "rang": 12
+   "rang": 3
   },
   {
    "moteur": "V3",
@@ -489,7 +219,7 @@
     "rendement": 0.1568,
     "p": 0.0755128440992206
    },
-   "rang": 13
+   "rang": 4
   },
   {
    "moteur": "V3",
@@ -519,7 +249,7 @@
     "rendement": 0.1568,
     "p": 0.0755128440992206
    },
-   "rang": 14
+   "rang": 5
   },
   {
    "moteur": "V3",
@@ -549,7 +279,7 @@
     "rendement": 0.1568,
     "p": 0.0755128440992206
    },
-   "rang": 15
+   "rang": 6
   },
   {
    "moteur": "V3",
@@ -579,7 +309,7 @@
     "rendement": 0.1568,
     "p": 0.0755128440992206
    },
-   "rang": 16
+   "rang": 7
   },
   {
    "moteur": "V3",
@@ -609,7 +339,7 @@
     "rendement": 0.1568,
     "p": 0.0755128440992206
    },
-   "rang": 17
+   "rang": 8
   },
   {
    "moteur": "V3",
@@ -639,7 +369,7 @@
     "rendement": 0.1568,
     "p": 0.0755128440992206
    },
-   "rang": 18
+   "rang": 9
   },
   {
    "moteur": "V3",
@@ -669,7 +399,7 @@
     "rendement": 0.1568,
     "p": 0.0755128440992206
    },
-   "rang": 19
+   "rang": 10
   },
   {
    "moteur": "V3",
@@ -699,7 +429,7 @@
     "rendement": 0.1568,
     "p": 0.0755128440992206
    },
-   "rang": 20
+   "rang": 11
   },
   {
    "moteur": "V3",
@@ -729,7 +459,7 @@
     "rendement": 0.1568,
     "p": 0.0755128440992206
    },
-   "rang": 21
+   "rang": 12
   },
   {
    "moteur": "V3",
@@ -759,7 +489,7 @@
     "rendement": 0.1568,
     "p": 0.0755128440992206
    },
-   "rang": 22
+   "rang": 13
   },
   {
    "moteur": "V3",
@@ -789,7 +519,7 @@
     "rendement": 0.1568,
     "p": 0.0755128440992206
    },
-   "rang": 23
+   "rang": 14
   },
   {
    "moteur": "V3",
@@ -819,7 +549,7 @@
     "rendement": 0.1568,
     "p": 0.0755128440992206
    },
-   "rang": 24
+   "rang": 15
   },
   {
    "moteur": "V3",
@@ -849,7 +579,7 @@
     "rendement": 0.1568,
     "p": 0.0755128440992206
    },
-   "rang": 25
+   "rang": 16
   },
   {
    "moteur": "V3",
@@ -879,7 +609,7 @@
     "rendement": 0.1568,
     "p": 0.0755128440992206
    },
-   "rang": 26
+   "rang": 17
   },
   {
    "moteur": "V3",
@@ -909,7 +639,7 @@
     "rendement": 0.1568,
     "p": 0.0755128440992206
    },
-   "rang": 27
+   "rang": 18
   },
   {
    "moteur": "V3",
@@ -939,7 +669,7 @@
     "rendement": 0.1568,
     "p": 0.0755128440992206
    },
-   "rang": 28
+   "rang": 19
   },
   {
    "moteur": "V3",
@@ -969,7 +699,7 @@
     "rendement": 0.1568,
     "p": 0.0755128440992206
    },
-   "rang": 29
+   "rang": 20
   },
   {
    "moteur": "V3",
@@ -999,7 +729,7 @@
     "rendement": 0.1568,
     "p": 0.0755128440992206
    },
-   "rang": 30
+   "rang": 21
   },
   {
    "moteur": "V3",
@@ -1029,7 +759,427 @@
     "rendement": 0.1568,
     "p": 0.0755128440992206
    },
+   "rang": 22
+  },
+  {
+   "moteur": "V2",
+   "match_id": "csquu3woz3mp89gvqpkrxikno",
+   "date": "2026-10-24",
+   "heure": "17:00",
+   "competition": "Turquie :\n                        Super Ligue",
+   "domicile": "Samsunspor",
+   "exterieur": "Amed",
+   "rang_moteur": "P1",
+   "marche": "over_1_5",
+   "marche_affiche": "over_under_total_1.5_over",
+   "libelle": null,
+   "cote": 1.29,
+   "probabilite": 0.8318027310537012,
+   "indice": 4,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "famille": "total_plus",
+    "palier": 0.5,
+    "statut": "observation",
+    "n": 38,
+    "gagnes": 28,
+    "reussite": 0.7368421052631579,
+    "base": 0.6239634624370842,
+    "rendement": 0.19236842105263158,
+    "p": 0.10025931866142627
+   },
+   "rang": 23
+  },
+  {
+   "moteur": "V2",
+   "match_id": "4lpv8sflfhjjzuchmwc3ra044",
+   "date": "2026-10-25",
+   "heure": "16:00",
+   "competition": "Angleterre :\n                        Premier League",
+   "domicile": "Crystal Palace",
+   "exterieur": "Newcastle",
+   "rang_moteur": "P1",
+   "marche": "over_2_5",
+   "marche_affiche": "over_under_total_2.5_over",
+   "libelle": null,
+   "cote": 1.62,
+   "probabilite": 0.6602601118038801,
+   "indice": 4,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "famille": "total_plus",
+    "palier": 0.5,
+    "statut": "observation",
+    "n": 38,
+    "gagnes": 28,
+    "reussite": 0.7368421052631579,
+    "base": 0.6239634624370842,
+    "rendement": 0.19236842105263158,
+    "p": 0.10025931866142627
+   },
+   "rang": 24
+  },
+  {
+   "moteur": "V2",
+   "match_id": "27nc47v30k2o7o6ncqurzqtck",
+   "date": "2026-10-25",
+   "heure": "09:00",
+   "competition": "Japon :\n                        J1 Ligue",
+   "domicile": "Kawasaki F.",
+   "exterieur": "Fagiano",
+   "rang_moteur": "P1",
+   "marche": "over_2_5",
+   "marche_affiche": "over_under_total_2.5_over",
+   "libelle": null,
+   "cote": 1.74,
+   "probabilite": 0.6351899874121291,
+   "indice": 4,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "famille": "total_plus",
+    "palier": 0.5,
+    "statut": "observation",
+    "n": 38,
+    "gagnes": 28,
+    "reussite": 0.7368421052631579,
+    "base": 0.6239634624370842,
+    "rendement": 0.19236842105263158,
+    "p": 0.10025931866142627
+   },
+   "rang": 25
+  },
+  {
+   "moteur": "V2",
+   "match_id": "63dbi2lkt59tt16v39mpy82s4",
+   "date": "2026-10-25",
+   "heure": "00:30",
+   "competition": "Guatemala :\n                        Ligue Nationale Ouverture",
+   "domicile": "Suchitepéquez",
+   "exterieur": "Aurora",
+   "rang_moteur": "P1",
+   "marche": "over_1_5",
+   "marche_affiche": "over_under_total_1.5_over",
+   "libelle": null,
+   "cote": 1.29,
+   "probabilite": 0.8239958219516368,
+   "indice": 3,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "famille": "total_plus",
+    "palier": 0.5,
+    "statut": "observation",
+    "n": 38,
+    "gagnes": 28,
+    "reussite": 0.7368421052631579,
+    "base": 0.6239634624370842,
+    "rendement": 0.19236842105263158,
+    "p": 0.10025931866142627
+   },
+   "rang": 26
+  },
+  {
+   "moteur": "V2",
+   "match_id": "1ndp8jigs5d0fyjsxopchku1g",
+   "date": "2026-10-24",
+   "heure": "12:30",
+   "competition": "Angleterre :\n                        Championnat",
+   "domicile": "Portsmouth",
+   "exterieur": "Millwall",
+   "rang_moteur": "P1",
+   "marche": "over_1_5",
+   "marche_affiche": "over_under_total_1.5_over",
+   "libelle": null,
+   "cote": 1.33,
+   "probabilite": 0.8137407243938306,
+   "indice": 3,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "famille": "total_plus",
+    "palier": 0.5,
+    "statut": "observation",
+    "n": 38,
+    "gagnes": 28,
+    "reussite": 0.7368421052631579,
+    "base": 0.6239634624370842,
+    "rendement": 0.19236842105263158,
+    "p": 0.10025931866142627
+   },
+   "rang": 27
+  },
+  {
+   "moteur": "V2",
+   "match_id": "45bvxv6ljrui99fp8cw68gpp0",
+   "date": "2026-10-25",
+   "heure": "15:00",
+   "competition": "Espagne :\n                        Segunda Division",
+   "domicile": "Sabadell",
+   "exterieur": "Tenerife",
+   "rang_moteur": "P1",
+   "marche": "over_1_5",
+   "marche_affiche": "over_under_total_1.5_over",
+   "libelle": null,
+   "cote": 1.49,
+   "probabilite": 0.7854094417800117,
+   "indice": 3,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "famille": "total_plus",
+    "palier": 0.5,
+    "statut": "observation",
+    "n": 38,
+    "gagnes": 28,
+    "reussite": 0.7368421052631579,
+    "base": 0.6239634624370842,
+    "rendement": 0.19236842105263158,
+    "p": 0.10025931866142627
+   },
+   "rang": 28
+  },
+  {
+   "moteur": "V2",
+   "match_id": "27by2ku56c666dyvypya070gk",
+   "date": "2026-10-24",
+   "heure": "07:00",
+   "competition": "Japon :\n                        J1 Ligue",
+   "domicile": "Tokyo Verdy",
+   "exterieur": "Fukuoka",
+   "rang_moteur": "P1",
+   "marche": "over_1_5",
+   "marche_affiche": "over_under_total_1.5_over",
+   "libelle": null,
+   "cote": 1.56,
+   "probabilite": 0.7574594868363463,
+   "indice": 3,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "famille": "total_plus",
+    "palier": 0.5,
+    "statut": "observation",
+    "n": 38,
+    "gagnes": 28,
+    "reussite": 0.7368421052631579,
+    "base": 0.6239634624370842,
+    "rendement": 0.19236842105263158,
+    "p": 0.10025931866142627
+   },
+   "rang": 29
+  },
+  {
+   "moteur": "V2",
+   "match_id": "crhbvnp5bfppip4wfpx6hdxxw",
+   "date": "2026-10-25",
+   "heure": "18:00",
+   "competition": "Turquie :\n                        Super Ligue",
+   "domicile": "Goztepe",
+   "exterieur": "Corum FK",
+   "rang_moteur": "P1",
+   "marche": "over_2_5",
+   "marche_affiche": "over_under_total_2.5_over",
+   "libelle": null,
+   "cote": 1.67,
+   "probabilite": 0.6873309708432886,
+   "indice": 3,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "famille": "total_plus",
+    "palier": 0.5,
+    "statut": "observation",
+    "n": 38,
+    "gagnes": 28,
+    "reussite": 0.7368421052631579,
+    "base": 0.6239634624370842,
+    "rendement": 0.19236842105263158,
+    "p": 0.10025931866142627
+   },
+   "rang": 30
+  },
+  {
+   "moteur": "V2",
+   "match_id": "66brskzw2e20lmlqxcu9y3v2s",
+   "date": "2026-10-23",
+   "heure": "18:30",
+   "competition": "Autriche :\n                        Bundesliga",
+   "domicile": "Altach",
+   "exterieur": "Austria Vienne",
+   "rang_moteur": "P1",
+   "marche": "over_2_5",
+   "marche_affiche": "over_under_total_2.5_over",
+   "libelle": null,
+   "cote": 1.84,
+   "probabilite": 0.6080852986899206,
+   "indice": 3,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "famille": "total_plus",
+    "palier": 0.5,
+    "statut": "observation",
+    "n": 38,
+    "gagnes": 28,
+    "reussite": 0.7368421052631579,
+    "base": 0.6239634624370842,
+    "rendement": 0.19236842105263158,
+    "p": 0.10025931866142627
+   },
    "rang": 31
+  },
+  {
+   "moteur": "V2",
+   "match_id": "66ngnehulk8j5p5pg5tv6jrx0",
+   "date": "2026-10-24",
+   "heure": "16:00",
+   "competition": "Autriche :\n                        Bundesliga",
+   "domicile": "WSG Tirol",
+   "exterieur": "Grazer AK",
+   "rang_moteur": "P1",
+   "marche": "over_2_5",
+   "marche_affiche": "over_under_total_2.5_over",
+   "libelle": null,
+   "cote": 1.87,
+   "probabilite": 0.6298642047616919,
+   "indice": 2,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "famille": "total_plus",
+    "palier": 0.5,
+    "statut": "observation",
+    "n": 38,
+    "gagnes": 28,
+    "reussite": 0.7368421052631579,
+    "base": 0.6239634624370842,
+    "rendement": 0.19236842105263158,
+    "p": 0.10025931866142627
+   },
+   "rang": 32
+  },
+  {
+   "moteur": "V2",
+   "match_id": "63dbi2lkt59tt16v39mpy82s4",
+   "date": "2026-10-25",
+   "heure": "00:30",
+   "competition": "Guatemala :\n                        Ligue Nationale Ouverture",
+   "domicile": "Suchitepéquez",
+   "exterieur": "Aurora",
+   "rang_moteur": "P2",
+   "marche": "over_2_5",
+   "marche_affiche": "over_under_total_2.5_over",
+   "libelle": null,
+   "cote": 1.97,
+   "probabilite": 0.612455429153215,
+   "indice": 2,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "famille": "total_plus",
+    "palier": 0.5,
+    "statut": "observation",
+    "n": 38,
+    "gagnes": 28,
+    "reussite": 0.7368421052631579,
+    "base": 0.6239634624370842,
+    "rendement": 0.19236842105263158,
+    "p": 0.10025931866142627
+   },
+   "rang": 33
+  },
+  {
+   "moteur": "V2",
+   "match_id": "1ndp8jigs5d0fyjsxopchku1g",
+   "date": "2026-10-24",
+   "heure": "12:30",
+   "competition": "Angleterre :\n                        Championnat",
+   "domicile": "Portsmouth",
+   "exterieur": "Millwall",
+   "rang_moteur": "P2",
+   "marche": "over_2_5",
+   "marche_affiche": "over_under_total_2.5_over",
+   "libelle": null,
+   "cote": 2.02,
+   "probabilite": 0.5964269886458353,
+   "indice": 2,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "famille": "total_plus",
+    "palier": 0.5,
+    "statut": "observation",
+    "n": 38,
+    "gagnes": 28,
+    "reussite": 0.7368421052631579,
+    "base": 0.6239634624370842,
+    "rendement": 0.19236842105263158,
+    "p": 0.10025931866142627
+   },
+   "rang": 34
+  },
+  {
+   "moteur": "V2",
+   "match_id": "7i2uipgklu0zsbsymtnplxiqc",
+   "date": "2026-10-23",
+   "heure": "19:45",
+   "competition": "Italie :\n                        Serie A",
+   "domicile": "Torino",
+   "exterieur": "Monza",
+   "rang_moteur": "P1",
+   "marche": "over_2_5",
+   "marche_affiche": "over_under_total_2.5_over",
+   "libelle": null,
+   "cote": 1.95,
+   "probabilite": 0.580798735144915,
+   "indice": 2,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "famille": "total_plus",
+    "palier": 0.5,
+    "statut": "observation",
+    "n": 38,
+    "gagnes": 28,
+    "reussite": 0.7368421052631579,
+    "base": 0.6239634624370842,
+    "rendement": 0.19236842105263158,
+    "p": 0.10025931866142627
+   },
+   "rang": 35
+  },
+  {
+   "moteur": "V2",
+   "match_id": "7gixui89fwmbgbcvk99xl0v10",
+   "date": "2026-10-25",
+   "heure": "16:00",
+   "competition": "Italie :\n                        Serie A",
+   "domicile": "Genoa",
+   "exterieur": "Venise",
+   "rang_moteur": "P1",
+   "marche": "over_2_5",
+   "marche_affiche": "over_under_total_2.5_over",
+   "libelle": null,
+   "cote": 1.93,
+   "probabilite": 0.5727972892665613,
+   "indice": 2,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "famille": "total_plus",
+    "palier": 0.5,
+    "statut": "observation",
+    "n": 38,
+    "gagnes": 28,
+    "reussite": 0.7368421052631579,
+    "base": 0.6239634624370842,
+    "rendement": 0.19236842105263158,
+    "p": 0.10025931866142627
+   },
+   "rang": 36
   }
  ]
 }
