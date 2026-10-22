@@ -39,7 +39,7 @@ function clarifieLibelle(texte, equipes) {
   if ((r = t.match(/^(Plus|Moins) de ([\d,.]+) buts?$/))) return phraseTotalButs(r[1] === "Plus" ? "over" : "under", r[2]);
   if ((r = t.match(/^(Domicile|Extérieur) marque (plus|moins) de ([\d,.]+) buts?$/))) return phraseButsEquipe(r[1] === "Domicile" ? d : e, r[2] === "plus" ? "over" : "under", r[3]);
   // Handicap 3 choix : privilégier la structure du libellé source plutôt que sa phrase descriptive potentiellement contradictoire.
-  if ((r = t.match(/^Handicap 3 choix (.+?) [−+]?([\\d,]+) \\((1|2|3)\\)\\s*:/))) {
+  if ((r = t.match(/^Handicap 3 choix (.+?) [−+]?([\d,]+) \\((1|2|3)\\)\\s*:/))) {
     const equipeHandicap = r[1].trim();
     const ligne = Number(r[2].replace(",", "."));
     const choix = r[3];
