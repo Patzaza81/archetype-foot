@@ -112,7 +112,7 @@ function v2rExplication(l) {
   const n = Number(l && l.cellule_n);
   const echantillon = Number.isFinite(n) ? `${n} paris` : "effectif inconnu";
   const tr = Array.isArray(l && l.cellule_tranche_cote) ? `${v2rCote(l.cellule_tranche_cote[0])}–${v2rCote(l.cellule_tranche_cote[1])}` : "inconnue";
-  return `<div class="v2r-explication"><strong>Pourquoi ce choix ?</strong><p>La matrice retient ce marché car sa case admissible présente le meilleur ROI historique pour ce match : <b>${v2rEchappe(rendement)}</b> sur ${v2rEchappe(echantillon)}, pour la tranche de cote ${v2rEchappe(tr)}. Les résultats passés ne garantissent pas le prochain.</p></div>`;
+  return `<div class="v2r-explication"><strong>Pourquoi ce choix ?</strong><p>Sur ${v2rEchappe(echantillon)} comparables, cette option a généré historiquement <b>${v2rEchappe(rendement)} de gain net pour 100 unités misées</b> (cotes ${v2rEchappe(tr)}). La matrice la privilégie car ses résultats passés sont les meilleurs parmi les options admissibles. Cela ne garantit pas le prochain résultat.</p></div>`;
 }
 function v2rCarte(l, mode) {
   const score = Array.isArray(l.score) ? `${l.score[0]} - ${l.score[1]}` : "";
