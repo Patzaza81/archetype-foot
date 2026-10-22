@@ -71,7 +71,7 @@ function v2rLigneModere(k, l, mode) {
   const ind = Number.isFinite(Number(l.indice_pct)) && l.indice_pct !== null ? Number(l.indice_pct) : null;
   const super_ = l.super_favori ? ` <span class="v2r-super">SUPER FAVORI · ${v2rEchappe(String(Math.round(ind)))} %</span>`
     : ind !== null ? ` <small>indice ${v2rEchappe(String(Math.round(ind)))} %</small>` : "";
-  return `<div class="v2r-ligne"><span><b>${nom}</b> · ${v2rEchappe(v2rMarche(l))}${meme ? " <small>(pas de version modérée)</small>" : ""}${super_}</span>` +
+  return `<div class="v2r-ligne"><span><b>${nom}</b> · <strong class="v2r-marche-nom">${v2rEchappe(l.marche || l.marche_v2r || "Marché indisponible")}</strong><small class="v2r-marche-explication">${v2rEchappe(v2rMarche(l))}</small>${meme ? " <small>(pas de version modérée)</small>" : ""}${super_}</span>` +
     `<span><span class="v2r-cote">Cote ${v2rCote(l.cote)}</span> ${v2rBadge(l)}${gain}</span></div>`;
 }
 function v2rBlocModere(l, mode) {
@@ -133,7 +133,7 @@ function v2rCarte(l, mode) {
     `</div>` +
     `<div class="v2r-corps">` +
       (score ? `<div class="v2r-score">Score final <strong>${v2rEchappe(score)}</strong></div>` : "") +
-      `<div class="v2r-ligne"><span>${v2rEchappe(v2rMarche(l))}</span><span class="v2r-cote">Cote ${v2rCote(l.cote)}</span></div>` +
+      `<div class="v2r-ligne"><span class="v2r-marche-bloc"><strong class="v2r-marche-nom">${v2rEchappe(l.marche || "Marché indisponible")}</strong><small class="v2r-marche-explication">${v2rEchappe(v2rMarche(l))}</small></span><span class="v2r-cote">Cote ${v2rCote(l.cote)}</span></div>` +
       `<div class="v2r-ligne v2r-info"><span>Historique de la cellule : ROI ${v2rPct(l.roi_cellule, true)} · ${l.cellule_n == null ? "effectif indisponible" : Number(l.cellule_n) + " paris"} · cote ${Array.isArray(l.cellule_tranche_cote) ? v2rCote(l.cellule_tranche_cote[0]) + "–" + v2rCote(l.cellule_tranche_cote[1]) : "—"} · buts attendus ${v2rEchappe((l.buts_attendus || []).join(" / "))}</span>${badge}</div>` +
       (mode === "regle" && profit ? `<div class="v2r-info">Mise 1 u${profit}</div>` : "") +
       v2rBlocModere(l, mode) +
