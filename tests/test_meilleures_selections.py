@@ -1,4 +1,5 @@
-"""Onglet « Meilleures sélections » (22/10/2026) : règles d'admission, recalibrage hebdomadaire automatique, absence de fuite du futur."""
+"""Onglet « Meilleures sélections » (22/10/2026) : critères = indice, pourcentage et étoiles AFFICHÉS + résultats réels ;
+recalibrage hebdomadaire automatique ; absence de fuite du futur."""
 import json
 import math
 import random
@@ -18,41 +19,43 @@ def jour(i):
     return (DEBUT + timedelta(days=i)).isoformat()
 
 
-def pari(i, marche="under_2_5", moteur="V3", cote=1.5, indice=4, sur=4, gagne=1):
-    return {"moteur": moteur, "date": jour(i), "marche": marche, "cote": cote, "indice": indice, "sur": sur, "gagne": gagne}
+def pari(i, moteur="V3", pct=85, indice=4, sur=4, etoiles=2, gagne=1, marche="under_2_5", mid=None, version=None):
+    p = {"moteur": moteur, "date": jour(i), "marche": marche, "pct": pct, "indice": indice, "sur": sur, "etoiles": etoiles, "gagne": gagne}
+    if mid is not None:
+        p["match_id"] = mid
+    if version is not None:
+        p["version"] = version
+    return p
 
 
-def serie(marche, taux, n_jours=28, par_jour=4, cote=1.5, moteur="V3", graine=1, indice=4, sur=4, depart=0):
-    """Paris synthétiques : `taux` peut être un nombre ou une fonction du jour."""
+def serie(taux, n_jours=28, par_jour=4, graine=1, depart=0, **kw):
+    """Paris synthétiques ; `taux` = nombre ou fonction du jour."""
     r = random.Random(graine)
     out = []
     for d in range(depart, depart + n_jours):
         t = taux(d) if callable(taux) else taux
         for _ in range(par_jour):
-            out.append(pari(d, marche, moteur, cote, indice, sur, int(r.random() < t)))
+            out.append(pari(d, gagne=int(r.random() < t), **kw))
     return out
 
 
-def admis(paris):
-    return {(g["moteur"], g["famille"]): g for g in regles.calibrer(paris)["groupes"]}
+def fond(taux=0.45, moteur="V3", n_jours=28, graine=99):
+    """Les AUTRES paris du moteur (pourcentage bas, indice bas) : ils fixent la référence."""
+    return serie(taux, n_jours=n_jours, moteur=moteur, graine=graine, pct=55, indice=0, etoiles=1, marche="over_2_5")
 
 
-# ───────────── familles ─────────────
-@pytest.mark.parametrize("marche,attendu", [
-    ("under_2_5", "total_moins"), ("over_1_5", "total_plus"), ("away_under_1_5", "equipe_moins"), ("home_over_0_5", "equipe_plus"),
-    ("handicap_-1.5_1", "handicap"), ("dc_1X", "double_chance"), ("1x2_2", "victoire"), ("btts_yes", "btts_oui"), ("clean_home", "cage"),
-])
-def test_familles_reconnues(marche, attendu):
-    assert regles.famille(marche) == attendu
+def retenues(paris):
+    return {g["moteur"]: g for g in regles.calibrer(paris)["groupes"]}
 
 
-@pytest.mark.parametrize("marche", ["", None, "score_2_3", "corners_over_8_5", "inconnu"])
-def test_familles_inconnues_exclues(marche):
-    assert regles.famille(marche) is None
-    assert regles.calibrer([pari(0, marche or "x") for _ in range(50)])["groupes"] == []
+# ───────────── valeurs de la structure ─────────────
+def test_structure():
+    assert regles.nb_tests_possibles() == 5 * 5 * 3 + 5 * 5 * 4 == 175
+    c = regles.calibrer([])
+    assert c["m_tests"] == 175 and c["seuil_confirme"] == pytest.approx(0.05 / 175) and c["seuil_observation"] == pytest.approx(1 / 175)
 
 
-# ───────────── test statistique exact ─────────────
+# ───────────── test statistique exact et borne ─────────────
 def somme_directe(k, n, p):
     return sum(math.comb(n, i) * p ** i * (1 - p) ** (n - i) for i in range(k, n + 1))
 
@@ -62,58 +65,88 @@ def test_queue_binomiale_exacte(k, n, p):
     assert regles.queue_binomiale(k, n, p) == pytest.approx(somme_directe(k, n, p), rel=1e-9)
 
 
-def test_queue_binomiale_bornes():
-    assert regles.queue_binomiale(0, 10, 0.3) == 1.0 and regles.queue_binomiale(11, 10, 0.3) == 0.0
+def hyper_directe(g, n, K, N):
+    return sum(math.comb(K, i) * math.comb(N - K, n - i) for i in range(g, min(n, K) + 1)) / math.comb(N, n)
 
 
-# ───────────── admission : cas qui DOIVENT passer ─────────────
-def test_passe_groupe_tres_gagnant_et_stable():
-    g = admis(serie("under_2_5", 0.92))[("V3", "total_moins")]
-    assert g["statut"] == "confirme" and g["n"] == 112
+@pytest.mark.parametrize("g,n,K,N", [(8, 10, 12, 30), (3, 3, 10, 20), (0, 5, 9, 20), (20, 25, 30, 60), (5, 5, 5, 40), (2, 12, 3, 15)])
+def test_test_de_fisher_exact(g, n, K, N):
+    assert regles.queue_hypergeometrique(g, n, K, N) == pytest.approx(hyper_directe(g, n, K, N), rel=1e-9)
 
 
-def test_passe_groupe_moyennement_gagnant_en_observation():
-    # taux entre la base (0,667) et le très fort : preuve moyenne → au moins « en observation »
-    res = {admis(serie("under_2_5", 0.82, graine=s)).get(("V3", "total_moins"), {}).get("statut") for s in range(1, 9)}
-    assert res & {"observation", "confirme"} and None not in res or res & {"observation", "confirme"}
+def test_borne_basse_de_wilson():
+    assert regles.borne_basse(0, 0) == 0.0
+    assert regles.borne_basse(50, 100) == pytest.approx(0.4038, abs=1e-3)      # valeur de référence de l'intervalle de Wilson à 95 %
+    assert regles.borne_basse(100, 200) > regles.borne_basse(50, 100)           # plus de paris, borne plus haute
+    assert regles.borne_basse(9, 10) < regles.borne_basse(90, 100)
 
 
-def test_passe_aussi_pour_v2_et_une_autre_famille():
-    g = admis(serie("handicap_-1.5_1", 0.93, moteur="V2"))
-    assert g[("V2", "handicap")]["statut"] == "confirme"
+# ───────────── règle : cas qui DOIVENT passer ─────────────
+def test_passe_une_combinaison_tres_reussie_et_stable():
+    g = retenues(serie(0.92) + fond())["V3"]
+    assert g["statut"] == "confirme" and g["reussite"] > 0.85
 
 
-# ───────────── admission : cas qui DOIVENT échouer ─────────────
+def test_passe_aussi_pour_v2_et_retient_les_bons_criteres():
+    # seuls les paris à pourcentage >= 80 réussissent : la règle retenue doit exiger au moins 70 %
+    haut = serie(0.93, moteur="V2", pct=85, etoiles=3)
+    bas = serie(0.40, moteur="V2", pct=65, etoiles=3, graine=7, marche="over_2_5")
+    g = retenues(haut + bas)["V2"]
+    assert g["statut"] == "confirme" and g["pct_min"] >= 70
+
+
+def test_la_regle_suit_l_indice_affiche():
+    bon = serie(0.92, indice=4)
+    mauvais = serie(0.40, indice=1, graine=5, marche="over_2_5") + serie(0.45, indice=2, graine=6, marche="over_1_5")
+    g = retenues(bon + mauvais)["V3"]
+    assert g["indice_min"] >= 0.5
+
+
+def test_la_regle_suit_les_etoiles_affichees():
+    bon = serie(0.93, etoiles=3)
+    mauvais = serie(0.40, etoiles=1, graine=5, marche="over_2_5")
+    g = retenues(bon + mauvais)["V3"]
+    assert g["etoiles_min"] >= 2
+
+
+def test_la_reference_est_celle_du_meme_moteur():
+    # V3 réussit 9 fois sur 10 PARTOUT (séries exactes, sans hasard) : aucune combinaison n'est meilleure que les autres paris du moteur.
+    # Le même profil côté V2, dont les autres paris réussissent moins, est retenu.
+    exact = lambda k, taux_dix: (k % 10) < taux_dix
+    v3 = [pari(i // 4, gagne=int(exact(i, 9))) for i in range(112)] + [pari(i // 4, gagne=int(exact(i, 9)), pct=55, indice=0, etoiles=1, marche="over_2_5") for i in range(112)]
+    assert "V3" not in retenues(v3)
+    v2 = [pari(i // 4, "V2", gagne=int(exact(i, 9))) for i in range(112)] + [pari(i // 4, "V2", gagne=int(exact(i, 4)), pct=55, indice=0, etoiles=1, marche="over_2_5") for i in range(112)]
+    assert "V2" in retenues(v2)
+
+
+# ───────────── règle : cas qui DOIVENT échouer ─────────────
 def test_echoue_tout_gagne_mais_trop_peu_de_paris():
-    paris = [pari(i, gagne=1) for i in range(3)] + [pari(i, marche="over_2_5", gagne=0) for i in range(3, 6)]
-    assert ("V3", "total_moins") not in admis(paris)          # 3 sur 3 : p = 0,30, rien d'établi
+    assert "V3" not in retenues([pari(i, gagne=1) for i in range(3)] + fond())
 
 
-def test_echoue_resultat_egal_a_la_base():
-    assert admis(serie("under_2_5", 1 / 1.5)) == {} or ("V3", "total_moins") not in admis(serie("under_2_5", 1 / 1.5))
+def test_echoue_resultat_egal_aux_autres_paris():
+    assert "V3" not in retenues(serie(0.5) + fond(0.5))
 
 
-def test_echoue_gagnant_seulement_dans_une_moitie():
-    t = lambda d: 0.97 if d < 14 else 0.45
-    assert ("V3", "total_moins") not in admis(serie("under_2_5", t))
-    t2 = lambda d: 0.45 if d < 14 else 0.97
-    assert ("V3", "total_moins") not in admis(serie("under_2_5", t2))
+def test_echoue_reussi_seulement_dans_une_moitie():
+    assert "V3" not in retenues(serie(lambda d: 0.97 if d < 14 else 0.30) + fond())
+    assert "V3" not in retenues(serie(lambda d: 0.30 if d < 14 else 0.97) + fond())
 
 
 def test_echoue_perdant():
-    assert ("V3", "total_moins") not in admis(serie("under_2_5", 0.40))
+    assert "V3" not in retenues(serie(0.30) + fond())
 
 
-def test_echoue_reussite_au_dessus_de_la_base_mais_rendement_negatif():
-    # 140 paris à cote 1,10 (133 gagnés) + 60 paris à cote 4 (12 gagnés) : réussite 72,5 % > base 71,1 %, mais on perd de l'argent
-    paris = []
-    for i in range(140):
-        paris.append(pari(i % 28, cote=1.1, gagne=int(i % 20 != 0)))
-    for i in range(60):
-        paris.append(pari(i % 28, cote=4.0, gagne=int(i % 5 == 0)))
-    s = regles.statistiques(paris)
-    assert s["reussite"] > s["base"] and s["rendement"] < 0
-    assert ("V3", "total_moins") not in admis(paris)
+def test_echoue_un_seul_jour_de_donnees():
+    un_jour = [pari(0, gagne=1) for _ in range(40)] + [pari(0, gagne=0, pct=55, indice=0, etoiles=1, marche="over_2_5") for _ in range(40)]
+    assert retenues(un_jour) == {}
+
+
+def test_cotes_et_rendement_ignores():
+    a = [{**p, "cote": 1.2} for p in serie(0.92) + fond()]
+    b = [{**p, "cote": 9.0} for p in serie(0.92) + fond()]
+    cle = lambda c: [(g["moteur"], g["indice_min"], g["pct_min"], g["etoiles_min"], g["n"]) for g in regles.calibrer(c)["groupes"]]
+    assert cle(a) == cle(b)
 
 
 # ───────────── recalibrage hebdomadaire ─────────────
@@ -126,21 +159,19 @@ def test_recalibrage_du_calendrier():
     assert regles.recalibrage_du([{"calibre_le": "2026-10-01"}, {"calibre_le": "2026-10-20"}], "2026-10-26") is False
 
 
-def test_un_groupe_rentable_est_remplace_quand_les_donnees_changent():
-    """A gagnait au début puis s'effondre ; B perdait puis gagne. Le recalibrage de fin doit retirer A et faire entrer B, sans aucune main."""
-    A = serie("under_2_5", lambda d: 0.95 if d < 21 else 0.10, n_jours=42, graine=3)
-    B = serie("over_2_5", lambda d: 0.10 if d < 21 else 0.97, n_jours=42, graine=4, cote=1.5)
-    tout = A + B
-    tot_t = regles.photographie(tout, jour(21))["groupes"]     # on ne connaît que les 21 premiers jours
-    assert [g["famille"] for g in tot_t] == ["total_moins"]
-    fin = regles.photographie(tout, jour(42))["groupes"]
-    fams = {g["famille"] for g in fin}
-    assert "total_plus" in fams or "total_moins" not in fams
-    assert "total_moins" not in fams                         # A est sorti
+def test_la_regle_change_toute_seule_quand_les_donnees_changent():
+    """Jusqu'au jour 30 ce sont les paris à indice 4 qui réussissent ; ensuite ce sont ceux à indice 1. La règle suit, sans aucune main."""
+    haut = serie(lambda d: 0.95 if d < 30 else 0.30, n_jours=60, indice=4, graine=3)
+    bas = serie(lambda d: 0.30 if d < 30 else 0.95, n_jours=60, indice=1, graine=4, marche="over_2_5")
+    tout = haut + bas
+    g30 = regles.photographie(tout, jour(30))["groupes"]
+    assert g30 and g30[0]["indice_min"] >= 0.5                      # au jour 30 : indice élevé
+    g60 = regles.photographie(tout, jour(60))["groupes"]
+    assert [(g["indice_min"], g["n"]) for g in g60] != [(g["indice_min"], g["n"]) for g in g30]    # la règle a changé
 
 
 def test_construire_ne_recalibre_qu_une_fois_par_semaine():
-    paris = serie("under_2_5", 0.9)
+    paris = serie(0.9) + fond()
     h1, _ = suivi.construire(jour(30), paris, [], [])
     h2, s2 = suivi.construire(jour(31), paris, [], h1)
     assert len(h2) == 1 and s2["recalibre_aujourdhui"] is False
@@ -150,54 +181,95 @@ def test_construire_ne_recalibre_qu_une_fois_par_semaine():
 
 # ───────────── pas de fuite du futur ─────────────
 def test_le_calibrage_du_jour_J_ignore_les_paris_du_jour_J_et_apres():
-    base = serie("under_2_5", 0.9, n_jours=20)
+    base = serie(0.9, n_jours=20) + fond(n_jours=20)
     avant = regles.photographie(base, jour(20))
-    futur = base + [pari(20 + i % 5, gagne=0) for i in range(500)]   # des défaites massives APRÈS le recalibrage
+    futur = base + [pari(20 + i % 5, gagne=0) for i in range(500)]
     apres = regles.photographie(futur, jour(20))
     assert avant["groupes"] == apres["groupes"] and avant["nb_paris"] == apres["nb_paris"]
 
 
-def test_bilan_hors_echantillon_utilise_l_instantane_d_avant_le_pari():
-    paris = serie("under_2_5", 0.9, n_jours=40, graine=5)
+def test_bilan_hors_echantillon_par_moteur_apres_le_choix():
+    paris = serie(0.9, n_jours=40, graine=5) + fond(n_jours=40)
     hist = [regles.photographie(paris, jour(14)), regles.photographie(paris, jour(28))]
     b = regles.bilan_hors_echantillon(paris, hist)
-    comptes = sum(v["n"] for v in b.values())
-    assert 0 < comptes <= len([p for p in paris if p["date"] >= jour(14)])
-    assert regles.bilan_hors_echantillon([p for p in paris if p["date"] < jour(14)], hist)["confirme"]["n"] == 0   # rien avant le 1er instantané
+    assert set(b) == {"V3"} and 0 < b["V3"]["n"] <= len([p for p in paris if p["date"] >= jour(14)])
+    assert regles.bilan_hors_echantillon([p for p in paris if p["date"] < jour(14)], hist) == {}      # rien avant le 1er instantané
+    assert regles.bilan_historique(paris, hist[-1]["groupes"])["V3"]["n"] > 0
 
 
 # ───────────── classement du jour ─────────────
-def test_classer_ne_garde_que_les_groupes_admis_et_trie():
-    groupes = [
-        {"moteur": "V3", "famille": "total_moins", "palier": 0.5, "statut": "observation", "n": 40, "gagnes": 33, "reussite": .8, "base": .7, "rendement": .1, "p": 0.05},
-        {"moteur": "V2", "famille": "handicap", "palier": 0.0, "statut": "confirme", "n": 90, "gagnes": 80, "reussite": .9, "base": .7, "rendement": .2, "p": 0.001},
-    ]
+def test_classer_filtre_sur_la_regle_et_trie_par_indicateurs_affiches():
+    regle_v3 = {"moteur": "V3", "indice_min": 0.75, "pct_min": 80, "etoiles_min": 2, "statut": "confirme", "n": 50, "gagnes": 40,
+                "reussite": .8, "borne_basse": .7, "p": 0.001}
+    regle_v2 = {"moteur": "V2", "indice_min": 0.0, "pct_min": 70, "etoiles_min": 1, "statut": "observation", "n": 90, "gagnes": 60,
+                "reussite": .66, "borne_basse": .6, "p": 0.03}
+    base = {"marche": "under_2_5"}
     sel = [
-        {"moteur": "V3", "marche": "under_2_5", "indice": 4, "sur": 4, "cote": 1.5, "probabilite": .8},    # admis (observation)
-        {"moteur": "V3", "marche": "under_2_5", "indice": 1, "sur": 4, "cote": 1.5, "probabilite": .8},    # indice trop bas
-        {"moteur": "V3", "marche": "over_2_5", "indice": 4, "sur": 4, "cote": 1.5, "probabilite": .8},     # autre famille
-        {"moteur": "V2", "marche": "handicap_-1.5_1", "indice": 0, "sur": 4, "cote": 1.6, "probabilite": .7},  # admis (confirmé)
-        {"moteur": "V2", "marche": "under_2_5", "indice": 4, "sur": 4, "cote": 1.5, "probabilite": .8},    # autre moteur
-        {"moteur": "V3", "marche": "under_2_5", "indice": None, "sur": None, "cote": 1.5, "probabilite": .8},  # sans indice
+        {**base, "moteur": "V3", "pct": 82, "indice": 3, "sur": 4, "etoiles": 2},        # passe
+        {**base, "moteur": "V3", "pct": 88, "indice": 4, "sur": 4, "etoiles": 3},        # passe, meilleur pourcentage
+        {**base, "moteur": "V3", "pct": 79, "indice": 4, "sur": 4, "etoiles": 3},        # pourcentage trop bas
+        {**base, "moteur": "V3", "pct": 90, "indice": 2, "sur": 4, "etoiles": 3},        # indice trop bas
+        {**base, "moteur": "V3", "pct": 90, "indice": 4, "sur": 4, "etoiles": 1},        # étoiles insuffisantes
+        {**base, "moteur": "V2", "pct": 75, "indice": 0, "sur": 4, "etoiles": 1},        # passe (observation)
+        {**base, "moteur": "V2", "pct": 65, "indice": 4, "sur": 4, "etoiles": 3},        # pourcentage trop bas
+        {**base, "moteur": "V3", "pct": 95, "indice": None, "sur": None, "etoiles": 3},  # sans indice
     ]
-    out = regles.classer(sel, groupes)
-    assert [(x["moteur"], x["marche"]) for x in out] == [("V2", "handicap_-1.5_1"), ("V3", "under_2_5")]
-    assert [x["rang"] for x in out] == [1, 2]
+    out = regles.classer(sel, [regle_v3, regle_v2])
+    assert [(x["moteur"], x["pct"]) for x in out] == [("V3", 88), ("V3", 82), ("V2", 75)]
+    assert [x["rang"] for x in out] == [1, 2, 3]
 
 
-# ───────────── garde-fou statistique : sous l'hypothèse « aucun avantage », on n'admet presque jamais ─────────────
+# ───────────── version du moteur V2 et un pari par match ─────────────
+def test_version_courante_et_filtre():
+    paris = [pari(0, "V2", version="2.6.9"), pari(5, "V2", version="2.6.9"), pari(4, "V2", version="2.6.10"), pari(9, "V2", version="2.6.10")]
+    assert regles.version_courante(paris) == "2.6.10"
+    v3, sans = pari(3), pari(2, "V2")
+    gardes = regles.garde_version_courante(paris[:2] + [pari(6, "V2", version="2.6.10"), v3, sans])
+    assert [p.get("version") for p in gardes if p["moteur"] == "V2" and p.get("version")] == ["2.6.10"]
+    assert v3 in gardes and sans in gardes
+    assert regles.garde_version_courante([pari(i, "V2") for i in range(5)]) == [pari(i, "V2") for i in range(5)]
+
+
+def test_un_pari_par_match_garde_le_meilleur_pourcentage():
+    a, b = pari(0, mid="M1", marche="over_1_5", pct=60), pari(0, mid="M1", marche="over_2_5", pct=80)
+    assert regles.un_pari_par_match_et_famille([a, b]) == [b]
+
+
+def test_un_pari_par_match_ne_fusionne_pas_ce_qui_est_different():
+    lots = [
+        [pari(0, mid="M1", marche="over_1_5"), pari(0, mid="M2", marche="over_1_5")],                          # 2 matchs
+        [pari(0, mid="M1", marche="over_1_5"), pari(0, mid="M1", marche="under_3_5")],                         # 2 familles
+        [pari(0, "V2", mid="M1", marche="over_1_5"), pari(0, "V3", mid="M1", marche="over_1_5")],              # 2 moteurs
+        [pari(0), pari(0)],                                                                                    # pas d'identifiant
+    ]
+    for lot in lots:
+        assert len(regles.un_pari_par_match_et_famille(lot)) == 2
+
+
+def test_la_deduplication_est_deterministe():
+    a, b = pari(0, mid="M1", marche="over_1_5", pct=70, gagne=1), pari(0, mid="M1", marche="over_2_5", pct=70, gagne=0)
+    assert regles.un_pari_par_match_et_famille([a, b]) == regles.un_pari_par_match_et_famille([b, a])
+
+
+def test_calibrer_compte_un_pari_par_match():
+    paris = [pari(m % 28, "V2", mid=f"M{m}", marche=ligne, pct=90 - 10 * k, gagne=int(m % 10 != 0))
+             for m in range(40) for k, ligne in enumerate(("over_0_5", "over_1_5", "over_2_5"))]
+    assert regles.calibrer(paris)["nb_paris"] == 40
+
+
+# ───────────── garde-fou statistique ─────────────
 def test_faux_positifs_rares_sans_aucun_avantage():
     r = random.Random(11)
     faux_confirmes = 0
-    essais = 40
+    essais = 30
     for _ in range(essais):
         paris = []
-        for marche, cote, indice in (("under_2_5", 1.5, 4), ("over_2_5", 1.9, 3), ("handicap_-1.5_1", 1.7, 2), ("dc_1X", 1.3, 4), ("btts_yes", 1.9, 4)):
-            for d in range(28):
-                for _ in range(3):
-                    paris.append(pari(d, marche, "V2", cote, indice, 4, int(r.random() < 1 / cote)))
+        for d in range(28):
+            for _ in range(8):
+                paris.append(pari(d, "V2", pct=r.choice((55, 65, 75, 85, 95)), indice=r.randint(0, 4), etoiles=r.randint(1, 3),
+                                  gagne=int(r.random() < 0.55)))                # aucun lien entre les indicateurs et le résultat
         faux_confirmes += len([g for g in regles.calibrer(paris)["groupes"] if g["statut"] == "confirme"])
-    assert faux_confirmes / essais <= 1.0        # au plus une fausse admission « confirmée » attendue par recalibrage
+    assert faux_confirmes / essais <= 1.0
 
 
 # ───────────── données réelles du dépôt (si présentes) ─────────────
@@ -207,23 +279,32 @@ def test_chargement_reel_coherent():
         pytest.skip("archive absente")
     paris = donnees.paris_resolus(str(RACINE / "data/archive_test"), str(RACINE / "data/v3/journal"))
     assert paris and {p["moteur"] for p in paris} <= {"V2", "V3"}
-    assert all(p["gagne"] in (0, 1) and p["cote"] > 1 for p in paris)
-    c = regles.calibrer(paris)
-    assert c["m_tests"] > 0 and all(g["statut"] in ("confirme", "observation") for g in c["groupes"])
+    assert all(p["gagne"] in (0, 1) and isinstance(p["pct"], int) and p["etoiles"] in (1, 2, 3, 4) for p in paris)
+    assert all(p["etoiles"] <= 3 for p in paris if p["moteur"] == "V2")
+    c = regles.calibrer(regles.garde_version_courante(paris))
+    assert c["m_tests"] == 175 and all(g["statut"] in ("confirme", "observation") for g in c["groupes"])
+
+
+def test_pourcentage_affiche_arrondi_comme_le_site():
+    donnees = pytest.importorskip("meilleures_selections.donnees")
+    assert [donnees.pct_affiche(x) for x in (0.7349, 0.735, 0.7351, 0.8, 0.9999)] == [73, 74, 74, 80, 100]
+    assert donnees.pct_affiche(None) is None and donnees.pct_affiche("x") is None
+    assert [donnees.etoiles_v3(n) for n in (3, 4, 5, 7, 8, 9, 10, 12)] == [1, 1, 2, 2, 3, 3, 4, 4]
 
 
 # ───────────── pages et pipeline ─────────────
 @pytest.mark.parametrize("page,moteur,js", [("archetype.html", "V2", "archetype.js"), ("pronostics_v3.html", "V3", "archetype_v3.js")])
 def test_pages_branchees(page, moteur, js):
     h = (RACINE / page).read_text(encoding="utf-8")
-    assert f'class="ax-page af-fond af-v{moteur[1]}"' in h        # le script lit le moteur dans la classe du body
+    assert f'class="ax-page af-fond af-v{moteur[1]}"' in h
     assert re.search(r"af-meilleures\.css\?v=\d", h)
-    assert h.index(js) < h.index("af-date-navigation.js") < h.index("meilleures_selections.js")   # après la page (helper de traduction) et la navigation par dates
+    assert h.index(js) < h.index("af-date-navigation.js") < h.index("meilleures_selections.js")
 
 
-def test_js_ne_touche_pas_aux_cartes_du_filtre_de_dates():
+def test_js_ne_touche_pas_aux_cartes_du_filtre_de_dates_et_n_affiche_ni_cote_ni_rendement():
     js = (RACINE / "meilleures_selections.js").read_text(encoding="utf-8")
     assert "ax-carte" not in js and "<table" not in js
+    assert not re.search(r"cote|rendement|misés", js, re.I)
 
 
 def test_css_limite_a_la_page():
@@ -237,82 +318,15 @@ def test_workflow_apres_les_scores_et_avant_la_publication():
     i = w.index("python evaluation_scores.py")
     j = w.index("python -m meilleures_selections.suivi pipeline")
     k = w.index("Commit et push du résultat")
-    assert i < j < k
-    assert "continue-on-error: true" in w[j:j + 200]
+    assert i < j < k and "continue-on-error: true" in w[j:j + 200]
 
 
-def test_sortie_json_complete(tmp_path):
-    paris = serie("under_2_5", 0.9, n_jours=30)
+def test_sortie_json_complete():
+    paris = serie(0.9, n_jours=30) + fond(n_jours=30)
     sel = [{"moteur": "V3", "match_id": "m", "date": jour(30), "heure": "10:00", "competition": "X", "domicile": "A", "exterieur": "B",
-            "marche": "under_2_5", "cote": 1.5, "probabilite": .8, "indice": 4, "sur": 4}]
+            "marche": "under_2_5", "pct": 88, "indice": 4, "sur": 4, "etoiles": 2}]
     _, s = suivi.construire(jour(30), paris, sel, [])
     json.dumps(s)
     for cle in ("calibre_le", "prochain_recalibrage", "groupes", "hors_echantillon", "bilan_historique", "rejeu", "selections", "m_tests", "seuil_confirme", "seuil_observation"):
         assert cle in s
     assert len(s["selections"]) == 1 and s["selections"][0]["rang"] == 1
-
-
-def test_nombre_de_tests_possibles_suit_la_structure():
-    assert regles.nb_tests_possibles() == 2 * (7 * 5 + 3 * 3) == 88
-    assert regles.nb_paliers("nul") == 0 and regles.nb_paliers("cage") == 3 and regles.nb_paliers("handicap") == 5
-    c = regles.calibrer(serie("under_2_5", 0.9))
-    assert c["m_tests"] == 88 and c["seuil_confirme"] == pytest.approx(1 / 88)
-    assert regles.calibrer([])["m_tests"] == 88                      # indépendant de la quantité de données
-
-
-# ───────────── version du moteur V2 et un pari par match ─────────────
-def v2(i, version, mid="m", marche="over_2_5", prob=0.7):
-    return {**pari(i, marche, "V2"), "version": version, "match_id": mid, "probabilite": prob}
-
-
-def test_version_courante_est_celle_du_pari_le_plus_recent():
-    paris = [v2(0, "2.6.9"), v2(5, "2.6.9"), v2(4, "2.6.10"), v2(9, "2.6.10")]
-    assert regles.version_courante(paris) == "2.6.10"
-    assert regles.version_courante([pari(0)]) is None                     # V3 sans version
-
-
-def test_garde_version_courante_retire_l_ancienne_version_seulement_en_v2():
-    v3 = pari(3)                                                         # V3 : jamais touché
-    sans_version = {**pari(2, moteur="V2"), "match_id": "z"}             # V2 sans information de version : conservé
-    paris = [v2(0, "2.6.9"), v2(1, "2.6.9"), v2(6, "2.6.10"), v3, sans_version]
-    gardes = regles.garde_version_courante(paris)
-    assert [p.get("version") for p in gardes if p["moteur"] == "V2" and p.get("version")] == ["2.6.10"]
-    assert v3 in gardes and sans_version in gardes and len(gardes) == 3
-
-
-def test_garde_version_courante_sans_aucune_version_ne_retire_rien():
-    paris = [pari(i, moteur="V2") for i in range(5)]
-    assert regles.garde_version_courante(paris) == paris
-
-
-def test_un_pari_par_match_garde_la_meilleure_probabilite():
-    a, b = v2(0, "x", "M1", "over_1_5", 0.60), v2(0, "x", "M1", "over_2_5", 0.80)
-    out = regles.un_pari_par_match_et_famille([a, b])
-    assert out == [b]                                                    # même match, même famille : 1 seul pari, le plus probable
-
-
-def test_un_pari_par_match_ne_fusionne_pas_ce_qui_est_different():
-    memes_familles = [v2(0, "x", "M1", "over_1_5", 0.6), v2(0, "x", "M2", "over_1_5", 0.6)]           # 2 matchs
-    autres_familles = [v2(0, "x", "M1", "over_1_5", 0.6), v2(0, "x", "M1", "under_3_5", 0.6)]         # 2 familles
-    autres_moteurs = [v2(0, "x", "M1", "over_1_5", 0.6), {**pari(0, "over_1_5", "V3"), "match_id": "M1"}]
-    sans_id = [pari(0), pari(0)]                                                                    # pas d'identifiant : rien n'est regroupé
-    for lot in (memes_familles, autres_familles, autres_moteurs, sans_id):
-        assert len(regles.un_pari_par_match_et_famille(lot)) == 2
-
-
-def test_la_deduplication_est_deterministe_et_sans_lien_avec_le_resultat():
-    a, b = {**v2(0, "x", "M1", "over_1_5", 0.7), "gagne": 1}, {**v2(0, "x", "M1", "over_2_5", 0.7), "gagne": 0}   # égalité de probabilité
-    r1 = regles.un_pari_par_match_et_famille([a, b])
-    r2 = regles.un_pari_par_match_et_famille([b, a])
-    assert r1 == r2 and len(r1) == 1
-
-
-def test_calibrer_compte_un_pari_par_match():
-    # 40 matchs, chacun avec 3 paris « plus de » : après regroupement il reste 40 paris, pas 120
-    paris = []
-    for m in range(40):
-        for k, ligne in enumerate(("over_0_5", "over_1_5", "over_2_5")):
-            paris.append({**pari(m % 28, ligne, "V2", 1.5, 4, 4, int(m % 10 != 0)), "match_id": f"M{m}", "probabilite": 0.9 - 0.1 * k})
-    c = regles.calibrer(paris)
-    assert c["nb_paris"] == 40
-    assert all(t["n"] <= 40 for t in c["tests"])

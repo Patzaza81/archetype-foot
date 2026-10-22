@@ -1,18 +1,19 @@
 """Règles pures de l'onglet « Meilleures sélections » (22/10/2026). Aucune lecture de fichier ici : tout est testable.
 
-Un PARI = dict(moteur "V2"|"V3", date "AAAA-MM-JJ", marche (nom V3), cote, indice, sur, gagne 0|1).
+Même base que l'étude des indicateurs affichés : un PARI = dict(moteur "V2"|"V3", date, match_id, marche, indice + sur (indice affiché x/sur),
+pct (pourcentage AFFICHÉ sur le site, entier), etoiles (étoiles affichées), gagne 0|1). Ni cote ni rendement : seule la réussite réelle compte.
 
-Principe : le classement se recalibre seul. À chaque recalibrage, on regarde, pour chaque (moteur, famille de marché), les
-ensembles « indice >= palier » (un palier par valeur d'indice observée) et on ne garde que ceux dont le résultat est
-statistiquement meilleur que ce que les cotes exigent. Aucune constante tirée de l'intuition :
-  - la base d'un pari = 1 / cote (ce que le bookmaker exige pour ne rien perdre) ;
-  - le test = probabilité (loi binomiale exacte, base = moyenne des 1/cote) d'obtenir au moins autant de paris gagnés
-    par hasard pur ; le résultat doit en plus dépasser la base dans CHAQUE moitié chronologique (précédent alpha_serie)
-    et le rendement à mise égale doit être positif ;
-  - les seuils de probabilité viennent du NOMBRE de tests POSSIBLES (m = somme sur les moteurs et les familles des paliers atteignables, fixé par la structure
-    et non par la quantité de données, pour qu'un début d'historique ne relâche pas la règle) : « confirmé » = au plus une
-    fausse admission attendue sur l'ensemble (p <= 1/m) ; « en observation » = p <= 1/racine(m).
-Quand les données changent (m, n, résultats), les groupes entrent et sortent sans intervention.
+Principe : le classement se recalibre seul. Une RÈGLE = « indice affiché >= i ET pourcentage affiché >= p ET étoiles affichées >= e ».
+À chaque recalibrage, toutes les règles possibles sont testées par moteur ; on retient celle dont la réussite garantie est la plus haute (borne basse de l'intervalle à 95 % de la réussite).
+  - i : les niveaux de l'indice (0, 1/4, 1/2, 3/4, 1) ; p : les paliers du pourcentage affiché (0, 60, 70, 80, 90, les tranches des tableaux de
+    l'étude) ; e : les niveaux d'étoiles du moteur (V2 : 1 à 3, V3 : 1 à 4) ;
+  - la référence d'une règle = la réussite de tous les autres paris du même moteur ; le test = probabilité (test exact de Fisher) d'obtenir au
+    moins autant de paris gagnés dans la règle par pur hasard ; la règle doit aussi dépasser la référence dans CHAQUE moitié
+    chronologique (précédent alpha_serie) ;
+  - les seuils de probabilité viennent du NOMBRE de règles possibles (m, fixé par la structure et non par la quantité de données) :
+    « confirmé » = risque global de fausse admission d'au plus 5 % (p <= 0,05/m) ; « en observation » = au plus une fausse admission
+    attendue sur l'ensemble (p <= 1/m).
+Quand les données changent, la règle retenue change toute seule.
 """
 from __future__ import annotations
 
@@ -22,38 +23,20 @@ from datetime import date, timedelta
 from typing import Any, Iterable, Mapping, Sequence
 
 PERIODE_JOURS = 7  # recalibrage hebdomadaire (demande de Patrick)
+ALPHA = 0.05       # niveau de confiance 95 %, le même que les intervalles des tableaux de l'étude
 MOTEURS = ("V2", "V3")
-
-
-def nb_paliers(fam: str) -> int:
-    """Paliers d'indice réellement possibles pour une famille (moteur_v3/performance.py) : marché d'une seule équipe = 2 scénarios
-    (indice 0 à 2, donc 3 paliers) ; marché à deux équipes = 4 scénarios (indice 0 à 4, donc 5 paliers). Le nul n'a pas d'indice : aucun test."""
-    if fam == "nul":
-        return 0
-    return 3 if fam in ("equipe_moins", "equipe_plus", "cage") else 5
+NIVEAUX_INDICE = (0.0, 0.25, 0.5, 0.75, 1.0)    # indice affiché / sur : 4 scénarios (deux équipes) ou 2 (une équipe)
+PALIERS_POURCENTAGE = (0, 60, 70, 80, 90)       # tranches du pourcentage affiché, celles des tableaux de l'étude
+ETOILES_MAX = {"V2": 3, "V3": 4}                # V2 : catégories C/B/A ; V3 : 4 paliers de taille d'échantillon
 
 
 def nb_tests_possibles() -> int:
-    """Nombre de tests possibles, fixé par la structure (moteurs x familles x paliers atteignables), jamais par la quantité de données."""
-    return len(MOTEURS) * sum(nb_paliers(f) for f in FAMILLES)
-
-FAMILLES = {
-    "total_moins": "Total de buts : moins de",
-    "total_plus": "Total de buts : plus de",
-    "equipe_moins": "Buts d'une équipe : moins de",
-    "equipe_plus": "Buts d'une équipe : plus de",
-    "handicap": "Handicap",
-    "double_chance": "Double chance",
-    "victoire": "Victoire d'une équipe",
-    "nul": "Match nul",
-    "btts_oui": "Les deux équipes marquent : oui",
-    "btts_non": "Les deux équipes marquent : non",
-    "cage": "Cage inviolée",
-}
+    """Nombre de règles possibles, fixé par la structure (niveaux d'indice x paliers de pourcentage x niveaux d'étoiles, par moteur)."""
+    return sum(len(NIVEAUX_INDICE) * len(PALIERS_POURCENTAGE) * e for e in ETOILES_MAX.values())
 
 
 def famille(marche: str | None) -> str | None:
-    """Famille d'un marché (nom V3). None si le marché n'est pas reconnu : il ne peut alors figurer dans aucun groupe."""
+    """Famille d'un marché (nom V3), utilisée pour ne compter qu'un pari par match et par famille. None si le marché n'est pas reconnu."""
     s = str(marche or "")
     if re.fullmatch(r"under_\d_\d", s):
         return "total_moins"
@@ -81,7 +64,7 @@ def famille(marche: str | None) -> str | None:
 
 
 def niveau(p: Mapping[str, Any]) -> float | None:
-    """Part des scénarios validés (indice / sur), entre 0 et 1. None si pas d'indice."""
+    """Part des scénarios validés (indice affiché / sur), entre 0 et 1. None si pas d'indice."""
     i, s = p.get("indice"), p.get("sur")
     if not isinstance(i, int) or not isinstance(s, int) or s <= 0:
         return None
@@ -93,8 +76,8 @@ def _jour(p: Mapping[str, Any]) -> str:
 
 
 def _utilisable(p: Mapping[str, Any]) -> bool:
-    return (famille(p.get("marche")) is not None and niveau(p) is not None
-            and isinstance(p.get("cote"), (int, float)) and p["cote"] > 1 and p.get("gagne") in (0, 1, True, False))
+    return (famille(p.get("marche")) is not None and niveau(p) is not None and isinstance(p.get("pct"), int)
+            and isinstance(p.get("etoiles"), int) and p.get("gagne") in (0, 1, True, False))
 
 
 def version_courante(paris: Sequence[Mapping[str, Any]], moteur: str = "V2") -> str | None:
@@ -112,18 +95,20 @@ def garde_version_courante(paris: Sequence[Mapping[str, Any]]) -> list[Mapping[s
 
 def un_pari_par_match_et_famille(paris: Sequence[Mapping[str, Any]]) -> list[Mapping[str, Any]]:
     """Les paris d'un même match ne sont pas indépendants : pour un même (moteur, match, famille) on garde UN pari, celui de plus forte
-    probabilité affichée (connue avant le match, donc sans lien avec le résultat). Sans identifiant de match, aucun regroupement."""
+    pourcentage affiché (connu avant le match, donc sans lien avec le résultat). Sans identifiant de match, aucun regroupement."""
     meilleurs: dict[tuple, Mapping[str, Any]] = {}
     sans_id = []
+
+    def rang(p):
+        return (-(p.get("pct") or 0), str(p.get("marche")))
+
     for p in paris:
         f = famille(p.get("marche"))
         if p.get("match_id") in (None, "") or f is None:
             sans_id.append(p)
             continue
         cle = (p.get("moteur"), p["match_id"], f)
-        cur = meilleurs.get(cle)
-        rang = (-(p.get("probabilite") or 0.0), str(p.get("marche")), p.get("cote") or 0.0)
-        if cur is None or rang < (-(cur.get("probabilite") or 0.0), str(cur.get("marche")), cur.get("cote") or 0.0):
+        if cle not in meilleurs or rang(p) < rang(meilleurs[cle]):
             meilleurs[cle] = p
     return sans_id + list(meilleurs.values())
 
@@ -141,17 +126,48 @@ def queue_binomiale(k: int, n: int, p: float) -> float:
     return min(1.0, math.exp(m) * sum(math.exp(t - m) for t in termes))
 
 
-def statistiques(paris: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+def queue_hypergeometrique(g: int, n: int, k_total: int, n_total: int) -> float:
+    """Test exact de Fisher (unilatéral) : P(X >= g) quand on tire n paris parmi n_total dont k_total gagnés, au hasard pur. Tient compte du
+    bruit des DEUX côtés (l'ensemble testé ET les autres paris), contrairement à une référence supposée connue."""
+    if g <= 0:
+        return 1.0
+    haut = min(n, k_total)
+    if g > haut or n - g > n_total - k_total:
+        return 0.0
+
+    def lc(a, b):
+        return math.lgamma(a + 1) - math.lgamma(b + 1) - math.lgamma(a - b + 1)
+
+    termes = [lc(k_total, i) + lc(n_total - k_total, n - i) - lc(n_total, n) for i in range(g, haut + 1) if n - i <= n_total - k_total]
+    m = max(termes)
+    return min(1.0, math.exp(m) * sum(math.exp(t - m) for t in termes))
+
+
+def borne_basse(gagnes: int, n: int, z: float = 1.96) -> float:
+    """Borne basse de l'intervalle de Wilson à 95 % de la réussite (le même intervalle que les tableaux de l'étude)."""
+    if n <= 0:
+        return 0.0
+    p = gagnes / n
+    d = 1 + z * z / n
+    centre = p + z * z / (2 * n)
+    marge = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n))
+    return (centre - marge) / d
+
+
+def _taux(paris: Sequence[Mapping[str, Any]]) -> float | None:
+    return sum(int(bool(p["gagne"])) for p in paris) / len(paris) if paris else None
+
+
+def statistiques(paris: Sequence[Mapping[str, Any]], autres: Sequence[Mapping[str, Any]] | None = None) -> dict[str, Any]:
+    """n, gagnés, réussite observée ; avec les AUTRES paris du moteur : référence (leur réussite) et p = probabilité (test exact de Fisher)
+    d'obtenir au moins autant de gagnés dans cet ensemble par pur hasard."""
     n = len(paris)
-    if n == 0:
-        return {"n": 0, "gagnes": 0, "reussite": None, "base": None, "rendement": None, "erreur_type_rendement": None, "p": 1.0}
     g = sum(int(bool(p["gagne"])) for p in paris)
-    base = sum(1.0 / p["cote"] for p in paris) / n
-    gains = [(p["cote"] - 1.0) if p["gagne"] else -1.0 for p in paris]
-    rend = sum(gains) / n
-    var = sum((x - rend) ** 2 for x in gains) / (n - 1) if n > 1 else 0.0
-    return {"n": n, "gagnes": g, "reussite": g / n, "base": base, "rendement": rend,
-            "erreur_type_rendement": math.sqrt(var / n), "p": queue_binomiale(g, n, base)}
+    if not n or not autres:
+        return {"n": n, "gagnes": g, "reussite": g / n if n else None, "base": None, "p": 1.0}
+    ga = sum(int(bool(p["gagne"])) for p in autres)
+    return {"n": n, "gagnes": g, "reussite": g / n, "base": ga / len(autres),
+            "p": queue_hypergeometrique(g, n, g + ga, n + len(autres))}
 
 
 def _moitiés(paris: Sequence[Mapping[str, Any]]) -> tuple[list, list]:
@@ -163,78 +179,92 @@ def _moitiés(paris: Sequence[Mapping[str, Any]]) -> tuple[list, list]:
     return [p for p in paris if _jour(p) < coupe], [p for p in paris if _jour(p) >= coupe]
 
 
-def _tient_dans_le_temps(paris: Sequence[Mapping[str, Any]]) -> bool:
+def _tient_dans_le_temps(paris: Sequence[Mapping[str, Any]], reference: float) -> bool:
     premiere, seconde = _moitiés(paris)
     if not premiere or not seconde:
         return False
-    for moitie in (premiere, seconde):
-        s = statistiques(moitie)
-        if s["reussite"] < s["base"]:
-            return False
-    return True
+    return all(_taux(moitie) >= reference for moitie in (premiere, seconde))
+
+
+def dans_la_regle(p: Mapping[str, Any], r: Mapping[str, Any]) -> bool:
+    n = niveau(p)
+    return (p.get("moteur") == r["moteur"] and n is not None and n >= r["indice_min"] - 1e-12
+            and (p.get("pct") or 0) >= r["pct_min"] and (p.get("etoiles") or 0) >= r["etoiles_min"])
 
 
 def candidats(paris: Iterable[Mapping[str, Any]]) -> list[dict[str, Any]]:
-    """Tous les ensembles testés : (moteur, famille, palier d'indice). Chaque ensemble = les paris de niveau >= palier."""
+    """Toutes les règles testées (moteur, indice minimal, pourcentage minimal, étoiles minimales) qui retiennent au moins un pari."""
     utiles = [p for p in paris if _utilisable(p)]
-    groupes: dict[tuple[str, str], list] = {}
-    for p in utiles:
-        groupes.setdefault((p["moteur"], famille(p["marche"])), []).append(p)
     out = []
-    for (moteur, fam), lot in sorted(groupes.items()):
-        for palier in sorted({niveau(p) for p in lot}):
-            ens = [p for p in lot if niveau(p) >= palier]
-            out.append({"moteur": moteur, "famille": fam, "palier": palier, "paris": ens})
+    for moteur in MOTEURS:
+        lot = [p for p in utiles if p["moteur"] == moteur]
+        for i in NIVEAUX_INDICE:
+            for pc in PALIERS_POURCENTAGE:
+                for e in range(1, ETOILES_MAX[moteur] + 1):
+                    r = {"moteur": moteur, "indice_min": i, "pct_min": pc, "etoiles_min": e}
+                    ens = [p for p in lot if dans_la_regle(p, r)]
+                    if ens:
+                        out.append({**r, "paris": ens})
     return out
 
 
+def _autres(tous_du_moteur: Sequence[Mapping[str, Any]], ens: Sequence[Mapping[str, Any]]) -> list[Mapping[str, Any]]:
+    """Tous les AUTRES paris du moteur (l'ensemble testé n'entre pas dans sa propre référence)."""
+    ids = {id(p) for p in ens}
+    return [p for p in tous_du_moteur if id(p) not in ids]
+
+
+CLES_REGLE = ("moteur", "indice_min", "pct_min", "etoiles_min")
+
+
 def calibrer(paris: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
-    """Recalibrage complet à partir des seuls paris fournis (déjà résolus). Retourne les groupes admis et le détail des tests."""
+    """Recalibrage complet à partir des seuls paris fournis (déjà résolus). Retourne la règle retenue par moteur et le détail des tests."""
     paris = un_pari_par_match_et_famille([p for p in paris if _utilisable(p)])
+    par_moteur: dict[str, list] = {}
+    for p in paris:
+        par_moteur.setdefault(p["moteur"], []).append(p)
     cands = candidats(paris)
     m = nb_tests_possibles()
-    seuil_confirme = 1.0 / m if m else 0.0
-    seuil_observation = 1.0 / math.sqrt(m) if m else 0.0
+    seuil_confirme = ALPHA / m          # risque global de fausse admission <= 5 % sur l'ensemble des règles testées
+    seuil_observation = 1.0 / m         # au plus une fausse admission attendue sur l'ensemble
     tests = []
     for c in cands:
-        s = statistiques(c["paris"])
-        stable = _tient_dans_le_temps(c["paris"])
-        ok_base = s["rendement"] is not None and s["rendement"] > 0 and s["reussite"] > s["base"] and stable
-        statut = "confirme" if ok_base and s["p"] <= seuil_confirme else "observation" if ok_base and s["p"] <= seuil_observation else "rejete"
-        tests.append({"moteur": c["moteur"], "famille": c["famille"], "palier": c["palier"], "statut": statut,
-                      "stable_dans_le_temps": stable, **s})
+        autres = _autres(par_moteur[c["moteur"]], c["paris"])
+        if not autres:                       # aucun autre pari du moteur : rien à comparer
+            continue
+        s = statistiques(c["paris"], autres)
+        ref = s["base"]
+        stable = _tient_dans_le_temps(c["paris"], ref)
+        ok = s["reussite"] > ref and stable
+        statut = "confirme" if ok and s["p"] <= seuil_confirme else "observation" if ok and s["p"] <= seuil_observation else "rejete"
+        tests.append({**{k: c[k] for k in CLES_REGLE}, "statut": statut, "stable_dans_le_temps": stable, "borne_basse": borne_basse(s["gagnes"], s["n"]), **s})
     admis = []
-    for (moteur, fam) in sorted({(t["moteur"], t["famille"]) for t in tests}):
-        propres = [t for t in tests if t["moteur"] == moteur and t["famille"] == fam]
+    for moteur in MOTEURS:
+        propres = [t for t in tests if t["moteur"] == moteur]
         for statut in ("confirme", "observation"):
             ok = [t for t in propres if t["statut"] == statut]
             if ok:
-                admis.append(min(ok, key=lambda t: t["palier"]))   # le plus large des ensembles qui passent : aucun choix sur le gain
+                admis.append(max(ok, key=lambda t: (t["borne_basse"], t["n"], -t["indice_min"], -t["pct_min"], -t["etoiles_min"])))   # meilleure réussite garantie ; à égalité, critères les moins restrictifs
                 break
     return {"m_tests": m, "nb_tests_realises": len(cands), "seuil_confirme": seuil_confirme, "seuil_observation": seuil_observation,
-            "nb_paris": len(paris),
-            "groupes": admis, "tests": tests}
+            "nb_paris": len(paris), "groupes": admis, "tests": tests}
 
 
 def groupe_du_pari(pari: Mapping[str, Any], groupes: Sequence[Mapping[str, Any]]) -> Mapping[str, Any] | None:
-    """Groupe admis qui contient ce pari (même moteur, même famille, niveau >= palier). Le meilleur statut puis le plus petit p."""
-    f, n = famille(pari.get("marche")), niveau(pari)
-    if f is None or n is None:
-        return None
-    ok = [g for g in groupes if g["moteur"] == pari.get("moteur") and g["famille"] == f and n >= g["palier"] - 1e-12]
-    if not ok:
-        return None
-    return sorted(ok, key=lambda g: (g["statut"] != "confirme", g["p"]))[0]
+    """Règle retenue qui contient ce pari (une seule par moteur)."""
+    ok = [g for g in groupes if dans_la_regle(pari, g)]
+    return sorted(ok, key=lambda g: (g["statut"] != "confirme", g["p"]))[0] if ok else None
 
 
 def classer(selections: Sequence[Mapping[str, Any]], groupes: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
-    """Garde les sélections du jour appartenant à un groupe admis. Tri : confirmés d'abord, puis preuve la plus forte du groupe (p le plus bas), puis indice, probabilité et cote."""
+    """Garde les sélections du jour qui remplissent la règle retenue de leur moteur. Tri : confirmés d'abord, puis pourcentage affiché,
+    indice affiché, étoiles affichées."""
     out = []
     for s in selections:
         g = groupe_du_pari(s, groupes)
         if g is not None:
-            out.append({**s, "groupe": {k: g[k] for k in ("moteur", "famille", "palier", "statut", "n", "gagnes", "reussite", "base", "rendement", "p")}})
-    out.sort(key=lambda x: (x["groupe"]["statut"] != "confirme", x["groupe"]["p"], -(niveau(x) or 0.0), -float(x.get("probabilite") or 0.0), -float(x.get("cote") or 0.0)))
+            out.append({**s, "groupe": {k: g[k] for k in (*CLES_REGLE, "statut", "n", "gagnes", "reussite", "borne_basse", "p")}})
+    out.sort(key=lambda x: (x["groupe"]["statut"] != "confirme", -(x.get("pct") or 0), -(niveau(x) or 0.0), -(x.get("etoiles") or 0)))
     for i, x in enumerate(out, 1):
         x["rang"] = i
     return out
@@ -256,39 +286,43 @@ def photographie(paris: Sequence[Mapping[str, Any]], jour: str) -> dict[str, Any
             "seuil_observation": c["seuil_observation"], "groupes": c["groupes"]}
 
 
+def _par_moteur(retenus: dict[str, list], autres: dict[str, list]) -> dict[str, dict[str, Any]]:
+    """Statistiques par moteur des paris retenus, avec la réussite des paris non retenus du même moteur en référence interne."""
+    return {m: statistiques(v, autres.get(m) or []) for m, v in retenus.items() if v}
+
+
 def bilan_historique(paris: Sequence[Mapping[str, Any]], groupes: Sequence[Mapping[str, Any]]) -> dict[str, dict[str, Any]]:
-    """Résultat, par moteur, de l'ensemble des paris passés appartenant à au moins un groupe admis (chaque pari compté une fois).
-    Mesure dans l'échantillon : ces paris ont servi à choisir les groupes, le chiffre est donc flatteur."""
-    sortie: dict[str, list] = {}
-    for p in paris:
-        if _utilisable(p) and groupe_du_pari(p, groupes) is not None:
-            sortie.setdefault(p["moteur"], []).append(p)
-    return {m: statistiques(v) for m, v in sortie.items()}
+    """Résultat, par moteur, des paris passés qui remplissent la règle retenue (chaque pari compté une fois). Mesure dans l'échantillon :
+    ces paris ont servi à choisir la règle, le chiffre est donc flatteur."""
+    utiles = un_pari_par_match_et_famille([p for p in paris if _utilisable(p)])
+    dedans: dict[str, list] = {}
+    dehors: dict[str, list] = {}
+    for p in utiles:
+        (dedans if groupe_du_pari(p, groupes) is not None else dehors).setdefault(p["moteur"], []).append(p)
+    return _par_moteur(dedans, dehors)
 
 
-def bilan_hors_echantillon(paris: Sequence[Mapping[str, Any]], historique: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
-    """Résultat des paris joués APRÈS le recalibrage qui les aurait retenus (le dernier instantané daté d'avant le pari).
-    C'est la seule mesure non biaisée : aucun de ces paris n'a servi à choisir son groupe."""
+def bilan_hors_echantillon(paris: Sequence[Mapping[str, Any]], historique: Sequence[Mapping[str, Any]]) -> dict[str, dict[str, Any]]:
+    """Résultat, par moteur, des paris joués APRÈS le recalibrage qui les aurait retenus (le dernier instantané daté d'avant le pari).
+    C'est la seule mesure non biaisée : aucun de ces paris n'a servi à choisir sa règle."""
     snaps = sorted(historique, key=lambda h: h["calibre_le"])
-    sortie: dict[str, list] = {"confirme": [], "observation": []}
+    dedans: dict[str, list] = {}
+    dehors: dict[str, list] = {}
     for p in paris:
         if not _utilisable(p):
             continue
         actifs = [h for h in snaps if h["calibre_le"] <= _jour(p)]
         if not actifs:
             continue
-        # un instantané daté du jour J ne couvre que les paris de J et après, calibrés sur les jours < J
-        g = groupe_du_pari(p, actifs[-1]["groupes"])
-        if g is not None:
-            sortie[g["statut"]].append(p)
-    return {k: statistiques(v) for k, v in sortie.items()}
+        (dedans if groupe_du_pari(p, actifs[-1]["groupes"]) is not None else dehors).setdefault(p["moteur"], []).append(p)
+    return _par_moteur(dedans, dehors)
 
 
 def rejeu(paris: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
     """Rejoue l'historique comme si le recalibrage hebdomadaire avait toujours tourné (marche avant, sans regarder l'avenir)."""
     jours = sorted({_jour(p) for p in paris if _utilisable(p)})
     if len(jours) <= PERIODE_JOURS:
-        return {"instantanes": [], "bilan": bilan_hors_echantillon([], [])}
+        return {"instantanes": [], "bilan": {}}
     debut = date.fromisoformat(jours[0]) + timedelta(days=PERIODE_JOURS)
     fin = date.fromisoformat(jours[-1])
     historique, j = [], debut

@@ -4,6 +4,7 @@ from __future__ import annotations
 import glob
 import gzip
 import json
+import math
 import os
 from typing import Any
 
@@ -18,6 +19,18 @@ DOSSIER_JOURNAL_V3 = "data/v3/journal"
 FICHIER_V2 = "precalcul_leger.json"
 FICHIER_V3 = "data/v3/pronostics_v3.json"
 CATEGORIES_AFFICHEES = ("A", "B", "C")   # la catégorie D n'est jamais affichée sur la page V2
+ETOILES_V2 = {"A": 3, "B": 2, "C": 1}    # traduction_marches.js : catégorie -> étoiles affichées
+ETOILES_V3_NIVEAU = {"V3_ECHANTILLON_FAIBLE": 1, "V3_ECHANTILLON_UTILISABLE": 2, "V3_ECHANTILLON_SOLIDE": 3, "V3_ECHANTILLON_TRES_SOLIDE": 4}
+
+
+def etoiles_v3(n_min: int) -> int:
+    """moteur_v3_pipeline.niveau_echantillon : moins de 5 matchs = 1 ; 5 à 7 = 2 ; 8 à 9 = 3 ; 10 et plus = 4."""
+    return 1 if n_min < 5 else 2 if n_min < 8 else 3 if n_min < 10 else 4
+
+
+def pct_affiche(probabilite) -> int | None:
+    """Pourcentage tel qu'affiché sur les pages (archetype_v3.js : Math.round(probabilité x 100))."""
+    return int(math.floor(float(probabilite) * 100 + 0.5)) if isinstance(probabilite, (int, float)) else None
 
 
 def _archive(dossier: str) -> dict[str, dict]:
@@ -57,8 +70,10 @@ def paris_resolus(dossier_archive: str = DOSSIER_ARCHIVE, dossier_journal: str =
                 continue
             dom, ext = _series(a, m["date"])
             ip = s.get("indice_performance") or indice_performance(s["marche"], dom, ext)
+            nmin = min(m.get("n_dom") or len(dom), m.get("n_ext") or len(ext))
             paris.append({"moteur": "V3", "date": m["date"], "match_id": mid, "marche": s["marche"], "cote": s.get("cote"),
-                          "probabilite": s.get("probabilite"), "indice": (ip or {}).get("indice"), "sur": (ip or {}).get("sur"), "gagne": int(g)})
+                          "pct": pct_affiche(s.get("probabilite")), "etoiles": etoiles_v3(nmin),
+                          "indice": (ip or {}).get("indice"), "sur": (ip or {}).get("sur"), "gagne": int(g)})
     for mid, a in arch.items():
         mep = a.get("moteur_en_production") or {}
         sc = _score(a)
@@ -72,11 +87,12 @@ def paris_resolus(dossier_archive: str = DOSSIER_ARCHIVE, dossier_journal: str =
             if g is None:
                 continue
             ligne = {"marche": c["marche_moteur"], "proba_modele": c["probabilite"], "cote": c["cote"], "ev": c.get("edv") or 0.0}
-            if categorie_value(ligne["ev"], ligne["proba_modele"], len(artefacts_marche(ligne))) not in CATEGORIES_AFFICHEES:
+            cat = categorie_value(ligne["ev"], ligne["proba_modele"], len(artefacts_marche(ligne)))
+            if cat not in CATEGORIES_AFFICHEES:
                 continue
             ip = indice_performance(mk3, dom, ext)
             paris.append({"moteur": "V2", "date": a["date"], "match_id": mid, "marche": mk3, "cote": c["cote"],
-                          "probabilite": c.get("probabilite"), "version": version,
+                          "pct": pct_affiche(c.get("probabilite")), "etoiles": ETOILES_V2[cat], "version": version,
                           "indice": (ip or {}).get("indice"), "sur": (ip or {}).get("sur"), "gagne": int(g)})
     return paris
 
@@ -119,4 +135,6 @@ def _ligne(moteur: str, s: dict, rang: str, c: dict, marche3: str, ip: dict) -> 
     return {"moteur": moteur, "match_id": s.get("match_id"), "date": s.get("date"), "heure": s.get("heure_cameroun") or s.get("heure"),
             "competition": s.get("competition"), "domicile": s.get("domicile"), "exterieur": s.get("exterieur"),
             "rang_moteur": rang, "marche": marche3, "marche_affiche": c.get("marche"), "libelle": c.get("libelle"),
-            "cote": c.get("cote"), "probabilite": c.get("probabilite"), "indice": ip.get("indice"), "sur": ip.get("sur")}
+            "cote": c.get("cote"), "probabilite": c.get("probabilite"), "pct": pct_affiche(c.get("probabilite")),
+            "etoiles": ETOILES_V2.get(c.get("categorie")) if moteur == "V2" else ETOILES_V3_NIVEAU.get(c.get("niveau")),
+            "indice": ip.get("indice"), "sur": ip.get("sur")}

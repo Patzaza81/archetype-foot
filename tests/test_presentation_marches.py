@@ -103,7 +103,7 @@ def test_page_charge_la_presentation_avant_les_scripts_de_rendu(page):
 @pytest.mark.parametrize("script,appel", [
     ("archetype.js", "marcheAvecExplication(nomOrigineMarche("), ("archetype_v3.js", "marcheV3Html("), ("archetype_europe.js", "marcheV3Html("),
     ("archetype_v.js", "marcheAvecExplication(p.marche"), ("archetype_comportement.js", "afMarcheHtml(s.marche"),
-    ("journal.js", "marcheHtml("), ("tickets.js", "marcheTicketHtml("),
+    ("journal.js", "marcheHtml("), ("tickets.js", "marcheTicketHtml("), ("meilleures_selections.js", "afMarcheHtml("),
 ])
 def test_chaque_affichage_utilise_la_presentation_commune(script, appel):
     assert appel in (RACINE / script).read_text(encoding="utf-8")
