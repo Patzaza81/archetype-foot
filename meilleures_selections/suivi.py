@@ -75,8 +75,9 @@ def pipeline() -> int:
 
 def rejeu_cmd() -> int:
     r = regles.rejeu(regles.garde_version_courante(donnees.paris_resolus()))
-    print(json.dumps({"instantanes": [{k: h[k] for k in ("calibre_le", "nb_paris", "m_tests")} | {"groupes": [(g["moteur"], g["famille"], g["palier"], g["statut"], g["n"]) for g in h["groupes"]]} for h in r["instantanes"]],
-                      "hors_echantillon": r["bilan"]}, ensure_ascii=False, indent=1, default=str))
+    instantanes = [{"calibre_le": h["calibre_le"], "nb_paris": h["nb_paris"],
+                    "regles": [(g["moteur"], g["indice_min"], g["pct_min"], g["etoiles_min"], g["statut"], g["n"]) for g in h["groupes"]]} for h in r["instantanes"]]
+    print(json.dumps({"instantanes": instantanes, "hors_echantillon": r["bilan"]}, ensure_ascii=False, indent=1, default=str))
     return 0
 
 

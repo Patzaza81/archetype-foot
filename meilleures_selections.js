@@ -20,7 +20,6 @@
   }
   function nombre(x, d) { return Number(x).toLocaleString("fr-FR", { minimumFractionDigits: d, maximumFractionDigits: d }); }
   function pct(x) { return x == null ? "—" : nombre(x * 100, 0) + " %"; }
-  function signe(x) { return (x > 0 ? "+" : x < 0 ? "−" : "") + nombre(Math.abs(x), 1); }
   function jourLisible(iso) {
     var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ""));
     return m ? m[3] + "/" + m[2] : "";
@@ -33,14 +32,19 @@
     } catch (e) { /* repli ci-dessous */ }
     return s.libelle || s.marche_affiche || s.marche;
   }
+  function titreMarche(s) {   // nom d'origine du marché (le libellé écrit par le moteur, ou le nom court tiré du code)
+    if (s.libelle) return s.libelle;
+    var brut = s.marche_affiche || s.marche;
+    try { if (typeof nomOrigineMarche === "function") return nomOrigineMarche(brut, { domicile: s.domicile, exterieur: s.exterieur }); } catch (e) { /* repli */ }
+    return brut;
+  }
   function phraseGroupe(g) {
     var palier = g.palier > 0 ? " avec un indice d'au moins " + nombre(g.palier * 4, 0) + " sur 4 (ou équivalent)" : "";
     return (FAMILLES[g.famille] || g.famille) + palier;
   }
   function ligneBilan(titre, b, note) {
     if (!b || !b.n) return "<li><strong>" + esc(titre) + " :</strong> aucun pari pour l'instant." + (note ? " " + esc(note) : "") + "</li>";
-    return "<li><strong>" + esc(titre) + " :</strong> " + b.gagnes + " gagnés sur " + b.n + " (" + pct(b.reussite) + "), alors que les cotes en exigeaient " +
-      pct(b.base) + ". Pour 100 misés à chaque pari : " + signe(b.rendement * 100) + "." + (note ? " " + esc(note) : "") + "</li>";
+    return "<li><strong>" + esc(titre) + " :</strong> " + b.gagnes + " gagnés sur " + b.n + " (" + pct(b.reussite) + ")" + (b.base != null ? ", contre " + pct(b.base) + " pour les autres paris." : ".") + (note ? " " + esc(note) : "") + "</li>";
   }
 
   function carte(s) {
@@ -49,59 +53,48 @@
       '<div class="ms-tete"><span class="ms-rang">' + s.rang + '</span><div class="ms-match"><strong>' + esc(s.domicile) + " — " + esc(s.exterieur) + "</strong>" +
       '<span class="ms-quand">' + esc(jourLisible(s.date)) + " · " + esc(s.heure || "") + " · " + esc(s.competition || "") + "</span></div>" +
       '<span class="ms-badge ' + (conf ? "ms-b-conf" : "ms-b-obs") + '">' + (conf ? "Confirmée" : "En observation") + "</span></div>" +
-      '<p class="ms-marche">' + esc(nomMarche(s)) + "</p>" +
-      '<ul class="ms-chiffres"><li><span>Cote</span><strong>' + (s.cote != null ? nombre(s.cote, 2) : "—") + "</strong></li>" +
+      '<p class="ms-marche">' + (typeof afMarcheHtml === "function" ? afMarcheHtml(titreMarche(s), nomMarche(s)) : esc(nomMarche(s))) + "</p>" +
+      '<ul class="ms-chiffres"><li><span>Pourcentage</span><strong>' + (s.pct != null ? s.pct + " %" : "—") + "</strong></li>" +
       "<li><span>Indice</span><strong>" + (s.indice != null ? s.indice + "/" + s.sur : "—") + "</strong></li>" +
-      "<li><span>Probabilité</span><strong>" + (s.probabilite != null ? pct(s.probabilite) : "—") + "</strong></li></ul>" +
-      '<p class="ms-groupe">Ce type de pari a gagné ' + pct(g.reussite) + " du temps (" + g.gagnes + " sur " + g.n + ") alors que les cotes en exigeaient " + pct(g.base) + ".</p>" +
+      "<li><span>Étoiles</span><strong>" + (s.etoiles != null ? s.etoiles + " ★" : "—") + "</strong></li></ul>" +
+      '<p class="ms-groupe">Les paris qui remplissent ces critères ont réussi ' + pct(g.reussite) + " du temps (" + g.gagnes + " sur " + g.n + ").</p>" +
       "</article>";
   }
 
   function rend(d) {
     var propres = (d.selections || []).filter(function (s) { return s.moteur === MOTEUR; });
-    var groupes = (d.groupes || []).filter(function (g) { return g.moteur === MOTEUR; });
+    var regle = (d.groupes || []).filter(function (g) { return g.moteur === MOTEUR; })[0];
     propres.forEach(function (s, i) { s.rang = i + 1; });   // rang propre à ce moteur (le fichier classe V2 et V3 ensemble)
     var conf = propres.filter(function (s) { return s.groupe.statut === "confirme"; });
     var obs = propres.filter(function (s) { return s.groupe.statut !== "confirme"; });
     var h = "";
     h += '<section class="ms-bloc ms-explique"><h2>Meilleures sélections ' + esc(MOTEUR) + "</h2>" +
-      "<p>Seuls les paris qui appartiennent à un type de pari ayant <strong>battu les cotes</strong> dans l'historique sont listés ici. " +
-      "Le classement se recalibre <strong>tout seul chaque semaine</strong> : un type de pari qui cesse de gagner sort de la liste, un autre peut y entrer.</p>" +
+      "<p>Seuls les paris dont l'<strong>indice, le pourcentage et les étoiles affichés</strong> correspondent à la combinaison qui a le mieux réussi sont listés ici. " +
+      "La combinaison se recalcule <strong>toute seule chaque semaine</strong> d'après les résultats réels : si elle cesse de réussir, une autre la remplace.</p>" +
+      (regle ? '<p class="ms-regle-actuelle"><strong>Combinaison retenue :</strong> ' + esc(phraseGroupe(regle)) + ".<br>Résultat sur l'historique : " + regle.gagnes + " gagnés sur " + regle.n + " (" + pct(regle.reussite) + ").</p>"
+             : '<p class="ms-regle-actuelle"><strong>Aucune combinaison retenue pour l\'instant :</strong> l\'historique ' + esc(MOTEUR) + " est encore trop court pour prouver qu'une combinaison d'indice, de pourcentage et d'étoiles réussit mieux que les autres.</p>") +
       '<p class="ms-meta">Dernier recalibrage : ' + esc(jourLisible(d.calibre_le)) + " · prochain : " + esc(jourLisible(d.prochain_recalibrage)) +
       " · " + (d.nb_paris_calibrage || 0) + " paris passés analysés (V2 et V3).</p></section>";
 
-    h += '<section class="ms-bloc"><h3>Ce que ça donne vraiment</h3><ul class="ms-bilan">' +
-      ligneBilan("Sur l'historique", (d.bilan_historique || {})[MOTEUR], "Attention : ces paris ont servi à choisir les types retenus, ce résultat est donc flatteur.") +
-      ligneBilan("Depuis le recalibrage (vérifié sans triche)", agrege(d.hors_echantillon), "Ce sont les seuls paris joués après le choix du type : c'est la vraie mesure.") +
-      ligneBilan("Rejeu semaine par semaine sur le passé", agrege((d.rejeu || {}).bilan), "Même méthode appliquée au passé sans regarder l'avenir.") +
+    h += '<section class="ms-bloc"><h3>Résultats obtenus par ces critères</h3><ul class="ms-bilan">' +
+      ligneBilan("Sur l'historique", (d.bilan_historique || {})[MOTEUR], "Attention : ces paris ont servi à choisir la combinaison, ce résultat est donc flatteur.") +
+      ligneBilan("Depuis le recalibrage", (d.hors_echantillon || {})[MOTEUR], "Seuls les paris joués après le choix de la combinaison : c'est la vraie mesure.") +
+      ligneBilan("Rejeu semaine par semaine sur le passé", ((d.rejeu || {}).bilan || {})[MOTEUR], "Même méthode appliquée au passé sans regarder l'avenir.") +
       "</ul></section>";
 
     if (!propres.length) {
       h += '<div class="ms-vide"><strong>Aucune sélection ne remplit les critères pour le moment</strong><p>Le système préfère ne rien proposer plutôt que de forcer un pari.</p></div>';
     } else {
-      if (conf.length) h += '<section class="ms-bloc"><h3>Confirmées (' + conf.length + ")</h3>" + conf.map(carte).join("") + "</section>";
-      if (obs.length) h += '<section class="ms-bloc"><h3>En observation (' + obs.length + ')</h3><p class="ms-note">Types de pari prometteurs mais pas encore assez prouvés : une partie peut simplement être due au hasard. À suivre, pas à miser en confiance.</p>' + obs.map(carte).join("") + "</section>";
+      if (conf.length) h += '<section class="ms-bloc"><h3>Sélections (' + conf.length + ")</h3>" + conf.map(carte).join("") + "</section>";
+      if (obs.length) h += '<details class="ms-bloc ms-obs"><summary>En observation (' + obs.length + ')</summary><p class="ms-note">Combinaison prometteuse mais pas encore assez prouvée : elle peut être due au hasard. À suivre, pas à miser en confiance.</p>' + obs.map(carte).join("") + "</details>";
     }
 
-    h += '<details class="ms-bloc ms-regle"><summary>Types de pari retenus cette semaine (' + groupes.length + ")</summary>" +
-      (groupes.length ? "<ul>" + groupes.map(function (g) {
-        return "<li><strong>" + esc(phraseGroupe(g)) + "</strong> — " + (g.statut === "confirme" ? "confirmé" : "en observation") + " : " + g.gagnes + " gagnés sur " + g.n + " (" + pct(g.reussite) + " contre " + pct(g.base) + " exigés).</li>";
-      }).join("") + "</ul>" : "<p>Aucun type de pari ne remplit les critères.</p>") +
-      "<p class=\"ms-note\">Critères : le type de pari doit gagner plus souvent que ce que les cotes exigent, rapporter de l'argent à mise égale et tenir dans chacune des deux moitiés de la période. " +
-      "Pour être « confirmé », la probabilité que ce soit dû au hasard doit être inférieure à " + pct(d.seuil_confirme) + " ; pour être « en observation », inférieure à " + pct(d.seuil_observation) +
-      ". Ces seuils se calculent à partir du nombre de combinaisons possibles (type de pari × niveau d'indice × moteur : " + (d.m_tests || 0) + ") et changent donc tout seuls avec les données.</p></details>";
+    h += '<details class="ms-bloc ms-regle"><summary>Comment les critères sont choisis</summary>' +
+      "<p>Chaque semaine, toutes les combinaisons « indice affiché au moins X, pourcentage affiché au moins Y, étoiles affichées au moins Z » sont comparées aux résultats réels. " +
+      "On garde celle dont la réussite garantie est la plus haute (borne basse de l'intervalle à 95 %), à condition qu'elle réussisse mieux que les autres paris du moteur dans chacune des deux moitiés de la période.</p>" +
+      "<p class=\"ms-note\">« Confirmée » : moins d'une chance sur " + Math.round(1 / (d.seuil_confirme || 1)) + " que ce soit dû au hasard ; « en observation » : moins d'une chance sur " + Math.round(1 / (d.seuil_observation || 1)) +
+      ". Ces seuils viennent du nombre de combinaisons possibles (" + (d.m_tests || 0) + ") et ne sont pas fixés à la main.</p></details>";
     return h;
-  }
-
-  function agrege(bilan) {
-    if (!bilan) return null;
-    var t = ["confirme", "observation"].map(function (k) { return bilan[k]; }).filter(function (b) { return b && b.n; });
-    return fusion(t);
-  }
-  function fusion(lots) {
-    var n = 0, g = 0, base = 0, rend = 0;
-    lots.forEach(function (b) { n += b.n; g += b.gagnes; base += b.base * b.n; rend += b.rendement * b.n; });
-    return n ? { n: n, gagnes: g, reussite: g / n, base: base / n, rendement: rend / n } : { n: 0 };
   }
 
   var barre = document.createElement("div");
