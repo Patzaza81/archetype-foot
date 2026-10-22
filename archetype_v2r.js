@@ -26,8 +26,8 @@ function v2rDate(iso) {
 function v2rNomMarche(l) {
   const m = String(l.marche || l.marche_v2r || ""), dom = l.domicile || "Domicile", ext = l.exterieur || "Extérieur";
   let r;
-  if ((r = m.match(/^Plus de (\\d+(?:[.,]\\d+)?) buts - (Domicile|Extérieur|Exterieur)$/i))) return `${r[2].toLowerCase().startsWith("dom") ? dom : ext} marque +${r[1].replace(".", ",")} buts`;
-  if ((r = m.match(/^Moins de (\\d+(?:[.,]\\d+)?) buts - (Domicile|Extérieur|Exterieur)$/i))) return `${r[2].toLowerCase().startsWith("dom") ? dom : ext} marque moins de ${r[1].replace(".", ",")} buts`;
+  if ((r = m.match(/^Plus de (\d+(?:[.,]\d+)?) buts - (Domicile|Extérieur|Exterieur)$/i))) return `${r[2].toLowerCase().startsWith("dom") ? dom : ext} marque +${r[1].replace(".", ",")} buts`;
+  if ((r = m.match(/^Moins de (\d+(?:[.,]\d+)?) buts - (Domicile|Extérieur|Exterieur)$/i))) return `${r[2].toLowerCase().startsWith("dom") ? dom : ext} marque moins de ${r[1].replace(".", ",")} buts`;
   return m || "Marché indisponible";
 }
 function v2rMarche(l) {
