@@ -34,35 +34,75 @@ const aujourdhui = () => {
 };
 let compteurCartes = 0;
 
+// ── Libellés en mots simples (présentation seulement : la clé du marché dans le fichier de données reste inchangée) ──
+const butsN = (n) => `${n} but${n > 1 ? "s" : ""}`;
+const auMoins = (ligne) => Math.floor(ligne) + 1;               // 1,5 -> 2 ; 2,5 -> 3 ; 0,5 -> 1
+const nombre = (t) => Number(String(t).replace(",", "."));
+function sensHandicap(L, eq) {                                   // buts marqués + L > buts encaissés, du point de vue de l'équipe
+  const m = Math.floor(-L) + 1;
+  if (m >= 1) return `${eq} gagne${m > 1 ? ` par ${butsN(m)} d'écart ou plus` : ""}`;
+  return m === 0 ? `${eq} ne perd pas` : `${eq} ne perd pas par ${butsN(1 - m)} d'écart ou plus`;
+}
+function libelleClair(marche, dom, ext) {
+  const m = String(marche || ""), d = dom || "L'équipe à domicile", e = ext || "L'équipe à l'extérieur";
+  let r;
+  const fixes = {
+    "Victoire domicile": `${d} gagne`, "Victoire extérieur": `${e} gagne`, "Match nul": "Match nul (égalité, quel que soit le score)",
+    "Domicile ne perd pas (1N)": `${d} ne perd pas (victoire ou nul)`, "Extérieur ne perd pas (N2)": `${e} ne perd pas (victoire ou nul)`,
+    "Pas de nul (12)": "Pas de match nul (l'une des deux équipes gagne)",
+    "Les deux marquent : oui": "Les deux équipes marquent (au moins 1 but chacune)", "Les deux marquent : non": "Au moins une équipe ne marque pas",
+    "Total de buts pair": "Nombre total de buts pair (0, 2, 4…)", "Total de buts impair": "Nombre total de buts impair (1, 3, 5…)",
+    "Cage du domicile inviolée": `${d} n'encaisse aucun but`, "Le domicile encaisse": `${d} encaisse au moins 1 but`,
+    "Cage de l'extérieur inviolée": `${e} n'encaisse aucun but`, "L'extérieur encaisse": `${e} encaisse au moins 1 but`,
+    "1:0 / 2:0 / 3:0": `${d} gagne 1-0, 2-0 ou 3-0`, "2:1 / 3:1 / 4:1": `${d} gagne 2-1, 3-1 ou 4-1`,
+    "0:1 / 0:2 / 0:3": `${e} gagne 1-0, 2-0 ou 3-0 (scores 0-1, 0-2, 0-3)`, "1:2 / 1:3 / 1:4": `${e} gagne 2-1, 3-1 ou 4-1 (scores 1-2, 1-3, 1-4)`,
+  };
+  if (fixes[m]) return fixes[m];
+  if ((r = m.match(/^Multigoals (\d+)-(\d+)$/))) return `Entre ${r[1]} et ${r[2]} buts dans le match`;
+  if ((r = m.match(/^(Plus|Moins) de ([\d,]+) buts( du domicile| de l'extérieur)?$/))) {
+    const L = nombre(r[2]), n = auMoins(L), plus = r[1] === "Plus";
+    if (!r[3]) return plus ? `Au moins ${butsN(n)} dans le match` : n - 1 === 0 ? "Aucun but dans le match" : `${butsN(n - 1)} au maximum dans le match`;
+    const eq = r[3].trim() === "du domicile" ? d : e;
+    return plus ? `${eq} marque au moins ${butsN(n)}` : n - 1 === 0 ? `${eq} ne marque pas` : `${eq} marque ${butsN(n - 1)} au maximum`;
+  }
+  if ((r = m.match(/^Handicap ([+\-−]?[\d,]+) (domicile|extérieur)$/))) {
+    const L = nombre(r[1].replace("−", "-")), eq = r[2] === "domicile" ? d : e;
+    return `${sensHandicap(L, eq)} (handicap ${r[1]})`;
+  }
+  if ((r = m.match(/^Exactement (\d+)(\+)? buts$/))) return r[2] ? `${butsN(Number(r[1]))} ou plus dans le match` : `Exactement ${butsN(Number(r[1]))} dans le match`;
+  if ((r = m.match(/^Score exact (\d+)-(\d+)$/))) return `Score exact : ${d} ${r[1]}-${r[2]} ${e}`;
+  return m;
+}
+
 // Marchés d'un onglet, du plus fort au plus faible (valeur décroissante ; à valeur égale l'ordre du fichier est conservé).
 const lignesDe = (m, cle) => ((m.onglets && m.onglets[cle]) || []).slice().sort((a, b) => (Number(b.valeur) || 0) - (Number(a.valeur) || 0));
 const pluriel = (n, mot) => `${n} ${mot}${n > 1 ? "s" : ""}`;
 const detailBranches = (cle, s) => (cle === "multiscores"
-  ? `${pluriel(Number(s.scenarios), "scénario")} sur ${Number(s.sur)}`
-  : `Offensive ${formatPct(s.offensive)} · Défensive ${formatPct(s.defensive)}`);
+  ? `arrivé dans ${Number(s.scenarios)} des ${Number(s.sur)} comparaisons de matchs`
+  : `buts marqués ${formatPct(s.offensive)} · buts encaissés ${formatPct(s.defensive)}`);
 
 // ── Carte dépliée : une ligne par marché (nom, valeur, cote, branches, alerte) ──
-function ligneMarche(cle, s) {
+function ligneMarche(cle, s, m) {
   const pct = Number.isFinite(Number(s.valeur)) && s.valeur !== null ? Math.max(0, Math.min(100, Math.round(Number(s.valeur) * 100))) : null;
   const barre = pct === null ? "" : `<span class="ax-mk-barre" aria-hidden="true"><i style="--v:${pct}"></i></span>`;
   const cote = aUneCote(s.cote)
     ? `<span class="ax-mk-cote"><small>Cote</small><strong>${formatCote(s.cote)}</strong></span>`
     : `<span class="ax-mk-cote ax-mk-cote-lire"><small>Cote</small><strong>à lire</strong></span>`;
   const branches = cle === "multiscores"
-    ? `<span>${pluriel(Number(s.scenarios), "scénario")} sur ${Number(s.sur)}</span>`
-    : `<span>Offensive <b>${formatPct(s.offensive)}</b></span><span>Défensive <b>${formatPct(s.defensive)}</b></span>`;
+    ? `<span>Arrivé dans <b>${Number(s.scenarios)}</b> des <b>${Number(s.sur)}</b> comparaisons de matchs</span>`
+    : `<span>Sur les buts marqués : <b>${formatPct(s.offensive)}</b></span><span>Sur les buts encaissés : <b>${formatPct(s.defensive)}</b></span>`;
   const alerte = s.alerte ? `<p class="ax-mk-alerte"><span aria-hidden="true">⚠</span> ${echappeHtml(s.alerte)}</p>` : "";
-  return `<li class="ax-mk"><span class="ax-mk-nom">${echappeHtml(s.marche)}</span>${cote}` +
+  return `<li class="ax-mk"><span class="ax-mk-nom">${echappeHtml(libelleClair(s.marche, m.domicile, m.exterieur))}</span>${cote}` +
     `<div class="ax-mk-valeur">${barre}<b>${formatPct(s.valeur)}</b><small>valeur</small></div>` +
     `<p class="ax-mk-branches">${branches}</p>${alerte}</li>`;
 }
 
-function liste(cle, lignes) {
+function liste(cle, lignes, m) {
   if (!lignes.length) return `<p class="ax-texte-resume">Aucun marché retenu dans cet onglet pour ce match.</p>`;
   const legende = cle === "multiscores"
-    ? "Valeur : part des scénarios qui reviennent sur ce groupe de scores, ajustée à la taille de l'échantillon."
-    : "Valeur : part des scénarios qui valident le marché (moyenne des deux branches, ajustée à la taille de l'échantillon). Offensive et Défensive : la part dans chaque branche.";
-  return `<ul class="ax-mk-liste">${lignes.map((s) => ligneMarche(cle, s)).join("")}</ul><p class="ax-mk-legende">${legende}</p>`;
+    ? "Valeur : part des comparaisons de matchs où ce résultat est arrivé, ajustée à la taille de l'échantillon. Plus elle est haute, plus le résultat est fréquent dans les derniers matchs des deux équipes."
+    : "Valeur : part des comparaisons de matchs où ce résultat est arrivé (moyenne « buts marqués » et « buts encaissés », ajustée à la taille de l'échantillon). Plus elle est haute, plus le résultat est fréquent dans les derniers matchs des deux équipes.";
+  return `<ul class="ax-mk-liste">${lignes.map((s) => ligneMarche(cle, s, m)).join("")}</ul><p class="ax-mk-legende">${legende}</p>`;
 }
 
 // ── Carte repliée : le meilleur marché de chaque onglet, visible dès l'entrée ──
@@ -80,7 +120,7 @@ function construitResume(m) {
     rang.className = `ax-resume-rang ax-rang-${Math.min(i + 1, 3)}`;
     rang.innerHTML = `<div class="ax-resume-corps"><div class="ax-resume-tete">` +
       `<span class="ax-resume-etiquette">${nom}${plus}</span><span class="ax-resume-cote">Cote${cote}</span></div>` +
-      `<p class="ax-resume-marche">${echappeHtml(s.marche)}</p>` +
+      `<p class="ax-resume-marche">${echappeHtml(libelleClair(s.marche, m.domicile, m.exterieur))}</p>` +
       `<p class="ax-resume-texte">Valeur <b>${formatPct(s.valeur)}</b> · ${detailBranches(cle, s)}</p>${alerte}</div>`;
     racine.appendChild(rang);
   });
@@ -89,7 +129,7 @@ function construitResume(m) {
 
 function remplitDetails(details, m) {
   const sc = (l) => (l || []).map(([h, a]) => `${Number(h)}-${Number(a)}`).join(" · ");
-  const rej = (m.rejetes || []).map((r) => `<li><strong>${echappeHtml(r.marche)}</strong> — ${echappeHtml(r.raison)}</li>`).join("");
+  const rej = (m.rejetes || []).map((r) => `<li><strong>${echappeHtml(libelleClair(r.marche, m.domicile, m.exterieur))}</strong> — ${echappeHtml(r.raison)}</li>`).join("");
   const niv = m.niveaux ? `Buts attendus : domicile ${Number(m.niveaux.dom).toFixed(2)}, extérieur ${Number(m.niveaux.ext).toFixed(2)}, total ${Number(m.niveaux.total).toFixed(2)}. ` : "";
   details.innerHTML = `<summary class="ax-summary-cache" tabindex="-1">Détails de l'analyse</summary><div class="ax-details-corps">` +
     `<div class="ax-tab"><h4 class="ax-tab-titre">Scénarios appariés (${Number(m.n_domicile)} matchs à domicile, ${Number(m.n_exterieur)} à l'extérieur, k = ${Number(m.k)})</h4>` +
@@ -136,7 +176,7 @@ function construitCarte(m) {
   const prepare = () => {
     if (pret) return;
     pret = true;
-    actifs.forEach(({ cle, panneau, lignes }) => { panneau.innerHTML = liste(cle, lignes); });
+    actifs.forEach(({ cle, panneau, lignes }) => { panneau.innerHTML = liste(cle, lignes, m); });
     remplitDetails(blocDetails, m);
   };
   let courant = (actifs.find((a) => a.n) || actifs[0]);
