@@ -8,14 +8,18 @@ Méthode (aucune cote à l'analyse) :
    passe dans les 4 coins SANS être « juste au seuil » (un seul but de plus ou de moins pour une équipe le ferait perdre).
    Exception : marchés « zéro but » (BTTS non, cage inviolée oui, buts d'une équipe moins de 0,5) où ce test n'a pas de sens.
 4. v_def = paires qui valident le défavorable ; v_hab = paires qui valident l'habituel.
-5. Référence historique : table (marché, n, v_def, v_hab) -> réussite réelle sur l'échantillon de réglage. Retenu si borne basse de Wilson 95 % >= 80 %
-   (80 % = 1 / 1,25, la cote minimale de Patrick). Un petit groupe ne peut pas l'atteindre : l'effectif minimum se règle tout seul.
+5. Référence historique : table (marché, n, v_def, v_hab) -> réussite réelle sur Football-Data (10 194 matchs). Retenu si borne basse de Wilson 95 % >= 72 %
+   (seuil fixé par Patrick le 23/10/2026, 80 % jugé trop strict). Un petit groupe ne peut pas l'atteindre : l'effectif minimum se règle tout seul.
 6. Stabilité : on retire chaque paire une à une et on relit la table GELÉE (cellule n-1). Retenu seulement si chaque retrait reste retenu.
    La table contient aussi n = 3, uniquement pour ce test (aucun pronostic n'est fait à 3 matchs).
-Usage : python -m alpha_serie.robustesse  (réglage sur la saison 2526, validation unique sur 2627 + archive ARCHETYPE)
+7. Calibrage par marché et par intervalle de cote gagnant sur TOUS les matchs ARCHETYPE (archive de test, sans doublon) : la stratégie tourne,
+   puis pour chaque marché on cherche l'intervalle de cote (cote >= 1,25) qui garde le plus de paris avec une réussite (borne Wilson) >= 72 %.
+   Priorité à la fréquence de réussite ; le rendement est publié à titre d'information.
+Usage : python -m alpha_serie.robustesse
 """
 from __future__ import annotations
 
+import glob
 import gzip
 import hashlib
 import json
@@ -25,15 +29,17 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable
 
-from . import calibration as C, coeur, parametres as P
+from . import coeur, parametres as P
 from .marches import libelle, test_du_marche
 
 ROOT = Path(__file__).resolve().parent.parent
 BLOC = ROOT / "data" / "bloc_saisons" / "bloc_2526_2627.json.gz"
 TABLE = ROOT / "data" / "alpha_serie" / "robustesse_table.json"
 RAPPORT = ROOT / "docs" / "alpha_robustesse_validation.json"
+INTERVALLES = ROOT / "data" / "alpha_serie" / "robustesse_intervalles.json"
+IDS = ROOT / "data" / "alpha_serie" / "robustesse_matchs.json.gz"
 
-SEUIL_WILSON = 1 / P.COTE_MIN          # 0,80
+SEUIL_WILSON = 0.72                     # décision de Patrick (23/10/2026)
 Z = 1.96
 GMAX = 10                              # buts lus de 0 à 10 (au-delà : ramené à 10)
 N_TABLE = range(3, P.MAX_MATCHS + 1)   # 3 : stabilité seulement
@@ -57,19 +63,20 @@ def catalogue(params: dict | None = None) -> list[tuple[tuple[str, str], str, Pr
     for lo, hi in params["multigoals"]["plages"]:
         out.append((("multigoals", f"{lo}-{hi}"), f"Multigoals {lo}-{hi}", (lambda h, a, lo=lo, hi=hi: lo <= h + a <= hi), False))
     dcs = {"1N": ("Domicile ne perd pas", lambda h, a: h >= a), "N2": ("Extérieur ne perd pas", lambda h, a: h <= a), "12": ("Pas de nul", lambda h, a: h != a)}
-    jambes = {f"plus_{x}": (f"plus de {x.replace('.', ',')} buts", (lambda h, a, x=float(x): h + a > x)) for x in ("1.5", "2.5", "3.5")}
-    jambes |= {f"moins_{x}": (f"moins de {x.replace('.', ',')} buts", (lambda h, a, x=float(x): h + a < x)) for x in ("2.5", "3.5", "4.5")}
-    jambes |= {"btts_oui": ("les deux marquent", lambda h, a: h >= 1 and a >= 1), "btts_non": ("les deux ne marquent pas", lambda h, a: h == 0 or a == 0)}
+    jambes = {f"plus_{x}": (f"plus de {x.replace('.', ',')} buts", (lambda h, a, x=float(x): h + a > x), False) for x in ("1.5", "2.5", "3.5")}
+    jambes |= {f"moins_{x}": (f"moins de {x.replace('.', ',')} buts", (lambda h, a, x=float(x): h + a < x), False) for x in ("2.5", "3.5", "4.5")}
+    jambes |= {"btts_oui": ("les deux marquent", lambda h, a: h >= 1 and a >= 1, False), "btts_non": ("les deux ne marquent pas", lambda h, a: h == 0 or a == 0, True)}
     for dk, (dl, dp) in dcs.items():
-        for jk, (jl, jp) in jambes.items():
-            out.append((("combo", f"{dk}+{jk}"), f"{dl} + {jl}", (lambda h, a, dp=dp, jp=jp: dp(h, a) and jp(h, a)), False))
+        for jk, (jl, jp, jz) in jambes.items():
+            pred = (lambda h, a, dp=dp, jp=jp: dp(h, a) and jp(h, a))
+            pred.jambes = ((dp, False), (jp, jz))          # « juste au seuil » d'un combo = juste sur l'une de ses jambes, chacune avec sa règle
+            out.append((("combo", f"{dk}+{jk}"), f"{dl} + {jl}", pred, False))
     for nom, p in coeur.GROUPES_MULTISCORES.items():
         out.append((("multiscores", nom), f"Multiscore {nom}", p, False))
     return out
 
 
-def grilles(pred: Pred, zero: bool) -> tuple[list[list[bool]], list[list[bool]]]:
-    """passe[h][a] et solide[h][a] (passe et pas « juste au seuil »)."""
+def _solide_simple(pred: Pred, zero: bool):
     passe = [[bool(pred(h, a)) for a in range(GMAX + 2)] for h in range(GMAX + 2)]
     solide = [[False] * (GMAX + 1) for _ in range(GMAX + 1)]
     for h in range(GMAX + 1):
@@ -81,6 +88,17 @@ def grilles(pred: Pred, zero: bool) -> tuple[list[list[bool]], list[list[bool]]]
                 continue
             voisins = [(h + 1, a), (h, a + 1)] + ([(h - 1, a)] if h else []) + ([(h, a - 1)] if a else [])
             solide[h][a] = all(passe[x][y] for x, y in voisins)
+    return passe, solide
+
+
+def grilles(pred: Pred, zero: bool) -> tuple[list[list[bool]], list[list[bool]]]:
+    """passe[h][a] et solide[h][a] (passe et pas « juste au seuil »). Combo : solide si chaque jambe est solide selon sa propre règle."""
+    jambes = getattr(pred, "jambes", None)
+    if not jambes:
+        return _solide_simple(pred, zero)
+    passe = [[bool(pred(h, a)) for a in range(GMAX + 2)] for h in range(GMAX + 2)]
+    sj = [_solide_simple(p, z)[1] for p, z in jambes]
+    solide = [[all(g[h][a] for g in sj) for a in range(GMAX + 1)] for h in range(GMAX + 1)]
     return passe, solide
 
 
@@ -143,10 +161,27 @@ def charger_bloc() -> list[dict]:
 
 
 def charger_archive_archetype() -> list[dict]:
-    out = []
-    for i, m in enumerate(C.charger_archive()):
-        out.append({**m, "id": f"archetype|{m['jour']}|{i}", "source": "archetype"})
-    return out
+    """TOUS les matchs ARCHETYPE avec historique des deux équipes, cotes BetPawa et score. Sans doublon : un match_id (ou date + équipes) une seule fois,
+    on garde l'enregistrement le plus récent. Historique : assemblage figé, sinon le bloc équipe de l'archive (même règle anti-fuite)."""
+    vus: dict[str, dict] = {}
+    for f in sorted(glob.glob(str(ROOT / "data" / "archive_test" / "*.json.gz"))):
+        for k, x in json.load(gzip.open(f)).items():
+            sc = x.get("score") or {}
+            if sc.get("buts_dom") is None or sc.get("buts_ext") is None or not x.get("cotes_betpawa"):
+                continue
+            a = x.get("assemblage") or {}
+            dom = a.get("equipe_dom") if "matchs" in (a.get("equipe_dom") or {}) else x.get("equipe_dom")
+            ext = a.get("equipe_ext") if "matchs" in (a.get("equipe_ext") or {}) else x.get("equipe_ext")
+            if "matchs" not in (dom or {}) or "matchs" not in (ext or {}):
+                continue
+            jour = str(x["date"])[:10]
+            cle = str(x.get("match_id") or f"{jour}|{x.get('domicile')}|{x.get('exterieur')}")
+            vus[cle] = {"id": f"archetype|{cle}", "jour": jour, "source": "archetype", "domicile": x.get("domicile"), "exterieur": x.get("exterieur"),
+                        "dom": dom, "ext": ext, "cotes": x["cotes_betpawa"], "h": sc["buts_dom"], "a": sc["buts_ext"]}
+    par_equipes: dict[tuple, dict] = {}
+    for m in vus.values():                                   # deuxième garde : même jour et mêmes équipes sous deux identifiants
+        par_equipes[(m["jour"], m["domicile"], m["exterieur"])] = m
+    return sorted(par_equipes.values(), key=lambda m: (m["jour"], m["id"]))
 
 
 def series(m: dict) -> list:
@@ -177,9 +212,9 @@ def construire_table(matchs: list[dict], cat=None) -> dict:
         lb = wilson_bas(s, t)
         table[k] = {"succes": s, "total": t, "reussite": round(s / t, 4), "wilson_bas": round(lb, 4), "retenu": lb >= SEUIL_WILSON}
     empreinte = hashlib.sha256("\n".join(ids).encode()).hexdigest()
-    return {"gele_le": datetime.now(timezone.utc).isoformat(timespec="seconds"), "regle": "borne basse de Wilson 95 % >= 1/1,25",
-            "matchs_reglage": len(ids), "du": min(m["jour"] for m in matchs), "au": max(m["jour"] for m in matchs),
-            "empreinte_ids": empreinte, "cellules": table}
+    jours = [m["jour"] for m in matchs if m["id"] in set(ids)]
+    return {"gele_le": datetime.now(timezone.utc).isoformat(timespec="seconds"), "regle": f"borne basse de Wilson 95 % >= {SEUIL_WILSON:.0%}",
+            "matchs_reglage": len(ids), "du": min(jours), "au": max(jours), "empreinte_ids": empreinte, "ids": ids, "cellules": table}
 
 
 # --- Verdict -------------------------------------------------------------------------------------------------------
@@ -234,71 +269,153 @@ def cote_reelle(m: dict, cle: tuple[str, str]) -> float | None:
     return None
 
 
-def valider(matchs: list[dict], cellules: dict) -> dict:
-    cat = catalogue()
+def lire_strategie(matchs: list[dict], cat=None) -> tuple[list[dict], int]:
+    """Fait tourner la lecture de la stratégie sur chaque match et chaque marché (aucune cote à la lecture).
+    Pour chaque marché : part défavorable et part habituelle, et leur plus petite valeur après le retrait de chaque paire (stabilité)."""
+    cat = cat or catalogue()
     gr = {cle: grilles(p, z) for cle, _, p, z in cat}
-    par: dict[str, dict] = {}
-    base: dict[str, list[int]] = defaultdict(lambda: [0, 0])
-    analyses = abstentions = 0
+    lignes, analyses = [], 0
     for m in matchs:
         prs = series(m)
         if len(prs) < P.MIN_MATCHS:
             continue
         analyses += 1
-        ret = analyser(m, cellules, cat, gr)
-        if not ret:
-            abstentions += 1
-        for cle, lib, p, _ in cat:
-            b = base[lib]
-            b[0] += int(bool(p(m["h"], m["a"])))
-            b[1] += 1
-        for r in ret:
-            lib = r["marche"]
-            d = par.setdefault(lib, {"marche": lib, "n": 0, "gagnes": 0, "avec_cote": 0, "gain_net": 0.0, "somme_cotes": 0.0})
-            g = bool(dict((c, p) for c, _, p, _ in cat)[r["cle"]](m["h"], m["a"]))
-            d["n"] += 1
-            d["gagnes"] += g
-            c = cote_reelle(m, r["cle"])
-            if c:
-                d["avec_cote"] += 1
-                d["somme_cotes"] += c
-                d["gain_net"] += (c - 1) if g else -1
-    lignes = []
-    for d in sorted(par.values(), key=lambda x: -x["n"]):
-        b = base[d["marche"]]
-        lignes.append({"marche": d["marche"], "propositions": d["n"], "reussite": round(d["gagnes"] / d["n"], 4),
-                       "base": round(b[0] / b[1], 4) if b[1] else None, "avec_cote": d["avec_cote"],
-                       "cote_moyenne": round(d["somme_cotes"] / d["avec_cote"], 3) if d["avec_cote"] else None,
-                       "rendement": round(d["gain_net"] / d["avec_cote"], 4) if d["avec_cote"] else None})
-    tot_n = sum(x["propositions"] for x in lignes)
-    tot_g = sum(round(x["reussite"] * x["propositions"]) for x in lignes)
-    ac = sum(par[x["marche"]]["avec_cote"] for x in lignes)
-    gn = sum(par[x["marche"]]["gain_net"] for x in lignes)
-    return {"matchs_analyses": analyses, "matchs_sans_aucun_marche": abstentions, "propositions": tot_n,
-            "reussite": round(tot_g / tot_n, 4) if tot_n else None, "avec_cote": ac, "rendement": round(gn / ac, 4) if ac else None,
-            "marches": lignes}
+        for cle, lib, pred, _ in cat:
+            n, vd, vh, loo = lire(prs, *gr[cle])
+            lignes.append({"id": m["id"], "jour": m["jour"], "cle": cle, "marche": lib, "n": n, "v_def": vd, "v_hab": vh,
+                           "def": min(round(x / k, 4) for k, x, _ in loo), "hab": min(round(y / k, 4) for k, _, y in loo),
+                           "cote": cote_reelle(m, cle), "gagne": bool(pred(m["h"], m["a"]))})
+    return lignes, analyses
+
+
+def _meilleur_intervalle(pts: list[tuple[float, int]]):
+    """pts triés par cote. Intervalle [bas, haut] (bornes = cotes observées, sans couper une même cote) qui garde le plus de paris
+    avec une borne de Wilson >= 72 % ; à égalité, la meilleure réussite."""
+    cotes = sorted({c for c, _ in pts})
+    par = {c: [0, 0] for c in cotes}
+    for c, g in pts:
+        par[c][0] += g
+        par[c][1] += 1
+    best = None
+    for i in range(len(cotes)):
+        s = n = 0
+        for j in range(i, len(cotes)):
+            s += par[cotes[j]][0]
+            n += par[cotes[j]][1]
+            if wilson_bas(s, n) >= SEUIL_WILSON and (best is None or (n, s / n) > (best[2], best[3] / best[2])):
+                best = (cotes[i], cotes[j], n, s)
+    return best
+
+
+def _tient_dans_chaque_moitie(sel, td, th, bas, haut, coupe) -> bool:
+    """Garde anti-hasard (même principe que calibration.py) : la règle doit garder au moins 72 % de réussite dans CHAQUE moitié chronologique."""
+    for moitie in (lambda j: j < coupe, lambda j: j >= coupe):
+        g = [x["gagne"] for x in sel if moitie(x["jour"]) and (bas is None or (x["cote"] and bas <= x["cote"] <= haut))]
+        if not g or sum(g) / len(g) < SEUIL_WILSON:
+            return False
+    return True
+
+
+def calibrer_marche(L: list[dict]) -> dict:
+    """Règle d'un marché, apprise sur les données : seuil de part défavorable, seuil de part habituelle (valeurs réellement observées,
+    lues après retrait d'une paire) et, si le marché a des cotes, intervalle de cote gagnant (cote >= 1,25).
+    On garde la règle qui retient le plus de paris avec une borne de Wilson >= 72 % ET au moins 72 % dans chaque moitié chronologique ;
+    à égalité, la meilleure réussite. Aucune : marché écarté."""
+    avec_cotes = any(x["cote"] for x in L)
+    jl = sorted({x["jour"] for x in L})
+    coupe = jl[len(jl) // 2]
+    seuils_d = sorted({x["def"] for x in L})
+    seuils_h = sorted({x["hab"] for x in L})
+    best = None
+    for td in seuils_d:
+        Ld = [x for x in L if x["def"] >= td]
+        for th in seuils_h:
+            sel = [x for x in Ld if x["hab"] >= th]
+            if not sel:
+                break
+            if avec_cotes:
+                pts = [(x["cote"], int(x["gagne"])) for x in sel if x["cote"] and x["cote"] >= P.COTE_MIN]
+                if not pts:
+                    continue
+                r = _meilleur_intervalle(pts)
+                if r is None:
+                    continue
+                bas, haut, n, s = r
+            else:
+                n, s = len(sel), sum(x["gagne"] for x in sel)
+                if wilson_bas(s, n) < SEUIL_WILSON:
+                    continue
+                bas = haut = None
+            if not _tient_dans_chaque_moitie(sel, td, th, bas, haut, coupe):
+                continue
+            if best is None or (n, s / n) > (best["paris"], best["reussite"]):
+                best = {"part_defavorable_min": td, "part_habituelle_min": th, "cote_bas": bas, "cote_haut": haut,
+                        "paris": n, "gagnes": s, "reussite": round(s / n, 4), "wilson_bas": round(wilson_bas(s, n), 4)}
+    return {"avec_cotes": avec_cotes, "regle": best}
+
+
+def calibrer(lignes: list[dict]) -> dict:
+    par: dict[str, list] = defaultdict(list)
+    for x in lignes:
+        par[x["marche"]].append(x)
+    return {nom: calibrer_marche(L) for nom, L in sorted(par.items())}
+
+
+def appliquer(lignes: list[dict], regles: dict) -> list[dict]:
+    out = []
+    for x in lignes:
+        r = (regles.get(x["marche"]) or {}).get("regle")
+        if not r or x["def"] < r["part_defavorable_min"] or x["hab"] < r["part_habituelle_min"]:
+            continue
+        if r["cote_bas"] is not None and not (x["cote"] and r["cote_bas"] <= x["cote"] <= r["cote_haut"]):
+            continue
+        out.append(x)
+    return out
+
+
+def bilan(paris: list[dict]) -> dict:
+    n, w = len(paris), sum(p["gagne"] for p in paris)
+    ac = [p for p in paris if p["cote"]]
+    par: dict[str, list] = defaultdict(list)
+    for p in paris:
+        par[p["marche"]].append(p)
+    return {"paris": n, "reussite": round(w / n, 4) if n else None, "avec_cote": len(ac),
+            "rendement": round(sum((p["cote"] - 1) if p["gagne"] else -1 for p in ac) / len(ac), 4) if ac else None,
+            "par_marche": {k: {"paris": len(v), "reussite": round(sum(x["gagne"] for x in v) / len(v), 4),
+                               "cote_moyenne": round(sum(x["cote"] for x in v if x["cote"]) / max(1, sum(1 for x in v if x["cote"])), 3)}
+                           for k, v in sorted(par.items(), key=lambda kv: -len(kv[1]))}}
 
 
 def main() -> None:
-    bloc = charger_bloc()
-    reglage = [m for m in bloc if m["saison"] == "2526"]
-    validation_fd = [m for m in bloc if m["saison"] == "2627"]
-    table = construire_table(reglage)
-    TABLE.write_text(json.dumps(table, ensure_ascii=False, indent=0), encoding="utf-8")
-    cel = table["cellules"]
     archetype = charger_archive_archetype()
-    rapport = {"reglage": {k: table[k] for k in ("gele_le", "matchs_reglage", "du", "au", "empreinte_ids", "regle")},
-               "cellules_retenues": sum(1 for c in cel.values() if c["retenu"]), "cellules": len(cel),
-               "validation_football_data_2627": valider(validation_fd, cel),
-               "validation_archive_archetype": valider(archetype, cel)}
+    lignes, analyses = lire_strategie(archetype)
+    jours = sorted({m["jour"] for m in archetype})
+    jours_an = sorted({x["jour"] for x in lignes})
+    coupe = jours_an[(2 * len(jours_an)) // 3]                    # contrôle : règles apprises sur les 2/3 les plus anciens, jugées sur le dernier 1/3
+    regles_avant = calibrer([x for x in lignes if x["jour"] < coupe])
+    controle = bilan(appliquer([x for x in lignes if x["jour"] >= coupe], regles_avant))
+    regles = calibrer(lignes)                                      # règles finales : tous les matchs ARCHETYPE
+    gele = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    ids = [m["id"] for m in archetype]
+    IDS.write_bytes(gzip.compress(json.dumps({"archetype": ids}).encode()))
+    INTERVALLES.write_text(json.dumps({"gele_le": gele, "seuil_wilson": SEUIL_WILSON, "cote_min": P.COTE_MIN, "matchs_archetype": len(ids),
+                                       "matchs_analyses": analyses, "du": jours[0], "au": jours[-1],
+                                       "empreinte_ids": hashlib.sha256("\n".join(ids).encode()).hexdigest(), "regles": regles},
+                                      ensure_ascii=False, indent=1), encoding="utf-8")
+    retenus = {k: v for k, v in regles.items() if v["regle"]}
+    rapport = {"gele_le": gele, "archetype": {"matchs_sans_doublon": len(ids), "matchs_analyses": analyses, "du": jours[0], "au": jours[-1]},
+               "controle_chronologique": {"coupe": coupe, "marches_retenus_avant_coupe": sorted(k for k, v in regles_avant.items() if v["regle"]),
+                                          "resultat_dernier_tiers": controle},
+               "regles_retenues": retenus, "marches_sans_regle": sorted(k for k, v in regles.items() if not v["regle"]),
+               "resultat_regles_finales": bilan(appliquer(lignes, regles))}
     RAPPORT.write_text(json.dumps(rapport, ensure_ascii=False, indent=1), encoding="utf-8")
-    print(json.dumps({k: v for k, v in rapport.items() if not k.startswith("validation")}, ensure_ascii=False))
-    for k in ("validation_football_data_2627", "validation_archive_archetype"):
-        v = rapport[k]
-        print(f"== {k}: {v['matchs_analyses']} matchs, {v['matchs_sans_aucun_marche']} sans marché, {v['propositions']} propositions, "
-              f"réussite {v['reussite']}, rendement {v['rendement']} sur {v['avec_cote']} cotes")
-        for x in v["marches"][:25]:
-            print("  ", x)
+    print("ARCHETYPE:", len(ids), "matchs sans doublon,", analyses, "analysés, du", jours[0], "au", jours[-1])
+    print("CONTROLE coupe", coupe, json.dumps(controle, ensure_ascii=False))
+    for k, v in retenus.items():
+        print("  ", k, v["regle"])
+    print("SANS REGLE:", len(rapport["marches_sans_regle"]))
+    r = rapport["resultat_regles_finales"]
+    print("FINAL:", {k: v for k, v in r.items() if k != "par_marche"})
 
 
 if __name__ == "__main__":

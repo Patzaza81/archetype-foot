@@ -49,7 +49,7 @@ def test_combo_juste_si_une_jambe_juste():
 
 def test_wilson_et_effectif_minimum():
     assert R.wilson_bas(16, 16) >= R.SEUIL_WILSON
-    assert R.wilson_bas(15, 15) < R.SEUIL_WILSON                   # un petit groupe parfait ne suffit pas
+    assert R.wilson_bas(9, 9) < R.SEUIL_WILSON                     # un petit groupe parfait ne suffit pas (seuil 72 %)
     assert R.wilson_bas(0, 0) == 0.0
 
 
@@ -64,3 +64,50 @@ def test_verdict_stabilite_table_gelee():
     assert R.verdict(prs, cle, passe, solide, cel_instable)["statut"] == "instable"
     assert R.verdict(prs, cle, passe, solide, {})["statut"] == "abstention"
     assert R.verdict(prs[:3], cle, passe, solide, cel)["statut"] == "exclu"
+
+
+# --- Version 2 (23/10/2026) : seuil 72 %, combos par jambes, calibrage par marché et intervalle de cote --------------
+def test_combo_avec_jambe_zero_but_garde_son_exemption():
+    _, solide = _grille(("combo", "1N+btts_non"))
+    assert solide[1][0] and solide[3][0] and solide[5][0]          # BTTS non exempté ; 1N tient même avec un but de moins (nul)
+    assert not solide[0][0] and not solide[1][1] and not solide[0][1]  # 0-0 : 1N juste ; 1-1 et 0-1 ne passent pas
+
+
+def test_quatre_coins_egal_coin_du_marche_pour_les_marches_monotones():
+    """Réponse au contrôle externe : pour un marché qui ne fait que monter ou descendre avec les buts de chaque équipe,
+    exiger les 4 coins revient exactement à exiger le coin défavorable propre au marché."""
+    coins = {("over_under_1.5", "plus"): (0, 0), ("over_under_3.5", "moins"): (1, 1), ("1x2", "1"): (0, 1),
+             ("double_chance", "N2"): (1, 0), ("over_under_domicile_1.5", "plus"): (0, 0), ("btts", "Oui"): (0, 0)}
+    for cle, (ih, ia) in coins.items():
+        passe, solide = _grille(cle)
+        for A in range(5):
+            for Cc in range(5):
+                for B in range(5):
+                    for D in range(5):
+                        hs, as_ = (min(A, Cc), max(A, Cc)), (min(B, D), max(B, D))
+                        quatre = all(solide[h][a] for h in hs for a in as_)
+                        un = solide[hs[ih]][as_[ia]]
+                        assert quatre == un, (cle, A, Cc, B, D)
+
+
+def test_intervalle_gagnant():
+    from alpha_serie.robustesse import _meilleur_intervalle
+    pts = [(1.30, 1)] * 20 + [(1.60, 0)] * 10
+    assert _meilleur_intervalle(sorted(pts))[:2] == (1.30, 1.30)     # la zone perdante est laissée dehors
+    pts = [(1.30, 1)] * 15 + [(1.40, 1)] * 15 + [(1.50, 1)] * 5
+    assert _meilleur_intervalle(sorted(pts))[:3] == (1.30, 1.50, 35)  # tout passe : le plus large
+    assert _meilleur_intervalle(sorted([(1.30, 1)] * 30 + [(1.32, 0)] * 2))[2] == 32  # deux pertes au milieu : gardées si la barre tient
+    assert _meilleur_intervalle([(1.30, 1)] * 9) is None               # trop peu de paris : 9 sur 9 ne passe pas la borne Wilson
+    assert _meilleur_intervalle(sorted([(1.30, 1), (1.30, 0)] * 20)) is None   # 50 % : jamais retenu
+    assert _meilleur_intervalle([]) is None
+
+
+def test_archive_sans_doublon():
+    from alpha_serie.robustesse import charger_archive_archetype
+    ms = charger_archive_archetype()
+    assert len({m["id"] for m in ms}) == len(ms)
+    assert len({(m["jour"], m["domicile"], m["exterieur"]) for m in ms}) == len(ms)
+    from alpha_serie import coeur
+    for m in ms[:200]:                                           # anti-fuite : la série lue s'arrête avant le jour du match
+        hm, _ = coeur.serie_lieu(m["dom"], True, m["jour"])
+        assert len(hm) <= 7

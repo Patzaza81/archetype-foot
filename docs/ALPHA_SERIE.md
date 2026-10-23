@@ -59,3 +59,15 @@ Cahier des charges figé par Patrick. Couche séparée : `coeur.py`, la page et 
 - 2627 : 950 propositions, réussite 90 % (base des mêmes marchés 85–87 %), 75 % des matchs sans aucun marché.
 - Archive ARCHETYPE : 381 propositions, réussite 87,1 %, cote Betpawa moyenne 1,08–1,13, rendement −8,7 % sur 183 cotes ; seulement 8 propositions avec une cote >= 1,25 (5 gagnées).
 - Constat : la barre de 80 % ne laisse passer que des marchés que Betpawa paie sous 1,25. Rien n'est branché au pipeline.
+
+### Version 2 (23/10/2026, ordre de Patrick) : calibrage par marché et par intervalle de cote sur les matchs ARCHETYPE
+- Seuil : borne basse de Wilson 95 % >= **72 %** (80 % jugé trop strict par Patrick). Priorité à la fréquence de réussite ; le rendement est publié pour information.
+- Données : **tous** les matchs de l'archive de test avec historique des deux équipes, cotes BetPawa et score, **sans doublon** (match_id puis date + équipes, l'état le plus récent est gardé) : 1 766 matchs, 889 analysables (4 matchs au même lieu minimum), du 28/09 au 22/10/2026. Historique : assemblage figé, sinon le bloc équipe de l'archive.
+- Lecture de la stratégie inchangée (paires, défavorable sans « juste au seuil », habituel). Stabilité : chaque part est lue après retrait de chaque paire, on garde la plus petite.
+- Combos : « juste au seuil » = juste sur l'une des deux jambes, chacune avec sa propre règle (la jambe BTTS non garde son exemption).
+- Règle apprise par marché (`calibrer_marche`) : part défavorable minimale, part habituelle minimale (valeurs réellement observées) et intervalle de cote (bornes = cotes observées, >= 1,25) qui gardent le plus de paris avec Wilson >= 72 % et au moins 72 % dans chaque moitié chronologique. Marchés sans cote dans l'archive (combos, multigoals, multiscores) : réussite seule.
+- Quatre coins : test prouvant que, pour les marchés monotones, exiger les 4 coins = exiger le coin défavorable propre au marché (`test_quatre_coins_egal_coin_du_marche_pour_les_marches_monotones`).
+- Sorties : `data/alpha_serie/robustesse_intervalles.json` (règles gelées, date, empreinte), `data/alpha_serie/robustesse_matchs.json.gz` (liste explicite des matchs), `docs/alpha_robustesse_validation.json`.
+- Réglage du 23/10 (chiffres bruts) : 23 marchés reçoivent une règle. Sur tous les matchs : 1 614 paris, 81,4 % de réussite, rendement +18,8 % sur 725 cotes.
+- **Contrôle chronologique** (règles apprises avant le 14/10, jugées du 14 au 22/10) : 969 paris, **70,6 %** de réussite, rendement −9 % sur 516 cotes. Les règles ne tiennent pas hors de leurs données : la plupart des intervalles reposent sur 10 à 30 paris en 25 jours. Tiennent au-dessus de 72 % hors échantillon : plus de 1,5 buts (73 %), handicap +1,5 extérieur (77 %), handicap +0,5 extérieur (72 %), moins de 2,5 buts du domicile (76 %), multigoals 1-4 (74 %, égal à sa fréquence de base). Rien n'est branché au pipeline.
+- La version 1 (table Football-Data, 80 %) reste dans le code (`construire_table`, `verdict`) et dans `robustesse_table.json`, à titre de référence ; elle n'est plus utilisée par `main`.

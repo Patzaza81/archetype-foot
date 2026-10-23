@@ -1,86 +1,593 @@
 {
- "reglage": {
-  "gele_le": "2026-10-23T22:33:47+00:00",
-  "matchs_reglage": 10194,
-  "du": "2025-01-23",
-  "au": "2026-06-01",
-  "empreinte_ids": "e553dbcf5e5d0d0da05e72951070378542acb87cbdb92cb8525809a5f722f2cd",
-  "regle": "borne basse de Wilson 95 % >= 1/1,25"
+ "gele_le": "2026-10-23T22:58:53+00:00",
+ "archetype": {
+  "matchs_sans_doublon": 1766,
+  "matchs_analyses": 889,
+  "du": "2026-09-28",
+  "au": "2026-10-22"
  },
- "cellules_retenues": 110,
- "cellules": 5240,
- "validation_football_data_2627": {
-  "matchs_analyses": 3418,
-  "matchs_sans_aucun_marche": 2553,
-  "propositions": 950,
-  "reussite": 0.9,
-  "avec_cote": 0,
-  "rendement": null,
-  "marches": [
-   {
-    "marche": "Handicap +1,5 domicile",
-    "propositions": 570,
-    "reussite": 0.907,
-    "base": 0.8707,
-    "avec_cote": 0,
-    "cote_moyenne": null,
-    "rendement": null
-   },
-   {
-    "marche": "Moins de 2,5 buts de l'extérieur",
-    "propositions": 374,
-    "reussite": 0.8877,
-    "base": 0.8531,
-    "avec_cote": 0,
-    "cote_moyenne": null,
-    "rendement": null
-   },
-   {
-    "marche": "Moins de 4,5 buts",
-    "propositions": 6,
+ "controle_chronologique": {
+  "coupe": "2026-10-14",
+  "marches_retenus_avant_coupe": [
+   "Domicile ne perd pas (1N)",
+   "Extérieur ne perd pas (N2)",
+   "Handicap +0,5 domicile",
+   "Handicap +0,5 extérieur",
+   "Handicap +1,5 extérieur",
+   "Handicap -0,5 domicile",
+   "Handicap -0,5 extérieur",
+   "Handicap -1,5 domicile",
+   "Moins de 2,5 buts du domicile",
+   "Moins de 3,5 buts",
+   "Moins de 4,5 buts",
+   "Multigoals 1-4",
+   "Pas de nul (12)",
+   "Plus de 1,5 buts",
+   "Plus de 1,5 buts de l'extérieur"
+  ],
+  "resultat_dernier_tiers": {
+   "paris": 969,
+   "reussite": 0.7059,
+   "avec_cote": 516,
+   "rendement": -0.09,
+   "par_marche": {
+    "Multigoals 1-4": {
+     "paris": 453,
+     "reussite": 0.7439,
+     "cote_moyenne": 0.0
+    },
+    "Plus de 1,5 buts": {
+     "paris": 109,
+     "reussite": 0.7339,
+     "cote_moyenne": 1.316
+    },
+    "Handicap +1,5 extérieur": {
+     "paris": 66,
+     "reussite": 0.7727,
+     "cote_moyenne": 1.294
+    },
+    "Handicap +0,5 extérieur": {
+     "paris": 50,
+     "reussite": 0.72,
+     "cote_moyenne": 1.301
+    },
+    "Extérieur ne perd pas (N2)": {
+     "paris": 49,
+     "reussite": 0.6939,
+     "cote_moyenne": 1.304
+    },
+    "Moins de 3,5 buts": {
+     "paris": 47,
+     "reussite": 0.617,
+     "cote_moyenne": 1.345
+    },
+    "Pas de nul (12)": {
+     "paris": 45,
+     "reussite": 0.6222,
+     "cote_moyenne": 1.265
+    },
+    "Moins de 4,5 buts": {
+     "paris": 40,
+     "reussite": 0.7,
+     "cote_moyenne": 1.379
+    },
+    "Moins de 2,5 buts du domicile": {
+     "paris": 33,
+     "reussite": 0.7576,
+     "cote_moyenne": 1.282
+    },
+    "Plus de 1,5 buts de l'extérieur": {
+     "paris": 21,
+     "reussite": 0.5714,
+     "cote_moyenne": 1.566
+    },
+    "Handicap -1,5 domicile": {
+     "paris": 16,
+     "reussite": 0.375,
+     "cote_moyenne": 2.516
+    },
+    "Handicap +0,5 domicile": {
+     "paris": 14,
+     "reussite": 0.3571,
+     "cote_moyenne": 1.54
+    },
+    "Handicap -0,5 extérieur": {
+     "paris": 13,
+     "reussite": 0.3077,
+     "cote_moyenne": 1.819
+    },
+    "Domicile ne perd pas (1N)": {
+     "paris": 10,
+     "reussite": 0.6,
+     "cote_moyenne": 1.488
+    },
+    "Handicap -0,5 domicile": {
+     "paris": 3,
+     "reussite": 1.0,
+     "cote_moyenne": 1.487
+    }
+   }
+  }
+ },
+ "regles_retenues": {
+  "Domicile ne perd pas (1N)": {
+   "avec_cotes": true,
+   "regle": {
+    "part_defavorable_min": 0.25,
+    "part_habituelle_min": 0.0,
+    "cote_bas": 1.27,
+    "cote_haut": 1.34,
+    "paris": 10,
+    "gagnes": 10,
     "reussite": 1.0,
-    "base": 0.8294,
-    "avec_cote": 0,
-    "cote_moyenne": null,
-    "rendement": null
+    "wilson_bas": 0.7225
    }
-  ]
+  },
+  "Extérieur ne perd pas (N2)": {
+   "avec_cotes": true,
+   "regle": {
+    "part_defavorable_min": 0.0,
+    "part_habituelle_min": 0.0,
+    "cote_bas": 1.25,
+    "cote_haut": 1.32,
+    "paris": 61,
+    "gagnes": 51,
+    "reussite": 0.8361,
+    "wilson_bas": 0.7239
+   }
+  },
+  "Handicap +0,5 domicile": {
+   "avec_cotes": true,
+   "regle": {
+    "part_defavorable_min": 0.25,
+    "part_habituelle_min": 0.0,
+    "cote_bas": 1.25,
+    "cote_haut": 1.38,
+    "paris": 17,
+    "gagnes": 16,
+    "reussite": 0.9412,
+    "wilson_bas": 0.7302
+   }
+  },
+  "Handicap +0,5 extérieur": {
+   "avec_cotes": true,
+   "regle": {
+    "part_defavorable_min": 0.0,
+    "part_habituelle_min": 0.1667,
+    "cote_bas": 1.58,
+    "cote_haut": 1.61,
+    "paris": 33,
+    "gagnes": 29,
+    "reussite": 0.8788,
+    "wilson_bas": 0.7267
+   }
+  },
+  "Handicap +1,5 domicile": {
+   "avec_cotes": true,
+   "regle": {
+    "part_defavorable_min": 0.0,
+    "part_habituelle_min": 0.75,
+    "cote_bas": 1.27,
+    "cote_haut": 1.3,
+    "paris": 11,
+    "gagnes": 11,
+    "reussite": 1.0,
+    "wilson_bas": 0.7412
+   }
+  },
+  "Handicap +1,5 extérieur": {
+   "avec_cotes": true,
+   "regle": {
+    "part_defavorable_min": 0.0,
+    "part_habituelle_min": 0.0,
+    "cote_bas": 1.25,
+    "cote_haut": 1.36,
+    "paris": 124,
+    "gagnes": 100,
+    "reussite": 0.8065,
+    "wilson_bas": 0.7281
+   }
+  },
+  "Handicap -0,5 domicile": {
+   "avec_cotes": true,
+   "regle": {
+    "part_defavorable_min": 0.0,
+    "part_habituelle_min": 0.4,
+    "cote_bas": 1.41,
+    "cote_haut": 1.5,
+    "paris": 22,
+    "gagnes": 20,
+    "reussite": 0.9091,
+    "wilson_bas": 0.7218
+   }
+  },
+  "Handicap -0,5 extérieur": {
+   "avec_cotes": true,
+   "regle": {
+    "part_defavorable_min": 0.0,
+    "part_habituelle_min": 0.0,
+    "cote_bas": 1.57,
+    "cote_haut": 1.65,
+    "paris": 18,
+    "gagnes": 17,
+    "reussite": 0.9444,
+    "wilson_bas": 0.7424
+   }
+  },
+  "L'extérieur encaisse": {
+   "avec_cotes": true,
+   "regle": {
+    "part_defavorable_min": 0.0,
+    "part_habituelle_min": 0.5,
+    "cote_bas": 1.41,
+    "cote_haut": 1.47,
+    "paris": 18,
+    "gagnes": 17,
+    "reussite": 0.9444,
+    "wilson_bas": 0.7424
+   }
+  },
+  "Les deux marquent : non": {
+   "avec_cotes": true,
+   "regle": {
+    "part_defavorable_min": 0.1667,
+    "part_habituelle_min": 1.0,
+    "cote_bas": 1.68,
+    "cote_haut": 2.33,
+    "paris": 11,
+    "gagnes": 11,
+    "reussite": 1.0,
+    "wilson_bas": 0.7412
+   }
+  },
+  "Les deux marquent : oui": {
+   "avec_cotes": true,
+   "regle": {
+    "part_defavorable_min": 0.0,
+    "part_habituelle_min": 0.8,
+    "cote_bas": 1.33,
+    "cote_haut": 1.41,
+    "paris": 14,
+    "gagnes": 14,
+    "reussite": 1.0,
+    "wilson_bas": 0.7847
+   }
+  },
+  "Moins de 1,5 buts de l'extérieur": {
+   "avec_cotes": true,
+   "regle": {
+    "part_defavorable_min": 0.1667,
+    "part_habituelle_min": 0.8,
+    "cote_bas": 1.25,
+    "cote_haut": 1.56,
+    "paris": 11,
+    "gagnes": 11,
+    "reussite": 1.0,
+    "wilson_bas": 0.7412
+   }
+  },
+  "Moins de 1,5 buts du domicile": {
+   "avec_cotes": true,
+   "regle": {
+    "part_defavorable_min": 0.0,
+    "part_habituelle_min": 0.4,
+    "cote_bas": 1.25,
+    "cote_haut": 1.34,
+    "paris": 24,
+    "gagnes": 22,
+    "reussite": 0.9167,
+    "wilson_bas": 0.7415
+   }
+  },
+  "Moins de 3,5 buts": {
+   "avec_cotes": true,
+   "regle": {
+    "part_defavorable_min": 0.0,
+    "part_habituelle_min": 1.0,
+    "cote_bas": 1.25,
+    "cote_haut": 1.36,
+    "paris": 61,
+    "gagnes": 51,
+    "reussite": 0.8361,
+    "wilson_bas": 0.7239
+   }
+  },
+  "Moins de 4,5 buts": {
+   "avec_cotes": true,
+   "regle": {
+    "part_defavorable_min": 0.0,
+    "part_habituelle_min": 0.3333,
+    "cote_bas": 1.36,
+    "cote_haut": 1.61,
+    "paris": 33,
+    "gagnes": 29,
+    "reussite": 0.8788,
+    "wilson_bas": 0.7267
+   }
+  },
+  "Multigoals 1-4": {
+   "avec_cotes": false,
+   "regle": {
+    "part_defavorable_min": 0.0,
+    "part_habituelle_min": 0.0,
+    "cote_bas": null,
+    "cote_haut": null,
+    "paris": 889,
+    "gagnes": 681,
+    "reussite": 0.766,
+    "wilson_bas": 0.7371
+   }
+  },
+  "Pas de nul (12)": {
+   "avec_cotes": true,
+   "regle": {
+    "part_defavorable_min": 0.0,
+    "part_habituelle_min": 0.0,
+    "cote_bas": 1.3,
+    "cote_haut": 1.3,
+    "paris": 94,
+    "gagnes": 79,
+    "reussite": 0.8404,
+    "wilson_bas": 0.7533
+   }
+  },
+  "Plus de 0,5 buts de l'extérieur": {
+   "avec_cotes": true,
+   "regle": {
+    "part_defavorable_min": 0.0,
+    "part_habituelle_min": 0.6667,
+    "cote_bas": 1.36,
+    "cote_haut": 1.38,
+    "paris": 17,
+    "gagnes": 16,
+    "reussite": 0.9412,
+    "wilson_bas": 0.7302
+   }
+  },
+  "Plus de 0,5 buts du domicile": {
+   "avec_cotes": true,
+   "regle": {
+    "part_defavorable_min": 0.0,
+    "part_habituelle_min": 0.4,
+    "cote_bas": 1.4,
+    "cote_haut": 1.44,
+    "paris": 17,
+    "gagnes": 16,
+    "reussite": 0.9412,
+    "wilson_bas": 0.7302
+   }
+  },
+  "Plus de 1,5 buts": {
+   "avec_cotes": true,
+   "regle": {
+    "part_defavorable_min": 0.0,
+    "part_habituelle_min": 0.6,
+    "cote_bas": 1.29,
+    "cote_haut": 1.35,
+    "paris": 78,
+    "gagnes": 64,
+    "reussite": 0.8205,
+    "wilson_bas": 0.721
+   }
+  },
+  "Plus de 2,5 buts": {
+   "avec_cotes": true,
+   "regle": {
+    "part_defavorable_min": 0.0,
+    "part_habituelle_min": 0.0,
+    "cote_bas": 1.27,
+    "cote_haut": 1.29,
+    "paris": 11,
+    "gagnes": 11,
+    "reussite": 1.0,
+    "wilson_bas": 0.7412
+   }
+  },
+  "Victoire domicile": {
+   "avec_cotes": true,
+   "regle": {
+    "part_defavorable_min": 0.0,
+    "part_habituelle_min": 0.5,
+    "cote_bas": 1.46,
+    "cote_haut": 1.52,
+    "paris": 18,
+    "gagnes": 17,
+    "reussite": 0.9444,
+    "wilson_bas": 0.7424
+   }
+  },
+  "Victoire extérieur": {
+   "avec_cotes": true,
+   "regle": {
+    "part_defavorable_min": 0.0,
+    "part_habituelle_min": 0.3333,
+    "cote_bas": 1.25,
+    "cote_haut": 1.51,
+    "paris": 22,
+    "gagnes": 20,
+    "reussite": 0.9091,
+    "wilson_bas": 0.7218
+   }
+  }
  },
- "validation_archive_archetype": {
-  "matchs_analyses": 862,
-  "matchs_sans_aucun_marche": 566,
-  "propositions": 381,
-  "reussite": 0.8714,
-  "avec_cote": 183,
-  "rendement": -0.0866,
-  "marches": [
-   {
-    "marche": "Moins de 2,5 buts de l'extérieur",
-    "propositions": 199,
-    "reussite": 0.8744,
-    "base": 0.8643,
-    "avec_cote": 120,
-    "cote_moyenne": 1.083,
-    "rendement": -0.0399
+ "marches_sans_regle": [
+  "Cage de l'extérieur inviolée",
+  "Cage du domicile inviolée",
+  "Domicile ne perd pas + les deux marquent",
+  "Domicile ne perd pas + les deux ne marquent pas",
+  "Domicile ne perd pas + moins de 2,5 buts",
+  "Domicile ne perd pas + moins de 3,5 buts",
+  "Domicile ne perd pas + moins de 4,5 buts",
+  "Domicile ne perd pas + plus de 1,5 buts",
+  "Domicile ne perd pas + plus de 2,5 buts",
+  "Domicile ne perd pas + plus de 3,5 buts",
+  "Extérieur ne perd pas + les deux marquent",
+  "Extérieur ne perd pas + les deux ne marquent pas",
+  "Extérieur ne perd pas + moins de 2,5 buts",
+  "Extérieur ne perd pas + moins de 3,5 buts",
+  "Extérieur ne perd pas + moins de 4,5 buts",
+  "Extérieur ne perd pas + plus de 1,5 buts",
+  "Extérieur ne perd pas + plus de 2,5 buts",
+  "Extérieur ne perd pas + plus de 3,5 buts",
+  "Handicap -1,5 domicile",
+  "Handicap -1,5 extérieur",
+  "Le domicile encaisse",
+  "Match nul",
+  "Moins de 0,5 buts de l'extérieur",
+  "Moins de 0,5 buts du domicile",
+  "Moins de 1,5 buts",
+  "Moins de 2,5 buts",
+  "Moins de 2,5 buts de l'extérieur",
+  "Moins de 2,5 buts du domicile",
+  "Multigoals 1-2",
+  "Multigoals 1-3",
+  "Multigoals 2-3",
+  "Multigoals 2-4",
+  "Multigoals 2-5",
+  "Multigoals 3-4",
+  "Multigoals 3-5",
+  "Multigoals 3-6",
+  "Multiscore 0:1 / 0:2 / 0:3",
+  "Multiscore 1:0 / 2:0 / 3:0",
+  "Multiscore 1:2 / 1:3 / 1:4",
+  "Multiscore 2:1 / 3:1 / 4:1",
+  "Multiscore Match nul",
+  "Pas de nul + les deux marquent",
+  "Pas de nul + les deux ne marquent pas",
+  "Pas de nul + moins de 2,5 buts",
+  "Pas de nul + moins de 3,5 buts",
+  "Pas de nul + moins de 4,5 buts",
+  "Pas de nul + plus de 1,5 buts",
+  "Pas de nul + plus de 2,5 buts",
+  "Pas de nul + plus de 3,5 buts",
+  "Plus de 1,5 buts de l'extérieur",
+  "Plus de 1,5 buts du domicile",
+  "Plus de 2,5 buts de l'extérieur",
+  "Plus de 2,5 buts du domicile",
+  "Plus de 3,5 buts",
+  "Plus de 4,5 buts"
+ ],
+ "resultat_regles_finales": {
+  "paris": 1614,
+  "reussite": 0.8135,
+  "avec_cote": 725,
+  "rendement": 0.1879,
+  "par_marche": {
+   "Multigoals 1-4": {
+    "paris": 889,
+    "reussite": 0.766,
+    "cote_moyenne": 0.0
    },
-   {
-    "marche": "Handicap +1,5 domicile",
-    "propositions": 166,
-    "reussite": 0.8916,
-    "base": 0.8689,
-    "avec_cote": 47,
-    "cote_moyenne": 1.134,
-    "rendement": -0.1332
+   "Handicap +1,5 extérieur": {
+    "paris": 124,
+    "reussite": 0.8065,
+    "cote_moyenne": 1.297
    },
-   {
-    "marche": "Moins de 4,5 buts",
-    "propositions": 16,
-    "reussite": 0.625,
-    "base": 0.8167,
-    "avec_cote": 16,
-    "cote_moyenne": 1.116,
-    "rendement": -0.2994
+   "Pas de nul (12)": {
+    "paris": 94,
+    "reussite": 0.8404,
+    "cote_moyenne": 1.3
+   },
+   "Plus de 1,5 buts": {
+    "paris": 78,
+    "reussite": 0.8205,
+    "cote_moyenne": 1.316
+   },
+   "Moins de 3,5 buts": {
+    "paris": 61,
+    "reussite": 0.8361,
+    "cote_moyenne": 1.304
+   },
+   "Extérieur ne perd pas (N2)": {
+    "paris": 61,
+    "reussite": 0.8361,
+    "cote_moyenne": 1.29
+   },
+   "Handicap +0,5 extérieur": {
+    "paris": 33,
+    "reussite": 0.8788,
+    "cote_moyenne": 1.594
+   },
+   "Moins de 4,5 buts": {
+    "paris": 33,
+    "reussite": 0.8788,
+    "cote_moyenne": 1.44
+   },
+   "Moins de 1,5 buts du domicile": {
+    "paris": 24,
+    "reussite": 0.9167,
+    "cote_moyenne": 1.292
+   },
+   "Handicap -0,5 domicile": {
+    "paris": 22,
+    "reussite": 0.9091,
+    "cote_moyenne": 1.461
+   },
+   "Victoire extérieur": {
+    "paris": 22,
+    "reussite": 0.9091,
+    "cote_moyenne": 1.4
+   },
+   "Victoire domicile": {
+    "paris": 18,
+    "reussite": 0.9444,
+    "cote_moyenne": 1.492
+   },
+   "L'extérieur encaisse": {
+    "paris": 18,
+    "reussite": 0.9444,
+    "cote_moyenne": 1.439
+   },
+   "Handicap -0,5 extérieur": {
+    "paris": 18,
+    "reussite": 0.9444,
+    "cote_moyenne": 1.612
+   },
+   "Handicap +0,5 domicile": {
+    "paris": 17,
+    "reussite": 0.9412,
+    "cote_moyenne": 1.315
+   },
+   "Plus de 0,5 buts du domicile": {
+    "paris": 17,
+    "reussite": 0.9412,
+    "cote_moyenne": 1.416
+   },
+   "Plus de 0,5 buts de l'extérieur": {
+    "paris": 17,
+    "reussite": 0.9412,
+    "cote_moyenne": 1.368
+   },
+   "Les deux marquent : oui": {
+    "paris": 14,
+    "reussite": 1.0,
+    "cote_moyenne": 1.373
+   },
+   "Handicap +1,5 domicile": {
+    "paris": 11,
+    "reussite": 1.0,
+    "cote_moyenne": 1.275
+   },
+   "Les deux marquent : non": {
+    "paris": 11,
+    "reussite": 1.0,
+    "cote_moyenne": 1.888
+   },
+   "Moins de 1,5 buts de l'extérieur": {
+    "paris": 11,
+    "reussite": 1.0,
+    "cote_moyenne": 1.355
+   },
+   "Plus de 2,5 buts": {
+    "paris": 11,
+    "reussite": 1.0,
+    "cote_moyenne": 1.281
+   },
+   "Domicile ne perd pas (1N)": {
+    "paris": 10,
+    "reussite": 1.0,
+    "cote_moyenne": 1.312
    }
-  ]
+  }
  }
 }
