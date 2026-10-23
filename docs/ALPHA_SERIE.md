@@ -43,3 +43,19 @@ Chiffres rapportés tels quels, **aucune rentabilité démontrée** (archive de 
 - Les enjeux (légende de zones Matchendirect) ne sont pas collectés.
 - Aucune norme de niveau mesurée pour les multigoals (marge d'un but par borne par défaut).
 - 21 jours d'archive seulement : tout seuil reste provisoire et à recalculer à chaque ajout de jours.
+
+## Couche de robustesse par scénarios (`alpha_serie/robustesse.py`, branche `alpha-robustesse`, 23/10/2026)
+Cahier des charges figé par Patrick. Couche séparée : `coeur.py`, la page et le pipeline ne sont pas modifiés.
+- Paire i : A = marqués domicile, C = encaissés extérieur, B = marqués extérieur, D = encaissés domicile. Fermé = (min(A,C), min(B,D)), habituel = (A,B), ouvert = (max(A,C), max(B,D)).
+- Défavorable = pire des 4 coins ; une validation « juste au seuil » (un seul but de plus ou de moins la fait perdre) compte comme échec. Exemptés : BTTS non, cage inviolée oui, buts d'une équipe moins de 0,5.
+- Tous les marchés de l'alpha + multigoals + groupes de multiscores + combos double chance × (plus 1,5/2,5/3,5, moins 2,5/3,5/4,5, BTTS oui/non). Exclus inchangés.
+- Table (marché, n, v_def, v_hab) gelée dans `data/alpha_serie/robustesse_table.json` (date, empreinte des matchs) ; retenu si borne basse de Wilson 95 % >= 80 % (= 1/1,25). k supprimé.
+- Stabilité : retrait de chaque paire, lecture de la table gelée (cellule n-1 ; n = 3 existe pour ce seul test).
+- Réglage : Football-Data saison 2526 (10 194 matchs analysables). Validation unique : saison 2627 (3 418 matchs) et archive ARCHETYPE (862 matchs). Rapport : `docs/alpha_robustesse_validation.json`.
+- Commande : `python -m alpha_serie.robustesse`. Tests : `tests/test_alpha_robustesse.py`.
+
+### Résultat de la première validation (23/10/2026, chiffres bruts)
+- 110 cellules retenues sur 5 240. Marchés qui passent : handicap +1,5 domicile, moins de 2,5 buts de l'extérieur, moins de 4,5 buts (les autres tombent au test de stabilité).
+- 2627 : 950 propositions, réussite 90 % (base des mêmes marchés 85–87 %), 75 % des matchs sans aucun marché.
+- Archive ARCHETYPE : 381 propositions, réussite 87,1 %, cote Betpawa moyenne 1,08–1,13, rendement −8,7 % sur 183 cotes ; seulement 8 propositions avec une cote >= 1,25 (5 gagnées).
+- Constat : la barre de 80 % ne laisse passer que des marchés que Betpawa paie sous 1,25. Rien n'est branché au pipeline.
