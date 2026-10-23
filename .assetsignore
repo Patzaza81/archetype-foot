@@ -1,0 +1,15 @@
+# Fichiers non servis par l'hébergement de secours Cloudflare (limite de 25 Mo par fichier, ou inutiles au site).
+# Netlify n'utilise pas ce fichier : rien ne change pour lui.
+.git
+.github
+node_modules
+netlify
+tests
+diagnostic
+wrangler.jsonc
+.assetsignore
+# Trop gros pour Cloudflare (> 25 Mo) et jamais chargés par les pages du site :
+precalcul.json
+historique_pronostics.json
+# Trop gros pour Cloudflare (49 Mo) : la page Journal ne pourra pas charger ce fichier sur le site de secours.
+data/journal_intelligence.json
