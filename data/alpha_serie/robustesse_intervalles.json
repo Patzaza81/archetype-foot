@@ -1,27 +1,28 @@
 {
- "gele_le": "2026-10-23T23:24:32+00:00",
- "statut": "règles gelées des seuls marchés validés hors échantillon",
- "seuil": 0.72,
+ "gele_le": "2026-10-23T23:39:42+00:00",
+ "statut": "règles gelées des seuls marchés validés hors échantillon (par voie)",
+ "voies": {
+  "A": "sélections robustes à forte fréquence de réussite (cote de 1,25 à moins de 1,39)",
+  "B": "occasions à cote élevée (cote de 1,39 et plus, sans limite haute)",
+  "sans_cote": "combos (aucune cote dans l'archive) : réussite seule, cote à lire sur Betpawa"
+ },
+ "frontiere_voies": 1.3889,
  "cote_min": 1.25,
  "min_paris_hors_echantillon": 50,
- "matchs_archetype": 1766,
- "matchs_analyses": 889,
+ "matchs_archetype": 1670,
  "du": "2026-09-28",
  "au": "2026-10-22",
- "empreinte_ids": "55f720c0ce6b06c080b45f40187b6ada7ce887529ccddcfa6a428a37f070b424",
+ "empreinte_ids": "6f3182e5ecc45c48c8ff015a8cb95a0006f24c2b5c1a8063d091cbfb84c6fbd8",
  "regles": {
-  "Handicap +1,5 extérieur": {
-   "avec_cotes": true,
-   "regle": {
-    "part_defavorable_min": 0.0,
-    "part_habituelle_min": 0.0,
-    "cote_bas": 1.25,
-    "cote_haut": 1.36,
-    "paris": 124,
-    "gagnes": 100,
-    "reussite": 0.8065,
-    "wilson_bas": 0.7281
-   }
+  "Moins de 3,5 buts | voie A": {
+   "part_defavorable_min": 0.0,
+   "part_habituelle_min": 1.0,
+   "filtre_scenarios": true,
+   "objectif": 0.7039,
+   "paris": 69,
+   "gagnes": 56,
+   "reussite": 0.8116,
+   "gain_net": 4.42
   }
  }
 }

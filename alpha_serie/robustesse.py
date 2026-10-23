@@ -162,6 +162,9 @@ def charger_bloc() -> list[dict]:
     return out
 
 
+REJETS_COTES: list[str] = []
+
+
 def charger_archive_archetype() -> list[dict]:
     """TOUS les matchs ARCHETYPE avec historique des deux équipes, cotes BetPawa et score. Sans doublon : un match_id (ou date + équipes) une seule fois,
     on garde l'enregistrement le plus récent. Historique : assemblage figé, sinon le bloc équipe de l'archive (même règle anti-fuite)."""
@@ -176,10 +179,15 @@ def charger_archive_archetype() -> list[dict]:
             ext = a.get("equipe_ext") if "matchs" in (a.get("equipe_ext") or {}) else x.get("equipe_ext")
             if "matchs" not in (dom or {}) or "matchs" not in (ext or {}):
                 continue
+            pris, coup = (x.get("run") or {}).get("pris_le"), x.get("coup_d_envoi_utc")
+            if not pris or not coup or str(pris) >= str(coup):
+                REJETS_COTES.append(str(x.get("match_id") or k))   # cotes non prouvées antérieures au coup d'envoi : match écarté
+                continue
             jour = str(x["date"])[:10]
             cle = str(x.get("match_id") or f"{jour}|{x.get('domicile')}|{x.get('exterieur')}")
             vus[cle] = {"id": f"archetype|{cle}", "jour": jour, "source": "archetype", "domicile": x.get("domicile"), "exterieur": x.get("exterieur"),
-                        "dom": dom, "ext": ext, "cotes": x["cotes_betpawa"], "h": sc["buts_dom"], "a": sc["buts_ext"]}
+                        "dom": dom, "ext": ext, "cotes": x["cotes_betpawa"], "h": sc["buts_dom"], "a": sc["buts_ext"],
+                        "cotes_prises_le": pris, "coup_d_envoi_utc": coup}
     par_equipes: dict[tuple, dict] = {}
     for m in vus.values():                                   # deuxième garde : même jour et mêmes équipes sous deux identifiants
         par_equipes[(m["jour"], m["domicile"], m["exterieur"])] = m
@@ -292,102 +300,111 @@ def lire_strategie(matchs: list[dict], cat=None) -> tuple[list[dict], int]:
     return lignes, analyses
 
 
-def _meilleur_intervalle(pts: list[tuple[float, int]]):
-    """pts triés par cote. Intervalle [bas, haut] (bornes = cotes observées, sans couper une même cote) qui garde le plus de paris
-    avec une borne de Wilson >= 72 % ; à égalité, la meilleure réussite."""
-    cotes = sorted({c for c, _ in pts})
-    par = {c: [0, 0] for c in cotes}
-    for c, g in pts:
-        par[c][0] += g
-        par[c][1] += 1
-    best = None
-    for i in range(len(cotes)):
-        s = n = 0
-        for j in range(i, len(cotes)):
-            s += par[cotes[j]][0]
-            n += par[cotes[j]][1]
-            if wilson_bas(s, n) >= SEUIL_WILSON and (best is None or (n, s / n) > (best[2], best[3] / best[2])):
-                best = (cotes[i], cotes[j], n, s)
-    return best
+# --- Correction méthodologique (24/10/2026) : deux voies, aucune bande de cote apprise, aucun plafond ------------------
+# Frontière entre les voies = 1 / 0,72 : au-dessus, la cote annonce une probabilité implicite sous 72 %, l'objectif « fréquence » n'a plus de sens.
+# Elle découle du seul seuil de Patrick (72 %) ; ce n'est pas un plafond : la voie B n'a AUCUNE limite haute.
+FRONTIERE_VOIES = 1 / SEUIL_WILSON
+VOIES = {"A": "sélections robustes à forte fréquence de réussite (cote de 1,25 à moins de 1,39)",
+         "B": "occasions à cote élevée (cote de 1,39 et plus, sans limite haute)",
+         "sans_cote": "combos (aucune cote dans l'archive) : réussite seule, cote à lire sur Betpawa"}
 
 
-def _tient_dans_chaque_moitie(sel, td, th, bas, haut, coupe) -> bool:
-    """Garde anti-hasard (même principe que calibration.py) : la règle doit garder au moins 72 % de réussite dans CHAQUE moitié chronologique."""
-    for moitie in (lambda j: j < coupe, lambda j: j >= coupe):
-        g = [x["gagne"] for x in sel if moitie(x["jour"]) and (bas is None or (x["cote"] and bas <= x["cote"] <= haut))]
-        if not g or sum(g) / len(g) < SEUIL_WILSON:
+def voie(cote: float | None, cle: tuple[str, str] | None = None) -> str | None:
+    """Catégorie de cote d'un pari. Sous 1,25 : aucune voie (cote minimale de Patrick).
+    Sans cote : seuls les combos (marché absent de l'archive) vont en « sans_cote ». Un marché simple dont la cote manque pour CE match
+    est écarté (cote introuvable) : il ne peut être ni vérifié ni joué à 1,25 minimum."""
+    if cote is None:
+        return "sans_cote" if cle and cle[0] == "combo" else None
+    if cote < P.COTE_MIN:
+        return None
+    return "A" if cote < FRONTIERE_VOIES - 1e-12 else "B"
+
+
+def _gain(x: dict) -> float:
+    return (x["cote"] - 1) if x["gagne"] else -1.0
+
+
+def _mesures(sel: list[dict]) -> dict:
+    n = len(sel)
+    w = sum(x["gagne"] for x in sel)
+    ac = [x for x in sel if x["cote"]]
+    return {"n": n, "w": w, "taux": w / n if n else 0.0, "gain": sum(_gain(x) for x in ac),
+            "implicite": sum(1 / x["cote"] for x in ac) / len(ac) if ac else None}
+
+
+def _objectif(v: str, sel: list[dict]) -> float:
+    """Objectif déclaré de la voie. A : fréquence de réussite fiable (borne de Wilson, indicateur qui tient compte de l'effectif — jamais un filtre).
+    B : gain net total à mise égale. sans_cote : comme A."""
+    m = _mesures(sel)
+    return m["gain"] if v == "B" else wilson_bas(m["w"], m["n"])
+
+
+def _stable(v: str, sel: list[dict], coupe: str) -> bool:
+    """La règle doit remplir l'objectif de sa voie dans CHAQUE moitié chronologique de ses données d'apprentissage.
+    A et sans_cote : >= 72 % dans chaque moitié. B : gain net > 0 dans chaque moitié."""
+    for moitie in ([x for x in sel if x["jour"] < coupe], [x for x in sel if x["jour"] >= coupe]):
+        if not moitie:
+            return False
+        m = _mesures(moitie)
+        if v == "B":
+            if m["gain"] <= 0:
+                return False
+        elif m["taux"] < SEUIL_WILSON:
             return False
     return True
 
 
-def calibrer_marche(L: list[dict]) -> dict:
-    """Règle d'un marché, apprise sur les données : seuil de part défavorable, seuil de part habituelle (valeurs réellement observées,
-    lues après retrait d'une paire) et, si le marché a des cotes, intervalle de cote gagnant (cote >= 1,25).
-    On garde la règle qui retient le plus de paris avec une borne de Wilson >= 72 % ET au moins 72 % dans chaque moitié chronologique ;
-    à égalité, la meilleure réussite. Aucune : marché écarté."""
-    avec_cotes = any(x["cote"] for x in L)
+def calibrer_marche_voie(L: list[dict], v: str) -> dict | None:
+    """Règle d'un marché dans une voie, apprise sur les données d'apprentissage seulement : part défavorable minimale et part habituelle minimale
+    (valeurs réellement observées, lues après retrait d'une paire). La règle « sans filtre » (0, 0) est candidate.
+    Retenue = meilleure selon l'objectif de la voie, parmi les règles stables ET meilleures que la sélection sans filtre de la même voie."""
+    if not L:
+        return None
     jl = sorted({x["jour"] for x in L})
     coupe = jl[len(jl) // 2]
-    seuils_d = sorted({x["def"] for x in L})
-    seuils_h = sorted({x["hab"] for x in L})
+    ref = _mesures(L)                                            # sélection sans filtre de scénarios, même marché, même voie
     best = None
-    for td in seuils_d:
+    for td in sorted({x["def"] for x in L}):
         Ld = [x for x in L if x["def"] >= td]
-        for th in seuils_h:
+        for th in sorted({x["hab"] for x in L}):
             sel = [x for x in Ld if x["hab"] >= th]
             if not sel:
                 break
-            if avec_cotes:
-                pts = [(x["cote"], int(x["gagne"])) for x in sel if x["cote"] and x["cote"] >= P.COTE_MIN]
-                if not pts:
-                    continue
-                r = _meilleur_intervalle(pts)
-                if r is None:
-                    continue
-                bas, haut, n, s = r
-            else:
-                n, s = len(sel), sum(x["gagne"] for x in sel)
-                if wilson_bas(s, n) < SEUIL_WILSON:
-                    continue
-                bas = haut = None
-            if not _tient_dans_chaque_moitie(sel, td, th, bas, haut, coupe):
+            if not _stable(v, sel, coupe):
                 continue
-            if best is None or (n, s / n) > (best["paris"], best["reussite"]):
-                best = {"part_defavorable_min": td, "part_habituelle_min": th, "cote_bas": bas, "cote_haut": haut,
-                        "paris": n, "gagnes": s, "reussite": round(s / n, 4), "wilson_bas": round(wilson_bas(s, n), 4)}
-    return {"avec_cotes": avec_cotes, "regle": best}
+            m = _mesures(sel)
+            sans_filtre = (td == 0 and th == 0) or len(sel) == len(L)
+            if not sans_filtre:                                   # un filtre doit apporter quelque chose par rapport à « tout prendre »
+                if v == "B" and m["gain"] / m["n"] <= ref["gain"] / ref["n"]:
+                    continue
+                if v != "B" and m["taux"] <= ref["taux"]:
+                    continue
+            obj = _objectif(v, sel)
+            if best is None or obj > best["objectif"]:
+                best = {"part_defavorable_min": td, "part_habituelle_min": th, "filtre_scenarios": not sans_filtre, "objectif": round(obj, 4),
+                        "paris": m["n"], "gagnes": m["w"], "reussite": round(m["taux"], 4), "gain_net": round(m["gain"], 3)}
+    return best
 
 
 def calibrer(lignes: list[dict]) -> dict:
-    par: dict[str, list] = defaultdict(list)
+    """{(marché, voie): règle | None}."""
+    par: dict[tuple, list] = defaultdict(list)
     for x in lignes:
-        par[x["marche"]].append(x)
-    return {nom: calibrer_marche(L) for nom, L in sorted(par.items())}
+        v = voie(x["cote"], x["cle"])
+        if v:
+            par[(x["marche"], v)].append(x)
+    return {k: calibrer_marche_voie(L, k[1]) for k, L in sorted(par.items())}
 
 
 def appliquer(lignes: list[dict], regles: dict) -> list[dict]:
+    """Applique des règles GELÉES. N'utilise ni le score ni l'issue du match (champ « gagne » jamais lu)."""
     out = []
     for x in lignes:
-        r = (regles.get(x["marche"]) or {}).get("regle")
-        if not r or x["def"] < r["part_defavorable_min"] or x["hab"] < r["part_habituelle_min"]:
-            continue
-        if r["cote_bas"] is not None and not (x["cote"] and r["cote_bas"] <= x["cote"] <= r["cote_haut"]):
-            continue
-        out.append(x)
+        v = voie(x["cote"], x["cle"])
+        r = regles.get((x["marche"], v)) if v else None
+        if r and x["def"] >= r["part_defavorable_min"] and x["hab"] >= r["part_habituelle_min"]:
+            out.append({**x, "voie": v})
     return out
-
-
-def bilan(paris: list[dict]) -> dict:
-    n, w = len(paris), sum(p["gagne"] for p in paris)
-    ac = [p for p in paris if p["cote"]]
-    par: dict[str, list] = defaultdict(list)
-    for p in paris:
-        par[p["marche"]].append(p)
-    return {"paris": n, "reussite": round(w / n, 4) if n else None, "avec_cote": len(ac),
-            "rendement": round(sum((p["cote"] - 1) if p["gagne"] else -1 for p in ac) / len(ac), 4) if ac else None,
-            "par_marche": {k: {"paris": len(v), "reussite": round(sum(x["gagne"] for x in v) / len(v), 4),
-                               "cote_moyenne": round(sum(x["cote"] for x in v if x["cote"]) / max(1, sum(1 for x in v if x["cote"])), 3)}
-                           for k, v in sorted(par.items(), key=lambda kv: -len(kv[1]))}}
 
 
 def _semaine(jour: str) -> str:
@@ -396,100 +413,129 @@ def _semaine(jour: str) -> str:
 
 
 def marche_avant(lignes: list[dict]) -> tuple[list[dict], list[dict]]:
-    """Validation chronologique répétée : pour chaque jour testé, les règles sont apprises sur les jours STRICTEMENT antérieurs, gelées,
-    puis appliquées à ce seul jour. Renvoie (paris hors échantillon, journal des jours)."""
+    """Validation chronologique répétée : pour chaque jour, règles apprises sur les jours STRICTEMENT antérieurs, gelées, appliquées à ce jour."""
     jours = sorted({x["jour"] for x in lignes})
     paris, journal = [], []
     for d in jours[1:]:
         regles = calibrer([x for x in lignes if x["jour"] < d])
-        jour = [x for x in lignes if x["jour"] == d]
-        pris = appliquer(jour, regles)
+        pris = appliquer([x for x in lignes if x["jour"] == d], regles)
+        for x in pris:
+            r = regles[(x["marche"], x["voie"])]
+            x["filtre_scenarios"] = r["filtre_scenarios"]
         paris += pris
-        journal.append({"jour": d, "marches_avec_regle": sum(1 for v in regles.values() if v["regle"]), "paris": len(pris),
-                        "gagnes": sum(x["gagne"] for x in pris)})
+        journal.append({"jour": d, "regles": sum(1 for r in regles.values() if r), "paris": len(pris), "gagnes": sum(x["gagne"] for x in pris)})
     return paris, journal
 
 
 def juger(paris_oos: list[dict], lignes: list[dict]) -> dict:
-    """Verdict par marché sur les paris hors échantillon seulement.
-    validé : au moins 50 paris, réussite >= 72 %, >= 72 % dans chaque moitié chronologique de ses paris, et au-dessus du taux de base du marché
-    (tous les matchs analysés des mêmes jours). exploratoire : moins de 50 paris. rejeté : sinon."""
-    jours_testes = {x["jour"] for x in paris_oos} | {x["jour"] for x in lignes if x["jour"] > min(x["jour"] for x in lignes)}
-    base: dict[str, list[int]] = defaultdict(lambda: [0, 0])
+    """Verdicts hors échantillon, SÉPARÉS par voie. Références sur les mêmes jours :
+      - base du marché : tous les matchs analysés, toutes cotes ;
+      - sans filtre : tous les paris du même marché dans la même voie (même catégorie de cote), sans filtre de scénarios.
+    A / sans_cote : validé si >= 50 paris, >= 72 %, >= 72 % dans chaque moitié chronologique, au-dessus de la sélection sans filtre.
+    B : opportunité démontrée si >= 50 paris, gain net > 0 au total et dans chaque moitié, réussite au-dessus de la probabilité implicite des cotes.
+    Moins de 50 paris : exploratoire. Sinon : rejeté."""
+    jours = {x["jour"] for x in paris_oos} | ({x["jour"] for x in lignes} - {min(x["jour"] for x in lignes)} if lignes else set())
+    base: dict[str, list] = defaultdict(list)
+    tout: dict[tuple, list] = defaultdict(list)
     for x in lignes:
-        if x["jour"] in jours_testes:
-            base[x["marche"]][0] += x["gagne"]
-            base[x["marche"]][1] += 1
-    par: dict[str, list] = defaultdict(list)
+        if x["jour"] not in jours:
+            continue
+        base[x["marche"]].append(x)
+        v = voie(x["cote"], x["cle"])
+        if v:
+            tout[(x["marche"], v)].append(x)
+    par: dict[tuple, list] = defaultdict(list)
     for x in paris_oos:
-        par[x["marche"]].append(x)
-    out = {}
-    for nom, L in sorted(par.items(), key=lambda kv: -len(kv[1])):
+        par[(x["marche"], x["voie"])].append(x)
+    out: dict[str, dict] = {"A": {}, "B": {}, "sans_cote": {}}
+    for (nom, v), L in sorted(par.items(), key=lambda kv: -len(kv[1])):
         L.sort(key=lambda x: x["jour"])
-        n, w = len(L), sum(x["gagne"] for x in L)
-        b = base[nom][0] / base[nom][1] if base[nom][1] else None
-        moitie = n // 2
-        m1, m2 = L[:moitie], L[moitie:]
-        t1 = sum(x["gagne"] for x in m1) / len(m1) if m1 else None
-        t2 = sum(x["gagne"] for x in m2) / len(m2) if m2 else None
+        m = _mesures(L)
+        h1, h2 = _mesures(L[: m["n"] // 2]), _mesures(L[m["n"] // 2:])
+        b = _mesures(base[nom])
+        sf = _mesures(tout[(nom, v)])
         sem: dict[str, list[int]] = defaultdict(lambda: [0, 0])
         for x in L:
             sem[_semaine(x["jour"])][0] += x["gagne"]
             sem[_semaine(x["jour"])][1] += 1
-        ac = [x for x in L if x["cote"]]
-        taux = w / n
-        if n < MIN_PARIS_HORS_ECHANTILLON:
-            statut, raison = "exploratoire", f"{n} paris hors échantillon, minimum {MIN_PARIS_HORS_ECHANTILLON}"
-        elif taux < SEUIL_WILSON:
-            statut, raison = "rejeté", f"réussite hors échantillon {taux:.1%} sous 72 %"
-        elif t1 is None or t2 is None or min(t1, t2) < SEUIL_WILSON:
-            statut, raison = "rejeté", f"incohérent entre périodes ({t1:.0%} puis {t2:.0%})"
-        elif b is not None and taux <= b:
-            statut, raison = "rejeté", f"aucun gain de sélection ({taux:.1%} contre {b:.1%} de base)"
+        cotes = sorted(x["cote"] for x in L if x["cote"])
+        fiche = {"paris": m["n"], "gagnes": m["w"], "perdus": m["n"] - m["w"], "reussite": round(m["taux"], 4),
+                 "base_marche": round(b["taux"], 4) if b["n"] else None, "sans_filtre_meme_voie": round(sf["taux"], 4) if sf["n"] else None,
+                 "paris_sans_filtre": sf["n"], "apport_filtre": round(m["taux"] - sf["taux"], 4) if sf["n"] else None,
+                 "part_des_paris_avec_filtre_actif": round(sum(1 for x in L if x.get("filtre_scenarios")) / m["n"], 4),
+                 "premiere_moitie": round(h1["taux"], 4) if h1["n"] else None, "seconde_moitie": round(h2["taux"], 4) if h2["n"] else None,
+                 "wilson_bas_indicatif": round(wilson_bas(m["w"], m["n"]), 4),
+                 "par_semaine": {k: {"paris": c[1], "gagnes": c[0]} for k, c in sorted(sem.items())}}
+        if cotes:
+            fiche |= {"cotes_min_max": [cotes[0], cotes[-1]], "cote_moyenne": round(sum(cotes) / len(cotes), 3),
+                      "probabilite_implicite": round(m["implicite"], 4), "gain_net": round(m["gain"], 3), "rendement": round(m["gain"] / len(cotes), 4),
+                      "rendement_sans_filtre": round(sf["gain"] / sf["n"], 4) if sf["n"] else None,
+                      "gain_premiere_moitie": round(h1["gain"], 3), "gain_seconde_moitie": round(h2["gain"], 3)}
+        if m["n"] < MIN_PARIS_HORS_ECHANTILLON:
+            statut, raison = "exploratoire", f"{m['n']} paris hors échantillon (minimum {MIN_PARIS_HORS_ECHANTILLON}) : aucune conclusion"
+        elif v == "B":
+            if m["gain"] <= 0:
+                statut, raison = "rejeté", f"gain net {m['gain']:+.2f} unités"
+            elif min(h1["gain"], h2["gain"]) <= 0:
+                statut, raison = "rejeté", f"gain instable ({h1['gain']:+.2f} puis {h2['gain']:+.2f})"
+            elif m["taux"] <= m["implicite"]:
+                statut, raison = "rejeté", f"réussite {m['taux']:.1%} sous la probabilité implicite {m['implicite']:.1%}"
+            else:
+                statut, raison = "opportunité démontrée", f"gain {m['gain']:+.2f} unités, {m['taux']:.1%} contre {m['implicite']:.1%} implicite"
         else:
-            statut, raison = "validé", f"{taux:.1%} hors échantillon, base {b:.1%}, {t1:.0%} puis {t2:.0%}"
-        out[nom] = {"statut": statut, "raison": raison, "paris": n, "gagnes": w, "perdus": n - w, "reussite": round(taux, 4),
-                    "base": round(b, 4) if b is not None else None, "gain_selection": round(taux - b, 4) if b is not None else None,
-                    "premiere_moitie": round(t1, 4) if t1 is not None else None, "seconde_moitie": round(t2, 4) if t2 is not None else None,
-                    "wilson_bas_indicatif": round(wilson_bas(w, n), 4), "par_semaine": {k: {"paris": v[1], "gagnes": v[0]} for k, v in sorted(sem.items())},
-                    "avec_cote": len(ac), "cote_moyenne": round(sum(x["cote"] for x in ac) / len(ac), 3) if ac else None,
-                    "rendement_indicatif": round(sum((x["cote"] - 1) if x["gagne"] else -1 for x in ac) / len(ac), 4) if ac else None}
+            if m["taux"] < SEUIL_WILSON:
+                statut, raison = "rejeté", f"réussite {m['taux']:.1%} sous 72 %"
+            elif min(h1["taux"], h2["taux"]) < SEUIL_WILSON:
+                statut, raison = "rejeté", f"incohérent entre périodes ({h1['taux']:.0%} puis {h2['taux']:.0%})"
+            elif sf["n"] and m["taux"] <= sf["taux"]:
+                statut, raison = "rejeté", f"aucun apport du filtre ({m['taux']:.1%} contre {sf['taux']:.1%} sans filtre)"
+            else:
+                statut, raison = "validé", f"{m['taux']:.1%}, sans filtre {sf['taux']:.1%}, {h1['taux']:.0%} puis {h2['taux']:.0%}"
+        out[v][nom] = {"statut": statut, "raison": raison, **fiche}
     return out
 
 
 def main() -> None:
+    REJETS_COTES.clear()
     archetype = charger_archive_archetype()
     lignes, analyses = lire_strategie(archetype)
     jours = sorted({m["jour"] for m in archetype})
     paris_oos, journal = marche_avant(lignes)
     verdicts = juger(paris_oos, lignes)
-    valides = sorted(k for k, v in verdicts.items() if v["statut"] == "validé")
-    regles_finales = calibrer(lignes)                              # règles apprises sur tout l'historique, gelées pour la suite
-    regles_gelees = {k: regles_finales[k] for k in valides if regles_finales.get(k, {}).get("regle")}
+    regles = calibrer(lignes)
+    retenus = {(nom, v) for v, d in verdicts.items() for nom, f in d.items() if f["statut"] in ("validé", "opportunité démontrée")}
     gele = datetime.now(timezone.utc).isoformat(timespec="seconds")
     ids = [m["id"] for m in archetype]
-    IDS.write_bytes(gzip.compress(json.dumps({"archetype": ids}).encode()))
-    INTERVALLES.write_text(json.dumps({"gele_le": gele, "statut": "règles gelées des seuls marchés validés hors échantillon",
-                                       "seuil": SEUIL_WILSON, "cote_min": P.COTE_MIN, "min_paris_hors_echantillon": MIN_PARIS_HORS_ECHANTILLON,
-                                       "matchs_archetype": len(ids), "matchs_analyses": analyses, "du": jours[0], "au": jours[-1],
-                                       "empreinte_ids": hashlib.sha256("\n".join(ids).encode()).hexdigest(), "regles": regles_gelees},
+    IDS.write_bytes(gzip.compress(json.dumps({"archetype": ids, "ecartes_cotes_non_anterieures": REJETS_COTES}).encode()))
+    INTERVALLES.write_text(json.dumps({"gele_le": gele, "statut": "règles gelées des seuls marchés validés hors échantillon (par voie)",
+                                       "voies": VOIES, "frontiere_voies": round(FRONTIERE_VOIES, 4), "cote_min": P.COTE_MIN,
+                                       "min_paris_hors_echantillon": MIN_PARIS_HORS_ECHANTILLON, "matchs_archetype": len(ids), "du": jours[0], "au": jours[-1],
+                                       "empreinte_ids": hashlib.sha256("\n".join(ids).encode()).hexdigest(),
+                                       "regles": {f"{nom} | voie {v}": regles[(nom, v)] for nom, v in sorted(retenus) if regles.get((nom, v))}},
                                       ensure_ascii=False, indent=1), encoding="utf-8")
-    n, w = len(paris_oos), sum(x["gagne"] for x in paris_oos)
-    vp = [x for x in paris_oos if x["marche"] in valides]
-    rapport = {"gele_le": gele, "protocole": "validation chronologique répétée jour par jour (règles apprises sur les jours antérieurs, gelées, appliquées au jour suivant)",
-               "archetype": {"matchs_sans_doublon": len(ids), "matchs_analyses": analyses, "du": jours[0], "au": jours[-1]},
-               "hors_echantillon_tous_marches": {"paris": n, "gagnes": w, "reussite": round(w / n, 4) if n else None},
-               "hors_echantillon_marches_valides": {"paris": len(vp), "gagnes": sum(x["gagne"] for x in vp),
-                                                    "reussite": round(sum(x["gagne"] for x in vp) / len(vp), 4) if vp else None},
-               "marches_valides": valides,
-               "verdicts": verdicts, "journal_des_jours": journal,
-               "abstentions": {"jours_sans_aucun_pari": sum(1 for j in journal if not j["paris"])}}
+    par_voie = {}
+    for v in ("A", "B", "sans_cote"):
+        L = [x for x in paris_oos if x["voie"] == v]
+        m = _mesures(L)
+        par_voie[v] = {"paris": m["n"], "gagnes": m["w"], "reussite": round(m["taux"], 4) if m["n"] else None,
+                       "gain_net": round(m["gain"], 3), "paris_avec_filtre_actif": sum(1 for x in L if x.get("filtre_scenarios"))}
+    rapport = {"gele_le": gele, "protocole": "correction méthodologique du 24/10/2026 : validation chronologique répétée jour par jour, deux voies séparées, "
+                                            "aucune bande de cote apprise, aucun plafond de cote, Wilson indicatif",
+               "voies": VOIES, "frontiere_voies": round(FRONTIERE_VOIES, 4),
+               "donnees": {"matchs_sans_doublon": len(ids), "matchs_analyses": analyses, "du": jours[0], "au": jours[-1],
+                           "ecartes_cotes_non_anterieures_au_coup_d_envoi": len(REJETS_COTES)},
+               "lectures_ecartees_cote_introuvable": sum(1 for x in lignes if x["cle"][0] != "combo" and x["cote"] is None),
+               "lectures_ecartees_cote_sous_1_25": sum(1 for x in lignes if x["cote"] is not None and x["cote"] < P.COTE_MIN),
+               "hors_echantillon_par_voie": par_voie, "verdicts": verdicts, "journal_des_jours": journal,
+               "jours_sans_aucun_pari": sum(1 for j in journal if not j["paris"])}
     RAPPORT.write_text(json.dumps(rapport, ensure_ascii=False, indent=1), encoding="utf-8")
-    print("ARCHETYPE:", len(ids), "matchs,", analyses, "analysés,", jours[0], "->", jours[-1])
-    print("HORS ECHANTILLON (tous):", rapport["hors_echantillon_tous_marches"])
-    print("VALIDES:", valides, rapport["hors_echantillon_marches_valides"])
-    for k, v in verdicts.items():
-        print(f"  {v['statut']:<12} {k:<38} {v['paris']:>4} paris {v['reussite']:.1%} base {v['base']} | {v['raison']}")
+    print("DONNEES:", rapport["donnees"])
+    print("PAR VOIE:", par_voie)
+    for v in ("A", "B", "sans_cote"):
+        print(f"== VOIE {v}")
+        for k, f in verdicts[v].items():
+            print(f"  {f['statut']:<22} {k:<38} {f['paris']:>4} paris {f['reussite']:.1%} | base {f['base_marche']} sans filtre {f['sans_filtre_meme_voie']} "
+                  f"apport {f['apport_filtre']} | gain {f.get('gain_net')} | {f['raison']}")
 
 
 if __name__ == "__main__":

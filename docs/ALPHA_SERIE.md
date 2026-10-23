@@ -81,3 +81,21 @@ Cahier des charges figé par Patrick. Couche séparée : `coeur.py`, la page et 
 - Limite à ne pas cacher : la règle gelée de ce marché a des seuils de part défavorable et habituelle à 0. **La lecture par scénarios ne filtre rien** : la sélection vient de l'intervalle de cote 1,25–1,36. Le gain sur la base est faible et non démontré statistiquement.
 - Rejetés : plus de 1,5 buts (71,9 %), pas de nul (incohérent 76 % puis 72 %), extérieur ne perd pas (70,6 %), moins de 3,5 buts (69,2 %). Tous les autres : exploratoires (moins de 50 paris).
 - Fichiers : `data/alpha_serie/robustesse_intervalles.json` (règles gelées des seuls marchés validés), `docs/alpha_robustesse_validation.json` (verdicts, résultats par semaine, journal des jours), `data/alpha_serie/robustesse_matchs.json.gz` (liste des matchs). Commande : `python -m alpha_serie.robustesse`. Rien n'est branché au pipeline ni à la page.
+
+### Correction méthodologique (24/10/2026, branche `alpha-robustesse-correction`)
+Remplace le verdict de la « version finale » ci-dessus, qui reposait sur des bandes de cote apprises avec Wilson >= 72 % comme filtre obligatoire.
+- **Plus de bande de cote apprise ni de Wilson obligatoire.** Deux voies fixes, séparées, chacune avec son objectif et son verdict :
+  - **A — sélections robustes** : cote de 1,25 à moins de 1,39. Objectif : fréquence de réussite >= 72 %.
+  - **B — occasions à cote élevée** : cote de 1,39 et plus, **sans limite haute**. Objectif : gain net à mise égale.
+  - La frontière 1,39 = 1 / 0,72 : au-dessus, la cote annonce moins de 72 % de chances, l'objectif fréquence n'a plus de sens. Elle découle du seul seuil de Patrick.
+  - **Sans cote** : combos seulement (aucune cote dans l'archive), jugés sur la réussite seule. Un marché simple dont la cote manque pour un match est écarté (7 343 lectures), comme les cotes sous 1,25 (4 815 lectures).
+- Règle par marché et par voie, apprise sur les seuls jours antérieurs : part défavorable minimale et part habituelle minimale ; « sans filtre » est candidate. Une règle filtrée n'est retenue que si elle fait mieux que « tout prendre » dans la même voie, et que si elle remplit l'objectif de sa voie dans chaque moitié chronologique. Choix selon l'objectif (A : borne de Wilson comme mesure de fréquence fiable, B : gain net total), jamais selon le volume.
+- Verdicts hors échantillon (validation jour par jour) : A validé = >= 50 paris, >= 72 %, >= 72 % dans chaque moitié, au-dessus de la sélection sans filtre de la même voie ; B « opportunité démontrée » = >= 50 paris, gain net > 0 au total et dans chaque moitié, réussite au-dessus de la probabilité implicite des cotes ; moins de 50 paris = exploratoire. Références publiées : taux de base du marché, taux sans filtre de la même voie, apport du filtre, part des paris où le filtre est actif, résultats par semaine.
+- Contrôle des cotes : un match n'est gardé que si ses cotes ont été prises avant le coup d'envoi (`run.pris_le` < `coup_d_envoi_utc`) : 146 enregistrements écartés. `appliquer` ne lit jamais l'issue du match (test).
+- k conservé dans chaque lecture (champ `k`), sans rôle de preuve.
+- **Résultat brut** (1 670 matchs sans doublon, 851 analysés, 28/09–22/10) :
+  - Voie A : 1 295 paris, 73,0 %, gain −63,8 unités. **Un seul marché validé : moins de 3,5 buts**, 74 paris, 77,0 % (57/17), contre 67,5 % sans filtre (+9,5 points), 73 % puis 81 %, filtre actif sur 93 % des paris, cotes 1,25–1,38, gain +0,49 unité, Wilson indicatif 66 %. Rejetés faute d'apport du filtre : pas de nul, plus de 1,5 buts, handicap +1,5 extérieur ; extérieur ne perd pas : incohérent (78 % puis 67 %).
+  - Voie B : 1 059 paris, 48,1 %, gain −144,9 unités. **Aucune opportunité démontrée** ; 6 marchés rejetés (dont moins de 3,5 buts : gain instable), les autres exploratoires.
+  - Combos : 146 paris, 57,5 %, tous exploratoires.
+- Limites : un seul marché validé, sur 74 paris en 25 jours, première moitié juste au-dessus de 72 %. Ce n'est pas une preuve durable. Rien n'est branché au pipeline, aucune exécution automatique programmée.
+- Tests : `tests/test_alpha_robustesse.py` (35 tests alpha) ; suite complète : 2 500 tests réussis.

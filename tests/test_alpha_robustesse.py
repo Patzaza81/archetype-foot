@@ -90,18 +90,6 @@ def test_quatre_coins_egal_coin_du_marche_pour_les_marches_monotones():
                         assert quatre == un, (cle, A, Cc, B, D)
 
 
-def test_intervalle_gagnant():
-    from alpha_serie.robustesse import _meilleur_intervalle
-    pts = [(1.30, 1)] * 20 + [(1.60, 0)] * 10
-    assert _meilleur_intervalle(sorted(pts))[:2] == (1.30, 1.30)     # la zone perdante est laissée dehors
-    pts = [(1.30, 1)] * 15 + [(1.40, 1)] * 15 + [(1.50, 1)] * 5
-    assert _meilleur_intervalle(sorted(pts))[:3] == (1.30, 1.50, 35)  # tout passe : le plus large
-    assert _meilleur_intervalle(sorted([(1.30, 1)] * 30 + [(1.32, 0)] * 2))[2] == 32  # deux pertes au milieu : gardées si la barre tient
-    assert _meilleur_intervalle([(1.30, 1)] * 9) is None               # trop peu de paris : 9 sur 9 ne passe pas la borne Wilson
-    assert _meilleur_intervalle(sorted([(1.30, 1), (1.30, 0)] * 20)) is None   # 50 % : jamais retenu
-    assert _meilleur_intervalle([]) is None
-
-
 def test_archive_sans_doublon():
     from alpha_serie.robustesse import charger_archive_archetype
     ms = charger_archive_archetype()
@@ -113,35 +101,78 @@ def test_archive_sans_doublon():
         assert len(hm) <= 7
 
 
-# --- Protocole final (24/10/2026) : validation chronologique répétée, verdict hors échantillon ----------------------
-def _paris(nom, gagnes_par_jour):
-    out = []
-    for i, gs in enumerate(gagnes_par_jour):
-        out += [{"marche": nom, "jour": f"2026-10-{10 + i:02d}", "gagne": bool(g), "cote": 1.30} for g in gs]
-    return out
+# --- Correction méthodologique (24/10/2026) : deux voies, aucun plafond de cote, verdicts séparés ------------------
+def _l(nom, jour, gagne, cote, d=1.0, h=1.0, cle=("x", "y")):
+    return {"marche": nom, "jour": jour, "gagne": bool(gagne), "cote": cote, "def": d, "hab": h, "cle": cle}
 
 
-def _base(nom, taux, jours=4, n=100):
-    return [{"marche": nom, "jour": f"2026-10-{10 + i:02d}", "gagne": k < taux * n} for i in range(jours) for k in range(n)]
+def test_voies_sans_plafond_et_cote_minimale():
+    assert R.voie(1.25) == "A" and R.voie(1.38) == "A"
+    assert R.voie(1.39) == "B" and R.voie(4.5) == "B" and R.voie(25.0) == "B"     # aucune limite haute
+    assert R.voie(1.24) is None and R.voie(1.10) is None                          # sous la cote minimale de Patrick
+    assert R.voie(None, ("combo", "1N+plus_1.5")) == "sans_cote"
+    assert R.voie(None, ("1x2", "1")) is None                                     # marché simple sans cote pour ce match : écarté
 
 
-def test_juger_valide_quand_tout_tient():
-    paris = _paris("M", [[1] * 20 + [0] * 5, [1] * 20 + [0] * 5, [1] * 20 + [0] * 5])
-    v = R.juger(paris, _base("M", 0.60))
-    assert v["M"]["statut"] == "validé" and v["M"]["paris"] == 75
+def test_grosse_cote_admissible_n_est_pas_rejetee_pour_sa_valeur():
+    jours = [f"2026-10-{i:02d}" for i in range(1, 21)]
+    L = [_l("V", j, k == 0, 3.6) for j in jours for k in range(3)]                 # 1 sur 3 à 3,6 : gain positif dans chaque moitié
+    r = R.calibrer_marche_voie(L, "B")
+    assert r is not None and r["gain_net"] > 0
+    pris = R.appliquer([_l("V", "2026-10-21", 0, 6.0)], {("V", "B"): r})
+    assert len(pris) == 1 and pris[0]["voie"] == "B"                              # une cote de 6,0 passe : la valeur de la cote ne rejette rien
 
 
-def test_juger_exploratoire_sous_50_paris():
-    v = R.juger(_paris("M", [[1] * 20, [1] * 20]), _base("M", 0.5))
-    assert v["M"]["statut"] == "exploratoire"
+def test_appliquer_ne_lit_jamais_l_issue():
+    regles = {("M", "A"): {"part_defavorable_min": 0.5, "part_habituelle_min": 0.5}}
+    jour = [_l("M", "2026-10-21", 1, 1.30, 0.6, 0.6), _l("M", "2026-10-21", 1, 1.30, 0.2, 0.9)]
+    a = [x["def"] for x in R.appliquer(jour, regles)]
+    for x in jour:
+        x["gagne"] = not x["gagne"]
+    assert [x["def"] for x in R.appliquer(jour, regles)] == a == [0.6]
 
 
-def test_juger_rejette_sous_72_ou_incoherent_ou_sans_gain():
-    assert R.juger(_paris("M", [[1] * 35 + [0] * 25]), _base("M", 0.5))["M"]["statut"] == "rejeté"             # 58 %
-    v = R.juger(_paris("M", [[1] * 30, [1] * 15 + [0] * 15]), _base("M", 0.5))["M"]                              # 100 % puis 50 %
+def test_regle_choisie_par_objectif_pas_par_volume():
+    jours = [f"2026-10-{i:02d}" for i in range(1, 21)]
+    L = []
+    for j in jours:
+        L += [_l("M", j, 1, 1.30, 1.0, 1.0)] * 4                                  # filtré : 100 %
+        L += [_l("M", j, k < 3, 1.30, 0.0, 0.0) for k in range(5)]                # non filtré : 60 %
+    r = R.calibrer_marche_voie(L, "A")
+    assert r["filtre_scenarios"] and r["paris"] == 80 and r["reussite"] == 1.0   # pas la règle « tout prendre » (180 paris)
+
+
+def test_filtre_sans_apport_non_retenu():
+    jours = [f"2026-10-{i:02d}" for i in range(1, 21)]
+    L = [_l("M", j, k < 8, 1.30, 1.0 if k % 2 else 0.0, 1.0) for j in jours for k in range(10)]  # 80 % avec ou sans filtre
+    r = R.calibrer_marche_voie(L, "A")
+    assert r is not None and not r["filtre_scenarios"]
+
+
+def test_juger_voie_a_valide_rejette_exploratoire():
+    def oos(gs, v="A", cote=1.30):
+        return [{**_l("M", f"2026-10-{10 + i // 20:02d}", g, cote), "voie": v} for i, g in enumerate(gs)]
+    ref = [_l("M", f"2026-10-{10 + i:02d}", k < 6, 1.30) for i in range(4) for k in range(10)]   # sans filtre : 60 %
+    assert R.juger(oos([1, 1, 1, 1, 0] * 12), ref)["A"]["M"]["statut"] == "validé"
+    assert R.juger(oos([1] * 30), ref)["A"]["M"]["statut"] == "exploratoire"
+    assert R.juger(oos([1, 0] * 30), ref)["A"]["M"]["statut"] == "rejeté"                         # 50 %
+    v = R.juger(oos([1] * 30 + [1, 0] * 15), ref)["A"]["M"]
     assert v["statut"] == "rejeté" and "incohérent" in v["raison"]
-    v = R.juger(_paris("M", [[1] * 40 + [0] * 10, [1] * 40 + [0] * 10]), _base("M", 0.85))["M"]                  # 80 % < base 85 %
-    assert v["statut"] == "rejeté" and "gain" in v["raison"]
+
+
+def test_juger_voie_b_separee():
+    def oos(gs, cote):
+        return [{**_l("M", f"2026-10-{10 + i // 20:02d}", g, cote), "voie": "B"} for i, g in enumerate(gs)]
+    ref = [_l("M", "2026-10-10", 0, 3.0)]
+    assert R.juger(oos([1, 0, 0] * 20, 3.6), ref)["B"]["M"]["statut"] == "opportunité démontrée"   # 33 % à 3,6 : gagnant
+    assert R.juger(oos([1, 0, 0, 0] * 15, 3.6), ref)["B"]["M"]["statut"] == "rejeté"               # 25 % à 3,6 : perdant
+    assert R.juger(oos([1, 0, 0] * 10, 3.6), ref)["B"]["M"]["statut"] == "exploratoire"
+    assert R.juger(oos([1, 0, 0] * 20, 3.6), ref)["A"] == {}                                        # jamais mélangé avec la voie A
+
+
+def test_cotes_anterieures_au_coup_d_envoi():
+    ms = R.charger_archive_archetype()
+    assert all(m["cotes_prises_le"] < m["coup_d_envoi_utc"] for m in ms)
 
 
 def test_multigoals_et_multiscores_hors_couche():
