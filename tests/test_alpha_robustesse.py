@@ -111,3 +111,38 @@ def test_archive_sans_doublon():
     for m in ms[:200]:                                           # anti-fuite : la série lue s'arrête avant le jour du match
         hm, _ = coeur.serie_lieu(m["dom"], True, m["jour"])
         assert len(hm) <= 7
+
+
+# --- Protocole final (24/10/2026) : validation chronologique répétée, verdict hors échantillon ----------------------
+def _paris(nom, gagnes_par_jour):
+    out = []
+    for i, gs in enumerate(gagnes_par_jour):
+        out += [{"marche": nom, "jour": f"2026-10-{10 + i:02d}", "gagne": bool(g), "cote": 1.30} for g in gs]
+    return out
+
+
+def _base(nom, taux, jours=4, n=100):
+    return [{"marche": nom, "jour": f"2026-10-{10 + i:02d}", "gagne": k < taux * n} for i in range(jours) for k in range(n)]
+
+
+def test_juger_valide_quand_tout_tient():
+    paris = _paris("M", [[1] * 20 + [0] * 5, [1] * 20 + [0] * 5, [1] * 20 + [0] * 5])
+    v = R.juger(paris, _base("M", 0.60))
+    assert v["M"]["statut"] == "validé" and v["M"]["paris"] == 75
+
+
+def test_juger_exploratoire_sous_50_paris():
+    v = R.juger(_paris("M", [[1] * 20, [1] * 20]), _base("M", 0.5))
+    assert v["M"]["statut"] == "exploratoire"
+
+
+def test_juger_rejette_sous_72_ou_incoherent_ou_sans_gain():
+    assert R.juger(_paris("M", [[1] * 35 + [0] * 25]), _base("M", 0.5))["M"]["statut"] == "rejeté"             # 58 %
+    v = R.juger(_paris("M", [[1] * 30, [1] * 15 + [0] * 15]), _base("M", 0.5))["M"]                              # 100 % puis 50 %
+    assert v["statut"] == "rejeté" and "incohérent" in v["raison"]
+    v = R.juger(_paris("M", [[1] * 40 + [0] * 10, [1] * 40 + [0] * 10]), _base("M", 0.85))["M"]                  # 80 % < base 85 %
+    assert v["statut"] == "rejeté" and "gain" in v["raison"]
+
+
+def test_multigoals_et_multiscores_hors_couche():
+    assert R.HORS_COUCHE == {"multigoals", "multiscores"}

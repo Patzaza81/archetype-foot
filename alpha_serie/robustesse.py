@@ -43,6 +43,8 @@ SEUIL_WILSON = 0.72                     # décision de Patrick (23/10/2026)
 Z = 1.96
 GMAX = 10                              # buts lus de 0 à 10 (au-delà : ramené à 10)
 N_TABLE = range(3, P.MAX_MATCHS + 1)   # 3 : stabilité seulement
+HORS_COUCHE = {"multigoals", "multiscores"}   # protocole final : ils gardent leur méthode propre
+MIN_PARIS_HORS_ECHANTILLON = 50          # minimum pratique avant de qualifier un marché (protocole final, 24/10/2026)
 
 Pred = Callable[[int, int], bool]
 
@@ -281,8 +283,10 @@ def lire_strategie(matchs: list[dict], cat=None) -> tuple[list[dict], int]:
             continue
         analyses += 1
         for cle, lib, pred, _ in cat:
+            if cle[0] in HORS_COUCHE:
+                continue
             n, vd, vh, loo = lire(prs, *gr[cle])
-            lignes.append({"id": m["id"], "jour": m["jour"], "cle": cle, "marche": lib, "n": n, "v_def": vd, "v_hab": vh,
+            lignes.append({"id": m["id"], "jour": m["jour"], "cle": cle, "marche": lib, "n": n, "k": P.coef_k(n), "v_def": vd, "v_hab": vh,
                            "def": min(round(x / k, 4) for k, x, _ in loo), "hab": min(round(y / k, 4) for k, _, y in loo),
                            "cote": cote_reelle(m, cle), "gagne": bool(pred(m["h"], m["a"]))})
     return lignes, analyses
@@ -386,36 +390,106 @@ def bilan(paris: list[dict]) -> dict:
                            for k, v in sorted(par.items(), key=lambda kv: -len(kv[1]))}}
 
 
+def _semaine(jour: str) -> str:
+    d = datetime.strptime(jour, "%Y-%m-%d")
+    return f"{d.isocalendar()[0]}-S{d.isocalendar()[1]:02d}"
+
+
+def marche_avant(lignes: list[dict]) -> tuple[list[dict], list[dict]]:
+    """Validation chronologique répétée : pour chaque jour testé, les règles sont apprises sur les jours STRICTEMENT antérieurs, gelées,
+    puis appliquées à ce seul jour. Renvoie (paris hors échantillon, journal des jours)."""
+    jours = sorted({x["jour"] for x in lignes})
+    paris, journal = [], []
+    for d in jours[1:]:
+        regles = calibrer([x for x in lignes if x["jour"] < d])
+        jour = [x for x in lignes if x["jour"] == d]
+        pris = appliquer(jour, regles)
+        paris += pris
+        journal.append({"jour": d, "marches_avec_regle": sum(1 for v in regles.values() if v["regle"]), "paris": len(pris),
+                        "gagnes": sum(x["gagne"] for x in pris)})
+    return paris, journal
+
+
+def juger(paris_oos: list[dict], lignes: list[dict]) -> dict:
+    """Verdict par marché sur les paris hors échantillon seulement.
+    validé : au moins 50 paris, réussite >= 72 %, >= 72 % dans chaque moitié chronologique de ses paris, et au-dessus du taux de base du marché
+    (tous les matchs analysés des mêmes jours). exploratoire : moins de 50 paris. rejeté : sinon."""
+    jours_testes = {x["jour"] for x in paris_oos} | {x["jour"] for x in lignes if x["jour"] > min(x["jour"] for x in lignes)}
+    base: dict[str, list[int]] = defaultdict(lambda: [0, 0])
+    for x in lignes:
+        if x["jour"] in jours_testes:
+            base[x["marche"]][0] += x["gagne"]
+            base[x["marche"]][1] += 1
+    par: dict[str, list] = defaultdict(list)
+    for x in paris_oos:
+        par[x["marche"]].append(x)
+    out = {}
+    for nom, L in sorted(par.items(), key=lambda kv: -len(kv[1])):
+        L.sort(key=lambda x: x["jour"])
+        n, w = len(L), sum(x["gagne"] for x in L)
+        b = base[nom][0] / base[nom][1] if base[nom][1] else None
+        moitie = n // 2
+        m1, m2 = L[:moitie], L[moitie:]
+        t1 = sum(x["gagne"] for x in m1) / len(m1) if m1 else None
+        t2 = sum(x["gagne"] for x in m2) / len(m2) if m2 else None
+        sem: dict[str, list[int]] = defaultdict(lambda: [0, 0])
+        for x in L:
+            sem[_semaine(x["jour"])][0] += x["gagne"]
+            sem[_semaine(x["jour"])][1] += 1
+        ac = [x for x in L if x["cote"]]
+        taux = w / n
+        if n < MIN_PARIS_HORS_ECHANTILLON:
+            statut, raison = "exploratoire", f"{n} paris hors échantillon, minimum {MIN_PARIS_HORS_ECHANTILLON}"
+        elif taux < SEUIL_WILSON:
+            statut, raison = "rejeté", f"réussite hors échantillon {taux:.1%} sous 72 %"
+        elif t1 is None or t2 is None or min(t1, t2) < SEUIL_WILSON:
+            statut, raison = "rejeté", f"incohérent entre périodes ({t1:.0%} puis {t2:.0%})"
+        elif b is not None and taux <= b:
+            statut, raison = "rejeté", f"aucun gain de sélection ({taux:.1%} contre {b:.1%} de base)"
+        else:
+            statut, raison = "validé", f"{taux:.1%} hors échantillon, base {b:.1%}, {t1:.0%} puis {t2:.0%}"
+        out[nom] = {"statut": statut, "raison": raison, "paris": n, "gagnes": w, "perdus": n - w, "reussite": round(taux, 4),
+                    "base": round(b, 4) if b is not None else None, "gain_selection": round(taux - b, 4) if b is not None else None,
+                    "premiere_moitie": round(t1, 4) if t1 is not None else None, "seconde_moitie": round(t2, 4) if t2 is not None else None,
+                    "wilson_bas_indicatif": round(wilson_bas(w, n), 4), "par_semaine": {k: {"paris": v[1], "gagnes": v[0]} for k, v in sorted(sem.items())},
+                    "avec_cote": len(ac), "cote_moyenne": round(sum(x["cote"] for x in ac) / len(ac), 3) if ac else None,
+                    "rendement_indicatif": round(sum((x["cote"] - 1) if x["gagne"] else -1 for x in ac) / len(ac), 4) if ac else None}
+    return out
+
+
 def main() -> None:
     archetype = charger_archive_archetype()
     lignes, analyses = lire_strategie(archetype)
     jours = sorted({m["jour"] for m in archetype})
-    jours_an = sorted({x["jour"] for x in lignes})
-    coupe = jours_an[(2 * len(jours_an)) // 3]                    # contrôle : règles apprises sur les 2/3 les plus anciens, jugées sur le dernier 1/3
-    regles_avant = calibrer([x for x in lignes if x["jour"] < coupe])
-    controle = bilan(appliquer([x for x in lignes if x["jour"] >= coupe], regles_avant))
-    regles = calibrer(lignes)                                      # règles finales : tous les matchs ARCHETYPE
+    paris_oos, journal = marche_avant(lignes)
+    verdicts = juger(paris_oos, lignes)
+    valides = sorted(k for k, v in verdicts.items() if v["statut"] == "validé")
+    regles_finales = calibrer(lignes)                              # règles apprises sur tout l'historique, gelées pour la suite
+    regles_gelees = {k: regles_finales[k] for k in valides if regles_finales.get(k, {}).get("regle")}
     gele = datetime.now(timezone.utc).isoformat(timespec="seconds")
     ids = [m["id"] for m in archetype]
     IDS.write_bytes(gzip.compress(json.dumps({"archetype": ids}).encode()))
-    INTERVALLES.write_text(json.dumps({"gele_le": gele, "seuil_wilson": SEUIL_WILSON, "cote_min": P.COTE_MIN, "matchs_archetype": len(ids),
-                                       "matchs_analyses": analyses, "du": jours[0], "au": jours[-1],
-                                       "empreinte_ids": hashlib.sha256("\n".join(ids).encode()).hexdigest(), "regles": regles},
+    INTERVALLES.write_text(json.dumps({"gele_le": gele, "statut": "règles gelées des seuls marchés validés hors échantillon",
+                                       "seuil": SEUIL_WILSON, "cote_min": P.COTE_MIN, "min_paris_hors_echantillon": MIN_PARIS_HORS_ECHANTILLON,
+                                       "matchs_archetype": len(ids), "matchs_analyses": analyses, "du": jours[0], "au": jours[-1],
+                                       "empreinte_ids": hashlib.sha256("\n".join(ids).encode()).hexdigest(), "regles": regles_gelees},
                                       ensure_ascii=False, indent=1), encoding="utf-8")
-    retenus = {k: v for k, v in regles.items() if v["regle"]}
-    rapport = {"gele_le": gele, "archetype": {"matchs_sans_doublon": len(ids), "matchs_analyses": analyses, "du": jours[0], "au": jours[-1]},
-               "controle_chronologique": {"coupe": coupe, "marches_retenus_avant_coupe": sorted(k for k, v in regles_avant.items() if v["regle"]),
-                                          "resultat_dernier_tiers": controle},
-               "regles_retenues": retenus, "marches_sans_regle": sorted(k for k, v in regles.items() if not v["regle"]),
-               "resultat_regles_finales": bilan(appliquer(lignes, regles))}
+    n, w = len(paris_oos), sum(x["gagne"] for x in paris_oos)
+    vp = [x for x in paris_oos if x["marche"] in valides]
+    rapport = {"gele_le": gele, "protocole": "validation chronologique répétée jour par jour (règles apprises sur les jours antérieurs, gelées, appliquées au jour suivant)",
+               "archetype": {"matchs_sans_doublon": len(ids), "matchs_analyses": analyses, "du": jours[0], "au": jours[-1]},
+               "hors_echantillon_tous_marches": {"paris": n, "gagnes": w, "reussite": round(w / n, 4) if n else None},
+               "hors_echantillon_marches_valides": {"paris": len(vp), "gagnes": sum(x["gagne"] for x in vp),
+                                                    "reussite": round(sum(x["gagne"] for x in vp) / len(vp), 4) if vp else None},
+               "marches_valides": valides,
+               "verdicts": verdicts, "journal_des_jours": journal,
+               "abstentions": {"jours_sans_aucun_pari": sum(1 for j in journal if not j["paris"])}}
     RAPPORT.write_text(json.dumps(rapport, ensure_ascii=False, indent=1), encoding="utf-8")
-    print("ARCHETYPE:", len(ids), "matchs sans doublon,", analyses, "analysés, du", jours[0], "au", jours[-1])
-    print("CONTROLE coupe", coupe, json.dumps(controle, ensure_ascii=False))
-    for k, v in retenus.items():
-        print("  ", k, v["regle"])
-    print("SANS REGLE:", len(rapport["marches_sans_regle"]))
-    r = rapport["resultat_regles_finales"]
-    print("FINAL:", {k: v for k, v in r.items() if k != "par_marche"})
+    print("ARCHETYPE:", len(ids), "matchs,", analyses, "analysés,", jours[0], "->", jours[-1])
+    print("HORS ECHANTILLON (tous):", rapport["hors_echantillon_tous_marches"])
+    print("VALIDES:", valides, rapport["hors_echantillon_marches_valides"])
+    for k, v in verdicts.items():
+        print(f"  {v['statut']:<12} {k:<38} {v['paris']:>4} paris {v['reussite']:.1%} base {v['base']} | {v['raison']}")
 
 
 if __name__ == "__main__":

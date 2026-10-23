@@ -1,593 +1,860 @@
 {
- "gele_le": "2026-10-23T22:58:53+00:00",
+ "gele_le": "2026-10-23T23:24:32+00:00",
+ "protocole": "validation chronologique répétée jour par jour (règles apprises sur les jours antérieurs, gelées, appliquées au jour suivant)",
  "archetype": {
   "matchs_sans_doublon": 1766,
   "matchs_analyses": 889,
   "du": "2026-09-28",
   "au": "2026-10-22"
  },
- "controle_chronologique": {
-  "coupe": "2026-10-14",
-  "marches_retenus_avant_coupe": [
-   "Domicile ne perd pas (1N)",
-   "Extérieur ne perd pas (N2)",
-   "Handicap +0,5 domicile",
-   "Handicap +0,5 extérieur",
-   "Handicap +1,5 extérieur",
-   "Handicap -0,5 domicile",
-   "Handicap -0,5 extérieur",
-   "Handicap -1,5 domicile",
-   "Moins de 2,5 buts du domicile",
-   "Moins de 3,5 buts",
-   "Moins de 4,5 buts",
-   "Multigoals 1-4",
-   "Pas de nul (12)",
-   "Plus de 1,5 buts",
-   "Plus de 1,5 buts de l'extérieur"
-  ],
-  "resultat_dernier_tiers": {
-   "paris": 969,
-   "reussite": 0.7059,
-   "avec_cote": 516,
-   "rendement": -0.09,
-   "par_marche": {
-    "Multigoals 1-4": {
-     "paris": 453,
-     "reussite": 0.7439,
-     "cote_moyenne": 0.0
-    },
-    "Plus de 1,5 buts": {
-     "paris": 109,
-     "reussite": 0.7339,
-     "cote_moyenne": 1.316
-    },
-    "Handicap +1,5 extérieur": {
-     "paris": 66,
-     "reussite": 0.7727,
-     "cote_moyenne": 1.294
-    },
-    "Handicap +0,5 extérieur": {
-     "paris": 50,
-     "reussite": 0.72,
-     "cote_moyenne": 1.301
-    },
-    "Extérieur ne perd pas (N2)": {
-     "paris": 49,
-     "reussite": 0.6939,
-     "cote_moyenne": 1.304
-    },
-    "Moins de 3,5 buts": {
-     "paris": 47,
-     "reussite": 0.617,
-     "cote_moyenne": 1.345
-    },
-    "Pas de nul (12)": {
-     "paris": 45,
-     "reussite": 0.6222,
-     "cote_moyenne": 1.265
-    },
-    "Moins de 4,5 buts": {
-     "paris": 40,
-     "reussite": 0.7,
-     "cote_moyenne": 1.379
-    },
-    "Moins de 2,5 buts du domicile": {
-     "paris": 33,
-     "reussite": 0.7576,
-     "cote_moyenne": 1.282
-    },
-    "Plus de 1,5 buts de l'extérieur": {
-     "paris": 21,
-     "reussite": 0.5714,
-     "cote_moyenne": 1.566
-    },
-    "Handicap -1,5 domicile": {
-     "paris": 16,
-     "reussite": 0.375,
-     "cote_moyenne": 2.516
-    },
-    "Handicap +0,5 domicile": {
-     "paris": 14,
-     "reussite": 0.3571,
-     "cote_moyenne": 1.54
-    },
-    "Handicap -0,5 extérieur": {
-     "paris": 13,
-     "reussite": 0.3077,
-     "cote_moyenne": 1.819
-    },
-    "Domicile ne perd pas (1N)": {
-     "paris": 10,
-     "reussite": 0.6,
-     "cote_moyenne": 1.488
-    },
-    "Handicap -0,5 domicile": {
-     "paris": 3,
-     "reussite": 1.0,
-     "cote_moyenne": 1.487
-    }
-   }
-  }
+ "hors_echantillon_tous_marches": {
+  "paris": 891,
+  "gagnes": 624,
+  "reussite": 0.7003
  },
- "regles_retenues": {
-  "Domicile ne perd pas (1N)": {
-   "avec_cotes": true,
-   "regle": {
-    "part_defavorable_min": 0.25,
-    "part_habituelle_min": 0.0,
-    "cote_bas": 1.27,
-    "cote_haut": 1.34,
-    "paris": 10,
-    "gagnes": 10,
-    "reussite": 1.0,
-    "wilson_bas": 0.7225
-   }
-  },
-  "Extérieur ne perd pas (N2)": {
-   "avec_cotes": true,
-   "regle": {
-    "part_defavorable_min": 0.0,
-    "part_habituelle_min": 0.0,
-    "cote_bas": 1.25,
-    "cote_haut": 1.32,
-    "paris": 61,
-    "gagnes": 51,
-    "reussite": 0.8361,
-    "wilson_bas": 0.7239
-   }
-  },
-  "Handicap +0,5 domicile": {
-   "avec_cotes": true,
-   "regle": {
-    "part_defavorable_min": 0.25,
-    "part_habituelle_min": 0.0,
-    "cote_bas": 1.25,
-    "cote_haut": 1.38,
-    "paris": 17,
-    "gagnes": 16,
-    "reussite": 0.9412,
-    "wilson_bas": 0.7302
-   }
-  },
-  "Handicap +0,5 extérieur": {
-   "avec_cotes": true,
-   "regle": {
-    "part_defavorable_min": 0.0,
-    "part_habituelle_min": 0.1667,
-    "cote_bas": 1.58,
-    "cote_haut": 1.61,
-    "paris": 33,
-    "gagnes": 29,
-    "reussite": 0.8788,
-    "wilson_bas": 0.7267
-   }
-  },
-  "Handicap +1,5 domicile": {
-   "avec_cotes": true,
-   "regle": {
-    "part_defavorable_min": 0.0,
-    "part_habituelle_min": 0.75,
-    "cote_bas": 1.27,
-    "cote_haut": 1.3,
-    "paris": 11,
-    "gagnes": 11,
-    "reussite": 1.0,
-    "wilson_bas": 0.7412
-   }
-  },
-  "Handicap +1,5 extérieur": {
-   "avec_cotes": true,
-   "regle": {
-    "part_defavorable_min": 0.0,
-    "part_habituelle_min": 0.0,
-    "cote_bas": 1.25,
-    "cote_haut": 1.36,
-    "paris": 124,
-    "gagnes": 100,
-    "reussite": 0.8065,
-    "wilson_bas": 0.7281
-   }
-  },
-  "Handicap -0,5 domicile": {
-   "avec_cotes": true,
-   "regle": {
-    "part_defavorable_min": 0.0,
-    "part_habituelle_min": 0.4,
-    "cote_bas": 1.41,
-    "cote_haut": 1.5,
-    "paris": 22,
-    "gagnes": 20,
-    "reussite": 0.9091,
-    "wilson_bas": 0.7218
-   }
-  },
-  "Handicap -0,5 extérieur": {
-   "avec_cotes": true,
-   "regle": {
-    "part_defavorable_min": 0.0,
-    "part_habituelle_min": 0.0,
-    "cote_bas": 1.57,
-    "cote_haut": 1.65,
-    "paris": 18,
-    "gagnes": 17,
-    "reussite": 0.9444,
-    "wilson_bas": 0.7424
-   }
-  },
-  "L'extérieur encaisse": {
-   "avec_cotes": true,
-   "regle": {
-    "part_defavorable_min": 0.0,
-    "part_habituelle_min": 0.5,
-    "cote_bas": 1.41,
-    "cote_haut": 1.47,
-    "paris": 18,
-    "gagnes": 17,
-    "reussite": 0.9444,
-    "wilson_bas": 0.7424
-   }
-  },
-  "Les deux marquent : non": {
-   "avec_cotes": true,
-   "regle": {
-    "part_defavorable_min": 0.1667,
-    "part_habituelle_min": 1.0,
-    "cote_bas": 1.68,
-    "cote_haut": 2.33,
-    "paris": 11,
-    "gagnes": 11,
-    "reussite": 1.0,
-    "wilson_bas": 0.7412
-   }
-  },
-  "Les deux marquent : oui": {
-   "avec_cotes": true,
-   "regle": {
-    "part_defavorable_min": 0.0,
-    "part_habituelle_min": 0.8,
-    "cote_bas": 1.33,
-    "cote_haut": 1.41,
-    "paris": 14,
-    "gagnes": 14,
-    "reussite": 1.0,
-    "wilson_bas": 0.7847
-   }
-  },
-  "Moins de 1,5 buts de l'extérieur": {
-   "avec_cotes": true,
-   "regle": {
-    "part_defavorable_min": 0.1667,
-    "part_habituelle_min": 0.8,
-    "cote_bas": 1.25,
-    "cote_haut": 1.56,
-    "paris": 11,
-    "gagnes": 11,
-    "reussite": 1.0,
-    "wilson_bas": 0.7412
-   }
-  },
-  "Moins de 1,5 buts du domicile": {
-   "avec_cotes": true,
-   "regle": {
-    "part_defavorable_min": 0.0,
-    "part_habituelle_min": 0.4,
-    "cote_bas": 1.25,
-    "cote_haut": 1.34,
-    "paris": 24,
-    "gagnes": 22,
-    "reussite": 0.9167,
-    "wilson_bas": 0.7415
-   }
-  },
-  "Moins de 3,5 buts": {
-   "avec_cotes": true,
-   "regle": {
-    "part_defavorable_min": 0.0,
-    "part_habituelle_min": 1.0,
-    "cote_bas": 1.25,
-    "cote_haut": 1.36,
-    "paris": 61,
-    "gagnes": 51,
-    "reussite": 0.8361,
-    "wilson_bas": 0.7239
-   }
-  },
-  "Moins de 4,5 buts": {
-   "avec_cotes": true,
-   "regle": {
-    "part_defavorable_min": 0.0,
-    "part_habituelle_min": 0.3333,
-    "cote_bas": 1.36,
-    "cote_haut": 1.61,
-    "paris": 33,
-    "gagnes": 29,
-    "reussite": 0.8788,
-    "wilson_bas": 0.7267
-   }
-  },
-  "Multigoals 1-4": {
-   "avec_cotes": false,
-   "regle": {
-    "part_defavorable_min": 0.0,
-    "part_habituelle_min": 0.0,
-    "cote_bas": null,
-    "cote_haut": null,
-    "paris": 889,
-    "gagnes": 681,
-    "reussite": 0.766,
-    "wilson_bas": 0.7371
-   }
+ "hors_echantillon_marches_valides": {
+  "paris": 105,
+  "gagnes": 84,
+  "reussite": 0.8
+ },
+ "marches_valides": [
+  "Handicap +1,5 extérieur"
+ ],
+ "verdicts": {
+  "Plus de 1,5 buts": {
+   "statut": "rejeté",
+   "raison": "réussite hors échantillon 71.9% sous 72 %",
+   "paris": 217,
+   "gagnes": 156,
+   "perdus": 61,
+   "reussite": 0.7189,
+   "base": 0.7695,
+   "gain_selection": -0.0506,
+   "premiere_moitie": 0.7407,
+   "seconde_moitie": 0.6972,
+   "wilson_bas_indicatif": 0.6557,
+   "par_semaine": {
+    "2026-S40": {
+     "paris": 16,
+     "gagnes": 13
+    },
+    "2026-S41": {
+     "paris": 102,
+     "gagnes": 75
+    },
+    "2026-S42": {
+     "paris": 93,
+     "gagnes": 64
+    },
+    "2026-S43": {
+     "paris": 6,
+     "gagnes": 4
+    }
+   },
+   "avec_cote": 217,
+   "cote_moyenne": 1.339,
+   "rendement_indicatif": -0.0411
   },
   "Pas de nul (12)": {
-   "avec_cotes": true,
-   "regle": {
-    "part_defavorable_min": 0.0,
-    "part_habituelle_min": 0.0,
-    "cote_bas": 1.3,
-    "cote_haut": 1.3,
-    "paris": 94,
-    "gagnes": 79,
-    "reussite": 0.8404,
-    "wilson_bas": 0.7533
-   }
+   "statut": "rejeté",
+   "raison": "incohérent entre périodes (76% puis 72%)",
+   "paris": 169,
+   "gagnes": 125,
+   "perdus": 44,
+   "reussite": 0.7396,
+   "base": 0.7537,
+   "gain_selection": -0.014,
+   "premiere_moitie": 0.7619,
+   "seconde_moitie": 0.7176,
+   "wilson_bas_indicatif": 0.6687,
+   "par_semaine": {
+    "2026-S40": {
+     "paris": 4,
+     "gagnes": 3
+    },
+    "2026-S41": {
+     "paris": 137,
+     "gagnes": 100
+    },
+    "2026-S42": {
+     "paris": 16,
+     "gagnes": 11
+    },
+    "2026-S43": {
+     "paris": 12,
+     "gagnes": 11
+    }
+   },
+   "avec_cote": 169,
+   "cote_moyenne": 1.29,
+   "rendement_indicatif": -0.0453
   },
-  "Plus de 0,5 buts de l'extérieur": {
-   "avec_cotes": true,
-   "regle": {
-    "part_defavorable_min": 0.0,
-    "part_habituelle_min": 0.6667,
-    "cote_bas": 1.36,
-    "cote_haut": 1.38,
-    "paris": 17,
-    "gagnes": 16,
-    "reussite": 0.9412,
-    "wilson_bas": 0.7302
-   }
+  "Handicap +1,5 extérieur": {
+   "statut": "validé",
+   "raison": "80.0% hors échantillon, base 78.5%, 85% puis 75%",
+   "paris": 105,
+   "gagnes": 84,
+   "perdus": 21,
+   "reussite": 0.8,
+   "base": 0.7853,
+   "gain_selection": 0.0147,
+   "premiere_moitie": 0.8462,
+   "seconde_moitie": 0.7547,
+   "wilson_bas_indicatif": 0.7135,
+   "par_semaine": {
+    "2026-S41": {
+     "paris": 35,
+     "gagnes": 29
+    },
+    "2026-S42": {
+     "paris": 60,
+     "gagnes": 48
+    },
+    "2026-S43": {
+     "paris": 10,
+     "gagnes": 7
+    }
+   },
+   "avec_cote": 105,
+   "cote_moyenne": 1.296,
+   "rendement_indicatif": 0.0376
   },
-  "Plus de 0,5 buts du domicile": {
-   "avec_cotes": true,
-   "regle": {
-    "part_defavorable_min": 0.0,
-    "part_habituelle_min": 0.4,
-    "cote_bas": 1.4,
-    "cote_haut": 1.44,
-    "paris": 17,
-    "gagnes": 16,
-    "reussite": 0.9412,
-    "wilson_bas": 0.7302
-   }
+  "Extérieur ne perd pas (N2)": {
+   "statut": "rejeté",
+   "raison": "réussite hors échantillon 70.6% sous 72 %",
+   "paris": 68,
+   "gagnes": 48,
+   "perdus": 20,
+   "reussite": 0.7059,
+   "base": 0.5695,
+   "gain_selection": 0.1364,
+   "premiere_moitie": 0.7647,
+   "seconde_moitie": 0.6471,
+   "wilson_bas_indicatif": 0.5889,
+   "par_semaine": {
+    "2026-S40": {
+     "paris": 10,
+     "gagnes": 4
+    },
+    "2026-S41": {
+     "paris": 14,
+     "gagnes": 13
+    },
+    "2026-S42": {
+     "paris": 39,
+     "gagnes": 27
+    },
+    "2026-S43": {
+     "paris": 5,
+     "gagnes": 4
+    }
+   },
+   "avec_cote": 68,
+   "cote_moyenne": 1.349,
+   "rendement_indicatif": -0.0537
   },
-  "Plus de 1,5 buts": {
-   "avec_cotes": true,
-   "regle": {
-    "part_defavorable_min": 0.0,
-    "part_habituelle_min": 0.6,
-    "cote_bas": 1.29,
-    "cote_haut": 1.35,
-    "paris": 78,
-    "gagnes": 64,
-    "reussite": 0.8205,
-    "wilson_bas": 0.721
-   }
+  "Moins de 3,5 buts": {
+   "statut": "rejeté",
+   "raison": "réussite hors échantillon 69.2% sous 72 %",
+   "paris": 65,
+   "gagnes": 45,
+   "perdus": 20,
+   "reussite": 0.6923,
+   "base": 0.6836,
+   "gain_selection": 0.0087,
+   "premiere_moitie": 0.625,
+   "seconde_moitie": 0.7576,
+   "wilson_bas_indicatif": 0.572,
+   "par_semaine": {
+    "2026-S41": {
+     "paris": 22,
+     "gagnes": 13
+    },
+    "2026-S42": {
+     "paris": 38,
+     "gagnes": 28
+    },
+    "2026-S43": {
+     "paris": 5,
+     "gagnes": 4
+    }
+   },
+   "avec_cote": 65,
+   "cote_moyenne": 1.365,
+   "rendement_indicatif": -0.0629
   },
-  "Plus de 2,5 buts": {
-   "avec_cotes": true,
-   "regle": {
-    "part_defavorable_min": 0.0,
-    "part_habituelle_min": 0.0,
-    "cote_bas": 1.27,
-    "cote_haut": 1.29,
-    "paris": 11,
-    "gagnes": 11,
-    "reussite": 1.0,
-    "wilson_bas": 0.7412
-   }
+  "Moins de 4,5 buts": {
+   "statut": "exploratoire",
+   "raison": "44 paris hors échantillon, minimum 50",
+   "paris": 44,
+   "gagnes": 29,
+   "perdus": 15,
+   "reussite": 0.6591,
+   "base": 0.8181,
+   "gain_selection": -0.159,
+   "premiere_moitie": 0.6364,
+   "seconde_moitie": 0.6818,
+   "wilson_bas_indicatif": 0.5114,
+   "par_semaine": {
+    "2026-S41": {
+     "paris": 16,
+     "gagnes": 12
+    },
+    "2026-S42": {
+     "paris": 25,
+     "gagnes": 15
+    },
+    "2026-S43": {
+     "paris": 3,
+     "gagnes": 2
+    }
+   },
+   "avec_cote": 44,
+   "cote_moyenne": 1.377,
+   "rendement_indicatif": -0.0945
   },
-  "Victoire domicile": {
-   "avec_cotes": true,
-   "regle": {
-    "part_defavorable_min": 0.0,
-    "part_habituelle_min": 0.5,
-    "cote_bas": 1.46,
-    "cote_haut": 1.52,
-    "paris": 18,
-    "gagnes": 17,
-    "reussite": 0.9444,
-    "wilson_bas": 0.7424
-   }
+  "Les deux marquent : oui": {
+   "statut": "exploratoire",
+   "raison": "29 paris hors échantillon, minimum 50",
+   "paris": 29,
+   "gagnes": 16,
+   "perdus": 13,
+   "reussite": 0.5517,
+   "base": 0.5458,
+   "gain_selection": 0.006,
+   "premiere_moitie": 0.5714,
+   "seconde_moitie": 0.5333,
+   "wilson_bas_indicatif": 0.3755,
+   "par_semaine": {
+    "2026-S40": {
+     "paris": 18,
+     "gagnes": 10
+    },
+    "2026-S41": {
+     "paris": 8,
+     "gagnes": 4
+    },
+    "2026-S42": {
+     "paris": 2,
+     "gagnes": 1
+    },
+    "2026-S43": {
+     "paris": 1,
+     "gagnes": 1
+    }
+   },
+   "avec_cote": 29,
+   "cote_moyenne": 1.724,
+   "rendement_indicatif": -0.0441
+  },
+  "Moins de 2,5 buts du domicile": {
+   "statut": "exploratoire",
+   "raison": "29 paris hors échantillon, minimum 50",
+   "paris": 29,
+   "gagnes": 20,
+   "perdus": 9,
+   "reussite": 0.6897,
+   "base": 0.7864,
+   "gain_selection": -0.0968,
+   "premiere_moitie": 0.7143,
+   "seconde_moitie": 0.6667,
+   "wilson_bas_indicatif": 0.5077,
+   "par_semaine": {
+    "2026-S41": {
+     "paris": 9,
+     "gagnes": 7
+    },
+    "2026-S42": {
+     "paris": 16,
+     "gagnes": 11
+    },
+    "2026-S43": {
+     "paris": 4,
+     "gagnes": 2
+    }
+   },
+   "avec_cote": 29,
+   "cote_moyenne": 1.293,
+   "rendement_indicatif": -0.1069
+  },
+  "Handicap +0,5 extérieur": {
+   "statut": "exploratoire",
+   "raison": "26 paris hors échantillon, minimum 50",
+   "paris": 26,
+   "gagnes": 17,
+   "perdus": 9,
+   "reussite": 0.6538,
+   "base": 0.5695,
+   "gain_selection": 0.0844,
+   "premiere_moitie": 0.7692,
+   "seconde_moitie": 0.5385,
+   "wilson_bas_indicatif": 0.4622,
+   "par_semaine": {
+    "2026-S41": {
+     "paris": 8,
+     "gagnes": 7
+    },
+    "2026-S42": {
+     "paris": 13,
+     "gagnes": 7
+    },
+    "2026-S43": {
+     "paris": 5,
+     "gagnes": 3
+    }
+   },
+   "avec_cote": 26,
+   "cote_moyenne": 1.431,
+   "rendement_indicatif": -0.0615
+  },
+  "Le domicile encaisse": {
+   "statut": "exploratoire",
+   "raison": "23 paris hors échantillon, minimum 50",
+   "paris": 23,
+   "gagnes": 14,
+   "perdus": 9,
+   "reussite": 0.6087,
+   "base": 0.7119,
+   "gain_selection": -0.1032,
+   "premiere_moitie": 0.5455,
+   "seconde_moitie": 0.6667,
+   "wilson_bas_indicatif": 0.4079,
+   "par_semaine": {
+    "2026-S41": {
+     "paris": 11,
+     "gagnes": 6
+    },
+    "2026-S42": {
+     "paris": 10,
+     "gagnes": 7
+    },
+    "2026-S43": {
+     "paris": 2,
+     "gagnes": 1
+    }
+   },
+   "avec_cote": 23,
+   "cote_moyenne": 1.387,
+   "rendement_indicatif": -0.1539
+  },
+  "Handicap +0,5 domicile": {
+   "statut": "exploratoire",
+   "raison": "22 paris hors échantillon, minimum 50",
+   "paris": 22,
+   "gagnes": 13,
+   "perdus": 9,
+   "reussite": 0.5909,
+   "base": 0.6768,
+   "gain_selection": -0.0859,
+   "premiere_moitie": 0.7273,
+   "seconde_moitie": 0.4545,
+   "wilson_bas_indicatif": 0.3873,
+   "par_semaine": {
+    "2026-S41": {
+     "paris": 12,
+     "gagnes": 8
+    },
+    "2026-S42": {
+     "paris": 9,
+     "gagnes": 5
+    },
+    "2026-S43": {
+     "paris": 1,
+     "gagnes": 0
+    }
+   },
+   "avec_cote": 22,
+   "cote_moyenne": 1.52,
+   "rendement_indicatif": -0.1014
+  },
+  "Plus de 1,5 buts de l'extérieur": {
+   "statut": "exploratoire",
+   "raison": "17 paris hors échantillon, minimum 50",
+   "paris": 17,
+   "gagnes": 10,
+   "perdus": 7,
+   "reussite": 0.5882,
+   "base": 0.3751,
+   "gain_selection": 0.2131,
+   "premiere_moitie": 0.75,
+   "seconde_moitie": 0.4444,
+   "wilson_bas_indicatif": 0.3601,
+   "par_semaine": {
+    "2026-S42": {
+     "paris": 17,
+     "gagnes": 10
+    }
+   },
+   "avec_cote": 17,
+   "cote_moyenne": 1.594,
+   "rendement_indicatif": -0.0659
+  },
+  "Domicile ne perd pas (1N)": {
+   "statut": "exploratoire",
+   "raison": "14 paris hors échantillon, minimum 50",
+   "paris": 14,
+   "gagnes": 7,
+   "perdus": 7,
+   "reussite": 0.5,
+   "base": 0.6768,
+   "gain_selection": -0.1768,
+   "premiere_moitie": 0.4286,
+   "seconde_moitie": 0.5714,
+   "wilson_bas_indicatif": 0.268,
+   "par_semaine": {
+    "2026-S41": {
+     "paris": 9,
+     "gagnes": 4
+    },
+    "2026-S42": {
+     "paris": 5,
+     "gagnes": 3
+    }
+   },
+   "avec_cote": 14,
+   "cote_moyenne": 1.349,
+   "rendement_indicatif": -0.3179
+  },
+  "Handicap -0,5 domicile": {
+   "statut": "exploratoire",
+   "raison": "10 paris hors échantillon, minimum 50",
+   "paris": 10,
+   "gagnes": 6,
+   "perdus": 4,
+   "reussite": 0.6,
+   "base": 0.4305,
+   "gain_selection": 0.1695,
+   "premiere_moitie": 0.4,
+   "seconde_moitie": 0.8,
+   "wilson_bas_indicatif": 0.3127,
+   "par_semaine": {
+    "2026-S41": {
+     "paris": 6,
+     "gagnes": 3
+    },
+    "2026-S42": {
+     "paris": 2,
+     "gagnes": 1
+    },
+    "2026-S43": {
+     "paris": 2,
+     "gagnes": 2
+    }
+   },
+   "avec_cote": 10,
+   "cote_moyenne": 1.553,
+   "rendement_indicatif": -0.057
   },
   "Victoire extérieur": {
-   "avec_cotes": true,
-   "regle": {
-    "part_defavorable_min": 0.0,
-    "part_habituelle_min": 0.3333,
-    "cote_bas": 1.25,
-    "cote_haut": 1.51,
-    "paris": 22,
-    "gagnes": 20,
-    "reussite": 0.9091,
-    "wilson_bas": 0.7218
-   }
+   "statut": "exploratoire",
+   "raison": "10 paris hors échantillon, minimum 50",
+   "paris": 10,
+   "gagnes": 7,
+   "perdus": 3,
+   "reussite": 0.7,
+   "base": 0.3232,
+   "gain_selection": 0.3768,
+   "premiere_moitie": 0.8,
+   "seconde_moitie": 0.6,
+   "wilson_bas_indicatif": 0.3968,
+   "par_semaine": {
+    "2026-S42": {
+     "paris": 6,
+     "gagnes": 5
+    },
+    "2026-S43": {
+     "paris": 4,
+     "gagnes": 2
+    }
+   },
+   "avec_cote": 10,
+   "cote_moyenne": 1.437,
+   "rendement_indicatif": -0.012
+  },
+  "Handicap -1,5 domicile": {
+   "statut": "exploratoire",
+   "raison": "8 paris hors échantillon, minimum 50",
+   "paris": 8,
+   "gagnes": 6,
+   "perdus": 2,
+   "reussite": 0.75,
+   "base": 0.2147,
+   "gain_selection": 0.5353,
+   "premiere_moitie": 0.75,
+   "seconde_moitie": 0.75,
+   "wilson_bas_indicatif": 0.4093,
+   "par_semaine": {
+    "2026-S41": {
+     "paris": 1,
+     "gagnes": 1
+    },
+    "2026-S42": {
+     "paris": 7,
+     "gagnes": 5
+    }
+   },
+   "avec_cote": 8,
+   "cote_moyenne": 2.518,
+   "rendement_indicatif": 0.8938
+  },
+  "Victoire domicile": {
+   "statut": "exploratoire",
+   "raison": "7 paris hors échantillon, minimum 50",
+   "paris": 7,
+   "gagnes": 5,
+   "perdus": 2,
+   "reussite": 0.7143,
+   "base": 0.4305,
+   "gain_selection": 0.2838,
+   "premiere_moitie": 1.0,
+   "seconde_moitie": 0.5,
+   "wilson_bas_indicatif": 0.3589,
+   "par_semaine": {
+    "2026-S41": {
+     "paris": 6,
+     "gagnes": 4
+    },
+    "2026-S43": {
+     "paris": 1,
+     "gagnes": 1
+    }
+   },
+   "avec_cote": 7,
+   "cote_moyenne": 1.511,
+   "rendement_indicatif": 0.0757
+  },
+  "Handicap -0,5 extérieur": {
+   "statut": "exploratoire",
+   "raison": "6 paris hors échantillon, minimum 50",
+   "paris": 6,
+   "gagnes": 1,
+   "perdus": 5,
+   "reussite": 0.1667,
+   "base": 0.3232,
+   "gain_selection": -0.1565,
+   "premiere_moitie": 0.3333,
+   "seconde_moitie": 0.0,
+   "wilson_bas_indicatif": 0.0301,
+   "par_semaine": {
+    "2026-S42": {
+     "paris": 6,
+     "gagnes": 1
+    }
+   },
+   "avec_cote": 6,
+   "cote_moyenne": 1.82,
+   "rendement_indicatif": -0.6917
+  },
+  "Handicap +1,5 domicile": {
+   "statut": "exploratoire",
+   "raison": "4 paris hors échantillon, minimum 50",
+   "paris": 4,
+   "gagnes": 3,
+   "perdus": 1,
+   "reussite": 0.75,
+   "base": 0.8689,
+   "gain_selection": -0.1189,
+   "premiere_moitie": 1.0,
+   "seconde_moitie": 0.5,
+   "wilson_bas_indicatif": 0.3006,
+   "par_semaine": {
+    "2026-S42": {
+     "paris": 1,
+     "gagnes": 1
+    },
+    "2026-S43": {
+     "paris": 3,
+     "gagnes": 2
+    }
+   },
+   "avec_cote": 4,
+   "cote_moyenne": 1.312,
+   "rendement_indicatif": -0.02
+  },
+  "Plus de 2,5 buts": {
+   "statut": "exploratoire",
+   "raison": "4 paris hors échantillon, minimum 50",
+   "paris": 4,
+   "gagnes": 3,
+   "perdus": 1,
+   "reussite": 0.75,
+   "base": 0.5322,
+   "gain_selection": 0.2178,
+   "premiere_moitie": 1.0,
+   "seconde_moitie": 0.5,
+   "wilson_bas_indicatif": 0.3006,
+   "par_semaine": {
+    "2026-S42": {
+     "paris": 2,
+     "gagnes": 2
+    },
+    "2026-S43": {
+     "paris": 2,
+     "gagnes": 1
+    }
+   },
+   "avec_cote": 4,
+   "cote_moyenne": 1.272,
+   "rendement_indicatif": -0.0425
+  },
+  "Moins de 1,5 buts du domicile": {
+   "statut": "exploratoire",
+   "raison": "4 paris hors échantillon, minimum 50",
+   "paris": 4,
+   "gagnes": 3,
+   "perdus": 1,
+   "reussite": 0.75,
+   "base": 0.5492,
+   "gain_selection": 0.2008,
+   "premiere_moitie": 1.0,
+   "seconde_moitie": 0.5,
+   "wilson_bas_indicatif": 0.3006,
+   "par_semaine": {
+    "2026-S43": {
+     "paris": 4,
+     "gagnes": 3
+    }
+   },
+   "avec_cote": 4,
+   "cote_moyenne": 1.312,
+   "rendement_indicatif": -0.015
+  },
+  "L'extérieur encaisse": {
+   "statut": "exploratoire",
+   "raison": "4 paris hors échantillon, minimum 50",
+   "paris": 4,
+   "gagnes": 3,
+   "perdus": 1,
+   "reussite": 0.75,
+   "base": 0.7831,
+   "gain_selection": -0.0331,
+   "premiere_moitie": 1.0,
+   "seconde_moitie": 0.5,
+   "wilson_bas_indicatif": 0.3006,
+   "par_semaine": {
+    "2026-S43": {
+     "paris": 4,
+     "gagnes": 3
+    }
+   },
+   "avec_cote": 4,
+   "cote_moyenne": 1.44,
+   "rendement_indicatif": 0.0725
+  },
+  "Plus de 0,5 buts de l'extérieur": {
+   "statut": "exploratoire",
+   "raison": "4 paris hors échantillon, minimum 50",
+   "paris": 4,
+   "gagnes": 2,
+   "perdus": 2,
+   "reussite": 0.5,
+   "base": 0.7119,
+   "gain_selection": -0.2119,
+   "premiere_moitie": 0.5,
+   "seconde_moitie": 0.5,
+   "wilson_bas_indicatif": 0.15,
+   "par_semaine": {
+    "2026-S43": {
+     "paris": 4,
+     "gagnes": 2
+    }
+   },
+   "avec_cote": 4,
+   "cote_moyenne": 1.33,
+   "rendement_indicatif": -0.335
+  },
+  "Plus de 0,5 buts du domicile": {
+   "statut": "exploratoire",
+   "raison": "1 paris hors échantillon, minimum 50",
+   "paris": 1,
+   "gagnes": 1,
+   "perdus": 0,
+   "reussite": 1.0,
+   "base": 0.7831,
+   "gain_selection": 0.2169,
+   "premiere_moitie": null,
+   "seconde_moitie": 1.0,
+   "wilson_bas_indicatif": 0.2065,
+   "par_semaine": {
+    "2026-S43": {
+     "paris": 1,
+     "gagnes": 1
+    }
+   },
+   "avec_cote": 1,
+   "cote_moyenne": 1.43,
+   "rendement_indicatif": 0.43
+  },
+  "Les deux marquent : non": {
+   "statut": "exploratoire",
+   "raison": "1 paris hors échantillon, minimum 50",
+   "paris": 1,
+   "gagnes": 0,
+   "perdus": 1,
+   "reussite": 0.0,
+   "base": 0.4542,
+   "gain_selection": -0.4542,
+   "premiere_moitie": null,
+   "seconde_moitie": 0.0,
+   "wilson_bas_indicatif": 0.0,
+   "par_semaine": {
+    "2026-S43": {
+     "paris": 1,
+     "gagnes": 0
+    }
+   },
+   "avec_cote": 1,
+   "cote_moyenne": 1.81,
+   "rendement_indicatif": -1.0
   }
  },
- "marches_sans_regle": [
-  "Cage de l'extérieur inviolée",
-  "Cage du domicile inviolée",
-  "Domicile ne perd pas + les deux marquent",
-  "Domicile ne perd pas + les deux ne marquent pas",
-  "Domicile ne perd pas + moins de 2,5 buts",
-  "Domicile ne perd pas + moins de 3,5 buts",
-  "Domicile ne perd pas + moins de 4,5 buts",
-  "Domicile ne perd pas + plus de 1,5 buts",
-  "Domicile ne perd pas + plus de 2,5 buts",
-  "Domicile ne perd pas + plus de 3,5 buts",
-  "Extérieur ne perd pas + les deux marquent",
-  "Extérieur ne perd pas + les deux ne marquent pas",
-  "Extérieur ne perd pas + moins de 2,5 buts",
-  "Extérieur ne perd pas + moins de 3,5 buts",
-  "Extérieur ne perd pas + moins de 4,5 buts",
-  "Extérieur ne perd pas + plus de 1,5 buts",
-  "Extérieur ne perd pas + plus de 2,5 buts",
-  "Extérieur ne perd pas + plus de 3,5 buts",
-  "Handicap -1,5 domicile",
-  "Handicap -1,5 extérieur",
-  "Le domicile encaisse",
-  "Match nul",
-  "Moins de 0,5 buts de l'extérieur",
-  "Moins de 0,5 buts du domicile",
-  "Moins de 1,5 buts",
-  "Moins de 2,5 buts",
-  "Moins de 2,5 buts de l'extérieur",
-  "Moins de 2,5 buts du domicile",
-  "Multigoals 1-2",
-  "Multigoals 1-3",
-  "Multigoals 2-3",
-  "Multigoals 2-4",
-  "Multigoals 2-5",
-  "Multigoals 3-4",
-  "Multigoals 3-5",
-  "Multigoals 3-6",
-  "Multiscore 0:1 / 0:2 / 0:3",
-  "Multiscore 1:0 / 2:0 / 3:0",
-  "Multiscore 1:2 / 1:3 / 1:4",
-  "Multiscore 2:1 / 3:1 / 4:1",
-  "Multiscore Match nul",
-  "Pas de nul + les deux marquent",
-  "Pas de nul + les deux ne marquent pas",
-  "Pas de nul + moins de 2,5 buts",
-  "Pas de nul + moins de 3,5 buts",
-  "Pas de nul + moins de 4,5 buts",
-  "Pas de nul + plus de 1,5 buts",
-  "Pas de nul + plus de 2,5 buts",
-  "Pas de nul + plus de 3,5 buts",
-  "Plus de 1,5 buts de l'extérieur",
-  "Plus de 1,5 buts du domicile",
-  "Plus de 2,5 buts de l'extérieur",
-  "Plus de 2,5 buts du domicile",
-  "Plus de 3,5 buts",
-  "Plus de 4,5 buts"
- ],
- "resultat_regles_finales": {
-  "paris": 1614,
-  "reussite": 0.8135,
-  "avec_cote": 725,
-  "rendement": 0.1879,
-  "par_marche": {
-   "Multigoals 1-4": {
-    "paris": 889,
-    "reussite": 0.766,
-    "cote_moyenne": 0.0
-   },
-   "Handicap +1,5 extérieur": {
-    "paris": 124,
-    "reussite": 0.8065,
-    "cote_moyenne": 1.297
-   },
-   "Pas de nul (12)": {
-    "paris": 94,
-    "reussite": 0.8404,
-    "cote_moyenne": 1.3
-   },
-   "Plus de 1,5 buts": {
-    "paris": 78,
-    "reussite": 0.8205,
-    "cote_moyenne": 1.316
-   },
-   "Moins de 3,5 buts": {
-    "paris": 61,
-    "reussite": 0.8361,
-    "cote_moyenne": 1.304
-   },
-   "Extérieur ne perd pas (N2)": {
-    "paris": 61,
-    "reussite": 0.8361,
-    "cote_moyenne": 1.29
-   },
-   "Handicap +0,5 extérieur": {
-    "paris": 33,
-    "reussite": 0.8788,
-    "cote_moyenne": 1.594
-   },
-   "Moins de 4,5 buts": {
-    "paris": 33,
-    "reussite": 0.8788,
-    "cote_moyenne": 1.44
-   },
-   "Moins de 1,5 buts du domicile": {
-    "paris": 24,
-    "reussite": 0.9167,
-    "cote_moyenne": 1.292
-   },
-   "Handicap -0,5 domicile": {
-    "paris": 22,
-    "reussite": 0.9091,
-    "cote_moyenne": 1.461
-   },
-   "Victoire extérieur": {
-    "paris": 22,
-    "reussite": 0.9091,
-    "cote_moyenne": 1.4
-   },
-   "Victoire domicile": {
-    "paris": 18,
-    "reussite": 0.9444,
-    "cote_moyenne": 1.492
-   },
-   "L'extérieur encaisse": {
-    "paris": 18,
-    "reussite": 0.9444,
-    "cote_moyenne": 1.439
-   },
-   "Handicap -0,5 extérieur": {
-    "paris": 18,
-    "reussite": 0.9444,
-    "cote_moyenne": 1.612
-   },
-   "Handicap +0,5 domicile": {
-    "paris": 17,
-    "reussite": 0.9412,
-    "cote_moyenne": 1.315
-   },
-   "Plus de 0,5 buts du domicile": {
-    "paris": 17,
-    "reussite": 0.9412,
-    "cote_moyenne": 1.416
-   },
-   "Plus de 0,5 buts de l'extérieur": {
-    "paris": 17,
-    "reussite": 0.9412,
-    "cote_moyenne": 1.368
-   },
-   "Les deux marquent : oui": {
-    "paris": 14,
-    "reussite": 1.0,
-    "cote_moyenne": 1.373
-   },
-   "Handicap +1,5 domicile": {
-    "paris": 11,
-    "reussite": 1.0,
-    "cote_moyenne": 1.275
-   },
-   "Les deux marquent : non": {
-    "paris": 11,
-    "reussite": 1.0,
-    "cote_moyenne": 1.888
-   },
-   "Moins de 1,5 buts de l'extérieur": {
-    "paris": 11,
-    "reussite": 1.0,
-    "cote_moyenne": 1.355
-   },
-   "Plus de 2,5 buts": {
-    "paris": 11,
-    "reussite": 1.0,
-    "cote_moyenne": 1.281
-   },
-   "Domicile ne perd pas (1N)": {
-    "paris": 10,
-    "reussite": 1.0,
-    "cote_moyenne": 1.312
-   }
+ "journal_des_jours": [
+  {
+   "jour": "2026-09-29",
+   "marches_avec_regle": 0,
+   "paris": 0,
+   "gagnes": 0
+  },
+  {
+   "jour": "2026-09-30",
+   "marches_avec_regle": 0,
+   "paris": 0,
+   "gagnes": 0
+  },
+  {
+   "jour": "2026-10-01",
+   "marches_avec_regle": 0,
+   "paris": 0,
+   "gagnes": 0
+  },
+  {
+   "jour": "2026-10-02",
+   "marches_avec_regle": 0,
+   "paris": 0,
+   "gagnes": 0
+  },
+  {
+   "jour": "2026-10-03",
+   "marches_avec_regle": 3,
+   "paris": 35,
+   "gagnes": 21
+  },
+  {
+   "jour": "2026-10-04",
+   "marches_avec_regle": 4,
+   "paris": 13,
+   "gagnes": 9
+  },
+  {
+   "jour": "2026-10-05",
+   "marches_avec_regle": 6,
+   "paris": 16,
+   "gagnes": 14
+  },
+  {
+   "jour": "2026-10-06",
+   "marches_avec_regle": 6,
+   "paris": 5,
+   "gagnes": 4
+  },
+  {
+   "jour": "2026-10-07",
+   "marches_avec_regle": 5,
+   "paris": 10,
+   "gagnes": 5
+  },
+  {
+   "jour": "2026-10-08",
+   "marches_avec_regle": 8,
+   "paris": 10,
+   "gagnes": 6
+  },
+  {
+   "jour": "2026-10-09",
+   "marches_avec_regle": 7,
+   "paris": 22,
+   "gagnes": 19
+  },
+  {
+   "jour": "2026-10-10",
+   "marches_avec_regle": 10,
+   "paris": 190,
+   "gagnes": 136
+  },
+  {
+   "jour": "2026-10-11",
+   "marches_avec_regle": 11,
+   "paris": 143,
+   "gagnes": 102
+  },
+  {
+   "jour": "2026-10-12",
+   "marches_avec_regle": 12,
+   "paris": 18,
+   "gagnes": 10
+  },
+  {
+   "jour": "2026-10-13",
+   "marches_avec_regle": 14,
+   "paris": 14,
+   "gagnes": 12
+  },
+  {
+   "jour": "2026-10-14",
+   "marches_avec_regle": 14,
+   "paris": 18,
+   "gagnes": 11
+  },
+  {
+   "jour": "2026-10-15",
+   "marches_avec_regle": 14,
+   "paris": 26,
+   "gagnes": 17
+  },
+  {
+   "jour": "2026-10-16",
+   "marches_avec_regle": 14,
+   "paris": 34,
+   "gagnes": 28
+  },
+  {
+   "jour": "2026-10-17",
+   "marches_avec_regle": 15,
+   "paris": 153,
+   "gagnes": 105
+  },
+  {
+   "jour": "2026-10-18",
+   "marches_avec_regle": 15,
+   "paris": 104,
+   "gagnes": 69
+  },
+  {
+   "jour": "2026-10-19",
+   "marches_avec_regle": 21,
+   "paris": 39,
+   "gagnes": 29
+  },
+  {
+   "jour": "2026-10-20",
+   "marches_avec_regle": 20,
+   "paris": 21,
+   "gagnes": 16
+  },
+  {
+   "jour": "2026-10-21",
+   "marches_avec_regle": 21,
+   "paris": 8,
+   "gagnes": 4
+  },
+  {
+   "jour": "2026-10-22",
+   "marches_avec_regle": 22,
+   "paris": 12,
+   "gagnes": 7
   }
+ ],
+ "abstentions": {
+  "jours_sans_aucun_pari": 4
  }
 }
