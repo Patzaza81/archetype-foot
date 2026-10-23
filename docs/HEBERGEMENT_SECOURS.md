@@ -10,3 +10,7 @@ Réglages Cloudflare Pages (Workers & Pages → Create → Pages → Connect to 
 
 Chaque commit du pipeline redéploie le site tout seul. L'adresse sera `https://<nom-du-projet>.pages.dev`.
 Un nom de domaine personnel peut ensuite être ajouté (Custom domains) sur Cloudflare Pages ou sur Netlify.
+
+## Cloudflare Workers (assistant actuel de Cloudflare)
+`wrangler.jsonc` et `.assetsignore` permettent de garder la commande de déploiement par défaut `npx wrangler deploy`.
+Limite : Cloudflare refuse les fichiers de plus de 25 Mo. `data/journal_intelligence.json` (49 Mo) est donc exclu : la page Journal est vide sur le site de secours. `precalcul.json` et `historique_pronostics.json` (non utilisés par les pages) sont aussi exclus.
