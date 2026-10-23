@@ -1,0 +1,6 @@
+# Hébergement de secours (Cloudflare Pages) : mêmes règles anti-cache que netlify.toml.
+# Netlify lit aussi ce fichier ; les valeurs sont identiques, rien ne change pour lui.
+/*
+  Cache-Control: no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0
+  Pragma: no-cache
+  Expires: 0
