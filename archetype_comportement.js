@@ -76,7 +76,7 @@ function libelleClair(marche, dom, ext) {
   return m;
 }
 
-// Marchés d'une catégorie : classés à l'intérieur de la catégorie seulement (af-alpha-selection.js).
+// Marchés d'un onglet (= catégorie) : classés à l'intérieur de la catégorie seulement (af-alpha-selection.js).
 const lignesDe = (m, cat) => lignesCategorie(m, cat);
 const pluriel = (n, mot) => `${n} ${mot}${n > 1 ? "s" : ""}`;
 const detailBranches = (cle, s) => (cle === "calibrees"
