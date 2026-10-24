@@ -3,8 +3,8 @@
 Règle : pour chaque famille de marché, on cherche le plus petit cran (pas de 0,25 but) tel que, parmi les matchs qui respectent la marge,
   - la réussite dépasse la fréquence de base du marché de plus d'une erreur-type (le bruit d'échantillon),
   - et reste au moins égale à la base dans CHAQUE moitié chronologique où la marge est présente.
-24/10/2026 (ordre de Patrick) : plus aucun plancher fixé à la main. La marge retenue est la marge APPRISE ; si aucun cran ne passe le test,
-la marge est 0 (aucune marge imposée) et la famille est listée dans `provisoire`.
+24/10/2026 (Patrick) : marchés de buts = règle des buts entiers (1 but d'écart avec la ligne), jamais recalculée ; la valeur apprise n'est
+qu'une information. Seuils d'écart (victoire, ne perd pas) : seulement la valeur APPRISE, 0 si rien n'est appris (famille listée dans `provisoire`).
 Usage : python -m alpha_serie.calibration
 """
 from __future__ import annotations
@@ -85,9 +85,12 @@ def calibrer(rows: list[dict]) -> dict:
     coupe = _moitiés(rows)
     detail, provisoire = {}, []
 
-    def regler(cible: dict, cle: str, nom: str, cond_t, win, rows_=None):
+    def regler(cible: dict, cle: str, nom: str, cond_t, win, rows_=None, regle_fixe: bool = False):
         t, info = _plus_petit_cran(rows_ if rows_ is not None else rows, cond_t, win, coupe)
         plancher = cible[cle]
+        if regle_fixe:                       # marchés de buts : règle des buts entiers de Patrick, l'archive ne fait que renseigner (24/10/2026)
+            detail[nom] = {"retenu": plancher, "regle": "buts entiers (Patrick)", "appris_pour_information": t, **info}
+            return
         if t is None:
             provisoire.append(nom)
             detail[nom] = {"retenu": plancher, "plancher": plancher, "appris": None}
@@ -97,14 +100,14 @@ def calibrer(rows: list[dict]) -> dict:
 
     for ligne in ("1.5", "2.5", "3.5", "4.5"):
         L = float(ligne)
-        regler(params["marges"]["total_plus"], ligne, f"total_plus_{ligne}", lambda r, t, L=L: r["niv"]["total"] >= L + t, lambda r, L=L: r["h"] + r["a"] > L)
-        regler(params["marges"]["total_moins"], ligne, f"total_moins_{ligne}", lambda r, t, L=L: r["niv"]["total"] <= L - t, lambda r, L=L: r["h"] + r["a"] < L)
+        regler(params["marges"]["total_plus"], ligne, f"total_plus_{ligne}", lambda r, t, L=L: r["niv"]["total"] >= L + t, lambda r, L=L: r["h"] + r["a"] > L, regle_fixe=True)
+        regler(params["marges"]["total_moins"], ligne, f"total_moins_{ligne}", lambda r, t, L=L: r["niv"]["total"] <= L - t, lambda r, L=L: r["h"] + r["a"] < L, regle_fixe=True)
     # marchés d'équipe : chaque match fournit deux observations (domicile et extérieur)
     eq = [{"jour": r["jour"], "e": r["niv"]["dom"], "g": r["h"]} for r in rows] + [{"jour": r["jour"], "e": r["niv"]["ext"], "g": r["a"]} for r in rows]
     for ligne in ("0.5", "1.5", "2.5"):
         L = float(ligne)
-        regler(params["marges"]["equipe_plus"], ligne, f"equipe_plus_{ligne}", lambda r, t, L=L: r["e"] >= L + t, lambda r, L=L: r["g"] > L, eq)
-        regler(params["marges"]["equipe_moins"], ligne, f"equipe_moins_{ligne}", lambda r, t, L=L: r["e"] <= L - t, lambda r, L=L: r["g"] < L, eq)
+        regler(params["marges"]["equipe_plus"], ligne, f"equipe_plus_{ligne}", lambda r, t, L=L: r["e"] >= L + t, lambda r, L=L: r["g"] > L, eq, regle_fixe=True)
+        regler(params["marges"]["equipe_moins"], ligne, f"equipe_moins_{ligne}", lambda r, t, L=L: r["e"] <= L - t, lambda r, L=L: r["g"] < L, eq, regle_fixe=True)
     s = params["seuils_resultat"]
     regler(s, "dom_gagne", "dom_gagne", lambda r, t: r["niv"]["d"] >= t, lambda r: r["h"] > r["a"])
     regler(s, "ext_gagne", "ext_gagne", lambda r, t: -r["niv"]["d"] >= t, lambda r: r["a"] > r["h"])

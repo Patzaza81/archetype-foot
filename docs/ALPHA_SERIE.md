@@ -16,7 +16,8 @@
 
 ## Paramètres (`parametres.py`, `parametres.json`)
 - Règles de Patrick en constantes (échantillon, k, constante de 3, cote minimale).
-- Marges et seuils d'écart attendu : **plus aucun plancher fixé à la main depuis le 24/10/2026** (ordre de Patrick : « il faut impérativement les supprimer »). Valeur de départ 0 ; `calibration.py` ne retient que la marge **apprise** sur l'archive (le plus petit cran de 0,25 but dont la réussite dépasse la base de plus d'une erreur-type et ne passe sous la base dans aucune moitié chronologique) ; rien d'appris : 0. Multigoals : aucune distance aux bornes imposée.
+- Marges des marchés de buts (total, par équipe, donc « les deux marquent ») : **règle des buts entiers de Patrick** (24/10/2026) — « plus de 1,5 » = au moins 2 buts, accepté si le total attendu atteint 2,5 ; « moins de 2,5 » = 2 buts au plus, attendu au plus 1,5 ; soit 1 but d'écart avec la ligne (`parametres.MARGE_BUT_ENTIER`), jamais recalculée. La marge n'est qu'un garde-fou : la fréquence de répétition (branches) décide d'abord.
+- Seuils d'écart attendu (victoire, ne perd pas) : aucun plancher fixé à la main ; seulement la valeur apprise sur l'archive, 0 sinon. Multigoals : aucune distance aux bornes imposée.
 - Match nul : aucun seuil de niveau appris sur l'archive (la réussite du nul ne dépasse pas sa base) → il passe par la même porte que les autres marchés mais est rejeté au registre avec la raison tant qu'aucun seuil n'est appris. Se recalcule avec l'archive.
 - Plages de multigoals : liste de départ dans `parametres.py` (à aligner sur celles que Betpawa propose ; les cotes de multigoals et de multiscores ne sont pas dans l'archive).
 
@@ -176,3 +177,4 @@ Construite au-dessus de `robustesse.py` (ffb25b0), sans le modifier. Aucun autre
 - Effet sur les 338 matchs analysés à venir : catégorie Buts disponible avec cote dans 293 matchs (61 avant) ; buts par équipe avec cote dans 274 matchs (39 avant).
 - Mesure sur l'archive (même période que la calibration, donc flatteuse) : beaucoup plus de paris, réussite de l'ordre de 46 à 73 % selon le marché, rendement toujours négatif pour la plupart : aucun gain démontré.
 - Tests : `tests/test_alpha_serie.py` (aucun plancher imposé ; marges de production = marges apprises ; mécanisme testé avec des marges d'exemple).
+- **Règle des buts entiers (24/10/2026, Patrick)** : les marges apprises des marchés de buts (ex. 1,75 pour « plus de 1,5 », 2,5 pour « moins de 4,5 ») sont abandonnées au profit d'une règle unique : 1 but d'écart avec la ligne (attendu ≥ buts nécessaires + 0,5). La calibration ne fait plus que les afficher pour information. Effet sur les 338 matchs à venir : Buts avec cote dans 200 matchs (61 avec les anciens planchers), buts par équipe avec cote dans 77 (39 avant).
