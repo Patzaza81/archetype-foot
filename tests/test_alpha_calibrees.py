@@ -125,5 +125,34 @@ def test_page_sans_marches_exclus_avec_historique(tmp_path, monkeypatch):
 
 def test_page_js_explication_et_details():
     js = (suivi.ROOT / "archetype_comportement.js").read_text(encoding="utf-8")
-    assert "explicationCourte(s, m)" in js and "matchs joués à domicile" in js and "matchs joués à l'extérieur" in js
+    assert "pourquoiCourt(s)" in js and "matchs joués à domicile" in js and "matchs joués à l'extérieur" in js
+    assert "Premier de sa catégorie." in js
     assert "Marchés exclus" not in js
+
+
+# --- 24/10/2026 : chaque pronostic affiché porte la vraie raison de sa sélection, sans rien inventer ---------------------
+PARAMS = {"seuil_branche": 0.5}
+
+
+def test_pourquoi_buts_equipes():
+    t = suivi.pourquoi("equipes", {"offensive": 1.0, "defensive": 0.8333, "niveau": "écart attendu +1.46, marge 1 sur la borne -1.5"}, PARAMS)
+    assert t == "Choisi : arrive dans 100 % des comparaisons (buts marqués) et 83 % (buts encaissés), minimum 50 % des deux côtés ; moyenne de buts confirmée avec marge."
+    t = suivi.pourquoi("equipes", {"offensive": 0.6, "defensive": 0.7, "niveau": "sans objet (le niveau n'apporte rien au « pas de nul »)"}, PARAMS)
+    assert "marge" not in t                                                               # pas de marge revendiquée quand le marché n'en a pas
+    assert suivi.pourquoi("buts", {"offensive": None, "defensive": 0.5}, PARAMS) is None   # donnée manquante : aucune phrase
+
+
+def test_pourquoi_multiscores_et_calibres():
+    assert suivi.pourquoi("multiscores", {"scenarios": 4, "sur": 12}, PARAMS) == "Choisi : ce groupe de scores revient 4 fois sur 12 comparaisons (minimum 3)."
+    t = suivi.pourquoi("calibrees", {"reussite_test_final": 0.6066, "paris_test_final": 577, "reussite_sans_filtre": 0.5652}, PARAMS)
+    assert t == "Choisi : règle remplie par les deux équipes ; elle a gagné 61 % des fois sur 577 matchs jamais vus (57 % sans elle)."
+    assert suivi.pourquoi("calibrees", {"reussite_test_final": 0.6}, PARAMS) is None
+
+
+def test_tous_les_pronostics_de_la_page_sont_justifies(tmp_path, monkeypatch):
+    monkeypatch.setattr(suivi, "_REGLES", [regle("Victoire domicile")])
+    m = {"match_id": "x1", "date": "2099-01-01", "coup_d_envoi_utc": "2099-01-01T18:00:00Z", "heure_cameroun": "19:00", "competition": "Test",
+         "domicile": "A", "exterieur": "B", "assemblage": {"equipe_dom": FORT_DOM, "equipe_ext": FAIBLE_EXT}, "cotes_betpawa": {"1x2": {"1": 1.40}}, "score_final": None}
+    f = suivi.page(matchs=[m], sortie=tmp_path / "p.json")["matchs"][0]
+    lignes = [x for lst in f["onglets"].values() for x in lst]
+    assert lignes and all(x["pourquoi"] for x in lignes)
