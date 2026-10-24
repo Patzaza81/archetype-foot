@@ -5,8 +5,9 @@
 // Affichage (22/10/2026) : carte repliée = le meilleur marché de chaque onglet est lisible dès l'entrée (aperçu .ax-resume) ;
 // carte dépliée = une ligne par marché, pensée pour l'écran du téléphone (plus de tableau à 5 colonnes) ; alertes écrites en toutes lettres.
 const CLE_THEME_NUIT = "archetype_theme_nuit"; // même clé que theme.js
-// 24/10/2026 : quatrième onglet « Calibrés » = règles exploitables de la campagne d'optimisation (alpha_serie/calibrees.py).
-const NOMS_ONGLETS = [["buts", "Buts"], ["equipes", "Équipes"], ["multiscores", "Multiscores"], ["calibrees", "Calibrés"]];
+// 24/10/2026 : onglet « Calibrés » = règles exploitables de la campagne d'optimisation (alpha_serie/calibrees.py).
+// Règle définitive d'affichage (24/10/2026, Patrick) : cinq catégories indépendantes, voir af-alpha-selection.js.
+const BILAN_ONGLETS = [["buts", "Buts"], ["equipes", "Équipes"], ["multiscores", "Multiscores"], ["calibrees", "Calibrés"]];   // bilan gelé : onglets du fichier
 
 const echappeHtml = (x) => (x === null || x === undefined ? "" : String(x)
   .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;"));
@@ -75,8 +76,8 @@ function libelleClair(marche, dom, ext) {
   return m;
 }
 
-// Marchés d'un onglet, du plus fort au plus faible (valeur décroissante ; à valeur égale l'ordre du fichier est conservé).
-const lignesDe = (m, cle) => ((m.onglets && m.onglets[cle]) || []).slice().sort((a, b) => (Number(b.valeur) || 0) - (Number(a.valeur) || 0));
+// Marchés d'un onglet (= catégorie) : classés à l'intérieur de la catégorie seulement (af-alpha-selection.js).
+const lignesDe = (m, cat) => lignesCategorie(m, cat);
 const pluriel = (n, mot) => `${n} ${mot}${n > 1 ? "s" : ""}`;
 const detailBranches = (cle, s) => (cle === "calibrees"
   ? `gagné ${formatPct(s.reussite_test_final)} des fois au test sur matchs jamais vus (${formatPct(s.reussite_sans_filtre)} sans le filtre)`
@@ -112,16 +113,18 @@ function liste(cle, lignes, m) {
   return `<ul class="ax-mk-liste">${lignes.map((s) => ligneMarche(cle, s, m)).join("")}</ul><p class="ax-mk-legende">${legende}</p>`;
 }
 
-// ── Carte repliée : le meilleur marché de chaque onglet, visible dès l'entrée ──
+// ── Carte repliée : chaque catégorie montre SON meilleur marché, indépendamment des autres ──
+// Buts, Équipes, Calibrés : affiché seulement si sa cote BetPawa est connue, sinon catégorie masquée (aucun marché inférieur en remplacement).
+// Multigoals, Multiscores : affichés même sans cote (cote facultative).
 function construitResume(m) {
   const racine = document.createElement("div");
   racine.className = "ax-resume";
-  NOMS_ONGLETS.forEach(([cle, nom], i) => {
-    const l = lignesDe(m, cle);
-    if (!l.length) return;
-    const s = l[0];
+  CATEGORIES_ALPHA.forEach((cat, i) => {
+    const s = meilleurAffichable(m, cat);
+    if (!s) return;
+    const cle = cat.source, nom = cat.nom, l = lignesDe(m, cat);
     const plus = l.length > 1 ? `<span class="ax-resume-plus"> · +${l.length - 1} autre${l.length > 2 ? "s" : ""}</span>` : "";
-    const cote = aUneCote(s.cote) ? `<strong>${formatCote(s.cote)}</strong>` : `<strong class="ax-cote-lire">à lire</strong>`;
+    const cote = aUneCote(s.cote) ? `<strong>${formatCote(s.cote)}</strong>` : `<strong class="ax-cote-lire">facultative</strong>`;
     const alerte = s.alerte ? `<p class="ax-resume-alerte"><span aria-hidden="true">⚠</span> ${echappeHtml(s.alerte)}</p>` : "";
     const rang = document.createElement("div");
     rang.className = `ax-resume-rang ax-rang-${Math.min(i + 1, 3)}`;
@@ -160,8 +163,9 @@ function construitCarte(m) {
   onglets.className = "ax-onglets"; onglets.setAttribute("role", "tablist"); onglets.setAttribute("aria-label", "Choix de l'onglet");
   const panneaux = document.createElement("div");
   panneaux.className = "ax-panneaux";
-  const actifs = NOMS_ONGLETS.map(([cle, nom], i) => {
-    const lignes = lignesDe(m, cle);
+  const actifs = CATEGORIES_ALPHA.map((cat, i) => {
+    const cle = cat.source, nom = cat.nom;
+    const lignes = lignesDe(m, cat);
     const idO = `ax-onglet-${id}-${i}`, idP = `ax-panneau-${id}-${i}`;
     const bouton = document.createElement("button");
     bouton.type = "button"; bouton.id = idO; bouton.className = `ax-onglet ax-rang-${Math.min(i + 1, 3)}${lignes.length ? "" : " ax-vide"}`;
@@ -238,7 +242,7 @@ function construitCarte(m) {
 // ── Bilan réel : trois pastilles lisibles d'un coup d'œil (avant : une longue phrase grise) ──
 function afficheBilan(b, perf) {
   if (!perf) return;
-  const tuiles = b ? NOMS_ONGLETS.map(([c, nom]) => {
+  const tuiles = b ? BILAN_ONGLETS.map(([c, nom]) => {
     const o = (b.onglets || {})[c];
     return o && o.cas ? `<div class="ax-perf-tuile"><span class="ax-perf-nom">${nom}</span><strong>${formatPct(o.reussite)}</strong><small>sur ${Number(o.cas)} cas</small></div>` : "";
   }).join("") : "";
@@ -251,16 +255,16 @@ function afficheSelections(d) {
   const racine = document.getElementById("matches"), maj = document.getElementById("maj"), perf = document.getElementById("perf");
   const jour = aujourdhui();
   const cleTri = (m) => `${m.date || ""}${m.heure || ""}`;
-  const aUnMarche = (m) => Object.values(m.onglets || {}).some((l) => (l || []).length);
+  const aUnMarche = (m) => carteAffichable(m);              // au moins une catégorie affichable selon la règle d'affichage
   const retenus = (d.matchs || []).filter((m) => m.statut === "analyse" && m.date >= jour && aUnMarche(m)).sort((a, b) => cleTri(a).localeCompare(cleTri(b)));
   maj.innerHTML = retenus.length
-    ? `<strong>${pluriel(retenus.length, "match")}</strong> avec au moins un marché retenu · cote minimale ${formatCote(d.cote_min)} (buts et équipes)`
+    ? `<strong>${pluriel(retenus.length, "match")}</strong> avec au moins un marché affichable · cote BetPawa obligatoire (sauf multigoals et multiscores), minimum ${formatCote(d.cote_min)}`
     : "Aucun pronostic pour le moment";
   afficheBilan(d.bilan_gele, perf);
   racine.innerHTML = "";
   if (!retenus.length) {
     racine.innerHTML = `<div class="ax-etat-vide"><strong>Aucun pronostic pour le moment</strong>` +
-      `<p>Aucun match à venir ne respecte les normes du moteur (les deux branches à 50 % au moins et la marge de niveau).</p></div>`;
+      `<p>Aucun match à venir n'a de marché affichable (meilleur marché de chaque catégorie avec cote BetPawa connue, ou multigoal / multiscore).</p></div>`;
     return;
   }
   retenus.forEach((m) => racine.appendChild(construitCarte(m)));
