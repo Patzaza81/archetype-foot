@@ -5,6 +5,8 @@
 // 3. Buts, Équipes, Calibrés : ce meilleur marché n'est affiché que si sa cote BetPawa est connue ; sinon la catégorie est masquée.
 // 4. Multigoals et Multiscores : affichés même sans cote (cote facultative).
 // 5. Jamais de marché inférieur en remplacement ; doublons retirés à l'intérieur de chaque catégorie seulement.
+// 6. (24/10/2026) Partout sur la page, y compris dans les onglets dépliés : un pronostic de Buts, Équipes ou Calibrés n'apparaît JAMAIS sans
+//    sa cote BetPawa. Une catégorie dont le meilleur marché n'a pas de cote est entièrement masquée (onglet vide). Multigoals et Multiscores : cote facultative.
 (function (racine) {
   const CATEGORIES_ALPHA = [
     { cle: "buts", nom: "Buts", source: "buts", garde: (s) => !estMultigoal(s), coteObligatoire: true },
@@ -34,7 +36,14 @@
     return meilleur;
   }
   function carteAffichable(m) { return CATEGORIES_ALPHA.some((c) => meilleurAffichable(m, c)); }
-  const api = { CATEGORIES_ALPHA, lignesCategorie, meilleurAffichable, carteAffichable, aUneCoteAlpha };
+  // Marchés montrés dans l'onglet déplié d'une catégorie : uniquement ceux qui ont une cote (sauf Multigoals / Multiscores),
+  // et rien du tout si le meilleur marché de la catégorie n'est pas affichable (aucun remplaçant).
+  function marchesAffiches(m, cat) {
+    if (!meilleurAffichable(m, cat)) return [];
+    const l = lignesCategorie(m, cat);
+    return cat.coteObligatoire ? l.filter((s) => aUneCoteAlpha(s.cote)) : l;
+  }
+  const api = { CATEGORIES_ALPHA, lignesCategorie, meilleurAffichable, carteAffichable, marchesAffiches, aUneCoteAlpha };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else Object.assign(racine, api);
 })(typeof window !== "undefined" ? window : globalThis);
