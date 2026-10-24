@@ -1,15 +1,152 @@
 {
  "version": "1.0.0",
- "genere_le": "2026-10-24 09:31 UTC",
+ "genere_le": "2026-10-24 12:53 UTC",
  "resume": {
-  "equipes_en_cache": 1139,
-  "verifiables": 959,
-  "coherentes": 959,
-  "incoherentes": 0,
-  "non_verifiables": 111,
-  "sans_donnees": 69,
-  "taux_incoherence": 0.0
+  "equipes_en_cache": 1211,
+  "verifiables": 1022,
+  "coherentes": 1014,
+  "incoherentes": 8,
+  "non_verifiables": 113,
+  "sans_donnees": 76,
+  "taux_incoherence": 0.0078
  },
  "methode": "Chaque match connu par les pages de match (même compétition, joué avant l'enregistrement) doit figurer dans la saison enregistrée de l'équipe (même lieu, mêmes buts). Sinon : INCOHERENTE.",
- "incoherentes": []
+ "incoherentes": [
+  {
+   "equipe": "macarthur",
+   "competition": "australie : a-ligue",
+   "url": "https://www.matchendirect.fr/equipe/macarthur_7jv344gvcvgqg7oeuc9u554dm.html",
+   "enregistre_le": "2026-10-24",
+   "matchs_enregistres": 1,
+   "matchs_connus": 2,
+   "manquants": [
+    {
+     "date": "2026-10-23",
+     "adversaire": "Newcastle",
+     "lieu": "extérieur",
+     "score_equipe": "1-1"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "newcastle",
+   "competition": "australie : a-ligue",
+   "url": "https://www.matchendirect.fr/equipe/newcastle_chu9blh367xs3yumct5tqto2q.html",
+   "enregistre_le": "2026-10-24",
+   "matchs_enregistres": 1,
+   "matchs_connus": 2,
+   "manquants": [
+    {
+     "date": "2026-10-23",
+     "adversaire": "Macarthur",
+     "lieu": "domicile",
+     "score_equipe": "1-1"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "bucheon",
+   "competition": "corée du sud : k-ligue",
+   "url": "https://www.matchendirect.fr/equipe/bucheon_43rl9oirbg0nsrtzg5ou1icfq.html",
+   "enregistre_le": "2026-10-24",
+   "matchs_enregistres": 24,
+   "matchs_connus": 5,
+   "manquants": [
+    {
+     "date": "2026-10-23",
+     "adversaire": "Gwangju",
+     "lieu": "domicile",
+     "score_equipe": "0-3"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "gwangju",
+   "competition": "corée du sud : k-ligue",
+   "url": "https://www.matchendirect.fr/equipe/gwangju_dxrq5ce9fljcf0vrbrz89rp0k.html",
+   "enregistre_le": "2026-10-24",
+   "matchs_enregistres": 24,
+   "matchs_connus": 5,
+   "manquants": [
+    {
+     "date": "2026-10-23",
+     "adversaire": "Bucheon",
+     "lieu": "extérieur",
+     "score_equipe": "3-0"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "incheon utd",
+   "competition": "corée du sud : k-ligue",
+   "url": "https://www.matchendirect.fr/equipe/incheon-utd_4dkougngrd8mpvfb1cr9mdb1p.html",
+   "enregistre_le": "2026-10-24",
+   "matchs_enregistres": 24,
+   "matchs_connus": 3,
+   "manquants": [
+    {
+     "date": "2026-10-23",
+     "adversaire": "Jeju Utd",
+     "lieu": "domicile",
+     "score_equipe": "3-1"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "jeju utd",
+   "competition": "corée du sud : k-ligue",
+   "url": "https://www.matchendirect.fr/equipe/jeju-utd_92h5si20tnxjtg4hj8cs97bpw.html",
+   "enregistre_le": "2026-10-24",
+   "matchs_enregistres": 24,
+   "matchs_connus": 4,
+   "manquants": [
+    {
+     "date": "2026-10-23",
+     "adversaire": "Incheon Utd",
+     "lieu": "extérieur",
+     "score_equipe": "1-3"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "s hiroshima",
+   "competition": "japon : j1 ligue",
+   "url": "https://www.matchendirect.fr/equipe/s-hiroshima_89wr6p2dkh7wjxtbwhtsruu02.html",
+   "enregistre_le": "2026-10-24",
+   "matchs_enregistres": 11,
+   "matchs_connus": 6,
+   "manquants": [
+    {
+     "date": "2026-10-23",
+     "adversaire": "Shimizu",
+     "lieu": "domicile",
+     "score_equipe": "4-0"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "shimizu",
+   "competition": "japon : j1 ligue",
+   "url": "https://www.matchendirect.fr/equipe/shimizu_a1escgblmveduau3j1st0lbxn.html",
+   "enregistre_le": "2026-10-24",
+   "matchs_enregistres": 11,
+   "matchs_connus": 5,
+   "manquants": [
+    {
+     "date": "2026-10-23",
+     "adversaire": "S. Hiroshima",
+     "lieu": "extérieur",
+     "score_equipe": "0-4"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  }
+ ]
 }
