@@ -86,3 +86,69 @@ def test_etape_football_data_sans_recouvrement_avec_archetype():
     assert C.etape_fd({"jour": "2026-03-01", "saison": "2526"}) == "apprentissage"
     assert C.etape_fd({"jour": "2026-08-15", "saison": "2627"}) == "validation"
     assert C.etape_fd({"jour": "2026-09-28", "saison": "2627"}) is None
+
+
+# --- Défaut 1 (corrigé le 24/10) : le découpage par étiquette de saison mêlait les dates ------------------------------
+def test_decoupage_par_date_et_non_par_etiquette_de_saison():
+    # un match « 2627 » d'un championnat sur l'année civile, joué en mars 2026, appartient à l'apprentissage (avant la validation)
+    assert C.etape_fd({"jour": "2026-03-15", "saison": "2627"}) == "apprentissage"
+    assert C.etape_fd({"jour": "2026-06-30", "saison": "2627"}) == "apprentissage"
+    assert C.etape_fd({"jour": "2026-07-01", "saison": "2627"}) == "validation"
+
+
+def test_decoupage_reel_strictement_chronologique_sans_identifiant_commun():
+    import gzip
+    import json
+    liste = json.load(gzip.open(C.R.BLOC))["liste"]
+    etapes = {}
+    for m in liste:
+        e = C.etape_fd({"jour": m["date"], "saison": m["saison"]})
+        if e:
+            etapes.setdefault(e, []).append(m)
+    ap, va = etapes["apprentissage"], etapes["validation"]
+    assert max(m["date"] for m in ap) < min(m["date"] for m in va) < C.DEBUT_ARCHETYPE
+    assert not ({m["id"] for m in ap} & {m["id"] for m in va})
+    assert any(m["saison"] == "2627" for m in ap)                     # les matchs civils 2026 avant juillet sont bien dans l'apprentissage
+
+
+# --- Défaut 2 (corrigé le 24/10) : Benjamini-Hochberg appliqué après une présélection sur les résultats --------------
+def _bloc(etape, mois, n1, w1, n0, w0, jours=10):
+    out = [(etape, f"2026-{mois}-{1 + i % jours:02d}", 6, 1.0, 1.0, (i // jours) < w1 // jours, None) for i in range(n1)]
+    return out + [(etape, f"2026-{mois}-{1 + i % jours:02d}", 6, 0.0, 0.0, (i // jours) < w0 // jours, None) for i in range(n0)]
+
+
+def _tab_bh(n_nuls):
+    tab, infos = {}, {}
+    marginal = _etape("apprentissage", "01", 40, 0.9, 0.3) + _bloc("validation", "07", 100, 60, 100, 40) + _etape("final", "10", 40, 0.9, 0.3)
+    tab[("Marginal", "toutes")] = _col(marginal)
+    infos["Marginal"] = {"cle": ("over_under_2.5", "plus"), "famille": "totaux"}
+    for i in range(n_nuls):                                            # bons à l'apprentissage, inversés en validation (apport négatif)
+        nul = _etape("apprentissage", "01", 40, 0.9, 0.3) + _bloc("validation", "07", 100, 30, 100, 60) + _etape("final", "10", 40, 0.9, 0.3)
+        tab[(f"Nul {i}", "toutes")] = _col(nul)
+        infos[f"Nul {i}"] = {"cle": ("over_under_2.5", "plus"), "famille": "totaux"}
+    return tab, infos
+
+
+def test_bh_validation_porte_sur_toutes_les_hypotheses():
+    seul = C.campagne(*_tab_bh(0))
+    assert [f for f in seul["fiches"] if f["marche"] == "Marginal"][0]["statut"] == "exploitable"   # p = 0,0035, seule hypothèse
+    avec = C.campagne(*_tab_bh(30))
+    f = [f for f in avec["fiches"] if f["marche"] == "Marginal"][0]
+    assert avec["hypotheses_validation"] == 31                          # les 30 hypothèses à apport négatif comptent aussi
+    assert f["statut"] == "écarté en validation" and f["q_validation"] > 0.05   # l'ancienne présélection l'aurait gardé (m = 1)
+
+
+def test_bh_final_porte_sur_toutes_les_candidates():
+    tab, infos = {}, {}
+    for i, taux in enumerate([0.9, 0.3, 0.3]):                          # trois candidates, dont deux sans apport au test final
+        tab[(f"M{i}", "toutes")] = _col(_etape("apprentissage", "01", 40, 0.9, 0.3) + _etape("validation", "07", 40, 0.9, 0.3)
+                                        + _etape("final", "10", 40, taux, 0.3))
+        infos[f"M{i}"] = {"cle": ("over_under_2.5", "plus"), "famille": "totaux"}
+    r = C.campagne(tab, infos)
+    assert r["tests_finaux"] == 3 and all("q_final" in f for f in r["fiches"])
+    assert [f["statut"] for f in r["fiches"]] == ["exploitable", "non confirmé", "non confirmé"]
+
+
+def test_q_valeurs_benjamini_hochberg():
+    q = C.q_valeurs({"a": 0.01, "b": 0.02, "c": 0.9})
+    assert q == {"a": 0.03, "b": 0.03, "c": 0.9}

@@ -12,12 +12,12 @@ Catégories : « toutes » (objectif réussite, cotes absentes comprises), A (co
 B (cote 1,39 et plus, sans limite haute, objectif rendement). Une cote connue sous 1,25 n'est jamais proposable : lecture écartée.
 
 Trois étapes, chronologiques, sans recouvrement de matchs :
-  1. APPRENTISSAGE   : Football-Data saison 2526. Toutes les configurations sont évaluées ; admissible = apport positif sur les paris non retenus
+  1. APPRENTISSAGE   : Football-Data, matchs avant le 01/07/2026 (coupe par date, corrigée le 24/10). Toutes les configurations sont évaluées ; admissible = apport positif sur les paris non retenus
                        dans chaque moitié chronologique ; retenue = la plus nette (statistique z contre les paris non retenus).
-  2. VALIDATION      : Football-Data saison 2627, matchs avant le 28/09/2026. La configuration gelée est appliquée telle quelle.
-                       Candidate = apport positif dans chaque moitié ET significatif après Benjamini-Hochberg 5 % (tests exacts).
+  2. VALIDATION      : Football-Data, matchs du 01/07 au 27/09/2026. La configuration gelée est appliquée telle quelle.
+                       Benjamini-Hochberg 5 % sur TOUTES les configurations retenues (tests exacts), puis apport positif dans chaque moitié.
   3. TEST FINAL      : archive ARCHETYPE (28/09–22/10/2026, cotes BetPawa prises avant le coup d'envoi). Jamais utilisée pour choisir ou retoucher.
-                       Les candidates sont appliquées une fois ; Benjamini-Hochberg 5 % sur ces seuls tests.
+                       Les candidates sont appliquées une fois ; Benjamini-Hochberg 5 % sur TOUTES les candidates (aucune présélection).
 Statuts : exploitable (confirmé au test final), prometteur (positif au test final, non significatif), non confirmé, écarté en validation,
 insuffisamment documenté (aucune configuration admissible, ou aucun pari dans une étape).
 Cotes : Football-Data = moyenne de clôture du marché (1X2, plus/moins 2,5) et handicap asiatique d'ouverture ; ARCHETYPE = BetPawa avant match.
@@ -182,6 +182,17 @@ def benjamini_hochberg(pvals: dict, q: float = 0.05) -> set:
     return R.benjamini_hochberg(pvals, q)
 
 
+def q_valeurs(pvals: dict) -> dict:
+    """p-valeurs ajustées de Benjamini-Hochberg (q-valeurs) : une hypothèse est retenue à 5 % si sa q-valeur <= 0,05."""
+    items = sorted(pvals.items(), key=lambda kv: kv[1])
+    m, out, mini = len(items), {}, 1.0
+    for i in range(m, 0, -1):
+        k, pv = items[i - 1]
+        mini = min(mini, pv * m / i)
+        out[k] = round(min(mini, 1.0), 6)
+    return out
+
+
 def evaluer(cat: str, cfg: dict, col: dict, masque: np.ndarray) -> dict | None:
     """Applique une configuration GELÉE aux lignes d'une étape. Ne lit l'issue que pour mesurer, jamais pour choisir."""
     if not masque.any():
@@ -230,10 +241,17 @@ def evaluer(cat: str, cfg: dict, col: dict, masque: np.ndarray) -> dict | None:
 
 
 # --- Campagne ----------------------------------------------------------------------------------------------------------
+DEBUT_VALIDATION = "2026-07-01"   # 24/10/2026 : coupe par DATE (début de la saison européenne 2026-27). L'ancienne coupe par étiquette de saison
+                                  # (2526 / 2627) mêlait les dates : 1 093 matchs « 2627 » des championnats sur l'année civile (Argentine, Brésil,
+                                  # États-Unis, Chine, Irlande, Norvège, Suède, Finlande) étaient datés AVANT la fin de l'apprentissage (01/06/2026).
+
+
 def etape_fd(m: dict) -> str | None:
-    if m["jour"] >= DEBUT_ARCHETYPE:                               # aucun recouvrement avec l'archive ARCHETYPE
+    """Découpage strictement chronologique par la date du match : apprentissage avant le 01/07/2026, validation du 01/07 au 27/09/2026,
+    rien à partir du 28/09/2026 (période de l'archive ARCHETYPE, test final)."""
+    if m["jour"] >= DEBUT_ARCHETYPE:
         return None
-    return "apprentissage" if m["saison"] == "2526" else "validation"
+    return "apprentissage" if m["jour"] < DEBUT_VALIDATION else "validation"
 
 
 def campagne(tab: dict, infos: dict) -> dict:
@@ -255,29 +273,36 @@ def campagne(tab: dict, infos: dict) -> dict:
             for e in ETAPES:
                 fiche[e] = evaluer(cat, cfg, col, col["etape"] == e)
         fiches.append(fiche)
-    # Étape 2 : validation (BH sur toutes les configurations retenues qui ont un apport positif en validation)
-    pv = {}
-    for i, f in enumerate(fiches):
-        va = f.get("validation")
-        if f["configuration"] and va and va.get("paris") and va["apport"] > 0 and None not in va["apport_par_moitie"] and min(va["apport_par_moitie"]) > 0:
-            pv[i] = va["p_exacte"]
-    cand = benjamini_hochberg(pv)
-    # Étape 3 : test final (BH sur les seules candidates)
-    pf = {i: fiches[i]["final"]["p_exacte"] for i in cand if fiches[i].get("final") and fiches[i]["final"].get("paris") and fiches[i]["final"]["apport"] > 0}
+    # Étape 2 : validation. Benjamini-Hochberg sur TOUTES les hypothèses de l'étape (toute configuration retenue à l'apprentissage),
+    # sans présélection sur les résultats de validation ; une configuration sans pari en validation compte avec p = 1.
+    pv = {i: ((f.get("validation") or {}).get("p_exacte", 1.0) if (f.get("validation") or {}).get("paris") else 1.0)
+          for i, f in enumerate(fiches) if f["configuration"]}
+    qv = q_valeurs(pv)
+    sig_v = benjamini_hochberg(pv)
+    cand = {i for i in sig_v if (va := fiches[i]["validation"])["apport"] > 0
+            and None not in va["apport_par_moitie"] and min(va["apport_par_moitie"]) > 0}   # exigence supplémentaire APRÈS la correction : ne fait que restreindre
+    # Étape 3 : test final. Benjamini-Hochberg sur TOUTES les candidates, qu'elles aient ou non un apport positif au test final (p = 1 si aucun pari).
+    pf = {i: ((fiches[i].get("final") or {}).get("p_exacte", 1.0) if (fiches[i].get("final") or {}).get("paris") else 1.0) for i in cand}
+    qf = q_valeurs(pf)
     conf = benjamini_hochberg(pf)
     for i, f in enumerate(fiches):
         fi = f.get("final") or {}
+        if i in qv:
+            f["q_validation"] = qv[i]
+        if i in qf:
+            f["q_final"] = qf[i]
         if not f["configuration"]:
             f["statut"], f["raison"] = "insuffisamment documenté", "aucune configuration admissible à l'apprentissage"
         elif not (f.get("validation") or {}).get("paris"):
             f["statut"], f["raison"] = "insuffisamment documenté", "aucun pari en validation"
         elif i not in cand:
-            f["statut"], f["raison"] = "écarté en validation", "apport non confirmé en validation (moitiés ou correction des faux positifs)"
+            f["statut"], f["raison"] = "écarté en validation", ("non significatif après correction sur toutes les hypothèses de validation" if i not in sig_v
+                                                                 else "significatif mais apport non positif dans les deux moitiés")
         elif not fi.get("paris"):
             f["statut"], f["raison"] = "insuffisamment documenté", "aucun pari au test final"
-        elif i in conf:
-            f["statut"], f["raison"] = "exploitable", "confirmé au test final, significatif après correction des faux positifs"
-        elif i in pf:
+        elif i in conf and fi["apport"] > 0:
+            f["statut"], f["raison"] = "exploitable", "confirmé au test final, significatif après correction sur toutes les candidates"
+        elif fi["apport"] > 0:
             f["statut"], f["raison"] = "prometteur", "apport positif au test final, non significatif après correction"
         else:
             f["statut"], f["raison"] = "non confirmé", "aucun apport au test final"
@@ -292,7 +317,51 @@ def campagne(tab: dict, infos: dict) -> dict:
             if f["marche"] in libs and len(libs) > 1:
                 f["meme_evenement_que"] = [x for x in libs if x != f["marche"]]
     fiches.sort(key=lambda f: (R.FAMILLES.index(f["famille"]), f["marche"], CATEGORIES.index(f["categorie"])))
-    return {"fiches": fiches, "configurations_evaluees": total_cfg, "candidates_validation": len(cand), "tests_finaux": len(pf)}
+    return {"fiches": fiches, "configurations_evaluees": total_cfg, "hypotheses_validation": len(pv), "candidates_validation": len(cand), "tests_finaux": len(pf)}
+
+
+def preuve_decoupage(tab: dict) -> dict:
+    """Dates réelles et identifiants de chaque étape, tirés des lectures effectivement utilisées."""
+    ids, jours = defaultdict(set), defaultdict(set)
+    for col in tab.values():
+        for i, e, j in zip(col["id"], col["etape"], col["jour"]):
+            ids[str(e)].add(i)
+            jours[str(e)].add(str(j))
+    out = {e: {"matchs": len(ids[e]), "premier_jour": min(jours[e]), "dernier_jour": max(jours[e])} for e in ETAPES if ids[e]}
+    out["identifiants_communs"] = {"apprentissage/validation": len(ids["apprentissage"] & ids["validation"]),
+                                   "apprentissage/final": len(ids["apprentissage"] & ids["final"]), "validation/final": len(ids["validation"] & ids["final"])}
+    out["strictement_chronologique"] = (max(jours["apprentissage"]) < min(jours["validation"]) and max(jours["validation"]) < min(jours["final"]))
+    return out
+
+
+def comparer(fiches: list[dict], chemin_git: str = "2dc8e31:docs/alpha_campagne.json") -> dict | None:
+    """Comparaison avec la campagne 2dc8e31 (ancien découpage, ancienne correction) : configuration et statut, marché par marché."""
+    import subprocess
+    try:
+        old = json.loads(subprocess.run(["git", "show", chemin_git], cwd=ROOT, capture_output=True, text=True, check=True).stdout)
+    except Exception:
+        return None
+    anc = {(f["marche"], f["categorie"]): f for f in old["fiches"]}
+    changements, anciens_exploitables = [], []
+    for f in fiches:
+        o = anc.get((f["marche"], f["categorie"]))
+        if not o:
+            continue
+        f["avant_2dc8e31"] = {"statut": o["statut"], "configuration": o["configuration"]}
+        if o["statut"] != f["statut"]:
+            changements.append({"marche": f["marche"], "categorie": f["categorie"], "avant": o["statut"], "apres": f["statut"]})
+        if o["statut"] == "exploitable":
+            fi = f.get("final") or {}
+            anciens_exploitables.append({"marche": f["marche"], "categorie": f["categorie"], "statut_apres": f["statut"], "raison": f["raison"],
+                                         "configuration_avant": o["configuration"], "configuration_apres": f["configuration"],
+                                         "validation_apres": {k: (f.get("validation") or {}).get(k) for k in ("paris", "reussite", "reussite_sans_filtre", "apport", "p_exacte")},
+                                         "q_validation": f.get("q_validation"),
+                                         "final_apres": {k: fi.get(k) for k in ("paris", "reussite", "reussite_sans_filtre", "apport", "p_exacte")},
+                                         "q_final": f.get("q_final")})
+    st_old = defaultdict(int)
+    for o in old["fiches"]:
+        st_old[o["statut"]] += 1
+    return {"statuts_avant": dict(st_old), "changements_de_statut": changements, "anciens_exploitables_un_par_un": anciens_exploitables}
 
 
 def main() -> None:
@@ -308,6 +377,8 @@ def main() -> None:
         else:
             tab[k] = col
     res = campagne(tab, infos)
+    preuve = preuve_decoupage(tab)
+    comp = comparer(res["fiches"])
     statuts = defaultdict(int)
     for f in res["fiches"]:
         statuts[f["statut"]] += 1
@@ -321,12 +392,14 @@ def main() -> None:
     nb = lambda e: len({i for col in tab.values() for i, x in zip(col["id"], col["etape"]) if x == e})
     gele = datetime.now(timezone.utc).isoformat(timespec="seconds")
     rapport = {"gele_le": gele, "methode": __doc__.split("Usage")[0].strip(),
-               "donnees": {"apprentissage": {"source": "Football-Data saison 2526", "matchs_analysables": nb("apprentissage")},
-                           "validation": {"source": f"Football-Data saison 2627 avant le {DEBUT_ARCHETYPE}", "matchs_analysables": nb("validation")},
+               "donnees": {"apprentissage": {"source": f"Football-Data, matchs avant le {DEBUT_VALIDATION}", "matchs_analysables": nb("apprentissage")},
+                           "validation": {"source": f"Football-Data, matchs du {DEBUT_VALIDATION} au jour précédant le {DEBUT_ARCHETYPE}", "matchs_analysables": nb("validation")},
                            "final": {"source": "archive ARCHETYPE, cotes BetPawa avant le coup d'envoi", "matchs_analysables": nb("final"),
                                      "ecartes_cotes_non_anterieures": len(R.REJETS_COTES)},
                            "cotes_combos": "aucune archivée : réussite seule, valeur financière non évaluable"},
-               "configurations_evaluees": res["configurations_evaluees"], "candidates_apres_validation": res["candidates_validation"],
+               "preuve_decoupage": preuve, "comparaison_2dc8e31": comp,
+               "configurations_evaluees": res["configurations_evaluees"], "hypotheses_validation": res["hypotheses_validation"],
+               "candidates_apres_validation": res["candidates_validation"],
                "tests_finaux": res["tests_finaux"], "statuts": dict(statuts), "statuts_par_famille": par_fam, "fiches": res["fiches"]}
     RAPPORT.write_text(json.dumps(rapport, ensure_ascii=False, indent=1, default=float), encoding="utf-8")
     REGLES.write_text(json.dumps({"gele_le": gele, "statut": "configurations apprises sur Football-Data 2526 des seuls marchés exploitables ou prometteurs",
@@ -334,7 +407,14 @@ def main() -> None:
                                              for f in res["fiches"] if f["statut"] in ("exploitable", "prometteur")}},
                                  ensure_ascii=False, indent=1), encoding="utf-8")
     print("DONNEES:", json.dumps(rapport["donnees"], ensure_ascii=False))
-    print("CONFIGURATIONS EVALUEES:", res["configurations_evaluees"], "| candidates après validation:", res["candidates_validation"], "| tests finaux:", res["tests_finaux"])
+    print("PREUVE DECOUPAGE:", json.dumps(preuve, ensure_ascii=False))
+    print("CONFIGURATIONS EVALUEES:", res["configurations_evaluees"], "| hypothèses en validation:", res["hypotheses_validation"],
+          "| candidates après validation:", res["candidates_validation"], "| tests finaux:", res["tests_finaux"])
+    if comp:
+        print("AVANT (2dc8e31):", comp["statuts_avant"])
+        for x in comp["anciens_exploitables_un_par_un"]:
+            print(f"  ancien exploitable -> {x['statut_apres']:<26} {x['marche']:<44} {x['categorie']:<6} q_val {x['q_validation']} q_final {x['q_final']} "
+                  f"final {x['final_apres']}")
     print("STATUTS:", dict(statuts))
     for f in res["fiches"]:
         if f["statut"] in ("exploitable", "prometteur", "non confirmé"):
