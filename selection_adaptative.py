@@ -185,12 +185,17 @@ def sync_v3_history() -> list[dict[str, Any]]:
     index = {norm(x.get("record_id")): x for x in existing if isinstance(x, dict) and norm(x.get("record_id"))}
     scores = score_history()
 
+    # CORRECTIF 24/10/2026 : aucune sélection V3 n'était jamais réglée (367 sur 367 « PENDING »). Les marchés de
+    # l'historique sont déjà au nom du site (« over_under_total_3.5_under »...) : nom_canonique() renvoie None pour
+    # eux, et le règlement était sauté. Le handicap à 3 choix (« handicap3_domicile_... ») n'était reconnu par aucun
+    # évaluateur. On règle désormais avec l'évaluateur des tickets (suivi_tickets.evaluateur_defaut), qui essaie le nom
+    # tel quel, puis son nom canonique, puis la règle V3 du handicap à 3 choix. Rien n'est inventé : un marché non
+    # reconnu reste PENDING.
     try:
-        from branchement_moteur import nom_canonique
-        from archetype_model.learning.reglement import evaluer_marche
+        from suivi_tickets import evaluateur_defaut
+        evaluer = evaluateur_defaut()
     except Exception:
-        nom_canonique = lambda x: x
-        evaluer_marche = None
+        evaluer = None
 
     for signal in current.get("signaux", []) or []:
         if not isinstance(signal, dict):
@@ -220,25 +225,28 @@ def sync_v3_history() -> list[dict[str, Any]]:
                 "edv": num(c.get("edv")),
                 "resultat_statut": "PENDING",
             })
-            if rec.get("resultat_statut") == "RESOLVED":
-                continue
-            sc = scores.get(mid)
-            if not sc:
-                continue
-            canon = nom_canonique(market)
-            result = None
-            if evaluer_marche and canon:
-                try:
-                    result = evaluer_marche(canon, sc[0], sc[1]).statut
-                except Exception:
-                    result = None
-            if result in ("WIN", "LOSS"):
-                rec.update({
-                    "resultat_statut": "RESOLVED",
-                    "resultat_marche": result,
-                    "buts_dom": sc[0],
-                    "buts_ext": sc[1],
-                })
+    # CORRECTIF 24/10/2026 : le règlement ne parcourait que les signaux du fichier V3 du jour. Un match terminé n'y figure
+    # plus : ses sélections restaient PENDING pour toujours. Toutes les sélections enregistrées encore en attente sont
+    # désormais réglées dès que leur score est connu.
+    for rec in index.values():
+        if rec.get("resultat_statut") == "RESOLVED":
+            continue
+        sc = scores.get(norm(rec.get("match_id")))
+        if not sc:
+            continue
+        result = None
+        if evaluer:
+            try:
+                result = evaluer(norm(rec.get("marche")), sc[0], sc[1])
+            except Exception:
+                result = None
+        if result in ("WIN", "LOSS"):
+            rec.update({
+                "resultat_statut": "RESOLVED",
+                "resultat_marche": result,
+                "buts_dom": sc[0],
+                "buts_ext": sc[1],
+            })
     ordered = sorted(index.values(), key=lambda x: (str(x.get("date")), str(x.get("match_id")), str(x.get("marche"))))
     V3_HISTORY.parent.mkdir(parents=True, exist_ok=True)
     V3_HISTORY.write_text(json.dumps(ordered, ensure_ascii=False, indent=2), encoding="utf-8")
