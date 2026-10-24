@@ -80,7 +80,7 @@ def test_cote_invalide_traitee_comme_absente():
 
 def test_page_branchee_sur_la_regle():
     assert HTML.index("af-alpha-selection.js") < HTML.index("archetype_comportement.js")
-    assert "CATEGORIES_ALPHA.forEach" in JS and "meilleurAffichable(m, cat)" in JS and "carteAffichable(m)" in JS
+    assert "CATEGORIES_ALPHA.map((cat, i)" in JS and "meilleurAffichable(m, parCle[k])" in JS and "carteAffichable(m)" in JS
     assert "NOMS_ONGLETS" not in JS
 
 
@@ -126,3 +126,17 @@ def test_multigoals_multiscores_sans_cote_dans_l_onglet():
 
 def test_page_utilise_les_marches_affiches():
     assert "marchesAffiches(m, cat)" in JS and "<strong>à lire</strong>" not in JS
+
+
+# --- 24/10/2026 : plaque compacte, repli / dépli au toucher n'importe où ---------------------------------------------
+def test_carte_repliee_compacte():
+    assert 'let choisies = ["buts", "equipes"].filter((k) => meilleurAffichable(m, parCle[k]));' in JS
+    assert 'choisies = ["multigoals", "multiscores", "calibrees"].filter((k) => meilleurAffichable(m, parCle[k])).slice(0, 1);' in JS
+    corps = JS.split("function construitResume(m) {")[1].split("function listeMatchs")[0]
+    assert "pourquoiCourt" not in corps                                           # aucune phrase longue sur la carte repliée
+
+
+def test_repli_depli_au_toucher_partout():
+    assert 'if (e.target.closest("[role=tab], a")) return;' in JS                  # seuls les onglets et les liens gardent leur action
+    assert "ax-bouton-replier" not in JS and "ax-bouton-details" not in JS          # plus de boutons « Replier » / « Détails »
+    assert "if (onglets.parentNode) onglets.remove();" in JS                       # onglets seulement carte dépliée
