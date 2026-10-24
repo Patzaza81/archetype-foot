@@ -35,11 +35,12 @@ def test_meilleur_avec_cote_affiche_par_categorie():
     assert r["buts"] == "Plus de 1,5 buts" and r["equipes"] == "Victoire domicile" and r["calibrees"] == "Handicap +1,5 extérieur"
 
 
-def test_meilleur_sans_cote_masque_la_categorie_sans_remplacant():
-    m = {"onglets": {"buts": [mk("Plus de 1,5 buts", 0.8, None), mk("Moins de 4,5 buts", 0.7, 1.30)],          # le 2e a une cote : PAS affiché
+def test_principal_sans_cote_remplace_par_le_meilleur_inferieur_cote():
+    m = {"onglets": {"buts": [mk("Plus de 1,5 buts", 0.8, None), mk("Moins de 4,5 buts", 0.7, 1.30), mk("Plus de 2,5 buts", 0.6, 1.80)],
                      "equipes": [mk("L'extérieur encaisse", 0.9, None)], "calibrees": [mk("Combo", 0.6, None, ["combo", "1N+moins_4.5"])]}}
     r = meilleurs(m)
-    assert r["buts"] is None and r["equipes"] is None and r["calibrees"] is None and r["__carte"] is False
+    assert r["buts"] == "Moins de 4,5 buts"                                            # le meilleur inférieur coté, pas le suivant
+    assert r["equipes"] is None and r["calibrees"] is None and r["__carte"] is True    # aucun marché coté : catégorie masquée
 
 
 def test_multigoals_et_multiscores_sans_cote_affiches():
@@ -98,12 +99,22 @@ def test_onglet_deplie_seulement_les_marches_avec_cote():
     assert r["calibrees"] == ["A", "C"] and r["equipes"] == ["E"] and r["buts"] == ["G"]       # B, D, F, H (sans cote valable) jamais montrés
 
 
-def test_categorie_masquee_entierement_si_le_meilleur_est_sans_cote():
+def test_onglet_garde_les_marches_cotes_quand_le_principal_est_sans_cote():
     m = {"onglets": {"calibrees": [mk("L'extérieur encaisse", 0.86, None), mk("Moins de 2,5 buts", 0.5, 1.79)],
                      "equipes": [mk("Handicap +1,5 extérieur", 0.92, None), mk("Handicap +1,5 domicile", 0.83, 1.26)],
-                     "buts": [mk("Plus de 1,5 buts", 0.8, None), mk("Plus de 2,5 buts", 0.6, 1.7)]}}
+                     "buts": [mk("Plus de 1,5 buts", 0.8, None)]}}
     r = affiches(m)
-    assert r["calibrees"] == [] and r["equipes"] == [] and r["buts"] == []                      # aucun remplaçant, même dans l'onglet
+    assert r["calibrees"] == ["Moins de 2,5 buts"] and r["equipes"] == ["Handicap +1,5 domicile"] and r["buts"] == []
+
+
+def test_remplacement_signale():
+    code = ("const s = require(process.argv[1]); const m = JSON.parse(process.argv[2]);"
+            "console.log(JSON.stringify(s.CATEGORIES_ALPHA.map((c) => s.estRemplacant(m, c))));")
+    m = {"onglets": {"buts": [mk("Plus de 1,5 buts", 0.8, None), mk("Plus de 2,5 buts", 0.6, 1.7)],
+                     "equipes": [mk("Victoire domicile", 0.7, 1.9)], "multiscores": [mk("Match nul", 0.3, None, ["multiscores", "Match nul"])]}}
+    r = subprocess.run(["node", "-e", code, str(RACINE / "af-alpha-selection.js"), json.dumps(m)], capture_output=True, text=True, check=True)
+    assert json.loads(r.stdout) == [True, False, False, False, False]                  # seul « Buts » est un remplacement
+    assert "estRemplacant(m, cat)" in JS
 
 
 def test_multigoals_multiscores_sans_cote_dans_l_onglet():

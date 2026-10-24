@@ -114,7 +114,7 @@ function liste(cle, lignes, m) {
 }
 
 // ── Carte repliée : chaque catégorie montre SON meilleur marché, indépendamment des autres ──
-// Buts, Équipes, Calibrés : affiché seulement si sa cote BetPawa est connue, sinon catégorie masquée (aucun marché inférieur en remplacement).
+// Buts, Équipes, Calibrés : jamais sans cote BetPawa ; si le marché principal n'en a pas, le meilleur marché inférieur coté est retenu (signalé).
 // Multigoals, Multiscores : affichés même sans cote (cote facultative).
 function construitResume(m) {
   const racine = document.createElement("div");
@@ -126,12 +126,13 @@ function construitResume(m) {
     const plus = l.length > 1 ? `<span class="ax-resume-plus"> · +${l.length - 1} autre${l.length > 2 ? "s" : ""}</span>` : "";
     const cote = aUneCote(s.cote) ? `<strong>${formatCote(s.cote)}</strong>` : `<strong class="ax-cote-lire">facultative</strong>`;
     const alerte = s.alerte ? `<p class="ax-resume-alerte"><span aria-hidden="true">⚠</span> ${echappeHtml(s.alerte)}</p>` : "";
+    const remplace = estRemplacant(m, cat) ? `<p class="ax-resume-texte">Le marché principal de cette catégorie n'a pas de cote BetPawa : le marché suivant est retenu.</p>` : "";
     const rang = document.createElement("div");
     rang.className = `ax-resume-rang ax-rang-${Math.min(i + 1, 3)}`;
     rang.innerHTML = `<div class="ax-resume-corps"><div class="ax-resume-tete">` +
       `<span class="ax-resume-etiquette">${nom}${plus}</span><span class="ax-resume-cote">Cote${cote}</span></div>` +
       `<p class="ax-resume-marche">${afMarcheHtml(s.marche, libelleClair(s.marche, m.domicile, m.exterieur))}</p>` +
-      `<p class="ax-resume-texte">${cle === "calibrees" ? "Réussite" : "Valeur"} <b>${formatPct(s.valeur)}</b> · ${detailBranches(cle, s)}</p>${alerte}</div>`;
+      `<p class="ax-resume-texte">${cle === "calibrees" ? "Réussite" : "Valeur"} <b>${formatPct(s.valeur)}</b> · ${detailBranches(cle, s)}</p>${remplace}${alerte}</div>`;
     racine.appendChild(rang);
   });
   return racine;
