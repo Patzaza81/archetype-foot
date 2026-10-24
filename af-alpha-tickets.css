@@ -1,0 +1,80 @@
+/* af-alpha-tickets.css — onglet « Traitement séquentiel des tickets (Moteur Alpha) » (25/10/2026).
+   Reprend les couleurs et les cartes de la page alpha (variables --ax-*, cartes .ax-carte) ; téléphone d'abord. */
+
+/* Onglets de la page alpha : Pronostics / Traitement séquentiel des tickets */
+body.af-alpha .at-sous-onglets { display: flex; gap: 6px; margin: 0 0 12px; padding: 4px; border-radius: 12px; background: var(--ax-surface2, #F1F6F4); }
+body.af-alpha .at-sous-onglets a { flex: 1 1 0; padding: 9px 8px; border-radius: 9px; text-align: center; font-size: 13.5px; font-weight: 700; line-height: 1.25; color: var(--ax-doux); text-decoration: none; }
+body.af-alpha .at-sous-onglets a[aria-current="page"] { background: var(--ax-fond, #fff); color: var(--ax-accent-texte, #087F78); box-shadow: 0 1px 4px rgba(15,42,40,.10); }
+
+/* Contrôles : jour, mise simulée */
+body.af-alpha #at-controles { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; margin: 0 0 12px; }
+body.af-alpha .at-jours, body.af-alpha .at-presets { display: grid; grid-template-columns: repeat(auto-fit, minmax(84px, 1fr)); gap: 6px; min-width: 0; }
+body.af-alpha .at-jours button { white-space: normal; line-height: 1.2; }
+body.af-alpha .at-jours button, body.af-alpha .at-presets button { min-width: 0; min-height: 40px; padding: 8px 6px; border: 1px solid var(--ax-ligne); border-radius: 10px; background: var(--ax-fond, #fff); color: var(--ax-texte); font-size: 13px; font-weight: 700; }
+body.af-alpha .at-jours button[aria-pressed="true"] { background: var(--ax-accent, #087F78); border-color: var(--ax-accent, #087F78); color: #fff; }
+body.af-alpha .at-mise span { white-space: nowrap; }
+body.af-alpha .at-mise { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: var(--ax-texte); }
+body.af-alpha .at-mise input { flex: 1 1 auto; min-width: 0; min-height: 40px; padding: 6px 10px; border: 1px solid var(--ax-ligne); border-radius: 10px; background: var(--ax-fond, #fff); color: var(--ax-texte); font-size: 16px; font-weight: 800; font-variant-numeric: tabular-nums; }
+
+body.af-alpha .at-intro { margin: 0 0 10px; font-size: 14px; font-weight: 700; color: var(--ax-texte); }
+body.af-alpha .at-h2 { margin: 18px 0 8px; font-size: 16px; font-weight: 800; color: var(--ax-texte); }
+body.af-alpha .at-carte { margin: 0 0 12px; padding: 12px; }
+body.af-alpha .at-titre { display: grid; gap: 3px; margin: 0 0 10px; font-size: 16px; font-weight: 800; line-height: 1.25; color: var(--ax-accent-texte, #087F78); }
+body.af-alpha .at-titre small { font-size: 12.5px; font-weight: 500; color: var(--ax-doux); line-height: 1.35; }
+body.af-alpha .at-vide { margin: 0; font-size: 13.5px; color: var(--ax-doux); }
+
+/* Paris d'un ticket */
+body.af-alpha .at-sels { display: grid; gap: 8px; margin: 0 0 10px; padding: 0; list-style: none; }
+body.af-alpha .at-sel { display: grid; gap: 4px; padding: 10px; border-radius: 10px; background: var(--ax-surface2, #F1F6F4); }
+body.af-alpha .at-sel-haut { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px; align-items: baseline; }
+body.af-alpha .at-heure { font-size: 13px; font-weight: 800; color: var(--ax-doux); font-variant-numeric: tabular-nums; }
+body.af-alpha .at-match { font-size: 14.5px; font-weight: 800; color: var(--ax-texte); overflow-wrap: anywhere; }
+body.af-alpha .at-cote { font-size: 20px; font-weight: 800; color: var(--ax-texte); font-variant-numeric: tabular-nums; }
+body.af-alpha .at-sel-pari { font-size: 14px; font-weight: 700; color: var(--ax-accent-texte, #087F78); }
+body.af-alpha .at-sel-bas { display: grid; gap: 1px; font-size: 12px; color: var(--ax-doux); line-height: 1.35; overflow-wrap: anywhere; }
+body.af-alpha .at-sels-court { gap: 4px; margin: 6px 0; font-size: 13px; color: var(--ax-texte); line-height: 1.35; }
+
+/* Montants */
+body.af-alpha .at-montants { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 6px; }
+body.af-alpha .at-montants div { display: grid; gap: 1px; padding: 7px 8px; border-radius: 9px; border: 1px solid var(--ax-ligne); }
+body.af-alpha .at-montants small, body.af-alpha .at-deux small { font-size: 11.5px; font-weight: 600; color: var(--ax-doux); }
+body.af-alpha .at-montants strong { font-size: 15.5px; font-weight: 800; color: var(--ax-texte); font-variant-numeric: tabular-nums; }
+body.af-alpha .at-plus { color: var(--ax-vert, #1F7A44) !important; }
+body.af-alpha .at-moins { color: #B4413B !important; }
+body.af-alpha.theme-nuit .at-moins { color: #F08A84 !important; }
+
+/* Étapes (ticket progressif, réinvestissement) */
+body.af-alpha .at-etapes { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+body.af-alpha .at-etape { padding: 10px; border-radius: 10px; background: var(--ax-surface2, #F1F6F4); }
+body.af-alpha .at-etape-tete { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--ax-texte); line-height: 1.35; }
+body.af-alpha .at-etape-tete small { color: var(--ax-doux); }
+body.af-alpha .at-num { flex: 0 0 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; background: var(--ax-accent, #087F78); color: #fff; font-size: 13px; font-weight: 800; }
+body.af-alpha .at-etape-chiffres { display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 6px 0 0 36px; font-size: 13px; color: var(--ax-doux); }
+body.af-alpha .at-etape-chiffres b { color: var(--ax-texte); font-variant-numeric: tabular-nums; }
+body.af-alpha .at-deux { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 6px; margin-top: 6px; }
+body.af-alpha .at-deux > div { display: grid; gap: 2px; padding: 8px; border-radius: 9px; background: var(--ax-fond, #fff); font-size: 13px; color: var(--ax-texte); line-height: 1.35; }
+body.af-alpha .at-delai { margin: 4px 0 0; font-size: 12.5px; color: var(--ax-doux); line-height: 1.35; }
+body.af-alpha .at-alerte { padding: 6px 8px; border-radius: 8px; background: rgba(196,154,58,.16); color: var(--ax-or-texte); font-weight: 600; }
+
+/* Comparaison */
+body.af-alpha .at-strats { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+body.af-alpha .at-strats li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 9px 10px; border-radius: 10px; background: var(--ax-surface2, #F1F6F4); }
+body.af-alpha .at-strats div { display: grid; gap: 1px; }
+body.af-alpha .at-strats b { font-size: 14px; color: var(--ax-texte); }
+body.af-alpha .at-strats small { font-size: 11.5px; color: var(--ax-doux); }
+body.af-alpha .at-strats strong { font-size: 16px; font-weight: 800; color: var(--ax-texte); text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Paris écartés, règles */
+body.af-alpha .at-ecartes { margin-top: 8px; font-size: 12.5px; color: var(--ax-doux); }
+body.af-alpha .at-ecartes summary, body.af-alpha .at-regles summary { cursor: pointer; font-weight: 700; color: var(--ax-accent-texte, #087F78); }
+body.af-alpha .at-ecartes ul, body.af-alpha .at-regles ul { margin: 8px 0 0; padding-left: 18px; display: grid; gap: 5px; line-height: 1.4; }
+body.af-alpha .at-regles { font-size: 13px; color: var(--ax-texte); }
+
+/* Mode nuit : contrôles et onglets (les variables de fond de la page V3 ne couvrent pas ces éléments) */
+body.af-alpha.theme-nuit .at-sous-onglets { background: #171A25; }
+body.af-alpha.theme-nuit .at-sous-onglets a { color: #A9B3B8; }
+body.af-alpha.theme-nuit .at-sous-onglets a[aria-current="page"] { background: #1E2230; color: #2BB3A6; box-shadow: none; }
+body.af-alpha.theme-nuit .at-jours button, body.af-alpha.theme-nuit .at-presets button, body.af-alpha.theme-nuit .at-mise input { background: #1E2230; border-color: #2E3342; color: #F1EFF7; }
+body.af-alpha.theme-nuit .at-jours button[aria-pressed="true"] { background: #15988D; border-color: #15988D; color: #fff; }
+body.af-alpha.theme-nuit .at-montants div { border-color: #2E3342; }
+body.af-alpha.theme-nuit .at-deux > div { background: #171A25; }
