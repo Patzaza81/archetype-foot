@@ -63,9 +63,10 @@ function libelleClair(marche, dom, ext) {
   if ((r = m.match(/^Multigoals (\d+)-(\d+)$/))) return `Entre ${r[1]} et ${r[2]} buts dans le match`;
   if ((r = m.match(/^(Plus|Moins) de ([\d,]+) buts( du domicile| de l'extérieur)?$/))) {
     const L = nombre(r[2]), n = auMoins(L), plus = r[1] === "Plus";
-    if (!r[3]) return plus ? `Au moins ${butsN(n)} dans le match` : n - 1 === 0 ? "Aucun but dans le match" : `${butsN(n - 1)} au maximum dans le match`;
+    // « Moins de 2,5 » se dit « pas plus de 2,5 buts dans le match » (choix de Patrick, 24/10/2026).
+    if (!r[3]) return plus ? `Au moins ${butsN(n)} dans le match` : n - 1 === 0 ? "Aucun but dans le match" : `Pas plus de ${r[2]} buts dans le match`;
     const eq = r[3].trim() === "du domicile" ? d : e;
-    return plus ? `${eq} marque au moins ${butsN(n)}` : n - 1 === 0 ? `${eq} ne marque pas` : `${eq} marque ${butsN(n - 1)} au maximum`;
+    return plus ? `${eq} marque au moins ${butsN(n)}` : n - 1 === 0 ? `${eq} ne marque pas` : `${eq} ne marque pas plus de ${r[2]} buts`;
   }
   if ((r = m.match(/^Handicap ([+\-−]?[\d,]+) (domicile|extérieur)$/))) {
     const L = nombre(r[1].replace("−", "-")), eq = r[2] === "domicile" ? d : e;

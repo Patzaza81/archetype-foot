@@ -60,3 +60,12 @@ def test_libelles_inconnus_inchanges():
 def test_aucune_formule_ambigue_restante():
     for m in ("over_under_total_3.5_over", "buts_equipe_domicile_2.5_over", "handicap_domicile_-1.5"):
         assert "Plus de" not in titre(m) and "Moins de" not in titre(m)
+
+
+def test_alpha_moins_de_pas_plus_de():
+    assert alpha("Moins de 2,5 buts") == "Pas plus de 2,5 buts dans le match"
+    assert alpha("Moins de 3,5 buts") == "Pas plus de 3,5 buts dans le match"
+    assert alpha("Moins de 2,5 buts du domicile") == "Madura ne marque pas plus de 2,5 buts"
+    assert alpha("Moins de 0,5 buts") == "Aucun but dans le match"
+    assert alpha("Moins de 0,5 buts de l'extérieur") == "Bali ne marque pas"
+    assert alpha("Plus de 1,5 buts") == "Au moins 2 buts dans le match"
