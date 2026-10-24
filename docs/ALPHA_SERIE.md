@@ -189,3 +189,17 @@ Construite au-dessus de `robustesse.py` (ffb25b0), sans le modifier. Aucun autre
 - Relevé brut : `scraper_betpawa.py` écrit `diagnostic/betpawa_combines.json` (20 derniers matchs : titres et blocs bruts, groupes lus). Il sert à confirmer le titre exact utilisé par Betpawa après la prochaine collecte de nuit.
 - Branchement : `calibrees.cote_combo` relie la règle (« combo », « 1N+moins_3.5 ») au groupe `dc_total_3.5` / « 1N|moins », et (« combo », « N2+btts_oui ») à `dc_btts` / « N2|Oui ». Même règle que les autres marchés : cote < 1,25 → non proposable ; sans cote → non affiché.
 - Limite : tant que le relevé ne confirme pas le titre réel, l'affichage des combinés n'est pas garanti.
+
+## 25/10/2026 — Traitement séquentiel des tickets (onglet de la page alpha, demande de Patrick)
+
+- **Page** : `tickets_alpha.html`, reliée à la page alpha par deux onglets (« Pronostics » / « Traitement séquentiel des tickets »). Calcul dans le navigateur (`af-alpha-tickets.js`), affichage `af-alpha-tickets-vue.js`, style `af-alpha-tickets.css` (couleurs et cartes de la page alpha, mode nuit compris).
+- **Source** : uniquement `data/alpha_serie/pronostics.json` déjà publié. Le meilleur marché de chaque catégorie est celui du site (`af-alpha-selection.js`). Le moteur (`alpha_serie/`), le pipeline et les données ne sont ni appelés ni modifiés ; aucun résultat passé n'entre dans la sélection.
+- **Règles** (procédure de l'audit validé le 25/10/2026 ; règles de cette procédure, pas des paramètres du moteur ; constantes `REGLES`) :
+  1. Buts, Équipes, Calibrés seulement (Multigoals et Multiscores exclus), meilleur marché affiché de chaque catégorie, cote ≥ 1,25.
+  2. Admissible : pas un remplaçant ; valeur alpha ≥ 80 % ; confirmation sur les matchs propres des deux équipes ≥ 75 % (la plus faible) ; au moins 5 matchs comparés par équipe. Chaque marché écarté affiche sa raison.
+  3. Tranches de 2 heures à partir de 10 h (heure de Douala) ; ticket de tranche = les 2 meilleurs (valeur, confirmation, matchs comparés, puis cote la plus basse par convention), un seul marché par match.
+  4. Méthode A : un seul ticket validé d'avance, le premier de chaque tranche ajouté tranche après tranche.
+  5. Méthode B : enchaînements où chaque ticket commence après la fin estimée du précédent (dernier coup d'envoi + 115 min) et 15 min de règlement ; seuls les matchs de la tranche qui respectent ce délai sont gardés ; marge < 30 min signalée « marge courte ». Montants « tout réinvestir » et « prudent » (mise de départ mise de côté après le premier gain), avec, à chaque étape, ce qui reste si l'étape perd.
+- **Mise** : simulée, réglable (100, 500, 1 000 ou libre), mémorisée sur le téléphone. Rien n'est joué depuis le site ; aucun taux de réussite n'est présenté comme une probabilité ; « aucun gain n'est garanti ».
+- **Vérifié** sur les données du 25/10 : mêmes tickets et mêmes montants que l'audit validé (méthode A 5,3979 ; B1 4,3613, 2 180,64 / prudent 1 003,22).
+- Tests : `tests/test_alpha_tickets_sequentiels.py` (admis et écartés, ex æquo, un pari par match, cotes, faisabilité des horaires, montants).
