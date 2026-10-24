@@ -150,3 +150,11 @@ Construite au-dessus de `robustesse.py` (ffb25b0), sans le modifier. Aucun autre
 - `suivi.py` : quatrième onglet `calibrees` à côté de buts / équipes / multiscores, **gelé avant le coup d'envoi, réglé et compté dans le bilan** comme les trois autres. Les trois onglets existants et la méthode de `coeur.py` sont inchangés. Même étape du pipeline nocturne (`python -m alpha_serie.suivi pipeline`), toujours hors générateur de tickets.
 - Page `pronostics_comportement.html` : onglet « Calibrés » ; pour chaque marché, réussite observée au test sur matchs jamais vus et réussite sans le filtre, cote BetPawa ou « à lire », mention « aucune rentabilité n'est démontrée ».
 - Tests : `tests/test_alpha_calibrees.py` (10 tests : 3 cas qui passent, 4 qui échouent, même événement, échantillon et fuite, combo, gel / résultat / bilan, lecture commune, page). Suite complète : 2 531 tests réussis.
+
+### Règle définitive d'affichage (24/10/2026, décision de Patrick) — présentation seulement
+- Cinq catégories indépendantes sur la carte : **Buts, Multigoals, Équipes, Multiscores, Calibrés** (les multigoals, rangés dans l'onglet « buts » du fichier, forment leur propre catégorie). Aucun classement entre catégories : chaque catégorie garde son meilleur marché, classé par elle-même (valeur décroissante).
+- Buts, Équipes, Calibrés : le meilleur marché n'est affiché que si sa **cote BetPawa est connue** ; sinon la catégorie est masquée. **Jamais de marché inférieur en remplacement.**
+- Multigoals et Multiscores : affichés même sans cote (« Cote facultative »).
+- Doublons retirés à l'intérieur d'une catégorie seulement. Un match n'apparaît que si au moins une catégorie est affichable. Les onglets dépliés gardent la liste complète de chaque catégorie (analyse).
+- Code : `af-alpha-selection.js` (règle, testable avec node), utilisé par `archetype_comportement.js`. Aucun calcul de moteur modifié. Tests : `tests/test_alpha_affichage_categories.py`.
+- Constat sur les données du 24/10 (302 matchs analysés à venir) : catégorie affichée pour Multigoals 288 fois, Multiscores 256, Équipes 86, Calibrés 72, Buts 55. Le meilleur marché de Buts, Équipes et Calibrés est souvent sans cote BetPawa (multigoal-type, handicaps, combos), d'où ces catégories souvent masquées.
