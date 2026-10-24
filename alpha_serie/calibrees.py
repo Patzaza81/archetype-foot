@@ -43,6 +43,24 @@ def charger_regles(fichier: Path = FICHIER) -> list[dict[str, Any]]:
     return sorted(regles, key=lambda r: (r.get("q_final") if r.get("q_final") is not None else 1.0, r["marche"]))
 
 
+def cote_combo(cotes_betpawa: dict | None, cle: tuple | list) -> float | None:
+    """Cote BetPawa d'un combiné calibré, lue dans les groupes du lecteur des combinés (parse_combines_betpawa.py) :
+    (« combo », « 1N+moins_3.5 ») -> dc_total_3.5 / « 1N|moins » ; (« combo », « N2+btts_oui ») -> dc_btts / « N2|Oui ». Absente : None."""
+    try:
+        dc, jambe = str(cle[1]).split("+")
+    except ValueError:
+        return None
+    if jambe.startswith(("plus_", "moins_")):
+        sens, ligne = jambe.split("_")
+        groupe, sel = f"dc_total_{ligne}", f"{dc}|{sens}"
+    elif jambe in ("btts_oui", "btts_non"):
+        groupe, sel = "dc_btts", f"{dc}|{'Oui' if jambe == 'btts_oui' else 'Non'}"
+    else:
+        return None
+    v = ((cotes_betpawa or {}).get(groupe) or {}).get(sel)
+    return float(v) if isinstance(v, (int, float)) and v > 1 else None
+
+
 def categories(cote: float | None) -> list[str]:
     """Même règle que la campagne : sous 1,25 aucune catégorie ; sans cote : « toutes » ; sinon « toutes » + A ou B."""
     if cote is None:
@@ -71,7 +89,10 @@ def selections(equipe_dom: dict, equipe_ext: dict, jour: str, cotes_betpawa: dic
         d, h = R.parts_marche(prs, cle, gm, gj)
         if d < r["marge_defavorable"] - 1e-9 or h < r["marge_habituelle"] - 1e-9:
             continue
-        cote = coeur.cote_de(cotes_betpawa, cle) if cle[0] not in R.ETUDIES_SANS_COTE else None
+        if cle[0] == "combo":                          # 24/10/2026 : cotes des combinés lues quand la collecte les fournit
+            cote = cote_combo(cotes_betpawa, cle)
+        else:
+            cote = coeur.cote_de(cotes_betpawa, cle) if cle[0] not in R.ETUDIES_SANS_COTE else None
         if r["categorie"] not in categories(cote):
             continue
         evenement = tuple(bool(pred(a, b)) for a in range(11) for b in range(11))

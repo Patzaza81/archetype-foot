@@ -165,3 +165,21 @@ def test_tous_les_pronostics_de_la_page_sont_justifies(tmp_path, monkeypatch):
     f = suivi.page(matchs=[m], sortie=tmp_path / "p.json")["matchs"][0]
     lignes = [x for lst in f["onglets"].values() for x in lst]
     assert lignes and all(x["pourquoi"] for x in lignes)
+
+
+# --- 24/10/2026 : cotes des combinés calibrés lues dans les groupes du lecteur des combinés ---------------------------
+def test_cote_combo():
+    cotes = {"dc_total_3.5": {"1N|moins": 1.72}, "dc_btts": {"N2|Oui": 2.09, "1N|Non": 4.5}}
+    assert K.cote_combo(cotes, ["combo", "1N+moins_3.5"]) == 1.72
+    assert K.cote_combo(cotes, ["combo", "N2+btts_oui"]) == 2.09
+    assert K.cote_combo(cotes, ["combo", "1N+btts_non"]) == 4.5
+    assert K.cote_combo(cotes, ["combo", "1N+plus_2.5"]) is None                    # cote absente : rien d'inventé
+    assert K.cote_combo({}, ["combo", "12+moins_4.5"]) is None
+    assert K.cote_combo(cotes, ["combo", "mauvais"]) is None
+
+
+def test_selection_combo_prend_sa_cote():
+    r = [regle("Domicile ne perd pas + moins de 4,5 buts", h=0.0)]
+    s = K.selections(FORT_DOM, FAIBLE_EXT, JOUR, {"dc_total_4.5": {"1N|moins": 1.33}}, r)
+    assert s[0]["cote"] == 1.33 and not s[0]["cote_a_lire"]
+    assert K.selections(FORT_DOM, FAIBLE_EXT, JOUR, {"dc_total_4.5": {"1N|moins": 1.10}}, r) == []   # sous 1,25 : non proposable

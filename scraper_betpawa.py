@@ -27,6 +27,7 @@ des cotes est chargé par JavaScript après le chargement initial (confirmé
 par test_scraping_betpawa.py, 26/08 : une requête HTTP classique ne
 renvoie que le squelette vide de l'application).
 """
+import os
 import re
 
 from parse_betpawa import parse_betpawa
@@ -179,7 +180,37 @@ def meilleur_parsing(texte, domicile, exterieur):
             print(f"  Combinés lus : {sum(len(v) for v in combines.values())} cote(s)")
         except Exception as e:
             print(f"  Combinés non lus : {e}")
+        _releve_combines(texte, domicile, exterieur, meilleur_resultat)
     return meilleur_resultat
+
+
+# AJOUT 24/10/2026 -- relevé brut des blocs « Double Chance … » combinés (lecture seule, aucune cote produite) : la page française n'a
+# jamais été vue par le lecteur des combinés ; ce relevé sert à vérifier ses titres et étiquettes. Garde les 20 derniers relevés.
+FICHIER_RELEVE_COMBINES = os.path.join(os.path.dirname(os.path.abspath(__file__)), "diagnostic", "betpawa_combines.json")
+
+
+def _releve_combines(texte, domicile, exterieur, resultat):
+    try:
+        import json as _json
+        from datetime import datetime as _dt, timezone as _tz
+        from parse_combines_betpawa import diagnostic_combines
+        lignes = [l.strip() for l in (texte or "").splitlines() if l.strip()]
+        titres_dc = [l for l in lignes if " | " in l and "double chance" in l.lower()][:20]
+        blocs = diagnostic_combines(texte or "")
+        try:
+            with open(FICHIER_RELEVE_COMBINES, encoding="utf-8") as f:
+                d = _json.load(f)
+        except Exception:
+            d = {"releves": []}
+        d["releves"] = (d.get("releves") or [])[-19:] + [{
+            "le": _dt.now(_tz.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "match": f"{domicile} - {exterieur}",
+            "titres_double_chance": titres_dc, "blocs_combines": blocs[:4],
+            "groupes_combines_lus": sorted(g for g in (resultat or {}) if g.startswith(("dc_", "1x2_total", "1x2_btts")))}]
+        os.makedirs(os.path.dirname(FICHIER_RELEVE_COMBINES), exist_ok=True)
+        with open(FICHIER_RELEVE_COMBINES, "w", encoding="utf-8") as f:
+            _json.dump(d, f, ensure_ascii=False, indent=1)
+    except Exception as e:
+        print(f"  Relevé des combinés impossible : {e}")
 
 
 # ---------------------------------------------------------------------------------------------------------------------
