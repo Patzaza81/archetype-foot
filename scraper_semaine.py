@@ -142,6 +142,10 @@ def main():
                 print(f"  {date_cible.isoformat()} : ÉCHEC ({e})", file=sys.stderr)
         navigateur.close()
 
+    # CORRECTIF 24/10/2026 : un match de la nuit listé sur J+2 et J+3 est daté de J+3 (voir scraper.corrige_dates_minuit)
+    # avant la déduplication, qui ne voit donc plus de conflit de date pour ces matchs.
+    from scraper import corrige_dates_minuit
+    corrige_dates_minuit(tous_les_matchs)
     nb_avant_dedup = len(tous_les_matchs)
     tous_les_matchs = deduplique_par_match_id(tous_les_matchs)
     nb_doublons = nb_avant_dedup - len(tous_les_matchs)

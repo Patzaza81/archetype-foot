@@ -20,3 +20,11 @@
 - **Décision de Patrick (19/10/2026), qui LÈVE la règle du 24/09 pour l'évaluation et le calibrage** : les colonnes de cotes des CSV bruts Football-Data (Bet365, Pinnacle, Betfair, moyenne, maximum ; ouverture et clôture ; 1X2, plus/moins 2,5, handicap asiatique) peuvent être lues par des modules d'évaluation séparés (bancs de test, blocs de saisons : `matrice_scenarios/bloc_saisons.py`) pour juger et calibrer les moteurs. Inchangé : la couche de collecte ne normalise ni ne transmet aucune cote, et `contrat_moteur.py` n'en donne aucune à un moteur ; un pronostic n'est jamais calculé à partir d'une cote Football-Data.
 - La collecte ne calcule rien : elle récupère, normalise, vérifie et transmet.
 - Le moteur ne lit les données d'équipes que par `contrat_moteur.py` (`charge_assemblage`, `equipe`) ; tout changement de format passe par une nouvelle `VERSION_CONTRAT` + `docs/CONTRAT_MOTEUR.md` + `tests/test_contrat_moteur.py`.
+
+## Dates des matchs de la nuit (correctif du 24/10/2026)
+
+- Matchendirect liste les matchs de la nuit suivante (environ 00:00-07:00 heure française) à la fin de la page du jour D et en tête de la page D+1, avec le même match_id. Leur vraie date est D+1.
+- Avant le correctif, la page D les datait du jour D : coup d'envoi 24 h trop tôt, match vu comme « déjà commencé » (Amériques, Japon, Corée, Australie, Nouvelle-Zélande, Océanie). Mesure du 24/10 : 124 matchs communs aux pages du 24 et du 25.
+- Règle : `scraper.corrige_dates_minuit` — un match présent sur deux pages consécutives prend la date de la page la plus tardive ; date et heure du Cameroun recalculées ; date d'origine gardée dans `date_page`. Appliquée dans `scraper.py` (aujourd'hui/demain), `scraper_semaine.py` (J+2/J+3) et `precalcul.py` (fusion des trois fichiers).
+- Limite : un match de la nuit qui suit la DERNIÈRE page lue n'a pas de seconde page comme preuve ; il est corrigé au passage suivant du pipeline.
+- Tests : `tests/test_scraper_date_timezone.py`.
