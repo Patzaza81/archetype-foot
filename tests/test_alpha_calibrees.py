@@ -90,3 +90,40 @@ def test_lecture_commune_a_la_campagne():
 def test_page_affiche_l_onglet_calibres():
     js = (suivi.ROOT / "archetype_comportement.js").read_text(encoding="utf-8")
     assert '["calibrees", "Calibrés"]' in js and "aucune rentabilité n'est démontrée" in js
+
+
+# --- Affichage du 24/10/2026 : matchs au même lieu, buts par match, explication factuelle, plus de marchés exclus -----
+def test_historique_lieu_tous_les_matchs_avant_le_jour():
+    eq = {"matchs": [{"date": "2026-09-01", "domicile": True, "adversaire": "X", "buts_marques": 2, "buts_encaisses": 0},
+                     {"date": "2026-09-08", "domicile": False, "adversaire": "Y", "buts_marques": 1, "buts_encaisses": 1},
+                     {"date": "2026-09-15", "domicile": True, "adversaire": "Z", "buts_marques": 0, "buts_encaisses": 3},
+                     {"date": "2026-10-20", "domicile": True, "adversaire": "W", "buts_marques": 5, "buts_encaisses": 0}]}
+    h = suivi.historique_lieu(eq, True, "2026-10-20")
+    assert [x["adversaire"] for x in h] == ["Z", "X"]                                   # domicile seulement, avant le jour, plus récent d'abord
+    assert suivi.bilan_historique(h) == {"matchs": 2, "marques": 2, "encaisses": 3, "marques_par_match": 1.0, "encaisses_par_match": 1.5}
+    assert suivi.historique_lieu(eq, False, "2026-10-20")[0]["adversaire"] == "Y"
+    assert suivi.bilan_historique([])["marques_par_match"] is None
+
+
+def test_explication_compte_les_vrais_matchs():
+    h_dom = [{"marques": 2, "encaisses": 0}, {"marques": 1, "encaisses": 1}, {"marques": 0, "encaisses": 2}]   # domicile : V, N, D
+    h_ext = [{"marques": 3, "encaisses": 1}, {"marques": 0, "encaisses": 1}]                                  # extérieur : V, D
+    assert suivi.explication(["1x2", "1"], h_dom, h_ext) == {"domicile": [1, 3], "exterieur": [1, 2]}       # victoire du domicile : 1/3 et 1/2 (l'hôte gagne)
+    assert suivi.explication(["over_under_1.5", "plus"], h_dom, h_ext) == {"domicile": [3, 3], "exterieur": [1, 2]}
+    assert suivi.explication(["combo", "N2+plus_2.5"], h_dom, h_ext) == {"domicile": [0, 3], "exterieur": [1, 2]}
+    assert suivi.explication(["inconnu", "?"], h_dom, h_ext) is None                    # marché non lisible : aucune explication inventée
+
+
+def test_page_sans_marches_exclus_avec_historique(tmp_path, monkeypatch):
+    monkeypatch.setattr(suivi, "_REGLES", [regle("Victoire domicile")])
+    m = {"match_id": "x1", "date": "2099-01-01", "coup_d_envoi_utc": "2099-01-01T18:00:00Z", "heure_cameroun": "19:00", "competition": "Test",
+         "domicile": "A", "exterieur": "B", "assemblage": {"equipe_dom": FORT_DOM, "equipe_ext": FAIBLE_EXT}, "cotes_betpawa": {"1x2": {"1": 1.40}}, "score_final": None}
+    f = suivi.page(matchs=[m], sortie=tmp_path / "p.json")["matchs"][0]
+    assert "rejetes" not in f and f["historique"]["bilan_domicile"]["matchs"] == 6
+    assert all("explication" in x for lst in f["onglets"].values() for x in lst)
+
+
+def test_page_js_explication_et_details():
+    js = (suivi.ROOT / "archetype_comportement.js").read_text(encoding="utf-8")
+    assert "explicationCourte(s, m)" in js and "matchs joués à domicile" in js and "matchs joués à l'extérieur" in js
+    assert "Marchés exclus" not in js

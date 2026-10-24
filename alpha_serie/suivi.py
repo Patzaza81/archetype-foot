@@ -194,6 +194,32 @@ def bilan(journal: Path = JOURNAL, ecrire: bool = True) -> dict[str, Any]:
     return out
 
 
+def historique_lieu(equipe: dict | None, domicile: bool, jour: str) -> list[dict[str, Any]]:
+    """TOUS les matchs de l'équipe au lieu demandé (domicile ou extérieur), joués strictement avant `jour`, du plus récent au plus ancien.
+    Mêmes données figées que le moteur (équipe de l'archive)."""
+    ms = [x for x in (equipe or {}).get("matchs") or [] if bool(x.get("domicile")) is bool(domicile) and not x.get("provisoire")
+          and str(x.get("date"))[:10] < jour and isinstance(x.get("buts_marques"), int) and isinstance(x.get("buts_encaisses"), int)]
+    ms.sort(key=lambda x: str(x["date"]), reverse=True)
+    return [{"date": str(x["date"])[:10], "adversaire": x.get("adversaire"), "marques": x["buts_marques"], "encaisses": x["buts_encaisses"]} for x in ms]
+
+
+def bilan_historique(h: list[dict[str, Any]]) -> dict[str, Any]:
+    n = len(h)
+    bm, be = sum(x["marques"] for x in h), sum(x["encaisses"] for x in h)
+    return {"matchs": n, "marques": bm, "encaisses": be, "marques_par_match": round(bm / n, 2) if n else None,
+            "encaisses_par_match": round(be / n, 2) if n else None}
+
+
+def explication(cle: list[str], h_dom: list[dict], h_ext: list[dict]) -> dict[str, list[int]] | None:
+    """Faits seulement : dans combien des matchs affichés le pari aurait gagné. Matchs à domicile de l'équipe qui reçoit lus tels quels
+    (domicile = elle) ; matchs à l'extérieur de l'adversaire lus avec l'équipe qui recevait ce jour-là comme « domicile »."""
+    kd = [_gagne(cle, x["marques"], x["encaisses"]) for x in h_dom]
+    ke = [_gagne(cle, x["encaisses"], x["marques"]) for x in h_ext]
+    if any(v is None for v in kd + ke):
+        return None
+    return {"domicile": [sum(kd), len(kd)], "exterieur": [sum(ke), len(ke)]}
+
+
 def page(matchs: list[dict[str, Any]] | None = None, params: dict | None = None, sortie: Path = PAGE) -> dict[str, Any]:
     """Données de la page : tous les matchs de l'archive qui ont une analyse ; le moteur lit les équipes figées avant le coup d'envoi."""
     params = params or P.charger()
@@ -205,7 +231,14 @@ def page(matchs: list[dict[str, Any]] | None = None, params: dict | None = None,
             continue
         r = analyser(m, params, classements)
         sc = m.get("score_final")
-        liste.append({**r, "score": sc, "heure": m.get("heure_cameroun")})
+        fiche = {**r, "score": sc, "heure": m.get("heure_cameroun")}
+        if r["statut"] == "analyse":                 # affichage (24/10/2026) : matchs joués au même lieu, buts par match, explication factuelle
+            a, jour = m.get("assemblage") or {}, str(m["date"])[:10]
+            hd, he = historique_lieu(a.get("equipe_dom"), True, jour), historique_lieu(a.get("equipe_ext"), False, jour)
+            fiche["historique"] = {"domicile": hd, "exterieur": he, "bilan_domicile": bilan_historique(hd), "bilan_exterieur": bilan_historique(he)}
+            fiche["onglets"] = {o: [{**x, "explication": explication(x["cle"], hd, he)} for x in lst] for o, lst in r["onglets"].items()}
+            fiche.pop("rejetes", None)               # marchés exclus : plus affichés (décision de Patrick)
+        liste.append(fiche)
     d = {"moteur": "alpha_serie", "statut": "OK", "genere_le": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"), "promotion_allowed": False,
          "cote_min": P.COTE_MIN, "parametres": {"seuil_branche": params["seuil_branche"], "source": params.get("source"), "provisoire": params.get("provisoire", [])},
          "bilan_gele": bilan(ecrire=False), "matchs": liste}
