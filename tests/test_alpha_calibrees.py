@@ -89,7 +89,7 @@ def test_lecture_commune_a_la_campagne():
 
 def test_page_affiche_l_onglet_calibres():
     js = (suivi.ROOT / "archetype_comportement.js").read_text(encoding="utf-8")
-    assert '["calibrees", "Calibrés"]' in js and "aucune rentabilité n'est démontrée" in js
+    assert '["calibrees", "Calibrés"]' in js and "Ce n'est pas une garantie de gain." in js
 
 
 # --- Affichage du 24/10/2026 : matchs au même lieu, buts par match, explication factuelle, plus de marchés exclus -----
@@ -126,7 +126,7 @@ def test_page_sans_marches_exclus_avec_historique(tmp_path, monkeypatch):
 def test_page_js_explication_et_details():
     js = (suivi.ROOT / "archetype_comportement.js").read_text(encoding="utf-8")
     assert "pourquoiCourt(s)" in js and "matchs joués à domicile" in js and "matchs joués à l'extérieur" in js
-    assert "Premier de sa catégorie." in js
+    assert "C'est notre premier choix dans cette catégorie." in js
     assert "Marchés exclus" not in js
 
 
@@ -134,19 +134,28 @@ def test_page_js_explication_et_details():
 PARAMS = {"seuil_branche": 0.5}
 
 
-def test_pourquoi_buts_equipes():
-    t = suivi.pourquoi("equipes", {"offensive": 1.0, "defensive": 0.8333, "niveau": "écart attendu +1.46, marge 1 sur la borne -1.5"}, PARAMS)
-    assert t == "Choisi : arrive dans 100 % des comparaisons (buts marqués) et 83 % (buts encaissés), minimum 50 % des deux côtés ; moyenne de buts confirmée avec marge."
-    t = suivi.pourquoi("equipes", {"offensive": 0.6, "defensive": 0.7, "niveau": "sans objet (le niveau n'apporte rien au « pas de nul »)"}, PARAMS)
-    assert "marge" not in t                                                               # pas de marge revendiquée quand le marché n'en a pas
-    assert suivi.pourquoi("buts", {"offensive": None, "defensive": 0.5}, PARAMS) is None   # donnée manquante : aucune phrase
+def test_pourquoi_buts_equipes_en_mots_simples():
+    t = suivi.pourquoi("equipes", {"offensive": 1.0, "defensive": 0.8333, "niveau": "écart attendu +1.46, marge 1 sur la borne -1.5"}, PARAMS, 6, "León", "Toluca")
+    assert t == ("On a comparé les 6 derniers matchs de León à domicile avec ceux de Toluca à l'extérieur : ce pari passe 6 fois sur 6 avec leurs "
+                 "buts marqués et 5 fois sur 6 avec leurs buts encaissés. La moyenne de buts des deux équipes le confirme.")
+    t = suivi.pourquoi("equipes", {"offensive": 0.6, "defensive": 0.8, "niveau": "sans objet (le niveau n'apporte rien au « pas de nul »)"}, PARAMS, 5, "A", "B")
+    assert "moyenne" not in t and "3 fois sur 5" in t and "4 fois sur 5" in t           # pas de confirmation revendiquée sans marge
+    assert suivi.pourquoi("buts", {"offensive": None, "defensive": 0.5}, PARAMS, 6) is None # donnée manquante : aucune phrase
+    assert suivi.pourquoi("buts", {"offensive": 0.5, "defensive": 0.5}, PARAMS, None) is None
 
 
 def test_pourquoi_multiscores_et_calibres():
-    assert suivi.pourquoi("multiscores", {"scenarios": 4, "sur": 12}, PARAMS) == "Choisi : ce groupe de scores revient 4 fois sur 12 comparaisons (minimum 3)."
+    assert suivi.pourquoi("multiscores", {"scenarios": 4, "sur": 12}, PARAMS, 6, "A", "B") == (
+        "On a comparé les 6 derniers matchs de A à domicile avec ceux de B à l'extérieur : ce type de score est sorti 4 fois sur 12.")
     t = suivi.pourquoi("calibrees", {"reussite_test_final": 0.6066, "paris_test_final": 577, "reussite_sans_filtre": 0.5652}, PARAMS)
-    assert t == "Choisi : règle remplie par les deux équipes ; elle a gagné 61 % des fois sur 577 matchs jamais vus (57 % sans elle)."
+    assert t == "Dans 577 matchs passés qui ressemblaient à celui-ci, ce pari a gagné 61 % du temps (contre 57 % en général)."
     assert suivi.pourquoi("calibrees", {"reussite_test_final": 0.6}, PARAMS) is None
+
+
+def test_aucun_jargon_sur_la_page():
+    js = (suivi.ROOT / "archetype_comportement.js").read_text(encoding="utf-8")
+    for mot in ("Valeur", "comparaisons de matchs", "jamais vus", "sans le filtre", "gelés", "marché affichable", "facultative</strong>", "rentabilité"):
+        assert mot not in js.split("// ── Carte dépliée")[1], mot
 
 
 def test_tous_les_pronostics_de_la_page_sont_justifies(tmp_path, monkeypatch):

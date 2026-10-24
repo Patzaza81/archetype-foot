@@ -224,27 +224,30 @@ def _pct(x: float) -> str:
     return f"{round(float(x) * 100)} %"
 
 
-def pourquoi(onglet: str, ligne: dict[str, Any], params: dict) -> str | None:
-    """La VRAIE raison de la sélection, en une phrase courte, à partir des seuls critères que le moteur a appliqués (rien d'inventé).
-    Buts / équipes / multigoals : part des comparaisons de matchs (buts marqués, buts encaissés) au-dessus du seuil des deux côtés,
-    plus la marge de sécurité sur la moyenne de buts quand le marché en a une. Multiscores : nombre d'apparitions (au moins 3).
-    Calibrés : règle exploitable remplie, avec sa réussite mesurée sur des matchs jamais vus. Données manquantes : None (pas de phrase)."""
+def pourquoi(onglet: str, ligne: dict[str, Any], params: dict, n_paires: int | None = None, dom: str = "l'équipe à domicile",
+             ext: str = "l'équipe à l'extérieur") -> str | None:
+    """La VRAIE raison de la sélection, en mots de tous les jours (24/10/2026, Patrick : « jargon basique compréhensible par tous »).
+    Tirée des seuls critères appliqués par le moteur, rien d'inventé ; donnée manquante -> None (pas de phrase).
+    Buts / équipes / multigoals : nombre de fois où le pari passe en comparant les derniers matchs des deux équipes, avec les buts marqués
+    puis avec les buts encaissés (le moteur exige au moins la moitié des deux côtés) ; « la moyenne de buts confirme » seulement si le marché
+    a une marge de sécurité. Multiscores : nombre de fois où le type de score sort. Calibrés : réussite dans des matchs passés comparables."""
     if onglet == "calibrees":
         r, n, sf = ligne.get("reussite_test_final"), ligne.get("paris_test_final"), ligne.get("reussite_sans_filtre")
         if r is None or n is None or sf is None:
             return None
-        return f"Choisi : règle remplie par les deux équipes ; elle a gagné {_pct(r)} des fois sur {n} matchs jamais vus ({_pct(sf)} sans elle)."
+        return f"Dans {n} matchs passés qui ressemblaient à celui-ci, ce pari a gagné {_pct(r)} du temps (contre {_pct(sf)} en général)."
+    debut = f"On a comparé les {n_paires} derniers matchs de {dom} à domicile avec ceux de {ext} à l'extérieur : " if n_paires else None
     if onglet == "multiscores":
         c, n = ligne.get("scenarios"), ligne.get("sur")
-        if c is None or n is None:
+        if c is None or n is None or not debut:
             return None
-        return f"Choisi : ce groupe de scores revient {c} fois sur {n} comparaisons (minimum {P.CONSTANTE_MULTISCORE})."
+        return f"{debut}ce type de score est sorti {c} fois sur {n}."
     o, d = ligne.get("offensive"), ligne.get("defensive")
-    if o is None or d is None:
+    if o is None or d is None or not debut:
         return None
-    marge = "" if "sans objet" in str(ligne.get("niveau") or "sans objet") else " ; moyenne de buts confirmée avec marge"
-    return (f"Choisi : arrive dans {_pct(o)} des comparaisons (buts marqués) et {_pct(d)} (buts encaissés), "
-            f"minimum {_pct(params['seuil_branche'])} des deux côtés{marge}.")
+    ko, kd = round(float(o) * n_paires), round(float(d) * n_paires)
+    marge = "" if "sans objet" in str(ligne.get("niveau") or "sans objet") else " La moyenne de buts des deux équipes le confirme."
+    return f"{debut}ce pari passe {ko} fois sur {n_paires} avec leurs buts marqués et {kd} fois sur {n_paires} avec leurs buts encaissés.{marge}"
 
 
 def page(matchs: list[dict[str, Any]] | None = None, params: dict | None = None, sortie: Path = PAGE) -> dict[str, Any]:
@@ -263,7 +266,9 @@ def page(matchs: list[dict[str, Any]] | None = None, params: dict | None = None,
             a, jour = m.get("assemblage") or {}, str(m["date"])[:10]
             hd, he = historique_lieu(a.get("equipe_dom"), True, jour), historique_lieu(a.get("equipe_ext"), False, jour)
             fiche["historique"] = {"domicile": hd, "exterieur": he, "bilan_domicile": bilan_historique(hd), "bilan_exterieur": bilan_historique(he)}
-            fiche["onglets"] = {o: [{**x, "explication": explication(x["cle"], hd, he), "pourquoi": pourquoi(o, x, params)} for x in lst]
+            n_paires = len(r.get("scenarios_offensifs") or [])
+            fiche["onglets"] = {o: [{**x, "explication": explication(x["cle"], hd, he),
+                                     "pourquoi": pourquoi(o, x, params, n_paires, m["domicile"], m["exterieur"])} for x in lst]
                                 for o, lst in r["onglets"].items()}
             fiche.pop("rejetes", None)               # marchés exclus : plus affichés (décision de Patrick)
         liste.append(fiche)

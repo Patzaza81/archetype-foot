@@ -79,11 +79,6 @@ function libelleClair(marche, dom, ext) {
 // Marchés d'un onglet (= catégorie) : classés à l'intérieur de la catégorie seulement (af-alpha-selection.js).
 const lignesDe = (m, cat) => marchesAffiches(m, cat);       // jamais de pronostic sans cote (sauf multigoals / multiscores)
 const pluriel = (n, mot) => `${n} ${mot}${n > 1 ? "s" : ""}`;
-const detailBranches = (cle, s) => (cle === "calibrees"
-  ? `gagné ${formatPct(s.reussite_test_final)} des fois au test sur matchs jamais vus (${formatPct(s.reussite_sans_filtre)} sans le filtre)`
-  : cle === "multiscores"
-  ? `arrivé dans ${Number(s.scenarios)} des ${Number(s.sur)} comparaisons de matchs`
-  : `buts marqués ${formatPct(s.offensive)} · buts encaissés ${formatPct(s.defensive)}`);
 
 // Pourquoi ce marché est retenu (24/10/2026, Patrick) : la vraie raison de la sélection, écrite par alpha_serie.suivi.pourquoi
 // à partir des seuls critères appliqués par le moteur. Aucune phrase si la raison n'est pas disponible (rien d'inventé).
@@ -104,25 +99,18 @@ function ligneMarche(cle, s, m) {
   const barre = pct === null ? "" : `<span class="ax-mk-barre" aria-hidden="true"><i style="--v:${pct}"></i></span>`;
   const cote = aUneCote(s.cote)
     ? `<span class="ax-mk-cote"><small>Cote</small><strong>${formatCote(s.cote)}</strong></span>`
-    : `<span class="ax-mk-cote ax-mk-cote-lire"><small>Cote</small><strong>facultative</strong></span>`;
-  const branches = cle === "calibrees"
-    ? `<span>Gagné <b>${formatPct(s.reussite_test_final)}</b> des fois sur <b>${Number(s.paris_test_final)}</b> matchs jamais vus</span><span>Sans le filtre : <b>${formatPct(s.reussite_sans_filtre)}</b></span>`
-    : cle === "multiscores"
-    ? `<span>Arrivé dans <b>${Number(s.scenarios)}</b> des <b>${Number(s.sur)}</b> comparaisons de matchs</span>`
-    : `<span>Sur les buts marqués : <b>${formatPct(s.offensive)}</b></span><span>Sur les buts encaissés : <b>${formatPct(s.defensive)}</b></span>`;
+    : `<span class="ax-mk-cote ax-mk-cote-lire"><small>Cote</small><strong>à vérifier</strong></span>`;
   const alerte = s.alerte ? `<p class="ax-mk-alerte"><span aria-hidden="true">⚠</span> ${echappeHtml(s.alerte)}</p>` : "";
   return `<li class="ax-mk"><span class="ax-mk-nom">${afMarcheHtml(s.marche, libelleClair(s.marche, m.domicile, m.exterieur))}</span>${cote}` +
-    `<div class="ax-mk-valeur">${barre}<b>${formatPct(s.valeur)}</b><small>${cle === "calibrees" ? "réussite" : "valeur"}</small></div>` +
-    `<p class="ax-mk-branches">${branches}</p>${pourquoiCourt(s)}${alerte}</li>`;
+    `<div class="ax-mk-valeur">${barre}<b>${formatPct(s.valeur)}</b><small>${cle === "calibrees" ? "de réussite" : "de chances"}</small></div>` +
+    `${pourquoiCourt(s)}${alerte}</li>`;
 }
 
 function liste(cle, lignes, m) {
-  if (!lignes.length) return `<p class="ax-texte-resume">Aucun marché retenu dans cet onglet pour ce match.</p>`;
+  if (!lignes.length) return `<p class="ax-texte-resume">Aucun pari proposé dans cette catégorie pour ce match.</p>`;
   const legende = cle === "calibrees"
-    ? "Calibrés : marchés dont la règle a été réglée sur plus de 10 000 matchs passés puis confirmée sur des matchs jamais vus. Le pourcentage est la réussite observée à ce test ; il gagne plus souvent que sans le filtre, mais aucune rentabilité n'est démontrée face à la cote."
-    : cle === "multiscores"
-    ? "Valeur : part des comparaisons de matchs où ce résultat est arrivé, ajustée à la taille de l'échantillon. Plus elle est haute, plus le résultat est fréquent dans les derniers matchs des deux équipes."
-    : "Valeur : part des comparaisons de matchs où ce résultat est arrivé (moyenne « buts marqués » et « buts encaissés », ajustée à la taille de l'échantillon). Plus elle est haute, plus le résultat est fréquent dans les derniers matchs des deux équipes.";
+    ? "Le pourcentage dit combien de fois ce pari a gagné dans des matchs passés qui ressemblaient à celui-ci. Ce n'est pas une garantie de gain."
+    : "Le pourcentage dit à quel point ce pari revient souvent quand on compare les derniers matchs des deux équipes. Ce n'est pas une garantie de gain.";
   return `<ul class="ax-mk-liste">${lignes.map((s) => ligneMarche(cle, s, m)).join("")}</ul><p class="ax-mk-legende">${legende}</p>`;
 }
 
@@ -137,16 +125,16 @@ function construitResume(m) {
     if (!s) return;
     const cle = cat.source, nom = cat.nom, l = lignesDe(m, cat);
     const plus = l.length > 1 ? `<span class="ax-resume-plus"> · +${l.length - 1} autre${l.length > 2 ? "s" : ""}</span>` : "";
-    const cote = aUneCote(s.cote) ? `<strong>${formatCote(s.cote)}</strong>` : `<strong class="ax-cote-lire">facultative</strong>`;
+    const cote = aUneCote(s.cote) ? `<strong>${formatCote(s.cote)}</strong>` : `<strong class="ax-cote-lire">à vérifier</strong>`;
     const alerte = s.alerte ? `<p class="ax-resume-alerte"><span aria-hidden="true">⚠</span> ${echappeHtml(s.alerte)}</p>` : "";
-    const texteRang = estRemplacant(m, cat) ? "Le premier de la catégorie n'a pas de cote BetPawa : celui-ci est le suivant." : "Premier de sa catégorie.";
+    const texteRang = estRemplacant(m, cat) ? "Notre premier choix n'a pas de cote chez BetPawa : voici le suivant." : "C'est notre premier choix dans cette catégorie.";
     const remplace = `<p class="ax-resume-texte">${texteRang}</p>`;
     const rang = document.createElement("div");
     rang.className = `ax-resume-rang ax-rang-${Math.min(i + 1, 3)}`;
     rang.innerHTML = `<div class="ax-resume-corps"><div class="ax-resume-tete">` +
       `<span class="ax-resume-etiquette">${nom}${plus}</span><span class="ax-resume-cote">Cote${cote}</span></div>` +
       `<p class="ax-resume-marche">${afMarcheHtml(s.marche, libelleClair(s.marche, m.domicile, m.exterieur))}</p>` +
-      `<p class="ax-resume-texte">${cle === "calibrees" ? "Réussite" : "Valeur"} <b>${formatPct(s.valeur)}</b></p>${pourquoiCourt(s)}${remplace}${alerte}</div>`;
+      `${pourquoiCourt(s)}${remplace}${alerte}</div>`;
     racine.appendChild(rang);
   });
   return racine;
@@ -274,11 +262,11 @@ function afficheBilan(b, perf) {
   if (!perf) return;
   const tuiles = b ? BILAN_ONGLETS.map(([c, nom]) => {
     const o = (b.onglets || {})[c];
-    return o && o.cas ? `<div class="ax-perf-tuile"><span class="ax-perf-nom">${nom}</span><strong>${formatPct(o.reussite)}</strong><small>sur ${Number(o.cas)} cas</small></div>` : "";
+    return o && o.cas ? `<div class="ax-perf-tuile"><span class="ax-perf-nom">${nom}</span><strong>${formatPct(o.reussite)}</strong><small>gagnés sur ${Number(o.cas)} paris</small></div>` : "";
   }).join("") : "";
   perf.innerHTML = tuiles
-    ? `<p class="ax-perf-titre">Réussite réelle — pronostics gelés avant le match</p><div class="ax-perf-grille">${tuiles}</div><p class="ax-perf-note">Aucune rentabilité démontrée.</p>`
-    : `<p class="ax-perf-note">Aucun résultat sur des pronostics gelés pour l'instant : la réussite réelle s'affichera ici. Aucune rentabilité démontrée.</p>`;
+    ? `<p class="ax-perf-titre">Nos vrais résultats (pronostics enregistrés avant les matchs)</p><div class="ax-perf-grille">${tuiles}</div><p class="ax-perf-note">Gagner souvent ne veut pas dire gagner de l'argent : aucun gain n'est garanti.</p>`
+    : `<p class="ax-perf-note">Pas encore de résultats : ils s'afficheront ici après les premiers matchs. Aucun gain n'est garanti.</p>`;
 }
 
 function afficheSelections(d) {
@@ -288,13 +276,13 @@ function afficheSelections(d) {
   const aUnMarche = (m) => carteAffichable(m);              // au moins une catégorie affichable selon la règle d'affichage
   const retenus = (d.matchs || []).filter((m) => m.statut === "analyse" && m.date >= jour && aUnMarche(m)).sort((a, b) => cleTri(a).localeCompare(cleTri(b)));
   maj.innerHTML = retenus.length
-    ? `<strong>${pluriel(retenus.length, "match")}</strong> avec au moins un marché affichable · cote BetPawa obligatoire (sauf multigoals et multiscores), minimum ${formatCote(d.cote_min)}`
+    ? `<strong>${pluriel(retenus.length, "match")}</strong> avec au moins un pari proposé`
     : "Aucun pronostic pour le moment";
   afficheBilan(d.bilan_gele, perf);
   racine.innerHTML = "";
   if (!retenus.length) {
     racine.innerHTML = `<div class="ax-etat-vide"><strong>Aucun pronostic pour le moment</strong>` +
-      `<p>Aucun match à venir n'a de marché affichable (meilleur marché de chaque catégorie avec cote BetPawa connue, ou multigoal / multiscore).</p></div>`;
+      `<p>Aucun match à venir n'a de pari à proposer pour l'instant.</p></div>`;
     return;
   }
   retenus.forEach((m) => racine.appendChild(construitCarte(m)));
