@@ -134,6 +134,20 @@ def lire(prs: list, passe, solide) -> tuple[int, int, int, list[tuple[int, int, 
     return len(lp), vd, vh, loo
 
 
+def parts_marche(prs: list, cle: tuple, grilles_marche, grilles_jambes=None) -> tuple[float, float]:
+    """(part défavorable, part habituelle) d'un marché, lues après retrait de chaque paire (la plus petite est gardée).
+    Combo : parts de sa jambe la plus fragile (chaque jambe avec sa propre règle). Lecture commune à la campagne et aux sélections en production."""
+    if grilles_jambes:
+        d = h = 1.0
+        for passe, solide in grilles_jambes:
+            _, _, _, lj = lire(prs, passe, solide)
+            d = min(d, min(a / k for k, a, _ in lj))
+            h = min(h, min(b / k for k, _, b in lj))
+        return d, h
+    _, _, _, loo = lire(prs, *grilles_marche)
+    return min(a / k for k, a, _ in loo), min(b / k for k, _, b in loo)
+
+
 def wilson_bas(s: int, n: int) -> float:
     if n == 0:
         return 0.0

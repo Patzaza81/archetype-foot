@@ -5,7 +5,8 @@
 // Affichage (22/10/2026) : carte repliée = le meilleur marché de chaque onglet est lisible dès l'entrée (aperçu .ax-resume) ;
 // carte dépliée = une ligne par marché, pensée pour l'écran du téléphone (plus de tableau à 5 colonnes) ; alertes écrites en toutes lettres.
 const CLE_THEME_NUIT = "archetype_theme_nuit"; // même clé que theme.js
-const NOMS_ONGLETS = [["buts", "Buts"], ["equipes", "Équipes"], ["multiscores", "Multiscores"]];
+// 24/10/2026 : quatrième onglet « Calibrés » = règles exploitables de la campagne d'optimisation (alpha_serie/calibrees.py).
+const NOMS_ONGLETS = [["buts", "Buts"], ["equipes", "Équipes"], ["multiscores", "Multiscores"], ["calibrees", "Calibrés"]];
 
 const echappeHtml = (x) => (x === null || x === undefined ? "" : String(x)
   .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;"));
@@ -77,7 +78,9 @@ function libelleClair(marche, dom, ext) {
 // Marchés d'un onglet, du plus fort au plus faible (valeur décroissante ; à valeur égale l'ordre du fichier est conservé).
 const lignesDe = (m, cle) => ((m.onglets && m.onglets[cle]) || []).slice().sort((a, b) => (Number(b.valeur) || 0) - (Number(a.valeur) || 0));
 const pluriel = (n, mot) => `${n} ${mot}${n > 1 ? "s" : ""}`;
-const detailBranches = (cle, s) => (cle === "multiscores"
+const detailBranches = (cle, s) => (cle === "calibrees"
+  ? `gagné ${formatPct(s.reussite_test_final)} des fois au test sur matchs jamais vus (${formatPct(s.reussite_sans_filtre)} sans le filtre)`
+  : cle === "multiscores"
   ? `arrivé dans ${Number(s.scenarios)} des ${Number(s.sur)} comparaisons de matchs`
   : `buts marqués ${formatPct(s.offensive)} · buts encaissés ${formatPct(s.defensive)}`);
 
@@ -88,18 +91,22 @@ function ligneMarche(cle, s, m) {
   const cote = aUneCote(s.cote)
     ? `<span class="ax-mk-cote"><small>Cote</small><strong>${formatCote(s.cote)}</strong></span>`
     : `<span class="ax-mk-cote ax-mk-cote-lire"><small>Cote</small><strong>à lire</strong></span>`;
-  const branches = cle === "multiscores"
+  const branches = cle === "calibrees"
+    ? `<span>Gagné <b>${formatPct(s.reussite_test_final)}</b> des fois sur <b>${Number(s.paris_test_final)}</b> matchs jamais vus</span><span>Sans le filtre : <b>${formatPct(s.reussite_sans_filtre)}</b></span>`
+    : cle === "multiscores"
     ? `<span>Arrivé dans <b>${Number(s.scenarios)}</b> des <b>${Number(s.sur)}</b> comparaisons de matchs</span>`
     : `<span>Sur les buts marqués : <b>${formatPct(s.offensive)}</b></span><span>Sur les buts encaissés : <b>${formatPct(s.defensive)}</b></span>`;
   const alerte = s.alerte ? `<p class="ax-mk-alerte"><span aria-hidden="true">⚠</span> ${echappeHtml(s.alerte)}</p>` : "";
   return `<li class="ax-mk"><span class="ax-mk-nom">${afMarcheHtml(s.marche, libelleClair(s.marche, m.domicile, m.exterieur))}</span>${cote}` +
-    `<div class="ax-mk-valeur">${barre}<b>${formatPct(s.valeur)}</b><small>valeur</small></div>` +
+    `<div class="ax-mk-valeur">${barre}<b>${formatPct(s.valeur)}</b><small>${cle === "calibrees" ? "réussite" : "valeur"}</small></div>` +
     `<p class="ax-mk-branches">${branches}</p>${alerte}</li>`;
 }
 
 function liste(cle, lignes, m) {
   if (!lignes.length) return `<p class="ax-texte-resume">Aucun marché retenu dans cet onglet pour ce match.</p>`;
-  const legende = cle === "multiscores"
+  const legende = cle === "calibrees"
+    ? "Calibrés : marchés dont la règle a été réglée sur plus de 10 000 matchs passés puis confirmée sur des matchs jamais vus. Le pourcentage est la réussite observée à ce test ; il gagne plus souvent que sans le filtre, mais aucune rentabilité n'est démontrée face à la cote."
+    : cle === "multiscores"
     ? "Valeur : part des comparaisons de matchs où ce résultat est arrivé, ajustée à la taille de l'échantillon. Plus elle est haute, plus le résultat est fréquent dans les derniers matchs des deux équipes."
     : "Valeur : part des comparaisons de matchs où ce résultat est arrivé (moyenne « buts marqués » et « buts encaissés », ajustée à la taille de l'échantillon). Plus elle est haute, plus le résultat est fréquent dans les derniers matchs des deux équipes.";
   return `<ul class="ax-mk-liste">${lignes.map((s) => ligneMarche(cle, s, m)).join("")}</ul><p class="ax-mk-legende">${legende}</p>`;
@@ -121,7 +128,7 @@ function construitResume(m) {
     rang.innerHTML = `<div class="ax-resume-corps"><div class="ax-resume-tete">` +
       `<span class="ax-resume-etiquette">${nom}${plus}</span><span class="ax-resume-cote">Cote${cote}</span></div>` +
       `<p class="ax-resume-marche">${afMarcheHtml(s.marche, libelleClair(s.marche, m.domicile, m.exterieur))}</p>` +
-      `<p class="ax-resume-texte">Valeur <b>${formatPct(s.valeur)}</b> · ${detailBranches(cle, s)}</p>${alerte}</div>`;
+      `<p class="ax-resume-texte">${cle === "calibrees" ? "Réussite" : "Valeur"} <b>${formatPct(s.valeur)}</b> · ${detailBranches(cle, s)}</p>${alerte}</div>`;
     racine.appendChild(rang);
   });
   return racine;

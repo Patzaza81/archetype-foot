@@ -76,16 +76,7 @@ def lectures(matchs: list[dict], etape_de) -> dict:
         if len(prs) < P.MIN_MATCHS:
             continue
         for cle, lib, pred, _ in cat:
-            if cle in gj:                                         # combo : jambe la plus fragile
-                d = h = 1.0
-                for passe, solide in gj[cle]:
-                    _, _, _, lj = R.lire(prs, passe, solide)
-                    d = min(d, min(a / k for k, a, _ in lj))
-                    h = min(h, min(b / k for k, _, b in lj))
-            else:
-                _, _, _, loo = R.lire(prs, *gr[cle])
-                d = min(a / k for k, a, _ in loo)
-                h = min(b / k for k, _, b in loo)
+            d, h = R.parts_marche(prs, cle, gr[cle], gj.get(cle))       # même lecture qu'en production (alpha_serie/calibrees.py)
             cote = R.cote_reelle(m, cle) if cle[0] not in R.ETUDIES_SANS_COTE else None
             for c in categories(cote):
                 col = out[(lib, c)]
@@ -402,9 +393,16 @@ def main() -> None:
                "candidates_apres_validation": res["candidates_validation"],
                "tests_finaux": res["tests_finaux"], "statuts": dict(statuts), "statuts_par_famille": par_fam, "fiches": res["fiches"]}
     RAPPORT.write_text(json.dumps(rapport, ensure_ascii=False, indent=1, default=float), encoding="utf-8")
-    REGLES.write_text(json.dumps({"gele_le": gele, "statut": "configurations apprises sur Football-Data 2526 des seuls marchés exploitables ou prometteurs",
-                                  "regles": {f"{f['marche']} | {f['categorie']}": {**f["configuration"], "statut": f["statut"]}
-                                             for f in res["fiches"] if f["statut"] in ("exploitable", "prometteur")}},
+    def _export(f):
+        fi = f.get("final") or {}
+        fin = fi if "gain_net" in fi else (fi.get("sur_paris_avec_cote") or {})
+        return {**f["configuration"], "marche": f["marche"], "categorie": f["categorie"], "statut": f["statut"], "q_final": f.get("q_final"),
+                "test_final": {"paris": fi.get("paris"), "gagnes": fi.get("gagnes"), "reussite": fi.get("reussite"), "reussite_sans_filtre": fi.get("reussite_sans_filtre"),
+                               "rendement": fin.get("rendement"), "paris_avec_cote": fin.get("paris", fi.get("paris") if "gain_net" in fi else None)},
+                "meme_evenement_que": f.get("meme_evenement_que", [])}
+    REGLES.write_text(json.dumps({"gele_le": gele, "statut": "configurations apprises sur Football-Data (avant le 01/07/2026) des marchés exploitables ou prometteurs ; "
+                                                             "la production (alpha_serie/calibrees.py) n'utilise que les exploitables",
+                                  "regles": {f"{f['marche']} | {f['categorie']}": _export(f) for f in res["fiches"] if f["statut"] in ("exploitable", "prometteur")}},
                                  ensure_ascii=False, indent=1), encoding="utf-8")
     print("DONNEES:", json.dumps(rapport["donnees"], ensure_ascii=False))
     print("PREUVE DECOUPAGE:", json.dumps(preuve, ensure_ascii=False))
