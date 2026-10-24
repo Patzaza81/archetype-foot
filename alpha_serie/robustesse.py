@@ -1,20 +1,25 @@
-"""Moteur alpha — couche de robustesse par scénarios (cahier des charges figé de Patrick, 23/10/2026).
+"""Moteur alpha — couche de robustesse par scénarios : lecture de la stratégie et calibrage par famille de marchés (état au 24/10/2026).
 
-Méthode (aucune cote à l'analyse) :
-1. Séries au même lieu (alpha : domicile pour l'un, extérieur pour l'autre, strictement avant le jour), appariées un à un, n = plus petit échantillon.
-2. Pour chaque paire i : A = marqués du domicile, C = encaissés de l'extérieur, B = marqués de l'extérieur, D = encaissés du domicile.
-     fermé = (min(A, C), min(B, D)) ; habituel = (A, B) ; ouvert = (max(A, C), max(B, D)).
-3. Scénario défavorable d'un marché = le pire des 4 coins (min/max pour chaque équipe) : la paire valide le défavorable seulement si le marché
-   passe dans les 4 coins SANS être « juste au seuil » (un seul but de plus ou de moins pour une équipe le ferait perdre).
-   Exception : marchés « zéro but » (BTTS non, cage inviolée oui, buts d'une équipe moins de 0,5) où ce test n'a pas de sens.
-4. v_def = paires qui valident le défavorable ; v_hab = paires qui valident l'habituel.
-5. Référence historique : table (marché, n, v_def, v_hab) -> réussite réelle sur Football-Data (10 194 matchs). Retenu si borne basse de Wilson 95 % >= 72 %
-   (seuil fixé par Patrick le 23/10/2026, 80 % jugé trop strict). Un petit groupe ne peut pas l'atteindre : l'effectif minimum se règle tout seul.
-6. Stabilité : on retire chaque paire une à une et on relit la table GELÉE (cellule n-1). Retenu seulement si chaque retrait reste retenu.
-   La table contient aussi n = 3, uniquement pour ce test (aucun pronostic n'est fait à 3 matchs).
-7. Calibrage par marché et par intervalle de cote gagnant sur TOUS les matchs ARCHETYPE (archive de test, sans doublon) : la stratégie tourne,
-   puis pour chaque marché on cherche l'intervalle de cote (cote >= 1,25) qui garde le plus de paris avec une réussite (borne Wilson) >= 72 %.
-   Priorité à la fréquence de réussite ; le rendement est publié à titre d'information.
+LECTURE (aucune cote, aucune issue) :
+1. Séries au même lieu (domicile pour l'un, extérieur pour l'autre, strictement avant le jour du match), 4 à 7 matchs, appariées un à un.
+2. Paire i : A = marqués du domicile, C = encaissés de l'extérieur, B = marqués de l'extérieur, D = encaissés du domicile.
+   fermé = (min(A, C), min(B, D)) ; habituel = (A, B) ; ouvert = (max(A, C), max(B, D)).
+3. Défavorable = pire des 4 coins (égal au coin propre au marché pour les marchés monotones, prouvé par test) ; une validation « juste au seuil »
+   compte comme échec (exemptés : BTTS non, cage inviolée oui, buts d'une équipe moins de 0,5). Combos : juste si une jambe est juste, selon sa règle.
+4. Parts défavorable et habituelle lues après retrait de chaque paire (la plus petite est gardée). Combos : mêmes parts pour leur jambe la plus fragile.
+   Coefficient k de l'alpha conservé dans chaque lecture, sans rôle de preuve.
+
+CALIBRAGE (`main`) :
+5. Matchs ARCHETYPE sans doublon, cotes prises avant le coup d'envoi uniquement. Familles : totaux, buts par équipe, BTTS, 1N2, double chance,
+   handicaps, combos, multigoals, multiscores ; chaque ligne précise est un marché à part.
+6. Voies : A (cote 1,25 à moins de 1,39), B (1,39 et plus, sans limite haute, objectif rendement), sans_cote (combos, multigoals, multiscores),
+   cote_manquante (marché simple sans cote pour ce match, voie séparée). Sous 1,25 : non proposable. Aucun taux de réussite commun.
+7. Marges apprises par marché et par voie sur le passé (candidats = valeurs observées, admissibles si meilleures que « tout prendre » dans chaque
+   moitié, classées par l'écart avec les paris non retenus).
+8. Développement : validation jour par jour. Période réservée = dernier tiers des jours, jamais utilisée pour choisir : règles du développement gelées,
+   appliquées une fois. Tests exacts (Fisher, permutation) sélection contre paris non retenus ; faux positifs contrôlés par Benjamini-Hochberg 5 %.
+   Statuts : rejeté, exploratoire, non confirmé, prometteur, validé hors échantillon.
+L'ancienne version (table Football-Data, 80 %) reste dans `construire_table` / `verdict`, à titre de référence, non utilisée par `main`.
 Usage : python -m alpha_serie.robustesse
 """
 from __future__ import annotations
@@ -305,11 +310,17 @@ def famille(cle: tuple[str, str]) -> str:
     return "totaux"
 
 
+ETUDIES_SANS_COTE = {"combo", "multigoals", "multiscores"}   # groupes sans aucune cote dans l'archive : étudiés sur la réussite seule
+
+
 def voie(cote: float | None, cle: tuple[str, str] | None = None) -> str | None:
-    """Catégorie de cote. Sans cote (combos, multigoals, multiscores : absents de l'archive, ou cote introuvable pour ce match) : « sans_cote »,
-    valeur financière NON ÉVALUABLE. Sous 1,25 : aucune voie (cote minimale de Patrick, le pari ne peut pas être proposé)."""
+    """Catégorie d'un pari.
+    A : cote de 1,25 à moins de 1,39 ; B : 1,39 et plus, sans limite haute ;
+    sans_cote : combos, multigoals, multiscores (aucune cote archivée pour ces groupes) ;
+    cote_manquante : marché SIMPLE dont la cote manque pour ce match (voie séparée, jamais mélangée aux deux autres) ;
+    None : cote sous 1,25 (le pari ne peut pas être proposé). Valeur financière non évaluable pour sans_cote et cote_manquante."""
     if cote is None:
-        return "sans_cote"
+        return "sans_cote" if cle and cle[0] in ETUDIES_SANS_COTE else "cote_manquante"
     if cote < P.COTE_MIN:
         return None
     return "A" if cote < FRONTIERE_VOIES - 1e-12 else "B"
@@ -373,23 +384,70 @@ def _ecart_type(v: str, sel: list[dict]) -> float:
     return math.sqrt(max(p * (1 - p), 1e-9) / n)
 
 
-def apport(v: str, sel: list[dict], ref: list[dict]) -> tuple[float, float]:
-    """(apport du filtre, borne basse à 95 %) : valeur de la sélection filtrée moins celle de la référence sans filtre (même marché, même voie).
-    Réussite : borne basse de Wilson de la sélection moins le taux de la référence (juste pour les petits effectifs : 3 sur 3 ne prouve rien).
-    Rendement : moyenne moins 1,96 erreur-type ; moins de 2 paris -> borne non calculable (moins l'infini)."""
-    d = _valeur(v, sel) - _valeur(v, ref)
+def apport(v: str, sel: list[dict], ref: list[dict]) -> float:
+    """Apport affiché : valeur de la sélection moins celle de la référence sans filtre (même marché, même voie, mêmes jours)."""
+    return _valeur(v, sel) - _valeur(v, ref)
+
+
+def test_selection(v: str, sel: list[dict], ref: list[dict]) -> tuple[float, float]:
+    """Comparaison correcte : la sélection est INCLUSE dans la référence, on la compare donc aux paris NON retenus (groupes disjoints).
+    Statistique z (deux proportions ; rendement : Welch) servant SEULEMENT à classer les marges candidates à l'apprentissage.
+    Les verdicts utilisent `p_exacte` (Fisher / permutation), valable pour les petits effectifs. Aucun pari non retenu : (0, 1)."""
+    ids = {id(x) for x in sel}
+    non = [x for x in ref if id(x) not in ids]
+    if not sel or not non:
+        return 0.0, 1.0
     if _objectif_voie(v) == "reussite":
-        w = sum(x["gagne"] for x in sel)
-        return d, wilson_bas(w, len(sel)) - _valeur(v, ref)
-    if len(sel) < 2:
-        return d, float("-inf")
-    return d, d - Z95 * _ecart_type(v, sel)
+        n1, n2 = len(sel), len(non)
+        p1, p2 = sum(x["gagne"] for x in sel) / n1, sum(x["gagne"] for x in non) / n2
+        pp = (p1 * n1 + p2 * n2) / (n1 + n2)
+        se = math.sqrt(max(pp * (1 - pp), 1e-12) * (1 / n1 + 1 / n2))
+        z = (p1 - p2) / se
+    else:
+        if len(sel) < 2 or len(non) < 2:
+            return 0.0, 1.0
+        z = (_valeur(v, sel) - _valeur(v, non)) / math.sqrt(_ecart_type(v, sel) ** 2 + _ecart_type(v, non) ** 2 + 1e-12)
+    return z, 0.5 * math.erfc(z / math.sqrt(2))
+
+
+def p_exacte(v: str, sel: list[dict], ref: list[dict], tirages: int = 10000) -> float:
+    """p unilatérale (sélection meilleure que les paris NON retenus), valable pour les petits effectifs.
+    Réussite : test exact de Fisher (loi hypergéométrique). Rendement : test de permutation (graine fixe 0, résultat reproductible).
+    Aucun pari non retenu ou sélection vide : 1."""
+    ids = {id(x) for x in sel}
+    non = [x for x in ref if id(x) not in ids]
+    if not sel or not non:
+        return 1.0
+    if _objectif_voie(v) == "reussite":
+        n1, n2 = len(sel), len(non)
+        w1, w = sum(x["gagne"] for x in sel), sum(x["gagne"] for x in sel) + sum(x["gagne"] for x in non)
+        tot = math.comb(n1 + n2, n1)
+        return min(1.0, sum(math.comb(w, k) * math.comb(n1 + n2 - w, n1 - k) for k in range(w1, min(w, n1) + 1)) / tot)
+    import random
+    g = [_gain(x) for x in sel] + [_gain(x) for x in non]
+    n1, obs = len(sel), sum(_gain(x) for x in sel) / len(sel)
+    rnd, ok = random.Random(0), 0
+    for _ in range(tirages):
+        rnd.shuffle(g)
+        ok += sum(g[:n1]) / n1 >= obs - 1e-12
+    return (ok + 1) / (tirages + 1)
+
+
+def benjamini_hochberg(pvals: dict, q: float = 0.05) -> set:
+    """Contrôle des faux positifs sur l'ensemble des comparaisons (taux de fausses découvertes 5 %). Renvoie les clés significatives."""
+    items = sorted(pvals.items(), key=lambda kv: kv[1])
+    m, k = len(items), 0
+    for i, (_, pv) in enumerate(items, 1):
+        if pv <= q * i / m:
+            k = i
+    return {key for key, _ in items[:k]}
 
 
 def calibrer_marche_voie(L: list[dict], v: str) -> dict | None:
     """Apprentissage sur le passé seulement. Candidats = toutes les marges observées (part défavorable, part habituelle ; jambe la plus fragile
     pour un combo). Un candidat n'est admissible que si son apport sur « tout prendre » est positif dans CHAQUE moitié chronologique.
-    Retenu : le candidat dont la borne basse de l'apport est la plus haute (ni le volume, ni un taux commun). Aucun admissible : None (pas de filtre)."""
+    Retenu : le candidat dont l'écart avec les paris non retenus est le plus net (statistique z), ni le volume, ni un taux commun.
+    Aucun admissible : None (pas de filtre). Ce choix est fait sur l'apprentissage : son optimisme est mesuré à part (surajustement)."""
     if len(L) < 2:
         return None
     jl = sorted({x["jour"] for x in L})
@@ -414,14 +472,13 @@ def calibrer_marche_voie(L: list[dict], v: str) -> dict | None:
                     break
             if not ok:
                 continue
-            d, lb = apport(v, sel, L)
-            if lb == float("-inf"):
-                continue
-            if best is None or lb > best["apport_borne_basse"]:
+            d = apport(v, sel, L)
+            z, _ = test_selection(v, sel, L)
+            if best is None or z > best["z_apprentissage"]:
                 best = {"marge_defavorable": td, "marge_habituelle": th, "axes": "jambe la plus fragile" if "def_fragile" in L[0] else "marché",
                         "objectif": _objectif_voie(v), "paris": len(sel), "reference": len(L),
                         "valeur": round(_valeur(v, sel), 4), "valeur_sans_filtre": round(_valeur(v, L), 4),
-                        "apport": round(d, 4), "apport_borne_basse": round(lb, 4)}
+                        "apport": round(d, 4), "z_apprentissage": round(z, 3)}
     return best
 
 
@@ -453,7 +510,8 @@ def _semaine(jour: str) -> str:
 
 
 def marche_avant(lignes: list[dict]) -> tuple[list[dict], list[dict], set]:
-    """Pour chaque jour : règles apprises sur les jours STRICTEMENT antérieurs, gelées, appliquées à ce seul jour."""
+    """Pour chaque jour : règles apprises sur les jours STRICTEMENT antérieurs, gelées, appliquées à ce seul jour.
+    Ne reçoit que les jours de développement : la période réservée n'y entre jamais."""
     jours = sorted({x["jour"] for x in lignes})
     paris, journal = [], []
     for d in jours[1:]:
@@ -487,149 +545,211 @@ def indicateurs(sel: list[dict]) -> dict:
     return out
 
 
-def juger(paris_oos: list[dict], lignes: list[dict], jours_testes: set) -> dict:
-    """Verdict de chaque marché (ligne précise) dans chaque voie, hors échantillon, contre SA référence sans filtre (même marché, même voie, mêmes jours).
-    rejeté : apport <= 0 (le filtre ne fait pas mieux que tout prendre) ou, en voies A / sans cote, réussite <= taux de base du marché ;
-    validé hors échantillon : borne basse à 95 % de l'apport > 0 ET apport > 0 dans chaque moitié chronologique ;
-    prometteur : apport > 0 dans chaque moitié, borne basse <= 0 ; exploratoire : apport > 0 mais pas dans les deux moitiés (ou une moitié vide)."""
-    base: dict[str, list] = defaultdict(list)
+def _ref_par_couple(lignes: list[dict], jours: set) -> dict:
     ref: dict[tuple, list] = defaultdict(list)
     for x in lignes:
-        if x["jour"] in jours_testes:
-            base[x["marche"]].append(x)
+        if x["jour"] in jours:
             v = voie(x["cote"], x["cle"])
             if v:
                 ref[(x["marche"], v)].append(x)
-    par: dict[tuple, list] = defaultdict(list)
-    for x in paris_oos:
-        par[(x["marche"], x["voie"])].append(x)
-    out = []
-    for (nom, v), L in par.items():
-        L.sort(key=lambda x: x["jour"])
-        R_ = ref[(nom, v)]
-        d, lb = apport(v, L, R_)
-        h = len(L) // 2
-        jc = L[h]["jour"] if L else None
-        moities = []
-        for part in ([x for x in L if x["jour"] < jc], [x for x in L if x["jour"] >= jc]):
+    return ref
+
+
+def _base(lignes: list[dict], jours: set) -> dict:
+    b: dict[str, list[int]] = defaultdict(lambda: [0, 0])
+    for x in lignes:
+        if x["jour"] in jours:
+            b[x["marche"]][0] += x["gagne"]
+            b[x["marche"]][1] += 1
+    return {k: w / n for k, (w, n) in b.items() if n}
+
+
+def fiche(v: str, sel: list[dict], ref: list[dict], base: float | None) -> dict:
+    sel = sorted(sel, key=lambda x: x["jour"])
+    z, _ = test_selection(v, sel, ref)
+    pv = p_exacte(v, sel, ref)
+    moities = []
+    if sel:
+        jc = sel[len(sel) // 2]["jour"]
+        for part in ([x for x in sel if x["jour"] < jc], [x for x in sel if x["jour"] >= jc]):
             rj = {x["jour"] for x in part}
-            rp = [x for x in R_ if x["jour"] in rj]
-            moities.append(round(_valeur(v, part) - _valeur(v, rp), 4) if part and rp else None)
-        b = base[nom]
-        tb = sum(x["gagne"] for x in b) / len(b) if b else None
-        taux = sum(x["gagne"] for x in L) / len(L)
-        sem: dict[str, list[int]] = defaultdict(lambda: [0, 0])
-        for x in L:
-            sem[_semaine(x["jour"])][0] += x["gagne"]
-            sem[_semaine(x["jour"])][1] += 1
-        if d <= 0:
-            statut, raison = "rejeté", "le filtre ne fait pas mieux que tout prendre"
-        elif v != "B" and tb is not None and taux <= tb:
-            statut, raison = "rejeté", f"réussite {taux:.1%} pas au-dessus du taux de base {tb:.1%}"
-        elif None in moities or min(moities) <= 0:
-            statut, raison = "exploratoire", "apport positif mais pas dans les deux moitiés chronologiques"
-        elif lb > 0:
-            statut, raison = "validé hors échantillon", "apport positif dans les deux moitiés, borne basse à 95 % au-dessus de zéro"
+            rp = [x for x in ref if x["jour"] in rj]
+            moities.append(round(apport(v, part, rp), 4) if part and rp else None)
+    sem: dict[str, list[int]] = defaultdict(lambda: [0, 0])
+    for x in sel:
+        sem[_semaine(x["jour"])][0] += x["gagne"]
+        sem[_semaine(x["jour"])][1] += 1
+    return {**indicateurs(sel), "sans_filtre": indicateurs(ref), "taux_de_base_marche": round(base, 4) if base is not None else None,
+            "apport": round(apport(v, sel, ref), 4) if sel and ref else None, "apport_par_moitie": moities,
+            "z_contre_non_retenus": round(z, 3), "p_unilaterale_exacte": round(pv, 5),
+            "par_semaine": {k: {"paris": c[1], "gagnes": c[0]} for k, c in sorted(sem.items())}}
+
+
+def juger(dev_paris: list[dict], res_paris: list[dict], lignes: list[dict], jours_dev_testes: set, jours_res: set) -> list[dict]:
+    """Deux étages, sans réutiliser les données qui ont servi à choisir :
+    1. DÉVELOPPEMENT (validation jour par jour sur les jours de développement) : rejeté si apport <= 0 (ou, en A / sans cote / cote manquante,
+       réussite pas au-dessus du taux de base) ; exploratoire si apport positif mais pas dans les deux moitiés ; candidat sinon.
+    2. PÉRIODE RÉSERVÉE (jamais utilisée pour choisir) : les règles apprises sur tout le développement sont gelées et appliquées une seule fois.
+       Seuls les candidats y sont testés ; faux positifs contrôlés par Benjamini-Hochberg (5 %) sur ces seuls tests.
+       validé hors échantillon : apport réservé > 0 et significatif après correction ; prometteur : apport réservé > 0 non significatif ;
+       non confirmé : apport réservé <= 0 ou aucun pari sur la réserve."""
+    ref_d, ref_r = _ref_par_couple(lignes, jours_dev_testes), _ref_par_couple(lignes, jours_res)
+    base_d, base_r = _base(lignes, jours_dev_testes), _base(lignes, jours_res)
+    par_d: dict[tuple, list] = defaultdict(list)
+    par_r: dict[tuple, list] = defaultdict(list)
+    for x in dev_paris:
+        par_d[(x["marche"], x["voie"])].append(x)
+    for x in res_paris:
+        par_r[(x["marche"], x["voie"])].append(x)
+    out, pvals = {}, {}
+    for (nom, v) in sorted(set(par_d) | set(par_r)):
+        Ld, Lr = par_d.get((nom, v), []), par_r.get((nom, v), [])
+        cle = (Ld or Lr)[0]["cle"]
+        fd = fiche(v, Ld, ref_d[(nom, v)], base_d.get(nom)) if Ld else None
+        fr = fiche(v, Lr, ref_r[(nom, v)], base_r.get(nom)) if Lr else None
+        if not fd:
+            etage1, raison = "exploratoire", "aucun pari en développement"
+        elif fd["apport"] is None or fd["apport"] <= 0:
+            etage1, raison = "rejeté", "le filtre ne fait pas mieux que tout prendre (développement)"
+        elif v != "B" and fd["taux_de_base_marche"] is not None and fd["reussite"] <= fd["taux_de_base_marche"]:
+            etage1, raison = "rejeté", "réussite pas au-dessus du taux de base du marché (développement)"
+        elif None in fd["apport_par_moitie"] or min(fd["apport_par_moitie"]) <= 0:
+            etage1, raison = "exploratoire", "apport positif mais pas dans les deux moitiés (développement)"
         else:
-            statut, raison = "prometteur", "apport positif dans les deux moitiés, mais l'incertitude inclut zéro"
-        out.append({"marche": nom, "famille": famille(L[0]["cle"]), "voie": v, "objectif": _objectif_voie(v), "statut": statut, "raison": raison,
-                    **indicateurs(L), "sans_filtre": indicateurs(R_), "taux_de_base_marche": round(tb, 4) if tb is not None else None,
-                    "apport": round(d, 4), "apport_borne_basse_95": round(lb, 4) if lb != float("-inf") else None, "apport_par_moitie": moities,
-                    "par_semaine": {k: {"paris": c[1], "gagnes": c[0]} for k, c in sorted(sem.items())},
-                    **({"jambes": 2, "type_combo": L[0]["type_combo"]} if "type_combo" in L[0] else {})})
-    out.sort(key=lambda f: (FAMILLES.index(f["famille"]), f["marche"], f["voie"]))
-    return out
+            etage1, raison = "candidat", "apport positif dans les deux moitiés (développement)"
+            if fr and fr["apport"] is not None and fr["apport"] > 0:
+                pvals[(nom, v)] = fr["p_unilaterale_exacte"]
+        out[(nom, v)] = {"marche": nom, "famille": famille(cle), "voie": v, "objectif": _objectif_voie(v), "etage_developpement": etage1,
+                         "raison": raison, "developpement": fd, "periode_reservee": fr,
+                         **({"jambes": 2, "type_combo": (Ld or Lr)[0].get("type_combo")} if cle[0] == "combo" else {})}
+    sig = benjamini_hochberg(pvals)
+    for k, f in out.items():
+        if f["etage_developpement"] != "candidat":
+            f["statut"] = f["etage_developpement"]
+        elif k in sig:
+            f["statut"], f["raison"] = "validé hors échantillon", "candidat confirmé sur la période réservée, significatif après contrôle des faux positifs"
+        elif k in pvals:
+            f["statut"], f["raison"] = "prometteur", "candidat, apport positif sur la période réservée mais non significatif après correction"
+        else:
+            f["statut"], f["raison"] = "non confirmé", "candidat sans apport positif sur la période réservée (ou aucun pari)"
+    res = list(out.values())
+    res.sort(key=lambda f: (FAMILLES.index(f["famille"]), f["marche"], f["voie"]))
+    return res
 
 
-def par_famille(paris: list[dict], lignes: list[dict], jours: set, verdicts: list[dict]) -> dict:
+VOIES_ORDRE = ["A", "B", "sans_cote", "cote_manquante"]
+
+
+def par_famille(paris: list[dict], verdicts: list[dict], etage: str) -> dict:
+    """Totaux de famille, toujours SÉPARÉS par voie (cotes disponibles / sans cote / cote manquante). Complément des fiches par marché."""
     out = {}
     for fam in FAMILLES:
-        sel = [x for x in paris if x["famille"] == fam]
-        tout = [x for x in lignes if x["famille"] == fam and x["jour"] in jours and voie(x["cote"], x["cle"])]
+        d = {}
+        for v in VOIES_ORDRE:
+            sel = [x for x in paris if x["famille"] == fam and x["voie"] == v]
+            vs = [f[etage] for f in verdicts if f["famille"] == fam and f["voie"] == v and f.get(etage)]
+            n = sum(f["paris"] for f in vs)
+            if not sel:
+                continue
+            att = sum(f["paris"] * f["sans_filtre"]["reussite"] for f in vs) / n if n else None
+            a = indicateurs(sel)
+            d[v] = {**a, "attendu_sans_filtre_meme_melange": round(att, 4) if att is not None else None,
+                    "apport": round(a["reussite"] - att, 4) if att is not None else None}
         st = defaultdict(int)
         for f in verdicts:
             if f["famille"] == fam:
                 st[f["statut"]] += 1
-        vs = [f for f in verdicts if f["famille"] == fam]
-        n = sum(f["paris"] for f in vs)
-        attendu = sum(f["paris"] * f["sans_filtre"]["reussite"] for f in vs) / n if n else None   # même mélange de marchés et de voies que les paris filtrés
-        a = indicateurs(sel)
-        out[fam] = {"avec_filtre": a, "reussite_attendue_sans_filtre_meme_melange": round(attendu, 4) if attendu is not None else None,
-                    "apport_famille": round(a["reussite"] - attendu, 4) if attendu is not None and a["reussite"] is not None else None,
-                    "toutes_lectures_sans_filtre": indicateurs(tout), "statuts": dict(st)}
+        out[fam] = {"par_voie": d, "statuts": dict(st)}
+    return out
+
+
+def surajustement(lignes: list[dict], jours_dev: list[str], verdicts: list[dict]) -> dict:
+    """Optimisme de la recherche de marges : apport des règles sur leurs propres données d'apprentissage (développement complet)
+    contre apport mesuré en validation jour par jour et sur la période réservée, par famille."""
+    regles = calibrer([x for x in lignes if x["jour"] in set(jours_dev)])
+    out = {}
+    for fam in FAMILLES:
+        ins = [(r["apport"], r["paris"]) for (nom, v), r in regles.items() if r and famille(next(c for c, l, _, _ in catalogue() if l == nom)) == fam]
+        dv = [(f["developpement"]["apport"], f["developpement"]["paris"]) for f in verdicts if f["famille"] == fam and f["developpement"] and f["developpement"]["apport"] is not None]
+        rv = [(f["periode_reservee"]["apport"], f["periode_reservee"]["paris"]) for f in verdicts if f["famille"] == fam and f["periode_reservee"] and f["periode_reservee"]["apport"] is not None]
+        moy = lambda L: round(sum(a * n for a, n in L) / sum(n for _, n in L), 4) if L and sum(n for _, n in L) else None
+        out[fam] = {"apport_sur_apprentissage": moy(ins), "apport_validation_jour_par_jour": moy(dv), "apport_periode_reservee": moy(rv)}
     return out
 
 
 def combos_par_type(paris: list[dict], lignes: list[dict], jours: set) -> dict:
     out = {}
-    types = sorted({x["type_combo"] for x in lignes if "type_combo" in x})
-    for t in types:
-        sel = [x for x in paris if x.get("type_combo") == t]
-        tout = [x for x in lignes if x.get("type_combo") == t and x["jour"] in jours]
-        out[t] = {"jambes": 2, "avec_filtre": indicateurs(sel), "sans_filtre": indicateurs(tout)}
+    for t in sorted({x["type_combo"] for x in lignes if "type_combo" in x}):
+        out[t] = {"jambes": 2, "avec_filtre": indicateurs([x for x in paris if x.get("type_combo") == t]),
+                  "sans_filtre": indicateurs([x for x in lignes if x.get("type_combo") == t and x["jour"] in jours])}
     return out
 
 
-def avant_par_famille(chemin_git: str = "03e7e51:docs/alpha_robustesse_validation.json") -> dict | None:
-    """Résultats de la version précédente (seuil commun de 72 %), regroupés par famille, pour la comparaison avant / après."""
+def avant(chemin_git: str = "2e5f090:docs/alpha_robustesse_validation.json") -> dict | None:
+    """Statuts de la version précédente (2e5f090), pour l'avant / après."""
     import subprocess
     try:
         old = json.loads(subprocess.run(["git", "show", chemin_git], cwd=ROOT, capture_output=True, text=True, check=True).stdout)
     except Exception:
         return None
-    noms = {lib: famille(c) for c, lib, _, _ in catalogue()}
-    out: dict[str, dict] = {f: {"paris": 0, "gagnes": 0, "valides": 0} for f in FAMILLES}
-    for v, d in old.get("verdicts", {}).items():
-        for nom, f in d.items():
-            fam = noms.get(nom)
-            if fam:
-                out[fam]["paris"] += f["paris"]
-                out[fam]["gagnes"] += f["gagnes"]
-                out[fam]["valides"] += f["statut"] in ("validé", "opportunité démontrée")
-    for f in out.values():
-        f["reussite"] = round(f["gagnes"] / f["paris"], 4) if f["paris"] else None
-    return out
+    return {f"{f['marche']} | {f['voie']}": f["statut"] for f in old.get("verdicts", [])}
 
 
 def main() -> None:
     REJETS_COTES.clear()
     archetype = charger_archive_archetype()
     lignes, analyses = lire_strategie(archetype)
-    jours = sorted({m["jour"] for m in archetype})
-    paris_oos, journal, jt = marche_avant(lignes)
-    verdicts = juger(paris_oos, lignes, jt)
-    familles = par_famille(paris_oos, lignes, jt, verdicts)
-    regles = calibrer(lignes)
-    retenus = {(f["marche"], f["voie"]) for f in verdicts if f["statut"] in ("validé hors échantillon", "prometteur")}
+    jours = sorted({x["jour"] for x in lignes})
+    coupe = jours[(2 * len(jours)) // 3]                          # période réservée : le dernier tiers des jours, fixé AVANT tout calcul
+    jours_dev, jours_res = [j for j in jours if j < coupe], [j for j in jours if j >= coupe]
+    dev = [x for x in lignes if x["jour"] < coupe]
+    dev_paris, journal, jt = marche_avant(dev)
+    regles_dev = calibrer(dev)                                    # gelées avant d'ouvrir la période réservée
+    res_paris = appliquer([x for x in lignes if x["jour"] >= coupe], regles_dev)
+    verdicts = juger(dev_paris, res_paris, lignes, jt, set(jours_res))
+    precedent = avant()
+    for f in verdicts:
+        f["statut_version_precedente"] = (precedent or {}).get(f"{f['marche']} | {f['voie']}")
     gele = datetime.now(timezone.utc).isoformat(timespec="seconds")
     ids = [m["id"] for m in archetype]
-    IDS.write_bytes(gzip.compress(json.dumps({"archetype": ids, "ecartes_cotes_non_anterieures": REJETS_COTES}).encode()))
-    INTERVALLES.write_text(json.dumps({"gele_le": gele, "statut": "marges apprises sur tout l'historique, gelées, pour les seuls marchés « validé » ou « prometteur » hors échantillon",
-                                       "frontiere_voies": round(FRONTIERE_VOIES, 4), "cote_min": P.COTE_MIN, "matchs_archetype": len(ids),
-                                       "du": jours[0], "au": jours[-1], "empreinte_ids": hashlib.sha256("\n".join(ids).encode()).hexdigest(),
-                                       "regles": {f"{nom} | voie {v}": regles.get((nom, v)) for nom, v in sorted(retenus)}},
-                                      ensure_ascii=False, indent=1), encoding="utf-8")
-    rapport = {"gele_le": gele,
-               "protocole": "calibrage par marché (ligne précise) et par voie de cote, marges apprises sur les jours antérieurs, jugées jour par jour "
-                            "contre la référence sans filtre du même marché ; aucun taux commun ; combos calibrés sur leur jambe la plus fragile",
-               "donnees": {"matchs_sans_doublon": len(ids), "matchs_analyses": analyses, "du": jours[0], "au": jours[-1],
-                           "ecartes_cotes_non_anterieures_au_coup_d_envoi": len(REJETS_COTES),
-                           "lectures_sous_cote_minimale": sum(1 for x in lignes if x["cote"] is not None and x["cote"] < P.COTE_MIN),
-                           "lectures_sans_cote": sum(1 for x in lignes if x["cote"] is None),
-                           "cotes_des_combos": "absentes de l'archive (parse_combines_betpawa.py existe, mais ses groupes ne sont pas archivés)"},
-               "par_famille": familles, "combos_par_type": combos_par_type(paris_oos, lignes, jt),
-               "avant_seuil_commun_72": avant_par_famille(), "verdicts": verdicts, "journal_des_jours": journal}
-    RAPPORT.write_text(json.dumps(rapport, ensure_ascii=False, indent=1), encoding="utf-8")
-    print("DONNEES:", rapport["donnees"])
-    for fam, d in familles.items():
-        a = d["avec_filtre"]
-        print(f"{fam:<16} {a['paris']:>5} paris {a['reussite']} (attendu sans filtre {d['reussite_attendue_sans_filtre_meme_melange']}, apport {d['apport_famille']}) "
-              f"gain {a.get('gain_net')} | {d['statuts']}")
+    valides = [(f["marche"], f["voie"]) for f in verdicts if f["statut"] == "validé hors échantillon"]
+    IDS.write_bytes(gzip.compress(json.dumps({"archetype": ids, "ecartes_cotes_non_anterieures": REJETS_COTES,
+                                              "jours_developpement": jours_dev, "jours_reserves": jours_res}).encode()))
+    INTERVALLES.write_text(json.dumps({"gele_le": gele, "statut": "marges apprises sur la période de développement, gelées, des seuls marchés validés sur la période réservée",
+                                       "frontiere_voies": round(FRONTIERE_VOIES, 4), "cote_min": P.COTE_MIN, "coupe_reserve": coupe,
+                                       "empreinte_ids": hashlib.sha256("\n".join(ids).encode()).hexdigest(),
+                                       "regles": {f"{n} | voie {v}": regles_dev.get((n, v)) for n, v in valides}}, ensure_ascii=False, indent=1), encoding="utf-8")
+    statuts = defaultdict(int)
     for f in verdicts:
-        if f["statut"] in ("validé hors échantillon", "prometteur"):
-            print(f"  {f['statut']:<24} {f['famille']:<15} {f['marche']:<40} {f['voie']:<9} {f['paris']:>4} {f['reussite']:.1%} "
-                  f"sans filtre {f['sans_filtre']['reussite']:.1%} apport {f['apport']:+.3f} [{f['apport_borne_basse_95']}] moitiés {f['apport_par_moitie']} "
-                  f"gain {f.get('gain_net')}")
+        statuts[f["statut"]] += 1
+    rapport = {"gele_le": gele,
+               "protocole": "développement : validation jour par jour (règles apprises sur les jours antérieurs) ; période réservée = dernier tiers des jours, "
+                            "jamais utilisée pour choisir, règles du développement gelées et appliquées une fois ; comparaison sélection / paris non retenus ; "
+                            "faux positifs contrôlés par Benjamini-Hochberg 5 % ; aucun taux commun ; combos sur leur jambe la plus fragile",
+               "donnees": {"matchs_sans_doublon": len(ids), "matchs_analyses": analyses, "du": jours[0], "au": jours[-1],
+                           "jours_developpement": [jours_dev[0], jours_dev[-1], len(jours_dev)], "jours_reserves": [jours_res[0], jours_res[-1], len(jours_res)],
+                           "ecartes_cotes_non_anterieures_au_coup_d_envoi": len(REJETS_COTES),
+                           "lectures_par_voie": {v: sum(1 for x in lignes if voie(x["cote"], x["cle"]) == v) for v in VOIES_ORDRE},
+                           "lectures_sous_cote_minimale": sum(1 for x in lignes if x["cote"] is not None and x["cote"] < P.COTE_MIN),
+                           "cotes_des_combos": "aucune dans l'archive, ni dans precalcul.json (625 matchs avec cotes BetPawa, 0 groupe combiné) : "
+                                               "le lecteur parse_combines_betpawa.py est branché au scraper mais ne produit rien ; rentabilité des combos non évaluable"},
+               "statuts": dict(statuts),
+               "par_famille_developpement": par_famille(dev_paris, verdicts, "developpement"),
+               "par_famille_periode_reservee": par_famille(res_paris, verdicts, "periode_reservee"),
+               "surajustement": surajustement(lignes, jours_dev, verdicts),
+               "combos_par_type_periode_reservee": combos_par_type(res_paris, lignes, set(jours_res)),
+               "verdicts": verdicts, "journal_developpement": journal}
+    RAPPORT.write_text(json.dumps(rapport, ensure_ascii=False, indent=1), encoding="utf-8")
+    print("DONNEES:", json.dumps(rapport["donnees"], ensure_ascii=False))
+    print("STATUTS:", dict(statuts))
+    print("SURAJUSTEMENT:", json.dumps(rapport["surajustement"], ensure_ascii=False))
+    for f in verdicts:
+        if f["statut"] in ("validé hors échantillon", "prometteur", "non confirmé"):
+            r = f["periode_reservee"] or {}
+            d = f["developpement"] or {}
+            print(f"  {f['statut']:<24} {f['famille']:<15} {f['marche']:<44} {f['voie']:<14} dev {d.get('paris')} {d.get('reussite')} apport {d.get('apport')} | "
+                  f"réserve {r.get('paris')} {r.get('reussite')} sans filtre {(r.get('sans_filtre') or {}).get('reussite')} apport {r.get('apport')} p {r.get('p_unilaterale_exacte')} "
+                  f"gain {r.get('gain_net')} | avant: {f['statut_version_precedente']}")
 
 
 if __name__ == "__main__":

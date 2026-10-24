@@ -112,3 +112,16 @@ Remplace le verdict de la correction précédente (seuil commun de 72 % en voie 
 - **Par famille**, réussite des paris filtrés contre réussite attendue sans filtre avec le même mélange de marchés : apport de +0,4 point (double chance) à +4,6 points (1N2). Toutes les familles avec cotes restent en gain net négatif (BTTS −8,4, 1N2 −72,5, double chance −106,2 unités).
 - **Limite majeure** : 121 couples testés. Avec une borne à 95 %, quelques « validés » peuvent sortir par hasard ; 4 validés n'excluent pas ce cas. Aucune amélioration robuste et rentable n'est démontrée. Rien n'est branché.
 - Commande : `python -m alpha_serie.robustesse`. Tests : `tests/test_alpha_robustesse.py` ; 36 tests alpha, suite complète 2 501 tests réussis (24/10/2026).
+
+### Révision statistique (24/10/2026, branche `alpha-robustesse-correction`)
+Corrige les défauts relevés sur `2e5f090`. Remplace ses statuts.
+- **Cote manquante séparée** : un marché simple sans cote pour un match va dans la voie `cote_manquante`, jamais dans `sans_cote` (réservée aux combos, multigoals, multiscores). Les 3 marchés simples « validés » de `2e5f090` venaient de ce mélange.
+- **Comparaison correcte** : la sélection étant incluse dans la référence, elle est comparée aux paris **non retenus** (groupes disjoints), par test exact (Fisher pour la réussite, permutation à graine fixe pour le rendement), valable pour les petits effectifs.
+- **Période réservée** : dernier tiers des jours (14/10–22/10, 9 jours), fixé avant tout calcul, jamais utilisé pour choisir. Les règles apprises sur le développement (28/09–13/10) sont gelées puis appliquées une seule fois.
+- **Faux positifs** : seuls les candidats du développement sont testés sur la réserve ; Benjamini-Hochberg à 5 % sur ces seuls tests.
+- **Statuts** : rejeté, exploratoire, non confirmé (bon en développement, pas sur la réserve), prometteur (positif sur la réserve, non significatif), validé hors échantillon (significatif après correction).
+- **Surajustement mesuré** (`surajustement` dans le rapport) : apport des règles sur leurs propres données contre validation jour par jour et réserve, par famille ; ex. totaux +6,9 points en apprentissage, −11,5 en validation jour par jour, +2,1 sur la réserve.
+- **Cotes des combos** : aucune dans l'archive ni dans `precalcul.json` (625 matchs avec cotes BetPawa, 0 groupe combiné). `parse_combines_betpawa.py` est appelé par le scraper mais ne produit rien. Archivage impossible sans toucher la production : non fait.
+- **Résultat brut** (104 couples marché × voie) : **0 validé hors échantillon**, 15 prometteurs, 2 non confirmés, 38 exploratoires, 49 rejetés. Les 4 « validés » de `2e5f090` : 2 non confirmés (plus de 1,5 buts du domicile), 2 ramenés à prometteur, dont le combo domicile ne perd pas + moins de 3,5 buts (réserve : 20 paris, 65 % contre 47 % sans filtre, p = 0,089).
+- Toutes les familles avec cotes restent en gain net négatif sur la réserve, sauf BTTS (+0,7 et +0,3 unité sur 10 et 46 paris : non significatif).
+- Tests : 38 tests alpha ; suite complète 2 503 tests réussis (24/10/2026).
