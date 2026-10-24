@@ -107,35 +107,35 @@ function ligneMarche(cle, s, m) {
     `${pourquoiCourt(s)}${alerte}</li>`;
 }
 
-function liste(cle, lignes, m) {
+function liste(cle, lignes, m, cat) {
   if (!lignes.length) return `<p class="ax-texte-resume">Aucun pari proposé dans cette catégorie pour ce match.</p>`;
+  const texteRang = cat && estRemplacant(m, cat) ? "Notre premier choix n'a pas de cote chez BetPawa : voici le suivant." : "C'est notre premier choix dans cette catégorie.";
   const legende = cle === "calibrees"
     ? "Le pourcentage dit combien de fois ce pari a gagné dans des matchs passés qui ressemblaient à celui-ci. Ce n'est pas une garantie de gain."
     : "Le pourcentage dit à quel point ce pari revient souvent quand on compare les derniers matchs des deux équipes. Ce n'est pas une garantie de gain.";
-  return `<ul class="ax-mk-liste">${lignes.map((s) => ligneMarche(cle, s, m)).join("")}</ul><p class="ax-mk-legende">${legende}</p>`;
+  return `<p class="ax-texte-resume">${texteRang}</p><ul class="ax-mk-liste">${lignes.map((s) => ligneMarche(cle, s, m)).join("")}</ul><p class="ax-mk-legende">${legende}</p>`;
 }
 
 // ── Carte repliée : chaque catégorie montre SON meilleur marché, indépendamment des autres ──
 // Buts, Équipes, Calibrés : jamais sans cote BetPawa ; si le marché principal n'en a pas, le meilleur marché inférieur coté est retenu (signalé).
 // Multigoals, Multiscores : affichés même sans cote (cote facultative).
 function construitResume(m) {
+  // Carte repliée (24/10/2026, Patrick : plaques trop longues) : seulement le marché Buts et le marché Équipes ;
+  // s'il n'y en a aucun, le Multigoal ; à défaut, la première catégorie disponible. Une ligne courte par marché, sans texte.
   const racine = document.createElement("div");
   racine.className = "ax-resume";
-  CATEGORIES_ALPHA.forEach((cat, i) => {
-    const s = meilleurAffichable(m, cat);
-    if (!s) return;
-    const cle = cat.source, nom = cat.nom, l = lignesDe(m, cat);
-    const plus = l.length > 1 ? `<span class="ax-resume-plus"> · +${l.length - 1} autre${l.length > 2 ? "s" : ""}</span>` : "";
+  const parCle = Object.fromEntries(CATEGORIES_ALPHA.map((c) => [c.cle, c]));
+  let choisies = ["buts", "equipes"].filter((k) => meilleurAffichable(m, parCle[k]));
+  if (!choisies.length) choisies = ["multigoals", "multiscores", "calibrees"].filter((k) => meilleurAffichable(m, parCle[k])).slice(0, 1);
+  choisies.forEach((k, i) => {
+    const cat = parCle[k], s = meilleurAffichable(m, cat);
     const cote = aUneCote(s.cote) ? `<strong>${formatCote(s.cote)}</strong>` : `<strong class="ax-cote-lire">à vérifier</strong>`;
     const alerte = s.alerte ? `<p class="ax-resume-alerte"><span aria-hidden="true">⚠</span> ${echappeHtml(s.alerte)}</p>` : "";
-    const texteRang = estRemplacant(m, cat) ? "Notre premier choix n'a pas de cote chez BetPawa : voici le suivant." : "C'est notre premier choix dans cette catégorie.";
-    const remplace = `<p class="ax-resume-texte">${texteRang}</p>`;
     const rang = document.createElement("div");
     rang.className = `ax-resume-rang ax-rang-${Math.min(i + 1, 3)}`;
     rang.innerHTML = `<div class="ax-resume-corps"><div class="ax-resume-tete">` +
-      `<span class="ax-resume-etiquette">${nom}${plus}</span><span class="ax-resume-cote">Cote${cote}</span></div>` +
-      `<p class="ax-resume-marche">${afMarcheHtml(s.marche, libelleClair(s.marche, m.domicile, m.exterieur))}</p>` +
-      `${pourquoiCourt(s)}${remplace}${alerte}</div>`;
+      `<span class="ax-resume-etiquette">${cat.nom}</span><span class="ax-resume-cote">Cote${cote}</span></div>` +
+      `<p class="ax-resume-marche">${afMarcheHtml(s.marche, libelleClair(s.marche, m.domicile, m.exterieur))}</p>${alerte}</div>`;
     racine.appendChild(rang);
   });
   return racine;
@@ -195,48 +195,43 @@ function construitCarte(m) {
     panneau.className = `ax-panneau ax-rang-${Math.min(i + 1, 3)}`; panneau.id = idP; panneau.setAttribute("role", "tabpanel"); panneau.setAttribute("aria-labelledby", idO);
     panneau.hidden = true;
     panneaux.appendChild(panneau);
-    return { cle, bouton, panneau, lignes, n: lignes.length };
+    return { cle, cat, bouton, panneau, lignes, n: lignes.length };
   });
   const blocDetails = document.createElement("details");
   blocDetails.className = "details-analyse ax-details"; blocDetails.id = idDetails;
-  section.appendChild(onglets); section.appendChild(construitResume(m)); section.appendChild(panneaux); section.appendChild(blocDetails);
+  const resume = construitResume(m);
+  section.appendChild(panneaux); section.appendChild(blocDetails);
 
   // Le contenu lourd (listes de marchés, matchs des deux équipes) n'est construit qu'au premier dépliage : la page reste fluide sur téléphone.
   let pret = false;
   const prepare = () => {
     if (pret) return;
     pret = true;
-    actifs.forEach(({ cle, panneau, lignes }) => { panneau.innerHTML = liste(cle, lignes, m); });
+    actifs.forEach(({ cle, panneau, lignes, cat }) => { panneau.innerHTML = liste(cle, lignes, m, cat); });
     remplitDetails(blocDetails, m);
   };
   let courant = (actifs.find((a) => a.n) || actifs[0]);
+  // Carte repliée : en-tête du match + ligne(s) courte(s). Carte dépliée : onglets, marchés avec leur raison, matchs des deux équipes.
   const applique = (replie) => {
     if (!replie) prepare();
     section.classList.toggle("ax-replie", replie);
     section.setAttribute("aria-expanded", String(!replie));
+    if (replie) {
+      if (onglets.parentNode) onglets.remove();
+      if (!resume.parentNode) section.insertBefore(resume, panneaux);
+    } else {
+      if (resume.parentNode) resume.remove();
+      if (!onglets.parentNode) section.insertBefore(onglets, panneaux);
+      blocDetails.open = true;
+    }
     actifs.forEach((a) => {
       const oui = !replie && a === courant;
       a.bouton.classList.toggle("ax-actif", oui); a.bouton.setAttribute("aria-selected", String(oui));
       a.bouton.tabIndex = a === courant ? 0 : -1; a.panneau.hidden = !oui;
     });
   };
-  // Une pression sur un onglet déplie la carte sur cet onglet (avant : la carte restait fermée et rien ne se passait).
-  actifs.forEach((a) => a.bouton.addEventListener("click", () => { courant = a; applique(false); }));
-
-  const pied = document.createElement("div");
-  pied.className = "ax-pied";
-  const boutonReplier = document.createElement("button");
-  boutonReplier.type = "button"; boutonReplier.className = "ax-bouton-replier"; boutonReplier.textContent = "Replier";
-  const boutonDetails = document.createElement("button");
-  boutonDetails.type = "button"; boutonDetails.className = "ax-bouton-details";
-  boutonDetails.textContent = "Détails de l'analyse";
-  boutonDetails.setAttribute("aria-controls", idDetails); boutonDetails.setAttribute("aria-expanded", "false");
-  boutonDetails.addEventListener("click", (e) => {
-    e.stopPropagation();
-    blocDetails.open = !blocDetails.open;
-    boutonDetails.textContent = blocDetails.open ? "Masquer les détails" : "Détails de l'analyse";
-    boutonDetails.setAttribute("aria-expanded", String(blocDetails.open));
-  });
+  // Une pression sur un onglet (carte dépliée) change de catégorie sans replier la carte.
+  actifs.forEach((a) => a.bouton.addEventListener("click", (e) => { e.stopPropagation(); courant = a; applique(false); }));
   // Bascule en gardant l'en-tête du match au même endroit de l'écran ; en repliant, on remonte à l'en-tête s'il est sorti de l'écran.
   const bascule = (replie) => {
     const avant = section.getBoundingClientRect().top;
@@ -246,15 +241,15 @@ function construitCarte(m) {
     const haut = section.getBoundingClientRect().top;
     if (replie && haut < 0) window.scrollBy(0, haut - 8);
   };
-  boutonReplier.addEventListener("click", (e) => { e.stopPropagation(); bascule(true); });
+  // Repli et dépli au toucher N'IMPORTE OÙ sur la plaque (24/10/2026, Patrick) ; seuls les onglets et les liens gardent leur propre action.
   section.addEventListener("click", (e) => {
-    if (e.target.closest("button, a, summary, [role=tab], .ax-mk-liste, .ax-details")) return;
+    if (e.target.closest("[role=tab], a")) return;
+    if (e.target.closest("summary")) e.preventDefault();
     const sel = window.getSelection && window.getSelection();
     if (sel && String(sel).length) return;
     bascule(!section.classList.contains("ax-replie"));
   });
   applique(true);
-  pied.appendChild(boutonReplier); pied.appendChild(boutonDetails); section.appendChild(pied);
   return section;
 }
 
