@@ -77,7 +77,7 @@ function libelleClair(marche, dom, ext) {
 }
 
 // Marchés d'un onglet (= catégorie) : classés à l'intérieur de la catégorie seulement (af-alpha-selection.js).
-const lignesDe = (m, cat) => lignesCategorie(m, cat);
+const lignesDe = (m, cat) => marchesAffiches(m, cat);       // jamais de pronostic sans cote (sauf multigoals / multiscores)
 const pluriel = (n, mot) => `${n} ${mot}${n > 1 ? "s" : ""}`;
 const detailBranches = (cle, s) => (cle === "calibrees"
   ? `gagné ${formatPct(s.reussite_test_final)} des fois au test sur matchs jamais vus (${formatPct(s.reussite_sans_filtre)} sans le filtre)`
@@ -91,7 +91,7 @@ function ligneMarche(cle, s, m) {
   const barre = pct === null ? "" : `<span class="ax-mk-barre" aria-hidden="true"><i style="--v:${pct}"></i></span>`;
   const cote = aUneCote(s.cote)
     ? `<span class="ax-mk-cote"><small>Cote</small><strong>${formatCote(s.cote)}</strong></span>`
-    : `<span class="ax-mk-cote ax-mk-cote-lire"><small>Cote</small><strong>à lire</strong></span>`;
+    : `<span class="ax-mk-cote ax-mk-cote-lire"><small>Cote</small><strong>facultative</strong></span>`;
   const branches = cle === "calibrees"
     ? `<span>Gagné <b>${formatPct(s.reussite_test_final)}</b> des fois sur <b>${Number(s.paris_test_final)}</b> matchs jamais vus</span><span>Sans le filtre : <b>${formatPct(s.reussite_sans_filtre)}</b></span>`
     : cle === "multiscores"

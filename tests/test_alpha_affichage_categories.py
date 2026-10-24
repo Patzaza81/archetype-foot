@@ -81,3 +81,37 @@ def test_page_branchee_sur_la_regle():
     assert HTML.index("af-alpha-selection.js") < HTML.index("archetype_comportement.js")
     assert "CATEGORIES_ALPHA.forEach" in JS and "meilleurAffichable(m, cat)" in JS and "carteAffichable(m)" in JS
     assert "NOMS_ONGLETS" not in JS
+
+
+# --- 24/10/2026 : aucun pronostic sans cote, même dans les onglets dépliés (sauf multigoals et multiscores) ----------
+def affiches(match):
+    code = ("const s = require(process.argv[1]); const m = JSON.parse(process.argv[2]);"
+            "const o = {}; for (const c of s.CATEGORIES_ALPHA) o[c.cle] = s.marchesAffiches(m, c).map((x) => x.marche); console.log(JSON.stringify(o));")
+    r = subprocess.run(["node", "-e", code, str(RACINE / "af-alpha-selection.js"), json.dumps(match)], capture_output=True, text=True, check=True)
+    return json.loads(r.stdout)
+
+
+def test_onglet_deplie_seulement_les_marches_avec_cote():
+    m = {"onglets": {"calibrees": [mk("A", 0.9, 1.40), mk("B", 0.8, None), mk("C", 0.7, 1.30), mk("D", 0.6, None, ["combo", "1N+moins_4.5"])],
+                     "equipes": [mk("E", 0.9, 1.50), mk("F", 0.8, "")], "buts": [mk("G", 0.9, 1.6), mk("H", 0.5, 1.0)]}}
+    r = affiches(m)
+    assert r["calibrees"] == ["A", "C"] and r["equipes"] == ["E"] and r["buts"] == ["G"]       # B, D, F, H (sans cote valable) jamais montrés
+
+
+def test_categorie_masquee_entierement_si_le_meilleur_est_sans_cote():
+    m = {"onglets": {"calibrees": [mk("L'extérieur encaisse", 0.86, None), mk("Moins de 2,5 buts", 0.5, 1.79)],
+                     "equipes": [mk("Handicap +1,5 extérieur", 0.92, None), mk("Handicap +1,5 domicile", 0.83, 1.26)],
+                     "buts": [mk("Plus de 1,5 buts", 0.8, None), mk("Plus de 2,5 buts", 0.6, 1.7)]}}
+    r = affiches(m)
+    assert r["calibrees"] == [] and r["equipes"] == [] and r["buts"] == []                      # aucun remplaçant, même dans l'onglet
+
+
+def test_multigoals_multiscores_sans_cote_dans_l_onglet():
+    m = {"onglets": {"buts": [mk("Multigoals 1-4", 0.58, None, ["multigoals", "1-4"]), mk("Multigoals 2-5", 0.5, None, ["multigoals", "2-5"])],
+                     "multiscores": [mk("Match nul", 0.33, None, ["multiscores", "Match nul"])]}}
+    r = affiches(m)
+    assert r["multigoals"] == ["Multigoals 1-4", "Multigoals 2-5"] and r["multiscores"] == ["Match nul"]
+
+
+def test_page_utilise_les_marches_affiches():
+    assert "marchesAffiches(m, cat)" in JS and "<strong>à lire</strong>" not in JS
