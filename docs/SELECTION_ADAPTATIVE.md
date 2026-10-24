@@ -91,3 +91,13 @@ Maximum absolu : 12 matchs.
 Un ticket dont les critères ne sont pas satisfaits est explicitement marqué AUCUN_TICKET_SOLIDE.
 
 La cote totale est le produit exact des cotes des jambes. La probabilité indépendante éventuelle est seulement informative : elle n'est jamais présentée comme une probabilité jointe garantie.
+
+## Correctif du 24/10/2026 — règlement de l'historique V3
+
+- Constat : les 367 sélections V3 de `data/v3/historique_selection.json` étaient toutes « PENDING ».
+- Cause 1 : le règlement ne parcourait que les signaux du fichier V3 du jour ; un match terminé n'y figure plus.
+- Cause 2 : les marchés enregistrés portent déjà le nom du site ; `nom_canonique()` renvoie None pour eux et le règlement était sauté. Le handicap à 3 choix n'était reconnu par aucun évaluateur.
+- Correction : toutes les sélections en attente sont réglées dès que le score est connu, avec l'évaluateur des tickets (`suivi_tickets.evaluateur_defaut`). Sans score ou marché non réglable : la sélection reste PENDING.
+- Premier règlement : 241 sélections réglées, 147 gagnées (61 %) pour une probabilité annoncée de 78 % en moyenne ; rendement −10,9 % à cote moyenne 1,47.
+- Conséquence : les niveaux de preuve de la V3 (PROUVE, ETABLI…) reposent désormais sur ces résultats réels.
+- Tests : `tests/test_v3_suivi_resultats.py`.
