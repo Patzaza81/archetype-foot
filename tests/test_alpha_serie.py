@@ -146,16 +146,18 @@ def test_graduation_alerte_seulement_exact_et_sans_ressemblance():
 # --- 24/10/2026 : plus aucune marge fixée à la main (ordre de Patrick) ------------------------------------------------
 def test_aucun_plancher_impose_hors_regle_des_buts_entiers():
     d = P.defaut()
-    for fam in ("total_plus", "total_moins", "equipe_plus", "equipe_moins"):
-        assert all(v == P.MARGE_BUT_ENTIER == 1.0 for v in d["marges"][fam].values()), fam   # règle de Patrick, pas un plancher calibré
+    for fam in ("total_plus", "equipe_plus"):
+        assert all(v == P.MARGE_PLUS == 1.0 for v in d["marges"][fam].values()), fam          # règle de Patrick, pas un plancher calibré
+    for fam in ("total_moins", "equipe_moins"):
+        assert all(v == P.MARGE_MOINS == 0.0 for v in d["marges"][fam].values()), fam
     assert d["marges"]["defaut"] == 0.0 and d["marges"]["handicap_1_5"] == 0.0 and d["multigoals"]["marge_borne"] == 0.0
     assert all(d["seuils_resultat"][k] == 0.0 for k in ("dom_gagne", "ext_gagne", "dom_ne_perd_pas", "ext_ne_perd_pas"))
 
 
 def test_production_regle_des_buts_entiers_et_seuils_appris():
     p = P.charger()
-    for fam in ("total_plus", "total_moins", "equipe_plus", "equipe_moins"):
-        assert all(v == 1.0 for v in p["marges"][fam].values()), fam                      # jamais recalculée
+    for fam, v0 in (("total_plus", 1.0), ("equipe_plus", 1.0), ("total_moins", 0.0), ("equipe_moins", 0.0)):
+        assert all(v == v0 for v in p["marges"][fam].values()), fam                       # jamais recalculée
     for nom in ("dom_gagne", "ext_gagne", "dom_ne_perd_pas", "ext_ne_perd_pas"):
         det = p["detail_calibration"][nom]
         assert det["retenu"] == (det["appris"] if det.get("appris") is not None else 0.0), nom
@@ -167,8 +169,10 @@ def test_regle_des_buts_entiers():
     assert plus15(2.5) and plus15(2.51) and plus15(3.4)                                    # au moins 2 buts : attendu 2,5 minimum
     assert not plus15(2.49) and not plus15(1.9) and not plus15(1.5)
     moins25 = lambda t: coeur.norme_niveau("over_under_2.5", "moins", niv(t), PARAMS)[0]
-    assert moins25(1.5) and moins25(1.0) and moins25(0.2)                                  # 2 buts au plus : attendu 1,5 maximum
-    assert not moins25(1.51) and not moins25(2.0) and not moins25(2.4)
+    assert moins25(2.5) and moins25(2.0) and moins25(1.0)                                  # « moins de 2,5 » = moins de 3 buts : attendu 3 - 0,5 = 2,5 maximum
+    assert not moins25(2.51) and not moins25(3.0) and not moins25(4.0)
+    moins35 = lambda t: coeur.norme_niveau("over_under_3.5", "moins", niv(t), PARAMS)[0]
+    assert moins35(3.5) and moins35(3.0) and not moins35(3.51)
     eq05 = lambda e: coeur.norme_niveau("over_under_domicile_0.5", "plus", {"dom": e, "ext": 1.0, "total": e + 1, "d": 0.0}, PARAMS)[0]
     assert eq05(1.5) and eq05(2.0) and eq05(1.51)                                          # l'équipe marque au moins 1 but : attendu 1,5 minimum
     assert not eq05(1.49) and not eq05(1.0) and not eq05(0.6)

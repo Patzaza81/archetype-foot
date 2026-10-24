@@ -2,7 +2,7 @@
 
 Deux sortes de valeurs, séparées :
 - RÈGLES DE PATRICK (constantes de la méthode, jamais recalculées) : échantillon 4 à 7 matchs, coefficient k, « constante de 3 », cote minimale.
-- MARGES DES MARCHÉS DE BUTS : règle des buts entiers de Patrick (MARGE_BUT_ENTIER, 1 but d'écart avec la ligne), jamais recalculée.
+- MARGES DES MARCHÉS DE BUTS : règle des buts entiers de Patrick (demi-but de marge : plus X,5 -> attendu >= X+1,5 ; moins X,5 -> attendu <= X+0,5), jamais recalculée.
 - SEUILS D'ÉCART ATTENDU (victoire, ne perd pas) : aucun plancher fixé à la main ; `calibration.py` ne retient qu'un seuil APPRIS sur l'archive, 0 sinon.
 Le fichier `parametres.json` (écrit par `calibration.py`) prime sur ces valeurs par défaut.
 """
@@ -21,11 +21,15 @@ K_PAR_ECHANTILLON = {4: 0.8, 5: 0.9}   # 6 matchs et plus : 1,0 (selon le plus p
 K_DEFAUT = 1.0
 CONSTANTE_MULTISCORE = 3           # un groupe de scores « revient dans une constante de 3 » : au moins 3 scénarios sur l'ensemble des deux branches
 COTE_MIN = 1.25                    # étape 2 seulement ; pas de cote maximale ; aucune limite de cote pour les multiscores
-# Règle des buts entiers (Patrick, 24/10/2026) : « plus de 1,5 » = au moins 2 buts ; pour être accepté, le total attendu doit atteindre 2,5
-# (le nombre de buts nécessaire + un demi-but). « Moins de 2,5 » = 2 buts au plus ; attendu au plus 1,5. Soit 1 but d'écart avec la ligne,
-# pour tous les marchés de buts (total et par équipe, donc aussi « les deux marquent »). La marge n'est qu'un garde-fou : c'est la fréquence
-# de répétition (part des comparaisons au-dessus du seuil dans les deux branches) qui décide d'abord. Jamais recalculée.
-MARGE_BUT_ENTIER = 1.0
+# Règle des buts entiers (Patrick, 24/10/2026), marge d'un demi-but partout :
+# - « plus de 1,5 » = au moins 2 buts -> accepté si le total attendu atteint 2 + 0,5 = 2,5 (marge 1,0 au-dessus de la ligne) ;
+# - « moins de 2,5 » = en réalité « moins de 3 buts » -> accepté si le total attendu est au plus 3 - 0,5 = 2,5 (marge 0 sous la ligne).
+# Même règle pour les buts par équipe (donc aussi « les deux marquent »). La marge n'est qu'un garde-fou : la fréquence de répétition
+# (part des comparaisons au-dessus du seuil dans les deux branches) décide d'abord. Jamais recalculée.
+DEMI_BUT = 0.5
+MARGE_PLUS = 0.5 + DEMI_BUT        # ligne X,5 -> au moins X+1 buts -> attendu >= X+1+0,5 = ligne + 1,0
+MARGE_MOINS = DEMI_BUT - 0.5       # ligne X,5 -> moins de X+1 buts -> attendu <= X+1-0,5 = ligne - 0,0
+MARGE_BUT_ENTIER = MARGE_PLUS      # compatibilité
 
 
 def coef_k(n: int) -> float | None:
@@ -41,10 +45,10 @@ DEFAUT = {
     # Marge de niveau, en buts : « plus de L » exige attendu >= L + marge ; « moins de L » exige attendu <= L - marge.
     "marges": {
         "defaut": 0.0,
-        "total_plus": {"1.5": MARGE_BUT_ENTIER, "2.5": MARGE_BUT_ENTIER, "3.5": MARGE_BUT_ENTIER, "4.5": MARGE_BUT_ENTIER},
-        "total_moins": {"1.5": MARGE_BUT_ENTIER, "2.5": MARGE_BUT_ENTIER, "3.5": MARGE_BUT_ENTIER, "4.5": MARGE_BUT_ENTIER},
-        "equipe_plus": {"0.5": MARGE_BUT_ENTIER, "1.5": MARGE_BUT_ENTIER, "2.5": MARGE_BUT_ENTIER},
-        "equipe_moins": {"0.5": MARGE_BUT_ENTIER, "1.5": MARGE_BUT_ENTIER, "2.5": MARGE_BUT_ENTIER},
+        "total_plus": {"1.5": MARGE_PLUS, "2.5": MARGE_PLUS, "3.5": MARGE_PLUS, "4.5": MARGE_PLUS},
+        "total_moins": {"1.5": MARGE_MOINS, "2.5": MARGE_MOINS, "3.5": MARGE_MOINS, "4.5": MARGE_MOINS},
+        "equipe_plus": {"0.5": MARGE_PLUS, "1.5": MARGE_PLUS, "2.5": MARGE_PLUS},
+        "equipe_moins": {"0.5": MARGE_MOINS, "1.5": MARGE_MOINS, "2.5": MARGE_MOINS},
         "handicap_1_5": 0.0,
     },
     # Écart attendu d = buts attendus domicile - buts attendus extérieur.
