@@ -1,7 +1,7 @@
 // archetype_comportement.js — page du moteur alpha « séries » (remplace l'ancien alpha le 20/10/2026, demande de Patrick).
 // Présentation uniquement : le navigateur ne calcule rien, tout vient de data/alpha_serie/pronostics.json
 // (écrit par python -m alpha_serie.suivi pipeline). Même carte que la page V3 (classes ax-*) ; trois onglets par match :
-// marchés de buts, marchés d'équipes, multiscores. Seuls les marchés retenus figurent dans les listes ; le registre des exclus est dans « Détails ».
+// marchés de buts, marchés d'équipes, multiscores. Seuls les marchés retenus figurent dans les listes . « Détails » : matchs au même lieu avec score et buts par match (24/10/2026).
 // Affichage (22/10/2026) : carte repliée = le meilleur marché de chaque onglet est lisible dès l'entrée (aperçu .ax-resume) ;
 // carte dépliée = une ligne par marché, pensée pour l'écran du téléphone (plus de tableau à 5 colonnes) ; alertes écrites en toutes lettres.
 const CLE_THEME_NUIT = "archetype_theme_nuit"; // même clé que theme.js
@@ -85,6 +85,15 @@ const detailBranches = (cle, s) => (cle === "calibrees"
   ? `arrivé dans ${Number(s.scenarios)} des ${Number(s.sur)} comparaisons de matchs`
   : `buts marqués ${formatPct(s.offensive)} · buts encaissés ${formatPct(s.defensive)}`);
 
+// Pourquoi ce marché est retenu : un fait, en mots simples (24/10/2026). Compté par alpha_serie.suivi sur les matchs affichés dans « Détails ».
+function explicationCourte(s, m) {
+  const e = s && s.explication;
+  if (!e || !e.domicile || !e.exterieur) return "";
+  const [kd, nd] = e.domicile, [ke, ne] = e.exterieur;
+  return `<p class="ax-resume-texte">Aurait gagné dans <b>${Number(kd)}</b> des ${Number(nd)} matchs à domicile de ${echappeHtml(m.domicile)} ` +
+    `et dans <b>${Number(ke)}</b> des ${Number(ne)} matchs à l'extérieur de ${echappeHtml(m.exterieur)}.</p>`;
+}
+
 // ── Carte dépliée : une ligne par marché (nom, valeur, cote, branches, alerte) ──
 function ligneMarche(cle, s, m) {
   const pct = Number.isFinite(Number(s.valeur)) && s.valeur !== null ? Math.max(0, Math.min(100, Math.round(Number(s.valeur) * 100))) : null;
@@ -100,7 +109,7 @@ function ligneMarche(cle, s, m) {
   const alerte = s.alerte ? `<p class="ax-mk-alerte"><span aria-hidden="true">⚠</span> ${echappeHtml(s.alerte)}</p>` : "";
   return `<li class="ax-mk"><span class="ax-mk-nom">${afMarcheHtml(s.marche, libelleClair(s.marche, m.domicile, m.exterieur))}</span>${cote}` +
     `<div class="ax-mk-valeur">${barre}<b>${formatPct(s.valeur)}</b><small>${cle === "calibrees" ? "réussite" : "valeur"}</small></div>` +
-    `<p class="ax-mk-branches">${branches}</p>${alerte}</li>`;
+    `<p class="ax-mk-branches">${branches}</p>${explicationCourte(s, m)}${alerte}</li>`;
 }
 
 function liste(cle, lignes, m) {
@@ -132,20 +141,35 @@ function construitResume(m) {
     rang.innerHTML = `<div class="ax-resume-corps"><div class="ax-resume-tete">` +
       `<span class="ax-resume-etiquette">${nom}${plus}</span><span class="ax-resume-cote">Cote${cote}</span></div>` +
       `<p class="ax-resume-marche">${afMarcheHtml(s.marche, libelleClair(s.marche, m.domicile, m.exterieur))}</p>` +
-      `<p class="ax-resume-texte">${cle === "calibrees" ? "Réussite" : "Valeur"} <b>${formatPct(s.valeur)}</b> · ${detailBranches(cle, s)}</p>${remplace}${alerte}</div>`;
+      `<p class="ax-resume-texte">${cle === "calibrees" ? "Réussite" : "Valeur"} <b>${formatPct(s.valeur)}</b> · ${detailBranches(cle, s)}</p>${explicationCourte(s, m)}${remplace}${alerte}</div>`;
     racine.appendChild(rang);
   });
   return racine;
 }
 
+// Détails (24/10/2026) : tous les matchs à domicile de l'équipe qui reçoit et tous les matchs à l'extérieur de son adversaire, avec le score,
+// puis les buts marqués et encaissés par match sur cet échantillon. Les marchés exclus ne sont plus affichés.
+function listeMatchs(liste, equipe, domicile) {
+  if (!liste || !liste.length) return "<li>Aucun match enregistré</li>";
+  return liste.map((x) => {
+    const adv = echappeHtml(x.adversaire || "Adversaire");
+    const score = domicile ? `${echappeHtml(equipe)} <b>${Number(x.marques)}-${Number(x.encaisses)}</b> ${adv}` : `${adv} <b>${Number(x.encaisses)}-${Number(x.marques)}</b> ${echappeHtml(equipe)}`;
+    return `<li>${echappeHtml(formatDate(x.date))} · ${score}</li>`;
+  }).join("");
+}
+function ligneBilanButs(b) {
+  if (!b || !b.matchs) return "";
+  const v = (x) => Number(x).toFixed(2).replace(".", ",");
+  return `<p class="ax-preuve-texte">Sur ${Number(b.matchs)} matchs : <b>${Number(b.marques)}</b> buts marqués (${v(b.marques_par_match)} par match) · ` +
+    `<b>${Number(b.encaisses)}</b> buts encaissés (${v(b.encaisses_par_match)} par match).</p>`;
+}
 function remplitDetails(details, m) {
-  const sc = (l) => (l || []).map(([h, a]) => `${Number(h)}-${Number(a)}`).join(" · ");
-  const rej = (m.rejetes || []).map((r) => `<li><strong>${echappeHtml(libelleClair(r.marche, m.domicile, m.exterieur))}</strong> — ${echappeHtml(r.raison)}</li>`).join("");
-  const niv = m.niveaux ? `Buts attendus : domicile ${Number(m.niveaux.dom).toFixed(2)}, extérieur ${Number(m.niveaux.ext).toFixed(2)}, total ${Number(m.niveaux.total).toFixed(2)}. ` : "";
+  const h = m.historique || {};
   details.innerHTML = `<summary class="ax-summary-cache" tabindex="-1">Détails de l'analyse</summary><div class="ax-details-corps">` +
-    `<div class="ax-tab"><h4 class="ax-tab-titre">Scénarios appariés (${Number(m.n_domicile)} matchs à domicile, ${Number(m.n_exterieur)} à l'extérieur, k = ${Number(m.k)})</h4>` +
-    `<p class="ax-preuve-texte">${niv}</p><p class="ax-preuve-texte">Offensive : ${sc(m.scenarios_offensifs)}</p><p class="ax-preuve-texte">Défensive : ${sc(m.scenarios_defensifs)}</p></div>` +
-    `<div class="ax-tab"><h4 class="ax-tab-titre">Marchés exclus et raison</h4><ul class="ax-v3-lignes">${rej || "<li>Aucun</li>"}</ul></div></div>`;
+    `<div class="ax-tab"><h4 class="ax-tab-titre">${echappeHtml(m.domicile)} : matchs joués à domicile</h4>${ligneBilanButs(h.bilan_domicile)}` +
+    `<ul class="ax-v3-lignes">${listeMatchs(h.domicile, m.domicile, true)}</ul></div>` +
+    `<div class="ax-tab"><h4 class="ax-tab-titre">${echappeHtml(m.exterieur)} : matchs joués à l'extérieur</h4>${ligneBilanButs(h.bilan_exterieur)}` +
+    `<ul class="ax-v3-lignes">${listeMatchs(h.exterieur, m.exterieur, false)}</ul></div></div>`;
 }
 
 function construitCarte(m) {
@@ -183,7 +207,7 @@ function construitCarte(m) {
   blocDetails.className = "details-analyse ax-details"; blocDetails.id = idDetails;
   section.appendChild(onglets); section.appendChild(construitResume(m)); section.appendChild(panneaux); section.appendChild(blocDetails);
 
-  // Le contenu lourd (listes de marchés, registre des exclus) n'est construit qu'au premier dépliage : la page reste fluide sur téléphone.
+  // Le contenu lourd (listes de marchés, matchs des deux équipes) n'est construit qu'au premier dépliage : la page reste fluide sur téléphone.
   let pret = false;
   const prepare = () => {
     if (pret) return;
