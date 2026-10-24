@@ -85,7 +85,11 @@ const detailBranches = (cle, s) => (cle === "calibrees"
   ? `arrivé dans ${Number(s.scenarios)} des ${Number(s.sur)} comparaisons de matchs`
   : `buts marqués ${formatPct(s.offensive)} · buts encaissés ${formatPct(s.defensive)}`);
 
-// Pourquoi ce marché est retenu : un fait, en mots simples (24/10/2026). Compté par alpha_serie.suivi sur les matchs affichés dans « Détails ».
+// Pourquoi ce marché est retenu (24/10/2026, Patrick) : la vraie raison de la sélection, écrite par alpha_serie.suivi.pourquoi
+// à partir des seuls critères appliqués par le moteur. Aucune phrase si la raison n'est pas disponible (rien d'inventé).
+function pourquoiCourt(s) {
+  return s && s.pourquoi ? `<p class="ax-resume-texte">${echappeHtml(s.pourquoi)}</p>` : "";
+}
 function explicationCourte(s, m) {
   const e = s && s.explication;
   if (!e || !e.domicile || !e.exterieur) return "";
@@ -109,7 +113,7 @@ function ligneMarche(cle, s, m) {
   const alerte = s.alerte ? `<p class="ax-mk-alerte"><span aria-hidden="true">⚠</span> ${echappeHtml(s.alerte)}</p>` : "";
   return `<li class="ax-mk"><span class="ax-mk-nom">${afMarcheHtml(s.marche, libelleClair(s.marche, m.domicile, m.exterieur))}</span>${cote}` +
     `<div class="ax-mk-valeur">${barre}<b>${formatPct(s.valeur)}</b><small>${cle === "calibrees" ? "réussite" : "valeur"}</small></div>` +
-    `<p class="ax-mk-branches">${branches}</p>${explicationCourte(s, m)}${alerte}</li>`;
+    `<p class="ax-mk-branches">${branches}</p>${pourquoiCourt(s)}${alerte}</li>`;
 }
 
 function liste(cle, lignes, m) {
@@ -135,13 +139,14 @@ function construitResume(m) {
     const plus = l.length > 1 ? `<span class="ax-resume-plus"> · +${l.length - 1} autre${l.length > 2 ? "s" : ""}</span>` : "";
     const cote = aUneCote(s.cote) ? `<strong>${formatCote(s.cote)}</strong>` : `<strong class="ax-cote-lire">facultative</strong>`;
     const alerte = s.alerte ? `<p class="ax-resume-alerte"><span aria-hidden="true">⚠</span> ${echappeHtml(s.alerte)}</p>` : "";
-    const remplace = estRemplacant(m, cat) ? `<p class="ax-resume-texte">Le marché principal de cette catégorie n'a pas de cote BetPawa : le marché suivant est retenu.</p>` : "";
+    const texteRang = estRemplacant(m, cat) ? "Le premier de la catégorie n'a pas de cote BetPawa : celui-ci est le suivant." : "Premier de sa catégorie.";
+    const remplace = `<p class="ax-resume-texte">${texteRang}</p>`;
     const rang = document.createElement("div");
     rang.className = `ax-resume-rang ax-rang-${Math.min(i + 1, 3)}`;
     rang.innerHTML = `<div class="ax-resume-corps"><div class="ax-resume-tete">` +
       `<span class="ax-resume-etiquette">${nom}${plus}</span><span class="ax-resume-cote">Cote${cote}</span></div>` +
       `<p class="ax-resume-marche">${afMarcheHtml(s.marche, libelleClair(s.marche, m.domicile, m.exterieur))}</p>` +
-      `<p class="ax-resume-texte">${cle === "calibrees" ? "Réussite" : "Valeur"} <b>${formatPct(s.valeur)}</b> · ${detailBranches(cle, s)}</p>${explicationCourte(s, m)}${remplace}${alerte}</div>`;
+      `<p class="ax-resume-texte">${cle === "calibrees" ? "Réussite" : "Valeur"} <b>${formatPct(s.valeur)}</b></p>${pourquoiCourt(s)}${remplace}${alerte}</div>`;
     racine.appendChild(rang);
   });
   return racine;
