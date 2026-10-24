@@ -3,8 +3,8 @@
 Règle : pour chaque famille de marché, on cherche le plus petit cran (pas de 0,25 but) tel que, parmi les matchs qui respectent la marge,
   - la réussite dépasse la fréquence de base du marché de plus d'une erreur-type (le bruit d'échantillon),
   - et reste au moins égale à la base dans CHAQUE moitié chronologique où la marge est présente.
-Une marge calibrée ne peut qu'ÉLARGIR le plancher de départ (`parametres.DEFAUT`) : elle ne le resserre jamais. Si aucun cran ne passe le test,
-le plancher est gardé et la famille est listée dans `provisoire`.
+24/10/2026 (ordre de Patrick) : plus aucun plancher fixé à la main. La marge retenue est la marge APPRISE ; si aucun cran ne passe le test,
+la marge est 0 (aucune marge imposée) et la famille est listée dans `provisoire`.
 Usage : python -m alpha_serie.calibration
 """
 from __future__ import annotations
@@ -80,7 +80,7 @@ def _plus_petit_cran(rows, cond_t, win, coupe):
 
 
 def calibrer(rows: list[dict]) -> dict:
-    """Retourne des paramètres (planchers de départ élargis par l'archive) et le détail de la calibration."""
+    """Retourne des paramètres dont les marges sont uniquement celles apprises sur l'archive (0 si rien n'est appris), et le détail."""
     params = P.defaut()
     coupe = _moitiés(rows)
     detail, provisoire = {}, []
@@ -134,7 +134,7 @@ def main() -> None:
     print(params["source"])
     for nom, d in sorted(params["detail_calibration"].items()):
         print(f"{nom:22s} plancher {d.get('plancher')} -> retenu {d.get('retenu')}  {({k: v for k, v in d.items() if k in ('n', 'reussite', 'base', 'z')})}")
-    print("provisoires (aucun cran n'a passé le test, plancher gardé) :", params["provisoire"])
+    print("provisoires (aucun cran n'a passé le test, marge 0) :", params["provisoire"])
 
 
 if __name__ == "__main__":

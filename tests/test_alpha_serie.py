@@ -6,6 +6,13 @@ import pytest
 from alpha_serie import coeur, parametres as P
 
 PARAMS = P.defaut()
+# Marges d'EXEMPLE pour tester le mécanisme de la norme de niveau (anciennes valeurs fixées à la main, supprimées des paramètres le 24/10/2026).
+PARAMS_MARGES = P.defaut()
+PARAMS_MARGES["marges"].update({"defaut": 1.0, "total_plus": {"1.5": 2.0, "2.5": 1.0, "3.5": 1.0, "4.5": 1.0},
+                                "total_moins": {"1.5": 1.0, "2.5": 1.0, "3.5": 1.5, "4.5": 1.0},
+                                "equipe_plus": {"0.5": 1.5, "1.5": 1.0, "2.5": 1.0}, "equipe_moins": {"0.5": 1.0, "1.5": 1.0, "2.5": 1.0}, "handicap_1_5": 1.0})
+PARAMS_MARGES["seuils_resultat"].update({"dom_gagne": 0.5, "ext_gagne": 0.5, "dom_ne_perd_pas": 1.0, "ext_ne_perd_pas": 0.5})
+PARAMS_MARGES["multigoals"]["marge_borne"] = 1.0
 
 
 def equipe(rows):
@@ -51,10 +58,10 @@ def test_exemple_northampton_scenarios_apparies():
 
 def test_marge_de_niveau_buts_entiers():
     niv = lambda t: {"dom": t / 2, "ext": t / 2, "total": t, "d": 0.0}
-    plus15 = lambda t: coeur.norme_niveau("over_under_1.5", "plus", niv(t), PARAMS)[0]
+    plus15 = lambda t: coeur.norme_niveau("over_under_1.5", "plus", niv(t), PARAMS_MARGES)[0]
     assert plus15(3.5) and plus15(4.0) and plus15(3.5001)                        # 1,5 + marge 2
     assert not plus15(1.9) and not plus15(3.0) and not plus15(3.49)              # 1,9 ne garantit pas 2 buts
-    moins35 = lambda t: coeur.norme_niveau("over_under_3.5", "moins", niv(t), PARAMS)[0]
+    moins35 = lambda t: coeur.norme_niveau("over_under_3.5", "moins", niv(t), PARAMS_MARGES)[0]
     assert moins35(2.0) and moins35(1.0) and moins35(0.0)
     assert not moins35(2.5) and not moins35(3.0) and not moins35(2.01)
 
@@ -62,18 +69,18 @@ def test_marge_de_niveau_buts_entiers():
 def test_resultats_victoire_nul_double_chance():
     def n(d):
         return coeur.norme_niveau
-    f = lambda g, s, d: coeur.norme_niveau(g, s, {"dom": 1 + d / 2, "ext": 1 - d / 2, "total": 2.0, "d": d}, PARAMS)[0]
+    f = lambda g, s, d: coeur.norme_niveau(g, s, {"dom": 1 + d / 2, "ext": 1 - d / 2, "total": 2.0, "d": d}, PARAMS_MARGES)[0]
     assert f("1x2", "1", 0.5) and f("1x2", "2", -0.5) and f("double_chance", "1N", 1.0) and f("double_chance", "N2", -0.5) and f("double_chance", "12", 0.0)
     assert not f("1x2", "1", 0.4) and not f("1x2", "2", -0.4) and not f("double_chance", "1N", 0.9) and not f("double_chance", "N2", -0.4)
     assert not f("1x2", "N", 0.0)                                                # aucun seuil appris pour le nul : rejeté, avec la raison
-    avec_nul = copy.deepcopy(PARAMS)
+    avec_nul = copy.deepcopy(PARAMS_MARGES)
     avec_nul["seuils_resultat"]["nul"] = 0.25
     assert coeur.norme_niveau("1x2", "N", {"dom": 1, "ext": 1, "total": 2, "d": 0.2}, avec_nul)[0]
     assert not coeur.norme_niveau("1x2", "N", {"dom": 1, "ext": 1, "total": 2, "d": 0.3}, avec_nul)[0]
 
 
 def test_analyse_northampton_registre_et_onglets():
-    r = coeur.analyser_match(NORTHAMPTON, TRANMERE, "2026-10-20", PARAMS)
+    r = coeur.analyser_match(NORTHAMPTON, TRANMERE, "2026-10-20", PARAMS_MARGES)
     assert r["statut"] == "analyse" and r["k"] == 0.8
     buts = {f["marche"]: f for f in r["onglets"]["buts"]}
     assert "Multigoals 1-3" in buts and buts["Multigoals 1-3"]["offensive"] == 1.0 and buts["Multigoals 1-3"]["defensive"] == 0.5
@@ -134,3 +141,28 @@ def test_graduation_alerte_seulement_exact_et_sans_ressemblance():
     assert coeur.alerte_graduation(("1x2", "2"), g) and "domicile" in coeur.alerte_graduation(("1x2", "2"), g)
     assert coeur.alerte_graduation(("1x2", "1"), g) is None and coeur.alerte_graduation(("over_under_2.5", "plus"), g) is None
     assert coeur.graduation(cl, "Alpha FC", "Beta") is None and coeur.graduation(None, "Alpha", "Beta") is None
+
+
+# --- 24/10/2026 : plus aucune marge fixée à la main (ordre de Patrick) ------------------------------------------------
+def test_aucun_plancher_impose():
+    d = P.defaut()
+    for fam in ("total_plus", "total_moins", "equipe_plus", "equipe_moins"):
+        assert all(v == 0.0 for v in d["marges"][fam].values()), fam
+    assert d["marges"]["defaut"] == 0.0 and d["marges"]["handicap_1_5"] == 0.0 and d["multigoals"]["marge_borne"] == 0.0
+    assert all(d["seuils_resultat"][k] == 0.0 for k in ("dom_gagne", "ext_gagne", "dom_ne_perd_pas", "ext_ne_perd_pas"))
+
+
+def test_marges_en_production_uniquement_apprises():
+    p = P.charger()
+    for nom, det in p["detail_calibration"].items():
+        if nom == "nul":
+            continue
+        attendu = det["appris"] if det.get("appris") is not None else 0.0
+        assert det["retenu"] == attendu, nom                              # retenu = appris sur l'archive, sinon 0 : jamais une valeur imposée
+
+
+def test_sans_marge_le_bon_cote_de_la_ligne_suffit():
+    niv = lambda t: {"dom": t / 2, "ext": t / 2, "total": t, "d": 0.0}
+    plus15 = lambda t: coeur.norme_niveau("over_under_1.5", "plus", niv(t), PARAMS)[0]
+    assert plus15(1.5) and plus15(1.9) and plus15(3.0)
+    assert not plus15(1.49) and not plus15(1.0) and not plus15(0.0)
