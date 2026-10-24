@@ -6,6 +6,8 @@
 - resultats() : pour les matchs gelés dont le score est connu, ajoute une ligne « resultat » (gagné / perdu par sélection).
 - bilan()     : réussite et rendement calculés UNIQUEMENT sur les pronostics gelés avant le match (le vrai test hors échantillon).
 - page()      : `data/alpha_serie/pronostics.json`, lu tel quel par `pronostics_comportement.html` (le navigateur ne calcule rien).
+Quatrième onglet « calibrees » (24/10/2026) : sélections des règles exploitables de la campagne d'optimisation (`calibrees.py`), gelées,
+réglées et comptées dans le bilan comme les trois autres onglets, sans rien changer à ceux-ci.
 Aucun lien avec V2, V3, V2R, Europe, le Journal ni le générateur de tickets. Usage : python -m alpha_serie.suivi [pipeline|geler|resultats|bilan|page]
 """
 from __future__ import annotations
@@ -20,7 +22,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-from . import coeur, parametres as P
+from . import calibrees, coeur, parametres as P
 from .marches import test_du_marche
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -29,7 +31,15 @@ JOURNAL = DOSSIER / "journal.jsonl"
 BILAN = DOSSIER / "bilan.json"
 PAGE = DOSSIER / "pronostics.json"
 CLASSEMENTS = ROOT / "cache_classement.json"
-ONGLETS = ("buts", "equipes", "multiscores")
+ONGLETS = ("buts", "equipes", "multiscores", "calibrees")   # « calibrees » (24/10/2026) : règles exploitables de la campagne, voir calibrees.py
+_REGLES: list | None = None
+
+
+def _regles() -> list:
+    global _REGLES
+    if _REGLES is None:
+        _REGLES = calibrees.charger_regles()
+    return _REGLES
 
 
 def charger_matchs() -> list[dict[str, Any]]:
@@ -111,6 +121,8 @@ def analyser(m: dict[str, Any], params: dict, classements: dict[str, list] | Non
             if alerte:
                 ligne["alerte"] = alerte
             onglets[onglet].append(ligne)
+    onglets["calibrees"] = calibrees.selections(a.get("equipe_dom") or {}, a.get("equipe_ext") or {}, str(m["date"])[:10],
+                                                m.get("cotes_betpawa") or {}, _regles())
     rejetes = [{"onglet": f["onglet"], "marche": f["marche"], "raison": f["raison"]} for f in r["rejetes"]] + \
               [{"onglet": f["onglet"], "marche": f["marche"], "raison": f["raison"]} for f in e2["ecartes_par_la_cote"]]
     return {**fiche, "k": r["k"], "niveaux": r["niveaux"], "scenarios_offensifs": r["scenarios_offensifs"], "scenarios_defensifs": r["scenarios_defensifs"],
@@ -143,6 +155,8 @@ def _gagne(cle: list[str], h: int, a: int) -> bool | None:
         return lo <= h + a <= hi
     if g == "multiscores":
         return bool(coeur.GROUPES_MULTISCORES[s](h, a))
+    if g == "combo":
+        return calibrees.gagne(cle, h, a)
     p = test_du_marche(g, s)
     return None if p is None else bool(p(h, a))
 
