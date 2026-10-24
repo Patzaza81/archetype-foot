@@ -783,6 +783,12 @@ def charge_matchs_fenetre():
     matchs_demain = charge_json_ou_vide(FICHIER_MATCHS_DEMAIN, defaut=[])
     matchs_semaine = charge_json_ou_vide(FICHIER_MATCHS_SEMAINE, defaut=[])
 
+    # CORRECTIF 24/10/2026 : un match de la nuit listé sur deux pages consécutives (aujourd'hui/demain/semaine) prend la
+    # date de la page la plus tardive (voir scraper.corrige_dates_minuit). matchs_semaine.json sert ici de preuve de date
+    # même quand ses matchs ne rejoignent pas la fenêtre.
+    from scraper import corrige_dates_minuit
+    corrige_dates_minuit(matchs_du_jour, matchs_demain, matchs_semaine)
+
     cibles = dates_j2_j3() if jours_fenetre() == 4 else []      # 2 jours : matchs_semaine.json ignoré, même s'il est présent
     matchs_j2_j3 = [m for m in matchs_semaine if m.get("date") in cibles]
 

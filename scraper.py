@@ -84,6 +84,50 @@ def convertit_date_cameroun(heure, date_label):
     return dt_paris.astimezone(ZoneInfo("Africa/Douala")).date().isoformat()
 
 
+def corrige_dates_minuit(*listes):
+    """CORRECTIF 24/10/2026 -- matchs de la nuit (Amériques, Asie, Océanie).
+
+    Matchendirect liste les matchs de la nuit suivante (environ 00:00-07:00 heure française) à la fin de la page du
+    jour D, ET en tête de la page D+1, avec le MÊME match_id. Leur vraie date française est D+1. La page D les datait
+    du jour D : coup d'envoi 24 h trop tôt (ex. Orlando - New York City, 01:30 le 25/10, enregistré au 24/10 à 00:30
+    heure du Cameroun, donc « déjà commencé » pour les moteurs). Constaté le 24/10/2026 : 124 matchs communs aux pages
+    du 24 et du 25, tous entre 00:00 et 07:00 (États-Unis, Mexique, Amérique centrale et du Sud, Japon, Corée du Sud,
+    Australie, Nouvelle-Zélande, Nouvelle-Calédonie, îles Salomon, îles Cook...).
+
+    Règle (preuve directe, aucune estimation) : un match présent sur deux pages consécutives prend la date de la page la
+    plus tardive ; date et heure du Cameroun sont recalculées à partir de cette date. La date de la page d'origine est
+    gardée dans « date_page ». Un match vu sur une seule page n'est jamais modifié (rien ne prouve un décalage). Deux
+    pages non consécutives : rien n'est modifié, l'écart est signalé. Les listes sont corrigées sur place ; le nombre
+    d'entrées corrigées est renvoyé."""
+    occurrences = {}
+    for liste in listes:
+        for m in liste or []:
+            mid = m.get("match_id")
+            if mid and m.get("date_source"):
+                occurrences.setdefault(mid, []).append(m)
+    corrigees = 0
+    for mid, occ in occurrences.items():
+        dates = sorted({o["date_source"] for o in occ})
+        if len(dates) < 2:
+            continue
+        premiere = datetime.date.fromisoformat(dates[0])
+        derniere = datetime.date.fromisoformat(dates[-1])
+        if (derniere - premiere).days != 1:
+            print(f"  DATE NON CORRIGÉE : match_id={mid} présent sur des pages non consécutives {dates}", file=sys.stderr)
+            continue
+        heure = next((o.get("heure") for o in occ if o.get("heure") and RE_HEURE.match(o["heure"])), None)
+        for o in occ:
+            if o["date_source"] == dates[-1]:
+                continue
+            o["date_page"] = o["date_source"]
+            o["date_source"] = dates[-1]
+            o["date"] = convertit_date_cameroun(heure, dates[-1])
+            if heure:
+                o["heure_cameroun"] = convertit_heure_cameroun(heure, dates[-1])
+            corrigees += 1
+    return corrigees
+
+
 def url_resultat_foot(date_obj):
     """URL "demain"/"hier" du site, construite depuis une date. Format
     DD-MM-YYYY confirmé via la nav réelle du site (liens "Demain"/"Hier")."""
@@ -251,9 +295,6 @@ def main():
     args = parser.parse_args()
 
     matchs_jour = scrape_programme("aujourdhui", max_matchs=args.max_matchs)
-    with open(args.sortie_aujourdhui, "w", encoding="utf-8") as f:
-        json.dump(matchs_jour, f, indent=2, ensure_ascii=False)
-    print(f"{len(matchs_jour)} matchs (aujourd'hui) -> {args.sortie_aujourdhui}", file=sys.stderr)
 
     try:
         matchs_demain = scrape_programme("demain", max_matchs=args.max_matchs)
@@ -262,6 +303,12 @@ def main():
         # note "NON VÉRIFIÉ" en tête de fichier sur l'URL "demain".
         print(f"ÉCHEC scraping demain (non bloquant) : {e}", file=sys.stderr)
         matchs_demain = []
+    # CORRECTIF 24/10/2026 : matchs de la nuit présents sur les deux pages -> date de la page du lendemain.
+    nb = corrige_dates_minuit(matchs_jour, matchs_demain)
+    print(f"{nb} match(s) de la nuit redaté(s) au lendemain", file=sys.stderr)
+    with open(args.sortie_aujourdhui, "w", encoding="utf-8") as f:
+        json.dump(matchs_jour, f, indent=2, ensure_ascii=False)
+    print(f"{len(matchs_jour)} matchs (aujourd'hui) -> {args.sortie_aujourdhui}", file=sys.stderr)
     with open(args.sortie_demain, "w", encoding="utf-8") as f:
         json.dump(matchs_demain, f, indent=2, ensure_ascii=False)
     print(f"{len(matchs_demain)} matchs (demain) -> {args.sortie_demain}", file=sys.stderr)
