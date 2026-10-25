@@ -79,6 +79,7 @@ body.theme-nuit .hero{background:linear-gradient(110deg,var(--surface) 0 60%,tra
 .pari{font-size:12.5px;color:var(--accent)}
 .cote-sel{font-weight:700;font-size:14px}
 .ticket[aria-selected="true"] .badge{outline:2px solid var(--accent)}
+.ticket.recommande{border:2px solid var(--or);border-radius:12px;padding:14px 12px;margin-bottom:12px;background:var(--surface)}
 .badge{border-radius:10px;background:var(--surface-2);text-align:center;padding:7px 4px}
 .badge b{display:block;font-size:18px;color:var(--accent)}
 .badge small{font-size:10.5px;color:var(--doux)}
@@ -338,7 +339,8 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer a{text-decoration:non
   function heureSel(x){ return x.heure || ""; }
   fetch("data/alpha_serie/tickets_accueil.json", {cache: "no-store"}).then(function(r){ return r.json(); }).then(function(d){
     JOUR_PRESENT = d.jour || null;
-    var tickets = d.tickets || [], max = d.max || 10;
+    var rec = d.recommande && (d.recommande.selection || []).length ? [d.recommande] : [];
+    var tickets = rec.concat(d.tickets || []), max = d.max || 10, decalage = rec.length;
     if (d.jour) texte("date-jour", "Matchs du " + jourCourt(d.jour));
     if (!tickets.some(function(t){ return (t.selection || []).length; })) { liste.innerHTML = '<div class="vide-etat">Aucun ticket aujourd\'hui : aucun match ne remplit les règles entre 10 h et minuit. Mieux vaut ne pas jouer que jouer au hasard.</div>'; return; }
     liste.innerHTML = tickets.map(function(t, i){
@@ -352,12 +354,15 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer a{text-decoration:non
           '<span class="pari">' + echappe(marche(x)) + '</span></span>' +
           '<span class="cote-sel num">' + (x.cote ? fr.format(x.cote) : "—") + '</span></li>';
       }).join("");
-      var manque = sel.length && sel.length < max ? '<p class="note">Seulement ' + sel.length + ' match' + (sel.length > 1 ? "s remplissent" : " remplit") + ' les règles aujourd\'hui pour ce ticket.</p>' : "";
+      var estRec = t.cle === "accueil_recommande";
+      var manque = !estRec && sel.length && sel.length < max ? '<p class="note">Seulement ' + sel.length + ' match' + (sel.length > 1 ? "s remplissent" : " remplit") + ' les règles aujourd\'hui pour ce ticket.</p>' : "";
       var b = t.bilan, suivi = b && b.tickets ? '<p class="note">Vrais résultats : ' + b.gagnes + ' ticket' + (b.gagnes > 1 ? "s" : "") + ' gagné' + (b.gagnes > 1 ? "s" : "") + ' sur ' + b.tickets + ' · ' + b.paris_gagnes + '/' + b.paris + ' matchs.</p>' : "";
       var corps = sel.length ? '<ol class="selections">' + lignes + '</ol>' + manque : '<p class="note">Aucun match ne remplit les règles aujourd\'hui pour ce ticket.</p>';
-      return '<div class="ticket" role="button" tabindex="0" data-cle="' + echappe(t.cle) + '">' +
+      var titre = estRec ? "Ticket recommandé — cote " + fr.format(t.cote_max || 5).replace(",00", "") + " maximum" : "Ticket " + (i + 1 - decalage) + " — " + t.nom;
+      var phrase = estRec ? "Les mieux classés, dans l'ordre, tant que la cote totale reste à " + (t.cote_max || 5) + " ou moins." : (PHRASES[t.cle] || "");
+      return '<div class="ticket' + (estRec ? ' recommande' : '') + '" role="button" tabindex="0" data-cle="' + echappe(t.cle) + '">' +
         '<div class="tete"><div class="badge"><b class="num">' + sel.length + '</b><small>' + (sel.length > 1 ? "matchs" : "match") + '</small></div>' +
-        '<div class="titre-ticket"><b>Ticket ' + (i + 1) + ' — ' + echappe(t.nom) + '</b><span class="pari">' + echappe(PHRASES[t.cle] || "") + '</span></div>' +
+        '<div class="titre-ticket">' + (estRec ? '<span class="jours auj">Recommandé</span>' : '') + '<b>' + echappe(titre) + '</b><span class="pari">' + echappe(phrase) + '</span></div>' +
         '<div class="cote"><small>Cote globale</small><b class="num">' + (c ? fr.format(c) : "—") + '</b></div>' +
         '<a class="voir" href="tickets_alpha.html">Détails →</a></div>' + corps + suivi + '</div>';
     }).join("");

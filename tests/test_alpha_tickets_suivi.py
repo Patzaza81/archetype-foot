@@ -154,3 +154,21 @@ def test_accueil_affiche_le_gel(tmp_path):
     assert [c["match_id"] for c in res["selection"]] == ["a", "b"] and res["cote_totale"] == pytest.approx(1.30 * 1.35)   # le match ajouté après le gel n'y est pas
     html = (RACINE / "index.html").read_text(encoding="utf-8")
     assert "data/alpha_serie/tickets_accueil.json" in html and "data/tickets.json" not in html
+
+
+# --- Ticket recommandé : cote totale 5 au plus (règle de Patrick, 25/10/2026) ------------------------------------------------
+def _rec(cotes):
+    page = [match(f"r{i}", f"{12 + i}:00", equipes=[pari("p", c, 0.99 - i / 1000, ["double_chance", "12"])]) for i, c in enumerate(cotes)]
+    return [(c["match_id"], c["cote"]) for c in T.du_jour(page, JOUR)["accueil_recommande"]]
+
+
+def test_ticket_recommande_cote_5_maximum():
+    assert [m for m, _ in _rec([1.30, 1.30, 1.30, 1.30, 1.30, 1.30, 1.30])] == ["r0", "r1", "r2", "r3", "r4", "r5"]   # 1,3^6 = 4,83
+    assert [m for m, _ in _rec([2.0, 2.5, 1.25])] == ["r0", "r1"]                                                  # 5,00 pile : gardé
+    assert [m for m, _ in _rec([1.25, 1.25, 1.25])] == ["r0", "r1", "r2"]                                          # moins de 5 : tout
+
+
+def test_ticket_recommande_ne_depasse_jamais_ni_ne_saute():
+    assert [m for m, _ in _rec([1.30, 1.30, 1.30, 1.30, 1.30, 1.30, 1.30, 1.25])] == ["r0", "r1", "r2", "r3", "r4", "r5"]  # stop à r6
+    assert _rec([5.5, 1.25]) == []                                         # le mieux classé dépasse seul : pas de ticket, pas de saut
+    assert [m for m, _ in _rec([2.0, 2.6, 1.25])] == ["r0"]                # 5,20 : on s'arrête, r2 n'est pas pris à la place

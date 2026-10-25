@@ -13,6 +13,8 @@ Python pour être gelées et suivies chaque nuit ; un test vérifie que le navig
   championnats et de contextes différents n'ont rien en commun du fait de leur marché). Ticket 1 = les 10 paris les mieux classés de
   la journée (10 h – minuit), ticket 2 = les 10 suivants, ticket 3 = les 10 suivants ; mêmes règles que le palier 1, un pari par match,
   un match sur un seul ticket. Moins de 30 admissibles : les derniers tickets en comptent moins (rien n'est assoupli).
+  Ticket recommandé (25/10/2026, règle de Patrick : « cote maximum 5 ») : les paris du même classement, pris dans l'ordre, tant que
+  la cote totale reste ≤ 5 ; on s'arrête au premier pari qui la ferait dépasser (on ne saute pas un pari mieux classé).
 Gel : chaque nuit, pour le jour courant (Douala), ou pour le lendemain après 22 h (début du dernier créneau), avant le premier match du ticket ; jamais regelé, jamais a posteriori.
 Résultats : quand tous les matchs d'un ticket ont un score. Bilan : uniquement sur des tickets gelés avant les matchs.
 Bibliothèque standard seulement. Le moteur alpha (`coeur.py`) n'est ni appelé ni modifié.
@@ -27,7 +29,8 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 JOURNAL = ROOT / "data" / "alpha_serie" / "tickets_journal.jsonl"
 FAMILLES = {"accueil_1": "les mieux classés", "accueil_2": "la suite du classement", "accueil_3": "le troisième groupe"}
-PALIERS = ("palier1", "palier2", "palier3") + tuple(FAMILLES)
+PALIERS = ("palier1", "palier2", "palier3") + tuple(FAMILLES) + ("accueil_recommande",)
+COTE_RECOMMANDEE_MAX = 5.0         # règle de Patrick, 25/10/2026
 ACCUEIL = ROOT / "data" / "alpha_serie" / "tickets_accueil.json"
 
 COTE_MIN, VALEUR_MIN, CONFIRMATION_MIN, MATCHS_MIN, PAR_TRANCHE, PALIER2_MAX, ACCUEIL_MAX = 1.25, 0.80, 0.75, 5, 2, 10, 10
@@ -137,7 +140,15 @@ def accueil(cands: list[dict]) -> dict[str, list[dict]]:
         if c["match_id"] not in pris:
             rang.append(c)
             pris.add(c["match_id"])
-    return {f: rang[i * ACCUEIL_MAX:(i + 1) * ACCUEIL_MAX] for i, f in enumerate(FAMILLES)}
+    out = {f: rang[i * ACCUEIL_MAX:(i + 1) * ACCUEIL_MAX] for i, f in enumerate(FAMILLES)}
+    rec, cote = [], 1.0
+    for c in rang:
+        if cote * c["cote"] > COTE_RECOMMANDEE_MAX + 1e-9:
+            break
+        rec.append(c)
+        cote *= c["cote"]
+    out["accueil_recommande"] = rec
+    return out
 
 
 def du_jour(matchs: list[dict], jour: str) -> dict[str, Any]:
@@ -152,7 +163,7 @@ def du_jour(matchs: list[dict], jour: str) -> dict[str, Any]:
     acc = accueil(cands)
     return {"jour": jour, "palier1": [{k: c.get(k) for k in garde} for c in p1], "palier2": [{k: c.get(k) for k in garde} for c in p2],
             "palier3": [{k: c.get(k) for k in garde + ("avantage", "p_estimee", "p_cote")} for c in p3],
-            **{f: [{k: c.get(k) for k in garde} for c in acc[f]] for f in FAMILLES}}
+            **{f: [{k: c.get(k) for k in garde} for c in acc[f]] for f in (*FAMILLES, "accueil_recommande")}}
 
 
 # --- Journal : gel, résultats, bilan -----------------------------------------------------------------------------------------
@@ -242,7 +253,7 @@ def page_accueil(matchs_page: list[dict], maintenant: datetime | None = None, jo
     sinon calculés sur la page du moment, marqués non gelés."""
     maintenant = maintenant or datetime.now(timezone.utc)
     jour = jour_cible(maintenant)
-    gel = next((l for l in reversed(_lire(journal)) if l["type"] == "tickets" and l["jour"] == jour and FAMILLES.keys() <= l.keys()), None)
+    gel = next((l for l in reversed(_lire(journal)) if l["type"] == "tickets" and l["jour"] == jour and "accueil_recommande" in l), None)
     t = gel or du_jour(matchs_page, jour)
     b = bilan(journal)
     tickets = []
@@ -252,7 +263,13 @@ def page_accueil(matchs_page: list[dict], maintenant: datetime | None = None, jo
             cote *= c["cote"]
         tickets.append({"cle": f, "nom": nom, "selection": [{**c, "date": jour} for c in sel], "cote_totale": round(cote, 4) if sel else None,
                         "bilan": b.get(f)})
-    return {"jour": jour, "gele": bool(gel), "gele_le": (gel or {}).get("gele_le"), "max": ACCUEIL_MAX,
+    sel = t.get("accueil_recommande", [])
+    cote = 1.0
+    for c in sel:
+        cote *= c["cote"]
+    recommande = {"cle": "accueil_recommande", "nom": "Ticket recommandé", "cote_max": COTE_RECOMMANDEE_MAX,
+                  "selection": [{**c, "date": jour} for c in sel], "cote_totale": round(cote, 4) if sel else None, "bilan": b.get("accueil_recommande")}
+    return {"jour": jour, "gele": bool(gel), "recommande": recommande, "gele_le": (gel or {}).get("gele_le"), "max": ACCUEIL_MAX,
             "genere_le": maintenant.strftime("%Y-%m-%dT%H:%M:%SZ"), "tickets": tickets}
 
 
