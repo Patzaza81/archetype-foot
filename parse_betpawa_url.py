@@ -16,7 +16,7 @@ ce parseur à la demande, il n'y a pas de portage JS correspondant.
 """
 import re
 
-from equipe_betpawa import cote_de_l_equipe
+from equipe_betpawa import cotes_des_equipes
 from datetime import date as _date
 
 
@@ -66,6 +66,7 @@ PREFIXES_NB_BUTS = [str(n) for n in range(6)] + ["6+"]
 def parse_betpawa_url(texte, nom_domicile, nom_exterieur):
     lignes = _lignes_non_vides(texte)
     cotes = {}
+    equipes = cotes_des_equipes(lignes, nom_domicile, nom_exterieur)   # 25/10/2026 : noms en autre langue, par élimination
     i = 0
 
     while i < len(lignes):
@@ -100,7 +101,7 @@ def parse_betpawa_url(texte, nom_domicile, nom_exterieur):
         m_equipe = re.match(r"^Over/Under \| (.+) \| Full Time$", titre)
         if m_equipe:
             nom = m_equipe.group(1)
-            prefixe = {"domicile": "over_under_domicile", "exterieur": "over_under_exterieur"}.get(cote_de_l_equipe(nom, nom_domicile, nom_exterieur))
+            prefixe = {"domicile": "over_under_domicile", "exterieur": "over_under_exterieur"}.get(equipes.get(nom))
             paires, i = _lit_bloc(lignes, i + 1, PREFIXES_OU)
             if prefixe:
                 for label, valeur in paires.items():
@@ -153,9 +154,9 @@ def parse_betpawa_url(texte, nom_domicile, nom_exterieur):
             nom = m_cages.group(1)
             paires, i = _lit_bloc(lignes, i + 1, ["Yes", "No"])
             if len(paires) == 2:
-                if cote_de_l_equipe(nom, nom_domicile, nom_exterieur) == "domicile":
+                if equipes.get(nom) == "domicile":
                     cotes["cages_inviolees_domicile"] = {"oui": paires["Yes"], "non": paires["No"]}
-                elif cote_de_l_equipe(nom, nom_domicile, nom_exterieur) == "exterieur":
+                elif equipes.get(nom) == "exterieur":
                     cotes["cages_inviolees_exterieur"] = {"oui": paires["Yes"], "non": paires["No"]}
             continue
 

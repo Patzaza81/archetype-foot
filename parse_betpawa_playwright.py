@@ -11,7 +11,7 @@ parse_betpawa_url.py.
 """
 import re
 
-from equipe_betpawa import cote_de_l_equipe
+from equipe_betpawa import cotes_des_equipes
 
 
 RE_LIGNE_HANDICAP_3 = r"^(Home|Away) ([+-]\d+)$"
@@ -50,6 +50,7 @@ def _paires_jusqua_rupture(lignes, i, motif_label):
 def parse_betpawa_playwright(texte, nom_domicile, nom_exterieur):
     lignes = _lignes_non_vides(texte)
     cotes = {}
+    equipes = cotes_des_equipes(lignes, nom_domicile, nom_exterieur)   # 25/10/2026 : noms en autre langue, par élimination
     i = 0
 
     while i < len(lignes):
@@ -86,7 +87,7 @@ def parse_betpawa_playwright(texte, nom_domicile, nom_exterieur):
         m_equipe = re.match(r"^Over/Under \| (.+) \| Full Time$", titre)
         if m_equipe:
             nom = m_equipe.group(1)
-            prefixe = {"domicile": "over_under_domicile", "exterieur": "over_under_exterieur"}.get(cote_de_l_equipe(nom, nom_domicile, nom_exterieur))
+            prefixe = {"domicile": "over_under_domicile", "exterieur": "over_under_exterieur"}.get(equipes.get(nom))
             paires, i = _paires_jusqua_rupture(lignes, i + 1, r"^(Over|Under) \d+\.5$")
             if prefixe:
                 for label, valeur in paires.items():
@@ -149,9 +150,9 @@ def parse_betpawa_playwright(texte, nom_domicile, nom_exterieur):
             nom = m_cages.group(1)
             paires, i = _paires(lignes, i + 1, 2)
             if len(paires) == 2:
-                if cote_de_l_equipe(nom, nom_domicile, nom_exterieur) == "domicile":
+                if equipes.get(nom) == "domicile":
                     cotes["cages_inviolees_domicile"] = {"oui": paires.get("Yes"), "non": paires.get("No")}
-                elif cote_de_l_equipe(nom, nom_domicile, nom_exterieur) == "exterieur":
+                elif equipes.get(nom) == "exterieur":
                     cotes["cages_inviolees_exterieur"] = {"oui": paires.get("Yes"), "non": paires.get("No")}
             continue
 
