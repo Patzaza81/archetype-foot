@@ -29,7 +29,7 @@
     const d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4] + 1, +m[5]));
     return `${String(d.getUTCDate()).padStart(2, "0")}/${String(d.getUTCMonth() + 1).padStart(2, "0")} à ${d.getUTCHours()} h ${String(d.getUTCMinutes()).padStart(2, "0")}`;
   };
-  let donnees = null, jour = null, mise = 500;
+  let donnees = null, jour = null, mise = 500, longueur = null;   // longueur : nombre de matchs choisis dans le ticket du jour
   try { const v = Number(localStorage.getItem(CLE_MISE)); if (v > 0) mise = v; } catch (e) { /* stockage indisponible */ }
 
   function ligneSelection(c) {
@@ -111,18 +111,48 @@
       `<li>Ces règles sont celles de l'analyse validée le 25/10/2026 ; elles ne changent pas le moteur alpha. Aucun gain n'est garanti.</li></ul></details>`;
   }
 
+  // Vue simple (25/10/2026, Patrick : « un utilisateur qui n'a jamais entendu parler de ça doit comprendre ») :
+  // un seul ticket, les matchs dans l'ordre, ce qu'on gagne et ce qu'on perd ; tout le reste est replié pour les connaisseurs.
+  function ticketDuJour(a) {
+    const etapes = a.methodeA;
+    if (!etapes.length) return `<section class="ax-carte at-carte at-simple"><h2 class="at-simple-titre">Pas de ticket ce jour-là</h2><p class="at-vide">Aucun match ne remplit nos règles entre 10 h et minuit. Mieux vaut ne pas jouer que jouer au hasard.</p></section>`;
+    const n = Math.min(longueur || etapes.length, etapes.length), e = etapes[n - 1], choisis = etapes.slice(0, n);
+    const retour = mise * e.cote;
+    const choix = etapes.length > 1 ? `<div class="at-choix" role="group" aria-label="Nombre de matchs dans le ticket">${etapes.map((x, i) => `<button type="button" data-longueur="${i + 1}" aria-pressed="${i + 1 === n}">${i + 1} match${i ? "s" : ""}<small>× ${cote(x.cote)}</small></button>`).join("")}</div>` +
+      `<p class="at-aide">Moins de matchs = gain plus petit, mais plus de chances que le ticket passe.</p>` : "";
+    const lignes = choisis.map((x, i) => `<li><span class="at-num">${i + 1}</span><div><p class="at-qui"><b>${esc(x.ajout.match.heure)}</b> · ${esc(x.ajout.match.domicile)} – ${esc(x.ajout.match.exterieur)}</p>` +
+      `<p class="at-quoi">${esc(clair(x.ajout) || x.ajout.marche)}</p><p class="at-ou">${esc(compet(x.ajout.match))} · sur Betpawa : « ${esc(x.ajout.marche)} » à ${cote(x.ajout.cote)}</p></div></li>`).join("");
+    return `<section class="ax-carte at-carte at-simple">` +
+      `<h2 class="at-simple-titre">Le ticket du jour</h2>` +
+      `<p class="at-phrase">Mets ces ${n} match${n > 1 ? "s" : ""} sur <b>un seul ticket</b>, avant ${esc(choisis[0].ajout.match.heure)}.</p>` +
+      choix +
+      `<div class="at-gros"><div><small>Tu mises</small><strong>${fcfa(mise)}</strong></div><div class="at-fleche" aria-hidden="true">→</div><div><small>Si tout passe, tu reçois</small><strong class="at-plus">${fcfa(retour)}</strong></div></div>` +
+      `<p class="at-risque">Si <b>un seul</b> de ces matchs rate, tu perds tes ${fcfa(mise)}.</p>` +
+      `<ol class="at-liste-simple">${lignes}</ol></section>`;
+  }
+
+  function commentCaMarche() {
+    return `<details class="ax-carte at-carte at-regles"><summary>Comment ces matchs sont choisis ?</summary><ul>` +
+      `<li>Le moteur alpha regarde les derniers matchs de chaque équipe : à domicile pour celle qui reçoit, à l'extérieur pour l'autre.</li>` +
+      `<li>On garde seulement les paris que ces matchs confirment presque à chaque fois, avec une cote Betpawa.</li>` +
+      `<li>On prend le meilleur pari de chaque créneau de 2 heures, de 10 h à minuit.</li>` +
+      `<li>Rien n'est sûr à 100 % : un match peut toujours surprendre. Ne mise que ce que tu peux te permettre de perdre.</li></ul></details>`;
+  }
+
   function rendu() {
     const zone = document.getElementById("tickets");
     if (!donnees || !zone) return;
     const a = T.analyse(donnees, jour);
-    const nbMatchs = new Set(a.tranches.flatMap((t) => t.candidats.map((c) => c.match_id))).size;
     zone.innerHTML =
-      `<p class="at-intro">${esc(dateLongue(jour))} · ${nbMatchs} matchs entre 10 h et minuit (heure de Douala).</p>` +
+      ticketDuJour(a) +
+      commentCaMarche() +
+      `<details class="at-expert"><summary>Pour les connaisseurs : autres façons de jouer</summary>` +
       comparaison(a) +
       `<h2 class="at-h2">Tickets par tranche de 2 heures</h2>${a.tranches.filter((t) => t.candidats.length).map(carteTranche).join("") || '<p class="at-vide">Aucun match ce jour-là.</p>'}` +
       (a.methodeA.length ? `<h2 class="at-h2">Ticket progressif</h2>${sectionA(a.methodeA)}` : "") +
       (a.chaines.length ? `<h2 class="at-h2">Réinvestir les gains d'une tranche à l'autre</h2>${a.chaines.slice(0, 3).map(carteChaine).join("")}` : "") +
-      regles();
+      regles() + `</details>`;
+    zone.querySelectorAll("[data-longueur]").forEach((b) => b.addEventListener("click", () => { longueur = Number(b.dataset.longueur); rendu(); }));
   }
 
   function controles() {
@@ -130,9 +160,9 @@
     if (!js.includes(jour)) jour = js[0] || aujourdhui();
     z.innerHTML =
       `<div class="at-jours" role="group" aria-label="Choix du jour">${js.slice(0, 4).map((j) => `<button type="button" data-jour="${j}" aria-pressed="${j === jour}">${esc(dateLongue(j).split(" ").slice(0, 2).join(" "))}</button>`).join("")}</div>` +
-      `<label class="at-mise"><span>Mise simulée</span><input id="at-mise" type="number" inputmode="numeric" min="5" step="5" value="${mise}"><span>FCFA</span></label>` +
+      `<label class="at-mise"><span>Ta mise</span><input id="at-mise" type="number" inputmode="numeric" min="5" step="5" value="${mise}"><span>FCFA</span></label>` +
       `<div class="at-presets">${[100, 500, 1000].map((v) => `<button type="button" data-mise="${v}">${v.toLocaleString("fr-FR")}</button>`).join("")}</div>`;
-    z.querySelectorAll("[data-jour]").forEach((b) => b.addEventListener("click", () => { jour = b.dataset.jour; controles(); rendu(); }));
+    z.querySelectorAll("[data-jour]").forEach((b) => b.addEventListener("click", () => { jour = b.dataset.jour; longueur = null; controles(); rendu(); }));
     const champ = z.querySelector("#at-mise");
     const fixe = (v) => { if (v > 0) { mise = v; try { localStorage.setItem(CLE_MISE, String(v)); } catch (e) { /* ignoré */ } champ.value = v; rendu(); } };
     champ.addEventListener("input", () => fixe(Number(champ.value)));
