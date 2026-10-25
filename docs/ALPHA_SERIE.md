@@ -255,3 +255,12 @@ Construite au-dessus de `robustesse.py` (ffb25b0), sans le modifier. Aucun autre
 - Les clés du journal sont `accueil_1`, `accueil_2`, `accueil_3`. Moins de 30 admissibles → les derniers tickets en comptent moins ; rien n'est assoupli.
 - Le gel du 25/10/2026 a été refait une troisième fois, à 02:35 UTC (03:35 à Douala, avant le premier match de 13:00) ; les paliers 1, 2 et 3 sont identiques. Résultat du 25/10 : 10, 5 et 0 matchs.
 - Tests : `test_trois_tickets_accueil_par_classement`, `test_accueil_jamais_force`, `test_accueil_affiche_le_gel`.
+
+## 25/10/2026 — Accueil : ticket recommandé, cote 5 maximum (règle de Patrick)
+
+- Les paris du classement de l'accueil sont pris dans l'ordre tant que la cote totale reste ≤ `COTE_RECOMMANDEE_MAX` = 5. On s'arrête au premier pari qui la ferait dépasser : on ne saute jamais un pari mieux classé pour en prendre un moins bien classé à plus petite cote.
+- Le ticket est affiché en tête de l'accueil, encadré, et sélectionné par défaut dans « Détails du ticket ».
+- Il est gelé et suivi sous la clé `accueil_recommande` du journal des tickets.
+- Le gel du 25/10/2026 a été refait une quatrième fois, à 02:43 UTC (03:43 à Douala, avant le premier match de 13:00) ; tout ce qui était déjà gelé est identique.
+- Le 25/10/2026 : 6 matchs, cote 4,67.
+- Tests : `test_ticket_recommande_cote_5_maximum`, `test_ticket_recommande_ne_depasse_jamais_ni_ne_saute`.
