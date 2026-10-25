@@ -179,7 +179,7 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer a{text-decoration:non
       <h1>Des analyses chiffrées, <em>des résultats vérifiables</em></h1>
       <p class="intro">ARCHETYPE Foot analyse chaque jour les matchs à l’aide de modèles statistiques, sans intelligence artificielle. Il propose des tickets, puis publie le résultat de chaque pari, gagné ou perdu. Vous décidez seul de jouer.</p>
       <div class="boutons">
-        <a class="btn plein" href="tickets.html">Voir les tickets</a>
+        <a class="btn plein" href="#titre-tickets">Voir les tickets</a>
         <a class="btn vide" href="#methode">Découvrir la méthode</a>
       </div>
       <div class="chiffres" id="chiffres" aria-live="polite">
@@ -204,11 +204,11 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer a{text-decoration:non
 
 <main class="conteneur grille">
   <section class="carte" aria-labelledby="titre-tickets">
-    <div class="entete"><h2 id="titre-tickets">Les tickets proposés</h2><span class="date" id="date-jour"></span></div>
+    <div class="entete"><h2 id="titre-tickets">Les 3 tickets du jour — moteur alpha</h2><span class="date" id="date-jour"></span></div>
     <div class="onglets"><span class="onglet">Football</span><span class="onglet-note">Seul sport analysé aujourd'hui</span></div>
     <div id="liste-tickets"><div class="vide-etat">Chargement des tickets…</div></div>
-    <p class="note">Un ticket peut regrouper des matchs de plusieurs jours : chaque sélection indique sa date et son heure. Le drapeau est celui du pays du championnat, pas celui des équipes.</p>
-    <a class="lien-tous" href="tickets.html">Voir tous les tickets et composer le vôtre →</a>
+    <p class="note">Chaque ticket a 10 matchs au plus, entre 10 h et minuit (heure de Douala), et un match n'apparaît que sur un seul ticket. S'il y a moins de 10 matchs qui remplissent les règles, le ticket en a moins : on ne force jamais. Le drapeau est celui du pays du championnat.</p>
+    <a class="lien-tous" href="tickets_alpha.html">Voir le traitement séquentiel des tickets (moteur alpha) →</a>
   </section>
 
   <div class="colonne">
@@ -239,8 +239,8 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer a{text-decoration:non
   <div class="carte">
     <h2 id="titre-methode">Comment ça marche ?</h2>
     <ol>
-      <li><h3>Analyse</h3><p>Le moteur V3 et le Journal étudient les matchs disposant de cotes à partir des statistiques des équipes.</p></li>
-      <li><h3>Tickets</h3><p>Le générateur compose des tickets au hasard parmi les meilleurs paris, jamais deux fois le même match.</p></li>
+      <li><h3>Analyse</h3><p>Le moteur alpha compare chaque pari aux derniers matchs des deux équipes : à domicile pour celle qui reçoit, à l'extérieur pour l'autre.</p></li>
+      <li><h3>Tickets</h3><p>Trois tickets par jour, un par famille de pari (Résultat, Peu de buts, Buts), avec les mêmes règles chaque jour, enregistrés avant le premier match.</p></li>
       <li><h3>Résultats publiés</h3><p>Chaque pari est réglé après le match et compté dans les statistiques, qu'il soit gagné ou perdu.</p></li>
       <li><h3>Votre décision</h3><p>Vous reportez le ticket sur votre plateforme de pari et décidez seul de le jouer, avec la mise de votre choix.</p></li>
     </ol>
@@ -307,7 +307,7 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer a{text-decoration:non
     if (a === b) return a === JOUR_PRESENT ? "Aujourd'hui" : jourCourt(a);
     return jourCourt(a) + " → " + jourCourt(b);
   }
-  var NOMS = {PRUDENT_2:"Prudent", PRUDENT_3:"Prudent", EQUILIBRE_4:"Équilibré", EQUILIBRE_5:"Équilibré", EQUILIBRE_8:"Équilibré", OBJECTIF_COTE_10:"Objectif cote 10"};
+  var PHRASES = {accueil_resultat: "Qui gagne ou ne perd pas : double chance, handicap.", accueil_peu_de_buts: "Matchs fermés : moins de buts que la limite.", accueil_buts: "Matchs ouverts : au moins un ou deux buts."};
 
   // Chiffres du bandeau : réussite RÉELLEMENT observée (paris réglés), jamais une probabilité de modèle.
   fetch("data/selection_generateur_historique.json", {cache: "no-store"}).then(function(r){ return r.json(); }).then(function(d){
@@ -323,53 +323,50 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer a{text-decoration:non
     texte("c-total", entier.format(total));
   }).catch(function(){ ["c-v3","c-journal","c-total"].forEach(function(id){ texte(id, "—"); }); texte("c-v3-txt", "Statistiques indisponibles pour le moment"); });
 
-  // Tickets du jour : data/tickets.json (générateur existant), sans aucun calcul supplémentaire.
+  // Les 3 tickets du jour (25/10/2026) : data/alpha_serie/tickets_accueil.json, écrit chaque nuit par alpha_serie/tickets.py
+  // (gelés avant le premier match). Aucun calcul ici : la page affiche ce qui est suivi.
   var liste = document.getElementById("liste-tickets");
   function details(t){
-    var m = t.metrics || {}, n = (t.selection || []).length, c = m.cote_totale;
+    var n = (t.selection || []).length, c = t.cote_totale;
     texte("d-n", n || "—");
     texte("d-cote", c ? fr.format(c) : "—");
-    texte("d-dates", libelleDates(t) || "—");
+    texte("d-dates", n ? libelleDates(t) : "—");
     texte("d-gain", c ? entier.format(Math.round(c * 1000)) + " FCFA" : "—");
     texte("d-net", c ? "+ " + entier.format(Math.round((c - 1) * 1000)) + " FCFA" : "—");
-    Array.prototype.forEach.call(liste.querySelectorAll(".ticket"), function(el){ el.setAttribute("aria-selected", el.dataset.cle === t.scenario ? "true" : "false"); });
+    Array.prototype.forEach.call(liste.querySelectorAll(".ticket"), function(el){ el.setAttribute("aria-selected", el.dataset.cle === t.cle ? "true" : "false"); });
   }
-  fetch("data/tickets.json", {cache: "no-store"}).then(function(r){ return r.json(); }).then(function(d){
-    JOUR_PRESENT = d.jour_present || null;
-    var tickets = (d.scenarios || []).filter(function(t){ return t.statut === "OK" && (t.selection || []).length; });
-    // Les tickets couvrent plusieurs jours (plage du générateur) : on affiche la période réelle, jamais « du jour ».
-    var toutes = [].concat.apply([], tickets.map(dates)).sort();
-    if (toutes.length) {
-      var j1 = toutes[0], j2 = toutes[toutes.length - 1];
-      texte("date-jour", j1 === j2 ? "Matchs du " + jourCourt(j1) : "Matchs du " + jourCourt(j1) + " au " + jourCourt(j2));
-    }
-    tickets.sort(function(a, b){ var x = dates(a)[0] || "", y = dates(b)[0] || ""; return x < y ? -1 : x > y ? 1 : 0; });
-    if (!tickets.length) { liste.innerHTML = '<div class="vide-etat">Aucun ticket aujourd\'hui : le générateur ne force jamais un ticket quand les paris manquent.</div>'; return; }
+  function heureSel(x){ return x.heure || ""; }
+  fetch("data/alpha_serie/tickets_accueil.json", {cache: "no-store"}).then(function(r){ return r.json(); }).then(function(d){
+    JOUR_PRESENT = d.jour || null;
+    var tickets = d.tickets || [], max = d.max || 10;
+    if (d.jour) texte("date-jour", "Matchs du " + jourCourt(d.jour));
+    if (!tickets.some(function(t){ return (t.selection || []).length; })) { liste.innerHTML = '<div class="vide-etat">Aucun ticket aujourd\'hui : aucun match ne remplit les règles entre 10 h et minuit. Mieux vaut ne pas jouer que jouer au hasard.</div>'; return; }
     liste.innerHTML = tickets.map(function(t){
-      var sel = t.selection.slice().sort(function(a, b){ return (a.date + (a.heure || "")) < (b.date + (b.heure || "")) ? -1 : 1; }), c = (t.metrics || {}).cote_totale;
-      // Toutes les sélections sont listées, chacune avec sa date, son heure et le drapeau du pays de SON championnat.
+      var sel = (t.selection || []).slice().sort(function(a, b){ return heureSel(a) < heureSel(b) ? -1 : heureSel(a) > heureSel(b) ? 1 : 0; }), c = t.cote_totale;
       var lignes = sel.map(function(x){
         var dr = typeof drapeauCompetition === "function" ? drapeauCompetition(x.competition) : {symbole: ""};
         var nomComp = String(x.competition || "").replace(/\s+/g, " ").trim();
-        return '<li class="sel"><span class="quand num">' + echappe(jourCourt(x.date)) + '<br>' + echappe(x.heure || "") + '</span>' +
+        return '<li class="sel"><span class="quand num">' + echappe(x.heure || "") + '</span>' +
           '<span class="quoi"><span class="comp">' + (dr.symbole ? '<span class="drapeau" role="img" aria-label="' + echappe(dr.pays) + '">' + dr.symbole + '</span>' : '') + echappe(nomComp) + '</span>' +
           '<span class="equipes">' + echappe(x.domicile) + ' – ' + echappe(x.exterieur) + '</span>' +
           '<span class="pari">' + echappe(marche(x)) + '</span></span>' +
           '<span class="cote-sel num">' + (x.cote ? fr.format(x.cote) : "—") + '</span></li>';
       }).join("");
-      return '<div class="ticket" role="button" tabindex="0" data-cle="' + echappe(t.scenario) + '">' +
-        '<div class="tete"><div class="badge"><b class="num">' + sel.length + '</b><small>' + (sel.length > 1 ? "sélections" : "sélection") + '</small></div>' +
-        '<div class="titre-ticket"><b>' + echappe(NOMS[t.scenario] || t.scenario) + '</b><span class="jours' + (libelleDates(t) === "Aujourd'hui" ? " auj" : "") + '">' + echappe(libelleDates(t)) + '</span></div>' +
+      var manque = sel.length && sel.length < max ? '<p class="note">Seulement ' + sel.length + ' match' + (sel.length > 1 ? "s remplissent" : " remplit") + ' les règles aujourd\'hui pour ce ticket.</p>' : "";
+      var b = t.bilan, suivi = b && b.tickets ? '<p class="note">Vrais résultats : ' + b.gagnes + ' ticket' + (b.gagnes > 1 ? "s" : "") + ' gagné' + (b.gagnes > 1 ? "s" : "") + ' sur ' + b.tickets + ' · ' + b.paris_gagnes + '/' + b.paris + ' matchs.</p>' : "";
+      var corps = sel.length ? '<ol class="selections">' + lignes + '</ol>' + manque : '<p class="note">Aucun match ne remplit les règles aujourd\'hui pour ce ticket.</p>';
+      return '<div class="ticket" role="button" tabindex="0" data-cle="' + echappe(t.cle) + '">' +
+        '<div class="tete"><div class="badge"><b class="num">' + sel.length + '</b><small>' + (sel.length > 1 ? "matchs" : "match") + '</small></div>' +
+        '<div class="titre-ticket"><b>Ticket ' + echappe(t.nom) + '</b><span class="pari">' + echappe(PHRASES[t.cle] || "") + '</span></div>' +
         '<div class="cote"><small>Cote globale</small><b class="num">' + (c ? fr.format(c) : "—") + '</b></div>' +
-        '<a class="voir" href="tickets.html">Voir le ticket →</a></div>' +
-        '<ol class="selections">' + lignes + '</ol></div>';
+        '<a class="voir" href="tickets_alpha.html">Détails →</a></div>' + corps + suivi + '</div>';
     }).join("");
     Array.prototype.forEach.call(liste.querySelectorAll(".ticket"), function(el, i){
       function choisit(e){ if (e.target.closest("a")) return; details(tickets[i]); }
       el.addEventListener("click", choisit);
       el.addEventListener("keydown", function(e){ if (e.key === "Enter" || e.key === " ") { e.preventDefault(); details(tickets[i]); } });
     });
-    details(tickets[0]);
+    details(tickets.filter(function(t){ return (t.selection || []).length; })[0]);
   }).catch(function(){ liste.innerHTML = '<div class="vide-etat">Les tickets ne sont pas disponibles pour le moment. Réessayez dans quelques minutes.</div>'; });
 })();
 </script>

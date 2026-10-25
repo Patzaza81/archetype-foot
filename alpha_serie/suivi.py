@@ -292,6 +292,7 @@ def pipeline() -> dict[str, Any]:
     t_geles, t_regles = tickets.geler(d["matchs"]), tickets.regler(matchs)
     d["bilan_tickets"] = tickets.bilan()
     PAGE.write_text(json.dumps(d, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    tickets.ecrire_accueil(d["matchs"])                 # les 3 tickets de la page d'accueil (25/10/2026)
     return {"geles": gele, "resultats": resultat, "page_matchs": len(d["matchs"]), "bilan": bilan(),
             "tickets": {"geles": t_geles, "regles": t_regles, "bilan": d["bilan_tickets"]}}
 

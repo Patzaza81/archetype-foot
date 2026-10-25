@@ -114,3 +114,38 @@ def test_palier2_dix_meilleurs_restants():
     assert "m16" not in p2 and "m04" not in p2                           # 09:30 : hors journée ; 79 % : sous le seuil (rien n'est assoupli)
     plein = [match(f"x{i:02d}", f"{10 + i // 2}:{'00' if i % 2 == 0 else '30'}", equipes=[pari("Pas de nul (12)", 1.30, 0.90, ["double_chance", "12"])]) for i in range(28)]
     assert len(T.du_jour(plein, JOUR)["palier2"]) == T.PALIER2_MAX == 10  # jamais plus de 10
+
+
+# --- Page d'accueil : 3 tickets par famille de pari (25/10/2026) --------------------------------------------------------------
+def test_famille_des_paris():
+    assert T.famille(["double_chance", "12"]) == T.famille(["handicap_-1.5", "exterieur"]) == T.famille(["combo", "1N+moins_3.5"]) == "accueil_resultat"
+    assert T.famille(["over_under_3.5", "moins"]) == T.famille(["btts", "Non"]) == "accueil_peu_de_buts"
+    assert T.famille(["over_under_domicile_0.5", "plus"]) == T.famille(["btts", "Oui"]) == T.famille(["cages_inviolees_exterieur", "non"]) == "accueil_buts"
+    assert T.famille(["multigoals", "1-4"]) is None                       # marché inconnu : jamais rangé au hasard
+    assert T.famille(["over_under_2.5", "egal"]) is None and T.famille("over_under_2.5") is None
+
+
+def test_trois_tickets_accueil():
+    cles = [["double_chance", "12"], ["over_under_3.5", "moins"], ["over_under_1.5", "plus"]]
+    page = [match(f"x{i:02d}", f"{10 + i // 3}:{(i % 3) * 15:02d}", equipes=[pari("p", 1.30, 0.95 - i / 1000, cles[i % 3])]) for i in range(36)]
+    page.append(match("deux", "12:05", equipes=[pari("p", 1.30, 0.99, cles[0])], buts=[pari("q", 1.30, 0.98, cles[1])]))
+    page.append(match("tot", "09:00", equipes=[pari("p", 1.30, 0.99, cles[2])]))                # avant 10 h : jamais
+    t = T.du_jour(page, JOUR)
+    ids = [c["match_id"] for f in T.FAMILLES for c in t[f]]
+    assert [len(t[f]) for f in T.FAMILLES] == [10, 10, 10] and len(ids) == len(set(ids))           # 3 × 10, un match une seule fois
+    assert "deux" in [c["match_id"] for c in t["accueil_resultat"]] and "tot" not in ids           # meilleur pari du match ; 09:00 exclu
+    assert all(T.famille(c["cle"]) == f for f in T.FAMILLES for c in t[f])
+    peu = T.du_jour(page[:4], JOUR)
+    assert [len(peu[f]) for f in T.FAMILLES] == [2, 1, 1]                                          # moins de 10 : jamais forcé
+
+
+def test_accueil_affiche_le_gel(tmp_path):
+    j, sortie = tmp_path / "t.jsonl", tmp_path / "acc.json"
+    nuit = datetime(2026, 10, 25, 0, 45, tzinfo=timezone.utc)
+    T.geler(PAGE, nuit, j)
+    d = T.ecrire_accueil(PAGE + [match("tard", "14:00", equipes=[pari("Pas de nul (12)", 1.40, 0.99, ["double_chance", "12"])])], nuit, j, sortie)
+    assert d["gele"] and json.loads(sortie.read_text())["jour"] == JOUR
+    res = next(t for t in d["tickets"] if t["cle"] == "accueil_resultat")
+    assert [c["match_id"] for c in res["selection"]] == ["a"] and res["cote_totale"] == pytest.approx(1.30)   # le match ajouté après le gel n'y est pas
+    html = (RACINE / "index.html").read_text(encoding="utf-8")
+    assert "data/alpha_serie/tickets_accueil.json" in html and "data/tickets.json" not in html
