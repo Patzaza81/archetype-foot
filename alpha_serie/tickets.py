@@ -9,6 +9,10 @@ Python pour être gelées et suivies chaque nuit ; un test vérifie que le navig
 - Palier 2 (25/10/2026, Patrick) : les 10 meilleurs pronostics RESTANTS de la journée (10 h – minuit), mêmes règles, même classement,
   un seul pari par match, aucun match du palier 1. Moins de 10 admissibles : le palier en compte moins (rien n'est assoupli).
 - Palier 3, en test : les paris de `palier2.py` (« le domicile ne marque pas plus de 2 buts » quand les chiffres battent la cote).
+- Page d'accueil (25/10/2026, Patrick) : 3 tickets de 10 matchs au plus, un par famille de pari — Résultat (qui gagne ou ne perd
+  pas : double chance, handicap, 1N2, combinés résultat + buts), Peu de buts (moins de…, les deux ne marquent pas), Buts (plus de…, les
+  deux marquent, une équipe encaisse). Mêmes règles que le palier 1, 10 h – minuit ; chaque match n'apparaît qu'une fois sur les trois
+  tickets, dans la famille de son meilleur pari (ou de son pari admissible suivant si cette famille a déjà 10 matchs). Moins de 10 admissibles : le ticket en compte moins (rien n'est assoupli).
 Gel : chaque nuit, pour le jour courant (Douala), ou pour le lendemain après 22 h (début du dernier créneau), avant le premier match du ticket ; jamais regelé, jamais a posteriori.
 Résultats : quand tous les matchs d'un ticket ont un score. Bilan : uniquement sur des tickets gelés avant les matchs.
 Bibliothèque standard seulement. Le moteur alpha (`coeur.py`) n'est ni appelé ni modifié.
@@ -22,9 +26,11 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
 JOURNAL = ROOT / "data" / "alpha_serie" / "tickets_journal.jsonl"
-PALIERS = ("palier1", "palier2", "palier3")
+FAMILLES = {"accueil_resultat": "Résultat", "accueil_peu_de_buts": "Peu de buts", "accueil_buts": "Buts"}
+PALIERS = ("palier1", "palier2", "palier3") + tuple(FAMILLES)
+ACCUEIL = ROOT / "data" / "alpha_serie" / "tickets_accueil.json"
 
-COTE_MIN, VALEUR_MIN, CONFIRMATION_MIN, MATCHS_MIN, PAR_TRANCHE, PALIER2_MAX = 1.25, 0.80, 0.75, 5, 2, 10
+COTE_MIN, VALEUR_MIN, CONFIRMATION_MIN, MATCHS_MIN, PAR_TRANCHE, PALIER2_MAX, ACCUEIL_MAX = 1.25, 0.80, 0.75, 5, 2, 10, 10
 DEBUT, PAS, FIN = 10 * 60, 120, 24 * 60
 DOUALA = timezone(timedelta(hours=1))
 
@@ -124,6 +130,34 @@ def palier_2(cands: list[dict], p1: list[dict]) -> list[dict]:
     return out
 
 
+def famille(cle: Any) -> str | None:
+    """Famille d'un pari pour les tickets de l'accueil, d'après sa clé (marché, issue). None : clé inconnue, jamais rangée au hasard."""
+    if not isinstance(cle, (list, tuple)) or len(cle) != 2:
+        return None
+    m, issue = str(cle[0]), str(cle[1]).lower()
+    if m in ("double_chance", "1x2", "combo") or m.startswith("handicap_"):
+        return "accueil_resultat"
+    if m.startswith("over_under"):
+        return {"moins": "accueil_peu_de_buts", "plus": "accueil_buts"}.get(issue)
+    if m == "btts":
+        return {"non": "accueil_peu_de_buts", "oui": "accueil_buts"}.get(issue)
+    if m.startswith("cages_inviolees"):
+        return {"oui": "accueil_peu_de_buts", "non": "accueil_buts"}.get(issue)
+    return None
+
+
+def accueil(cands: list[dict]) -> dict[str, list[dict]]:
+    out: dict[str, list[dict]] = {f: [] for f in FAMILLES}
+    pris: set = set()
+    for c in sorted([c for c in cands if c["admissible"] and DEBUT <= c["debut"] < FIN], key=_ordre):
+        f = famille(c["cle"])
+        if c["match_id"] in pris or not f or len(out[f]) >= ACCUEIL_MAX:
+            continue                         # famille pleine : le pari admissible suivant du même match peut aller dans une autre
+        out[f].append(c)
+        pris.add(c["match_id"])
+    return out
+
+
 def du_jour(matchs: list[dict], jour: str) -> dict[str, Any]:
     cands = candidats(matchs, jour)
     p1 = [t["ticket"][0] for t in tranches(cands) if t["ticket"]]
@@ -133,8 +167,10 @@ def du_jour(matchs: list[dict], jour: str) -> dict[str, Any]:
                  for m in matchs if m.get("date") == jour and m.get("statut") == "analyse" for s in m.get("palier2") or []
                  if _minutes(m.get("heure")) is not None and DEBUT <= _minutes(m.get("heure")) < FIN], key=lambda x: (x["debut"], x["match_id"]))
     garde = ("match_id", "categorie", "cle", "marche", "cote", "valeur", "heure", "debut", "domicile", "exterieur", "competition")
+    acc = accueil(cands)
     return {"jour": jour, "palier1": [{k: c.get(k) for k in garde} for c in p1], "palier2": [{k: c.get(k) for k in garde} for c in p2],
-            "palier3": [{k: c.get(k) for k in garde + ("avantage", "p_estimee", "p_cote")} for c in p3]}
+            "palier3": [{k: c.get(k) for k in garde + ("avantage", "p_estimee", "p_cote")} for c in p3],
+            **{f: [{k: c.get(k) for k in garde} for c in acc[f]] for f in FAMILLES}}
 
 
 # --- Journal : gel, résultats, bilan -----------------------------------------------------------------------------------------
@@ -150,17 +186,22 @@ def _ajouter(journal: Path, lignes: list[dict]) -> None:
                 f.write(json.dumps(l, ensure_ascii=False, separators=(",", ":")) + "\n")
 
 
+def jour_cible(maintenant: datetime) -> str:
+    """Passé le début du dernier créneau (22 h, FIN − PAS), tous les tickets du jour ont commencé : le prochain jour est demain.
+    Le pipeline démarre à 21:00 UTC (22 h à Douala) : s'il finit avant minuit, il gèle demain au lieu de ne rien geler."""
+    local = maintenant.astimezone(DOUALA)
+    return (local + timedelta(days=1) if local.hour * 60 + local.minute >= FIN - PAS else local).strftime("%Y-%m-%d")
+
+
 def geler(matchs_page: list[dict], maintenant: datetime | None = None, journal: Path = JOURNAL) -> int:
     """Gèle les tickets du jour courant (Douala) si aucun de leurs matchs n'a commencé. Un jour déjà gelé ne l'est jamais deux fois."""
     maintenant = maintenant or datetime.now(timezone.utc)
     local = maintenant.astimezone(DOUALA)
-    # Passé le début du dernier créneau (22 h, FIN − PAS), tous les tickets du jour ont commencé : le prochain jour à geler est demain.
-    # Le pipeline démarre à 21:00 UTC (22 h à Douala) : s'il finit avant minuit, il gèle demain au lieu de ne rien geler.
-    jour = (local + timedelta(days=1) if local.hour * 60 + local.minute >= FIN - PAS else local).strftime("%Y-%m-%d")
+    jour = jour_cible(maintenant)
     if any(l["type"] == "tickets" and l["jour"] == jour for l in _lire(journal)):
         return 0
     t = du_jour(matchs_page, jour)
-    tous = t["palier1"] + t["palier2"] + t["palier3"]
+    tous = [c for p in PALIERS for c in t[p]]
     if not tous:
         return 0
     minute_now = local.hour * 60 + local.minute if jour == local.strftime("%Y-%m-%d") else -1
@@ -212,3 +253,29 @@ def bilan(journal: Path = JOURNAL) -> dict[str, Any]:
         out[nom] = {"tickets": tickets, "gagnes": gagnes, "paris": legs, "paris_gagnes": legs_g,
                     "rendement_par_ticket": round(rendement / tickets, 4) if tickets else None}
     return out
+
+
+def page_accueil(matchs_page: list[dict], maintenant: datetime | None = None, journal: Path = JOURNAL) -> dict[str, Any]:
+    """Les 3 tickets de l'accueil : ceux GELÉS pour le jour cible quand ils existent (ce qui est suivi est ce qui est affiché) ;
+    sinon calculés sur la page du moment, marqués non gelés."""
+    maintenant = maintenant or datetime.now(timezone.utc)
+    jour = jour_cible(maintenant)
+    gel = next((l for l in reversed(_lire(journal)) if l["type"] == "tickets" and l["jour"] == jour and FAMILLES.keys() <= l.keys()), None)
+    t = gel or du_jour(matchs_page, jour)
+    b = bilan(journal)
+    tickets = []
+    for f, nom in FAMILLES.items():
+        sel, cote = t.get(f, []), 1.0
+        for c in sel:
+            cote *= c["cote"]
+        tickets.append({"cle": f, "nom": nom, "selection": [{**c, "date": jour} for c in sel], "cote_totale": round(cote, 4) if sel else None,
+                        "bilan": b.get(f)})
+    return {"jour": jour, "gele": bool(gel), "gele_le": (gel or {}).get("gele_le"), "max": ACCUEIL_MAX,
+            "genere_le": maintenant.strftime("%Y-%m-%dT%H:%M:%SZ"), "tickets": tickets}
+
+
+def ecrire_accueil(matchs_page: list[dict], maintenant: datetime | None = None, journal: Path = JOURNAL, sortie: Path = ACCUEIL) -> dict[str, Any]:
+    d = page_accueil(matchs_page, maintenant, journal)
+    sortie.parent.mkdir(parents=True, exist_ok=True)
+    sortie.write_text(json.dumps(d, ensure_ascii=False, indent=1), encoding="utf-8")
+    return d

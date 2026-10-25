@@ -229,3 +229,18 @@ Construite au-dessus de `robustesse.py` (ffb25b0), sans le modifier. Aucun autre
 - Le 25/10/2026 : palier 1 = 6 matchs, palier 2 = 9 (seulement 9 restants admissibles), palier 3 = 4.
 - Tests : `tests/test_alpha_tickets_suivi.py` (`test_palier2_dix_meilleurs_restants`, `test_meme_ticket_que_la_page`).
 - Gel du soir (25/10/2026) : le pipeline démarre à 21:00 UTC (22 h à Douala). Après 22 h (début du dernier créneau, `FIN − PAS`), `tickets.geler` gèle le lendemain ; avant, le jour courant. Sans cela, un passage terminé avant minuit ne gelait rien (tous les matchs du jour avaient commencé). Test : `test_gel_du_lendemain_si_le_pipeline_finit_avant_minuit`.
+
+## 25/10/2026 — Page d'accueil : 3 tickets du moteur alpha (demande de Patrick)
+
+- Les tickets de l'ancien générateur (`data/tickets.json`) ne sont plus affichés sur l'accueil. Le générateur, `tickets.html` et la validation Netlify ne changent pas.
+- L'accueil affiche 3 tickets de 10 matchs au plus, un par famille de pari (`tickets.famille`, d'après la clé du pari) :
+  - **Résultat** : double chance, handicap, 1N2, combinés résultat + buts.
+  - **Peu de buts** : moins de…, les deux ne marquent pas, cages inviolées.
+  - **Buts** : plus de…, les deux marquent, une équipe encaisse.
+  Une clé inconnue n'est rangée nulle part.
+- Mêmes règles que le palier 1, de 10 h à minuit. Les paris sont pris dans l'ordre du classement ; un match n'apparaît qu'une fois sur les trois tickets, dans la famille de son meilleur pari, ou de son pari admissible suivant si cette famille a déjà 10 matchs. Moins de 10 admissibles → le ticket en a moins : rien n'est assoupli.
+- Gel et suivi : clés `accueil_resultat`, `accueil_peu_de_buts`, `accueil_buts` du journal des tickets, avec le même gel et le même bilan que les paliers.
+- Fichier de l'accueil : `data/alpha_serie/tickets_accueil.json`, écrit par `suivi.pipeline` (`tickets.ecrire_accueil`). Il affiche le ticket GELÉ du jour cible quand il existe, sinon le calcul du moment, marqué `gele: false`.
+- Le gel du 25/10/2026 a été refait une seconde fois à 02:29 UTC (03:29 à Douala, avant le premier match de 13:00) pour y ajouter les 3 tickets ; les paliers 1, 2 et 3 sont identiques.
+- Le 25/10/2026 : Résultat 7 matchs, Peu de buts 6, Buts 2. Avec les données complètes du 24/10, on aurait eu 3, 10 et 10.
+- Tests : `test_famille_des_paris`, `test_trois_tickets_accueil`, `test_accueil_affiche_le_gel`.
