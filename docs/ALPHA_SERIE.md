@@ -244,3 +244,14 @@ Construite au-dessus de `robustesse.py` (ffb25b0), sans le modifier. Aucun autre
 - Le gel du 25/10/2026 a été refait une seconde fois à 02:29 UTC (03:29 à Douala, avant le premier match de 13:00) pour y ajouter les 3 tickets ; les paliers 1, 2 et 3 sont identiques.
 - Le 25/10/2026 : Résultat 7 matchs, Peu de buts 6, Buts 2. Avec les données complètes du 24/10, on aurait eu 3, 10 et 10.
 - Tests : `test_famille_des_paris`, `test_trois_tickets_accueil`, `test_accueil_affiche_le_gel`.
+
+## 25/10/2026 — Accueil : tickets rangés par classement au lieu du type de pari (remarque de Patrick)
+
+- Ce qui remplace le découpage par famille : ranger des matchs de championnats et de contextes différents par type de pari n'a pas de sens (remarque de Patrick). Le découpage par famille (Résultat / Peu de buts / Buts) est abandonné le jour même.
+- Les paris admissibles de la journée (mêmes règles que le palier 1, de 10 h à minuit, un pari par match) sont rangés dans l'ordre du classement du moteur, puis coupés en tickets :
+  - ticket 1 = rangs 1 à 10 ;
+  - ticket 2 = rangs 11 à 20 ;
+  - ticket 3 = rangs 21 à 30.
+- Les clés du journal sont `accueil_1`, `accueil_2`, `accueil_3`. Moins de 30 admissibles → les derniers tickets en comptent moins ; rien n'est assoupli.
+- Le gel du 25/10/2026 a été refait une troisième fois, à 02:35 UTC (03:35 à Douala, avant le premier match de 13:00) ; les paliers 1, 2 et 3 sont identiques. Résultat du 25/10 : 10, 5 et 0 matchs.
+- Tests : `test_trois_tickets_accueil_par_classement`, `test_accueil_jamais_force`, `test_accueil_affiche_le_gel`.

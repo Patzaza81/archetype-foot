@@ -9,10 +9,10 @@ Python pour être gelées et suivies chaque nuit ; un test vérifie que le navig
 - Palier 2 (25/10/2026, Patrick) : les 10 meilleurs pronostics RESTANTS de la journée (10 h – minuit), mêmes règles, même classement,
   un seul pari par match, aucun match du palier 1. Moins de 10 admissibles : le palier en compte moins (rien n'est assoupli).
 - Palier 3, en test : les paris de `palier2.py` (« le domicile ne marque pas plus de 2 buts » quand les chiffres battent la cote).
-- Page d'accueil (25/10/2026, Patrick) : 3 tickets de 10 matchs au plus, un par famille de pari — Résultat (qui gagne ou ne perd
-  pas : double chance, handicap, 1N2, combinés résultat + buts), Peu de buts (moins de…, les deux ne marquent pas), Buts (plus de…, les
-  deux marquent, une équipe encaisse). Mêmes règles que le palier 1, 10 h – minuit ; chaque match n'apparaît qu'une fois sur les trois
-  tickets, dans la famille de son meilleur pari (ou de son pari admissible suivant si cette famille a déjà 10 matchs). Moins de 10 admissibles : le ticket en compte moins (rien n'est assoupli).
+- Page d'accueil (25/10/2026, Patrick) : 3 tickets de 10 matchs au plus, rangés par CLASSEMENT (pas par type de pari : des matchs de
+  championnats et de contextes différents n'ont rien en commun du fait de leur marché). Ticket 1 = les 10 paris les mieux classés de
+  la journée (10 h – minuit), ticket 2 = les 10 suivants, ticket 3 = les 10 suivants ; mêmes règles que le palier 1, un pari par match,
+  un match sur un seul ticket. Moins de 30 admissibles : les derniers tickets en comptent moins (rien n'est assoupli).
 Gel : chaque nuit, pour le jour courant (Douala), ou pour le lendemain après 22 h (début du dernier créneau), avant le premier match du ticket ; jamais regelé, jamais a posteriori.
 Résultats : quand tous les matchs d'un ticket ont un score. Bilan : uniquement sur des tickets gelés avant les matchs.
 Bibliothèque standard seulement. Le moteur alpha (`coeur.py`) n'est ni appelé ni modifié.
@@ -26,7 +26,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
 JOURNAL = ROOT / "data" / "alpha_serie" / "tickets_journal.jsonl"
-FAMILLES = {"accueil_resultat": "Résultat", "accueil_peu_de_buts": "Peu de buts", "accueil_buts": "Buts"}
+FAMILLES = {"accueil_1": "les mieux classés", "accueil_2": "la suite du classement", "accueil_3": "le troisième groupe"}
 PALIERS = ("palier1", "palier2", "palier3") + tuple(FAMILLES)
 ACCUEIL = ROOT / "data" / "alpha_serie" / "tickets_accueil.json"
 
@@ -130,32 +130,14 @@ def palier_2(cands: list[dict], p1: list[dict]) -> list[dict]:
     return out
 
 
-def famille(cle: Any) -> str | None:
-    """Famille d'un pari pour les tickets de l'accueil, d'après sa clé (marché, issue). None : clé inconnue, jamais rangée au hasard."""
-    if not isinstance(cle, (list, tuple)) or len(cle) != 2:
-        return None
-    m, issue = str(cle[0]), str(cle[1]).lower()
-    if m in ("double_chance", "1x2", "combo") or m.startswith("handicap_"):
-        return "accueil_resultat"
-    if m.startswith("over_under"):
-        return {"moins": "accueil_peu_de_buts", "plus": "accueil_buts"}.get(issue)
-    if m == "btts":
-        return {"non": "accueil_peu_de_buts", "oui": "accueil_buts"}.get(issue)
-    if m.startswith("cages_inviolees"):
-        return {"oui": "accueil_peu_de_buts", "non": "accueil_buts"}.get(issue)
-    return None
-
-
 def accueil(cands: list[dict]) -> dict[str, list[dict]]:
-    out: dict[str, list[dict]] = {f: [] for f in FAMILLES}
-    pris: set = set()
+    """Les paris admissibles de la journée, un par match, dans l'ordre du classement, coupés en tickets de ACCUEIL_MAX."""
+    rang, pris = [], set()
     for c in sorted([c for c in cands if c["admissible"] and DEBUT <= c["debut"] < FIN], key=_ordre):
-        f = famille(c["cle"])
-        if c["match_id"] in pris or not f or len(out[f]) >= ACCUEIL_MAX:
-            continue                         # famille pleine : le pari admissible suivant du même match peut aller dans une autre
-        out[f].append(c)
-        pris.add(c["match_id"])
-    return out
+        if c["match_id"] not in pris:
+            rang.append(c)
+            pris.add(c["match_id"])
+    return {f: rang[i * ACCUEIL_MAX:(i + 1) * ACCUEIL_MAX] for i, f in enumerate(FAMILLES)}
 
 
 def du_jour(matchs: list[dict], jour: str) -> dict[str, Any]:

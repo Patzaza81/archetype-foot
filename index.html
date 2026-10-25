@@ -207,7 +207,7 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer a{text-decoration:non
     <div class="entete"><h2 id="titre-tickets">Les 3 tickets du jour — moteur alpha</h2><span class="date" id="date-jour"></span></div>
     <div class="onglets"><span class="onglet">Football</span><span class="onglet-note">Seul sport analysé aujourd'hui</span></div>
     <div id="liste-tickets"><div class="vide-etat">Chargement des tickets…</div></div>
-    <p class="note">Chaque ticket a 10 matchs au plus, entre 10 h et minuit (heure de Douala), et un match n'apparaît que sur un seul ticket. S'il y a moins de 10 matchs qui remplissent les règles, le ticket en a moins : on ne force jamais. Le drapeau est celui du pays du championnat.</p>
+    <p class="note">Les paris sont rangés du mieux classé au moins bien classé par le moteur alpha, puis coupés en tickets de 10 matchs au plus, entre 10 h et minuit (heure de Douala) ; un match n'apparaît que sur un seul ticket. S'il y a moins de 10 matchs qui remplissent les règles, le ticket en a moins : on ne force jamais. Le drapeau est celui du pays du championnat.</p>
     <a class="lien-tous" href="tickets_alpha.html">Voir le traitement séquentiel des tickets (moteur alpha) →</a>
   </section>
 
@@ -240,7 +240,7 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer a{text-decoration:non
     <h2 id="titre-methode">Comment ça marche ?</h2>
     <ol>
       <li><h3>Analyse</h3><p>Le moteur alpha compare chaque pari aux derniers matchs des deux équipes : à domicile pour celle qui reçoit, à l'extérieur pour l'autre.</p></li>
-      <li><h3>Tickets</h3><p>Trois tickets par jour, un par famille de pari (Résultat, Peu de buts, Buts), avec les mêmes règles chaque jour, enregistrés avant le premier match.</p></li>
+      <li><h3>Tickets</h3><p>Trois tickets par jour : les 10 paris les mieux classés, puis les 10 suivants, puis les 10 d'après, avec les mêmes règles chaque jour, enregistrés avant le premier match.</p></li>
       <li><h3>Résultats publiés</h3><p>Chaque pari est réglé après le match et compté dans les statistiques, qu'il soit gagné ou perdu.</p></li>
       <li><h3>Votre décision</h3><p>Vous reportez le ticket sur votre plateforme de pari et décidez seul de le jouer, avec la mise de votre choix.</p></li>
     </ol>
@@ -307,7 +307,7 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer a{text-decoration:non
     if (a === b) return a === JOUR_PRESENT ? "Aujourd'hui" : jourCourt(a);
     return jourCourt(a) + " → " + jourCourt(b);
   }
-  var PHRASES = {accueil_resultat: "Qui gagne ou ne perd pas : double chance, handicap.", accueil_peu_de_buts: "Matchs fermés : moins de buts que la limite.", accueil_buts: "Matchs ouverts : au moins un ou deux buts."};
+  var PHRASES = {accueil_1: "Les paris les mieux classés par le moteur alpha aujourd'hui.", accueil_2: "Les 10 suivants du classement.", accueil_3: "Les 10 suivants, encore un cran en dessous."};
 
   // Chiffres du bandeau : réussite RÉELLEMENT observée (paris réglés), jamais une probabilité de modèle.
   fetch("data/selection_generateur_historique.json", {cache: "no-store"}).then(function(r){ return r.json(); }).then(function(d){
@@ -341,7 +341,7 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer a{text-decoration:non
     var tickets = d.tickets || [], max = d.max || 10;
     if (d.jour) texte("date-jour", "Matchs du " + jourCourt(d.jour));
     if (!tickets.some(function(t){ return (t.selection || []).length; })) { liste.innerHTML = '<div class="vide-etat">Aucun ticket aujourd\'hui : aucun match ne remplit les règles entre 10 h et minuit. Mieux vaut ne pas jouer que jouer au hasard.</div>'; return; }
-    liste.innerHTML = tickets.map(function(t){
+    liste.innerHTML = tickets.map(function(t, i){
       var sel = (t.selection || []).slice().sort(function(a, b){ return heureSel(a) < heureSel(b) ? -1 : heureSel(a) > heureSel(b) ? 1 : 0; }), c = t.cote_totale;
       var lignes = sel.map(function(x){
         var dr = typeof drapeauCompetition === "function" ? drapeauCompetition(x.competition) : {symbole: ""};
@@ -357,7 +357,7 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer a{text-decoration:non
       var corps = sel.length ? '<ol class="selections">' + lignes + '</ol>' + manque : '<p class="note">Aucun match ne remplit les règles aujourd\'hui pour ce ticket.</p>';
       return '<div class="ticket" role="button" tabindex="0" data-cle="' + echappe(t.cle) + '">' +
         '<div class="tete"><div class="badge"><b class="num">' + sel.length + '</b><small>' + (sel.length > 1 ? "matchs" : "match") + '</small></div>' +
-        '<div class="titre-ticket"><b>Ticket ' + echappe(t.nom) + '</b><span class="pari">' + echappe(PHRASES[t.cle] || "") + '</span></div>' +
+        '<div class="titre-ticket"><b>Ticket ' + (i + 1) + ' — ' + echappe(t.nom) + '</b><span class="pari">' + echappe(PHRASES[t.cle] || "") + '</span></div>' +
         '<div class="cote"><small>Cote globale</small><b class="num">' + (c ? fr.format(c) : "—") + '</b></div>' +
         '<a class="voir" href="tickets_alpha.html">Détails →</a></div>' + corps + suivi + '</div>';
     }).join("");
