@@ -9,7 +9,7 @@ Python pour être gelées et suivies chaque nuit ; un test vérifie que le navig
 - Palier 2 (25/10/2026, Patrick) : les 10 meilleurs pronostics RESTANTS de la journée (10 h – minuit), mêmes règles, même classement,
   un seul pari par match, aucun match du palier 1. Moins de 10 admissibles : le palier en compte moins (rien n'est assoupli).
 - Palier 3, en test : les paris de `palier2.py` (« le domicile ne marque pas plus de 2 buts » quand les chiffres battent la cote).
-Gel : chaque nuit, pour le jour courant (Douala) seulement, avant le premier match du ticket ; jamais regelé, jamais a posteriori.
+Gel : chaque nuit, pour le jour courant (Douala), ou pour le lendemain après 22 h (début du dernier créneau), avant le premier match du ticket ; jamais regelé, jamais a posteriori.
 Résultats : quand tous les matchs d'un ticket ont un score. Bilan : uniquement sur des tickets gelés avant les matchs.
 Bibliothèque standard seulement. Le moteur alpha (`coeur.py`) n'est ni appelé ni modifié.
 """
@@ -153,14 +153,17 @@ def _ajouter(journal: Path, lignes: list[dict]) -> None:
 def geler(matchs_page: list[dict], maintenant: datetime | None = None, journal: Path = JOURNAL) -> int:
     """Gèle les tickets du jour courant (Douala) si aucun de leurs matchs n'a commencé. Un jour déjà gelé ne l'est jamais deux fois."""
     maintenant = maintenant or datetime.now(timezone.utc)
-    jour = maintenant.astimezone(DOUALA).strftime("%Y-%m-%d")
+    local = maintenant.astimezone(DOUALA)
+    # Passé le début du dernier créneau (22 h, FIN − PAS), tous les tickets du jour ont commencé : le prochain jour à geler est demain.
+    # Le pipeline démarre à 21:00 UTC (22 h à Douala) : s'il finit avant minuit, il gèle demain au lieu de ne rien geler.
+    jour = (local + timedelta(days=1) if local.hour * 60 + local.minute >= FIN - PAS else local).strftime("%Y-%m-%d")
     if any(l["type"] == "tickets" and l["jour"] == jour for l in _lire(journal)):
         return 0
     t = du_jour(matchs_page, jour)
     tous = t["palier1"] + t["palier2"] + t["palier3"]
     if not tous:
         return 0
-    minute_now = (maintenant.astimezone(DOUALA).hour * 60 + maintenant.astimezone(DOUALA).minute)
+    minute_now = local.hour * 60 + local.minute if jour == local.strftime("%Y-%m-%d") else -1
     if min(c["debut"] for c in tous) <= minute_now:
         return 0                                                  # un match a déjà commencé : aucun gel a posteriori
     _ajouter(journal, [{"type": "tickets", "gele_le": maintenant.strftime("%Y-%m-%dT%H:%M:%SZ"), **t}])
