@@ -4,7 +4,10 @@ CORRECTIF 24/10/2026 : la page Betpawa Cameroun est en FRANÇAIS (le lecteur pri
 « Plus de 1.5 », « Oui / Non »), alors que ce lecteur ne connaissait que les titres anglais : aucune cote de combiné n'a jamais été lue
 (0 sur 625 matchs). Les titres et étiquettes français sont maintenant compris en plus des anglais : « Double Chance & Plus de/Moins de |
 Fin de Match » (séparateur « & », « et », « and » ou « + »), « Plus de 1.5 » / « Moins de 2.5 », « Oui » / « Non », lignes « 1X & Oui ».
-La forme exacte de la page française n'a pas encore été vue : `diagnostic_combines` en garde un relevé brut pour vérification.
+CORRECTIF 25/10/2026 : le relevé de la collecte (diagnostic/betpawa_combines.json) montre la vraie disposition, en anglais :
+l'étiquette est RÉPÉTÉE devant chaque cote, une fois par colonne (« Under 1.5 / 12.22 / Under 1.5 / 11.54 / Under 1.5 / 16.47 »
+pour 1X, 12, X2 ; « 1X / 1.68 / 1X / 3.87 » pour Yes, No). Ni l'ancienne lecture ni la française ne la comprenaient : 0 cote
+lue. Elle est maintenant lue (17 relevés sur 17 qui contiennent des combinés).
 
 Titres lus (fin de match seulement) :
   « Double Chance and Over/Under | Full Time »            -> groupe dc_total_<ligne>   , sélection « 1N|plus »
@@ -92,7 +95,21 @@ def _lit_total(bloc, genre, famille, out):
         if not t:
             k += 1
             continue
-        k += 1
+        # Disposition réelle vue le 25/10/2026 (relevé diagnostic/betpawa_combines.json) : l'étiquette est RÉPÉTÉE devant chaque
+        # cote, une fois par colonne (« Under 1.5 / 12.22 / Under 1.5 / 11.54 / Under 1.5 / 16.47 » pour 1X, 12, X2).
+        lab, rep = bloc[k], []
+        while k + 1 < len(bloc) and bloc[k] == lab and _nombre(bloc[k + 1]) is not None:
+            rep.append(_nombre(bloc[k + 1]))
+            k += 2
+        if len(rep) > 1 or (rep and len(entetes) == 1):
+            if len(rep) == len(entetes):
+                for iss, v in zip(entetes, rep):
+                    out.setdefault(f"{famille}_{t[1]}", {})[f"{iss}|{t[0]}"] = v
+            continue
+        if rep:                                   # une seule paire : on revient à la lecture d'origine (cotes à la suite)
+            k -= 1
+        else:
+            k += 1
         vals = []
         while k < len(bloc) and _total(bloc[k]) is None:
             if _nombre(bloc[k]) is not None:
@@ -118,6 +135,16 @@ def _lit_btts(bloc, genre, famille, out):
             continue
         if bloc[k].strip("- ").strip() in BTTS and _nombre(bloc[k]) is None:
             entetes.append(BTTS[bloc[k].strip("- ").strip()])
+        elif _issue(bloc[k], genre) and entetes and k + 3 < len(bloc) and bloc[k + 2] == bloc[k] and _nombre(bloc[k + 1]) is not None:
+            # Disposition réelle (25/10/2026) : « 1X / 1.68 / 1X / 3.87 » = l'issue répétée devant chaque colonne (Yes, No).
+            lab, rep = bloc[k], []
+            while k + 1 < len(bloc) and bloc[k] == lab and _nombre(bloc[k + 1]) is not None:
+                rep.append(_nombre(bloc[k + 1]))
+                k += 2
+            if len(rep) == len(entetes):
+                for e, v in zip(entetes, rep):
+                    out.setdefault(famille, {})[f"{_issue(lab, genre)}|{e}"] = v
+            continue
         elif _issue(bloc[k], genre) and entetes:
             vals = []
             k += 1
