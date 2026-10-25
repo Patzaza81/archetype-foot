@@ -1,14 +1,14 @@
 {
  "version": "1.0.0",
- "genere_le": "2026-10-24 12:53 UTC",
+ "genere_le": "2026-10-25 00:50 UTC",
  "resume": {
-  "equipes_en_cache": 1211,
-  "verifiables": 1022,
-  "coherentes": 1014,
-  "incoherentes": 8,
-  "non_verifiables": 113,
-  "sans_donnees": 76,
-  "taux_incoherence": 0.0078
+  "equipes_en_cache": 1316,
+  "verifiables": 1107,
+  "coherentes": 1095,
+  "incoherentes": 12,
+  "non_verifiables": 123,
+  "sans_donnees": 86,
+  "taux_incoherence": 0.0108
  },
  "methode": "Chaque match connu par les pages de match (même compétition, joué avant l'enregistrement) doit figurer dans la saison enregistrée de l'équipe (même lieu, mêmes buts). Sinon : INCOHERENTE.",
  "incoherentes": [
@@ -42,6 +42,40 @@
      "adversaire": "Macarthur",
      "lieu": "domicile",
      "score_equipe": "1-1"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "chapecoense",
+   "competition": "brésil : série a",
+   "url": "https://www.matchendirect.fr/equipe/chapecoense_dcmhxgsc612y27h5p2rzqy7i.html",
+   "enregistre_le": "2026-10-24",
+   "matchs_enregistres": 24,
+   "matchs_connus": 7,
+   "manquants": [
+    {
+     "date": "2026-10-23",
+     "adversaire": "Fluminense",
+     "lieu": "domicile",
+     "score_equipe": "2-1"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "fluminense",
+   "competition": "brésil : série a",
+   "url": "https://www.matchendirect.fr/equipe/fluminense_2ldx5vhhqfz2rllkgp7wpa744.html",
+   "enregistre_le": "2026-10-24",
+   "matchs_enregistres": 24,
+   "matchs_connus": 7,
+   "manquants": [
+    {
+     "date": "2026-10-23",
+     "adversaire": "Chapecoense",
+     "lieu": "extérieur",
+     "score_equipe": "1-2"
     }
    ],
    "statut": "INCOHERENTE"
@@ -144,6 +178,40 @@
      "adversaire": "S. Hiroshima",
      "lieu": "extérieur",
      "score_equipe": "0-4"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "dep recoleta",
+   "competition": "paraguay : professionnel de la division clôture",
+   "url": "https://www.matchendirect.fr/equipe/dep-recoleta_24h1lehk43heu9nkp3p7co76y.html",
+   "enregistre_le": "2026-10-24",
+   "matchs_enregistres": 24,
+   "matchs_connus": 7,
+   "manquants": [
+    {
+     "date": "2026-10-23",
+     "adversaire": "CS 2 de Mayo",
+     "lieu": "extérieur",
+     "score_equipe": "1-1"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "danubio",
+   "competition": "uruguay : primera division cloture",
+   "url": "https://www.matchendirect.fr/equipe/danubio_13dm67jajkwthfllv5h6uqha6.html",
+   "enregistre_le": "2026-10-24",
+   "matchs_enregistres": 24,
+   "matchs_connus": 8,
+   "manquants": [
+    {
+     "date": "2026-10-23",
+     "adversaire": "D. Maldonado",
+     "lieu": "extérieur",
+     "score_equipe": "1-2"
     }
    ],
    "statut": "INCOHERENTE"
