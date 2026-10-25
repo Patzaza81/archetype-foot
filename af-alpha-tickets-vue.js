@@ -113,18 +113,31 @@
 
   // Vue simple (25/10/2026, Patrick : « un utilisateur qui n'a jamais entendu parler de ça doit comprendre ») :
   // un seul ticket, les matchs dans l'ordre, ce qu'on gagne et ce qu'on perd ; tout le reste est replié pour les connaisseurs.
+  const ptsMatch = (x) => Number(x).toFixed(2).replace(".", ",");
+  // Les éléments qui ont décidé le choix, écrits en clair (25/10/2026, Patrick : « ces paramètres ne sont marqués nulle part »).
+  function pourquoiCeMatch(c) {
+    const m = c.match, e = (c.pronostic && c.pronostic.explication) || {}, g = m.graduation || {};
+    const conf = Array.isArray(e.domicile) && Array.isArray(e.exterieur)
+      ? `Ce pari serait passé dans ${e.domicile[0]} des ${e.domicile[1]} matchs de ${esc(m.domicile)} à domicile et dans ${e.exterieur[0]} des ${e.exterieur[1]} matchs de ${esc(m.exterieur)} à l'extérieur.` : "";
+    const niv = g.dom && g.ext && Number.isFinite(Number(g.dom.pts_match)) && Number.isFinite(Number(g.ext.pts_match))
+      ? `Classement : ${esc(m.domicile)} ${ptsMatch(g.dom.pts_match)} point par match, ${esc(m.exterieur)} ${ptsMatch(g.ext.pts_match)}.` : "Classement non disponible.";
+    return `<ul class="at-pourquoi"><li>Chances selon le moteur : <b>${pct(c.valeur)}</b> · comparé sur <b>${Number(m.n_domicile) || 0} et ${Number(m.n_exterieur) || 0} matchs</b>.</li>` +
+      (conf ? `<li>${conf}</li>` : "") + `<li>${niv}</li></ul>`;
+  }
+
   function ticketDuJour(a) {
-    const etapes = a.methodeA;
+    const etapes = a.ticketLong;
     if (!etapes.length) return `<section class="ax-carte at-carte at-simple"><h2 class="at-simple-titre">Pas de ticket ce jour-là</h2><p class="at-vide">Aucun match ne remplit nos règles entre 10 h et minuit. Mieux vaut ne pas jouer que jouer au hasard.</p></section>`;
-    const n = Math.min(longueur || etapes.length, etapes.length), e = etapes[n - 1], choisis = etapes.slice(0, n);
+    const n = Math.min(longueur || a.methodeA.length, etapes.length), e = etapes[n - 1];
+    const choisis = etapes.slice(0, n).map((x) => x.ajout).sort((x, y) => x.debut - y.debut);
     const retour = mise * e.cote;
     const choix = etapes.length > 1 ? `<div class="at-choix" role="group" aria-label="Nombre de matchs dans le ticket">${etapes.map((x, i) => `<button type="button" data-longueur="${i + 1}" aria-pressed="${i + 1 === n}">${i + 1} match${i ? "s" : ""}<small>× ${cote(x.cote)}</small></button>`).join("")}</div>` +
-      `<p class="at-aide">Moins de matchs = gain plus petit, mais plus de chances que le ticket passe.</p>` : "";
-    const lignes = choisis.map((x, i) => `<li><span class="at-num">${i + 1}</span><div><p class="at-qui"><b>${esc(x.ajout.match.heure)}</b> · ${esc(x.ajout.match.domicile)} – ${esc(x.ajout.match.exterieur)}</p>` +
-      `<p class="at-quoi">${esc(clair(x.ajout) || x.ajout.marche)}</p><p class="at-ou">${esc(compet(x.ajout.match))} · sur Betpawa : « ${esc(x.ajout.marche)} » à ${cote(x.ajout.cote)}</p></div></li>`).join("");
+      `<p class="at-aide">Plus de matchs = gain plus grand, mais beaucoup plus de risques que le ticket perde. Les ${a.methodeA.length} premiers sont les meilleurs de chaque créneau de 2 heures ; les suivants sont les deuxièmes meilleurs.</p>` : "";
+    const lignes = choisis.map((x, i) => `<li><span class="at-num">${i + 1}</span><div><p class="at-qui"><b>${esc(x.match.heure)}</b> · ${esc(x.match.domicile)} – ${esc(x.match.exterieur)}</p>` +
+      `<p class="at-quoi">${esc(clair(x) || x.marche)}</p><p class="at-ou">${esc(compet(x.match))} · sur Betpawa : « ${esc(x.marche)} » à ${cote(x.cote)}</p>${pourquoiCeMatch(x)}</div></li>`).join("");
     return `<section class="ax-carte at-carte at-simple">` +
       `<h2 class="at-simple-titre">Le ticket du jour</h2>` +
-      `<p class="at-phrase">Mets ces ${n} match${n > 1 ? "s" : ""} sur <b>un seul ticket</b>, avant ${esc(choisis[0].ajout.match.heure)}.</p>` +
+      `<p class="at-phrase">Mets ces ${n} match${n > 1 ? "s" : ""} sur <b>un seul ticket</b>, avant ${esc(choisis[0].match.heure)}.</p>` +
       choix +
       `<div class="at-gros"><div><small>Tu mises</small><strong>${fcfa(mise)}</strong></div><div class="at-fleche" aria-hidden="true">→</div><div><small>Si tout passe, tu reçois</small><strong class="at-plus">${fcfa(retour)}</strong></div></div>` +
       `<p class="at-risque">Si <b>un seul</b> de ces matchs rate, tu perds tes ${fcfa(mise)}.</p>` +
@@ -135,7 +148,8 @@
     return `<details class="ax-carte at-carte at-regles"><summary>Comment ces matchs sont choisis ?</summary><ul>` +
       `<li>Le moteur alpha regarde les derniers matchs de chaque équipe : à domicile pour celle qui reçoit, à l'extérieur pour l'autre.</li>` +
       `<li>On garde seulement les paris que ces matchs confirment presque à chaque fois, avec une cote Betpawa.</li>` +
-      `<li>On prend le meilleur pari de chaque créneau de 2 heures, de 10 h à minuit.</li>` +
+      `<li>Un pari est gardé si le moteur lui donne au moins ${Math.round(T.REGLES.valeurMin * 100)} % de chances, s'il serait passé dans au moins ${Math.round(T.REGLES.confirmationMin * 100)} % des derniers matchs de chaque équipe, avec au moins ${T.REGLES.matchsMin} matchs comparés de chaque côté.</li>` +
+      `<li>On prend le meilleur pari de chaque créneau de 2 heures, de 10 h à minuit (puis le deuxième meilleur si tu veux un ticket plus long).</li>` +
       `<li>Rien n'est sûr à 100 % : un match peut toujours surprendre. Ne mise que ce que tu peux te permettre de perdre.</li></ul></details>`;
   }
 

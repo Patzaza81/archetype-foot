@@ -95,7 +95,7 @@ body.af-alpha .at-gros strong { font-size: 22px; font-weight: 800; color: var(--
 body.af-alpha .at-fleche { font-size: 22px; color: var(--ax-doux); }
 body.af-alpha .at-risque { margin: 10px 0 12px; padding: 8px 10px; border-radius: 9px; background: rgba(180,65,59,.10); font-size: 13.5px; line-height: 1.4; color: var(--ax-texte); }
 body.af-alpha .at-liste-simple { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
-body.af-alpha .at-liste-simple li { display: flex; gap: 10px; align-items: flex-start; }
+body.af-alpha .at-liste-simple > li { display: flex; gap: 10px; align-items: flex-start; }
 body.af-alpha .at-liste-simple p { margin: 0; line-height: 1.35; }
 body.af-alpha .at-qui { font-size: 14px; color: var(--ax-texte); }
 body.af-alpha .at-quoi { font-size: 16px; font-weight: 800; color: var(--ax-accent-texte, #087F78); }
@@ -106,3 +106,6 @@ body.af-alpha .at-expert[open] > summary { margin-bottom: 10px; }
 body.af-alpha.theme-nuit .at-choix button { background: #1E2230; border-color: #2E3342; color: #F1EFF7; }
 body.af-alpha.theme-nuit .at-choix button[aria-pressed="true"] { background: #15988D; border-color: #15988D; }
 body.af-alpha.theme-nuit .at-risque { background: rgba(240,138,132,.12); }
+body.af-alpha .at-pourquoi { margin: 4px 0 0; padding-left: 16px; display: grid; gap: 2px; font-size: 12.5px; line-height: 1.4; color: var(--ax-doux); }
+body.af-alpha .at-liste-simple .at-pourquoi li { display: list-item; }
+body.af-alpha .at-pourquoi b { color: var(--ax-texte); }
