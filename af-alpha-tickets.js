@@ -104,6 +104,14 @@
     return etapes;
   }
 
+  // Ticket du jour (vue simple) : d'abord le premier de chaque tranche (= méthode A), puis le deuxième de chaque tranche.
+  // Plus de matchs = multiplicateur plus grand mais ticket plus fragile ; l'utilisateur choisit la longueur.
+  function ticketLong(trs) {
+    const ordre = [...trs.map((t) => t.ticket[0]), ...trs.map((t) => t.ticket[1])].filter(Boolean);
+    let cote = 1;
+    return ordre.map((ajout, i) => { cote *= ajout.cote; return { ajout, cote, selections: i + 1 }; });
+  }
+
   const finEstimee = (sels) => Math.max(...sels.map((s) => s.debut)) + REGLES.dureeMatch;
 
   // Méthode B : à partir de chaque tranche, enchaîne les tickets dont les matchs commencent après la fin et le règlement du précédent.
@@ -158,7 +166,7 @@
 
   function analyse(donnees, jour) {
     const trs = tranches(candidats((donnees && donnees.matchs) || [], jour));
-    return { jour, regles: REGLES, tranches: trs, methodeA: methodeA(trs), chaines: chaines(trs) };
+    return { jour, regles: REGLES, tranches: trs, methodeA: methodeA(trs), ticketLong: ticketLong(trs), chaines: chaines(trs) };
   }
 
   // Jours disponibles (au moins un match analysé avec une heure), du plus proche au plus lointain, à partir de `depuis`.
@@ -166,7 +174,7 @@
     return [...new Set(((donnees && donnees.matchs) || []).filter((m) => m.statut === "analyse" && minutes(m.heure) !== null && m.date >= depuis).map((m) => m.date))].sort();
   }
 
-  const api = { REGLES, minutes, heure, confirmation, candidats, compare, tranches, coteTotale, methodeA, chaines, finances, analyse, jours, finEstimee };
+  const api = { REGLES, minutes, heure, confirmation, candidats, compare, tranches, coteTotale, methodeA, ticketLong, chaines, finances, analyse, jours, finEstimee };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else racine.AlphaTickets = api;
 })(typeof window !== "undefined" ? window : globalThis);

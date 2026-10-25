@@ -118,3 +118,10 @@ def test_page_branchee():
     assert "Traitement séquentiel des tickets" in html and 'href="tickets_alpha.html" aria-current="page"' in html
     alpha = (RACINE / "pronostics_comportement.html").read_text(encoding="utf-8")
     assert 'href="tickets_alpha.html">Traitement séquentiel des tickets</a>' in alpha
+
+
+def test_ticket_long_premiers_puis_deuxiemes():
+    code = ANALYSE.split("console.log")[0] + "console.log(JSON.stringify(a.ticketLong.map((e) => [e.ajout.match_id, e.cote])));"
+    r = node(code, AUDIT)
+    assert [x[0] for x in r] == ["atyrau", "jelgava", "nublense", "borac", "calera", "pacific", "ameliano", "komarno", "moquegua", "palestino"]
+    assert r[5][1] == pytest.approx(5.3979314571) and r[-1][1] == pytest.approx(1.30 * 1.7685 * 1.6254 * 1.49 * 1.6125 * 1.6256)
