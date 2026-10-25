@@ -1,8 +1,8 @@
 {
  "bilan": {
   "avertissement": "Petits échantillons : le taux observé n'est significatif qu'avec beaucoup de paris réglés.",
-  "executions": 67,
-  "genere_le": "2026-10-24T12:53:26.500895+00:00",
+  "executions": 68,
+  "genere_le": "2026-10-25T00:46:11.611809+00:00",
   "par_jour_du_match": {
    "2026-10-09": {
     "cote_moyenne": 1.668,
@@ -117,24 +117,24 @@
     "taux_reussite": 0.3571
    },
    "2026-10-23": {
-    "cote_moyenne": 1.483,
+    "cote_moyenne": 1.476,
     "paris": 33,
-    "proba_moyenne_estimee": 0.7721,
-    "regles": 32,
-    "reussis": 19,
-    "taux_reussite": 0.5938
+    "proba_moyenne_estimee": 0.7744,
+    "regles": 33,
+    "reussis": 20,
+    "taux_reussite": 0.6061
    },
    "2026-10-24": {
-    "cote_moyenne": null,
+    "cote_moyenne": 1.458,
     "paris": 47,
-    "proba_moyenne_estimee": null,
-    "regles": 0,
-    "reussis": 0,
-    "taux_reussite": null
+    "proba_moyenne_estimee": 0.789,
+    "regles": 40,
+    "reussis": 27,
+    "taux_reussite": 0.675
    },
    "2026-10-25": {
     "cote_moyenne": null,
-    "paris": 13,
+    "paris": 36,
     "proba_moyenne_estimee": null,
     "regles": 0,
     "reussis": 0,
@@ -142,7 +142,7 @@
    },
    "2026-10-26": {
     "cote_moyenne": null,
-    "paris": 2,
+    "paris": 4,
     "proba_moyenne_estimee": null,
     "regles": 0,
     "reussis": 0,
@@ -150,7 +150,15 @@
    },
    "2026-10-27": {
     "cote_moyenne": null,
-    "paris": 1,
+    "paris": 4,
+    "proba_moyenne_estimee": null,
+    "regles": 0,
+    "reussis": 0,
+    "taux_reussite": null
+   },
+   "2026-10-28": {
+    "cote_moyenne": null,
+    "paris": 4,
     "proba_moyenne_estimee": null,
     "regles": 0,
     "reussis": 0,
@@ -159,12 +167,12 @@
   },
   "par_source": {
    "journal": {
-    "cote_moyenne": 1.509,
-    "paris": 322,
-    "proba_moyenne_estimee": 0.7154,
-    "regles": 270,
-    "reussis": 165,
-    "taux_reussite": 0.6111
+    "cote_moyenne": 1.504,
+    "paris": 331,
+    "proba_moyenne_estimee": 0.7207,
+    "regles": 289,
+    "reussis": 179,
+    "taux_reussite": 0.6194
    },
    "moteur_v2_6_10": {
     "cote_moyenne": 1.923,
@@ -176,15 +184,15 @@
    },
    "moteur_v3": {
     "cote_moyenne": 1.481,
-    "paris": 209,
-    "proba_moyenne_estimee": 0.7882,
-    "regles": 173,
-    "reussis": 104,
-    "taux_reussite": 0.6012
+    "paris": 232,
+    "proba_moyenne_estimee": 0.7879,
+    "regles": 195,
+    "reussis": 118,
+    "taux_reussite": 0.6051
    }
   },
-  "paris_distincts": 559,
-  "paris_regles": 471
+  "paris_distincts": 591,
+  "paris_regles": 512
  },
  "derniere_erreur": null,
  "executions": [
@@ -85073,6 +85081,1123 @@
     "2026-10-24..2026-10-26": 30,
     "2026-10-24..2026-10-27": 30
    }
+  },
+  {
+   "empreinte": "17b2a0bdfa8616ba",
+   "genere_le": "2026-10-25T00:46:11.201873+00:00",
+   "jour_present": "2026-10-25",
+   "paris": [
+    {
+     "competition": "Colombie : Première A Cloture",
+     "cote": 1.27,
+     "date": "2026-10-25",
+     "domicile": "Dep. Tolima",
+     "ev_estime": null,
+     "exterieur": "Dep. Pasto",
+     "heure": "03:15",
+     "id": "match:2026-10-25|dep tolima|dep pasto|over_under_total_3.5_under|journal",
+     "journal_observations": 6,
+     "journal_team": "Dep. Pasto",
+     "journal_wins": 6,
+     "marche": "Match à moins de 3,5 buts",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_6_SUR_6",
+     "plages": [
+      "2026-10-25..2026-10-25",
+      "2026-10-25..2026-10-26",
+      "2026-10-25..2026-10-27",
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.80665,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Etats-Unis : MLS",
+     "cote": 1.34,
+     "date": "2026-10-25",
+     "domicile": "Portland",
+     "ev_estime": 0.051498,
+     "exterieur": "Charlotte",
+     "heure": "04:30",
+     "id": "match:2026-10-25|portland|charlotte|over_under_total_2.5_over|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_2.5_over",
+     "marche_canonique": "over_under_total_2.5_over",
+     "marge_modele": 0.038431,
+     "match_id": "c5uaz8hppl7brc2lt75ork5xw",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-10-25..2026-10-25",
+      "2026-10-25..2026-10-26",
+      "2026-10-25..2026-10-27",
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.7847,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Japon : J1 Ligue",
+     "cote": 1.41,
+     "date": "2026-10-25",
+     "domicile": "Tokyo",
+     "ev_estime": null,
+     "exterieur": "M. Hollyhock",
+     "heure": "09:00",
+     "id": "match:2026-10-25|tokyo|m hollyhock|over_under_total_3.5_under|journal",
+     "journal_observations": 6,
+     "journal_team": "M. Hollyhock",
+     "journal_wins": 6,
+     "marche": "Match à moins de 3,5 buts",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_6_SUR_6",
+     "plages": [
+      "2026-10-25..2026-10-25",
+      "2026-10-25..2026-10-26",
+      "2026-10-25..2026-10-27",
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.80665,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Indonésie : Ligue 1",
+     "cote": 1.27,
+     "date": "2026-10-25",
+     "domicile": "Arema",
+     "ev_estime": null,
+     "exterieur": "Dewa United",
+     "heure": "10:30",
+     "id": "match:2026-10-25|arema|dewa united|double_chance_X2|journal",
+     "journal_observations": 6,
+     "journal_team": "Dewa United",
+     "journal_wins": 6,
+     "marche": "Ne perd pas (victoire ou nul)",
+     "marche_canonique": "double_chance_X2",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_6_SUR_6",
+     "plages": [
+      "2026-10-25..2026-10-25",
+      "2026-10-25..2026-10-26",
+      "2026-10-25..2026-10-27",
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.792698,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Portugal : Liga Portugal 2",
+     "cote": 1.27,
+     "date": "2026-10-25",
+     "domicile": "AVS",
+     "ev_estime": 0.086358,
+     "exterieur": "Tondela",
+     "heure": "13:00",
+     "id": "match:2026-10-25|avs|tondela|over_under_total_3.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_3.5_under",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": 0.067998,
+     "match_id": "b49308h9noyukj8i4nnbjantg",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-10-25..2026-10-25",
+      "2026-10-25..2026-10-26",
+      "2026-10-25..2026-10-27",
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.8554,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Ukraine : Première Ligue",
+     "cote": 1.37,
+     "date": "2026-10-25",
+     "domicile": "Tchernomorets",
+     "ev_estime": 0.091068,
+     "exterieur": "Karpaty Lviv",
+     "heure": "13:00",
+     "id": "match:2026-10-25|tchernomorets|karpaty lviv|over_under_total_3.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_3.5_under",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": 0.066473,
+     "match_id": "18xnw44qsumfkxa1fs5xh2adw",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-10-25..2026-10-25",
+      "2026-10-25..2026-10-26",
+      "2026-10-25..2026-10-27",
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.7964,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Italie : Serie A",
+     "cote": 1.4,
+     "date": "2026-10-25",
+     "domicile": "Inter",
+     "ev_estime": 0.18314,
+     "exterieur": "Fiorentina",
+     "heure": "13:30",
+     "id": "match:2026-10-25|inter|fiorentina|over_under_total_2.5_over|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_2.5_over",
+     "marche_canonique": "over_under_total_2.5_over",
+     "marge_modele": 0.130814,
+     "match_id": "7gu26r4qboc37xx7wsn37z4t0",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-10-25..2026-10-25",
+      "2026-10-25..2026-10-26"
+     ],
+     "probabilite_estimee": 0.8451,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Kosovo : Superliga",
+     "cote": 1.3,
+     "date": "2026-10-25",
+     "domicile": "FC Prishtina",
+     "ev_estime": null,
+     "exterieur": "KF Drita",
+     "heure": "14:00",
+     "id": "match:2026-10-25|fc prishtina|kf drita|double_chance_1X|journal",
+     "journal_observations": 8,
+     "journal_team": "FC Prishtina",
+     "journal_wins": 8,
+     "marche": "Ne perd pas (victoire ou nul)",
+     "marche_canonique": "double_chance_1X",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_8_SUR_8",
+     "plages": [
+      "2026-10-25..2026-10-25",
+      "2026-10-25..2026-10-26",
+      "2026-10-25..2026-10-27",
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.792698,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Écosse : Premier Ligue",
+     "cote": 1.56,
+     "date": "2026-10-25",
+     "domicile": "Hibernian",
+     "ev_estime": null,
+     "exterieur": "Celtic Glasgow",
+     "heure": "14:00",
+     "id": "match:2026-10-25|hibernian|celtic glasgow|over_under_total_3.5_under|journal",
+     "journal_observations": 6,
+     "journal_team": "Hibernian",
+     "journal_wins": 6,
+     "marche": "Match à moins de 3,5 buts",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_6_SUR_6",
+     "plages": [
+      "2026-10-25..2026-10-25",
+      "2026-10-25..2026-10-26",
+      "2026-10-25..2026-10-27",
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.80665,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Lettonie : Virsliga",
+     "cote": 1.37,
+     "date": "2026-10-25",
+     "domicile": "Jelgava",
+     "ev_estime": 0.159157,
+     "exterieur": "Daugavpils",
+     "heure": "14:00",
+     "id": "match:2026-10-25|jelgava|daugavpils|over_under_total_3.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_3.5_under",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": 0.116173,
+     "match_id": "c8s83orizbi75yq0gngj9bi8k",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-10-25..2026-10-25",
+      "2026-10-25..2026-10-26",
+      "2026-10-25..2026-10-27",
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.8461,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Allemagne : Ligue 3",
+     "cote": 1.41,
+     "date": "2026-10-25",
+     "domicile": "TSV Havelse",
+     "ev_estime": 0.101774,
+     "exterieur": "Sarrebruck",
+     "heure": "14:30",
+     "id": "match:2026-10-25|tsv havelse|sarrebruck|over_under_total_2.5_over|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_2.5_over",
+     "marche_canonique": "over_under_total_2.5_over",
+     "marge_modele": 0.07218,
+     "match_id": "augit7cz5t1vudwqtt2ngq4no",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-10-25..2026-10-25",
+      "2026-10-25..2026-10-26",
+      "2026-10-25..2026-10-27"
+     ],
+     "probabilite_estimee": 0.7814,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Paraguay : Professionnel de la Division Clôture",
+     "cote": 1.31,
+     "date": "2026-10-25",
+     "domicile": "CS Ameliano",
+     "ev_estime": null,
+     "exterieur": "Club Olimpia",
+     "heure": "15:00",
+     "id": "match:2026-10-25|cs ameliano|club olimpia|over_under_total_3.5_under|journal",
+     "journal_observations": 6,
+     "journal_team": "Club Olimpia",
+     "journal_wins": 6,
+     "marche": "Match à moins de 3,5 buts",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_6_SUR_6",
+     "plages": [
+      "2026-10-25..2026-10-25",
+      "2026-10-25..2026-10-26",
+      "2026-10-25..2026-10-27",
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.80665,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Turquie : Super Ligue",
+     "cote": 1.28,
+     "date": "2026-10-25",
+     "domicile": "Konyaspor",
+     "ev_estime": null,
+     "exterieur": "Genclerbirligi",
+     "heure": "15:00",
+     "id": "match:2026-10-25|konyaspor|genclerbirligi|over_under_total_3.5_under|journal",
+     "journal_observations": 6,
+     "journal_team": "Konyaspor",
+     "journal_wins": 6,
+     "marche": "Match à moins de 3,5 buts",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_6_SUR_6",
+     "plages": [
+      "2026-10-25..2026-10-25",
+      "2026-10-25..2026-10-26",
+      "2026-10-25..2026-10-27",
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.80665,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Suisse : Super Ligue",
+     "cote": 1.31,
+     "date": "2026-10-25",
+     "domicile": "Thoune",
+     "ev_estime": null,
+     "exterieur": "Lugano",
+     "heure": "15:00",
+     "id": "match:2026-10-25|thoune|lugano|double_chance_X2|journal",
+     "journal_observations": 6,
+     "journal_team": "Lugano",
+     "journal_wins": 6,
+     "marche": "Ne perd pas (victoire ou nul)",
+     "marche_canonique": "double_chance_X2",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_6_SUR_6",
+     "plages": [
+      "2026-10-25..2026-10-25"
+     ],
+     "probabilite_estimee": 0.792698,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Italie : Série C Girone A",
+     "cote": 1.3,
+     "date": "2026-10-25",
+     "domicile": "Desenzano",
+     "ev_estime": 0.11605,
+     "exterieur": "GIANA Erminio",
+     "heure": "15:30",
+     "id": "match:2026-10-25|desenzano|giana erminio|over_under_total_3.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_3.5_under",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": 0.089269,
+     "match_id": "62mojfq2i63u7wtmz5kmvj7ys",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-10-25..2026-10-25",
+      "2026-10-25..2026-10-26",
+      "2026-10-25..2026-10-27",
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.8585,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P2",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Pays-Bas : Eredivisie",
+     "cote": 1.75,
+     "date": "2026-10-25",
+     "domicile": "PSV Eindhoven",
+     "ev_estime": null,
+     "exterieur": "Feyenoord",
+     "heure": "15:30",
+     "id": "match:2026-10-25|psv eindhoven|feyenoord|double_chance_X2|journal",
+     "journal_observations": 6,
+     "journal_team": "Feyenoord",
+     "journal_wins": 6,
+     "marche": "Ne perd pas (victoire ou nul)",
+     "marche_canonique": "double_chance_X2",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_6_SUR_6",
+     "plages": [
+      "2026-10-25..2026-10-25"
+     ],
+     "probabilite_estimee": 0.792698,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Angleterre : Premier League",
+     "cote": 1.53,
+     "date": "2026-10-25",
+     "domicile": "Crystal Palace",
+     "ev_estime": 0.180395,
+     "exterieur": "Newcastle",
+     "heure": "16:00",
+     "id": "match:2026-10-25|crystal palace|newcastle|over_under_total_2.5_over|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_2.5_over",
+     "marche_canonique": "over_under_total_2.5_over",
+     "marge_modele": 0.117905,
+     "match_id": "4lpv8sflfhjjzuchmwc3ra044",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-10-25..2026-10-25",
+      "2026-10-25..2026-10-26"
+     ],
+     "probabilite_estimee": 0.7715,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Grèce : Super Ligue",
+     "cote": 1.56,
+     "date": "2026-10-25",
+     "domicile": "Olympiakos",
+     "ev_estime": null,
+     "exterieur": "PS PAE Kalamata",
+     "heure": "16:00",
+     "id": "match:2026-10-25|olympiakos|ps pae kalamata|over_under_total_3.5_under|journal",
+     "journal_observations": 6,
+     "journal_team": "Olympiakos",
+     "journal_wins": 6,
+     "marche": "Match à moins de 3,5 buts",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_6_SUR_6",
+     "plages": [
+      "2026-10-25..2026-10-25",
+      "2026-10-25..2026-10-26",
+      "2026-10-25..2026-10-27",
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.80665,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Pays-Bas : Eredivisie",
+     "cote": 1.35,
+     "date": "2026-10-25",
+     "domicile": "S. Rotterdam",
+     "ev_estime": 0.13184,
+     "exterieur": "Ajax Amsterdam",
+     "heure": "17:45",
+     "id": "match:2026-10-25|s rotterdam|ajax amsterdam|over_under_total_2.5_over|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_2.5_over",
+     "marche_canonique": "over_under_total_2.5_over",
+     "marge_modele": 0.097659,
+     "match_id": "arkqfe7ckq0hy1pahhy6c4844",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-10-25..2026-10-25"
+     ],
+     "probabilite_estimee": 0.8384,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P2",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Pays-Bas : Eredivisie Femmes",
+     "cote": 1.44,
+     "date": "2026-10-25",
+     "domicile": "Zwolle",
+     "ev_estime": 0.236528,
+     "exterieur": "Twente",
+     "heure": "17:45",
+     "id": "match:2026-10-25|zwolle|twente|over_under_total_2.5_over|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_2.5_over",
+     "marche_canonique": "over_under_total_2.5_over",
+     "marge_modele": 0.164256,
+     "match_id": "285dkie24p6jpsms25dvj5hck",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-10-25..2026-10-25",
+      "2026-10-25..2026-10-26",
+      "2026-10-25..2026-10-27"
+     ],
+     "probabilite_estimee": 0.8587,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Turquie : Super Ligue",
+     "cote": 1.63,
+     "date": "2026-10-25",
+     "domicile": "Goztepe",
+     "ev_estime": 0.30074,
+     "exterieur": "Corum FK",
+     "heure": "18:00",
+     "id": "match:2026-10-25|goztepe|corum fk|over_under_total_2.5_over|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_2.5_over",
+     "marche_canonique": "over_under_total_2.5_over",
+     "marge_modele": 0.184503,
+     "match_id": "crhbvnp5bfppip4wfpx6hdxxw",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-10-25..2026-10-25",
+      "2026-10-25..2026-10-26",
+      "2026-10-25..2026-10-27"
+     ],
+     "probabilite_estimee": 0.798,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Turquie : TFF 1. Ligue",
+     "cote": 1.37,
+     "date": "2026-10-25",
+     "domicile": "Keciorengucu",
+     "ev_estime": null,
+     "exterieur": "Bursaspor",
+     "heure": "18:00",
+     "id": "match:2026-10-25|keciorengucu|bursaspor|over_under_total_3.5_under|journal",
+     "journal_observations": 6,
+     "journal_team": "Keciorengucu",
+     "journal_wins": 6,
+     "marche": "Match à moins de 3,5 buts",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_6_SUR_6",
+     "plages": [
+      "2026-10-25..2026-10-25",
+      "2026-10-25..2026-10-26",
+      "2026-10-25..2026-10-27",
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.80665,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "France : Ligue 1 McDonald's",
+     "cote": 1.43,
+     "date": "2026-10-25",
+     "domicile": "Rennes",
+     "ev_estime": 0.111253,
+     "exterieur": "Strasbourg",
+     "heure": "18:15",
+     "id": "match:2026-10-25|rennes|strasbourg|over_under_total_2.5_over|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_2.5_over",
+     "marche_canonique": "over_under_total_2.5_over",
+     "marge_modele": 0.077799,
+     "match_id": "9yckoyu3sec76t8t6c50a1n9w",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-10-25..2026-10-25"
+     ],
+     "probabilite_estimee": 0.7771,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Italie : Série C Girone A",
+     "cote": 1.36,
+     "date": "2026-10-25",
+     "domicile": "Pergolettese",
+     "ev_estime": null,
+     "exterieur": "Lumezzane",
+     "heure": "18:30",
+     "id": "match:2026-10-25|pergolettese|lumezzane|double_chance_1X|journal",
+     "journal_observations": 8,
+     "journal_team": "Pergolettese",
+     "journal_wins": 8,
+     "marche": "Ne perd pas (victoire ou nul)",
+     "marche_canonique": "double_chance_1X",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_8_SUR_8",
+     "plages": [
+      "2026-10-25..2026-10-25",
+      "2026-10-25..2026-10-26",
+      "2026-10-25..2026-10-27",
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.792698,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Espagne : Segunda Division",
+     "cote": 1.42,
+     "date": "2026-10-25",
+     "domicile": "Castellon",
+     "ev_estime": 0.133444,
+     "exterieur": "Gijon",
+     "heure": "19:30",
+     "id": "match:2026-10-25|castellon|gijon|over_under_total_3.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_3.5_under",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": 0.093975,
+     "match_id": "43gawf3dim7yfm9s86c52we8k",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-10-25..2026-10-25",
+      "2026-10-25..2026-10-26",
+      "2026-10-25..2026-10-27",
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.7982,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Belgique : 2e Division",
+     "cote": 1.63,
+     "date": "2026-10-25",
+     "domicile": "Liège",
+     "ev_estime": 0.181098,
+     "exterieur": "Patro",
+     "heure": "20:15",
+     "id": "match:2026-10-25|liege|patro|over_under_total_2.5_over|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_2.5_over",
+     "marche_canonique": "over_under_total_2.5_over",
+     "marge_modele": 0.111103,
+     "match_id": "dup3wao2cb2yv93h6e6wbwzdg",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-10-25..2026-10-25",
+      "2026-10-25..2026-10-26"
+     ],
+     "probabilite_estimee": 0.7246,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Colombie : Première A Cloture",
+     "cote": 1.35,
+     "date": "2026-10-25",
+     "domicile": "Fortaleza",
+     "ev_estime": null,
+     "exterieur": "Cali",
+     "heure": "21:00",
+     "id": "match:2026-10-25|fortaleza|cali|double_chance_X2|journal",
+     "journal_observations": 9,
+     "journal_team": "Cali",
+     "journal_wins": 9,
+     "marche": "Ne perd pas (victoire ou nul)",
+     "marche_canonique": "double_chance_X2",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_9_SUR_9",
+     "plages": [
+      "2026-10-25..2026-10-25",
+      "2026-10-25..2026-10-26",
+      "2026-10-25..2026-10-27",
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.792698,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Espagne : LaLiga",
+     "cote": 1.26,
+     "date": "2026-10-25",
+     "domicile": "Barcelone",
+     "ev_estime": null,
+     "exterieur": "Real Madrid",
+     "heure": "22:00",
+     "id": "match:2026-10-25|barcelone|real madrid|double_chance_1X|journal",
+     "journal_observations": 6,
+     "journal_team": "Barcelone",
+     "journal_wins": 6,
+     "marche": "Ne perd pas (victoire ou nul)",
+     "marche_canonique": "double_chance_1X",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_6_SUR_6",
+     "plages": [
+      "2026-10-25..2026-10-25",
+      "2026-10-25..2026-10-26",
+      "2026-10-25..2026-10-27",
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.792698,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "République Dominicaine : IV Liga Mayor",
+     "cote": 1.29,
+     "date": "2026-10-25",
+     "domicile": "Delfines",
+     "ev_estime": null,
+     "exterieur": "Salcedo",
+     "heure": "22:00",
+     "id": "match:2026-10-25|delfines|salcedo|double_chance_X2|journal",
+     "journal_observations": 6,
+     "journal_team": "Salcedo",
+     "journal_wins": 6,
+     "marche": "Ne perd pas (victoire ou nul)",
+     "marche_canonique": "double_chance_X2",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_6_SUR_6",
+     "plages": [
+      "2026-10-25..2026-10-25",
+      "2026-10-25..2026-10-26",
+      "2026-10-25..2026-10-27",
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.792698,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Pérou : Primera Division Cloture",
+     "cote": 1.44,
+     "date": "2026-10-25",
+     "domicile": "Sport Boys",
+     "ev_estime": 0.111392,
+     "exterieur": "FC Cajamarca",
+     "heure": "22:30",
+     "id": "match:2026-10-25|sport boys|fc cajamarca|over_under_total_3.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_3.5_under",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": 0.077356,
+     "match_id": "ae33flcb9k0p94he3plwu16ok",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-10-25..2026-10-25",
+      "2026-10-25..2026-10-26",
+      "2026-10-25..2026-10-27",
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.7718,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Arménie : 1ère Division",
+     "cote": 1.29,
+     "date": "2026-10-26",
+     "domicile": "Ararat-Armenia",
+     "ev_estime": null,
+     "exterieur": "Noah",
+     "heure": "17:00",
+     "id": "match:2026-10-26|ararat armenia|noah|double_chance_X2|journal",
+     "journal_observations": 6,
+     "journal_team": "Noah",
+     "journal_wins": 6,
+     "marche": "Ne perd pas (victoire ou nul)",
+     "marche_canonique": "double_chance_X2",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_6_SUR_6",
+     "plages": [
+      "2026-10-25..2026-10-26",
+      "2026-10-25..2026-10-27",
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.792698,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Bulgarie : Parva Liga",
+     "cote": 1.49,
+     "date": "2026-10-26",
+     "domicile": "Loko Plovdiv",
+     "ev_estime": 0.078462,
+     "exterieur": "Slavia Sofia",
+     "heure": "17:00",
+     "id": "match:2026-10-26|loko plovdiv|slavia sofia|over_under_total_2.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_2.5_under",
+     "marche_canonique": "over_under_total_2.5_under",
+     "marge_modele": 0.052659,
+     "match_id": "97681or4dlab9i91mfkz698no",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-10-25..2026-10-26",
+      "2026-10-25..2026-10-27",
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.7238,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Turquie : Super Ligue",
+     "cote": 1.56,
+     "date": "2026-10-26",
+     "domicile": "Rizespor",
+     "ev_estime": 0.215708,
+     "exterieur": "Trabzonspor",
+     "heure": "18:00",
+     "id": "match:2026-10-26|rizespor|trabzonspor|over_under_total_3.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_3.5_under",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": 0.138274,
+     "match_id": "cr5vvpgz8k5inrya7fkb8j8k4",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-10-25..2026-10-26",
+      "2026-10-25..2026-10-27",
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.7793,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Angleterre : League Two",
+     "cote": 1.64,
+     "date": "2026-10-26",
+     "domicile": "Walsall",
+     "ev_estime": null,
+     "exterieur": "Salford",
+     "heure": "22:00",
+     "id": "match:2026-10-26|walsall|salford|double_chance_1X|journal",
+     "journal_observations": 8,
+     "journal_team": "Walsall",
+     "journal_wins": 8,
+     "marche": "Ne perd pas (victoire ou nul)",
+     "marche_canonique": "double_chance_1X",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_8_SUR_8",
+     "plages": [
+      "2026-10-25..2026-10-26",
+      "2026-10-25..2026-10-27",
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.792698,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Angleterre : League One",
+     "cote": 1.65,
+     "date": "2026-10-27",
+     "domicile": "Leicester",
+     "ev_estime": 0.30581,
+     "exterieur": "Wigan Ath",
+     "heure": "21:45",
+     "id": "match:2026-10-27|leicester|wigan ath|handicap_exterieur_1.5|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "handicap_exterieur_1.5",
+     "marche_canonique": "handicap_exterieur_1.5",
+     "marge_modele": 0.185339,
+     "match_id": "180gilfmifuj3jdvrbz3mfk7o",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-10-25..2026-10-27",
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.7914,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Angleterre : League One",
+     "cote": 1.51,
+     "date": "2026-10-27",
+     "domicile": "Luton",
+     "ev_estime": 0.163455,
+     "exterieur": "Doncaster",
+     "heure": "21:45",
+     "id": "match:2026-10-27|luton|doncaster|handicap_exterieur_1.5|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "handicap_exterieur_1.5",
+     "marche_canonique": "handicap_exterieur_1.5",
+     "marge_modele": 0.108248,
+     "match_id": "1citigo0k5og06tdrdifr9kb8",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-10-25..2026-10-27",
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.7705,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Angleterre : Ligue Nationale",
+     "cote": 1.51,
+     "date": "2026-10-27",
+     "domicile": "Wealdstone",
+     "ev_estime": 0.201658,
+     "exterieur": "Solihull",
+     "heure": "21:45",
+     "id": "match:2026-10-27|wealdstone|solihull|over_under_total_2.5_over|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_2.5_over",
+     "marche_canonique": "over_under_total_2.5_over",
+     "marge_modele": 0.133548,
+     "match_id": "8gmudaocyg74coymdg6ltatqs",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-10-25..2026-10-27"
+     ],
+     "probabilite_estimee": 0.7958,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Etats-Unis : MLS",
+     "cote": 1.28,
+     "date": "2026-10-28",
+     "domicile": "Chicago Fire",
+     "ev_estime": 0.089536,
+     "exterieur": "Orlando City",
+     "heure": "02:30",
+     "id": "match:2026-10-28|chicago fire|orlando city|over_under_total_2.5_over|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_2.5_over",
+     "marche_canonique": "over_under_total_2.5_over",
+     "marge_modele": 0.06995,
+     "match_id": "cajh9fhnz60rnxes1j5mqpno4",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.8512,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Brésil : Série A",
+     "cote": 1.42,
+     "date": "2026-10-28",
+     "domicile": "Remo",
+     "ev_estime": 0.080052,
+     "exterieur": "Botafogo RJ",
+     "heure": "02:30",
+     "id": "match:2026-10-28|remo|botafogo rj|over_under_total_3.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_3.5_under",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": 0.056375,
+     "match_id": "2duoly292kwm8zwuce08f105w",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.7606,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Égypte : Première Ligue",
+     "cote": 1.53,
+     "date": "2026-10-28",
+     "domicile": "El Zamalek",
+     "ev_estime": 0.106496,
+     "exterieur": "Al Mokawloon",
+     "heure": "19:00",
+     "id": "match:2026-10-28|el zamalek|al mokawloon|over_under_total_2.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_2.5_under",
+     "marche_canonique": "over_under_total_2.5_under",
+     "marge_modele": 0.069605,
+     "match_id": "a1r789psoo6dptdazjs6lbjtg",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.7232,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Écosse : Premier Ligue",
+     "cote": 1.35,
+     "date": "2026-10-28",
+     "domicile": "Aberdeen",
+     "ev_estime": 0.133325,
+     "exterieur": "Falkirk FC",
+     "heure": "21:45",
+     "id": "match:2026-10-28|aberdeen|falkirk fc|over_under_total_3.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_3.5_under",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": 0.098759,
+     "match_id": "26o0dbdvvl20qlerfsq32i7tg",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-10-25..2026-10-28"
+     ],
+     "probabilite_estimee": 0.8395,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    }
+   ],
+   "plages": {
+    "2026-10-25..2026-10-25": 30,
+    "2026-10-25..2026-10-26": 30,
+    "2026-10-25..2026-10-27": 30,
+    "2026-10-25..2026-10-28": 30
+   }
   }
  ],
  "resultats": {
@@ -87336,6 +88461,11 @@
    "resultat": "WIN",
    "score": "1-0"
   },
+  "match:2026-10-23|d maldonado|danubio|buts_equipe_exterieur_1.5_under|moteur_v3": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "WIN",
+   "score": "2-1"
+  },
   "match:2026-10-23|den bosch|mvv|btts_oui|moteur_v3": {
    "regle_le": "2026-10-24T03:39:15.050861+00:00",
    "resultat": "WIN",
@@ -87430,6 +88560,206 @@
    "regle_le": "2026-10-24T03:39:15.050861+00:00",
    "resultat": "WIN",
    "score": "3-2"
+  },
+  "match:2026-10-24|akron|d moscou|double_chance_X2|journal": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "LOSS",
+   "score": "3-1"
+  },
+  "match:2026-10-24|alianza|metapan|double_chance_1X|journal": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "WIN",
+   "score": "1-0"
+  },
+  "match:2026-10-24|bandirmaspor|igdr fk|double_chance_X2|journal": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "WIN",
+   "score": "1-2"
+  },
+  "match:2026-10-24|barnet|oldham|1x2_domicile|moteur_v3": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "LOSS",
+   "score": "1-1"
+  },
+  "match:2026-10-24|barnet|oldham|handicap_domicile_-0.5|moteur_v3": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "LOSS",
+   "score": "1-1"
+  },
+  "match:2026-10-24|columbus|toronto|over_under_total_4.5_under|moteur_v3": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "LOSS",
+   "score": "4-2"
+  },
+  "match:2026-10-24|cremonese|juve stabia|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "WIN",
+   "score": "0-1"
+  },
+  "match:2026-10-24|dinamo batumi|samgurali|over_under_total_2.5_over|moteur_v3": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "WIN",
+   "score": "3-0"
+  },
+  "match:2026-10-24|exeter city|fleetwood|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "WIN",
+   "score": "2-1"
+  },
+  "match:2026-10-24|falkirk fc|kilmarnock fc|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "WIN",
+   "score": "3-0"
+  },
+  "match:2026-10-24|gnistan|ac oulu|buts_equipe_exterieur_1.5_under|moteur_v3": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "LOSS",
+   "score": "3-4"
+  },
+  "match:2026-10-24|gnistan|ac oulu|handicap3_domicile_1_1|moteur_v3": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "LOSS",
+   "score": "3-4"
+  },
+  "match:2026-10-24|hartlepool|hornchurch|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "WIN",
+   "score": "2-1"
+  },
+  "match:2026-10-24|ingolstadt|duisbourg|over_under_total_2.5_over|moteur_v3": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "WIN",
+   "score": "2-1"
+  },
+  "match:2026-10-24|kidderminster|worthing|double_chance_X2|journal": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "WIN",
+   "score": "1-2"
+  },
+  "match:2026-10-24|ldu quito|macara|over_under_total_3.5_under|moteur_v3": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "WIN",
+   "score": "1-2"
+  },
+  "match:2026-10-24|luton|leicester|double_chance_x2|moteur_v3": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "LOSS",
+   "score": "2-1"
+  },
+  "match:2026-10-24|manta|cd cuenca|buts_equipe_exterieur_1.5_under|moteur_v3": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "LOSS",
+   "score": "0-2"
+  },
+  "match:2026-10-24|mirassol|sao paulo|buts_equipe_exterieur_1.5_under|moteur_v3": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "WIN",
+   "score": "1-1"
+  },
+  "match:2026-10-24|mirassol|sao paulo|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "WIN",
+   "score": "1-1"
+  },
+  "match:2026-10-24|monagas sc|a puerto c|over_under_total_3.5_under|moteur_v3": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "WIN",
+   "score": "1-2"
+  },
+  "match:2026-10-24|nacional|trinidense|double_chance_1X|journal": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "LOSS",
+   "score": "0-1"
+  },
+  "match:2026-10-24|notts county|stockport|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "WIN",
+   "score": "1-1"
+  },
+  "match:2026-10-24|nuremberg|kaiserslautern|double_chance_1X|journal": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "LOSS",
+   "score": "0-1"
+  },
+  "match:2026-10-24|otrant olympic|sutjeska|double_chance_X2|journal": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "WIN",
+   "score": "1-1"
+  },
+  "match:2026-10-24|oxford utd|bradford|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "WIN",
+   "score": "0-0"
+  },
+  "match:2026-10-24|p thistle|stenhousemuir|btts_non|moteur_v3": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "WIN",
+   "score": "3-0"
+  },
+  "match:2026-10-24|p thistle|stenhousemuir|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "WIN",
+   "score": "3-0"
+  },
+  "match:2026-10-24|palmeiras|bragantino sp|over_under_total_3.5_under|moteur_v3": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "WIN",
+   "score": "2-0"
+  },
+  "match:2026-10-24|queen s park|dunfermline|buts_equipe_exterieur_2.5_under|moteur_v3": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "WIN",
+   "score": "0-1"
+  },
+  "match:2026-10-24|queen s park|dunfermline|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "WIN",
+   "score": "0-1"
+  },
+  "match:2026-10-24|san antonio bb|real potosi|over_under_total_3.5_under|moteur_v3": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "WIN",
+   "score": "2-1"
+  },
+  "match:2026-10-24|sarajevo|zeljeznicar|over_under_total_2.5_under|moteur_v3": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "WIN",
+   "score": "2-0"
+  },
+  "match:2026-10-24|sport huancayo|alianza atl|encaisse_domicile|moteur_v3": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "WIN",
+   "score": "4-1"
+  },
+  "match:2026-10-24|umraniyespor|sivasspor|buts_equipe_domicile_2.5_under|moteur_v3": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "LOSS",
+   "score": "4-0"
+  },
+  "match:2026-10-24|umraniyespor|sivasspor|double_chance_X2|journal": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "LOSS",
+   "score": "4-0"
+  },
+  "match:2026-10-24|viktoria col|sc verl|double_chance_X2|journal": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "LOSS",
+   "score": "3-1"
+  },
+  "match:2026-10-24|york|port vale|buts_equipe_exterieur_1.5_under|moteur_v3": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "WIN",
+   "score": "2-0"
+  },
+  "match:2026-10-24|york|port vale|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "WIN",
+   "score": "2-0"
+  },
+  "match:2026-10-24|zurich|lucerne|buts_equipe_domicile_1.5_over|moteur_v3": {
+   "regle_le": "2026-10-25T00:46:11.611809+00:00",
+   "resultat": "WIN",
+   "score": "2-1"
   }
  },
  "version": 1
