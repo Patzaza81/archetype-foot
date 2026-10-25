@@ -1,18 +1,18 @@
 {
  "version": "1.0.0",
  "version_contrat": 1,
- "genere_le": "2026-10-25 00:50 UTC",
+ "genere_le": "2026-10-25 02:58 UTC",
  "saison_football_data": "2627",
  "regle": "Football-Data en base ; jours manquants complétés par Matchendirect (provisoire) ; même équipe à ± 1 jour = même match ; reconstruit à chaque run, jamais cumulé",
  "bilan": {
-  "doublons_evites": 5208,
-  "equipes_couvertes": 466,
-  "matchs_football_data": 6216,
+  "doublons_evites": 5240,
+  "equipes_couvertes": 469,
+  "matchs_football_data": 6242,
   "matchs_provisoires": 8,
   "matchs_sans_date_ignores": 13,
-  "equipes_matchendirect_seul": 850,
-  "matchs_matchendirect_seul": 7856,
-  "equipes_couvertes_non_reliees": 180
+  "equipes_matchendirect_seul": 824,
+  "matchs_matchendirect_seul": 7923,
+  "equipes_couvertes_non_reliees": 166
  },
  "equipes": [
   {
@@ -11596,13 +11596,6 @@
      "provisoire": false
     }
    ]
-  },
-  {
-   "cle_cache": "https://www.matchendirect.fr/equipe/arabi_c9hjusvlmejkki3vgutrja2rh.html||qatar : division 1",
-   "competition": "qatar : division 1",
-   "couverte_par_football_data": false,
-   "raison": "championnat non couvert par Football-Data",
-   "matchs": []
   },
   {
    "cle_cache": "https://www.matchendirect.fr/equipe/ararat-armenia_e3c3aotjsfoewbuow17vqm0kq.html||arménie : 1ère division",
@@ -26518,13 +26511,6 @@
    ]
   },
   {
-   "cle_cache": "https://www.matchendirect.fr/equipe/bate-borisov_dt1p3v926refyx025719o2pc2.html||bélarus : première ligue",
-   "competition": "bélarus : première ligue",
-   "couverte_par_football_data": false,
-   "raison": "championnat couvert par Football-Data mais équipe pas encore reliée (A3)",
-   "matchs": []
-  },
-  {
    "cle_cache": "https://www.matchendirect.fr/equipe/batman-petrol_b0k7caqbwgb1srpwas38ii52l.html||turquie : tff 1. ligue",
    "competition": "turquie : tff 1. ligue",
    "couverte_par_football_data": false,
@@ -27747,13 +27733,6 @@
    ]
   },
   {
-   "cle_cache": "https://www.matchendirect.fr/equipe/belshina_2781yllnfwhrigmimq30q011n.html||bélarus : première ligue",
-   "competition": "bélarus : première ligue",
-   "couverte_par_football_data": false,
-   "raison": "championnat couvert par Football-Data mais équipe pas encore reliée (A3)",
-   "matchs": []
-  },
-  {
    "cle_cache": "https://www.matchendirect.fr/equipe/benevento_4cq1gkb2yelnvz4z7jdo6q81.html||italie : série b",
    "competition": "italie : série b",
    "couverte_par_football_data": true,
@@ -27912,6 +27891,193 @@
      "cartons_rouges": 0,
      "xg": 1.92,
      "xg_concede": 1.18,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    }
+   ]
+  },
+  {
+   "cle_cache": "https://www.matchendirect.fr/equipe/benfica_9ldqu49smv1xg2va0n2cy28zl.html||portugal : primeira liga",
+   "competition": "portugal : primeira liga",
+   "couverte_par_football_data": true,
+   "division_football_data": "P1",
+   "nom_football_data": "Benfica",
+   "nom_matchendirect": "Benfica",
+   "matchs_sans_date_ignores": 0,
+   "matchs": [
+    {
+     "date": "2026-08-09",
+     "domicile": true,
+     "adversaire": "Academico Viseu",
+     "buts_marques": 2,
+     "buts_encaisses": 2,
+     "buts_marques_mi_temps": 1,
+     "buts_encaisses_mi_temps": 0,
+     "tirs": 28,
+     "tirs_concedes": 8,
+     "tirs_cadres": 11,
+     "tirs_cadres_concedes": 4,
+     "corners": 10,
+     "corners_concedes": 2,
+     "cartons_jaunes": 2,
+     "cartons_rouges": 0,
+     "xg": 3.12,
+     "xg_concede": 1.18,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    },
+    {
+     "date": "2026-08-17",
+     "domicile": false,
+     "adversaire": "Casa Pia",
+     "buts_marques": 7,
+     "buts_encaisses": 0,
+     "buts_marques_mi_temps": 2,
+     "buts_encaisses_mi_temps": 0,
+     "tirs": 20,
+     "tirs_concedes": 3,
+     "tirs_cadres": 8,
+     "tirs_cadres_concedes": 0,
+     "corners": 3,
+     "corners_concedes": 1,
+     "cartons_jaunes": 0,
+     "cartons_rouges": 0,
+     "xg": 3.04,
+     "xg_concede": 0.12,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    },
+    {
+     "date": "2026-08-31",
+     "domicile": true,
+     "adversaire": "Estoril",
+     "buts_marques": 2,
+     "buts_encaisses": 1,
+     "buts_marques_mi_temps": 1,
+     "buts_encaisses_mi_temps": 0,
+     "tirs": 25,
+     "tirs_concedes": 4,
+     "tirs_cadres": 8,
+     "tirs_cadres_concedes": 2,
+     "corners": 9,
+     "corners_concedes": 0,
+     "cartons_jaunes": 0,
+     "cartons_rouges": 0,
+     "xg": 2.03,
+     "xg_concede": 0.36,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    },
+    {
+     "date": "2026-09-05",
+     "domicile": false,
+     "adversaire": "Maritimo",
+     "buts_marques": 3,
+     "buts_encaisses": 0,
+     "buts_marques_mi_temps": 1,
+     "buts_encaisses_mi_temps": 0,
+     "tirs": 11,
+     "tirs_concedes": 6,
+     "tirs_cadres": 6,
+     "tirs_cadres_concedes": 1,
+     "corners": 5,
+     "corners_concedes": 3,
+     "cartons_jaunes": 3,
+     "cartons_rouges": 0,
+     "xg": 1.31,
+     "xg_concede": 0.13,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    },
+    {
+     "date": "2026-09-09",
+     "domicile": false,
+     "adversaire": "Moreirense",
+     "buts_marques": 4,
+     "buts_encaisses": 0,
+     "buts_marques_mi_temps": 1,
+     "buts_encaisses_mi_temps": 0,
+     "tirs": 21,
+     "tirs_concedes": 8,
+     "tirs_cadres": 9,
+     "tirs_cadres_concedes": 1,
+     "corners": 7,
+     "corners_concedes": 3,
+     "cartons_jaunes": 2,
+     "cartons_rouges": 0,
+     "xg": 2.99,
+     "xg_concede": 0.38,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    },
+    {
+     "date": "2026-09-13",
+     "domicile": true,
+     "adversaire": "Gil Vicente",
+     "buts_marques": 3,
+     "buts_encaisses": 1,
+     "buts_marques_mi_temps": 1,
+     "buts_encaisses_mi_temps": 1,
+     "tirs": 17,
+     "tirs_concedes": 4,
+     "tirs_cadres": 5,
+     "tirs_cadres_concedes": 2,
+     "corners": 14,
+     "corners_concedes": 0,
+     "cartons_jaunes": 2,
+     "cartons_rouges": 0,
+     "xg": 2.91,
+     "xg_concede": 1.1,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    },
+    {
+     "date": "2026-09-20",
+     "domicile": false,
+     "adversaire": "Porto",
+     "buts_marques": 1,
+     "buts_encaisses": 3,
+     "buts_marques_mi_temps": 0,
+     "buts_encaisses_mi_temps": 1,
+     "tirs": 12,
+     "tirs_concedes": 20,
+     "tirs_cadres": 3,
+     "tirs_cadres_concedes": 7,
+     "corners": 3,
+     "corners_concedes": 3,
+     "cartons_jaunes": 3,
+     "cartons_rouges": 1,
+     "xg": 0.84,
+     "xg_concede": 1.3,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    },
+    {
+     "date": "2026-10-11",
+     "domicile": true,
+     "adversaire": "Guimaraes",
+     "buts_marques": 2,
+     "buts_encaisses": 0,
+     "buts_marques_mi_temps": 1,
+     "buts_encaisses_mi_temps": 0,
+     "tirs": 23,
+     "tirs_concedes": 8,
+     "tirs_cadres": 5,
+     "tirs_cadres_concedes": 0,
+     "corners": 11,
+     "corners_concedes": 6,
+     "cartons_jaunes": 2,
+     "cartons_rouges": 0,
+     "xg": 2.76,
+     "xg_concede": 0.43,
      "source": "football-data",
      "provisoire": false,
      "saison": "2627"
@@ -29902,13 +30068,6 @@
      "saison": "2627"
     }
    ]
-  },
-  {
-   "cle_cache": "https://www.matchendirect.fr/equipe/bodoglimt_ctvzi2jbl1q6xzq0s3sexj73g.html||norvège : eliteserien",
-   "competition": "norvège : eliteserien",
-   "couverte_par_football_data": false,
-   "raison": "championnat couvert par Football-Data mais équipe pas encore reliée (A3)",
-   "matchs": []
   },
   {
    "cle_cache": "https://www.matchendirect.fr/equipe/bodrum-fk_2wewa9ecjudncv3fs8d3ind9l.html||turquie : tff 1. ligue",
@@ -33778,13 +33937,6 @@
    ]
   },
   {
-   "cle_cache": "https://www.matchendirect.fr/equipe/brage_cnjb9lg1xqd4c2lpl7lo6y47f.html||suède : superettan",
-   "competition": "suède : superettan",
-   "couverte_par_football_data": false,
-   "raison": "championnat non couvert par Football-Data",
-   "matchs": []
-  },
-  {
    "cle_cache": "https://www.matchendirect.fr/equipe/brann_6oxoag5c6zbnn09wx08vz4iak.html||norvège : eliteserien",
    "competition": "norvège : eliteserien",
    "couverte_par_football_data": false,
@@ -34947,13 +35099,6 @@
      "saison": "2627"
     }
    ]
-  },
-  {
-   "cle_cache": "https://www.matchendirect.fr/equipe/brommapojkarna_2gg7ex0jz6l5q1devvvd7oprk.html||suède : damallsvenskan",
-   "competition": "suède : damallsvenskan",
-   "couverte_par_football_data": false,
-   "raison": "championnat non couvert par Football-Data",
-   "matchs": []
   },
   {
    "cle_cache": "https://www.matchendirect.fr/equipe/brommapojkarna_ac8jow4mdkvnsv5s0och4qqm.html||suède : allsvenskan",
@@ -42352,6 +42497,193 @@
      "url_match": "/live-score/danubio-central-esp_1iqsav8n6ppa4gxcouptydp1w.html",
      "source": "matchendirect",
      "provisoire": false
+    }
+   ]
+  },
+  {
+   "cle_cache": "https://www.matchendirect.fr/equipe/cercle-bruges_3ix9om1svhd6obl0mbk1otgop.html||belgique : pro ligue",
+   "competition": "belgique : pro ligue",
+   "couverte_par_football_data": true,
+   "division_football_data": "B1",
+   "nom_football_data": "Cercle Brugge",
+   "nom_matchendirect": "Cercle Bruges",
+   "matchs_sans_date_ignores": 0,
+   "matchs": [
+    {
+     "date": "2026-08-08",
+     "domicile": false,
+     "adversaire": "Standard",
+     "buts_marques": 2,
+     "buts_encaisses": 2,
+     "buts_marques_mi_temps": 1,
+     "buts_encaisses_mi_temps": 1,
+     "tirs": 18,
+     "tirs_concedes": 20,
+     "tirs_cadres": 2,
+     "tirs_cadres_concedes": 6,
+     "corners": 11,
+     "corners_concedes": 7,
+     "cartons_jaunes": 1,
+     "cartons_rouges": 0,
+     "xg": 1.47,
+     "xg_concede": 2.59,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    },
+    {
+     "date": "2026-08-14",
+     "domicile": true,
+     "adversaire": "St Truiden",
+     "buts_marques": 3,
+     "buts_encaisses": 3,
+     "buts_marques_mi_temps": 1,
+     "buts_encaisses_mi_temps": 2,
+     "tirs": 26,
+     "tirs_concedes": 13,
+     "tirs_cadres": 8,
+     "tirs_cadres_concedes": 7,
+     "corners": 10,
+     "corners_concedes": 3,
+     "cartons_jaunes": 0,
+     "cartons_rouges": 0,
+     "xg": 4.15,
+     "xg_concede": 2.05,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    },
+    {
+     "date": "2026-08-23",
+     "domicile": false,
+     "adversaire": "Club Brugge",
+     "buts_marques": 0,
+     "buts_encaisses": 1,
+     "buts_marques_mi_temps": 0,
+     "buts_encaisses_mi_temps": 1,
+     "tirs": 10,
+     "tirs_concedes": 15,
+     "tirs_cadres": 4,
+     "tirs_cadres_concedes": 4,
+     "corners": 4,
+     "corners_concedes": 9,
+     "cartons_jaunes": 1,
+     "cartons_rouges": 0,
+     "xg": 0.99,
+     "xg_concede": 1.76,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    },
+    {
+     "date": "2026-08-29",
+     "domicile": true,
+     "adversaire": "Lommel SK",
+     "buts_marques": 0,
+     "buts_encaisses": 1,
+     "buts_marques_mi_temps": 0,
+     "buts_encaisses_mi_temps": 0,
+     "tirs": 19,
+     "tirs_concedes": 14,
+     "tirs_cadres": 3,
+     "tirs_cadres_concedes": 3,
+     "corners": 9,
+     "corners_concedes": 4,
+     "cartons_jaunes": 2,
+     "cartons_rouges": 0,
+     "xg": 1.25,
+     "xg_concede": 1.63,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    },
+    {
+     "date": "2026-09-06",
+     "domicile": true,
+     "adversaire": "Gent",
+     "buts_marques": 0,
+     "buts_encaisses": 3,
+     "buts_marques_mi_temps": 0,
+     "buts_encaisses_mi_temps": 1,
+     "tirs": 9,
+     "tirs_concedes": 9,
+     "tirs_cadres": 1,
+     "tirs_cadres_concedes": 3,
+     "corners": 8,
+     "corners_concedes": 0,
+     "cartons_jaunes": 1,
+     "cartons_rouges": 0,
+     "xg": 0.49,
+     "xg_concede": 1.23,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    },
+    {
+     "date": "2026-09-12",
+     "domicile": false,
+     "adversaire": "Oud-Heverlee Leuven",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "buts_marques_mi_temps": 0,
+     "buts_encaisses_mi_temps": 1,
+     "tirs": 13,
+     "tirs_concedes": 10,
+     "tirs_cadres": 3,
+     "tirs_cadres_concedes": 2,
+     "corners": 11,
+     "corners_concedes": 2,
+     "cartons_jaunes": 3,
+     "cartons_rouges": 0,
+     "xg": 1.6,
+     "xg_concede": 0.91,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    },
+    {
+     "date": "2026-09-19",
+     "domicile": false,
+     "adversaire": "Charleroi",
+     "buts_marques": 2,
+     "buts_encaisses": 3,
+     "buts_marques_mi_temps": 1,
+     "buts_encaisses_mi_temps": 2,
+     "tirs": 7,
+     "tirs_concedes": 14,
+     "tirs_cadres": 6,
+     "tirs_cadres_concedes": 7,
+     "corners": 2,
+     "corners_concedes": 3,
+     "cartons_jaunes": 1,
+     "cartons_rouges": 0,
+     "xg": 2.08,
+     "xg_concede": 2.04,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    },
+    {
+     "date": "2026-10-10",
+     "domicile": true,
+     "adversaire": "Anderlecht",
+     "buts_marques": 1,
+     "buts_encaisses": 2,
+     "buts_marques_mi_temps": 1,
+     "buts_encaisses_mi_temps": 0,
+     "tirs": 13,
+     "tirs_concedes": 11,
+     "tirs_cadres": 7,
+     "tirs_cadres_concedes": 6,
+     "corners": 5,
+     "corners_concedes": 5,
+     "cartons_jaunes": 1,
+     "cartons_rouges": 0,
+     "xg": 0.66,
+     "xg_concede": 0.83,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
     }
    ]
   },
@@ -51833,149 +52165,6 @@
      "url_match": "/live-score/cologne-hambourg-sv_8j4i1xlkztds4n33y0m4qrdas.html",
      "source": "matchendirect",
      "provisoire": false
-    }
-   ]
-  },
-  {
-   "cle_cache": "https://www.matchendirect.fr/equipe/cologne_8q1ul09cygzswb7tb456bmifv.html||allemagne : bundesliga",
-   "competition": "allemagne : bundesliga",
-   "couverte_par_football_data": true,
-   "division_football_data": "D1",
-   "nom_football_data": "FC Koln",
-   "nom_matchendirect": "Cologne",
-   "matchs_sans_date_ignores": 0,
-   "matchs": [
-    {
-     "date": "2026-08-29",
-     "domicile": true,
-     "adversaire": "Hoffenheim",
-     "buts_marques": 3,
-     "buts_encaisses": 2,
-     "buts_marques_mi_temps": 0,
-     "buts_encaisses_mi_temps": 1,
-     "tirs": 18,
-     "tirs_concedes": 15,
-     "tirs_cadres": 6,
-     "tirs_cadres_concedes": 4,
-     "corners": 6,
-     "corners_concedes": 7,
-     "cartons_jaunes": 0,
-     "cartons_rouges": 0,
-     "xg": 1.95,
-     "xg_concede": 1.88,
-     "source": "football-data",
-     "provisoire": false,
-     "saison": "2627"
-    },
-    {
-     "date": "2026-09-04",
-     "domicile": false,
-     "adversaire": "Stuttgart",
-     "buts_marques": 1,
-     "buts_encaisses": 4,
-     "buts_marques_mi_temps": 0,
-     "buts_encaisses_mi_temps": 1,
-     "tirs": 18,
-     "tirs_concedes": 22,
-     "tirs_cadres": 5,
-     "tirs_cadres_concedes": 8,
-     "corners": 8,
-     "corners_concedes": 10,
-     "cartons_jaunes": 3,
-     "cartons_rouges": 0,
-     "xg": 2.86,
-     "xg_concede": 3.47,
-     "source": "football-data",
-     "provisoire": false,
-     "saison": "2627"
-    },
-    {
-     "date": "2026-09-12",
-     "domicile": true,
-     "adversaire": "Werder Bremen",
-     "buts_marques": 1,
-     "buts_encaisses": 1,
-     "buts_marques_mi_temps": 1,
-     "buts_encaisses_mi_temps": 0,
-     "tirs": 15,
-     "tirs_concedes": 14,
-     "tirs_cadres": 6,
-     "tirs_cadres_concedes": 5,
-     "corners": 8,
-     "corners_concedes": 5,
-     "cartons_jaunes": 2,
-     "cartons_rouges": 0,
-     "xg": 1.65,
-     "xg_concede": 1.12,
-     "source": "football-data",
-     "provisoire": false,
-     "saison": "2627"
-    },
-    {
-     "date": "2026-09-19",
-     "domicile": false,
-     "adversaire": "Hamburg",
-     "buts_marques": 1,
-     "buts_encaisses": 2,
-     "buts_marques_mi_temps": 0,
-     "buts_encaisses_mi_temps": 1,
-     "tirs": 18,
-     "tirs_concedes": 12,
-     "tirs_cadres": 5,
-     "tirs_cadres_concedes": 7,
-     "corners": 5,
-     "corners_concedes": 3,
-     "cartons_jaunes": 3,
-     "cartons_rouges": 0,
-     "xg": 1.41,
-     "xg_concede": 1.45,
-     "source": "football-data",
-     "provisoire": false,
-     "saison": "2627"
-    },
-    {
-     "date": "2026-10-11",
-     "domicile": true,
-     "adversaire": "M'gladbach",
-     "buts_marques": 2,
-     "buts_encaisses": 1,
-     "buts_marques_mi_temps": 1,
-     "buts_encaisses_mi_temps": 1,
-     "tirs": 19,
-     "tirs_concedes": 16,
-     "tirs_cadres": 7,
-     "tirs_cadres_concedes": 7,
-     "corners": 6,
-     "corners_concedes": 6,
-     "cartons_jaunes": 1,
-     "cartons_rouges": 0,
-     "xg": 1.32,
-     "xg_concede": 1.17,
-     "source": "football-data",
-     "provisoire": false,
-     "saison": "2627"
-    },
-    {
-     "date": "2026-10-16",
-     "domicile": false,
-     "adversaire": "Ein Frankfurt",
-     "buts_marques": 0,
-     "buts_encaisses": 1,
-     "buts_marques_mi_temps": 0,
-     "buts_encaisses_mi_temps": 0,
-     "tirs": 9,
-     "tirs_concedes": 15,
-     "tirs_cadres": 3,
-     "tirs_cadres_concedes": 7,
-     "corners": 3,
-     "corners_concedes": 7,
-     "cartons_jaunes": 2,
-     "cartons_rouges": 0,
-     "xg": 0.8,
-     "xg_concede": 1.8,
-     "source": "football-data",
-     "provisoire": false,
-     "saison": "2627"
     }
    ]
   },
@@ -68712,13 +68901,6 @@
    ]
   },
   {
-   "cle_cache": "https://www.matchendirect.fr/equipe/djurgarden_css4y2gh8y60h1o8rmt6hzhuk.html||suède : damallsvenskan",
-   "competition": "suède : damallsvenskan",
-   "couverte_par_football_data": false,
-   "raison": "championnat non couvert par Football-Data",
-   "matchs": []
-  },
-  {
    "cle_cache": "https://www.matchendirect.fr/equipe/djurgarden_czkf5t3ai00ghwbga03i5aqxw.html||suède : allsvenskan",
    "competition": "suède : allsvenskan",
    "couverte_par_football_data": false,
@@ -71544,13 +71726,6 @@
    ]
   },
   {
-   "cle_cache": "https://www.matchendirect.fr/equipe/east-riffa_eix32cvphyslwkpq9boohjr9k.html||bahreïn : premiere ligue",
-   "competition": "bahreïn : premiere ligue",
-   "couverte_par_football_data": false,
-   "raison": "championnat couvert par Football-Data mais équipe pas encore reliée (A3)",
-   "matchs": []
-  },
-  {
    "cle_cache": "https://www.matchendirect.fr/equipe/eastleigh_1ebletdp8yd8e3gnyfm9o32od.html||angleterre : ligue nationale",
    "competition": "angleterre : ligue nationale",
    "couverte_par_football_data": true,
@@ -74093,13 +74268,6 @@
    ]
   },
   {
-   "cle_cache": "https://www.matchendirect.fr/equipe/eskilstuna_32lrji5aaunfircb25r5zh0ze.html||suède : damallsvenskan",
-   "competition": "suède : damallsvenskan",
-   "couverte_par_football_data": false,
-   "raison": "championnat non couvert par Football-Data",
-   "matchs": []
-  },
-  {
    "cle_cache": "https://www.matchendirect.fr/equipe/espanyol_c8llrezkm3b3op4afrou6b487.html||espagne : laliga",
    "competition": "espagne : laliga",
    "couverte_par_football_data": true,
@@ -76097,6 +76265,64 @@
      "buts_marques": 1,
      "buts_encaisses": 1,
      "url_match": "/live-score/riteriai-fa-siauliai_7f5fjbow1y421n8dk7ewywoic.html",
+     "source": "matchendirect",
+     "provisoire": false
+    }
+   ]
+  },
+  {
+   "cle_cache": "https://www.matchendirect.fr/equipe/faetano_5pbrrfbvgmmc0tbqg68h7t88y.html||saint-marin : campionato ligue",
+   "competition": "saint-marin : campionato ligue",
+   "couverte_par_football_data": false,
+   "raison": "championnat non couvert par Football-Data",
+   "matchs": [
+    {
+     "date": "2026-08-28",
+     "domicile": false,
+     "adversaire": "Juvenes/Dogana",
+     "buts_marques": 0,
+     "buts_encaisses": 4,
+     "url_match": "/live-score/juvenes-dogana-faetano_4xizjonqsj0u3iea65bag3bpw.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-04",
+     "domicile": true,
+     "adversaire": "Tre Fiori",
+     "buts_marques": 0,
+     "buts_encaisses": 4,
+     "url_match": "/live-score/faetano-tre-fiori_4ziceoaexqvegcxcfdzwm2t5g.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-13",
+     "domicile": false,
+     "adversaire": "SM Academy",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/sm-academy-faetano_54mfca2s2sexv8cq56tnktpg4.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-18",
+     "domicile": false,
+     "adversaire": "Libertas",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/libertas-faetano_55axulsgub6z8si88l8yotpg4.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-10",
+     "domicile": true,
+     "adversaire": "Fiorentino",
+     "buts_marques": 0,
+     "buts_encaisses": 6,
+     "url_match": "/live-score/faetano-fiorentino_3321cqkl3l56b88y9ca32gt90.html",
      "source": "matchendirect",
      "provisoire": false
     }
@@ -89166,13 +89392,6 @@
    ]
   },
   {
-   "cle_cache": "https://www.matchendirect.fr/equipe/gomel_ar727fz6cjjhn98ysl37rg5nv.html||bélarus : première ligue",
-   "competition": "bélarus : première ligue",
-   "couverte_par_football_data": false,
-   "raison": "championnat couvert par Football-Data mais équipe pas encore reliée (A3)",
-   "matchs": []
-  },
-  {
    "cle_cache": "https://www.matchendirect.fr/equipe/gor-mahia_a5b4if5fvar17mo2ph307ipob.html||kenya : première ligue",
    "competition": "kenya : première ligue",
    "couverte_par_football_data": false,
@@ -92017,13 +92236,6 @@
    ]
   },
   {
-   "cle_cache": "https://www.matchendirect.fr/equipe/guoan_exq7je02eprk5fcre1uo9zwbi.html||chine : super ligue",
-   "competition": "chine : super ligue",
-   "couverte_par_football_data": false,
-   "raison": "championnat couvert par Football-Data mais équipe pas encore reliée (A3)",
-   "matchs": []
-  },
-  {
    "cle_cache": "https://www.matchendirect.fr/equipe/gwangju_dxrq5ce9fljcf0vrbrz89rp0k.html||corée du sud : k-ligue",
    "competition": "corée du sud : k-ligue",
    "couverte_par_football_data": false,
@@ -94689,13 +94901,6 @@
    "matchs": []
   },
   {
-   "cle_cache": "https://www.matchendirect.fr/equipe/hammarby_2t2dpr32qupxntt5whjfjsjlh.html||suède : damallsvenskan",
-   "competition": "suède : damallsvenskan",
-   "couverte_par_football_data": false,
-   "raison": "championnat non couvert par Football-Data",
-   "matchs": []
-  },
-  {
    "cle_cache": "https://www.matchendirect.fr/equipe/hapoel-haifa_7cd60mgte8skipavum0o6ecyo.html||israël : ligat al",
    "competition": "israël : ligat al",
    "couverte_par_football_data": false,
@@ -96179,13 +96384,6 @@
      "provisoire": false
     }
    ]
-  },
-  {
-   "cle_cache": "https://www.matchendirect.fr/equipe/hegelmann_7q9rtpy2dnzzah7dr523n5syd.html||lituanie : a lyga",
-   "competition": "lituanie : a lyga",
-   "couverte_par_football_data": false,
-   "raison": "championnat non couvert par Football-Data",
-   "matchs": []
   },
   {
    "cle_cache": "https://www.matchendirect.fr/equipe/heidenheim_3xcg7xikgrn2x8oa65sopb2is.html||allemagne : 2. bundesliga",
@@ -106200,13 +106398,6 @@
    ]
   },
   {
-   "cle_cache": "https://www.matchendirect.fr/equipe/isloch_21ws3y0nac7gdweocsuqx3s9g.html||bélarus : première ligue",
-   "competition": "bélarus : première ligue",
-   "couverte_par_football_data": false,
-   "raison": "championnat couvert par Football-Data mais équipe pas encore reliée (A3)",
-   "matchs": []
-  },
-  {
    "cle_cache": "https://www.matchendirect.fr/equipe/istanbulspor_4rjsyxn0rlbjggofvvpbmk8pc.html||turquie : tff 1. ligue",
    "competition": "turquie : tff 1. ligue",
    "couverte_par_football_data": false,
@@ -107092,7 +107283,18 @@
    "competition": "finlande : veikkausliiga - relégation finale",
    "couverte_par_football_data": false,
    "raison": "championnat non couvert par Football-Data",
-   "matchs": []
+   "matchs": [
+    {
+     "date": "2026-10-21",
+     "domicile": false,
+     "adversaire": "PK-35",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/pk-35-jaro_bzdrk57rnctkremj66wrube38.html",
+     "source": "matchendirect",
+     "provisoire": false
+    }
+   ]
   },
   {
    "cle_cache": "https://www.matchendirect.fr/equipe/java-utd_3aw96bbqqmzl9oslzopmlb40k.html||indonésie : ligue 1",
@@ -108789,13 +108991,6 @@
      "saison": "2627"
     }
    ]
-  },
-  {
-   "cle_cache": "https://www.matchendirect.fr/equipe/kalmar_bqtquhot4yruw677rkc607lk6.html||suède : allsvenskan",
-   "competition": "suède : allsvenskan",
-   "couverte_par_football_data": false,
-   "raison": "championnat couvert par Football-Data mais équipe pas encore reliée (A3)",
-   "matchs": []
   },
   {
    "cle_cache": "https://www.matchendirect.fr/equipe/kapaz_bvajvatode80d4lx90fl86hi.html||azerbaïdjan : première ligue",
@@ -114879,6 +115074,64 @@
    "matchs": []
   },
   {
+   "cle_cache": "https://www.matchendirect.fr/equipe/la-fiorita_8l7k4sc5qar1h6wcco71j0fsc.html||saint-marin : campionato ligue",
+   "competition": "saint-marin : campionato ligue",
+   "couverte_par_football_data": false,
+   "raison": "championnat non couvert par Football-Data",
+   "matchs": [
+    {
+     "date": "2026-08-30",
+     "domicile": false,
+     "adversaire": "Virtus",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/virtus-la-fiorita_4yr24l15ubixa9ug6moffc9hw.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-06",
+     "domicile": true,
+     "adversaire": "SM Academy",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/la-fiorita-sm-academy_51w0gpwm47r2e6503j7o75clw.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-11",
+     "domicile": false,
+     "adversaire": "Fiorentino",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/fiorentino-la-fiorita_52kkbcsk0fro17uvd5p7twn4k.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-19",
+     "domicile": false,
+     "adversaire": "Domagnano",
+     "buts_marques": 2,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/domagnano-la-fiorita_56nkji8q02x9kdgrx7ahcp89g.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-09",
+     "domicile": true,
+     "adversaire": "Murata",
+     "buts_marques": 3,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/la-fiorita-murata_3270di3lvlrz5k4xju2wj807o.html",
+     "source": "matchendirect",
+     "provisoire": false
+    }
+   ]
+  },
+  {
    "cle_cache": "https://www.matchendirect.fr/equipe/la-galaxy_6qr5y32dthc4dqycckwmfj1si.html||etats-unis : mls",
    "competition": "etats-unis : mls",
    "couverte_par_football_data": true,
@@ -115761,13 +116014,6 @@
   {
    "cle_cache": "https://www.matchendirect.fr/equipe/laagri_1z4cnmelyxy76s65wq9zsou1g.html||estonie : meistriliiga femmes",
    "competition": "estonie : meistriliiga femmes",
-   "couverte_par_football_data": false,
-   "raison": "championnat non couvert par Football-Data",
-   "matchs": []
-  },
-  {
-   "cle_cache": "https://www.matchendirect.fr/equipe/laagri_3kt3yl3x165248bz7tonv3t2h.html||estonie : meistriliiga",
-   "competition": "estonie : meistriliiga",
    "couverte_par_football_data": false,
    "raison": "championnat non couvert par Football-Data",
    "matchs": []
@@ -119991,13 +120237,6 @@
    ]
   },
   {
-   "cle_cache": "https://www.matchendirect.fr/equipe/liepaja_3rutx3wc2j6q3qq8uqdn8pdja.html||lettonie : virsliga",
-   "competition": "lettonie : virsliga",
-   "couverte_par_football_data": false,
-   "raison": "championnat non couvert par Football-Data",
-   "matchs": []
-  },
-  {
    "cle_cache": "https://www.matchendirect.fr/equipe/life_27wvfqlog8gbwgvhcibf2c8wk.html||cambodge : 1ère division",
    "competition": "cambodge : 1ère division",
    "couverte_par_football_data": false,
@@ -120859,6 +121098,254 @@
      "buts_marques": 2,
      "buts_encaisses": 0,
      "url_match": "/live-score/albirex-lion-city_cyo3ejfrpb8icz1zgup0u16ok.html",
+     "source": "matchendirect",
+     "provisoire": false
+    }
+   ]
+  },
+  {
+   "cle_cache": "https://www.matchendirect.fr/equipe/liverpool-m_1p2mbne1t0rwtj3go5f5z98pu.html||uruguay : primera division cloture",
+   "competition": "uruguay : primera division cloture",
+   "couverte_par_football_data": false,
+   "raison": "championnat non couvert par Football-Data",
+   "matchs": [
+    {
+     "date": "2026-04-05",
+     "domicile": true,
+     "adversaire": "D. Maldonado",
+     "buts_marques": 0,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/liverpool-m-d-maldonado_63jkgp70wlebaq4pd2i5hh7o4.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-04-14",
+     "domicile": false,
+     "adversaire": "Peñarol",
+     "buts_marques": 2,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/penarol-liverpool-m_67nsj6ha0kabbuu9f5jeas7bo.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-04-19",
+     "domicile": true,
+     "adversaire": "Nacional",
+     "buts_marques": 1,
+     "buts_encaisses": 3,
+     "url_match": "/live-score/liverpool-m-nacional_6btrnhm8ug61irzjuv63uqhp0.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-04-25",
+     "domicile": false,
+     "adversaire": "Juventud",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/juventud-liverpool-m_6g2352ydnk1ax06wp3wuqpx5g.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-05-02",
+     "domicile": true,
+     "adversaire": "Danubio",
+     "buts_marques": 3,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/liverpool-m-danubio_6krdgmmgphdrcil1yepq40r9w.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-05-08",
+     "domicile": false,
+     "adversaire": "Montevideo",
+     "buts_marques": 0,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/montevideo-liverpool-m_6pxeoxpu9fykxrhkbig2x3578.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-05-16",
+     "domicile": false,
+     "adversaire": "Peñarol",
+     "buts_marques": 1,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/penarol-liverpool-m_2iqh2422m363tstpwriix0v10.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-05-22",
+     "domicile": true,
+     "adversaire": "R. Montevideo",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/liverpool-m-r-montevideo_9co612iv225bzl4b97qshrrpw.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-06-01",
+     "domicile": false,
+     "adversaire": "Boston River",
+     "buts_marques": 1,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/boston-river-liverpool-m_9dtc8kj6me0ecbutfivm9ev4k.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-06-08",
+     "domicile": true,
+     "adversaire": "Cerro Largo",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/liverpool-m-cerro-largo_9fyno7vf4iys6sxijqm82n76c.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-07-12",
+     "domicile": true,
+     "adversaire": "Cerro",
+     "buts_marques": 1,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/liverpool-m-cerro_9gc0udgaoh3wvu2lvtj0qz3f8.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-07-25",
+     "domicile": false,
+     "adversaire": "Def. Sporting",
+     "buts_marques": 2,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/def-sporting-liverpool-m_9itp5gm4ox6ygh5mt0vn4khlg.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-08-02",
+     "domicile": false,
+     "adversaire": "Central Esp.",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/central-esp-liverpool-m_9jj9ub8th461abfavcm5qta1g.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-08-08",
+     "domicile": true,
+     "adversaire": "Albion",
+     "buts_marques": 1,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/liverpool-m-albion_e77g1t9ralcqprabrcd9lp9n8.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-08-16",
+     "domicile": false,
+     "adversaire": "Def. Sporting",
+     "buts_marques": 4,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/def-sporting-liverpool-m_b8fgj2weq0pxnj99da2a44j6c.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-08-21",
+     "domicile": true,
+     "adversaire": "Cerro",
+     "buts_marques": 4,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/liverpool-m-cerro_1x63h85x07icj0dqmb7upj5zo.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-08-30",
+     "domicile": false,
+     "adversaire": "Cerro Largo",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/cerro-largo-liverpool-m_bdgqv2u4tlg78ggq4eoar8yz8.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-06",
+     "domicile": true,
+     "adversaire": "Boston River",
+     "buts_marques": 1,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/liverpool-m-boston-river_eitzkp2fterrprze7hiy0x6ac.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-14",
+     "domicile": false,
+     "adversaire": "Torque",
+     "buts_marques": 1,
+     "buts_encaisses": 3,
+     "url_match": "/live-score/torque-liverpool-m_60jgvuhggj5olu147ee0tzcb8.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-21",
+     "domicile": true,
+     "adversaire": "R. Montevideo",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/liverpool-m-r-montevideo_9vjk2znijqm00z4c8ptux591w.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-27",
+     "domicile": false,
+     "adversaire": "Central Esp.",
+     "buts_marques": 2,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/central-esp-liverpool-m_8zw69ixyzfr57wo6rjlloihp0.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-03",
+     "domicile": true,
+     "adversaire": "CA Progreso",
+     "buts_marques": 3,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/liverpool-m-ca-progreso_603fnr1j0up2x3yryeym3tqfo.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-10",
+     "domicile": false,
+     "adversaire": "D. Maldonado",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/d-maldonado-liverpool-m_c7qi0bf5i49am0svxw4wgmj8.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-18",
+     "domicile": true,
+     "adversaire": "Peñarol",
+     "buts_marques": 1,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/liverpool-m-penarol_1i7v2vh3ztoqmb3odb52e0vmc.html",
      "source": "matchendirect",
      "provisoire": false
     }
@@ -127107,13 +127594,6 @@
      "provisoire": false
     }
    ]
-  },
-  {
-   "cle_cache": "https://www.matchendirect.fr/equipe/malmo_1j6urnrw0k09so13v9rswoys4.html||suède : damallsvenskan",
-   "competition": "suède : damallsvenskan",
-   "couverte_par_football_data": false,
-   "raison": "championnat non couvert par Football-Data",
-   "matchs": []
   },
   {
    "cle_cache": "https://www.matchendirect.fr/equipe/malmo_93ohqui2qgqm8408viwmm1ken.html||suède : allsvenskan",
@@ -135936,6 +136416,254 @@
    ]
   },
   {
+   "cle_cache": "https://www.matchendirect.fr/equipe/nacional_27ia8tgma24uc864wpnbdwoxo.html||uruguay : primera division cloture",
+   "competition": "uruguay : primera division cloture",
+   "couverte_par_football_data": false,
+   "raison": "championnat non couvert par Football-Data",
+   "matchs": [
+    {
+     "date": "2026-03-28",
+     "domicile": false,
+     "adversaire": "Torque",
+     "buts_marques": 3,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/torque-nacional_62kcbfqspsg2dmuia4b7bhtec.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-04-11",
+     "domicile": false,
+     "adversaire": "D. Maldonado",
+     "buts_marques": 2,
+     "buts_encaisses": 4,
+     "url_match": "/live-score/d-maldonado-nacional_6bc7812d24yvy2x0iiax3hq8k.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-04-19",
+     "domicile": false,
+     "adversaire": "Liverpool M.",
+     "buts_marques": 3,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/liverpool-m-nacional_6btrnhm8ug61irzjuv63uqhp0.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-04-25",
+     "domicile": true,
+     "adversaire": "Danubio",
+     "buts_marques": 1,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/nacional-danubio_6jxlj7wm21bytwgib17slqluc.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-05-04",
+     "domicile": false,
+     "adversaire": "Albion",
+     "buts_marques": 2,
+     "buts_encaisses": 3,
+     "url_match": "/live-score/albion-nacional_6lmqdkdho3w5fqppzjm1f7tw4.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-05-10",
+     "domicile": true,
+     "adversaire": "Cerro",
+     "buts_marques": 4,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/nacional-cerro_6swhhnx2u4lin9mx4kmo9fyms.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-05-16",
+     "domicile": false,
+     "adversaire": "Torque",
+     "buts_marques": 2,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/torque-nacional_d0mk7x0p02nr8wj3v2p2y7384.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-05-23",
+     "domicile": true,
+     "adversaire": "Albion",
+     "buts_marques": 1,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/nacional-albion_9l4buhpiqwtwzrfal34big0t0.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-05-31",
+     "domicile": false,
+     "adversaire": "D. Maldonado",
+     "buts_marques": 0,
+     "buts_encaisses": 3,
+     "url_match": "/live-score/d-maldonado-nacional_9n2a4y5w6kfamblhnaw924kd0.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-06-06",
+     "domicile": true,
+     "adversaire": "Juventud",
+     "buts_marques": 2,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/nacional-juventud_9oh46z0x8427z3ogrpbndfcic.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-07-11",
+     "domicile": false,
+     "adversaire": "Danubio",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/danubio-nacional_9pj27mdl7iiaj71k005lemrdg.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-07-17",
+     "domicile": true,
+     "adversaire": "Montevideo",
+     "buts_marques": 1,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/nacional-montevideo_9rnv3phygbt9gqugwredu45ck.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-08-02",
+     "domicile": true,
+     "adversaire": "CA Progreso",
+     "buts_marques": 2,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/nacional-ca-progreso_9s0n9hiq5g0d4h3b5tc3x1jis.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-08-09",
+     "domicile": true,
+     "adversaire": "Boston River",
+     "buts_marques": 1,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/nacional-boston-river_e8bn13557a8e1n9izyiczpwyc.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-08-15",
+     "domicile": false,
+     "adversaire": "R. Montevideo",
+     "buts_marques": 0,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/r-montevideo-nacional_b7y5h3ll85msdzxr9s0ubszkk.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-08-23",
+     "domicile": true,
+     "adversaire": "CA Progreso",
+     "buts_marques": 1,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/nacional-ca-progreso_1ysjnbuio7z6ld0xzgbwmyrkk.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-08-30",
+     "domicile": false,
+     "adversaire": "Peñarol",
+     "buts_marques": 1,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/penarol-nacional_bdrj8n1gj5x46lbw8ojp96wb8.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-06",
+     "domicile": true,
+     "adversaire": "Juventud",
+     "buts_marques": 2,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/nacional-juventud_ejcnwoldfgdw6kpj45zhz7ms4.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-12",
+     "domicile": false,
+     "adversaire": "Montevideo",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/montevideo-nacional_5yum2bawr4t4a6hfwouek8x78.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-20",
+     "domicile": true,
+     "adversaire": "Def. Sporting",
+     "buts_marques": 3,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/nacional-def-sporting_9vaeo76k2wxnpe1msl0rbzjtg.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-26",
+     "domicile": false,
+     "adversaire": "Cerro Largo",
+     "buts_marques": 2,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/cerro-largo-nacional_8z49n51bnx0uwcsaynjbt7spg.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-06",
+     "domicile": true,
+     "adversaire": "Torque",
+     "buts_marques": 2,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/nacional-torque_6232tg2m4z7a34vo4b14ymhw4.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-11",
+     "domicile": false,
+     "adversaire": "Central Esp.",
+     "buts_marques": 1,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/central-esp-nacional_dnsae9qyc2e0hs32o9bnro5w.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-20",
+     "domicile": true,
+     "adversaire": "D. Maldonado",
+     "buts_marques": 3,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/nacional-d-maldonado_1iznibpudjub150ogj53rrtp0.html",
+     "source": "matchendirect",
+     "provisoire": false
+    }
+   ]
+  },
+  {
    "cle_cache": "https://www.matchendirect.fr/equipe/nacional_3n0uz5141jkl4wazgk0h5oh85.html||paraguay : professionnel de la division clôture",
    "competition": "paraguay : professionnel de la division clôture",
    "couverte_par_football_data": false,
@@ -136182,13 +136910,6 @@
      "provisoire": false
     }
    ]
-  },
-  {
-   "cle_cache": "https://www.matchendirect.fr/equipe/naftan_4apk2yuum9vl4okws1ydq6wt8.html||bélarus : première ligue",
-   "competition": "bélarus : première ligue",
-   "couverte_par_football_data": false,
-   "raison": "championnat couvert par Football-Data mais équipe pas encore reliée (A3)",
-   "matchs": []
   },
   {
    "cle_cache": "https://www.matchendirect.fr/equipe/nagaworld_bqjue0ryvt16pxw0ut6l2sfe2.html||cambodge : 1ère division",
@@ -146753,13 +147474,6 @@
    ]
   },
   {
-   "cle_cache": "https://www.matchendirect.fr/equipe/orgryte_dwh59i70ej2t39052zb719qp3.html||suède : allsvenskan",
-   "competition": "suède : allsvenskan",
-   "couverte_par_football_data": false,
-   "raison": "championnat couvert par Football-Data mais équipe pas encore reliée (A3)",
-   "matchs": []
-  },
-  {
    "cle_cache": "https://www.matchendirect.fr/equipe/orlando-city_eaqreat4kxwvah0bvwg1wtoq5.html||etats-unis : mls",
    "competition": "etats-unis : mls",
    "couverte_par_football_data": true,
@@ -148041,13 +148755,6 @@
      "provisoire": false
     }
    ]
-  },
-  {
-   "cle_cache": "https://www.matchendirect.fr/equipe/oster_cfvya7igkhkas7wvsktwz6j8k.html||suède : superettan",
-   "competition": "suède : superettan",
-   "couverte_par_football_data": false,
-   "raison": "championnat non couvert par Football-Data",
-   "matchs": []
   },
   {
    "cle_cache": "https://www.matchendirect.fr/equipe/otelul_3yo4oywqy61m0zjsnbi45xq1o.html||roumanie : liga 1",
@@ -155296,7 +156003,18 @@
    "competition": "finlande : veikkausliiga - relégation finale",
    "couverte_par_football_data": false,
    "raison": "championnat non couvert par Football-Data",
-   "matchs": []
+   "matchs": [
+    {
+     "date": "2026-10-21",
+     "domicile": true,
+     "adversaire": "Jaro",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/pk-35-jaro_bzdrk57rnctkremj66wrube38.html",
+     "source": "matchendirect",
+     "provisoire": false
+    }
+   ]
   },
   {
    "cle_cache": "https://www.matchendirect.fr/equipe/platense_erhh6pzf5gb393pa1w3ob5qwa.html||el salvador : 1ère division ouverture",
@@ -172838,13 +173556,6 @@
    ]
   },
   {
-   "cle_cache": "https://www.matchendirect.fr/equipe/s-shenhua_cvx4yvx5oby9dz7vm70mw04um.html||chine : super ligue",
-   "competition": "chine : super ligue",
-   "couverte_par_football_data": false,
-   "raison": "championnat couvert par Football-Data mais équipe pas encore reliée (A3)",
-   "matchs": []
-  },
-  {
    "cle_cache": "https://www.matchendirect.fr/equipe/s-sounders_3st9rj62b3qnni6uolw0lwaqn.html||etats-unis : mls",
    "competition": "etats-unis : mls",
    "couverte_par_football_data": true,
@@ -177477,7 +178188,7 @@
    ]
   },
   {
-   "cle_cache": "https://www.matchendirect.fr/equipe/san-carlos_7esbrsdge6pknfynf4npsgg7o.html||costa rica : 1ère division ouverture",
+   "cle_cache": "https://www.matchendirect.fr/equipe/san-carlos_8gsjo8rs9cfipedjwhdmg1g0q.html||costa rica : 1ère division ouverture",
    "competition": "costa rica : 1ère division ouverture",
    "couverte_par_football_data": false,
    "raison": "championnat non couvert par Football-Data",
@@ -180821,13 +181532,6 @@
    "matchs": []
   },
   {
-   "cle_cache": "https://www.matchendirect.fr/equipe/sandviken_6gmmnqqkjtnd06ciw8plcoy3c.html||suède : superettan",
-   "competition": "suède : superettan",
-   "couverte_par_football_data": false,
-   "raison": "championnat non couvert par Football-Data",
-   "matchs": []
-  },
-  {
    "cle_cache": "https://www.matchendirect.fr/equipe/sant-andreu_aob7kpdara8575rqb3g2r49x8.html||espagne : première division rfef groupe 1",
    "competition": "espagne : première division rfef groupe 1",
    "couverte_par_football_data": false,
@@ -180912,6 +181616,193 @@
      "url_match": "/live-score/sant-andreu-torremolinos_exhdodnzitfjvxvefst55oqok.html",
      "source": "matchendirect",
      "provisoire": false
+    }
+   ]
+  },
+  {
+   "cle_cache": "https://www.matchendirect.fr/equipe/santa-clara_cmbqc74mshg77ra7mywec2a6b.html||portugal : primeira liga",
+   "competition": "portugal : primeira liga",
+   "couverte_par_football_data": true,
+   "division_football_data": "P1",
+   "nom_football_data": "Santa Clara",
+   "nom_matchendirect": "Santa Clara",
+   "matchs_sans_date_ignores": 0,
+   "matchs": [
+    {
+     "date": "2026-08-10",
+     "domicile": true,
+     "adversaire": "Nacional",
+     "buts_marques": 2,
+     "buts_encaisses": 2,
+     "buts_marques_mi_temps": 2,
+     "buts_encaisses_mi_temps": 2,
+     "tirs": 19,
+     "tirs_concedes": 10,
+     "tirs_cadres": 7,
+     "tirs_cadres_concedes": 4,
+     "corners": 4,
+     "corners_concedes": 4,
+     "cartons_jaunes": 2,
+     "cartons_rouges": 0,
+     "xg": 1.44,
+     "xg_concede": 1.24,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    },
+    {
+     "date": "2026-08-15",
+     "domicile": false,
+     "adversaire": "Academico Viseu",
+     "buts_marques": 1,
+     "buts_encaisses": 0,
+     "buts_marques_mi_temps": 1,
+     "buts_encaisses_mi_temps": 0,
+     "tirs": 8,
+     "tirs_concedes": 10,
+     "tirs_cadres": 2,
+     "tirs_cadres_concedes": 1,
+     "corners": 2,
+     "corners_concedes": 4,
+     "cartons_jaunes": 3,
+     "cartons_rouges": 0,
+     "xg": 1.26,
+     "xg_concede": 0.69,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    },
+    {
+     "date": "2026-08-23",
+     "domicile": true,
+     "adversaire": "Famalicao",
+     "buts_marques": 1,
+     "buts_encaisses": 0,
+     "buts_marques_mi_temps": 1,
+     "buts_encaisses_mi_temps": 0,
+     "tirs": 12,
+     "tirs_concedes": 9,
+     "tirs_cadres": 2,
+     "tirs_cadres_concedes": 3,
+     "corners": 1,
+     "corners_concedes": 9,
+     "cartons_jaunes": 1,
+     "cartons_rouges": 0,
+     "xg": 1.36,
+     "xg_concede": 1.05,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    },
+    {
+     "date": "2026-08-29",
+     "domicile": false,
+     "adversaire": "Alverca",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "buts_marques_mi_temps": 0,
+     "buts_encaisses_mi_temps": 0,
+     "tirs": 15,
+     "tirs_concedes": 5,
+     "tirs_cadres": 3,
+     "tirs_cadres_concedes": 1,
+     "corners": 4,
+     "corners_concedes": 10,
+     "cartons_jaunes": 2,
+     "cartons_rouges": 0,
+     "xg": 1.41,
+     "xg_concede": 0.41,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    },
+    {
+     "date": "2026-09-06",
+     "domicile": true,
+     "adversaire": "Rio Ave",
+     "buts_marques": 4,
+     "buts_encaisses": 0,
+     "buts_marques_mi_temps": 1,
+     "buts_encaisses_mi_temps": 0,
+     "tirs": 16,
+     "tirs_concedes": 5,
+     "tirs_cadres": 6,
+     "tirs_cadres_concedes": 3,
+     "corners": 8,
+     "corners_concedes": 2,
+     "cartons_jaunes": 1,
+     "cartons_rouges": 0,
+     "xg": 1.8,
+     "xg_concede": 0.32,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    },
+    {
+     "date": "2026-09-13",
+     "domicile": false,
+     "adversaire": "Arouca",
+     "buts_marques": 2,
+     "buts_encaisses": 1,
+     "buts_marques_mi_temps": 2,
+     "buts_encaisses_mi_temps": 0,
+     "tirs": 12,
+     "tirs_concedes": 10,
+     "tirs_cadres": 5,
+     "tirs_cadres_concedes": 4,
+     "corners": 2,
+     "corners_concedes": 5,
+     "cartons_jaunes": 5,
+     "cartons_rouges": 1,
+     "xg": 1.16,
+     "xg_concede": 0.72,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    },
+    {
+     "date": "2026-09-20",
+     "domicile": true,
+     "adversaire": "Sp Braga",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "buts_marques_mi_temps": 0,
+     "buts_encaisses_mi_temps": 0,
+     "tirs": 10,
+     "tirs_concedes": 8,
+     "tirs_cadres": 1,
+     "tirs_cadres_concedes": 1,
+     "corners": 5,
+     "corners_concedes": 5,
+     "cartons_jaunes": 4,
+     "cartons_rouges": 0,
+     "xg": 1.04,
+     "xg_concede": 0.5,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    },
+    {
+     "date": "2026-10-10",
+     "domicile": false,
+     "adversaire": "Casa Pia",
+     "buts_marques": 1,
+     "buts_encaisses": 0,
+     "buts_marques_mi_temps": 0,
+     "buts_encaisses_mi_temps": 0,
+     "tirs": 14,
+     "tirs_concedes": 5,
+     "tirs_cadres": 2,
+     "tirs_cadres_concedes": 2,
+     "corners": 7,
+     "corners_concedes": 3,
+     "cartons_jaunes": 5,
+     "cartons_rouges": 0,
+     "xg": 0.61,
+     "xg_concede": 0.43,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
     }
    ]
   },
@@ -185671,13 +186562,6 @@
    ]
   },
   {
-   "cle_cache": "https://www.matchendirect.fr/equipe/shanghai-port_5x5hvs5xtbbh8b0zg5ehyyudv.html||chine : super ligue",
-   "competition": "chine : super ligue",
-   "couverte_par_football_data": false,
-   "raison": "championnat couvert par Football-Data mais équipe pas encore reliée (A3)",
-   "matchs": []
-  },
-  {
    "cle_cache": "https://www.matchendirect.fr/equipe/sheffield-utd_bws31egwjda253q9lvykgnivo.html||angleterre : championnat",
    "competition": "angleterre : championnat",
    "couverte_par_football_data": true,
@@ -187892,13 +188776,6 @@
      "saison": "2627"
     }
    ]
-  },
-  {
-   "cle_cache": "https://www.matchendirect.fr/equipe/sirius_4jg5vd59i24chckyua90dr1lg.html||suède : allsvenskan",
-   "competition": "suède : allsvenskan",
-   "couverte_par_football_data": false,
-   "raison": "championnat couvert par Football-Data mais équipe pas encore reliée (A3)",
-   "matchs": []
   },
   {
    "cle_cache": "https://www.matchendirect.fr/equipe/siroki-brije_evg8s568ahyh2t9qub0yad8ye.html||bosnie-herzégovine : première ligue",
@@ -194238,13 +195115,6 @@
    "matchs": []
   },
   {
-   "cle_cache": "https://www.matchendirect.fr/equipe/stjarnan_23vg6q15dzr375k6757j06wkq.html||islande : úrvalsdeild tour de relégation",
-   "competition": "islande : úrvalsdeild tour de relégation",
-   "couverte_par_football_data": false,
-   "raison": "championnat non couvert par Football-Data",
-   "matchs": []
-  },
-  {
    "cle_cache": "https://www.matchendirect.fr/equipe/stockport_5adikbrse2tjc3zthxrx8ic2k.html||angleterre : league one",
    "competition": "angleterre : league one",
    "couverte_par_football_data": true,
@@ -197118,6 +197988,92 @@
      "buts_marques": 1,
      "buts_encaisses": 5,
      "url_match": "/live-score/alashkert-syunik_bdi4vmi1e1if27fk0ohdq9vkk.html",
+     "source": "matchendirect",
+     "provisoire": false
+    }
+   ]
+  },
+  {
+   "cle_cache": "https://www.matchendirect.fr/equipe/taichung-futuro_7rb0b6ymls3w3d7a798qmfwx6.html||taïwan : première ligue",
+   "competition": "taïwan : première ligue",
+   "couverte_par_football_data": false,
+   "raison": "championnat couvert par Football-Data mais équipe pas encore reliée (A3)",
+   "matchs": [
+    {
+     "date": "2026-09-13",
+     "domicile": true,
+     "adversaire": "Taipei Tatung",
+     "buts_marques": 0,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/taichung-futuro-taipei-tatung_5o1xbayqc1qj23cnn3rnwsrh0.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-20",
+     "domicile": true,
+     "adversaire": "Attackers",
+     "buts_marques": 0,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/taichung-futuro-attackers_5pvnalvc15ddqlkfluazt474k.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-11",
+     "domicile": false,
+     "adversaire": "Taipower",
+     "buts_marques": 1,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/taipower-taichung-futuro_5r7696j6alg4czyz9orxf0pw4.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-18",
+     "domicile": true,
+     "adversaire": "AC Taipei",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/taichung-futuro-ac-taipei_5s7sevu3oieo1u642jf9ebyms.html",
+     "source": "matchendirect",
+     "provisoire": false
+    }
+   ]
+  },
+  {
+   "cle_cache": "https://www.matchendirect.fr/equipe/taichung-rock_ddlzxi3sjhcjzwdl8qpvexw4.html||taïwan : première ligue",
+   "competition": "taïwan : première ligue",
+   "couverte_par_football_data": false,
+   "raison": "championnat couvert par Football-Data mais équipe pas encore reliée (A3)",
+   "matchs": [
+    {
+     "date": "2026-09-13",
+     "domicile": false,
+     "adversaire": "Attackers",
+     "buts_marques": 2,
+     "buts_encaisses": 5,
+     "url_match": "/live-score/attackers-taichung-rock_5oh3dlscuq3c0jrqy6wecawb8.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-20",
+     "domicile": true,
+     "adversaire": "Taipower",
+     "buts_marques": 1,
+     "buts_encaisses": 3,
+     "url_match": "/live-score/taichung-rock-taipower_5pjvwrg0fxyv2lvjqykx6o178.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-11",
+     "domicile": false,
+     "adversaire": "AC Taipei",
+     "buts_marques": 1,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/ac-taipei-taichung-rock_5rjlu0v7l6ngwsfatd3fw3nkk.html",
      "source": "matchendirect",
      "provisoire": false
     }
@@ -201812,13 +202768,6 @@
      "provisoire": false
     }
    ]
-  },
-  {
-   "cle_cache": "https://www.matchendirect.fr/equipe/tobol_6q0da0czmcq4ymj63mdxyvs46.html||kazakhstan : super ligue",
-   "competition": "kazakhstan : super ligue",
-   "couverte_par_football_data": false,
-   "raison": "championnat couvert par Football-Data mais équipe pas encore reliée (A3)",
-   "matchs": []
   },
   {
    "cle_cache": "https://www.matchendirect.fr/equipe/tokyo-verdy_6u7ltoz339il087ubf6rdtc2v.html||japon : j1 ligue",
@@ -209333,6 +210282,193 @@
    ]
   },
   {
+   "cle_cache": "https://www.matchendirect.fr/equipe/union-sg_ecj1gmc7pqcjo4sc9hvghj5u3.html||belgique : pro ligue",
+   "competition": "belgique : pro ligue",
+   "couverte_par_football_data": true,
+   "division_football_data": "B1",
+   "nom_football_data": "St. Gilloise",
+   "nom_matchendirect": "Union SG",
+   "matchs_sans_date_ignores": 0,
+   "matchs": [
+    {
+     "date": "2026-08-08",
+     "domicile": false,
+     "adversaire": "Westerlo",
+     "buts_marques": 5,
+     "buts_encaisses": 1,
+     "buts_marques_mi_temps": 1,
+     "buts_encaisses_mi_temps": 1,
+     "tirs": 19,
+     "tirs_concedes": 12,
+     "tirs_cadres": 10,
+     "tirs_cadres_concedes": 3,
+     "corners": 5,
+     "corners_concedes": 4,
+     "cartons_jaunes": 2,
+     "cartons_rouges": 0,
+     "xg": 1.79,
+     "xg_concede": 0.76,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    },
+    {
+     "date": "2026-08-15",
+     "domicile": true,
+     "adversaire": "Waregem",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "buts_marques_mi_temps": 0,
+     "buts_encaisses_mi_temps": 0,
+     "tirs": 9,
+     "tirs_concedes": 11,
+     "tirs_cadres": 3,
+     "tirs_cadres_concedes": 4,
+     "corners": 9,
+     "corners_concedes": 3,
+     "cartons_jaunes": 2,
+     "cartons_rouges": 0,
+     "xg": 0.89,
+     "xg_concede": 0.97,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    },
+    {
+     "date": "2026-08-30",
+     "domicile": true,
+     "adversaire": "Anderlecht",
+     "buts_marques": 3,
+     "buts_encaisses": 0,
+     "buts_marques_mi_temps": 2,
+     "buts_encaisses_mi_temps": 0,
+     "tirs": 15,
+     "tirs_concedes": 12,
+     "tirs_cadres": 7,
+     "tirs_cadres_concedes": 2,
+     "corners": 4,
+     "corners_concedes": 3,
+     "cartons_jaunes": 2,
+     "cartons_rouges": 0,
+     "xg": 1.6,
+     "xg_concede": 1.35,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    },
+    {
+     "date": "2026-09-02",
+     "domicile": false,
+     "adversaire": "St Truiden",
+     "buts_marques": 3,
+     "buts_encaisses": 0,
+     "buts_marques_mi_temps": 1,
+     "buts_encaisses_mi_temps": 0,
+     "tirs": 12,
+     "tirs_concedes": 6,
+     "tirs_cadres": 6,
+     "tirs_cadres_concedes": 2,
+     "corners": 1,
+     "corners_concedes": 3,
+     "cartons_jaunes": 2,
+     "cartons_rouges": 0,
+     "xg": 2.49,
+     "xg_concede": 0.85,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    },
+    {
+     "date": "2026-09-05",
+     "domicile": false,
+     "adversaire": "Charleroi",
+     "buts_marques": 3,
+     "buts_encaisses": 2,
+     "buts_marques_mi_temps": 2,
+     "buts_encaisses_mi_temps": 2,
+     "tirs": 17,
+     "tirs_concedes": 20,
+     "tirs_cadres": 7,
+     "tirs_cadres_concedes": 5,
+     "corners": 6,
+     "corners_concedes": 5,
+     "cartons_jaunes": 2,
+     "cartons_rouges": 0,
+     "xg": 1.24,
+     "xg_concede": 2.18,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    },
+    {
+     "date": "2026-09-12",
+     "domicile": true,
+     "adversaire": "Lommel SK",
+     "buts_marques": 5,
+     "buts_encaisses": 0,
+     "buts_marques_mi_temps": 2,
+     "buts_encaisses_mi_temps": 0,
+     "tirs": 28,
+     "tirs_concedes": 11,
+     "tirs_cadres": 12,
+     "tirs_cadres_concedes": 4,
+     "corners": 6,
+     "corners_concedes": 4,
+     "cartons_jaunes": 2,
+     "cartons_rouges": 0,
+     "xg": 3.27,
+     "xg_concede": 0.65,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    },
+    {
+     "date": "2026-09-20",
+     "domicile": false,
+     "adversaire": "Antwerp",
+     "buts_marques": 2,
+     "buts_encaisses": 0,
+     "buts_marques_mi_temps": 0,
+     "buts_encaisses_mi_temps": 0,
+     "tirs": 21,
+     "tirs_concedes": 7,
+     "tirs_cadres": 11,
+     "tirs_cadres_concedes": 1,
+     "corners": 7,
+     "corners_concedes": 1,
+     "cartons_jaunes": 2,
+     "cartons_rouges": 0,
+     "xg": 3.34,
+     "xg_concede": 0.41,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    },
+    {
+     "date": "2026-10-11",
+     "domicile": true,
+     "adversaire": "Oud-Heverlee Leuven",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "buts_marques_mi_temps": 0,
+     "buts_encaisses_mi_temps": 1,
+     "tirs": 18,
+     "tirs_concedes": 14,
+     "tirs_cadres": 2,
+     "tirs_cadres_concedes": 2,
+     "corners": 9,
+     "corners_concedes": 4,
+     "cartons_jaunes": 0,
+     "cartons_rouges": 1,
+     "xg": 1.29,
+     "xg_concede": 1.35,
+     "source": "football-data",
+     "provisoire": false,
+     "saison": "2627"
+    }
+   ]
+  },
+  {
    "cle_cache": "https://www.matchendirect.fr/equipe/univ-craiova_83rbv17lblttd5vcb3emcyzms.html||roumanie : liga 1",
    "competition": "roumanie : liga 1",
    "couverte_par_football_data": true,
@@ -213024,22 +214160,8 @@
    ]
   },
   {
-   "cle_cache": "https://www.matchendirect.fr/equipe/valerenga_8q6cv8g4bd3xdl7m88kll16na.html||norvège : eliteserien",
-   "competition": "norvège : eliteserien",
-   "couverte_par_football_data": false,
-   "raison": "championnat couvert par Football-Data mais équipe pas encore reliée (A3)",
-   "matchs": []
-  },
-  {
    "cle_cache": "https://www.matchendirect.fr/equipe/valur_khmdmbol7850k3i07yusgpn.html||islande : úrvalsdeild tour de championnat",
    "competition": "islande : úrvalsdeild tour de championnat",
-   "couverte_par_football_data": false,
-   "raison": "championnat non couvert par Football-Data",
-   "matchs": []
-  },
-  {
-   "cle_cache": "https://www.matchendirect.fr/equipe/valur_khmdmbol7850k3i07yusgpn.html||islande : úrvalsdeild tour de relégation",
-   "competition": "islande : úrvalsdeild tour de relégation",
    "couverte_par_football_data": false,
    "raison": "championnat non couvert par Football-Data",
    "matchs": []
@@ -213409,13 +214531,6 @@
   },
   {
    "cle_cache": "https://www.matchendirect.fr/equipe/varbergs_4mo3tith28qu9za01e8siplsn.html||suède : superettan",
-   "competition": "suède : superettan",
-   "couverte_par_football_data": false,
-   "raison": "championnat non couvert par Football-Data",
-   "matchs": []
-  },
-  {
-   "cle_cache": "https://www.matchendirect.fr/equipe/varnamo_durq4oppf7c08tnbzrlebt0uz.html||suède : superettan",
    "competition": "suède : superettan",
    "couverte_par_football_data": false,
    "raison": "championnat non couvert par Football-Data",
@@ -216264,13 +217379,6 @@
   {
    "cle_cache": "https://www.matchendirect.fr/equipe/vikingur-r_7gmdb4hmtrz199zv9r66qy9qp.html||islande : úrvalsdeild tour de championnat",
    "competition": "islande : úrvalsdeild tour de championnat",
-   "couverte_par_football_data": false,
-   "raison": "championnat non couvert par Football-Data",
-   "matchs": []
-  },
-  {
-   "cle_cache": "https://www.matchendirect.fr/equipe/vikingur-r_7gmdb4hmtrz199zv9r66qy9qp.html||islande : úrvalsdeild tour de relégation",
-   "competition": "islande : úrvalsdeild tour de relégation",
    "couverte_par_football_data": false,
    "raison": "championnat non couvert par Football-Data",
    "matchs": []
@@ -226248,13 +227356,6 @@
      "provisoire": false
     }
    ]
-  },
-  {
-   "cle_cache": "https://www.matchendirect.fr/equipe/zhetysu_61i6iclntjwmpojzlis65wsv7.html||kazakhstan : super ligue",
-   "competition": "kazakhstan : super ligue",
-   "couverte_par_football_data": false,
-   "raison": "championnat couvert par Football-Data mais équipe pas encore reliée (A3)",
-   "matchs": []
   },
   {
    "cle_cache": "https://www.matchendirect.fr/equipe/zlin_aj1nbeiatqrs6e47mnhjidn15.html||république tchèque : ligue tchèque",
