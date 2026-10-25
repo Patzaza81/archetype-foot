@@ -4,9 +4,11 @@ de tickets »).
 Mêmes règles que l'onglet « Traitement séquentiel des tickets » (`af-alpha-tickets.js`, audit validé du 25/10/2026), réécrites ici en
 Python pour être gelées et suivies chaque nuit ; un test vérifie que le navigateur et ce module choisissent exactement les mêmes paris.
 - Palier 1 : meilleur marché affiché de Buts, Équipes, Calibrés ; admissible si cote ≥ 1,25, pas un remplaçant, valeur ≥ 80 %,
-  confirmation sur les matchs des deux équipes ≥ 75 %, au moins 5 matchs comparés ; tranches de 2 heures de 10 h à minuit ; 2 meilleurs
-  par tranche (un marché par match) ; « ticket du jour » = le premier de chaque tranche ; « ticket long » = puis les deuxièmes.
-- Palier 2 : les paris de `palier2.py` des matchs du jour (10 h – minuit), dans l'ordre des heures.
+  confirmation sur les matchs des deux équipes ≥ 75 %, au moins 5 matchs comparés ; tranches de 2 heures de 10 h à minuit ; le premier
+  de chaque tranche (un marché par match).
+- Palier 2 (25/10/2026, Patrick) : les 10 meilleurs pronostics RESTANTS de la journée (10 h – minuit), mêmes règles, même classement,
+  un seul pari par match, aucun match du palier 1. Moins de 10 admissibles : le palier en compte moins (rien n'est assoupli).
+- Palier 3, en test : les paris de `palier2.py` (« le domicile ne marque pas plus de 2 buts » quand les chiffres battent la cote).
 Gel : chaque nuit, pour le jour courant (Douala) seulement, avant le premier match du ticket ; jamais regelé, jamais a posteriori.
 Résultats : quand tous les matchs d'un ticket ont un score. Bilan : uniquement sur des tickets gelés avant les matchs.
 Bibliothèque standard seulement. Le moteur alpha (`coeur.py`) n'est ni appelé ni modifié.
@@ -20,8 +22,9 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
 JOURNAL = ROOT / "data" / "alpha_serie" / "tickets_journal.jsonl"
+PALIERS = ("palier1", "palier2", "palier3")
 
-COTE_MIN, VALEUR_MIN, CONFIRMATION_MIN, MATCHS_MIN, PAR_TRANCHE = 1.25, 0.80, 0.75, 5, 2
+COTE_MIN, VALEUR_MIN, CONFIRMATION_MIN, MATCHS_MIN, PAR_TRANCHE, PALIER2_MAX = 1.25, 0.80, 0.75, 5, 2, 10
 DEBUT, PAS, FIN = 10 * 60, 120, 24 * 60
 DOUALA = timezone(timedelta(hours=1))
 
@@ -111,18 +114,27 @@ def ticket_long(trs: list[dict]) -> list[dict]:
     return [t["ticket"][0] for t in trs if t["ticket"]] + [t["ticket"][1] for t in trs if len(t["ticket"]) > 1]
 
 
+def palier_2(cands: list[dict], p1: list[dict]) -> list[dict]:
+    pris, out = {c["match_id"] for c in p1}, []
+    for c in sorted([c for c in cands if c["admissible"] and DEBUT <= c["debut"] < FIN], key=_ordre):
+        if c["match_id"] in pris or len(out) >= PALIER2_MAX:
+            continue
+        out.append(c)
+        pris.add(c["match_id"])
+    return out
+
+
 def du_jour(matchs: list[dict], jour: str) -> dict[str, Any]:
-    trs = tranches(candidats(matchs, jour))
-    longue = ticket_long(trs)
-    n1 = sum(1 for t in trs if t["ticket"])
-    p2 = sorted([{**s, "match_id": m["match_id"], "heure": m.get("heure"), "debut": _minutes(m.get("heure")), "domicile": m.get("domicile"),
-                  "exterieur": m.get("exterieur"), "competition": m.get("competition")}
+    cands = candidats(matchs, jour)
+    p1 = [t["ticket"][0] for t in tranches(cands) if t["ticket"]]
+    p2 = palier_2(cands, p1)
+    p3 = sorted([{**s, "match_id": m["match_id"], "categorie": "palier3", "heure": m.get("heure"), "debut": _minutes(m.get("heure")),
+                  "domicile": m.get("domicile"), "exterieur": m.get("exterieur"), "competition": m.get("competition")}
                  for m in matchs if m.get("date") == jour and m.get("statut") == "analyse" for s in m.get("palier2") or []
                  if _minutes(m.get("heure")) is not None and DEBUT <= _minutes(m.get("heure")) < FIN], key=lambda x: (x["debut"], x["match_id"]))
     garde = ("match_id", "categorie", "cle", "marche", "cote", "valeur", "heure", "debut", "domicile", "exterieur", "competition")
-    return {"jour": jour, "palier1": [{k: c[k] for k in garde} for c in longue[:n1]],
-            "palier1_long": [{k: c[k] for k in garde} for c in longue[n1:]],
-            "palier2": [{k: c.get(k) for k in garde + ("avantage", "p_estimee", "p_cote")} for c in p2]}
+    return {"jour": jour, "palier1": [{k: c.get(k) for k in garde} for c in p1], "palier2": [{k: c.get(k) for k in garde} for c in p2],
+            "palier3": [{k: c.get(k) for k in garde + ("avantage", "p_estimee", "p_cote")} for c in p3]}
 
 
 # --- Journal : gel, résultats, bilan -----------------------------------------------------------------------------------------
@@ -145,7 +157,7 @@ def geler(matchs_page: list[dict], maintenant: datetime | None = None, journal: 
     if any(l["type"] == "tickets" and l["jour"] == jour for l in _lire(journal)):
         return 0
     t = du_jour(matchs_page, jour)
-    tous = t["palier1"] + t["palier1_long"] + t["palier2"]
+    tous = t["palier1"] + t["palier2"] + t["palier3"]
     if not tous:
         return 0
     minute_now = (maintenant.astimezone(DOUALA).hour * 60 + maintenant.astimezone(DOUALA).minute)
@@ -162,12 +174,12 @@ def regler(matchs_archive: list[dict], journal: Path = JOURNAL) -> int:
     scores = {m["match_id"]: m.get("score_final") for m in matchs_archive if m.get("score_final")}
     nouveaux = []
     for t in (l for l in lignes if l["type"] == "tickets" and l["jour"] not in faits):
-        legs = t["palier1"] + t["palier1_long"] + t["palier2"]
+        legs = [c for p in PALIERS for c in t.get(p, [])]
         if not all(c["match_id"] in scores for c in legs):
             continue
         res = lambda lst: [_gagne(c["cle"], scores[c["match_id"]]["buts_dom"], scores[c["match_id"]]["buts_ext"]) for c in lst]  # noqa: E731
-        nouveaux.append({"type": "resultat_tickets", "jour": t["jour"], "palier1": res(t["palier1"]), "palier1_long": res(t["palier1_long"]),
-                         "palier2": res(t["palier2"]), "enregistre_le": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")})
+        nouveaux.append({"type": "resultat_tickets", "jour": t["jour"], **{p: res(t.get(p, [])) for p in PALIERS},
+                         "enregistre_le": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")})
     _ajouter(journal, nouveaux)
     return len(nouveaux)
 
@@ -177,12 +189,12 @@ def bilan(journal: Path = JOURNAL) -> dict[str, Any]:
     res = {l["jour"]: l for l in lignes if l["type"] == "resultat_tickets"}
     gel = {l["jour"]: l for l in lignes if l["type"] == "tickets"}
     out: dict[str, Any] = {"jours_geles": len(gel), "jours_regles": len(res)}
-    for nom, partie in (("palier1", ["palier1"]), ("palier1_long", ["palier1", "palier1_long"]), ("palier2", ["palier2"])):
+    for nom, partie in ((p, [p]) for p in PALIERS):
         tickets = gagnes = legs = legs_g = 0
         rendement = 0.0
         for j, r in res.items():
-            sel = sum((gel[j][p] for p in partie), [])
-            ok = sum((r[p] for p in partie), [])
+            sel = sum((gel[j].get(p, []) for p in partie), [])
+            ok = sum((r.get(p, []) for p in partie), [])
             if not sel or any(x is None for x in ok):
                 continue
             tickets += 1

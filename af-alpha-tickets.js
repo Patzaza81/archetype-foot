@@ -19,7 +19,7 @@
   const REGLES = Object.freeze({
     categories: ["buts", "equipes", "calibrees"],
     coteMin: 1.25, valeurMin: 0.80, confirmationMin: 0.75, matchsMin: 5, parTranche: 2,
-    debut: 10 * 60, pas: 120, fin: 24 * 60,
+    debut: 10 * 60, pas: 120, fin: 24 * 60, palier2Max: 10,
     dureeMatch: 115, delaiReglement: 15, margeConfortable: 30,
   });
 
@@ -112,6 +112,17 @@
     return ordre.map((ajout, i) => { cote *= ajout.cote; return { ajout, cote, selections: i + 1 }; });
   }
 
+  // Palier 2 (25/10/2026, Patrick) : les 10 meilleurs pronostics RESTANTS après le palier 1, avec la même rigueur (mêmes règles
+  // d'admissibilité, même classement), sur toute la journée ; un seul pari par match, aucun match du palier 1.
+  function palier2(cands, p1) {
+    const pris = new Set(p1.map((c) => c.match_id)), out = [];
+    for (const c of cands.filter((x) => x.admissible && x.debut >= REGLES.debut && x.debut < REGLES.fin).sort(compare)) {
+      if (pris.has(c.match_id) || out.length >= REGLES.palier2Max) continue;
+      out.push(c); pris.add(c.match_id);
+    }
+    return out;
+  }
+
   const finEstimee = (sels) => Math.max(...sels.map((s) => s.debut)) + REGLES.dureeMatch;
 
   // Méthode B : à partir de chaque tranche, enchaîne les tickets dont les matchs commencent après la fin et le règlement du précédent.
@@ -165,8 +176,9 @@
   }
 
   function analyse(donnees, jour) {
-    const trs = tranches(candidats((donnees && donnees.matchs) || [], jour));
-    return { jour, regles: REGLES, tranches: trs, methodeA: methodeA(trs), ticketLong: ticketLong(trs), chaines: chaines(trs) };
+    const cands = candidats((donnees && donnees.matchs) || [], jour), trs = tranches(cands), a = methodeA(trs);
+    return { jour, regles: REGLES, tranches: trs, methodeA: a, palier1: a.map((e) => e.ajout), palier2: palier2(cands, a.map((e) => e.ajout)),
+      ticketLong: ticketLong(trs), chaines: chaines(trs) };
   }
 
   // Jours disponibles (au moins un match analysé avec une heure), du plus proche au plus lointain, à partir de `depuis`.
@@ -174,7 +186,7 @@
     return [...new Set(((donnees && donnees.matchs) || []).filter((m) => m.statut === "analyse" && minutes(m.heure) !== null && m.date >= depuis).map((m) => m.date))].sort();
   }
 
-  const api = { REGLES, minutes, heure, confirmation, candidats, compare, tranches, coteTotale, methodeA, ticketLong, chaines, finances, analyse, jours, finEstimee };
+  const api = { REGLES, minutes, heure, confirmation, candidats, compare, tranches, coteTotale, methodeA, palier2, ticketLong, chaines, finances, analyse, jours, finEstimee };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else racine.AlphaTickets = api;
 })(typeof window !== "undefined" ? window : globalThis);

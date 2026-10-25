@@ -62,7 +62,8 @@ def test_gel_regles_bilan(tmp_path):
     assert T.regler(archive, j) == 1
     b = T.bilan(j)
     assert b["palier1"] == {"tickets": 1, "gagnes": 1, "paris": 2, "paris_gagnes": 2, "rendement_par_ticket": pytest.approx(1.30 * 1.35 - 1, abs=1e-4)}
-    assert b["palier2"]["gagnes"] == 0 and b["palier2"]["paris"] == 1                   # 3 buts du domicile : perdu
+    assert b["palier3"]["gagnes"] == 0 and b["palier3"]["paris"] == 1                   # 3 buts du domicile : perdu
+    assert b["palier2"]["tickets"] == 0                                                 # 2 admissibles, tous deux au palier 1
 
 
 def test_aucun_gel_a_posteriori(tmp_path):
@@ -72,14 +73,35 @@ def test_aucun_gel_a_posteriori(tmp_path):
 
 
 # --- Mêmes choix que la page (af-alpha-tickets.js) -------------------------------------------------------------------------
+PARITE = [("12:30", 1.30, 0.93, (9, 12)), ("13:15", 1.28, 0.93, (10, 12)), ("14:00", 1.35, 0.81, (5, 6)), ("15:00", 1.29, 0.81, (5, 6)),
+          ("16:00", 1.40, 0.79, (9, 9)), ("18:30", 1.25, 1.0, (3, 4)), ("20:00", 1.29, 1.0, (9, 12)), ("22:30", 1.28, 0.86, (11, 12)),
+          ("11:00", 1.33, 0.90, (10, 12)), ("12:00", 1.26, 0.88, (9, 12)), ("13:45", 1.31, 0.85, (8, 10)), ("17:00", 1.27, 0.84, (9, 11)),
+          ("19:00", 1.32, 0.83, (7, 9)), ("21:00", 1.30, 0.82, (8, 10)), ("23:15", 1.29, 0.95, (11, 12)), ("10:30", 1.36, 0.92, (10, 12)),
+          ("09:30", 1.30, 0.99, (12, 12))]                                        # 09:30 : hors de la journée de 10 h à minuit
+
+
+def _page_parite():
+    return [match(f"m{i:02d}", h, equipes=[pari("Pas de nul (12)", c, v, ["double_chance", "12"], conf)]) for i, (h, c, v, conf) in enumerate(PARITE)]
+
+
 @pytest.mark.skipif(shutil.which("node") is None, reason="node absent")
 def test_meme_ticket_que_la_page():
-    page = [match(f"m{i}", h, equipes=[pari("Pas de nul (12)", c, v, ["double_chance", "12"], conf)])
-            for i, (h, c, v, conf) in enumerate([("12:30", 1.30, 0.93, (9, 12)), ("13:15", 1.28, 0.93, (10, 12)), ("14:00", 1.35, 0.81, (5, 6)),
-                                                ("15:00", 1.29, 0.81, (5, 6)), ("16:00", 1.40, 0.79, (9, 9)), ("18:30", 1.25, 1.0, (3, 4)),
-                                                ("20:00", 1.29, 1.0, (9, 12)), ("22:30", 1.28, 0.86, (11, 12))])]
-    code = ("const T = require(process.argv[1]); const d = JSON.parse(process.argv[2]);"
-            "console.log(JSON.stringify(T.analyse(d, '%s').ticketLong.map((e) => e.ajout.match_id + '|' + e.ajout.categorie)));" % JOUR)
+    page = _page_parite()
+    code = ("const T = require(process.argv[1]); const d = JSON.parse(process.argv[2]); const a = T.analyse(d, '%s');"
+            "const f = (l) => l.map((s) => s.match_id + '|' + s.categorie); console.log(JSON.stringify([f(a.palier1), f(a.palier2)]));" % JOUR)
     r = subprocess.run(["node", "-e", code, str(RACINE / "af-alpha-tickets.js"), json.dumps({"matchs": page})], capture_output=True, text=True, check=True)
     t = T.du_jour(page, JOUR)
-    assert json.loads(r.stdout) == [f"{c['match_id']}|{c['categorie']}" for c in t["palier1"] + t["palier1_long"]]
+    assert json.loads(r.stdout) == [[f"{c['match_id']}|{c['categorie']}" for c in t[p]] for p in ("palier1", "palier2")]
+
+
+# --- Palier 2 = les 10 meilleurs restants : 3 règles qui tiennent, 3 cas qui doivent être écartés -------------------------------
+def test_palier2_dix_meilleurs_restants():
+    t = T.du_jour(_page_parite(), JOUR)
+    p1, p2 = {c["match_id"] for c in t["palier1"]}, [c["match_id"] for c in t["palier2"]]
+    assert len(t["palier1"]) == 7 and len(p2) == 8                       # 15 admissibles en journée : 7 au palier 1, 8 restent (moins de 10)
+    assert not p1 & set(p2) and len(set(p2)) == len(p2)                  # aucun match du palier 1, un pari par match
+    v = [c["valeur"] for c in t["palier2"]]
+    assert v == sorted(v, reverse=True)                                  # classés du meilleur au moins bon
+    assert "m16" not in p2 and "m04" not in p2                           # 09:30 : hors journée ; 79 % : sous le seuil (rien n'est assoupli)
+    plein = [match(f"x{i:02d}", f"{10 + i // 2}:{'00' if i % 2 == 0 else '30'}", equipes=[pari("Pas de nul (12)", 1.30, 0.90, ["double_chance", "12"])]) for i in range(28)]
+    assert len(T.du_jour(plein, JOUR)["palier2"]) == T.PALIER2_MAX == 10  # jamais plus de 10
