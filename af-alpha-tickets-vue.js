@@ -29,7 +29,7 @@
     const d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4] + 1, +m[5]));
     return `${String(d.getUTCDate()).padStart(2, "0")}/${String(d.getUTCMonth() + 1).padStart(2, "0")} à ${d.getUTCHours()} h ${String(d.getUTCMinutes()).padStart(2, "0")}`;
   };
-  let donnees = null, jour = null, mise = 500, longueur = null;   // longueur : nombre de matchs choisis dans le ticket du jour
+  let donnees = null, jour = null, mise = 500, longueurs = {};   // nombre de matchs choisis dans chaque palier
   try { const v = Number(localStorage.getItem(CLE_MISE)); if (v > 0) mise = v; } catch (e) { /* stockage indisponible */ }
 
   function ligneSelection(c) {
@@ -125,23 +125,27 @@
       (conf ? `<li>${conf}</li>` : "") + `<li>${niv}</li></ul>`;
   }
 
-  function ticketDuJour(a) {
-    const etapes = a.ticketLong;
-    if (!etapes.length) return `<section class="ax-carte at-carte at-simple"><h2 class="at-simple-titre">Pas de ticket ce jour-là</h2><p class="at-vide">Aucun match ne remplit nos règles entre 10 h et minuit. Mieux vaut ne pas jouer que jouer au hasard.</p></section>`;
-    const n = Math.min(longueur || a.methodeA.length, etapes.length), e = etapes[n - 1];
+  // Un ticket de palier : les paris dans l'ordre du classement (le multiplicateur s'ajoute dans cet ordre), affichés par heure.
+  function carteTicket(cle, titre, phrase, picks, classe) {
+    if (!picks.length) return "";
+    let c = 1;
+    const etapes = picks.map((x) => ({ ajout: x, cote: (c *= x.cote) }));
+    const n = Math.min(longueurs[cle] || etapes.length, etapes.length), e = etapes[n - 1];
     const choisis = etapes.slice(0, n).map((x) => x.ajout).sort((x, y) => x.debut - y.debut);
-    const retour = mise * e.cote;
-    const choix = etapes.length > 1 ? `<div class="at-choix" role="group" aria-label="Nombre de matchs dans le ticket">${etapes.map((x, i) => `<button type="button" data-longueur="${i + 1}" aria-pressed="${i + 1 === n}">${i + 1} match${i ? "s" : ""}<small>× ${cote(x.cote)}</small></button>`).join("")}</div>` +
-      `<p class="at-aide">Plus de matchs = gain plus grand, mais beaucoup plus de risques que le ticket perde. Les ${a.methodeA.length} premiers sont les meilleurs de chaque créneau de 2 heures ; les suivants sont les deuxièmes meilleurs.</p>` : "";
+    const choix = etapes.length > 1 ? `<div class="at-choix" role="group" aria-label="Nombre de matchs dans le ticket">${etapes.map((x, i) => `<button type="button" data-palier="${cle}" data-longueur="${i + 1}" aria-pressed="${i + 1 === n}">${i + 1} match${i ? "s" : ""}<small>× ${cote(x.cote)}</small></button>`).join("")}</div>` +
+      `<p class="at-aide">Plus de matchs = gain plus grand, mais beaucoup plus de risques que le ticket perde. Les matchs s'ajoutent du plus sûr au moins sûr.</p>` : "";
     const lignes = choisis.map((x, i) => `<li><span class="at-num">${i + 1}</span><div><p class="at-qui"><b>${esc(x.match.heure)}</b> · ${esc(x.match.domicile)} – ${esc(x.match.exterieur)}</p>` +
       `<p class="at-quoi">${esc(clair(x) || x.marche)}</p><p class="at-ou">${esc(compet(x.match))} · sur Betpawa : « ${esc(x.marche)} » à ${cote(x.cote)}</p>${pourquoiCeMatch(x)}</div></li>`).join("");
-    return `<section class="ax-carte at-carte at-simple">` +
-      `<h2 class="at-simple-titre">Le ticket du jour</h2>` +
-      `<p class="at-phrase">Mets ces ${n} match${n > 1 ? "s" : ""} sur <b>un seul ticket</b>, avant ${esc(choisis[0].match.heure)}.</p>` +
-      choix +
-      `<div class="at-gros"><div><small>Tu mises</small><strong>${fcfa(mise)}</strong></div><div class="at-fleche" aria-hidden="true">→</div><div><small>Si tout passe, tu reçois</small><strong class="at-plus">${fcfa(retour)}</strong></div></div>` +
-      `<p class="at-risque">Si <b>un seul</b> de ces matchs rate, tu perds tes ${fcfa(mise)}.</p>` +
-      `<ol class="at-liste-simple">${lignes}</ol></section>`;
+    return `<section class="ax-carte at-carte at-simple ${classe || ""}"><h2 class="at-simple-titre">${titre}</h2>` +
+      `<p class="at-phrase">${phrase} Mets ces ${n} match${n > 1 ? "s" : ""} sur <b>un seul ticket</b>, avant ${esc(choisis[0].match.heure)}.</p>` + choix +
+      `<div class="at-gros"><div><small>Tu mises</small><strong>${fcfa(mise)}</strong></div><div class="at-fleche" aria-hidden="true">→</div><div><small>Si tout passe, tu reçois</small><strong class="at-plus">${fcfa(mise * e.cote)}</strong></div></div>` +
+      `<p class="at-risque">Si <b>un seul</b> de ces matchs rate, tu perds tes ${fcfa(mise)}.</p><ol class="at-liste-simple">${lignes}</ol></section>`;
+  }
+
+  function ticketDuJour(a) {
+    if (!a.palier1.length) return `<section class="ax-carte at-carte at-simple"><h2 class="at-simple-titre">Pas de ticket ce jour-là</h2><p class="at-vide">Aucun match ne remplit nos règles entre 10 h et minuit. Mieux vaut ne pas jouer que jouer au hasard.</p></section>`;
+    return carteTicket("p1", "Palier 1 — le ticket du jour", "Le meilleur pari de chaque créneau de 2 heures.", a.palier1, "") +
+      carteTicket("p2", "Palier 2 — les suivants", `Les ${a.palier2.length} meilleurs paris restants de la journée, choisis avec les mêmes règles que le palier 1 (aucun match du palier 1).`, a.palier2, "at-palier2");
   }
 
   function commentCaMarche() {
@@ -149,12 +153,12 @@
       `<li>Le moteur alpha regarde les derniers matchs de chaque équipe : à domicile pour celle qui reçoit, à l'extérieur pour l'autre.</li>` +
       `<li>On garde seulement les paris que ces matchs confirment presque à chaque fois, avec une cote Betpawa.</li>` +
       `<li>Un pari est gardé si le moteur lui donne au moins ${Math.round(T.REGLES.valeurMin * 100)} % de chances, s'il serait passé dans au moins ${Math.round(T.REGLES.confirmationMin * 100)} % des derniers matchs de chaque équipe, avec au moins ${T.REGLES.matchsMin} matchs comparés de chaque côté.</li>` +
-      `<li>On prend le meilleur pari de chaque créneau de 2 heures, de 10 h à minuit (puis le deuxième meilleur si tu veux un ticket plus long).</li>` +
+      `<li>Palier 1 : le meilleur pari de chaque créneau de 2 heures, de 10 h à minuit. Palier 2 : les ${T.REGLES.palier2Max} meilleurs paris restants de la journée, mêmes règles.</li>` +
       `<li>Rien n'est sûr à 100 % : un match peut toujours surprendre. Ne mise que ce que tu peux te permettre de perdre.</li></ul></details>`;
   }
 
-  // Palier 2 (25/10/2026) : « le domicile ne marque pas plus de 2 buts » quand nos chiffres battent la cote (alpha_serie/palier2.py).
-  function palierDeux() {
+  // Palier 3 — en test (25/10/2026) : « le domicile ne marque pas plus de 2 buts » quand nos chiffres battent la cote (alpha_serie/palier2.py).
+  function palierTrois() {
     const lst = (donnees.matchs || []).filter((m) => m.date === jour && m.statut === "analyse" && (m.palier2 || []).length)
       .map((m) => ({ m, p: m.palier2[0], debut: T.minutes(m.heure) }))
       .filter((x) => x.debut !== null && x.debut >= T.REGLES.debut && x.debut < T.REGLES.fin).sort((a, b) => a.debut - b.debut);
@@ -165,8 +169,8 @@
       `<ul class="at-pourquoi"><li>Nos chiffres : <b>${pct(x.p.p_estimee)}</b> de chances ; la cote en donne ${pct(x.p.p_cote)}.</li>` +
       `<li>${esc(x.m.domicile)} a marqué 2 buts ou moins dans ${x.p.domicile_au_plus_2[0]} de ses ${x.p.domicile_au_plus_2[1]} derniers matchs à domicile ; ` +
       `${esc(x.m.exterieur)} en a encaissé 2 ou moins dans ${x.p.exterieur_encaisse_au_plus_2[0]} de ses ${x.p.exterieur_encaisse_au_plus_2[1]} matchs à l'extérieur.</li></ul></div></li>`).join("");
-    return `<section class="ax-carte at-carte at-simple at-palier2"><h2 class="at-simple-titre">Palier 2</h2>` +
-      `<p class="at-phrase">Un second ticket, sur un pari où nos chiffres donnent plus de chances que Betpawa. <b>En test</b> : il a gagné 77 % du temps sur un mois de matchs passés ; ses vrais résultats sont suivis chaque jour.</p>` +
+    return `<section class="ax-carte at-carte at-simple at-palier3"><h2 class="at-simple-titre">Palier 3 — en test</h2>` +
+      `<p class="at-phrase">Un ticket à part, sur un pari où nos chiffres donnent plus de chances que Betpawa. <b>En test</b> : il a gagné 77 % du temps sur un mois de matchs passés ; ses vrais résultats sont suivis chaque jour.</p>` +
       `<div class="at-gros"><div><small>Tu mises</small><strong>${fcfa(mise)}</strong></div><div class="at-fleche" aria-hidden="true">→</div><div><small>Si tout passe, tu reçois</small><strong class="at-plus">${fcfa(mise * cote2)}</strong></div></div>` +
       `<p class="at-risque">${lst.length} match${lst.length > 1 ? "s" : ""}, cote ${cote(cote2)}. Si un seul rate, tu perds ta mise.</p><ol class="at-liste-simple">${lignes}</ol></section>`;
   }
@@ -178,7 +182,7 @@
     if (!b.jours_regles) return `<p class="at-aide at-suivi">Suivi des tickets commencé le 25/10/2026 : les vrais résultats s'afficheront ici après le premier jour joué.</p>`;
     const tuile = (nom, x) => (x && x.tickets ? `<div class="ax-perf-tuile"><span class="ax-perf-nom">${nom}</span><strong>${x.gagnes}/${x.tickets}</strong><small>tickets gagnés · ${x.paris_gagnes}/${x.paris} matchs</small></div>` : "");
     return `<section class="ax-perf" aria-label="Vrais résultats des tickets"><p class="ax-perf-titre">Vrais résultats des tickets (gelés avant les matchs, ${b.jours_regles} jour${b.jours_regles > 1 ? "s" : ""})</p>` +
-      `<div class="ax-perf-grille">${tuile("Ticket du jour", b.palier1)}${tuile("Ticket long", b.palier1_long)}${tuile("Palier 2", b.palier2)}</div></section>`;
+      `<div class="ax-perf-grille">${tuile("Palier 1", b.palier1)}${tuile("Palier 2", b.palier2)}${tuile("Palier 3 (test)", b.palier3)}</div></section>`;
   }
 
   function rendu() {
@@ -188,7 +192,7 @@
     zone.innerHTML =
       resultatsTickets() +
       ticketDuJour(a) +
-      palierDeux() +
+      palierTrois() +
       commentCaMarche() +
       `<details class="at-expert"><summary>Pour les connaisseurs : autres façons de jouer</summary>` +
       comparaison(a) +
@@ -196,7 +200,7 @@
       (a.methodeA.length ? `<h2 class="at-h2">Ticket progressif</h2>${sectionA(a.methodeA)}` : "") +
       (a.chaines.length ? `<h2 class="at-h2">Réinvestir les gains d'une tranche à l'autre</h2>${a.chaines.slice(0, 3).map(carteChaine).join("")}` : "") +
       regles() + `</details>`;
-    zone.querySelectorAll("[data-longueur]").forEach((b) => b.addEventListener("click", () => { longueur = Number(b.dataset.longueur); rendu(); }));
+    zone.querySelectorAll("[data-longueur]").forEach((b) => b.addEventListener("click", () => { longueurs[b.dataset.palier] = Number(b.dataset.longueur); rendu(); }));
   }
 
   function controles() {
@@ -206,7 +210,7 @@
       `<div class="at-jours" role="group" aria-label="Choix du jour">${js.slice(0, 4).map((j) => `<button type="button" data-jour="${j}" aria-pressed="${j === jour}">${esc(dateLongue(j).split(" ").slice(0, 2).join(" "))}</button>`).join("")}</div>` +
       `<label class="at-mise"><span>Ta mise</span><input id="at-mise" type="number" inputmode="numeric" min="5" step="5" value="${mise}"><span>FCFA</span></label>` +
       `<div class="at-presets">${[100, 500, 1000].map((v) => `<button type="button" data-mise="${v}">${v.toLocaleString("fr-FR")}</button>`).join("")}</div>`;
-    z.querySelectorAll("[data-jour]").forEach((b) => b.addEventListener("click", () => { jour = b.dataset.jour; longueur = null; controles(); rendu(); }));
+    z.querySelectorAll("[data-jour]").forEach((b) => b.addEventListener("click", () => { jour = b.dataset.jour; longueurs = {}; controles(); rendu(); }));
     const champ = z.querySelector("#at-mise");
     const fixe = (v) => { if (v > 0) { mise = v; try { localStorage.setItem(CLE_MISE, String(v)); } catch (e) { /* ignoré */ } champ.value = v; rendu(); } };
     champ.addEventListener("input", () => fixe(Number(champ.value)));
