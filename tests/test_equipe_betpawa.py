@@ -97,3 +97,41 @@ def test_aucune_devinette_quand_c_est_ambigu():
     assert cotes_des_equipes(lignes("Club Brugge"), "Club Bruges", "St. Truidense") == {"Club Brugge": None}          # un seul nom
     assert set(cotes_des_equipes(lignes("Club Brugge", "Genk", "St. Truidense VV"), "Club Bruges", "St. Truidense").values()) >= {None}  # trois noms
     assert cotes_des_equipes(lignes("Paris FC", "Paris"), "Paris", "Lyon") == {"Paris FC": None, "Paris": None}       # deux noms, même équipe
+
+
+# --- 25/10/2026 : même règle sur la page ANGLAISE (format réel de la collecte : navigateur automatisé) -------------------
+from parse_betpawa_playwright import parse_betpawa_playwright  # noqa: E402
+
+BRUGES_EN = """Over/Under | Club Brugge | Full Time
+Over 1.5
+1.27
+Under 1.5
+3.41
+Over 2.5
+1.88
+Under 2.5
+1.83
+Over/Under | St. Truidense VV | Full Time
+Over 0.5
+1.44
+Under 0.5
+2.60
+Clean Sheet | Club Brugge | Full Time
+Yes
+2.58
+No
+1.44
+"""
+
+
+def test_page_anglaise_nom_retrouve_par_elimination():
+    c = parse_betpawa_playwright(BRUGES_EN, "Club Bruges", "St. Truidense")
+    assert c["over_under_domicile_2.5"] == {"plus": 1.88, "moins": 1.83} and c["over_under_exterieur_0.5"] == {"plus": 1.44, "moins": 2.60}
+    assert c["cages_inviolees_domicile"] == {"oui": 2.58, "non": 1.44}
+
+
+def test_page_anglaise_noms_reconnus_inchanges_et_ambigu_ignore():
+    c = parse_betpawa_playwright(BRUGES_EN.replace("Club Brugge", "Club Bruges"), "Club Bruges", "St. Truidense")
+    assert c["over_under_domicile_1.5"]["plus"] == 1.27
+    c = parse_betpawa_playwright(BRUGES_EN.replace("St. Truidense VV", "Sint-Truiden"), "Club Bruges", "St. Truidense")   # aucun nom reconnu
+    assert not any(k.startswith(("over_under_domicile", "over_under_exterieur", "cages_inviolees")) for k in c)

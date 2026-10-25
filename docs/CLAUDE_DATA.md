@@ -33,5 +33,5 @@
 
 - Constat : sur Club Bruges – Saint-Trond, BetPawa écrit « Club Brugge ». Le rapprochement par les mots (`equipe_betpawa.cote_de_l_equipe`) échouait et tous les marchés propres à Bruges (total de buts de l'équipe, cages inviolées) étaient perdus. Le 24 et le 25/10, 145 matchs sur 570 n'avaient aucun total de buts par équipe pour le domicile.
 - Règle : `parse_betpawa.cotes_des_equipes` — une page ne parle que de deux équipes ; si l'un des deux noms est reconnu et l'autre non, l'autre est l'équipe restante. Aucun nom reconnu, un seul nom, plus de deux noms, ou deux noms rattachés à la même équipe : rien n'est deviné.
-- Portée : lecteur de la page française (`parse_betpawa.py`, format de production). Les lecteurs anglais restent inchangés.
+- Portée (complétée le 25/10/2026) : la page réellement lue en production est ANGLAISE (navigateur automatisé : « Over/Under | Club Brugge | Full Time », « Clean Sheet | … »). La règle est dans `equipe_betpawa.cotes_des_equipes` et s'applique aux trois lecteurs : français (`parse_betpawa.py`), anglais séparé (`parse_betpawa_playwright.py`, production), anglais collé (`parse_betpawa_url.py`).
 - Tests : `tests/test_equipe_betpawa.py`.

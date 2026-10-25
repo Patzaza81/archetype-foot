@@ -9,7 +9,7 @@ Les autres formes de handicap sont ignorées.
 import json
 import re
 
-from equipe_betpawa import cote_de_l_equipe
+from equipe_betpawa import cotes_des_equipes
 import sys
 
 
@@ -41,32 +41,6 @@ def _paires_jusqua_rupture(lignes, i, motif_label):
             break
         i += 2
     return resultat, i
-
-
-_TITRE_EQUIPE = re.compile(r"^(?:Plus de/Moins de|Cages Inviolées|Multigoals|Impair/Pair) \| (.+) \| Fin de [Mm]atch$")
-
-
-def cotes_des_equipes(lignes, nom_domicile, nom_exterieur):
-    """{nom écrit par BetPawa : « domicile » | « exterieur »} pour les marchés propres à une équipe.
-    CORRECTIF 25/10/2026 : BetPawa écrit parfois le nom dans une autre langue (« Club Brugge » pour « Club Bruges ») ;
-    le rapprochement par les mots échoue et les marchés de cette équipe (total de buts, cages inviolées) étaient perdus.
-    Une page ne parle que de deux équipes : si l'un des deux noms est reconnu et que l'autre ne l'est pas, l'autre est
-    l'équipe restante (élimination). Plus de deux noms, ou aucun reconnu : rien n'est deviné."""
-    noms = []
-    for l in lignes:
-        m = _TITRE_EQUIPE.match(l)
-        if m and m.group(1) not in noms:
-            noms.append(m.group(1))
-    cotes = {n: cote_de_l_equipe(n, nom_domicile, nom_exterieur) for n in noms}
-    if len(noms) == 2:
-        a, b = noms
-        if cotes[a] and cotes[b] is None:
-            cotes[b] = "exterieur" if cotes[a] == "domicile" else "domicile"
-        elif cotes[b] and cotes[a] is None:
-            cotes[a] = "exterieur" if cotes[b] == "domicile" else "domicile"
-        elif cotes[a] and cotes[a] == cotes[b]:          # deux noms rattachés à la même équipe : ambigu, rien n'est gardé
-            cotes = {a: None, b: None}
-    return cotes
 
 
 def parse_betpawa(texte, nom_domicile, nom_exterieur):
