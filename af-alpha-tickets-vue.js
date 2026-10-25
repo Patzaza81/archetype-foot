@@ -153,12 +153,42 @@
       `<li>Rien n'est sûr à 100 % : un match peut toujours surprendre. Ne mise que ce que tu peux te permettre de perdre.</li></ul></details>`;
   }
 
+  // Palier 2 (25/10/2026) : « le domicile ne marque pas plus de 2 buts » quand nos chiffres battent la cote (alpha_serie/palier2.py).
+  function palierDeux() {
+    const lst = (donnees.matchs || []).filter((m) => m.date === jour && m.statut === "analyse" && (m.palier2 || []).length)
+      .map((m) => ({ m, p: m.palier2[0], debut: T.minutes(m.heure) }))
+      .filter((x) => x.debut !== null && x.debut >= T.REGLES.debut && x.debut < T.REGLES.fin).sort((a, b) => a.debut - b.debut);
+    if (!lst.length) return "";
+    const cote2 = lst.reduce((c, x) => c * Number(x.p.cote), 1);
+    const lignes = lst.map((x, i) => `<li><span class="at-num">${i + 1}</span><div><p class="at-qui"><b>${esc(x.m.heure)}</b> · ${esc(x.m.domicile)} – ${esc(x.m.exterieur)}</p>` +
+      `<p class="at-quoi">${esc(x.m.domicile)} ne marque pas plus de 2 buts</p><p class="at-ou">${esc(compet(x.m))} · sur Betpawa : « ${esc(x.m.domicile)} moins de 2,5 » à ${cote(x.p.cote)}</p>` +
+      `<ul class="at-pourquoi"><li>Nos chiffres : <b>${pct(x.p.p_estimee)}</b> de chances ; la cote en donne ${pct(x.p.p_cote)}.</li>` +
+      `<li>${esc(x.m.domicile)} a marqué 2 buts ou moins dans ${x.p.domicile_au_plus_2[0]} de ses ${x.p.domicile_au_plus_2[1]} derniers matchs à domicile ; ` +
+      `${esc(x.m.exterieur)} en a encaissé 2 ou moins dans ${x.p.exterieur_encaisse_au_plus_2[0]} de ses ${x.p.exterieur_encaisse_au_plus_2[1]} matchs à l'extérieur.</li></ul></div></li>`).join("");
+    return `<section class="ax-carte at-carte at-simple at-palier2"><h2 class="at-simple-titre">Palier 2</h2>` +
+      `<p class="at-phrase">Un second ticket, sur un pari où nos chiffres donnent plus de chances que Betpawa. <b>En test</b> : il a gagné 77 % du temps sur un mois de matchs passés ; ses vrais résultats sont suivis chaque jour.</p>` +
+      `<div class="at-gros"><div><small>Tu mises</small><strong>${fcfa(mise)}</strong></div><div class="at-fleche" aria-hidden="true">→</div><div><small>Si tout passe, tu reçois</small><strong class="at-plus">${fcfa(mise * cote2)}</strong></div></div>` +
+      `<p class="at-risque">${lst.length} match${lst.length > 1 ? "s" : ""}, cote ${cote(cote2)}. Si un seul rate, tu perds ta mise.</p><ol class="at-liste-simple">${lignes}</ol></section>`;
+  }
+
+  // Vrais résultats des tickets gelés avant les matchs (alpha_serie/tickets.py, suivi chaque nuit).
+  function resultatsTickets() {
+    const b = donnees.bilan_tickets;
+    if (!b) return "";
+    if (!b.jours_regles) return `<p class="at-aide at-suivi">Suivi des tickets commencé le 25/10/2026 : les vrais résultats s'afficheront ici après le premier jour joué.</p>`;
+    const tuile = (nom, x) => (x && x.tickets ? `<div class="ax-perf-tuile"><span class="ax-perf-nom">${nom}</span><strong>${x.gagnes}/${x.tickets}</strong><small>tickets gagnés · ${x.paris_gagnes}/${x.paris} matchs</small></div>` : "");
+    return `<section class="ax-perf" aria-label="Vrais résultats des tickets"><p class="ax-perf-titre">Vrais résultats des tickets (gelés avant les matchs, ${b.jours_regles} jour${b.jours_regles > 1 ? "s" : ""})</p>` +
+      `<div class="ax-perf-grille">${tuile("Ticket du jour", b.palier1)}${tuile("Ticket long", b.palier1_long)}${tuile("Palier 2", b.palier2)}</div></section>`;
+  }
+
   function rendu() {
     const zone = document.getElementById("tickets");
     if (!donnees || !zone) return;
     const a = T.analyse(donnees, jour);
     zone.innerHTML =
+      resultatsTickets() +
       ticketDuJour(a) +
+      palierDeux() +
       commentCaMarche() +
       `<details class="at-expert"><summary>Pour les connaisseurs : autres façons de jouer</summary>` +
       comparaison(a) +
