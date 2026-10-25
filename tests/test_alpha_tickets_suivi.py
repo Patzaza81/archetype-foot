@@ -72,6 +72,15 @@ def test_aucun_gel_a_posteriori(tmp_path):
     assert T.geler([], datetime(2026, 10, 25, 0, 45, tzinfo=timezone.utc), j) == 0
 
 
+def test_gel_du_lendemain_si_le_pipeline_finit_avant_minuit(tmp_path):
+    j = tmp_path / "t.jsonl"
+    assert T.geler(PAGE, datetime(2026, 10, 24, 21, 30, tzinfo=timezone.utc), j) == 1     # 22:30 à Douala le 24 : on gèle le 25
+    assert json.loads(j.read_text().splitlines()[0])["jour"] == JOUR
+    assert T.geler(PAGE, datetime(2026, 10, 25, 0, 45, tzinfo=timezone.utc), j) == 0      # 01:45 le 25 : déjà gelé, jamais regelé
+    k = tmp_path / "k.jsonl"
+    assert T.geler(PAGE, datetime(2026, 10, 24, 20, 30, tzinfo=timezone.utc), k) == 0     # 21:30 le 24 : jour = 24, aucun match ce jour-là
+
+
 # --- Mêmes choix que la page (af-alpha-tickets.js) -------------------------------------------------------------------------
 PARITE = [("12:30", 1.30, 0.93, (9, 12)), ("13:15", 1.28, 0.93, (10, 12)), ("14:00", 1.35, 0.81, (5, 6)), ("15:00", 1.29, 0.81, (5, 6)),
           ("16:00", 1.40, 0.79, (9, 9)), ("18:30", 1.25, 1.0, (3, 4)), ("20:00", 1.29, 1.0, (9, 12)), ("22:30", 1.28, 0.86, (11, 12)),
