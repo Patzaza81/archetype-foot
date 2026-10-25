@@ -22,7 +22,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-from . import calibrees, coeur, parametres as P
+from . import calibrees, coeur, palier2, parametres as P, tickets
 from .marches import test_du_marche
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -271,10 +271,12 @@ def page(matchs: list[dict[str, Any]] | None = None, params: dict | None = None,
                                      "pourquoi": pourquoi(o, x, params, n_paires, m["domicile"], m["exterieur"])} for x in lst]
                                 for o, lst in r["onglets"].items()}
             fiche.pop("rejetes", None)               # marchés exclus : plus affichés (décision de Patrick)
+            # Palier 2 des tickets (25/10/2026) : « le domicile ne marque pas plus de 2 buts » quand les chiffres battent la cote (palier2.py)
+            fiche["palier2"] = palier2.selections(a.get("equipe_dom"), a.get("equipe_ext"), jour, m.get("cotes_betpawa") or {})
         liste.append(fiche)
     d = {"moteur": "alpha_serie", "statut": "OK", "genere_le": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"), "promotion_allowed": False,
          "cote_min": P.COTE_MIN, "parametres": {"seuil_branche": params["seuil_branche"], "source": params.get("source"), "provisoire": params.get("provisoire", [])},
-         "bilan_gele": bilan(ecrire=False), "matchs": liste}
+         "bilan_gele": bilan(ecrire=False), "bilan_tickets": tickets.bilan(), "matchs": liste}
     sortie.parent.mkdir(parents=True, exist_ok=True)
     sortie.write_text(json.dumps(d, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     return d
@@ -286,7 +288,12 @@ def pipeline() -> dict[str, Any]:
     gele = geler(matchs=matchs)
     resultat = resultats(matchs=matchs)
     d = page(matchs=matchs)
-    return {"geles": gele, "resultats": resultat, "page_matchs": len(d["matchs"]), "bilan": bilan()}
+    # Tickets du jour (25/10/2026) : gelés avant le premier match, réglés quand tous leurs matchs ont un score, bilan ajouté à la page.
+    t_geles, t_regles = tickets.geler(d["matchs"]), tickets.regler(matchs)
+    d["bilan_tickets"] = tickets.bilan()
+    PAGE.write_text(json.dumps(d, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    return {"geles": gele, "resultats": resultat, "page_matchs": len(d["matchs"]), "bilan": bilan(),
+            "tickets": {"geles": t_geles, "regles": t_regles, "bilan": d["bilan_tickets"]}}
 
 
 if __name__ == "__main__":

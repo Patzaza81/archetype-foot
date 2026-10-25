@@ -1,0 +1,199 @@
+"""Tickets du moteur alpha : gel avant les matchs, résultats et bilan (25/10/2026, demande de Patrick : « finalise le moteur de génération
+de tickets »).
+
+Mêmes règles que l'onglet « Traitement séquentiel des tickets » (`af-alpha-tickets.js`, audit validé du 25/10/2026), réécrites ici en
+Python pour être gelées et suivies chaque nuit ; un test vérifie que le navigateur et ce module choisissent exactement les mêmes paris.
+- Palier 1 : meilleur marché affiché de Buts, Équipes, Calibrés ; admissible si cote ≥ 1,25, pas un remplaçant, valeur ≥ 80 %,
+  confirmation sur les matchs des deux équipes ≥ 75 %, au moins 5 matchs comparés ; tranches de 2 heures de 10 h à minuit ; 2 meilleurs
+  par tranche (un marché par match) ; « ticket du jour » = le premier de chaque tranche ; « ticket long » = puis les deuxièmes.
+- Palier 2 : les paris de `palier2.py` des matchs du jour (10 h – minuit), dans l'ordre des heures.
+Gel : chaque nuit, pour le jour courant (Douala) seulement, avant le premier match du ticket ; jamais regelé, jamais a posteriori.
+Résultats : quand tous les matchs d'un ticket ont un score. Bilan : uniquement sur des tickets gelés avant les matchs.
+Bibliothèque standard seulement. Le moteur alpha (`coeur.py`) n'est ni appelé ni modifié.
+"""
+from __future__ import annotations
+
+import json
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+from typing import Any
+
+ROOT = Path(__file__).resolve().parent.parent
+JOURNAL = ROOT / "data" / "alpha_serie" / "tickets_journal.jsonl"
+
+COTE_MIN, VALEUR_MIN, CONFIRMATION_MIN, MATCHS_MIN, PAR_TRANCHE = 1.25, 0.80, 0.75, 5, 2
+DEBUT, PAS, FIN = 10 * 60, 120, 24 * 60
+DOUALA = timezone(timedelta(hours=1))
+
+
+# --- Meilleur marché affiché d'une catégorie (même règle que af-alpha-selection.js) ----------------------------------------
+def _cote_valide(x: Any) -> bool:
+    try:
+        return x is not None and x != "" and float(x) > 1
+    except (TypeError, ValueError):
+        return False
+
+
+def _lignes(m: dict, cat: str) -> list[dict]:
+    source = "buts" if cat == "buts" else cat
+    brutes = [s for s in (m.get("onglets") or {}).get(source) or [] if cat != "buts" or not (s.get("cle") or [""])[0] == "multigoals"]
+    vus, uniques = set(), []
+    for s in brutes:
+        k = "|".join(s["cle"]) if isinstance(s.get("cle"), list) else str(s.get("marche") or "")
+        if k not in vus:
+            vus.add(k)
+            uniques.append(s)
+    return sorted(uniques, key=lambda s: -(float(s.get("valeur") or 0)))          # tri stable : ordre du fichier à égalité
+
+
+def meilleur(m: dict, cat: str) -> tuple[dict | None, bool]:
+    l = _lignes(m, cat)
+    aff = [s for s in l if _cote_valide(s.get("cote"))]
+    return (aff[0], bool(l and l[0] is not aff[0])) if aff else (None, False)
+
+
+def _minutes(h: Any) -> int | None:
+    try:
+        hh, mm = str(h).split(":")
+        return int(hh) * 60 + int(mm)
+    except (ValueError, AttributeError):
+        return None
+
+
+def _confirmation(s: dict) -> float | None:
+    e = s.get("explication") or {}
+    parts = [e[k][0] / e[k][1] for k in ("domicile", "exterieur") if isinstance(e.get(k), list) and len(e[k]) == 2 and e[k][1]]
+    return min(parts) if parts else None
+
+
+def candidats(matchs: list[dict], jour: str) -> list[dict]:
+    out = []
+    for m in matchs:
+        if m.get("statut") != "analyse" or m.get("date") != jour:
+            continue
+        debut = _minutes(m.get("heure"))
+        if debut is None:
+            continue
+        for cat in ("buts", "equipes", "calibrees"):
+            s, rempl = meilleur(m, cat)
+            if not s:
+                continue
+            conf = _confirmation(s)
+            n = min(int(m.get("n_domicile") or 0), int(m.get("n_exterieur") or 0))
+            c = {"id": f"{m['match_id']}|{cat}", "match_id": m["match_id"], "categorie": cat, "cle": s.get("cle"), "marche": s.get("marche"),
+                 "cote": float(s["cote"]), "valeur": float(s.get("valeur") or 0), "confirmation": conf, "matchs": n, "remplacant": rempl,
+                 "debut": debut, "heure": m.get("heure"), "domicile": m.get("domicile"), "exterieur": m.get("exterieur"), "competition": m.get("competition")}
+            c["admissible"] = (c["cote"] >= COTE_MIN and not rempl and c["valeur"] >= VALEUR_MIN - 1e-9 and conf is not None
+                               and conf >= CONFIRMATION_MIN - 1e-9 and n >= MATCHS_MIN)
+            out.append(c)
+    return out
+
+
+def _ordre(c: dict) -> tuple:
+    return (-c["valeur"], -(c["confirmation"] or 0), -c["matchs"], c["cote"], c["debut"], c["id"])
+
+
+def tranches(cands: list[dict]) -> list[dict]:
+    out = []
+    for d in range(DEBUT, FIN, PAS):
+        admis = sorted([c for c in cands if c["admissible"] and d <= c["debut"] < d + PAS], key=_ordre)
+        ticket, vus = [], set()
+        for c in admis:
+            if c["match_id"] in vus or len(ticket) >= PAR_TRANCHE:
+                continue
+            ticket.append(c)
+            vus.add(c["match_id"])
+        out.append({"debut": d, "ticket": ticket})
+    return out
+
+
+def ticket_long(trs: list[dict]) -> list[dict]:
+    return [t["ticket"][0] for t in trs if t["ticket"]] + [t["ticket"][1] for t in trs if len(t["ticket"]) > 1]
+
+
+def du_jour(matchs: list[dict], jour: str) -> dict[str, Any]:
+    trs = tranches(candidats(matchs, jour))
+    longue = ticket_long(trs)
+    n1 = sum(1 for t in trs if t["ticket"])
+    p2 = sorted([{**s, "match_id": m["match_id"], "heure": m.get("heure"), "debut": _minutes(m.get("heure")), "domicile": m.get("domicile"),
+                  "exterieur": m.get("exterieur"), "competition": m.get("competition")}
+                 for m in matchs if m.get("date") == jour and m.get("statut") == "analyse" for s in m.get("palier2") or []
+                 if _minutes(m.get("heure")) is not None and DEBUT <= _minutes(m.get("heure")) < FIN], key=lambda x: (x["debut"], x["match_id"]))
+    garde = ("match_id", "categorie", "cle", "marche", "cote", "valeur", "heure", "debut", "domicile", "exterieur", "competition")
+    return {"jour": jour, "palier1": [{k: c[k] for k in garde} for c in longue[:n1]],
+            "palier1_long": [{k: c[k] for k in garde} for c in longue[n1:]],
+            "palier2": [{k: c.get(k) for k in garde + ("avantage", "p_estimee", "p_cote")} for c in p2]}
+
+
+# --- Journal : gel, résultats, bilan -----------------------------------------------------------------------------------------
+def _lire(journal: Path) -> list[dict]:
+    return [json.loads(l) for l in journal.read_text(encoding="utf-8").splitlines() if l.strip()] if journal.exists() else []
+
+
+def _ajouter(journal: Path, lignes: list[dict]) -> None:
+    if lignes:
+        journal.parent.mkdir(parents=True, exist_ok=True)
+        with journal.open("a", encoding="utf-8") as f:
+            for l in lignes:
+                f.write(json.dumps(l, ensure_ascii=False, separators=(",", ":")) + "\n")
+
+
+def geler(matchs_page: list[dict], maintenant: datetime | None = None, journal: Path = JOURNAL) -> int:
+    """Gèle les tickets du jour courant (Douala) si aucun de leurs matchs n'a commencé. Un jour déjà gelé ne l'est jamais deux fois."""
+    maintenant = maintenant or datetime.now(timezone.utc)
+    jour = maintenant.astimezone(DOUALA).strftime("%Y-%m-%d")
+    if any(l["type"] == "tickets" and l["jour"] == jour for l in _lire(journal)):
+        return 0
+    t = du_jour(matchs_page, jour)
+    tous = t["palier1"] + t["palier1_long"] + t["palier2"]
+    if not tous:
+        return 0
+    minute_now = (maintenant.astimezone(DOUALA).hour * 60 + maintenant.astimezone(DOUALA).minute)
+    if min(c["debut"] for c in tous) <= minute_now:
+        return 0                                                  # un match a déjà commencé : aucun gel a posteriori
+    _ajouter(journal, [{"type": "tickets", "gele_le": maintenant.strftime("%Y-%m-%dT%H:%M:%SZ"), **t}])
+    return 1
+
+
+def regler(matchs_archive: list[dict], journal: Path = JOURNAL) -> int:
+    from .suivi import _gagne
+    lignes = _lire(journal)
+    faits = {l["jour"] for l in lignes if l["type"] == "resultat_tickets"}
+    scores = {m["match_id"]: m.get("score_final") for m in matchs_archive if m.get("score_final")}
+    nouveaux = []
+    for t in (l for l in lignes if l["type"] == "tickets" and l["jour"] not in faits):
+        legs = t["palier1"] + t["palier1_long"] + t["palier2"]
+        if not all(c["match_id"] in scores for c in legs):
+            continue
+        res = lambda lst: [_gagne(c["cle"], scores[c["match_id"]]["buts_dom"], scores[c["match_id"]]["buts_ext"]) for c in lst]  # noqa: E731
+        nouveaux.append({"type": "resultat_tickets", "jour": t["jour"], "palier1": res(t["palier1"]), "palier1_long": res(t["palier1_long"]),
+                         "palier2": res(t["palier2"]), "enregistre_le": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")})
+    _ajouter(journal, nouveaux)
+    return len(nouveaux)
+
+
+def bilan(journal: Path = JOURNAL) -> dict[str, Any]:
+    lignes = _lire(journal)
+    res = {l["jour"]: l for l in lignes if l["type"] == "resultat_tickets"}
+    gel = {l["jour"]: l for l in lignes if l["type"] == "tickets"}
+    out: dict[str, Any] = {"jours_geles": len(gel), "jours_regles": len(res)}
+    for nom, partie in (("palier1", ["palier1"]), ("palier1_long", ["palier1", "palier1_long"]), ("palier2", ["palier2"])):
+        tickets = gagnes = legs = legs_g = 0
+        rendement = 0.0
+        for j, r in res.items():
+            sel = sum((gel[j][p] for p in partie), [])
+            ok = sum((r[p] for p in partie), [])
+            if not sel or any(x is None for x in ok):
+                continue
+            tickets += 1
+            legs += len(ok)
+            legs_g += sum(ok)
+            cote = 1.0
+            for c in sel:
+                cote *= c["cote"]
+            g = all(ok)
+            gagnes += g
+            rendement += (cote - 1) if g else -1
+        out[nom] = {"tickets": tickets, "gagnes": gagnes, "paris": legs, "paris_gagnes": legs_g,
+                    "rendement_par_ticket": round(rendement / tickets, 4) if tickets else None}
+    return out
