@@ -43,9 +43,36 @@ def _paires_jusqua_rupture(lignes, i, motif_label):
     return resultat, i
 
 
+_TITRE_EQUIPE = re.compile(r"^(?:Plus de/Moins de|Cages Inviolées|Multigoals|Impair/Pair) \| (.+) \| Fin de [Mm]atch$")
+
+
+def cotes_des_equipes(lignes, nom_domicile, nom_exterieur):
+    """{nom écrit par BetPawa : « domicile » | « exterieur »} pour les marchés propres à une équipe.
+    CORRECTIF 25/10/2026 : BetPawa écrit parfois le nom dans une autre langue (« Club Brugge » pour « Club Bruges ») ;
+    le rapprochement par les mots échoue et les marchés de cette équipe (total de buts, cages inviolées) étaient perdus.
+    Une page ne parle que de deux équipes : si l'un des deux noms est reconnu et que l'autre ne l'est pas, l'autre est
+    l'équipe restante (élimination). Plus de deux noms, ou aucun reconnu : rien n'est deviné."""
+    noms = []
+    for l in lignes:
+        m = _TITRE_EQUIPE.match(l)
+        if m and m.group(1) not in noms:
+            noms.append(m.group(1))
+    cotes = {n: cote_de_l_equipe(n, nom_domicile, nom_exterieur) for n in noms}
+    if len(noms) == 2:
+        a, b = noms
+        if cotes[a] and cotes[b] is None:
+            cotes[b] = "exterieur" if cotes[a] == "domicile" else "domicile"
+        elif cotes[b] and cotes[a] is None:
+            cotes[a] = "exterieur" if cotes[b] == "domicile" else "domicile"
+        elif cotes[a] and cotes[a] == cotes[b]:          # deux noms rattachés à la même équipe : ambigu, rien n'est gardé
+            cotes = {a: None, b: None}
+    return cotes
+
+
 def parse_betpawa(texte, nom_domicile, nom_exterieur):
     lignes = _lignes_non_vides(texte)
     cotes = {}
+    equipes = cotes_des_equipes(lignes, nom_domicile, nom_exterieur)
     i = 0
     while i < len(lignes):
         titre = lignes[i]
@@ -79,7 +106,7 @@ def parse_betpawa(texte, nom_domicile, nom_exterieur):
         m_equipe = re.match(r"^Plus de/Moins de \| (.+) \| Fin de [Mm]atch$", titre)
         if m_equipe:
             nom = m_equipe.group(1)
-            prefixe = {"domicile": "over_under_domicile", "exterieur": "over_under_exterieur"}.get(cote_de_l_equipe(nom, nom_domicile, nom_exterieur))
+            prefixe = {"domicile": "over_under_domicile", "exterieur": "over_under_exterieur"}.get(equipes.get(nom))
             paires, i = _paires_jusqua_rupture(lignes, i + 1, r"^(Plus|Moins) de \d+\.5$")
             if prefixe:
                 for label, valeur in paires.items():
@@ -128,9 +155,9 @@ def parse_betpawa(texte, nom_domicile, nom_exterieur):
             nom = m_cages.group(1)
             paires, i = _paires(lignes, i + 1, 2)
             if len(paires) == 2:
-                if cote_de_l_equipe(nom, nom_domicile, nom_exterieur) == "domicile":
+                if equipes.get(nom) == "domicile":
                     cotes["cages_inviolees_domicile"] = {"oui": paires.get("Oui"), "non": paires.get("Non")}
-                elif cote_de_l_equipe(nom, nom_domicile, nom_exterieur) == "exterieur":
+                elif equipes.get(nom) == "exterieur":
                     cotes["cages_inviolees_exterieur"] = {"oui": paires.get("Oui"), "non": paires.get("Non")}
             continue
 
