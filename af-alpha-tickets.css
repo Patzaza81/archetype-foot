@@ -1,10 +1,13 @@
 /* af-alpha-tickets.css — onglet « Traitement séquentiel des tickets (Moteur Alpha) » (25/10/2026).
    Reprend les couleurs et les cartes de la page alpha (variables --ax-*, cartes .ax-carte) ; téléphone d'abord. */
 
-/* Onglets de la page alpha : Pronostics / Traitement séquentiel des tickets */
-body.af-alpha .at-sous-onglets { display: flex; gap: 6px; margin: 0 0 12px; padding: 4px; border-radius: 12px; background: var(--ax-surface2, #F1F6F4); }
-body.af-alpha .at-sous-onglets a { flex: 1 1 0; padding: 9px 8px; border-radius: 9px; text-align: center; font-size: 13.5px; font-weight: 700; line-height: 1.25; color: var(--ax-doux); text-decoration: none; }
-body.af-alpha .at-sous-onglets a[aria-current="page"] { background: var(--ax-fond, #fff); color: var(--ax-accent-texte, #087F78); box-shadow: 0 1px 4px rgba(15,42,40,.10); }
+/* Onglets de la page alpha : Pronostics / Traitement séquentiel des tickets
+   25/10/2026 : en beige, en relief, avec une flèche « › » sur l'onglet à ouvrir, pour montrer qu'on peut les toucher. */
+body.af-alpha .at-sous-onglets { display: flex; gap: 8px; margin: 0 0 12px; padding: 6px; border-radius: 14px; background: #F3EBDA; border: 1px solid #E0D0AE; }
+body.af-alpha .at-sous-onglets a { flex: 1 1 0; display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 48px; padding: 9px 8px; border-radius: 11px; border: 1px solid #CDB27A; background: #EBDDBE; box-shadow: 0 2px 0 #CDB27A, 0 3px 6px rgba(90,71,32,.15); text-align: center; font-size: 13.5px; font-weight: 800; line-height: 1.25; color: #5A4720; text-decoration: none; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: rgba(196,154,58,.35); transition: transform .08s, box-shadow .08s; }
+body.af-alpha .at-sous-onglets a:not([aria-current="page"])::after { content: "›"; font-size: 20px; font-weight: 800; line-height: 1; }
+body.af-alpha .at-sous-onglets a:not([aria-current="page"]):active { transform: translateY(2px); box-shadow: 0 0 0 #CDB27A, 0 1px 2px rgba(90,71,32,.2); }
+body.af-alpha .at-sous-onglets a[aria-current="page"] { background: #D8B75F; border-color: #A8832F; color: #2E2208; box-shadow: inset 0 2px 4px rgba(90,71,32,.25); cursor: default; }
 
 /* Contrôles : jour, mise simulée */
 body.af-alpha #at-controles { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; margin: 0 0 12px; }
@@ -71,9 +74,10 @@ body.af-alpha .at-ecartes ul, body.af-alpha .at-regles ul { margin: 8px 0 0; pad
 body.af-alpha .at-regles { font-size: 13px; color: var(--ax-texte); }
 
 /* Mode nuit : contrôles et onglets (les variables de fond de la page V3 ne couvrent pas ces éléments) */
-body.af-alpha.theme-nuit .at-sous-onglets { background: #171A25; }
-body.af-alpha.theme-nuit .at-sous-onglets a { color: #A9B3B8; }
-body.af-alpha.theme-nuit .at-sous-onglets a[aria-current="page"] { background: #1E2230; color: #2BB3A6; box-shadow: none; }
+body.af-alpha.theme-nuit .at-sous-onglets { background: #1F1B14; border-color: #4A3F28; }
+body.af-alpha.theme-nuit .at-sous-onglets a { background: #3A3224; border-color: #6B5A36; box-shadow: 0 2px 0 #6B5A36, 0 3px 6px rgba(0,0,0,.35); color: #EBDDBE; }
+body.af-alpha.theme-nuit .at-sous-onglets a:not([aria-current="page"]):active { box-shadow: 0 0 0 #6B5A36, 0 1px 2px rgba(0,0,0,.4); }
+body.af-alpha.theme-nuit .at-sous-onglets a[aria-current="page"] { background: #8A6D2B; border-color: #B8923D; color: #FFF4D6; box-shadow: inset 0 2px 4px rgba(0,0,0,.3); }
 body.af-alpha.theme-nuit .at-jours button, body.af-alpha.theme-nuit .at-presets button, body.af-alpha.theme-nuit .at-mise input { background: #1E2230; border-color: #2E3342; color: #F1EFF7; }
 body.af-alpha.theme-nuit .at-jours button[aria-pressed="true"] { background: #15988D; border-color: #15988D; color: #fff; }
 body.af-alpha.theme-nuit .at-montants div { border-color: #2E3342; }
