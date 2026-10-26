@@ -172,3 +172,72 @@ def test_ticket_recommande_ne_depasse_jamais_ni_ne_saute():
     assert [m for m, _ in _rec([1.30, 1.30, 1.30, 1.30, 1.30, 1.30, 1.30, 1.25])] == ["r0", "r1", "r2", "r3", "r4", "r5"]  # stop à r6
     assert _rec([5.5, 1.25]) == []                                         # le mieux classé dépasse seul : pas de ticket, pas de saut
     assert [m for m, _ in _rec([2.0, 2.6, 1.25])] == ["r0"]                # 5,20 : on s'arrête, r2 n'est pas pris à la place
+
+
+# --- « Plus de 1,5 » à chances maximales : entre automatiquement dans le ticket du jour et se reconnaît (26/10/2026) --------------------
+CLE15 = ["over_under_1.5", "plus"]
+
+
+def match15(mid, heure, total, cote=1.30, valeur=0.70, equipes=None, cle=None):
+    """Match dont le « Plus de 1,5 » d'alpha a un total attendu `total` (valeur 70 % : sous le seuil des autres paris, donc jamais admissible seul)."""
+    m = match(mid, heure, buts=[pari("Plus de 1,5 buts", cote, valeur, cle or CLE15)], equipes=equipes)
+    m["niveaux"] = {"dom": total / 2, "ext": total / 2, "total": total, "d": 0.0}
+    return m
+
+
+def test_palier_gele_identique_partout():
+    conf = json.loads((RACINE / "data" / "alpha_serie" / "plus15_chances_max.json").read_text(encoding="utf-8"))
+    assert T.palier_plus15() == conf["palier_total_attendu"] == 3.4
+    assert conf["controle"]["wilson_bas"] >= 0.80 and conf["reglage"]["wilson_bas"] >= 0.80          # règle : borne basse >= 1/1,25 aux deux périodes
+    if shutil.which("node"):
+        r = subprocess.run(["node", "-e", "const T=require(process.argv[1]);console.log(JSON.stringify([T.REGLES.plus15TotalMin,T.REGLES.plus15Taux,T.REGLES.plus15Matchs]))",
+                            str(RACINE / "af-alpha-tickets.js")], capture_output=True, text=True, check=True)
+        assert json.loads(r.stdout) == [3.4, round(conf["tous"]["reussite"], 2), conf["tous"]["matchs"]]
+
+
+def test_plus15_max_entre_dans_tous_les_tickets_et_est_marque():
+    page = [match15("pm", "16:00", 3.8), match("a", "13:00", equipes=[pari("Pas de nul (12)", 1.30, 0.99, ["double_chance", "12"])])]
+    t = T.du_jour(page, JOUR)
+    p1 = {c["match_id"]: c for c in t["palier1"]}
+    assert "pm" in p1 and p1["pm"]["chances_max"] is True and p1["pm"]["total_attendu"] == 3.8 and p1["pm"]["categorie"] == "plus15"   # ticket du jour
+    assert t["accueil_1"][0]["match_id"] == "pm" and t["accueil_1"][0]["chances_max"] is True                                   # prioritaire : en tête de l'accueil
+    assert "pm" in [c["match_id"] for c in t["accueil_recommande"]]
+    assert p1["a"].get("chances_max") is None                                                                                    # les autres paris ne sont pas marqués
+
+
+def test_plus15_max_prioritaire_sur_le_meilleur_pari_du_meme_match():
+    m = match15("pm", "16:00", 3.6, equipes=[pari("Pas de nul (12)", 1.30, 0.99, ["double_chance", "12"])])        # le match a aussi un pari admissible à 99 %
+    t = T.du_jour([m], JOUR)
+    assert [c["categorie"] for c in t["palier1"]] == ["plus15"] and len(t["palier2"]) == 0                              # un pari par match : le « chances maximales »
+
+
+def test_plus15_max_ecarte_si_sous_le_palier_sans_cote_ou_hors_horaire():
+    assert T.du_jour([match15("p1", "16:00", 3.39)], JOUR)["palier1"] == []                                             # 3,39 < 3,4
+    assert T.du_jour([match15("p2", "16:00", 4.5, cote=None)], JOUR)["palier1"] == []                                   # cote absente : jamais proposé
+    assert T.du_jour([match15("p3", "16:00", 4.5, cote=1.20)], JOUR)["palier1"] == []                                   # cote < 1,25
+    assert T.du_jour([match15("p4", "09:30", 4.5)], JOUR)["palier1"] == []                                              # avant 10 h
+    assert T.du_jour([match15("p5", "16:00", 4.5, cle=["over_under_2.5", "plus"])], JOUR)["palier1"] == []             # autre marché que +1,5
+    inactif = T.palier_plus15(Path("/inexistant/plus15.json"))
+    assert inactif is None                                                                                              # fichier absent : fonction désactivée
+
+
+def test_plus15_max_gele_regle_et_suivi(tmp_path):
+    j = tmp_path / "t.jsonl"
+    page = [match15("pm", "16:00", 3.8), match15("qm", "17:30", 4.1)]
+    assert T.geler(page, datetime(2026, 10, 25, 0, 45, tzinfo=timezone.utc), j) == 1
+    gele = json.loads(j.read_text().splitlines()[0])
+    assert all(c["chances_max"] for c in gele["palier1"]) and gele["accueil_1"][0]["total_attendu"] in (3.8, 4.1)
+    archive = [{"match_id": "pm", "score_final": {"buts_dom": 1, "buts_ext": 1}}, {"match_id": "qm", "score_final": {"buts_dom": 1, "buts_ext": 0}}]
+    assert T.regler(archive, j) == 1
+    assert T.bilan(j)["plus15_max"] == {"paris": 2, "gagnes": 1, "reussite": 0.5}                                         # 1-0 : un seul but, perdu
+
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="node absent")
+def test_plus15_max_meme_ticket_que_la_page():
+    page = _page_parite() + [match15("pm1", "12:10", 3.9), match15("pm2", "12:40", 3.5), match15("pm3", "19:20", 4.2), match15("pn", "15:30", 3.2)]
+    code = ("const T = require(process.argv[1]); const d = JSON.parse(process.argv[2]); const a = T.analyse(d, '%s');"
+            "const f = (l) => l.map((s) => s.match_id + '|' + s.categorie); console.log(JSON.stringify([f(a.palier1), f(a.palier2)]));" % JOUR)
+    r = subprocess.run(["node", "-e", code, str(RACINE / "af-alpha-tickets.js"), json.dumps({"matchs": page})], capture_output=True, text=True, check=True)
+    t = T.du_jour(page, JOUR)
+    assert json.loads(r.stdout) == [[f"{c['match_id']}|{c['categorie']}" for c in t[p]] for p in ("palier1", "palier2")]
+    assert {"pm1|plus15", "pm3|plus15"} <= {f"{c['match_id']}|{c['categorie']}" for c in t["palier1"]}                    # prioritaires dans leur créneau

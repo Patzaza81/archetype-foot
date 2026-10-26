@@ -32,10 +32,15 @@
   let donnees = null, jour = null, mise = 500, longueurs = {};   // nombre de matchs choisis dans chaque palier
   try { const v = Number(localStorage.getItem(CLE_MISE)); if (v > 0) mise = v; } catch (e) { /* stockage indisponible */ }
 
+  // Repère « chances maximales » : le « Plus de 1,5 buts » dont le total attendu atteint le palier gelé (af-alpha-tickets.js, REGLES.plus15*).
+  const badgeMax = (c) => (c.chancesMax ? `<span class="at-max" title="Plus de 1,5 buts à chances maximales">★ Chances maximales</span>` : "");
+  const phraseMax = (c) => (c.chancesMax
+    ? `<li class="at-max-phrase"><b>Chances maximales :</b> on attend ${String(c.totalAttendu).replace(".", ",")} buts dans ce match. Les « plus de 1,5 buts » de ce niveau sont passés ${Math.round(T.REGLES.plus15Taux * 100)} fois sur 100 (${T.REGLES.plus15Matchs.toLocaleString("fr-FR")} matchs testés).</li>` : "");
+
   function ligneSelection(c) {
-    return `<li class="at-sel">` +
+    return `<li class="at-sel${c.chancesMax ? " at-sel-max" : ""}">` +
       `<div class="at-sel-haut"><span class="at-heure">${esc(c.match.heure)}</span><span class="at-match">${esc(c.match.domicile)} – ${esc(c.match.exterieur)}</span><strong class="at-cote">${cote(c.cote)}</strong></div>` +
-      `<div class="at-sel-pari">${typeof afMarcheHtml === "function" ? afMarcheHtml(c.marche, clair(c)) : esc(c.marche)}</div>` +
+      `<div class="at-sel-pari">${typeof afMarcheHtml === "function" ? afMarcheHtml(c.marche, clair(c)) : esc(c.marche)} ${badgeMax(c)}</div>` +
       `<div class="at-sel-bas"><span>${esc(compet(c.match))}</span><span>${esc(c.nomCategorie)} · ${pct(c.valeur)} de chances · confirmé ${pct(c.confirmation)} · ${c.matchs} matchs comparés</span></div>` +
       `</li>`;
   }
@@ -121,7 +126,7 @@
       ? `Ce pari serait passé dans ${e.domicile[0]} des ${e.domicile[1]} matchs de ${esc(m.domicile)} à domicile et dans ${e.exterieur[0]} des ${e.exterieur[1]} matchs de ${esc(m.exterieur)} à l'extérieur.` : "";
     const niv = g.dom && g.ext && Number.isFinite(Number(g.dom.pts_match)) && Number.isFinite(Number(g.ext.pts_match))
       ? `Classement : ${esc(m.domicile)} ${ptsMatch(g.dom.pts_match)} point par match, ${esc(m.exterieur)} ${ptsMatch(g.ext.pts_match)}.` : "Classement non disponible.";
-    return `<ul class="at-pourquoi"><li>Chances selon le moteur : <b>${pct(c.valeur)}</b> · comparé sur <b>${Number(m.n_domicile) || 0} et ${Number(m.n_exterieur) || 0} matchs</b>.</li>` +
+    return `<ul class="at-pourquoi">${phraseMax(c)}<li>Chances selon le moteur : <b>${pct(c.valeur)}</b> · comparé sur <b>${Number(m.n_domicile) || 0} et ${Number(m.n_exterieur) || 0} matchs</b>.</li>` +
       (conf ? `<li>${conf}</li>` : "") + `<li>${niv}</li></ul>`;
   }
 
@@ -135,7 +140,7 @@
     const choix = etapes.length > 1 ? `<div class="at-choix" role="group" aria-label="Nombre de matchs dans le ticket">${etapes.map((x, i) => `<button type="button" data-palier="${cle}" data-longueur="${i + 1}" aria-pressed="${i + 1 === n}">${i + 1} match${i ? "s" : ""}<small>× ${cote(x.cote)}</small></button>`).join("")}</div>` +
       `<p class="at-aide">Plus de matchs = gain plus grand, mais beaucoup plus de risques que le ticket perde. Les matchs s'ajoutent du plus sûr au moins sûr.</p>` : "";
     const lignes = choisis.map((x, i) => `<li><span class="at-num">${i + 1}</span><div><p class="at-qui"><b>${esc(x.match.heure)}</b> · ${esc(x.match.domicile)} – ${esc(x.match.exterieur)}</p>` +
-      `<p class="at-quoi">${esc(clair(x) || x.marche)}</p><p class="at-ou">${esc(compet(x.match))} · sur Betpawa : « ${esc(x.marche)} » à ${cote(x.cote)}</p>${pourquoiCeMatch(x)}</div></li>`).join("");
+      `<p class="at-quoi">${esc(clair(x) || x.marche)} ${badgeMax(x)}</p><p class="at-ou">${esc(compet(x.match))} · sur Betpawa : « ${esc(x.marche)} » à ${cote(x.cote)}</p>${pourquoiCeMatch(x)}</div></li>`).join("");
     return `<section class="ax-carte at-carte at-simple ${classe || ""}"><h2 class="at-simple-titre">${titre}</h2>` +
       `<p class="at-phrase">${phrase} Mets ces ${n} match${n > 1 ? "s" : ""} sur <b>un seul ticket</b>, avant ${esc(choisis[0].match.heure)}.</p>` + choix +
       `<div class="at-gros"><div><small>Tu mises</small><strong>${fcfa(mise)}</strong></div><div class="at-fleche" aria-hidden="true">→</div><div><small>Si tout passe, tu reçois</small><strong class="at-plus">${fcfa(mise * e.cote)}</strong></div></div>` +

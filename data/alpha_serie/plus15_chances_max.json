@@ -1,0 +1,52 @@
+{
+ "gele_le": "2026-10-26",
+ "marche": [
+  "over_under_1.5",
+  "plus"
+ ],
+ "palier_total_attendu": 3.4,
+ "cote_min": 1.25,
+ "regle": "plus petit palier du total attendu (niveaux.total d'alpha) dont la borne basse de Wilson 95 % est >= 1/1,25 = 0,80 sur la période de réglage ET sur la période de contrôle ; une cote BetPawa connue >= 1,25 est exigée",
+ "source": "rejeu du code alpha (coeur.analyser_match) sur le bloc Football-Data 2025-2026 et l'archive ARCHETYPE : 14 161 matchs analysés (4 à 7 matchs au même lieu)",
+ "reglage": {
+  "periode": "avant 2026-04-01",
+  "matchs": 836,
+  "reussis": 696,
+  "reussite": 0.8325,
+  "wilson_bas": 0.8057
+ },
+ "controle": {
+  "periode": "à partir de 2026-04-01",
+  "matchs": 872,
+  "reussis": 734,
+  "reussite": 0.8417,
+  "wilson_bas": 0.816
+ },
+ "tous": {
+  "matchs": 1708,
+  "reussis": 1430,
+  "reussite": 0.8372,
+  "wilson_bas": 0.819
+ },
+ "base_tous_matchs": 0.7637,
+ "tranches_total_attendu": {
+  "2.5-3.0": {
+   "matchs": 5011,
+   "reussite": 0.7623
+  },
+  "3.0-3.4": {
+   "matchs": 2779,
+   "reussite": 0.7895
+  },
+  "3.4-3.8": {
+   "matchs": 1221,
+   "reussite": 0.8239
+  },
+  "3.8-+": {
+   "matchs": 487,
+   "reussite": 0.8706
+  }
+ },
+ "empreinte_matchs": "7106a8f3f521e02c643b0307b393d50bff76f12b254d8db37a8105eae2b21347",
+ "note": "Information de classement seulement : le calcul d'alpha (coeur.py) n'est pas modifié. Suivi en direct : bilan_tickets.plus15_max."
+}

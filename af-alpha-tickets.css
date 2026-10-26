@@ -117,3 +117,8 @@ body.af-alpha .at-palier2 { border-color: var(--ax-accent, #087F78); border-styl
 body.af-alpha .at-palier3 { border-color: var(--ax-or, #9E6B0C); }
 body.af-alpha .at-palier3 .at-simple-titre { color: var(--ax-or-texte, #8A5E0A); }
 body.af-alpha .at-suivi { margin: 0 0 10px; }
+
+/* « Plus de 1,5 » à chances maximales (26/10/2026) : repère jaune souligné, lisible en mode clair comme en mode nuit. */
+body.af-alpha .at-max { display: inline-block; margin-left: 6px; padding: 2px 9px; border-radius: 999px; background: #F6C945; color: #3A2B00; font-size: 12px; font-weight: 800; text-decoration: underline; white-space: nowrap; vertical-align: middle; }
+body.af-alpha .at-sel-max { border-left: 4px solid #F6C945; padding-left: 8px; }
+body.af-alpha .at-max-phrase { font-weight: 600; }

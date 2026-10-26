@@ -21,6 +21,8 @@
     coteMin: 1.25, valeurMin: 0.80, confirmationMin: 0.75, matchsMin: 5, parTranche: 2,
     debut: 10 * 60, pas: 120, fin: 24 * 60, palier2Max: 10,
     dureeMatch: 115, delaiReglement: 15, margeConfortable: 30,
+    // « Plus de 1,5 » à chances maximales (26/10/2026, Patrick) : palier gelé dans data/alpha_serie/plus15_chances_max.json (un test vérifie l'égalité).
+    plus15TotalMin: 3.4, plus15Cle: ["over_under_1.5", "plus"], plus15Taux: 0.84, plus15Matchs: 1708,
   });
 
   const sel = () => (typeof module !== "undefined" && module.exports ? require("./af-alpha-selection.js") : racine);
@@ -65,13 +67,28 @@
         c.admissible = c.raisons.length === 0;
         out.push(c);
       }
+      const pm = plus15(m, debut);
+      if (pm) out.push(pm);
     }
     return out;
   }
 
+  // Le « Plus de 1,5 buts » d'alpha à chances maximales : total attendu >= palier gelé et cote connue >= cote minimale. Candidat PRIORITAIRE
+  // (devant tous les autres dans tous les classements), un pari par match comme les autres. Aucun calcul d'alpha n'est refait : le total attendu est celui publié.
+  function plus15(m, debut) {
+    const total = Number(m.niveaux && m.niveaux.total);
+    if (!Number.isFinite(total) || total < REGLES.plus15TotalMin - 1e-9) return null;
+    const s = ((m.onglets && m.onglets.buts) || []).find((x) => Array.isArray(x.cle) && x.cle[0] === REGLES.plus15Cle[0] && x.cle[1] === REGLES.plus15Cle[1]);
+    const cote = s ? Number(s.cote) : NaN;
+    if (!s || !(cote > 1) || cote < REGLES.coteMin) return null;
+    return { id: `${m.match_id}|plus15`, match_id: m.match_id, match: m, categorie: "plus15", nomCategorie: "Plus de 1,5 buts à chances maximales", marche: s.marche,
+      cote, valeur: Number(s.valeur) || 0, confirmation: confirmation(s), matchs: Math.min(Number(m.n_domicile) || 0, Number(m.n_exterieur) || 0),
+      remplacant: false, chancesMax: true, totalAttendu: Math.round(total * 100) / 100, debut, pronostic: s, raisons: [], admissible: true };
+  }
+
   // Classement écrit : valeur, confirmation, matchs comparés, cote la plus basse ; puis ordre stable (heure, identifiant).
   function compare(a, b) {
-    return (b.valeur - a.valeur) || ((b.confirmation || 0) - (a.confirmation || 0)) || (b.matchs - a.matchs) || (a.cote - b.cote) ||
+    return (Number(!!b.chancesMax) - Number(!!a.chancesMax)) || (b.valeur - a.valeur) || ((b.confirmation || 0) - (a.confirmation || 0)) || (b.matchs - a.matchs) || (a.cote - b.cote) ||
       (a.debut - b.debut) || String(a.id).localeCompare(String(b.id));
   }
   const coteTotale = (sels) => sels.reduce((p, s) => p * s.cote, 1);
@@ -186,7 +203,7 @@
     return [...new Set(((donnees && donnees.matchs) || []).filter((m) => m.statut === "analyse" && minutes(m.heure) !== null && m.date >= depuis).map((m) => m.date))].sort();
   }
 
-  const api = { REGLES, minutes, heure, confirmation, candidats, compare, tranches, coteTotale, methodeA, palier2, ticketLong, chaines, finances, analyse, jours, finEstimee };
+  const api = { REGLES, plus15, minutes, heure, confirmation, candidats, compare, tranches, coteTotale, methodeA, palier2, ticketLong, chaines, finances, analyse, jours, finEstimee };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else racine.AlphaTickets = api;
 })(typeof window !== "undefined" ? window : globalThis);
