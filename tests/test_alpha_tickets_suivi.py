@@ -214,7 +214,7 @@ def test_plus15_max_prioritaire_sur_le_meilleur_pari_du_meme_match():
 def test_plus15_max_ecarte_si_sous_le_palier_sans_cote_ou_hors_horaire():
     assert T.du_jour([match15("p1", "16:00", 3.39)], JOUR)["palier1"] == []                                             # 3,39 < 3,4
     assert T.du_jour([match15("p2", "16:00", 4.5, cote=None)], JOUR)["palier1"] == []                                   # cote absente : jamais proposé
-    assert T.du_jour([match15("p3", "16:00", 4.5, cote=1.21)], JOUR)["palier1"] == []                                   # cote < 1,22 (minimum du « Plus de 1,5 » seul)
+    assert T.du_jour([match15("p3", "16:00", 4.5, cote=1.249)], JOUR)["palier1"] == []                                  # cote < 1,25 (minimum de tous les marchés)
     assert T.du_jour([match15("p4", "09:30", 4.5)], JOUR)["palier1"] == []                                              # avant 10 h
     assert T.du_jour([match15("p5", "16:00", 4.5, cle=["over_under_2.5", "plus"])], JOUR)["palier1"] == []             # autre marché que +1,5
     inactif = T.palier_plus15(Path("/inexistant/plus15.json"))
@@ -243,11 +243,9 @@ def test_plus15_max_meme_ticket_que_la_page():
     assert {"pm1|plus15", "pm3|plus15"} <= {f"{c['match_id']}|{c['categorie']}" for c in t["palier1"]}                    # prioritaires dans leur créneau
 
 
-def test_plus15_cote_minimale_1_22_seulement_pour_ce_marche():
-    for cote in (1.22, 1.23, 1.249):                                                                                      # 3 cas retenus : 1,22 à 1,249
-        assert [c["categorie"] for c in T.du_jour([match15("p", "16:00", 3.8, cote=cote)], JOUR)["palier1"]] == ["plus15"]
-    ordinaire = match("o", "16:00", buts=[pari("Moins de 3,5 buts", 1.23, 0.95, ["over_under_3.5", "moins"])])
-    assert T.du_jour([ordinaire], JOUR)["palier1"] == []                                                                  # autre marché à 1,23 : toujours écarté (minimum 1,25)
+def test_plus15_cote_minimale_1_25_comme_les_autres():
+    assert [c["categorie"] for c in T.du_jour([match15("p", "16:00", 3.8, cote=1.25)], JOUR)["palier1"]] == ["plus15"]   # 1,25 : retenu
+    for cote in (1.22, 1.23, 1.249):                                                                                      # l'essai à 1,22 est retiré
+        assert T.du_jour([match15("p", "16:00", 3.8, cote=cote)], JOUR)["palier1"] == []
     sous_palier = match15("q", "16:00", 3.0, cote=1.23, valeur=0.95)
-    assert [c["categorie"] for c in T.du_jour([sous_palier], JOUR)["palier1"]] == ["buts"]                                # +1,5 ordinaire à 1,23 : admissible comme pari ordinaire
-    assert T.du_jour([match15("r", "16:00", 3.8, cote=1.2199)], JOUR)["palier1"] == []                                    # 1,2199 : écarté
+    assert T.du_jour([sous_palier], JOUR)["palier1"] == []                                                                # +1,5 ordinaire à 1,23 : écarté aussi

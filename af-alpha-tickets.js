@@ -22,7 +22,7 @@
     debut: 10 * 60, pas: 120, fin: 24 * 60, palier2Max: 10,
     dureeMatch: 115, delaiReglement: 15, margeConfortable: 30,
     // « Plus de 1,5 » à chances maximales (26/10/2026, Patrick) : palier gelé dans data/alpha_serie/plus15_chances_max.json (un test vérifie l'égalité).
-    coteMinPlus15: 1.22, plus15TotalMin: 3.4, plus15Cle: ["over_under_1.5", "plus"], plus15Taux: 0.84, plus15Matchs: 1708,
+    plus15TotalMin: 3.4, plus15Cle: ["over_under_1.5", "plus"], plus15Taux: 0.84, plus15Matchs: 1708,
   });
 
   const sel = () => (typeof module !== "undefined" && module.exports ? require("./af-alpha-selection.js") : racine);
@@ -63,7 +63,7 @@
           id: `${m.match_id}|${cat.cle}`, match_id: m.match_id, match: m, categorie: cat.cle, nomCategorie: cat.nom, marche: s.marche,
           cote: Number(s.cote), valeur: Number(s.valeur) || 0, confirmation: confirmation(s),
           matchs: Math.min(Number(m.n_domicile) || 0, Number(m.n_exterieur) || 0), remplacant: S.estRemplacant(m, cat), debut, pronostic: s,
-          coteMin: estPlus15(s) ? REGLES.coteMinPlus15 : REGLES.coteMin,      // « Plus de 1,5 » seul : 1,22 (Patrick, 26/10/2026)
+          coteMin: REGLES.coteMin,
         };
         c.raisons = raisonsExclusion(c);
         c.admissible = c.raisons.length === 0;
@@ -77,13 +77,12 @@
 
   // Le « Plus de 1,5 buts » d'alpha à chances maximales : total attendu >= palier gelé et cote connue >= cote minimale. Candidat PRIORITAIRE
   // (devant tous les autres dans tous les classements), un pari par match comme les autres. Aucun calcul d'alpha n'est refait : le total attendu est celui publié.
-  const estPlus15 = (s) => !!s && Array.isArray(s.cle) && s.cle[0] === REGLES.plus15Cle[0] && s.cle[1] === REGLES.plus15Cle[1];
   function plus15(m, debut) {
     const total = Number(m.niveaux && m.niveaux.total);
     if (!Number.isFinite(total) || total < REGLES.plus15TotalMin - 1e-9) return null;
     const s = ((m.onglets && m.onglets.buts) || []).find((x) => Array.isArray(x.cle) && x.cle[0] === REGLES.plus15Cle[0] && x.cle[1] === REGLES.plus15Cle[1]);
     const cote = s ? Number(s.cote) : NaN;
-    if (!s || !(cote > 1) || cote < REGLES.coteMinPlus15 - 1e-9) return null;
+    if (!s || !(cote > 1) || cote < REGLES.coteMin - 1e-9) return null;
     return { id: `${m.match_id}|plus15`, match_id: m.match_id, match: m, categorie: "plus15", nomCategorie: "Plus de 1,5 buts à chances maximales", marche: s.marche,
       cote, valeur: Number(s.valeur) || 0, confirmation: confirmation(s), matchs: Math.min(Number(m.n_domicile) || 0, Number(m.n_exterieur) || 0),
       remplacant: false, chancesMax: true, totalAttendu: Math.round(total * 100) / 100, debut, pronostic: s, raisons: [], admissible: true };

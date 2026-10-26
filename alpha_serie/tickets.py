@@ -17,7 +17,7 @@ Python pour être gelées et suivies chaque nuit ; un test vérifie que le navig
   la cote totale reste ≤ 5 ; on s'arrête au premier pari qui la ferait dépasser (on ne saute pas un pari mieux classé).
 « Plus de 1,5 » à chances maximales (26/10/2026, Patrick : « il doit figurer automatiquement dans le ticket du jour et l'utilisateur doit pouvoir le
   reconnaître ») : le « Plus de 1,5 buts » d'alpha dont le total attendu atteint le palier gelé de `data/alpha_serie/plus15_chances_max.json` (3,4 :
-  borne basse de Wilson >= 1/1,25 au réglage ET au contrôle), avec une cote BetPawa connue >= 1,22 (minimum du « Plus de 1,5 » seul, Patrick 26/10/2026 ; 1,25 pour les autres marchés), devient candidat prioritaire (`chances_max`) : il
+  borne basse de Wilson >= 1/1,25 au réglage ET au contrôle), avec une cote BetPawa connue >= 1,25 (minimum de tous les marchés), devient candidat prioritaire (`chances_max`) : il
   passe devant les autres dans tous les classements (palier 1, palier 2, accueil, ticket recommandé), toujours à raison d'un pari par match. Il est
   marqué dans les tickets gelés (`chances_max`, `total_attendu`) et son taux de réussite réel est suivi (`bilan()["plus15_max"]`). Sans le fichier, rien n'est ajouté.
 Gel : chaque nuit, pour le jour courant (Douala), ou pour le lendemain après 22 h (début du dernier créneau), avant le premier match du ticket ; jamais regelé, jamais a posteriori.
@@ -112,7 +112,7 @@ def candidats(matchs: list[dict], jour: str) -> list[dict]:
             c = {"id": f"{m['match_id']}|{cat}", "match_id": m["match_id"], "categorie": cat, "cle": s.get("cle"), "marche": s.get("marche"),
                  "cote": float(s["cote"]), "valeur": float(s.get("valeur") or 0), "confirmation": conf, "matchs": n, "remplacant": rempl,
                  "debut": debut, "heure": m.get("heure"), "domicile": m.get("domicile"), "exterieur": m.get("exterieur"), "competition": m.get("competition")}
-            c["admissible"] = (c["cote"] >= P.cote_min_du(s.get("cle") or ()) - 1e-9 and not rempl and c["valeur"] >= VALEUR_MIN - 1e-9 and conf is not None
+            c["admissible"] = (c["cote"] >= P.COTE_MIN - 1e-9 and not rempl and c["valeur"] >= VALEUR_MIN - 1e-9 and conf is not None
                                and conf >= CONFIRMATION_MIN - 1e-9 and n >= MATCHS_MIN)
             out.append(c)
         pm = _plus15(m, debut)
@@ -128,7 +128,7 @@ def _plus15(m: dict, debut: int) -> dict | None:
     if palier is None or total is None or float(total) < palier - 1e-9:
         return None
     s = next((x for x in (m.get("onglets") or {}).get("buts") or [] if x.get("cle") == CLE_PLUS15), None)
-    if not s or not _cote_valide(s.get("cote")) or float(s["cote"]) < P.COTE_MIN_PLUS15 - 1e-9:
+    if not s or not _cote_valide(s.get("cote")) or float(s["cote"]) < P.COTE_MIN - 1e-9:
         return None
     return {"id": f"{m['match_id']}|plus15", "match_id": m["match_id"], "categorie": "plus15", "cle": s.get("cle"), "marche": s.get("marche"),
             "cote": float(s["cote"]), "valeur": float(s.get("valeur") or 0), "confirmation": _confirmation(s),
