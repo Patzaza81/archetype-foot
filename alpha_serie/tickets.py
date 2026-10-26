@@ -15,6 +15,11 @@ Python pour être gelées et suivies chaque nuit ; un test vérifie que le navig
   un match sur un seul ticket. Moins de 30 admissibles : les derniers tickets en comptent moins (rien n'est assoupli).
   Ticket recommandé (25/10/2026, règle de Patrick : « cote maximum 5 ») : les paris du même classement, pris dans l'ordre, tant que
   la cote totale reste ≤ 5 ; on s'arrête au premier pari qui la ferait dépasser (on ne saute pas un pari mieux classé).
+« Plus de 1,5 » à chances maximales (26/10/2026, Patrick : « il doit figurer automatiquement dans le ticket du jour et l'utilisateur doit pouvoir le
+  reconnaître ») : le « Plus de 1,5 buts » d'alpha dont le total attendu atteint le palier gelé de `data/alpha_serie/plus15_chances_max.json` (3,4 :
+  borne basse de Wilson >= 1/1,25 au réglage ET au contrôle), avec une cote BetPawa connue >= 1,25 (minimum de tous les marchés), devient candidat prioritaire (`chances_max`) : il
+  passe devant les autres dans tous les classements (palier 1, palier 2, accueil, ticket recommandé), toujours à raison d'un pari par match. Il est
+  marqué dans les tickets gelés (`chances_max`, `total_attendu`) et son taux de réussite réel est suivi (`bilan()["plus15_max"]`). Sans le fichier, rien n'est ajouté.
 Gel : chaque nuit, pour le jour courant (Douala), ou pour le lendemain après 22 h (début du dernier créneau), avant le premier match du ticket ; jamais regelé, jamais a posteriori.
 Résultats : quand tous les matchs d'un ticket ont un score. Bilan : uniquement sur des tickets gelés avant les matchs.
 Bibliothèque standard seulement. Le moteur alpha (`coeur.py`) n'est ni appelé ni modifié.
@@ -26,12 +31,24 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
+from . import parametres as P
+
 ROOT = Path(__file__).resolve().parent.parent
 JOURNAL = ROOT / "data" / "alpha_serie" / "tickets_journal.jsonl"
 FAMILLES = {"accueil_1": "les mieux classés", "accueil_2": "la suite du classement", "accueil_3": "le troisième groupe"}
 PALIERS = ("palier1", "palier2", "palier3") + tuple(FAMILLES) + ("accueil_recommande",)
 COTE_RECOMMANDEE_MAX = 5.0         # règle de Patrick, 25/10/2026
 ACCUEIL = ROOT / "data" / "alpha_serie" / "tickets_accueil.json"
+PLUS15 = ROOT / "data" / "alpha_serie" / "plus15_chances_max.json"
+CLE_PLUS15 = ["over_under_1.5", "plus"]
+
+
+def palier_plus15(chemin: Path = PLUS15) -> float | None:
+    """Palier gelé du total attendu pour « Plus de 1,5 » à chances maximales ; None si le fichier est absent (fonction désactivée)."""
+    try:
+        return float(json.loads(chemin.read_text(encoding="utf-8"))["palier_total_attendu"])
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
 
 COTE_MIN, VALEUR_MIN, CONFIRMATION_MIN, MATCHS_MIN, PAR_TRANCHE, PALIER2_MAX, ACCUEIL_MAX = 1.25, 0.80, 0.75, 5, 2, 10, 10
 DEBUT, PAS, FIN = 10 * 60, 120, 24 * 60
@@ -95,14 +112,33 @@ def candidats(matchs: list[dict], jour: str) -> list[dict]:
             c = {"id": f"{m['match_id']}|{cat}", "match_id": m["match_id"], "categorie": cat, "cle": s.get("cle"), "marche": s.get("marche"),
                  "cote": float(s["cote"]), "valeur": float(s.get("valeur") or 0), "confirmation": conf, "matchs": n, "remplacant": rempl,
                  "debut": debut, "heure": m.get("heure"), "domicile": m.get("domicile"), "exterieur": m.get("exterieur"), "competition": m.get("competition")}
-            c["admissible"] = (c["cote"] >= COTE_MIN and not rempl and c["valeur"] >= VALEUR_MIN - 1e-9 and conf is not None
+            c["admissible"] = (c["cote"] >= P.COTE_MIN - 1e-9 and not rempl and c["valeur"] >= VALEUR_MIN - 1e-9 and conf is not None
                                and conf >= CONFIRMATION_MIN - 1e-9 and n >= MATCHS_MIN)
             out.append(c)
+        pm = _plus15(m, debut)
+        if pm:
+            out.append(pm)
     return out
 
 
+def _plus15(m: dict, debut: int) -> dict | None:
+    """Le « Plus de 1,5 buts » d'alpha à chances maximales (total attendu >= palier gelé, cote connue >= COTE_MIN), sinon None."""
+    palier = palier_plus15()
+    total = (m.get("niveaux") or {}).get("total")
+    if palier is None or total is None or float(total) < palier - 1e-9:
+        return None
+    s = next((x for x in (m.get("onglets") or {}).get("buts") or [] if x.get("cle") == CLE_PLUS15), None)
+    if not s or not _cote_valide(s.get("cote")) or float(s["cote"]) < P.COTE_MIN - 1e-9:
+        return None
+    return {"id": f"{m['match_id']}|plus15", "match_id": m["match_id"], "categorie": "plus15", "cle": s.get("cle"), "marche": s.get("marche"),
+            "cote": float(s["cote"]), "valeur": float(s.get("valeur") or 0), "confirmation": _confirmation(s),
+            "matchs": min(int(m.get("n_domicile") or 0), int(m.get("n_exterieur") or 0)), "remplacant": False, "chances_max": True,
+            "total_attendu": round(float(total), 2), "debut": debut, "heure": m.get("heure"), "domicile": m.get("domicile"),
+            "exterieur": m.get("exterieur"), "competition": m.get("competition"), "admissible": True}
+
+
 def _ordre(c: dict) -> tuple:
-    return (-c["valeur"], -(c["confirmation"] or 0), -c["matchs"], c["cote"], c["debut"], c["id"])
+    return (not c.get("chances_max"), -c["valeur"], -(c["confirmation"] or 0), -c["matchs"], c["cote"], c["debut"], c["id"])
 
 
 def tranches(cands: list[dict]) -> list[dict]:
@@ -160,10 +196,12 @@ def du_jour(matchs: list[dict], jour: str) -> dict[str, Any]:
                  for m in matchs if m.get("date") == jour and m.get("statut") == "analyse" for s in m.get("palier2") or []
                  if _minutes(m.get("heure")) is not None and DEBUT <= _minutes(m.get("heure")) < FIN], key=lambda x: (x["debut"], x["match_id"]))
     garde = ("match_id", "categorie", "cle", "marche", "cote", "valeur", "heure", "debut", "domicile", "exterieur", "competition")
+    garde_max = garde + ("chances_max", "total_attendu")        # le repère « chances maximales » suit le pari jusque dans le journal et l'accueil
     acc = accueil(cands)
-    return {"jour": jour, "palier1": [{k: c.get(k) for k in garde} for c in p1], "palier2": [{k: c.get(k) for k in garde} for c in p2],
+    gk = lambda c: {k: c.get(k) for k in (garde_max if c.get("chances_max") else garde)}  # noqa: E731
+    return {"jour": jour, "palier1": [gk(c) for c in p1], "palier2": [gk(c) for c in p2],
             "palier3": [{k: c.get(k) for k in garde + ("avantage", "p_estimee", "p_cote")} for c in p3],
-            **{f: [{k: c.get(k) for k in garde} for c in acc[f]] for f in (*FAMILLES, "accueil_recommande")}}
+            **{f: [gk(c) for c in acc[f]] for f in (*FAMILLES, "accueil_recommande")}}
 
 
 # --- Journal : gel, résultats, bilan -----------------------------------------------------------------------------------------
@@ -245,7 +283,20 @@ def bilan(journal: Path = JOURNAL) -> dict[str, Any]:
             rendement += (cote - 1) if g else -1
         out[nom] = {"tickets": tickets, "gagnes": gagnes, "paris": legs, "paris_gagnes": legs_g,
                     "rendement_par_ticket": round(rendement / tickets, 4) if tickets else None}
+    out["plus15_max"] = _bilan_plus15(res, gel)
     return out
+
+
+def _bilan_plus15(res: dict, gel: dict) -> dict[str, Any]:
+    """Réussite RÉELLE des « Plus de 1,5 » à chances maximales gelés avant leur match (un match compté une fois, quel que soit le palier)."""
+    vus: dict[tuple, bool | None] = {}
+    for j, r in res.items():
+        for p in PALIERS:
+            for c, ok in zip(gel[j].get(p, []), r.get(p, [])):
+                if c.get("chances_max") and ok is not None:
+                    vus[(j, c["match_id"])] = bool(ok)
+    n, k = len(vus), sum(vus.values())
+    return {"paris": n, "gagnes": k, "reussite": round(k / n, 4) if n else None}
 
 
 def page_accueil(matchs_page: list[dict], maintenant: datetime | None = None, journal: Path = JOURNAL) -> dict[str, Any]:
