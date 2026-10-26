@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "genere_le": "2026-10-26T11:01:03Z",
+  "genere_le": "2026-10-26T19:18:10Z",
   "source": "data/archive_test",
-  "observations": 27242,
+  "observations": 27280,
   "team_market": {
     "07 Vestur|1x2_exterieur": {
       "equipe": "07 Vestur",
@@ -58035,6 +58035,32 @@
         "+1": 1.0
       }
     },
+    "Aurora|buts_equipe_domicile_1.5_over": {
+      "equipe": "Aurora",
+      "marche": "buts_equipe_domicile_1.5_over",
+      "echantillon": 1,
+      "frequence": 1.0,
+      "sequence": {
+        "sequence": [
+          "O"
+        ],
+        "longueur": 1,
+        "issue_dernier": "O",
+        "serie_actuelle": 1,
+        "type_serie": "SUCCES",
+        "rupture": false,
+        "reprise": false,
+        "avant": null,
+        "apres": null
+      },
+      "prix": {
+        "2.00-2.49": {
+          "echantillon": 1,
+          "frequence": 1.0
+        }
+      },
+      "persistance": {}
+    },
     "Aurora|double_chance_X2": {
       "equipe": "Aurora",
       "marche": "double_chance_X2",
@@ -58116,16 +58142,17 @@
     "Aurora|over_under_total_1.5_over": {
       "equipe": "Aurora",
       "marche": "over_under_total_1.5_over",
-      "echantillon": 1,
-      "frequence": 0.0,
+      "echantillon": 2,
+      "frequence": 0.5,
       "sequence": {
         "sequence": [
-          "N"
+          "N",
+          "O"
         ],
-        "longueur": 1,
-        "issue_dernier": "N",
+        "longueur": 2,
+        "issue_dernier": "O",
         "serie_actuelle": 1,
-        "type_serie": "ECHEC",
+        "type_serie": "SUCCES",
         "rupture": false,
         "reprise": false,
         "avant": null,
@@ -58133,11 +58160,13 @@
       },
       "prix": {
         "<1.30": {
-          "echantillon": 1,
-          "frequence": 0.0
+          "echantillon": 2,
+          "frequence": 0.5
         }
       },
-      "persistance": {}
+      "persistance": {
+        "+1": 1.0
+      }
     },
     "Aurora|over_under_total_2.5_over": {
       "equipe": "Aurora",
@@ -72450,16 +72479,17 @@
     "Barracas C|double_chance_X2": {
       "equipe": "Barracas C",
       "marche": "double_chance_X2",
-      "echantillon": 1,
-      "frequence": 1.0,
+      "echantillon": 2,
+      "frequence": 0.5,
       "sequence": {
         "sequence": [
-          "O"
+          "O",
+          "N"
         ],
-        "longueur": 1,
-        "issue_dernier": "O",
+        "longueur": 2,
+        "issue_dernier": "N",
         "serie_actuelle": 1,
-        "type_serie": "SUCCES",
+        "type_serie": "ECHEC",
         "rupture": false,
         "reprise": false,
         "avant": null,
@@ -72469,23 +72499,30 @@
         "1.75-1.99": {
           "echantillon": 1,
           "frequence": 1.0
+        },
+        "2.00-2.49": {
+          "echantillon": 1,
+          "frequence": 0.0
         }
       },
-      "persistance": {}
+      "persistance": {
+        "+1": 0.0
+      }
     },
     "Barracas C|handicap_exterieur_-0.5": {
       "equipe": "Barracas C",
       "marche": "handicap_exterieur_-0.5",
-      "echantillon": 1,
-      "frequence": 1.0,
+      "echantillon": 2,
+      "frequence": 0.5,
       "sequence": {
         "sequence": [
-          "O"
+          "O",
+          "N"
         ],
-        "longueur": 1,
-        "issue_dernier": "O",
+        "longueur": 2,
+        "issue_dernier": "N",
         "serie_actuelle": 1,
-        "type_serie": "SUCCES",
+        "type_serie": "ECHEC",
         "rupture": false,
         "reprise": false,
         "avant": null,
@@ -72493,25 +72530,28 @@
       },
       "prix": {
         "3.00+": {
-          "echantillon": 1,
-          "frequence": 1.0
+          "echantillon": 2,
+          "frequence": 0.5
         }
       },
-      "persistance": {}
+      "persistance": {
+        "+1": 0.0
+      }
     },
     "Barracas C|handicap_exterieur_0.5": {
       "equipe": "Barracas C",
       "marche": "handicap_exterieur_0.5",
-      "echantillon": 1,
-      "frequence": 1.0,
+      "echantillon": 2,
+      "frequence": 0.5,
       "sequence": {
         "sequence": [
-          "O"
+          "O",
+          "N"
         ],
-        "longueur": 1,
-        "issue_dernier": "O",
+        "longueur": 2,
+        "issue_dernier": "N",
         "serie_actuelle": 1,
-        "type_serie": "SUCCES",
+        "type_serie": "ECHEC",
         "rupture": false,
         "reprise": false,
         "avant": null,
@@ -72521,9 +72561,15 @@
         "1.75-1.99": {
           "echantillon": 1,
           "frequence": 1.0
+        },
+        "2.00-2.49": {
+          "echantillon": 1,
+          "frequence": 0.0
         }
       },
-      "persistance": {}
+      "persistance": {
+        "+1": 0.0
+      }
     },
     "Barracas C|over_under_total_0.5_under": {
       "equipe": "Barracas C",
@@ -147387,6 +147433,32 @@
         "+1": 0.0
       }
     },
+    "Córdoba SdE|over_under_total_2.5_over": {
+      "equipe": "Córdoba SdE",
+      "marche": "over_under_total_2.5_over",
+      "echantillon": 1,
+      "frequence": 1.0,
+      "sequence": {
+        "sequence": [
+          "O"
+        ],
+        "longueur": 1,
+        "issue_dernier": "O",
+        "serie_actuelle": 1,
+        "type_serie": "SUCCES",
+        "rupture": false,
+        "reprise": false,
+        "avant": null,
+        "apres": null
+      },
+      "prix": {
+        "2.00-2.49": {
+          "echantillon": 1,
+          "frequence": 1.0
+        }
+      },
+      "persistance": {}
+    },
     "Córdoba SdE|over_under_total_2.5_under": {
       "equipe": "Córdoba SdE",
       "marche": "over_under_total_2.5_under",
@@ -169525,15 +169597,16 @@
     "E. Rio Cuarto|double_chance_X2": {
       "equipe": "E. Rio Cuarto",
       "marche": "double_chance_X2",
-      "echantillon": 1,
+      "echantillon": 2,
       "frequence": 0.0,
       "sequence": {
         "sequence": [
+          "N",
           "N"
         ],
-        "longueur": 1,
+        "longueur": 2,
         "issue_dernier": "N",
-        "serie_actuelle": 1,
+        "serie_actuelle": 2,
         "type_serie": "ECHEC",
         "rupture": false,
         "reprise": false,
@@ -169541,12 +169614,18 @@
         "apres": null
       },
       "prix": {
+        "2.00-2.49": {
+          "echantillon": 1,
+          "frequence": 0.0
+        },
         "3.00+": {
           "echantillon": 1,
           "frequence": 0.0
         }
       },
-      "persistance": {}
+      "persistance": {
+        "+1": 0.0
+      }
     },
     "E. Rio Cuarto|handicap_domicile_-0.5": {
       "equipe": "E. Rio Cuarto",
@@ -169600,9 +169679,9 @@
       },
       "persistance": {}
     },
-    "E. Rio Cuarto|handicap_exterieur_0.5": {
+    "E. Rio Cuarto|handicap_exterieur_-0.5": {
       "equipe": "E. Rio Cuarto",
-      "marche": "handicap_exterieur_0.5",
+      "marche": "handicap_exterieur_-0.5",
       "echantillon": 1,
       "frequence": 0.0,
       "sequence": {
@@ -169625,6 +169704,39 @@
         }
       },
       "persistance": {}
+    },
+    "E. Rio Cuarto|handicap_exterieur_0.5": {
+      "equipe": "E. Rio Cuarto",
+      "marche": "handicap_exterieur_0.5",
+      "echantillon": 2,
+      "frequence": 0.0,
+      "sequence": {
+        "sequence": [
+          "N",
+          "N"
+        ],
+        "longueur": 2,
+        "issue_dernier": "N",
+        "serie_actuelle": 2,
+        "type_serie": "ECHEC",
+        "rupture": false,
+        "reprise": false,
+        "avant": null,
+        "apres": null
+      },
+      "prix": {
+        "2.00-2.49": {
+          "echantillon": 1,
+          "frequence": 0.0
+        },
+        "3.00+": {
+          "echantillon": 1,
+          "frequence": 0.0
+        }
+      },
+      "persistance": {
+        "+1": 0.0
+      }
     },
     "E. Rio Cuarto|handicap_exterieur_1.5": {
       "equipe": "E. Rio Cuarto",
@@ -255393,16 +255505,17 @@
     "Jarabacoa|1x2_domicile": {
       "equipe": "Jarabacoa",
       "marche": "1x2_domicile",
-      "echantillon": 1,
-      "frequence": 0.0,
+      "echantillon": 2,
+      "frequence": 0.5,
       "sequence": {
         "sequence": [
-          "N"
+          "N",
+          "O"
         ],
-        "longueur": 1,
-        "issue_dernier": "N",
+        "longueur": 2,
+        "issue_dernier": "O",
         "serie_actuelle": 1,
-        "type_serie": "ECHEC",
+        "type_serie": "SUCCES",
         "rupture": false,
         "reprise": false,
         "avant": null,
@@ -255410,11 +255523,13 @@
       },
       "prix": {
         "3.00+": {
-          "echantillon": 1,
-          "frequence": 0.0
+          "echantillon": 2,
+          "frequence": 0.5
         }
       },
-      "persistance": {}
+      "persistance": {
+        "+1": 1.0
+      }
     },
     "Jarabacoa|1x2_exterieur": {
       "equipe": "Jarabacoa",
@@ -297501,6 +297616,32 @@
       "persistance": {
         "+1": 0.5
       }
+    },
+    "Liverpool M.|1x2_exterieur": {
+      "equipe": "Liverpool M.",
+      "marche": "1x2_exterieur",
+      "echantillon": 1,
+      "frequence": 1.0,
+      "sequence": {
+        "sequence": [
+          "O"
+        ],
+        "longueur": 1,
+        "issue_dernier": "O",
+        "serie_actuelle": 1,
+        "type_serie": "SUCCES",
+        "rupture": false,
+        "reprise": false,
+        "avant": null,
+        "apres": null
+      },
+      "prix": {
+        "3.00+": {
+          "echantillon": 1,
+          "frequence": 1.0
+        }
+      },
+      "persistance": {}
     },
     "Liverpool M.|1x2_nul": {
       "equipe": "Liverpool M.",
@@ -342676,18 +342817,19 @@
     "Nacional|1x2_exterieur": {
       "equipe": "Nacional",
       "marche": "1x2_exterieur",
-      "echantillon": 3,
-      "frequence": 0.0,
+      "echantillon": 4,
+      "frequence": 0.25,
       "sequence": {
         "sequence": [
           "N",
           "N",
-          "N"
+          "N",
+          "O"
         ],
-        "longueur": 3,
-        "issue_dernier": "N",
-        "serie_actuelle": 3,
-        "type_serie": "ECHEC",
+        "longueur": 4,
+        "issue_dernier": "O",
+        "serie_actuelle": 1,
+        "type_serie": "SUCCES",
         "rupture": false,
         "reprise": false,
         "avant": null,
@@ -342695,12 +342837,13 @@
       },
       "prix": {
         "3.00+": {
-          "echantillon": 3,
-          "frequence": 0.0
+          "echantillon": 4,
+          "frequence": 0.25
         }
       },
       "persistance": {
-        "+1": 0.0
+        "+1": 0.3333,
+        "+3": 1.0
       }
     },
     "Nacional|buts_equipe_domicile_1.5_over": {
@@ -353548,6 +353691,32 @@
       },
       "prix": {
         "1.50-1.74": {
+          "echantillon": 1,
+          "frequence": 1.0
+        }
+      },
+      "persistance": {}
+    },
+    "O&M|1x2_domicile": {
+      "equipe": "O&M",
+      "marche": "1x2_domicile",
+      "echantillon": 1,
+      "frequence": 1.0,
+      "sequence": {
+        "sequence": [
+          "O"
+        ],
+        "longueur": 1,
+        "issue_dernier": "O",
+        "serie_actuelle": 1,
+        "type_serie": "SUCCES",
+        "rupture": false,
+        "reprise": false,
+        "avant": null,
+        "apres": null
+      },
+      "prix": {
+        "3.00+": {
           "echantillon": 1,
           "frequence": 1.0
         }
@@ -399783,14 +399952,43 @@
     "Racing Club|1x2_exterieur": {
       "equipe": "Racing Club",
       "marche": "1x2_exterieur",
-      "echantillon": 2,
-      "frequence": 0.5,
+      "echantillon": 3,
+      "frequence": 0.3333,
       "sequence": {
         "sequence": [
           "O",
+          "N",
           "N"
         ],
-        "longueur": 2,
+        "longueur": 3,
+        "issue_dernier": "N",
+        "serie_actuelle": 2,
+        "type_serie": "ECHEC",
+        "rupture": false,
+        "reprise": false,
+        "avant": null,
+        "apres": null
+      },
+      "prix": {
+        "3.00+": {
+          "echantillon": 3,
+          "frequence": 0.3333
+        }
+      },
+      "persistance": {
+        "+1": 0.0
+      }
+    },
+    "Racing Club|1x2_nul": {
+      "equipe": "Racing Club",
+      "marche": "1x2_nul",
+      "echantillon": 1,
+      "frequence": 0.0,
+      "sequence": {
+        "sequence": [
+          "N"
+        ],
+        "longueur": 1,
         "issue_dernier": "N",
         "serie_actuelle": 1,
         "type_serie": "ECHEC",
@@ -399801,13 +399999,11 @@
       },
       "prix": {
         "3.00+": {
-          "echantillon": 2,
-          "frequence": 0.5
+          "echantillon": 1,
+          "frequence": 0.0
         }
       },
-      "persistance": {
-        "+1": 0.0
-      }
+      "persistance": {}
     },
     "Racing Club|btts_non": {
       "equipe": "Racing Club",
@@ -399838,6 +400034,61 @@
     "Racing Club|buts_equipe_domicile_0.5_under": {
       "equipe": "Racing Club",
       "marche": "buts_equipe_domicile_0.5_under",
+      "echantillon": 2,
+      "frequence": 0.0,
+      "sequence": {
+        "sequence": [
+          "N",
+          "N"
+        ],
+        "longueur": 2,
+        "issue_dernier": "N",
+        "serie_actuelle": 2,
+        "type_serie": "ECHEC",
+        "rupture": false,
+        "reprise": false,
+        "avant": null,
+        "apres": null
+      },
+      "prix": {
+        "3.00+": {
+          "echantillon": 2,
+          "frequence": 0.0
+        }
+      },
+      "persistance": {
+        "+1": 0.0
+      }
+    },
+    "Racing Club|buts_equipe_domicile_1.5_under": {
+      "equipe": "Racing Club",
+      "marche": "buts_equipe_domicile_1.5_under",
+      "echantillon": 1,
+      "frequence": 1.0,
+      "sequence": {
+        "sequence": [
+          "O"
+        ],
+        "longueur": 1,
+        "issue_dernier": "O",
+        "serie_actuelle": 1,
+        "type_serie": "SUCCES",
+        "rupture": false,
+        "reprise": false,
+        "avant": null,
+        "apres": null
+      },
+      "prix": {
+        "2.00-2.49": {
+          "echantillon": 1,
+          "frequence": 1.0
+        }
+      },
+      "persistance": {}
+    },
+    "Racing Club|buts_equipe_exterieur_0.5_over": {
+      "equipe": "Racing Club",
+      "marche": "buts_equipe_exterieur_0.5_over",
       "echantillon": 1,
       "frequence": 0.0,
       "sequence": {
@@ -399854,7 +400105,7 @@
         "apres": null
       },
       "prix": {
-        "3.00+": {
+        "1.75-1.99": {
           "echantillon": 1,
           "frequence": 0.0
         }
@@ -399864,6 +400115,35 @@
     "Racing Club|buts_equipe_exterieur_1.5_over": {
       "equipe": "Racing Club",
       "marche": "buts_equipe_exterieur_1.5_over",
+      "echantillon": 2,
+      "frequence": 0.0,
+      "sequence": {
+        "sequence": [
+          "N",
+          "N"
+        ],
+        "longueur": 2,
+        "issue_dernier": "N",
+        "serie_actuelle": 2,
+        "type_serie": "ECHEC",
+        "rupture": false,
+        "reprise": false,
+        "avant": null,
+        "apres": null
+      },
+      "prix": {
+        "3.00+": {
+          "echantillon": 2,
+          "frequence": 0.0
+        }
+      },
+      "persistance": {
+        "+1": 0.0
+      }
+    },
+    "Racing Club|cage_inviolee_exterieur": {
+      "equipe": "Racing Club",
+      "marche": "cage_inviolee_exterieur",
       "echantillon": 1,
       "frequence": 0.0,
       "sequence": {
@@ -399916,39 +400196,14 @@
     "Racing Club|double_chance_X2": {
       "equipe": "Racing Club",
       "marche": "double_chance_X2",
-      "echantillon": 1,
-      "frequence": 1.0,
+      "echantillon": 2,
+      "frequence": 0.5,
       "sequence": {
         "sequence": [
-          "O"
-        ],
-        "longueur": 1,
-        "issue_dernier": "O",
-        "serie_actuelle": 1,
-        "type_serie": "SUCCES",
-        "rupture": false,
-        "reprise": false,
-        "avant": null,
-        "apres": null
-      },
-      "prix": {
-        "1.50-1.74": {
-          "echantillon": 1,
-          "frequence": 1.0
-        }
-      },
-      "persistance": {}
-    },
-    "Racing Club|handicap_exterieur_-0.5": {
-      "equipe": "Racing Club",
-      "marche": "handicap_exterieur_-0.5",
-      "echantillon": 1,
-      "frequence": 0.0,
-      "sequence": {
-        "sequence": [
+          "O",
           "N"
         ],
-        "longueur": 1,
+        "longueur": 2,
         "issue_dernier": "N",
         "serie_actuelle": 1,
         "type_serie": "ECHEC",
@@ -399958,12 +400213,47 @@
         "apres": null
       },
       "prix": {
-        "3.00+": {
+        "1.50-1.74": {
+          "echantillon": 1,
+          "frequence": 1.0
+        },
+        "2.50-2.99": {
           "echantillon": 1,
           "frequence": 0.0
         }
       },
-      "persistance": {}
+      "persistance": {
+        "+1": 0.0
+      }
+    },
+    "Racing Club|handicap_exterieur_-0.5": {
+      "equipe": "Racing Club",
+      "marche": "handicap_exterieur_-0.5",
+      "echantillon": 2,
+      "frequence": 0.0,
+      "sequence": {
+        "sequence": [
+          "N",
+          "N"
+        ],
+        "longueur": 2,
+        "issue_dernier": "N",
+        "serie_actuelle": 2,
+        "type_serie": "ECHEC",
+        "rupture": false,
+        "reprise": false,
+        "avant": null,
+        "apres": null
+      },
+      "prix": {
+        "3.00+": {
+          "echantillon": 2,
+          "frequence": 0.0
+        }
+      },
+      "persistance": {
+        "+1": 0.0
+      }
     },
     "Racing Club|handicap_exterieur_-1.5": {
       "equipe": "Racing Club",
@@ -399994,6 +400284,39 @@
     "Racing Club|handicap_exterieur_0.5": {
       "equipe": "Racing Club",
       "marche": "handicap_exterieur_0.5",
+      "echantillon": 2,
+      "frequence": 0.5,
+      "sequence": {
+        "sequence": [
+          "O",
+          "N"
+        ],
+        "longueur": 2,
+        "issue_dernier": "N",
+        "serie_actuelle": 1,
+        "type_serie": "ECHEC",
+        "rupture": false,
+        "reprise": false,
+        "avant": null,
+        "apres": null
+      },
+      "prix": {
+        "1.50-1.74": {
+          "echantillon": 1,
+          "frequence": 1.0
+        },
+        "2.50-2.99": {
+          "echantillon": 1,
+          "frequence": 0.0
+        }
+      },
+      "persistance": {
+        "+1": 0.0
+      }
+    },
+    "Racing Club|handicap_exterieur_1.5": {
+      "equipe": "Racing Club",
+      "marche": "handicap_exterieur_1.5",
       "echantillon": 1,
       "frequence": 1.0,
       "sequence": {
@@ -416610,13 +416933,44 @@
     "River Plate|1x2_exterieur": {
       "equipe": "River Plate",
       "marche": "1x2_exterieur",
-      "echantillon": 1,
+      "echantillon": 2,
       "frequence": 0.0,
       "sequence": {
         "sequence": [
+          "N",
           "N"
         ],
-        "longueur": 1,
+        "longueur": 2,
+        "issue_dernier": "N",
+        "serie_actuelle": 2,
+        "type_serie": "ECHEC",
+        "rupture": false,
+        "reprise": false,
+        "avant": null,
+        "apres": null
+      },
+      "prix": {
+        "3.00+": {
+          "echantillon": 2,
+          "frequence": 0.0
+        }
+      },
+      "persistance": {
+        "+1": 0.0
+      }
+    },
+    "River Plate|1x2_nul": {
+      "equipe": "River Plate",
+      "marche": "1x2_nul",
+      "echantillon": 3,
+      "frequence": 0.3333,
+      "sequence": {
+        "sequence": [
+          "N",
+          "O",
+          "N"
+        ],
+        "longueur": 3,
         "issue_dernier": "N",
         "serie_actuelle": 1,
         "type_serie": "ECHEC",
@@ -416627,39 +416981,12 @@
       },
       "prix": {
         "3.00+": {
-          "echantillon": 1,
-          "frequence": 0.0
-        }
-      },
-      "persistance": {}
-    },
-    "River Plate|1x2_nul": {
-      "equipe": "River Plate",
-      "marche": "1x2_nul",
-      "echantillon": 2,
-      "frequence": 0.5,
-      "sequence": {
-        "sequence": [
-          "N",
-          "O"
-        ],
-        "longueur": 2,
-        "issue_dernier": "O",
-        "serie_actuelle": 1,
-        "type_serie": "SUCCES",
-        "rupture": false,
-        "reprise": false,
-        "avant": null,
-        "apres": null
-      },
-      "prix": {
-        "3.00+": {
-          "echantillon": 2,
-          "frequence": 0.5
+          "echantillon": 3,
+          "frequence": 0.3333
         }
       },
       "persistance": {
-        "+1": 1.0
+        "+1": 0.5
       }
     },
     "River Plate|btts_oui": {
@@ -416724,15 +417051,16 @@
     "River Plate|buts_equipe_domicile_0.5_under": {
       "equipe": "River Plate",
       "marche": "buts_equipe_domicile_0.5_under",
-      "echantillon": 1,
+      "echantillon": 2,
       "frequence": 0.0,
       "sequence": {
         "sequence": [
+          "N",
           "N"
         ],
-        "longueur": 1,
+        "longueur": 2,
         "issue_dernier": "N",
-        "serie_actuelle": 1,
+        "serie_actuelle": 2,
         "type_serie": "ECHEC",
         "rupture": false,
         "reprise": false,
@@ -416741,11 +417069,13 @@
       },
       "prix": {
         "3.00+": {
-          "echantillon": 1,
+          "echantillon": 2,
           "frequence": 0.0
         }
       },
-      "persistance": {}
+      "persistance": {
+        "+1": 0.0
+      }
     },
     "River Plate|buts_equipe_domicile_1.5_over": {
       "equipe": "River Plate",
@@ -416779,15 +417109,16 @@
     "River Plate|buts_equipe_domicile_1.5_under": {
       "equipe": "River Plate",
       "marche": "buts_equipe_domicile_1.5_under",
-      "echantillon": 1,
+      "echantillon": 2,
       "frequence": 1.0,
       "sequence": {
         "sequence": [
+          "O",
           "O"
         ],
-        "longueur": 1,
+        "longueur": 2,
         "issue_dernier": "O",
-        "serie_actuelle": 1,
+        "serie_actuelle": 2,
         "type_serie": "SUCCES",
         "rupture": false,
         "reprise": false,
@@ -416795,9 +417126,41 @@
         "apres": null
       },
       "prix": {
+        "2.00-2.49": {
+          "echantillon": 1,
+          "frequence": 1.0
+        },
         "2.50-2.99": {
           "echantillon": 1,
           "frequence": 1.0
+        }
+      },
+      "persistance": {
+        "+1": 1.0
+      }
+    },
+    "River Plate|buts_equipe_exterieur_0.5_over": {
+      "equipe": "River Plate",
+      "marche": "buts_equipe_exterieur_0.5_over",
+      "echantillon": 1,
+      "frequence": 0.0,
+      "sequence": {
+        "sequence": [
+          "N"
+        ],
+        "longueur": 1,
+        "issue_dernier": "N",
+        "serie_actuelle": 1,
+        "type_serie": "ECHEC",
+        "rupture": false,
+        "reprise": false,
+        "avant": null,
+        "apres": null
+      },
+      "prix": {
+        "1.75-1.99": {
+          "echantillon": 1,
+          "frequence": 0.0
         }
       },
       "persistance": {}
@@ -416830,6 +417193,32 @@
       "persistance": {
         "+1": 0.0
       }
+    },
+    "River Plate|buts_equipe_exterieur_1.5_over": {
+      "equipe": "River Plate",
+      "marche": "buts_equipe_exterieur_1.5_over",
+      "echantillon": 1,
+      "frequence": 0.0,
+      "sequence": {
+        "sequence": [
+          "N"
+        ],
+        "longueur": 1,
+        "issue_dernier": "N",
+        "serie_actuelle": 1,
+        "type_serie": "ECHEC",
+        "rupture": false,
+        "reprise": false,
+        "avant": null,
+        "apres": null
+      },
+      "prix": {
+        "3.00+": {
+          "echantillon": 1,
+          "frequence": 0.0
+        }
+      },
+      "persistance": {}
     },
     "River Plate|buts_equipe_exterieur_1.5_under": {
       "equipe": "River Plate",
@@ -416893,6 +417282,32 @@
         "+1": 0.0
       }
     },
+    "River Plate|cage_inviolee_exterieur": {
+      "equipe": "River Plate",
+      "marche": "cage_inviolee_exterieur",
+      "echantillon": 1,
+      "frequence": 0.0,
+      "sequence": {
+        "sequence": [
+          "N"
+        ],
+        "longueur": 1,
+        "issue_dernier": "N",
+        "serie_actuelle": 1,
+        "type_serie": "ECHEC",
+        "rupture": false,
+        "reprise": false,
+        "avant": null,
+        "apres": null
+      },
+      "prix": {
+        "3.00+": {
+          "echantillon": 1,
+          "frequence": 0.0
+        }
+      },
+      "persistance": {}
+    },
     "River Plate|double_chance_1X": {
       "equipe": "River Plate",
       "marche": "double_chance_1X",
@@ -416929,15 +417344,16 @@
     "River Plate|double_chance_X2": {
       "equipe": "River Plate",
       "marche": "double_chance_X2",
-      "echantillon": 1,
+      "echantillon": 2,
       "frequence": 0.0,
       "sequence": {
         "sequence": [
+          "N",
           "N"
         ],
-        "longueur": 1,
+        "longueur": 2,
         "issue_dernier": "N",
-        "serie_actuelle": 1,
+        "serie_actuelle": 2,
         "type_serie": "ECHEC",
         "rupture": false,
         "reprise": false,
@@ -416945,12 +417361,18 @@
         "apres": null
       },
       "prix": {
+        "2.50-2.99": {
+          "echantillon": 1,
+          "frequence": 0.0
+        },
         "3.00+": {
           "echantillon": 1,
           "frequence": 0.0
         }
       },
-      "persistance": {}
+      "persistance": {
+        "+1": 0.0
+      }
     },
     "River Plate|handicap_domicile_-0.5": {
       "equipe": "River Plate",
@@ -417066,9 +417488,9 @@
       },
       "persistance": {}
     },
-    "River Plate|handicap_exterieur_0.5": {
+    "River Plate|handicap_exterieur_-0.5": {
       "equipe": "River Plate",
-      "marche": "handicap_exterieur_0.5",
+      "marche": "handicap_exterieur_-0.5",
       "echantillon": 1,
       "frequence": 0.0,
       "sequence": {
@@ -417092,18 +417514,52 @@
       },
       "persistance": {}
     },
+    "River Plate|handicap_exterieur_0.5": {
+      "equipe": "River Plate",
+      "marche": "handicap_exterieur_0.5",
+      "echantillon": 2,
+      "frequence": 0.0,
+      "sequence": {
+        "sequence": [
+          "N",
+          "N"
+        ],
+        "longueur": 2,
+        "issue_dernier": "N",
+        "serie_actuelle": 2,
+        "type_serie": "ECHEC",
+        "rupture": false,
+        "reprise": false,
+        "avant": null,
+        "apres": null
+      },
+      "prix": {
+        "2.50-2.99": {
+          "echantillon": 1,
+          "frequence": 0.0
+        },
+        "3.00+": {
+          "echantillon": 1,
+          "frequence": 0.0
+        }
+      },
+      "persistance": {
+        "+1": 0.0
+      }
+    },
     "River Plate|handicap_exterieur_1.5": {
       "equipe": "River Plate",
       "marche": "handicap_exterieur_1.5",
-      "echantillon": 1,
+      "echantillon": 2,
       "frequence": 1.0,
       "sequence": {
         "sequence": [
+          "O",
           "O"
         ],
-        "longueur": 1,
+        "longueur": 2,
         "issue_dernier": "O",
-        "serie_actuelle": 1,
+        "serie_actuelle": 2,
         "type_serie": "SUCCES",
         "rupture": false,
         "reprise": false,
@@ -417111,12 +417567,18 @@
         "apres": null
       },
       "prix": {
+        "1.50-1.74": {
+          "echantillon": 1,
+          "frequence": 1.0
+        },
         "2.00-2.49": {
           "echantillon": 1,
           "frequence": 1.0
         }
       },
-      "persistance": {}
+      "persistance": {
+        "+1": 1.0
+      }
     },
     "River Plate|over_under_total_1.5_under": {
       "equipe": "River Plate",
@@ -468668,6 +469130,32 @@
         "+1": 0.0
       }
     },
+    "Suchitepéquez|buts_equipe_domicile_1.5_over": {
+      "equipe": "Suchitepéquez",
+      "marche": "buts_equipe_domicile_1.5_over",
+      "echantillon": 1,
+      "frequence": 1.0,
+      "sequence": {
+        "sequence": [
+          "O"
+        ],
+        "longueur": 1,
+        "issue_dernier": "O",
+        "serie_actuelle": 1,
+        "type_serie": "SUCCES",
+        "rupture": false,
+        "reprise": false,
+        "avant": null,
+        "apres": null
+      },
+      "prix": {
+        "2.00-2.49": {
+          "echantillon": 1,
+          "frequence": 1.0
+        }
+      },
+      "persistance": {}
+    },
     "Suchitepéquez|buts_equipe_exterieur_0.5_over": {
       "equipe": "Suchitepéquez",
       "marche": "buts_equipe_exterieur_0.5_over",
@@ -468818,6 +469306,32 @@
       },
       "prix": {
         "1.50-1.74": {
+          "echantillon": 1,
+          "frequence": 1.0
+        }
+      },
+      "persistance": {}
+    },
+    "Suchitepéquez|over_under_total_1.5_over": {
+      "equipe": "Suchitepéquez",
+      "marche": "over_under_total_1.5_over",
+      "echantillon": 1,
+      "frequence": 1.0,
+      "sequence": {
+        "sequence": [
+          "O"
+        ],
+        "longueur": 1,
+        "issue_dernier": "O",
+        "serie_actuelle": 1,
+        "type_serie": "SUCCES",
+        "rupture": false,
+        "reprise": false,
+        "avant": null,
+        "apres": null
+      },
+      "prix": {
+        "<1.30": {
           "echantillon": 1,
           "frequence": 1.0
         }
@@ -509627,6 +510141,32 @@
       },
       "prix": {
         "1.75-1.99": {
+          "echantillon": 1,
+          "frequence": 1.0
+        }
+      },
+      "persistance": {}
+    },
+    "V. Sarsfield|over_under_total_2.5_over": {
+      "equipe": "V. Sarsfield",
+      "marche": "over_under_total_2.5_over",
+      "echantillon": 1,
+      "frequence": 1.0,
+      "sequence": {
+        "sequence": [
+          "O"
+        ],
+        "longueur": 1,
+        "issue_dernier": "O",
+        "serie_actuelle": 1,
+        "type_serie": "SUCCES",
+        "rupture": false,
+        "reprise": false,
+        "avant": null,
+        "apres": null
+      },
+      "prix": {
+        "2.00-2.49": {
           "echantillon": 1,
           "frequence": 1.0
         }

@@ -1,30 +1,166 @@
 {
  "version": "1.0.0",
- "genere_le": "2026-10-26 11:01 UTC",
+ "genere_le": "2026-10-26 19:18 UTC",
  "resume": {
-  "equipes_en_cache": 479,
-  "verifiables": 316,
-  "coherentes": 315,
-  "incoherentes": 1,
-  "non_verifiables": 85,
-  "sans_donnees": 78,
-  "taux_incoherence": 0.0032
+  "equipes_en_cache": 388,
+  "verifiables": 282,
+  "coherentes": 273,
+  "incoherentes": 9,
+  "non_verifiables": 47,
+  "sans_donnees": 59,
+  "taux_incoherence": 0.0319
  },
  "methode": "Chaque match connu par les pages de match (même compétition, joué avant l'enregistrement) doit figurer dans la saison enregistrée de l'équipe (même lieu, mêmes buts). Sinon : INCOHERENTE.",
  "incoherentes": [
   {
-   "equipe": "dc united",
-   "competition": "etats-unis : mls",
-   "url": "https://www.matchendirect.fr/equipe/dc-united_5qw82lpi6fio4fbljihlyyulb.html",
-   "enregistre_le": "2026-10-25",
-   "matchs_enregistres": 24,
-   "matchs_connus": 9,
+   "equipe": "al khaleej",
+   "competition": "arabie saoudite : première division",
+   "url": "https://www.matchendirect.fr/equipe/al-khaleej_7w4300dn2tnd0eqmbtk531tkx.html",
+   "enregistre_le": "2026-10-26",
+   "matchs_enregistres": 10,
+   "matchs_connus": 7,
    "manquants": [
     {
-     "date": "2026-10-24",
-     "adversaire": "Cincinnati",
+     "date": "2026-10-22",
+     "adversaire": "Al Ahli",
+     "lieu": "extérieur",
+     "score_equipe": "1-4"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "cordoba sde",
+   "competition": "argentine : copa de la liga profesional 2e tour",
+   "url": "https://www.matchendirect.fr/equipe/cordoba-sde_1x5i9dl7uyrh5o2th8ore61e6.html",
+   "enregistre_le": "2026-10-26",
+   "matchs_enregistres": 24,
+   "matchs_connus": 7,
+   "manquants": [
+    {
+     "date": "2026-10-25",
+     "adversaire": "V. Sarsfield",
      "lieu": "domicile",
-     "score_equipe": "0-2"
+     "score_equipe": "0-5"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "v sarsfield",
+   "competition": "argentine : copa de la liga profesional 2e tour",
+   "url": "https://www.matchendirect.fr/equipe/v-sarsfield_a3kgi895b7b3ecfzmoyxbw2pl.html",
+   "enregistre_le": "2026-10-26",
+   "matchs_enregistres": 24,
+   "matchs_connus": 6,
+   "manquants": [
+    {
+     "date": "2026-10-25",
+     "adversaire": "Córdoba SdE",
+     "lieu": "extérieur",
+     "score_equipe": "5-0"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "dep pasto",
+   "competition": "colombie : première a cloture",
+   "url": "https://www.matchendirect.fr/equipe/dep-pasto_enocf5klc7avko0sapv2mgabr.html",
+   "enregistre_le": "2026-10-26",
+   "matchs_enregistres": 24,
+   "matchs_connus": 7,
+   "manquants": [
+    {
+     "date": "2026-10-25",
+     "adversaire": "Dep. Tolima",
+     "lieu": "extérieur",
+     "score_equipe": "1-0"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "los angeles",
+   "competition": "etats-unis : mls",
+   "url": "https://www.matchendirect.fr/equipe/los-angeles_c6e7kqqrkt389ysrth6yy6puy.html",
+   "enregistre_le": "2026-10-26",
+   "matchs_enregistres": 24,
+   "matchs_connus": 10,
+   "manquants": [
+    {
+     "date": "2026-10-25",
+     "adversaire": "LA Galaxy",
+     "lieu": "domicile",
+     "score_equipe": "2-2"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "aurora",
+   "competition": "guatemala : ligue nationale ouverture",
+   "url": "https://www.matchendirect.fr/equipe/aurora_8zyg0xtflz8ojg6d3losx61va.html",
+   "enregistre_le": "2026-10-26",
+   "matchs_enregistres": 16,
+   "matchs_connus": 10,
+   "manquants": [
+    {
+     "date": "2026-10-25",
+     "adversaire": "Suchitepéquez",
+     "lieu": "extérieur",
+     "score_equipe": "2-2"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "suchitepequez",
+   "competition": "guatemala : ligue nationale ouverture",
+   "url": "https://www.matchendirect.fr/equipe/suchitepequez_eyz1ydqtat7e2iaprfn4hjeh5.html",
+   "enregistre_le": "2026-10-26",
+   "matchs_enregistres": 16,
+   "matchs_connus": 10,
+   "manquants": [
+    {
+     "date": "2026-10-25",
+     "adversaire": "Aurora",
+     "lieu": "domicile",
+     "score_equipe": "2-2"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "managua",
+   "competition": "nicaragua : 1ère division ouverture",
+   "url": "https://www.matchendirect.fr/equipe/managua_cybp9ww9byb0ewpvk088rlmbf.html",
+   "enregistre_le": "2026-10-26",
+   "matchs_enregistres": 13,
+   "matchs_connus": 6,
+   "manquants": [
+    {
+     "date": "2026-10-25",
+     "adversaire": "Real Estelí",
+     "lieu": "extérieur",
+     "score_equipe": "1-2"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "dep la guaira",
+   "competition": "venezuela : primera division clausura - quadrangular groupe a",
+   "url": "https://www.matchendirect.fr/equipe/dep-la-guaira_em31nnti82q57le3wp7g5lsrj.html",
+   "enregistre_le": "2026-10-26",
+   "matchs_enregistres": 24,
+   "matchs_connus": 1,
+   "manquants": [
+    {
+     "date": "2026-10-25",
+     "adversaire": "Metropolitan",
+     "lieu": "domicile",
+     "score_equipe": "2-2"
     }
    ],
    "statut": "INCOHERENTE"
