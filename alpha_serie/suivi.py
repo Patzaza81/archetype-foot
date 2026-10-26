@@ -415,8 +415,15 @@ def pipeline() -> dict[str, Any]:
     tickets.ecrire_accueil(d["matchs"])                 # les 3 tickets de la page d'accueil (25/10/2026)
     b_geles, b_regles = geler_bandes(matchs=matchs), resultats_bandes(matchs=matchs)      # validation des bandes 1X2, sans effet sur la page
     bilan_bandes()
-    return {"geles": gele, "resultats": resultat, "page_matchs": len(d["matchs"]), "bilan": bilan(), "bandes_1x2": {"geles": b_geles, "regles": b_regles},
-            "tickets": {"geles": t_geles, "regles": t_regles, "bilan": d["bilan_tickets"]}}
+    sortie = {"geles": gele, "resultats": resultat, "page_matchs": len(d["matchs"]), "bilan": bilan(), "bandes_1x2": {"geles": b_geles, "regles": b_regles},
+              "tickets": {"geles": t_geles, "regles": t_regles, "bilan": d["bilan_tickets"]}}
+    try:                                                                    # onglet « Indice Alpha » (26/10/2026) : lit les journaux, ne change rien d'autre
+        from . import indice_alpha
+        r = indice_alpha.construire()
+        sortie["indice_alpha"] = {"indices": len(r["indices"]), "alerte_registre": r["alerte_registre"], "paris_distincts": r["global"]["paris_distincts"]["matchs"]}
+    except Exception as e:                                                  # l'erreur est affichée dans le résultat du pipeline, elle ne bloque pas le reste
+        sortie["indice_alpha"] = {"erreur": repr(e)}
+    return sortie
 
 
 if __name__ == "__main__":

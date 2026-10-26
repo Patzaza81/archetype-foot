@@ -1,0 +1,73 @@
+{
+ "version": 1,
+ "avertissement": "Aucun indice n'est présenté comme fiable tant que son statut n'est pas « validé » ET que sa borne basse réelle n'atteint pas son objectif. Les chiffres de l'étude historique sont affichés à part du suivi réel.",
+ "regles_de_gestion": "Un indice = une entrée indépendante. Pour modifier une règle ou un statut : changer le fichier de règles de l'indice (ou son statut ici) ET ajouter une ligne dans « modifications » avec l'empreinte après modification (python -m alpha_serie.indice_alpha --empreinte <id>). Une modification sans ligne d'historique est signalée sur la page. Les autres indices ne sont jamais touchés.",
+ "indices": [
+  {
+   "id": "victoire_domicile",
+   "nom": "Victoire à domicile",
+   "famille": "1X2",
+   "marche": "1X2 — victoire de l'équipe à domicile",
+   "statut": "en_validation",
+   "source": "bandes:domicile",
+   "conditions": "Cote BetPawa de 1,33 à 1,50 inclus. Aucun filtre de probabilité (l'étude n'a pas montré de gain fiable dans cette bande). Tous les matchs de la bande sont gelés avant le coup d'envoi, défaites comprises.",
+   "objectif_reussite": 0.7,
+   "limites": "Règle issue d'une seule fenêtre de 28 jours. Le suivi réel commence à la première nuit gelée. L'objectif de 7 sur 10 est une cible à confirmer, pas une garantie.",
+   "modifications": [
+    {
+     "date": "2026-10-26",
+     "auteur": "Patrick (demande) · Claude (mise en place)",
+     "champ": "création",
+     "ancien": null,
+     "nouveau": "statut en_validation",
+     "motif": "Création de l'onglet Indice Alpha : indice repris en validation, sans effet sur la sélection d'Alpha.",
+     "empreinte_apres": "1f3fca6acbc9"
+    }
+   ]
+  },
+  {
+   "id": "victoire_exterieur",
+   "nom": "Victoire à l'extérieur",
+   "famille": "1X2",
+   "marche": "1X2 — victoire de l'équipe à l'extérieur",
+   "statut": "en_validation",
+   "source": "bandes:exterieur",
+   "conditions": "Cote BetPawa de 1,38 à 1,70 inclus. Aucun filtre de probabilité. Tous les matchs de la bande sont gelés avant le coup d'envoi, défaites comprises.",
+   "objectif_reussite": 0.7,
+   "limites": "Règle issue d'une seule fenêtre de 28 jours. Le suivi réel commence à la première nuit gelée. L'objectif de 7 sur 10 est une cible à confirmer, pas une garantie.",
+   "modifications": [
+    {
+     "date": "2026-10-26",
+     "auteur": "Patrick (demande) · Claude (mise en place)",
+     "champ": "création",
+     "ancien": null,
+     "nouveau": "statut en_validation",
+     "motif": "Création de l'onglet Indice Alpha : indice repris en validation, sans effet sur la sélection d'Alpha.",
+     "empreinte_apres": "067753f1ce1a"
+    }
+   ]
+  },
+  {
+   "id": "plus_de_1_5_maximal",
+   "nom": "Plus de 1,5 buts — chances maximales",
+   "famille": "Buts",
+   "marche": "Plus de 1,5 buts",
+   "statut": "en_validation",
+   "source": "plus15_max",
+   "conditions": "« Plus de 1,5 buts » d'alpha dont le total de buts attendu atteint le palier gelé, avec une cote BetPawa connue au moins égale au minimum. Prioritaire dans les tickets du jour.",
+   "objectif_reussite": 0.8,
+   "limites": "Le suivi réel ne compte que les paris entrés dans un ticket gelé (cote connue, créneau de 10 h à minuit) : il est plus petit que le rejeu. Les chiffres du rejeu sont affichés à part.",
+   "modifications": [
+    {
+     "date": "2026-10-26",
+     "auteur": "Patrick (demande) · Claude (mise en place)",
+     "champ": "création",
+     "ancien": null,
+     "nouveau": "statut en_validation",
+     "motif": "Création de l'onglet Indice Alpha : indice repris en validation, sans effet sur la sélection d'Alpha.",
+     "empreinte_apres": "29e8ad7bcf89"
+    }
+   ]
+  }
+ ]
+}
