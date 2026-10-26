@@ -1,0 +1,16 @@
+{
+ "statut": "règles candidates en validation — NON intégrées à Alpha, aucun affichage sur le site",
+ "source_cotes": "BetPawa uniquement (cotes_betpawa.1x2 de l'archive, figées avant le coup d'envoi). Les cotes Pinnacle de l'étude ne sont jamais mélangées.",
+ "regles": {
+  "domicile": {"cote_cle": "1", "cote_min": 1.33, "cote_max": 1.5, "bornes": "incluses"},
+  "exterieur": {"cote_cle": "2", "cote_min": 1.38, "cote_max": 1.7, "bornes": "incluses"}
+ },
+ "filtre_de_probabilite": "aucun : l'étude du 26/10/2026 n'a pas montré de gain fiable en combinant probabilité et cote dans ces bandes",
+ "reference_etude": {
+  "nature": "Fenêtre BetPawa du 28/09 au 25/10/2026 (observée AVANT le gel de la règle : ce n'est PAS une validation, seulement le point de départ). Bornes incluses.",
+  "domicile": {"tous_matchs_de_la_bande": {"matchs": 171, "gagnes": 125}, "matchs_analyses_par_alpha": {"matchs": 102, "gagnes": 73}},
+  "exterieur": {"tous_matchs_de_la_bande": {"matchs": 161, "gagnes": 107}, "matchs_analyses_par_alpha": {"matchs": 76, "gagnes": 53}},
+  "note": "L'étude du 26/10 donnait 94 matchs (72,3 %) et 75 matchs (70,7 %) avec la borne haute exclue et les seuls matchs analysés ; la borne haute incluse ajoute les cotes exactement égales à 1,50 et 1,70."
+ },
+ "decision": "Attendre plusieurs semaines gelées indépendantes, puis examiner le taux cumulé, sa borne basse de Wilson à 95 % et la stabilité hebdomadaire. L'objectif de 7 réussites sur 10 est une cible à confirmer, pas une garantie."
+}
