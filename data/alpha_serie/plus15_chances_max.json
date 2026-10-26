@@ -29,7 +29,7 @@
   "wilson_bas": 0.8403
  },
  "base_tous_matchs": 0.7855,
- "note": "Information de classement seulement : le calcul d'alpha (coeur.py) n'est pas modifié. Suivi en direct : bilan_tickets.plus15_max.",
+ "note": "Information de classement seulement : le calcul d'alpha (coeur.py) n'est pas modifié. Suivi en direct : bilan_tickets.plus15_max (indice maximal) et bilan_tickets.plus15_normal.",
  "matchs_faibles_max": 1,
  "definition_matchs_faibles": "dans les paires d'alpha (scenarios_offensifs, scenarios_defensifs), nombre de matchs passés des deux équipes terminés à 0 ou 1 but au total (domicile : marqués + encaissés ; extérieur : idem), toutes paires comptées",
  "variantes_testees": {
@@ -46,6 +46,28 @@
    "reglage": 0.866,
    "controle": 0.86,
    "par_jour": 2.2
+  }
+ },
+ "indice_maximal": "total attendu >= palier_total_attendu ET au plus matchs_faibles_max match(s) passé(s) à 0 ou 1 but chez les deux équipes (statistiques : reglage / controle / tous ci-dessous) ; prioritaire dans tous les tickets",
+ "indice_normal": {
+  "definition": "total attendu >= palier_total_attendu mais plus de matchs_faibles_max matchs passés à 0 ou 1 but (ou paires absentes) ; information seulement, aucune priorité dans les tickets",
+  "reglage": {
+   "matchs": 316,
+   "reussis": 246,
+   "reussite": 0.7785,
+   "wilson_bas": 0.7295
+  },
+  "controle": {
+   "matchs": 338,
+   "reussis": 275,
+   "reussite": 0.8136,
+   "wilson_bas": 0.7687
+  },
+  "tous": {
+   "matchs": 654,
+   "reussis": 521,
+   "reussite": 0.7966,
+   "wilson_bas": 0.7641
   }
  }
 }

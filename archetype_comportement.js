@@ -102,7 +102,10 @@ function ligneMarche(cle, s, m) {
     ? `<span class="ax-mk-cote"><small>Cote</small><strong>${formatCote(s.cote)}</strong></span>`
     : `<span class="ax-mk-cote ax-mk-cote-lire"><small>Cote</small><strong>à vérifier</strong></span>`;
   const alerte = s.alerte ? `<p class="ax-mk-alerte"><span aria-hidden="true">⚠</span> ${echappeHtml(s.alerte)}</p>` : "";
-  return `<li class="ax-mk"><span class="ax-mk-nom">${afMarcheHtml(s.marche, libelleClair(s.marche, m.domicile, m.exterieur))}</span>${cote}` +
+  const ind = cle === "buts" && Array.isArray(s.cle) && s.cle[0] === "over_under_1.5" && s.cle[1] === "plus" && typeof AlphaTickets !== "undefined" ? AlphaTickets.indicePlus15(m) : null;
+  const indice = !ind ? "" : ind.niveau === "maximal"
+    ? ` <span class="at-max" title="Total attendu ${String(ind.total).replace(".", ",")}">★ Indice maximal</span>` : ` <span class="at-normal" title="Total attendu ${String(ind.total).replace(".", ",")}">Indice normal</span>`;
+  return `<li class="ax-mk"><span class="ax-mk-nom">${afMarcheHtml(s.marche, libelleClair(s.marche, m.domicile, m.exterieur))}${indice}</span>${cote}` +
     `<div class="ax-mk-valeur">${barre}<b>${formatPct(s.valeur)}</b><small>${cle === "calibrees" ? "de réussite" : "de chances"}</small></div>` +
     `${pourquoiCourt(s)}${alerte}</li>`;
 }

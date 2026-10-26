@@ -196,9 +196,10 @@ def test_palier_gele_identique_partout():
     assert T.faibles_max_plus15() == conf["matchs_faibles_max"] == 1
     assert conf["controle"]["wilson_bas"] >= 0.80 and conf["reglage"]["wilson_bas"] >= 0.80          # règle : borne basse >= 1/1,25 aux deux périodes
     if shutil.which("node"):
-        r = subprocess.run(["node", "-e", "const T=require(process.argv[1]);console.log(JSON.stringify([T.REGLES.plus15TotalMin,T.REGLES.plus15Taux,T.REGLES.plus15Matchs,T.REGLES.plus15FaiblesMax]))",
+        r = subprocess.run(["node", "-e", "const T=require(process.argv[1]);console.log(JSON.stringify([T.REGLES.plus15TotalMin,T.REGLES.plus15Taux,T.REGLES.plus15Matchs,T.REGLES.plus15FaiblesMax,T.REGLES.plus15NormalTaux,T.REGLES.plus15NormalMatchs]))",
                             str(RACINE / "af-alpha-tickets.js")], capture_output=True, text=True, check=True)
-        assert json.loads(r.stdout) == [3.4, round(conf["tous"]["reussite"], 2), conf["tous"]["matchs"], conf["matchs_faibles_max"]]
+        assert json.loads(r.stdout) == [3.4, round(conf["tous"]["reussite"], 2), conf["tous"]["matchs"], conf["matchs_faibles_max"],
+                              round(conf["indice_normal"]["tous"]["reussite"], 2), conf["indice_normal"]["tous"]["matchs"]]
 
 
 def test_plus15_max_entre_dans_tous_les_tickets_et_est_marque():
@@ -264,3 +265,58 @@ def test_plus15_cote_minimale_1_25_comme_les_autres():
         assert T.du_jour([match15("p", "16:00", 3.8, cote=cote)], JOUR)["palier1"] == []
     sous_palier = match15("q", "16:00", 3.0, cote=1.23, valeur=0.95)
     assert T.du_jour([sous_palier], JOUR)["palier1"] == []                                                                # +1,5 ordinaire à 1,23 : écarté aussi
+
+
+def pari15_ordinaire(mid, heure, total, faibles, valeur=0.95):
+    """Match dont le « Plus de 1,5 » est un pari ordinaire admissible (valeur et confirmation suffisantes)."""
+    m = match15(mid, heure, total, cote=1.30, valeur=valeur, faibles=faibles)
+    return m
+
+
+def test_indice_normal_et_maximal_sont_deux_niveaux_distincts():
+    mx = match15("mx", "12:00", 3.8, faibles=0)                                    # total >= 3,4 et 0 match faible : maximal
+    nm = pari15_ordinaire("nm", "14:00", 3.6, faibles=3)                           # total >= 3,4 mais 3 matchs faibles : normal
+    bas = pari15_ordinaire("bs", "16:00", 3.0, faibles=0)                          # total < 3,4 : aucun indice
+    cands = {c["match_id"]: c for c in T.candidats([mx, nm, bas], JOUR)}
+    assert cands["mx"]["indice_plus15"] == "maximal" and cands["mx"]["chances_max"] is True and cands["mx"]["categorie"] == "plus15"
+    assert cands["nm"].get("indice_plus15") == "normal" and cands["nm"].get("chances_max") is None and cands["nm"]["total_attendu"] == 3.6
+    assert "indice_plus15" not in cands["bs"] and "chances_max" not in cands["bs"]
+    assert T._ordre(cands["mx"]) < T._ordre({**cands["nm"], "valeur": 0.50, "confirmation": 0.0})         # seul le maximal est prioritaire
+    assert T.matchs_faibles(nm) == 3 and T.matchs_faibles(mx) == 0
+
+
+def test_indice_normal_suit_le_pari_jusque_dans_le_journal_et_le_bilan(tmp_path):
+    j = tmp_path / "t.jsonl"
+    page = [match15("mx", "12:00", 3.8), pari15_ordinaire("nm", "14:00", 3.6, faibles=3)]
+    t = T.du_jour(page, JOUR)
+    marques = {c["match_id"]: c.get("indice_plus15") for c in t["palier1"] + t["palier2"]}
+    assert marques == {"mx": "maximal", "nm": "normal"}                                        # ticket du jour : les deux niveaux, chacun marqué
+    assert {c["match_id"]: c.get("indice_plus15") for c in t["accueil_1"]} == {"mx": "maximal", "nm": "normal"}   # et sur l'accueil
+    T.geler(page, datetime(2026, 10, 25, 0, 45, tzinfo=timezone.utc), j)
+    archive = [{"match_id": "mx", "score_final": {"buts_dom": 1, "buts_ext": 1}}, {"match_id": "nm", "score_final": {"buts_dom": 0, "buts_ext": 1}}]
+    T.regler(archive, j)
+    b = T.bilan(j)
+    assert b["plus15_max"]["paris"] == 1 and b["plus15_max"]["gagnes"] == 1                    # maximal : 1-1 gagné
+    assert set(b["plus15_normal"]) == {"paris", "gagnes", "reussite"}
+
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="node absent")
+def test_indices_normal_et_maximal_memes_que_la_page():
+    page = _page_parite() + [match15("im", "12:00", 3.9), pari15_ordinaire("in", "13:00", 3.6, faibles=3), pari15_ordinaire("io", "15:00", 3.0, faibles=0)]
+    code = ("const T = require(process.argv[1]); const d = JSON.parse(process.argv[2]); const a = T.analyse(d, '%s');"
+            "const f = (l) => l.map((s) => s.match_id + '|' + s.categorie + '|' + (s.indicePlus15 || '-')); console.log(JSON.stringify([f(a.palier1), f(a.palier2)]));" % JOUR)
+    r = subprocess.run(["node", "-e", code, str(RACINE / "af-alpha-tickets.js"), json.dumps({"matchs": page})], capture_output=True, text=True, check=True)
+    t = T.du_jour(page, JOUR)
+    py = [[f"{c['match_id']}|{c['categorie']}|{c.get('indice_plus15') or '-'}" for c in t[p]] for p in ("palier1", "palier2")]
+    assert json.loads(r.stdout) == py
+    assert any(x.endswith("|maximal") for x in py[0] + py[1]) and any(x.endswith("|normal") for x in py[0] + py[1])
+
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="node absent")
+def test_indice_plus15_sur_la_fiche_meme_regle_que_les_tickets():
+    cas = {"max": match15("a", "12:00", 3.8, faibles=1), "normal": match15("b", "12:00", 3.8, faibles=2), "aucun": match15("c", "12:00", 3.39),
+           "sans_paires": {**match15("d", "12:00", 4.0), "scenarios_offensifs": [], "scenarios_defensifs": []}}
+    code = ("const T = require(process.argv[1]); const d = JSON.parse(process.argv[2]); const o = {};"
+            "for (const k of Object.keys(d)) { const r = T.indicePlus15(d[k]); o[k] = r ? r.niveau : null; } console.log(JSON.stringify(o));")
+    r = subprocess.run(["node", "-e", code, str(RACINE / "af-alpha-tickets.js"), json.dumps(cas)], capture_output=True, text=True, check=True)
+    assert json.loads(r.stdout) == {"max": "maximal", "normal": "normal", "aucun": None, "sans_paires": "normal"}     # sans paires : jamais maximal

@@ -32,10 +32,19 @@
   let donnees = null, jour = null, mise = 500, longueurs = {};   // nombre de matchs choisis dans chaque palier
   try { const v = Number(localStorage.getItem(CLE_MISE)); if (v > 0) mise = v; } catch (e) { /* stockage indisponible */ }
 
-  // Repère « chances maximales » : le « Plus de 1,5 buts » dont le total attendu atteint le palier gelé (af-alpha-tickets.js, REGLES.plus15*).
-  const badgeMax = (c) => (c.chancesMax ? `<span class="at-max" title="Plus de 1,5 buts à chances maximales">★ Chances maximales</span>` : "");
-  const phraseMax = (c) => (c.chancesMax
-    ? `<li class="at-max-phrase"><b>Chances maximales :</b> on attend ${String(c.totalAttendu).replace(".", ",")} buts dans ce match. Les « plus de 1,5 buts » de ce niveau, avec au plus un match passé à 0 ou 1 but chez les deux équipes, sont passés ${Math.round(T.REGLES.plus15Taux * 100)} fois sur 100 (${T.REGLES.plus15Matchs.toLocaleString("fr-FR")} matchs testés).</li>` : "");
+  // Deux indices pour le « Plus de 1,5 buts » (af-alpha-tickets.js, REGLES.plus15*) : maximal (prioritaire) et normal (information seulement).
+  const badgeMax = (c) => (c.indicePlus15 === "maximal"
+    ? `<span class="at-max" title="Plus de 1,5 buts à indice maximal">★ Indice maximal</span>`
+    : c.indicePlus15 === "normal" ? `<span class="at-normal" title="Plus de 1,5 buts à indice normal">Indice normal</span>` : "");
+  const phraseMax = (c) => {
+    const buts = c.totalAttendu === undefined ? "" : String(c.totalAttendu).replace(".", ",");
+    const R = T.REGLES;
+    if (c.indicePlus15 === "maximal")
+      return `<li class="at-max-phrase"><b>Indice maximal :</b> on attend ${buts} buts dans ce match et, chez les deux équipes, au plus un match récent s'est fini à 0 ou 1 but. Les « plus de 1,5 buts » de ce niveau sont passés ${Math.round(R.plus15Taux * 100)} fois sur 100 (${R.plus15Matchs.toLocaleString("fr-FR")} matchs testés).</li>`;
+    if (c.indicePlus15 === "normal")
+      return `<li class="at-max-phrase"><b>Indice normal :</b> on attend ${buts} buts dans ce match, mais plusieurs matchs récents des deux équipes se sont finis à 0 ou 1 but. Les « plus de 1,5 buts » de ce niveau sont passés ${Math.round(R.plus15NormalTaux * 100)} fois sur 100 (${R.plus15NormalMatchs.toLocaleString("fr-FR")} matchs testés).</li>`;
+    return "";
+  };
 
   function ligneSelection(c) {
     return `<li class="at-sel${c.chancesMax ? " at-sel-max" : ""}">` +

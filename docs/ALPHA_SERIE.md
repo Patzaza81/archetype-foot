@@ -283,6 +283,14 @@ Construite au-dessus de `robustesse.py` (ffb25b0), sans le modifier. Aucun autre
 - Sur les données publiées du 25 au 29/10 : 3 « ★ » seulement (1, 2, 0, 0, 0 par jour) ; la parité Python / JavaScript est vraie chaque jour. La rareté vient du minimum de cote 1,25 qui écarte déjà la plupart de ces paris.
 - Tests : `test_palier_gele_identique_partout`, `test_plus15_max_ecarte_si_sous_le_palier_sans_cote_ou_hors_horaire` (1 match faible accepté ; 2 et 5 refusés ; paires absentes ; matchs faibles de l'extérieur), `test_plus15_max_meme_ticket_que_la_page`.
 
+### Deux indices pour le « Plus de 1,5 » : normal et maximal (demande de Patrick, 26/10/2026, comme les indices de V3)
+- **Indice maximal (★)** = total attendu ≥ 3,4 ET au plus 1 match passé à 0 ou 1 but chez les deux équipes. Réussite rejouée 86,3 % sur 1 027 paris (86,6 % / 86,0 % réglage / contrôle). Prioritaire dans tous les tickets (inchangé, `chances_max`). Cote ≥ 1,25 exigée pour entrer dans un ticket.
+- **Indice normal** = total attendu ≥ 3,4 mais plus d'un match passé à 0 ou 1 but (ou paires absentes). Réussite rejouée 79,7 % sur 654 paris (77,9 % / 81,4 %) : pas mieux que les autres paris d'alpha, donc **information seulement**, aucune priorité dans les tickets. Il est marqué quand ce « Plus de 1,5 » figure dans un ticket (candidat ordinaire) et sur la fiche du marché.
+- Où : fiche de chaque « Plus de 1,5 buts » de la page Moteur alpha (`pronostics_comportement.html`, via `AlphaTickets.indicePlus15` ; sans condition de cote), page des tickets, tickets de l'accueil ; champs du journal gelé `indice_plus15` (`maximal` / `normal`) et `total_attendu` ; les anciens gels avec `chances_max` comptent comme maximal.
+- Suivi réel : `bilan_tickets.plus15_max` (indice maximal) et `bilan_tickets.plus15_normal`.
+- Fichier : `data/alpha_serie/plus15_chances_max.json` (`indice_maximal`, `indice_normal` avec leurs statistiques). Mêmes règles en Python (`tickets.py`) et en JavaScript (`af-alpha-tickets.js`).
+- Tests : `test_indice_normal_et_maximal_sont_deux_niveaux_distincts`, `test_indice_normal_suit_le_pari_jusque_dans_le_journal_et_le_bilan`, `test_indices_normal_et_maximal_memes_que_la_page`, `test_indice_plus15_sur_la_fiche_meme_regle_que_les_tickets`.
+
 ### Essai à 1,22 retiré : le « Plus de 1,5 » reste à 1,25 (décision de Patrick, 26/10/2026)
 - L'essai (minimum 1,22 pour ce seul marché) est retiré : `COTE_MIN_PLUS15` et `cote_min_du` n'existent plus ; tous les marchés sont à `COTE_MIN = 1.25` (`coeur.choisir`, `tickets.py`, `af-alpha-tickets.js`, `plus15_chances_max.json`). Les multiscores restent sans limite.
 - Pourquoi : sur 190 « Plus de 1,5 » ★ avec cote connue (29/09 → 25/10), les cotes 1,22–1,249 ne réussissent que 4 sur 11 (36 %), les cotes 1,25–1,30 réussissent 11 sur 11 ; jouables à partir de 1,25 : 13 sur 16 (81 %), à partir de 1,22 : 17 sur 27 (63 %). Échantillons très petits.
