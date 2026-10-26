@@ -29,6 +29,8 @@ ROOT = Path(__file__).resolve().parent.parent
 DOSSIER = ROOT / "data" / "alpha_serie"
 JOURNAL = DOSSIER / "journal.jsonl"
 BILAN = DOSSIER / "bilan.json"
+BANDES = DOSSIER / "bandes_1x2.json"                 # règles candidates 1X2 en validation (26/10/2026)
+RAPPORT_BANDES = DOSSIER / "validation_bandes_1x2.json"
 PAGE = DOSSIER / "pronostics.json"
 CLASSEMENTS = ROOT / "cache_classement.json"
 ONGLETS = ("buts", "equipes", "multiscores", "calibrees")   # « calibrees » (24/10/2026) : règles exploitables de la campagne, voir calibrees.py
@@ -282,6 +284,124 @@ def page(matchs: list[dict[str, Any]] | None = None, params: dict | None = None,
     return d
 
 
+# --- Validation des bandes de cotes 1X2 (26/10/2026, Patrick) -------------------------------------------------------------------------------
+# Deux règles candidates, sans filtre de probabilité, NON intégrées à Alpha : victoire domicile avec cote BetPawa 1,33–1,50, victoire extérieur
+# avec cote BetPawa 1,38–1,70 (bornes incluses). Réutilise le journal gelé : lignes « bande » (gel avant le coup d'envoi, jamais regelées, jamais
+# a posteriori) puis « resultat_bande ». Aucune donnée Pinnacle, aucun affichage, aucun effet sur les pronostics ni sur les tickets.
+
+def regles_bandes(fichier: Path = BANDES) -> dict[str, dict[str, Any]]:
+    try:
+        return json.loads(fichier.read_text(encoding="utf-8")).get("regles") or {}
+    except Exception:
+        return {}
+
+
+def _cote_bande(m: dict[str, Any], regle: dict[str, Any]) -> float | None:
+    c = ((m.get("cotes_betpawa") or {}).get("1x2") or {}).get(regle["cote_cle"])
+    if isinstance(c, bool) or not isinstance(c, (int, float)) or c <= 1:
+        return None
+    c = round(float(c), 2)
+    return c if regle["cote_min"] <= c <= regle["cote_max"] else None
+
+
+def geler_bandes(maintenant: datetime | None = None, journal: Path = JOURNAL, matchs: list[dict[str, Any]] | None = None,
+                 params: dict | None = None, fichier: Path = BANDES) -> int:
+    """Gèle TOUS les matchs admissibles (pertes comprises) dont le coup d'envoi n'a pas eu lieu. Un enregistrement par (match, règle)."""
+    maintenant = maintenant or datetime.now(timezone.utc)
+    regles = regles_bandes(fichier)
+    if not regles:
+        return 0
+    params = params or P.charger()
+    deja = {(l["match_id"], l["regle"]) for l in _lire(journal) if l["type"] == "bande"}
+    nouveaux = []
+    for m in (matchs if matchs is not None else charger_matchs()):
+        ko = _coup_d_envoi(m)
+        if ko is None or ko <= maintenant or m.get("score_final"):
+            continue
+        for nom, regle in regles.items():
+            cote = _cote_bande(m, regle)
+            if cote is None or (m["match_id"], nom) in deja:
+                continue
+            a = m.get("assemblage") or {}
+            try:
+                analyse = coeur.analyser_match(a.get("equipe_dom") or {}, a.get("equipe_ext") or {}, str(m["date"])[:10], params).get("statut") == "analyse"
+            except Exception:
+                analyse = False
+            deja.add((m["match_id"], nom))
+            nouveaux.append({"type": "bande", "regle": nom, "gele_le": maintenant.strftime("%Y-%m-%dT%H:%M:%SZ"), "code": _commit(),
+                             "match_id": m["match_id"], "coup_d_envoi_utc": m.get("coup_d_envoi_utc"), "date": str(m["date"])[:10],
+                             "competition": " ".join(str(m.get("competition") or "").split()), "domicile": m["domicile"], "exterieur": m["exterieur"],
+                             "cote": cote, "bande": [regle["cote_min"], regle["cote_max"]], "analyse_alpha": analyse})
+    _ajouter(journal, nouveaux)
+    return len(nouveaux)
+
+
+def resultats_bandes(journal: Path = JOURNAL, matchs: list[dict[str, Any]] | None = None) -> int:
+    lignes = _lire(journal)
+    figes = {(l["match_id"], l["regle"]) for l in lignes if l["type"] == "bande"}
+    faits = {(l["match_id"], l["regle"]) for l in lignes if l["type"] == "resultat_bande"}
+    nouveaux = []
+    for m in (matchs if matchs is not None else charger_matchs()):
+        sc = m.get("score_final")
+        if not sc:
+            continue
+        for nom in ("domicile", "exterieur"):
+            if (m["match_id"], nom) in figes and (m["match_id"], nom) not in faits:
+                h, a = sc["buts_dom"], sc["buts_ext"]
+                faits.add((m["match_id"], nom))
+                nouveaux.append({"type": "resultat_bande", "match_id": m["match_id"], "regle": nom, "score": sc,
+                                 "gagne": bool(h > a) if nom == "domicile" else bool(a > h),
+                                 "enregistre_le": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")})
+    _ajouter(journal, nouveaux)
+    return len(nouveaux)
+
+
+def wilson_bas(g: int, n: int, z: float = 1.96) -> float | None:
+    if n <= 0:
+        return None
+    p = g / n
+    return round((p + z * z / (2 * n) - z * (p * (1 - p) / n + z * z / (4 * n * n)) ** 0.5) / (1 + z * z / n), 4)
+
+
+def _bloc(lst: list[bool]) -> dict[str, Any]:
+    n, g = len(lst), sum(lst)
+    return {"matchs": n, "gagnes": g, "perdus": n - g, "taux": round(g / n, 4) if n else None, "wilson_bas_95": wilson_bas(g, n)}
+
+
+def bilan_bandes(journal: Path = JOURNAL, ecrire: bool = True, fichier: Path = BANDES, sortie: Path = RAPPORT_BANDES) -> dict[str, Any]:
+    lignes = _lire(journal)
+    figes = [l for l in lignes if l["type"] == "bande"]
+    res = {(l["match_id"], l["regle"]): l for l in lignes if l["type"] == "resultat_bande"}
+    cles = [(l["match_id"], l["regle"]) for l in figes]
+    ref = {}
+    try:
+        ref = json.loads(fichier.read_text(encoding="utf-8"))
+    except Exception:
+        pass
+    out: dict[str, Any] = {"statut": ref.get("statut"), "source_cotes": ref.get("source_cotes"), "regles": {}, "controles": {
+        "doublons_match_regle": len(cles) - len(set(cles)),
+        "gels_non_anterieurs_au_coup_d_envoi": sum(1 for l in figes if not l.get("coup_d_envoi_utc") or l["gele_le"] >= l["coup_d_envoi_utc"]),
+        "resultats_sans_gel": sum(1 for k in res if k not in set(cles)),
+        "cotes_hors_bande": sum(1 for l in figes if not (l["bande"][0] <= l["cote"] <= l["bande"][1]))}}
+    for nom, regle in (ref.get("regles") or {}).items():
+        mine = [l for l in figes if l["regle"] == nom]
+        reglees = [(l, res[(l["match_id"], nom)]["gagne"]) for l in mine if (l["match_id"], nom) in res]
+        sem: dict[str, list[bool]] = {}
+        for l, g in reglees:
+            a = datetime.fromisoformat(l["date"]).isocalendar()
+            sem.setdefault("%d-S%02d" % (a[0], a[1]), []).append(g)
+        out["regles"][nom] = {"bande_cote_betpawa": [regle["cote_min"], regle["cote_max"]], "geles": len(mine), "en_attente": len(mine) - len(reglees),
+                              "cumule": _bloc([g for _, g in reglees]),
+                              "dont_analyses_par_alpha": _bloc([g for l, g in reglees if l.get("analyse_alpha")]),
+                              "par_semaine": {k: _bloc(v) for k, v in sorted(sem.items())}}
+    out["reference_etude"] = ref.get("reference_etude")
+    out["decision"] = ref.get("decision")
+    if ecrire:
+        sortie.parent.mkdir(parents=True, exist_ok=True)
+        sortie.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
+    return out
+
+
 def pipeline() -> dict[str, Any]:
     """Passage dans le pipeline nocturne : lit l'archive du dossier de travail, sans git. Le commit est fait par le pipeline."""
     matchs = charger_matchs()                        # chargée une seule fois : même archive pour le gel, les résultats et la page
@@ -293,7 +413,9 @@ def pipeline() -> dict[str, Any]:
     d["bilan_tickets"] = tickets.bilan()
     PAGE.write_text(json.dumps(d, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     tickets.ecrire_accueil(d["matchs"])                 # les 3 tickets de la page d'accueil (25/10/2026)
-    return {"geles": gele, "resultats": resultat, "page_matchs": len(d["matchs"]), "bilan": bilan(),
+    b_geles, b_regles = geler_bandes(matchs=matchs), resultats_bandes(matchs=matchs)      # validation des bandes 1X2, sans effet sur la page
+    bilan_bandes()
+    return {"geles": gele, "resultats": resultat, "page_matchs": len(d["matchs"]), "bilan": bilan(), "bandes_1x2": {"geles": b_geles, "regles": b_regles},
             "tickets": {"geles": t_geles, "regles": t_regles, "bilan": d["bilan_tickets"]}}
 
 
