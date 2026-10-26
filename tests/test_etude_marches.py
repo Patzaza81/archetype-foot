@@ -149,7 +149,7 @@ def test_etude_reproductible(table):
 # ---- aucune intégration ----
 def test_etude_non_branchee_a_la_production():
     for f in (RACINE / "alpha_serie").glob("*.py"):
-        if f.name not in ("etude_marches.py", "decouverte_marches.py"):
+        if f.name not in ("etude_marches.py", "decouverte_marches.py", "decouverte_marches_v2.py"):
             assert "etude_marches" not in f.read_text(encoding="utf-8"), f.name
     suivi = (RACINE / "alpha_serie" / "suivi.py").read_text(encoding="utf-8")
     assert not re.search(r"etude_marches", suivi)
