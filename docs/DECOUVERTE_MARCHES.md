@@ -45,3 +45,22 @@ Mon erreur de fond : j'ai traité l'étude comme un *test de pronostics existant
 
 ## 3. Application aux autres marchés (même logique)
 Voir la section générée ci-dessous (`python -m alpha_serie.decouverte_marches --ecrire`).
+
+## 4. Contrôle du 26/10/2026 sur la v1 et corrections (v2 : `alpha_serie/decouverte_marches_v2.py`)
+
+Points du contrôle vérifiés dans le code de la v1 (`decouverte_marches.py`) :
+
+| Constat du contrôle | Vérifié dans la v1 | Correction v2 |
+|---|---|---|
+| Niveaux visés communs 30–95 % par pas de 5 | vrai (`NIVEAUX_VISES`) | 10 pas égaux entre le taux de base du marché et le plus haut taux qu'il atteint en A **et** B avec l'effectif exigé |
+| 60 matchs exigés en A et B pour tous les marchés | vrai (`N_MIN_PERIODE`) | effectif exigé **par marché et par niveau** : calcul de puissance (taux de base → niveau visé, 5 %, 80 %) + n·p ≥ 10 et n·(1−p) ≥ 10 |
+| 100 matchs exigés sur C pour tous | vrai (`N_MIN_C`) | même calcul, planifié avec le taux de base du réglage (rien de C n'est lu avant) ; sous l'effectif exigé : « à confirmer », jamais « confirmée » |
+| Seuils aux 11 mêmes quantiles | vrai (`QUANTILES`) | toutes les valeurs observées en A (variables discrètes), 1/40 de la distribution (continues), gardées si leur effectif atteint le plancher du marché |
+| 3 conditions seulement à partir des 40 meilleures paires | vrai | faisceau par niveau (60 paires par niveau, ≈ 1,5 million de triplets par marché) + contrôle de sensibilité à 180 paires. L'exhaustif à 3 conditions (≈ 10⁹–10¹⁰ combinaisons) est hors de portée : on mesure ce que le faisceau change |
+| Mêmes variables pour tous les marchés | vrai | ajout, par marché, de la fréquence de **l'événement lui-même** : série domicile de l'équipe qui reçoit, série extérieur de l'équipe qui se déplace, moyenne, scénarios appariés du moteur, Poisson sur les niveaux du moteur |
+| Cotes : probabilités limitées au 1X2 et au 2,5 | vrai, et ce sont des cotes de **clôture** Football-Data | retirées de l'étude principale S (non disponibles au run nocturne) ; étude F séparée avec la cote BetPawa **figée** de chaque marché |
+| Cotes BetPawa « à harmoniser » sur tout l'historique | **impossible** : l'archive des cotes figées commence le 28/09/2026 (2 257 matchs, 1 233 analysables par alpha) | séparation des études : S sur l'historique sans cote ; F dans la seule fenêtre figée (réglage 28/09–11/10, contrôle 12–25/10), petits effectifs, moteur réglé sur cette archive |
+
+Conventions restées communes (statistiques, pas métier) : erreur 5 % unilatérale, puissance 80 %, n·p ≥ 10, pas de 1/40, 10 niveaux, 60 paires par niveau. Tout le reste est tiré des données du marché.
+
+Résultats : `docs/DECOUVERTE_MARCHES_V2_RESULTATS.md` (`python -m alpha_serie.decouverte_marches_v2 --ecrire`). La v1 et ses résultats restent en l'état pour comparaison.

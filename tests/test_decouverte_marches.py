@@ -170,7 +170,7 @@ def test_jamais_valide_et_non_branche_a_la_production(donnees):
     r = DM.etudier(d, {k: ev[k] for k in ("over_under_3.5|moins", "double_chance|12")}, signal=False)
     assert all(f["statut"] in ("confirmee_sur_C", "prometteuse_a_confirmer", "rejetee") for m in r.values() for f in m["frontiere"])
     for f in (RACINE / "alpha_serie").glob("*.py"):
-        if f.name not in ("decouverte_marches.py", "etude_marches.py"):
+        if f.name not in ("decouverte_marches.py", "etude_marches.py", "decouverte_marches_v2.py"):
             assert "decouverte_marches" not in f.read_text(encoding="utf-8"), f.name
     src = (RACINE / "alpha_serie" / "decouverte_marches.py").read_text(encoding="utf-8")
     assert "journal.jsonl" not in src and "_ajouter" not in src and "geler(" not in src

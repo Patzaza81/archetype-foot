@@ -178,6 +178,7 @@ def construire(evts: dict[str, dict[str, Any]]) -> dict[str, Any]:
                         elif cle == ("over_under_2.5", "moins") and ou25:
                             cotes[eid] = float(ou25[1])
             rows.append({"id": m["id"], "jour": m["jour"], "src": src, "h": m["h"], "a": m["a"], "cotes": cotes,
+                         "serie": (hm, hc, am, ac), "niv": (r["niveaux"]["dom"], r["niveaux"]["ext"]), "cotes_brutes": (m.get("cotes") or {}) if src == "ARCH" else {},
                          "f": caracteristiques(hm, hc, am, ac, r["niveaux"], r["scenarios_offensifs"], r["scenarios_defensifs"], o1x2, ou25)})
     rows.sort(key=lambda r: (r["jour"], r["id"]))
     noms = sorted(rows[0]["f"])

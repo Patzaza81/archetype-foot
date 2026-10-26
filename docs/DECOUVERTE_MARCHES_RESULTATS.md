@@ -1,5 +1,7 @@
 # Découverte des indices par marché — résultats (26/10/2026)
 
+> Remplacé par la v2 (protocole propre à chaque marché, sans cote de clôture) : `docs/DECOUVERTE_MARCHES_V2_RESULTATS.md`. Conservé pour comparaison.
+
 Statut : ÉTUDE EN LECTURE SEULE. Aucun gel, aucune modification de production. Rien n'est « validé » : « confirmée sur C » veut dire qu'une configuration choisie sur A et B tient sur la période indépendante C ; seul un gel avant match peut valider.
 
 ## Résumé
