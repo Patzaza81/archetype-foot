@@ -17,7 +17,7 @@ Python pour être gelées et suivies chaque nuit ; un test vérifie que le navig
   la cote totale reste ≤ 5 ; on s'arrête au premier pari qui la ferait dépasser (on ne saute pas un pari mieux classé).
 « Plus de 1,5 » à chances maximales (26/10/2026, Patrick : « il doit figurer automatiquement dans le ticket du jour et l'utilisateur doit pouvoir le
   reconnaître ») : le « Plus de 1,5 buts » d'alpha dont le total attendu atteint le palier gelé de `data/alpha_serie/plus15_chances_max.json` (3,4 :
-  borne basse de Wilson >= 1/1,25 au réglage ET au contrôle), avec une cote BetPawa connue >= 1,25 (minimum de tous les marchés), devient candidat prioritaire (`chances_max`) : il
+  borne basse de Wilson >= 1/1,25 au réglage ET au contrôle) ET qui compte au plus 1 match passé à 0 ou 1 but dans les séries des deux équipes (`matchs_faibles_max`, même fichier), avec une cote BetPawa connue >= 1,25 (minimum de tous les marchés), devient candidat prioritaire (`chances_max`) : il
   passe devant les autres dans tous les classements (palier 1, palier 2, accueil, ticket recommandé), toujours à raison d'un pari par match. Il est
   marqué dans les tickets gelés (`chances_max`, `total_attendu`) et son taux de réussite réel est suivi (`bilan()["plus15_max"]`). Sans le fichier, rien n'est ajouté.
 Gel : chaque nuit, pour le jour courant (Douala), ou pour le lendemain après 22 h (début du dernier créneau), avant le premier match du ticket ; jamais regelé, jamais a posteriori.
@@ -49,6 +49,24 @@ def palier_plus15(chemin: Path = PLUS15) -> float | None:
         return float(json.loads(chemin.read_text(encoding="utf-8"))["palier_total_attendu"])
     except (OSError, ValueError, KeyError, TypeError):
         return None
+
+def faibles_max_plus15(chemin: Path = PLUS15) -> int | None:
+    """Nombre maximal de matchs passés à 0 ou 1 but toléré pour le « chances maximales » ; None : pas de limite (clé absente du fichier)."""
+    try:
+        v = json.loads(chemin.read_text(encoding="utf-8")).get("matchs_faibles_max")
+        return None if v is None else int(v)
+    except (OSError, ValueError, TypeError):
+        return None
+
+
+def matchs_faibles(m: dict) -> int | None:
+    """Matchs passés à 0 ou 1 but au total, pour les deux équipes, lus dans les paires publiées d'alpha : domicile = marqués (offensive[0]) + encaissés (défensive[1]) ;
+    extérieur = marqués (offensive[1]) + encaissés (défensive[0]). None si les paires manquent."""
+    off, de = m.get("scenarios_offensifs") or [], m.get("scenarios_defensifs") or []
+    if not off or len(off) != len(de):
+        return None
+    return sum((o[0] + d[1]) <= 1 for o, d in zip(off, de)) + sum((o[1] + d[0]) <= 1 for o, d in zip(off, de))
+
 
 COTE_MIN, VALEUR_MIN, CONFIRMATION_MIN, MATCHS_MIN, PAR_TRANCHE, PALIER2_MAX, ACCUEIL_MAX = 1.25, 0.80, 0.75, 5, 2, 10, 10
 DEBUT, PAS, FIN = 10 * 60, 120, 24 * 60
@@ -103,6 +121,8 @@ def candidats(matchs: list[dict], jour: str) -> list[dict]:
         debut = _minutes(m.get("heure"))
         if debut is None:
             continue
+        pm = _plus15(m, debut)                      # indice maximal : candidat prioritaire
+        normal = None if pm else _indice_normal(m)  # indice normal : total attendu >= palier sans l'indice maximal ; information seulement
         for cat in ("buts", "equipes", "calibrees"):
             s, rempl = meilleur(m, cat)
             if not s:
@@ -112,28 +132,42 @@ def candidats(matchs: list[dict], jour: str) -> list[dict]:
             c = {"id": f"{m['match_id']}|{cat}", "match_id": m["match_id"], "categorie": cat, "cle": s.get("cle"), "marche": s.get("marche"),
                  "cote": float(s["cote"]), "valeur": float(s.get("valeur") or 0), "confirmation": conf, "matchs": n, "remplacant": rempl,
                  "debut": debut, "heure": m.get("heure"), "domicile": m.get("domicile"), "exterieur": m.get("exterieur"), "competition": m.get("competition")}
+            if normal is not None and s.get("cle") == CLE_PLUS15:
+                c["indice_plus15"], c["total_attendu"] = "normal", normal
             c["admissible"] = (c["cote"] >= P.COTE_MIN - 1e-9 and not rempl and c["valeur"] >= VALEUR_MIN - 1e-9 and conf is not None
                                and conf >= CONFIRMATION_MIN - 1e-9 and n >= MATCHS_MIN)
             out.append(c)
-        pm = _plus15(m, debut)
         if pm:
             out.append(pm)
     return out
 
 
-def _plus15(m: dict, debut: int) -> dict | None:
-    """Le « Plus de 1,5 buts » d'alpha à chances maximales (total attendu >= palier gelé, cote connue >= COTE_MIN), sinon None."""
+def _indice_normal(m: dict) -> float | None:
+    """Total attendu (arrondi) si le match atteint le palier du « Plus de 1,5 » sans avoir l'indice maximal, sinon None. Appelé seulement quand l'indice maximal est absent."""
     palier = palier_plus15()
     total = (m.get("niveaux") or {}).get("total")
     if palier is None or total is None or float(total) < palier - 1e-9:
+        return None
+    return round(float(total), 2)
+
+
+def _plus15(m: dict, debut: int) -> dict | None:
+    """Le « Plus de 1,5 buts » d'alpha à chances maximales (total attendu >= palier gelé, au plus `matchs_faibles_max` matchs passés à 0 ou 1 but, cote connue >= COTE_MIN), sinon None."""
+    palier = palier_plus15()
+    total = (m.get("niveaux") or {}).get("total")
+    if palier is None or total is None or float(total) < palier - 1e-9:
+        return None
+    limite = faibles_max_plus15()
+    faibles = matchs_faibles(m)
+    if limite is not None and (faibles is None or faibles > limite):
         return None
     s = next((x for x in (m.get("onglets") or {}).get("buts") or [] if x.get("cle") == CLE_PLUS15), None)
     if not s or not _cote_valide(s.get("cote")) or float(s["cote"]) < P.COTE_MIN - 1e-9:
         return None
     return {"id": f"{m['match_id']}|plus15", "match_id": m["match_id"], "categorie": "plus15", "cle": s.get("cle"), "marche": s.get("marche"),
             "cote": float(s["cote"]), "valeur": float(s.get("valeur") or 0), "confirmation": _confirmation(s),
-            "matchs": min(int(m.get("n_domicile") or 0), int(m.get("n_exterieur") or 0)), "remplacant": False, "chances_max": True,
-            "total_attendu": round(float(total), 2), "debut": debut, "heure": m.get("heure"), "domicile": m.get("domicile"),
+            "matchs": min(int(m.get("n_domicile") or 0), int(m.get("n_exterieur") or 0)), "remplacant": False, "chances_max": True, "indice_plus15": "maximal",
+            "total_attendu": round(float(total), 2), "matchs_faibles": faibles, "debut": debut, "heure": m.get("heure"), "domicile": m.get("domicile"),
             "exterieur": m.get("exterieur"), "competition": m.get("competition"), "admissible": True}
 
 
@@ -196,9 +230,9 @@ def du_jour(matchs: list[dict], jour: str) -> dict[str, Any]:
                  for m in matchs if m.get("date") == jour and m.get("statut") == "analyse" for s in m.get("palier2") or []
                  if _minutes(m.get("heure")) is not None and DEBUT <= _minutes(m.get("heure")) < FIN], key=lambda x: (x["debut"], x["match_id"]))
     garde = ("match_id", "categorie", "cle", "marche", "cote", "valeur", "heure", "debut", "domicile", "exterieur", "competition")
-    garde_max = garde + ("chances_max", "total_attendu")        # le repère « chances maximales » suit le pari jusque dans le journal et l'accueil
+    garde_max = garde + ("chances_max", "indice_plus15", "total_attendu")        # les indices « maximal » et « normal » suivent le pari jusque dans le journal et l'accueil
     acc = accueil(cands)
-    gk = lambda c: {k: c.get(k) for k in (garde_max if c.get("chances_max") else garde)}  # noqa: E731
+    gk = lambda c: {k: c.get(k) for k in (garde_max if c.get("chances_max") or c.get("indice_plus15") else garde)}  # noqa: E731
     return {"jour": jour, "palier1": [gk(c) for c in p1], "palier2": [gk(c) for c in p2],
             "palier3": [{k: c.get(k) for k in garde + ("avantage", "p_estimee", "p_cote")} for c in p3],
             **{f: [gk(c) for c in acc[f]] for f in (*FAMILLES, "accueil_recommande")}}
@@ -283,17 +317,18 @@ def bilan(journal: Path = JOURNAL) -> dict[str, Any]:
             rendement += (cote - 1) if g else -1
         out[nom] = {"tickets": tickets, "gagnes": gagnes, "paris": legs, "paris_gagnes": legs_g,
                     "rendement_par_ticket": round(rendement / tickets, 4) if tickets else None}
-    out["plus15_max"] = _bilan_plus15(res, gel)
+    out["plus15_max"] = _bilan_plus15(res, gel, "maximal")
+    out["plus15_normal"] = _bilan_plus15(res, gel, "normal")
     return out
 
 
-def _bilan_plus15(res: dict, gel: dict) -> dict[str, Any]:
-    """Réussite RÉELLE des « Plus de 1,5 » à chances maximales gelés avant leur match (un match compté une fois, quel que soit le palier)."""
+def _bilan_plus15(res: dict, gel: dict, niveau: str = "maximal") -> dict[str, Any]:
+    """Réussite RÉELLE des « Plus de 1,5 » à indice `niveau` (maximal ou normal) gelés avant leur match (un match compté une fois, quel que soit le palier)."""
     vus: dict[tuple, bool | None] = {}
     for j, r in res.items():
         for p in PALIERS:
             for c, ok in zip(gel[j].get(p, []), r.get(p, [])):
-                if c.get("chances_max") and ok is not None:
+                if (c.get("indice_plus15") or ("maximal" if c.get("chances_max") else None)) == niveau and ok is not None:   # anciens gels : chances_max = maximal
                     vus[(j, c["match_id"])] = bool(ok)
     n, k = len(vus), sum(vus.values())
     return {"paris": n, "gagnes": k, "reussite": round(k / n, 4) if n else None}

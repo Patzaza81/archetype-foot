@@ -79,6 +79,7 @@ body.theme-nuit .hero{background:linear-gradient(110deg,var(--surface) 0 60%,tra
 .pari{font-size:12.5px;color:var(--accent)}
 .max{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;background:#F6C945;color:#3A2B00;font-size:11px;font-weight:800;text-decoration:underline;white-space:nowrap}
 .sel.sel-max{border-left:4px solid #F6C945;padding-left:8px}
+.normal{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;border:1.5px solid #F6C945;font-size:11px;font-weight:700;white-space:nowrap}
 .cote-sel{font-weight:700;font-size:14px}
 .ticket[aria-selected="true"] .badge{outline:2px solid var(--accent)}
 .ticket.recommande{border:2px solid var(--or);border-radius:12px;padding:14px 12px;margin-bottom:12px;background:var(--surface)}
@@ -353,7 +354,7 @@ footer nav{display:flex;flex-wrap:wrap;gap:6px 16px}footer a{text-decoration:non
         return '<li class="sel' + (x.chances_max ? ' sel-max' : '') + '"><span class="quand num">' + echappe(x.heure || "") + '</span>' +
           '<span class="quoi"><span class="comp">' + (dr.symbole ? '<span class="drapeau" role="img" aria-label="' + echappe(dr.pays) + '">' + dr.symbole + '</span>' : '') + echappe(nomComp) + '</span>' +
           '<span class="equipes">' + echappe(x.domicile) + ' – ' + echappe(x.exterieur) + '</span>' +
-          '<span class="pari">' + echappe(marche(x)) + (x.chances_max ? ' <span class="max" title="Plus de 1,5 buts à chances maximales : total attendu ' + echappe(String(x.total_attendu).replace(".", ",")) + '">★ Chances maximales</span>' : '') + '</span></span>' +
+          '<span class="pari">' + echappe(marche(x)) + (x.indice_plus15 === 'normal' ? ' <span class="normal" title="Plus de 1,5 buts à indice normal : total attendu ' + echappe(String(x.total_attendu).replace(".", ",")) + '">Indice normal</span>' : (x.chances_max ? ' <span class="max" title="Plus de 1,5 buts à indice maximal : total attendu ' + echappe(String(x.total_attendu).replace(".", ",")) + '">★ Indice maximal</span>' : '')) + '</span></span>' +
           '<span class="cote-sel num">' + (x.cote ? fr.format(x.cote) : "—") + '</span></li>';
       }).join("");
       var estRec = t.cle === "accueil_recommande";
