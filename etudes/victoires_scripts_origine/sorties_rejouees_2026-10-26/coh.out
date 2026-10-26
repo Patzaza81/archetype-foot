@@ -1,0 +1,60 @@
+Matchs : A(2025) 4753 | B(janv–mars 2026) 3305 | C réservée (depuis 01/04/2026) 6103
+
+== 1. Ce que les victoires ont en commun (moyennes par issue, tous matchs)
+  caractéristique                                        vic.dom       nul   vic.ext
+  Supériorité offensive (buts attendus dom − ext)           0.43      0.26      0.12
+  Solidité défensive du domicile (buts encaissés)           1.16      1.22      1.29
+  Solidité défensive de l'extérieur (buts encaissés)        1.57      1.48      1.42
+  Écart de niveau D                                         0.85      0.52      0.24
+  Paires favorables au domicile                             0.55      0.50      0.45
+  Paires favorables à l'extérieur                           0.28      0.33      0.37
+  Irrégularité du domicile                                  1.42      1.40      1.40
+  Irrégularité de l'extérieur                               1.43      1.41      1.41
+  Nuls du domicile à domicile                               0.26      0.26      0.27
+  Nuls de l'extérieur à l'extérieur                         0.26      0.26      0.27
+  Total de buts attendu                                     2.75      2.71      2.71
+
+  C=0.1 log-loss B 1.0447 | C réservée 1.0526 | (hasard 3 classes 1.0986 ; fréquences seules 1.0744)
+
+  C=1.0 log-loss B 1.0447 | C réservée 1.0527 | (hasard 3 classes 1.0986 ; fréquences seules 1.0744)
+
+== 2. Poids des points de cohérence (régression apprise sur 2025–mars 2026, variables centrées-réduites)
+  point                                                pour vic.dom pour vic.ext
+  Supériorité offensive (buts attendus dom − ext)             +0.17        -0.14
+  Solidité défensive du domicile (buts encaissés)             +0.04        -0.00
+  Solidité défensive de l'extérieur (buts encaissés)          -0.05        +0.05
+  Écart de niveau D                                           +0.17        -0.14
+  Paires favorables au domicile                               +0.02        -0.03
+  Paires favorables à l'extérieur                             +0.01        -0.01
+  Irrégularité du domicile                                    +0.01        -0.01
+  Irrégularité de l'extérieur                                 +0.02        -0.04
+  Nuls du domicile à domicile                                 -0.00        +0.02
+  Nuls de l'extérieur à l'extérieur                           +0.01        -0.02
+  Total de buts attendu                                       +0.01        -0.01
+
+== 3. Échelle : probabilité annoncée par le modèle → réussite réelle sur la période RÉSERVÉE (178 jours)
+  VICTOIRE DOMICILE
+    annoncé 70–100% : n=  85 | réel 72.9% | 0.48/jour
+    annoncé 65–70% : n= 174 | réel 62.1% | 0.98/jour
+    annoncé 60–65% : n= 332 | réel 59.3% | 1.87/jour
+    annoncé 55–60% : n= 616 | réel 56.2% | 3.46/jour
+    annoncé 50–55% : n= 847 | réel 49.5% | 4.76/jour
+    annoncé 45–50% : n= 992 | réel 44.6% | 5.57/jour
+    cumulé >= 70% : n=  85 | réel 72.9% | 0.48/jour
+    cumulé >= 65% : n= 259 | réel 65.6% | 1.46/jour
+    cumulé >= 60% : n= 591 | réel 62.1% | 3.32/jour
+  VICTOIRE EXTÉRIEUR
+    annoncé 55–60% : n=  20 | réel 50.0% | 0.11/jour
+    annoncé 50–55% : n=  82 | réel 57.3% | 0.46/jour
+    annoncé 45–50% : n= 225 | réel 50.2% | 1.26/jour
+    cumulé >= 70% : n=   4 | réel 100.0% | 0.02/jour
+    cumulé >= 65% : n=   5 | réel 100.0% | 0.03/jour
+    cumulé >= 60% : n=  11 | réel 90.9% | 0.06/jour
+
+== 4. Risque de nul : probabilité de nul annoncée → nuls réels (période réservée)
+   annoncé 9.7–24.1% : n=1221 | nuls réels 23.3%
+   annoncé 24.1–25.6% : n=1220 | nuls réels 24.9%
+   annoncé 25.6–26.5% : n=1221 | nuls réels 26.7%
+   annoncé 26.5–27.4% : n=1220 | nuls réels 25.8%
+   annoncé 27.4–31.2% : n=1221 | nuls réels 28.3%
+   dom >= 65% : nul annoncé bas (<=19.7%) -> réel 70.0% (n=130) | nul annoncé haut -> réel 61.2% (n=129)

@@ -1,4 +1,7 @@
-"""Étude marché par marché des indices de réussite (26/10/2026). LECTURE SEULE : ne gèle rien, n'est appelée par aucun pipeline.
+"""[REMPLACÉE par decouverte_marches.py le 26/10/2026 : cette étude testait les pronostics existants avec une seule condition et mêlait la rentabilité au verdict ;
+conservée pour mémoire et pour ses contrôles de données.]
+
+Étude marché par marché des indices de réussite (26/10/2026). LECTURE SEULE : ne gèle rien, n'est appelée par aucun pipeline.
 
 Reprend la rigueur de l'étude des victoires : rejeu du moteur alpha sur chaque match (matchs strictement antérieurs), séparation chronologique
 stricte, sources jamais mélangées, effectifs exacts, borne basse de Wilson 95 %, comparaison à une référence propre à chaque marché.
@@ -404,6 +407,7 @@ def rapport(o: dict[str, Any]) -> str:
     nom = lambda k: k.replace("|", " : ")
     a = o["audit_donnees"]
     L = [f"# Étude des marchés — audit et résultats reproductibles ({o['genere_le']})", "",
+         "**REMPLACÉE** par `docs/DECOUVERTE_MARCHES.md` (26/10/2026) : cette étude testait les pronostics existants avec une seule condition et mêlait la rentabilité au verdict ; elle ne reproduisait pas la méthode des victoires. Conservée pour mémoire.", "",
          "Statut : ÉTUDE EN LECTURE SEULE. Aucun gel, aucune modification du moteur ni de la production. Rien n'est « validé ».", "",
          "## Résultat en une ligne",
          f"- {o['synthese']['marches_etudies']} marchés étudiés ; **{o['synthese']['sous_observation']} sous observation, {o['synthese']['non_valides']} non validés**. "

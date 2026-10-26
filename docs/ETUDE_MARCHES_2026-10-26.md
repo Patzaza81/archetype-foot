@@ -1,5 +1,7 @@
 # Étude des marchés — audit et résultats reproductibles (2026-10-26)
 
+**REMPLACÉE** par `docs/DECOUVERTE_MARCHES.md` (26/10/2026) : cette étude testait les pronostics existants avec une seule condition et mêlait la rentabilité au verdict ; elle ne reproduisait pas la méthode des victoires. Conservée pour mémoire.
+
 Statut : ÉTUDE EN LECTURE SEULE. Aucun gel, aucune modification du moteur ni de la production. Rien n'est « validé ».
 
 ## Résultat en une ligne

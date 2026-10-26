@@ -1,0 +1,19 @@
+
+###### VICTOIRE DOMICILE | règles testées 24857
+ -- au plus 2 conditions, choisies sur 2025 puis janv–mars 2026 (>= 70% dans chacune), jugées sur la période réservée (depuis 01/04/2026)
+    la>=0.40 & gdh>=1.50 | réglage A 70.8% (219) | B 71.0% (138) | RÉSERVÉE 66.4% (298, bas 60.9) | 1.27 paris/jour
+    dd>=1.25 & gdh>=0.75 | réglage A 70.4% (189) | B 73.0% (122) | RÉSERVÉE 63.2% (296, bas 57.5) | 1.17 paris/jour
+    dd>=1.25 & gdh>=1.00 | réglage A 71.2% (177) | B 72.4% (116) | RÉSERVÉE 64.1% (281, bas 58.3) | 1.11 paris/jour
+ -- au plus 3 conditions, choisies sur 2025 puis janv–mars 2026 (>= 70% dans chacune), jugées sur la période réservée (depuis 01/04/2026)
+    dd>=1.00 & lh<=0.25 & gdh>=1.25 | réglage A 70.2% (265) | B 70.9% (179) | RÉSERVÉE 64.9% (390, bas 60.0) | 1.61 paris/jour
+    ph>=0.70 & gda<=0.00 & w2h>=0.50 | réglage A 71.7% (240) | B 70.0% (140) | RÉSERVÉE 62.8% (309, bas 57.3) | 1.33 paris/jour
+    dd>=1.00 & gdh>=1.25 & ftsa>=0.25 | réglage A 70.6% (214) | B 71.8% (156) | RÉSERVÉE 64.8% (332, bas 59.5) | 1.36 paris/jour
+
+###### VICTOIRE EXTÉRIEUR | règles testées 7093
+ -- au plus 2 conditions, choisies sur 2025 puis janv–mars 2026 (>= 55% dans chacune), jugées sur la période réservée (depuis 01/04/2026)
+    dd<=-0.75 & wa>=0.50 | réglage A 55.1% (118) | B 57.3% (75) | RÉSERVÉE 57.2% (138, bas 48.9) | 0.64 paris/jour
+    dd<=-0.75 & ptsa>=2.00 | réglage A 55.9% (93) | B 56.2% (64) | RÉSERVÉE 57.9% (114, bas 48.7) | 0.52 paris/jour
+ -- au plus 3 conditions, choisies sur 2025 puis janv–mars 2026 (>= 55% dans chacune), jugées sur la période réservée (depuis 01/04/2026)
+    dd<=-0.75 & gda>=0.50 & w2a>=0.25 | réglage A 55.9% (111) | B 55.3% (85) | RÉSERVÉE 61.6% (138, bas 53.3) | 0.65 paris/jour
+    dd<=-0.75 & wa>=0.50 | réglage A 55.1% (118) | B 57.3% (75) | RÉSERVÉE 57.2% (138, bas 48.9) | 0.64 paris/jour
+    dd<=-0.75 & pe>=0.40 & wa>=0.50 | réglage A 55.1% (118) | B 57.3% (75) | RÉSERVÉE 56.9% (137, bas 48.6) | 0.64 paris/jour
