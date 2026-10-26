@@ -1,0 +1,19 @@
+/* Page « Sélection » du moteur alpha (26/10/2026). Téléphone d'abord (414 px) ; réutilise les classes ia-* de af-indice-alpha.css. */
+body.af-alpha .sa-vues { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+body.af-alpha .sa-jour { margin: 6px 0 0; font-size: 15px; font-weight: 800; color: var(--ax-accent-texte, #087F78); }
+body.af-alpha .sa-prono { display: grid; gap: 6px; min-width: 0; padding: 12px 14px; border: 1px solid var(--ax-ligne); border-radius: 14px; background: var(--ax-fond, #fff); }
+body.af-alpha .sa-haut { display: flex; flex-wrap: wrap; gap: 6px 10px; font-size: 12.5px; color: var(--ax-doux); }
+body.af-alpha .sa-haut b { color: var(--ax-texte); font-variant-numeric: tabular-nums; }
+body.af-alpha .sa-match { margin: 0; font-size: 15px; font-weight: 800; line-height: 1.3; color: var(--ax-texte); overflow-wrap: anywhere; }
+body.af-alpha .sa-marche { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 10px; }
+body.af-alpha .sa-marche strong { font-size: 14.5px; line-height: 1.3; color: var(--ax-texte); overflow-wrap: anywhere; }
+body.af-alpha .sa-cote { padding: 4px 10px; border-radius: 10px; background: var(--ax-surface2, #F1F6F4); font-size: 14px; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--ax-texte); white-space: nowrap; }
+body.af-alpha .sa-sans { font-size: 12.5px; font-weight: 700; color: var(--ax-doux); }
+body.af-alpha .ia-badge.niv-maximal { background: #FFF1CC; border-color: #D8B75F; color: #6A4D00; }
+body.af-alpha .ia-badge.res-gagne { background: #DFF3E6; border-color: #3E9B62; color: #12532D; }
+body.af-alpha .ia-badge.res-perdu { background: #FBE9E7; border-color: #D98A80; color: #7A1F14; }
+body.af-alpha.theme-nuit .sa-prono { background: #1E2230; border-color: #2E3342; }
+body.af-alpha.theme-nuit .sa-cote { background: #171A25; }
+body.af-alpha.theme-nuit .ia-badge.niv-maximal { background: #3A3016; color: #FFE7A3; }
+body.af-alpha.theme-nuit .ia-badge.res-gagne { background: #123424; color: #BFEBD0; }
+body.af-alpha.theme-nuit .ia-badge.res-perdu { background: #3A1A16; color: #FFC9C1; }
