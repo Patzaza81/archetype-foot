@@ -3,8 +3,8 @@
 
 /* Onglets de la page alpha : Pronostics / Traitement séquentiel des tickets
    25/10/2026 : en beige, en relief, avec une flèche « › » sur l'onglet à ouvrir, pour montrer qu'on peut les toucher. */
-body.af-alpha .at-sous-onglets { display: flex; gap: 8px; margin: 0 0 12px; padding: 6px; border-radius: 14px; background: #F3EBDA; border: 1px solid #E0D0AE; }
-body.af-alpha .at-sous-onglets a { flex: 1 1 0; display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 48px; padding: 9px 8px; border-radius: 11px; border: 1px solid #CDB27A; background: #EBDDBE; box-shadow: 0 2px 0 #CDB27A, 0 3px 6px rgba(90,71,32,.15); text-align: center; font-size: 13.5px; font-weight: 800; line-height: 1.25; color: #5A4720; text-decoration: none; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: rgba(196,154,58,.35); transition: transform .08s, box-shadow .08s; }
+body.af-alpha .at-sous-onglets { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; padding: 6px; border-radius: 14px; background: #F3EBDA; border: 1px solid #E0D0AE; }
+body.af-alpha .at-sous-onglets a { flex: 1 1 calc(50% - 4px); min-width: 0; display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 48px; padding: 9px 8px; border-radius: 11px; border: 1px solid #CDB27A; background: #EBDDBE; box-shadow: 0 2px 0 #CDB27A, 0 3px 6px rgba(90,71,32,.15); text-align: center; font-size: 13.5px; font-weight: 800; line-height: 1.25; color: #5A4720; text-decoration: none; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: rgba(196,154,58,.35); transition: transform .08s, box-shadow .08s; }
 body.af-alpha .at-sous-onglets a:not([aria-current="page"])::after { content: "›"; font-size: 20px; font-weight: 800; line-height: 1; }
 body.af-alpha .at-sous-onglets a:not([aria-current="page"]):active { transform: translateY(2px); box-shadow: 0 0 0 #CDB27A, 0 1px 2px rgba(90,71,32,.2); }
 body.af-alpha .at-sous-onglets a[aria-current="page"] { background: #D8B75F; border-color: #A8832F; color: #2E2208; box-shadow: inset 0 2px 4px rgba(90,71,32,.25); cursor: default; }

@@ -423,6 +423,11 @@ def pipeline() -> dict[str, Any]:
         sortie["indice_alpha"] = {"indices": len(r["indices"]), "alerte_registre": r["alerte_registre"], "paris_distincts": r["global"]["paris_distincts"]["matchs"]}
     except Exception as e:                                                  # l'erreur est affichée dans le résultat du pipeline, elle ne bloque pas le reste
         sortie["indice_alpha"] = {"erreur": repr(e)}
+    try:                                                                    # sélection provisoire (26/10/2026) : 8 marchés, gel avant match, page « Sélection »
+        from . import selection_provisoire
+        sortie["selection_provisoire"] = selection_provisoire.pipeline(matchs)
+    except Exception as e:                                                  # l'erreur est affichée dans le résultat du pipeline, elle ne bloque pas le reste
+        sortie["selection_provisoire"] = {"erreur": repr(e)}
     return sortie
 
 

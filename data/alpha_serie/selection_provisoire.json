@@ -1,0 +1,309 @@
+{
+ "gele_le": "2026-10-26",
+ "source": "sélection provisoire du 26/10/2026, commit 576577e, branche etude-marches-rigueur (docs/SELECTION_PROVISOIRE.md, data/etudes/selection_provisoire_2026-10-26.json)",
+ "statut": "provisoire : aucune règle n'est validée ; les taux passés ne garantissent ni la réussite ni la rentabilité",
+ "definitions": {
+  "normal": "pronostic publié par alpha (admission inchangée) pour ce marché",
+  "maximal": "pronostic normal ET au plus echecs_max match(s) passé(s) où l'événement a échoué dans les paires publiées d'alpha : match de l'équipe qui reçoit = (scenarios_offensifs[i][0], scenarios_defensifs[i][1]) ; match de l'équipe qui se déplace = (scenarios_defensifs[i][0], scenarios_offensifs[i][1])",
+  "cote": "cote BetPawa figée au run nocturne, la première trouvée dans l'ordre des clés équivalentes ; >= cote_min exigée sauf sans_cote (multigoals)"
+ },
+ "regles": [
+  {
+   "id": "multigoals|1-4",
+   "nom": "Multigoals 1-4 (1 à 4 buts dans le match)",
+   "cles": [
+    [
+     "multigoals",
+     "1-4"
+    ]
+   ],
+   "niveau": "normal",
+   "echecs_max": null,
+   "cote_min": 1.25,
+   "sans_cote": true,
+   "reference_historique": {
+    "decouverte": {
+     "matchs": 7319,
+     "gagnes": 5809,
+     "periode": "avant le 01/04/2026 (Football-Data)"
+    },
+    "controle": {
+     "matchs": 3997,
+     "gagnes": 3116,
+     "periode": "01/04/2026 au 27/09/2026 (Football-Data)"
+    },
+    "publiables_betpawa": {
+     "matchs": 1099,
+     "gagnes": 849,
+     "periode": "28/09/2026 au 25/10/2026, cotes BetPawa figées",
+     "par_jour": 39.2,
+     "rendement": null,
+     "rendement_ic95": null
+    }
+   }
+  },
+  {
+   "id": "double_chance|12",
+   "nom": "Double chance 12 (pas de match nul)",
+   "cles": [
+    [
+     "double_chance",
+     "12"
+    ]
+   ],
+   "niveau": "normal",
+   "echecs_max": null,
+   "cote_min": 1.25,
+   "sans_cote": false,
+   "reference_historique": {
+    "decouverte": {
+     "matchs": 6850,
+     "gagnes": 5082,
+     "periode": "avant le 01/04/2026 (Football-Data)"
+    },
+    "controle": {
+     "matchs": 3796,
+     "gagnes": 2797,
+     "periode": "01/04/2026 au 27/09/2026 (Football-Data)"
+    },
+    "publiables_betpawa": {
+     "matchs": 773,
+     "gagnes": 565,
+     "periode": "28/09/2026 au 25/10/2026, cotes BetPawa figées",
+     "par_jour": 27.6,
+     "rendement": -0.0489,
+     "rendement_ic95": [
+      -0.0897,
+      -0.0082
+     ]
+    }
+   }
+  },
+  {
+   "id": "over_under_1.5|plus",
+   "nom": "Plus de 1,5 buts",
+   "cles": [
+    [
+     "over_under_1.5",
+     "plus"
+    ]
+   ],
+   "niveau": "normal",
+   "echecs_max": null,
+   "cote_min": 1.25,
+   "sans_cote": false,
+   "reference_historique": {
+    "decouverte": {
+     "matchs": 4804,
+     "gagnes": 3745,
+     "periode": "avant le 01/04/2026 (Football-Data)"
+    },
+    "controle": {
+     "matchs": 2968,
+     "gagnes": 2351,
+     "periode": "01/04/2026 au 27/09/2026 (Football-Data)"
+    },
+    "publiables_betpawa": {
+     "matchs": 191,
+     "gagnes": 146,
+     "periode": "28/09/2026 au 25/10/2026, cotes BetPawa figées",
+     "par_jour": 6.8,
+     "rendement": -0.0036,
+     "rendement_ic95": [
+      -0.0825,
+      0.0753
+     ]
+    }
+   }
+  },
+  {
+   "id": "handicap_1.5|domicile",
+   "nom": "Handicap +1,5 domicile",
+   "cles": [
+    [
+     "handicap_1.5",
+     "domicile"
+    ]
+   ],
+   "niveau": "normal",
+   "echecs_max": null,
+   "cote_min": 1.25,
+   "sans_cote": false,
+   "reference_historique": {
+    "decouverte": {
+     "matchs": 7837,
+     "gagnes": 6842,
+     "periode": "avant le 01/04/2026 (Football-Data)"
+    },
+    "controle": {
+     "matchs": 4370,
+     "gagnes": 3816,
+     "periode": "01/04/2026 au 27/09/2026 (Football-Data)"
+    },
+    "publiables_betpawa": {
+     "matchs": 156,
+     "gagnes": 113,
+     "periode": "28/09/2026 au 25/10/2026, cotes BetPawa figées",
+     "par_jour": 5.6,
+     "rendement": 0.0297,
+     "rendement_ic95": [
+      -0.0744,
+      0.1339
+     ]
+    }
+   }
+  },
+  {
+   "id": "over_under_4.5|moins",
+   "nom": "Moins de 4,5 buts",
+   "cles": [
+    [
+     "over_under_4.5",
+     "moins"
+    ]
+   ],
+   "niveau": "normal",
+   "echecs_max": null,
+   "cote_min": 1.25,
+   "sans_cote": false,
+   "reference_historique": {
+    "decouverte": {
+     "matchs": 7698,
+     "gagnes": 6680,
+     "periode": "avant le 01/04/2026 (Football-Data)"
+    },
+    "controle": {
+     "matchs": 4227,
+     "gagnes": 3572,
+     "periode": "01/04/2026 au 27/09/2026 (Football-Data)"
+    },
+    "publiables_betpawa": {
+     "matchs": 134,
+     "gagnes": 96,
+     "periode": "28/09/2026 au 25/10/2026, cotes BetPawa figées",
+     "par_jour": 4.8,
+     "rendement": -0.0461,
+     "rendement_ic95": [
+      -0.1488,
+      0.0565
+     ]
+    }
+   }
+  },
+  {
+   "id": "over_under_domicile_0.5|plus",
+   "nom": "L'équipe à domicile marque au moins 1 but",
+   "cles": [
+    [
+     "over_under_domicile_0.5",
+     "plus"
+    ],
+    [
+     "cages_inviolees_exterieur",
+     "non"
+    ]
+   ],
+   "niveau": "normal",
+   "echecs_max": null,
+   "cote_min": 1.25,
+   "sans_cote": false,
+   "reference_historique": {
+    "decouverte": {
+     "matchs": 3799,
+     "gagnes": 3151,
+     "periode": "avant le 01/04/2026 (Football-Data)"
+    },
+    "controle": {
+     "matchs": 2441,
+     "gagnes": 2021,
+     "periode": "01/04/2026 au 27/09/2026 (Football-Data)"
+    },
+    "publiables_betpawa": {
+     "matchs": 97,
+     "gagnes": 72,
+     "periode": "28/09/2026 au 25/10/2026, cotes BetPawa figées",
+     "par_jour": 3.5,
+     "rendement": -0.0143,
+     "rendement_ic95": [
+      -0.1314,
+      0.1028
+     ]
+    }
+   }
+  },
+  {
+   "id": "over_under_exterieur_2.5|moins",
+   "nom": "L'équipe à l'extérieur marque au plus 2 buts",
+   "cles": [
+    [
+     "over_under_exterieur_2.5",
+     "moins"
+    ]
+   ],
+   "niveau": "normal",
+   "echecs_max": null,
+   "cote_min": 1.25,
+   "sans_cote": false,
+   "reference_historique": {
+    "decouverte": {
+     "matchs": 7831,
+     "gagnes": 6867,
+     "periode": "avant le 01/04/2026 (Football-Data)"
+    },
+    "controle": {
+     "matchs": 4355,
+     "gagnes": 3755,
+     "periode": "01/04/2026 au 27/09/2026 (Football-Data)"
+    },
+    "publiables_betpawa": {
+     "matchs": 84,
+     "gagnes": 65,
+     "periode": "28/09/2026 au 25/10/2026, cotes BetPawa figées",
+     "par_jour": 3.0,
+     "rendement": 0.0586,
+     "rendement_ic95": [
+      -0.0669,
+      0.184
+     ]
+    }
+   }
+  },
+  {
+   "id": "over_under_domicile_2.5|moins",
+   "nom": "L'équipe à domicile marque au plus 2 buts",
+   "cles": [
+    [
+     "over_under_domicile_2.5",
+     "moins"
+    ]
+   ],
+   "niveau": "maximal",
+   "echecs_max": 1,
+   "cote_min": 1.25,
+   "sans_cote": false,
+   "reference_historique": {
+    "decouverte": {
+     "matchs": 2592,
+     "gagnes": 2233,
+     "periode": "avant le 01/04/2026 (Football-Data)"
+    },
+    "controle": {
+     "matchs": 1129,
+     "gagnes": 957,
+     "periode": "01/04/2026 au 27/09/2026 (Football-Data)"
+    },
+    "publiables_betpawa": {
+     "matchs": 46,
+     "gagnes": 34,
+     "periode": "28/09/2026 au 25/10/2026, cotes BetPawa figées",
+     "par_jour": 1.6,
+     "rendement": 0.0146,
+     "rendement_ic95": [
+      -0.1644,
+      0.1936
+     ]
+    }
+   }
+  }
+ ]
+}
