@@ -109,7 +109,25 @@ def _source_plus15_max(journal: Path = tickets.JOURNAL) -> dict[str, Any]:
     return {"geles": list(geles.values()), "paris": paris, "doublons": 0, "dates_gelees": [g["date"] for g in geles.values()], "gel_apres_coup_d_envoi": 0}
 
 
+def _source_regle(marche: str, journal: Path = suivi.JOURNAL) -> dict[str, Any]:
+    """Configuration découverte (decouverte.py) : seules les lignes gelées avec l'empreinte de la règle ACTUELLE comptent ; une règle modifiée repart de zéro."""
+    regle = suivi.regles_decouvertes().get(marche)
+    emp = suivi.empreinte_regle(regle) if regle else None
+    lignes = suivi._lire(journal)
+    res = {l["match_id"]: l for l in lignes if l["type"] == "resultat_indice_regle" and l["indice"] == marche and l.get("empreinte_regle") == emp}
+    vus: dict[str, dict] = {}
+    doublons = 0
+    for l in lignes:
+        if l["type"] == "indice_regle" and l["indice"] == marche and l.get("empreinte_regle") == emp:
+            doublons += l["match_id"] in vus
+            vus.setdefault(l["match_id"], l)
+    paris = [{"id": "%s|%s" % (k, marche), "match_id": k, "date": l["date"], "gagne": res[k]["gagne"], "cote": l.get("cote_betpawa")} for k, l in vus.items() if k in res]
+    return {"geles": list(vus.values()), "paris": paris, "doublons": doublons, "dates_gelees": [l["date"] for l in vus.values()],
+            "gel_apres_coup_d_envoi": sum(1 for l in vus.values() if not l.get("coup_d_envoi_utc") or l["gele_le"] >= l["coup_d_envoi_utc"])}
+
+
 SOURCES: dict[str, Callable[[str], dict[str, Any]]] = {
+    "regle": lambda arg: _source_regle(arg),
     "bandes": lambda arg: _source_bandes(arg),
     "plus15_max": lambda arg: _source_plus15_max(),
 }
@@ -135,6 +153,13 @@ def seuils_reels(indice: dict[str, Any]) -> dict[str, Any]:
         r = (_json(suivi.BANDES).get("regles") or {}).get(arg) or {}
         return {"cote_min": r.get("cote_min"), "cote_max": r.get("cote_max"), "bornes": r.get("bornes"), "probabilite_min": None,
                 "source_cotes": "BetPawa"}
+    if nature == "regle":
+        r = suivi.regles_decouvertes().get(arg)
+        if not r:
+            return {}
+        from . import decouverte
+        return {"conditions": r["regle"], "conditions_texte": decouverte.texte_conditions(r["regle"]), "empreinte_regle": suivi.empreinte_regle(r), "probabilite_min": None,
+                "cote_min": None, "cote_max": None, "source_cotes": "BetPawa (cote enregistrée pour information, non filtrante)"}
     if nature == "plus15_max":
         f = _json(tickets.PLUS15)
         return {"total_attendu_min": f.get("palier_total_attendu"), "cote_min": f.get("cote_min"), "cote_max": None, "probabilite_min": None,
@@ -177,6 +202,13 @@ def _reference(indice: dict[str, Any]) -> dict[str, Any] | None:
             return {"nature": "Rejeu historique (non gelé, observé avant la règle) : ce n'est PAS le suivi réel.", "matchs": x.get("matchs"),
                     "gagnes": x.get("reussis"), "taux": x.get("reussite"), "wilson_bas_95": x.get("wilson_bas"),
                     "periode": "bloc Football-Data 2025-2026 + archive ARCHETYPE", "source": t.get("source")}
+    if nature == "regle":
+        r = suivi.regles_decouvertes().get(arg)
+        c = (r or {}).get("verification_C")
+        if c:
+            return {"nature": "Vérification chronologique de la recherche (règle apprise sur 2025, retenue sur janvier–mars 2026, vérifiée depuis le 01/04/2026) : ce n'est PAS le suivi réel.",
+                    "matchs": c["matchs"], "gagnes": c["gagnes"], "taux": c["taux"], "wilson_bas_95": c["wilson_bas_95"],
+                    "periode": "depuis le 01/04/2026", "source": "taux de base du marché sur la même période : %.1f %%" % (100 * r["taux_de_base_C"])}
     if nature == "bandes":
         ref = (_json(suivi.BANDES).get("reference_etude") or {}).get(arg, {}).get("tous_matchs_de_la_bande")
         if ref:

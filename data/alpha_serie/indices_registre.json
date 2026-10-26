@@ -68,6 +68,160 @@
      "empreinte_apres": "29e8ad7bcf89"
     }
    ]
+  },
+  {
+   "id": "regle_vic_ext",
+   "nom": "Victoire à l'extérieur — configuration découverte",
+   "famille": "Découverte",
+   "marche": "Victoire à l'extérieur",
+   "statut": "en_validation",
+   "source": "regle:vic_ext",
+   "conditions": "Configuration trouvée par le protocole commun : buts attendus du domicile <= 0,9286 ET plus fort niveau des deux équipes >= 1,571. Tous les matchs qui la vérifient sont gelés avant le coup d'envoi, défaites comprises.",
+   "objectif_reussite": 0.3072,
+   "limites": "Règle choisie parmi des dizaines de milliers de combinaisons : son taux observé est optimiste. Aucun suivi réel pour l'instant. L'objectif est le taux de base du marché (ce que réussit un pari pris au hasard sur ce marché).",
+   "modifications": [
+    {
+     "date": "2026-10-26",
+     "auteur": "Patrick (demande) · Claude (protocole)",
+     "champ": "création",
+     "ancien": null,
+     "nouveau": "statut en_validation",
+     "motif": "Règle retenue par le protocole commun (apprentissage, sélection, vérification chronologique).",
+     "empreinte_apres": "46e082cc69b6"
+    }
+   ]
+  },
+  {
+   "id": "regle_dc_1n",
+   "nom": "Double chance 1N — configuration découverte",
+   "famille": "Découverte",
+   "marche": "Double chance 1N",
+   "statut": "en_validation",
+   "source": "regle:dc_1n",
+   "conditions": "Configuration trouvée par le protocole commun : buts attendus du domicile >= 2,0714 ET plus faible niveau des deux équipes <= 0,929. Tous les matchs qui la vérifient sont gelés avant le coup d'envoi, défaites comprises.",
+   "objectif_reussite": 0.6928,
+   "limites": "Règle choisie parmi des dizaines de milliers de combinaisons : son taux observé est optimiste. Aucun suivi réel pour l'instant. L'objectif est le taux de base du marché (ce que réussit un pari pris au hasard sur ce marché).",
+   "modifications": [
+    {
+     "date": "2026-10-26",
+     "auteur": "Patrick (demande) · Claude (protocole)",
+     "champ": "création",
+     "ancien": null,
+     "nouveau": "statut en_validation",
+     "motif": "Règle retenue par le protocole commun (apprentissage, sélection, vérification chronologique).",
+     "empreinte_apres": "4d526c2a9b59"
+    }
+   ]
+  },
+  {
+   "id": "regle_plus_2_5",
+   "nom": "Plus de 2,5 buts — configuration découverte",
+   "famille": "Découverte",
+   "marche": "Plus de 2,5 buts",
+   "statut": "en_validation",
+   "source": "regle:plus_2_5",
+   "conditions": "Configuration trouvée par le protocole commun : buts encaissés par le domicile >= 1,2857 ET écart de niveau D >= 2,0. Tous les matchs qui la vérifient sont gelés avant le coup d'envoi, défaites comprises.",
+   "objectif_reussite": 0.5489,
+   "limites": "Règle choisie parmi des dizaines de milliers de combinaisons : son taux observé est optimiste. Aucun suivi réel pour l'instant. L'objectif est le taux de base du marché (ce que réussit un pari pris au hasard sur ce marché).",
+   "modifications": [
+    {
+     "date": "2026-10-26",
+     "auteur": "Patrick (demande) · Claude (protocole)",
+     "champ": "création",
+     "ancien": null,
+     "nouveau": "statut en_validation",
+     "motif": "Règle retenue par le protocole commun (apprentissage, sélection, vérification chronologique).",
+     "empreinte_apres": "a361a5274aeb"
+    }
+   ]
+  },
+  {
+   "id": "regle_ext_plus_1_5",
+   "nom": "L'extérieur marque 2 buts ou plus — configuration découverte",
+   "famille": "Découverte",
+   "marche": "L'extérieur marque 2 buts ou plus",
+   "statut": "en_validation",
+   "source": "regle:ext_plus_1_5",
+   "conditions": "Configuration trouvée par le protocole commun : total de buts attendu >= 3,4286 ET supériorité offensive attendue (domicile − extérieur) <= -0,2143. Tous les matchs qui la vérifient sont gelés avant le coup d'envoi, défaites comprises.",
+   "objectif_reussite": 0.3649,
+   "limites": "Règle choisie parmi des dizaines de milliers de combinaisons : son taux observé est optimiste. Aucun suivi réel pour l'instant. L'objectif est le taux de base du marché (ce que réussit un pari pris au hasard sur ce marché).",
+   "modifications": [
+    {
+     "date": "2026-10-26",
+     "auteur": "Patrick (demande) · Claude (protocole)",
+     "champ": "création",
+     "ancien": null,
+     "nouveau": "statut en_validation",
+     "motif": "Règle retenue par le protocole commun (apprentissage, sélection, vérification chronologique).",
+     "empreinte_apres": "705e03bd72c0"
+    }
+   ]
+  },
+  {
+   "id": "regle_hcp_dom_m1_5",
+   "nom": "Handicap -1,5 domicile (gagne par 2 buts ou plus) — configuration découverte",
+   "famille": "Découverte",
+   "marche": "Handicap -1,5 domicile (gagne par 2 buts ou plus)",
+   "statut": "en_validation",
+   "source": "regle:hcp_dom_m1_5",
+   "conditions": "Configuration trouvée par le protocole commun : total attendu du niveau >= 3,143 ET plus faible niveau des deux équipes <= 0,929. Tous les matchs qui la vérifient sont gelés avant le coup d'envoi, défaites comprises.",
+   "objectif_reussite": 0.2183,
+   "limites": "Règle choisie parmi des dizaines de milliers de combinaisons : son taux observé est optimiste. Aucun suivi réel pour l'instant. L'objectif est le taux de base du marché (ce que réussit un pari pris au hasard sur ce marché).",
+   "modifications": [
+    {
+     "date": "2026-10-26",
+     "auteur": "Patrick (demande) · Claude (protocole)",
+     "champ": "création",
+     "ancien": null,
+     "nouveau": "statut en_validation",
+     "motif": "Règle retenue par le protocole commun (apprentissage, sélection, vérification chronologique).",
+     "empreinte_apres": "b99c4c956cbb"
+    }
+   ]
+  },
+  {
+   "id": "regle_hcp_ext_m1_5",
+   "nom": "Handicap -1,5 extérieur (gagne par 2 buts ou plus) — configuration découverte",
+   "famille": "Découverte",
+   "marche": "Handicap -1,5 extérieur (gagne par 2 buts ou plus)",
+   "statut": "en_validation",
+   "source": "regle:hcp_ext_m1_5",
+   "conditions": "Configuration trouvée par le protocole commun : buts marqués par le domicile (moyenne à domicile) >= 1,5714 ET supériorité offensive attendue (domicile − extérieur) <= -0,4286. Tous les matchs qui la vérifient sont gelés avant le coup d'envoi, défaites comprises.",
+   "objectif_reussite": 0.1312,
+   "limites": "Règle choisie parmi des dizaines de milliers de combinaisons : son taux observé est optimiste. Aucun suivi réel pour l'instant. L'objectif est le taux de base du marché (ce que réussit un pari pris au hasard sur ce marché).",
+   "modifications": [
+    {
+     "date": "2026-10-26",
+     "auteur": "Patrick (demande) · Claude (protocole)",
+     "champ": "création",
+     "ancien": null,
+     "nouveau": "statut en_validation",
+     "motif": "Règle retenue par le protocole commun (apprentissage, sélection, vérification chronologique).",
+     "empreinte_apres": "17a1c7ec0cf8"
+    }
+   ]
+  },
+  {
+   "id": "regle_hcp_dom_p1_5",
+   "nom": "Handicap +1,5 domicile (ne perd pas par 2 buts ou plus) — configuration découverte",
+   "famille": "Découverte",
+   "marche": "Handicap +1,5 domicile (ne perd pas par 2 buts ou plus)",
+   "statut": "en_validation",
+   "source": "regle:hcp_dom_p1_5",
+   "conditions": "Configuration trouvée par le protocole commun : buts attendus du domicile >= 1,8333 ET plus faible niveau des deux équipes <= 1,0. Tous les matchs qui la vérifient sont gelés avant le coup d'envoi, défaites comprises.",
+   "objectif_reussite": 0.8688,
+   "limites": "Règle choisie parmi des dizaines de milliers de combinaisons : son taux observé est optimiste. Aucun suivi réel pour l'instant. L'objectif est le taux de base du marché (ce que réussit un pari pris au hasard sur ce marché). Marché à cote basse : une grande part des matchs est sous la cote minimale 1,25 de BetPawa, donc peu jouable.",
+   "modifications": [
+    {
+     "date": "2026-10-26",
+     "auteur": "Patrick (demande) · Claude (protocole)",
+     "champ": "création",
+     "ancien": null,
+     "nouveau": "statut en_validation",
+     "motif": "Règle retenue par le protocole commun (apprentissage, sélection, vérification chronologique).",
+     "empreinte_apres": "ac019a398150"
+    }
+   ]
   }
  ]
 }

@@ -133,13 +133,14 @@ def test_registre_actuel_coherent_et_aucun_indice_valide_d_office():
     reg = I.charger_registre()
     assert I.verifier_registre(reg) == []
     ids = [i["id"] for i in reg["indices"]]
-    assert ids == ["victoire_domicile", "victoire_exterieur", "plus_de_1_5_maximal"] and len(set(ids)) == 3
+    assert ids[:3] == ["victoire_domicile", "victoire_exterieur", "plus_de_1_5_maximal"] and len(set(ids)) == len(ids)
+    assert all(x.startswith("regle_") for x in ids[3:]) and len(ids) > 3
     assert all(i["statut"] == "en_validation" for i in reg["indices"])
 
 
 def test_les_seuils_affiches_sont_ceux_que_le_suivi_lit_vraiment():
     reg = I.charger_registre()
-    d, e, p = (I.seuils_reels(i) for i in reg["indices"])
+    d, e, p = (I.seuils_reels(i) for i in reg["indices"][:3])
     regles = json.loads((RACINE / "data/alpha_serie/bandes_1x2.json").read_text(encoding="utf-8"))["regles"]
     assert (d["cote_min"], d["cote_max"]) == (regles["domicile"]["cote_min"], regles["domicile"]["cote_max"]) == (1.33, 1.5)
     assert (e["cote_min"], e["cote_max"]) == (regles["exterieur"]["cote_min"], regles["exterieur"]["cote_max"]) == (1.38, 1.7)
@@ -223,27 +224,30 @@ def test_la_page_s_affiche_sans_erreur_et_echappe_le_texte(tmp_path):
     data["indices"][0]["nom"] = "<img src=x onerror=alert(1)>"
     data["global"]["classement"][0]["nom"] = "<img src=x onerror=alert(1)>"
     (tmp_path / "d.json").write_text(json.dumps(data), encoding="utf-8")
+    (tmp_path / "r.json").write_text((RACINE / "data/alpha_serie/decouverte_resultats.json").read_text(encoding="utf-8"), encoding="utf-8")
     js = r"""
 const fs=require('fs');const els={};const mk=(id)=>els[id]||(els[id]={id,innerHTML:'',textContent:'',hidden:true});
 let click=null;
 global.window={scrollTo(){}};
 global.document={getElementById:mk,querySelectorAll:()=>[],addEventListener:(t,f)=>{click=f}};
-global.fetch=()=>Promise.resolve({ok:true,json:()=>Promise.resolve(JSON.parse(fs.readFileSync(process.argv[2],'utf8')))});
+global.fetch=(u)=>Promise.resolve({ok:true,json:()=>Promise.resolve(JSON.parse(fs.readFileSync(String(u).includes('decouverte')?process.argv[4]:process.argv[2],'utf8')))});
 eval(fs.readFileSync(process.argv[3],'utf8'));
 const tick=()=>new Promise(r=>setTimeout(r,20));
 (async()=>{await tick();const out={};
  out.total=mk('ia').innerHTML;
  const btn=(vue)=>({closest:(s)=>s==='#ia-vues button'?{dataset:{vue}}:null});
  click({target:btn('marche')});out.marche=mk('ia').innerHTML;
+ click({target:btn('recherche')});out.recherche=mk('ia').innerHTML;
  click({target:btn('gestion')});out.gestion=mk('ia').innerHTML;
  out.maj=mk('maj').textContent;console.log(JSON.stringify(out));})();
 """
     (tmp_path / "t.js").write_text(js, encoding="utf-8")
-    r = subprocess.run(["node", str(tmp_path / "t.js"), str(tmp_path / "d.json"), str(RACINE / "af-indice-alpha.js")], capture_output=True, text=True, timeout=60)
+    r = subprocess.run(["node", str(tmp_path / "t.js"), str(tmp_path / "d.json"), str(RACINE / "af-indice-alpha.js"), str(tmp_path / "r.json")], capture_output=True, text=True, timeout=60)
     assert r.returncode == 0, r.stderr
     o = json.loads(r.stdout)
-    for vue in ("total", "marche", "gestion"):
+    for vue in ("total", "marche", "recherche", "gestion"):
         assert o[vue] and "undefined" not in o[vue] and "NaN" not in o[vue] and "<img" not in o[vue], vue
     assert "Victoire à l&#39;extérieur" in o["total"] and "&lt;img" in o["total"]
     assert "Historique des modifications" in o["gestion"]
+    assert "Recherche marché par marché" in o["recherche"] and "En étude" in o["recherche"] and "Vérification depuis avril" in o["recherche"]
     assert "Suivi réel" in o["marche"] and "Étude historique" in o["marche"]

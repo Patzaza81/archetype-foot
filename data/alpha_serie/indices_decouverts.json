@@ -1,0 +1,327 @@
+{
+ "note": "Règles trouvées sur A, retenues sur B, vérifiées sur C, puis GELÉES ici. Leur suivi réel (gel avant match) est indépendant de ces chiffres.",
+ "regles": {
+  "vic_ext": {
+   "nom": "Victoire à l'extérieur",
+   "gele_le": "2026-10-26",
+   "regle": [
+    {
+     "var": "xh",
+     "op": "<=",
+     "val": 0.9286
+    },
+    {
+     "var": "mx",
+     "op": ">=",
+     "val": 1.571
+    }
+   ],
+   "taux_de_base_C": 0.3072,
+   "apprentissage_A": {
+    "matchs": 78,
+    "gagnes": 44,
+    "perdus": 34,
+    "taux": 0.5641,
+    "wilson_bas_95": 0.4536,
+    "par_jour": 0.25
+   },
+   "selection_B": {
+    "matchs": 67,
+    "gagnes": 37,
+    "perdus": 30,
+    "taux": 0.5522,
+    "wilson_bas_95": 0.4336,
+    "par_jour": 0.74
+   },
+   "verification_C": {
+    "matchs": 86,
+    "gagnes": 44,
+    "perdus": 42,
+    "taux": 0.5116,
+    "wilson_bas_95": 0.4078,
+    "par_jour": 0.41
+   },
+   "taux_de_base": {
+    "A": 0.3013,
+    "B": 0.2935,
+    "C": 0.3072
+   }
+  },
+  "dc_1n": {
+   "nom": "Double chance 1N",
+   "gele_le": "2026-10-26",
+   "regle": [
+    {
+     "var": "xh",
+     "op": ">=",
+     "val": 2.0714
+    },
+    {
+     "var": "mn",
+     "op": "<=",
+     "val": 0.929
+    }
+   ],
+   "taux_de_base_C": 0.6928,
+   "apprentissage_A": {
+    "matchs": 131,
+    "gagnes": 123,
+    "perdus": 8,
+    "taux": 0.9389,
+    "wilson_bas_95": 0.8841,
+    "par_jour": 0.43
+   },
+   "selection_B": {
+    "matchs": 113,
+    "gagnes": 100,
+    "perdus": 13,
+    "taux": 0.885,
+    "wilson_bas_95": 0.8131,
+    "par_jour": 1.26
+   },
+   "verification_C": {
+    "matchs": 190,
+    "gagnes": 171,
+    "perdus": 19,
+    "taux": 0.9,
+    "wilson_bas_95": 0.8491,
+    "par_jour": 0.91
+   },
+   "taux_de_base": {
+    "A": 0.6987,
+    "B": 0.7065,
+    "C": 0.6928
+   }
+  },
+  "plus_2_5": {
+   "nom": "Plus de 2,5 buts",
+   "gele_le": "2026-10-26",
+   "regle": [
+    {
+     "var": "gah",
+     "op": ">=",
+     "val": 1.2857
+    },
+    {
+     "var": "D",
+     "op": ">=",
+     "val": 2.0
+    }
+   ],
+   "taux_de_base_C": 0.5489,
+   "apprentissage_A": {
+    "matchs": 71,
+    "gagnes": 52,
+    "perdus": 19,
+    "taux": 0.7324,
+    "wilson_bas_95": 0.6195,
+    "par_jour": 0.23
+   },
+   "selection_B": {
+    "matchs": 39,
+    "gagnes": 27,
+    "perdus": 12,
+    "taux": 0.6923,
+    "wilson_bas_95": 0.5358,
+    "par_jour": 0.43
+   },
+   "verification_C": {
+    "matchs": 150,
+    "gagnes": 100,
+    "perdus": 50,
+    "taux": 0.6667,
+    "wilson_bas_95": 0.5879,
+    "par_jour": 0.72
+   },
+   "taux_de_base": {
+    "A": 0.514,
+    "B": 0.5241,
+    "C": 0.5489
+   }
+  },
+  "ext_plus_1_5": {
+   "nom": "L'extérieur marque 2 buts ou plus",
+   "gele_le": "2026-10-26",
+   "regle": [
+    {
+     "var": "tot",
+     "op": ">=",
+     "val": 3.4286
+    },
+    {
+     "var": "sup",
+     "op": "<=",
+     "val": -0.2143
+    }
+   ],
+   "taux_de_base_C": 0.3649,
+   "apprentissage_A": {
+    "matchs": 91,
+    "gagnes": 59,
+    "perdus": 32,
+    "taux": 0.6484,
+    "wilson_bas_95": 0.5461,
+    "par_jour": 0.3
+   },
+   "selection_B": {
+    "matchs": 34,
+    "gagnes": 20,
+    "perdus": 14,
+    "taux": 0.5882,
+    "wilson_bas_95": 0.4222,
+    "par_jour": 0.38
+   },
+   "verification_C": {
+    "matchs": 140,
+    "gagnes": 79,
+    "perdus": 61,
+    "taux": 0.5643,
+    "wilson_bas_95": 0.4815,
+    "par_jour": 0.67
+   },
+   "taux_de_base": {
+    "A": 0.3364,
+    "B": 0.3377,
+    "C": 0.3649
+   }
+  },
+  "hcp_dom_m1_5": {
+   "nom": "Handicap -1,5 domicile (gagne par 2 buts ou plus)",
+   "gele_le": "2026-10-26",
+   "regle": [
+    {
+     "var": "T",
+     "op": ">=",
+     "val": 3.143
+    },
+    {
+     "var": "mn",
+     "op": "<=",
+     "val": 0.929
+    }
+   ],
+   "taux_de_base_C": 0.2183,
+   "apprentissage_A": {
+    "matchs": 43,
+    "gagnes": 25,
+    "perdus": 18,
+    "taux": 0.5814,
+    "wilson_bas_95": 0.4333,
+    "par_jour": 0.14
+   },
+   "selection_B": {
+    "matchs": 34,
+    "gagnes": 16,
+    "perdus": 18,
+    "taux": 0.4706,
+    "wilson_bas_95": 0.3145,
+    "par_jour": 0.38
+   },
+   "verification_C": {
+    "matchs": 79,
+    "gagnes": 35,
+    "perdus": 44,
+    "taux": 0.443,
+    "wilson_bas_95": 0.3387,
+    "par_jour": 0.38
+   },
+   "taux_de_base": {
+    "A": 0.2188,
+    "B": 0.2088,
+    "C": 0.2183
+   }
+  },
+  "hcp_ext_m1_5": {
+   "nom": "Handicap -1,5 extérieur (gagne par 2 buts ou plus)",
+   "gele_le": "2026-10-26",
+   "regle": [
+    {
+     "var": "gfh",
+     "op": ">=",
+     "val": 1.5714
+    },
+    {
+     "var": "sup",
+     "op": "<=",
+     "val": -0.4286
+    }
+   ],
+   "taux_de_base_C": 0.1312,
+   "apprentissage_A": {
+    "matchs": 53,
+    "gagnes": 18,
+    "perdus": 35,
+    "taux": 0.3396,
+    "wilson_bas_95": 0.2269,
+    "par_jour": 0.17
+   },
+   "selection_B": {
+    "matchs": 33,
+    "gagnes": 11,
+    "perdus": 22,
+    "taux": 0.3333,
+    "wilson_bas_95": 0.1975,
+    "par_jour": 0.37
+   },
+   "verification_C": {
+    "matchs": 90,
+    "gagnes": 25,
+    "perdus": 65,
+    "taux": 0.2778,
+    "wilson_bas_95": 0.1958,
+    "par_jour": 0.43
+   },
+   "taux_de_base": {
+    "A": 0.1317,
+    "B": 0.1268,
+    "C": 0.1312
+   }
+  },
+  "hcp_dom_p1_5": {
+   "nom": "Handicap +1,5 domicile (ne perd pas par 2 buts ou plus)",
+   "gele_le": "2026-10-26",
+   "regle": [
+    {
+     "var": "xh",
+     "op": ">=",
+     "val": 1.8333
+    },
+    {
+     "var": "mn",
+     "op": "<=",
+     "val": 1.0
+    }
+   ],
+   "taux_de_base_C": 0.8688,
+   "apprentissage_A": {
+    "matchs": 324,
+    "gagnes": 312,
+    "perdus": 12,
+    "taux": 0.963,
+    "wilson_bas_95": 0.9364,
+    "par_jour": 1.06
+   },
+   "selection_B": {
+    "matchs": 256,
+    "gagnes": 249,
+    "perdus": 7,
+    "taux": 0.9727,
+    "wilson_bas_95": 0.9446,
+    "par_jour": 2.84
+   },
+   "verification_C": {
+    "matchs": 479,
+    "gagnes": 454,
+    "perdus": 25,
+    "taux": 0.9478,
+    "wilson_bas_95": 0.9241,
+    "par_jour": 2.3
+   },
+   "taux_de_base": {
+    "A": 0.8683,
+    "B": 0.8732,
+    "C": 0.8688
+   }
+  }
+ }
+}

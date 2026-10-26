@@ -1,0 +1,2182 @@
+{
+ "genere_le": "2026-10-26",
+ "lignes_analysees": 14161,
+ "periodes": {
+  "A": "< 2026-01-01",
+  "B": "2026-01-01 à 2026-04-01",
+  "C": ">= 2026-04-01"
+ },
+ "protocole": "(le même pour tous les marchés ; rien n'est décidé parce qu'il « donne un beau pourcentage »)\n1. Données : un match analysé par alpha = une ligne (variables calculées AVANT le match à partir des séries appariées publiées ; résultat réel ; cotes si elles\n   existent, chacune dans sa propre source : moyenne du marché de Football-Data « moy », BetPawa de l'archive ARCHETYPE).\n2. Recherche : conditions « variable >= t » ou « variable <= t » (t = quantiles de la période d'APPRENTISSAGE), seules ou à deux. Rien n'est présumé.\n3. Séparation chronologique : apprentissage A (avant 2026-01-01) -> sélection B (2026-01-01 à 2026-03-31) -> vérification C (depuis 2026-04-01).\n   La règle est choisie sur A puis B ; C n'est calculée QUE pour la règle déjà gelée (une seule par marché et par famille de variables).\n4. Référence propre au marché : le taux de réussite de TOUS les matchs sur la même période (taux de base), la borne basse de Wilson à 95 %, la fréquence par jour,\n   les pertes, et, quand la cote existe, le rendement réel.\n5. Seuil propre au marché : une règle n'est retenue (« en validation ») que si sa borne basse de Wilson sur C dépasse le taux de base de C. Sinon « en étude »\n   (le taux observé dépasse la base mais l'incertitude ne le prouve pas) ou « aucun indice ». Jamais « validé » ici : seule la mesure prospective gelée peut le dire.\n6. Suivi sans triche : voir `suivi.py` (gel avant le coup d'envoi, défaites comprises, sans doublon) ; les résultats de C ne servent jamais à « valider » rétroactivement.\n7. Format commun : une configuration = {marche, variables, conditions, source de cote} ; un nouveau marché s'ajoute au catalogue `MARCHES` sans changer le protocole.",
+ "resultats": [
+  {
+   "marche": "vic_dom",
+   "nom": "Victoire à domicile",
+   "cote_source": null,
+   "lignes": 14161,
+   "taux_de_base": {
+    "A": 0.4414,
+    "B": 0.446,
+    "C": 0.4347
+   },
+   "regles_testees_sur_A": 39556,
+   "retenues_apres_B": 50,
+   "periodes": {
+    "A": "< 2026-01-01",
+    "B": "2026-01-01 à 2026-04-01",
+    "C": ">= 2026-04-01"
+   },
+   "regle": [
+    {
+     "var": "gfa",
+     "op": "<=",
+     "val": 0.8571
+    },
+    {
+     "var": "mx",
+     "op": ">=",
+     "val": 2.1
+    }
+   ],
+   "regle_texte": "buts marqués par l'extérieur (moyenne à l'extérieur) <= 0,8571 ET plus fort niveau des deux équipes >= 2,1",
+   "apprentissage_A": {
+    "matchs": 102,
+    "gagnes": 76,
+    "perdus": 26,
+    "taux": 0.7451,
+    "wilson_bas_95": 0.6527,
+    "par_jour": 0.33
+   },
+   "selection_B": {
+    "matchs": 57,
+    "gagnes": 44,
+    "perdus": 13,
+    "taux": 0.7719,
+    "wilson_bas_95": 0.6479,
+    "par_jour": 0.63
+   },
+   "apprentissage_et_selection_AB": {
+    "matchs": 159,
+    "gagnes": 120,
+    "perdus": 39,
+    "taux": 0.7547,
+    "wilson_bas_95": 0.6824,
+    "par_jour": 0.4
+   },
+   "verification_C": {
+    "matchs": 139,
+    "gagnes": 88,
+    "perdus": 51,
+    "taux": 0.6331,
+    "wilson_bas_95": 0.5504,
+    "par_jour": 0.67
+   },
+   "verdict": "en_etude",
+   "raison": "dégradation : le taux sur C est significativement plus bas que sur A+B",
+   "taux_de_base_C": 0.4347,
+   "cotes_moyenne_marche": {
+    "matchs": 90,
+    "gagnes": 57,
+    "taux": 0.6333,
+    "cote_moyenne": 1.491,
+    "rendement": -0.0874,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 76,
+     "gagnes": 46,
+     "part": 0.844,
+     "taux": 0.6053
+    }
+   },
+   "cotes_betpawa": {
+    "matchs": 47,
+    "gagnes": 29,
+    "taux": 0.617,
+    "cote_moyenne": 1.605,
+    "rendement": -0.0904,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 41,
+     "gagnes": 23,
+     "part": 0.872,
+     "taux": 0.561
+    }
+   }
+  },
+  {
+   "marche": "vic_dom",
+   "nom": "Victoire à domicile",
+   "cote_source": "moy",
+   "lignes": 12909,
+   "taux_de_base": {
+    "A": 0.4409,
+    "B": 0.446,
+    "C": 0.4347
+   },
+   "regles_testees_sur_A": 44764,
+   "retenues_apres_B": 50,
+   "periodes": {
+    "A": "< 2026-01-01",
+    "B": "2026-01-01 à 2026-04-01",
+    "C": ">= 2026-04-01"
+   },
+   "regle": [
+    {
+     "var": "gfa",
+     "op": "<=",
+     "val": 0.8571
+    },
+    {
+     "var": "cote",
+     "op": "<=",
+     "val": 1.48
+    }
+   ],
+   "regle_texte": "buts marqués par l'extérieur (moyenne à l'extérieur) <= 0,8571 ET cote <= 1,48",
+   "apprentissage_A": {
+    "matchs": 169,
+    "gagnes": 137,
+    "perdus": 32,
+    "taux": 0.8107,
+    "wilson_bas_95": 0.7449,
+    "par_jour": 0.55
+   },
+   "selection_B": {
+    "matchs": 107,
+    "gagnes": 85,
+    "perdus": 22,
+    "taux": 0.7944,
+    "wilson_bas_95": 0.7083,
+    "par_jour": 1.19
+   },
+   "apprentissage_et_selection_AB": {
+    "matchs": 276,
+    "gagnes": 222,
+    "perdus": 54,
+    "taux": 0.8043,
+    "wilson_bas_95": 0.7535,
+    "par_jour": 0.7
+   },
+   "verification_C": {
+    "matchs": 163,
+    "gagnes": 120,
+    "perdus": 43,
+    "taux": 0.7362,
+    "wilson_bas_95": 0.6637,
+    "par_jour": 0.82
+   },
+   "verdict": "en_validation",
+   "raison": "borne basse sur C au-dessus du taux de base et taux sans baisse significative par rapport à A+B",
+   "taux_de_base_C": 0.4347,
+   "cotes_moyenne_marche": {
+    "matchs": 163,
+    "gagnes": 120,
+    "taux": 0.7362,
+    "cote_moyenne": 1.327,
+    "rendement": -0.0321,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 123,
+     "gagnes": 86,
+     "part": 0.755,
+     "taux": 0.6992
+    }
+   }
+  },
+  {
+   "marche": "vic_ext",
+   "nom": "Victoire à l'extérieur",
+   "cote_source": null,
+   "lignes": 14161,
+   "taux_de_base": {
+    "A": 0.3013,
+    "B": 0.2935,
+    "C": 0.3072
+   },
+   "regles_testees_sur_A": 39556,
+   "retenues_apres_B": 43,
+   "periodes": {
+    "A": "< 2026-01-01",
+    "B": "2026-01-01 à 2026-04-01",
+    "C": ">= 2026-04-01"
+   },
+   "regle": [
+    {
+     "var": "xh",
+     "op": "<=",
+     "val": 0.9286
+    },
+    {
+     "var": "mx",
+     "op": ">=",
+     "val": 1.571
+    }
+   ],
+   "regle_texte": "buts attendus du domicile <= 0,9286 ET plus fort niveau des deux équipes >= 1,571",
+   "apprentissage_A": {
+    "matchs": 78,
+    "gagnes": 44,
+    "perdus": 34,
+    "taux": 0.5641,
+    "wilson_bas_95": 0.4536,
+    "par_jour": 0.25
+   },
+   "selection_B": {
+    "matchs": 67,
+    "gagnes": 37,
+    "perdus": 30,
+    "taux": 0.5522,
+    "wilson_bas_95": 0.4336,
+    "par_jour": 0.74
+   },
+   "apprentissage_et_selection_AB": {
+    "matchs": 145,
+    "gagnes": 81,
+    "perdus": 64,
+    "taux": 0.5586,
+    "wilson_bas_95": 0.4773,
+    "par_jour": 0.37
+   },
+   "verification_C": {
+    "matchs": 86,
+    "gagnes": 44,
+    "perdus": 42,
+    "taux": 0.5116,
+    "wilson_bas_95": 0.4078,
+    "par_jour": 0.41
+   },
+   "verdict": "en_validation",
+   "raison": "borne basse sur C au-dessus du taux de base et taux sans baisse significative par rapport à A+B",
+   "taux_de_base_C": 0.3072,
+   "cotes_moyenne_marche": {
+    "matchs": 58,
+    "gagnes": 29,
+    "taux": 0.5,
+    "cote_moyenne": 1.993,
+    "rendement": -0.1191,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 54,
+     "gagnes": 26,
+     "part": 0.931,
+     "taux": 0.4815
+    }
+   },
+   "cotes_betpawa": {
+    "matchs": 27,
+    "gagnes": 14,
+    "taux": 0.5185,
+    "cote_moyenne": 2.051,
+    "rendement": -0.1867,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 25,
+     "gagnes": 12,
+     "part": 0.926,
+     "taux": 0.48
+    }
+   }
+  },
+  {
+   "marche": "vic_ext",
+   "nom": "Victoire à l'extérieur",
+   "cote_source": "moy",
+   "lignes": 12909,
+   "taux_de_base": {
+    "A": 0.3014,
+    "B": 0.2935,
+    "C": 0.3057
+   },
+   "regles_testees_sur_A": 44761,
+   "retenues_apres_B": 50,
+   "periodes": {
+    "A": "< 2026-01-01",
+    "B": "2026-01-01 à 2026-04-01",
+    "C": ">= 2026-04-01"
+   },
+   "regle": [
+    {
+     "var": "sh_btts",
+     "op": "<=",
+     "val": 0.6667
+    },
+    {
+     "var": "cote",
+     "op": "<=",
+     "val": 1.96
+    }
+   ],
+   "regle_texte": "part des paires où les deux équipes marquent <= 0,6667 ET cote <= 1,96",
+   "apprentissage_A": {
+    "matchs": 310,
+    "gagnes": 189,
+    "perdus": 121,
+    "taux": 0.6097,
+    "wilson_bas_95": 0.5543,
+    "par_jour": 1.01
+   },
+   "selection_B": {
+    "matchs": 252,
+    "gagnes": 150,
+    "perdus": 102,
+    "taux": 0.5952,
+    "wilson_bas_95": 0.5336,
+    "par_jour": 2.8
+   },
+   "apprentissage_et_selection_AB": {
+    "matchs": 562,
+    "gagnes": 339,
+    "perdus": 223,
+    "taux": 0.6032,
+    "wilson_bas_95": 0.5622,
+    "par_jour": 1.42
+   },
+   "verification_C": {
+    "matchs": 344,
+    "gagnes": 199,
+    "perdus": 145,
+    "taux": 0.5785,
+    "wilson_bas_95": 0.5257,
+    "par_jour": 1.73
+   },
+   "verdict": "en_validation",
+   "raison": "borne basse sur C au-dessus du taux de base et taux sans baisse significative par rapport à A+B",
+   "taux_de_base_C": 0.3057,
+   "cotes_moyenne_marche": {
+    "matchs": 344,
+    "gagnes": 199,
+    "taux": 0.5785,
+    "cote_moyenne": 1.662,
+    "rendement": -0.0616,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 331,
+     "gagnes": 188,
+     "part": 0.962,
+     "taux": 0.568
+    }
+   }
+  },
+  {
+   "marche": "nul",
+   "nom": "Match nul",
+   "cote_source": null,
+   "lignes": 14161,
+   "taux_de_base": {
+    "A": 0.2573,
+    "B": 0.2605,
+    "C": 0.2581
+   },
+   "regles_testees_sur_A": 39556,
+   "retenues_apres_B": 2,
+   "periodes": {
+    "A": "< 2026-01-01",
+    "B": "2026-01-01 à 2026-04-01",
+    "C": ">= 2026-04-01"
+   },
+   "regle": [
+    {
+     "var": "gah",
+     "op": "<=",
+     "val": 0.75
+    },
+    {
+     "var": "gaa",
+     "op": "<=",
+     "val": 0.75
+    }
+   ],
+   "regle_texte": "buts encaissés par le domicile <= 0,75 ET buts encaissés par l'extérieur <= 0,75",
+   "apprentissage_A": {
+    "matchs": 143,
+    "gagnes": 55,
+    "perdus": 88,
+    "taux": 0.3846,
+    "wilson_bas_95": 0.3089,
+    "par_jour": 0.47
+   },
+   "selection_B": {
+    "matchs": 61,
+    "gagnes": 26,
+    "perdus": 35,
+    "taux": 0.4262,
+    "wilson_bas_95": 0.3102,
+    "par_jour": 0.68
+   },
+   "apprentissage_et_selection_AB": {
+    "matchs": 204,
+    "gagnes": 81,
+    "perdus": 123,
+    "taux": 0.3971,
+    "wilson_bas_95": 0.3324,
+    "par_jour": 0.52
+   },
+   "verification_C": {
+    "matchs": 127,
+    "gagnes": 39,
+    "perdus": 88,
+    "taux": 0.3071,
+    "wilson_bas_95": 0.2335,
+    "par_jour": 0.61
+   },
+   "verdict": "en_etude",
+   "raison": "incertitude trop grande : borne basse sur C sous le taux de base",
+   "taux_de_base_C": 0.2581,
+   "cotes_moyenne_marche": {
+    "matchs": 87,
+    "gagnes": 28,
+    "taux": 0.3218,
+    "cote_moyenne": 3.402,
+    "rendement": 0.0693,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 87,
+     "gagnes": 28,
+     "part": 1.0,
+     "taux": 0.3218
+    }
+   },
+   "cotes_betpawa": {
+    "matchs": 40,
+    "gagnes": 11,
+    "taux": 0.275,
+    "cote_moyenne": 3.566,
+    "rendement": -0.087,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 40,
+     "gagnes": 11,
+     "part": 1.0,
+     "taux": 0.275
+    }
+   }
+  },
+  {
+   "marche": "nul",
+   "nom": "Match nul",
+   "cote_source": "moy",
+   "lignes": 12909,
+   "taux_de_base": {
+    "A": 0.2577,
+    "B": 0.2605,
+    "C": 0.2595
+   },
+   "regles_testees_sur_A": 44786,
+   "retenues_apres_B": 25,
+   "periodes": {
+    "A": "< 2026-01-01",
+    "B": "2026-01-01 à 2026-04-01",
+    "C": ">= 2026-04-01"
+   },
+   "regle": [
+    {
+     "var": "sh_o25",
+     "op": "<=",
+     "val": 0.2857
+    },
+    {
+     "var": "cote",
+     "op": "<=",
+     "val": 3.01
+    }
+   ],
+   "regle_texte": "part des paires à 2,5 buts attendus ou plus <= 0,2857 ET cote <= 3,01",
+   "apprentissage_A": {
+    "matchs": 92,
+    "gagnes": 38,
+    "perdus": 54,
+    "taux": 0.413,
+    "wilson_bas_95": 0.3179,
+    "par_jour": 0.3
+   },
+   "selection_B": {
+    "matchs": 41,
+    "gagnes": 19,
+    "perdus": 22,
+    "taux": 0.4634,
+    "wilson_bas_95": 0.3206,
+    "par_jour": 0.46
+   },
+   "apprentissage_et_selection_AB": {
+    "matchs": 133,
+    "gagnes": 57,
+    "perdus": 76,
+    "taux": 0.4286,
+    "wilson_bas_95": 0.3476,
+    "par_jour": 0.34
+   },
+   "verification_C": {
+    "matchs": 51,
+    "gagnes": 17,
+    "perdus": 34,
+    "taux": 0.3333,
+    "wilson_bas_95": 0.2197,
+    "par_jour": 0.26
+   },
+   "verdict": "en_etude",
+   "raison": "incertitude trop grande : borne basse sur C sous le taux de base",
+   "taux_de_base_C": 0.2595,
+   "cotes_moyenne_marche": {
+    "matchs": 51,
+    "gagnes": 17,
+    "taux": 0.3333,
+    "cote_moyenne": 2.828,
+    "rendement": -0.061,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 51,
+     "gagnes": 17,
+     "part": 1.0,
+     "taux": 0.3333
+    }
+   }
+  },
+  {
+   "marche": "dc_1n",
+   "nom": "Double chance 1N",
+   "cote_source": null,
+   "lignes": 14161,
+   "taux_de_base": {
+    "A": 0.6987,
+    "B": 0.7065,
+    "C": 0.6928
+   },
+   "regles_testees_sur_A": 39556,
+   "retenues_apres_B": 46,
+   "periodes": {
+    "A": "< 2026-01-01",
+    "B": "2026-01-01 à 2026-04-01",
+    "C": ">= 2026-04-01"
+   },
+   "regle": [
+    {
+     "var": "xh",
+     "op": ">=",
+     "val": 2.0714
+    },
+    {
+     "var": "mn",
+     "op": "<=",
+     "val": 0.929
+    }
+   ],
+   "regle_texte": "buts attendus du domicile >= 2,0714 ET plus faible niveau des deux équipes <= 0,929",
+   "apprentissage_A": {
+    "matchs": 131,
+    "gagnes": 123,
+    "perdus": 8,
+    "taux": 0.9389,
+    "wilson_bas_95": 0.8841,
+    "par_jour": 0.43
+   },
+   "selection_B": {
+    "matchs": 113,
+    "gagnes": 100,
+    "perdus": 13,
+    "taux": 0.885,
+    "wilson_bas_95": 0.8131,
+    "par_jour": 1.26
+   },
+   "apprentissage_et_selection_AB": {
+    "matchs": 244,
+    "gagnes": 223,
+    "perdus": 21,
+    "taux": 0.9139,
+    "wilson_bas_95": 0.872,
+    "par_jour": 0.62
+   },
+   "verification_C": {
+    "matchs": 190,
+    "gagnes": 171,
+    "perdus": 19,
+    "taux": 0.9,
+    "wilson_bas_95": 0.8491,
+    "par_jour": 0.91
+   },
+   "verdict": "en_validation",
+   "raison": "borne basse sur C au-dessus du taux de base et taux sans baisse significative par rapport à A+B",
+   "taux_de_base_C": 0.6928,
+   "cotes_betpawa": {
+    "matchs": 33,
+    "gagnes": 31,
+    "taux": 0.9394,
+    "cote_moyenne": 1.174,
+    "rendement": 0.0942,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 8,
+     "gagnes": 6,
+     "part": 0.242,
+     "taux": 0.75
+    }
+   }
+  },
+  {
+   "marche": "dc_n2",
+   "nom": "Double chance N2",
+   "cote_source": null,
+   "lignes": 14161,
+   "taux_de_base": {
+    "A": 0.5586,
+    "B": 0.554,
+    "C": 0.5653
+   },
+   "regles_testees_sur_A": 39556,
+   "retenues_apres_B": 44,
+   "periodes": {
+    "A": "< 2026-01-01",
+    "B": "2026-01-01 à 2026-04-01",
+    "C": ">= 2026-04-01"
+   },
+   "regle": [
+    {
+     "var": "xh",
+     "op": "<=",
+     "val": 1.6667
+    },
+    {
+     "var": "mx",
+     "op": ">=",
+     "val": 2.1
+    }
+   ],
+   "regle_texte": "buts attendus du domicile <= 1,6667 ET plus fort niveau des deux équipes >= 2,1",
+   "apprentissage_A": {
+    "matchs": 73,
+    "gagnes": 64,
+    "perdus": 9,
+    "taux": 0.8767,
+    "wilson_bas_95": 0.782,
+    "par_jour": 0.24
+   },
+   "selection_B": {
+    "matchs": 37,
+    "gagnes": 29,
+    "perdus": 8,
+    "taux": 0.7838,
+    "wilson_bas_95": 0.628,
+    "par_jour": 0.41
+   },
+   "apprentissage_et_selection_AB": {
+    "matchs": 110,
+    "gagnes": 93,
+    "perdus": 17,
+    "taux": 0.8455,
+    "wilson_bas_95": 0.7664,
+    "par_jour": 0.28
+   },
+   "verification_C": {
+    "matchs": 82,
+    "gagnes": 58,
+    "perdus": 24,
+    "taux": 0.7073,
+    "wilson_bas_95": 0.6013,
+    "par_jour": 0.39
+   },
+   "verdict": "en_etude",
+   "raison": "dégradation : le taux sur C est significativement plus bas que sur A+B",
+   "taux_de_base_C": 0.5653,
+   "cotes_betpawa": {
+    "matchs": 42,
+    "gagnes": 29,
+    "taux": 0.6905,
+    "cote_moyenne": 1.337,
+    "rendement": -0.1302,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 23,
+     "gagnes": 12,
+     "part": 0.548,
+     "taux": 0.5217
+    }
+   }
+  },
+  {
+   "marche": "dc_12",
+   "nom": "Double chance 12 (pas de nul)",
+   "cote_source": null,
+   "lignes": 14161,
+   "taux_de_base": {
+    "A": 0.7427,
+    "B": 0.7395,
+    "C": 0.7419
+   },
+   "regles_testees_sur_A": 39556,
+   "retenues_apres_B": 0,
+   "periodes": {
+    "A": "< 2026-01-01",
+    "B": "2026-01-01 à 2026-04-01",
+    "C": ">= 2026-04-01"
+   },
+   "verdict": "aucun_indice",
+   "raison": "aucune règle apprise sur A ne tient sur B"
+  },
+  {
+   "marche": "plus_1_5",
+   "nom": "Plus de 1,5 buts",
+   "cote_source": null,
+   "lignes": 14161,
+   "taux_de_base": {
+    "A": 0.7479,
+    "B": 0.7561,
+    "C": 0.7801
+   },
+   "regles_testees_sur_A": 39556,
+   "retenues_apres_B": 22,
+   "periodes": {
+    "A": "< 2026-01-01",
+    "B": "2026-01-01 à 2026-04-01",
+    "C": ">= 2026-04-01"
+   },
+   "regle": [
+    {
+     "var": "xh",
+     "op": ">=",
+     "val": 1.8333
+    },
+    {
+     "var": "xa",
+     "op": ">=",
+     "val": 1.7143
+    }
+   ],
+   "regle_texte": "buts attendus du domicile >= 1,8333 ET buts attendus de l'extérieur >= 1,7143",
+   "apprentissage_A": {
+    "matchs": 99,
+    "gagnes": 90,
+    "perdus": 9,
+    "taux": 0.9091,
+    "wilson_bas_95": 0.8362,
+    "par_jour": 0.32
+   },
+   "selection_B": {
+    "matchs": 33,
+    "gagnes": 31,
+    "perdus": 2,
+    "taux": 0.9394,
+    "wilson_bas_95": 0.8039,
+    "par_jour": 0.37
+   },
+   "apprentissage_et_selection_AB": {
+    "matchs": 132,
+    "gagnes": 121,
+    "perdus": 11,
+    "taux": 0.9167,
+    "wilson_bas_95": 0.8569,
+    "par_jour": 0.33
+   },
+   "verification_C": {
+    "matchs": 133,
+    "gagnes": 111,
+    "perdus": 22,
+    "taux": 0.8346,
+    "wilson_bas_95": 0.7622,
+    "par_jour": 0.64
+   },
+   "verdict": "en_etude",
+   "raison": "incertitude trop grande : borne basse sur C sous le taux de base",
+   "taux_de_base_C": 0.7801,
+   "cotes_betpawa": {
+    "matchs": 42,
+    "gagnes": 36,
+    "taux": 0.8571,
+    "cote_moyenne": 1.124,
+    "rendement": -0.0426,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 1,
+     "gagnes": 0,
+     "part": 0.024,
+     "taux": 0.0
+    }
+   }
+  },
+  {
+   "marche": "moins_1_5",
+   "nom": "Moins de 1,5 buts",
+   "cote_source": null,
+   "lignes": 14161,
+   "taux_de_base": {
+    "A": 0.2521,
+    "B": 0.2439,
+    "C": 0.2199
+   },
+   "regles_testees_sur_A": 39556,
+   "retenues_apres_B": 35,
+   "periodes": {
+    "A": "< 2026-01-01",
+    "B": "2026-01-01 à 2026-04-01",
+    "C": ">= 2026-04-01"
+   },
+   "regle": [
+    {
+     "var": "xh",
+     "op": "<=",
+     "val": 1.4286
+    },
+    {
+     "var": "pe",
+     "op": "<=",
+     "val": 0.0
+    }
+   ],
+   "regle_texte": "buts attendus du domicile <= 1,4286 ET part des paires favorables à l'extérieur <= 0,0",
+   "apprentissage_A": {
+    "matchs": 113,
+    "gagnes": 47,
+    "perdus": 66,
+    "taux": 0.4159,
+    "wilson_bas_95": 0.3293,
+    "par_jour": 0.37
+   },
+   "selection_B": {
+    "matchs": 36,
+    "gagnes": 16,
+    "perdus": 20,
+    "taux": 0.4444,
+    "wilson_bas_95": 0.2954,
+    "par_jour": 0.4
+   },
+   "apprentissage_et_selection_AB": {
+    "matchs": 149,
+    "gagnes": 63,
+    "perdus": 86,
+    "taux": 0.4228,
+    "wilson_bas_95": 0.3464,
+    "par_jour": 0.38
+   },
+   "verification_C": {
+    "matchs": 79,
+    "gagnes": 15,
+    "perdus": 64,
+    "taux": 0.1899,
+    "wilson_bas_95": 0.1186,
+    "par_jour": 0.38
+   },
+   "verdict": "aucun_indice",
+   "raison": "le taux sur C ne dépasse pas le taux de base",
+   "taux_de_base_C": 0.2199,
+   "cotes_betpawa": {
+    "matchs": 31,
+    "gagnes": 9,
+    "taux": 0.2903,
+    "cote_moyenne": 3.098,
+    "rendement": -0.1584,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 31,
+     "gagnes": 9,
+     "part": 1.0,
+     "taux": 0.2903
+    }
+   }
+  },
+  {
+   "marche": "plus_2_5",
+   "nom": "Plus de 2,5 buts",
+   "cote_source": null,
+   "lignes": 14161,
+   "taux_de_base": {
+    "A": 0.514,
+    "B": 0.5241,
+    "C": 0.5489
+   },
+   "regles_testees_sur_A": 39556,
+   "retenues_apres_B": 14,
+   "periodes": {
+    "A": "< 2026-01-01",
+    "B": "2026-01-01 à 2026-04-01",
+    "C": ">= 2026-04-01"
+   },
+   "regle": [
+    {
+     "var": "gah",
+     "op": ">=",
+     "val": 1.2857
+    },
+    {
+     "var": "D",
+     "op": ">=",
+     "val": 2.0
+    }
+   ],
+   "regle_texte": "buts encaissés par le domicile >= 1,2857 ET écart de niveau D >= 2,0",
+   "apprentissage_A": {
+    "matchs": 71,
+    "gagnes": 52,
+    "perdus": 19,
+    "taux": 0.7324,
+    "wilson_bas_95": 0.6195,
+    "par_jour": 0.23
+   },
+   "selection_B": {
+    "matchs": 39,
+    "gagnes": 27,
+    "perdus": 12,
+    "taux": 0.6923,
+    "wilson_bas_95": 0.5358,
+    "par_jour": 0.43
+   },
+   "apprentissage_et_selection_AB": {
+    "matchs": 110,
+    "gagnes": 79,
+    "perdus": 31,
+    "taux": 0.7182,
+    "wilson_bas_95": 0.6278,
+    "par_jour": 0.28
+   },
+   "verification_C": {
+    "matchs": 150,
+    "gagnes": 100,
+    "perdus": 50,
+    "taux": 0.6667,
+    "wilson_bas_95": 0.5879,
+    "par_jour": 0.72
+   },
+   "verdict": "en_validation",
+   "raison": "borne basse sur C au-dessus du taux de base et taux sans baisse significative par rapport à A+B",
+   "taux_de_base_C": 0.5489,
+   "cotes_moyenne_marche": {
+    "matchs": 58,
+    "gagnes": 43,
+    "taux": 0.7414,
+    "cote_moyenne": 1.527,
+    "rendement": 0.1188,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 50,
+     "gagnes": 36,
+     "part": 0.862,
+     "taux": 0.72
+    }
+   },
+   "cotes_betpawa": {
+    "matchs": 27,
+    "gagnes": 15,
+    "taux": 0.5556,
+    "cote_moyenne": 1.551,
+    "rendement": -0.1567,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 27,
+     "gagnes": 15,
+     "part": 1.0,
+     "taux": 0.5556
+    }
+   }
+  },
+  {
+   "marche": "plus_2_5",
+   "nom": "Plus de 2,5 buts",
+   "cote_source": "moy",
+   "lignes": 7037,
+   "taux_de_base": {
+    "A": 0.5084,
+    "B": 0.5329,
+    "C": 0.555
+   },
+   "regles_testees_sur_A": 43530,
+   "retenues_apres_B": 42,
+   "periodes": {
+    "A": "< 2026-01-01",
+    "B": "2026-01-01 à 2026-04-01",
+    "C": ">= 2026-04-01"
+   },
+   "regle": [
+    {
+     "var": "gaa",
+     "op": "<=",
+     "val": 1.0
+    },
+    {
+     "var": "cote",
+     "op": "<=",
+     "val": 1.53
+    }
+   ],
+   "regle_texte": "buts encaissés par l'extérieur <= 1,0 ET cote <= 1,53",
+   "apprentissage_A": {
+    "matchs": 41,
+    "gagnes": 31,
+    "perdus": 10,
+    "taux": 0.7561,
+    "wilson_bas_95": 0.6066,
+    "par_jour": 0.38
+   },
+   "selection_B": {
+    "matchs": 46,
+    "gagnes": 40,
+    "perdus": 6,
+    "taux": 0.8696,
+    "wilson_bas_95": 0.7433,
+    "par_jour": 0.51
+   },
+   "apprentissage_et_selection_AB": {
+    "matchs": 87,
+    "gagnes": 71,
+    "perdus": 16,
+    "taux": 0.8161,
+    "wilson_bas_95": 0.7219,
+    "par_jour": 0.44
+   },
+   "verification_C": {
+    "matchs": 94,
+    "gagnes": 67,
+    "perdus": 27,
+    "taux": 0.7128,
+    "wilson_bas_95": 0.6144,
+    "par_jour": 0.48
+   },
+   "verdict": "en_etude",
+   "raison": "dégradation : le taux sur C est significativement plus bas que sur A+B",
+   "taux_de_base_C": 0.555,
+   "cotes_moyenne_marche": {
+    "matchs": 94,
+    "gagnes": 67,
+    "taux": 0.7128,
+    "cote_moyenne": 1.421,
+    "rendement": 0.0148,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 92,
+     "gagnes": 65,
+     "part": 0.979,
+     "taux": 0.7065
+    }
+   }
+  },
+  {
+   "marche": "moins_2_5",
+   "nom": "Moins de 2,5 buts",
+   "cote_source": null,
+   "lignes": 14161,
+   "taux_de_base": {
+    "A": 0.486,
+    "B": 0.4759,
+    "C": 0.4511
+   },
+   "regles_testees_sur_A": 39556,
+   "retenues_apres_B": 17,
+   "periodes": {
+    "A": "< 2026-01-01",
+    "B": "2026-01-01 à 2026-04-01",
+    "C": ">= 2026-04-01"
+   },
+   "regle": [
+    {
+     "var": "T",
+     "op": "<=",
+     "val": 1.9774
+    },
+    {
+     "var": "sh_btts",
+     "op": "<=",
+     "val": 0.3333
+    }
+   ],
+   "regle_texte": "total attendu du niveau <= 1,9774 ET part des paires où les deux équipes marquent <= 0,3333",
+   "apprentissage_A": {
+    "matchs": 241,
+    "gagnes": 154,
+    "perdus": 87,
+    "taux": 0.639,
+    "wilson_bas_95": 0.5766,
+    "par_jour": 0.79
+   },
+   "selection_B": {
+    "matchs": 146,
+    "gagnes": 85,
+    "perdus": 61,
+    "taux": 0.5822,
+    "wilson_bas_95": 0.5011,
+    "par_jour": 1.62
+   },
+   "apprentissage_et_selection_AB": {
+    "matchs": 387,
+    "gagnes": 239,
+    "perdus": 148,
+    "taux": 0.6176,
+    "wilson_bas_95": 0.5682,
+    "par_jour": 0.98
+   },
+   "verification_C": {
+    "matchs": 245,
+    "gagnes": 132,
+    "perdus": 113,
+    "taux": 0.5388,
+    "wilson_bas_95": 0.4762,
+    "par_jour": 1.18
+   },
+   "verdict": "en_etude",
+   "raison": "dégradation : le taux sur C est significativement plus bas que sur A+B",
+   "taux_de_base_C": 0.4511,
+   "cotes_moyenne_marche": {
+    "matchs": 76,
+    "gagnes": 43,
+    "taux": 0.5658,
+    "cote_moyenne": 1.749,
+    "rendement": -0.0096,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 76,
+     "gagnes": 43,
+     "part": 1.0,
+     "taux": 0.5658
+    }
+   },
+   "cotes_betpawa": {
+    "matchs": 63,
+    "gagnes": 29,
+    "taux": 0.4603,
+    "cote_moyenne": 1.668,
+    "rendement": -0.2589,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 63,
+     "gagnes": 29,
+     "part": 1.0,
+     "taux": 0.4603
+    }
+   }
+  },
+  {
+   "marche": "moins_2_5",
+   "nom": "Moins de 2,5 buts",
+   "cote_source": "moy",
+   "lignes": 7037,
+   "taux_de_base": {
+    "A": 0.4916,
+    "B": 0.4671,
+    "C": 0.445
+   },
+   "regles_testees_sur_A": 43528,
+   "retenues_apres_B": 8,
+   "periodes": {
+    "A": "< 2026-01-01",
+    "B": "2026-01-01 à 2026-04-01",
+    "C": ">= 2026-04-01"
+   },
+   "regle": [
+    {
+     "var": "T",
+     "op": ">=",
+     "val": 2.917
+    },
+    {
+     "var": "cote",
+     "op": "<=",
+     "val": 1.74
+    }
+   ],
+   "regle_texte": "total attendu du niveau >= 2,917 ET cote <= 1,74",
+   "apprentissage_A": {
+    "matchs": 85,
+    "gagnes": 58,
+    "perdus": 27,
+    "taux": 0.6824,
+    "wilson_bas_95": 0.5773,
+    "par_jour": 0.78
+   },
+   "selection_B": {
+    "matchs": 105,
+    "gagnes": 63,
+    "perdus": 42,
+    "taux": 0.6,
+    "wilson_bas_95": 0.5044,
+    "par_jour": 1.17
+   },
+   "apprentissage_et_selection_AB": {
+    "matchs": 190,
+    "gagnes": 121,
+    "perdus": 69,
+    "taux": 0.6368,
+    "wilson_bas_95": 0.5664,
+    "par_jour": 0.95
+   },
+   "verification_C": {
+    "matchs": 58,
+    "gagnes": 34,
+    "perdus": 24,
+    "taux": 0.5862,
+    "wilson_bas_95": 0.458,
+    "par_jour": 0.29
+   },
+   "verdict": "en_validation",
+   "raison": "borne basse sur C au-dessus du taux de base et taux sans baisse significative par rapport à A+B",
+   "taux_de_base_C": 0.445,
+   "cotes_moyenne_marche": {
+    "matchs": 58,
+    "gagnes": 34,
+    "taux": 0.5862,
+    "cote_moyenne": 1.667,
+    "rendement": -0.0272,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 58,
+     "gagnes": 34,
+     "part": 1.0,
+     "taux": 0.5862
+    }
+   }
+  },
+  {
+   "marche": "plus_3_5",
+   "nom": "Plus de 3,5 buts",
+   "cote_source": null,
+   "lignes": 14161,
+   "taux_de_base": {
+    "A": 0.2906,
+    "B": 0.2811,
+    "C": 0.3226
+   },
+   "regles_testees_sur_A": 39556,
+   "retenues_apres_B": 2,
+   "periodes": {
+    "A": "< 2026-01-01",
+    "B": "2026-01-01 à 2026-04-01",
+    "C": ">= 2026-04-01"
+   },
+   "regle": [
+    {
+     "var": "mn",
+     "op": ">=",
+     "val": 1.5
+    },
+    {
+     "var": "pe",
+     "op": "<=",
+     "val": 0.1429
+    }
+   ],
+   "regle_texte": "plus faible niveau des deux équipes >= 1,5 ET part des paires favorables à l'extérieur <= 0,1429",
+   "apprentissage_A": {
+    "matchs": 51,
+    "gagnes": 30,
+    "perdus": 21,
+    "taux": 0.5882,
+    "wilson_bas_95": 0.4517,
+    "par_jour": 0.17
+   },
+   "selection_B": {
+    "matchs": 32,
+    "gagnes": 15,
+    "perdus": 17,
+    "taux": 0.4688,
+    "wilson_bas_95": 0.3087,
+    "par_jour": 0.36
+   },
+   "apprentissage_et_selection_AB": {
+    "matchs": 83,
+    "gagnes": 45,
+    "perdus": 38,
+    "taux": 0.5422,
+    "wilson_bas_95": 0.4355,
+    "par_jour": 0.21
+   },
+   "verification_C": {
+    "matchs": 73,
+    "gagnes": 27,
+    "perdus": 46,
+    "taux": 0.3699,
+    "wilson_bas_95": 0.2682,
+    "par_jour": 0.35
+   },
+   "verdict": "en_etude",
+   "raison": "incertitude trop grande : borne basse sur C sous le taux de base",
+   "taux_de_base_C": 0.3226,
+   "cotes_betpawa": {
+    "matchs": 13,
+    "gagnes": 3,
+    "taux": 0.2308,
+    "cote_moyenne": 2.223,
+    "rendement": -0.5254,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 13,
+     "gagnes": 3,
+     "part": 1.0,
+     "taux": 0.2308
+    }
+   }
+  },
+  {
+   "marche": "moins_3_5",
+   "nom": "Moins de 3,5 buts",
+   "cote_source": null,
+   "lignes": 14161,
+   "taux_de_base": {
+    "A": 0.7094,
+    "B": 0.7189,
+    "C": 0.6774
+   },
+   "regles_testees_sur_A": 39556,
+   "retenues_apres_B": 28,
+   "periodes": {
+    "A": "< 2026-01-01",
+    "B": "2026-01-01 à 2026-04-01",
+    "C": ">= 2026-04-01"
+   },
+   "regle": [
+    {
+     "var": "sh_o25",
+     "op": ">=",
+     "val": 0.5714
+    },
+    {
+     "var": "nfaibles",
+     "op": ">=",
+     "val": 6.0
+    }
+   ],
+   "regle_texte": "part des paires à 2,5 buts attendus ou plus >= 0,5714 ET matchs passés à 0 ou 1 but >= 6,0",
+   "apprentissage_A": {
+    "matchs": 83,
+    "gagnes": 74,
+    "perdus": 9,
+    "taux": 0.8916,
+    "wilson_bas_95": 0.8066,
+    "par_jour": 0.27
+   },
+   "selection_B": {
+    "matchs": 86,
+    "gagnes": 73,
+    "perdus": 13,
+    "taux": 0.8488,
+    "wilson_bas_95": 0.7584,
+    "par_jour": 0.96
+   },
+   "apprentissage_et_selection_AB": {
+    "matchs": 169,
+    "gagnes": 147,
+    "perdus": 22,
+    "taux": 0.8698,
+    "wilson_bas_95": 0.8108,
+    "par_jour": 0.43
+   },
+   "verification_C": {
+    "matchs": 135,
+    "gagnes": 95,
+    "perdus": 40,
+    "taux": 0.7037,
+    "wilson_bas_95": 0.6219,
+    "par_jour": 0.65
+   },
+   "verdict": "en_etude",
+   "raison": "incertitude trop grande : borne basse sur C sous le taux de base",
+   "taux_de_base_C": 0.6774,
+   "cotes_betpawa": {
+    "matchs": 10,
+    "gagnes": 8,
+    "taux": 0.8,
+    "cote_moyenne": 1.267,
+    "rendement": 0.031,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 3,
+     "gagnes": 3,
+     "part": 0.3,
+     "taux": 1.0
+    }
+   }
+  },
+  {
+   "marche": "btts_oui",
+   "nom": "Les deux équipes marquent",
+   "cote_source": null,
+   "lignes": 14161,
+   "taux_de_base": {
+    "A": 0.53,
+    "B": 0.5467,
+    "C": 0.5691
+   },
+   "regles_testees_sur_A": 39556,
+   "retenues_apres_B": 17,
+   "periodes": {
+    "A": "< 2026-01-01",
+    "B": "2026-01-01 à 2026-04-01",
+    "C": ">= 2026-04-01"
+   },
+   "regle": [
+    {
+     "var": "xh",
+     "op": ">=",
+     "val": 1.8333
+    },
+    {
+     "var": "xa",
+     "op": ">=",
+     "val": 1.7143
+    }
+   ],
+   "regle_texte": "buts attendus du domicile >= 1,8333 ET buts attendus de l'extérieur >= 1,7143",
+   "apprentissage_A": {
+    "matchs": 99,
+    "gagnes": 76,
+    "perdus": 23,
+    "taux": 0.7677,
+    "wilson_bas_95": 0.6754,
+    "par_jour": 0.32
+   },
+   "selection_B": {
+    "matchs": 33,
+    "gagnes": 26,
+    "perdus": 7,
+    "taux": 0.7879,
+    "wilson_bas_95": 0.6225,
+    "par_jour": 0.37
+   },
+   "apprentissage_et_selection_AB": {
+    "matchs": 132,
+    "gagnes": 102,
+    "perdus": 30,
+    "taux": 0.7727,
+    "wilson_bas_95": 0.6941,
+    "par_jour": 0.33
+   },
+   "verification_C": {
+    "matchs": 133,
+    "gagnes": 85,
+    "perdus": 48,
+    "taux": 0.6391,
+    "wilson_bas_95": 0.5546,
+    "par_jour": 0.64
+   },
+   "verdict": "en_etude",
+   "raison": "incertitude trop grande : borne basse sur C sous le taux de base",
+   "taux_de_base_C": 0.5691,
+   "cotes_betpawa": {
+    "matchs": 45,
+    "gagnes": 27,
+    "taux": 0.6,
+    "cote_moyenne": 1.436,
+    "rendement": -0.1602,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 42,
+     "gagnes": 25,
+     "part": 0.933,
+     "taux": 0.5952
+    }
+   }
+  },
+  {
+   "marche": "btts_non",
+   "nom": "Les deux équipes ne marquent pas",
+   "cote_source": null,
+   "lignes": 14161,
+   "taux_de_base": {
+    "A": 0.47,
+    "B": 0.4533,
+    "C": 0.4309
+   },
+   "regles_testees_sur_A": 39556,
+   "retenues_apres_B": 14,
+   "periodes": {
+    "A": "< 2026-01-01",
+    "B": "2026-01-01 à 2026-04-01",
+    "C": ">= 2026-04-01"
+   },
+   "regle": [
+    {
+     "var": "sup",
+     "op": ">=",
+     "val": 0.5714
+    },
+    {
+     "var": "mx",
+     "op": "<=",
+     "val": 1.357
+    }
+   ],
+   "regle_texte": "supériorité offensive attendue (domicile − extérieur) >= 0,5714 ET plus fort niveau des deux équipes <= 1,357",
+   "apprentissage_A": {
+    "matchs": 103,
+    "gagnes": 65,
+    "perdus": 38,
+    "taux": 0.6311,
+    "wilson_bas_95": 0.5347,
+    "par_jour": 0.34
+   },
+   "selection_B": {
+    "matchs": 58,
+    "gagnes": 35,
+    "perdus": 23,
+    "taux": 0.6034,
+    "wilson_bas_95": 0.4749,
+    "par_jour": 0.64
+   },
+   "apprentissage_et_selection_AB": {
+    "matchs": 161,
+    "gagnes": 100,
+    "perdus": 61,
+    "taux": 0.6211,
+    "wilson_bas_95": 0.5442,
+    "par_jour": 0.41
+   },
+   "verification_C": {
+    "matchs": 79,
+    "gagnes": 33,
+    "perdus": 46,
+    "taux": 0.4177,
+    "wilson_bas_95": 0.3153,
+    "par_jour": 0.38
+   },
+   "verdict": "aucun_indice",
+   "raison": "le taux sur C ne dépasse pas le taux de base",
+   "taux_de_base_C": 0.4309,
+   "cotes_betpawa": {
+    "matchs": 20,
+    "gagnes": 7,
+    "taux": 0.35,
+    "cote_moyenne": 1.731,
+    "rendement": -0.4465,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 20,
+     "gagnes": 7,
+     "part": 1.0,
+     "taux": 0.35
+    }
+   }
+  },
+  {
+   "marche": "dom_plus_0_5",
+   "nom": "Le domicile marque",
+   "cote_source": null,
+   "lignes": 14161,
+   "taux_de_base": {
+    "A": 0.7732,
+    "B": 0.7785,
+    "C": 0.7929
+   },
+   "regles_testees_sur_A": 39556,
+   "retenues_apres_B": 40,
+   "periodes": {
+    "A": "< 2026-01-01",
+    "B": "2026-01-01 à 2026-04-01",
+    "C": ">= 2026-04-01"
+   },
+   "regle": [
+    {
+     "var": "gah",
+     "op": "<=",
+     "val": 0.5714
+    },
+    {
+     "var": "mx",
+     "op": ">=",
+     "val": 1.9
+    }
+   ],
+   "regle_texte": "buts encaissés par le domicile <= 0,5714 ET plus fort niveau des deux équipes >= 1,9",
+   "apprentissage_A": {
+    "matchs": 60,
+    "gagnes": 58,
+    "perdus": 2,
+    "taux": 0.9667,
+    "wilson_bas_95": 0.8864,
+    "par_jour": 0.2
+   },
+   "selection_B": {
+    "matchs": 34,
+    "gagnes": 33,
+    "perdus": 1,
+    "taux": 0.9706,
+    "wilson_bas_95": 0.8508,
+    "par_jour": 0.38
+   },
+   "apprentissage_et_selection_AB": {
+    "matchs": 94,
+    "gagnes": 91,
+    "perdus": 3,
+    "taux": 0.9681,
+    "wilson_bas_95": 0.9103,
+    "par_jour": 0.24
+   },
+   "verification_C": {
+    "matchs": 87,
+    "gagnes": 79,
+    "perdus": 8,
+    "taux": 0.908,
+    "wilson_bas_95": 0.8289,
+    "par_jour": 0.42
+   },
+   "verdict": "en_etude",
+   "raison": "dégradation : le taux sur C est significativement plus bas que sur A+B",
+   "taux_de_base_C": 0.7929,
+   "cotes_betpawa": {
+    "matchs": 15,
+    "gagnes": 12,
+    "taux": 0.8,
+    "cote_moyenne": 1.158,
+    "rendement": -0.0907,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 2,
+     "gagnes": 0,
+     "part": 0.133,
+     "taux": 0.0
+    }
+   }
+  },
+  {
+   "marche": "dom_plus_1_5",
+   "nom": "Le domicile marque 2 buts ou plus",
+   "cote_source": null,
+   "lignes": 14161,
+   "taux_de_base": {
+    "A": 0.4349,
+    "B": 0.4384,
+    "C": 0.4599
+   },
+   "regles_testees_sur_A": 39556,
+   "retenues_apres_B": 42,
+   "periodes": {
+    "A": "< 2026-01-01",
+    "B": "2026-01-01 à 2026-04-01",
+    "C": ">= 2026-04-01"
+   },
+   "regle": [
+    {
+     "var": "T",
+     "op": ">=",
+     "val": 3.143
+    },
+    {
+     "var": "mn",
+     "op": "<=",
+     "val": 0.929
+    }
+   ],
+   "regle_texte": "total attendu du niveau >= 3,143 ET plus faible niveau des deux équipes <= 0,929",
+   "apprentissage_A": {
+    "matchs": 43,
+    "gagnes": 35,
+    "perdus": 8,
+    "taux": 0.814,
+    "wilson_bas_95": 0.6738,
+    "par_jour": 0.14
+   },
+   "selection_B": {
+    "matchs": 34,
+    "gagnes": 24,
+    "perdus": 10,
+    "taux": 0.7059,
+    "wilson_bas_95": 0.5383,
+    "par_jour": 0.38
+   },
+   "apprentissage_et_selection_AB": {
+    "matchs": 77,
+    "gagnes": 59,
+    "perdus": 18,
+    "taux": 0.7662,
+    "wilson_bas_95": 0.6605,
+    "par_jour": 0.19
+   },
+   "verification_C": {
+    "matchs": 79,
+    "gagnes": 51,
+    "perdus": 28,
+    "taux": 0.6456,
+    "wilson_bas_95": 0.5356,
+    "par_jour": 0.38
+   },
+   "verdict": "en_etude",
+   "raison": "dégradation : le taux sur C est significativement plus bas que sur A+B",
+   "taux_de_base_C": 0.4599,
+   "cotes_betpawa": {
+    "matchs": 8,
+    "gagnes": 5,
+    "taux": 0.625,
+    "cote_moyenne": 1.844,
+    "rendement": -0.14,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 4,
+     "gagnes": 1,
+     "part": 0.5,
+     "taux": 0.25
+    }
+   }
+  },
+  {
+   "marche": "ext_plus_0_5",
+   "nom": "L'extérieur marque",
+   "cote_source": null,
+   "lignes": 14161,
+   "taux_de_base": {
+    "A": 0.6844,
+    "B": 0.6932,
+    "C": 0.7164
+   },
+   "regles_testees_sur_A": 39556,
+   "retenues_apres_B": 40,
+   "periodes": {
+    "A": "< 2026-01-01",
+    "B": "2026-01-01 à 2026-04-01",
+    "C": ">= 2026-04-01"
+   },
+   "regle": [
+    {
+     "var": "xh",
+     "op": "<=",
+     "val": 1.4286
+    },
+    {
+     "var": "mx",
+     "op": ">=",
+     "val": 2.1
+    }
+   ],
+   "regle_texte": "buts attendus du domicile <= 1,4286 ET plus fort niveau des deux équipes >= 2,1",
+   "apprentissage_A": {
+    "matchs": 51,
+    "gagnes": 50,
+    "perdus": 1,
+    "taux": 0.9804,
+    "wilson_bas_95": 0.897,
+    "par_jour": 0.17
+   },
+   "selection_B": {
+    "matchs": 30,
+    "gagnes": 27,
+    "perdus": 3,
+    "taux": 0.9,
+    "wilson_bas_95": 0.7438,
+    "par_jour": 0.33
+   },
+   "apprentissage_et_selection_AB": {
+    "matchs": 81,
+    "gagnes": 77,
+    "perdus": 4,
+    "taux": 0.9506,
+    "wilson_bas_95": 0.8798,
+    "par_jour": 0.2
+   },
+   "verification_C": {
+    "matchs": 51,
+    "gagnes": 43,
+    "perdus": 8,
+    "taux": 0.8431,
+    "wilson_bas_95": 0.7199,
+    "par_jour": 0.25
+   },
+   "verdict": "en_etude",
+   "raison": "dégradation : le taux sur C est significativement plus bas que sur A+B",
+   "taux_de_base_C": 0.7164,
+   "cotes_betpawa": {
+    "matchs": 14,
+    "gagnes": 10,
+    "taux": 0.7143,
+    "cote_moyenne": 1.119,
+    "rendement": -0.2114,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 1,
+     "gagnes": 1,
+     "part": 0.071,
+     "taux": 1.0
+    }
+   }
+  },
+  {
+   "marche": "ext_plus_1_5",
+   "nom": "L'extérieur marque 2 buts ou plus",
+   "cote_source": null,
+   "lignes": 14161,
+   "taux_de_base": {
+    "A": 0.3364,
+    "B": 0.3377,
+    "C": 0.3649
+   },
+   "regles_testees_sur_A": 39556,
+   "retenues_apres_B": 22,
+   "periodes": {
+    "A": "< 2026-01-01",
+    "B": "2026-01-01 à 2026-04-01",
+    "C": ">= 2026-04-01"
+   },
+   "regle": [
+    {
+     "var": "tot",
+     "op": ">=",
+     "val": 3.4286
+    },
+    {
+     "var": "sup",
+     "op": "<=",
+     "val": -0.2143
+    }
+   ],
+   "regle_texte": "total de buts attendu >= 3,4286 ET supériorité offensive attendue (domicile − extérieur) <= -0,2143",
+   "apprentissage_A": {
+    "matchs": 91,
+    "gagnes": 59,
+    "perdus": 32,
+    "taux": 0.6484,
+    "wilson_bas_95": 0.5461,
+    "par_jour": 0.3
+   },
+   "selection_B": {
+    "matchs": 34,
+    "gagnes": 20,
+    "perdus": 14,
+    "taux": 0.5882,
+    "wilson_bas_95": 0.4222,
+    "par_jour": 0.38
+   },
+   "apprentissage_et_selection_AB": {
+    "matchs": 125,
+    "gagnes": 79,
+    "perdus": 46,
+    "taux": 0.632,
+    "wilson_bas_95": 0.5447,
+    "par_jour": 0.32
+   },
+   "verification_C": {
+    "matchs": 140,
+    "gagnes": 79,
+    "perdus": 61,
+    "taux": 0.5643,
+    "wilson_bas_95": 0.4815,
+    "par_jour": 0.67
+   },
+   "verdict": "en_validation",
+   "raison": "borne basse sur C au-dessus du taux de base et taux sans baisse significative par rapport à A+B",
+   "taux_de_base_C": 0.3649,
+   "cotes_betpawa": {
+    "matchs": 36,
+    "gagnes": 19,
+    "taux": 0.5278,
+    "cote_moyenne": 1.841,
+    "rendement": -0.0942,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 34,
+     "gagnes": 17,
+     "part": 0.944,
+     "taux": 0.5
+    }
+   }
+  },
+  {
+   "marche": "hcp_dom_m1_5",
+   "nom": "Handicap -1,5 domicile (gagne par 2 buts ou plus)",
+   "cote_source": null,
+   "lignes": 14161,
+   "taux_de_base": {
+    "A": 0.2188,
+    "B": 0.2088,
+    "C": 0.2183
+   },
+   "regles_testees_sur_A": 39556,
+   "retenues_apres_B": 50,
+   "periodes": {
+    "A": "< 2026-01-01",
+    "B": "2026-01-01 à 2026-04-01",
+    "C": ">= 2026-04-01"
+   },
+   "regle": [
+    {
+     "var": "T",
+     "op": ">=",
+     "val": 3.143
+    },
+    {
+     "var": "mn",
+     "op": "<=",
+     "val": 0.929
+    }
+   ],
+   "regle_texte": "total attendu du niveau >= 3,143 ET plus faible niveau des deux équipes <= 0,929",
+   "apprentissage_A": {
+    "matchs": 43,
+    "gagnes": 25,
+    "perdus": 18,
+    "taux": 0.5814,
+    "wilson_bas_95": 0.4333,
+    "par_jour": 0.14
+   },
+   "selection_B": {
+    "matchs": 34,
+    "gagnes": 16,
+    "perdus": 18,
+    "taux": 0.4706,
+    "wilson_bas_95": 0.3145,
+    "par_jour": 0.38
+   },
+   "apprentissage_et_selection_AB": {
+    "matchs": 77,
+    "gagnes": 41,
+    "perdus": 36,
+    "taux": 0.5325,
+    "wilson_bas_95": 0.4221,
+    "par_jour": 0.19
+   },
+   "verification_C": {
+    "matchs": 79,
+    "gagnes": 35,
+    "perdus": 44,
+    "taux": 0.443,
+    "wilson_bas_95": 0.3387,
+    "par_jour": 0.38
+   },
+   "verdict": "en_validation",
+   "raison": "borne basse sur C au-dessus du taux de base et taux sans baisse significative par rapport à A+B",
+   "taux_de_base_C": 0.2183,
+   "cotes_betpawa": {
+    "matchs": 9,
+    "gagnes": 5,
+    "taux": 0.5556,
+    "cote_moyenne": 1.97,
+    "rendement": -0.0633,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 8,
+     "gagnes": 5,
+     "part": 0.889,
+     "taux": 0.625
+    }
+   }
+  },
+  {
+   "marche": "hcp_ext_m1_5",
+   "nom": "Handicap -1,5 extérieur (gagne par 2 buts ou plus)",
+   "cote_source": null,
+   "lignes": 14161,
+   "taux_de_base": {
+    "A": 0.1317,
+    "B": 0.1268,
+    "C": 0.1312
+   },
+   "regles_testees_sur_A": 39556,
+   "retenues_apres_B": 38,
+   "periodes": {
+    "A": "< 2026-01-01",
+    "B": "2026-01-01 à 2026-04-01",
+    "C": ">= 2026-04-01"
+   },
+   "regle": [
+    {
+     "var": "gfh",
+     "op": ">=",
+     "val": 1.5714
+    },
+    {
+     "var": "sup",
+     "op": "<=",
+     "val": -0.4286
+    }
+   ],
+   "regle_texte": "buts marqués par le domicile (moyenne à domicile) >= 1,5714 ET supériorité offensive attendue (domicile − extérieur) <= -0,4286",
+   "apprentissage_A": {
+    "matchs": 53,
+    "gagnes": 18,
+    "perdus": 35,
+    "taux": 0.3396,
+    "wilson_bas_95": 0.2269,
+    "par_jour": 0.17
+   },
+   "selection_B": {
+    "matchs": 33,
+    "gagnes": 11,
+    "perdus": 22,
+    "taux": 0.3333,
+    "wilson_bas_95": 0.1975,
+    "par_jour": 0.37
+   },
+   "apprentissage_et_selection_AB": {
+    "matchs": 86,
+    "gagnes": 29,
+    "perdus": 57,
+    "taux": 0.3372,
+    "wilson_bas_95": 0.2462,
+    "par_jour": 0.22
+   },
+   "verification_C": {
+    "matchs": 90,
+    "gagnes": 25,
+    "perdus": 65,
+    "taux": 0.2778,
+    "wilson_bas_95": 0.1958,
+    "par_jour": 0.43
+   },
+   "verdict": "en_validation",
+   "raison": "borne basse sur C au-dessus du taux de base et taux sans baisse significative par rapport à A+B",
+   "taux_de_base_C": 0.1312,
+   "cotes_betpawa": {
+    "matchs": 30,
+    "gagnes": 12,
+    "taux": 0.4,
+    "cote_moyenne": 3.4,
+    "rendement": 0.1783,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 30,
+     "gagnes": 12,
+     "part": 1.0,
+     "taux": 0.4
+    }
+   }
+  },
+  {
+   "marche": "hcp_dom_p1_5",
+   "nom": "Handicap +1,5 domicile (ne perd pas par 2 buts ou plus)",
+   "cote_source": null,
+   "lignes": 14161,
+   "taux_de_base": {
+    "A": 0.8683,
+    "B": 0.8732,
+    "C": 0.8688
+   },
+   "regles_testees_sur_A": 39556,
+   "retenues_apres_B": 45,
+   "periodes": {
+    "A": "< 2026-01-01",
+    "B": "2026-01-01 à 2026-04-01",
+    "C": ">= 2026-04-01"
+   },
+   "regle": [
+    {
+     "var": "xh",
+     "op": ">=",
+     "val": 1.8333
+    },
+    {
+     "var": "mn",
+     "op": "<=",
+     "val": 1.0
+    }
+   ],
+   "regle_texte": "buts attendus du domicile >= 1,8333 ET plus faible niveau des deux équipes <= 1,0",
+   "apprentissage_A": {
+    "matchs": 324,
+    "gagnes": 312,
+    "perdus": 12,
+    "taux": 0.963,
+    "wilson_bas_95": 0.9364,
+    "par_jour": 1.06
+   },
+   "selection_B": {
+    "matchs": 256,
+    "gagnes": 249,
+    "perdus": 7,
+    "taux": 0.9727,
+    "wilson_bas_95": 0.9446,
+    "par_jour": 2.84
+   },
+   "apprentissage_et_selection_AB": {
+    "matchs": 580,
+    "gagnes": 561,
+    "perdus": 19,
+    "taux": 0.9672,
+    "wilson_bas_95": 0.9494,
+    "par_jour": 1.46
+   },
+   "verification_C": {
+    "matchs": 479,
+    "gagnes": 454,
+    "perdus": 25,
+    "taux": 0.9478,
+    "wilson_bas_95": 0.9241,
+    "par_jour": 2.3
+   },
+   "verdict": "en_validation",
+   "raison": "borne basse sur C au-dessus du taux de base et taux sans baisse significative par rapport à A+B",
+   "taux_de_base_C": 0.8688,
+   "cotes_betpawa": {
+    "matchs": 22,
+    "gagnes": 18,
+    "taux": 0.8182,
+    "cote_moyenne": 1.093,
+    "rendement": -0.1123,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 1,
+     "gagnes": 0,
+     "part": 0.045,
+     "taux": 0.0
+    }
+   }
+  },
+  {
+   "marche": "hcp_ext_p1_5",
+   "nom": "Handicap +1,5 extérieur (ne perd pas par 2 buts ou plus)",
+   "cote_source": null,
+   "lignes": 14161,
+   "taux_de_base": {
+    "A": 0.7812,
+    "B": 0.7912,
+    "C": 0.7817
+   },
+   "regles_testees_sur_A": 39556,
+   "retenues_apres_B": 25,
+   "periodes": {
+    "A": "< 2026-01-01",
+    "B": "2026-01-01 à 2026-04-01",
+    "C": ">= 2026-04-01"
+   },
+   "regle": [
+    {
+     "var": "gfh",
+     "op": "<=",
+     "val": 0.75
+    },
+    {
+     "var": "gfa",
+     "op": ">=",
+     "val": 1.8571
+    }
+   ],
+   "regle_texte": "buts marqués par le domicile (moyenne à domicile) <= 0,75 ET buts marqués par l'extérieur (moyenne à l'extérieur) >= 1,8571",
+   "apprentissage_A": {
+    "matchs": 46,
+    "gagnes": 45,
+    "perdus": 1,
+    "taux": 0.9783,
+    "wilson_bas_95": 0.8866,
+    "par_jour": 0.15
+   },
+   "selection_B": {
+    "matchs": 36,
+    "gagnes": 34,
+    "perdus": 2,
+    "taux": 0.9444,
+    "wilson_bas_95": 0.8186,
+    "par_jour": 0.4
+   },
+   "apprentissage_et_selection_AB": {
+    "matchs": 82,
+    "gagnes": 79,
+    "perdus": 3,
+    "taux": 0.9634,
+    "wilson_bas_95": 0.8979,
+    "par_jour": 0.21
+   },
+   "verification_C": {
+    "matchs": 55,
+    "gagnes": 48,
+    "perdus": 7,
+    "taux": 0.8727,
+    "wilson_bas_95": 0.7598,
+    "par_jour": 0.26
+   },
+   "verdict": "en_etude",
+   "raison": "incertitude trop grande : borne basse sur C sous le taux de base",
+   "taux_de_base_C": 0.7817,
+   "cotes_betpawa": {
+    "matchs": 6,
+    "gagnes": 3,
+    "taux": 0.5,
+    "cote_moyenne": 1.207,
+    "rendement": -0.43,
+    "jouables": {
+     "cote_min": 1.25,
+     "matchs": 1,
+     "gagnes": 0,
+     "part": 0.167,
+     "taux": 0.0
+    }
+   }
+  }
+ ]
+}

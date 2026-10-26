@@ -8,7 +8,7 @@
   const jourFr = (iso) => (iso ? iso.split("-").reverse().join("/") : "—");
   const FI = { non_fiable: "Pas encore fiable", a_confirmer: "À confirmer", fiable: "Fiable" };
   const TD = { baisse: "En baisse", stable: "Pas de baisse détectée", insuffisant: "Tendance : trop peu de semaines" };
-  let D = null, vue = "total", choix = null;
+  let D = null, R = null, vue = "total", choix = null;
 
   const gros = (l) => `<div class="ia-gros">${l.map(([t, v]) => `<div><small>${esc(t)}</small><strong>${esc(v)}</strong></div>`).join("")}</div>`;
   const badges = (r) => `<div class="ia-badges"><span class="ia-badge st-${esc(r.statut)}">${esc(r.statut_libelle)}</span>` +
@@ -46,7 +46,7 @@
   function ficheMarche(r) {
     const ref = r.reference_rejeu;
     const s = r.seuils || {};
-    const seuils = [s.cote_min != null ? `cote BetPawa ≥ ${nb(s.cote_min)}` : "", s.cote_max != null ? `cote ≤ ${nb(s.cote_max)}` : "",
+    const seuils = s.conditions_texte ? `${s.conditions_texte} (cote BetPawa enregistrée, non filtrante)` : [s.cote_min != null ? `cote BetPawa ≥ ${nb(s.cote_min)}` : "", s.cote_max != null ? `cote ≤ ${nb(s.cote_max)}` : "",
       s.total_attendu_min != null ? `total de buts attendu ≥ ${nb(s.total_attendu_min)}` : "", s.probabilite_min != null ? `probabilité ≥ ${pct(s.probabilite_min, 0)}` : "aucun seuil de probabilité"].filter(Boolean).join(" · ");
     return `<section class="ia-carte"><h2>${esc(r.nom)}</h2>${badges(r)}<p>${esc(r.fiabilite.texte)}</p>` +
       `<p><b>Conditions :</b> ${esc(r.conditions)}</p><p><b>Seuils :</b> ${esc(seuils)}</p>` +
@@ -68,6 +68,30 @@
     return `<div class="ia-chips" role="group" aria-label="Choisir un marché">${D.indices.map((r) => `<button type="button" data-id="${esc(r.id)}" aria-pressed="${r.id === cur.id}">${esc(r.nom)}</button>`).join("")}</div>` + ficheMarche(cur);
   }
 
+  const VERD = { en_validation: "En validation", en_etude: "En étude (preuve insuffisante)", aucun_indice: "Aucun indice" };
+  const st = (x) => (x ? `${x.gagnes}/${x.matchs} · ${pct(x.taux)} (bas ${pct(x.wilson_bas_95)}) · ${nb(x.par_jour)}/j` : "—");
+
+  function carteRecherche(r) {
+    const cote = r.cote_source ? " · avec la cote moyenne du marché" : "";
+    const bp = r.cotes_betpawa, mm = r.cotes_moyenne_marche;
+    return `<article class="ia-carte"><h3>${esc(r.nom || r.marche)}${esc(cote)}</h3><div class="ia-badges"><span class="ia-badge st-${r.verdict === "en_validation" ? "en_validation" : "en_etude"}">${esc(VERD[r.verdict] || r.verdict)}</span></div>` +
+      (r.regle_texte ? `<p><b>Règle :</b> ${esc(r.regle_texte)}</p>` + (r.cote_source ? `<p class="ia-avert">Règle qui utilise la cote moyenne du marché (Football-Data) : elle n'est pas suivie en direct, car la cote BetPawa n'est pas la même. Information seulement.</p>` : `<p class="ia-doux">Suivie en direct (gel avant chaque match) si elle est en validation.</p>`) +
+        `<div class="ia-ligne2"><span>Apprentissage 2025</span><span>${esc(st(r.apprentissage_A))}</span><span>Sélection janv.–mars 2026</span><span>${esc(st(r.selection_B))}</span>` +
+        `<span><b>Vérification depuis avril</b></span><span><b>${esc(st(r.verification_C))}</b></span><span>Taux de base du marché</span><span>${pct(r.taux_de_base_C)}</span></div>` +
+        (mm ? `<p class="ia-doux">Cotes moyennes du marché : ${mm.matchs} matchs, cote moyenne ${nb(mm.cote_moyenne)}, rendement ${pct(mm.rendement)}.</p>` : "") +
+        (bp ? `<p class="ia-doux">Cotes BetPawa (28 jours) : ${bp.matchs} matchs, cote moyenne ${nb(bp.cote_moyenne)}, rendement ${pct(bp.rendement)} ; ${bp.jouables.matchs} à cote ≥ ${nb(bp.jouables.cote_min)} (${pct(bp.jouables.part, 0)}).</p>` : "") +
+        `<p class="ia-doux">${esc(r.raison || "")}</p>` : `<p class="ia-vide">${esc(r.raison || "Aucune règle retenue.")}</p>`) + `</article>`;
+  }
+
+  function vueRecherche() {
+    if (!R) return `<p class="ia-vide">Résultats de la recherche indisponibles.</p>`;
+    const g = (v) => R.resultats.filter((r) => r.verdict === v);
+    return `<section class="ia-carte"><h2>Recherche marché par marché</h2><p>Même protocole pour chaque marché : règle cherchée sur 2025, retenue sur janvier–mars 2026, vérifiée une seule fois depuis le 01/04/2026. ` +
+      `Aucun seuil de réussite n'est imposé : une règle n'est « en validation » que si sa borne basse sur la vérification dépasse le taux de base du marché ET que son taux ne s'est pas dégradé. Aucun indice n'est « validé » ici : seul le suivi gelé en direct peut le dire.</p>` +
+      `<p class="ia-doux">${nb(R.lignes_analysees)} matchs analysés par alpha · ${esc(R.genere_le)}.</p></section>` +
+      ["en_validation", "en_etude", "aucun_indice"].map((v) => `<h2 class="at-h2">${esc(VERD[v])} — ${g(v).length}</h2>` + g(v).map(carteRecherche).join("")).join("");
+  }
+
   function vueGestion() {
     return `<section class="ia-carte"><h2>Gestion des indices</h2><p>Règles actives, seuils et état de validation. Chaque indice est indépendant : modifier l'un ne change jamais les autres. ` +
       `Toute modification de règle, de seuil ou de statut doit être inscrite dans l'historique de l'indice ; sinon une alerte apparaît.</p>` +
@@ -80,7 +104,7 @@
 
   function rendre() {
     const el = document.getElementById("ia");
-    el.innerHTML = vue === "total" ? vueTotal() : vue === "marche" ? vueMarche() : vueGestion();
+    el.innerHTML = vue === "total" ? vueTotal() : vue === "marche" ? vueMarche() : vue === "recherche" ? vueRecherche() : vueGestion();
     document.querySelectorAll("#ia-vues button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.vue === vue)));
   }
 
@@ -99,6 +123,7 @@
       document.getElementById("maj").textContent = `Mis à jour le ${d.genere_le.slice(8, 10)}/${d.genere_le.slice(5, 7)} (pipeline de nuit).`;
       document.getElementById("ia-vues").hidden = false;
       rendre();
+      fetch(`data/alpha_serie/decouverte_resultats.json?_=${Date.now()}`).then((r) => (r.ok ? r.json() : null)).then((x) => { R = x; if (vue === "recherche") rendre(); }).catch(() => {});
     })
     .catch((e) => { document.getElementById("maj").textContent = `Impossible de charger l'Indice Alpha (${e.message}). Aucune donnée n'est affichée plutôt que des chiffres faux.`; });
 })();
