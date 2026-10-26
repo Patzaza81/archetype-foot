@@ -176,3 +176,17 @@ def test_regle_des_buts_entiers():
     eq05 = lambda e: coeur.norme_niveau("over_under_domicile_0.5", "plus", {"dom": e, "ext": 1.0, "total": e + 1, "d": 0.0}, PARAMS)[0]
     assert eq05(1.5) and eq05(2.0) and eq05(1.51)                                          # l'équipe marque au moins 1 but : attendu 1,5 minimum
     assert not eq05(1.49) and not eq05(1.0) and not eq05(0.6)
+
+
+def test_cote_minimale_plus_de_1_5_seul():
+    """« Plus de 1,5 buts » seul : minimum 1,22 (Patrick, 26/10/2026) ; tous les autres marchés restent à 1,25 ; multiscores sans limite."""
+    def res(*cles):
+        return {"onglets": {"buts": [{"cle": list(c), "marche": "m", "valeur": 0.9} for c in cles], "equipes": [], "multiscores": []}}
+    r = res(("over_under_1.5", "plus"))
+    for cote in (1.22, 1.23, 1.249):                                                                                      # retenus
+        assert coeur.choisir(r, {"over_under_1.5": {"plus": cote}})["onglets"]["buts"][0]["cote"] == cote
+    for cote in (1.21, 1.2199, 1.10):                                                                                     # écartés
+        e = coeur.choisir(r, {"over_under_1.5": {"plus": cote}})
+        assert e["onglets"]["buts"] == [] and e["ecartes_par_la_cote"][0]["raison"] == f"cote {cote:g} sous le minimum 1.22"
+    assert coeur.choisir(res(("over_under_2.5", "plus")), {"over_under_2.5": {"plus": 1.23}})["onglets"]["buts"] == []   # autre total : 1,25
+    assert coeur.choisir(res(("over_under_1.5", "moins")), {"over_under_1.5": {"moins": 1.23}})["onglets"]["buts"] == []  # « moins de 1,5 » : 1,25

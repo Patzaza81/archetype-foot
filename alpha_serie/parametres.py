@@ -21,6 +21,13 @@ K_PAR_ECHANTILLON = {4: 0.8, 5: 0.9}   # 6 matchs et plus : 1,0 (selon le plus p
 K_DEFAUT = 1.0
 CONSTANTE_MULTISCORE = 3           # un groupe de scores « revient dans une constante de 3 » : au moins 3 scénarios sur l'ensemble des deux branches
 COTE_MIN = 1.25                    # étape 2 seulement ; pas de cote maximale ; aucune limite de cote pour les multiscores
+COTE_MIN_PLUS15 = 1.22             # « Plus de 1,5 buts » SEUL (décision de Patrick, 26/10/2026) : récupérer les paris à cote 1,22–1,24 ; tous les autres marchés restent à 1,25
+CLE_PLUS15 = ("over_under_1.5", "plus")
+
+
+def cote_min_du(cle) -> float:
+    """Cote minimale d'un marché : 1,22 pour « Plus de 1,5 buts » (total du match), 1,25 pour tous les autres."""
+    return COTE_MIN_PLUS15 if tuple(cle) == CLE_PLUS15 else COTE_MIN
 # Règle des buts entiers (Patrick, 24/10/2026), marge d'un demi-but partout :
 # - « plus de 1,5 » = au moins 2 buts -> accepté si le total attendu atteint 2 + 0,5 = 2,5 (marge 1,0 au-dessus de la ligne) ;
 # - « moins de 2,5 » = en réalité « moins de 3 buts » -> accepté si le total attendu est au plus 3 - 0,5 = 2,5 (marge 0 sous la ligne).

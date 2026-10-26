@@ -239,15 +239,16 @@ def cote_de(cotes_betpawa: dict | None, cle: tuple[str, str]) -> float | None:
 
 
 def choisir(resultat: dict, cotes_betpawa: dict | None, cote_min: float = P.COTE_MIN) -> dict:
-    """Étape 2. Buts et équipes : cote >= 1,25, aucun maximum. Multiscores : aucune limite de cote. Cote introuvable : le marché reste, marqué « cote à lire »."""
+    """Étape 2. Buts et équipes : cote >= 1,25 (1,22 pour « Plus de 1,5 buts » seul), aucun maximum. Multiscores : aucune limite de cote. Cote introuvable : le marché reste, marqué « cote à lire »."""
     tab: dict[str, list] = {"buts": [], "equipes": [], "multiscores": []}
     ecartes = []
     for onglet, lst in resultat["onglets"].items():
         for f in lst:
             c = cote_de(cotes_betpawa, f["cle"])
             g = {**f, "cote": c}
-            if onglet != "multiscores" and c is not None and c < cote_min:
-                ecartes.append({**g, "raison": f"cote {c:g} sous le minimum {cote_min:g}"})
+            mini = min(cote_min, P.COTE_MIN_PLUS15) if tuple(f["cle"]) == P.CLE_PLUS15 else cote_min      # « Plus de 1,5 » seul : 1,22 (Patrick, 26/10/2026)
+            if onglet != "multiscores" and c is not None and c < mini:
+                ecartes.append({**g, "raison": f"cote {c:g} sous le minimum {mini:g}"})
             else:
                 if c is None:
                     g["cote_a_lire"] = True
