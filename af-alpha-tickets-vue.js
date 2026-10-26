@@ -35,7 +35,7 @@
   // Repère « chances maximales » : le « Plus de 1,5 buts » dont le total attendu atteint le palier gelé (af-alpha-tickets.js, REGLES.plus15*).
   const badgeMax = (c) => (c.chancesMax ? `<span class="at-max" title="Plus de 1,5 buts à chances maximales">★ Chances maximales</span>` : "");
   const phraseMax = (c) => (c.chancesMax
-    ? `<li class="at-max-phrase"><b>Chances maximales :</b> on attend ${String(c.totalAttendu).replace(".", ",")} buts dans ce match. Les « plus de 1,5 buts » de ce niveau sont passés ${Math.round(T.REGLES.plus15Taux * 100)} fois sur 100 (${T.REGLES.plus15Matchs.toLocaleString("fr-FR")} matchs testés).</li>` : "");
+    ? `<li class="at-max-phrase"><b>Chances maximales :</b> on attend ${String(c.totalAttendu).replace(".", ",")} buts dans ce match. Les « plus de 1,5 buts » de ce niveau, avec au plus un match passé à 0 ou 1 but chez les deux équipes, sont passés ${Math.round(T.REGLES.plus15Taux * 100)} fois sur 100 (${T.REGLES.plus15Matchs.toLocaleString("fr-FR")} matchs testés).</li>` : "");
 
   function ligneSelection(c) {
     return `<li class="at-sel${c.chancesMax ? " at-sel-max" : ""}">` +

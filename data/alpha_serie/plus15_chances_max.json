@@ -6,47 +6,46 @@
  ],
  "palier_total_attendu": 3.4,
  "cote_min": 1.25,
- "regle": "plus petit palier du total attendu (niveaux.total d'alpha) dont la borne basse de Wilson 95 % est >= 1/1,25 = 0,80 sur la période de réglage ET sur la période de contrôle ; une cote BetPawa connue >= 1,25 est exigée (minimum de tous les marchés)",
- "source": "rejeu du code alpha (coeur.analyser_match) sur le bloc Football-Data 2025-2026 et l'archive ARCHETYPE : 14 161 matchs analysés (4 à 7 matchs au même lieu)",
+ "regle": "total attendu (niveaux.total d'alpha) >= 3,4 ET au plus 1 match passé à 0 ou 1 but dans les séries des deux équipes ; une cote BetPawa connue >= 1,25 est exigée (minimum de tous les marchés). Réussite >= 80 % (borne basse de Wilson 95 %) sur la période de réglage ET sur la période de contrôle ; décision de Patrick du 26/10/2026 : viser la réussite maximale",
+ "source": "rejeu du code alpha (coeur.analyser_match) sur le bloc Football-Data 2025-2026 et l'archive ARCHETYPE : 8 849 « Plus de 1,5 » proposés par alpha",
  "reglage": {
   "periode": "avant 2026-04-01",
-  "matchs": 836,
-  "reussis": 696,
-  "reussite": 0.8325,
-  "wilson_bas": 0.8057
+  "matchs": 507,
+  "reussis": 439,
+  "reussite": 0.8659,
+  "wilson_bas": 0.8334
  },
  "controle": {
   "periode": "à partir de 2026-04-01",
-  "matchs": 872,
-  "reussis": 734,
-  "reussite": 0.8417,
-  "wilson_bas": 0.816
+  "matchs": 520,
+  "reussis": 447,
+  "reussite": 0.8596,
+  "wilson_bas": 0.8271
  },
  "tous": {
-  "matchs": 1708,
-  "reussis": 1430,
-  "reussite": 0.8372,
-  "wilson_bas": 0.819
+  "matchs": 1027,
+  "reussis": 886,
+  "reussite": 0.8627,
+  "wilson_bas": 0.8403
  },
- "base_tous_matchs": 0.7637,
- "tranches_total_attendu": {
-  "2.5-3.0": {
-   "matchs": 5011,
-   "reussite": 0.7623
+ "base_tous_matchs": 0.7855,
+ "note": "Information de classement seulement : le calcul d'alpha (coeur.py) n'est pas modifié. Suivi en direct : bilan_tickets.plus15_max.",
+ "matchs_faibles_max": 1,
+ "definition_matchs_faibles": "dans les paires d'alpha (scenarios_offensifs, scenarios_defensifs), nombre de matchs passés des deux équipes terminés à 0 ou 1 but au total (domicile : marqués + encaissés ; extérieur : idem), toutes paires comptées",
+ "variantes_testees": {
+  "total_attendu>=3.4 seul": {
+   "reglage": 0.8325,
+   "controle": 0.8417
   },
-  "3.0-3.4": {
-   "matchs": 2779,
-   "reussite": 0.7895
+  "total_attendu>=3.4 et aucun match faible": {
+   "reglage": 0.878,
+   "controle": 0.885,
+   "par_jour": 0.8
   },
-  "3.4-3.8": {
-   "matchs": 1221,
-   "reussite": 0.8239
-  },
-  "3.8-+": {
-   "matchs": 487,
-   "reussite": 0.8706
+  "total_attendu>=3.4 et au plus 1 match faible": {
+   "reglage": 0.866,
+   "controle": 0.86,
+   "par_jour": 2.2
   }
- },
- "empreinte_matchs": "7106a8f3f521e02c643b0307b393d50bff76f12b254d8db37a8105eae2b21347",
- "note": "Information de classement seulement : le calcul d'alpha (coeur.py) n'est pas modifié. Suivi en direct : bilan_tickets.plus15_max."
+ }
 }

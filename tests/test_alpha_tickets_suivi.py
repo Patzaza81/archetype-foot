@@ -178,21 +178,27 @@ def test_ticket_recommande_ne_depasse_jamais_ni_ne_saute():
 CLE15 = ["over_under_1.5", "plus"]
 
 
-def match15(mid, heure, total, cote=1.30, valeur=0.70, equipes=None, cle=None):
+def match15(mid, heure, total, cote=1.30, valeur=0.70, equipes=None, cle=None, faibles=0):
     """Match dont le « Plus de 1,5 » d'alpha a un total attendu `total` (valeur 70 % : sous le seuil des autres paris, donc jamais admissible seul)."""
     m = match(mid, heure, buts=[pari("Plus de 1,5 buts", cote, valeur, cle or CLE15)], equipes=equipes)
     m["niveaux"] = {"dom": total / 2, "ext": total / 2, "total": total, "d": 0.0}
+    m["scenarios_offensifs"] = [[2, 1] for _ in range(5)]                      # paires publiées d'alpha : (marqués dom, marqués ext)
+    m["scenarios_defensifs"] = [[1, 1] for _ in range(5)]                                         # (encaissés ext, encaissés dom) : chaque match passé fait 3 buts au total
+    for i in range(faibles or 0):                                                    # `faibles` matchs passés à 0 ou 1 but (domicile)
+        m["scenarios_offensifs"][i] = [0, 1]
+        m["scenarios_defensifs"][i] = [1, 1]
     return m
 
 
 def test_palier_gele_identique_partout():
     conf = json.loads((RACINE / "data" / "alpha_serie" / "plus15_chances_max.json").read_text(encoding="utf-8"))
     assert T.palier_plus15() == conf["palier_total_attendu"] == 3.4
+    assert T.faibles_max_plus15() == conf["matchs_faibles_max"] == 1
     assert conf["controle"]["wilson_bas"] >= 0.80 and conf["reglage"]["wilson_bas"] >= 0.80          # règle : borne basse >= 1/1,25 aux deux périodes
     if shutil.which("node"):
-        r = subprocess.run(["node", "-e", "const T=require(process.argv[1]);console.log(JSON.stringify([T.REGLES.plus15TotalMin,T.REGLES.plus15Taux,T.REGLES.plus15Matchs]))",
+        r = subprocess.run(["node", "-e", "const T=require(process.argv[1]);console.log(JSON.stringify([T.REGLES.plus15TotalMin,T.REGLES.plus15Taux,T.REGLES.plus15Matchs,T.REGLES.plus15FaiblesMax]))",
                             str(RACINE / "af-alpha-tickets.js")], capture_output=True, text=True, check=True)
-        assert json.loads(r.stdout) == [3.4, round(conf["tous"]["reussite"], 2), conf["tous"]["matchs"]]
+        assert json.loads(r.stdout) == [3.4, round(conf["tous"]["reussite"], 2), conf["tous"]["matchs"], conf["matchs_faibles_max"]]
 
 
 def test_plus15_max_entre_dans_tous_les_tickets_et_est_marque():
@@ -217,6 +223,14 @@ def test_plus15_max_ecarte_si_sous_le_palier_sans_cote_ou_hors_horaire():
     assert T.du_jour([match15("p3", "16:00", 4.5, cote=1.249)], JOUR)["palier1"] == []                                  # cote < 1,25 (minimum de tous les marchés)
     assert T.du_jour([match15("p4", "09:30", 4.5)], JOUR)["palier1"] == []                                              # avant 10 h
     assert T.du_jour([match15("p5", "16:00", 4.5, cle=["over_under_2.5", "plus"])], JOUR)["palier1"] == []             # autre marché que +1,5
+    assert [c["categorie"] for c in T.du_jour([match15("f1", "16:00", 4.5, faibles=1)], JOUR)["palier1"]] == ["plus15"]   # 1 match faible : accepté
+    assert T.du_jour([match15("f2", "16:00", 4.5, faibles=2)], JOUR)["palier1"] == []                                   # 2 matchs faibles : refusé
+    assert T.du_jour([match15("f5", "16:00", 4.5, faibles=5)], JOUR)["palier1"] == []                                   # 5 matchs faibles : refusé
+    sans_paires = match15("f3", "16:00", 4.5); sans_paires.pop("scenarios_offensifs"); sans_paires.pop("scenarios_defensifs")
+    assert T.du_jour([sans_paires], JOUR)["palier1"] == []                                                              # paires absentes : jamais proposé
+    ext_faible = match15("f4", "16:00", 4.5); ext_faible["scenarios_offensifs"][0] = [2, 0]; ext_faible["scenarios_defensifs"][0] = [1, 1]   # extérieur : 0+1 = 1 but
+    ext_faible["scenarios_offensifs"][1] = [2, 0]; ext_faible["scenarios_defensifs"][1] = [0, 1]                         # extérieur : 0+0 = 0 but
+    assert T.matchs_faibles(ext_faible) == 2 and T.du_jour([ext_faible], JOUR)["palier1"] == []                         # les matchs faibles de l'extérieur comptent aussi
     inactif = T.palier_plus15(Path("/inexistant/plus15.json"))
     assert inactif is None                                                                                              # fichier absent : fonction désactivée
 
@@ -234,7 +248,8 @@ def test_plus15_max_gele_regle_et_suivi(tmp_path):
 
 @pytest.mark.skipif(shutil.which("node") is None, reason="node absent")
 def test_plus15_max_meme_ticket_que_la_page():
-    page = _page_parite() + [match15("pm1", "12:10", 3.9), match15("pm2", "12:40", 3.5), match15("pm3", "19:20", 4.2), match15("pn", "15:30", 3.2)]
+    page = _page_parite() + [match15("pm1", "12:10", 3.9), match15("pm2", "12:40", 3.5), match15("pm3", "19:20", 4.2), match15("pn", "15:30", 3.2),
+                             match15("pf1", "14:00", 4.4, faibles=1), match15("pf2", "14:10", 4.4, faibles=2)]
     code = ("const T = require(process.argv[1]); const d = JSON.parse(process.argv[2]); const a = T.analyse(d, '%s');"
             "const f = (l) => l.map((s) => s.match_id + '|' + s.categorie); console.log(JSON.stringify([f(a.palier1), f(a.palier2)]));" % JOUR)
     r = subprocess.run(["node", "-e", code, str(RACINE / "af-alpha-tickets.js"), json.dumps({"matchs": page})], capture_output=True, text=True, check=True)
