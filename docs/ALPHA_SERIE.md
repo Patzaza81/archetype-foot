@@ -299,3 +299,26 @@ Construite au-dessus de `robustesse.py` (ffb25b0), sans le modifier. Aucun autre
 - **Fiabilité** : « fiable » seulement si le statut est « validé » ET que la borne basse réelle atteint l'objectif de l'indice (70 % pour les deux bandes 1X2, 80 % pour le « Plus de 1,5 ») ; sinon « pas encore fiable » ou « à confirmer ». Les trois indices démarrent « en validation ». Tendance : « en baisse » seulement si la dernière semaine passe sous la borne basse du cumul précédent (aucun seuil posé à la main).
 - **Limite connue** : le suivi réel du « Plus de 1,5 » ne compte que les paris entrés dans un ticket gelé (cote connue, créneau 10 h – minuit). Au 26/10/2026 : 0 pari réglé, la page l'affiche tel quel. L'indice normal / maximal de la PR #114, s'il est fusionné, s'ajoute par une nouvelle entrée du registre.
 - Tests : `tests/test_indice_alpha.py` (calculs, regroupement par marché, doublons, traçabilité et indépendance, suivi nocturne, navigation, CSS mobile, rendu de la page sous node avec échappement du texte). Rendu vérifié à 414 px : aucun débordement horizontal.
+
+## 26/10/2026 — Protocole commun de recherche d'indices par marché (`alpha_serie/decouverte.py`), RIEN de validé
+
+Demande de Patrick : un même protocole pour chaque marché (victoire domicile/extérieur, nul, double chance, plus/moins de buts, les deux marquent, buts par équipe, handicaps), sans présupposé, avec preuve reproductible. Aucun indice n'est « validé » par cette recherche : seul le suivi prospectif gelé peut le faire.
+
+**Protocole (identique pour tous les marchés)**
+- Données : bloc Football-Data (16 558 matchs, 14 161 analysés par l'Alpha) pour la recherche ; cotes marché moyen Football-Data et cotes BetPawa de l'archive ARCH (28/09–25/10/2026) **jamais mélangées**.
+- Découpage chronologique : A < 01/01/2026 (apprentissage) ; B 01/01–31/03/2026 (sélection) ; C ≥ 01/04/2026 (vérification, calculée seulement pour la règle finale gelée).
+- ~40 000 configurations (combinaisons de seuils de 1 à 2 variables du moteur) testées sur A par marché ; retenues sur B ; la meilleure est unique.
+- Références sur C : taux de base du marché, borne basse de Wilson 95 %, fréquence (matchs/jour), défaites, rendement réel aux cotes (moyenne marché, BetPawa) et part jouable à cote ≥ 1,25.
+- Verdict : `en_validation` = borne basse de Wilson sur C > taux de base de C ET pas de baisse significative par rapport à A+B (test de deux proportions, 5 % unilatéral) ; `en_etude` = taux au-dessus de la base mais une preuve manque ; `aucun_indice` sinon.
+- Suivi : les règles `en_validation` (cotes BetPawa) sont gelées chaque nuit avant le coup d'envoi (`suivi.geler_regles`), tous les matchs qui les vérifient, défaites comprises, sans doublon ; empreinte de règle : une règle modifiée repart de zéro. Résultats dans `data/alpha_serie/decouverte_resultats.json`, règles gelées dans `indices_decouverts.json`, registre dans `indices_registre.json` (`regle_<marché>`).
+
+**Résultats (26/10/2026)** : 7 règles gelées en suivi (vic_ext, dc_1n, plus_2_5, ext_plus_1_5, hcp_dom_m1_5, hcp_ext_m1_5, hcp_dom_p1_5), 20 résultats `en_etude`, 4 `aucun_indice` (dc_12, moins_1_5, btts_non, …).
+
+**Limites (à lire avant toute conclusion)**
+- Règle choisie parmi des dizaines de milliers : le taux observé est optimiste (biais de sélection). La vérification C est indépendante de la sélection mais pas des biais de choix du protocole.
+- Les règles se dégradent de A vers C (ex. victoire domicile 74,5 % → 63,3 %).
+- Rendements aux cotes majoritairement négatifs ; plusieurs marchés (double chance, +1,5 domicile) ont une cote trop basse pour être jouables au minimum 1,25.
+- Cotes BetPawa : fenêtre de 28 jours seulement, échantillons petits.
+- Un taux de réussite élevé n'est pas une rentabilité.
+
+Tests : `tests/test_decouverte.py` (verdict dépendant du taux de base, gel générique sans doublon, cohérence du catalogue des handicaps avec BetPawa), `tests/test_indice_alpha.py`.

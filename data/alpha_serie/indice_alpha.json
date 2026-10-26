@@ -1,5 +1,5 @@
 {
- "genere_le": "2026-10-26T12:10:03Z",
+ "genere_le": "2026-10-26T13:03:46Z",
  "avertissement": "Aucun indice n'est présenté comme fiable tant que son statut n'est pas « validé » ET que sa borne basse réelle n'atteint pas son objectif. Les chiffres de l'étude historique sont affichés à part du suivi réel.",
  "alerte_registre": [],
  "global": {
@@ -58,6 +58,146 @@
    {
     "id": "plus_de_1_5_maximal",
     "nom": "Plus de 1,5 buts — chances maximales",
+    "statut": "en_validation",
+    "statut_libelle": "En validation",
+    "matchs": 0,
+    "gagnes": 0,
+    "perdus": 0,
+    "taux": null,
+    "wilson_bas_95": null,
+    "par_jour": null,
+    "periode": {
+     "debut": null,
+     "fin": null,
+     "jours": 0
+    },
+    "tendance": "insuffisant",
+    "fiabilite": "non_fiable",
+    "en_attente": 0
+   },
+   {
+    "id": "regle_vic_ext",
+    "nom": "Victoire à l'extérieur — configuration découverte",
+    "statut": "en_validation",
+    "statut_libelle": "En validation",
+    "matchs": 0,
+    "gagnes": 0,
+    "perdus": 0,
+    "taux": null,
+    "wilson_bas_95": null,
+    "par_jour": null,
+    "periode": {
+     "debut": null,
+     "fin": null,
+     "jours": 0
+    },
+    "tendance": "insuffisant",
+    "fiabilite": "non_fiable",
+    "en_attente": 0
+   },
+   {
+    "id": "regle_dc_1n",
+    "nom": "Double chance 1N — configuration découverte",
+    "statut": "en_validation",
+    "statut_libelle": "En validation",
+    "matchs": 0,
+    "gagnes": 0,
+    "perdus": 0,
+    "taux": null,
+    "wilson_bas_95": null,
+    "par_jour": null,
+    "periode": {
+     "debut": null,
+     "fin": null,
+     "jours": 0
+    },
+    "tendance": "insuffisant",
+    "fiabilite": "non_fiable",
+    "en_attente": 0
+   },
+   {
+    "id": "regle_plus_2_5",
+    "nom": "Plus de 2,5 buts — configuration découverte",
+    "statut": "en_validation",
+    "statut_libelle": "En validation",
+    "matchs": 0,
+    "gagnes": 0,
+    "perdus": 0,
+    "taux": null,
+    "wilson_bas_95": null,
+    "par_jour": null,
+    "periode": {
+     "debut": null,
+     "fin": null,
+     "jours": 0
+    },
+    "tendance": "insuffisant",
+    "fiabilite": "non_fiable",
+    "en_attente": 0
+   },
+   {
+    "id": "regle_ext_plus_1_5",
+    "nom": "L'extérieur marque 2 buts ou plus — configuration découverte",
+    "statut": "en_validation",
+    "statut_libelle": "En validation",
+    "matchs": 0,
+    "gagnes": 0,
+    "perdus": 0,
+    "taux": null,
+    "wilson_bas_95": null,
+    "par_jour": null,
+    "periode": {
+     "debut": null,
+     "fin": null,
+     "jours": 0
+    },
+    "tendance": "insuffisant",
+    "fiabilite": "non_fiable",
+    "en_attente": 0
+   },
+   {
+    "id": "regle_hcp_dom_m1_5",
+    "nom": "Handicap -1,5 domicile (gagne par 2 buts ou plus) — configuration découverte",
+    "statut": "en_validation",
+    "statut_libelle": "En validation",
+    "matchs": 0,
+    "gagnes": 0,
+    "perdus": 0,
+    "taux": null,
+    "wilson_bas_95": null,
+    "par_jour": null,
+    "periode": {
+     "debut": null,
+     "fin": null,
+     "jours": 0
+    },
+    "tendance": "insuffisant",
+    "fiabilite": "non_fiable",
+    "en_attente": 0
+   },
+   {
+    "id": "regle_hcp_ext_m1_5",
+    "nom": "Handicap -1,5 extérieur (gagne par 2 buts ou plus) — configuration découverte",
+    "statut": "en_validation",
+    "statut_libelle": "En validation",
+    "matchs": 0,
+    "gagnes": 0,
+    "perdus": 0,
+    "taux": null,
+    "wilson_bas_95": null,
+    "par_jour": null,
+    "periode": {
+     "debut": null,
+     "fin": null,
+     "jours": 0
+    },
+    "tendance": "insuffisant",
+    "fiabilite": "non_fiable",
+    "en_attente": 0
+   },
+   {
+    "id": "regle_hcp_dom_p1_5",
+    "nom": "Handicap +1,5 domicile (ne perd pas par 2 buts ou plus) — configuration découverte",
     "statut": "en_validation",
     "statut_libelle": "En validation",
     "matchs": 0,
@@ -287,6 +427,559 @@
      "nouveau": "statut en_validation",
      "motif": "Création de l'onglet Indice Alpha : indice repris en validation, sans effet sur la sélection d'Alpha.",
      "empreinte_apres": "29e8ad7bcf89"
+    }
+   ]
+  },
+  {
+   "id": "regle_vic_ext",
+   "nom": "Victoire à l'extérieur — configuration découverte",
+   "famille": "Découverte",
+   "marche": "Victoire à l'extérieur",
+   "statut": "en_validation",
+   "statut_libelle": "En validation",
+   "conditions": "Configuration trouvée par le protocole commun : buts attendus du domicile <= 0,9286 ET plus fort niveau des deux équipes >= 1,571. Tous les matchs qui la vérifient sont gelés avant le coup d'envoi, défaites comprises.",
+   "seuils": {
+    "conditions": [
+     {
+      "var": "xh",
+      "op": "<=",
+      "val": 0.9286
+     },
+     {
+      "var": "mx",
+      "op": ">=",
+      "val": 1.571
+     }
+    ],
+    "conditions_texte": "buts attendus du domicile <= 0,9286 ET plus fort niveau des deux équipes >= 1,571",
+    "empreinte_regle": "32bff7d0cc96",
+    "probabilite_min": null,
+    "cote_min": null,
+    "cote_max": null,
+    "source_cotes": "BetPawa (cote enregistrée pour information, non filtrante)"
+   },
+   "objectif_reussite": 0.3072,
+   "limites": "Règle choisie parmi des dizaines de milliers de combinaisons : son taux observé est optimiste. Aucun suivi réel pour l'instant. L'objectif est le taux de base du marché (ce que réussit un pari pris au hasard sur ce marché).",
+   "geles": 0,
+   "en_attente": 0,
+   "matchs": 0,
+   "gagnes": 0,
+   "perdus": 0,
+   "taux": null,
+   "wilson_bas_95": null,
+   "periode": {
+    "debut": null,
+    "fin": null,
+    "jours": 0
+   },
+   "par_jour": null,
+   "par_semaine": [],
+   "cumule_par_semaine": [],
+   "tendance": {
+    "signal": "insuffisant",
+    "texte": "Moins de deux semaines mesurées : aucune tendance."
+   },
+   "reference_rejeu": {
+    "nature": "Vérification chronologique de la recherche (règle apprise sur 2025, retenue sur janvier–mars 2026, vérifiée depuis le 01/04/2026) : ce n'est PAS le suivi réel.",
+    "matchs": 86,
+    "gagnes": 44,
+    "taux": 0.5116,
+    "wilson_bas_95": 0.4078,
+    "periode": "depuis le 01/04/2026",
+    "source": "taux de base du marché sur la même période : 30.7 %"
+   },
+   "fiabilite": {
+    "niveau": "non_fiable",
+    "texte": "Pas encore fiable : en validation."
+   },
+   "controles": {
+    "doublons": 0,
+    "gels_non_anterieurs_au_coup_d_envoi": 0
+   },
+   "empreinte": "46e082cc69b6",
+   "modifications": [
+    {
+     "date": "2026-10-26",
+     "auteur": "Patrick (demande) · Claude (protocole)",
+     "champ": "création",
+     "ancien": null,
+     "nouveau": "statut en_validation",
+     "motif": "Règle retenue par le protocole commun (apprentissage, sélection, vérification chronologique).",
+     "empreinte_apres": "46e082cc69b6"
+    }
+   ]
+  },
+  {
+   "id": "regle_dc_1n",
+   "nom": "Double chance 1N — configuration découverte",
+   "famille": "Découverte",
+   "marche": "Double chance 1N",
+   "statut": "en_validation",
+   "statut_libelle": "En validation",
+   "conditions": "Configuration trouvée par le protocole commun : buts attendus du domicile >= 2,0714 ET plus faible niveau des deux équipes <= 0,929. Tous les matchs qui la vérifient sont gelés avant le coup d'envoi, défaites comprises.",
+   "seuils": {
+    "conditions": [
+     {
+      "var": "xh",
+      "op": ">=",
+      "val": 2.0714
+     },
+     {
+      "var": "mn",
+      "op": "<=",
+      "val": 0.929
+     }
+    ],
+    "conditions_texte": "buts attendus du domicile >= 2,0714 ET plus faible niveau des deux équipes <= 0,929",
+    "empreinte_regle": "ed0e4a7051c1",
+    "probabilite_min": null,
+    "cote_min": null,
+    "cote_max": null,
+    "source_cotes": "BetPawa (cote enregistrée pour information, non filtrante)"
+   },
+   "objectif_reussite": 0.6928,
+   "limites": "Règle choisie parmi des dizaines de milliers de combinaisons : son taux observé est optimiste. Aucun suivi réel pour l'instant. L'objectif est le taux de base du marché (ce que réussit un pari pris au hasard sur ce marché).",
+   "geles": 0,
+   "en_attente": 0,
+   "matchs": 0,
+   "gagnes": 0,
+   "perdus": 0,
+   "taux": null,
+   "wilson_bas_95": null,
+   "periode": {
+    "debut": null,
+    "fin": null,
+    "jours": 0
+   },
+   "par_jour": null,
+   "par_semaine": [],
+   "cumule_par_semaine": [],
+   "tendance": {
+    "signal": "insuffisant",
+    "texte": "Moins de deux semaines mesurées : aucune tendance."
+   },
+   "reference_rejeu": {
+    "nature": "Vérification chronologique de la recherche (règle apprise sur 2025, retenue sur janvier–mars 2026, vérifiée depuis le 01/04/2026) : ce n'est PAS le suivi réel.",
+    "matchs": 190,
+    "gagnes": 171,
+    "taux": 0.9,
+    "wilson_bas_95": 0.8491,
+    "periode": "depuis le 01/04/2026",
+    "source": "taux de base du marché sur la même période : 69.3 %"
+   },
+   "fiabilite": {
+    "niveau": "non_fiable",
+    "texte": "Pas encore fiable : en validation."
+   },
+   "controles": {
+    "doublons": 0,
+    "gels_non_anterieurs_au_coup_d_envoi": 0
+   },
+   "empreinte": "4d526c2a9b59",
+   "modifications": [
+    {
+     "date": "2026-10-26",
+     "auteur": "Patrick (demande) · Claude (protocole)",
+     "champ": "création",
+     "ancien": null,
+     "nouveau": "statut en_validation",
+     "motif": "Règle retenue par le protocole commun (apprentissage, sélection, vérification chronologique).",
+     "empreinte_apres": "4d526c2a9b59"
+    }
+   ]
+  },
+  {
+   "id": "regle_plus_2_5",
+   "nom": "Plus de 2,5 buts — configuration découverte",
+   "famille": "Découverte",
+   "marche": "Plus de 2,5 buts",
+   "statut": "en_validation",
+   "statut_libelle": "En validation",
+   "conditions": "Configuration trouvée par le protocole commun : buts encaissés par le domicile >= 1,2857 ET écart de niveau D >= 2,0. Tous les matchs qui la vérifient sont gelés avant le coup d'envoi, défaites comprises.",
+   "seuils": {
+    "conditions": [
+     {
+      "var": "gah",
+      "op": ">=",
+      "val": 1.2857
+     },
+     {
+      "var": "D",
+      "op": ">=",
+      "val": 2.0
+     }
+    ],
+    "conditions_texte": "buts encaissés par le domicile >= 1,2857 ET écart de niveau D >= 2,0",
+    "empreinte_regle": "86fc930f13e6",
+    "probabilite_min": null,
+    "cote_min": null,
+    "cote_max": null,
+    "source_cotes": "BetPawa (cote enregistrée pour information, non filtrante)"
+   },
+   "objectif_reussite": 0.5489,
+   "limites": "Règle choisie parmi des dizaines de milliers de combinaisons : son taux observé est optimiste. Aucun suivi réel pour l'instant. L'objectif est le taux de base du marché (ce que réussit un pari pris au hasard sur ce marché).",
+   "geles": 0,
+   "en_attente": 0,
+   "matchs": 0,
+   "gagnes": 0,
+   "perdus": 0,
+   "taux": null,
+   "wilson_bas_95": null,
+   "periode": {
+    "debut": null,
+    "fin": null,
+    "jours": 0
+   },
+   "par_jour": null,
+   "par_semaine": [],
+   "cumule_par_semaine": [],
+   "tendance": {
+    "signal": "insuffisant",
+    "texte": "Moins de deux semaines mesurées : aucune tendance."
+   },
+   "reference_rejeu": {
+    "nature": "Vérification chronologique de la recherche (règle apprise sur 2025, retenue sur janvier–mars 2026, vérifiée depuis le 01/04/2026) : ce n'est PAS le suivi réel.",
+    "matchs": 150,
+    "gagnes": 100,
+    "taux": 0.6667,
+    "wilson_bas_95": 0.5879,
+    "periode": "depuis le 01/04/2026",
+    "source": "taux de base du marché sur la même période : 54.9 %"
+   },
+   "fiabilite": {
+    "niveau": "non_fiable",
+    "texte": "Pas encore fiable : en validation."
+   },
+   "controles": {
+    "doublons": 0,
+    "gels_non_anterieurs_au_coup_d_envoi": 0
+   },
+   "empreinte": "a361a5274aeb",
+   "modifications": [
+    {
+     "date": "2026-10-26",
+     "auteur": "Patrick (demande) · Claude (protocole)",
+     "champ": "création",
+     "ancien": null,
+     "nouveau": "statut en_validation",
+     "motif": "Règle retenue par le protocole commun (apprentissage, sélection, vérification chronologique).",
+     "empreinte_apres": "a361a5274aeb"
+    }
+   ]
+  },
+  {
+   "id": "regle_ext_plus_1_5",
+   "nom": "L'extérieur marque 2 buts ou plus — configuration découverte",
+   "famille": "Découverte",
+   "marche": "L'extérieur marque 2 buts ou plus",
+   "statut": "en_validation",
+   "statut_libelle": "En validation",
+   "conditions": "Configuration trouvée par le protocole commun : total de buts attendu >= 3,4286 ET supériorité offensive attendue (domicile − extérieur) <= -0,2143. Tous les matchs qui la vérifient sont gelés avant le coup d'envoi, défaites comprises.",
+   "seuils": {
+    "conditions": [
+     {
+      "var": "tot",
+      "op": ">=",
+      "val": 3.4286
+     },
+     {
+      "var": "sup",
+      "op": "<=",
+      "val": -0.2143
+     }
+    ],
+    "conditions_texte": "total de buts attendu >= 3,4286 ET supériorité offensive attendue (domicile − extérieur) <= -0,2143",
+    "empreinte_regle": "b5fa0567bd45",
+    "probabilite_min": null,
+    "cote_min": null,
+    "cote_max": null,
+    "source_cotes": "BetPawa (cote enregistrée pour information, non filtrante)"
+   },
+   "objectif_reussite": 0.3649,
+   "limites": "Règle choisie parmi des dizaines de milliers de combinaisons : son taux observé est optimiste. Aucun suivi réel pour l'instant. L'objectif est le taux de base du marché (ce que réussit un pari pris au hasard sur ce marché).",
+   "geles": 0,
+   "en_attente": 0,
+   "matchs": 0,
+   "gagnes": 0,
+   "perdus": 0,
+   "taux": null,
+   "wilson_bas_95": null,
+   "periode": {
+    "debut": null,
+    "fin": null,
+    "jours": 0
+   },
+   "par_jour": null,
+   "par_semaine": [],
+   "cumule_par_semaine": [],
+   "tendance": {
+    "signal": "insuffisant",
+    "texte": "Moins de deux semaines mesurées : aucune tendance."
+   },
+   "reference_rejeu": {
+    "nature": "Vérification chronologique de la recherche (règle apprise sur 2025, retenue sur janvier–mars 2026, vérifiée depuis le 01/04/2026) : ce n'est PAS le suivi réel.",
+    "matchs": 140,
+    "gagnes": 79,
+    "taux": 0.5643,
+    "wilson_bas_95": 0.4815,
+    "periode": "depuis le 01/04/2026",
+    "source": "taux de base du marché sur la même période : 36.5 %"
+   },
+   "fiabilite": {
+    "niveau": "non_fiable",
+    "texte": "Pas encore fiable : en validation."
+   },
+   "controles": {
+    "doublons": 0,
+    "gels_non_anterieurs_au_coup_d_envoi": 0
+   },
+   "empreinte": "705e03bd72c0",
+   "modifications": [
+    {
+     "date": "2026-10-26",
+     "auteur": "Patrick (demande) · Claude (protocole)",
+     "champ": "création",
+     "ancien": null,
+     "nouveau": "statut en_validation",
+     "motif": "Règle retenue par le protocole commun (apprentissage, sélection, vérification chronologique).",
+     "empreinte_apres": "705e03bd72c0"
+    }
+   ]
+  },
+  {
+   "id": "regle_hcp_dom_m1_5",
+   "nom": "Handicap -1,5 domicile (gagne par 2 buts ou plus) — configuration découverte",
+   "famille": "Découverte",
+   "marche": "Handicap -1,5 domicile (gagne par 2 buts ou plus)",
+   "statut": "en_validation",
+   "statut_libelle": "En validation",
+   "conditions": "Configuration trouvée par le protocole commun : total attendu du niveau >= 3,143 ET plus faible niveau des deux équipes <= 0,929. Tous les matchs qui la vérifient sont gelés avant le coup d'envoi, défaites comprises.",
+   "seuils": {
+    "conditions": [
+     {
+      "var": "T",
+      "op": ">=",
+      "val": 3.143
+     },
+     {
+      "var": "mn",
+      "op": "<=",
+      "val": 0.929
+     }
+    ],
+    "conditions_texte": "total attendu du niveau >= 3,143 ET plus faible niveau des deux équipes <= 0,929",
+    "empreinte_regle": "2695c33c8f0b",
+    "probabilite_min": null,
+    "cote_min": null,
+    "cote_max": null,
+    "source_cotes": "BetPawa (cote enregistrée pour information, non filtrante)"
+   },
+   "objectif_reussite": 0.2183,
+   "limites": "Règle choisie parmi des dizaines de milliers de combinaisons : son taux observé est optimiste. Aucun suivi réel pour l'instant. L'objectif est le taux de base du marché (ce que réussit un pari pris au hasard sur ce marché).",
+   "geles": 0,
+   "en_attente": 0,
+   "matchs": 0,
+   "gagnes": 0,
+   "perdus": 0,
+   "taux": null,
+   "wilson_bas_95": null,
+   "periode": {
+    "debut": null,
+    "fin": null,
+    "jours": 0
+   },
+   "par_jour": null,
+   "par_semaine": [],
+   "cumule_par_semaine": [],
+   "tendance": {
+    "signal": "insuffisant",
+    "texte": "Moins de deux semaines mesurées : aucune tendance."
+   },
+   "reference_rejeu": {
+    "nature": "Vérification chronologique de la recherche (règle apprise sur 2025, retenue sur janvier–mars 2026, vérifiée depuis le 01/04/2026) : ce n'est PAS le suivi réel.",
+    "matchs": 79,
+    "gagnes": 35,
+    "taux": 0.443,
+    "wilson_bas_95": 0.3387,
+    "periode": "depuis le 01/04/2026",
+    "source": "taux de base du marché sur la même période : 21.8 %"
+   },
+   "fiabilite": {
+    "niveau": "non_fiable",
+    "texte": "Pas encore fiable : en validation."
+   },
+   "controles": {
+    "doublons": 0,
+    "gels_non_anterieurs_au_coup_d_envoi": 0
+   },
+   "empreinte": "b99c4c956cbb",
+   "modifications": [
+    {
+     "date": "2026-10-26",
+     "auteur": "Patrick (demande) · Claude (protocole)",
+     "champ": "création",
+     "ancien": null,
+     "nouveau": "statut en_validation",
+     "motif": "Règle retenue par le protocole commun (apprentissage, sélection, vérification chronologique).",
+     "empreinte_apres": "b99c4c956cbb"
+    }
+   ]
+  },
+  {
+   "id": "regle_hcp_ext_m1_5",
+   "nom": "Handicap -1,5 extérieur (gagne par 2 buts ou plus) — configuration découverte",
+   "famille": "Découverte",
+   "marche": "Handicap -1,5 extérieur (gagne par 2 buts ou plus)",
+   "statut": "en_validation",
+   "statut_libelle": "En validation",
+   "conditions": "Configuration trouvée par le protocole commun : buts marqués par le domicile (moyenne à domicile) >= 1,5714 ET supériorité offensive attendue (domicile − extérieur) <= -0,4286. Tous les matchs qui la vérifient sont gelés avant le coup d'envoi, défaites comprises.",
+   "seuils": {
+    "conditions": [
+     {
+      "var": "gfh",
+      "op": ">=",
+      "val": 1.5714
+     },
+     {
+      "var": "sup",
+      "op": "<=",
+      "val": -0.4286
+     }
+    ],
+    "conditions_texte": "buts marqués par le domicile (moyenne à domicile) >= 1,5714 ET supériorité offensive attendue (domicile − extérieur) <= -0,4286",
+    "empreinte_regle": "8a48bab106bc",
+    "probabilite_min": null,
+    "cote_min": null,
+    "cote_max": null,
+    "source_cotes": "BetPawa (cote enregistrée pour information, non filtrante)"
+   },
+   "objectif_reussite": 0.1312,
+   "limites": "Règle choisie parmi des dizaines de milliers de combinaisons : son taux observé est optimiste. Aucun suivi réel pour l'instant. L'objectif est le taux de base du marché (ce que réussit un pari pris au hasard sur ce marché).",
+   "geles": 0,
+   "en_attente": 0,
+   "matchs": 0,
+   "gagnes": 0,
+   "perdus": 0,
+   "taux": null,
+   "wilson_bas_95": null,
+   "periode": {
+    "debut": null,
+    "fin": null,
+    "jours": 0
+   },
+   "par_jour": null,
+   "par_semaine": [],
+   "cumule_par_semaine": [],
+   "tendance": {
+    "signal": "insuffisant",
+    "texte": "Moins de deux semaines mesurées : aucune tendance."
+   },
+   "reference_rejeu": {
+    "nature": "Vérification chronologique de la recherche (règle apprise sur 2025, retenue sur janvier–mars 2026, vérifiée depuis le 01/04/2026) : ce n'est PAS le suivi réel.",
+    "matchs": 90,
+    "gagnes": 25,
+    "taux": 0.2778,
+    "wilson_bas_95": 0.1958,
+    "periode": "depuis le 01/04/2026",
+    "source": "taux de base du marché sur la même période : 13.1 %"
+   },
+   "fiabilite": {
+    "niveau": "non_fiable",
+    "texte": "Pas encore fiable : en validation."
+   },
+   "controles": {
+    "doublons": 0,
+    "gels_non_anterieurs_au_coup_d_envoi": 0
+   },
+   "empreinte": "17a1c7ec0cf8",
+   "modifications": [
+    {
+     "date": "2026-10-26",
+     "auteur": "Patrick (demande) · Claude (protocole)",
+     "champ": "création",
+     "ancien": null,
+     "nouveau": "statut en_validation",
+     "motif": "Règle retenue par le protocole commun (apprentissage, sélection, vérification chronologique).",
+     "empreinte_apres": "17a1c7ec0cf8"
+    }
+   ]
+  },
+  {
+   "id": "regle_hcp_dom_p1_5",
+   "nom": "Handicap +1,5 domicile (ne perd pas par 2 buts ou plus) — configuration découverte",
+   "famille": "Découverte",
+   "marche": "Handicap +1,5 domicile (ne perd pas par 2 buts ou plus)",
+   "statut": "en_validation",
+   "statut_libelle": "En validation",
+   "conditions": "Configuration trouvée par le protocole commun : buts attendus du domicile >= 1,8333 ET plus faible niveau des deux équipes <= 1,0. Tous les matchs qui la vérifient sont gelés avant le coup d'envoi, défaites comprises.",
+   "seuils": {
+    "conditions": [
+     {
+      "var": "xh",
+      "op": ">=",
+      "val": 1.8333
+     },
+     {
+      "var": "mn",
+      "op": "<=",
+      "val": 1.0
+     }
+    ],
+    "conditions_texte": "buts attendus du domicile >= 1,8333 ET plus faible niveau des deux équipes <= 1,0",
+    "empreinte_regle": "15025d4a178c",
+    "probabilite_min": null,
+    "cote_min": null,
+    "cote_max": null,
+    "source_cotes": "BetPawa (cote enregistrée pour information, non filtrante)"
+   },
+   "objectif_reussite": 0.8688,
+   "limites": "Règle choisie parmi des dizaines de milliers de combinaisons : son taux observé est optimiste. Aucun suivi réel pour l'instant. L'objectif est le taux de base du marché (ce que réussit un pari pris au hasard sur ce marché). Marché à cote basse : une grande part des matchs est sous la cote minimale 1,25 de BetPawa, donc peu jouable.",
+   "geles": 0,
+   "en_attente": 0,
+   "matchs": 0,
+   "gagnes": 0,
+   "perdus": 0,
+   "taux": null,
+   "wilson_bas_95": null,
+   "periode": {
+    "debut": null,
+    "fin": null,
+    "jours": 0
+   },
+   "par_jour": null,
+   "par_semaine": [],
+   "cumule_par_semaine": [],
+   "tendance": {
+    "signal": "insuffisant",
+    "texte": "Moins de deux semaines mesurées : aucune tendance."
+   },
+   "reference_rejeu": {
+    "nature": "Vérification chronologique de la recherche (règle apprise sur 2025, retenue sur janvier–mars 2026, vérifiée depuis le 01/04/2026) : ce n'est PAS le suivi réel.",
+    "matchs": 479,
+    "gagnes": 454,
+    "taux": 0.9478,
+    "wilson_bas_95": 0.9241,
+    "periode": "depuis le 01/04/2026",
+    "source": "taux de base du marché sur la même période : 86.9 %"
+   },
+   "fiabilite": {
+    "niveau": "non_fiable",
+    "texte": "Pas encore fiable : en validation."
+   },
+   "controles": {
+    "doublons": 0,
+    "gels_non_anterieurs_au_coup_d_envoi": 0
+   },
+   "empreinte": "ac019a398150",
+   "modifications": [
+    {
+     "date": "2026-10-26",
+     "auteur": "Patrick (demande) · Claude (protocole)",
+     "champ": "création",
+     "ancien": null,
+     "nouveau": "statut en_validation",
+     "motif": "Règle retenue par le protocole commun (apprentissage, sélection, vérification chronologique).",
+     "empreinte_apres": "ac019a398150"
     }
    ]
   }

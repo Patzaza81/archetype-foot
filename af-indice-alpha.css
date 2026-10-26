@@ -1,5 +1,5 @@
 /* Onglet « Indice Alpha » (26/10/2026). Téléphone d'abord (414 px), mêmes variables --ax-* que les autres pages alpha. */
-body.af-alpha .ia-vues { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin: 0 0 12px; }
+body.af-alpha .ia-vues { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin: 0 0 12px; }
 body.af-alpha .ia-vues button { min-width: 0; min-height: 44px; padding: 8px 6px; border: 1px solid var(--ax-ligne); border-radius: 10px; background: var(--ax-fond, #fff); color: var(--ax-texte); font-size: 13.5px; font-weight: 800; line-height: 1.2; touch-action: manipulation; }
 body.af-alpha .ia-vues button[aria-pressed="true"] { background: var(--ax-accent, #087F78); border-color: var(--ax-accent, #087F78); color: #fff; }
 body.af-alpha .ia-contenu { display: grid; gap: 12px; min-width: 0; }
@@ -44,3 +44,4 @@ body.af-alpha.theme-nuit .ia-badge { background: #1E2230; border-color: #2E3342;
 body.af-alpha.theme-nuit .ia-badge.st-en_validation, body.af-alpha.theme-nuit .ia-badge.fi-a_confirmer { background: #3A3016; color: #FFE7A3; }
 body.af-alpha.theme-nuit .ia-badge.st-valide, body.af-alpha.theme-nuit .ia-badge.fi-fiable { background: #123424; color: #BFEBD0; }
 body.af-alpha.theme-nuit .ia-badge.fi-non_fiable, body.af-alpha.theme-nuit .ia-badge.td-baisse { background: #3A1A16; color: #FFC9C1; }
+body.af-alpha .ia-ligne2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 4px 8px; font-size: 13px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }

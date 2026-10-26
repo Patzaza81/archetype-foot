@@ -402,6 +402,75 @@ def bilan_bandes(journal: Path = JOURNAL, ecrire: bool = True, fichier: Path = B
     return out
 
 
+# --- Suivi prospectif des configurations découvertes (26/10/2026, protocole `decouverte.py`) --------------------------------------------------
+# Une configuration = un marché + des conditions sur les variables d'alpha (data/alpha_serie/indices_decouverts.json). Gel de TOUS les matchs qui la
+# vérifient avant leur coup d'envoi (défaites comprises), un enregistrement par (match, marché), jamais regelé. Aucun effet sur les pronostics ni les tickets.
+
+def regles_decouvertes(fichier: Path | None = None) -> dict[str, dict[str, Any]]:
+    from . import decouverte
+    try:
+        return json.loads((fichier or decouverte.GELEES).read_text(encoding="utf-8")).get("regles") or {}
+    except Exception:
+        return {}
+
+
+def empreinte_regle(regle: dict[str, Any]) -> str:
+    return hashlib.sha256(json.dumps(regle["regle"], sort_keys=True).encode("utf-8")).hexdigest()[:12]
+
+
+def geler_regles(maintenant: datetime | None = None, journal: Path = JOURNAL, matchs: list[dict[str, Any]] | None = None, params: dict | None = None,
+                 fichier: Path | None = None) -> int:
+    from . import decouverte
+    maintenant = maintenant or datetime.now(timezone.utc)
+    regles = regles_decouvertes(fichier)
+    if not regles:
+        return 0
+    params = params or P.charger()
+    deja = {(l["match_id"], l["indice"], l.get("empreinte_regle")) for l in _lire(journal) if l["type"] == "indice_regle"}
+    classements = _classements()
+    nouveaux = []
+    for m in (matchs if matchs is not None else charger_matchs()):
+        ko = _coup_d_envoi(m)
+        if ko is None or ko <= maintenant or m.get("score_final"):
+            continue
+        a = analyser(m, params, classements)
+        if a["statut"] != "analyse":
+            continue
+        f = decouverte.features(a["niveaux"], a["scenarios_offensifs"], a["scenarios_defensifs"])
+        if f is None:
+            continue
+        for mid, regle in regles.items():
+            emp = empreinte_regle(regle)
+            if (m["match_id"], mid, emp) in deja or not decouverte.regle_vraie(regle["regle"], f):
+                continue
+            deja.add((m["match_id"], mid, emp))
+            nouveaux.append({"type": "indice_regle", "indice": mid, "empreinte_regle": emp, "gele_le": maintenant.strftime("%Y-%m-%dT%H:%M:%SZ"), "code": _commit(),
+                             "match_id": m["match_id"], "coup_d_envoi_utc": m.get("coup_d_envoi_utc"), "date": str(m["date"])[:10],
+                             "competition": a["competition"], "domicile": m["domicile"], "exterieur": m["exterieur"],
+                             "variables": {k: round(v, 4) for k, v in f.items()}, "cote_betpawa": decouverte.cote_betpawa(mid, m.get("cotes_betpawa"))})
+    _ajouter(journal, nouveaux)
+    return len(nouveaux)
+
+
+def resultats_regles(journal: Path = JOURNAL, matchs: list[dict[str, Any]] | None = None) -> int:
+    from . import decouverte
+    lignes = _lire(journal)
+    figes = {(l["match_id"], l["indice"], l.get("empreinte_regle")) for l in lignes if l["type"] == "indice_regle"}
+    faits = {(l["match_id"], l["indice"], l.get("empreinte_regle")) for l in lignes if l["type"] == "resultat_indice_regle"}
+    nouveaux = []
+    for m in (matchs if matchs is not None else charger_matchs()):
+        sc = m.get("score_final")
+        if not sc:
+            continue
+        for k in sorted(x for x in figes if x[0] == m["match_id"] and x not in faits and x[1] in decouverte.MARCHES):
+            faits.add(k)
+            nouveaux.append({"type": "resultat_indice_regle", "indice": k[1], "empreinte_regle": k[2], "match_id": k[0], "score": sc,
+                             "gagne": bool(decouverte.MARCHES[k[1]]["gagne"](sc["buts_dom"], sc["buts_ext"])),
+                             "enregistre_le": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")})
+    _ajouter(journal, nouveaux)
+    return len(nouveaux)
+
+
 def pipeline() -> dict[str, Any]:
     """Passage dans le pipeline nocturne : lit l'archive du dossier de travail, sans git. Le commit est fait par le pipeline."""
     matchs = charger_matchs()                        # chargée une seule fois : même archive pour le gel, les résultats et la page
@@ -414,8 +483,13 @@ def pipeline() -> dict[str, Any]:
     PAGE.write_text(json.dumps(d, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     tickets.ecrire_accueil(d["matchs"])                 # les 3 tickets de la page d'accueil (25/10/2026)
     b_geles, b_regles = geler_bandes(matchs=matchs), resultats_bandes(matchs=matchs)      # validation des bandes 1X2, sans effet sur la page
+    try:                                                                    # configurations découvertes (decouverte.py) : gel et résultats, sans effet sur la page
+        r_geles, r_regles = geler_regles(matchs=matchs), resultats_regles(matchs=matchs)
+    except Exception as e:
+        r_geles = r_regles = {"erreur": repr(e)}
     bilan_bandes()
     sortie = {"geles": gele, "resultats": resultat, "page_matchs": len(d["matchs"]), "bilan": bilan(), "bandes_1x2": {"geles": b_geles, "regles": b_regles},
+              "indices_decouverts": {"geles": r_geles, "regles": r_regles},
               "tickets": {"geles": t_geles, "regles": t_regles, "bilan": d["bilan_tickets"]}}
     try:                                                                    # onglet « Indice Alpha » (26/10/2026) : lit les journaux, ne change rien d'autre
         from . import indice_alpha
