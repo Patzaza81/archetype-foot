@@ -1,0 +1,69 @@
+# Moteur omega (`moteur_omega/`)
+
+Dernier moteur décidé par Patrick (27/10/2026, « mon dernier moteur avant deux mois »). Cahier des charges : quatre croisements,
+scénario contradictoire par marché, Poisson/Dixon-Coles, sélection, traçabilité. Calibré sur les expériences des moteurs précédents.
+Autonome : n'utilise ni V2, ni V3, ni le Journal, ni l'alpha, ni Europe, ni v2r, ni v. Hors générateur de tickets.
+
+## Quatre rôles séparés
+1. **Croisements** (`coeur.croisements`) : attaque dom × attaque ext, défense dom × défense ext (descriptifs), attaque dom × défense ext,
+   attaque ext × défense dom (servent aux buts attendus). Valeurs, moyennes, extrêmes, dispersion, convergence.
+2. **Scénario contradictoire** (`coeur.scenario_contradictoire`) — règle de Patrick :
+   - valeurs prises dans les échantillons réels des deux équipes (rien d'inventé) ;
+   - buts candidats d'une équipe = (ses buts marqués + buts encaissés par l'adversaire) / 2, avec les extrêmes défavorables au marché
+     (Plus de 1,5 : attaque la plus faible × défense adverse la plus solide pour chaque équipe ; Moins de 2,5 : attaque la plus forte ×
+     défense adverse la plus faible ; victoire : défavorable à l'équipe soutenue, favorable à l'adversaire ; nul et « pas de nul » : les 4 combinaisons) ;
+   - **buts entiers** : « Plus de 1,5 » est l'affichage, la valeur réelle est « au moins 2 buts ». Une valeur non entière (1,5) peut valoir 1 ou 2 :
+     le marché ne résiste que si tous les scores entiers possibles le font gagner (`marches.tient_en_buts_entiers`) ;
+   - statut RESISTE / FRAGILE (INDETERMINE impossible : un match sans 4 matchs au même lieu est exclu avant). C'est un test, pas une probabilité.
+3. **Poisson / Dixon-Coles** (`modele.py`) : buts attendus selon la méthode de Patrick (croisements 3 et 4), rapprochés de la moyenne du championnat
+   selon la taille d'échantillon ; correction ρ ; distribution 0..10 renormalisée ; marchés par agrégation exacte ; calibrage isotone par marché.
+4. **Sélection** (`coeur.retenu`, `coeur.selectionner`) : cote BetPawa connue ≥ 1,25 ; probabilité du modèle ≥ 72 % ; **accord avec la cote** :
+   la probabilité annoncée par BetPawa (marge retirée en normalisant les issues du marché) atteint aussi 72 %. Probabilité affichée
+   (« réussite attendue ») = la plus prudente des deux. Principal = le plus probable ; « autres » = le reste ; jamais deux fois le même événement
+   (même ensemble de scores gagnants, ex. handicap +0,5 = ne perd pas). Aucun marché ne passe : aucun pari (on ne force jamais).
+
+## Données
+- Séries au même lieu, saison en cours, même compétition, strictement avant le jour du match ; minimum 4 matchs (règle de Patrick).
+- Réglage : bloc Football-Data (`data/bloc_saisons/`), historiques reconstitués par saison ET division (aucune donnée de la saison passée).
+- Validation finale et production : archive ARCHETYPE (`data/archive_test/`), cotes prises avant le coup d'envoi (sinon match écarté).
+
+## Marchés
+1X2, double chance, plus/moins 1,5 à 4,5, les deux marquent, buts d'une équipe 0,5 à 2,5, cages inviolées, handicaps ±0,5 et ±1,5,
+combinés BetPawa (double chance ou 1X2 + total 1,5 à 4,5, + les deux marquent). Exclus (décisions déjà prises) : score exact, nombre exact
+de buts, 5,5 et plus, handicaps de 2,5 et plus, pair/impair, mi-temps, corners, cartons.
+
+## Calibrage (`python -m moteur_omega.calibrage`) — protocole fixé avant calcul
+Leçon des moteurs précédents : des réglages appris sur 3 semaines d'archive ne tenaient pas hors échantillon. Donc :
+1. **Réglage sur Football-Data 2025-26** (9 510 matchs analysables) : fenêtre et forme choisies sur les 30 % les plus récents après
+   ajustement sur les 70 % plus anciens ; rapprochement et ρ au maximum de vraisemblance ; calibrage isotone par marché.
+2. **Validation sur Football-Data 2026-27** (1 617 matchs, jamais utilisés pour régler) : qualité des probabilités ; décision sur les filtres
+   de résistance et de stabilité (gardés seulement si la réussite dépasse la probabilité, test de Welch, p < 0,05).
+3. **Archive ARCHETYPE coupée au 14/10/2026** : développement (avant) pour décider l'accord avec la cote ; réserve (à partir du 14/10) = test final.
+Sorties : `moteur_omega/parametres.json`, `docs/omega_validation.json`.
+
+## Résultats du calibrage du 27/10/2026 (chiffres bruts)
+- Fenêtre retenue : **toute la saison au même lieu** (meilleure que 5, 6, 7, 8 et 10 matchs). Forme retenue : **la moyenne de Patrick**
+  (meilleure que la forme multiplicative). Rapprochement : 3,9 pseudo-matchs ; moyenne du championnat ≈ moyenne générale (les moyennes
+  par championnat en cours de saison n'apportent rien) ; ρ = −0,043. Pondération des matchs récents testée : gain négligeable, non gardée.
+- Le modèle bat le taux de base et la constante (vraisemblance −2,934 contre −2,982), il est bien calibré sur l'ensemble des marchés
+  (2026-27 et archive), **mais il est moins précis que la cote** (Brier 1X2 domicile : 0,237 contre 0,216 pour BetPawa) et, une fois la cote
+  connue, il n'apporte aucune information de plus (vérifié par famille sur la réserve).
+- Conséquence mesurée : quand le modèle annonce ≥ 72 % mais que BetPawa annonce moins, la réussite tombe à 64–69 % (le modèle se trompe) ;
+  d'où l'**accord avec la cote** (développement : +7,8 points sur la probabilité, p = 0,009 ; confirmé sur la réserve : +5,4 points, p = 0,004).
+- Scénario contradictoire : **ne filtre pas** (les marchés qui résistent font moins bien que leur probabilité, p = 0,047) ; stabilité : apport non
+  significatif (p = 0,10). Les deux restent affichés, pour information.
+- **Test final (réserve, 851 matchs du 14 au 27/10)** : 531 paris principaux, **74,8 % réussis pour 73,4 % annoncés**, cote moyenne 1,27,
+  rendement −4,8 %. Tous les paris retenus : 793, 73,9 %, rendement −5,7 %. **Aucune rentabilité démontrée** : la cote paie un peu moins que la réussite.
+- Combinés : aucun ne passe les règles sur la réserve (cotes trop hautes pour 72 %).
+
+## Production (`python -m moteur_omega.suivi pipeline`)
+- Étape « Moteur omega » de `pipeline.yml`, après l'alpha, `continue-on-error`.
+- `data/omega/journal.jsonl` (ajout seul) : une ligne « pronostic » par match à venir, nouvelle ligne seulement si la sélection change ; la
+  dernière ligne écrite AVANT le coup d'envoi est celle qui compte ; une ligne « resultat » par match, jamais modifiée.
+- `data/omega/pronostics.json` → `pronostics_omega.html` (`archetype_omega.js`, lecture seule). Bilan calculé sur les seuls paris gelés avant le match.
+- Statut affiché : EN OBSERVATION.
+
+## Points ouverts / améliorations possibles
+- Recalibrer quand la saison 2026-27 sera plus avancée (relancer `python -m moteur_omega.calibrage`).
+- Les combinés n'ont presque pas d'historique de cotes (archivés depuis peu) : à réévaluer avec plus de données.
+- Tests : `tests/test_moteur_omega.py`.
