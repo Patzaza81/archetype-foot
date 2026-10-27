@@ -74,7 +74,7 @@ function omPourquoi(f) {
   l.push(`${omE(f.domicile)} à domicile : ${omFr(omMoy(s.dom_marques))} but marqué et ${omFr(omMoy(s.dom_encaisses))} encaissé par match (${f.n_domicile} matchs)`);
   l.push(`${omE(f.exterieur)} à l'extérieur : ${omFr(omMoy(s.ext_marques))} but marqué et ${omFr(omMoy(s.ext_encaisses))} encaissé par match (${f.n_exterieur} matchs)`);
   if (p.p_modele != null && p.p_cote != null) l.push(`Les chiffres des deux équipes donnent ${omPct(p.p_modele)} et la cote ${omPct(p.p_cote)} : les deux sont d'accord`);
-  return `<div class="om-pourquoi">${l.map((x) => `<div>${x}</div>`).join("")}</div>` + omHistorique(p);
+  return `<div class="om-pourquoi">${l.map((x) => `<div>${x}</div>`).join("")}</div>`;
 }
 function omLigne(p, f, principal) {
   const ph = omPhrase(p.cle, f.domicile, f.exterieur);
