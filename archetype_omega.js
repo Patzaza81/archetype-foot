@@ -73,7 +73,7 @@ function omPourquoi(f) {
   l.push(`Buts attendus : <b>${omE(f.domicile)} ${omFr((f.buts_attendus || {}).dom)}</b> – <b>${omFr((f.buts_attendus || {}).ext)} ${omE(f.exterieur)}</b>`);
   l.push(`${omE(f.domicile)} à domicile : ${omFr(omMoy(s.dom_marques))} but marqué et ${omFr(omMoy(s.dom_encaisses))} encaissé par match (${f.n_domicile} matchs)`);
   l.push(`${omE(f.exterieur)} à l'extérieur : ${omFr(omMoy(s.ext_marques))} but marqué et ${omFr(omMoy(s.ext_encaisses))} encaissé par match (${f.n_exterieur} matchs)`);
-  if (p.p_modele != null && p.p_cote != null) l.push(`Les chiffres des deux équipes donnent ${omPct(p.p_modele)} et la cote BetPawa ${omPct(p.p_cote)} : les deux sont d'accord`);
+  if (p.p_modele != null && p.p_cote != null) l.push(`Les chiffres des deux équipes donnent ${omPct(p.p_modele)} et la cote ${omPct(p.p_cote)} : les deux sont d'accord`);
   return `<div class="om-pourquoi">${l.map((x) => `<div>${x}</div>`).join("")}</div>`;
 }
 function omLigne(p, f, principal) {
@@ -92,7 +92,7 @@ function omCroisements(f) {
     `<div><b>Attaque ${omE(f.exterieur)} × défense ${omE(f.domicile)}</b>${v(s.ext_marques)}<br>${v(s.dom_encaisses)}</div>` +
     `</div></div>`;
 }
-// Derniers matchs des deux équipes (ceux du même lieu, utilisés par le modèle) : date, adversaire, score, résultat.
+// Derniers matchs des deux équipes (à domicile pour l'une, à l'extérieur pour l'autre : ceux qu'utilise le modèle) : date, adversaire, score, résultat.
 function omRes(m, e) { return m > e ? ["V", "om-v"] : m < e ? ["D", "om-d"] : ["N", "om-n"]; }
 function omJourCourt(iso) {
   const d = new Date(`${iso}T12:00:00`); if (Number.isNaN(d.getTime())) return omE(iso || "");
