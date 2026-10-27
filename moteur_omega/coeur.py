@@ -7,7 +7,7 @@ Quatre rôles séparés (cahier des charges, section 13) :
    marché (ex. Plus de 1,5 : plus faible attaque de chaque équipe × plus faible nombre de buts encaissés par l'adversaire). Lecture en buts
    entiers : le marché ne résiste que si tous les scores entiers possibles du scénario le font gagner. C'est un test, pas une probabilité.
 3. POISSON / DIXON-COLES : probabilité de chaque marché, calibrée sur l'historique (`calibrage.py`).
-4. SÉLECTION : probabilité calibrée >= seuil, cote BetPawa connue >= 1,25 ; accord avec la cote (la probabilité annoncée par BetPawa,
+4. SÉLECTION : probabilité calibrée >= seuil, cote BetPawa connue >= 1,39 (ordre de Patrick du 27/10/2026 : jamais moins) ; accord avec la cote (la probabilité annoncée par BetPawa,
    marge retirée, atteint aussi le seuil) et filtres de résistance et de stabilité seulement si le calibrage a montré qu'ils apportent
    quelque chose hors échantillon (`parametres.json` → `selection`). Probabilité retenue = la plus prudente des deux (modèle, cote).
 """
@@ -22,7 +22,7 @@ from . import marches as M
 from . import modele as MO
 from .donnees import References, MIN_MATCHS
 
-COTE_MIN = 1.25                    # règle de Patrick (tous les moteurs) : aucun pronostic proposé sous 1,25
+COTE_MIN = 1.39                    # ordre de Patrick (27/10/2026) : omega ne propose QUE des cotes de 1,39 et plus, jamais moins
 
 
 # --- 1. Croisements -------------------------------------------------------------------------------------------------
@@ -191,8 +191,8 @@ def retenu(l: dict[str, Any], sel: dict[str, Any]) -> tuple[bool, str]:
     """Règle de sélection d'un marché (paramètres appris dans `selection`)."""
     if l["cote"] is None:
         return False, "cote BetPawa inconnue"
-    if l["cote"] < COTE_MIN:
-        return False, f"cote {l['cote']:g} sous 1,25"
+    if l["cote"] < sel.get("cote_min", COTE_MIN):
+        return False, f"cote {l['cote']:g} sous {sel.get('cote_min', COTE_MIN):g}".replace(".", ",")
     if l["p"] < sel["seuil"]:
         return False, f"probabilité du modèle {l['p']:.0%} sous le seuil {sel['seuil']:.0%}"
     if sel.get("exiger_accord_cote"):

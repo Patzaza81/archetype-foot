@@ -10,7 +10,7 @@ import pytest
 from moteur_omega import coeur, donnees as D, marches as M, modele as MO, suivi
 
 PARAMS = {"global_dom": 1.5, "global_ext": 1.2, "forme": "moyenne", "fenetre": None, "m_equipe": 3.9, "m_ligue": 2000.0, "rho": -0.04,
-          "calibration": {}, "selection": {"seuil": 0.72, "exiger_accord_cote": True, "exiger_resistance": False, "exiger_stabilite": False},
+          "calibration": {}, "selection": {"cote_min": 1.39, "seuil": 0.62, "exiger_accord_cote": True, "exiger_resistance": False, "exiger_stabilite": False},
           "version": "test"}
 
 
@@ -136,18 +136,18 @@ def test_proba_cote_incomplete_rien_devine(cotes, cle):
 
 # --- Règle de sélection --------------------------------------------------------------------------------------------
 def _ligne(**kw):
-    l = {"cle": ["over_under_1.5", "plus"], "marche": "Plus de 1,5 buts", "p": 0.78, "p_cote": 0.75, "p_retenue": 0.75, "p_min": 0.74,
-         "cote": 1.28, "resistance": "FRAGILE"}
+    l = {"cle": ["over_under_1.5", "plus"], "marche": "Plus de 1,5 buts", "p": 0.70, "p_cote": 0.65, "p_retenue": 0.65, "p_min": 0.66,
+         "cote": 1.45, "resistance": "FRAGILE"}
     l.update(kw)
     return l
 
 
-@pytest.mark.parametrize("kw", [{}, {"cote": 1.25, "p_cote": 0.76}, {"p": 0.72, "p_cote": 0.72}])
+@pytest.mark.parametrize("kw", [{}, {"cote": 1.39, "p_cote": 0.66}, {"p": 0.62, "p_cote": 0.62}])
 def test_retenu(kw):
     assert coeur.retenu(_ligne(**kw), PARAMS["selection"])[0]
 
 
-@pytest.mark.parametrize("kw", [{"cote": 1.20}, {"p": 0.71}, {"p_cote": 0.65}, {"cote": None}, {"p_cote": None}])
+@pytest.mark.parametrize("kw", [{"cote": 1.38}, {"cote": 1.25, "p_cote": 0.76}, {"p": 0.61}, {"p_cote": 0.60}, {"cote": None}, {"p_cote": None}])
 def test_non_retenu(kw):
     assert not coeur.retenu(_ligne(**kw), PARAMS["selection"])[0]
 
@@ -155,14 +155,21 @@ def test_non_retenu(kw):
 def test_filtres_resistance_et_stabilite_si_actives():
     sel = {**PARAMS["selection"], "exiger_resistance": True, "exiger_stabilite": True}
     assert not coeur.retenu(_ligne(), sel)[0]
-    assert not coeur.retenu(_ligne(resistance="RESISTE", p_min=0.70), sel)[0]
+    assert not coeur.retenu(_ligne(resistance="RESISTE", p_min=0.60), sel)[0]
     assert coeur.retenu(_ligne(resistance="RESISTE"), sel)[0]
 
 
+def test_jamais_de_cote_sous_1_39():
+    """Ordre de Patrick (27/10/2026) : omega ne propose que des cotes de 1,39 et plus, même très probables."""
+    for c in (1.10, 1.25, 1.30, 1.38):
+        assert not coeur.retenu(_ligne(cote=c, p=0.95, p_cote=0.90), PARAMS["selection"])[0]
+    assert coeur.COTE_MIN == 1.39
+
+
 def test_meme_evenement_garde_une_seule_fois():
-    a = {"statut": "analyse", "marches": [_ligne(cle=["double_chance", "1N"], marche="Domicile ne perd pas", p=0.80, p_retenue=0.76, cote=1.27),
-                                          _ligne(cle=["handicap_0.5", "domicile"], marche="Handicap +0,5 domicile", p=0.80, p_retenue=0.76, cote=1.30),
-                                          _ligne(cle=["over_under_1.5", "plus"], p=0.79, p_retenue=0.74)]}
+    a = {"statut": "analyse", "marches": [_ligne(cle=["double_chance", "1N"], marche="Domicile ne perd pas", p=0.72, p_retenue=0.68, cote=1.40),
+                                          _ligne(cle=["handicap_0.5", "domicile"], marche="Handicap +0,5 domicile", p=0.72, p_retenue=0.68, cote=1.43),
+                                          _ligne(cle=["over_under_1.5", "plus"], p=0.71, p_retenue=0.66)]}
     s = coeur.selectionner(a, PARAMS["selection"])
     assert s["principal"]["marche"] == "Handicap +0,5 domicile"          # même probabilité : la meilleure cote est gardée
     assert [x["marche"] for x in s["autres"]] == ["Plus de 1,5 buts"]
@@ -170,7 +177,7 @@ def test_meme_evenement_garde_une_seule_fois():
 
 # --- Analyse complète et suivi (gel avant le coup d'envoi, ajout seul) -------------------------------------------
 COTES = {"1x2": {"1": 1.55, "N": 4.0, "2": 6.0}, "double_chance": {"1N": 1.12, "N2": 2.4, "12": 1.27},
-         "over_under_1.5": {"plus": 1.28, "moins": 3.4}, "over_under_2.5": {"plus": 1.9, "moins": 1.85}}
+         "over_under_1.5": {"plus": 1.42, "moins": 2.7}, "over_under_2.5": {"plus": 1.9, "moins": 1.85}}
 
 
 def test_analyse_complete_et_sorties_obligatoires():
@@ -189,7 +196,7 @@ def test_gel_avant_coup_d_envoi_seulement(tmp_path):
     assert suivi.geler(avant, j, [m], D.References(), PARAMS) == 1
     assert suivi.geler(avant, j, [m], D.References(), PARAMS) == 0            # rien n'a changé : pas de nouvelle ligne
     apres = datetime(2026, 10, 20, 19, tzinfo=timezone.utc)
-    m2 = dict(m, cotes={**COTES, "over_under_1.5": {"plus": 1.30, "moins": 3.2}})
+    m2 = dict(m, cotes={**COTES, "over_under_1.5": {"plus": 1.45, "moins": 2.6}})
     assert suivi.geler(apres, j, [m2], D.References(), PARAMS) == 0          # coup d'envoi passé : jamais de pronostic
     lignes = [json.loads(x) for x in j.read_text().splitlines()]
     assert len(lignes) == 1 and lignes[0]["type"] == "pronostic"

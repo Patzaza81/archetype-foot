@@ -10,7 +10,8 @@ Protocole (fixé avant tout calcul, leçons des moteurs précédents : les régl
    calibrage par tranches), comparaison au taux de base et aux cotes de clôture ; décision sur les filtres de résistance et de stabilité
    (gardés seulement s'ils améliorent la réussite au-delà de la probabilité, test de Welch, p < 0,05).
 3. ARCHIVE ARCHETYPE (cotes BetPawa réelles prises avant le coup d'envoi), coupée en deux au 14/10/2026 :
-   - développement (avant) : décision sur l'accord avec la cote (mêmes règles que les autres filtres) ;
+   - développement (avant) : seuil de probabilité appris (meilleure borne basse de Wilson des paris principaux, cote >= 1,39 imposée par
+     Patrick) et décision sur l'accord avec la cote (mêmes règles que les autres filtres) ;
    - réserve (à partir du 14/10) : test final, jamais utilisé pour choisir ; réussite des sélections, rendement indicatif.
 Sorties : moteur_omega/parametres.json, docs/omega_validation.json.
 """
@@ -35,8 +36,9 @@ RAPPORT = ROOT / "docs" / "omega_validation.json"
 FENETRES = (5, 6, 7, 8, 10, None)          # None = toute la saison au même lieu
 FORMES = ("moyenne", "multiplicative")
 COUPE_ARCHIVE = "2026-10-14"              # archive : développement avant, réserve (test final) à partir de ce jour ; fixée avant calcul (même coupe que l'alpha)
-SEUIL_PATRICK = 0.72                       # seuil de réussite fixé par Patrick (alpha, v, moteurs précédents)
-VERSION = "1.0.0"
+SEUILS_CANDIDATS = [round(0.50 + 0.01 * k, 2) for k in range(26)]   # 50 % à 75 % : le seuil retenu est APPRIS (72 % est impossible à 1,39 et plus)
+MIN_PARIS_SEUIL = 30                       # en dessous, un seuil n'est pas jugeable (borne de Wilson trop large) : il n'est pas candidat
+VERSION = "1.1.0"
 
 
 def _caracteristiques(ms: list[dict], refs: D.References, fenetre: int | None) -> tuple[np.ndarray, list[dict]]:
@@ -253,6 +255,26 @@ def apport_accord_cote(analyses: list[dict], seuil: float) -> dict[str, Any]:
     return r
 
 
+def _wilson_bas(g: int, n: int, z: float = 1.96) -> float:
+    if n == 0:
+        return 0.0
+    p = g / n
+    return (p + z * z / (2 * n) - z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n))) / (1 + z * z / n)
+
+
+def choisir_seuil(analyses: list[dict], sel: dict[str, Any]) -> dict[str, Any]:
+    """Seuil de probabilité appris sur le développement : celui dont les paris principaux ont la meilleure borne basse de Wilson (95 %)
+    de réussite — la réussite la plus sûre compte tenu du nombre de paris. Aucun seuil fixé à la main."""
+    essais = []
+    for s in SEUILS_CANDIDATS:
+        b = bilan_selection(analyses, {**sel, "seuil": s})["principal"]
+        if b["n"] >= MIN_PARIS_SEUIL:
+            essais.append({"seuil": s, "n": b["n"], "reussite": b["reussite"], "rendement": b["rendement"],
+                           "wilson_bas": round(_wilson_bas(b["gagnes"], b["n"]), 4)})
+    meilleur = max(essais, key=lambda e: (e["wilson_bas"], e["n"]))
+    return {"retenu": meilleur["seuil"], "essais": essais}
+
+
 def bilan_selection(analyses: list[dict], sel: dict[str, Any]) -> dict[str, Any]:
     principaux, tous = [], []
     for a in analyses:
@@ -285,36 +307,45 @@ def main() -> None:
     p, reglage = regler(fd, refs_fd)
     p["version"] = VERSION
     p["regle_le"] = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
-    p["selection"] = {"seuil": SEUIL_PATRICK, "exiger_resistance": False, "exiger_stabilite": False}
-    va = [m for m in fd if m["saison"] == "2627"]
-    an_va = analyser_tous(va, refs_fd, p)
-    filtres = apport_filtres(an_va, SEUIL_PATRICK)
-    p["selection"]["exiger_resistance"] = filtres["resistance"]["garde"]
-    p["selection"]["exiger_stabilite"] = filtres["stabilite"]["garde"]
+    sel = {"cote_min": coeur.COTE_MIN, "seuil": None, "exiger_accord_cote": True, "exiger_resistance": False, "exiger_stabilite": False}
     arch, refs_ar = D.charger_archive(avec_futurs=False)
     an_ar = analyser_tous(arch, refs_ar, p)
     dev = [a for a in an_ar if a["jour"] < COUPE_ARCHIVE]
     res = [a for a in an_ar if a["jour"] >= COUPE_ARCHIVE]
-    accord = apport_accord_cote(dev, SEUIL_PATRICK)
-    p["selection"]["exiger_accord_cote"] = accord["garde"]
+    # 1. seuil appris sur le développement (accord avec la cote), 2. l'accord est-il utile à ce seuil ? sinon seuil réappris sans accord
+    choix = choisir_seuil(dev, sel)
+    sel["seuil"] = choix["retenu"]
+    accord = apport_accord_cote(dev, sel["seuil"])
+    if not accord["garde"]:
+        sel["exiger_accord_cote"] = False
+        choix = choisir_seuil(dev, sel)
+        sel["seuil"] = choix["retenu"]
+    # 3. filtres de résistance et de stabilité jugés sur Football-Data 2026-27 au seuil appris
+    va = [m for m in fd if m["saison"] == "2627"]
+    an_va = analyser_tous(va, refs_fd, p)
+    filtres = apport_filtres(an_va, sel["seuil"])
+    sel["exiger_resistance"] = filtres["resistance"]["garde"]
+    sel["exiger_stabilite"] = filtres["stabilite"]["garde"]
+    p["selection"] = sel
     rapport = {"genere_le": p["regle_le"], "version": VERSION, "protocole": __doc__.split("Protocole", 1)[1].split("Sorties")[0].strip(),
                "reglage_2526": reglage, "parametres": {k: v for k, v in p.items() if k not in ("calibration", "taux_de_base_2526")},
                "validation_2627": {"matchs": len(an_va), "qualite_par_marche": qualite(an_va, p, "football-data"),
                                    "apport_des_filtres": filtres, "frequence_resiste": _freq_resiste(an_va)},
                "test_archive": {"matchs": len(an_ar), "du": arch[0]["jour"] if arch else None, "au": arch[-1]["jour"] if arch else None,
                                 "coupe": COUPE_ARCHIVE, "matchs_developpement": len(dev), "matchs_reserve": len(res),
-                                "accord_cote_developpement": accord, "accord_cote_reserve": apport_accord_cote(res, SEUIL_PATRICK),
+                                "choix_du_seuil_developpement": choix,
+                                "accord_cote_developpement": accord, "accord_cote_reserve": apport_accord_cote(res, sel["seuil"]),
                                 "qualite_par_marche": qualite(an_ar, p, "archetype"),
-                                "selection_reserve": bilan_selection(res, p["selection"]),
-                                "selection_developpement": bilan_selection(dev, p["selection"]),
-                                "selection_sans_accord_reserve": bilan_selection(res, {**p["selection"], "exiger_accord_cote": False}),
-                                "apport_des_filtres": apport_filtres(an_ar, SEUIL_PATRICK)}}
+                                "selection_reserve": bilan_selection(res, sel),
+                                "selection_developpement": bilan_selection(dev, sel),
+                                "selection_sans_accord_reserve": bilan_selection(res, {**sel, "exiger_accord_cote": False}),
+                                "apport_des_filtres": apport_filtres(an_ar, sel["seuil"])}}
     PARAMS.write_text(json.dumps(p, ensure_ascii=False, indent=1), encoding="utf-8")
     RAPPORT.write_text(json.dumps(rapport, ensure_ascii=False, indent=1), encoding="utf-8")
-    sel = rapport["test_archive"]["selection_reserve"]
+    r = rapport["test_archive"]["selection_reserve"]
     print("réglage :", reglage["retenu"], "ll", reglage["ll_modele"], "constante", reglage["ll_constante"])
-    print("filtres (validation 2627) :", {k: filtres[k].get("garde") for k in ("resistance", "stabilite")}, "accord cote :", accord["garde"])
-    print("réserve : principal", sel["principal"], "\n tous", sel["tous_les_retenus"])
+    print("sélection :", sel)
+    print("réserve : principal", r["principal"], "\n tous", r["tous_les_retenus"])
 
 
 def _freq_resiste(analyses: list[dict]) -> dict[str, float]:

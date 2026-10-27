@@ -24,7 +24,7 @@ Avant toute modification concernée, lire le document spécialisé correspondant
 - Moteur v (conception, tests subis, résultats, suivi) : `docs/MOTEUR_V.md` et `docs/MOTEUR_V_HISTORIQUE.md`
 - Moteur alpha = séries appariées (`alpha_serie/`, remplace l'ancien alpha le 20/10/2026 ; pronostics et journal gelé chaque nuit, hors tickets, aucune cote à l'analyse) : `docs/ALPHA_SERIE.md`
 - Laboratoire de matrice de scénarios (indépendant de l'alpha) : `docs/MATRICE_SCENARIOS.md`
-- Moteur omega (croisements, scénario contradictoire, Poisson/Dixon-Coles calibré, accord avec la cote ; autonome, hors tickets) : `docs/MOTEUR_OMEGA.md`
+- Moteur omega (croisements, scénario contradictoire, Poisson/Dixon-Coles calibré, accord avec la cote, cotes de 1,39 et plus seulement ; autonome, hors tickets) : `docs/MOTEUR_OMEGA.md`
 
 ## Règles de sécurité
 
