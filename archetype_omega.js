@@ -92,14 +92,31 @@ function omCroisements(f) {
     `<div><b>Attaque ${omE(f.exterieur)} × défense ${omE(f.domicile)}</b>${v(s.ext_marques)}<br>${v(s.dom_encaisses)}</div>` +
     `</div></div>`;
 }
-function omScenario(f) {
-  const p = f.principal || {}, sc = p.scenario || {};
-  const tient = p.resistance === "RESISTE";
-  return `<div class="om-bloc"><div class="om-bloc-titre">Pire scénario pour ce pari (valeurs réelles des deux équipes)</div>` +
-    `<div>${omE(f.domicile)} <b>${omFr(sc.dom)}</b> – <b>${omFr(sc.ext)}</b> ${omE(f.exterieur)} : ` +
-    `<span class="${tient ? "om-ok" : "om-ko"}">${tient ? "le pari tient même dans ce cas" : "le pari ne tient pas dans ce cas extrême"}</span></div>` +
-    `<div class="om-info">Buts d'une équipe = (ses buts marqués + buts encaissés par l'adversaire) ÷ 2, avec les valeurs les plus défavorables au pari. Pas de demi-but : 1,5 peut valoir 1 ou 2, le pari doit gagner dans les deux cas. Information : ce test ne change pas la sélection (il n'a pas amélioré la réussite sur les matchs passés).</div>` +
-    `<div class="om-info">Sans un des matchs de l'échantillon, la réussite attendue du modèle descend au plus bas à ${omPct(p.p_min)}.</div></div>`;
+// Derniers matchs des deux équipes (ceux du même lieu, utilisés par le modèle) : date, adversaire, score, résultat.
+function omRes(m, e) { return m > e ? ["V", "om-v"] : m < e ? ["D", "om-d"] : ["N", "om-n"]; }
+function omJourCourt(iso) {
+  const d = new Date(`${iso}T12:00:00`); if (Number.isNaN(d.getTime())) return omE(iso || "");
+  return omE(d.toLocaleDateString("fr-FR", { day: "numeric", month: "short" }).replace(/\./g, ""));
+}
+function omEquipeDerniers(nom, lieu, liste, total) {
+  const l = Array.isArray(liste) ? liste : [];
+  const moy = (k) => (l.length ? l.reduce((a, x) => a + Number(x[k] || 0), 0) / l.length : NaN);
+  const lignes = l.map((x) => {
+    const [lettre, cls] = omRes(x.marques, x.encaisses);
+    return `<li class="om-dm"><span class="om-dm-date">${omJourCourt(x.date)}</span>` +
+      `<span class="om-dm-adv">${omE(x.adversaire || "Adversaire inconnu")}</span>` +
+      `<b class="om-dm-score">${Number(x.marques)} – ${Number(x.encaisses)}</b><span class="om-dm-res ${cls}">${lettre}</span></li>`;
+  }).join("");
+  return `<div class="om-dm-eq"><div class="om-dm-tete"><span class="om-dm-nom">${omE(nom)}</span>` +
+    `<span class="om-dm-lieu">${lieu} · ${total || l.length} match${(total || l.length) > 1 ? "s" : ""}</span></div>` +
+    (l.length ? `<div class="om-dm-puces"><span>Marque <b>${omFr(moy("marques"))}</b></span><span>Encaisse <b>${omFr(moy("encaisses"))}</b></span></div><ul class="om-dm-liste">${lignes}</ul>`
+              : `<p class="om-info">Matchs indisponibles.</p>`) + `</div>`;
+}
+function omDerniers(f) {
+  const d = f.derniers_matchs || {};
+  if (!(d.dom && d.dom.length) && !(d.ext && d.ext.length)) return "";
+  return `<div class="om-bloc"><div class="om-bloc-titre">Derniers matchs</div><div class="om-dm-grille">` +
+    omEquipeDerniers(f.domicile, "À domicile", d.dom, f.n_domicile) + omEquipeDerniers(f.exterieur, "À l'extérieur", d.ext, f.n_exterieur) + `</div></div>`;
 }
 function omScores(f) {
   const sc = (f.scores_probables || []).map((x) => `${omE(x.score)} (${omPct(x.p)})`).join(" · ");
@@ -130,7 +147,7 @@ function omCarte(f) {
       omPourquoi(f) +
       `<div class="om-autres"><div class="om-autres-titre">Autres paris possibles</div>` +
         (autres.length ? autres.map((x) => omLigne(x, f, false)).join("") : `<div class="om-info">Aucun autre pari ne remplit les règles.</div>`) + `</div>` +
-      omCroisements(f) + omScenario(f) + omScores(f) +
+      omDerniers(f) + omCroisements(f) + omScores(f) +
     `</div></details>`;
   section.addEventListener("click", (e) => {      // carte repliée au départ ; un toucher la déplie ou la replie
     if (e.target.closest("button, a, summary")) return;
@@ -159,11 +176,6 @@ function omBilan(b) {
   return `<table class="om-table"><tr><th>Pari</th><th>Réglés</th><th>Réussite réelle</th><th>Annoncée</th><th>Cote moy.</th><th>Rendement</th></tr>${corps}</table>`;
 }
 function omAffiche(d) {
-  const v = d.validation;
-  const test = v ? `Test sur ${v.n} paris passés jamais utilisés pour le réglage : ${omPct1(v.reussite)} réussis pour ${omPct1(v.annonce)} annoncés, rendement ${omSigne(v.rendement)}.` : "";
-  document.getElementById("om-statut").innerHTML =
-    `<div class="om-statut">EN OBSERVATION — réussite visée : ${omPct(d.seuil)} au moins` +
-    `<small>${omE(test)} Aucune rentabilité démontrée : la cote paie un peu moins que la réussite réelle.</small></div>`;
   document.getElementById("om-bilan").innerHTML = omBilan(d.bilan || {});
   omListe("om-avenir", d.a_venir, "Aucun pari à venir pour l'instant.");
   const sans = Number(d.sans_pronostic) || 0;
