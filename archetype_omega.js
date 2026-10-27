@@ -73,13 +73,12 @@ function omPourquoi(f) {
   l.push(`Buts attendus : <b>${omE(f.domicile)} ${omFr((f.buts_attendus || {}).dom)}</b> – <b>${omFr((f.buts_attendus || {}).ext)} ${omE(f.exterieur)}</b>`);
   l.push(`${omE(f.domicile)} à domicile : ${omFr(omMoy(s.dom_marques))} but marqué et ${omFr(omMoy(s.dom_encaisses))} encaissé par match (${f.n_domicile} matchs)`);
   l.push(`${omE(f.exterieur)} à l'extérieur : ${omFr(omMoy(s.ext_marques))} but marqué et ${omFr(omMoy(s.ext_encaisses))} encaissé par match (${f.n_exterieur} matchs)`);
-  if (p.p_modele != null && p.p_cote != null) l.push(`Les chiffres des deux équipes donnent ${omPct(p.p_modele)} et la cote ${omPct(p.p_cote)} : les deux sont d'accord`);
   return `<div class="om-pourquoi">${l.map((x) => `<div>${x}</div>`).join("")}</div>`;
 }
 function omLigne(p, f, principal) {
   const ph = omPhrase(p.cle, f.domicile, f.exterieur);
   return `<div class="om-ligne ${principal ? "om-principal" : ""}"><span>${omE(ph.titre)}${ph.reel ? `<small class="om-sous">${omE(ph.reel)}</small>` : ""}` +
-    (principal ? "" : `<small class="om-sous">réussite attendue ${omPct(p.p)}</small>`) + `</span>` +
+    `</span>` +
     `<span><span class="om-cote">Cote ${omCote(p.cote)}</span> ${omBadge(p)}</span></div>`;
 }
 function omCroisements(f) {
@@ -136,7 +135,7 @@ function omHistorique(p) {
 }
 // Phrase vraie, propre au type de pari : simple décompte sur les derniers matchs affichés (aucune estimation).
 const omN = (liste, test) => liste.filter(test).length;
-function omPhrase(p, f) {
+function omPhrasePari(p, f) {
   const d = f.derniers_matchs, cle = Array.isArray(p.cle) ? p.cle : [];
   if (!d || !d.dom || !d.ext || !d.dom.length || !d.ext.length) return "";
   const g = String(cle[0] || ""), s = String(cle[1] || ""), D = d.dom, X = d.ext, nd = D.length, nx = X.length;
@@ -198,11 +197,11 @@ function omPhrase(p, f) {
 }
 // Cercle du pourcentage (le plus prudent des deux : modèle ou cote) + la phrase propre au type de pari.
 function omPourquoiCourt(p, f) {
-  const r = Math.round(Number(p.p) * 100);
-  const pct = Number.isFinite(r) ? r : null;
+  const c = f.pari_sur_derniers, n = c && c.dom && c.ext ? c.dom.n + c.ext.n : 0;
+  const pct = n ? Math.round(100 * (c.dom.ok + c.ext.ok) / n) : null;   // part des derniers matchs affichés où le pari serait passé
   const anneau = pct === null ? "" :
-    `<div class="om-anneau" style="--p:${pct}" role="img" aria-label="Réussite attendue ${pct} %"><span><b>${pct} %</b></span></div>`;
-  const phrase = omPhrase(p, f);
+    `<div class="om-anneau" style="--p:${pct}" role="img" aria-label="Pari passé dans ${pct} % des derniers matchs"><span><b>${pct} %</b></span></div>`;
+  const phrase = omPhrasePari(p, f);
   return anneau || phrase ? `<div class="om-pq">${anneau}<p class="om-pq-txt">${phrase}</p></div>` : "";
 }
 function omCarte(f) {

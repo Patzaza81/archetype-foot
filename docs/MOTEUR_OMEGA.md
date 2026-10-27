@@ -84,8 +84,8 @@ Sorties : `moteur_omega/parametres.json`, `docs/omega_validation.json`.
   moitiés de la période : le TYPE de pari (buts du match 72 % sur 306 ; résultat 62 % sur 292 ; buts d'une équipe 69 % sur 197 ; combinés trop peu, non publiés).
   La carte affiche donc la réussite constatée du type de pari (`historique.py` → `docs/omega_historique.json`, relancé à chaque passage du pipeline,
   minimum 30 paris par famille). Le pourcentage du pari reste dans le détail (modèle et cote). Aucun niveau de « confiance » inventé.
-- **Carte « pourquoi ce pari »** (27/10/2026, ordre de Patrick) : le pourcentage affiché (le plus prudent du modèle et de la cote, c'est une estimation)
-  est dans un cercle ; à côté, UNE phrase vraie **propre au type de pari** (`archetype_omega.js`, `omPhrase`), simple décompte sur les « Derniers matchs »
+- **Carte « pourquoi ce pari »** (27/10/2026, ordre de Patrick) : le pourcentage du cercle = part des derniers matchs affichés (les deux équipes) où le pari serait passé (décompte réel, varie de 36 à 100 %, ce n'est pas une probabilité ; le % du modèle/cote n'est plus affiché sur les cartes, il reste dans le JSON)
+  ; il est dans un cercle ; à côté, UNE phrase vraie **propre au type de pari** (`archetype_omega.js`, `omPhrase`), simple décompte sur les « Derniers matchs »
   affichés, sans estimation : total de buts (« terminés avec 3 buts ou moins : X sur N pour A à domicile, Y sur N pour B à l'extérieur ») ; buts d'une équipe
   (ses buts marqués + les buts encaissés par l'adversaire) ; les deux marquent ; cage inviolée / encaisse ; 1X2 ; double chance ; handicap (marge exigée) ;
   combinés = décompte du pari complet (`pari_sur_derniers`, calculé en Python par `marches.test_du_marche`, score de l'extérieur inversé).
