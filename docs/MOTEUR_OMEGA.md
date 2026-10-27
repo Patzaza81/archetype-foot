@@ -17,8 +17,10 @@ Autonome : n'utilise ni V2, ni V3, ni le Journal, ni l'alpha, ni Europe, ni v2r,
    - statut RESISTE / FRAGILE (INDETERMINE impossible : un match sans 4 matchs au même lieu est exclu avant). C'est un test, pas une probabilité.
 3. **Poisson / Dixon-Coles** (`modele.py`) : buts attendus selon la méthode de Patrick (croisements 3 et 4), rapprochés de la moyenne du championnat
    selon la taille d'échantillon ; correction ρ ; distribution 0..10 renormalisée ; marchés par agrégation exacte ; calibrage isotone par marché.
-4. **Sélection** (`coeur.retenu`, `coeur.selectionner`) : cote BetPawa connue ≥ 1,25 ; probabilité du modèle ≥ 72 % ; **accord avec la cote** :
-   la probabilité annoncée par BetPawa (marge retirée en normalisant les issues du marché) atteint aussi 72 %. Probabilité affichée
+4. **Sélection** (`coeur.retenu`, `coeur.selectionner`) : cote BetPawa connue **≥ 1,39, jamais moins** (ordre de Patrick du 27/10/2026) ;
+   probabilité du modèle ≥ seuil ; **accord avec la cote** : la probabilité annoncée par BetPawa (marge retirée en normalisant les issues du
+   marché) atteint aussi le seuil. Seuil APPRIS sur le développement de l'archive : **62 %** (72 % est impossible à 1,39 et plus : une cote de
+   1,39 annonce au plus ~66 % une fois la marge retirée). Probabilité affichée
    (« réussite attendue ») = la plus prudente des deux. Principal = le plus probable ; « autres » = le reste ; jamais deux fois le même événement
    (même ensemble de scores gagnants, ex. handicap +0,5 = ne perd pas). Aucun marché ne passe : aucun pari (on ne force jamais).
 
@@ -38,10 +40,21 @@ Leçon des moteurs précédents : des réglages appris sur 3 semaines d'archive 
    ajustement sur les 70 % plus anciens ; rapprochement et ρ au maximum de vraisemblance ; calibrage isotone par marché.
 2. **Validation sur Football-Data 2026-27** (1 617 matchs, jamais utilisés pour régler) : qualité des probabilités ; décision sur les filtres
    de résistance et de stabilité (gardés seulement si la réussite dépasse la probabilité, test de Welch, p < 0,05).
-3. **Archive ARCHETYPE coupée au 14/10/2026** : développement (avant) pour décider l'accord avec la cote ; réserve (à partir du 14/10) = test final.
+3. **Archive ARCHETYPE coupée au 14/10/2026** : développement (avant) pour apprendre le seuil (meilleure borne basse de Wilson à 95 % de la
+   réussite des paris principaux, seuils candidats 50 à 75 %, au moins 30 paris) et décider l'accord avec la cote ; réserve (à partir du 14/10) = test final.
 Sorties : `moteur_omega/parametres.json`, `docs/omega_validation.json`.
 
-## Résultats du calibrage du 27/10/2026 (chiffres bruts)
+## Version 1.1.0 (27/10/2026) : cotes de 1,39 et plus seulement (ordre de Patrick)
+- Seuil appris : 62 % (développement : 250 paris, 65,6 %, borne de Wilson 59,5 % ; les autres seuils font moins bien).
+- Accord avec la cote à 1,39 et plus : indispensable (développement : +13,9 points sur la probabilité du modèle ; réserve : +8,2 points).
+  Sans accord, réserve : 63,5 % et rendement −7,5 %.
+- Recherche faite pour trouver mieux à 1,39 et plus (écart modèle − cote, « valeur » du modèle, résistance, convergence, familles, tranches
+  de cotes) : aucun levier ne bat la cote ; la réussite suit la probabilité annoncée par BetPawa (1,39–1,50 : ~64–65 % ; 1,50–1,70 : ~58 %).
+- **Test final (réserve, 851 matchs du 14 au 27/10)** : 557 paris principaux, **67,7 % réussis pour 64,8 % annoncés**, cote moyenne 1,42,
+  rendement −3,7 %. Tous les paris retenus : 832, 66,6 %, rendement −4,7 %. Cotes proposées en pratique : 1,39 à ~1,55.
+- Résistance et stabilité : toujours sans apport (2026-27 : −2,3 points, p = 0,015 ; +1,6 point, p = 0,077), affichées pour information.
+
+## Résultats du calibrage de la version 1.0.0 (27/10/2026, cotes ≥ 1,25, seuil 72 % — remplacée par la 1.1.0)
 - Fenêtre retenue : **toute la saison au même lieu** (meilleure que 5, 6, 7, 8 et 10 matchs). Forme retenue : **la moyenne de Patrick**
   (meilleure que la forme multiplicative). Rapprochement : 3,9 pseudo-matchs ; moyenne du championnat ≈ moyenne générale (les moyennes
   par championnat en cours de saison n'apportent rien) ; ρ = −0,043. Pondération des matchs récents testée : gain négligeable, non gardée.
@@ -62,6 +75,7 @@ Sorties : `moteur_omega/parametres.json`, `docs/omega_validation.json`.
   dernière ligne écrite AVANT le coup d'envoi est celle qui compte ; une ligne « resultat » par match, jamais modifiée.
 - `data/omega/pronostics.json` → `pronostics_omega.html` (`archetype_omega.js`, lecture seule). Bilan calculé sur les seuls paris gelés avant le match.
 - Statut affiché : EN OBSERVATION.
+- Une seule exception à « tout seuil appris » : la cote minimale 1,39, imposée par Patrick.
 
 ## Points ouverts / améliorations possibles
 - Recalibrer quand la saison 2026-27 sera plus avancée (relancer `python -m moteur_omega.calibrage`).
