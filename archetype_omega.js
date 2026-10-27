@@ -134,14 +134,75 @@ function omHistorique(p) {
   return `<div class="om-hist"><b class="om-hist-pct">${Math.round(h.reussite * 100)} %</b>` +
     `<span class="om-hist-txt">de réussite sur les paris portant sur ${OM_TYPES[p.famille]}<small>${h.n} paris testés du ${omJourCourt(OM_HIST.du)} au ${omJourCourt(OM_HIST.au)}</small></span></div>`;
 }
-// Cercle du pourcentage (le plus prudent des deux : modèle ou cote) + une phrase vraie : dans combien de leurs derniers matchs le pari serait passé.
+// Phrase vraie, propre au type de pari : simple décompte sur les derniers matchs affichés (aucune estimation).
+const omN = (liste, test) => liste.filter(test).length;
+function omPhrase(p, f) {
+  const d = f.derniers_matchs, cle = Array.isArray(p.cle) ? p.cle : [];
+  if (!d || !d.dom || !d.ext || !d.dom.length || !d.ext.length) return "";
+  const g = String(cle[0] || ""), s = String(cle[1] || ""), D = d.dom, X = d.ext, nd = D.length, nx = X.length;
+  const dom = omE(f.domicile), ext = omE(f.exterieur);
+  const b = (k, n) => `<b>${k} sur ${n}</b>`;
+  const dd = (t) => b(omN(D, t), nd), xx = (t) => b(omN(X, t), nx);
+  const tot = (x) => x.marques + x.encaisses;
+  let m = g.match(/^over_under_(\d+(?:\.\d+)?)$/);
+  if (m) {
+    const k = Math.floor(Number(m[1])), plus = s === "plus";
+    const t = plus ? (x) => tot(x) > k : (x) => tot(x) <= k;
+    const txt = plus ? `au moins ${k + 1} but${k + 1 > 1 ? "s" : ""}` : (k === 0 ? "aucun but" : `${k} but${k > 1 ? "s" : ""} ou moins`);
+    return `Matchs terminés avec ${txt} : ${dd(t)} pour ${dom} à domicile, ${xx(t)} pour ${ext} à l'extérieur.`;
+  }
+  m = g.match(/^over_under_(domicile|exterieur)_(\d+(?:\.\d+)?)$/);
+  if (m) {
+    const k = Math.floor(Number(m[2])), plus = s === "plus", home = m[1] === "domicile";
+    const txt = plus ? `au moins ${k + 1} but${k + 1 > 1 ? "s" : ""}` : (k === 0 ? "aucun but" : `${k} but${k > 1 ? "s" : ""} ou moins`);
+    const own = plus ? (x) => x.marques > k : (x) => x.marques <= k, opp = plus ? (x) => x.encaisses > k : (x) => x.encaisses <= k;
+    const [eq, lq, el, ll, nm] = home ? [dom, "à domicile", ext, "à l'extérieur", 0] : [ext, "à l'extérieur", dom, "à domicile", 1];
+    const L1 = home ? D : X, L2 = home ? X : D;
+    return `${eq} a marqué ${txt} dans ${b(omN(L1, own), L1.length)} de ses derniers matchs ${lq} ; ${el} en a encaissé ${plus ? "autant" : "aussi peu"} dans ${b(omN(L2, opp), L2.length)} ${ll === "à l'extérieur" ? "à l'extérieur" : "à domicile"}.`;
+  }
+  if (g === "btts") {
+    const oui = s === "Oui", t = oui ? (x) => x.marques > 0 && x.encaisses > 0 : (x) => x.marques === 0 || x.encaisses === 0;
+    return `${oui ? "Les deux équipes ont marqué" : "Une équipe au moins est restée à zéro"} dans ${dd(t)} matchs de ${dom} à domicile et ${xx(t)} matchs de ${ext} à l'extérieur.`;
+  }
+  if (g === "cages_inviolees_domicile" || g === "cages_inviolees_exterieur") {
+    const home = g.endsWith("domicile"), oui = s === "oui";
+    const [T, LT, A, LA] = home ? [dom, D, ext, X] : [ext, X, dom, D];
+    const lieuT = home ? "à domicile" : "à l'extérieur", lieuA = home ? "à l'extérieur" : "à domicile";
+    const tn = oui ? (x) => x.encaisses === 0 : (x) => x.encaisses > 0, an = oui ? (x) => x.marques === 0 : (x) => x.marques > 0;
+    return `${T} ${oui ? "n'a pas encaissé" : "a encaissé"} dans ${b(omN(LT, tn), LT.length)} de ses matchs ${lieuT} ; ${A} ${oui ? "n'a pas marqué" : "a marqué"} dans ${b(omN(LA, an), LA.length)} de ses matchs ${lieuA}.`;
+  }
+  const v = (x) => x.marques > x.encaisses, nul = (x) => x.marques === x.encaisses, dft = (x) => x.marques < x.encaisses;
+  const de = (k, n) => `<b>${k}</b> de ses ${n} derniers`, des = (k, n) => `<b>${k}</b> des ${n} siens`;
+  if (g === "1x2" && s === "1") return `${dom} a gagné ${de(omN(D, v), nd)} matchs à domicile ; ${ext} en a perdu ${des(omN(X, dft), nx)} à l'extérieur.`.replace(" en a perdu", " a perdu").replace(/ des (\d+) siens/, " des $1 siens");
+  if (g === "1x2" && s === "2") return `${ext} a gagné ${de(omN(X, v), nx)} matchs à l'extérieur ; ${dom} a perdu ${des(omN(D, dft), nd)} à domicile.`;
+  if (g === "1x2" && s === "N") return `Match nul dans ${dd(nul)} matchs de ${dom} à domicile et ${xx(nul)} matchs de ${ext} à l'extérieur.`;
+  if (g === "double_chance" && s === "1N") return `${dom} n'a pas perdu dans ${dd((x) => !dft(x))} de ses matchs à domicile ; ${ext} n'a pas gagné dans ${xx((x) => !v(x))} des siens à l'extérieur.`;
+  if (g === "double_chance" && s === "N2") return `${ext} n'a pas perdu dans ${xx((x) => !dft(x))} de ses matchs à l'extérieur ; ${dom} n'a pas gagné dans ${dd((x) => !v(x))} des siens à domicile.`;
+  if (g === "double_chance" && s === "12") return `Match décidé (sans nul) dans ${dd((x) => !nul(x))} matchs de ${dom} à domicile et ${xx((x) => !nul(x))} matchs de ${ext} à l'extérieur.`;
+  m = g.match(/^handicap_(-?\d+(?:\.\d+)?)$/);
+  if (m && (s === "domicile" || s === "exterieur")) {
+    const home = s === "domicile", h = home ? Number(m[1]) : -Number(m[1]);
+    const t = Math.floor(-h) + 1;                       // l'équipe soutenue doit avoir une marge >= t
+    const mq = (x) => x.marques - x.encaisses;
+    const verbe = t >= 2 ? `a gagné d'au moins ${t} buts` : t === 1 ? "a gagné" : t === 0 ? "n'a pas perdu" : `n'a pas perdu de ${1 - t} buts ou plus`;
+    const u = -t, verbeA = u <= -2 ? `a perdu d'au moins ${-u} buts` : u === -1 ? "a perdu" : u === 0 ? "n'a pas gagné" : `n'a pas gagné de ${u + 1} buts ou plus`;
+    const [T, LT, lt, A, LA, la] = home ? [dom, D, "à domicile", ext, X, "à l'extérieur"] : [ext, X, "à l'extérieur", dom, D, "à domicile"];
+    const okT = omN(LT, (x) => mq(x) >= t), okA = omN(LA, (x) => mq(x) <= u);
+    return `${T} ${verbe} dans ${b(okT, LT.length)} de ses matchs ${lt} ; ${A} ${verbeA} dans ${b(okA, LA.length)} des siens ${la}.`;
+  }
+  const c = f.pari_sur_derniers;
+  if (c && c.dom && c.ext && c.dom.n && c.ext.n) {
+    return `Les deux conditions du pari réunies : ${b(c.dom.ok, c.dom.n)} matchs de ${dom} à domicile, ${b(c.ext.ok, c.ext.n)} matchs de ${ext} à l'extérieur.`;
+  }
+  return "";
+}
+// Cercle du pourcentage (le plus prudent des deux : modèle ou cote) + la phrase propre au type de pari.
 function omPourquoiCourt(p, f) {
-  const r = Math.round(Number(p.p) * 100), d = f.pari_sur_derniers;
+  const r = Math.round(Number(p.p) * 100);
   const pct = Number.isFinite(r) ? r : null;
   const anneau = pct === null ? "" :
     `<div class="om-anneau" style="--p:${pct}" role="img" aria-label="Réussite attendue ${pct} %"><span><b>${pct} %</b><small>attendue</small></span></div>`;
-  const phrase = d && d.dom && d.ext && d.dom.n && d.ext.n
-    ? `Ce pari serait passé dans <b>${d.dom.ok} des ${d.dom.n}</b> derniers matchs de ${omE(f.domicile)} à domicile et dans <b>${d.ext.ok} des ${d.ext.n}</b> derniers matchs de ${omE(f.exterieur)} à l'extérieur.` : "";
+  const phrase = omPhrase(p, f);
   return anneau || phrase ? `<div class="om-pq">${anneau}<p class="om-pq-txt">${phrase}</p></div>` : "";
 }
 function omCarte(f) {
