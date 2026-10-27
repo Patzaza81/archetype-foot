@@ -6,6 +6,9 @@
   let mode = "all";
   let selectedDate = "";
   let selectedLeague = "";
+  let leagueOpen = false;
+  let leagueSearch = "";
+  const expanded = new Set();
   let observer = null;
   let refreshQueued = false;
 
@@ -66,8 +69,11 @@
       '<button type="button" data-mode="tomorrow">Demain</button>' +
       '<button type="button" data-mode="all" class="is-active" aria-pressed="true">Toutes les dates</button>' +
       '<label class="af-date-select-label" for="af-date-select">Date précise</label><select id="af-date-select"><option value="">Choisir une date…</option></select></div>' +
-      '<div class="af-date-controls af-league-controls"><label class="af-date-select-label af-league-label" for="af-league-select">Championnat</label>' +
-      '<select id="af-league-select"><option value="">Tous les championnats</option></select></div>';
+      '<div class="af-league-controls"><span class="af-date-select-label af-league-label">Championnat</span>' +
+      '<button type="button" id="af-league-trigger" class="af-league-trigger" aria-haspopup="true" aria-expanded="false"></button>' +
+      '<div id="af-league-panel" class="af-league-panel" hidden>' +
+      '<input id="af-league-search" class="af-league-search" type="search" placeholder="Rechercher un championnat ou un pays" autocomplete="off" aria-label="Rechercher un championnat">' +
+      '<div id="af-league-list" class="af-league-list"></div></div></div>';
     const heading = host.querySelector(".ax-entete");
     if (heading) heading.insertAdjacentElement("afterend", bar);
     else host.insertAdjacentElement("afterbegin", bar);
@@ -76,9 +82,28 @@
       selectedDate = "";
       applyFilter();
     }));
-    bar.querySelector("#af-league-select").addEventListener("change", event => {
-      selectedLeague = event.target.value;
+    bar.querySelector("#af-league-trigger").addEventListener("click", () => {
+      leagueOpen = !leagueOpen;
       applyFilter();
+    });
+    bar.querySelector("#af-league-search").addEventListener("input", event => {
+      leagueSearch = event.target.value;
+      applyFilter();
+    });
+    bar.querySelector("#af-league-list").addEventListener("click", event => {
+      const choice = event.target.closest("[data-league]");
+      if (choice) { selectedLeague = choice.dataset.league; leagueOpen = false; leagueSearch = ""; applyFilter(); return; }
+      const country = event.target.closest("[data-country]");
+      if (country) {
+        const c = country.dataset.country;
+        if (expanded.has(c)) expanded.delete(c); else expanded.add(c);
+        applyFilter();
+      }
+    });
+    document.addEventListener("click", event => {
+      // composedPath : le chemin du clic est figé à l'envoi, même si le bouton cliqué a été réécrit entre-temps.
+      const inside = event.composedPath().some(el => el.classList && el.classList.contains("af-league-controls"));
+      if (leagueOpen && !inside) { leagueOpen = false; applyFilter(); }
     });
     bar.querySelector("#af-date-select").addEventListener("change", event => {
       selectedDate = event.target.value;
@@ -96,24 +121,75 @@
     if (dates.includes(prior)) select.value = prior;
     else if (selectedDate && !dates.includes(selectedDate)) { selectedDate = ""; mode = "all"; }
   }
-  function updateLeagueOptions(cards) {
-    const select = document.getElementById("af-league-select");
-    if (!select) return;
+  const escHtml = t => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  const norm = t => String(t || "").toLocaleLowerCase("fr-FR").normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  // « Pays : Championnat » -> {pays, nom}. Sans séparateur, le libellé entier sert de nom et de pays.
+  function splitLeague(label) {
+    const k = label.indexOf(" : ");
+    return k > 0 ? { pays: label.slice(0, k).trim(), nom: label.slice(k + 3).trim() } : { pays: label, nom: label };
+  }
+  function flagOf(label) {
+    try { const d = typeof window.drapeauCompetition === "function" ? window.drapeauCompetition(label) : null; return d && d.symbole ? d.symbole : ""; }
+    catch (e) { return ""; }
+  }
+  function flagHtml(symbol) {
+    return '<span class="af-flag" aria-hidden="true">' + (symbol ? escHtml(symbol) : "⚽") + "</span>";
+  }
+  function updateLeagueUI(cards) {
+    const trigger = document.getElementById("af-league-trigger");
+    const panel = document.getElementById("af-league-panel");
+    const list = document.getElementById("af-league-list");
+    if (!trigger || !panel || !list) return;
     const counts = new Map();
     cards.forEach(card => { const l = cardLeague(card); if (l) counts.set(l, (counts.get(l) || 0) + 1); });
-    const leagues = Array.from(counts.keys()).sort((a, b) => a.localeCompare(b, "fr"));
-    const esc = t => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
-    const markup = '<option value="">Tous les championnats</option>' +
-      leagues.map(l => '<option value="' + esc(l) + '">' + esc(l) + " (" + counts.get(l) + ")</option>").join("");
-    if (select.innerHTML !== markup) select.innerHTML = markup;
     if (selectedLeague && !counts.has(selectedLeague)) selectedLeague = "";
-    select.value = selectedLeague;
+    const byCountry = new Map();
+    counts.forEach((n, label) => {
+      const { pays, nom } = splitLeague(label);
+      if (!byCountry.has(pays)) byCountry.set(pays, { symbole: flagOf(label), total: 0, ligues: [] });
+      const c = byCountry.get(pays);
+      c.total += n; c.ligues.push({ label, nom, n });
+    });
+    const q = norm(leagueSearch.trim());
+    const countries = Array.from(byCountry.keys()).sort((a, b) => a.localeCompare(b, "fr"));
+    let rows = '<button type="button" class="af-league-row af-league-all' + (selectedLeague ? "" : " is-selected") + '" data-league="">' +
+      '<span class="af-flag af-flag-all" aria-hidden="true">🌐</span><span class="af-league-name">Tous les championnats</span>' +
+      '<span class="af-league-count">' + cards.length + "</span></button>";
+    let shownCountries = 0;
+    countries.forEach(pays => {
+      const c = byCountry.get(pays);
+      c.ligues.sort((a, b) => a.nom.localeCompare(b.nom, "fr"));
+      const ligues = q ? c.ligues.filter(l => norm(l.nom).includes(q) || norm(pays).includes(q)) : c.ligues;
+      if (!ligues.length) return;
+      shownCountries++;
+      const open = q ? true : expanded.has(pays);
+      rows += '<div class="af-league-country' + (open ? " is-open" : "") + '">' +
+        '<button type="button" class="af-league-row af-league-head" data-country="' + escHtml(pays) + '" aria-expanded="' + open + '">' +
+        flagHtml(c.symbole) + '<span class="af-league-name">' + escHtml(pays) + '</span>' +
+        '<span class="af-league-count">' + c.total + '</span><span class="af-league-chevron" aria-hidden="true"></span></button>';
+      if (open) {
+        rows += '<div class="af-league-sub">' + ligues.map(l =>
+          '<button type="button" class="af-league-row af-league-item' + (l.label === selectedLeague ? " is-selected" : "") + '" data-league="' + escHtml(l.label) + '">' +
+          '<span class="af-league-name">' + escHtml(l.nom) + '</span><span class="af-league-count">' + l.n + "</span></button>").join("") + "</div>";
+      }
+      rows += "</div>";
+    });
+    if (q && !shownCountries) rows += '<p class="af-league-empty">Aucun championnat ne correspond.</p>';
+    if (list.innerHTML !== rows) list.innerHTML = rows;
+    const sel = selectedLeague ? splitLeague(selectedLeague) : null;
+    const head = sel
+      ? flagHtml(flagOf(selectedLeague)) + '<span class="af-league-name">' + escHtml(sel.nom) + '<small>' + escHtml(sel.pays) + "</small></span>"
+      : '<span class="af-flag af-flag-all" aria-hidden="true">🌐</span><span class="af-league-name">Tous les championnats</span>';
+    const label = head + '<span class="af-league-chevron' + (leagueOpen ? " is-up" : "") + '" aria-hidden="true"></span>';
+    if (trigger.innerHTML !== label) trigger.innerHTML = label;
+    trigger.setAttribute("aria-expanded", String(leagueOpen));
+    panel.hidden = !leagueOpen;
   }
   function applyFilter() {
     ensureBar();
     const cards = getCards();
     updateDateOptions(cards);
-    updateLeagueOptions(cards);
+    updateLeagueUI(cards);
     const today = localIso(new Date());
     const tomorrowDate = new Date(); tomorrowDate.setDate(tomorrowDate.getDate()+1);
     const tomorrow = localIso(tomorrowDate);

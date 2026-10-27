@@ -9,9 +9,35 @@
 .af-date-controls button:focus-visible,.af-date-controls select:focus-visible{outline:3px solid #C49A3A;outline-offset:2px}
 .af-date-select-label{font-size:12px;font-weight:700;color:#5B6763;margin-left:auto}
 .af-date-controls select{min-height:40px;max-width:100%;padding:8px 12px;border:1px solid rgba(8,127,120,.24);border-radius:10px;background:#fff;color:#17141B;font:600 13px system-ui,-apple-system,"Segoe UI",sans-serif}
-.af-league-controls{margin-top:10px}
-.af-league-label{margin-left:0}
-.af-league-controls select{flex:1 1 220px;min-width:0}
+.af-league-controls{margin-top:12px;position:relative}
+.af-league-label{display:block;margin:0 0 6px}
+.af-league-trigger{display:flex;align-items:center;gap:12px;width:100%;min-height:52px;padding:8px 14px;border:1px solid rgba(8,127,120,.24);border-radius:14px;background:#fff;color:#17141B;font:700 15px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif;text-align:left;cursor:pointer}
+.af-league-trigger:focus-visible,.af-league-row:focus-visible,.af-league-search:focus-visible{outline:3px solid #C49A3A;outline-offset:2px}
+.af-flag{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;overflow:hidden;background:#EEF3F1;font-size:30px;line-height:32px;box-shadow:0 0 0 1px rgba(23,20,27,.08)}
+.af-flag-all{font-size:18px}
+.af-league-name{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.af-league-name small{display:block;font-weight:500;font-size:12px;color:#5B6763;margin-top:2px}
+.af-league-count{flex:0 0 auto;font-weight:600;font-size:14px;color:#5B6763;font-variant-numeric:tabular-nums}
+.af-league-chevron{flex:0 0 auto;width:9px;height:9px;margin:0 4px 0 2px;border-right:2px solid #5B6763;border-bottom:2px solid #5B6763;transform:rotate(45deg);transition:transform .15s}
+.af-league-chevron.is-up,.af-league-country.is-open>.af-league-head .af-league-chevron{transform:rotate(-135deg)}
+.af-league-panel{margin-top:8px;border:1px solid rgba(8,127,120,.2);border-radius:16px;background:#fff;box-shadow:0 8px 24px rgba(15,42,40,.10);overflow:hidden}
+.af-league-search{display:block;box-sizing:border-box;width:calc(100% - 24px);margin:12px;min-height:42px;padding:8px 12px;border:1px solid rgba(8,127,120,.24);border-radius:10px;background:#F6F9F8;color:#17141B;font:600 14px system-ui,-apple-system,"Segoe UI",sans-serif}
+.af-league-list{max-height:min(60vh,460px);overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 6px 8px}
+.af-league-row{display:flex;align-items:center;gap:12px;width:100%;min-height:52px;padding:8px 10px;border:0;border-radius:12px;background:transparent;color:#17141B;font:700 15px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif;text-align:left;cursor:pointer}
+.af-league-row:hover{background:#F1F6F4}
+.af-league-sub{margin:0 0 6px 44px;border-left:2px solid rgba(8,127,120,.18)}
+.af-league-item{min-height:44px;font-weight:600;font-size:14px;padding-left:14px}
+.af-league-item.is-selected,.af-league-all.is-selected{background:rgba(8,127,120,.12);color:#087F78}
+.af-league-item.is-selected .af-league-name::after,.af-league-all.is-selected .af-league-name::after{content:" ✓"}
+.af-league-empty{margin:12px;font-size:13px;color:#5B6763}
+.theme-nuit .af-league-trigger,.theme-nuit .af-league-panel{background:#1B1D22;color:#F4F2F7;border-color:rgba(21,152,141,.3)}
+.theme-nuit .af-league-search{background:#24272E;color:#F4F2F7;border-color:rgba(21,152,141,.3)}
+.theme-nuit .af-league-row{color:#F4F2F7}
+.theme-nuit .af-league-row:hover{background:#24272E}
+.theme-nuit .af-flag{background:#2A2E36;box-shadow:0 0 0 1px rgba(255,255,255,.12)}
+.theme-nuit .af-league-name small,.theme-nuit .af-league-count,.theme-nuit .af-league-empty{color:#A9B3B8}
+.theme-nuit .af-league-chevron{border-color:#A9B3B8}
+.theme-nuit .af-league-item.is-selected,.theme-nuit .af-league-all.is-selected{background:rgba(21,152,141,.22);color:#4FD1C5}
 .af-date-navigation [hidden]{display:none!important}
 .theme-nuit .af-date-navigation{background:#171A25;border-color:rgba(21,152,141,.28)}
 .theme-nuit .af-date-heading strong{color:#F4F2F7}
