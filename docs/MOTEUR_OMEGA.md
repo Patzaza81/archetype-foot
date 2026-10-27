@@ -98,6 +98,8 @@ Sorties : `moteur_omega/parametres.json`, `docs/omega_validation.json`.
   ne change ni la sélection ni les pronostics gelés. Le jour du lancement : 1 pari identique, 6 dans le même sens, 92 différents sur 99 (le pondéré tombe presque toujours
   sur un favori à cote ≈ 1,24).
 - **Bloc « Les 4 croisements »** : ancien affichage (2×2, « (moy. x) » après les buts) ; la moyenne est en couleur, en gras, police 12 px (+2 px), identique partout (27/10/2026, ordre de Patrick).
+- **Replier une carte** (27/10/2026, ordre de Patrick) : `af-repli-carte.js`, commun à tous les moteurs (alpha, V, V2R, V3, Europe, Comportement, Omega, Journal) : quand on replie une carte dont le haut
+  est sorti de l'écran, la page remet son haut sous la barre fixe, donc la carte suivante apparaît tout de suite ; si le haut est visible, rien ne bouge. Aucune donnée touchée.
 - Statut (dans le JSON) : observation.
 - Une seule exception à « tout seuil appris » : la cote minimale 1,39, imposée par Patrick.
 
