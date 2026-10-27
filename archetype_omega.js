@@ -204,6 +204,16 @@ function omPourquoiCourt(p, f) {
   const phrase = omPhrasePari(p, f);
   return anneau || phrase ? `<div class="om-pq">${anneau}<p class="om-pq-txt">${phrase}</p></div>` : "";
 }
+// Marché pondéré (le plus probable parmi les cotes > 1,22) à côté du pari principal : même pari, même sens, ou différent.
+const OM_HARMONIE = { identique: ["Même pari", "om-h-ok"], meme_sens: ["Dans le même sens", "om-h-ok"], different: ["Pari différent", "om-h-diff"] };
+function omPondere(f) {
+  const q = f.pondere;
+  if (!q || !q.marche) return "";
+  const h = OM_HARMONIE[q.harmonie] || ["", ""];
+  const ph = omPhrase(q.cle, f.domicile, f.exterieur);
+  return `<div class="om-pond"><div class="om-pond-t">Marché pondéré</div><div class="om-pond-l"><span>${omE(ph.titre)}</span>` +
+    `<span class="om-cote">Cote ${omCote(q.cote)}</span></div>` + (h[0] ? `<span class="om-h ${h[1]}">${h[0]}</span>` : "") + `</div>`;
+}
 function omCarte(f) {
   const h = omHoraire(f.coup_d_envoi_utc), p = f.principal || {};
   const score = Array.isArray(f.score) ? `${f.score[0]} - ${f.score[1]}` : "";
@@ -221,7 +231,7 @@ function omCarte(f) {
     `<div class="om-corps">` +
       (score ? `<div class="om-info">Score final <strong>${omE(score)}</strong></div>` : "") +
       `<div class="om-info"><b>Pari proposé</b></div>` + omLigne(p, f, true) +
-      omPourquoiCourt(p, f) +
+      omPourquoiCourt(p, f) + omPondere(f) +
     `</div>` +
     `<details class="ax-details" open><summary class="ax-summary-cache" tabindex="-1">Détails</summary><div class="ax-details-corps">` +
       omPourquoi(f) +

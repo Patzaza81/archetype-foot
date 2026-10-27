@@ -330,3 +330,72 @@ def test_fiche_et_page_portent_pari_sur_derniers(tmp_path):
     j.write_text("".join(json.dumps(x) + "\n" for x in lignes))
     out = suivi.page(datetime(2026, 10, 20, 13, tzinfo=timezone.utc), j, sortie)
     assert out["a_venir"][0]["pari_sur_derniers"]["dom"]["n"] == 5
+
+
+# --- Marché pondéré (affichage) ---
+from moteur_omega import ponderation as PO
+
+
+@pytest.mark.parametrize("a,b,attendu", [
+    (["over_under_3.5", "moins"], ["over_under_3.5", "moins"], "identique"),
+    (["handicap_0.5", "domicile"], ["double_chance", "1N"], "identique"),             # +0,5 = ne perd pas : même événement
+    (["over_under_3.5", "moins"], ["over_under_4.5", "moins"], "meme_sens"),          # moins de 3,5 gagne => moins de 4,5 gagne
+    (["over_under_2.5", "plus"], ["over_under_1.5", "plus"], "meme_sens"),
+    (["1x2", "1"], ["double_chance", "1N"], "meme_sens"),
+    (["over_under_3.5", "moins"], ["double_chance", "12"], "different"),
+    (["over_under_2.5", "plus"], ["over_under_3.5", "moins"], "different"),            # chevauchement partiel, aucun ne contient l'autre
+    (["1x2", "1"], ["1x2", "2"], "different"),
+])
+def test_harmonie(a, b, attendu):
+    assert PO.harmonie(a, b) == attendu
+
+
+@pytest.mark.parametrize("a,b", [(None, ["1x2", "1"]), (["1x2", "1"], None)])
+def test_harmonie_sans_pari_rien_invente(a, b):
+    assert PO.harmonie(a, b) is None
+
+
+def test_choisir_sans_poids_ne_choisit_rien():
+    assert PO.choisir({}, {"statut": "analyse", "marches": []}, None) is None
+
+
+def test_choisir_prend_la_plus_forte_probabilite_et_respecte_la_cote_minimale(monkeypatch):
+    def faux(m, a):
+        return [{"ligne": {"cle": ["1x2", "1"], "marche": "A", "famille": "résultat", "cote": 1.30}, "test": None, "x": [1, 0.0, 0.0, 0, 0]},
+                {"ligne": {"cle": ["1x2", "2"], "marche": "B", "famille": "résultat", "cote": 1.25}, "test": None, "x": [1, 0.0, 2.0, 0, 0]}]
+    monkeypatch.setattr(PO, "candidats", faux)
+    poids = {"constante": 0.0, "logit_modele": 0.0, "logit_cote": 1.0, "frequence_moyenne": 0.0, "frequence_minimale": 0.0}
+    r = PO.choisir({}, {}, {"poids": poids})
+    assert r["marche"] == "B" and r["cote"] == 1.25
+
+
+def test_candidats_exclut_cote_1_22_et_moins():
+    a = {"statut": "analyse", "marches": [
+        {"cle": ["over_under_1.5", "plus"], "marche": "x", "famille": "buts du match", "p": 0.8, "p_cote": 0.8, "cote": 1.22},
+        {"cle": ["over_under_1.5", "plus"], "marche": "x", "famille": "buts du match", "p": 0.8, "p_cote": 0.8, "cote": 1.10},
+        {"cle": ["over_under_1.5", "plus"], "marche": "x", "famille": "buts du match", "p": 0.8, "p_cote": 0.8, "cote": None}]}
+    m = _match([2, 1, 3, 2, 1], [1, 0, 1, 2, 1], [1, 2, 1, 0, 2], [2, 1, 3, 1, 2])
+    assert PO.candidats(m, a) == []
+
+
+def test_candidats_garde_cote_superieure_a_1_22():
+    a = {"statut": "analyse", "marches": [
+        {"cle": ["over_under_1.5", "plus"], "marche": "x", "famille": "buts du match", "p": 0.8, "p_cote": 0.8, "cote": 1.23}]}
+    m = _match([2, 1, 3, 2, 1], [1, 0, 1, 2, 1], [1, 2, 1, 0, 2], [2, 1, 3, 1, 2])
+    assert len(PO.candidats(m, a)) == 1
+
+
+def test_page_ajoute_le_marche_pondere_sans_toucher_au_journal(tmp_path, monkeypatch):
+    jr = tmp_path / "journal.jsonl"
+    pg = tmp_path / "pronostics.json"
+    f = {"match_id": "m1", "jour": "2026-10-27", "coup_d_envoi_utc": "2026-10-27T18:00:00Z", "domicile": "A", "exterieur": "B", "statut": "analyse",
+         "principal": {"cle": ["over_under_3.5", "moins"], "marche": "Moins de 3,5 buts", "cote": 1.4, "p": 0.63, "famille": "buts du match"}, "autres": [],
+         "derniers_matchs": {"dom": [], "ext": []}}
+    jr.write_text(json.dumps({"type": "pronostic", "match_id": "m1", "fiche": f, "gele_le": "2026-10-27T10:00:00Z"}) + "\n", encoding="utf-8")
+    avant = jr.read_text(encoding="utf-8")
+    m = _match([2, 1, 3, 2, 1], [1, 0, 1, 2, 1], [1, 2, 1, 0, 2], [2, 1, 3, 1, 2], mid="m1", ko="2026-10-27T18:00:00Z")
+    monkeypatch.setattr(PO, "choisir", lambda *a, **k: {"cle": ["over_under_4.5", "moins"], "marche": "Moins de 4,5 buts", "cote": 1.25, "p": 0.8})
+    monkeypatch.setattr(suivi.coeur, "analyser", lambda *a, **k: {})
+    out = suivi.page(maintenant=datetime(2026, 10, 27, 9, 0, tzinfo=timezone.utc), journal=jr, sortie=pg, matchs=[m], refs=object(), ponderation={"poids": {}})
+    assert out["a_venir"][0]["pondere"]["harmonie"] == "meme_sens"
+    assert jr.read_text(encoding="utf-8") == avant

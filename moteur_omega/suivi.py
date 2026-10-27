@@ -18,7 +18,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-from . import coeur, donnees as D, historique as H, marches as M
+from . import coeur, donnees as D, historique as H, marches as M, ponderation as PO
 
 ROOT = Path(__file__).resolve().parent.parent
 DOSSIER = ROOT / "data" / "omega"
@@ -184,7 +184,8 @@ def bilan(lignes: list[dict[str, Any]]) -> dict[str, Any]:
     return {"principal": _stats(princ), "autres": _stats(autres), "matchs_regles": len(res)}
 
 
-def page(maintenant: datetime | None = None, journal: Path = JOURNAL, sortie: Path = PAGE, matchs: list[dict] | None = None) -> dict[str, Any]:
+def page(maintenant: datetime | None = None, journal: Path = JOURNAL, sortie: Path = PAGE, matchs: list[dict] | None = None,
+         refs: D.References | None = None, ponderation: dict[str, Any] | None = None) -> dict[str, Any]:
     maintenant = maintenant or datetime.now(timezone.utc)
     lignes = _lire(journal)
     # Pronostics gelés avant l'ajout de l'affichage des derniers matchs : on les complète ICI, à la lecture, depuis l'archive (journal inchangé).
@@ -205,6 +206,14 @@ def page(maintenant: datetime | None = None, journal: Path = JOURNAL, sortie: Pa
         ko = _ko(f.get("coup_d_envoi_utc"))
         if ko is None:
             continue
+        if ponderation and refs is not None and mid in par_id and ko > maintenant and f.get("principal"):
+            # Marché pondéré : affichage seulement (calculé à la lecture avec les cotes de l'archive), jamais écrit dans le journal.
+            try:
+                pn = PO.choisir(par_id[mid], coeur.analyser(par_id[mid], refs, charger_parametres(), avec_stabilite=False), ponderation)
+            except Exception:                                  # noqa: BLE001
+                pn = None
+            if pn:
+                f["pondere"] = {**pn, "harmonie": PO.harmonie(f["principal"]["cle"], pn["cle"])}
         if not f.get("principal"):
             if ko > maintenant:
                 sans += 1
@@ -252,7 +261,13 @@ def pipeline() -> None:
         H.ecrire(matchs=matchs, refs=refs)
     except Exception as e:                                     # noqa: BLE001
         print(f"omega : historique non mis à jour ({e})")
-    p = page(matchs=matchs)
+    pond = None
+    try:                                                       # marché pondéré (affichage) ; ne bloque jamais le reste
+        pond = PO.ecrire(matchs=matchs, refs=refs)
+    except Exception as e:                                     # noqa: BLE001
+        print(f"omega : pondération non mise à jour ({e})")
+        pond = PO.charger()
+    p = page(matchs=matchs, refs=refs, ponderation=pond)
     print(f"omega : {n} pronostic(s) gelé(s), {r} résultat(s) réglé(s), {len(p['a_venir'])} pari(s) à venir, {p['sans_pronostic']} match(s) sans pronostic")
 
 
