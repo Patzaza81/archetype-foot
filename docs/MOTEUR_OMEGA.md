@@ -84,6 +84,12 @@ Sorties : `moteur_omega/parametres.json`, `docs/omega_validation.json`.
   moitiés de la période : le TYPE de pari (buts du match 72 % sur 306 ; résultat 62 % sur 292 ; buts d'une équipe 69 % sur 197 ; combinés trop peu, non publiés).
   La carte affiche donc la réussite constatée du type de pari (`historique.py` → `docs/omega_historique.json`, relancé à chaque passage du pipeline,
   minimum 30 paris par famille). Le pourcentage du pari reste dans le détail (modèle et cote). Aucun niveau de « confiance » inventé.
+- **Carte « pourquoi ce pari »** (27/10/2026, ordre de Patrick) : le pourcentage affiché (le plus prudent du modèle et de la cote, c'est une estimation)
+  est dans un cercle ; à côté, UNE phrase vraie : « Ce pari serait passé dans X des N derniers matchs de {domicile} à domicile et dans Y des N
+  derniers matchs de {extérieur} à l'extérieur. » C'est un simple décompte sur les matchs affichés dans « Derniers matchs » (`donnees.pari_sur_derniers`,
+  test du marché `marches.test_du_marche`, score de l'équipe à l'extérieur inversé), sans estimation. Gelé dans la fiche des nouveaux pronostics,
+  calculé à la lecture pour les anciens. Si une équipe n'a pas de matchs : pas de phrase. La réussite constatée par type de pari
+  (`historique.py`) reste disponible dans le détail « pourquoi ».
 - Statut (dans le JSON) : observation.
 - Une seule exception à « tout seuil appris » : la cote minimale 1,39, imposée par Patrick.
 

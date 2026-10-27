@@ -41,6 +41,17 @@ def serie_lieu(matchs: list[dict] | None, domicile: bool, jour: str, fenetre: in
     return [m["buts_marques"] for m in ms], [m["buts_encaisses"] for m in ms]
 
 
+def pari_sur_derniers(test, derniers: dict[str, list[dict]] | None) -> dict[str, dict[str, int]] | None:
+    """Affichage : dans combien des derniers matchs de chaque équipe (ceux de `derniers_matchs`) le pari aurait-il gagné ?
+    `test(i, j)` = condition du marché sur le score (i = buts du domicile, j = buts de l'extérieur). L'équipe à domicile a joué chez elle
+    (score = marqués – encaissés), l'équipe à l'extérieur chez l'adversaire (score = encaissés – marqués). Rien d'estimé : un simple décompte."""
+    if not derniers or not derniers.get("dom") or not derniers.get("ext"):
+        return None
+    dom, ext = derniers["dom"], derniers["ext"]
+    return {"dom": {"ok": sum(bool(test(x["marques"], x["encaisses"])) for x in dom), "n": len(dom)},
+            "ext": {"ok": sum(bool(test(x["encaisses"], x["marques"])) for x in ext), "n": len(ext)}}
+
+
 def derniers_matchs(m: dict, par_equipe: int = 10) -> dict[str, list[dict]]:
     """Affichage : les matchs du même lieu de chaque équipe (ceux du modèle), du plus récent au plus ancien, `par_equipe` au plus.
     Date, adversaire, buts marqués et encaissés par l'équipe. Aucune information postérieure au jour du match."""

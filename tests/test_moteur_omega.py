@@ -286,3 +286,47 @@ def test_page_expose_l_historique_si_le_fichier_existe(tmp_path, monkeypatch):
     assert suivi.page(datetime(2026, 10, 20, 13, tzinfo=timezone.utc), j, sortie)["historique"]["familles"]["buts du match"]["n"] == 40
     monkeypatch.setattr(suivi, "HISTORIQUE", tmp_path / "absent.json")
     assert suivi.page(datetime(2026, 10, 20, 13, tzinfo=timezone.utc), j, sortie)["historique"] is None
+
+
+# --- « Ce pari serait passé dans X des N derniers matchs » -------------------------------------------------------
+def _d(*scores):                          # (marqués, encaissés) de l'équipe, du plus récent au plus ancien
+    return [{"date": f"2026-10-{20 - k:02d}", "adversaire": "x", "marques": a, "encaisses": b} for k, (a, b) in enumerate(scores)]
+
+
+@pytest.mark.parametrize("cle,dom,ext,attendu", [
+    (("over_under_3.5", "moins"), _d((1, 1), (2, 2), (3, 1)), _d((0, 0), (2, 1), (1, 1)), (1, 3)),     # totaux dom 2,4,4 -> 1 ; ext 0,3,2 -> 3
+    (("over_under_domicile_0.5", "plus"), _d((0, 1), (2, 0), (1, 1), (0, 0)), _d((5, 5)), (2, 1)),     # le domicile marque : 2 sur 4 ; à l'extérieur l'adversaire a marqué 5
+    (("btts", "Oui"), _d((1, 1), (0, 2), (2, 1)), _d((2, 3), (0, 1)), (2, 1)),
+    (("over_under_3.5", "moins"), _d((4, 2), (3, 3)), _d((2, 2), (5, 1)), (0, 0)),                      # cas où le pari ne passe jamais
+    (("btts", "Non"), _d((1, 0), (0, 0)), _d((0, 3), (1, 1)), (2, 1)),
+    (("1x2", "1"), _d((2, 0), (0, 1), (1, 1)), _d((1, 3), (2, 0)), (1, 1)),                              # victoire domicile : dom a gagné 1 fois ; ext : 1-3 chez lui = i 3 > j 1 oui, 0-2 non
+])
+def test_pari_sur_derniers_decompte(cle, dom, ext, attendu):
+    r = D.pari_sur_derniers(M.test_du_marche(*cle), {"dom": dom, "ext": ext})
+    assert (r["dom"]["ok"], r["ext"]["ok"]) == attendu and (r["dom"]["n"], r["ext"]["n"]) == (len(dom), len(ext))
+
+
+def test_pari_sur_derniers_l_exterieur_inverse_le_score():
+    # Victoire de l'extérieur : l'équipe qui a joué à l'extérieur a marqué plus qu'elle n'a encaissé.
+    t = M.test_du_marche("1x2", "2")
+    r = D.pari_sur_derniers(t, {"dom": _d((0, 1)), "ext": _d((3, 1), (0, 2), (1, 1))})
+    assert r["ext"] == {"ok": 1, "n": 3}
+    assert r["dom"] == {"ok": 1, "n": 1}            # score 0-1 : l'équipe a perdu CHEZ ELLE, donc une victoire extérieure a bien eu lieu dans ce match
+
+
+@pytest.mark.parametrize("derniers", [None, {}, {"dom": [], "ext": _d((1, 0))}, {"dom": _d((1, 0)), "ext": []}])
+def test_pari_sur_derniers_sans_donnees_rien_invente(derniers):
+    assert D.pari_sur_derniers(M.test_du_marche("btts", "Oui"), derniers) is None
+
+
+def test_fiche_et_page_portent_pari_sur_derniers(tmp_path):
+    j, sortie = tmp_path / "journal.jsonl", tmp_path / "pronostics.json"
+    m = _match([2, 3, 1, 2, 3], [1, 0, 1, 2, 1], [1, 0, 1, 2, 0], [2, 3, 1, 2, 2], cotes=COTES)
+    suivi.geler(datetime(2026, 10, 20, 12, tzinfo=timezone.utc), j, [m], D.References(), PARAMS)
+    f = json.loads(j.read_text().splitlines()[0])["fiche"]
+    assert f["pari_sur_derniers"]["dom"]["n"] == 5 and f["pari_sur_derniers"]["ext"]["n"] == 5
+    lignes = [json.loads(x) for x in j.read_text().splitlines()]
+    del lignes[0]["fiche"]["pari_sur_derniers"]                                 # ancien gel : complété à la lecture
+    j.write_text("".join(json.dumps(x) + "\n" for x in lignes))
+    out = suivi.page(datetime(2026, 10, 20, 13, tzinfo=timezone.utc), j, sortie)
+    assert out["a_venir"][0]["pari_sur_derniers"]["dom"]["n"] == 5
