@@ -18,7 +18,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-from . import coeur, donnees as D, marches as M
+from . import coeur, donnees as D, historique as H, marches as M
 
 ROOT = Path(__file__).resolve().parent.parent
 DOSSIER = ROOT / "data" / "omega"
@@ -26,6 +26,7 @@ JOURNAL = DOSSIER / "journal.jsonl"
 PAGE = DOSSIER / "pronostics.json"
 PARAMS = Path(__file__).with_name("parametres.json")
 VALIDATION = ROOT / "docs" / "omega_validation.json"
+HISTORIQUE = ROOT / "docs" / "omega_historique.json"
 JOURS_REGLES_AFFICHES = 7
 
 
@@ -219,7 +220,11 @@ def page(maintenant: datetime | None = None, journal: Path = JOURNAL, sortie: Pa
                "matchs": v["matchs_reserve"], "du": v["coupe"], "au": v["au"]}
     except Exception:
         val = None
-    out = {"genere_le": maintenant.isoformat(timespec="seconds"), "version": charger_parametres().get("version") if PARAMS.exists() else None,
+    try:
+        hist = json.loads(HISTORIQUE.read_text(encoding="utf-8"))
+    except Exception:
+        hist = None
+    out = {"genere_le": maintenant.isoformat(timespec="seconds"), "historique": hist, "version": charger_parametres().get("version") if PARAMS.exists() else None,
            "statut": "observation", "seuil": charger_parametres()["selection"]["seuil"] if PARAMS.exists() else None,
            "validation": val, "bilan": bilan(lignes), "sans_pronostic": sans,
            "a_venir": sorted(a_venir, key=lambda f: str(f.get("coup_d_envoi_utc"))),
@@ -234,6 +239,10 @@ def pipeline() -> None:
     matchs, refs = D.charger_archive(avec_futurs=True)
     n = geler(matchs=matchs, refs=refs)
     r = resultats(matchs=matchs)
+    try:                                                       # réussite par type de pari (affichage) ; ne bloque jamais le reste
+        H.ecrire(matchs=matchs, refs=refs)
+    except Exception as e:                                     # noqa: BLE001
+        print(f"omega : historique non mis à jour ({e})")
     p = page(matchs=matchs)
     print(f"omega : {n} pronostic(s) gelé(s), {r} résultat(s) réglé(s), {len(p['a_venir'])} pari(s) à venir, {p['sans_pronostic']} match(s) sans pronostic")
 

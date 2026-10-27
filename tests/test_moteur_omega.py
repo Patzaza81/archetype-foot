@@ -255,3 +255,34 @@ def test_page_complete_les_anciens_gels_sans_toucher_au_journal(tmp_path):
     assert j.read_text() == avant                                               # le journal gelé n'est jamais modifié
     sans = suivi.page(datetime(2026, 10, 20, 13, tzinfo=timezone.utc), j, sortie)
     assert "derniers_matchs" not in sans["a_venir"][0]                          # sans archive : rien d'inventé
+
+
+# --- Historique de réussite par type de pari (remplace la barre « réussite attendue ») ---------------------------------
+def _joue(h, a, mid):
+    return _match([2, 3, 1, 2, 3], [1, 0, 1, 2, 1], [1, 0, 1, 2, 0], [2, 3, 1, 2, 2], cotes=COTES, h=h, a=a, mid=mid)
+
+
+def test_historique_compte_les_paris_principaux_par_famille(monkeypatch):
+    from moteur_omega import historique as H
+    monkeypatch.setattr(H, "MIN_PARIS", 1)
+    ms = [_joue(2, 1, "a"), _joue(0, 0, "b"), _match([2, 3, 1, 2, 3], [1, 0, 1, 2, 1], [1, 0, 1, 2, 0], [2, 3, 1, 2, 2], cotes=COTES, mid="c")]  # « c » pas joué
+    out = H.calculer(ms, D.References(), PARAMS)
+    assert out["total"]["n"] == 2                                              # le match non joué est ignoré
+    assert sum(f["n"] for f in out["familles"].values()) == 2
+    for f in out["familles"].values():
+        assert 0 <= f["gagnes"] <= f["n"] and f["reussite"] == round(f["gagnes"] / f["n"], 4)
+
+
+def test_historique_ne_publie_pas_une_famille_trop_petite():
+    from moteur_omega import historique as H
+    out = H.calculer([_joue(2, 1, "a")], D.References(), PARAMS)                 # 1 pari < MIN_PARIS (30)
+    assert out["familles"] == {} and out["total"]["n"] == 1
+
+
+def test_page_expose_l_historique_si_le_fichier_existe(tmp_path, monkeypatch):
+    j, sortie, hist = tmp_path / "journal.jsonl", tmp_path / "pronostics.json", tmp_path / "hist.json"
+    hist.write_text(json.dumps({"familles": {"buts du match": {"n": 40, "gagnes": 30, "reussite": 0.75}}}))
+    monkeypatch.setattr(suivi, "HISTORIQUE", hist)
+    assert suivi.page(datetime(2026, 10, 20, 13, tzinfo=timezone.utc), j, sortie)["historique"]["familles"]["buts du match"]["n"] == 40
+    monkeypatch.setattr(suivi, "HISTORIQUE", tmp_path / "absent.json")
+    assert suivi.page(datetime(2026, 10, 20, 13, tzinfo=timezone.utc), j, sortie)["historique"] is None
