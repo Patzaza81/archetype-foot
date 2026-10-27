@@ -83,12 +83,20 @@ function omLigne(p, f, principal) {
 }
 function omCroisements(f) {
   const s = f.series || {};
-  const v = (x) => `<span class="om-buts">${(x || []).join(" · ") || "—"}</span> <small>(moy. ${omFr(omMoy(x))})</small>`;
-  return `<div class="om-bloc"><div class="om-bloc-titre">Les 4 croisements (buts par match, du plus ancien au plus récent)</div><div class="om-croix">` +
-    `<div><b>Attaque ${omE(f.domicile)} × attaque ${omE(f.exterieur)}</b>${v(s.dom_marques)}<br>${v(s.ext_marques)}</div>` +
-    `<div><b>Défense ${omE(f.domicile)} × défense ${omE(f.exterieur)}</b>${v(s.dom_encaisses)}<br>${v(s.ext_encaisses)}</div>` +
-    `<div><b>Attaque ${omE(f.domicile)} × défense ${omE(f.exterieur)}</b>${v(s.dom_marques)}<br>${v(s.ext_encaisses)}</div>` +
-    `<div><b>Attaque ${omE(f.exterieur)} × défense ${omE(f.domicile)}</b>${v(s.ext_marques)}<br>${v(s.dom_encaisses)}</div>` +
+  // Une ligne par équipe : nom, buts match par match, et la moyenne en gros (c'est le chiffre qui compte).
+  const ligne = (nom, x) => `<div class="om-cx-l"><span class="om-cx-n">${omE(nom)}</span><span class="om-buts">${(x || []).join(" · ") || "—"}</span>` +
+    `<b class="om-cx-m">${omFr(omMoy(x))}</b></div>`;
+  const carte = (titre, n1, x1, n2, x2) => {
+    const m = (omMoy(x1) + omMoy(x2)) / 2;
+    return `<div class="om-cx"><div class="om-cx-t">${titre}</div>${ligne(n1, x1)}${ligne(n2, x2)}` +
+      `<div class="om-cx-f"><span>Moyenne des deux</span><b>${omFr(m)}</b></div></div>`;
+  };
+  const d = f.domicile, e = f.exterieur;
+  return `<div class="om-bloc"><div class="om-bloc-titre">Les 4 croisements <small>buts par match, du plus ancien au plus récent</small></div><div class="om-croix">` +
+    carte("Attaque × attaque", d, s.dom_marques, e, s.ext_marques) +
+    carte("Défense × défense", d, s.dom_encaisses, e, s.ext_encaisses) +
+    carte(`Attaque ${omE(d)} × défense ${omE(e)}`, d, s.dom_marques, e, s.ext_encaisses) +
+    carte(`Attaque ${omE(e)} × défense ${omE(d)}`, e, s.ext_marques, d, s.dom_encaisses) +
     `</div></div>`;
 }
 // Derniers matchs des deux équipes (à domicile pour l'une, à l'extérieur pour l'autre : ceux qu'utilise le modèle) : date, adversaire, score, résultat.
