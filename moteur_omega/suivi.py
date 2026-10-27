@@ -84,7 +84,7 @@ def fiche(m: dict[str, Any], a: dict[str, Any], s: dict[str, Any]) -> dict[str, 
     cr = a["croisements"]
     return {**out, "principal": _pari(s["principal"]) if s["principal"] else None, "autres": [_pari(x) for x in s["autres"]],
             "raison": s.get("raison"), "buts_attendus": {k: round(v, 3) for k, v in a["buts_attendus"].items()},
-            "series": ser, "coins": a["coins"], "convergence": cr["convergence"], "scores_probables": a["scores_probables"],
+            "series": ser, "derniers_matchs": D.derniers_matchs(m), "coins": a["coins"], "convergence": cr["convergence"], "scores_probables": a["scores_probables"],
             "meilleur_modele": _meilleurs_sans_cote(a)}
 
 
@@ -176,9 +176,11 @@ def bilan(lignes: list[dict[str, Any]]) -> dict[str, Any]:
     return {"principal": _stats(princ), "autres": _stats(autres), "matchs_regles": len(res)}
 
 
-def page(maintenant: datetime | None = None, journal: Path = JOURNAL, sortie: Path = PAGE) -> dict[str, Any]:
+def page(maintenant: datetime | None = None, journal: Path = JOURNAL, sortie: Path = PAGE, matchs: list[dict] | None = None) -> dict[str, Any]:
     maintenant = maintenant or datetime.now(timezone.utc)
     lignes = _lire(journal)
+    # Pronostics gelés avant l'ajout de l'affichage des derniers matchs : on les complète ICI, à la lecture, depuis l'archive (journal inchangé).
+    par_id = {str(m.get("match_id") or m["id"]): m for m in (matchs or [])}
     res = {l["match_id"]: l for l in lignes if l["type"] == "resultat"}
     tous: dict[str, dict] = {}
     for l in lignes:                                          # dernière version connue de chaque match (avant ou après coup d'envoi : affichage)
@@ -188,6 +190,8 @@ def page(maintenant: datetime | None = None, journal: Path = JOURNAL, sortie: Pa
     a_venir, en_cours, reglees, sans = [], [], [], 0
     for mid, l in tous.items():
         f = dict((gels.get(mid) or l)["fiche"])
+        if "derniers_matchs" not in f and mid in par_id:
+            f["derniers_matchs"] = D.derniers_matchs(par_id[mid])
         ko = _ko(f.get("coup_d_envoi_utc"))
         if ko is None:
             continue
@@ -230,7 +234,7 @@ def pipeline() -> None:
     matchs, refs = D.charger_archive(avec_futurs=True)
     n = geler(matchs=matchs, refs=refs)
     r = resultats(matchs=matchs)
-    p = page()
+    p = page(matchs=matchs)
     print(f"omega : {n} pronostic(s) gelé(s), {r} résultat(s) réglé(s), {len(p['a_venir'])} pari(s) à venir, {p['sans_pronostic']} match(s) sans pronostic")
 
 

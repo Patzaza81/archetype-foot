@@ -213,3 +213,45 @@ def test_resultat_regle_sur_dernier_gel_avant_le_match(tmp_path):
     assert res["type"] == "resultat" and res["score"] == [2, 1]
     for p in res["paris"]:
         assert p["gagne"] == M.test_du_marche(*p["cle"])(2, 1)
+
+
+# --- Derniers matchs affichés (même échantillon que le modèle, jamais le futur) ------------------------------------
+def test_derniers_matchs_meme_echantillon_que_le_modele_du_plus_recent_au_plus_ancien():
+    m = _match([2, 3, 1, 2, 3], [1, 0, 1, 2, 1], [1, 0, 1, 2, 0], [2, 3, 1, 2, 2])
+    m["dom_matchs"] = m["dom_matchs"] + _equipe(False, [9], [9]) + [{"date": "2026-10-20", "domicile": True, "buts_marques": 7, "buts_encaisses": 7}]
+    m["dom_matchs"][0]["adversaire"] = "Premier"
+    d = D.derniers_matchs(m)
+    assert [x["marques"] for x in d["dom"]] == [3, 2, 1, 3, 2]                       # 5 matchs à domicile, récent d'abord ; ni l'extérieur ni le jour J
+    assert [x["marques"] for x in reversed(d["ext"])] == [1, 0, 1, 2, 0]                  # extérieur : ses 5 matchs, du plus ancien au plus récent
+    assert d["dom"][-1]["adversaire"] == "Premier" and d["dom"] == sorted(d["dom"], key=lambda x: x["date"], reverse=True)
+    assert [x["marques"] for x in reversed(d["dom"])] == D.serie_lieu(m["dom_matchs"], True, m["jour"], None)[0]
+
+
+def test_derniers_matchs_limite_et_cas_vides():
+    m = _match([1] * 8, [0] * 8, [1] * 8, [0] * 8)
+    assert len(D.derniers_matchs(m, par_equipe=3)["dom"]) == 3
+    assert D.derniers_matchs({"jour": "2026-10-20", "dom_matchs": None, "ext_matchs": []}) == {"dom": [], "ext": []}
+    assert D.derniers_matchs(_match([1] * 5, [0] * 5, [1] * 5, [0] * 5, jour="2026-09-01"))["dom"] == []        # rien avant le jour du match
+
+
+def test_fiche_gelee_contient_les_derniers_matchs(tmp_path):
+    j = tmp_path / "journal.jsonl"
+    m = _match([2, 3, 1, 2, 3], [1, 0, 1, 2, 1], [1, 0, 1, 2, 0], [2, 3, 1, 2, 2], cotes=COTES)
+    suivi.geler(datetime(2026, 10, 20, 12, tzinfo=timezone.utc), j, [m], D.References(), PARAMS)
+    f = json.loads(j.read_text().splitlines()[0])["fiche"]
+    assert len(f["derniers_matchs"]["dom"]) == 5 and len(f["derniers_matchs"]["ext"]) == 5
+
+
+def test_page_complete_les_anciens_gels_sans_toucher_au_journal(tmp_path):
+    j, sortie = tmp_path / "journal.jsonl", tmp_path / "pronostics.json"
+    m = _match([2, 3, 1, 2, 3], [1, 0, 1, 2, 1], [1, 0, 1, 2, 0], [2, 3, 1, 2, 2], cotes=COTES, ko="2026-10-20T18:00:00Z")
+    suivi.geler(datetime(2026, 10, 20, 12, tzinfo=timezone.utc), j, [m], D.References(), PARAMS)
+    lignes = [json.loads(x) for x in j.read_text().splitlines()]
+    del lignes[0]["fiche"]["derniers_matchs"]                                   # gel ancien, avant cette fonction
+    j.write_text("".join(json.dumps(x) + "\n" for x in lignes))
+    avant = j.read_text()
+    out = suivi.page(datetime(2026, 10, 20, 13, tzinfo=timezone.utc), j, sortie, matchs=[m])
+    assert len(out["a_venir"][0]["derniers_matchs"]["dom"]) == 5
+    assert j.read_text() == avant                                               # le journal gelé n'est jamais modifié
+    sans = suivi.page(datetime(2026, 10, 20, 13, tzinfo=timezone.utc), j, sortie)
+    assert "derniers_matchs" not in sans["a_venir"][0]                          # sans archive : rien d'inventé

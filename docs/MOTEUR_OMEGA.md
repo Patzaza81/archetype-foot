@@ -74,7 +74,12 @@ Sorties : `moteur_omega/parametres.json`, `docs/omega_validation.json`.
 - `data/omega/journal.jsonl` (ajout seul) : une ligne « pronostic » par match à venir, nouvelle ligne seulement si la sélection change ; la
   dernière ligne écrite AVANT le coup d'envoi est celle qui compte ; une ligne « resultat » par match, jamais modifiée.
 - `data/omega/pronostics.json` → `pronostics_omega.html` (`archetype_omega.js`, lecture seule). Bilan calculé sur les seuls paris gelés avant le match.
-- Statut affiché : EN OBSERVATION.
+- Présentation (27/10/2026, ordre de Patrick) : en-tête court dans une carte épurée ; le bloc « EN OBSERVATION… test sur 557 paris… » et les notes
+  du pire scénario (« buts d'une équipe = … ÷ 2 », « information… », « sans un des matchs… ») ne sont plus affichés (le calcul, le statut et
+  `p_min` restent dans le JSON). À la place : « Derniers matchs » des deux équipes = EXACTEMENT les matchs du même lieu utilisés par le modèle
+  (`donnees.derniers_matchs` : date, adversaire, score, V/N/D, moyennes marquées/encaissées ; 10 au plus par équipe, du plus récent au plus ancien).
+  Gelé dans la fiche des nouveaux pronostics ; pour les anciens gels, complété à la lecture par `page(matchs=…)` sans modifier le journal.
+- Statut (dans le JSON) : observation.
 - Une seule exception à « tout seuil appris » : la cote minimale 1,39, imposée par Patrick.
 
 ## Points ouverts / améliorations possibles

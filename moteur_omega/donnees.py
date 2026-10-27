@@ -27,13 +27,27 @@ def _buts_ok(m: dict) -> bool:
     return isinstance(m.get("buts_marques"), int) and isinstance(m.get("buts_encaisses"), int)
 
 
-def serie_lieu(matchs: list[dict] | None, domicile: bool, jour: str, fenetre: int | None) -> tuple[list[int], list[int]]:
-    """(buts marqués, buts encaissés) au lieu demandé, strictement avant `jour`, du plus ancien au plus récent, `fenetre` derniers au plus."""
+def matchs_lieu(matchs: list[dict] | None, domicile: bool, jour: str, fenetre: int | None = None) -> list[dict]:
+    """Matchs (dictionnaires complets) au lieu demandé, strictement avant `jour`, du plus ancien au plus récent, `fenetre` derniers au plus.
+    Même filtre que `serie_lieu` : c'est exactement l'échantillon utilisé par le modèle."""
     ms = [m for m in (matchs or []) if bool(m.get("domicile")) is bool(domicile) and str(m.get("date"))[:10] < jour and _buts_ok(m)]
     ms.sort(key=lambda m: str(m["date"])[:10])
-    if fenetre:
-        ms = ms[-fenetre:]
+    return ms[-fenetre:] if fenetre else ms
+
+
+def serie_lieu(matchs: list[dict] | None, domicile: bool, jour: str, fenetre: int | None) -> tuple[list[int], list[int]]:
+    """(buts marqués, buts encaissés) au lieu demandé, strictement avant `jour`, du plus ancien au plus récent, `fenetre` derniers au plus."""
+    ms = matchs_lieu(matchs, domicile, jour, fenetre)
     return [m["buts_marques"] for m in ms], [m["buts_encaisses"] for m in ms]
+
+
+def derniers_matchs(m: dict, par_equipe: int = 10) -> dict[str, list[dict]]:
+    """Affichage : les matchs du même lieu de chaque équipe (ceux du modèle), du plus récent au plus ancien, `par_equipe` au plus.
+    Date, adversaire, buts marqués et encaissés par l'équipe. Aucune information postérieure au jour du match."""
+    def liste(matchs, domicile):
+        ms = matchs_lieu(matchs, domicile, m["jour"])[-par_equipe:][::-1]
+        return [{"date": str(x["date"])[:10], "adversaire": x.get("adversaire"), "marques": x["buts_marques"], "encaisses": x["buts_encaisses"]} for x in ms]
+    return {"dom": liste(m.get("dom_matchs"), True), "ext": liste(m.get("ext_matchs"), False)}
 
 
 class References:
