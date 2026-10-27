@@ -74,6 +74,11 @@ def _pari(l: dict[str, Any]) -> dict[str, Any]:
             "resistance": l["resistance"], "scenario": l["scenario"]}
 
 
+def _sur_derniers(cle: list[str], derniers: dict[str, Any] | None) -> dict[str, Any] | None:
+    t = M.test_du_marche(*cle)
+    return D.pari_sur_derniers(t, derniers) if t else None
+
+
 def fiche(m: dict[str, Any], a: dict[str, Any], s: dict[str, Any]) -> dict[str, Any]:
     """Ce qui est gelé et affiché pour un match (tout ce qu'il faut pour auditer la décision)."""
     out = {"match_id": m.get("match_id") or m["id"], "jour": m["jour"], "heure": m.get("heure"), "coup_d_envoi_utc": m.get("coup_d_envoi_utc"),
@@ -83,9 +88,11 @@ def fiche(m: dict[str, Any], a: dict[str, Any], s: dict[str, Any]) -> dict[str, 
         return {**out, "raison": a.get("raison"), "principal": None, "autres": []}
     ser = a["series"]
     cr = a["croisements"]
+    dm = D.derniers_matchs(m)
     return {**out, "principal": _pari(s["principal"]) if s["principal"] else None, "autres": [_pari(x) for x in s["autres"]],
+            "pari_sur_derniers": _sur_derniers(s["principal"]["cle"], dm) if s["principal"] else None,
             "raison": s.get("raison"), "buts_attendus": {k: round(v, 3) for k, v in a["buts_attendus"].items()},
-            "series": ser, "derniers_matchs": D.derniers_matchs(m), "coins": a["coins"], "convergence": cr["convergence"], "scores_probables": a["scores_probables"],
+            "series": ser, "derniers_matchs": dm, "coins": a["coins"], "convergence": cr["convergence"], "scores_probables": a["scores_probables"],
             "meilleur_modele": _meilleurs_sans_cote(a)}
 
 
@@ -193,6 +200,8 @@ def page(maintenant: datetime | None = None, journal: Path = JOURNAL, sortie: Pa
         f = dict((gels.get(mid) or l)["fiche"])
         if "derniers_matchs" not in f and mid in par_id:
             f["derniers_matchs"] = D.derniers_matchs(par_id[mid])
+        if "pari_sur_derniers" not in f and f.get("principal") and f.get("derniers_matchs"):
+            f["pari_sur_derniers"] = _sur_derniers(f["principal"]["cle"], f["derniers_matchs"])
         ko = _ko(f.get("coup_d_envoi_utc"))
         if ko is None:
             continue

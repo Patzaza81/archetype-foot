@@ -74,7 +74,7 @@ function omPourquoi(f) {
   l.push(`${omE(f.domicile)} à domicile : ${omFr(omMoy(s.dom_marques))} but marqué et ${omFr(omMoy(s.dom_encaisses))} encaissé par match (${f.n_domicile} matchs)`);
   l.push(`${omE(f.exterieur)} à l'extérieur : ${omFr(omMoy(s.ext_marques))} but marqué et ${omFr(omMoy(s.ext_encaisses))} encaissé par match (${f.n_exterieur} matchs)`);
   if (p.p_modele != null && p.p_cote != null) l.push(`Les chiffres des deux équipes donnent ${omPct(p.p_modele)} et la cote ${omPct(p.p_cote)} : les deux sont d'accord`);
-  return `<div class="om-pourquoi">${l.map((x) => `<div>${x}</div>`).join("")}</div>`;
+  return `<div class="om-pourquoi">${l.map((x) => `<div>${x}</div>`).join("")}</div>` + omHistorique(p);
 }
 function omLigne(p, f, principal) {
   const ph = omPhrase(p.cle, f.domicile, f.exterieur);
@@ -134,6 +134,16 @@ function omHistorique(p) {
   return `<div class="om-hist"><b class="om-hist-pct">${Math.round(h.reussite * 100)} %</b>` +
     `<span class="om-hist-txt">de réussite sur les paris portant sur ${OM_TYPES[p.famille]}<small>${h.n} paris testés du ${omJourCourt(OM_HIST.du)} au ${omJourCourt(OM_HIST.au)}</small></span></div>`;
 }
+// Cercle du pourcentage (le plus prudent des deux : modèle ou cote) + une phrase vraie : dans combien de leurs derniers matchs le pari serait passé.
+function omPourquoiCourt(p, f) {
+  const r = Math.round(Number(p.p) * 100), d = f.pari_sur_derniers;
+  const pct = Number.isFinite(r) ? r : null;
+  const anneau = pct === null ? "" :
+    `<div class="om-anneau" style="--p:${pct}" role="img" aria-label="Réussite attendue ${pct} %"><span><b>${pct} %</b><small>attendue</small></span></div>`;
+  const phrase = d && d.dom && d.ext && d.dom.n && d.ext.n
+    ? `Ce pari serait passé dans <b>${d.dom.ok} des ${d.dom.n}</b> derniers matchs de ${omE(f.domicile)} à domicile et dans <b>${d.ext.ok} des ${d.ext.n}</b> derniers matchs de ${omE(f.exterieur)} à l'extérieur.` : "";
+  return anneau || phrase ? `<div class="om-pq">${anneau}<p class="om-pq-txt">${phrase}</p></div>` : "";
+}
 function omCarte(f) {
   const h = omHoraire(f.coup_d_envoi_utc), p = f.principal || {};
   const score = Array.isArray(f.score) ? `${f.score[0]} - ${f.score[1]}` : "";
@@ -151,7 +161,7 @@ function omCarte(f) {
     `<div class="om-corps">` +
       (score ? `<div class="om-info">Score final <strong>${omE(score)}</strong></div>` : "") +
       `<div class="om-info"><b>Pari proposé</b></div>` + omLigne(p, f, true) +
-      omHistorique(p) +
+      omPourquoiCourt(p, f) +
     `</div>` +
     `<details class="ax-details" open><summary class="ax-summary-cache" tabindex="-1">Détails</summary><div class="ax-details-corps">` +
       omPourquoi(f) +
