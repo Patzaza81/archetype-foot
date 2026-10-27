@@ -201,7 +201,7 @@ function omPourquoiCourt(p, f) {
   const r = Math.round(Number(p.p) * 100);
   const pct = Number.isFinite(r) ? r : null;
   const anneau = pct === null ? "" :
-    `<div class="om-anneau" style="--p:${pct}" role="img" aria-label="Réussite attendue ${pct} %"><span><b>${pct} %</b><small>attendue</small></span></div>`;
+    `<div class="om-anneau" style="--p:${pct}" role="img" aria-label="Réussite attendue ${pct} %"><span><b>${pct} %</b></span></div>`;
   const phrase = omPhrase(p, f);
   return anneau || phrase ? `<div class="om-pq">${anneau}<p class="om-pq-txt">${phrase}</p></div>` : "";
 }
