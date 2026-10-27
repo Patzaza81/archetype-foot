@@ -75,19 +75,13 @@
 .om-autres .om-ligne{padding:3px 0}
 .om-bloc{font-size:12px}
 .om-bloc-titre{font-weight:800;font-size:12px;margin-bottom:4px}
-.om-croix{display:grid;grid-template-columns:1fr;gap:10px}
-.om-cx{background:#F2F7F6;border:1px solid #DCE7E4;border-radius:14px;padding:10px 12px}
-.om-cx-t{font:700 12px/1.3 system-ui,-apple-system,"Segoe UI",sans-serif;color:#5B6763;margin-bottom:8px}
-.om-cx-l{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"n m" "b m";column-gap:12px;align-items:center;padding:6px 0;border-top:1px solid #DCE7E4}
-.om-cx-n{grid-area:n;font:700 14px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif;color:#17141B;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.om-cx-l .om-buts{grid-area:b;font:500 13px/1.3 system-ui,-apple-system,"Segoe UI",sans-serif;color:#5B6763;letter-spacing:.02em}
-.om-cx-m{grid-area:m;min-width:46px;text-align:center;padding:6px 10px;border-radius:10px;background:#D7F0EA;color:#06645F;font:800 18px/1 system-ui,-apple-system,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums}
-.om-cx-f{display:flex;justify-content:space-between;align-items:center;margin-top:4px;padding-top:8px;border-top:1px dashed #BFD3CE;font:600 12px/1 system-ui,-apple-system,"Segoe UI",sans-serif;color:#5B6763}
-.om-cx-f b{font:800 16px/1 system-ui,-apple-system,"Segoe UI",sans-serif;color:#087F78;font-variant-numeric:tabular-nums}
-.om-bloc-titre small{display:block;margin-top:2px;font:500 12px/1.3 system-ui,-apple-system,"Segoe UI",sans-serif;opacity:.75}
-.theme-nuit .om-cx{background:#20262C;border-color:#2C3440}.theme-nuit .om-cx-l{border-color:#2C3440}.theme-nuit .om-cx-t,.theme-nuit .om-cx-l .om-buts,.theme-nuit .om-cx-f{color:#A9B3B8}
-.theme-nuit .om-cx-n{color:#F4F2F7}.theme-nuit .om-cx-m{background:#12423D;color:#7FE3D6}.theme-nuit .om-cx-f{border-color:#3A4450}.theme-nuit .om-cx-f b{color:#4FD1C5}
+.om-croix{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.om-croix>div{border:1px solid var(--ax-ligne);border-radius:10px;padding:6px 8px}
+.om-croix b{display:block;font-size:11px;opacity:.85;margin-bottom:2px}
 .om-buts{font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.om-croix .om-moy{font-size:12px}
+.om-moy-v{font-weight:800;color:#087F78}
+.theme-nuit .om-moy-v{color:#4FD1C5}
 .om-ok{color:#2E7D32;font-weight:700}.om-ko{color:#B86E00;font-weight:700}
 .theme-nuit .om-ok{color:#7BD88F}.theme-nuit .om-ko{color:#F2B24C}
 .om-intro{display:flex;align-items:center;gap:14px;margin:14px 0 4px;padding:14px 16px;border:1px solid rgba(8,127,120,.2);border-radius:18px;background:linear-gradient(135deg,#F1F8F6,#fff);box-shadow:0 4px 18px rgba(15,42,40,.05)}
@@ -146,7 +140,7 @@
 .theme-nuit .om-pond{background:#20262C;border-color:#2C3440}.theme-nuit .om-pond-t{color:#A9B3B8}.theme-nuit .om-pond-l{color:#F4F2F7}
 .theme-nuit .om-h-ok{background:#12423D;color:#7FE3D6}.theme-nuit .om-h-diff{background:#4A3A14;color:#F0CF80}
 </style>
-<script src="archetype_omega.js?v=20261027m"></script>
+<script src="archetype_omega.js?v=20261027n"></script>
 <script src="drapeaux.js"></script>
 <script src="af-drapeaux-cartes.js"></script>
 <script src="af-date-navigation.js?v=20261027b"></script>
