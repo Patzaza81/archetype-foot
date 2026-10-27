@@ -197,10 +197,10 @@ function omPhrasePari(p, f) {
 }
 // Cercle du pourcentage (le plus prudent des deux : modèle ou cote) + la phrase propre au type de pari.
 function omPourquoiCourt(p, f) {
-  const c = f.pari_sur_derniers, n = c && c.dom && c.ext ? c.dom.n + c.ext.n : 0;
-  const pct = n ? Math.round(100 * (c.dom.ok + c.ext.ok) / n) : null;   // part des derniers matchs affichés où le pari serait passé
+  const r = Math.round(Number(p.p_modele) * 100);                    // probabilité brute du modèle (Poisson / Dixon-Coles calibré), sans la cote
+  const pct = p.p_modele != null && Number.isFinite(r) ? r : null;
   const anneau = pct === null ? "" :
-    `<div class="om-anneau" style="--p:${pct}" role="img" aria-label="Pari passé dans ${pct} % des derniers matchs"><span><b>${pct} %</b></span></div>`;
+    `<div class="om-anneau" style="--p:${pct}" role="img" aria-label="Probabilité du modèle ${pct} %"><span><b>${pct} %</b></span></div>`;
   const phrase = omPhrasePari(p, f);
   return anneau || phrase ? `<div class="om-pq">${anneau}<p class="om-pq-txt">${phrase}</p></div>` : "";
 }
