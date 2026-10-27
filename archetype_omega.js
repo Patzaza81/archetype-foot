@@ -125,11 +125,19 @@ function omScores(f) {
   const sc = (f.scores_probables || []).map((x) => `${omE(x.score)} (${omPct(x.p)})`).join(" · ");
   return sc ? `<div class="om-bloc"><div class="om-bloc-titre">Scores les plus probables</div><div>${sc}</div></div>` : "";
 }
+// Réussite réellement constatée du TYPE de pari (docs/omega_historique.json) : le % annoncé varie trop peu d'un pari à l'autre pour les distinguer.
+let OM_HIST = null;
+const OM_TYPES = { "buts du match": "les buts du match", "résultat": "le résultat", "buts d'une équipe": "les buts d'une équipe" };
+function omHistorique(p) {
+  const h = OM_HIST && OM_HIST.familles && OM_HIST.familles[p.famille];
+  if (!h || !OM_TYPES[p.famille]) return "";
+  return `<div class="om-hist"><b class="om-hist-pct">${Math.round(h.reussite * 100)} %</b>` +
+    `<span class="om-hist-txt">de réussite sur les paris portant sur ${OM_TYPES[p.famille]}<small>${h.n} paris testés du ${omJourCourt(OM_HIST.du)} au ${omJourCourt(OM_HIST.au)}</small></span></div>`;
+}
 function omCarte(f) {
   const h = omHoraire(f.coup_d_envoi_utc), p = f.principal || {};
   const score = Array.isArray(f.score) ? `${f.score[0]} - ${f.score[1]}` : "";
   const autres = Array.isArray(f.autres) ? f.autres : [];
-  const r = Math.round(Number(p.p) * 100);
   const section = document.createElement("section");
   section.className = "ax-carte ax-replie";
   section.setAttribute("aria-expanded", "false");
@@ -143,8 +151,7 @@ function omCarte(f) {
     `<div class="om-corps">` +
       (score ? `<div class="om-info">Score final <strong>${omE(score)}</strong></div>` : "") +
       `<div class="om-info"><b>Pari proposé</b></div>` + omLigne(p, f, true) +
-      `<div class="om-info">Réussite attendue : <b>${Number.isFinite(r) ? r : "—"} sur 100</b></div>` +
-      `<div class="om-jauge" aria-hidden="true"><i style="width:${Number.isFinite(r) ? r : 0}%"></i></div>` +
+      omHistorique(p) +
     `</div>` +
     `<details class="ax-details" open><summary class="ax-summary-cache" tabindex="-1">Détails</summary><div class="ax-details-corps">` +
       omPourquoi(f) +
@@ -179,6 +186,7 @@ function omBilan(b) {
   return `<table class="om-table"><tr><th>Pari</th><th>Réglés</th><th>Réussite réelle</th><th>Annoncée</th><th>Cote moy.</th><th>Rendement</th></tr>${corps}</table>`;
 }
 function omAffiche(d) {
+  OM_HIST = d.historique || null;
   document.getElementById("om-bilan").innerHTML = omBilan(d.bilan || {});
   omListe("om-avenir", d.a_venir, "Aucun pari à venir pour l'instant.");
   const sans = Number(d.sans_pronostic) || 0;

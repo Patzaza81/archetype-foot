@@ -79,6 +79,11 @@ Sorties : `moteur_omega/parametres.json`, `docs/omega_validation.json`.
   `p_min` restent dans le JSON). À la place : « Derniers matchs » des deux équipes = EXACTEMENT les matchs du même lieu utilisés par le modèle
   (`donnees.derniers_matchs` : date, adversaire, score, V/N/D, moyennes marquées/encaissées ; 10 au plus par équipe, du plus récent au plus ancien).
   Gelé dans la fiche des nouveaux pronostics ; pour les anciens gels, complété à la lecture par `page(matchs=…)` sans modifier le journal.
+- **Barre « réussite attendue » supprimée** (27/10/2026) : parmi les paris retenus (807, du 28/09 au 26/10), le pourcentage annoncé (62–70 %) ne
+  distingue pas les paris (corrélation avec la réussite 0,004 ; tranches 67,5 / 65,2 / 69,8 / 69,0 %). Ce qui distingue, de façon stable sur les deux
+  moitiés de la période : le TYPE de pari (buts du match 72 % sur 306 ; résultat 62 % sur 292 ; buts d'une équipe 69 % sur 197 ; combinés trop peu, non publiés).
+  La carte affiche donc la réussite constatée du type de pari (`historique.py` → `docs/omega_historique.json`, relancé à chaque passage du pipeline,
+  minimum 30 paris par famille). Le pourcentage du pari reste dans le détail (modèle et cote). Aucun niveau de « confiance » inventé.
 - Statut (dans le JSON) : observation.
 - Une seule exception à « tout seuil appris » : la cote minimale 1,39, imposée par Patrick.
 
