@@ -97,6 +97,8 @@ Sorties : `moteur_omega/parametres.json`, `docs/omega_validation.json`.
   ≈ 75 % de réussite, cote moyenne 1,27, rendement ≈ −5 % : INFORMATION, pas un pari rentable. Affichage seulement : calculé à la lecture, jamais écrit dans le journal,
   ne change ni la sélection ni les pronostics gelés. Le jour du lancement : 1 pari identique, 6 dans le même sens, 92 différents sur 99 (le pondéré tombe presque toujours
   sur un favori à cote ≈ 1,24).
+- **Bloc « Les 4 croisements »** (27/10/2026, ordre de Patrick : moyennes illisibles) : une carte par croisement, une ligne par équipe (nom, buts match par match, moyenne en gros
+  dans une pastille) et « Moyenne des deux » en bas ; une colonne sur mobile, clair et nuit. Mêmes chiffres qu'avant, présentation seule.
 - Statut (dans le JSON) : observation.
 - Une seule exception à « tout seuil appris » : la cote minimale 1,39, imposée par Patrick.
 
