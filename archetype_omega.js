@@ -98,14 +98,17 @@ function omJourCourt(iso) {
   const d = new Date(`${iso}T12:00:00`); if (Number.isNaN(d.getTime())) return omE(iso || "");
   return omE(d.toLocaleDateString("fr-FR", { day: "numeric", month: "short" }).replace(/\./g, ""));
 }
-function omEquipeDerniers(nom, lieu, liste, total) {
+function omEquipeDerniers(nom, lieu, liste, total, domicile) {
   const l = Array.isArray(liste) ? liste : [];
   const moy = (k) => (l.length ? l.reduce((a, x) => a + Number(x[k] || 0), 0) / l.length : NaN);
   const lignes = l.map((x) => {
     const [lettre, cls] = omRes(x.marques, x.encaisses);
+    const m = Number(x.marques), e = Number(x.encaisses);
+    // Score dans l'ordre d'un match : l'équipe qui reçoit en premier. Les buts de l'équipe affichée sont en gras.
+    const score = domicile ? `<b>${m}</b> – ${e}` : `${e} – <b>${m}</b>`;
     return `<li class="om-dm"><span class="om-dm-date">${omJourCourt(x.date)}</span>` +
       `<span class="om-dm-adv">${omE(x.adversaire || "Adversaire inconnu")}</span>` +
-      `<b class="om-dm-score">${Number(x.marques)} – ${Number(x.encaisses)}</b><span class="om-dm-res ${cls}">${lettre}</span></li>`;
+      `<span class="om-dm-score">${score}</span><span class="om-dm-res ${cls}">${lettre}</span></li>`;
   }).join("");
   return `<div class="om-dm-eq"><div class="om-dm-tete"><span class="om-dm-nom">${omE(nom)}</span>` +
     `<span class="om-dm-lieu">${lieu} · ${total || l.length} match${(total || l.length) > 1 ? "s" : ""}</span></div>` +
@@ -116,7 +119,7 @@ function omDerniers(f) {
   const d = f.derniers_matchs || {};
   if (!(d.dom && d.dom.length) && !(d.ext && d.ext.length)) return "";
   return `<div class="om-bloc"><div class="om-bloc-titre">Derniers matchs</div><div class="om-dm-grille">` +
-    omEquipeDerniers(f.domicile, "À domicile", d.dom, f.n_domicile) + omEquipeDerniers(f.exterieur, "À l'extérieur", d.ext, f.n_exterieur) + `</div></div>`;
+    omEquipeDerniers(f.domicile, "À domicile", d.dom, f.n_domicile, true) + omEquipeDerniers(f.exterieur, "À l'extérieur", d.ext, f.n_exterieur, false) + `</div></div>`;
 }
 function omScores(f) {
   const sc = (f.scores_probables || []).map((x) => `${omE(x.score)} (${omPct(x.p)})`).join(" · ");
