@@ -89,8 +89,8 @@ Sorties : `moteur_omega/parametres.json`, `docs/omega_validation.json`.
   affichés, sans estimation : total de buts (« terminés avec 3 buts ou moins : X sur N pour A à domicile, Y sur N pour B à l'extérieur ») ; buts d'une équipe
   (ses buts marqués + les buts encaissés par l'adversaire) ; les deux marquent ; cage inviolée / encaisse ; 1X2 ; double chance ; handicap (marge exigée) ;
   combinés = décompte du pari complet (`pari_sur_derniers`, calculé en Python par `marches.test_du_marche`, score de l'extérieur inversé).
-  Aucune phrase si une équipe n'a pas de matchs. Les décomptes JS sont recoupés avec ceux de Python (60 paris, 0 écart). La réussite constatée par type
-  de pari (`historique.py`) reste dans le détail « pourquoi ».
+  Aucune phrase si une équipe n'a pas de matchs. Les décomptes JS sont recoupés avec ceux de Python (60 paris, 0 écart). L'encart « réussite par type de pari » (`historique.py`) n'est plus affiché sur les cartes (refusé par Patrick le 27/10/2026) ; le fichier
+  `docs/omega_historique.json` reste produit.
 - Statut (dans le JSON) : observation.
 - Une seule exception à « tout seuil appris » : la cote minimale 1,39, imposée par Patrick.
 
