@@ -5,6 +5,7 @@
   const MONTH_LABELS = ["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
   let mode = "all";
   let selectedDate = "";
+  let selectedLeague = "";
   let observer = null;
   let refreshQueued = false;
 
@@ -42,6 +43,16 @@
     const dateEl = card.querySelector(".ax-horaire span");
     return parseDate(dateEl ? dateEl.textContent : card.textContent);
   }
+  // Championnat de la carte : texte de .ax-competition sans le drapeau ajouté par af-drapeaux-cartes.js
+  // et sans le score final que certaines pages (alpha) ajoutent après le libellé. Lecture seule.
+  function cardLeague(card) {
+    const el = card.querySelector(".ax-competition");
+    if (!el) return "";
+    const text = Array.from(el.childNodes)
+      .filter(n => !(n.nodeType === 1 && n.classList.contains("af-drapeau")))
+      .map(n => n.textContent).join("");
+    return text.replace(/\s*·\s*Score final.*$/i, "").replace(/\s+/g, " ").trim();
+  }
   function ensureBar() {
     const host = document.querySelector(".ax-conteneur");
     if (!host || document.getElementById("af-date-navigation")) return;
@@ -54,7 +65,9 @@
       '<button type="button" data-mode="today">Aujourd’hui</button>' +
       '<button type="button" data-mode="tomorrow">Demain</button>' +
       '<button type="button" data-mode="all" class="is-active" aria-pressed="true">Toutes les dates</button>' +
-      '<label class="af-date-select-label" for="af-date-select">Date précise</label><select id="af-date-select"><option value="">Choisir une date…</option></select></div>';
+      '<label class="af-date-select-label" for="af-date-select">Date précise</label><select id="af-date-select"><option value="">Choisir une date…</option></select></div>' +
+      '<div class="af-date-controls af-league-controls"><label class="af-date-select-label af-league-label" for="af-league-select">Championnat</label>' +
+      '<select id="af-league-select"><option value="">Tous les championnats</option></select></div>';
     const heading = host.querySelector(".ax-entete");
     if (heading) heading.insertAdjacentElement("afterend", bar);
     else host.insertAdjacentElement("afterbegin", bar);
@@ -63,6 +76,10 @@
       selectedDate = "";
       applyFilter();
     }));
+    bar.querySelector("#af-league-select").addEventListener("change", event => {
+      selectedLeague = event.target.value;
+      applyFilter();
+    });
     bar.querySelector("#af-date-select").addEventListener("change", event => {
       selectedDate = event.target.value;
       mode = selectedDate ? "date" : "all";
@@ -79,10 +96,24 @@
     if (dates.includes(prior)) select.value = prior;
     else if (selectedDate && !dates.includes(selectedDate)) { selectedDate = ""; mode = "all"; }
   }
+  function updateLeagueOptions(cards) {
+    const select = document.getElementById("af-league-select");
+    if (!select) return;
+    const counts = new Map();
+    cards.forEach(card => { const l = cardLeague(card); if (l) counts.set(l, (counts.get(l) || 0) + 1); });
+    const leagues = Array.from(counts.keys()).sort((a, b) => a.localeCompare(b, "fr"));
+    const esc = t => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+    const markup = '<option value="">Tous les championnats</option>' +
+      leagues.map(l => '<option value="' + esc(l) + '">' + esc(l) + " (" + counts.get(l) + ")</option>").join("");
+    if (select.innerHTML !== markup) select.innerHTML = markup;
+    if (selectedLeague && !counts.has(selectedLeague)) selectedLeague = "";
+    select.value = selectedLeague;
+  }
   function applyFilter() {
     ensureBar();
     const cards = getCards();
     updateDateOptions(cards);
+    updateLeagueOptions(cards);
     const today = localIso(new Date());
     const tomorrowDate = new Date(); tomorrowDate.setDate(tomorrowDate.getDate()+1);
     const tomorrow = localIso(tomorrowDate);
@@ -92,6 +123,7 @@
       let visible = mode === "all" || (mode === "today" && date === today) ||
         (mode === "tomorrow" && date === tomorrow) || (mode === "date" && date === selectedDate);
       if (mode === "all") visible = true;
+      if (selectedLeague && cardLeague(card) !== selectedLeague) visible = false;
       card.hidden = !visible;
       if (visible) shown++;
     });
