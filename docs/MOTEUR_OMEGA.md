@@ -90,6 +90,13 @@ Sorties : `moteur_omega/parametres.json`, `docs/omega_validation.json`.
   combinés = décompte du pari complet (`pari_sur_derniers`, calculé en Python par `marches.test_du_marche`, score de l'extérieur inversé).
   Aucune phrase si une équipe n'a pas de matchs. Les décomptes JS sont recoupés avec ceux de Python (60 paris, 0 écart). L'encart « réussite par type de pari » (`historique.py`) n'est plus affiché sur les cartes (refusé par Patrick le 27/10/2026) ; le fichier
   `docs/omega_historique.json` reste produit.
+- **Marché pondéré** (27/10/2026, ordre de Patrick ; `ponderation.py`, `docs/omega_ponderation.json`) : sur chaque carte, sous le pari principal, le marché
+  le plus probable parmi ceux de cote **supérieure à 1,22**, avec un repère « Même pari / Dans le même sens / Pari différent » (comparaison des scores qui font gagner).
+  Probabilité pondérée = régression logistique sur modèle, cote et fréquence dans les derniers matchs ; poids APPRIS sur l'archive (40 984 marchés), réécrits à chaque
+  pipeline. Poids mesurés : cote 1,09, modèle 0,03, derniers matchs ≈ 0 : le résultat est presque la cote seule (Brier 0,1973 contre 0,1975). Test réserve (après le 14/10) :
+  ≈ 75 % de réussite, cote moyenne 1,27, rendement ≈ −5 % : INFORMATION, pas un pari rentable. Affichage seulement : calculé à la lecture, jamais écrit dans le journal,
+  ne change ni la sélection ni les pronostics gelés. Le jour du lancement : 1 pari identique, 6 dans le même sens, 92 différents sur 99 (le pondéré tombe presque toujours
+  sur un favori à cote ≈ 1,24).
 - Statut (dans le JSON) : observation.
 - Une seule exception à « tout seuil appris » : la cote minimale 1,39, imposée par Patrick.
 
