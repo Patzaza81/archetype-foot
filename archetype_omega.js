@@ -74,10 +74,15 @@ function omPourquoi(f) {
   l.push(`${omE(f.exterieur)} à l'extérieur : ${omFr(omMoy(s.ext_marques))} but marqué et ${omFr(omMoy(s.ext_encaisses))} encaissé par match (${f.n_exterieur} matchs)`);
   return `<div class="om-pourquoi">${l.map((x) => `<div>${x}</div>`).join("")}</div>`;
 }
+// Solidité (28/10/2026) : indice de réserve du pari, calculé en Python (`moteur_omega/indice.py`) ; ici seulement l'affichage du pourcentage.
+function omSolidite(p) {
+  const s = Number(p && p.solidite);
+  return p && p.solidite != null && Number.isFinite(s) ? `<small class="om-sol">Solidité <b>${Math.round(s * 100)} %</b></small>` : "";
+}
 function omLigne(p, f, principal) {
   const ph = omPhrase(p.cle, f.domicile, f.exterieur);
   return `<div class="om-ligne ${principal ? "om-principal" : ""}"><span>${omE(ph.titre)}${ph.reel ? `<small class="om-sous">${omE(ph.reel)}</small>` : ""}` +
-    `</span>` +
+    omSolidite(p) + `</span>` +
     `<span><span class="om-cote">Cote ${omCote(p.cote)}</span> ${omBadge(p)}</span></div>`;
 }
 function omCroisements(f) {

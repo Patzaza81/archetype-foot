@@ -399,3 +399,56 @@ def test_page_ajoute_le_marche_pondere_sans_toucher_au_journal(tmp_path, monkeyp
     out = suivi.page(maintenant=datetime(2026, 10, 27, 9, 0, tzinfo=timezone.utc), journal=jr, sortie=pg, matchs=[m], refs=object(), ponderation={"poids": {}})
     assert out["a_venir"][0]["pondere"]["harmonie"] == "meme_sens"
     assert jr.read_text(encoding="utf-8") == avant
+
+
+# --- Solidité = indice de réserve (28/10/2026) : distance au basculement du score ----------------------------------------
+from moteur_omega import indice as IND
+
+
+@pytest.mark.parametrize("cle,score,attendu", [
+    (("over_under_3.5", "moins"), (2, 1), 1),      # passe de justesse : un but de plus fait perdre
+    (("over_under_3.5", "moins"), (1, 1), 2),      # passe avec un but de réserve
+    (("over_under_3.5", "moins"), (0, 0), 4),
+    (("double_chance", "1N"), (1, 1), 1),          # le nul passe, une victoire extérieure le ferait perdre
+    (("double_chance", "1N"), (2, 1), 2),
+    (("handicap_-0.5", "domicile"), (1, 0), 1),
+])
+def test_distance_au_basculement_positive_quand_le_pari_passe(cle, score, attendu):
+    assert IND.distance(cle, *score) == attendu
+
+
+@pytest.mark.parametrize("cle,score,attendu", [
+    (("over_under_3.5", "moins"), (3, 1), -1),     # perdu d'un but
+    (("over_under_3.5", "moins"), (5, 2), -4),
+    (("double_chance", "1N"), (0, 1), -1),
+    (("double_chance", "1N"), (0, 3), -3),
+    (("handicap_-0.5", "domicile"), (1, 1), -1),
+    (("handicap_-0.5", "domicile"), (0, 2), -3),
+])
+def test_distance_au_basculement_negative_quand_le_pari_rate(cle, score, attendu):
+    assert IND.distance(cle, *score) == attendu
+
+
+def test_indice_pari_valeurs_connues():
+    s = {"dom_marques": [1, 1, 2, 0], "dom_encaisses": [0, 1, 1, 0], "ext_marques": [0, 1, 1, 2], "ext_encaisses": [1, 1, 2, 1]}
+    r = IND.indice_pari(("over_under_3.5", "moins"), s)
+    # domicile : totaux 1, 2, 3, 0 -> distances 3, 2, 1, 4 : passe 100 %, avec réserve 75 % -> 0,875 ; extérieur : totaux 1, 2, 3, 3 -> 3, 2, 1, 1 : 100 % / 50 % -> 0,75
+    assert r["dom"]["indice"] == pytest.approx(0.875) and r["ext"]["indice"] == pytest.approx(0.75) and r["indice"] == pytest.approx(0.8125)
+
+
+def test_indice_pari_sans_donnees_ou_marche_inconnu_rien_invente():
+    assert IND.indice_pari(("over_under_3.5", "moins"), {"dom_marques": [], "dom_encaisses": [], "ext_marques": [], "ext_encaisses": []}) is None
+    assert IND.indice_pari(("marche_inconnu", "x"), {"dom_marques": [1], "dom_encaisses": [1], "ext_marques": [1], "ext_encaisses": [1]}) is None
+
+
+def test_page_ajoute_la_solidite_sans_toucher_au_journal(tmp_path):
+    j, sortie = tmp_path / "journal.jsonl", tmp_path / "pronostics.json"
+    m = _match([2, 3, 1, 2, 3], [1, 0, 1, 2, 1], [1, 0, 1, 2, 0], [2, 3, 1, 2, 2], cotes=COTES, ko="2026-10-20T18:00:00Z")
+    suivi.geler(datetime(2026, 10, 20, 12, tzinfo=timezone.utc), j, [m], D.References(), PARAMS)
+    avant = j.read_text()
+    out = suivi.page(datetime(2026, 10, 20, 13, tzinfo=timezone.utc), j, sortie, matchs=[m])
+    f = out["a_venir"][0]
+    for p in [f["principal"]] + f["autres"]:
+        assert 0 <= p["solidite"] <= 1
+    assert j.read_text() == avant and "solidite" not in avant                   # affichage seulement : le journal gelé n'est jamais modifié
+    assert json.loads(sortie.read_text())["a_venir"][0]["principal"]["solidite"] == f["principal"]["solidite"]

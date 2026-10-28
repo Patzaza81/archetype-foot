@@ -95,6 +95,13 @@ Sorties : `moteur_omega/parametres.json`, `docs/omega_validation.json`.
   à l'extérieur (0,7), et ce chiffre était trop loin du pari. Affichage seulement, aucun calcul ni sélection modifiés.
 - **Seuil lié à la taille d'échantillon : testé, NON retenu** (28/10/2026, 830 paris principaux de l'archive, sélection actuelle) : réussite par minimum de matchs au même lieu
   4-5 : 67,5 % (526), 6-7 : 76,6 % (47), 8-10 : 33,3 % (9), 11-14 : 65,2 % (227), 15+ : 85,7 % (21) ; par stabilité (p_min) et par écart modèle − cote : aucune pente nette. Aucun seuil ajouté (cohérent avec « stabilité sans apport »).
+- **Solidité** (28/10/2026, ordre de Patrick ; `indice.py`) : pourcentage affiché sous chaque pari (principal et « autres paris »), nom choisi par Patrick, pourcentage seul.
+  Pour chaque match passé de chaque équipe au même lieu (séries gelées du match), DISTANCE AU BASCULEMENT du pari = nombre minimal de buts à changer dans le score pour que le pari
+  change d'issue (grille 0..10, `marches.test_du_marche` : s'adapte à chaque marché, combinés compris, aucun seuil choisi). Indice d'une équipe = moyenne de (part des matchs où le pari passait)
+  et (part des matchs où il passait avec au moins un but de réserve) ; solidité = moyenne des deux équipes. Calculée à la lecture (`suivi._ajouter_solidite`), jamais écrite dans le journal,
+  ne change ni la sélection ni les pronostics. **Mesuré (rejeu de l'archive, 50 305 marchés avec cote, 30 jours)** : l'indice est calibré (tranches 0-11 / 11-23 / 23-38 / 38-56 / 56-100 % :
+  réussite 17 / 30 / 42 / 60 / 77 %), mais n'apporte rien de plus que la probabilité de la cote (à cote égale, coefficient −0,20) et ne départage pas les paris déjà retenus par Omega
+  (1 229 paris, corrélation −0,03). C'est une INFORMATION de lecture, pas un critère de sélection. Journal réel au 28/10 : 36 matchs réglés, 39 paris (les 1 229 viennent du rejeu de l'archive).
 - **Marché pondéré** (27/10/2026, ordre de Patrick ; `ponderation.py`, `docs/omega_ponderation.json`) : sur chaque carte, sous le pari principal, le marché
   le plus probable parmi ceux de cote **supérieure à 1,22**, avec un repère « Même pari / Dans le même sens / Pari différent » (comparaison des scores qui font gagner).
   Probabilité pondérée = régression logistique sur modèle, cote et fréquence dans les derniers matchs ; poids APPRIS sur l'archive (40 984 marchés), réécrits à chaque

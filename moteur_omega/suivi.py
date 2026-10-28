@@ -18,7 +18,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-from . import coeur, donnees as D, historique as H, marches as M, ponderation as PO
+from . import coeur, donnees as D, historique as H, indice as IND, marches as M, ponderation as PO
 
 ROOT = Path(__file__).resolve().parent.parent
 DOSSIER = ROOT / "data" / "omega"
@@ -184,6 +184,25 @@ def bilan(lignes: list[dict[str, Any]]) -> dict[str, Any]:
     return {"principal": _stats(princ), "autres": _stats(autres), "matchs_regles": len(res)}
 
 
+def _ajouter_solidite(f: dict[str, Any]) -> None:
+    """Solidité (28/10/2026, ordre de Patrick) : indice de réserve du pari (`indice.py`), calculé à la lecture depuis les séries gelées du match.
+    Affichage seulement : jamais écrit dans le journal, ne change ni la sélection ni les pronostics. Les paris sont copiés avant d'être complétés."""
+    ser = f.get("series")
+    if not ser:
+        return
+    for k in ("principal",):
+        if f.get(k):
+            f[k] = dict(f[k])
+    f["autres"] = [dict(x) for x in f.get("autres") or []]
+    for p in ([f["principal"]] if f.get("principal") else []) + f["autres"]:
+        try:
+            r = IND.indice_pari(tuple(p["cle"]), ser)
+        except Exception:                                      # noqa: BLE001
+            r = None
+        if r is not None:
+            p["solidite"] = r["indice"]
+
+
 def page(maintenant: datetime | None = None, journal: Path = JOURNAL, sortie: Path = PAGE, matchs: list[dict] | None = None,
          refs: D.References | None = None, ponderation: dict[str, Any] | None = None) -> dict[str, Any]:
     maintenant = maintenant or datetime.now(timezone.utc)
@@ -206,6 +225,7 @@ def page(maintenant: datetime | None = None, journal: Path = JOURNAL, sortie: Pa
         ko = _ko(f.get("coup_d_envoi_utc"))
         if ko is None:
             continue
+        _ajouter_solidite(f)
         if ponderation and refs is not None and mid in par_id and ko > maintenant and f.get("principal"):
             # Marché pondéré : affichage seulement (calculé à la lecture avec les cotes de l'archive), jamais écrit dans le journal.
             try:
