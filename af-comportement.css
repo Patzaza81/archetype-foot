@@ -72,3 +72,6 @@ body.af-alpha .ax-carte .ax-v3-lignes { display: grid; margin: 0; padding: 0; li
 body.af-alpha .ax-carte .ax-v3-lignes li { padding: 6px 0; border-bottom: 1px solid var(--ax-ligne); font-size: 13px; line-height: 1.35; overflow-wrap: anywhere; }
 body.af-alpha .ax-carte .ax-v3-lignes li:last-child { border-bottom: 0; }
 body.af-alpha .ax-carte .ax-preuve-texte { overflow-wrap: anywhere; }
+/* Solidité (28/10/2026) : pourcentage seul, sous le marché */
+body.af-alpha .ax-carte .ax-mk-sol, body.af-alpha .ax-carte .ax-resume-sol { margin: 2px 0 0; font-size: 12px; font-weight: 600; color: var(--ax-doux); }
+body.af-alpha .ax-carte .ax-mk-sol strong, body.af-alpha .ax-carte .ax-resume-sol strong { font-weight: 800; color: var(--ax-accent-texte); }

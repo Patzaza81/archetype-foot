@@ -20,12 +20,8 @@ from . import marches as M
 N = 10   # grille 0..N ; les scores plus grands sont ramenés à N (même issue pour tous les marchés du catalogue)
 
 
-@lru_cache(maxsize=None)
-def table_distances(cle: tuple[str, str]) -> tuple[tuple[int, ...], ...] | None:
-    """table[i][j] = distance signée au basculement du score (i, j) pour ce marché (None si marché inconnu)."""
-    t = M.test_du_marche(*cle)
-    if t is None:
-        return None
+def table_depuis_test(t) -> tuple[tuple[int, ...], ...]:
+    """table[i][j] = distance signée au basculement du score (i, j) pour la règle `t(i, j)` d'un marché (réutilisable par un autre moteur)."""
     ok = [[bool(t(i, j)) for j in range(N + 1)] for i in range(N + 1)]
     lignes = []
     for i in range(N + 1):
@@ -35,6 +31,24 @@ def table_distances(cle: tuple[str, str]) -> tuple[tuple[int, ...], ...] | None:
             ligne.append(d if ok[i][j] else -d)
         lignes.append(tuple(ligne))
     return tuple(lignes)
+
+
+@lru_cache(maxsize=None)
+def table_distances(cle: tuple[str, str]) -> tuple[tuple[int, ...], ...] | None:
+    """Table du marché du catalogue omega (None si marché inconnu)."""
+    t = M.test_du_marche(*cle)
+    return None if t is None else table_depuis_test(t)
+
+
+def mesures_table(tb, dom: list[tuple[int, int]], ext: list[tuple[int, int]]) -> dict[str, float] | None:
+    """Mesures (`passe`, `ecart`) d'un pari à partir de sa table de distances et des scores (vus du domicile) des deux équipes."""
+    if tb is None or not dom or not ext:
+        return None
+    ds = [tb[min(int(h), N)][min(int(a), N)] for h, a in dom]
+    de = [tb[min(int(h), N)][min(int(a), N)] for h, a in ext]
+    passe = (sum(x > 0 for x in ds) / len(ds) + sum(x > 0 for x in de) / len(de)) / 2
+    ecart = (sum(ds) / len(ds) + sum(de) / len(de)) / 2
+    return {"passe": passe, "ecart": ecart}
 
 
 def distance(cle: tuple[str, str], h: int, a: int) -> int | None:

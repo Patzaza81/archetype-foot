@@ -94,6 +94,12 @@ function explicationCourte(s, m) {
     `et dans <b>${Number(ke)}</b> des ${Number(ne)} matchs à l'extérieur de ${echappeHtml(m.exterieur)}.</p>`;
 }
 
+// Solidité (28/10/2026, Patrick) : pourcentage calculé en Python (alpha_serie/solidite.py) ; ici seulement l'affichage. Rien si le champ manque.
+function solidite(s, classe) {
+  const v = Number(s && s.solidite);
+  return s && s.solidite != null && Number.isFinite(v) ? `<p class="${classe}">Solidité <strong>${Math.round(v * 100)} %</strong></p>` : "";
+}
+
 // ── Carte dépliée : une ligne par marché (nom, valeur, cote, branches, alerte) ──
 function ligneMarche(cle, s, m) {
   const pct = Number.isFinite(Number(s.valeur)) && s.valeur !== null ? Math.max(0, Math.min(100, Math.round(Number(s.valeur) * 100))) : null;
@@ -104,7 +110,7 @@ function ligneMarche(cle, s, m) {
   const alerte = s.alerte ? `<p class="ax-mk-alerte"><span aria-hidden="true">⚠</span> ${echappeHtml(s.alerte)}</p>` : "";
   return `<li class="ax-mk"><span class="ax-mk-nom">${afMarcheHtml(s.marche, libelleClair(s.marche, m.domicile, m.exterieur))}</span>${cote}` +
     `<div class="ax-mk-valeur">${barre}<b>${formatPct(s.valeur)}</b><small>${cle === "calibrees" ? "de réussite" : "de chances"}</small></div>` +
-    `${pourquoiCourt(s)}${alerte}</li>`;
+    `${solidite(s, "ax-mk-sol")}${pourquoiCourt(s)}${alerte}</li>`;
 }
 
 function liste(cle, lignes, m, cat) {
@@ -135,7 +141,7 @@ function construitResume(m) {
     rang.className = `ax-resume-rang ax-rang-${Math.min(i + 1, 3)}`;
     rang.innerHTML = `<div class="ax-resume-corps"><div class="ax-resume-tete">` +
       `<span class="ax-resume-etiquette">${cat.nom}</span><span class="ax-resume-cote">Cote${cote}</span></div>` +
-      `<p class="ax-resume-marche">${afMarcheHtml(s.marche, libelleClair(s.marche, m.domicile, m.exterieur))}</p>${alerte}</div>`;
+      `<p class="ax-resume-marche">${afMarcheHtml(s.marche, libelleClair(s.marche, m.domicile, m.exterieur))}</p>${solidite(s, "ax-resume-sol")}${alerte}</div>`;
     racine.appendChild(rang);
   });
   return racine;

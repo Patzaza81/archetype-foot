@@ -22,7 +22,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-from . import calibrees, coeur, palier2, parametres as P, tickets
+from . import calibrees, coeur, palier2, parametres as P, solidite as SOL, tickets
 from .marches import test_du_marche
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -252,10 +252,20 @@ def pourquoi(onglet: str, ligne: dict[str, Any], params: dict, n_paires: int | N
     return f"{debut}ce pari passe {ko} fois sur {n_paires} avec leurs buts marqués et {kd} fois sur {n_paires} avec leurs buts encaissés.{marge}"
 
 
-def page(matchs: list[dict[str, Any]] | None = None, params: dict | None = None, sortie: Path = PAGE) -> dict[str, Any]:
+def _solidite(poids: dict | None, cle: list[str], hd: list[dict], he: list[dict]) -> dict[str, float]:
+    """Solidité du marché (`solidite.py`) : champ ajouté seulement si elle est calculable ; jamais écrite dans le journal gelé, aucune sélection modifiée."""
+    try:
+        r = SOL.probabilite(poids, cle, hd, he)
+    except Exception:                                  # noqa: BLE001
+        r = None
+    return {} if r is None else {"solidite": round(r, 4)}
+
+
+def page(matchs: list[dict[str, Any]] | None = None, params: dict | None = None, sortie: Path = PAGE, solidite: dict | None = None) -> dict[str, Any]:
     """Données de la page : tous les matchs de l'archive qui ont une analyse ; le moteur lit les équipes figées avant le coup d'envoi."""
     params = params or P.charger()
     classements = _classements()
+    poids_solidite = solidite if solidite is not None else SOL.charger()     # Solidité (28/10/2026) : affichage seulement, aucun poids = aucun champ
     liste = []
     depuis = (datetime.now(timezone.utc) - timedelta(days=1)).strftime("%Y-%m-%d")     # la page montre les matchs d'hier, d'aujourd'hui et à venir (fichier léger)
     for m in (matchs if matchs is not None else charger_matchs()):
@@ -270,7 +280,7 @@ def page(matchs: list[dict[str, Any]] | None = None, params: dict | None = None,
             fiche["historique"] = {"domicile": hd, "exterieur": he, "bilan_domicile": bilan_historique(hd), "bilan_exterieur": bilan_historique(he)}
             n_paires = len(r.get("scenarios_offensifs") or [])
             fiche["onglets"] = {o: [{**x, "explication": explication(x["cle"], hd, he),
-                                     "pourquoi": pourquoi(o, x, params, n_paires, m["domicile"], m["exterieur"])} for x in lst]
+                                     "pourquoi": pourquoi(o, x, params, n_paires, m["domicile"], m["exterieur"]), **_solidite(poids_solidite, x["cle"], hd, he)} for x in lst]
                                 for o, lst in r["onglets"].items()}
             fiche.pop("rejetes", None)               # marchés exclus : plus affichés (décision de Patrick)
             # Palier 2 des tickets (25/10/2026) : « le domicile ne marque pas plus de 2 buts » quand les chiffres battent la cote (palier2.py)
@@ -407,6 +417,11 @@ def pipeline() -> dict[str, Any]:
     matchs = charger_matchs()                        # chargée une seule fois : même archive pour le gel, les résultats et la page
     gele = geler(matchs=matchs)
     resultat = resultats(matchs=matchs)
+    sol_info = None
+    try:                                             # Solidité (28/10/2026) : poids réappris à chaque passage ; une erreur ne bloque rien (poids précédents gardés)
+        sol_info = {k: v for k, v in SOL.ecrire(matchs=matchs).items() if k in ("n_marches", "poids_frequence", "poids_ecart", "brier")}
+    except Exception as e:                           # noqa: BLE001
+        sol_info = {"erreur": repr(e)}
     d = page(matchs=matchs)
     # Tickets du jour (25/10/2026) : gelés avant le premier match, réglés quand tous leurs matchs ont un score, bilan ajouté à la page.
     t_geles, t_regles = tickets.geler(d["matchs"]), tickets.regler(matchs)
@@ -415,7 +430,7 @@ def pipeline() -> dict[str, Any]:
     tickets.ecrire_accueil(d["matchs"])                 # les 3 tickets de la page d'accueil (25/10/2026)
     b_geles, b_regles = geler_bandes(matchs=matchs), resultats_bandes(matchs=matchs)      # validation des bandes 1X2, sans effet sur la page
     bilan_bandes()
-    sortie = {"geles": gele, "resultats": resultat, "page_matchs": len(d["matchs"]), "bilan": bilan(), "bandes_1x2": {"geles": b_geles, "regles": b_regles},
+    sortie = {"geles": gele, "resultats": resultat, "page_matchs": len(d["matchs"]), "solidite": sol_info, "bilan": bilan(), "bandes_1x2": {"geles": b_geles, "regles": b_regles},
               "tickets": {"geles": t_geles, "regles": t_regles, "bilan": d["bilan_tickets"]}}
     try:                                                                    # onglet « Indice Alpha » (26/10/2026) : lit les journaux, ne change rien d'autre
         from . import indice_alpha
