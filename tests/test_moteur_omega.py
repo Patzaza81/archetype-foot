@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 from datetime import datetime, timezone
 
 import numpy as np
@@ -534,3 +535,9 @@ def test_solidite_est_la_part_des_matchs_ou_le_pari_passait_pour_chaque_type_de_
     # scores vus du côté du domicile : domicile 1-0, 1-1, 2-1, 0-0 ; extérieur 1-0, 1-1, 2-1, 1-2
     s = {"dom_marques": [1, 1, 2, 0], "dom_encaisses": [0, 1, 1, 0], "ext_marques": [0, 1, 1, 2], "ext_encaisses": [1, 1, 2, 1]}
     assert IND.indice_pari(cle, s)["passe"] == pytest.approx(attendu)
+
+
+def test_omega_anneau_cache_carte_repliee_et_solidite_jaune():
+    html = (Path(__file__).resolve().parent.parent / "pronostics_omega.html").read_text(encoding="utf-8")
+    assert ".ax-carte.ax-replie .om-anneau{display:none}" in html          # un seul pourcentage visible carte repliée
+    assert "#C49A3A calc(var(--s,0)*1%)" in html                           # pastille Solidité jaune du logo

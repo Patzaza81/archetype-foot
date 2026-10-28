@@ -74,9 +74,10 @@ body.af-alpha .ax-carte .ax-v3-lignes li:last-child { border-bottom: 0; }
 body.af-alpha .ax-carte .ax-preuve-texte { overflow-wrap: anywhere; }
 /* Solidité (28/10/2026) : pastille bien visible, remplie à hauteur du pourcentage (--s) ; même rendu que la page Omega.
    Marché dans une ligne dépliée : nom et Solidité à gauche, cote à droite, le reste sur toute la largeur (sans quoi la grille se décale). */
-body.af-alpha .ax-carte .ax-mk-sol, body.af-alpha .ax-carte .ax-resume-sol { display: flex; align-items: baseline; gap: 8px; width: fit-content; max-width: 100%; margin: 6px 0 0; padding: 4px 12px; border-radius: 999px; font-size: 14px; font-weight: 600; line-height: 1.2; color: var(--ax-texte); background: linear-gradient(90deg, rgba(8,127,120,.26) calc(var(--s, 0) * 1%), rgba(8,127,120,.09) 0); }
-body.af-alpha .ax-carte .ax-mk-sol strong, body.af-alpha .ax-carte .ax-resume-sol strong { font-size: 20px; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--ax-accent-texte); }
-body.af-alpha.theme-nuit .ax-carte .ax-mk-sol, body.af-alpha.theme-nuit .ax-carte .ax-resume-sol { background: linear-gradient(90deg, rgba(79,209,197,.30) calc(var(--s, 0) * 1%), rgba(79,209,197,.10) 0); }
+body.af-alpha .ax-carte .ax-mk-sol, body.af-alpha .ax-carte .ax-resume-sol { display: flex; align-items: baseline; gap: 8px; width: fit-content; max-width: 100%; margin: 6px 0 0; padding: 4px 12px; border-radius: 999px; font-size: 14px; font-weight: 600; line-height: 1.2; color: #17141B; background: linear-gradient(90deg, #C49A3A calc(var(--s, 0) * 1%), rgba(196,154,58,.22) 0); }
+body.af-alpha .ax-carte .ax-mk-sol strong, body.af-alpha .ax-carte .ax-resume-sol strong { font-size: 20px; font-weight: 800; font-variant-numeric: tabular-nums; color: #17141B; }
+body.af-alpha.theme-nuit .ax-carte .ax-mk-sol, body.af-alpha.theme-nuit .ax-carte .ax-resume-sol { color: #F4F2F7; background: linear-gradient(90deg, rgba(196,154,58,.75) calc(var(--s, 0) * 1%), rgba(196,154,58,.22) 0); }
+body.af-alpha.theme-nuit .ax-carte .ax-mk-sol strong, body.af-alpha.theme-nuit .ax-carte .ax-resume-sol strong { color: #F4F2F7; }
 body.af-alpha .ax-carte .ax-mk > .ax-mk-sol { grid-column: 1; grid-row: 2; }
 body.af-alpha .ax-carte .ax-mk > .ax-mk-valeur { grid-row: 3; }
 body.af-alpha .ax-carte .ax-mk > .ax-resume-texte { grid-column: 1 / -1; }
