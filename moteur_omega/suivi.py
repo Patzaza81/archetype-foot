@@ -18,7 +18,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-from . import coeur, donnees as D, historique as H, marches as M, ponderation as PO, solidite as SO
+from . import coeur, donnees as D, historique as H, marches as M, ponderation as PO, simulation as SIM, solidite as SO
 
 ROOT = Path(__file__).resolve().parent.parent
 DOSSIER = ROOT / "data" / "omega"
@@ -203,6 +203,38 @@ def _ajouter_solidite(f: dict[str, Any], poids: dict[str, Any] | None) -> None:
             p["solidite"] = round(r, 4)
 
 
+def _ajouter_simulation(f: dict[str, Any], poids: dict[str, Any] | None, m: dict[str, Any] | None) -> None:
+    """Matchs simulés dans les deux sens (28/10/2026, méthode de Patrick validée en badge « Accord » / « Alerte » ; `simulation.py`).
+    Sur chaque pari affiché : `simules` (validés / simulés) et `alerte` (moins de 6 sur 10). Sur la fiche : `accord` = marché où la Solidité et
+    la simulation désignent le même premier choix (cotes de l'archive, 1,39 et plus) ; le pari affiché correspondant reçoit `accord: true`.
+    Affichage seulement : jamais écrit dans le journal, ne change ni la sélection ni les pronostics. Les paris sont copiés avant d'être complétés."""
+    ser = f.get("series")
+    if not ser or not SIM.scores_simules(ser):
+        return
+    if f.get("principal"):
+        f["principal"] = dict(f["principal"])
+    f["autres"] = [dict(x) for x in f.get("autres") or []]
+    affiches = ([f["principal"]] if f.get("principal") else []) + f["autres"]
+    for p in affiches:
+        fr = SIM.frequence(p["cle"], ser)
+        if fr:
+            p["simules"] = fr
+            p["alerte"] = fr["ok"] / fr["n"] < SIM.SEUIL_ALERTE
+    try:
+        cle = SIM.marche_accord(ser, (m or {}).get("cotes"), poids)
+    except Exception:                                          # noqa: BLE001
+        cle = None
+    if cle is None:
+        return
+    fr = SIM.frequence(cle, ser)
+    f["accord"] = {"cle": list(cle), "marche": M.libelle(cle), "cote": coeur.cote_de(m["cotes"], cle), "simules": fr,
+                   "affiche": False}
+    for p in affiches:
+        if tuple(p["cle"]) == tuple(cle):
+            p["accord"] = True
+            f["accord"]["affiche"] = True
+
+
 def page(maintenant: datetime | None = None, journal: Path = JOURNAL, sortie: Path = PAGE, matchs: list[dict] | None = None,
          refs: D.References | None = None, ponderation: dict[str, Any] | None = None, solidite: dict[str, Any] | None = None) -> dict[str, Any]:
     maintenant = maintenant or datetime.now(timezone.utc)
@@ -226,6 +258,7 @@ def page(maintenant: datetime | None = None, journal: Path = JOURNAL, sortie: Pa
         if ko is None:
             continue
         _ajouter_solidite(f, solidite)
+        _ajouter_simulation(f, solidite, par_id.get(mid))
         if ponderation and refs is not None and mid in par_id and ko > maintenant and f.get("principal"):
             # Marché pondéré : affichage seulement (calculé à la lecture avec les cotes de l'archive), jamais écrit dans le journal.
             try:
