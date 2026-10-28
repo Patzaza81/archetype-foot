@@ -100,6 +100,8 @@ Sorties : `moteur_omega/parametres.json`, `docs/omega_validation.json`.
 - **Bloc « Les 4 croisements »** : ancien affichage (2×2, « (moy. x) » après les buts) ; la moyenne est en couleur, en gras, police 12 px (+2 px), identique partout (27/10/2026, ordre de Patrick).
 - **Replier une carte** (27/10/2026, ordre de Patrick) : `af-repli-carte.js`, commun à tous les moteurs (alpha, V, V2R, V3, Europe, Comportement, Omega, Journal) : quand on replie une carte dont le haut
   est sorti de l'écran, la page remet son haut sous la barre fixe, donc la carte suivante apparaît tout de suite ; si le haut est visible, rien ne bouge. Aucune donnée touchée.
+- **Barre d'onglets** (28/10/2026, ordre de Patrick) : onglets en cartes avec icône (`af-barre.css`, `<nav class="af-nav">` dans les 12 pages), onglet actif plein et centré (`af-repli-carte.js`).
+  Noms : « Moteur alpha / V3 / Coupes d'Europe (ex-Europe) / V2R / V / Omega / V2 », puis Tickets, Journal, Corners & cartons, Système. Liens et ordre inchangés.
 - Statut (dans le JSON) : observation.
 - Une seule exception à « tout seuil appris » : la cote minimale 1,39, imposée par Patrick.
 

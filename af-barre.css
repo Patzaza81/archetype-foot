@@ -32,3 +32,20 @@ body.af-fond{background:var(--afb-fond)}
 
 /* La barre gère déjà la zone de l'encoche : le conteneur qui la suit ne la rajoute pas. */
 .af-barre + .ax-conteneur{padding-top:12px}
+
+/* Onglets en cartes avec icône (27/10/2026, modèle fourni par Patrick) : une carte par page, icône au-dessus du nom, onglet actif plein.
+   Icônes : traits couleur d'accent + détail doré (.g), héritent du mode nuit via --afb-*. Liens et ordre inchangés. */
+.af-barre-in{flex-wrap:wrap;gap:2px 10px;padding-block:6px}
+.af-nav{order:3;flex-basis:100%;gap:8px;padding:2px 2px 6px;scroll-snap-type:x proximity}
+.af-nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;flex:none;min-width:80px;padding:6px 10px;border:1px solid var(--afb-ligne);border-bottom:1px solid var(--afb-ligne);
+  border-radius:16px;background:var(--afb-surface);box-shadow:0 2px 8px rgba(8,127,120,.08);color:var(--afb-accent);font-size:12px;font-weight:700;line-height:1.15;scroll-snap-align:start}
+.af-nav a svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.af-nav a svg .g{stroke:var(--afb-or)}
+.af-nav a span{white-space:nowrap}
+.af-nav a[aria-current="page"]{background:var(--afb-accent);border-color:var(--afb-accent);color:#fff;box-shadow:0 4px 12px rgba(8,127,120,.28);position:relative}
+.af-nav a[aria-current="page"] svg .g{stroke:#F4D58A}
+.af-nav a[aria-current="page"]::after{content:"";position:absolute;left:22%;right:22%;bottom:4px;height:2px;border-radius:2px;background:rgba(255,255,255,.75)}
+body.theme-nuit .af-nav a{box-shadow:none}
+body.theme-nuit .af-nav a[aria-current="page"]{color:#06201E;background:#2BB3A6;border-color:#2BB3A6}
+body.theme-nuit .af-nav a[aria-current="page"] svg .g{stroke:#7A5A12}
+body.theme-nuit .af-nav a[aria-current="page"]::after{background:rgba(6,32,30,.55)}
