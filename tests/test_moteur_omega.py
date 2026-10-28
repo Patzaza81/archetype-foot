@@ -450,5 +450,20 @@ def test_page_ajoute_la_solidite_sans_toucher_au_journal(tmp_path):
     f = out["a_venir"][0]
     for p in [f["principal"]] + f["autres"]:
         assert 0 <= p["solidite"] <= 1
+        assert p["solidite"] == pytest.approx(IND.indice_pari(tuple(p["cle"]), f["series"])["passe"])    # Solidité = part des matchs où le pari passait
     assert j.read_text() == avant and "solidite" not in avant                   # affichage seulement : le journal gelé n'est jamais modifié
     assert json.loads(sortie.read_text())["a_venir"][0]["principal"]["solidite"] == f["principal"]["solidite"]
+
+
+@pytest.mark.parametrize("cle,attendu", [
+    (("over_under_3.5", "moins"), 1.0),            # totaux tous <= 3
+    (("double_chance", "1N"), (4 / 4 + 3 / 4) / 2),  # domicile : 4 sur 4 ; extérieur : 3 sur 4 (le 1-2 est perdu)
+    (("btts", "Oui"), (2 / 4 + 3 / 4) / 2),
+    (("over_under_3.5", "plus"), 0.0),             # ne passe jamais
+    (("double_chance", "N2"), (2 / 4 + 2 / 4) / 2),
+    (("over_under_domicile_0.5", "moins"), (1 / 4 + 0 / 4) / 2),  # le domicile ne marque pas : 1 match sur 4 chez lui, 0 sur 4 pour l'adversaire visiteur
+])
+def test_solidite_est_la_part_des_matchs_ou_le_pari_passait_pour_chaque_type_de_marche(cle, attendu):
+    # scores vus du côté du domicile : domicile 1-0, 1-1, 2-1, 0-0 ; extérieur 1-0, 1-1, 2-1, 1-2
+    s = {"dom_marques": [1, 1, 2, 0], "dom_encaisses": [0, 1, 1, 0], "ext_marques": [0, 1, 1, 2], "ext_encaisses": [1, 1, 2, 1]}
+    assert IND.indice_pari(cle, s)["passe"] == pytest.approx(attendu)

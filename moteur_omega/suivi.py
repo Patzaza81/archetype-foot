@@ -185,7 +185,7 @@ def bilan(lignes: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def _ajouter_solidite(f: dict[str, Any]) -> None:
-    """Solidité (28/10/2026, ordre de Patrick) : indice de réserve du pari (`indice.py`), calculé à la lecture depuis les séries gelées du match.
+    """Solidité (28/10/2026, ordre de Patrick) : part des matchs récents des deux équipes (même lieu) où le pari passait (`indice.py`), calculée à la lecture depuis les séries gelées du match.
     Affichage seulement : jamais écrit dans le journal, ne change ni la sélection ni les pronostics. Les paris sont copiés avant d'être complétés."""
     ser = f.get("series")
     if not ser:
@@ -200,7 +200,7 @@ def _ajouter_solidite(f: dict[str, Any]) -> None:
         except Exception:                                      # noqa: BLE001
             r = None
         if r is not None:
-            p["solidite"] = r["indice"]
+            p["solidite"] = r["passe"]
 
 
 def page(maintenant: datetime | None = None, journal: Path = JOURNAL, sortie: Path = PAGE, matchs: list[dict] | None = None,
