@@ -537,7 +537,7 @@ def test_solidite_est_la_part_des_matchs_ou_le_pari_passait_pour_chaque_type_de_
     assert IND.indice_pari(cle, s)["passe"] == pytest.approx(attendu)
 
 
-def test_omega_anneau_cache_carte_repliee_et_solidite_jaune():
-    html = (Path(__file__).resolve().parent.parent / "pronostics_omega.html").read_text(encoding="utf-8")
-    assert ".ax-carte.ax-replie .om-anneau{display:none}" in html          # un seul pourcentage visible carte repliée
-    assert "background:#F6E4A6}" in html.split(".om-sol{")[1].split("}")[0] + "}"                           # pastille Solidité jaune du logo
+def test_omega_sans_cercle_de_pourcentage():
+    js = (Path(__file__).resolve().parent.parent / "archetype_omega.js").read_text(encoding="utf-8")
+    assert 'class="om-anneau"' not in js          # le pourcentage du modèle dans le cercle a disparu ; la Solidité reste
+    assert "omSolidite(p)" in js

@@ -201,10 +201,7 @@ function omPhrasePari(p, f) {
 }
 // Cercle du pourcentage (le plus prudent des deux : modèle ou cote) + la phrase propre au type de pari.
 function omPourquoiCourt(p, f) {
-  const r = Math.round(Number(p.p_modele) * 100);                    // probabilité brute du modèle (Poisson / Dixon-Coles calibré), sans la cote
-  const pct = p.p_modele != null && Number.isFinite(r) ? r : null;
-  const anneau = pct === null ? "" :
-    `<div class="om-anneau" style="--p:${pct}" role="img" aria-label="Probabilité du modèle ${pct} %"><span><b>${pct} %</b></span></div>`;
+  const anneau = "";                                                // 28/10/2026 (Patrick) : le pourcentage du modèle dans le cercle ne s'affiche plus ; seule la Solidité reste
   const phrase = omPhrasePari(p, f);
   // Buts attendus des deux équipes (c'est ce chiffre, croisé avec la défense adverse, qui décide les paris sur les buts) : juste sous le pari, plus dans les détails.
   const ba = f.buts_attendus || {};

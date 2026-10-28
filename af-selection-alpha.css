@@ -18,7 +18,7 @@ body.af-alpha.theme-nuit .ia-badge.niv-maximal { background: #3A3016; color: #FF
 body.af-alpha.theme-nuit .ia-badge.res-gagne { background: #123424; color: #BFEBD0; }
 body.af-alpha.theme-nuit .ia-badge.res-perdu { background: #3A1A16; color: #FFC9C1; }
 /* Solidité (28/10/2026) */
-body.af-alpha .sa-sol { display: flex; align-items: baseline; gap: 8px; width: fit-content; max-width: 100%; margin: 6px 0 0; padding: 4px 12px; border-radius: 999px; font-size: 14px; font-weight: 600; line-height: 1.2; color: #17141B; background: #F6E4A6; }
-body.af-alpha .sa-sol strong { font-size: 20px; font-weight: 800; font-variant-numeric: tabular-nums; color: #17141B; }
-body.af-alpha.theme-nuit .sa-sol { color: #17141B; background: #F6E4A6; }
+body.af-alpha .sa-sol { display: flex; align-items: baseline; gap: 8px; width: fit-content; max-width: 100%; margin: 6px 0 0; padding: 4px 12px; border-radius: 999px; font-size: 14px; font-weight: 600; line-height: 1.2; color: var(--ax-texte); background: linear-gradient(90deg, rgba(8,127,120,.26) calc(var(--s, 0) * 1%), rgba(8,127,120,.09) 0); }
+body.af-alpha .sa-sol strong { font-size: 20px; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--ax-accent-texte); }
+body.af-alpha.theme-nuit .sa-sol { background: linear-gradient(90deg, rgba(79,209,197,.30) calc(var(--s, 0) * 1%), rgba(79,209,197,.10) 0); }
 body.af-alpha.theme-nuit .sa-sol strong { color: #17141B; }
