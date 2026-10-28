@@ -101,7 +101,7 @@ Sorties : `moteur_omega/parametres.json`, `docs/omega_validation.json`.
 - **Replier une carte** (27/10/2026, ordre de Patrick) : `af-repli-carte.js`, commun à tous les moteurs (alpha, V, V2R, V3, Europe, Comportement, Omega, Journal) : quand on replie une carte dont le haut
   est sorti de l'écran, la page remet son haut sous la barre fixe, donc la carte suivante apparaît tout de suite ; si le haut est visible, rien ne bouge. Aucune donnée touchée.
 - **Barre d'onglets** (28/10/2026, ordre de Patrick) : onglets en cartes avec icône, TOUS de la même taille (78×62 px), une couleur par page (`--c`), libellé « MOTEUR » en petit au-dessus du nom
-  (alpha, V3, Europe, V2R, V, Omega, V2), onglet actif plein et centré (`af-repli-carte.js`). Tickets, Journal, Corners & cartons, Système sans « Moteur ». Liens et ordre inchangés (12 pages).
+  (alpha, Omega, V3, Europe, V2R, V, V2), onglet actif plein et centré (`af-repli-carte.js`). Tickets, Journal, Corners & cartons, Système sans « Moteur ». Liens et ordre inchangés (12 pages).
 - Statut (dans le JSON) : observation.
 - Une seule exception à « tout seuil appris » : la cote minimale 1,39, imposée par Patrick.
 
