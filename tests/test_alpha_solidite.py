@@ -67,3 +67,54 @@ def test_affichage_de_la_solidite_prudent_et_a_la_bonne_version():
     assert "Number.isFinite(v)" in JS and "s.solidite != null" in JS                    # jamais « 0 % » quand le champ manque
     assert ".ax-mk-sol" in CSS and ".ax-resume-sol" in CSS
     assert "af-comportement.css?v=20261028a" in HTML and "archetype_comportement.js?v=20261028a" in HTML
+
+
+# --- Onglet « Sélection » de l'alpha : Solidité du marché sélectionné (affichage seulement) ------------------------------------------
+from datetime import datetime, timezone
+
+from alpha_serie import selection_provisoire as SP
+
+
+def _journal(tmp_path, regle="double_chance|12", mid="m1"):
+    j = tmp_path / "j.jsonl"
+    j.write_text(json.dumps({"type": "selection", "regle": regle, "marche": "Pas de nul (12)", "niveau": "normal", "cote": 1.3, "date": "2026-10-29", "heure": "20:00",
+                             "coup_d_envoi_utc": "2026-10-29T19:00:00Z", "competition": "Test", "domicile": "A", "exterieur": "B", "match_id": mid}) + "\n", encoding="utf-8")
+    return j
+
+
+def _match_archive(mid="m1", n=5):
+    eq = lambda dom: {"matchs": [{"date": f"2026-10-{10 + 2 * k:02d}", "domicile": dom, "buts_marques": g, "buts_encaisses": c, "adversaire": "X"}
+                                 for k, (g, c) in enumerate([(1, 0), (2, 1), (0, 1), (1, 2), (3, 1)][:n])]}
+    return {"match_id": mid, "date": "2026-10-29", "assemblage": {"equipe_dom": eq(True), "equipe_ext": eq(False)}}
+
+
+W = {"poids_frequence": 0.5, "poids_ecart": 0.4, "marches": {"double_chance|12": {"niveau": 0.5, "ecart_type_ecart": 1.5, "n": 500}}}
+
+
+def test_selection_affiche_la_solidite_quand_les_poids_et_le_match_existent(tmp_path):
+    t = datetime(2026, 10, 29, 10, tzinfo=timezone.utc)
+    d = SP.page(_journal(tmp_path), tmp_path / "p.json", maintenant=t, matchs=[_match_archive()], solidite=W)
+    assert 0 < d["pronostics"][0]["solidite"] < 1
+    assert json.loads((tmp_path / "p.json").read_text(encoding="utf-8"))["pronostics"][0]["solidite"] == d["pronostics"][0]["solidite"]
+
+
+@pytest.mark.parametrize("matchs,poids", [(None, W), ([_match_archive()], None), ([_match_archive(mid="autre")], W), ([_match_archive(n=3)], W)])
+def test_selection_sans_poids_sans_match_ou_avec_moins_de_4_matchs_rien_invente(tmp_path, matchs, poids):
+    t = datetime(2026, 10, 29, 10, tzinfo=timezone.utc)
+    d = SP.page(_journal(tmp_path), tmp_path / "p.json", maintenant=t, matchs=matchs, solidite=poids)
+    assert "solidite" not in d["pronostics"][0]
+
+
+def test_la_solidite_n_est_jamais_ecrite_dans_le_journal_gele(tmp_path):
+    j = _journal(tmp_path)
+    avant = j.read_text(encoding="utf-8")
+    SP.page(j, tmp_path / "p.json", maintenant=datetime(2026, 10, 29, 10, tzinfo=timezone.utc), matchs=[_match_archive()], solidite=W)
+    assert j.read_text(encoding="utf-8") == avant and "solidite" not in avant
+
+
+def test_affichage_selection_solidite_prudent_et_versionne():
+    js = (RACINE / "af-selection-alpha.js").read_text(encoding="utf-8")
+    css = (RACINE / "af-selection-alpha.css").read_text(encoding="utf-8")
+    html = (RACINE / "selection_alpha.html").read_text(encoding="utf-8")
+    assert "p.solidite != null" in js and "Number.isFinite(sv)" in js and ".sa-sol" in css
+    assert "af-selection-alpha.js?v=20261028a" in html and "af-selection-alpha.css?v=20261028a" in html

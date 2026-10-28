@@ -171,7 +171,24 @@ def bilan(journal: Path = JOURNAL, regles: list[dict[str, Any]] | None = None) -
                                           "wilson_bas_95": round(wilson_bas(g, n), 4) if n else None}}
 
 
-def page(journal: Path = JOURNAL, sortie: Path = PAGE, regles_fichier: Path = REGLES, maintenant: datetime | None = None) -> dict[str, Any]:
+def _solidite_pronostic(l: dict[str, Any], par_id: dict[str, dict[str, Any]], poids: dict[str, Any] | None) -> dict[str, float]:
+    """Solidité (28/10/2026) du marché sélectionné, calculée à la lecture sur les matchs affichés des deux équipes (`solidite.py`). Affichage seulement :
+    jamais écrite dans le journal gelé, aucune sélection modifiée. Rien si le match, les poids ou les matchs des équipes manquent."""
+    m = par_id.get(str(l.get("match_id")))
+    if not poids or not m:
+        return {}
+    from . import solidite as SOL, suivi
+    a, jour = m.get("assemblage") or {}, str(m["date"])[:10]
+    try:
+        hd, he = suivi.historique_lieu(a.get("equipe_dom"), True, jour), suivi.historique_lieu(a.get("equipe_ext"), False, jour)
+        r = SOL.probabilite(poids, str(l["regle"]).split("|"), hd, he)
+    except Exception:                                  # noqa: BLE001
+        r = None
+    return {} if r is None else {"solidite": round(r, 4)}
+
+
+def page(journal: Path = JOURNAL, sortie: Path = PAGE, regles_fichier: Path = REGLES, maintenant: datetime | None = None,
+         matchs: list[dict[str, Any]] | None = None, solidite: dict[str, Any] | None = None) -> dict[str, Any]:
     """Fichier de la page « Sélection » : les pronostics GELÉS (d'hier aux jours à venir), leur résultat s'il est connu, le suivi réel par marché
     et la référence historique (présentée à part, jamais comme une garantie)."""
     maintenant = maintenant or datetime.now(timezone.utc)
@@ -182,12 +199,14 @@ def page(journal: Path = JOURNAL, sortie: Path = PAGE, regles_fichier: Path = RE
     depuis = (maintenant - timedelta(days=1)).strftime("%Y-%m-%d")
     ordre = {r["id"]: i for i, r in enumerate(regles)}
     pronos = []
+    par_id = {str(m.get("match_id")): m for m in (matchs or []) if m.get("match_id")}
     for l in lignes:
         if l["type"] != "selection" or l["date"] < depuis:
             continue
         r = res.get((l["match_id"], l["regle"]))
         pronos.append({k: l.get(k) for k in ("regle", "marche", "niveau", "cote", "date", "heure", "coup_d_envoi_utc", "competition", "domicile", "exterieur", "match_id")}
-                      | {"resultat": None if r is None else ("gagne" if r["gagne"] else "perdu"), "score": None if r is None else r["score"]})
+                      | {"resultat": None if r is None else ("gagne" if r["gagne"] else "perdu"), "score": None if r is None else r["score"]}
+                      | _solidite_pronostic(l, par_id, solidite))
     pronos.sort(key=lambda p: (p["coup_d_envoi_utc"] or "", p["domicile"], ordre.get(p["regle"], 99)))
     d = {"genere_le": maintenant.strftime("%Y-%m-%d %H:%M UTC"), "statut": d_regles["statut"], "source": d_regles["source"],
          "regles": [{k: r[k] for k in ("id", "nom", "niveau", "sans_cote", "cote_min", "reference_historique")} for r in regles],
@@ -200,5 +219,6 @@ def page(journal: Path = JOURNAL, sortie: Path = PAGE, regles_fichier: Path = RE
 def pipeline(matchs: list[dict[str, Any]], maintenant: datetime | None = None) -> dict[str, Any]:
     g = geler(matchs, maintenant)
     r = regler(matchs)
-    d = page(maintenant=maintenant)
+    from . import solidite as SOL
+    d = page(maintenant=maintenant, matchs=matchs, solidite=SOL.charger())      # Solidité (28/10/2026) : poids écrits plus tôt dans le même passage de suivi.pipeline
     return {"geles": g, "regles": r, "affiches": len(d["pronostics"]), "suivi_total": d["suivi"]["total"]}

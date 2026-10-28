@@ -17,9 +17,11 @@
     const res = p.resultat === "gagne" ? `<span class="ia-badge res-gagne">Gagné ${esc(p.score.buts_dom)}-${esc(p.score.buts_ext)}</span>`
       : p.resultat === "perdu" ? `<span class="ia-badge res-perdu">Perdu ${esc(p.score.buts_dom)}-${esc(p.score.buts_ext)}</span>` : "";
     const c = cote(p.cote);
+    const sv = Number(p.solidite);       // Solidité : calculée en Python (alpha_serie/solidite.py) ; rien si le champ manque
+    const sol = p.solidite != null && Number.isFinite(sv) ? `<p class="sa-sol">Solidité <strong>${Math.round(sv * 100)} %</strong></p>` : "";
     return `<article class="sa-prono"><div class="sa-haut"><b>${esc(p.heure || "—")}</b><span>${esc(p.competition)}</span></div>` +
       `<p class="sa-match">${esc(p.domicile)} – ${esc(p.exterieur)}</p>` +
-      `<div class="sa-marche"><strong>${esc(p.marche)}</strong>${c ? `<span class="sa-cote">Cote ${esc(c)}</span>` : `<span class="sa-sans">Multigoal : sans cote BetPawa</span>`}</div>` +
+      `<div class="sa-marche"><strong>${esc(p.marche)}</strong>${c ? `<span class="sa-cote">Cote ${esc(c)}</span>` : `<span class="sa-sans">Multigoal : sans cote BetPawa</span>`}</div>` + sol +
       `<div class="ia-badges"><span class="ia-badge niv-${esc(p.niveau)}">Niveau ${p.niveau === "maximal" ? "maximal" : "normal"}</span>${res}</div></article>`;
   }
 
