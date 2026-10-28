@@ -67,8 +67,8 @@ def test_affichage_de_la_solidite_prudent_et_a_la_bonne_version():
     assert "Number.isFinite(v)" in JS and "s.solidite != null" in JS                    # jamais « 0 % » quand le champ manque
     assert ".ax-mk-sol" in CSS and ".ax-resume-sol" in CSS
     assert "--s:" in JS                                       # pastille remplie à hauteur du pourcentage (lisible au premier coup d'œil)
-    assert "#C49A3A" in CSS and ".ax-mk > .ax-resume-texte { grid-column: 1 / -1; }" in CSS and ".ax-mk > .ax-mk-sol { grid-column: 1; grid-row: 2; }" in CSS   # grille de la ligne de marché non décalée
-    assert "af-comportement.css?v=20261028d" in HTML and "archetype_comportement.js?v=20261028d" in HTML
+    assert "#F6E4A6" in CSS and ".ax-mk > .ax-resume-texte { grid-column: 1 / -1; }" in CSS and ".ax-mk > .ax-mk-sol { grid-column: 1; grid-row: 2; }" in CSS   # grille de la ligne de marché non décalée
+    assert "af-comportement.css?v=20261028e" in HTML and "archetype_comportement.js?v=20261028e" in HTML
 
 
 # --- Onglet « Sélection » de l'alpha : Solidité du marché sélectionné (affichage seulement) ------------------------------------------
@@ -119,4 +119,4 @@ def test_affichage_selection_solidite_prudent_et_versionne():
     css = (RACINE / "af-selection-alpha.css").read_text(encoding="utf-8")
     html = (RACINE / "selection_alpha.html").read_text(encoding="utf-8")
     assert "p.solidite != null" in js and "Number.isFinite(sv)" in js and ".sa-sol" in css
-    assert "af-selection-alpha.js?v=20261028d" in html and "af-selection-alpha.css?v=20261028d" in html
+    assert "af-selection-alpha.js?v=20261028e" in html and "af-selection-alpha.css?v=20261028e" in html
