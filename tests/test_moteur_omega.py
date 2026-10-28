@@ -540,4 +540,4 @@ def test_solidite_est_la_part_des_matchs_ou_le_pari_passait_pour_chaque_type_de_
 def test_omega_anneau_cache_carte_repliee_et_solidite_jaune():
     html = (Path(__file__).resolve().parent.parent / "pronostics_omega.html").read_text(encoding="utf-8")
     assert ".ax-carte.ax-replie .om-anneau{display:none}" in html          # un seul pourcentage visible carte repliée
-    assert "#C49A3A calc(var(--s,0)*1%)" in html                           # pastille Solidité jaune du logo
+    assert "background:#C49A3A}" in html.split(".om-sol{")[1].split("}")[0] + "}"                           # pastille Solidité jaune du logo
