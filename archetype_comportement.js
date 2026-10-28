@@ -97,7 +97,7 @@ function explicationCourte(s, m) {
 // Solidité (28/10/2026, Patrick) : pourcentage calculé en Python (alpha_serie/solidite.py) ; ici seulement l'affichage. Rien si le champ manque.
 function solidite(s, classe) {
   const v = Number(s && s.solidite);
-  return s && s.solidite != null && Number.isFinite(v) ? `<p class="${classe}">Solidité <strong>${Math.round(v * 100)} %</strong></p>` : "";
+  return s && s.solidite != null && Number.isFinite(v) ? `<p class="${classe}" style="--s:${Math.max(0, Math.min(100, Math.round(v * 100)))}">Solidité <strong>${Math.round(v * 100)} %</strong></p>` : "";
 }
 
 // ── Carte dépliée : une ligne par marché (nom, valeur, cote, branches, alerte) ──

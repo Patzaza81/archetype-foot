@@ -77,7 +77,7 @@ function omPourquoi(f) {
 // Solidité (28/10/2026) : indice de réserve du pari, calculé en Python (`moteur_omega/indice.py`) ; ici seulement l'affichage du pourcentage.
 function omSolidite(p) {
   const s = Number(p && p.solidite);
-  return p && p.solidite != null && Number.isFinite(s) ? `<small class="om-sol">Solidité <b>${Math.round(s * 100)} %</b></small>` : "";
+  return p && p.solidite != null && Number.isFinite(s) ? `<small class="om-sol" style="--s:${Math.max(0, Math.min(100, Math.round(s * 100)))}">Solidité <b>${Math.round(s * 100)} %</b></small>` : "";
 }
 function omLigne(p, f, principal) {
   const ph = omPhrase(p.cle, f.domicile, f.exterieur);
