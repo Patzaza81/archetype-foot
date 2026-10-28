@@ -18,7 +18,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-from . import coeur, donnees as D, historique as H, indice as IND, marches as M, ponderation as PO
+from . import coeur, donnees as D, historique as H, marches as M, ponderation as PO, solidite as SO
 
 ROOT = Path(__file__).resolve().parent.parent
 DOSSIER = ROOT / "data" / "omega"
@@ -184,27 +184,27 @@ def bilan(lignes: list[dict[str, Any]]) -> dict[str, Any]:
     return {"principal": _stats(princ), "autres": _stats(autres), "matchs_regles": len(res)}
 
 
-def _ajouter_solidite(f: dict[str, Any]) -> None:
-    """Solidité (28/10/2026, ordre de Patrick) : part des matchs récents des deux équipes (même lieu) où le pari passait (`indice.py`), calculée à la lecture depuis les séries gelées du match.
-    Affichage seulement : jamais écrit dans le journal, ne change ni la sélection ni les pronostics. Les paris sont copiés avant d'être complétés."""
+def _ajouter_solidite(f: dict[str, Any], poids: dict[str, Any] | None) -> None:
+    """Solidité (28/10/2026, ordre de Patrick ; `solidite.py`) : fréquence + écarts de buts des derniers matchs, par type de marché, poids appris sur l'archive.
+    Calculée à la lecture depuis les séries gelées du match ; affichage seulement : jamais écrite dans le journal, ne change ni la sélection ni les pronostics.
+    Sans poids appris, ou pour un marché jamais vu, aucune solidité (rien n'est inventé). Les paris sont copiés avant d'être complétés."""
     ser = f.get("series")
-    if not ser:
+    if not ser or not poids:
         return
-    for k in ("principal",):
-        if f.get(k):
-            f[k] = dict(f[k])
+    if f.get("principal"):
+        f["principal"] = dict(f["principal"])
     f["autres"] = [dict(x) for x in f.get("autres") or []]
     for p in ([f["principal"]] if f.get("principal") else []) + f["autres"]:
         try:
-            r = IND.indice_pari(tuple(p["cle"]), ser)
+            r = SO.probabilite(poids, p["cle"], ser)
         except Exception:                                      # noqa: BLE001
             r = None
         if r is not None:
-            p["solidite"] = r["passe"]
+            p["solidite"] = round(r, 4)
 
 
 def page(maintenant: datetime | None = None, journal: Path = JOURNAL, sortie: Path = PAGE, matchs: list[dict] | None = None,
-         refs: D.References | None = None, ponderation: dict[str, Any] | None = None) -> dict[str, Any]:
+         refs: D.References | None = None, ponderation: dict[str, Any] | None = None, solidite: dict[str, Any] | None = None) -> dict[str, Any]:
     maintenant = maintenant or datetime.now(timezone.utc)
     lignes = _lire(journal)
     # Pronostics gelés avant l'ajout de l'affichage des derniers matchs : on les complète ICI, à la lecture, depuis l'archive (journal inchangé).
@@ -225,7 +225,7 @@ def page(maintenant: datetime | None = None, journal: Path = JOURNAL, sortie: Pa
         ko = _ko(f.get("coup_d_envoi_utc"))
         if ko is None:
             continue
-        _ajouter_solidite(f)
+        _ajouter_solidite(f, solidite)
         if ponderation and refs is not None and mid in par_id and ko > maintenant and f.get("principal"):
             # Marché pondéré : affichage seulement (calculé à la lecture avec les cotes de l'archive), jamais écrit dans le journal.
             try:
@@ -287,7 +287,12 @@ def pipeline() -> None:
     except Exception as e:                                     # noqa: BLE001
         print(f"omega : pondération non mise à jour ({e})")
         pond = PO.charger()
-    p = page(matchs=matchs, refs=refs, ponderation=pond)
+    try:                                                       # solidité (affichage) ; ne bloque jamais le reste
+        sol = SO.ecrire(matchs=matchs, refs=refs)
+    except Exception as e:                                     # noqa: BLE001
+        print(f"omega : solidité non mise à jour ({e})")
+        sol = SO.charger()
+    p = page(matchs=matchs, refs=refs, ponderation=pond, solidite=sol)
     print(f"omega : {n} pronostic(s) gelé(s), {r} résultat(s) réglé(s), {len(p['a_venir'])} pari(s) à venir, {p['sans_pronostic']} match(s) sans pronostic")
 
 

@@ -95,15 +95,18 @@ Sorties : `moteur_omega/parametres.json`, `docs/omega_validation.json`.
   à l'extérieur (0,7), et ce chiffre était trop loin du pari. Affichage seulement, aucun calcul ni sélection modifiés.
 - **Seuil lié à la taille d'échantillon : testé, NON retenu** (28/10/2026, 830 paris principaux de l'archive, sélection actuelle) : réussite par minimum de matchs au même lieu
   4-5 : 67,5 % (526), 6-7 : 76,6 % (47), 8-10 : 33,3 % (9), 11-14 : 65,2 % (227), 15+ : 85,7 % (21) ; par stabilité (p_min) et par écart modèle − cote : aucune pente nette. Aucun seuil ajouté (cohérent avec « stabilité sans apport »).
-- **Solidité** (28/10/2026, ordre de Patrick ; `indice.py`, `suivi._ajouter_solidite`) : pourcentage affiché sous chaque pari (principal et « autres paris »), nom choisi par Patrick, pourcentage seul.
-  = part des matchs récents des deux équipes au même lieu (séries gelées du match, moyenne des deux équipes à poids égal) où le pari passait, selon la règle du marché (`marches.test_du_marche`,
-  valable pour tous les types de marché, combinés compris). Calculée à la lecture, jamais écrite dans le journal ; ne change ni la sélection ni les pronostics.
-  **Vérifié (rejeu de l'archive, 50 305 marchés avec cote, 40 marchés d'au moins 300 évaluations)** : écart moyen entre cette fréquence et la réussite réelle du marché 1,1 point.
-  **Version abandonnée le jour même** : indice de réserve = moyenne de (pari passe) et (pari passe avec un but de réserve), basé sur la distance au basculement du score (`indice.indice_pari`, conservé, non affiché).
-  Calcul exact (0 écart sur les 100 marchés) mais NON comparable entre types de marché : sous-estime la réussite de 5 à 21 points selon le marché (pas de nul 54 % pour 75 % réels ; plus de 4,5 buts −6 points),
-  plafonne à 50 % pour les marchés où un seul but suffit à tout changer (match nul, cage inviolée, moins de 0,5 but), et ne discrimine pas mieux dans un marché que la fréquence seule (+0,10 contre +0,09 ; cote +0,22).
-  Ni l'une ni l'autre ne départage les paris déjà retenus par Omega (1 229 paris du rejeu, corrélation −0,03) : INFORMATION de lecture, pas un critère de sélection.
-  Le journal réel d'Omega compte 36 matchs réglés et 39 paris au 28/10 ; les 1 229 viennent du rejeu de l'archive.
+- **Solidité** (28/10/2026, ordre de Patrick ; `solidite.py`, `indice.py`, `suivi._ajouter_solidite`) : pourcentage affiché sous chaque pari (principal et « autres paris »), pour repérer d'un coup d'œil les marchés
+  les plus pertinents et robustes. Pour le MÊME TYPE DE MARCHÉ, croise deux lectures des derniers matchs au même lieu des deux équipes (séries gelées du match, poids égal aux deux équipes) :
+  la FRÉQUENCE (part des matchs où le pari passait) et les ÉCARTS DE BUTS (distance moyenne au basculement du score = nombre minimal de buts à changer pour que le pari change d'issue, signée,
+  normalisée par l'écart-type propre au type de marché ; `marches.test_du_marche` donc valable pour tous les marchés, combinés compris). Régression logistique de la réussite réelle sur :
+  niveau de départ par type de marché + logit(fréquence) + écart normalisé ; poids APPRIS sur l'archive (tous les marchés des matchs joués, avec ou sans cote), réécrits à chaque pipeline dans
+  `docs/omega_solidite.json`. N'utilise NI la cote NI la probabilité du modèle. Marché non appris (moins de 100 observations) ou sans poids : aucune solidité. Calcul à la lecture, jamais écrit dans le journal,
+  ne change ni la sélection ni les pronostics. **Vérifié hors échantillon** (poids appris sur les premiers 60 % des jours, test sur les 40 % suivants, 84 600 marchés) : perte 0,5255 contre 0,5581 (type de
+  marché seul) et 0,5650 (fréquence brute) ; écart moyen de calibrage par marché 1,7 point (max 4,2) ; tranches de 9 / 19 / 29 / 45 / 72 % de solidité = 9 / 19 / 29 / 45 / 72 % de réussite.
+  Le poids de la fréquence seule est quasi nul une fois les écarts pris en compte (le signe de l'écart contient déjà « passe / ne passe pas »).
+  **Historique du jour (abandonné)** : (1) indice de réserve = moyenne de (pari passe) et (pari passe avec un but de réserve), non comparable entre types de marché (sous-estime de 5 à 21 points,
+  plafonne à 50 % pour match nul / cage inviolée / moins de 0,5 but) ; (2) fréquence seule, comparable mais sans les écarts de buts demandés. La Solidité ne départage pas les paris déjà retenus par Omega
+  (rejeu de l'archive, 1 229 paris : corrélation −0,03) : c'est une aide de lecture. Journal réel d'Omega au 28/10 : 36 matchs réglés, 39 paris (les 1 229 viennent du rejeu de l'archive).
 - **Marché pondéré** (27/10/2026, ordre de Patrick ; `ponderation.py`, `docs/omega_ponderation.json`) : sur chaque carte, sous le pari principal, le marché
   le plus probable parmi ceux de cote **supérieure à 1,22**, avec un repère « Même pari / Dans le même sens / Pari différent » (comparaison des scores qui font gagner).
   Probabilité pondérée = régression logistique sur modèle, cote et fréquence dans les derniers matchs ; poids APPRIS sur l'archive (40 984 marchés), réécrits à chaque

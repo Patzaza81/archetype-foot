@@ -441,18 +441,85 @@ def test_indice_pari_sans_donnees_ou_marche_inconnu_rien_invente():
     assert IND.indice_pari(("marche_inconnu", "x"), {"dom_marques": [1], "dom_encaisses": [1], "ext_marques": [1], "ext_encaisses": [1]}) is None
 
 
+from moteur_omega import solidite as SOL
+
+S_TEST = {"dom_marques": [1, 1, 2, 0], "dom_encaisses": [0, 1, 1, 0], "ext_marques": [0, 1, 1, 2], "ext_encaisses": [1, 1, 2, 1]}
+# scores vus du domicile : domicile 1-0, 1-1, 2-1, 0-0 ; extérieur 1-0, 1-1, 2-1, 1-2
+
+
+def _poids(**niveaux):
+    base = {"over_under_3.5|moins": 1.0, "double_chance|1N": 0.5, "over_under_3.5|plus": -2.0}
+    base.update(niveaux)
+    return {"poids_frequence": 0.5, "poids_ecart": 0.4,
+            "marches": {k: {"niveau": v, "ecart_type_ecart": 1.5, "n": 500} for k, v in base.items()}}
+
+
+@pytest.mark.parametrize("cle,passe,signe", [
+    (("over_under_3.5", "moins"), 1.0, +1),             # 3 paris qui passent (tout ou presque)
+    (("double_chance", "1N"), (4 / 4 + 3 / 4) / 2, +1),
+    (("btts", "Oui"), (2 / 4 + 3 / 4) / 2, +1),
+    (("over_under_3.5", "plus"), 0.0, -1),              # 3 paris qui ratent (jamais ou une fois sur deux ou moins)
+    (("over_under_exterieur_1.5", "plus"), (0 / 4 + 1 / 4) / 2, -1),   # l'extérieur marque 2 buts ou plus : seul le 1-2 passe
+    (("over_under_domicile_0.5", "moins"), (1 / 4 + 0 / 4) / 2, -1),
+])
+def test_mesures_frequence_et_ecart(cle, passe, signe):
+    r = IND.mesures(cle, S_TEST)
+    assert r["passe"] == pytest.approx(passe)
+    dom = [IND.distance(cle, h, a) for h, a in [(1, 0), (1, 1), (2, 1), (0, 0)]]
+    ext = [IND.distance(cle, h, a) for h, a in [(1, 0), (1, 1), (2, 1), (1, 2)]]
+    assert r["ecart"] == pytest.approx((sum(dom) / 4 + sum(ext) / 4) / 2)
+    assert (r["ecart"] > 0) == (signe > 0)
+
+
+def test_solidite_plus_haute_quand_le_pari_passe_avec_plus_d_ecart():
+    solide = {"dom_marques": [0, 1, 0, 1], "dom_encaisses": [0, 0, 1, 0], "ext_marques": [0, 1, 0, 0], "ext_encaisses": [1, 0, 1, 0]}   # peu de buts
+    juste = {"dom_marques": [2, 2, 1, 2], "dom_encaisses": [1, 1, 2, 1], "ext_marques": [1, 2, 2, 1], "ext_encaisses": [2, 1, 1, 2]}     # totaux de 3 : à la limite
+    ouvert = {"dom_marques": [3, 4, 2, 3], "dom_encaisses": [2, 1, 3, 2], "ext_marques": [2, 3, 3, 2], "ext_encaisses": [3, 2, 2, 3]}  # totaux de 5 à 7 : perdu
+    w = _poids()
+    cle = ("over_under_3.5", "moins")
+    a, b, c = (SOL.probabilite(w, cle, s) for s in (solide, juste, ouvert))
+    assert a > b > c and all(0 < v < 1 for v in (a, b, c))
+
+
+def test_solidite_marche_inconnu_ou_sans_donnees_rien_invente():
+    w = _poids()
+    assert SOL.probabilite(w, ("btts", "Oui"), S_TEST) is None                              # type de marché jamais appris
+    assert SOL.probabilite(w, ("over_under_3.5", "moins"), {"dom_marques": [], "dom_encaisses": [], "ext_marques": [], "ext_encaisses": []}) is None
+    assert SOL.probabilite({}, ("over_under_3.5", "moins"), S_TEST) is None
+
+
+def test_solidite_apprend_des_poids_sur_des_donnees_simulees():
+    rng = np.random.default_rng(1)
+    lignes = []
+    for i in range(3000):
+        mk = "m1" if i % 2 else "m2"
+        ecart = float(rng.normal(0, 1))
+        f = float(np.clip(0.5 + 0.2 * ecart + rng.normal(0, .1), 0.05, 0.95))
+        y = float(rng.random() < 1 / (1 + np.exp(-(0.8 * ecart + (0.5 if mk == "m1" else -0.5)))))
+        lignes.append((mk, f, ecart, y, "2026-10-01"))
+    r = SOL.ajuster_lignes(lignes)
+    assert set(r["marches"]) == {"m1", "m2"} and r["marches"]["m1"]["niveau"] > r["marches"]["m2"]["niveau"]
+    assert r["poids_ecart"] > 0 and r["brier"] < 0.25
+    with pytest.raises(ValueError):
+        SOL.ajuster_lignes(lignes[:50])
+
+
 def test_page_ajoute_la_solidite_sans_toucher_au_journal(tmp_path):
     j, sortie = tmp_path / "journal.jsonl", tmp_path / "pronostics.json"
     m = _match([2, 3, 1, 2, 3], [1, 0, 1, 2, 1], [1, 0, 1, 2, 0], [2, 3, 1, 2, 2], cotes=COTES, ko="2026-10-20T18:00:00Z")
     suivi.geler(datetime(2026, 10, 20, 12, tzinfo=timezone.utc), j, [m], D.References(), PARAMS)
     avant = j.read_text()
-    out = suivi.page(datetime(2026, 10, 20, 13, tzinfo=timezone.utc), j, sortie, matchs=[m])
+    f0 = json.loads(avant.splitlines()[0])["fiche"]
+    cles = {"|".join(p["cle"]) for p in [f0["principal"]] + f0["autres"]}
+    w = {"poids_frequence": 0.5, "poids_ecart": 0.4, "marches": {k: {"niveau": 0.3, "ecart_type_ecart": 1.5, "n": 500} for k in cles}}
+    out = suivi.page(datetime(2026, 10, 20, 13, tzinfo=timezone.utc), j, sortie, matchs=[m], solidite=w)
     f = out["a_venir"][0]
     for p in [f["principal"]] + f["autres"]:
-        assert 0 <= p["solidite"] <= 1
-        assert p["solidite"] == pytest.approx(IND.indice_pari(tuple(p["cle"]), f["series"])["passe"])    # Solidité = part des matchs où le pari passait
+        assert 0 < p["solidite"] < 1
+        assert p["solidite"] == pytest.approx(SOL.probabilite(w, p["cle"], f["series"]), abs=1e-4)
     assert j.read_text() == avant and "solidite" not in avant                   # affichage seulement : le journal gelé n'est jamais modifié
-    assert json.loads(sortie.read_text())["a_venir"][0]["principal"]["solidite"] == f["principal"]["solidite"]
+    sans = suivi.page(datetime(2026, 10, 20, 13, tzinfo=timezone.utc), j, sortie, matchs=[m])
+    assert "solidite" not in sans["a_venir"][0]["principal"]                    # sans poids appris : rien d'inventé
 
 
 @pytest.mark.parametrize("cle,attendu", [

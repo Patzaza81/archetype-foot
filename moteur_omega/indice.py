@@ -68,3 +68,18 @@ def indice_pari(cle: tuple[str, str], s: dict[str, list[int]]) -> dict[str, Any]
             "passe_avec_reserve": round((a["passe_avec_reserve"] + b["passe_avec_reserve"]) / 2, 4),
             "dom": {k: round(v, 4) if isinstance(v, float) else v for k, v in a.items()},
             "ext": {k: round(v, 4) if isinstance(v, float) else v for k, v in b.items()}}
+
+
+def mesures(cle: tuple[str, str], s: dict[str, list[int]]) -> dict[str, float] | None:
+    """Les deux mesures d'un pari sur les séries d'un match : `passe` = part des matchs récents (moyenne des deux équipes, même poids) où le pari passait ;
+    `ecart` = distance moyenne au basculement (signée : positive si le pari passait, négative sinon), moyenne des deux équipes."""
+    dom, ext = scores_series(s)
+    if not dom or not ext:
+        return None
+    ds = [distance(cle, h, a) for h, a in dom]
+    de = [distance(cle, h, a) for h, a in ext]
+    if any(x is None for x in ds + de):
+        return None
+    passe = (sum(x > 0 for x in ds) / len(ds) + sum(x > 0 for x in de) / len(de)) / 2
+    ecart = (sum(ds) / len(ds) + sum(de) / len(de)) / 2
+    return {"passe": passe, "ecart": ecart}
