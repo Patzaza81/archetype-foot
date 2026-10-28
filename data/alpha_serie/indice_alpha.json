@@ -1,59 +1,68 @@
 {
- "genere_le": "2026-10-27T08:24:27Z",
+ "genere_le": "2026-10-28T02:45:01Z",
  "avertissement": "Aucun indice n'est présenté comme fiable tant que son statut n'est pas « validé » ET que sa borne basse réelle n'atteint pas son objectif. Les chiffres de l'étude historique sont affichés à part du suivi réel.",
  "alerte_registre": [],
  "global": {
   "paris_distincts": {
-   "matchs": 0,
-   "gagnes": 0,
-   "perdus": 0,
-   "taux": null,
-   "wilson_bas_95": null
+   "matchs": 2,
+   "gagnes": 1,
+   "perdus": 1,
+   "taux": 0.5,
+   "wilson_bas_95": 0.0945
   },
-  "matchs_distincts": 0,
+  "matchs_distincts": 2,
   "matchs_avec_plusieurs_indices": 0,
   "doublons_ecartes": 0,
-  "par_semaine": [],
+  "par_semaine": [
+   {
+    "semaine": "2026-S44",
+    "matchs": 2,
+    "gagnes": 1,
+    "perdus": 1,
+    "taux": 0.5,
+    "wilson_bas_95": 0.0945
+   }
+  ],
   "classement": [
    {
     "id": "victoire_domicile",
     "nom": "Victoire à domicile",
     "statut": "en_validation",
     "statut_libelle": "En validation",
-    "matchs": 0,
-    "gagnes": 0,
+    "matchs": 1,
+    "gagnes": 1,
     "perdus": 0,
-    "taux": null,
-    "wilson_bas_95": null,
-    "par_jour": 4.25,
+    "taux": 1.0,
+    "wilson_bas_95": 0.2065,
+    "par_jour": 6.4,
     "periode": {
      "debut": "2026-10-27",
-     "fin": "2026-10-30",
-     "jours": 4
+     "fin": "2026-10-31",
+     "jours": 5
     },
     "tendance": "insuffisant",
     "fiabilite": "non_fiable",
-    "en_attente": 17
+    "en_attente": 31
    },
    {
     "id": "victoire_exterieur",
     "nom": "Victoire à l'extérieur",
     "statut": "en_validation",
     "statut_libelle": "En validation",
-    "matchs": 0,
+    "matchs": 1,
     "gagnes": 0,
-    "perdus": 0,
-    "taux": null,
-    "wilson_bas_95": null,
-    "par_jour": 2.5,
+    "perdus": 1,
+    "taux": 0.0,
+    "wilson_bas_95": 0.0,
+    "par_jour": 4.2,
     "periode": {
      "debut": "2026-10-27",
-     "fin": "2026-10-30",
-     "jours": 4
+     "fin": "2026-10-31",
+     "jours": 5
     },
     "tendance": "insuffisant",
     "fiabilite": "non_fiable",
-    "en_attente": 10
+    "en_attente": 20
    },
    {
     "id": "plus_de_1_5_maximal",
@@ -97,21 +106,39 @@
    },
    "objectif_reussite": 0.7,
    "limites": "Règle issue d'une seule fenêtre de 28 jours. Le suivi réel commence à la première nuit gelée. L'objectif de 7 sur 10 est une cible à confirmer, pas une garantie.",
-   "geles": 17,
-   "en_attente": 17,
-   "matchs": 0,
-   "gagnes": 0,
+   "geles": 32,
+   "en_attente": 31,
+   "matchs": 1,
+   "gagnes": 1,
    "perdus": 0,
-   "taux": null,
-   "wilson_bas_95": null,
+   "taux": 1.0,
+   "wilson_bas_95": 0.2065,
    "periode": {
     "debut": "2026-10-27",
-    "fin": "2026-10-30",
-    "jours": 4
+    "fin": "2026-10-31",
+    "jours": 5
    },
-   "par_jour": 4.25,
-   "par_semaine": [],
-   "cumule_par_semaine": [],
+   "par_jour": 6.4,
+   "par_semaine": [
+    {
+     "semaine": "2026-S44",
+     "matchs": 1,
+     "gagnes": 1,
+     "perdus": 0,
+     "taux": 1.0,
+     "wilson_bas_95": 0.2065
+    }
+   ],
+   "cumule_par_semaine": [
+    {
+     "semaine": "2026-S44",
+     "matchs": 1,
+     "gagnes": 1,
+     "perdus": 0,
+     "taux": 1.0,
+     "wilson_bas_95": 0.2065
+    }
+   ],
    "tendance": {
     "signal": "insuffisant",
     "texte": "Moins de deux semaines mesurées : aucune tendance."
@@ -145,11 +172,11 @@
     }
    ],
    "dont_analyses_par_alpha": {
-    "matchs": 0,
-    "gagnes": 0,
+    "matchs": 1,
+    "gagnes": 1,
     "perdus": 0,
-    "taux": null,
-    "wilson_bas_95": null
+    "taux": 1.0,
+    "wilson_bas_95": 0.2065
    }
   },
   {
@@ -169,21 +196,39 @@
    },
    "objectif_reussite": 0.7,
    "limites": "Règle issue d'une seule fenêtre de 28 jours. Le suivi réel commence à la première nuit gelée. L'objectif de 7 sur 10 est une cible à confirmer, pas une garantie.",
-   "geles": 10,
-   "en_attente": 10,
-   "matchs": 0,
+   "geles": 21,
+   "en_attente": 20,
+   "matchs": 1,
    "gagnes": 0,
-   "perdus": 0,
-   "taux": null,
-   "wilson_bas_95": null,
+   "perdus": 1,
+   "taux": 0.0,
+   "wilson_bas_95": 0.0,
    "periode": {
     "debut": "2026-10-27",
-    "fin": "2026-10-30",
-    "jours": 4
+    "fin": "2026-10-31",
+    "jours": 5
    },
-   "par_jour": 2.5,
-   "par_semaine": [],
-   "cumule_par_semaine": [],
+   "par_jour": 4.2,
+   "par_semaine": [
+    {
+     "semaine": "2026-S44",
+     "matchs": 1,
+     "gagnes": 0,
+     "perdus": 1,
+     "taux": 0.0,
+     "wilson_bas_95": 0.0
+    }
+   ],
+   "cumule_par_semaine": [
+    {
+     "semaine": "2026-S44",
+     "matchs": 1,
+     "gagnes": 0,
+     "perdus": 1,
+     "taux": 0.0,
+     "wilson_bas_95": 0.0
+    }
+   ],
    "tendance": {
     "signal": "insuffisant",
     "texte": "Moins de deux semaines mesurées : aucune tendance."
@@ -217,11 +262,11 @@
     }
    ],
    "dont_analyses_par_alpha": {
-    "matchs": 0,
+    "matchs": 1,
     "gagnes": 0,
-    "perdus": 0,
-    "taux": null,
-    "wilson_bas_95": null
+    "perdus": 1,
+    "taux": 0.0,
+    "wilson_bas_95": 0.0
    }
   },
   {
