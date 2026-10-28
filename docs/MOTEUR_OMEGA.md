@@ -107,6 +107,14 @@ Sorties : `moteur_omega/parametres.json`, `docs/omega_validation.json`.
   **Historique du jour (abandonné)** : (1) indice de réserve = moyenne de (pari passe) et (pari passe avec un but de réserve), non comparable entre types de marché (sous-estime de 5 à 21 points,
   plafonne à 50 % pour match nul / cage inviolée / moins de 0,5 but) ; (2) fréquence seule, comparable mais sans les écarts de buts demandés. La Solidité ne départage pas les paris déjà retenus par Omega
   (rejeu de l'archive, 1 229 paris : corrélation −0,03) : c'est une aide de lecture. Journal réel d'Omega au 28/10 : 36 matchs réglés, 39 paris (les 1 229 viennent du rejeu de l'archive).
+- **Matchs simulés dans les deux sens : badges « Accord » et « Alerte »** (28/10/2026, méthode de Patrick validée dans ce rôle ; `simulation.py`, `suivi._ajouter_simulation`,
+  `archetype_omega.js` `omSimulation` / `omAccord`). Paires dans l'ordre (les k derniers matchs de chaque équipe au même lieu, k = le plus petit échantillon) ; chaque paire donne deux scores
+  domicile – extérieur en buts entiers : marqués domicile – encaissés extérieur, puis encaissés domicile – marqués extérieur. Indice d'un marché = scores simulés qui le valident sur 2k.
+  « Accord » = le premier marché de la Solidité et celui de la simulation coïncident (marchés cotés 1,39 et plus, cotes de l'archive) : badge sur le pari affiché, sinon bloc à part.
+  « Alerte » = pari affiché validé dans moins de 6 scores simulés sur 10. Test du 28/10 sur l'archive (846 matchs de la période test, poids de la Solidité réappris avant la coupure) :
+  accord 65,9 % gagnés (466 matchs) contre 60,6 % / 55,0 % en désaccord ; pari de la Solidité sous 6 sur 10 = 58,9 %, rendement −11,0 % (146 paris), d'où le seuil.
+  La simulation NE remplace PAS la Solidité : seule, elle gonfle ses pourcentages (90-100 % annoncés = 80 % réels) et choisit moins bien (61,0 % contre 63,5 %, 84,9 % contre 90,3 % sans cote).
+  Affichage seulement : ni la sélection, ni le journal gelé, ni les pronostics ne changent.
 - **Marché pondéré** (27/10/2026, ordre de Patrick ; `ponderation.py`, `docs/omega_ponderation.json`) : sur chaque carte, sous le pari principal, le marché
   le plus probable parmi ceux de cote **supérieure à 1,22**, avec un repère « Même pari / Dans le même sens / Pari différent » (comparaison des scores qui font gagner).
   Probabilité pondérée = régression logistique sur modèle, cote et fréquence dans les derniers matchs ; poids APPRIS sur l'archive (40 984 marchés), réécrits à chaque

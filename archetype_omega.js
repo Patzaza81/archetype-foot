@@ -79,10 +79,25 @@ function omSolidite(p) {
   const s = Number(p && p.solidite);
   return p && p.solidite != null && Number.isFinite(s) ? `<small class="om-sol" style="--s:${Math.max(0, Math.min(100, Math.round(s * 100)))}">Solidité <b>${Math.round(s * 100)} %</b></small>` : "";
 }
+// Matchs simulés dans les deux sens (28/10/2026, méthode de Patrick ; calcul en Python, `moteur_omega/simulation.py`) : badge « Accord » et « Alerte ».
+function omSimules(x) { return x && x.simules && x.simules.n ? `${x.simules.ok} sur ${x.simules.n} matchs simulés` : ""; }
+function omSimulation(p) {
+  if (!p) return "";
+  const acc = p.accord ? `<small class="om-acc">Accord · ${omE(omSimules(p))}</small>` : "";
+  const al = p.alerte ? `<small class="om-alerte">Alerte : seulement ${omE(omSimules(p))}</small>` : "";
+  return acc + al;
+}
+function omAccord(f) {
+  const a = f.accord;
+  if (!a || a.affiche || !a.cle) return "";
+  const ph = omPhrase(a.cle, f.domicile, f.exterieur);
+  return `<div class="om-pond om-pond-acc"><div class="om-pond-t">Accord Solidité + matchs simulés</div><div class="om-pond-l"><span>${omE(ph.titre)}</span>` +
+    `<span class="om-cote">Cote ${omCote(a.cote)}</span></div>` + (omSimules(a) ? `<span class="om-h om-h-ok">${omE(omSimules(a))}</span>` : "") + `</div>`;
+}
 function omLigne(p, f, principal) {
   const ph = omPhrase(p.cle, f.domicile, f.exterieur);
   return `<div class="om-ligne ${principal ? "om-principal" : ""}"><span>${omE(ph.titre)}${ph.reel ? `<small class="om-sous">${omE(ph.reel)}</small>` : ""}` +
-    omSolidite(p) + `</span>` +
+    omSolidite(p) + omSimulation(p) + `</span>` +
     `<span><span class="om-cote">Cote ${omCote(p.cote)}</span> ${omBadge(p)}</span></div>`;
 }
 function omCroisements(f) {
@@ -236,7 +251,7 @@ function omCarte(f) {
     `<div class="om-corps">` +
       (score ? `<div class="om-info">Score final <strong>${omE(score)}</strong></div>` : "") +
       `<div class="om-info"><b>Pari proposé</b></div>` + omLigne(p, f, true) +
-      omPourquoiCourt(p, f) + omPondere(f) +
+      omPourquoiCourt(p, f) + omPondere(f) + omAccord(f) +
     `</div>` +
     `<details class="ax-details" open><summary class="ax-summary-cache" tabindex="-1">Détails</summary><div class="ax-details-corps">` +
       omPourquoi(f) +
