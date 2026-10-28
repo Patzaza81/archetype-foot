@@ -90,6 +90,11 @@ Sorties : `moteur_omega/parametres.json`, `docs/omega_validation.json`.
   combinés = décompte du pari complet (`pari_sur_derniers`, calculé en Python par `marches.test_du_marche`, score de l'extérieur inversé).
   Aucune phrase si une équipe n'a pas de matchs. Les décomptes JS sont recoupés avec ceux de Python (60 paris, 0 écart). L'encart « réussite par type de pari » (`historique.py`) n'est plus affiché sur les cartes (refusé par Patrick le 27/10/2026) ; le fichier
   `docs/omega_historique.json` reste produit.
+- **Buts attendus près du pari** (28/10/2026) : la ligne « Buts attendus : A x – y B » est affichée sous le pari principal (zone du cercle), plus dans les détails
+  (`archetype_omega.js`, `omPourquoiCourt`). Raison : un pari « Forest Green encaisse au moins 1 but » se décide sur les buts attendus d'Eastleigh (1,3), pas sur sa seule moyenne
+  à l'extérieur (0,7), et ce chiffre était trop loin du pari. Affichage seulement, aucun calcul ni sélection modifiés.
+- **Seuil lié à la taille d'échantillon : testé, NON retenu** (28/10/2026, 830 paris principaux de l'archive, sélection actuelle) : réussite par minimum de matchs au même lieu
+  4-5 : 67,5 % (526), 6-7 : 76,6 % (47), 8-10 : 33,3 % (9), 11-14 : 65,2 % (227), 15+ : 85,7 % (21) ; par stabilité (p_min) et par écart modèle − cote : aucune pente nette. Aucun seuil ajouté (cohérent avec « stabilité sans apport »).
 - **Marché pondéré** (27/10/2026, ordre de Patrick ; `ponderation.py`, `docs/omega_ponderation.json`) : sur chaque carte, sous le pari principal, le marché
   le plus probable parmi ceux de cote **supérieure à 1,22**, avec un repère « Même pari / Dans le même sens / Pari différent » (comparaison des scores qui font gagner).
   Probabilité pondérée = régression logistique sur modèle, cote et fréquence dans les derniers matchs ; poids APPRIS sur l'archive (40 984 marchés), réécrits à chaque

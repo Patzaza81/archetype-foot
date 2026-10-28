@@ -70,7 +70,6 @@ function omMoy(v) { return Array.isArray(v) && v.length ? v.reduce((a, b) => a +
 // « Pourquoi ce pari » : en positif, avec les chiffres réels des matchs des deux équipes.
 function omPourquoi(f) {
   const s = f.series || {}, p = f.principal || {}, l = [];
-  l.push(`Buts attendus : <b>${omE(f.domicile)} ${omFr((f.buts_attendus || {}).dom)}</b> – <b>${omFr((f.buts_attendus || {}).ext)} ${omE(f.exterieur)}</b>`);
   l.push(`${omE(f.domicile)} à domicile : ${omFr(omMoy(s.dom_marques))} but marqué et ${omFr(omMoy(s.dom_encaisses))} encaissé par match (${f.n_domicile} matchs)`);
   l.push(`${omE(f.exterieur)} à l'extérieur : ${omFr(omMoy(s.ext_marques))} but marqué et ${omFr(omMoy(s.ext_encaisses))} encaissé par match (${f.n_exterieur} matchs)`);
   return `<div class="om-pourquoi">${l.map((x) => `<div>${x}</div>`).join("")}</div>`;
@@ -202,7 +201,11 @@ function omPourquoiCourt(p, f) {
   const anneau = pct === null ? "" :
     `<div class="om-anneau" style="--p:${pct}" role="img" aria-label="Probabilité du modèle ${pct} %"><span><b>${pct} %</b></span></div>`;
   const phrase = omPhrasePari(p, f);
-  return anneau || phrase ? `<div class="om-pq">${anneau}<p class="om-pq-txt">${phrase}</p></div>` : "";
+  // Buts attendus des deux équipes (c'est ce chiffre, croisé avec la défense adverse, qui décide les paris sur les buts) : juste sous le pari, plus dans les détails.
+  const ba = f.buts_attendus || {};
+  const attendus = ba.dom != null && ba.ext != null && Number.isFinite(Number(ba.dom)) && Number.isFinite(Number(ba.ext))
+    ? `<span class="om-attendus">Buts attendus : <b>${omE(f.domicile)} ${omFr(ba.dom)}</b> – <b>${omFr(ba.ext)} ${omE(f.exterieur)}</b></span>` : "";
+  return anneau || phrase || attendus ? `<div class="om-pq">${anneau}<p class="om-pq-txt">${attendus}${phrase}</p></div>` : "";
 }
 // Marché pondéré (le plus probable parmi les cotes > 1,22) à côté du pari principal : même pari, même sens, ou différent.
 const OM_HARMONIE = { identique: ["Même pari", "om-h-ok"], meme_sens: ["Dans le même sens", "om-h-ok"], different: ["Pari différent", "om-h-diff"] };
