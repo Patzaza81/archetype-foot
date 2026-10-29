@@ -36,3 +36,9 @@ def test_aucun_masquage_et_portee_alpha():
 def test_versions_de_cache_dans_la_page():
     assert re.search(r"af-comportement\.css\?v=\d", HTML)
     assert re.search(r"archetype_comportement\.js\?v=\d", HTML)
+
+
+def test_matchs_deja_joues_jamais_dans_la_liste_a_venir():
+    """29/10/2026 : un match de la nuit (Amérique) est « d'aujourd'hui » par sa date mais déjà fini : le coup d'envoi ou le score décide."""
+    assert "function dejaJoue(" in JS and "!dejaJoue(m)" in JS
+    assert "coup_d_envoi_utc" in JS.split("function dejaJoue(")[1].split("}\n")[0] and "+01:00" in JS

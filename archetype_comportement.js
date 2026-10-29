@@ -35,6 +35,16 @@ const aujourdhui = () => {
   return `${valeurs.year}-${valeurs.month}-${valeurs.day}`;
 };
 let compteurCartes = 0;
+// Match déjà joué (29/10/2026, Patrick : les matchs d'Amérique réapparaissaient) : jamais dans la liste des matchs à venir.
+// La date seule ne suffit pas (un match de la nuit est « d'aujourd'hui » mais déjà fini) : on compare le coup d'envoi à l'heure actuelle ;
+// un score connu suffit aussi. Sans coup d'envoi UTC, repli sur date + heure du Cameroun (UTC+1) ; sans aucune heure, le match reste affiché.
+function dejaJoue(m, maintenant = Date.now()) {
+  if (m.score && m.score.buts_dom !== undefined && m.score.buts_dom !== null) return true;
+  let ko = m.coup_d_envoi_utc ? Date.parse(m.coup_d_envoi_utc) : NaN;
+  if (Number.isNaN(ko) && m.date && /^\d{2}:\d{2}$/.test(String(m.heure || ""))) ko = Date.parse(`${String(m.date).slice(0, 10)}T${m.heure}:00+01:00`);
+  return !Number.isNaN(ko) && ko <= maintenant;
+}
+
 
 // ── Libellés en mots simples (présentation seulement : la clé du marché dans le fichier de données reste inchangée) ──
 const butsN = (n) => `${n} but${n > 1 ? "s" : ""}`;
@@ -286,7 +296,7 @@ function afficheSelections(d) {
   const jour = aujourdhui();
   const cleTri = (m) => `${m.date || ""}${m.heure || ""}`;
   const aUnMarche = (m) => carteAffichable(m);              // au moins une catégorie affichable selon la règle d'affichage
-  const retenus = (d.matchs || []).filter((m) => m.statut === "analyse" && m.date >= jour && aUnMarche(m)).sort((a, b) => cleTri(a).localeCompare(cleTri(b)));
+  const retenus = (d.matchs || []).filter((m) => m.statut === "analyse" && m.date >= jour && !dejaJoue(m) && aUnMarche(m)).sort((a, b) => cleTri(a).localeCompare(cleTri(b)));
   maj.innerHTML = retenus.length
     ? `<strong>${pluriel(retenus.length, "match")}</strong> avec au moins un pari proposé`
     : "Aucun pronostic pour le moment";
