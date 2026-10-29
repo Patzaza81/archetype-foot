@@ -147,29 +147,39 @@ function construitResume(m) {
   return racine;
 }
 
-// Détails (24/10/2026) : tous les matchs à domicile de l'équipe qui reçoit et tous les matchs à l'extérieur de son adversaire, avec le score,
-// puis les buts marqués et encaissés par match sur cet échantillon. Les marchés exclus ne sont plus affichés.
-function listeMatchs(liste, equipe, domicile) {
-  if (!liste || !liste.length) return "<li>Aucun match enregistré</li>";
-  return liste.map((x) => {
-    const adv = echappeHtml(x.adversaire || "Adversaire");
-    const score = domicile ? `${echappeHtml(equipe)} <b>${Number(x.marques)}-${Number(x.encaisses)}</b> ${adv}` : `${adv} <b>${Number(x.encaisses)}-${Number(x.marques)}</b> ${echappeHtml(equipe)}`;
-    return `<li>${echappeHtml(formatDate(x.date))} · ${score}</li>`;
-  }).join("");
+// Derniers matchs (29/10/2026, Patrick) : même présentation que le moteur Omega. Une plaque par équipe : moyennes en pastilles,
+// puis une ligne par match (date, adversaire, score, V / N / D). Les données ne changent pas : seule la présentation change.
+function resultatMatch(m, e) { return m > e ? ["V", "om-v"] : m < e ? ["D", "om-d"] : ["N", "om-n"]; }
+function jourCourt(iso) {
+  const d = new Date(`${iso}T12:00:00`);
+  if (Number.isNaN(d.getTime())) return echappeHtml(iso || "");
+  return echappeHtml(d.toLocaleDateString("fr-FR", { day: "numeric", month: "short" }).replace(/\./g, ""));
 }
-function ligneBilanButs(b) {
-  if (!b || !b.matchs) return "";
-  const v = (x) => Number(x).toFixed(2).replace(".", ",");
-  return `<p class="ax-preuve-texte">Sur ${Number(b.matchs)} matchs : <b>${Number(b.marques)}</b> buts marqués (${v(b.marques_par_match)} par match) · ` +
-    `<b>${Number(b.encaisses)}</b> buts encaissés (${v(b.encaisses_par_match)} par match).</p>`;
+const moyenneFr = (x) => (Number.isFinite(x) ? x.toFixed(1).replace(".", ",") : "—");
+function equipeDerniers(nom, lieu, liste, bilan, domicile) {
+  const l = Array.isArray(liste) ? liste : [];
+  const total = bilan && Number(bilan.matchs) ? Number(bilan.matchs) : l.length;
+  const moy = (cleBilan, cle) => {
+    if (bilan && bilan[cleBilan] != null && Number.isFinite(Number(bilan[cleBilan]))) return Number(bilan[cleBilan]);
+    return l.length ? l.reduce((a, x) => a + Number(x[cle] || 0), 0) / l.length : NaN;
+  };
+  const lignes = l.map((x) => {
+    const mq = Number(x.marques), en = Number(x.encaisses), [lettre, cls] = resultatMatch(mq, en);
+    const score = domicile ? `<b>${mq}</b> – ${en}` : `${en} – <b>${mq}</b>`;
+    return `<li class="om-dm"><span class="om-dm-date">${jourCourt(x.date)}</span><span class="om-dm-adv">${echappeHtml(x.adversaire || "Adversaire inconnu")}</span>` +
+      `<span class="om-dm-score">${score}</span><span class="om-dm-res ${cls}">${lettre}</span></li>`;
+  }).join("");
+  return `<div class="om-dm-eq"><div class="om-dm-tete"><span class="om-dm-nom">${echappeHtml(nom)}</span>` +
+    `<span class="om-dm-lieu">${lieu} · ${total} match${total > 1 ? "s" : ""}</span></div>` +
+    (l.length ? `<div class="om-dm-puces"><span>Marque <b>${moyenneFr(moy("marques_par_match", "marques"))}</b></span><span>Encaisse <b>${moyenneFr(moy("encaisses_par_match", "encaisses"))}</b></span></div><ul class="om-dm-liste">${lignes}</ul>`
+      : `<p class="om-info">Aucun match enregistré</p>`) + `</div>`;
 }
 function remplitDetails(details, m) {
   const h = m.historique || {};
   details.innerHTML = `<summary class="ax-summary-cache" tabindex="-1">Détails de l'analyse</summary><div class="ax-details-corps">` +
-    `<div class="ax-tab"><h4 class="ax-tab-titre">${echappeHtml(m.domicile)} : matchs joués à domicile</h4>${ligneBilanButs(h.bilan_domicile)}` +
-    `<ul class="ax-v3-lignes">${listeMatchs(h.domicile, m.domicile, true)}</ul></div>` +
-    `<div class="ax-tab"><h4 class="ax-tab-titre">${echappeHtml(m.exterieur)} : matchs joués à l'extérieur</h4>${ligneBilanButs(h.bilan_exterieur)}` +
-    `<ul class="ax-v3-lignes">${listeMatchs(h.exterieur, m.exterieur, false)}</ul></div></div>`;
+    `<div class="om-bloc"><div class="om-bloc-titre">Derniers matchs</div><div class="om-dm-grille">` +
+    equipeDerniers(m.domicile, "À domicile", h.domicile, h.bilan_domicile, true) +
+    equipeDerniers(m.exterieur, "À l'extérieur", h.exterieur, h.bilan_exterieur, false) + `</div></div></div>`;
 }
 
 function construitCarte(m) {

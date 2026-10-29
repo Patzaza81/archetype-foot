@@ -125,7 +125,7 @@ def test_page_sans_marches_exclus_avec_historique(tmp_path, monkeypatch):
 
 def test_page_js_explication_et_details():
     js = (suivi.ROOT / "archetype_comportement.js").read_text(encoding="utf-8")
-    assert "pourquoiCourt(s)" in js and "matchs joués à domicile" in js and "matchs joués à l'extérieur" in js
+    assert "pourquoiCourt(s)" in js and "\"À domicile\"" in js and "\"À l'extérieur\"" in js and "om-dm-eq" in js   # présentation des derniers matchs identique à Omega (29/10/2026)
     assert "C'est notre premier choix dans cette catégorie." in js
     assert "Marchés exclus" not in js
 

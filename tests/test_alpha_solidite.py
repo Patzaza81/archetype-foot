@@ -68,7 +68,7 @@ def test_affichage_de_la_solidite_prudent_et_a_la_bonne_version():
     assert ".ax-mk-sol" in CSS and ".ax-resume-sol" in CSS
     assert "--s:" in JS                                       # pastille remplie à hauteur du pourcentage (lisible au premier coup d'œil)
     assert ".ax-mk > .ax-resume-texte { grid-column: 1 / -1; }" in CSS and ".ax-mk > .ax-mk-sol { grid-column: 1; grid-row: 2; }" in CSS   # grille de la ligne de marché non décalée
-    assert "af-comportement.css?v=20261028f" in HTML and "archetype_comportement.js?v=20261028f" in HTML
+    assert "af-comportement.css?v=20261029a" in HTML and "archetype_comportement.js?v=20261029a" in HTML
 
 
 # --- Onglet « Sélection » de l'alpha : Solidité du marché sélectionné (affichage seulement) ------------------------------------------

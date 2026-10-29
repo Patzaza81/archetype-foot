@@ -1,0 +1,29 @@
+/* Derniers matchs du moteur alpha (29/10/2026, Patrick) : même présentation que le moteur Omega (classes om-dm-*, copiées de pronostics_omega.html). Portée : page alpha seulement. */
+body.af-alpha .om-bloc{font-size:12px}
+body.af-alpha .om-bloc-titre{font-weight:800;font-size:12px;margin-bottom:4px}
+body.af-alpha .om-info{font-size:12px;opacity:.8;margin-top:4px}
+body.af-alpha .om-dm-grille{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:720px){body.af-alpha .om-dm-grille{grid-template-columns:1fr 1fr}}
+body.af-alpha .om-dm-eq{border:1px solid rgba(8,127,120,.2);border-radius:16px;background:#fff;padding:12px 12px 6px;box-shadow:0 4px 14px rgba(15,42,40,.05)}
+body.af-alpha .om-dm-tete{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+body.af-alpha .om-dm-nom{font:800 15px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif;color:#17141B;min-width:0;overflow:hidden;text-overflow:ellipsis}
+body.af-alpha .om-dm-lieu{flex:0 0 auto;font-size:12px;font-weight:600;color:#5B6763}
+body.af-alpha .om-dm-puces{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px}
+body.af-alpha .om-dm-puces span{padding:3px 10px;border-radius:999px;background:#EEF5F3;color:#174743;font-size:12px;font-weight:600}
+body.af-alpha .om-dm-puces b{font-weight:800}
+body.af-alpha .om-dm-liste{list-style:none;margin:0;padding:0}
+body.af-alpha .om-dm{display:flex;align-items:center;gap:10px;min-height:42px;border-top:1px solid rgba(23,20,27,.07);font-size:13px}
+body.af-alpha .om-dm:first-child{border-top:0}
+body.af-alpha .om-dm-date{flex:0 0 52px;color:#5B6763;font-weight:600;font-variant-numeric:tabular-nums}
+body.af-alpha .om-dm-adv{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;color:#17141B}
+body.af-alpha .om-dm-score{flex:0 0 auto;font-variant-numeric:tabular-nums;font-weight:500;color:#8A949B;font-size:15px}
+body.af-alpha .om-dm-score b{font-weight:800;color:#17141B}
+body.af-alpha .om-dm-res{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;font-size:12px;font-weight:800;color:#fff}
+body.af-alpha .om-v{background:#2E9E6B}
+body.af-alpha .om-n{background:#8A949B}
+body.af-alpha .om-d{background:#D94F6B}
+body.af-alpha.theme-nuit .om-dm-eq{background:#1B1D22;border-color:rgba(21,152,141,.3)}
+body.af-alpha.theme-nuit .om-dm-nom,body.af-alpha.theme-nuit .om-dm-adv,body.af-alpha.theme-nuit .om-dm-score b{color:#F4F2F7}
+body.af-alpha.theme-nuit .om-dm-lieu,body.af-alpha.theme-nuit .om-dm-date{color:#A9B3B8}
+body.af-alpha.theme-nuit .om-dm-puces span{background:#24272E;color:#CFE9E5}
+body.af-alpha.theme-nuit .om-dm{border-top-color:rgba(255,255,255,.08)}
