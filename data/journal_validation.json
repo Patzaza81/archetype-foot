@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "genere_le": "2026-10-28T17:37:09Z",
+  "genere_le": "2026-10-29T03:31:07Z",
   "methode": "walk_forward",
   "anti_fuite": true,
   "groupes": {
@@ -74,7 +74,24 @@
       "observations": 0,
       "par_regime": {}
     },
+    "Boyacá Chicó|handicap_domicile_0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Boyacá Chicó|1x2_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "PERSISTANT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "Boyacá Chicó|handicap_domicile_-1.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -83,14 +100,24 @@
     "Boyacá Chicó|double_chance_1X": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "PERSISTANT": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
     },
     "Boyacá Chicó|handicap_domicile_-0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "PERSISTANT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Roda|over_under_total_3.5_under": {
       "methode": "walk_forward",
@@ -405,6 +432,18 @@
       "par_regime": {}
     },
     "Dunfermline|over_under_total_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Aberdeen|over_under_total_3.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Aberdeen|over_under_total_2.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
