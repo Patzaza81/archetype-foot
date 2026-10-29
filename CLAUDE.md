@@ -40,3 +40,10 @@ Les contrats et règles détaillées référencés par les documents spécialis�
 - `docs/CONTRAT_MOTEUR.md`
 - `docs/REGLE_DOUBLE_CONTROLE.md`
 - `tests/`
+
+## Tests, bilans et rapports de performance (règle de Patrick, 29/10/2026)
+
+- Tout test, bilan ou rapport sur un moteur (alpha, omega, …) utilise UNIQUEMENT les matchs que le moteur a réellement tournés : paris des journaux gelés AVANT le coup d'envoi, sur des matchs terminés. Jamais d'archive, de rejeu, de backtest ni de matchs à venir, sans que Patrick ait à le préciser.
+- Pour alpha, seulement les marchés que la page affiche vraiment (règle `af-alpha-selection.js`). Utiliser `python bilan_reel.py [--solidite-min 0.78]` ; ne pas recompter à la main.
+- Tout rapport annonce le nombre de matchs, de paris et la période ; ne pas citer le nombre de lignes de journal comme un nombre de matchs.
+- Si la période est courte ou l'échantillon petit, le dire. Les poids de la Solidité sont appris sur l'archive : le préciser quand elle sert de filtre.
