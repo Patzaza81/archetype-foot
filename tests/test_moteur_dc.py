@@ -212,7 +212,7 @@ def test_multigoal_somme_des_cases_et_effectifs_orientes():
 
 
 # --- Module 4 -----------------------------------------------------------------------------------------------------------
-def _l(cle, p, base, k, n, cote=None):
+def _l(cle, p, base, k, n, cote=1.50):
     return {"cle": list(cle), "marche": M.libelle(cle), "famille": M.famille(cle), "p": p, "base": base, "cote": cote,
             "preuve": {"k": k, "n": n, "p_hat": round(k / n, 4)}}
 
@@ -382,3 +382,18 @@ def test_seuils_par_marche_cas_qui_passent_et_echouent():
     assert K.seuils_par_marche(an)["1x2|1"]["seuil"] is None
     an = _an([0.40] * 100, [True] * 100)                                                      # sous 50 % : hors des tranches
     assert K.seuils_par_marche(an)["1x2|1"]["seuil"] is None
+
+
+def test_cote_minimale_1_26_et_cote_absente():
+    assert S.tester(_l(("1x2", "1"), 0.70, 0.45, 7, 10, cote=1.26), 0.005, None, 0.60)[0]          # 1,26 pile : jouable
+    assert S.tester(_l(("1x2", "1"), 0.70, 0.45, 7, 10, cote=1.80), 0.005, None, 0.60)[0]
+    assert S.tester(_l(("double_chance", "1N"), 0.85, 0.70, 9, 10, cote=1.30), 0.005, None, 0.70)[0]
+    ok, r = S.tester(_l(("double_chance", "1N"), 0.85, 0.70, 9, 10, cote=1.14), 0.005, None, 0.70)
+    assert not ok and r.startswith("cote 1,14")                                                     # « ne perd pas » à 1,14 : exclu
+    ok, r = S.tester(_l(("handicap_1.5", "domicile"), 0.93, 0.80, 9, 10, cote=None), 0.005, None, 0.70)
+    assert not ok and "absente" in r                                                                # pas de cote : injouable
+    assert not S.tester(_l(("over_under_exterieur_0.5", "plus"), 0.87, 0.73, 8, 8, cote=1.05), 0.005, None, 0.70)[0]
+    a = {"statut": "analyse", "marches": [_l(("handicap_1.5", "exterieur"), 0.94, 0.84, 8, 8, cote=None),
+                                          _l(("1x2", "2"), 0.62, 0.41, 6, 8, cote=1.28)]}
+    s = S.selectionner(a, 0.005, {"handicap_1.5|exterieur": {"seuil": 0.6}, "1x2|2": {"seuil": 0.5}})
+    assert s["principal"]["cle"] == ["1x2", "2"] and s["autres"] == []                             # le plus probable PARMI les jouables

@@ -66,6 +66,11 @@ Tranches de 5 points dès 50 % ; réussite par tranche lissée pour croître ave
 prédictions au-dessus de 50 %, ou jamais 70 % de réussite : victoire domicile, nul, la plupart des combinés). Détail : `docs/dc_validation.json` → `seuils_par_marche`.
 Soir du 30/10 (18 h-22 h) : 38 paris sur 19 matchs, 9 matchs à plusieurs paris, P moyenne 82,1 %, 0 avertissement.
 
+## Cote minimale 1,26 (Patrick, 30/10/2026 18 h 38)
+Le filtre de cote du Module 5 est rétabli (EV et Kelly restent écartés) : un pari validé n'est gardé, gelé et affiché que si sa cote BetPawa
+est connue et ≥ 1,26. Soir du 30/10 (18 h-22 h) : 7 paris jouables sur 6 matchs (au lieu de 38 sur 19). Exception : Slaven – Istra (cote 1,23)
+avait été gelé à 17 h 58, avant la règle, et son match avait commencé : sa ligne reste au journal (ajout seul).
+
 ## Points ouverts
 - Page `pronostics_dc.html` non faite.
 - Tests : `tests/test_moteur_dc.py` (30 tests, 3 cas qui passent et 3 qui échouent pour le contrat et le Module 4).

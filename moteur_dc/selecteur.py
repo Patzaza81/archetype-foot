@@ -4,7 +4,8 @@ Pour chaque marché du match (P = probabilité du modèle, Base = fréquence du 
 k/n = réussites/essais sur les matchs comparables : A à domicile + B à l'extérieur, score orienté) :
 - ordre de Patrick (30/10/2026) : 1. Edge = P − Base ≥ 10 % (et ≥ EMAC) ; 2. P ≥ seuil CALIBRÉ du marché (calibrage.seuils_par_marche) ;
 - Bonferroni et Z supprimés comme filtre (le Z reste affiché) ;
-- 3. intervalle de Wilson à 95 % de p̂, sur les seuls marchés validés : simple AVERTISSEMENT si P en sort (affiché, ne change ni la décision ni l'ordre) ;
+- 3. cote BetPawa ≥ 1,26 (Module 5 de Patrick, sans EV ni Kelly) ; cote absente = rejet ;
+- 4. intervalle de Wilson à 95 % de p̂, sur les seuls marchés validés : simple AVERTISSEMENT si P en sort (affiché, ne change ni la décision ni l'ordre) ;
 - une seule issue par marché (la plus probable) et jamais deux fois le même événement (même ensemble de scores gagnants).
 Sortie : TOUS les paris validés, par PROBABILITÉ décroissante ; pari principal = le plus probable. Tous sont gelés et réglés (suivi.py).
 
@@ -21,6 +22,7 @@ from . import marches as M
 ALPHA = 0.05                 # risque de l'intervalle de Wilson (95 %)
 P_MIN = 0.60                 # Patrick : plancher P ≥ 60 %
 EDGE_MIN = 0.10              # Patrick : Edge ≥ 10 %
+COTE_MIN = 1.26              # Module 5 de Patrick : cote BetPawa minimale (EV et Kelly restent écartés) ; cote absente = pari injouable
 REUSSITE_CIBLE = 0.70        # Patrick (30/10/2026) : seuil d'un marché = plus petite probabilité à partir de laquelle la réussite observée atteint 70 %
 Z_WILSON = NormalDist().inv_cdf(1 - ALPHA / 2)     # intervalle de Wilson à 95 % (même risque α)
 
@@ -60,6 +62,11 @@ def tester(l: dict[str, Any], emac: float, zs: float | None = None, seuil: float
         return False, f"P sans seuil : ce marché n'atteint jamais {REUSSITE_CIBLE:.0%} de réussite sur l'échantillon"
     if p < seuil:
         return False, f"P {p:.0%} < seuil du marché {seuil:.0%}"
+    cote = l.get("cote")
+    if cote is None:
+        return False, "cote BetPawa absente : pari injouable"
+    if cote < COTE_MIN:
+        return False, f"cote {cote:.2f} < {COTE_MIN:.2f}".replace(".", ",")
     if pr:
         bas, haut = wilson(pr["k"], pr["n"])
         pr["wilson"] = [round(bas, 4), round(haut, 4)]

@@ -6,17 +6,18 @@
   ],
   "matchs": 57,
   "analyses": 46,
-  "matchs_avec_pari": 19,
-  "paris": 38,
-  "paris_P_70_et_plus": 33,
+  "matchs_avec_pari": 6,
+  "paris": 7,
+  "paris_P_70_et_plus": 3,
   "paris_avec_avertissement": 0,
-  "matchs_plusieurs_paris": 9,
-  "p_moyenne": 0.821,
+  "matchs_plusieurs_paris": 1,
+  "p_moyenne": 0.6776,
   "decisions": {
    "Edge": 4400,
    "P": 283,
-   "validé": 38,
-   "exclusion": 17
+   "cote": 44,
+   "validé": 7,
+   "exclusion": 4
   }
  },
  "matchs": [
@@ -99,26 +100,7 @@
     "dom": 1.74,
     "ext": 1.57
    },
-   "paris_valides": [
-    {
-     "marche": "Plus de 0,5 buts de l'extérieur",
-     "P": 0.7917,
-     "p_hat": 0.7,
-     "k": 7,
-     "n": 10,
-     "wilson": [
-      0.3968,
-      0.8922
-     ],
-     "z": 0.34,
-     "base": 0.6481,
-     "edge": 0.1436,
-     "seuil_marche": 0.7,
-     "cote": 1.23,
-     "decision": "validé",
-     "avertissement": null
-    }
-   ],
+   "paris_valides": [],
    "tendances": [
     {
      "marche": "Plus de 1,5 buts",
@@ -441,42 +423,6 @@
    },
    "paris_valides": [
     {
-     "marche": "Handicap +1,5 extérieur",
-     "P": 0.8693,
-     "p_hat": 0.7778,
-     "k": 7,
-     "n": 9,
-     "wilson": [
-      0.4526,
-      0.9368
-     ],
-     "z": 0.09,
-     "base": 0.7647,
-     "edge": 0.1046,
-     "seuil_marche": 0.6,
-     "cote": 1.16,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Moins de 2,5 buts du domicile",
-     "P": 0.8193,
-     "p_hat": 0.8889,
-     "k": 8,
-     "n": 9,
-     "wilson": [
-      0.565,
-      0.9801
-     ],
-     "z": 1.2,
-     "base": 0.7059,
-     "edge": 0.1134,
-     "seuil_marche": 0.6,
-     "cote": null,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
      "marche": "Extérieur ne perd pas + plus de 1,5 buts",
      "P": 0.6184,
      "p_hat": 0.5556,
@@ -502,16 +448,13 @@
      "p_hat": 0.7778,
      "k": 7,
      "n": 9,
-     "wilson": [
-      0.4526,
-      0.9368
-     ],
+     "wilson": null,
      "z": 0.09,
      "base": 0.7647,
      "edge": 0.1046,
      "seuil_marche": 0.6,
      "cote": 1.16,
-     "decision": "validé",
+     "decision": "cote 1,16 < 1,26",
      "avertissement": null
     },
     {
@@ -621,24 +564,6 @@
    },
    "paris_valides": [
     {
-     "marche": "Plus de 0,5 buts de l'extérieur",
-     "P": 0.8628,
-     "p_hat": 0.75,
-     "k": 9,
-     "n": 12,
-     "wilson": [
-      0.4677,
-      0.9111
-     ],
-     "z": 0.08,
-     "base": 0.7403,
-     "edge": 0.1225,
-     "seuil_marche": 0.7,
-     "cote": 1.1,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
      "marche": "Extérieur ne perd pas + plus de 1,5 buts",
      "P": 0.6356,
      "p_hat": 0.5,
@@ -697,16 +622,13 @@
      "p_hat": 0.75,
      "k": 9,
      "n": 12,
-     "wilson": [
-      0.4677,
-      0.9111
-     ],
+     "wilson": null,
      "z": 0.08,
      "base": 0.7403,
      "edge": 0.1225,
      "seuil_marche": 0.7,
      "cote": 1.1,
-     "decision": "validé",
+     "decision": "cote 1,10 < 1,26",
      "avertissement": null
     },
     {
@@ -715,16 +637,13 @@
      "p_hat": 0.75,
      "k": 9,
      "n": 12,
-     "wilson": [
-      0.4677,
-      0.9111
-     ],
+     "wilson": null,
      "z": 0.08,
      "base": 0.7403,
      "edge": 0.1225,
      "seuil_marche": 0.7,
      "cote": 1.11,
-     "decision": "exclusion : même événement que « Plus de 0,5 buts de l'extérieur »",
+     "decision": "cote 1,11 < 1,26",
      "avertissement": null
     }
    ],
@@ -818,26 +737,7 @@
     "dom": 1.64,
     "ext": 1.53
    },
-   "paris_valides": [
-    {
-     "marche": "Moins de 2,5 buts du domicile",
-     "P": 0.7738,
-     "p_hat": 0.875,
-     "k": 7,
-     "n": 8,
-     "wilson": [
-      0.5291,
-      0.9776
-     ],
-     "z": 1.33,
-     "base": 0.65,
-     "edge": 0.1238,
-     "seuil_marche": 0.6,
-     "cote": 1.16,
-     "decision": "validé",
-     "avertissement": null
-    }
-   ],
+   "paris_valides": [],
    "tendances": [
     {
      "marche": "Plus de 1,5 buts",
@@ -914,26 +814,7 @@
     "dom": 2.25,
     "ext": 0.75
    },
-   "paris_valides": [
-    {
-     "marche": "Domicile ne perd pas",
-     "P": 0.8925,
-     "p_hat": 0.9286,
-     "k": 13,
-     "n": 14,
-     "wilson": [
-      0.6853,
-      0.9873
-     ],
-     "z": 1.42,
-     "base": 0.7692,
-     "edge": 0.1233,
-     "seuil_marche": 0.7,
-     "cote": 1.07,
-     "decision": "validé",
-     "avertissement": null
-    }
-   ],
+   "paris_valides": [],
    "tendances": [
     {
      "marche": "Handicap +1,5 domicile",
@@ -1238,26 +1119,7 @@
     "dom": 1.54,
     "ext": 1.71
    },
-   "paris_valides": [
-    {
-     "marche": "Plus de 1,5 buts",
-     "P": 0.8353,
-     "p_hat": 0.8889,
-     "k": 8,
-     "n": 9,
-     "wilson": [
-      0.565,
-      0.9801
-     ],
-     "z": 1.18,
-     "base": 0.7111,
-     "edge": 0.1242,
-     "seuil_marche": 0.5,
-     "cote": 1.14,
-     "decision": "validé",
-     "avertissement": null
-    }
-   ],
+   "paris_valides": [],
    "tendances": [
     {
      "marche": "Plus de 1,5 buts",
@@ -1265,16 +1127,13 @@
      "p_hat": 0.8889,
      "k": 8,
      "n": 9,
-     "wilson": [
-      0.565,
-      0.9801
-     ],
+     "wilson": null,
      "z": 1.18,
      "base": 0.7111,
      "edge": 0.1242,
      "seuil_marche": 0.5,
      "cote": 1.14,
-     "decision": "validé",
+     "decision": "cote 1,14 < 1,26",
      "avertissement": null
     },
     {
@@ -1996,44 +1855,7 @@
     "dom": 1.7,
     "ext": 1.98
    },
-   "paris_valides": [
-    {
-     "marche": "Plus de 0,5 buts de l'extérieur",
-     "P": 0.8615,
-     "p_hat": 0.8462,
-     "k": 11,
-     "n": 13,
-     "wilson": [
-      0.5777,
-      0.9567
-     ],
-     "z": 1.01,
-     "base": 0.7207,
-     "edge": 0.1408,
-     "seuil_marche": 0.7,
-     "cote": 1.11,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Handicap +1,5 extérieur",
-     "P": 0.832,
-     "p_hat": 0.6923,
-     "k": 9,
-     "n": 13,
-     "wilson": [
-      0.4237,
-      0.8732
-     ],
-     "z": -0.3,
-     "base": 0.7297,
-     "edge": 0.1023,
-     "seuil_marche": 0.6,
-     "cote": 1.07,
-     "decision": "validé",
-     "avertissement": null
-    }
-   ],
+   "paris_valides": [],
    "tendances": [
     {
      "marche": "Plus de 1,5 buts",
@@ -2056,16 +1878,13 @@
      "p_hat": 0.8462,
      "k": 11,
      "n": 13,
-     "wilson": [
-      0.5777,
-      0.9567
-     ],
+     "wilson": null,
      "z": 1.01,
      "base": 0.7207,
      "edge": 0.1408,
      "seuil_marche": 0.7,
      "cote": 1.11,
-     "decision": "validé",
+     "decision": "cote 1,11 < 1,26",
      "avertissement": null
     },
     {
@@ -2074,16 +1893,13 @@
      "p_hat": 0.8462,
      "k": 11,
      "n": 13,
-     "wilson": [
-      0.5777,
-      0.9567
-     ],
+     "wilson": null,
      "z": 1.01,
      "base": 0.7207,
      "edge": 0.1408,
      "seuil_marche": 0.7,
      "cote": 1.13,
-     "decision": "exclusion : même événement que « Plus de 0,5 buts de l'extérieur »",
+     "decision": "cote 1,13 < 1,26",
      "avertissement": null
     }
    ],
@@ -2100,62 +1916,7 @@
     "dom": 1.14,
     "ext": 1.58
    },
-   "paris_valides": [
-    {
-     "marche": "Moins de 2,5 buts du domicile",
-     "P": 0.8923,
-     "p_hat": 1.0,
-     "k": 12,
-     "n": 12,
-     "wilson": [
-      0.7575,
-      1.0
-     ],
-     "z": 1.96,
-     "base": 0.7568,
-     "edge": 0.1355,
-     "seuil_marche": 0.6,
-     "cote": null,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Handicap +1,5 extérieur",
-     "P": 0.8914,
-     "p_hat": 0.8333,
-     "k": 10,
-     "n": 12,
-     "wilson": [
-      0.552,
-      0.953
-     ],
-     "z": 0.81,
-     "base": 0.7297,
-     "edge": 0.1617,
-     "seuil_marche": 0.6,
-     "cote": null,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Moins de 4,5 buts",
-     "P": 0.8605,
-     "p_hat": 0.75,
-     "k": 9,
-     "n": 12,
-     "wilson": [
-      0.4677,
-      0.9111
-     ],
-     "z": 0.02,
-     "base": 0.7477,
-     "edge": 0.1128,
-     "seuil_marche": 0.7,
-     "cote": 1.12,
-     "decision": "validé",
-     "avertissement": null
-    }
-   ],
+   "paris_valides": [],
    "tendances": [
     {
      "marche": "Moins de 2,5 buts du domicile",
@@ -2163,16 +1924,13 @@
      "p_hat": 1.0,
      "k": 12,
      "n": 12,
-     "wilson": [
-      0.7575,
-      1.0
-     ],
+     "wilson": null,
      "z": 1.96,
      "base": 0.7568,
      "edge": 0.1355,
      "seuil_marche": 0.6,
      "cote": null,
-     "decision": "validé",
+     "decision": "cote BetPawa absente : pari injouable",
      "avertissement": null
     },
     {
@@ -2181,16 +1939,13 @@
      "p_hat": 0.8333,
      "k": 10,
      "n": 12,
-     "wilson": [
-      0.552,
-      0.953
-     ],
+     "wilson": null,
      "z": 0.81,
      "base": 0.7297,
      "edge": 0.1617,
      "seuil_marche": 0.6,
      "cote": null,
-     "decision": "validé",
+     "decision": "cote BetPawa absente : pari injouable",
      "avertissement": null
     },
     {
@@ -2199,16 +1954,13 @@
      "p_hat": 0.75,
      "k": 9,
      "n": 12,
-     "wilson": [
-      0.4677,
-      0.9111
-     ],
+     "wilson": null,
      "z": 0.02,
      "base": 0.7477,
      "edge": 0.1128,
      "seuil_marche": 0.7,
      "cote": 1.12,
-     "decision": "validé",
+     "decision": "cote 1,12 < 1,26",
      "avertissement": null
     }
    ],
@@ -2294,62 +2046,7 @@
     "dom": 2.42,
     "ext": 1.26
    },
-   "paris_valides": [
-    {
-     "marche": "Handicap +1,5 domicile",
-     "P": 0.9267,
-     "p_hat": 0.8571,
-     "k": 12,
-     "n": 14,
-     "wilson": [
-      0.6006,
-      0.9599
-     ],
-     "z": 0.74,
-     "base": 0.7748,
-     "edge": 0.1519,
-     "seuil_marche": 0.7,
-     "cote": null,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Plus de 0,5 buts du domicile",
-     "P": 0.9113,
-     "p_hat": 0.8571,
-     "k": 12,
-     "n": 14,
-     "wilson": [
-      0.6006,
-      0.9599
-     ],
-     "z": 0.59,
-     "base": 0.7928,
-     "edge": 0.1185,
-     "seuil_marche": 0.65,
-     "cote": null,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Domicile ne perd pas",
-     "P": 0.8162,
-     "p_hat": 0.8571,
-     "k": 12,
-     "n": 14,
-     "wilson": [
-      0.6006,
-      0.9599
-     ],
-     "z": 1.76,
-     "base": 0.6306,
-     "edge": 0.1856,
-     "seuil_marche": 0.7,
-     "cote": 1.14,
-     "decision": "validé",
-     "avertissement": null
-    }
-   ],
+   "paris_valides": [],
    "tendances": [
     {
      "marche": "Handicap +1,5 domicile",
@@ -2357,16 +2054,13 @@
      "p_hat": 0.8571,
      "k": 12,
      "n": 14,
-     "wilson": [
-      0.6006,
-      0.9599
-     ],
+     "wilson": null,
      "z": 0.74,
      "base": 0.7748,
      "edge": 0.1519,
      "seuil_marche": 0.7,
      "cote": null,
-     "decision": "validé",
+     "decision": "cote BetPawa absente : pari injouable",
      "avertissement": null
     },
     {
@@ -2375,16 +2069,13 @@
      "p_hat": 0.8571,
      "k": 12,
      "n": 14,
-     "wilson": [
-      0.6006,
-      0.9599
-     ],
+     "wilson": null,
      "z": 0.59,
      "base": 0.7928,
      "edge": 0.1185,
      "seuil_marche": 0.65,
      "cote": null,
-     "decision": "validé",
+     "decision": "cote BetPawa absente : pari injouable",
      "avertissement": null
     },
     {
@@ -2393,16 +2084,13 @@
      "p_hat": 0.8571,
      "k": 12,
      "n": 14,
-     "wilson": [
-      0.6006,
-      0.9599
-     ],
+     "wilson": null,
      "z": 0.59,
      "base": 0.7928,
      "edge": 0.1185,
      "seuil_marche": 0.65,
      "cote": 1.06,
-     "decision": "exclusion : même événement que « Plus de 0,5 buts du domicile »",
+     "decision": "cote 1,06 < 1,26",
      "avertissement": null
     }
    ],
@@ -2419,62 +2107,7 @@
     "dom": 2.24,
     "ext": 1.25
    },
-   "paris_valides": [
-    {
-     "marche": "Handicap +1,5 domicile",
-     "P": 0.9193,
-     "p_hat": 1.0,
-     "k": 12,
-     "n": 12,
-     "wilson": [
-      0.7575,
-      1.0
-     ],
-     "z": 1.87,
-     "base": 0.7748,
-     "edge": 0.1445,
-     "seuil_marche": 0.7,
-     "cote": null,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Plus de 0,5 buts du domicile",
-     "P": 0.894,
-     "p_hat": 0.8333,
-     "k": 10,
-     "n": 12,
-     "wilson": [
-      0.552,
-      0.953
-     ],
-     "z": 0.35,
-     "base": 0.7928,
-     "edge": 0.1012,
-     "seuil_marche": 0.65,
-     "cote": null,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Domicile ne perd pas",
-     "P": 0.7994,
-     "p_hat": 0.6667,
-     "k": 8,
-     "n": 12,
-     "wilson": [
-      0.3906,
-      0.8619
-     ],
-     "z": 0.26,
-     "base": 0.6306,
-     "edge": 0.1688,
-     "seuil_marche": 0.7,
-     "cote": 1.13,
-     "decision": "validé",
-     "avertissement": null
-    }
-   ],
+   "paris_valides": [],
    "tendances": [
     {
      "marche": "Handicap +1,5 domicile",
@@ -2482,16 +2115,13 @@
      "p_hat": 1.0,
      "k": 12,
      "n": 12,
-     "wilson": [
-      0.7575,
-      1.0
-     ],
+     "wilson": null,
      "z": 1.87,
      "base": 0.7748,
      "edge": 0.1445,
      "seuil_marche": 0.7,
      "cote": null,
-     "decision": "validé",
+     "decision": "cote BetPawa absente : pari injouable",
      "avertissement": null
     },
     {
@@ -2500,16 +2130,13 @@
      "p_hat": 0.8333,
      "k": 10,
      "n": 12,
-     "wilson": [
-      0.552,
-      0.953
-     ],
+     "wilson": null,
      "z": 0.35,
      "base": 0.7928,
      "edge": 0.1012,
      "seuil_marche": 0.65,
      "cote": null,
-     "decision": "validé",
+     "decision": "cote BetPawa absente : pari injouable",
      "avertissement": null
     },
     {
@@ -2518,16 +2145,13 @@
      "p_hat": 0.8333,
      "k": 10,
      "n": 12,
-     "wilson": [
-      0.552,
-      0.953
-     ],
+     "wilson": null,
      "z": 0.35,
      "base": 0.7928,
      "edge": 0.1012,
      "seuil_marche": 0.65,
      "cote": 1.03,
-     "decision": "exclusion : même événement que « Plus de 0,5 buts du domicile »",
+     "decision": "cote 1,03 < 1,26",
      "avertissement": null
     }
    ],
@@ -2605,62 +2229,7 @@
     "dom": 1.22,
     "ext": 1.48
    },
-   "paris_valides": [
-    {
-     "marche": "Moins de 2,5 buts du domicile",
-     "P": 0.8742,
-     "p_hat": 0.875,
-     "k": 7,
-     "n": 8,
-     "wilson": [
-      0.5291,
-      0.9776
-     ],
-     "z": 1.3,
-     "base": 0.6575,
-     "edge": 0.2167,
-     "seuil_marche": 0.6,
-     "cote": 1.05,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Handicap +1,5 extérieur",
-     "P": 0.8686,
-     "p_hat": 0.875,
-     "k": 7,
-     "n": 8,
-     "wilson": [
-      0.5291,
-      0.9776
-     ],
-     "z": 1.09,
-     "base": 0.6986,
-     "edge": 0.17,
-     "seuil_marche": 0.6,
-     "cote": null,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Plus de 0,5 buts de l'extérieur",
-     "P": 0.7719,
-     "p_hat": 0.875,
-     "k": 7,
-     "n": 8,
-     "wilson": [
-      0.5291,
-      0.9776
-     ],
-     "z": 1.37,
-     "base": 0.6438,
-     "edge": 0.1281,
-     "seuil_marche": 0.7,
-     "cote": 1.06,
-     "decision": "validé",
-     "avertissement": null
-    }
-   ],
+   "paris_valides": [],
    "tendances": [
     {
      "marche": "Moins de 2,5 buts du domicile",
@@ -2668,16 +2237,13 @@
      "p_hat": 0.875,
      "k": 7,
      "n": 8,
-     "wilson": [
-      0.5291,
-      0.9776
-     ],
+     "wilson": null,
      "z": 1.3,
      "base": 0.6575,
      "edge": 0.2167,
      "seuil_marche": 0.6,
      "cote": 1.05,
-     "decision": "validé",
+     "decision": "cote 1,05 < 1,26",
      "avertissement": null
     },
     {
@@ -2686,16 +2252,13 @@
      "p_hat": 0.875,
      "k": 7,
      "n": 8,
-     "wilson": [
-      0.5291,
-      0.9776
-     ],
+     "wilson": null,
      "z": 1.09,
      "base": 0.6986,
      "edge": 0.17,
      "seuil_marche": 0.6,
      "cote": null,
-     "decision": "validé",
+     "decision": "cote BetPawa absente : pari injouable",
      "avertissement": null
     },
     {
@@ -2727,26 +2290,7 @@
     "dom": 1.82,
     "ext": 1.13
    },
-   "paris_valides": [
-    {
-     "marche": "Domicile ne perd pas",
-     "P": 0.7687,
-     "p_hat": 0.7333,
-     "k": 11,
-     "n": 15,
-     "wilson": [
-      0.4805,
-      0.891
-     ],
-     "z": 0.75,
-     "base": 0.64,
-     "edge": 0.1287,
-     "seuil_marche": 0.7,
-     "cote": 1.25,
-     "decision": "validé",
-     "avertissement": null
-    }
-   ],
+   "paris_valides": [],
    "tendances": [
     {
      "marche": "Handicap +1,5 domicile",
@@ -2807,26 +2351,7 @@
     "dom": 1.48,
     "ext": 1.19
    },
-   "paris_valides": [
-    {
-     "marche": "Handicap +1,5 domicile",
-     "P": 0.8753,
-     "p_hat": 0.8182,
-     "k": 9,
-     "n": 11,
-     "wilson": [
-      0.523,
-      0.9486
-     ],
-     "z": 0.45,
-     "base": 0.76,
-     "edge": 0.1153,
-     "seuil_marche": 0.7,
-     "cote": null,
-     "decision": "validé",
-     "avertissement": null
-    }
-   ],
+   "paris_valides": [],
    "tendances": [
     {
      "marche": "Moins de 2,5 buts de l'extérieur",
@@ -2849,16 +2374,13 @@
      "p_hat": 0.8182,
      "k": 9,
      "n": 11,
-     "wilson": [
-      0.523,
-      0.9486
-     ],
+     "wilson": null,
      "z": 0.45,
      "base": 0.76,
      "edge": 0.1153,
      "seuil_marche": 0.7,
      "cote": null,
-     "decision": "validé",
+     "decision": "cote BetPawa absente : pari injouable",
      "avertissement": null
     },
     {
@@ -2890,62 +2412,7 @@
     "dom": 1.75,
     "ext": 1.03
    },
-   "paris_valides": [
-    {
-     "marche": "Handicap +1,5 domicile",
-     "P": 0.92,
-     "p_hat": 1.0,
-     "k": 12,
-     "n": 12,
-     "wilson": [
-      0.7575,
-      1.0
-     ],
-     "z": 1.95,
-     "base": 0.76,
-     "edge": 0.16,
-     "seuil_marche": 0.7,
-     "cote": null,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Moins de 2,5 buts de l'extérieur",
-     "P": 0.9147,
-     "p_hat": 0.9167,
-     "k": 11,
-     "n": 12,
-     "wilson": [
-      0.6461,
-      0.9851
-     ],
-     "z": 0.92,
-     "base": 0.8133,
-     "edge": 0.1014,
-     "seuil_marche": 0.7,
-     "cote": null,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Domicile ne perd pas",
-     "P": 0.782,
-     "p_hat": 0.75,
-     "k": 9,
-     "n": 12,
-     "wilson": [
-      0.4677,
-      0.9111
-     ],
-     "z": 1.24,
-     "base": 0.5733,
-     "edge": 0.2087,
-     "seuil_marche": 0.7,
-     "cote": 1.06,
-     "decision": "validé",
-     "avertissement": null
-    }
-   ],
+   "paris_valides": [],
    "tendances": [
     {
      "marche": "Handicap +1,5 domicile",
@@ -2953,16 +2420,13 @@
      "p_hat": 1.0,
      "k": 12,
      "n": 12,
-     "wilson": [
-      0.7575,
-      1.0
-     ],
+     "wilson": null,
      "z": 1.95,
      "base": 0.76,
      "edge": 0.16,
      "seuil_marche": 0.7,
      "cote": null,
-     "decision": "validé",
+     "decision": "cote BetPawa absente : pari injouable",
      "avertissement": null
     },
     {
@@ -2971,16 +2435,13 @@
      "p_hat": 0.9167,
      "k": 11,
      "n": 12,
-     "wilson": [
-      0.6461,
-      0.9851
-     ],
+     "wilson": null,
      "z": 0.92,
      "base": 0.8133,
      "edge": 0.1014,
      "seuil_marche": 0.7,
      "cote": null,
-     "decision": "validé",
+     "decision": "cote BetPawa absente : pari injouable",
      "avertissement": null
     },
     {
@@ -3142,26 +2603,7 @@
     "dom": 1.06,
     "ext": 1.44
    },
-   "paris_valides": [
-    {
-     "marche": "Handicap +1,5 extérieur",
-     "P": 0.8943,
-     "p_hat": 0.8929,
-     "k": 25,
-     "n": 28,
-     "wilson": [
-      0.728,
-      0.9629
-     ],
-     "z": 1.36,
-     "base": 0.7881,
-     "edge": 0.1062,
-     "seuil_marche": 0.6,
-     "cote": null,
-     "decision": "validé",
-     "avertissement": null
-    }
-   ],
+   "paris_valides": [],
    "tendances": [
     {
      "marche": "Moins de 2,5 buts du domicile",
@@ -3184,16 +2626,13 @@
      "p_hat": 0.8929,
      "k": 25,
      "n": 28,
-     "wilson": [
-      0.728,
-      0.9629
-     ],
+     "wilson": null,
      "z": 1.36,
      "base": 0.7881,
      "edge": 0.1062,
      "seuil_marche": 0.6,
      "cote": null,
-     "decision": "validé",
+     "decision": "cote BetPawa absente : pari injouable",
      "avertissement": null
     },
     {
@@ -3479,78 +2918,6 @@
    },
    "paris_valides": [
     {
-     "marche": "Handicap +1,5 extérieur",
-     "P": 0.942,
-     "p_hat": 1.0,
-     "k": 8,
-     "n": 8,
-     "wilson": [
-      0.6756,
-      1.0
-     ],
-     "z": 1.24,
-     "base": 0.8395,
-     "edge": 0.1025,
-     "seuil_marche": 0.6,
-     "cote": null,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Plus de 0,5 buts de l'extérieur",
-     "P": 0.8718,
-     "p_hat": 1.0,
-     "k": 8,
-     "n": 8,
-     "wilson": [
-      0.6756,
-      1.0
-     ],
-     "z": 1.73,
-     "base": 0.7284,
-     "edge": 0.1434,
-     "seuil_marche": 0.7,
-     "cote": 1.05,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Extérieur ne perd pas",
-     "P": 0.8344,
-     "p_hat": 1.0,
-     "k": 8,
-     "n": 8,
-     "wilson": [
-      0.6756,
-      1.0
-     ],
-     "z": 2.17,
-     "base": 0.6296,
-     "edge": 0.2048,
-     "seuil_marche": 0.75,
-     "cote": 1.08,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Extérieur ne perd pas + plus de 1,5 buts",
-     "P": 0.6866,
-     "p_hat": 0.75,
-     "k": 6,
-     "n": 8,
-     "wilson": [
-      0.4093,
-      0.9285
-     ],
-     "z": 1.52,
-     "base": 0.4815,
-     "edge": 0.2051,
-     "seuil_marche": 0.6,
-     "cote": null,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
      "marche": "Victoire extérieur",
      "P": 0.6177,
      "p_hat": 0.75,
@@ -3576,16 +2943,13 @@
      "p_hat": 1.0,
      "k": 8,
      "n": 8,
-     "wilson": [
-      0.6756,
-      1.0
-     ],
+     "wilson": null,
      "z": 1.24,
      "base": 0.8395,
      "edge": 0.1025,
      "seuil_marche": 0.6,
      "cote": null,
-     "decision": "validé",
+     "decision": "cote BetPawa absente : pari injouable",
      "avertissement": null
     },
     {
@@ -3609,16 +2973,13 @@
      "p_hat": 1.0,
      "k": 8,
      "n": 8,
-     "wilson": [
-      0.6756,
-      1.0
-     ],
+     "wilson": null,
      "z": 1.73,
      "base": 0.7284,
      "edge": 0.1434,
      "seuil_marche": 0.7,
      "cote": 1.05,
-     "decision": "validé",
+     "decision": "cote 1,05 < 1,26",
      "avertissement": null
     }
    ],
