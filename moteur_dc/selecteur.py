@@ -4,9 +4,9 @@ Pour chaque marché du match (P = probabilité du modèle, Base = fréquence du 
 k/n = réussites/essais sur les matchs comparables : A à domicile + B à l'extérieur, score orienté) :
 - ordre de Patrick (30/10/2026) : 1. Edge = P − Base ≥ 10 % (et ≥ EMAC) ; 2. P ≥ seuil CALIBRÉ du marché (calibrage.seuils_par_marche) ;
 - Bonferroni et Z supprimés comme filtre (le Z reste affiché) ;
-- 3. intervalle de Wilson à 95 % de p̂, sur les seuls marchés validés : simple AVERTISSEMENT si P en sort (confiance réduite, classé après les paris sans avertissement) ;
+- 3. intervalle de Wilson à 95 % de p̂, sur les seuls marchés validés : simple AVERTISSEMENT si P en sort (affiché, ne change ni la décision ni l'ordre) ;
 - une seule issue par marché (la plus probable) et jamais deux fois le même événement (même ensemble de scores gagnants).
-Sortie : paris sans avertissement d'abord, puis par PROBABILITÉ décroissante ; pari principal = le premier.
+Sortie : TOUS les paris validés, par PROBABILITÉ décroissante ; pari principal = le plus probable. Tous sont gelés et réglés (suivi.py).
 
 EMAC = erreur de calibration du modèle par dixième de probabilité (calibrage hors échantillon, puis 30 derniers jours du journal gelé).
 """
@@ -87,7 +87,7 @@ def selectionner(a: dict[str, Any], emac: float, seuils: dict[str, Any] | None =
         l["decision"] = raison
         if bon:
             ok.append(l)
-    ok.sort(key=lambda l: (l.get("avertissement") is not None, -l["p"], -l["edge"]))
+    ok.sort(key=lambda l: (-l["p"], -l["edge"]))                 # réussite d'abord : le plus probable en tête (Patrick, 30/10/2026)
     garde, groupes, vus = [], {}, {}
     for l in ok:
         g = l["cle"][0]

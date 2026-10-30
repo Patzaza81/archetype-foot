@@ -249,8 +249,8 @@ def test_option_b_une_issue_par_marche_avertis_apres_et_jamais_deux_fois_le_meme
                                           _l(("handicap_0.5", "domicile"), 0.95, 0.70, 10, 10), _l(("over_under_1.5", "plus"), 0.97, 0.70, 3, 10)]}
     s = S.selectionner(a, 0.005)
     cles = [s["principal"]["cle"]] + [x["cle"] for x in s["autres"]]
-    assert cles[0] in (["double_chance", "1N"], ["handicap_0.5", "domicile"])     # le plus probable sans avertissement en tête
-    assert cles[-1] == ["over_under_1.5", "plus"]                                 # 97 % mais hors Wilson : classé après
+    assert cles[0] == ["over_under_1.5", "plus"]                                  # le plus probable en tête, même avec un avertissement (réussite d'abord)
+    assert [x["p"] for x in [s["principal"]] + s["autres"]] == sorted([x["p"] for x in [s["principal"]] + s["autres"]], reverse=True)
     assert (["double_chance", "1N"] in cles) != (["handicap_0.5", "domicile"] in cles)
     assert ["1x2", "1"] in cles
     assert S.selectionner({"statut": "analyse", "marches": [_l(("1x2", "1"), 0.58, 0.45, 6, 10)]}, 0.005)["principal"] is None

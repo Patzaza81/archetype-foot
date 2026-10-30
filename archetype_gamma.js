@@ -94,10 +94,18 @@ function gaPreuve(p) {
   if (pr.n) l.push(`Matchs comparables : <b>${pr.k} sur ${pr.n}</b>` + (Array.isArray(pr.wilson) ? ` (intervalle ${gaPct(pr.wilson[0])} – ${gaPct(pr.wilson[1])})` : ""));
   return l.length ? `<div class="om-pond"><div class="om-pond-t">Preuve</div>${l.map((x) => `<div class="om-info">${x}</div>`).join("")}</div>` : "";
 }
+// Détail compact d'un autre pari validé : base, avantage, seuil du marché, matchs comparables et intervalle de Wilson.
+function gaPreuveCourte(p) {
+  const pr = p.preuve || {}, l = [];
+  if (p.base != null) l.push(`base ${gaPct(p.base)} · avantage ${gaSigne(p.edge)}`);
+  if (p.seuil != null) l.push(`seuil ${gaPct(p.seuil)}`);
+  if (pr.n) l.push(`${pr.k} sur ${pr.n}` + (Array.isArray(pr.wilson) ? ` (intervalle ${gaPct(pr.wilson[0])} – ${gaPct(pr.wilson[1])})` : ""));
+  return l.length ? `<small class="om-sous">${l.join(" · ")}</small>` : "";
+}
 function gaLigne(p, f, principal) {
   const ph = gaPhrase(p.cle, f.domicile, f.exterieur);
   return `<div class="om-ligne ${principal ? "om-principal" : ""}"><span>${gaE(ph.titre)}${ph.reel ? `<small class="om-sous">${gaE(ph.reel)}</small>` : ""}` +
-    gaProba(p) + gaAlerte(p) + `</span>` +
+    gaProba(p) + gaAlerte(p) + (principal ? "" : gaPreuveCourte(p)) + `</span>` +
     `<span><span class="om-cote">Cote ${gaCote(p.cote)}</span> ${gaBadge(p)}</span></div>`;
 }
 // Derniers matchs des deux équipes (à domicile pour l'une, à l'extérieur pour l'autre : ceux qu'utilise le modèle) : date, adversaire, score, résultat.
@@ -226,7 +234,7 @@ function gaCarte(f) {
     `</div>` +
     `<details class="ax-details" open><summary class="ax-summary-cache" tabindex="-1">Détails</summary><div class="ax-details-corps">` +
       gaPourquoi(f) +
-      `<div class="om-autres"><div class="om-autres-titre">Autres paris possibles</div>` +
+      `<div class="om-autres"><div class="om-autres-titre">Autres paris validés (du plus probable au moins probable)</div>` +
         (autres.length ? autres.map((x) => gaLigne(x, f, false)).join("") : `<div class="om-info">Aucun autre pari ne remplit les règles.</div>`) + `</div>` +
       gaDerniers(f) + gaScores(f) +
     `</div></details>`;
@@ -263,9 +271,9 @@ function gaAffiche(d) {
   document.getElementById("om-sans").textContent = sans ? `${sans} autre${sans > 1 ? "s" : ""} match${sans > 1 ? "s" : ""} analysé${sans > 1 ? "s" : ""} sans pari : aucun marché ne remplit les règles (on ne force jamais).` : "";
   gaListe("om-encours", d.en_cours, "Aucun match en cours.");
   gaListe("om-regles", d.reglees, "Aucun pari réglé pour l'instant.");
-  const g = d.genere_le ? new Date(d.genere_le) : null;
+  const g = d.derniere_analyse || d.genere_le ? new Date(d.derniere_analyse || d.genere_le) : null;
   document.getElementById("maj").textContent = g && !Number.isNaN(g.getTime())
-    ? `Mis à jour le ${g.toLocaleDateString("fr-FR")} à ${g.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}` : "";
+    ? `Dernière analyse du moteur Gamma : ${g.toLocaleDateString("fr-FR")} à ${g.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}` : "";
 }
 function gaTheme() {
   const bouton = document.getElementById("ax-bouton-theme"); if (!bouton) return;

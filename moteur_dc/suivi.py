@@ -217,7 +217,9 @@ def _noms_derniers(f: dict[str, Any], noms: dict[str, str] | None) -> dict[str, 
     return f
 
 
-def page(maintenant: datetime | None = None, journal: Path = JOURNAL, sortie: Path = PAGE, noms: dict[str, str] | None = None) -> dict[str, Any]:
+def page(maintenant: datetime | None = None, journal: Path = JOURNAL, sortie: Path = PAGE, noms: dict[str, str] | None = None,
+         derniere_analyse: datetime | None = None) -> dict[str, Any]:
+    """`derniere_analyse` = heure de la dernière analyse réussie du moteur (pipeline) ; la page l'affiche : si le pipeline plante, elle reste ancienne."""
     maintenant = maintenant or datetime.now(timezone.utc)
     lignes = _lire(journal)
     res = {l["match_id"]: l for l in lignes if l["type"] == "resultat"}
@@ -251,7 +253,8 @@ def page(maintenant: datetime | None = None, journal: Path = JOURNAL, sortie: Pa
     except Exception:
         val = None
     p = charger_parametres() if PARAMS.exists() else {}
-    out = {"genere_le": maintenant.isoformat(timespec="seconds"), "version": p.get("version"), "statut": "observation", "effets": p.get("effets"), "emac_calibrage": p.get("emac"),
+    out = {"genere_le": maintenant.isoformat(timespec="seconds"),
+           "derniere_analyse": (derniere_analyse or maintenant).isoformat(timespec="seconds"), "version": p.get("version"), "statut": "observation", "effets": p.get("effets"), "emac_calibrage": p.get("emac"),
            "validation": val, "bilan": bilan(lignes), "sans_pronostic": sans,
            "a_venir": sorted(a_venir, key=lambda f: str(f.get("coup_d_envoi_utc"))), "en_cours": sorted(en_cours, key=lambda f: str(f.get("coup_d_envoi_utc"))),
            "reglees": sorted(reglees, key=lambda f: str(f.get("coup_d_envoi_utc")), reverse=True)}
@@ -261,11 +264,12 @@ def page(maintenant: datetime | None = None, journal: Path = JOURNAL, sortie: Pa
 
 
 def pipeline() -> None:
+    debut = datetime.now(timezone.utc)
     ligues = D.charger_ligues()
     matchs = D.charger_archive(ligues)
-    n = geler(ligues=ligues, matchs=matchs)
+    n = geler(maintenant=debut, ligues=ligues, matchs=matchs)
     r = resultats(matchs=matchs)
-    p = page(noms=ligues.noms)
+    p = page(noms=ligues.noms, derniere_analyse=debut)
     print(f"dc : {n} pronostic(s) gelé(s), {r} résultat(s) réglé(s), {len(p['a_venir'])} pari(s) à venir, {p['sans_pronostic']} match(s) sans pronostic")
 
 
