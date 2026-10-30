@@ -6,15 +6,17 @@
   ],
   "matchs": 57,
   "analyses": 46,
-  "matchs_avec_pari": 26,
-  "paris": 90,
-  "paris_P_70_et_plus": 51,
-  "paris_avec_avertissement": 2,
+  "matchs_avec_pari": 19,
+  "paris": 38,
+  "paris_P_70_et_plus": 33,
+  "paris_avec_avertissement": 0,
+  "matchs_plusieurs_paris": 9,
+  "p_moyenne": 0.821,
   "decisions": {
    "Edge": 4400,
-   "P": 217,
-   "validé": 90,
-   "exclusion": 31
+   "P": 283,
+   "validé": 38,
+   "exclusion": 17
   }
  },
  "matchs": [
@@ -40,6 +42,7 @@
      "z": 0.26,
      "base": 0.8842,
      "edge": -0.018,
+     "seuil_marche": 0.7,
      "cote": 1.1,
      "decision": "Edge -1.8% < 10%",
      "avertissement": null
@@ -54,6 +57,7 @@
      "z": 0.35,
      "base": 0.8737,
      "edge": -0.0249,
+     "seuil_marche": 0.7,
      "cote": 1.1,
      "decision": "Edge -2.5% < 10%",
      "avertissement": null
@@ -68,6 +72,7 @@
      "z": 0.15,
      "base": 0.8,
      "edge": 0.0132,
+     "seuil_marche": 0.7,
      "cote": 1.16,
      "decision": "Edge +1.3% < 10%",
      "avertissement": null
@@ -108,24 +113,8 @@
      "z": 0.34,
      "base": 0.6481,
      "edge": 0.1436,
+     "seuil_marche": 0.7,
      "cote": 1.23,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Les deux équipes marquent",
-     "P": 0.6591,
-     "p_hat": 0.7,
-     "k": 7,
-     "n": 10,
-     "wilson": [
-      0.3968,
-      0.8922
-     ],
-     "z": 0.92,
-     "base": 0.5556,
-     "edge": 0.1035,
-     "cote": 1.46,
      "decision": "validé",
      "avertissement": null
     }
@@ -141,6 +130,7 @@
      "z": 0.81,
      "base": 0.7963,
      "edge": 0.0524,
+     "seuil_marche": 0.5,
      "cote": 1.16,
      "decision": "Edge +5.2% < 10%",
      "avertissement": null
@@ -155,6 +145,7 @@
      "z": -1.9,
      "base": 0.8889,
      "edge": -0.0573,
+     "seuil_marche": 0.7,
      "cote": null,
      "decision": "Edge -5.7% < 10%",
      "avertissement": null
@@ -169,6 +160,7 @@
      "z": 0.57,
      "base": 0.8333,
      "edge": -0.008,
+     "seuil_marche": 0.65,
      "cote": 1.15,
      "decision": "Edge -0.8% < 10%",
      "avertissement": null
@@ -187,42 +179,7 @@
     "dom": 1.25,
     "ext": 1.22
    },
-   "paris_valides": [
-    {
-     "marche": "Moins de 1,5 buts du domicile",
-     "P": 0.6432,
-     "p_hat": 0.6667,
-     "k": 6,
-     "n": 9,
-     "wilson": [
-      0.3542,
-      0.8794
-     ],
-     "z": 0.96,
-     "base": 0.5062,
-     "edge": 0.137,
-     "cote": 1.27,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Extérieur ne perd pas",
-     "P": 0.6373,
-     "p_hat": 0.6667,
-     "k": 6,
-     "n": 9,
-     "wilson": [
-      0.3542,
-      0.8794
-     ],
-     "z": 0.89,
-     "base": 0.5185,
-     "edge": 0.1188,
-     "cote": 1.17,
-     "decision": "validé",
-     "avertissement": null
-    }
-   ],
+   "paris_valides": [],
    "tendances": [
     {
      "marche": "Moins de 4,5 buts",
@@ -234,6 +191,7 @@
      "z": 0.4,
      "base": 0.8395,
      "edge": 0.0552,
+     "seuil_marche": 0.7,
      "cote": 1.18,
      "decision": "Edge +5.5% < 10%",
      "avertissement": null
@@ -248,6 +206,7 @@
      "z": -0.76,
      "base": 0.8642,
      "edge": 0.0111,
+     "seuil_marche": 0.7,
      "cote": 1.41,
      "decision": "Edge +1.1% < 10%",
      "avertissement": null
@@ -262,6 +221,7 @@
      "z": 0.73,
      "base": 0.7901,
      "edge": 0.0774,
+     "seuil_marche": 0.6,
      "cote": 1.03,
      "decision": "Edge +7.7% < 10%",
      "avertissement": null
@@ -292,6 +252,7 @@
      "z": -0.05,
      "base": 0.8235,
      "edge": 0.0396,
+     "seuil_marche": 0.6,
      "cote": 1.26,
      "decision": "Edge +4.0% < 10%",
      "avertissement": null
@@ -306,6 +267,7 @@
      "z": 0.86,
      "base": 0.8067,
      "edge": 0.0559,
+     "seuil_marche": 0.6,
      "cote": 1.3,
      "decision": "Edge +5.6% < 10%",
      "avertissement": null
@@ -320,6 +282,7 @@
      "z": -0.37,
      "base": 0.8571,
      "edge": -0.0071,
+     "seuil_marche": 0.7,
      "cote": 1.14,
      "decision": "Edge -0.7% < 10%",
      "avertissement": null
@@ -350,6 +313,7 @@
      "z": -1.2,
      "base": 0.8675,
      "edge": -0.0053,
+     "seuil_marche": 0.7,
      "cote": 1.17,
      "decision": "Edge -0.5% < 10%",
      "avertissement": null
@@ -364,6 +328,7 @@
      "z": -1.38,
      "base": 0.8795,
      "edge": -0.022,
+     "seuil_marche": 0.7,
      "cote": 1.18,
      "decision": "Edge -2.2% < 10%",
      "avertissement": null
@@ -378,6 +343,7 @@
      "z": -0.22,
      "base": 0.8554,
      "edge": 0.0009,
+     "seuil_marche": 0.7,
      "cote": 1.13,
      "decision": "Edge +0.1% < 10%",
      "avertissement": null
@@ -416,6 +382,7 @@
      "z": 0.87,
      "base": 0.9136,
      "edge": 0.008,
+     "seuil_marche": 0.7,
      "cote": 1.19,
      "decision": "Edge +0.8% < 10%",
      "avertissement": null
@@ -430,6 +397,7 @@
      "z": 0.18,
      "base": 0.8519,
      "edge": 0.0627,
+     "seuil_marche": 0.7,
      "cote": 1.23,
      "decision": "Edge +6.3% < 10%",
      "avertissement": null
@@ -444,6 +412,7 @@
      "z": 0.27,
      "base": 0.8395,
      "edge": 0.0079,
+     "seuil_marche": 0.7,
      "cote": 1.25,
      "decision": "Edge +0.8% < 10%",
      "avertissement": null
@@ -484,6 +453,7 @@
      "z": 0.09,
      "base": 0.7647,
      "edge": 0.1046,
+     "seuil_marche": 0.6,
      "cote": 1.16,
      "decision": "validé",
      "avertissement": null
@@ -501,24 +471,8 @@
      "z": 1.2,
      "base": 0.7059,
      "edge": 0.1134,
+     "seuil_marche": 0.6,
      "cote": null,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Extérieur ne perd pas",
-     "P": 0.7161,
-     "p_hat": 0.6667,
-     "k": 6,
-     "n": 9,
-     "wilson": [
-      0.3542,
-      0.8794
-     ],
-     "z": 0.83,
-     "base": 0.5294,
-     "edge": 0.1867,
-     "cote": 1.49,
      "decision": "validé",
      "avertissement": null
     },
@@ -535,6 +489,7 @@
      "z": 0.51,
      "base": 0.4706,
      "edge": 0.1478,
+     "seuil_marche": 0.6,
      "cote": 1.87,
      "decision": "validé",
      "avertissement": null
@@ -554,6 +509,7 @@
      "z": 0.09,
      "base": 0.7647,
      "edge": 0.1046,
+     "seuil_marche": 0.6,
      "cote": 1.16,
      "decision": "validé",
      "avertissement": null
@@ -568,6 +524,7 @@
      "z": -0.97,
      "base": 0.8824,
      "edge": -0.0233,
+     "seuil_marche": 0.5,
      "cote": 1.21,
      "decision": "Edge -2.3% < 10%",
      "avertissement": null
@@ -582,6 +539,7 @@
      "z": -1.23,
      "base": 0.8235,
      "edge": 0.0343,
+     "seuil_marche": 0.7,
      "cote": null,
      "decision": "Edge +3.4% < 10%",
      "avertissement": null
@@ -612,6 +570,7 @@
      "z": 0.05,
      "base": 0.8413,
      "edge": 0.0246,
+     "seuil_marche": 0.7,
      "cote": 1.1,
      "decision": "Edge +2.5% < 10%",
      "avertissement": null
@@ -626,6 +585,7 @@
      "z": -1.47,
      "base": 0.8413,
      "edge": -0.0014,
+     "seuil_marche": 0.7,
      "cote": 1.12,
      "decision": "Edge -0.1% < 10%",
      "avertissement": null
@@ -640,6 +600,7 @@
      "z": -0.37,
      "base": 0.8095,
      "edge": 0.0161,
+     "seuil_marche": 0.65,
      "cote": 1.14,
      "decision": "Edge +1.6% < 10%",
      "avertissement": null
@@ -672,41 +633,8 @@
      "z": 0.08,
      "base": 0.7403,
      "edge": 0.1225,
+     "seuil_marche": 0.7,
      "cote": 1.1,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Extérieur ne perd pas",
-     "P": 0.7394,
-     "p_hat": 0.6667,
-     "k": 8,
-     "n": 12,
-     "wilson": [
-      0.3906,
-      0.8619
-     ],
-     "z": 0.4,
-     "base": 0.6104,
-     "edge": 0.129,
-     "cote": 1.24,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Les deux équipes marquent",
-     "P": 0.6483,
-     "p_hat": 0.5,
-     "k": 6,
-     "n": 12,
-     "wilson": [
-      0.2538,
-      0.7462
-     ],
-     "z": -0.23,
-     "base": 0.5325,
-     "edge": 0.1158,
-     "cote": 1.5,
      "decision": "validé",
      "avertissement": null
     },
@@ -723,7 +651,26 @@
      "z": 0.5,
      "base": 0.4286,
      "edge": 0.207,
+     "seuil_marche": 0.6,
      "cote": 1.44,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Victoire extérieur",
+     "P": 0.5134,
+     "p_hat": 0.4167,
+     "k": 5,
+     "n": 12,
+     "wilson": [
+      0.1933,
+      0.6805
+     ],
+     "z": 0.38,
+     "base": 0.3636,
+     "edge": 0.1498,
+     "seuil_marche": 0.5,
+     "cote": 1.79,
      "decision": "validé",
      "avertissement": null
     }
@@ -739,6 +686,7 @@
      "z": -0.36,
      "base": 0.7922,
      "edge": 0.0931,
+     "seuil_marche": 0.6,
      "cote": null,
      "decision": "Edge +9.3% < 10%",
      "avertissement": null
@@ -756,6 +704,7 @@
      "z": 0.08,
      "base": 0.7403,
      "edge": 0.1225,
+     "seuil_marche": 0.7,
      "cote": 1.1,
      "decision": "validé",
      "avertissement": null
@@ -773,6 +722,7 @@
      "z": 0.08,
      "base": 0.7403,
      "edge": 0.1225,
+     "seuil_marche": 0.7,
      "cote": 1.11,
      "decision": "exclusion : même événement que « Plus de 0,5 buts de l'extérieur »",
      "avertissement": null
@@ -819,6 +769,7 @@
      "z": -0.1,
      "base": 0.8118,
      "edge": 0.0588,
+     "seuil_marche": 0.7,
      "cote": 1.07,
      "decision": "Edge +5.9% < 10%",
      "avertissement": null
@@ -833,6 +784,7 @@
      "z": 1.64,
      "base": 0.7882,
      "edge": 0.0798,
+     "seuil_marche": 0.7,
      "cote": 1.2,
      "decision": "Edge +8.0% < 10%",
      "avertissement": null
@@ -847,6 +799,7 @@
      "z": -1.58,
      "base": 0.8,
      "edge": 0.0608,
+     "seuil_marche": 0.7,
      "cote": null,
      "decision": "Edge +6.1% < 10%",
      "avertissement": null
@@ -879,24 +832,8 @@
      "z": 1.33,
      "base": 0.65,
      "edge": 0.1238,
+     "seuil_marche": 0.6,
      "cote": 1.16,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Extérieur ne perd pas",
-     "P": 0.6027,
-     "p_hat": 0.625,
-     "k": 5,
-     "n": 8,
-     "wilson": [
-      0.3057,
-      0.8632
-     ],
-     "z": 0.8,
-     "base": 0.4833,
-     "edge": 0.1194,
-     "cote": 1.64,
      "decision": "validé",
      "avertissement": null
     }
@@ -912,6 +849,7 @@
      "z": -2.01,
      "base": 0.8667,
      "edge": -0.0347,
+     "seuil_marche": 0.5,
      "cote": 1.28,
      "decision": "Edge -3.5% < 10%",
      "avertissement": null
@@ -926,6 +864,7 @@
      "z": 1.41,
      "base": 0.8,
      "edge": 0.0266,
+     "seuil_marche": 0.7,
      "cote": 1.07,
      "decision": "Edge +2.7% < 10%",
      "avertissement": null
@@ -940,6 +879,7 @@
      "z": -0.23,
      "base": 0.7833,
      "edge": 0.0221,
+     "seuil_marche": 0.65,
      "cote": 1.22,
      "decision": "Edge +2.2% < 10%",
      "avertissement": null
@@ -988,75 +928,8 @@
      "z": 1.42,
      "base": 0.7692,
      "edge": 0.1233,
+     "seuil_marche": 0.7,
      "cote": 1.07,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Domicile ne perd pas + plus de 1,5 buts",
-     "P": 0.7306,
-     "p_hat": 0.7143,
-     "k": 10,
-     "n": 14,
-     "wilson": [
-      0.4535,
-      0.8828
-     ],
-     "z": 1.11,
-     "base": 0.5673,
-     "edge": 0.1633,
-     "cote": 1.25,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Victoire domicile",
-     "P": 0.7144,
-     "p_hat": 0.7857,
-     "k": 11,
-     "n": 14,
-     "wilson": [
-      0.5241,
-      0.9243
-     ],
-     "z": 1.93,
-     "base": 0.5288,
-     "edge": 0.1856,
-     "cote": 1.24,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Plus de 1,5 buts du domicile",
-     "P": 0.6581,
-     "p_hat": 0.5714,
-     "k": 8,
-     "n": 14,
-     "wilson": [
-      0.3259,
-      0.7862
-     ],
-     "z": 0.53,
-     "base": 0.5,
-     "edge": 0.1581,
-     "cote": 1.34,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Victoire domicile + plus de 1,5 buts",
-     "P": 0.6032,
-     "p_hat": 0.5714,
-     "k": 8,
-     "n": 14,
-     "wilson": [
-      0.3259,
-      0.7862
-     ],
-     "z": 1.36,
-     "base": 0.3942,
-     "edge": 0.209,
-     "cote": 1.42,
      "decision": "validé",
      "avertissement": null
     }
@@ -1072,6 +945,7 @@
      "z": 1.22,
      "base": 0.9038,
      "edge": 0.0664,
+     "seuil_marche": 0.7,
      "cote": null,
      "decision": "Edge +6.6% < 10%",
      "avertissement": null
@@ -1086,6 +960,7 @@
      "z": 1.29,
      "base": 0.8942,
      "edge": 0.0656,
+     "seuil_marche": 0.7,
      "cote": null,
      "decision": "Edge +6.6% < 10%",
      "avertissement": null
@@ -1100,6 +975,7 @@
      "z": 1.22,
      "base": 0.7981,
      "edge": 0.0968,
+     "seuil_marche": 0.65,
      "cote": null,
      "decision": "Edge +9.7% < 10%",
      "avertissement": null
@@ -1118,25 +994,7 @@
     "dom": 1.35,
     "ext": 1.65
    },
-   "paris_valides": [
-    {
-     "marche": "Pas de match nul + plus de 1,5 buts",
-     "P": 0.6102,
-     "p_hat": 0.4444,
-     "k": 4,
-     "n": 9,
-     "wilson": [
-      0.1888,
-      0.7333
-     ],
-     "z": -0.27,
-     "base": 0.4889,
-     "edge": 0.1213,
-     "cote": 1.8,
-     "decision": "validé",
-     "avertissement": null
-    }
-   ],
+   "paris_valides": [],
    "tendances": [
     {
      "marche": "Handicap +1,5 extérieur",
@@ -1148,6 +1006,7 @@
      "z": 0.37,
      "base": 0.8444,
      "edge": 0.0166,
+     "seuil_marche": 0.6,
      "cote": 1.08,
      "decision": "Edge +1.7% < 10%",
      "avertissement": null
@@ -1162,6 +1021,7 @@
      "z": 0.52,
      "base": 0.8222,
      "edge": 0.023,
+     "seuil_marche": 0.6,
      "cote": 1.05,
      "decision": "Edge +2.3% < 10%",
      "avertissement": null
@@ -1176,6 +1036,7 @@
      "z": 0.52,
      "base": 0.8222,
      "edge": -0.0066,
+     "seuil_marche": 0.7,
      "cote": 1.08,
      "decision": "Edge -0.7% < 10%",
      "avertissement": null
@@ -1194,25 +1055,7 @@
     "dom": 1.1,
     "ext": 1.38
    },
-   "paris_valides": [
-    {
-     "marche": "Extérieur ne perd pas + moins de 4,5 buts",
-     "P": 0.6459,
-     "p_hat": 0.7,
-     "k": 7,
-     "n": 10,
-     "wilson": [
-      0.3968,
-      0.8922
-     ],
-     "z": 0.99,
-     "base": 0.5444,
-     "edge": 0.1015,
-     "cote": 1.71,
-     "decision": "validé",
-     "avertissement": null
-    }
-   ],
+   "paris_valides": [],
    "tendances": [
     {
      "marche": "Moins de 2,5 buts du domicile",
@@ -1224,6 +1067,7 @@
      "z": 0.64,
      "base": 0.8222,
      "edge": 0.0792,
+     "seuil_marche": 0.6,
      "cote": 1.1,
      "decision": "Edge +7.9% < 10%",
      "avertissement": null
@@ -1238,6 +1082,7 @@
      "z": 0.64,
      "base": 0.8222,
      "edge": 0.0718,
+     "seuil_marche": 0.7,
      "cote": 1.07,
      "decision": "Edge +7.2% < 10%",
      "avertissement": null
@@ -1252,6 +1097,7 @@
      "z": 1.36,
      "base": 0.8444,
      "edge": 0.0396,
+     "seuil_marche": 0.6,
      "cote": 1.15,
      "decision": "Edge +4.0% < 10%",
      "avertissement": null
@@ -1282,6 +1128,7 @@
      "z": -0.35,
      "base": 0.8222,
      "edge": 0.0494,
+     "seuil_marche": 0.7,
      "cote": 1.13,
      "decision": "Edge +4.9% < 10%",
      "avertissement": null
@@ -1296,6 +1143,7 @@
      "z": -0.35,
      "base": 0.8222,
      "edge": 0.0334,
+     "seuil_marche": 0.6,
      "cote": 1.19,
      "decision": "Edge +3.3% < 10%",
      "avertissement": null
@@ -1310,6 +1158,7 @@
      "z": 1.29,
      "base": 0.8444,
      "edge": 0.0048,
+     "seuil_marche": 0.7,
      "cote": 1.07,
      "decision": "Edge +0.5% < 10%",
      "avertissement": null
@@ -1340,6 +1189,7 @@
      "z": -1.22,
      "base": 0.8222,
      "edge": 0.0615,
+     "seuil_marche": 0.7,
      "cote": 1.11,
      "decision": "Edge +6.2% < 10%",
      "avertissement": null
@@ -1354,6 +1204,7 @@
      "z": -1.47,
      "base": 0.8444,
      "edge": 0.0224,
+     "seuil_marche": 0.7,
      "cote": null,
      "decision": "Edge +2.2% < 10%",
      "avertissement": null
@@ -1368,6 +1219,7 @@
      "z": -0.35,
      "base": 0.8222,
      "edge": 0.0355,
+     "seuil_marche": 0.6,
      "cote": 1.34,
      "decision": "Edge +3.6% < 10%",
      "avertissement": null
@@ -1400,41 +1252,8 @@
      "z": 1.18,
      "base": 0.7111,
      "edge": 0.1242,
+     "seuil_marche": 0.5,
      "cote": 1.14,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Pas de match nul + plus de 1,5 buts",
-     "P": 0.6424,
-     "p_hat": 0.6667,
-     "k": 6,
-     "n": 9,
-     "wilson": [
-      0.3542,
-      0.8794
-     ],
-     "z": 1.07,
-     "base": 0.4889,
-     "edge": 0.1535,
-     "cote": 1.52,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Plus de 2,5 buts",
-     "P": 0.6302,
-     "p_hat": 0.6667,
-     "k": 6,
-     "n": 9,
-     "wilson": [
-      0.3542,
-      0.8794
-     ],
-     "z": 1.13,
-     "base": 0.4778,
-     "edge": 0.1524,
-     "cote": 1.53,
      "decision": "validé",
      "avertissement": null
     }
@@ -1453,6 +1272,7 @@
      "z": 1.18,
      "base": 0.7111,
      "edge": 0.1242,
+     "seuil_marche": 0.5,
      "cote": 1.14,
      "decision": "validé",
      "avertissement": null
@@ -1467,6 +1287,7 @@
      "z": -1.47,
      "base": 0.8444,
      "edge": -0.011,
+     "seuil_marche": 0.6,
      "cote": 1.24,
      "decision": "Edge -1.1% < 10%",
      "avertissement": null
@@ -1481,6 +1302,7 @@
      "z": 0.23,
      "base": 0.7444,
      "edge": 0.0747,
+     "seuil_marche": 0.7,
      "cote": 1.22,
      "decision": "Edge +7.5% < 10%",
      "avertissement": null
@@ -1521,58 +1343,8 @@
      "z": 1.59,
      "base": 0.7083,
      "edge": 0.1177,
+     "seuil_marche": 0.7,
      "cote": 1.36,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Domicile ne perd pas + plus de 1,5 buts",
-     "P": 0.7446,
-     "p_hat": 0.9167,
-     "k": 11,
-     "n": 12,
-     "wilson": [
-      0.6461,
-      0.9851
-     ],
-     "z": 2.14,
-     "base": 0.6167,
-     "edge": 0.1279,
-     "cote": 1.48,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Plus de 1,5 buts du domicile",
-     "P": 0.7135,
-     "p_hat": 0.8333,
-     "k": 10,
-     "n": 12,
-     "wilson": [
-      0.552,
-      0.953
-     ],
-     "z": 1.81,
-     "base": 0.575,
-     "edge": 0.1385,
-     "cote": 1.44,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Victoire domicile",
-     "P": 0.6434,
-     "p_hat": 0.75,
-     "k": 9,
-     "n": 12,
-     "wilson": [
-      0.4677,
-      0.9111
-     ],
-     "z": 1.67,
-     "base": 0.5083,
-     "edge": 0.1351,
-     "cote": 1.98,
      "decision": "validé",
      "avertissement": null
     }
@@ -1588,6 +1360,7 @@
      "z": 1.5,
      "base": 0.8417,
      "edge": 0.0894,
+     "seuil_marche": 0.7,
      "cote": null,
      "decision": "Edge +8.9% < 10%",
      "avertissement": null
@@ -1602,6 +1375,7 @@
      "z": 1.36,
      "base": 0.8667,
      "edge": 0.0515,
+     "seuil_marche": 0.65,
      "cote": 1.05,
      "decision": "Edge +5.2% < 10%",
      "avertissement": null
@@ -1616,6 +1390,7 @@
      "z": 1.36,
      "base": 0.8667,
      "edge": 0.0515,
+     "seuil_marche": 0.65,
      "cote": 1.08,
      "decision": "Edge +5.2% < 10%",
      "avertissement": null
@@ -1646,6 +1421,7 @@
      "z": -0.38,
      "base": 0.8583,
      "edge": 0.0285,
+     "seuil_marche": 0.5,
      "cote": 1.16,
      "decision": "Edge +2.9% < 10%",
      "avertissement": null
@@ -1660,6 +1436,7 @@
      "z": -1.36,
      "base": 0.8667,
      "edge": 0.0161,
+     "seuil_marche": 0.65,
      "cote": 1.13,
      "decision": "Edge +1.6% < 10%",
      "avertissement": null
@@ -1674,6 +1451,7 @@
      "z": -1.36,
      "base": 0.8667,
      "edge": 0.0161,
+     "seuil_marche": 0.65,
      "cote": 1.16,
      "decision": "Edge +1.6% < 10%",
      "avertissement": null
@@ -1706,24 +1484,8 @@
      "z": 0.5,
      "base": 0.6833,
      "edge": 0.1103,
+     "seuil_marche": 0.6,
      "cote": 1.3,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Extérieur ne perd pas",
-     "P": 0.6219,
-     "p_hat": 0.6667,
-     "k": 8,
-     "n": 12,
-     "wilson": [
-      0.3906,
-      0.8619
-     ],
-     "z": 1.21,
-     "base": 0.4917,
-     "edge": 0.1302,
-     "cote": 1.67,
      "decision": "validé",
      "avertissement": null
     }
@@ -1739,6 +1501,7 @@
      "z": 1.41,
      "base": 0.8583,
      "edge": -0.0345,
+     "seuil_marche": 0.5,
      "cote": 1.11,
      "decision": "Edge -3.5% < 10%",
      "avertissement": null
@@ -1753,6 +1516,7 @@
      "z": -0.87,
      "base": 0.8417,
      "edge": -0.0197,
+     "seuil_marche": 0.7,
      "cote": 1.12,
      "decision": "Edge -2.0% < 10%",
      "avertissement": null
@@ -1767,6 +1531,7 @@
      "z": 0.72,
      "base": 0.7417,
      "edge": 0.0664,
+     "seuil_marche": 0.6,
      "cote": 1.24,
      "decision": "Edge +6.6% < 10%",
      "avertissement": null
@@ -1797,6 +1562,7 @@
      "z": -0.21,
      "base": 0.8417,
      "edge": 0.0251,
+     "seuil_marche": 0.7,
      "cote": null,
      "decision": "Edge +2.5% < 10%",
      "avertissement": null
@@ -1811,6 +1577,7 @@
      "z": 0.48,
      "base": 0.8583,
      "edge": -0.0052,
+     "seuil_marche": 0.5,
      "cote": 1.12,
      "decision": "Edge -0.5% < 10%",
      "avertissement": null
@@ -1825,6 +1592,7 @@
      "z": 1.3,
      "base": 0.8667,
      "edge": -0.0165,
+     "seuil_marche": 0.65,
      "cote": 1.06,
      "decision": "Edge -1.6% < 10%",
      "avertissement": null
@@ -1857,41 +1625,8 @@
      "z": 0.22,
      "base": 0.587,
      "edge": 0.1512,
+     "seuil_marche": 0.7,
      "cote": 1.38,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Les deux équipes marquent",
-     "P": 0.7131,
-     "p_hat": 0.75,
-     "k": 6,
-     "n": 8,
-     "wilson": [
-      0.4093,
-      0.9285
-     ],
-     "z": 0.94,
-     "base": 0.587,
-     "edge": 0.1261,
-     "cote": 1.52,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Domicile ne perd pas + plus de 1,5 buts",
-     "P": 0.6663,
-     "p_hat": 0.5,
-     "k": 4,
-     "n": 8,
-     "wilson": [
-      0.2152,
-      0.7848
-     ],
-     "z": -0.12,
-     "base": 0.5217,
-     "edge": 0.1446,
-     "cote": 1.68,
      "decision": "validé",
      "avertissement": null
     }
@@ -1907,6 +1642,7 @@
      "z": 0.5,
      "base": 0.8043,
      "edge": 0.095,
+     "seuil_marche": 0.5,
      "cote": 1.19,
      "decision": "Edge +9.5% < 10%",
      "avertissement": null
@@ -1921,6 +1657,7 @@
      "z": -0.39,
      "base": 0.8043,
      "edge": 0.0894,
+     "seuil_marche": 0.65,
      "cote": 1.18,
      "decision": "Edge +8.9% < 10%",
      "avertissement": null
@@ -1935,6 +1672,7 @@
      "z": -0.39,
      "base": 0.8043,
      "edge": 0.0894,
+     "seuil_marche": 0.65,
      "cote": 1.19,
      "decision": "Edge +8.9% < 10%",
      "avertissement": null
@@ -1965,6 +1703,7 @@
      "z": 0.36,
      "base": 0.86,
      "edge": 0.0596,
+     "seuil_marche": 0.7,
      "cote": 1.19,
      "decision": "Edge +6.0% < 10%",
      "avertissement": null
@@ -1979,6 +1718,7 @@
      "z": -0.53,
      "base": 0.94,
      "edge": -0.0457,
+     "seuil_marche": 0.7,
      "cote": 1.24,
      "decision": "Edge -4.6% < 10%",
      "avertissement": null
@@ -1993,6 +1733,7 @@
      "z": 0.92,
      "base": 0.78,
      "edge": 0.0827,
+     "seuil_marche": 0.65,
      "cote": 1.17,
      "decision": "Edge +8.3% < 10%",
      "avertissement": null
@@ -2023,6 +1764,7 @@
      "z": -0.4,
      "base": 0.86,
      "edge": 0.0097,
+     "seuil_marche": 0.7,
      "cote": null,
      "decision": "Edge +1.0% < 10%",
      "avertissement": null
@@ -2037,6 +1779,7 @@
      "z": 0.84,
      "base": 0.94,
      "edge": -0.0706,
+     "seuil_marche": 0.7,
      "cote": 1.16,
      "decision": "Edge -7.1% < 10%",
      "avertissement": null
@@ -2051,6 +1794,7 @@
      "z": -0.63,
      "base": 0.88,
      "edge": -0.0295,
+     "seuil_marche": 0.7,
      "cote": 1.24,
      "decision": "Edge -2.9% < 10%",
      "avertissement": null
@@ -2081,6 +1825,7 @@
      "z": -1.9,
      "base": 0.9831,
      "edge": -0.0328,
+     "seuil_marche": 0.7,
      "cote": 1.11,
      "decision": "Edge -3.3% < 10%",
      "avertissement": null
@@ -2095,6 +1840,7 @@
      "z": -1.04,
      "base": 0.9661,
      "edge": -0.0205,
+     "seuil_marche": 0.7,
      "cote": 1.25,
      "decision": "Edge -2.1% < 10%",
      "avertissement": null
@@ -2109,6 +1855,7 @@
      "z": -0.65,
      "base": 0.8814,
      "edge": 0.0284,
+     "seuil_marche": 0.7,
      "cote": 1.32,
      "decision": "Edge +2.8% < 10%",
      "avertissement": null
@@ -2139,6 +1886,7 @@
      "z": 0.3,
      "base": 0.88,
      "edge": 0.0302,
+     "seuil_marche": 0.7,
      "cote": 1.06,
      "decision": "Edge +3.0% < 10%",
      "avertissement": null
@@ -2153,6 +1901,7 @@
      "z": 0.12,
      "base": 0.8985,
      "edge": 0.0053,
+     "seuil_marche": 0.7,
      "cote": 1.03,
      "decision": "Edge +0.5% < 10%",
      "avertissement": null
@@ -2167,6 +1916,7 @@
      "z": 1.11,
      "base": 0.8985,
      "edge": -0.0219,
+     "seuil_marche": 0.7,
      "cote": null,
      "decision": "Edge -2.2% < 10%",
      "avertissement": null
@@ -2197,6 +1947,7 @@
      "z": 0.02,
      "base": 0.8985,
      "edge": 0.0001,
+     "seuil_marche": 0.7,
      "cote": 1.01,
      "decision": "Edge +0.0% < 10%",
      "avertissement": null
@@ -2211,6 +1962,7 @@
      "z": 0.02,
      "base": 0.8985,
      "edge": -0.001,
+     "seuil_marche": 0.7,
      "cote": null,
      "decision": "Edge -0.1% < 10%",
      "avertissement": null
@@ -2225,6 +1977,7 @@
      "z": 1.17,
      "base": 0.88,
      "edge": -0.017,
+     "seuil_marche": 0.7,
      "cote": 1.11,
      "decision": "Edge -1.7% < 10%",
      "avertissement": null
@@ -2257,6 +2010,7 @@
      "z": 1.01,
      "base": 0.7207,
      "edge": 0.1408,
+     "seuil_marche": 0.7,
      "cote": 1.11,
      "decision": "validé",
      "avertissement": null
@@ -2274,41 +2028,8 @@
      "z": -0.3,
      "base": 0.7297,
      "edge": 0.1023,
+     "seuil_marche": 0.6,
      "cote": 1.07,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Les deux équipes marquent",
-     "P": 0.7066,
-     "p_hat": 0.5385,
-     "k": 7,
-     "n": 13,
-     "wilson": [
-      0.2914,
-      0.7679
-     ],
-     "z": 0.12,
-     "base": 0.5225,
-     "edge": 0.1841,
-     "cote": 1.48,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Extérieur ne perd pas",
-     "P": 0.665,
-     "p_hat": 0.6923,
-     "k": 9,
-     "n": 13,
-     "wilson": [
-      0.4237,
-      0.8732
-     ],
-     "z": 1.29,
-     "base": 0.5135,
-     "edge": 0.1515,
-     "cote": 1.38,
      "decision": "validé",
      "avertissement": null
     }
@@ -2324,6 +2045,7 @@
      "z": 1.74,
      "base": 0.8108,
      "edge": 0.0733,
+     "seuil_marche": 0.5,
      "cote": 1.16,
      "decision": "Edge +7.3% < 10%",
      "avertissement": null
@@ -2341,6 +2063,7 @@
      "z": 1.01,
      "base": 0.7207,
      "edge": 0.1408,
+     "seuil_marche": 0.7,
      "cote": 1.11,
      "decision": "validé",
      "avertissement": null
@@ -2358,6 +2081,7 @@
      "z": 1.01,
      "base": 0.7207,
      "edge": 0.1408,
+     "seuil_marche": 0.7,
      "cote": 1.13,
      "decision": "exclusion : même événement que « Plus de 0,5 buts de l'extérieur »",
      "avertissement": null
@@ -2390,6 +2114,7 @@
      "z": 1.96,
      "base": 0.7568,
      "edge": 0.1355,
+     "seuil_marche": 0.6,
      "cote": null,
      "decision": "validé",
      "avertissement": null
@@ -2407,6 +2132,7 @@
      "z": 0.81,
      "base": 0.7297,
      "edge": 0.1617,
+     "seuil_marche": 0.6,
      "cote": null,
      "decision": "validé",
      "avertissement": null
@@ -2424,77 +2150,10 @@
      "z": 0.02,
      "base": 0.7477,
      "edge": 0.1128,
+     "seuil_marche": 0.7,
      "cote": 1.12,
      "decision": "validé",
      "avertissement": null
-    },
-    {
-     "marche": "Extérieur ne perd pas",
-     "P": 0.7303,
-     "p_hat": 0.5833,
-     "k": 7,
-     "n": 12,
-     "wilson": [
-      0.3195,
-      0.8067
-     ],
-     "z": 0.48,
-     "base": 0.5135,
-     "edge": 0.2168,
-     "cote": 1.08,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Moins de 3,5 buts",
-     "P": 0.7105,
-     "p_hat": 0.5833,
-     "k": 7,
-     "n": 12,
-     "wilson": [
-      0.3195,
-      0.8067
-     ],
-     "z": -0.08,
-     "base": 0.5946,
-     "edge": 0.1159,
-     "cote": 1.37,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Moins de 1,5 buts du domicile",
-     "P": 0.6846,
-     "p_hat": 0.6667,
-     "k": 8,
-     "n": 12,
-     "wilson": [
-      0.3906,
-      0.8619
-     ],
-     "z": 0.94,
-     "base": 0.5315,
-     "edge": 0.1531,
-     "cote": 1.07,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Extérieur ne perd pas + moins de 4,5 buts",
-     "P": 0.6333,
-     "p_hat": 0.3333,
-     "k": 4,
-     "n": 12,
-     "wilson": [
-      0.1381,
-      0.6094
-     ],
-     "z": -0.45,
-     "base": 0.3964,
-     "edge": 0.2369,
-     "cote": 1.26,
-     "decision": "validé (avertissement)",
-     "avertissement": "confiance réduite : modèle 63% hors de l'intervalle de Wilson des données [14% ; 61%] (p̂ = 33%, n = 12)"
     }
    ],
    "tendances": [
@@ -2511,6 +2170,7 @@
      "z": 1.96,
      "base": 0.7568,
      "edge": 0.1355,
+     "seuil_marche": 0.6,
      "cote": null,
      "decision": "validé",
      "avertissement": null
@@ -2528,6 +2188,7 @@
      "z": 0.81,
      "base": 0.7297,
      "edge": 0.1617,
+     "seuil_marche": 0.6,
      "cote": null,
      "decision": "validé",
      "avertissement": null
@@ -2545,6 +2206,7 @@
      "z": 0.02,
      "base": 0.7477,
      "edge": 0.1128,
+     "seuil_marche": 0.7,
      "cote": 1.12,
      "decision": "validé",
      "avertissement": null
@@ -2571,25 +2233,7 @@
     "dom": 1.43,
     "ext": 1.45
    },
-   "paris_valides": [
-    {
-     "marche": "Extérieur ne perd pas",
-     "P": 0.6347,
-     "p_hat": 0.3846,
-     "k": 5,
-     "n": 13,
-     "wilson": [
-      0.1771,
-      0.6448
-     ],
-     "z": -0.93,
-     "base": 0.5135,
-     "edge": 0.1212,
-     "cote": 1.7,
-     "decision": "validé",
-     "avertissement": null
-    }
-   ],
+   "paris_valides": [],
    "tendances": [
     {
      "marche": "Moins de 4,5 buts",
@@ -2601,6 +2245,7 @@
      "z": 0.18,
      "base": 0.7477,
      "edge": 0.0876,
+     "seuil_marche": 0.7,
      "cote": 1.15,
      "decision": "Edge +8.8% < 10%",
      "avertissement": null
@@ -2615,6 +2260,7 @@
      "z": 0.32,
      "base": 0.7297,
      "edge": 0.0978,
+     "seuil_marche": 0.6,
      "cote": 1.19,
      "decision": "Edge +9.8% < 10%",
      "avertissement": null
@@ -2629,6 +2275,7 @@
      "z": 0.75,
      "base": 0.7568,
      "edge": 0.0702,
+     "seuil_marche": 0.6,
      "cote": 1.17,
      "decision": "Edge +7.0% < 10%",
      "avertissement": null
@@ -2661,6 +2308,7 @@
      "z": 0.74,
      "base": 0.7748,
      "edge": 0.1519,
+     "seuil_marche": 0.7,
      "cote": null,
      "decision": "validé",
      "avertissement": null
@@ -2678,6 +2326,7 @@
      "z": 0.59,
      "base": 0.7928,
      "edge": 0.1185,
+     "seuil_marche": 0.65,
      "cote": null,
      "decision": "validé",
      "avertissement": null
@@ -2695,75 +2344,8 @@
      "z": 1.76,
      "base": 0.6306,
      "edge": 0.1856,
+     "seuil_marche": 0.7,
      "cote": 1.14,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Domicile ne perd pas + plus de 1,5 buts",
-     "P": 0.7303,
-     "p_hat": 0.7143,
-     "k": 10,
-     "n": 14,
-     "wilson": [
-      0.4535,
-      0.8828
-     ],
-     "z": 1.5,
-     "base": 0.5135,
-     "edge": 0.2168,
-     "cote": 1.32,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Plus de 1,5 buts du domicile",
-     "P": 0.6964,
-     "p_hat": 0.7143,
-     "k": 10,
-     "n": 14,
-     "wilson": [
-      0.4535,
-      0.8828
-     ],
-     "z": 1.84,
-     "base": 0.4685,
-     "edge": 0.2279,
-     "cote": 1.39,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Les deux équipes marquent",
-     "P": 0.6551,
-     "p_hat": 0.4286,
-     "k": 6,
-     "n": 14,
-     "wilson": [
-      0.2138,
-      0.6741
-     ],
-     "z": -0.7,
-     "base": 0.5225,
-     "edge": 0.1326,
-     "cote": 1.63,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Victoire domicile",
-     "P": 0.6281,
-     "p_hat": 0.7143,
-     "k": 10,
-     "n": 14,
-     "wilson": [
-      0.4535,
-      0.8828
-     ],
-     "z": 1.71,
-     "base": 0.4865,
-     "edge": 0.1416,
-     "cote": 1.4,
      "decision": "validé",
      "avertissement": null
     }
@@ -2782,6 +2364,7 @@
      "z": 0.74,
      "base": 0.7748,
      "edge": 0.1519,
+     "seuil_marche": 0.7,
      "cote": null,
      "decision": "validé",
      "avertissement": null
@@ -2799,6 +2382,7 @@
      "z": 0.59,
      "base": 0.7928,
      "edge": 0.1185,
+     "seuil_marche": 0.65,
      "cote": null,
      "decision": "validé",
      "avertissement": null
@@ -2816,6 +2400,7 @@
      "z": 0.59,
      "base": 0.7928,
      "edge": 0.1185,
+     "seuil_marche": 0.65,
      "cote": 1.06,
      "decision": "exclusion : même événement que « Plus de 0,5 buts du domicile »",
      "avertissement": null
@@ -2848,6 +2433,7 @@
      "z": 1.87,
      "base": 0.7748,
      "edge": 0.1445,
+     "seuil_marche": 0.7,
      "cote": null,
      "decision": "validé",
      "avertissement": null
@@ -2865,6 +2451,7 @@
      "z": 0.35,
      "base": 0.7928,
      "edge": 0.1012,
+     "seuil_marche": 0.65,
      "cote": null,
      "decision": "validé",
      "avertissement": null
@@ -2882,58 +2469,8 @@
      "z": 0.26,
      "base": 0.6306,
      "edge": 0.1688,
+     "seuil_marche": 0.7,
      "cote": 1.13,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Domicile ne perd pas + plus de 1,5 buts",
-     "P": 0.7005,
-     "p_hat": 0.5833,
-     "k": 7,
-     "n": 12,
-     "wilson": [
-      0.3195,
-      0.8067
-     ],
-     "z": 0.48,
-     "base": 0.5135,
-     "edge": 0.187,
-     "cote": 1.27,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Plus de 1,5 buts du domicile",
-     "P": 0.656,
-     "p_hat": 0.5833,
-     "k": 7,
-     "n": 12,
-     "wilson": [
-      0.3195,
-      0.8067
-     ],
-     "z": 0.8,
-     "base": 0.4685,
-     "edge": 0.1875,
-     "cote": 1.34,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Les deux équipes marquent",
-     "P": 0.6394,
-     "p_hat": 0.6667,
-     "k": 8,
-     "n": 12,
-     "wilson": [
-      0.3906,
-      0.8619
-     ],
-     "z": 1.0,
-     "base": 0.5225,
-     "edge": 0.1169,
-     "cote": 1.58,
      "decision": "validé",
      "avertissement": null
     }
@@ -2952,6 +2489,7 @@
      "z": 1.87,
      "base": 0.7748,
      "edge": 0.1445,
+     "seuil_marche": 0.7,
      "cote": null,
      "decision": "validé",
      "avertissement": null
@@ -2969,6 +2507,7 @@
      "z": 0.35,
      "base": 0.7928,
      "edge": 0.1012,
+     "seuil_marche": 0.65,
      "cote": null,
      "decision": "validé",
      "avertissement": null
@@ -2986,6 +2525,7 @@
      "z": 0.35,
      "base": 0.7928,
      "edge": 0.1012,
+     "seuil_marche": 0.65,
      "cote": 1.03,
      "decision": "exclusion : même événement que « Plus de 0,5 buts du domicile »",
      "avertissement": null
@@ -3016,6 +2556,7 @@
      "z": 1.2,
      "base": 0.8933,
      "edge": -0.0133,
+     "seuil_marche": 0.7,
      "cote": 1.2,
      "decision": "Edge -1.3% < 10%",
      "avertissement": null
@@ -3030,6 +2571,7 @@
      "z": 1.11,
      "base": 0.9067,
      "edge": -0.0343,
+     "seuil_marche": 0.7,
      "cote": 1.25,
      "decision": "Edge -3.4% < 10%",
      "avertissement": null
@@ -3044,6 +2586,7 @@
      "z": 1.36,
      "base": 0.8667,
      "edge": 0.0015,
+     "seuil_marche": 0.7,
      "cote": 1.11,
      "decision": "Edge +0.2% < 10%",
      "avertissement": null
@@ -3076,6 +2619,7 @@
      "z": 1.3,
      "base": 0.6575,
      "edge": 0.2167,
+     "seuil_marche": 0.6,
      "cote": 1.05,
      "decision": "validé",
      "avertissement": null
@@ -3093,6 +2637,7 @@
      "z": 1.09,
      "base": 0.6986,
      "edge": 0.17,
+     "seuil_marche": 0.6,
      "cote": null,
      "decision": "validé",
      "avertissement": null
@@ -3110,58 +2655,8 @@
      "z": 1.37,
      "base": 0.6438,
      "edge": 0.1281,
+     "seuil_marche": 0.7,
      "cote": 1.06,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Extérieur ne perd pas",
-     "P": 0.6905,
-     "p_hat": 0.625,
-     "k": 5,
-     "n": 8,
-     "wilson": [
-      0.3057,
-      0.8632
-     ],
-     "z": 0.75,
-     "base": 0.4932,
-     "edge": 0.1973,
-     "cote": 1.16,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Moins de 1,5 buts du domicile",
-     "P": 0.6539,
-     "p_hat": 0.625,
-     "k": 5,
-     "n": 8,
-     "wilson": [
-      0.3057,
-      0.8632
-     ],
-     "z": 0.98,
-     "base": 0.4521,
-     "edge": 0.2018,
-     "cote": 1.33,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Extérieur ne perd pas + moins de 4,5 buts",
-     "P": 0.6032,
-     "p_hat": 0.5,
-     "k": 4,
-     "n": 8,
-     "wilson": [
-      0.2152,
-      0.7848
-     ],
-     "z": 0.68,
-     "base": 0.3836,
-     "edge": 0.2196,
-     "cote": null,
      "decision": "validé",
      "avertissement": null
     }
@@ -3180,6 +2675,7 @@
      "z": 1.3,
      "base": 0.6575,
      "edge": 0.2167,
+     "seuil_marche": 0.6,
      "cote": 1.05,
      "decision": "validé",
      "avertissement": null
@@ -3197,6 +2693,7 @@
      "z": 1.09,
      "base": 0.6986,
      "edge": 0.17,
+     "seuil_marche": 0.6,
      "cote": null,
      "decision": "validé",
      "avertissement": null
@@ -3211,6 +2708,7 @@
      "z": 0.56,
      "base": 0.7945,
      "edge": 0.0681,
+     "seuil_marche": 0.7,
      "cote": 1.28,
      "decision": "Edge +6.8% < 10%",
      "avertissement": null
@@ -3243,24 +2741,8 @@
      "z": 0.75,
      "base": 0.64,
      "edge": 0.1287,
+     "seuil_marche": 0.7,
      "cote": 1.25,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Domicile ne perd pas + moins de 4,5 buts",
-     "P": 0.6347,
-     "p_hat": 0.6667,
-     "k": 10,
-     "n": 15,
-     "wilson": [
-      0.4171,
-      0.8482
-     ],
-     "z": 1.27,
-     "base": 0.5029,
-     "edge": 0.1318,
-     "cote": 1.59,
      "decision": "validé",
      "avertissement": null
     }
@@ -3276,6 +2758,7 @@
      "z": 0.94,
      "base": 0.8457,
      "edge": 0.0645,
+     "seuil_marche": 0.7,
      "cote": 1.03,
      "decision": "Edge +6.4% < 10%",
      "avertissement": null
@@ -3290,6 +2773,7 @@
      "z": 1.08,
      "base": 0.8286,
      "edge": 0.0662,
+     "seuil_marche": 0.7,
      "cote": 1.07,
      "decision": "Edge +6.6% < 10%",
      "avertissement": null
@@ -3304,6 +2788,7 @@
      "z": 0.89,
      "base": 0.8514,
      "edge": -0.013,
+     "seuil_marche": 0.65,
      "cote": null,
      "decision": "Edge -1.3% < 10%",
      "avertissement": null
@@ -3336,41 +2821,8 @@
      "z": 0.45,
      "base": 0.76,
      "edge": 0.1153,
+     "seuil_marche": 0.7,
      "cote": null,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Domicile ne perd pas",
-     "P": 0.6991,
-     "p_hat": 0.7273,
-     "k": 8,
-     "n": 11,
-     "wilson": [
-      0.4344,
-      0.9025
-     ],
-     "z": 1.03,
-     "base": 0.5733,
-     "edge": 0.1258,
-     "cote": 1.19,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Moins de 1,5 buts de l'extérieur",
-     "P": 0.6663,
-     "p_hat": 0.6364,
-     "k": 7,
-     "n": 11,
-     "wilson": [
-      0.3538,
-      0.8483
-     ],
-     "z": 0.6,
-     "base": 0.5467,
-     "edge": 0.1196,
-     "cote": 1.29,
      "decision": "validé",
      "avertissement": null
     }
@@ -3386,6 +2838,7 @@
      "z": 0.82,
      "base": 0.8133,
      "edge": 0.0684,
+     "seuil_marche": 0.7,
      "cote": 1.04,
      "decision": "Edge +6.8% < 10%",
      "avertissement": null
@@ -3403,6 +2856,7 @@
      "z": 0.45,
      "base": 0.76,
      "edge": 0.1153,
+     "seuil_marche": 0.7,
      "cote": null,
      "decision": "validé",
      "avertissement": null
@@ -3417,6 +2871,7 @@
      "z": -0.63,
      "base": 0.88,
      "edge": -0.0131,
+     "seuil_marche": 0.7,
      "cote": 1.15,
      "decision": "Edge -1.3% < 10%",
      "avertissement": null
@@ -3449,6 +2904,7 @@
      "z": 1.95,
      "base": 0.76,
      "edge": 0.16,
+     "seuil_marche": 0.7,
      "cote": null,
      "decision": "validé",
      "avertissement": null
@@ -3466,6 +2922,7 @@
      "z": 0.92,
      "base": 0.8133,
      "edge": 0.1014,
+     "seuil_marche": 0.7,
      "cote": null,
      "decision": "validé",
      "avertissement": null
@@ -3483,58 +2940,8 @@
      "z": 1.24,
      "base": 0.5733,
      "edge": 0.2087,
+     "seuil_marche": 0.7,
      "cote": 1.06,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Moins de 1,5 buts de l'extérieur",
-     "P": 0.726,
-     "p_hat": 0.6667,
-     "k": 8,
-     "n": 12,
-     "wilson": [
-      0.3906,
-      0.8619
-     ],
-     "z": 0.84,
-     "base": 0.5467,
-     "edge": 0.1793,
-     "cote": 1.11,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Domicile ne perd pas + moins de 4,5 buts",
-     "P": 0.6672,
-     "p_hat": 0.6667,
-     "k": 8,
-     "n": 12,
-     "wilson": [
-      0.3906,
-      0.8619
-     ],
-     "z": 1.02,
-     "base": 0.52,
-     "edge": 0.1472,
-     "cote": 1.29,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Domicile ne perd pas + plus de 1,5 buts",
-     "P": 0.6103,
-     "p_hat": 0.5833,
-     "k": 7,
-     "n": 12,
-     "wilson": [
-      0.3195,
-      0.8067
-     ],
-     "z": 1.2,
-     "base": 0.4133,
-     "edge": 0.197,
-     "cote": 1.21,
      "decision": "validé",
      "avertissement": null
     }
@@ -3553,6 +2960,7 @@
      "z": 1.95,
      "base": 0.76,
      "edge": 0.16,
+     "seuil_marche": 0.7,
      "cote": null,
      "decision": "validé",
      "avertissement": null
@@ -3570,6 +2978,7 @@
      "z": 0.92,
      "base": 0.8133,
      "edge": 0.1014,
+     "seuil_marche": 0.7,
      "cote": null,
      "decision": "validé",
      "avertissement": null
@@ -3584,6 +2993,7 @@
      "z": -0.5,
      "base": 0.88,
      "edge": -0.028,
+     "seuil_marche": 0.7,
      "cote": 1.19,
      "decision": "Edge -2.8% < 10%",
      "avertissement": null
@@ -3614,6 +3024,7 @@
      "z": -1.13,
      "base": 0.8609,
      "edge": -0.0038,
+     "seuil_marche": 0.7,
      "cote": 1.1,
      "decision": "Edge -0.4% < 10%",
      "avertissement": null
@@ -3628,6 +3039,7 @@
      "z": -0.17,
      "base": 0.8344,
      "edge": 0.0218,
+     "seuil_marche": 0.7,
      "cote": 1.13,
      "decision": "Edge +2.2% < 10%",
      "avertissement": null
@@ -3642,6 +3054,7 @@
      "z": -0.78,
      "base": 0.894,
      "edge": -0.0427,
+     "seuil_marche": 0.7,
      "cote": null,
      "decision": "Edge -4.3% < 10%",
      "avertissement": null
@@ -3668,25 +3081,7 @@
     "dom": 1.9,
     "ext": 1.36
    },
-   "paris_valides": [
-    {
-     "marche": "Plus de 2,5 buts",
-     "P": 0.6338,
-     "p_hat": 0.6429,
-     "k": 18,
-     "n": 28,
-     "wilson": [
-      0.4583,
-      0.7929
-     ],
-     "z": 1.41,
-     "base": 0.5099,
-     "edge": 0.1239,
-     "cote": 1.51,
-     "decision": "validé",
-     "avertissement": null
-    }
-   ],
+   "paris_valides": [],
    "tendances": [
     {
      "marche": "Handicap +1,5 domicile",
@@ -3698,6 +3093,7 @@
      "z": 0.59,
      "base": 0.894,
      "edge": -0.0138,
+     "seuil_marche": 0.7,
      "cote": null,
      "decision": "Edge -1.4% < 10%",
      "avertissement": null
@@ -3712,6 +3108,7 @@
      "z": 0.58,
      "base": 0.8146,
      "edge": 0.0362,
+     "seuil_marche": 0.65,
      "cote": 1.12,
      "decision": "Edge +3.6% < 10%",
      "avertissement": null
@@ -3726,6 +3123,7 @@
      "z": 0.58,
      "base": 0.8146,
      "edge": 0.0362,
+     "seuil_marche": 0.65,
      "cote": 1.14,
      "decision": "Edge +3.6% < 10%",
      "avertissement": null
@@ -3758,58 +3156,8 @@
      "z": 1.36,
      "base": 0.7881,
      "edge": 0.1062,
+     "seuil_marche": 0.6,
      "cote": null,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Extérieur ne perd pas",
-     "P": 0.7256,
-     "p_hat": 0.7143,
-     "k": 20,
-     "n": 28,
-     "wilson": [
-      0.5294,
-      0.8475
-     ],
-     "z": 1.34,
-     "base": 0.5894,
-     "edge": 0.1362,
-     "cote": 1.16,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Moins de 1,5 buts du domicile",
-     "P": 0.7136,
-     "p_hat": 0.5714,
-     "k": 16,
-     "n": 28,
-     "wilson": [
-      0.3907,
-      0.7349
-     ],
-     "z": 0.51,
-     "base": 0.5232,
-     "edge": 0.1904,
-     "cote": 1.25,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Extérieur ne perd pas + moins de 4,5 buts",
-     "P": 0.6518,
-     "p_hat": 0.6786,
-     "k": 19,
-     "n": 28,
-     "wilson": [
-      0.4934,
-      0.8207
-     ],
-     "z": 1.86,
-     "base": 0.5033,
-     "edge": 0.1485,
-     "cote": 1.4,
      "decision": "validé",
      "avertissement": null
     }
@@ -3825,6 +3173,7 @@
      "z": 2.36,
      "base": 0.8344,
      "edge": 0.0739,
+     "seuil_marche": 0.6,
      "cote": 1.03,
      "decision": "Edge +7.4% < 10%",
      "avertissement": null
@@ -3842,6 +3191,7 @@
      "z": 1.36,
      "base": 0.7881,
      "edge": 0.1062,
+     "seuil_marche": 0.6,
      "cote": null,
      "decision": "validé",
      "avertissement": null
@@ -3856,6 +3206,7 @@
      "z": 1.85,
      "base": 0.8344,
      "edge": 0.0574,
+     "seuil_marche": 0.7,
      "cote": 1.16,
      "decision": "Edge +5.7% < 10%",
      "avertissement": null
@@ -3874,25 +3225,7 @@
     "dom": 1.39,
     "ext": 1.03
    },
-   "paris_valides": [
-    {
-     "marche": "Moins de 3,5 buts",
-     "P": 0.7753,
-     "p_hat": 0.5714,
-     "k": 16,
-     "n": 28,
-     "wilson": [
-      0.3907,
-      0.7349
-     ],
-     "z": -1.1,
-     "base": 0.6689,
-     "edge": 0.1064,
-     "cote": 1.34,
-     "decision": "validé (avertissement)",
-     "avertissement": "confiance réduite : modèle 78% hors de l'intervalle de Wilson des données [39% ; 73%] (p̂ = 57%, n = 28)"
-    }
-   ],
+   "paris_valides": [],
    "tendances": [
     {
      "marche": "Moins de 2,5 buts de l'extérieur",
@@ -3904,6 +3237,7 @@
      "z": -0.6,
      "base": 0.8609,
      "edge": 0.0541,
+     "seuil_marche": 0.7,
      "cote": 1.07,
      "decision": "Edge +5.4% < 10%",
      "avertissement": null
@@ -3918,6 +3252,7 @@
      "z": -0.19,
      "base": 0.8344,
      "edge": 0.0676,
+     "seuil_marche": 0.7,
      "cote": 1.11,
      "decision": "Edge +6.8% < 10%",
      "avertissement": null
@@ -3932,6 +3267,7 @@
      "z": -1.86,
      "base": 0.894,
      "edge": 0.0031,
+     "seuil_marche": 0.7,
      "cote": null,
      "decision": "Edge +0.3% < 10%",
      "avertissement": null
@@ -3962,6 +3298,7 @@
      "z": -0.52,
      "base": 0.8819,
      "edge": 0.0099,
+     "seuil_marche": 0.7,
      "cote": 1.1,
      "decision": "Edge +1.0% < 10%",
      "avertissement": null
@@ -3976,6 +3313,7 @@
      "z": -0.81,
      "base": 0.9028,
      "edge": -0.012,
+     "seuil_marche": 0.7,
      "cote": 1.1,
      "decision": "Edge -1.2% < 10%",
      "avertissement": null
@@ -3990,6 +3328,7 @@
      "z": -0.21,
      "base": 0.8542,
      "edge": 0.0063,
+     "seuil_marche": 0.7,
      "cote": 1.11,
      "decision": "Edge +0.6% < 10%",
      "avertissement": null
@@ -4020,6 +3359,7 @@
      "z": 0.48,
      "base": 0.8283,
      "edge": 0.0747,
+     "seuil_marche": 0.7,
      "cote": 1.03,
      "decision": "Edge +7.5% < 10%",
      "avertissement": null
@@ -4034,6 +3374,7 @@
      "z": 0.26,
      "base": 0.8586,
      "edge": 0.0442,
+     "seuil_marche": 0.7,
      "cote": null,
      "decision": "Edge +4.4% < 10%",
      "avertissement": null
@@ -4048,6 +3389,7 @@
      "z": 0.8,
      "base": 0.7778,
      "edge": 0.0847,
+     "seuil_marche": 0.7,
      "cote": 1.26,
      "decision": "Edge +8.5% < 10%",
      "avertissement": null
@@ -4066,25 +3408,7 @@
     "dom": 1.83,
     "ext": 0.96
    },
-   "paris_valides": [
-    {
-     "marche": "Moins de 1,5 buts de l'extérieur",
-     "P": 0.749,
-     "p_hat": 0.875,
-     "k": 7,
-     "n": 8,
-     "wilson": [
-      0.5291,
-      0.9776
-     ],
-     "z": 1.44,
-     "base": 0.6286,
-     "edge": 0.1204,
-     "cote": 1.17,
-     "decision": "validé",
-     "avertissement": null
-    }
-   ],
+   "paris_valides": [],
    "tendances": [
     {
      "marche": "Handicap +1,5 domicile",
@@ -4096,6 +3420,7 @@
      "z": -0.4,
      "base": 0.9143,
      "edge": 0.0185,
+     "seuil_marche": 0.7,
      "cote": null,
      "decision": "Edge +1.8% < 10%",
      "avertissement": null
@@ -4110,6 +3435,7 @@
      "z": 0.87,
      "base": 0.9143,
      "edge": 0.0119,
+     "seuil_marche": 0.7,
      "cote": null,
      "decision": "Edge +1.2% < 10%",
      "avertissement": null
@@ -4124,6 +3450,7 @@
      "z": 1.02,
      "base": 0.8857,
      "edge": -0.0365,
+     "seuil_marche": 0.7,
      "cote": 1.09,
      "decision": "Edge -3.6% < 10%",
      "avertissement": null
@@ -4164,6 +3491,7 @@
      "z": 1.24,
      "base": 0.8395,
      "edge": 0.1025,
+     "seuil_marche": 0.6,
      "cote": null,
      "decision": "validé",
      "avertissement": null
@@ -4181,6 +3509,7 @@
      "z": 1.73,
      "base": 0.7284,
      "edge": 0.1434,
+     "seuil_marche": 0.7,
      "cote": 1.05,
      "decision": "validé",
      "avertissement": null
@@ -4198,24 +3527,8 @@
      "z": 2.17,
      "base": 0.6296,
      "edge": 0.2048,
+     "seuil_marche": 0.75,
      "cote": 1.08,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Moins de 1,5 buts du domicile",
-     "P": 0.7452,
-     "p_hat": 0.875,
-     "k": 7,
-     "n": 8,
-     "wilson": [
-      0.5291,
-      0.9776
-     ],
-     "z": 1.5,
-     "base": 0.6173,
-     "edge": 0.1279,
-     "cote": 1.13,
      "decision": "validé",
      "avertissement": null
     },
@@ -4232,23 +3545,7 @@
      "z": 1.52,
      "base": 0.4815,
      "edge": 0.2051,
-     "cote": null,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Extérieur ne perd pas + moins de 4,5 buts",
-     "P": 0.6739,
-     "p_hat": 0.75,
-     "k": 6,
-     "n": 8,
-     "wilson": [
-      0.4093,
-      0.9285
-     ],
-     "z": 1.04,
-     "base": 0.5679,
-     "edge": 0.106,
+     "seuil_marche": 0.6,
      "cote": null,
      "decision": "validé",
      "avertissement": null
@@ -4266,24 +3563,8 @@
      "z": 1.97,
      "base": 0.4074,
      "edge": 0.2103,
+     "seuil_marche": 0.5,
      "cote": 1.28,
-     "decision": "validé",
-     "avertissement": null
-    },
-    {
-     "marche": "Plus de 1,5 buts de l'extérieur",
-     "P": 0.6084,
-     "p_hat": 0.625,
-     "k": 5,
-     "n": 8,
-     "wilson": [
-      0.3057,
-      0.8632
-     ],
-     "z": 1.03,
-     "base": 0.4444,
-     "edge": 0.164,
-     "cote": 1.36,
      "decision": "validé",
      "avertissement": null
     }
@@ -4302,6 +3583,7 @@
      "z": 1.24,
      "base": 0.8395,
      "edge": 0.1025,
+     "seuil_marche": 0.6,
      "cote": null,
      "decision": "validé",
      "avertissement": null
@@ -4316,6 +3598,7 @@
      "z": 1.06,
      "base": 0.8765,
      "edge": 0.0479,
+     "seuil_marche": 0.6,
      "cote": null,
      "decision": "Edge +4.8% < 10%",
      "avertissement": null
@@ -4333,6 +3616,7 @@
      "z": 1.73,
      "base": 0.7284,
      "edge": 0.1434,
+     "seuil_marche": 0.7,
      "cote": 1.05,
      "decision": "validé",
      "avertissement": null
@@ -4363,6 +3647,7 @@
      "z": -1.4,
      "base": 0.9137,
      "edge": 0.0015,
+     "seuil_marche": 0.7,
      "cote": null,
      "decision": "Edge +0.1% < 10%",
      "avertissement": null
@@ -4377,6 +3662,7 @@
      "z": -0.29,
      "base": 0.8934,
      "edge": 0.0085,
+     "seuil_marche": 0.7,
      "cote": 1.07,
      "decision": "Edge +0.9% < 10%",
      "avertissement": null
@@ -4391,6 +3677,7 @@
      "z": -0.34,
      "base": 0.934,
      "edge": -0.0366,
+     "seuil_marche": 0.7,
      "cote": 1.06,
      "decision": "Edge -3.7% < 10%",
      "avertissement": null

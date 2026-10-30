@@ -207,5 +207,4186 @@
     "étape 1": 5011
    }
   }
+ },
+ "seuils_par_marche": {
+  "echantillon": {
+   "matchs": 827,
+   "du": "2026-09-28",
+   "au": "2026-10-29"
+  },
+  "reussite_cible": 0.7,
+  "min_predictions": 30,
+  "marches": {
+   "1x2|1": {
+    "seuil": null,
+    "marche": "Victoire domicile",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 94,
+      "gagnes": 46,
+      "p_moyenne": 0.5214,
+      "reussite": 0.4894,
+      "reussite_lissee": 0.4894
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 72,
+      "gagnes": 41,
+      "p_moyenne": 0.5725,
+      "reussite": 0.5694,
+      "reussite_lissee": 0.5694
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 48,
+      "gagnes": 30,
+      "p_moyenne": 0.621,
+      "reussite": 0.625,
+      "reussite_lissee": 0.625
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 11,
+      "gagnes": 9,
+      "p_moyenne": 0.668,
+      "reussite": 0.8182,
+      "reussite_lissee": 0.8182
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 2,
+      "gagnes": 2,
+      "p_moyenne": 0.7265,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 3,
+      "gagnes": 3,
+      "p_moyenne": 0.7836,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     },
+     {
+      "debut": 0.85,
+      "tranche": "0.85-0.90",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.8832,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "1x2|N": {
+    "seuil": null,
+    "marche": "Match nul",
+    "predictions": 827,
+    "tranches": []
+   },
+   "1x2|2": {
+    "seuil": 0.5,
+    "reussite": 0.7692,
+    "n": 39,
+    "p_moyenne": 0.5623,
+    "marche": "Victoire extérieur",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 20,
+      "gagnes": 15,
+      "p_moyenne": 0.5207,
+      "reussite": 0.75,
+      "reussite_lissee": 0.7353
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 14,
+      "gagnes": 10,
+      "p_moyenne": 0.5727,
+      "reussite": 0.7143,
+      "reussite_lissee": 0.7353
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.6455,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 2,
+      "gagnes": 2,
+      "p_moyenne": 0.6633,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.7057,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     },
+     {
+      "debut": 0.8,
+      "tranche": "0.80-0.85",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.8192,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "double_chance|1N": {
+    "seuil": 0.7,
+    "reussite": 0.8123,
+    "n": 405,
+    "p_moyenne": 0.769,
+    "marche": "Domicile ne perd pas",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 40,
+      "gagnes": 22,
+      "p_moyenne": 0.5278,
+      "reussite": 0.55,
+      "reussite_lissee": 0.55
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 66,
+      "gagnes": 39,
+      "p_moyenne": 0.5814,
+      "reussite": 0.5909,
+      "reussite_lissee": 0.5909
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 114,
+      "gagnes": 69,
+      "p_moyenne": 0.6258,
+      "reussite": 0.6053,
+      "reussite_lissee": 0.6053
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 163,
+      "gagnes": 99,
+      "p_moyenne": 0.6762,
+      "reussite": 0.6074,
+      "reussite_lissee": 0.6074
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 165,
+      "gagnes": 137,
+      "p_moyenne": 0.7237,
+      "reussite": 0.8303,
+      "reussite_lissee": 0.7852
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 133,
+      "gagnes": 97,
+      "p_moyenne": 0.7745,
+      "reussite": 0.7293,
+      "reussite_lissee": 0.7852
+     },
+     {
+      "debut": 0.8,
+      "tranche": "0.80-0.85",
+      "n": 84,
+      "gagnes": 72,
+      "p_moyenne": 0.8202,
+      "reussite": 0.8571,
+      "reussite_lissee": 0.8571
+     },
+     {
+      "debut": 0.85,
+      "tranche": "0.85-0.90",
+      "n": 19,
+      "gagnes": 19,
+      "p_moyenne": 0.8636,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     },
+     {
+      "debut": 0.9,
+      "tranche": "0.90-0.95",
+      "n": 3,
+      "gagnes": 3,
+      "p_moyenne": 0.9171,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     },
+     {
+      "debut": 0.95,
+      "tranche": "0.95-1.00",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.9626,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "double_chance|N2": {
+    "seuil": 0.75,
+    "reussite": 0.9143,
+    "n": 35,
+    "p_moyenne": 0.7928,
+    "marche": "Extérieur ne perd pas",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 120,
+      "gagnes": 59,
+      "p_moyenne": 0.5283,
+      "reussite": 0.4917,
+      "reussite_lissee": 0.4917
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 148,
+      "gagnes": 91,
+      "p_moyenne": 0.5753,
+      "reussite": 0.6149,
+      "reussite_lissee": 0.6076
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 140,
+      "gagnes": 84,
+      "p_moyenne": 0.6246,
+      "reussite": 0.6,
+      "reussite_lissee": 0.6076
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 97,
+      "gagnes": 70,
+      "p_moyenne": 0.6743,
+      "reussite": 0.7216,
+      "reussite_lissee": 0.6993
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 56,
+      "gagnes": 37,
+      "p_moyenne": 0.7232,
+      "reussite": 0.6607,
+      "reussite_lissee": 0.6993
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 25,
+      "gagnes": 23,
+      "p_moyenne": 0.7757,
+      "reussite": 0.92,
+      "reussite_lissee": 0.9091
+     },
+     {
+      "debut": 0.8,
+      "tranche": "0.80-0.85",
+      "n": 8,
+      "gagnes": 7,
+      "p_moyenne": 0.8187,
+      "reussite": 0.875,
+      "reussite_lissee": 0.9091
+     },
+     {
+      "debut": 0.85,
+      "tranche": "0.85-0.90",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.8716,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     },
+     {
+      "debut": 0.9,
+      "tranche": "0.90-0.95",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.9336,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "double_chance|12": {
+    "seuil": 0.6,
+    "reussite": 0.7437,
+    "n": 827,
+    "p_moyenne": 0.7447,
+    "marche": "Pas de match nul",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 4,
+      "gagnes": 3,
+      "p_moyenne": 0.6335,
+      "reussite": 0.75,
+      "reussite_lissee": 0.7143
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 73,
+      "gagnes": 52,
+      "p_moyenne": 0.6825,
+      "reussite": 0.7123,
+      "reussite_lissee": 0.7143
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 389,
+      "gagnes": 284,
+      "p_moyenne": 0.7291,
+      "reussite": 0.7301,
+      "reussite_lissee": 0.7301
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 329,
+      "gagnes": 247,
+      "p_moyenne": 0.7695,
+      "reussite": 0.7508,
+      "reussite_lissee": 0.7508
+     },
+     {
+      "debut": 0.8,
+      "tranche": "0.80-0.85",
+      "n": 29,
+      "gagnes": 26,
+      "p_moyenne": 0.8186,
+      "reussite": 0.8966,
+      "reussite_lissee": 0.8966
+     },
+     {
+      "debut": 0.85,
+      "tranche": "0.85-0.90",
+      "n": 4,
+      "gagnes": 4,
+      "p_moyenne": 0.8713,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     },
+     {
+      "debut": 0.9,
+      "tranche": "0.90-0.95",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.9206,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "over_under_1.5|plus": {
+    "seuil": 0.5,
+    "reussite": 0.7706,
+    "n": 824,
+    "p_moyenne": 0.7671,
+    "marche": "Plus de 1,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 10,
+      "gagnes": 7,
+      "p_moyenne": 0.5319,
+      "reussite": 0.7,
+      "reussite_lissee": 0.7
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 22,
+      "gagnes": 17,
+      "p_moyenne": 0.5804,
+      "reussite": 0.7727,
+      "reussite_lissee": 0.7444
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 41,
+      "gagnes": 31,
+      "p_moyenne": 0.6309,
+      "reussite": 0.7561,
+      "reussite_lissee": 0.7444
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 70,
+      "gagnes": 51,
+      "p_moyenne": 0.6766,
+      "reussite": 0.7286,
+      "reussite_lissee": 0.7444
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 160,
+      "gagnes": 120,
+      "p_moyenne": 0.7268,
+      "reussite": 0.75,
+      "reussite_lissee": 0.7487
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 234,
+      "gagnes": 175,
+      "p_moyenne": 0.7746,
+      "reussite": 0.7479,
+      "reussite_lissee": 0.7487
+     },
+     {
+      "debut": 0.8,
+      "tranche": "0.80-0.85",
+      "n": 174,
+      "gagnes": 136,
+      "p_moyenne": 0.8245,
+      "reussite": 0.7816,
+      "reussite_lissee": 0.7816
+     },
+     {
+      "debut": 0.85,
+      "tranche": "0.85-0.90",
+      "n": 88,
+      "gagnes": 76,
+      "p_moyenne": 0.872,
+      "reussite": 0.8636,
+      "reussite_lissee": 0.8636
+     },
+     {
+      "debut": 0.9,
+      "tranche": "0.90-0.95",
+      "n": 25,
+      "gagnes": 22,
+      "p_moyenne": 0.9159,
+      "reussite": 0.88,
+      "reussite_lissee": 0.88
+     },
+     {
+      "debut": 0.95,
+      "tranche": "0.95-1.00",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.9613,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "over_under_1.5|moins": {
+    "seuil": null,
+    "marche": "Moins de 1,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 3,
+      "gagnes": 1,
+      "p_moyenne": 0.5273,
+      "reussite": 0.3333,
+      "reussite_lissee": 0.3333
+     }
+    ]
+   },
+   "over_under_2.5|plus": {
+    "seuil": 0.7,
+    "reussite": 0.7547,
+    "n": 53,
+    "p_moyenne": 0.7484,
+    "marche": "Plus de 2,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 160,
+      "gagnes": 82,
+      "p_moyenne": 0.5238,
+      "reussite": 0.5125,
+      "reussite_lissee": 0.5125
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 142,
+      "gagnes": 73,
+      "p_moyenne": 0.5728,
+      "reussite": 0.5141,
+      "reussite_lissee": 0.5141
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 96,
+      "gagnes": 52,
+      "p_moyenne": 0.6262,
+      "reussite": 0.5417,
+      "reussite_lissee": 0.5417
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 58,
+      "gagnes": 34,
+      "p_moyenne": 0.6731,
+      "reussite": 0.5862,
+      "reussite_lissee": 0.5862
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 31,
+      "gagnes": 24,
+      "p_moyenne": 0.7248,
+      "reussite": 0.7742,
+      "reussite_lissee": 0.7547
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 16,
+      "gagnes": 12,
+      "p_moyenne": 0.7647,
+      "reussite": 0.75,
+      "reussite_lissee": 0.7547
+     },
+     {
+      "debut": 0.8,
+      "tranche": "0.80-0.85",
+      "n": 5,
+      "gagnes": 4,
+      "p_moyenne": 0.8165,
+      "reussite": 0.8,
+      "reussite_lissee": 0.7547
+     },
+     {
+      "debut": 0.85,
+      "tranche": "0.85-0.90",
+      "n": 1,
+      "gagnes": 0,
+      "p_moyenne": 0.8766,
+      "reussite": 0.0,
+      "reussite_lissee": 0.7547
+     }
+    ]
+   },
+   "over_under_2.5|moins": {
+    "seuil": null,
+    "marche": "Moins de 2,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 133,
+      "gagnes": 60,
+      "p_moyenne": 0.5235,
+      "reussite": 0.4511,
+      "reussite_lissee": 0.4511
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 81,
+      "gagnes": 45,
+      "p_moyenne": 0.5699,
+      "reussite": 0.5556,
+      "reussite_lissee": 0.5337
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 57,
+      "gagnes": 29,
+      "p_moyenne": 0.6247,
+      "reussite": 0.5088,
+      "reussite_lissee": 0.5337
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 25,
+      "gagnes": 13,
+      "p_moyenne": 0.6737,
+      "reussite": 0.52,
+      "reussite_lissee": 0.5337
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 17,
+      "gagnes": 12,
+      "p_moyenne": 0.7193,
+      "reussite": 0.7059,
+      "reussite_lissee": 0.6522
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 6,
+      "gagnes": 3,
+      "p_moyenne": 0.773,
+      "reussite": 0.5,
+      "reussite_lissee": 0.6522
+     }
+    ]
+   },
+   "over_under_3.5|plus": {
+    "seuil": null,
+    "marche": "Plus de 3,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 25,
+      "gagnes": 15,
+      "p_moyenne": 0.5242,
+      "reussite": 0.6,
+      "reussite_lissee": 0.5532
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 15,
+      "gagnes": 8,
+      "p_moyenne": 0.5675,
+      "reussite": 0.5333,
+      "reussite_lissee": 0.5532
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 4,
+      "gagnes": 3,
+      "p_moyenne": 0.6302,
+      "reussite": 0.75,
+      "reussite_lissee": 0.5532
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 2,
+      "gagnes": 0,
+      "p_moyenne": 0.6548,
+      "reussite": 0.0,
+      "reussite_lissee": 0.5532
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 1,
+      "gagnes": 0,
+      "p_moyenne": 0.7371,
+      "reussite": 0.0,
+      "reussite_lissee": 0.5532
+     }
+    ]
+   },
+   "over_under_3.5|moins": {
+    "seuil": 0.8,
+    "reussite": 0.8,
+    "n": 105,
+    "p_moyenne": 0.8446,
+    "marche": "Moins de 3,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 44,
+      "gagnes": 27,
+      "p_moyenne": 0.53,
+      "reussite": 0.6136,
+      "reussite_lissee": 0.6136
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 78,
+      "gagnes": 57,
+      "p_moyenne": 0.5797,
+      "reussite": 0.7308,
+      "reussite_lissee": 0.6851
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 109,
+      "gagnes": 78,
+      "p_moyenne": 0.6285,
+      "reussite": 0.7156,
+      "reussite_lissee": 0.6851
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 159,
+      "gagnes": 107,
+      "p_moyenne": 0.6776,
+      "reussite": 0.673,
+      "reussite_lissee": 0.6851
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 165,
+      "gagnes": 113,
+      "p_moyenne": 0.7227,
+      "reussite": 0.6848,
+      "reussite_lissee": 0.6851
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 121,
+      "gagnes": 78,
+      "p_moyenne": 0.7709,
+      "reussite": 0.6446,
+      "reussite_lissee": 0.6851
+     },
+     {
+      "debut": 0.8,
+      "tranche": "0.80-0.85",
+      "n": 65,
+      "gagnes": 49,
+      "p_moyenne": 0.8234,
+      "reussite": 0.7538,
+      "reussite_lissee": 0.7538
+     },
+     {
+      "debut": 0.85,
+      "tranche": "0.85-0.90",
+      "n": 33,
+      "gagnes": 29,
+      "p_moyenne": 0.8716,
+      "reussite": 0.8788,
+      "reussite_lissee": 0.875
+     },
+     {
+      "debut": 0.9,
+      "tranche": "0.90-0.95",
+      "n": 7,
+      "gagnes": 6,
+      "p_moyenne": 0.9134,
+      "reussite": 0.8571,
+      "reussite_lissee": 0.875
+     }
+    ]
+   },
+   "over_under_4.5|plus": {
+    "seuil": null,
+    "marche": "Plus de 4,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 1,
+      "gagnes": 0,
+      "p_moyenne": 0.5621,
+      "reussite": 0.0,
+      "reussite_lissee": 0.0
+     }
+    ]
+   },
+   "over_under_4.5|moins": {
+    "seuil": 0.7,
+    "reussite": 0.8439,
+    "n": 775,
+    "p_moyenne": 0.8491,
+    "marche": "Moins de 4,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 2,
+      "gagnes": 2,
+      "p_moyenne": 0.5353,
+      "reussite": 1.0,
+      "reussite_lissee": 0.6275
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 5,
+      "gagnes": 3,
+      "p_moyenne": 0.5699,
+      "reussite": 0.6,
+      "reussite_lissee": 0.6275
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 17,
+      "gagnes": 11,
+      "p_moyenne": 0.6328,
+      "reussite": 0.6471,
+      "reussite_lissee": 0.6275
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 27,
+      "gagnes": 16,
+      "p_moyenne": 0.6771,
+      "reussite": 0.5926,
+      "reussite_lissee": 0.6275
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 51,
+      "gagnes": 42,
+      "p_moyenne": 0.7275,
+      "reussite": 0.8235,
+      "reussite_lissee": 0.8235
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 111,
+      "gagnes": 97,
+      "p_moyenne": 0.775,
+      "reussite": 0.8739,
+      "reussite_lissee": 0.833
+     },
+     {
+      "debut": 0.8,
+      "tranche": "0.80-0.85",
+      "n": 203,
+      "gagnes": 171,
+      "p_moyenne": 0.8271,
+      "reussite": 0.8424,
+      "reussite_lissee": 0.833
+     },
+     {
+      "debut": 0.85,
+      "tranche": "0.85-0.90",
+      "n": 255,
+      "gagnes": 206,
+      "p_moyenne": 0.8739,
+      "reussite": 0.8078,
+      "reussite_lissee": 0.833
+     },
+     {
+      "debut": 0.9,
+      "tranche": "0.90-0.95",
+      "n": 124,
+      "gagnes": 109,
+      "p_moyenne": 0.9218,
+      "reussite": 0.879,
+      "reussite_lissee": 0.879
+     },
+     {
+      "debut": 0.95,
+      "tranche": "0.95-1.00",
+      "n": 32,
+      "gagnes": 30,
+      "p_moyenne": 0.9605,
+      "reussite": 0.9375,
+      "reussite_lissee": 0.9375
+     }
+    ]
+   },
+   "btts|Oui": {
+    "seuil": null,
+    "marche": "Les deux équipes marquent",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 205,
+      "gagnes": 110,
+      "p_moyenne": 0.5263,
+      "reussite": 0.5366,
+      "reussite_lissee": 0.5309
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 183,
+      "gagnes": 96,
+      "p_moyenne": 0.574,
+      "reussite": 0.5246,
+      "reussite_lissee": 0.5309
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 131,
+      "gagnes": 72,
+      "p_moyenne": 0.622,
+      "reussite": 0.5496,
+      "reussite_lissee": 0.5496
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 74,
+      "gagnes": 49,
+      "p_moyenne": 0.672,
+      "reussite": 0.6622,
+      "reussite_lissee": 0.6622
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 28,
+      "gagnes": 20,
+      "p_moyenne": 0.7235,
+      "reussite": 0.7143,
+      "reussite_lissee": 0.6774
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 2,
+      "gagnes": 1,
+      "p_moyenne": 0.7728,
+      "reussite": 0.5,
+      "reussite_lissee": 0.6774
+     },
+     {
+      "debut": 0.8,
+      "tranche": "0.80-0.85",
+      "n": 1,
+      "gagnes": 0,
+      "p_moyenne": 0.8032,
+      "reussite": 0.0,
+      "reussite_lissee": 0.6774
+     }
+    ]
+   },
+   "btts|Non": {
+    "seuil": null,
+    "marche": "Les deux équipes ne marquent pas toutes les deux",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 111,
+      "gagnes": 52,
+      "p_moyenne": 0.5212,
+      "reussite": 0.4685,
+      "reussite_lissee": 0.4685
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 56,
+      "gagnes": 31,
+      "p_moyenne": 0.5695,
+      "reussite": 0.5536,
+      "reussite_lissee": 0.5536
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 28,
+      "gagnes": 17,
+      "p_moyenne": 0.6208,
+      "reussite": 0.6071,
+      "reussite_lissee": 0.5641
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 9,
+      "gagnes": 4,
+      "p_moyenne": 0.6702,
+      "reussite": 0.4444,
+      "reussite_lissee": 0.5641
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 2,
+      "gagnes": 1,
+      "p_moyenne": 0.7056,
+      "reussite": 0.5,
+      "reussite_lissee": 0.5641
+     }
+    ]
+   },
+   "multigoal|0-1": {
+    "seuil": null,
+    "marche": "0 ou 1 but dans le match",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 3,
+      "gagnes": 1,
+      "p_moyenne": 0.5273,
+      "reussite": 0.3333,
+      "reussite_lissee": 0.3333
+     }
+    ]
+   },
+   "multigoal|2-3": {
+    "seuil": null,
+    "marche": "2 ou 3 buts dans le match",
+    "predictions": 827,
+    "tranches": []
+   },
+   "multigoal|4+": {
+    "seuil": null,
+    "marche": "4 buts ou plus dans le match",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 25,
+      "gagnes": 15,
+      "p_moyenne": 0.5242,
+      "reussite": 0.6,
+      "reussite_lissee": 0.5532
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 15,
+      "gagnes": 8,
+      "p_moyenne": 0.5675,
+      "reussite": 0.5333,
+      "reussite_lissee": 0.5532
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 4,
+      "gagnes": 3,
+      "p_moyenne": 0.6302,
+      "reussite": 0.75,
+      "reussite_lissee": 0.5532
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 2,
+      "gagnes": 0,
+      "p_moyenne": 0.6548,
+      "reussite": 0.0,
+      "reussite_lissee": 0.5532
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 1,
+      "gagnes": 0,
+      "p_moyenne": 0.7371,
+      "reussite": 0.0,
+      "reussite_lissee": 0.5532
+     }
+    ]
+   },
+   "over_under_domicile_0.5|plus": {
+    "seuil": 0.65,
+    "reussite": 0.7959,
+    "n": 774,
+    "p_moyenne": 0.7854,
+    "marche": "Plus de 0,5 buts du domicile",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 13,
+      "gagnes": 10,
+      "p_moyenne": 0.5807,
+      "reussite": 0.7692,
+      "reussite_lissee": 0.6415
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 40,
+      "gagnes": 24,
+      "p_moyenne": 0.6292,
+      "reussite": 0.6,
+      "reussite_lissee": 0.6415
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 91,
+      "gagnes": 68,
+      "p_moyenne": 0.6785,
+      "reussite": 0.7473,
+      "reussite_lissee": 0.7328
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 156,
+      "gagnes": 113,
+      "p_moyenne": 0.7261,
+      "reussite": 0.7244,
+      "reussite_lissee": 0.7328
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 206,
+      "gagnes": 161,
+      "p_moyenne": 0.7767,
+      "reussite": 0.7816,
+      "reussite_lissee": 0.7816
+     },
+     {
+      "debut": 0.8,
+      "tranche": "0.80-0.85",
+      "n": 181,
+      "gagnes": 152,
+      "p_moyenne": 0.8257,
+      "reussite": 0.8398,
+      "reussite_lissee": 0.8398
+     },
+     {
+      "debut": 0.85,
+      "tranche": "0.85-0.90",
+      "n": 117,
+      "gagnes": 103,
+      "p_moyenne": 0.871,
+      "reussite": 0.8803,
+      "reussite_lissee": 0.8714
+     },
+     {
+      "debut": 0.9,
+      "tranche": "0.90-0.95",
+      "n": 23,
+      "gagnes": 19,
+      "p_moyenne": 0.9214,
+      "reussite": 0.8261,
+      "reussite_lissee": 0.8714
+     },
+     {
+      "debut": 0.95,
+      "tranche": "0.95-1.00",
+      "n": 2,
+      "gagnes": 2,
+      "p_moyenne": 0.9631,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "over_under_domicile_0.5|moins": {
+    "seuil": null,
+    "marche": "Moins de 0,5 buts du domicile",
+    "predictions": 827,
+    "tranches": []
+   },
+   "over_under_domicile_1.5|plus": {
+    "seuil": null,
+    "marche": "Plus de 1,5 buts du domicile",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 115,
+      "gagnes": 53,
+      "p_moyenne": 0.5243,
+      "reussite": 0.4609,
+      "reussite_lissee": 0.4609
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 75,
+      "gagnes": 41,
+      "p_moyenne": 0.5731,
+      "reussite": 0.5467,
+      "reussite_lissee": 0.5467
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 63,
+      "gagnes": 37,
+      "p_moyenne": 0.6217,
+      "reussite": 0.5873,
+      "reussite_lissee": 0.5873
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 13,
+      "gagnes": 9,
+      "p_moyenne": 0.6737,
+      "reussite": 0.6923,
+      "reussite_lissee": 0.6207
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 10,
+      "gagnes": 6,
+      "p_moyenne": 0.72,
+      "reussite": 0.6,
+      "reussite_lissee": 0.6207
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 6,
+      "gagnes": 3,
+      "p_moyenne": 0.7691,
+      "reussite": 0.5,
+      "reussite_lissee": 0.6207
+     },
+     {
+      "debut": 0.8,
+      "tranche": "0.80-0.85",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.809,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     },
+     {
+      "debut": 0.85,
+      "tranche": "0.85-0.90",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.8766,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "over_under_domicile_1.5|moins": {
+    "seuil": null,
+    "marche": "Moins de 1,5 buts du domicile",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 128,
+      "gagnes": 60,
+      "p_moyenne": 0.5291,
+      "reussite": 0.4688,
+      "reussite_lissee": 0.4688
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 127,
+      "gagnes": 72,
+      "p_moyenne": 0.5764,
+      "reussite": 0.5669,
+      "reussite_lissee": 0.5669
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 119,
+      "gagnes": 70,
+      "p_moyenne": 0.6249,
+      "reussite": 0.5882,
+      "reussite_lissee": 0.5882
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 97,
+      "gagnes": 66,
+      "p_moyenne": 0.6734,
+      "reussite": 0.6804,
+      "reussite_lissee": 0.6607
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 48,
+      "gagnes": 31,
+      "p_moyenne": 0.7234,
+      "reussite": 0.6458,
+      "reussite_lissee": 0.6607
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 23,
+      "gagnes": 14,
+      "p_moyenne": 0.7697,
+      "reussite": 0.6087,
+      "reussite_lissee": 0.6607
+     },
+     {
+      "debut": 0.8,
+      "tranche": "0.80-0.85",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.8043,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "over_under_domicile_2.5|plus": {
+    "seuil": null,
+    "marche": "Plus de 2,5 buts du domicile",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 5,
+      "gagnes": 2,
+      "p_moyenne": 0.5254,
+      "reussite": 0.4,
+      "reussite_lissee": 0.4
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 2,
+      "gagnes": 1,
+      "p_moyenne": 0.574,
+      "reussite": 0.5,
+      "reussite_lissee": 0.5
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.7013,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "over_under_domicile_2.5|moins": {
+    "seuil": 0.6,
+    "reussite": 0.814,
+    "n": 801,
+    "p_moyenne": 0.7998,
+    "marche": "Moins de 2,5 buts du domicile",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 9,
+      "gagnes": 4,
+      "p_moyenne": 0.5321,
+      "reussite": 0.4444,
+      "reussite_lissee": 0.4444
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 9,
+      "gagnes": 4,
+      "p_moyenne": 0.5765,
+      "reussite": 0.4444,
+      "reussite_lissee": 0.4444
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 36,
+      "gagnes": 27,
+      "p_moyenne": 0.632,
+      "reussite": 0.75,
+      "reussite_lissee": 0.75
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 71,
+      "gagnes": 54,
+      "p_moyenne": 0.6738,
+      "reussite": 0.7606,
+      "reussite_lissee": 0.7541
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 112,
+      "gagnes": 84,
+      "p_moyenne": 0.7266,
+      "reussite": 0.75,
+      "reussite_lissee": 0.7541
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 151,
+      "gagnes": 123,
+      "p_moyenne": 0.7772,
+      "reussite": 0.8146,
+      "reussite_lissee": 0.8146
+     },
+     {
+      "debut": 0.8,
+      "tranche": "0.80-0.85",
+      "n": 182,
+      "gagnes": 149,
+      "p_moyenne": 0.8252,
+      "reussite": 0.8187,
+      "reussite_lissee": 0.8187
+     },
+     {
+      "debut": 0.85,
+      "tranche": "0.85-0.90",
+      "n": 174,
+      "gagnes": 148,
+      "p_moyenne": 0.8742,
+      "reussite": 0.8506,
+      "reussite_lissee": 0.8506
+     },
+     {
+      "debut": 0.9,
+      "tranche": "0.90-0.95",
+      "n": 74,
+      "gagnes": 66,
+      "p_moyenne": 0.9198,
+      "reussite": 0.8919,
+      "reussite_lissee": 0.8919
+     },
+     {
+      "debut": 0.95,
+      "tranche": "0.95-1.00",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.9508,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "over_under_exterieur_0.5|plus": {
+    "seuil": 0.7,
+    "reussite": 0.7619,
+    "n": 441,
+    "p_moyenne": 0.7714,
+    "marche": "Plus de 0,5 buts de l'extérieur",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 27,
+      "gagnes": 17,
+      "p_moyenne": 0.5283,
+      "reussite": 0.6296,
+      "reussite_lissee": 0.5568
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 61,
+      "gagnes": 32,
+      "p_moyenne": 0.5744,
+      "reussite": 0.5246,
+      "reussite_lissee": 0.5568
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 116,
+      "gagnes": 69,
+      "p_moyenne": 0.6264,
+      "reussite": 0.5948,
+      "reussite_lissee": 0.5948
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 176,
+      "gagnes": 118,
+      "p_moyenne": 0.6747,
+      "reussite": 0.6705,
+      "reussite_lissee": 0.6705
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 171,
+      "gagnes": 122,
+      "p_moyenne": 0.7262,
+      "reussite": 0.7135,
+      "reussite_lissee": 0.7135
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 159,
+      "gagnes": 126,
+      "p_moyenne": 0.7728,
+      "reussite": 0.7925,
+      "reussite_lissee": 0.7787
+     },
+     {
+      "debut": 0.8,
+      "tranche": "0.80-0.85",
+      "n": 76,
+      "gagnes": 57,
+      "p_moyenne": 0.8192,
+      "reussite": 0.75,
+      "reussite_lissee": 0.7787
+     },
+     {
+      "debut": 0.85,
+      "tranche": "0.85-0.90",
+      "n": 28,
+      "gagnes": 24,
+      "p_moyenne": 0.8682,
+      "reussite": 0.8571,
+      "reussite_lissee": 0.8571
+     },
+     {
+      "debut": 0.9,
+      "tranche": "0.90-0.95",
+      "n": 5,
+      "gagnes": 5,
+      "p_moyenne": 0.9278,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     },
+     {
+      "debut": 0.95,
+      "tranche": "0.95-1.00",
+      "n": 2,
+      "gagnes": 2,
+      "p_moyenne": 0.9631,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "over_under_exterieur_0.5|moins": {
+    "seuil": null,
+    "marche": "Moins de 0,5 buts de l'extérieur",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 5,
+      "gagnes": 3,
+      "p_moyenne": 0.5195,
+      "reussite": 0.6,
+      "reussite_lissee": 0.5
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 1,
+      "gagnes": 0,
+      "p_moyenne": 0.5709,
+      "reussite": 0.0,
+      "reussite_lissee": 0.5
+     }
+    ]
+   },
+   "over_under_exterieur_1.5|plus": {
+    "seuil": null,
+    "marche": "Plus de 1,5 buts de l'extérieur",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 33,
+      "gagnes": 17,
+      "p_moyenne": 0.5189,
+      "reussite": 0.5152,
+      "reussite_lissee": 0.5152
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 25,
+      "gagnes": 16,
+      "p_moyenne": 0.571,
+      "reussite": 0.64,
+      "reussite_lissee": 0.64
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 12,
+      "gagnes": 10,
+      "p_moyenne": 0.623,
+      "reussite": 0.8333,
+      "reussite_lissee": 0.8333
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 2,
+      "gagnes": 2,
+      "p_moyenne": 0.6678,
+      "reussite": 1.0,
+      "reussite_lissee": 0.8333
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 2,
+      "gagnes": 2,
+      "p_moyenne": 0.7311,
+      "reussite": 1.0,
+      "reussite_lissee": 0.8333
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 2,
+      "gagnes": 1,
+      "p_moyenne": 0.7773,
+      "reussite": 0.5,
+      "reussite_lissee": 0.8333
+     },
+     {
+      "debut": 0.8,
+      "tranche": "0.80-0.85",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.83,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     },
+     {
+      "debut": 0.85,
+      "tranche": "0.85-0.90",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.8534,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "over_under_exterieur_1.5|moins": {
+    "seuil": 0.75,
+    "reussite": 0.7557,
+    "n": 131,
+    "p_moyenne": 0.7919,
+    "marche": "Moins de 1,5 buts de l'extérieur",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 82,
+      "gagnes": 51,
+      "p_moyenne": 0.5261,
+      "reussite": 0.622,
+      "reussite_lissee": 0.5859
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 116,
+      "gagnes": 65,
+      "p_moyenne": 0.5768,
+      "reussite": 0.5603,
+      "reussite_lissee": 0.5859
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 135,
+      "gagnes": 82,
+      "p_moyenne": 0.6236,
+      "reussite": 0.6074,
+      "reussite_lissee": 0.6074
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 146,
+      "gagnes": 101,
+      "p_moyenne": 0.6749,
+      "reussite": 0.6918,
+      "reussite_lissee": 0.6912
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 139,
+      "gagnes": 96,
+      "p_moyenne": 0.7226,
+      "reussite": 0.6906,
+      "reussite_lissee": 0.6912
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 87,
+      "gagnes": 63,
+      "p_moyenne": 0.7747,
+      "reussite": 0.7241,
+      "reussite_lissee": 0.7241
+     },
+     {
+      "debut": 0.8,
+      "tranche": "0.80-0.85",
+      "n": 38,
+      "gagnes": 31,
+      "p_moyenne": 0.8197,
+      "reussite": 0.8158,
+      "reussite_lissee": 0.8158
+     },
+     {
+      "debut": 0.85,
+      "tranche": "0.85-0.90",
+      "n": 6,
+      "gagnes": 5,
+      "p_moyenne": 0.8649,
+      "reussite": 0.8333,
+      "reussite_lissee": 0.8333
+     }
+    ]
+   },
+   "over_under_exterieur_2.5|plus": {
+    "seuil": null,
+    "marche": "Plus de 2,5 buts de l'extérieur",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 1,
+      "gagnes": 0,
+      "p_moyenne": 0.5119,
+      "reussite": 0.0,
+      "reussite_lissee": 0.0
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 1,
+      "gagnes": 0,
+      "p_moyenne": 0.5741,
+      "reussite": 0.0,
+      "reussite_lissee": 0.0
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 1,
+      "gagnes": 0,
+      "p_moyenne": 0.6219,
+      "reussite": 0.0,
+      "reussite_lissee": 0.0
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.6607,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "over_under_exterieur_2.5|moins": {
+    "seuil": 0.7,
+    "reussite": 0.8778,
+    "n": 794,
+    "p_moyenne": 0.8671,
+    "marche": "Moins de 2,5 buts de l'extérieur",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 2,
+      "gagnes": 0,
+      "p_moyenne": 0.5203,
+      "reussite": 0.0,
+      "reussite_lissee": 0.0
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 1,
+      "gagnes": 0,
+      "p_moyenne": 0.5821,
+      "reussite": 0.0,
+      "reussite_lissee": 0.0
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 7,
+      "gagnes": 2,
+      "p_moyenne": 0.6308,
+      "reussite": 0.2857,
+      "reussite_lissee": 0.2857
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 19,
+      "gagnes": 13,
+      "p_moyenne": 0.6783,
+      "reussite": 0.6842,
+      "reussite_lissee": 0.6842
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 26,
+      "gagnes": 22,
+      "p_moyenne": 0.7228,
+      "reussite": 0.8462,
+      "reussite_lissee": 0.8291
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 91,
+      "gagnes": 75,
+      "p_moyenne": 0.7766,
+      "reussite": 0.8242,
+      "reussite_lissee": 0.8291
+     },
+     {
+      "debut": 0.8,
+      "tranche": "0.80-0.85",
+      "n": 172,
+      "gagnes": 147,
+      "p_moyenne": 0.8275,
+      "reussite": 0.8547,
+      "reussite_lissee": 0.8547
+     },
+     {
+      "debut": 0.85,
+      "tranche": "0.85-0.90",
+      "n": 231,
+      "gagnes": 203,
+      "p_moyenne": 0.876,
+      "reussite": 0.8788,
+      "reussite_lissee": 0.8788
+     },
+     {
+      "debut": 0.9,
+      "tranche": "0.90-0.95",
+      "n": 234,
+      "gagnes": 212,
+      "p_moyenne": 0.9226,
+      "reussite": 0.906,
+      "reussite_lissee": 0.906
+     },
+     {
+      "debut": 0.95,
+      "tranche": "0.95-1.00",
+      "n": 41,
+      "gagnes": 39,
+      "p_moyenne": 0.9596,
+      "reussite": 0.9512,
+      "reussite_lissee": 0.9512
+     }
+    ]
+   },
+   "cages_inviolees_domicile|oui": {
+    "seuil": null,
+    "marche": "Le domicile n'encaisse pas",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 5,
+      "gagnes": 3,
+      "p_moyenne": 0.5195,
+      "reussite": 0.6,
+      "reussite_lissee": 0.5
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 1,
+      "gagnes": 0,
+      "p_moyenne": 0.5709,
+      "reussite": 0.0,
+      "reussite_lissee": 0.5
+     }
+    ]
+   },
+   "cages_inviolees_domicile|non": {
+    "seuil": 0.7,
+    "reussite": 0.7619,
+    "n": 441,
+    "p_moyenne": 0.7714,
+    "marche": "Le domicile encaisse au moins 1 but",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 27,
+      "gagnes": 17,
+      "p_moyenne": 0.5283,
+      "reussite": 0.6296,
+      "reussite_lissee": 0.5568
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 61,
+      "gagnes": 32,
+      "p_moyenne": 0.5744,
+      "reussite": 0.5246,
+      "reussite_lissee": 0.5568
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 116,
+      "gagnes": 69,
+      "p_moyenne": 0.6264,
+      "reussite": 0.5948,
+      "reussite_lissee": 0.5948
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 176,
+      "gagnes": 118,
+      "p_moyenne": 0.6747,
+      "reussite": 0.6705,
+      "reussite_lissee": 0.6705
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 171,
+      "gagnes": 122,
+      "p_moyenne": 0.7262,
+      "reussite": 0.7135,
+      "reussite_lissee": 0.7135
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 159,
+      "gagnes": 126,
+      "p_moyenne": 0.7728,
+      "reussite": 0.7925,
+      "reussite_lissee": 0.7787
+     },
+     {
+      "debut": 0.8,
+      "tranche": "0.80-0.85",
+      "n": 76,
+      "gagnes": 57,
+      "p_moyenne": 0.8192,
+      "reussite": 0.75,
+      "reussite_lissee": 0.7787
+     },
+     {
+      "debut": 0.85,
+      "tranche": "0.85-0.90",
+      "n": 28,
+      "gagnes": 24,
+      "p_moyenne": 0.8682,
+      "reussite": 0.8571,
+      "reussite_lissee": 0.8571
+     },
+     {
+      "debut": 0.9,
+      "tranche": "0.90-0.95",
+      "n": 5,
+      "gagnes": 5,
+      "p_moyenne": 0.9278,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     },
+     {
+      "debut": 0.95,
+      "tranche": "0.95-1.00",
+      "n": 2,
+      "gagnes": 2,
+      "p_moyenne": 0.9631,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "cages_inviolees_exterieur|oui": {
+    "seuil": null,
+    "marche": "L'extérieur n'encaisse pas",
+    "predictions": 827,
+    "tranches": []
+   },
+   "cages_inviolees_exterieur|non": {
+    "seuil": 0.65,
+    "reussite": 0.7959,
+    "n": 774,
+    "p_moyenne": 0.7854,
+    "marche": "L'extérieur encaisse au moins 1 but",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 13,
+      "gagnes": 10,
+      "p_moyenne": 0.5807,
+      "reussite": 0.7692,
+      "reussite_lissee": 0.6415
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 40,
+      "gagnes": 24,
+      "p_moyenne": 0.6292,
+      "reussite": 0.6,
+      "reussite_lissee": 0.6415
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 91,
+      "gagnes": 68,
+      "p_moyenne": 0.6785,
+      "reussite": 0.7473,
+      "reussite_lissee": 0.7328
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 156,
+      "gagnes": 113,
+      "p_moyenne": 0.7261,
+      "reussite": 0.7244,
+      "reussite_lissee": 0.7328
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 206,
+      "gagnes": 161,
+      "p_moyenne": 0.7767,
+      "reussite": 0.7816,
+      "reussite_lissee": 0.7816
+     },
+     {
+      "debut": 0.8,
+      "tranche": "0.80-0.85",
+      "n": 181,
+      "gagnes": 152,
+      "p_moyenne": 0.8257,
+      "reussite": 0.8398,
+      "reussite_lissee": 0.8398
+     },
+     {
+      "debut": 0.85,
+      "tranche": "0.85-0.90",
+      "n": 117,
+      "gagnes": 103,
+      "p_moyenne": 0.871,
+      "reussite": 0.8803,
+      "reussite_lissee": 0.8714
+     },
+     {
+      "debut": 0.9,
+      "tranche": "0.90-0.95",
+      "n": 23,
+      "gagnes": 19,
+      "p_moyenne": 0.9214,
+      "reussite": 0.8261,
+      "reussite_lissee": 0.8714
+     },
+     {
+      "debut": 0.95,
+      "tranche": "0.95-1.00",
+      "n": 2,
+      "gagnes": 2,
+      "p_moyenne": 0.9631,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "handicap_-1.5|domicile": {
+    "seuil": null,
+    "marche": "Handicap -1,5 domicile",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 2,
+      "gagnes": 1,
+      "p_moyenne": 0.5242,
+      "reussite": 0.5,
+      "reussite_lissee": 0.5
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 2,
+      "gagnes": 2,
+      "p_moyenne": 0.5788,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.6075,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.7417,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "handicap_-1.5|exterieur": {
+    "seuil": 0.6,
+    "reussite": 0.7897,
+    "n": 799,
+    "p_moyenne": 0.7825,
+    "marche": "Handicap +1,5 extérieur",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 5,
+      "gagnes": 2,
+      "p_moyenne": 0.5367,
+      "reussite": 0.4,
+      "reussite_lissee": 0.4
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 17,
+      "gagnes": 8,
+      "p_moyenne": 0.5795,
+      "reussite": 0.4706,
+      "reussite_lissee": 0.4706
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 60,
+      "gagnes": 43,
+      "p_moyenne": 0.627,
+      "reussite": 0.7167,
+      "reussite_lissee": 0.7167
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 81,
+      "gagnes": 60,
+      "p_moyenne": 0.6786,
+      "reussite": 0.7407,
+      "reussite_lissee": 0.7374
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 117,
+      "gagnes": 86,
+      "p_moyenne": 0.7259,
+      "reussite": 0.735,
+      "reussite_lissee": 0.7374
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 176,
+      "gagnes": 144,
+      "p_moyenne": 0.7767,
+      "reussite": 0.8182,
+      "reussite_lissee": 0.7962
+     },
+     {
+      "debut": 0.8,
+      "tranche": "0.80-0.85",
+      "n": 197,
+      "gagnes": 153,
+      "p_moyenne": 0.8247,
+      "reussite": 0.7766,
+      "reussite_lissee": 0.7962
+     },
+     {
+      "debut": 0.85,
+      "tranche": "0.85-0.90",
+      "n": 129,
+      "gagnes": 109,
+      "p_moyenne": 0.8737,
+      "reussite": 0.845,
+      "reussite_lissee": 0.845
+     },
+     {
+      "debut": 0.9,
+      "tranche": "0.90-0.95",
+      "n": 37,
+      "gagnes": 34,
+      "p_moyenne": 0.9169,
+      "reussite": 0.9189,
+      "reussite_lissee": 0.9189
+     },
+     {
+      "debut": 0.95,
+      "tranche": "0.95-1.00",
+      "n": 2,
+      "gagnes": 2,
+      "p_moyenne": 0.9664,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "handicap_-0.5|domicile": {
+    "seuil": null,
+    "marche": "Handicap -0,5 domicile",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 94,
+      "gagnes": 46,
+      "p_moyenne": 0.5214,
+      "reussite": 0.4894,
+      "reussite_lissee": 0.4894
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 72,
+      "gagnes": 41,
+      "p_moyenne": 0.5725,
+      "reussite": 0.5694,
+      "reussite_lissee": 0.5694
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 48,
+      "gagnes": 30,
+      "p_moyenne": 0.621,
+      "reussite": 0.625,
+      "reussite_lissee": 0.625
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 11,
+      "gagnes": 9,
+      "p_moyenne": 0.668,
+      "reussite": 0.8182,
+      "reussite_lissee": 0.8182
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 2,
+      "gagnes": 2,
+      "p_moyenne": 0.7265,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 3,
+      "gagnes": 3,
+      "p_moyenne": 0.7836,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     },
+     {
+      "debut": 0.85,
+      "tranche": "0.85-0.90",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.8832,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "handicap_-0.5|exterieur": {
+    "seuil": 0.75,
+    "reussite": 0.9143,
+    "n": 35,
+    "p_moyenne": 0.7928,
+    "marche": "Handicap +0,5 extérieur",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 120,
+      "gagnes": 59,
+      "p_moyenne": 0.5283,
+      "reussite": 0.4917,
+      "reussite_lissee": 0.4917
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 148,
+      "gagnes": 91,
+      "p_moyenne": 0.5753,
+      "reussite": 0.6149,
+      "reussite_lissee": 0.6076
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 140,
+      "gagnes": 84,
+      "p_moyenne": 0.6246,
+      "reussite": 0.6,
+      "reussite_lissee": 0.6076
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 97,
+      "gagnes": 70,
+      "p_moyenne": 0.6743,
+      "reussite": 0.7216,
+      "reussite_lissee": 0.6993
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 56,
+      "gagnes": 37,
+      "p_moyenne": 0.7232,
+      "reussite": 0.6607,
+      "reussite_lissee": 0.6993
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 25,
+      "gagnes": 23,
+      "p_moyenne": 0.7757,
+      "reussite": 0.92,
+      "reussite_lissee": 0.9091
+     },
+     {
+      "debut": 0.8,
+      "tranche": "0.80-0.85",
+      "n": 8,
+      "gagnes": 7,
+      "p_moyenne": 0.8187,
+      "reussite": 0.875,
+      "reussite_lissee": 0.9091
+     },
+     {
+      "debut": 0.85,
+      "tranche": "0.85-0.90",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.8716,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     },
+     {
+      "debut": 0.9,
+      "tranche": "0.90-0.95",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.9336,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "handicap_0.5|domicile": {
+    "seuil": 0.7,
+    "reussite": 0.8123,
+    "n": 405,
+    "p_moyenne": 0.769,
+    "marche": "Handicap +0,5 domicile",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 40,
+      "gagnes": 22,
+      "p_moyenne": 0.5278,
+      "reussite": 0.55,
+      "reussite_lissee": 0.55
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 66,
+      "gagnes": 39,
+      "p_moyenne": 0.5814,
+      "reussite": 0.5909,
+      "reussite_lissee": 0.5909
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 114,
+      "gagnes": 69,
+      "p_moyenne": 0.6258,
+      "reussite": 0.6053,
+      "reussite_lissee": 0.6053
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 163,
+      "gagnes": 99,
+      "p_moyenne": 0.6762,
+      "reussite": 0.6074,
+      "reussite_lissee": 0.6074
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 165,
+      "gagnes": 137,
+      "p_moyenne": 0.7237,
+      "reussite": 0.8303,
+      "reussite_lissee": 0.7852
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 133,
+      "gagnes": 97,
+      "p_moyenne": 0.7745,
+      "reussite": 0.7293,
+      "reussite_lissee": 0.7852
+     },
+     {
+      "debut": 0.8,
+      "tranche": "0.80-0.85",
+      "n": 84,
+      "gagnes": 72,
+      "p_moyenne": 0.8202,
+      "reussite": 0.8571,
+      "reussite_lissee": 0.8571
+     },
+     {
+      "debut": 0.85,
+      "tranche": "0.85-0.90",
+      "n": 19,
+      "gagnes": 19,
+      "p_moyenne": 0.8636,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     },
+     {
+      "debut": 0.9,
+      "tranche": "0.90-0.95",
+      "n": 3,
+      "gagnes": 3,
+      "p_moyenne": 0.9171,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     },
+     {
+      "debut": 0.95,
+      "tranche": "0.95-1.00",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.9626,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "handicap_0.5|exterieur": {
+    "seuil": 0.5,
+    "reussite": 0.7692,
+    "n": 39,
+    "p_moyenne": 0.5623,
+    "marche": "Handicap -0,5 extérieur",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 20,
+      "gagnes": 15,
+      "p_moyenne": 0.5207,
+      "reussite": 0.75,
+      "reussite_lissee": 0.7353
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 14,
+      "gagnes": 10,
+      "p_moyenne": 0.5727,
+      "reussite": 0.7143,
+      "reussite_lissee": 0.7353
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.6455,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 2,
+      "gagnes": 2,
+      "p_moyenne": 0.6633,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.7057,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     },
+     {
+      "debut": 0.8,
+      "tranche": "0.80-0.85",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.8192,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "handicap_1.5|domicile": {
+    "seuil": 0.7,
+    "reussite": 0.8835,
+    "n": 798,
+    "p_moyenne": 0.8675,
+    "marche": "Handicap +1,5 domicile",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 3,
+      "gagnes": 2,
+      "p_moyenne": 0.5161,
+      "reussite": 0.6667,
+      "reussite_lissee": 0.6429
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.5533,
+      "reussite": 1.0,
+      "reussite_lissee": 0.6429
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 6,
+      "gagnes": 4,
+      "p_moyenne": 0.6346,
+      "reussite": 0.6667,
+      "reussite_lissee": 0.6429
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 18,
+      "gagnes": 11,
+      "p_moyenne": 0.6779,
+      "reussite": 0.6111,
+      "reussite_lissee": 0.6429
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 31,
+      "gagnes": 23,
+      "p_moyenne": 0.7289,
+      "reussite": 0.7419,
+      "reussite_lissee": 0.7419
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 75,
+      "gagnes": 59,
+      "p_moyenne": 0.7797,
+      "reussite": 0.7867,
+      "reussite_lissee": 0.7867
+     },
+     {
+      "debut": 0.8,
+      "tranche": "0.80-0.85",
+      "n": 160,
+      "gagnes": 133,
+      "p_moyenne": 0.8271,
+      "reussite": 0.8313,
+      "reussite_lissee": 0.8313
+     },
+     {
+      "debut": 0.85,
+      "tranche": "0.85-0.90",
+      "n": 274,
+      "gagnes": 247,
+      "p_moyenne": 0.8749,
+      "reussite": 0.9015,
+      "reussite_lissee": 0.9015
+     },
+     {
+      "debut": 0.9,
+      "tranche": "0.90-0.95",
+      "n": 229,
+      "gagnes": 214,
+      "p_moyenne": 0.9224,
+      "reussite": 0.9345,
+      "reussite_lissee": 0.9345
+     },
+     {
+      "debut": 0.95,
+      "tranche": "0.95-1.00",
+      "n": 31,
+      "gagnes": 31,
+      "p_moyenne": 0.959,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "handicap_1.5|exterieur": {
+    "seuil": null,
+    "marche": "Handicap -1,5 extérieur",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.6573,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "dc_total_1.5|1N|plus": {
+    "seuil": null,
+    "marche": "Domicile ne perd pas + plus de 1,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 159,
+      "gagnes": 81,
+      "p_moyenne": 0.5231,
+      "reussite": 0.5094,
+      "reussite_lissee": 0.5094
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 127,
+      "gagnes": 75,
+      "p_moyenne": 0.5745,
+      "reussite": 0.5906,
+      "reussite_lissee": 0.5906
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 106,
+      "gagnes": 74,
+      "p_moyenne": 0.6224,
+      "reussite": 0.6981,
+      "reussite_lissee": 0.6723
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 71,
+      "gagnes": 45,
+      "p_moyenne": 0.6723,
+      "reussite": 0.6338,
+      "reussite_lissee": 0.6723
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 22,
+      "gagnes": 16,
+      "p_moyenne": 0.7214,
+      "reussite": 0.7273,
+      "reussite_lissee": 0.6786
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 6,
+      "gagnes": 3,
+      "p_moyenne": 0.7683,
+      "reussite": 0.5,
+      "reussite_lissee": 0.6786
+     },
+     {
+      "debut": 0.8,
+      "tranche": "0.80-0.85",
+      "n": 4,
+      "gagnes": 3,
+      "p_moyenne": 0.8197,
+      "reussite": 0.75,
+      "reussite_lissee": 0.75
+     },
+     {
+      "debut": 0.9,
+      "tranche": "0.90-0.95",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.9033,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "dc_total_1.5|1N|moins": {
+    "seuil": null,
+    "marche": "Domicile ne perd pas + moins de 1,5 buts",
+    "predictions": 827,
+    "tranches": []
+   },
+   "dc_total_1.5|N2|plus": {
+    "seuil": 0.6,
+    "reussite": 0.8462,
+    "n": 39,
+    "p_moyenne": 0.6643,
+    "marche": "Extérieur ne perd pas + plus de 1,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 91,
+      "gagnes": 42,
+      "p_moyenne": 0.5231,
+      "reussite": 0.4615,
+      "reussite_lissee": 0.4615
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 44,
+      "gagnes": 24,
+      "p_moyenne": 0.5742,
+      "reussite": 0.5455,
+      "reussite_lissee": 0.5455
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 20,
+      "gagnes": 16,
+      "p_moyenne": 0.6278,
+      "reussite": 0.8,
+      "reussite_lissee": 0.8
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 13,
+      "gagnes": 12,
+      "p_moyenne": 0.6644,
+      "reussite": 0.9231,
+      "reussite_lissee": 0.8889
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.7229,
+      "reussite": 1.0,
+      "reussite_lissee": 0.8889
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 4,
+      "gagnes": 3,
+      "p_moyenne": 0.7777,
+      "reussite": 0.75,
+      "reussite_lissee": 0.8889
+     },
+     {
+      "debut": 0.85,
+      "tranche": "0.85-0.90",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.8793,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "dc_total_1.5|N2|moins": {
+    "seuil": null,
+    "marche": "Extérieur ne perd pas + moins de 1,5 buts",
+    "predictions": 827,
+    "tranches": []
+   },
+   "dc_total_1.5|12|plus": {
+    "seuil": null,
+    "marche": "Pas de match nul + plus de 1,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 141,
+      "gagnes": 81,
+      "p_moyenne": 0.5273,
+      "reussite": 0.5745,
+      "reussite_lissee": 0.5477
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 226,
+      "gagnes": 120,
+      "p_moyenne": 0.5769,
+      "reussite": 0.531,
+      "reussite_lissee": 0.5477
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 177,
+      "gagnes": 106,
+      "p_moyenne": 0.6244,
+      "reussite": 0.5989,
+      "reussite_lissee": 0.5903
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 111,
+      "gagnes": 64,
+      "p_moyenne": 0.67,
+      "reussite": 0.5766,
+      "reussite_lissee": 0.5903
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 40,
+      "gagnes": 29,
+      "p_moyenne": 0.7214,
+      "reussite": 0.725,
+      "reussite_lissee": 0.6939
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 9,
+      "gagnes": 5,
+      "p_moyenne": 0.7711,
+      "reussite": 0.5556,
+      "reussite_lissee": 0.6939
+     },
+     {
+      "debut": 0.8,
+      "tranche": "0.80-0.85",
+      "n": 3,
+      "gagnes": 3,
+      "p_moyenne": 0.8187,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     },
+     {
+      "debut": 0.85,
+      "tranche": "0.85-0.90",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.8667,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "dc_total_1.5|12|moins": {
+    "seuil": null,
+    "marche": "Pas de match nul + moins de 1,5 buts",
+    "predictions": 827,
+    "tranches": []
+   },
+   "dc_total_2.5|1N|plus": {
+    "seuil": null,
+    "marche": "Domicile ne perd pas + plus de 2,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 32,
+      "gagnes": 14,
+      "p_moyenne": 0.5154,
+      "reussite": 0.4375,
+      "reussite_lissee": 0.4375
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 12,
+      "gagnes": 9,
+      "p_moyenne": 0.5755,
+      "reussite": 0.75,
+      "reussite_lissee": 0.6087
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 7,
+      "gagnes": 3,
+      "p_moyenne": 0.6189,
+      "reussite": 0.4286,
+      "reussite_lissee": 0.6087
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 4,
+      "gagnes": 2,
+      "p_moyenne": 0.6609,
+      "reussite": 0.5,
+      "reussite_lissee": 0.6087
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.7037,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.784,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "dc_total_2.5|1N|moins": {
+    "seuil": null,
+    "marche": "Domicile ne perd pas + moins de 2,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 29,
+      "gagnes": 14,
+      "p_moyenne": 0.5221,
+      "reussite": 0.4828,
+      "reussite_lissee": 0.4634
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 12,
+      "gagnes": 5,
+      "p_moyenne": 0.5795,
+      "reussite": 0.4167,
+      "reussite_lissee": 0.4634
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 2,
+      "gagnes": 1,
+      "p_moyenne": 0.6034,
+      "reussite": 0.5,
+      "reussite_lissee": 0.5
+     }
+    ]
+   },
+   "dc_total_2.5|N2|plus": {
+    "seuil": null,
+    "marche": "Extérieur ne perd pas + plus de 2,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 5,
+      "gagnes": 5,
+      "p_moyenne": 0.5186,
+      "reussite": 1.0,
+      "reussite_lissee": 0.8
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 3,
+      "gagnes": 2,
+      "p_moyenne": 0.6211,
+      "reussite": 0.6667,
+      "reussite_lissee": 0.8
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.687,
+      "reussite": 1.0,
+      "reussite_lissee": 0.8
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 1,
+      "gagnes": 0,
+      "p_moyenne": 0.707,
+      "reussite": 0.0,
+      "reussite_lissee": 0.8
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.762,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "dc_total_2.5|N2|moins": {
+    "seuil": null,
+    "marche": "Extérieur ne perd pas + moins de 2,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 11,
+      "gagnes": 3,
+      "p_moyenne": 0.523,
+      "reussite": 0.2727,
+      "reussite_lissee": 0.2727
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.5616,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "dc_total_2.5|12|plus": {
+    "seuil": null,
+    "marche": "Pas de match nul + plus de 2,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 138,
+      "gagnes": 64,
+      "p_moyenne": 0.5234,
+      "reussite": 0.4638,
+      "reussite_lissee": 0.4608
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 79,
+      "gagnes": 36,
+      "p_moyenne": 0.5709,
+      "reussite": 0.4557,
+      "reussite_lissee": 0.4608
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 36,
+      "gagnes": 24,
+      "p_moyenne": 0.6212,
+      "reussite": 0.6667,
+      "reussite_lissee": 0.6111
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 18,
+      "gagnes": 9,
+      "p_moyenne": 0.6651,
+      "reussite": 0.5,
+      "reussite_lissee": 0.6111
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 4,
+      "gagnes": 3,
+      "p_moyenne": 0.7164,
+      "reussite": 0.75,
+      "reussite_lissee": 0.7143
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 3,
+      "gagnes": 2,
+      "p_moyenne": 0.77,
+      "reussite": 0.6667,
+      "reussite_lissee": 0.7143
+     }
+    ]
+   },
+   "dc_total_2.5|12|moins": {
+    "seuil": null,
+    "marche": "Pas de match nul + moins de 2,5 buts",
+    "predictions": 827,
+    "tranches": []
+   },
+   "dc_total_3.5|1N|plus": {
+    "seuil": null,
+    "marche": "Domicile ne perd pas + plus de 3,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 3,
+      "gagnes": 1,
+      "p_moyenne": 0.533,
+      "reussite": 0.3333,
+      "reussite_lissee": 0.3333
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.6205,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "dc_total_3.5|1N|moins": {
+    "seuil": null,
+    "marche": "Domicile ne perd pas + moins de 3,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 168,
+      "gagnes": 81,
+      "p_moyenne": 0.525,
+      "reussite": 0.4821,
+      "reussite_lissee": 0.4821
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 100,
+      "gagnes": 53,
+      "p_moyenne": 0.5709,
+      "reussite": 0.53,
+      "reussite_lissee": 0.53
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 53,
+      "gagnes": 34,
+      "p_moyenne": 0.6237,
+      "reussite": 0.6415,
+      "reussite_lissee": 0.6415
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 14,
+      "gagnes": 10,
+      "p_moyenne": 0.6723,
+      "reussite": 0.7143,
+      "reussite_lissee": 0.7143
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 4,
+      "gagnes": 3,
+      "p_moyenne": 0.7123,
+      "reussite": 0.75,
+      "reussite_lissee": 0.75
+     }
+    ]
+   },
+   "dc_total_3.5|N2|plus": {
+    "seuil": null,
+    "marche": "Extérieur ne perd pas + plus de 3,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 1,
+      "gagnes": 0,
+      "p_moyenne": 0.5032,
+      "reussite": 0.0,
+      "reussite_lissee": 0.0
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 1,
+      "gagnes": 0,
+      "p_moyenne": 0.5627,
+      "reussite": 0.0,
+      "reussite_lissee": 0.0
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 2,
+      "gagnes": 1,
+      "p_moyenne": 0.6095,
+      "reussite": 0.5,
+      "reussite_lissee": 0.5
+     }
+    ]
+   },
+   "dc_total_3.5|N2|moins": {
+    "seuil": null,
+    "marche": "Extérieur ne perd pas + moins de 3,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 85,
+      "gagnes": 42,
+      "p_moyenne": 0.5213,
+      "reussite": 0.4941,
+      "reussite_lissee": 0.4918
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 37,
+      "gagnes": 18,
+      "p_moyenne": 0.5748,
+      "reussite": 0.4865,
+      "reussite_lissee": 0.4918
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 9,
+      "gagnes": 5,
+      "p_moyenne": 0.6184,
+      "reussite": 0.5556,
+      "reussite_lissee": 0.5556
+     }
+    ]
+   },
+   "dc_total_3.5|12|plus": {
+    "seuil": null,
+    "marche": "Pas de match nul + plus de 3,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 4,
+      "gagnes": 1,
+      "p_moyenne": 0.5108,
+      "reussite": 0.25,
+      "reussite_lissee": 0.25
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 3,
+      "gagnes": 1,
+      "p_moyenne": 0.5684,
+      "reussite": 0.3333,
+      "reussite_lissee": 0.3333
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 2,
+      "gagnes": 1,
+      "p_moyenne": 0.6155,
+      "reussite": 0.5,
+      "reussite_lissee": 0.5
+     }
+    ]
+   },
+   "dc_total_3.5|12|moins": {
+    "seuil": null,
+    "marche": "Pas de match nul + moins de 3,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 320,
+      "gagnes": 149,
+      "p_moyenne": 0.524,
+      "reussite": 0.4656,
+      "reussite_lissee": 0.4656
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 139,
+      "gagnes": 82,
+      "p_moyenne": 0.5672,
+      "reussite": 0.5899,
+      "reussite_lissee": 0.5887
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 2,
+      "gagnes": 1,
+      "p_moyenne": 0.6071,
+      "reussite": 0.5,
+      "reussite_lissee": 0.5887
+     }
+    ]
+   },
+   "dc_total_4.5|1N|plus": {
+    "seuil": null,
+    "marche": "Domicile ne perd pas + plus de 4,5 buts",
+    "predictions": 827,
+    "tranches": []
+   },
+   "dc_total_4.5|1N|moins": {
+    "seuil": null,
+    "marche": "Domicile ne perd pas + moins de 4,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 127,
+      "gagnes": 66,
+      "p_moyenne": 0.5265,
+      "reussite": 0.5197,
+      "reussite_lissee": 0.5197
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 178,
+      "gagnes": 98,
+      "p_moyenne": 0.5752,
+      "reussite": 0.5506,
+      "reussite_lissee": 0.5506
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 163,
+      "gagnes": 109,
+      "p_moyenne": 0.6246,
+      "reussite": 0.6687,
+      "reussite_lissee": 0.6687
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 138,
+      "gagnes": 96,
+      "p_moyenne": 0.6718,
+      "reussite": 0.6957,
+      "reussite_lissee": 0.6779
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 70,
+      "gagnes": 45,
+      "p_moyenne": 0.7214,
+      "reussite": 0.6429,
+      "reussite_lissee": 0.6779
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 9,
+      "gagnes": 8,
+      "p_moyenne": 0.765,
+      "reussite": 0.8889,
+      "reussite_lissee": 0.8889
+     },
+     {
+      "debut": 0.8,
+      "tranche": "0.80-0.85",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.8107,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "dc_total_4.5|N2|plus": {
+    "seuil": null,
+    "marche": "Extérieur ne perd pas + plus de 4,5 buts",
+    "predictions": 827,
+    "tranches": []
+   },
+   "dc_total_4.5|N2|moins": {
+    "seuil": null,
+    "marche": "Extérieur ne perd pas + moins de 4,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 164,
+      "gagnes": 88,
+      "p_moyenne": 0.5231,
+      "reussite": 0.5366,
+      "reussite_lissee": 0.5336
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 134,
+      "gagnes": 71,
+      "p_moyenne": 0.5738,
+      "reussite": 0.5299,
+      "reussite_lissee": 0.5336
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 80,
+      "gagnes": 49,
+      "p_moyenne": 0.6225,
+      "reussite": 0.6125,
+      "reussite_lissee": 0.6087
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 35,
+      "gagnes": 21,
+      "p_moyenne": 0.6682,
+      "reussite": 0.6,
+      "reussite_lissee": 0.6087
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 4,
+      "gagnes": 4,
+      "p_moyenne": 0.7102,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "dc_total_4.5|12|plus": {
+    "seuil": null,
+    "marche": "Pas de match nul + plus de 4,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 1,
+      "gagnes": 0,
+      "p_moyenne": 0.5096,
+      "reussite": 0.0,
+      "reussite_lissee": 0.0
+     }
+    ]
+   },
+   "dc_total_4.5|12|moins": {
+    "seuil": null,
+    "marche": "Pas de match nul + moins de 4,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 80,
+      "gagnes": 43,
+      "p_moyenne": 0.5302,
+      "reussite": 0.5375,
+      "reussite_lissee": 0.5375
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 237,
+      "gagnes": 149,
+      "p_moyenne": 0.5796,
+      "reussite": 0.6287,
+      "reussite_lissee": 0.5974
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 461,
+      "gagnes": 268,
+      "p_moyenne": 0.6216,
+      "reussite": 0.5813,
+      "reussite_lissee": 0.5974
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 16,
+      "gagnes": 11,
+      "p_moyenne": 0.6584,
+      "reussite": 0.6875,
+      "reussite_lissee": 0.6875
+     }
+    ]
+   },
+   "dc_btts|1N|Oui": {
+    "seuil": null,
+    "marche": "Domicile ne perd pas + les deux marquent",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 38,
+      "gagnes": 15,
+      "p_moyenne": 0.5185,
+      "reussite": 0.3947,
+      "reussite_lissee": 0.3947
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 7,
+      "gagnes": 4,
+      "p_moyenne": 0.5651,
+      "reussite": 0.5714,
+      "reussite_lissee": 0.5
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 1,
+      "gagnes": 0,
+      "p_moyenne": 0.6066,
+      "reussite": 0.0,
+      "reussite_lissee": 0.5
+     }
+    ]
+   },
+   "dc_btts|1N|Non": {
+    "seuil": null,
+    "marche": "Domicile ne perd pas + les deux ne marquent pas",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 5,
+      "gagnes": 3,
+      "p_moyenne": 0.5195,
+      "reussite": 0.6,
+      "reussite_lissee": 0.5
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 1,
+      "gagnes": 0,
+      "p_moyenne": 0.5709,
+      "reussite": 0.0,
+      "reussite_lissee": 0.5
+     }
+    ]
+   },
+   "dc_btts|N2|Oui": {
+    "seuil": null,
+    "marche": "Extérieur ne perd pas + les deux marquent",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 9,
+      "gagnes": 8,
+      "p_moyenne": 0.5159,
+      "reussite": 0.8889,
+      "reussite_lissee": 0.7857
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 3,
+      "gagnes": 2,
+      "p_moyenne": 0.5703,
+      "reussite": 0.6667,
+      "reussite_lissee": 0.7857
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 2,
+      "gagnes": 1,
+      "p_moyenne": 0.6281,
+      "reussite": 0.5,
+      "reussite_lissee": 0.7857
+     }
+    ]
+   },
+   "dc_btts|N2|Non": {
+    "seuil": null,
+    "marche": "Extérieur ne perd pas + les deux ne marquent pas",
+    "predictions": 827,
+    "tranches": []
+   },
+   "dc_btts|12|Oui": {
+    "seuil": null,
+    "marche": "Pas de match nul + les deux marquent",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 33,
+      "gagnes": 17,
+      "p_moyenne": 0.5226,
+      "reussite": 0.5152,
+      "reussite_lissee": 0.4894
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 12,
+      "gagnes": 6,
+      "p_moyenne": 0.5632,
+      "reussite": 0.5,
+      "reussite_lissee": 0.4894
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 1,
+      "gagnes": 0,
+      "p_moyenne": 0.6013,
+      "reussite": 0.0,
+      "reussite_lissee": 0.4894
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 1,
+      "gagnes": 0,
+      "p_moyenne": 0.6553,
+      "reussite": 0.0,
+      "reussite_lissee": 0.4894
+     }
+    ]
+   },
+   "dc_btts|12|Non": {
+    "seuil": null,
+    "marche": "Pas de match nul + les deux ne marquent pas",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 2,
+      "gagnes": 0,
+      "p_moyenne": 0.5241,
+      "reussite": 0.0,
+      "reussite_lissee": 0.0
+     }
+    ]
+   },
+   "1x2_total_1.5|1|plus": {
+    "seuil": null,
+    "marche": "Victoire domicile + plus de 1,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 53,
+      "gagnes": 24,
+      "p_moyenne": 0.5212,
+      "reussite": 0.4528,
+      "reussite_lissee": 0.4528
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 12,
+      "gagnes": 8,
+      "p_moyenne": 0.5751,
+      "reussite": 0.6667,
+      "reussite_lissee": 0.5789
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 5,
+      "gagnes": 2,
+      "p_moyenne": 0.6133,
+      "reussite": 0.4,
+      "reussite_lissee": 0.5789
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 2,
+      "gagnes": 1,
+      "p_moyenne": 0.6685,
+      "reussite": 0.5,
+      "reussite_lissee": 0.5789
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 3,
+      "gagnes": 3,
+      "p_moyenne": 0.7167,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     },
+     {
+      "debut": 0.8,
+      "tranche": "0.80-0.85",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.8377,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "1x2_total_1.5|1|moins": {
+    "seuil": null,
+    "marche": "Victoire domicile + moins de 1,5 buts",
+    "predictions": 827,
+    "tranches": []
+   },
+   "1x2_total_1.5|N|plus": {
+    "seuil": null,
+    "marche": "Match nul + plus de 1,5 buts",
+    "predictions": 827,
+    "tranches": []
+   },
+   "1x2_total_1.5|N|moins": {
+    "seuil": null,
+    "marche": "Match nul + moins de 1,5 buts",
+    "predictions": 827,
+    "tranches": []
+   },
+   "1x2_total_1.5|2|plus": {
+    "seuil": null,
+    "marche": "Victoire extérieur + plus de 1,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 3,
+      "gagnes": 3,
+      "p_moyenne": 0.5072,
+      "reussite": 1.0,
+      "reussite_lissee": 0.875
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.5562,
+      "reussite": 1.0,
+      "reussite_lissee": 0.875
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 4,
+      "gagnes": 3,
+      "p_moyenne": 0.6304,
+      "reussite": 0.75,
+      "reussite_lissee": 0.875
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.7816,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "1x2_total_1.5|2|moins": {
+    "seuil": null,
+    "marche": "Victoire extérieur + moins de 1,5 buts",
+    "predictions": 827,
+    "tranches": []
+   },
+   "1x2_total_2.5|1|plus": {
+    "seuil": null,
+    "marche": "Victoire domicile + plus de 2,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 10,
+      "gagnes": 5,
+      "p_moyenne": 0.5215,
+      "reussite": 0.5,
+      "reussite_lissee": 0.4286
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 4,
+      "gagnes": 1,
+      "p_moyenne": 0.5845,
+      "reussite": 0.25,
+      "reussite_lissee": 0.4286
+     },
+     {
+      "debut": 0.6,
+      "tranche": "0.60-0.65",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.6154,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     },
+     {
+      "debut": 0.65,
+      "tranche": "0.65-0.70",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.6513,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     },
+     {
+      "debut": 0.75,
+      "tranche": "0.75-0.80",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.7535,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "1x2_total_2.5|1|moins": {
+    "seuil": null,
+    "marche": "Victoire domicile + moins de 2,5 buts",
+    "predictions": 827,
+    "tranches": []
+   },
+   "1x2_total_2.5|N|plus": {
+    "seuil": null,
+    "marche": "Match nul + plus de 2,5 buts",
+    "predictions": 827,
+    "tranches": []
+   },
+   "1x2_total_2.5|N|moins": {
+    "seuil": null,
+    "marche": "Match nul + moins de 2,5 buts",
+    "predictions": 827,
+    "tranches": []
+   },
+   "1x2_total_2.5|2|plus": {
+    "seuil": null,
+    "marche": "Victoire extérieur + plus de 2,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 2,
+      "gagnes": 1,
+      "p_moyenne": 0.5244,
+      "reussite": 0.5,
+      "reussite_lissee": 0.5
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 3,
+      "gagnes": 2,
+      "p_moyenne": 0.5819,
+      "reussite": 0.6667,
+      "reussite_lissee": 0.6667
+     },
+     {
+      "debut": 0.7,
+      "tranche": "0.70-0.75",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.7103,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "1x2_total_2.5|2|moins": {
+    "seuil": null,
+    "marche": "Victoire extérieur + moins de 2,5 buts",
+    "predictions": 827,
+    "tranches": []
+   },
+   "1x2_total_3.5|1|plus": {
+    "seuil": null,
+    "marche": "Victoire domicile + plus de 3,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.5899,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "1x2_total_3.5|1|moins": {
+    "seuil": null,
+    "marche": "Victoire domicile + moins de 3,5 buts",
+    "predictions": 827,
+    "tranches": []
+   },
+   "1x2_total_3.5|N|plus": {
+    "seuil": null,
+    "marche": "Match nul + plus de 3,5 buts",
+    "predictions": 827,
+    "tranches": []
+   },
+   "1x2_total_3.5|N|moins": {
+    "seuil": null,
+    "marche": "Match nul + moins de 3,5 buts",
+    "predictions": 827,
+    "tranches": []
+   },
+   "1x2_total_3.5|2|plus": {
+    "seuil": null,
+    "marche": "Victoire extérieur + plus de 3,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 1,
+      "gagnes": 0,
+      "p_moyenne": 0.5004,
+      "reussite": 0.0,
+      "reussite_lissee": 0.0
+     },
+     {
+      "debut": 0.55,
+      "tranche": "0.55-0.60",
+      "n": 1,
+      "gagnes": 1,
+      "p_moyenne": 0.5585,
+      "reussite": 1.0,
+      "reussite_lissee": 1.0
+     }
+    ]
+   },
+   "1x2_total_3.5|2|moins": {
+    "seuil": null,
+    "marche": "Victoire extérieur + moins de 3,5 buts",
+    "predictions": 827,
+    "tranches": []
+   },
+   "1x2_total_4.5|1|plus": {
+    "seuil": null,
+    "marche": "Victoire domicile + plus de 4,5 buts",
+    "predictions": 827,
+    "tranches": []
+   },
+   "1x2_total_4.5|1|moins": {
+    "seuil": null,
+    "marche": "Victoire domicile + moins de 4,5 buts",
+    "predictions": 827,
+    "tranches": [
+     {
+      "debut": 0.5,
+      "tranche": "0.50-0.55",
+      "n": 21,
+      "gagnes": 12,
+      "p_moyenne": 0.5193,
+      "reussite": 0.5714,
+      "reussite_lissee": 0.5714
+     }
+    ]
+   },
+   "1x2_total_4.5|N|plus": {
+    "seuil": null,
+    "marche": "Match nul + plus de 4,5 buts",
+    "predictions": 827,
+    "tranches": []
+   },
+   "1x2_total_4.5|N|moins": {
+    "seuil": null,
+    "marche": "Match nul + moins de 4,5 buts",
+    "predictions": 827,
+    "tranches": []
+   },
+   "1x2_total_4.5|2|plus": {
+    "seuil": null,
+    "marche": "Victoire extérieur + plus de 4,5 buts",
+    "predictions": 827,
+    "tranches": []
+   },
+   "1x2_total_4.5|2|moins": {
+    "seuil": null,
+    "marche": "Victoire extérieur + moins de 4,5 buts",
+    "predictions": 827,
+    "tranches": []
+   },
+   "1x2_btts|1|Oui": {
+    "seuil": null,
+    "marche": "Victoire domicile + les deux marquent",
+    "predictions": 827,
+    "tranches": []
+   },
+   "1x2_btts|1|Non": {
+    "seuil": null,
+    "marche": "Victoire domicile + les deux ne marquent pas",
+    "predictions": 827,
+    "tranches": []
+   },
+   "1x2_btts|N|Oui": {
+    "seuil": null,
+    "marche": "Match nul + les deux marquent",
+    "predictions": 827,
+    "tranches": []
+   },
+   "1x2_btts|N|Non": {
+    "seuil": null,
+    "marche": "Match nul + les deux ne marquent pas",
+    "predictions": 827,
+    "tranches": []
+   },
+   "1x2_btts|2|Oui": {
+    "seuil": null,
+    "marche": "Victoire extérieur + les deux marquent",
+    "predictions": 827,
+    "tranches": []
+   },
+   "1x2_btts|2|Non": {
+    "seuil": null,
+    "marche": "Victoire extérieur + les deux ne marquent pas",
+    "predictions": 827,
+    "tranches": []
+   }
+  }
  }
 }

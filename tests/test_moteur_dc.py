@@ -311,7 +311,7 @@ class _Lg:
 
 
 def test_gel_avant_coup_d_envoi_puis_resultat(tmp_path, monkeypatch):
-    monkeypatch.setattr(S, "tester", lambda l, e, z: (l["cle"] == ["1x2", "1"], "test"))                         # un pari forcé pour suivre la mécanique
+    monkeypatch.setattr(S, "tester", lambda l, e, z, s=None: (l["cle"] == ["1x2", "1"], "test"))                         # un pari forcé pour suivre la mécanique
     j = tmp_path / "journal.jsonl"
     avant = datetime(2026, 10, 20, 10, 0, tzinfo=timezone.utc)
     n = suivi.geler(maintenant=avant, journal=j, ligues=_Lg, matchs=_arch(), params=_params())
@@ -346,3 +346,39 @@ def test_emac_glissante_sur_30_jours_du_journal_sinon_valeur_du_calibrage():
     assert n == 1 and "journal" in src                                              # « b » est hors des 30 jours
     assert suivi.emac_glissante(L, "2026-12-20", matchs, 0.0054) == (0.0054, "calibrage hors échantillon (Football-Data 2026-27)", 0)
     assert suivi.emac_glissante([ligne("c", "2026-10-10", 0.5)], "2026-10-20", matchs, 0.0054)[2] == 0   # match non terminé : ignoré
+
+
+# --- Seuils calibrés par marché (Patrick, 30/10/2026) ---------------------------------------------------------------------
+def test_seuil_par_marche_applique_au_module4():
+    seuils = {"1x2|1": {"seuil": 0.65}, "over_under_1.5|plus": {"seuil": 0.80}}
+    assert S.tester(_l(("1x2", "1"), 0.66, 0.45, 6, 10), 0.005, None, 0.65)[0]                     # victoire à 66 % ≥ seuil 65 %
+    assert S.tester(_l(("over_under_1.5", "plus"), 0.85, 0.70, 9, 10), 0.005, None, 0.80)[0]
+    assert S.tester(_l(("btts", "Non"), 0.70, 0.55, 7, 10), 0.005, None, 0.70)[0]                  # seuil pile
+    assert not S.tester(_l(("over_under_1.5", "plus"), 0.78, 0.60, 9, 10), 0.005, None, 0.80)[0]  # 78 % sous le seuil de son marché
+    assert not S.tester(_l(("1x2", "N"), 0.70, 0.30, 7, 10), 0.005, None, None)[0]                # marché sans seuil : jamais validé
+    assert not S.tester(_l(("1x2", "1"), 0.66, 0.60, 6, 10), 0.005, None, 0.65)[0]                # seuil passé mais Edge +6 %
+    a = {"statut": "analyse", "marches": [_l(("1x2", "1"), 0.66, 0.45, 6, 10), _l(("over_under_1.5", "plus"), 0.78, 0.60, 9, 10)]}
+    s = S.selectionner(a, 0.005, seuils)
+    assert s["principal"]["cle"] == ["1x2", "1"] and s["autres"] == []
+
+
+def _an(p1, gagne):
+    """Analyses fictives : P du marché « victoire domicile » (index 0) et résultat."""
+    return [{"a": {"p_marches": [p] + [0.0] * (len(coeur.CLES) - 1)}, "m": {"h": 1 if g else 0, "a": 0}} for p, g in zip(p1, gagne)]
+
+
+def test_seuils_par_marche_cas_qui_passent_et_echouent():
+    # 40 prédictions à 52 % (50 % de réussite) puis 40 à 72 % (80 %) : seuil 0,70, la tranche basse n'est pas noyée dans la moyenne
+    an = _an([0.52] * 40 + [0.72] * 40, [True] * 20 + [False] * 20 + [True] * 32 + [False] * 8)
+    s = K.seuils_par_marche(an)["1x2|1"]
+    assert s["seuil"] == 0.70 and s["n"] == 40 and s["reussite"] == pytest.approx(0.8)
+    an = _an([0.62] * 40, [True] * 30 + [False] * 10)                                         # 75 % dès 0,60
+    assert K.seuils_par_marche(an)["1x2|1"]["seuil"] == 0.60
+    an = _an([0.56] * 30 + [0.66] * 30, [True] * 24 + [False] * 6 + [True] * 18 + [False] * 12)   # tranches contradictoires lissées : 70 % dès 0,55
+    assert K.seuils_par_marche(an)["1x2|1"]["seuil"] == 0.55
+    an = _an([0.72] * 29, [True] * 29)                                                        # 100 % mais 29 prédictions : pas de seuil
+    assert K.seuils_par_marche(an)["1x2|1"]["seuil"] is None
+    an = _an([0.80] * 60, [True] * 41 + [False] * 19)                                         # 68 % : jamais 70 %
+    assert K.seuils_par_marche(an)["1x2|1"]["seuil"] is None
+    an = _an([0.40] * 100, [True] * 100)                                                      # sous 50 % : hors des tranches
+    assert K.seuils_par_marche(an)["1x2|1"]["seuil"] is None

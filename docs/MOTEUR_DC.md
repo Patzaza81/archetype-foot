@@ -11,7 +11,7 @@ Autonome (aucun import d'un autre moteur), hors générateur de tickets. Statut 
 | 1.5 | `contrat.py` | `match_input` (structure de la Section A) et contrôles stricts : Filtre 0 (≥ 4 matchs à domicile / à l'extérieur), types, NaN, historiques d'au moins 4 matchs en ordre chronologique strict. Erreur = match exclu, raison gelée. |
 | 2 | `modele.py` + `ajustements.py` | Dixon-Coles pénalisé (shrinkage) sur le championnat entier ; Forme→xi, IE→λ, Amplitude et Score modal→ρ, Profil croisé→λ. Chaque effet a une force apprise hors échantillon. |
 | 3 | `coeur.py`, `marches.py` | 103 marchés (1N2, double chance, plus/moins, BTTS, **Multigoal 0-1 / 2-3 / 4+**, buts par équipe, handicaps, combinés) par SOMME des cases de la grille ; k/n sur les matchs comparables (A à domicile + B à l'extérieur, score orienté) ; Base = fréquence du marché dans le championnat cette saison avant le match. |
-| 4 | `selecteur.py` | **Option B de Patrick (30/10/2026)** : ordre de Patrick (30/10, 17 h 39) : 1. Edge = P − Base ≥ 10 % (et ≥ EMAC) ; 2. plancher P ≥ 60 % ; 3. Wilson calculé sur les seuls validés, simple avertissement. Bonferroni et Z supprimés comme filtre (Z affiché). Intervalle de Wilson à 95 % de p̂ = simple avertissement (paris avertis classés après). Une issue par marché, jamais deux fois le même événement. Classement par probabilité ; principal = le plus probable. **Aucune cote.** |
+| 4 | `selecteur.py` | **Option B de Patrick (30/10/2026)** : ordre de Patrick (30/10, 17 h 39) : 1. Edge = P − Base ≥ 10 % (et ≥ EMAC) ; 2. P ≥ seuil CALIBRÉ de son marché (`python -m moteur_dc.calibrage seuils`, voir plus bas) ; 3. Wilson calculé sur les seuls validés, simple avertissement. Bonferroni et Z supprimés comme filtre (Z affiché). Intervalle de Wilson à 95 % de p̂ = simple avertissement (paris avertis classés après). Une issue par marché, jamais deux fois le même événement. Classement par probabilité ; principal = le plus probable. **Aucune cote.** |
 
 Précisions imposées par la spécification (aucune valeur choisie) :
 - Forme_PPM : avec J ≤ 5 la formule reçue divise par 0 ou par un nombre négatif → PPM simple.
@@ -58,6 +58,13 @@ Cotes connues : 1,05 à 1,36 ; 15 paris sans cote BetPawa.
 
 Ordre Edge ≥ 10 % puis P ≥ 60 % (même soir) : 90 paris sur 26 matchs, P moyenne 73,7 % (principaux 80,6 %), 2 avertissements ;
 4 victoires (1N2), 19 double chance, 18 combinés double chance + buts.
+
+## Seuils calibrés par marché (Patrick, 30/10/2026 17 h 56)
+Échantillon : archive ARCHETYPE, 827 matchs joués du 28/09 au 29/10/2026 (prédictions faites avec les seuls matchs d'avant ; les matchs à venir n'y sont jamais).
+Tranches de 5 points dès 50 % ; réussite par tranche lissée pour croître avec la probabilité ; seuil = début de la première tranche à 70 % de réussite
+(cible de Patrick), avec au moins 30 prédictions au-dessus. 21 marchés sur 103 ont un seuil ; les 82 autres ne sont jamais validés (pas assez de
+prédictions au-dessus de 50 %, ou jamais 70 % de réussite : victoire domicile, nul, la plupart des combinés). Détail : `docs/dc_validation.json` → `seuils_par_marche`.
+Soir du 30/10 (18 h-22 h) : 38 paris sur 19 matchs, 9 matchs à plusieurs paris, P moyenne 82,1 %, 0 avertissement.
 
 ## Points ouverts
 - Page `pronostics_dc.html` non faite.

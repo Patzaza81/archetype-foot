@@ -101,4 +101,4 @@ def analyser(m: dict[str, Any], matchs: list[dict], p: dict[str, Any], fit: MO.A
 
 
 def selectionner(a: dict[str, Any], p: dict[str, Any], emac: float | None = None) -> dict[str, Any]:
-    return S.selectionner(a, p["emac"] if emac is None else emac)
+    return S.selectionner(a, p["emac"] if emac is None else emac, p.get("seuils_marche"))

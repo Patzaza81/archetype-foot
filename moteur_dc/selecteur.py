@@ -2,7 +2,7 @@
 
 Pour chaque marché du match (P = probabilité du modèle, Base = fréquence du marché dans le championnat cette saison avant le match,
 k/n = réussites/essais sur les matchs comparables : A à domicile + B à l'extérieur, score orienté) :
-- ordre de Patrick (30/10/2026) : 1. Edge = P − Base ≥ 10 % (et ≥ EMAC) ; 2. plancher P ≥ 60 % ;
+- ordre de Patrick (30/10/2026) : 1. Edge = P − Base ≥ 10 % (et ≥ EMAC) ; 2. P ≥ seuil CALIBRÉ du marché (calibrage.seuils_par_marche) ;
 - Bonferroni et Z supprimés comme filtre (le Z reste affiché) ;
 - 3. intervalle de Wilson à 95 % de p̂, sur les seuls marchés validés : simple AVERTISSEMENT si P en sort (confiance réduite, classé après les paris sans avertissement) ;
 - une seule issue par marché (la plus probable) et jamais deux fois le même événement (même ensemble de scores gagnants).
@@ -21,6 +21,7 @@ from . import marches as M
 ALPHA = 0.05                 # risque de l'intervalle de Wilson (95 %)
 P_MIN = 0.60                 # Patrick : plancher P ≥ 60 %
 EDGE_MIN = 0.10              # Patrick : Edge ≥ 10 %
+REUSSITE_CIBLE = 0.70        # Patrick (30/10/2026) : seuil d'un marché = plus petite probabilité à partir de laquelle la réussite observée atteint 70 %
 Z_WILSON = NormalDist().inv_cdf(1 - ALPHA / 2)     # intervalle de Wilson à 95 % (même risque α)
 
 
@@ -44,17 +45,21 @@ def z_score(p_hat: float, base: float, n: int) -> float | None:
     return (p_hat - base) / math.sqrt(base * (1 - base) / n)
 
 
-def tester(l: dict[str, Any], emac: float, zs: float | None = None) -> tuple[bool, str]:
-    """Ordre de Patrick (30/10/2026, 17 h 39) : 1. Edge = P − Base ≥ 10 % ; 2. plancher P ≥ 60 % ; 3. Wilson = avertissement sur les validés."""
+def tester(l: dict[str, Any], emac: float, zs: float | None = None, seuil: float | None = P_MIN) -> tuple[bool, str]:
+    """1. Edge = P − Base ≥ 10 % ; 2. P ≥ seuil calibré du marché (None = le marché n'a jamais atteint 70 % de réussite sur l'échantillon) ;
+    3. Wilson = avertissement sur les validés."""
     pr, base, p = l.get("preuve"), l.get("base"), l["p"]
     l["avertissement"] = None
+    l["seuil"] = seuil
     if base is None:
         return False, "pas de base du championnat"
     edge = round(p - base, 9)                      # arrondi : 0,75 − 0,65 doit valoir 0,10, pas 0,0999…
     if edge < max(EDGE_MIN, emac):
         return False, f"Edge {edge:+.1%} < {max(EDGE_MIN, emac):.0%}"
-    if p < P_MIN:
-        return False, f"P {p:.0%} < {P_MIN:.0%}"
+    if seuil is None:
+        return False, f"P sans seuil : ce marché n'atteint jamais {REUSSITE_CIBLE:.0%} de réussite sur l'échantillon"
+    if p < seuil:
+        return False, f"P {p:.0%} < seuil du marché {seuil:.0%}"
     if pr:
         bas, haut = wilson(pr["k"], pr["n"])
         pr["wilson"] = [round(bas, 4), round(haut, 4)]
@@ -63,7 +68,8 @@ def tester(l: dict[str, Any], emac: float, zs: float | None = None) -> tuple[boo
     return True, "validé" + (" (avertissement)" if l["avertissement"] else "")
 
 
-def selectionner(a: dict[str, Any], emac: float) -> dict[str, Any]:
+def selectionner(a: dict[str, Any], emac: float, seuils: dict[str, Any] | None = None) -> dict[str, Any]:
+    """`seuils` = seuils calibrés par marché ({"groupe|sélection": {"seuil": …}}) ; absent : plancher commun P_MIN."""
     if a["statut"] != "analyse":
         return {"principal": None, "autres": [], "raison": a.get("raison"), "m": 0, "z_seuil": None, "emac": emac}
     testes = [l for l in a["marches"] if l.get("preuve") and l.get("base") is not None]
@@ -76,7 +82,8 @@ def selectionner(a: dict[str, Any], emac: float) -> dict[str, Any]:
         if pr:
             z = z_score(pr["p_hat"], l["base"], pr["n"]) if l.get("base") is not None else None
             pr["z"] = round(z, 2) if z is not None else None
-        bon, raison = tester(l, emac, zs)
+        seuil = P_MIN if seuils is None else (seuils.get(f"{l['cle'][0]}|{l['cle'][1]}") or {}).get("seuil")
+        bon, raison = tester(l, emac, zs, seuil)
         l["decision"] = raison
         if bon:
             ok.append(l)

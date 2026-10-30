@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parent.parent
 def _ligne(l: dict[str, Any]) -> dict[str, Any]:
     pr = l.get("preuve") or {}
     return {"marche": l["marche"], "P": round(l["p"], 4), "p_hat": pr.get("p_hat"), "k": pr.get("k"), "n": pr.get("n"), "wilson": pr.get("wilson"),
-            "z": pr.get("z"), "base": l.get("base"), "edge": l.get("edge"), "cote": l.get("cote"), "decision": l.get("decision"),
+            "z": pr.get("z"), "base": l.get("base"), "edge": l.get("edge"), "seuil_marche": l.get("seuil"), "cote": l.get("cote"), "decision": l.get("decision"),
             "avertissement": l.get("avertissement")}
 
 
@@ -62,14 +62,15 @@ def rapport(debut: datetime, fin: datetime, params: dict[str, Any] | None = None
     resume = {"fenetre_utc": [debut.isoformat(), fin.isoformat()], "matchs": len(out), "analyses": sum(x["statut"] == "analyse" for x in out),
               "matchs_avec_pari": sum(bool(x.get("paris_valides")) for x in out), "paris": len(paris),
               "paris_P_70_et_plus": sum(p["P"] >= 0.70 for p in paris), "paris_avec_avertissement": sum(bool(p["avertissement"]) for p in paris),
-              "decisions": dict(etapes)}
+              "matchs_plusieurs_paris": sum(len(x.get("paris_valides", [])) > 1 for x in out),
+              "p_moyenne": round(sum(p["P"] for p in paris) / len(paris), 4) if paris else None, "decisions": dict(etapes)}
     return {"resume": resume, "matchs": out}
 
 
 def texte(r: dict[str, Any]) -> str:
     z = r["resume"]
     L = [f"{z['matchs']} matchs ({z['analyses']} analysés) | {z['paris']} paris validés sur {z['matchs_avec_pari']} matchs | "
-         f"dont {z['paris_avec_avertissement']} avec avertissement Wilson"]
+         f"{z['matchs_plusieurs_paris']} matchs à plusieurs paris | P moyenne {z['p_moyenne']} | {z['paris_avec_avertissement']} avertissement(s) Wilson"]
     for x in r["matchs"]:
         h = (datetime.fromisoformat(x["coup_d_envoi_utc"].replace("Z", "+00:00")) + timedelta(hours=1)).strftime("%H:%M")
         L.append(f"\n{h} {x['domicile']} – {x['exterieur']} ({x['competition']})")
@@ -78,7 +79,7 @@ def texte(r: dict[str, Any]) -> str:
             continue
         for p in x["paris_valides"]:
             L.append(f"   VALIDÉ  {p['marche']} : P {p['P']:.0%} | p̂ {p['p_hat']:.0%} ({p['k']}/{p['n']}) Wilson [{p['wilson'][0]:.0%} ; {p['wilson'][1]:.0%}]"
-                     f" | base {p['base']:.0%} | Edge {p['edge']:+.0%} | cote {p['cote'] or '—'}" + (" | ⚠ hors Wilson" if p["avertissement"] else ""))
+                     f" | seuil marché {p['seuil_marche']:.0%} | base {p['base']:.0%} | Edge {p['edge']:+.0%} | cote {p['cote'] or '—'}" + (" | ⚠ hors Wilson" if p["avertissement"] else ""))
         for p in ([] if x["paris_valides"] else x["tendances"]):
             w = p["wilson"]
             L.append(f"   rejeté    {p['marche']} : P {p['P']:.0%} | p̂ {p['p_hat']:.0%} ({p['k']}/{p['n']})"

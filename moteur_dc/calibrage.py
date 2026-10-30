@@ -1,4 +1,4 @@
-"""Calibrage du moteur DC — protocole fixé AVANT le calcul. Usage : python -m moteur_dc.calibrage [tout|reprise]
+"""Calibrage du moteur DC — protocole fixé AVANT le calcul. Usage : python -m moteur_dc.calibrage [tout|reprise|seuils]
 
 1. HYPERPARAMÈTRES du Dixon-Coles (σ de la pénalité, xi, ρ commun) : Football-Data 2025-26, vraisemblance PRÉDICTIVE hors échantillon
    (marche avant : ajustement avec les matchs d'avant chaque semaine, notation des scores de la semaine). Recherche par coordonnées sur une grille
@@ -277,6 +277,66 @@ def controle_archive(params: dict[str, Any], log=print) -> dict[str, Any]:
     return out
 
 
+PAS_SEUIL = 0.05                       # tranches de Patrick : [0,50-0,55], [0,55-0,60] … [0,95-1,00]
+MIN_PARIS = 30                         # minimum de prédictions pour lire une réussite (règle déjà utilisée par ce moteur)
+
+
+def _pav(n: list[int], k: list[float]) -> list[float]:
+    """Réussite par tranche rendue croissante avec la probabilité (fusion des tranches voisines qui se contredisent, pondérée par n)."""
+    blocs: list[list[float]] = []
+    for ni, ki in zip(n, k):
+        blocs.append([ni, ki, 1])
+        while len(blocs) > 1 and blocs[-2][1] / blocs[-2][0] >= blocs[-1][1] / blocs[-1][0]:
+            x = blocs.pop()
+            blocs[-1] = [blocs[-1][0] + x[0], blocs[-1][1] + x[1], blocs[-1][2] + x[2]]
+    out: list[float] = []
+    for bl in blocs:
+        out += [bl[1] / bl[0]] * int(bl[2])
+    return out
+
+
+def seuils_par_marche(analyses: list[dict[str, Any]]) -> dict[str, Any]:
+    """Pour chaque marché, sur les matchs JOUÉS de l'échantillon (archive, prédictions faites avec les seuls matchs d'avant) :
+    tranches de 5 points à partir de 50 % et réussite observée par tranche. La réussite d'une tranche est lissée pour croître avec la
+    probabilité (tranches voisines contradictoires fusionnées) : sans ce lissage, une moyenne cumulée laisse passer des tranches à 55-60 %
+    de réussite noyées dans les tranches hautes. Seuil = début de la première tranche dont la réussite lissée atteint 70 %, avec au moins
+    30 prédictions au-dessus. Aucun seuil : le marché n'est jamais validé."""
+    out: dict[str, Any] = {}
+    bornes = [round(0.5 + PAS_SEUIL * k, 2) for k in range(int(0.5 / PAS_SEUIL))]
+    for i, c in enumerate(coeur.CLES):
+        P = np.array([x["a"]["p_marches"][i] for x in analyses])
+        Y = np.array([float(coeur.TESTS[c](x["m"]["h"], x["m"]["a"])) for x in analyses])
+        tr = []
+        for b in bornes:
+            m = (P >= b) & ((P < b + PAS_SEUIL) if b < bornes[-1] else (P <= 1))
+            if m.sum():
+                tr.append({"debut": b, "tranche": f"{b:.2f}-{b + PAS_SEUIL:.2f}", "n": int(m.sum()), "gagnes": int(Y[m].sum()),
+                           "p_moyenne": round(float(P[m].mean()), 4), "reussite": round(float(Y[m].mean()), 4)})
+        lisse = _pav([t["n"] for t in tr], [t["gagnes"] for t in tr])
+        seuil = None
+        for t, r in zip(tr, lisse):
+            t["reussite_lissee"] = round(r, 4)
+            m = P >= t["debut"]
+            if seuil is None and r >= S.REUSSITE_CIBLE and m.sum() >= MIN_PARIS:
+                seuil = {"seuil": t["debut"], "reussite": round(float(Y[m].mean()), 4), "n": int(m.sum()), "p_moyenne": round(float(P[m].mean()), 4)}
+        out[coeur.cle_txt(c)] = {**(seuil or {"seuil": None}), "marche": M.libelle(c), "predictions": len(P), "tranches": tr}
+    return out
+
+
+def calibrer_seuils(log=print) -> dict[str, Any]:
+    params = json.loads(PARAMS.read_text(encoding="utf-8"))
+    an = analyses_archive(params, log)
+    seuils = seuils_par_marche(an)
+    params["seuils_marche"] = {k: {kk: v[kk] for kk in ("seuil", "reussite", "n")} for k, v in seuils.items() if v["seuil"] is not None}
+    params["seuils_echantillon"] = {"matchs": len(an), "du": min(x["m"]["jour"] for x in an), "au": max(x["m"]["jour"] for x in an)}
+    PARAMS.write_text(json.dumps(params, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    val = json.loads(VALIDATION.read_text(encoding="utf-8"))
+    val["seuils_par_marche"] = {"echantillon": params["seuils_echantillon"], "reussite_cible": S.REUSSITE_CIBLE, "min_predictions": MIN_PARIS, "marches": seuils}
+    VALIDATION.write_text(json.dumps(val, ensure_ascii=False, indent=1), encoding="utf-8")
+    log(f"  seuils : {len(params['seuils_marche'])} marchés sur {len(seuils)} ont un seuil ({len(an)} matchs)")
+    return seuils
+
+
 def tout(log=print, reprise: bool = False) -> None:
     t0 = time.time()
     bloc = D.charger_bloc()
@@ -306,5 +366,7 @@ if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "tout"
     if mode in ("tout", "reprise"):
         tout(reprise=mode == "reprise")
+    elif mode == "seuils":
+        calibrer_seuils()
     else:
         print(__doc__)
