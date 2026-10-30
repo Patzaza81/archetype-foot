@@ -1,4 +1,4 @@
-"""Tests du moteur DC (30/10/2026) : 3 cas qui passent et 3 cas qui échouent par règle, plus les contrôles numériques de l'audit."""
+"""Tests du moteur DC (30/10/2026, v2 : Modules 1, 1.5, 2 avec effets, 3 et 4 de Patrick) : 3 cas qui passent et 3 qui échouent par règle."""
 from __future__ import annotations
 
 import json
@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 import numpy as np
 import pytest
 
-from moteur_dc import coeur, donnees as D, marches as M, modele as MO, suivi, calibrage as C
+from moteur_dc import ajustements as AJ, calibrage as K, coeur, contrat as C, donnees as D, marches as M, modele as MO, module1 as M1, selecteur as S, suivi
 
 
 # --- Modèle : la grille est une distribution, les marchés s'additionnent exactement -------------------------------
@@ -69,7 +69,7 @@ def test_la_penalite_rapproche_les_petits_echantillons_de_la_moyenne():
     assert np.abs(forte.att).max() < np.abs(faible.att).max()                    # σ petit = shrinkage fort
 
 
-# --- Anti-fuite --------------------------------------------------------------------------------------------------
+# --- Ligue de test --------------------------------------------------------------------------------------------------
 def _ligue():
     j = ["2026-09-01", "2026-09-08", "2026-09-15", "2026-09-22", "2026-09-29", "2026-10-06"]
     ms = []
@@ -79,35 +79,193 @@ def _ligue():
     return ms
 
 
-def test_un_match_du_jour_n_entre_jamais_dans_l_ajustement():
+P0 = {"sigma": 0.5, "xi": 0.0, "rho": -0.04, "effets": dict(AJ.NEUTRES), "emac": 0.02}
+
+
+# --- Anti-fuite ------------------------------------------------------------------------------------------------------
+def test_un_match_du_jour_n_entre_jamais_dans_l_ajustement_ni_dans_le_module1():
     ms = _ligue()
-    a = coeur.ajuster_ligue(ms, "2026-10-06", 0.5, 0.0, -0.04)
+    a = coeur.ajuster_ligue(ms, "2026-10-06", P0)
     assert a.n_matchs == 20                                                       # les 4 matchs du 06/10 sont exclus
-    assert coeur.ajuster_ligue(ms, "2026-09-01", 0.5, 0.0) is None                # rien avant le premier jour
-    b = coeur.ajuster_ligue(ms + [{"date": "2026-10-06", "dom": "A", "ext": "C", "h": 9, "a": 0}], "2026-10-06", 0.5, 0.0, -0.04)
+    assert coeur.ajuster_ligue(ms, "2026-09-01", P0) is None                      # rien avant le premier jour
+    plus = ms + [{"date": "2026-10-06", "dom": "A", "ext": "C", "h": 9, "a": 0}]
+    b = coeur.ajuster_ligue(plus, "2026-10-06", P0)
     assert b.att[b.indice["A"]] == pytest.approx(a.att[a.indice["A"]])            # un score du jour n'a aucune influence
+    assert M1.tableau(plus, "2026-10-06")["equipes"]["A"] == M1.tableau(ms, "2026-10-06")["equipes"]["A"]
 
 
-def test_minimum_quatre_matchs_au_meme_lieu():
+# --- Module 1 --------------------------------------------------------------------------------------------------------
+def test_module1_blocs_de_base():
+    p = M1.tableau(_ligue(), "2026-10-20")["equipes"]
+    a = p["A"]                                                                    # 6 × (2-1 à dom.) + 6 × (1-1 à l'ext.)
+    assert (a["J"], a["V"], a["N"], a["D"], a["BP"], a["BC"], a["Pts"]) == (12, 6, 6, 0, 18, 12, 24)
+    assert a["PPM"] == pytest.approx(2.0) and a["MBM_dom"] == 2 and a["MBE_ext"] == 1 and a["TN_ext"] == 1
+    assert a["score_modal_dom"] == "2-1" and a["clean_sheet"] == 0 and a["streak_sans_defaite"] == 12
+    assert p["A"]["position"] == 1 and p["A"]["CBD"] == pytest.approx((2 + 1 + 0 + 3) / 4)
+
+
+def test_forme_ppm_formule_de_patrick_et_cas_j_inferieur_a_6():
+    assert M1.forme_ppm([3, 3, 3, 0, 0, 0, 0, 0]) == pytest.approx((9 / 3 + 1.5 * 0 / 5) / 2.5)   # J = 8
+    assert M1.forme_ppm([0, 0, 0, 3, 3, 3, 3, 3]) == pytest.approx((0 + 1.5 * 15 / 5) / 2.5)
+    assert M1.forme_ppm([3, 1, 0]) == pytest.approx(4 / 3)                        # J ≤ 5 : PPM simple (la formule divise par J − 5)
+    assert M1.forme_ppm([]) is None
+
+
+def test_score_modal_departage_sans_hasard():
+    assert M1.score_modal([(1, 0), (1, 0), (2, 2)]) == "1-0"
+    assert M1.score_modal([(2, 2), (0, 0)]) == "0-0"                              # égalité : le moins de buts
+    assert M1.score_modal([(1, 0), (0, 1)]) == "0-1"                              # puis l'ordre du texte
+    assert M1.score_modal([]) is None
+
+
+def test_ie_vaut_points_sur_points_attendus_et_profils():
+    p = M1.tableau(_ligue(), "2026-10-20")["equipes"]
+    for e in "ABCD":
+        assert p[e]["IE"] == pytest.approx(p[e]["Pts"] / p[e]["xPts"])
+        assert p[e]["profil_id"] in M1.PROFILS and p[e]["style_tag"] in ("Defensive", "Offensive_Volatile", "Balanced")
+    assert p["A"]["profil_id"] in (1, 4) and p["C"]["profil_id"] == 5               # A : attaque et défense au-dessus ; C : les deux en dessous
+
+
+# --- Module 1.5 : contrat ---------------------------------------------------------------------------------------------
+def test_contrat_valide_cas_qui_passent():
     ms = _ligue()
-    assert D.nb_matchs_lieu(ms, "A", True, "2026-10-06") == 5
-    assert D.nb_matchs_lieu(ms, "A", True, "2026-09-22") == 3                    # 3 matchs : match exclu
-    assert D.nb_matchs_lieu(ms, "A", False, "2026-10-06") == 5
+    c = C.construire(ms, "A", "B", "2026-10-20")
+    assert c["equipe_domicile"]["matchs_joues_dom"] == 6 and len(c["equipe_exterieur"]["historique_matchs_ext"]) == 6
+    assert C.construire(ms, "D", "C", "2026-10-20")["gap"] is not None
+    assert C.construire(ms, "A", "B", "2026-10-06")["equipe_domicile"]["matchs_joues_dom"] == 5
+
+
+def test_contrat_cas_qui_echouent():
+    ms = _ligue()
+    with pytest.raises(ValueError, match="Filtre 0"):
+        C.construire(ms, "A", "B", "2026-09-22")                                  # 3 matchs à domicile
+    c = C.construire(ms, "A", "B", "2026-10-20")
+    c["equipe_domicile"]["stats_agregees_dom"]["ie"] = float("nan")
+    with pytest.raises(ValueError, match="NaN"):
+        C.valider(c)
+    c = C.construire(ms, "A", "B", "2026-10-20")
+    h = c["equipe_exterieur"]["historique_matchs_ext"]
+    h[0], h[1] = h[1], h[0]
+    with pytest.raises(ValueError, match="chronologique"):
+        C.valider(c)
+
+
+def test_un_match_exclu_par_le_contrat_garde_sa_raison():
     m = {"id": "x", "jour": "2026-09-22", "domicile": "A", "exterieur": "B", "eq_dom": "A", "eq_ext": "B", "cotes": {}}
-    assert coeur.analyser(m, ms, {"sigma": .5, "xi": 0.0})["statut"] == "exclu"
+    a = coeur.analyser(m, _ligue(), P0)
+    assert a["statut"] == "exclu" and "Filtre 0" in a["raison"]
     m["jour"] = "2026-10-06"
-    assert coeur.analyser(m, ms, {"sigma": .5, "xi": 0.0, "rho": -0.04})["statut"] == "analyse"
+    assert coeur.analyser(m, _ligue(), P0)["statut"] == "analyse"
 
 
-# --- Preuve empirique : « 1 » veut dire la même chose pour les deux séries ----------------------------------------
-def test_preuve_oriente_les_scores_des_deux_series():
+# --- Module 2 : effets des paramètres du Module 1 ---------------------------------------------------------------------
+F0 = {"ie_dom": -0.3, "ie_ext": 0.4, "amplitude": 0.5, "modal": 0.5, "style_dom": 0.6, "style_ext": -0.2}
+
+
+def test_effets_nuls_ne_changent_rien_et_ie_penalise_qui_gache():
+    assert AJ.appliquer(1.5, 1.1, -0.04, F0, AJ.NEUTRES) == (1.5, 1.1, -0.04)
+    lh, la, _ = AJ.appliquer(1.5, 1.1, -0.04, F0, {"ie": 0.5})
+    assert lh < 1.5 and la > 1.1                                                  # IE < 1 : λ baisse ; IE > 1 : λ monte
+    assert AJ.mult_xi(["A"], ["B"], {"A": 1.0}, 0.0) is None
+    assert AJ.mult_xi(["A"], ["B"], {"A": 1.0, "B": 0.0}, 2.0)[0] == pytest.approx(np.exp(1.0))   # dynamique moyenne 0,5 × 2
+
+
+def test_rho_suit_variance_et_score_modal_et_reste_borne():
+    _, _, r = AJ.appliquer(1.5, 1.1, -0.04, F0, {"amplitude": -0.02, "modal": -0.04})
+    assert r == pytest.approx(-0.04 - 0.01 - 0.02)
+    _, _, r = AJ.appliquer(1.5, 1.1, -0.04, F0, {"modal": -10})
+    assert r == MO.RHO_BORNES[0]                                                  # jamais de case de score impossible
+    lh, la, rv = AJ.appliquer_vect(np.array([1.5]), np.array([1.1]), np.array([-0.04]), {k: np.array([v]) for k, v in F0.items()}, {"amplitude": -0.02, "ie": 0.3})
+    assert (lh[0], la[0], rv[0]) == pytest.approx(AJ.appliquer(1.5, 1.1, -0.04, F0, {"amplitude": -0.02, "ie": 0.3}))
+
+
+def test_style_croise_sans_match_contre_ce_profil_ne_devine_rien():
+    ms = _ligue()
+    t = M1.tableau(ms, "2026-10-20")
+    fit = coeur.ajuster_ligue(ms, "2026-10-20", P0, t)
+    ex = AJ.excedents(ms, "A", "D", "2026-10-20", t, fit)                         # A n'a reçu que B, D n'a joué à l'extérieur que chez C
+    if t["equipes"]["B"]["profil_id"] != t["equipes"]["D"]["profil_id"]:
+        assert ex["n_a"] == 0 and ex["a_marque"] == 0.0
+    ex = AJ.excedents(ms, "A", "B", "2026-10-20", t, fit)
+    assert ex["n_a"] == 6 and ex["n_b"] == 6                                      # A a reçu 6 fois B (même profil, par construction)
+
+
+def test_les_forces_apprises_sont_appliquees_dans_l_analyse():
+    m = {"id": "x", "jour": "2026-10-20", "domicile": "A", "exterieur": "B", "eq_dom": "A", "eq_ext": "B", "cotes": {}}
+    a0 = coeur.analyser(m, _ligue(), P0)
+    a1 = coeur.analyser(m, _ligue(), dict(P0, effets=dict(AJ.NEUTRES, style=0.3)))
+    assert a0["buts_attendus"] == a0["buts_attendus_avant_effets"]
+    assert a1["buts_attendus"]["dom"] != pytest.approx(a1["buts_attendus_avant_effets"]["dom"])
+
+
+# --- Module 3 -----------------------------------------------------------------------------------------------------------
+def test_multigoal_somme_des_cases_et_effectifs_orientes():
+    P = dict(zip(coeur.CLES, np.einsum("ij,kij->k", MO.grille(1.4, 1.2, -0.04), coeur.MASQUES)))
+    assert P[("multigoal", "0-1")] + P[("multigoal", "2-3")] + P[("multigoal", "4+")] == pytest.approx(1)
+    assert P[("multigoal", "2-3")] == pytest.approx(P[("over_under_1.5", "plus")] - P[("over_under_3.5", "plus")])
     ms = [{"date": f"2026-09-{d:02d}", "dom": "A", "ext": "Z", "h": 2, "a": 0} for d in (1, 8, 15, 22)] + \
          [{"date": f"2026-09-{d:02d}", "dom": "Y", "ext": "B", "h": 0, "a": 3} for d in (2, 9, 16, 23)]
-    p = coeur.preuve(ms, "A", "B", "2026-10-01", coeur.TESTS[("1x2", "1")], 0.45)
-    assert p["n"] == 8 and p["k"] == 4 and p["p_hat"] == 0.5                      # A gagne chez lui ×4 ; B gagne chez l'adversaire = « 2 » ×4
-    p2 = coeur.preuve(ms, "A", "B", "2026-10-01", coeur.TESTS[("1x2", "2")], 0.28)
-    assert p2["k"] == 4 and p2["n"] == 8
-    assert coeur.preuve(ms, "Q", "R", "2026-10-01", coeur.TESTS[("1x2", "1")], 0.45) is None
+    c = C.construire(ms, "A", "B", "2026-10-01")
+    K_, n = coeur.effectifs(c)
+    k = dict(zip(coeur.CLES, K_))
+    assert n == 8 and k[("1x2", "1")] == 4 and k[("1x2", "2")] == 4                 # B gagne chez l'adversaire = « 2 » : orientation gardée
+
+
+# --- Module 4 -----------------------------------------------------------------------------------------------------------
+def _l(cle, p, base, k, n, cote=None):
+    return {"cle": list(cle), "marche": M.libelle(cle), "famille": M.famille(cle), "p": p, "base": base, "cote": cote,
+            "preuve": {"k": k, "n": n, "p_hat": round(k / n, 4)}}
+
+
+def test_bonferroni_et_z():
+    assert S.z_seuil(13) == pytest.approx(2.66, abs=0.01)                         # exemple du Module 4
+    assert S.z_seuil(1) == pytest.approx(1.645, abs=0.001)
+    assert S.z_score(43 / 60, 0.52, 60) == pytest.approx(3.05, abs=0.02)            # exemple over 2,5 du Module 4
+
+
+def test_module4_cas_qui_passent():
+    zs = S.z_seuil(13)
+    assert S.tester(_l(("over_under_2.5", "plus"), 0.72, 0.52, 43, 60), 0.02, zs)[0]
+    assert S.tester(_l(("1x2", "1"), 0.80, 0.45, 32, 40), 0.03, zs)[0]
+    assert S.tester(_l(("btts", "Non"), 0.95, 0.50, 19, 20), 0.03, zs)[0]
+
+
+def test_module4_cas_qui_echouent():
+    zs = S.z_seuil(13)
+    ok, r = S.tester(_l(("over_under_2.5", "plus"), 0.60, 0.52, 43, 60), 0.02, zs)
+    assert not ok and r.startswith("étape 0")                                     # modèle 60 %, données 72 % : incohérent
+    ok, r = S.tester(_l(("1x2", "1"), 0.84, 0.72, 50, 60), 0.02, zs)
+    assert not ok and r.startswith("étape 1")                                     # exemple 1X du Module 4 : Z = 1,95 < 2,66
+    ok, r = S.tester(_l(("btts", "Oui"), 0.62, 0.55, 280, 400), 0.10, 1.0)
+    assert not ok and r.startswith("étape 3")                                     # données nettes (Z = 6) mais Edge 7 % sous l'EMAC 10 %
+
+
+def test_module4_une_issue_par_marche_et_jamais_deux_fois_le_meme_evenement():
+    a = {"statut": "analyse", "marches": [_l(("1x2", "1"), 0.80, 0.45, 32, 40), _l(("1x2", "N"), 0.80, 0.30, 32, 40),
+                                          _l(("double_chance", "1N"), 0.95, 0.70, 38, 40), _l(("handicap_0.5", "domicile"), 0.95, 0.70, 38, 40)]}
+    s = S.selectionner(a, 0.03)
+    cles = [s["principal"]["cle"]] + [x["cle"] for x in s["autres"]]
+    assert cles[0] == ["1x2", "N"]                                                # Edge le plus grand en tête
+    assert ["1x2", "1"] not in cles                                               # même marché 1N2 : issue dominée
+    assert (["double_chance", "1N"] in cles) != (["handicap_0.5", "domicile"] in cles)   # même événement : un seul
+    assert S.selectionner({"statut": "analyse", "marches": [_l(("1x2", "1"), 0.5, 0.45, 20, 40)]}, 0.03)["principal"] is None
+
+
+def test_emac_mesure_la_calibration_pas_l_erreur_individuelle():
+    p = np.array([0.7] * 10 + [0.2] * 10)
+    y = np.array([1] * 7 + [0] * 3 + [1] * 2 + [0] * 8)
+    assert K.emac(p, y) == 0.0                                                    # parfaitement calibré : 0 (la formule |P − Y| donnerait 0,36)
+    assert K.emac(np.array([0.9] * 10), np.array([1] * 5 + [0] * 5)) == pytest.approx(0.4)
+
+
+# --- Suivi : journal gelé avant le coup d'envoi, résultat réglé une fois ------------------------------------------------
+def _params():
+    return {"sigma": 0.5, "xi": 0.0, "rho": -0.04, "effets": dict(AJ.NEUTRES), "emac": 1.0, "version": "test"}
+
+
+def _arch(h=None, a=None, ko="2026-10-20T18:00:00Z", cotes=None):
+    return [{"id": "m1", "ligue": "ligue t", "competition": "Ligue T", "jour": "2026-10-20", "heure": "20:00", "coup_d_envoi_utc": ko, "domicile": "A",
+             "exterieur": "B", "eq_dom": "A", "eq_ext": "B", "h": h, "a": a, "cotes": cotes or {"1x2": {"1": 2.0, "N": 3.2, "2": 3.5}}}]
 
 
 # --- Championnat reconstitué de l'assemblage : dédoublonnage et identité des adversaires --------------------------
@@ -143,65 +301,12 @@ def test_adversaire_inconnu_garde_sa_propre_identite_sans_deviner():
     assert sum(1 for m in L.matchs["ligue t"] if m["ext"].startswith("?")) == 1
 
 
-# --- Sélection : cote ≥ 1,39 (ordre de Patrick), seuil, jamais deux fois le même événement ---------------------------
-def _l(cle, p, cote, p_cote=None):
-    return {"cle": list(cle), "marche": M.libelle(cle), "famille": M.famille(cle), "valeur_reelle": None, "p_brut": p, "p": p, "base": None,
-            "cote": cote, "p_cote": p_cote, "preuve": None}
-
-
-SEL = {"seuil": 0.62, "cote_min": 1.39, "exiger_accord_cote": False}
-
-
-def test_retenu_cas_qui_passent():
-    assert coeur.retenu(_l(("1x2", "1"), 0.70, 1.45), SEL)[0]
-    assert coeur.retenu(_l(("over_under_1.5", "plus"), 0.80, 1.39), SEL)[0]                   # 1,39 exactement : accepté
-    assert coeur.retenu(_l(("btts", "Oui"), 0.62, 1.80, 0.65), dict(SEL, exiger_accord_cote=True))[0]
-
-
-def test_retenu_cas_qui_echouent():
-    assert not coeur.retenu(_l(("1x2", "1"), 0.90, 1.38), SEL)[0]                              # jamais moins de 1,39
-    assert not coeur.retenu(_l(("1x2", "1"), 0.90, None), SEL)[0]                              # pas de cote : rien n'est deviné
-    assert not coeur.retenu(_l(("1x2", "1"), 0.61, 1.60), SEL)[0]                              # sous le seuil
-    assert not coeur.retenu(_l(("btts", "Oui"), 0.70, 1.80, 0.55), dict(SEL, exiger_accord_cote=True))[0]   # la cote n'annonce que 55 %
-    assert not coeur.retenu(_l(("btts", "Oui"), 0.70, 1.80, None), dict(SEL, exiger_accord_cote=True))[0]   # accord illisible
-
-
-def test_selection_principal_le_plus_probable_et_pas_deux_fois_le_meme_evenement():
-    a = {"statut": "analyse", "marches": [_l(("double_chance", "1N"), 0.80, 1.45), _l(("handicap_0.5", "domicile"), 0.80, 1.45),
-                                          _l(("1x2", "1"), 0.66, 1.70), _l(("over_under_2.5", "plus"), 0.40, 2.0)]}
-    s = coeur.selectionner(a, SEL)
-    assert s["principal"]["cle"] == ["double_chance", "1N"]
-    assert [x["cle"] for x in s["autres"]] == [["1x2", "1"]]                                  # handicap +0,5 = même événement que « ne perd pas »
-    assert coeur.selectionner({"statut": "analyse", "marches": [_l(("1x2", "1"), 0.9, 1.2)]}, SEL)["principal"] is None   # rien ne passe : aucun pari
-
-
-# --- Calibrage : fonctions de mesure -----------------------------------------------------------------------------
-def test_wilson_et_tranches():
-    assert C.wilson_bas(70, 100) == pytest.approx(0.604, abs=0.002)
-    assert C.wilson_bas(0, 0) == 0.0
-    t = C.tranches(np.array([0.05, 0.15, 0.95, 0.95]), np.array([0, 0, 1, 1]))
-    assert [x["tranche"] for x in t] == ["0-10%", "10-20%", "90-100%"] and t[-1]["observe"] == 1.0 and t[-1]["ecart"] == pytest.approx(-0.05)
-    assert MO.calibrer(0.5, None) == 0.5
-    pts = MO.isotone(np.array([0.2, 0.4, 0.6, 0.8]), np.array([0, 0, 1, 1.0]))
-    assert MO.calibrer(0.8, [list(pts[0]), list(pts[1])]) == pytest.approx(1.0)
-
-
-# --- Suivi : journal gelé avant le coup d'envoi, résultat réglé une fois -----------------------------------------
-def _params():
-    return {"sigma": 0.5, "xi": 0.0, "rho": -0.04, "calibration": {}, "bases": {}, "version": "test",
-            "selection": {"seuil": 0.0, "cote_min": 1.39, "exiger_accord_cote": False}}
-
-
-def _arch(h=None, a=None, ko="2026-10-20T18:00:00Z", cotes=None):
-    return [{"id": "m1", "ligue": "ligue t", "competition": "Ligue T", "jour": "2026-10-20", "heure": "20:00", "coup_d_envoi_utc": ko, "domicile": "A",
-             "exterieur": "B", "eq_dom": "A", "eq_ext": "B", "h": h, "a": a, "cotes": cotes or {"1x2": {"1": 2.0, "N": 3.2, "2": 3.5}}}]
-
-
 class _Lg:
     matchs = {"ligue t": _ligue()}
 
 
-def test_gel_avant_coup_d_envoi_puis_resultat(tmp_path):
+def test_gel_avant_coup_d_envoi_puis_resultat(tmp_path, monkeypatch):
+    monkeypatch.setattr(S, "tester", lambda l, e, z: (l["cle"] == ["1x2", "1"], "test"))                         # un pari forcé pour suivre la mécanique
     j = tmp_path / "journal.jsonl"
     avant = datetime(2026, 10, 20, 10, 0, tzinfo=timezone.utc)
     n = suivi.geler(maintenant=avant, journal=j, ligues=_Lg, matchs=_arch(), params=_params())
@@ -224,3 +329,15 @@ def test_aucun_gel_apres_le_coup_d_envoi_dans_le_bilan(tmp_path):
     tard["gele_le"] = "2026-10-20T18:30:00Z"                                                                    # après le coup d'envoi
     assert suivi.derniers_pronostics([tard]) == {}
     assert "m1" in suivi.derniers_pronostics(lignes)
+
+
+def test_emac_glissante_sur_30_jours_du_journal_sinon_valeur_du_calibrage():
+    def ligne(mid, jour, p):
+        return {"type": "pronostic", "match_id": mid, "gele_le": f"{jour}T10:00:00+00:00",
+                "fiche": {"jour": jour, "coup_d_envoi_utc": f"{jour}T18:00:00Z", "p_marches": [p] * len(coeur.CLES)}}
+    matchs = [{"id": "a", "h": 1, "a": 0}, {"id": "b", "h": 0, "a": 0}]
+    L = [ligne("a", "2026-10-10", 0.5), ligne("b", "2026-08-01", 0.5)]
+    e, src, n = suivi.emac_glissante(L, "2026-10-20", matchs, 0.0054)
+    assert n == 1 and "journal" in src                                              # « b » est hors des 30 jours
+    assert suivi.emac_glissante(L, "2026-12-20", matchs, 0.0054) == (0.0054, "calibrage hors échantillon (Football-Data 2026-27)", 0)
+    assert suivi.emac_glissante([ligne("c", "2026-10-10", 0.5)], "2026-10-20", matchs, 0.0054)[2] == 0   # match non terminé : ignoré

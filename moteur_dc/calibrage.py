@@ -1,18 +1,17 @@
-"""Calibrage du moteur DC — protocole fixé AVANT le calcul (30/10/2026). Usage : python -m moteur_dc.calibrage [tout|reprise|hyper]
+"""Calibrage du moteur DC — protocole fixé AVANT le calcul. Usage : python -m moteur_dc.calibrage [tout|reprise]
 
-Leçon des moteurs précédents (omega) : un réglage appris sur peu de matchs ne tient pas hors échantillon. Donc, dans l'ordre :
-1. HYPERPARAMÈTRES (σ de la pénalité, xi de la décroissance, ρ commun à tous les championnats) : Football-Data 2025-26, vraisemblance PRÉDICTIVE hors échantillon
-   (marche avant : on ajuste le championnat avec les matchs d'avant la semaine, on note les scores de la semaine). Recherche par coordonnées
-   (σ, xi, ρ puis σ) sur une grille de candidats ; les valeurs de la grille sont des candidats de recherche, pas des réglages posés à la main.
-   Un match n'est noté que si chaque équipe a au moins 4 matchs au même lieu avant la semaine (règle de Patrick) ; saison courante seulement.
-2. CALIBRATION par marché (isotone) et taux de base par marché : appris sur 2025-26 seulement ; gardée pour une famille de marchés SEULEMENT si, sur 2026-27,
-   elle améliore à la fois la perte logarithmique et le Brier du modèle brut (règle fixée avant le calcul, comme omega pour ses filtres).
-3. VALIDATION sur Football-Data 2026-27, jamais utilisé pour régler : perte logarithmique et Brier du modèle brut, calibré et du taux de base ;
-   erreur de calibration PAR TRANCHE (écart entre probabilité annoncée et fréquence observée, par dixième de probabilité).
-4. SÉLECTION (seuil, accord avec la cote) : archive ARCHETYPE (cotes BetPawa prises avant le coup d'envoi), coupée au 14/10/2026 comme omega :
-   développement (avant) pour apprendre le seuil (meilleure borne basse de Wilson à 95 % de la réussite du pari principal, seuils candidats 50 à 75 %,
-   au moins 30 paris) et décider l'accord avec la cote ; réserve (à partir du 14/10) = contrôle. Ce n'est PAS un bilan de performance du moteur :
-   le bilan réel vient du journal gelé (bilan_dc.py).
+1. HYPERPARAMÈTRES du Dixon-Coles (σ de la pénalité, xi, ρ commun) : Football-Data 2025-26, vraisemblance PRÉDICTIVE hors échantillon
+   (marche avant : ajustement avec les matchs d'avant chaque semaine, notation des scores de la semaine). Recherche par coordonnées sur une grille
+   de candidats. `reprise` réutilise ceux déjà appris (docs/dc_validation.json).
+2. FORCES DES EFFETS du Module 1 branchés dans le Module 2 (ajustements.py : forme, ie, amplitude, modal, style), même marche avant sur 2025-26 :
+   recherche par coordonnées (deux passages) ; chaque force part de 0 (sans effet) et la grille s'étend tant que la vraisemblance s'améliore
+   (aucune borne posée à la main). Seuls les matchs qui passent le contrat 1.5 (Filtre 0 compris) sont notés.
+3. VALIDATION sur Football-Data 2026-27 (jamais utilisé pour régler) : vraisemblance avec et sans chaque effet. Règle fixée avant le calcul :
+   un effet dont le retrait AMÉLIORE la vraisemblance 2026-27 est remis à 0 (il n'a pas tenu hors échantillon). Perte logarithmique par famille
+   contre le taux de base ; erreur de calibration par dixième de probabilité.
+4. EMAC (Module 4) = erreur de calibration pondérée par tranche, mesurée sur 2026-27 avec le modèle final.
+5. CONTRÔLE du Module 4 sur l'archive ARCHETYPE (coupée au 14/10/2026 : développement / réserve) : nombre de paris, réussite, étape où les
+   marchés tombent. Ce n'est PAS un bilan de performance : le bilan réel vient du journal gelé (bilan_reel.py).
 Sorties : moteur_dc/parametres.json, docs/dc_validation.json.
 """
 from __future__ import annotations
@@ -21,14 +20,14 @@ import json
 import math
 import sys
 import time
-from collections import defaultdict
+from collections import Counter, defaultdict
 from datetime import date, timedelta
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 
-from . import coeur, donnees as D, marches as M, modele as MO
+from . import ajustements as AJ, coeur, contrat as C, donnees as D, marches as M, modele as MO, module1 as M1, selecteur as S
 
 ROOT = Path(__file__).resolve().parent.parent
 PARAMS = Path(__file__).with_name("parametres.json")
@@ -37,51 +36,8 @@ COUPE_ARCHIVE = "2026-10-14"
 SIGMAS = (0.15, 0.25, 0.4, 0.6, 1.0, 2.0)
 RHOS = (-0.12, -0.08, -0.04, 0.0, 0.04)
 XIS = (0.0, 0.002, 0.004, 0.008, 0.016)
-SEUILS = [x / 100 for x in range(50, 76)]
-MIN_PARIS = 30
-VERSION = "1.0.0"
-
-
-def semaine(d: str, depart: date) -> date:
-    return depart + timedelta(days=((date.fromisoformat(d) - depart).days // 7) * 7)
-
-
-def marche_avant(par_ligue: dict[str, list[dict]], sigma: float, xi: float, rho: float, avec_probas: bool = False, saisons: set[str] | None = None,
-                 pas_jours: int = 7) -> list[dict[str, Any]]:
-    """Prédictions hors échantillon : pour chaque semaine, ajustement avec les matchs d'AVANT la semaine, puis notation des matchs de la semaine."""
-    out: list[dict[str, Any]] = []
-    for lg, ms in par_ligue.items():
-        ms = sorted(ms, key=lambda m: m["date"])
-        if saisons and ms[0].get("saison") not in saisons:
-            continue
-        depart = date.fromisoformat(ms[0]["date"])
-        semaines: dict[date, list[dict]] = defaultdict(list)
-        for m in ms:
-            semaines[depart + timedelta(days=((date.fromisoformat(m["date"]) - depart).days // pas_jours) * pas_jours)].append(m)
-        fit = None
-        compte_dom: dict[str, int] = defaultdict(int)
-        compte_ext: dict[str, int] = defaultdict(int)
-        passe: list[dict] = []
-        for debut in sorted(semaines):
-            jour = debut.isoformat()
-            if passe:
-                fit = MO.ajuster([m["dom"] for m in passe], [m["ext"] for m in passe], np.array([m["h"] for m in passe]),
-                                 np.array([m["a"] for m in passe]), np.array([D.jours(m["date"], jour) for m in passe]), sigma, xi, fit, rho)
-                for m in semaines[debut]:
-                    if compte_dom[m["dom"]] < D.MIN_MATCHS or compte_ext[m["ext"]] < D.MIN_MATCHS:
-                        continue
-                    lh, la = fit.lambdas(m["dom"], m["ext"])
-                    r = {"ligue": lg, "saison": m.get("saison"), "date": m["date"], "id": m["id"], "h": m["h"], "a": m["a"], "lh": lh, "la": la}
-                    g = MO.grille(lh, la, fit.rho)
-                    r["ll"] = math.log(max(g[min(m["h"], MO.N_BUTS), min(m["a"], MO.N_BUTS)], 1e-12))
-                    if avec_probas:
-                        r["p"] = np.einsum("ij,kij->k", g, coeur.MASQUES)
-                    out.append(r)
-            for m in semaines[debut]:
-                passe.append(m)
-                compte_dom[m["dom"]] += 1
-                compte_ext[m["ext"]] += 1
-    return out
+PAS = {"forme": 0.5, "ie": 0.1, "amplitude": 0.01, "modal": 0.02, "style": 0.05}   # pas de recherche (la grille s'étend sans borne)
+VERSION = "2.0.0"
 
 
 def _regrouper(matchs: list[dict]) -> dict[str, list[dict]]:
@@ -91,19 +47,84 @@ def _regrouper(matchs: list[dict]) -> dict[str, list[dict]]:
     return d
 
 
+def marche_avant(par_ligue: dict[str, list[dict]], p: dict[str, Any], avec_facteurs: bool = True, pas_jours: int = 7) -> list[dict[str, Any]]:
+    """Prédictions hors échantillon semaine par semaine. Chaque ligne : λ et ρ AVANT effets, variables des effets, score réel."""
+    out: list[dict[str, Any]] = []
+    k = p.get("effets") or AJ.NEUTRES
+    for lg, ms in par_ligue.items():
+        ms = sorted(ms, key=lambda m: m["date"])
+        depart = date.fromisoformat(ms[0]["date"])
+        semaines: dict[date, list[dict]] = defaultdict(list)
+        for m in ms:
+            semaines[depart + timedelta(days=((date.fromisoformat(m["date"]) - depart).days // pas_jours) * pas_jours)].append(m)
+        fit = None
+        passe: list[dict] = []
+        for debut in sorted(semaines):
+            jour = debut.isoformat()
+            if passe:
+                t = M1.tableau(passe, jour)
+                dom, ext = [m["dom"] for m in passe], [m["ext"] for m in passe]
+                fit = MO.ajuster(dom, ext, np.array([m["h"] for m in passe]), np.array([m["a"] for m in passe]),
+                                 np.array([D.jours(m["date"], jour) for m in passe]), p["sigma"], p["xi"], fit, p["rho"],
+                                 AJ.mult_xi(dom, ext, AJ.dynamique(t), k.get("forme", 0.0)))
+                for m in semaines[debut]:
+                    try:
+                        c = C.construire(passe, m["dom"], m["ext"], jour, t, m["id"])
+                    except ValueError:
+                        continue
+                    lh, la = fit.lambdas(m["dom"], m["ext"])
+                    r = {"ligue": lg, "saison": m.get("saison"), "date": m["date"], "id": m["id"], "h": m["h"], "a": m["a"], "lh": lh, "la": la, "rho": fit.rho}
+                    if avec_facteurs:
+                        r["f"] = AJ.facteurs(c, t, AJ.excedents(passe, m["dom"], m["ext"], jour, t, fit))
+                    out.append(r)
+            passe.extend(semaines[debut])
+    return out
+
+
+def _tableaux(res: list[dict]) -> tuple[np.ndarray, np.ndarray, np.ndarray, dict[str, np.ndarray], np.ndarray, np.ndarray]:
+    lh = np.array([r["lh"] for r in res])
+    la = np.array([r["la"] for r in res])
+    rho = np.array([r["rho"] for r in res])
+    F = {k: np.array([r["f"][k] for r in res]) for k in res[0]["f"]}
+    return lh, la, rho, F, np.minimum([r["h"] for r in res], MO.N_BUTS), np.minimum([r["a"] for r in res], MO.N_BUTS)
+
+
+def ll_moyenne(T: tuple, k: dict[str, float]) -> float:
+    lh, la, rho, F, h, a = T
+    g = MO.grilles(*AJ.appliquer_vect(lh, la, rho, F, k))
+    return float(np.mean(np.log(np.maximum(g[np.arange(len(h)), h, a], 1e-12))))
+
+
+def recherche_1d(score, k: dict[str, float], nom: str) -> dict[str, float]:
+    """Meilleure force pour un effet, les autres fixées : on part de la valeur courante et on avance par pas tant que ça s'améliore."""
+    pas = PAS[nom]
+    cache: dict[float, float] = {}
+
+    def s(v: float) -> float:
+        v = round(v, 6)
+        if v not in cache:
+            cache[v] = score({**k, nom: v})
+        return cache[v]
+
+    v = k.get(nom, 0.0)
+    for sens in (1, -1):
+        while s(v + sens * pas) > s(v):
+            v += sens * pas
+    return {**k, nom: round(v, 6)}
+
+
 def hyperparametres(bloc: list[dict], log=print) -> dict[str, Any]:
     par_ligue = _regrouper([m for m in bloc if m["saison"] == "2526"])
     essais: dict[tuple, float] = {}
 
     def score(s: float, x: float, r: float) -> float:
         if (s, x, r) not in essais:
-            t = time.time()
-            res = marche_avant(par_ligue, s, x, r)
-            essais[(s, x, r)] = float(np.mean([q["ll"] for q in res]))
-            log(f"  sigma={s} xi={x} rho={r} : vraisemblance prédictive {essais[(s, x, r)]:.5f} par match ({len(res)} matchs, {time.time() - t:.0f} s)")
+            res = marche_avant(par_ligue, {"sigma": s, "xi": x, "rho": r}, avec_facteurs=False)
+            essais[(s, x, r)] = float(np.mean([math.log(max(MO.grille(q["lh"], q["la"], q["rho"])[min(q["h"], 10), min(q["a"], 10)], 1e-12)) for q in res]))
+            log(f"  sigma={s} xi={x} rho={r} : {essais[(s, x, r)]:.5f}")
         return essais[(s, x, r)]
 
-    s_b, x_b, r_b = SIGMAS[2], XIS[0], RHOS[2]            # point de départ de la recherche par coordonnées
+    s_b, x_b, r_b = SIGMAS[2], XIS[0], RHOS[2]
     s_b = max(SIGMAS, key=lambda s: score(s, x_b, r_b))
     x_b = max(XIS, key=lambda x: score(s_b, x, r_b))
     r_b = max(RHOS, key=lambda r: score(s_b, x_b, r))
@@ -111,20 +132,39 @@ def hyperparametres(bloc: list[dict], log=print) -> dict[str, Any]:
     return {"sigma": s_b, "xi": x_b, "rho": r_b, "ll": essais[(s_b, x_b, r_b)], "essais": {f"{s}|{x}|{r}": v for (s, x, r), v in essais.items()}}
 
 
-def _resultats(r: dict) -> np.ndarray:
-    h, a = r["h"], r["a"]
-    return np.array([float(t(h, a)) for t in (coeur.TESTS[c] for c in coeur.CLES)])
+def apprendre_effets(bloc: list[dict], hp: dict[str, Any], log=print) -> tuple[dict[str, float], dict[str, Any]]:
+    par_ligue = _regrouper([m for m in bloc if m["saison"] == "2526"])
+    traces: dict[str, Any] = {"essais_forme": {}}
+    runs: dict[float, tuple] = {}
+
+    def run(c_forme: float) -> tuple:
+        c_forme = round(c_forme, 6)
+        if c_forme not in runs:
+            t0 = time.time()
+            res = marche_avant(par_ligue, {**hp, "effets": {"forme": c_forme}})
+            runs[c_forme] = _tableaux(res)
+            log(f"  forme={c_forme} : marche avant {len(res)} matchs ({time.time() - t0:.0f} s)")
+        return runs[c_forme]
+
+    k = dict(AJ.NEUTRES)
+    for passage in (1, 2):
+        k = recherche_1d(lambda kk: ll_moyenne(run(kk["forme"]), kk), k, "forme")
+        traces["essais_forme"].update({str(c): None for c in runs})
+        for nom in ("ie", "amplitude", "modal", "style"):
+            T = run(k["forme"])
+            k = recherche_1d(lambda kk: ll_moyenne(T, kk), k, nom)
+        log(f"  passage {passage} : {k} → {ll_moyenne(run(k['forme']), k):.5f} (sans effet : {ll_moyenne(run(0.0), AJ.NEUTRES):.5f})")
+    traces["ll_dev_sans_effet"] = round(ll_moyenne(run(0.0), AJ.NEUTRES), 5)
+    traces["ll_dev_avec_effets"] = round(ll_moyenne(run(k["forme"]), k), 5)
+    traces["matchs_dev"] = int(len(run(0.0)[0]))
+    return k, traces
 
 
-def predictions_marches(bloc: list[dict], sigma: float, xi: float, rho: float, saisons: set[str]) -> tuple[np.ndarray, np.ndarray, list[dict]]:
-    r = marche_avant(_regrouper([m for m in bloc if m["saison"] in saisons]), sigma, xi, rho, avec_probas=True)
-    P = np.stack([q["p"] for q in r])
-    Y = np.stack([_resultats(q) for q in r])
-    return P, Y, r
+def _resultats(h: np.ndarray, a: np.ndarray) -> np.ndarray:
+    return np.stack([MO.masque(c, coeur.TESTS[c])[h, a] for c in coeur.CLES], axis=1)
 
 
 def tranches(p: np.ndarray, y: np.ndarray) -> list[dict[str, Any]]:
-    """Erreur de calibration par dixième de probabilité annoncée : écart moyen entre ce que le moteur annonce et ce qui arrive."""
     out = []
     for k in range(10):
         m = (p >= k / 10) & ((p < (k + 1) / 10) if k < 9 else (p <= 1))
@@ -134,58 +174,60 @@ def tranches(p: np.ndarray, y: np.ndarray) -> list[dict[str, Any]]:
     return out
 
 
+def emac(p: np.ndarray, y: np.ndarray) -> float:
+    """Erreur de calibration : |annoncé − observé| par dixième de probabilité, pondéré par le nombre de prédictions."""
+    tr = tranches(p, y)
+    n = sum(t["n"] for t in tr)
+    return round(sum(t["n"] * abs(t["ecart"]) for t in tr) / n, 4) if n else 0.0
+
+
 def _perte(p: np.ndarray, y: np.ndarray) -> tuple[float, float]:
     q = np.clip(p, 1e-6, 1 - 1e-6)
     return float(-np.mean(y * np.log(q) + (1 - y) * np.log(1 - q))), float(np.mean((p - y) ** 2))
 
 
-def calibration_et_validation(bloc: list[dict], hp: dict[str, Any], log=print) -> tuple[dict, dict]:
-    sigma, xi, rho = hp["sigma"], hp["xi"], hp["rho"]
-    P1, Y1, r1 = predictions_marches(bloc, sigma, xi, rho, {"2526"})
-    P2, Y2, r2 = predictions_marches(bloc, sigma, xi, rho, {"2627"})
-    log(f"prédictions : développement {len(r1)} matchs (2025-26), validation {len(r2)} matchs (2026-27)")
-    cal: dict[str, list] = {}
-    bases: dict[str, float] = {}
-    tout = [m for m in bloc if m["saison"] == "2526"]
-    for k, c in enumerate(coeur.CLES):
-        cal[coeur.cle_txt(c)] = [list(v) for v in MO.isotone(P1[:, k], Y1[:, k])]
-        bases[coeur.cle_txt(c)] = round(float(np.mean([coeur.TESTS[c](m["h"], m["a"]) for m in tout])), 4)
-    # validation
-    brut, calib, constante = np.zeros_like(P2), np.zeros_like(P2), np.zeros_like(P2)
-    for k, c in enumerate(coeur.CLES):
-        calib[:, k] = MO.calibrer(P2[:, k], cal[coeur.cle_txt(c)])
-        constante[:, k] = bases[coeur.cle_txt(c)]
-    brut = P2
-    par_famille: dict[str, dict] = {}
-    gardee: dict[str, bool] = {}
+def valider(bloc: list[dict], hp: dict[str, Any], k: dict[str, float], log=print) -> tuple[dict[str, float], dict[str, Any]]:
+    par_ligue = _regrouper([m for m in bloc if m["saison"] == "2627"])
+    T = _tableaux(marche_avant(par_ligue, {**hp, "effets": k}))
+    T0 = T if not k.get("forme") else _tableaux(marche_avant(par_ligue, {**hp, "effets": {"forme": 0.0}}))
+    val: dict[str, Any] = {"matchs": int(len(T[0])), "ll_sans_effet": round(ll_moyenne(T0, AJ.NEUTRES), 5), "ll_avec_effets": round(ll_moyenne(T, k), 5),
+                           "retrait": {}}
+    final = dict(k)
+    for nom in AJ.NOMS:
+        if not k[nom]:
+            continue
+        sans = dict(k, **{nom: 0.0})
+        ll = ll_moyenne(T0 if nom == "forme" else T, sans)
+        val["retrait"][nom] = round(ll, 5)
+        if ll > val["ll_avec_effets"]:                   # règle fixée avant le calcul
+            final[nom] = 0.0
+    if final != k:
+        Tf = T0 if not final.get("forme") else T
+        val["ll_final"] = round(ll_moyenne(Tf, final), 5)
+    else:
+        Tf = T
+        val["ll_final"] = val["ll_avec_effets"]
+    lh, la, rho, F, h, a = Tf
+    P = np.einsum("nij,kij->nk", MO.grilles(*AJ.appliquer_vect(lh, la, rho, F, final)), coeur.MASQUES)
+    Y = _resultats(h, a)
+    dev = [m for m in bloc if m["saison"] == "2526"]
+    base = np.einsum("ij,kij->k", coeur.comptes([(m["h"], m["a"]) for m in dev]), coeur.MASQUES) / len(dev)
+    par_famille = {}
     for fam in sorted({M.famille(c) for c in coeur.CLES}):
-        idx = [k for k, c in enumerate(coeur.CLES) if M.famille(c) == fam]
-        ll_b, br_b = _perte(brut[:, idx].ravel(), Y2[:, idx].ravel())
-        ll_c, br_c = _perte(calib[:, idx].ravel(), Y2[:, idx].ravel())
-        ll_k, br_k = _perte(constante[:, idx].ravel(), Y2[:, idx].ravel())
-        # règle fixée avant le calcul : la calibration n'est gardée pour une famille que si elle améliore HORS ÉCHANTILLON la perte logarithmique ET le Brier
-        gardee[fam] = bool(ll_c < ll_b and br_c < br_b)
-        par_famille[fam] = {"brut": {"perte_log": round(ll_b, 5), "brier": round(br_b, 5)}, "calibre": {"perte_log": round(ll_c, 5), "brier": round(br_c, 5)},
-                            "taux_de_base": {"perte_log": round(ll_k, 5), "brier": round(br_k, 5)}, "calibration_gardee": gardee[fam]}
-    utilise = np.stack([calib[:, k] if gardee[M.famille(c)] else brut[:, k] for k, c in enumerate(coeur.CLES)], axis=1)
-    cal = {coeur.cle_txt(c): v for c, v in zip(coeur.CLES, (cal[coeur.cle_txt(c)] for c in coeur.CLES)) if gardee[M.famille(c)]}
-    val = {"matchs": len(r2), "ll_exact_par_match": round(float(np.mean([q["ll"] for q in r2])), 5),
-           "ll_exact_par_match_dev": round(float(np.mean([q["ll"] for q in r1])), 5),
-           "par_famille": par_famille, "tranches_utilisees": tranches(utilise.ravel(), Y2.ravel()),
-           "tranches_calibre": tranches(calib.ravel(), Y2.ravel()), "tranches_brut": tranches(brut.ravel(), Y2.ravel())}
-    return {"calibration": cal, "bases": bases}, val
-
-
-def wilson_bas(k: int, n: int, z: float = 1.959964) -> float:
-    if n == 0:
-        return 0.0
-    p = k / n
-    d = 1 + z * z / n
-    return (p + z * z / (2 * n) - z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n))) / d
+        idx = [i for i, c in enumerate(coeur.CLES) if M.famille(c) == fam]
+        lb, bb = _perte(P[:, idx].ravel(), Y[:, idx].ravel())
+        lk, bk = _perte(np.broadcast_to(base[idx], (len(P), len(idx))).ravel(), Y[:, idx].ravel())
+        par_famille[fam] = {"modele": {"perte_log": round(lb, 5), "brier": round(bb, 5)}, "taux_de_base": {"perte_log": round(lk, 5), "brier": round(bk, 5)}}
+    val["par_famille"] = par_famille
+    val["tranches"] = tranches(P.ravel(), Y.ravel())
+    val["emac"] = emac(P.ravel(), Y.ravel())
+    val["emac_par_famille"] = {fam: emac(P[:, [i for i, c in enumerate(coeur.CLES) if M.famille(c) == fam]].ravel(),
+                                         Y[:, [i for i, c in enumerate(coeur.CLES) if M.famille(c) == fam]].ravel()) for fam in par_famille}
+    log(f"  validation 2026-27 : {val['matchs']} matchs, sans effet {val['ll_sans_effet']}, avec {val['ll_avec_effets']}, final {val['ll_final']}, EMAC {val['emac']}")
+    return final, val
 
 
 def analyses_archive(params: dict[str, Any], log=print) -> list[dict[str, Any]]:
-    """Analyse de chaque match JOUÉ de l'archive avec le championnat tel qu'il était la veille (un ajustement par championnat et par jour)."""
     ligues = D.charger_ligues()
     matchs = [m for m in D.charger_archive(ligues) if m["h"] is not None]
     par_jour: dict[tuple, list[dict]] = defaultdict(list)
@@ -196,57 +238,42 @@ def analyses_archive(params: dict[str, Any], log=print) -> list[dict[str, Any]]:
         liste = ligues.matchs.get(lg)
         if not liste:
             continue
-        fit = coeur.ajuster_ligue(liste, jour, params["sigma"], params["xi"], params.get("rho"))
+        t = M1.tableau(liste, jour)
+        fit = coeur.ajuster_ligue(liste, jour, params, t)
         if fit is None:
             continue
+        bases = coeur.bases_ligue(liste, jour)
         for m in ms:
-            a = coeur.analyser(m, liste, params, fit)
+            a = coeur.analyser(m, liste, params, fit, t, bases)
             if a["statut"] == "analyse":
                 out.append({"m": m, "a": a})
-    log(f"archive : {len(out)} matchs joués analysables")
+    log(f"  archive : {len(out)} matchs joués analysables")
     return out
 
 
-def _paris_principaux(analyses: list[dict], sel: dict) -> list[tuple[bool, float]]:
-    res = []
-    for x in analyses:
-        s = coeur.selectionner(json.loads(json.dumps(x["a"])), sel)          # copie : selectionner annote les lignes
-        if s["principal"]:
-            p = s["principal"]
-            res.append((bool(coeur.TESTS[tuple(p["cle"])](x["m"]["h"], x["m"]["a"])), p["cote"]))
-    return res
-
-
-def apprendre_selection(params: dict[str, Any], log=print) -> dict[str, Any]:
+def controle_archive(params: dict[str, Any], log=print) -> dict[str, Any]:
     an = analyses_archive(params, log)
-    dev = [x for x in an if x["m"]["jour"] < COUPE_ARCHIVE]
-    res = [x for x in an if x["m"]["jour"] >= COUPE_ARCHIVE]
-    out: dict[str, Any] = {"matchs_dev": len(dev), "matchs_reserve": len(res), "coupe": COUPE_ARCHIVE, "essais": []}
-    meilleur = None
-    for accord in (False, True):
-        for s in SEUILS:
-            sel = {"seuil": s, "cote_min": coeur.COTE_MIN, "exiger_accord_cote": accord}
-            pr = _paris_principaux(dev, sel)
-            if len(pr) < MIN_PARIS:
-                continue
-            k = sum(g for g, _ in pr)
-            b = wilson_bas(k, len(pr))
-            out["essais"].append({"accord": accord, "seuil": s, "paris": len(pr), "reussite": round(k / len(pr), 4), "wilson_bas": round(b, 4)})
-            if meilleur is None or b > meilleur[0]:
-                meilleur = (b, accord, s, len(pr), k / len(pr))
-    if meilleur is None:
-        out["selection"] = None
-        return out
-    _, accord, s, n, r = meilleur
-    sel = {"seuil": s, "cote_min": coeur.COTE_MIN, "exiger_accord_cote": accord}
-    out["selection"] = sel
-    out["developpement"] = {"paris": n, "reussite": round(r, 4)}
-    for nom, groupe in (("reserve", res), ("reserve_sans_accord", res), ("reserve_avec_accord", res)):
-        sel2 = dict(sel, exiger_accord_cote={"reserve": accord, "reserve_sans_accord": False, "reserve_avec_accord": True}[nom])
-        pr = _paris_principaux(groupe, sel2)
-        if pr:
-            k = sum(g for g, _ in pr)
-            out[nom] = {"paris": len(pr), "reussite": round(k / len(pr), 4), "cote_moyenne": round(float(np.mean([c for _, c in pr])), 3)}
+    out: dict[str, Any] = {"coupe": COUPE_ARCHIVE}
+    for nom, groupe in (("developpement", [x for x in an if x["m"]["jour"] < COUPE_ARCHIVE]), ("reserve", [x for x in an if x["m"]["jour"] >= COUPE_ARCHIVE])):
+        etapes: Counter = Counter()
+        principaux, tous = [], []
+        for x in groupe:
+            s = coeur.selectionner(x["a"], params)
+            for l in x["a"]["marches"]:
+                etapes[l["decision"].split(" :")[0]] += 1
+            for q, l in enumerate(([s["principal"]] if s["principal"] else []) + s["autres"]):
+                g = bool(coeur.TESTS[tuple(l["cle"])](x["m"]["h"], x["m"]["a"]))
+                tous.append((g, l["p"]))
+                if q == 0:
+                    principaux.append((g, l["p"], l["cote"]))
+        out[nom] = {"matchs": len(groupe), "paris_principaux": len(principaux), "tous_paris": len(tous), "etapes": dict(etapes)}
+        if principaux:
+            out[nom]["principal"] = {"reussite": round(sum(g for g, _, _ in principaux) / len(principaux), 4),
+                                     "p_moyenne": round(float(np.mean([p for _, p, _ in principaux])), 4),
+                                     "cotes_connues": sum(c is not None for _, _, c in principaux)}
+        if tous:
+            out[nom]["tous"] = {"reussite": round(sum(g for g, _ in tous) / len(tous), 4), "p_moyenne": round(float(np.mean([p for _, p in tous])), 4)}
+        log(f"  {nom} : {out[nom]}")
     return out
 
 
@@ -254,37 +281,30 @@ def tout(log=print, reprise: bool = False) -> None:
     t0 = time.time()
     bloc = D.charger_bloc()
     log(f"bloc Football-Data : {len(bloc)} matchs")
-    log("1. hyperparamètres (prédictif hors échantillon, 2025-26)")
-    if reprise:                                         # hyperparamètres déjà appris (docs/dc_validation.json) : seules les étapes 2 à 4 sont refaites
+    if reprise:
         hp = json.loads(VALIDATION.read_text(encoding="utf-8"))["hyperparametres"]
-        log("   repris du fichier de validation")
+        log(f"1. hyperparamètres repris : sigma={hp['sigma']} xi={hp['xi']} rho={hp['rho']}")
     else:
+        log("1. hyperparamètres")
         hp = hyperparametres(bloc, log)
-    log(f"   retenu : sigma={hp['sigma']} xi={hp['xi']} rho={hp['rho']}")
-    log("2-3. calibration (2025-26) et validation (2026-27)")
-    cal, val = calibration_et_validation(bloc, hp, log)
-    params = {"version": VERSION, "sigma": hp["sigma"], "xi": hp["xi"], "rho": hp["rho"], **cal,
-              "selection": {"seuil": 0.62, "cote_min": coeur.COTE_MIN, "exiger_accord_cote": False}}
-    PARAMS.write_text(json.dumps(params, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-    log("4. sélection (archive, développement avant le 14/10 / réserve après)")
-    sel = apprendre_selection(params, log)
-    if sel.get("selection"):
-        params["selection"] = sel["selection"]
+    base = {"sigma": hp["sigma"], "xi": hp["xi"], "rho": hp["rho"]}
+    log("2. forces des effets du Module 1 (2025-26)")
+    k, traces = apprendre_effets(bloc, base, log)
+    log("3-4. validation 2026-27 et EMAC")
+    final, val = valider(bloc, base, k, log)
+    params = {"version": VERSION, **base, "effets": final, "effets_appris_2526": k, "emac": val["emac"]}
+    log("5. contrôle du Module 4 sur l'archive")
+    ctl = controle_archive(params, log)
     params["regle_le"] = time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime())
     PARAMS.write_text(json.dumps(params, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-    VALIDATION.parent.mkdir(parents=True, exist_ok=True)
-    VALIDATION.write_text(json.dumps({"version": VERSION, "hyperparametres": hp, "validation_fd_2627": val, "selection_archive": sel},
-                                     ensure_ascii=False, indent=1), encoding="utf-8")
+    VALIDATION.write_text(json.dumps({"version": VERSION, "hyperparametres": hp, "effets": {"appris_2526": k, "traces": traces, "final": final},
+                                      "validation_fd_2627": val, "controle_module4_archive": ctl}, ensure_ascii=False, indent=1), encoding="utf-8")
     log(f"terminé en {time.time() - t0:.0f} s")
 
 
 if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "tout"
-    if mode == "tout":
-        tout()
-    elif mode == "reprise":
-        tout(reprise=True)
-    elif mode == "hyper":
-        print(hyperparametres(D.charger_bloc()))
+    if mode in ("tout", "reprise"):
+        tout(reprise=mode == "reprise")
     else:
         print(__doc__)

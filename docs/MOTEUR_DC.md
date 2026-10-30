@@ -1,64 +1,50 @@
-# Moteur DC (`moteur_dc/`)
+# Moteur DC (`moteur_dc/`) — version 2 (30/10/2026)
 
-Créé le 30/10/2026 à partir des 5 modules « Extraction → Dixon-Coles & Bayes → Marchés → Sélecteur statistique → Cotes et staking » fournis par Patrick,
-après audit de leur cohérence. Branche `moteur-dc`. Autonome : n'utilise ni V2, ni V3, ni le Journal, ni alpha, ni omega, ni Europe, ni v2r, ni v
-(le catalogue de marchés d'omega est COPIÉ dans `moteur_dc/marches.py`, pas importé). Hors générateur de tickets. Statut : observation.
+Architecture de Patrick (5 modules reçus le 30/10/2026), ordre du 30/10/2026 : réintégrer les Modules 1, 1.5, 3 et 4 et brancher les paramètres du
+Module 1 dans Dixon-Coles ; Module 5 (cotes, EV, Kelly) laissé de côté. Branche `moteur-dc`, jamais fusionnée sans « Fusionner ».
+Autonome (aucun import d'un autre moteur), hors générateur de tickets. Statut : observation.
 
-## Ce qui a été gardé, corrigé, retiré (audit des 5 modules)
-| Module reçu | Décision | Pourquoi |
+## Chaîne d'un match (`coeur.analyser`)
+| Module | Fichier | Ce qu'il fait |
 |---|---|---|
-| 2 — Dixon-Coles | **Gardé et corrigé** | Le contrat d'entrée ne contenait que l'historique des deux équipes (adversaire = style, sans identité) : les forces d'un championnat ne s'estiment que sur TOUS ses matchs. `donnees.py` reconstitue le championnat entier. Ajout d'un terme de niveau de buts `mu` (absent). Pénalité vers 0 (= moyenne du championnat), pas vers CBD/CBE. |
-| 2 — choix de xi | **Corrigé** | La vraisemblance pondérée de l'échantillon diverge quand xi grandit : σ, xi et ρ sont choisis sur la vraisemblance PRÉDICTIVE hors échantillon. |
-| 2 — ρ | **Corrigé** | Un ρ libre par championnat se perd dans le bruit et a rendu des scores impossibles (τ ≤ 0, constaté pendant la construction) : ρ commun, appris hors échantillon. |
-| 2 — facteur d'efficacité BP/xG | **Retiré** | Double emploi (les forces sont déjà ajustées sur les buts réels) ; aucun xG dans le contrat ; circulaire s'il vient du Poisson. |
-| 2 — ajustement Bayes par style/profil | **Retiré** | Estimé sur 4 matchs contre 5 profils : bruit ; aucune preuve hors échantillon. À reproposer avec preuve. |
-| 1 — 44 paramètres | **Non repris** | La majorité n'entrait dans aucune formule du Module 2 (moy_bp, taux_nul, score_modal, variance, ie, forme_ppm, CBD/CBE…). Forme_PPM divisait par J−5 (nul ou négatif pour une équipe à 4 matchs) ; 5 profils sans règle de classement. Le moteur lit directement les matchs. |
-| 3 — extraction des marchés | **Gardé** | Somme exacte des cases de la grille, combinés compris (catalogue d'omega : 100 marchés). |
-| 4 — EMAC, Z-test, Bonferroni | **Corrigé** | EMAC = moyenne de |P − Y| avec Y∈{0,1} vaut ≈ 0,4–0,5 (jamais 0,032) : l'étape 3 rejetait tout, l'étape 0 laissait tout passer. Remplacé par l'erreur de calibration PAR TRANCHE (`calibrage.tranches`). Le pool k/n mélangeait des matchs où « 1 » ne veut pas dire la même chose : p̂ est lu par perspective (A à domicile, B à l'extérieur, score orienté), n = essais, k = réussites. Le Z (p̂ contre la base du championnat) est AFFICHÉ, jamais un filtre (aucune preuve hors échantillon, cf. omega). |
-| 5 — cotes, EV, Kelly | **Non repris** | Contraire aux règles de Patrick : ne pas chercher à battre la cote, réussite d'abord, pas de ROI. Cote minimale **1,39**, ordre du 27/10/2026 (seule valeur posée à la main). |
+| 1 | `module1.py` | Les 44 paramètres de chaque équipe du championnat (classement, moyennes, terrain, fréquences, amplitude, score modal, Forme_PPM, streak, volatilité, xPts, IE, RC, rangs, profil 1-5 et Style_Tag, CBD/CBE, gap), avec les matchs STRICTEMENT antérieurs au jour du match. |
+| 1.5 | `contrat.py` | `match_input` (structure de la Section A) et contrôles stricts : Filtre 0 (≥ 4 matchs à domicile / à l'extérieur), types, NaN, historiques d'au moins 4 matchs en ordre chronologique strict. Erreur = match exclu, raison gelée. |
+| 2 | `modele.py` + `ajustements.py` | Dixon-Coles pénalisé (shrinkage) sur le championnat entier ; Forme→xi, IE→λ, Amplitude et Score modal→ρ, Profil croisé→λ. Chaque effet a une force apprise hors échantillon. |
+| 3 | `coeur.py`, `marches.py` | 103 marchés (1N2, double chance, plus/moins, BTTS, **Multigoal 0-1 / 2-3 / 4+**, buts par équipe, handicaps, combinés) par SOMME des cases de la grille ; k/n sur les matchs comparables (A à domicile + B à l'extérieur, score orienté) ; Base = fréquence du marché dans le championnat cette saison avant le match. |
+| 4 | `selecteur.py` | Étape 0 cohérence `|P − p̂| ≤ 2 × EMAC` ; étape 1 Z = (p̂ − Base)/√(Base(1−Base)/n) > Z Bonferroni (α = 0,05 / m marchés testés) ; étapes 2-3 Edge = P − Base > EMAC ; étape 4 une issue par marché (Edge max) et jamais deux fois le même événement. Principal = Edge le plus grand. **Aucune cote, aucun seuil de probabilité.** |
 
-Les exemples chiffrés des modules étaient incohérents (k(1X)=50 alors que k(1)+k(N)=54 ; probabilités du Module 3 sans rapport avec les λ du Module 2).
-Contrôlés et exacts : la formule τ de Dixon-Coles, les Z des exemples, le seuil Bonferroni 2,66 pour 13 marchés, l'arithmétique Kelly.
+Précisions imposées par la spécification (aucune valeur choisie) :
+- Forme_PPM : avec J ≤ 5 la formule reçue divise par 0 ou par un nombre négatif → PPM simple.
+- Profil : seuils de Patrick (IE > 1,2 = Opportuniste), sinon attaque et défense comparées à la médiane du championnat.
+- Dynamique de forme = |Forme_PPM − PPM|. IE et amplitude au lieu du match (contrat 1.5).
+- EMAC : la formule reçue (moyenne de |P − Y|, Y = 0/1) vaut 0,4 à 0,5 quel que soit le modèle ; remplacée par l'erreur de calibration par
+  dixième de probabilité (pondérée). Production : 30 derniers jours du journal gelé (tous les marchés des matchs terminés), sinon valeur du calibrage.
 
-## Modèle (`modele.py`)
-`λ_dom = exp(mu + gamma + att_dom + def_ext)`, `λ_ext = exp(mu + att_ext + def_dom)` (`def` = faiblesse défensive). Vraisemblance de Dixon-Coles (τ sur 0-0, 1-0, 0-1, 1-1),
-poids `exp(−xi × âge en jours)`, pénalité `(1/2σ²) Σ(att² + def²)` (rend la solution unique), gradient analytique (vérifié contre le gradient numérique : écart 5·10⁻⁸).
-Grille des scores 0 à 10 renormalisée ; chaque marché = somme des cases. Un match n'entre jamais dans l'ajustement d'une prédiction s'il n'est pas STRICTEMENT antérieur au jour du match.
-
-## Données (`donnees.py`)
-- Production : `data/assemblage/equipes.json` (assemblage du contrat des données). Chaque équipe y liste ses matchs ; le championnat entier est reconstitué en dédoublonnant les
-  matchs vus des deux côtés. Un adversaire écrit autrement est rattaché par les faits (même jour, score inverse, équipe connue en face ; l'alias va à l'équipe qui y gagne le plus
-  de dates, égalité = rien n'est deviné) — aucun seuil de ressemblance de noms. Une équipe sans aucun bloc dans l'assemblage garde sa propre identité d'adversaire.
-- Règle de Patrick conservée : au moins 4 matchs au même lieu pour chaque équipe, sinon match exclu. Saison en cours seulement.
-- Calibrage : bloc Football-Data 2025-26 / 2026-27 (`data/bloc_saisons/`), identités propres, saison ET division séparées.
-
-## Calibrage (`python -m moteur_dc.calibrage [tout|reprise]`) — protocole fixé avant calcul
-1. **Hyperparamètres** sur Football-Data 2025-26, marche avant (ajustement avec les matchs d'AVANT chaque semaine, notation des matchs de la semaine ; 9 488 matchs) :
-   **σ = 0,25 ; xi = 0,004 ; ρ = −0,04** ; vraisemblance prédictive −2,9178 par match (σ=0,15 : −2,927 ; σ=0,4 : −2,928 ; σ=2 : −2,972 ; xi=0 : −2,919 ; xi=0,016 : −2,930).
-2. **Calibration par marché** (isotone) apprise sur 2025-26 et **taux de base** par marché ; calibration gardée pour une famille SEULEMENT si elle améliore, sur 2026-27, la perte logarithmique ET le Brier.
-3. **Validation sur Football-Data 2026-27** (1 598 matchs, jamais utilisés pour régler) : le modèle brut bat le taux de base dans les 4 familles (perte logarithmique :
-   résultat 0,5665 contre 0,5802 ; buts du match 0,5875 / 0,5972 ; buts d'une équipe 0,5476 / 0,5604 ; combinés 0,4964 / 0,5037). **La calibration isotone NE LES AMÉLIORE PAS**
-   (légèrement pire dans les 4 familles) : elle est donc retirée, les probabilités utilisées sont les probabilités brutes. Écart annoncé − observé par tranche : de −1,1 à +1,9 point
-   (le plus élevé : 90-100 %, annoncé 92,8 % pour 90,9 % observé). Vraisemblance exacte 2026-27 : −2,996 par match (début de saison : plus d'équipes à petit échantillon).
-4. **Sélection** (archive ARCHETYPE, coupée au 14/10/2026 comme omega) : seuil appris par la meilleure borne basse de Wilson à 95 % sur le développement (261 matchs, 95 paris principaux),
-   candidats 50 à 75 %, accord avec la cote testé : **seuil 71 %, sans accord avec la cote** (développement : 71,6 % réussis). Contrôle sur la réserve (616 matchs, 245 paris, cote
-   moyenne 1,48) : **66,5 %** réussis pour au moins 71 % annoncés : le modèle surestime un peu sur la réserve. Ce n'est PAS un bilan de performance (archive, période courte) :
-   le bilan réel vient du journal gelé.
-
-Limites : l'archive ne contient que 36 jours ; l'accord avec la cote n'a pas montré d'apport ici (il en montrait chez omega) — à retester quand le journal réel sera plus long.
-Pas de preuve que le moteur bat la cote ; la rentabilité n'est ni testée ni visée.
+## Calibrage (`python -m moteur_dc.calibrage [tout|reprise]`) — résultats du 30/10/2026
+1. Hyperparamètres (Football-Data 2025-26, 9 488 matchs, vraisemblance prédictive) : σ = 0,25 ; xi = 0,004 ; ρ = −0,04.
+2. Forces des effets (même protocole, la grille s'étend tant que ça s'améliore) :
+   forme **−1,0** (le contraire de l'hypothèse : une équipe en pleine dynamique gagne à garder ses anciens matchs), IE **0**, amplitude **+0,02**,
+   score modal **−0,08**, style croisé **0**. Gain : −2,91781 → −2,91753 par match (négligeable).
+3. Validation Football-Data 2026-27 (1 598 matchs) : sans effet −2,99588 ; avec les forces apprises −2,99622 (**pire**) ; la forme a été remise à 0
+   par la règle fixée avant le calcul ; final (amplitude + score modal) −2,99561. **Les paramètres du Module 1 n'apportent presque rien au
+   Dixon-Coles du championnat entier** (+0,0003 par match). IE et style croisé : aucun effet mesurable, force 0.
+4. EMAC = **0,0054** (par famille 0,005 à 0,013) : le modèle est très bien calibré en moyenne.
+5. Contrôle du Module 4 sur l'archive ARCHETYPE (827 matchs joués analysables, calibrage seulement, pas un bilan) : **0 pari**.
+   Pourquoi : avec EMAC = 0,0054, l'étape 0 exige |P − p̂| ≤ 0,011 alors que p̂ vient d'environ 20 matchs (erreur d'échantillonnage ≈ 0,10) ;
+   et avec m = 103 marchés, Z doit dépasser 3,30 : sur 20 matchs, un marché dont la base dépasse 65 % ne peut JAMAIS passer (il faudrait p̂ > 1).
+   Variante mesurée (non appliquée) où l'étape 0 tient compte de l'erreur d'échantillonnage de p̂ : 36 paris principaux sur 827 matchs,
+   probabilité moyenne 22 %, réussite 10 % (développement) et 27 % (réserve). Le Module 4 choisit des marchés qui s'écartent du championnat,
+   pas des marchés qui gagnent souvent.
+6. Production au 30/10/2026 : 586 matchs gelés, 436 analysés, 1 pari (handicap −1,5 extérieur, P = 41,6 %).
+   30 matchs exclus par le contrat parce qu'une équipe a deux matchs le même jour dans l'assemblage (donnée à vérifier, ex. Trefelin, Cymru Premier).
 
 ## Production (`python -m moteur_dc.suivi pipeline`)
-- Étape « Moteur DC » de `pipeline.yml`, après omega, `continue-on-error`. Dépendance ajoutée à l'étape d'installation : `scipy`.
-- `data/dc/journal.jsonl` (ajout seul) : une ligne « pronostic » par match à venir, nouvelle ligne seulement si la sélection change ; la dernière ligne écrite AVANT le coup
-  d'envoi compte ; une ligne « resultat » par match, jamais modifiée. `data/dc/pronostics.json` pour une page (pas encore créée).
-- Sélection : cote BetPawa connue ≥ 1,39 ; probabilité ≥ seuil appris ; principal = le plus probable ; « autres » = les autres marchés retenus ; jamais deux fois le même événement ;
-  aucun marché qui passe = aucun pari. Chaque pari porte sa preuve (k, n, p̂, Z) et sa base de championnat.
-- Bilan réel : `python bilan_reel.py` (lignes « DC tous paris » et « DC pari principal ») : seulement les paris gelés avant le coup d'envoi, matchs terminés.
-  Au 30/10/2026 : 0 match réglé (premier gel le 30/10/2026).
+Étape « Moteur DC » de `pipeline.yml` (après omega, `continue-on-error`, `scipy` installé). Journal `data/dc/journal.jsonl` (ajout seul, dernier gel
+avant le coup d'envoi = celui qui compte, résultats réglés une fois) ; il garde les probabilités des 103 marchés de chaque match analysé (EMAC glissante).
+Page `data/dc/pronostics.json`. Bilan réel : `python bilan_reel.py` (lignes DC). Le journal de la version 1 (jamais en production) a été effacé.
 
-## Points ouverts
-- Page `pronostics_dc.html` (affichage des paris, preuves, derniers matchs au même lieu) : non faite.
-- Recalibrer (`python -m moteur_dc.calibrage reprise`) quand la saison 2026-27 sera plus avancée.
-- Reproposer l'ajustement par style adverse ou l'efficacité de finition seulement avec une preuve hors échantillon.
-- Tests : `tests/test_moteur_dc.py` (17 tests : modèle, anti-fuite, minimum 4 matchs, preuve orientée, championnat reconstitué, sélection, gel et résultat).
+## Points ouverts (décision de Patrick)
+- Étape 0 : garder `2 × EMAC` (0 pari) ou y ajouter l'erreur d'échantillonnage de p̂ (variante mesurée ci-dessus).
+- Classement par Edge : il favorise les marchés rares ; un classement par probabilité garderait l'esprit « réussite d'abord ».
+- Page `pronostics_dc.html` non faite.
+- Tests : `tests/test_moteur_dc.py` (29 tests, 3 cas qui passent et 3 qui échouent pour le contrat et le Module 4).

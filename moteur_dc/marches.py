@@ -1,4 +1,4 @@
-"""Catalogue des marchés du moteur DC (copie autonome de celui d'omega, 30/10/2026 : aucun import entre moteurs) : condition sur le score final, libellé, lecture en buts entiers.
+"""Catalogue des marchés du moteur DC (copie autonome de celui d'omega, 30/10/2026 : aucun import entre moteurs ; + Multigoal du Module 3 de Patrick) : condition sur le score final, libellé, lecture en buts entiers.
 
 Clé d'un marché = (groupe, sélection), au format des cotes BetPawa de l'archive (`cotes_betpawa`) : la cote se lit directement.
 i = buts du domicile, j = buts de l'extérieur.
@@ -25,6 +25,7 @@ LIGNES_TOTAL = ("1.5", "2.5", "3.5", "4.5")
 LIGNES_EQUIPE = ("0.5", "1.5", "2.5")
 LIGNES_HANDICAP = ("-1.5", "-0.5", "0.5", "1.5")
 LIGNES_COMBO_TOTAL = ("1.5", "2.5", "3.5", "4.5")
+MULTIGOAL = {"0-1": lambda i, j: i + j <= 1, "2-3": lambda i, j: 2 <= i + j <= 3, "4+": lambda i, j: i + j >= 4}   # Module 3 de Patrick
 
 
 def _total(ligne: float, plus: bool) -> Test:
@@ -46,6 +47,8 @@ def test_du_marche(groupe: str, selection: str) -> Test | None:
         return DC.get(s)
     if g == "btts":
         return BTTS.get(s)
+    if g == "multigoal":
+        return MULTIGOAL.get(s)
     if g == "cages_inviolees_domicile":
         return {"oui": lambda i, j: j == 0, "non": lambda i, j: j >= 1}.get(s)
     if g == "cages_inviolees_exterieur":
@@ -90,6 +93,7 @@ def catalogue() -> list[Cle]:
     c: list[Cle] = [("1x2", s) for s in ("1", "N", "2")] + [("double_chance", s) for s in ("1N", "N2", "12")]
     c += [(f"over_under_{x}", s) for x in LIGNES_TOTAL for s in ("plus", "moins")]
     c += [("btts", "Oui"), ("btts", "Non")]
+    c += [("multigoal", s) for s in MULTIGOAL]
     c += [(f"over_under_{q}_{x}", s) for q in ("domicile", "exterieur") for x in LIGNES_EQUIPE for s in ("plus", "moins")]
     c += [(f"cages_inviolees_{q}", s) for q in ("domicile", "exterieur") for s in ("oui", "non")]
     c += [(f"handicap_{x}", s) for x in LIGNES_HANDICAP for s in ("domicile", "exterieur")]
@@ -126,6 +130,8 @@ def libelle(cle: Cle) -> str:
             "cages_inviolees_exterieur": {"oui": "L'extérieur n'encaisse pas", "non": "L'extérieur encaisse au moins 1 but"}}
     if g in noms:
         return noms[g][s]
+    if g == "multigoal":
+        return {"0-1": "0 ou 1 but dans le match", "2-3": "2 ou 3 buts dans le match", "4+": "4 buts ou plus dans le match"}[s]
     if g.startswith("over_under_"):
         reste = g[len("over_under_"):]
         qui = ""

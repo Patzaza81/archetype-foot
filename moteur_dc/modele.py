@@ -60,7 +60,7 @@ def _tau(x: np.ndarray, y: np.ndarray, lh: np.ndarray, la: np.ndarray, rho: floa
 
 
 def ajuster(dom: list[str], ext: list[str], h: np.ndarray, a: np.ndarray, age_jours: np.ndarray, sigma: float, xi: float,
-            depart: Ajustement | None = None, rho: float | None = None) -> Ajustement:
+            depart: Ajustement | None = None, rho: float | None = None, mult_xi: np.ndarray | None = None) -> Ajustement:
     """Maximum de vraisemblance pénalisé. `age_jours` = jours entre le match et le jour de la prédiction (≥ 1 : strictement avant).
     `rho` donné = corrélation des scores faibles fixée (estimée une fois pour tous les championnats par vraisemblance prédictive, calibrage.py) ;
     sinon estimée ici. Un ρ libre par championnat se perd dans le bruit et peut rendre une case de score impossible (τ ≤ 0), ce qui a été constaté."""
@@ -70,7 +70,7 @@ def ajuster(dom: list[str], ext: list[str], h: np.ndarray, a: np.ndarray, age_jo
     d = np.fromiter((idx[e] for e in dom), int, len(dom))
     e = np.fromiter((idx[x] for x in ext), int, len(ext))
     h, a = np.asarray(h, float), np.asarray(a, float)
-    w = np.exp(-xi * np.asarray(age_jours, float))
+    w = np.exp(-xi * np.asarray(age_jours, float) * (1.0 if mult_xi is None else np.asarray(mult_xi, float)))   # xi par match (forme, ajustements.py)
     hi, ai = h.astype(int), a.astype(int)
     pen = 1.0 / (2.0 * sigma ** 2)
 
@@ -142,6 +142,19 @@ def grille(lh: float, la: float, rho: float) -> np.ndarray:
     g[0, 1] *= max(1 + lh * rho, 1e-6)
     g[1, 1] *= max(1 - rho, 1e-6)
     return g / g.sum()
+
+
+def grilles(lh: np.ndarray, la: np.ndarray, rho: np.ndarray) -> np.ndarray:
+    """Version vectorisée de grille() : (n, 11, 11), ρ propre à chaque match."""
+    lh, la, rho = (np.maximum(np.asarray(x, float), 1e-6) if k < 2 else np.asarray(x, float) for k, x in enumerate((lh, la, rho)))
+    ph = np.exp(_I * np.log(lh)[:, None] - lh[:, None] - _LOGFACT)
+    pa = np.exp(_I * np.log(la)[:, None] - la[:, None] - _LOGFACT)
+    g = ph[:, :, None] * pa[:, None, :]
+    g[:, 0, 0] *= np.maximum(1 - lh * la * rho, 1e-6)
+    g[:, 1, 0] *= np.maximum(1 + la * rho, 1e-6)
+    g[:, 0, 1] *= np.maximum(1 + lh * rho, 1e-6)
+    g[:, 1, 1] *= np.maximum(1 - rho, 1e-6)
+    return g / g.sum(axis=(1, 2), keepdims=True)
 
 
 _MASQUES: dict[tuple, np.ndarray] = {}

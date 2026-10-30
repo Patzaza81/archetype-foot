@@ -1,7 +1,7 @@
 """Suivi du moteur DC en production. Usage : python -m moteur_dc.suivi [pipeline|geler|resultats|page]
 
 Même mécanique que les autres moteurs, code autonome :
-- geler()     : pour chaque match à venir (coup d'envoi > maintenant), analyse + sélection, puis AJOUT d'une ligne « pronostic » horodatée au journal
+- geler()     : pour chaque match à venir (coup d'envoi > maintenant), Modules 1 → 4 (coeur.py), puis AJOUT d'une ligne « pronostic » horodatée au journal
                 `data/dc/journal.jsonl` (ajout seul). Nouvelle ligne seulement si la sélection a changé ; la DERNIÈRE ligne écrite avant le coup d'envoi compte.
 - resultats() : pour les pronostics dont le score est connu, ajoute UNE ligne « resultat » (gagné / perdu par pari), jamais modifiée.
 - page()      : `data/dc/pronostics.json` (lecture seule côté navigateur) ; bilan calculé uniquement sur les pronostics gelés avant le match.
@@ -16,7 +16,9 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-from . import coeur, donnees as D, marches as M
+import numpy as np
+
+from . import calibrage as K, coeur, donnees as D, marches as M, module1 as M1
 
 ROOT = Path(__file__).resolve().parent.parent
 DOSSIER = ROOT / "data" / "dc"
@@ -25,6 +27,7 @@ PAGE = DOSSIER / "pronostics.json"
 PARAMS = Path(__file__).with_name("parametres.json")
 VALIDATION = ROOT / "docs" / "dc_validation.json"
 JOURS_REGLES_AFFICHES = 7
+JOURS_EMAC = 30                       # Module 4 : EMAC recalculée sur les 30 derniers jours glissants (spécification de Patrick)
 
 
 def charger_parametres(chemin: Path = PARAMS) -> dict[str, Any]:
@@ -66,8 +69,26 @@ def _ko(x: Any) -> datetime | None:
 
 def _pari(l: dict[str, Any]) -> dict[str, Any]:
     return {"cle": l["cle"], "marche": l["marche"], "valeur_reelle": l.get("valeur_reelle"), "famille": l["famille"], "cote": l["cote"],
-            "p": round(l["p"], 4), "p_brut": round(l["p_brut"], 4), "p_cote": round(l["p_cote"], 4) if l.get("p_cote") is not None else None,
-            "base": l.get("base"), "preuve": l.get("preuve")}
+            "p": round(l["p"], 4), "base": l.get("base"), "edge": l.get("edge"), "preuve": l.get("preuve"), "decision": l.get("decision")}
+
+
+def emac_glissante(lignes: list[dict[str, Any]], jour: str, matchs: list[dict], defaut: float) -> tuple[float, str, int]:
+    """EMAC du Module 4 : erreur de calibration sur TOUS les marchés des matchs gelés puis terminés dans les 30 jours avant `jour`.
+    Sans aucun match terminé dans la fenêtre : valeur hors échantillon du calibrage (Football-Data 2026-27)."""
+    scores = {m["id"]: (m["h"], m["a"]) for m in matchs if m.get("h") is not None}
+    debut = (datetime.fromisoformat(jour) - timedelta(days=JOURS_EMAC)).date().isoformat()
+    P, Y = [], []
+    for mid, l in derniers_pronostics(lignes).items():
+        f = l["fiche"]
+        pm = f.get("p_marches")
+        if not pm or mid not in scores or not (debut <= f["jour"] < jour) or len(pm) != len(coeur.CLES):
+            continue
+        h, a = scores[mid]
+        P.extend(pm)
+        Y.extend(float(coeur.TESTS[c](h, a)) for c in coeur.CLES)
+    if not P:
+        return defaut, "calibrage hors échantillon (Football-Data 2026-27)", 0
+    return K.emac(np.array(P), np.array(Y)), f"journal gelé, {JOURS_EMAC} derniers jours", len(P) // len(coeur.CLES)
 
 
 def fiche(m: dict[str, Any], a: dict[str, Any], s: dict[str, Any], matchs: list[dict]) -> dict[str, Any]:
@@ -77,14 +98,22 @@ def fiche(m: dict[str, Any], a: dict[str, Any], s: dict[str, Any], matchs: list[
            "n_domicile": a["n_domicile"], "n_exterieur": a["n_exterieur"]}
     if a["statut"] != "analyse":
         return {**out, "raison": a.get("raison"), "principal": None, "autres": []}
+    eq = a["parametres_equipes"]
     return {**out, "principal": _pari(s["principal"]) if s["principal"] else None, "autres": [_pari(x) for x in s["autres"]], "raison": s.get("raison"),
-            "buts_attendus": {k: round(v, 3) for k, v in a["buts_attendus"].items()}, "modele": a["modele"], "scores_probables": a["scores_probables"],
+            "module4": {"marches_testes": s["m"], "z_seuil_bonferroni": s["z_seuil"], "emac": s["emac"], "emac_source": s.get("emac_source")},
+            "buts_attendus": {k: round(v, 3) for k, v in a["buts_attendus"].items()},
+            "buts_attendus_avant_effets": {k: round(v, 3) for k, v in a["buts_attendus_avant_effets"].items()},
+            "modele": a["modele"], "facteurs": a["facteurs"], "excedents_profil": a["excedents_profil"], "scores_probables": a["scores_probables"],
+            "equipes": {k: {x: eq[k].get(x) for x in ("position", "Pts", "J", "PPM", "forme_ppm", "IE", "IE_dom", "IE_ext", "profil", "style_tag",
+                                                       "score_modal_dom", "score_modal_ext", "amplitude_dom", "amplitude_ext", "MBM_dom", "MBE_dom", "MBM_ext", "MBE_ext")}
+                        for k in ("dom", "ext")},
+            "gap": a["contrat"].get("gap"), "p_marches": a["p_marches"],
             "derniers_matchs": {"dom": D.derniers_au_lieu(matchs, m["eq_dom"], True, m["jour"]), "ext": D.derniers_au_lieu(matchs, m["eq_ext"], False, m["jour"])}}
 
 
 def _cle_selection(f: dict[str, Any]) -> str:
     p = f.get("principal") or {}
-    return json.dumps([p.get("cle"), p.get("cote"), [(x["cle"], x["cote"]) for x in f.get("autres") or []]], sort_keys=True)
+    return json.dumps([f.get("statut"), p.get("cle"), p.get("cote"), [(x["cle"], x["cote"]) for x in f.get("autres") or []]], sort_keys=True)
 
 
 def geler(maintenant: datetime | None = None, journal: Path = JOURNAL, ligues: D.Ligues | None = None, matchs: list[dict] | None = None,
@@ -95,8 +124,10 @@ def geler(maintenant: datetime | None = None, journal: Path = JOURNAL, ligues: D
         ligues = D.charger_ligues()
     if matchs is None:
         matchs = D.charger_archive(ligues)
-    dernier = {l["match_id"]: _cle_selection(l["fiche"]) for l in _lire(journal) if l["type"] == "pronostic"}
-    fits: dict[tuple, Any] = {}
+    lignes = _lire(journal)
+    dernier = {l["match_id"]: _cle_selection(l["fiche"]) for l in lignes if l["type"] == "pronostic"}
+    caches: dict[tuple, Any] = {}
+    emacs: dict[str, tuple] = {}
     nouveaux = []
     for m in matchs:
         ko = _ko(m.get("coup_d_envoi_utc"))
@@ -104,14 +135,21 @@ def geler(maintenant: datetime | None = None, journal: Path = JOURNAL, ligues: D
             continue
         liste = ligues.matchs.get(m["ligue"]) or []
         cle = (m["ligue"], m["jour"])
-        if cle not in fits:
-            fits[cle] = coeur.ajuster_ligue(liste, m["jour"], params["sigma"], params["xi"], params.get("rho")) if liste else None
-        if fits[cle] is None:
+        if cle not in caches:
+            t = M1.tableau(liste, m["jour"]) if liste else None
+            fit = coeur.ajuster_ligue(liste, m["jour"], params, t) if liste else None
+            caches[cle] = (fit, t, coeur.bases_ligue(liste, m["jour"]) if fit else None)
+        fit, t, bases = caches[cle]
+        if fit is None:
             a = {"id": m["id"], "jour": m["jour"], "domicile": m["domicile"], "exterieur": m["exterieur"], "n_domicile": 0, "n_exterieur": 0,
                  "statut": "exclu", "raison": "championnat sans match connu"}
         else:
-            a = coeur.analyser(m, liste, params, fits[cle])
-        s = coeur.selectionner(a, params["selection"])
+            a = coeur.analyser(m, liste, params, fit, t, bases)
+        if m["jour"] not in emacs:
+            emacs[m["jour"]] = emac_glissante(lignes, m["jour"], matchs, params["emac"])
+        e, source, n_e = emacs[m["jour"]]
+        s = coeur.selectionner(a, params, e)
+        s["emac_source"] = f"{source}" + (f" ({n_e} matchs)" if n_e else "")
         f = fiche(m, a, s, liste)
         if dernier.get(f["match_id"]) == _cle_selection(f):
             continue
@@ -158,9 +196,9 @@ def _stats(paris: list[dict[str, Any]]) -> dict[str, Any]:
     if not paris:
         return {"regles": 0}
     g = sum(p["gagne"] for p in paris)
+    c = [p for p in paris if p.get("cote")]
     return {"regles": len(paris), "gagnes": g, "reussite": round(g / len(paris), 4), "annonce": round(sum(p["p"] for p in paris) / len(paris), 4),
-            "cote_moyenne": round(sum(p["cote"] for p in paris) / len(paris), 3),
-            "rendement": round(sum((p["cote"] - 1) if p["gagne"] else -1 for p in paris) / len(paris), 4)}
+            "avec_cote": len(c), "cote_moyenne": round(sum(p["cote"] for p in c) / len(c), 3) if c else None}
 
 
 def bilan(lignes: list[dict[str, Any]]) -> dict[str, Any]:
@@ -199,11 +237,11 @@ def page(maintenant: datetime | None = None, journal: Path = JOURNAL, sortie: Pa
             en_cours.append(f)
     try:
         val = json.loads(VALIDATION.read_text(encoding="utf-8"))
-        val = {"matchs_fd_2627": val["validation_fd_2627"]["matchs"], "selection": val.get("selection_archive", {}).get("selection")}
+        val = {"matchs_fd_2627": val["validation_fd_2627"]["matchs"], "emac": val["validation_fd_2627"]["emac"], "effets": val["effets"]["final"]}
     except Exception:
         val = None
     p = charger_parametres() if PARAMS.exists() else {}
-    out = {"genere_le": maintenant.isoformat(timespec="seconds"), "version": p.get("version"), "statut": "observation", "selection": p.get("selection"),
+    out = {"genere_le": maintenant.isoformat(timespec="seconds"), "version": p.get("version"), "statut": "observation", "effets": p.get("effets"), "emac_calibrage": p.get("emac"),
            "validation": val, "bilan": bilan(lignes), "sans_pronostic": sans,
            "a_venir": sorted(a_venir, key=lambda f: str(f.get("coup_d_envoi_utc"))), "en_cours": sorted(en_cours, key=lambda f: str(f.get("coup_d_envoi_utc"))),
            "reglees": sorted(reglees, key=lambda f: str(f.get("coup_d_envoi_utc")), reverse=True)}
