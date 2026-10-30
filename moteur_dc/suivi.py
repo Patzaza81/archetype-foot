@@ -69,7 +69,8 @@ def _ko(x: Any) -> datetime | None:
 
 def _pari(l: dict[str, Any]) -> dict[str, Any]:
     return {"cle": l["cle"], "marche": l["marche"], "valeur_reelle": l.get("valeur_reelle"), "famille": l["famille"], "cote": l["cote"],
-            "p": round(l["p"], 4), "base": l.get("base"), "edge": l.get("edge"), "preuve": l.get("preuve"), "decision": l.get("decision")}
+            "p": round(l["p"], 4), "base": l.get("base"), "edge": l.get("edge"), "seuil": l.get("seuil"), "avertissement": l.get("avertissement"),
+            "preuve": l.get("preuve"), "decision": l.get("decision")}
 
 
 def emac_glissante(lignes: list[dict[str, Any]], jour: str, matchs: list[dict], defaut: float) -> tuple[float, str, int]:
@@ -207,7 +208,16 @@ def bilan(lignes: list[dict[str, Any]]) -> dict[str, Any]:
             "autres": _stats([p for l in res for p in l["paris"] if p["role"] == "autre"]), "matchs_regles": len(res)}
 
 
-def page(maintenant: datetime | None = None, journal: Path = JOURNAL, sortie: Path = PAGE) -> dict[str, Any]:
+def _noms_derniers(f: dict[str, Any], noms: dict[str, str] | None) -> dict[str, Any]:
+    """Affichage : un adversaire gelé sous son identité interne (lignes gelées avant le 30/10/2026 18 h) reçoit son nom d'équipe."""
+    d = f.get("derniers_matchs")
+    if not noms or not d:
+        return f
+    f["derniers_matchs"] = {k: [dict(x, adversaire=noms.get(x.get("adversaire"), x.get("adversaire"))) for x in v] for k, v in d.items()}
+    return f
+
+
+def page(maintenant: datetime | None = None, journal: Path = JOURNAL, sortie: Path = PAGE, noms: dict[str, str] | None = None) -> dict[str, Any]:
     maintenant = maintenant or datetime.now(timezone.utc)
     lignes = _lire(journal)
     res = {l["match_id"]: l for l in lignes if l["type"] == "resultat"}
@@ -215,7 +225,7 @@ def page(maintenant: datetime | None = None, journal: Path = JOURNAL, sortie: Pa
     gels = derniers_pronostics(lignes)
     a_venir, en_cours, reglees, sans = [], [], [], 0
     for mid, l in tous.items():
-        f = dict((gels.get(mid) or l)["fiche"])
+        f = _noms_derniers(dict((gels.get(mid) or l)["fiche"]), noms)
         ko = _ko(f.get("coup_d_envoi_utc"))
         if ko is None:
             continue
@@ -255,7 +265,7 @@ def pipeline() -> None:
     matchs = D.charger_archive(ligues)
     n = geler(ligues=ligues, matchs=matchs)
     r = resultats(matchs=matchs)
-    p = page()
+    p = page(noms=ligues.noms)
     print(f"dc : {n} pronostic(s) gelé(s), {r} résultat(s) réglé(s), {len(p['a_venir'])} pari(s) à venir, {p['sans_pronostic']} match(s) sans pronostic")
 
 

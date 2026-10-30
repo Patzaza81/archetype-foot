@@ -1,4 +1,4 @@
-# Moteur DC (`moteur_dc/`) — version 2 (30/10/2026)
+# Moteur DC = moteur Gamma (`moteur_dc/`, page `pronostics_gamma.html`) — version 2 (30/10/2026)
 
 Architecture de Patrick (5 modules reçus le 30/10/2026), ordre du 30/10/2026 : réintégrer les Modules 1, 1.5, 3 et 4 et brancher les paramètres du
 Module 1 dans Dixon-Coles ; Module 5 (cotes, EV, Kelly) laissé de côté. Branche `moteur-dc`, jamais fusionnée sans « Fusionner ».
@@ -41,7 +41,7 @@ Précisions imposées par la spécification (aucune valeur choisie) :
 ## Production (`python -m moteur_dc.suivi pipeline`)
 Étape « Moteur DC » de `pipeline.yml` (après omega, `continue-on-error`, `scipy` installé). Journal `data/dc/journal.jsonl` (ajout seul, dernier gel
 avant le coup d'envoi = celui qui compte, résultats réglés une fois) ; il garde les probabilités des 103 marchés de chaque match analysé (EMAC glissante).
-Page `data/dc/pronostics.json`. Bilan réel : `python bilan_reel.py` (lignes DC). Le journal de la version 1 (jamais en production) a été effacé.
+Page `pronostics_gamma.html` + `archetype_gamma.js` (même présentation que la page Omega), lit `data/dc/pronostics.json`. Bilan réel : `python bilan_reel.py` (lignes DC). Le journal de la version 1 (jamais en production) a été effacé.
 
 ## Corrections du 30/10/2026 (Patrick) et matchs du soir
 Étape 0 par intervalle de Wilson, classement par probabilité. Rapport : `python -m moteur_dc.rapport <début UTC> <fin UTC>` (→ `data/dc/rapport_*.json`).

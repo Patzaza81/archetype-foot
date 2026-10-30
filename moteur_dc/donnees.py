@@ -119,12 +119,24 @@ class Ligues:
             top = sorted(v.items(), key=lambda kv: -kv[1])
             if len(top) == 1 or top[0][1] > top[1][1]:
                 uf.unir(top[0][0], alias)
+        # nom affiché de chaque identité (page) : nom propre de l'équipe, sinon le nom écrit par l'adversaire
+        self.noms: dict[str, str] = {}
+        for x in eqs:
+            r = re.search(r"/equipe/([^/_]+)_", x["cle_cache"])
+            n = x.get("nom_matchendirect") or x.get("nom_football_data") or (r.group(1).replace("-", " ").title() if r else None)
+            if n:
+                self.noms.setdefault(uf.trouve(x["cle_cache"]), n)
+        for x in eqs:
+            for m in x.get("matchs") or []:
+                if m.get("adversaire"):
+                    o = noms[x["competition"]].get(norm(m["adversaire"])) or f"?{x['competition']}|{norm(m['adversaire'])}"
+                    self.noms.setdefault(uf.trouve(o), str(m["adversaire"]))
         uniques: dict[str, dict[tuple, dict]] = defaultdict(dict)
         for lg, d, t, dom, o, gm, gc, resolu in recs:
             a, b = uf.trouve(t), uf.trouve(o)
             dm, ex = (a, b) if dom else (b, a)
             h, g = (gm, gc) if dom else (gc, gm)
-            uniques[lg][(d, dm, ex)] = {"date": d, "dom": dm, "ext": ex, "h": h, "a": g}
+            uniques[lg][(d, dm, ex)] = {"date": d, "dom": dm, "ext": ex, "h": h, "a": g, "dom_nom": self.noms.get(dm, dm), "ext_nom": self.noms.get(ex, ex)}
         self.matchs = {lg: sorted(v.values(), key=lambda m: m["date"]) for lg, v in uniques.items()}
         self._uf = uf
         self._cles = {x["cle_cache"] for x in eqs}
@@ -177,5 +189,5 @@ def derniers_au_lieu(matchs: list[dict], equipe: str, domicile: bool, jour: str,
     cle, autre = ("dom", "ext") if domicile else ("ext", "dom")
     ms = [m for m in matchs if m[cle] == equipe and m["date"] < jour]
     ms.sort(key=lambda m: m["date"], reverse=True)
-    return [{"date": m["date"], "adversaire": m[autre], "marques": m["h"] if domicile else m["a"], "encaisses": m["a"] if domicile else m["h"]}
+    return [{"date": m["date"], "adversaire": m.get(f"{autre}_nom", m[autre]), "marques": m["h"] if domicile else m["a"], "encaisses": m["a"] if domicile else m["h"]}
             for m in ms[:n]]
