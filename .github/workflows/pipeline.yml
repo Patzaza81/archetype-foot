@@ -42,7 +42,7 @@ jobs:
 
       - name: Installer les dépendances
         run: |
-          pip install requests beautifulsoup4 pandas numpy lxml playwright pytest
+          pip install requests beautifulsoup4 pandas numpy scipy lxml playwright pytest
           playwright install --with-deps chromium
 
       - name: Autotests du moteur, du pont et suite Python
@@ -118,6 +118,13 @@ jobs:
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         continue-on-error: true
         run: python -m moteur_omega.suivi pipeline
+
+      # AJOUT 30/10/2026 : moteur DC (Dixon-Coles sur le championnat entier, vraisemblance pénalisée, calibré hors échantillon). Autonome, hors tickets,
+      # journal gelé avant le coup d'envoi (data/dc/). Ne bloque jamais le pipeline. Voir docs/MOTEUR_DC.md.
+      - name: Moteur DC (pronostics et journal gelé, hors tickets)
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+        continue-on-error: true
+        run: python -m moteur_dc.suivi pipeline
 
       - name: Récupérer les scores des matchs du jeu d'évaluation du moteur
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
