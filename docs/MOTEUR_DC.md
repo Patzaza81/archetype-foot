@@ -11,7 +11,7 @@ Autonome (aucun import d'un autre moteur), hors générateur de tickets. Statut 
 | 1.5 | `contrat.py` | `match_input` (structure de la Section A) et contrôles stricts : Filtre 0 (≥ 4 matchs à domicile / à l'extérieur), types, NaN, historiques d'au moins 4 matchs en ordre chronologique strict. Erreur = match exclu, raison gelée. |
 | 2 | `modele.py` + `ajustements.py` | Dixon-Coles pénalisé (shrinkage) sur le championnat entier ; Forme→xi, IE→λ, Amplitude et Score modal→ρ, Profil croisé→λ. Chaque effet a une force apprise hors échantillon. |
 | 3 | `coeur.py`, `marches.py` | 103 marchés (1N2, double chance, plus/moins, BTTS, **Multigoal 0-1 / 2-3 / 4+**, buts par équipe, handicaps, combinés) par SOMME des cases de la grille ; k/n sur les matchs comparables (A à domicile + B à l'extérieur, score orienté) ; Base = fréquence du marché dans le championnat cette saison avant le match. |
-| 4 | `selecteur.py` | Étape 0 cohérence `|P − p̂| ≤ 2 × EMAC` ; étape 1 Z = (p̂ − Base)/√(Base(1−Base)/n) > Z Bonferroni (α = 0,05 / m marchés testés) ; étapes 2-3 Edge = P − Base > EMAC ; étape 4 une issue par marché (Edge max) et jamais deux fois le même événement. Principal = Edge le plus grand. **Aucune cote, aucun seuil de probabilité.** |
+| 4 | `selecteur.py` | Étape 0 cohérence : P dans l'intervalle de Wilson à 95 % de p̂ (correction de Patrick du 30/10, remplace `|P − p̂| ≤ 2 × EMAC`) ; étape 1 Z = (p̂ − Base)/√(Base(1−Base)/n) > Z Bonferroni (α = 0,05 / m marchés testés) ; étapes 2-3 Edge = P − Base > EMAC ; étape 4 une issue par marché (la plus probable) et jamais deux fois le même événement. Classement par PROBABILITÉ décroissante (correction de Patrick du 30/10) ; principal = le plus probable. **Aucune cote, aucun seuil de probabilité.** |
 
 Précisions imposées par la spécification (aucune valeur choisie) :
 - Forme_PPM : avec J ≤ 5 la formule reçue divise par 0 ou par un nombre négatif → PPM simple.
@@ -43,8 +43,16 @@ Précisions imposées par la spécification (aucune valeur choisie) :
 avant le coup d'envoi = celui qui compte, résultats réglés une fois) ; il garde les probabilités des 103 marchés de chaque match analysé (EMAC glissante).
 Page `data/dc/pronostics.json`. Bilan réel : `python bilan_reel.py` (lignes DC). Le journal de la version 1 (jamais en production) a été effacé.
 
+## Corrections du 30/10/2026 (Patrick) et matchs du soir
+Étape 0 par intervalle de Wilson, classement par probabilité. Rapport : `python -m moteur_dc.rapport <début UTC> <fin UTC>` (→ `data/dc/rapport_*.json`).
+Matchs du 30/10/2026 entre 18 h et 22 h (Douala) : 57 matchs, 46 analysés, **0 pari**. L'étape 0 ne rejette presque plus rien (95 marchés sur 4 738) ;
+tout tombe à l'étape 1 : les tendances fortes du modèle (80 à 97 %) sont confirmées par les données (P dans l'intervalle de Wilson) mais leur Z
+vaut environ 0, car le marché est aussi fréquent dans tout le championnat. Le Z contre la base ne mesure pas la réussite, il mesure l'écart au championnat.
+Gel du même jour (tous les matchs à venir) : 12 paris sur les 31/10-02/11, probabilité de 0,9 % à 67 %, aucun à 70 % ou plus.
+Information (non appliqué) : Z simple 1,645 → 34 matchs avec pari, 119 paris dont 17 à P ≥ 70 % ; sans l'étape 1 → un pari par match analysé,
+principal entre 79 et 97 %, cotes de 1,03 à 1,32 quand elles existent.
+
 ## Points ouverts (décision de Patrick)
-- Étape 0 : garder `2 × EMAC` (0 pari) ou y ajouter l'erreur d'échantillonnage de p̂ (variante mesurée ci-dessus).
-- Classement par Edge : il favorise les marchés rares ; un classement par probabilité garderait l'esprit « réussite d'abord ».
+- Étape 1 (Z contre la base, Bonferroni) : la garder, l'assouplir ou la retirer.
 - Page `pronostics_dc.html` non faite.
-- Tests : `tests/test_moteur_dc.py` (29 tests, 3 cas qui passent et 3 qui échouent pour le contrat et le Module 4).
+- Tests : `tests/test_moteur_dc.py` (30 tests, 3 cas qui passent et 3 qui échouent pour le contrat et le Module 4).

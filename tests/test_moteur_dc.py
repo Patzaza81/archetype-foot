@@ -217,6 +217,16 @@ def _l(cle, p, base, k, n, cote=None):
             "preuve": {"k": k, "n": n, "p_hat": round(k / n, 4)}}
 
 
+def test_wilson_etape0_cas_qui_passent_et_echouent():
+    assert S.wilson(43, 60) == pytest.approx((0.5913, 0.8143), abs=0.002)
+    assert S.wilson(0, 0) == (0.0, 1.0)
+    zs = 1.0
+    for p, k, n in ((0.60, 12, 20), (0.75, 15, 20), (0.45, 6, 20)):              # P dans l'intervalle : passe l'étape 0
+        assert not S.tester(_l(("btts", "Oui"), p, 0.10, k, n), 0.0, zs)[1].startswith("étape 0")
+    for p, k, n in ((0.95, 12, 20), (0.30, 15, 20), (0.80, 6, 20)):              # P hors de l'intervalle : rejeté
+        assert S.tester(_l(("btts", "Oui"), p, 0.10, k, n), 0.0, zs)[1].startswith("étape 0")
+
+
 def test_bonferroni_et_z():
     assert S.z_seuil(13) == pytest.approx(2.66, abs=0.01)                         # exemple du Module 4
     assert S.z_seuil(1) == pytest.approx(1.645, abs=0.001)
@@ -232,12 +242,12 @@ def test_module4_cas_qui_passent():
 
 def test_module4_cas_qui_echouent():
     zs = S.z_seuil(13)
-    ok, r = S.tester(_l(("over_under_2.5", "plus"), 0.60, 0.52, 43, 60), 0.02, zs)
-    assert not ok and r.startswith("étape 0")                                     # modèle 60 %, données 72 % : incohérent
+    ok, r = S.tester(_l(("over_under_2.5", "plus"), 0.55, 0.52, 43, 60), 0.02, zs)
+    assert not ok and r.startswith("étape 0")                                     # modèle 55 %, données 72 % [59 % ; 82 %] : incohérent
     ok, r = S.tester(_l(("1x2", "1"), 0.84, 0.72, 50, 60), 0.02, zs)
     assert not ok and r.startswith("étape 1")                                     # exemple 1X du Module 4 : Z = 1,95 < 2,66
-    ok, r = S.tester(_l(("btts", "Oui"), 0.62, 0.55, 280, 400), 0.10, 1.0)
-    assert not ok and r.startswith("étape 3")                                     # données nettes (Z = 6) mais Edge 7 % sous l'EMAC 10 %
+    ok, r = S.tester(_l(("btts", "Oui"), 0.58, 0.55, 28, 40), 0.10, 1.0)
+    assert not ok and r.startswith("étape 3")                                     # cohérent, Z = 1,9, mais Edge 3 % sous l'EMAC 10 %
 
 
 def test_module4_une_issue_par_marche_et_jamais_deux_fois_le_meme_evenement():
@@ -245,8 +255,8 @@ def test_module4_une_issue_par_marche_et_jamais_deux_fois_le_meme_evenement():
                                           _l(("double_chance", "1N"), 0.95, 0.70, 38, 40), _l(("handicap_0.5", "domicile"), 0.95, 0.70, 38, 40)]}
     s = S.selectionner(a, 0.03)
     cles = [s["principal"]["cle"]] + [x["cle"] for x in s["autres"]]
-    assert cles[0] == ["1x2", "N"]                                                # Edge le plus grand en tête
-    assert ["1x2", "1"] not in cles                                               # même marché 1N2 : issue dominée
+    assert cles[0] in (["double_chance", "1N"], ["handicap_0.5", "domicile"])   # le plus probable en tête (réussite d'abord)
+    assert ["1x2", "N"] in cles and ["1x2", "1"] not in cles                      # même marché 1N2, même P : l'Edge départage
     assert (["double_chance", "1N"] in cles) != (["handicap_0.5", "domicile"] in cles)   # même événement : un seul
     assert S.selectionner({"statut": "analyse", "marches": [_l(("1x2", "1"), 0.5, 0.45, 20, 40)]}, 0.03)["principal"] is None
 
