@@ -2,7 +2,7 @@
 
 Pour chaque marché du match (P = probabilité du modèle, Base = fréquence du marché dans le championnat cette saison avant le match,
 k/n = réussites/essais sur les matchs comparables : A à domicile + B à l'extérieur, score orienté) :
-- ordre strict : 1. P ≥ 75 % (sinon rejet immédiat) ; 2. Edge = P − Base ≥ 10 % (et ≥ EMAC) ; seuils de Patrick ;
+- ordre de Patrick (30/10/2026) : 1. Edge = P − Base ≥ 10 % (et ≥ EMAC) ; 2. plancher P ≥ 60 % ;
 - Bonferroni et Z supprimés comme filtre (le Z reste affiché) ;
 - 3. intervalle de Wilson à 95 % de p̂, sur les seuls marchés validés : simple AVERTISSEMENT si P en sort (confiance réduite, classé après les paris sans avertissement) ;
 - une seule issue par marché (la plus probable) et jamais deux fois le même événement (même ensemble de scores gagnants).
@@ -19,7 +19,7 @@ from typing import Any
 from . import marches as M
 
 ALPHA = 0.05                 # risque de l'intervalle de Wilson (95 %)
-P_MIN = 0.75                 # Patrick : P ≥ 75 %
+P_MIN = 0.60                 # Patrick : plancher P ≥ 60 %
 EDGE_MIN = 0.10              # Patrick : Edge ≥ 10 %
 Z_WILSON = NormalDist().inv_cdf(1 - ALPHA / 2)     # intervalle de Wilson à 95 % (même risque α)
 
@@ -45,16 +45,16 @@ def z_score(p_hat: float, base: float, n: int) -> float | None:
 
 
 def tester(l: dict[str, Any], emac: float, zs: float | None = None) -> tuple[bool, str]:
-    """Ordre strict de Patrick (30/10/2026) : 1. P ≥ 75 % ; 2. Edge ≥ 10 % ; 3. Wilson = avertissement, seulement sur les marchés validés."""
+    """Ordre de Patrick (30/10/2026, 17 h 39) : 1. Edge = P − Base ≥ 10 % ; 2. plancher P ≥ 60 % ; 3. Wilson = avertissement sur les validés."""
     pr, base, p = l.get("preuve"), l.get("base"), l["p"]
     l["avertissement"] = None
-    if p < P_MIN:
-        return False, f"P {p:.0%} < {P_MIN:.0%}"
     if base is None:
         return False, "pas de base du championnat"
     edge = round(p - base, 9)                      # arrondi : 0,75 − 0,65 doit valoir 0,10, pas 0,0999…
     if edge < max(EDGE_MIN, emac):
         return False, f"Edge {edge:+.1%} < {max(EDGE_MIN, emac):.0%}"
+    if p < P_MIN:
+        return False, f"P {p:.0%} < {P_MIN:.0%}"
     if pr:
         bas, haut = wilson(pr["k"], pr["n"])
         pr["wilson"] = [round(bas, 4), round(haut, 4)]

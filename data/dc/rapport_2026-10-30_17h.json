@@ -6,15 +6,15 @@
   ],
   "matchs": 57,
   "analyses": 46,
-  "matchs_avec_pari": 19,
-  "paris": 33,
-  "paris_P_70_et_plus": 33,
-  "paris_avec_avertissement": 1,
+  "matchs_avec_pari": 26,
+  "paris": 90,
+  "paris_P_70_et_plus": 51,
+  "paris_avec_avertissement": 2,
   "decisions": {
-   "P": 4364,
-   "Edge": 327,
-   "validé": 33,
-   "exclusion": 14
+   "Edge": 4400,
+   "P": 217,
+   "validé": 90,
+   "exclusion": 31
   }
  },
  "matchs": [
@@ -111,6 +111,23 @@
      "cote": 1.23,
      "decision": "validé",
      "avertissement": null
+    },
+    {
+     "marche": "Les deux équipes marquent",
+     "P": 0.6591,
+     "p_hat": 0.7,
+     "k": 7,
+     "n": 10,
+     "wilson": [
+      0.3968,
+      0.8922
+     ],
+     "z": 0.92,
+     "base": 0.5556,
+     "edge": 0.1035,
+     "cote": 1.46,
+     "decision": "validé",
+     "avertissement": null
     }
    ],
    "tendances": [
@@ -170,7 +187,42 @@
     "dom": 1.25,
     "ext": 1.22
    },
-   "paris_valides": [],
+   "paris_valides": [
+    {
+     "marche": "Moins de 1,5 buts du domicile",
+     "P": 0.6432,
+     "p_hat": 0.6667,
+     "k": 6,
+     "n": 9,
+     "wilson": [
+      0.3542,
+      0.8794
+     ],
+     "z": 0.96,
+     "base": 0.5062,
+     "edge": 0.137,
+     "cote": 1.27,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Extérieur ne perd pas",
+     "P": 0.6373,
+     "p_hat": 0.6667,
+     "k": 6,
+     "n": 9,
+     "wilson": [
+      0.3542,
+      0.8794
+     ],
+     "z": 0.89,
+     "base": 0.5185,
+     "edge": 0.1188,
+     "cote": 1.17,
+     "decision": "validé",
+     "avertissement": null
+    }
+   ],
    "tendances": [
     {
      "marche": "Moins de 4,5 buts",
@@ -452,6 +504,40 @@
      "cote": null,
      "decision": "validé",
      "avertissement": null
+    },
+    {
+     "marche": "Extérieur ne perd pas",
+     "P": 0.7161,
+     "p_hat": 0.6667,
+     "k": 6,
+     "n": 9,
+     "wilson": [
+      0.3542,
+      0.8794
+     ],
+     "z": 0.83,
+     "base": 0.5294,
+     "edge": 0.1867,
+     "cote": 1.49,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Extérieur ne perd pas + plus de 1,5 buts",
+     "P": 0.6184,
+     "p_hat": 0.5556,
+     "k": 5,
+     "n": 9,
+     "wilson": [
+      0.2667,
+      0.8112
+     ],
+     "z": 0.51,
+     "base": 0.4706,
+     "edge": 0.1478,
+     "cote": 1.87,
+     "decision": "validé",
+     "avertissement": null
     }
    ],
    "tendances": [
@@ -587,6 +673,57 @@
      "base": 0.7403,
      "edge": 0.1225,
      "cote": 1.1,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Extérieur ne perd pas",
+     "P": 0.7394,
+     "p_hat": 0.6667,
+     "k": 8,
+     "n": 12,
+     "wilson": [
+      0.3906,
+      0.8619
+     ],
+     "z": 0.4,
+     "base": 0.6104,
+     "edge": 0.129,
+     "cote": 1.24,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Les deux équipes marquent",
+     "P": 0.6483,
+     "p_hat": 0.5,
+     "k": 6,
+     "n": 12,
+     "wilson": [
+      0.2538,
+      0.7462
+     ],
+     "z": -0.23,
+     "base": 0.5325,
+     "edge": 0.1158,
+     "cote": 1.5,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Extérieur ne perd pas + plus de 1,5 buts",
+     "P": 0.6356,
+     "p_hat": 0.5,
+     "k": 6,
+     "n": 12,
+     "wilson": [
+      0.2538,
+      0.7462
+     ],
+     "z": 0.5,
+     "base": 0.4286,
+     "edge": 0.207,
+     "cote": 1.44,
      "decision": "validé",
      "avertissement": null
     }
@@ -745,6 +882,23 @@
      "cote": 1.16,
      "decision": "validé",
      "avertissement": null
+    },
+    {
+     "marche": "Extérieur ne perd pas",
+     "P": 0.6027,
+     "p_hat": 0.625,
+     "k": 5,
+     "n": 8,
+     "wilson": [
+      0.3057,
+      0.8632
+     ],
+     "z": 0.8,
+     "base": 0.4833,
+     "edge": 0.1194,
+     "cote": 1.64,
+     "decision": "validé",
+     "avertissement": null
     }
    ],
    "tendances": [
@@ -837,6 +991,74 @@
      "cote": 1.07,
      "decision": "validé",
      "avertissement": null
+    },
+    {
+     "marche": "Domicile ne perd pas + plus de 1,5 buts",
+     "P": 0.7306,
+     "p_hat": 0.7143,
+     "k": 10,
+     "n": 14,
+     "wilson": [
+      0.4535,
+      0.8828
+     ],
+     "z": 1.11,
+     "base": 0.5673,
+     "edge": 0.1633,
+     "cote": 1.25,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Victoire domicile",
+     "P": 0.7144,
+     "p_hat": 0.7857,
+     "k": 11,
+     "n": 14,
+     "wilson": [
+      0.5241,
+      0.9243
+     ],
+     "z": 1.93,
+     "base": 0.5288,
+     "edge": 0.1856,
+     "cote": 1.24,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Plus de 1,5 buts du domicile",
+     "P": 0.6581,
+     "p_hat": 0.5714,
+     "k": 8,
+     "n": 14,
+     "wilson": [
+      0.3259,
+      0.7862
+     ],
+     "z": 0.53,
+     "base": 0.5,
+     "edge": 0.1581,
+     "cote": 1.34,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Victoire domicile + plus de 1,5 buts",
+     "P": 0.6032,
+     "p_hat": 0.5714,
+     "k": 8,
+     "n": 14,
+     "wilson": [
+      0.3259,
+      0.7862
+     ],
+     "z": 1.36,
+     "base": 0.3942,
+     "edge": 0.209,
+     "cote": 1.42,
+     "decision": "validé",
+     "avertissement": null
     }
    ],
    "tendances": [
@@ -896,7 +1118,25 @@
     "dom": 1.35,
     "ext": 1.65
    },
-   "paris_valides": [],
+   "paris_valides": [
+    {
+     "marche": "Pas de match nul + plus de 1,5 buts",
+     "P": 0.6102,
+     "p_hat": 0.4444,
+     "k": 4,
+     "n": 9,
+     "wilson": [
+      0.1888,
+      0.7333
+     ],
+     "z": -0.27,
+     "base": 0.4889,
+     "edge": 0.1213,
+     "cote": 1.8,
+     "decision": "validé",
+     "avertissement": null
+    }
+   ],
    "tendances": [
     {
      "marche": "Handicap +1,5 extérieur",
@@ -954,7 +1194,25 @@
     "dom": 1.1,
     "ext": 1.38
    },
-   "paris_valides": [],
+   "paris_valides": [
+    {
+     "marche": "Extérieur ne perd pas + moins de 4,5 buts",
+     "P": 0.6459,
+     "p_hat": 0.7,
+     "k": 7,
+     "n": 10,
+     "wilson": [
+      0.3968,
+      0.8922
+     ],
+     "z": 0.99,
+     "base": 0.5444,
+     "edge": 0.1015,
+     "cote": 1.71,
+     "decision": "validé",
+     "avertissement": null
+    }
+   ],
    "tendances": [
     {
      "marche": "Moins de 2,5 buts du domicile",
@@ -1145,6 +1403,40 @@
      "cote": 1.14,
      "decision": "validé",
      "avertissement": null
+    },
+    {
+     "marche": "Pas de match nul + plus de 1,5 buts",
+     "P": 0.6424,
+     "p_hat": 0.6667,
+     "k": 6,
+     "n": 9,
+     "wilson": [
+      0.3542,
+      0.8794
+     ],
+     "z": 1.07,
+     "base": 0.4889,
+     "edge": 0.1535,
+     "cote": 1.52,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Plus de 2,5 buts",
+     "P": 0.6302,
+     "p_hat": 0.6667,
+     "k": 6,
+     "n": 9,
+     "wilson": [
+      0.3542,
+      0.8794
+     ],
+     "z": 1.13,
+     "base": 0.4778,
+     "edge": 0.1524,
+     "cote": 1.53,
+     "decision": "validé",
+     "avertissement": null
     }
    ],
    "tendances": [
@@ -1230,6 +1522,57 @@
      "base": 0.7083,
      "edge": 0.1177,
      "cote": 1.36,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Domicile ne perd pas + plus de 1,5 buts",
+     "P": 0.7446,
+     "p_hat": 0.9167,
+     "k": 11,
+     "n": 12,
+     "wilson": [
+      0.6461,
+      0.9851
+     ],
+     "z": 2.14,
+     "base": 0.6167,
+     "edge": 0.1279,
+     "cote": 1.48,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Plus de 1,5 buts du domicile",
+     "P": 0.7135,
+     "p_hat": 0.8333,
+     "k": 10,
+     "n": 12,
+     "wilson": [
+      0.552,
+      0.953
+     ],
+     "z": 1.81,
+     "base": 0.575,
+     "edge": 0.1385,
+     "cote": 1.44,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Victoire domicile",
+     "P": 0.6434,
+     "p_hat": 0.75,
+     "k": 9,
+     "n": 12,
+     "wilson": [
+      0.4677,
+      0.9111
+     ],
+     "z": 1.67,
+     "base": 0.5083,
+     "edge": 0.1351,
+     "cote": 1.98,
      "decision": "validé",
      "avertissement": null
     }
@@ -1366,6 +1709,23 @@
      "cote": 1.3,
      "decision": "validé",
      "avertissement": null
+    },
+    {
+     "marche": "Extérieur ne perd pas",
+     "P": 0.6219,
+     "p_hat": 0.6667,
+     "k": 8,
+     "n": 12,
+     "wilson": [
+      0.3906,
+      0.8619
+     ],
+     "z": 1.21,
+     "base": 0.4917,
+     "edge": 0.1302,
+     "cote": 1.67,
+     "decision": "validé",
+     "avertissement": null
     }
    ],
    "tendances": [
@@ -1483,7 +1843,59 @@
     "dom": 2.24,
     "ext": 1.57
    },
-   "paris_valides": [],
+   "paris_valides": [
+    {
+     "marche": "Domicile ne perd pas",
+     "P": 0.7382,
+     "p_hat": 0.625,
+     "k": 5,
+     "n": 8,
+     "wilson": [
+      0.3057,
+      0.8632
+     ],
+     "z": 0.22,
+     "base": 0.587,
+     "edge": 0.1512,
+     "cote": 1.38,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Les deux équipes marquent",
+     "P": 0.7131,
+     "p_hat": 0.75,
+     "k": 6,
+     "n": 8,
+     "wilson": [
+      0.4093,
+      0.9285
+     ],
+     "z": 0.94,
+     "base": 0.587,
+     "edge": 0.1261,
+     "cote": 1.52,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Domicile ne perd pas + plus de 1,5 buts",
+     "P": 0.6663,
+     "p_hat": 0.5,
+     "k": 4,
+     "n": 8,
+     "wilson": [
+      0.2152,
+      0.7848
+     ],
+     "z": -0.12,
+     "base": 0.5217,
+     "edge": 0.1446,
+     "cote": 1.68,
+     "decision": "validé",
+     "avertissement": null
+    }
+   ],
    "tendances": [
     {
      "marche": "Plus de 1,5 buts",
@@ -1865,6 +2277,40 @@
      "cote": 1.07,
      "decision": "validé",
      "avertissement": null
+    },
+    {
+     "marche": "Les deux équipes marquent",
+     "P": 0.7066,
+     "p_hat": 0.5385,
+     "k": 7,
+     "n": 13,
+     "wilson": [
+      0.2914,
+      0.7679
+     ],
+     "z": 0.12,
+     "base": 0.5225,
+     "edge": 0.1841,
+     "cote": 1.48,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Extérieur ne perd pas",
+     "P": 0.665,
+     "p_hat": 0.6923,
+     "k": 9,
+     "n": 13,
+     "wilson": [
+      0.4237,
+      0.8732
+     ],
+     "z": 1.29,
+     "base": 0.5135,
+     "edge": 0.1515,
+     "cote": 1.38,
+     "decision": "validé",
+     "avertissement": null
     }
    ],
    "tendances": [
@@ -1981,6 +2427,74 @@
      "cote": 1.12,
      "decision": "validé",
      "avertissement": null
+    },
+    {
+     "marche": "Extérieur ne perd pas",
+     "P": 0.7303,
+     "p_hat": 0.5833,
+     "k": 7,
+     "n": 12,
+     "wilson": [
+      0.3195,
+      0.8067
+     ],
+     "z": 0.48,
+     "base": 0.5135,
+     "edge": 0.2168,
+     "cote": 1.08,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Moins de 3,5 buts",
+     "P": 0.7105,
+     "p_hat": 0.5833,
+     "k": 7,
+     "n": 12,
+     "wilson": [
+      0.3195,
+      0.8067
+     ],
+     "z": -0.08,
+     "base": 0.5946,
+     "edge": 0.1159,
+     "cote": 1.37,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Moins de 1,5 buts du domicile",
+     "P": 0.6846,
+     "p_hat": 0.6667,
+     "k": 8,
+     "n": 12,
+     "wilson": [
+      0.3906,
+      0.8619
+     ],
+     "z": 0.94,
+     "base": 0.5315,
+     "edge": 0.1531,
+     "cote": 1.07,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Extérieur ne perd pas + moins de 4,5 buts",
+     "P": 0.6333,
+     "p_hat": 0.3333,
+     "k": 4,
+     "n": 12,
+     "wilson": [
+      0.1381,
+      0.6094
+     ],
+     "z": -0.45,
+     "base": 0.3964,
+     "edge": 0.2369,
+     "cote": 1.26,
+     "decision": "validé (avertissement)",
+     "avertissement": "confiance réduite : modèle 63% hors de l'intervalle de Wilson des données [14% ; 61%] (p̂ = 33%, n = 12)"
     }
    ],
    "tendances": [
@@ -2057,7 +2571,25 @@
     "dom": 1.43,
     "ext": 1.45
    },
-   "paris_valides": [],
+   "paris_valides": [
+    {
+     "marche": "Extérieur ne perd pas",
+     "P": 0.6347,
+     "p_hat": 0.3846,
+     "k": 5,
+     "n": 13,
+     "wilson": [
+      0.1771,
+      0.6448
+     ],
+     "z": -0.93,
+     "base": 0.5135,
+     "edge": 0.1212,
+     "cote": 1.7,
+     "decision": "validé",
+     "avertissement": null
+    }
+   ],
    "tendances": [
     {
      "marche": "Moins de 4,5 buts",
@@ -2164,6 +2696,74 @@
      "base": 0.6306,
      "edge": 0.1856,
      "cote": 1.14,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Domicile ne perd pas + plus de 1,5 buts",
+     "P": 0.7303,
+     "p_hat": 0.7143,
+     "k": 10,
+     "n": 14,
+     "wilson": [
+      0.4535,
+      0.8828
+     ],
+     "z": 1.5,
+     "base": 0.5135,
+     "edge": 0.2168,
+     "cote": 1.32,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Plus de 1,5 buts du domicile",
+     "P": 0.6964,
+     "p_hat": 0.7143,
+     "k": 10,
+     "n": 14,
+     "wilson": [
+      0.4535,
+      0.8828
+     ],
+     "z": 1.84,
+     "base": 0.4685,
+     "edge": 0.2279,
+     "cote": 1.39,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Les deux équipes marquent",
+     "P": 0.6551,
+     "p_hat": 0.4286,
+     "k": 6,
+     "n": 14,
+     "wilson": [
+      0.2138,
+      0.6741
+     ],
+     "z": -0.7,
+     "base": 0.5225,
+     "edge": 0.1326,
+     "cote": 1.63,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Victoire domicile",
+     "P": 0.6281,
+     "p_hat": 0.7143,
+     "k": 10,
+     "n": 14,
+     "wilson": [
+      0.4535,
+      0.8828
+     ],
+     "z": 1.71,
+     "base": 0.4865,
+     "edge": 0.1416,
+     "cote": 1.4,
      "decision": "validé",
      "avertissement": null
     }
@@ -2283,6 +2883,57 @@
      "base": 0.6306,
      "edge": 0.1688,
      "cote": 1.13,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Domicile ne perd pas + plus de 1,5 buts",
+     "P": 0.7005,
+     "p_hat": 0.5833,
+     "k": 7,
+     "n": 12,
+     "wilson": [
+      0.3195,
+      0.8067
+     ],
+     "z": 0.48,
+     "base": 0.5135,
+     "edge": 0.187,
+     "cote": 1.27,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Plus de 1,5 buts du domicile",
+     "P": 0.656,
+     "p_hat": 0.5833,
+     "k": 7,
+     "n": 12,
+     "wilson": [
+      0.3195,
+      0.8067
+     ],
+     "z": 0.8,
+     "base": 0.4685,
+     "edge": 0.1875,
+     "cote": 1.34,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Les deux équipes marquent",
+     "P": 0.6394,
+     "p_hat": 0.6667,
+     "k": 8,
+     "n": 12,
+     "wilson": [
+      0.3906,
+      0.8619
+     ],
+     "z": 1.0,
+     "base": 0.5225,
+     "edge": 0.1169,
+     "cote": 1.58,
      "decision": "validé",
      "avertissement": null
     }
@@ -2462,6 +3113,57 @@
      "cote": 1.06,
      "decision": "validé",
      "avertissement": null
+    },
+    {
+     "marche": "Extérieur ne perd pas",
+     "P": 0.6905,
+     "p_hat": 0.625,
+     "k": 5,
+     "n": 8,
+     "wilson": [
+      0.3057,
+      0.8632
+     ],
+     "z": 0.75,
+     "base": 0.4932,
+     "edge": 0.1973,
+     "cote": 1.16,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Moins de 1,5 buts du domicile",
+     "P": 0.6539,
+     "p_hat": 0.625,
+     "k": 5,
+     "n": 8,
+     "wilson": [
+      0.3057,
+      0.8632
+     ],
+     "z": 0.98,
+     "base": 0.4521,
+     "edge": 0.2018,
+     "cote": 1.33,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Extérieur ne perd pas + moins de 4,5 buts",
+     "P": 0.6032,
+     "p_hat": 0.5,
+     "k": 4,
+     "n": 8,
+     "wilson": [
+      0.2152,
+      0.7848
+     ],
+     "z": 0.68,
+     "base": 0.3836,
+     "edge": 0.2196,
+     "cote": null,
+     "decision": "validé",
+     "avertissement": null
     }
    ],
    "tendances": [
@@ -2544,6 +3246,23 @@
      "cote": 1.25,
      "decision": "validé",
      "avertissement": null
+    },
+    {
+     "marche": "Domicile ne perd pas + moins de 4,5 buts",
+     "P": 0.6347,
+     "p_hat": 0.6667,
+     "k": 10,
+     "n": 15,
+     "wilson": [
+      0.4171,
+      0.8482
+     ],
+     "z": 1.27,
+     "base": 0.5029,
+     "edge": 0.1318,
+     "cote": 1.59,
+     "decision": "validé",
+     "avertissement": null
     }
    ],
    "tendances": [
@@ -2618,6 +3337,40 @@
      "base": 0.76,
      "edge": 0.1153,
      "cote": null,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Domicile ne perd pas",
+     "P": 0.6991,
+     "p_hat": 0.7273,
+     "k": 8,
+     "n": 11,
+     "wilson": [
+      0.4344,
+      0.9025
+     ],
+     "z": 1.03,
+     "base": 0.5733,
+     "edge": 0.1258,
+     "cote": 1.19,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Moins de 1,5 buts de l'extérieur",
+     "P": 0.6663,
+     "p_hat": 0.6364,
+     "k": 7,
+     "n": 11,
+     "wilson": [
+      0.3538,
+      0.8483
+     ],
+     "z": 0.6,
+     "base": 0.5467,
+     "edge": 0.1196,
+     "cote": 1.29,
      "decision": "validé",
      "avertissement": null
     }
@@ -2731,6 +3484,57 @@
      "base": 0.5733,
      "edge": 0.2087,
      "cote": 1.06,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Moins de 1,5 buts de l'extérieur",
+     "P": 0.726,
+     "p_hat": 0.6667,
+     "k": 8,
+     "n": 12,
+     "wilson": [
+      0.3906,
+      0.8619
+     ],
+     "z": 0.84,
+     "base": 0.5467,
+     "edge": 0.1793,
+     "cote": 1.11,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Domicile ne perd pas + moins de 4,5 buts",
+     "P": 0.6672,
+     "p_hat": 0.6667,
+     "k": 8,
+     "n": 12,
+     "wilson": [
+      0.3906,
+      0.8619
+     ],
+     "z": 1.02,
+     "base": 0.52,
+     "edge": 0.1472,
+     "cote": 1.29,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Domicile ne perd pas + plus de 1,5 buts",
+     "P": 0.6103,
+     "p_hat": 0.5833,
+     "k": 7,
+     "n": 12,
+     "wilson": [
+      0.3195,
+      0.8067
+     ],
+     "z": 1.2,
+     "base": 0.4133,
+     "edge": 0.197,
+     "cote": 1.21,
      "decision": "validé",
      "avertissement": null
     }
@@ -2864,7 +3668,25 @@
     "dom": 1.9,
     "ext": 1.36
    },
-   "paris_valides": [],
+   "paris_valides": [
+    {
+     "marche": "Plus de 2,5 buts",
+     "P": 0.6338,
+     "p_hat": 0.6429,
+     "k": 18,
+     "n": 28,
+     "wilson": [
+      0.4583,
+      0.7929
+     ],
+     "z": 1.41,
+     "base": 0.5099,
+     "edge": 0.1239,
+     "cote": 1.51,
+     "decision": "validé",
+     "avertissement": null
+    }
+   ],
    "tendances": [
     {
      "marche": "Handicap +1,5 domicile",
@@ -2937,6 +3759,57 @@
      "base": 0.7881,
      "edge": 0.1062,
      "cote": null,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Extérieur ne perd pas",
+     "P": 0.7256,
+     "p_hat": 0.7143,
+     "k": 20,
+     "n": 28,
+     "wilson": [
+      0.5294,
+      0.8475
+     ],
+     "z": 1.34,
+     "base": 0.5894,
+     "edge": 0.1362,
+     "cote": 1.16,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Moins de 1,5 buts du domicile",
+     "P": 0.7136,
+     "p_hat": 0.5714,
+     "k": 16,
+     "n": 28,
+     "wilson": [
+      0.3907,
+      0.7349
+     ],
+     "z": 0.51,
+     "base": 0.5232,
+     "edge": 0.1904,
+     "cote": 1.25,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Extérieur ne perd pas + moins de 4,5 buts",
+     "P": 0.6518,
+     "p_hat": 0.6786,
+     "k": 19,
+     "n": 28,
+     "wilson": [
+      0.4934,
+      0.8207
+     ],
+     "z": 1.86,
+     "base": 0.5033,
+     "edge": 0.1485,
+     "cote": 1.4,
      "decision": "validé",
      "avertissement": null
     }
@@ -3193,7 +4066,25 @@
     "dom": 1.83,
     "ext": 0.96
    },
-   "paris_valides": [],
+   "paris_valides": [
+    {
+     "marche": "Moins de 1,5 buts de l'extérieur",
+     "P": 0.749,
+     "p_hat": 0.875,
+     "k": 7,
+     "n": 8,
+     "wilson": [
+      0.5291,
+      0.9776
+     ],
+     "z": 1.44,
+     "base": 0.6286,
+     "edge": 0.1204,
+     "cote": 1.17,
+     "decision": "validé",
+     "avertissement": null
+    }
+   ],
    "tendances": [
     {
      "marche": "Handicap +1,5 domicile",
@@ -3308,6 +4199,91 @@
      "base": 0.6296,
      "edge": 0.2048,
      "cote": 1.08,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Moins de 1,5 buts du domicile",
+     "P": 0.7452,
+     "p_hat": 0.875,
+     "k": 7,
+     "n": 8,
+     "wilson": [
+      0.5291,
+      0.9776
+     ],
+     "z": 1.5,
+     "base": 0.6173,
+     "edge": 0.1279,
+     "cote": 1.13,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Extérieur ne perd pas + plus de 1,5 buts",
+     "P": 0.6866,
+     "p_hat": 0.75,
+     "k": 6,
+     "n": 8,
+     "wilson": [
+      0.4093,
+      0.9285
+     ],
+     "z": 1.52,
+     "base": 0.4815,
+     "edge": 0.2051,
+     "cote": null,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Extérieur ne perd pas + moins de 4,5 buts",
+     "P": 0.6739,
+     "p_hat": 0.75,
+     "k": 6,
+     "n": 8,
+     "wilson": [
+      0.4093,
+      0.9285
+     ],
+     "z": 1.04,
+     "base": 0.5679,
+     "edge": 0.106,
+     "cote": null,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Victoire extérieur",
+     "P": 0.6177,
+     "p_hat": 0.75,
+     "k": 6,
+     "n": 8,
+     "wilson": [
+      0.4093,
+      0.9285
+     ],
+     "z": 1.97,
+     "base": 0.4074,
+     "edge": 0.2103,
+     "cote": 1.28,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Plus de 1,5 buts de l'extérieur",
+     "P": 0.6084,
+     "p_hat": 0.625,
+     "k": 5,
+     "n": 8,
+     "wilson": [
+      0.3057,
+      0.8632
+     ],
+     "z": 1.03,
+     "base": 0.4444,
+     "edge": 0.164,
+     "cote": 1.36,
      "decision": "validé",
      "avertissement": null
     }

@@ -228,17 +228,17 @@ def test_wilson_n_est_plus_qu_un_avertissement():
 
 
 def test_option_b_cas_qui_passent():
-    assert S.tester(_l(("over_under_1.5", "plus"), 0.80, 0.68, 9, 10), 0.005)[0]      # Edge +12 %
-    assert S.tester(_l(("1x2", "1"), 0.76, 0.45, 2, 10), 0.005)[0]                    # passe même avec p̂ faible (avertissement)
-    assert S.tester(_l(("double_chance", "1N"), 0.95, 0.70, 20, 20), 0.005)[0]
-    assert S.tester(_l(("btts", "Non"), 0.75, 0.65, 8, 10), 0.005)[0]               # 75 % et Edge 10 % pile : acceptés
+    assert S.tester(_l(("1x2", "1"), 0.65, 0.45, 6, 10), 0.005)[0]                    # victoire à 65 %, Edge +20 %
+    assert S.tester(_l(("over_under_1.5", "plus"), 0.85, 0.73, 9, 10), 0.005)[0]      # +1,5 à 85 %, Edge +12 %
+    assert S.tester(_l(("btts", "Non"), 0.60, 0.50, 6, 10), 0.005)[0]                 # 60 % et Edge 10 % pile : acceptés
+    assert S.tester(_l(("1x2", "1"), 0.76, 0.45, 2, 10), 0.005)[0]                    # p̂ faible : avertissement, pas rejet
 
 
 def test_option_b_cas_qui_echouent():
-    ok, r = S.tester(_l(("over_under_1.5", "plus"), 0.749, 0.50, 9, 10), 0.005)
-    assert not ok and r.startswith("P")                                           # sous 75 % : rejet immédiat, Edge ni Wilson calculés
-    ok, r = S.tester(_l(("over_under_0.5", "plus"), 0.93, 0.84, 10, 10), 0.005)
-    assert not ok and r.startswith("Edge")                                        # Edge +9 % ≤ 10 %
+    ok, r = S.tester(_l(("over_under_1.5", "plus"), 0.85, 0.83, 9, 10), 0.005)
+    assert not ok and r.startswith("Edge")                                        # +1,5 à 85 %, Edge +2 %
+    ok, r = S.tester(_l(("1x2", "2"), 0.55, 0.30, 5, 10), 0.005)
+    assert not ok and r.startswith("P")                                           # Edge +25 % mais sous le plancher de 60 %
     ok, r = S.tester(_l(("btts", "Non"), 0.90, 0.50, 9, 10), 0.45)
     assert not ok and r.startswith("Edge")                                        # Edge +40 % sous une EMAC de 45 %
     assert not S.tester(dict(_l(("1x2", "1"), 0.9, 0.5, 9, 10), base=None), 0.005)[0]
@@ -253,7 +253,7 @@ def test_option_b_une_issue_par_marche_avertis_apres_et_jamais_deux_fois_le_meme
     assert cles[-1] == ["over_under_1.5", "plus"]                                 # 97 % mais hors Wilson : classé après
     assert (["double_chance", "1N"] in cles) != (["handicap_0.5", "domicile"] in cles)
     assert ["1x2", "1"] in cles
-    assert S.selectionner({"statut": "analyse", "marches": [_l(("1x2", "1"), 0.6, 0.45, 6, 10)]}, 0.005)["principal"] is None
+    assert S.selectionner({"statut": "analyse", "marches": [_l(("1x2", "1"), 0.58, 0.45, 6, 10)]}, 0.005)["principal"] is None
 
 
 def test_emac_mesure_la_calibration_pas_l_erreur_individuelle():
