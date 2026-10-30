@@ -22,7 +22,8 @@ ROOT = Path(__file__).resolve().parent.parent
 def _ligne(l: dict[str, Any]) -> dict[str, Any]:
     pr = l.get("preuve") or {}
     return {"marche": l["marche"], "P": round(l["p"], 4), "p_hat": pr.get("p_hat"), "k": pr.get("k"), "n": pr.get("n"), "wilson": pr.get("wilson"),
-            "z": pr.get("z"), "base": l.get("base"), "edge": l.get("edge"), "cote": l.get("cote"), "decision": l.get("decision")}
+            "z": pr.get("z"), "base": l.get("base"), "edge": l.get("edge"), "cote": l.get("cote"), "decision": l.get("decision"),
+            "avertissement": l.get("avertissement")}
 
 
 def rapport(debut: datetime, fin: datetime, params: dict[str, Any] | None = None) -> dict[str, Any]:
@@ -51,7 +52,7 @@ def rapport(debut: datetime, fin: datetime, params: dict[str, Any] | None = None
         e, source, _ = suivi.emac_glissante(lignes, m["jour"], [], params["emac"])
         s = coeur.selectionner(a, params, e)
         for l in a["marches"]:
-            etapes[l["decision"].split(" :")[0]] += 1
+            etapes[l["decision"].split(" ")[0]] += 1
         paris = ([s["principal"]] if s["principal"] else []) + s["autres"]
         top = sorted(a["marches"], key=lambda l: -l["p"])[:3]
         out.append({**r, "statut": "analyse", "buts_attendus": {k: round(v, 2) for k, v in a["buts_attendus"].items()},
@@ -60,14 +61,15 @@ def rapport(debut: datetime, fin: datetime, params: dict[str, Any] | None = None
     paris = [p for x in out for p in x.get("paris_valides", [])]
     resume = {"fenetre_utc": [debut.isoformat(), fin.isoformat()], "matchs": len(out), "analyses": sum(x["statut"] == "analyse" for x in out),
               "matchs_avec_pari": sum(bool(x.get("paris_valides")) for x in out), "paris": len(paris),
-              "paris_P_70_et_plus": sum(p["P"] >= 0.70 for p in paris), "marches_par_etape": dict(etapes)}
+              "paris_P_70_et_plus": sum(p["P"] >= 0.70 for p in paris), "paris_avec_avertissement": sum(bool(p["avertissement"]) for p in paris),
+              "decisions": dict(etapes)}
     return {"resume": resume, "matchs": out}
 
 
 def texte(r: dict[str, Any]) -> str:
     z = r["resume"]
     L = [f"{z['matchs']} matchs ({z['analyses']} analysés) | {z['paris']} paris validés sur {z['matchs_avec_pari']} matchs | "
-         f"dont {z['paris_P_70_et_plus']} à P ≥ 70 % | marchés par étape : {z['marches_par_etape']}"]
+         f"dont {z['paris_avec_avertissement']} avec avertissement Wilson"]
     for x in r["matchs"]:
         h = (datetime.fromisoformat(x["coup_d_envoi_utc"].replace("Z", "+00:00")) + timedelta(hours=1)).strftime("%H:%M")
         L.append(f"\n{h} {x['domicile']} – {x['exterieur']} ({x['competition']})")
@@ -76,11 +78,11 @@ def texte(r: dict[str, Any]) -> str:
             continue
         for p in x["paris_valides"]:
             L.append(f"   VALIDÉ  {p['marche']} : P {p['P']:.0%} | p̂ {p['p_hat']:.0%} ({p['k']}/{p['n']}) Wilson [{p['wilson'][0]:.0%} ; {p['wilson'][1]:.0%}]"
-                     f" | Z {p['z']} | base {p['base']:.0%} | cote {p['cote'] or '—'}")
-        for p in x["tendances"]:
+                     f" | base {p['base']:.0%} | Edge {p['edge']:+.0%} | cote {p['cote'] or '—'}" + (" | ⚠ hors Wilson" if p["avertissement"] else ""))
+        for p in ([] if x["paris_valides"] else x["tendances"]):
             w = p["wilson"]
-            L.append(f"   tendance {p['marche']} : P {p['P']:.0%} | p̂ {p['p_hat']:.0%} ({p['k']}/{p['n']})"
-                     + (f" Wilson [{w[0]:.0%} ; {w[1]:.0%}]" if w else "") + f" | Z {p['z']} → {p['decision']}")
+            L.append(f"   rejeté    {p['marche']} : P {p['P']:.0%} | p̂ {p['p_hat']:.0%} ({p['k']}/{p['n']})"
+                     + (f" Wilson [{w[0]:.0%} ; {w[1]:.0%}]" if w else "") + f" | base {p['base']:.0%} → {p['decision']}")
     return "\n".join(L)
 
 

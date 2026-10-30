@@ -11,7 +11,7 @@ Autonome (aucun import d'un autre moteur), hors générateur de tickets. Statut 
 | 1.5 | `contrat.py` | `match_input` (structure de la Section A) et contrôles stricts : Filtre 0 (≥ 4 matchs à domicile / à l'extérieur), types, NaN, historiques d'au moins 4 matchs en ordre chronologique strict. Erreur = match exclu, raison gelée. |
 | 2 | `modele.py` + `ajustements.py` | Dixon-Coles pénalisé (shrinkage) sur le championnat entier ; Forme→xi, IE→λ, Amplitude et Score modal→ρ, Profil croisé→λ. Chaque effet a une force apprise hors échantillon. |
 | 3 | `coeur.py`, `marches.py` | 103 marchés (1N2, double chance, plus/moins, BTTS, **Multigoal 0-1 / 2-3 / 4+**, buts par équipe, handicaps, combinés) par SOMME des cases de la grille ; k/n sur les matchs comparables (A à domicile + B à l'extérieur, score orienté) ; Base = fréquence du marché dans le championnat cette saison avant le match. |
-| 4 | `selecteur.py` | Étape 0 cohérence : P dans l'intervalle de Wilson à 95 % de p̂ (correction de Patrick du 30/10, remplace `|P − p̂| ≤ 2 × EMAC`) ; étape 1 Z = (p̂ − Base)/√(Base(1−Base)/n) > Z Bonferroni (α = 0,05 / m marchés testés) ; étapes 2-3 Edge = P − Base > EMAC ; étape 4 une issue par marché (la plus probable) et jamais deux fois le même événement. Classement par PROBABILITÉ décroissante (correction de Patrick du 30/10) ; principal = le plus probable. **Aucune cote, aucun seuil de probabilité.** |
+| 4 | `selecteur.py` | **Option B de Patrick (30/10/2026)** : validé si P > 75 % ET Edge = P − Base > 10 % (et > EMAC). Bonferroni et Z supprimés comme filtre (Z affiché). Intervalle de Wilson à 95 % de p̂ = simple avertissement (paris avertis classés après). Une issue par marché, jamais deux fois le même événement. Classement par probabilité ; principal = le plus probable. **Aucune cote.** |
 
 Précisions imposées par la spécification (aucune valeur choisie) :
 - Forme_PPM : avec J ≤ 5 la formule reçue divise par 0 ou par un nombre négatif → PPM simple.
@@ -52,7 +52,10 @@ Gel du même jour (tous les matchs à venir) : 12 paris sur les 31/10-02/11, pro
 Information (non appliqué) : Z simple 1,645 → 34 matchs avec pari, 119 paris dont 17 à P ≥ 70 % ; sans l'étape 1 → un pari par match analysé,
 principal entre 79 et 97 %, cotes de 1,03 à 1,32 quand elles existent.
 
-## Points ouverts (décision de Patrick)
-- Étape 1 (Z contre la base, Bonferroni) : la garder, l'assouplir ou la retirer.
+## Option B appliquée le 30/10/2026
+Matchs du soir (18 h-22 h Douala) : 57 matchs, 46 analysés, 33 paris sur 19 matchs, tous à P > 75 %, 1 avec avertissement Wilson.
+Cotes connues : 1,05 à 1,36 ; 15 paris sans cote BetPawa.
+
+## Points ouverts
 - Page `pronostics_dc.html` non faite.
 - Tests : `tests/test_moteur_dc.py` (30 tests, 3 cas qui passent et 3 qui échouent pour le contrat et le Module 4).

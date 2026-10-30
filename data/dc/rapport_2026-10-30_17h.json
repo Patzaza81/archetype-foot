@@ -6,12 +6,15 @@
   ],
   "matchs": 57,
   "analyses": 46,
-  "matchs_avec_pari": 0,
-  "paris": 0,
-  "paris_P_70_et_plus": 0,
-  "marches_par_etape": {
-   "étape 1": 4643,
-   "étape 0": 95
+  "matchs_avec_pari": 19,
+  "paris": 33,
+  "paris_P_70_et_plus": 33,
+  "paris_avec_avertissement": 1,
+  "decisions": {
+   "P": 4364,
+   "Edge": 327,
+   "validé": 33,
+   "exclusion": 14
   }
  },
  "matchs": [
@@ -41,7 +44,8 @@
      "base": 0.8842,
      "edge": -0.018,
      "cote": 1.1,
-     "decision": "étape 1 : Z = 0.26 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -1.8% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 2,5 buts de l'extérieur",
@@ -57,7 +61,8 @@
      "base": 0.8737,
      "edge": -0.0249,
      "cote": 1.1,
-     "decision": "étape 1 : Z = 0.35 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -2.5% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 4,5 buts",
@@ -73,10 +78,11 @@
      "base": 0.8,
      "edge": 0.0132,
      "cote": 1.16,
-     "decision": "étape 1 : Z = 0.15 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +1.3% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -97,7 +103,25 @@
     "dom": 1.74,
     "ext": 1.57
    },
-   "paris_valides": [],
+   "paris_valides": [
+    {
+     "marche": "Plus de 0,5 buts de l'extérieur",
+     "P": 0.7917,
+     "p_hat": 0.7,
+     "k": 7,
+     "n": 10,
+     "wilson": [
+      0.3968,
+      0.8922
+     ],
+     "z": 0.34,
+     "base": 0.6481,
+     "edge": 0.1436,
+     "cote": 1.23,
+     "decision": "validé",
+     "avertissement": null
+    }
+   ],
    "tendances": [
     {
      "marche": "Plus de 1,5 buts",
@@ -113,7 +137,8 @@
      "base": 0.7963,
      "edge": 0.0524,
      "cote": 1.16,
-     "decision": "étape 1 : Z = 0.81 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +5.2% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Handicap +1,5 domicile",
@@ -129,7 +154,8 @@
      "base": 0.8889,
      "edge": -0.0573,
      "cote": null,
-     "decision": "étape 1 : Z = -1.9 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -5.7% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Plus de 0,5 buts du domicile",
@@ -145,10 +171,11 @@
      "base": 0.8333,
      "edge": -0.008,
      "cote": 1.15,
-     "decision": "étape 1 : Z = 0.57 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -0.8% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -177,7 +204,8 @@
      "base": 0.8395,
      "edge": 0.0552,
      "cote": 1.18,
-     "decision": "étape 1 : Z = 0.4 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +5.5% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 2,5 buts de l'extérieur",
@@ -193,7 +221,8 @@
      "base": 0.8642,
      "edge": 0.0111,
      "cote": 1.41,
-     "decision": "étape 1 : Z = -0.76 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +1.1% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 2,5 buts du domicile",
@@ -209,10 +238,11 @@
      "base": 0.7901,
      "edge": 0.0774,
      "cote": 1.03,
-     "decision": "étape 1 : Z = 0.73 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +7.7% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -241,7 +271,8 @@
      "base": 0.8235,
      "edge": 0.0396,
      "cote": 1.26,
-     "decision": "étape 1 : Z = -0.05 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +4.0% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Handicap +1,5 extérieur",
@@ -257,7 +288,8 @@
      "base": 0.8067,
      "edge": 0.0559,
      "cote": 1.3,
-     "decision": "étape 1 : Z = 0.86 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +5.6% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 4,5 buts",
@@ -273,10 +305,11 @@
      "base": 0.8571,
      "edge": -0.0071,
      "cote": 1.14,
-     "decision": "étape 1 : Z = -0.37 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -0.7% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -305,7 +338,8 @@
      "base": 0.8675,
      "edge": -0.0053,
      "cote": 1.17,
-     "decision": "étape 1 : Z = -1.2 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -0.5% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Handicap +1,5 domicile",
@@ -321,7 +355,8 @@
      "base": 0.8795,
      "edge": -0.022,
      "cote": 1.18,
-     "decision": "étape 1 : Z = -1.38 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -2.2% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 4,5 buts",
@@ -337,10 +372,11 @@
      "base": 0.8554,
      "edge": 0.0009,
      "cote": 1.13,
-     "decision": "étape 1 : Z = -0.22 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +0.1% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -377,7 +413,8 @@
      "base": 0.9136,
      "edge": 0.008,
      "cote": 1.19,
-     "decision": "étape 1 : Z = 0.87 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +0.8% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 2,5 buts de l'extérieur",
@@ -393,7 +430,8 @@
      "base": 0.8519,
      "edge": 0.0627,
      "cote": 1.23,
-     "decision": "étape 1 : Z = 0.18 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +6.3% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 4,5 buts",
@@ -409,10 +447,11 @@
      "base": 0.8395,
      "edge": 0.0079,
      "cote": 1.25,
-     "decision": "étape 1 : Z = 0.27 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +0.8% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -433,7 +472,42 @@
     "dom": 1.46,
     "ext": 1.95
    },
-   "paris_valides": [],
+   "paris_valides": [
+    {
+     "marche": "Handicap +1,5 extérieur",
+     "P": 0.8693,
+     "p_hat": 0.7778,
+     "k": 7,
+     "n": 9,
+     "wilson": [
+      0.4526,
+      0.9368
+     ],
+     "z": 0.09,
+     "base": 0.7647,
+     "edge": 0.1046,
+     "cote": 1.16,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Moins de 2,5 buts du domicile",
+     "P": 0.8193,
+     "p_hat": 0.8889,
+     "k": 8,
+     "n": 9,
+     "wilson": [
+      0.565,
+      0.9801
+     ],
+     "z": 1.2,
+     "base": 0.7059,
+     "edge": 0.1134,
+     "cote": null,
+     "decision": "validé",
+     "avertissement": null
+    }
+   ],
    "tendances": [
     {
      "marche": "Handicap +1,5 extérieur",
@@ -449,7 +523,8 @@
      "base": 0.7647,
      "edge": 0.1046,
      "cote": 1.16,
-     "decision": "étape 1 : Z = 0.09 ≤ 3.30 (Bonferroni)"
+     "decision": "validé",
+     "avertissement": null
     },
     {
      "marche": "Plus de 1,5 buts",
@@ -465,7 +540,8 @@
      "base": 0.8824,
      "edge": -0.0233,
      "cote": 1.21,
-     "decision": "étape 1 : Z = -0.97 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -2.3% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Plus de 0,5 buts de l'extérieur",
@@ -481,10 +557,11 @@
      "base": 0.8235,
      "edge": 0.0343,
      "cote": null,
-     "decision": "étape 1 : Z = -1.23 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +3.4% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -513,7 +590,8 @@
      "base": 0.8413,
      "edge": 0.0246,
      "cote": 1.1,
-     "decision": "étape 1 : Z = 0.05 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +2.5% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 2,5 buts de l'extérieur",
@@ -529,7 +607,8 @@
      "base": 0.8413,
      "edge": -0.0014,
      "cote": 1.12,
-     "decision": "étape 1 : Z = -1.47 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -0.1% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Plus de 0,5 buts du domicile",
@@ -545,10 +624,11 @@
      "base": 0.8095,
      "edge": 0.0161,
      "cote": 1.14,
-     "decision": "étape 1 : Z = -0.37 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +1.6% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -561,7 +641,25 @@
     "dom": 1.37,
     "ext": 1.99
    },
-   "paris_valides": [],
+   "paris_valides": [
+    {
+     "marche": "Plus de 0,5 buts de l'extérieur",
+     "P": 0.8628,
+     "p_hat": 0.75,
+     "k": 9,
+     "n": 12,
+     "wilson": [
+      0.4677,
+      0.9111
+     ],
+     "z": 0.08,
+     "base": 0.7403,
+     "edge": 0.1225,
+     "cote": 1.1,
+     "decision": "validé",
+     "avertissement": null
+    }
+   ],
    "tendances": [
     {
      "marche": "Handicap +1,5 extérieur",
@@ -577,7 +675,8 @@
      "base": 0.7922,
      "edge": 0.0931,
      "cote": null,
-     "decision": "étape 1 : Z = -0.36 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +9.3% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Plus de 0,5 buts de l'extérieur",
@@ -593,7 +692,8 @@
      "base": 0.7403,
      "edge": 0.1225,
      "cote": 1.1,
-     "decision": "étape 1 : Z = 0.08 ≤ 3.30 (Bonferroni)"
+     "decision": "validé",
+     "avertissement": null
     },
     {
      "marche": "Le domicile encaisse au moins 1 but",
@@ -609,10 +709,11 @@
      "base": 0.7403,
      "edge": 0.1225,
      "cote": 1.11,
-     "decision": "étape 1 : Z = 0.08 ≤ 3.30 (Bonferroni)"
+     "decision": "exclusion : même événement que « Plus de 0,5 buts de l'extérieur »",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -657,7 +758,8 @@
      "base": 0.8118,
      "edge": 0.0588,
      "cote": 1.07,
-     "decision": "étape 1 : Z = -0.1 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +5.9% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 4,5 buts",
@@ -673,7 +775,8 @@
      "base": 0.7882,
      "edge": 0.0798,
      "cote": 1.2,
-     "decision": "étape 1 : Z = 1.64 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +8.0% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Handicap +1,5 domicile",
@@ -689,10 +792,11 @@
      "base": 0.8,
      "edge": 0.0608,
      "cote": null,
-     "decision": "étape 0 : modèle 86% hors de l'intervalle de Wilson des données [31% ; 83%] (p̂ = 60%, n = 10)"
+     "decision": "Edge +6.1% ≤ 10%",
+     "avertissement": "confiance réduite : modèle 86% hors de l'intervalle de Wilson des données [31% ; 83%] (p̂ = 60%, n = 10)"
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -705,7 +809,25 @@
     "dom": 1.64,
     "ext": 1.53
    },
-   "paris_valides": [],
+   "paris_valides": [
+    {
+     "marche": "Moins de 2,5 buts du domicile",
+     "P": 0.7738,
+     "p_hat": 0.875,
+     "k": 7,
+     "n": 8,
+     "wilson": [
+      0.5291,
+      0.9776
+     ],
+     "z": 1.33,
+     "base": 0.65,
+     "edge": 0.1238,
+     "cote": 1.16,
+     "decision": "validé",
+     "avertissement": null
+    }
+   ],
    "tendances": [
     {
      "marche": "Plus de 1,5 buts",
@@ -721,7 +843,8 @@
      "base": 0.8667,
      "edge": -0.0347,
      "cote": 1.28,
-     "decision": "étape 1 : Z = -2.01 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -3.5% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Handicap +1,5 domicile",
@@ -737,7 +860,8 @@
      "base": 0.8,
      "edge": 0.0266,
      "cote": 1.07,
-     "decision": "étape 1 : Z = 1.41 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +2.7% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Plus de 0,5 buts du domicile",
@@ -753,10 +877,11 @@
      "base": 0.7833,
      "edge": 0.0221,
      "cote": 1.22,
-     "decision": "étape 1 : Z = -0.23 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +2.2% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -785,7 +910,25 @@
     "dom": 2.25,
     "ext": 0.75
    },
-   "paris_valides": [],
+   "paris_valides": [
+    {
+     "marche": "Domicile ne perd pas",
+     "P": 0.8925,
+     "p_hat": 0.9286,
+     "k": 13,
+     "n": 14,
+     "wilson": [
+      0.6853,
+      0.9873
+     ],
+     "z": 1.42,
+     "base": 0.7692,
+     "edge": 0.1233,
+     "cote": 1.07,
+     "decision": "validé",
+     "avertissement": null
+    }
+   ],
    "tendances": [
     {
      "marche": "Handicap +1,5 domicile",
@@ -801,7 +944,8 @@
      "base": 0.9038,
      "edge": 0.0664,
      "cote": null,
-     "decision": "étape 1 : Z = 1.22 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +6.6% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 2,5 buts de l'extérieur",
@@ -817,7 +961,8 @@
      "base": 0.8942,
      "edge": 0.0656,
      "cote": null,
-     "decision": "étape 1 : Z = 1.29 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +6.6% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Plus de 0,5 buts du domicile",
@@ -833,10 +978,11 @@
      "base": 0.7981,
      "edge": 0.0968,
      "cote": null,
-     "decision": "étape 1 : Z = 1.22 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +9.7% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -865,7 +1011,8 @@
      "base": 0.8444,
      "edge": 0.0166,
      "cote": 1.08,
-     "decision": "étape 1 : Z = 0.37 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +1.7% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 2,5 buts du domicile",
@@ -881,7 +1028,8 @@
      "base": 0.8222,
      "edge": 0.023,
      "cote": 1.05,
-     "decision": "étape 1 : Z = 0.52 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +2.3% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 4,5 buts",
@@ -897,10 +1045,11 @@
      "base": 0.8222,
      "edge": -0.0066,
      "cote": 1.08,
-     "decision": "étape 1 : Z = 0.52 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -0.7% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -929,7 +1078,8 @@
      "base": 0.8222,
      "edge": 0.0792,
      "cote": 1.1,
-     "decision": "étape 1 : Z = 0.64 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +7.9% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 4,5 buts",
@@ -945,7 +1095,8 @@
      "base": 0.8222,
      "edge": 0.0718,
      "cote": 1.07,
-     "decision": "étape 1 : Z = 0.64 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +7.2% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Handicap +1,5 extérieur",
@@ -961,10 +1112,11 @@
      "base": 0.8444,
      "edge": 0.0396,
      "cote": 1.15,
-     "decision": "étape 1 : Z = 1.36 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +4.0% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -993,7 +1145,8 @@
      "base": 0.8222,
      "edge": 0.0494,
      "cote": 1.13,
-     "decision": "étape 1 : Z = -0.35 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +4.9% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 2,5 buts du domicile",
@@ -1009,7 +1162,8 @@
      "base": 0.8222,
      "edge": 0.0334,
      "cote": 1.19,
-     "decision": "étape 1 : Z = -0.35 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +3.3% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 2,5 buts de l'extérieur",
@@ -1025,10 +1179,11 @@
      "base": 0.8444,
      "edge": 0.0048,
      "cote": 1.07,
-     "decision": "étape 1 : Z = 1.29 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +0.5% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -1057,7 +1212,8 @@
      "base": 0.8222,
      "edge": 0.0615,
      "cote": 1.11,
-     "decision": "étape 0 : modèle 88% hors de l'intervalle de Wilson des données [35% ; 88%] (p̂ = 67%, n = 9)"
+     "decision": "Edge +6.2% ≤ 10%",
+     "avertissement": "confiance réduite : modèle 88% hors de l'intervalle de Wilson des données [35% ; 88%] (p̂ = 67%, n = 9)"
     },
     {
      "marche": "Moins de 2,5 buts de l'extérieur",
@@ -1073,7 +1229,8 @@
      "base": 0.8444,
      "edge": 0.0224,
      "cote": null,
-     "decision": "étape 1 : Z = -1.47 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +2.2% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 2,5 buts du domicile",
@@ -1089,10 +1246,11 @@
      "base": 0.8222,
      "edge": 0.0355,
      "cote": 1.34,
-     "decision": "étape 1 : Z = -0.35 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +3.6% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -1105,7 +1263,25 @@
     "dom": 1.54,
     "ext": 1.71
    },
-   "paris_valides": [],
+   "paris_valides": [
+    {
+     "marche": "Plus de 1,5 buts",
+     "P": 0.8353,
+     "p_hat": 0.8889,
+     "k": 8,
+     "n": 9,
+     "wilson": [
+      0.565,
+      0.9801
+     ],
+     "z": 1.18,
+     "base": 0.7111,
+     "edge": 0.1242,
+     "cote": 1.14,
+     "decision": "validé",
+     "avertissement": null
+    }
+   ],
    "tendances": [
     {
      "marche": "Plus de 1,5 buts",
@@ -1121,7 +1297,8 @@
      "base": 0.7111,
      "edge": 0.1242,
      "cote": 1.14,
-     "decision": "étape 1 : Z = 1.18 ≤ 3.30 (Bonferroni)"
+     "decision": "validé",
+     "avertissement": null
     },
     {
      "marche": "Handicap +1,5 extérieur",
@@ -1137,7 +1314,8 @@
      "base": 0.8444,
      "edge": -0.011,
      "cote": 1.24,
-     "decision": "étape 1 : Z = -1.47 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -1.1% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Plus de 0,5 buts de l'extérieur",
@@ -1153,10 +1331,11 @@
      "base": 0.7444,
      "edge": 0.0747,
      "cote": 1.22,
-     "decision": "étape 1 : Z = 0.23 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +7.5% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -1177,7 +1356,25 @@
     "dom": 2.5,
     "ext": 1.26
    },
-   "paris_valides": [],
+   "paris_valides": [
+    {
+     "marche": "Domicile ne perd pas",
+     "P": 0.826,
+     "p_hat": 0.9167,
+     "k": 11,
+     "n": 12,
+     "wilson": [
+      0.6461,
+      0.9851
+     ],
+     "z": 1.59,
+     "base": 0.7083,
+     "edge": 0.1177,
+     "cote": 1.36,
+     "decision": "validé",
+     "avertissement": null
+    }
+   ],
    "tendances": [
     {
      "marche": "Handicap +1,5 domicile",
@@ -1193,7 +1390,8 @@
      "base": 0.8417,
      "edge": 0.0894,
      "cote": null,
-     "decision": "étape 1 : Z = 1.5 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +8.9% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Plus de 0,5 buts du domicile",
@@ -1209,7 +1407,8 @@
      "base": 0.8667,
      "edge": 0.0515,
      "cote": 1.05,
-     "decision": "étape 1 : Z = 1.36 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +5.2% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "L'extérieur encaisse au moins 1 but",
@@ -1225,10 +1424,11 @@
      "base": 0.8667,
      "edge": 0.0515,
      "cote": 1.08,
-     "decision": "étape 1 : Z = 1.36 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +5.2% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -1257,7 +1457,8 @@
      "base": 0.8583,
      "edge": 0.0285,
      "cote": 1.16,
-     "decision": "étape 1 : Z = -0.38 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +2.9% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Plus de 0,5 buts du domicile",
@@ -1273,7 +1474,8 @@
      "base": 0.8667,
      "edge": 0.0161,
      "cote": 1.13,
-     "decision": "étape 1 : Z = -1.36 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +1.6% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "L'extérieur encaisse au moins 1 but",
@@ -1289,10 +1491,11 @@
      "base": 0.8667,
      "edge": 0.0161,
      "cote": 1.16,
-     "decision": "étape 1 : Z = -1.36 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +1.6% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -1305,7 +1508,25 @@
     "dom": 1.56,
     "ext": 1.52
    },
-   "paris_valides": [],
+   "paris_valides": [
+    {
+     "marche": "Moins de 2,5 buts du domicile",
+     "P": 0.7936,
+     "p_hat": 0.75,
+     "k": 9,
+     "n": 12,
+     "wilson": [
+      0.4677,
+      0.9111
+     ],
+     "z": 0.5,
+     "base": 0.6833,
+     "edge": 0.1103,
+     "cote": 1.3,
+     "decision": "validé",
+     "avertissement": null
+    }
+   ],
    "tendances": [
     {
      "marche": "Plus de 1,5 buts",
@@ -1321,7 +1542,8 @@
      "base": 0.8583,
      "edge": -0.0345,
      "cote": 1.11,
-     "decision": "étape 1 : Z = 1.41 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -3.5% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Handicap +1,5 domicile",
@@ -1337,7 +1559,8 @@
      "base": 0.8417,
      "edge": -0.0197,
      "cote": 1.12,
-     "decision": "étape 1 : Z = -0.87 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -2.0% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Handicap +1,5 extérieur",
@@ -1353,10 +1576,11 @@
      "base": 0.7417,
      "edge": 0.0664,
      "cote": 1.24,
-     "decision": "étape 1 : Z = 0.72 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +6.6% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -1385,7 +1609,8 @@
      "base": 0.8417,
      "edge": 0.0251,
      "cote": null,
-     "decision": "étape 1 : Z = -0.21 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +2.5% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Plus de 1,5 buts",
@@ -1401,7 +1626,8 @@
      "base": 0.8583,
      "edge": -0.0052,
      "cote": 1.12,
-     "decision": "étape 1 : Z = 0.48 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -0.5% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Plus de 0,5 buts du domicile",
@@ -1417,10 +1643,11 @@
      "base": 0.8667,
      "edge": -0.0165,
      "cote": 1.06,
-     "decision": "étape 1 : Z = 1.3 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -1.6% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -1449,7 +1676,8 @@
      "base": 0.8043,
      "edge": 0.095,
      "cote": 1.19,
-     "decision": "étape 1 : Z = 0.5 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +9.5% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Plus de 0,5 buts du domicile",
@@ -1465,7 +1693,8 @@
      "base": 0.8043,
      "edge": 0.0894,
      "cote": 1.18,
-     "decision": "étape 1 : Z = -0.39 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +8.9% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "L'extérieur encaisse au moins 1 but",
@@ -1481,10 +1710,11 @@
      "base": 0.8043,
      "edge": 0.0894,
      "cote": 1.19,
-     "decision": "étape 1 : Z = -0.39 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +8.9% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -1513,7 +1743,8 @@
      "base": 0.86,
      "edge": 0.0596,
      "cote": 1.19,
-     "decision": "étape 1 : Z = 0.36 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +6.0% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 2,5 buts de l'extérieur",
@@ -1529,7 +1760,8 @@
      "base": 0.94,
      "edge": -0.0457,
      "cote": 1.24,
-     "decision": "étape 1 : Z = -0.53 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -4.6% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Plus de 0,5 buts du domicile",
@@ -1545,10 +1777,11 @@
      "base": 0.78,
      "edge": 0.0827,
      "cote": 1.17,
-     "decision": "étape 1 : Z = 0.92 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +8.3% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -1577,7 +1810,8 @@
      "base": 0.86,
      "edge": 0.0097,
      "cote": null,
-     "decision": "étape 1 : Z = -0.4 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +1.0% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 2,5 buts de l'extérieur",
@@ -1593,7 +1827,8 @@
      "base": 0.94,
      "edge": -0.0706,
      "cote": 1.16,
-     "decision": "étape 1 : Z = 0.84 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -7.1% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 4,5 buts",
@@ -1609,10 +1844,11 @@
      "base": 0.88,
      "edge": -0.0295,
      "cote": 1.24,
-     "decision": "étape 1 : Z = -0.63 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -2.9% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -1641,7 +1877,8 @@
      "base": 0.9831,
      "edge": -0.0328,
      "cote": 1.11,
-     "decision": "étape 1 : Z = -1.9 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -3.3% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 2,5 buts de l'extérieur",
@@ -1657,7 +1894,8 @@
      "base": 0.9661,
      "edge": -0.0205,
      "cote": 1.25,
-     "decision": "étape 1 : Z = -1.04 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -2.1% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Handicap +1,5 domicile",
@@ -1673,10 +1911,11 @@
      "base": 0.8814,
      "edge": 0.0284,
      "cote": 1.32,
-     "decision": "étape 1 : Z = -0.65 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +2.8% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -1705,7 +1944,8 @@
      "base": 0.88,
      "edge": 0.0302,
      "cote": 1.06,
-     "decision": "étape 1 : Z = 0.3 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +3.0% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 2,5 buts de l'extérieur",
@@ -1721,7 +1961,8 @@
      "base": 0.8985,
      "edge": 0.0053,
      "cote": 1.03,
-     "decision": "étape 1 : Z = 0.12 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +0.5% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Handicap +1,5 domicile",
@@ -1737,10 +1978,11 @@
      "base": 0.8985,
      "edge": -0.0219,
      "cote": null,
-     "decision": "étape 1 : Z = 1.11 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -2.2% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -1769,7 +2011,8 @@
      "base": 0.8985,
      "edge": 0.0001,
      "cote": 1.01,
-     "decision": "étape 1 : Z = 0.02 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +0.0% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Handicap +1,5 domicile",
@@ -1785,7 +2028,8 @@
      "base": 0.8985,
      "edge": -0.001,
      "cote": null,
-     "decision": "étape 1 : Z = 0.02 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -0.1% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 4,5 buts",
@@ -1801,10 +2045,11 @@
      "base": 0.88,
      "edge": -0.017,
      "cote": 1.11,
-     "decision": "étape 1 : Z = 1.17 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -1.7% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -1817,7 +2062,42 @@
     "dom": 1.7,
     "ext": 1.98
    },
-   "paris_valides": [],
+   "paris_valides": [
+    {
+     "marche": "Plus de 0,5 buts de l'extérieur",
+     "P": 0.8615,
+     "p_hat": 0.8462,
+     "k": 11,
+     "n": 13,
+     "wilson": [
+      0.5777,
+      0.9567
+     ],
+     "z": 1.01,
+     "base": 0.7207,
+     "edge": 0.1408,
+     "cote": 1.11,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Handicap +1,5 extérieur",
+     "P": 0.832,
+     "p_hat": 0.6923,
+     "k": 9,
+     "n": 13,
+     "wilson": [
+      0.4237,
+      0.8732
+     ],
+     "z": -0.3,
+     "base": 0.7297,
+     "edge": 0.1023,
+     "cote": 1.07,
+     "decision": "validé",
+     "avertissement": null
+    }
+   ],
    "tendances": [
     {
      "marche": "Plus de 1,5 buts",
@@ -1833,7 +2113,8 @@
      "base": 0.8108,
      "edge": 0.0733,
      "cote": 1.16,
-     "decision": "étape 1 : Z = 1.74 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +7.3% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Plus de 0,5 buts de l'extérieur",
@@ -1849,7 +2130,8 @@
      "base": 0.7207,
      "edge": 0.1408,
      "cote": 1.11,
-     "decision": "étape 1 : Z = 1.01 ≤ 3.30 (Bonferroni)"
+     "decision": "validé",
+     "avertissement": null
     },
     {
      "marche": "Le domicile encaisse au moins 1 but",
@@ -1865,10 +2147,11 @@
      "base": 0.7207,
      "edge": 0.1408,
      "cote": 1.13,
-     "decision": "étape 1 : Z = 1.01 ≤ 3.30 (Bonferroni)"
+     "decision": "exclusion : même événement que « Plus de 0,5 buts de l'extérieur »",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -1881,8 +2164,7 @@
     "dom": 1.14,
     "ext": 1.58
    },
-   "paris_valides": [],
-   "tendances": [
+   "paris_valides": [
     {
      "marche": "Moins de 2,5 buts du domicile",
      "P": 0.8923,
@@ -1897,7 +2179,8 @@
      "base": 0.7568,
      "edge": 0.1355,
      "cote": null,
-     "decision": "étape 1 : Z = 1.96 ≤ 3.30 (Bonferroni)"
+     "decision": "validé",
+     "avertissement": null
     },
     {
      "marche": "Handicap +1,5 extérieur",
@@ -1913,7 +2196,8 @@
      "base": 0.7297,
      "edge": 0.1617,
      "cote": null,
-     "decision": "étape 1 : Z = 0.81 ≤ 3.30 (Bonferroni)"
+     "decision": "validé",
+     "avertissement": null
     },
     {
      "marche": "Moins de 4,5 buts",
@@ -1929,10 +2213,64 @@
      "base": 0.7477,
      "edge": 0.1128,
      "cote": 1.12,
-     "decision": "étape 1 : Z = 0.02 ≤ 3.30 (Bonferroni)"
+     "decision": "validé",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "tendances": [
+    {
+     "marche": "Moins de 2,5 buts du domicile",
+     "P": 0.8923,
+     "p_hat": 1.0,
+     "k": 12,
+     "n": 12,
+     "wilson": [
+      0.7575,
+      1.0
+     ],
+     "z": 1.96,
+     "base": 0.7568,
+     "edge": 0.1355,
+     "cote": null,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Handicap +1,5 extérieur",
+     "P": 0.8914,
+     "p_hat": 0.8333,
+     "k": 10,
+     "n": 12,
+     "wilson": [
+      0.552,
+      0.953
+     ],
+     "z": 0.81,
+     "base": 0.7297,
+     "edge": 0.1617,
+     "cote": null,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Moins de 4,5 buts",
+     "P": 0.8605,
+     "p_hat": 0.75,
+     "k": 9,
+     "n": 12,
+     "wilson": [
+      0.4677,
+      0.9111
+     ],
+     "z": 0.02,
+     "base": 0.7477,
+     "edge": 0.1128,
+     "cote": 1.12,
+     "decision": "validé",
+     "avertissement": null
+    }
+   ],
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -1969,7 +2307,8 @@
      "base": 0.7477,
      "edge": 0.0876,
      "cote": 1.15,
-     "decision": "étape 1 : Z = 0.18 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +8.8% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Handicap +1,5 extérieur",
@@ -1985,7 +2324,8 @@
      "base": 0.7297,
      "edge": 0.0978,
      "cote": 1.19,
-     "decision": "étape 1 : Z = 0.32 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +9.8% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 2,5 buts du domicile",
@@ -2001,10 +2341,11 @@
      "base": 0.7568,
      "edge": 0.0702,
      "cote": 1.17,
-     "decision": "étape 1 : Z = 0.75 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +7.0% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -2017,7 +2358,59 @@
     "dom": 2.42,
     "ext": 1.26
    },
-   "paris_valides": [],
+   "paris_valides": [
+    {
+     "marche": "Handicap +1,5 domicile",
+     "P": 0.9267,
+     "p_hat": 0.8571,
+     "k": 12,
+     "n": 14,
+     "wilson": [
+      0.6006,
+      0.9599
+     ],
+     "z": 0.74,
+     "base": 0.7748,
+     "edge": 0.1519,
+     "cote": null,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Plus de 0,5 buts du domicile",
+     "P": 0.9113,
+     "p_hat": 0.8571,
+     "k": 12,
+     "n": 14,
+     "wilson": [
+      0.6006,
+      0.9599
+     ],
+     "z": 0.59,
+     "base": 0.7928,
+     "edge": 0.1185,
+     "cote": null,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Domicile ne perd pas",
+     "P": 0.8162,
+     "p_hat": 0.8571,
+     "k": 12,
+     "n": 14,
+     "wilson": [
+      0.6006,
+      0.9599
+     ],
+     "z": 1.76,
+     "base": 0.6306,
+     "edge": 0.1856,
+     "cote": 1.14,
+     "decision": "validé",
+     "avertissement": null
+    }
+   ],
    "tendances": [
     {
      "marche": "Handicap +1,5 domicile",
@@ -2033,7 +2426,8 @@
      "base": 0.7748,
      "edge": 0.1519,
      "cote": null,
-     "decision": "étape 1 : Z = 0.74 ≤ 3.30 (Bonferroni)"
+     "decision": "validé",
+     "avertissement": null
     },
     {
      "marche": "Plus de 0,5 buts du domicile",
@@ -2049,7 +2443,8 @@
      "base": 0.7928,
      "edge": 0.1185,
      "cote": null,
-     "decision": "étape 1 : Z = 0.59 ≤ 3.30 (Bonferroni)"
+     "decision": "validé",
+     "avertissement": null
     },
     {
      "marche": "L'extérieur encaisse au moins 1 but",
@@ -2065,10 +2460,11 @@
      "base": 0.7928,
      "edge": 0.1185,
      "cote": 1.06,
-     "decision": "étape 1 : Z = 0.59 ≤ 3.30 (Bonferroni)"
+     "decision": "exclusion : même événement que « Plus de 0,5 buts du domicile »",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -2081,8 +2477,7 @@
     "dom": 2.24,
     "ext": 1.25
    },
-   "paris_valides": [],
-   "tendances": [
+   "paris_valides": [
     {
      "marche": "Handicap +1,5 domicile",
      "P": 0.9193,
@@ -2097,7 +2492,8 @@
      "base": 0.7748,
      "edge": 0.1445,
      "cote": null,
-     "decision": "étape 1 : Z = 1.87 ≤ 3.30 (Bonferroni)"
+     "decision": "validé",
+     "avertissement": null
     },
     {
      "marche": "Plus de 0,5 buts du domicile",
@@ -2113,7 +2509,61 @@
      "base": 0.7928,
      "edge": 0.1012,
      "cote": null,
-     "decision": "étape 1 : Z = 0.35 ≤ 3.30 (Bonferroni)"
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Domicile ne perd pas",
+     "P": 0.7994,
+     "p_hat": 0.6667,
+     "k": 8,
+     "n": 12,
+     "wilson": [
+      0.3906,
+      0.8619
+     ],
+     "z": 0.26,
+     "base": 0.6306,
+     "edge": 0.1688,
+     "cote": 1.13,
+     "decision": "validé",
+     "avertissement": null
+    }
+   ],
+   "tendances": [
+    {
+     "marche": "Handicap +1,5 domicile",
+     "P": 0.9193,
+     "p_hat": 1.0,
+     "k": 12,
+     "n": 12,
+     "wilson": [
+      0.7575,
+      1.0
+     ],
+     "z": 1.87,
+     "base": 0.7748,
+     "edge": 0.1445,
+     "cote": null,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Plus de 0,5 buts du domicile",
+     "P": 0.894,
+     "p_hat": 0.8333,
+     "k": 10,
+     "n": 12,
+     "wilson": [
+      0.552,
+      0.953
+     ],
+     "z": 0.35,
+     "base": 0.7928,
+     "edge": 0.1012,
+     "cote": null,
+     "decision": "validé",
+     "avertissement": null
     },
     {
      "marche": "L'extérieur encaisse au moins 1 but",
@@ -2129,10 +2579,11 @@
      "base": 0.7928,
      "edge": 0.1012,
      "cote": 1.03,
-     "decision": "étape 1 : Z = 0.35 ≤ 3.30 (Bonferroni)"
+     "decision": "exclusion : même événement que « Plus de 0,5 buts du domicile »",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -2161,7 +2612,8 @@
      "base": 0.8933,
      "edge": -0.0133,
      "cote": 1.2,
-     "decision": "étape 1 : Z = 1.2 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -1.3% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Handicap +1,5 domicile",
@@ -2177,7 +2629,8 @@
      "base": 0.9067,
      "edge": -0.0343,
      "cote": 1.25,
-     "decision": "étape 1 : Z = 1.11 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -3.4% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 4,5 buts",
@@ -2193,10 +2646,11 @@
      "base": 0.8667,
      "edge": 0.0015,
      "cote": 1.11,
-     "decision": "étape 1 : Z = 1.36 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +0.2% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -2209,8 +2663,7 @@
     "dom": 1.22,
     "ext": 1.48
    },
-   "paris_valides": [],
-   "tendances": [
+   "paris_valides": [
     {
      "marche": "Moins de 2,5 buts du domicile",
      "P": 0.8742,
@@ -2225,7 +2678,8 @@
      "base": 0.6575,
      "edge": 0.2167,
      "cote": 1.05,
-     "decision": "étape 1 : Z = 1.3 ≤ 3.30 (Bonferroni)"
+     "decision": "validé",
+     "avertissement": null
     },
     {
      "marche": "Handicap +1,5 extérieur",
@@ -2241,7 +2695,61 @@
      "base": 0.6986,
      "edge": 0.17,
      "cote": null,
-     "decision": "étape 1 : Z = 1.09 ≤ 3.30 (Bonferroni)"
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Plus de 0,5 buts de l'extérieur",
+     "P": 0.7719,
+     "p_hat": 0.875,
+     "k": 7,
+     "n": 8,
+     "wilson": [
+      0.5291,
+      0.9776
+     ],
+     "z": 1.37,
+     "base": 0.6438,
+     "edge": 0.1281,
+     "cote": 1.06,
+     "decision": "validé",
+     "avertissement": null
+    }
+   ],
+   "tendances": [
+    {
+     "marche": "Moins de 2,5 buts du domicile",
+     "P": 0.8742,
+     "p_hat": 0.875,
+     "k": 7,
+     "n": 8,
+     "wilson": [
+      0.5291,
+      0.9776
+     ],
+     "z": 1.3,
+     "base": 0.6575,
+     "edge": 0.2167,
+     "cote": 1.05,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Handicap +1,5 extérieur",
+     "P": 0.8686,
+     "p_hat": 0.875,
+     "k": 7,
+     "n": 8,
+     "wilson": [
+      0.5291,
+      0.9776
+     ],
+     "z": 1.09,
+     "base": 0.6986,
+     "edge": 0.17,
+     "cote": null,
+     "decision": "validé",
+     "avertissement": null
     },
     {
      "marche": "Moins de 4,5 buts",
@@ -2257,10 +2765,11 @@
      "base": 0.7945,
      "edge": 0.0681,
      "cote": 1.28,
-     "decision": "étape 1 : Z = 0.56 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +6.8% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -2273,7 +2782,25 @@
     "dom": 1.82,
     "ext": 1.13
    },
-   "paris_valides": [],
+   "paris_valides": [
+    {
+     "marche": "Domicile ne perd pas",
+     "P": 0.7687,
+     "p_hat": 0.7333,
+     "k": 11,
+     "n": 15,
+     "wilson": [
+      0.4805,
+      0.891
+     ],
+     "z": 0.75,
+     "base": 0.64,
+     "edge": 0.1287,
+     "cote": 1.25,
+     "decision": "validé",
+     "avertissement": null
+    }
+   ],
    "tendances": [
     {
      "marche": "Handicap +1,5 domicile",
@@ -2289,7 +2816,8 @@
      "base": 0.8457,
      "edge": 0.0645,
      "cote": 1.03,
-     "decision": "étape 1 : Z = 0.94 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +6.4% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 2,5 buts de l'extérieur",
@@ -2305,7 +2833,8 @@
      "base": 0.8286,
      "edge": 0.0662,
      "cote": 1.07,
-     "decision": "étape 1 : Z = 1.08 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +6.6% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Plus de 0,5 buts du domicile",
@@ -2321,10 +2850,11 @@
      "base": 0.8514,
      "edge": -0.013,
      "cote": null,
-     "decision": "étape 1 : Z = 0.89 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -1.3% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -2337,7 +2867,25 @@
     "dom": 1.48,
     "ext": 1.19
    },
-   "paris_valides": [],
+   "paris_valides": [
+    {
+     "marche": "Handicap +1,5 domicile",
+     "P": 0.8753,
+     "p_hat": 0.8182,
+     "k": 9,
+     "n": 11,
+     "wilson": [
+      0.523,
+      0.9486
+     ],
+     "z": 0.45,
+     "base": 0.76,
+     "edge": 0.1153,
+     "cote": null,
+     "decision": "validé",
+     "avertissement": null
+    }
+   ],
    "tendances": [
     {
      "marche": "Moins de 2,5 buts de l'extérieur",
@@ -2353,7 +2901,8 @@
      "base": 0.8133,
      "edge": 0.0684,
      "cote": 1.04,
-     "decision": "étape 1 : Z = 0.82 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +6.8% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Handicap +1,5 domicile",
@@ -2369,7 +2918,8 @@
      "base": 0.76,
      "edge": 0.1153,
      "cote": null,
-     "decision": "étape 1 : Z = 0.45 ≤ 3.30 (Bonferroni)"
+     "decision": "validé",
+     "avertissement": null
     },
     {
      "marche": "Moins de 4,5 buts",
@@ -2385,10 +2935,11 @@
      "base": 0.88,
      "edge": -0.0131,
      "cote": 1.15,
-     "decision": "étape 1 : Z = -0.63 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -1.3% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -2401,8 +2952,7 @@
     "dom": 1.75,
     "ext": 1.03
    },
-   "paris_valides": [],
-   "tendances": [
+   "paris_valides": [
     {
      "marche": "Handicap +1,5 domicile",
      "P": 0.92,
@@ -2417,7 +2967,8 @@
      "base": 0.76,
      "edge": 0.16,
      "cote": null,
-     "decision": "étape 1 : Z = 1.95 ≤ 3.30 (Bonferroni)"
+     "decision": "validé",
+     "avertissement": null
     },
     {
      "marche": "Moins de 2,5 buts de l'extérieur",
@@ -2433,7 +2984,61 @@
      "base": 0.8133,
      "edge": 0.1014,
      "cote": null,
-     "decision": "étape 1 : Z = 0.92 ≤ 3.30 (Bonferroni)"
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Domicile ne perd pas",
+     "P": 0.782,
+     "p_hat": 0.75,
+     "k": 9,
+     "n": 12,
+     "wilson": [
+      0.4677,
+      0.9111
+     ],
+     "z": 1.24,
+     "base": 0.5733,
+     "edge": 0.2087,
+     "cote": 1.06,
+     "decision": "validé",
+     "avertissement": null
+    }
+   ],
+   "tendances": [
+    {
+     "marche": "Handicap +1,5 domicile",
+     "P": 0.92,
+     "p_hat": 1.0,
+     "k": 12,
+     "n": 12,
+     "wilson": [
+      0.7575,
+      1.0
+     ],
+     "z": 1.95,
+     "base": 0.76,
+     "edge": 0.16,
+     "cote": null,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Moins de 2,5 buts de l'extérieur",
+     "P": 0.9147,
+     "p_hat": 0.9167,
+     "k": 11,
+     "n": 12,
+     "wilson": [
+      0.6461,
+      0.9851
+     ],
+     "z": 0.92,
+     "base": 0.8133,
+     "edge": 0.1014,
+     "cote": null,
+     "decision": "validé",
+     "avertissement": null
     },
     {
      "marche": "Moins de 4,5 buts",
@@ -2449,10 +3054,11 @@
      "base": 0.88,
      "edge": -0.028,
      "cote": 1.19,
-     "decision": "étape 1 : Z = -0.5 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -2.8% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -2481,7 +3087,8 @@
      "base": 0.8609,
      "edge": -0.0038,
      "cote": 1.1,
-     "decision": "étape 1 : Z = -1.13 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -0.4% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 4,5 buts",
@@ -2497,7 +3104,8 @@
      "base": 0.8344,
      "edge": 0.0218,
      "cote": 1.13,
-     "decision": "étape 1 : Z = -0.17 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +2.2% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Handicap +1,5 domicile",
@@ -2513,10 +3121,11 @@
      "base": 0.894,
      "edge": -0.0427,
      "cote": null,
-     "decision": "étape 1 : Z = -0.78 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -4.3% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -2553,7 +3162,8 @@
      "base": 0.894,
      "edge": -0.0138,
      "cote": null,
-     "decision": "étape 1 : Z = 0.59 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -1.4% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Plus de 0,5 buts du domicile",
@@ -2569,7 +3179,8 @@
      "base": 0.8146,
      "edge": 0.0362,
      "cote": 1.12,
-     "decision": "étape 1 : Z = 0.58 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +3.6% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "L'extérieur encaisse au moins 1 but",
@@ -2585,10 +3196,11 @@
      "base": 0.8146,
      "edge": 0.0362,
      "cote": 1.14,
-     "decision": "étape 1 : Z = 0.58 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +3.6% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -2601,7 +3213,25 @@
     "dom": 1.06,
     "ext": 1.44
    },
-   "paris_valides": [],
+   "paris_valides": [
+    {
+     "marche": "Handicap +1,5 extérieur",
+     "P": 0.8943,
+     "p_hat": 0.8929,
+     "k": 25,
+     "n": 28,
+     "wilson": [
+      0.728,
+      0.9629
+     ],
+     "z": 1.36,
+     "base": 0.7881,
+     "edge": 0.1062,
+     "cote": null,
+     "decision": "validé",
+     "avertissement": null
+    }
+   ],
    "tendances": [
     {
      "marche": "Moins de 2,5 buts du domicile",
@@ -2617,7 +3247,8 @@
      "base": 0.8344,
      "edge": 0.0739,
      "cote": 1.03,
-     "decision": "étape 1 : Z = 2.36 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +7.4% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Handicap +1,5 extérieur",
@@ -2633,7 +3264,8 @@
      "base": 0.7881,
      "edge": 0.1062,
      "cote": null,
-     "decision": "étape 1 : Z = 1.36 ≤ 3.30 (Bonferroni)"
+     "decision": "validé",
+     "avertissement": null
     },
     {
      "marche": "Moins de 4,5 buts",
@@ -2649,10 +3281,11 @@
      "base": 0.8344,
      "edge": 0.0574,
      "cote": 1.16,
-     "decision": "étape 1 : Z = 1.85 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +5.7% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -2665,7 +3298,25 @@
     "dom": 1.39,
     "ext": 1.03
    },
-   "paris_valides": [],
+   "paris_valides": [
+    {
+     "marche": "Moins de 3,5 buts",
+     "P": 0.7753,
+     "p_hat": 0.5714,
+     "k": 16,
+     "n": 28,
+     "wilson": [
+      0.3907,
+      0.7349
+     ],
+     "z": -1.1,
+     "base": 0.6689,
+     "edge": 0.1064,
+     "cote": 1.34,
+     "decision": "validé (avertissement)",
+     "avertissement": "confiance réduite : modèle 78% hors de l'intervalle de Wilson des données [39% ; 73%] (p̂ = 57%, n = 28)"
+    }
+   ],
    "tendances": [
     {
      "marche": "Moins de 2,5 buts de l'extérieur",
@@ -2681,7 +3332,8 @@
      "base": 0.8609,
      "edge": 0.0541,
      "cote": 1.07,
-     "decision": "étape 1 : Z = -0.6 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +5.4% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 4,5 buts",
@@ -2697,7 +3349,8 @@
      "base": 0.8344,
      "edge": 0.0676,
      "cote": 1.11,
-     "decision": "étape 1 : Z = -0.19 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +6.8% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Handicap +1,5 domicile",
@@ -2713,10 +3366,11 @@
      "base": 0.894,
      "edge": 0.0031,
      "cote": null,
-     "decision": "étape 1 : Z = -1.86 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +0.3% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -2745,7 +3399,8 @@
      "base": 0.8819,
      "edge": 0.0099,
      "cote": 1.1,
-     "decision": "étape 1 : Z = -0.52 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +1.0% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Handicap +1,5 domicile",
@@ -2761,7 +3416,8 @@
      "base": 0.9028,
      "edge": -0.012,
      "cote": 1.1,
-     "decision": "étape 1 : Z = -0.81 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -1.2% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 4,5 buts",
@@ -2777,10 +3433,11 @@
      "base": 0.8542,
      "edge": 0.0063,
      "cote": 1.11,
-     "decision": "étape 1 : Z = -0.21 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +0.6% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -2809,7 +3466,8 @@
      "base": 0.8283,
      "edge": 0.0747,
      "cote": 1.03,
-     "decision": "étape 1 : Z = 0.48 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +7.5% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Handicap +1,5 domicile",
@@ -2825,7 +3483,8 @@
      "base": 0.8586,
      "edge": 0.0442,
      "cote": null,
-     "decision": "étape 1 : Z = 0.26 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +4.4% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 4,5 buts",
@@ -2841,10 +3500,11 @@
      "base": 0.7778,
      "edge": 0.0847,
      "cote": 1.26,
-     "decision": "étape 1 : Z = 0.8 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +8.5% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -2873,7 +3533,8 @@
      "base": 0.9143,
      "edge": 0.0185,
      "cote": null,
-     "decision": "étape 1 : Z = -0.4 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +1.8% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 2,5 buts de l'extérieur",
@@ -2889,7 +3550,8 @@
      "base": 0.9143,
      "edge": 0.0119,
      "cote": null,
-     "decision": "étape 1 : Z = 0.87 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +1.2% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 4,5 buts",
@@ -2905,10 +3567,11 @@
      "base": 0.8857,
      "edge": -0.0365,
      "cote": 1.09,
-     "decision": "étape 1 : Z = 1.02 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -3.6% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -2929,8 +3592,7 @@
     "dom": 0.97,
     "ext": 2.05
    },
-   "paris_valides": [],
-   "tendances": [
+   "paris_valides": [
     {
      "marche": "Handicap +1,5 extérieur",
      "P": 0.942,
@@ -2945,23 +3607,8 @@
      "base": 0.8395,
      "edge": 0.1025,
      "cote": null,
-     "decision": "étape 1 : Z = 1.24 ≤ 3.30 (Bonferroni)"
-    },
-    {
-     "marche": "Moins de 2,5 buts du domicile",
-     "P": 0.9244,
-     "p_hat": 1.0,
-     "k": 8,
-     "n": 8,
-     "wilson": [
-      0.6756,
-      1.0
-     ],
-     "z": 1.06,
-     "base": 0.8765,
-     "edge": 0.0479,
-     "cote": null,
-     "decision": "étape 1 : Z = 1.06 ≤ 3.30 (Bonferroni)"
+     "decision": "validé",
+     "avertissement": null
     },
     {
      "marche": "Plus de 0,5 buts de l'extérieur",
@@ -2977,10 +3624,81 @@
      "base": 0.7284,
      "edge": 0.1434,
      "cote": 1.05,
-     "decision": "étape 1 : Z = 1.73 ≤ 3.30 (Bonferroni)"
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Extérieur ne perd pas",
+     "P": 0.8344,
+     "p_hat": 1.0,
+     "k": 8,
+     "n": 8,
+     "wilson": [
+      0.6756,
+      1.0
+     ],
+     "z": 2.17,
+     "base": 0.6296,
+     "edge": 0.2048,
+     "cote": 1.08,
+     "decision": "validé",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "tendances": [
+    {
+     "marche": "Handicap +1,5 extérieur",
+     "P": 0.942,
+     "p_hat": 1.0,
+     "k": 8,
+     "n": 8,
+     "wilson": [
+      0.6756,
+      1.0
+     ],
+     "z": 1.24,
+     "base": 0.8395,
+     "edge": 0.1025,
+     "cote": null,
+     "decision": "validé",
+     "avertissement": null
+    },
+    {
+     "marche": "Moins de 2,5 buts du domicile",
+     "P": 0.9244,
+     "p_hat": 1.0,
+     "k": 8,
+     "n": 8,
+     "wilson": [
+      0.6756,
+      1.0
+     ],
+     "z": 1.06,
+     "base": 0.8765,
+     "edge": 0.0479,
+     "cote": null,
+     "decision": "Edge +4.8% ≤ 10%",
+     "avertissement": null
+    },
+    {
+     "marche": "Plus de 0,5 buts de l'extérieur",
+     "P": 0.8718,
+     "p_hat": 1.0,
+     "k": 8,
+     "n": 8,
+     "wilson": [
+      0.6756,
+      1.0
+     ],
+     "z": 1.73,
+     "base": 0.7284,
+     "edge": 0.1434,
+     "cote": 1.05,
+     "decision": "validé",
+     "avertissement": null
+    }
+   ],
+   "z_seuil": null,
    "emac": 0.0054
   },
   {
@@ -3009,7 +3727,8 @@
      "base": 0.9137,
      "edge": 0.0015,
      "cote": null,
-     "decision": "étape 1 : Z = -1.4 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +0.1% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Moins de 4,5 buts",
@@ -3025,7 +3744,8 @@
      "base": 0.8934,
      "edge": 0.0085,
      "cote": 1.07,
-     "decision": "étape 1 : Z = -0.29 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge +0.9% ≤ 10%",
+     "avertissement": null
     },
     {
      "marche": "Handicap +1,5 domicile",
@@ -3041,10 +3761,11 @@
      "base": 0.934,
      "edge": -0.0366,
      "cote": 1.06,
-     "decision": "étape 1 : Z = -0.34 ≤ 3.30 (Bonferroni)"
+     "decision": "Edge -3.7% ≤ 10%",
+     "avertissement": null
     }
    ],
-   "z_seuil": 3.299,
+   "z_seuil": null,
    "emac": 0.0054
   }
  ]

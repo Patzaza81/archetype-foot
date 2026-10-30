@@ -217,48 +217,42 @@ def _l(cle, p, base, k, n, cote=None):
             "preuve": {"k": k, "n": n, "p_hat": round(k / n, 4)}}
 
 
-def test_wilson_etape0_cas_qui_passent_et_echouent():
+def test_wilson_n_est_plus_qu_un_avertissement():
     assert S.wilson(43, 60) == pytest.approx((0.5913, 0.8143), abs=0.002)
     assert S.wilson(0, 0) == (0.0, 1.0)
-    zs = 1.0
-    for p, k, n in ((0.60, 12, 20), (0.75, 15, 20), (0.45, 6, 20)):              # P dans l'intervalle : passe l'étape 0
-        assert not S.tester(_l(("btts", "Oui"), p, 0.10, k, n), 0.0, zs)[1].startswith("étape 0")
-    for p, k, n in ((0.95, 12, 20), (0.30, 15, 20), (0.80, 6, 20)):              # P hors de l'intervalle : rejeté
-        assert S.tester(_l(("btts", "Oui"), p, 0.10, k, n), 0.0, zs)[1].startswith("étape 0")
+    l = _l(("btts", "Oui"), 0.86, 0.50, 6, 10)                                     # 86 % hors de [31 % ; 83 %]
+    ok, r = S.tester(l, 0.005)
+    assert ok and l["avertissement"] and "avertissement" in r
+    l = _l(("btts", "Oui"), 0.80, 0.50, 8, 10)
+    assert S.tester(l, 0.005)[0] and l["avertissement"] is None
 
 
-def test_bonferroni_et_z():
-    assert S.z_seuil(13) == pytest.approx(2.66, abs=0.01)                         # exemple du Module 4
-    assert S.z_seuil(1) == pytest.approx(1.645, abs=0.001)
-    assert S.z_score(43 / 60, 0.52, 60) == pytest.approx(3.05, abs=0.02)            # exemple over 2,5 du Module 4
+def test_option_b_cas_qui_passent():
+    assert S.tester(_l(("over_under_1.5", "plus"), 0.80, 0.68, 9, 10), 0.005)[0]      # Edge +12 %
+    assert S.tester(_l(("1x2", "1"), 0.76, 0.45, 2, 10), 0.005)[0]                    # passe même avec p̂ faible (avertissement)
+    assert S.tester(_l(("double_chance", "1N"), 0.95, 0.70, 20, 20), 0.005)[0]
 
 
-def test_module4_cas_qui_passent():
-    zs = S.z_seuil(13)
-    assert S.tester(_l(("over_under_2.5", "plus"), 0.72, 0.52, 43, 60), 0.02, zs)[0]
-    assert S.tester(_l(("1x2", "1"), 0.80, 0.45, 32, 40), 0.03, zs)[0]
-    assert S.tester(_l(("btts", "Non"), 0.95, 0.50, 19, 20), 0.03, zs)[0]
+def test_option_b_cas_qui_echouent():
+    ok, r = S.tester(_l(("over_under_1.5", "plus"), 0.75, 0.50, 9, 10), 0.005)
+    assert not ok and r.startswith("P")                                           # 75 % pile : il faut plus de 75 %
+    ok, r = S.tester(_l(("over_under_0.5", "plus"), 0.93, 0.84, 10, 10), 0.005)
+    assert not ok and r.startswith("Edge")                                        # Edge +9 % ≤ 10 %
+    ok, r = S.tester(_l(("btts", "Non"), 0.90, 0.50, 9, 10), 0.45)
+    assert not ok and r.startswith("Edge")                                        # Edge +40 % sous une EMAC de 45 %
+    assert not S.tester(dict(_l(("1x2", "1"), 0.9, 0.5, 9, 10), base=None), 0.005)[0]
 
 
-def test_module4_cas_qui_echouent():
-    zs = S.z_seuil(13)
-    ok, r = S.tester(_l(("over_under_2.5", "plus"), 0.55, 0.52, 43, 60), 0.02, zs)
-    assert not ok and r.startswith("étape 0")                                     # modèle 55 %, données 72 % [59 % ; 82 %] : incohérent
-    ok, r = S.tester(_l(("1x2", "1"), 0.84, 0.72, 50, 60), 0.02, zs)
-    assert not ok and r.startswith("étape 1")                                     # exemple 1X du Module 4 : Z = 1,95 < 2,66
-    ok, r = S.tester(_l(("btts", "Oui"), 0.58, 0.55, 28, 40), 0.10, 1.0)
-    assert not ok and r.startswith("étape 3")                                     # cohérent, Z = 1,9, mais Edge 3 % sous l'EMAC 10 %
-
-
-def test_module4_une_issue_par_marche_et_jamais_deux_fois_le_meme_evenement():
-    a = {"statut": "analyse", "marches": [_l(("1x2", "1"), 0.80, 0.45, 32, 40), _l(("1x2", "N"), 0.80, 0.30, 32, 40),
-                                          _l(("double_chance", "1N"), 0.95, 0.70, 38, 40), _l(("handicap_0.5", "domicile"), 0.95, 0.70, 38, 40)]}
-    s = S.selectionner(a, 0.03)
+def test_option_b_une_issue_par_marche_avertis_apres_et_jamais_deux_fois_le_meme_evenement():
+    a = {"statut": "analyse", "marches": [_l(("1x2", "1"), 0.80, 0.45, 8, 10), _l(("double_chance", "1N"), 0.95, 0.70, 10, 10),
+                                          _l(("handicap_0.5", "domicile"), 0.95, 0.70, 10, 10), _l(("over_under_1.5", "plus"), 0.97, 0.70, 3, 10)]}
+    s = S.selectionner(a, 0.005)
     cles = [s["principal"]["cle"]] + [x["cle"] for x in s["autres"]]
-    assert cles[0] in (["double_chance", "1N"], ["handicap_0.5", "domicile"])   # le plus probable en tête (réussite d'abord)
-    assert ["1x2", "N"] in cles and ["1x2", "1"] not in cles                      # même marché 1N2, même P : l'Edge départage
-    assert (["double_chance", "1N"] in cles) != (["handicap_0.5", "domicile"] in cles)   # même événement : un seul
-    assert S.selectionner({"statut": "analyse", "marches": [_l(("1x2", "1"), 0.5, 0.45, 20, 40)]}, 0.03)["principal"] is None
+    assert cles[0] in (["double_chance", "1N"], ["handicap_0.5", "domicile"])     # le plus probable sans avertissement en tête
+    assert cles[-1] == ["over_under_1.5", "plus"]                                 # 97 % mais hors Wilson : classé après
+    assert (["double_chance", "1N"] in cles) != (["handicap_0.5", "domicile"] in cles)
+    assert ["1x2", "1"] in cles
+    assert S.selectionner({"statut": "analyse", "marches": [_l(("1x2", "1"), 0.6, 0.45, 6, 10)]}, 0.005)["principal"] is None
 
 
 def test_emac_mesure_la_calibration_pas_l_erreur_individuelle():

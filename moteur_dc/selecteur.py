@@ -1,19 +1,14 @@
-"""Module 4 du moteur DC : sélecteur statistique (spécification de Patrick, version corrigée). Aucune cote, aucun seuil de probabilité.
+"""Module 4 du moteur DC : sélecteur (option B de Patrick, 30/10/2026). Aucune cote.
 
 Pour chaque marché du match (P = probabilité du modèle, Base = fréquence du marché dans le championnat cette saison avant le match,
 k/n = réussites/essais sur les matchs comparables : A à domicile + B à l'extérieur, score orienté) :
-- Étape 0, cohérence (corrigée par Patrick le 30/10/2026) : rejeté si P sort de l'intervalle de Wilson à 95 % de p̂ = k/n (l'erreur
-  d'échantillonnage de p̂ est prise en compte ; l'ancienne règle |P − p̂| ≤ 2 × EMAC = 0,011 rejetait tout) ;
-- Étape 1, significativité : Z = (p̂ − Base) / √(Base(1 − Base)/n) ; admis si Z > Z_seuil, Z_seuil = quantile normal de 1 − 0,05/m,
-  m = nombre de marchés testés sur le match (correction de Bonferroni) ;
-- Étapes 2 et 3 : Edge = P − Base ; admis si Edge > EMAC ;
-- Étape 4 : une seule issue par marché (groupe de la clé : 1N2, double chance, chaque ligne de buts, BTTS, Multigoal…), la plus probable ;
-  en plus, jamais deux fois le même événement (même ensemble de scores gagnants, ex. « handicap +0,5 » et « ne perd pas »).
-Sortie : marchés validés par PROBABILITÉ décroissante (réussite d'abord, Patrick 30/10/2026) ; pari principal = le plus probable.
+- validé si P > 75 % ET Edge = P − Base > 10 % (et > EMAC) — seuils de Patrick ;
+- Bonferroni et Z supprimés comme filtre (le Z reste affiché) ;
+- intervalle de Wilson à 95 % de p̂ : simple AVERTISSEMENT si P en sort (confiance réduite, classé après les paris sans avertissement) ;
+- une seule issue par marché (la plus probable) et jamais deux fois le même événement (même ensemble de scores gagnants).
+Sortie : paris sans avertissement d'abord, puis par PROBABILITÉ décroissante ; pari principal = le premier.
 
-EMAC = erreur de calibration du modèle : écart moyen |probabilité annoncée − fréquence observée| par dixième de probabilité, pondéré par le nombre
-de prédictions (la formule reçue, moyenne de |P − Y| avec Y = 0 ou 1, vaut toujours 0,4 à 0,5 : elle ne mesure pas la calibration).
-Mesurée hors échantillon au calibrage, puis sur les 30 derniers jours du journal gelé dès qu'il contient des matchs terminés (suivi.py).
+EMAC = erreur de calibration du modèle par dixième de probabilité (calibrage hors échantillon, puis 30 derniers jours du journal gelé).
 """
 from __future__ import annotations
 
@@ -23,7 +18,9 @@ from typing import Any
 
 from . import marches as M
 
-ALPHA = 0.05                 # risque global de Patrick (Module 4) ; le seuil par marché en découle (Bonferroni)
+ALPHA = 0.05                 # risque de l'intervalle de Wilson (95 %)
+P_MIN = 0.75                 # option B de Patrick : P > 75 %
+EDGE_MIN = 0.10              # option B de Patrick : Edge > 10 %
 Z_WILSON = NormalDist().inv_cdf(1 - ALPHA / 2)     # intervalle de Wilson à 95 % (même risque α)
 
 
@@ -47,22 +44,22 @@ def z_score(p_hat: float, base: float, n: int) -> float | None:
     return (p_hat - base) / math.sqrt(base * (1 - base) / n)
 
 
-def tester(l: dict[str, Any], emac: float, zs: float) -> tuple[bool, str]:
+def tester(l: dict[str, Any], emac: float, zs: float | None = None) -> tuple[bool, str]:
     pr, base, p = l.get("preuve"), l.get("base"), l["p"]
-    if not pr or base is None:
-        return False, "pas de matchs comparables ou pas de base du championnat"
-    ph, n = pr["p_hat"], pr["n"]
-    bas, haut = wilson(pr["k"], n)
-    pr["wilson"] = [round(bas, 4), round(haut, 4)]
-    if not bas <= p <= haut:
-        return False, f"étape 0 : modèle {p:.0%} hors de l'intervalle de Wilson des données [{bas:.0%} ; {haut:.0%}] (p̂ = {ph:.0%}, n = {n})"
-    z = z_score(ph, base, n)
-    if z is None or z <= zs:
-        return False, f"étape 1 : Z = {z if z is None else round(z, 2)} ≤ {zs:.2f} (Bonferroni)"
+    l["avertissement"] = None
+    if pr:
+        bas, haut = wilson(pr["k"], pr["n"])
+        pr["wilson"] = [round(bas, 4), round(haut, 4)]
+        if not bas <= p <= haut:
+            l["avertissement"] = f"confiance réduite : modèle {p:.0%} hors de l'intervalle de Wilson des données [{bas:.0%} ; {haut:.0%}] (p̂ = {pr['p_hat']:.0%}, n = {pr['n']})"
+    if base is None:
+        return False, "pas de base du championnat"
+    if p <= P_MIN:
+        return False, f"P {p:.0%} ≤ {P_MIN:.0%}"
     edge = p - base
-    if edge <= emac:
-        return False, f"étape 3 : Edge {edge:+.3f} ≤ EMAC {emac:.3f}"
-    return True, "validé"
+    if edge <= max(EDGE_MIN, emac):
+        return False, f"Edge {edge:+.1%} ≤ {max(EDGE_MIN, emac):.0%}"
+    return True, "validé" + (" (avertissement)" if l["avertissement"] else "")
 
 
 def selectionner(a: dict[str, Any], emac: float) -> dict[str, Any]:
@@ -70,7 +67,7 @@ def selectionner(a: dict[str, Any], emac: float) -> dict[str, Any]:
         return {"principal": None, "autres": [], "raison": a.get("raison"), "m": 0, "z_seuil": None, "emac": emac}
     testes = [l for l in a["marches"] if l.get("preuve") and l.get("base") is not None]
     m = len(testes)
-    zs = z_seuil(m)
+    zs = None
     ok = []
     for l in a["marches"]:
         pr = l.get("preuve")
@@ -82,20 +79,20 @@ def selectionner(a: dict[str, Any], emac: float) -> dict[str, Any]:
         l["decision"] = raison
         if bon:
             ok.append(l)
-    ok.sort(key=lambda l: (-l["p"], -l["edge"]))
+    ok.sort(key=lambda l: (l.get("avertissement") is not None, -l["p"], -l["edge"]))
     garde, groupes, vus = [], {}, {}
     for l in ok:
         g = l["cle"][0]
         if g in groupes:
-            l["decision"] = f"étape 4 : issue dominée par « {groupes[g]} » (même marché, plus probable)"
+            l["decision"] = f"exclusion : issue dominée par « {groupes[g]} » (même marché, plus probable)"
             continue
         sig = M.signature(tuple(l["cle"]))
         if sig in vus:
-            l["decision"] = f"étape 4 : même événement que « {vus[sig]} »"
+            l["decision"] = f"exclusion : même événement que « {vus[sig]} »"
             continue
         groupes[g] = vus[sig] = l["marche"]
         garde.append(l)
-    base = {"m": m, "z_seuil": round(zs, 3), "emac": emac}
+    base = {"m": m, "z_seuil": None, "emac": emac}
     if not garde:
         return {"principal": None, "autres": [], "raison": "aucun marché ne passe le Module 4", **base}
     return {"principal": garde[0], "autres": garde[1:], "raison": None, **base}
