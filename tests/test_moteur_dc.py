@@ -231,11 +231,12 @@ def test_option_b_cas_qui_passent():
     assert S.tester(_l(("over_under_1.5", "plus"), 0.80, 0.68, 9, 10), 0.005)[0]      # Edge +12 %
     assert S.tester(_l(("1x2", "1"), 0.76, 0.45, 2, 10), 0.005)[0]                    # passe même avec p̂ faible (avertissement)
     assert S.tester(_l(("double_chance", "1N"), 0.95, 0.70, 20, 20), 0.005)[0]
+    assert S.tester(_l(("btts", "Non"), 0.75, 0.65, 8, 10), 0.005)[0]               # 75 % et Edge 10 % pile : acceptés
 
 
 def test_option_b_cas_qui_echouent():
-    ok, r = S.tester(_l(("over_under_1.5", "plus"), 0.75, 0.50, 9, 10), 0.005)
-    assert not ok and r.startswith("P")                                           # 75 % pile : il faut plus de 75 %
+    ok, r = S.tester(_l(("over_under_1.5", "plus"), 0.749, 0.50, 9, 10), 0.005)
+    assert not ok and r.startswith("P")                                           # sous 75 % : rejet immédiat, Edge ni Wilson calculés
     ok, r = S.tester(_l(("over_under_0.5", "plus"), 0.93, 0.84, 10, 10), 0.005)
     assert not ok and r.startswith("Edge")                                        # Edge +9 % ≤ 10 %
     ok, r = S.tester(_l(("btts", "Non"), 0.90, 0.50, 9, 10), 0.45)

@@ -2,9 +2,9 @@
 
 Pour chaque marché du match (P = probabilité du modèle, Base = fréquence du marché dans le championnat cette saison avant le match,
 k/n = réussites/essais sur les matchs comparables : A à domicile + B à l'extérieur, score orienté) :
-- validé si P > 75 % ET Edge = P − Base > 10 % (et > EMAC) — seuils de Patrick ;
+- ordre strict : 1. P ≥ 75 % (sinon rejet immédiat) ; 2. Edge = P − Base ≥ 10 % (et ≥ EMAC) ; seuils de Patrick ;
 - Bonferroni et Z supprimés comme filtre (le Z reste affiché) ;
-- intervalle de Wilson à 95 % de p̂ : simple AVERTISSEMENT si P en sort (confiance réduite, classé après les paris sans avertissement) ;
+- 3. intervalle de Wilson à 95 % de p̂, sur les seuls marchés validés : simple AVERTISSEMENT si P en sort (confiance réduite, classé après les paris sans avertissement) ;
 - une seule issue par marché (la plus probable) et jamais deux fois le même événement (même ensemble de scores gagnants).
 Sortie : paris sans avertissement d'abord, puis par PROBABILITÉ décroissante ; pari principal = le premier.
 
@@ -19,8 +19,8 @@ from typing import Any
 from . import marches as M
 
 ALPHA = 0.05                 # risque de l'intervalle de Wilson (95 %)
-P_MIN = 0.75                 # option B de Patrick : P > 75 %
-EDGE_MIN = 0.10              # option B de Patrick : Edge > 10 %
+P_MIN = 0.75                 # Patrick : P ≥ 75 %
+EDGE_MIN = 0.10              # Patrick : Edge ≥ 10 %
 Z_WILSON = NormalDist().inv_cdf(1 - ALPHA / 2)     # intervalle de Wilson à 95 % (même risque α)
 
 
@@ -45,20 +45,21 @@ def z_score(p_hat: float, base: float, n: int) -> float | None:
 
 
 def tester(l: dict[str, Any], emac: float, zs: float | None = None) -> tuple[bool, str]:
+    """Ordre strict de Patrick (30/10/2026) : 1. P ≥ 75 % ; 2. Edge ≥ 10 % ; 3. Wilson = avertissement, seulement sur les marchés validés."""
     pr, base, p = l.get("preuve"), l.get("base"), l["p"]
     l["avertissement"] = None
+    if p < P_MIN:
+        return False, f"P {p:.0%} < {P_MIN:.0%}"
+    if base is None:
+        return False, "pas de base du championnat"
+    edge = round(p - base, 9)                      # arrondi : 0,75 − 0,65 doit valoir 0,10, pas 0,0999…
+    if edge < max(EDGE_MIN, emac):
+        return False, f"Edge {edge:+.1%} < {max(EDGE_MIN, emac):.0%}"
     if pr:
         bas, haut = wilson(pr["k"], pr["n"])
         pr["wilson"] = [round(bas, 4), round(haut, 4)]
         if not bas <= p <= haut:
             l["avertissement"] = f"confiance réduite : modèle {p:.0%} hors de l'intervalle de Wilson des données [{bas:.0%} ; {haut:.0%}] (p̂ = {pr['p_hat']:.0%}, n = {pr['n']})"
-    if base is None:
-        return False, "pas de base du championnat"
-    if p <= P_MIN:
-        return False, f"P {p:.0%} ≤ {P_MIN:.0%}"
-    edge = p - base
-    if edge <= max(EDGE_MIN, emac):
-        return False, f"Edge {edge:+.1%} ≤ {max(EDGE_MIN, emac):.0%}"
     return True, "validé" + (" (avertissement)" if l["avertissement"] else "")
 
 
