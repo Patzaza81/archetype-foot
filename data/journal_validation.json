@@ -1,9 +1,15 @@
 {
   "schema_version": 1,
-  "genere_le": "2026-10-31T10:56:44Z",
+  "genere_le": "2026-10-31T19:57:39Z",
   "methode": "walk_forward",
   "anti_fuite": true,
   "groupes": {
+    "Galatasaray|over_under_total_3.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "V. Whitecaps|over_under_total_3.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
@@ -25,6 +31,12 @@
           "frequence_apres": 0.0
         }
       }
+    },
+    "Glentoran|double_chance_X2": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
     },
     "New York City|over_under_total_3.5_under": {
       "methode": "walk_forward",
@@ -89,7 +101,19 @@
       "observations": 0,
       "par_regime": {}
     },
+    "Bochum|over_under_total_3.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Austin|double_chance_1X": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Livingston FC|cage_inviolee_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -158,11 +182,34 @@
       "observations": 0,
       "par_regime": {}
     },
-    "Newport|1x2_domicile": {
+    "Volendam|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
       "par_regime": {}
+    },
+    "Volendam|handicap_domicile_-0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Volendam|handicap_domicile_-1.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Newport|1x2_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
     },
     "Grimsby|1x2_domicile": {
       "methode": "walk_forward",
@@ -173,8 +220,13 @@
     "Newport|handicap_domicile_-0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
     },
     "Grimsby|handicap_domicile_-0.5": {
       "methode": "walk_forward",
@@ -188,7 +240,25 @@
       "observations": 0,
       "par_regime": {}
     },
+    "Glentoran|over_under_total_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Glentoran|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Nacional|1x2_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Haverfordwest|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -242,6 +312,24 @@
       "observations": 0,
       "par_regime": {}
     },
+    "De Graafschap|over_under_total_4.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "De Graafschap|over_under_total_3.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "De Graafschap|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Eibar|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
@@ -263,14 +351,24 @@
     "AlbinoLeffe|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "AlbinoLeffe|handicap_exterieur_-0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "San Diego|over_under_total_3.5_under": {
       "methode": "walk_forward",
@@ -356,6 +454,12 @@
       "observations": 0,
       "par_regime": {}
     },
+    "Tornadoes|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "NY Red Bulls|over_under_total_2.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
@@ -381,6 +485,18 @@
       "par_regime": {}
     },
     "Forge|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Livingston FC|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Livingston FC|over_under_total_1.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -441,6 +557,12 @@
       "par_regime": {}
     },
     "Remo|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Diriyah|over_under_total_2.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -525,6 +647,12 @@
       "par_regime": {}
     },
     "Dunfermline|over_under_total_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Independiente|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
