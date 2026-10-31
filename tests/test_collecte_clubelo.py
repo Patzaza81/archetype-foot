@@ -52,12 +52,22 @@ def test_collecte_ecrit_reprend_et_ne_retelecharge_pas(tmp_path):
 
 
 def test_arret_apres_trois_echecs_de_suite_et_reponse_refusee_non_ecrite(tmp_path):
-    s = Session([Reponse("<html>erreur</html>"), Reponse("", 503), Reponse(BON.replace("2018.4", "x")), Reponse(BON)])
+    mauvaises = [Reponse("<html>erreur</html>"), Reponse("", 503), Reponse(BON.replace("2018.4", "x"))] * 2     # chaque date essaie http puis https
+    s = Session(mauvaises + [Reponse(BON)])
     m = C.collecter(["a", "b", "c", "d"], tmp_path, s, 0, dormir=lambda x: None, log=lambda *a: None)
-    assert m["arret"] and len(m["erreurs"]) == 3 and not list(tmp_path.glob("*.csv")) and len(s.appels) == 3
+    assert m["arret"] and len(m["erreurs"]) == 3 and not list(tmp_path.glob("*.csv")) and len(s.appels) == 6
+
+
+def test_repli_https_si_http_echoue_et_ordre_des_adresses(tmp_path):
+    s = Session([Reponse("", 500), Reponse(BON)])
+    m = C.collecter(["2025-02-27"], tmp_path, s, 0, dormir=lambda x: None, log=lambda *a: None)
+    assert m["ok"] == ["2025-02-27"] and s.appels[0].startswith("http://") and s.appels[1].startswith("https://")
+    s2 = Session([Reponse(BON)])
+    C.collecter(["2025-03-06"], tmp_path, s2, 0, dormir=lambda x: None, log=lambda *a: None)
+    assert len(s2.appels) == 1                                              # http répond : pas d'appel https
 
 
 def test_un_echec_isole_ne_stoppe_pas(tmp_path):
-    s = Session([Reponse(BON), Reponse("", 500), Reponse(BON)])
+    s = Session([Reponse(BON), Reponse("", 500), Reponse("", 500), Reponse(BON)])
     m = C.collecter(["2025-02-27", "2025-03-06", "2025-03-13"], tmp_path, s, 0, dormir=lambda x: None, log=lambda *a: None)
     assert not m["arret"] and m["ok"] == ["2025-02-27", "2025-03-13"] and list(m["erreurs"]) == ["2025-03-06"]

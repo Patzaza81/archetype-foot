@@ -18,7 +18,7 @@ from pathlib import Path
 import requests
 
 DOSSIER = Path(__file__).resolve().parent / "data" / "clubelo"
-URL = "https://api.clubelo.com/{jour}"
+URLS = ("http://api.clubelo.com/{jour}", "https://api.clubelo.com/{jour}")      # http d'abord (forme documentée) ; https testé en repli : en https la connexion expirait depuis GitHub
 ENTETE = "Rank,Club,Country,Level,Elo,From,To"
 MAX_ECHECS_DE_SUITE = 3
 DEBUT_DEFAUT = "2025-02-27"           # la veille du premier match de la saison 2025-26 du bloc Football-Data (2025-02-28)
@@ -57,9 +57,17 @@ def valider(texte: str) -> list[dict]:
 
 
 def telecharger(jour: str, session) -> str:
-    r = session.get(URL.format(jour=jour), timeout=30, headers={"User-Agent": AGENT})
-    r.raise_for_status()
-    return r.text
+    """Essaie chaque adresse dans l'ordre ; la raison de chaque échec est gardée dans l'erreur finale."""
+    raisons = []
+    for url in URLS:
+        try:
+            r = session.get(url.format(jour=jour), timeout=(15, 30), headers={"User-Agent": AGENT})
+            r.raise_for_status()
+            valider(r.text)
+            return r.text
+        except Exception as e:                                      # noqa: BLE001
+            raisons.append(f"{url.split(':')[0]}: {type(e).__name__} {str(e)[:60]}")
+    raise RuntimeError(" | ".join(raisons))
 
 
 def collecter(liste: list[str], dossier: Path, session, pause: float, dormir=time.sleep, log=print) -> dict:
