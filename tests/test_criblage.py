@@ -135,3 +135,29 @@ def test_bout_en_bout_sans_signal_et_placebo():
     App, Test = _jeu(6000, 30), _jeu(3000, 31)
     pl = K.cribler(App, Test, np.random.default_rng(0), melange=True)["parametres"]
     assert not pl["signal"]["retenu_holm"]                                  # le placebo casse le signal planté
+
+
+# --- variante centrée : un simple décalage de niveau entre les saisons ne doit pas passer pour un signal
+def _jeu_decale(n, seed, decalage):
+    L = _jeu(n, seed, signal=False)
+    L["X"] = L["X"].copy()
+    L["X"][:, 0] += decalage                                                 # la variable « signal » dérive entre les deux saisons
+    rng = np.random.default_rng(seed + 500)
+    lam_vrai = L["lam"] * 1.12                                              # Dixon-Coles sous-estime le niveau de la saison test
+    y = rng.poisson(lam_vrai).astype(float)
+    L["y"] = y
+    L["h"], L["a"] = np.minimum(y[:n], MO.N_BUTS).astype(int), np.minimum(y[n:], MO.N_BUTS).astype(int)
+    return L
+
+
+def test_decalage_de_niveau_credite_sans_centrage_pas_avec():
+    App = _jeu(6000, 40, signal=False)
+    App["y"] = App["y"] + 0.0
+    # apprentissage : la variable est faiblement liée aux buts (corrélation fortuite du niveau), le test porte le décalage de niveau
+    rng = np.random.default_rng(41)
+    App["X"][:, 0] = rng.normal(size=2 * App["n"])
+    Test = _jeu_decale(3000, 42, decalage=1.0)
+    sans = K.cribler(App, Test, np.random.default_rng(0), centrer=False)["parametres"]["signal"]
+    avec = K.cribler(App, Test, np.random.default_rng(0), centrer=True)["parametres"]["signal"]
+    assert abs(avec["moyenne"]) <= abs(sans["moyenne"]) + 1e-12
+    assert not avec["retenu"]

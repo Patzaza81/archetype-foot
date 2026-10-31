@@ -21,6 +21,8 @@ from .module1 import SCORES_FAIBLES_NULS
 ROOT = Path(__file__).resolve().parent.parent
 SORTIE_JSON = ROOT / "docs" / "dc_criblage_resultats.json"
 SORTIE_MD = ROOT / "docs" / "DC_CRIBLAGE_RESULTATS.md"
+SORTIE_JSON_CENTRE = ROOT / "docs" / "dc_criblage_resultats_centre.json"
+SORTIE_MD_CENTRE = ROOT / "docs" / "DC_CRIBLAGE_RESULTATS_CENTRE.md"
 TIRAGES = 4000          # précision du bootstrap (pas un paramètre du modèle)
 NIVEAU = 0.025          # unilatéral : la borne basse d'un intervalle à 95 % est > 0 si et seulement si p < 2,5 %
 
@@ -172,8 +174,10 @@ def holm(p: dict[str, float], niveau: float = NIVEAU) -> dict[str, bool]:
     return out
 
 
-def cribler(App: dict[str, Any], Test: dict[str, Any], rng: np.random.Generator, melange: bool = False) -> dict[str, Any]:
-    """Un test par paramètre + un test de l'ensemble. `melange` : placebo, lignes de variables permutées (apprentissage et test séparément)."""
+def cribler(App: dict[str, Any], Test: dict[str, Any], rng: np.random.Generator, melange: bool = False, centrer: bool = False) -> dict[str, Any]:
+    """Un test par paramètre + un test de l'ensemble. `melange` : placebo, lignes de variables permutées (apprentissage et test séparément).
+    `centrer` (variante du 31/10, décidée après le premier run, voir le protocole) : la sortie ŝ est centrée sur sa moyenne du test, ce qui retire le décalage
+    de niveau entre les deux saisons ; les buts du test n'interviennent pas dans ce centrage."""
     XA, XT = App["X"], Test["X"]
     if melange:
         XA, XT = XA[rng.permutation(len(XA))], XT[rng.permutation(len(XT))]
@@ -188,6 +192,7 @@ def cribler(App: dict[str, Any], Test: dict[str, Any], rng: np.random.Generator,
         alpha = choisir_alpha(Zg, rA, blocs)
         th = ridge(Zg, rA, alpha)
         s = (ZT[:, cols] - ZA[:, cols].mean(axis=0)) @ th
+        s = s - s.mean() if centrer else s
         d = gain_ll(Test, s, ll0)
         b = bootstrap(d, rng)
         res[g] = {**b, "alpha": alpha, "coef": [round(float(x), 5) for x in th], "retenu": retenu(b["bas"]),
@@ -197,7 +202,8 @@ def cribler(App: dict[str, Any], Test: dict[str, Any], rng: np.random.Generator,
         res[g]["retenu_holm"] = h[g]
     alpha = choisir_alpha(ZA, rA, blocs)
     th = ridge(ZA, rA, alpha)
-    d = gain_ll(Test, (ZT - ZA.mean(axis=0)) @ th, ll0)
+    s_ens = (ZT - ZA.mean(axis=0)) @ th
+    d = gain_ll(Test, s_ens - s_ens.mean() if centrer else s_ens, ll0)
     ens = {**bootstrap(d, rng), "alpha": alpha, "colonnes": int(ZA.shape[1])}
     return {"parametres": res, "ensemble": ens}
 
@@ -213,7 +219,7 @@ def lignes_saison(bloc: list[dict], saison: str, hp: dict[str, Any], log=print) 
 
 def rapport_md(out: dict[str, Any]) -> str:
     p = out["parametres"]
-    L = ["# Piste A : criblage des paramètres du Module 1 (résultats)", "",
+    L = [f"# Piste A : criblage des paramètres du Module 1 (résultats, variante {'centrée sur le test' if out.get('variante') == 'centree' else 'sans centrage'})", "",
          f"Protocole : `docs/DC_CRIBLAGE_PROTOCOLE.md` (commité avant le calcul). Apprentissage : Football-Data 2025-26, {out['apprentissage']['matchs']} matchs "
          f"({out['apprentissage']['periode'][0]} au {out['apprentissage']['periode'][1]}). Test : Football-Data 2026-27, {out['test']['matchs']} matchs "
          f"({out['test']['periode'][0]} au {out['test']['periode'][1]}). Aucun match de l'archive ni aucun pari : mesure sur la log-vraisemblance du score.", "",
@@ -233,7 +239,7 @@ def rapport_md(out: dict[str, Any]) -> str:
     return "\n".join(L) + "\n"
 
 
-def lancer(placebos: int, cache: Path | None, log=print) -> dict[str, Any]:
+def lancer(placebos: int, cache: Path | None, centrer: bool = False, log=print) -> dict[str, Any]:
     bloc = D.charger_bloc()
     hp = json.loads(CAL.PARAMS.read_text())
     if cache and cache.exists():
@@ -244,21 +250,21 @@ def lancer(placebos: int, cache: Path | None, log=print) -> dict[str, Any]:
             cache.write_bytes(pickle.dumps((App, Test)))
     rng = np.random.default_rng(20261031)
     log("criblage réel…")
-    reel = cribler(App, Test, rng)
+    reel = cribler(App, Test, rng, centrer=centrer)
     passent = []
     for k in range(placebos):
-        pl = cribler(App, Test, np.random.default_rng(1000 + k), melange=True)
+        pl = cribler(App, Test, np.random.default_rng(1000 + k), melange=True, centrer=centrer)
         passent.append(sum(v["retenu"] for v in pl["parametres"].values()))
         log(f"  placebo {k + 1}/{placebos} : {passent[-1]} paramètres retenus")
     p = reel["parametres"]
-    out = {"apprentissage": {"matchs": App["n"], "periode": App["dates"]}, "test": {"matchs": Test["n"], "periode": Test["dates"]},
+    out = {"variante": "centree" if centrer else "sans_centrage", "apprentissage": {"matchs": App["n"], "periode": App["dates"]}, "test": {"matchs": Test["n"], "periode": Test["dates"]},
            "biais_residu": {"apprentissage": float(np.mean((App["y"] - App["lam"]) / np.sqrt(App["lam"]))),
                             "test": float(np.mean((Test["y"] - Test["lam"]) / np.sqrt(Test["lam"])))},
            "hyperparametres": {k: hp[k] for k in ("sigma", "xi", "rho")}, "parametres": p, "ensemble": reel["ensemble"],
            "nb_retenus": sum(v["retenu"] for v in p.values()), "nb_retenus_holm": sum(v["retenu_holm"] for v in p.values()),
            "placebo": {"tirages": placebos, "passent_par_tirage": passent}}
-    SORTIE_JSON.write_text(json.dumps(out, indent=1, ensure_ascii=False))
-    SORTIE_MD.write_text(rapport_md(out))
+    (SORTIE_JSON_CENTRE if centrer else SORTIE_JSON).write_text(json.dumps(out, indent=1, ensure_ascii=False))
+    (SORTIE_MD_CENTRE if centrer else SORTIE_MD).write_text(rapport_md(out))
     return out
 
 
@@ -266,6 +272,7 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--placebos", type=int, default=10)
     ap.add_argument("--cache", type=Path, default=None)
+    ap.add_argument("--centrer", action="store_true")
     a = ap.parse_args()
-    o = lancer(a.placebos, a.cache)
+    o = lancer(a.placebos, a.cache, a.centrer)
     print(f"retenus (règle) : {o['nb_retenus']} / {len(o['parametres'])} ; après Holm : {o['nb_retenus_holm']} ; placebos : {o['placebo']['passent_par_tirage']}")

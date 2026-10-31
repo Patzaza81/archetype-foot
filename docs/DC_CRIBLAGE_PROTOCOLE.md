@@ -45,3 +45,12 @@ Parmi les paramètres du Module 1, lesquels portent un signal sur les buts que l
 - Le test a un seul échantillon de 2026-27 (≈ 1 600 matchs), MDE de l'ordre de 0,001 pour un effet faible ; un effet plus petit ne sera pas vu, et « non retenu » ne veut pas dire « inutile ».
 - La régression sur résidus teste un signal linéaire dans les paramètres ; un effet non linéaire n'est pas couvert.
 - Les paramètres sont fortement liés entre eux (PPM, Pts, J…) : des paramètres redondants donneront des résultats proches, pas indépendants.
+
+## Amendement du 31/10/2026, décidé APRÈS le premier run (à lire avec les résultats)
+Premier run (fichiers `dc_criblage_resultats.json` et `DC_CRIBLAGE_RESULTATS.md`, conservés tels quels) : 1 paramètre sur 64 passe la règle, 0 après Holm,
+mais les placebos en retiennent 0 à 10 par tirage (moyenne 3,3, hasard attendu 1,6) : la règle n'est pas fiable telle quelle sur ces données.
+Cause mesurée : le Dixon-Coles pur sous-estime le niveau de buts de 2026-27 (résidu de Pearson moyen +0,061 en test contre +0,021 en apprentissage, 3,4 erreurs-types)
+et 28 colonnes sur 146 ont une moyenne décalée de plus de 0,2 écart-type entre les deux saisons : un paramètre « gagne » en rattrapant le niveau de la saison, pas en
+distinguant les équipes. Correction (variante `--centrer`) : la sortie ŝ est centrée sur sa moyenne du test (les buts du test n'interviennent pas). Les deux variantes sont publiées ;
+la variante centrée devient la lecture principale parce que c'est celle qui répond à la question posée (le paramètre distingue-t-il les équipes au-delà de Dixon-Coles ?).
+Le placebo est rejoué avec la même correction : elle n'est acceptée que si le nombre de paramètres retenus par tirage placebo est compatible avec le hasard.
