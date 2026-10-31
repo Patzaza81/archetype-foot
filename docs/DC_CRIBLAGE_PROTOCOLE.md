@@ -20,7 +20,8 @@ Parmi les paramètres du Module 1, lesquels portent un signal sur les buts que l
 
 ## Modèle testé
 - Résidu de Pearson de chaque ligne : r = (buts − λ) / √λ, λ du Dixon-Coles pur.
-- Régression ridge de r sur les colonnes du paramètre (intercept non pénalisé). α choisi par validation croisée en BLOCS TEMPORELS : un bloc = un mois civil de 2025-26,
+- Régression ridge de r sur les colonnes du paramètre, colonnes centrées sur la moyenne d'apprentissage, SANS intercept dans la prédiction (précision du 31/10, avant tout calcul :
+  un intercept ferait gagner à chaque paramètre le même décalage moyen de Dixon-Coles ; le décalage moyen de r est mesuré et publié à part). α choisi par validation croisée en BLOCS TEMPORELS : un bloc = un mois civil de 2025-26,
   chaque mois est laissé de côté à tour de rôle ; la grille de α s'étend par facteur 10 tant que l'optimum n'est pas intérieur (aucune borne posée à la main).
 - Prédiction : λ̃ = λ · exp(ŝ / √λ), où ŝ est la sortie de la régression (égal au premier ordre à λ + √λ·ŝ, toujours positif, aucun plancher posé à la main).
   La grille de scores est celle du Dixon-Coles (mêmes ρ), seuls λ changent.

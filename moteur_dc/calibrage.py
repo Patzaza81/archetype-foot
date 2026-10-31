@@ -47,8 +47,9 @@ def _regrouper(matchs: list[dict]) -> dict[str, list[dict]]:
     return d
 
 
-def marche_avant(par_ligue: dict[str, list[dict]], p: dict[str, Any], avec_facteurs: bool = True, pas_jours: int = 7) -> list[dict[str, Any]]:
-    """Prédictions hors échantillon semaine par semaine. Chaque ligne : λ et ρ AVANT effets, variables des effets, score réel."""
+def marche_avant(par_ligue: dict[str, list[dict]], p: dict[str, Any], avec_facteurs: bool = True, pas_jours: int = 7, extra=None) -> list[dict[str, Any]]:
+    """Prédictions hors échantillon semaine par semaine. Chaque ligne : λ et ρ AVANT effets, variables des effets, score réel.
+    `extra(t, m)` (facultatif, criblage) : valeur gardée dans la clé "z" de la ligne, calculée avec le tableau du Module 1 au jour du match."""
     out: list[dict[str, Any]] = []
     k = p.get("effets") or AJ.NEUTRES
     for lg, ms in par_ligue.items():
@@ -76,6 +77,8 @@ def marche_avant(par_ligue: dict[str, list[dict]], p: dict[str, Any], avec_facte
                     r = {"ligue": lg, "saison": m.get("saison"), "date": m["date"], "id": m["id"], "h": m["h"], "a": m["a"], "lh": lh, "la": la, "rho": fit.rho}
                     if avec_facteurs:
                         r["f"] = AJ.facteurs(c, t, AJ.excedents(passe, m["dom"], m["ext"], jour, t, fit))
+                    if extra is not None:
+                        r["z"] = extra(t, m)
                     out.append(r)
             passe.extend(semaines[debut])
     return out
