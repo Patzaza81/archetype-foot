@@ -1,0 +1,62 @@
+{
+ "c_utilise": 0.002123047,
+ "k": 471.0,
+ "matchs": 827,
+ "dev": 241,
+ "reserve": 586,
+ "logloss_marches": {
+  "toutes_matchs": {
+   "sans": 0.526625,
+   "avec": 0.526693
+  },
+  "reserve": {
+   "sans": 0.526589,
+   "avec": 0.526626
+  }
+ },
+ "vue_827_seuils_sur_827": {
+  "sans": {
+   "paris": 130,
+   "reussite_%": 71.5,
+   "principaux": 111,
+   "reussite_principaux_%": 72.1,
+   "matchs_avec_pari": 111
+  },
+  "avec": {
+   "paris": 129,
+   "reussite_%": 71.3,
+   "principaux": 110,
+   "reussite_principaux_%": 71.8,
+   "matchs_avec_pari": 110
+  },
+  "ic95_diff_pts": [
+   -0.8,
+   0.0
+  ]
+ },
+ "vue_reserve_seuils_sur_dev": {
+  "sans": {
+   "paris": 60,
+   "reussite_%": 68.3,
+   "principaux": 56,
+   "reussite_principaux_%": 69.6,
+   "matchs_avec_pari": 56
+  },
+  "avec": {
+   "paris": 63,
+   "reussite_%": 65.1,
+   "principaux": 56,
+   "reussite_principaux_%": 67.9,
+   "matchs_avec_pari": 56
+  },
+  "ic95_diff_pts": [
+   -11.1,
+   5.1
+  ],
+  "marches_avec_seuil": {
+   "0": 16,
+   "1": 15
+  }
+ },
+ "matchs_aux_memes_paris": 826
+}

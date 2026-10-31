@@ -27,7 +27,7 @@ from typing import Any
 
 import numpy as np
 
-from . import ajustements as AJ, coeur, contrat as C, donnees as D, marches as M, modele as MO, module1 as M1, selecteur as S
+from . import ajustements as AJ, coeur, contrat as C, donnees as D, marches as M, modele as MO, module1 as M1, selecteur as S, style as ST
 
 ROOT = Path(__file__).resolve().parent.parent
 PARAMS = Path(__file__).with_name("parametres.json")
@@ -47,7 +47,7 @@ def _regrouper(matchs: list[dict]) -> dict[str, list[dict]]:
     return d
 
 
-def marche_avant(par_ligue: dict[str, list[dict]], p: dict[str, Any], avec_facteurs: bool = True, pas_jours: int = 7) -> list[dict[str, Any]]:
+def marche_avant(par_ligue: dict[str, list[dict]], p: dict[str, Any], avec_facteurs: bool = True, pas_jours: int = 7, avec_style: bool = False) -> list[dict[str, Any]]:
     """Prédictions hors échantillon semaine par semaine. Chaque ligne : λ et ρ AVANT effets, variables des effets, score réel."""
     out: list[dict[str, Any]] = []
     k = p.get("effets") or AJ.NEUTRES
@@ -76,6 +76,8 @@ def marche_avant(par_ligue: dict[str, list[dict]], p: dict[str, Any], avec_facte
                     r = {"ligue": lg, "saison": m.get("saison"), "date": m["date"], "id": m["id"], "h": m["h"], "a": m["a"], "lh": lh, "la": la, "rho": fit.rho}
                     if avec_facteurs:
                         r["f"] = AJ.facteurs(c, t, AJ.excedents(passe, m["dom"], m["ext"], jour, t, fit))
+                    if avec_style:
+                        r["E"], r["n_style"] = ST.matrice_empirique(c)
                     out.append(r)
             passe.extend(semaines[debut])
     return out
