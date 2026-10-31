@@ -28,6 +28,16 @@ jobs:
       - run: pip install requests pytest
       - name: Tests de la collecte
         run: python -m pytest tests/test_collecte_clubelo.py -q
+      - name: Diagnostic réseau (réponse brute du serveur)
+        continue-on-error: true
+        run: |
+          mkdir -p data/clubelo
+          {
+            echo "== DNS"; getent hosts api.clubelo.com clubelo.com || true
+            for u in http://api.clubelo.com/2026-10-31 https://api.clubelo.com/2026-10-31 http://api.clubelo.com/Barcelona http://clubelo.com/ https://clubelo.com/ENG; do
+              echo; echo "== $u"; curl -sS -m 25 -i -A "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Safari/604.1" "$u" 2>&1 | head -15
+            done
+          } > data/clubelo/diagnostic.txt 2>&1
       - name: Collecter
         id: collecte
         continue-on-error: true
