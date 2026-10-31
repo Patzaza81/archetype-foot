@@ -74,3 +74,8 @@ avait été gelé à 17 h 58, avant la règle, et son match avait commencé : sa
 ## Points ouverts
 - Page `pronostics_dc.html` non faite.
 - Tests : `tests/test_moteur_dc.py` (30 tests, 3 cas qui passent et 3 qui échouent pour le contrat et le Module 4).
+
+## Piste A, criblage des paramètres du Module 1 sur les résidus de Dixon-Coles pur (31/10/2026, branche `moteur-dc-criblage`, non fusionnée)
+Protocole : `docs/DC_CRIBLAGE_PROTOCOLE.md` (commité avant le calcul, amendé après le premier run). Code : `moteur_dc/criblage.py` (aucun changement du moteur ; `marche_avant` reçoit un
+paramètre facultatif `extra`). Résultats : `docs/DC_CRIBLAGE_RESULTATS.md` (premier run) et `docs/DC_CRIBLAGE_RESULTATS_CENTRE.md` (lecture principale), JSON associés.
+Apprentissage 2025-26 (9 488 matchs), test 2026-27 (1 598 matchs), log-vraisemblance du score, aucun pari, aucune archive.
