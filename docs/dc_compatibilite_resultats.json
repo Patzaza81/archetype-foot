@@ -1,0 +1,277 @@
+{
+ "matchs_calibrage": 9488,
+ "matchs_test": 1598,
+ "periode_test": [
+  "2026-03-03",
+  "2026-10-16"
+ ],
+ "periode_calibrage": [
+  "2025-02-28",
+  "2026-05-31"
+ ],
+ "variantes": {
+  "min": {
+   "seuil_compatibilite": 0.5,
+   "calibrage": {
+    "seuil": 0.5,
+    "n": 31222,
+    "reussite": 0.8496572929344692
+   },
+   "paris": 4152,
+   "matchs_avec_pari": 1343,
+   "reussite": 0.8504335260115607,
+   "p_moyenne": 0.8613528794966107,
+   "comparaisons": {
+    "volume_compat": {
+     "paris": 4152,
+     "reussite_compat": 0.8504335260115607,
+     "reussite_P": 0.8853564547206165,
+     "ecart": -0.03492292870905578,
+     "ic95": [
+      -0.04741157681879581,
+      -0.02241188889589024
+     ],
+     "sd_bootstrap": 0.006329992448261764,
+     "mde": 0.012406785198593057,
+     "retenu": false,
+     "paris_communs": 2408,
+     "p_unilat": 0.9999999827638106,
+     "holm_retenu": false
+    },
+    "volume_P_seuil": {
+     "paris": 14631,
+     "reussite_compat": 0.7636525186248376,
+     "reussite_P": 0.803020982844645,
+     "ecart": -0.03936846421980733,
+     "ic95": [
+      -0.0468166942849355,
+      -0.0318461244063177
+     ],
+     "sd_bootstrap": 0.0038583415101108034,
+     "mde": 0.007562349359817175,
+     "retenu": false,
+     "paris_communs": 10271,
+     "p_unilat": 0.0
+    },
+    "demi_pari_par_match": {
+     "paris": 799,
+     "reussite_compat": 0.886107634543179,
+     "reussite_P": 0.9286608260325406,
+     "ecart": -0.04255319148936165,
+     "ic95": [
+      -0.07234927964005214,
+      -0.013509439799079953
+     ],
+     "sd_bootstrap": 0.015035521945315636,
+     "mde": 0.029469623012818646,
+     "retenu": false,
+     "paris_communs": 224,
+     "p_unilat": 0.0
+    }
+   }
+  },
+  "moyenne": {
+   "seuil_compatibilite": 0.5,
+   "calibrage": {
+    "seuil": 0.5,
+    "n": 52696,
+    "reussite": 0.8257742523151662
+   },
+   "paris": 7137,
+   "matchs_avec_pari": 1507,
+   "reussite": 0.832842931203587,
+   "p_moyenne": 0.836621283374114,
+   "comparaisons": {
+    "volume_compat": {
+     "paris": 7137,
+     "reussite_compat": 0.832842931203587,
+     "reussite_P": 0.8607257951520246,
+     "ecart": -0.02788286394843764,
+     "ic95": [
+      -0.03697326225322392,
+      -0.018584722081068147
+     ],
+     "sd_bootstrap": 0.004701499706651131,
+     "mde": 0.009214939425036216,
+     "retenu": false,
+     "paris_communs": 4765,
+     "p_unilat": 0.9999999984911443,
+     "holm_retenu": false
+    },
+    "volume_P_seuil": {
+     "paris": 14631,
+     "reussite_compat": 0.7744515070740209,
+     "reussite_P": 0.803020982844645,
+     "ecart": -0.028569475770624075,
+     "ic95": [
+      -0.03515393769398137,
+      -0.02168682498021752
+     ],
+     "sd_bootstrap": 0.003464397085772575,
+     "mde": 0.006790218288114247,
+     "retenu": false,
+     "paris_communs": 10985,
+     "p_unilat": 0.0
+    },
+    "demi_pari_par_match": {
+     "paris": 799,
+     "reussite_compat": 0.8961201501877347,
+     "reussite_P": 0.9286608260325406,
+     "ecart": -0.03254067584480591,
+     "ic95": [
+      -0.06323319126399198,
+      -0.0036714584782180965
+     ],
+     "sd_bootstrap": 0.01493398761327637,
+     "mde": 0.029270615722021685,
+     "retenu": false,
+     "paris_communs": 216,
+     "p_unilat": 0.0
+    }
+   }
+  },
+  "produit": {
+   "seuil_compatibilite": 0.5,
+   "calibrage": {
+    "seuil": 0.5,
+    "n": 3828,
+    "reussite": 0.9012539184952978
+   },
+   "paris": 356,
+   "matchs_avec_pari": 222,
+   "reussite": 0.8932584269662921,
+   "p_moyenne": 0.9125437682934021,
+   "comparaisons": {
+    "volume_compat": {
+     "paris": 356,
+     "reussite_compat": 0.8932584269662921,
+     "reussite_P": 0.9185393258426966,
+     "ecart": -0.0252808988764045,
+     "ic95": [
+      -0.07153873538597769,
+      0.01965203139180148
+     ],
+     "sd_bootstrap": 0.023213692862266568,
+     "mde": 0.045498838010042474,
+     "retenu": false,
+     "paris_communs": 66,
+     "p_unilat": 0.8619343346567707,
+     "holm_retenu": false
+    },
+    "volume_P_seuil": {
+     "paris": 14631,
+     "reussite_compat": 0.7747248991866584,
+     "reussite_P": 0.803020982844645,
+     "ecart": -0.028296083657986526,
+     "ic95": [
+      -0.03510496746156999,
+      -0.02138292555032494
+     ],
+     "sd_bootstrap": 0.0035496183928187515,
+     "mde": 0.006957252049924753,
+     "retenu": false,
+     "paris_communs": 10962,
+     "p_unilat": 0.0
+    },
+    "demi_pari_par_match": {
+     "paris": 799,
+     "reussite_compat": 0.9011264080100125,
+     "reussite_P": 0.9286608260325406,
+     "ecart": -0.027534418022528095,
+     "ic95": [
+      -0.05585523935540012,
+      0.0009590241861163982
+     ],
+     "sd_bootstrap": 0.014415618758120278,
+     "mde": 0.028254612765915746,
+     "retenu": false,
+     "paris_communs": 217,
+     "p_unilat": 0.0
+    }
+   }
+  }
+ },
+ "P_seul": {
+  "seuil": 0.7,
+  "paris": 14631,
+  "matchs_avec_pari": 1598,
+  "reussite": 0.803020982844645
+ },
+ "regression": {
+  "min": {
+   "coef_P": 0.9995704188962521,
+   "coef_compat_std": 0.006178850060284999,
+   "gain_ll_par_obs": 3.9895643567234135e-05,
+   "ic95": [
+    3.4778564754392344e-06,
+    7.825610366001097e-05
+   ],
+   "mde": 3.700668851082075e-05,
+   "observations": 41546,
+   "retenu": true
+  },
+  "moyenne": {
+   "coef_P": 0.981503546193252,
+   "coef_compat_std": 0.020848078148352985,
+   "gain_ll_par_obs": 0.0001717567347602086,
+   "ic95": [
+    5.119502568971274e-05,
+    0.00029480001766037166
+   ],
+   "mde": 0.00012335608678390336,
+   "observations": 41546,
+   "retenu": true
+  },
+  "produit": {
+   "coef_P": 0.9865657741354071,
+   "coef_compat_std": 0.017248367432134117,
+   "gain_ll_par_obs": 0.00011085201318578153,
+   "ic95": [
+    2.2306201190130744e-05,
+    0.00019752065317243706
+   ],
+   "mde": 8.761499391056117e-05,
+   "observations": 41546,
+   "retenu": true
+  }
+ },
+ "regression_centree": {
+  "min": {
+   "coef_P": 1.008658438191453,
+   "coef_compat_std": -0.01128313108215779,
+   "gain_ll_par_obs": 1.1940214260631624e-05,
+   "ic95": [
+    -8.069809546287131e-05,
+    0.00010816568935674579
+   ],
+   "mde": 9.60283675870855e-05,
+   "observations": 41546,
+   "retenu": false
+  },
+  "moyenne": {
+   "coef_P": 1.007699992327866,
+   "coef_compat_std": -0.006958797042543743,
+   "gain_ll_par_obs": 2.42649552267392e-06,
+   "ic95": [
+    -6.457585690865684e-05,
+    6.526400246070173e-05
+   ],
+   "mde": 6.414575095704106e-05,
+   "observations": 41546,
+   "retenu": false
+  },
+  "produit": {
+   "coef_P": 1.0089075158744654,
+   "coef_compat_std": -0.008889618776003668,
+   "gain_ll_par_obs": 2.6478908621515797e-06,
+   "ic95": [
+    -6.776067445035886e-05,
+    7.383328519178322e-05
+   ],
+   "mde": 7.159115487166405e-05,
+   "observations": 41546,
+   "retenu": false
+  }
+ },
+ "_exemples": null
+}

@@ -74,3 +74,8 @@ avait été gelé à 17 h 58, avant la règle, et son match avait commencé : sa
 ## Points ouverts
 - Page `pronostics_dc.html` non faite.
 - Tests : `tests/test_moteur_dc.py` (30 tests, 3 cas qui passent et 3 qui échouent pour le contrat et le Module 4).
+
+## Règle n°1 « compatibilité des comportements historiques » (Patrick, 31/10/2026) — résultat nul, non intégrée
+Branche `moteur-dc-compatibilite`, jamais fusionnée. Protocole, résultats et lecture : `docs/DC_COMPATIBILITE_PROTOCOLE.md`, `docs/DC_COMPATIBILITE_RESULTATS.md`. Sur archive/rejeu
+(1 598 matchs de test 2026-27), la sélection par compatibilité croisée (min / moyenne / produit des bornes de Wilson dom et ext) réussit moins que la sélection par P à volume égal et
+n'ajoute aucune information à P une fois la compatibilité centrée par marché. Module 4 inchangé.
