@@ -37,6 +37,8 @@ class Ajustement:
     n_matchs: int
     log_vraisemblance: float = 0.0
     indice: dict[str, int] = field(default_factory=dict)
+    gamma_elo: float = 0.0                     # prior à moyenne Elo (branche moteur-dc-elo) : att ~ gamma_elo × Elo, dfn ~ delta_elo × Elo ; 0 sans Elo
+    delta_elo: float = 0.0
 
     def __post_init__(self) -> None:
         self.indice = {e: k for k, e in enumerate(self.equipes)}
@@ -60,10 +62,15 @@ def _tau(x: np.ndarray, y: np.ndarray, lh: np.ndarray, la: np.ndarray, rho: floa
 
 
 def ajuster(dom: list[str], ext: list[str], h: np.ndarray, a: np.ndarray, age_jours: np.ndarray, sigma: float, xi: float,
-            depart: Ajustement | None = None, rho: float | None = None, mult_xi: np.ndarray | None = None) -> Ajustement:
+            depart: Ajustement | None = None, rho: float | None = None, mult_xi: np.ndarray | None = None,
+            elo: dict[str, float] | None = None, elo_coefs: tuple[float, float] | None = None) -> Ajustement:
     """Maximum de vraisemblance pénalisé. `age_jours` = jours entre le match et le jour de la prédiction (≥ 1 : strictement avant).
     `rho` donné = corrélation des scores faibles fixée (estimée une fois pour tous les championnats par vraisemblance prédictive, calibrage.py) ;
-    sinon estimée ici. Un ρ libre par championnat se perd dans le bruit et peut rendre une case de score impossible (τ ≤ 0), ce qui a été constaté."""
+    sinon estimée ici. Un ρ libre par championnat se perd dans le bruit et peut rendre une case de score impossible (τ ≤ 0), ce qui a été constaté.
+    `elo` (facultatif, {équipe: Elo strictement antérieur au jour de la prédiction}) : la pénalité devient (att − γ·E)² + (dfn − δ·E)², E = Elo centré et réduit sur les équipes du
+    championnat qui en ont un ; une équipe sans Elo a E = 0 (retombe sur la pénalité habituelle).
+    `elo_coefs` = (γ, δ) FIGÉS (appris une fois pour tous les championnats sur le calibrage, voir elo.py) ; absent, γ et δ sont estimés dans l'ajustement avec les forces
+    (mode libre : une vingtaine d'équipes seulement par championnat, estimation bruitée, non utilisé pour la décision)."""
     equipes = sorted(set(dom) | set(ext))
     idx = {e: k for k, e in enumerate(equipes)}
     n_eq = len(equipes)
@@ -73,6 +80,14 @@ def ajuster(dom: list[str], ext: list[str], h: np.ndarray, a: np.ndarray, age_jo
     w = np.exp(-xi * np.asarray(age_jours, float) * (1.0 if mult_xi is None else np.asarray(mult_xi, float)))   # xi par match (forme, ajustements.py)
     hi, ai = h.astype(int), a.astype(int)
     pen = 1.0 / (2.0 * sigma ** 2)
+    E = np.zeros(n_eq)
+    if elo is not None:
+        ok = [k for k, nom in enumerate(equipes) if elo.get(nom) is not None and math.isfinite(elo[nom])]
+        if len(ok) >= 2:
+            v = np.array([elo[equipes[k]] for k in ok], float)
+            if v.std() > 0:
+                E[ok] = (v - v.mean()) / v.std()
+    n_ex = 2 if (elo is not None and elo_coefs is None) else 0      # paramètres supplémentaires γ_elo, δ_elo (en fin de vecteur), mode libre seulement
 
     def decode(p):
         return p[:n_eq], p[n_eq:2 * n_eq], p[2 * n_eq], p[2 * n_eq + 1], p[2 * n_eq + 2]
@@ -84,7 +99,12 @@ def ajuster(dom: list[str], ext: list[str], h: np.ndarray, a: np.ndarray, age_jo
         lh, la = np.exp(eh), np.exp(ea)
         tau = _tau(hi, ai, lh, la, rho)
         ll = w * (np.log(tau) + h * eh - lh - _logfact(hi) + a * ea - la - _logfact(ai))
-        val = -ll.sum() + pen * (att @ att + dfn @ dfn)
+        if elo is not None:
+            ge, de = (p[2 * n_eq + 3], p[2 * n_eq + 4]) if n_ex else elo_coefs
+            ra, rd = att - ge * E, dfn - de * E
+            val = -ll.sum() + pen * (ra @ ra + rd @ rd)
+        else:
+            val = -ll.sum() + pen * (att @ att + dfn @ dfn)
         # gradient
         dlh = np.zeros_like(lh)
         dla = np.zeros_like(la)
@@ -103,11 +123,15 @@ def ajuster(dom: list[str], ext: list[str], h: np.ndarray, a: np.ndarray, age_jo
         drho[m11] = -1.0 / tau[m11]
         g_att = np.bincount(d, gh, n_eq) + np.bincount(e, ga, n_eq)
         g_dfn = np.bincount(e, gh, n_eq) + np.bincount(d, ga, n_eq)
-        g = np.concatenate([-g_att + 2 * pen * att, -g_dfn + 2 * pen * dfn,
-                            [-(gh.sum() + ga.sum()), -gh.sum(), -(w * drho).sum()]])
+        if elo is not None:
+            g = np.concatenate([-g_att + 2 * pen * ra, -g_dfn + 2 * pen * rd, [-(gh.sum() + ga.sum()), -gh.sum(), -(w * drho).sum()]]
+                               + ([[-2 * pen * (E @ ra), -2 * pen * (E @ rd)]] if n_ex else []))
+        else:
+            g = np.concatenate([-g_att + 2 * pen * att, -g_dfn + 2 * pen * dfn,
+                                [-(gh.sum() + ga.sum()), -gh.sum(), -(w * drho).sum()]])
         return val, g
 
-    p0 = np.zeros(2 * n_eq + 3)
+    p0 = np.zeros(2 * n_eq + 3 + n_ex)
     p0[2 * n_eq] = math.log(max(float(np.average(np.concatenate([h, a]), weights=np.concatenate([w, w]))), 0.1))
     if depart is not None:
         for k, nom in enumerate(equipes):
@@ -116,13 +140,17 @@ def ajuster(dom: list[str], ext: list[str], h: np.ndarray, a: np.ndarray, age_jo
                 p0[k], p0[n_eq + k] = depart.att[j], depart.dfn[j]
         p0[2 * n_eq:2 * n_eq + 2] = [depart.mu, depart.gamma]
         if rho is None:
-            p0[-1] = depart.rho
+            p0[2 * n_eq + 2] = depart.rho
+        if n_ex:
+            p0[2 * n_eq + 3:] = [depart.gamma_elo, depart.delta_elo]
     if rho is not None:
-        p0[-1] = rho
-    bornes = [(None, None)] * (2 * n_eq + 2) + [RHO_BORNES if rho is None else (rho, rho)]
+        p0[2 * n_eq + 2] = rho
+    bornes = [(None, None)] * (2 * n_eq + 2) + [RHO_BORNES if rho is None else (rho, rho)] + [(None, None)] * n_ex
     r = minimize(f, p0, jac=True, method="L-BFGS-B", bounds=bornes, options={"maxiter": 300})
     att, dfn, mu, gam, rho = decode(r.x)
-    return Ajustement(equipes, att.copy(), dfn.copy(), float(mu), float(gam), float(rho), sigma, xi, len(h), float(-r.fun))
+    return Ajustement(equipes, att.copy(), dfn.copy(), float(mu), float(gam), float(rho), sigma, xi, len(h), float(-r.fun),
+                      gamma_elo=float(r.x[2 * n_eq + 3]) if n_ex else (float(elo_coefs[0]) if elo_coefs else 0.0),
+                      delta_elo=float(r.x[2 * n_eq + 4]) if n_ex else (float(elo_coefs[1]) if elo_coefs else 0.0))
 
 
 def _logfact(k: np.ndarray) -> np.ndarray:
