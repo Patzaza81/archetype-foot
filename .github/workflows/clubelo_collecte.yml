@@ -1,0 +1,47 @@
+name: Collecte ClubElo (piste B', branche moteur-dc-elo)
+
+# Télécharge un instantané Elo par semaine (API CSV publique de clubelo.com) dans data/clubelo/. Isolé : ne touche aucun autre dossier, ne tourne que sur la branche moteur-dc-elo.
+# Déclenchement depuis l'iPhone : modifier data/clubelo/demande_collecte.txt sur la branche moteur-dc-elo.
+on:
+  push:
+    branches: ["moteur-dc-elo"]
+    paths:
+      - "data/clubelo/demande_collecte.txt"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pipeline-archetype-foot
+  cancel-in-progress: false
+
+jobs:
+  collecte:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: moteur-dc-elo
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests pytest
+      - name: Tests de la collecte
+        run: python -m pytest tests/test_collecte_clubelo.py -q
+      - name: Collecter
+        id: collecte
+        continue-on-error: true
+        run: python collecte_clubelo.py
+      - name: Publier ce qui a été téléchargé
+        run: |
+          git config user.name "archetype-foot-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data/clubelo/
+          git diff --staged --quiet || git commit -m "Collecte ClubElo"
+          git pull --rebase origin moteur-dc-elo
+          git push origin moteur-dc-elo
+      - name: Échec visible si la collecte n'est pas complète
+        if: steps.collecte.outcome == 'failure'
+        run: |
+          echo "::error::Collecte ClubElo incomplète : voir data/clubelo/manifest.json (erreurs par date)"
+          exit 1
