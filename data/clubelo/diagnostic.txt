@@ -1,0 +1,57 @@
+== DNS
+37.128.134.74   api.clubelo.com
+2606:4700:7::60 flerosport-83869.ondigitalocean.app clubelo.com
+2a06:98c1:58::60 flerosport-83869.ondigitalocean.app clubelo.com
+
+== http://api.clubelo.com/2026-10-31
+HTTP/1.1 502 Bad Gateway
+Server: Microsoft-IIS/10.0
+X-Powered-By: ASP.NET
+Date: Sat, 31 Oct 2026 16:22:09 GMT
+Content-Length: 0
+
+
+== https://api.clubelo.com/2026-10-31
+curl: (28) Connection timed out after 25000 milliseconds
+
+== http://api.clubelo.com/Barcelona
+HTTP/1.1 502 Bad Gateway
+Server: Microsoft-IIS/10.0
+X-Powered-By: ASP.NET
+Date: Sat, 31 Oct 2026 16:22:35 GMT
+Content-Length: 0
+
+
+== http://clubelo.com/
+HTTP/1.1 301 Moved Permanently
+Date: Sat, 31 Oct 2026 16:22:36 GMT
+Content-Type: text/html; charset=UTF-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+Location: https://clubelo.com/
+set-cookie: __cf_bm=TxHjMFj6l8Ljl.fONz3cNZvXT1vwcS8u08GOAX5PcSA-1793463756.3902268-1.0.1.1-RH7invkIpnfpa1X4L26LbYkmpppBe5NDPxEHfo1LCcFx_G9JbWRW4uEsYyzcrmz.6CRZgJNzvM3M41MTUn96FuDTI4igeglWpDZCRekTUnEC7DuN5pw8D5unRrXpqw99; HttpOnly; Path=/; Domain=clubelo.com; Expires=Sat, 31 Oct 2026 16:52:36 GMT
+Server: cloudflare
+CF-RAY: a533ffdd6bd01586-SJC
+alt-svc: h3=":443"; ma=86400
+
+<html>
+<head><title>301 Moved Permanently</title></head>
+<body>
+<center><h1>301 Moved Permanently</h1></center>
+
+== https://clubelo.com/ENG
+HTTP/2 403 
+date: Sat, 31 Oct 2026 16:22:36 GMT
+content-type: text/html; charset=UTF-8
+content-length: 5421
+accept-ch: Sec-CH-UA-Bitness, Sec-CH-UA-Arch, Sec-CH-UA-Full-Version, Sec-CH-UA-Mobile, Sec-CH-UA-Model, Sec-CH-UA-Platform-Version, Sec-CH-UA-Full-Version-List, Sec-CH-UA-Platform, Sec-CH-UA, UA-Bitness, UA-Arch, UA-Full-Version, UA-Mobile, UA-Model, UA-Platform-Version, UA-Platform, UA
+cf-mitigated: challenge
+content-security-policy: default-src 'none'; script-src 'nonce-1wn4pY0z0kS8LBgyOmVjym' 'unsafe-eval' https://challenges.cloudflare.com; script-src-attr 'none'; style-src 'unsafe-inline'; img-src 'self' https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com; frame-src 'self' https://challenges.cloudflare.com blob:; child-src 'self' https://challenges.cloudflare.com blob:; worker-src blob:; form-action http: https:; base-uri 'self'
+server: cloudflare
+critical-ch: Sec-CH-UA-Bitness, Sec-CH-UA-Arch, Sec-CH-UA-Full-Version, Sec-CH-UA-Mobile, Sec-CH-UA-Model, Sec-CH-UA-Platform-Version, Sec-CH-UA-Full-Version-List, Sec-CH-UA-Platform, Sec-CH-UA, UA-Bitness, UA-Arch, UA-Full-Version, UA-Mobile, UA-Model, UA-Platform-Version, UA-Platform, UA
+cross-origin-embedder-policy: require-corp
+cross-origin-opener-policy: same-origin
+cross-origin-resource-policy: same-origin
+origin-agent-cluster: ?1
+permissions-policy: accelerometer=(),camera=(),clipboard-read=(),clipboard-write=(),geolocation=(),gyroscope=(),hid=(),magnetometer=(),microphone=(),payment=(),publickey-credentials-get=(),screen-wake-lock=(),serial=(),sync-xhr=(),usb=(),xr-spatial-tracking=*
+referrer-policy: same-origin
