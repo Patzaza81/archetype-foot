@@ -1,0 +1,39 @@
+name: Suivi mensuel du volume xG (moteur DC)
+
+# AJOUT 31/10/2026 -- compte les matchs avec xG (Football-Data, ligues couvertes à 80 % ou plus), recalcule le seuil de déclenchement
+# avec la variance courante et écrit data/dc/xg_volume.json. Ne lance AUCUN test et ne modifie pas le moteur : le test complet reste
+# manuel (python -m moteur_dc.xg_harnais lancer) et refusé sous le seuil. Voir docs/MOTEUR_DC.md, section xG.
+
+on:
+  schedule:
+    - cron: "37 6 2 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pipeline-archetype-foot
+  cancel-in-progress: false
+
+jobs:
+  volume:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt pytest scipy
+      - name: Compter les matchs xG et comparer au seuil
+        run: python -m moteur_dc.xg_harnais verifier
+      - name: Publier
+        run: |
+          git config user.name "archetype-foot-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data/dc/xg_volume.json
+          git diff --staged --quiet || git commit -m "Suivi mensuel du volume xG"
+          git pull --rebase origin main
+          git push

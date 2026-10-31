@@ -1,0 +1,67 @@
+{
+ "date": "2026-10-31",
+ "matchs_xg": 1677,
+ "matchs_predits": 275,
+ "sd_ecart_par_match": 0.293219,
+ "ligues": {
+  "B1": 80,
+  "D1": 63,
+  "D2": 81,
+  "E0": 80,
+  "E1": 144,
+  "E2": 143,
+  "E3": 151,
+  "F1": 72,
+  "F2": 90,
+  "G1": 55,
+  "I1": 90,
+  "I2": 90,
+  "N1": 90,
+  "P1": 81,
+  "SC0": 66,
+  "SP1": 99,
+  "SP2": 121,
+  "T1": 81
+ },
+ "seuil_matchs_predits": 66060,
+ "effet_de_suivi_millièmes": 5.0,
+ "atteint": false,
+ "manque": 65785,
+ "seuils": {
+  "critere_logloss": {
+   "sd_ecart_par_match": 0.293219,
+   "par_effet": {
+    "1_millièmes": {
+     "effet": 0.001,
+     "matchs_de_test": 330291,
+     "matchs_predits_total": 1651455
+    },
+    "5_millièmes": {
+     "effet": 0.005,
+     "matchs_de_test": 13212,
+     "matchs_predits_total": 66060
+    },
+    "10_millièmes": {
+     "effet": 0.01,
+     "matchs_de_test": 3303,
+     "matchs_predits_total": 16515
+    }
+   },
+   "effet_de_suivi": 0.005,
+   "matchs_predits_total": 66060
+  },
+  "critere_reussite_patrick_0_5": {
+   "effet_pts": 0.5,
+   "paris_reserve": 15747,
+   "matchs_de_test": 153796,
+   "matchs_predits_total": 768980
+  },
+  "critere_reussite_2_pts": {
+   "effet_pts": 2.0,
+   "paris_reserve": 985,
+   "matchs_de_test": 9621,
+   "matchs_predits_total": 48105
+  },
+  "base": "60 paris, demi-largeur 8.1 points, 0.1024 pari par match (essai style) ; écart-type du log-loss par match mesuré entre xG pur (β = 1) et buts purs (β = 0), donc borne haute"
+ }
+}

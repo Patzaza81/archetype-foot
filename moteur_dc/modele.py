@@ -60,10 +60,13 @@ def _tau(x: np.ndarray, y: np.ndarray, lh: np.ndarray, la: np.ndarray, rho: floa
 
 
 def ajuster(dom: list[str], ext: list[str], h: np.ndarray, a: np.ndarray, age_jours: np.ndarray, sigma: float, xi: float,
-            depart: Ajustement | None = None, rho: float | None = None, mult_xi: np.ndarray | None = None) -> Ajustement:
+            depart: Ajustement | None = None, rho: float | None = None, mult_xi: np.ndarray | None = None,
+            buts_tau: tuple[np.ndarray, np.ndarray] | None = None) -> Ajustement:
     """Maximum de vraisemblance pénalisé. `age_jours` = jours entre le match et le jour de la prédiction (≥ 1 : strictement avant).
     `rho` donné = corrélation des scores faibles fixée (estimée une fois pour tous les championnats par vraisemblance prédictive, calibrage.py) ;
-    sinon estimée ici. Un ρ libre par championnat se perd dans le bruit et peut rendre une case de score impossible (τ ≤ 0), ce qui a été constaté."""
+    sinon estimée ici. Un ρ libre par championnat se perd dans le bruit et peut rendre une case de score impossible (τ ≤ 0), ce qui a été constaté.
+    `h` et `a` peuvent être des cibles non entières (xG) ; `buts_tau` = (buts réels domicile, buts réels extérieur) entiers pour la correction τ
+    des scores faibles, qui porte sur des scores et non sur des xG. Absent : τ lit `h` et `a` (comportement d'origine)."""
     equipes = sorted(set(dom) | set(ext))
     idx = {e: k for k, e in enumerate(equipes)}
     n_eq = len(equipes)
@@ -71,7 +74,7 @@ def ajuster(dom: list[str], ext: list[str], h: np.ndarray, a: np.ndarray, age_jo
     e = np.fromiter((idx[x] for x in ext), int, len(ext))
     h, a = np.asarray(h, float), np.asarray(a, float)
     w = np.exp(-xi * np.asarray(age_jours, float) * (1.0 if mult_xi is None else np.asarray(mult_xi, float)))   # xi par match (forme, ajustements.py)
-    hi, ai = h.astype(int), a.astype(int)
+    hi, ai = (h.astype(int), a.astype(int)) if buts_tau is None else (np.asarray(buts_tau[0], int), np.asarray(buts_tau[1], int))
     pen = 1.0 / (2.0 * sigma ** 2)
 
     def decode(p):

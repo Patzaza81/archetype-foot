@@ -64,9 +64,11 @@ def marche_avant(par_ligue: dict[str, list[dict]], p: dict[str, Any], avec_facte
             if passe:
                 t = M1.tableau(passe, jour)
                 dom, ext = [m["dom"] for m in passe], [m["ext"] for m in passe]
-                fit = MO.ajuster(dom, ext, np.array([m["h"] for m in passe]), np.array([m["a"] for m in passe]),
+                cible = any("hf" in m for m in passe)                    # cibles d'ajustement non entières (xG, harnais xG) : 'hf'/'af'
+                fit = MO.ajuster(dom, ext, np.array([m.get("hf", m["h"]) for m in passe]), np.array([m.get("af", m["a"]) for m in passe]),
                                  np.array([D.jours(m["date"], jour) for m in passe]), p["sigma"], p["xi"], fit, p["rho"],
-                                 AJ.mult_xi(dom, ext, AJ.dynamique(t), k.get("forme", 0.0)))
+                                 AJ.mult_xi(dom, ext, AJ.dynamique(t), k.get("forme", 0.0)),
+                                 (np.array([m["h"] for m in passe]), np.array([m["a"] for m in passe])) if cible else None)
                 for m in semaines[debut]:
                     try:
                         c = C.construire(passe, m["dom"], m["ext"], jour, t, m["id"])

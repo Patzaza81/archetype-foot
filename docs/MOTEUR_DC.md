@@ -74,3 +74,21 @@ avait été gelé à 17 h 58, avant la règle, et son match avait commencé : sa
 ## Points ouverts
 - Page `pronostics_dc.html` non faite.
 - Tests : `tests/test_moteur_dc.py` (30 tests, 3 cas qui passent et 3 qui échouent pour le contrat et le Module 4).
+
+## Harnais de test xG (branche `moteur-dc-xg-prep`, 31/10/2026) — préparation, rien n'est branché au moteur
+Ordre de Patrick : ne pas tester l'effet xG tant que le volume ne le permet pas ; préparer le test et son suivi. Fichiers : `moteur_dc/xg_harnais.py`,
+`tests/test_xg_harnais.py`, `.github/workflows/xg_volume.yml`. Le moteur en production n'est pas modifié (`modele.ajuster` reçoit un paramètre
+facultatif `buts_tau`, `calibrage.marche_avant` lit des cibles facultatives `hf`/`af` : sans eux, comportement d'origine, vérifié par test).
+- **Principe** : forces de Dixon-Coles ajustées sur y = (1 − β)·buts + β·xG, β appris (jamais posé), score final en BUTS (τ des petits scores lu sur les buts réels).
+- **Données** : Football-Data normalisé 2026-27, 18 ligues à 100 % de xG (B1, D1, D2, E0, E1, E2, E3, F1, F2, G1, I1, I2, N1, P1, SC0, SP1, SP2, T1), 1 677 matchs du 31/07 au 29/10/2026 ;
+  20 ligues sans xG (dont MLS, Série C italienne, Liga MX, Brésil) ; aucun xG pour 2025-26. Règle : ligue exclue si couverture < 80 %.
+- **Protocole** : matchs prédits en marche avant, 60 % calibrage (β) / 20 % validation (β remis à 0 s'il n'améliore pas) / 20 % test (log-loss en millièmes, paris, intervalles à 95 % par bootstrap).
+  Paris simplifiés : seuil par marché appris sur le calibrage, un pari principal par match, SANS Edge, Wilson ni cote (aucune cote BetPawa sur Football-Data) : ce n'est pas le Module 4.
+- **Essai à blanc (31/10/2026, NON significatif)** : seuls **275 matchs sur 1 677** sont prédictibles (4 matchs au lieu requis par équipe), du 03/10 au 29/10 : 165 / 55 / 55.
+  β appris = 1 (gain de calibrage de 64 millièmes), mais test de 55 matchs : −35 millièmes, intervalle −101 / +27 ; écart-type par match 0,29. Pur bruit.
+  Réserve : l'ajustement n'a pas été re-réglé en σ pour les cibles xG (moins bruitées) ; un écart de régularisation peut gonfler le gain de calibrage.
+- **Seuil de déclenchement** (formule : (1,96·σ/effet)², σ mesuré entre xG pur et buts purs, recalculé à chaque suivi ; test = 20 % finaux des matchs prédits) :
+  écart de 1 millième : 330 292 matchs de test (1,65 million de matchs prédits) ; 5 millièmes (niveau de suivi) : 13 212 (66 060 au total) ; 10 millièmes : 3 303 (16 515 au total).
+  Règle de réussite +0,5 point : 15 747 paris sur la réserve, 153 796 matchs de test (768 980 au total), calculé d'après l'essai « style » (60 paris, demi-largeur 8,1 points) : inatteignable.
+  +2 points : 985 paris, 9 621 matchs de test (48 105 au total).
+- **Suivi** : workflow mensuel `xg_volume.yml` (le 2 de chaque mois) → `data/dc/xg_volume.json` + annotation `::notice::` quand le seuil est atteint. `python -m moteur_dc.xg_harnais lancer` refuse de s'exécuter sous le seuil.
