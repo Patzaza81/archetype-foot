@@ -74,3 +74,11 @@ avait été gelé à 17 h 58, avant la règle, et son match avait commencé : sa
 ## Points ouverts
 - Page `pronostics_dc.html` non faite.
 - Tests : `tests/test_moteur_dc.py` (30 tests, 3 cas qui passent et 3 qui échouent pour le contrat et le Module 4).
+
+## Essai « fréquence des scores » (branche `moteur-dc-style`, 31/10/2026) — retiré, non fusionné
+Idée de Patrick : lire le style dans la répétition des scores. Matrice empirique (buts marqués du domicile à domicile croisés avec les buts
+encaissés de l'extérieur à l'extérieur, et inversement) mélangée à Dixon-Coles : P = (1 − w)·P_DC + w·P_emp, w = n/(n+k), k appris hors échantillon.
+- Apprentissage Football-Data 2025-26 (9 488 matchs) : k = 471 (c = 1/k = 0,00212) ; gain +0,00015 par match. Validation 2026-27 (1 598 matchs) : −2,99561 sans effet, −2,99600 avec (pire) → effet remis à 0 par la règle fixée avant le calcul.
+- w pour n = 4, 5, 6, 7, 10, 15, 20 : 0,008 ; 0,011 ; 0,013 ; 0,015 ; 0,021 ; 0,031 ; 0,041. Règle de Patrick (w < 0,1 à n = 4 → retrait) : déclenchée.
+- Archive (827 matchs, filtre de cote 1,26 actif) : 130 paris à 71,5 % sans effet, 129 à 71,3 % avec ; réserve (586 matchs, seuils appris sur les 241 du développement) : 60 paris à 68,3 % contre 63 à 65,1 %. Règle de Patrick (+2 points minimum) : non atteinte.
+- Code retiré (`style.py`, `calibrage_style.py`, appels dans `coeur.py` et `calibrage.py`) ; preuves : `docs/dc_style_validation.json`, `docs/dc_style_ab_archive.json`, `docs/dc_style_matrices.json`. Le code d'essai reste dans l'historique de la branche.

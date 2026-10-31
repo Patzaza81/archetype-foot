@@ -11,7 +11,7 @@ from typing import Any
 
 import numpy as np
 
-from . import ajustements as AJ, contrat as C, donnees as D, marches as M, modele as MO, module1 as M1, selecteur as S, style as ST
+from . import ajustements as AJ, contrat as C, donnees as D, marches as M, modele as MO, module1 as M1, selecteur as S
 
 CLES: list[M.Cle] = M.catalogue()
 TESTS = {c: M.test_du_marche(*c) for c in CLES}
@@ -83,12 +83,6 @@ def analyser(m: dict[str, Any], matchs: list[dict], p: dict[str, Any], fit: MO.A
     f = AJ.facteurs(c, t, exc)
     lh, la, rho = AJ.appliquer(lh0, la0, fit.rho, f, k)
     g = MO.grille(lh, la, rho)
-    force_style = ST.force_du(p)                                                       # fréquence des scores (branche moteur-dc-style) ; 0 = sans effet
-    w_style = None
-    if force_style > 0:
-        e, n_style = ST.matrice_empirique(c)
-        w_style = float(ST.poids(n_style, force_style))
-        g = ST.melanger(g, e, w_style)
     P = np.einsum("ij,kij->k", g, MASQUES)                                             # Module 3
     base, n_ligue = bases or bases_ligue(matchs, m["jour"])
     K, n = effectifs(c)
@@ -102,7 +96,7 @@ def analyser(m: dict[str, Any], matchs: list[dict], p: dict[str, Any], fit: MO.A
     return {**fiche, "statut": "analyse", "buts_attendus": {"dom": lh, "ext": la}, "buts_attendus_avant_effets": {"dom": lh0, "ext": la0},
             "modele": {"mu": fit.mu, "gamma": fit.gamma, "rho_commun": fit.rho, "rho": rho, "n_matchs_ligue": fit.n_matchs, "effets": k},
             "facteurs": {kk: round(v, 4) for kk, v in f.items()}, "excedents_profil": exc, "n_ligue": n_ligue,
-            "style_freq": None if w_style is None else {"w": round(w_style, 4), "n": n_style}, "contrat": c, "parametres_equipes": {"dom": eq[m["eq_dom"]], "ext": eq[m["eq_ext"]]},
+            "contrat": c, "parametres_equipes": {"dom": eq[m["eq_dom"]], "ext": eq[m["eq_ext"]]},
             "scores_probables": [{"score": f"{i}-{j}", "p": round(q, 4)} for q, i, j in top], "marches": lignes, "p_marches": [round(float(x), 4) for x in P]}
 
 
