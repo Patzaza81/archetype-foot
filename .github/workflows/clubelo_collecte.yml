@@ -38,6 +38,12 @@ jobs:
               echo; echo "== $u"; curl -sS -m 25 -i -A "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Safari/604.1" "$u" 2>&1 | head -15
             done
           } > data/clubelo/diagnostic.txt 2>&1
+      - name: Sonde navigateur (Playwright ordinaire, aucun contournement)
+        continue-on-error: true
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+          python sonde_clubelo_page.py 2026-10-31
       - name: Collecter
         id: collecte
         continue-on-error: true
