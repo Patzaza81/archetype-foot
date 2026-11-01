@@ -35,3 +35,8 @@
 - Règle : `parse_betpawa.cotes_des_equipes` — une page ne parle que de deux équipes ; si l'un des deux noms est reconnu et l'autre non, l'autre est l'équipe restante. Aucun nom reconnu, un seul nom, plus de deux noms, ou deux noms rattachés à la même équipe : rien n'est deviné.
 - Portée (complétée le 25/10/2026) : la page réellement lue en production est ANGLAISE (navigateur automatisé : « Over/Under | Club Brugge | Full Time », « Clean Sheet | … »). La règle est dans `equipe_betpawa.cotes_des_equipes` et s'applique aux trois lecteurs : français (`parse_betpawa.py`), anglais séparé (`parse_betpawa_playwright.py`, production), anglais collé (`parse_betpawa_url.py`).
 - Tests : `tests/test_equipe_betpawa.py`.
+
+## Enquête assemblage du 01/11/2026
+
+- `data/assemblage/equipes.json` n'est PAS une base de championnats : c'est le reflet du cache `cache_equipes_saison.json`, limité aux équipes des matchs cotés de la fenêtre J0 à J+3 (TTL 30 h, puis purge). Un championnat peut y être incomplet ou absent d'un run à l'autre.
+- Contrôle d'intégrité en lecture seule : `controle_assemblage.py` ; analyse, preuves et correctif proposé du chargeur : `docs/ENQUETE_ASSEMBLAGE.md`. Tests : `tests/test_controle_assemblage.py`.
