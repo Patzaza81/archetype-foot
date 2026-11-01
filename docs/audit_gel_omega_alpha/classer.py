@@ -75,6 +75,8 @@ def marches_alpha_fiche(onglets):
 
 def etat(gel, var, cle_cmp):
     """Classe d'un marché : inchangé / modifié / supprimé / ajouté."""
+    if gel is None and var is None:
+        return "absent"
     if gel is None:
         return "ajoutée"
     if var is None:
