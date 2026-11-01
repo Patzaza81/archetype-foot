@@ -1,8 +1,8 @@
 """Audit du 01/11/2026 (ordre de Patrick) : mesure de l'effet du filtre EV > 0 et du tri par EV. Usage : python -m moteur_dc.audit
 
 Deux mesures, annoncées avec leur nombre de matchs, de paris et leur période :
-1. JOURNAL RÉEL : paris gelés AVANT le coup d'envoi, matchs terminés (règle de bilan_reel.py). « Avant » = tous ces paris ; « après » = ceux d'EV > 0.
-2. REJEU de l'archive ARCHETYPE (cotes BetPawa prises avant le coup d'envoi), marche avant, ancienne règle contre nouvelle règle.
+1. JOURNAL RÉEL : paris gelés AVANT le coup d'envoi, matchs terminés (règle de bilan_reel.py). « Avant » = tous ces paris (règle de production) ; « après » = ceux d'EV > 0 (filtre expérimental).
+2. REJEU de l'archive ARCHETYPE (cotes BetPawa prises avant le coup d'envoi), marche avant, règle de production (probabilité) contre règle expérimentale (EV).
    Les seuils par marché ont été appris sur cette même archive : le rejeu est donc OPTIMISTE pour les deux règles ; le filtre EV, lui, n'a aucun paramètre.
 3. CONTRÔLE de la décomposition des λ sur tous les matchs rejoués : le produit des facteurs gelés doit redonner les buts attendus.
 Rendement THÉORIQUE = moyenne de P × cote − 1 selon le modèle ; rendement RÉEL = moyenne de (cote − 1 si gagné, −1 sinon) par pari, mise de 1.
@@ -89,14 +89,14 @@ def rejeu_archive(params: dict[str, Any]) -> dict[str, Any]:
             paris, principaux = [], []
             for x in groupe:
                 a = json.loads(json.dumps(x["a"], default=float))                    # la sélection écrit dans les lignes : copie propre pour chaque règle
-                s = coeur.S.selectionner(a, params["emac"], params.get("seuils_marche"), regle)
+                s = coeur.selectionner(a, params, regle=regle)
                 for q, l in enumerate(([s["principal"]] if s["principal"] else []) + s["autres"]):
                     gagne = bool(coeur.TESTS[tuple(l["cle"])](x["m"]["h"], x["m"]["a"]))
                     ligne = {"match": x["m"]["id"], "p": l["p"], "cote": l["cote"], "gagne": gagne}
                     paris.append(ligne)
                     if q == 0:
                         principaux.append(ligne)
-            res[{"probabilite": "ancienne_regle", "ev": "nouvelle_regle"}[regle]] = {"tous_les_paris": _stats(paris), "paris_principaux": _stats(principaux)}
+            res[{"probabilite": "production_probabilite", "ev": "experimental_ev"}[regle]] = {"tous_les_paris": _stats(paris), "paris_principaux": _stats(principaux)}
         out[nom] = res
     for x in an:
         d = x["a"]["decomposition"]

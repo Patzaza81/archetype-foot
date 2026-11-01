@@ -130,5 +130,6 @@ def analyser(m: dict[str, Any], matchs: list[dict], p: dict[str, Any], fit: MO.A
             "scores_probables": [{"score": f"{i}-{j}", "p": round(q, 4)} for q, i, j in top], "marches": lignes, "p_marches": [round(float(x), 4) for x in P]}
 
 
-def selectionner(a: dict[str, Any], p: dict[str, Any], emac: float | None = None) -> dict[str, Any]:
-    return S.selectionner(a, p["emac"] if emac is None else emac, p.get("seuils_marche"))
+def selectionner(a: dict[str, Any], p: dict[str, Any], emac: float | None = None, regle: str | None = None) -> dict[str, Any]:
+    """Point d'entrée de la sélection. Mode explicite : argument `regle`, sinon `regle_selection` de parametres.json, sinon S.REGLE_PRODUCTION (« probabilite »)."""
+    return S.selectionner(a, p["emac"] if emac is None else emac, p.get("seuils_marche"), regle or p.get("regle_selection") or S.REGLE_PRODUCTION)

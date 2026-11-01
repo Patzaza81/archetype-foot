@@ -403,8 +403,9 @@ def test_seuils_par_marche_cas_qui_passent_et_echouent():
 
 def test_cote_minimale_1_26_et_cote_absente():
     assert S.tester(_l(("1x2", "1"), 0.82, 0.45, 8, 10, cote=1.26), 0.005, None, 0.60)[0]          # 1,26 pile : jouable (EV +3,3 %)
-    ok, r = S.tester(_l(("1x2", "1"), 0.70, 0.45, 7, 10, cote=1.26), 0.005, None, 0.60)
-    assert not ok and r.startswith("EV")                                                            # 1,26 pile mais P 70 % : EV négative, rejeté
+    ok, r = S.tester(_l(("1x2", "1"), 0.70, 0.45, 7, 10, cote=1.26), 0.005, None, 0.60, True)
+    assert not ok and r.startswith("EV")                                                            # mode expérimental : 1,26 pile mais P 70 %, EV négative
+    assert S.tester(_l(("1x2", "1"), 0.70, 0.45, 7, 10, cote=1.26), 0.005, None, 0.60)[0]           # production : l'EV ne filtre pas
     assert S.tester(_l(("1x2", "1"), 0.70, 0.45, 7, 10, cote=1.80), 0.005, None, 0.60)[0]
     assert S.tester(_l(("double_chance", "1N"), 0.85, 0.70, 9, 10, cote=1.30), 0.005, None, 0.70)[0]
     ok, r = S.tester(_l(("double_chance", "1N"), 0.85, 0.70, 9, 10, cote=1.14), 0.005, None, 0.70)
@@ -413,7 +414,7 @@ def test_cote_minimale_1_26_et_cote_absente():
     assert not ok and "absente" in r                                                                # pas de cote : injouable
     assert not S.tester(_l(("over_under_exterieur_0.5", "plus"), 0.87, 0.73, 8, 8, cote=1.05), 0.005, None, 0.70)[0]
     a = {"statut": "analyse", "marches": [_l(("handicap_1.5", "exterieur"), 0.94, 0.84, 8, 8, cote=None),
-                                          _l(("1x2", "2"), 0.82, 0.41, 6, 8, cote=1.28)]}
+                                          _l(("1x2", "2"), 0.62, 0.41, 6, 8, cote=1.28)]}
     s = S.selectionner(a, 0.005, {"handicap_1.5|exterieur": {"seuil": 0.6}, "1x2|2": {"seuil": 0.5}})
     assert s["principal"]["cle"] == ["1x2", "2"] and s["autres"] == []                             # le plus probable PARMI les jouables
 
@@ -440,28 +441,45 @@ def test_la_sortie_ne_contient_aucun_k_n_additionne():
 def test_ev_filtre_les_paris_non_rentables_selon_le_modele():
     assert S.ev(0.82, 1.26) == pytest.approx(0.0332, abs=1e-4)                      # exemple de l'audit : +3,3 %
     assert S.ev(0.82, 1.50) == pytest.approx(0.23, abs=1e-9)                        # +23 %
-    assert S.tester(_l(("double_chance", "N2"), 0.82, 0.63, 8, 10, cote=1.26), 0.005, None, 0.75)[0]
-    assert S.tester(_l(("double_chance", "N2"), 0.82, 0.63, 8, 10, cote=1.50), 0.005, None, 0.75)[0]
-    assert S.tester(_l(("over_under_1.5", "plus"), 0.76, 0.60, 8, 10, cote=1.33), 0.005, None, 0.50)[0]       # 0,76 × 1,33 = 1,011 : EV +1,1 %
-    ok, r = S.tester(_l(("over_under_1.5", "plus"), 0.75, 0.60, 8, 10, cote=1.33), 0.005, None, 0.50)
+    assert S.tester(_l(("double_chance", "N2"), 0.82, 0.63, 8, 10, cote=1.26), 0.005, None, 0.75, True)[0]
+    assert S.tester(_l(("double_chance", "N2"), 0.82, 0.63, 8, 10, cote=1.50), 0.005, None, 0.75, True)[0]
+    assert S.tester(_l(("over_under_1.5", "plus"), 0.76, 0.60, 8, 10, cote=1.33), 0.005, None, 0.50, True)[0]       # 0,76 × 1,33 = 1,011 : EV +1,1 %
+    ok, r = S.tester(_l(("over_under_1.5", "plus"), 0.75, 0.60, 8, 10, cote=1.33), 0.005, None, 0.50, True)
     assert not ok and r.startswith("EV")                                            # 0,75 × 1,33 = 0,9975 : EV négative
-    ok, r = S.tester(_l(("double_chance", "N2"), 0.50, 0.30, 5, 10, cote=1.90), 0.005, None, 0.50)
+    ok, r = S.tester(_l(("double_chance", "N2"), 0.50, 0.30, 5, 10, cote=1.90), 0.005, None, 0.50, True)
     assert not ok and r.startswith("EV")
-    ok, r = S.tester(_l(("double_chance", "N2"), 0.80, 0.60, 8, 10, cote=1.20), 0.005, None, 0.50)
+    ok, r = S.tester(_l(("double_chance", "N2"), 0.80, 0.60, 8, 10, cote=1.20), 0.005, None, 0.50, True)
     assert not ok and r.startswith("cote")                                          # le plancher 1,26 reste devant l'EV
 
 
-def test_tri_par_ev_decroissante_et_principal_de_plus_forte_ev():
+def test_mode_experimental_ev_trie_par_ev_et_principal_de_plus_forte_ev():
     a = {"statut": "analyse", "marches": [_l(("double_chance", "N2"), 0.82, 0.63, 8, 10, cote=1.33),                    # EV +9,1 %
                                           _l(("btts", "Oui"), 0.66, 0.40, 6, 10, cote=1.76),                           # EV +16,2 % : moins probable, plus rentable
                                           _l(("over_under_1.5", "plus"), 0.97, 0.70, 9, 10, cote=1.27)]}               # EV +23,2 %
-    s = S.selectionner(a, 0.005, {"double_chance|N2": {"seuil": 0.75}, "btts|Oui": {"seuil": 0.6}, "over_under_1.5|plus": {"seuil": 0.5}})
+    s = S.selectionner(a, 0.005, regle="ev", seuils={"double_chance|N2": {"seuil": 0.75}, "btts|Oui": {"seuil": 0.6}, "over_under_1.5|plus": {"seuil": 0.5}})
     ordre = [s["principal"]] + s["autres"]
     assert [x["cle"][0] for x in ordre] == ["over_under_1.5", "btts", "double_chance"]
     assert [x["ev"] for x in ordre] == sorted([x["ev"] for x in ordre], reverse=True)
     assert s["principal"]["ev"] == pytest.approx(0.97 * 1.27 - 1, abs=1e-4)
     assert S.selectionner({"statut": "analyse", "marches": [_l(("double_chance", "N2"), 0.70, 0.40, 7, 10, cote=1.30)]}, 0.005,
-                          {"double_chance|N2": {"seuil": 0.6}})["principal"] is None                                    # EV négative : aucun pari
+                          {"double_chance|N2": {"seuil": 0.6}}, "ev")["principal"] is None                                    # EV négative : aucun pari
+
+
+def test_production_trie_par_probabilite_garde_l_ev_en_information_et_le_mode_est_explicite():
+    a = lambda: {"statut": "analyse", "marches": [_l(("double_chance", "N2"), 0.82, 0.63, 8, 10, cote=1.33), _l(("btts", "Oui"), 0.66, 0.40, 6, 10, cote=1.76),
+                                                    _l(("over_under_1.5", "plus"), 0.75, 0.50, 8, 10, cote=1.33)]}                # ce dernier : EV négative
+    seuils = {"double_chance|N2": {"seuil": 0.75}, "btts|Oui": {"seuil": 0.6}, "over_under_1.5|plus": {"seuil": 0.5}}
+    s = S.selectionner(a(), 0.005, seuils)
+    ordre = [s["principal"]] + s["autres"]
+    assert S.REGLE_PRODUCTION == "probabilite"
+    assert [x["cle"][0] for x in ordre] == ["double_chance", "over_under_1.5", "btts"]                                              # P décroissante, EV négative gardée
+    assert all(x["ev"] is not None for x in ordre) and ordre[1]["ev"] < 0                                                           # EV calculée et affichée
+    p = {"emac": 0.005, "seuils_marche": seuils}
+    assert coeur.selectionner(a(), p)["principal"]["cle"][0] == "double_chance"                                                    # point d'entrée : défaut = production
+    assert coeur.selectionner(a(), p, regle="ev")["principal"]["cle"][0] == "btts"                                                 # mode explicite
+    assert coeur.selectionner(a(), {**p, "regle_selection": "ev"})["principal"]["cle"][0] == "btts"                                # via parametres.json
+    with pytest.raises(ValueError):
+        S.selectionner(a(), 0.005, seuils, "inconnue")
 
 
 def test_decomposition_des_lambdas_reproduit_exactement_les_buts_attendus():

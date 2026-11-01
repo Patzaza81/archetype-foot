@@ -1,5 +1,5 @@
 {
- "genere_le": "2026-11-01T11:24:30",
+ "genere_le": "2026-11-01T11:40:34",
  "journal_reel": {
   "source": "data/dc/journal.jsonl : paris gelés avant le coup d'envoi, matchs terminés, cote connue",
   "periode": [
@@ -58,7 +58,7 @@
   "coupe": "2026-10-14",
   "calibrage_avant_coupe": {
    "matchs_analyses": 157,
-   "ancienne_regle": {
+   "production_probabilite": {
     "tous_les_paris": {
      "paris": 15,
      "matchs": 13,
@@ -88,7 +88,7 @@
      ]
     }
    },
-   "nouvelle_regle": {
+   "experimental_ev": {
     "tous_les_paris": {
      "paris": 8,
      "matchs": 6,
@@ -121,7 +121,7 @@
   },
   "validation_apres_coupe": {
    "matchs_analyses": 420,
-   "ancienne_regle": {
+   "production_probabilite": {
     "tous_les_paris": {
      "paris": 69,
      "matchs": 60,
@@ -151,7 +151,7 @@
      ]
     }
    },
-   "nouvelle_regle": {
+   "experimental_ev": {
     "tous_les_paris": {
      "paris": 41,
      "matchs": 36,
@@ -184,7 +184,7 @@
   },
   "ensemble": {
    "matchs_analyses": 577,
-   "ancienne_regle": {
+   "production_probabilite": {
     "tous_les_paris": {
      "paris": 84,
      "matchs": 73,
@@ -214,7 +214,7 @@
      ]
     }
    },
-   "nouvelle_regle": {
+   "experimental_ev": {
     "tous_les_paris": {
      "paris": 49,
      "matchs": 42,
@@ -304,11 +304,20 @@
   },
   "paris": [
    {
-    "marche": "Victoire extérieur",
-    "p": 0.5809,
-    "cote": 2.13,
-    "ev": 0.2373,
+    "marche": "Extérieur ne perd pas",
+    "p": 0.8156,
+    "cote": 1.33,
+    "ev": 0.0847,
     "dom": {
+     "k": 4,
+     "n": 4,
+     "p_hat": 1.0,
+     "wilson": [
+      0.5101,
+      1.0
+     ]
+    },
+    "ext": {
      "k": 3,
      "n": 4,
      "p_hat": 0.75,
@@ -317,21 +326,12 @@
       0.9544
      ]
     },
-    "ext": {
-     "k": 2,
-     "n": 4,
-     "p_hat": 0.5,
-     "wilson": [
-      0.15,
-      0.85
-     ]
-    },
     "estimation": {
-     "p": 0.5645,
-     "se": 0.123,
+     "p": 0.6944,
+     "se": 0.1141,
      "ic": [
-      0.3235,
-      0.8055
+      0.4708,
+      0.9181
      ],
      "methode": "moyenne pondérée par l'inverse de la variance des deux populations (Agresti-Coull)"
     }
@@ -370,20 +370,11 @@
     }
    },
    {
-    "marche": "Extérieur ne perd pas",
-    "p": 0.8156,
-    "cote": 1.33,
-    "ev": 0.0847,
+    "marche": "Victoire extérieur",
+    "p": 0.5809,
+    "cote": 2.13,
+    "ev": 0.2373,
     "dom": {
-     "k": 4,
-     "n": 4,
-     "p_hat": 1.0,
-     "wilson": [
-      0.5101,
-      1.0
-     ]
-    },
-    "ext": {
      "k": 3,
      "n": 4,
      "p_hat": 0.75,
@@ -392,12 +383,21 @@
       0.9544
      ]
     },
+    "ext": {
+     "k": 2,
+     "n": 4,
+     "p_hat": 0.5,
+     "wilson": [
+      0.15,
+      0.85
+     ]
+    },
     "estimation": {
-     "p": 0.6944,
-     "se": 0.1141,
+     "p": 0.5645,
+     "se": 0.123,
      "ic": [
-      0.4708,
-      0.9181
+      0.3235,
+      0.8055
      ],
      "methode": "moyenne pondérée par l'inverse de la variance des deux populations (Agresti-Coull)"
     }

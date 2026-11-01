@@ -34,7 +34,7 @@ PR = {"dom": {"k": 4, "n": 4, "wilson": [0.51, 1.0]}, "ext": {"k": 3, "n": 4, "w
 def test_deux_populations_affichees_separement_jamais_7_sur_8():
     t = appel("gaPops", PR, F, False)
     assert "4 sur 4" in t and "3 sur 4" in t and "7 sur 8" not in t
-    assert "Estimation combinée" in t and "pas une fréquence observée" in t
+    assert "Estimation combinée" in t and "pas une fréquence observée" in t and "non validée" in t
     assert "7 sur 8" not in appel("gaPreuve", {"p": 0.82, "cote": 1.33, "ev": 0.09, "base": 0.63, "edge": 0.19, "seuil": 0.75, "preuve": PR}, F)
     assert appel("gaPops", {"k": 7, "n": 8}, F, False) == ""                         # ancienne ligne gelée (k/n additionné) : plus rien d'affiché
     assert appel("gaPops", None, F, False) == ""

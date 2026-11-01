@@ -5,12 +5,13 @@ k/n = réussites/essais sur les matchs comparables : A à domicile + B à l'ext�
 - ordre de Patrick (30/10/2026) : 1. Edge = P − Base ≥ 10 % (et ≥ EMAC) ; 2. P ≥ seuil CALIBRÉ du marché (calibrage.seuils_par_marche) ;
 - Bonferroni et Z supprimés comme filtre (le Z reste affiché) ;
 - 3. cote BetPawa ≥ 1,26 ; cote absente = rejet ;
-- 3 bis (audit du 01/11/2026, ordre de Patrick) : EV = P × cote − 1 > 0 (un pari à l'espérance négative selon le modèle est rejeté) ;
+- EV = P × cote − 1 : CALCULÉE et affichée pour chaque pari (information secondaire, audit du 01/11/2026). Le filtre EV > 0 et le tri par EV existent
+  mais sont EXPÉRIMENTAUX (`regle="ev"`) : non activés en production (REGLE_PRODUCTION), l'amélioration théorique n'est pas confirmée par le rendement réel ;
 - 4. AVERTISSEMENT (affiché, ne change ni la décision ni l'ordre) si P sort de l'intervalle de l'ESTIMATION COMBINÉE des matchs comparables.
   Les deux populations (A à domicile, B à l'extérieur) ne sont JAMAIS additionnées en un k/n : chacune garde son k/n et son intervalle de Wilson ;
-  l'estimation combinée est une moyenne pondérée par l'inverse de la variance (Agresti-Coull), présentée comme une estimation, pas comme une fréquence ;
-- une seule issue par marché (la plus rentable) et jamais deux fois le même événement (même ensemble de scores gagnants).
-Sortie : TOUS les paris validés, par EV décroissante (à EV égale, par probabilité) ; pari principal = celui de plus forte EV. Tous sont gelés et réglés (suivi.py).
+  l'estimation combinée (moyenne pondérée par l'inverse de la variance, Agresti-Coull) est INDICATIVE, non validée sur données indépendantes ;
+- une seule issue par marché (la plus probable ; la plus rentable en mode « ev ») et jamais deux fois le même événement (même ensemble de scores gagnants).
+Sortie (production) : TOUS les paris validés, par PROBABILITÉ décroissante, puis Edge ; pari principal = le plus probable. Tous sont gelés et réglés (suivi.py).
 
 EMAC = erreur de calibration du modèle par dixième de probabilité (calibrage hors échantillon, puis 30 derniers jours du journal gelé).
 """
@@ -22,6 +23,7 @@ from typing import Any
 
 from . import marches as M
 
+REGLE_PRODUCTION = "probabilite"   # mode de sélection en production ; « ev » = expérimental (filtre EV > 0 et tri par EV), à valider chronologiquement
 ALPHA = 0.05                 # risque de l'intervalle de Wilson (95 %)
 P_MIN = 0.60                 # Patrick : plancher P ≥ 60 %
 EDGE_MIN = 0.10              # Patrick : Edge ≥ 10 %
@@ -70,7 +72,7 @@ def z_score(est: dict[str, Any] | None, base: float) -> float | None:
     return (est["p"] - base) / est["se"]
 
 
-def tester(l: dict[str, Any], emac: float, zs: float | None = None, seuil: float | None = P_MIN, filtre_ev: bool = True) -> tuple[bool, str]:
+def tester(l: dict[str, Any], emac: float, zs: float | None = None, seuil: float | None = P_MIN, filtre_ev: bool = False) -> tuple[bool, str]:
     """1. Edge = P − Base ≥ 10 % ; 2. P ≥ seuil calibré du marché (None = le marché n'a jamais atteint 70 % de réussite sur l'échantillon) ;
     3. Wilson = avertissement sur les validés."""
     pr, base, p = l.get("preuve"), l.get("base"), l["p"]
@@ -92,7 +94,7 @@ def tester(l: dict[str, Any], emac: float, zs: float | None = None, seuil: float
         return False, f"cote {cote:.2f} < {COTE_MIN:.2f}".replace(".", ",")
     gain = ev(p, cote)
     l["ev"] = round(gain, 4)
-    if filtre_ev and gain <= 0:                      # filtre_ev=False : comparaison « avant l'audit » (audit.py) seulement
+    if filtre_ev and gain <= 0:                      # filtre expérimental (regle="ev") ; l'EV reste calculée dans tous les cas
         return False, f"EV {gain:+.1%} ≤ 0 (P {p:.0%} × cote {cote:.2f} − 1)"
     if pr:
         est = pr.get("estimation")
@@ -102,9 +104,11 @@ def tester(l: dict[str, Any], emac: float, zs: float | None = None, seuil: float
     return True, "validé" + (" (avertissement)" if l["avertissement"] else "")
 
 
-def selectionner(a: dict[str, Any], emac: float, seuils: dict[str, Any] | None = None, regle: str = "ev") -> dict[str, Any]:
+def selectionner(a: dict[str, Any], emac: float, seuils: dict[str, Any] | None = None, regle: str = REGLE_PRODUCTION) -> dict[str, Any]:
     """`seuils` = seuils calibrés par marché ({"groupe|sélection": {"seuil": …}}) ; absent : plancher commun P_MIN.
-    `regle` : « ev » (production depuis le 01/11/2026) ; « probabilite » = ancienne règle (sans filtre EV, tri par probabilité), gardée pour mesurer l'audit."""
+    `regle` : « probabilite » (production) = sans filtre EV, tri par probabilité puis Edge ; « ev » = expérimental (filtre EV > 0, tri par EV)."""
+    if regle not in ("probabilite", "ev"):
+        raise ValueError(f"règle de sélection inconnue : {regle}")
     if a["statut"] != "analyse":
         return {"principal": None, "autres": [], "raison": a.get("raison"), "m": 0, "z_seuil": None, "emac": emac}
     testes = [l for l in a["marches"] if l.get("preuve") and l.get("base") is not None]

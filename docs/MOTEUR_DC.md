@@ -11,7 +11,7 @@ Autonome (aucun import d'un autre moteur), hors générateur de tickets. Statut 
 | 1.5 | `contrat.py` | `match_input` (structure de la Section A) et contrôles stricts : Filtre 0 (≥ 4 matchs à domicile / à l'extérieur), types, NaN, historiques d'au moins 4 matchs en ordre chronologique strict. Erreur = match exclu, raison gelée. |
 | 2 | `modele.py` + `ajustements.py` | Dixon-Coles pénalisé (shrinkage) sur le championnat entier ; Forme→xi, IE→λ, Amplitude et Score modal→ρ, Profil croisé→λ. Chaque effet a une force apprise hors échantillon. |
 | 3 | `coeur.py`, `marches.py` | 103 marchés (1N2, double chance, plus/moins, BTTS, **Multigoal 0-1 / 2-3 / 4+**, buts par équipe, handicaps, combinés) par SOMME des cases de la grille ; k/n sur les matchs comparables (A à domicile + B à l'extérieur, score orienté) ; Base = fréquence du marché dans le championnat cette saison avant le match. |
-| 4 | `selecteur.py` | **Option B de Patrick (30/10/2026)** : ordre de Patrick (30/10, 17 h 39) : 1. Edge = P − Base ≥ 10 % (et ≥ EMAC) ; 2. P ≥ seuil CALIBRÉ de son marché (`python -m moteur_dc.calibrage seuils`, voir plus bas) ; 3. Wilson calculé sur les seuls validés, simple avertissement. Bonferroni et Z supprimés comme filtre (Z affiché). Intervalle de Wilson à 95 % de p̂ = simple avertissement (paris avertis classés après). Une issue par marché, jamais deux fois le même événement. Classement par probabilité ; principal = le plus probable. **Aucune cote.** *(Remplacé le 01/11/2026 : voir « Audit du 01/11/2026 » — EV > 0, tri par EV, k/n séparés.)* |
+| 4 | `selecteur.py` | **Option B de Patrick (30/10/2026)** : ordre de Patrick (30/10, 17 h 39) : 1. Edge = P − Base ≥ 10 % (et ≥ EMAC) ; 2. P ≥ seuil CALIBRÉ de son marché (`python -m moteur_dc.calibrage seuils`, voir plus bas) ; 3. Wilson calculé sur les seuls validés, simple avertissement. Bonferroni et Z supprimés comme filtre (Z affiché). Intervalle de Wilson à 95 % de p̂ = simple avertissement (paris avertis classés après). Une issue par marché, jamais deux fois le même événement. Classement par probabilité ; principal = le plus probable. **Aucune cote.** *(01/11/2026 : k/n séparés par population, EV affichée seulement ; voir « Audit du 01/11/2026».)* |
 
 Précisions imposées par la spécification (aucune valeur choisie) :
 - Forme_PPM : avec J ≤ 5 la formule reçue divise par 0 ou par un nombre négatif → PPM simple.
@@ -71,19 +71,20 @@ Le filtre de cote du Module 5 est rétabli (EV et Kelly restent écartés) : un 
 est connue et ≥ 1,26. Soir du 30/10 (18 h-22 h) : 7 paris jouables sur 6 matchs (au lieu de 38 sur 19). Exception : Slaven – Istra (cote 1,23)
 avait été gelé à 17 h 58, avant la règle, et son match avait commencé : sa ligne reste au journal (ajout seul).
 
-## Audit du 01/11/2026 (branche `moteur-dc-audit`, NON fusionnée ; ordre de Patrick, 3 corrections sur les 10 défauts d'un audit externe)
-1. **k/n séparés.** Le « 7 sur 8 » d'Arezzo – Ascoli additionnait deux populations (Arezzo à domicile 4/4, Ascoli à l'extérieur 3/4). Plus aucun k/n additionné
+## Audit du 01/11/2026 (branche `moteur-dc-audit`, NON fusionnée ; décision de Patrick : corrections 1 et 3 en production, EV en option expérimentale)
+1. **k/n séparés (en production).** Le « 7 sur 8 » d'Arezzo – Ascoli additionnait deux populations (Arezzo à domicile 4/4, Ascoli à l'extérieur 3/4). Plus aucun k/n additionné
    n'est calculé, gelé ni affiché : `preuve = {dom: {k, n, wilson}, ext: {k, n, wilson}, estimation}`. `estimation` = moyenne pondérée par l'inverse de la variance
-   des deux populations (Agresti-Coull), présentée comme une ESTIMATION. L'avertissement (sans effet sur la décision) compare P à son intervalle ; le Z est calculé sur elle.
-   (Le message d'audit parlait de « Arezzo 0/4 » : c'est 4/4, l'événement étant « Arezzo n'a pas gagné ».) Les lignes gelées avant le 01/11 n'affichent plus de k/n.
-2. **EV.** EV = P × cote − 1, affichée sur chaque pari. Filtre : EV > 0 (après le seuil de P et la cote ≥ 1,26). Tri et pari principal par EV décroissante
-   (une seule issue par marché = la plus rentable). Conséquence mesurée : le pari principal n'est plus le plus probable (Arezzo – Ascoli : « Victoire extérieur » P 58 % cote 2,13 passe devant « Extérieur ne perd pas » P 82 % cote 1,33).
-   `selectionner(..., regle="probabilite")` garde l'ancienne règle, pour la mesure seulement. **La « règle n°1 » (compatibilité croisée positive) n'existe pas dans Gamma** : la piste « compatibilité » a donné un résultat nul et n'est pas fusionnée ; elle n'est donc PAS appliquée.
+   (Agresti-Coull), **indicative et non validée** (on suppose que deux populations conditionnelles différentes estiment une même probabilité : à démontrer sur données indépendantes).
+   L'avertissement (sans effet sur la décision) et le Z s'appuient sur elle. Les lignes gelées avant le 01/11 n'affichent plus de k/n.
+2. **EV (information secondaire).** EV = P × cote − 1 est calculée, gelée (`ev`) et affichée. Le filtre EV > 0 et le tri par EV sont une option **expérimentale** indépendante :
+   `selecteur.selectionner(..., regle="ev")` / `coeur.selectionner(..., regle="ev")` / `regle_selection` dans `parametres.json`. **Production : `S.REGLE_PRODUCTION = "probabilite"`**
+   (tri par probabilité puis Edge, pari principal = le plus probable, aucun filtre EV). Mesure (`docs/dc_audit_resultats.json`) : l'EV améliore le rendement théorique (+4 % → +14 %)
+   mais pas le rendement réel (rejeu 577 matchs : +14,9 % → +15,8 %, après le 14/10 : +11,7 % → +7,8 %, intervalles couvrant 0) et baisse la réussite (79,8 % → 73,5 %) : non activé.
+   À retester en chronologique sur les seuls matchs réellement tournés. La « règle n°1 » (compatibilité croisée) n'existe pas dans Gamma (piste nulle, non fusionnée).
 3. **Décomposition des λ gelée** (`fiche.decomposition`, `coeur.decomposition`) : termes mu, gamma, att/def, facteurs exp(terme), moyennes réelles du championnat, σ, xi, nombre de matchs de chaque équipe, effets des modules, ρ.
-   Il n'y a PAS de facteur de shrinkage séparé : att et def sont déjà tirés vers la moyenne par la pénalité σ ; on gèle σ et les effectifs. Le « Filtre 0 » (≥ 4 matchs) est un contrôle d'entrée, pas un facteur.
+   Pas de facteur de shrinkage séparé : att et def sont déjà tirés vers la moyenne par la pénalité σ ; on gèle σ et les effectifs. Le « Filtre 0 » (≥ 4 matchs) est un contrôle d'entrée.
    Une fiche sans décomposition est regelée une fois (avant le coup d'envoi, ajout seul). Page : panneau repliable « Détail du calcul ».
-Mesure : `python -m moteur_dc.audit` → `docs/dc_audit_resultats.json` (journal réel + rejeu de l'archive + contrôle : produit des facteurs = buts attendus, écart max 2,6e-06 sur 577 matchs).
-Les 21 seuils, Dixon-Coles et omega sont inchangés. Tests : `tests/test_moteur_dc.py` (+6), `tests/test_gamma_js.py` (3).
+Mesure : `python -m moteur_dc.audit`. Les 21 seuils, Dixon-Coles et omega sont inchangés. Tests : `tests/test_moteur_dc.py`, `tests/test_gamma_js.py`.
 
 ## Points ouverts
 - Page `pronostics_dc.html` non faite.

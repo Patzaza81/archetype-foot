@@ -93,9 +93,9 @@ function gaPops(pr, f, court) {
   const dom = f ? gaE(f.domicile) : "Domicile", ext = f ? gaE(f.exterieur) : "Extérieur";
   const t = `${dom} à domicile <b>${pr.dom.k} sur ${pr.dom.n}</b>${court ? "" : iv(pr.dom)} · ${ext} à l'extérieur <b>${pr.ext.k} sur ${pr.ext.n}</b>${court ? "" : iv(pr.ext)}`;
   const e = pr.estimation;
-  return t + (e && !court ? `<br><small>Estimation combinée (pas une fréquence observée) : <b>${gaPct(e.p)}</b>, intervalle ${gaPct(e.ic[0])} – ${gaPct(e.ic[1])} (moyenne pondérée par la variance)</small>` : "");
+  return t + (e && !court ? `<br><small>Estimation combinée, indicative et non validée (pas une fréquence observée) : <b>${gaPct(e.p)}</b>, intervalle ${gaPct(e.ic[0])} – ${gaPct(e.ic[1])} (moyenne pondérée par la variance)</small>` : "");
 }
-// Espérance de gain selon le modèle : P × cote − 1.
+// Espérance de gain selon le modèle : P × cote − 1 (information secondaire : ne filtre ni ne classe en production).
 function gaEv(p) { return p && p.ev != null && Number.isFinite(Number(p.ev)) ? `EV <b>${gaSigne(p.ev)}</b>` : ""; }
 // Preuve du pari : base du championnat, avantage (Edge), seuil du marché, EV, matchs comparables.
 function gaPreuve(p, f) {
