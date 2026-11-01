@@ -84,9 +84,9 @@ def test_aucun_pattern_ne_force_un_candidat():
 def test_championnat_peut_devenir_un_signal_specifique():
     rows = []
     for i in range(50):
-        rows.append(rec(i, win=i < 46, competition="Ligue A"))
+        rows.append(rec(i, win=i < 46, date=jour_recent((i % 28) + 1), competition="Ligue A"))
     for i in range(50, 100):
-        rows.append(rec(i, win=i < 80, competition="Ligue B"))
+        rows.append(rec(i, win=i < 80, date=jour_recent((i % 28) + 1), competition="Ligue B"))
 
     intelligence = ce.discover_rules(rows)
     league_rules = [
