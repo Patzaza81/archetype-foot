@@ -1,4 +1,4 @@
-"""Module 4 du moteur DC : sélecteur (option B de Patrick, 30/10/2026). Aucune cote.
+"""Module 4 du moteur DC : sélecteur (option B de Patrick, 30/10/2026). Cote BetPawa ≥ 1,26 OBLIGATOIRE (cote absente = exclu) ; EV informative.
 
 Pour chaque marché du match (P = probabilité du modèle, Base = fréquence du marché dans le championnat cette saison avant le match,
 k/n = réussites/essais sur les matchs comparables : A à domicile + B à l'extérieur, score orienté) :
@@ -27,7 +27,7 @@ REGLE_PRODUCTION = "probabilite"   # mode de sélection en production ; « ev »
 ALPHA = 0.05                 # risque de l'intervalle de Wilson (95 %)
 P_MIN = 0.60                 # Patrick : plancher P ≥ 60 %
 EDGE_MIN = 0.10              # Patrick : Edge ≥ 10 %
-COTE_MIN = 1.26              # Module 5 de Patrick : cote BetPawa minimale (EV et Kelly restent écartés) ; cote absente = pari injouable
+COTE_MIN = 1.26              # Module 5 de Patrick : cote BetPawa minimale ; cote absente = pari injouable (Kelly écarté ; EV : information, filtre expérimental)
 REUSSITE_CIBLE = 0.70        # Patrick (30/10/2026) : seuil d'un marché = plus petite probabilité à partir de laquelle la réussite observée atteint 70 %
 Z_WILSON = NormalDist().inv_cdf(1 - ALPHA / 2)     # intervalle de Wilson à 95 % (même risque α)
 

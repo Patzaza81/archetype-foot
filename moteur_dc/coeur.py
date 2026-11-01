@@ -3,7 +3,8 @@
 Module 1 (module1.py, 44 paramètres de chaque équipe) → Module 1.5 (contrat.py, match_input validé ; erreur = match exclu)
 → Module 2 (modele.py : Dixon-Coles pénalisé sur le championnat entier ; ajustements.py : Forme→xi, IE→λ, Amplitude/Score modal→ρ, Profil croisé→λ)
 → Module 3 (grille des scores, chaque marché = somme exacte de ses cases ; effectifs k/n et base du championnat)
-→ Module 4 (selecteur.py). Module 5 (cotes, EV, Kelly) non branché : contraire à la règle du taux de réussite. La cote est seulement affichée.
+→ Module 4 (selecteur.py). Cote BetPawa ≥ 1,26 obligatoire (filtre du Module 4) ; EV = P × cote − 1 calculée et affichée (information) ; filtre/tri par EV = option
+expérimentale (`regle="ev"`), désactivée en production ; Kelly écarté.
 """
 from __future__ import annotations
 

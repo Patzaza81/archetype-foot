@@ -1,7 +1,7 @@
 # Moteur DC = moteur Gamma (`moteur_dc/`, page `pronostics_gamma.html`) — version 2 (30/10/2026)
 
 Architecture de Patrick (5 modules reçus le 30/10/2026), ordre du 30/10/2026 : réintégrer les Modules 1, 1.5, 3 et 4 et brancher les paramètres du
-Module 1 dans Dixon-Coles ; Module 5 (cotes, EV, Kelly) laissé de côté. Branche `moteur-dc`, jamais fusionnée sans « Fusionner ».
+Module 1 dans Dixon-Coles ; Module 5 : seul le filtre de cote est repris (cote BetPawa ≥ 1,26 obligatoire, voir plus bas) ; EV = information, filtre EV expérimental et désactivé, Kelly écarté. Branche `moteur-dc`, jamais fusionnée sans « Fusionner ».
 Autonome (aucun import d'un autre moteur), hors générateur de tickets. Statut : observation.
 
 ## Chaîne d'un match (`coeur.analyser`)
@@ -11,7 +11,7 @@ Autonome (aucun import d'un autre moteur), hors générateur de tickets. Statut 
 | 1.5 | `contrat.py` | `match_input` (structure de la Section A) et contrôles stricts : Filtre 0 (≥ 4 matchs à domicile / à l'extérieur), types, NaN, historiques d'au moins 4 matchs en ordre chronologique strict. Erreur = match exclu, raison gelée. |
 | 2 | `modele.py` + `ajustements.py` | Dixon-Coles pénalisé (shrinkage) sur le championnat entier ; Forme→xi, IE→λ, Amplitude et Score modal→ρ, Profil croisé→λ. Chaque effet a une force apprise hors échantillon. |
 | 3 | `coeur.py`, `marches.py` | 103 marchés (1N2, double chance, plus/moins, BTTS, **Multigoal 0-1 / 2-3 / 4+**, buts par équipe, handicaps, combinés) par SOMME des cases de la grille ; k/n sur les matchs comparables (A à domicile + B à l'extérieur, score orienté) ; Base = fréquence du marché dans le championnat cette saison avant le match. |
-| 4 | `selecteur.py` | **Option B de Patrick (30/10/2026)** : ordre de Patrick (30/10, 17 h 39) : 1. Edge = P − Base ≥ 10 % (et ≥ EMAC) ; 2. P ≥ seuil CALIBRÉ de son marché (`python -m moteur_dc.calibrage seuils`, voir plus bas) ; 3. Wilson calculé sur les seuls validés, simple avertissement. Bonferroni et Z supprimés comme filtre (Z affiché). Intervalle de Wilson à 95 % de p̂ = simple avertissement (paris avertis classés après). Une issue par marché, jamais deux fois le même événement. Classement par probabilité ; principal = le plus probable. **Aucune cote.** *(01/11/2026 : k/n séparés par population, EV affichée seulement ; voir « Audit du 01/11/2026».)* |
+| 4 | `selecteur.py` | **Option B de Patrick (30/10/2026)** : ordre de Patrick (30/10, 17 h 39) : 1. Edge = P − Base ≥ 10 % (et ≥ EMAC) ; 2. P ≥ seuil CALIBRÉ de son marché (`python -m moteur_dc.calibrage seuils`, voir plus bas) ; 3. Wilson calculé sur les seuls validés, simple avertissement. Bonferroni et Z supprimés comme filtre (Z affiché). Intervalle de Wilson à 95 % de p̂ = simple avertissement (paris avertis classés après). Une issue par marché, jamais deux fois le même événement. Classement par probabilité ; principal = le plus probable. **Cote BetPawa ≥ 1,26 obligatoire (ajoutée le 30/10 18 h 38, voir plus bas), EV informative.** *(01/11/2026 : k/n séparés par population, EV affichée seulement ; voir « Audit du 01/11/2026».)* |
 
 Précisions imposées par la spécification (aucune valeur choisie) :
 - Forme_PPM : avec J ≤ 5 la formule reçue divise par 0 ou par un nombre négatif → PPM simple.
@@ -67,7 +67,7 @@ prédictions au-dessus de 50 %, ou jamais 70 % de réussite : victoire domicile,
 Soir du 30/10 (18 h-22 h) : 38 paris sur 19 matchs, 9 matchs à plusieurs paris, P moyenne 82,1 %, 0 avertissement.
 
 ## Cote minimale 1,26 (Patrick, 30/10/2026 18 h 38)
-Le filtre de cote du Module 5 est rétabli (EV et Kelly restent écartés) : un pari validé n'est gardé, gelé et affiché que si sa cote BetPawa
+Le filtre de cote du Module 5 est rétabli (Kelly reste écarté ; EV : information depuis le 01/11/2026) : un pari validé n'est gardé, gelé et affiché que si sa cote BetPawa
 est connue et ≥ 1,26. Soir du 30/10 (18 h-22 h) : 7 paris jouables sur 6 matchs (au lieu de 38 sur 19). Exception : Slaven – Istra (cote 1,23)
 avait été gelé à 17 h 58, avant la règle, et son match avait commencé : sa ligne reste au journal (ajout seul).
 
@@ -85,6 +85,13 @@ avait été gelé à 17 h 58, avant la règle, et son match avait commencé : sa
    Pas de facteur de shrinkage séparé : att et def sont déjà tirés vers la moyenne par la pénalité σ ; on gèle σ et les effectifs. Le « Filtre 0 » (≥ 4 matchs) est un contrôle d'entrée.
    Une fiche sans décomposition est regelée une fois (avant le coup d'envoi, ajout seul). Page : panneau repliable « Détail du calcul ».
 Mesure : `python -m moteur_dc.audit`. Les 21 seuils, Dixon-Coles et omega sont inchangés. Tests : `tests/test_moteur_dc.py`, `tests/test_gamma_js.py`.
+
+## Écart 90 contre 81 matchs (Arezzo – Ascoli), expliqué le 01/11/2026
+La fiche gelée (31/10 19 h 48 UTC) a utilisé 90 matchs de Série B ; le rejeu en donne 81. Cause : **les données, pas le code.** Le commit `2c80acc` (31/10 19 h 58 UTC, dix minutes après le dernier gel)
+a régénéré `data/assemblage/equipes.json` : Série B passe de 90 à 81 matchs (versions `1dc1035` puis `6068a9d`). 22 matchs ont disparu, 13 sont apparus, soit −9 net.
+Les disparus sont les matchs de **Cremonese et Mantova** (l'assemblage n'a plus que 18 équipes de Série B sur 20) ; les nouveaux sont des matchs attribués à d'autres clubs, dont un « Virtus – Virtus 0-0 » (équipe contre elle-même).
+Ce n'est pas propre à la Série B : tous championnats confondus, 9 275 matchs avant, 8 424 après ; plusieurs championnats entiers sont vides (Kazakhstan, Irlande, Ouzbékistan, France Ligue 3…) ; des matchs d'une équipe contre elle-même existaient déjà (66) et sont plus nombreux (79).
+Aucun résultat historique n'a été modifié. À traiter à part (génération de l'assemblage), pas dans la branche d'audit. Les pronostics non commencés regelés après cette fusion utiliseront les données courantes.
 
 ## Points ouverts
 - Page `pronostics_dc.html` non faite.

@@ -343,6 +343,24 @@ def test_gel_avant_coup_d_envoi_puis_resultat(tmp_path, monkeypatch):
     assert p["bilan"]["matchs_regles"] == 1 and len(p["reglees"]) == 1 and p["reglees"][0]["score"] == [2, 1]
 
 
+def test_regel_pour_la_decomposition_est_ajout_seul_et_seulement_avant_le_coup_d_envoi(tmp_path, monkeypatch):
+    monkeypatch.setattr(S, "tester", lambda l, e, z, s=None, fe=False: (l["cle"] == ["1x2", "1"], "test"))
+    j = tmp_path / "journal.jsonl"
+    avant = datetime(2026, 10, 20, 10, 0, tzinfo=timezone.utc)
+    suivi.geler(maintenant=avant, journal=j, ligues=_Lg, matchs=_arch(), params=_params())
+    ancien = json.loads(j.read_text(encoding="utf-8").splitlines()[0])
+    del ancien["fiche"]["decomposition"]                                                  # fiche gelée avant le 01/11/2026 : sans décomposition
+    j.write_text(json.dumps(ancien, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
+    octets = j.read_bytes()
+    assert suivi.geler(maintenant=datetime(2026, 10, 20, 11, 0, tzinfo=timezone.utc), journal=j, ligues=_Lg, matchs=_arch(), params=_params()) == 1   # regel avant le KO
+    assert j.read_bytes().startswith(octets)                                              # la ligne gelée n'est ni modifiée ni supprimée
+    assert len(suivi._lire(j)) == 2 and suivi._lire(j)[1]["fiche"]["decomposition"]
+    assert suivi.geler(maintenant=datetime(2026, 10, 20, 12, 0, tzinfo=timezone.utc), journal=j, ligues=_Lg, matchs=_arch(), params=_params()) == 0   # une seule fois
+    apres = j.read_bytes()
+    assert suivi.geler(maintenant=datetime(2026, 10, 20, 19, 0, tzinfo=timezone.utc), journal=j, ligues=_Lg, matchs=_arch(), params=_params()) == 0   # match commencé
+    assert j.read_bytes() == apres
+
+
 def test_aucun_gel_apres_le_coup_d_envoi_dans_le_bilan(tmp_path):
     j = tmp_path / "journal.jsonl"
     suivi.geler(maintenant=datetime(2026, 10, 20, 10, 0, tzinfo=timezone.utc), journal=j, ligues=_Lg, matchs=_arch(), params=_params())
