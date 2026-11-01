@@ -54,7 +54,7 @@ Matchs terminés : **807 matchs, 7 067 marchés affichés, 20→31/10/2026** ; 3
 - **Lecture** : environ 10 % des matchs terminés perdent au moins un marché affiché si l'historique est complété. Effet visible sur la liste affichée, sans biais net sur le taux de réussite.
 
 ## Auto-références seules (mesure 2)
-Omega : 3 matchs terminés modifiés sur 4 exposés. Alpha : 2 matchs avec sélection supprimée sur 7 exposés. Effet réel mais sur très peu de matchs.
+Omega : 4 matchs ont une auto-référence dans leurs blocs, mais 10 gels changent (3 terminés) : les auto-références faussent aussi les références de championnat que construit Omega à partir de tous les blocs (effet indirect). Alpha : 7 matchs exposés, 2 sélections supprimées (terminés). Effet réel mais sur très peu de matchs.
 
 ## Limites (à lire avant toute conclusion)
 1. **Lecture L = reconstruction, pas vérité.** Les lignes ajoutées viennent d'autres blocs de l'archive ; elles ne sont pas confirmées par une source tierce. L'écart mesuré est un ordre de grandeur de ce que vaudrait un historique complet.
