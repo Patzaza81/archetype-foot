@@ -74,3 +74,7 @@ avait été gelé à 17 h 58, avant la règle, et son match avait commencé : sa
 ## Points ouverts
 - Page `pronostics_dc.html` non faite.
 - Tests : `tests/test_moteur_dc.py` (30 tests, 3 cas qui passent et 3 qui échouent pour le contrat et le Module 4).
+
+## Piste B′ « prior Elo » (Patrick, 31/10/2026) — résultat nul, non intégrée
+Branche `moteur-dc-elo`, jamais fusionnée. Données ClubElo via une copie publique CC BY 4.0 (API en panne). Couverture réelle faible (13 % des matchs 2025-26, 5 grands championnats seulement) ; test par
+découpage chronologique de 2025-26 (679 matchs) : gain de log-vraisemblance +0,0006 par match, IC 95 % [−0,0074 ; +0,0088], MDE 0,0079 : non retenu. Détail : `docs/DC_ELO_PROTOCOLE.md`, `docs/DC_ELO_RESULTATS.md`, `docs/DC_ELO_COUVERTURE.md`.

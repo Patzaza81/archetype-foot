@@ -3,10 +3,19 @@
 Branche `moteur-dc-elo` (depuis main). Ordre de Patrick du 31/10/2026. Fiche écrite AVANT tout calcul. Aucune fusion avant validation du rapport. Pas de test sur les 827 matchs
 d'archive, pas de critère sur le taux de réussite, pas de marge ΔLL, aucune constante posée à la main. `style_tag` écarté (piste A : échoue à Holm, dans la zone des placebos).
 
-## État au 31/10/2026 : en attente des données
-Les données Elo ne sont pas dans le dépôt, et l'environnement de travail ne peut pas joindre clubelo.com (hôte non résolu, lecture web bloquée par le site). Rien n'est calculé.
-La couverture « 100 % de l'archive » affirmée dans la demande n'est pas établie : elle sera MESURÉE (par compétition et par match) avant tout test et publiée avec le rapport.
-Fichiers attendus de Patrick : exports clubelo.com `http://api.clubelo.com/AAAA-MM-JJ` (colonnes Rank, Club, Country, Level, Elo, From, To), assez de dates pour couvrir 2025-26 et 2026-27.
+## État au 01/11/2026 : données trouvées, test fait avec écarts déclarés
+- L'API ClubElo est en panne (HTTP 502 depuis le 31/10/2026) et clubelo.com bloque les robots (Cloudflare) : voir `data/clubelo/diagnostic.txt`, `data/clubelo/sonde_page.txt`. Aucun contournement n'a été tenté.
+- Les données viennent d'une copie publique CC BY 4.0 (`data/clubelo/SOURCE.md`) : 105 clubs des cinq grands championnats, séries complètes. Contrôle d'intégrité : accord à 0,000 point avec une 2e copie indépendante (01/03/2026, 105 clubs).
+- Couverture MESURÉE (`docs/DC_ELO_COUVERTURE.md`) : 13,0 % des matchs de 2025-26 du bloc, 6,9 % de ceux de 2026-27, 3,5 % de l'archive ARCHETYPE. L'affirmation « ClubElo couvre l'archive » est fausse.
+- Écart au protocole : aucun match de 2026-27 des cinq grandes divisions ne passe le contrat 1.5 (saison trop jeune). Le test est donc un découpage chronologique de 2025-26 (date médiane 2026-02-08, fixée avant le résultat), plus l'inverse.
+- Résultat et lecture : `docs/DC_ELO_RESULTATS.md`.
+
+## Lecture (01/11/2026) : résultat nul, non concluant
+- Gain de log-vraisemblance par match : +0,0006 (IC 95 % [−0,0074 ; +0,0088], MDE 0,0079, n = 679) ; inverse +0,0055 (IC [−0,0040 ; +0,0150], MDE 0,0097, n = 673). Borne basse < 0 : NON retenu, ni brut ni centré.
+- γ est positif et stable (+0,15 sur les deux moitiés) ; δ change de signe (−0,10 / +0,05) : pas de lecture fiable pour la défense.
+- EMAC : 0,0050 sans Elo, 0,0058 avec Elo (pas d'amélioration). Gains par division de signes mixtes (SP1 −0,0103, I1 +0,0111).
+- Puissance : le test ne voit que des gains supérieurs à 0,008 par match ; un gain plus petit mais réel resterait invisible. Périmètre : 5 championnats seulement.
+- Conclusion : l'Elo n'apporte pas de gain mesurable au Dixon-Coles sur ce périmètre. Module 4 et moteur inchangés. Pas de fusion.
 
 ## Modèle (déjà codé, testé sur ligues simulées : `moteur_dc/modele.py`, `tests/test_modele_elo.py`)
 - Pénalité : (1/2σ²)·Σᵢ[(attᵢ − γ·Eᵢ)² + (dfnᵢ − δ·Eᵢ)²], remplace (1/2σ²)·Σᵢ(attᵢ² + dfnᵢ²). σ = valeur apprise du moteur (0,25), inchangée.
