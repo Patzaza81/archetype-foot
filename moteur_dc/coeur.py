@@ -7,6 +7,7 @@ Module 1 (module1.py, 44 paramètres de chaque équipe) → Module 1.5 (contrat.
 """
 from __future__ import annotations
 
+import math
 from typing import Any
 
 import numpy as np
@@ -42,11 +43,38 @@ def bases_ligue(matchs: list[dict], jour: str) -> tuple[np.ndarray | None, int]:
     return np.einsum("ij,kij->k", comptes(sc), MASQUES) / len(sc), len(sc)
 
 
-def effectifs(c: dict[str, Any]) -> tuple[np.ndarray, int]:
-    """k par marché et n = matchs comparables : A à domicile (score pour-contre) + B à l'extérieur (score contre-pour : « 1 » = victoire du domicile)."""
-    sc = [(x["buts_pour"], x["buts_contre"]) for x in c["equipe_domicile"]["historique_matchs_dom"]]
-    sc += [(x["buts_contre"], x["buts_pour"]) for x in c["equipe_exterieur"]["historique_matchs_ext"]]
-    return np.einsum("ij,kij->k", comptes(sc), MASQUES), len(sc)
+def effectifs(c: dict[str, Any]) -> tuple[np.ndarray, int, np.ndarray, int]:
+    """Deux populations SÉPARÉES (audit du 01/11/2026 : les additionner mélangeait deux échantillons différents) :
+    A à domicile (score pour-contre) → (k_dom, n_dom) ; B à l'extérieur (score contre-pour : « 1 » = victoire du domicile) → (k_ext, n_ext)."""
+    sd = [(x["buts_pour"], x["buts_contre"]) for x in c["equipe_domicile"]["historique_matchs_dom"]]
+    se = [(x["buts_contre"], x["buts_pour"]) for x in c["equipe_exterieur"]["historique_matchs_ext"]]
+    return np.einsum("ij,kij->k", comptes(sd), MASQUES), len(sd), np.einsum("ij,kij->k", comptes(se), MASQUES), len(se)
+
+
+def _arr(x: float) -> float:
+    return round(float(x), 6)
+
+
+def decomposition(fit: MO.Ajustement, matchs: list[dict], m: dict[str, Any], p: dict[str, Any], lh: float, la: float, lh0: float, la0: float,
+                  rho: float) -> dict[str, Any]:
+    """Audit du 01/11/2026 : décomposition EXACTE des buts attendus, gelée avec la fiche. λ_dom = exp(mu + gamma + att_dom + def_ext),
+    λ_ext = exp(mu + att_ext + def_dom) ; chaque facteur = exp(terme). Le shrinkage n'est pas un multiplicateur à part : att et def sont DÉJÀ tirés
+    vers la moyenne du championnat par la pénalité σ (voir modele.py) ; on gèle σ et le nombre de matchs de chaque équipe dans l'ajustement."""
+    c = fit.composantes(m["eq_dom"], m["eq_ext"])
+    jour = m["jour"]
+    avant = [x for x in matchs if x["date"] < jour and x.get("h") is not None]
+    n_eq = lambda e: sum(1 for x in avant if e in (x["dom"], x["ext"]))
+    return {"formule": "λ_dom = exp(mu + gamma + att_dom + def_ext) ; λ_ext = exp(mu + att_ext + def_dom)",
+            "termes": {k: _arr(v) for k, v in c.items()},
+            "lambda_dom": {"niveau_ligue": _arr(math.exp(c["mu"])), "avantage_terrain": _arr(math.exp(c["gamma"])), "attaque_dom": _arr(math.exp(c["att_dom"])),
+                           "faiblesse_defensive_ext": _arr(math.exp(c["def_ext"])), "valeur": _arr(lh0)},
+            "lambda_ext": {"niveau_ligue": _arr(math.exp(c["mu"])), "attaque_ext": _arr(math.exp(c["att_ext"])),
+                           "faiblesse_defensive_dom": _arr(math.exp(c["def_dom"])), "valeur": _arr(la0)},
+            "moyennes_ligue": {"buts_dom": _arr(sum(x["h"] for x in avant) / len(avant)) if avant else None,
+                               "buts_ext": _arr(sum(x["a"] for x in avant) / len(avant)) if avant else None, "n_matchs": len(avant)},
+            "shrinkage": {"sigma": p["sigma"], "xi": p["xi"], "n_matchs_equipe_dom": n_eq(m["eq_dom"]), "n_matchs_equipe_ext": n_eq(m["eq_ext"])},
+            "effets_modules": {"dom": _arr(lh / lh0), "ext": _arr(la / la0), "rho_commun": _arr(fit.rho), "rho_final": _arr(rho)},
+            "lambda_final": {"dom": _arr(lh), "ext": _arr(la)}}
 
 
 # --- Ajustement ---------------------------------------------------------------------------------------------------
@@ -85,15 +113,17 @@ def analyser(m: dict[str, Any], matchs: list[dict], p: dict[str, Any], fit: MO.A
     g = MO.grille(lh, la, rho)
     P = np.einsum("ij,kij->k", g, MASQUES)                                             # Module 3
     base, n_ligue = bases or bases_ligue(matchs, m["jour"])
-    K, n = effectifs(c)
+    Kd, nd, Ke, ne = effectifs(c)
     lignes = []
     for i, cl in enumerate(CLES):
         lignes.append({"cle": list(cl), "marche": M.libelle(cl), "famille": M.famille(cl), "valeur_reelle": M.valeur_reelle(cl),
                        "p": float(P[i]), "base": round(float(base[i]), 4) if base is not None else None, "cote": cote_de(m.get("cotes"), cl),
-                       "preuve": {"k": int(K[i]), "n": n, "p_hat": round(float(K[i]) / n, 4)} if n else None})
+                       "preuve": {"dom": {"k": int(Kd[i]), "n": nd, "p_hat": round(float(Kd[i]) / nd, 4)},
+                                  "ext": {"k": int(Ke[i]), "n": ne, "p_hat": round(float(Ke[i]) / ne, 4)}} if nd and ne else None})
     top = sorted(((float(g[i, j]), i, j) for i in range(6) for j in range(6)), reverse=True)[:5]
     eq = t["equipes"]
     return {**fiche, "statut": "analyse", "buts_attendus": {"dom": lh, "ext": la}, "buts_attendus_avant_effets": {"dom": lh0, "ext": la0},
+            "decomposition": decomposition(fit, matchs, m, p, lh, la, lh0, la0, rho),
             "modele": {"mu": fit.mu, "gamma": fit.gamma, "rho_commun": fit.rho, "rho": rho, "n_matchs_ligue": fit.n_matchs, "effets": k},
             "facteurs": {kk: round(v, 4) for kk, v in f.items()}, "excedents_profil": exc, "n_ligue": n_ligue,
             "contrat": c, "parametres_equipes": {"dom": eq[m["eq_dom"]], "ext": eq[m["eq_ext"]]},

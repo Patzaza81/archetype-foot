@@ -1,0 +1,407 @@
+{
+ "genere_le": "2026-11-01T11:24:30",
+ "journal_reel": {
+  "source": "data/dc/journal.jsonl : paris gelés avant le coup d'envoi, matchs terminés, cote connue",
+  "periode": [
+   "2026-10-30T16:00:00Z",
+   "2026-10-31T19:00:00Z"
+  ],
+  "avant_filtre_ev": {
+   "paris": 26,
+   "matchs": 20,
+   "gagnes": 15,
+   "reussite": 0.5769,
+   "p_moyenne": 0.6998,
+   "cote_moyenne": 1.449,
+   "rendement_theorique": -0.0075,
+   "rendement_reel": -0.2046,
+   "rendement_reel_ic95_par_match": [
+    -0.5119,
+    0.112
+   ]
+  },
+  "apres_filtre_ev": {
+   "paris": 12,
+   "matchs": 11,
+   "gagnes": 7,
+   "reussite": 0.5833,
+   "p_moyenne": 0.7572,
+   "cote_moyenne": 1.416,
+   "rendement_theorique": 0.0607,
+   "rendement_reel": -0.1867,
+   "rendement_reel_ic95_par_match": [
+    -0.6309,
+    0.1893
+   ]
+  },
+  "rejetes_par_ev": {
+   "paris": 14,
+   "matchs": 10,
+   "gagnes": 8,
+   "reussite": 0.5714,
+   "p_moyenne": 0.6507,
+   "cote_moyenne": 1.478,
+   "rendement_theorique": -0.066,
+   "rendement_reel": -0.22,
+   "rendement_reel_ic95_par_match": [
+    -0.6216,
+    0.3136
+   ]
+  },
+  "matchs_dont_le_pari_principal_change": 1,
+  "paris_a_venir_avant": 41,
+  "paris_a_venir_apres": 23,
+  "lecture": "échantillon court : lire les ordres de grandeur, pas une preuve"
+ },
+ "rejeu_archive": {
+  "source": "archive ARCHETYPE rejouée en marche avant (cotes BetPawa prises avant le coup d'envoi)",
+  "coupe": "2026-10-14",
+  "calibrage_avant_coupe": {
+   "matchs_analyses": 157,
+   "ancienne_regle": {
+    "tous_les_paris": {
+     "paris": 15,
+     "matchs": 13,
+     "gagnes": 14,
+     "reussite": 0.9333,
+     "p_moyenne": 0.7254,
+     "cote_moyenne": 1.393,
+     "rendement_theorique": 0.0021,
+     "rendement_reel": 0.2947,
+     "rendement_reel_ic95_par_match": [
+      0.06,
+      0.4392
+     ]
+    },
+    "paris_principaux": {
+     "paris": 13,
+     "matchs": 13,
+     "gagnes": 12,
+     "reussite": 0.9231,
+     "p_moyenne": 0.7383,
+     "cote_moyenne": 1.371,
+     "rendement_theorique": 0.0007,
+     "rendement_reel": 0.2569,
+     "rendement_reel_ic95_par_match": [
+      0.0223,
+      0.4215
+     ]
+    }
+   },
+   "nouvelle_regle": {
+    "tous_les_paris": {
+     "paris": 8,
+     "matchs": 6,
+     "gagnes": 8,
+     "reussite": 1.0,
+     "p_moyenne": 0.7781,
+     "cote_moyenne": 1.571,
+     "rendement_theorique": 0.1708,
+     "rendement_reel": 0.5713,
+     "rendement_reel_ic95_par_match": [
+      0.3167,
+      0.8067
+     ]
+    },
+    "paris_principaux": {
+     "paris": 6,
+     "matchs": 6,
+     "gagnes": 6,
+     "reussite": 1.0,
+     "p_moyenne": 0.7594,
+     "cote_moyenne": 1.597,
+     "rendement_theorique": 0.1508,
+     "rendement_reel": 0.5967,
+     "rendement_reel_ic95_par_match": [
+      0.3167,
+      1.1183
+     ]
+    }
+   }
+  },
+  "validation_apres_coupe": {
+   "matchs_analyses": 420,
+   "ancienne_regle": {
+    "tous_les_paris": {
+     "paris": 69,
+     "matchs": 60,
+     "gagnes": 53,
+     "reussite": 0.7681,
+     "p_moyenne": 0.7333,
+     "cote_moyenne": 1.444,
+     "rendement_theorique": 0.0499,
+     "rendement_reel": 0.1171,
+     "rendement_reel_ic95_par_match": [
+      -0.0632,
+      0.2903
+     ]
+    },
+    "paris_principaux": {
+     "paris": 60,
+     "matchs": 60,
+     "gagnes": 47,
+     "reussite": 0.7833,
+     "p_moyenne": 0.7448,
+     "cote_moyenne": 1.424,
+     "rendement_theorique": 0.0552,
+     "rendement_reel": 0.1337,
+     "rendement_reel_ic95_par_match": [
+      -0.0427,
+      0.3007
+     ]
+    }
+   },
+   "nouvelle_regle": {
+    "tous_les_paris": {
+     "paris": 41,
+     "matchs": 36,
+     "gagnes": 28,
+     "reussite": 0.6829,
+     "p_moyenne": 0.759,
+     "cote_moyenne": 1.522,
+     "rendement_theorique": 0.1379,
+     "rendement_reel": 0.0778,
+     "rendement_reel_ic95_par_match": [
+      -0.1967,
+      0.3515
+     ]
+    },
+    "paris_principaux": {
+     "paris": 36,
+     "matchs": 36,
+     "gagnes": 24,
+     "reussite": 0.6667,
+     "p_moyenne": 0.7525,
+     "cote_moyenne": 1.544,
+     "rendement_theorique": 0.1438,
+     "rendement_reel": 0.0742,
+     "rendement_reel_ic95_par_match": [
+      -0.2094,
+      0.3714
+     ]
+    }
+   }
+  },
+  "ensemble": {
+   "matchs_analyses": 577,
+   "ancienne_regle": {
+    "tous_les_paris": {
+     "paris": 84,
+     "matchs": 73,
+     "gagnes": 67,
+     "reussite": 0.7976,
+     "p_moyenne": 0.7319,
+     "cote_moyenne": 1.435,
+     "rendement_theorique": 0.0414,
+     "rendement_reel": 0.1488,
+     "rendement_reel_ic95_par_match": [
+      -0.0043,
+      0.297
+     ]
+    },
+    "paris_principaux": {
+     "paris": 73,
+     "matchs": 73,
+     "gagnes": 59,
+     "reussite": 0.8082,
+     "p_moyenne": 0.7436,
+     "cote_moyenne": 1.415,
+     "rendement_theorique": 0.0455,
+     "rendement_reel": 0.1556,
+     "rendement_reel_ic95_par_match": [
+      0.0096,
+      0.3014
+     ]
+    }
+   },
+   "nouvelle_regle": {
+    "tous_les_paris": {
+     "paris": 49,
+     "matchs": 42,
+     "gagnes": 36,
+     "reussite": 0.7347,
+     "p_moyenne": 0.7621,
+     "cote_moyenne": 1.53,
+     "rendement_theorique": 0.1433,
+     "rendement_reel": 0.1584,
+     "rendement_reel_ic95_par_match": [
+      -0.0922,
+      0.3979
+     ]
+    },
+    "paris_principaux": {
+     "paris": 42,
+     "matchs": 42,
+     "gagnes": 30,
+     "reussite": 0.7143,
+     "p_moyenne": 0.7534,
+     "cote_moyenne": 1.551,
+     "rendement_theorique": 0.1448,
+     "rendement_reel": 0.1488,
+     "rendement_reel_ic95_par_match": [
+      -0.1036,
+      0.4102
+     ]
+    }
+   }
+  },
+  "controle_decomposition": {
+   "matchs": 577,
+   "ecart_max_produit_des_facteurs_vs_buts_attendus": 2.6258020886515965e-06,
+   "verdict": "reproductible"
+  }
+ },
+ "exemple_decomposition_lambda": {
+  "match": "Arezzo – Ascoli (2026-11-01)",
+  "buts_attendus": {
+   "dom": 0.991,
+   "ext": 1.909
+  },
+  "decomposition": {
+   "formule": "λ_dom = exp(mu + gamma + att_dom + def_ext) ; λ_ext = exp(mu + att_ext + def_dom)",
+   "termes": {
+    "mu": 0.306971,
+    "gamma": -0.015385,
+    "att_dom": -0.10574,
+    "def_dom": 0.212144,
+    "att_ext": 0.127682,
+    "def_ext": -0.194559
+   },
+   "lambda_dom": {
+    "niveau_ligue": 1.359301,
+    "avantage_terrain": 0.984733,
+    "attaque_dom": 0.899659,
+    "faiblesse_defensive_ext": 0.823197,
+    "valeur": 0.991324
+   },
+   "lambda_ext": {
+    "niveau_ligue": 1.359301,
+    "attaque_ext": 1.136192,
+    "faiblesse_defensive_dom": 1.236326,
+    "valeur": 1.909415
+   },
+   "moyennes_ligue": {
+    "buts_dom": 1.382716,
+    "buts_ext": 1.333333,
+    "n_matchs": 81
+   },
+   "shrinkage": {
+    "sigma": 0.25,
+    "xi": 0.004,
+    "n_matchs_equipe_dom": 9,
+    "n_matchs_equipe_ext": 9
+   },
+   "effets_modules": {
+    "dom": 1.0,
+    "ext": 1.0,
+    "rho_commun": -0.04,
+    "rho_final": -0.07063
+   },
+   "lambda_final": {
+    "dom": 0.991324,
+    "ext": 1.909415
+   }
+  },
+  "paris": [
+   {
+    "marche": "Victoire extérieur",
+    "p": 0.5809,
+    "cote": 2.13,
+    "ev": 0.2373,
+    "dom": {
+     "k": 3,
+     "n": 4,
+     "p_hat": 0.75,
+     "wilson": [
+      0.3006,
+      0.9544
+     ]
+    },
+    "ext": {
+     "k": 2,
+     "n": 4,
+     "p_hat": 0.5,
+     "wilson": [
+      0.15,
+      0.85
+     ]
+    },
+    "estimation": {
+     "p": 0.5645,
+     "se": 0.123,
+     "ic": [
+      0.3235,
+      0.8055
+     ],
+     "methode": "moyenne pondérée par l'inverse de la variance des deux populations (Agresti-Coull)"
+    }
+   },
+   {
+    "marche": "Extérieur ne perd pas + plus de 1,5 buts",
+    "p": 0.6556,
+    "cote": 1.76,
+    "ev": 0.1539,
+    "dom": {
+     "k": 3,
+     "n": 4,
+     "p_hat": 0.75,
+     "wilson": [
+      0.3006,
+      0.9544
+     ]
+    },
+    "ext": {
+     "k": 2,
+     "n": 4,
+     "p_hat": 0.5,
+     "wilson": [
+      0.15,
+      0.85
+     ]
+    },
+    "estimation": {
+     "p": 0.5645,
+     "se": 0.123,
+     "ic": [
+      0.3235,
+      0.8055
+     ],
+     "methode": "moyenne pondérée par l'inverse de la variance des deux populations (Agresti-Coull)"
+    }
+   },
+   {
+    "marche": "Extérieur ne perd pas",
+    "p": 0.8156,
+    "cote": 1.33,
+    "ev": 0.0847,
+    "dom": {
+     "k": 4,
+     "n": 4,
+     "p_hat": 1.0,
+     "wilson": [
+      0.5101,
+      1.0
+     ]
+    },
+    "ext": {
+     "k": 3,
+     "n": 4,
+     "p_hat": 0.75,
+     "wilson": [
+      0.3006,
+      0.9544
+     ]
+    },
+    "estimation": {
+     "p": 0.6944,
+     "se": 0.1141,
+     "ic": [
+      0.4708,
+      0.9181
+     ],
+     "methode": "moyenne pondérée par l'inverse de la variance des deux populations (Agresti-Coull)"
+    }
+   }
+  ]
+ }
+}

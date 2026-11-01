@@ -21,9 +21,17 @@ ROOT = Path(__file__).resolve().parent.parent
 
 def _ligne(l: dict[str, Any]) -> dict[str, Any]:
     pr = l.get("preuve") or {}
-    return {"marche": l["marche"], "P": round(l["p"], 4), "p_hat": pr.get("p_hat"), "k": pr.get("k"), "n": pr.get("n"), "wilson": pr.get("wilson"),
+    return {"marche": l["marche"], "P": round(l["p"], 4), "dom": pr.get("dom"), "ext": pr.get("ext"), "estimation": pr.get("estimation"), "ev": l.get("ev"),
             "z": pr.get("z"), "base": l.get("base"), "edge": l.get("edge"), "seuil_marche": l.get("seuil"), "cote": l.get("cote"), "decision": l.get("decision"),
             "avertissement": l.get("avertissement")}
+
+
+def _pops(p: dict[str, Any]) -> str:
+    """Les deux populations restent séparées (jamais de k/n additionné)."""
+    d, e, est = p.get("dom"), p.get("ext"), p.get("estimation")
+    if not d or not e:
+        return "pas de matchs comparables"
+    return f"domicile {d['k']}/{d['n']}, extérieur {e['k']}/{e['n']}" + (f", estimation combinée {est['p']:.0%}" if est else "")
 
 
 def rapport(debut: datetime, fin: datetime, params: dict[str, Any] | None = None) -> dict[str, Any]:
@@ -78,12 +86,11 @@ def texte(r: dict[str, Any]) -> str:
             L.append(f"   EXCLU : {x['raison']}")
             continue
         for p in x["paris_valides"]:
-            L.append(f"   VALIDÉ  {p['marche']} : P {p['P']:.0%} | p̂ {p['p_hat']:.0%} ({p['k']}/{p['n']}) Wilson [{p['wilson'][0]:.0%} ; {p['wilson'][1]:.0%}]"
-                     f" | seuil marché {p['seuil_marche']:.0%} | base {p['base']:.0%} | Edge {p['edge']:+.0%} | cote {p['cote'] or '—'}" + (" | ⚠ hors Wilson" if p["avertissement"] else ""))
+            L.append(f"   VALIDÉ  {p['marche']} : P {p['P']:.0%} | {_pops(p)}"
+                     f" | seuil marché {p['seuil_marche']:.0%} | base {p['base']:.0%} | Edge {p['edge']:+.0%} | cote {p['cote'] or '—'} | EV {p['ev']:+.1%}"
+                     + (" | ⚠ hors de l'estimation combinée" if p["avertissement"] else ""))
         for p in ([] if x["paris_valides"] else x["tendances"]):
-            w = p["wilson"]
-            L.append(f"   rejeté    {p['marche']} : P {p['P']:.0%} | p̂ {p['p_hat']:.0%} ({p['k']}/{p['n']})"
-                     + (f" Wilson [{w[0]:.0%} ; {w[1]:.0%}]" if w else "") + f" | base {p['base']:.0%} → {p['decision']}")
+            L.append(f"   rejeté    {p['marche']} : P {p['P']:.0%} | {_pops(p)}" + f" | base {p['base']:.0%} → {p['decision']}")
     return "\n".join(L)
 
 
