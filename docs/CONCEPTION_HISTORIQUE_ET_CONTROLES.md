@@ -52,7 +52,7 @@ Cette version v3 remplace la v2. Elle intègre les cinq décisions du 01/11 et l
   - **Incertaine** : `indéterminée`. Le match est conservé, **exclu des statistiques saisonnières**.
 - **Aucune hypothèse de calendrier commun** (championnats d'été : Norvège, Suède, Japon, Amérique).
 - **Interdit** : fusionner deux éditions parce que leurs dates se chevauchent. Une fusion d'éditions n'existe que comme décision documentée, réversible (§2.5).
-- Les moteurs lisent aujourd'hui la « saison en cours » de chaque compétition sans l'avoir confirmée. Pour la continuité, une saison `provisoire` serait utilisable **avec son état écrit dans la fiche** ; `indéterminée` jamais. *Point à confirmer par Patrick (§12).*
+- **Règle fixée par Patrick (01/11, 17:33)** : `confirmée` = statistiques normales ; `provisoire` = **compartiment distinct**, avec avertissement visible et possibilité d'exclusion ; `indéterminée` = exclue de toute statistique saisonnière. Une saison provisoire n'est jamais présentée comme confirmée ni mélangée silencieusement à une saison confirmée (les moteurs doivent exposer deux totaux séparés et l'état dans la fiche).
 
 ### 2.5 Contraintes d'unicité, changements d'identifiants, fusions et annulations (correction B)
 | # | Contrainte |
@@ -115,7 +115,7 @@ Chaque rattachement écrit : identifiants concernés, source, **type de preuve r
 - **Football-Data ↔ Matchendirect : candidats, puis vérification (jamais une fusion directe).**
   - *Recherche de candidats* : `(date ± 1 jour, domicile_id, exterieur_id)` ne sert qu'à **proposer** des candidats.
   - *Vérification exigée avant tout lien* : (a) scores finaux identiques (et mi-temps identiques quand les deux sources en ont), (b) le candidat est **unique des deux côtés**, (c) orientation identique (domicile/extérieur non inversés), (d) aucune autre observation du même couple de clubs dans la fenêtre de recherche.
-  - *Limite assumée* : Football-Data et Matchendirect n'ont **aucun identifiant commun**. Le score n'est pas un identifiant ; un lien vérifié a un niveau de preuve inférieur à P1, il est étiqueté `lien_vérifié`, enregistré avec sa version de règle et **réversible**.
+  - *Limite assumée* : Football-Data et Matchendirect n'ont **aucun identifiant commun**. Le score n'est pas un identifiant ; un lien vérifié a un niveau de preuve inférieur à P1, il porte le statut **`verifie_inter_sources`** (distinct de P1 et de P2), enregistré avec : les deux identifiants externes, les observations brutes des deux sources, la méthode de rapprochement et sa **version**. Il est **révocable sans supprimer aucune observation d'origine**. Une égalité de score et une correspondance unique ne prouvent pas toujours le même événement (match rejoué, correction tardive) : au moindre doute, le lien reste **en attente de vérification**.
   - *Reporté* (écart de date > 1 jour, date absente) : candidats non vérifiés ; les deux observations restent séparées, aucun lien. *Inversé* (domicile et extérieur échangés entre sources) : `conflit`, jamais lié. *Rejoué* (même couple de clubs deux fois dans la fenêtre : reprise, match rejoué après abandon) : deux candidats ou plus ⇒ aucun lien automatique ; la version abandonnée garde son statut `abandonné`, la nouvelle est un autre match (autre identifiant de source).
   - *Pas de double comptage* : tant qu'aucun lien n'est vérifié, dans une compétition couverte par Football-Data, c'est Football-Data qui fait foi pour les statistiques ; l'observation Matchendirect non liée est conservée mais exclue.
 - Deux observations du même identifiant de match doivent être **miroirs** (domicile opposé, buts échangés, même date). Sinon : `conflit` (§7).
@@ -270,16 +270,15 @@ Aucune réécriture. Trois informations distinctes par pari, proposées pour le 
 |---|---|---|
 | Conception v3 (cette étude) | **livrée ; attend la validation explicite de Patrick** | ce document |
 | Implémentation de l'historique permanent | **bloquée** jusqu'à validation de la v3 | — |
-| Correction de `_memes_equipes` | autorisée, branche dédiée `scraper-memes-equipes`, non fusionnée | §13 |
-| Rejeu d'impact Omega et Alpha | autorisé, espace isolé | §8.2 |
-| Collecte parallèle de la méthode B (7 à 14 jours) | autorisée, stockage isolé | §14 |
-| Fusions | aucune, sur ordre explicite uniquement | — |
+| Correction de `_memes_equipes` | faite et testée, branche `scraper-memes-equipes` | §13 |
+| Rejeu d'impact Omega et Alpha | **fait et fusionné** (`docs/AUDIT_PRONOSTICS_GELES_OMEGA_ALPHA.md`) | §8.2 |
+| Collecte parallèle de la méthode B (7 à 14 jours) | dépôt `archetype-foot-collecte` créé, code testé ; **workflow planifié à installer à la main** | §14 |
+| Fusions | sur ordre explicite de Patrick (ordre du 01/11 22:20) | — |
 
-## 12. Points à confirmer par Patrick dans la v3
+## 12. Décisions du 01/11 (17:33) appliquées ; ce qui reste à valider
 
-1. Une saison `provisoire` peut-elle servir aux statistiques des moteurs, avec son état écrit dans la fiche (§2.4) ? `indéterminée` : jamais.
-2. Niveau de preuve des liens Football-Data ↔ Matchendirect (§4.3) : score identique + unicité + orientation, étiquetés `lien_vérifié` (inférieur à P1) et réversibles. Aucune preuve plus forte n'existe sans identifiant commun.
-3. Mise en œuvre de la collecte parallèle (§14).
+Appliquées dans ce document : saisons provisoires en compartiment distinct (§2.4) ; statut `verifie_inter_sources`, révocable, doute = en attente (§4.3) ; limites de `_memes_equipes` conservées (§13) ; dépôt séparé pour la collecte (§14).
+Reste à valider par Patrick : la conception v3 complète, avant toute implémentation de l'historique permanent. Ces décisions ne valent pas cette validation.
 
 ## 13. Correction de `scraper_details._memes_equipes` (autorisée sous tests)
 
@@ -288,9 +287,12 @@ Aucune réécriture. Trois informations distinctes par pari, proposées pour le 
 - **Règle** : (1) égalité exacte (même normalisation que l'existant) avec un seul des deux côtés : c'est ce côté ; (2) sinon, ressemblance avec un seul côté : ce côté (comportement actuel) ; (3) ressemblance avec les deux côtés, ou égalité exacte avec les deux : **ambiguïté, ligne ignorée** (pas de donnée plutôt que fausse donnée). Pas de nouvelle heuristique de ressemblance.
 - **Hors périmètre, signalé** : `moteur_europe/scraper_matchendirect.py` contient la même fonction et la même boucle (moteur Europe, non modifié) ; `h2h_stats.py` teste les deux côtés séparément.
 - Tests, comparaison avant/après sur 9 pages réelles capturées, non-régression : voir le rapport de la branche.
+- **Limites conservées (décision du 01/11)** : (1) le scraper du moteur Europe a encore une logique similaire ; (2) `h2h_stats.py` utilise deux tests séparés ; (3) les lignes ambiguës sont ignorées et peuvent créer une perte de données. Ces deux zones ne sont ni évaluées ni modifiées : **le problème n'est pas déclaré entièrement résolu** tant qu'elles ne sont pas auditées (audit en lecture seule à prévoir).
 
 ## 14. Collecte parallèle : mise en œuvre
 
 - **Contrainte technique** : un déclenchement planifié (cron) d'un workflow GitHub ne s'exécute que depuis la **branche par défaut** (`main`). Ajouter un workflow planifié à ce dépôt reviendrait à fusionner dans `main`, ce qui est interdit sans ordre explicite, et créerait un lien avec le dépôt de production.
 - **Option retenue pour respecter « stockage séparé, aucune connexion »** : un **dépôt distinct** (par exemple `archetype-foot-collecte`), avec son propre workflow planifié, qui n'écrit que dans son propre dépôt. Le code du collecteur est écrit et testé ici, sur une branche, sans toucher au pipeline.
-- Ce bac à sable ne peut pas atteindre Matchendirect (réseau limité aux registres de paquets et à GitHub) : la collecte ne peut tourner que sur GitHub Actions. *La création du dépôt est une action que je ne fais pas sans ton ordre.*
+- Ce bac à sable ne peut pas atteindre Matchendirect (réseau limité aux registres de paquets et à GitHub) : la collecte ne peut tourner que sur GitHub Actions.
+- **État (01/11)** : dépôt privé `archetype-foot-collecte` créé sur ordre de Patrick. Contenu : collecteur autonome (pages brutes compressées avec sha256, URL finale, code HTTP, date/heure, `run_id`, manifeste écrit en dernier), analyseur sans fusion par les noms, rapport de mesure (couverture, score à J/J+1/J+2, reports, corrections, doublons, identités non résolues), comparaison A/B en lecture seule, 8 tests hors ligne. Le jeton de la session ne peut pas écrire dans `.github/workflows` : le workflow planifié est fourni dans `A_INSTALLER/collecte.yml` et doit être **créé à la main** sur GitHub. Il s'arrête de lui-même après le 16/11.
+- Aucune donnée réelle n'a encore été collectée : le livrable final (comparaison A/B mesurée) viendra après 7 à 14 jours.
