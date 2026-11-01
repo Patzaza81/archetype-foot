@@ -1,0 +1,7669 @@
+{
+ "genere_le": "2026-11-01",
+ "perimetre": {
+  "matchs_avec_paris": 68,
+  "paris": 97,
+  "periode_gels": "2026-10-30T15:12 → 2026-11-01T01:23 UTC",
+  "periode_matchs": "2026-10-30 → 2026-11-03",
+  "dernier_gel_avant_coup_d_envoi": true,
+  "matchs_termines": 20,
+  "paris_des_termines": 29
+ },
+ "methode": "rejeu de chaque fiche gelée avec le code actuel, cotes et EMAC gelés, sur la version d'assemblage où l'ancien chargeur reproduit exactement effectifs, buts attendus et taille du championnat ; même rejeu avec le chargeur strict ; comparaison",
+ "resume": {
+  "non affecté": {
+   "matchs": 51,
+   "paris": 75,
+   "matchs_termines": 17,
+   "paris_des_termines": 24
+  },
+  "affecté : probabilités modifiées, paris maintenus": {
+   "matchs": 14,
+   "paris": 17,
+   "matchs_termines": 3,
+   "paris_des_termines": 5
+  },
+  "indéterminé": {
+   "matchs": 1,
+   "paris": 1,
+   "matchs_termines": 0,
+   "paris_des_termines": 0
+  },
+  "affecté : match exclu par le chargeur strict (effectifs < 4)": {
+   "matchs": 1,
+   "paris": 3,
+   "matchs_termines": 0,
+   "paris_des_termines": 0
+  },
+  "affecté : paris retirés par le chargeur": {
+   "matchs": 1,
+   "paris": 1,
+   "matchs_termines": 0,
+   "paris_des_termines": 0
+  }
+ },
+ "ecart_proba_max_par_match": {
+  "mediane": 0.0092,
+  "max": 0.0679,
+  "n": 15
+ },
+ "matchs": [
+  {
+   "match_id": "2cz7i0fci7woefbe9eobl0qac",
+   "jour": "2026-10-30",
+   "comp": "Ukraine : Première Ligue",
+   "dom": "Shakhtar",
+   "ext": "Obolon' Kyiv",
+   "commit": "5cb8aa2",
+   "gele_le": "2026-10-30T15:48:44+00:00",
+   "termine": true,
+   "paris_geles": [
+    {
+     "cle": [
+      "handicap_1.5",
+      "domicile"
+     ],
+     "marche": "Handicap +1,5 domicile",
+     "cote": null,
+     "p": 0.9654,
+     "role": "principal"
+    },
+    {
+     "cle": [
+      "double_chance",
+      "1N"
+     ],
+     "marche": "Domicile ne perd pas",
+     "cote": null,
+     "p": 0.8754,
+     "role": "autre"
+    },
+    {
+     "cle": [
+      "over_under_exterieur_1.5",
+      "moins"
+     ],
+     "marche": "Moins de 1,5 buts de l'extérieur",
+     "cote": 1.04,
+     "p": 0.8515,
+     "role": "autre"
+    },
+    {
+     "cle": [
+      "dc_total_4.5",
+      "1N|moins"
+     ],
+     "marche": "Domicile ne perd pas + moins de 4,5 buts",
+     "cote": 1.29,
+     "p": 0.7766,
+     "role": "autre"
+    },
+    {
+     "cle": [
+      "over_under_domicile_0.5",
+      "plus"
+     ],
+     "marche": "Plus de 0,5 buts du domicile",
+     "cote": null,
+     "p": 0.8394,
+     "role": "autre"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": false,
+   "effectifs": {
+    "gele": [
+     6,
+     8
+    ],
+    "strict": [
+     6,
+     8
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.829,
+     0.679
+    ],
+    "strict": [
+     1.829,
+     0.679
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 76,
+    "strict": 76
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "handicap_1.5|domicile": {
+     "p_gele": 0.9654,
+     "p_strict": 0.9654,
+     "dp": -0.0,
+     "ancien_maintient": false,
+     "strict_maintient": false,
+     "statut": "non reproductible : retiré aussi avec l'ancien chargeur",
+     "raison": "cote BetPawa absente : pari injouable"
+    },
+    "double_chance|1N": {
+     "p_gele": 0.8754,
+     "p_strict": 0.8754,
+     "dp": -0.0,
+     "ancien_maintient": false,
+     "strict_maintient": false,
+     "statut": "non reproductible : retiré aussi avec l'ancien chargeur",
+     "raison": "cote BetPawa absente : pari injouable"
+    },
+    "over_under_exterieur_1.5|moins": {
+     "p_gele": 0.8515,
+     "p_strict": 0.8515,
+     "dp": 0.0,
+     "ancien_maintient": false,
+     "strict_maintient": false,
+     "statut": "non reproductible : retiré aussi avec l'ancien chargeur",
+     "raison": "cote 1,04 < 1,26"
+    },
+    "dc_total_4.5|1N|moins": {
+     "p_gele": 0.7766,
+     "p_strict": 0.7766,
+     "dp": -0.0,
+     "ancien_maintient": false,
+     "strict_maintient": false,
+     "statut": "non reproductible : retiré aussi avec l'ancien chargeur",
+     "raison": "P sans seuil : ce marché n'atteint jamais 70% de réussite sur l'échantillon"
+    },
+    "over_under_domicile_0.5|plus": {
+     "p_gele": 0.8394,
+     "p_strict": 0.8394,
+     "dp": -0.0,
+     "ancien_maintient": false,
+     "strict_maintient": false,
+     "statut": "non reproductible : retiré aussi avec l'ancien chargeur",
+     "raison": "cote BetPawa absente : pari injouable"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": []
+  },
+  {
+   "match_id": "42a70m37efqbh36uuz2aq8mj8",
+   "jour": "2026-10-30",
+   "comp": "Portugal : Primeira Liga",
+   "dom": "Casa Pia",
+   "ext": "Sporting",
+   "commit": "8773dc4",
+   "gele_le": "2026-10-30T17:38:51+00:00",
+   "termine": true,
+   "paris_geles": [
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "marche": "Victoire extérieur",
+     "cote": 1.28,
+     "p": 0.6177,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     4,
+     4
+    ],
+    "strict": [
+     4,
+     4
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     0.974,
+     2.054
+    ],
+    "strict": [
+     0.974,
+     2.054
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 81,
+    "strict": 81
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "1x2|2": {
+     "p_gele": 0.6177,
+     "p_strict": 0.6177,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "p": 0.6177
+    }
+   ]
+  },
+  {
+   "match_id": "45f4mv6h5lqwvnodqt7kdfl78",
+   "jour": "2026-10-30",
+   "comp": "Suisse : Nationalliga A Féminine",
+   "dom": "Basel",
+   "ext": "Zürich",
+   "commit": "8773dc4",
+   "gele_le": "2026-10-30T17:38:51+00:00",
+   "termine": true,
+   "paris_geles": [
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "marche": "Extérieur ne perd pas + plus de 1,5 buts",
+     "cote": 1.87,
+     "p": 0.6184,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     4,
+     5
+    ],
+    "strict": [
+     4,
+     5
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.458,
+     1.95
+    ],
+    "strict": [
+     1.458,
+     1.95
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 17,
+    "strict": 17
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "dc_total_1.5|N2|plus": {
+     "p_gele": 0.6184,
+     "p_strict": 0.6184,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "p": 0.6184
+    }
+   ]
+  },
+  {
+   "match_id": "8ihzwi5l1j4n8nph3rr2cerdg",
+   "jour": "2026-10-30",
+   "comp": "Arabie Saoudite : Première Division",
+   "dom": "Al Shabab",
+   "ext": "Al Ahli",
+   "commit": "8773dc4",
+   "gele_le": "2026-10-30T17:38:51+00:00",
+   "termine": true,
+   "paris_geles": [
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "marche": "Extérieur ne perd pas + plus de 1,5 buts",
+     "cote": 1.44,
+     "p": 0.6356,
+     "role": "principal"
+    },
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "marche": "Victoire extérieur",
+     "cote": 1.79,
+     "p": 0.5134,
+     "role": "autre"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     6,
+     6
+    ],
+    "strict": [
+     6,
+     6
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.373,
+     1.986
+    ],
+    "strict": [
+     1.368,
+     1.955
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 77,
+    "strict": 79
+   },
+   "dp_max": 0.0084,
+   "verdict_paris": {
+    "dc_total_1.5|N2|plus": {
+     "p_gele": 0.6356,
+     "p_strict": 0.6294,
+     "dp": -0.0062,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    },
+    "1x2|2": {
+     "p_gele": 0.5134,
+     "p_strict": 0.5078,
+     "dp": -0.0056,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "affecté : probabilités modifiées, paris maintenus",
+   "paris_strict": [
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "p": 0.6294
+    },
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "p": 0.5078
+    }
+   ]
+  },
+  {
+   "match_id": "905ypycyc04xjr5xhsemodn2s",
+   "jour": "2026-10-30",
+   "comp": "Croatie : HNL",
+   "dom": "Slaven",
+   "ext": "Istra",
+   "commit": "24f13a1",
+   "gele_le": "2026-10-30T16:58:43+00:00",
+   "termine": true,
+   "paris_geles": [
+    {
+     "cle": [
+      "over_under_exterieur_0.5",
+      "plus"
+     ],
+     "marche": "Plus de 0,5 buts de l'extérieur",
+     "cote": 1.23,
+     "p": 0.7917,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": false,
+   "effectifs": {
+    "gele": [
+     5,
+     5
+    ],
+    "strict": [
+     5,
+     5
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.745,
+     1.569
+    ],
+    "strict": [
+     1.745,
+     1.569
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 54,
+    "strict": 54
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "over_under_exterieur_0.5|plus": {
+     "p_gele": 0.7917,
+     "p_strict": 0.7917,
+     "dp": 0.0,
+     "ancien_maintient": false,
+     "strict_maintient": false,
+     "statut": "non reproductible : retiré aussi avec l'ancien chargeur",
+     "raison": "cote 1,23 < 1,26"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": []
+  },
+  {
+   "match_id": "dphmmozaavpyid7s7si8p9jx0",
+   "jour": "2026-10-30",
+   "comp": "Pays-Bas : Eerste Divisie",
+   "dom": "Volendam",
+   "ext": "De Graafschap",
+   "commit": "24f13a1",
+   "gele_le": "2026-10-30T16:58:43+00:00",
+   "termine": true,
+   "paris_geles": [
+    {
+     "cle": [
+      "double_chance",
+      "1N"
+     ],
+     "marche": "Domicile ne perd pas",
+     "cote": 1.36,
+     "p": 0.826,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     6,
+     6
+    ],
+    "strict": [
+     6,
+     6
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     2.504,
+     1.258
+    ],
+    "strict": [
+     2.504,
+     1.258
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 120,
+    "strict": 120
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "double_chance|1N": {
+     "p_gele": 0.826,
+     "p_strict": 0.826,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "double_chance",
+      "1N"
+     ],
+     "p": 0.826
+    }
+   ]
+  },
+  {
+   "match_id": "dqiwb1o5pl9imwu2uolt722vo",
+   "jour": "2026-10-30",
+   "comp": "Pays-Bas : Eerste Divisie",
+   "dom": "Waalwijk",
+   "ext": "Almere City",
+   "commit": "24f13a1",
+   "gele_le": "2026-10-30T16:58:43+00:00",
+   "termine": true,
+   "paris_geles": [
+    {
+     "cle": [
+      "over_under_domicile_2.5",
+      "moins"
+     ],
+     "marche": "Moins de 2,5 buts du domicile",
+     "cote": 1.3,
+     "p": 0.7936,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     6,
+     6
+    ],
+    "strict": [
+     6,
+     6
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.56,
+     1.515
+    ],
+    "strict": [
+     1.56,
+     1.515
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 120,
+    "strict": 120
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "over_under_domicile_2.5|moins": {
+     "p_gele": 0.7936,
+     "p_strict": 0.7936,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "over_under_domicile_2.5",
+      "moins"
+     ],
+     "p": 0.7936
+    }
+   ]
+  },
+  {
+   "match_id": "dw62yis8pmim27mdcp90ku1as",
+   "jour": "2026-10-30",
+   "comp": "Belgique : 2e Division",
+   "dom": "RFC Seraing",
+   "ext": "Liège",
+   "commit": "24f13a1",
+   "gele_le": "2026-10-30T16:58:43+00:00",
+   "termine": true,
+   "paris_geles": [
+    {
+     "cle": [
+      "double_chance",
+      "1N"
+     ],
+     "marche": "Domicile ne perd pas",
+     "cote": 1.38,
+     "p": 0.7382,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     4,
+     4
+    ],
+    "strict": [
+     4,
+     4
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     2.242,
+     1.567
+    ],
+    "strict": [
+     2.242,
+     1.567
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 46,
+    "strict": 46
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "double_chance|1N": {
+     "p_gele": 0.7382,
+     "p_strict": 0.7382,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "double_chance",
+      "1N"
+     ],
+     "p": 0.7382
+    }
+   ]
+  },
+  {
+   "match_id": "16acugma3j5az1dquicwmjxg4",
+   "jour": "2026-10-31",
+   "comp": "Italie : Série C Girone A",
+   "dom": "Cavese",
+   "ext": "Picerno",
+   "commit": "24f13a1",
+   "gele_le": "2026-10-30T16:58:43+00:00",
+   "termine": true,
+   "paris_geles": [
+    {
+     "cle": [
+      "over_under_1.5",
+      "plus"
+     ],
+     "marche": "Plus de 1,5 buts",
+     "cote": 1.31,
+     "p": 0.8509,
+     "role": "principal"
+    },
+    {
+     "cle": [
+      "over_under_exterieur_0.5",
+      "plus"
+     ],
+     "marche": "Plus de 0,5 buts de l'extérieur",
+     "cote": 1.44,
+     "p": 0.7735,
+     "role": "autre"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     5,
+     5
+    ],
+    "strict": [
+     5,
+     5
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.89,
+     1.485
+    ],
+    "strict": [
+     1.871,
+     1.471
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 325,
+    "strict": 325
+   },
+   "dp_max": 0.0073,
+   "verdict_paris": {
+    "over_under_1.5|plus": {
+     "p_gele": 0.8509,
+     "p_strict": 0.8471,
+     "dp": -0.0038,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    },
+    "over_under_exterieur_0.5|plus": {
+     "p_gele": 0.7735,
+     "p_strict": 0.7702,
+     "dp": -0.0033,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "affecté : probabilités modifiées, paris maintenus",
+   "paris_strict": [
+    {
+     "cle": [
+      "over_under_1.5",
+      "plus"
+     ],
+     "p": 0.8471
+    },
+    {
+     "cle": [
+      "over_under_exterieur_0.5",
+      "plus"
+     ],
+     "p": 0.7702
+    }
+   ]
+  },
+  {
+   "match_id": "16xtjvb85a9qtvtv4gs5hl91w",
+   "jour": "2026-10-31",
+   "comp": "Italie : Série C Girone A",
+   "dom": "Giugliano",
+   "ext": "Caserte",
+   "commit": "8773dc4",
+   "gele_le": "2026-10-30T17:38:51+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "over_under_1.5",
+      "plus"
+     ],
+     "marche": "Plus de 1,5 buts",
+     "cote": 1.26,
+     "p": 0.8359,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     6,
+     5
+    ],
+    "strict": [
+     6,
+     5
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.4,
+     1.822
+    ],
+    "strict": [
+     1.385,
+     1.815
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 325,
+    "strict": 325
+   },
+   "dp_max": 0.0052,
+   "verdict_paris": {
+    "over_under_1.5|plus": {
+     "p_gele": 0.8359,
+     "p_strict": 0.8331,
+     "dp": -0.0028,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "affecté : probabilités modifiées, paris maintenus",
+   "paris_strict": [
+    {
+     "cle": [
+      "over_under_1.5",
+      "plus"
+     ],
+     "p": 0.8331
+    }
+   ]
+  },
+  {
+   "match_id": "1c3meg6brycxel19deg1j9dzo",
+   "jour": "2026-10-31",
+   "comp": "Ukraine : Première Ligue",
+   "dom": "Livyi Bereh",
+   "ext": "Bukovyna",
+   "commit": "8773dc4",
+   "gele_le": "2026-10-30T17:38:51+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "over_under_exterieur_1.5",
+      "moins"
+     ],
+     "marche": "Moins de 1,5 buts de l'extérieur",
+     "cote": 1.55,
+     "p": 0.8088,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     4,
+     4
+    ],
+    "strict": [
+     4,
+     4
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.144,
+     0.8
+    ],
+    "strict": [
+     1.144,
+     0.8
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 76,
+    "strict": 76
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "over_under_exterieur_1.5|moins": {
+     "p_gele": 0.8088,
+     "p_strict": 0.8088,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "over_under_exterieur_1.5",
+      "moins"
+     ],
+     "p": 0.8088
+    }
+   ]
+  },
+  {
+   "match_id": "1u7e6g34bdtcszmhvc47yuf4k",
+   "jour": "2026-10-31",
+   "comp": "Angleterre : League One",
+   "dom": "Bradford",
+   "ext": "Huddersfield",
+   "commit": "24f13a1",
+   "gele_le": "2026-10-30T16:58:43+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "over_under_3.5",
+      "moins"
+     ],
+     "marche": "Moins de 3,5 buts",
+     "cote": 1.33,
+     "p": 0.838,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     5,
+     6
+    ],
+    "strict": [
+     5,
+     6
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.074,
+     1.03
+    ],
+    "strict": [
+     1.074,
+     1.03
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 143,
+    "strict": 143
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "over_under_3.5|moins": {
+     "p_gele": 0.838,
+     "p_strict": 0.838,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "over_under_3.5",
+      "moins"
+     ],
+     "p": 0.838
+    }
+   ]
+  },
+  {
+   "match_id": "1z9dn3fphyc1zq9lckgkaklxw",
+   "jour": "2026-10-31",
+   "comp": "Angleterre : League Two",
+   "dom": "Salford",
+   "ext": "Exeter City",
+   "commit": "8773dc4",
+   "gele_le": "2026-10-30T17:38:51+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "over_under_3.5",
+      "moins"
+     ],
+     "marche": "Moins de 3,5 buts",
+     "cote": 1.4,
+     "p": 0.8356,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     6,
+     6
+    ],
+    "strict": [
+     6,
+     6
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.325,
+     0.791
+    ],
+    "strict": [
+     1.335,
+     0.785
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 150,
+    "strict": 151
+   },
+   "dp_max": 0.0047,
+   "verdict_paris": {
+    "over_under_3.5|moins": {
+     "p_gele": 0.8356,
+     "p_strict": 0.8347,
+     "dp": -0.0009,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "affecté : probabilités modifiées, paris maintenus",
+   "paris_strict": [
+    {
+     "cle": [
+      "over_under_3.5",
+      "moins"
+     ],
+     "p": 0.8347
+    }
+   ]
+  },
+  {
+   "match_id": "23khcgmdti687u5ip0ipcs7pw",
+   "jour": "2026-10-31",
+   "comp": "Suisse : Super Ligue",
+   "dom": "Grasshoppers",
+   "ext": "Vaduz",
+   "commit": "24f13a1",
+   "gele_le": "2026-10-30T16:58:43+00:00",
+   "termine": true,
+   "paris_geles": [
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "marche": "Extérieur ne perd pas + plus de 1,5 buts",
+     "cote": 1.72,
+     "p": 0.6042,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035",
+    "2c80acc",
+    "6068a9d",
+    "dc700f3"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     5,
+     6
+    ],
+    "strict": [
+     5,
+     6
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.669,
+     2.023
+    ],
+    "strict": [
+     1.669,
+     2.023
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 60,
+    "strict": 60
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "dc_total_1.5|N2|plus": {
+     "p_gele": 0.6042,
+     "p_strict": 0.6042,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "p": 0.6042
+    }
+   ]
+  },
+  {
+   "match_id": "29uhfiyegwjyj9pfo4h533ok4",
+   "jour": "2026-10-31",
+   "comp": "Japon : J1 Ligue",
+   "dom": "M. Hollyhock",
+   "ext": "S. Hiroshima",
+   "commit": "8773dc4",
+   "gele_le": "2026-10-30T17:38:51+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "marche": "Extérieur ne perd pas + plus de 1,5 buts",
+     "cote": 1.35,
+     "p": 0.6374,
+     "role": "principal"
+    },
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "marche": "Victoire extérieur",
+     "cote": 1.42,
+     "p": 0.5456,
+     "role": "autre"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     6,
+     6
+    ],
+    "strict": [
+     6,
+     6
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.125,
+     1.883
+    ],
+    "strict": [
+     1.125,
+     1.883
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 109,
+    "strict": 109
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "dc_total_1.5|N2|plus": {
+     "p_gele": 0.6374,
+     "p_strict": 0.6374,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    },
+    "1x2|2": {
+     "p_gele": 0.5456,
+     "p_strict": 0.5456,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "p": 0.6374
+    },
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "p": 0.5456
+    }
+   ]
+  },
+  {
+   "match_id": "2c2dyaehpjjphzzxpioktkoic",
+   "jour": "2026-10-31",
+   "comp": "Japon : J1 Ligue",
+   "dom": "Fagiano",
+   "ext": "Tokyo",
+   "commit": "8773dc4",
+   "gele_le": "2026-10-30T17:38:51+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "double_chance",
+      "N2"
+     ],
+     "marche": "Extérieur ne perd pas",
+     "cote": 1.28,
+     "p": 0.7538,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     6,
+     5
+    ],
+    "strict": [
+     6,
+     5
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.117,
+     1.652
+    ],
+    "strict": [
+     1.117,
+     1.652
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 109,
+    "strict": 109
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "double_chance|N2": {
+     "p_gele": 0.7538,
+     "p_strict": 0.7538,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "double_chance",
+      "N2"
+     ],
+     "p": 0.7538
+    }
+   ]
+  },
+  {
+   "match_id": "2c908hfqoda6ake1rfc0gjyms",
+   "jour": "2026-10-31",
+   "comp": "Slovénie : 1. SNL",
+   "dom": "Aluminij",
+   "ext": "NK Radomlje",
+   "commit": "8773dc4",
+   "gele_le": "2026-10-30T17:38:51+00:00",
+   "termine": true,
+   "paris_geles": [
+    {
+     "cle": [
+      "double_chance",
+      "12"
+     ],
+     "marche": "Pas de match nul",
+     "cote": 1.26,
+     "p": 0.7469,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035",
+    "2c80acc",
+    "6068a9d",
+    "dc700f3"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     7,
+     5
+    ],
+    "strict": [
+     7,
+     5
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.678,
+     1.068
+    ],
+    "strict": [
+     1.678,
+     1.068
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 63,
+    "strict": 63
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "double_chance|12": {
+     "p_gele": 0.7469,
+     "p_strict": 0.7469,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "double_chance",
+      "12"
+     ],
+     "p": 0.7469
+    }
+   ]
+  },
+  {
+   "match_id": "38492knb2typae7jdd20s5bmc",
+   "jour": "2026-10-31",
+   "comp": "Qatar : Division 1",
+   "dom": "Sailiya",
+   "ext": "Lusail City",
+   "commit": "8773dc4",
+   "gele_le": "2026-10-30T17:38:51+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "double_chance",
+      "N2"
+     ],
+     "marche": "Extérieur ne perd pas",
+     "cote": 1.3,
+     "p": 0.7773,
+     "role": "principal"
+    },
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "marche": "Extérieur ne perd pas + plus de 1,5 buts",
+     "cote": 1.57,
+     "p": 0.6892,
+     "role": "autre"
+    },
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "marche": "Victoire extérieur",
+     "cote": 1.96,
+     "p": 0.5785,
+     "role": "autre"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     4,
+     5
+    ],
+    "strict": [
+     4,
+     5
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.353,
+     2.257
+    ],
+    "strict": [
+     1.353,
+     2.257
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 36,
+    "strict": 36
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "double_chance|N2": {
+     "p_gele": 0.7773,
+     "p_strict": 0.7773,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    },
+    "dc_total_1.5|N2|plus": {
+     "p_gele": 0.6892,
+     "p_strict": 0.6892,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    },
+    "1x2|2": {
+     "p_gele": 0.5785,
+     "p_strict": 0.5785,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "double_chance",
+      "N2"
+     ],
+     "p": 0.7773
+    },
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "p": 0.6892
+    },
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "p": 0.5785
+    }
+   ]
+  },
+  {
+   "match_id": "3wyl1gdkor2rbg8t4cl4e1jbo",
+   "jour": "2026-10-31",
+   "comp": "France : Ligue 2 BKT",
+   "dom": "EA Guingamp",
+   "ext": "Saint-Étienne",
+   "commit": "24f13a1",
+   "gele_le": "2026-10-30T16:58:43+00:00",
+   "termine": true,
+   "paris_geles": [
+    {
+     "cle": [
+      "double_chance",
+      "N2"
+     ],
+     "marche": "Extérieur ne perd pas",
+     "cote": 1.27,
+     "p": 0.7539,
+     "role": "principal"
+    },
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "marche": "Extérieur ne perd pas + plus de 1,5 buts",
+     "cote": 1.56,
+     "p": 0.6005,
+     "role": "autre"
+    },
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "marche": "Victoire extérieur",
+     "cote": 1.9,
+     "p": 0.5158,
+     "role": "autre"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     5,
+     5
+    ],
+    "strict": [
+     5,
+     5
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.137,
+     1.749
+    ],
+    "strict": [
+     1.137,
+     1.749
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 90,
+    "strict": 90
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "double_chance|N2": {
+     "p_gele": 0.7539,
+     "p_strict": 0.7539,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    },
+    "dc_total_1.5|N2|plus": {
+     "p_gele": 0.6005,
+     "p_strict": 0.6005,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    },
+    "1x2|2": {
+     "p_gele": 0.5158,
+     "p_strict": 0.5158,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "double_chance",
+      "N2"
+     ],
+     "p": 0.7539
+    },
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "p": 0.6005
+    },
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "p": 0.5158
+    }
+   ]
+  },
+  {
+   "match_id": "4oh5hbmm8f67d46idn1vikrh0",
+   "jour": "2026-10-31",
+   "comp": "Angleterre : Premier League",
+   "dom": "Brentford",
+   "ext": "Not. Forest",
+   "commit": "8773dc4",
+   "gele_le": "2026-10-30T17:38:51+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "double_chance",
+      "1N"
+     ],
+     "marche": "Domicile ne perd pas",
+     "cote": 1.33,
+     "p": 0.7787,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     4,
+     4
+    ],
+    "strict": [
+     4,
+     4
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.621,
+     0.987
+    ],
+    "strict": [
+     1.621,
+     0.987
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 80,
+    "strict": 80
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "double_chance|1N": {
+     "p_gele": 0.7787,
+     "p_strict": 0.7787,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "double_chance",
+      "1N"
+     ],
+     "p": 0.7787
+    }
+   ]
+  },
+  {
+   "match_id": "4pi7i7z79l8iotr00ev7ugu1g",
+   "jour": "2026-10-31",
+   "comp": "Angleterre : Premier League",
+   "dom": "Hull City",
+   "ext": "Ipswich Town",
+   "commit": "8773dc4",
+   "gele_le": "2026-10-30T17:38:51+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "cages_inviolees_exterieur",
+      "non"
+     ],
+     "marche": "L'extérieur encaisse au moins 1 but",
+     "cote": 1.26,
+     "p": 0.8036,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     4,
+     4
+    ],
+    "strict": [
+     4,
+     4
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.628,
+     1.172
+    ],
+    "strict": [
+     1.628,
+     1.172
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 80,
+    "strict": 80
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "cages_inviolees_exterieur|non": {
+     "p_gele": 0.8036,
+     "p_strict": 0.8036,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "cages_inviolees_exterieur",
+      "non"
+     ],
+     "p": 0.8036
+    }
+   ]
+  },
+  {
+   "match_id": "5b12j8f1517wphpdu65xdq6tw",
+   "jour": "2026-10-31",
+   "comp": "Belgique : Pro Ligue",
+   "dom": "Standard",
+   "ext": "Courtrai",
+   "commit": "8773dc4",
+   "gele_le": "2026-10-30T17:38:51+00:00",
+   "termine": true,
+   "paris_geles": [
+    {
+     "cle": [
+      "over_under_exterieur_1.5",
+      "moins"
+     ],
+     "marche": "Moins de 1,5 buts de l'extérieur",
+     "cote": 1.32,
+     "p": 0.7685,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     4,
+     4
+    ],
+    "strict": [
+     4,
+     4
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     2.024,
+     0.911
+    ],
+    "strict": [
+     2.04,
+     0.941
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 73,
+    "strict": 74
+   },
+   "dp_max": 0.012,
+   "verdict_paris": {
+    "over_under_exterieur_1.5|moins": {
+     "p_gele": 0.7685,
+     "p_strict": 0.7574,
+     "dp": -0.0111,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "affecté : probabilités modifiées, paris maintenus",
+   "paris_strict": [
+    {
+     "cle": [
+      "over_under_exterieur_1.5",
+      "moins"
+     ],
+     "p": 0.7574
+    }
+   ]
+  },
+  {
+   "match_id": "5l69k8xyw4nwky8wswn27eyok",
+   "jour": "2026-10-31",
+   "comp": "Paraguay : Professionnel de la Division Clôture",
+   "dom": "San Lorenzo",
+   "ext": "Libertad",
+   "commit": "4228c03",
+   "gele_le": "2026-10-31T19:48:52+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "marche": "Victoire extérieur",
+     "cote": 1.43,
+     "p": 0.5084,
+     "role": "principal"
+    }
+   ],
+   "classe": "indéterminé",
+   "motif": "aucune version d'assemblage ne permet à l'ancien chargeur de reproduire la fiche gelée"
+  },
+  {
+   "match_id": "5ol09lv8kbiwv536wsymb9bmc",
+   "jour": "2026-10-31",
+   "comp": "France : Ligue 3",
+   "dom": "Cannes",
+   "ext": "Valenciennes",
+   "commit": "24f13a1",
+   "gele_le": "2026-10-30T16:58:43+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "over_under_exterieur_1.5",
+      "moins"
+     ],
+     "marche": "Moins de 1,5 buts de l'extérieur",
+     "cote": 1.28,
+     "p": 0.804,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     4,
+     5
+    ],
+    "strict": [
+     4,
+     5
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.511,
+     0.813
+    ],
+    "strict": [
+     1.481,
+     0.81
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 87,
+    "strict": 88
+   },
+   "dp_max": 0.0102,
+   "verdict_paris": {
+    "over_under_exterieur_1.5|moins": {
+     "p_gele": 0.804,
+     "p_strict": 0.8053,
+     "dp": 0.0013,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "affecté : probabilités modifiées, paris maintenus",
+   "paris_strict": [
+    {
+     "cle": [
+      "over_under_exterieur_1.5",
+      "moins"
+     ],
+     "p": 0.8053
+    }
+   ]
+  },
+  {
+   "match_id": "7olw9mhgeyk96shvskaegwh04",
+   "jour": "2026-10-31",
+   "comp": "Italie : Serie A",
+   "dom": "Udinese",
+   "ext": "Rome",
+   "commit": "8773dc4",
+   "gele_le": "2026-10-30T17:38:51+00:00",
+   "termine": true,
+   "paris_geles": [
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "marche": "Victoire extérieur",
+     "cote": 1.52,
+     "p": 0.6155,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     5,
+     4
+    ],
+    "strict": [
+     5,
+     4
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.111,
+     2.204
+    ],
+    "strict": [
+     1.111,
+     2.204
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 88,
+    "strict": 88
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "1x2|2": {
+     "p_gele": 0.6155,
+     "p_strict": 0.6155,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "p": 0.6155
+    }
+   ]
+  },
+  {
+   "match_id": "8lt2oeqdv5bo5dot11mtq5xck",
+   "jour": "2026-10-31",
+   "comp": "Angleterre : Ligue Nationale",
+   "dom": "Wealdstone",
+   "ext": "Southend Utd",
+   "commit": "8773dc4",
+   "gele_le": "2026-10-30T17:38:51+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "marche": "Extérieur ne perd pas + plus de 1,5 buts",
+     "cote": 1.42,
+     "p": 0.6117,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     7,
+     8
+    ],
+    "strict": [
+     7,
+     8
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.595,
+     2.0
+    ],
+    "strict": [
+     1.612,
+     1.985
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 175,
+    "strict": 176
+   },
+   "dp_max": 0.0064,
+   "verdict_paris": {
+    "dc_total_1.5|N2|plus": {
+     "p_gele": 0.6117,
+     "p_strict": 0.6059,
+     "dp": -0.0058,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "affecté : probabilités modifiées, paris maintenus",
+   "paris_strict": [
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "p": 0.6059
+    }
+   ]
+  },
+  {
+   "match_id": "8m4o85urivdrtd6vdq888gbh0",
+   "jour": "2026-10-31",
+   "comp": "Angleterre : Ligue Nationale",
+   "dom": "Worthing",
+   "ext": "Sutton Utd",
+   "commit": "24f13a1",
+   "gele_le": "2026-10-30T16:58:43+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "double_chance",
+      "1N"
+     ],
+     "marche": "Domicile ne perd pas",
+     "cote": 1.3,
+     "p": 0.8052,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     8,
+     7
+    ],
+    "strict": [
+     8,
+     7
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     2.039,
+     1.109
+    ],
+    "strict": [
+     2.01,
+     1.125
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 175,
+    "strict": 176
+   },
+   "dp_max": 0.0096,
+   "verdict_paris": {
+    "double_chance|1N": {
+     "p_gele": 0.8052,
+     "p_strict": 0.7979,
+     "dp": -0.0073,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "affecté : probabilités modifiées, paris maintenus",
+   "paris_strict": [
+    {
+     "cle": [
+      "double_chance",
+      "1N"
+     ],
+     "p": 0.7979
+    }
+   ]
+  },
+  {
+   "match_id": "98xb56770o8rqp6z6nttx18gk",
+   "jour": "2026-10-31",
+   "comp": "Mexique : Liga MX Ouverture",
+   "dom": "FC Juarez",
+   "ext": "Querétaro FC",
+   "commit": "8773dc4",
+   "gele_le": "2026-10-30T17:38:51+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "double_chance",
+      "N2"
+     ],
+     "marche": "Extérieur ne perd pas",
+     "cote": 1.39,
+     "p": 0.7659,
+     "role": "principal"
+    },
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "marche": "Extérieur ne perd pas + plus de 1,5 buts",
+     "cote": 1.79,
+     "p": 0.6041,
+     "role": "autre"
+    },
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "marche": "Victoire extérieur",
+     "cote": 2.26,
+     "p": 0.5165,
+     "role": "autre"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     7,
+     7
+    ],
+    "strict": [
+     7,
+     7
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.095,
+     1.731
+    ],
+    "strict": [
+     1.095,
+     1.731
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 124,
+    "strict": 124
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "double_chance|N2": {
+     "p_gele": 0.7659,
+     "p_strict": 0.7659,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    },
+    "dc_total_1.5|N2|plus": {
+     "p_gele": 0.6041,
+     "p_strict": 0.6041,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    },
+    "1x2|2": {
+     "p_gele": 0.5165,
+     "p_strict": 0.5165,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "double_chance",
+      "N2"
+     ],
+     "p": 0.7659
+    },
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "p": 0.6041
+    },
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "p": 0.5165
+    }
+   ]
+  },
+  {
+   "match_id": "bhu6d7a83aoembakkb09wig44",
+   "jour": "2026-10-31",
+   "comp": "Slovaquie : Super Ligue",
+   "dom": "Z. Podbrezova",
+   "ext": "S. Bratislava",
+   "commit": "8773dc4",
+   "gele_le": "2026-10-30T17:38:51+00:00",
+   "termine": true,
+   "paris_geles": [
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "marche": "Victoire extérieur",
+     "cote": 1.87,
+     "p": 0.5294,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     5,
+     7
+    ],
+    "strict": [
+     5,
+     7
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.289,
+     1.984
+    ],
+    "strict": [
+     1.289,
+     1.984
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 72,
+    "strict": 72
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "1x2|2": {
+     "p_gele": 0.5294,
+     "p_strict": 0.5294,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "p": 0.5294
+    }
+   ]
+  },
+  {
+   "match_id": "cf4prgf19vyj8bwjiq5dxjhuc",
+   "jour": "2026-10-31",
+   "comp": "Etats-Unis : MLS",
+   "dom": "Cincinnati",
+   "ext": "Phila. Union",
+   "commit": "8773dc4",
+   "gele_le": "2026-10-30T17:38:51+00:00",
+   "termine": true,
+   "paris_geles": [
+    {
+     "cle": [
+      "over_under_2.5",
+      "plus"
+     ],
+     "marche": "Plus de 2,5 buts",
+     "cote": 1.35,
+     "p": 0.782,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035",
+    "2c80acc",
+    "6068a9d",
+    "dc700f3"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     15,
+     16
+    ],
+    "strict": [
+     15,
+     16
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.996,
+     2.146
+    ],
+    "strict": [
+     1.996,
+     2.146
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 480,
+    "strict": 480
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "over_under_2.5|plus": {
+     "p_gele": 0.782,
+     "p_strict": 0.782,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "over_under_2.5",
+      "plus"
+     ],
+     "p": 0.782
+    }
+   ]
+  },
+  {
+   "match_id": "cg79aosr4wu495t1rlq8jruhg",
+   "jour": "2026-10-31",
+   "comp": "Etats-Unis : MLS",
+   "dom": "Charlotte",
+   "ext": "Orlando City",
+   "commit": "24f13a1",
+   "gele_le": "2026-10-30T16:58:43+00:00",
+   "termine": true,
+   "paris_geles": [
+    {
+     "cle": [
+      "over_under_2.5",
+      "plus"
+     ],
+     "marche": "Plus de 2,5 buts",
+     "cote": 1.26,
+     "p": 0.7806,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     16,
+     16
+    ],
+    "strict": [
+     16,
+     16
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     2.501,
+     1.63
+    ],
+    "strict": [
+     2.501,
+     1.63
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 480,
+    "strict": 480
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "over_under_2.5|plus": {
+     "p_gele": 0.7806,
+     "p_strict": 0.7806,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "over_under_2.5",
+      "plus"
+     ],
+     "p": 0.7806
+    }
+   ]
+  },
+  {
+   "match_id": "chqor05jtdb3kqqogkpxtuo0k",
+   "jour": "2026-10-31",
+   "comp": "Etats-Unis : MLS",
+   "dom": "Sporting KC",
+   "ext": "Dallas",
+   "commit": "8773dc4",
+   "gele_le": "2026-10-30T17:38:51+00:00",
+   "termine": true,
+   "paris_geles": [
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "marche": "Extérieur ne perd pas + plus de 1,5 buts",
+     "cote": 1.46,
+     "p": 0.6481,
+     "role": "principal"
+    },
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "marche": "Victoire extérieur",
+     "cote": 1.81,
+     "p": 0.5088,
+     "role": "autre"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035",
+    "2c80acc",
+    "6068a9d",
+    "dc700f3"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     16,
+     16
+    ],
+    "strict": [
+     16,
+     16
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.542,
+     2.138
+    ],
+    "strict": [
+     1.542,
+     2.138
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 480,
+    "strict": 480
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "dc_total_1.5|N2|plus": {
+     "p_gele": 0.6481,
+     "p_strict": 0.6481,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    },
+    "1x2|2": {
+     "p_gele": 0.5088,
+     "p_strict": 0.5088,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "p": 0.6481
+    },
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "p": 0.5088
+    }
+   ]
+  },
+  {
+   "match_id": "ci8sf0x0hbpgfbunp0do0zxuc",
+   "jour": "2026-10-31",
+   "comp": "Etats-Unis : MLS",
+   "dom": "St. Louis",
+   "ext": "San Diego",
+   "commit": "24f13a1",
+   "gele_le": "2026-10-30T16:58:43+00:00",
+   "termine": true,
+   "paris_geles": [
+    {
+     "cle": [
+      "over_under_2.5",
+      "plus"
+     ],
+     "marche": "Plus de 2,5 buts",
+     "cote": 1.34,
+     "p": 0.7517,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035",
+    "2c80acc",
+    "6068a9d",
+    "dc700f3"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     16,
+     16
+    ],
+    "strict": [
+     16,
+     16
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     2.477,
+     1.454
+    ],
+    "strict": [
+     2.477,
+     1.454
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 480,
+    "strict": 480
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "over_under_2.5|plus": {
+     "p_gele": 0.7517,
+     "p_strict": 0.7517,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "over_under_2.5",
+      "plus"
+     ],
+     "p": 0.7517
+    }
+   ]
+  },
+  {
+   "match_id": "cuy5ku0290ddhliw8hb9lxiqc",
+   "jour": "2026-10-31",
+   "comp": "Turquie : Super Ligue",
+   "dom": "Fenerbahce",
+   "ext": "Goztepe",
+   "commit": "8773dc4",
+   "gele_le": "2026-10-30T17:38:51+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "over_under_2.5",
+      "plus"
+     ],
+     "marche": "Plus de 2,5 buts",
+     "cote": 1.45,
+     "p": 0.7057,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     4,
+     5
+    ],
+    "strict": [
+     4,
+     5
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     2.431,
+     1.217
+    ],
+    "strict": [
+     2.431,
+     1.217
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 81,
+    "strict": 81
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "over_under_2.5|plus": {
+     "p_gele": 0.7057,
+     "p_strict": 0.7057,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "over_under_2.5",
+      "plus"
+     ],
+     "p": 0.7057
+    }
+   ]
+  },
+  {
+   "match_id": "cv9khx5yrbwut2arnr9lj02z8",
+   "jour": "2026-10-31",
+   "comp": "Turquie : Super Ligue",
+   "dom": "Kocaelispor",
+   "ext": "Rizespor",
+   "commit": "24f13a1",
+   "gele_le": "2026-10-30T16:58:43+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "double_chance",
+      "1N"
+     ],
+     "marche": "Domicile ne perd pas",
+     "cote": 1.48,
+     "p": 0.7848,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     4,
+     5
+    ],
+    "strict": [
+     4,
+     5
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.689,
+     0.987
+    ],
+    "strict": [
+     1.689,
+     0.987
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 81,
+    "strict": 81
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "double_chance|1N": {
+     "p_gele": 0.7848,
+     "p_strict": 0.7848,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "double_chance",
+      "1N"
+     ],
+     "p": 0.7848
+    }
+   ]
+  },
+  {
+   "match_id": "d4bufsin87zjex9k2jmgrww7o",
+   "jour": "2026-10-31",
+   "comp": "Turquie : TFF 1. Ligue",
+   "dom": "Manisa FK",
+   "ext": "Batman Petrol",
+   "commit": "8773dc4",
+   "gele_le": "2026-10-30T17:38:51+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "over_under_2.5",
+      "plus"
+     ],
+     "marche": "Plus de 2,5 buts",
+     "cote": 1.56,
+     "p": 0.7161,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     6,
+     6
+    ],
+    "strict": [
+     6,
+     6
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.785,
+     1.925
+    ],
+    "strict": [
+     1.785,
+     1.925
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 119,
+    "strict": 119
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "over_under_2.5|plus": {
+     "p_gele": 0.7161,
+     "p_strict": 0.7161,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "over_under_2.5",
+      "plus"
+     ],
+     "p": 0.7161
+    }
+   ]
+  },
+  {
+   "match_id": "dr7ocs07gr6dpqzka2vykjms4",
+   "jour": "2026-10-31",
+   "comp": "Pays-Bas : Eerste Divisie",
+   "dom": "MVV",
+   "ext": "VVV",
+   "commit": "8773dc4",
+   "gele_le": "2026-10-30T17:38:51+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "marche": "Extérieur ne perd pas + plus de 1,5 buts",
+     "cote": 1.54,
+     "p": 0.6725,
+     "role": "principal"
+    },
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "marche": "Victoire extérieur",
+     "cote": 1.99,
+     "p": 0.5329,
+     "role": "autre"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     6,
+     6
+    ],
+    "strict": [
+     6,
+     6
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.665,
+     2.365
+    ],
+    "strict": [
+     1.665,
+     2.365
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 120,
+    "strict": 120
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "dc_total_1.5|N2|plus": {
+     "p_gele": 0.6725,
+     "p_strict": 0.6725,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    },
+    "1x2|2": {
+     "p_gele": 0.5329,
+     "p_strict": 0.5329,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "p": 0.6725
+    },
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "p": 0.5329
+    }
+   ]
+  },
+  {
+   "match_id": "dua7qs1td3np4r5hehegq8hsk",
+   "jour": "2026-10-31",
+   "comp": "Allemagne : 2. Bundesliga",
+   "dom": "Wolfsbourg",
+   "ext": "Osnabrück",
+   "commit": "8773dc4",
+   "gele_le": "2026-10-30T17:38:51+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "over_under_2.5",
+      "plus"
+     ],
+     "marche": "Plus de 2,5 buts",
+     "cote": 1.37,
+     "p": 0.7202,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     4,
+     4
+    ],
+    "strict": [
+     4,
+     4
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     2.485,
+     1.248
+    ],
+    "strict": [
+     2.485,
+     1.248
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 81,
+    "strict": 81
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "over_under_2.5|plus": {
+     "p_gele": 0.7202,
+     "p_strict": 0.7202,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "over_under_2.5",
+      "plus"
+     ],
+     "p": 0.7202
+    }
+   ]
+  },
+  {
+   "match_id": "exc590eu1ktu0mtkxn8xv9o9g",
+   "jour": "2026-10-31",
+   "comp": "Costa Rica : 1ère Division Ouverture",
+   "dom": "Pérez Zeledón",
+   "ext": "Puntarenas",
+   "commit": "24f13a1",
+   "gele_le": "2026-10-30T16:58:43+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "double_chance",
+      "N2"
+     ],
+     "marche": "Extérieur ne perd pas",
+     "cote": 1.44,
+     "p": 0.764,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     7,
+     6
+    ],
+    "strict": [
+     7,
+     6
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.01,
+     1.592
+    ],
+    "strict": [
+     1.01,
+     1.592
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 34,
+    "strict": 34
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "double_chance|N2": {
+     "p_gele": 0.764,
+     "p_strict": 0.764,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "double_chance",
+      "N2"
+     ],
+     "p": 0.764
+    }
+   ]
+  },
+  {
+   "match_id": "sk66empasl4alcy3u1ukhfro",
+   "jour": "2026-10-31",
+   "comp": "Grèce : Super Ligue",
+   "dom": "Kifisia",
+   "ext": "Olympiakos",
+   "commit": "8773dc4",
+   "gele_le": "2026-10-30T17:38:51+00:00",
+   "termine": true,
+   "paris_geles": [
+    {
+     "cle": [
+      "over_under_3.5",
+      "moins"
+     ],
+     "marche": "Moins de 3,5 buts",
+     "cote": 1.31,
+     "p": 0.8024,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035",
+    "2c80acc",
+    "6068a9d",
+    "dc700f3"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     4,
+     4
+    ],
+    "strict": [
+     4,
+     4
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.239,
+     1.046
+    ],
+    "strict": [
+     1.239,
+     1.046
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 55,
+    "strict": 55
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "over_under_3.5|moins": {
+     "p_gele": 0.8024,
+     "p_strict": 0.8024,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "over_under_3.5",
+      "moins"
+     ],
+     "p": 0.8024
+    }
+   ]
+  },
+  {
+   "match_id": "1ft3mnfj4mbdhx237lo9nhyxg",
+   "jour": "2026-11-01",
+   "comp": "Angleterre : Femmes Super Ligue",
+   "dom": "Birmingham",
+   "ext": "Tottenham",
+   "commit": "2c80acc",
+   "gele_le": "2026-11-01T01:23:49+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "over_under_2.5",
+      "plus"
+     ],
+     "marche": "Plus de 2,5 buts",
+     "cote": 1.49,
+     "p": 0.7158,
+     "role": "principal"
+    },
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "marche": "Extérieur ne perd pas + plus de 1,5 buts",
+     "cote": 1.43,
+     "p": 0.7004,
+     "role": "autre"
+    },
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "marche": "Victoire extérieur",
+     "cote": 1.72,
+     "p": 0.5852,
+     "role": "autre"
+    }
+   ],
+   "version_assemblage": "2c80acc",
+   "versions_equivalentes": [
+    "2c80acc"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     4,
+     4
+    ],
+    "strict": [
+     3,
+     3
+    ]
+   },
+   "strict_statut": "exclu",
+   "strict_raison": "contrat 1.5 : Filtre 0 : 3 match(s) à domicile pour https://www.matchendirect.fr/equipe/birmingham_4s6f6ktui5q36clvqisqr6lvo.html||angleterre : femmes super ligue, 3 à l'extérieur pour https://www.matchendirect.fr/equipe/tottenham_9ijyncrxsejz505dbadwr1dir.html||angleterre : femmes super ligue (il en faut 4)",
+   "buts_attendus": {
+    "gele": [
+     1.38,
+     2.327
+    ],
+    "strict": null
+   },
+   "paris_strict": [],
+   "classe": "affecté : match exclu par le chargeur strict (effectifs < 4)",
+   "verdict_paris": {
+    "over_under_2.5|plus": "perdu : match non analysable",
+    "dc_total_1.5|N2|plus": "perdu : match non analysable",
+    "1x2|2": "perdu : match non analysable"
+   },
+   "dp_max": null
+  },
+  {
+   "match_id": "2bvpxdx9dohy0h38sr644zx1w",
+   "jour": "2026-11-01",
+   "comp": "Slovénie : 1. SNL",
+   "dom": "NK Celje",
+   "ext": "NK Nafta Lendava",
+   "commit": "5cb8aa2",
+   "gele_le": "2026-10-30T15:48:44+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "over_under_3.5",
+      "moins"
+     ],
+     "marche": "Moins de 3,5 buts",
+     "cote": 1.59,
+     "p": 0.8033,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     5,
+     6
+    ],
+    "strict": [
+     5,
+     6
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.215,
+     1.065
+    ],
+    "strict": [
+     1.215,
+     1.065
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 63,
+    "strict": 63
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "over_under_3.5|moins": {
+     "p_gele": 0.8033,
+     "p_strict": 0.8033,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "over_under_3.5",
+      "moins"
+     ],
+     "p": 0.8033
+    }
+   ]
+  },
+  {
+   "match_id": "41c6705ap8dzr2oojjejsu0ic",
+   "jour": "2026-11-01",
+   "comp": "Portugal : Primeira Liga",
+   "dom": "Viseu",
+   "ext": "Rio Ave",
+   "commit": "2c80acc",
+   "gele_le": "2026-11-01T01:23:49+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "double_chance",
+      "1N"
+     ],
+     "marche": "Domicile ne perd pas",
+     "cote": 1.26,
+     "p": 0.7382,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "2c80acc",
+   "versions_equivalentes": [
+    "2c80acc",
+    "6068a9d",
+    "dc700f3"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     4,
+     4
+    ],
+    "strict": [
+     4,
+     4
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.706,
+     1.184
+    ],
+    "strict": [
+     1.706,
+     1.184
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 82,
+    "strict": 82
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "double_chance|1N": {
+     "p_gele": 0.7382,
+     "p_strict": 0.7382,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "double_chance",
+      "1N"
+     ],
+     "p": 0.7382
+    }
+   ]
+  },
+  {
+   "match_id": "42wrwnd587bot95fy0fyeo8b8",
+   "jour": "2026-11-01",
+   "comp": "Portugal : Primeira Liga",
+   "dom": "Maritimo",
+   "ext": "Santa Clara",
+   "commit": "8773dc4",
+   "gele_le": "2026-10-30T17:38:51+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "over_under_exterieur_0.5",
+      "plus"
+     ],
+     "marche": "Plus de 0,5 buts de l'extérieur",
+     "cote": 1.32,
+     "p": 0.8348,
+     "role": "principal"
+    },
+    {
+     "cle": [
+      "double_chance",
+      "N2"
+     ],
+     "marche": "Extérieur ne perd pas",
+     "cote": 1.32,
+     "p": 0.8121,
+     "role": "autre"
+    },
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "marche": "Victoire extérieur",
+     "cote": 2.25,
+     "p": 0.576,
+     "role": "autre"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     4,
+     4
+    ],
+    "strict": [
+     4,
+     4
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     0.928,
+     1.801
+    ],
+    "strict": [
+     0.928,
+     1.801
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 81,
+    "strict": 81
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "over_under_exterieur_0.5|plus": {
+     "p_gele": 0.8348,
+     "p_strict": 0.8348,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    },
+    "double_chance|N2": {
+     "p_gele": 0.8121,
+     "p_strict": 0.8121,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    },
+    "1x2|2": {
+     "p_gele": 0.576,
+     "p_strict": 0.576,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "over_under_exterieur_0.5",
+      "plus"
+     ],
+     "p": 0.8348
+    },
+    {
+     "cle": [
+      "double_chance",
+      "N2"
+     ],
+     "p": 0.8121
+    },
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "p": 0.576
+    }
+   ]
+  },
+  {
+   "match_id": "592416nf8aels140nzcywu0ic",
+   "jour": "2026-11-01",
+   "comp": "Belgique : Pro Ligue",
+   "dom": "Cercle Bruges",
+   "ext": "Antwerp",
+   "commit": "4228c03",
+   "gele_le": "2026-10-31T19:48:52+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "over_under_exterieur_0.5",
+      "plus"
+     ],
+     "marche": "Plus de 0,5 buts de l'extérieur",
+     "cote": 1.26,
+     "p": 0.8314,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     4,
+     7
+    ],
+    "strict": [
+     4,
+     4
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.831,
+     1.78
+    ],
+    "strict": [
+     1.968,
+     1.586
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 73,
+    "strict": 74
+   },
+   "dp_max": 0.0679,
+   "verdict_paris": {
+    "over_under_exterieur_0.5|plus": {
+     "p_gele": 0.8314,
+     "p_strict": 0.7953,
+     "dp": -0.0361,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "affecté : probabilités modifiées, paris maintenus",
+   "paris_strict": [
+    {
+     "cle": [
+      "over_under_exterieur_0.5",
+      "plus"
+     ],
+     "p": 0.7953
+    }
+   ]
+  },
+  {
+   "match_id": "67ywbhh72som2qwwnw7p5lbf8",
+   "jour": "2026-11-01",
+   "comp": "Autriche : Bundesliga",
+   "dom": "Austria Vienne",
+   "ext": "Rapid Wien",
+   "commit": "4228c03",
+   "gele_le": "2026-10-31T19:48:52+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "marche": "Victoire extérieur",
+     "cote": 1.66,
+     "p": 0.5544,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     4,
+     4
+    ],
+    "strict": [
+     4,
+     4
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.301,
+     2.099
+    ],
+    "strict": [
+     1.301,
+     2.099
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 60,
+    "strict": 60
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "1x2|2": {
+     "p_gele": 0.5544,
+     "p_strict": 0.5544,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "p": 0.5544
+    }
+   ]
+  },
+  {
+   "match_id": "6li6liblkia93r67q9kgxva50",
+   "jour": "2026-11-01",
+   "comp": "Espagne : Première Division RFEF Groupe 1",
+   "dom": "CD Coria",
+   "ext": "Arenas Getxo",
+   "commit": "8773dc4",
+   "gele_le": "2026-10-30T17:38:51+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "double_chance",
+      "1N"
+     ],
+     "marche": "Domicile ne perd pas",
+     "cote": 1.27,
+     "p": 0.8554,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     4,
+     4
+    ],
+    "strict": [
+     4,
+     4
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     2.256,
+     0.976
+    ],
+    "strict": [
+     2.238,
+     0.972
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 134,
+    "strict": 137
+   },
+   "dp_max": 0.005,
+   "verdict_paris": {
+    "double_chance|1N": {
+     "p_gele": 0.8554,
+     "p_strict": 0.8547,
+     "dp": -0.0007,
+     "ancien_maintient": true,
+     "strict_maintient": false,
+     "statut": "retiré par le chargeur strict",
+     "raison": "Edge +9.6% < 10%"
+    }
+   },
+   "classe": "affecté : paris retirés par le chargeur",
+   "paris_strict": []
+  },
+  {
+   "match_id": "8981de11hu78j8zr6q5oly8t0",
+   "jour": "2026-11-01",
+   "comp": "Israël : Ligat Al",
+   "dom": "M. Petah Tikva",
+   "ext": "H Be'er Sheva",
+   "commit": "4228c03",
+   "gele_le": "2026-10-31T19:48:52+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "marche": "Extérieur ne perd pas + plus de 1,5 buts",
+     "cote": 1.31,
+     "p": 0.6498,
+     "role": "principal"
+    },
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "marche": "Victoire extérieur",
+     "cote": 1.43,
+     "p": 0.54,
+     "role": "autre"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     4,
+     4
+    ],
+    "strict": [
+     4,
+     4
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.302,
+     2.027
+    ],
+    "strict": [
+     1.302,
+     2.027
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 56,
+    "strict": 56
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "dc_total_1.5|N2|plus": {
+     "p_gele": 0.6498,
+     "p_strict": 0.6498,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    },
+    "1x2|2": {
+     "p_gele": 0.54,
+     "p_strict": 0.54,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "p": 0.6498
+    },
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "p": 0.54
+    }
+   ]
+  },
+  {
+   "match_id": "9aqotfj5dhbvu9aiyva8ckopg",
+   "jour": "2026-11-01",
+   "comp": "Mexique : Liga MX Ouverture",
+   "dom": "Club América",
+   "ext": "D. Toluca",
+   "commit": "2c80acc",
+   "gele_le": "2026-11-01T01:23:49+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "over_under_2.5",
+      "plus"
+     ],
+     "marche": "Plus de 2,5 buts",
+     "cote": 1.52,
+     "p": 0.7282,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "2c80acc",
+   "versions_equivalentes": [
+    "2c80acc",
+    "6068a9d",
+    "dc700f3"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     7,
+     7
+    ],
+    "strict": [
+     7,
+     7
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     2.085,
+     1.697
+    ],
+    "strict": [
+     2.085,
+     1.697
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 123,
+    "strict": 123
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "over_under_2.5|plus": {
+     "p_gele": 0.7282,
+     "p_strict": 0.7282,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "over_under_2.5",
+      "plus"
+     ],
+     "p": 0.7282
+    }
+   ]
+  },
+  {
+   "match_id": "auehjcbf8dbcs33bj0oji2i38",
+   "jour": "2026-11-01",
+   "comp": "Pays-Bas : Eredivisie",
+   "dom": "Excelsior",
+   "ext": "Twente",
+   "commit": "4228c03",
+   "gele_le": "2026-10-31T19:48:52+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "marche": "Victoire extérieur",
+     "cote": 1.58,
+     "p": 0.5504,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     4,
+     5
+    ],
+    "strict": [
+     4,
+     5
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.236,
+     2.01
+    ],
+    "strict": [
+     1.236,
+     2.01
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 88,
+    "strict": 88
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "1x2|2": {
+     "p_gele": 0.5504,
+     "p_strict": 0.5504,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "p": 0.5504
+    }
+   ]
+  },
+  {
+   "match_id": "bgu9muyirb56hrm8o9pga90r8",
+   "jour": "2026-11-01",
+   "comp": "Slovaquie : Super Ligue",
+   "dom": "Banská Bystric",
+   "ext": "Dunajska S.",
+   "commit": "4228c03",
+   "gele_le": "2026-10-31T19:48:52+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "marche": "Extérieur ne perd pas + plus de 1,5 buts",
+     "cote": 1.27,
+     "p": 0.7552,
+     "role": "principal"
+    },
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "marche": "Victoire extérieur",
+     "cote": 1.38,
+     "p": 0.6938,
+     "role": "autre"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     5,
+     7
+    ],
+    "strict": [
+     5,
+     7
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     0.989,
+     2.448
+    ],
+    "strict": [
+     0.989,
+     2.448
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 72,
+    "strict": 72
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "dc_total_1.5|N2|plus": {
+     "p_gele": 0.7552,
+     "p_strict": 0.7552,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    },
+    "1x2|2": {
+     "p_gele": 0.6938,
+     "p_strict": 0.6938,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "p": 0.7552
+    },
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "p": 0.6938
+    }
+   ]
+  },
+  {
+   "match_id": "cfn15711ik6wixftoaxmzfllg",
+   "jour": "2026-11-01",
+   "comp": "Etats-Unis : MLS",
+   "dom": "Nashville SC",
+   "ext": "NY Red Bulls",
+   "commit": "2c80acc",
+   "gele_le": "2026-11-01T01:23:49+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "over_under_exterieur_1.5",
+      "moins"
+     ],
+     "marche": "Moins de 1,5 buts de l'extérieur",
+     "cote": 1.31,
+     "p": 0.8161,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "2c80acc",
+   "versions_equivalentes": [
+    "2c80acc",
+    "6068a9d",
+    "dc700f3"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     16,
+     16
+    ],
+    "strict": [
+     16,
+     16
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     2.147,
+     0.78
+    ],
+    "strict": [
+     2.147,
+     0.78
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 481,
+    "strict": 481
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "over_under_exterieur_1.5|moins": {
+     "p_gele": 0.8161,
+     "p_strict": 0.8161,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "over_under_exterieur_1.5",
+      "moins"
+     ],
+     "p": 0.8161
+    }
+   ]
+  },
+  {
+   "match_id": "d3n6vbyoz6bkkr9x1atez4w0k",
+   "jour": "2026-11-01",
+   "comp": "Turquie : TFF 1. Ligue",
+   "dom": "Istanbulspor",
+   "ext": "Mardin 1969",
+   "commit": "4228c03",
+   "gele_le": "2026-10-31T19:48:52+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "double_chance",
+      "N2"
+     ],
+     "marche": "Extérieur ne perd pas",
+     "cote": 1.27,
+     "p": 0.7989,
+     "role": "principal"
+    },
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "marche": "Extérieur ne perd pas + plus de 1,5 buts",
+     "cote": 1.63,
+     "p": 0.631,
+     "role": "autre"
+    },
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "marche": "Victoire extérieur",
+     "cote": 1.96,
+     "p": 0.5595,
+     "role": "autre"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     5,
+     6
+    ],
+    "strict": [
+     5,
+     6
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.003,
+     1.817
+    ],
+    "strict": [
+     1.003,
+     1.817
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 119,
+    "strict": 119
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "double_chance|N2": {
+     "p_gele": 0.7989,
+     "p_strict": 0.7989,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    },
+    "dc_total_1.5|N2|plus": {
+     "p_gele": 0.631,
+     "p_strict": 0.631,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    },
+    "1x2|2": {
+     "p_gele": 0.5595,
+     "p_strict": 0.5595,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "double_chance",
+      "N2"
+     ],
+     "p": 0.7989
+    },
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "p": 0.631
+    },
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "p": 0.5595
+    }
+   ]
+  },
+  {
+   "match_id": "d7waroqeqzdbbuh95tjci0glw",
+   "jour": "2026-11-01",
+   "comp": "Hongrie : NB I",
+   "dom": "Újpest",
+   "ext": "Nyíregyháza",
+   "commit": "24f13a1",
+   "gele_le": "2026-10-30T16:58:43+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "double_chance",
+      "1N"
+     ],
+     "marche": "Domicile ne perd pas",
+     "cote": 1.27,
+     "p": 0.7811,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     5,
+     6
+    ],
+    "strict": [
+     5,
+     6
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.908,
+     1.118
+    ],
+    "strict": [
+     1.908,
+     1.118
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 64,
+    "strict": 64
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "double_chance|1N": {
+     "p_gele": 0.7811,
+     "p_strict": 0.7811,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "double_chance",
+      "1N"
+     ],
+     "p": 0.7811
+    }
+   ]
+  },
+  {
+   "match_id": "dumvfytu4myf1td3wfcbcq8lw",
+   "jour": "2026-11-01",
+   "comp": "Allemagne : 2. Bundesliga",
+   "dom": "Sankt Pauli",
+   "ext": "Nuremberg",
+   "commit": "2c80acc",
+   "gele_le": "2026-11-01T01:23:49+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "double_chance",
+      "12"
+     ],
+     "marche": "Pas de match nul",
+     "cote": 1.3,
+     "p": 0.7493,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "2c80acc",
+   "versions_equivalentes": [
+    "2c80acc",
+    "6068a9d",
+    "dc700f3"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     4,
+     4
+    ],
+    "strict": [
+     4,
+     4
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.632,
+     1.176
+    ],
+    "strict": [
+     1.632,
+     1.176
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 58,
+    "strict": 58
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "double_chance|12": {
+     "p_gele": 0.7493,
+     "p_strict": 0.7493,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "double_chance",
+      "12"
+     ],
+     "p": 0.7493
+    }
+   ]
+  },
+  {
+   "match_id": "duzf4oik22z10mh7d03px5d04",
+   "jour": "2026-11-01",
+   "comp": "Allemagne : 2. Bundesliga",
+   "dom": "Hanovre",
+   "ext": "D. Dresde",
+   "commit": "2c80acc",
+   "gele_le": "2026-11-01T01:23:49+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "double_chance",
+      "12"
+     ],
+     "marche": "Pas de match nul",
+     "cote": 1.29,
+     "p": 0.7555,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "2c80acc",
+   "versions_equivalentes": [
+    "2c80acc",
+    "6068a9d",
+    "dc700f3"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     4,
+     5
+    ],
+    "strict": [
+     4,
+     5
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.697,
+     1.111
+    ],
+    "strict": [
+     1.697,
+     1.111
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 58,
+    "strict": 58
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "double_chance|12": {
+     "p_gele": 0.7555,
+     "p_strict": 0.7555,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "double_chance",
+      "12"
+     ],
+     "p": 0.7555
+    }
+   ]
+  },
+  {
+   "match_id": "dwptt2djbz8l1uavmwqt7bh1w",
+   "jour": "2026-11-01",
+   "comp": "Allemagne : 2. Bundesliga",
+   "dom": "Greuther Fürth",
+   "ext": "Kiel",
+   "commit": "2c80acc",
+   "gele_le": "2026-11-01T01:23:49+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "double_chance",
+      "12"
+     ],
+     "marche": "Pas de match nul",
+     "cote": 1.3,
+     "p": 0.7465,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "2c80acc",
+   "versions_equivalentes": [
+    "2c80acc",
+    "6068a9d",
+    "dc700f3"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     4,
+     4
+    ],
+    "strict": [
+     4,
+     4
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.605,
+     1.06
+    ],
+    "strict": [
+     1.605,
+     1.06
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 58,
+    "strict": 58
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "double_chance|12": {
+     "p_gele": 0.7465,
+     "p_strict": 0.7465,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "double_chance",
+      "12"
+     ],
+     "p": 0.7465
+    }
+   ]
+  },
+  {
+   "match_id": "dxunw43agbcfmhg2j7s0lqs5w",
+   "jour": "2026-11-01",
+   "comp": "Italie : Série B",
+   "dom": "Arezzo",
+   "ext": "Ascoli",
+   "commit": "4228c03",
+   "gele_le": "2026-10-31T19:48:52+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "double_chance",
+      "N2"
+     ],
+     "marche": "Extérieur ne perd pas",
+     "cote": 1.33,
+     "p": 0.8217,
+     "role": "principal"
+    },
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "marche": "Extérieur ne perd pas + plus de 1,5 buts",
+     "cote": 1.76,
+     "p": 0.6597,
+     "role": "autre"
+    },
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "marche": "Victoire extérieur",
+     "cote": 2.13,
+     "p": 0.5887,
+     "role": "autre"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     4,
+     4
+    ],
+    "strict": [
+     4,
+     4
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     0.971,
+     1.922
+    ],
+    "strict": [
+     0.971,
+     1.922
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 90,
+    "strict": 90
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "double_chance|N2": {
+     "p_gele": 0.8217,
+     "p_strict": 0.8217,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    },
+    "dc_total_1.5|N2|plus": {
+     "p_gele": 0.6597,
+     "p_strict": 0.6597,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    },
+    "1x2|2": {
+     "p_gele": 0.5887,
+     "p_strict": 0.5887,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "double_chance",
+      "N2"
+     ],
+     "p": 0.8217
+    },
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "p": 0.6597
+    },
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "p": 0.5887
+    }
+   ]
+  },
+  {
+   "match_id": "f2p2w1mdmz9gyriq1d1cyd6vo",
+   "jour": "2026-11-01",
+   "comp": "Espagne : Première Division RFEF Groupe 1",
+   "dom": "Torremolinos",
+   "ext": "Águilas",
+   "commit": "2c80acc",
+   "gele_le": "2026-11-01T01:23:49+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "over_under_1.5",
+      "plus"
+     ],
+     "marche": "Plus de 1,5 buts",
+     "cote": 1.33,
+     "p": 0.8239,
+     "role": "principal"
+    },
+    {
+     "cle": [
+      "over_under_exterieur_0.5",
+      "plus"
+     ],
+     "marche": "Plus de 0,5 buts de l'extérieur",
+     "cote": 1.3,
+     "p": 0.7266,
+     "role": "autre"
+    }
+   ],
+   "version_assemblage": "2c80acc",
+   "versions_equivalentes": [
+    "2c80acc",
+    "6068a9d",
+    "dc700f3"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     6,
+     5
+    ],
+    "strict": [
+     4,
+     4
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.815,
+     1.297
+    ],
+    "strict": [
+     1.748,
+     1.226
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 115,
+    "strict": 119
+   },
+   "dp_max": 0.0307,
+   "verdict_paris": {
+    "over_under_1.5|plus": {
+     "p_gele": 0.8239,
+     "p_strict": 0.8039,
+     "dp": -0.02,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    },
+    "over_under_exterieur_0.5|plus": {
+     "p_gele": 0.7266,
+     "p_strict": 0.7066,
+     "dp": -0.02,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "affecté : probabilités modifiées, paris maintenus",
+   "paris_strict": [
+    {
+     "cle": [
+      "over_under_1.5",
+      "plus"
+     ],
+     "p": 0.8039
+    },
+    {
+     "cle": [
+      "over_under_exterieur_0.5",
+      "plus"
+     ],
+     "p": 0.7066
+    }
+   ]
+  },
+  {
+   "match_id": "34avjommiz639dmv3uydeuxas",
+   "jour": "2026-11-02",
+   "comp": "Bolivie : Primera Division",
+   "dom": "Uni de Vinto",
+   "ext": "Always Ready",
+   "commit": "2c80acc",
+   "gele_le": "2026-11-01T01:23:49+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "marche": "Victoire extérieur",
+     "cote": 1.72,
+     "p": 0.538,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "2c80acc",
+   "versions_equivalentes": [
+    "2c80acc",
+    "6068a9d",
+    "dc700f3"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     17,
+     11
+    ],
+    "strict": [
+     12,
+     11
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.105,
+     1.83
+    ],
+    "strict": [
+     1.189,
+     1.874
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 139,
+    "strict": 140
+   },
+   "dp_max": 0.0315,
+   "verdict_paris": {
+    "1x2|2": {
+     "p_gele": 0.538,
+     "p_strict": 0.5243,
+     "dp": -0.0137,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "affecté : probabilités modifiées, paris maintenus",
+   "paris_strict": [
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "p": 0.5243
+    }
+   ]
+  },
+  {
+   "match_id": "34k4cna5uwy9l4upnq8e2rggk",
+   "jour": "2026-11-02",
+   "comp": "Bolivie : Primera Division",
+   "dom": "Real Tomayapo",
+   "ext": "Blooming",
+   "commit": "8773dc4",
+   "gele_le": "2026-10-30T17:38:51+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "over_under_3.5",
+      "moins"
+     ],
+     "marche": "Moins de 3,5 buts",
+     "cote": 1.44,
+     "p": 0.8397,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     11,
+     11
+    ],
+    "strict": [
+     11,
+     11
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.076,
+     1.018
+    ],
+    "strict": [
+     1.098,
+     1.03
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 174,
+    "strict": 175
+   },
+   "dp_max": 0.0092,
+   "verdict_paris": {
+    "over_under_3.5|moins": {
+     "p_gele": 0.8397,
+     "p_strict": 0.8332,
+     "dp": -0.0065,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "affecté : probabilités modifiées, paris maintenus",
+   "paris_strict": [
+    {
+     "cle": [
+      "over_under_3.5",
+      "moins"
+     ],
+     "p": 0.8332
+    }
+   ]
+  },
+  {
+   "match_id": "9b3njmfi2qw98kyyjz5evzgno",
+   "jour": "2026-11-02",
+   "comp": "Mexique : Liga MX Ouverture",
+   "dom": "Santos Laguna",
+   "ext": "Club Necaxa",
+   "commit": "24f13a1",
+   "gele_le": "2026-10-30T16:58:43+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "double_chance",
+      "1N"
+     ],
+     "marche": "Domicile ne perd pas",
+     "cote": 1.28,
+     "p": 0.7559,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "435dd1f",
+   "versions_equivalentes": [
+    "435dd1f",
+    "64675df",
+    "1dc1035"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     7,
+     6
+    ],
+    "strict": [
+     7,
+     6
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.789,
+     1.174
+    ],
+    "strict": [
+     1.789,
+     1.174
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 124,
+    "strict": 124
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "double_chance|1N": {
+     "p_gele": 0.7559,
+     "p_strict": 0.7559,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "double_chance",
+      "1N"
+     ],
+     "p": 0.7559
+    }
+   ]
+  },
+  {
+   "match_id": "b89mlz49uofxjzxcli03wbk0k",
+   "jour": "2026-11-02",
+   "comp": "Portugal : Liga Portugal 2",
+   "dom": "Penafiel",
+   "ext": "Feirense",
+   "commit": "2c80acc",
+   "gele_le": "2026-11-01T01:23:49+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "over_under_exterieur_1.5",
+      "moins"
+     ],
+     "marche": "Moins de 1,5 buts de l'extérieur",
+     "cote": 1.26,
+     "p": 0.7891,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "2c80acc",
+   "versions_equivalentes": [
+    "2c80acc"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     4,
+     4
+    ],
+    "strict": [
+     4,
+     4
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.665,
+     0.854
+    ],
+    "strict": [
+     1.669,
+     0.831
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 49,
+    "strict": 51
+   },
+   "dp_max": 0.0099,
+   "verdict_paris": {
+    "over_under_exterieur_1.5|moins": {
+     "p_gele": 0.7891,
+     "p_strict": 0.7975,
+     "dp": 0.0084,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "affecté : probabilités modifiées, paris maintenus",
+   "paris_strict": [
+    {
+     "cle": [
+      "over_under_exterieur_1.5",
+      "moins"
+     ],
+     "p": 0.7975
+    }
+   ]
+  },
+  {
+   "match_id": "1fdg4eyd87wv00hv40k6f5yqc",
+   "jour": "2026-11-03",
+   "comp": "Angleterre : League Two",
+   "dom": "Northampton",
+   "ext": "Oldham",
+   "commit": "2c80acc",
+   "gele_le": "2026-11-01T01:23:49+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "over_under_3.5",
+      "moins"
+     ],
+     "marche": "Moins de 3,5 buts",
+     "cote": 1.26,
+     "p": 0.8433,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "2c80acc",
+   "versions_equivalentes": [
+    "2c80acc",
+    "6068a9d",
+    "dc700f3"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     6,
+     6
+    ],
+    "strict": [
+     6,
+     6
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.254,
+     0.822
+    ],
+    "strict": [
+     1.266,
+     0.823
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 149,
+    "strict": 149
+   },
+   "dp_max": 0.0043,
+   "verdict_paris": {
+    "over_under_3.5|moins": {
+     "p_gele": 0.8433,
+     "p_strict": 0.8407,
+     "dp": -0.0026,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "affecté : probabilités modifiées, paris maintenus",
+   "paris_strict": [
+    {
+     "cle": [
+      "over_under_3.5",
+      "moins"
+     ],
+     "p": 0.8407
+    }
+   ]
+  },
+  {
+   "match_id": "1v2v3ijxkcmqu5injef74y6ms",
+   "jour": "2026-11-03",
+   "comp": "Angleterre : Championnat",
+   "dom": "Queens Park R.",
+   "ext": "Burnley",
+   "commit": "2c80acc",
+   "gele_le": "2026-11-01T01:23:49+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "double_chance",
+      "1N"
+     ],
+     "marche": "Domicile ne perd pas",
+     "cote": 1.32,
+     "p": 0.808,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "2c80acc",
+   "versions_equivalentes": [
+    "2c80acc",
+    "6068a9d",
+    "dc700f3"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     6,
+     6
+    ],
+    "strict": [
+     6,
+     6
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     2.072,
+     1.111
+    ],
+    "strict": [
+     2.072,
+     1.111
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 156,
+    "strict": 156
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "double_chance|1N": {
+     "p_gele": 0.808,
+     "p_strict": 0.808,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "double_chance",
+      "1N"
+     ],
+     "p": 0.808
+    }
+   ]
+  },
+  {
+   "match_id": "28her7jq9oxqt3h9m8mhm2ck4",
+   "jour": "2026-11-01",
+   "comp": "Pays-Bas : Eredivisie Femmes",
+   "dom": "Ajax",
+   "ext": "Twente",
+   "commit": "2c80acc",
+   "gele_le": "2026-11-01T01:23:49+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "over_under_2.5",
+      "plus"
+     ],
+     "marche": "Plus de 2,5 buts",
+     "cote": 1.68,
+     "p": 0.7427,
+     "role": "principal"
+    },
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "marche": "Extérieur ne perd pas + plus de 1,5 buts",
+     "cote": 1.59,
+     "p": 0.6467,
+     "role": "autre"
+    },
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "marche": "Victoire extérieur",
+     "cote": 2.09,
+     "p": 0.5004,
+     "role": "autre"
+    }
+   ],
+   "version_assemblage": "2c80acc",
+   "versions_equivalentes": [
+    "2c80acc",
+    "6068a9d",
+    "dc700f3"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     5,
+     4
+    ],
+    "strict": [
+     5,
+     4
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.661,
+     2.212
+    ],
+    "strict": [
+     1.661,
+     2.212
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 28,
+    "strict": 28
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "over_under_2.5|plus": {
+     "p_gele": 0.7427,
+     "p_strict": 0.7427,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    },
+    "dc_total_1.5|N2|plus": {
+     "p_gele": 0.6467,
+     "p_strict": 0.6467,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    },
+    "1x2|2": {
+     "p_gele": 0.5004,
+     "p_strict": 0.5004,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "over_under_2.5",
+      "plus"
+     ],
+     "p": 0.7427
+    },
+    {
+     "cle": [
+      "dc_total_1.5",
+      "N2|plus"
+     ],
+     "p": 0.6467
+    },
+    {
+     "cle": [
+      "1x2",
+      "2"
+     ],
+     "p": 0.5004
+    }
+   ]
+  },
+  {
+   "match_id": "5xpooi221ztt4hm8mcka7ui38",
+   "jour": "2026-11-01",
+   "comp": "Monténégro : Prva Liga",
+   "dom": "Mornar",
+   "ext": "Petrovac",
+   "commit": "2c80acc",
+   "gele_le": "2026-11-01T01:23:49+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "double_chance",
+      "12"
+     ],
+     "marche": "Pas de match nul",
+     "cote": 1.33,
+     "p": 0.727,
+     "role": "principal"
+    },
+    {
+     "cle": [
+      "over_under_1.5",
+      "plus"
+     ],
+     "marche": "Plus de 1,5 buts",
+     "cote": 1.37,
+     "p": 0.7264,
+     "role": "autre"
+    }
+   ],
+   "version_assemblage": "2c80acc",
+   "versions_equivalentes": [
+    "2c80acc",
+    "6068a9d",
+    "dc700f3"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     6,
+     5
+    ],
+    "strict": [
+     6,
+     5
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.549,
+     0.974
+    ],
+    "strict": [
+     1.549,
+     0.974
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 24,
+    "strict": 24
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "double_chance|12": {
+     "p_gele": 0.727,
+     "p_strict": 0.727,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    },
+    "over_under_1.5|plus": {
+     "p_gele": 0.7264,
+     "p_strict": 0.7264,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "double_chance",
+      "12"
+     ],
+     "p": 0.727
+    },
+    {
+     "cle": [
+      "over_under_1.5",
+      "plus"
+     ],
+     "p": 0.7264
+    }
+   ]
+  },
+  {
+   "match_id": "pcvg9ycd63ffdx3wds7mbvh0",
+   "jour": "2026-11-01",
+   "comp": "Portugal : Ligue 3 Groupe A",
+   "dom": "Paredes",
+   "ext": "Sao Joao Ver",
+   "commit": "2c80acc",
+   "gele_le": "2026-11-01T01:23:49+00:00",
+   "termine": false,
+   "paris_geles": [
+    {
+     "cle": [
+      "over_under_1.5",
+      "plus"
+     ],
+     "marche": "Plus de 1,5 buts",
+     "cote": 1.28,
+     "p": 0.779,
+     "role": "principal"
+    }
+   ],
+   "version_assemblage": "2c80acc",
+   "versions_equivalentes": [
+    "2c80acc",
+    "6068a9d",
+    "dc700f3"
+   ],
+   "ancien_reproduit_paris": true,
+   "effectifs": {
+    "gele": [
+     4,
+     4
+    ],
+    "strict": [
+     4,
+     4
+    ]
+   },
+   "buts_attendus": {
+    "gele": [
+     1.817,
+     0.996
+    ],
+    "strict": [
+     1.817,
+     0.996
+    ]
+   },
+   "n_matchs_ligue": {
+    "gele": 46,
+    "strict": 46
+   },
+   "dp_max": 0.0,
+   "verdict_paris": {
+    "over_under_1.5|plus": {
+     "p_gele": 0.779,
+     "p_strict": 0.779,
+     "dp": 0.0,
+     "ancien_maintient": true,
+     "strict_maintient": true,
+     "statut": "maintenu"
+    }
+   },
+   "classe": "non affecté",
+   "paris_strict": [
+    {
+     "cle": [
+      "over_under_1.5",
+      "plus"
+     ],
+     "p": 0.779
+    }
+   ]
+  }
+ ],
+ "causes_matchs_retires": [
+  {
+   "match": "Al Shabab - Al Ahli",
+   "jour": "2026-10-30",
+   "classe": "affecté : probabilités modifiées, paris maintenus",
+   "version": "435dd1f",
+   "termine": true,
+   "dom": {
+    "equipe": "Al Shabab",
+    "matchs_ancien": 10,
+    "matchs_strict": 10,
+    "retires_(venaient_d_autres_clubs)": [
+     [
+      "2026-08-25",
+      "Al Shabab",
+      "Neom",
+      3,
+      3
+     ],
+     [
+      "2026-08-30",
+      "Al Fateh",
+      "Al Shabab",
+      1,
+      1
+     ],
+     [
+      "2026-10-11",
+      "Al Shabab",
+      "Al Faisaly",
+      3,
+      0
+     ]
+    ],
+    "ajoutes": [
+     [
+      "2026-08-25",
+      "Al Shabab",
+      "Al Riyadh",
+      3,
+      3
+     ],
+     [
+      "2026-08-30",
+      "Al Hazem",
+      "Al Shabab",
+      1,
+      1
+     ],
+     [
+      "2026-10-11",
+      "Al Shabab",
+      "Al Taawon",
+      3,
+      0
+     ]
+    ]
+   },
+   "ext": {
+    "equipe": "Al Ahli",
+    "matchs_ancien": 10,
+    "matchs_strict": 10,
+    "retires_(venaient_d_autres_clubs)": [
+     [
+      "2026-09-04",
+      "Al Ahli",
+      "Neom",
+      5,
+      0
+     ],
+     [
+      "2026-09-11",
+      "Al Ahli",
+      "Al Fateh",
+      3,
+      1
+     ]
+    ],
+    "ajoutes": [
+     [
+      "2026-09-04",
+      "Al Ahli",
+      "Al Riyadh",
+      5,
+      0
+     ],
+     [
+      "2026-09-11",
+      "Al Ahli",
+      "Al Hazem",
+      3,
+      1
+     ]
+    ]
+   }
+  },
+  {
+   "match": "Cavese - Picerno",
+   "jour": "2026-10-31",
+   "classe": "affecté : probabilités modifiées, paris maintenus",
+   "version": "435dd1f",
+   "termine": true,
+   "dom": {
+    "equipe": "Cavese",
+    "matchs_ancien": 11,
+    "matchs_strict": 11,
+    "retires_(venaient_d_autres_clubs)": [
+     [
+      "2026-09-12",
+      "Latina",
+      "Cavese",
+      0,
+      0
+     ],
+     [
+      "2026-09-15",
+      "Cavese",
+      "Dolomiti",
+      2,
+      3
+     ]
+    ],
+    "ajoutes": [
+     [
+      "2026-09-12",
+      "Cosenza",
+      "Cavese",
+      0,
+      0
+     ],
+     [
+      "2026-09-15",
+      "Cavese",
+      "Sorrente",
+      2,
+      3
+     ]
+    ]
+   },
+   "ext": {
+    "equipe": "Picerno",
+    "matchs_ancien": 11,
+    "matchs_strict": 11,
+    "retires_(venaient_d_autres_clubs)": [
+     [
+      "2026-09-12",
+      "Dolomiti",
+      "Picerno",
+      1,
+      0
+     ],
+     [
+      "2026-10-12",
+      "Picerno",
+      "Latina",
+      1,
+      2
+     ]
+    ],
+    "ajoutes": [
+     [
+      "2026-09-12",
+      "Sorrente",
+      "Picerno",
+      1,
+      0
+     ],
+     [
+      "2026-10-12",
+      "Picerno",
+      "Cosenza",
+      1,
+      2
+     ]
+    ]
+   }
+  },
+  {
+   "match": "Giugliano - Caserte",
+   "jour": "2026-10-31",
+   "classe": "affecté : probabilités modifiées, paris maintenus",
+   "version": "435dd1f",
+   "termine": false,
+   "dom": {
+    "equipe": "Giugliano",
+    "matchs_ancien": 11,
+    "matchs_strict": 11,
+    "retires_(venaient_d_autres_clubs)": [
+     [
+      "2026-09-05",
+      "Giugliano",
+      "Dolomiti",
+      0,
+      2
+     ],
+     [
+      "2026-09-15",
+      "Giugliano",
+      "Latina",
+      5,
+      2
+     ]
+    ],
+    "ajoutes": [
+     [
+      "2026-09-05",
+      "Giugliano",
+      "Sorrente",
+      0,
+      2
+     ],
+     [
+      "2026-09-15",
+      "Giugliano",
+      "Cosenza",
+      5,
+      2
+     ]
+    ]
+   },
+   "ext": {
+    "equipe": "Caserte",
+    "matchs_ancien": 11,
+    "matchs_strict": 11,
+    "retires_(venaient_d_autres_clubs)": [
+     [
+      "2026-10-18",
+      "Dolomiti",
+      "Caserte",
+      0,
+      0
+     ]
+    ],
+    "ajoutes": [
+     [
+      "2026-10-18",
+      "Sorrente",
+      "Caserte",
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "match": "Salford - Exeter City",
+   "jour": "2026-10-31",
+   "classe": "affecté : probabilités modifiées, paris maintenus",
+   "version": "435dd1f",
+   "termine": false,
+   "dom": {
+    "equipe": "Salford",
+    "matchs_ancien": 13,
+    "matchs_strict": 13,
+    "retires_(venaient_d_autres_clubs)": [
+     [
+      "2026-09-05",
+      "Salford",
+      "Oldham",
+      1,
+      0
+     ]
+    ],
+    "ajoutes": [
+     [
+      "2026-09-05",
+      "Salford",
+      "Port Vale",
+      1,
+      0
+     ]
+    ]
+   },
+   "ext": {
+    "equipe": "Exeter City",
+    "matchs_ancien": 13,
+    "matchs_strict": 13,
+    "retires_(venaient_d_autres_clubs)": [
+     [
+      "2026-09-12",
+      "Oldham",
+      "Exeter City",
+      1,
+      0
+     ]
+    ],
+    "ajoutes": [
+     [
+      "2026-09-12",
+      "Port Vale",
+      "Exeter City",
+      1,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "match": "Standard - Courtrai",
+   "jour": "2026-10-31",
+   "classe": "affecté : probabilités modifiées, paris maintenus",
+   "version": "435dd1f",
+   "termine": true,
+   "dom": {
+    "equipe": "Standard",
+    "matchs_ancien": 9,
+    "matchs_strict": 9,
+    "retires_(venaient_d_autres_clubs)": [],
+    "ajoutes": []
+   },
+   "ext": {
+    "equipe": "Courtrai",
+    "matchs_ancien": 8,
+    "matchs_strict": 8,
+    "retires_(venaient_d_autres_clubs)": [],
+    "ajoutes": []
+   }
+  },
+  {
+   "match": "Cannes - Valenciennes",
+   "jour": "2026-10-31",
+   "classe": "affecté : probabilités modifiées, paris maintenus",
+   "version": "435dd1f",
+   "termine": false,
+   "dom": {
+    "equipe": "Cannes",
+    "matchs_ancien": 10,
+    "matchs_strict": 10,
+    "retires_(venaient_d_autres_clubs)": [
+     [
+      "2026-09-10",
+      "Cannes",
+      "Aubagne",
+      0,
+      0
+     ],
+     [
+      "2026-09-17",
+      "La Roche",
+      "Cannes",
+      1,
+      1
+     ]
+    ],
+    "ajoutes": [
+     [
+      "2026-09-10",
+      "Cannes",
+      "Amiens",
+      0,
+      0
+     ],
+     [
+      "2026-09-17",
+      "SC Bastia",
+      "Cannes",
+      1,
+      1
+     ]
+    ]
+   },
+   "ext": {
+    "equipe": "Valenciennes",
+    "matchs_ancien": 10,
+    "matchs_strict": 10,
+    "retires_(venaient_d_autres_clubs)": [
+     [
+      "2026-10-17",
+      "Valenciennes",
+      "Aubagne",
+      1,
+      1
+     ]
+    ],
+    "ajoutes": [
+     [
+      "2026-10-17",
+      "Valenciennes",
+      "Amiens",
+      1,
+      1
+     ]
+    ]
+   }
+  },
+  {
+   "match": "Wealdstone - Southend Utd",
+   "jour": "2026-10-31",
+   "classe": "affecté : probabilités modifiées, paris maintenus",
+   "version": "435dd1f",
+   "termine": false,
+   "dom": {
+    "equipe": "Wealdstone",
+    "matchs_ancien": 15,
+    "matchs_strict": 15,
+    "retires_(venaient_d_autres_clubs)": [
+     [
+      "2026-08-15",
+      "Wealdstone",
+      "Solihull",
+      1,
+      3
+     ]
+    ],
+    "ajoutes": [
+     [
+      "2026-08-15",
+      "Wealdstone",
+      "Harrogate",
+      1,
+      3
+     ]
+    ]
+   },
+   "ext": {
+    "equipe": "Southend Utd",
+    "matchs_ancien": 15,
+    "matchs_strict": 15,
+    "retires_(venaient_d_autres_clubs)": [
+     [
+      "2026-08-15",
+      "Southend Utd",
+      "Aldershot",
+      1,
+      0
+     ]
+    ],
+    "ajoutes": [
+     [
+      "2026-08-15",
+      "Southend Utd",
+      "Scunthorpe",
+      1,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "match": "Worthing - Sutton Utd",
+   "jour": "2026-10-31",
+   "classe": "affecté : probabilités modifiées, paris maintenus",
+   "version": "435dd1f",
+   "termine": false,
+   "dom": {
+    "equipe": "Worthing",
+    "matchs_ancien": 15,
+    "matchs_strict": 15,
+    "retires_(venaient_d_autres_clubs)": [],
+    "ajoutes": []
+   },
+   "ext": {
+    "equipe": "Sutton Utd",
+    "matchs_ancien": 15,
+    "matchs_strict": 15,
+    "retires_(venaient_d_autres_clubs)": [
+     [
+      "2026-09-12",
+      "Sutton Utd",
+      "Aldershot",
+      0,
+      2
+     ],
+     [
+      "2026-10-24",
+      "Solihull",
+      "Sutton Utd",
+      3,
+      1
+     ]
+    ],
+    "ajoutes": [
+     [
+      "2026-09-12",
+      "Sutton Utd",
+      "Scunthorpe",
+      0,
+      2
+     ],
+     [
+      "2026-10-24",
+      "Harrogate",
+      "Sutton Utd",
+      3,
+      1
+     ]
+    ]
+   }
+  },
+  {
+   "match": "Birmingham - Tottenham",
+   "jour": "2026-11-01",
+   "classe": "affecté : match exclu par le chargeur strict (effectifs < 4)",
+   "version": "2c80acc",
+   "termine": false,
+   "dom": {
+    "equipe": "Birmingham",
+    "matchs_ancien": 10,
+    "matchs_strict": 7,
+    "retires_(venaient_d_autres_clubs)": [
+     [
+      "2026-09-06",
+      "Tottenham",
+      "Birmingham",
+      3,
+      1
+     ],
+     [
+      "2026-10-04",
+      "Birmingham",
+      "Chelsea",
+      0,
+      3
+     ],
+     [
+      "2026-10-18",
+      "Crystal Palace",
+      "Birmingham",
+      0,
+      1
+     ],
+     [
+      "2026-10-24",
+      "Brighton",
+      "Birmingham",
+      3,
+      0
+     ]
+    ],
+    "ajoutes": [
+     [
+      "2026-09-06",
+      "Man City",
+      "Birmingham",
+      3,
+      1
+     ]
+    ]
+   },
+   "ext": {
+    "equipe": "Tottenham",
+    "matchs_ancien": 9,
+    "matchs_strict": 7,
+    "retires_(venaient_d_autres_clubs)": [
+     [
+      "2026-09-06",
+      "Tottenham",
+      "Birmingham",
+      3,
+      1
+     ],
+     [
+      "2026-09-26",
+      "Charlton",
+      "Tottenham",
+      0,
+      1
+     ],
+     [
+      "2026-10-18",
+      "Tottenham",
+      "Brighton",
+      3,
+      2
+     ]
+    ],
+    "ajoutes": [
+     [
+      "2026-09-06",
+      "Tottenham",
+      "West Ham",
+      3,
+      1
+     ]
+    ]
+   }
+  },
+  {
+   "match": "Cercle Bruges - Antwerp",
+   "jour": "2026-11-01",
+   "classe": "affecté : probabilités modifiées, paris maintenus",
+   "version": "435dd1f",
+   "termine": false,
+   "dom": {
+    "equipe": "Cercle Bruges",
+    "matchs_ancien": 9,
+    "matchs_strict": 9,
+    "retires_(venaient_d_autres_clubs)": [
+     [
+      "2026-08-14",
+      "Cercle Bruges",
+      "Antwerp",
+      3,
+      3
+     ],
+     [
+      "2026-10-25",
+      "Westerlo",
+      "Cercle Bruges",
+      5,
+      2
+     ]
+    ],
+    "ajoutes": [
+     [
+      "2026-08-14",
+      "Cercle Bruges",
+      "St Truiden",
+      3,
+      3
+     ],
+     [
+      "2026-10-25",
+      "St. Gilloise",
+      "Cercle Bruges",
+      5,
+      2
+     ]
+    ]
+   },
+   "ext": {
+    "equipe": "Antwerp",
+    "matchs_ancien": 13,
+    "matchs_strict": 9,
+    "retires_(venaient_d_autres_clubs)": [
+     [
+      "2026-08-08",
+      "Antwerp",
+      "Lommel SK",
+      1,
+      1
+     ],
+     [
+      "2026-08-14",
+      "Cercle Bruges",
+      "Antwerp",
+      3,
+      3
+     ],
+     [
+      "2026-08-30",
+      "Antwerp",
+      "Antwerp",
+      1,
+      4
+     ],
+     [
+      "2026-09-05",
+      "Antwerp",
+      "La Louvière",
+      4,
+      0
+     ],
+     [
+      "2026-09-20",
+      "Antwerp",
+      "Westerlo",
+      0,
+      2
+     ],
+     [
+      "2026-10-25",
+      "Club Bruges",
+      "Antwerp",
+      3,
+      2
+     ]
+    ],
+    "ajoutes": [
+     [
+      "2026-08-30",
+      "Antwerp",
+      "St Truiden",
+      1,
+      4
+     ],
+     [
+      "2026-09-20",
+      "Antwerp",
+      "St. Gilloise",
+      0,
+      2
+     ]
+    ]
+   }
+  },
+  {
+   "match": "CD Coria - Arenas Getxo",
+   "jour": "2026-11-01",
+   "classe": "affecté : paris retirés par le chargeur",
+   "version": "435dd1f",
+   "termine": false,
+   "dom": {
+    "equipe": "CD Coria",
+    "matchs_ancien": 9,
+    "matchs_strict": 9,
+    "retires_(venaient_d_autres_clubs)": [],
+    "ajoutes": []
+   },
+   "ext": {
+    "equipe": "Arenas Getxo",
+    "matchs_ancien": 9,
+    "matchs_strict": 9,
+    "retires_(venaient_d_autres_clubs)": [],
+    "ajoutes": []
+   }
+  },
+  {
+   "match": "Torremolinos - Águilas",
+   "jour": "2026-11-01",
+   "classe": "affecté : probabilités modifiées, paris maintenus",
+   "version": "2c80acc",
+   "termine": false,
+   "dom": {
+    "equipe": "Torremolinos",
+    "matchs_ancien": 13,
+    "matchs_strict": 9,
+    "retires_(venaient_d_autres_clubs)": [
+     [
+      "2026-08-30",
+      "Aguilas",
+      "Torremolinos",
+      2,
+      2
+     ],
+     [
+      "2026-09-12",
+      "Antequera",
+      "Torremolinos",
+      1,
+      1
+     ],
+     [
+      "2026-09-26",
+      "Torremolinos",
+      "Sant Andreu",
+      1,
+      2
+     ],
+     [
+      "2026-10-03",
+      "Torremolinos",
+      "Torremolinos",
+      5,
+      0
+     ],
+     [
+      "2026-10-04",
+      "Real Murcie",
+      "Torremolinos",
+      2,
+      0
+     ],
+     [
+      "2026-10-10",
+      "Teruel",
+      "Torremolinos",
+      1,
+      0
+     ],
+     [
+      "2026-10-10",
+      "Torremolinos",
+      "Torremolinos",
+      2,
+      2
+     ],
+     [
+      "2026-10-25",
+      "Torremolinos",
+      "Hercules",
+      4,
+      2
+     ]
+    ],
+    "ajoutes": [
+     [
+      "2026-08-30",
+      "A Madrid II",
+      "Torremolinos",
+      2,
+      2
+     ],
+     [
+      "2026-09-26",
+      "Torremolinos",
+      "Algeciras",
+      1,
+      2
+     ],
+     [
+      "2026-10-03",
+      "Alcorcón",
+      "Torremolinos",
+      5,
+      0
+     ],
+     [
+      "2026-10-10",
+      "Torremolinos",
+      "Gimnastic",
+      2,
+      2
+     ]
+    ]
+   },
+   "ext": {
+    "equipe": "Águilas",
+    "matchs_ancien": 11,
+    "matchs_strict": 9,
+    "retires_(venaient_d_autres_clubs)": [
+     [
+      "2026-08-30",
+      "Aguilas",
+      "Torremolinos",
+      2,
+      2
+     ],
+     [
+      "2026-09-06",
+      "Hercules",
+      "Aguilas",
+      0,
+      2
+     ],
+     [
+      "2026-09-13",
+      "Aguilas",
+      "Real Murcie",
+      4,
+      0
+     ],
+     [
+      "2026-09-20",
+      "Sant Andreu",
+      "Aguilas",
+      1,
+      1
+     ]
+    ],
+    "ajoutes": [
+     [
+      "2026-08-30",
+      "Aguilas",
+      "Alcorcón",
+      2,
+      2
+     ],
+     [
+      "2026-09-20",
+      "Algeciras",
+      "Aguilas",
+      1,
+      1
+     ]
+    ]
+   }
+  },
+  {
+   "match": "Uni de Vinto - Always Ready",
+   "jour": "2026-11-02",
+   "classe": "affecté : probabilités modifiées, paris maintenus",
+   "version": "2c80acc",
+   "termine": false,
+   "dom": {
+    "equipe": "Uni de Vinto",
+    "matchs_ancien": 30,
+    "matchs_strict": 23,
+    "retires_(venaient_d_autres_clubs)": [
+     [
+      "2026-04-21",
+      "Uni De Vinto",
+      "Real Oruro",
+      5,
+      2
+     ],
+     [
+      "2026-04-23",
+      "Uni De Vinto",
+      "Real Oruro",
+      2,
+      1
+     ],
+     [
+      "2026-05-10",
+      "Real Tomayapo",
+      "Uni De Vinto",
+      1,
+      0
+     ],
+     [
+      "2026-05-12",
+      "Uni De Vinto",
+      "Uni De Vinto",
+      0,
+      2
+     ],
+     [
+      "2026-07-25",
+      "Always Ready",
+      "Uni De Vinto",
+      3,
+      1
+     ],
+     [
+      "2026-08-01",
+      "Uni De Vinto",
+      "Blooming",
+      2,
+      0
+     ],
+     [
+      "2026-08-08",
+      "Uni De Vinto",
+      "Nacional",
+      2,
+      1
+     ],
+     [
+      "2026-08-15",
+      "Bolivar",
+      "Uni De Vinto",
+      4,
+      1
+     ],
+     [
+      "2026-09-04",
+      "Real Oruro",
+      "Uni De Vinto",
+      2,
+      0
+     ],
+     [
+      "2026-10-09",
+      "Uni De Vinto",
+      "Real Tomayapo",
+      0,
+      0
+     ],
+     [
+      "2026-10-17",
+      "Uni De Vinto",
+      "Uni De Vinto",
+      2,
+      1
+     ]
+    ],
+    "ajoutes": [
+     [
+      "2026-04-21",
+      "Uni De Vinto",
+      "ABB",
+      5,
+      2
+     ],
+     [
+      "2026-05-12",
+      "San Antonio BB",
+      "Uni De Vinto",
+      0,
+      2
+     ],
+     [
+      "2026-09-04",
+      "ABB",
+      "Uni De Vinto",
+      2,
+      0
+     ],
+     [
+      "2026-10-17",
+      "Uni De Vinto",
+      "San Antonio BB",
+      2,
+      1
+     ]
+    ]
+   },
+   "ext": {
+    "equipe": "Always Ready",
+    "matchs_ancien": 23,
+    "matchs_strict": 23,
+    "retires_(venaient_d_autres_clubs)": [
+     [
+      "2026-05-30",
+      "Real Oruro",
+      "Always Ready",
+      1,
+      3
+     ],
+     [
+      "2026-07-25",
+      "Always Ready",
+      "Uni De Vinto",
+      3,
+      1
+     ]
+    ],
+    "ajoutes": [
+     [
+      "2026-05-30",
+      "ABB",
+      "Always Ready",
+      1,
+      3
+     ],
+     [
+      "2026-07-25",
+      "Always Ready",
+      "San Antonio BB",
+      3,
+      1
+     ]
+    ]
+   }
+  },
+  {
+   "match": "Real Tomayapo - Blooming",
+   "jour": "2026-11-02",
+   "classe": "affecté : probabilités modifiées, paris maintenus",
+   "version": "435dd1f",
+   "termine": false,
+   "dom": {
+    "equipe": "Real Tomayapo",
+    "matchs_ancien": 23,
+    "matchs_strict": 23,
+    "retires_(venaient_d_autres_clubs)": [
+     [
+      "2026-05-10",
+      "Real Tomayapo",
+      "Uni De Vinto",
+      1,
+      0
+     ],
+     [
+      "2026-08-01",
+      "Real Tomayapo",
+      "Real Oruro",
+      1,
+      1
+     ],
+     [
+      "2026-10-09",
+      "Uni De Vinto",
+      "Real Tomayapo",
+      0,
+      0
+     ]
+    ],
+    "ajoutes": [
+     [
+      "2026-05-10",
+      "Real Tomayapo",
+      "San Antonio BB",
+      1,
+      0
+     ],
+     [
+      "2026-08-01",
+      "Real Tomayapo",
+      "ABB",
+      1,
+      1
+     ],
+     [
+      "2026-10-09",
+      "San Antonio BB",
+      "Real Tomayapo",
+      0,
+      0
+     ]
+    ]
+   },
+   "ext": {
+    "equipe": "Blooming",
+    "matchs_ancien": 23,
+    "matchs_strict": 23,
+    "retires_(venaient_d_autres_clubs)": [
+     [
+      "2026-04-25",
+      "Real Oruro",
+      "Blooming",
+      3,
+      2
+     ],
+     [
+      "2026-08-01",
+      "Uni De Vinto",
+      "Blooming",
+      2,
+      0
+     ],
+     [
+      "2026-09-13",
+      "Blooming",
+      "Real Oruro",
+      6,
+      1
+     ]
+    ],
+    "ajoutes": [
+     [
+      "2026-04-25",
+      "ABB",
+      "Blooming",
+      3,
+      2
+     ],
+     [
+      "2026-08-01",
+      "San Antonio BB",
+      "Blooming",
+      2,
+      0
+     ],
+     [
+      "2026-09-13",
+      "Blooming",
+      "ABB",
+      6,
+      1
+     ]
+    ]
+   }
+  },
+  {
+   "match": "Penafiel - Feirense",
+   "jour": "2026-11-02",
+   "classe": "affecté : probabilités modifiées, paris maintenus",
+   "version": "2c80acc",
+   "termine": false,
+   "dom": {
+    "equipe": "Penafiel",
+    "matchs_ancien": 8,
+    "matchs_strict": 8,
+    "retires_(venaient_d_autres_clubs)": [
+     [
+      "2026-08-08",
+      "Penafiel",
+      "Felgueiras",
+      0,
+      1
+     ],
+     [
+      "2026-08-23",
+      "Penafiel",
+      "Felgueiras",
+      2,
+      0
+     ]
+    ],
+    "ajoutes": [
+     [
+      "2026-08-08",
+      "Penafiel",
+      "Portimonense",
+      0,
+      1
+     ],
+     [
+      "2026-08-23",
+      "Penafiel",
+      "Sporting CP II",
+      2,
+      0
+     ]
+    ]
+   },
+   "ext": {
+    "equipe": "Feirense",
+    "matchs_ancien": 8,
+    "matchs_strict": 8,
+    "retires_(venaient_d_autres_clubs)": [
+     [
+      "2026-09-05",
+      "Feirense",
+      "Felgueiras",
+      1,
+      3
+     ],
+     [
+      "2026-09-13",
+      "Farense",
+      "Feirense",
+      1,
+      0
+     ]
+    ],
+    "ajoutes": [
+     [
+      "2026-09-05",
+      "Feirense",
+      "Sporting CP II",
+      1,
+      3
+     ],
+     [
+      "2026-09-13",
+      "Chaves",
+      "Feirense",
+      1,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "match": "Northampton - Oldham",
+   "jour": "2026-11-03",
+   "classe": "affecté : probabilités modifiées, paris maintenus",
+   "version": "2c80acc",
+   "termine": false,
+   "dom": {
+    "equipe": "Northampton",
+    "matchs_ancien": 12,
+    "matchs_strict": 12,
+    "retires_(venaient_d_autres_clubs)": [
+     [
+      "2026-09-01",
+      "Northampton",
+      "Gillingham",
+      1,
+      1
+     ],
+     [
+      "2026-10-10",
+      "Tranmere",
+      "Northampton",
+      1,
+      1
+     ]
+    ],
+    "ajoutes": [
+     [
+      "2026-09-01",
+      "Northampton",
+      "Crawley Town",
+      1,
+      1
+     ],
+     [
+      "2026-10-10",
+      "York",
+      "Northampton",
+      1,
+      1
+     ]
+    ]
+   },
+   "ext": {
+    "equipe": "Oldham",
+    "matchs_ancien": 13,
+    "matchs_strict": 13,
+    "retires_(venaient_d_autres_clubs)": [],
+    "ajoutes": []
+   }
+  }
+ ],
+ "alias_rattaches_par_le_strict": {
+  "6068a9d": [
+   {
+    "ligue": "portugal : liga portugal 2",
+    "alias": "Tondela 2",
+    "club": "tondela",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "academica"
+    ]
+   },
+   {
+    "ligue": "portugal : liga portugal 2",
+    "alias": "Penafiel 2",
+    "club": "penafiel",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "academica"
+    ]
+   },
+   {
+    "ligue": "turquie : tff 1. ligue",
+    "alias": "Igdır FK",
+    "club": "igdir-fk",
+    "citations": 7,
+    "dates": 7,
+    "citations_prouvees": 7,
+    "citants": [
+     "batman-petrol",
+     "boluspor",
+     "istanbulspor",
+     "kayserispor",
+     "manisa-fk",
+     "mardin-1969",
+     "muglaspor"
+    ]
+   },
+   {
+    "ligue": "colombie : première a cloture",
+    "alias": "Cúcuta 2",
+    "club": "cucuta",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "boyaca-chico"
+    ]
+   },
+   {
+    "ligue": "uruguay : primera division cloture",
+    "alias": "Peñarol 2",
+    "club": "penarol",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "central-esp"
+    ]
+   },
+   {
+    "ligue": "uruguay : primera division cloture",
+    "alias": "2 Liverpool M.",
+    "club": "liverpool-m",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "central-esp"
+    ]
+   },
+   {
+    "ligue": "paraguay : professionnel de la division clôture",
+    "alias": "Nacional 2",
+    "club": "nacional",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "cerro-porteno"
+    ]
+   },
+   {
+    "ligue": "colombie : première a cloture",
+    "alias": "2 Dep. Pasto",
+    "club": "dep-pasto",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "cucuta"
+    ]
+   },
+   {
+    "ligue": "colombie : première a cloture",
+    "alias": "2 Boyacá Chicó",
+    "club": "boyaca-chico",
+    "citations": 2,
+    "dates": 2,
+    "citations_prouvees": 2,
+    "citants": [
+     "dep-pasto",
+     "dep-pereira"
+    ]
+   },
+   {
+    "ligue": "pérou : primera division cloture",
+    "alias": "2 Cusco",
+    "club": "cusco",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "deportivo-g"
+    ]
+   },
+   {
+    "ligue": "italie : série c girone a",
+    "alias": "US Caratese 2",
+    "club": "us-caratese",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "dolomiti"
+    ]
+   },
+   {
+    "ligue": "bolivie : primera division",
+    "alias": "2 Nacional",
+    "club": "nacional",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "guabira"
+    ]
+   },
+   {
+    "ligue": "bolivie : primera division",
+    "alias": "2 Real Tomayapo",
+    "club": "real-tomayapo",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "guabira"
+    ]
+   },
+   {
+    "ligue": "irlande du nord : ifa premiership",
+    "alias": "2 Carrick",
+    "club": "carrick",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "linfield"
+    ]
+   },
+   {
+    "ligue": "colombie : première a cloture",
+    "alias": "Dep. Pasto 2",
+    "club": "dep-pasto",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "llaneros"
+    ]
+   },
+   {
+    "ligue": "angleterre : league two",
+    "alias": "2 Rotherham Utd",
+    "club": "rotherham-utd",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "swindon-town"
+    ]
+   },
+   {
+    "ligue": "chili : superliga",
+    "alias": "Ñublense 2",
+    "club": "nublense",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "u-catolica"
+    ]
+   },
+   {
+    "ligue": "chili : superliga",
+    "alias": "Audax Ital. 2",
+    "club": "audax-ital",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "u-catolica"
+    ]
+   },
+   {
+    "ligue": "chili : superliga",
+    "alias": "Limache 2",
+    "club": "limache",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "u-catolica"
+    ]
+   },
+   {
+    "ligue": "turquie : tff 1. ligue",
+    "alias": "2 Sivasspor",
+    "club": "sivasspor",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "umraniyespor"
+    ]
+   },
+   {
+    "ligue": "équateur : première a tour de championnat",
+    "alias": "Libertad 2",
+    "club": "libertad",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "universidad"
+    ]
+   }
+  ],
+  "1dc1035": [
+   {
+    "ligue": "chypre : 1. division",
+    "alias": "2 Karmiotissa P.",
+    "club": "karmiotissa-p",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "als-omonia"
+    ]
+   },
+   {
+    "ligue": "espagne : première division rfef groupe 1",
+    "alias": "Barakaldo 2",
+    "club": "barakaldo",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "arenas-getxo"
+    ]
+   },
+   {
+    "ligue": "singapour : s-ligue",
+    "alias": "Hougang Utd 2",
+    "club": "hougang-utd",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "balestier"
+    ]
+   },
+   {
+    "ligue": "turquie : tff 1. ligue",
+    "alias": "Igdır FK",
+    "club": "igdir-fk",
+    "citations": 12,
+    "dates": 12,
+    "citations_prouvees": 12,
+    "citants": [
+     "bandirmaspor",
+     "batman-petrol",
+     "boluspor",
+     "bursaspor",
+     "esenler-erokspor",
+     "fatih-karagumruk",
+     "istanbulspor",
+     "kayserispor",
+     "keciorengucu",
+     "manisa-fk",
+     "mardin-1969",
+     "muglaspor"
+    ]
+   },
+   {
+    "ligue": "bolivie : primera division",
+    "alias": "Independiente 2",
+    "club": "independiente",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "bolivar"
+    ]
+   },
+   {
+    "ligue": "indonésie : ligue 1",
+    "alias": "2 Bali United",
+    "club": "bali-united",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "borneo"
+    ]
+   },
+   {
+    "ligue": "pays de galles : cymru premier",
+    "alias": "2 Cambrian",
+    "club": "cambrian",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "caernarfon"
+    ]
+   },
+   {
+    "ligue": "pays de galles : cymru premier",
+    "alias": "Haverfordwest 2",
+    "club": "haverfordwest",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "caernarfon"
+    ]
+   },
+   {
+    "ligue": "uruguay : primera division cloture",
+    "alias": "Peñarol 2",
+    "club": "penarol",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "central-esp"
+    ]
+   },
+   {
+    "ligue": "uruguay : primera division cloture",
+    "alias": "2 Liverpool M.",
+    "club": "liverpool-m",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "central-esp"
+    ]
+   },
+   {
+    "ligue": "colombie : première a cloture",
+    "alias": "2 Boyacá Chicó",
+    "club": "boyaca-chico",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "dep-pereira"
+    ]
+   },
+   {
+    "ligue": "paraguay : professionnel de la division clôture",
+    "alias": "2 Rubio NU",
+    "club": "rubio-nu",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "dep-recoleta"
+    ]
+   },
+   {
+    "ligue": "pérou : primera division cloture",
+    "alias": "2 Cusco",
+    "club": "cusco",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "deportivo-g"
+    ]
+   },
+   {
+    "ligue": "italie : série c girone a",
+    "alias": "US Caratese 2",
+    "club": "us-caratese",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "dolomiti"
+    ]
+   },
+   {
+    "ligue": "costa rica : 1ère division ouverture",
+    "alias": "Pérez Zeledón 2",
+    "club": "perez-zeledon",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "e-belen"
+    ]
+   },
+   {
+    "ligue": "bolivie : primera division",
+    "alias": "Real Potosí 2",
+    "club": "real-potosi",
+    "citations": 2,
+    "dates": 2,
+    "citations_prouvees": 2,
+    "citants": [
+     "guabira",
+     "real-tomayapo"
+    ]
+   },
+   {
+    "ligue": "bolivie : primera division",
+    "alias": "2 Nacional",
+    "club": "nacional",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "guabira"
+    ]
+   },
+   {
+    "ligue": "bolivie : primera division",
+    "alias": "2 Real Tomayapo",
+    "club": "real-tomayapo",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "guabira"
+    ]
+   },
+   {
+    "ligue": "chili : superliga",
+    "alias": "U. Concepción 2",
+    "club": "u-concepcion",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "huachipato"
+    ]
+   },
+   {
+    "ligue": "république tchèque : ligue tchèque",
+    "alias": "2 Slovácko",
+    "club": "slovacko",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "jablonec"
+    ]
+   },
+   {
+    "ligue": "kazakhstan : super ligue",
+    "alias": "2 Zhenys",
+    "club": "zhenys",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "kaspyi-aktau"
+    ]
+   },
+   {
+    "ligue": "kazakhstan : super ligue",
+    "alias": "2 Aktobe",
+    "club": "aktobe",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "kyzyl-zhar-sk"
+    ]
+   },
+   {
+    "ligue": "irlande du nord : ifa premiership",
+    "alias": "2 Carrick",
+    "club": "carrick",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "linfield"
+    ]
+   },
+   {
+    "ligue": "espagne : première division rfef groupe 1",
+    "alias": "Unionistas 2",
+    "club": "unionistas",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "lugo"
+    ]
+   },
+   {
+    "ligue": "paraguay : professionnel de la division clôture",
+    "alias": "Rubio NU 2",
+    "club": "rubio-nu",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "nacional"
+    ]
+   },
+   {
+    "ligue": "italie : série c girone a",
+    "alias": "2 Lumezzane",
+    "club": "lumezzane",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "pergolettese"
+    ]
+   },
+   {
+    "ligue": "irlande du nord : ifa premiership",
+    "alias": "2 Limavady Utd",
+    "club": "limavady-utd",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "portadown"
+    ]
+   },
+   {
+    "ligue": "allemagne : ligue 3",
+    "alias": "2 Meppen",
+    "club": "meppen",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "sc-verl"
+    ]
+   },
+   {
+    "ligue": "pérou : primera division cloture",
+    "alias": "Comerciantes Uni 2",
+    "club": "comerciantes-uni",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "sport-huancayo"
+    ]
+   },
+   {
+    "ligue": "république tchèque : ligue tchèque",
+    "alias": "Slovan 2",
+    "club": "slovan",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "teplice"
+    ]
+   },
+   {
+    "ligue": "portugal : liga portugal 2",
+    "alias": "2 Torreense",
+    "club": "torreense",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "tondela"
+    ]
+   },
+   {
+    "ligue": "pays de galles : cymru premier",
+    "alias": "2 Ammanford",
+    "club": "ammanford",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "trefelin"
+    ]
+   },
+   {
+    "ligue": "paraguay : professionnel de la division clôture",
+    "alias": "Dep. Recoleta 2",
+    "club": "dep-recoleta",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "trinidense"
+    ]
+   },
+   {
+    "ligue": "chili : superliga",
+    "alias": "Ñublense 2",
+    "club": "nublense",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "u-catolica"
+    ]
+   },
+   {
+    "ligue": "chili : superliga",
+    "alias": "Audax Ital. 2",
+    "club": "audax-ital",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "u-catolica"
+    ]
+   },
+   {
+    "ligue": "chili : superliga",
+    "alias": "Limache 2",
+    "club": "limache",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "u-catolica"
+    ]
+   },
+   {
+    "ligue": "turquie : tff 1. ligue",
+    "alias": "2 Sivasspor",
+    "club": "sivasspor",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "umraniyespor"
+    ]
+   },
+   {
+    "ligue": "équateur : première a tour de championnat",
+    "alias": "Libertad 2",
+    "club": "libertad",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "universidad"
+    ]
+   },
+   {
+    "ligue": "france : ligue 3",
+    "alias": "2 Fleury 91",
+    "club": "fleury-91",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "valenciennes"
+    ]
+   },
+   {
+    "ligue": "france : ligue 3",
+    "alias": "2 La Roche",
+    "club": "la-roche",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "villefranche"
+    ]
+   },
+   {
+    "ligue": "kazakhstan : super ligue",
+    "alias": "Ordabasy 2",
+    "club": "ordabasy",
+    "citations": 1,
+    "dates": 1,
+    "citations_prouvees": 1,
+    "citants": [
+     "zhenys"
+    ]
+   }
+  ]
+ },
+ "preuve_par_identifiant_de_match": {
+  "6068a9d": {
+   "matchs": 12168,
+   "avec_url": 6335,
+   "alias_prouves_par_id": 23,
+   "rows": {
+    "ancien|accord|strict|accord": 21,
+    "ancien|accord|strict|aucun": 2
+   },
+   "ancien_sans_preuve_id": 110,
+   "strict_sans_preuve_id": 0
+  },
+  "1dc1035": {
+   "matchs": 14683,
+   "avec_url": 7767,
+   "alias_prouves_par_id": 43,
+   "rows": {
+    "ancien|accord|strict|accord": 41,
+    "ancien|accord|strict|aucun": 2
+   },
+   "ancien_sans_preuve_id": 72,
+   "strict_sans_preuve_id": 0
+  }
+ }
+}
