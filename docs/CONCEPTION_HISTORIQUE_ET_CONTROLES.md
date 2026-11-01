@@ -1,8 +1,8 @@
-# Conception : référentiel canonique, historique permanent, contrôles (v2, 01/11/2026)
+# Conception : référentiel canonique, historique permanent, contrôles (v3, 01/11/2026)
 
 **Étude de conception. Aucun code. Rien n'est fusionné.** Fiches gelées, bilans historiques et autres moteurs : non touchés. L'architecture finale doit être validée par Patrick avant toute implémentation.
 
-Cette version intègre les cinq décisions du 01/11 (section 0), ajoute les mesures demandées (sections 5 et 8) et remplace la v1.
+Cette version v3 remplace la v2. Elle intègre les cinq décisions du 01/11 et les **trois corrections demandées le 01/11 après la v2** : A (cohérence P1/P2, §3), B (unicité des identifiants, §2.5), C (fiabilité de l'ingestion, §4.5 ; lien Football-Data ↔ Matchendirect = candidats puis vérification, §4.3). **L'implémentation de l'historique permanent attend la validation explicite de Patrick.**
 
 ## 0. Décisions de Patrick intégrées
 
@@ -12,7 +12,10 @@ Cette version intègre les cinq décisions du 01/11 (section 0), ajoute les mesu
 | 2 | Étudier pages d'équipes ET résultats quotidiens ; aucun nouveau scraping avant comparaison | §5 |
 | 3 | Rattachement par identifiant de match autorisé, traçable, réversible ; Sport Boys 2 / 2 Melgar récupérables | §3 |
 | 4 | América Cali : correction par nouvelle version, original conservé | §7 |
-| 5 | Six paris conservés ; trois informations distinctes (résultat, règle de l'époque, règle actuelle) | §9 |
+| 5 | Six paris conservés ; trois informations distinctes (résultat, règle de l'époque, règle actuelle) ; 18/29 conservé, 12/23 = comparaison analytique | §9 |
+| 6 | Hiérarchie compétition → édition (saison) → phase → matchs validée ; saison en deux temps (provisoire / confirmée / indéterminée) | §2.3, §2.4 |
+| 7 | Collecte parallèle (7 à 14 jours), rejeu Omega/Alpha, correction de `_memes_equipes` : autorisés sur espaces et branches isolés, sous conditions | §5, §8.2, §13 |
+| 8 | Corrections A, B, C de la v2 | §3, §2.5, §4.5 |
 
 ## 1. Principes
 
@@ -41,24 +44,48 @@ Cette version intègre les cinq décisions du 01/11 (section 0), ajoute les mesu
 - Identifiant interne permanent ; noms externes multiples (nom Matchendirect, code Football-Data).
 - **Constat** : une même compétition change de nom selon la phase (Ouverture/Clôture, Tour de championnat, Quadrangular) et les noms Matchendirect ne sont pas stables. On distingue donc **compétition** (permanente) → **édition** (saison) → **phase** (libellé externe).
 
-### 2.4 Saisons
-- `saison_id` lié à une compétition, avec **début et fin explicites** et leur source (code Football-Data, ou dates observées).
-- **Aucune hypothèse de calendrier commun.** Les championnats d'été (Norvège, Suède, Japon, Amérique) n'ont pas la même année de début que l'Europe.
-- Une saison est `provisoire` tant qu'elle n'est pas close. Si la saison d'un match ne peut pas être établie, le match est conservé avec `saison_id = indéterminée` et exclu des statistiques de saison.
-- **À valider par Patrick** : règle de définition pour les compétitions sans Football-Data (133 compétitions dans l'assemblage, 38 divisions Football-Data). Proposition : première et dernière date observées, confirmées par une déclaration explicite pour les compétitions à phases.
+### 2.4 Saisons (règle validée en deux temps)
+- `saison_id` est lié à une compétition ; il porte début, fin, **état** et **source de la définition**.
+- États : `confirmée` · `provisoire` · `indéterminée`.
+  - **Football-Data** : `confirmée` par le code de saison de la source.
+  - **Sans Football-Data** : les dates observées ne donnent qu'une période **`provisoire`** (période observée, pas limites décrétées). Elle devient `confirmée` seulement si (a) une source explicite établit les limites et les phases, ou (b) une validation documentée (qui, quand, preuve) est inscrite au référentiel.
+  - **Incertaine** : `indéterminée`. Le match est conservé, **exclu des statistiques saisonnières**.
+- **Aucune hypothèse de calendrier commun** (championnats d'été : Norvège, Suède, Japon, Amérique).
+- **Interdit** : fusionner deux éditions parce que leurs dates se chevauchent. Une fusion d'éditions n'existe que comme décision documentée, réversible (§2.5).
+- Les moteurs lisent aujourd'hui la « saison en cours » de chaque compétition sans l'avoir confirmée. Pour la continuité, une saison `provisoire` serait utilisable **avec son état écrit dans la fiche** ; `indéterminée` jamais. *Point à confirmer par Patrick (§12).*
 
-## 3. Preuves, rattachement, traçabilité
+### 2.5 Contraintes d'unicité, changements d'identifiants, fusions et annulations (correction B)
+| # | Contrainte |
+|---|---|
+| U1 | Un identifiant externe `(source, type, valeur)` désigne **au plus un** objet interne actif (club, compétition ou match). Toute écriture qui créerait un deuxième est refusée et journalisée. |
+| U2 | Un club (ou une compétition) peut avoir plusieurs identifiants externes actifs pour une même source **seulement** par une ligne `changement_identifiant` avec preuve (match commun) et période de validité. Sans cette ligne : refus. |
+| U3 | Un match n'a jamais deux identités internes actives pour la même `(source, identifiant du match)`. Deux créations simultanées : la seconde est refusée par la contrainte, pas par l'ordre d'arrivée. |
+| U4 | Une fusion de clubs ne peut pas créer de cycle ni lier un club à deux cibles actives différentes. Une chaîne A→B→C est autorisée. |
+| U5 | Les lignes d'identifiants ne sont **jamais modifiées**. Une fin de validité est une nouvelle ligne (`valide_du`, `valide_au`, statut `inactif` ou `annulé`). L'historique complet d'un identifiant est donc toujours reconstructible. |
+| U6 | Le journal des fusions et annulations est **ordonné par numéro de séquence** strictement croissant (pas par l'horloge). L'état « à la date X » ou « au numéro N » est le rejeu des lignes jusqu'à X ou N. Rejouer deux fois donne le **même état** (même empreinte d'état) : ce test est obligatoire. |
+| U7 | Une annulation ne vise qu'une fusion active. Une nouvelle fusion après annulation exige une **nouvelle preuve** et une nouvelle ligne ; l'ancienne reste visible. |
+| U8 | Une preuve contradictoire (deux clubs prouvés pour un même alias, ou P1 et P2 en désaccord) empêche toute fusion automatique : ligne `conflit`, aucun rattachement. |
 
-| Rang | Preuve | Statut |
-|---|---|---|
-| P1 | Même identifiant de match d'une source, vu par les deux équipes, **et** les deux identités vérifiées | prioritaire |
-| P2 | Nommage croisé : le bloc de l'autre équipe nomme la nôtre, même date, score inverse | complémentaire, seulement si P1 est indisponible |
-| — | Nom ressemblant, score ressemblant, proximité de date | **jamais suffisant** |
-| — | Contradiction entre sources | `conflit`, aucune fusion automatique |
+## 3. Preuves, rattachement, traçabilité (correction A : P1 et P2 harmonisées)
 
-Chaque rattachement écrit : identifiants concernés, source, preuve (identifiant de match ou références des deux enregistrements), `decide_le`, `version_regle`, statut. Un contrôle indépendant (`audit_identites.py`, existant) vérifie que tout rattachement est prouvé par P1.
+| Rang | Preuve | Définition | Statut |
+|---|---|---|---|
+| P1 | Identifiant de match | Le même identifiant de match d'une source figure dans les observations des deux équipes, **et** chacun des deux clubs est identifié par son identifiant de club (pas par un alias non prouvé) | prioritaire |
+| P2 | Nommage croisé | Le bloc de l'autre équipe nomme la nôtre, même date, score inverse ; les deux observations sont citées et vérifiables | **seulement en l'absence de P1** |
+| — | Nom ressemblant, score ressemblant, proximité de date | | **jamais suffisant** |
+| — | Contradiction | | `conflit`, aucune fusion automatique (U8) |
 
-**Récupération de Sport Boys 2 / 2 Melgar** : le match du 15/04/2026 (3-1) porte le même identifiant dans les deux blocs ; chaque bloc l'écrit avec un alias en « 2 » (pas de nommage croisé, donc P2 échoue). P1 s'applique si les deux identités (Sport Boys, Melgar) sont chacune vérifiées. Mesuré : 2 alias sur 23 prouvés par P1 que le chargeur strict ne rattache pas.
+**Règle de décision, dans cet ordre**
+1. Chercher P1. Si elle existe et ne contredit rien : rattachement, `preuve.type = P1`.
+2. Sans P1 : P2 est acceptée si (a) ses deux observations sont vérifiables, (b) **aucun autre club** ne satisfait aussi P2 pour le même alias, (c) aucune preuve contradictoire n'existe (P1 vers un autre club, observation incompatible). `preuve.type = P2`.
+3. P1 et P2 en désaccord, ou deux clubs candidats : `conflit`, **aucun rattachement**.
+4. Aucune preuve : « non résolu », exclu des statistiques de club.
+
+Chaque rattachement écrit : identifiants concernés, source, **type de preuve réellement utilisé**, références des observations, `decide_le`, `version_regle`, statut.
+
+**L'audit** (`audit_identites.py`, outil existant) doit, pour chaque rattachement : relire **la preuve annoncée** (P1 ou P2) et la revérifier ; chercher toute preuve contradictoire ; classer en `confirmé P1`, `confirmé P2`, `invalide`, `contredit`. Il n'exige pas P1 pour un rattachement fondé sur P2 valide. *État actuel : l'outil ne vérifie que P1. Il reste exact pour les 21 alias du chargeur strict (tous confirmés P1) ; son adaptation à P2 fait partie de l'implémentation, non faite ici.*
+
+**Récupération de Sport Boys 2 / 2 Melgar** : le match du 15/04/2026 (3-1) porte le même identifiant dans les deux blocs ; chaque bloc l'écrit avec un alias en « 2 » (pas de nommage croisé, donc P2 échoue). P1 s'applique si les deux identités (Sport Boys, Melgar) sont chacune vérifiées par leur identifiant de club (c'est le cas : les deux ont leur adresse d'équipe). Mesuré : 2 alias sur 23 prouvés par P1 que le chargeur strict ne rattache pas.
 
 **Mesure sur l'assemblage du 01/11** : 1 509 matchs vus par les deux équipes ; 23 alias prouvés par P1 ; le chargeur strict en rattache 21, tous confirmés ; l'ancien en rattachait 110 de plus sans preuve P1.
 
@@ -85,14 +112,32 @@ Chaque rattachement écrit : identifiants concernés, source, preuve (identifian
 
 ### 4.3 Clés et dédoublonnage
 - Clé externe d'un match : `(source, identifiant du match de la source)`. Le même match vu des deux équipes se fusionne par cette clé.
-- Football-Data ↔ Matchendirect : lien créé seulement après identification des deux clubs, sur `(date ± 1 jour, domicile_id, exterieur_id)`, avec preuve enregistrée. Deux candidats ou plus : `conflit`.
+- **Football-Data ↔ Matchendirect : candidats, puis vérification (jamais une fusion directe).**
+  - *Recherche de candidats* : `(date ± 1 jour, domicile_id, exterieur_id)` ne sert qu'à **proposer** des candidats.
+  - *Vérification exigée avant tout lien* : (a) scores finaux identiques (et mi-temps identiques quand les deux sources en ont), (b) le candidat est **unique des deux côtés**, (c) orientation identique (domicile/extérieur non inversés), (d) aucune autre observation du même couple de clubs dans la fenêtre de recherche.
+  - *Limite assumée* : Football-Data et Matchendirect n'ont **aucun identifiant commun**. Le score n'est pas un identifiant ; un lien vérifié a un niveau de preuve inférieur à P1, il est étiqueté `lien_vérifié`, enregistré avec sa version de règle et **réversible**.
+  - *Reporté* (écart de date > 1 jour, date absente) : candidats non vérifiés ; les deux observations restent séparées, aucun lien. *Inversé* (domicile et extérieur échangés entre sources) : `conflit`, jamais lié. *Rejoué* (même couple de clubs deux fois dans la fenêtre : reprise, match rejoué après abandon) : deux candidats ou plus ⇒ aucun lien automatique ; la version abandonnée garde son statut `abandonné`, la nouvelle est un autre match (autre identifiant de source).
+  - *Pas de double comptage* : tant qu'aucun lien n'est vérifié, dans une compétition couverte par Football-Data, c'est Football-Data qui fait foi pour les statistiques ; l'observation Matchendirect non liée est conservée mais exclue.
 - Deux observations du même identifiant de match doivent être **miroirs** (domicile opposé, buts échangés, même date). Sinon : `conflit` (§7).
 
-### 4.4 Mise à jour, versionnement, reprise
-- Un run écrit dans un dossier temporaire, puis le publie en une seule opération de renommage ; un run interrompu ne laisse aucun état partiel visible.
-- `etat_ingestion` : dernier `(source, jour)` traité ; reprise = continuer après ce point ; rejouer un jour déjà traité est sans effet (hash du brut identique).
+### 4.4 Versionnement
 - Une source qui change un score ou une date sur un même identifiant crée une nouvelle version ; l'ancienne reste, marquée `remplacée`.
 - La purge du cache J0–J+3 ne lit ni n'écrit cette couche.
+
+### 4.5 Fiabilité de l'ingestion (correction C)
+**Unité de travail : le lot** `(source, jour)`.
+
+| Risque | Garantie |
+|---|---|
+| Exécutions concurrentes | Un seul écrivain à la fois : verrou exclusif par espace de stockage (identifiant du run, début, durée de bail). Un verrou périmé n'est repris qu'après constat que son propriétaire n'est plus actif, et la reprise est écrite. Les workflows d'écriture partagent un groupe de concurrence (comme `pipeline-archetype-foot` aujourd'hui) ; la collecte parallèle a son propre groupe. Les lecteurs ne lisent **que** les lots publiés. |
+| Écriture incomplète | Le lot s'écrit dans `en_cours/<run_id>/`. Un fichier `MANIFEST` est écrit **en dernier** : liste des fichiers, taille, sha256 de chacun, nombre d'observations, hash du lot, version de règle, hash du MANIFEST du lot précédent. Publication = renommage atomique vers `lots/<source>/<jour>/<run_id>/`. **Un lot sans MANIFEST valide n'existe pas.** |
+| Interruption | Rien de visible n'a changé tant que le renommage n'a pas eu lieu. Les dossiers `en_cours` périmés sont nettoyés sans effet sur les lots publiés. |
+| Reprise | On recommence le lot. Pas de point de reprise à croire sur parole : l'index des observations déjà ingérées est **reconstruit depuis les lots publiés** (vérité) ; `etat_ingestion` n'en est qu'un cache, reconstruit s'il est absent ou incohérent. |
+| Double ingestion | Clé d'observation = `(source, identifiant source, sha256 du brut normalisé)`. L'ingestion est une **union par clé** : une clé déjà présente n'est pas ajoutée (le MANIFEST compte les observations ignorées). Rejouer un lot, avant ou après une reprise, ne change pas l'état. |
+| Empreintes | Au démarrage et avant toute consolidation : recalcul du sha256 de chaque fichier de chaque lot et vérification de la chaîne de MANIFEST. Un écart **bloque** ; jamais de correction silencieuse. |
+| Dépôt Git | Les lots publiés entrent dans un seul commit ; un push refusé est rejoué sans doublon (mêmes clés). |
+
+**Test d'acceptation obligatoire** : interrompre le processus à chaque étape (points d'arrêt avant et après chaque écriture, avant et après le renommage), reprendre, puis comparer l'empreinte de l'état final à celle d'une exécution sans interruption : elle doit être identique. Idem pour deux exécutions simultanées.
 
 ## 5. Alimentation : comparaison des deux méthodes (mesures du 01/11, sans nouveau scraping)
 
@@ -113,9 +158,21 @@ Chaque rattachement écrit : identifiants concernés, source, preuve (identifian
 - B donne la couverture et l'identifiant de match, mais pas d'identifiant de club : insuffisant seul pour l'identité.
 - Les deux sont complémentaires : B pour la couverture sportive, A (ou les pages d'équipe) pour fournir l'identifiant de club qui prouve le nom. Le mapping nom → club de B se prouve par P1 contre les blocs de A.
 
-**Ce que je n'ai pas pu mesurer** (la page quotidienne locale date du matin du 01/11 : seulement 18 matchs avec score) : la part de matchs terminés avec score final à J+1, le taux de noms de clubs non résolus, les reports et corrections. La seule façon de les mesurer est une **collecte parallèle** sur plusieurs jours, écrite dans un dossier séparé, **sans lien avec le pipeline**. C'est un nouveau scraping, même isolé : **je ne le lance pas sans ton accord**.
+**Ce que je n'ai pas pu mesurer** (la page quotidienne locale date du matin du 01/11 : seulement 18 matchs avec score) : la part de matchs terminés avec score final à J+1, le taux de noms de clubs non résolus, les reports et corrections.
 
-**Recommandation** : décider l'architecture d'alimentation après cette collecte parallèle (7 à 14 jours), avec les quatre mesures ci-dessus.
+### Collecte parallèle : autorisée le 01/11 (7 à 14 jours)
+**Conditions de Patrick** : stockage séparé du pipeline ; aucune modification de `data/assemblage/equipes.json` ; aucune incidence sur Gamma, Alpha, Omega ; conservation des réponses brutes, identifiants, dates de collecte et empreintes ; aucune fusion d'identités à partir des seuls noms.
+
+**Mesures** (une ligne par jour de collecte et par compétition) :
+1. *Scores à J+1* : part des matchs de la page du jour J qui ont un score final à J+1, J+2, J+7.
+2. *Reports* : matchs dont la date change, qui disparaissent ou réapparaissent d'une collecte à l'autre.
+3. *Corrections* : même identifiant de match dont le score, la date ou les équipes changent entre deux collectes.
+4. *Noms non résolus* : noms de clubs de la page qui ne se rattachent à aucun identifiant de club par P1 ou P2 (jamais par nom).
+5. *Couverture* : compétitions et matchs par jour, comparés à ceux de la méthode A pour les mêmes jours.
+
+**Livrable à la fin** : tableau comparatif A / B **chiffré** (pas une conclusion générale de complémentarité), avec la période, le nombre de jours, de compétitions et de matchs.
+
+**Mise en œuvre** : voir §14 (contrainte : un déclenchement planifié ne tourne que depuis la branche par défaut).
 
 ## 6. Contrôles : quatre familles, chacune identifie la donnée fautive et sa provenance
 
@@ -162,7 +219,14 @@ Procédure proposée (aucune modification silencieuse) :
 - Pas de doublon exact dans un bloc (0 sur 76 044).
 - Alpha lit aussi le bloc de l'adversaire à l'extérieur, toujours depuis son propre bloc.
 
-**Ce que je n'ai pas fait** : mesurer l'effet de ces 9,9 % sur les probabilités d'Omega et d'Alpha, ni auditer leurs paramètres et leurs dépendances au-delà des chargeurs. Aucun moteur n'est modifié. À faire avant toute adaptation : rejeu des fiches gelées d'Omega et d'Alpha avec le meilleur historique connu (union des versions), même méthode que l'audit Gamma.
+**Rejeu d'impact d'Omega et d'Alpha : autorisé le 01/11. Protocole** (même rigueur que pour Gamma) :
+- Fiches gelées, journaux, cotes historiques : **lecture seule** ; tout est rejoué à côté.
+- Trois lectures comparées : (1) **blocs originaux** figés dans l'archive (reproduction de la fiche gelée) ; (2) **meilleur historique reconstituable** (union des versions d'un même bloc, matchs identifiés sans nom) ; (3) blocs sans auto-références.
+- Les deux effets sont **mesurés séparément** : historiques tronqués (lecture 2 contre 1), auto-références (lecture 3 contre 1). Le taux de blocs dégradés (9,9 %) ne vaut pas taux de pronostics affectés ; on mesure les fiches.
+- Comparaison **marché par marché** des probabilités et des sélections retenues, avec les cotes gelées.
+- Classement de chaque fiche : **non affectée / affectée / non reproductible / indéterminée**. « Non reproductible » = le rejeu avec les blocs originaux ne retrouve pas la fiche gelée ; elle n'est alors pas imputée à l'historique.
+- Périmètre : uniquement les paris que chaque moteur a réellement gelés avant le coup d'envoi (règle du 29/10) ; pour Alpha, seulement les marchés que la page affiche.
+- Livrable : `docs/AUDIT_PRONOSTICS_GELES_OMEGA_ALPHA.md` + JSON, sur une branche dédiée, aucune modification des moteurs.
 
 ### 8.3 Pipeline
 `calculs.py`, `run_pipeline.py`, `scraper_details.py` : non touchés. Seraient concernés si validé : `precalcul.py` (point de purge) et `assemblage_equipes.py`.
@@ -183,7 +247,7 @@ Aucune réécriture. Trois informations distinctes par pari, proposées pour le 
 | | Plus de 0,5 buts du domicile | **absente** | | gagné | validé (avertissement) | non : cote absente |
 | Slaven – Istra (0-2) | Plus de 0,5 buts de l'extérieur | 1,23 | 30/10 16:58 / `bfd9adeafe5f` | gagné | validé | non : cote 1,23 < 1,26 |
 
-**À savoir sur le bilan réel** : sur les 29 paris réglés, 18 gagnés (62,1 %). Ces six paris ont **tous gagné** : sans eux, 12 sur 23 (52,2 %). Les cotes absentes empêchent tout calcul de rendement pour trois d'entre eux. Le bilan doit afficher les deux chiffres. Le champ `commit` du journal ne dit pas quelle règle a gelé la fiche (il est celui du dépôt au lancement, pas du code exécuté : les lignes marquées `24f13a1` portent l'empreinte `bfd9adeafe5f`, alors que les paramètres de `24f13a1` ont l'empreinte `56de51045557`) : la règle de l'époque doit être identifiée par l'heure de gel et l'empreinte des paramètres, pas par `commit`.
+**À savoir sur le bilan réel** : sur les 29 paris réglés, 18 gagnés (62,1 %). Ces six paris ont **tous gagné** : sans eux, 12 sur 23 (52,2 %). Les cotes absentes empêchent tout calcul de rendement pour trois d'entre eux. Le bilan doit afficher les deux chiffres. **Le 12/23 est une comparaison rétrospective, pas un bilan historique corrigé** : les six paris restent dans le journal et dans le bilan réel (18/29 = 62,1 %). **Les trois paris sans cote ne reçoivent aucun rendement estimé.** Le champ `commit` du journal ne dit pas quelle règle a gelé la fiche (il est celui du dépôt au lancement, pas du code exécuté : les lignes marquées `24f13a1` portent l'empreinte `bfd9adeafe5f`, alors que les paramètres de `24f13a1` ont l'empreinte `56de51045557`) : la règle de l'époque doit être identifiée par l'heure de gel et l'empreinte des paramètres, pas par `commit`.
 
 ## 10. Garanties demandées (récapitulatif)
 
@@ -196,20 +260,37 @@ Aucune réécriture. Trois informations distinctes par pari, proposées pour le 
 | Reprise après interruption | publication par renommage atomique ; `etat_ingestion` |
 | Traçable | brut + hash + run + preuve + version de règle pour chaque décision |
 | Aucun seuil arbitraire | contrôles par comparaison d'ensembles d'identifiants |
+| Unicité | U1–U8 (§2.5) |
+| Preuves cohérentes | P1 prioritaire, P2 seulement sans P1 et sans contradiction ; l'audit revérifie la preuve utilisée (§3) |
+| Ingestion fiable | verrou, lot + MANIFEST écrit en dernier, renommage atomique, union par clé d'observation, empreintes, test d'interruption (§4.5) |
 
-## 11. Ordre proposé
+## 11. Ordre et état (01/11/2026)
 
-1. Valider ce document (référentiel, saisons des compétitions sans Football-Data, hiérarchie P1/P2).
-2. Autoriser ou non la **collecte parallèle** de la méthode B (aucune intégration au pipeline).
-3. Auditer Omega et Alpha par rejeu avec le meilleur historique connu.
-4. Décider de la correction du scraper (`_memes_equipes`) : fichier protégé.
-5. Implémentation par étapes (référentiel → brut/observations → consolidé → contrôles bloquants), chaque étape testée, comparée avant/après.
-6. Fusion seulement sur ordre explicite.
+| Chantier | État | Où |
+|---|---|---|
+| Conception v3 (cette étude) | **livrée ; attend la validation explicite de Patrick** | ce document |
+| Implémentation de l'historique permanent | **bloquée** jusqu'à validation de la v3 | — |
+| Correction de `_memes_equipes` | autorisée, branche dédiée `scraper-memes-equipes`, non fusionnée | §13 |
+| Rejeu d'impact Omega et Alpha | autorisé, espace isolé | §8.2 |
+| Collecte parallèle de la méthode B (7 à 14 jours) | autorisée, stockage isolé | §14 |
+| Fusions | aucune, sur ordre explicite uniquement | — |
 
-## 12. Décisions à prendre par Patrick
+## 12. Points à confirmer par Patrick dans la v3
 
-1. Valider le référentiel (identifiants internes, éditions/phases) et la règle de saison pour les compétitions hors Football-Data.
-2. Autoriser la collecte parallèle de B pendant 7 à 14 jours.
-3. Autoriser l'audit d'impact d'Omega et d'Alpha par rejeu.
-4. Autoriser (ou non) la correction de `scraper_details._memes_equipes` (mécanisme démontré pour 3 des 4 cas « miroir » observés : América Cali et les deux Cerro / Cerro Largo ; le 4e, Comerciantes / Melgar, a une date absente et n'est pas élucidé).
-5. Valider la présentation du bilan en trois informations pour les six paris.
+1. Une saison `provisoire` peut-elle servir aux statistiques des moteurs, avec son état écrit dans la fiche (§2.4) ? `indéterminée` : jamais.
+2. Niveau de preuve des liens Football-Data ↔ Matchendirect (§4.3) : score identique + unicité + orientation, étiquetés `lien_vérifié` (inférieur à P1) et réversibles. Aucune preuve plus forte n'existe sans identifiant commun.
+3. Mise en œuvre de la collecte parallèle (§14).
+
+## 13. Correction de `scraper_details._memes_equipes` (autorisée sous tests)
+
+- **Cause** (démontrée) : sur la page de l'équipe T, une ligne `A - B` est attribuée au premier côté qui « ressemble » à T par inclusion de sous-chaîne. « Cali » est contenu dans « America Cali » : sur la page d'América Cali, le match Cali – América Cali est lu avec América Cali à domicile.
+- **Portée** : `_memes_equipes` est aussi appelée par `corrige_dates_historique.py`, `enregistre_scores_historique.py`, `archetype_model/learning/resultats.py` et `archetype_model/h2h/h2h_stats.py`. **Sa règle globale n'est pas modifiée.** Seule la lecture d'une page d'équipe (`scraper_details`, boucle de lecture des lignes) change : un nouvel arbitrage de côté, sans changement de contrat ni de format de sortie.
+- **Règle** : (1) égalité exacte (même normalisation que l'existant) avec un seul des deux côtés : c'est ce côté ; (2) sinon, ressemblance avec un seul côté : ce côté (comportement actuel) ; (3) ressemblance avec les deux côtés, ou égalité exacte avec les deux : **ambiguïté, ligne ignorée** (pas de donnée plutôt que fausse donnée). Pas de nouvelle heuristique de ressemblance.
+- **Hors périmètre, signalé** : `moteur_europe/scraper_matchendirect.py` contient la même fonction et la même boucle (moteur Europe, non modifié) ; `h2h_stats.py` teste les deux côtés séparément.
+- Tests, comparaison avant/après sur 9 pages réelles capturées, non-régression : voir le rapport de la branche.
+
+## 14. Collecte parallèle : mise en œuvre
+
+- **Contrainte technique** : un déclenchement planifié (cron) d'un workflow GitHub ne s'exécute que depuis la **branche par défaut** (`main`). Ajouter un workflow planifié à ce dépôt reviendrait à fusionner dans `main`, ce qui est interdit sans ordre explicite, et créerait un lien avec le dépôt de production.
+- **Option retenue pour respecter « stockage séparé, aucune connexion »** : un **dépôt distinct** (par exemple `archetype-foot-collecte`), avec son propre workflow planifié, qui n'écrit que dans son propre dépôt. Le code du collecteur est écrit et testé ici, sur une branche, sans toucher au pipeline.
+- Ce bac à sable ne peut pas atteindre Matchendirect (réseau limité aux registres de paquets et à GitHub) : la collecte ne peut tourner que sur GitHub Actions. *La création du dépôt est une action que je ne fais pas sans ton ordre.*
