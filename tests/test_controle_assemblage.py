@@ -25,14 +25,8 @@ def _m(date, dom, adv, g, c):
 
 
 def strict():
-    """Variante proposée du chargeur : un alias n'est rattaché que si l'autre équipe NOMME explicitement la nôtre (jamais sur « adversaire aussi inconnu »)."""
-    src = (RACINE / "moteur_dc" / "donnees.py").read_text(encoding="utf-8")
-    nouveau = src.replace("(o2 == t or not res2)", "(o2 == t)")
-    assert nouveau != src
-    mod = types.ModuleType("dc_strict")
-    mod.__package__, mod.__file__ = "moteur_dc", str(RACINE / "moteur_dc" / "donnees.py")
-    exec(compile(nouveau, "dc_strict", "exec"), mod.__dict__)
-    return mod.Ligues
+    """Le chargeur fusionné le 02/11/2026 EST la variante stricte (un alias n'est rattaché que si l'autre équipe NOMME explicitement la nôtre)."""
+    return D.Ligues
 
 
 # --- 1. auto-rencontre brute ------------------------------------------------------------------------------------------
@@ -106,13 +100,13 @@ def test_la_verification_bloque_le_pipeline(tmp_path):
 
 
 # --- 5. cas réel : Série B du 01/11/2026 --------------------------------------------------------------------------------
-def test_serie_b_reelle_chargeur_actuel_fabrique_virtus_contre_virtus():
+def test_serie_b_reelle_chargeur_corrige_ne_fabrique_plus_virtus_contre_virtus():
     L = D.Ligues(FIXTURE)
     lg = "italie : série b"
     auto = [m for m in L.matchs[lg] if m["dom"] == m["ext"]]
     assert len(FIXTURE["equipes"]) == 14                                                    # l'assemblage brut n'a que 14 clubs de Série B sur 20
-    assert len(auto) == 1 and auto[0]["date"] == "2026-09-19" and "virtus" in auto[0]["dom"]    # défaut démontré, non corrigé dans le moteur
-    assert len({m[k] for m in L.matchs[lg] for k in ("dom", "ext")}) == 18                   # Cremonese et Mantova absorbés par d'autres clubs
+    assert auto == []                                                                       # défaut corrigé par le chargeur strict (fusion du 02/11)
+    assert len({m[k] for m in L.matchs[lg] for k in ("dom", "ext")}) == 20                   # Cremonese et Mantova ne sont plus absorbés
 
 
 def test_serie_b_reelle_chargeur_strict_garde_les_20_clubs_sans_auto_rencontre():
@@ -130,18 +124,14 @@ def test_serie_b_reelle_chargeur_strict_garde_les_20_clubs_sans_auto_rencontre()
 
 
 # --- 6. non-régression sur tous les championnats (assemblage commité) ---------------------------------------------------
-def test_chargeur_strict_ne_perd_aucun_match_et_ne_cree_aucune_auto_rencontre():
+def test_chargeur_strict_ne_cree_aucune_auto_rencontre():
     doc = json.loads((RACINE / "data" / "assemblage" / "equipes.json").read_text(encoding="utf-8"))
-    cur, str_ = D.Ligues(doc), strict()(doc)
+    L = D.Ligues(doc)
     brut = len(C.auto_rencontres_brutes(doc))
-    tot = lambda L: sum(len(v) for v in L.matchs.values())
-    auto = lambda L: sum(1 for v in L.matchs.values() for m in v if m["dom"] == m["ext"])
-    assert tot(str_) >= tot(cur)
-    assert auto(str_) <= auto(cur) and auto(str_) <= brut                                   # il ne reste que les erreurs de la source
-    for lg, v in cur.matchs.items():                                                          # championnat par championnat : jamais moins de matchs
-        assert len(str_.matchs.get(lg, [])) >= len(v), lg
+    auto = sum(1 for v in L.matchs.values() for m in v if m["dom"] == m["ext"])
+    assert auto == 0 and brut >= 0                                                          # les auto-références de la source sont mises en quarantaine, jamais comptées
     cles = [x["cle_cache"] for x in doc["equipes"]]
-    assert len({str_.equipe(k) for k in cles}) == len({cur.equipe(k) for k in cles}) == len(cles)   # identités des clubs du cache conservées
+    assert len({L.equipe(k) for k in cles}) == len(cles)                                      # identités des clubs du cache conservées
 
 
 # --- 7. reproductibilité -----------------------------------------------------------------------------------------------------

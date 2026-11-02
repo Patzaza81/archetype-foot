@@ -36,7 +36,7 @@
 - Portée (complétée le 25/10/2026) : la page réellement lue en production est ANGLAISE (navigateur automatisé : « Over/Under | Club Brugge | Full Time », « Clean Sheet | … »). La règle est dans `equipe_betpawa.cotes_des_equipes` et s'applique aux trois lecteurs : français (`parse_betpawa.py`), anglais séparé (`parse_betpawa_playwright.py`, production), anglais collé (`parse_betpawa_url.py`).
 - Tests : `tests/test_equipe_betpawa.py`.
 
-## Identités du chargeur de Gamma (correctif du 01/11/2026, branche `moteur-dc-chargeur`, non fusionnée)
+## Identités du chargeur de Gamma (correctif du 01/11/2026, fusionné le 02/11/2026)
 
 - Règle : un alias d'adversaire n'est rattaché à un club que si le bloc de ce club NOMME explicitement l'équipe qui le cite (même jour, score inverse). Jamais sur la seule ressemblance des scores. Une auto-rencontre de la source est isolée (`Ligues.quarantaine`) et exclue des statistiques.
 - Preuve indépendante : `audit_identites.py` (identifiant du match dans `url_match`). Tous les alias rattachés doivent être prouvés ; `tests/test_audit_identites.py` le vérifie sur l'assemblage courant.
