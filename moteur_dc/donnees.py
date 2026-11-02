@@ -85,10 +85,16 @@ class Ligues:
         uf = _UF()
         vus: dict[tuple, list[tuple[str, bool]]] = defaultdict(list)    # (date, équipe, lieu, buts pour, buts contre) -> [(adversaire, résolu)]
         recs = []
+        self.quarantaine: list[dict[str, Any]] = []                     # erreurs de la SOURCE, isolées et exclues des statistiques (rapport distinct)
         for x in eqs:
             lg, t = x["competition"], x["cle_cache"]
+            propres = {norm(n) for n in (x.get("nom_football_data"), x.get("nom_matchendirect")) if n} | ({_slug(t)} - {""})
             for m in x.get("matchs") or []:
                 if not m.get("date") or not m.get("adversaire") or not isinstance(m.get("buts_marques"), int) or not isinstance(m.get("buts_encaisses"), int):
+                    continue
+                if norm(m["adversaire"]) in propres:
+                    self.quarantaine.append({"championnat": lg, "equipe": t, "date": m["date"][:10], "adversaire": m["adversaire"],
+                                             "score": [m["buts_marques"], m["buts_encaisses"]], "raison": "auto-rencontre dans la source : l'adversaire porte le nom de l'équipe"})
                     continue
                 o = noms[lg].get(norm(m["adversaire"]))
                 resolu = o is not None
@@ -103,8 +109,9 @@ class Ligues:
                 if not r2:
                     uf.unir(t, o2)
         # alias restants (nom écrit par les autres équipes autrement que le nom propre de l'équipe) : l'alias désigne l'équipe qui, aux dates
-        # où cet alias est cité, a elle-même un match au score inverse contre l'équipe qui le cite ; l'alias est rattaché à l'équipe qui
-        # y gagne le plus de dates (égalité = rien n'est deviné)
+        # où cet alias est cité, a elle-même un match au score inverse contre l'équipe qui le cite ET dont le bloc NOMME explicitement celle qui le cite
+        # (jamais sur la seule ressemblance de scores : un 0-0 est son propre inverse, enquête du 01/11/2026) ; l'alias est rattaché à l'équipe qui
+        # y gagne le plus de dates (égalité = rien n'est deviné ; sans preuve explicite l'alias reste une identité distincte « ? »)
         par_date: dict[tuple, list] = defaultdict(list)
         for r in recs:
             par_date[(r[0], r[1])].append(r)
@@ -113,7 +120,7 @@ class Ligues:
             if resolu:
                 continue
             for lg2, d2, u, dom2, o2, gm2, gc2, res2 in par_date[(lg, d)]:
-                if u != t and dom2 != dom and gm2 == gc and gc2 == gm and (o2 == t or not res2):
+                if u != t and dom2 != dom and gm2 == gc and gc2 == gm and (o2 == t):
                     votes[o][u] = votes[o].get(u, 0) + 1
         for alias, v in votes.items():
             top = sorted(v.items(), key=lambda kv: -kv[1])
