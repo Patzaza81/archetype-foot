@@ -128,6 +128,12 @@ jobs:
         continue-on-error: true
         run: python -m moteur_omega_v3.suivi pipeline
 
+      # ESSAI (02/11/2026) : pourcentage mixte, journal à part (data/gamma/journal_mixte.jsonl, page pronostics_mixte.html). Ne touche ni au journal Gamma ni à la page Gamma.
+      - name: Pourcentage mixte (essai, journal gelé à part)
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+        continue-on-error: true
+        run: python -m moteur_omega_v3.mixte pipeline
+
       # CONSERVÉ (audit du 02/11/2026) : moteur DC = ancien Gamma, inchangé, pour la comparaison avec Omega V3 sur les mêmes matchs gelés (data/dc/, page pronostics_dc.html).
       - name: Ancien moteur DC (pronostics et journal gelé, hors tickets)
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
