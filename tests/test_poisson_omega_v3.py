@@ -66,3 +66,16 @@ def test_calibreur_croissant_et_fidele_aux_frequences():
 def test_aucune_value_ni_ev_dans_le_module():
     t = open(P.__file__, encoding="utf-8").read().lower()
     assert "p_implicite" not in t and "* cote" not in t and "value >" not in t
+
+
+def test_proba_officielle_mixte_puis_force_puis_rien():
+    L = champ()
+    cal = {k: P.Calibreur(np.linspace(0, 1, 2000), np.linspace(0, 1, 2000) > 0.5, np.ones(2000, dtype=bool)) for k in ("MIXTE", "FORCE")}
+    r = P.proba_officielle(L, "A", "B", "2026-12-01", cal)
+    assert r["modele"] in ("MIXTE", "FORCE") and r["calibre"].shape == r["brut"].shape
+    # une équipe sans assez de matchs à son lieu mais avec assez au total → FORCE seul
+    L2 = [m for m in L if not (m["dom"] == "A" and m["date"] > "2026-09-02")] + [{"date": f"2026-09-{d:02d}", "dom": "C", "ext": "A", "h": 1, "a": 2} for d in range(3, 12)]
+    assert P.proba_officielle(L2, "A", "B", "2026-12-01", cal)["modele"] == "FORCE"
+    # moins de 5 matchs au total → rien, avec la raison
+    r3 = P.proba_officielle(champ(1), "A", "B", "2026-12-01", cal)
+    assert r3["modele"] is None and "insuffisantes" in r3["raison"]

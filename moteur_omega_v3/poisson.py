@@ -105,6 +105,27 @@ def probabilites(ech: list[dict[str, Any]], ligues: D.Ligues) -> dict[str, np.nd
     return out
 
 
+def proba_officielle(matchs: list[dict], dom: str, ext: str, jour: str, calibreurs: dict[str, "Calibreur"]) -> dict[str, Any]:
+    """Pourcentage OFFICIEL d'un match : modèle MIXTE (C + FORCE) quand les quatre séquences de 5 matchs existent, sinon FORCE seul (5 matchs au total par équipe suffisent),
+    sinon rien. Chaque modèle est calibré par SON calibreur. Renvoie le modèle utilisé : jamais de mélange silencieux entre deux populations."""
+    forces = None
+    try:
+        forces = forces_championnat(matchs, dom, ext, jour)
+    except ValueError as e:
+        raison_force = str(e)
+    try:
+        s = D.sequences(matchs, dom, ext, jour)
+    except ValueError as e:
+        s, raison_seq = None, str(e)
+    if forces is not None and s is not None:
+        brut = (Vr.frequences(Vr.poids("C", s["att_a"], s["def_a"], s["att_b"], s["def_b"])) + proba_lambdas(forces["lam_dom"], forces["lam_ext"])) / 2
+        return {"modele": "MIXTE", "brut": brut, "calibre": calibreurs["MIXTE"](brut)}
+    if forces is not None:
+        brut = proba_lambdas(forces["lam_dom"], forces["lam_ext"])
+        return {"modele": "FORCE", "brut": brut, "calibre": calibreurs["FORCE"](brut)}
+    return {"modele": None, "brut": None, "calibre": None, "raison": raison_force}
+
+
 def mesure(P: np.ndarray, S: np.ndarray, V: np.ndarray, sel: np.ndarray) -> dict[str, Any]:
     p, y = P[sel & V], S[sel & V].astype(float)
     q = np.clip(p, 1e-3, 1 - 1e-3)
