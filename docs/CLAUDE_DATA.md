@@ -42,3 +42,8 @@
 - Preuve indépendante : `audit_identites.py` (identifiant du match dans `url_match`). Tous les alias rattachés doivent être prouvés ; `tests/test_audit_identites.py` le vérifie sur l'assemblage courant.
 - Documents : `docs/CHARGEUR_IDENTITES.md`, `docs/AUDIT_PRONOSTICS_GELES.md`, `docs/CONCEPTION_HISTORIQUE_ET_CONTROLES.md` (étude, aucun code).
 - Tests : `tests/test_chargeur_identites.py`, `tests/test_audit_identites.py`.
+
+## Enquête assemblage du 01/11/2026
+
+- `data/assemblage/equipes.json` n'est PAS une base de championnats : c'est le reflet du cache `cache_equipes_saison.json`, limité aux équipes des matchs cotés de la fenêtre J0 à J+3 (TTL 30 h, puis purge). Un championnat peut y être incomplet ou absent d'un run à l'autre.
+- Contrôle d'intégrité en lecture seule : `controle_assemblage.py` ; analyse, preuves et correctif proposé du chargeur : `docs/ENQUETE_ASSEMBLAGE.md`. Tests : `tests/test_controle_assemblage.py`.
