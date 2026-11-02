@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parent
 ALPHA_JOURNAL = ROOT / "data" / "alpha_serie" / "journal.jsonl"
 OMEGA_JOURNAL = ROOT / "data" / "omega" / "journal.jsonl"
 DC_JOURNAL = ROOT / "data" / "dc" / "journal.jsonl"
+GAMMA_JOURNAL = ROOT / "data" / "gamma" / "journal.jsonl"      # Gamma = Omega V3 depuis le 02/11/2026
 SANS_COTE_OK = {"multigoals", "multiscores"}
 
 
@@ -129,6 +130,27 @@ def paris_dc(journal: Path = DC_JOURNAL) -> list[dict]:
     return out
 
 
+def paris_gamma(journal: Path = GAMMA_JOURNAL) -> list[dict]:
+    """Moteur Gamma = Omega V3 (02/11/2026) : même règle (gel avant le coup d'envoi, match terminé, remboursés exclus), journal `data/gamma/journal.jsonl`."""
+    if not journal.exists():
+        return []
+    L = _lire(journal)
+    gels = gels_valides(L, lambda l: (l.get("fiche") or {}).get("coup_d_envoi_utc"))
+    res = {l["match_id"]: l for l in L if l.get("type") == "resultat"}
+    out = []
+    for mid, g in gels.items():
+        r, f = res.get(mid), g["fiche"]
+        if not r or not f.get("principal"):
+            continue
+        gag = {json.dumps(p["cle"]): p for p in r.get("paris") or []}
+        for rang, p in [("principal", f["principal"])] + [("autre", x) for x in f.get("autres") or []]:
+            q = gag.get(json.dumps(p["cle"]))
+            if q is not None and q.get("gagne") is not None:
+                out.append({"moteur": "gamma", "mid": mid, "jour": f["jour"], "cat": rang, "cle": p["cle"], "tete": rang == "principal",
+                            "cote": float(q["cote"]) if q.get("cote") else None, "gagne": bool(q["gagne"]), "sol": None})
+    return out
+
+
 def ajouter_solidite(alpha: list[dict], omega: list[dict]) -> None:
     """Solidité recalculée comme sur les pages (poids appris sur l'archive : légèrement avantagée, à dire dans tout rapport)."""
     from alpha_serie import solidite as SA, suivi as AS
@@ -176,7 +198,9 @@ def main() -> None:
     print(resume("ALPHA tous marchés affichés", al)); print(resume("ALPHA jouables (avec cote)", [x for x in al if x["cote"]]))
     print(resume("OMEGA tous paris", om)); print(resume("OMEGA pari principal", [x for x in om if x["cat"] == "principal"]))
     dc = paris_dc()                                                        # la Solidité n'existe pas pour DC : jamais de filtre
-    print(resume("DC tous paris", dc)); print(resume("DC pari principal", [x for x in dc if x["cat"] == "principal"]))
+    print(resume("DC (ancien Gamma) tous paris", dc)); print(resume("DC (ancien Gamma) pari principal", [x for x in dc if x["cat"] == "principal"]))
+    ga = paris_gamma()                                                     # Gamma = Omega V3 : pas de Solidité non plus
+    print(resume("GAMMA (Omega V3) tous paris", ga)); print(resume("GAMMA (Omega V3) pari principal", [x for x in ga if x["cat"] == "principal"]))
 
 
 if __name__ == "__main__":

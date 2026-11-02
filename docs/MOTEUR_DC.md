@@ -1,3 +1,5 @@
+> **REMPLACÉ le 02/11/2026** : le moteur Gamma est désormais Omega V3 (`docs/MOTEUR_OMEGA_V3.md`). Ce document et `moteur_dc/`, `data/dc/` sont conservés intacts comme historique.
+
 # Moteur DC = moteur Gamma (`moteur_dc/`, page `pronostics_gamma.html`) — version 2 (30/10/2026)
 
 Architecture de Patrick (5 modules reçus le 30/10/2026), ordre du 30/10/2026 : réintégrer les Modules 1, 1.5, 3 et 4 et brancher les paramètres du

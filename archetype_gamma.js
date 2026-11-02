@@ -1,5 +1,5 @@
-// Page Gamma (moteur DC : moteur_dc/) : affiche data/dc/pronostics.json (écrit par moteur_dc.suivi). Lecture seule, aucun calcul métier.
-// Même présentation que la page Omega (archetype_omega.js), adaptée aux données du moteur Gamma.
+// Page Gamma (moteur Omega V3 : moteur_omega_v3/, depuis le 02/11/2026) : affiche data/gamma/pronostics.json (écrit par moteur_omega_v3.suivi). Lecture seule, aucun calcul métier.
+// Même présentation que la page Omega (archetype_omega.js). Les fréquences affichées sont des FRÉQUENCES de scénarios, jamais des probabilités.
 "use strict";
 const GA_CLE_THEME = "archetype_theme_nuit";
 
@@ -48,6 +48,11 @@ function gaPhrase(cle, dom, ext) {
       reel: s === "plus" ? `${eq} marque au moins ${gaButs(Math.ceil(l))}` : (Math.floor(l) ? `${eq} marque au plus ${gaButs(Math.floor(l))}` : `${eq} ne marque pas`) };
   }
   if ((r = g.match(/^over_under_(\d+\.5)$/))) return { titre: `${s === "plus" ? "Plus" : "Moins"} de ${gaVirg(r[1])} buts`, reel: total(r[1], s) };
+  if ((r = g.match(/^over_under_(\d+)$/))) return { titre: `${s === "plus" ? "Plus" : "Moins"} de ${r[1]} buts (remboursé si exactement ${r[1]})` };
+  if (g === "handicap_0") return { titre: `${s === "domicile" ? dom : ext} gagne (remboursé si match nul)` };
+  if (g === "victoire_sans_encaisser_domicile") return { titre: `${dom} gagne sans encaisser` };
+  if (g === "victoire_sans_encaisser_exterieur") return { titre: `${ext} gagne sans encaisser` };
+  if (g === "score_exact") return { titre: s === "autre" ? "Un autre score (plus de 5 buts pour une équipe)" : `Score exact ${s.replace("-", " - ")}` };
   if ((r = g.match(/^handicap_(-?\d+\.5)$/))) {
     const h = s === "domicile" ? Number(r[1]) : -Number(r[1]), eq = s === "domicile" ? dom : ext;
     const phrase = h > 0 ? (h < 1 ? `${eq} ne perd pas` : `${eq} ne perd pas par ${gaButs(Math.ceil(h))} d'écart ou plus`)
@@ -69,58 +74,43 @@ function gaBadge(p) {
 }
 function gaMoy(v) { return Array.isArray(v) && v.length ? v.reduce((a, b) => a + b, 0) / v.length : NaN; }
 
-// « Pourquoi ce pari » : quelques paramètres du Module 1 des deux équipes (calculés en Python).
-function gaPourquoi(f) {
-  const e = f.equipes || {}, l = [];
-  const t = (x, nom) => x ? `${gaE(nom)} : ${x.position}e (${x.Pts} pts en ${x.J} matchs), forme ${gaFr(x.forme_ppm, 2)} pt par match, profil ${gaE(x.profil || "—")}` : "";
-  if (e.dom) l.push(t(e.dom, f.domicile));
-  if (e.ext) l.push(t(e.ext, f.exterieur));
-  return l.length ? `<div class="om-pourquoi">${l.map((x) => `<div>${x}</div>`).join("")}</div>` : "";
-}
-// Probabilité du modèle (Dixon-Coles du championnat entier) et avertissement Wilson (calculés en Python, moteur_dc/selecteur.py).
-function gaProba(p) {
-  const s = Number(p && p.p);
-  return Number.isFinite(s) ? `<small class="om-sol" style="--s:${Math.max(0, Math.min(100, Math.round(s * 100)))}">Probabilité <b>${Math.round(s * 100)} %</b></small>` : "";
-}
-function gaAlerte(p) {
-  return p && p.avertissement ? `<small class="om-alerte">Confiance réduite : le modèle sort de ce que montrent les matchs</small>` : "";
-}
-// Audit du 01/11/2026 : les deux populations de matchs comparables restent SÉPARÉES (jamais de « k sur n » additionné).
-// Les lignes gelées avant cette date n'ont qu'un k/n additionné : il n'est plus affiché.
-function gaPops(pr, f, court) {
-  if (!pr || !pr.dom || !pr.ext) return "";
-  const iv = (x) => (Array.isArray(x.wilson) ? ` (intervalle ${gaPct(x.wilson[0])} – ${gaPct(x.wilson[1])})` : "");
-  const dom = f ? gaE(f.domicile) : "Domicile", ext = f ? gaE(f.exterieur) : "Extérieur";
-  const t = `${dom} à domicile <b>${pr.dom.k} sur ${pr.dom.n}</b>${court ? "" : iv(pr.dom)} · ${ext} à l'extérieur <b>${pr.ext.k} sur ${pr.ext.n}</b>${court ? "" : iv(pr.ext)}`;
-  const e = pr.estimation;
-  return t + (e && !court ? `<br><small>Estimation combinée, indicative et non validée (pas une fréquence observée) : <b>${gaPct(e.p)}</b>, intervalle ${gaPct(e.ic[0])} – ${gaPct(e.ic[1])} (moyenne pondérée par la variance)</small>` : "");
-}
-// Espérance de gain selon le modèle : P × cote − 1 (information secondaire : ne filtre ni ne classe en production).
+// --- Omega V3 : fréquences, paliers de compatibilité, stabilité (spécification Omega V1 §5, §8, §10) ---
 function gaEv(p) { return p && p.ev != null && Number.isFinite(Number(p.ev)) ? `EV <b>${gaSigne(p.ev)}</b>` : ""; }
-// Preuve du pari : base du championnat, avantage (Edge), seuil du marché, EV, matchs comparables.
-function gaPreuve(p, f) {
+let GA_CLES = [];
+let GA_ORDRE = "";
+const GA_STATUTS = {
+  0: "aucun seuil calibré (jamais 70 % de réussite sur l'archive)", 1: "fréquence robuste sous le seuil du marché", 2: "score exact : jamais retenu",
+  3: "à surveiller : aucune cote disponible", 4: "à surveiller : cote trop basse", 5: "à surveiller : même événement qu'un pari retenu", 6: "retenu", 7: "non évalué",
+};
+function gaStatut(code) { return GA_STATUTS[code] || "—"; }
+function gaFreqPari(p, f) {
   if (!p) return "";
-  const pr = p.preuve || {}, l = [];
-  if (p.base != null) l.push(`Base du championnat <b>${gaPct(p.base)}</b> · avantage <b>${gaSigne(p.edge)}</b>`);
-  if (p.seuil != null) l.push(`Seuil de ce marché : <b>${gaPct(p.seuil)}</b>`);
-  if (p.ev != null) l.push(`Probabilité du modèle <b>${gaPct(p.p)}</b> × cote <b>${gaCote(p.cote)}</b> − 1 = ${gaEv(p)}`);
-  const pops = gaPops(pr, f, false);
-  if (pops) l.push(`Matchs comparables : ${pops}`);
-  return l.length ? `<div class="om-pond"><div class="om-pond-t">Preuve</div>${l.map((x) => `<div class="om-info">${x}</div>`).join("")}</div>` : "";
+  const nv = p.niveaux || {}, st = p.stabilite || {}, dv = p.diversite || {};
+  const pal = (nom, k) => {
+    const x = nv[k]; if (!x || !x.n) return `<tr><td>${nom}</td><td colspan="2">aucun scénario</td></tr>`;
+    return `<tr><td>${nom}</td><td>${x.k} sur ${x.n}</td><td>${gaPct(x.f)}${x.faible ? ' <small>(trop peu représenté)</small>' : ""}</td></tr>`;
+  };
+  const l = [];
+  l.push(`<div class="om-info">Fréquence brute : <b>${p.k} scénarios sur ${p.n}</b> (${gaPct(p.f)}). Une fréquence de scénarios n'est pas une probabilité.</div>`);
+  l.push(`<div class="om-info">Fréquence robuste (une observation retirée à la fois) : <b>${gaPct(p.g)}</b> (de ${gaPct(st.f_min)} à ${gaPct(st.f_max)}).</div>`);
+  if (p.seuil != null) l.push(`<div class="om-info">Seuil de ce marché appris sur l'archive : <b>${gaPct(p.seuil)}</b>${p.p_calibree != null ? ` · réussite réelle observée à ce niveau : <b>${gaPct(p.p_calibree)}</b>` : ""}</div>`);
+  if (p.cote) l.push(`<div class="om-info">Cote <b>${gaCote(p.cote)}</b> = probabilité implicite ${gaPct(p.p_implicite)}${p.p_implicite_corrigee != null ? ` (${gaPct(p.p_implicite_corrigee)} marge retirée, marge ${gaPct1(p.marge)})` : ""}${p.ev != null ? ` · ${gaEv(p)} <small>(information)</small>` : ""}</div>`);
+  l.push(`<table class="om-table"><tr><th>Palier défensif</th><th>Scénarios</th><th>Fréquence</th></tr>` +
+    `<tr><td>Brut (tous)</td><td>${p.k} sur ${p.n}</td><td>${gaPct(p.f)}</td></tr>${pal("Strict", "strict")}${pal("Intermédiaire", "intermediaire")}${pal("Élargi", "elargi")}</table>`);
+  if (dv.configurations) l.push(`<div class="om-info">Configurations offensives favorables : ${dv.configurations_favorables} sur ${dv.configurations} · plus grande part portée par une seule observation : ${gaPct(dv.part_max_observation)}</div>`);
+  if (p.contradiction && p.contradiction.length) l.push(`<div class="om-info"><b>Contradiction</b> : le palier ${p.contradiction.map(gaE).join(", ")} va dans l'autre sens que le brut (passe de l'autre côté de 50 %).</div>`);
+  return `<div class="om-pond"><div class="om-pond-t">Fréquences et stabilité</div>${l.join("")}</div>`;
 }
-// Détail compact d'un autre pari validé : base, avantage, seuil du marché, matchs comparables et intervalle de Wilson.
-function gaPreuveCourte(p, f) {
-  const pr = p.preuve || {}, l = [];
-  if (p.base != null) l.push(`base ${gaPct(p.base)} · avantage ${gaSigne(p.edge)}`);
+function gaFreqCourte(p) {
+  const l = [`fréquence robuste ${gaPct(p.g)}`];
+  if (p.p_calibree != null) l.push(`réussite observée ${gaPct(p.p_calibree)}`);
   if (p.seuil != null) l.push(`seuil ${gaPct(p.seuil)}`);
-  if (p.ev != null) l.push(gaEv(p));
-  if (pr.dom && pr.ext) l.push(`domicile ${pr.dom.k}/${pr.dom.n} · extérieur ${pr.ext.k}/${pr.ext.n}`);
-  return l.length ? `<small class="om-sous">${l.join(" · ")}</small>` : "";
+  return `<small class="om-sous">${l.join(" · ")}</small>`;
 }
 function gaLigne(p, f, principal) {
   const ph = gaPhrase(p.cle, f.domicile, f.exterieur);
   return `<div class="om-ligne ${principal ? "om-principal" : ""}"><span>${gaE(ph.titre)}${ph.reel ? `<small class="om-sous">${gaE(ph.reel)}</small>` : ""}` +
-    gaProba(p) + gaAlerte(p) + (principal ? "" : gaPreuveCourte(p, f)) + `</span>` +
+    (principal ? `<small class="om-sol" style="--s:${Math.round((Number(p.g) || 0) * 100)}">Fréquence robuste <b>${gaPct(p.g)}</b></small>` : gaFreqCourte(p)) + `</span>` +
     `<span><span class="om-cote">Cote ${gaCote(p.cote)}</span> ${gaBadge(p)}</span></div>`;
 }
 // Derniers matchs des deux équipes (à domicile pour l'une, à l'extérieur pour l'autre : ceux qu'utilise le modèle) : date, adversaire, score, résultat.
@@ -152,31 +142,54 @@ function gaDerniers(f) {
   return `<div class="om-bloc"><div class="om-bloc-titre">Derniers matchs</div><div class="om-dm-grille">` +
     gaEquipeDerniers(f.domicile, "À domicile", d.dom, f.n_domicile, true) + gaEquipeDerniers(f.exterieur, "À l'extérieur", d.ext, f.n_exterieur, false) + `</div></div>`;
 }
-// Audit du 01/11/2026 : « Détail du calcul » repliable. Décomposition exacte des buts attendus, gelée avec le pronostic avant le coup d'envoi.
-function gaDecomposition(f) {
-  const d = f.decomposition;
-  if (!d || !d.lambda_dom || !d.lambda_ext) {
-    return `<details class="ax-calcul"><summary>Détail du calcul</summary><p class="om-info">Décomposition non gelée pour ce pronostic (gelé avant le 01/11/2026).</p></details>`;
-  }
-  const x = (v) => gaFr(v, 3), a = d.lambda_dom, b = d.lambda_ext, m = d.moyennes_ligue || {}, sh = d.shrinkage || {}, ef = d.effets_modules || {};
-  const dom = gaE(f.domicile), ext = gaE(f.exterieur);
-  const ligne = (t, v) => `<tr><td>${t}</td><td>${v}</td></tr>`;
-  const bloc = (nom, k, lignes, val) => `<table class="om-table"><tr><th colspan="2">Buts attendus de ${nom}</th></tr>` + lignes.map(([t, v]) => ligne(t, `× ${x(v)}`)).join("") +
-    `<tr><td><b>= ${nom}</b></td><td><b>${x(val)}</b></td></tr></table>`;
-  return `<details class="ax-calcul"><summary>Détail du calcul</summary><div class="ax-details-corps">` +
-    `<p class="om-info">Chaque facteur multiplie le niveau de buts du championnat ; 1,000 = la moyenne du championnat.</p>` +
-    bloc(dom, "dom", [["Niveau de buts du championnat", a.niveau_ligue], ["Avantage du terrain", a.avantage_terrain], [`Force d'attaque de ${dom}`, a.attaque_dom],
-      [`Faiblesse défensive de ${ext}`, a.faiblesse_defensive_ext]], a.valeur) +
-    bloc(ext, "ext", [["Niveau de buts du championnat", b.niveau_ligue], [`Force d'attaque de ${ext}`, b.attaque_ext], [`Faiblesse défensive de ${dom}`, b.faiblesse_defensive_dom]], b.valeur) +
-    `<div class="om-info">Moyenne réelle du championnat : <b>${x(m.buts_dom)}</b> buts à domicile, <b>${x(m.buts_ext)}</b> à l'extérieur (${m.n_matchs} matchs avant ce jour).</div>` +
-    `<div class="om-info">Lissage : attaque et défense sont tirées vers la moyenne (rigidité σ = ${gaFr(sh.sigma, 2)}) ; matchs de chaque équipe dans le calcul : ${dom} ${sh.n_matchs_equipe_dom}, ${ext} ${sh.n_matchs_equipe_ext}. ` +
-      `Matchs au lieu du pari : ${f.n_domicile} et ${f.n_exterieur} (minimum 4). Poids décroissant avec l'âge des matchs (xi = ${gaFr(sh.xi, 3)}).</div>` +
-    `<div class="om-info">Effets des paramètres d'équipe sur les buts : ${dom} × ${x(ef.dom)}, ${ext} × ${x(ef.ext)} ; corrélation des petits scores : ${gaFr(ef.rho_final, 3)}.</div>` +
-    `</div></details>`;
+// Données utilisées (§16.A) : les quatre séquences, rendues telles que le moteur les lit (du plus ancien au plus récent).
+function gaSequences(f) {
+  const s = f.donnees && f.donnees.sequences; if (!s) return "";
+  const fm = (a) => `[${(a || []).join(", ")}]`;
+  return `<div class="om-bloc"><div class="om-bloc-titre">Les quatre séquences (${(s.att_a || []).length} matchs au même lieu chacune)</div>` +
+    `<div class="om-info">Attaque ${gaE(f.domicile)} (à domicile) = <b>${fm(s.att_a)}</b> · Défense = <b>${fm(s.def_a)}</b></div>` +
+    `<div class="om-info">Attaque ${gaE(f.exterieur)} (à l'extérieur) = <b>${fm(s.att_b)}</b> · Défense = <b>${fm(s.def_b)}</b></div>` +
+    `<div class="om-info"><small>Source : ${gaE(f.donnees.source || "")}. Les scénarios sont des combinaisons de ces observations, pas des matchs indépendants.</small></div></div>`;
 }
-function gaScores(f) {
-  const sc = (f.scores_probables || []).map((x) => `${gaE(x.score)} (${gaPct(x.p)})`).join(" · ");
-  return sc ? `<div class="om-bloc"><div class="om-bloc-titre">Scores les plus probables</div><div>${sc}</div></div>` : "";
+// Exploration brute (§16.B) et paliers (§16.C).
+function gaExploration(f) {
+  const x = f.exploration; if (!x) return "";
+  const nv = f.niveaux || {};
+  const lignes = (x.top_scores || []).map((s) => `<tr><td>${gaE(s.score.replace("-", " - "))}</td><td>${s.occurrences}</td><td>${gaPct1(s.f)}</td>` +
+    ["strict", "intermediaire", "elargi"].map((k) => `<td>${s.par_niveau && s.par_niveau[k] != null ? gaPct1(s.par_niveau[k]) : "—"}</td>`).join("") + `</tr>`).join("");
+  const is = x.issues || {};
+  const part = (k, nom) => nv[k] ? `${nom} <b>${nv[k].n}</b> (${gaPct(nv[k].part)})${nv[k].faible ? " <small>trop peu représenté</small>" : ""}` : "";
+  return `<div class="om-bloc"><div class="om-bloc-titre">Exploration : ${x.combinaisons} scénarios, ${x.scores_distincts} scores distincts</div>` +
+    `<div class="om-info">Victoire de ${gaE(f.domicile)} <b>${is.A || 0}</b> · nul <b>${is.N || 0}</b> · victoire de ${gaE(f.exterieur)} <b>${is.B || 0}</b> (sur ${x.combinaisons})</div>` +
+    `<div class="om-info">Compatibilité défensive : ${[part("strict", "stricte"), part("intermediaire", "intermédiaire"), part("elargi", "élargie"), part("incompatible", "incompatible")].join(" · ")}</div>` +
+    `<table class="om-table"><tr><th>Score</th><th>Occ.</th><th>Brut</th><th>Strict</th><th>Interm.</th><th>Élargi</th></tr>${lignes}</table>` +
+    `<div class="om-info"><small>Les trois scores les plus fréquents pèsent ${gaPct(x.concentration_top3)} de la distribution. Un score fréquent n'est jamais un pronostic retenu.</small></div></div>`;
+}
+function gaConclusion(f) {
+  const c = f.conclusion; if (!c || !c.length) return "";
+  return `<div class="om-bloc"><div class="om-bloc-titre">Conclusion</div>${c.map((x) => `<div class="om-info">${gaE(x).replace(/·/g, "–")}</div>`).join("")}</div>`;
+}
+function gaSurveiller(f) {
+  const l = f.a_surveiller || []; if (!l.length) return "";
+  return `<div class="om-autres"><div class="om-autres-titre">À surveiller (seuil atteint, pari non jouable)</div>` +
+    l.slice(0, 12).map((x) => `<div class="om-info">${gaE(gaPhrase(x.cle, f.domicile, f.exterieur).titre)} — ${gaE(x.raison)}</div>`).join("") + (l.length > 12 ? `<div class="om-info">… et ${l.length - 12} autres.</div>` : "") + `</div>`;
+}
+// Tous les marchés explorés (§16.D) : aucun marché n'est caché, rejetés et raison comprise. Lignes positionnelles : voir moteur_omega_v3/suivi.py (_compact).
+function gaTousMarches(f) {
+  const t = f.tous_marches; if (!t || !t.length) return "";
+  if (f.ordre_marches && GA_ORDRE && f.ordre_marches !== GA_ORDRE) return `<details class="ax-calcul"><summary>Tous les marchés explorés</summary><p class="om-info">Liste des marchés d'une autre version du moteur : affichage indisponible pour ce pronostic.</p></details>`;
+  const nv = f.niveaux || {}, n = f.exploration ? f.exploration.combinaisons : 0;
+  const ordre = t.map((r, i) => i).sort((a, b) => (t[b][5] - t[a][5]) || (t[b][0] - t[a][0]) || (a - b));
+  const corps = ordre.map((i) => {
+    const r = t[i], c = GA_CLES[i]; if (!c) return "";
+    const pc = (k, tot) => tot ? gaPct(k / tot) : "—";
+    const st = r[10] === 1 && r[12] != null ? `fréquence robuste ${gaPct(r[5])} sous le seuil ${gaPct(r[12])}` : gaStatut(r[10]);
+    return `<tr><td>${gaE(gaPhrase(c, f.domicile, f.exterieur).titre)}</td><td>${pc(r[0], n)}</td><td>${pc(r[2], (nv.strict || {}).n)}</td><td>${pc(r[3], (nv.intermediaire || {}).n)}</td><td>${pc(r[4], (nv.elargi || {}).n)}</td>` +
+      `<td>${gaPct(r[6])}–${gaPct(r[7])}${r[9] ? " ⚠" : ""}</td><td>${r[11] ? gaCote(r[11]) : "—"}</td><td>${gaE(st)}</td></tr>`;
+  }).join("");
+  return `<details class="ax-calcul"><summary>Tous les marchés explorés (${t.length})</summary><div class="ax-details-corps" style="overflow-x:auto">` +
+    `<p class="om-info">Fréquences de scénarios, triées par fréquence robuste. ⚠ = le marché disparaît si on retire une seule observation.</p>` +
+    `<table class="om-table"><tr><th>Marché</th><th>Brut</th><th>Strict</th><th>Interm.</th><th>Élargi</th><th>Stabilité</th><th>Cote</th><th>Statut</th></tr>${corps}</table></div></details>`;
 }
 // Phrase vraie, propre au type de pari : simple décompte sur les derniers matchs affichés (aucune estimation).
 const gaN = (liste, test) => liste.filter(test).length;
@@ -240,15 +253,9 @@ function gaPhrasePari(p, f) {
   }
   return "";
 }
-// Cercle du pourcentage (le plus prudent des deux : modèle ou cote) + la phrase propre au type de pari.
 function gaPourquoiCourt(p, f) {
-  const anneau = "";                                                // 28/10/2026 (Patrick) : le pourcentage du modèle dans le cercle ne s'affiche plus ; seule la Solidité reste
   const phrase = gaPhrasePari(p, f);
-  // Buts attendus des deux équipes (c'est ce chiffre, croisé avec la défense adverse, qui décide les paris sur les buts) : juste sous le pari, plus dans les détails.
-  const ba = f.buts_attendus || {};
-  const attendus = ba.dom != null && ba.ext != null && Number.isFinite(Number(ba.dom)) && Number.isFinite(Number(ba.ext))
-    ? `<span class="om-attendus">Buts attendus : <b>${gaE(f.domicile)} ${gaFr(ba.dom)}</b> – <b>${gaFr(ba.ext)} ${gaE(f.exterieur)}</b></span>` : "";
-  return anneau || phrase || attendus ? `<div class="om-pq">${anneau}<p class="om-pq-txt">${attendus}${phrase}</p></div>` : "";
+  return phrase ? `<div class="om-pq"><p class="om-pq-txt">${phrase}</p></div>` : "";
 }
 function gaCarte(f) {
   const h = gaHoraire(f.coup_d_envoi_utc), p = f.principal || {};
@@ -267,13 +274,12 @@ function gaCarte(f) {
     `<div class="om-corps">` +
       (score ? `<div class="om-info">Score final <strong>${gaE(score)}</strong></div>` : "") +
       `<div class="om-info"><b>Pari proposé</b></div>` + gaLigne(p, f, true) +
-      gaPourquoiCourt(p, f) + gaPreuve(p, f) +
+      gaPourquoiCourt(p, f) + gaFreqPari(p, f) +
     `</div>` +
     `<details class="ax-details" open><summary class="ax-summary-cache" tabindex="-1">Détails</summary><div class="ax-details-corps">` +
-      gaPourquoi(f) +
-      `<div class="om-autres"><div class="om-autres-titre">Autres paris validés (du plus probable au moins probable)</div>` +
-        (autres.length ? autres.map((x) => gaLigne(x, f, false)).join("") : `<div class="om-info">Aucun autre pari ne remplit les règles.</div>`) + `</div>` +
-      gaDerniers(f) + gaScores(f) + gaDecomposition(f) +
+      `<div class="om-autres"><div class="om-autres-titre">Autres paris retenus (du plus au moins fiable)</div>` +
+        (autres.length ? autres.map((x) => gaLigne(x, f, false)).join("") : `<div class="om-info">Aucun autre marché ne remplit les règles.</div>`) + `</div>` +
+      gaSurveiller(f) + gaSequences(f) + gaDerniers(f) + gaExploration(f) + gaConclusion(f) + gaTousMarches(f) +
     `</div></details>`;
   section.addEventListener("click", (e) => {      // carte repliée au départ ; un toucher la déplie ou la replie
     if (e.target.closest("button, a, summary")) return;
@@ -296,21 +302,22 @@ function gaListe(id, liste, vide) {
 }
 function gaBilan(b) {
   const ligne = (nom, s) => s && s.regles > 0
-    ? `<tr><td>${nom}</td><td>${s.regles}</td><td>${gaPct1(s.reussite)}</td><td>${gaPct1(s.annonce)}</td><td>${gaCote(s.cote_moyenne)}</td></tr>` : "";
+    ? `<tr><td>${nom}</td><td>${s.regles}</td><td>${gaPct1(s.reussite)}</td><td>${s.annonce != null ? gaPct1(s.annonce) : "—"}</td><td>${gaCote(s.cote_moyenne)}</td></tr>` : "";
   const corps = ligne("Principal", b.principal) + ligne("Autres", b.autres);
   if (!corps) return `<p class="om-info" style="margin:8px 14px">Aucun pari réglé pour l'instant : le tableau « annoncé contre réel » apparaîtra avec les premiers résultats.</p>`;
-  return `<table class="om-table"><tr><th>Pari</th><th>Réglés</th><th>Réussite réelle</th><th>Annoncée</th><th>Cote moy.</th></tr>${corps}</table>`;
+  return `<table class="om-table"><tr><th>Pari</th><th>Réglés</th><th>Réussite réelle</th><th>Réussite observée à l'apprentissage</th><th>Cote moy.</th></tr>${corps}</table>`;
 }
 function gaAffiche(d) {
+  GA_CLES = d.cles_marches || []; GA_ORDRE = d.ordre_marches || "";
   document.getElementById("om-bilan").innerHTML = gaBilan(d.bilan || {});
   gaListe("om-avenir", d.a_venir, "Aucun pari à venir pour l'instant.");
   const sans = Number(d.sans_pronostic) || 0;
-  document.getElementById("om-sans").textContent = sans ? `${sans} autre${sans > 1 ? "s" : ""} match${sans > 1 ? "s" : ""} analysé${sans > 1 ? "s" : ""} sans pari : aucun marché ne remplit les règles (on ne force jamais).` : "";
+  document.getElementById("om-sans").textContent = sans ? `${sans} autre${sans > 1 ? "s" : ""} match${sans > 1 ? "s" : ""} analysé${sans > 1 ? "s" : ""} sans pari : aucun marché ne remplit les règles (le moteur ne force jamais une sélection).` : "";
   gaListe("om-encours", d.en_cours, "Aucun match en cours.");
   gaListe("om-regles", d.reglees, "Aucun pari réglé pour l'instant.");
   const g = d.derniere_analyse || d.genere_le ? new Date(d.derniere_analyse || d.genere_le) : null;
   document.getElementById("maj").textContent = g && !Number.isNaN(g.getTime())
-    ? `Dernière analyse du moteur Gamma : ${g.toLocaleDateString("fr-FR")} à ${g.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}` : "";
+    ? `Dernière analyse du moteur Gamma (Omega V3) : ${g.toLocaleDateString("fr-FR")} à ${g.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}` : "";
 }
 function gaTheme() {
   const bouton = document.getElementById("ax-bouton-theme"); if (!bouton) return;
@@ -330,9 +337,9 @@ function gaTheme() {
 }
 gaTheme();
 if (document.getElementById("om-avenir")) {
-  fetch(`data/dc/pronostics.json?_=${Date.now()}`)
+  fetch(`data/gamma/pronostics.json?_=${Date.now()}`)
     .then((r) => { if (!r.ok) throw new Error(`données gamma introuvables (${r.status}) : le moteur n'a pas encore tourné`); return r.json(); })
     .then(gaAffiche)
     .catch((e) => { document.getElementById("maj").textContent = "Erreur de chargement : " + e.message; console.error(e); });
 }
-if (typeof module !== "undefined") module.exports = { gaPhrase, gaPreuve, gaCarte, gaPops, gaDecomposition, gaEv };
+if (typeof module !== "undefined") module.exports = { gaPhrase, gaCarte, gaEv, gaFreqPari, gaStatut, gaSequences, gaExploration, gaTousMarches, gaAffiche, gaSurveiller };
