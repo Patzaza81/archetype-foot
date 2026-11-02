@@ -28,28 +28,32 @@ SORTIE = ROOT / "docs" / "omega_v3_poisson.json"
 MODELES = ("C", "FORCE", "MIXTE")
 
 
-def forces_championnat(matchs: list[dict], dom: str, ext: str, jour: str, minimum: int = D.MIN_MATCHS) -> dict[str, float]:
+def forces_championnat(matchs: list[dict], dom: str, ext: str, jour: str, minimum: int = D.MIN_MATCHS, poids_recent: float = 1.0, n_recent: int = 3) -> dict[str, float]:
     """Espérances de buts (domicile, extérieur) à partir de tous les matchs du championnat STRICTEMENT avant `jour` (le match lui-même exclu).
+    `poids_recent` : poids des `n_recent` derniers matchs de chaque équipe (1 = tous égaux) : la forme est une PONDÉRATION, jamais un filtre.
     Lève ValueError si une équipe a moins de `minimum` matchs au total ou si le championnat n'a aucun match."""
+    if poids_recent <= 0:
+        raise ValueError("poids de la forme invalide")
     pris = [m for m in matchs if m["date"] < jour and not D._est_le_match(m, dom, ext, jour) and isinstance(m["h"], int) and isinstance(m["a"], int)]
     if not pris:
         raise ValueError("championnat sans match antérieur")
     moy_dom = sum(m["h"] for m in pris) / len(pris)
     moy_ext = sum(m["a"] for m in pris) / len(pris)
     moy = (moy_dom + moy_ext) / 2
-    def bilan(e: str) -> tuple[float, float, int]:
-        pour = contre = n = 0
-        for m in pris:
-            if m["dom"] == e:
-                pour, contre, n = pour + m["h"], contre + m["a"], n + 1
-            elif m["ext"] == e:
-                pour, contre, n = pour + m["a"], contre + m["h"], n + 1
-        return pour, contre, n
-    pa, ca, na = bilan(dom)
-    pb, cb, nb = bilan(ext)
+    def bilan(e: str) -> tuple[float, float, int, float]:
+        """Buts marqués et encaissés par match de l'équipe, moyennes pondérées (les `n_recent` derniers matchs pèsent `poids_recent`) ; n = nombre de matchs."""
+        jeu = sorted((m for m in pris if e in (m["dom"], m["ext"])), key=lambda m: (m["date"], m["dom"], m["ext"]))
+        pour = contre = tot = 0.0
+        for q, m in enumerate(jeu):
+            w = poids_recent if q >= len(jeu) - n_recent else 1.0
+            p_, c_ = (m["h"], m["a"]) if m["dom"] == e else (m["a"], m["h"])
+            pour, contre, tot = pour + w * p_, contre + w * c_, tot + w
+        return pour, contre, len(jeu), tot
+    pa, ca, na, ta = bilan(dom)
+    pb, cb, nb, tb = bilan(ext)
     if na < minimum or nb < minimum:
         raise ValueError(f"données insuffisantes : {na} et {nb} matchs au total (il en faut {minimum})")
-    att_a, def_a, att_b, def_b = (pa / na) / moy, (ca / na) / moy, (pb / nb) / moy, (cb / nb) / moy
+    att_a, def_a, att_b, def_b = (pa / ta) / moy, (ca / ta) / moy, (pb / tb) / moy, (cb / tb) / moy
     return {"lam_dom": moy_dom * att_a * def_b, "lam_ext": moy_ext * att_b * def_a, "n_a": na, "n_b": nb, "moy_dom": moy_dom, "moy_ext": moy_ext}
 
 
