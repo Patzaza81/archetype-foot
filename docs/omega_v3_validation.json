@@ -25,129 +25,133 @@
   "probabilite": {
    "observations": 65087,
    "frequence_brute_prise_pour_probabilite": {
-    "brier": 0.1159,
-    "log_loss": 0.485
+    "brier": 0.1086,
+    "log_loss": 0.4055
    },
    "reussite_lissee_apprise": {
-    "brier": 0.1112,
-    "log_loss": 0.363
+    "brier": 0.107,
+    "log_loss": 0.3482
    },
    "calibration_reserve": [
     {
      "tranche": "0.0-0.1",
-     "n": 34956,
-     "g_moyen": 0.002,
-     "reussite": 0.0697
+     "n": 33036,
+     "g_moyen": 0.0077,
+     "reussite": 0.056
     },
     {
      "tranche": "0.1-0.2",
-     "n": 4320,
-     "g_moyen": 0.1208,
-     "reussite": 0.2484
+     "n": 5117,
+     "g_moyen": 0.1386,
+     "reussite": 0.2175
     },
     {
      "tranche": "0.2-0.3",
-     "n": 4199,
-     "g_moyen": 0.2225,
-     "reussite": 0.3332
+     "n": 4364,
+     "g_moyen": 0.2379,
+     "reussite": 0.3178
     },
     {
      "tranche": "0.3-0.4",
-     "n": 2269,
-     "g_moyen": 0.3176,
-     "reussite": 0.3936
+     "n": 2982,
+     "g_moyen": 0.3384,
+     "reussite": 0.3967
     },
     {
      "tranche": "0.4-0.5",
-     "n": 2334,
-     "g_moyen": 0.4173,
-     "reussite": 0.4717
+     "n": 2560,
+     "g_moyen": 0.4351,
+     "reussite": 0.484
     },
     {
      "tranche": "0.5-0.6",
-     "n": 2314,
-     "g_moyen": 0.5146,
-     "reussite": 0.5432
+     "n": 2499,
+     "g_moyen": 0.5342,
+     "reussite": 0.539
     },
     {
      "tranche": "0.6-0.7",
-     "n": 1893,
-     "g_moyen": 0.6197,
-     "reussite": 0.626
+     "n": 2127,
+     "g_moyen": 0.6379,
+     "reussite": 0.6432
     },
     {
      "tranche": "0.7-0.8",
-     "n": 2351,
-     "g_moyen": 0.7339,
-     "reussite": 0.6661
+     "n": 2084,
+     "g_moyen": 0.7416,
+     "reussite": 0.7246
     },
     {
      "tranche": "0.8-0.9",
-     "n": 1274,
-     "g_moyen": 0.8207,
-     "reussite": 0.7818
+     "n": 1525,
+     "g_moyen": 0.8341,
+     "reussite": 0.7921
     },
     {
      "tranche": "0.9-1.0",
-     "n": 9177,
-     "g_moyen": 0.9908,
-     "reussite": 0.9608
+     "n": 8793,
+     "g_moyen": 0.9897,
+     "reussite": 0.9691
     }
    ]
   },
   "selection_reserve": {
    "matchs_analyses": 171,
-   "matchs_avec_pari": 136,
+   "matchs_avec_pari": 147,
    "tous_paris": {
-    "paris": 269,
-    "reussite": 0.7175,
-    "annonce_moyenne": 0.7573,
-    "cote_moyenne": 1.352
+    "paris": 306,
+    "reussite": 0.7059,
+    "annonce_moyenne": 0.7408,
+    "cote_moyenne": 1.357
    },
    "paris_principaux": {
-    "paris": 136,
-    "reussite": 0.7353
+    "paris": 147,
+    "reussite": 0.7075
    },
    "par_marche": {
     "cages_inviolees_exterieur|non": {
-     "paris": 8,
-     "reussite": 0.875
+     "paris": 32,
+     "reussite": 0.6562
     },
     "double_chance|12": {
-     "paris": 110,
-     "reussite": 0.7
+     "paris": 112,
+     "reussite": 0.6964
     },
     "double_chance|1N": {
-     "paris": 15,
-     "reussite": 0.5333
+     "paris": 16,
+     "reussite": 0.625
     },
     "handicap_-1.5|exterieur": {
-     "paris": 15,
-     "reussite": 0.7333
+     "paris": 12,
+     "reussite": 0.5833
     },
     "handicap_1.5|domicile": {
-     "paris": 16,
-     "reussite": 0.8125
+     "paris": 17,
+     "reussite": 0.7647
     },
-    "handicap_3issues_1|1": {
-     "paris": 4,
-     "reussite": 0.75
+    "handicap_3issues_-2|2": {
+     "paris": 16,
+     "reussite": 0.625
     },
     "handicap_3issues_2|1": {
      "paris": 1,
      "reussite": 1.0
     },
     "over_under_1.5|plus": {
-     "paris": 52,
-     "reussite": 0.7885
+     "paris": 49,
+     "reussite": 0.7755
     },
     "over_under_3.5|moins": {
-     "paris": 22,
-     "reussite": 0.7727
+     "paris": 15,
+     "reussite": 0.8
+    },
+    "over_under_4.5|moins": {
+     "paris": 21,
+     "reussite": 0.7143
     },
     "over_under_domicile_0.5|plus": {
-     "paris": 26,
-     "reussite": 0.5769
+     "paris": 15,
+     "reussite": 0.7333
     }
    }
   }
@@ -166,9 +170,7 @@
    "predictions": 520
   },
   "double_chance|1N": {
-   "seuil": 0.85,
-   "reussite": 0.7333,
-   "n": 45,
+   "seuil": null,
    "predictions": 334
   },
   "double_chance|N2": {
@@ -177,8 +179,8 @@
   },
   "double_chance|12": {
    "seuil": 0.8,
-   "reussite": 0.7733,
-   "n": 75,
+   "reussite": 0.75,
+   "n": 52,
    "predictions": 364
   },
   "over_under_0.5|plus": {
@@ -190,9 +192,9 @@
    "predictions": 339
   },
   "over_under_1.5|plus": {
-   "seuil": 0.55,
-   "reussite": 0.773,
-   "n": 141,
+   "seuil": 0.5,
+   "reussite": 0.7564,
+   "n": 156,
    "predictions": 196
   },
   "over_under_1.5|moins": {
@@ -213,8 +215,8 @@
   },
   "over_under_3.5|moins": {
    "seuil": 0.85,
-   "reussite": 0.8169,
-   "n": 71,
+   "reussite": 0.8261,
+   "n": 46,
    "predictions": 409
   },
   "over_under_4.5|plus": {
@@ -222,9 +224,7 @@
    "predictions": 503
   },
   "over_under_4.5|moins": {
-   "seuil": 0.55,
-   "reussite": 0.7627,
-   "n": 59,
+   "seuil": null,
    "predictions": 83
   },
   "over_under_5.5|plus": {
@@ -361,7 +361,7 @@
   },
   "over_under_domicile_0.5|plus": {
    "seuil": 0.5,
-   "reussite": 0.7157,
+   "reussite": 0.7059,
    "n": 102,
    "predictions": 111
   },
@@ -518,9 +518,9 @@
    "predictions": 376
   },
   "cages_inviolees_exterieur|non": {
-   "seuil": 0.5,
-   "reussite": 0.7258,
-   "n": 124,
+   "seuil": 0.55,
+   "reussite": 0.7282,
+   "n": 103,
    "predictions": 133
   },
   "victoire_sans_encaisser_domicile|oui": {
@@ -584,7 +584,9 @@
    "predictions": 183
   },
   "handicap_-2.5|exterieur": {
-   "seuil": null,
+   "seuil": 0.65,
+   "reussite": 0.7333,
+   "n": 30,
    "predictions": 40
   },
   "handicap_-1.5|domicile": {
@@ -592,9 +594,7 @@
    "predictions": 445
   },
   "handicap_-1.5|exterieur": {
-   "seuil": 0.8,
-   "reussite": 0.766,
-   "n": 47,
+   "seuil": null,
    "predictions": 206
   },
   "handicap_-0.5|domicile": {
@@ -614,7 +614,7 @@
    "predictions": 472
   },
   "handicap_1.5|domicile": {
-   "seuil": 0.5,
+   "seuil": 0.55,
    "reussite": 0.7736,
    "n": 53,
    "predictions": 58
@@ -836,9 +836,9 @@
    "predictions": 178
   },
   "dc_total_4.5|1N|moins": {
-   "seuil": 0.65,
-   "reussite": 0.7609,
-   "n": 46,
+   "seuil": 0.7,
+   "reussite": 0.7419,
+   "n": 31,
    "predictions": 172
   },
   "dc_total_4.5|N2|plus": {
@@ -1434,9 +1434,9 @@
    "predictions": 438
   },
   "handicap_3issues_-2|2": {
-   "seuil": 0.8,
-   "reussite": 0.7907,
-   "n": 43,
+   "seuil": 0.75,
+   "reussite": 0.7222,
+   "n": 54,
    "predictions": 195
   },
   "handicap_3issues_-1|1": {
@@ -1453,8 +1453,8 @@
   },
   "handicap_3issues_1|1": {
    "seuil": 0.8,
-   "reussite": 0.75,
-   "n": 56,
+   "reussite": 0.7442,
+   "n": 43,
    "predictions": 302
   },
   "handicap_3issues_1|X": {
@@ -1466,7 +1466,7 @@
    "predictions": 490
   },
   "handicap_3issues_2|1": {
-   "seuil": 0.5,
+   "seuil": 0.55,
    "reussite": 0.7755,
    "n": 49,
    "predictions": 55

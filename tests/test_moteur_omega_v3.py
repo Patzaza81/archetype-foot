@@ -11,6 +11,7 @@ import re
 from datetime import datetime, timezone
 from pathlib import Path
 
+import numpy as np
 import pytest
 
 from moteur_omega_v3 import calibrage as K, coeur as C, donnees as D, marches as M, suivi as S
@@ -340,7 +341,7 @@ def test_geler_ajout_seul_dernier_gel_avant_le_coup_denvoi_et_regles_une_fois(tm
     lignes = [json.loads(x) for x in texte.splitlines()]
     assert S.derniers_pronostics(lignes)["m1"]["fiche"]["principal"] is None
     f = lignes[0]["fiche"]
-    assert f["statut"] == "analyse" and f["exploration"]["combinaisons"] == 625 and len(f["tous_marches"]) == len(M.CLES) and f["ordre_marches"] == S.ORDRE
+    assert f["statut"] == "analyse" and f["exploration"]["combinaisons"] == len(f["donnees"]["sequences"]["att_a"]) ** 2 * len(f["donnees"]["sequences"]["att_b"]) ** 2 and len(f["tous_marches"]) == len(M.CLES) and f["ordre_marches"] == S.ORDRE
     assert f["donnees"]["sequences"]["att_a"] and f["verifications"]["total"] == f["verifications"]["reussies"]
     # résultats : une seule ligne par match, jamais modifiée
     termine = [{**m, "h": 2, "a": 0}]
@@ -619,3 +620,56 @@ def test_bilan_reel_lit_le_journal_gamma_gel_avant_le_coup_d_envoi_remboursement
     p = B.paris_gamma(j)
     assert len(p) == 1 and p[0]["moteur"] == "gamma" and p[0]["mid"] == "a" and p[0]["gagne"] is True and p[0]["tete"] is True       # remboursement exclu, gel tardif ignoré, sans résultat ignoré
     assert B.paris_gamma(tmp_path / "absent.jsonl") == []
+
+
+# --- profondeur variable (02/11/2026) : calcul sans énumération = calcul par énumération -------------------------------------
+import random as _random
+
+
+def _seqs(na, nb, graine):
+    r = _random.Random(graine)
+    f = lambda n: [r.choice([0, 1, 1, 2, 2, 3, 5]) for _ in range(n)]
+    return f(na), f(na), f(nb), f(nb)
+
+
+@pytest.mark.parametrize("na,nb", [(5, 5), (7, 9), (12, 8), (19, 19), (5, 14), (11, 5)])
+def test_histogrammes_sans_enumeration_identiques(na, nb):
+    s = _seqs(na, nb, na * 100 + nb)
+    h1, h2 = C.histogrammes(*s, C.PARAMS_DEFAUT), C.histogrammes_enumeres(*s, C.PARAMS_DEFAUT) if na * na * nb * nb < 2_000_000 else None
+    assert sum(h1["brute"].values()) == na * na * nb * nb
+    assert h2 is not None and all(dict(h1[k]) == dict(h2[k]) for k in h1)
+
+
+def _part_enumeree(att_a, def_a, att_b, def_b):
+    """Concentration par parcours des scénarios (ancienne méthode)."""
+    rows = C.combinaisons(att_a, def_a, att_b, def_b)
+    O = np.stack([M.vecteur(r[4], r[6]) == 1 for r in rows])
+    idx = np.array([(r[0], r[1], r[2], r[3]) for r in rows])
+    sup = O.sum(0)
+    part = np.zeros(C.MARCHES_N)
+    for s in range(4):
+        for r in range(len((att_a, def_a, att_b, def_b)[s])):
+            part = np.maximum(part, np.divide(O[idx[:, s] == r].sum(0), sup, out=np.zeros(C.MARCHES_N), where=sup > 0))
+    return part
+
+
+@pytest.mark.parametrize("na,nb", [(5, 5), (7, 9), (6, 12)])
+def test_concentration_identique_a_l_enumeration(na, nb):
+    s = _seqs(na, nb, 7 + na + nb)
+    a = C.analyser(*s)
+    ref = _part_enumeree(*s)
+    got = np.array([m["diversite"]["part_max_observation"] for m in a["marches"]])
+    assert np.allclose(got, np.round(ref, 4))
+
+
+def test_toute_la_saison_19_matchs_rapide_et_coherent():
+    import time
+    t = time.time()
+    a = C.analyser(*_seqs(19, 19, 1))
+    assert a["combinaisons"] == 19 ** 4 and not [v for v in a["verifications"] if not v["ok"]] and time.time() - t < 5
+
+
+@pytest.mark.parametrize("na,nb", [(4, 9), (9, 4), (3, 3)])
+def test_moins_de_cinq_toujours_refuse(na, nb):
+    with pytest.raises(C.DonneesInsuffisantes):
+        C.analyser(*_seqs(na, nb, 5))

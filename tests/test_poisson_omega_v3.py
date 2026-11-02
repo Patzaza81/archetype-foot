@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 
-from moteur_omega_v3 import marches as M, poisson as P
+from moteur_omega_v3 import donnees as D, marches as M, poisson as P
 
 
 def champ(n=10):
@@ -89,3 +89,29 @@ def test_calibreur_distingue_deux_probabilites_proches_pas_de_marches_d_escalier
     v = c(np.array([0.60, 0.62, 0.64, 0.66, 0.68]))
     assert len(set(np.round(v, 4))) == 5 and np.all(np.diff(v) > 0)              # cinq probabilités différentes → cinq pourcentages différents
     assert c(np.array([0.62]))[0] == pytest.approx(0.62, abs=0.03)                 # et fidèles à la réussite réelle
+
+
+# --- profondeur : toute la saison au même lieu, 5 matchs minimum (règle de Patrick du 02/11/2026) ---
+def _lieu(n_dom, n_ext):
+    ms = []
+    for i in range(n_dom):
+        ms.append({"dom": "A", "ext": f"X{i}", "date": f"2026-01-{i + 1:02d}", "h": i % 3, "a": 1, "dom_nom": "A", "ext_nom": f"X{i}"})
+    for i in range(n_ext):
+        ms.append({"dom": f"Y{i}", "ext": "B", "date": f"2026-01-{i + 1:02d}", "h": 1, "a": i % 2, "dom_nom": f"Y{i}", "ext_nom": "B"})
+    return ms
+
+
+@pytest.mark.parametrize("n_dom,n_ext,attendu", [(5, 5, (5, 5)), (12, 9, (12, 9)), (19, 19, (19, 19))])
+def test_toute_la_saison_prise(n_dom, n_ext, attendu):
+    s = D.sequences(_lieu(n_dom, n_ext), "A", "B", "2026-06-01", n=D.TOUT_LE_LIEU)
+    assert (len(s["att_a"]), len(s["att_b"])) == attendu
+
+
+@pytest.mark.parametrize("n_dom,n_ext", [(4, 10), (10, 4), (0, 0)])
+def test_moins_de_cinq_refuse(n_dom, n_ext):
+    with pytest.raises(ValueError):
+        D.sequences(_lieu(n_dom, n_ext), "A", "B", "2026-06-01", n=D.TOUT_LE_LIEU)
+
+
+def test_defaut_inchange_cinq():
+    assert len(D.sequences(_lieu(12, 12), "A", "B", "2026-06-01")["att_a"]) == 5

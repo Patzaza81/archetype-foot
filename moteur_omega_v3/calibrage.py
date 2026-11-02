@@ -46,7 +46,7 @@ def echantillon(log=print) -> tuple[list[dict[str, Any]], Counter]:
             exclus["championnat sans match connu"] += 1
             continue
         try:
-            s = D.sequences(liste, m["eq_dom"], m["eq_ext"], m["jour"])
+            s = D.sequences(liste, m["eq_dom"], m["eq_ext"], m["jour"], n=D.TOUT_LE_LIEU)
         except ValueError as e:
             exclus[str(e).split(":")[0].split(" (")[0]] += 1
             continue

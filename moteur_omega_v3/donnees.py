@@ -209,8 +209,12 @@ def _est_le_match(m: dict, dom: str, ext: str, jour: str) -> bool:
     return m["dom"] == dom and m["ext"] == ext and abs(jours(m["date"], jour)) <= 1
 
 
-def sequences(matchs: list[dict], dom: str, ext: str, jour: str, n: int = MIN_MATCHS) -> dict[str, Any]:
-    """Les quatre séquences de la spécification Omega V1 (§2) : les `n` derniers matchs de `dom` à domicile et de `ext` à l'extérieur,
+TOUT_LE_LIEU = None                 # profondeur « toute la saison au même lieu » (règle de Patrick du 02/11/2026 : 5 matchs minimum, le maximum possible ensuite)
+
+
+def sequences(matchs: list[dict], dom: str, ext: str, jour: str, n: int | None = MIN_MATCHS) -> dict[str, Any]:
+    """Les quatre séquences de la spécification Omega V1 (§2) : les `n` derniers matchs de `dom` à domicile et de `ext` à l'extérieur
+    (`n=None` : TOUS ceux de la saison, au moins MIN_MATCHS ; la liste `matchs` ne contient que la saison en cours),
     STRICTEMENT avant `jour` (aucun match futur), du plus ancien au plus récent. Chaque observation garde sa date, son adversaire et son score.
     Lève ValueError (donnée insuffisante ou douteuse) : jamais de prédiction fabriquée, jamais de zéro de remplacement."""
     if dom == ext:
@@ -227,10 +231,11 @@ def sequences(matchs: list[dict], dom: str, ext: str, jour: str, n: int = MIN_MA
         dates = [m["date"] for m in ms]
         if len(dates) != len(set(dates)):
             raise ValueError(f"donnée douteuse : {equipe} a deux matchs au même lieu le même jour")
-        if len(ms) < n:
-            raise ValueError(f"données insuffisantes : {len(ms)} match(s) {'à domicile' if domicile else 'à l\'extérieur'} pour {equipe} (il en faut {n})")
+        mini = MIN_MATCHS if n is None else n
+        if len(ms) < mini:
+            raise ValueError(f"données insuffisantes : {len(ms)} match(s) {'à domicile' if domicile else 'à l\'extérieur'} pour {equipe} (il en faut {mini})")
         out = []
-        for m in ms[-n:]:
+        for m in (ms if n is None else ms[-n:]):
             pour, contre = (m["h"], m["a"]) if domicile else (m["a"], m["h"])
             if not isinstance(pour, int) or not isinstance(contre, int) or isinstance(pour, bool) or isinstance(contre, bool) or pour < 0 or contre < 0:
                 raise ValueError(f"score invalide pour {equipe} le {m['date']}")

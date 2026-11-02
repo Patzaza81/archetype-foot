@@ -5,7 +5,7 @@ probabilités des scores qui le font gagner (même règlement que `marches.py`).
 tranche de 5 points, rendue croissante) : le pourcentage affiché est une réussite mesurée, jamais la sortie brute du modèle.
 
 Modèles (chacun testé seul, aucun n'est empilé sur un autre sans test) :
-  C        Poisson sur la moyenne attaque / défense des quatre séquences de 5 matchs (variante C de `variantes.py`) ;
+  C        Poisson sur la moyenne attaque / défense des quatre séquences (toute la saison au même lieu, 5 matchs minimum) (variante C de `variantes.py`) ;
   FORCE    forces de TOUT le championnat (tous les matchs avant le jour, quel que soit le lieu) : attaque = buts marqués par match / moyenne du championnat,
            défense = buts encaissés par match / moyenne ; λ domicile = moyenne des buts à domicile × attaque A × défense B, λ extérieur = moyenne des buts à
            l'extérieur × attaque B × défense A. Les points et la différence de buts du classement sont des conséquences de ces mêmes buts : pas de double compte ;
@@ -101,7 +101,8 @@ def probabilites(ech: list[dict[str, Any]], ligues: D.Ligues) -> dict[str, np.nd
     nm = len(M.CLES)
     out = {k: np.full((len(ech), nm), np.nan) for k in MODELES}
     for t, x in enumerate(ech):
-        s = x["sequences"]
+        m = x["m"]
+        s = D.sequences(ligues.matchs[m["ligue"]], m["eq_dom"], m["eq_ext"], m["jour"], n=D.TOUT_LE_LIEU)      # toute la saison au même lieu (≥ 5)
         out["C"][t] = Vr.frequences(Vr.poids("C", s["att_a"], s["def_a"], s["att_b"], s["def_b"]))
         m = x["m"]
         try:
@@ -114,7 +115,7 @@ def probabilites(ech: list[dict[str, Any]], ligues: D.Ligues) -> dict[str, np.nd
 
 
 def proba_officielle(matchs: list[dict], dom: str, ext: str, jour: str, calibreurs: dict[str, "Calibreur"]) -> dict[str, Any]:
-    """Pourcentage OFFICIEL d'un match : modèle MIXTE (C + FORCE) quand les quatre séquences de 5 matchs existent, sinon FORCE seul (5 matchs au total par équipe suffisent),
+    """Pourcentage OFFICIEL d'un match : modèle MIXTE (C + FORCE) quand les quatre séquences (≥ 5 matchs au même lieu) existent, sinon FORCE seul (5 matchs au total par équipe suffisent),
     sinon rien. Chaque modèle est calibré par SON calibreur. Renvoie le modèle utilisé : jamais de mélange silencieux entre deux populations."""
     forces = None
     try:
@@ -122,7 +123,7 @@ def proba_officielle(matchs: list[dict], dom: str, ext: str, jour: str, calibreu
     except ValueError as e:
         raison_force = str(e)
     try:
-        s = D.sequences(matchs, dom, ext, jour)
+        s = D.sequences(matchs, dom, ext, jour, n=D.TOUT_LE_LIEU)
     except ValueError as e:
         s, raison_seq = None, str(e)
     if forces is not None and s is not None:
