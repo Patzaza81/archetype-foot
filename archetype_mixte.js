@@ -11,7 +11,8 @@ function mxModele(m) {
     : m === "FORCE" ? "Forces du championnat seules (moins de 5 matchs au même lieu)" : "Aucun modèle";
 }
 function mxLigne(x) {
-  const hab = x.habituel != null ? `<span class="om-sous">habituellement ${mxPct(x.habituel)} pour ce marché</span>` : "";
+  const hab = (x.habituel != null ? `<span class="om-sous">habituellement ${mxPct(x.habituel)} pour ce marché</span>` : "") +
+    (x.observe != null ? `<span class="om-sous">réussite observée à ce niveau sur l'archive : ${mxPct(x.observe)}</span>` : "");
   const aussi = (x.aussi || []).length ? `<span class="om-sous">même pari : ${x.aussi.map((y) => `${mxE(y.libelle)} (cote ${mxCote(y.cote)})`).join(" ; ")}</span>` : "";
   return `<div class="om-ligne"><span>${mxE(x.libelle)}${hab}${aussi}</span><span class="om-cote">${mxPct1(x.p)} <small>· cote ${mxCote(x.cote)}</small></span></div>`;
 }
@@ -32,9 +33,9 @@ function mxCarte(f) {
     `<div class="ax-match"><div class="ax-ligne-match"><span class="ax-equipe ax-dom">${mxE(f.domicile)}</span>` +
     `<div class="ax-horaire"><strong>${mxE(h.heure)}</strong><span>${mxE(h.date)}</span></div><span class="ax-equipe ax-ext">${mxE(f.exterieur)}</span></div>` +
     `<div class="ax-match-bas"><p class="ax-competition">${mxE(String(f.competition || "").replace(/\s+/g, " ").trim())}</p><div class="ax-actions-tete"></div></div></div>` +
-    `<div class="om-corps"><div class="om-info"><b>Marchés les plus probables</b> (pourcentage calibré)</div>${haut}</div>` +
+    `<div class="om-corps"><div class="om-info"><b>Marchés les plus probables</b> (probabilité du modèle)</div>${haut}</div>` +
     `<details class="ax-details" open><summary class="ax-summary-cache" tabindex="-1">Détails</summary><div class="ax-details-corps"><div class="om-corps">${reste}` +
-    `<div class="om-info">${mxE(mxModele(f.modele))}. Le pourcentage est la réussite observée sur l'archive pour les marchés annoncés à ce niveau.</div></div></div></details>`;
+    `<div class="om-info">${mxE(mxModele(f.modele))}. Le pourcentage est la probabilité calculée par le modèle, sans correction.</div></div></div></details>`;
   section.addEventListener("click", (e) => {
     if (e.target.closest("button, a, summary")) return;
     const sel = window.getSelection && window.getSelection();
@@ -55,9 +56,9 @@ function mxValidation(v) {
   if (!v) return "";
   const l = (v.tranches || []).map((t) => `<tr><td>${mxE(t.tranche)}</td><td>${t.n}</td><td>${mxPct(t.annonce)}</td><td>${mxPct(t.reel)}</td></tr>`).join("");
   const t1 = v.meilleurs_marches_du_match && v.meilleurs_marches_du_match["1"];
-  return `<h2 class="om-titre">Validation sur l'archive</h2><p class="om-info" style="margin:8px 14px">Pourcentage calibré sur ${v.matchs_apprentissage} matchs anciens, puis mesuré sur ${v.matchs_validation} matchs récents que le calibrage n'a jamais vus (marchés cotés à 1,26 ou plus) : ${v.marches_evalues} marchés, annoncé ${mxPct(v.annonce_moyenne)}, réel ${mxPct(v.reel)}.` +
-    (t1 ? ` Le marché le plus probable de chaque match a réussi ${mxPct(t1.reel)} (annoncé ${mxPct(t1.annonce)}).` : "") + ` Ce n'est pas un bilan de paris gelés : il vient de matchs déjà joués. Au-delà de 70 % annoncé, trop peu de cas pour conclure.</p>` +
-    `<table class="om-table"><tr><th>Annoncé</th><th>Marchés</th><th>Moyenne annoncée</th><th>Réussite réelle</th></tr>${l}</table>`;
+  return `<h2 class="om-titre">Fiabilité sur l'archive</h2><p class="om-info" style="margin:8px 14px">Probabilité du modèle, sans aucune correction, comparée à la réussite réelle sur ${v.matchs_validation} matchs récents (marchés cotés à 1,26 ou plus) : ${v.marches_evalues} marchés, annoncé ${mxPct(v.annonce_moyenne)}, réel ${mxPct(v.reel)}.` +
+    (t1 ? ` Le marché le plus probable de chaque match a réussi ${mxPct(t1.reel)} (annoncé ${mxPct(t1.annonce)}).` : "") + ` Ce n'est pas un bilan de paris gelés : il vient de matchs déjà joués. Au-dessus de 60 % le modèle annonce un peu trop haut.</p>` +
+    `<table class="om-table"><tr><th>Probabilité</th><th>Marchés</th><th>Moyenne annoncée</th><th>Réussite réelle</th></tr>${l}</table>`;
 }
 function mxAffiche(d) {
   document.getElementById("om-bilan").innerHTML = mxValidation(d.validation_archive) + `<h2 class="om-titre">Suivi des matchs gelés</h2>` + mxBilan(d.bilan);

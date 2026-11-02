@@ -33,28 +33,26 @@ def _cotes(m: dict[str, Any]) -> np.ndarray:
     return np.array([C.lire_cote(m.get("cotes"), c) or np.nan for c in M.CLES])
 
 
-def _validation(mx_P: np.ndarray, S: np.ndarray, V: np.ndarray, cote: np.ndarray, util: np.ndarray, dev: np.ndarray, res: np.ndarray, base: np.ndarray) -> dict[str, Any]:
-    """Validation chronologique sur l'archive : calibreur appris sur les matchs anciens (marchés cotés ≥ COTE_MIN seulement), appliqué aux matchs récents jamais vus.
-    N'est PAS un bilan de paris gelés : c'est la preuve que le pourcentage affiché correspond à une réussite observée sur des matchs que le calibrage n'a pas vus."""
+def _validation(mx_P: np.ndarray, S: np.ndarray, V: np.ndarray, cote: np.ndarray, util: np.ndarray, res: np.ndarray, base: np.ndarray) -> dict[str, Any]:
+    """Validation sur l'archive de la probabilité BRUTE du modèle (aucune correction) : pour les marchés cotés ≥ COTE_MIN des matchs récents, probabilité annoncée contre réussite réelle.
+    N'est PAS un bilan de paris gelés : il vient de matchs déjà joués."""
     play = (cote >= COTE_MIN) & V & util
-    cal = P.Calibreur(mx_P[play & dev[:, None]], S[play & dev[:, None]], np.ones(int((play & dev[:, None]).sum()), dtype=bool))
-    Q = cal(np.nan_to_num(mx_P))
     r = play & res[:, None]
     tr = []
     for lo in np.arange(0, 1, 0.1):
-        m = r & (Q >= lo - 1e-12) & ((Q < lo + 0.1 - 1e-12) if lo < 0.9 else (Q <= 1.0))
+        m = r & (mx_P >= lo - 1e-12) & ((mx_P < lo + 0.1 - 1e-12) if lo < 0.9 else (mx_P <= 1.0))
         if m.any():
-            tr.append({"tranche": f"{lo:.1f}-{lo + 0.1:.1f}", "n": int(m.sum()), "annonce": round(float(Q[m].mean()), 4), "reel": round(float(S[m].mean()), 4)})
+            tr.append({"tranche": f"{lo:.1f}-{lo + 0.1:.1f}", "n": int(m.sum()), "annonce": round(float(mx_P[m].mean()), 4), "reel": round(float(S[m].mean()), 4)})
     top = {}
     for k in (1, 3):
         n = kk = 0
         an = 0.0
         for t in np.where(res)[0]:
-            q = np.where(play[t] & (Q[t] > base), Q[t], -1.0)
+            q = np.where(play[t] & (mx_P[t] > base), mx_P[t], -1.0)
             idx = [i for i in np.argsort(-q)[:k] if q[i] >= 0]
-            n, kk, an = n + len(idx), kk + int(S[t, idx].sum()), an + float(Q[t, idx].sum())
+            n, kk, an = n + len(idx), kk + int(S[t, idx].sum()), an + float(mx_P[t, idx].sum())
         top[str(k)] = {"paris": n, "reel": round(kk / n, 4) if n else None, "annonce": round(an / n, 4) if n else None}
-    return {"matchs_apprentissage": int(dev.sum()), "matchs_validation": int(res.sum()), "marches_evalues": int(r.sum()), "annonce_moyenne": round(float(Q[r].mean()), 4), "reel": round(float(S[r].mean()), 4),
+    return {"matchs_validation": int(res.sum()), "marches_evalues": int(r.sum()), "annonce_moyenne": round(float(mx_P[r].mean()), 4), "reel": round(float(S[r].mean()), 4),
             "tranches": tr, "meilleurs_marches_du_match": top}
 
 
@@ -75,7 +73,7 @@ def calibrer(log=print) -> dict[str, Any]:
     coupe = jours[int(len(ech) * K.PART_DEV)]
     dev, res = jours < coupe, jours >= coupe
     base_dev = np.array([(S_[:, i] & dev & V_[:, i]).sum() / max(1, (dev & V_[:, i]).sum()) for i in range(NB)])
-    validation = _validation(brut["MIXTE"], S_, V_, cote, util, dev & ok, res & ok, base_dev)
+    validation = _validation(brut["MIXTE"], S_, V_, cote, util, res & ok, base_dev)
     jou = (cote >= COTE_MIN) & V_
     cal_mixte = P.Calibreur(brut["MIXTE"][ok][jou[ok]], S_[ok][jou[ok]], np.ones(int(jou[ok].sum()), dtype=bool))
     Pf, Sf, Vf, Jf, dates = [], [], [], [], []
@@ -96,7 +94,7 @@ def calibrer(log=print) -> dict[str, Any]:
     jf = Jf & Vf
     cal_force = P.Calibreur(Pf[jf], Sf[jf], np.ones(int(jf.sum()), dtype=bool))
     base = np.where(Vf.sum(0) > 0, (Sf & Vf).sum(0) / np.maximum(Vf.sum(0), 1), np.nan)      # réussite habituelle de chaque marché sur tous les matchs joués de l'archive
-    out = {"version": "mixte-3", "cote_min": COTE_MIN, "calibre_le": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+    out = {"version": "mixte-4", "cote_min": COTE_MIN, "calibre_le": datetime.now(timezone.utc).isoformat(timespec="seconds"),
            "MIXTE": {"x": [round(v, 5) for v in cal_mixte.x], "y": [round(v, 5) for v in cal_mixte.y], "effectifs": cal_mixte.effectifs, "matchs": int(ok.sum())},
            "FORCE": {"x": [round(v, 5) for v in cal_force.x], "y": [round(v, 5) for v in cal_force.y], "effectifs": cal_force.effectifs, "matchs": len(Pf), "du": min(dates), "au": max(dates)},
            "taux_base": [None if np.isnan(x) else round(float(x), 4) for x in base], "validation_archive": validation}
@@ -156,7 +154,7 @@ def geler(maintenant: datetime | None = None, journal: Path = JOURNAL, ligues: D
         f = fiche(m, ligues.matchs.get(m["ligue"]) or [], cals)
         if dernier.get(m["id"]) == _signature(f):
             continue
-        nouveaux.append({"type": "pronostic", "match_id": m["id"], "gele_le": maintenant.isoformat(timespec="seconds"), "commit": SV._commit(), "version": "mixte-3", "fiche": f})
+        nouveaux.append({"type": "pronostic", "match_id": m["id"], "gele_le": maintenant.isoformat(timespec="seconds"), "commit": SV._commit(), "version": "mixte-4", "fiche": f})
     SV._ajouter(journal, nouveaux)
     return len(nouveaux)
 
@@ -189,12 +187,12 @@ def bilan(lignes: list[dict[str, Any]]) -> dict[str, Any]:
         if not r or not f.get("p"):
             continue
         n_matchs += 1
-        p, y = np.array(f["p"]), np.array(r["y"])
+        p, y = np.array(f["p_brut"]), np.array(r["y"])
         cotes = np.array([c if c is not None else 0.0 for c in f["cotes"]])
         v = (y != 2) & (cotes >= COTE_MIN)
         P_.append(p[v & AFFICHABLE])
         S_.append((y == 1)[v & AFFICHABLE])
-        cand = [i for i in np.argsort(-p) if AFFICHABLE[i] and v[i] and 1e-3 < f["p_brut"][i] < 1 - 1e-3]
+        cand = [i for i in np.argsort(-p, kind="stable") if AFFICHABLE[i] and v[i] and 1e-3 < f["p_brut"][i] < 1 - 1e-3]
         if cand:
             top1.append((float(p[cand[0]]), bool(y[cand[0]] == 1)))
     if not P_:
@@ -210,17 +208,18 @@ def bilan(lignes: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def haut_de_liste(f: dict[str, Any], k: int = HAUT_DE_LISTE, base: list | None = None) -> list[dict[str, Any]]:
-    """Les k marchés les plus probables du match parmi ceux que CE match rend plus probables que d'habitude (probabilité calibrée au-dessus de la réussite habituelle du marché
-    sur l'archive : un marché vrai à 99 % partout, comme « moins de 9 buts », ne dit rien de ce match). Hors scores exacts. Seuls les marchés réellement cotés sont proposés (accès) ; la cote est affichée à côté, jamais dans le calcul."""
+    """Les k marchés les plus probables du match selon le modèle, parmi ceux que CE match rend plus probables que d'habitude (probabilité au-dessus de la réussite habituelle du marché
+    sur l'archive : un marché vrai à 99 % partout, comme « moins de 9 buts », ne dit rien de ce match). Hors scores exacts. Seuls les marchés de cote ≥ COTE_MIN sont proposés (accès) ;
+    la cote est affichée à côté, jamais dans le calcul. `p` = probabilité du modèle SANS correction ; `observe` = réussite réellement observée sur l'archive à ce niveau (information)."""
     p = np.array(f["p"])
     brut = np.array(f["p_brut"])
     out: list[dict[str, Any]] = []
     index: dict[bytes, dict[str, Any]] = {}
-    for i in np.lexsort((-brut, -p)):                                # pourcentage calibré décroissant ; à égalité (plateau du calibrage), probabilité brute du modèle décroissante
+    for i in np.argsort(-brut, kind="stable"):                       # probabilité du modèle décroissante
         if not AFFICHABLE[i] or not 1e-3 < brut[i] < 1 - 1e-3 or f["cotes"][i] is None or f["cotes"][i] < COTE_MIN:
             continue                                              # cote absente ou < COTE_MIN : marché non jouable, jamais proposé (condition d'accès, pas un critère de qualité)
         b = base[i] if base else None
-        if b is None or p[i] <= b:
+        if b is None or brut[i] <= b:
             continue
         c = M.CLES[i]
         libelle = Df.definition(c[0], c[1])[0]
@@ -230,7 +229,7 @@ def haut_de_liste(f: dict[str, Any], k: int = HAUT_DE_LISTE, base: list | None =
             if f["cotes"][i] > deja["cote"]:
                 deja["aussi"][-1], deja["libelle"], deja["cote"], deja["cle"] = {"libelle": deja["libelle"], "cote": deja["cote"]}, libelle, f["cotes"][i], M.cle_txt(c)
             continue
-        e = {"cle": M.cle_txt(c), "libelle": libelle, "famille": FAM[i], "p": float(p[i]), "habituel": b, "cote": f["cotes"][i]}
+        e = {"cle": M.cle_txt(c), "libelle": libelle, "famille": FAM[i], "p": float(brut[i]), "observe": float(p[i]), "habituel": b, "cote": f["cotes"][i]}
         index[EVENEMENT[i]] = e
         out.append(e)
     out = out[:k]
@@ -254,7 +253,7 @@ def page(maintenant: datetime | None = None, journal: Path = JOURNAL, sortie: Pa
             continue
         avenir.append({**{k: f[k] for k in ("match_id", "jour", "heure", "competition", "domicile", "exterieur", "coup_d_envoi_utc", "modele")}, "gele_le": g["gele_le"], "marches": haut_de_liste(f, base=base)})
     avenir.sort(key=lambda x: (x["coup_d_envoi_utc"] or "", x["match_id"]))
-    out = {"genere_le": maintenant.isoformat(timespec="seconds"), "version": "mixte-3", "cote_min": COTE_MIN, "validation_archive": (ch[1].get("validation_archive") if ch else None), "a_venir": avenir, "sans_pronostic": sans, "bilan": bilan(lignes),
+    out = {"genere_le": maintenant.isoformat(timespec="seconds"), "version": "mixte-4", "cote_min": COTE_MIN, "validation_archive": (ch[1].get("validation_archive") if ch else None), "a_venir": avenir, "sans_pronostic": sans, "bilan": bilan(lignes),
            "avertissement": "Pourcentage calibré sur l'historique du moteur : réussite réellement observée à ce niveau, pas une certitude. La cote n'est qu'une information d'accès."}
     sortie.parent.mkdir(parents=True, exist_ok=True)
     sortie.write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
