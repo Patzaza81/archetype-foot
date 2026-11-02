@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "genere_le": "2026-11-02T13:26:47Z",
+  "genere_le": "2026-11-02T19:08:41Z",
   "source": "data/archive_test",
-  "observations": 35258,
+  "observations": 35260,
   "team_market": {
     "07 Vestur|1x2_exterieur": {
       "equipe": "07 Vestur",
@@ -296309,24 +296309,29 @@
     "Inter Miami|buts_equipe_domicile_1.5_under": {
       "equipe": "Inter Miami",
       "marche": "buts_equipe_domicile_1.5_under",
-      "echantillon": 3,
-      "frequence": 0.0,
+      "echantillon": 4,
+      "frequence": 0.25,
       "sequence": {
         "sequence": [
           "N",
           "N",
-          "N"
+          "N",
+          "O"
         ],
-        "longueur": 3,
-        "issue_dernier": "N",
-        "serie_actuelle": 3,
-        "type_serie": "ECHEC",
+        "longueur": 4,
+        "issue_dernier": "O",
+        "serie_actuelle": 1,
+        "type_serie": "SUCCES",
         "rupture": false,
         "reprise": false,
         "avant": null,
         "apres": null
       },
       "prix": {
+        "1.75-1.99": {
+          "echantillon": 1,
+          "frequence": 1.0
+        },
         "2.50-2.99": {
           "echantillon": 1,
           "frequence": 0.0
@@ -296337,7 +296342,8 @@
         }
       },
       "persistance": {
-        "+1": 0.0
+        "+1": 0.3333,
+        "+3": 1.0
       }
     },
     "Inter Miami|buts_equipe_exterieur_0.5_under": {
@@ -403264,6 +403270,32 @@
       "persistance": {
         "+1": 0.5
       }
+    },
+    "NE Revolution|buts_equipe_domicile_1.5_under": {
+      "equipe": "NE Revolution",
+      "marche": "buts_equipe_domicile_1.5_under",
+      "echantillon": 1,
+      "frequence": 1.0,
+      "sequence": {
+        "sequence": [
+          "O"
+        ],
+        "longueur": 1,
+        "issue_dernier": "O",
+        "serie_actuelle": 1,
+        "type_serie": "SUCCES",
+        "rupture": false,
+        "reprise": false,
+        "avant": null,
+        "apres": null
+      },
+      "prix": {
+        "1.75-1.99": {
+          "echantillon": 1,
+          "frequence": 1.0
+        }
+      },
+      "persistance": {}
     },
     "NE Revolution|double_chance_X2": {
       "equipe": "NE Revolution",
