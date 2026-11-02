@@ -49,8 +49,16 @@ function mxBilan(b) {
   return `<p class="om-info" style="margin:8px 14px">${b.matchs} match${b.matchs > 1 ? "s" : ""} terminé${b.matchs > 1 ? "s" : ""} suivi${b.matchs > 1 ? "s" : ""} (pronostic gelé avant le coup d'envoi), ${b.marches_evalues} marchés évalués : annoncé ${mxPct(b.annonce_moyenne)}, réel ${mxPct(b.reel)}.</p>` +
     `<table class="om-table"><tr><th>Annoncé</th><th>Marchés</th><th>Moyenne annoncée</th><th>Réussite réelle</th></tr>${l}</table>`;
 }
+function mxValidation(v) {
+  if (!v) return "";
+  const l = (v.tranches || []).map((t) => `<tr><td>${mxE(t.tranche)}</td><td>${t.n}</td><td>${mxPct(t.annonce)}</td><td>${mxPct(t.reel)}</td></tr>`).join("");
+  const t1 = v.meilleurs_marches_du_match && v.meilleurs_marches_du_match["1"];
+  return `<h2 class="om-titre">Validation sur l'archive</h2><p class="om-info" style="margin:8px 14px">Pourcentage calibré sur ${v.matchs_apprentissage} matchs anciens, puis mesuré sur ${v.matchs_validation} matchs récents que le calibrage n'a jamais vus (marchés cotés à 1,26 ou plus) : ${v.marches_evalues} marchés, annoncé ${mxPct(v.annonce_moyenne)}, réel ${mxPct(v.reel)}.` +
+    (t1 ? ` Le marché le plus probable de chaque match a réussi ${mxPct(t1.reel)} (annoncé ${mxPct(t1.annonce)}).` : "") + ` Ce n'est pas un bilan de paris gelés : il vient de matchs déjà joués. Au-delà de 70 % annoncé, trop peu de cas pour conclure.</p>` +
+    `<table class="om-table"><tr><th>Annoncé</th><th>Marchés</th><th>Moyenne annoncée</th><th>Réussite réelle</th></tr>${l}</table>`;
+}
 function mxAffiche(d) {
-  document.getElementById("om-bilan").innerHTML = mxBilan(d.bilan);
+  document.getElementById("om-bilan").innerHTML = mxValidation(d.validation_archive) + `<h2 class="om-titre">Suivi des matchs gelés</h2>` + mxBilan(d.bilan);
   const el = document.getElementById("om-avenir"); el.innerHTML = "";
   if (d.a_venir && d.a_venir.length) d.a_venir.forEach((f) => el.appendChild(mxCarte(f)));
   else el.innerHTML = `<p class="om-vide">Aucun match à venir pour l'instant.</p>`;
@@ -78,4 +86,4 @@ if (document.getElementById("om-avenir")) {
     .then(mxAffiche)
     .catch((e) => { document.getElementById("maj").textContent = "Erreur de chargement : " + e.message; console.error(e); });
 }
-if (typeof module !== "undefined") module.exports = { mxLigne, mxCarte, mxBilan, mxModele, mxPct, mxCote };
+if (typeof module !== "undefined") module.exports = { mxValidation, mxLigne, mxCarte, mxBilan, mxModele, mxPct, mxCote };

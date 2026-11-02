@@ -79,7 +79,7 @@ def test_resultats_regles_une_seule_fois_et_page(tmp_path):
     fini = {**match(), "h": 2, "a": 1}
     assert X.resultats(j, [fini]) == 1 and X.resultats(j, [fini]) == 0
     b = X.bilan(SV._lire(j))
-    assert b["matchs"] == 1 and b["marches_evalues"] > 100 and b["tranches"]
+    assert b["matchs"] == 1 and b["marches_evalues"] == 3 and b["tranches"]
     p = X.page(NOW + timedelta(hours=8), j, tmp_path / "p.json")
     assert p["a_venir"] == [] and p["bilan"]["matchs"] == 1
 
@@ -103,6 +103,11 @@ def test_haut_de_liste_seulement_des_marches_cotes_et_plus_probables_que_d_habit
     assert [x["p"] for x in L] == sorted((x["p"] for x in L), reverse=True)
     assert X.haut_de_liste(f, 10, [1.0] * len(M.CLES)) == []                                      # rien ne dépasse l'habituel : rien n'est proposé
     assert X.haut_de_liste({**f, "cotes": [None] * len(M.CLES)}, 10, base) == []                  # aucune cote : rien n'est proposé
+    assert all(x["cote"] >= 1.26 for x in L)                                                      # cote jouable exigée
+    for faible in (1.01, 1.10, 1.25):                                                             # sous 1,26 : jamais proposé
+        assert X.haut_de_liste({**f, "cotes": [faible] * len(M.CLES)}, 10, base) == []
+    for ok in (1.26, 1.5, 3.0):
+        assert X.haut_de_liste({**f, "cotes": [ok] * len(M.CLES)}, 10, base)
 
 
 def test_aucun_edge_ev_ni_value_dans_le_calcul_et_rien_de_bookmaker_dans_la_page():
