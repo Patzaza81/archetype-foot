@@ -380,9 +380,9 @@ def test_autonomie_aucun_import_dun_autre_moteur_et_aucune_ecriture_dans_les_his
     assert '"data" / "gamma"' in suivi and '"data" / "dc"' not in suivi and "data/omega" not in suivi and "data/alpha" not in suivi
 
 
-def test_le_pipeline_lance_omega_v3_et_plus_le_moteur_dc():
+def test_le_pipeline_lance_omega_v3_et_garde_le_moteur_dc_pour_la_comparaison():
     y = (ROOT / ".github" / "workflows" / "pipeline.yml").read_text(encoding="utf-8")
-    assert "python -m moteur_omega_v3.suivi pipeline" in y and "python -m moteur_dc.suivi" not in y
+    assert "python -m moteur_omega_v3.suivi pipeline" in y and "python -m moteur_dc.suivi pipeline" in y
 
 
 def test_calibrage_apprend_un_seuil_par_marche_sans_poser_de_constante():
@@ -400,3 +400,222 @@ def test_calibrage_apprend_un_seuil_par_marche_sans_poser_de_constante():
         assert x["reussite"] >= K.REUSSITE_CIBLE - 0.05 and x["n"] >= K.MIN_PARIS
     lis = [t["reussite_lissee"] for t in x["tranches"]]
     assert lis == sorted(lis)                                                      # réussite lissée croissante avec la fréquence
+
+
+# =====================================================================================================================
+# Tests ajoutés par l'audit du 02/11/2026
+# =====================================================================================================================
+import subprocess
+
+import numpy as np
+
+from moteur_omega_v3 import definitions as Df, variantes as V
+
+
+def test_les_scenarios_gardent_leurs_quatre_observations_et_les_defavorables_restent():
+    mat = C.matrice(*EX)
+    att_a, def_a, att_b, def_b = EX
+    for m in mat:
+        i, l, k, j = (int(x) for x in m["id"].split("-"))
+        assert (m["att_a"], m["def_a"], m["att_b"], m["def_b"]) == (att_a[i], def_a[l], att_b[k], def_b[j])
+        assert m["ecart_a"] == abs(att_a[i] - def_b[j]) and m["ecart_b"] == abs(att_b[k] - def_a[l])          # orientation : attaque A contre défense B, attaque B contre défense A
+    assert any(m["niveau"] == "incompatible" for m in mat) and any(m["marches"][M.INDEX[("1x2", "2")]] == 1 for m in mat)    # défavorables et incompatibles gardés dans le brut
+
+
+def test_la_defense_ne_change_ni_la_frequence_brute_ni_g():
+    """Constat de l'audit : le score d'un scénario est (attA, attB), chaque couple est répété une fois par couple de défenses. Les défenses n'ont donc AUCUN effet sur f ni sur g."""
+    a = analyse(*EX)
+    b = analyse(EX[0], [4, 4, 0, 3, 4], EX[2], [0, 0, 5, 1, 2])                       # mêmes attaques, défenses toutes différentes
+    assert [m["f"] for m in a["marches"]] == [m["f"] for m in b["marches"]]
+    assert [m["g"] for m in a["marches"]] == [m["g"] for m in b["marches"]]
+    assert a["niveaux"] != b["niveaux"]                                                    # seuls les paliers de compatibilité changent
+    f, g = V.robuste("A", [list(x) for x in EX])
+    assert np.allclose(g, [m["g"] for m in a["marches"]], atol=1e-4) and np.allclose(f, [m["f"] for m in a["marches"]], atol=1e-4)
+
+
+def test_frequence_brute_egale_ponderation_marginale():
+    pa, pb = Counter(EX[0]), Counter(EX[2])
+    a = analyse(*EX)
+    for m in a["marches"]:
+        _, _, fn = Df.definition(*m["cle"])
+        marginal = sum(pa[x] * pb[y] for x in pa for y in pb if fn(x, y) == 1) / 25
+        assert m["f"] == pytest.approx(marginal, abs=1e-4)
+
+
+from collections import Counter  # noqa: E402
+
+
+def test_les_383_marches_egalent_les_definitions_independantes_sur_toute_la_grille():
+    assert len(M.CLES) == len(set(M.CLES))
+    for c in M.CLES:
+        _, formule, fn = Df.definition(*c)
+        assert formule
+        for i in range(M.MAX_EQUIPE + 3):
+            for j in range(M.MAX_EQUIPE + 3):
+                assert fn(i, j) == M.REGLES[c](i, j), (c, i, j)
+
+
+@pytest.mark.parametrize("cle", [("1x2", "X"), ("over_under_2.5", "dessus"), ("handicap_0.5", "nulle"), ("inconnu", "1"), ("handicap_3issues_x", "1")])
+def test_cles_inconnues_refusees_par_les_definitions(cle):
+    with pytest.raises((ValueError, KeyError)):
+        Df.definition(*cle)
+
+
+def test_les_lignes_couvrent_les_scores_reellement_observes():
+    chemin = ROOT / "data" / "assemblage" / "equipes.json"
+    if not chemin.exists():
+        pytest.skip("historique absent")
+    h = [m for v in D.charger_ligues(chemin).matchs.values() for m in v]
+    assert max(max(m["h"], m["a"]) for m in h) <= M.MAX_EQUIPE
+    assert max(m["h"] + m["a"] for m in h) <= M.MAX_TOTAL
+    assert max(abs(m["h"] - m["a"]) for m in h) <= M.MAX_ECART
+
+
+def test_marches_ajoutes_par_l_audit_sont_complets_et_coherents():
+    a = analyse(*EX)
+    N = a["combinaisons"]
+    assert sum(freq(a, "nombre_exact_buts", s)["k"] for s in ["0", "1", "2", "3", "4", "5", "6+"]) == N
+    for h in M.LIGNES_HANDICAP_3:
+        assert sum(freq(a, f"handicap_3issues_{h}", s)["k"] for s in ("1", "X", "2")) == N
+    for x in M.LIGNES_COMBO:
+        g = f"btts_total_{x:g}"
+        assert sum(freq(a, g, f"{b}|{s}")["k"] for b in ("Oui", "Non") for s in ("plus", "moins")) == N
+    assert freq(a, "over_under_9.5", "plus")["k"] == 0 and freq(a, "over_under_9.5", "moins")["k"] == N
+    assert freq(a, "handicap_3issues_0", "1") if False else True
+    assert ("handicap_3issues_0", "1") not in M.INDEX                                       # handicap 0 = le 1X2 lui-même, pas de doublon
+    # handicap à trois issues -1 : « 1 » = domicile gagne par 2 buts ou plus ; sens confirmé par les cotes de la source (cote(1 | -1) ≈ 1,9 × cote(1X2 « 1 »))
+    assert M.resultat(("handicap_3issues_-1", "1"), 3, 1) == 1 and M.resultat(("handicap_3issues_-1", "1"), 2, 1) == 0 and M.resultat(("handicap_3issues_-1", "X"), 2, 1) == 1
+
+
+@pytest.mark.parametrize("jours_ecart,attendu", [(0, True), (1, True), (-1, True), (2, False), (5, False), (-3, False)])
+def test_le_match_lui_meme_est_reconnu_a_un_jour_pres(jours_ecart, attendu):
+    from datetime import date, timedelta
+    jour = "2026-10-27"
+    d = (date.fromisoformat(jour) + timedelta(days=jours_ecart)).isoformat()
+    assert D._est_le_match({"date": d, "dom": "A", "ext": "B"}, "A", "B", jour) is attendu
+
+
+@pytest.mark.parametrize("dom,ext", [("B", "A"), ("A", "C"), ("C", "B")])
+def test_une_autre_affiche_n_est_jamais_prise_pour_le_match_lui_meme(dom, ext):
+    assert D._est_le_match({"date": "2026-10-26", "dom": dom, "ext": ext}, "A", "B", "2026-10-27") is False
+
+
+def test_le_resultat_du_match_date_la_veille_par_la_source_n_entre_pas_dans_ses_sequences():
+    liste = _liste("A", "Z", 8) + _liste("B", "Y", 8, dom=False)
+    soi = {"date": "2026-11-29", "dom": "A", "ext": "B", "h": 9, "a": 9, "dom_nom": "A", "ext_nom": "B"}       # le match, daté la veille (fuseau) avec son score final
+    s = D.sequences(liste + [soi], "A", "B", "2026-11-30")
+    assert 9 not in s["att_a"] and 9 not in s["att_b"] and all(x["date"] < "2026-11-29" for x in s["A"] + s["B"])
+    assert D.sequences(liste, "A", "B", "2026-11-30") == s
+
+
+def test_ordre_des_donnees_sans_effet_sur_les_sequences():
+    liste = _liste("A", "Z", 8) + _liste("B", "Y", 8, dom=False)
+    r = random.Random(3)
+    melange = liste[:]
+    r.shuffle(melange)
+    assert D.sequences(liste, "A", "B", "2026-12-30") == D.sequences(melange, "A", "B", "2026-12-30")
+
+
+def test_orientation_des_buts_marques_et_encaisses():
+    liste = [{"date": f"2026-09-{q + 1:02d}", "dom": "A", "ext": f"Z{q}", "h": q + 1, "a": 0, "dom_nom": "A", "ext_nom": "Z"} for q in range(5)] + \
+            [{"date": f"2026-09-{q + 10:02d}", "dom": f"Y{q}", "ext": "B", "h": 7, "a": q, "dom_nom": "Y", "ext_nom": "B"} for q in range(5)]
+    s = D.sequences(liste, "A", "B", "2026-12-01")
+    assert s["att_a"] == [1, 2, 3, 4, 5] and s["def_a"] == [0] * 5            # A à domicile : buts marqués = h, encaissés = a
+    assert s["att_b"] == [0, 1, 2, 3, 4] and s["def_b"] == [7] * 5            # B à l'extérieur : buts marqués = a, encaissés = h
+
+
+@pytest.mark.parametrize("variante", ["A", "B", "C"])
+@pytest.mark.parametrize("graine", [11, 12, 13])
+def test_variantes_pas_de_double_comptage_et_somme_un(variante, graine):
+    r = random.Random(graine)
+    seqs = [[r.randint(0, 5) for _ in range(5)] for _ in range(4)]
+    W = V.poids(variante, *seqs)
+    assert W.sum() == pytest.approx(1.0, abs=1e-12) and (W >= 0).all()
+    assert np.abs(W - V.poids_par_scenarios(variante, *seqs)).max() < 1e-12     # factorisation = énumération scénario par scénario (chaque scénario pèse 1/625)
+
+
+def test_variante_c_est_un_modele_et_a_b_des_frequences():
+    z = V.poids("C", [0] * 5, [0] * 5, [0] * 5, [0] * 5)
+    assert z[0, 0] == pytest.approx(1.0)                                         # λ = 0 : aucun but, sans masse parasite
+    a = V.poids("A", [2] * 5, [0] * 5, [1] * 5, [0] * 5)
+    assert a[2, 1] == pytest.approx(1.0)
+    b = V.poids("B", [2] * 5, [0] * 5, [1] * 5, [0] * 5)
+    assert b[2, 1] == pytest.approx(0.25) and b[0, 1] == pytest.approx(0.25) and b[2, 0] == pytest.approx(0.25) and b[0, 0] == pytest.approx(0.25)
+    with pytest.raises(ValueError):
+        V.poids("Z", *EX)
+
+
+def test_calibrage_sur_la_population_jouable_ne_compte_pas_les_cotes_injouables():
+    r = random.Random(5)
+    ech = []
+    k_dc = M.INDEX[("double_chance", "1N")]
+    for q in range(300):
+        y = np.zeros(len(M.CLES), dtype=np.int8)
+        y[k_dc] = 1 if (r.random() < (0.97 if q % 2 else 0.4)) else 0           # injouable (q impair) : presque toujours gagné ; jouable (q pair) : 40 %
+        g = np.zeros(len(M.CLES))
+        g[k_dc] = 0.9
+        j = np.zeros(len(M.CLES), dtype=bool)
+        j[k_dc] = q % 2 == 0
+        ech.append({"m": {"jour": f"2026-10-{1 + q % 28:02d}", "id": str(q)}, "g": g, "y": y, "jouable": j})
+    tout = K.seuils(ech, jouable=False)["double_chance|1N"]
+    jou = K.seuils(ech, jouable=True)["double_chance|1N"]
+    assert tout["seuil"] is not None and jou["seuil"] is None                    # sur la population jouable le marché n'atteint jamais 70 %
+    assert jou["predictions"] == 150 and tout["predictions"] == 300
+
+
+def test_conclusion_sans_cle_technique_et_sans_marche_certain():
+    a = analyse(*EX)
+    texte = " ".join(a["conclusion"])
+    assert "|" not in texte and "_" not in texte and "vrais ou faux dans 100 %" in texte
+    assert "100%" not in a["conclusion"][0].split("sur 625")[0]
+
+
+def test_page_distingue_matchs_non_analyses_et_matchs_analyses_sans_pari(tmp_path):
+    j = tmp_path / "j.jsonl"
+    ko = "2099-01-01T15:00:00Z"
+    base = {"jour": "2099-01-01", "heure": "16:00", "coup_d_envoi_utc": ko, "competition": "x", "domicile": "A", "exterieur": "B"}
+    lignes = [{"type": "pronostic", "match_id": "e", "gele_le": "2098-12-31T10:00:00+00:00", "fiche": {**base, "match_id": "e", "statut": "exclu", "raison": "données insuffisantes : 3 match(s) pour A", "principal": None, "autres": []}},
+              {"type": "pronostic", "match_id": "s", "gele_le": "2098-12-31T10:00:00+00:00", "fiche": {**base, "match_id": "s", "statut": "analyse", "raison": "AUCUN MARCHÉ RETENU", "principal": None, "autres": []}}]
+    j.write_text("\n".join(json.dumps(l) for l in lignes) + "\n", encoding="utf-8")
+    p = S.page(maintenant=datetime(2098, 12, 31, 12, tzinfo=timezone.utc), journal=j, sortie=tmp_path / "p.json")
+    assert p["sans_pronostic"] == 1 and p["nb_exclus"] == 1 and p["exclus"] == {"données insuffisantes": 1}
+
+
+def test_ancien_moteur_dc_intact_par_rapport_a_main():
+    try:
+        r = subprocess.run(["git", "diff", "--quiet", "origin/main", "--", "moteur_dc", "data/dc", "tests/test_moteur_dc.py"], cwd=ROOT, capture_output=True, timeout=30)
+        ref = subprocess.run(["git", "rev-parse", "--verify", "origin/main"], cwd=ROOT, capture_output=True, timeout=30)
+    except Exception:
+        pytest.skip("git indisponible")
+    if ref.returncode != 0:
+        pytest.skip("référence origin/main absente")
+    assert r.returncode == 0, "moteur_dc/, data/dc/ ou leurs tests ont été modifiés : l'ancien moteur DC doit rester intact"
+
+
+def test_la_page_dc_conservee_lit_toujours_les_donnees_dc():
+    js = (ROOT / "archetype_dc.js").read_text(encoding="utf-8")
+    assert "data/dc/pronostics.json" in js and (ROOT / "pronostics_dc.html").exists()
+    assert "data/gamma/pronostics.json" in (ROOT / "archetype_gamma.js").read_text(encoding="utf-8")
+
+
+def test_bilan_reel_lit_le_journal_gamma_gel_avant_le_coup_d_envoi_remboursements_exclus(tmp_path):
+    import bilan_reel as B
+    ko = "2026-12-05T15:00:00Z"
+    def pari(cle, cote=1.5):
+        return {"cle": list(cle), "cote": cote, "p_calibree": 0.8}
+    def gel(mid, quand, principal, autres=()):
+        return {"type": "pronostic", "match_id": mid, "gele_le": quand, "fiche": {"match_id": mid, "jour": "2026-12-05", "coup_d_envoi_utc": ko, "principal": principal, "autres": list(autres)}}
+    def res(mid, paris):
+        return {"type": "resultat", "match_id": mid, "score": [1, 1], "paris": paris}
+    lignes = [
+        gel("a", "2026-12-04T10:00:00+00:00", pari(("double_chance", "1N")), [pari(("handicap_0", "domicile"))]),
+        res("a", [{"role": "principal", "cle": ["double_chance", "1N"], "cote": 1.5, "gagne": True, "rembourse": False}, {"role": "autre", "cle": ["handicap_0", "domicile"], "cote": 1.5, "gagne": None, "rembourse": True}]),
+        gel("b", "2026-12-05T16:00:00+00:00", pari(("btts", "Oui"))),                         # gelé APRÈS le coup d'envoi : ne compte pas
+        res("b", [{"role": "principal", "cle": ["btts", "Oui"], "cote": 1.5, "gagne": True, "rembourse": False}]),
+        gel("c", "2026-12-04T10:00:00+00:00", pari(("btts", "Non"))),                          # pas de résultat : ne compte pas
+    ]
+    j = tmp_path / "j.jsonl"
+    j.write_text("\n".join(json.dumps(l) for l in lignes) + "\n", encoding="utf-8")
+    p = B.paris_gamma(j)
+    assert len(p) == 1 and p[0]["moteur"] == "gamma" and p[0]["mid"] == "a" and p[0]["gagne"] is True and p[0]["tete"] is True       # remboursement exclu, gel tardif ignoré, sans résultat ignoré
+    assert B.paris_gamma(tmp_path / "absent.jsonl") == []

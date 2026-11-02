@@ -20,15 +20,8 @@ Autonome (aucun import d'un autre moteur), hors générateur de tickets. L'ancie
 - Les seuils par marché reprennent son protocole 70 % déjà approuvé, faute de seuil fixe dans la spécification (pas de constante arbitraire).
 
 ## Résultats de calibrage / validation (archive, 525 matchs du 28/09 au 01/11/2026)
-- 34 marchés sur 174 ont un seuil ; les autres n'ont jamais atteint 70 % sur l'archive.
-- Réserve chronologique (matchs du 28/10 au 01/11, seuils appris avant) : 530 paris, **69,8 % réussis contre 77,1 % annoncés**.
-- Brier : fréquence brute prise pour probabilité 0,1531 ; réussite lissée apprise 0,1445. Log loss : 0,6655 contre 0,4541.
-- Sur la réserve, g 0,7–0,8 → 68 % réels ; g 0,9–1,0 → 90 % réels : la fréquence brute **surestime**.
-
-## Limites et risques
-- Minimum 5 matchs au même lieu : 659 matchs de l'archive exclus (données insuffisantes), couverture réduite.
-- Échantillon court (5 semaines), seuils fragiles, taux annoncé surestimé d'environ 7 points.
-- Les 625 scénarios ne sont pas indépendants : ils viennent de 20 observations seulement (4 séquences de 5).
-- Aucune comparaison possible avec l'ancien Omega ou le DC avant d'avoir des matchs gelés réels (`bilan_reel.py`).
-- Journal et page plus lourds que ceux du DC (≈ 1,4 Mo en 165 gels).
-- Tests : `tests/test_moteur_omega_v3.py` (spécification §18), `tests/test_gamma_js.py`.
+Mis à jour par l'audit du 02/11/2026 : voir `docs/AUDIT_OMEGA_V3.md` (méthode, sources, limites).
+- 383 marchés générés ; calibrage sur la **population jouable** (cote ≥ 1,26) : 13 marchés ont un seuil.
+- Réserve chronologique (28/10 au 01/11, seuils appris avant) : 269 paris, 71,8 % réussis contre 75,7 % annoncés (écart 4,0 points, IC 95 % −0,9 à +10,0).
+- Ancien calibrage (toutes observations) : 533 paris, 69,8 % contre 77,1 % : biais de sélection prouvé (voir l'audit).
+- Aucune validation n'est annoncée ; seuls les paris gelés réels trancheront.

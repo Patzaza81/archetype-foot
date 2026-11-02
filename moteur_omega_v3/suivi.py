@@ -11,6 +11,7 @@ Le journal du moteur DC (`data/dc/`) n'est ni lu ni modifié : il reste l'histor
 from __future__ import annotations
 
 import hashlib
+from collections import Counter
 import json
 import subprocess
 from datetime import datetime, timedelta, timezone
@@ -208,14 +209,18 @@ def page(maintenant: datetime | None = None, journal: Path = JOURNAL, sortie: Pa
     res = {l["match_id"]: l for l in lignes if l["type"] == "resultat"}
     tous = {l["match_id"]: l for l in lignes if l["type"] == "pronostic"}
     gels = derniers_pronostics(lignes)
-    a_venir, en_cours, reglees, sans = [], [], [], 0
+    a_venir, en_cours, reglees, sans, exclus = [], [], [], 0, Counter()
     for mid, l in tous.items():
         f = dict((gels.get(mid) or l)["fiche"])
         ko = _ko(f.get("coup_d_envoi_utc"))
         if ko is None:
             continue
         if not f.get("principal"):
-            sans += ko > maintenant
+            if ko > maintenant:
+                if f.get("statut") == "exclu":
+                    exclus[str(f.get("raison") or "raison inconnue").split(":")[0].split(" (")[0].strip()] += 1       # données insuffisantes, doublon, score invalide… : jamais « analysé sans pari »
+                else:
+                    sans += 1
             continue
         if mid in res:
             if ko < maintenant - timedelta(days=JOURS_REGLES_AFFICHES):
@@ -234,7 +239,7 @@ def page(maintenant: datetime | None = None, journal: Path = JOURNAL, sortie: Pa
     p = charger_parametres() or {}
     out = {"genere_le": maintenant.isoformat(timespec="seconds"), "derniere_analyse": (derniere_analyse or maintenant).isoformat(timespec="seconds"),
            "version": p.get("version"), "statut": "observation", "calibrage": p.get("echantillon"), "cote_min": p.get("cote_min"), "ordre_marches": ORDRE,
-           "cles_marches": [list(c) for c in M.CLES], "bilan": bilan(lignes), "sans_pronostic": sans,
+           "cles_marches": [list(c) for c in M.CLES], "bilan": bilan(lignes), "sans_pronostic": sans, "exclus": dict(exclus), "nb_exclus": sum(exclus.values()),
            "a_venir": sorted(a_venir, key=lambda f: str(f.get("coup_d_envoi_utc"))), "en_cours": sorted(en_cours, key=lambda f: str(f.get("coup_d_envoi_utc"))),
            "reglees": sorted(reglees, key=lambda f: str(f.get("coup_d_envoi_utc")), reverse=True)}
     sortie.parent.mkdir(parents=True, exist_ok=True)

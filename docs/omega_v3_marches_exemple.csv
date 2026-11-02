@@ -1,0 +1,384 @@
+groupe;selection;famille;definition;formule;k;n;remboursés;f_brute;strict_k;strict_n;intermediaire_k;intermediaire_n;elargi_k;elargi_n;incompatible_k;incompatible_n;g;statut
+1x2;1;résultat;le domicile gagne;i > j;275;625;0;0.44;28;49;166;324;255;552;20;73;0.35;non_evalue
+1x2;N;résultat;match nul;i = j;150;625;0;0.24;14;49;88;324;137;552;13;73;0.2;non_evalue
+1x2;2;résultat;l'extérieur gagne;i < j;200;625;0;0.32;7;49;70;324;160;552;40;73;0.2;non_evalue
+double_chance;1N;résultat;domicile gagne ou nul;i ≥ j;425;625;0;0.68;42;49;254;324;392;552;33;73;0.6;non_evalue
+double_chance;N2;résultat;nul ou extérieur gagne;i ≤ j;350;625;0;0.56;21;49;158;324;297;552;53;73;0.45;non_evalue
+double_chance;12;résultat;pas de match nul;i ≠ j;475;625;0;0.76;35;49;236;324;415;552;60;73;0.75;non_evalue
+over_under_0.5;plus;buts du match;plus de 0,5 buts dans le match;i + j > 0,5;600;625;0;0.96;47;49;312;324;527;552;73;73;0.95;non_evalue
+over_under_0.5;moins;buts du match;moins de 0,5 buts dans le match;i + j < 0,5;25;625;0;0.04;2;49;12;324;25;552;0;73;0.0;non_evalue
+over_under_1.5;plus;buts du match;plus de 1,5 buts dans le match;i + j > 1,5;525;625;0;0.84;39;49;262;324;452;552;73;73;0.8;non_evalue
+over_under_1.5;moins;buts du match;moins de 1,5 buts dans le match;i + j < 1,5;100;625;0;0.16;10;49;62;324;100;552;0;73;0.05;non_evalue
+over_under_2.5;plus;buts du match;plus de 2,5 buts dans le match;i + j > 2,5;400;625;0;0.64;22;49;171;324;327;552;73;73;0.55;non_evalue
+over_under_2.5;moins;buts du match;moins de 2,5 buts dans le match;i + j < 2,5;225;625;0;0.36;27;49;153;324;225;552;0;73;0.25;non_evalue
+over_under_3.5;plus;buts du match;plus de 3,5 buts dans le match;i + j > 3,5;225;625;0;0.36;4;49;65;324;167;552;58;73;0.25;non_evalue
+over_under_3.5;moins;buts du match;moins de 3,5 buts dans le match;i + j < 3,5;400;625;0;0.64;45;49;259;324;385;552;15;73;0.55;non_evalue
+over_under_4.5;plus;buts du match;plus de 4,5 buts dans le match;i + j > 4,5;100;625;0;0.16;0;49;16;324;62;552;38;73;0.05;non_evalue
+over_under_4.5;moins;buts du match;moins de 4,5 buts dans le match;i + j < 4,5;525;625;0;0.84;49;49;308;324;490;552;35;73;0.8;non_evalue
+over_under_5.5;plus;buts du match;plus de 5,5 buts dans le match;i + j > 5,5;25;625;0;0.04;0;49;2;324;12;552;13;73;0.0;non_evalue
+over_under_5.5;moins;buts du match;moins de 5,5 buts dans le match;i + j < 5,5;600;625;0;0.96;49;49;322;324;540;552;60;73;0.95;non_evalue
+over_under_6.5;plus;buts du match;plus de 6,5 buts dans le match;i + j > 6,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+over_under_6.5;moins;buts du match;moins de 6,5 buts dans le match;i + j < 6,5;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+over_under_7.5;plus;buts du match;plus de 7,5 buts dans le match;i + j > 7,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+over_under_7.5;moins;buts du match;moins de 7,5 buts dans le match;i + j < 7,5;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+over_under_8.5;plus;buts du match;plus de 8,5 buts dans le match;i + j > 8,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+over_under_8.5;moins;buts du match;moins de 8,5 buts dans le match;i + j < 8,5;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+over_under_9.5;plus;buts du match;plus de 9,5 buts dans le match;i + j > 9,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+over_under_9.5;moins;buts du match;moins de 9,5 buts dans le match;i + j < 9,5;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+over_under_1;plus;buts du match;plus de 1 buts, remboursé si exactement 1;i + j > 1 (remboursé si = 1);525;625;75;0.84;39;49;262;324;452;552;73;73;0.8;non_evalue
+over_under_1;moins;buts du match;moins de 1 buts, remboursé si exactement 1;i + j < 1 (remboursé si = 1);25;625;75;0.04;2;49;12;324;25;552;0;73;0.0;non_evalue
+over_under_2;plus;buts du match;plus de 2 buts, remboursé si exactement 2;i + j > 2 (remboursé si = 2);400;625;125;0.64;22;49;171;324;327;552;73;73;0.55;non_evalue
+over_under_2;moins;buts du match;moins de 2 buts, remboursé si exactement 2;i + j < 2 (remboursé si = 2);100;625;125;0.16;10;49;62;324;100;552;0;73;0.05;non_evalue
+over_under_3;plus;buts du match;plus de 3 buts, remboursé si exactement 3;i + j > 3 (remboursé si = 3);225;625;175;0.36;4;49;65;324;167;552;58;73;0.25;non_evalue
+over_under_3;moins;buts du match;moins de 3 buts, remboursé si exactement 3;i + j < 3 (remboursé si = 3);225;625;175;0.36;27;49;153;324;225;552;0;73;0.25;non_evalue
+over_under_4;plus;buts du match;plus de 4 buts, remboursé si exactement 4;i + j > 4 (remboursé si = 4);100;625;125;0.16;0;49;16;324;62;552;38;73;0.05;non_evalue
+over_under_4;moins;buts du match;moins de 4 buts, remboursé si exactement 4;i + j < 4 (remboursé si = 4);400;625;125;0.64;45;49;259;324;385;552;15;73;0.55;non_evalue
+over_under_5;plus;buts du match;plus de 5 buts, remboursé si exactement 5;i + j > 5 (remboursé si = 5);25;625;75;0.04;0;49;2;324;12;552;13;73;0.0;non_evalue
+over_under_5;moins;buts du match;moins de 5 buts, remboursé si exactement 5;i + j < 5 (remboursé si = 5);525;625;75;0.84;49;49;308;324;490;552;35;73;0.8;non_evalue
+over_under_6;plus;buts du match;plus de 6 buts, remboursé si exactement 6;i + j > 6 (remboursé si = 6);0;625;25;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+over_under_6;moins;buts du match;moins de 6 buts, remboursé si exactement 6;i + j < 6 (remboursé si = 6);600;625;25;0.96;49;49;322;324;540;552;60;73;0.95;non_evalue
+over_under_7;plus;buts du match;plus de 7 buts, remboursé si exactement 7;i + j > 7 (remboursé si = 7);0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+over_under_7;moins;buts du match;moins de 7 buts, remboursé si exactement 7;i + j < 7 (remboursé si = 7);625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+over_under_8;plus;buts du match;plus de 8 buts, remboursé si exactement 8;i + j > 8 (remboursé si = 8);0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+over_under_8;moins;buts du match;moins de 8 buts, remboursé si exactement 8;i + j < 8 (remboursé si = 8);625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+over_under_9;plus;buts du match;plus de 9 buts, remboursé si exactement 9;i + j > 9 (remboursé si = 9);0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+over_under_9;moins;buts du match;moins de 9 buts, remboursé si exactement 9;i + j < 9 (remboursé si = 9);625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+btts;Oui;buts du match;les deux équipes marquent;i ≥ 1 et j ≥ 1;400;625;0;0.64;30;49;210;324;342;552;58;73;0.6;non_evalue
+btts;Non;buts du match;au moins une équipe ne marque pas;i = 0 ou j = 0;225;625;0;0.36;19;49;114;324;210;552;15;73;0.2;non_evalue
+multigoal;0-1;buts du match;total de buts entre 0 et 1;0 ≤ i + j ≤ 1;100;625;0;0.16;10;49;62;324;100;552;0;73;0.05;non_evalue
+multigoal;2-3;buts du match;total de buts entre 2 et 3;2 ≤ i + j ≤ 3;300;625;0;0.48;35;49;197;324;285;552;15;73;0.45;non_evalue
+multigoal;4+;buts du match;total de buts d'au moins 4;i + j ≥ 4;225;625;0;0.36;4;49;65;324;167;552;58;73;0.25;non_evalue
+over_under_domicile_0.5;plus;buts d'une équipe;plus de 0,5 buts pour le domicile;i > 0,5;500;625;0;0.8;42;49;270;324;437;552;63;73;0.75;non_evalue
+over_under_domicile_0.5;moins;buts d'une équipe;moins de 0,5 buts pour le domicile;i < 0,5;125;625;0;0.2;7;49;54;324;115;552;10;73;0.0;non_evalue
+over_under_exterieur_0.5;plus;buts d'une équipe;plus de 0,5 buts pour l'extérieur;j > 0,5;500;625;0;0.8;35;49;252;324;432;552;68;73;0.75;non_evalue
+over_under_exterieur_0.5;moins;buts d'une équipe;moins de 0,5 buts pour l'extérieur;j < 0,5;125;625;0;0.2;14;49;72;324;120;552;5;73;0.0;non_evalue
+over_under_domicile_1.5;plus;buts d'une équipe;plus de 1,5 buts pour le domicile;i > 1,5;375;625;0;0.6;28;49;180;324;322;552;53;73;0.5;non_evalue
+over_under_domicile_1.5;moins;buts d'une équipe;moins de 1,5 buts pour le domicile;i < 1,5;250;625;0;0.4;21;49;144;324;230;552;20;73;0.25;non_evalue
+over_under_exterieur_1.5;plus;buts d'une équipe;plus de 1,5 buts pour l'extérieur;j > 1,5;250;625;0;0.4;7;49;72;324;192;552;58;73;0.25;non_evalue
+over_under_exterieur_1.5;moins;buts d'une équipe;moins de 1,5 buts pour l'extérieur;j < 1,5;375;625;0;0.6;42;49;252;324;360;552;15;73;0.5;non_evalue
+over_under_domicile_2.5;plus;buts d'une équipe;plus de 2,5 buts pour le domicile;i > 2,5;125;625;0;0.2;0;49;36;324;92;552;33;73;0.0;non_evalue
+over_under_domicile_2.5;moins;buts d'une équipe;moins de 2,5 buts pour le domicile;i < 2,5;500;625;0;0.8;49;49;288;324;460;552;40;73;0.75;non_evalue
+over_under_exterieur_2.5;plus;buts d'une équipe;plus de 2,5 buts pour l'extérieur;j > 2,5;125;625;0;0.2;0;49;18;324;72;552;53;73;0.0;non_evalue
+over_under_exterieur_2.5;moins;buts d'une équipe;moins de 2,5 buts pour l'extérieur;j < 2,5;500;625;0;0.8;49;49;306;324;480;552;20;73;0.75;non_evalue
+over_under_domicile_3.5;plus;buts d'une équipe;plus de 3,5 buts pour le domicile;i > 3,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+over_under_domicile_3.5;moins;buts d'une équipe;moins de 3,5 buts pour le domicile;i < 3,5;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+over_under_exterieur_3.5;plus;buts d'une équipe;plus de 3,5 buts pour l'extérieur;j > 3,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+over_under_exterieur_3.5;moins;buts d'une équipe;moins de 3,5 buts pour l'extérieur;j < 3,5;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+over_under_domicile_4.5;plus;buts d'une équipe;plus de 4,5 buts pour le domicile;i > 4,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+over_under_domicile_4.5;moins;buts d'une équipe;moins de 4,5 buts pour le domicile;i < 4,5;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+over_under_exterieur_4.5;plus;buts d'une équipe;plus de 4,5 buts pour l'extérieur;j > 4,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+over_under_exterieur_4.5;moins;buts d'une équipe;moins de 4,5 buts pour l'extérieur;j < 4,5;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+over_under_domicile_5.5;plus;buts d'une équipe;plus de 5,5 buts pour le domicile;i > 5,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+over_under_domicile_5.5;moins;buts d'une équipe;moins de 5,5 buts pour le domicile;i < 5,5;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+over_under_exterieur_5.5;plus;buts d'une équipe;plus de 5,5 buts pour l'extérieur;j > 5,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+over_under_exterieur_5.5;moins;buts d'une équipe;moins de 5,5 buts pour l'extérieur;j < 5,5;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+over_under_domicile_6.5;plus;buts d'une équipe;plus de 6,5 buts pour le domicile;i > 6,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+over_under_domicile_6.5;moins;buts d'une équipe;moins de 6,5 buts pour le domicile;i < 6,5;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+over_under_exterieur_6.5;plus;buts d'une équipe;plus de 6,5 buts pour l'extérieur;j > 6,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+over_under_exterieur_6.5;moins;buts d'une équipe;moins de 6,5 buts pour l'extérieur;j < 6,5;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+over_under_domicile_7.5;plus;buts d'une équipe;plus de 7,5 buts pour le domicile;i > 7,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+over_under_domicile_7.5;moins;buts d'une équipe;moins de 7,5 buts pour le domicile;i < 7,5;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+over_under_exterieur_7.5;plus;buts d'une équipe;plus de 7,5 buts pour l'extérieur;j > 7,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+over_under_exterieur_7.5;moins;buts d'une équipe;moins de 7,5 buts pour l'extérieur;j < 7,5;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+over_under_domicile_8.5;plus;buts d'une équipe;plus de 8,5 buts pour le domicile;i > 8,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+over_under_domicile_8.5;moins;buts d'une équipe;moins de 8,5 buts pour le domicile;i < 8,5;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+over_under_exterieur_8.5;plus;buts d'une équipe;plus de 8,5 buts pour l'extérieur;j > 8,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+over_under_exterieur_8.5;moins;buts d'une équipe;moins de 8,5 buts pour l'extérieur;j < 8,5;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+cages_inviolees_domicile;oui;buts d'une équipe;le domicile n'encaisse aucun but;j = 0;125;625;0;0.2;14;49;72;324;120;552;5;73;0.0;non_evalue
+cages_inviolees_domicile;non;buts d'une équipe;le domicile encaisse au moins un but;j ≥ 1;500;625;0;0.8;35;49;252;324;432;552;68;73;0.75;non_evalue
+cages_inviolees_exterieur;oui;buts d'une équipe;l'extérieur n'encaisse aucun but;i = 0;125;625;0;0.2;7;49;54;324;115;552;10;73;0.0;non_evalue
+cages_inviolees_exterieur;non;buts d'une équipe;l'extérieur encaisse au moins un but;i ≥ 1;500;625;0;0.8;42;49;270;324;437;552;63;73;0.75;non_evalue
+victoire_sans_encaisser_domicile;oui;résultat;le domicile gagne sans encaisser;i > j et j = 0;100;625;0;0.16;12;49;60;324;95;552;5;73;0.0;non_evalue
+victoire_sans_encaisser_exterieur;oui;résultat;l'extérieur gagne sans encaisser;j > i et i = 0;100;625;0;0.16;5;49;42;324;90;552;10;73;0.0;non_evalue
+handicap_-8.5;domicile;résultat;domicile avec handicap −8,5;i + (-8,5) > j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_-8.5;exterieur;résultat;extérieur avec handicap +8,5;j + (8,5) > i;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+handicap_-7.5;domicile;résultat;domicile avec handicap −7,5;i + (-7,5) > j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_-7.5;exterieur;résultat;extérieur avec handicap +7,5;j + (7,5) > i;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+handicap_-6.5;domicile;résultat;domicile avec handicap −6,5;i + (-6,5) > j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_-6.5;exterieur;résultat;extérieur avec handicap +6,5;j + (6,5) > i;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+handicap_-5.5;domicile;résultat;domicile avec handicap −5,5;i + (-5,5) > j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_-5.5;exterieur;résultat;extérieur avec handicap +5,5;j + (5,5) > i;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+handicap_-4.5;domicile;résultat;domicile avec handicap −4,5;i + (-4,5) > j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_-4.5;exterieur;résultat;extérieur avec handicap +4,5;j + (4,5) > i;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+handicap_-3.5;domicile;résultat;domicile avec handicap −3,5;i + (-3,5) > j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_-3.5;exterieur;résultat;extérieur avec handicap +3,5;j + (3,5) > i;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+handicap_-2.5;domicile;résultat;domicile avec handicap −2,5;i + (-2,5) > j;25;625;0;0.04;0;49;8;324;20;552;5;73;0.0;non_evalue
+handicap_-2.5;exterieur;résultat;extérieur avec handicap +2,5;j + (2,5) > i;600;625;0;0.96;49;49;316;324;532;552;68;73;0.95;non_evalue
+handicap_-1.5;domicile;résultat;domicile avec handicap −1,5;i + (-1,5) > j;125;625;0;0.2;8;49;60;324;110;552;15;73;0.1;non_evalue
+handicap_-1.5;exterieur;résultat;extérieur avec handicap +1,5;j + (1,5) > i;500;625;0;0.8;41;49;264;324;442;552;58;73;0.75;non_evalue
+handicap_-0.5;domicile;résultat;domicile avec handicap −0,5;i + (-0,5) > j;275;625;0;0.44;28;49;166;324;255;552;20;73;0.35;non_evalue
+handicap_-0.5;exterieur;résultat;extérieur avec handicap +0,5;j + (0,5) > i;350;625;0;0.56;21;49;158;324;297;552;53;73;0.45;non_evalue
+handicap_0.5;domicile;résultat;domicile avec handicap +0,5;i + (0,5) > j;425;625;0;0.68;42;49;254;324;392;552;33;73;0.6;non_evalue
+handicap_0.5;exterieur;résultat;extérieur avec handicap −0,5;j + (-0,5) > i;200;625;0;0.32;7;49;70;324;160;552;40;73;0.2;non_evalue
+handicap_1.5;domicile;résultat;domicile avec handicap +1,5;i + (1,5) > j;550;625;0;0.88;48;49;307;324;497;552;53;73;0.85;non_evalue
+handicap_1.5;exterieur;résultat;extérieur avec handicap −1,5;j + (-1,5) > i;75;625;0;0.12;1;49;17;324;55;552;20;73;0.05;non_evalue
+handicap_2.5;domicile;résultat;domicile avec handicap +2,5;i + (2,5) > j;600;625;0;0.96;49;49;321;324;537;552;63;73;0.95;non_evalue
+handicap_2.5;exterieur;résultat;extérieur avec handicap −2,5;j + (-2,5) > i;25;625;0;0.04;0;49;3;324;15;552;10;73;0.0;non_evalue
+handicap_3.5;domicile;résultat;domicile avec handicap +3,5;i + (3,5) > j;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+handicap_3.5;exterieur;résultat;extérieur avec handicap −3,5;j + (-3,5) > i;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_4.5;domicile;résultat;domicile avec handicap +4,5;i + (4,5) > j;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+handicap_4.5;exterieur;résultat;extérieur avec handicap −4,5;j + (-4,5) > i;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_5.5;domicile;résultat;domicile avec handicap +5,5;i + (5,5) > j;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+handicap_5.5;exterieur;résultat;extérieur avec handicap −5,5;j + (-5,5) > i;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_6.5;domicile;résultat;domicile avec handicap +6,5;i + (6,5) > j;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+handicap_6.5;exterieur;résultat;extérieur avec handicap −6,5;j + (-6,5) > i;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_7.5;domicile;résultat;domicile avec handicap +7,5;i + (7,5) > j;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+handicap_7.5;exterieur;résultat;extérieur avec handicap −7,5;j + (-7,5) > i;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_8.5;domicile;résultat;domicile avec handicap +8,5;i + (8,5) > j;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+handicap_8.5;exterieur;résultat;extérieur avec handicap −8,5;j + (-8,5) > i;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_0;domicile;résultat;domicile gagne, remboursé si nul;i > j (remboursé si i = j);275;625;150;0.44;28;49;166;324;255;552;20;73;0.35;non_evalue
+handicap_0;exterieur;résultat;extérieur gagne, remboursé si nul;j > i (remboursé si i = j);200;625;150;0.32;7;49;70;324;160;552;40;73;0.2;non_evalue
+dc_total_1.5;1N|plus;combinés;domicile gagne ou nul et plus de 1,5 buts;(i ≥ j) et i + j > 1,5;375;625;0;0.6;36;49;222;324;342;552;33;73;0.5;non_evalue
+dc_total_1.5;1N|moins;combinés;domicile gagne ou nul et moins de 1,5 buts;(i ≥ j) et i + j < 1,5;50;625;0;0.08;6;49;32;324;50;552;0;73;0.0;non_evalue
+dc_total_1.5;N2|plus;combinés;nul ou extérieur gagne et plus de 1,5 buts;(i ≤ j) et i + j > 1,5;275;625;0;0.44;15;49;116;324;222;552;53;73;0.3;non_evalue
+dc_total_1.5;N2|moins;combinés;nul ou extérieur gagne et moins de 1,5 buts;(i ≤ j) et i + j < 1,5;75;625;0;0.12;6;49;42;324;75;552;0;73;0.0;non_evalue
+dc_total_1.5;12|plus;combinés;pas de nul et plus de 1,5 buts;(i ≠ j) et i + j > 1,5;400;625;0;0.64;27;49;186;324;340;552;60;73;0.6;non_evalue
+dc_total_1.5;12|moins;combinés;pas de nul et moins de 1,5 buts;(i ≠ j) et i + j < 1,5;75;625;0;0.12;8;49;50;324;75;552;0;73;0.05;non_evalue
+1x2_total_1.5;1|plus;combinés;le domicile gagne et plus de 1,5 buts;(i > j) et i + j > 1,5;250;625;0;0.4;24;49;146;324;230;552;20;73;0.3;non_evalue
+1x2_total_1.5;1|moins;combinés;le domicile gagne et moins de 1,5 buts;(i > j) et i + j < 1,5;25;625;0;0.04;4;49;20;324;25;552;0;73;0.0;non_evalue
+1x2_total_1.5;N|plus;combinés;nul et plus de 1,5 buts;(i = j) et i + j > 1,5;125;625;0;0.2;12;49;76;324;112;552;13;73;0.15;non_evalue
+1x2_total_1.5;N|moins;combinés;nul et moins de 1,5 buts;(i = j) et i + j < 1,5;25;625;0;0.04;2;49;12;324;25;552;0;73;0.0;non_evalue
+1x2_total_1.5;2|plus;combinés;l'extérieur gagne et plus de 1,5 buts;(i < j) et i + j > 1,5;150;625;0;0.24;3;49;40;324;110;552;40;73;0.1;non_evalue
+1x2_total_1.5;2|moins;combinés;l'extérieur gagne et moins de 1,5 buts;(i < j) et i + j < 1,5;50;625;0;0.08;4;49;30;324;50;552;0;73;0.0;non_evalue
+dc_total_2.5;1N|plus;combinés;domicile gagne ou nul et plus de 2,5 buts;(i ≥ j) et i + j > 2,5;275;625;0;0.44;20;49;140;324;242;552;33;73;0.3;non_evalue
+dc_total_2.5;1N|moins;combinés;domicile gagne ou nul et moins de 2,5 buts;(i ≥ j) et i + j < 2,5;150;625;0;0.24;22;49;114;324;150;552;0;73;0.1;non_evalue
+dc_total_2.5;N2|plus;combinés;nul ou extérieur gagne et plus de 2,5 buts;(i ≤ j) et i + j > 2,5;200;625;0;0.32;6;49;57;324;147;552;53;73;0.15;non_evalue
+dc_total_2.5;N2|moins;combinés;nul ou extérieur gagne et moins de 2,5 buts;(i ≤ j) et i + j < 2,5;150;625;0;0.24;15;49;101;324;150;552;0;73;0.1;non_evalue
+dc_total_2.5;12|plus;combinés;pas de nul et plus de 2,5 buts;(i ≠ j) et i + j > 2,5;325;625;0;0.52;18;49;145;324;265;552;60;73;0.45;non_evalue
+dc_total_2.5;12|moins;combinés;pas de nul et moins de 2,5 buts;(i ≠ j) et i + j < 2,5;150;625;0;0.24;17;49;91;324;150;552;0;73;0.15;non_evalue
+1x2_total_2.5;1|plus;combinés;le domicile gagne et plus de 2,5 buts;(i > j) et i + j > 2,5;200;625;0;0.32;16;49;114;324;180;552;20;73;0.2;non_evalue
+1x2_total_2.5;1|moins;combinés;le domicile gagne et moins de 2,5 buts;(i > j) et i + j < 2,5;75;625;0;0.12;12;49;52;324;75;552;0;73;0.0;non_evalue
+1x2_total_2.5;N|plus;combinés;nul et plus de 2,5 buts;(i = j) et i + j > 2,5;75;625;0;0.12;4;49;26;324;62;552;13;73;0.05;non_evalue
+1x2_total_2.5;N|moins;combinés;nul et moins de 2,5 buts;(i = j) et i + j < 2,5;75;625;0;0.12;10;49;62;324;75;552;0;73;0.05;non_evalue
+1x2_total_2.5;2|plus;combinés;l'extérieur gagne et plus de 2,5 buts;(i < j) et i + j > 2,5;125;625;0;0.2;2;49;31;324;85;552;40;73;0.05;non_evalue
+1x2_total_2.5;2|moins;combinés;l'extérieur gagne et moins de 2,5 buts;(i < j) et i + j < 2,5;75;625;0;0.12;5;49;39;324;75;552;0;73;0.0;non_evalue
+dc_total_3.5;1N|plus;combinés;domicile gagne ou nul et plus de 3,5 buts;(i ≥ j) et i + j > 3,5;150;625;0;0.24;4;49;52;324;122;552;28;73;0.1;non_evalue
+dc_total_3.5;1N|moins;combinés;domicile gagne ou nul et moins de 3,5 buts;(i ≥ j) et i + j < 3,5;275;625;0;0.44;38;49;202;324;270;552;5;73;0.3;non_evalue
+dc_total_3.5;N2|plus;combinés;nul ou extérieur gagne et plus de 3,5 buts;(i ≤ j) et i + j > 3,5;150;625;0;0.24;4;49;39;324;107;552;43;73;0.1;non_evalue
+dc_total_3.5;N2|moins;combinés;nul ou extérieur gagne et moins de 3,5 buts;(i ≤ j) et i + j < 3,5;200;625;0;0.32;17;49;119;324;190;552;10;73;0.15;non_evalue
+dc_total_3.5;12|plus;combinés;pas de nul et plus de 3,5 buts;(i ≠ j) et i + j > 3,5;150;625;0;0.24;0;49;39;324;105;552;45;73;0.15;non_evalue
+dc_total_3.5;12|moins;combinés;pas de nul et moins de 3,5 buts;(i ≠ j) et i + j < 3,5;325;625;0;0.52;35;49;197;324;310;552;15;73;0.45;non_evalue
+1x2_total_3.5;1|plus;combinés;le domicile gagne et plus de 3,5 buts;(i > j) et i + j > 3,5;75;625;0;0.12;0;49;26;324;60;552;15;73;0.0;non_evalue
+1x2_total_3.5;1|moins;combinés;le domicile gagne et moins de 3,5 buts;(i > j) et i + j < 3,5;200;625;0;0.32;28;49;140;324;195;552;5;73;0.2;non_evalue
+1x2_total_3.5;N|plus;combinés;nul et plus de 3,5 buts;(i = j) et i + j > 3,5;75;625;0;0.12;4;49;26;324;62;552;13;73;0.05;non_evalue
+1x2_total_3.5;N|moins;combinés;nul et moins de 3,5 buts;(i = j) et i + j < 3,5;75;625;0;0.12;10;49;62;324;75;552;0;73;0.05;non_evalue
+1x2_total_3.5;2|plus;combinés;l'extérieur gagne et plus de 3,5 buts;(i < j) et i + j > 3,5;75;625;0;0.12;0;49;13;324;45;552;30;73;0.0;non_evalue
+1x2_total_3.5;2|moins;combinés;l'extérieur gagne et moins de 3,5 buts;(i < j) et i + j < 3,5;125;625;0;0.2;7;49;57;324;115;552;10;73;0.05;non_evalue
+dc_total_4.5;1N|plus;combinés;domicile gagne ou nul et plus de 4,5 buts;(i ≥ j) et i + j > 4,5;50;625;0;0.08;0;49;8;324;32;552;18;73;0.0;non_evalue
+dc_total_4.5;1N|moins;combinés;domicile gagne ou nul et moins de 4,5 buts;(i ≥ j) et i + j < 4,5;375;625;0;0.6;42;49;246;324;360;552;15;73;0.5;non_evalue
+dc_total_4.5;N2|plus;combinés;nul ou extérieur gagne et plus de 4,5 buts;(i ≤ j) et i + j > 4,5;75;625;0;0.12;0;49;10;324;42;552;33;73;0.0;non_evalue
+dc_total_4.5;N2|moins;combinés;nul ou extérieur gagne et moins de 4,5 buts;(i ≤ j) et i + j < 4,5;275;625;0;0.44;21;49;148;324;255;552;20;73;0.3;non_evalue
+dc_total_4.5;12|plus;combinés;pas de nul et plus de 4,5 buts;(i ≠ j) et i + j > 4,5;75;625;0;0.12;0;49;14;324;50;552;25;73;0.05;non_evalue
+dc_total_4.5;12|moins;combinés;pas de nul et moins de 4,5 buts;(i ≠ j) et i + j < 4,5;400;625;0;0.64;35;49;222;324;365;552;35;73;0.6;non_evalue
+1x2_total_4.5;1|plus;combinés;le domicile gagne et plus de 4,5 buts;(i > j) et i + j > 4,5;25;625;0;0.04;0;49;6;324;20;552;5;73;0.0;non_evalue
+1x2_total_4.5;1|moins;combinés;le domicile gagne et moins de 4,5 buts;(i > j) et i + j < 4,5;250;625;0;0.4;28;49;160;324;235;552;15;73;0.3;non_evalue
+1x2_total_4.5;N|plus;combinés;nul et plus de 4,5 buts;(i = j) et i + j > 4,5;25;625;0;0.04;0;49;2;324;12;552;13;73;0.0;non_evalue
+1x2_total_4.5;N|moins;combinés;nul et moins de 4,5 buts;(i = j) et i + j < 4,5;125;625;0;0.2;14;49;86;324;125;552;0;73;0.15;non_evalue
+1x2_total_4.5;2|plus;combinés;l'extérieur gagne et plus de 4,5 buts;(i < j) et i + j > 4,5;50;625;0;0.08;0;49;8;324;30;552;20;73;0.0;non_evalue
+1x2_total_4.5;2|moins;combinés;l'extérieur gagne et moins de 4,5 buts;(i < j) et i + j < 4,5;150;625;0;0.24;7;49;62;324;130;552;20;73;0.1;non_evalue
+dc_total_5.5;1N|plus;combinés;domicile gagne ou nul et plus de 5,5 buts;(i ≥ j) et i + j > 5,5;25;625;0;0.04;0;49;2;324;12;552;13;73;0.0;non_evalue
+dc_total_5.5;1N|moins;combinés;domicile gagne ou nul et moins de 5,5 buts;(i ≥ j) et i + j < 5,5;400;625;0;0.64;42;49;252;324;380;552;20;73;0.55;non_evalue
+dc_total_5.5;N2|plus;combinés;nul ou extérieur gagne et plus de 5,5 buts;(i ≤ j) et i + j > 5,5;25;625;0;0.04;0;49;2;324;12;552;13;73;0.0;non_evalue
+dc_total_5.5;N2|moins;combinés;nul ou extérieur gagne et moins de 5,5 buts;(i ≤ j) et i + j < 5,5;325;625;0;0.52;21;49;156;324;285;552;40;73;0.4;non_evalue
+dc_total_5.5;12|plus;combinés;pas de nul et plus de 5,5 buts;(i ≠ j) et i + j > 5,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+dc_total_5.5;12|moins;combinés;pas de nul et moins de 5,5 buts;(i ≠ j) et i + j < 5,5;475;625;0;0.76;35;49;236;324;415;552;60;73;0.75;non_evalue
+1x2_total_5.5;1|plus;combinés;le domicile gagne et plus de 5,5 buts;(i > j) et i + j > 5,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+1x2_total_5.5;1|moins;combinés;le domicile gagne et moins de 5,5 buts;(i > j) et i + j < 5,5;275;625;0;0.44;28;49;166;324;255;552;20;73;0.35;non_evalue
+1x2_total_5.5;N|plus;combinés;nul et plus de 5,5 buts;(i = j) et i + j > 5,5;25;625;0;0.04;0;49;2;324;12;552;13;73;0.0;non_evalue
+1x2_total_5.5;N|moins;combinés;nul et moins de 5,5 buts;(i = j) et i + j < 5,5;125;625;0;0.2;14;49;86;324;125;552;0;73;0.15;non_evalue
+1x2_total_5.5;2|plus;combinés;l'extérieur gagne et plus de 5,5 buts;(i < j) et i + j > 5,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+1x2_total_5.5;2|moins;combinés;l'extérieur gagne et moins de 5,5 buts;(i < j) et i + j < 5,5;200;625;0;0.32;7;49;70;324;160;552;40;73;0.2;non_evalue
+dc_total_6.5;1N|plus;combinés;domicile gagne ou nul et plus de 6,5 buts;(i ≥ j) et i + j > 6,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+dc_total_6.5;1N|moins;combinés;domicile gagne ou nul et moins de 6,5 buts;(i ≥ j) et i + j < 6,5;425;625;0;0.68;42;49;254;324;392;552;33;73;0.6;non_evalue
+dc_total_6.5;N2|plus;combinés;nul ou extérieur gagne et plus de 6,5 buts;(i ≤ j) et i + j > 6,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+dc_total_6.5;N2|moins;combinés;nul ou extérieur gagne et moins de 6,5 buts;(i ≤ j) et i + j < 6,5;350;625;0;0.56;21;49;158;324;297;552;53;73;0.45;non_evalue
+dc_total_6.5;12|plus;combinés;pas de nul et plus de 6,5 buts;(i ≠ j) et i + j > 6,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+dc_total_6.5;12|moins;combinés;pas de nul et moins de 6,5 buts;(i ≠ j) et i + j < 6,5;475;625;0;0.76;35;49;236;324;415;552;60;73;0.75;non_evalue
+1x2_total_6.5;1|plus;combinés;le domicile gagne et plus de 6,5 buts;(i > j) et i + j > 6,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+1x2_total_6.5;1|moins;combinés;le domicile gagne et moins de 6,5 buts;(i > j) et i + j < 6,5;275;625;0;0.44;28;49;166;324;255;552;20;73;0.35;non_evalue
+1x2_total_6.5;N|plus;combinés;nul et plus de 6,5 buts;(i = j) et i + j > 6,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+1x2_total_6.5;N|moins;combinés;nul et moins de 6,5 buts;(i = j) et i + j < 6,5;150;625;0;0.24;14;49;88;324;137;552;13;73;0.2;non_evalue
+1x2_total_6.5;2|plus;combinés;l'extérieur gagne et plus de 6,5 buts;(i < j) et i + j > 6,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+1x2_total_6.5;2|moins;combinés;l'extérieur gagne et moins de 6,5 buts;(i < j) et i + j < 6,5;200;625;0;0.32;7;49;70;324;160;552;40;73;0.2;non_evalue
+dc_total_7.5;1N|plus;combinés;domicile gagne ou nul et plus de 7,5 buts;(i ≥ j) et i + j > 7,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+dc_total_7.5;1N|moins;combinés;domicile gagne ou nul et moins de 7,5 buts;(i ≥ j) et i + j < 7,5;425;625;0;0.68;42;49;254;324;392;552;33;73;0.6;non_evalue
+dc_total_7.5;N2|plus;combinés;nul ou extérieur gagne et plus de 7,5 buts;(i ≤ j) et i + j > 7,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+dc_total_7.5;N2|moins;combinés;nul ou extérieur gagne et moins de 7,5 buts;(i ≤ j) et i + j < 7,5;350;625;0;0.56;21;49;158;324;297;552;53;73;0.45;non_evalue
+dc_total_7.5;12|plus;combinés;pas de nul et plus de 7,5 buts;(i ≠ j) et i + j > 7,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+dc_total_7.5;12|moins;combinés;pas de nul et moins de 7,5 buts;(i ≠ j) et i + j < 7,5;475;625;0;0.76;35;49;236;324;415;552;60;73;0.75;non_evalue
+1x2_total_7.5;1|plus;combinés;le domicile gagne et plus de 7,5 buts;(i > j) et i + j > 7,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+1x2_total_7.5;1|moins;combinés;le domicile gagne et moins de 7,5 buts;(i > j) et i + j < 7,5;275;625;0;0.44;28;49;166;324;255;552;20;73;0.35;non_evalue
+1x2_total_7.5;N|plus;combinés;nul et plus de 7,5 buts;(i = j) et i + j > 7,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+1x2_total_7.5;N|moins;combinés;nul et moins de 7,5 buts;(i = j) et i + j < 7,5;150;625;0;0.24;14;49;88;324;137;552;13;73;0.2;non_evalue
+1x2_total_7.5;2|plus;combinés;l'extérieur gagne et plus de 7,5 buts;(i < j) et i + j > 7,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+1x2_total_7.5;2|moins;combinés;l'extérieur gagne et moins de 7,5 buts;(i < j) et i + j < 7,5;200;625;0;0.32;7;49;70;324;160;552;40;73;0.2;non_evalue
+dc_total_8.5;1N|plus;combinés;domicile gagne ou nul et plus de 8,5 buts;(i ≥ j) et i + j > 8,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+dc_total_8.5;1N|moins;combinés;domicile gagne ou nul et moins de 8,5 buts;(i ≥ j) et i + j < 8,5;425;625;0;0.68;42;49;254;324;392;552;33;73;0.6;non_evalue
+dc_total_8.5;N2|plus;combinés;nul ou extérieur gagne et plus de 8,5 buts;(i ≤ j) et i + j > 8,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+dc_total_8.5;N2|moins;combinés;nul ou extérieur gagne et moins de 8,5 buts;(i ≤ j) et i + j < 8,5;350;625;0;0.56;21;49;158;324;297;552;53;73;0.45;non_evalue
+dc_total_8.5;12|plus;combinés;pas de nul et plus de 8,5 buts;(i ≠ j) et i + j > 8,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+dc_total_8.5;12|moins;combinés;pas de nul et moins de 8,5 buts;(i ≠ j) et i + j < 8,5;475;625;0;0.76;35;49;236;324;415;552;60;73;0.75;non_evalue
+1x2_total_8.5;1|plus;combinés;le domicile gagne et plus de 8,5 buts;(i > j) et i + j > 8,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+1x2_total_8.5;1|moins;combinés;le domicile gagne et moins de 8,5 buts;(i > j) et i + j < 8,5;275;625;0;0.44;28;49;166;324;255;552;20;73;0.35;non_evalue
+1x2_total_8.5;N|plus;combinés;nul et plus de 8,5 buts;(i = j) et i + j > 8,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+1x2_total_8.5;N|moins;combinés;nul et moins de 8,5 buts;(i = j) et i + j < 8,5;150;625;0;0.24;14;49;88;324;137;552;13;73;0.2;non_evalue
+1x2_total_8.5;2|plus;combinés;l'extérieur gagne et plus de 8,5 buts;(i < j) et i + j > 8,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+1x2_total_8.5;2|moins;combinés;l'extérieur gagne et moins de 8,5 buts;(i < j) et i + j < 8,5;200;625;0;0.32;7;49;70;324;160;552;40;73;0.2;non_evalue
+dc_total_9.5;1N|plus;combinés;domicile gagne ou nul et plus de 9,5 buts;(i ≥ j) et i + j > 9,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+dc_total_9.5;1N|moins;combinés;domicile gagne ou nul et moins de 9,5 buts;(i ≥ j) et i + j < 9,5;425;625;0;0.68;42;49;254;324;392;552;33;73;0.6;non_evalue
+dc_total_9.5;N2|plus;combinés;nul ou extérieur gagne et plus de 9,5 buts;(i ≤ j) et i + j > 9,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+dc_total_9.5;N2|moins;combinés;nul ou extérieur gagne et moins de 9,5 buts;(i ≤ j) et i + j < 9,5;350;625;0;0.56;21;49;158;324;297;552;53;73;0.45;non_evalue
+dc_total_9.5;12|plus;combinés;pas de nul et plus de 9,5 buts;(i ≠ j) et i + j > 9,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+dc_total_9.5;12|moins;combinés;pas de nul et moins de 9,5 buts;(i ≠ j) et i + j < 9,5;475;625;0;0.76;35;49;236;324;415;552;60;73;0.75;non_evalue
+1x2_total_9.5;1|plus;combinés;le domicile gagne et plus de 9,5 buts;(i > j) et i + j > 9,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+1x2_total_9.5;1|moins;combinés;le domicile gagne et moins de 9,5 buts;(i > j) et i + j < 9,5;275;625;0;0.44;28;49;166;324;255;552;20;73;0.35;non_evalue
+1x2_total_9.5;N|plus;combinés;nul et plus de 9,5 buts;(i = j) et i + j > 9,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+1x2_total_9.5;N|moins;combinés;nul et moins de 9,5 buts;(i = j) et i + j < 9,5;150;625;0;0.24;14;49;88;324;137;552;13;73;0.2;non_evalue
+1x2_total_9.5;2|plus;combinés;l'extérieur gagne et plus de 9,5 buts;(i < j) et i + j > 9,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+1x2_total_9.5;2|moins;combinés;l'extérieur gagne et moins de 9,5 buts;(i < j) et i + j < 9,5;200;625;0;0.32;7;49;70;324;160;552;40;73;0.2;non_evalue
+dc_btts;1N|Oui;combinés;domicile gagne ou nul et les deux marquent;(i ≥ j) et (i ≥ 1 et j ≥ 1);300;625;0;0.48;28;49;182;324;272;552;28;73;0.4;non_evalue
+dc_btts;1N|Non;combinés;domicile gagne ou nul et une équipe au moins ne marque pas;(i ≥ j) et (i = 0 ou j = 0);125;625;0;0.2;14;49;72;324;120;552;5;73;0.0;non_evalue
+dc_btts;N2|Oui;combinés;nul ou extérieur gagne et les deux marquent;(i ≤ j) et (i ≥ 1 et j ≥ 1);225;625;0;0.36;14;49;104;324;182;552;43;73;0.25;non_evalue
+dc_btts;N2|Non;combinés;nul ou extérieur gagne et une équipe au moins ne marque pas;(i ≤ j) et (i = 0 ou j = 0);125;625;0;0.2;7;49;54;324;115;552;10;73;0.0;non_evalue
+dc_btts;12|Oui;combinés;pas de nul et les deux marquent;(i ≠ j) et (i ≥ 1 et j ≥ 1);275;625;0;0.44;18;49;134;324;230;552;45;73;0.4;non_evalue
+dc_btts;12|Non;combinés;pas de nul et une équipe au moins ne marque pas;(i ≠ j) et (i = 0 ou j = 0);200;625;0;0.32;17;49;102;324;185;552;15;73;0.2;non_evalue
+1x2_btts;1|Oui;combinés;le domicile gagne et les deux marquent;(i > j) et (i ≥ 1 et j ≥ 1);175;625;0;0.28;16;49;106;324;160;552;15;73;0.2;non_evalue
+1x2_btts;1|Non;combinés;le domicile gagne et une équipe au moins ne marque pas;(i > j) et (i = 0 ou j = 0);100;625;0;0.16;12;49;60;324;95;552;5;73;0.0;non_evalue
+1x2_btts;N|Oui;combinés;nul et les deux marquent;(i = j) et (i ≥ 1 et j ≥ 1);125;625;0;0.2;12;49;76;324;112;552;13;73;0.15;non_evalue
+1x2_btts;N|Non;combinés;nul et une équipe au moins ne marque pas;(i = j) et (i = 0 ou j = 0);25;625;0;0.04;2;49;12;324;25;552;0;73;0.0;non_evalue
+1x2_btts;2|Oui;combinés;l'extérieur gagne et les deux marquent;(i < j) et (i ≥ 1 et j ≥ 1);100;625;0;0.16;2;49;28;324;70;552;30;73;0.05;non_evalue
+1x2_btts;2|Non;combinés;l'extérieur gagne et une équipe au moins ne marque pas;(i < j) et (i = 0 ou j = 0);100;625;0;0.16;5;49;42;324;90;552;10;73;0.0;non_evalue
+btts_total_1.5;Oui|plus;combinés;les deux marquent et plus de 1,5 buts;(i ≥ 1 et j ≥ 1) et i + j > 1,5;400;625;0;0.64;30;49;210;324;342;552;58;73;0.6;non_evalue
+btts_total_1.5;Oui|moins;combinés;les deux marquent et moins de 1,5 buts;(i ≥ 1 et j ≥ 1) et i + j < 1,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+btts_total_1.5;Non|plus;combinés;une équipe au moins ne marque pas et plus de 1,5 buts;(i = 0 ou j = 0) et i + j > 1,5;125;625;0;0.2;9;49;52;324;110;552;15;73;0.1;non_evalue
+btts_total_1.5;Non|moins;combinés;une équipe au moins ne marque pas et moins de 1,5 buts;(i = 0 ou j = 0) et i + j < 1,5;100;625;0;0.16;10;49;62;324;100;552;0;73;0.05;non_evalue
+btts_total_2.5;Oui|plus;combinés;les deux marquent et plus de 2,5 buts;(i ≥ 1 et j ≥ 1) et i + j > 2,5;350;625;0;0.56;22;49;160;324;292;552;58;73;0.5;non_evalue
+btts_total_2.5;Oui|moins;combinés;les deux marquent et moins de 2,5 buts;(i ≥ 1 et j ≥ 1) et i + j < 2,5;50;625;0;0.08;8;49;50;324;50;552;0;73;0.0;non_evalue
+btts_total_2.5;Non|plus;combinés;une équipe au moins ne marque pas et plus de 2,5 buts;(i = 0 ou j = 0) et i + j > 2,5;50;625;0;0.08;0;49;11;324;35;552;15;73;0.05;non_evalue
+btts_total_2.5;Non|moins;combinés;une équipe au moins ne marque pas et moins de 2,5 buts;(i = 0 ou j = 0) et i + j < 2,5;175;625;0;0.28;19;49;103;324;175;552;0;73;0.15;non_evalue
+btts_total_3.5;Oui|plus;combinés;les deux marquent et plus de 3,5 buts;(i ≥ 1 et j ≥ 1) et i + j > 3,5;225;625;0;0.36;4;49;65;324;167;552;58;73;0.25;non_evalue
+btts_total_3.5;Oui|moins;combinés;les deux marquent et moins de 3,5 buts;(i ≥ 1 et j ≥ 1) et i + j < 3,5;175;625;0;0.28;26;49;145;324;175;552;0;73;0.2;non_evalue
+btts_total_3.5;Non|plus;combinés;une équipe au moins ne marque pas et plus de 3,5 buts;(i = 0 ou j = 0) et i + j > 3,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+btts_total_3.5;Non|moins;combinés;une équipe au moins ne marque pas et moins de 3,5 buts;(i = 0 ou j = 0) et i + j < 3,5;225;625;0;0.36;19;49;114;324;210;552;15;73;0.2;non_evalue
+btts_total_4.5;Oui|plus;combinés;les deux marquent et plus de 4,5 buts;(i ≥ 1 et j ≥ 1) et i + j > 4,5;100;625;0;0.16;0;49;16;324;62;552;38;73;0.05;non_evalue
+btts_total_4.5;Oui|moins;combinés;les deux marquent et moins de 4,5 buts;(i ≥ 1 et j ≥ 1) et i + j < 4,5;300;625;0;0.48;30;49;194;324;280;552;20;73;0.4;non_evalue
+btts_total_4.5;Non|plus;combinés;une équipe au moins ne marque pas et plus de 4,5 buts;(i = 0 ou j = 0) et i + j > 4,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+btts_total_4.5;Non|moins;combinés;une équipe au moins ne marque pas et moins de 4,5 buts;(i = 0 ou j = 0) et i + j < 4,5;225;625;0;0.36;19;49;114;324;210;552;15;73;0.2;non_evalue
+btts_total_5.5;Oui|plus;combinés;les deux marquent et plus de 5,5 buts;(i ≥ 1 et j ≥ 1) et i + j > 5,5;25;625;0;0.04;0;49;2;324;12;552;13;73;0.0;non_evalue
+btts_total_5.5;Oui|moins;combinés;les deux marquent et moins de 5,5 buts;(i ≥ 1 et j ≥ 1) et i + j < 5,5;375;625;0;0.6;30;49;208;324;330;552;45;73;0.55;non_evalue
+btts_total_5.5;Non|plus;combinés;une équipe au moins ne marque pas et plus de 5,5 buts;(i = 0 ou j = 0) et i + j > 5,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+btts_total_5.5;Non|moins;combinés;une équipe au moins ne marque pas et moins de 5,5 buts;(i = 0 ou j = 0) et i + j < 5,5;225;625;0;0.36;19;49;114;324;210;552;15;73;0.2;non_evalue
+btts_total_6.5;Oui|plus;combinés;les deux marquent et plus de 6,5 buts;(i ≥ 1 et j ≥ 1) et i + j > 6,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+btts_total_6.5;Oui|moins;combinés;les deux marquent et moins de 6,5 buts;(i ≥ 1 et j ≥ 1) et i + j < 6,5;400;625;0;0.64;30;49;210;324;342;552;58;73;0.6;non_evalue
+btts_total_6.5;Non|plus;combinés;une équipe au moins ne marque pas et plus de 6,5 buts;(i = 0 ou j = 0) et i + j > 6,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+btts_total_6.5;Non|moins;combinés;une équipe au moins ne marque pas et moins de 6,5 buts;(i = 0 ou j = 0) et i + j < 6,5;225;625;0;0.36;19;49;114;324;210;552;15;73;0.2;non_evalue
+btts_total_7.5;Oui|plus;combinés;les deux marquent et plus de 7,5 buts;(i ≥ 1 et j ≥ 1) et i + j > 7,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+btts_total_7.5;Oui|moins;combinés;les deux marquent et moins de 7,5 buts;(i ≥ 1 et j ≥ 1) et i + j < 7,5;400;625;0;0.64;30;49;210;324;342;552;58;73;0.6;non_evalue
+btts_total_7.5;Non|plus;combinés;une équipe au moins ne marque pas et plus de 7,5 buts;(i = 0 ou j = 0) et i + j > 7,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+btts_total_7.5;Non|moins;combinés;une équipe au moins ne marque pas et moins de 7,5 buts;(i = 0 ou j = 0) et i + j < 7,5;225;625;0;0.36;19;49;114;324;210;552;15;73;0.2;non_evalue
+btts_total_8.5;Oui|plus;combinés;les deux marquent et plus de 8,5 buts;(i ≥ 1 et j ≥ 1) et i + j > 8,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+btts_total_8.5;Oui|moins;combinés;les deux marquent et moins de 8,5 buts;(i ≥ 1 et j ≥ 1) et i + j < 8,5;400;625;0;0.64;30;49;210;324;342;552;58;73;0.6;non_evalue
+btts_total_8.5;Non|plus;combinés;une équipe au moins ne marque pas et plus de 8,5 buts;(i = 0 ou j = 0) et i + j > 8,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+btts_total_8.5;Non|moins;combinés;une équipe au moins ne marque pas et moins de 8,5 buts;(i = 0 ou j = 0) et i + j < 8,5;225;625;0;0.36;19;49;114;324;210;552;15;73;0.2;non_evalue
+btts_total_9.5;Oui|plus;combinés;les deux marquent et plus de 9,5 buts;(i ≥ 1 et j ≥ 1) et i + j > 9,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+btts_total_9.5;Oui|moins;combinés;les deux marquent et moins de 9,5 buts;(i ≥ 1 et j ≥ 1) et i + j < 9,5;400;625;0;0.64;30;49;210;324;342;552;58;73;0.6;non_evalue
+btts_total_9.5;Non|plus;combinés;une équipe au moins ne marque pas et plus de 9,5 buts;(i = 0 ou j = 0) et i + j > 9,5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+btts_total_9.5;Non|moins;combinés;une équipe au moins ne marque pas et moins de 9,5 buts;(i = 0 ou j = 0) et i + j < 9,5;225;625;0;0.36;19;49;114;324;210;552;15;73;0.2;non_evalue
+nombre_exact_buts;0;buts du match;exactement 0 but(s) dans le match;i + j = 0;25;625;0;0.04;2;49;12;324;25;552;0;73;0.0;non_evalue
+nombre_exact_buts;1;buts du match;exactement 1 but(s) dans le match;i + j = 1;75;625;0;0.12;8;49;50;324;75;552;0;73;0.05;non_evalue
+nombre_exact_buts;2;buts du match;exactement 2 but(s) dans le match;i + j = 2;125;625;0;0.2;17;49;91;324;125;552;0;73;0.15;non_evalue
+nombre_exact_buts;3;buts du match;exactement 3 but(s) dans le match;i + j = 3;175;625;0;0.28;18;49;106;324;160;552;15;73;0.25;non_evalue
+nombre_exact_buts;4;buts du match;exactement 4 but(s) dans le match;i + j = 4;125;625;0;0.2;4;49;49;324;105;552;20;73;0.15;non_evalue
+nombre_exact_buts;5;buts du match;exactement 5 but(s) dans le match;i + j = 5;75;625;0;0.12;0;49;14;324;50;552;25;73;0.05;non_evalue
+nombre_exact_buts;6+;buts du match;6 buts ou plus dans le match;i + j ≥ 6;25;625;0;0.04;0;49;2;324;12;552;13;73;0.0;non_evalue
+handicap_3issues_-9;1;résultat;handicap -9 sur le domicile, issue 1;i + (-9) > j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_3issues_-9;X;résultat;handicap -9 sur le domicile, issue X;i + (-9) = j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_3issues_-9;2;résultat;handicap -9 sur le domicile, issue 2;i + (-9) < j;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+handicap_3issues_-8;1;résultat;handicap -8 sur le domicile, issue 1;i + (-8) > j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_3issues_-8;X;résultat;handicap -8 sur le domicile, issue X;i + (-8) = j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_3issues_-8;2;résultat;handicap -8 sur le domicile, issue 2;i + (-8) < j;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+handicap_3issues_-7;1;résultat;handicap -7 sur le domicile, issue 1;i + (-7) > j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_3issues_-7;X;résultat;handicap -7 sur le domicile, issue X;i + (-7) = j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_3issues_-7;2;résultat;handicap -7 sur le domicile, issue 2;i + (-7) < j;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+handicap_3issues_-6;1;résultat;handicap -6 sur le domicile, issue 1;i + (-6) > j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_3issues_-6;X;résultat;handicap -6 sur le domicile, issue X;i + (-6) = j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_3issues_-6;2;résultat;handicap -6 sur le domicile, issue 2;i + (-6) < j;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+handicap_3issues_-5;1;résultat;handicap -5 sur le domicile, issue 1;i + (-5) > j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_3issues_-5;X;résultat;handicap -5 sur le domicile, issue X;i + (-5) = j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_3issues_-5;2;résultat;handicap -5 sur le domicile, issue 2;i + (-5) < j;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+handicap_3issues_-4;1;résultat;handicap -4 sur le domicile, issue 1;i + (-4) > j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_3issues_-4;X;résultat;handicap -4 sur le domicile, issue X;i + (-4) = j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_3issues_-4;2;résultat;handicap -4 sur le domicile, issue 2;i + (-4) < j;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+handicap_3issues_-3;1;résultat;handicap -3 sur le domicile, issue 1;i + (-3) > j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_3issues_-3;X;résultat;handicap -3 sur le domicile, issue X;i + (-3) = j;25;625;0;0.04;0;49;8;324;20;552;5;73;0.0;non_evalue
+handicap_3issues_-3;2;résultat;handicap -3 sur le domicile, issue 2;i + (-3) < j;600;625;0;0.96;49;49;316;324;532;552;68;73;0.95;non_evalue
+handicap_3issues_-2;1;résultat;handicap -2 sur le domicile, issue 1;i + (-2) > j;25;625;0;0.04;0;49;8;324;20;552;5;73;0.0;non_evalue
+handicap_3issues_-2;X;résultat;handicap -2 sur le domicile, issue X;i + (-2) = j;100;625;0;0.16;8;49;52;324;90;552;10;73;0.1;non_evalue
+handicap_3issues_-2;2;résultat;handicap -2 sur le domicile, issue 2;i + (-2) < j;500;625;0;0.8;41;49;264;324;442;552;58;73;0.75;non_evalue
+handicap_3issues_-1;1;résultat;handicap -1 sur le domicile, issue 1;i + (-1) > j;125;625;0;0.2;8;49;60;324;110;552;15;73;0.1;non_evalue
+handicap_3issues_-1;X;résultat;handicap -1 sur le domicile, issue X;i + (-1) = j;150;625;0;0.24;20;49;106;324;145;552;5;73;0.2;non_evalue
+handicap_3issues_-1;2;résultat;handicap -1 sur le domicile, issue 2;i + (-1) < j;350;625;0;0.56;21;49;158;324;297;552;53;73;0.45;non_evalue
+handicap_3issues_1;1;résultat;handicap +1 sur le domicile, issue 1;i + (1) > j;425;625;0;0.68;42;49;254;324;392;552;33;73;0.6;non_evalue
+handicap_3issues_1;X;résultat;handicap +1 sur le domicile, issue X;i + (1) = j;125;625;0;0.2;6;49;53;324;105;552;20;73;0.15;non_evalue
+handicap_3issues_1;2;résultat;handicap +1 sur le domicile, issue 2;i + (1) < j;75;625;0;0.12;1;49;17;324;55;552;20;73;0.05;non_evalue
+handicap_3issues_2;1;résultat;handicap +2 sur le domicile, issue 1;i + (2) > j;550;625;0;0.88;48;49;307;324;497;552;53;73;0.85;non_evalue
+handicap_3issues_2;X;résultat;handicap +2 sur le domicile, issue X;i + (2) = j;50;625;0;0.08;1;49;14;324;40;552;10;73;0.05;non_evalue
+handicap_3issues_2;2;résultat;handicap +2 sur le domicile, issue 2;i + (2) < j;25;625;0;0.04;0;49;3;324;15;552;10;73;0.0;non_evalue
+handicap_3issues_3;1;résultat;handicap +3 sur le domicile, issue 1;i + (3) > j;600;625;0;0.96;49;49;321;324;537;552;63;73;0.95;non_evalue
+handicap_3issues_3;X;résultat;handicap +3 sur le domicile, issue X;i + (3) = j;25;625;0;0.04;0;49;3;324;15;552;10;73;0.0;non_evalue
+handicap_3issues_3;2;résultat;handicap +3 sur le domicile, issue 2;i + (3) < j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_3issues_4;1;résultat;handicap +4 sur le domicile, issue 1;i + (4) > j;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+handicap_3issues_4;X;résultat;handicap +4 sur le domicile, issue X;i + (4) = j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_3issues_4;2;résultat;handicap +4 sur le domicile, issue 2;i + (4) < j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_3issues_5;1;résultat;handicap +5 sur le domicile, issue 1;i + (5) > j;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+handicap_3issues_5;X;résultat;handicap +5 sur le domicile, issue X;i + (5) = j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_3issues_5;2;résultat;handicap +5 sur le domicile, issue 2;i + (5) < j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_3issues_6;1;résultat;handicap +6 sur le domicile, issue 1;i + (6) > j;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+handicap_3issues_6;X;résultat;handicap +6 sur le domicile, issue X;i + (6) = j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_3issues_6;2;résultat;handicap +6 sur le domicile, issue 2;i + (6) < j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_3issues_7;1;résultat;handicap +7 sur le domicile, issue 1;i + (7) > j;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+handicap_3issues_7;X;résultat;handicap +7 sur le domicile, issue X;i + (7) = j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_3issues_7;2;résultat;handicap +7 sur le domicile, issue 2;i + (7) < j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_3issues_8;1;résultat;handicap +8 sur le domicile, issue 1;i + (8) > j;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+handicap_3issues_8;X;résultat;handicap +8 sur le domicile, issue X;i + (8) = j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_3issues_8;2;résultat;handicap +8 sur le domicile, issue 2;i + (8) < j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_3issues_9;1;résultat;handicap +9 sur le domicile, issue 1;i + (9) > j;625;625;0;1.0;49;49;324;324;552;552;73;73;1.0;non_evalue
+handicap_3issues_9;X;résultat;handicap +9 sur le domicile, issue X;i + (9) = j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+handicap_3issues_9;2;résultat;handicap +9 sur le domicile, issue 2;i + (9) < j;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+score_exact;0-0;scores exacts;score exact 0-0;i = 0 et j = 0;25;625;0;0.04;2;49;12;324;25;552;0;73;0.0;non_evalue
+score_exact;0-1;scores exacts;score exact 0-1;i = 0 et j = 1;50;625;0;0.08;4;49;30;324;50;552;0;73;0.0;non_evalue
+score_exact;0-2;scores exacts;score exact 0-2;i = 0 et j = 2;25;625;0;0.04;1;49;9;324;25;552;0;73;0.0;non_evalue
+score_exact;0-3;scores exacts;score exact 0-3;i = 0 et j = 3;25;625;0;0.04;0;49;3;324;15;552;10;73;0.0;non_evalue
+score_exact;0-4;scores exacts;score exact 0-4;i = 0 et j = 4;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+score_exact;0-5;scores exacts;score exact 0-5;i = 0 et j = 5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+score_exact;1-0;scores exacts;score exact 1-0;i = 1 et j = 0;25;625;0;0.04;4;49;20;324;25;552;0;73;0.0;non_evalue
+score_exact;1-1;scores exacts;score exact 1-1;i = 1 et j = 1;50;625;0;0.08;8;49;50;324;50;552;0;73;0.0;non_evalue
+score_exact;1-2;scores exacts;score exact 1-2;i = 1 et j = 2;25;625;0;0.04;2;49;15;324;25;552;0;73;0.0;non_evalue
+score_exact;1-3;scores exacts;score exact 1-3;i = 1 et j = 3;25;625;0;0.04;0;49;5;324;15;552;10;73;0.0;non_evalue
+score_exact;1-4;scores exacts;score exact 1-4;i = 1 et j = 4;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+score_exact;1-5;scores exacts;score exact 1-5;i = 1 et j = 5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+score_exact;2-0;scores exacts;score exact 2-0;i = 2 et j = 0;50;625;0;0.08;8;49;32;324;50;552;0;73;0.0;non_evalue
+score_exact;2-1;scores exacts;score exact 2-1;i = 2 et j = 1;100;625;0;0.16;16;49;80;324;100;552;0;73;0.1;non_evalue
+score_exact;2-2;scores exacts;score exact 2-2;i = 2 et j = 2;50;625;0;0.08;4;49;24;324;50;552;0;73;0.0;non_evalue
+score_exact;2-3;scores exacts;score exact 2-3;i = 2 et j = 3;50;625;0;0.08;0;49;8;324;30;552;20;73;0.0;non_evalue
+score_exact;2-4;scores exacts;score exact 2-4;i = 2 et j = 4;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+score_exact;2-5;scores exacts;score exact 2-5;i = 2 et j = 5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+score_exact;3-0;scores exacts;score exact 3-0;i = 3 et j = 0;25;625;0;0.04;0;49;8;324;20;552;5;73;0.0;non_evalue
+score_exact;3-1;scores exacts;score exact 3-1;i = 3 et j = 1;50;625;0;0.08;0;49;20;324;40;552;10;73;0.0;non_evalue
+score_exact;3-2;scores exacts;score exact 3-2;i = 3 et j = 2;25;625;0;0.04;0;49;6;324;20;552;5;73;0.0;non_evalue
+score_exact;3-3;scores exacts;score exact 3-3;i = 3 et j = 3;25;625;0;0.04;0;49;2;324;12;552;13;73;0.0;non_evalue
+score_exact;3-4;scores exacts;score exact 3-4;i = 3 et j = 4;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+score_exact;3-5;scores exacts;score exact 3-5;i = 3 et j = 5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+score_exact;4-0;scores exacts;score exact 4-0;i = 4 et j = 0;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+score_exact;4-1;scores exacts;score exact 4-1;i = 4 et j = 1;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+score_exact;4-2;scores exacts;score exact 4-2;i = 4 et j = 2;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+score_exact;4-3;scores exacts;score exact 4-3;i = 4 et j = 3;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+score_exact;4-4;scores exacts;score exact 4-4;i = 4 et j = 4;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+score_exact;4-5;scores exacts;score exact 4-5;i = 4 et j = 5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+score_exact;5-0;scores exacts;score exact 5-0;i = 5 et j = 0;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+score_exact;5-1;scores exacts;score exact 5-1;i = 5 et j = 1;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+score_exact;5-2;scores exacts;score exact 5-2;i = 5 et j = 2;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+score_exact;5-3;scores exacts;score exact 5-3;i = 5 et j = 3;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+score_exact;5-4;scores exacts;score exact 5-4;i = 5 et j = 4;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+score_exact;5-5;scores exacts;score exact 5-5;i = 5 et j = 5;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue
+score_exact;autre;scores exacts;un autre score (6 buts ou plus pour une équipe);i ≥ 6 ou j ≥ 6;0;625;0;0.0;0;49;0;324;0;552;0;73;0.0;non_evalue

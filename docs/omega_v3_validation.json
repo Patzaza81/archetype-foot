@@ -23,133 +23,117 @@
    "au": "2026-11-01"
   },
   "probabilite": {
-   "observations": 29400,
+   "observations": 65087,
    "frequence_brute_prise_pour_probabilite": {
-    "brier": 0.1531,
-    "log_loss": 0.6655
+    "brier": 0.1159,
+    "log_loss": 0.485
    },
    "reussite_lissee_apprise": {
-    "brier": 0.1445,
-    "log_loss": 0.4541
+    "brier": 0.1112,
+    "log_loss": 0.363
    },
    "calibration_reserve": [
     {
      "tranche": "0.0-0.1",
-     "n": 15260,
-     "g_moyen": 0.0022,
-     "reussite": 0.1055
+     "n": 34956,
+     "g_moyen": 0.002,
+     "reussite": 0.0697
     },
     {
      "tranche": "0.1-0.2",
-     "n": 2477,
-     "g_moyen": 0.1209,
-     "reussite": 0.2459
+     "n": 4320,
+     "g_moyen": 0.1208,
+     "reussite": 0.2484
     },
     {
      "tranche": "0.2-0.3",
-     "n": 2498,
-     "g_moyen": 0.225,
-     "reussite": 0.3347
+     "n": 4199,
+     "g_moyen": 0.2225,
+     "reussite": 0.3332
     },
     {
      "tranche": "0.3-0.4",
-     "n": 1330,
-     "g_moyen": 0.3173,
-     "reussite": 0.3992
+     "n": 2269,
+     "g_moyen": 0.3176,
+     "reussite": 0.3936
     },
     {
      "tranche": "0.4-0.5",
-     "n": 1164,
-     "g_moyen": 0.4204,
-     "reussite": 0.4442
+     "n": 2334,
+     "g_moyen": 0.4173,
+     "reussite": 0.4717
     },
     {
      "tranche": "0.5-0.6",
-     "n": 1486,
-     "g_moyen": 0.5121,
-     "reussite": 0.5377
+     "n": 2314,
+     "g_moyen": 0.5146,
+     "reussite": 0.5432
     },
     {
      "tranche": "0.6-0.7",
-     "n": 879,
-     "g_moyen": 0.6209,
-     "reussite": 0.6143
+     "n": 1893,
+     "g_moyen": 0.6197,
+     "reussite": 0.626
     },
     {
      "tranche": "0.7-0.8",
-     "n": 1389,
-     "g_moyen": 0.7378,
-     "reussite": 0.6811
+     "n": 2351,
+     "g_moyen": 0.7339,
+     "reussite": 0.6661
     },
     {
      "tranche": "0.8-0.9",
-     "n": 597,
-     "g_moyen": 0.8208,
-     "reussite": 0.7839
+     "n": 1274,
+     "g_moyen": 0.8207,
+     "reussite": 0.7818
     },
     {
      "tranche": "0.9-1.0",
-     "n": 2320,
-     "g_moyen": 0.9826,
-     "reussite": 0.9034
+     "n": 9177,
+     "g_moyen": 0.9908,
+     "reussite": 0.9608
     }
    ]
   },
   "selection_reserve": {
    "matchs_analyses": 171,
-   "matchs_avec_pari": 169,
+   "matchs_avec_pari": 136,
    "tous_paris": {
-    "paris": 530,
-    "reussite": 0.6981,
-    "annonce_moyenne": 0.7712,
-    "cote_moyenne": 1.401
+    "paris": 269,
+    "reussite": 0.7175,
+    "annonce_moyenne": 0.7573,
+    "cote_moyenne": 1.352
    },
    "paris_principaux": {
-    "paris": 169,
-    "reussite": 0.7041
+    "paris": 136,
+    "reussite": 0.7353
    },
    "par_marche": {
-    "cages_inviolees_domicile|non": {
-     "paris": 72,
-     "reussite": 0.5972
-    },
     "cages_inviolees_exterieur|non": {
-     "paris": 47,
-     "reussite": 0.6809
-    },
-    "dc_total_4.5|1N|moins": {
-     "paris": 15,
-     "reussite": 0.6667
+     "paris": 8,
+     "reussite": 0.875
     },
     "double_chance|12": {
      "paris": 110,
      "reussite": 0.7
     },
     "double_chance|1N": {
-     "paris": 51,
-     "reussite": 0.7059
+     "paris": 15,
+     "reussite": 0.5333
     },
     "handicap_-1.5|exterieur": {
-     "paris": 45,
-     "reussite": 0.5778
-    },
-    "handicap_-2.5|exterieur": {
-     "paris": 12,
-     "reussite": 0.5833
-    },
-    "handicap_-3.5|exterieur": {
-     "paris": 1,
-     "reussite": 1.0
+     "paris": 15,
+     "reussite": 0.7333
     },
     "handicap_1.5|domicile": {
      "paris": 16,
      "reussite": 0.8125
     },
-    "handicap_2.5|domicile": {
-     "paris": 1,
-     "reussite": 0.0
+    "handicap_3issues_1|1": {
+     "paris": 4,
+     "reussite": 0.75
     },
-    "handicap_3.5|domicile": {
+    "handicap_3issues_2|1": {
      "paris": 1,
      "reussite": 1.0
     },
@@ -161,41 +145,9 @@
      "paris": 22,
      "reussite": 0.7727
     },
-    "over_under_4.5|moins": {
-     "paris": 18,
-     "reussite": 0.7778
-    },
-    "over_under_5.5|moins": {
-     "paris": 3,
-     "reussite": 0.6667
-    },
-    "over_under_domicile_2.5|moins": {
-     "paris": 32,
-     "reussite": 0.7812
-    },
-    "over_under_domicile_3.5|moins": {
-     "paris": 6,
-     "reussite": 1.0
-    },
-    "over_under_domicile_4.5|moins": {
-     "paris": 1,
-     "reussite": 1.0
-    },
-    "over_under_exterieur_0.5|plus": {
-     "paris": 6,
-     "reussite": 0.5
-    },
-    "over_under_exterieur_1.5|moins": {
-     "paris": 7,
-     "reussite": 0.7143
-    },
-    "over_under_exterieur_2.5|moins": {
-     "paris": 11,
-     "reussite": 0.8182
-    },
-    "over_under_exterieur_3.5|moins": {
-     "paris": 1,
-     "reussite": 1.0
+    "over_under_domicile_0.5|plus": {
+     "paris": 26,
+     "reussite": 0.5769
     }
    }
   }
@@ -203,767 +155,1561 @@
  "seuils_par_marche": {
   "1x2|1": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 506
   },
   "1x2|N": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 522
   },
   "1x2|2": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 520
   },
   "double_chance|1N": {
-   "seuil": 0.6,
-   "reussite": 0.7817,
-   "n": 339,
-   "predictions": 525
+   "seuil": 0.85,
+   "reussite": 0.7333,
+   "n": 45,
+   "predictions": 334
   },
   "double_chance|N2": {
-   "seuil": 0.85,
-   "reussite": 0.7714,
-   "n": 35,
-   "predictions": 525
+   "seuil": null,
+   "predictions": 472
   },
   "double_chance|12": {
-   "seuil": 0.5,
-   "reussite": 0.7461,
-   "n": 508,
-   "predictions": 525
+   "seuil": 0.8,
+   "reussite": 0.7733,
+   "n": 75,
+   "predictions": 364
   },
   "over_under_0.5|plus": {
-   "seuil": 0.6,
-   "reussite": 0.9322,
-   "n": 516,
-   "predictions": 525
+   "seuil": null,
+   "predictions": 0
   },
   "over_under_0.5|moins": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 339
   },
   "over_under_1.5|plus": {
-   "seuil": 0.5,
-   "reussite": 0.7743,
-   "n": 452,
-   "predictions": 525
+   "seuil": 0.55,
+   "reussite": 0.773,
+   "n": 141,
+   "predictions": 196
   },
   "over_under_1.5|moins": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 509
   },
   "over_under_2.5|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 515
   },
   "over_under_2.5|moins": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 521
   },
   "over_under_3.5|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 518
   },
   "over_under_3.5|moins": {
    "seuil": 0.85,
-   "reussite": 0.8108,
-   "n": 111,
-   "predictions": 525
+   "reussite": 0.8169,
+   "n": 71,
+   "predictions": 409
   },
   "over_under_4.5|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 503
   },
   "over_under_4.5|moins": {
-   "seuil": 0.5,
-   "reussite": 0.8395,
-   "n": 486,
-   "predictions": 525
+   "seuil": 0.55,
+   "reussite": 0.7627,
+   "n": 59,
+   "predictions": 83
   },
   "over_under_5.5|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 350
   },
   "over_under_5.5|moins": {
-   "seuil": 0.5,
-   "reussite": 0.9306,
-   "n": 519,
-   "predictions": 525
+   "seuil": null,
+   "predictions": 3
   },
   "over_under_6.5|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 8
   },
   "over_under_6.5|moins": {
-   "seuil": 0.6,
-   "reussite": 0.979,
-   "n": 523,
-   "predictions": 525
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_7.5|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_7.5|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_8.5|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_8.5|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_9.5|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_9.5|moins": {
+   "seuil": null,
+   "predictions": 0
   },
   "over_under_1|plus": {
-   "seuil": 0.5,
-   "reussite": 0.9235,
-   "n": 379,
-   "predictions": 439
+   "seuil": null,
+   "predictions": 0
   },
   "over_under_1|moins": {
    "seuil": null,
-   "predictions": 439
+   "predictions": 0
   },
   "over_under_2|plus": {
-   "seuil": 0.5,
-   "reussite": 0.7317,
-   "n": 205,
-   "predictions": 411
+   "seuil": null,
+   "predictions": 0
   },
   "over_under_2|moins": {
    "seuil": null,
-   "predictions": 411
+   "predictions": 0
   },
   "over_under_3|plus": {
    "seuil": null,
-   "predictions": 408
+   "predictions": 0
   },
   "over_under_3|moins": {
-   "seuil": 0.65,
-   "reussite": 0.7397,
-   "n": 73,
-   "predictions": 408
+   "seuil": null,
+   "predictions": 0
   },
   "over_under_4|plus": {
    "seuil": null,
-   "predictions": 442
+   "predictions": 0
   },
   "over_under_4|moins": {
-   "seuil": 0.5,
-   "reussite": 0.8339,
-   "n": 301,
-   "predictions": 442
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_5|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_5|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_6|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_6|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_7|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_7|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_8|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_8|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_9|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_9|moins": {
+   "seuil": null,
+   "predictions": 0
   },
   "btts|Oui": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 523
   },
   "btts|Non": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 522
   },
   "multigoal|0-1": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 0
   },
   "multigoal|2-3": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 0
   },
   "multigoal|4+": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 0
   },
   "over_under_domicile_0.5|plus": {
    "seuil": 0.5,
-   "reussite": 0.8167,
-   "n": 491,
-   "predictions": 525
+   "reussite": 0.7157,
+   "n": 102,
+   "predictions": 111
   },
   "over_under_domicile_0.5|moins": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 350
   },
   "over_under_exterieur_0.5|plus": {
-   "seuil": 0.75,
-   "reussite": 0.7108,
-   "n": 287,
-   "predictions": 525
+   "seuil": null,
+   "predictions": 238
   },
   "over_under_exterieur_0.5|moins": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 380
   },
   "over_under_domicile_1.5|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 373
   },
   "over_under_domicile_1.5|moins": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 359
   },
   "over_under_exterieur_1.5|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 377
   },
   "over_under_exterieur_1.5|moins": {
-   "seuil": 0.95,
-   "reussite": 0.7571,
-   "n": 70,
-   "predictions": 525
+   "seuil": null,
+   "predictions": 288
   },
   "over_under_domicile_2.5|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 364
   },
   "over_under_domicile_2.5|moins": {
-   "seuil": 0.5,
-   "reussite": 0.789,
-   "n": 474,
-   "predictions": 525
+   "seuil": null,
+   "predictions": 116
   },
   "over_under_exterieur_2.5|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 318
   },
   "over_under_exterieur_2.5|moins": {
-   "seuil": 0.5,
-   "reussite": 0.8685,
-   "n": 502,
-   "predictions": 525
+   "seuil": null,
+   "predictions": 30
   },
   "over_under_domicile_3.5|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 137
   },
   "over_under_domicile_3.5|moins": {
-   "seuil": 0.5,
-   "reussite": 0.9208,
-   "n": 518,
-   "predictions": 525
+   "seuil": null,
+   "predictions": 12
   },
   "over_under_exterieur_3.5|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 57
   },
   "over_under_exterieur_3.5|moins": {
-   "seuil": 0.5,
-   "reussite": 0.9426,
-   "n": 523,
-   "predictions": 525
+   "seuil": null,
+   "predictions": 1
   },
   "over_under_domicile_4.5|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 33
   },
   "over_under_domicile_4.5|moins": {
-   "seuil": 0.5,
-   "reussite": 0.9809,
-   "n": 524,
-   "predictions": 525
+   "seuil": null,
+   "predictions": 2
   },
   "over_under_exterieur_4.5|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 6
   },
   "over_under_exterieur_4.5|moins": {
-   "seuil": 0.5,
-   "reussite": 0.9848,
-   "n": 525,
-   "predictions": 525
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_domicile_5.5|plus": {
+   "seuil": null,
+   "predictions": 2
+  },
+  "over_under_domicile_5.5|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_exterieur_5.5|plus": {
+   "seuil": null,
+   "predictions": 1
+  },
+  "over_under_exterieur_5.5|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_domicile_6.5|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_domicile_6.5|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_exterieur_6.5|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_exterieur_6.5|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_domicile_7.5|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_domicile_7.5|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_exterieur_7.5|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_exterieur_7.5|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_domicile_8.5|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_domicile_8.5|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_exterieur_8.5|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "over_under_exterieur_8.5|moins": {
+   "seuil": null,
+   "predictions": 0
   },
   "cages_inviolees_domicile|oui": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 377
   },
   "cages_inviolees_domicile|non": {
-   "seuil": 0.75,
-   "reussite": 0.7108,
-   "n": 287,
-   "predictions": 525
+   "seuil": null,
+   "predictions": 244
   },
   "cages_inviolees_exterieur|oui": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 376
   },
   "cages_inviolees_exterieur|non": {
    "seuil": 0.5,
-   "reussite": 0.8167,
-   "n": 491,
-   "predictions": 525
+   "reussite": 0.7258,
+   "n": 124,
+   "predictions": 133
   },
   "victoire_sans_encaisser_domicile|oui": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 0
   },
   "victoire_sans_encaisser_exterieur|oui": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 0
+  },
+  "handicap_-8.5|domicile": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_-8.5|exterieur": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_-7.5|domicile": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_-7.5|exterieur": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_-6.5|domicile": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_-6.5|exterieur": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_-5.5|domicile": {
+   "seuil": null,
+   "predictions": 1
+  },
+  "handicap_-5.5|exterieur": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_-4.5|domicile": {
+   "seuil": null,
+   "predictions": 4
+  },
+  "handicap_-4.5|exterieur": {
+   "seuil": null,
+   "predictions": 2
   },
   "handicap_-3.5|domicile": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 35
   },
   "handicap_-3.5|exterieur": {
-   "seuil": 0.55,
-   "reussite": 0.9618,
-   "n": 524,
-   "predictions": 525
+   "seuil": null,
+   "predictions": 4
   },
   "handicap_-2.5|domicile": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 183
   },
   "handicap_-2.5|exterieur": {
-   "seuil": 0.5,
-   "reussite": 0.8928,
-   "n": 513,
-   "predictions": 525
+   "seuil": null,
+   "predictions": 40
   },
   "handicap_-1.5|domicile": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 445
   },
   "handicap_-1.5|exterieur": {
-   "seuil": 0.7,
-   "reussite": 0.8094,
-   "n": 320,
-   "predictions": 525
+   "seuil": 0.8,
+   "reussite": 0.766,
+   "n": 47,
+   "predictions": 206
   },
   "handicap_-0.5|domicile": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 492
   },
   "handicap_-0.5|exterieur": {
-   "seuil": 0.85,
-   "reussite": 0.7714,
-   "n": 35,
-   "predictions": 525
+   "seuil": null,
+   "predictions": 456
   },
   "handicap_0.5|domicile": {
-   "seuil": 0.6,
-   "reussite": 0.7817,
-   "n": 339,
-   "predictions": 525
+   "seuil": null,
+   "predictions": 318
   },
   "handicap_0.5|exterieur": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 472
   },
   "handicap_1.5|domicile": {
    "seuil": 0.5,
-   "reussite": 0.8878,
-   "n": 508,
-   "predictions": 525
+   "reussite": 0.7736,
+   "n": 53,
+   "predictions": 58
   },
   "handicap_1.5|exterieur": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 257
   },
   "handicap_2.5|domicile": {
-   "seuil": 0.6,
-   "reussite": 0.95,
-   "n": 520,
-   "predictions": 525
+   "seuil": null,
+   "predictions": 5
   },
   "handicap_2.5|exterieur": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 59
   },
   "handicap_3.5|domicile": {
-   "seuil": 0.8,
-   "reussite": 0.9846,
-   "n": 520,
-   "predictions": 525
+   "seuil": null,
+   "predictions": 1
   },
   "handicap_3.5|exterieur": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 5
+  },
+  "handicap_4.5|domicile": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_4.5|exterieur": {
+   "seuil": null,
+   "predictions": 1
+  },
+  "handicap_5.5|domicile": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_5.5|exterieur": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_6.5|domicile": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_6.5|exterieur": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_7.5|domicile": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_7.5|exterieur": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_8.5|domicile": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_8.5|exterieur": {
+   "seuil": null,
+   "predictions": 0
   },
   "handicap_0|domicile": {
-   "seuil": 0.5,
-   "reussite": 0.7479,
-   "n": 119,
-   "predictions": 389
+   "seuil": null,
+   "predictions": 0
   },
   "handicap_0|exterieur": {
    "seuil": null,
-   "predictions": 389
+   "predictions": 0
   },
   "dc_total_1.5|1N|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 173
   },
   "dc_total_1.5|1N|moins": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 181
   },
   "dc_total_1.5|N2|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 180
   },
   "dc_total_1.5|N2|moins": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 181
   },
   "dc_total_1.5|12|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 176
   },
   "dc_total_1.5|12|moins": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 181
   },
   "1x2_total_1.5|1|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 167
   },
   "1x2_total_1.5|1|moins": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 170
   },
   "1x2_total_1.5|N|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 170
   },
   "1x2_total_1.5|N|moins": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 170
   },
   "1x2_total_1.5|2|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 169
   },
   "1x2_total_1.5|2|moins": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 170
   },
   "dc_total_2.5|1N|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 185
   },
   "dc_total_2.5|1N|moins": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 186
   },
   "dc_total_2.5|N2|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 188
   },
   "dc_total_2.5|N2|moins": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 187
   },
   "dc_total_2.5|12|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 183
   },
   "dc_total_2.5|12|moins": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 188
   },
   "1x2_total_2.5|1|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 199
   },
   "1x2_total_2.5|1|moins": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 200
   },
   "1x2_total_2.5|N|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 200
   },
   "1x2_total_2.5|N|moins": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 200
   },
   "1x2_total_2.5|2|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 200
   },
   "1x2_total_2.5|2|moins": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 200
   },
   "dc_total_3.5|1N|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 185
   },
   "dc_total_3.5|1N|moins": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 181
   },
   "dc_total_3.5|N2|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 186
   },
   "dc_total_3.5|N2|moins": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 184
   },
   "dc_total_3.5|12|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 185
   },
   "dc_total_3.5|12|moins": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 179
   },
   "1x2_total_3.5|1|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 201
   },
   "1x2_total_3.5|1|moins": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 201
   },
   "1x2_total_3.5|N|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 201
   },
   "1x2_total_3.5|N|moins": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 201
   },
   "1x2_total_3.5|2|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 201
   },
   "1x2_total_3.5|2|moins": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 201
   },
   "dc_total_4.5|1N|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 178
   },
   "dc_total_4.5|1N|moins": {
-   "seuil": 0.8,
-   "reussite": 0.7671,
-   "n": 73,
-   "predictions": 525
+   "seuil": 0.65,
+   "reussite": 0.7609,
+   "n": 46,
+   "predictions": 172
   },
   "dc_total_4.5|N2|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 178
   },
   "dc_total_4.5|N2|moins": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 177
   },
   "dc_total_4.5|12|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 178
   },
   "dc_total_4.5|12|moins": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 178
   },
   "1x2_total_4.5|1|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 128
   },
   "1x2_total_4.5|1|moins": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 128
   },
   "1x2_total_4.5|N|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 128
   },
   "1x2_total_4.5|N|moins": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 128
   },
   "1x2_total_4.5|2|plus": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 128
   },
   "1x2_total_4.5|2|moins": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 128
+  },
+  "dc_total_5.5|1N|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "dc_total_5.5|1N|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "dc_total_5.5|N2|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "dc_total_5.5|N2|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "dc_total_5.5|12|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "dc_total_5.5|12|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "1x2_total_5.5|1|plus": {
+   "seuil": null,
+   "predictions": 1
+  },
+  "1x2_total_5.5|1|moins": {
+   "seuil": null,
+   "predictions": 1
+  },
+  "1x2_total_5.5|N|plus": {
+   "seuil": null,
+   "predictions": 1
+  },
+  "1x2_total_5.5|N|moins": {
+   "seuil": null,
+   "predictions": 1
+  },
+  "1x2_total_5.5|2|plus": {
+   "seuil": null,
+   "predictions": 1
+  },
+  "1x2_total_5.5|2|moins": {
+   "seuil": null,
+   "predictions": 1
+  },
+  "dc_total_6.5|1N|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "dc_total_6.5|1N|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "dc_total_6.5|N2|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "dc_total_6.5|N2|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "dc_total_6.5|12|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "dc_total_6.5|12|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "1x2_total_6.5|1|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "1x2_total_6.5|1|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "1x2_total_6.5|N|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "1x2_total_6.5|N|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "1x2_total_6.5|2|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "1x2_total_6.5|2|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "dc_total_7.5|1N|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "dc_total_7.5|1N|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "dc_total_7.5|N2|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "dc_total_7.5|N2|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "dc_total_7.5|12|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "dc_total_7.5|12|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "1x2_total_7.5|1|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "1x2_total_7.5|1|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "1x2_total_7.5|N|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "1x2_total_7.5|N|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "1x2_total_7.5|2|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "1x2_total_7.5|2|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "dc_total_8.5|1N|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "dc_total_8.5|1N|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "dc_total_8.5|N2|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "dc_total_8.5|N2|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "dc_total_8.5|12|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "dc_total_8.5|12|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "1x2_total_8.5|1|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "1x2_total_8.5|1|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "1x2_total_8.5|N|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "1x2_total_8.5|N|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "1x2_total_8.5|2|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "1x2_total_8.5|2|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "dc_total_9.5|1N|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "dc_total_9.5|1N|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "dc_total_9.5|N2|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "dc_total_9.5|N2|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "dc_total_9.5|12|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "dc_total_9.5|12|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "1x2_total_9.5|1|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "1x2_total_9.5|1|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "1x2_total_9.5|N|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "1x2_total_9.5|N|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "1x2_total_9.5|2|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "1x2_total_9.5|2|moins": {
+   "seuil": null,
+   "predictions": 0
   },
   "dc_btts|1N|Oui": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 201
   },
   "dc_btts|1N|Non": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 201
   },
   "dc_btts|N2|Oui": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 201
   },
   "dc_btts|N2|Non": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 201
   },
   "dc_btts|12|Oui": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 201
   },
   "dc_btts|12|Non": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 201
   },
   "1x2_btts|1|Oui": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 205
   },
   "1x2_btts|1|Non": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 205
   },
   "1x2_btts|N|Oui": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 205
   },
   "1x2_btts|N|Non": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 205
   },
   "1x2_btts|2|Oui": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 205
   },
   "1x2_btts|2|Non": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 205
+  },
+  "btts_total_1.5|Oui|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_1.5|Oui|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_1.5|Non|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_1.5|Non|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_2.5|Oui|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_2.5|Oui|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_2.5|Non|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_2.5|Non|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_3.5|Oui|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_3.5|Oui|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_3.5|Non|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_3.5|Non|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_4.5|Oui|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_4.5|Oui|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_4.5|Non|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_4.5|Non|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_5.5|Oui|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_5.5|Oui|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_5.5|Non|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_5.5|Non|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_6.5|Oui|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_6.5|Oui|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_6.5|Non|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_6.5|Non|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_7.5|Oui|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_7.5|Oui|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_7.5|Non|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_7.5|Non|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_8.5|Oui|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_8.5|Oui|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_8.5|Non|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_8.5|Non|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_9.5|Oui|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_9.5|Oui|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_9.5|Non|plus": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "btts_total_9.5|Non|moins": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "nombre_exact_buts|0": {
+   "seuil": null,
+   "predictions": 495
+  },
+  "nombre_exact_buts|1": {
+   "seuil": null,
+   "predictions": 495
+  },
+  "nombre_exact_buts|2": {
+   "seuil": null,
+   "predictions": 495
+  },
+  "nombre_exact_buts|3": {
+   "seuil": null,
+   "predictions": 495
+  },
+  "nombre_exact_buts|4": {
+   "seuil": null,
+   "predictions": 495
+  },
+  "nombre_exact_buts|5": {
+   "seuil": null,
+   "predictions": 495
+  },
+  "nombre_exact_buts|6+": {
+   "seuil": null,
+   "predictions": 495
+  },
+  "handicap_3issues_-9|1": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_3issues_-9|X": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_3issues_-9|2": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_3issues_-8|1": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_3issues_-8|X": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_3issues_-8|2": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_3issues_-7|1": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_3issues_-7|X": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_3issues_-7|2": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_3issues_-6|1": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_3issues_-6|X": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_3issues_-6|2": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_3issues_-5|1": {
+   "seuil": null,
+   "predictions": 2
+  },
+  "handicap_3issues_-5|X": {
+   "seuil": null,
+   "predictions": 2
+  },
+  "handicap_3issues_-5|2": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_3issues_-4|1": {
+   "seuil": null,
+   "predictions": 12
+  },
+  "handicap_3issues_-4|X": {
+   "seuil": null,
+   "predictions": 12
+  },
+  "handicap_3issues_-4|2": {
+   "seuil": null,
+   "predictions": 4
+  },
+  "handicap_3issues_-3|1": {
+   "seuil": null,
+   "predictions": 199
+  },
+  "handicap_3issues_-3|X": {
+   "seuil": null,
+   "predictions": 199
+  },
+  "handicap_3issues_-3|2": {
+   "seuil": null,
+   "predictions": 35
+  },
+  "handicap_3issues_-2|1": {
+   "seuil": null,
+   "predictions": 438
+  },
+  "handicap_3issues_-2|X": {
+   "seuil": null,
+   "predictions": 438
+  },
+  "handicap_3issues_-2|2": {
+   "seuil": 0.8,
+   "reussite": 0.7907,
+   "n": 43,
+   "predictions": 195
+  },
+  "handicap_3issues_-1|1": {
+   "seuil": null,
+   "predictions": 499
+  },
+  "handicap_3issues_-1|X": {
+   "seuil": null,
+   "predictions": 500
+  },
+  "handicap_3issues_-1|2": {
+   "seuil": null,
+   "predictions": 448
+  },
+  "handicap_3issues_1|1": {
+   "seuil": 0.8,
+   "reussite": 0.75,
+   "n": 56,
+   "predictions": 302
+  },
+  "handicap_3issues_1|X": {
+   "seuil": null,
+   "predictions": 490
+  },
+  "handicap_3issues_1|2": {
+   "seuil": null,
+   "predictions": 490
+  },
+  "handicap_3issues_2|1": {
+   "seuil": 0.5,
+   "reussite": 0.7755,
+   "n": 49,
+   "predictions": 55
+  },
+  "handicap_3issues_2|X": {
+   "seuil": null,
+   "predictions": 275
+  },
+  "handicap_3issues_2|2": {
+   "seuil": null,
+   "predictions": 275
+  },
+  "handicap_3issues_3|1": {
+   "seuil": null,
+   "predictions": 1
+  },
+  "handicap_3issues_3|X": {
+   "seuil": null,
+   "predictions": 64
+  },
+  "handicap_3issues_3|2": {
+   "seuil": null,
+   "predictions": 64
+  },
+  "handicap_3issues_4|1": {
+   "seuil": null,
+   "predictions": 1
+  },
+  "handicap_3issues_4|X": {
+   "seuil": null,
+   "predictions": 1
+  },
+  "handicap_3issues_4|2": {
+   "seuil": null,
+   "predictions": 1
+  },
+  "handicap_3issues_5|1": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_3issues_5|X": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_3issues_5|2": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_3issues_6|1": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_3issues_6|X": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_3issues_6|2": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_3issues_7|1": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_3issues_7|X": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_3issues_7|2": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_3issues_8|1": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_3issues_8|X": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_3issues_8|2": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_3issues_9|1": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_3issues_9|X": {
+   "seuil": null,
+   "predictions": 0
+  },
+  "handicap_3issues_9|2": {
+   "seuil": null,
+   "predictions": 0
   },
   "score_exact|0-0": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 518
   },
   "score_exact|0-1": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 518
   },
   "score_exact|0-2": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 518
   },
   "score_exact|0-3": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 518
   },
   "score_exact|0-4": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 518
   },
   "score_exact|0-5": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 0
   },
   "score_exact|1-0": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 518
   },
   "score_exact|1-1": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 518
   },
   "score_exact|1-2": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 518
   },
   "score_exact|1-3": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 518
   },
   "score_exact|1-4": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 518
   },
   "score_exact|1-5": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 0
   },
   "score_exact|2-0": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 518
   },
   "score_exact|2-1": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 518
   },
   "score_exact|2-2": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 518
   },
   "score_exact|2-3": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 518
   },
   "score_exact|2-4": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 518
   },
   "score_exact|2-5": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 0
   },
   "score_exact|3-0": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 518
   },
   "score_exact|3-1": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 518
   },
   "score_exact|3-2": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 518
   },
   "score_exact|3-3": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 518
   },
   "score_exact|3-4": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 518
   },
   "score_exact|3-5": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 0
   },
   "score_exact|4-0": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 518
   },
   "score_exact|4-1": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 518
   },
   "score_exact|4-2": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 518
   },
   "score_exact|4-3": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 518
   },
   "score_exact|4-4": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 518
   },
   "score_exact|4-5": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 0
   },
   "score_exact|5-0": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 0
   },
   "score_exact|5-1": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 0
   },
   "score_exact|5-2": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 0
   },
   "score_exact|5-3": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 0
   },
   "score_exact|5-4": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 0
   },
   "score_exact|5-5": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 0
   },
   "score_exact|autre": {
    "seuil": null,
-   "predictions": 525
+   "predictions": 0
   }
  }
 }

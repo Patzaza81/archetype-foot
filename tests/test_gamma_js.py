@@ -78,3 +78,25 @@ def test_exploration_et_tous_marches_sans_donnees_ne_cassent_pas():
          "niveaux": {"strict": {"n": 50, "part": 0.08}, "incompatible": {"n": 0, "part": 0}}}
     t = appel("gaExploration", x)
     assert "625 scénarios" in t and "Victoire de Arezzo" in t and "jamais un pronostic retenu" in t
+
+
+@pytest.mark.parametrize("cle,attendu", [
+    (["handicap_3issues_-1", "1"], "Arezzo gagne par 2 buts d'écart ou plus"), (["handicap_3issues_-1", "X"], "Arezzo gagne d'exactement 1 but d'écart"),
+    (["handicap_3issues_-1", "2"], "Ascoli ne perd pas"), (["handicap_3issues_2", "2"], "Ascoli gagne par 3 buts d'écart ou plus"),
+    (["nombre_exact_buts", "3"], "Exactement 3 buts dans le match"), (["nombre_exact_buts", "6+"], "6 buts ou plus dans le match"),
+    (["btts_total_2.5", "Oui|plus"], "Les deux équipes marquent et au moins 3 buts dans le match"), (["over_under_9.5", "plus"], "Plus de 9,5 buts"),
+])
+def test_phrases_des_marches_ajoutes_par_l_audit(cle, attendu):
+    assert appel("gaPhrase", cle, "Arezzo", "Ascoli")["titre"] == attendu
+
+
+@pytest.mark.parametrize("cle", [["handicap_3issues_-1", "1"], ["nombre_exact_buts", "2"], ["btts_total_3.5", "Non|moins"], ["over_under_8.5", "moins"]])
+def test_aucune_cle_technique_dans_les_phrases(cle):
+    t = appel("gaPhrase", cle, "Arezzo", "Ascoli")["titre"]
+    assert "_" not in t and "|" not in t
+
+
+def test_raison_meme_evenement_affichee_en_clair():
+    f = {**F, "a_surveiller": [{"cle": ["over_under_0.5", "plus"], "raison": "même événement que cages_inviolees_exterieur|non"}]}
+    t = appel("gaSurveiller", f)
+    assert "même événement que Ascoli encaisse au moins 1 but" in t and "cages_inviolees" not in t

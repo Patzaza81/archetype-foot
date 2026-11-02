@@ -187,10 +187,10 @@ def charger_archive(ligues: Ligues, dossier: Path = ARCHIVE) -> list[dict[str, A
     return sorted(vus.values(), key=lambda m: (m["jour"], m["id"]))
 
 
-def nb_matchs_lieu(matchs: list[dict], equipe: str, domicile: bool, jour: str) -> int:
-    """Matchs de l'équipe au lieu demandé, strictement avant `jour` (règle de Patrick : au moins 4)."""
+def nb_matchs_lieu(matchs: list[dict], equipe: str, domicile: bool, jour: str, affiche: tuple[str, str] | None = None) -> int:
+    """Matchs de l'équipe au lieu demandé, strictement avant `jour` ; `affiche` = (domicile, extérieur) du match à pronostiquer, écarté s'il figure déjà dans la liste."""
     cle = "dom" if domicile else "ext"
-    return sum(1 for m in matchs if m[cle] == equipe and m["date"] < jour)
+    return sum(1 for m in matchs if m[cle] == equipe and m["date"] < jour and not (affiche and _est_le_match(m, affiche[0], affiche[1], jour)))
 
 
 def derniers_au_lieu(matchs: list[dict], equipe: str, domicile: bool, jour: str, n: int = 10) -> list[dict]:
@@ -202,6 +202,13 @@ def derniers_au_lieu(matchs: list[dict], equipe: str, domicile: bool, jour: str,
             for m in ms[:n]]
 
 
+def _est_le_match(m: dict, dom: str, ext: str, jour: str) -> bool:
+    """Le match à pronostiquer lui-même, déjà joué et daté la veille par la source (fuseaux horaires : la page date en heure du Cameroun, l'historique en heure locale
+    du stade ; audit du 02/11/2026 : Coritiba – Grêmio, 27/10 dans l'archive, 26/10 dans l'historique). Une même affiche (même domicile, même extérieur) à un jour d'écart
+    ou moins n'est jamais un match précédent : son résultat est celui qu'on veut prédire."""
+    return m["dom"] == dom and m["ext"] == ext and abs(jours(m["date"], jour)) <= 1
+
+
 def sequences(matchs: list[dict], dom: str, ext: str, jour: str, n: int = MIN_MATCHS) -> dict[str, Any]:
     """Les quatre séquences de la spécification Omega V1 (§2) : les `n` derniers matchs de `dom` à domicile et de `ext` à l'extérieur,
     STRICTEMENT avant `jour` (aucun match futur), du plus ancien au plus récent. Chaque observation garde sa date, son adversaire et son score.
@@ -210,7 +217,7 @@ def sequences(matchs: list[dict], dom: str, ext: str, jour: str, n: int = MIN_MA
         raise ValueError("identité : l'équipe est opposée à elle-même")
     def prend(equipe: str, domicile: bool) -> list[dict[str, Any]]:
         cle, autre = ("dom", "ext") if domicile else ("ext", "dom")
-        ms = sorted((m for m in matchs if m[cle] == equipe and m["date"] < jour), key=lambda m: (m["date"], m["dom"], m["ext"]))
+        ms = sorted((m for m in matchs if m[cle] == equipe and m["date"] < jour and not _est_le_match(m, dom, ext, jour)), key=lambda m: (m["date"], m["dom"], m["ext"]))
         vus: set[tuple] = set()
         for m in ms:                                               # doublon exact = même date, mêmes équipes
             k = (m["date"], m["dom"], m["ext"])
@@ -232,4 +239,4 @@ def sequences(matchs: list[dict], dom: str, ext: str, jour: str, n: int = MIN_MA
     a, b = prend(dom, True), prend(ext, False)
     return {"A": a, "B": b, "att_a": [x["marques"] for x in a], "def_a": [x["encaisses"] for x in a],
             "att_b": [x["marques"] for x in b], "def_b": [x["encaisses"] for x in b],
-            "n_a_total": nb_matchs_lieu(matchs, dom, True, jour), "n_b_total": nb_matchs_lieu(matchs, ext, False, jour)}
+            "n_a_total": nb_matchs_lieu(matchs, dom, True, jour, (dom, ext)), "n_b_total": nb_matchs_lieu(matchs, ext, False, jour, (dom, ext))}

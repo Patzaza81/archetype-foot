@@ -5,9 +5,11 @@ directement), sinon une clé propre (marché analysé mais sans cote : il ne peu
 (i = buts du domicile, j = buts de l'extérieur) : 1 = gagné, 0 = perdu, 2 = remboursé (lignes entières, handicap 0 : « marchés à remboursement », §14.12).
 
 Règle des buts entiers (Patrick, 27/10/2026) : « Plus de 1,5 » est l'affichage, la valeur réelle est « au moins 2 buts » ; il n'y a pas de demi-buts.
-Lignes (fixes, pour qu'un marché ait toujours la même clé d'un match à l'autre et puisse être calibré) : totaux 0,5 à 6,5 et entiers 1 à 4 ;
-buts d'une équipe 0,5 à 4,5 ; handicaps ±0,5 à ±3,5 et handicap 0 ; combinés double chance / 1N2 × total (1,5 à 4,5) et × les deux marquent ;
-tous les scores exacts de 0-0 à 5-5 + « autre score ».
+Lignes (fixes, pour qu'un marché ait toujours la même clé d'un match à l'autre et puisse être calibré) : elles montent jusqu'aux plus hautes valeurs
+RÉELLEMENT observées dans l'historique (audit du 02/11/2026 : 9 buts pour une équipe, 10 au total, 9 buts d'écart ; un test échoue si l'historique les dépasse) :
+totaux 0,5 à 9,5 et entiers 1 à 9 ; buts d'une équipe 0,5 à 8,5 ; handicaps ±0,5 à ±8,5 et handicap 0 ; handicaps à trois issues ±1 à ±9 ;
+nombre exact de buts ; combinés double chance / 1N2 / les deux marquent × total (1,5 à 9,5) ; double chance / 1N2 × les deux marquent ;
+tous les scores exacts de 0-0 à 5-5 + « autre score » (au-delà de 5 buts pour une équipe : 1,4 % des matchs, regroupé).
 
 Marchés NON calculables avec les quatre séquences (jamais inventés, §6.7) : voir `NON_CALCULABLES`.
 """
@@ -27,11 +29,18 @@ NON_CALCULABLES = (
     "pair / impair (sans logique de tendance, exclu par décision de Patrick)",
 )
 
-LIGNES_TOTAL = (0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5)
-LIGNES_TOTAL_ENTIERES = (1, 2, 3, 4)
-LIGNES_EQUIPE = (0.5, 1.5, 2.5, 3.5, 4.5)
-LIGNES_HANDICAP = (-3.5, -2.5, -1.5, -0.5, 0.5, 1.5, 2.5, 3.5)
-LIGNES_COMBO = (1.5, 2.5, 3.5, 4.5)
+# Plus hautes valeurs observées dans l'historique réel (data/assemblage, audit du 02/11/2026). Elles bornent les lignes générées : au-delà, le marché ne peut plus
+# distinguer deux scores réels (« plus de X » toujours perdu, « moins de X » toujours gagné). `tests/test_moteur_omega_v3.py` échoue si l'historique les dépasse.
+MAX_EQUIPE = 9
+MAX_TOTAL = 10
+MAX_ECART = 9
+LIGNES_TOTAL = tuple(x + 0.5 for x in range(MAX_TOTAL))                              # 0,5 … 9,5
+LIGNES_TOTAL_ENTIERES = tuple(range(1, MAX_TOTAL))                                   # 1 … 9
+LIGNES_EQUIPE = tuple(x + 0.5 for x in range(MAX_EQUIPE))                            # 0,5 … 8,5
+LIGNES_HANDICAP = tuple(-(x + 0.5) for x in reversed(range(MAX_ECART))) + tuple(x + 0.5 for x in range(MAX_ECART))      # ±0,5 … ±8,5
+LIGNES_HANDICAP_3 = tuple(range(-MAX_ECART, 0)) + tuple(range(1, MAX_ECART + 1))     # ±1 … ±9 (handicap à trois issues : 1, X, 2)
+LIGNES_COMBO = tuple(x + 0.5 for x in range(1, MAX_TOTAL))                           # 1,5 … 9,5
+EXACT_MAX = 5                                                                        # nombre exact de buts : 0 … 5 puis « 6+ » (comme la source de cotes)
 SCORE_MAX = 5
 
 
@@ -103,6 +112,17 @@ def _construire() -> list[tuple[Cle, Regle]]:
     for r, fr in R1X2.items():
         for b, fb in BTTS.items():
             ajoute(("1x2_btts", f"{r}|{b}"), lambda i, j, fr=fr, fb=fb: fr(i, j) and fb(i, j))
+    for x in LIGNES_COMBO:                                  # les deux équipes marquent × total
+        for b, fb in BTTS.items():
+            ajoute((f"btts_total_{_l(x)}", f"{b}|plus"), lambda i, j, fb=fb, x=x: fb(i, j) and i + j > x)
+            ajoute((f"btts_total_{_l(x)}", f"{b}|moins"), lambda i, j, fb=fb, x=x: fb(i, j) and i + j < x)
+    for n in range(EXACT_MAX + 1):                          # nombre exact de buts du match (clés de la source de cotes : « 0 » … « 5 », « 6+ »)
+        ajoute(("nombre_exact_buts", str(n)), lambda i, j, n=n: i + j == n)
+    ajoute(("nombre_exact_buts", f"{EXACT_MAX + 1}+"), lambda i, j: i + j > EXACT_MAX)
+    for h in LIGNES_HANDICAP_3:                             # handicap à trois issues : le handicap h s'ajoute aux buts du domicile
+        ajoute((f"handicap_3issues_{h}", "1"), lambda i, j, h=h: i + h > j)
+        ajoute((f"handicap_3issues_{h}", "X"), lambda i, j, h=h: i + h == j)
+        ajoute((f"handicap_3issues_{h}", "2"), lambda i, j, h=h: i + h < j)
     for a in range(SCORE_MAX + 1):
         for b in range(SCORE_MAX + 1):
             ajoute(("score_exact", f"{a}-{b}"), lambda i, j, a=a, b=b: i == a and j == b)
@@ -150,13 +170,13 @@ def libelle(c: Cle) -> str:
 def evenement(c: Cle) -> bytes:
     """Empreinte de l'ÉVÉNEMENT (ensemble des scores gagnants, remboursés compris) : deux marchés aux clés différentes mais de même empreinte
     sont le même pari (ex. cage inviolée de l'extérieur = l'extérieur marque « moins de 0,5 »). Sert à ne jamais proposer deux fois le même événement."""
-    grille = np.array([[REGLES[c](i, j) for j in range(SCORE_MAX + 3)] for i in range(SCORE_MAX + 3)], dtype=np.int8)
+    grille = np.array([[REGLES[c](i, j) for j in range(MAX_EQUIPE + 2)] for i in range(MAX_EQUIPE + 2)], dtype=np.int8)
     return grille.tobytes()
 
 
 def famille(c: Cle) -> str:
     g = c[0]
-    if g.startswith(("dc_", "1x2_total", "1x2_btts")):
+    if g.startswith(("dc_", "1x2_total", "1x2_btts", "btts_total")):
         return "combinés"
     if g in ("1x2", "double_chance") or g.startswith(("handicap_", "victoire_sans")):
         return "résultat"
@@ -179,6 +199,10 @@ def issues_completes(c: Cle) -> tuple[str, ...] | None:
         return ("plus", "moins")
     if g.startswith("over_under_domicile_") or g.startswith("over_under_exterieur_"):
         return ("plus", "moins")
+    if g.startswith("handicap_3issues_"):
+        return ("1", "X", "2")
+    if g == "nombre_exact_buts":
+        return tuple(str(n) for n in range(EXACT_MAX + 1)) + (f"{EXACT_MAX + 1}+",)
     if g.startswith("handicap_") and g != "handicap_0" and g.endswith(".5"):
         return ("domicile", "exterieur")
     return None

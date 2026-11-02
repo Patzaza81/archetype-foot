@@ -26,7 +26,7 @@ from typing import Any
 
 import numpy as np
 
-from . import marches as M
+from . import definitions as Df, marches as M
 
 NIVEAUX = ("strict", "intermediaire", "elargi")
 PARAMS_DEFAUT: dict[str, Any] = {
@@ -321,15 +321,19 @@ def selection(a: dict[str, Any]) -> dict[str, Any]:
 
 # --- 16.E Conclusion ---------------------------------------------------------------------------------------------------
 def _nom(c: list[str]) -> str:
-    return f"{c[0]} · {c[1]}"
+    """Nom lisible d'un marché (définition française, sans les équipes : la conclusion est gelée sans noms)."""
+    t = Df.definition(c[0], c[1])[0]
+    return t[:1].upper() + t[1:]
 
 
 def conclure(a: dict[str, Any]) -> list[str]:
     """Phrases de la conclusion (§16.E), en clair. Descriptif : rien ici n'est une probabilité."""
     L = []
     ms = [m for m in a["marches"] if m["famille"] != "scores exacts"]
-    top = sorted(ms, key=lambda m: (-m["f"], M.cle_txt(tuple(m["cle"]))))[:3]
-    L.append("Ce qui ressort le plus souvent (fréquence brute) : " + " ; ".join(f"{_nom(m['cle'])} {m['f']:.0%}" for m in top) + f" sur {a['combinaisons']} scénarios.")
+    certains = [m for m in ms if m["f"] in (0.0, 1.0)]
+    top = sorted([m for m in ms if 0.0 < m["f"] < 1.0], key=lambda m: (-m["f"], M.cle_txt(tuple(m["cle"]))))[:3]
+    L.append("Ce qui ressort le plus souvent (fréquence brute, hors marchés vrais ou faux dans tous les scénarios) : " + " ; ".join(f"{_nom(m['cle'])} {m['f']:.0%}" for m in top)
+             + f" sur {a['combinaisons']} scénarios. {len(certains)} marché(s) sont vrais ou faux dans 100 % des scénarios (lignes extrêmes) : ils ne disent rien du match.")
     stables = [m for m in ms if m["f"] >= 0.5 and m["stabilite"]["amplitude"] == 0.0]
     L.append(f"Stable quand on retire une observation : {len(stables)} marché(s) au-dessus de 50 %.")
     fragiles = [m for m in ms if m["stabilite"]["dependance_unique"]]

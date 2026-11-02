@@ -52,15 +52,26 @@ function gaPhrase(cle, dom, ext) {
   if (g === "handicap_0") return { titre: `${s === "domicile" ? dom : ext} gagne (remboursé si match nul)` };
   if (g === "victoire_sans_encaisser_domicile") return { titre: `${dom} gagne sans encaisser` };
   if (g === "victoire_sans_encaisser_exterieur") return { titre: `${ext} gagne sans encaisser` };
-  if (g === "score_exact") return { titre: s === "autre" ? "Un autre score (plus de 5 buts pour une équipe)" : `Score exact ${s.replace("-", " - ")}` };
+  if (g === "score_exact") return { titre: s === "autre" ? "Un autre score (6 buts ou plus pour une équipe)" : `Score exact ${s.replace("-", " - ")}` };
   if ((r = g.match(/^handicap_(-?\d+\.5)$/))) {
     const h = s === "domicile" ? Number(r[1]) : -Number(r[1]), eq = s === "domicile" ? dom : ext;
     const phrase = h > 0 ? (h < 1 ? `${eq} ne perd pas` : `${eq} ne perd pas par ${gaButs(Math.ceil(h))} d'écart ou plus`)
       : (h > -1 ? `${eq} gagne` : `${eq} gagne par ${gaButs(Math.ceil(-h))} d'écart ou plus`);
     return { titre: phrase, reel: `handicap ${h > 0 ? "+" : "−"}${gaVirg(Math.abs(h))}` };
   }
+  if ((r = g.match(/^handicap_3issues_(-?\d+)$/))) {
+    const k = Number(r[1]);
+    const marge = (eq, m) => m >= 1 ? `${eq} gagne par ${gaButs(m)} d'écart ou plus` : (m === 0 ? `${eq} ne perd pas` : `${eq} ne perd pas de plus de ${gaButs(-m)} d'écart`);
+    const ex = (eq, n) => `${eq} ${n > 0 ? "gagne" : "perd"} d'exactement ${gaButs(Math.abs(n))} d'écart`;
+    const reel = `handicap ${k > 0 ? "+" : "−"}${Math.abs(k)} sur ${dom}`;
+    if (s === "1") return { titre: marge(dom, 1 - k), reel };
+    if (s === "2") return { titre: marge(ext, k + 1), reel };
+    return { titre: ex(dom, -k), reel };
+  }
+  if (g === "nombre_exact_buts") return { titre: /\+$/.test(s) ? `${gaButs(parseInt(s, 10))} ou plus dans le match` : `Exactement ${gaButs(Number(s))} dans le match` };
   if (s.includes("|")) {
     const [a, b] = s.split("|");
+    if (g.startsWith("btts_total_")) return { titre: `${a === "Oui" ? "Les deux équipes marquent" : "Au moins une équipe ne marque pas"} et ${total(g.split("_").pop(), b)}` };
     const debut = g.startsWith("dc_") ? dc[a] : res[a];
     let fin;
     if (g.endsWith("btts")) fin = b === "Oui" ? "les deux équipes marquent" : "au moins une équipe ne marque pas";
@@ -93,7 +104,7 @@ function gaFreqPari(p, f) {
   const l = [];
   l.push(`<div class="om-info">Fréquence brute : <b>${p.k} scénarios sur ${p.n}</b> (${gaPct(p.f)}). Une fréquence de scénarios n'est pas une probabilité.</div>`);
   l.push(`<div class="om-info">Fréquence robuste (une observation retirée à la fois) : <b>${gaPct(p.g)}</b> (de ${gaPct(st.f_min)} à ${gaPct(st.f_max)}).</div>`);
-  if (p.seuil != null) l.push(`<div class="om-info">Seuil de ce marché appris sur l'archive : <b>${gaPct(p.seuil)}</b>${p.p_calibree != null ? ` · réussite réelle observée à ce niveau : <b>${gaPct(p.p_calibree)}</b>` : ""}</div>`);
+  if (p.seuil != null) l.push(`<div class="om-info">Seuil de ce marché appris sur l'archive : <b>${gaPct(p.seuil)}</b>${p.p_calibree != null ? ` · réussite observée sur l'archive à ce niveau, parmi les paris jouables : <b>${gaPct(p.p_calibree)}</b>` : ""}</div>`);
   if (p.cote) l.push(`<div class="om-info">Cote <b>${gaCote(p.cote)}</b> = probabilité implicite ${gaPct(p.p_implicite)}${p.p_implicite_corrigee != null ? ` (${gaPct(p.p_implicite_corrigee)} marge retirée, marge ${gaPct1(p.marge)})` : ""}${p.ev != null ? ` · ${gaEv(p)} <small>(information)</small>` : ""}</div>`);
   l.push(`<table class="om-table"><tr><th>Palier défensif</th><th>Scénarios</th><th>Fréquence</th></tr>` +
     `<tr><td>Brut (tous)</td><td>${p.k} sur ${p.n}</td><td>${gaPct(p.f)}</td></tr>${pal("Strict", "strict")}${pal("Intermédiaire", "intermediaire")}${pal("Élargi", "elargi")}</table>`);
@@ -169,10 +180,14 @@ function gaConclusion(f) {
   const c = f.conclusion; if (!c || !c.length) return "";
   return `<div class="om-bloc"><div class="om-bloc-titre">Conclusion</div>${c.map((x) => `<div class="om-info">${gaE(x).replace(/·/g, "–")}</div>`).join("")}</div>`;
 }
+// La raison gelée cite parfois la clé technique d'un autre marché : on la remplace par sa phrase.
+function gaRaison(r, f) {
+  return String(r || "").replace(/(même événement que )([a-z0-9_.\-]+)\|(\S+)/i, (m, d, g, s) => d + gaPhrase([g, s], f.domicile, f.exterieur).titre);
+}
 function gaSurveiller(f) {
   const l = f.a_surveiller || []; if (!l.length) return "";
   return `<div class="om-autres"><div class="om-autres-titre">À surveiller (seuil atteint, pari non jouable)</div>` +
-    l.slice(0, 12).map((x) => `<div class="om-info">${gaE(gaPhrase(x.cle, f.domicile, f.exterieur).titre)} — ${gaE(x.raison)}</div>`).join("") + (l.length > 12 ? `<div class="om-info">… et ${l.length - 12} autres.</div>` : "") + `</div>`;
+    l.slice(0, 12).map((x) => `<div class="om-info">${gaE(gaPhrase(x.cle, f.domicile, f.exterieur).titre)} — ${gaE(gaRaison(x.raison, f))}</div>`).join("") + (l.length > 12 ? `<div class="om-info">… et ${l.length - 12} autres.</div>` : "") + `</div>`;
 }
 // Tous les marchés explorés (§16.D) : aucun marché n'est caché, rejetés et raison comprise. Lignes positionnelles : voir moteur_omega_v3/suivi.py (_compact).
 function gaTousMarches(f) {
@@ -311,8 +326,10 @@ function gaAffiche(d) {
   GA_CLES = d.cles_marches || []; GA_ORDRE = d.ordre_marches || "";
   document.getElementById("om-bilan").innerHTML = gaBilan(d.bilan || {});
   gaListe("om-avenir", d.a_venir, "Aucun pari à venir pour l'instant.");
-  const sans = Number(d.sans_pronostic) || 0;
-  document.getElementById("om-sans").textContent = sans ? `${sans} autre${sans > 1 ? "s" : ""} match${sans > 1 ? "s" : ""} analysé${sans > 1 ? "s" : ""} sans pari : aucun marché ne remplit les règles (le moteur ne force jamais une sélection).` : "";
+  const sans = Number(d.sans_pronostic) || 0, exclus = Number(d.nb_exclus) || 0;
+  const raisons = Object.entries(d.exclus || {}).map(([r, n]) => `${gaE(r)} : ${n}`).join(" · ");
+  document.getElementById("om-sans").innerHTML = (sans ? `${sans} autre${sans > 1 ? "s" : ""} match${sans > 1 ? "s" : ""} analysé${sans > 1 ? "s" : ""} sans pari : aucun marché ne remplit les règles (le moteur ne force jamais une sélection).` : "") +
+    (exclus ? `${sans ? "<br>" : ""}${exclus} match${exclus > 1 ? "s" : ""} non analysé${exclus > 1 ? "s" : ""} (${raisons}) : le moteur n'invente aucune donnée manquante.` : "");
   gaListe("om-encours", d.en_cours, "Aucun match en cours.");
   gaListe("om-regles", d.reglees, "Aucun pari réglé pour l'instant.");
   const g = d.derniere_analyse || d.genere_le ? new Date(d.derniere_analyse || d.genere_le) : null;

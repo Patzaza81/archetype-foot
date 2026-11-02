@@ -122,11 +122,17 @@ jobs:
       # REMPLACEMENT 02/11/2026 (ordre de Patrick) : le moteur Gamma n'est plus le moteur DC mais le moteur Omega V3 (exploration ouverte, 625 scénarios,
       # seuils appris sur l'archive). Autonome, hors tickets, journal gelé avant le coup d'envoi (data/gamma/). Ne bloque jamais le pipeline ; un contrôle
       # mathématique raté fait échouer CETTE étape (visible) sans publier le match concerné. Voir docs/MOTEUR_OMEGA_V3.md.
-      # L'ancien moteur DC n'est plus lancé : son code (moteur_dc/), ses tests et son journal gelé (data/dc/) restent intacts.
+      # L'ancien moteur DC continue de tourner (étape suivante) : sans cela son journal gelé s'arrêterait et aucune comparaison réelle ne serait plus possible.
       - name: Moteur Gamma = Omega V3 (pronostics et journal gelé, hors tickets)
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         continue-on-error: true
         run: python -m moteur_omega_v3.suivi pipeline
+
+      # CONSERVÉ (audit du 02/11/2026) : moteur DC = ancien Gamma, inchangé, pour la comparaison avec Omega V3 sur les mêmes matchs gelés (data/dc/, page pronostics_dc.html).
+      - name: Ancien moteur DC (pronostics et journal gelé, hors tickets)
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+        continue-on-error: true
+        run: python -m moteur_dc.suivi pipeline
 
       - name: Récupérer les scores des matchs du jeu d'évaluation du moteur
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')

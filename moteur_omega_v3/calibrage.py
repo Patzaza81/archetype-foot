@@ -5,6 +5,10 @@
 - pour chaque marché : tranches de 5 points de g à partir de 50 %, réussite réelle par tranche, rendue croissante avec g (fusion des tranches voisines qui se contredisent) ;
 - seuil du marché = début de la première tranche dont la réussite lissée atteint 70 % (cible de Patrick), avec au moins 30 prédictions au-dessus ; sinon aucun seuil, le marché n'est jamais retenu ;
 - un remboursement n'est ni un gain ni une perte : il sort du décompte ;
+- POPULATION JOUABLE (audit du 02/11/2026) : seules comptent les observations dont le marché a une cote ≥ cote minimale, c'est-à-dire celles où le moteur peut réellement parier.
+  Calibrer sur toutes les observations puis ne parier que si la cote est ≥ 1,26 est un biais de sélection : le bookmaker ne cote ≥ 1,26 que les cas qu'il juge moins sûrs,
+  et à fréquence robuste égale ces cas réussissent moins souvent. Mesuré sur le développement : cellules g ≥ seuil, toutes = 92,3 % annoncé / 92,3 % réel ;
+  cote ≥ 1,26 = 76,9 % annoncé / 69,3 % réel ; cote < 1,26 = 84,3 % / 85,2 %. `seuils(ech, jouable=False)` reproduit l'ancien calcul (comparaison) ;
 - VALIDATION CHRONOLOGIQUE (§17) : seuils appris sur les 70 % de matchs les plus anciens, appliqués tels quels (code de production, cotes réelles) aux 30 % suivants ;
   Brier et log loss de la fréquence brute prise pour une probabilité, contre la réussite lissée apprise (§10 : une fréquence n'est pas une probabilité), table de calibration.
   Ce n'est PAS un bilan du moteur (règle de Patrick du 29/10/2026 : les bilans ne portent que sur les paris gelés avant le coup d'envoi et des matchs terminés).
@@ -51,9 +55,15 @@ def echantillon(log=print) -> tuple[list[dict[str, Any]], Counter]:
             exclus["contrôle mathématique échoué"] += 1
             continue
         res = M.vecteur(m["h"], m["a"])
-        out.append({"m": m, "g": np.array([x["g"] for x in a["marches"]]), "f": np.array([x["f"] for x in a["marches"]]), "y": res, "sequences": s})
+        out.append({"m": m, "g": np.array([x["g"] for x in a["marches"]]), "f": np.array([x["f"] for x in a["marches"]]), "y": res, "sequences": s, "jouable": jouables(m.get("cotes"))})
     log(f"  archive : {len(out)} matchs joués analysables ; exclus : {dict(exclus)}")
     return out, exclus
+
+
+def jouables(cotes: dict | None) -> np.ndarray:
+    """Pour chaque marché : la cote est connue et au moins égale à la cote minimale (le pari serait possible)."""
+    mini = C.PARAMS_DEFAUT["cote_min"]
+    return np.array([(lambda v: v is not None and v >= mini)(C.lire_cote(cotes, c)) for c in M.CLES])
 
 
 def _pav(n: list[int], k: list[float]) -> list[float]:
@@ -70,15 +80,16 @@ def _pav(n: list[int], k: list[float]) -> list[float]:
     return out
 
 
-def seuils(ech: list[dict[str, Any]]) -> dict[str, Any]:
-    """Seuil et tranches de chaque marché sur l'échantillon donné."""
+def seuils(ech: list[dict[str, Any]], jouable: bool = True) -> dict[str, Any]:
+    """Seuil et tranches de chaque marché sur l'échantillon donné. `jouable` : n'apprend que sur les observations dont la cote permet de parier (voir l'en-tête)."""
     G = np.array([x["g"] for x in ech])
     Y = np.array([x["y"] for x in ech])
+    J = np.array([x["jouable"] for x in ech]) if jouable and all("jouable" in x for x in ech) else np.ones_like(Y, dtype=bool)
     bornes = [round(0.5 + PAS * k, 2) for k in range(int(round(0.5 / PAS)))]
     out: dict[str, Any] = {}
     for i, c in enumerate(M.CLES):
-        jouable = Y[:, i] != 2                                  # un remboursé n'est ni gagné ni perdu
-        g, y = G[jouable, i], (Y[jouable, i] == 1).astype(float)
+        garde = (Y[:, i] != 2) & J[:, i]                        # un remboursé n'est ni gagné ni perdu ; hors population jouable : pas de pari possible
+        g, y = G[garde, i], (Y[garde, i] == 1).astype(float)
         tr = []
         for b in bornes:
             m = (g >= b - 1e-12) & ((g < b + PAS - 1e-12) if b < bornes[-1] else (g <= 1.0 + 1e-12))
