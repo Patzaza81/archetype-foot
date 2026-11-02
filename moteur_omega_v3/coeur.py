@@ -3,7 +3,7 @@
 Il REMPLACE le moteur DC derrière la page Gamma (ordre de Patrick du 02/11/2026). Autonome : aucun import d'un autre moteur, aucune cote dans l'exploration.
 
 Principe : la matrice observe, les calculs mesurent, le moteur ne force jamais la conclusion. Quatre séquences de buts (attaque A, défense A, attaque B,
-défense B ; A reçoit B ; au moins 5 matchs au même lieu chacune), 5 × 5 × 5 × 5 = 625 scénarios parcourus SANS suppression préalable.
+défense B ; A reçoit B ; au moins 5 matchs au même lieu chacune, toute la saison ensuite : règle de Patrick du 02/11/2026), n × n × n × n scénarios (625 à 5 matchs, 130 321 à 19) parcourus SANS suppression préalable, comptés sans les énumérer.
 
 LECTURE DE LA SPÉCIFICATION (à connaître, elle n'est pas écrite noir sur blanc) :
 - le score d'un scénario (attA_i, defA_l, attB_k, defB_j) est (attA_i, attB_k) : buts de A et buts de B ; l'écart « attA − attB » du §3.1 en est la marge ;
@@ -31,7 +31,7 @@ from . import definitions as Df, marches as M
 NIVEAUX = ("strict", "intermediaire", "elargi")
 PARAMS_DEFAUT: dict[str, Any] = {
     "ecart_max_niveau": {"strict": 0, "intermediaire": 1, "elargi": 2},   # buts entiers ; au-delà de « élargi » : incompatible (reste dans l'exploration brute)
-    "min_scenarios_niveau": 25,       # = nombre de paires (attA, attB) d'un échantillon de 5 : en dessous, un palier est SIGNALÉ « trop peu représenté », jamais utilisé pour décider
+    "min_scenarios_niveau": 25,       # = nombre de paires (attA, attB) (25 à 5 matchs, valeur conservée dans l'empreinte ; le seuil appliqué est len(attA) × len(attB)) : en dessous, un palier est SIGNALÉ « trop peu représenté », jamais utilisé pour décider
     "cote_min": 1.26,                 # décision de Patrick (30/10/2026) pour Gamma : cote BetPawa connue et ≥ 1,26, sinon le pari n'est pas jouable
     "pas_tranche": 0.05,
 }
@@ -67,8 +67,8 @@ def niveau(ecart: int, p: dict[str, Any]) -> str:
     return "incompatible"
 
 
-def histogrammes(att_a: list[int], def_a: list[int], att_b: list[int], def_b: list[int], p: dict[str, Any]) -> dict[str, Counter]:
-    """Distribution des scores (attA, attB) : brute (tous les scénarios), puis par palier cumulatif, + les incompatibles."""
+def histogrammes_enumeres(att_a: list[int], def_a: list[int], att_b: list[int], def_b: list[int], p: dict[str, Any]) -> dict[str, Counter]:
+    """RÉFÉRENCE (lente) : parcourt les scénarios un à un. Sert à prouver que `histogrammes` donne exactement les mêmes comptes ; non utilisée par le moteur."""
     h: dict[str, Counter] = {"brute": Counter(), "strict": Counter(), "intermediaire": Counter(), "elargi": Counter(), "incompatible": Counter()}
     lim = p["ecart_max_niveau"]
     for _, _, _, _, a, da, b, db in combinaisons(att_a, def_a, att_b, def_b):
@@ -82,6 +82,27 @@ def histogrammes(att_a: list[int], def_a: list[int], att_b: list[int], def_b: li
                     h["strict"][(a, b)] += 1
         else:
             h["incompatible"][(a, b)] += 1
+    return h
+
+
+def histogrammes(att_a: list[int], def_a: list[int], att_b: list[int], def_b: list[int], p: dict[str, Any]) -> dict[str, Counter]:
+    """Distribution des scores (attA, attB) : brute (tous les scénarios), puis par palier cumulatif, + les incompatibles.
+
+    Calcul SANS énumérer les scénarios (profondeur variable, jusqu'à toute la saison : 19⁴ = 130 321 scénarios). Les quatre indices sont indépendants et le score ne dépend que de
+    (attA_i, attB_k) : le nombre de scénarios de score (a, b) dont l'écart défensif maximal est ≤ L vaut
+    [nb de attA égaux à a × nb de defB à au plus L buts de a] × [nb de attB égaux à b × nb de defA à au plus L buts de b]. Mêmes entiers que l'énumération
+    (`histogrammes_enumeres`, comparée dans les tests)."""
+    lim = p["ecart_max_niveau"]
+    ca, cb = Counter(att_a), Counter(att_b)
+    def cote(c: Counter, defense: list[int], seuil: int | None) -> dict[int, int]:
+        return {v: n * (len(defense) if seuil is None else sum(1 for d in defense if abs(v - d) <= seuil)) for v, n in c.items()}
+    A0, B0 = cote(ca, def_b, None), cote(cb, def_a, None)
+    h: dict[str, Counter] = {"brute": Counter({(a, b): x * y for a, x in A0.items() for b, y in B0.items()})}
+    for t in NIVEAUX:
+        At, Bt = cote(ca, def_b, lim[t]), cote(cb, def_a, lim[t])
+        h[t] = Counter({(a, b): x * y for a, x in At.items() for b, y in Bt.items() if x * y})
+    Ae, Be = cote(ca, def_b, lim["elargi"]), cote(cb, def_a, lim["elargi"])
+    h["incompatible"] = Counter({(a, b): A0[a] * B0[b] - Ae[a] * Be[b] for a in A0 for b in B0 if A0[a] * B0[b] - Ae[a] * Be[b]})
     return h
 
 
@@ -149,8 +170,8 @@ def analyser(att_a: list[int], def_a: list[int], att_b: list[int], def_b: list[i
     """Exploration complète d'un match à partir des quatre séquences. Déterministe : mêmes entrées, mêmes sorties."""
     p = params or PARAMS_DEFAUT
     valider_sequences(att_a, def_a, att_b, def_b, minimum)
-    rows = combinaisons(att_a, def_a, att_b, def_b)
-    N = len(rows)
+    N = len(att_a) * len(def_a) * len(att_b) * len(def_b)               # nombre de scénarios (jamais énumérés : voir `histogrammes`)
+    mini_niveau = len(att_a) * len(att_b)                                 # palier « trop peu représenté » sous le nombre de paires (attA, attB) : 25 à 5 matchs
     h = histogrammes(att_a, def_a, att_b, def_b, p)
     W, R, n_brut = _gains(h["brute"])
     assert n_brut == N and sum(h["brute"].values()) == N      # aucun scénario perdu ni compté deux fois
@@ -158,7 +179,7 @@ def analyser(att_a: list[int], def_a: list[int], att_b: list[int], def_b: list[i
     niv: dict[str, Any] = {}
     for t in (*NIVEAUX, "incompatible"):
         w, r, n = _gains(h[t])
-        niv[t] = {"w": w, "n": n, "f": (w / n if n else None), "faible": n < p["min_scenarios_niveau"]}
+        niv[t] = {"w": w, "n": n, "f": (w / n if n else None), "faible": n < mini_niveau}
     # --- stabilité (§8.1) : une observation retirée à la fois dans chacune des quatre séquences ---
     seqs = [list(att_a), list(def_a), list(att_b), list(def_b)]
     F_loo, S_loo, retraits = [], [], []
@@ -176,13 +197,21 @@ def analyser(att_a: list[int], def_a: list[int], att_b: list[int], def_b: list[i
             retraits.append([("attaque A", "défense A", "attaque B", "défense B")[s], r])
     F_loo_a = np.array(F_loo) if F_loo else np.empty((0, MARCHES_N))
     # --- concentration (§8.2) : part des scénarios gagnants qui contiennent une même observation ---
-    idx = np.array([(r[0], r[1], r[2], r[3]) for r in rows])
-    O = np.stack([M.vecteur(r[4], r[6]) == 1 for r in rows])                     # N × marchés
-    sup = O.sum(0)
+    ca, cb = Counter(att_a), Counter(att_b)
+    gagne = {(a, b): M.vecteur(a, b) == 1 for a in ca for b in cb}
+    sup_ab = sum(ca[a] * cb[b] * gagne[(a, b)] for a in ca for b in cb)                          # scénarios gagnants / (nb defA × nb defB)
+    sup = sup_ab * (len(def_a) * len(def_b))
     part = np.zeros(MARCHES_N)
-    for s in range(4):
-        for r in range(len(seqs[s])):
-            part = np.maximum(part, np.divide(O[idx[:, s] == r].sum(0), sup, out=np.zeros(MARCHES_N), where=sup > 0))
+    for r in range(len(att_a)):                                                                  # scénarios gagnants qui contiennent l'observation r de attA
+        c = sum(cb[b] * gagne[(att_a[r], b)] for b in cb)
+        part = np.maximum(part, np.divide(c, sup_ab, out=np.zeros(MARCHES_N), where=sup_ab > 0))
+    for r in range(len(att_b)):
+        c = sum(ca[a] * gagne[(a, att_b[r])] for a in ca)
+        part = np.maximum(part, np.divide(c, sup_ab, out=np.zeros(MARCHES_N), where=sup_ab > 0))
+    if len(def_a):                                                                               # une observation défensive est dans 1 / n des scénarios, gagnants compris
+        part = np.maximum(part, np.where(sup > 0, 1 / len(def_a), 0.0))
+    if len(def_b):
+        part = np.maximum(part, np.where(sup > 0, 1 / len(def_b), 0.0))
     paires = np.stack([M.vecteur(a, b) == 1 for a in set(att_a) for b in set(att_b)])  # (valeurs distinctes) : diversité des configurations offensives
     paires_n = len(set(att_a)) * len(set(att_b))
     f_brute = W / N
@@ -193,7 +222,7 @@ def analyser(att_a: list[int], def_a: list[int], att_b: list[int], def_b: list[i
         g = f_min
         niveaux_m = {t: {"k": int(niv[t]["w"][k]), "n": niv[t]["n"], "f": (round(float(niv[t]["w"][k] / niv[t]["n"]), 4) if niv[t]["n"] else None), "faible": niv[t]["faible"]}
                      for t in (*NIVEAUX, "incompatible")}
-        contradiction = [t for t in NIVEAUX if niv[t]["n"] >= p["min_scenarios_niveau"] and (niveaux_m[t]["f"] - 0.5) * (f_brute[k] - 0.5) < 0]
+        contradiction = [t for t in NIVEAUX if niv[t]["n"] >= mini_niveau and (niveaux_m[t]["f"] - 0.5) * (f_brute[k] - 0.5) < 0]
         sl = [x[k] for x in S_loo if not math.isnan(x[k])]
         out_m.append({
             "cle": [c[0], c[1]], "famille": M.famille(c), "k": int(W[k]), "n": N, "remb": int(R[k]), "f": round(float(f_brute[k]), 4),

@@ -112,7 +112,7 @@ def analyser_match(m: dict[str, Any], liste: list[dict] | None, calib: dict[str,
     if not liste:
         return fiche(m, None, None, None, "championnat sans match connu")
     try:
-        s = D.sequences(liste, m["eq_dom"], m["eq_ext"], m["jour"])
+        s = D.sequences(liste, m["eq_dom"], m["eq_ext"], m["jour"], n=D.TOUT_LE_LIEU)
     except ValueError as e:
         return fiche(m, None, None, None, str(e))
     a = C.analyser(s["att_a"], s["def_a"], s["att_b"], s["def_b"], cotes=m.get("cotes"), calib=calib)
