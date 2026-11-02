@@ -69,7 +69,7 @@ def _ko(x: Any) -> datetime | None:
 
 def _pari(l: dict[str, Any]) -> dict[str, Any]:
     return {"cle": l["cle"], "marche": l["marche"], "valeur_reelle": l.get("valeur_reelle"), "famille": l["famille"], "cote": l["cote"],
-            "p": round(l["p"], 4), "base": l.get("base"), "edge": l.get("edge"), "seuil": l.get("seuil"), "avertissement": l.get("avertissement"),
+            "p": round(l["p"], 4), "ev": l.get("ev"), "base": l.get("base"), "edge": l.get("edge"), "seuil": l.get("seuil"), "avertissement": l.get("avertissement"),
             "preuve": l.get("preuve"), "decision": l.get("decision")}
 
 
@@ -104,7 +104,7 @@ def fiche(m: dict[str, Any], a: dict[str, Any], s: dict[str, Any], matchs: list[
             "module4": {"marches_testes": s["m"], "z_seuil_bonferroni": s["z_seuil"], "emac": s["emac"], "emac_source": s.get("emac_source")},
             "buts_attendus": {k: round(v, 3) for k, v in a["buts_attendus"].items()},
             "buts_attendus_avant_effets": {k: round(v, 3) for k, v in a["buts_attendus_avant_effets"].items()},
-            "modele": a["modele"], "facteurs": a["facteurs"], "excedents_profil": a["excedents_profil"], "scores_probables": a["scores_probables"],
+            "decomposition": a.get("decomposition"), "modele": a["modele"], "facteurs": a["facteurs"], "excedents_profil": a["excedents_profil"], "scores_probables": a["scores_probables"],
             "equipes": {k: {x: eq[k].get(x) for x in ("position", "Pts", "J", "PPM", "forme_ppm", "IE", "IE_dom", "IE_ext", "profil", "style_tag",
                                                        "score_modal_dom", "score_modal_ext", "amplitude_dom", "amplitude_ext", "MBM_dom", "MBE_dom", "MBM_ext", "MBE_ext")}
                         for k in ("dom", "ext")},
@@ -114,7 +114,8 @@ def fiche(m: dict[str, Any], a: dict[str, Any], s: dict[str, Any], matchs: list[
 
 def _cle_selection(f: dict[str, Any]) -> str:
     p = f.get("principal") or {}
-    return json.dumps([f.get("statut"), p.get("cle"), p.get("cote"), [(x["cle"], x["cote"]) for x in f.get("autres") or []]], sort_keys=True)
+    # version_fiche : une fiche sans décomposition gelée (avant le 01/11/2026) est regelée une fois, avant le coup d'envoi (ajout seul)
+    return json.dumps([f.get("statut"), p.get("cle"), p.get("cote"), [(x["cle"], x["cote"]) for x in f.get("autres") or []], f.get("decomposition") is not None], sort_keys=True)
 
 
 def geler(maintenant: datetime | None = None, journal: Path = JOURNAL, ligues: D.Ligues | None = None, matchs: list[dict] | None = None,

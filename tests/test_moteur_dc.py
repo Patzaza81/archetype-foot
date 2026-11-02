@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import math
 from datetime import datetime, timezone
 
 import numpy as np
@@ -206,24 +207,40 @@ def test_multigoal_somme_des_cases_et_effectifs_orientes():
     ms = [{"date": f"2026-09-{d:02d}", "dom": "A", "ext": "Z", "h": 2, "a": 0} for d in (1, 8, 15, 22)] + \
          [{"date": f"2026-09-{d:02d}", "dom": "Y", "ext": "B", "h": 0, "a": 3} for d in (2, 9, 16, 23)]
     c = C.construire(ms, "A", "B", "2026-10-01")
-    K_, n = coeur.effectifs(c)
-    k = dict(zip(coeur.CLES, K_))
-    assert n == 8 and k[("1x2", "1")] == 4 and k[("1x2", "2")] == 4                 # B gagne chez l'adversaire = « 2 » : orientation gardée
+    Kd, nd, Ke, ne = coeur.effectifs(c)
+    kd, ke = dict(zip(coeur.CLES, Kd)), dict(zip(coeur.CLES, Ke))
+    assert (nd, ne) == (4, 4)                                                      # deux populations séparées, jamais additionnées
+    assert kd[("1x2", "1")] == 4 and kd[("1x2", "2")] == 0                         # A à domicile : 4 victoires du domicile
+    assert ke[("1x2", "2")] == 4 and ke[("1x2", "1")] == 0                         # B gagne chez l'adversaire = « 2 » : orientation gardée
 
 
 # --- Module 4 -----------------------------------------------------------------------------------------------------------
-def _l(cle, p, base, k, n, cote=1.50):
+def _l(cle, p, base, k, n, cote="auto"):
+    """k sur n : réparti en deux populations séparées (moitié domicile, moitié extérieur). cote « auto » : jouable et d'EV positive (1,10 / P)."""
+    if cote == "auto":
+        cote = round(max(1.30, 1.10 / p), 2)
+    k1 = k // 2
+    d, e = n // 2, n - n // 2
     return {"cle": list(cle), "marche": M.libelle(cle), "famille": M.famille(cle), "p": p, "base": base, "cote": cote,
-            "preuve": {"k": k, "n": n, "p_hat": round(k / n, 4)}}
+            "preuve": {"dom": {"k": k1, "n": d, "p_hat": round(k1 / d, 4)}, "ext": {"k": k - k1, "n": e, "p_hat": round((k - k1) / e, 4)}}}
+
+
+def _avec_estimation(l):
+    """Les calculs de `selectionner` (Wilson par population + estimation combinée) avant d'appeler `tester` seul."""
+    pr = l["preuve"]
+    for pop in ("dom", "ext"):
+        pr[pop]["wilson"] = list(S.wilson(pr[pop]["k"], pr[pop]["n"]))
+    pr["estimation"] = S.estimation_combinee(pr)
+    return l
 
 
 def test_wilson_n_est_plus_qu_un_avertissement():
     assert S.wilson(43, 60) == pytest.approx((0.5913, 0.8143), abs=0.002)
     assert S.wilson(0, 0) == (0.0, 1.0)
-    l = _l(("btts", "Oui"), 0.86, 0.50, 6, 10)                                     # 86 % hors de [31 % ; 83 %]
+    l = _avec_estimation(_l(("btts", "Oui"), 0.97, 0.50, 4, 10))                  # 97 % très au-dessus de ce que montrent les deux populations (2/5 et 2/5)
     ok, r = S.tester(l, 0.005)
     assert ok and l["avertissement"] and "avertissement" in r
-    l = _l(("btts", "Oui"), 0.80, 0.50, 8, 10)
+    l = _avec_estimation(_l(("btts", "Oui"), 0.80, 0.50, 8, 10))                   # 4/5 et 4/5 : 80 % dans l'intervalle
     assert S.tester(l, 0.005)[0] and l["avertissement"] is None
 
 
@@ -311,7 +328,7 @@ class _Lg:
 
 
 def test_gel_avant_coup_d_envoi_puis_resultat(tmp_path, monkeypatch):
-    monkeypatch.setattr(S, "tester", lambda l, e, z, s=None: (l["cle"] == ["1x2", "1"], "test"))                         # un pari forcé pour suivre la mécanique
+    monkeypatch.setattr(S, "tester", lambda l, e, z, s=None, fe=True: (l["cle"] == ["1x2", "1"], "test"))                         # un pari forcé pour suivre la mécanique
     j = tmp_path / "journal.jsonl"
     avant = datetime(2026, 10, 20, 10, 0, tzinfo=timezone.utc)
     n = suivi.geler(maintenant=avant, journal=j, ligues=_Lg, matchs=_arch(), params=_params())
@@ -324,6 +341,24 @@ def test_gel_avant_coup_d_envoi_puis_resultat(tmp_path, monkeypatch):
     assert suivi.resultats(journal=j, matchs=_arch(h=2, a=1)) == 0                                              # réglé une seule fois
     p = suivi.page(maintenant=datetime(2026, 10, 21, tzinfo=timezone.utc), journal=j, sortie=tmp_path / "p.json")
     assert p["bilan"]["matchs_regles"] == 1 and len(p["reglees"]) == 1 and p["reglees"][0]["score"] == [2, 1]
+
+
+def test_regel_pour_la_decomposition_est_ajout_seul_et_seulement_avant_le_coup_d_envoi(tmp_path, monkeypatch):
+    monkeypatch.setattr(S, "tester", lambda l, e, z, s=None, fe=False: (l["cle"] == ["1x2", "1"], "test"))
+    j = tmp_path / "journal.jsonl"
+    avant = datetime(2026, 10, 20, 10, 0, tzinfo=timezone.utc)
+    suivi.geler(maintenant=avant, journal=j, ligues=_Lg, matchs=_arch(), params=_params())
+    ancien = json.loads(j.read_text(encoding="utf-8").splitlines()[0])
+    del ancien["fiche"]["decomposition"]                                                  # fiche gelée avant le 01/11/2026 : sans décomposition
+    j.write_text(json.dumps(ancien, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
+    octets = j.read_bytes()
+    assert suivi.geler(maintenant=datetime(2026, 10, 20, 11, 0, tzinfo=timezone.utc), journal=j, ligues=_Lg, matchs=_arch(), params=_params()) == 1   # regel avant le KO
+    assert j.read_bytes().startswith(octets)                                              # la ligne gelée n'est ni modifiée ni supprimée
+    assert len(suivi._lire(j)) == 2 and suivi._lire(j)[1]["fiche"]["decomposition"]
+    assert suivi.geler(maintenant=datetime(2026, 10, 20, 12, 0, tzinfo=timezone.utc), journal=j, ligues=_Lg, matchs=_arch(), params=_params()) == 0   # une seule fois
+    apres = j.read_bytes()
+    assert suivi.geler(maintenant=datetime(2026, 10, 20, 19, 0, tzinfo=timezone.utc), journal=j, ligues=_Lg, matchs=_arch(), params=_params()) == 0   # match commencé
+    assert j.read_bytes() == apres
 
 
 def test_aucun_gel_apres_le_coup_d_envoi_dans_le_bilan(tmp_path):
@@ -385,7 +420,10 @@ def test_seuils_par_marche_cas_qui_passent_et_echouent():
 
 
 def test_cote_minimale_1_26_et_cote_absente():
-    assert S.tester(_l(("1x2", "1"), 0.70, 0.45, 7, 10, cote=1.26), 0.005, None, 0.60)[0]          # 1,26 pile : jouable
+    assert S.tester(_l(("1x2", "1"), 0.82, 0.45, 8, 10, cote=1.26), 0.005, None, 0.60)[0]          # 1,26 pile : jouable (EV +3,3 %)
+    ok, r = S.tester(_l(("1x2", "1"), 0.70, 0.45, 7, 10, cote=1.26), 0.005, None, 0.60, True)
+    assert not ok and r.startswith("EV")                                                            # mode expérimental : 1,26 pile mais P 70 %, EV négative
+    assert S.tester(_l(("1x2", "1"), 0.70, 0.45, 7, 10, cote=1.26), 0.005, None, 0.60)[0]           # production : l'EV ne filtre pas
     assert S.tester(_l(("1x2", "1"), 0.70, 0.45, 7, 10, cote=1.80), 0.005, None, 0.60)[0]
     assert S.tester(_l(("double_chance", "1N"), 0.85, 0.70, 9, 10, cote=1.30), 0.005, None, 0.70)[0]
     ok, r = S.tester(_l(("double_chance", "1N"), 0.85, 0.70, 9, 10, cote=1.14), 0.005, None, 0.70)
@@ -397,3 +435,97 @@ def test_cote_minimale_1_26_et_cote_absente():
                                           _l(("1x2", "2"), 0.62, 0.41, 6, 8, cote=1.28)]}
     s = S.selectionner(a, 0.005, {"handicap_1.5|exterieur": {"seuil": 0.6}, "1x2|2": {"seuil": 0.5}})
     assert s["principal"]["cle"] == ["1x2", "2"] and s["autres"] == []                             # le plus probable PARMI les jouables
+
+
+# --- Audit du 01/11/2026 : k/n séparés, EV, décomposition des λ ---------------------------------------------------------
+def test_estimation_combinee_n_est_pas_la_somme_des_k_et_des_n():
+    pr = {"dom": {"k": 4, "n": 4}, "ext": {"k": 3, "n": 4}}                        # Arezzo – Ascoli : 4/4 et 3/4, pas « 7 sur 8 »
+    est = S.estimation_combinee(pr)
+    assert est["p"] == pytest.approx(0.694, abs=0.002) and est["ic"][0] < est["p"] < est["ic"][1]
+    assert "k" not in est and "n" not in est and "pondérée" in est["methode"]
+    gros = S.estimation_combinee({"dom": {"k": 5, "n": 50}, "ext": {"k": 4, "n": 4}})  # populations de tailles très différentes : la grande domine
+    assert gros["p"] < 0.3                                                         # la somme (9/54 = 17 %) et la pondération divergent, jamais présentées comme une fréquence
+    assert S.estimation_combinee({"dom": {"k": 0, "n": 4}, "ext": {"k": 0, "n": 4}})["p"] > 0     # définie même à 0/4 (Agresti-Coull)
+
+
+def test_la_sortie_ne_contient_aucun_k_n_additionne():
+    a = {"statut": "analyse", "marches": [_l(("double_chance", "N2"), 0.82, 0.63, 8, 8, cote=1.33)]}
+    s = S.selectionner(a, 0.005, {"double_chance|N2": {"seuil": 0.75}})
+    pr = s["principal"]["preuve"]
+    assert set(pr) >= {"dom", "ext", "estimation"} and "k" not in pr and "n" not in pr and "p_hat" not in pr
+    assert pr["dom"]["wilson"] and pr["ext"]["wilson"]
+
+
+def test_ev_filtre_les_paris_non_rentables_selon_le_modele():
+    assert S.ev(0.82, 1.26) == pytest.approx(0.0332, abs=1e-4)                      # exemple de l'audit : +3,3 %
+    assert S.ev(0.82, 1.50) == pytest.approx(0.23, abs=1e-9)                        # +23 %
+    assert S.tester(_l(("double_chance", "N2"), 0.82, 0.63, 8, 10, cote=1.26), 0.005, None, 0.75, True)[0]
+    assert S.tester(_l(("double_chance", "N2"), 0.82, 0.63, 8, 10, cote=1.50), 0.005, None, 0.75, True)[0]
+    assert S.tester(_l(("over_under_1.5", "plus"), 0.76, 0.60, 8, 10, cote=1.33), 0.005, None, 0.50, True)[0]       # 0,76 × 1,33 = 1,011 : EV +1,1 %
+    ok, r = S.tester(_l(("over_under_1.5", "plus"), 0.75, 0.60, 8, 10, cote=1.33), 0.005, None, 0.50, True)
+    assert not ok and r.startswith("EV")                                            # 0,75 × 1,33 = 0,9975 : EV négative
+    ok, r = S.tester(_l(("double_chance", "N2"), 0.50, 0.30, 5, 10, cote=1.90), 0.005, None, 0.50, True)
+    assert not ok and r.startswith("EV")
+    ok, r = S.tester(_l(("double_chance", "N2"), 0.80, 0.60, 8, 10, cote=1.20), 0.005, None, 0.50, True)
+    assert not ok and r.startswith("cote")                                          # le plancher 1,26 reste devant l'EV
+
+
+def test_mode_experimental_ev_trie_par_ev_et_principal_de_plus_forte_ev():
+    a = {"statut": "analyse", "marches": [_l(("double_chance", "N2"), 0.82, 0.63, 8, 10, cote=1.33),                    # EV +9,1 %
+                                          _l(("btts", "Oui"), 0.66, 0.40, 6, 10, cote=1.76),                           # EV +16,2 % : moins probable, plus rentable
+                                          _l(("over_under_1.5", "plus"), 0.97, 0.70, 9, 10, cote=1.27)]}               # EV +23,2 %
+    s = S.selectionner(a, 0.005, regle="ev", seuils={"double_chance|N2": {"seuil": 0.75}, "btts|Oui": {"seuil": 0.6}, "over_under_1.5|plus": {"seuil": 0.5}})
+    ordre = [s["principal"]] + s["autres"]
+    assert [x["cle"][0] for x in ordre] == ["over_under_1.5", "btts", "double_chance"]
+    assert [x["ev"] for x in ordre] == sorted([x["ev"] for x in ordre], reverse=True)
+    assert s["principal"]["ev"] == pytest.approx(0.97 * 1.27 - 1, abs=1e-4)
+    assert S.selectionner({"statut": "analyse", "marches": [_l(("double_chance", "N2"), 0.70, 0.40, 7, 10, cote=1.30)]}, 0.005,
+                          {"double_chance|N2": {"seuil": 0.6}}, "ev")["principal"] is None                                    # EV négative : aucun pari
+
+
+def test_production_trie_par_probabilite_garde_l_ev_en_information_et_le_mode_est_explicite():
+    a = lambda: {"statut": "analyse", "marches": [_l(("double_chance", "N2"), 0.82, 0.63, 8, 10, cote=1.33), _l(("btts", "Oui"), 0.66, 0.40, 6, 10, cote=1.76),
+                                                    _l(("over_under_1.5", "plus"), 0.75, 0.50, 8, 10, cote=1.33)]}                # ce dernier : EV négative
+    seuils = {"double_chance|N2": {"seuil": 0.75}, "btts|Oui": {"seuil": 0.6}, "over_under_1.5|plus": {"seuil": 0.5}}
+    s = S.selectionner(a(), 0.005, seuils)
+    ordre = [s["principal"]] + s["autres"]
+    assert S.REGLE_PRODUCTION == "probabilite"
+    assert [x["cle"][0] for x in ordre] == ["double_chance", "over_under_1.5", "btts"]                                              # P décroissante, EV négative gardée
+    assert all(x["ev"] is not None for x in ordre) and ordre[1]["ev"] < 0                                                           # EV calculée et affichée
+    p = {"emac": 0.005, "seuils_marche": seuils}
+    assert coeur.selectionner(a(), p)["principal"]["cle"][0] == "double_chance"                                                    # point d'entrée : défaut = production
+    assert coeur.selectionner(a(), p, regle="ev")["principal"]["cle"][0] == "btts"                                                 # mode explicite
+    assert coeur.selectionner(a(), {**p, "regle_selection": "ev"})["principal"]["cle"][0] == "btts"                                # via parametres.json
+    with pytest.raises(ValueError):
+        S.selectionner(a(), 0.005, seuils, "inconnue")
+
+
+def test_decomposition_des_lambdas_reproduit_exactement_les_buts_attendus():
+    dom, ext = ["A", "B", "C", "D"] * 6, ["B", "C", "D", "A"] * 6
+    n = len(dom)
+    rng = np.random.default_rng(1)
+    h, a = rng.poisson(1.6, n), rng.poisson(1.1, n)
+    fit = MO.ajuster(dom, ext, h, a, np.arange(1, n + 1) * 2, 0.25, 0.004, None, -0.04)
+    c = fit.composantes("A", "B")
+    lh, la = fit.lambdas("A", "B")
+    assert lh == pytest.approx(math.exp(c["mu"] + c["gamma"] + c["att_dom"] + c["def_ext"]))
+    assert la == pytest.approx(math.exp(c["mu"] + c["att_ext"] + c["def_dom"]))
+    inconnu = fit.composantes("A", "Z")                                            # équipe inconnue : moyenne du championnat (force 0)
+    assert inconnu["att_ext"] == 0.0 and inconnu["def_ext"] == 0.0
+    matchs = [{"date": f"2026-09-{1 + i % 28:02d}", "dom": d, "ext": e, "h": int(x), "a": int(y)} for i, (d, e, x, y) in enumerate(zip(dom, ext, h, a))]
+    m = {"eq_dom": "A", "eq_ext": "B", "jour": "2026-10-15"}
+    dc = coeur.decomposition(fit, matchs, m, {"sigma": 0.25, "xi": 0.004}, lh, la, lh, la, -0.04)
+    f = dc["lambda_dom"]
+    assert f["niveau_ligue"] * f["avantage_terrain"] * f["attaque_dom"] * f["faiblesse_defensive_ext"] == pytest.approx(lh, rel=1e-4)
+    g = dc["lambda_ext"]
+    assert g["niveau_ligue"] * g["attaque_ext"] * g["faiblesse_defensive_dom"] == pytest.approx(la, rel=1e-4)
+    assert dc["shrinkage"]["sigma"] == 0.25 and dc["moyennes_ligue"]["n_matchs"] == n and dc["shrinkage"]["n_matchs_equipe_dom"] == 12
+    assert dc["lambda_final"] == {"dom": pytest.approx(lh, abs=1e-6), "ext": pytest.approx(la, abs=1e-6)}
+
+
+def test_la_fiche_gelee_contient_la_decomposition_et_ev_et_force_un_regel():
+    p = {"cle": ["double_chance", "N2"], "marche": "x", "famille": "f", "cote": 1.33, "p": 0.82, "ev": 0.0906, "base": 0.63, "edge": 0.19, "seuil": 0.75}
+    assert suivi._pari(p)["ev"] == 0.0906
+    avec = {"statut": "analyse", "principal": p, "autres": [], "decomposition": {"lambda_dom": {}}}
+    sans = {"statut": "analyse", "principal": p, "autres": []}
+    assert suivi._cle_selection(avec) != suivi._cle_selection(sans)                # une fiche sans décomposition est regelée une fois (ajout seul)

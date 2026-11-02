@@ -41,6 +41,13 @@ class Ajustement:
     def __post_init__(self) -> None:
         self.indice = {e: k for k, e in enumerate(self.equipes)}
 
+    def composantes(self, dom: str, ext: str) -> dict[str, float]:
+        """Les six termes de log λ (une équipe inconnue vaut 0 = la moyenne du championnat)."""
+        a, b = self.indice.get(dom), self.indice.get(ext)
+        return {"mu": float(self.mu), "gamma": float(self.gamma),
+                "att_dom": float(self.att[a]) if a is not None else 0.0, "def_dom": float(self.dfn[a]) if a is not None else 0.0,
+                "att_ext": float(self.att[b]) if b is not None else 0.0, "def_ext": float(self.dfn[b]) if b is not None else 0.0}
+
     def lambdas(self, dom: str, ext: str) -> tuple[float, float]:
         """Buts attendus ; une équipe inconnue du championnat (aucun match) vaut la moyenne (force 0)."""
         a, b = self.indice.get(dom), self.indice.get(ext)

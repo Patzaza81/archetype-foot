@@ -85,27 +85,42 @@ function gaProba(p) {
 function gaAlerte(p) {
   return p && p.avertissement ? `<small class="om-alerte">Confiance réduite : le modèle sort de ce que montrent les matchs</small>` : "";
 }
-// Preuve du pari : base du championnat, avantage (Edge), seuil du marché, matchs comparables.
-function gaPreuve(p) {
+// Audit du 01/11/2026 : les deux populations de matchs comparables restent SÉPARÉES (jamais de « k sur n » additionné).
+// Les lignes gelées avant cette date n'ont qu'un k/n additionné : il n'est plus affiché.
+function gaPops(pr, f, court) {
+  if (!pr || !pr.dom || !pr.ext) return "";
+  const iv = (x) => (Array.isArray(x.wilson) ? ` (intervalle ${gaPct(x.wilson[0])} – ${gaPct(x.wilson[1])})` : "");
+  const dom = f ? gaE(f.domicile) : "Domicile", ext = f ? gaE(f.exterieur) : "Extérieur";
+  const t = `${dom} à domicile <b>${pr.dom.k} sur ${pr.dom.n}</b>${court ? "" : iv(pr.dom)} · ${ext} à l'extérieur <b>${pr.ext.k} sur ${pr.ext.n}</b>${court ? "" : iv(pr.ext)}`;
+  const e = pr.estimation;
+  return t + (e && !court ? `<br><small>Estimation combinée, indicative et non validée (pas une fréquence observée) : <b>${gaPct(e.p)}</b>, intervalle ${gaPct(e.ic[0])} – ${gaPct(e.ic[1])} (moyenne pondérée par la variance)</small>` : "");
+}
+// Espérance de gain selon le modèle : P × cote − 1 (information secondaire : ne filtre ni ne classe en production).
+function gaEv(p) { return p && p.ev != null && Number.isFinite(Number(p.ev)) ? `EV <b>${gaSigne(p.ev)}</b>` : ""; }
+// Preuve du pari : base du championnat, avantage (Edge), seuil du marché, EV, matchs comparables.
+function gaPreuve(p, f) {
   if (!p) return "";
   const pr = p.preuve || {}, l = [];
   if (p.base != null) l.push(`Base du championnat <b>${gaPct(p.base)}</b> · avantage <b>${gaSigne(p.edge)}</b>`);
   if (p.seuil != null) l.push(`Seuil de ce marché : <b>${gaPct(p.seuil)}</b>`);
-  if (pr.n) l.push(`Matchs comparables : <b>${pr.k} sur ${pr.n}</b>` + (Array.isArray(pr.wilson) ? ` (intervalle ${gaPct(pr.wilson[0])} – ${gaPct(pr.wilson[1])})` : ""));
+  if (p.ev != null) l.push(`Probabilité du modèle <b>${gaPct(p.p)}</b> × cote <b>${gaCote(p.cote)}</b> − 1 = ${gaEv(p)}`);
+  const pops = gaPops(pr, f, false);
+  if (pops) l.push(`Matchs comparables : ${pops}`);
   return l.length ? `<div class="om-pond"><div class="om-pond-t">Preuve</div>${l.map((x) => `<div class="om-info">${x}</div>`).join("")}</div>` : "";
 }
 // Détail compact d'un autre pari validé : base, avantage, seuil du marché, matchs comparables et intervalle de Wilson.
-function gaPreuveCourte(p) {
+function gaPreuveCourte(p, f) {
   const pr = p.preuve || {}, l = [];
   if (p.base != null) l.push(`base ${gaPct(p.base)} · avantage ${gaSigne(p.edge)}`);
   if (p.seuil != null) l.push(`seuil ${gaPct(p.seuil)}`);
-  if (pr.n) l.push(`${pr.k} sur ${pr.n}` + (Array.isArray(pr.wilson) ? ` (intervalle ${gaPct(pr.wilson[0])} – ${gaPct(pr.wilson[1])})` : ""));
+  if (p.ev != null) l.push(gaEv(p));
+  if (pr.dom && pr.ext) l.push(`domicile ${pr.dom.k}/${pr.dom.n} · extérieur ${pr.ext.k}/${pr.ext.n}`);
   return l.length ? `<small class="om-sous">${l.join(" · ")}</small>` : "";
 }
 function gaLigne(p, f, principal) {
   const ph = gaPhrase(p.cle, f.domicile, f.exterieur);
   return `<div class="om-ligne ${principal ? "om-principal" : ""}"><span>${gaE(ph.titre)}${ph.reel ? `<small class="om-sous">${gaE(ph.reel)}</small>` : ""}` +
-    gaProba(p) + gaAlerte(p) + (principal ? "" : gaPreuveCourte(p)) + `</span>` +
+    gaProba(p) + gaAlerte(p) + (principal ? "" : gaPreuveCourte(p, f)) + `</span>` +
     `<span><span class="om-cote">Cote ${gaCote(p.cote)}</span> ${gaBadge(p)}</span></div>`;
 }
 // Derniers matchs des deux équipes (à domicile pour l'une, à l'extérieur pour l'autre : ceux qu'utilise le modèle) : date, adversaire, score, résultat.
@@ -136,6 +151,28 @@ function gaDerniers(f) {
   if (!(d.dom && d.dom.length) && !(d.ext && d.ext.length)) return "";
   return `<div class="om-bloc"><div class="om-bloc-titre">Derniers matchs</div><div class="om-dm-grille">` +
     gaEquipeDerniers(f.domicile, "À domicile", d.dom, f.n_domicile, true) + gaEquipeDerniers(f.exterieur, "À l'extérieur", d.ext, f.n_exterieur, false) + `</div></div>`;
+}
+// Audit du 01/11/2026 : « Détail du calcul » repliable. Décomposition exacte des buts attendus, gelée avec le pronostic avant le coup d'envoi.
+function gaDecomposition(f) {
+  const d = f.decomposition;
+  if (!d || !d.lambda_dom || !d.lambda_ext) {
+    return `<details class="ax-calcul"><summary>Détail du calcul</summary><p class="om-info">Décomposition non gelée pour ce pronostic (gelé avant le 01/11/2026).</p></details>`;
+  }
+  const x = (v) => gaFr(v, 3), a = d.lambda_dom, b = d.lambda_ext, m = d.moyennes_ligue || {}, sh = d.shrinkage || {}, ef = d.effets_modules || {};
+  const dom = gaE(f.domicile), ext = gaE(f.exterieur);
+  const ligne = (t, v) => `<tr><td>${t}</td><td>${v}</td></tr>`;
+  const bloc = (nom, k, lignes, val) => `<table class="om-table"><tr><th colspan="2">Buts attendus de ${nom}</th></tr>` + lignes.map(([t, v]) => ligne(t, `× ${x(v)}`)).join("") +
+    `<tr><td><b>= ${nom}</b></td><td><b>${x(val)}</b></td></tr></table>`;
+  return `<details class="ax-calcul"><summary>Détail du calcul</summary><div class="ax-details-corps">` +
+    `<p class="om-info">Chaque facteur multiplie le niveau de buts du championnat ; 1,000 = la moyenne du championnat.</p>` +
+    bloc(dom, "dom", [["Niveau de buts du championnat", a.niveau_ligue], ["Avantage du terrain", a.avantage_terrain], [`Force d'attaque de ${dom}`, a.attaque_dom],
+      [`Faiblesse défensive de ${ext}`, a.faiblesse_defensive_ext]], a.valeur) +
+    bloc(ext, "ext", [["Niveau de buts du championnat", b.niveau_ligue], [`Force d'attaque de ${ext}`, b.attaque_ext], [`Faiblesse défensive de ${dom}`, b.faiblesse_defensive_dom]], b.valeur) +
+    `<div class="om-info">Moyenne réelle du championnat : <b>${x(m.buts_dom)}</b> buts à domicile, <b>${x(m.buts_ext)}</b> à l'extérieur (${m.n_matchs} matchs avant ce jour).</div>` +
+    `<div class="om-info">Lissage : attaque et défense sont tirées vers la moyenne (rigidité σ = ${gaFr(sh.sigma, 2)}) ; matchs de chaque équipe dans le calcul : ${dom} ${sh.n_matchs_equipe_dom}, ${ext} ${sh.n_matchs_equipe_ext}. ` +
+      `Matchs au lieu du pari : ${f.n_domicile} et ${f.n_exterieur} (minimum 4). Poids décroissant avec l'âge des matchs (xi = ${gaFr(sh.xi, 3)}).</div>` +
+    `<div class="om-info">Effets des paramètres d'équipe sur les buts : ${dom} × ${x(ef.dom)}, ${ext} × ${x(ef.ext)} ; corrélation des petits scores : ${gaFr(ef.rho_final, 3)}.</div>` +
+    `</div></details>`;
 }
 function gaScores(f) {
   const sc = (f.scores_probables || []).map((x) => `${gaE(x.score)} (${gaPct(x.p)})`).join(" · ");
@@ -230,13 +267,13 @@ function gaCarte(f) {
     `<div class="om-corps">` +
       (score ? `<div class="om-info">Score final <strong>${gaE(score)}</strong></div>` : "") +
       `<div class="om-info"><b>Pari proposé</b></div>` + gaLigne(p, f, true) +
-      gaPourquoiCourt(p, f) + gaPreuve(p) +
+      gaPourquoiCourt(p, f) + gaPreuve(p, f) +
     `</div>` +
     `<details class="ax-details" open><summary class="ax-summary-cache" tabindex="-1">Détails</summary><div class="ax-details-corps">` +
       gaPourquoi(f) +
       `<div class="om-autres"><div class="om-autres-titre">Autres paris validés (du plus probable au moins probable)</div>` +
         (autres.length ? autres.map((x) => gaLigne(x, f, false)).join("") : `<div class="om-info">Aucun autre pari ne remplit les règles.</div>`) + `</div>` +
-      gaDerniers(f) + gaScores(f) +
+      gaDerniers(f) + gaScores(f) + gaDecomposition(f) +
     `</div></details>`;
   section.addEventListener("click", (e) => {      // carte repliée au départ ; un toucher la déplie ou la replie
     if (e.target.closest("button, a, summary")) return;
@@ -298,4 +335,4 @@ if (document.getElementById("om-avenir")) {
     .then(gaAffiche)
     .catch((e) => { document.getElementById("maj").textContent = "Erreur de chargement : " + e.message; console.error(e); });
 }
-if (typeof module !== "undefined") module.exports = { gaPhrase, gaPreuve, gaCarte };
+if (typeof module !== "undefined") module.exports = { gaPhrase, gaPreuve, gaCarte, gaPops, gaDecomposition, gaEv };
