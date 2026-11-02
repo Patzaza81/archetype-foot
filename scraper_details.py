@@ -454,6 +454,32 @@ def _memes_equipes(nom1, nom2):
     return False
 
 
+def _cote_de_la_page(nom_equipe, nom_dom, nom_ext):
+    """CORRECTIF 01/11/2026 -- de quel côté d'une ligne « A - B » se trouve l'équipe propriétaire de la page ?
+
+    Avant : le premier côté qui « ressemblait » (_memes_equipes, inclusion de sous-chaîne) l'emportait. 'Cali' est
+    contenu dans 'America Cali' : sur la page d'America Cali, le match Cali - America Cali était lu avec America Cali à
+    DOMICILE, copie exacte de l'enregistrement de Cali (même mécanisme pour Cerro / Cerro Largo) -> match à l'envers et
+    auto-rencontre dans l'assemblage.
+
+    Règle (aucune nouvelle heuristique de ressemblance) :
+      1. égalité exacte (même normalisation que _memes_equipes) avec UN seul côté : c'est ce côté ;
+      2. sinon, ressemblance avec UN seul côté : ce côté (comportement antérieur) ;
+      3. ressemblance avec les deux côtés, ou égalité exacte avec les deux, ou aucun côté : None. La ligne est ignorée
+         (pas de donnée plutôt que de fausse donnée).
+    `_memes_equipes` n'est pas modifiée : d'autres modules l'utilisent. Renvoie "dom", "ext" ou None."""
+    n, d, e = _normalise_texte(nom_equipe), _normalise_texte(nom_dom), _normalise_texte(nom_ext)
+    exact_d, exact_e = n == d, n == e
+    if exact_d != exact_e:
+        return "dom" if exact_d else "ext"
+    if exact_d and exact_e:
+        return None
+    proche_d, proche_e = _memes_equipes(nom_equipe, nom_dom), _memes_equipes(nom_equipe, nom_ext)
+    if proche_d != proche_e:
+        return "dom" if proche_d else "ext"
+    return None
+
+
 def _saison_actuelle_et_precedente():
     from datetime import date
     aujourd_hui = date.today()
@@ -743,10 +769,11 @@ def _extrait_historique_competition(soup, nom_competition, nom_equipe, max_match
         # A3 bis (24/09/2026) : date, adversaire et lien du match sont gardés (vérification des dates exactes lors de
         # l'assemblage avec Football-Data). Les champs de buts sont inchangés.
         details = {"date": _date_ligne(tr, date_reference), "url_match": liens_avec_score[0].get("href")}
-        if _memes_equipes(nom_equipe, nom_dom):
+        cote = _cote_de_la_page(nom_equipe, nom_dom, nom_ext)
+        if cote == "dom":
             matchs.append(dict({"domicile": True, "buts_marques": buts_dom, "buts_encaisses": buts_ext},
                                adversaire=nom_ext, **details))
-        elif _memes_equipes(nom_equipe, nom_ext):
+        elif cote == "ext":
             matchs.append(dict({"domicile": False, "buts_marques": buts_ext, "buts_encaisses": buts_dom},
                                adversaire=nom_dom, **details))
 
