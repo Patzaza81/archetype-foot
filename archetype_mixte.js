@@ -7,7 +7,7 @@ function mxPct(x) { const n = Number(x); return Number.isFinite(n) ? Math.round(
 function mxPct1(x) { const n = Number(x); return Number.isFinite(n) ? (n * 100).toFixed(1).replace(".", ",") + " %" : "—"; }
 function mxCote(x) { const n = Number(x); return x != null && Number.isFinite(n) && n > 1 ? n.toFixed(2).replace(".", ",") : "—"; }
 function mxModele(m) {
-  return m === "MIXTE" ? "Modèle mixte (5 derniers matchs au même lieu + forces du championnat)"
+  return m === "MIXTE" ? "Modèle mixte (toute la saison au même lieu, 5 matchs minimum + forces du championnat)"
     : m === "FORCE" ? "Forces du championnat seules (moins de 5 matchs au même lieu)" : "Aucun modèle";
 }
 function mxLigne(x) {
