@@ -1,4 +1,4 @@
-"""Page Gamma (audit du 01/11/2026) : k/n séparés, EV, panneau « Détail du calcul ». Exécute archetype_gamma.js sous Node avec un document factice."""
+"""Page Gamma = Omega V3 : exécute archetype_gamma.js sous Node avec un document factice (affichages, vocabulaire, aucune probabilité inventée)."""
 from __future__ import annotations
 
 import json
@@ -26,32 +26,85 @@ def appel(fn: str, *args):
     return json.loads(r.stdout)
 
 
-F = {"domicile": "Arezzo", "exterieur": "Ascoli", "n_domicile": 4, "n_exterieur": 4}
-PR = {"dom": {"k": 4, "n": 4, "wilson": [0.51, 1.0]}, "ext": {"k": 3, "n": 4, "wilson": [0.30, 0.95]},
-      "estimation": {"p": 0.6944, "ic": [0.47, 0.92], "methode": "x"}}
+F = {"domicile": "Arezzo", "exterieur": "Ascoli"}
+PARI = {"k": 400, "n": 625, "f": 0.64, "g": 0.6, "seuil": 0.55, "p_calibree": 0.72, "cote": 1.4, "p_implicite": 0.714, "ev": 0.008,
+        "niveaux": {"strict": {"k": 30, "n": 50, "f": 0.6}, "intermediaire": {"k": 100, "n": 200, "f": 0.5}, "elargi": {"k": 300, "n": 500, "f": 0.6, "faible": True}},
+        "stabilite": {"f_min": 0.6, "f_max": 0.66}, "diversite": {}}
 
 
-def test_deux_populations_affichees_separement_jamais_7_sur_8():
-    t = appel("gaPops", PR, F, False)
-    assert "4 sur 4" in t and "3 sur 4" in t and "7 sur 8" not in t
-    assert "Estimation combinée" in t and "pas une fréquence observée" in t and "non validée" in t
-    assert "7 sur 8" not in appel("gaPreuve", {"p": 0.82, "cote": 1.33, "ev": 0.09, "base": 0.63, "edge": 0.19, "seuil": 0.75, "preuve": PR}, F)
-    assert appel("gaPops", {"k": 7, "n": 8}, F, False) == ""                         # ancienne ligne gelée (k/n additionné) : plus rien d'affiché
-    assert appel("gaPops", None, F, False) == ""
+@pytest.mark.parametrize("cle,attendu", [
+    (["1x2", "1"], "Victoire Arezzo"), (["1x2", "N"], "Match nul"), (["double_chance", "1N"], "Arezzo ou match nul"),
+    (["btts", "Oui"], "Les deux équipes marquent"), (["over_under_2.5", "plus"], "Plus de 2,5 buts"),
+])
+def test_phrase_des_marches_qui_passent(cle, attendu):
+    assert attendu in appel("gaPhrase", cle, "Arezzo", "Ascoli")["titre"]
 
 
-def test_ev_affichee_et_signe():
-    assert "+9,1" in appel("gaEv", {"ev": 0.091}) and "−3,0" in appel("gaEv", {"ev": -0.03})
-    assert appel("gaEv", {}) == ""
+@pytest.mark.parametrize("cle,interdit", [(["1x2", "1"], "Ascoli"), (["over_under_2.5", "plus"], "Moins de"), (["over_under_2.5", "moins"], "Plus de")])
+def test_phrase_des_marches_qui_ne_doivent_pas_apparaitre(cle, interdit):
+    assert interdit not in appel("gaPhrase", cle, "Arezzo", "Ascoli")["titre"]
 
 
-def test_panneau_detail_du_calcul_avec_et_sans_decomposition():
-    d = {"lambda_dom": {"niveau_ligue": 1.359, "avantage_terrain": 0.985, "attaque_dom": 0.9, "faiblesse_defensive_ext": 0.823, "valeur": 0.991},
-         "lambda_ext": {"niveau_ligue": 1.359, "attaque_ext": 1.136, "faiblesse_defensive_dom": 1.236, "valeur": 1.909},
-         "moyennes_ligue": {"buts_dom": 1.383, "buts_ext": 1.333, "n_matchs": 81},
-         "shrinkage": {"sigma": 0.25, "xi": 0.004, "n_matchs_equipe_dom": 9, "n_matchs_equipe_ext": 9}, "effets_modules": {"dom": 1.0, "ext": 1.0, "rho_final": -0.07}}
-    h = appel("gaDecomposition", {**F, "decomposition": d})
-    for mot in ("Détail du calcul", "Avantage du terrain", "Force d'attaque de Arezzo", "Faiblesse défensive de Ascoli", "0,991", "1,909", "σ = 0,25", "81 matchs"):
-        assert mot in h
-    assert "non gelée" in appel("gaDecomposition", F)
-    assert "non gelée" in appel("gaDecomposition", {**F, "decomposition": {}})
+def test_frequence_jamais_presentee_comme_une_probabilite():
+    t = appel("gaFreqPari", PARI, F)
+    assert "400 scénarios sur 625" in t and "n'est pas une probabilité" in t and "Fréquence robuste" in t
+    assert "trop peu représenté" in t and "BetPawa" not in t
+    assert "EV" not in t and "Edge" not in t                                            # ni EV ni Edge : la cote n'est qu'une condition d'accès
+    assert appel("gaFreqPari", None, F) == ""
+
+
+def test_aucune_ev_ni_edge_dans_la_page_ni_dans_le_moteur():
+    import re
+    from pathlib import Path
+    racine = Path(__file__).resolve().parent.parent
+    js = (racine / "archetype_gamma.js").read_text(encoding="utf-8")
+    assert "gaEv" not in js and not re.search(r"\bEV\b|\bEdge\b|\bEDV\b", js)
+    for f in ("coeur.py", "suivi.py"):
+        t = (racine / "moteur_omega_v3" / f).read_text(encoding="utf-8")
+        assert '"ev"' not in t and "ecart_implicite" not in t
+    t = appel("gaFreqPari", {**PARI, "ev": 0.5}, F)
+    assert "EV" not in t
+
+
+def test_statuts_et_aucun_mot_betpawa():
+    assert "retenu" in appel("gaStatut", 6) and appel("gaStatut", 99) == "—"
+    assert all("BetPawa" not in appel("gaStatut", c) for c in range(8))
+
+
+def test_sequences_affichees_et_absentes():
+    f = {**F, "donnees": {"sequences": {"att_a": [2, 1, 0, 1, 3], "def_a": [0] * 5, "att_b": [1] * 5, "def_b": [2] * 5}, "source": "archive"}}
+    t = appel("gaSequences", f)
+    assert "[2, 1, 0, 1, 3]" in t and "5 matchs" in t and "pas des matchs indépendants" in t
+    assert appel("gaSequences", F) == ""
+
+
+def test_exploration_et_tous_marches_sans_donnees_ne_cassent_pas():
+    assert appel("gaExploration", F) == "" and appel("gaTousMarches", F) == ""
+    assert appel("gaSurveiller", F) == ""
+    x = {**F, "exploration": {"combinaisons": 625, "scores_distincts": 12, "issues": {"A": 300, "N": 100, "B": 225}, "concentration_top3": 0.4,
+                              "top_scores": [{"score": "2-1", "occurrences": 100, "f": 0.16}]},
+         "niveaux": {"strict": {"n": 50, "part": 0.08}, "incompatible": {"n": 0, "part": 0}}}
+    t = appel("gaExploration", x)
+    assert "625 scénarios" in t and "Victoire de Arezzo" in t and "jamais un pronostic retenu" in t
+
+
+@pytest.mark.parametrize("cle,attendu", [
+    (["handicap_3issues_-1", "1"], "Arezzo gagne par 2 buts d'écart ou plus"), (["handicap_3issues_-1", "X"], "Arezzo gagne d'exactement 1 but d'écart"),
+    (["handicap_3issues_-1", "2"], "Ascoli ne perd pas"), (["handicap_3issues_2", "2"], "Ascoli gagne par 3 buts d'écart ou plus"),
+    (["nombre_exact_buts", "3"], "Exactement 3 buts dans le match"), (["nombre_exact_buts", "6+"], "6 buts ou plus dans le match"),
+    (["btts_total_2.5", "Oui|plus"], "Les deux équipes marquent et au moins 3 buts dans le match"), (["over_under_9.5", "plus"], "Plus de 9,5 buts"),
+])
+def test_phrases_des_marches_ajoutes_par_l_audit(cle, attendu):
+    assert appel("gaPhrase", cle, "Arezzo", "Ascoli")["titre"] == attendu
+
+
+@pytest.mark.parametrize("cle", [["handicap_3issues_-1", "1"], ["nombre_exact_buts", "2"], ["btts_total_3.5", "Non|moins"], ["over_under_8.5", "moins"]])
+def test_aucune_cle_technique_dans_les_phrases(cle):
+    t = appel("gaPhrase", cle, "Arezzo", "Ascoli")["titre"]
+    assert "_" not in t and "|" not in t
+
+
+def test_raison_meme_evenement_affichee_en_clair():
+    f = {**F, "a_surveiller": [{"cle": ["over_under_0.5", "plus"], "raison": "même événement que cages_inviolees_exterieur|non"}]}
+    t = appel("gaSurveiller", f)
+    assert "même événement que Ascoli encaisse au moins 1 but" in t and "cages_inviolees" not in t

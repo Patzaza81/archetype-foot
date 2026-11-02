@@ -1,0 +1,528 @@
+{
+ "echantillon": {
+  "matchs": 525,
+  "coupe": "2026-10-28",
+  "developpement": 354,
+  "reserve": 171,
+  "exclus": {
+   "données insuffisantes ": 659,
+   "championnat sans match connu": 7
+  }
+ },
+ "marches": 383,
+ "marches_initiaux_174": 174,
+ "route_principale": [
+  {
+   "cible": 0.55,
+   "cote_min": 1.35,
+   "marches_avec_seuil": 16,
+   "paris": 582,
+   "matchs_avec_pari": 167,
+   "matchs_reserve": 171,
+   "reussite_C": 0.567,
+   "wilson_95": [
+    0.5264,
+    0.6067
+   ],
+   "g_moyen_annonce": 0.7003,
+   "ecart_g_moins_reussite": 0.1333
+  },
+  {
+   "cible": 0.6,
+   "cote_min": 1.35,
+   "marches_avec_seuil": 5,
+   "paris": 250,
+   "matchs_avec_pari": 148,
+   "matchs_reserve": 171,
+   "reussite_C": 0.56,
+   "wilson_95": [
+    0.498,
+    0.6202
+   ],
+   "g_moyen_annonce": 0.7002,
+   "ecart_g_moins_reussite": 0.1402
+  },
+  {
+   "cible": 0.65,
+   "cote_min": 1.35,
+   "marches_avec_seuil": 1,
+   "paris": 51,
+   "matchs_avec_pari": 51,
+   "matchs_reserve": 171,
+   "reussite_C": 0.5098,
+   "wilson_95": [
+    0.3768,
+    0.6414
+   ],
+   "g_moyen_annonce": 0.6618,
+   "ecart_g_moins_reussite": 0.152
+  },
+  {
+   "cible": 0.7,
+   "cote_min": 1.35,
+   "marches_avec_seuil": 0,
+   "paris": 0,
+   "matchs_avec_pari": 0,
+   "matchs_reserve": 171,
+   "reussite_C": null,
+   "wilson_95": null,
+   "g_moyen_annonce": null,
+   "ecart_g_moins_reussite": null
+  },
+  {
+   "cible": 0.75,
+   "cote_min": 1.35,
+   "marches_avec_seuil": 0,
+   "paris": 0,
+   "matchs_avec_pari": 0,
+   "matchs_reserve": 171,
+   "reussite_C": null,
+   "wilson_95": null,
+   "g_moyen_annonce": null,
+   "ecart_g_moins_reussite": null
+  }
+ ],
+ "route_principale_cote_1_26_pour_comparaison": [
+  {
+   "cible": 0.7,
+   "cote_min": 1.26,
+   "marches_avec_seuil": 11,
+   "paris": 344,
+   "matchs_avec_pari": 136,
+   "matchs_reserve": 171,
+   "reussite_C": 0.7064,
+   "wilson_95": [
+    0.6562,
+    0.752
+   ],
+   "g_moyen_annonce": 0.7757,
+   "ecart_g_moins_reussite": 0.0693
+  }
+ ],
+ "route_combinaison": [
+  {
+   "lecture": "estimation",
+   "seuil": 0.81,
+   "observations_reserve": 996,
+   "marches": 50,
+   "reussite": 0.8534,
+   "wilson_95": [
+    0.8301,
+    0.874
+   ],
+   "g_moyen_annonce": 0.9541,
+   "ecart_g_moins_reussite": 0.1007
+  },
+  {
+   "lecture": "historique",
+   "seuil": 0.81,
+   "observations_reserve": 1152,
+   "marches": 24,
+   "reussite": 0.8507,
+   "wilson_95": [
+    0.8289,
+    0.8701
+   ],
+   "g_moyen_annonce": 0.8218,
+   "ecart_g_moins_reussite": -0.0289
+  },
+  {
+   "lecture": "les_deux",
+   "seuil": 0.81,
+   "observations_reserve": 633,
+   "marches": 24,
+   "reussite": 0.8957,
+   "wilson_95": [
+    0.8695,
+    0.9172
+   ],
+   "g_moyen_annonce": 0.963,
+   "ecart_g_moins_reussite": 0.0673
+  }
+ ],
+ "combinaisons": {
+  "generes": 156,
+  "proposes_par_betpawa": 66,
+  "groupes_proposes": [
+   "1x2_btts",
+   "1x2_total_1.5",
+   "1x2_total_2.5",
+   "1x2_total_3.5",
+   "1x2_total_4.5",
+   "1x2_total_5.5",
+   "dc_btts",
+   "dc_total_1.5",
+   "dc_total_2.5",
+   "dc_total_3.5",
+   "dc_total_4.5"
+  ],
+  "groupes_sans_aucune_cote": [
+   "1x2_total_6.5",
+   "1x2_total_7.5",
+   "1x2_total_8.5",
+   "1x2_total_9.5",
+   "btts_total_1.5",
+   "btts_total_2.5",
+   "btts_total_3.5",
+   "btts_total_4.5",
+   "btts_total_5.5",
+   "btts_total_6.5",
+   "btts_total_7.5",
+   "btts_total_8.5",
+   "btts_total_9.5",
+   "dc_total_5.5",
+   "dc_total_6.5",
+   "dc_total_7.5",
+   "dc_total_8.5",
+   "dc_total_9.5"
+  ],
+  "observations_avec_cote": 11034,
+  "methodes_reserve": {
+   "evenement_joint_f": {
+    "observations": 8928,
+    "annonce_moyenne": 0.251,
+    "reel": 0.251,
+    "ecart": 0.0,
+    "brier": 0.1842
+   },
+   "evenement_joint_g": {
+    "observations": 8928,
+    "annonce_moyenne": 0.1643,
+    "reel": 0.251,
+    "ecart": -0.0868,
+    "brier": 0.1931
+   },
+   "produit_des_pourcentages": {
+    "observations": 8928,
+    "annonce_moyenne": 0.1712,
+    "reel": 0.251,
+    "ecart": -0.0798,
+    "brier": 0.1865
+   },
+   "minimum_des_pourcentages": {
+    "observations": 8928,
+    "annonce_moyenne": 0.2456,
+    "reel": 0.251,
+    "ecart": -0.0054,
+    "brier": 0.1876
+   }
+  },
+  "reussite_par_tranche_g_joint": [
+   {
+    "tranche": "0.4-0.5",
+    "developpement": {
+     "n": 123,
+     "succes": 63,
+     "reussite": 0.5122
+    },
+    "reserve": {
+     "n": 538,
+     "succes": 202,
+     "reussite": 0.3755
+    }
+   },
+   {
+    "tranche": "0.5-0.6",
+    "developpement": {
+     "n": 118,
+     "succes": 61,
+     "reussite": 0.5169
+    },
+    "reserve": {
+     "n": 429,
+     "succes": 182,
+     "reussite": 0.4242
+    }
+   },
+   {
+    "tranche": "0.6-0.7",
+    "developpement": {
+     "n": 57,
+     "succes": 36,
+     "reussite": 0.6316
+    },
+    "reserve": {
+     "n": 294,
+     "succes": 161,
+     "reussite": 0.5476
+    }
+   },
+   {
+    "tranche": "0.7-0.8",
+    "developpement": {
+     "n": 28,
+     "succes": 17,
+     "reussite": 0.6071
+    },
+    "reserve": {
+     "n": 192,
+     "succes": 85,
+     "reussite": 0.4427
+    }
+   },
+   {
+    "tranche": "0.8-0.9",
+    "developpement": {
+     "n": 13,
+     "succes": 9,
+     "reussite": 0.6923
+    },
+    "reserve": {
+     "n": 51,
+     "succes": 30,
+     "reussite": 0.5882
+    }
+   },
+   {
+    "tranche": "0.9-1.0",
+    "developpement": {
+     "n": 12,
+     "succes": 11,
+     "reussite": 0.9167
+    },
+    "reserve": {
+     "n": 33,
+     "succes": 22,
+     "reussite": 0.6667
+    }
+   }
+  ],
+  "cote_reelle_sur_produit_des_cotes": {
+   "observations": 10866,
+   "mediane": 1.021,
+   "p5_p95": [
+    0.741,
+    1.589
+   ]
+  },
+  "part_cote_sous_1_35": 0.0107
+ },
+ "niveau_atteignable": {
+  "marches_avec_niveau": 28,
+  "niveau_max": 0.6557,
+  "marches_au_moins_70": 0
+ },
+ "surestimation": {
+  "population": "cote >= 1.35, g >= 0.5",
+  "ensemble": {
+   "n": 5187,
+   "g_moyen": 0.6448,
+   "reussite": 0.5327,
+   "ecart": 0.1121,
+   "wilson_95": [
+    0.5191,
+    0.5462
+   ],
+   "brier": 0.2673,
+   "log_loss": 0.8062
+  },
+  "par_tranche_g": {
+   "0.50-0.60": {
+    "n": 2113,
+    "g_moyen": 0.5126,
+    "reussite": 0.4823,
+    "ecart": 0.0304,
+    "wilson_95": [
+     0.461,
+     0.5036
+    ],
+    "brier": 0.2507,
+    "log_loss": 0.6945
+   },
+   "0.60-0.70": {
+    "n": 1085,
+    "g_moyen": 0.6197,
+    "reussite": 0.5438,
+    "ecart": 0.0759,
+    "wilson_95": [
+     0.514,
+     0.5732
+    ],
+    "brier": 0.2537,
+    "log_loss": 0.7011
+   },
+   "0.70-0.80": {
+    "n": 1176,
+    "g_moyen": 0.7351,
+    "reussite": 0.5366,
+    "ecart": 0.1986,
+    "wilson_95": [
+     0.508,
+     0.5649
+    ],
+    "brier": 0.2898,
+    "log_loss": 0.7857
+   },
+   "0.80-0.90": {
+    "n": 412,
+    "g_moyen": 0.8184,
+    "reussite": 0.6359,
+    "ecart": 0.1825,
+    "wilson_95": [
+     0.5884,
+     0.6809
+    ],
+    "brier": 0.2668,
+    "log_loss": 0.7571
+   },
+   "0.90-1.00": {
+    "n": 401,
+    "g_moyen": 0.9655,
+    "reussite": 0.6509,
+    "ecart": 0.3146,
+    "wilson_95": [
+     0.603,
+     0.6959
+    ],
+    "brier": 0.3264,
+    "log_loss": 1.7894
+   }
+  },
+  "par_famille": {
+   "buts d'une équipe": {
+    "n": 1228,
+    "g_moyen": 0.6311,
+    "reussite": 0.5269,
+    "ecart": 0.1042,
+    "wilson_95": [
+     0.4989,
+     0.5547
+    ],
+    "brier": 0.2685,
+    "log_loss": 0.8616
+   },
+   "buts du match": {
+    "n": 1168,
+    "g_moyen": 0.6691,
+    "reussite": 0.5462,
+    "ecart": 0.1229,
+    "wilson_95": [
+     0.5176,
+     0.5746
+    ],
+    "brier": 0.2741,
+    "log_loss": 0.8624
+   },
+   "combinés": {
+    "n": 1158,
+    "g_moyen": 0.6116,
+    "reussite": 0.4948,
+    "ecart": 0.1168,
+    "wilson_95": [
+     0.4661,
+     0.5236
+    ],
+    "brier": 0.2647,
+    "log_loss": 0.7356
+   },
+   "résultat": {
+    "n": 1627,
+    "g_moyen": 0.6615,
+    "reussite": 0.5556,
+    "ecart": 0.1058,
+    "wilson_95": [
+     0.5314,
+     0.5796
+    ],
+    "brier": 0.2631,
+    "log_loss": 0.774
+   },
+   "scores exacts": {
+    "n": 6,
+    "g_moyen": 0.575,
+    "reussite": 0.1667,
+    "ecart": 0.4083,
+    "wilson_95": [
+     0.0301,
+     0.5635
+    ],
+    "brier": 0.3387,
+    "log_loss": 0.8831
+   }
+  },
+  "par_periode": {
+   "2026-09-28→2026-10-17": {
+    "n": 1210,
+    "g_moyen": 0.6649,
+    "reussite": 0.5331,
+    "ecart": 0.1318,
+    "wilson_95": [
+     0.5049,
+     0.561
+    ],
+    "brier": 0.273,
+    "log_loss": 0.8422
+   },
+   "2026-10-17→2026-10-27": {
+    "n": 1581,
+    "g_moyen": 0.6467,
+    "reussite": 0.5686,
+    "ecart": 0.0781,
+    "wilson_95": [
+     0.5441,
+     0.5928
+    ],
+    "brier": 0.2511,
+    "log_loss": 0.7593
+   },
+   "2026-10-27→2026-11-01": {
+    "n": 2396,
+    "g_moyen": 0.6333,
+    "reussite": 0.5088,
+    "ecart": 0.1245,
+    "wilson_95": [
+     0.4887,
+     0.5288
+    ],
+    "brier": 0.2752,
+    "log_loss": 0.8189
+   }
+  },
+  "par_effectif_du_marche": {
+   "moins de 30 observations": {
+    "n": 589,
+    "g_moyen": 0.6183,
+    "reussite": 0.4075,
+    "ecart": 0.2108,
+    "wilson_95": [
+     0.3685,
+     0.4476
+    ],
+    "brier": 0.2723,
+    "log_loss": 0.7981,
+    "marches": 335
+   },
+   "30 à 99": {
+    "n": 1513,
+    "g_moyen": 0.6305,
+    "reussite": 0.5162,
+    "ecart": 0.1143,
+    "wilson_95": [
+     0.491,
+     0.5413
+    ],
+    "brier": 0.2632,
+    "log_loss": 0.761,
+    "marches": 28
+   },
+   "100 et plus": {
+    "n": 3085,
+    "g_moyen": 0.6568,
+    "reussite": 0.5647,
+    "ecart": 0.0922,
+    "wilson_95": [
+     0.5471,
+     0.5821
+    ],
+    "brier": 0.2684,
+    "log_loss": 0.8299,
+    "marches": 20
+   }
+  }
+ },
+ "stabilite": {
+  "stables": 383,
+  "instables": 0,
+  "indetermines": 0
+ }
+}

@@ -25,7 +25,7 @@ Avant toute modification concernée, lire le document spécialisé correspondant
 - Moteur alpha = séries appariées (`alpha_serie/`, remplace l'ancien alpha le 20/10/2026 ; pronostics et journal gelé chaque nuit, hors tickets, aucune cote à l'analyse) : `docs/ALPHA_SERIE.md`
 - Laboratoire de matrice de scénarios (indépendant de l'alpha) : `docs/MATRICE_SCENARIOS.md`
 - Moteur omega (croisements, scénario contradictoire, Poisson/Dixon-Coles calibré, accord avec la cote, cotes de 1,39 et plus seulement ; autonome, hors tickets) : `docs/MOTEUR_OMEGA.md`
-- Moteur Gamma = moteur DC (page `pronostics_gamma.html` ; architecture de Patrick : Module 1 = 44 paramètres, contrat 1.5, Dixon-Coles du championnat + effets du Module 1 appris hors échantillon, Module 3 par somme des cases, Module 4 : Edge ≥ 10 % sur la base du championnat + seuil de probabilité calibré par marché, cote BetPawa ≥ 1,26 obligatoire (cote absente = exclu), Wilson en avertissement ; autonome, hors tickets, sans mise ni EV) : `docs/MOTEUR_DC.md`
+- Moteur Gamma = Omega V3 (depuis le 02/11/2026 ; page `pronostics_gamma.html`, code `moteur_omega_v3/`) : exploration ouverte de la spécification « Omega V1 » (4 séquences de 5 matchs au même lieu, 625 scénarios, paliers de compatibilité défensive, marchés générés depuis les scores, stabilité par retrait d'une observation) ; sélection = fréquence robuste ≥ seuil par marché appris sur l'archive (cible 70 %), cote ≥ 1,26 obligatoire, jamais deux fois le même événement, « AUCUN MARCHÉ RETENU » est valide ; fréquence ≠ probabilité ; autonome, hors tickets ; journal gelé `data/gamma/journal.jsonl` : `docs/MOTEUR_OMEGA_V3.md`. Ancien moteur DC conservé sans modification (historique) : `docs/MOTEUR_DC.md`
 
 ## Règles de sécurité
 
