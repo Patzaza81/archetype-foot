@@ -58,7 +58,7 @@ def test_calibreur_croissant_et_fidele_aux_frequences():
     p = rng.uniform(size=20000)
     s = rng.uniform(size=20000) < p * 0.8                    # le modèle surestime de 20 % : le calibreur doit le corriger
     c = P.Calibreur(p, s, np.ones_like(s, dtype=bool))
-    assert np.all(np.diff(c.table) >= -1e-12)
+    assert np.all(np.diff(c.table) >= -1e-12) and np.all(np.diff(c(np.linspace(0, 1, 500))) >= -1e-12)
     assert c(np.array([0.9]))[0] == pytest.approx(0.72, abs=0.04)
     assert c(np.array([0.5]))[0] == pytest.approx(0.40, abs=0.04)
 
@@ -79,3 +79,13 @@ def test_proba_officielle_mixte_puis_force_puis_rien():
     # moins de 5 matchs au total → rien, avec la raison
     r3 = P.proba_officielle(champ(1), "A", "B", "2026-12-01", cal)
     assert r3["modele"] is None and "insuffisantes" in r3["raison"]
+
+
+def test_calibreur_distingue_deux_probabilites_proches_pas_de_marches_d_escalier():
+    rng = np.random.default_rng(2)
+    p = rng.uniform(size=30000)
+    s = rng.uniform(size=30000) < p
+    c = P.Calibreur(p, s, np.ones_like(s, dtype=bool))
+    v = c(np.array([0.60, 0.62, 0.64, 0.66, 0.68]))
+    assert len(set(np.round(v, 4))) == 5 and np.all(np.diff(v) > 0)              # cinq probabilités différentes → cinq pourcentages différents
+    assert c(np.array([0.62]))[0] == pytest.approx(0.62, abs=0.03)                 # et fidèles à la réussite réelle

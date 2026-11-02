@@ -63,33 +63,37 @@ def proba_lambdas(lam_dom: float, lam_ext: float) -> np.ndarray:
 
 
 class Calibreur:
-    """Réussite réelle lissée par tranche de 5 points de la probabilité du modèle, apprise sur un échantillon (tous marchés confondus, remboursés exclus)."""
+    """Réussite réelle lissée en fonction de la probabilité du modèle, apprise sur un échantillon (tous marchés confondus, remboursés exclus).
+    Tranches de 5 points → réussite rendue croissante (PAV) → points d'appui (probabilité moyenne de la tranche, réussite lissée) reliés par interpolation linéaire :
+    deux marchés de probabilités différentes reçoivent deux pourcentages différents (pas de marches d'escalier, donc pas d'égalités artificielles)."""
     PAS = 0.05
 
     def __init__(self, P: np.ndarray, S: np.ndarray, V: np.ndarray) -> None:
-        n, k = [], []
+        n, k, somme = [], [], []
         for lo in np.arange(0, 1 - 1e-9, self.PAS):
             m = V & (P >= lo - 1e-12) & ((P < lo + self.PAS - 1e-12) if lo < 1 - self.PAS - 1e-9 else (P <= 1 + 1e-12))
             n.append(int(m.sum()))
             k.append(float(S[m].sum()))
+            somme.append(float(P[m].sum()))
         pleins = [j for j, a in enumerate(n) if a]
-        lis = np.full(len(n), np.nan)
-        for j, v in zip(pleins, K._pav([n[j] for j in pleins], [k[j] for j in pleins])):
-            lis[j] = v
-        dernier = np.nan
-        for j in range(len(lis)):
-            if np.isnan(lis[j]):
-                lis[j] = dernier
-            else:
-                dernier = lis[j]
-        for j in range(len(lis) - 1, -1, -1):                       # tranches vides en tête : valeur de la plus proche pleine
-            if np.isnan(lis[j]):
-                lis[j] = lis[j + 1]
-        self.table, self.effectifs = lis, n
+        lis = K._pav([n[j] for j in pleins], [k[j] for j in pleins])
+        self.effectifs = n
+        self.x = [somme[j] / n[j] for j in pleins]                       # probabilité moyenne du modèle dans la tranche
+        self.y = [float(v) for v in lis]                                 # réussite réelle lissée
+        self._tables()
+
+    def _tables(self) -> None:
+        self.table = np.interp((np.arange(0, 1 / self.PAS) + 0.5) * self.PAS, self.x, self.y)      # valeur au centre de chaque tranche (compatibilité, lecture)
+
+    @classmethod
+    def depuis(cls, x: list[float], y: list[float], effectifs: list[int]) -> "Calibreur":
+        c = cls.__new__(cls)
+        c.x, c.y, c.effectifs = list(x), list(y), list(effectifs)
+        c._tables()
+        return c
 
     def __call__(self, P: np.ndarray) -> np.ndarray:
-        j = np.minimum((np.asarray(P) / self.PAS + 1e-12).astype(int), len(self.table) - 1)
-        return self.table[j]
+        return np.interp(np.asarray(P, dtype=float), self.x, self.y)
 
 
 def probabilites(ech: list[dict[str, Any]], ligues: D.Ligues) -> dict[str, np.ndarray]:

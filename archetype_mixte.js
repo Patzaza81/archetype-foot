@@ -4,6 +4,7 @@
 const MX_CLE_THEME = "archetype_theme_nuit";
 function mxE(x) { return String(x == null ? "" : x).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
 function mxPct(x) { const n = Number(x); return Number.isFinite(n) ? Math.round(n * 100) + " %" : "—"; }
+function mxPct1(x) { const n = Number(x); return Number.isFinite(n) ? (n * 100).toFixed(1).replace(".", ",") + " %" : "—"; }
 function mxCote(x) { const n = Number(x); return x != null && Number.isFinite(n) && n > 1 ? n.toFixed(2).replace(".", ",") : "—"; }
 function mxModele(m) {
   return m === "MIXTE" ? "Modèle mixte (5 derniers matchs au même lieu + forces du championnat)"
@@ -11,7 +12,8 @@ function mxModele(m) {
 }
 function mxLigne(x) {
   const hab = x.habituel != null ? `<span class="om-sous">habituellement ${mxPct(x.habituel)} pour ce marché</span>` : "";
-  return `<div class="om-ligne"><span>${mxE(x.libelle)}${hab}</span><span class="om-cote">${mxPct(x.p)} <small>· cote ${mxCote(x.cote)}</small></span></div>`;
+  const aussi = (x.aussi || []).length ? `<span class="om-sous">même pari : ${x.aussi.map((y) => `${mxE(y.libelle)} (cote ${mxCote(y.cote)})`).join(" ; ")}</span>` : "";
+  return `<div class="om-ligne"><span>${mxE(x.libelle)}${hab}${aussi}</span><span class="om-cote">${mxPct1(x.p)} <small>· cote ${mxCote(x.cote)}</small></span></div>`;
 }
 function mxHeure(ko) {          // coup d'envoi UTC -> heure du Cameroun (UTC+1), même présentation que les autres pages
   const d = ko ? new Date(ko) : null; if (!d || Number.isNaN(d.getTime())) return { heure: "—", date: "" };

@@ -134,5 +134,34 @@ console.log(JSON.stringify([g.mxLigne({libelle: "<b>x</b>", p: 0.94, habituel: 0
     r = subprocess.run(["node", "-e", script, str(ROOT / "archetype_mixte.js")], capture_output=True, text=True, timeout=30)
     assert r.returncode == 0, r.stderr
     ligne, modele, bilan, cote = json.loads(r.stdout)
-    assert "&lt;b&gt;" in ligne and "94 %" in ligne and "1,06" in ligne and "90 %" in ligne
+    assert "&lt;b&gt;" in ligne and "94,0 %" in ligne and "1,06" in ligne and "90 %" in ligne
     assert "moins de 5 matchs" in modele and "Aucun match terminé" in bilan and cote == "—"
+
+
+def test_un_meme_pari_n_est_propose_qu_une_fois():
+    f = X.fiche(match(), championnat(), calibreurs())
+    f = {**f, "cotes": [1.5] * len(M.CLES)}
+    L = X.haut_de_liste(f, 400, [0.0] * len(M.CLES))
+    assert len(L) == len({M.evenement(M.cle_depuis_txt(x["cle"])) for x in L})                 # aucun événement en double
+    avec = [x for x in L if x.get("aussi")]
+    assert avec and all(y["libelle"] != x["libelle"] for x in avec for y in x["aussi"])        # les autres intitulés sont gardés, en « même pari »
+    # trois cas où deux intitulés sont le même pari, trois où ce sont deux paris
+    assert M.evenement(("double_chance", "N2")) == M.evenement(("handicap_-0.5", "exterieur"))
+    assert M.evenement(("double_chance", "1N")) == M.evenement(("handicap_0.5", "domicile"))
+    assert M.evenement(("cages_inviolees_exterieur", "oui")) == M.evenement(("over_under_domicile_0.5", "moins"))
+    assert M.evenement(("1x2", "1")) != M.evenement(("double_chance", "1N"))
+    assert M.evenement(("over_under_2.5", "plus")) != M.evenement(("over_under_3.5", "plus"))
+    assert M.evenement(("btts", "Oui")) != M.evenement(("btts", "Non"))
+
+
+def test_egalite_de_pourcentage_departagee_par_la_probabilite_du_modele():
+    f = X.fiche(match(), championnat(), calibreurs())
+    p = list(f["p"]); b = list(f["p_brut"])
+    i, j = 5, 6                                                     # deux marchés au même pourcentage calibré, le second plus probable pour le modèle
+    p[i] = p[j] = 0.7; b[i], b[j] = 0.60, 0.65
+    L = X.haut_de_liste({**f, "p": p, "p_brut": b, "cotes": [1.5] * len(M.CLES)}, 400, [0.0] * len(M.CLES))
+    cles = [x["cle"] for x in L]
+    ev = lambda k: M.evenement(M.CLES[k])
+    pos = {M.evenement(M.cle_depuis_txt(c)): n for n, c in enumerate(cles)}
+    if ev(i) != ev(j) and ev(i) in pos and ev(j) in pos:
+        assert pos[ev(j)] < pos[ev(i)]
