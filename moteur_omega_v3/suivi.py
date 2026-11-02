@@ -69,7 +69,7 @@ def _pari(l: dict[str, Any]) -> dict[str, Any]:
     """Un pari retenu, gelé en entier : de quoi retrouver chaque chiffre à partir des observations d'origine."""
     return {"cle": l["cle"], "famille": l["famille"], "cote": l.get("cote"), "p_implicite": l.get("p_implicite"), "p_implicite_corrigee": l.get("p_implicite_corrigee"),
             "marge": l.get("marge"), "k": l["k"], "n": l["n"], "f": l["f"], "g": l["g"], "niveaux": l["niveaux"], "stabilite": l["stabilite"], "diversite": l["diversite"],
-            "contradiction": l["contradiction"], "seuil": l.get("seuil"), "p_calibree": l.get("p_calibree"), "ecart_implicite": l.get("ecart_implicite"), "ev": l.get("ev"),
+            "contradiction": l["contradiction"], "seuil": l.get("seuil"), "p_calibree": l.get("p_calibree"),
             "statut": l["statut"], "raison": l["raison"]}
 
 

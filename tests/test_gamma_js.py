@@ -49,13 +49,21 @@ def test_frequence_jamais_presentee_comme_une_probabilite():
     t = appel("gaFreqPari", PARI, F)
     assert "400 scénarios sur 625" in t and "n'est pas une probabilité" in t and "Fréquence robuste" in t
     assert "trop peu représenté" in t and "BetPawa" not in t
-    assert "information" in t                                                          # l'EV n'est jamais un critère
+    assert "EV" not in t and "Edge" not in t                                            # ni EV ni Edge : la cote n'est qu'une condition d'accès
     assert appel("gaFreqPari", None, F) == ""
 
 
-def test_ev_affichee_et_signe():
-    assert "+0,8" in appel("gaEv", {"ev": 0.008}) and "−3,0" in appel("gaEv", {"ev": -0.03})
-    assert appel("gaEv", {}) == "" and appel("gaEv", None) in ("", None)
+def test_aucune_ev_ni_edge_dans_la_page_ni_dans_le_moteur():
+    import re
+    from pathlib import Path
+    racine = Path(__file__).resolve().parent.parent
+    js = (racine / "archetype_gamma.js").read_text(encoding="utf-8")
+    assert "gaEv" not in js and not re.search(r"\bEV\b|\bEdge\b|\bEDV\b", js)
+    for f in ("coeur.py", "suivi.py"):
+        t = (racine / "moteur_omega_v3" / f).read_text(encoding="utf-8")
+        assert '"ev"' not in t and "ecart_implicite" not in t
+    t = appel("gaFreqPari", {**PARI, "ev": 0.5}, F)
+    assert "EV" not in t
 
 
 def test_statuts_et_aucun_mot_betpawa():

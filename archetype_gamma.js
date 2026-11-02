@@ -86,7 +86,6 @@ function gaBadge(p) {
 function gaMoy(v) { return Array.isArray(v) && v.length ? v.reduce((a, b) => a + b, 0) / v.length : NaN; }
 
 // --- Omega V3 : fréquences, paliers de compatibilité, stabilité (spécification Omega V1 §5, §8, §10) ---
-function gaEv(p) { return p && p.ev != null && Number.isFinite(Number(p.ev)) ? `EV <b>${gaSigne(p.ev)}</b>` : ""; }
 let GA_CLES = [];
 let GA_ORDRE = "";
 const GA_STATUTS = {
@@ -105,7 +104,7 @@ function gaFreqPari(p, f) {
   l.push(`<div class="om-info">Fréquence brute : <b>${p.k} scénarios sur ${p.n}</b> (${gaPct(p.f)}). Une fréquence de scénarios n'est pas une probabilité.</div>`);
   l.push(`<div class="om-info">Fréquence robuste (une observation retirée à la fois) : <b>${gaPct(p.g)}</b> (de ${gaPct(st.f_min)} à ${gaPct(st.f_max)}).</div>`);
   if (p.seuil != null) l.push(`<div class="om-info">Seuil de ce marché appris sur l'archive : <b>${gaPct(p.seuil)}</b>${p.p_calibree != null ? ` · réussite observée sur l'archive à ce niveau, parmi les paris jouables : <b>${gaPct(p.p_calibree)}</b>` : ""}</div>`);
-  if (p.cote) l.push(`<div class="om-info">Cote <b>${gaCote(p.cote)}</b> = probabilité implicite ${gaPct(p.p_implicite)}${p.p_implicite_corrigee != null ? ` (${gaPct(p.p_implicite_corrigee)} marge retirée, marge ${gaPct1(p.marge)})` : ""}${p.ev != null ? ` · ${gaEv(p)} <small>(information)</small>` : ""}</div>`);
+  if (p.cote) l.push(`<div class="om-info">Cote <b>${gaCote(p.cote)}</b> (condition d'accès au pari, pas une mesure de qualité du marché).</div>`);
   l.push(`<table class="om-table"><tr><th>Palier défensif</th><th>Scénarios</th><th>Fréquence</th></tr>` +
     `<tr><td>Brut (tous)</td><td>${p.k} sur ${p.n}</td><td>${gaPct(p.f)}</td></tr>${pal("Strict", "strict")}${pal("Intermédiaire", "intermediaire")}${pal("Élargi", "elargi")}</table>`);
   if (dv.configurations) l.push(`<div class="om-info">Configurations offensives favorables : ${dv.configurations_favorables} sur ${dv.configurations} · plus grande part portée par une seule observation : ${gaPct(dv.part_max_observation)}</div>`);
@@ -359,4 +358,4 @@ if (document.getElementById("om-avenir")) {
     .then(gaAffiche)
     .catch((e) => { document.getElementById("maj").textContent = "Erreur de chargement : " + e.message; console.error(e); });
 }
-if (typeof module !== "undefined") module.exports = { gaPhrase, gaCarte, gaEv, gaFreqPari, gaStatut, gaSequences, gaExploration, gaTousMarches, gaAffiche, gaSurveiller };
+if (typeof module !== "undefined") module.exports = { gaPhrase, gaCarte, gaFreqPari, gaStatut, gaSequences, gaExploration, gaTousMarches, gaAffiche, gaSurveiller };

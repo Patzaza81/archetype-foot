@@ -285,8 +285,6 @@ def decider(a: dict[str, Any], calib: dict[str, Any] | None, p: dict[str, Any]) 
         s = seuils.get(M.cle_txt(c))
         m["seuil"] = s["seuil"] if s else None
         m["p_calibree"] = p_calibree(m["g"], s["tranches"], p["pas_tranche"]) if s else None
-        m["ecart_implicite"] = (round(m["p_calibree"] - (m.get("p_implicite_corrigee") or m["p_implicite"]), 4) if m["p_calibree"] is not None and m.get("p_implicite") else None)
-        m["ev"] = round(m["p_calibree"] * m["cote"] - 1, 4) if m["p_calibree"] is not None and m.get("cote") else None
         if not calib:
             m["statut"], m["raison"], m["code"] = "non_evalue", "aucun calibrage : indice descriptif seulement", 7
         elif m["famille"] == "scores exacts":
