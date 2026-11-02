@@ -1,0 +1,312 @@
+{
+ "echantillon": {
+  "matchs": 525,
+  "coupe": "2026-10-28",
+  "developpement": 354,
+  "reserve": 171,
+  "reserve_comparable": 171,
+  "matchs_sans_forces": 0
+ },
+ "modeles": {
+  "C": {
+   "brut": {
+    "observations": 31177,
+    "annonce_moyenne": 0.3825,
+    "reel": 0.3889,
+    "ecart": -0.0064,
+    "brier": 0.1804,
+    "log_loss": 0.5359
+   },
+   "calibre": {
+    "observations": 31177,
+    "annonce_moyenne": 0.3858,
+    "reel": 0.3889,
+    "ecart": -0.0032,
+    "brier": 0.1806,
+    "log_loss": 0.5364
+   },
+   "top_par_match": {
+    "1": {
+     "matchs": 171,
+     "paris": 171,
+     "reussite": 0.9532,
+     "annonce_calibree": 0.9399,
+     "wilson_95": [
+      0.9104,
+      0.9761
+     ]
+    },
+    "3": {
+     "matchs": 171,
+     "paris": 513,
+     "reussite": 0.9181,
+     "annonce_calibree": 0.9275,
+     "wilson_95": [
+      0.8912,
+      0.9389
+     ]
+    },
+    "5": {
+     "matchs": 171,
+     "paris": 855,
+     "reussite": 0.8889,
+     "annonce_calibree": 0.9123,
+     "wilson_95": [
+      0.8661,
+      0.9082
+     ]
+    }
+   },
+   "par_tranche_calibree": {
+    "0.0-0.1": {
+     "observations": 3050,
+     "annonce_moyenne": 0.0526,
+     "reel": 0.0587,
+     "ecart": -0.0061,
+     "brier": 0.0548,
+     "log_loss": 0.2198
+    },
+    "0.2-0.3": {
+     "observations": 5374,
+     "annonce_moyenne": 0.2528,
+     "reel": 0.2574,
+     "ecart": -0.0046,
+     "brier": 0.1905,
+     "log_loss": 0.5688
+    },
+    "0.4-0.5": {
+     "observations": 5410,
+     "annonce_moyenne": 0.4324,
+     "reel": 0.4314,
+     "ecart": 0.001,
+     "brier": 0.2438,
+     "log_loss": 0.6806
+    },
+    "0.6-0.7": {
+     "observations": 1239,
+     "annonce_moyenne": 0.6652,
+     "reel": 0.6376,
+     "ecart": 0.0276,
+     "brier": 0.2318,
+     "log_loss": 0.6565
+    },
+    "0.8-0.9": {
+     "observations": 1225,
+     "annonce_moyenne": 0.8654,
+     "reel": 0.8694,
+     "ecart": -0.004,
+     "brier": 0.1122,
+     "log_loss": 0.3817
+    },
+    "0.9-1.0": {
+     "observations": 661,
+     "annonce_moyenne": 0.9647,
+     "reel": 0.9682,
+     "ecart": -0.0035,
+     "brier": 0.0304,
+     "log_loss": 0.1314
+    }
+   }
+  },
+  "FORCE": {
+   "brut": {
+    "observations": 31177,
+    "annonce_moyenne": 0.3835,
+    "reel": 0.3889,
+    "ecart": -0.0054,
+    "brier": 0.1746,
+    "log_loss": 0.5214
+   },
+   "calibre": {
+    "observations": 31177,
+    "annonce_moyenne": 0.3842,
+    "reel": 0.3889,
+    "ecart": -0.0048,
+    "brier": 0.1746,
+    "log_loss": 0.5235
+   },
+   "top_par_match": {
+    "1": {
+     "matchs": 171,
+     "paris": 171,
+     "reussite": 0.924,
+     "annonce_calibree": 0.9629,
+     "wilson_95": [
+      0.8743,
+      0.955
+     ]
+    },
+    "3": {
+     "matchs": 171,
+     "paris": 513,
+     "reussite": 0.9123,
+     "annonce_calibree": 0.9524,
+     "wilson_95": [
+      0.8846,
+      0.9338
+     ]
+    },
+    "5": {
+     "matchs": 171,
+     "paris": 855,
+     "reussite": 0.8947,
+     "annonce_calibree": 0.9375,
+     "wilson_95": [
+      0.8724,
+      0.9136
+     ]
+    }
+   },
+   "par_tranche_calibree": {
+    "0.0-0.1": {
+     "observations": 4912,
+     "annonce_moyenne": 0.0489,
+     "reel": 0.0686,
+     "ecart": -0.0197,
+     "brier": 0.0632,
+     "log_loss": 0.2507
+    },
+    "0.2-0.3": {
+     "observations": 4684,
+     "annonce_moyenne": 0.2646,
+     "reel": 0.2611,
+     "ecart": 0.0035,
+     "brier": 0.1924,
+     "log_loss": 0.5729
+    },
+    "0.4-0.5": {
+     "observations": 4901,
+     "annonce_moyenne": 0.4365,
+     "reel": 0.4205,
+     "ecart": 0.016,
+     "brier": 0.244,
+     "log_loss": 0.6811
+    },
+    "0.6-0.7": {
+     "observations": 1025,
+     "annonce_moyenne": 0.6713,
+     "reel": 0.6156,
+     "ecart": 0.0557,
+     "brier": 0.2397,
+     "log_loss": 0.673
+    },
+    "0.8-0.9": {
+     "observations": 641,
+     "annonce_moyenne": 0.8864,
+     "reel": 0.8362,
+     "ecart": 0.0502,
+     "brier": 0.1395,
+     "log_loss": 0.4571
+    },
+    "0.9-1.0": {
+     "observations": 1424,
+     "annonce_moyenne": 0.9587,
+     "reel": 0.941,
+     "ecart": 0.0177,
+     "brier": 0.0553,
+     "log_loss": 0.232
+    }
+   }
+  },
+  "MIXTE": {
+   "brut": {
+    "observations": 31177,
+    "annonce_moyenne": 0.383,
+    "reel": 0.3889,
+    "ecart": -0.0059,
+    "brier": 0.1747,
+    "log_loss": 0.521
+   },
+   "calibre": {
+    "observations": 31177,
+    "annonce_moyenne": 0.3859,
+    "reel": 0.3889,
+    "ecart": -0.0031,
+    "brier": 0.175,
+    "log_loss": 0.5221
+   },
+   "top_par_match": {
+    "1": {
+     "matchs": 171,
+     "paris": 171,
+     "reussite": 0.9415,
+     "annonce_calibree": 0.9527,
+     "wilson_95": [
+      0.8957,
+      0.9679
+     ]
+    },
+    "3": {
+     "matchs": 171,
+     "paris": 513,
+     "reussite": 0.9201,
+     "annonce_calibree": 0.9415,
+     "wilson_95": [
+      0.8934,
+      0.9405
+     ]
+    },
+    "5": {
+     "matchs": 171,
+     "paris": 855,
+     "reussite": 0.9018,
+     "annonce_calibree": 0.9263,
+     "wilson_95": [
+      0.88,
+      0.9199
+     ]
+    }
+   },
+   "par_tranche_calibree": {
+    "0.0-0.1": {
+     "observations": 3665,
+     "annonce_moyenne": 0.0505,
+     "reel": 0.0548,
+     "ecart": -0.0043,
+     "brier": 0.0513,
+     "log_loss": 0.2079
+    },
+    "0.2-0.3": {
+     "observations": 5251,
+     "annonce_moyenne": 0.2543,
+     "reel": 0.2493,
+     "ecart": 0.005,
+     "brier": 0.1868,
+     "log_loss": 0.5606
+    },
+    "0.4-0.5": {
+     "observations": 5076,
+     "annonce_moyenne": 0.4732,
+     "reel": 0.4764,
+     "ecart": -0.0032,
+     "brier": 0.2478,
+     "log_loss": 0.6887
+    },
+    "0.6-0.7": {
+     "observations": 1114,
+     "annonce_moyenne": 0.6546,
+     "reel": 0.6391,
+     "ecart": 0.0154,
+     "brier": 0.2309,
+     "log_loss": 0.6544
+    },
+    "0.8-0.9": {
+     "observations": 673,
+     "annonce_moyenne": 0.8313,
+     "reel": 0.8247,
+     "ecart": 0.0066,
+     "brier": 0.1446,
+     "log_loss": 0.4644
+    },
+    "0.9-1.0": {
+     "observations": 1519,
+     "annonce_moyenne": 0.9394,
+     "reel": 0.9414,
+     "ecart": -0.002,
+     "brier": 0.054,
+     "log_loss": 0.21
+    }
+   }
+  }
+ }
+}
