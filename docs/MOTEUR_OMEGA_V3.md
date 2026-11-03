@@ -33,3 +33,9 @@ Mis à jour par l'audit du 02/11/2026 : voir `docs/AUDIT_OMEGA_V3.md` (méthode,
 ## Étoiles de l'échantillon et remarque « échantillons réels » (règle de Patrick, 03/11/2026)
 - Chaque carte affiche des étoiles selon le nombre de matchs de chaque équipe (le plus petit des deux) : 5 matchs = 1 étoile ; 6 = 2 ; 7 à 8 = 3 ; 9 à 15 = 4 ; 16 à 19 = 5.
 - Quand la fréquence robuste est à 100 % ET que les matchs réels confirment à 100 % pour les deux équipes, la carte écrit « Échantillons réels 6/6 pour les deux équipes » (ou « 6/6 et 7/7 »). Aucun message dans les autres cas. Page Gamma seulement.
+
+## Calibrage provisoire du 03/11/2026 (résultats uniquement)
+
+- Source : archive de test complète, 3 334 matchs joués, 1 156 analysables avec la règle inchangée (5 à 19 matchs au même lieu), sans cotes. Seuils appris sur les 70 % de matchs les plus anciens, vérifiés sur les 30 % suivants.
+- Seuls les marchés confirmés sont mis à jour dans `parametres.json` (24 marchés : taux de base inférieur à 1/1,26, vérification ≥ 30 paris et ≥ 65 %). Les autres seuils (domicile marque +0,5, extérieur ne garde pas sa cage inviolée) restent tels quels ; aucun marché n'est interdit ou ajouté en dehors de ces 24.
+- Un seuil à 0,50 ne filtre rien : le marché franchit 70 % grâce à son taux de base. Calibrage provisoire, à confirmer par les paris gelés (`bilan_reel.py`). Détail : clé `calibrage_provisoire` de `parametres.json`.
