@@ -187,3 +187,41 @@ def test_ecart_de_points_entre_les_deux_equipes(a, b, attendu):
 @pytest.mark.parametrize("a,b", [("E0", "Inconnu"), ("Inconnu", "E1"), ("X", "Y")])
 def test_ecart_de_points_absent_si_equipe_inconnue(a, b):
     assert E.ecart_points([{"equipe": "E0", "pts": 9, "j": 3}, {"equipe": "E1", "pts": 7, "j": 3}], a, b) is None
+
+
+def test_saison_en_cours_sans_minimum_saison_passee_a_3():
+    m = {"date": "2026-10-20", "competition_code": "ldc", "domicile": "A", "exterieur": "B", "meta_dom": {}, "meta_ext": {},
+         "entree": {"europe_dom": [obs("2026-09-01", "E1", 2, 0)] + [obs(f"2026-04-0{i}", f"S{i}", 1, 1, saison="2025/2026") for i in range(1, 3)],
+                    "europe_ext": [obs("2026-09-02", "F1", 0, 1, dom=False)] + [obs(f"2026-04-0{i}", f"T{i}", 1, 1, dom=False, saison="2025/2026") for i in range(1, 3)],
+                    "ligue_dom": [obs("2026-09-03", "L1", 1, 0)], "ligue_ext": [obs("2026-09-04", "M1", 0, 0, dom=False)], "odds": {}, "handicap_lines": []}}
+    r = D.echantillons(m, {})["sources"]
+    assert r["eu"]["valide"] and r["champ"]["valide"]          # un seul match suffit pour la saison en cours
+    assert not r["prec"]["valide"]                              # la saison passée garde son minimum de 3
+
+
+def test_analyse_avec_un_seul_match_par_equipe_en_saison_en_cours():
+    src = {"champ": src_valide(_obs([(2, 1)]), _obs([(0, 1)])), "eu": src_valide(_obs([(1, 1)]), _obs([(1, 2)])), "prec": {"A": [], "B": [], "valide": False}}
+    a = C.analyser(src)
+    assert a["echantillons"]["eu"]["poids_effectif"] == pytest.approx(0.625) and all(v["ok"] for v in a["verifications"])
+
+
+def test_enjeu_nul_est_affiche_sans_exclure_le_match(monkeypatch):
+    from moteur_europe_gamma import suivi as S
+    nul = {"pts": 21, "j": 7, "restants": 1, "ecart_ligne": {"8": 5, "24": 11}, "frontieres": {"8": "acquise", "24": "acquise"}, "reel": False}
+    monkeypatch.setattr(S, "_enjeu", lambda m, c: {"domicile": nul, "exterieur": dict(nul, reel=True), "ecart_points": 3})
+    m = {"match_id": "x", "date": "2026-10-20", "domicile": "A", "exterieur": "B", "competition": "Europe : Ligue des Champions Phase de Ligue", "competition_code": "ldc",
+         "meta_dom": {}, "meta_ext": {}, "coup_d_envoi_utc": "2026-10-20T19:00:00Z",
+         "entree": {"europe_dom": [obs("2026-09-01", "E1", 2, 0)], "europe_ext": [obs("2026-09-02", "F1", 0, 1, dom=False)],
+                    "ligue_dom": [obs("2026-09-03", "L1", 1, 0)], "ligue_ext": [obs("2026-09-04", "M1", 0, 0, dom=False)], "odds": {"1x2_1": 1.5}, "handicap_lines": []}}
+    f = S.analyser_match(m, {}, None)
+    assert f["statut"] == "analyse" and any("enjeu NUL" in l for l in f["conclusion"])
+
+
+def test_echantillon_a_poids_nuls_est_retire_sans_plantage():
+    nul = _obs([(1, 0)], w=0.0)
+    src = {"champ": src_valide(_obs([(2, 1)]), _obs([(0, 1)])), "eu": src_valide(_obs([(1, 1)]), _obs([(1, 2)])), "prec": src_valide(nul * 3, nul * 3)}
+    a = C.analyser(src)
+    assert set(a["echantillons"]) == {"champ", "eu"} and "prec" in a["absents"] and all(v["ok"] for v in a["verifications"])
+    seul = {"champ": src_valide(nul, nul), "eu": src_valide(_obs([(1, 1)]), _obs([(1, 2)])), "prec": {"A": [], "B": [], "valide": False}}
+    with pytest.raises(C.DonneesInsuffisantes):
+        C.analyser(seul)

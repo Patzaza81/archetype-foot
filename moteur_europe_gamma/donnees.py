@@ -7,7 +7,7 @@ Trois échantillons par équipe, TOUJOURS au même lieu (domicile pour A, extér
 - « champ » : championnat de la saison EN COURS, tous les matchs de la saison au même lieu ....... poids de base 30 %
 - « eu »    : matchs européens de la saison EN COURS, tous au même lieu ........................ poids de base 50 %
 
-Un échantillon n'entre dans le calcul que si LES DEUX équipes ont au moins N_MIN matchs dedans (« NO DATA -> NO GO », jamais de zéro de remplacement).
+Un échantillon n'entre dans le calcul que si LES DEUX équipes ont au moins N_MIN[échantillon] matchs dedans (1 pour la saison en cours, 3 pour la saison passée) (« NO DATA -> NO GO », jamais de zéro de remplacement).
 Un échantillon absent est retiré et les poids restants sont renormalisés (20/30/50 gardent leurs proportions) ; la fiche dit toujours lesquels ont servi.
 
 Forces en présence : chaque observation est pesée par la force de l'adversaire affronté (points par match de l'adversaire dans le classement de la MÊME compétition ÷ moyenne
@@ -29,7 +29,7 @@ CLASSEMENTS = ROOT / "cache_classement.json"
 
 SOURCES = ("prec", "champ", "eu")
 N_PREC_MAX = 5                       # décision de Patrick : « les 5 derniers dans le même lieu » de la saison européenne passée
-N_MIN = 3                            # minimum par équipe et par échantillon : celui que Patrick avait fixé pour l'Europe (13/10/2026)
+N_MIN = {"prec": 3, "champ": 1, "eu": 1}   # saison en cours (championnat, Europe) : aucune contrainte au-delà d'un match (décision de Patrick, 03/11/2026) ; saison passée : 3 (son minimum Europe du 13/10)
 CLE_CLASSEMENT_EUROPE = {"ldc": "europe : ligue des champions phase de ligue", "el": "europe : ligue europa phase de ligue",
                          "ecl": "europe : ligue conférence phase de ligue"}
 
@@ -119,7 +119,7 @@ def echantillons(m: dict[str, Any], classements: dict[str, Any] | None = None) -
                             "competition": x.get("competition"), "poids": round(w, 4), "force_resolue": ok})
             return out
         A, B = pese(a, "dom"), pese(b, "ext")
-        res[nom] = {"A": A, "B": B, "valide": len(A) >= N_MIN and len(B) >= N_MIN}
+        res[nom] = {"A": A, "B": B, "valide": len(A) >= N_MIN[nom] and len(B) >= N_MIN[nom]}
     return {"sources": res, "forces": stats}
 
 

@@ -24,6 +24,7 @@ from typing import Any
 import numpy as np
 
 from . import marches as M
+from .donnees import N_MIN
 
 NIVEAUX = ("strict", "intermediaire", "elargi")
 ECART = {"strict": 0, "intermediaire": 1, "elargi": 2}            # buts entiers, comme Gamma
@@ -86,17 +87,20 @@ def pi_effectifs(presents: list[str]) -> dict[str, float]:
 
 
 # --- Analyse d'un match ----------------------------------------------------------------------------------------------
-def valider(src: dict[str, dict[str, Any]], n_min: int) -> list[str]:
+def valider(src: dict[str, dict[str, Any]], n_min: dict[str, int]) -> list[str]:
     presents = [z for z, s in src.items() if s["valide"]]
     for z in presents:
         for nom in ("A", "B"):
-            if len(src[z][nom]) < n_min:
-                raise DonneesInsuffisantes(f"échantillon {z} : {len(src[z][nom])} match(s) pour l'équipe {nom}, il en faut {n_min}")
+            if len(src[z][nom]) < n_min[z]:
+                raise DonneesInsuffisantes(f"échantillon {z} : {len(src[z][nom])} match(s) pour l'équipe {nom}, il en faut {n_min[z]}")
     return presents
 
 
-def analyser(src: dict[str, dict[str, Any]], cotes: dict | None = None, calib: dict[str, Any] | None = None, n_min: int = 3, min_echantillons: int = 2) -> dict[str, Any]:
+def analyser(src: dict[str, dict[str, Any]], cotes: dict | None = None, calib: dict[str, Any] | None = None, n_min: dict[str, int] | None = None, min_echantillons: int = 2) -> dict[str, Any]:
+    n_min = n_min or N_MIN
     presents = valider(src, n_min)
+    # un échantillon dont toutes les observations pèsent 0 (adversaires à 0 point) n'apporte aucune information : il est retiré comme un échantillon absent
+    presents = [z for z in presents if sum(histogramme(sequences(src[z]["A"], src[z]["B"]), None).values()) > 0]
     if len(presents) < min_echantillons:
         raise DonneesInsuffisantes(f"{len(presents)} échantillon(s) exploitable(s) sur 3 ; il en faut au moins {min_echantillons} (un échantillon seul n'est pas le mélange voulu)")
     pi = pi_effectifs(presents)
