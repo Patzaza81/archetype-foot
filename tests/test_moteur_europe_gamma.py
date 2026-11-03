@@ -97,8 +97,10 @@ def test_force_adversaire():
 
 
 @pytest.mark.parametrize("k,v,cle", [("1x2_X", 3.7, ("1x2", "N")), ("dc_X2", 1.33, ("double_chance", "N2")), ("under_2_5", 2.2, ("over_under_2.5", "moins")),
-                                    ("home_over_1_5", 2.4, ("over_under_domicile_1.5", "plus")), ("handicap_-1.5_2", 1.9, ("handicap_-1.5", "exterieur")),
-                                    ("handicap_-1_X", 3.9, ("handicap_3issues_-1", "X"))])
+                                    ("home_over_1_5", 2.4, ("over_under_domicile_1.5", "plus")), ("handicap_-1.5_2", 1.9, ("handicap_1.5", "exterieur")),
+                                    ("handicap_3.5_1", 3.83, ("handicap_-3.5", "domicile")), ("handicap_3.5_2", 1.22, ("handicap_-3.5", "exterieur")),
+                                    ("handicap_0.5_1", 1.21, ("handicap_-0.5", "domicile")),
+                                    ("handicap_-1_X", 3.9, ("handicap_3issues_1", "X")), ("handicap_1_1", 1.58, ("handicap_3issues_-1", "1"))])
 def test_cotes_gamma_passe(k, v, cle):
     assert D.cotes_gamma({k: v}).get(cle[0], {}).get(cle[1]) == v
 
@@ -225,3 +227,11 @@ def test_echantillon_a_poids_nuls_est_retire_sans_plantage():
     seul = {"champ": src_valide(nul, nul), "eu": src_valide(_obs([(1, 1)]), _obs([(1, 2)])), "prec": {"A": [], "B": [], "valide": False}}
     with pytest.raises(C.DonneesInsuffisantes):
         C.analyser(seul)
+
+
+@pytest.mark.parametrize("k,faux", [("handicap_3.5_1", ("handicap_3.5", "domicile")),        # Barcelone -3,5 ne doit JAMAIS devenir « Barcelone +3,5 »
+                                    ("handicap_3.5_2", ("handicap_3.5", "exterieur")),
+                                    ("handicap_1.5_1", ("handicap_1.5", "domicile")),
+                                    ("handicap_1_1", ("handicap_3issues_1", "1"))])
+def test_handicap_signe_jamais_inverse(k, faux):
+    assert D.cotes_gamma({k: 2.5}).get(faux[0], {}).get(faux[1]) is None
