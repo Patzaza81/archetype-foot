@@ -218,8 +218,7 @@ function gaTousMarches(f) {
     `<table class="om-table"><tr><th>Marché</th><th>Brut</th><th>Strict</th><th>Interm.</th><th>Élargi</th><th>Stabilité</th><th>Cote</th><th>Statut</th></tr>${corps}</table></div></details>`;
 }
 // Phrase vraie, propre au type de pari : simple décompte sur les derniers matchs affichés (aucune estimation).
-let gaTrace = null;                                    // sert uniquement à relever les décomptes réels calculés par gaPhrasePari (aucun second calcul)
-const gaN = (liste, test) => { const k = liste.filter(test).length; if (gaTrace) gaTrace.push([liste, k]); return k; };
+const gaN = (liste, test) => liste.filter(test).length;
 function gaPhrasePari(p, f) {
   const d = f.derniers_matchs, cle = Array.isArray(p.cle) ? p.cle : [];
   if (!d || !d.dom || !d.ext || !d.dom.length || !d.ext.length) return "";
@@ -280,29 +279,9 @@ function gaPhrasePari(p, f) {
   }
   return "";
 }
-// Décomptes RÉELS du pari retenu sur les matchs joués : { dom: [k, n], ext: [k, n] } ou null.
-function gaReel(p, f) {
-  const d = f.derniers_matchs; if (!p || !d || !d.dom || !d.ext) return null;
-  gaTrace = []; let tr;
-  try { gaPhrasePari(p, f); } finally { tr = gaTrace; gaTrace = null; }
-  const a = tr.find((x) => x[0] === d.dom), x = tr.find((y) => y[0] === d.ext);
-  if (a && x) return { dom: [a[1], d.dom.length], ext: [x[1], d.ext.length] };
-  const c = f.pari_sur_derniers;
-  return c && c.dom && c.ext && c.dom.n && c.ext.n ? { dom: [c.dom.ok, c.dom.n], ext: [c.ext.ok, c.ext.n] } : null;
-}
-// Pari affiché à 100 % par le moteur : on dit toujours si les matchs réels le confirment (5 sur 5 des deux côtés) ou non (le 100 % ne vient alors que des scénarios croisés).
-function gaVerdictReel(p, f) {
-  if (!p || Math.round((Number(p.g) || 0) * 100) < 100) return "";
-  const r = gaReel(p, f); if (!r) return "";
-  const dom = gaE(f.domicile), ext = gaE(f.exterieur), tx = `${dom} <b>${r.dom[0]} sur ${r.dom[1]}</b> · ${ext} <b>${r.ext[0]} sur ${r.ext[1]}</b>`;
-  const rate = (r.dom[1] - r.dom[0]) + (r.ext[1] - r.ext[0]);
-  return r.dom[0] === r.dom[1] && r.ext[0] === r.ext[1]
-    ? `<div class="om-reel om-reel-ok" style="margin-top:8px;padding:8px 10px;border-radius:8px;font-size:13px;line-height:1.35;border-left:4px solid #2e7d62;background:rgba(46,125,98,.14)"><b>100 % confirmé par les matchs réels</b> : ${tx}.</div>`
-    : `<div class="om-reel om-reel-ko" style="margin-top:8px;padding:8px 10px;border-radius:8px;font-size:13px;line-height:1.35;border-left:4px solid #d64550;background:rgba(214,69,80,.14)"><b>100 % issu des scénarios, pas des matchs réels</b> : ${tx}. Condition non tenue dans ${rate} match${rate > 1 ? "s" : ""} réel${rate > 1 ? "s" : ""}.</div>`;
-}
 function gaPourquoiCourt(p, f) {
   const phrase = gaPhrasePari(p, f);
-  return phrase ? `<div class="om-pq"><p class="om-pq-txt">${phrase}</p>${gaVerdictReel(p, f)}</div>` : "";
+  return phrase ? `<div class="om-pq"><p class="om-pq-txt">${phrase}</p></div>` : "";
 }
 function gaCarte(f) {
   const h = gaHoraire(f.coup_d_envoi_utc), p = f.principal || {};
@@ -391,4 +370,4 @@ if (document.getElementById("om-avenir")) {
     .then(gaAffiche)
     .catch((e) => { document.getElementById("maj").textContent = "Erreur de chargement : " + e.message; console.error(e); });
 }
-if (typeof module !== "undefined") module.exports = { gaVerdictReel, gaPhrase, gaCarte, gaFreqPari, gaStatut, gaSequences, gaExploration, gaTousMarches, gaAffiche, gaSurveiller };
+if (typeof module !== "undefined") module.exports = { gaPhrase, gaCarte, gaFreqPari, gaStatut, gaSequences, gaExploration, gaTousMarches, gaAffiche, gaSurveiller };
