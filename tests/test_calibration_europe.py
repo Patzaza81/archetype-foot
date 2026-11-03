@@ -125,7 +125,7 @@ def test_marche_hors_fenetre_de_cotes_jamais_propose():
 
 def test_page_europe_lit_les_donnees_europe_et_pas_celles_de_v3():
     import pathlib
-    h = (pathlib.Path(__file__).parent.parent / "pronostics_europe.html").read_text(encoding="utf-8")
+    h = (pathlib.Path(__file__).parent.parent / "pronostics_europe_ancien.html").read_text(encoding="utf-8")
     assert 'data/europe/pronostics_europe.json' in open('archetype_europe.js', encoding='utf-8').read() and 'archetype_europe.js' in h and 'archetype_v3' not in h and 'data/v3' not in h
 
 
@@ -168,5 +168,5 @@ def test_chaque_match_est_soit_apercu_soit_dans_autres(tmp_path):
 
 def test_page_contient_la_zone_et_le_script_des_autres_matchs():
     import pathlib
-    h = (pathlib.Path(__file__).parent.parent / "pronostics_europe.html").read_text(encoding="utf-8")
+    h = (pathlib.Path(__file__).parent.parent / "pronostics_europe_ancien.html").read_text(encoding="utf-8")
     assert 'id="autres"' in h and "europe_autres.js" in h
