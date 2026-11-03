@@ -1,5 +1,5 @@
 {
- "genere_le": "2026-11-03T03:53:05.996780+00:00",
+ "genere_le": "2026-11-03T10:05:32.229764+00:00",
  "statut": "controle_ok",
  "avertissement": null,
  "parametres_version": "2026-10-16b",
@@ -23,7 +23,7 @@
    "niveau": "RISQUÉ"
   }
  ],
- "reglees_aujourdhui": 58,
+ "reglees_aujourdhui": 0,
  "bilan": {
   "principal": {
    "regles": 1353,
@@ -155,24 +155,12 @@
   "statut": "controle_ok"
  },
  "historique_ajouts": {
-  "versions": 78,
-  "reglements": 58,
-  "bilans": 1
+  "versions": 40,
+  "reglements": 0,
+  "bilans": 0
  },
  "plancher_principal": 0.5,
  "sans_pronostic": [
-  {
-   "match_id": "72mfrxqbwhsuid0a0gjhf36dw",
-   "date": "2026-11-05",
-   "coup_d_envoi_utc": "2026-11-05T01:30:00Z",
-   "competition": "Colombie : Première A Cloture",
-   "domicile": "Millonarios FC",
-   "exterieur": "America Cali",
-   "sans_pronostic": true,
-   "meilleur_score": 0.2589,
-   "n_marches": 5,
-   "parametres_version": "2026-10-16b"
-  },
   {
    "match_id": "36n2d6midvcagchxxm8dozlzo",
    "date": "2026-11-06",
@@ -196,15 +184,24 @@
    "exterieur": "Arsenal",
    "n_matchs_lieu": 6,
    "principal": {
-    "marche": "Plus de 1.5 buts",
-    "cote": 1.28,
-    "p_modele": 0.735,
+    "marche": "Handicap -1.5 - Extérieur",
+    "cote": 1.36,
+    "p_modele": 0.8001,
     "p_honnete": 0.748,
     "niveau": "SÛR",
     "resultat": null,
     "profit": null
    },
    "autres": [
+    {
+     "marche": "Plus de 1.5 buts",
+     "cote": 1.28,
+     "p_modele": 0.735,
+     "p_honnete": 0.748,
+     "niveau": "SÛR",
+     "resultat": null,
+     "profit": null
+    },
     {
      "marche": "Moins de 3.5 buts",
      "cote": 1.28,
@@ -220,11 +217,9 @@
     "ecart_rang": 0.8
    },
    "alertes": [
-    "musique dom:instable",
     "musique dom:pic",
     "musique dom:rupture",
-    "musique ext:pic",
-    "musique ext:rupture"
+    "musique ext:pic"
    ],
    "parametres_version": "2026-10-16b",
    "forme": {
@@ -317,7 +312,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -327,8 +322,8 @@
     1.2
    ],
    "lecture": [
-    0.8333,
-    0.5
+    0.6667,
+    0.8333
    ]
   },
   {
@@ -451,7 +446,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -485,7 +480,7 @@
    "autres": [
     {
      "marche": "Moins de 3.5 buts",
-     "cote": 1.33,
+     "cote": 1.34,
      "p_modele": 0.823,
      "p_honnete": 0.748,
      "niveau": "SÛR",
@@ -494,7 +489,7 @@
     },
     {
      "marche": "Moins de 1.5 buts - Domicile",
-     "cote": 1.28,
+     "cote": 1.29,
      "p_modele": 0.7223,
      "p_honnete": 0.748,
      "niveau": "SÛR",
@@ -503,7 +498,7 @@
     },
     {
      "marche": "Double chance - 12",
-     "cote": 1.26,
+     "cote": 1.27,
      "p_modele": 0.7086,
      "p_honnete": 0.748,
      "niveau": "SÛR",
@@ -612,7 +607,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -646,17 +641,17 @@
    "autres": [
     {
      "marche": "Handicap 0.5 - Domicile",
-     "cote": 1.31,
-     "p_modele": 0.773,
+     "cote": 1.29,
+     "p_modele": 0.7729,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
      "profit": null
     },
     {
-     "marche": "Encaisse au moins 1 but - Domicile",
-     "cote": 1.27,
-     "p_modele": 0.7653,
+     "marche": "Plus de 0.5 buts - Extérieur",
+     "cote": 1.28,
+     "p_modele": 0.7654,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
@@ -664,8 +659,8 @@
     },
     {
      "marche": "Plus de 2.5 buts",
-     "cote": 1.55,
-     "p_modele": 0.7436,
+     "cote": 1.63,
+     "p_modele": 0.7435,
      "p_honnete": 0.543,
      "niveau": "RISQUÉ",
      "resultat": null,
@@ -772,7 +767,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -797,7 +792,7 @@
    "principal": {
     "marche": "Double chance - 12",
     "cote": 1.31,
-    "p_modele": 0.7588,
+    "p_modele": 0.7589,
     "p_honnete": 0.748,
     "niveau": "SÛR",
     "resultat": null,
@@ -806,7 +801,7 @@
    "autres": [
     {
      "marche": "Plus de 0.5 buts - Domicile",
-     "cote": 1.3,
+     "cote": 1.28,
      "p_modele": 0.7254,
      "p_honnete": 0.748,
      "niveau": "SÛR",
@@ -916,7 +911,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -940,7 +935,7 @@
    "n_matchs_lieu": 6,
    "principal": {
     "marche": "Moins de 1.5 buts - Extérieur",
-    "cote": 1.34,
+    "cote": 1.35,
     "p_modele": 0.8884,
     "p_honnete": 0.748,
     "niveau": "SÛR",
@@ -950,7 +945,7 @@
    "autres": [
     {
      "marche": "Double chance - 1X",
-     "cote": 1.33,
+     "cote": 1.35,
      "p_modele": 0.8094,
      "p_honnete": 0.748,
      "niveau": "SÛR",
@@ -959,7 +954,7 @@
     },
     {
      "marche": "Moins de 2.5 buts",
-     "cote": 1.68,
+     "cote": 1.66,
      "p_modele": 0.764,
      "p_honnete": 0.543,
      "niveau": "RISQUÉ",
@@ -968,10 +963,10 @@
     },
     {
      "marche": "BTTS - non",
-     "cote": 1.82,
+     "cote": 1.81,
      "p_modele": 0.7145,
-     "p_honnete": null,
-     "niveau": "NON CALIBRÉ",
+     "p_honnete": 0.543,
+     "niveau": "RISQUÉ",
      "resultat": null,
      "profit": null
     }
@@ -1072,7 +1067,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -1096,7 +1091,7 @@
    "n_matchs_lieu": 6,
    "principal": {
     "marche": "Plus de 0.5 buts - Domicile",
-    "cote": 1.32,
+    "cote": 1.31,
     "p_modele": 0.8042,
     "p_honnete": 0.748,
     "niveau": "SÛR",
@@ -1106,7 +1101,7 @@
    "autres": [
     {
      "marche": "Plus de 1.5 buts",
-     "cote": 1.34,
+     "cote": 1.33,
      "p_modele": 0.7967,
      "p_honnete": 0.748,
      "niveau": "SÛR",
@@ -1232,7 +1227,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -1257,7 +1252,7 @@
    "principal": {
     "marche": "Double chance - 12",
     "cote": 1.3,
-    "p_modele": 0.7733,
+    "p_modele": 0.7734,
     "p_honnete": 0.748,
     "niveau": "SÛR",
     "resultat": null,
@@ -1265,9 +1260,9 @@
    },
    "autres": [
     {
-     "marche": "Plus de 0.5 buts - Domicile",
-     "cote": 1.31,
-     "p_modele": 0.74,
+     "marche": "Encaisse au moins 1 but - Extérieur",
+     "cote": 1.32,
+     "p_modele": 0.7399,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
@@ -1275,8 +1270,8 @@
     },
     {
      "marche": "Handicap -0.5 - Extérieur",
-     "cote": 1.3,
-     "p_modele": 0.7191,
+     "cote": 1.29,
+     "p_modele": 0.7192,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
@@ -1382,7 +1377,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -1415,8 +1410,8 @@
    },
    "autres": [
     {
-     "marche": "Plus de 0.5 buts - Extérieur",
-     "cote": 1.32,
+     "marche": "Encaisse au moins 1 but - Domicile",
+     "cote": 1.34,
      "p_modele": 0.7286,
      "p_honnete": 0.748,
      "niveau": "SÛR",
@@ -1425,25 +1420,16 @@
     },
     {
      "marche": "Plus de 1.5 buts",
-     "cote": 1.34,
+     "cote": 1.37,
      "p_modele": 0.7235,
-     "p_honnete": 0.748,
-     "niveau": "SÛR",
-     "resultat": null,
-     "profit": null
-    },
-    {
-     "marche": "Moins de 3.5 buts",
-     "cote": 1.26,
-     "p_modele": 0.7181,
-     "p_honnete": 0.748,
-     "niveau": "SÛR",
+     "p_honnete": 0.655,
+     "niveau": "MOYEN",
      "resultat": null,
      "profit": null
     },
     {
      "marche": "Plus de 0.5 buts - Domicile",
-     "cote": 1.32,
+     "cote": 1.34,
      "p_modele": 0.7181,
      "p_honnete": 0.748,
      "niveau": "SÛR",
@@ -1552,7 +1538,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -1576,7 +1562,7 @@
    "n_matchs_lieu": 6,
    "principal": {
     "marche": "Handicap -0.5 - Extérieur",
-    "cote": 1.29,
+    "cote": 1.26,
     "p_modele": 0.7725,
     "p_honnete": 0.748,
     "niveau": "SÛR",
@@ -1586,7 +1572,7 @@
    "autres": [
     {
      "marche": "Moins de 1.5 buts - Domicile",
-     "cote": 1.42,
+     "cote": 1.39,
      "p_modele": 0.7523,
      "p_honnete": 0.655,
      "niveau": "MOYEN",
@@ -1604,10 +1590,19 @@
     },
     {
      "marche": "Moins de 3.5 buts",
-     "cote": 1.39,
+     "cote": 1.4,
      "p_modele": 0.7467,
      "p_honnete": 0.655,
      "niveau": "MOYEN",
+     "resultat": null,
+     "profit": null
+    },
+    {
+     "marche": "Handicap 1.5 - Domicile",
+     "cote": 1.26,
+     "p_modele": 0.7215,
+     "p_honnete": 0.748,
+     "niveau": "SÛR",
      "resultat": null,
      "profit": null
     }
@@ -1710,7 +1705,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -1734,8 +1729,8 @@
    "n_matchs_lieu": 6,
    "principal": {
     "marche": "Handicap 0.5 - Domicile",
-    "cote": 1.29,
-    "p_modele": 0.8394,
+    "cote": 1.28,
+    "p_modele": 0.8393,
     "p_honnete": 0.748,
     "niveau": "SÛR",
     "resultat": null,
@@ -1744,7 +1739,7 @@
    "autres": [
     {
      "marche": "Double chance - 12",
-     "cote": 1.29,
+     "cote": 1.3,
      "p_modele": 0.8166,
      "p_honnete": 0.748,
      "niveau": "SÛR",
@@ -1753,8 +1748,8 @@
     },
     {
      "marche": "Moins de 1.5 buts - Extérieur",
-     "cote": 1.45,
-     "p_modele": 0.7033,
+     "cote": 1.44,
+     "p_modele": 0.7032,
      "p_honnete": 0.655,
      "niveau": "MOYEN",
      "resultat": null,
@@ -1863,7 +1858,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -1887,10 +1882,10 @@
    "n_matchs_lieu": 6,
    "principal": {
     "marche": "Moins de 3.5 buts",
-    "cote": 1.36,
+    "cote": 1.37,
     "p_modele": 0.7602,
-    "p_honnete": 0.748,
-    "niveau": "SÛR",
+    "p_honnete": 0.655,
+    "niveau": "MOYEN",
     "resultat": null,
     "profit": null
    },
@@ -1899,15 +1894,6 @@
      "marche": "Double chance - 12",
      "cote": 1.33,
      "p_modele": 0.7292,
-     "p_honnete": 0.748,
-     "niveau": "SÛR",
-     "resultat": null,
-     "profit": null
-    },
-    {
-     "marche": "Plus de 1.5 buts",
-     "cote": 1.26,
-     "p_modele": 0.7102,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
@@ -2021,7 +2007,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -2172,7 +2158,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -2207,7 +2193,7 @@
     {
      "marche": "Handicap 0.5 - Domicile",
      "cote": 1.26,
-     "p_modele": 0.7881,
+     "p_modele": 0.788,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
@@ -2215,10 +2201,10 @@
     },
     {
      "marche": "Plus de 0.5 buts - Extérieur",
-     "cote": 1.37,
+     "cote": 1.36,
      "p_modele": 0.7029,
-     "p_honnete": 0.655,
-     "niveau": "MOYEN",
+     "p_honnete": 0.748,
+     "niveau": "SÛR",
      "resultat": null,
      "profit": null
     }
@@ -2325,7 +2311,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -2349,7 +2335,7 @@
    "n_matchs_lieu": 6,
    "principal": {
     "marche": "Moins de 3.5 buts",
-    "cote": 1.46,
+    "cote": 1.44,
     "p_modele": 0.7411,
     "p_honnete": 0.655,
     "niveau": "MOYEN",
@@ -2466,7 +2452,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -2519,7 +2505,7 @@
     {
      "marche": "Plus de 1.5 buts",
      "cote": 1.35,
-     "p_modele": 0.7075,
+     "p_modele": 0.7076,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
@@ -2626,7 +2612,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -2650,7 +2636,7 @@
    "n_matchs_lieu": 12,
    "principal": {
     "marche": "Moins de 2.5 buts - Domicile",
-    "cote": 1.28,
+    "cote": 1.29,
     "p_modele": 0.7557,
     "p_honnete": 0.748,
     "niveau": "SÛR",
@@ -2669,8 +2655,8 @@
     },
     {
      "marche": "Moins de 3.5 buts",
-     "cote": 1.3,
-     "p_modele": 0.7303,
+     "cote": 1.29,
+     "p_modele": 0.7304,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
@@ -2776,13 +2762,13 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
    "profit": null,
    "attendus": [
-    1.71,
+    1.7,
     0.92
    ],
    "lecture": [
@@ -2810,7 +2796,7 @@
    "autres": [
     {
      "marche": "Handicap 1.5 - Domicile",
-     "cote": 1.47,
+     "cote": 1.41,
      "p_modele": 0.8303,
      "p_honnete": 0.655,
      "niveau": "MOYEN",
@@ -2819,7 +2805,7 @@
     },
     {
      "marche": "Double chance - 12",
-     "cote": 1.27,
+     "cote": 1.28,
      "p_modele": 0.7079,
      "p_honnete": 0.748,
      "niveau": "SÛR",
@@ -2929,7 +2915,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -3089,7 +3075,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -3113,7 +3099,7 @@
    "n_matchs_lieu": 12,
    "principal": {
     "marche": "Double chance - 12",
-    "cote": 1.31,
+    "cote": 1.32,
     "p_modele": 0.7479,
     "p_honnete": 0.748,
     "niveau": "SÛR",
@@ -3123,7 +3109,7 @@
    "autres": [
     {
      "marche": "Moins de 3.5 buts",
-     "cote": 1.35,
+     "cote": 1.34,
      "p_modele": 0.7111,
      "p_honnete": 0.748,
      "niveau": "SÛR",
@@ -3241,7 +3227,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -3265,7 +3251,7 @@
    "n_matchs_lieu": 12,
    "principal": {
     "marche": "Handicap -1.5 - Extérieur",
-    "cote": 1.37,
+    "cote": 1.41,
     "p_modele": 0.7485,
     "p_honnete": 0.655,
     "niveau": "MOYEN",
@@ -3275,8 +3261,8 @@
    "autres": [
     {
      "marche": "Double chance - 12",
-     "cote": 1.3,
-     "p_modele": 0.7471,
+     "cote": 1.28,
+     "p_modele": 0.747,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
@@ -3293,7 +3279,7 @@
     },
     {
      "marche": "Moins de 3.5 buts",
-     "cote": 1.28,
+     "cote": 1.27,
      "p_modele": 0.7234,
      "p_honnete": 0.748,
      "niveau": "SÛR",
@@ -3400,7 +3386,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -3561,7 +3547,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -3584,9 +3570,9 @@
    "exterieur": "Coritiba",
    "n_matchs_lieu": 12,
    "principal": {
-    "marche": "Double chance - 12",
-    "cote": 1.26,
-    "p_modele": 0.7626,
+    "marche": "Moins de 2.5 buts - Domicile",
+    "cote": 1.33,
+    "p_modele": 0.7516,
     "p_honnete": 0.748,
     "niveau": "SÛR",
     "resultat": null,
@@ -3594,27 +3580,18 @@
    },
    "autres": [
     {
-     "marche": "Moins de 2.5 buts - Domicile",
-     "cote": 1.27,
-     "p_modele": 0.7516,
-     "p_honnete": 0.748,
-     "niveau": "SÛR",
-     "resultat": null,
-     "profit": null
-    },
-    {
      "marche": "Moins de 3.5 buts",
-     "cote": 1.34,
+     "cote": 1.4,
      "p_modele": 0.7085,
-     "p_honnete": 0.748,
-     "niveau": "SÛR",
+     "p_honnete": 0.655,
+     "niveau": "MOYEN",
      "resultat": null,
      "profit": null
     },
     {
      "marche": "Handicap -1.5 - Extérieur",
-     "cote": 1.41,
-     "p_modele": 0.7001,
+     "cote": 1.46,
+     "p_modele": 0.7002,
      "p_honnete": 0.655,
      "niveau": "MOYEN",
      "resultat": null,
@@ -3627,6 +3604,7 @@
    },
    "alertes": [
     "musique dom:pic",
+    "musique dom:rupture",
     "musique ext:instable",
     "musique ext:pic",
     "musique ext:rupture"
@@ -3722,7 +3700,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -3732,8 +3710,8 @@
     1.0
    ],
    "lecture": [
-    0.5833,
-    0.75
+    0.8333,
+    0.6667
    ]
   },
   {
@@ -3746,8 +3724,8 @@
    "n_matchs_lieu": 12,
    "principal": {
     "marche": "Moins de 2.5 buts - Domicile",
-    "cote": 1.46,
-    "p_modele": 0.6873,
+    "cote": 1.43,
+    "p_modele": 0.6874,
     "p_honnete": 0.655,
     "niveau": "MOYEN",
     "resultat": null,
@@ -3854,7 +3832,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -3889,7 +3867,7 @@
     {
      "marche": "Handicap 1.5 - Domicile",
      "cote": 1.28,
-     "p_modele": 0.747,
+     "p_modele": 0.7469,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
@@ -4015,7 +3993,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -4176,7 +4154,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -4201,7 +4179,7 @@
    "principal": {
     "marche": "Double chance - 1X",
     "cote": 1.72,
-    "p_modele": 0.6998,
+    "p_modele": 0.6997,
     "p_honnete": 0.543,
     "niveau": "RISQUÉ",
     "resultat": null,
@@ -4307,7 +4285,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -4331,7 +4309,7 @@
    "n_matchs_lieu": 6,
    "principal": {
     "marche": "Moins de 3.5 buts",
-    "cote": 1.43,
+    "cote": 1.45,
     "p_modele": 0.76,
     "p_honnete": 0.655,
     "niveau": "MOYEN",
@@ -4359,8 +4337,8 @@
     },
     {
      "marche": "Moins de 1.5 buts - Extérieur",
-     "cote": 1.62,
-     "p_modele": 0.7066,
+     "cote": 1.64,
+     "p_modele": 0.7065,
      "p_honnete": 0.543,
      "niveau": "RISQUÉ",
      "resultat": null,
@@ -4469,7 +4447,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -4513,7 +4491,7 @@
     {
      "marche": "Handicap -0.5 - Extérieur",
      "cote": 1.3,
-     "p_modele": 0.717,
+     "p_modele": 0.7171,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
@@ -4639,7 +4617,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -4783,7 +4761,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -4952,7 +4930,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -5093,7 +5071,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -5137,7 +5115,7 @@
     {
      "marche": "Moins de 3.5 buts",
      "cote": 1.77,
-     "p_modele": 0.7531,
+     "p_modele": 0.7532,
      "p_honnete": 0.543,
      "niveau": "RISQUÉ",
      "resultat": null,
@@ -5146,7 +5124,7 @@
     {
      "marche": "Moins de 2.5 buts - Domicile",
      "cote": 1.99,
-     "p_modele": 0.7083,
+     "p_modele": 0.7084,
      "p_honnete": null,
      "niveau": "NON CALIBRÉ",
      "resultat": null,
@@ -5253,7 +5231,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -5277,8 +5255,8 @@
    "n_matchs_lieu": 12,
    "principal": {
     "marche": "Handicap 0.5 - Domicile",
-    "cote": 1.32,
-    "p_modele": 0.7926,
+    "cote": 1.3,
+    "p_modele": 0.7925,
     "p_honnete": 0.748,
     "niveau": "SÛR",
     "resultat": null,
@@ -5287,7 +5265,7 @@
    "autres": [
     {
      "marche": "Double chance - 12",
-     "cote": 1.31,
+     "cote": 1.32,
      "p_modele": 0.7697,
      "p_honnete": 0.748,
      "niveau": "SÛR",
@@ -5296,7 +5274,7 @@
     },
     {
      "marche": "Moins de 1.5 buts - Extérieur",
-     "cote": 1.44,
+     "cote": 1.42,
      "p_modele": 0.7324,
      "p_honnete": 0.655,
      "niveau": "MOYEN",
@@ -5405,7 +5383,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -5449,7 +5427,7 @@
     {
      "marche": "Handicap 0.5 - Domicile",
      "cote": 1.64,
-     "p_modele": 0.7195,
+     "p_modele": 0.7194,
      "p_honnete": 0.543,
      "niveau": "RISQUÉ",
      "resultat": null,
@@ -5566,7 +5544,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -5619,7 +5597,7 @@
     {
      "marche": "Moins de 3.5 buts",
      "cote": 1.27,
-     "p_modele": 0.7323,
+     "p_modele": 0.7322,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
@@ -5725,7 +5703,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -5857,7 +5835,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -5881,7 +5859,7 @@
    "n_matchs_lieu": 12,
    "principal": {
     "marche": "Handicap -1.5 - Extérieur",
-    "cote": 1.26,
+    "cote": 1.28,
     "p_modele": 0.8526,
     "p_honnete": 0.748,
     "niveau": "SÛR",
@@ -5891,7 +5869,7 @@
    "autres": [
     {
      "marche": "Plus de 0.5 buts - Extérieur",
-     "cote": 1.3,
+     "cote": 1.31,
      "p_modele": 0.7606,
      "p_honnete": 0.748,
      "niveau": "SÛR",
@@ -5900,7 +5878,7 @@
     },
     {
      "marche": "Double chance - 12",
-     "cote": 1.3,
+     "cote": 1.29,
      "p_modele": 0.7453,
      "p_honnete": 0.748,
      "niveau": "SÛR",
@@ -6018,7 +5996,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -6053,7 +6031,7 @@
     {
      "marche": "Handicap 0.5 - Domicile",
      "cote": 1.3,
-     "p_modele": 0.7555,
+     "p_modele": 0.7554,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
@@ -6062,7 +6040,7 @@
     {
      "marche": "Double chance - 12",
      "cote": 1.37,
-     "p_modele": 0.7407,
+     "p_modele": 0.7406,
      "p_honnete": 0.655,
      "niveau": "MOYEN",
      "resultat": null,
@@ -6188,7 +6166,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -6203,6 +6181,167 @@
    ]
   },
   {
+   "match_id": "72mfrxqbwhsuid0a0gjhf36dw",
+   "date": "2026-11-05",
+   "coup_d_envoi_utc": "2026-11-05T01:30:00Z",
+   "competition": "Colombie : Première A Cloture",
+   "domicile": "Millonarios FC",
+   "exterieur": "America Cali",
+   "n_matchs_lieu": 12,
+   "principal": {
+    "marche": "Moins de 3.5 buts",
+    "cote": 1.27,
+    "p_modele": 0.7943,
+    "p_honnete": 0.748,
+    "niveau": "SÛR",
+    "resultat": null,
+    "profit": null
+   },
+   "autres": [
+    {
+     "marche": "Handicap -1.5 - Extérieur",
+     "cote": 1.27,
+     "p_modele": 0.7782,
+     "p_honnete": 0.748,
+     "niveau": "SÛR",
+     "resultat": null,
+     "profit": null
+    },
+    {
+     "marche": "Double chance - 1X",
+     "cote": 1.27,
+     "p_modele": 0.7315,
+     "p_honnete": 0.748,
+     "niveau": "SÛR",
+     "resultat": null,
+     "profit": null
+    },
+    {
+     "marche": "Double chance - 12",
+     "cote": 1.32,
+     "p_modele": 0.7294,
+     "p_honnete": 0.748,
+     "niveau": "SÛR",
+     "resultat": null,
+     "profit": null
+    }
+   ],
+   "contexte": {
+    "ecart_points": -0.083,
+    "ecart_rang": -0.211
+   },
+   "alertes": [
+    "musique dom:pic",
+    "musique dom:rupture",
+    "musique ext:instable",
+    "musique ext:pic"
+   ],
+   "parametres_version": "2026-10-16b",
+   "forme": {
+    "domicile": [
+     {
+      "date": "2026-10-21",
+      "adversaire": "Once Caldas",
+      "lieu": "D",
+      "bm": 1,
+      "be": 1
+     },
+     {
+      "date": "2026-10-18",
+      "adversaire": "J. De Cordoba",
+      "lieu": "D",
+      "bm": 4,
+      "be": 1
+     },
+     {
+      "date": "2026-10-09",
+      "adversaire": "Fortaleza",
+      "lieu": "E",
+      "bm": 1,
+      "be": 1
+     },
+     {
+      "date": "2026-09-30",
+      "adversaire": "Medellín",
+      "lieu": "E",
+      "bm": 2,
+      "be": 2
+     },
+     {
+      "date": "2026-09-25",
+      "adversaire": "Atl. Nacional",
+      "lieu": "E",
+      "bm": 1,
+      "be": 1
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Boyacá Chicó",
+      "lieu": "D",
+      "bm": 3,
+      "be": 0
+     }
+    ],
+    "exterieur": [
+     {
+      "date": "2026-10-30",
+      "adversaire": "Fortaleza",
+      "lieu": "D",
+      "bm": 2,
+      "be": 1
+     },
+     {
+      "date": "2026-10-25",
+      "adversaire": "Cúcuta",
+      "lieu": "D",
+      "bm": 3,
+      "be": 1
+     },
+     {
+      "date": "2026-10-18",
+      "adversaire": "A. Bucaraman",
+      "lieu": "E",
+      "bm": 1,
+      "be": 1
+     },
+     {
+      "date": "2026-10-12",
+      "adversaire": "Medellín",
+      "lieu": "D",
+      "bm": 1,
+      "be": 2
+     },
+     {
+      "date": "2026-10-05",
+      "adversaire": "Llaneros",
+      "lieu": "E",
+      "bm": 2,
+      "be": 1
+     },
+     {
+      "date": "2026-09-24",
+      "adversaire": "R. Aguilas",
+      "lieu": "D",
+      "bm": 1,
+      "be": 0
+     }
+    ]
+   },
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
+   "fige": false,
+   "score": null,
+   "resultat": null,
+   "profit": null,
+   "attendus": [
+    1.36,
+    0.96
+   ],
+   "lecture": [
+    0.8333,
+    0.8333
+   ]
+  },
+  {
    "match_id": "agpth8c0xg59015y2rwum2rkk",
    "date": "2026-11-05",
    "coup_d_envoi_utc": "2026-11-05T01:30:00Z",
@@ -6213,7 +6352,7 @@
    "principal": {
     "marche": "Moins de 2.5 buts - Domicile",
     "cote": 1.58,
-    "p_modele": 0.8188,
+    "p_modele": 0.8189,
     "p_honnete": 0.543,
     "niveau": "RISQUÉ",
     "resultat": null,
@@ -6339,7 +6478,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -6362,9 +6501,9 @@
    "exterieur": "Al Khaleej",
    "n_matchs_lieu": 5,
    "principal": {
-    "marche": "Plus de 1.5 buts",
-    "cote": 1.27,
-    "p_modele": 0.8513,
+    "marche": "Encaisse au moins 1 but - Domicile",
+    "cote": 1.32,
+    "p_modele": 0.8011,
     "p_honnete": 0.748,
     "niveau": "SÛR",
     "resultat": null,
@@ -6372,18 +6511,9 @@
    },
    "autres": [
     {
-     "marche": "Encaisse au moins 1 but - Domicile",
-     "cote": 1.35,
-     "p_modele": 0.8004,
-     "p_honnete": 0.748,
-     "niveau": "SÛR",
-     "resultat": null,
-     "profit": null
-    },
-    {
      "marche": "Double chance - 12",
-     "cote": 1.3,
-     "p_modele": 0.7742,
+     "cote": 1.31,
+     "p_modele": 0.7748,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
@@ -6395,6 +6525,8 @@
     "ecart_rang": -0.056
    },
    "alertes": [
+    "musique dom:instable",
+    "musique dom:pic",
     "musique ext:pic",
     "musique ext:rupture"
    ],
@@ -6489,18 +6621,18 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
    "profit": null,
    "attendus": [
-    1.77,
-    1.61
+    1.78,
+    1.62
    ],
    "lecture": [
     1.0,
-    0.8333
+    0.6667
    ]
   },
   {
@@ -6513,8 +6645,8 @@
    "n_matchs_lieu": 4,
    "principal": {
     "marche": "Moins de 3.5 buts",
-    "cote": 1.48,
-    "p_modele": 0.7901,
+    "cote": 1.45,
+    "p_modele": 0.7867,
     "p_honnete": 0.655,
     "niveau": "MOYEN",
     "resultat": null,
@@ -6523,8 +6655,8 @@
    "autres": [
     {
      "marche": "Handicap 1.5 - Domicile",
-     "cote": 1.43,
-     "p_modele": 0.7297,
+     "cote": 1.41,
+     "p_modele": 0.7283,
      "p_honnete": 0.655,
      "niveau": "MOYEN",
      "resultat": null,
@@ -6630,14 +6762,14 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
    "profit": null,
    "attendus": [
     0.84,
-    1.5
+    1.51
    ],
    "lecture": [
     1.0,
@@ -6645,137 +6777,137 @@
    ]
   },
   {
-   "match_id": "8m072r8efzpwns0p3156u0pas",
-   "date": "2026-11-05",
-   "coup_d_envoi_utc": "2026-11-05T17:30:00Z",
-   "competition": "Arabie Saoudite : Première Division",
-   "domicile": "Al-Qadsiah",
-   "exterieur": "Al Fayha",
-   "n_matchs_lieu": 6,
-   "principal": {
-    "marche": "Moins de 3.5 buts - Domicile",
-    "cote": 1.52,
-    "p_modele": 0.7609,
-    "p_honnete": 0.543,
-    "niveau": "RISQUÉ",
-    "resultat": null,
-    "profit": null
-   },
-   "autres": [
-    {
-     "marche": "Moins de 4.5 buts",
-     "cote": 1.48,
-     "p_modele": 0.7244,
-     "p_honnete": 0.655,
-     "niveau": "MOYEN",
-     "resultat": null,
-     "profit": null
-    }
-   ],
-   "contexte": {
-    "ecart_points": 0.472,
-    "ecart_rang": 0.556
-   },
    "alertes": [
     "musique dom:pic",
     "musique ext:pic"
    ],
-   "parametres_version": "2026-10-16b",
+   "autres": [
+    {
+     "cote": 1.48,
+     "marche": "Moins de 4.5 buts",
+     "niveau": "MOYEN",
+     "p_honnete": 0.655,
+     "p_modele": 0.7244,
+     "profit": null,
+     "resultat": null
+    }
+   ],
+   "competition": "Arabie Saoudite : Première Division",
+   "contexte": {
+    "ecart_points": 0.472,
+    "ecart_rang": 0.556
+   },
+   "coup_d_envoi_utc": "2026-11-05T17:30:00Z",
+   "date": "2026-11-05",
+   "domicile": "Al-Qadsiah",
+   "exterieur": "Al Fayha",
+   "fige": false,
    "forme": {
     "domicile": [
      {
-      "date": "2026-10-29",
       "adversaire": "Al Riyadh",
-      "lieu": "E",
+      "be": 0,
       "bm": 6,
-      "be": 0
+      "date": "2026-10-29",
+      "lieu": "E"
      },
      {
-      "date": "2026-10-23",
       "adversaire": "Al Hilal",
-      "lieu": "D",
+      "be": 3,
       "bm": 2,
-      "be": 3
+      "date": "2026-10-23",
+      "lieu": "D"
      },
      {
-      "date": "2026-10-20",
       "adversaire": "Al Taawon",
-      "lieu": "E",
+      "be": 0,
       "bm": 1,
-      "be": 0
+      "date": "2026-10-20",
+      "lieu": "E"
      },
      {
-      "date": "2026-10-16",
       "adversaire": "Abha",
-      "lieu": "D",
+      "be": 1,
       "bm": 2,
-      "be": 1
+      "date": "2026-10-16",
+      "lieu": "D"
      },
      {
-      "date": "2026-10-09",
       "adversaire": "Al Kholood",
-      "lieu": "E",
+      "be": 0,
       "bm": 5,
-      "be": 0
+      "date": "2026-10-09",
+      "lieu": "E"
      },
      {
-      "date": "2026-09-11",
       "adversaire": "Al Ettifaq",
-      "lieu": "D",
+      "be": 3,
       "bm": 3,
-      "be": 3
+      "date": "2026-09-11",
+      "lieu": "D"
      }
     ],
     "exterieur": [
      {
-      "date": "2026-10-31",
       "adversaire": "Al Faisaly",
-      "lieu": "D",
+      "be": 1,
       "bm": 4,
-      "be": 1
+      "date": "2026-10-31",
+      "lieu": "D"
      },
      {
-      "date": "2026-10-22",
       "adversaire": "Al Hazem",
-      "lieu": "E",
+      "be": 2,
       "bm": 2,
-      "be": 2
+      "date": "2026-10-22",
+      "lieu": "E"
      },
      {
-      "date": "2026-10-19",
       "adversaire": "Al Ahli",
-      "lieu": "D",
+      "be": 3,
       "bm": 2,
-      "be": 3
+      "date": "2026-10-19",
+      "lieu": "D"
      },
      {
-      "date": "2026-10-15",
       "adversaire": "Al Khaleej",
-      "lieu": "E",
+      "be": 2,
       "bm": 0,
-      "be": 2
+      "date": "2026-10-15",
+      "lieu": "E"
      },
      {
-      "date": "2026-10-11",
       "adversaire": "Al Riyadh",
-      "lieu": "D",
+      "be": 1,
       "bm": 1,
-      "be": 1
+      "date": "2026-10-11",
+      "lieu": "D"
      },
      {
-      "date": "2026-09-12",
       "adversaire": "Al Shabab",
-      "lieu": "E",
+      "be": 0,
       "bm": 0,
-      "be": 0
+      "date": "2026-09-12",
+      "lieu": "E"
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
-   "fige": false,
-   "score": null,
-   "resultat": null,
+   "match_id": "8m072r8efzpwns0p3156u0pas",
+   "n_matchs_lieu": 6,
+   "parametres_version": "2026-10-16b",
+   "principal": {
+    "cote": 1.52,
+    "marche": "Moins de 3.5 buts - Domicile",
+    "niveau": "RISQUÉ",
+    "p_honnete": 0.543,
+    "p_modele": 0.7609,
+    "profit": null,
+    "resultat": null
+   },
    "profit": null,
+   "resultat": null,
+   "score": null,
+   "vu_le": "2026-11-03T03:53:05.996780+00:00",
    "attendus": [
     2.43,
     1.06
@@ -6930,7 +7062,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -7081,7 +7213,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -7104,15 +7236,24 @@
    "exterieur": "Luqueño",
    "n_matchs_lieu": 12,
    "principal": {
-    "marche": "Double chance - 12",
-    "cote": 1.28,
-    "p_modele": 0.7297,
+    "marche": "Moins de 3.5 buts",
+    "cote": 1.26,
+    "p_modele": 0.7614,
     "p_honnete": 0.748,
     "niveau": "SÛR",
     "resultat": null,
     "profit": null
    },
    "autres": [
+    {
+     "marche": "Double chance - 12",
+     "cote": 1.3,
+     "p_modele": 0.7297,
+     "p_honnete": 0.748,
+     "niveau": "SÛR",
+     "resultat": null,
+     "profit": null
+    },
     {
      "marche": "Plus de 1.5 buts",
      "cote": 1.31,
@@ -7128,10 +7269,10 @@
     "ecart_rang": 0.083
    },
    "alertes": [
+    "musique dom:instable",
     "musique dom:pic",
     "musique ext:instable",
-    "musique ext:pic",
-    "musique ext:rupture"
+    "musique ext:pic"
    ],
    "parametres_version": "2026-10-16b",
    "forme": {
@@ -7224,7 +7365,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -7234,8 +7375,8 @@
     1.12
    ],
    "lecture": [
-    0.5,
-    0.6667
+    0.75,
+    0.75
    ]
   },
   {
@@ -7258,7 +7399,7 @@
    "autres": [
     {
      "marche": "Moins de 2.5 buts - Domicile",
-     "cote": 1.7,
+     "cote": 1.71,
      "p_modele": 0.7247,
      "p_honnete": 0.543,
      "niveau": "RISQUÉ",
@@ -7368,7 +7509,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -7510,7 +7651,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -7554,7 +7695,7 @@
     {
      "marche": "Moins de 1.5 buts - Domicile",
      "cote": 1.46,
-     "p_modele": 0.7075,
+     "p_modele": 0.7076,
      "p_honnete": 0.655,
      "niveau": "MOYEN",
      "resultat": null,
@@ -7660,7 +7801,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -7694,7 +7835,7 @@
    "autres": [
     {
      "marche": "Double chance - 12",
-     "cote": 1.27,
+     "cote": 1.32,
      "p_modele": 0.7492,
      "p_honnete": 0.748,
      "niveau": "SÛR",
@@ -7702,11 +7843,11 @@
      "profit": null
     },
     {
-     "marche": "Encaisse au moins 1 but - Extérieur",
-     "cote": 1.38,
+     "marche": "Plus de 0.5 buts - Domicile",
+     "cote": 1.34,
      "p_modele": 0.7281,
-     "p_honnete": 0.655,
-     "niveau": "MOYEN",
+     "p_honnete": 0.748,
+     "niveau": "SÛR",
      "resultat": null,
      "profit": null
     }
@@ -7810,7 +7951,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -7834,7 +7975,7 @@
    "n_matchs_lieu": 5,
    "principal": {
     "marche": "Moins de 1.5 buts - Domicile",
-    "cote": 1.44,
+    "cote": 1.43,
     "p_modele": 0.7167,
     "p_honnete": 0.655,
     "niveau": "MOYEN",
@@ -7951,7 +8092,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -7976,7 +8117,7 @@
    "principal": {
     "marche": "Double chance - 12",
     "cote": 1.26,
-    "p_modele": 0.7929,
+    "p_modele": 0.7928,
     "p_honnete": 0.748,
     "niveau": "SÛR",
     "resultat": null,
@@ -7986,7 +8127,7 @@
     {
      "marche": "Plus de 1.5 buts",
      "cote": 1.26,
-     "p_modele": 0.7892,
+     "p_modele": 0.7891,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
@@ -8094,7 +8235,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -8252,7 +8393,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -8286,7 +8427,7 @@
    "autres": [
     {
      "marche": "Plus de 1.5 buts",
-     "cote": 1.3,
+     "cote": 1.29,
      "p_modele": 0.7389,
      "p_honnete": 0.748,
      "niveau": "SÛR",
@@ -8295,7 +8436,7 @@
     },
     {
      "marche": "Moins de 3.5 buts",
-     "cote": 1.28,
+     "cote": 1.3,
      "p_modele": 0.7289,
      "p_honnete": 0.748,
      "niveau": "SÛR",
@@ -8401,7 +8542,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -8544,7 +8685,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -8559,6 +8700,139 @@
    ]
   },
   {
+   "match_id": "bjow44265a2kowwe6u8bxi80k",
+   "date": "2026-11-06",
+   "coup_d_envoi_utc": "2026-11-06T11:00:00Z",
+   "competition": "Arménie : 1ère Division",
+   "domicile": "Van",
+   "exterieur": "Pyunik",
+   "n_matchs_lieu": 6,
+   "principal": {
+    "marche": "1X2 - 2",
+    "cote": 1.27,
+    "p_modele": 0.6629,
+    "p_honnete": 0.748,
+    "niveau": "SÛR",
+    "resultat": null,
+    "profit": null
+   },
+   "autres": [],
+   "contexte": {
+    "ecart_points": -0.472,
+    "ecart_rang": -0.636
+   },
+   "alertes": [
+    "musique dom:instable",
+    "musique dom:pic",
+    "musique dom:rupture",
+    "musique ext:pic"
+   ],
+   "parametres_version": "2026-10-16b",
+   "forme": {
+    "domicile": [
+     {
+      "date": "2026-10-30",
+      "adversaire": "Sardarapat",
+      "lieu": "E",
+      "bm": 2,
+      "be": 2
+     },
+     {
+      "date": "2026-10-23",
+      "adversaire": "A. Yerevan",
+      "lieu": "D",
+      "bm": 2,
+      "be": 1
+     },
+     {
+      "date": "2026-10-17",
+      "adversaire": "Urartu",
+      "lieu": "E",
+      "bm": 2,
+      "be": 5
+     },
+     {
+      "date": "2026-10-10",
+      "adversaire": "Gandzasar",
+      "lieu": "D",
+      "bm": 2,
+      "be": 0
+     },
+     {
+      "date": "2026-09-18",
+      "adversaire": "Noah",
+      "lieu": "E",
+      "bm": 0,
+      "be": 2
+     },
+     {
+      "date": "2026-09-11",
+      "adversaire": "BKMA",
+      "lieu": "D",
+      "bm": 2,
+      "be": 1
+     }
+    ],
+    "exterieur": [
+     {
+      "date": "2026-10-30",
+      "adversaire": "Urartu",
+      "lieu": "D",
+      "bm": 1,
+      "be": 0
+     },
+     {
+      "date": "2026-10-23",
+      "adversaire": "Gandzasar",
+      "lieu": "D",
+      "bm": 3,
+      "be": 0
+     },
+     {
+      "date": "2026-10-18",
+      "adversaire": "Noah",
+      "lieu": "E",
+      "bm": 1,
+      "be": 1
+     },
+     {
+      "date": "2026-10-12",
+      "adversaire": "BKMA",
+      "lieu": "D",
+      "bm": 5,
+      "be": 0
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Alashkert",
+      "lieu": "E",
+      "bm": 3,
+      "be": 3
+     },
+     {
+      "date": "2026-09-13",
+      "adversaire": "Shirak",
+      "lieu": "D",
+      "bm": 2,
+      "be": 0
+     }
+    ]
+   },
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
+   "fige": false,
+   "score": null,
+   "resultat": null,
+   "profit": null,
+   "attendus": [
+    1.02,
+    2.39
+   ],
+   "lecture": [
+    0.3333,
+    0.3333
+   ]
+  },
+  {
    "match_id": "8bker62iudykchdbm9h1c1ses",
    "date": "2026-11-06",
    "coup_d_envoi_utc": "2026-11-06T12:00:00Z",
@@ -8569,7 +8843,7 @@
    "principal": {
     "marche": "Plus de 2.5 buts",
     "cote": 1.31,
-    "p_modele": 0.8146,
+    "p_modele": 0.8145,
     "p_honnete": 0.748,
     "niveau": "SÛR",
     "resultat": null,
@@ -8675,7 +8949,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -8806,7 +9080,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -8829,9 +9103,9 @@
    "exterieur": "Al Riyadh",
    "n_matchs_lieu": 6,
    "principal": {
-    "marche": "Encaisse au moins 1 but - Domicile",
-    "cote": 1.29,
-    "p_modele": 0.7562,
+    "marche": "Plus de 1.5 buts",
+    "cote": 1.27,
+    "p_modele": 0.7881,
     "p_honnete": 0.748,
     "niveau": "SÛR",
     "resultat": null,
@@ -8839,9 +9113,18 @@
    },
    "autres": [
     {
+     "marche": "Encaisse au moins 1 but - Domicile",
+     "cote": 1.33,
+     "p_modele": 0.7552,
+     "p_honnete": 0.748,
+     "niveau": "SÛR",
+     "resultat": null,
+     "profit": null
+    },
+    {
      "marche": "Double chance - 12",
-     "cote": 1.27,
-     "p_modele": 0.7538,
+     "cote": 1.32,
+     "p_modele": 0.7544,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
@@ -8856,6 +9139,7 @@
     "musique dom:instable",
     "musique dom:pic",
     "musique dom:rupture",
+    "musique ext:instable",
     "musique ext:pic",
     "musique ext:rupture"
    ],
@@ -8950,18 +9234,18 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
    "profit": null,
    "attendus": [
-    1.49,
+    1.5,
     1.42
    ],
    "lecture": [
-    0.8333,
-    0.5
+    0.6667,
+    0.6667
    ]
   },
   {
@@ -8974,17 +9258,17 @@
    "n_matchs_lieu": 5,
    "principal": {
     "marche": "Moins de 4.5 buts",
-    "cote": 1.37,
-    "p_modele": 0.7651,
-    "p_honnete": 0.655,
-    "niveau": "MOYEN",
+    "cote": 1.35,
+    "p_modele": 0.7627,
+    "p_honnete": 0.748,
+    "niveau": "SÛR",
     "resultat": null,
     "profit": null
    },
    "autres": [],
    "contexte": {
     "ecart_points": -0.571,
-    "ecart_rang": -0.722
+    "ecart_rang": -0.667
    },
    "alertes": [
     "musique dom:pic",
@@ -9083,14 +9367,14 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
    "profit": null,
    "attendus": [
-    1.19,
-    2.09
+    1.2,
+    2.1
    ],
    "lecture": [
     0.8333,
@@ -9118,7 +9402,7 @@
     {
      "marche": "Encaisse au moins 1 but - Extérieur",
      "cote": 1.33,
-     "p_modele": 0.7397,
+     "p_modele": 0.7396,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
@@ -9226,7 +9510,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -9251,7 +9535,7 @@
    "principal": {
     "marche": "Handicap -1.5 - Extérieur",
     "cote": 1.32,
-    "p_modele": 0.7684,
+    "p_modele": 0.7685,
     "p_honnete": 0.748,
     "niveau": "SÛR",
     "resultat": null,
@@ -9378,7 +9662,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -9530,7 +9814,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -9555,7 +9839,7 @@
    "principal": {
     "marche": "Handicap 1.5 - Domicile",
     "cote": 1.31,
-    "p_modele": 0.8423,
+    "p_modele": 0.8422,
     "p_honnete": 0.748,
     "niveau": "SÛR",
     "resultat": null,
@@ -9682,7 +9966,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -9844,7 +10128,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -9869,7 +10153,7 @@
    "principal": {
     "marche": "Handicap -1.5 - Extérieur",
     "cote": 1.35,
-    "p_modele": 0.713,
+    "p_modele": 0.7131,
     "p_honnete": 0.748,
     "niveau": "SÛR",
     "resultat": null,
@@ -9977,7 +10261,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -10012,7 +10296,7 @@
     {
      "marche": "Handicap -0.5 - Extérieur",
      "cote": 1.51,
-     "p_modele": 0.8005,
+     "p_modele": 0.8006,
      "p_honnete": 0.543,
      "niveau": "RISQUÉ",
      "resultat": null,
@@ -10030,7 +10314,7 @@
     {
      "marche": "Encaisse au moins 1 but - Domicile",
      "cote": 1.29,
-     "p_modele": 0.7837,
+     "p_modele": 0.7838,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
@@ -10039,7 +10323,7 @@
     {
      "marche": "Double chance - 12",
      "cote": 1.33,
-     "p_modele": 0.7419,
+     "p_modele": 0.742,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
@@ -10144,7 +10428,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -10300,7 +10584,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -10335,7 +10619,7 @@
     {
      "marche": "Moins de 1.5 buts - Domicile",
      "cote": 1.55,
-     "p_modele": 0.756,
+     "p_modele": 0.7561,
      "p_honnete": 0.543,
      "niveau": "RISQUÉ",
      "resultat": null,
@@ -10344,7 +10628,7 @@
     {
      "marche": "Double chance - X2",
      "cote": 1.4,
-     "p_modele": 0.7177,
+     "p_modele": 0.7178,
      "p_honnete": 0.655,
      "niveau": "MOYEN",
      "resultat": null,
@@ -10458,7 +10742,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -10589,7 +10873,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -10612,28 +10896,19 @@
    "exterieur": "Neom",
    "n_matchs_lieu": 5,
    "principal": {
-    "marche": "Handicap -1.5 - Extérieur",
-    "cote": 1.27,
-    "p_modele": 0.802,
-    "p_honnete": 0.748,
-    "niveau": "SÛR",
+    "marche": "Moins de 3.5 buts",
+    "cote": 1.42,
+    "p_modele": 0.7965,
+    "p_honnete": 0.655,
+    "niveau": "MOYEN",
     "resultat": null,
     "profit": null
    },
    "autres": [
     {
-     "marche": "Moins de 3.5 buts",
-     "cote": 1.5,
-     "p_modele": 0.7986,
-     "p_honnete": 0.543,
-     "niveau": "RISQUÉ",
-     "resultat": null,
-     "profit": null
-    },
-    {
      "marche": "Moins de 1.5 buts - Extérieur",
-     "cote": 1.48,
-     "p_modele": 0.7349,
+     "cote": 1.42,
+     "p_modele": 0.7334,
      "p_honnete": 0.655,
      "niveau": "MOYEN",
      "resultat": null,
@@ -10641,8 +10916,8 @@
     },
     {
      "marche": "Double chance - 12",
-     "cote": 1.27,
-     "p_modele": 0.7203,
+     "cote": 1.3,
+     "p_modele": 0.7212,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
@@ -10650,7 +10925,7 @@
     },
     {
      "marche": "Double chance - 1X",
-     "cote": 1.29,
+     "cote": 1.28,
      "p_modele": 0.7132,
      "p_honnete": 0.748,
      "niveau": "SÛR",
@@ -10663,7 +10938,7 @@
     "ecart_rang": 0.111
    },
    "alertes": [
-    "musique ext:rupture"
+    "musique dom:pic"
    ],
    "parametres_version": "2026-10-16b",
    "forme": {
@@ -10756,14 +11031,14 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
    "profit": null,
    "attendus": [
-    1.3,
-    1.0
+    1.31,
+    1.01
    ],
    "lecture": [
     0.8,
@@ -10781,7 +11056,7 @@
    "principal": {
     "marche": "Moins de 2.5 buts - Domicile",
     "cote": 1.3,
-    "p_modele": 0.8086,
+    "p_modele": 0.8087,
     "p_honnete": 0.748,
     "niveau": "SÛR",
     "resultat": null,
@@ -10791,7 +11066,7 @@
     {
      "marche": "Handicap -1.5 - Extérieur",
      "cote": 1.33,
-     "p_modele": 0.7971,
+     "p_modele": 0.7972,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
@@ -10912,7 +11187,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -10947,7 +11222,7 @@
     {
      "marche": "Handicap 0.5 - Domicile",
      "cote": 1.48,
-     "p_modele": 0.7025,
+     "p_modele": 0.7024,
      "p_honnete": 0.655,
      "niveau": "MOYEN",
      "resultat": null,
@@ -11053,7 +11328,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -11206,7 +11481,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -11231,7 +11506,7 @@
    "principal": {
     "marche": "Moins de 3.5 buts",
     "cote": 1.6,
-    "p_modele": 0.764,
+    "p_modele": 0.7639,
     "p_honnete": 0.543,
     "niveau": "RISQUÉ",
     "resultat": null,
@@ -11241,7 +11516,7 @@
     {
      "marche": "Moins de 2.5 buts - Extérieur",
      "cote": 1.55,
-     "p_modele": 0.7211,
+     "p_modele": 0.721,
      "p_honnete": 0.543,
      "niveau": "RISQUÉ",
      "resultat": null,
@@ -11347,7 +11622,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -11372,7 +11647,7 @@
    "principal": {
     "marche": "Moins de 4.5 buts",
     "cote": 1.31,
-    "p_modele": 0.7386,
+    "p_modele": 0.7387,
     "p_honnete": 0.748,
     "niveau": "SÛR",
     "resultat": null,
@@ -11489,7 +11764,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -11640,7 +11915,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -11771,7 +12046,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -11912,7 +12187,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -12068,7 +12343,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -12121,7 +12396,7 @@
     {
      "marche": "Double chance - 12",
      "cote": 1.32,
-     "p_modele": 0.7481,
+     "p_modele": 0.748,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
@@ -12224,7 +12499,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -12268,7 +12543,7 @@
     {
      "marche": "Moins de 2.5 buts",
      "cote": 1.79,
-     "p_modele": 0.7403,
+     "p_modele": 0.7404,
      "p_honnete": 0.543,
      "niveau": "RISQUÉ",
      "resultat": null,
@@ -12374,7 +12649,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -12398,7 +12673,7 @@
    "n_matchs_lieu": 6,
    "principal": {
     "marche": "Plus de 0.5 buts - Domicile",
-    "cote": 1.34,
+    "cote": 1.33,
     "p_modele": 0.7997,
     "p_honnete": 0.748,
     "niveau": "SÛR",
@@ -12417,7 +12692,7 @@
     },
     {
      "marche": "BTTS - oui",
-     "cote": 1.51,
+     "cote": 1.5,
      "p_modele": 0.7246,
      "p_honnete": 0.543,
      "niveau": "RISQUÉ",
@@ -12525,7 +12800,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -12560,7 +12835,7 @@
     {
      "marche": "Handicap -1.5 - Extérieur",
      "cote": 1.26,
-     "p_modele": 0.73,
+     "p_modele": 0.7301,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
@@ -12685,7 +12960,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -12738,7 +13013,7 @@
     {
      "marche": "Moins de 2.5 buts - Extérieur",
      "cote": 1.3,
-     "p_modele": 0.7066,
+     "p_modele": 0.7065,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
@@ -12845,7 +13120,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -12880,7 +13155,7 @@
     {
      "marche": "Moins de 1.5 buts - Extérieur",
      "cote": 1.26,
-     "p_modele": 0.7899,
+     "p_modele": 0.7898,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
@@ -12988,7 +13263,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -13013,7 +13288,7 @@
    "principal": {
     "marche": "Plus de 2.5 buts",
     "cote": 1.29,
-    "p_modele": 0.7166,
+    "p_modele": 0.7167,
     "p_honnete": 0.748,
     "niveau": "SÛR",
     "resultat": null,
@@ -13032,7 +13307,7 @@
     {
      "marche": "Handicap -0.5 - Extérieur",
      "cote": 1.41,
-     "p_modele": 0.7051,
+     "p_modele": 0.7052,
      "p_honnete": 0.655,
      "niveau": "MOYEN",
      "resultat": null,
@@ -13148,7 +13423,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -13183,7 +13458,7 @@
     {
      "marche": "Moins de 2.5 buts - Extérieur",
      "cote": 1.3,
-     "p_modele": 0.8617,
+     "p_modele": 0.8616,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
@@ -13318,7 +13593,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -13353,7 +13628,7 @@
     {
      "marche": "Plus de 1.5 buts - Domicile",
      "cote": 1.36,
-     "p_modele": 0.7389,
+     "p_modele": 0.7388,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
@@ -13470,7 +13745,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -13621,7 +13896,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -13772,7 +14047,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -13796,7 +14071,7 @@
    "n_matchs_lieu": 5,
    "principal": {
     "marche": "Encaisse au moins 1 but - Extérieur",
-    "cote": 1.27,
+    "cote": 1.26,
     "p_modele": 0.8013,
     "p_honnete": 0.748,
     "niveau": "SÛR",
@@ -13914,7 +14189,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -13938,7 +14213,7 @@
    "n_matchs_lieu": 6,
    "principal": {
     "marche": "Moins de 3.5 buts",
-    "cote": 1.34,
+    "cote": 1.33,
     "p_modele": 0.8588,
     "p_honnete": 0.748,
     "niveau": "SÛR",
@@ -13948,7 +14223,7 @@
    "autres": [
     {
      "marche": "Moins de 1.5 buts - Extérieur",
-     "cote": 1.41,
+     "cote": 1.4,
      "p_modele": 0.7906,
      "p_honnete": 0.655,
      "niveau": "MOYEN",
@@ -14064,7 +14339,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -14107,10 +14382,10 @@
     },
     {
      "marche": "Handicap 1.5 - Domicile",
-     "cote": 1.32,
-     "p_modele": 0.7047,
-     "p_honnete": 0.748,
-     "niveau": "SÛR",
+     "cote": 1.37,
+     "p_modele": 0.7046,
+     "p_honnete": 0.655,
+     "niveau": "MOYEN",
      "resultat": null,
      "profit": null
     }
@@ -14217,7 +14492,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -14368,7 +14643,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -14412,7 +14687,7 @@
     {
      "marche": "1X2 - 2",
      "cote": 1.49,
-     "p_modele": 0.7211,
+     "p_modele": 0.7212,
      "p_honnete": 0.543,
      "niveau": "RISQUÉ",
      "resultat": null,
@@ -14421,7 +14696,7 @@
     {
      "marche": "Encaisse au moins 1 but - Extérieur",
      "cote": 1.32,
-     "p_modele": 0.7127,
+     "p_modele": 0.7126,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
@@ -14530,7 +14805,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -14662,7 +14937,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -14715,7 +14990,7 @@
     {
      "marche": "Moins de 2.5 buts - Domicile",
      "cote": 1.27,
-     "p_modele": 0.7339,
+     "p_modele": 0.734,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
@@ -14820,7 +15095,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -14844,7 +15119,7 @@
    "n_matchs_lieu": 5,
    "principal": {
     "marche": "Handicap 1.5 - Domicile",
-    "cote": 1.35,
+    "cote": 1.36,
     "p_modele": 0.7452,
     "p_honnete": 0.748,
     "niveau": "SÛR",
@@ -14954,7 +15229,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -14979,7 +15254,7 @@
    "principal": {
     "marche": "Handicap -0.5 - Domicile",
     "cote": 1.43,
-    "p_modele": 0.746,
+    "p_modele": 0.7459,
     "p_honnete": 0.655,
     "niveau": "MOYEN",
     "resultat": null,
@@ -14989,7 +15264,7 @@
     {
      "marche": "Moins de 3.5 buts",
      "cote": 1.54,
-     "p_modele": 0.7024,
+     "p_modele": 0.7025,
      "p_honnete": 0.543,
      "niveau": "RISQUÉ",
      "resultat": null,
@@ -15098,7 +15373,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -15239,7 +15514,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -15292,7 +15567,7 @@
     {
      "marche": "Handicap -1.5 - Extérieur",
      "cote": 1.39,
-     "p_modele": 0.7417,
+     "p_modele": 0.7418,
      "p_honnete": 0.655,
      "niveau": "MOYEN",
      "resultat": null,
@@ -15406,7 +15681,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -15450,7 +15725,7 @@
     {
      "marche": "Handicap -1.5 - Extérieur",
      "cote": 1.27,
-     "p_modele": 0.708,
+     "p_modele": 0.7081,
      "p_honnete": 0.748,
      "niveau": "SÛR",
      "resultat": null,
@@ -15558,7 +15833,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -15700,7 +15975,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
@@ -15724,7 +15999,7 @@
    "n_matchs_lieu": 4,
    "principal": {
     "marche": "Moins de 3.5 buts",
-    "cote": 1.32,
+    "cote": 1.29,
     "p_modele": 0.8401,
     "p_honnete": 0.748,
     "niveau": "SÛR",
@@ -15734,7 +16009,7 @@
    "autres": [
     {
      "marche": "Moins de 1.5 buts - Domicile",
-     "cote": 1.69,
+     "cote": 1.66,
      "p_modele": 0.7958,
      "p_honnete": 0.543,
      "niveau": "RISQUÉ",
@@ -15751,9 +16026,9 @@
      "profit": null
     },
     {
-     "marche": "Plus de 0.5 buts - Extérieur",
-     "cote": 1.4,
-     "p_modele": 0.7152,
+     "marche": "Encaisse au moins 1 but - Domicile",
+     "cote": 1.44,
+     "p_modele": 0.7153,
      "p_honnete": 0.655,
      "niveau": "MOYEN",
      "resultat": null,
@@ -15761,7 +16036,7 @@
     },
     {
      "marche": "Double chance - 12",
-     "cote": 1.32,
+     "cote": 1.34,
      "p_modele": 0.709,
      "p_honnete": 0.748,
      "niveau": "SÛR",
@@ -15870,7 +16145,7 @@
      }
     ]
    },
-   "vu_le": "2026-11-03T03:53:05.996780+00:00",
+   "vu_le": "2026-11-03T10:05:32.229764+00:00",
    "fige": false,
    "score": null,
    "resultat": null,
