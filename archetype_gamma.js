@@ -296,7 +296,7 @@ function gaNbEtoiles(n) { return n >= 16 ? 5 : n >= 9 ? 4 : n >= 7 ? 3 : n === 6
 function gaEtoiles(f) {
   const d = f.derniers_matchs; if (!d || !d.dom || !d.ext) return "";
   const a = d.dom.length, b = d.ext.length, e = gaNbEtoiles(Math.min(a, b)); if (!e) return "";
-  return `<div class="om-etoiles" style="flex:1 1 100%;width:100%;margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span aria-label="${e} étoile${e > 1 ? "s" : ""}" class="om-etoiles-ast" style="font-size:30px;line-height:1;letter-spacing:3px;color:${document.body && document.body.classList && document.body.classList.contains && document.body.classList.contains("theme-nuit") ? "#e0b44c" : "#7a5200"}">${"★".repeat(e)}</span><b style="font-size:15px">Échantillon : ${a === b ? `${a} matchs chacun` : `${a} et ${b} matchs`}</b></div>`;
+  return `<div class="om-etoiles" style="flex:1 1 100%;width:100%;margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span aria-label="${e} étoile${e > 1 ? "s" : ""}" class="om-etoiles-ast" style="font-size:30px;line-height:1;letter-spacing:3px;color:#FFB800;opacity:1">${"★".repeat(e)}</span><b style="font-size:15px">Échantillon : ${a === b ? `${a} matchs chacun` : `${a} et ${b} matchs`}</b></div>`;
 }
 // Fréquence robuste à 100 % ET matchs réels à 100 % des deux côtés : on le dit, en clair.
 function gaRemarque100(p, f) {
