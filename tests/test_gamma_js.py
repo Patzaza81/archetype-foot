@@ -149,3 +149,42 @@ def test_surveiller_pas_de_coupure_a_12():
     t = _surv(*[{**CB, "cle": ["over_under_domicile_0.5", "plus"]} for _ in range(15)])
     assert t.count("fréquence robuste") == 15 and "… et" not in t
 
+
+
+# --- Étoiles de l'échantillon et remarque « échantillons réels » (règle de Patrick, 03/11/2026) ---------------------------------------------------------
+@pytest.mark.parametrize("n,attendu", [(5, 1), (6, 2), (7, 3), (8, 3), (9, 4), (15, 4), (16, 5), (19, 5)])
+def test_etoiles_qui_passent(n, attendu):
+    assert appel("gaNbEtoiles", n) == attendu
+
+
+@pytest.mark.parametrize("n,interdit", [(6, 1), (7, 2), (9, 3), (16, 4), (5, 2), (19, 4)])
+def test_etoiles_qui_ne_doivent_pas_apparaitre(n, interdit):
+    assert appel("gaNbEtoiles", n) != interdit
+
+
+def _m(sc):
+    return [{"date": f"2026-0{i + 1}-01", "adversaire": f"T{i}", "marques": a, "encaisses": b} for i, (a, b) in enumerate(sc)]
+
+
+def _f(dom, ext):
+    return {**F, "derniers_matchs": {"dom": _m(dom), "ext": _m(ext)}}
+
+
+P100 = {"cle": ["handicap_1.5", "domicile"], "g": 1.0}
+SIX = ([(2, 0)] * 6, [(0, 2)] * 6)
+SIEDLCE = ([(3, 4), (1, 3), (2, 1), (2, 0), (1, 0)], [(2, 0), (0, 0), (0, 2), (1, 0), (1, 1)])
+
+
+def test_remarque_100_qui_passe():
+    t = appel("gaRemarque100", P100, _f(*SIX))
+    assert "Échantillons réels 6/6 pour les deux équipes" in t
+
+
+@pytest.mark.parametrize("p,fiche", [(P100, _f(*SIEDLCE)), ({**P100, "g": 0.9}, _f(*SIX)), ({**P100, "g": 0.99}, _f(*SIX))])
+def test_remarque_100_qui_ne_doit_pas_apparaitre(p, fiche):
+    assert appel("gaRemarque100", p, fiche) == ""
+
+
+def test_etoiles_ligne_affichee():
+    assert "⭐️⭐️" in appel("gaEtoiles", _f(*SIX)) and "6 matchs chacun" in appel("gaEtoiles", _f(*SIX))
+    assert "⭐️⭐️⭐️⭐️⭐️" not in appel("gaEtoiles", _f(*SIX))

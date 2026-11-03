@@ -218,7 +218,8 @@ function gaTousMarches(f) {
     `<table class="om-table"><tr><th>Marché</th><th>Brut</th><th>Strict</th><th>Interm.</th><th>Élargi</th><th>Stabilité</th><th>Cote</th><th>Statut</th></tr>${corps}</table></div></details>`;
 }
 // Phrase vraie, propre au type de pari : simple décompte sur les derniers matchs affichés (aucune estimation).
-const gaN = (liste, test) => liste.filter(test).length;
+let gaTrace = null;                                    // relève les décomptes réels calculés par gaPhrasePari (aucun second calcul)
+const gaN = (liste, test) => { const k = liste.filter(test).length; if (gaTrace) gaTrace.push([liste, k]); return k; };
 function gaPhrasePari(p, f) {
   const d = f.derniers_matchs, cle = Array.isArray(p.cle) ? p.cle : [];
   if (!d || !d.dom || !d.ext || !d.dom.length || !d.ext.length) return "";
@@ -279,9 +280,34 @@ function gaPhrasePari(p, f) {
   }
   return "";
 }
+// Décomptes réels du pari retenu sur les matchs joués : { dom: [k, n], ext: [k, n] } ou null.
+function gaReel(p, f) {
+  const d = f.derniers_matchs; if (!p || !d || !d.dom || !d.ext) return null;
+  gaTrace = []; let tr;
+  try { gaPhrasePari(p, f); } finally { tr = gaTrace; gaTrace = null; }
+  const a = tr.find((x) => x[0] === d.dom), x = tr.find((y) => y[0] === d.ext);
+  if (a && x) return { dom: [a[1], d.dom.length], ext: [x[1], d.ext.length] };
+  const c = f.pari_sur_derniers;
+  return c && c.dom && c.ext && c.dom.n && c.ext.n ? { dom: [c.dom.ok, c.dom.n], ext: [c.ext.ok, c.ext.n] } : null;
+}
+// Étoiles de l'échantillon (règle de Patrick, 03/11/2026) selon le nombre de matchs de chaque équipe (le plus petit des deux) :
+// 5 matchs = 1 étoile ; 6 = 2 ; 7 à 8 = 3 ; 9 à 15 = 4 ; 16 à 19 = 5.
+function gaNbEtoiles(n) { return n >= 16 ? 5 : n >= 9 ? 4 : n >= 7 ? 3 : n === 6 ? 2 : n >= 5 ? 1 : 0; }
+function gaEtoiles(f) {
+  const d = f.derniers_matchs; if (!d || !d.dom || !d.ext) return "";
+  const a = d.dom.length, b = d.ext.length, e = gaNbEtoiles(Math.min(a, b)); if (!e) return "";
+  return `<div class="om-info">Échantillon : <span aria-label="${e} étoile${e > 1 ? "s" : ""}">${"⭐️".repeat(e)}</span> (${a === b ? `${a} matchs chacun` : `${a} et ${b} matchs`})</div>`;
+}
+// Fréquence robuste à 100 % ET matchs réels à 100 % des deux côtés : on le dit, en clair.
+function gaRemarque100(p, f) {
+  if (!p || Math.round((Number(p.g) || 0) * 100) < 100) return "";
+  const r = gaReel(p, f); if (!r || r.dom[0] !== r.dom[1] || r.ext[0] !== r.ext[1]) return "";
+  const t = r.dom[1] === r.ext[1] ? `${r.dom[0]}/${r.dom[1]} pour les deux équipes` : `${r.dom[0]}/${r.dom[1]} et ${r.ext[0]}/${r.ext[1]}`;
+  return `<div class="om-reel" style="margin-top:8px;padding:8px 10px;border-radius:8px;font-size:14px;border-left:4px solid #2e7d62;background:rgba(46,125,98,.14)"><b>Échantillons réels ${t}</b></div>`;
+}
 function gaPourquoiCourt(p, f) {
   const phrase = gaPhrasePari(p, f);
-  return phrase ? `<div class="om-pq"><p class="om-pq-txt">${phrase}</p></div>` : "";
+  return phrase ? `<div class="om-pq"><p class="om-pq-txt">${phrase}</p>${gaRemarque100(p, f)}${gaEtoiles(f)}</div>` : "";
 }
 function gaCarte(f) {
   const h = gaHoraire(f.coup_d_envoi_utc), p = f.principal || {};
@@ -370,4 +396,4 @@ if (document.getElementById("om-avenir")) {
     .then(gaAffiche)
     .catch((e) => { document.getElementById("maj").textContent = "Erreur de chargement : " + e.message; console.error(e); });
 }
-if (typeof module !== "undefined") module.exports = { gaPhrase, gaCarte, gaFreqPari, gaStatut, gaSequences, gaExploration, gaTousMarches, gaAffiche, gaSurveiller };
+if (typeof module !== "undefined") module.exports = { gaNbEtoiles, gaEtoiles, gaRemarque100, gaPhrase, gaCarte, gaFreqPari, gaStatut, gaSequences, gaExploration, gaTousMarches, gaAffiche, gaSurveiller };

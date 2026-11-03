@@ -29,3 +29,7 @@ Mis à jour par l'audit du 02/11/2026 : voir `docs/AUDIT_OMEGA_V3.md` (méthode,
 - Réserve chronologique (28/10 au 01/11, seuils appris avant) : 269 paris, 71,8 % réussis contre 75,7 % annoncés (écart 4,0 points, IC 95 % −0,9 à +10,0).
 - Ancien calibrage (toutes observations) : 533 paris, 69,8 % contre 77,1 % : biais de sélection prouvé (voir l'audit).
 - Aucune validation n'est annoncée ; seuls les paris gelés réels trancheront.
+
+## Étoiles de l'échantillon et remarque « échantillons réels » (règle de Patrick, 03/11/2026)
+- Chaque carte affiche des étoiles selon le nombre de matchs de chaque équipe (le plus petit des deux) : 5 matchs = 1 étoile ; 6 = 2 ; 7 à 8 = 3 ; 9 à 15 = 4 ; 16 à 19 = 5.
+- Quand la fréquence robuste est à 100 % ET que les matchs réels confirment à 100 % pour les deux équipes, la carte écrit « Échantillons réels 6/6 pour les deux équipes » (ou « 6/6 et 7/7 »). Aucun message dans les autres cas. Page Gamma seulement.
