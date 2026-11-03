@@ -169,3 +169,21 @@ def test_enjeu_non_calcule_hors_phase_ou_equipe_inconnue():
     assert E.enjeu(None, "E0") is None
     assert E.enjeu(table([1, 2, 3], j=9), "E0") is None
     assert E.enjeu(table([1, 2, 3]), "Inconnu") is None
+
+
+def test_enjeu_en_points_jamais_en_rangs():
+    cl = [{"equipe": f"E{i}", "pts": 9 - (i // 4), "j": 3} for i in range(36)]      # beaucoup d'égalités : le rang ne départage rien
+    x = E.enjeu(cl, "E0")
+    assert "rang_provisoire" not in x and x["ecart_ligne"]["8"] == 9 - cl[7]["pts"]
+    assert E.enjeu(cl, "E35")["ecart_ligne"]["24"] == cl[35]["pts"] - cl[23]["pts"]
+
+
+@pytest.mark.parametrize("a,b,attendu", [("E0", "E1", 2), ("E1", "E0", -2), ("E2", "E2", 0)])
+def test_ecart_de_points_entre_les_deux_equipes(a, b, attendu):
+    cl = [{"equipe": "E0", "pts": 9, "j": 3}, {"equipe": "E1", "pts": 7, "j": 3}, {"equipe": "E2", "pts": 4, "j": 3}]
+    assert E.ecart_points(cl, a, b) == attendu
+
+
+@pytest.mark.parametrize("a,b", [("E0", "Inconnu"), ("Inconnu", "E1"), ("X", "Y")])
+def test_ecart_de_points_absent_si_equipe_inconnue(a, b):
+    assert E.ecart_points([{"equipe": "E0", "pts": 9, "j": 3}, {"equipe": "E1", "pts": 7, "j": 3}], a, b) is None

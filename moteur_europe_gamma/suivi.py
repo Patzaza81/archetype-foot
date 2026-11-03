@@ -81,7 +81,7 @@ def _enjeu(m: dict[str, Any], classements: dict[str, Any]) -> dict[str, Any] | N
         return None
     cl = (classements.get(D.CLE_CLASSEMENT_EUROPE.get(m.get("competition_code"), "")) or {}).get("resultat")
     d, e = E.enjeu(cl, m["domicile"]), E.enjeu(cl, m["exterieur"])
-    return {"domicile": d, "exterieur": e} if d and e else None
+    return {"domicile": d, "exterieur": e, "ecart_points": E.ecart_points(cl, m["domicile"], m["exterieur"])} if d and e else None
 
 
 def _recent(src: dict[str, Any], cote: str) -> list[dict[str, Any]]:
@@ -97,9 +97,12 @@ def fiche(m: dict[str, Any], s: dict[str, Any] | None, a: dict[str, Any] | None,
     ex, ap = a["exploration"], sel["apercu_non_calibre"]
     lignes = list(a["conclusion"])
     if enj:
+        if enj.get("ecart_points") is not None:
+            e = enj["ecart_points"]
+            lignes.append(f"Écart de points entre les deux équipes : {abs(e)} point(s)" + (f" en faveur de {m['domicile'] if e > 0 else m['exterieur']}." if e else " (à égalité)."))
         for cote, nom in (("domicile", m["domicile"]), ("exterieur", m["exterieur"])):
             x = enj[cote]
-            lignes.append(f"Enjeu {nom} : {x['pts']} pt(s) en {x['j']} match(s), {x['restants']} restant(s) ; frontière 1/8e (rang 8) {x['frontieres']['8']}, frontière play-off (rang 24) {x['frontieres']['24']} ; enjeu {'réel' if x['reel'] else 'NUL'}.")
+            lignes.append(f"Enjeu {nom} : {x['pts']} pt(s) en {x['j']} match(s), {x['restants']} restant(s) ; à {abs(x['ecart_ligne']['8'])} pt(s) {'au-dessus' if x['ecart_ligne']['8'] >= 0 else 'en dessous'} de la ligne des 1/8e ({x['frontieres']['8']}), à {abs(x['ecart_ligne']['24'])} pt(s) {'au-dessus' if x['ecart_ligne']['24'] >= 0 else 'en dessous'} de la ligne du play-off ({x['frontieres']['24']}) ; enjeu {'réel' if x['reel'] else 'NUL'}.")
     lignes.append(f"Forces en présence : {s['forces']['resolus']} observation(s) pesée(s) par la force réelle de l'adversaire, {s['forces']['neutres']} au poids neutre (adversaire absent du classement de sa compétition).")
     return {**out, "n_domicile": max(v["n_a"] for v in a["echantillons"].values()), "n_exterieur": max(v["n_b"] for v in a["echantillons"].values()), "raison": sel["raison"],
             "apercu_non_calibre": ap, "principal": _pari(sel["principal"], ap) if sel["principal"] else None, "autres": [_pari(x, ap) for x in sel["autres"]],

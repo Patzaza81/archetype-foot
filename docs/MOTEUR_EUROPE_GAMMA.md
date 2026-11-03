@@ -19,6 +19,7 @@ Branche `moteur-europe-gamma`, **non fusionnée** (fusion sur l'ordre « Fusionn
 Chaque observation est pesée par la force de l'adversaire affronté = points par match de l'adversaire ÷ moyenne, dans le classement de la MÊME compétition (`cache_classement.json`). Adversaire introuvable (qualifications, saison passée, nom différent) = poids neutre 1, compté et affiché. Aucun coefficient posé à la main.
 
 ## Enjeu réel
+Le classement sert par ses POINTS, jamais par le rang (le 15e et le 25e peuvent n'avoir qu'un point d'écart) : fiche = écart de points entre les deux équipes + distance en points de chaque équipe aux lignes 1/8e et play-off (points de l'équipe qui occupe le rang 8 / 24) + statut mathématique.
 Phase de ligue (36 équipes, 8 matchs ; frontières rang 8 et rang 24, règle UEFA) : pour chaque frontière, l'équipe est « acquise », « perdue » ou « ouverte » selon les points actuels, les points maximum restants et ceux des autres (égalité = ouverte, départages non simulés). Enjeu NUL (les deux frontières décidées) pour une équipe = match exclu avec sa raison. Hors phase de ligue ou classement absent : non calculé. L'enjeu est affiché sur chaque fiche.
 
 ## Sélection

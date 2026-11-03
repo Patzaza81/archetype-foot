@@ -6,7 +6,7 @@ Pour chaque frontière L (8 puis 24), une équipe est :
 - « perdue »     si, même avec tous les points restants, au moins L autres équipes ont déjà strictement plus de points ;
 - « ouverte »    sinon.
 L'enjeu est RÉEL si au moins une frontière est ouverte ; NUL si les deux sont décidées (zone fixée mathématiquement). Hors phase de ligue, ou classement absent : None (non calculé).
-Les départages (différence de buts…) ne sont pas simulés : une égalité de points reste « ouverte » (prudent).
+Le classement sert par ses POINTS (écart entre les deux équipes, distance de chaque équipe aux lignes), jamais par le rang. Les départages (différence de buts…) ne sont pas simulés : une égalité de points reste « ouverte » (prudent).
 """
 from __future__ import annotations
 
@@ -39,6 +39,15 @@ def enjeu(classement: list[dict[str, Any]] | None, equipe: str) -> dict[str, Any
         return None
     autres = [b for b in base if b is not moi]
     st = {str(L): _statut(moi["pts"], moi["max"], autres, L) for L in FRONTIERES}
-    rang = 1 + sum(1 for b in autres if b["pts"] > moi["pts"])
-    return {"equipe": equipe, "pts": moi["pts"], "j": moi["j"], "restants": MATCHS_PHASE - moi["j"], "rang_provisoire": rang, "frontieres": st,
+    # distance en POINTS à chaque ligne (points de l'équipe qui occupe actuellement le rang L), jamais en rangs : le 15e et le 25e peuvent n'avoir qu'un point d'écart
+    pts_tries = sorted((b["pts"] for b in base), reverse=True)
+    ecart = {str(L): moi["pts"] - pts_tries[L - 1] for L in FRONTIERES}
+    return {"equipe": equipe, "pts": moi["pts"], "j": moi["j"], "restants": MATCHS_PHASE - moi["j"], "ecart_ligne": ecart, "frontieres": st,
             "reel": any(v == "ouverte" for v in st.values())}
+
+
+def ecart_points(classement: list[dict[str, Any]] | None, dom: str, ext: str) -> int | None:
+    """Écart de points entre les deux équipes du match (domicile − extérieur) dans le même classement ; None si l'une manque."""
+    pts = {norm(r["equipe"]): r["pts"] for r in classement or [] if isinstance(r.get("pts"), int)}
+    a, b = pts.get(norm(dom)), pts.get(norm(ext))
+    return None if a is None or b is None else a - b
