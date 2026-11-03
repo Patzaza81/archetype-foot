@@ -25,3 +25,7 @@ Mis à jour par l'audit du 02/11/2026 : voir `docs/AUDIT_OMEGA_V3.md` (méthode,
 - Réserve chronologique (28/10 au 01/11, seuils appris avant) : 269 paris, 71,8 % réussis contre 75,7 % annoncés (écart 4,0 points, IC 95 % −0,9 à +10,0).
 - Ancien calibrage (toutes observations) : 533 paris, 69,8 % contre 77,1 % : biais de sélection prouvé (voir l'audit).
 - Aucune validation n'est annoncée ; seuls les paris gelés réels trancheront.
+
+## Affichage du « 100 % » (03/11/2026)
+- Même encadré que sur la page Europe : si la fréquence robuste s'affiche à 100 %, la carte indique si les matchs réels (5 derniers au même lieu) le confirment ou si le 100 % ne vient que des scénarios croisés (la défense ne crée jamais de score hors des buts déjà marqués).
+- Le texte d'introduction ne cite plus « 625 » : le moteur accepte plus de 5 observations (n_A² × n_B² scénarios, vérifié de 5×5 à 12×7, contrôles mathématiques verts) ; la production reste à 5 par équipe (spécification Omega V1, seuils appris sur cette taille).
