@@ -1,4 +1,4 @@
-// Page Gamma (moteur Omega V3 : moteur_omega_v3/, depuis le 02/11/2026) : affiche data/gamma/pronostics.json (écrit par moteur_omega_v3.suivi). Lecture seule, aucun calcul métier.
+// Page Gamma (moteur Gamma : moteur_omega_v3/, depuis le 02/11/2026) : affiche data/gamma/pronostics.json (écrit par moteur_omega_v3.suivi). Lecture seule, aucun calcul métier.
 // Même présentation que la page Omega (archetype_omega.js). Les fréquences affichées sont des FRÉQUENCES de scénarios, jamais des probabilités.
 "use strict";
 const GA_CLE_THEME = "archetype_theme_nuit";
@@ -85,7 +85,7 @@ function gaBadge(p) {
 }
 function gaMoy(v) { return Array.isArray(v) && v.length ? v.reduce((a, b) => a + b, 0) / v.length : NaN; }
 
-// --- Omega V3 : fréquences, paliers de compatibilité, stabilité (spécification Omega V1 §5, §8, §10) ---
+// --- Gamma : fréquences, paliers de compatibilité, stabilité (spécification Omega V1 §5, §8, §10) ---
 let GA_CLES = [];
 let GA_ORDRE = "";
 const GA_STATUTS = {
@@ -296,7 +296,7 @@ function gaNbEtoiles(n) { return n >= 16 ? 5 : n >= 9 ? 4 : n >= 7 ? 3 : n === 6
 function gaEtoiles(f) {
   const d = f.derniers_matchs; if (!d || !d.dom || !d.ext) return "";
   const a = d.dom.length, b = d.ext.length, e = gaNbEtoiles(Math.min(a, b)); if (!e) return "";
-  return `<div class="om-etoiles" style="flex:1 1 100%;width:100%;margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span aria-label="${e} étoile${e > 1 ? "s" : ""}" class="om-etoiles-ast" style="font-size:30px;line-height:1;letter-spacing:3px;color:#7a5200">${"★".repeat(e)}</span><b style="font-size:15px">Échantillon : ${a === b ? `${a} matchs chacun` : `${a} et ${b} matchs`}</b></div>`;
+  return `<div class="om-etoiles" style="flex:1 1 100%;width:100%;margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span aria-label="${e} étoile${e > 1 ? "s" : ""}" class="om-etoiles-ast" style="font-size:30px;line-height:1;letter-spacing:3px;color:${document.body && document.body.classList && document.body.classList.contains && document.body.classList.contains("theme-nuit") ? "#e0b44c" : "#7a5200"}">${"★".repeat(e)}</span><b style="font-size:15px">Échantillon : ${a === b ? `${a} matchs chacun` : `${a} et ${b} matchs`}</b></div>`;
 }
 // Fréquence robuste à 100 % ET matchs réels à 100 % des deux côtés : on le dit, en clair.
 function gaRemarque100(p, f) {
@@ -371,7 +371,7 @@ function gaAffiche(d) {
   gaListe("om-regles", d.reglees, "Aucun pari réglé pour l'instant.");
   const g = d.derniere_analyse || d.genere_le ? new Date(d.derniere_analyse || d.genere_le) : null;
   document.getElementById("maj").textContent = g && !Number.isNaN(g.getTime())
-    ? `Dernière analyse du moteur Gamma (Omega V3) : ${g.toLocaleDateString("fr-FR")} à ${g.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}` : "";
+    ? `Dernière analyse du moteur Gamma : ${g.toLocaleDateString("fr-FR")} à ${g.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}` : "";
 }
 function gaTheme() {
   const bouton = document.getElementById("ax-bouton-theme"); if (!bouton) return;

@@ -1,4 +1,4 @@
-"""Page Gamma = Omega V3 : exécute archetype_gamma.js sous Node avec un document factice (affichages, vocabulaire, aucune probabilité inventée)."""
+"""Page Gamma : exécute archetype_gamma.js sous Node avec un document factice (affichages, vocabulaire, aucune probabilité inventée)."""
 from __future__ import annotations
 
 import json

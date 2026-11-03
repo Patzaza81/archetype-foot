@@ -85,7 +85,7 @@ function gaBadge(p) {
 }
 function gaMoy(v) { return Array.isArray(v) && v.length ? v.reduce((a, b) => a + b, 0) / v.length : NaN; }
 
-// --- Omega V3 : fréquences, paliers de compatibilité, stabilité (spécification Omega V1 §5, §8, §10) ---
+// --- Gamma : fréquences, paliers de compatibilité, stabilité (spécification Omega V1 §5, §8, §10) ---
 let GA_CLES = [];
 let GA_ORDRE = "";
 const GA_STATUTS = {
