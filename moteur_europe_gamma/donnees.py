@@ -152,11 +152,17 @@ def cotes_gamma(odds: dict[str, Any]) -> dict[str, dict[str, float]]:
         elif p[0] in ("home", "away") and p[1] in ("over", "under") and len(p) == 4:
             put("over_under_" + ("domicile" if p[0] == "home" else "exterieur") + "_" + p[2] + "." + p[3], "plus" if p[1] == "over" else "moins", v)
         elif p[0] == "handicap" and len(p) >= 3:
-            ligne, sel = "_".join(p[1:-1]), p[-1]
-            if "_" in ligne:
-                ligne = ligne.replace("_", ".")
+            # Convention de la collecte (moteur_europe/rendu.py) : la ligne L de la clé est celle de l'EXTÉRIEUR ; le handicap du domicile est -L.
+            # « handicap_3.5_1 » = domicile -3,5 (cote 3,83 pour Barcelone), « handicap_3.5_2 » = extérieur +3,5. Les marchés du moteur (marches.py)
+            # expriment le handicap du domicile : on inverse donc le signe de la ligne, pour les deux issues.
+            ligne, sel = "_".join(p[1:-1]).replace("_", "."), p[-1]
+            try:
+                h = -float(ligne)
+            except ValueError:
+                continue
+            h = 0.0 if h == 0 else h
             if "." in ligne:
-                put("handicap_" + ligne, {"1": "domicile", "2": "exterieur"}.get(sel, "?"), v)
+                put("handicap_" + M._l(h), {"1": "domicile", "2": "exterieur"}.get(sel, "?"), v)
             else:
-                put("handicap_3issues_" + ligne, {"1": "1", "X": "X", "2": "2"}.get(sel, "?"), v)
+                put("handicap_3issues_" + M._l(h), {"1": "1", "X": "X", "2": "2"}.get(sel, "?"), v)
     return out
