@@ -128,6 +128,14 @@ jobs:
         continue-on-error: true
         run: python -m moteur_omega_v3.suivi pipeline
 
+      # REMPLACEMENT 03/11/2026 (ordre de Patrick) : le moteur Europe est refait sur la méthode Gamma avec trois échantillons (20 % saison européenne passée,
+      # 30 % championnat en cours, 50 % Europe en cours), forces en présence et enjeu réel. Autonome, hors tickets, journal gelé (data/europe_gamma/).
+      # Lit data/europe/entrees_europe.json (collecte commune, workflow europe.yml). Voir docs/MOTEUR_EUROPE_GAMMA.md.
+      - name: Moteur Europe-Gamma (pronostics et journal gelé, hors tickets)
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+        continue-on-error: true
+        run: python -m moteur_europe_gamma.suivi pipeline
+
       # ESSAI (02/11/2026) : pourcentage mixte, journal à part (data/gamma/journal_mixte.jsonl, page pronostics_mixte.html). Ne touche ni au journal Gamma ni à la page Gamma.
       - name: Pourcentage mixte (essai, journal gelé à part)
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
