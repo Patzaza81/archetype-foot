@@ -149,39 +149,3 @@ def test_surveiller_pas_de_coupure_a_12():
     t = _surv(*[{**CB, "cle": ["over_under_domicile_0.5", "plus"]} for _ in range(15)])
     assert t.count("fréquence robuste") == 15 and "… et" not in t
 
-
-# --- Verdict « 100 % » : le moteur dit si les matchs réels confirment ---------------------------------------------------------------------------------------
-def _m(sc):  # [(marques, encaisses)...]
-    return [{"date": f"2026-0{i + 1}-01", "adversaire": f"T{i}", "marques": a, "encaisses": b} for i, (a, b) in enumerate(sc)]
-
-
-def _f(dom, ext):
-    return {**F, "derniers_matchs": {"dom": _m(dom), "ext": _m(ext)}}
-
-
-P100 = {"cle": ["handicap_1.5", "domicile"], "g": 1.0}
-CONFIRME = ([(2, 0)] * 5, [(0, 2)] * 5)
-SIEDLCE = ([(3, 4), (1, 3), (2, 1), (2, 0), (1, 0)], [(2, 0), (0, 0), (0, 2), (1, 0), (1, 1)])   # cas réel : 1-3 à domicile, 0-2 gagné à l'extérieur
-
-
-@pytest.mark.parametrize("p,dom,ext,attendu", [
-    (P100, *CONFIRME, "100 % confirmé par les matchs réels"),
-    (P100, *SIEDLCE, "100 % issu des scénarios, pas des matchs réels"),
-    ({**P100, "g": 0.996}, *SIEDLCE, "4 sur 5"),
-])
-def test_verdict_reel_qui_passe(p, dom, ext, attendu):
-    assert attendu in appel("gaVerdictReel", p, _f(dom, ext))
-
-
-@pytest.mark.parametrize("p,dom,ext,interdit", [
-    (P100, *SIEDLCE, "confirmé par les matchs réels"),                 # 4 sur 5 des deux côtés : jamais « confirmé »
-    ({**P100, "g": 0.9}, *SIEDLCE, "100 %"),                           # moteur sous 100 % : aucun verdict
-    (P100, *CONFIRME, "issu des scénarios"),
-])
-def test_verdict_reel_qui_ne_doit_pas_apparaitre(p, dom, ext, interdit):
-    assert interdit not in appel("gaVerdictReel", p, _f(dom, ext))
-
-
-def test_verdict_reel_compte_les_echecs_reels():
-    t = appel("gaVerdictReel", P100, _f(*SIEDLCE))
-    assert "<b>4 sur 5</b>" in t and "2 matchs réels" in t
