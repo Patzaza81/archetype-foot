@@ -2,7 +2,7 @@
 
 Même mécanique que Gamma (journal en ajout seul, la DERNIÈRE ligne écrite avant le coup d'envoi compte, résultat réglé une fois) ; code autonome.
 Journal `data/europe_gamma/journal.jsonl`, page `data/europe_gamma/pronostics.json`. Entrées : `data/europe/entrees_europe.json` (collecte commune), classements : `cache_classement.json`.
-Un contrôle mathématique raté EXCLUT le match et fait échouer l'étape. Un enjeu NUL (zone fixée mathématiquement) exclut le match avec sa raison.
+Un contrôle mathématique raté EXCLUT le match et fait échouer l'étape. Un enjeu NUL (zone fixée mathématiquement) est seulement AFFICHÉ sur la fiche : le match n'est pas exclu (décision de Patrick, 03/11/2026).
 Les paris d'aperçu NON calibré sont étiquetés comme tels et comptés à part dans le bilan.
 """
 from __future__ import annotations
@@ -131,9 +131,6 @@ def analyser_match(m: dict[str, Any], classements: dict[str, Any], calib: dict[s
     rates = [v["nom"] for v in a["verifications"] if not v["ok"]]
     if rates:
         raise RuntimeError(f"contrôle mathématique échoué pour {m['domicile']} – {m['exterieur']} ({m['date']}) : {rates}")
-    if enj and not (enj["domicile"]["reel"] and enj["exterieur"]["reel"]):
-        nul = [n for n, x in ((m["domicile"], enj["domicile"]), (m["exterieur"], enj["exterieur"])) if not x["reel"]]
-        return fiche(m, s, a, None, enj, "enjeu nul : zone fixée mathématiquement pour " + ", ".join(nul))
     return fiche(m, s, a, C.selection(a), enj)
 
 

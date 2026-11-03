@@ -11,7 +11,7 @@ Branche `moteur-europe-gamma`, **non fusionnée** (fusion sur l'ordre « Fusionn
 | `champ` | championnat de la saison EN COURS : tous les matchs de la saison | 30 % |
 | `eu` | matchs européens de la saison EN COURS : tous | 50 % |
 
-- Fréquence d'un marché = Σ poids × fréquence de l'échantillon. Un échantillon n'entre que si les DEUX équipes y ont au moins 3 matchs (minimum fixé par Patrick pour l'Europe le 13/10) ; un échantillon absent est retiré et les poids restants sont renormalisés (la fiche affiche les poids effectifs). Il faut au moins 2 échantillons exploitables, sinon le match est exclu (« données insuffisantes »).
+- Fréquence d'un marché = Σ poids × fréquence de l'échantillon. Un échantillon n'entre que si les DEUX équipes y ont des matchs : saison en cours (championnat, Europe) = aucune contrainte au-delà d'un match (décision du 03/11/2026) ; saison passée = au moins 3 (minimum Europe du 13/10) ; un échantillon absent est retiré et les poids restants sont renormalisés (la fiche affiche les poids effectifs). Il faut au moins 2 échantillons exploitables, sinon le match est exclu (« données insuffisantes »).
 - Fréquence robuste g = minimum des fréquences obtenues en retirant une observation à la fois (4 séquences × chaque échantillon). Une fréquence n'est pas une probabilité.
 - Calcul exact et rapide : la masse d'une paire (attaque A, attaque B) à un palier t se calcule sans énumérer les n⁴ scénarios (voir `coeur.py`) ; un test vérifie l'équivalence avec l'énumération exhaustive.
 
@@ -20,7 +20,7 @@ Chaque observation est pesée par la force de l'adversaire affronté = points pa
 
 ## Enjeu réel
 Le classement sert par ses POINTS, jamais par le rang (le 15e et le 25e peuvent n'avoir qu'un point d'écart) : fiche = écart de points entre les deux équipes + distance en points de chaque équipe aux lignes 1/8e et play-off (points de l'équipe qui occupe le rang 8 / 24) + statut mathématique.
-Phase de ligue (36 équipes, 8 matchs ; frontières rang 8 et rang 24, règle UEFA) : pour chaque frontière, l'équipe est « acquise », « perdue » ou « ouverte » selon les points actuels, les points maximum restants et ceux des autres (égalité = ouverte, départages non simulés). Enjeu NUL (les deux frontières décidées) pour une équipe = match exclu avec sa raison. Hors phase de ligue ou classement absent : non calculé. L'enjeu est affiché sur chaque fiche.
+Phase de ligue (36 équipes, 8 matchs ; frontières rang 8 et rang 24, règle UEFA) : pour chaque frontière, l'équipe est « acquise », « perdue » ou « ouverte » selon les points actuels, les points maximum restants et ceux des autres (égalité = ouverte, départages non simulés). Enjeu NUL (les deux frontières décidées) pour une équipe : seulement AFFICHÉ sur la fiche, le match n'est pas exclu (décision du 03/11/2026). Hors phase de ligue ou classement absent : non calculé. L'enjeu est affiché sur chaque fiche.
 
 ## Sélection
 Sans calibrage (état actuel) : « aperçu NON calibré » = marché de plus forte fréquence robuste parmi ceux dont la cote est connue et ≥ 1,26, un seul, étiqueté, compté à part dans le bilan (jamais mélangé aux paris calibrés). Avec `parametres.json` (seuils appris par marché, même protocole que Gamma) : règle Gamma (g ≥ seuil, cote ≥ 1,26, jamais deux fois le même événement). « AUCUN MARCHÉ RETENU » est valide.
