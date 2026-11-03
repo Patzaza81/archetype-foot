@@ -27,7 +27,8 @@ ROOT = Path(__file__).resolve().parent.parent
 BLOC = ROOT / "data" / "bloc_saisons" / "bloc_2526_2627.json.gz"
 ASSEMBLAGE = ROOT / "data" / "assemblage" / "equipes.json"
 ARCHIVE = ROOT / "data" / "archive_test"
-MIN_MATCHS = 5                      # spécification Omega V1 §2.3 : au moins cinq matchs au même lieu (le moteur DC en exigeait 4)
+MIN_MATCHS = 5                      # règle de Patrick (03/11/2026) : au moins cinq matchs au même lieu pour qu'un match soit analysé (le moteur DC en exigeait 4)
+MAX_MATCHS = 19                     # règle de Patrick (03/11/2026) : au plus dix-neuf matchs au même lieu (les 19 derniers) ; remplace la fenêtre fixe de 5 de la spécification Omega V1
 
 
 def norm(s: Any) -> str:
@@ -209,12 +210,14 @@ def _est_le_match(m: dict, dom: str, ext: str, jour: str) -> bool:
     return m["dom"] == dom and m["ext"] == ext and abs(jours(m["date"], jour)) <= 1
 
 
-def sequences(matchs: list[dict], dom: str, ext: str, jour: str, n: int = MIN_MATCHS) -> dict[str, Any]:
-    """Les quatre séquences de la spécification Omega V1 (§2) : les `n` derniers matchs de `dom` à domicile et de `ext` à l'extérieur,
+def sequences(matchs: list[dict], dom: str, ext: str, jour: str, n: int | None = None, minimum: int = MIN_MATCHS, maximum: int = MAX_MATCHS) -> dict[str, Any]:
+    """Les quatre séquences : les matchs de `dom` à domicile et de `ext` à l'extérieur (au moins `minimum`, les `maximum` derniers au plus ; `n` fixe les deux à la fois),
     STRICTEMENT avant `jour` (aucun match futur), du plus ancien au plus récent. Chaque observation garde sa date, son adversaire et son score.
     Lève ValueError (donnée insuffisante ou douteuse) : jamais de prédiction fabriquée, jamais de zéro de remplacement."""
     if dom == ext:
         raise ValueError("identité : l'équipe est opposée à elle-même")
+    if n is not None:
+        minimum = maximum = n
     def prend(equipe: str, domicile: bool) -> list[dict[str, Any]]:
         cle, autre = ("dom", "ext") if domicile else ("ext", "dom")
         ms = sorted((m for m in matchs if m[cle] == equipe and m["date"] < jour and not _est_le_match(m, dom, ext, jour)), key=lambda m: (m["date"], m["dom"], m["ext"]))
@@ -227,10 +230,10 @@ def sequences(matchs: list[dict], dom: str, ext: str, jour: str, n: int = MIN_MA
         dates = [m["date"] for m in ms]
         if len(dates) != len(set(dates)):
             raise ValueError(f"donnée douteuse : {equipe} a deux matchs au même lieu le même jour")
-        if len(ms) < n:
-            raise ValueError(f"données insuffisantes : {len(ms)} match(s) {'à domicile' if domicile else 'à l\'extérieur'} pour {equipe} (il en faut {n})")
+        if len(ms) < minimum:
+            raise ValueError(f"données insuffisantes : {len(ms)} match(s) {'à domicile' if domicile else 'à l\'extérieur'} pour {equipe} (il en faut {minimum})")
         out = []
-        for m in ms[-n:]:
+        for m in ms[-maximum:]:
             pour, contre = (m["h"], m["a"]) if domicile else (m["a"], m["h"])
             if not isinstance(pour, int) or not isinstance(contre, int) or isinstance(pour, bool) or isinstance(contre, bool) or pour < 0 or contre < 0:
                 raise ValueError(f"score invalide pour {equipe} le {m['date']}")
