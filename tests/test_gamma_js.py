@@ -108,3 +108,43 @@ def test_raison_meme_evenement_affichee_en_clair():
     f = {**F, "a_surveiller": [{"cle": ["over_under_0.5", "plus"], "raison": "même événement que cages_inviolees_exterieur|non"}]}
     t = appel("gaSurveiller", f)
     assert "même événement que Ascoli encaisse au moins 1 but" in t and "cages_inviolees" not in t
+
+
+def _surv(*entrees):
+    return appel("gaSurveiller", {**F, "a_surveiller": list(entrees)})
+
+
+CB = {"cle": ["over_under_domicile_0.5", "plus"], "g": 0.5, "cote": 1.22, "raison": "seuil atteint mais cote 1,22 < 1,26"}
+SC = {"cle": ["handicap_1.5", "domicile"], "g": 0.8, "raison": "seuil atteint mais aucune cote disponible : pari injouable"}
+DB = {"cle": ["double_chance", "1N"], "g": 0.75, "raison": "même événement que handicap_3issues_1|1"}
+
+
+def test_surveiller_chaque_marche_avec_sa_frequence_robuste():
+    t = _surv(CB, SC, DB)
+    assert "fréquence robuste <b>50 %</b>" in t and "fréquence robuste <b>80 %</b>" in t and "fréquence robuste <b>75 %</b>" in t
+
+
+def test_surveiller_groupes_par_cause():
+    t = _surv(CB, SC, DB)
+    i0, i1, i2 = t.index("Cote sous le minimum (1)"), t.index("Aucune cote disponible (1)"), t.index("Même événement qu'un pari retenu")
+    assert i0 < t.index("fréquence robuste <b>50 %</b>") < i1 < t.index("fréquence robuste <b>80 %</b>") < i2 < t.index("fréquence robuste <b>75 %</b>")
+
+
+def test_surveiller_tri_par_frequence_decroissante_dans_un_groupe():
+    t = _surv(CB, {**CB, "cle": ["cages_inviolees_exterieur", "non"], "g": 0.7})
+    assert t.index("<b>70 %</b>") < t.index("<b>50 %</b>")
+
+
+def test_surveiller_un_groupe_vide_n_est_pas_affiche():
+    t = _surv(CB)
+    assert "Aucune cote disponible" not in t and "Même événement" not in t
+
+
+def test_surveiller_sans_frequence_ne_casse_pas_et_aucune_cle_technique():
+    t = _surv({"cle": ["double_chance", "1N"], "raison": "même événement que handicap_3issues_1|1"})
+    assert "fréquence robuste" not in t and "handicap_3issues" not in t and "|" not in t
+
+
+def test_surveiller_pas_de_coupure_a_12():
+    t = _surv(*[{**CB, "cle": ["over_under_domicile_0.5", "plus"]} for _ in range(15)])
+    assert t.count("fréquence robuste") == 15 and "… et" not in t

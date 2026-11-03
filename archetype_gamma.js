@@ -183,10 +183,22 @@ function gaConclusion(f) {
 function gaRaison(r, f) {
   return String(r || "").replace(/(même événement que )([a-z0-9_.\-]+)\|(\S+)/i, (m, d, g, s) => d + gaPhrase([g, s], f.domicile, f.exterieur).titre);
 }
+// Marchés dont la fréquence robuste atteint le seuil appris, mais non publiés : listés par cause, chacun avec sa fréquence robuste (une fréquence, pas une probabilité).
+function gaCauseSurveiller(x) {
+  const r = String(x.raison || "");
+  if (/^même événement/i.test(r)) return 2;
+  if (/aucune cote/i.test(r)) return 1;
+  return 0;
+}
+const GA_CAUSES_SURVEILLER = ["Cote sous le minimum", "Aucune cote disponible", "Même événement qu'un pari retenu (publié sous un autre nom)"];
 function gaSurveiller(f) {
   const l = f.a_surveiller || []; if (!l.length) return "";
-  return `<div class="om-autres"><div class="om-autres-titre">À surveiller (seuil atteint, pari non jouable)</div>` +
-    l.slice(0, 12).map((x) => `<div class="om-info">${gaE(gaPhrase(x.cle, f.domicile, f.exterieur).titre)} — ${gaE(gaRaison(x.raison, f))}</div>`).join("") + (l.length > 12 ? `<div class="om-info">… et ${l.length - 12} autres.</div>` : "") + `</div>`;
+  const ligne = (x) => `<div class="om-info">${gaE(gaPhrase(x.cle, f.domicile, f.exterieur).titre)} — ${x.g != null ? `fréquence robuste <b>${gaPct(x.g)}</b> · ` : ""}${gaE(gaRaison(x.raison, f))}</div>`;
+  const blocs = GA_CAUSES_SURVEILLER.map((nom, c) => {
+    const g = l.filter((x) => gaCauseSurveiller(x) === c).sort((a, b) => (Number(b.g) || 0) - (Number(a.g) || 0));
+    return g.length ? `<div class="om-info"><b>${nom} (${g.length})</b></div>` + g.map(ligne).join("") : "";
+  }).join("");
+  return `<div class="om-autres"><div class="om-autres-titre">Seuil atteint, mais non publié</div>${blocs}</div>`;
 }
 // Tous les marchés explorés (§16.D) : aucun marché n'est caché, rejetés et raison comprise. Lignes positionnelles : voir moteur_omega_v3/suivi.py (_compact).
 function gaTousMarches(f) {
@@ -289,10 +301,10 @@ function gaCarte(f) {
       (score ? `<div class="om-info">Score final <strong>${gaE(score)}</strong></div>` : "") +
       `<div class="om-info"><b>Pari proposé</b></div>` + gaLigne(p, f, true) +
       gaPourquoiCourt(p, f) + gaFreqPari(p, f) +
+      (autres.length ? `<div class="om-autres"><div class="om-autres-titre">Autres paris retenus (du plus au moins fiable)</div>` + autres.map((x) => gaLigne(x, f, false)).join("") + `</div>` : "") +
     `</div>` +
     `<details class="ax-details" open><summary class="ax-summary-cache" tabindex="-1">Détails</summary><div class="ax-details-corps">` +
-      `<div class="om-autres"><div class="om-autres-titre">Autres paris retenus (du plus au moins fiable)</div>` +
-        (autres.length ? autres.map((x) => gaLigne(x, f, false)).join("") : `<div class="om-info">Aucun autre marché ne remplit les règles.</div>`) + `</div>` +
+      (autres.length ? "" : `<div class="om-autres"><div class="om-autres-titre">Autres paris retenus</div><div class="om-info">Aucun autre marché ne remplit les règles.</div></div>`) +
       gaSurveiller(f) + gaSequences(f) + gaDerniers(f) + gaExploration(f) + gaConclusion(f) + gaTousMarches(f) +
     `</div></details>`;
   section.addEventListener("click", (e) => {      // carte repliée au départ ; un toucher la déplie ou la replie
