@@ -1,6 +1,6 @@
 {
  "moteur": "moteur_europe",
- "genere_le": "2026-11-03T02:02:28Z",
+ "genere_le": "2026-11-03T13:00:33Z",
  "calibration": {
   "prete": false,
   "observations": 3275,
@@ -11,7 +11,7 @@
  },
  "bilan": {
   "genere_le": "2026-11-03",
-  "matchs_a_venir": 82,
+  "matchs_a_venir": 83,
   "evalues": 49,
   "selections": 0,
   "calibration": {
@@ -335,8 +335,8 @@
     "apercu_non_calibre": true,
     "selection": {
      "P1": {
-      "marche": "buts_equipe_domicile_0.5_over",
-      "marche_moteur": "home_over_0_5",
+      "marche": "encaisse_exterieur",
+      "marche_moteur": "clean_away_no",
       "libelle": null,
       "probabilite": 0.8923,
       "cote": 1.56,
@@ -380,65 +380,6 @@
    }
   },
   {
-   "match_id": "5txb3hezipnihbbofmxictono",
-   "date": "2026-11-04",
-   "heure_cameroun": "21:00",
-   "competition": "Europe : Ligue des Champions Phase de Ligue",
-   "domicile": "Slavia Prague",
-   "exterieur": "Arsenal",
-   "moteur_utilise": "moteur_europe",
-   "moteur_europe": {
-    "statut": "OK",
-    "moteur": "moteur_europe",
-    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
-    "apercu_non_calibre": true,
-    "selection": {
-     "P1": {
-      "marche": "buts_equipe_exterieur_2.5_under",
-      "marche_moteur": "away_under_2_5",
-      "libelle": null,
-      "probabilite": 0.7856,
-      "cote": 1.72,
-      "edge": 0.20425411462645737,
-      "edv": 0.35100000000000003,
-      "niveau": "V3_ECHANTILLON_UTILISABLE",
-      "robustesse": null,
-      "points_de_vigilance": [
-       "Aperçu NON calibré : la calibration n'a pas encore assez de matchs joués. Ce n'est pas une sélection du moteur, seulement ce qu'il retiendrait si la calibration confirmait ses probabilités.",
-       "Moteur V3 en production parallèle : candidat, non promu comme moteur principal."
-      ],
-      "rang": "P1",
-      "apercu_non_calibre": true,
-      "indice_performance": null,
-      "alternatives_indice": [],
-      "justification": {
-       "resume": "Probabilité NON calibrée 79 % contre 58 % selon la cote 1,72 · marge +35,1 % · 5 matchs au même lieu.",
-       "preuves": [
-        {
-         "type": "v3_controle_saison",
-         "texte": "Arsenal marque moins de 2,5 buts dans 100% de ses matchs à ce lieu ; Slavia Prague encaisse moins de 2,5 buts dans 83% de ses matchs à son lieu ; Arsenal marque moins de 2,5 buts dans 83% de ses matchs de la saison ; buts attendus de Arsenal (moyennes simples) : 1,15"
-        },
-        {
-         "type": "v3_forme_recente",
-         "texte": "Arsenal marque moins de 2,5 buts dans 5 de ses 6 derniers ; Slavia Prague encaisse moins de 2,5 buts dans 6 de ses 6 derniers"
-        },
-        {
-         "type": "ev_percentage",
-         "valeur": 35.1,
-         "texte": "Le prix proposé laisse 35,1 % de marge par rapport à l'estimation NON calibrée."
-        }
-       ],
-       "explication": null,
-       "donnees_suffisantes": true,
-       "bibliotheque": {
-        "ev_percentage": 35.1
-       }
-      }
-     }
-    }
-   }
-  },
-  {
    "match_id": "cu09nlbqexyvr5ruxrjad35zo",
    "date": "2026-11-05",
    "heure_cameroun": "18:45",
@@ -457,9 +398,9 @@
       "marche_moteur": "clean_home_no",
       "libelle": null,
       "probabilite": 0.7699,
-      "cote": 1.41,
-      "edge": 0.06067214240816321,
-      "edv": 0.086,
+      "cote": 1.4,
+      "edge": 0.0556062862784773,
+      "edv": 0.078,
       "niveau": "V3_ECHANTILLON_FAIBLE",
       "robustesse": null,
       "points_de_vigilance": [
@@ -472,7 +413,7 @@
       "indice_performance": null,
       "alternatives_indice": [],
       "justification": {
-       "resume": "Probabilité NON calibrée 77 % contre 71 % selon la cote 1,41 · marge +8,6 % · 4 matchs au même lieu.",
+       "resume": "Probabilité NON calibrée 77 % contre 71 % selon la cote 1,40 · marge +7,8 % · 4 matchs au même lieu.",
        "preuves": [
         {
          "type": "v3_controle_saison",
@@ -484,14 +425,14 @@
         },
         {
          "type": "ev_percentage",
-         "valeur": 8.6,
-         "texte": "Le prix proposé laisse 8,6 % de marge par rapport à l'estimation NON calibrée."
+         "valeur": 7.8,
+         "texte": "Le prix proposé laisse 7,8 % de marge par rapport à l'estimation NON calibrée."
         }
        ],
        "explication": null,
        "donnees_suffisantes": true,
        "bibliotheque": {
-        "ev_percentage": 8.6
+        "ev_percentage": 7.8
        }
       }
      }
@@ -576,9 +517,9 @@
       "marche_moteur": "under_4_5",
       "libelle": null,
       "probabilite": 0.8269,
-      "cote": 1.32,
-      "edge": 0.06935775286125268,
-      "edv": 0.092,
+      "cote": 1.31,
+      "edge": 0.0635747318110561,
+      "edv": 0.083,
       "niveau": "V3_ECHANTILLON_UTILISABLE",
       "robustesse": null,
       "points_de_vigilance": [
@@ -590,7 +531,7 @@
       "indice_performance": null,
       "alternatives_indice": [],
       "justification": {
-       "resume": "Probabilité NON calibrée 83 % contre 76 % selon la cote 1,32 · marge +9,2 % · 6 matchs au même lieu.",
+       "resume": "Probabilité NON calibrée 83 % contre 76 % selon la cote 1,31 · marge +8,3 % · 6 matchs au même lieu.",
        "preuves": [
         {
          "type": "v3_controle_saison",
@@ -602,14 +543,14 @@
         },
         {
          "type": "ev_percentage",
-         "valeur": 9.2,
-         "texte": "Le prix proposé laisse 9,2 % de marge par rapport à l'estimation NON calibrée."
+         "valeur": 8.3,
+         "texte": "Le prix proposé laisse 8,3 % de marge par rapport à l'estimation NON calibrée."
         }
        ],
        "explication": null,
        "donnees_suffisantes": true,
        "bibliotheque": {
-        "ev_percentage": 9.2
+        "ev_percentage": 8.3
        }
       }
      }
@@ -755,9 +696,9 @@
       "marche_moteur": "home_under_2_5",
       "libelle": null,
       "probabilite": 0.8228,
-      "cote": 1.45,
-      "edge": 0.13311414572512115,
-      "edv": 0.193,
+      "cote": 1.46,
+      "edge": 0.13783781128959927,
+      "edv": 0.201,
       "niveau": "V3_ECHANTILLON_UTILISABLE",
       "robustesse": null,
       "points_de_vigilance": [
@@ -769,7 +710,7 @@
       "indice_performance": null,
       "alternatives_indice": [],
       "justification": {
-       "resume": "Probabilité NON calibrée 82 % contre 69 % selon la cote 1,45 · marge +19,3 % · 6 matchs au même lieu.",
+       "resume": "Probabilité NON calibrée 82 % contre 68 % selon la cote 1,46 · marge +20,1 % · 6 matchs au même lieu.",
        "preuves": [
         {
          "type": "v3_controle_saison",
@@ -781,14 +722,14 @@
         },
         {
          "type": "ev_percentage",
-         "valeur": 19.3,
-         "texte": "Le prix proposé laisse 19,3 % de marge par rapport à l'estimation NON calibrée."
+         "valeur": 20.1,
+         "texte": "Le prix proposé laisse 20,1 % de marge par rapport à l'estimation NON calibrée."
         }
        ],
        "explication": null,
        "donnees_suffisantes": true,
        "bibliotheque": {
-        "ev_percentage": 19.3
+        "ev_percentage": 20.1
        }
       }
      }
@@ -1159,9 +1100,9 @@
    "etat": "Évalué : aucun marché ne passe tous les filtres",
    "lignes": [
     "Buts attendus : 1.617 – 1.584",
-    "Moins de 4,5 buts · cote 1,33 · probabilité 78 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
-    "Domicile marque moins de 2,5 buts · cote 1,33 · probabilité 78 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
-    "Double chance 12 · cote 1,27 · probabilité 77 % · refusé : marge insuffisante"
+    "Handicap 3 choix Domicile −2 (2) : Extérieur ne perd pas par 2 buts ou plus · cote 1,29 · probabilité 81 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
+    "Handicap Extérieur +1,5 : Extérieur ne perd pas par 2 buts ou plus · cote 1,28 · probabilité 81 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
+    "Moins de 4,5 buts · cote 1,42 · probabilité 78 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification"
    ]
   },
   {
@@ -1175,8 +1116,8 @@
    "lignes": [
     "Buts attendus : 1.534 – 1.124",
     "Extérieur marque moins de 2,5 buts · cote 1,26 · probabilité 90 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)",
-    "Handicap 3 choix Domicile +2 (1) : Domicile ne perd pas par 2 buts ou plus · cote 1,27 · probabilité 89 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)",
-    "Handicap Domicile +1,5 : Domicile ne perd pas par 2 buts ou plus · cote 1,27 · probabilité 89 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)"
+    "Handicap 3 choix Domicile +2 (1) : Domicile ne perd pas par 2 buts ou plus · cote 1,28 · probabilité 89 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)",
+    "Handicap Domicile +1,5 : Domicile ne perd pas par 2 buts ou plus · cote 1,28 · probabilité 89 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)"
    ]
   },
   {
@@ -1189,9 +1130,9 @@
    "etat": "Évalué : aucun marché ne passe tous les filtres",
    "lignes": [
     "Buts attendus : 2.076 – 1.765",
-    "Double chance 12 · cote 1,28 · probabilité 79 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
-    "Extérieur marque moins de 2,5 buts · cote 1,27 · probabilité 74 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
-    "Plus de 2,5 buts · cote 1,44 · probabilité 74 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification"
+    "Double chance 12 · cote 1,27 · probabilité 79 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
+    "Extérieur marque moins de 2,5 buts · cote 1,28 · probabilité 74 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
+    "Plus de 2,5 buts · cote 1,43 · probabilité 74 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification"
    ]
   },
   {
@@ -1204,9 +1145,9 @@
    "etat": "Évalué : aucun marché ne passe tous les filtres",
    "lignes": [
     "Buts attendus : 2.144 – 1.461",
-    "Moins de 5,5 buts · cote 1,29 · probabilité 84 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)",
-    "Domicile marque moins de 3,5 buts · cote 1,53 · probabilité 83 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)",
-    "Extérieur marque plus de 0,5 but · cote 1,4 · probabilité 77 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)"
+    "Moins de 5,5 buts · cote 1,32 · probabilité 84 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)",
+    "Domicile marque moins de 3,5 buts · cote 1,51 · probabilité 83 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)",
+    "Extérieur marque plus de 0,5 but · cote 1,32 · probabilité 77 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)"
    ]
   },
   {
@@ -1231,9 +1172,9 @@
    "etat": "Évalué : aucun marché ne passe tous les filtres",
    "lignes": [
     "Buts attendus : 1.606 – 1.579",
-    "Handicap 3 choix Domicile +2 (1) : Domicile ne perd pas par 2 buts ou plus · cote 1,35 · probabilité 81 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Handicap Domicile +1,5 : Domicile ne perd pas par 2 buts ou plus · cote 1,35 · probabilité 81 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Extérieur marque moins de 2,5 buts · cote 1,42 · probabilité 79 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification"
+    "Handicap 3 choix Domicile +2 (1) : Domicile ne perd pas par 2 buts ou plus · cote 1,34 · probabilité 81 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
+    "Handicap Domicile +1,5 : Domicile ne perd pas par 2 buts ou plus · cote 1,34 · probabilité 81 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
+    "Extérieur marque moins de 2,5 buts · cote 1,41 · probabilité 79 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification"
    ]
   },
   {
@@ -1273,6 +1214,19 @@
    ]
   },
   {
+   "match_id": "e4jbx4zj8tned8gnvay3pajh0",
+   "date": "2026-11-04",
+   "heure": "16:30",
+   "competition": "Europe : Ligue Europa Phase de Ligue - des équipes Françaises",
+   "domicile": "Rennes",
+   "exterieur": "Olympiakos",
+   "etat": "Non évalué : historique insuffisant",
+   "lignes": [
+    "Rennes : 1 match européen à domicile (3 minimum)",
+    "Olympiakos : 1 match européen à l'extérieur (3 minimum)"
+   ]
+  },
+  {
    "match_id": "5sofq8ccd5mboopwnsotin02c",
    "date": "2026-11-04",
    "heure": "18:45",
@@ -1282,9 +1236,9 @@
    "etat": "Évalué : aucun marché ne passe tous les filtres",
    "lignes": [
     "Buts attendus : 1.46 – 1.69",
-    "Moins de 4,5 buts · cote 1,27 · probabilité 79 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)",
-    "Handicap 3 choix Domicile +2 (1) : Domicile ne perd pas par 2 buts ou plus · cote 1,56 · probabilité 78 % · refusé : résultats trop irréguliers (dispersion > 1,50)",
-    "Handicap Domicile +1,5 : Domicile ne perd pas par 2 buts ou plus · cote 1,56 · probabilité 78 % · refusé : résultats trop irréguliers (dispersion > 1,50)"
+    "Moins de 4,5 buts · cote 1,3 · probabilité 79 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)",
+    "Handicap 3 choix Domicile +2 (1) : Domicile ne perd pas par 2 buts ou plus · cote 1,58 · probabilité 78 % · refusé : résultats trop irréguliers (dispersion > 1,50)",
+    "Handicap Domicile +1,5 : Domicile ne perd pas par 2 buts ou plus · cote 1,57 · probabilité 78 % · refusé : résultats trop irréguliers (dispersion > 1,50)"
    ]
   },
   {
@@ -1298,7 +1252,7 @@
    "lignes": [
     "Buts attendus : 1.823 – 1.137",
     "Domicile marque moins de 2,5 buts · cote 1,41 · probabilité 72 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
-    "Handicap Extérieur +1,5 : Extérieur ne perd pas par 2 buts ou plus · cote 1,42 · probabilité 70 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
+    "Handicap Extérieur +1,5 : Extérieur ne perd pas par 2 buts ou plus · cote 1,4 · probabilité 70 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
     "Handicap 3 choix Domicile −2 (2) : Extérieur ne perd pas par 2 buts ou plus · cote 1,4 · probabilité 70 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification"
    ]
   },
@@ -1312,9 +1266,9 @@
    "etat": "Évalué : aucun marché ne passe tous les filtres",
    "lignes": [
     "Buts attendus : 1.941 – 1.026",
-    "Double chance 1X · cote 1,31 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Handicap Domicile +0,5 : Domicile ne perd pas · cote 1,3 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
-    "Handicap 3 choix Domicile +1 (1) : Domicile ne perd pas · cote 1,28 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification"
+    "Double chance 1X · cote 1,3 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
+    "Handicap 3 choix Domicile +1 (1) : Domicile ne perd pas · cote 1,26 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
+    "Handicap Domicile +0,5 : Domicile ne perd pas · cote 1,26 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification"
    ]
   },
   {
@@ -1339,7 +1293,7 @@
    "etat": "Évalué : aucun marché ne passe tous les filtres",
    "lignes": [
     "Buts attendus : 2.434 – 1.784",
-    "Plus de 2,5 buts · cote 1,35 · probabilité 79 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
+    "Plus de 2,5 buts · cote 1,34 · probabilité 79 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
     "Les deux équipes marquent · cote 1,35 · probabilité 76 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
     "Double chance 1X · cote 1,39 · probabilité 72 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification"
    ]
@@ -1360,6 +1314,21 @@
    ]
   },
   {
+   "match_id": "5txb3hezipnihbbofmxictono",
+   "date": "2026-11-04",
+   "heure": "21:00",
+   "competition": "Europe : Ligue des Champions Phase de Ligue",
+   "domicile": "Slavia Prague",
+   "exterieur": "Arsenal",
+   "etat": "Évalué : aucun marché ne passe tous les filtres",
+   "lignes": [
+    "Buts attendus : 1.125 – 1.591",
+    "Extérieur marque moins de 3,5 buts · cote 1,26 · probabilité 92 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
+    "Moins de 3,5 buts · cote 1,62 · probabilité 71 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
+    "Plus de 2,5 buts · cote 1,49 · probabilité 51 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; probabilité sous 60 % ; résultats irréguliers et probabilité sous 67 %"
+   ]
+  },
+  {
    "match_id": "5ujnxszfqaw867eaj7k9w2n84",
    "date": "2026-11-04",
    "heure": "21:00",
@@ -1369,9 +1338,9 @@
    "etat": "Évalué : aucun marché ne passe tous les filtres",
    "lignes": [
     "Buts attendus : 2.139 – 1.376",
-    "Extérieur marque plus de 0,5 but · cote 1,43 · probabilité 75 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; résultats trop irréguliers (dispersion > 1,50)",
-    "Domicile encaisse au moins un but · cote 1,43 · probabilité 75 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; résultats trop irréguliers (dispersion > 1,50)",
-    "Moins de 4,5 buts · cote 1,31 · probabilité 72 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; résultats trop irréguliers (dispersion > 1,50)"
+    "Domicile marque moins de 3,5 buts · cote 1,26 · probabilité 83 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; résultats trop irréguliers (dispersion > 1,50)",
+    "Extérieur marque plus de 0,5 but · cote 1,41 · probabilité 75 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; résultats trop irréguliers (dispersion > 1,50)",
+    "Domicile encaisse au moins un but · cote 1,41 · probabilité 75 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; résultats trop irréguliers (dispersion > 1,50)"
    ]
   },
   {
@@ -1384,9 +1353,9 @@
    "etat": "Évalué : aucun marché ne passe tous les filtres",
    "lignes": [
     "Buts attendus : 1.36 – 1.409",
-    "Handicap Domicile +1,5 : Domicile ne perd pas par 2 buts ou plus · cote 1,26 · probabilité 82 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé",
+    "Handicap Domicile +1,5 : Domicile ne perd pas par 2 buts ou plus · cote 1,27 · probabilité 82 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé",
     "Plus de 1,5 buts · cote 1,3 · probabilité 76 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé",
-    "Double chance 12 · cote 1,33 · probabilité 75 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé"
+    "Double chance 12 · cote 1,32 · probabilité 75 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé"
    ]
   },
   {
@@ -1414,9 +1383,9 @@
    "etat": "Évalué : aucun marché ne passe tous les filtres",
    "lignes": [
     "Buts attendus : 1.589 – 1.47",
-    "Domicile marque moins de 3,5 buts · cote 1,38 · probabilité 92 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Moins de 4,5 buts · cote 1,32 · probabilité 81 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé",
-    "Plus de 2,5 buts · cote 1,41 · probabilité 59 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; probabilité sous 60 % ; résultats irréguliers et probabilité sous 67 %"
+    "Domicile marque moins de 3,5 buts · cote 1,39 · probabilité 92 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
+    "Moins de 4,5 buts · cote 1,34 · probabilité 81 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
+    "Plus de 2,5 buts · cote 1,39 · probabilité 59 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; probabilité sous 60 % ; résultats irréguliers et probabilité sous 67 %"
    ]
   },
   {
@@ -1441,9 +1410,9 @@
    "etat": "Évalué : aucun marché ne passe tous les filtres",
    "lignes": [
     "Buts attendus : 1.039 – 1.23",
-    "Extérieur marque moins de 2,5 buts · cote 1,26 · probabilité 87 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)",
+    "Extérieur marque moins de 2,5 buts · cote 1,27 · probabilité 87 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)",
     "Handicap Domicile +1,5 : Domicile ne perd pas par 2 buts ou plus · cote 1,4 · probabilité 82 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)",
-    "Handicap 3 choix Domicile +2 (1) : Domicile ne perd pas par 2 buts ou plus · cote 1,38 · probabilité 82 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)"
+    "Handicap 3 choix Domicile +2 (1) : Domicile ne perd pas par 2 buts ou plus · cote 1,39 · probabilité 82 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)"
    ]
   },
   {
@@ -1483,7 +1452,7 @@
    "etat": "Évalué : aucun marché ne passe tous les filtres",
    "lignes": [
     "Buts attendus : 1.481 – 1.444",
-    "Extérieur marque moins de 2,5 buts · cote 1,52 · probabilité 82 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
+    "Extérieur marque moins de 2,5 buts · cote 1,5 · probabilité 82 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
     "Moins de 3,5 buts · cote 1,44 · probabilité 66 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé",
     "Plus de 2,5 buts · cote 1,69 · probabilité 56 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; probabilité sous 60 %"
    ]
@@ -1588,8 +1557,8 @@
    "lignes": [
     "Buts attendus : 1.466 – 1.184",
     "Moins de 4,5 buts · cote 1,31 · probabilité 87 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Domicile marque moins de 2,5 buts · cote 1,63 · probabilité 82 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Handicap Extérieur +1,5 : Extérieur ne perd pas par 2 buts ou plus · cote 1,69 · probabilité 79 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification"
+    "Domicile marque moins de 2,5 buts · cote 1,62 · probabilité 82 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
+    "Handicap Extérieur +1,5 : Extérieur ne perd pas par 2 buts ou plus · cote 1,66 · probabilité 79 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification"
    ]
   },
   {
@@ -1617,9 +1586,9 @@
    "etat": "Évalué : aucun marché ne passe tous les filtres",
    "lignes": [
     "Buts attendus : 2.117 – 1.638",
-    "Domicile marque moins de 3,5 buts · cote 1,49 · probabilité 84 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Extérieur marque plus de 0,5 but · cote 1,74 · probabilité 81 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Domicile encaisse au moins un but · cote 1,73 · probabilité 81 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification"
+    "Domicile marque moins de 3,5 buts · cote 1,5 · probabilité 84 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
+    "Plus de 2,5 buts · cote 1,3 · probabilité 72 % · refusé : marge insuffisante",
+    "Moins de 4,5 buts · cote 1,45 · probabilité 68 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification"
    ]
   },
   {
@@ -1672,9 +1641,9 @@
    "etat": "Évalué : aucun marché ne passe tous les filtres",
    "lignes": [
     "Buts attendus : 1.911 – 1.058",
-    "Domicile marque moins de 3,5 buts · cote 1,41 · probabilité 87 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)",
-    "Moins de 4,5 buts · cote 1,4 · probabilité 82 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)",
-    "Extérieur marque plus de 0,5 but · cote 1,71 · probabilité 65 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)"
+    "Domicile marque moins de 3,5 buts · cote 1,4 · probabilité 87 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)",
+    "Moins de 4,5 buts · cote 1,38 · probabilité 82 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)",
+    "Extérieur marque plus de 0,5 but · cote 1,72 · probabilité 65 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)"
    ]
   },
   {
@@ -1738,9 +1707,9 @@
    "etat": "Évalué : aucun marché ne passe tous les filtres",
    "lignes": [
     "Buts attendus : 1.594 – 1.104",
-    "Domicile marque moins de 2,5 buts · cote 1,4 · probabilité 78 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Handicap Extérieur +1,5 : Extérieur ne perd pas par 2 buts ou plus · cote 1,55 · probabilité 75 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Handicap 3 choix Domicile −2 (2) : Extérieur ne perd pas par 2 buts ou plus · cote 1,54 · probabilité 75 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification"
+    "Domicile marque moins de 2,5 buts · cote 1,39 · probabilité 78 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
+    "Handicap Extérieur +1,5 : Extérieur ne perd pas par 2 buts ou plus · cote 1,54 · probabilité 75 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
+    "Handicap 3 choix Domicile −2 (2) : Extérieur ne perd pas par 2 buts ou plus · cote 1,53 · probabilité 75 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification"
    ]
   }
  ]
