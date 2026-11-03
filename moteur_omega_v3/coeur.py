@@ -3,7 +3,7 @@
 Il REMPLACE le moteur DC derrière la page Gamma (ordre de Patrick du 02/11/2026). Autonome : aucun import d'un autre moteur, aucune cote dans l'exploration.
 
 Principe : la matrice observe, les calculs mesurent, le moteur ne force jamais la conclusion. Quatre séquences de buts (attaque A, défense A, attaque B,
-défense B ; A reçoit B ; au moins 5 matchs au même lieu chacune), 5 × 5 × 5 × 5 = 625 scénarios parcourus SANS suppression préalable.
+défense B ; A reçoit B ; au moins 5 et au plus 19 matchs au même lieu chacune), n × n × n × n scénarios (625 pour 5 matchs) parcourus SANS suppression préalable.
 
 LECTURE DE LA SPÉCIFICATION (à connaître, elle n'est pas écrite noir sur blanc) :
 - le score d'un scénario (attA_i, defA_l, attB_k, defB_j) est (attA_i, attB_k) : buts de A et buts de B ; l'écart « attA − attB » du §3.1 en est la marge ;
@@ -68,20 +68,24 @@ def niveau(ecart: int, p: dict[str, Any]) -> str:
 
 
 def histogrammes(att_a: list[int], def_a: list[int], att_b: list[int], def_b: list[int], p: dict[str, Any]) -> dict[str, Counter]:
-    """Distribution des scores (attA, attB) : brute (tous les scénarios), puis par palier cumulatif, + les incompatibles."""
-    h: dict[str, Counter] = {"brute": Counter(), "strict": Counter(), "intermediaire": Counter(), "elargi": Counter(), "incompatible": Counter()}
+    """Distribution des scores (attA, attB) : brute (tous les scénarios), puis par palier cumulatif, + les incompatibles.
+    Calcul par comptage, sans énumérer les n(attA) × n(defA) × n(attB) × n(defB) scénarios (19 observations par séquence = 130 321 scénarios) : pour un score (a, b),
+    le nombre de scénarios est  mult(a) · mult(b) · #{défenses B compatibles avec a} · #{défenses A compatibles avec b}. Identique à l'énumération (test d'équivalence)."""
     lim = p["ecart_max_niveau"]
-    for _, _, _, _, a, da, b, db in combinaisons(att_a, def_a, att_b, def_b):
-        e = max(abs(a - db), abs(b - da))
-        h["brute"][(a, b)] += 1
-        if e <= lim["elargi"]:
-            h["elargi"][(a, b)] += 1
-            if e <= lim["intermediaire"]:
-                h["intermediaire"][(a, b)] += 1
-                if e <= lim["strict"]:
-                    h["strict"][(a, b)] += 1
-        else:
-            h["incompatible"][(a, b)] += 1
+    h: dict[str, Counter] = {"brute": Counter(), "strict": Counter(), "intermediaire": Counter(), "elargi": Counter(), "incompatible": Counter()}
+    ma, mb = Counter(att_a), Counter(att_b)
+    for a, ca in ma.items():
+        for b, cb in mb.items():
+            mult = ca * cb
+            tot = mult * len(def_a) * len(def_b)
+            h["brute"][(a, b)] += tot
+            for t in NIVEAUX:
+                n = mult * sum(1 for db in def_b if abs(a - db) <= lim[t]) * sum(1 for da in def_a if abs(b - da) <= lim[t])
+                if n:
+                    h[t][(a, b)] += n
+            n_el = h["elargi"].get((a, b), 0)
+            if tot - n_el:
+                h["incompatible"][(a, b)] += tot - n_el
     return h
 
 

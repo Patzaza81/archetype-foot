@@ -226,7 +226,7 @@ def test_doublons_identites_et_orientation():
     with pytest.raises(ValueError, match="identité"):
         D.sequences(liste, "A", "A", "2026-12-01")
     inverse = D.sequences(liste, "A", "B", "2026-12-01")                       # A est à domicile seulement : ses matchs à l'extérieur n'entrent jamais dans « A à domicile »
-    assert len(inverse["A"]) == 5 and len(inverse["B"]) == 5
+    assert len(inverse["A"]) == 6 and len(inverse["B"]) == 6                      # tous les matchs disponibles entrent (5 au minimum, 19 au maximum)
     with pytest.raises(ValueError, match="insuffisantes"):
         D.sequences(liste, "B", "A", "2026-12-01")                             # orientation inversée : B n'a aucun match à domicile
     with pytest.raises(ValueError, match="invalide"):
@@ -340,7 +340,7 @@ def test_geler_ajout_seul_dernier_gel_avant_le_coup_denvoi_et_regles_une_fois(tm
     lignes = [json.loads(x) for x in texte.splitlines()]
     assert S.derniers_pronostics(lignes)["m1"]["fiche"]["principal"] is None
     f = lignes[0]["fiche"]
-    assert f["statut"] == "analyse" and f["exploration"]["combinaisons"] == 625 and len(f["tous_marches"]) == len(M.CLES) and f["ordre_marches"] == S.ORDRE
+    assert f["statut"] == "analyse" and f["exploration"]["combinaisons"] == len(f["donnees"]["sequences"]["att_a"]) ** 2 * len(f["donnees"]["sequences"]["att_b"]) ** 2 and len(f["tous_marches"]) == len(M.CLES) and f["ordre_marches"] == S.ORDRE
     assert f["donnees"]["sequences"]["att_a"] and f["verifications"]["total"] == f["verifications"]["reussies"]
     # résultats : une seule ligne par match, jamais modifiée
     termine = [{**m, "h": 2, "a": 0}]
@@ -619,3 +619,52 @@ def test_bilan_reel_lit_le_journal_gamma_gel_avant_le_coup_d_envoi_remboursement
     p = B.paris_gamma(j)
     assert len(p) == 1 and p[0]["moteur"] == "gamma" and p[0]["mid"] == "a" and p[0]["gagne"] is True and p[0]["tete"] is True       # remboursement exclu, gel tardif ignoré, sans résultat ignoré
     assert B.paris_gamma(tmp_path / "absent.jsonl") == []
+
+
+# --- Règle de Patrick (03/11/2026) : au moins 5 matchs au même lieu, au plus les 19 derniers ---------------------------------------------------------------
+@pytest.mark.parametrize("nb,attendu", [(5, 5), (12, 12), (19, 19), (30, 19)])
+def test_fenetre_de_5_a_19_matchs_qui_passe(nb, attendu):
+    liste = _liste("A", "Z", nb) + _liste("B", "Y", nb, dom=False)
+    s = D.sequences(liste, "A", "B", "2027-12-01")
+    assert len(s["A"]) == len(s["B"]) == attendu and len(s["att_a"]) == len(s["def_a"]) == attendu
+
+
+def test_fenetre_prend_les_19_plus_recents():
+    liste = _liste("A", "Z", 30) + _liste("B", "Y", 30, dom=False)
+    s = D.sequences(liste, "A", "B", "2027-12-01")
+    tous = sorted(x["date"] for x in liste if x["dom"] == "A")
+    assert [x["date"] for x in s["A"]] == tous[-19:]
+
+
+@pytest.mark.parametrize("nb", [0, 3, 4])
+def test_moins_de_5_matchs_refuse(nb):
+    liste = _liste("A", "Z", nb) + _liste("B", "Y", 8, dom=False)
+    with pytest.raises(ValueError, match="insuffisantes"):
+        D.sequences(liste, "A", "B", "2027-12-01")
+
+
+def test_histogrammes_par_comptage_identiques_a_l_enumeration():
+    import random
+    random.seed(11)
+    for _ in range(60):
+        A, dA, B, dB = ([random.randint(0, 5) for _ in range(random.randint(1, 9))] for _ in range(4))
+        h = C.histogrammes(A, dA, B, dB, C.PARAMS_DEFAUT)
+        ref: dict = {k: {} for k in h}
+        lim = C.PARAMS_DEFAUT["ecart_max_niveau"]
+        for _, _, _, _, a, da, b, db in C.combinaisons(A, dA, B, dB):
+            e = max(abs(a - db), abs(b - da))
+            ref["brute"][(a, b)] = ref["brute"].get((a, b), 0) + 1
+            if e > lim["elargi"]:
+                ref["incompatible"][(a, b)] = ref["incompatible"].get((a, b), 0) + 1
+            for t in C.NIVEAUX:
+                if e <= lim[t]:
+                    ref[t][(a, b)] = ref[t].get((a, b), 0) + 1
+        assert {k: dict(v) for k, v in h.items()} == ref
+
+
+def test_analyse_avec_19_observations_controles_mathematiques_verts():
+    import random
+    random.seed(3)
+    A, dA, B, dB = ([random.randint(0, 4) for _ in range(19)] for _ in range(4))
+    a = C.analyser(A, dA, B, dB)
+    assert a["combinaisons"] == 19 ** 4 and all(v["ok"] for v in a["verifications"])

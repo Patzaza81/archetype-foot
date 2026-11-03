@@ -122,7 +122,7 @@ def proba_officielle(matchs: list[dict], dom: str, ext: str, jour: str, calibreu
     except ValueError as e:
         raison_force = str(e)
     try:
-        s = D.sequences(matchs, dom, ext, jour)
+        s = D.sequences(matchs, dom, ext, jour, n=D.MIN_MATCHS)      # essai « pourcentage mixte » : inchangé, fenêtre fixe de 5
     except ValueError as e:
         s, raison_seq = None, str(e)
     if forces is not None and s is not None:

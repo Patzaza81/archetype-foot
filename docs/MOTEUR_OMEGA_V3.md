@@ -5,7 +5,8 @@ Branche `moteur-gamma-omega-v3`, **non fusionnée** : la spécification dit elle
 Autonome (aucun import d'un autre moteur), hors générateur de tickets. L'ancien moteur DC (`moteur_dc/`, `data/dc/`, `docs/MOTEUR_DC.md`) est conservé sans modification.
 
 ## Méthode
-- 4 séquences de 5 matchs au même lieu : attaque et défense de A (à domicile), attaque et défense de B (à l'extérieur). 5 × 5 × 5 × 5 = **625 scénarios**, aucun supprimé.
+- 4 séquences au même lieu : attaque et défense de A (à domicile), attaque et défense de B (à l'extérieur). **Règle de Patrick du 03/11/2026 : au moins 5 matchs au même lieu pour chaque équipe (sinon le match n'est pas analysé), au plus les 19 derniers.** Le nombre de scénarios est n_A² × n_B² (625 pour 5 et 5, jusqu'à 130 321 pour 19 et 19), aucun supprimé. Ancienne règle (fenêtre fixe de 5, spécification Omega V1) abandonnée.
+- Les fréquences par palier sont calculées par comptage (mêmes valeurs que l'énumération, testé) pour tenir 130 321 scénarios.
 - Score d'un scénario = (attaque A i, attaque B k). Les observations de défense ne servent qu'à la **compatibilité** : écart = max(|attA − défB|, |attB − défA|). Paliers cumulatifs strict (0) / intermédiaire (≤ 1) / élargi (≤ 2) / incompatible (> 2), paramétrables.
 - 174 marchés générés depuis les scores (1N2, double chance, totaux, buts par équipe, handicaps, combinés, scores exacts…). Mi-temps, premier buteur, corners, cartons : non calculables, jamais inventés.
 - Stabilité : fréquence recalculée en retirant une observation à la fois. **Fréquence robuste g = minimum** de ces valeurs et du brut. C'est la seule statistique de décision (pas d'indice composite).
@@ -19,7 +20,10 @@ Autonome (aucun import d'un autre moteur), hors générateur de tickets. L'ancie
 - « Score du scénario » = (attaque A, attaque B) ; la défense ne fait que filtrer par compatibilité.
 - Les seuils par marché reprennent son protocole 70 % déjà approuvé, faute de seuil fixe dans la spécification (pas de constante arbitraire).
 
-## Résultats de calibrage / validation (archive, 525 matchs du 28/09 au 01/11/2026)
+## Recalibrage du 03/11/2026 (nouvelle fenêtre 5 à 19 matchs)
+Les seuils appris sur la fenêtre fixe de 5 ne valaient pas pour une fenêtre variable : recalibrage complet avec la nouvelle règle, sur l'archive disponible dans le dépôt le 03/11 (206 matchs joués analysables du 28/09 au 02/11, 4 marchés ont un seuil ; réserve chronologique : 24 paris, 75,0 % réussis contre 81,4 % annoncés). Échantillon plus petit que celui de l'audit ci-dessous : à refaire à mesure que l'archive grossit. Les chiffres ci-dessous décrivent l'ancienne règle (fenêtre de 5).
+
+## Résultats de calibrage / validation de l'ancienne règle (fenêtre de 5 ; archive, 525 matchs du 28/09 au 01/11/2026)
 Mis à jour par l'audit du 02/11/2026 : voir `docs/AUDIT_OMEGA_V3.md` (méthode, sources, limites).
 - 383 marchés générés ; calibrage sur la **population jouable** (cote ≥ 1,26) : 13 marchés ont un seuil.
 - Réserve chronologique (28/10 au 01/11, seuils appris avant) : 269 paris, 71,8 % réussis contre 75,7 % annoncés (écart 4,0 points, IC 95 % −0,9 à +10,0).
@@ -27,5 +31,5 @@ Mis à jour par l'audit du 02/11/2026 : voir `docs/AUDIT_OMEGA_V3.md` (méthode,
 - Aucune validation n'est annoncée ; seuls les paris gelés réels trancheront.
 
 ## Affichage du « 100 % » (03/11/2026)
-- Même encadré que sur la page Europe : si la fréquence robuste s'affiche à 100 %, la carte indique si les matchs réels (5 derniers au même lieu) le confirment ou si le 100 % ne vient que des scénarios croisés (la défense ne crée jamais de score hors des buts déjà marqués).
-- Le texte d'introduction ne cite plus « 625 » : le moteur accepte plus de 5 observations (n_A² × n_B² scénarios, vérifié de 5×5 à 12×7, contrôles mathématiques verts) ; la production reste à 5 par équipe (spécification Omega V1, seuils appris sur cette taille).
+- Même encadré que sur la page Europe : si la fréquence robuste s'affiche à 100 %, la carte indique si les matchs réels (5 à 19 derniers au même lieu) le confirment ou si le 100 % ne vient que des scénarios croisés (la défense ne crée jamais de score hors des buts déjà marqués).
+- Le texte d'introduction ne cite plus « 625 » : le nombre de scénarios varie avec la taille des échantillons et s'affiche sur chaque carte.
