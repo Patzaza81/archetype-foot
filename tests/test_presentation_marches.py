@@ -85,7 +85,7 @@ def test_traduitMarche_est_inchangee_pour_tous_les_marches_connus():
 
 
 # ── Câblage des pages ──
-PAGES_AVEC_TRADUCTION = ["archetype.html", "pronostics_v3.html", "pronostics_europe.html", "pronostics_v.html", "panier.html", "journal.html", "tickets.html"]
+PAGES_AVEC_TRADUCTION = ["archetype.html", "pronostics_v3.html", "pronostics_europe_ancien.html", "pronostics_v.html", "panier.html", "journal.html", "tickets.html"]
 
 
 @pytest.mark.parametrize("page", PAGES_AVEC_TRADUCTION + ["pronostics_comportement.html"])
