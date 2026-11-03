@@ -123,7 +123,7 @@ jobs:
       # seuils appris sur l'archive). Autonome, hors tickets, journal gelé avant le coup d'envoi (data/gamma/). Ne bloque jamais le pipeline ; un contrôle
       # mathématique raté fait échouer CETTE étape (visible) sans publier le match concerné. Voir docs/MOTEUR_OMEGA_V3.md.
       # L'ancien moteur DC continue de tourner (étape suivante) : sans cela son journal gelé s'arrêterait et aucune comparaison réelle ne serait plus possible.
-      - name: Moteur Gamma = Omega V3 (pronostics et journal gelé, hors tickets)
+      - name: Moteur Gamma (pronostics et journal gelé, hors tickets)
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         continue-on-error: true
         run: python -m moteur_omega_v3.suivi pipeline

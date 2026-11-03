@@ -1,4 +1,4 @@
-"""Page Gamma = Omega V3 : exécute archetype_gamma.js sous Node avec un document factice (affichages, vocabulaire, aucune probabilité inventée)."""
+"""Page Gamma : exécute archetype_gamma.js sous Node avec un document factice (affichages, vocabulaire, aucune probabilité inventée)."""
 from __future__ import annotations
 
 import json
@@ -186,5 +186,5 @@ def test_remarque_100_qui_ne_doit_pas_apparaitre(p, fiche):
 
 
 def test_etoiles_ligne_affichee():
-    assert "⭐️⭐️" in appel("gaEtoiles", _f(*SIX)) and "6 matchs chacun" in appel("gaEtoiles", _f(*SIX))
-    assert "⭐️⭐️⭐️⭐️⭐️" not in appel("gaEtoiles", _f(*SIX))
+    assert "★★" in appel("gaEtoiles", _f(*SIX)) and "6 matchs chacun" in appel("gaEtoiles", _f(*SIX))
+    assert "★★★★★" not in appel("gaEtoiles", _f(*SIX))

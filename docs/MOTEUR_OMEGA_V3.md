@@ -1,4 +1,4 @@
-# Moteur Gamma = Omega V3 (`moteur_omega_v3/`, page `pronostics_gamma.html`) — 02/11/2026
+# Moteur Gamma (`moteur_omega_v3/`, page `pronostics_gamma.html`) — 02/11/2026
 
 Remplace le moteur DC sur la page Gamma, sur ordre de Patrick (« remplacer le moteur gamma … par ce dernier »), à partir de la spécification « NOUVEAU MOTEUR OMEGA V1 ».
 Branche `moteur-gamma-omega-v3`, **non fusionnée** : la spécification dit elle-même qu'un remplacement de production demande une validation explicite. Fusion sur l'ordre « Fusionner » seulement.
