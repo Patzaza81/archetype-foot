@@ -3,8 +3,11 @@ RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, RACINE)
 import classement_descriptif as cd
 import inventaire_football_data as inv
-sys.path.insert(0, os.path.join(RACINE, "tests"))
-from test_inventaire_football_data import fabriquer, ecrire, CFG, EU_HDR, ligne_eu
+import importlib.util
+_spec = importlib.util.spec_from_file_location("fixtures_inventaire", os.path.join(RACINE, "tests", "test_inventaire_football_data.py"))
+_fx = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_fx)
+fabriquer, ecrire, CFG, EU_HDR, ligne_eu = _fx.fabriquer, _fx.ecrire, _fx.CFG, _fx.EU_HDR, _fx.ligne_eu
 
 
 def construire(tmp, verifs=None):

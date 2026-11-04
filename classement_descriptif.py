@@ -136,12 +136,13 @@ def rapport(sortie, noms_capacites):
     C = sortie["competitions"]
     L = ["# Classement descriptif des 38 profils", "",
          f"Regles inventaire `{sortie['version_regles']}`. Trois dimensions SEPAREES; aucun score global; aucun statut n'est une recommandation de marche.", "",
+         "**Ce classement decrit la disponibilite et la coherence des donnees. Ce n'est PAS un classement de performance predictive.**", "",
          "## Avertissement completude", "",
          "La completude reelle d'une saison (nombre d'equipes et de matchs attendus) n'est verifiee que si une verification externe est enregistree dans `verifications_completude.json`. "
          "Sinon: `COMPLETUDE_NON_VERIFIEE`. Une structure aller-retour complete dans l'archive est coherente mais ne prouve pas qu'aucune equipe n'a ete oubliee.", ""]
     v = [f"{c}:{s}" for c in C for s, st in C[c]["completude_par_saison"].items() if st == "COMPLETUDE_VERIFIEE"]
     L.append(f"- Saisons verifiees: {len(v)} sur {len(C) * 5} ({', '.join(v) or 'aucune'})")
-    L.append(f"- Competitions comparables sans reserve: {sum(1 for c in C.values() if c['comparable_sans_reserve'])} sur {len(C)}")
+    L.append(f"- **Competitions comparables sans reserve: {sum(1 for c in C.values() if c['comparable_sans_reserve'])} sur {len(C)}**")
     L += ["", "## Volume (tri: matchs avec score decroissant)", "", "| Code | Matchs avec score | Saisons | Matchs/saison (min-max) |", "|---|---|---|---|"]
     for c in sorted(C, key=lambda k: -C[k]["volume"]["matchs_avec_score"]):
         m = C[c]["volume"]["matchs_par_saison"].values()
