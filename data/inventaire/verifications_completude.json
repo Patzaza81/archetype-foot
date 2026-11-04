@@ -1404,7 +1404,7 @@
     "saison_reguliere": "paires_completes_verifiees",
     "phases_finales": "aucune_phase_documentee",
     "matchs_additionnels": "examines_non_resolus",
-    "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas. Matchs attribues: 8 confirmes dans l'archive sur 9 cites par la page (la preuve precedente en comptait 7); un ecart non resolu (voir signalements_archive)."
+    "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas. Matchs attribues: 8 confirmes dans l'archive sur 9 cites par la page (la preuve precedente en comptait 7); un ecart non resolu (voir signalements_archive). CAS NON RESOLU MAINTENU: Dalian Pro-Guangzhou City (cite 0-3 attribue par la page; archive 2-0 le 08/06/2022). Les 8 autres cas confirmes ne valident pas ce neuvieme."
    }
   },
   {
@@ -1481,12 +1481,21 @@
     "Source externe (Wikipedia, https://en.wikipedia.org/wiki/2021_J1_League): cas signale(s), voir signalements_archive et perimetre_examen.limites."
    ],
    "date_verification": "2026-11-04",
-   "signalements_archive": [],
+   "signalements_archive": [
+    {
+     "code": "SCORE_ATTRIBUE_DIVERGENT",
+     "matchs_documentes_absents": 0,
+     "matchs_score_divergents": 1,
+     "niveau_preuve": "match_par_match",
+     "perimetre": "implique_un_club_de_la_ligue",
+     "detail": "Urawa-Shonan (20/06/2021): rencontre PRESENTE dans l'archive avec le score joue Urawa 2-3 Shonan; la JPFL a attribue 3-0 a Shonan (joueur non qualifie, Wikipedia 2021 J1 League). Score officiel different du score archive; rien n'est absent, rien n'est modifie."
+    }
+   ],
    "perimetre_examen": {
     "saison_reguliere": "paires_completes_verifiees",
     "phases_finales": "aucune_phase_documentee",
-    "matchs_additionnels": "examines_non_resolus",
-    "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas. Urawa-Shonan (20/06/2021): la page Wikipedia indique que la JPFL a attribue 3-0 a Shonan (joueur non qualifie), score joue 3-2 pour Shonan; l'archive contient le score joue (Urawa 2-3 Shonan), pas le score attribue. Ecart de resultat documente, rien n'est modifie dans l'archive."
+    "matchs_additionnels": "examines",
+    "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas. Urawa-Shonan (20/06/2021): la page Wikipedia indique que la JPFL a attribue 3-0 a Shonan (joueur non qualifie), score joue 3-2 pour Shonan; l'archive contient le score joue (Urawa 2-3 Shonan), pas le score attribue. Ecart de resultat documente, rien n'est modifie dans l'archive. (Divergence de score consignee comme signalement SCORE_ATTRIBUE_DIVERGENT: cas resolu et documente.)"
    }
   },
   {
@@ -3302,12 +3311,21 @@
     "Source externe (Wikipedia, https://en.wikipedia.org/wiki/2022%E2%80%9323_Russian_Premier_League): cas signale (voir perimetre_examen.limites)."
    ],
    "date_verification": "2026-11-04",
-   "signalements_archive": [],
+   "signalements_archive": [
+    {
+     "code": "SCORE_ATTRIBUE_DIVERGENT",
+     "matchs_documentes_absents": 0,
+     "matchs_score_divergents": 1,
+     "niveau_preuve": "match_par_match",
+     "perimetre": "implique_un_club_de_la_ligue",
+     "detail": "Pari NN-Torpedo Moscou (19/03/2023): rencontre PRESENTE dans l'archive avec le score joue 1-1; l'Union russe a attribue 3-0 a Torpedo (joueur non eligible, decision du 22/03/2023; Wikipedia 2022-23 RPL). Score officiel different du score archive; rien n'est absent, rien n'est modifie."
+    }
+   ],
    "perimetre_examen": {
     "saison_reguliere": "paires_completes_verifiees",
     "phases_finales": "total_seulement",
-    "matchs_additionnels": "examines_non_resolus",
-    "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires entre les 16 equipes. Barrages de relegation presents dans l'archive mais verifies par leur total cumule seulement (pas match par match). Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas. Pari NN-Torpedo Moscou (19/03/2023): 1-1 joue, attribue 3-0 a Torpedo par l'Union russe (joueur non eligible, 22/03/2023) d'apres Wikipedia; l'archive contient le score joue 1-1, pas le score attribue. Ecart de resultat documente; rien n'est modifie dans l'archive."
+    "matchs_additionnels": "examines",
+    "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires entre les 16 equipes. Barrages de relegation presents dans l'archive mais verifies par leur total cumule seulement (pas match par match). Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas. Pari NN-Torpedo Moscou (19/03/2023): 1-1 joue, attribue 3-0 a Torpedo par l'Union russe (joueur non eligible, 22/03/2023) d'apres Wikipedia; l'archive contient le score joue 1-1, pas le score attribue. Ecart de resultat documente; rien n'est modifie dans l'archive. (Divergence de score consignee comme signalement SCORE_ATTRIBUE_DIVERGENT: cas resolu et documente.)"
    }
   },
   {

@@ -89,6 +89,16 @@ class Classement(unittest.TestCase):
         self.assertTrue(f1["comparable_sans_reserve"])
         self.assertFalse(f1["comparable_archive_sans_reserve"])
 
+    def test_score_attribue_divergent_distinct_d_un_match_absent(self):
+        base = {"competition": "F1", "equipes_attendues": 2, "matchs_attendus": 2, "preuves": ["x"]}
+        def g(code):
+            return {"code": code, "matchs_documentes_absents": 0, "niveau_preuve": "match_par_match", "perimetre": "implique_un_club_de_la_ligue", "detail": "d"}
+        par = [[g("SCORE_ATTRIBUE_DIVERGENT")], [g("SCORE_ATTRIBUE_DIVERGENT"), g("MATCH_ATTRIBUE_NON_JOUE")],
+               [g("SCORE_ATTRIBUE_DIVERGENT"), g("MATCH_ARCHIVE_MANQUANT")], [g("SCORE_ATTRIBUE_DIVERGENT"), g("PHASE_EXCLUE_NON_DETAILLEE")], [g("MATCH_ATTRIBUE_NON_JOUE")]]
+        v = [dict(base, saison=s, signalements_archive=par[i]) for i, s in enumerate(CFG["saisons"])]
+        a = [construire(self.tmp, v)["competitions"]["F1"]["archive_par_saison"][s] for s in CFG["saisons"]]
+        self.assertEqual(a, ["SCORE_ATTRIBUE_DIVERGENT", "SCORE_ATTRIBUE_DIVERGENT", "MATCH_ARCHIVE_MANQUANT", "PHASE_EXCLUE_NON_DETAILLEE", "MATCH_ATTRIBUE_NON_JOUE"])
+
     def test_perimetre_etendu_exige_les_trois_conditions(self):
         base = {"competition": "F1", "equipes_attendues": 2, "matchs_attendus": 2, "preuves": ["x"], "signalements_archive": []}
         etendu = {"saison_reguliere": "paires_completes_verifiees", "phases_finales": "aucune_phase_documentee", "matchs_additionnels": "examines"}

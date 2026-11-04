@@ -52,7 +52,7 @@ def statut_completude(code, saison, struct, verifs):
     return ("COMPLETUDE_VERIFIEE" if ok else "COMPLETUDE_INCOHERENTE"), v["preuves"]
 
 
-PRIORITE_SIGNALEMENT = ("MATCH_ARCHIVE_MANQUANT", "PHASE_EXCLUE_NON_DETAILLEE", "MATCH_ATTRIBUE_NON_JOUE")
+PRIORITE_SIGNALEMENT = ("MATCH_ARCHIVE_MANQUANT", "PHASE_EXCLUE_NON_DETAILLEE", "SCORE_ATTRIBUE_DIVERGENT", "MATCH_ATTRIBUE_NON_JOUE")
 
 
 def statut_archive(code, saison, verifs):
@@ -61,6 +61,7 @@ def statut_archive(code, saison, verifs):
     Signalements (jamais ajoutes a l'archive ni comptes comme archives), par priorite:
       MATCH_ARCHIVE_MANQUANT: rencontre(s) reellement disputee(s) documentee(s) (nombre, equipes ou dates) et absente(s) des fichiers.
       PHASE_EXCLUE_NON_DETAILLEE: existence d'une phase exclue, sans preuve individualisee des rencontres.
+      SCORE_ATTRIBUE_DIVERGENT: rencontre PRESENTE dans l'archive avec le score joue, alors que le resultat officiel est un score attribue different (rien n'est absent, rien n'est modifie).
       MATCH_ATTRIBUE_NON_JOUE: resultat ou match attribue sans rencontre disputee.
     Liste vide explicite: aucun match documente manquant dans le PERIMETRE examine (`perimetre_examen`):
       ARCHIVE_COMPLETE_PERIMETRE_ETENDU seulement si saison reguliere = paires_completes_verifiees, phases finales = individuelle ou aucune_phase_documentee, matchs additionnels = examines;
@@ -178,10 +179,10 @@ def rapport(sortie, noms_capacites):
     L.append(f"- Saisons verifiees: {len(v)} sur {len(C) * 5} ({', '.join(v) or 'aucune'})")
     L.append(f"- **Competitions comparables sans reserve: {sum(1 for c in C.values() if c['comparable_sans_reserve'])} sur {len(C)}**")
     st_arch = [st for c in C for st in C[c]["archive_par_saison"].values()]
-    ordre = ("ARCHIVE_COMPLETE_PERIMETRE_ETENDU", "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL", "MATCH_ARCHIVE_MANQUANT", "PHASE_EXCLUE_NON_DETAILLEE", "MATCH_ATTRIBUE_NON_JOUE", "ARCHIVE_NON_EXAMINEE")
+    ordre = ("ARCHIVE_COMPLETE_PERIMETRE_ETENDU", "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL", "MATCH_ARCHIVE_MANQUANT", "PHASE_EXCLUE_NON_DETAILLEE", "SCORE_ATTRIBUE_DIVERGENT", "MATCH_ATTRIBUE_NON_JOUE", "ARCHIVE_NON_EXAMINEE")
     L += ["", "## Completude de l'archive (dimension distincte de la completude de la competition)", "",
           "Un match documente absent des fichiers n'est jamais ajoute a l'archive ni compte. `MATCH_ARCHIVE_MANQUANT` = rencontre disputee documentee et absente; "
-          "`PHASE_EXCLUE_NON_DETAILLEE` = phase exclue sans rencontres individualisees; `MATCH_ATTRIBUE_NON_JOUE` = match attribue sans rencontre disputee. "
+          "`PHASE_EXCLUE_NON_DETAILLEE` = phase exclue sans rencontres individualisees; `SCORE_ATTRIBUE_DIVERGENT` = rencontre presente dans l'archive avec le score joue, le resultat officiel etant un score attribue different (pas une rencontre absente); `MATCH_ATTRIBUE_NON_JOUE` = match attribue sans rencontre disputee. "
           "`ARCHIVE_COMPLETE_PERIMETRE_PARTIEL` = aucun match documente manquant dans le perimetre examine, mais ce perimetre n'inclut pas tout (voir `perimetre_examen`); "
           "`ARCHIVE_COMPLETE_PERIMETRE_ETENDU` = saison reguliere (paires verifiees) + phases finales examinees individuellement + matchs additionnels. "
           "`ARCHIVE_NON_EXAMINEE` = rien n'est affirme.", ""]
@@ -192,7 +193,7 @@ def rapport(sortie, noms_capacites):
         for s_, sig in C[c]["signalements_archive"].items():
             for g in sig:
                 n = g.get("matchs_documentes_absents")
-                L.append(f"- {c}:{s_} {g['code']} ({('nombre non documente' if n is None else str(n) + ' match(s) disputes' if g['code'] == 'MATCH_ARCHIVE_MANQUANT' else str(g.get('matchs_attribues_non_joues', n)) + ' attribue(s)')}; preuve: {g['niveau_preuve']}; perimetre: {g['perimetre']}): {g['detail']}")
+                L.append(f"- {c}:{s_} {g['code']} ({('nombre non documente' if n is None else str(n) + ' match(s) disputes' if g['code'] == 'MATCH_ARCHIVE_MANQUANT' else '1 score divergent' if g['code'] == 'SCORE_ATTRIBUE_DIVERGENT' else str(g.get('matchs_attribues_non_joues', n)) + ' attribue(s)')}; preuve: {g['niveau_preuve']}; perimetre: {g['perimetre']}): {g['detail']}")
     L.append("")
     L += ["", "## Volume (tri: matchs avec score decroissant)", "", "| Code | Matchs avec score | Saisons | Matchs/saison (min-max) |", "|---|---|---|---|"]
     for c in sorted(C, key=lambda k: -C[k]["volume"]["matchs_avec_score"]):
