@@ -1,0 +1,4451 @@
+{
+ "description": "Frequences de marches (scores joues des archives) et stabilite saison a saison vs bruit d'echantillonnage (ratio ~1 = variation compatible avec le hasard; >1 = derive reelle). Descriptif, sans modele ni cote.",
+ "competitions": {
+  "ARG": {
+   "saisons": {
+    "2122": {
+     "n": 501,
+     "buts_moy": 2.449,
+     "dom": 0.4271,
+     "nul": 0.2954,
+     "ext": 0.2774,
+     "o15": 0.6866,
+     "o25": 0.4371,
+     "o35": 0.2355,
+     "btts": 0.475
+    },
+    "2223": {
+     "n": 581,
+     "buts_moy": 2.325,
+     "dom": 0.4251,
+     "nul": 0.3046,
+     "ext": 0.2702,
+     "o15": 0.673,
+     "o25": 0.4303,
+     "o35": 0.2048,
+     "btts": 0.5009
+    },
+    "2324": {
+     "n": 582,
+     "buts_moy": 2.027,
+     "dom": 0.445,
+     "nul": 0.3351,
+     "ext": 0.2199,
+     "o15": 0.61,
+     "o25": 0.3402,
+     "o35": 0.1546,
+     "btts": 0.4055
+    },
+    "2425": {
+     "n": 581,
+     "buts_moy": 2.102,
+     "dom": 0.4269,
+     "nul": 0.3219,
+     "ext": 0.2513,
+     "o15": 0.6162,
+     "o25": 0.3322,
+     "o35": 0.1721,
+     "btts": 0.42
+    },
+    "2526": {
+     "n": 510,
+     "buts_moy": 1.947,
+     "dom": 0.4078,
+     "nul": 0.3176,
+     "ext": 0.2745,
+     "o15": 0.598,
+     "o25": 0.3235,
+     "o35": 0.1275,
+     "btts": 0.3804
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0148,
+     "bruit_attendu": 0.0236,
+     "ratio": 0.63,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0143,
+     "bruit_attendu": 0.0222,
+     "ratio": 0.64,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.028,
+     "bruit_attendu": 0.0207,
+     "ratio": 1.35,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0252,
+     "bruit_attendu": 0.0229,
+     "ratio": 1.1,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0284,
+     "bruit_attendu": 0.0229,
+     "ratio": 1.24,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0358,
+     "bruit_attendu": 0.0182,
+     "ratio": 1.97,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0438,
+     "bruit_attendu": 0.0236,
+     "ratio": 1.86,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_NON_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL"
+   }
+  },
+  "AUT": {
+   "saisons": {
+    "2122": {
+     "n": 195,
+     "buts_moy": 2.887,
+     "dom": 0.3846,
+     "nul": 0.3128,
+     "ext": 0.3026,
+     "o15": 0.8256,
+     "o25": 0.559,
+     "o35": 0.3077,
+     "btts": 0.6051
+    },
+    "2223": {
+     "n": 195,
+     "buts_moy": 2.964,
+     "dom": 0.3846,
+     "nul": 0.2564,
+     "ext": 0.359,
+     "o15": 0.8154,
+     "o25": 0.5795,
+     "o35": 0.3487,
+     "btts": 0.6051
+    },
+    "2324": {
+     "n": 195,
+     "buts_moy": 2.579,
+     "dom": 0.3641,
+     "nul": 0.3026,
+     "ext": 0.3333,
+     "o15": 0.7179,
+     "o25": 0.4615,
+     "o35": 0.2872,
+     "btts": 0.4564
+    },
+    "2425": {
+     "n": 192,
+     "buts_moy": 2.75,
+     "dom": 0.4219,
+     "nul": 0.2604,
+     "ext": 0.3177,
+     "o15": 0.776,
+     "o25": 0.5469,
+     "o35": 0.2604,
+     "btts": 0.5677
+    },
+    "2526": {
+     "n": 192,
+     "buts_moy": 2.698,
+     "dom": 0.4219,
+     "nul": 0.2604,
+     "ext": 0.3177,
+     "o15": 0.776,
+     "o25": 0.5052,
+     "o35": 0.3021,
+     "btts": 0.5521
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0196,
+     "bruit_attendu": 0.0396,
+     "ratio": 0.49,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0362,
+     "bruit_attendu": 0.0362,
+     "ratio": 1.0,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0244,
+     "bruit_attendu": 0.0381,
+     "ratio": 0.64,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0415,
+     "bruit_attendu": 0.0336,
+     "ratio": 1.23,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0664,
+     "bruit_attendu": 0.0404,
+     "ratio": 1.64,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0427,
+     "bruit_attendu": 0.0371,
+     "ratio": 1.15,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0689,
+     "bruit_attendu": 0.0402,
+     "ratio": 1.71,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "MATCH_ARCHIVE_MANQUANT",
+    "2526": "MATCH_ARCHIVE_MANQUANT"
+   }
+  },
+  "B1": {
+   "saisons": {
+    "2122": {
+     "n": 306,
+     "buts_moy": 2.941,
+     "dom": 0.4183,
+     "nul": 0.2222,
+     "ext": 0.3595,
+     "o15": 0.8072,
+     "o25": 0.549,
+     "o35": 0.3497,
+     "btts": 0.5294
+    },
+    "2223": {
+     "n": 306,
+     "buts_moy": 3.036,
+     "dom": 0.4412,
+     "nul": 0.2222,
+     "ext": 0.3366,
+     "o15": 0.8105,
+     "o25": 0.5784,
+     "o35": 0.3595,
+     "btts": 0.5556
+    },
+    "2324": {
+     "n": 312,
+     "buts_moy": 2.817,
+     "dom": 0.4455,
+     "nul": 0.2596,
+     "ext": 0.2949,
+     "o15": 0.7692,
+     "o25": 0.5481,
+     "o35": 0.3365,
+     "btts": 0.5545
+    },
+    "2425": {
+     "n": 312,
+     "buts_moy": 2.756,
+     "dom": 0.4391,
+     "nul": 0.2885,
+     "ext": 0.2724,
+     "o15": 0.7532,
+     "o25": 0.5192,
+     "o35": 0.2981,
+     "btts": 0.5321
+    },
+    "2526": {
+     "n": 311,
+     "buts_moy": 2.675,
+     "dom": 0.4051,
+     "nul": 0.254,
+     "ext": 0.3408,
+     "o15": 0.7621,
+     "o25": 0.492,
+     "o35": 0.2669,
+     "btts": 0.537
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0169,
+     "bruit_attendu": 0.0318,
+     "ratio": 0.53,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0252,
+     "bruit_attendu": 0.0278,
+     "ratio": 0.91,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0389,
+     "bruit_attendu": 0.0297,
+     "ratio": 1.31,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0174,
+     "bruit_attendu": 0.0265,
+     "ratio": 0.65,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.029,
+     "bruit_attendu": 0.0319,
+     "ratio": 0.91,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0256,
+     "bruit_attendu": 0.03,
+     "ratio": 0.85,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0136,
+     "bruit_attendu": 0.0319,
+     "ratio": 0.43,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_NON_VERIFIEE",
+    "2526": "COMPLETUDE_NON_VERIFIEE"
+   },
+   "archive": {
+    "2122": "MATCH_ARCHIVE_MANQUANT",
+    "2223": "MATCH_ARCHIVE_MANQUANT",
+    "2324": "MATCH_ARCHIVE_MANQUANT",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   }
+  },
+  "BRA": {
+   "saisons": {
+    "2122": {
+     "n": 380,
+     "buts_moy": 2.216,
+     "dom": 0.4579,
+     "nul": 0.2974,
+     "ext": 0.2447,
+     "o15": 0.6447,
+     "o25": 0.3947,
+     "o35": 0.1868,
+     "btts": 0.4474
+    },
+    "2223": {
+     "n": 380,
+     "buts_moy": 2.382,
+     "dom": 0.4421,
+     "nul": 0.2842,
+     "ext": 0.2737,
+     "o15": 0.6816,
+     "o25": 0.4342,
+     "o35": 0.2158,
+     "btts": 0.4974
+    },
+    "2324": {
+     "n": 380,
+     "buts_moy": 2.489,
+     "dom": 0.4684,
+     "nul": 0.2579,
+     "ext": 0.2737,
+     "o15": 0.7132,
+     "o25": 0.45,
+     "o35": 0.2053,
+     "btts": 0.4816
+    },
+    "2425": {
+     "n": 380,
+     "buts_moy": 2.445,
+     "dom": 0.4737,
+     "nul": 0.2658,
+     "ext": 0.2605,
+     "o15": 0.7289,
+     "o25": 0.4737,
+     "o35": 0.2,
+     "btts": 0.5316
+    },
+    "2526": {
+     "n": 380,
+     "buts_moy": 2.524,
+     "dom": 0.5026,
+     "nul": 0.2605,
+     "ext": 0.2368,
+     "o15": 0.7211,
+     "o25": 0.4605,
+     "o35": 0.2447,
+     "btts": 0.4737
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0191,
+     "bruit_attendu": 0.0289,
+     "ratio": 0.66,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0132,
+     "bruit_attendu": 0.0257,
+     "ratio": 0.51,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0165,
+     "bruit_attendu": 0.0255,
+     "ratio": 0.65,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.023,
+     "bruit_attendu": 0.0264,
+     "ratio": 0.87,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0231,
+     "bruit_attendu": 0.0288,
+     "ratio": 0.8,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0224,
+     "bruit_attendu": 0.0235,
+     "ratio": 0.95,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0434,
+     "bruit_attendu": 0.0289,
+     "ratio": 1.5,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU"
+   }
+  },
+  "CHN": {
+   "saisons": {
+    "2122": {
+     "n": 180,
+     "buts_moy": 2.506,
+     "dom": 0.4444,
+     "nul": 0.2778,
+     "ext": 0.2778,
+     "o15": 0.7056,
+     "o25": 0.4444,
+     "o35": 0.2389,
+     "btts": 0.5
+    },
+    "2223": {
+     "n": 306,
+     "buts_moy": 2.856,
+     "dom": 0.4281,
+     "nul": 0.2026,
+     "ext": 0.3693,
+     "o15": 0.7908,
+     "o25": 0.5654,
+     "o35": 0.2908,
+     "btts": 0.4739
+    },
+    "2324": {
+     "n": 240,
+     "buts_moy": 2.775,
+     "dom": 0.4417,
+     "nul": 0.2792,
+     "ext": 0.2792,
+     "o15": 0.7542,
+     "o25": 0.5208,
+     "o35": 0.2792,
+     "btts": 0.5792
+    },
+    "2425": {
+     "n": 240,
+     "buts_moy": 3.125,
+     "dom": 0.4625,
+     "nul": 0.2292,
+     "ext": 0.3083,
+     "o15": 0.775,
+     "o25": 0.5833,
+     "o35": 0.4083,
+     "btts": 0.5625
+    },
+    "2526": {
+     "n": 240,
+     "buts_moy": 3.212,
+     "dom": 0.4667,
+     "nul": 0.2583,
+     "ext": 0.275,
+     "o15": 0.8375,
+     "o25": 0.6208,
+     "o35": 0.4375,
+     "btts": 0.6292
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0137,
+     "bruit_attendu": 0.036,
+     "ratio": 0.38,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0577,
+     "bruit_attendu": 0.0309,
+     "ratio": 1.87,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.061,
+     "bruit_attendu": 0.0335,
+     "ratio": 1.82,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0513,
+     "bruit_attendu": 0.0301,
+     "ratio": 1.7,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0664,
+     "bruit_attendu": 0.0359,
+     "ratio": 1.85,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0554,
+     "bruit_attendu": 0.0337,
+     "ratio": 1.64,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0537,
+     "bruit_attendu": 0.0359,
+     "ratio": 1.5,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "MATCH_ATTRIBUE_NON_JOUE",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU"
+   }
+  },
+  "D1": {
+   "saisons": {
+    "2122": {
+     "n": 306,
+     "buts_moy": 3.118,
+     "dom": 0.4673,
+     "nul": 0.2386,
+     "ext": 0.2941,
+     "o15": 0.8333,
+     "o25": 0.585,
+     "o35": 0.3922,
+     "btts": 0.6078
+    },
+    "2223": {
+     "n": 306,
+     "buts_moy": 3.173,
+     "dom": 0.4739,
+     "nul": 0.2451,
+     "ext": 0.281,
+     "o15": 0.8464,
+     "o25": 0.6046,
+     "o35": 0.3791,
+     "btts": 0.5915
+    },
+    "2324": {
+     "n": 306,
+     "buts_moy": 3.219,
+     "dom": 0.4379,
+     "nul": 0.2647,
+     "ext": 0.2974,
+     "o15": 0.8529,
+     "o25": 0.6242,
+     "o35": 0.4118,
+     "btts": 0.6176
+    },
+    "2425": {
+     "n": 306,
+     "buts_moy": 3.134,
+     "dom": 0.3856,
+     "nul": 0.2516,
+     "ext": 0.3627,
+     "o15": 0.8072,
+     "o25": 0.598,
+     "o35": 0.4281,
+     "btts": 0.5686
+    },
+    "2526": {
+     "n": 306,
+     "buts_moy": 3.235,
+     "dom": 0.4379,
+     "nul": 0.2451,
+     "ext": 0.317,
+     "o15": 0.8366,
+     "o25": 0.6373,
+     "o35": 0.4281,
+     "btts": 0.6176
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0368,
+     "bruit_attendu": 0.032,
+     "ratio": 1.15,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0114,
+     "bruit_attendu": 0.028,
+     "ratio": 0.41,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0351,
+     "bruit_attendu": 0.0298,
+     "ratio": 1.18,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0237,
+     "bruit_attendu": 0.0239,
+     "ratio": 0.99,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0262,
+     "bruit_attendu": 0.0315,
+     "ratio": 0.83,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0155,
+     "bruit_attendu": 0.0317,
+     "ratio": 0.49,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0351,
+     "bruit_attendu": 0.0316,
+     "ratio": 1.11,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "MATCH_ATTRIBUE_NON_JOUE",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "MATCH_ATTRIBUE_NON_JOUE",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL"
+   }
+  },
+  "D2": {
+   "saisons": {
+    "2122": {
+     "n": 306,
+     "buts_moy": 2.915,
+     "dom": 0.3889,
+     "nul": 0.281,
+     "ext": 0.3301,
+     "o15": 0.8399,
+     "o25": 0.5948,
+     "o35": 0.3235,
+     "btts": 0.585
+    },
+    "2223": {
+     "n": 306,
+     "buts_moy": 2.944,
+     "dom": 0.4641,
+     "nul": 0.2386,
+     "ext": 0.2974,
+     "o15": 0.7843,
+     "o25": 0.5784,
+     "o35": 0.3137,
+     "btts": 0.5556
+    },
+    "2324": {
+     "n": 306,
+     "buts_moy": 3.095,
+     "dom": 0.4575,
+     "nul": 0.232,
+     "ext": 0.3105,
+     "o15": 0.8268,
+     "o25": 0.6078,
+     "o35": 0.3693,
+     "btts": 0.5915
+    },
+    "2425": {
+     "n": 306,
+     "buts_moy": 3.023,
+     "dom": 0.4052,
+     "nul": 0.281,
+     "ext": 0.3137,
+     "o15": 0.7974,
+     "o25": 0.5948,
+     "o35": 0.3693,
+     "btts": 0.6013
+    },
+    "2526": {
+     "n": 306,
+     "buts_moy": 2.931,
+     "dom": 0.4608,
+     "nul": 0.2418,
+     "ext": 0.2974,
+     "o15": 0.8039,
+     "o25": 0.5784,
+     "o35": 0.3137,
+     "btts": 0.5948
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0474,
+     "bruit_attendu": 0.032,
+     "ratio": 1.48,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0343,
+     "bruit_attendu": 0.028,
+     "ratio": 1.22,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0163,
+     "bruit_attendu": 0.0298,
+     "ratio": 0.55,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0335,
+     "bruit_attendu": 0.0254,
+     "ratio": 1.32,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0188,
+     "bruit_attendu": 0.0317,
+     "ratio": 0.59,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0303,
+     "bruit_attendu": 0.0306,
+     "ratio": 0.99,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0204,
+     "bruit_attendu": 0.0318,
+     "ratio": 0.64,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL"
+   }
+  },
+  "DNK": {
+   "saisons": {
+    "2122": {
+     "n": 193,
+     "buts_moy": 2.653,
+     "dom": 0.3938,
+     "nul": 0.3057,
+     "ext": 0.3005,
+     "o15": 0.7876,
+     "o25": 0.4715,
+     "o35": 0.285,
+     "btts": 0.5596
+    },
+    "2223": {
+     "n": 193,
+     "buts_moy": 2.741,
+     "dom": 0.399,
+     "nul": 0.2798,
+     "ext": 0.3212,
+     "o15": 0.7513,
+     "o25": 0.5026,
+     "o35": 0.3057,
+     "btts": 0.5648
+    },
+    "2324": {
+     "n": 193,
+     "buts_moy": 2.819,
+     "dom": 0.4041,
+     "nul": 0.2539,
+     "ext": 0.342,
+     "o15": 0.7876,
+     "o25": 0.5699,
+     "o35": 0.3057,
+     "btts": 0.5855
+    },
+    "2425": {
+     "n": 192,
+     "buts_moy": 3.135,
+     "dom": 0.4531,
+     "nul": 0.2812,
+     "ext": 0.2656,
+     "o15": 0.8333,
+     "o25": 0.6042,
+     "o35": 0.4427,
+     "btts": 0.6406
+    },
+    "2526": {
+     "n": 192,
+     "buts_moy": 3.099,
+     "dom": 0.4167,
+     "nul": 0.2344,
+     "ext": 0.349,
+     "o15": 0.8229,
+     "o25": 0.6042,
+     "o35": 0.3438,
+     "btts": 0.5938
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0239,
+     "bruit_attendu": 0.04,
+     "ratio": 0.6,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0315,
+     "bruit_attendu": 0.0361,
+     "ratio": 0.87,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0503,
+     "bruit_attendu": 0.0377,
+     "ratio": 1.33,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0322,
+     "bruit_attendu": 0.0328,
+     "ratio": 0.98,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0332,
+     "bruit_attendu": 0.0402,
+     "ratio": 0.82,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0641,
+     "bruit_attendu": 0.0384,
+     "ratio": 1.67,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0319,
+     "bruit_attendu": 0.0399,
+     "ratio": 0.8,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "MATCH_ARCHIVE_MANQUANT",
+    "2526": "MATCH_ARCHIVE_MANQUANT"
+   }
+  },
+  "E0": {
+   "saisons": {
+    "2122": {
+     "n": 380,
+     "buts_moy": 2.818,
+     "dom": 0.4289,
+     "nul": 0.2316,
+     "ext": 0.3395,
+     "o15": 0.7711,
+     "o25": 0.5395,
+     "o35": 0.3263,
+     "btts": 0.5
+    },
+    "2223": {
+     "n": 380,
+     "buts_moy": 2.853,
+     "dom": 0.4842,
+     "nul": 0.2289,
+     "ext": 0.2868,
+     "o15": 0.7553,
+     "o25": 0.5263,
+     "o35": 0.3184,
+     "btts": 0.5158
+    },
+    "2324": {
+     "n": 380,
+     "buts_moy": 3.279,
+     "dom": 0.4605,
+     "nul": 0.2158,
+     "ext": 0.3237,
+     "o15": 0.8605,
+     "o25": 0.6474,
+     "o35": 0.4368,
+     "btts": 0.6158
+    },
+    "2425": {
+     "n": 380,
+     "buts_moy": 2.934,
+     "dom": 0.4079,
+     "nul": 0.2447,
+     "ext": 0.3474,
+     "o15": 0.8132,
+     "o25": 0.5658,
+     "o35": 0.3421,
+     "btts": 0.5737
+    },
+    "2526": {
+     "n": 380,
+     "buts_moy": 2.75,
+     "dom": 0.4263,
+     "nul": 0.2737,
+     "ext": 0.3,
+     "o15": 0.7895,
+     "o25": 0.55,
+     "o35": 0.2842,
+     "btts": 0.5605
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0375,
+     "bruit_attendu": 0.0287,
+     "ratio": 1.3,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0184,
+     "bruit_attendu": 0.0245,
+     "ratio": 0.75,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0402,
+     "bruit_attendu": 0.027,
+     "ratio": 1.49,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.048,
+     "bruit_attendu": 0.023,
+     "ratio": 2.09,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0579,
+     "bruit_attendu": 0.0286,
+     "ratio": 2.03,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0697,
+     "bruit_attendu": 0.0275,
+     "ratio": 2.53,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0428,
+     "bruit_attendu": 0.0287,
+     "ratio": 1.49,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU"
+   }
+  },
+  "E1": {
+   "saisons": {
+    "2122": {
+     "n": 552,
+     "buts_moy": 2.509,
+     "dom": 0.4457,
+     "nul": 0.2518,
+     "ext": 0.3025,
+     "o15": 0.7192,
+     "o25": 0.4674,
+     "o35": 0.2355,
+     "btts": 0.4855
+    },
+    "2223": {
+     "n": 552,
+     "buts_moy": 2.431,
+     "dom": 0.4112,
+     "nul": 0.2699,
+     "ext": 0.3188,
+     "o15": 0.7011,
+     "o25": 0.4402,
+     "o35": 0.2246,
+     "btts": 0.4837
+    },
+    "2324": {
+     "n": 552,
+     "buts_moy": 2.681,
+     "dom": 0.4457,
+     "nul": 0.2337,
+     "ext": 0.3207,
+     "o15": 0.7482,
+     "o25": 0.5217,
+     "o35": 0.2844,
+     "btts": 0.5236
+    },
+    "2425": {
+     "n": 552,
+     "buts_moy": 2.451,
+     "dom": 0.4583,
+     "nul": 0.2826,
+     "ext": 0.2591,
+     "o15": 0.7083,
+     "o25": 0.4438,
+     "o35": 0.2174,
+     "btts": 0.5018
+    },
+    "2526": {
+     "n": 552,
+     "buts_moy": 2.605,
+     "dom": 0.4167,
+     "nul": 0.2645,
+     "ext": 0.3188,
+     "o15": 0.7645,
+     "o25": 0.5072,
+     "o35": 0.25,
+     "btts": 0.5688
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0308,
+     "bruit_attendu": 0.0238,
+     "ratio": 1.29,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0303,
+     "bruit_attendu": 0.0211,
+     "ratio": 1.44,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0349,
+     "bruit_attendu": 0.022,
+     "ratio": 1.58,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0403,
+     "bruit_attendu": 0.0214,
+     "ratio": 1.88,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0625,
+     "bruit_attendu": 0.024,
+     "ratio": 2.61,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0426,
+     "bruit_attendu": 0.0206,
+     "ratio": 2.07,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0326,
+     "bruit_attendu": 0.024,
+     "ratio": 1.36,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL"
+   }
+  },
+  "E2": {
+   "saisons": {
+    "2122": {
+     "n": 552,
+     "buts_moy": 2.697,
+     "dom": 0.4475,
+     "nul": 0.2645,
+     "ext": 0.288,
+     "o15": 0.7627,
+     "o25": 0.4909,
+     "o35": 0.2826,
+     "btts": 0.5272
+    },
+    "2223": {
+     "n": 552,
+     "buts_moy": 2.562,
+     "dom": 0.4366,
+     "nul": 0.2536,
+     "ext": 0.3098,
+     "o15": 0.7283,
+     "o25": 0.4692,
+     "o35": 0.2464,
+     "btts": 0.4746
+    },
+    "2324": {
+     "n": 552,
+     "buts_moy": 2.585,
+     "dom": 0.4239,
+     "nul": 0.2446,
+     "ext": 0.3315,
+     "o15": 0.7391,
+     "o25": 0.4982,
+     "o35": 0.2536,
+     "btts": 0.5109
+    },
+    "2425": {
+     "n": 552,
+     "buts_moy": 2.585,
+     "dom": 0.4312,
+     "nul": 0.2391,
+     "ext": 0.3297,
+     "o15": 0.7283,
+     "o25": 0.5018,
+     "o35": 0.2373,
+     "btts": 0.5163
+    },
+    "2526": {
+     "n": 552,
+     "buts_moy": 2.63,
+     "dom": 0.4601,
+     "nul": 0.2518,
+     "ext": 0.288,
+     "o15": 0.7264,
+     "o25": 0.5091,
+     "o35": 0.2772,
+     "btts": 0.5254
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.015,
+     "bruit_attendu": 0.0238,
+     "ratio": 0.63,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0095,
+     "bruit_attendu": 0.0208,
+     "ratio": 0.46,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0218,
+     "bruit_attendu": 0.0223,
+     "ratio": 0.98,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0145,
+     "bruit_attendu": 0.0212,
+     "ratio": 0.68,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0154,
+     "bruit_attendu": 0.024,
+     "ratio": 0.64,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0249,
+     "bruit_attendu": 0.0209,
+     "ratio": 1.19,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0258,
+     "bruit_attendu": 0.024,
+     "ratio": 1.08,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL"
+   }
+  },
+  "E3": {
+   "saisons": {
+    "2122": {
+     "n": 552,
+     "buts_moy": 2.462,
+     "dom": 0.4185,
+     "nul": 0.2754,
+     "ext": 0.3062,
+     "o15": 0.7228,
+     "o25": 0.4529,
+     "o35": 0.2319,
+     "btts": 0.4946
+    },
+    "2223": {
+     "n": 552,
+     "buts_moy": 2.344,
+     "dom": 0.4149,
+     "nul": 0.2899,
+     "ext": 0.2953,
+     "o15": 0.6884,
+     "o25": 0.413,
+     "o35": 0.1993,
+     "btts": 0.4837
+    },
+    "2324": {
+     "n": 552,
+     "buts_moy": 2.98,
+     "dom": 0.4493,
+     "nul": 0.2373,
+     "ext": 0.3134,
+     "o15": 0.7971,
+     "o25": 0.5616,
+     "o35": 0.3315,
+     "btts": 0.5906
+    },
+    "2425": {
+     "n": 552,
+     "buts_moy": 2.495,
+     "dom": 0.4203,
+     "nul": 0.2862,
+     "ext": 0.2935,
+     "o15": 0.7047,
+     "o25": 0.4565,
+     "o35": 0.2373,
+     "btts": 0.4891
+    },
+    "2526": {
+     "n": 552,
+     "buts_moy": 2.578,
+     "dom": 0.4203,
+     "nul": 0.2482,
+     "ext": 0.3315,
+     "o15": 0.7264,
+     "o25": 0.4819,
+     "o35": 0.2717,
+     "btts": 0.5254
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0167,
+     "bruit_attendu": 0.0237,
+     "ratio": 0.71,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0385,
+     "bruit_attendu": 0.0213,
+     "ratio": 1.81,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0217,
+     "bruit_attendu": 0.0221,
+     "ratio": 0.98,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0643,
+     "bruit_attendu": 0.0213,
+     "ratio": 3.01,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0798,
+     "bruit_attendu": 0.0239,
+     "ratio": 3.33,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0733,
+     "bruit_attendu": 0.0209,
+     "ratio": 3.51,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0639,
+     "bruit_attendu": 0.024,
+     "ratio": 2.67,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL"
+   }
+  },
+  "EC": {
+   "saisons": {
+    "2122": {
+     "n": 506,
+     "buts_moy": 2.739,
+     "dom": 0.4407,
+     "nul": 0.2292,
+     "ext": 0.33,
+     "o15": 0.7411,
+     "o25": 0.496,
+     "o35": 0.2984,
+     "btts": 0.502
+    },
+    "2223": {
+     "n": 552,
+     "buts_moy": 2.79,
+     "dom": 0.442,
+     "nul": 0.2572,
+     "ext": 0.3007,
+     "o15": 0.7826,
+     "o25": 0.5072,
+     "o35": 0.308,
+     "btts": 0.5598
+    },
+    "2324": {
+     "n": 552,
+     "buts_moy": 2.94,
+     "dom": 0.4221,
+     "nul": 0.2554,
+     "ext": 0.3225,
+     "o15": 0.7989,
+     "o25": 0.5543,
+     "o35": 0.3315,
+     "btts": 0.5924
+    },
+    "2425": {
+     "n": 552,
+     "buts_moy": 2.696,
+     "dom": 0.4221,
+     "nul": 0.2844,
+     "ext": 0.2935,
+     "o15": 0.7536,
+     "o25": 0.5036,
+     "o35": 0.288,
+     "btts": 0.5399
+    },
+    "2526": {
+     "n": 552,
+     "buts_moy": 2.922,
+     "dom": 0.433,
+     "nul": 0.2319,
+     "ext": 0.3351,
+     "o15": 0.8043,
+     "o25": 0.567,
+     "o35": 0.3116,
+     "btts": 0.5634
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.008,
+     "bruit_attendu": 0.0239,
+     "ratio": 0.34,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0278,
+     "bruit_attendu": 0.0211,
+     "ratio": 1.32,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0304,
+     "bruit_attendu": 0.0224,
+     "ratio": 1.36,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0385,
+     "bruit_attendu": 0.0201,
+     "ratio": 1.91,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0431,
+     "bruit_attendu": 0.0241,
+     "ratio": 1.79,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0251,
+     "bruit_attendu": 0.0223,
+     "ratio": 1.12,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0416,
+     "bruit_attendu": 0.024,
+     "ratio": 1.73,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL"
+   }
+  },
+  "F1": {
+   "saisons": {
+    "2122": {
+     "n": 380,
+     "buts_moy": 2.808,
+     "dom": 0.4263,
+     "nul": 0.2684,
+     "ext": 0.3053,
+     "o15": 0.7711,
+     "o25": 0.5026,
+     "o35": 0.3184,
+     "btts": 0.5526
+    },
+    "2223": {
+     "n": 380,
+     "buts_moy": 2.808,
+     "dom": 0.4289,
+     "nul": 0.2421,
+     "ext": 0.3289,
+     "o15": 0.7816,
+     "o25": 0.5632,
+     "o35": 0.2921,
+     "btts": 0.5816
+    },
+    "2324": {
+     "n": 306,
+     "buts_moy": 2.699,
+     "dom": 0.3922,
+     "nul": 0.2647,
+     "ext": 0.3431,
+     "o15": 0.7549,
+     "o25": 0.5294,
+     "o35": 0.2876,
+     "btts": 0.5392
+    },
+    "2425": {
+     "n": 306,
+     "buts_moy": 2.977,
+     "dom": 0.4673,
+     "nul": 0.2026,
+     "ext": 0.3301,
+     "o15": 0.8235,
+     "o25": 0.5556,
+     "o35": 0.3529,
+     "btts": 0.5686
+    },
+    "2526": {
+     "n": 306,
+     "buts_moy": 2.82,
+     "dom": 0.4608,
+     "nul": 0.2451,
+     "ext": 0.2941,
+     "o15": 0.7255,
+     "o25": 0.5261,
+     "o35": 0.3268,
+     "btts": 0.5065
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0302,
+     "bruit_attendu": 0.0307,
+     "ratio": 0.98,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0384,
+     "bruit_attendu": 0.0265,
+     "ratio": 1.45,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0217,
+     "bruit_attendu": 0.0291,
+     "ratio": 0.75,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0509,
+     "bruit_attendu": 0.0258,
+     "ratio": 1.97,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0375,
+     "bruit_attendu": 0.0309,
+     "ratio": 1.21,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0305,
+     "bruit_attendu": 0.0288,
+     "ratio": 1.06,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0407,
+     "bruit_attendu": 0.0308,
+     "ratio": 1.32,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2526": "MATCH_ATTRIBUE_NON_JOUE"
+   }
+  },
+  "F2": {
+   "saisons": {
+    "2122": {
+     "n": 380,
+     "buts_moy": 2.284,
+     "dom": 0.4132,
+     "nul": 0.2789,
+     "ext": 0.3079,
+     "o15": 0.6789,
+     "o25": 0.4079,
+     "o35": 0.1921,
+     "btts": 0.4632
+    },
+    "2223": {
+     "n": 380,
+     "buts_moy": 2.411,
+     "dom": 0.4395,
+     "nul": 0.2711,
+     "ext": 0.2895,
+     "o15": 0.6737,
+     "o25": 0.4368,
+     "o35": 0.2289,
+     "btts": 0.4763
+    },
+    "2324": {
+     "n": 380,
+     "buts_moy": 2.455,
+     "dom": 0.4026,
+     "nul": 0.2868,
+     "ext": 0.3105,
+     "o15": 0.6842,
+     "o25": 0.4684,
+     "o35": 0.25,
+     "btts": 0.4868
+    },
+    "2425": {
+     "n": 306,
+     "buts_moy": 2.578,
+     "dom": 0.4869,
+     "nul": 0.2353,
+     "ext": 0.2778,
+     "o15": 0.7092,
+     "o25": 0.4804,
+     "o35": 0.2712,
+     "btts": 0.4804
+    },
+    "2526": {
+     "n": 305,
+     "buts_moy": 2.541,
+     "dom": 0.377,
+     "nul": 0.3049,
+     "ext": 0.318,
+     "o15": 0.6787,
+     "o25": 0.4754,
+     "o35": 0.2656,
+     "btts": 0.518
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0643,
+     "bruit_attendu": 0.0299,
+     "ratio": 2.15,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0361,
+     "bruit_attendu": 0.0269,
+     "ratio": 1.35,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0281,
+     "bruit_attendu": 0.0276,
+     "ratio": 1.02,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0178,
+     "bruit_attendu": 0.028,
+     "ratio": 0.64,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0194,
+     "bruit_attendu": 0.0301,
+     "ratio": 0.64,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0212,
+     "bruit_attendu": 0.0259,
+     "ratio": 0.82,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0169,
+     "bruit_attendu": 0.0302,
+     "ratio": 0.56,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2526": "MATCH_ATTRIBUE_NON_JOUE"
+   }
+  },
+  "FIN": {
+   "saisons": {
+    "2122": {
+     "n": 164,
+     "buts_moy": 2.518,
+     "dom": 0.4268,
+     "nul": 0.2012,
+     "ext": 0.372,
+     "o15": 0.7134,
+     "o25": 0.4512,
+     "o35": 0.2439,
+     "btts": 0.4451
+    },
+    "2223": {
+     "n": 170,
+     "buts_moy": 2.941,
+     "dom": 0.4294,
+     "nul": 0.2176,
+     "ext": 0.3529,
+     "o15": 0.7824,
+     "o25": 0.5647,
+     "o35": 0.3412,
+     "btts": 0.5706
+    },
+    "2324": {
+     "n": 167,
+     "buts_moy": 2.563,
+     "dom": 0.4192,
+     "nul": 0.2455,
+     "ext": 0.3353,
+     "o15": 0.7725,
+     "o25": 0.497,
+     "o35": 0.2096,
+     "btts": 0.515
+    },
+    "2425": {
+     "n": 169,
+     "buts_moy": 2.911,
+     "dom": 0.4675,
+     "nul": 0.2485,
+     "ext": 0.284,
+     "o15": 0.7929,
+     "o25": 0.5976,
+     "o35": 0.3195,
+     "btts": 0.568
+    },
+    "2526": {
+     "n": 177,
+     "buts_moy": 3.294,
+     "dom": 0.4068,
+     "nul": 0.226,
+     "ext": 0.3672,
+     "o15": 0.8305,
+     "o25": 0.6667,
+     "o35": 0.4576,
+     "btts": 0.6497
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0305,
+     "bruit_attendu": 0.043,
+     "ratio": 0.71,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0175,
+     "bruit_attendu": 0.0366,
+     "ratio": 0.48,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0428,
+     "bruit_attendu": 0.0409,
+     "ratio": 1.05,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0342,
+     "bruit_attendu": 0.0359,
+     "ratio": 0.95,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0877,
+     "bruit_attendu": 0.0429,
+     "ratio": 2.04,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.1192,
+     "bruit_attendu": 0.0397,
+     "ratio": 3.0,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.079,
+     "bruit_attendu": 0.043,
+     "ratio": 1.83,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "MATCH_ARCHIVE_MANQUANT",
+    "2324": "MATCH_ARCHIVE_MANQUANT",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2526": "MATCH_ARCHIVE_MANQUANT"
+   }
+  },
+  "G1": {
+   "saisons": {
+    "2122": {
+     "n": 240,
+     "buts_moy": 2.375,
+     "dom": 0.425,
+     "nul": 0.25,
+     "ext": 0.325,
+     "o15": 0.6708,
+     "o25": 0.45,
+     "o35": 0.2167,
+     "btts": 0.4417
+    },
+    "2223": {
+     "n": 240,
+     "buts_moy": 2.35,
+     "dom": 0.4042,
+     "nul": 0.3,
+     "ext": 0.2958,
+     "o15": 0.7083,
+     "o25": 0.4083,
+     "o35": 0.2125,
+     "btts": 0.4125
+    },
+    "2324": {
+     "n": 240,
+     "buts_moy": 2.958,
+     "dom": 0.4458,
+     "nul": 0.2583,
+     "ext": 0.2958,
+     "o15": 0.8375,
+     "o25": 0.5917,
+     "o35": 0.35,
+     "btts": 0.5333
+    },
+    "2425": {
+     "n": 233,
+     "buts_moy": 2.442,
+     "dom": 0.4034,
+     "nul": 0.2232,
+     "ext": 0.3734,
+     "o15": 0.7082,
+     "o25": 0.4721,
+     "o35": 0.1974,
+     "btts": 0.485
+    },
+    "2526": {
+     "n": 236,
+     "buts_moy": 2.568,
+     "dom": 0.411,
+     "nul": 0.2839,
+     "ext": 0.3051,
+     "o15": 0.75,
+     "o25": 0.4958,
+     "o35": 0.2458,
+     "btts": 0.4873
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0281,
+     "bruit_attendu": 0.0361,
+     "ratio": 0.78,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0469,
+     "bruit_attendu": 0.0322,
+     "ratio": 1.46,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0438,
+     "bruit_attendu": 0.0341,
+     "ratio": 1.28,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0844,
+     "bruit_attendu": 0.0319,
+     "ratio": 2.65,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0921,
+     "bruit_attendu": 0.0365,
+     "ratio": 2.52,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0857,
+     "bruit_attendu": 0.0315,
+     "ratio": 2.72,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0502,
+     "bruit_attendu": 0.0365,
+     "ratio": 1.37,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_NON_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "MATCH_ARCHIVE_MANQUANT",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL"
+   }
+  },
+  "I1": {
+   "saisons": {
+    "2122": {
+     "n": 380,
+     "buts_moy": 2.866,
+     "dom": 0.3895,
+     "nul": 0.2579,
+     "ext": 0.3526,
+     "o15": 0.7816,
+     "o25": 0.5579,
+     "o35": 0.3263,
+     "btts": 0.5737
+    },
+    "2223": {
+     "n": 380,
+     "buts_moy": 2.563,
+     "dom": 0.4237,
+     "nul": 0.2632,
+     "ext": 0.3132,
+     "o15": 0.7526,
+     "o25": 0.4553,
+     "o35": 0.2421,
+     "btts": 0.5026
+    },
+    "2324": {
+     "n": 380,
+     "buts_moy": 2.611,
+     "dom": 0.4184,
+     "nul": 0.2947,
+     "ext": 0.2868,
+     "o15": 0.7447,
+     "o25": 0.4921,
+     "o35": 0.2632,
+     "btts": 0.5237
+    },
+    "2425": {
+     "n": 380,
+     "buts_moy": 2.561,
+     "dom": 0.3974,
+     "nul": 0.2842,
+     "ext": 0.3184,
+     "o15": 0.7395,
+     "o25": 0.4816,
+     "o35": 0.2605,
+     "btts": 0.5158
+    },
+    "2526": {
+     "n": 380,
+     "buts_moy": 2.426,
+     "dom": 0.3895,
+     "nul": 0.2605,
+     "ext": 0.35,
+     "o15": 0.7,
+     "o25": 0.4579,
+     "o35": 0.2211,
+     "btts": 0.4526
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0171,
+     "bruit_attendu": 0.0284,
+     "ratio": 0.6,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0178,
+     "bruit_attendu": 0.0258,
+     "ratio": 0.69,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0323,
+     "bruit_attendu": 0.0269,
+     "ratio": 1.2,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0204,
+     "bruit_attendu": 0.0252,
+     "ratio": 0.81,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0434,
+     "bruit_attendu": 0.0289,
+     "ratio": 1.5,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0368,
+     "bruit_attendu": 0.0254,
+     "ratio": 1.45,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0408,
+     "bruit_attendu": 0.0289,
+     "ratio": 1.41,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2223": "MATCH_ARCHIVE_MANQUANT",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU"
+   }
+  },
+  "I2": {
+   "saisons": {
+    "2122": {
+     "n": 380,
+     "buts_moy": 2.479,
+     "dom": 0.4,
+     "nul": 0.3079,
+     "ext": 0.2921,
+     "o15": 0.7237,
+     "o25": 0.4158,
+     "o35": 0.2447,
+     "btts": 0.5184
+    },
+    "2223": {
+     "n": 380,
+     "buts_moy": 2.345,
+     "dom": 0.4053,
+     "nul": 0.3211,
+     "ext": 0.2737,
+     "o15": 0.6763,
+     "o25": 0.4079,
+     "o35": 0.2079,
+     "btts": 0.4921
+    },
+    "2324": {
+     "n": 380,
+     "buts_moy": 2.521,
+     "dom": 0.3658,
+     "nul": 0.3211,
+     "ext": 0.3132,
+     "o15": 0.7263,
+     "o25": 0.4868,
+     "o35": 0.2421,
+     "btts": 0.5605
+    },
+    "2425": {
+     "n": 380,
+     "buts_moy": 2.463,
+     "dom": 0.4026,
+     "nul": 0.3395,
+     "ext": 0.2579,
+     "o15": 0.7132,
+     "o25": 0.4579,
+     "o35": 0.2447,
+     "btts": 0.5421
+    },
+    "2526": {
+     "n": 380,
+     "buts_moy": 2.561,
+     "dom": 0.45,
+     "nul": 0.3105,
+     "ext": 0.2395,
+     "o15": 0.7553,
+     "o25": 0.4842,
+     "o35": 0.2579,
+     "btts": 0.5421
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0322,
+     "bruit_attendu": 0.0283,
+     "ratio": 1.14,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0152,
+     "bruit_attendu": 0.0271,
+     "ratio": 0.56,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0329,
+     "bruit_attendu": 0.0259,
+     "ratio": 1.27,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0381,
+     "bruit_attendu": 0.0261,
+     "ratio": 1.46,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0355,
+     "bruit_attendu": 0.0288,
+     "ratio": 1.23,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0217,
+     "bruit_attendu": 0.0246,
+     "ratio": 0.88,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0283,
+     "bruit_attendu": 0.0289,
+     "ratio": 0.98,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "MATCH_ARCHIVE_MANQUANT",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL"
+   }
+  },
+  "IRL": {
+   "saisons": {
+    "2122": {
+     "n": 186,
+     "buts_moy": 2.527,
+     "dom": 0.4086,
+     "nul": 0.2419,
+     "ext": 0.3495,
+     "o15": 0.7419,
+     "o25": 0.4731,
+     "o35": 0.2151,
+     "btts": 0.543
+    },
+    "2223": {
+     "n": 181,
+     "buts_moy": 2.492,
+     "dom": 0.4475,
+     "nul": 0.2652,
+     "ext": 0.2873,
+     "o15": 0.7182,
+     "o25": 0.4751,
+     "o35": 0.2376,
+     "btts": 0.4862
+    },
+    "2324": {
+     "n": 181,
+     "buts_moy": 2.602,
+     "dom": 0.4475,
+     "nul": 0.2541,
+     "ext": 0.2983,
+     "o15": 0.7348,
+     "o25": 0.4862,
+     "o35": 0.2818,
+     "btts": 0.4586
+    },
+    "2425": {
+     "n": 181,
+     "buts_moy": 2.276,
+     "dom": 0.4144,
+     "nul": 0.2983,
+     "ext": 0.2873,
+     "o15": 0.6685,
+     "o25": 0.4199,
+     "o35": 0.1989,
+     "btts": 0.4807
+    },
+    "2526": {
+     "n": 180,
+     "buts_moy": 2.428,
+     "dom": 0.4278,
+     "nul": 0.2889,
+     "ext": 0.2833,
+     "o15": 0.7,
+     "o25": 0.4611,
+     "o35": 0.2056,
+     "btts": 0.5333
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0214,
+     "bruit_attendu": 0.0415,
+     "ratio": 0.51,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.022,
+     "bruit_attendu": 0.0372,
+     "ratio": 0.59,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0221,
+     "bruit_attendu": 0.0383,
+     "ratio": 0.58,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0345,
+     "bruit_attendu": 0.0379,
+     "ratio": 0.91,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0302,
+     "bruit_attendu": 0.0417,
+     "ratio": 0.72,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0391,
+     "bruit_attendu": 0.0353,
+     "ratio": 1.11,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0398,
+     "bruit_attendu": 0.0418,
+     "ratio": 0.95,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "MATCH_ATTRIBUE_NON_JOUE",
+    "2223": "PHASE_EXCLUE_NON_DETAILLEE",
+    "2324": "MATCH_ARCHIVE_MANQUANT",
+    "2425": "MATCH_ARCHIVE_MANQUANT",
+    "2526": "PHASE_EXCLUE_NON_DETAILLEE"
+   }
+  },
+  "JPN": {
+   "saisons": {
+    "2122": {
+     "n": 380,
+     "buts_moy": 2.426,
+     "dom": 0.4211,
+     "nul": 0.2474,
+     "ext": 0.3316,
+     "o15": 0.6868,
+     "o25": 0.4342,
+     "o35": 0.2158,
+     "btts": 0.4605
+    },
+    "2223": {
+     "n": 310,
+     "buts_moy": 2.529,
+     "dom": 0.3935,
+     "nul": 0.3226,
+     "ext": 0.2839,
+     "o15": 0.7161,
+     "o25": 0.4548,
+     "o35": 0.2677,
+     "btts": 0.4935
+    },
+    "2324": {
+     "n": 306,
+     "buts_moy": 2.539,
+     "dom": 0.4216,
+     "nul": 0.2549,
+     "ext": 0.3235,
+     "o15": 0.7157,
+     "o25": 0.4804,
+     "o35": 0.2582,
+     "btts": 0.5327
+    },
+    "2425": {
+     "n": 380,
+     "buts_moy": 2.666,
+     "dom": 0.3842,
+     "nul": 0.2737,
+     "ext": 0.3421,
+     "o15": 0.7421,
+     "o25": 0.4974,
+     "o35": 0.2605,
+     "btts": 0.5316
+    },
+    "2526": {
+     "n": 380,
+     "buts_moy": 2.397,
+     "dom": 0.4421,
+     "nul": 0.2553,
+     "ext": 0.3026,
+     "o15": 0.6526,
+     "o25": 0.4474,
+     "o35": 0.2105,
+     "btts": 0.4684
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0377,
+     "bruit_attendu": 0.03,
+     "ratio": 1.26,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.045,
+     "bruit_attendu": 0.0273,
+     "ratio": 1.65,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0364,
+     "bruit_attendu": 0.0284,
+     "ratio": 1.28,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0364,
+     "bruit_attendu": 0.0277,
+     "ratio": 1.31,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0283,
+     "bruit_attendu": 0.0305,
+     "ratio": 0.93,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0284,
+     "bruit_attendu": 0.0264,
+     "ratio": 1.07,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0341,
+     "bruit_attendu": 0.0305,
+     "ratio": 1.12,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "SCORE_ATTRIBUE_DIVERGENT",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU"
+   }
+  },
+  "MEX": {
+   "saisons": {
+    "2122": {
+     "n": 342,
+     "buts_moy": 2.395,
+     "dom": 0.4006,
+     "nul": 0.3012,
+     "ext": 0.2982,
+     "o15": 0.7251,
+     "o25": 0.4474,
+     "o35": 0.2105,
+     "btts": 0.5029
+    },
+    "2223": {
+     "n": 342,
+     "buts_moy": 2.807,
+     "dom": 0.4298,
+     "nul": 0.2778,
+     "ext": 0.2924,
+     "o15": 0.7544,
+     "o25": 0.5409,
+     "o35": 0.3216,
+     "btts": 0.5819
+    },
+    "2324": {
+     "n": 340,
+     "buts_moy": 2.844,
+     "dom": 0.4529,
+     "nul": 0.2618,
+     "ext": 0.2853,
+     "o15": 0.7971,
+     "o25": 0.5412,
+     "o35": 0.3088,
+     "btts": 0.5676
+    },
+    "2425": {
+     "n": 340,
+     "buts_moy": 2.744,
+     "dom": 0.4882,
+     "nul": 0.2382,
+     "ext": 0.2735,
+     "o15": 0.7618,
+     "o25": 0.5471,
+     "o35": 0.2794,
+     "btts": 0.5471
+    },
+    "2526": {
+     "n": 336,
+     "buts_moy": 2.905,
+     "dom": 0.4702,
+     "nul": 0.253,
+     "ext": 0.2768,
+     "o15": 0.7768,
+     "o25": 0.5536,
+     "o35": 0.3393,
+     "btts": 0.5863
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0264,
+     "bruit_attendu": 0.0304,
+     "ratio": 0.87,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0195,
+     "bruit_attendu": 0.0269,
+     "ratio": 0.72,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.007,
+     "bruit_attendu": 0.0276,
+     "ratio": 0.25,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0306,
+     "bruit_attendu": 0.0259,
+     "ratio": 1.18,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0265,
+     "bruit_attendu": 0.0305,
+     "ratio": 0.87,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0533,
+     "bruit_attendu": 0.0279,
+     "ratio": 1.91,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0382,
+     "bruit_attendu": 0.0304,
+     "ratio": 1.26,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_NON_VERIFIEE"
+   },
+   "archive": {
+    "2122": "MATCH_ATTRIBUE_NON_JOUE",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   }
+  },
+  "N1": {
+   "saisons": {
+    "2122": {
+     "n": 306,
+     "buts_moy": 2.859,
+     "dom": 0.4314,
+     "nul": 0.2092,
+     "ext": 0.3595,
+     "o15": 0.7614,
+     "o25": 0.5523,
+     "o35": 0.3235,
+     "btts": 0.549
+    },
+    "2223": {
+     "n": 306,
+     "buts_moy": 3.056,
+     "dom": 0.4477,
+     "nul": 0.2386,
+     "ext": 0.3137,
+     "o15": 0.7876,
+     "o25": 0.5948,
+     "o35": 0.3856,
+     "btts": 0.5261
+    },
+    "2324": {
+     "n": 306,
+     "buts_moy": 3.242,
+     "dom": 0.4314,
+     "nul": 0.2484,
+     "ext": 0.3203,
+     "o15": 0.8529,
+     "o25": 0.6373,
+     "o35": 0.4444,
+     "btts": 0.5654
+    },
+    "2425": {
+     "n": 306,
+     "buts_moy": 2.987,
+     "dom": 0.4542,
+     "nul": 0.2516,
+     "ext": 0.2941,
+     "o15": 0.8105,
+     "o25": 0.5523,
+     "o35": 0.3333,
+     "btts": 0.5556
+    },
+    "2526": {
+     "n": 306,
+     "buts_moy": 3.176,
+     "dom": 0.4444,
+     "nul": 0.2614,
+     "ext": 0.2941,
+     "o15": 0.866,
+     "o25": 0.6176,
+     "o35": 0.3791,
+     "btts": 0.6275
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0163,
+     "bruit_attendu": 0.032,
+     "ratio": 0.51,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0131,
+     "bruit_attendu": 0.0277,
+     "ratio": 0.47,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0197,
+     "bruit_attendu": 0.0299,
+     "ratio": 0.66,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0474,
+     "bruit_attendu": 0.0249,
+     "ratio": 1.9,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0588,
+     "bruit_attendu": 0.0317,
+     "ratio": 1.86,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0695,
+     "bruit_attendu": 0.0312,
+     "ratio": 2.22,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.036,
+     "bruit_attendu": 0.032,
+     "ratio": 1.12,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL"
+   }
+  },
+  "NOR": {
+   "saisons": {
+    "2122": {
+     "n": 241,
+     "buts_moy": 3.046,
+     "dom": 0.4523,
+     "nul": 0.2739,
+     "ext": 0.2739,
+     "o15": 0.8465,
+     "o25": 0.6058,
+     "o35": 0.3734,
+     "btts": 0.6058
+    },
+    "2223": {
+     "n": 242,
+     "buts_moy": 3.256,
+     "dom": 0.4587,
+     "nul": 0.2355,
+     "ext": 0.3058,
+     "o15": 0.8264,
+     "o25": 0.6612,
+     "o35": 0.4174,
+     "btts": 0.6322
+    },
+    "2324": {
+     "n": 242,
+     "buts_moy": 3.107,
+     "dom": 0.5041,
+     "nul": 0.1736,
+     "ext": 0.3223,
+     "o15": 0.7934,
+     "o25": 0.5992,
+     "o35": 0.3884,
+     "btts": 0.562
+    },
+    "2425": {
+     "n": 242,
+     "buts_moy": 2.822,
+     "dom": 0.4174,
+     "nul": 0.2521,
+     "ext": 0.3306,
+     "o15": 0.7438,
+     "o25": 0.5413,
+     "o35": 0.3264,
+     "btts": 0.5248
+    },
+    "2526": {
+     "n": 240,
+     "buts_moy": 3.188,
+     "dom": 0.4875,
+     "nul": 0.1917,
+     "ext": 0.3208,
+     "o15": 0.8208,
+     "o25": 0.625,
+     "o35": 0.4208,
+     "btts": 0.5708
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0522,
+     "bruit_attendu": 0.0362,
+     "ratio": 1.44,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0598,
+     "bruit_attendu": 0.0302,
+     "ratio": 1.98,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0166,
+     "bruit_attendu": 0.0337,
+     "ratio": 0.49,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0449,
+     "bruit_attendu": 0.029,
+     "ratio": 1.55,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0648,
+     "bruit_attendu": 0.0354,
+     "ratio": 1.83,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0573,
+     "bruit_attendu": 0.0352,
+     "ratio": 1.63,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0449,
+     "bruit_attendu": 0.0358,
+     "ratio": 1.26,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_NON_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2526": "MATCH_ARCHIVE_MANQUANT"
+   }
+  },
+  "P1": {
+   "saisons": {
+    "2122": {
+     "n": 306,
+     "buts_moy": 2.637,
+     "dom": 0.3954,
+     "nul": 0.2843,
+     "ext": 0.3203,
+     "o15": 0.768,
+     "o25": 0.4902,
+     "o35": 0.2712,
+     "btts": 0.5294
+    },
+    "2223": {
+     "n": 306,
+     "buts_moy": 2.493,
+     "dom": 0.4902,
+     "nul": 0.1797,
+     "ext": 0.3301,
+     "o15": 0.6634,
+     "o25": 0.4771,
+     "o35": 0.2484,
+     "btts": 0.4314
+    },
+    "2324": {
+     "n": 306,
+     "buts_moy": 2.866,
+     "dom": 0.4346,
+     "nul": 0.2451,
+     "ext": 0.3203,
+     "o15": 0.7516,
+     "o25": 0.5523,
+     "o35": 0.3431,
+     "btts": 0.5359
+    },
+    "2425": {
+     "n": 306,
+     "buts_moy": 2.569,
+     "dom": 0.4314,
+     "nul": 0.2582,
+     "ext": 0.3105,
+     "o15": 0.7353,
+     "o25": 0.4902,
+     "o35": 0.2549,
+     "btts": 0.4869
+    },
+    "2526": {
+     "n": 306,
+     "buts_moy": 2.683,
+     "dom": 0.4118,
+     "nul": 0.2712,
+     "ext": 0.317,
+     "o15": 0.7484,
+     "o25": 0.5392,
+     "o35": 0.3039,
+     "btts": 0.4804
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0433,
+     "bruit_attendu": 0.032,
+     "ratio": 1.35,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.049,
+     "bruit_attendu": 0.0275,
+     "ratio": 1.78,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.009,
+     "bruit_attendu": 0.0301,
+     "ratio": 0.3,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0556,
+     "bruit_attendu": 0.0287,
+     "ratio": 1.93,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0498,
+     "bruit_attendu": 0.0322,
+     "ratio": 1.55,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0637,
+     "bruit_attendu": 0.0291,
+     "ratio": 2.19,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0645,
+     "bruit_attendu": 0.0322,
+     "ratio": 2.0,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL"
+   }
+  },
+  "POL": {
+   "saisons": {
+    "2122": {
+     "n": 306,
+     "buts_moy": 2.673,
+     "dom": 0.4412,
+     "nul": 0.2745,
+     "ext": 0.2843,
+     "o15": 0.7451,
+     "o25": 0.4967,
+     "o35": 0.2908,
+     "btts": 0.5425
+    },
+    "2223": {
+     "n": 306,
+     "buts_moy": 2.477,
+     "dom": 0.4216,
+     "nul": 0.2647,
+     "ext": 0.3137,
+     "o15": 0.7288,
+     "o25": 0.4477,
+     "o35": 0.2255,
+     "btts": 0.4837
+    },
+    "2324": {
+     "n": 306,
+     "buts_moy": 2.69,
+     "dom": 0.4346,
+     "nul": 0.3039,
+     "ext": 0.2614,
+     "o15": 0.7614,
+     "o25": 0.4869,
+     "o35": 0.2941,
+     "btts": 0.5392
+    },
+    "2425": {
+     "n": 306,
+     "buts_moy": 2.755,
+     "dom": 0.4477,
+     "nul": 0.2516,
+     "ext": 0.3007,
+     "o15": 0.7614,
+     "o25": 0.4967,
+     "o35": 0.2974,
+     "btts": 0.5588
+    },
+    "2526": {
+     "n": 306,
+     "buts_moy": 2.735,
+     "dom": 0.451,
+     "nul": 0.2778,
+     "ext": 0.2712,
+     "o15": 0.7582,
+     "o25": 0.5196,
+     "o35": 0.3007,
+     "btts": 0.5752
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0123,
+     "bruit_attendu": 0.032,
+     "ratio": 0.38,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0319,
+     "bruit_attendu": 0.0288,
+     "ratio": 1.11,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0376,
+     "bruit_attendu": 0.0292,
+     "ratio": 1.29,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.013,
+     "bruit_attendu": 0.0279,
+     "ratio": 0.47,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0302,
+     "bruit_attendu": 0.0322,
+     "ratio": 0.94,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0351,
+     "bruit_attendu": 0.0289,
+     "ratio": 1.22,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0376,
+     "bruit_attendu": 0.0321,
+     "ratio": 1.17,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_NON_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU"
+   }
+  },
+  "ROU": {
+   "saisons": {
+    "2122": {
+     "n": 320,
+     "buts_moy": 2.316,
+     "dom": 0.4562,
+     "nul": 0.2406,
+     "ext": 0.3031,
+     "o15": 0.6375,
+     "o25": 0.3906,
+     "o35": 0.2188,
+     "btts": 0.3844
+    },
+    "2223": {
+     "n": 321,
+     "buts_moy": 2.424,
+     "dom": 0.4517,
+     "nul": 0.2617,
+     "ext": 0.2866,
+     "o15": 0.6947,
+     "o25": 0.4206,
+     "o35": 0.2056,
+     "btts": 0.5016
+    },
+    "2324": {
+     "n": 321,
+     "buts_moy": 2.579,
+     "dom": 0.4237,
+     "nul": 0.3053,
+     "ext": 0.271,
+     "o15": 0.7009,
+     "o25": 0.4798,
+     "o35": 0.296,
+     "btts": 0.5421
+    },
+    "2425": {
+     "n": 315,
+     "buts_moy": 2.327,
+     "dom": 0.4095,
+     "nul": 0.3111,
+     "ext": 0.2794,
+     "o15": 0.6952,
+     "o25": 0.3873,
+     "o35": 0.1968,
+     "btts": 0.4825
+    },
+    "2526": {
+     "n": 321,
+     "buts_moy": 2.542,
+     "dom": 0.4424,
+     "nul": 0.2773,
+     "ext": 0.2804,
+     "o15": 0.7134,
+     "o25": 0.4611,
+     "o35": 0.271,
+     "btts": 0.5171
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0199,
+     "bruit_attendu": 0.0313,
+     "ratio": 0.64,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0261,
+     "bruit_attendu": 0.0284,
+     "ratio": 0.92,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0104,
+     "bruit_attendu": 0.0284,
+     "ratio": 0.37,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0218,
+     "bruit_attendu": 0.0291,
+     "ratio": 0.75,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0639,
+     "bruit_attendu": 0.0312,
+     "ratio": 2.05,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0692,
+     "bruit_attendu": 0.0268,
+     "ratio": 2.59,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.063,
+     "bruit_attendu": 0.0315,
+     "ratio": 2.0,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_NON_VERIFIEE"
+   },
+   "archive": {
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "MATCH_ARCHIVE_MANQUANT",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   }
+  },
+  "RUS": {
+   "saisons": {
+    "2122": {
+     "n": 244,
+     "buts_moy": 2.664,
+     "dom": 0.4344,
+     "nul": 0.2459,
+     "ext": 0.3197,
+     "o15": 0.7418,
+     "o25": 0.5123,
+     "o35": 0.2623,
+     "btts": 0.5738
+    },
+    "2223": {
+     "n": 244,
+     "buts_moy": 3.02,
+     "dom": 0.4672,
+     "nul": 0.2254,
+     "ext": 0.3074,
+     "o15": 0.8156,
+     "o25": 0.6066,
+     "o35": 0.3648,
+     "btts": 0.5615
+    },
+    "2324": {
+     "n": 244,
+     "buts_moy": 2.652,
+     "dom": 0.4631,
+     "nul": 0.2705,
+     "ext": 0.2664,
+     "o15": 0.75,
+     "o25": 0.4713,
+     "o35": 0.2787,
+     "btts": 0.5328
+    },
+    "2425": {
+     "n": 240,
+     "buts_moy": 2.7,
+     "dom": 0.4292,
+     "nul": 0.2708,
+     "ext": 0.3,
+     "o15": 0.7667,
+     "o25": 0.5042,
+     "o35": 0.3,
+     "btts": 0.5125
+    },
+    "2526": {
+     "n": 240,
+     "buts_moy": 2.538,
+     "dom": 0.4542,
+     "nul": 0.2792,
+     "ext": 0.2667,
+     "o15": 0.7333,
+     "o25": 0.4542,
+     "o35": 0.2417,
+     "btts": 0.5208
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0239,
+     "bruit_attendu": 0.0361,
+     "ratio": 0.66,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0186,
+     "bruit_attendu": 0.0317,
+     "ratio": 0.59,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.03,
+     "bruit_attendu": 0.0329,
+     "ratio": 0.91,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0474,
+     "bruit_attendu": 0.0306,
+     "ratio": 1.55,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0781,
+     "bruit_attendu": 0.0361,
+     "ratio": 2.16,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.067,
+     "bruit_attendu": 0.0331,
+     "ratio": 2.02,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0174,
+     "bruit_attendu": 0.0361,
+     "ratio": 0.48,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "SCORE_ATTRIBUE_DIVERGENT",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "MATCH_ARCHIVE_MANQUANT",
+    "2526": "MATCH_ARCHIVE_MANQUANT"
+   }
+  },
+  "SC0": {
+   "saisons": {
+    "2122": {
+     "n": 228,
+     "buts_moy": 2.469,
+     "dom": 0.4298,
+     "nul": 0.2763,
+     "ext": 0.2939,
+     "o15": 0.7061,
+     "o25": 0.443,
+     "o35": 0.2368,
+     "btts": 0.4868
+    },
+    "2223": {
+     "n": 228,
+     "buts_moy": 2.939,
+     "dom": 0.5175,
+     "nul": 0.1754,
+     "ext": 0.307,
+     "o15": 0.807,
+     "o25": 0.5702,
+     "o35": 0.3377,
+     "btts": 0.4956
+    },
+    "2324": {
+     "n": 228,
+     "buts_moy": 2.759,
+     "dom": 0.4298,
+     "nul": 0.2675,
+     "ext": 0.3026,
+     "o15": 0.7675,
+     "o25": 0.5351,
+     "o35": 0.307,
+     "btts": 0.5044
+    },
+    "2425": {
+     "n": 228,
+     "buts_moy": 2.961,
+     "dom": 0.4737,
+     "nul": 0.2105,
+     "ext": 0.3158,
+     "o15": 0.7982,
+     "o25": 0.6053,
+     "o35": 0.3421,
+     "btts": 0.5351
+    },
+    "2526": {
+     "n": 228,
+     "buts_moy": 2.781,
+     "dom": 0.4474,
+     "nul": 0.2675,
+     "ext": 0.2851,
+     "o15": 0.7763,
+     "o25": 0.5307,
+     "o35": 0.3246,
+     "btts": 0.5175
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0614,
+     "bruit_attendu": 0.0373,
+     "ratio": 1.65,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0768,
+     "bruit_attendu": 0.0315,
+     "ratio": 2.44,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0154,
+     "bruit_attendu": 0.0344,
+     "ratio": 0.45,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0483,
+     "bruit_attendu": 0.031,
+     "ratio": 1.56,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0768,
+     "bruit_attendu": 0.0371,
+     "ratio": 2.07,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0461,
+     "bruit_attendu": 0.0347,
+     "ratio": 1.33,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0165,
+     "bruit_attendu": 0.0373,
+     "ratio": 0.44,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL"
+   }
+  },
+  "SC1": {
+   "saisons": {
+    "2122": {
+     "n": 180,
+     "buts_moy": 2.4,
+     "dom": 0.3722,
+     "nul": 0.3222,
+     "ext": 0.3056,
+     "o15": 0.6667,
+     "o25": 0.4389,
+     "o35": 0.2333,
+     "btts": 0.4556
+    },
+    "2223": {
+     "n": 180,
+     "buts_moy": 2.8,
+     "dom": 0.3944,
+     "nul": 0.2944,
+     "ext": 0.3111,
+     "o15": 0.7667,
+     "o25": 0.5111,
+     "o35": 0.3111,
+     "btts": 0.5333
+    },
+    "2324": {
+     "n": 180,
+     "buts_moy": 2.794,
+     "dom": 0.3667,
+     "nul": 0.2611,
+     "ext": 0.3722,
+     "o15": 0.7611,
+     "o25": 0.5722,
+     "o35": 0.3056,
+     "btts": 0.55
+    },
+    "2425": {
+     "n": 180,
+     "buts_moy": 2.511,
+     "dom": 0.4778,
+     "nul": 0.2389,
+     "ext": 0.2833,
+     "o15": 0.7278,
+     "o25": 0.4667,
+     "o35": 0.2111,
+     "btts": 0.4278
+    },
+    "2526": {
+     "n": 180,
+     "buts_moy": 2.433,
+     "dom": 0.3889,
+     "nul": 0.3389,
+     "ext": 0.2722,
+     "o15": 0.7056,
+     "o25": 0.45,
+     "o35": 0.2444,
+     "btts": 0.4833
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0625,
+     "bruit_attendu": 0.0412,
+     "ratio": 1.52,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0458,
+     "bruit_attendu": 0.0378,
+     "ratio": 1.21,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0416,
+     "bruit_attendu": 0.039,
+     "ratio": 1.07,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0403,
+     "bruit_attendu": 0.037,
+     "ratio": 1.09,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0639,
+     "bruit_attendu": 0.042,
+     "ratio": 1.52,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0528,
+     "bruit_attendu": 0.0371,
+     "ratio": 1.42,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.068,
+     "bruit_attendu": 0.042,
+     "ratio": 1.62,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "PHASE_EXCLUE_NON_DETAILLEE",
+    "2223": "PHASE_EXCLUE_NON_DETAILLEE",
+    "2324": "PHASE_EXCLUE_NON_DETAILLEE",
+    "2425": "PHASE_EXCLUE_NON_DETAILLEE",
+    "2526": "PHASE_EXCLUE_NON_DETAILLEE"
+   }
+  },
+  "SC2": {
+   "saisons": {
+    "2122": {
+     "n": 180,
+     "buts_moy": 2.817,
+     "dom": 0.3944,
+     "nul": 0.2889,
+     "ext": 0.3167,
+     "o15": 0.8167,
+     "o25": 0.5333,
+     "o35": 0.2778,
+     "btts": 0.5667
+    },
+    "2223": {
+     "n": 180,
+     "buts_moy": 2.961,
+     "dom": 0.4333,
+     "nul": 0.2333,
+     "ext": 0.3333,
+     "o15": 0.8167,
+     "o25": 0.5611,
+     "o35": 0.3444,
+     "btts": 0.5167
+    },
+    "2324": {
+     "n": 180,
+     "buts_moy": 3.172,
+     "dom": 0.4111,
+     "nul": 0.2278,
+     "ext": 0.3611,
+     "o15": 0.8,
+     "o25": 0.6222,
+     "o35": 0.4167,
+     "btts": 0.5889
+    },
+    "2425": {
+     "n": 180,
+     "buts_moy": 2.7,
+     "dom": 0.4111,
+     "nul": 0.2611,
+     "ext": 0.3278,
+     "o15": 0.7722,
+     "o25": 0.5167,
+     "o35": 0.3,
+     "btts": 0.5278
+    },
+    "2526": {
+     "n": 180,
+     "buts_moy": 2.644,
+     "dom": 0.4167,
+     "nul": 0.2722,
+     "ext": 0.3111,
+     "o15": 0.7833,
+     "o25": 0.4944,
+     "o35": 0.2833,
+     "btts": 0.5222
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0167,
+     "bruit_attendu": 0.0414,
+     "ratio": 0.4,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0264,
+     "bruit_attendu": 0.0364,
+     "ratio": 0.72,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0236,
+     "bruit_attendu": 0.0397,
+     "ratio": 0.6,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0139,
+     "bruit_attendu": 0.0338,
+     "ratio": 0.41,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0542,
+     "bruit_attendu": 0.0417,
+     "ratio": 1.3,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0681,
+     "bruit_attendu": 0.0396,
+     "ratio": 1.72,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0472,
+     "bruit_attendu": 0.0419,
+     "ratio": 1.13,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "PHASE_EXCLUE_NON_DETAILLEE",
+    "2223": "PHASE_EXCLUE_NON_DETAILLEE",
+    "2324": "PHASE_EXCLUE_NON_DETAILLEE",
+    "2425": "PHASE_EXCLUE_NON_DETAILLEE",
+    "2526": "PHASE_EXCLUE_NON_DETAILLEE"
+   }
+  },
+  "SC3": {
+   "saisons": {
+    "2122": {
+     "n": 180,
+     "buts_moy": 2.6,
+     "dom": 0.3778,
+     "nul": 0.25,
+     "ext": 0.3722,
+     "o15": 0.7444,
+     "o25": 0.4556,
+     "o35": 0.2889,
+     "btts": 0.4944
+    },
+    "2223": {
+     "n": 180,
+     "buts_moy": 2.717,
+     "dom": 0.4333,
+     "nul": 0.2389,
+     "ext": 0.3278,
+     "o15": 0.7611,
+     "o25": 0.5222,
+     "o35": 0.3111,
+     "btts": 0.55
+    },
+    "2324": {
+     "n": 180,
+     "buts_moy": 2.594,
+     "dom": 0.4056,
+     "nul": 0.3222,
+     "ext": 0.2722,
+     "o15": 0.75,
+     "o25": 0.4778,
+     "o35": 0.2667,
+     "btts": 0.5278
+    },
+    "2425": {
+     "n": 180,
+     "buts_moy": 2.606,
+     "dom": 0.5,
+     "nul": 0.2056,
+     "ext": 0.2944,
+     "o15": 0.7389,
+     "o25": 0.4611,
+     "o35": 0.2556,
+     "btts": 0.4556
+    },
+    "2526": {
+     "n": 180,
+     "buts_moy": 2.933,
+     "dom": 0.3944,
+     "nul": 0.2889,
+     "ext": 0.3167,
+     "o15": 0.8333,
+     "o25": 0.5722,
+     "o35": 0.3444,
+     "btts": 0.6111
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0708,
+     "bruit_attendu": 0.0416,
+     "ratio": 1.7,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0736,
+     "bruit_attendu": 0.0368,
+     "ratio": 2.0,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0361,
+     "bruit_attendu": 0.0388,
+     "ratio": 0.93,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0333,
+     "bruit_attendu": 0.0359,
+     "ratio": 0.93,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0597,
+     "bruit_attendu": 0.042,
+     "ratio": 1.42,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0416,
+     "bruit_attendu": 0.038,
+     "ratio": 1.09,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0764,
+     "bruit_attendu": 0.042,
+     "ratio": 1.82,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "PHASE_EXCLUE_NON_DETAILLEE",
+    "2223": "PHASE_EXCLUE_NON_DETAILLEE",
+    "2324": "PHASE_EXCLUE_NON_DETAILLEE",
+    "2425": "PHASE_EXCLUE_NON_DETAILLEE",
+    "2526": "PHASE_EXCLUE_NON_DETAILLEE"
+   }
+  },
+  "SP1": {
+   "saisons": {
+    "2122": {
+     "n": 380,
+     "buts_moy": 2.503,
+     "dom": 0.4342,
+     "nul": 0.2921,
+     "ext": 0.2737,
+     "o15": 0.6921,
+     "o25": 0.4447,
+     "o35": 0.2579,
+     "btts": 0.4868
+    },
+    "2223": {
+     "n": 380,
+     "buts_moy": 2.513,
+     "dom": 0.4789,
+     "nul": 0.2342,
+     "ext": 0.2868,
+     "o15": 0.7079,
+     "o25": 0.4763,
+     "o35": 0.2263,
+     "btts": 0.5026
+    },
+    "2324": {
+     "n": 380,
+     "buts_moy": 2.645,
+     "dom": 0.4395,
+     "nul": 0.2816,
+     "ext": 0.2789,
+     "o15": 0.7158,
+     "o25": 0.4605,
+     "o35": 0.2711,
+     "btts": 0.4947
+    },
+    "2425": {
+     "n": 380,
+     "buts_moy": 2.618,
+     "dom": 0.4447,
+     "nul": 0.2553,
+     "ext": 0.3,
+     "o15": 0.7237,
+     "o25": 0.4868,
+     "o35": 0.2395,
+     "btts": 0.5421
+    },
+    "2526": {
+     "n": 380,
+     "buts_moy": 2.695,
+     "dom": 0.4895,
+     "nul": 0.2447,
+     "ext": 0.2658,
+     "o15": 0.7816,
+     "o25": 0.5,
+     "o35": 0.2553,
+     "btts": 0.5658
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0335,
+     "bruit_attendu": 0.0288,
+     "ratio": 1.16,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0356,
+     "bruit_attendu": 0.0254,
+     "ratio": 1.4,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0191,
+     "bruit_attendu": 0.0261,
+     "ratio": 0.73,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0224,
+     "bruit_attendu": 0.0259,
+     "ratio": 0.86,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0217,
+     "bruit_attendu": 0.0289,
+     "ratio": 0.75,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.031,
+     "bruit_attendu": 0.025,
+     "ratio": 1.24,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0237,
+     "bruit_attendu": 0.0289,
+     "ratio": 0.82,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU"
+   }
+  },
+  "SP2": {
+   "saisons": {
+    "2122": {
+     "n": 462,
+     "buts_moy": 2.429,
+     "dom": 0.4372,
+     "nul": 0.2965,
+     "ext": 0.2662,
+     "o15": 0.7229,
+     "o25": 0.4437,
+     "o35": 0.2208,
+     "btts": 0.5238
+    },
+    "2223": {
+     "n": 462,
+     "buts_moy": 2.017,
+     "dom": 0.4416,
+     "nul": 0.3333,
+     "ext": 0.2251,
+     "o15": 0.5844,
+     "o25": 0.3463,
+     "o35": 0.1558,
+     "btts": 0.4394
+    },
+    "2324": {
+     "n": 462,
+     "buts_moy": 2.249,
+     "dom": 0.4654,
+     "nul": 0.3009,
+     "ext": 0.2338,
+     "o15": 0.6732,
+     "o25": 0.3745,
+     "o35": 0.1883,
+     "btts": 0.4351
+    },
+    "2425": {
+     "n": 462,
+     "buts_moy": 2.53,
+     "dom": 0.4632,
+     "nul": 0.2814,
+     "ext": 0.2554,
+     "o15": 0.684,
+     "o25": 0.4827,
+     "o35": 0.2922,
+     "btts": 0.5303
+    },
+    "2526": {
+     "n": 462,
+     "buts_moy": 2.632,
+     "dom": 0.4481,
+     "nul": 0.2489,
+     "ext": 0.303,
+     "o15": 0.7143,
+     "o25": 0.5043,
+     "o35": 0.2706,
+     "btts": 0.5584
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0114,
+     "bruit_attendu": 0.0261,
+     "ratio": 0.44,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0303,
+     "bruit_attendu": 0.024,
+     "ratio": 1.26,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0297,
+     "bruit_attendu": 0.0227,
+     "ratio": 1.31,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0671,
+     "bruit_attendu": 0.0247,
+     "ratio": 2.71,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0638,
+     "bruit_attendu": 0.0258,
+     "ratio": 2.48,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0558,
+     "bruit_attendu": 0.0216,
+     "ratio": 2.58,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.053,
+     "bruit_attendu": 0.0262,
+     "ratio": 2.03,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL"
+   }
+  },
+  "SWE": {
+   "saisons": {
+    "2122": {
+     "n": 242,
+     "buts_moy": 2.657,
+     "dom": 0.4463,
+     "nul": 0.2438,
+     "ext": 0.3099,
+     "o15": 0.7314,
+     "o25": 0.5041,
+     "o35": 0.2769,
+     "btts": 0.5041
+    },
+    "2223": {
+     "n": 242,
+     "buts_moy": 2.76,
+     "dom": 0.4421,
+     "nul": 0.2479,
+     "ext": 0.3099,
+     "o15": 0.7769,
+     "o25": 0.5207,
+     "o35": 0.2934,
+     "btts": 0.5289
+    },
+    "2324": {
+     "n": 240,
+     "buts_moy": 2.771,
+     "dom": 0.4667,
+     "nul": 0.1958,
+     "ext": 0.3375,
+     "o15": 0.7625,
+     "o25": 0.55,
+     "o35": 0.3042,
+     "btts": 0.5
+    },
+    "2425": {
+     "n": 242,
+     "buts_moy": 2.831,
+     "dom": 0.4545,
+     "nul": 0.219,
+     "ext": 0.3264,
+     "o15": 0.7769,
+     "o25": 0.5537,
+     "o35": 0.2934,
+     "btts": 0.5455
+    },
+    "2526": {
+     "n": 240,
+     "buts_moy": 2.846,
+     "dom": 0.4,
+     "nul": 0.2208,
+     "ext": 0.3792,
+     "o15": 0.7792,
+     "o25": 0.5167,
+     "o35": 0.3,
+     "btts": 0.525
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0239,
+     "bruit_attendu": 0.0361,
+     "ratio": 0.66,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0203,
+     "bruit_attendu": 0.0303,
+     "ratio": 0.67,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0229,
+     "bruit_attendu": 0.0341,
+     "ratio": 0.67,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0192,
+     "bruit_attendu": 0.0307,
+     "ratio": 0.62,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0216,
+     "bruit_attendu": 0.0362,
+     "ratio": 0.6,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0112,
+     "bruit_attendu": 0.0331,
+     "ratio": 0.34,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0299,
+     "bruit_attendu": 0.0363,
+     "ratio": 0.82,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "MATCH_ARCHIVE_MANQUANT",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2526": "MATCH_ARCHIVE_MANQUANT"
+   }
+  },
+  "SWZ": {
+   "saisons": {
+    "2122": {
+     "n": 181,
+     "buts_moy": 3.243,
+     "dom": 0.4199,
+     "nul": 0.2818,
+     "ext": 0.2983,
+     "o15": 0.8729,
+     "o25": 0.6133,
+     "o35": 0.4365,
+     "btts": 0.6464
+    },
+    "2223": {
+     "n": 182,
+     "buts_moy": 2.984,
+     "dom": 0.3956,
+     "nul": 0.3187,
+     "ext": 0.2857,
+     "o15": 0.8297,
+     "o25": 0.544,
+     "o35": 0.3516,
+     "btts": 0.6374
+    },
+    "2324": {
+     "n": 230,
+     "buts_moy": 2.83,
+     "dom": 0.4826,
+     "nul": 0.2435,
+     "ext": 0.2739,
+     "o15": 0.7609,
+     "o25": 0.5478,
+     "o35": 0.3174,
+     "btts": 0.587
+    },
+    "2425": {
+     "n": 228,
+     "buts_moy": 2.978,
+     "dom": 0.4781,
+     "nul": 0.2675,
+     "ext": 0.2544,
+     "o15": 0.8202,
+     "o25": 0.5526,
+     "o35": 0.3509,
+     "btts": 0.6096
+    },
+    "2526": {
+     "n": 228,
+     "buts_moy": 3.289,
+     "dom": 0.4035,
+     "nul": 0.2456,
+     "ext": 0.3509,
+     "o15": 0.8553,
+     "o25": 0.6711,
+     "o35": 0.4035,
+     "btts": 0.6579
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0476,
+     "bruit_attendu": 0.0387,
+     "ratio": 1.23,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0395,
+     "bruit_attendu": 0.0347,
+     "ratio": 1.14,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0351,
+     "bruit_attendu": 0.0352,
+     "ratio": 1.0,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0516,
+     "bruit_attendu": 0.03,
+     "ratio": 1.72,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0491,
+     "bruit_attendu": 0.0386,
+     "ratio": 1.27,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0513,
+     "bruit_attendu": 0.0374,
+     "ratio": 1.37,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0326,
+     "bruit_attendu": 0.0378,
+     "ratio": 0.86,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_NON_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "MATCH_ARCHIVE_MANQUANT",
+    "2526": "MATCH_ARCHIVE_MANQUANT"
+   }
+  },
+  "T1": {
+   "saisons": {
+    "2122": {
+     "n": 380,
+     "buts_moy": 2.808,
+     "dom": 0.4711,
+     "nul": 0.2395,
+     "ext": 0.2895,
+     "o15": 0.7921,
+     "o25": 0.5395,
+     "o35": 0.3,
+     "btts": 0.5763
+    },
+    "2223": {
+     "n": 342,
+     "buts_moy": 3.044,
+     "dom": 0.4503,
+     "nul": 0.2135,
+     "ext": 0.3363,
+     "o15": 0.8041,
+     "o25": 0.6199,
+     "o35": 0.3363,
+     "btts": 0.5292
+    },
+    "2324": {
+     "n": 380,
+     "buts_moy": 2.795,
+     "dom": 0.4553,
+     "nul": 0.2632,
+     "ext": 0.2816,
+     "o15": 0.7816,
+     "o25": 0.5132,
+     "o35": 0.3,
+     "btts": 0.55
+    },
+    "2425": {
+     "n": 342,
+     "buts_moy": 2.936,
+     "dom": 0.4854,
+     "nul": 0.2339,
+     "ext": 0.2807,
+     "o15": 0.7661,
+     "o25": 0.5526,
+     "o35": 0.345,
+     "btts": 0.5643
+    },
+    "2526": {
+     "n": 306,
+     "buts_moy": 2.654,
+     "dom": 0.4216,
+     "nul": 0.2908,
+     "ext": 0.2876,
+     "o15": 0.7647,
+     "o25": 0.5294,
+     "o35": 0.2745,
+     "btts": 0.5458
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0299,
+     "bruit_attendu": 0.03,
+     "ratio": 1.0,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0405,
+     "bruit_attendu": 0.0259,
+     "ratio": 1.56,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.0273,
+     "bruit_attendu": 0.0275,
+     "ratio": 0.99,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0129,
+     "bruit_attendu": 0.0249,
+     "ratio": 0.52,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0624,
+     "bruit_attendu": 0.03,
+     "ratio": 2.08,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.047,
+     "bruit_attendu": 0.0281,
+     "ratio": 1.68,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0252,
+     "bruit_attendu": 0.03,
+     "ratio": 0.84,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU"
+   }
+  },
+  "USA": {
+   "saisons": {
+    "2122": {
+     "n": 472,
+     "buts_moy": 2.775,
+     "dom": 0.4767,
+     "nul": 0.2733,
+     "ext": 0.25,
+     "o15": 0.7691,
+     "o25": 0.5318,
+     "o35": 0.303,
+     "btts": 0.589
+    },
+    "2223": {
+     "n": 489,
+     "buts_moy": 2.965,
+     "dom": 0.4908,
+     "nul": 0.2474,
+     "ext": 0.2618,
+     "o15": 0.7975,
+     "o25": 0.5869,
+     "o35": 0.3292,
+     "btts": 0.5951
+    },
+    "2324": {
+     "n": 521,
+     "buts_moy": 2.752,
+     "dom": 0.4818,
+     "nul": 0.2917,
+     "ext": 0.2265,
+     "o15": 0.7639,
+     "o25": 0.5489,
+     "o35": 0.3013,
+     "btts": 0.5605
+    },
+    "2425": {
+     "n": 522,
+     "buts_moy": 3.113,
+     "dom": 0.4502,
+     "nul": 0.249,
+     "ext": 0.3008,
+     "o15": 0.8161,
+     "o25": 0.613,
+     "o35": 0.3812,
+     "btts": 0.6284
+    },
+    "2526": {
+     "n": 540,
+     "buts_moy": 3.017,
+     "dom": 0.4426,
+     "nul": 0.25,
+     "ext": 0.3074,
+     "o15": 0.7833,
+     "o25": 0.587,
+     "o35": 0.3574,
+     "btts": 0.5963
+    }
+   },
+   "stabilite": {
+    "dom": {
+     "ecart_abs_moyen": 0.0156,
+     "bruit_attendu": 0.025,
+     "ratio": 0.62,
+     "paires_de_saisons": 4
+    },
+    "nul": {
+     "ecart_abs_moyen": 0.0285,
+     "bruit_attendu": 0.022,
+     "ratio": 1.29,
+     "paires_de_saisons": 4
+    },
+    "ext": {
+     "ecart_abs_moyen": 0.032,
+     "bruit_attendu": 0.0221,
+     "ratio": 1.45,
+     "paires_de_saisons": 4
+    },
+    "o15": {
+     "ecart_abs_moyen": 0.0368,
+     "bruit_attendu": 0.0204,
+     "ratio": 1.8,
+     "paires_de_saisons": 4
+    },
+    "o25": {
+     "ecart_abs_moyen": 0.0458,
+     "bruit_attendu": 0.0247,
+     "ratio": 1.85,
+     "paires_de_saisons": 4
+    },
+    "o35": {
+     "ecart_abs_moyen": 0.0394,
+     "bruit_attendu": 0.0236,
+     "ratio": 1.67,
+     "paires_de_saisons": 4
+    },
+    "btts": {
+     "ecart_abs_moyen": 0.0352,
+     "bruit_attendu": 0.0246,
+     "ratio": 1.43,
+     "paires_de_saisons": 4
+    }
+   },
+   "completude": {
+    "2122": "COMPLETUDE_VERIFIEE",
+    "2223": "COMPLETUDE_VERIFIEE",
+    "2324": "COMPLETUDE_VERIFIEE",
+    "2425": "COMPLETUDE_VERIFIEE",
+    "2526": "COMPLETUDE_VERIFIEE"
+   },
+   "archive": {
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL"
+   }
+  }
+ }
+}
