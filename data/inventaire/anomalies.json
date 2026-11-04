@@ -1,0 +1,2320 @@
+{
+ "anomalies": [
+  {
+   "competition": "ARG",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "Copa De La Liga Profesional"
+    },
+    {
+     "detail": "Liga Profesional"
+    }
+   ],
+   "message": "plusieurs editions dans un meme fichier: traitees separement, jamais fusionnees",
+   "nombre": 2,
+   "saison": "2122",
+   "severite": "info",
+   "type": "editions_multiples"
+  },
+  {
+   "competition": "ARG",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "Copa De La Liga Profesional"
+    },
+    {
+     "detail": "Liga Profesional"
+    }
+   ],
+   "message": "plusieurs editions dans un meme fichier: traitees separement, jamais fusionnees",
+   "nombre": 2,
+   "saison": "2223",
+   "severite": "info",
+   "type": "editions_multiples"
+  },
+  {
+   "competition": "ARG",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "Copa De La Liga Profesional"
+    },
+    {
+     "detail": "Liga Profesional"
+    }
+   ],
+   "message": "plusieurs editions dans un meme fichier: traitees separement, jamais fusionnees",
+   "nombre": 2,
+   "saison": "2324",
+   "severite": "info",
+   "type": "editions_multiples"
+  },
+  {
+   "competition": "ARG",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "Copa De La Liga Profesional"
+    },
+    {
+     "detail": "Liga Profesional"
+    }
+   ],
+   "message": "plusieurs editions dans un meme fichier: traitees separement, jamais fusionnees",
+   "nombre": 2,
+   "saison": "2425",
+   "severite": "info",
+   "type": "editions_multiples"
+  },
+  {
+   "competition": "ARG",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "2122: 501 matchs, 52 equipes, editions=['Copa De La Liga Profesional', 'Liga Profesional'], libelle=Copa De La Liga Profesional"
+    },
+    {
+     "detail": "2223: 581 matchs, 57 equipes, editions=['Copa De La Liga Profesional', 'Liga Profesional'], libelle=Copa De La Liga Profesional"
+    },
+    {
+     "detail": "2324: 582 matchs, 56 equipes, editions=['Copa De La Liga Profesional', 'Liga Profesional'], libelle=Liga Profesional"
+    },
+    {
+     "detail": "2425: 581 matchs, 56 equipes, editions=['Copa De La Liga Profesional', 'Liga Profesional'], libelle=Copa De La Liga Profesional"
+    },
+    {
+     "detail": "2526: 510 matchs, 30 equipes, editions=['Liga Profesional'], libelle=Liga Profesional"
+    }
+   ],
+   "message": "format/edition/libelle different entre saisons: segmentation historique a examiner (aucune fusion automatique)",
+   "nombre": 5,
+   "saison": null,
+   "severite": "info",
+   "type": "format_ou_edition_variable"
+  },
+  {
+   "competition": "AUT",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "2122: 195 matchs, 12 equipes, editions=['Bundesliga'], libelle=Bundesliga"
+    },
+    {
+     "detail": "2223: 195 matchs, 12 equipes, editions=['Bundesliga'], libelle=Bundesliga"
+    },
+    {
+     "detail": "2324: 195 matchs, 12 equipes, editions=['Bundesliga'], libelle=Bundesliga"
+    },
+    {
+     "detail": "2425: 192 matchs, 12 equipes, editions=['Bundesliga'], libelle=Bundesliga"
+    },
+    {
+     "detail": "2526: 192 matchs, 12 equipes, editions=['Bundesliga'], libelle=Bundesliga"
+    }
+   ],
+   "message": "format/edition/libelle different entre saisons: segmentation historique a examiner (aucune fusion automatique)",
+   "nombre": 5,
+   "saison": null,
+   "severite": "info",
+   "type": "format_ou_edition_variable"
+  },
+  {
+   "competition": "B1",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "2122: 306 matchs, 18 equipes, editions=['B1'], libelle=Jupiler Pro League"
+    },
+    {
+     "detail": "2223: 306 matchs, 18 equipes, editions=['B1'], libelle=Jupiler Pro League"
+    },
+    {
+     "detail": "2324: 312 matchs, 16 equipes, editions=['B1'], libelle=Jupiler Pro League"
+    },
+    {
+     "detail": "2425: 312 matchs, 16 equipes, editions=['B1'], libelle=Jupiler Pro League"
+    },
+    {
+     "detail": "2526: 311 matchs, 16 equipes, editions=['B1'], libelle=Jupiler Pro League"
+    }
+   ],
+   "message": "format/edition/libelle different entre saisons: segmentation historique a examiner (aucune fusion automatique)",
+   "nombre": 5,
+   "saison": null,
+   "severite": "info",
+   "type": "format_ou_edition_variable"
+  },
+  {
+   "competition": "CHN",
+   "edition": "Super League",
+   "exemples": [
+    {
+     "detail": "01/01/2022",
+     "ligne": 166
+    },
+    {
+     "detail": "01/01/2022",
+     "ligne": 167
+    },
+    {
+     "detail": "01/01/2022",
+     "ligne": 168
+    },
+    {
+     "detail": "01/01/2022",
+     "ligne": 169
+    },
+    {
+     "detail": "03/01/2022",
+     "ligne": 170
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 16,
+   "saison": "2122",
+   "severite": "avertissement",
+   "type": "date_hors_saison"
+  },
+  {
+   "competition": "CHN",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "Shenzhen -> Shenzhen Xinpengcheng"
+    }
+   ],
+   "message": "noms proches entre sortants et entrants: identites NON fusionnees, a confirmer manuellement",
+   "nombre": 1,
+   "saison": "2324->2425",
+   "severite": "a_verifier",
+   "type": "changement_nom_possible"
+  },
+  {
+   "competition": "CHN",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "2122: 180 matchs, 18 equipes, editions=['Super League'], libelle=Super League"
+    },
+    {
+     "detail": "2223: 306 matchs, 18 equipes, editions=['Super League'], libelle=Super League"
+    },
+    {
+     "detail": "2324: 240 matchs, 16 equipes, editions=['Super League'], libelle=Super League"
+    },
+    {
+     "detail": "2425: 240 matchs, 16 equipes, editions=['Super League'], libelle=Super League"
+    },
+    {
+     "detail": "2526: 240 matchs, 16 equipes, editions=['Super League'], libelle=Super League"
+    }
+   ],
+   "message": "format/edition/libelle different entre saisons: segmentation historique a examiner (aucune fusion automatique)",
+   "nombre": 5,
+   "saison": null,
+   "severite": "info",
+   "type": "format_ou_edition_variable"
+  },
+  {
+   "competition": "D1",
+   "edition": "D1",
+   "exemples": [
+    {
+     "detail": "0",
+     "ligne": 295
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2425",
+   "severite": "avertissement",
+   "type": "valeur_invalide:P<2.5"
+  },
+  {
+   "competition": "D1",
+   "edition": "D1",
+   "exemples": [
+    {
+     "detail": "0",
+     "ligne": 295
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2425",
+   "severite": "avertissement",
+   "type": "valeur_invalide:P>2.5"
+  },
+  {
+   "competition": "D1",
+   "edition": "D1",
+   "exemples": [
+    {
+     "detail": "0",
+     "ligne": 295
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2425",
+   "severite": "avertissement",
+   "type": "valeur_invalide:PC<2.5"
+  },
+  {
+   "competition": "D1",
+   "edition": "D1",
+   "exemples": [
+    {
+     "detail": "0",
+     "ligne": 295
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2425",
+   "severite": "avertissement",
+   "type": "valeur_invalide:PC>2.5"
+  },
+  {
+   "competition": "DNK",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "2122: 193 matchs, 12 equipes, editions=['Superliga'], libelle=Superliga"
+    },
+    {
+     "detail": "2223: 193 matchs, 12 equipes, editions=['Superliga'], libelle=Superliga"
+    },
+    {
+     "detail": "2324: 193 matchs, 12 equipes, editions=['Superliga'], libelle=Superliga"
+    },
+    {
+     "detail": "2425: 192 matchs, 12 equipes, editions=['Superliga'], libelle=Superliga"
+    },
+    {
+     "detail": "2526: 192 matchs, 12 equipes, editions=['Superliga'], libelle=Superliga"
+    }
+   ],
+   "message": "format/edition/libelle different entre saisons: segmentation historique a examiner (aucune fusion automatique)",
+   "nombre": 5,
+   "saison": null,
+   "severite": "info",
+   "type": "format_ou_edition_variable"
+  },
+  {
+   "competition": "E0",
+   "edition": "E0",
+   "exemples": [
+    {
+     "detail": "AST=9 > AS=8",
+     "ligne": 10
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2122",
+   "severite": "avertissement",
+   "type": "tirs_cadres_superieurs_aux_tirs"
+  },
+  {
+   "competition": "E0",
+   "edition": "E0",
+   "exemples": [
+    {
+     "detail": "0",
+     "ligne": 168
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2122",
+   "severite": "avertissement",
+   "type": "valeur_invalide:B365C<2.5"
+  },
+  {
+   "competition": "E0",
+   "edition": "E0",
+   "exemples": [
+    {
+     "detail": "0",
+     "ligne": 168
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2122",
+   "severite": "avertissement",
+   "type": "valeur_invalide:B365C>2.5"
+  },
+  {
+   "competition": "E1",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "Sheffield United -> Sheffield Weds"
+    }
+   ],
+   "message": "noms proches entre sortants et entrants: identites NON fusionnees, a confirmer manuellement",
+   "nombre": 1,
+   "saison": "2223->2324",
+   "severite": "a_verifier",
+   "type": "changement_nom_possible"
+  },
+  {
+   "competition": "E1",
+   "edition": "E1",
+   "exemples": [
+    {
+     "detail": "HST=7 > HS=2",
+     "ligne": 181
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2425",
+   "severite": "avertissement",
+   "type": "tirs_cadres_superieurs_aux_tirs"
+  },
+  {
+   "competition": "E1",
+   "edition": "E1",
+   "exemples": [
+    {
+     "detail": "0",
+     "ligne": 510
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2425",
+   "severite": "avertissement",
+   "type": "valeur_invalide:BFECAHA"
+  },
+  {
+   "competition": "E1",
+   "edition": "E1",
+   "exemples": [
+    {
+     "detail": "0",
+     "ligne": 510
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2425",
+   "severite": "avertissement",
+   "type": "valeur_invalide:BFECAHH"
+  },
+  {
+   "competition": "E2",
+   "edition": "E2",
+   "exemples": [
+    {
+     "detail": "AST=6 > AS=2",
+     "ligne": 490
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2223",
+   "severite": "avertissement",
+   "type": "tirs_cadres_superieurs_aux_tirs"
+  },
+  {
+   "competition": "EC",
+   "edition": "EC",
+   "exemples": [
+    {
+     "detail": "`",
+     "ligne": 340
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2425",
+   "severite": "avertissement",
+   "type": "valeur_invalide:AvgCAHH"
+  },
+  {
+   "competition": "EC",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "2122: 506 matchs, 23 equipes, editions=['EC'], libelle=National League"
+    },
+    {
+     "detail": "2223: 552 matchs, 24 equipes, editions=['EC'], libelle=National League"
+    },
+    {
+     "detail": "2324: 552 matchs, 24 equipes, editions=['EC'], libelle=National League"
+    },
+    {
+     "detail": "2425: 552 matchs, 24 equipes, editions=['EC'], libelle=National League"
+    },
+    {
+     "detail": "2526: 552 matchs, 24 equipes, editions=['EC'], libelle=National League"
+    }
+   ],
+   "message": "format/edition/libelle different entre saisons: segmentation historique a examiner (aucune fusion automatique)",
+   "nombre": 5,
+   "saison": null,
+   "severite": "info",
+   "type": "format_ou_edition_variable"
+  },
+  {
+   "competition": "F1",
+   "edition": "F1",
+   "exemples": [
+    {
+     "detail": "0",
+     "ligne": 303
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2425",
+   "severite": "avertissement",
+   "type": "valeur_invalide:1XBA"
+  },
+  {
+   "competition": "F1",
+   "edition": "F1",
+   "exemples": [
+    {
+     "detail": "0",
+     "ligne": 303
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2425",
+   "severite": "avertissement",
+   "type": "valeur_invalide:1XBD"
+  },
+  {
+   "competition": "F1",
+   "edition": "F1",
+   "exemples": [
+    {
+     "detail": "0",
+     "ligne": 303
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2425",
+   "severite": "avertissement",
+   "type": "valeur_invalide:1XBH"
+  },
+  {
+   "competition": "F1",
+   "edition": "F1",
+   "exemples": [
+    {
+     "detail": "0",
+     "ligne": 263
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2425",
+   "severite": "avertissement",
+   "type": "valeur_invalide:P<2.5"
+  },
+  {
+   "competition": "F1",
+   "edition": "F1",
+   "exemples": [
+    {
+     "detail": "0",
+     "ligne": 263
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2425",
+   "severite": "avertissement",
+   "type": "valeur_invalide:P>2.5"
+  },
+  {
+   "competition": "F1",
+   "edition": "F1",
+   "exemples": [
+    {
+     "detail": "0",
+     "ligne": 263
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2425",
+   "severite": "avertissement",
+   "type": "valeur_invalide:PC<2.5"
+  },
+  {
+   "competition": "F1",
+   "edition": "F1",
+   "exemples": [
+    {
+     "detail": "0",
+     "ligne": 263
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2425",
+   "severite": "avertissement",
+   "type": "valeur_invalide:PC>2.5"
+  },
+  {
+   "competition": "F1",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "2122: 380 matchs, 20 equipes, editions=['F1'], libelle=Ligue 1"
+    },
+    {
+     "detail": "2223: 380 matchs, 20 equipes, editions=['F1'], libelle=Ligue 1"
+    },
+    {
+     "detail": "2324: 306 matchs, 18 equipes, editions=['F1'], libelle=Ligue 1"
+    },
+    {
+     "detail": "2425: 306 matchs, 18 equipes, editions=['F1'], libelle=Ligue 1"
+    },
+    {
+     "detail": "2526: 306 matchs, 18 equipes, editions=['F1'], libelle=Ligue 1"
+    }
+   ],
+   "message": "format/edition/libelle different entre saisons: segmentation historique a examiner (aucune fusion automatique)",
+   "nombre": 5,
+   "saison": null,
+   "severite": "info",
+   "type": "format_ou_edition_variable"
+  },
+  {
+   "competition": "F2",
+   "edition": "F2",
+   "exemples": [],
+   "message": "lignes sans score (non jouees / futures): jamais utilisables pour l'apprentissage du resultat",
+   "nombre": 1,
+   "saison": "2526",
+   "severite": "info",
+   "type": "lignes_sans_score_vide"
+  },
+  {
+   "competition": "F2",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "2122: 380 matchs, 20 equipes, editions=['F2'], libelle=Ligue 2"
+    },
+    {
+     "detail": "2223: 380 matchs, 20 equipes, editions=['F2'], libelle=Ligue 2"
+    },
+    {
+     "detail": "2324: 380 matchs, 20 equipes, editions=['F2'], libelle=Ligue 2"
+    },
+    {
+     "detail": "2425: 306 matchs, 18 equipes, editions=['F2'], libelle=Ligue 2"
+    },
+    {
+     "detail": "2526: 305 matchs, 18 equipes, editions=['F2'], libelle=Ligue 2"
+    }
+   ],
+   "message": "format/edition/libelle different entre saisons: segmentation historique a examiner (aucune fusion automatique)",
+   "nombre": 5,
+   "saison": null,
+   "severite": "info",
+   "type": "format_ou_edition_variable"
+  },
+  {
+   "competition": "FIN",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "2122: 164 matchs, 13 equipes, editions=['Veikkausliiga'], libelle=Veikkausliiga"
+    },
+    {
+     "detail": "2223: 170 matchs, 14 equipes, editions=['Veikkausliiga'], libelle=Veikkausliiga"
+    },
+    {
+     "detail": "2324: 167 matchs, 12 equipes, editions=['Veikkausliiga'], libelle=Veikkausliiga"
+    },
+    {
+     "detail": "2425: 169 matchs, 13 equipes, editions=['Veikkausliiga'], libelle=Veikkausliiga"
+    },
+    {
+     "detail": "2526: 177 matchs, 12 equipes, editions=['Veikkausliiga'], libelle=Veikkausliiga"
+    }
+   ],
+   "message": "format/edition/libelle different entre saisons: segmentation historique a examiner (aucune fusion automatique)",
+   "nombre": 5,
+   "saison": null,
+   "severite": "info",
+   "type": "format_ou_edition_variable"
+  },
+  {
+   "competition": "G1",
+   "edition": "G1",
+   "exemples": [
+    {
+     "detail": "1xBet",
+     "ligne": 123
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2425",
+   "severite": "avertissement",
+   "type": "valeur_invalide:1XBH"
+  },
+  {
+   "competition": "G1",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "2122: 240 matchs, 14 equipes, editions=['G1'], libelle=Super League"
+    },
+    {
+     "detail": "2223: 240 matchs, 14 equipes, editions=['G1'], libelle=Super League"
+    },
+    {
+     "detail": "2324: 240 matchs, 14 equipes, editions=['G1'], libelle=Super League"
+    },
+    {
+     "detail": "2425: 233 matchs, 14 equipes, editions=['G1'], libelle=Super League"
+    },
+    {
+     "detail": "2526: 236 matchs, 14 equipes, editions=['G1'], libelle=Super League"
+    }
+   ],
+   "message": "format/edition/libelle different entre saisons: segmentation historique a examiner (aucune fusion automatique)",
+   "nombre": 5,
+   "saison": null,
+   "severite": "info",
+   "type": "format_ou_edition_variable"
+  },
+  {
+   "competition": "I2",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "Reggina -> Reggiana"
+    }
+   ],
+   "message": "noms proches entre sortants et entrants: identites NON fusionnees, a confirmer manuellement",
+   "nombre": 1,
+   "saison": "2223->2324",
+   "severite": "a_verifier",
+   "type": "changement_nom_possible"
+  },
+  {
+   "competition": "IRL",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "2122: 186 matchs, 14 equipes, editions=['Premier Division'], libelle=Premier Division"
+    },
+    {
+     "detail": "2223: 181 matchs, 11 equipes, editions=['Premier Division'], libelle=Premier Division"
+    },
+    {
+     "detail": "2324: 181 matchs, 11 equipes, editions=['Premier Division'], libelle=Premier Division"
+    },
+    {
+     "detail": "2425: 181 matchs, 11 equipes, editions=['Premier Division'], libelle=Premier Division"
+    },
+    {
+     "detail": "2526: 180 matchs, 10 equipes, editions=['Premier Division'], libelle=Premier Division"
+    }
+   ],
+   "message": "format/edition/libelle different entre saisons: segmentation historique a examiner (aucune fusion automatique)",
+   "nombre": 5,
+   "saison": null,
+   "severite": "info",
+   "type": "format_ou_edition_variable"
+  },
+  {
+   "competition": "JPN",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "2122: 380 matchs, 20 equipes, editions=['J1 League'], libelle=J1 League"
+    },
+    {
+     "detail": "2223: 310 matchs, 22 equipes, editions=['J1 League'], libelle=J1 League"
+    },
+    {
+     "detail": "2324: 306 matchs, 18 equipes, editions=['J1 League'], libelle=J1 League"
+    },
+    {
+     "detail": "2425: 380 matchs, 20 equipes, editions=['J1 League'], libelle=J1 League"
+    },
+    {
+     "detail": "2526: 380 matchs, 20 equipes, editions=['J1 League'], libelle=J1 League"
+    }
+   ],
+   "message": "format/edition/libelle different entre saisons: segmentation historique a examiner (aucune fusion automatique)",
+   "nombre": 5,
+   "saison": null,
+   "severite": "info",
+   "type": "format_ou_edition_variable"
+  },
+  {
+   "competition": "MEX",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "2122: 342 matchs, 18 equipes, editions=['Liga MX'], libelle=Liga MX"
+    },
+    {
+     "detail": "2223: 342 matchs, 18 equipes, editions=['Liga MX'], libelle=Liga MX"
+    },
+    {
+     "detail": "2324: 340 matchs, 18 equipes, editions=['Liga MX'], libelle=Liga MX"
+    },
+    {
+     "detail": "2425: 340 matchs, 18 equipes, editions=['Liga MX'], libelle=Liga MX"
+    },
+    {
+     "detail": "2526: 336 matchs, 18 equipes, editions=['Liga MX'], libelle=Liga MX"
+    }
+   ],
+   "message": "format/edition/libelle different entre saisons: segmentation historique a examiner (aucune fusion automatique)",
+   "nombre": 5,
+   "saison": null,
+   "severite": "info",
+   "type": "format_ou_edition_variable"
+  },
+  {
+   "competition": "N1",
+   "edition": "N1",
+   "exemples": [
+    {
+     "detail": "#",
+     "ligne": 133
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2223",
+   "severite": "avertissement",
+   "type": "valeur_invalide:B365CH"
+  },
+  {
+   "competition": "N1",
+   "edition": "N1",
+   "exemples": [
+    {
+     "detail": "0",
+     "ligne": 257
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2425",
+   "severite": "avertissement",
+   "type": "valeur_invalide:BFECAHA"
+  },
+  {
+   "competition": "N1",
+   "edition": "N1",
+   "exemples": [
+    {
+     "detail": "0",
+     "ligne": 257
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2425",
+   "severite": "avertissement",
+   "type": "valeur_invalide:BFECAHH"
+  },
+  {
+   "competition": "NOR",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "2122: 241 matchs, 17 equipes, editions=['Eliteserien'], libelle=Eliteserien"
+    },
+    {
+     "detail": "2223: 242 matchs, 17 equipes, editions=['Eliteserien'], libelle=Eliteserien"
+    },
+    {
+     "detail": "2324: 242 matchs, 18 equipes, editions=['Eliteserien'], libelle=Eliteserien"
+    },
+    {
+     "detail": "2425: 242 matchs, 17 equipes, editions=['Eliteserien'], libelle=Eliteserien"
+    },
+    {
+     "detail": "2526: 240 matchs, 16 equipes, editions=['Eliteserien'], libelle=Eliteserien"
+    }
+   ],
+   "message": "format/edition/libelle different entre saisons: segmentation historique a examiner (aucune fusion automatique)",
+   "nombre": 5,
+   "saison": null,
+   "severite": "info",
+   "type": "format_ou_edition_variable"
+  },
+  {
+   "competition": "ROU",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "2122: 320 matchs, 18 equipes, editions=['Superliga'], libelle=Superliga"
+    },
+    {
+     "detail": "2223: 321 matchs, 18 equipes, editions=['Superliga'], libelle=Superliga"
+    },
+    {
+     "detail": "2324: 321 matchs, 18 equipes, editions=['Superliga'], libelle=Superliga"
+    },
+    {
+     "detail": "2425: 315 matchs, 16 equipes, editions=['Superliga'], libelle=Superliga"
+    },
+    {
+     "detail": "2526: 321 matchs, 19 equipes, editions=['Superliga'], libelle=Superliga"
+    }
+   ],
+   "message": "format/edition/libelle different entre saisons: segmentation historique a examiner (aucune fusion automatique)",
+   "nombre": 5,
+   "saison": null,
+   "severite": "info",
+   "type": "format_ou_edition_variable"
+  },
+  {
+   "competition": "RUS",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "2122: 244 matchs, 18 equipes, editions=['Premier League'], libelle=Premier League"
+    },
+    {
+     "detail": "2223: 244 matchs, 18 equipes, editions=['Premier League'], libelle=Premier League"
+    },
+    {
+     "detail": "2324: 244 matchs, 18 equipes, editions=['Premier League'], libelle=Premier League"
+    },
+    {
+     "detail": "2425: 240 matchs, 16 equipes, editions=['Premier League'], libelle=Premier League"
+    },
+    {
+     "detail": "2526: 240 matchs, 16 equipes, editions=['Premier League'], libelle=Premier League"
+    }
+   ],
+   "message": "format/edition/libelle different entre saisons: segmentation historique a examiner (aucune fusion automatique)",
+   "nombre": 5,
+   "saison": null,
+   "severite": "info",
+   "type": "format_ou_edition_variable"
+  },
+  {
+   "competition": "SC0",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "Dundee United -> Dundee"
+    }
+   ],
+   "message": "noms proches entre sortants et entrants: identites NON fusionnees, a confirmer manuellement",
+   "nombre": 1,
+   "saison": "2223->2324",
+   "severite": "a_verifier",
+   "type": "changement_nom_possible"
+  },
+  {
+   "competition": "SC1",
+   "edition": "SC1",
+   "exemples": [
+    {
+     "detail": "AST=7 > AS=5",
+     "ligne": 129
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2122",
+   "severite": "avertissement",
+   "type": "tirs_cadres_superieurs_aux_tirs"
+  },
+  {
+   "competition": "SC1",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "Queen of Sth -> Queens Park"
+    }
+   ],
+   "message": "noms proches entre sortants et entrants: identites NON fusionnees, a confirmer manuellement",
+   "nombre": 1,
+   "saison": "2122->2223",
+   "severite": "a_verifier",
+   "type": "changement_nom_possible"
+  },
+  {
+   "competition": "SC1",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "Dundee -> Dundee United"
+    }
+   ],
+   "message": "noms proches entre sortants et entrants: identites NON fusionnees, a confirmer manuellement",
+   "nombre": 1,
+   "saison": "2223->2324",
+   "severite": "a_verifier",
+   "type": "changement_nom_possible"
+  },
+  {
+   "competition": "SC1",
+   "edition": "SC1",
+   "exemples": [
+    {
+     "detail": "AST=4 > AS=2",
+     "ligne": 13
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2425",
+   "severite": "avertissement",
+   "type": "tirs_cadres_superieurs_aux_tirs"
+  },
+  {
+   "competition": "SC2",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "Queens Park -> Queen of Sth"
+    }
+   ],
+   "message": "noms proches entre sortants et entrants: identites NON fusionnees, a confirmer manuellement",
+   "nombre": 1,
+   "saison": "2122->2223",
+   "severite": "a_verifier",
+   "type": "changement_nom_possible"
+  },
+  {
+   "competition": "SC3",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "East Fife -> East Kilbride"
+    }
+   ],
+   "message": "noms proches entre sortants et entrants: identites NON fusionnees, a confirmer manuellement",
+   "nombre": 1,
+   "saison": "2425->2526",
+   "severite": "a_verifier",
+   "type": "changement_nom_possible"
+  },
+  {
+   "competition": "SC3",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "2122: 180 matchs, 10 equipes, editions=['SC3'], libelle=League Two"
+    },
+    {
+     "detail": "2223: 180 matchs, 10 equipes, editions=['SC3'], libelle=League Two"
+    },
+    {
+     "detail": "2324: 180 matchs, 10 equipes, editions=['SC3'], libelle=League Two"
+    },
+    {
+     "detail": "2425: 180 matchs, 10 equipes, editions=['SC3'], libelle=League Two"
+    },
+    {
+     "detail": "2526: 180 matchs, 10 equipes, editions=['SC3'], libelle=None"
+    }
+   ],
+   "message": "format/edition/libelle different entre saisons: segmentation historique a examiner (aucune fusion automatique)",
+   "nombre": 5,
+   "saison": null,
+   "severite": "info",
+   "type": "format_ou_edition_variable"
+  },
+  {
+   "competition": "SP1",
+   "edition": "SP1",
+   "exemples": [
+    {
+     "detail": "0",
+     "ligne": 84
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2526",
+   "severite": "avertissement",
+   "type": "valeur_invalide:PC<2.5"
+  },
+  {
+   "competition": "SP1",
+   "edition": "SP1",
+   "exemples": [
+    {
+     "detail": "0",
+     "ligne": 84
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2526",
+   "severite": "avertissement",
+   "type": "valeur_invalide:PC>2.5"
+  },
+  {
+   "competition": "SP2",
+   "edition": "SP2",
+   "exemples": [
+    {
+     "detail": "AST=7 > AS=5",
+     "ligne": 37
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2425",
+   "severite": "avertissement",
+   "type": "tirs_cadres_superieurs_aux_tirs"
+  },
+  {
+   "competition": "SP2",
+   "edition": "SP2",
+   "exemples": [
+    {
+     "detail": "0.56",
+     "ligne": 342
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2526",
+   "severite": "avertissement",
+   "type": "valeur_invalide:AvgCAHA"
+  },
+  {
+   "competition": "SP2",
+   "edition": "SP2",
+   "exemples": [
+    {
+     "detail": "0.6",
+     "ligne": 342
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2526",
+   "severite": "avertissement",
+   "type": "valeur_invalide:AvgCAHH"
+  },
+  {
+   "competition": "SWE",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "Ostersunds -> Oster"
+    }
+   ],
+   "message": "noms proches entre sortants et entrants: identites NON fusionnees, a confirmer manuellement",
+   "nombre": 1,
+   "saison": "2122->2223",
+   "severite": "a_verifier",
+   "type": "changement_nom_possible"
+  },
+  {
+   "competition": "SWE",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "2122: 242 matchs, 17 equipes, editions=['Allsvenskan'], libelle=Allsvenskan"
+    },
+    {
+     "detail": "2223: 242 matchs, 17 equipes, editions=['Allsvenskan'], libelle=Allsvenskan"
+    },
+    {
+     "detail": "2324: 240 matchs, 16 equipes, editions=['Allsvenskan'], libelle=Allsvenskan"
+    },
+    {
+     "detail": "2425: 242 matchs, 17 equipes, editions=['Allsvenskan'], libelle=Allsvenskan"
+    },
+    {
+     "detail": "2526: 240 matchs, 16 equipes, editions=['Allsvenskan'], libelle=Allsvenskan"
+    }
+   ],
+   "message": "format/edition/libelle different entre saisons: segmentation historique a examiner (aucune fusion automatique)",
+   "nombre": 5,
+   "saison": null,
+   "severite": "info",
+   "type": "format_ou_edition_variable"
+  },
+  {
+   "competition": "SWZ",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "Lausanne -> Lausanne Ouchy"
+    }
+   ],
+   "message": "noms proches entre sortants et entrants: identites NON fusionnees, a confirmer manuellement",
+   "nombre": 1,
+   "saison": "2122->2223",
+   "severite": "a_verifier",
+   "type": "changement_nom_possible"
+  },
+  {
+   "competition": "SWZ",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "2122: 181 matchs, 11 equipes, editions=['Super League'], libelle=Super League"
+    },
+    {
+     "detail": "2223: 182 matchs, 11 equipes, editions=['Super League'], libelle=Super League"
+    },
+    {
+     "detail": "2324: 230 matchs, 13 equipes, editions=['Super League'], libelle=Super League"
+    },
+    {
+     "detail": "2425: 228 matchs, 12 equipes, editions=['Super League'], libelle=Super League"
+    },
+    {
+     "detail": "2526: 228 matchs, 12 equipes, editions=['Super League'], libelle=Super League"
+    }
+   ],
+   "message": "format/edition/libelle different entre saisons: segmentation historique a examiner (aucune fusion automatique)",
+   "nombre": 5,
+   "saison": null,
+   "severite": "info",
+   "type": "format_ou_edition_variable"
+  },
+  {
+   "competition": "T1",
+   "edition": "T1",
+   "exemples": [
+    {
+     "detail": "0",
+     "ligne": 313
+    },
+    {
+     "detail": "0",
+     "ligne": 331
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 2,
+   "saison": "2425",
+   "severite": "avertissement",
+   "type": "valeur_invalide:B365AHA"
+  },
+  {
+   "competition": "T1",
+   "edition": "T1",
+   "exemples": [
+    {
+     "detail": "0",
+     "ligne": 313
+    },
+    {
+     "detail": "0",
+     "ligne": 331
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 2,
+   "saison": "2425",
+   "severite": "avertissement",
+   "type": "valeur_invalide:B365AHH"
+  },
+  {
+   "competition": "T1",
+   "edition": "T1",
+   "exemples": [
+    {
+     "detail": "0",
+     "ligne": 313
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2425",
+   "severite": "avertissement",
+   "type": "valeur_invalide:B365CAHA"
+  },
+  {
+   "competition": "T1",
+   "edition": "T1",
+   "exemples": [
+    {
+     "detail": "0",
+     "ligne": 313
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2425",
+   "severite": "avertissement",
+   "type": "valeur_invalide:B365CAHH"
+  },
+  {
+   "competition": "T1",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "2122: 380 matchs, 20 equipes, editions=['T1'], libelle=Super Lig"
+    },
+    {
+     "detail": "2223: 342 matchs, 19 equipes, editions=['T1'], libelle=Super Lig"
+    },
+    {
+     "detail": "2324: 380 matchs, 20 equipes, editions=['T1'], libelle=Super Lig"
+    },
+    {
+     "detail": "2425: 342 matchs, 19 equipes, editions=['T1'], libelle=Super Lig"
+    },
+    {
+     "detail": "2526: 306 matchs, 18 equipes, editions=['T1'], libelle=Super Lig"
+    }
+   ],
+   "message": "format/edition/libelle different entre saisons: segmentation historique a examiner (aucune fusion automatique)",
+   "nombre": 5,
+   "saison": null,
+   "severite": "info",
+   "type": "format_ou_edition_variable"
+  },
+  {
+   "competition": "USA",
+   "edition": "MLS",
+   "exemples": [
+    {
+     "detail": "x",
+     "ligne": 107
+    }
+   ],
+   "message": "valeurs ou coherences invalides",
+   "nombre": 1,
+   "saison": "2526",
+   "severite": "avertissement",
+   "type": "valeur_invalide:AvgCH"
+  },
+  {
+   "competition": "USA",
+   "edition": null,
+   "exemples": [
+    {
+     "detail": "2122: 472 matchs, 27 equipes, editions=['MLS'], libelle=MLS"
+    },
+    {
+     "detail": "2223: 489 matchs, 28 equipes, editions=['MLS'], libelle=MLS"
+    },
+    {
+     "detail": "2324: 521 matchs, 29 equipes, editions=['MLS'], libelle=MLS"
+    },
+    {
+     "detail": "2425: 522 matchs, 29 equipes, editions=['MLS'], libelle=MLS"
+    },
+    {
+     "detail": "2526: 540 matchs, 30 equipes, editions=['MLS'], libelle=MLS"
+    }
+   ],
+   "message": "format/edition/libelle different entre saisons: segmentation historique a examiner (aucune fusion automatique)",
+   "nombre": 5,
+   "saison": null,
+   "severite": "info",
+   "type": "format_ou_edition_variable"
+  }
+ ],
+ "controles": [
+  {
+   "id": "snapshot_complet:2122",
+   "message": "marqueur _SNAPSHOT_COMPLETE present",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:E0:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:E1:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:E2:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:E3:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:EC:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SC0:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SC1:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SC2:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SC3:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:D1:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:D2:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:I1:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:I2:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SP1:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SP2:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:F1:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:F2:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:N1:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:B1:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:P1:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:T1:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:G1:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:ARG:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:AUT:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:BRA:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:CHN:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:DNK:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:FIN:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:IRL:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:JPN:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:MEX:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:NOR:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:POL:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:ROU:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:RUS:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SWE:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SWZ:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:USA:2122",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "snapshot_complet:2223",
+   "message": "marqueur _SNAPSHOT_COMPLETE present",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:E0:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:E1:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:E2:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:E3:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:EC:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SC0:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SC1:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SC2:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SC3:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:D1:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:D2:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:I1:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:I2:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SP1:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SP2:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:F1:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:F2:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:N1:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:B1:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:P1:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:T1:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:G1:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:ARG:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:AUT:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:BRA:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:CHN:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:DNK:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:FIN:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:IRL:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:JPN:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:MEX:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:NOR:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:POL:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:ROU:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:RUS:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SWE:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SWZ:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:USA:2223",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "snapshot_complet:2324",
+   "message": "marqueur _SNAPSHOT_COMPLETE present",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:E0:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:E1:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:E2:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:E3:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:EC:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SC0:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SC1:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SC2:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SC3:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:D1:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:D2:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:I1:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:I2:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SP1:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SP2:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:F1:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:F2:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:N1:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:B1:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:P1:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:T1:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:G1:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:ARG:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:AUT:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:BRA:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:CHN:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:DNK:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:FIN:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:IRL:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:JPN:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:MEX:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:NOR:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:POL:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:ROU:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:RUS:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SWE:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SWZ:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:USA:2324",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "snapshot_complet:2425",
+   "message": "marqueur _SNAPSHOT_COMPLETE present",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:E0:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:E1:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:E2:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:E3:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:EC:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SC0:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SC1:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SC2:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SC3:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:D1:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:D2:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:I1:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:I2:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SP1:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SP2:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:F1:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:F2:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:N1:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:B1:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:P1:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:T1:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:G1:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:ARG:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:AUT:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:BRA:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:CHN:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:DNK:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:FIN:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:IRL:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:JPN:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:MEX:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:NOR:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:POL:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:ROU:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:RUS:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SWE:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SWZ:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:USA:2425",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "snapshot_complet:2526",
+   "message": "marqueur _SNAPSHOT_COMPLETE present",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:E0:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:E1:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:E2:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:E3:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:EC:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SC0:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SC1:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SC2:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SC3:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:D1:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:D2:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:I1:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:I2:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SP1:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SP2:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:F1:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:F2:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:N1:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:B1:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:P1:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:T1:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:G1:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:ARG:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:AUT:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:BRA:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:CHN:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:DNK:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:FIN:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:IRL:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:JPN:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:MEX:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:NOR:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:POL:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:ROU:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:RUS:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SWE:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:SWZ:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "manifest_conforme:USA:2526",
+   "message": "conforme au manifest",
+   "ok": true
+  },
+  {
+   "id": "integrite_archives_avant_apres",
+   "message": "inchangees",
+   "ok": true
+  },
+  {
+   "id": "couverture_38x5",
+   "message": "38 competitions x 5 saisons attendues",
+   "ok": true
+  }
+ ],
+ "version_regles": "1.0.0"
+}
