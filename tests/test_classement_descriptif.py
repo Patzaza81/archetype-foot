@@ -66,35 +66,46 @@ class Classement(unittest.TestCase):
         ecrire(p, "Country,League,Season,Date,Time,Home,Away,HG,AG,Res\nX,Copa,2025,01/02/2025,,A,B,1,0,H\nX,Liga,2025,02/02/2025,,A,B,1,0,H\n")
         self.assertEqual(sorted(cd.structure_saison(p)), ["Copa", "Liga"])
 
-
-    def test_statut_archive_distinct_de_la_completude(self):
+    def test_statuts_archive_distincts_et_perimetre(self):
         base = {"competition": "F1", "equipes_attendues": 2, "matchs_attendus": 2, "preuves": ["x"]}
-        sig = [{"code": "MATCH_ARCHIVE_MANQUANT", "matchs_documentes_absents": 1, "niveau_preuve": "match_par_match", "perimetre": "implique_un_club_de_la_ligue", "detail": "d"}]
-        v = []
-        for i, s in enumerate(CFG["saisons"]):
-            e = dict(base, saison=s)
-            if i == 0:
-                e["signalements_archive"] = sig
-            elif i == 1:
-                e["signalements_archive"] = []
-            v.append(e)
+        def g(code, niveau="match_par_match"):
+            return {"code": code, "matchs_documentes_absents": 1, "niveau_preuve": niveau, "perimetre": "implique_un_club_de_la_ligue", "detail": "d"}
+        etendu = {"saison_reguliere": "paires_completes_verifiees", "phases_finales": "individuelle", "matchs_additionnels": "examines"}
+        partiel = {"saison_reguliere": "comptes_par_equipe_et_total", "phases_finales": "individuelle", "matchs_additionnels": "non_examines"}
+        par = [
+            {"signalements_archive": [g("MATCH_ARCHIVE_MANQUANT")]},
+            {"signalements_archive": [g("PHASE_EXCLUE_NON_DETAILLEE", "existence_seulement")]},
+            {"signalements_archive": [g("MATCH_ATTRIBUE_NON_JOUE")]},
+            {"signalements_archive": [g("MATCH_ATTRIBUE_NON_JOUE"), g("MATCH_ARCHIVE_MANQUANT")]},
+            {"signalements_archive": [], "perimetre_examen": partiel},
+        ]
+        v = [dict(base, saison=s, **(par[i] if i < len(par) else {})) for i, s in enumerate(CFG["saisons"])]
         r = construire(self.tmp, v)
         f1 = r["competitions"]["F1"]
         a = [f1["archive_par_saison"][s] for s in CFG["saisons"]]
-        self.assertEqual(a[0], "MATCH_ARCHIVE_MANQUANT")
-        self.assertEqual(a[1], "ARCHIVE_COMPLETE_EXAMINEE")
-        self.assertTrue(all(x == "ARCHIVE_NON_EXAMINEE" for x in a[2:]))
+        attendu = ["MATCH_ARCHIVE_MANQUANT", "PHASE_EXCLUE_NON_DETAILLEE", "MATCH_ATTRIBUE_NON_JOUE", "MATCH_ARCHIVE_MANQUANT", "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL"]
+        self.assertEqual(a[:len(attendu)], attendu[:len(a)])
         self.assertTrue(all(st == "COMPLETUDE_VERIFIEE" for st in f1["completude_par_saison"].values()))
         self.assertTrue(f1["comparable_sans_reserve"])
         self.assertFalse(f1["comparable_archive_sans_reserve"])
-        self.assertEqual(list(f1["signalements_archive"]), [CFG["saisons"][0]])
+
+    def test_perimetre_etendu_exige_les_trois_conditions(self):
+        base = {"competition": "F1", "equipes_attendues": 2, "matchs_attendus": 2, "preuves": ["x"], "signalements_archive": []}
+        etendu = {"saison_reguliere": "paires_completes_verifiees", "phases_finales": "aucune_phase_documentee", "matchs_additionnels": "examines"}
+        v = [dict(base, saison=s, perimetre_examen=dict(etendu)) for s in CFG["saisons"]]
+        r = construire(self.tmp, v)
+        self.assertTrue(all(x == "ARCHIVE_COMPLETE_PERIMETRE_ETENDU" for x in r["competitions"]["F1"]["archive_par_saison"].values()))
+        self.assertTrue(r["competitions"]["F1"]["comparable_archive_sans_reserve"])
+        for cle, val in (("phases_finales", "total_seulement"), ("saison_reguliere", "comptes_par_equipe_et_total"), ("matchs_additionnels", "non_examines")):
+            v2 = [dict(base, saison=s, perimetre_examen=dict(etendu, **{cle: val})) for s in CFG["saisons"]]
+            import shutil as _sh
+            _sh.rmtree(self.tmp); self.tmp = tempfile.mkdtemp()
+            r2 = construire(self.tmp, v2)
+            self.assertTrue(all(x == "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL" for x in r2["competitions"]["F1"]["archive_par_saison"].values()), cle)
+            self.assertFalse(r2["competitions"]["F1"]["comparable_archive_sans_reserve"])
 
     def test_sans_cle_signalements_rien_n_est_affirme(self):
         v = [{"competition": "F1", "saison": s, "equipes_attendues": 2, "matchs_attendus": 2, "preuves": ["x"]} for s in CFG["saisons"]]
         r = construire(self.tmp, v)
         self.assertTrue(all(x == "ARCHIVE_NON_EXAMINEE" for x in r["competitions"]["F1"]["archive_par_saison"].values()))
         self.assertFalse(r["competitions"]["F1"]["comparable_archive_sans_reserve"])
-
-
-if __name__ == "__main__":
-    unittest.main()

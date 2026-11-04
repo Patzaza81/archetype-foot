@@ -52,16 +52,32 @@ def statut_completude(code, saison, struct, verifs):
     return ("COMPLETUDE_VERIFIEE" if ok else "COMPLETUDE_INCOHERENTE"), v["preuves"]
 
 
+PRIORITE_SIGNALEMENT = ("MATCH_ARCHIVE_MANQUANT", "PHASE_EXCLUE_NON_DETAILLEE", "MATCH_ATTRIBUE_NON_JOUE")
+
+
 def statut_archive(code, saison, verifs):
-    """Seconde dimension, distincte de la completude de la competition: tous les matchs documentes sont-ils dans l'archive?
-    ARCHIVE_NON_EXAMINEE: aucune verification enregistree, ou verification sans cle `signalements_archive` (rien n'est affirme).
-    MATCH_ARCHIVE_MANQUANT: au moins un match documente (barrage, match attribue...) est absent des fichiers archives; jamais ajoute ni compte.
-    ARCHIVE_COMPLETE_EXAMINEE: `signalements_archive` explicitement vide apres examen des matchs documentes."""
+    """Seconde dimension, distincte de la completude de la competition: les matchs documentes sont-ils dans l'archive?
+    ARCHIVE_NON_EXAMINEE: aucune verification, ou pas de cle `signalements_archive` (rien n'est affirme).
+    Signalements (jamais ajoutes a l'archive ni comptes comme archives), par priorite:
+      MATCH_ARCHIVE_MANQUANT: rencontre(s) reellement disputee(s) documentee(s) (nombre, equipes ou dates) et absente(s) des fichiers.
+      PHASE_EXCLUE_NON_DETAILLEE: existence d'une phase exclue, sans preuve individualisee des rencontres.
+      MATCH_ATTRIBUE_NON_JOUE: resultat ou match attribue sans rencontre disputee.
+    Liste vide explicite: aucun match documente manquant dans le PERIMETRE examine (`perimetre_examen`):
+      ARCHIVE_COMPLETE_PERIMETRE_ETENDU seulement si saison reguliere = paires_completes_verifiees, phases finales = individuelle ou aucune_phase_documentee, matchs additionnels = examines;
+      sinon ARCHIVE_COMPLETE_PERIMETRE_PARTIEL."""
     v = verifs.get((code, saison))
     if not v or "signalements_archive" not in v:
-        return "ARCHIVE_NON_EXAMINEE", []
+        return "ARCHIVE_NON_EXAMINEE", [], None
     sig = v["signalements_archive"]
-    return ("MATCH_ARCHIVE_MANQUANT" if sig else "ARCHIVE_COMPLETE_EXAMINEE"), sig
+    per = v.get("perimetre_examen")
+    if sig:
+        codes = {g["code"] for g in sig}
+        return next(c for c in PRIORITE_SIGNALEMENT if c in codes), sig, per
+    p = per or {}
+    etendu = (p.get("saison_reguliere") == "paires_completes_verifiees"
+              and p.get("phases_finales") in ("individuelle", "aucune_phase_documentee")
+              and p.get("matchs_additionnels") == "examines")
+    return ("ARCHIVE_COMPLETE_PERIMETRE_ETENDU" if etendu else "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL"), sig, per
 
 
 def couverture(prof):
@@ -143,8 +159,9 @@ def classer(dossier_inv, snapshots, cfg):
             "completude_par_saison": comp_st,
             "comparable_sans_reserve": all(v == "COMPLETUDE_VERIFIEE" for v in comp_st.values()),
             "archive_par_saison": arch_st,
+            "perimetre_examen_par_saison": {s: arch[s][2] for s in arch if arch[s][2]},
             "signalements_archive": {s: arch[s][1] for s in arch if arch[s][1]},
-            "comparable_archive_sans_reserve": all(comp_st[x] == "COMPLETUDE_VERIFIEE" and arch_st[x] == "ARCHIVE_COMPLETE_EXAMINEE" for x in comp_st),
+            "comparable_archive_sans_reserve": all(comp_st[x] == "COMPLETUDE_VERIFIEE" and arch_st[x] == "ARCHIVE_COMPLETE_PERIMETRE_ETENDU" for x in comp_st),
         }
     return sortie
 
@@ -161,18 +178,21 @@ def rapport(sortie, noms_capacites):
     L.append(f"- Saisons verifiees: {len(v)} sur {len(C) * 5} ({', '.join(v) or 'aucune'})")
     L.append(f"- **Competitions comparables sans reserve: {sum(1 for c in C.values() if c['comparable_sans_reserve'])} sur {len(C)}**")
     st_arch = [st for c in C for st in C[c]["archive_par_saison"].values()]
+    ordre = ("ARCHIVE_COMPLETE_PERIMETRE_ETENDU", "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL", "MATCH_ARCHIVE_MANQUANT", "PHASE_EXCLUE_NON_DETAILLEE", "MATCH_ATTRIBUE_NON_JOUE", "ARCHIVE_NON_EXAMINEE")
     L += ["", "## Completude de l'archive (dimension distincte de la completude de la competition)", "",
-          "Un match documente (barrage, match attribue) absent des fichiers n'est jamais ajoute a l'archive ni compte: la saison peut etre verifiee pour sa structure et porter `MATCH_ARCHIVE_MANQUANT`. "
-          "`ARCHIVE_NON_EXAMINEE` = aucun examen enregistre: rien n'est affirme. Le comptage ci-dessous n'inclut que les examens explicites.", "",
-          f"- ARCHIVE_COMPLETE_EXAMINEE: {st_arch.count('ARCHIVE_COMPLETE_EXAMINEE')} saisons",
-          f"- MATCH_ARCHIVE_MANQUANT: {st_arch.count('MATCH_ARCHIVE_MANQUANT')} saisons",
-          f"- ARCHIVE_NON_EXAMINEE: {st_arch.count('ARCHIVE_NON_EXAMINEE')} saisons",
-          "- Parmi les saisons COMPLETUDE_VERIFIEE: " + ", ".join(f"{k} {sum(1 for c in C for x, st in C[c]['archive_par_saison'].items() if C[c]['completude_par_saison'][x] == 'COMPLETUDE_VERIFIEE' and st == k)}" for k in ("ARCHIVE_COMPLETE_EXAMINEE", "MATCH_ARCHIVE_MANQUANT", "ARCHIVE_NON_EXAMINEE")),
-          f"- **Competitions comparables sans reserve sur l'archive (5 saisons verifiees ET archive complete examinee): {sum(1 for c in C.values() if c['comparable_archive_sans_reserve'])} sur {len(C)}**", ""]
+          "Un match documente absent des fichiers n'est jamais ajoute a l'archive ni compte. `MATCH_ARCHIVE_MANQUANT` = rencontre disputee documentee et absente; "
+          "`PHASE_EXCLUE_NON_DETAILLEE` = phase exclue sans rencontres individualisees; `MATCH_ATTRIBUE_NON_JOUE` = match attribue sans rencontre disputee. "
+          "`ARCHIVE_COMPLETE_PERIMETRE_PARTIEL` = aucun match documente manquant dans le perimetre examine, mais ce perimetre n'inclut pas tout (voir `perimetre_examen`); "
+          "`ARCHIVE_COMPLETE_PERIMETRE_ETENDU` = saison reguliere (paires verifiees) + phases finales examinees individuellement + matchs additionnels. "
+          "`ARCHIVE_NON_EXAMINEE` = rien n'est affirme.", ""]
+    for k in ordre:
+        L.append(f"- {k}: {st_arch.count(k)} saisons (dont verifiees: {sum(1 for c in C for x, st in C[c]['archive_par_saison'].items() if st == k and C[c]['completude_par_saison'][x] == 'COMPLETUDE_VERIFIEE')})")
+    L += [f"- **Competitions comparables sans reserve sur l'archive (5 saisons verifiees ET perimetre etendu): {sum(1 for c in C.values() if c['comparable_archive_sans_reserve'])} sur {len(C)}**", ""]
     for c in sorted(C):
         for s_, sig in C[c]["signalements_archive"].items():
             for g in sig:
-                L.append(f"- {c}:{s_} MATCH_ARCHIVE_MANQUANT ({g.get('matchs_documentes_absents') if g.get('matchs_documentes_absents') is not None else 'nombre non documente'}; preuve: {g['niveau_preuve']}; perimetre: {g['perimetre']}): {g['detail']}")
+                n = g.get("matchs_documentes_absents")
+                L.append(f"- {c}:{s_} {g['code']} ({('nombre non documente' if n is None else str(n) + ' match(s) disputes' if g['code'] == 'MATCH_ARCHIVE_MANQUANT' else str(g.get('matchs_attribues_non_joues', n)) + ' attribue(s)')}; preuve: {g['niveau_preuve']}; perimetre: {g['perimetre']}): {g['detail']}")
     L.append("")
     L += ["", "## Volume (tri: matchs avec score decroissant)", "", "| Code | Matchs avec score | Saisons | Matchs/saison (min-max) |", "|---|---|---|---|"]
     for c in sorted(C, key=lambda k: -C[k]["volume"]["matchs_avec_score"]):
