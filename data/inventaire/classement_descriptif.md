@@ -15,13 +15,13 @@ La completude reelle d'une saison (nombre d'equipes et de matchs attendus) n'est
 
 Un match documente absent des fichiers n'est jamais ajoute a l'archive ni compte. `MATCH_ARCHIVE_MANQUANT` = rencontre disputee documentee et absente; `PHASE_EXCLUE_NON_DETAILLEE` = phase exclue sans rencontres individualisees; `MATCH_ATTRIBUE_NON_JOUE` = match attribue sans rencontre disputee. `ARCHIVE_COMPLETE_PERIMETRE_PARTIEL` = aucun match documente manquant dans le perimetre examine, mais ce perimetre n'inclut pas tout (voir `perimetre_examen`); `ARCHIVE_COMPLETE_PERIMETRE_ETENDU` = saison reguliere (paires verifiees) + phases finales examinees individuellement + matchs additionnels. `ARCHIVE_NON_EXAMINEE` = rien n'est affirme.
 
-- ARCHIVE_COMPLETE_PERIMETRE_ETENDU: 0 saisons (dont verifiees: 0)
-- ARCHIVE_COMPLETE_PERIMETRE_PARTIEL: 12 saisons (dont verifiees: 12)
-- MATCH_ARCHIVE_MANQUANT: 16 saisons (dont verifiees: 16)
+- ARCHIVE_COMPLETE_PERIMETRE_ETENDU: 14 saisons (dont verifiees: 14)
+- ARCHIVE_COMPLETE_PERIMETRE_PARTIEL: 62 saisons (dont verifiees: 62)
+- MATCH_ARCHIVE_MANQUANT: 18 saisons (dont verifiees: 18)
 - PHASE_EXCLUE_NON_DETAILLEE: 17 saisons (dont verifiees: 17)
-- MATCH_ATTRIBUE_NON_JOUE: 0 saisons (dont verifiees: 0)
-- ARCHIVE_NON_EXAMINEE: 145 saisons (dont verifiees: 136)
-- **Competitions comparables sans reserve sur l'archive (5 saisons verifiees ET perimetre etendu): 0 sur 38**
+- MATCH_ATTRIBUE_NON_JOUE: 4 saisons (dont verifiees: 4)
+- ARCHIVE_NON_EXAMINEE: 75 saisons (dont verifiees: 66)
+- **Competitions comparables sans reserve sur l'archive (5 saisons verifiees ET perimetre etendu): 2 sur 38**
 
 - AUT:2425 MATCH_ARCHIVE_MANQUANT (2 match(s) disputes; preuve: nombre_et_dates; perimetre: implique_un_club_de_la_ligue): Barrage Conference League (demi-finale 29/05/2025, finale 01/06/2025) absent de l'archive.
 - AUT:2526 MATCH_ARCHIVE_MANQUANT (3 match(s) disputes; preuve: match_par_match; perimetre: implique_un_club_de_la_ligue): Barrage Conference League: Ried 2-1 Wolfsberger (19/05/2026), Ried 2-1 Rapid (22/05), Rapid 3-0 Ried (25/05) (RSSSF), absents de l'archive.
@@ -29,12 +29,19 @@ Un match documente absent des fichiers n'est jamais ajoute a l'archive ni compte
 - B1:2223 MATCH_ARCHIVE_MANQUANT (24 match(s) disputes; preuve: nombre_seulement; perimetre: implique_un_club_de_la_ligue): Play-offs de la saison (24 matchs) non presents dans l'archive.
 - B1:2324 MATCH_ATTRIBUE_NON_JOUE (1 attribue(s); preuve: match_par_match; perimetre: implique_un_club_de_la_ligue): Standard-Westerlo attribue 0-5 (non joue: Standard n'a pas pris le coup d'envoi), absent de l'archive; ce n'est pas un match joue. (qualification corrigee: match attribue, aucune rencontre disputee absente)
 - B1:2324 MATCH_ARCHIVE_MANQUANT (2 match(s) disputes; preuve: nombre_et_equipes; perimetre: hors_clubs_de_la_ligue): Deux matchs de barrage de promotion/relegation contre Lommel, absents de l'archive.
+- D1:2122 MATCH_ATTRIBUE_NON_JOUE (1 attribue(s); preuve: match_par_match; perimetre: implique_un_club_de_la_ligue): Bochum-M'gladbach (18/03/2022): match interrompu, victoire 2-0 attribuee a M'gladbach par le tribunal sportif de la DFB (reference citee par Wikipedia, 24/03/2022). Present dans l'archive avec le score 0-2 (score attribue, pas le score au moment de l'interruption, que la source ne donne pas).
+- D1:2425 MATCH_ATTRIBUE_NON_JOUE (1 attribue(s); preuve: nombre_et_equipes; perimetre: implique_un_club_de_la_ligue): Union Berlin-Bochum (14/12/2024): match interrompu, donne a Bochum par la DFB (titre de la reference DFB.de du 09/01/2025 cite par Wikipedia; le score attribue n'est pas ecrit dans la page). Present dans l'archive avec le score 0-2, identique au tableau de resultats de Wikipedia.
 - DNK:2425 MATCH_ARCHIVE_MANQUANT (1 match(s) disputes; preuve: nombre_et_equipes; perimetre: implique_un_club_de_la_ligue): Barrage europeen Randers-Silkeborg (selon la page Wikipedia), absent de l'archive.
 - DNK:2526 MATCH_ARCHIVE_MANQUANT (1 match(s) disputes; preuve: nombre_et_equipes; perimetre: implique_un_club_de_la_ligue): Barrage europeen Brondby-Copenhague du 21/05/2026, absent de l'archive.
+- F1:2526 MATCH_ATTRIBUE_NON_JOUE (1 attribue(s); preuve: match_par_match; perimetre: implique_un_club_de_la_ligue): Nantes-Toulouse (17/05/2026): match interrompu apres invasion de terrain, score 0-0 enterine par la ligue (Le Parisien et BBC cites par Wikipedia). Present dans l'archive avec 0-0; resultat enterine, pas un match termine.
+- F2:2526 MATCH_ATTRIBUE_NON_JOUE (1 attribue(s); preuve: match_par_match; perimetre: implique_un_club_de_la_ligue): Bastia-Red Star (05/12/2025): interrompu a la 57e minute a 0-0 (fumigene), perdu par forfait par Bastia (Wikipedia). Ligne presente dans l'archive SANS score (ni FTHG ni FTAG); le tableau Wikipedia affiche 0-3 sans l'identifier comme score de forfait; buts non comptes au classement par la source. Un second match interrompu (0-2, fumigenes de supporters de Bastia) dont le score a ete confirme par la LFP n'est pas identifie dans la page (adversaire et date non indiques).
 - FIN:2223 MATCH_ARCHIVE_MANQUANT (1 match(s) disputes; preuve: match_par_match; perimetre: hors_clubs_de_la_ligue): Jaro-EIF 2-1 le 12/10/2022 (premier tour du parcours de barrage de Ykkonen, RSSSF), absent de l'archive.
 - FIN:2324 MATCH_ARCHIVE_MANQUANT (2 match(s) disputes; preuve: match_par_match; perimetre: implique_un_club_de_la_ligue): Barrage de relegation Mariehamn-Gnistan: 0-0 le 25/10/2023 et 3-0 le 29/10/2023 (RSSSF), absents de l'archive.
 - FIN:2526 MATCH_ARCHIVE_MANQUANT (nombre non documente; preuve: equipes_sans_nombre; perimetre: implique_un_club_de_la_ligue): Barrage de relegation KTP-TPS absent de l'archive; nombre de matchs non documente dans la verification.
 - G1:2122 MATCH_ARCHIVE_MANQUANT (2 match(s) disputes; preuve: nombre_et_equipes; perimetre: implique_un_club_de_la_ligue): Barrage de relegation Lamia-Veria (2 manches), absent de l'archive.
+- I1:2223 MATCH_ARCHIVE_MANQUANT (1 match(s) disputes; preuve: nombre_et_equipes; perimetre: implique_un_club_de_la_ligue): Match de depart Spezia-Hellas Verona (egalite a 31 points, 17e/18e): Verona 3-1, terrain neutre, date non indiquee par la source; absent de l'archive (aucune des deux equipes n'a plus de 38 matchs). Source: Wikipedia 2022-23 Serie A.
+- I2:2425 MATCH_ARCHIVE_MANQUANT (1 match(s) disputes; preuve: match_par_match; perimetre: implique_un_club_de_la_ligue): Play-out Sampdoria-Salernitana, match aller du 15/06/2025: 2-0 (Wikipedia 2024-25 Serie B), joue, absent de l'archive (table de saison reguliere seulement).
+- I2:2425 MATCH_ATTRIBUE_NON_JOUE (1 attribue(s); preuve: match_par_match; perimetre: implique_un_club_de_la_ligue): Play-out, match retour du 22/06/2025 a Salerne suspendu a la 74e minute (Sampdoria menait 2-0 sur le terrain), victoire 3-0 attribuee a la Sampdoria par la Lega B (Wikipedia); absent de l'archive; ce n'est pas un match joue en entier.
 - IRL:2223 PHASE_EXCLUE_NON_DETAILLEE (nombre non documente; preuve: existence_seulement; perimetre: hors_clubs_de_la_ligue): Matchs de First Division du parcours de barrage absents de l'archive; seule la finale UC Dublin-Waterford y figure.
 - IRL:2324 MATCH_ARCHIVE_MANQUANT (nombre non documente; preuve: equipes_sans_nombre; perimetre: hors_clubs_de_la_ligue): Matchs de First Division du parcours de barrage (Waterford-Athlone, Cobh-Wexford, Waterford-Cobh le 04/11/2023...) absents de l'archive; seule la finale y figure.
 - IRL:2425 MATCH_ARCHIVE_MANQUANT (nombre non documente; preuve: equipes_sans_nombre; perimetre: hors_clubs_de_la_ligue): Matchs de First Division du parcours de barrage (demi-finales, finale Bray-Athlone) absents de l'archive; seule la finale Bray-Drogheda y figure.

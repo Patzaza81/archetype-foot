@@ -623,11 +623,11 @@
   },
   "D1": {
    "archive_par_saison": {
-    "2122": "ARCHIVE_NON_EXAMINEE",
-    "2223": "ARCHIVE_NON_EXAMINEE",
-    "2324": "ARCHIVE_NON_EXAMINEE",
-    "2425": "ARCHIVE_NON_EXAMINEE",
-    "2526": "ARCHIVE_NON_EXAMINEE"
+    "2122": "MATCH_ATTRIBUE_NON_JOUE",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "MATCH_ATTRIBUE_NON_JOUE",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL"
    },
    "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
@@ -702,8 +702,60 @@
     "erreurs_et_codes_pour_1000_matchs": 2.614
    },
    "indices_segmentation_historique": [],
-   "perimetre_examen_par_saison": {},
-   "signalements_archive": {},
+   "perimetre_examen_par_saison": {
+    "2122": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2223": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2324": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2425": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2526": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    }
+   },
+   "signalements_archive": {
+    "2122": [
+     {
+      "code": "MATCH_ATTRIBUE_NON_JOUE",
+      "detail": "Bochum-M'gladbach (18/03/2022): match interrompu, victoire 2-0 attribuee a M'gladbach par le tribunal sportif de la DFB (reference citee par Wikipedia, 24/03/2022). Present dans l'archive avec le score 0-2 (score attribue, pas le score au moment de l'interruption, que la source ne donne pas).",
+      "matchs_attribues_non_joues": 1,
+      "matchs_documentes_absents": 0,
+      "niveau_preuve": "match_par_match",
+      "perimetre": "implique_un_club_de_la_ligue"
+     }
+    ],
+    "2425": [
+     {
+      "code": "MATCH_ATTRIBUE_NON_JOUE",
+      "detail": "Union Berlin-Bochum (14/12/2024): match interrompu, donne a Bochum par la DFB (titre de la reference DFB.de du 09/01/2025 cite par Wikipedia; le score attribue n'est pas ecrit dans la page). Present dans l'archive avec le score 0-2, identique au tableau de resultats de Wikipedia.",
+      "matchs_attribues_non_joues": 1,
+      "matchs_documentes_absents": 0,
+      "niveau_preuve": "nombre_et_equipes",
+      "perimetre": "implique_un_club_de_la_ligue"
+     }
+    ]
+   },
    "signature_couverture": "LLLCLLCLL",
    "type": "europe",
    "volume": {
@@ -728,11 +780,11 @@
   },
   "D2": {
    "archive_par_saison": {
-    "2122": "ARCHIVE_NON_EXAMINEE",
-    "2223": "ARCHIVE_NON_EXAMINEE",
-    "2324": "ARCHIVE_NON_EXAMINEE",
-    "2425": "ARCHIVE_NON_EXAMINEE",
-    "2526": "ARCHIVE_NON_EXAMINEE"
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL"
    },
    "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
@@ -807,7 +859,38 @@
     "erreurs_et_codes_pour_1000_matchs": 0.0
    },
    "indices_segmentation_historique": [],
-   "perimetre_examen_par_saison": {},
+   "perimetre_examen_par_saison": {
+    "2122": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2223": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2324": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2425": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2526": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    }
+   },
    "signalements_archive": {},
    "signature_couverture": "CCCCCCCCC",
    "type": "europe",
@@ -960,13 +1043,13 @@
   },
   "E0": {
    "archive_par_saison": {
-    "2122": "ARCHIVE_NON_EXAMINEE",
-    "2223": "ARCHIVE_NON_EXAMINEE",
-    "2324": "ARCHIVE_NON_EXAMINEE",
-    "2425": "ARCHIVE_NON_EXAMINEE",
-    "2526": "ARCHIVE_NON_EXAMINEE"
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU"
    },
-   "comparable_archive_sans_reserve": false,
+   "comparable_archive_sans_reserve": true,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -1039,7 +1122,38 @@
     "erreurs_et_codes_pour_1000_matchs": 1.579
    },
    "indices_segmentation_historique": [],
-   "perimetre_examen_par_saison": {},
+   "perimetre_examen_par_saison": {
+    "2122": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2223": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2324": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2425": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2526": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    }
+   },
    "signalements_archive": {},
    "signature_couverture": "CCCCCCCCL",
    "type": "europe",
@@ -1065,11 +1179,11 @@
   },
   "E1": {
    "archive_par_saison": {
-    "2122": "ARCHIVE_NON_EXAMINEE",
-    "2223": "ARCHIVE_NON_EXAMINEE",
-    "2324": "ARCHIVE_NON_EXAMINEE",
-    "2425": "ARCHIVE_NON_EXAMINEE",
-    "2526": "ARCHIVE_NON_EXAMINEE"
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL"
    },
    "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
@@ -1144,7 +1258,38 @@
     "erreurs_et_codes_pour_1000_matchs": 1.087
    },
    "indices_segmentation_historique": [],
-   "perimetre_examen_par_saison": {},
+   "perimetre_examen_par_saison": {
+    "2122": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2223": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2324": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2425": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2526": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    }
+   },
    "signalements_archive": {},
    "signature_couverture": "CCCCCCCCL",
    "type": "europe",
@@ -1170,11 +1315,11 @@
   },
   "E2": {
    "archive_par_saison": {
-    "2122": "ARCHIVE_NON_EXAMINEE",
-    "2223": "ARCHIVE_NON_EXAMINEE",
-    "2324": "ARCHIVE_NON_EXAMINEE",
-    "2425": "ARCHIVE_NON_EXAMINEE",
-    "2526": "ARCHIVE_NON_EXAMINEE"
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL"
    },
    "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
@@ -1249,7 +1394,38 @@
     "erreurs_et_codes_pour_1000_matchs": 0.362
    },
    "indices_segmentation_historique": [],
-   "perimetre_examen_par_saison": {},
+   "perimetre_examen_par_saison": {
+    "2122": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2223": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2324": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2425": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2526": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    }
+   },
    "signalements_archive": {},
    "signature_couverture": "CCCCCCCCL",
    "type": "europe",
@@ -1275,11 +1451,11 @@
   },
   "E3": {
    "archive_par_saison": {
-    "2122": "ARCHIVE_NON_EXAMINEE",
-    "2223": "ARCHIVE_NON_EXAMINEE",
-    "2324": "ARCHIVE_NON_EXAMINEE",
-    "2425": "ARCHIVE_NON_EXAMINEE",
-    "2526": "ARCHIVE_NON_EXAMINEE"
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL"
    },
    "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
@@ -1354,7 +1530,38 @@
     "erreurs_et_codes_pour_1000_matchs": 0.0
    },
    "indices_segmentation_historique": [],
-   "perimetre_examen_par_saison": {},
+   "perimetre_examen_par_saison": {
+    "2122": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2223": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2324": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2425": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2526": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    }
+   },
    "signalements_archive": {},
    "signature_couverture": "CCCCCCCCC",
    "type": "europe",
@@ -1487,11 +1694,11 @@
   },
   "F1": {
    "archive_par_saison": {
-    "2122": "ARCHIVE_NON_EXAMINEE",
-    "2223": "ARCHIVE_NON_EXAMINEE",
-    "2324": "ARCHIVE_NON_EXAMINEE",
-    "2425": "ARCHIVE_NON_EXAMINEE",
-    "2526": "ARCHIVE_NON_EXAMINEE"
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2526": "MATCH_ATTRIBUE_NON_JOUE"
    },
    "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
@@ -1568,8 +1775,50 @@
    "indices_segmentation_historique": [
     "nombre de matchs different selon les saisons: {\"2122\": 380, \"2223\": 380, \"2324\": 306, \"2425\": 306, \"2526\": 306}"
    ],
-   "perimetre_examen_par_saison": {},
-   "signalements_archive": {},
+   "perimetre_examen_par_saison": {
+    "2122": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2223": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2324": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas. Montpellier-Clermont: match interrompu pour troubles du public (Montpellier: 1 point retire, Wikipedia); date et score officiel non indiques par la source (les deux rencontres de l'archive affichent 1-1: 29/11/2023 Montpellier-Clermont et 14/04/2024 Clermont-Montpellier); statut officiel non tranche.",
+     "matchs_additionnels": "examines_non_resolus",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2425": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2526": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    }
+   },
+   "signalements_archive": {
+    "2526": [
+     {
+      "code": "MATCH_ATTRIBUE_NON_JOUE",
+      "detail": "Nantes-Toulouse (17/05/2026): match interrompu apres invasion de terrain, score 0-0 enterine par la ligue (Le Parisien et BBC cites par Wikipedia). Present dans l'archive avec 0-0; resultat enterine, pas un match termine.",
+      "matchs_attribues_non_joues": 1,
+      "matchs_documentes_absents": 0,
+      "niveau_preuve": "match_par_match",
+      "perimetre": "implique_un_club_de_la_ligue"
+     }
+    ]
+   },
    "signature_couverture": "CCCCCCCCC",
    "type": "europe",
    "volume": {
@@ -1594,11 +1843,11 @@
   },
   "F2": {
    "archive_par_saison": {
-    "2122": "ARCHIVE_NON_EXAMINEE",
-    "2223": "ARCHIVE_NON_EXAMINEE",
-    "2324": "ARCHIVE_NON_EXAMINEE",
-    "2425": "ARCHIVE_NON_EXAMINEE",
-    "2526": "ARCHIVE_NON_EXAMINEE"
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2526": "MATCH_ATTRIBUE_NON_JOUE"
    },
    "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
@@ -1675,8 +1924,50 @@
    "indices_segmentation_historique": [
     "nombre de matchs different selon les saisons: {\"2122\": 380, \"2223\": 380, \"2324\": 380, \"2425\": 306, \"2526\": 305}"
    ],
-   "perimetre_examen_par_saison": {},
-   "signalements_archive": {},
+   "perimetre_examen_par_saison": {
+    "2122": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2223": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas. Bordeaux-Rodez: match interrompu (invasion de terrain, references presse des 03 et 05/06/2023 citees par Wikipedia); score officiel non indique par la source (l'archive affiche Bordeaux 0-1 Rodez au 02/06/2023); statut officiel non tranche.",
+     "matchs_additionnels": "examines_non_resolus",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2324": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2425": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2526": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    }
+   },
+   "signalements_archive": {
+    "2526": [
+     {
+      "code": "MATCH_ATTRIBUE_NON_JOUE",
+      "detail": "Bastia-Red Star (05/12/2025): interrompu a la 57e minute a 0-0 (fumigene), perdu par forfait par Bastia (Wikipedia). Ligne presente dans l'archive SANS score (ni FTHG ni FTAG); le tableau Wikipedia affiche 0-3 sans l'identifier comme score de forfait; buts non comptes au classement par la source. Un second match interrompu (0-2, fumigenes de supporters de Bastia) dont le score a ete confirme par la LFP n'est pas identifie dans la page (adversaire et date non indiques).",
+      "matchs_attribues_non_joues": 1,
+      "matchs_documentes_absents": 0,
+      "niveau_preuve": "match_par_match",
+      "perimetre": "implique_un_club_de_la_ligue"
+     }
+    ]
+   },
    "signature_couverture": "LLLCLLCLL",
    "type": "europe",
    "volume": {
@@ -1968,11 +2259,11 @@
   },
   "I1": {
    "archive_par_saison": {
-    "2122": "ARCHIVE_NON_EXAMINEE",
-    "2223": "ARCHIVE_NON_EXAMINEE",
-    "2324": "ARCHIVE_NON_EXAMINEE",
-    "2425": "ARCHIVE_NON_EXAMINEE",
-    "2526": "ARCHIVE_NON_EXAMINEE"
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2223": "MATCH_ARCHIVE_MANQUANT",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU"
    },
    "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
@@ -2047,8 +2338,49 @@
     "erreurs_et_codes_pour_1000_matchs": 0.0
    },
    "indices_segmentation_historique": [],
-   "perimetre_examen_par_saison": {},
-   "signalements_archive": {},
+   "perimetre_examen_par_saison": {
+    "2122": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2223": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Match de depart Spezia-Verona documente individuellement. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "individuelle",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2324": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2425": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2526": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas. Milan-Como prevu a Perth (08/02/2026) non disputé; l'archive contient bien les deux rencontres (15/01/2026 et 18/02/2026).",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    }
+   },
+   "signalements_archive": {
+    "2223": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Match de depart Spezia-Hellas Verona (egalite a 31 points, 17e/18e): Verona 3-1, terrain neutre, date non indiquee par la source; absent de l'archive (aucune des deux equipes n'a plus de 38 matchs). Source: Wikipedia 2022-23 Serie A.",
+      "matchs_documentes_absents": 1,
+      "niveau_preuve": "nombre_et_equipes",
+      "perimetre": "implique_un_club_de_la_ligue"
+     }
+    ]
+   },
    "signature_couverture": "CCCCCCCCC",
    "type": "europe",
    "volume": {
@@ -2073,11 +2405,11 @@
   },
   "I2": {
    "archive_par_saison": {
-    "2122": "ARCHIVE_NON_EXAMINEE",
-    "2223": "ARCHIVE_NON_EXAMINEE",
-    "2324": "ARCHIVE_NON_EXAMINEE",
-    "2425": "ARCHIVE_NON_EXAMINEE",
-    "2526": "ARCHIVE_NON_EXAMINEE"
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "MATCH_ARCHIVE_MANQUANT",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL"
    },
    "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
@@ -2152,8 +2484,57 @@
     "erreurs_et_codes_pour_1000_matchs": 0.0
    },
    "indices_segmentation_historique": [],
-   "perimetre_examen_par_saison": {},
-   "signalements_archive": {},
+   "perimetre_examen_par_saison": {
+    "2122": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2223": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2324": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2425": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2526": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    }
+   },
+   "signalements_archive": {
+    "2425": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Play-out Sampdoria-Salernitana, match aller du 15/06/2025: 2-0 (Wikipedia 2024-25 Serie B), joue, absent de l'archive (table de saison reguliere seulement).",
+      "matchs_documentes_absents": 1,
+      "niveau_preuve": "match_par_match",
+      "perimetre": "implique_un_club_de_la_ligue"
+     },
+     {
+      "code": "MATCH_ATTRIBUE_NON_JOUE",
+      "detail": "Play-out, match retour du 22/06/2025 a Salerne suspendu a la 74e minute (Sampdoria menait 2-0 sur le terrain), victoire 3-0 attribuee a la Sampdoria par la Lega B (Wikipedia); absent de l'archive; ce n'est pas un match joue en entier.",
+      "matchs_attribues_non_joues": 1,
+      "matchs_documentes_absents": 0,
+      "niveau_preuve": "match_par_match",
+      "perimetre": "implique_un_club_de_la_ligue"
+     }
+    ]
+   },
    "signature_couverture": "CCCCCCCCC",
    "type": "europe",
    "volume": {
@@ -2546,11 +2927,11 @@
   },
   "N1": {
    "archive_par_saison": {
-    "2122": "ARCHIVE_NON_EXAMINEE",
-    "2223": "ARCHIVE_NON_EXAMINEE",
-    "2324": "ARCHIVE_NON_EXAMINEE",
-    "2425": "ARCHIVE_NON_EXAMINEE",
-    "2526": "ARCHIVE_NON_EXAMINEE"
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL"
    },
    "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
@@ -2625,7 +3006,38 @@
     "erreurs_et_codes_pour_1000_matchs": 1.961
    },
    "indices_segmentation_historique": [],
-   "perimetre_examen_par_saison": {},
+   "perimetre_examen_par_saison": {
+    "2122": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2223": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2324": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2425": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2526": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    }
+   },
    "signalements_archive": {},
    "signature_couverture": "CCCCCCCCC",
    "type": "europe",
@@ -2759,11 +3171,11 @@
   },
   "P1": {
    "archive_par_saison": {
-    "2122": "ARCHIVE_NON_EXAMINEE",
-    "2223": "ARCHIVE_NON_EXAMINEE",
-    "2324": "ARCHIVE_NON_EXAMINEE",
-    "2425": "ARCHIVE_NON_EXAMINEE",
-    "2526": "ARCHIVE_NON_EXAMINEE"
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL"
    },
    "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
@@ -2838,7 +3250,38 @@
     "erreurs_et_codes_pour_1000_matchs": 0.0
    },
    "indices_segmentation_historique": [],
-   "perimetre_examen_par_saison": {},
+   "perimetre_examen_par_saison": {
+    "2122": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2223": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2324": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2425": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2526": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    }
+   },
    "signalements_archive": {},
    "signature_couverture": "CCCCCCCCC",
    "type": "europe",
@@ -3764,13 +4207,13 @@
   },
   "SP1": {
    "archive_par_saison": {
-    "2122": "ARCHIVE_NON_EXAMINEE",
-    "2223": "ARCHIVE_NON_EXAMINEE",
-    "2324": "ARCHIVE_NON_EXAMINEE",
-    "2425": "ARCHIVE_NON_EXAMINEE",
-    "2526": "ARCHIVE_NON_EXAMINEE"
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU"
    },
-   "comparable_archive_sans_reserve": false,
+   "comparable_archive_sans_reserve": true,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -3843,7 +4286,38 @@
     "erreurs_et_codes_pour_1000_matchs": 1.053
    },
    "indices_segmentation_historique": [],
-   "perimetre_examen_par_saison": {},
+   "perimetre_examen_par_saison": {
+    "2122": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2223": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2324": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2425": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2526": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    }
+   },
    "signalements_archive": {},
    "signature_couverture": "CCCCCCCCC",
    "type": "europe",
@@ -3869,11 +4343,11 @@
   },
   "SP2": {
    "archive_par_saison": {
-    "2122": "ARCHIVE_NON_EXAMINEE",
-    "2223": "ARCHIVE_NON_EXAMINEE",
-    "2324": "ARCHIVE_NON_EXAMINEE",
-    "2425": "ARCHIVE_NON_EXAMINEE",
-    "2526": "ARCHIVE_NON_EXAMINEE"
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL"
    },
    "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
@@ -3948,7 +4422,38 @@
     "erreurs_et_codes_pour_1000_matchs": 0.433
    },
    "indices_segmentation_historique": [],
-   "perimetre_examen_par_saison": {},
+   "perimetre_examen_par_saison": {
+    "2122": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas. Pages SP2 2021-22 et 2022-23: les premieres lectures etaient incoherentes avec la saison; relues le 04/11/2026, sans cas signale.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2223": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas. Pages SP2 2021-22 et 2022-23: les premieres lectures etaient incoherentes avec la saison; relues le 04/11/2026, sans cas signale.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2324": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2425": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2526": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages/play-offs d'apres-saison eventuels (competition distincte de la table) non examines individuellement; leurs rencontres ne sont pas dans l'archive et ne sont pas comptees ici. Matchs additionnels (interrompus, attribues, annules, rejoues): examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    }
+   },
    "signalements_archive": {},
    "signature_couverture": "CCCCCCCCL",
    "type": "europe",
