@@ -31,3 +31,10 @@ Etape exclusivement d'inventaire : aucun modele predictif, aucune selection de m
 
 ## Complements manuels
 `data/inventaire/complements_manuels.json` : entrees `{competition, saison, colonnes, source, date_ajout}`. Declarees dans le profil, sans effet sur le statut automatique.
+
+## Regles 1.0.1 et recomptage independant
+- Cotes decimales (1X2, +/-2.5) valides si > 1; cotes de handicap asiatique valides si > 0 (peuvent etre < 1). `0`, `#`, `x`, `1xBet` = codes de remplissage, jamais des cotes.
+- Trois categories distinctes: valeurs manquantes (cases vides), codes de remplissage (non numerique ou 0 dans une colonne numerique), erreurs de donnees (incoherences, cotes hors domaine, dates hors saison).
+- `recomptage_independant.py` recompte chaque colonne depuis les CSV sans importer l'inventaire et liste les ecarts (`recomptage_independant.json`). Le workflow echoue s'il y a un ecart.
+- `comparaison_v1.0.0_vs_recomptage.md` documente les ecarts de la premiere version.
+- Limite: le recomptage est un code distinct mais ecrit avec la meme definition de validite; il valide l'arithmetique, pas la definition.

@@ -7,6 +7,7 @@ on:
     branches: [inventaire-fd]
     paths:
       - inventaire_football_data.py
+      - recomptage_independant.py
       - config/inventaire_regles.json
       - data/inventaire/complements_manuels.json
       - tests/test_inventaire_football_data.py
@@ -39,6 +40,14 @@ jobs:
           python inventaire_football_data.py --racine .
           echo "code=$?" >> "$GITHUB_OUTPUT"
           exit 0
+      - name: Recomptage independant (CSV sources vs inventaire)
+        id: rec
+        if: steps.inv.outputs.code == '0'
+        run: |
+          set +e
+          python recomptage_independant.py
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+          exit 0
       - name: Verifier que les archives sources n'ont pas change
         run: git diff --exit-code -- data/football_data
       - name: Publier les resultats sur la branche (uniquement data/inventaire)
@@ -49,6 +58,6 @@ jobs:
           git diff --cached --quiet || git commit -m "inventaire: resultats (script $(sha256sum inventaire_football_data.py | cut -c1-12))"
           git pull --rebase origin "${GITHUB_REF_NAME}" || true
           git push origin "HEAD:${GITHUB_REF_NAME}"
-      - name: Echec si les controles ont echoue
-        if: steps.inv.outputs.code != '0'
+      - name: Echec si les controles ou le recomptage ont echoue
+        if: steps.inv.outputs.code != '0' || steps.rec.outputs.code != '0'
         run: exit 1

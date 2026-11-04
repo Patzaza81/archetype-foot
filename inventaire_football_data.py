@@ -8,7 +8,7 @@ import argparse, csv, hashlib, io, json, os, re, sys
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
 
-VERSION_SCRIPT = "1.0.0"
+VERSION_SCRIPT = "1.0.1"
 
 
 # ---------- utilitaires ----------
@@ -99,11 +99,34 @@ class Cfg:
     def __init__(self, cfg):
         self.c = cfg
         self.vides = set(cfg["valeurs_vides"])
-        self.motifs = [re.compile(m) for m in cfg["motifs_cotes"]]
+        self.motifs = [re.compile(m) for m in cfg["motifs_cotes_decimales"]]
+        self.motifs_ah = [re.compile(m) for m in cfg["motifs_cotes_handicap"]]
         self.entiers = set(cfg["colonnes_entieres_positives"])
 
+    def est_cote_handicap(self, nom):
+        return any(m.match(nom) for m in self.motifs_ah)
+
     def est_cote(self, nom):
-        return any(m.match(nom) for m in self.motifs)
+        return any(m.match(nom) for m in self.motifs) or self.est_cote_handicap(nom)
+
+    def classer_valeur(self, nom, canon, v):
+        """(ok, categorie). categorie: None | code_remplissage | erreur_donnee."""
+        if canon in self.entiers:
+            try:
+                x = float(v)
+            except ValueError:
+                return False, "code_remplissage"
+            return (True, None) if (x == int(x) and x >= 0) else (False, "erreur_donnee")
+        if self.est_cote(nom):
+            try:
+                x = float(v)
+            except ValueError:
+                return False, "code_remplissage"
+            if x == 0:
+                return False, "code_remplissage"
+            mini = self.c["cote_minimale_exclue_handicap"] if self.est_cote_handicap(nom) else self.c["cote_minimale_exclue"]
+            return (True, None) if x > mini else (False, "erreur_donnee")
+        return True, None
 
 
 def _vide(v, vides):
@@ -207,7 +230,8 @@ def _analyser_unite(ed, rows, cols, can, C, val, annee_min_max, div_attendu):
         if len(exemples[k]) < ex_max:
             exemples[k].append({"ligne": num, "detail": detail})
 
-    stats = {k: {"valides_joues": 0, "valides_total": 0, "invalides": 0} for k in cols}
+    stats = {k: {"valides_joues": 0, "valides_total": 0, "invalides": 0, "invalides_code_remplissage": 0,
+                 "invalides_erreur_donnee": 0, "manquantes_joues": 0, "manquantes_total": 0} for k in cols}
     coh = {k: {"evaluees": 0, "violations": 0} for k in ("FTR_vs_buts", "mt_inferieur_ft", "cadres_inf_tirs", "HTR_vs_buts_mt")}
     joues = 0
     sans_score_vide = 0
@@ -238,20 +262,20 @@ def _analyser_unite(ed, rows, cols, can, C, val, annee_min_max, div_attendu):
         for k in cols:
             v = d[k]
             if _vide(v, C.vides):
+                stats[k]["manquantes_total"] += 1
+                if a_score:
+                    stats[k]["manquantes_joues"] += 1
                 continue
-            ok = True
             canon = next((cn for cn, s in can.items() if s == k), k)
-            if canon in C.entiers:
-                ok = _entier(v) is not None
-            elif C.est_cote(k):
-                ok = _cote(v, c["cote_minimale_exclue"]) is not None
+            ok, cat = C.classer_valeur(k, canon, v)
             if ok:
                 stats[k]["valides_total"] += 1
                 if a_score:
                     stats[k]["valides_joues"] += 1
             else:
                 stats[k]["invalides"] += 1
-                flag("valeur_invalide:" + k, num, v)
+                stats[k]["invalides_" + cat] += 1
+                flag(cat + ":" + k, num, v)
         # date
         dt = parse_date(d.get("Date", ""), c["formats_date"]) if "Date" in d else None
         if "Date" in d:
@@ -334,11 +358,13 @@ def _analyser_unite(ed, rows, cols, can, C, val, annee_min_max, div_attendu):
                      [{"detail": f"{k[0]} {k[1]} / {k[2]}"} for k in paires_inv], ex_max,
                      "match et son inverse a la meme date"))
     for k, n in sorted(cpt.items()):
-        sev = "avertissement"
-        an.append({"type": k, "severite": sev, "edition": None, "nombre": n, "exemples": exemples[k][:ex_max],
-                   "message": "valeurs ou coherences invalides"})
+        cat = "code_remplissage" if k.startswith("code_remplissage") or k == "score_invalide" else "erreur_donnee"
+        an.append({"type": k, "categorie": cat, "severite": "avertissement", "edition": None, "nombre": n,
+                   "exemples": exemples[k][:ex_max],
+                   "message": "valeur non numerique ou 0 dans une colonne numerique" if cat == "code_remplissage"
+                   else "valeur numerique contraire a la logique (incoherence, cote hors domaine, date)"})
     if sans_score_vide:
-        an.append({"type": "lignes_sans_score_vide", "severite": "info", "edition": None, "nombre": sans_score_vide,
+        an.append({"type": "lignes_sans_score_vide", "categorie": "valeur_manquante", "severite": "info", "edition": None, "nombre": sans_score_vide,
                    "exemples": [], "message": "lignes sans score (non jouees / futures): jamais utilisables pour l'apprentissage du resultat"})
     return {
         "lignes": len(rows), "lignes_avec_score": joues,
@@ -397,7 +423,8 @@ def evaluer_capacite(nom, definition, cellules, cfg):
                     ok, j = r
                     taux = (ok / j) if j else None
                     par_saison[saison] = {"etat": "presente_vide" if ok == 0 else ("complete" if ok == j else "partielle"),
-                                          "taux": None if taux is None else round(taux, 6), "renseignees": ok, "joues": j}
+                                          "taux": None if taux is None else round(taux, 6), "renseignees": ok, "joues": j,
+                                          "lignes_non_valides": j - ok}
                     total_ok += ok
                     if taux is None or taux < st["taux_confirmee"]:
                         parfait = False
@@ -513,9 +540,23 @@ def inventorier(racine, cfg, complements=None):
                                                              ("presente_vide" if v["valides_joues"] == 0 else
                                                               ("complete" if v["valides_joues"] == e["lignes_avec_score"] else "partielle"))),
                                                            "valides_joues": v["valides_joues"], "valides_total": v["valides_total"],
-                                                           "invalides": v["invalides"]} for k, v in e["colonnes"].items()}
+                                                           "invalides": v["invalides"],
+                                                           "invalides_code_remplissage": v["invalides_code_remplissage"],
+                                                           "invalides_erreur_donnee": v["invalides_erreur_donnee"],
+                                                           "manquantes_joues": v["manquantes_joues"],
+                                                           "manquantes_total": v["manquantes_total"]} for k, v in e["colonnes"].items()}
                     cel["editions"][ed]["coherence"] = e["coherence"]
                 cel["etat_colonnes"] = {k: etat_colonne(an, k, c) for k in an["colonnes"]}
+                part = {}
+                for ed_, e_ in an["editions"].items():
+                    for col_, st_ in e_["colonnes"].items():
+                        if st_["manquantes_joues"]:
+                            part[col_] = part.get(col_, 0) + st_["manquantes_joues"]
+                if part:
+                    anomalies.append({"type": "valeurs_manquantes", "categorie": "valeur_manquante", "severite": "info",
+                                      "competition": code, "saison": saison, "edition": None, "nombre": len(part),
+                                      "exemples": [{"detail": f"{k_}: {v_} manquantes sur {an['lignes_avec_score']} matchs joues"} for k_, v_ in sorted(part.items())],
+                                      "message": "colonnes presentes avec des cases vides sur des matchs joues (liste complete des colonnes concernees)"})
                 if len(an["editions"]) > 1:
                     anomalies.append({"type": "editions_multiples", "severite": "info", "competition": code, "saison": saison,
                                       "edition": None, "nombre": len(an["editions"]), "exemples": [{"detail": k} for k in sorted(an["editions"])],

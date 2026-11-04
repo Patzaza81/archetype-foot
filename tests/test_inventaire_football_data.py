@@ -96,6 +96,39 @@ class Unitaires(unittest.TestCase):
         self.assertEqual(sorted(an["editions"]), ["Copa", "Liga"])
 
 
+class Valeurs(unittest.TestCase):
+    def setUp(self):
+        self.C = inv.Cfg(CFG)
+
+    def v(self, col, val):
+        canon = col
+        return self.C.classer_valeur(col, canon, val)
+
+    def test_valides(self):
+        for col, val in (("B365AHH", "0.56"), ("AvgCAHA", "0.6"), ("B365H", "1.01"), ("BMGMCH", "2.5"), ("HS", "12"), ("P>2.5", "1.9")):
+            self.assertEqual(self.v(col, val), (True, None), (col, val))
+
+    def test_invalides(self):
+        casse = {("B365AHH", "0"): "code_remplissage", ("B365CH", "#"): "code_remplissage", ("1XBH", "1xBet"): "code_remplissage",
+                 ("USAH", "x"): "code_remplissage", ("B365H", "0.9"): "erreur_donnee", ("B365H", "0"): "code_remplissage",
+                 ("HS", "2.5"): "erreur_donnee", ("HS", "-1"): "erreur_donnee", ("B365AHH", "-0.3"): "erreur_donnee"}
+        for (col, val), cat in casse.items():
+            self.assertEqual(self.v(col, val), (False, cat), (col, val))
+
+    def test_manquantes_comptees(self):
+        tmp = tempfile.mkdtemp()
+        try:
+            p = os.path.join(tmp, "x.csv")
+            l1 = ligne_eu("F2", "10/09/2021", "A", "B")
+            l2 = ligne_eu("F2", "11/09/2021", "C", "D").replace(",10,8,4,3,", ",,8,4,3,")
+            ecrire(p, EU_HDR + "\n" + l1 + "\n" + l2 + "\n")
+            an, _ = inv.analyser_fichier(p, CFG)
+            st = an["editions"]["F2"]["colonnes"]["HS"]
+            self.assertEqual((st["valides_joues"], st["manquantes_joues"]), (1, 1))
+        finally:
+            shutil.rmtree(tmp)
+
+
 class Statuts(unittest.TestCase):
     def cel(self, taux_ok, joues=10, coh=None):
         ed = {"colonnes": {"HS": {"valides_joues": taux_ok}, "AS": {"valides_joues": taux_ok}},
@@ -177,6 +210,26 @@ class Bout_en_bout(unittest.TestCase):
         p = self.sortie("profils_capacite.json")["competitions"]["ARG"]
         self.assertEqual(len(p["complements_manuels"]), 1)
         self.assertEqual(p["capacites"]["tirs"]["statut"], "CAPACITE_INEXPLOITABLE")
+
+
+class Recomptage(unittest.TestCase):
+    def test_recomptage_sans_ecart_sur_donnees_fabriquees(self):
+        import recomptage_independant as rc
+        tmp = tempfile.mkdtemp()
+        try:
+            fabriquer(tmp)
+            os.makedirs(os.path.join(tmp, "config")); shutil.copy(os.path.join(RACINE, "config", "inventaire_regles.json"), os.path.join(tmp, "config"))
+            self.assertEqual(inv.main(["--racine", tmp]), 0)
+            argv = ["--snapshots", os.path.join(tmp, CFG["chemins"]["snapshots"]), "--config", os.path.join(tmp, "config", "inventaire_regles.json"),
+                    "--manifest", os.path.join(tmp, "data/inventaire/manifest_global.json"), "--sortie", os.path.join(tmp, "data/inventaire")]
+            self.assertEqual(rc.main(argv), 0)
+            # un ecart doit etre detecte si on falsifie le manifest
+            mp = argv[argv.index("--manifest") + 1]
+            m = json.load(open(mp, encoding="utf-8")); m["competitions"]["F1"]["saisons"]["2122"]["lignes_avec_score"] += 1
+            json.dump(m, open(mp, "w", encoding="utf-8"))
+            self.assertEqual(rc.main(argv), 1)
+        finally:
+            shutil.rmtree(tmp)
 
 
 @unittest.skipUnless(os.environ.get("INVENTAIRE_DONNEES_REELLES") == "1", "donnees reelles non demandees")
