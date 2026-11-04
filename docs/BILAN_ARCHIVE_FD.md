@@ -68,7 +68,15 @@ Legende des cartes ci-dessous (saisons 2122, 2223, 2324, 2425, 2526): E etendu, 
 
 ## 3. `ARCHIVE_COMPLETE_PERIMETRE_ETENDU` - 33 saisons
 
-Saison reguliere prouvee par completude des paires, aucune phase finale ou phases individuelles, matchs additionnels examines (une source: Wikipedia, absence de mention non probante). Saisons: BRA:2122, BRA:2223, BRA:2324, BRA:2425, BRA:2526, CHN:2324, CHN:2425, CHN:2526, E0:2122, E0:2223, E0:2324, E0:2425, E0:2526, I1:2122, I1:2324, I1:2425, I1:2526, JPN:2324, JPN:2425, JPN:2526, POL:2122, POL:2324, POL:2425, POL:2526, SP1:2122, SP1:2223, SP1:2324, SP1:2425, SP1:2526, T1:2122, T1:2324, T1:2425, T1:2526.
+Saisons: BRA 2122-2526 (5), E0 (5), SP1 (5), I1 2122/2324/2425/2526 (4), T1 2122/2324/2425/2526 (4), POL 2122/2324/2425/2526 (4), CHN 2324/2425/2526 (3), JPN 2324/2425/2526 (3).
+
+**Ce que le statut prouve, et ce qu'il ne prouve pas.** Il repose sur trois critiques de force differente, a ne pas confondre:
+
+1. **Rencontres de saison reguliere - PREUVE calculee, independante de Wikipedia.** Pour les 33 saisons, chaque paire (domicile, exterieur) apparait exactement une fois dans le CSV (N x (N-1) lignes, 0 doublon, 0 manquante), recalcule le 04/11/2026 sur les fichiers actuels (33/33). Les 33 ont aussi une completude de competition VERIFIEE (equipes et matchs attendus confirmes par une source externe).
+2. **Phases finales - `aucune_phase_documentee` pour les 33** (aucune n'est `individuelle`). Cela signifie qu'aucune phase finale ou barrage n'est documente pour ces competitions/saisons; ce n'est PAS une demonstration qu'il n'en existe pas. Appui: le format connu de ces championnats (pas de play-off de relegation/titre dans la table) et les pages Wikipedia consultees, qui ne mentionnent aucun play-off de ligue; certaines le disent explicitement (ex.: J1 2024, 'sans barrage J1/J2'; Super Lig 2021-22, 'les quatre derniers descendent directement'), la plupart n'en font simplement pas mention. Dans I1 2022-23, un match de depart (Spezia-Verona) existait: cette saison est donc classee en matchs manquants, pas ici.
+3. **Matchs additionnels (interrompus, attribues, annules, rejoues) - ABSENCE DE MENTION, pas preuve d'absence.** Une seule source (Wikipedia) a ete lue par saison; l'absence de mention n'est jamais une preuve negative. Les cas trouves ont ete consignes (signalements); les 33 saisons n'en ont aucun, ce qui signifie 'aucun cas trouve dans cette source', pas 'aucun cas n'existe'.
+
+Lecture correcte: `ETENDU` = identite des rencontres de saison reguliere PROUVEE, plus aucune anomalie ni phase finale trouvee dans le perimetre examine. Ce n'est pas une certification d'exhaustivite absolue; le qualificatif 'etendu' decrit le perimetre examine (le plus large atteint), pas la force de la preuve de chaque composante. Si cette formulation est jugee trop forte, le statut peut etre renomme sans toucher aux donnees.
 
 ## 4. `ARCHIVE_COMPLETE_PERIMETRE_PARTIEL` - 99 saisons
 
@@ -221,28 +229,35 @@ Saisons non verifiees (`COMPLETUDE_NON_VERIFIEE`), aucun examen d'archive: ARG:2
 ## 11. Limite documentee: play-offs et barrages non examines individuellement
 
 - 65 saisons verifiees ont `phases_finales: non_examinee` (play-offs/barrages hors table, absents de l'archive, non individualises): D1 (5); D2 (5); E1 (5); E2 (5); E3 (5); EC (5); F1 (5); F2 (5); I2 (5); N1 (5); P1 (5); SC0 (5); SP2 (5).
-- Ces saisons restent au mieux `ARCHIVE_COMPLETE_PERIMETRE_PARTIEL` tant que cette limite n'est pas levee. Aucune decision de les examiner n'est prise. (Correction: le chiffre de 62 saisons annonce plus tot confondait ce nombre avec le nombre de saisons en statut partiel; le compte exact est donne ci-dessus.)
+- Ces saisons restent au mieux `ARCHIVE_COMPLETE_PERIMETRE_PARTIEL` tant que cette limite n'est pas levee. Aucune decision de les examiner n'est prise. Verification: le compte de 65 correspond exactement aux entrees `phases_finales: non_examinee` du JSON (13 competitions x 5 saisons: D1, D2, E1, E2, E3, EC, F1, F2, I2, N1, P1, SC0, SP2), reparties par statut d'archive en 60 partielles, 4 `MATCH_ATTRIBUE_NON_JOUE` (D1 2122, D1 2425, F1 2526, F2 2526) et 1 `MATCH_ARCHIVE_MANQUANT` (I2 2425). Le chiffre de 62 annonce plus tot etait une erreur de ma part: c'etait le nombre de saisons alors en statut partiel (a cet instant), pas un decompte des phases non examinees; il ne s'appuyait pas sur le JSON.
 - Information pour une phase ulterieure (factuelle): competitions dont les 5 saisons sont verifiees, a saison reguliere prouvee par paires et matchs additionnels examines, bloquees SEULEMENT par cette limite:
   D2, E1, E2, E3, N1, P1, SP2.
 
-## 12. Controles du dernier run (`2d31772`, run Actions 41867586239, 04/11/2026 16:28 UTC)
+## 12. Controles executes apres le dernier changement de donnees
 
-- Tests d'inventaire: 23 tests OK.
-- Inventaire: publication `true`, 0 echec; 256 anomalies (anomalies structurelles deja connues du pipeline, non nouvelles).
-- Recomptage independant (CSV sources vs inventaire): 58 000 comparaisons, 0 ecart.
-- Classement: 38 competitions, `completude_incoherente: []`.
-- `git diff --exit-code -- data/football_data`: aucun changement des archives (etape reussie).
-- Empreintes: les 190 fichiers sources (2122 a 2526) ont ete re-hashes en SHA-256: 0 ecart avec `manifest_global.json` et 0 difference avec `main` (`8cd4ee1`). Manifeste: `archives_avant` = `archives_apres` (220 fichiers, SHA-256 global `4abd0a25...bd94`).
-- Difference avec `main` hors perimetre: 47 fichiers `data/football_data`, tous de la saison 2627 (raw/normalized) plus `manifest.json`, modifies par le bot de `main`; aucun fichier des saisons 2122-2526.
+Dernier run reel: Actions 41872638609, commit `eba2dd8` (04/11/2026 16:57 UTC), conclusion `success`, suivi du commit bot `19f8e5e` (resultats, uniquement `data/inventaire`). Les controles du run precedent (`2d31772`) ne sont plus la reference.
 
-## 13. Test `test_ancien_moteur_dc_intact_par_rapport_a_main`
+- Etapes du run toutes `success`: tests (23 OK), inventaire, recomptage independant, classement, 'archives sources inchangees' (`git diff --exit-code -- data/football_data`), publication; etape d'echec 'skipped' (rien a signaler).
+- Inventaire: publication `true`, 0 echec, 256 anomalies (nombre identique au run precedent). `dernier_run.json` (commit `eba2dd8`): 197 controles, 0 en echec.
+- Recomptage independant (CSV sources vs inventaire): 58 000 comparaisons, 0 ecart. Classement: 38 competitions, `completude_incoherente: []`.
+- Empreintes: manifeste `archives_avant` = `archives_apres` (220 fichiers, SHA-256 global `4abd0a25...bd94`). Les 190 fichiers sources (2122-2526) ont ete re-hashes en SHA-256 a partir des blobs git du commit `19f8e5e`: 0 ecart avec le manifeste, 0 difference avec `main` actuel (`8c2a4a1`).
+- Le commit `19f8e5e` ne modifie que `data/inventaire` (3 fichiers de resultats).
+- Reperage des comptes: les 190 saisons sont reparties sans chevauchement ni omission (190 cellules uniques); recompte independant a partir de `verifications_completude.json` = `classement_descriptif.json`, cellule par cellule, et = les chiffres de ce rapport.
+
+## 13. Test `test_ancien_moteur_dc_intact_par_rapport_a_main` (comparaison actualisee avec `main` = `8c2a4a1`)
 
 - Il execute `git diff --quiet origin/main -- moteur_dc data/dc tests/test_moteur_dc.py`; il echoue car `data/dc/journal.jsonl` (+55 lignes, prefixe identique a la branche) et `data/dc/pronostics.json` (1 ligne) different de `main`.
 - Cause: commit nocturne du bot de `main`, `2dbae51` (04/11/2026 03:40 UTC, "Mise a jour pipeline"), absent de la branche. `moteur_dc/` et `tests/test_moteur_dc.py` sont identiques a `main`; la branche n'a modifie aucun fichier de `data/dc/`.
-- Reproduction: copie temporaire de la branche avec ces 2 fichiers pris sur `main` -> le test passe. Le delta reel est donc exactement ces 2 fichiers de donnees du bot, pas du code. Il disparaitra apres rebase/fusion de `main`; a re-controler a ce moment-la.
+- Reproduction: copie temporaire de la branche avec ces 2 fichiers pris sur `main` -> le test passe. Le delta reel est donc exactement ces 2 fichiers de donnees du bot, pas du code. `main` a avance (`8cd4ee1` -> `8c2a4a1`, 2 commits: journal de rentabilite, moteur Europe) sans modifier `moteur_dc/`, `data/dc/`, `tests/` ni `data/football_data`: le delta est inchange. Il disparaitra apres integration de `main`; a re-controler a ce moment-la.
 
 ## 14. Methode et limites generales
 
 - Sources: Wikipedia (principale), RSSSF, ESPN, presse citee. Le resume automatique des pages est lossy: les scores ou equipes peuvent manquer, d'ou les niveaux de preuve (`match_par_match`, `nombre_et_equipes`, `nombre_et_dates`, `equipes_sans_nombre`, `nombre_seulement`, `existence_seulement`).
 - Preuve structurelle de l'identite des matchs: completude des paires domicile/exterieur (ligues a aller-retour simple). Les formats multi-phases ne l'ont pas: comptes par equipe et total seulement.
 - Aucun match documente absent n'a ete ajoute; aucun score modifie; aucune equipe fusionnee.
+
+## 15. Position par rapport au `main` actuel (actualisee, sans rebase ni fusion)
+
+- `main` = `8c2a4a1`; branche = `19f8e5e`; ancetre commun `9692027`. Branche en avance de 47 commits, en retard de 4 (`2dbae51`, `8cd4ee1`, `269a14e`, `8c2a4a1`), branches divergentes. La reference `8cd4ee1` citee plus haut est depassee.
+- Archives des 190 saisons (2122-2526): identiques a `main`. Les 47 fichiers `data/football_data` differents sont la saison 2627 (raw/normalized) et `manifest.json`, modifies par le bot de `main`; hors perimetre.
+- Fichiers de `main` hors `data/football_data` modifies depuis l'ancetre commun: pipeline, journaux, tickets, exports (98 fichiers), sans lien avec le classement descriptif. Avant toute integration, la comparaison devra etre refaite sur la tete de `main` a ce moment-la.
