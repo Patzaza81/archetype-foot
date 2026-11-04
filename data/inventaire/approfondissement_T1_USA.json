@@ -1,0 +1,682 @@
+{
+ "T1_ext": {
+  "code": "T1",
+  "marche": "ext",
+  "famille": {
+   "conditions": [
+    "elo_diff <= -1.090",
+    "ext_sans_marquer_ext > 0.140"
+   ],
+   "sens": "favorable",
+   "n": 164,
+   "couverture": 0.0938,
+   "taux_reussite": 0.7439,
+   "p1_moyen": 0.4733,
+   "z_ulterieur": 4.42
+  },
+  "fiabilite_P1_deciles": [
+   {
+    "decile": 1,
+    "n": 175,
+    "p_moyen": 0.138,
+    "frequence": 0.086,
+    "z": -2.02,
+    "residus_par_saison_signe": "-----"
+   },
+   {
+    "decile": 2,
+    "n": 175,
+    "p_moyen": 0.202,
+    "frequence": 0.166,
+    "z": -1.21,
+    "residus_par_saison_signe": "+----"
+   },
+   {
+    "decile": 3,
+    "n": 175,
+    "p_moyen": 0.233,
+    "frequence": 0.154,
+    "z": -2.47,
+    "residus_par_saison_signe": "--+--"
+   },
+   {
+    "decile": 4,
+    "n": 175,
+    "p_moyen": 0.262,
+    "frequence": 0.217,
+    "z": -1.35,
+    "residus_par_saison_signe": "+----"
+   },
+   {
+    "decile": 5,
+    "n": 174,
+    "p_moyen": 0.285,
+    "frequence": 0.247,
+    "z": -1.1,
+    "residus_par_saison_signe": "-+---"
+   },
+   {
+    "decile": 6,
+    "n": 175,
+    "p_moyen": 0.307,
+    "frequence": 0.291,
+    "z": -0.44,
+    "residus_par_saison_signe": "++---"
+   },
+   {
+    "decile": 7,
+    "n": 175,
+    "p_moyen": 0.329,
+    "frequence": 0.32,
+    "z": -0.26,
+    "residus_par_saison_signe": "++---"
+   },
+   {
+    "decile": 8,
+    "n": 175,
+    "p_moyen": 0.36,
+    "frequence": 0.371,
+    "z": 0.31,
+    "residus_par_saison_signe": "+--++"
+   },
+   {
+    "decile": 9,
+    "n": 175,
+    "p_moyen": 0.402,
+    "frequence": 0.44,
+    "z": 1.02,
+    "residus_par_saison_signe": "++--+"
+   },
+   {
+    "decile": 10,
+    "n": 175,
+    "p_moyen": 0.512,
+    "frequence": 0.657,
+    "z": 3.88,
+    "residus_par_saison_signe": "-++++"
+   }
+  ],
+  "contexte_par_saison": {
+   "2122": {
+    "n": 11,
+    "frequence": 0.636,
+    "p1": 0.414
+   },
+   "2223": {
+    "n": 33,
+    "frequence": 0.879,
+    "p1": 0.436
+   },
+   "2324": {
+    "n": 48,
+    "frequence": 0.708,
+    "p1": 0.49
+   },
+   "2425": {
+    "n": 37,
+    "frequence": 0.73,
+    "p1": 0.467
+   },
+   "2526": {
+    "n": 34,
+    "frequence": 0.706,
+    "p1": 0.509
+   }
+  },
+  "equipes_du_contexte": {
+   "n_equipes": 23,
+   "top_effectifs": [
+    {
+     "equipe": "Galatasaray",
+     "n": 55,
+     "residu_moyen": 0.286
+    },
+    {
+     "equipe": "Fenerbahce",
+     "n": 21,
+     "residu_moyen": 0.475
+    },
+    {
+     "equipe": "Buyuksehyr",
+     "n": 16,
+     "residu_moyen": 0.261
+    },
+    {
+     "equipe": "Besiktas",
+     "n": 15,
+     "residu_moyen": 0.226
+    },
+    {
+     "equipe": "Ad. Demirspor",
+     "n": 10,
+     "residu_moyen": -0.158
+    },
+    {
+     "equipe": "Trabzonspor",
+     "n": 10,
+     "residu_moyen": 0.141
+    }
+   ],
+   "part_matchs_top3": 0.564
+  },
+  "contexte_sans_top3_equipes": {
+   "n": 71,
+   "residu_moyen": 0.198,
+   "z": 3.4
+  },
+  "meme_contexte_tous_marches": {
+   "dom": {
+    "residu": -0.1515,
+    "z": -4.32,
+    "frequence": 0.135
+   },
+   "nul": {
+    "residu": -0.118,
+    "z": -3.53,
+    "frequence": 0.123
+   },
+   "ext": {
+    "residu": 0.2696,
+    "z": 6.98,
+    "frequence": 0.742
+   },
+   "o15": {
+    "residu": 0.0331,
+    "z": 1.02,
+    "frequence": 0.81
+   },
+   "o25": {
+    "residu": 0.0638,
+    "z": 1.64,
+    "frequence": 0.607
+   },
+   "o35": {
+    "residu": -0.0217,
+    "z": -0.6,
+    "frequence": 0.301
+   },
+   "btts": {
+    "residu": -0.0818,
+    "z": -2.11,
+    "frequence": 0.479
+   }
+  },
+  "residu_par_classe_de_facteur": {
+   "elo_diff": [
+    {
+     "classe": 1,
+     "borne_haute": -0.738,
+     "n": 350,
+     "residu": 0.1174,
+     "z": 4.49
+    },
+    {
+     "classe": 2,
+     "borne_haute": -0.215,
+     "n": 350,
+     "residu": -0.0068,
+     "z": -0.27
+    },
+    {
+     "classe": 3,
+     "borne_haute": 0.211,
+     "n": 349,
+     "residu": -0.0284,
+     "z": -1.18
+    },
+    {
+     "classe": 4,
+     "borne_haute": 0.759,
+     "n": 350,
+     "residu": -0.0449,
+     "z": -1.93
+    },
+    {
+     "classe": 5,
+     "borne_haute": 3.351,
+     "n": 350,
+     "residu": -0.0775,
+     "z": -3.76
+    }
+   ],
+   "ext_sans_marquer_ext": [
+    {
+     "classe": 1,
+     "borne_haute": 0.203,
+     "n": 350,
+     "residu": 0.0428,
+     "z": 1.69
+    },
+    {
+     "classe": 2,
+     "borne_haute": 0.266,
+     "n": 350,
+     "residu": -0.0016,
+     "z": -0.06
+    },
+    {
+     "classe": 3,
+     "borne_haute": 0.313,
+     "n": 349,
+     "residu": -0.0462,
+     "z": -1.93
+    },
+    {
+     "classe": 4,
+     "borne_haute": 0.383,
+     "n": 350,
+     "residu": 0.0004,
+     "z": 0.01
+    },
+    {
+     "classe": 5,
+     "borne_haute": 1.0,
+     "n": 350,
+     "residu": -0.0357,
+     "z": -1.59
+    }
+   ]
+  },
+  "perte_log_P1_selon_k_sans_oubli": {
+   "2": 0.55612,
+   "5": 0.55526,
+   "10": 0.55603,
+   "20": 0.55859,
+   "40": 0.56344
+  },
+  "hors_contexte_extremes_significatifs": [
+   {
+    "facteur": "elo_diff",
+    "classe": 5,
+    "n": 318,
+    "residu": -0.0792,
+    "z": -3.71
+   },
+   {
+    "facteur": "repos_diff",
+    "classe": 1,
+    "n": 278,
+    "residu": -0.0898,
+    "z": -3.39
+   },
+   {
+    "facteur": "x_elo_forme",
+    "classe": 5,
+    "n": 318,
+    "residu": -0.0775,
+    "z": -3.33
+   }
+  ]
+ },
+ "USA_btts": {
+  "code": "USA",
+  "marche": "btts",
+  "famille": {
+   "conditions": [
+    "mu_dom > 1.460",
+    "ext_bc_exterieur <= 1.900",
+    "journee_min > 8.500",
+    "x_att_dom_def_ext > 2.362"
+   ],
+   "sens": "favorable",
+   "n": 1057,
+   "couverture": 0.4163,
+   "taux_reussite": 0.6594,
+   "p1_moyen": 0.5663,
+   "z_ulterieur": 3.65
+  },
+  "fiabilite_P1_deciles": [
+   {
+    "decile": 1,
+    "n": 254,
+    "p_moyen": 0.486,
+    "frequence": 0.571,
+    "z": 2.72,
+    "residus_par_saison_signe": "++++-"
+   },
+   {
+    "decile": 2,
+    "n": 254,
+    "p_moyen": 0.515,
+    "frequence": 0.587,
+    "z": 2.3,
+    "residus_par_saison_signe": "++++-"
+   },
+   {
+    "decile": 3,
+    "n": 254,
+    "p_moyen": 0.53,
+    "frequence": 0.551,
+    "z": 0.69,
+    "residus_par_saison_signe": "++-++"
+   },
+   {
+    "decile": 4,
+    "n": 254,
+    "p_moyen": 0.541,
+    "frequence": 0.579,
+    "z": 1.22,
+    "residus_par_saison_signe": "+--++"
+   },
+   {
+    "decile": 5,
+    "n": 253,
+    "p_moyen": 0.551,
+    "frequence": 0.561,
+    "z": 0.33,
+    "residus_par_saison_signe": "-+++-"
+   },
+   {
+    "decile": 6,
+    "n": 254,
+    "p_moyen": 0.561,
+    "frequence": 0.614,
+    "z": 1.7,
+    "residus_par_saison_signe": "+++-+"
+   },
+   {
+    "decile": 7,
+    "n": 254,
+    "p_moyen": 0.572,
+    "frequence": 0.594,
+    "z": 0.74,
+    "residus_par_saison_signe": "++++-"
+   },
+   {
+    "decile": 8,
+    "n": 254,
+    "p_moyen": 0.583,
+    "frequence": 0.575,
+    "z": -0.27,
+    "residus_par_saison_signe": "+--+-"
+   },
+   {
+    "decile": 9,
+    "n": 254,
+    "p_moyen": 0.596,
+    "frequence": 0.638,
+    "z": 1.37,
+    "residus_par_saison_signe": "++-++"
+   },
+   {
+    "decile": 10,
+    "n": 254,
+    "p_moyen": 0.621,
+    "frequence": 0.673,
+    "z": 1.7,
+    "residus_par_saison_signe": "++++"
+   }
+  ],
+  "contexte_par_saison": {
+   "2122": {
+    "n": 125,
+    "frequence": 0.688,
+    "p1": 0.536
+   },
+   "2223": {
+    "n": 194,
+    "frequence": 0.696,
+    "p1": 0.56
+   },
+   "2324": {
+    "n": 221,
+    "frequence": 0.638,
+    "p1": 0.554
+   },
+   "2425": {
+    "n": 255,
+    "frequence": 0.651,
+    "p1": 0.578
+   },
+   "2526": {
+    "n": 261,
+    "frequence": 0.644,
+    "p1": 0.585
+   }
+  },
+  "equipes_du_contexte": {
+   "n_equipes": 30,
+   "top_effectifs": [
+    {
+     "equipe": "Los Angeles FC",
+     "n": 54,
+     "residu_moyen": 0.031
+    },
+    {
+     "equipe": "Los Angeles Galaxy",
+     "n": 54,
+     "residu_moyen": 0.188
+    },
+    {
+     "equipe": "Portland Timbers",
+     "n": 52,
+     "residu_moyen": 0.075
+    },
+    {
+     "equipe": "Seattle Sounders",
+     "n": 49,
+     "residu_moyen": -0.013
+    },
+    {
+     "equipe": "Real Salt Lake",
+     "n": 46,
+     "residu_moyen": 0.045
+    },
+    {
+     "equipe": "Sporting Kansas City",
+     "n": 46,
+     "residu_moyen": 0.104
+    }
+   ],
+   "part_matchs_top3": 0.152
+  },
+  "contexte_sans_top3_equipes": {
+   "n": 896,
+   "residu_moyen": 0.0918,
+   "z": 5.55
+  },
+  "meme_contexte_tous_marches": {
+   "dom": {
+    "residu": -0.027,
+    "z": -1.77,
+    "frequence": 0.471
+   },
+   "nul": {
+    "residu": 0.0325,
+    "z": 2.48,
+    "frequence": 0.27
+   },
+   "ext": {
+    "residu": -0.0054,
+    "z": -0.4,
+    "frequence": 0.259
+   },
+   "o15": {
+    "residu": 0.0588,
+    "z": 4.66,
+    "frequence": 0.843
+   },
+   "o25": {
+    "residu": 0.0764,
+    "z": 5.01,
+    "frequence": 0.63
+   },
+   "o35": {
+    "residu": 0.0572,
+    "z": 3.97,
+    "frequence": 0.388
+   },
+   "btts": {
+    "residu": 0.0928,
+    "z": 6.1,
+    "frequence": 0.659
+   }
+  },
+  "residu_par_classe_de_facteur": {
+   "mu_dom": [
+    {
+     "classe": 1,
+     "borne_haute": 1.524,
+     "n": 508,
+     "residu": 0.0421,
+     "z": 1.9
+    },
+    {
+     "classe": 2,
+     "borne_haute": 1.62,
+     "n": 508,
+     "residu": 0.038,
+     "z": 1.72
+    },
+    {
+     "classe": 3,
+     "borne_haute": 1.716,
+     "n": 507,
+     "residu": 0.0666,
+     "z": 3.02
+    },
+    {
+     "classe": 4,
+     "borne_haute": 1.835,
+     "n": 508,
+     "residu": 0.0404,
+     "z": 1.84
+    },
+    {
+     "classe": 5,
+     "borne_haute": 2.4,
+     "n": 508,
+     "residu": 0.0076,
+     "z": 0.35
+    }
+   ],
+   "ext_bc_exterieur": [
+    {
+     "classe": 1,
+     "borne_haute": 1.414,
+     "n": 508,
+     "residu": 0.0064,
+     "z": 0.29
+    },
+    {
+     "classe": 2,
+     "borne_haute": 1.62,
+     "n": 508,
+     "residu": 0.0745,
+     "z": 3.39
+    },
+    {
+     "classe": 3,
+     "borne_haute": 1.752,
+     "n": 507,
+     "residu": 0.0555,
+     "z": 2.52
+    },
+    {
+     "classe": 4,
+     "borne_haute": 1.891,
+     "n": 508,
+     "residu": 0.0501,
+     "z": 2.28
+    },
+    {
+     "classe": 5,
+     "borne_haute": 2.529,
+     "n": 508,
+     "residu": 0.0081,
+     "z": 0.37
+    }
+   ],
+   "journee_min": [
+    {
+     "classe": 1,
+     "borne_haute": 6.0,
+     "n": 437,
+     "residu": -0.0083,
+     "z": -0.35
+    },
+    {
+     "classe": 2,
+     "borne_haute": 13.0,
+     "n": 511,
+     "residu": 0.0233,
+     "z": 1.06
+    },
+    {
+     "classe": 3,
+     "borne_haute": 20.8,
+     "n": 575,
+     "residu": 0.0663,
+     "z": 3.2
+    },
+    {
+     "classe": 4,
+     "borne_haute": 28.0,
+     "n": 503,
+     "residu": 0.0571,
+     "z": 2.59
+    },
+    {
+     "classe": 5,
+     "borne_haute": 38.0,
+     "n": 513,
+     "residu": 0.0462,
+     "z": 2.12
+    }
+   ],
+   "x_att_dom_def_ext": [
+    {
+     "classe": 1,
+     "borne_haute": 2.292,
+     "n": 508,
+     "residu": 0.0218,
+     "z": 0.99
+    },
+    {
+     "classe": 2,
+     "borne_haute": 2.623,
+     "n": 508,
+     "residu": 0.0438,
+     "z": 1.99
+    },
+    {
+     "classe": 3,
+     "borne_haute": 2.9,
+     "n": 507,
+     "residu": 0.0926,
+     "z": 4.21
+    },
+    {
+     "classe": 4,
+     "borne_haute": 3.255,
+     "n": 508,
+     "residu": 0.0268,
+     "z": 1.22
+    },
+    {
+     "classe": 5,
+     "borne_haute": 5.76,
+     "n": 508,
+     "residu": 0.0096,
+     "z": 0.44
+    }
+   ]
+  },
+  "perte_log_P1_selon_k_sans_oubli": {
+   "2": 0.68568,
+   "5": 0.68287,
+   "10": 0.68105,
+   "20": 0.67956,
+   "40": 0.67851
+  },
+  "hors_contexte_extremes_significatifs": [
+   {
+    "facteur": "mu_dom",
+    "classe": 1,
+    "n": 297,
+    "residu": 0.11,
+    "z": 3.81
+   }
+  ]
+ }
+}
