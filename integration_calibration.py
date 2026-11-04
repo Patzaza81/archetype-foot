@@ -41,16 +41,17 @@ def historique(code, jusqua_jour=None):
     H.sort(key=lambda m: m[0])
     return [m for m in H if jusqua_jour is None or m[0] < jusqua_jour]
 
-def p1_matchs(hist, fixtures, cfg_p1):
+def p1_matchs(hist, fixtures, cfg_p1, avec_mu=False):
     """P1 de matchs futurs d'une meme competition. fixtures: liste (jour, dom, ext). Regroupe par jour : un seul jour fictif ajoute a la fois (aucun effet d'un match futur sur un autre)."""
     out = {}
     for jour in sorted({f[0] for f in fixtures}):
         H = [m for m in hist if m[0] < jour]; fx = [f for f in fixtures if f[0] == jour]
         M = H + [(jour, "futur", f[1], f[2], 0, 0) for f in fx]
-        P = pp.predire(M, "P1", cfg_p1["k"], cfg_p1["demi_vie_jours"])[len(H):]
+        P, MU = pp.predire(M, "P1", cfg_p1["k"], cfg_p1["demi_vie_jours"], ret_mu=True); P, MU = P[len(H):], MU[len(H):]
         n_hist = len(H)
-        for f, row in zip(fx, P):
-            out[(f[0], f[1], f[2])] = (None if n_hist == 0 or np.isnan(row).any() else row)
+        for f, row, mu in zip(fx, P, MU):
+            r = (None if n_hist == 0 or np.isnan(row).any() else row)
+            out[(f[0], f[1], f[2])] = r if not avec_mu else (None if r is None else (r, (float(mu[0]), float(mu[1]))))
     return out
 
 def lire_flux(jour_min, maintenant=None):
@@ -77,10 +78,10 @@ def traiter(matchs, config, mode_="parallele", ref_jour=None):
             for m in L: out.append({**_base(m), "statut": "HORS_PERIMETRE", "raison": "competition ou equipes non couvertes par Football-Data / non configurees"})
             continue
         ccfg = config["competitions"][code]; jours = {pp._date(m["date"]) for m in L}; hist = historique(code, jusqua_jour=max(j for j in jours if j) if jours else None)
-        fx = [(pp._date(m["date"]), m["fd_dom"], m["fd_ext"]) for m in L]; P = p1_matchs(hist, fx, ccfg["p1"])
+        fx = [(pp._date(m["date"]), m["fd_dom"], m["fd_ext"]) for m in L]; P = p1_matchs(hist, fx, ccfg["p1"], avec_mu=True)
         hist_elo = [(m[0], m[2], m[3], m[4], m[5]) for m in hist]
         for m, f in zip(L, fx):
-            row = P.get(f)
+            got = P.get(f); row = None if got is None else got[0]
             if row is None: out.append({**_base(m), "statut": "SANS_P1", "raison": "aucun historique anterieur dans la competition"}); continue
             orig = {mk: float(row[i]) for i, mk in enumerate(MARCHES)}; elo = None
             if any(ccfg[mk]["statut"] == "CORRECTION VALIDEE" and ccfg[mk]["methode"] in ("ELO", "ELO_PALIER") for mk in MARCHES):
@@ -92,22 +93,40 @@ def traiter(matchs, config, mode_="parallele", ref_jour=None):
             if any(stat[k] != "P1" for k in ("dom", "nul", "ext")): cal["dom"], cal["nul"], cal["ext"] = (float(x) for x in c1)
             out.append({**_base(m), "statut": "OK", "mode": mode_, "p1_original": orig, "p1_calibre": cal, "methode": stat, "somme_1x2_original": round(sum(orig[k] for k in ("dom", "nul", "ext")), 6),
                         "somme_1x2_calibre": round(sum(cal[k] for k in ("dom", "nul", "ext")), 6), "n_historique_competition": len(hist), "elo_diff": elo,
+                        "detail": {"buts_attendus_dom": got[1][0], "buts_attendus_ext": got[1][1], "k": ccfg["p1"]["k"], "demi_vie_jours": ccfg["p1"]["demi_vie_jours"],
+                                   "matchs_anterieurs_dom": sum(1 for h in hist if h[0] < f[0] and f[1] in (h[2], h[3])), "matchs_anterieurs_ext": sum(1 for h in hist if h[0] < f[0] and f[2] in (h[2], h[3])),
+                                   "fd_dom": m["fd_dom"], "fd_ext": m["fd_ext"]},
                         "publie": cal if mode_ == "actif" else orig})
     return out
 
 def _base(m): return {"match_id": m["match_id"], "date": m["date"], "competition": m["competition"], "division": m["division"], "domicile": m["domicile"], "exterieur": m["exterieur"], "coup_d_envoi_utc": m["coup_d_envoi_utc"]}
 
+def _empreinte(prec, rec):
+    return hashlib.sha256((prec + json.dumps(rec, ensure_ascii=False, sort_keys=True, separators=(",", ":"))).encode()).hexdigest()
+
+def lire_journal(dossier=DOSSIER):
+    chemin = os.path.join(dossier, "journal.jsonl")
+    return [json.loads(l) for l in open(chemin, encoding="utf-8") if l.strip()] if os.path.exists(chemin) else []
+
+def verifier_journal(dossier=DOSSIER):
+    """Controle d'immuabilite: chaine d'empreintes intacte ET chaque prediction gelee avant son coup d'envoi. -> liste d'anomalies (vide = intact)."""
+    anom, prec = [], ""
+    for i, r in enumerate(lire_journal(dossier)):
+        e = r.get("empreinte"); corps = {k: v for k, v in r.items() if k != "empreinte"}
+        if e != _empreinte(prec, corps): anom.append((i, r.get("match_id"), "empreinte"))
+        if not r.get("coup_d_envoi_utc") or not r["gele_le"] < r["coup_d_envoi_utc"]: anom.append((i, r.get("match_id"), "gele apres le coup d envoi"))
+        prec = e or ""
+    return anom
+
 def ecrire(enregistrements, config, dossier=DOSSIER, maintenant=None):
-    """Journal gele: une ligne par match_id, jamais reecrite. Retourne (nb ajoutes, nb deja geles)."""
-    os.makedirs(dossier, exist_ok=True); chemin = os.path.join(dossier, "journal.jsonl"); deja = set()
-    if os.path.exists(chemin):
-        for l in open(chemin, encoding="utf-8"):
-            if l.strip(): deja.add(json.loads(l)["match_id"])
-    n = 0
+    """Journal gele, chaine par empreintes: une ligne par match_id, jamais reecrite, ajoutee seulement si le coup d'envoi est posterieur a l'instant de gel. Retourne (nb ajoutes, nb deja geles)."""
+    os.makedirs(dossier, exist_ok=True); chemin = os.path.join(dossier, "journal.jsonl"); maintenant = maintenant or datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    ex = lire_journal(dossier); deja = {r["match_id"] for r in ex}; prec = ex[-1].get("empreinte", "") if ex else ""; n = 0
     with open(chemin, "a", encoding="utf-8") as f:
         for r in enregistrements:
             if r["statut"] != "OK" or r["match_id"] in deja: continue
-            f.write(json.dumps({**r, "gele_le": maintenant or datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")}, ensure_ascii=False, separators=(",", ":")) + "\n"); n += 1
+            if r.get("coup_d_envoi_utc") and r["coup_d_envoi_utc"] <= maintenant: continue
+            corps = {**r, "gele_le": maintenant}; e = _empreinte(prec, corps); f.write(json.dumps({**corps, "empreinte": e}, ensure_ascii=False, separators=(",", ":")) + "\n"); prec = e; n += 1
     return n, len([r for r in enregistrements if r["statut"] == "OK" and r["match_id"] in deja])
 
 def rapport(enregistrements, config, mode_, maintenant=None):

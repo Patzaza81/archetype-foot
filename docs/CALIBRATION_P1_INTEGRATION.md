@@ -29,3 +29,16 @@
 
 ## Tests
 `pytest tests/test_integration_calibration.py tests/test_calibration_p1.py`
+
+## Correction du 04/11/2026 (journal)
+Le premier journal avait été gelé avec une heure de test fixée à 12:00Z : certains matchs déjà commencés y figuraient comme gelés avant le coup d'envoi. Il a été régénéré avec l'heure réelle (matchs non commencés seulement). Désormais : `ecrire` refuse tout match dont le coup d'envoi est passé, chaque ligne porte une empreinte SHA-256 chaînée à la précédente, et `verifier_journal()` détecte toute modification ou tout gel postérieur au coup d'envoi (`tests/test_page_p1.py`).
+
+## Page « P1 – Analyse statistique » (`pronostics_p1.html`)
+- Fichiers : `pronostics_p1.html`, `archetype_p1.js`, `af-p1.css`, données `data/calibration_p1/page_p1.json` (produit par `p1_page_donnees.py`).
+- Lien dans la navigation de toutes les pages qui ont la barre des moteurs, et dans l'accueil. Aucun moteur, aucune API, aucun JSON d'un autre moteur modifiés.
+- Contenu : à venir (filtres date et compétition), 1/N/2 + plus de 1,5 / 2,5 / 3,5 + les deux marquent, détail statistique (buts attendus, matchs antérieurs, k, demi-vie, empreinte), P1 original vs calibré (identiques tant qu'aucune correction n'est validée ; l'écart s'affiche seulement s'il existe), terminés avec résultat, performances (perte logarithmique, Brier, favori correct ± erreur-type, par marché) sur matchs gelés avant le coup d'envoi, historique gelé avec contrôle d'intégrité.
+- Donnée absente : « — » ou message explicite ; aucune valeur inventée. Les résultats viennent des scores déjà écrits par le flux (`data/archive_test`).
+- Le workflow `calibration_parallele.yml` met à jour journal et `page_p1.json` après le pipeline.
+
+## Preuve d'exactitude
+`python verifier_page_p1.py` → `data/calibration_p1/preuve_page_p1.json` : recalcul de P1 depuis zéro pour chaque match (écart max avec journal et page), lecture du DOM dans Chromium (écart max en %), intégrité du journal. Captures : `data/calibration_p1/captures/`.

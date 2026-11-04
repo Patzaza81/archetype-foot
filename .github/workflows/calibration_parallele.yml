@@ -28,11 +28,13 @@ jobs:
           python-version: "3.12"
       - run: pip install numpy pytest
       - name: Tests
-        run: python -m pytest tests/test_calibration_p1.py tests/test_integration_calibration.py -q
+        run: python -m pytest tests/test_calibration_p1.py tests/test_integration_calibration.py tests/test_page_p1.py -q
       - name: Enregistrer P1 original et calibré
         run: OMP_NUM_THREADS=1 python integration_calibration.py
+      - name: Données de la page P1 (lecture du journal gelé et des scores du flux)
+        run: python p1_page_donnees.py
       - name: Commit du journal parallèle (dossier dédié seulement)
         run: |
           git config user.name "github-actions"; git config user.email "actions@github.com"
-          git add data/calibration_p1/parallele
-          git diff --cached --quiet || (git commit -m "Calibration P1: journal parallèle" && git pull --rebase origin main && git push origin HEAD:main)
+          git add data/calibration_p1/parallele data/calibration_p1/page_p1.json
+          git diff --cached --quiet || (git commit -m "Calibration P1: journal parallèle et données de la page" && git pull --rebase origin main && git push origin HEAD:main)
