@@ -1,0 +1,16 @@
+{
+  "description": "Verifications EXTERNES de completude (nombre d'equipes et de matchs attendus). Le script compare ces valeurs a ce qui est observe dans l'archive; en cas de divergence le statut devient COMPLETUDE_INCOHERENTE.",
+  "verifications": [
+    {
+      "competition": "T1",
+      "saison": "2223",
+      "equipes_attendues": 19,
+      "matchs_attendus": 342,
+      "preuves": [
+        "Archive: 19 equipes, 342 lignes = 19x18, aucune paire (domicile, exterieur) manquante ni en double, dates du 2022-08-05 au 2023-06-07, 342 lignes avec score.",
+        "Source externe (une seule): https://en.wikipedia.org/wiki/2022%E2%80%9323_S%C3%BCper_Lig - '19 teams contested the league', 36 matchs par equipe, 342 matchs; memes 19 equipes que l'archive. Gaziantep et Hatayspor se sont retires le 12/02/2023 apres le seisme sans etre relegues."
+      ],
+      "date_verification": "2026-11-04"
+    }
+  ]
+}

@@ -38,3 +38,9 @@ Etape exclusivement d'inventaire : aucun modele predictif, aucune selection de m
 - `recomptage_independant.py` recompte chaque colonne depuis les CSV sans importer l'inventaire et liste les ecarts (`recomptage_independant.json`). Le workflow echoue s'il y a un ecart.
 - `comparaison_v1.0.0_vs_recomptage.md` documente les ecarts de la premiere version.
 - Limite: le recomptage est un code distinct mais ecrit avec la meme definition de validite; il valide l'arithmetique, pas la definition.
+
+## Classement descriptif et completude
+- `classement_descriptif.py` produit `classement_descriptif.json/.md`: trois dimensions separees (couverture, fiabilite, volume) et aucun score global ni recommandation de marche.
+- Completude: `COMPLETUDE_VERIFIEE` seulement si `verifications_completude.json` contient une verification externe concordante avec l'archive; sinon `COMPLETUDE_NON_VERIFIEE`; divergence = `COMPLETUDE_INCOHERENTE` (le workflow echoue).
+- Une structure aller-retour complete dans l'archive est coherente mais ne prouve pas qu'une equipe n'a pas ete oubliee.
+- Editions et identites d'equipes ne sont jamais fusionnees.

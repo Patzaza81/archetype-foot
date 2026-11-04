@@ -4,10 +4,13 @@ name: inventaire_football_data
 on:
   workflow_dispatch:
   push:
-    branches: [inventaire-fd]
+    branches: [inventaire-fd, classement-descriptif-fd]
     paths:
       - inventaire_football_data.py
       - recomptage_independant.py
+      - classement_descriptif.py
+      - data/inventaire/verifications_completude.json
+      - tests/test_classement_descriptif.py
       - config/inventaire_regles.json
       - data/inventaire/complements_manuels.json
       - tests/test_inventaire_football_data.py
@@ -48,6 +51,14 @@ jobs:
           python recomptage_independant.py
           echo "code=$?" >> "$GITHUB_OUTPUT"
           exit 0
+      - name: Classement descriptif (3 dimensions, completude)
+        id: cls
+        if: steps.inv.outputs.code == '0'
+        run: |
+          set +e
+          python classement_descriptif.py
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+          exit 0
       - name: Verifier que les archives sources n'ont pas change
         run: git diff --exit-code -- data/football_data
       - name: Publier les resultats sur la branche (uniquement data/inventaire)
@@ -59,5 +70,5 @@ jobs:
           git pull --rebase origin "${GITHUB_REF_NAME}" || true
           git push origin "HEAD:${GITHUB_REF_NAME}"
       - name: Echec si les controles ou le recomptage ont echoue
-        if: steps.inv.outputs.code != '0' || steps.rec.outputs.code != '0'
+        if: steps.inv.outputs.code != '0' || steps.rec.outputs.code != '0' || steps.cls.outputs.code != '0'
         run: exit 1
