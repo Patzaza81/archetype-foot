@@ -1,0 +1,54 @@
+name: inventaire_football_data
+
+# Inventaire en lecture seule des archives Football-Data. Aucun modele predictif.
+on:
+  workflow_dispatch:
+  push:
+    branches: [inventaire-fd]
+    paths:
+      - inventaire_football_data.py
+      - config/inventaire_regles.json
+      - data/inventaire/complements_manuels.json
+      - tests/test_inventaire_football_data.py
+      - .github/workflows/inventaire_football_data.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: inventaire-fd
+  cancel-in-progress: false
+
+jobs:
+  inventaire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Tests (synthetiques + 38 competitions reelles)
+        env:
+          INVENTAIRE_DONNEES_REELLES: "1"
+          INVENTAIRE_RACINE: ${{ github.workspace }}
+        run: python -m unittest discover -s tests -p "test_inventaire*.py" -v
+      - name: Inventaire
+        id: inv
+        run: |
+          set +e
+          python inventaire_football_data.py --racine .
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Verifier que les archives sources n'ont pas change
+        run: git diff --exit-code -- data/football_data
+      - name: Publier les resultats sur la branche (uniquement data/inventaire)
+        run: |
+          git config user.name "inventaire-bot"
+          git config user.email "inventaire-bot@users.noreply.github.com"
+          git add data/inventaire
+          git diff --cached --quiet || git commit -m "inventaire: resultats (script $(sha256sum inventaire_football_data.py | cut -c1-12))"
+          git pull --rebase origin "${GITHUB_REF_NAME}" || true
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+      - name: Echec si les controles ont echoue
+        if: steps.inv.outputs.code != '0'
+        run: exit 1

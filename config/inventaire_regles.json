@@ -1,0 +1,62 @@
+{
+  "version_regles": "1.0.0",
+  "description": "Regles de l'inventaire Football-Data. Toute modification = nouvelle version_regles. Les seuils sont des conditions logiques fixees AVANT toute observation des resultats.",
+  "saisons": ["2122", "2223", "2324", "2425", "2526"],
+  "chemins": {
+    "snapshots": "data/football_data/snapshots",
+    "europe": "raw",
+    "extras": "nouvelles_ligues/raw"
+  },
+  "competitions_europe": ["E0","E1","E2","E3","EC","SC0","SC1","SC2","SC3","D1","D2","I1","I2","SP1","SP2","F1","F2","N1","B1","P1","T1","G1"],
+  "competitions_extra": ["ARG","AUT","BRA","CHN","DNK","FIN","IRL","JPN","MEX","NOR","POL","ROU","RUS","SWE","SWZ","USA"],
+  "alias_colonnes": {
+    "HomeTeam": ["HomeTeam", "Home"],
+    "AwayTeam": ["AwayTeam", "Away"],
+    "FTHG": ["FTHG", "HG"],
+    "FTAG": ["FTAG", "AG"],
+    "FTR": ["FTR", "Res"]
+  },
+  "valeurs_vides": ["", "NA", "N/A", "NULL", "-", "NaN"],
+  "formats_date": ["%d/%m/%Y", "%d/%m/%y", "%Y-%m-%d"],
+  "colonnes_entieres_positives": ["FTHG","FTAG","HTHG","HTAG","HS","AS","HST","AST","HF","AF","HC","AC","HY","AY","HR","AR"],
+  "motifs_cotes": [
+    "^(B365|BW|IW|PS|WH|VC|BF|BFE|Max|Avg|1XB|BMG|CL|GB|SB|SJ|SO|SY|LB|BS|BFD|P)C?[HDA]$",
+    "^(B365|P|Max|Avg|BFE|GB|BW|BF)C?(>|<)2\\.5$",
+    "^(B365|P|Max|Avg|BFE)C?AH[HA]$"
+  ],
+  "cote_minimale_exclue": 1.0,
+  "longueur_min_prefixe_nom": 4,
+  "exemples_max": 5,
+  "statuts": {
+    "taux_confirmee": 1.0,
+    "taux_inexploitable": 0.0,
+    "saisons_requises": 5,
+    "regle": "INEXPLOITABLE: toutes les alternatives ont au moins une colonne requise jamais renseignee sur les matchs joues. CAPACITE_CONFIRMEE: toutes les saisons requises presentes avec des matchs joues, meilleure alternative renseignee a taux_confirmee partout, controles de coherence evaluables avec 0 violation. CAPACITE_LIMITEE: tout le reste."
+  },
+  "capacites": {
+    "resultat_final": {
+      "marches": ["1X2","double_chance","remboursé_si_nul","handicap","plus_moins_buts","les_deux_marquent","score_exact"],
+      "alternatives": [["FTHG","FTAG"]],
+      "coherence": ["FTR_vs_buts"],
+      "usage": "apprentissage"
+    },
+    "mi_temps": {
+      "marches": ["resultat_mi_temps","mi_temps_fin_de_match","buts_1ere_mi_temps"],
+      "alternatives": [["HTHG","HTAG"]],
+      "coherence": ["mt_inferieur_ft"],
+      "usage": "apprentissage"
+    },
+    "tirs": {"marches": ["tirs_totaux"], "alternatives": [["HS","AS"]], "coherence": [], "usage": "apprentissage"},
+    "tirs_cadres": {"marches": ["tirs_cadres"], "alternatives": [["HST","AST"]], "coherence": ["cadres_inf_tirs"], "usage": "apprentissage"},
+    "corners": {"marches": ["corners"], "alternatives": [["HC","AC"]], "coherence": [], "usage": "apprentissage"},
+    "fautes": {"marches": ["fautes"], "alternatives": [["HF","AF"]], "coherence": [], "usage": "apprentissage"},
+    "cartons_jaunes": {"marches": ["cartons_jaunes"], "alternatives": [["HY","AY"]], "coherence": [], "usage": "apprentissage"},
+    "cartons_rouges": {"marches": ["cartons_rouges"], "alternatives": [["HR","AR"]], "coherence": [], "usage": "apprentissage"},
+    "cotes_calibration": {
+      "marches": ["cotes_1X2_pour_evaluation_et_calibration_seulement"],
+      "alternatives": [["B365H","B365D","B365A"],["PSH","PSD","PSA"],["AvgH","AvgD","AvgA"],["MaxH","MaxD","MaxA"],["B365CH","B365CD","B365CA"],["PSCH","PSCD","PSCA"],["AvgCH","AvgCD","AvgCA"],["MaxCH","MaxCD","MaxCA"]],
+      "coherence": [],
+      "usage": "calibration_seulement"
+    }
+  }
+}
