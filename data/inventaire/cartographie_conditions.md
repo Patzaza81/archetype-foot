@@ -14,10 +14,10 @@ Définitions : ensemble R_s = règles découvertes sur les matchs antérieurs à
 
 | Effectif de la règle (part de l'apprentissage) | durables : règles / reproduit / signe | non durables : règles / reproduit / signe |
 |---|---|---|
-| <10% | 409 | 1% | 53% | 4324 | 4% | 54% |
-| 10-20% | 358 | 8% | 56% | 2553 | 4% | 54% |
-| 20-30% | 203 | 20% | 56% | 1032 | 7% | 56% |
-| >=30% | 595 | 24% | 65% | 1414 | 12% | 61% |
+| <10% | 409 / 1% / 53% | 4324 / 4% / 54% |
+| 10-20% | 358 / 8% / 56% | 2553 / 4% / 54% |
+| 20-30% | 203 / 20% / 56% | 1032 / 7% / 56% |
+| >=30% | 595 / 24% / 65% | 1414 / 12% / 61% |
 
 | Marché (règles durables) | règles | reproduit | signe |
 |---|---|---|---|
