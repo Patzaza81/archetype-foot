@@ -8,8 +8,8 @@ Regles inventaire `1.0.1`. Trois dimensions SEPAREES; aucun score global; aucun 
 
 La completude reelle d'une saison (nombre d'equipes et de matchs attendus) n'est verifiee que si une verification externe est enregistree dans `verifications_completude.json`. Sinon: `COMPLETUDE_NON_VERIFIEE`. Une structure aller-retour complete dans l'archive est coherente mais ne prouve pas qu'aucune equipe n'a ete oubliee.
 
-- Saisons verifiees: 1 sur 190 (T1:2223)
-- **Competitions comparables sans reserve: 0 sur 38**
+- Saisons verifiees: 31 sur 190 (E0:2122, E0:2223, E0:2324, E0:2425, E0:2526, E1:2122, E1:2223, E1:2324, E1:2425, E1:2526, E2:2122, E2:2223, E2:2324, E2:2425, E2:2526, E3:2122, E3:2223, E3:2324, E3:2425, E3:2526, I1:2122, I1:2223, I1:2324, I1:2425, I1:2526, I2:2122, I2:2223, I2:2324, I2:2425, I2:2526, T1:2223)
+- **Competitions comparables sans reserve: 6 sur 38**
 
 ## Volume (tri: matchs avec score decroissant)
 
