@@ -36,7 +36,7 @@ def preparer(code):
     Ks = min(v2.K_ELO, key=lambda K: np.nanmean((v2.elo_pred_gd(M, K)[pre] - gd[pre]) ** 2))
     X = v3.variables(M, Ks, np.nan_to_num(mu, nan=1.2)); X = np.where(np.isnan(X), np.nanmean(X[valide], 0), X)
     P1 = np.nan_to_num(P1, nan=.5).clip(EPS, 1 - EPS)
-    return dict(M=M, S=S, D=D, Y=Y, ref=ref, valide=valide, P1=P1, X=X, start={s: D[S == s].min() for s in range(5)})
+    return dict(M=M, S=S, D=D, Y=Y, ref=ref, valide=valide, P1=P1, X=X, start={s: D[S == s].min() for s in range(5)}, K_elo=Ks, cfg_P1=best[1])
 
 def _F(X, p): return np.column_stack([X, v3.lg(p)])
 
