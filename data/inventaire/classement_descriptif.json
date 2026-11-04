@@ -403,13 +403,13 @@
   },
   "BRA": {
    "archive_par_saison": {
-    "2122": "ARCHIVE_NON_EXAMINEE",
-    "2223": "ARCHIVE_NON_EXAMINEE",
-    "2324": "ARCHIVE_NON_EXAMINEE",
-    "2425": "ARCHIVE_NON_EXAMINEE",
-    "2526": "ARCHIVE_NON_EXAMINEE"
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU"
    },
-   "comparable_archive_sans_reserve": false,
+   "comparable_archive_sans_reserve": true,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -482,7 +482,38 @@
     "erreurs_et_codes_pour_1000_matchs": 0.0
    },
    "indices_segmentation_historique": [],
-   "perimetre_examen_par_saison": {},
+   "perimetre_examen_par_saison": {
+    "2122": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2223": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2324": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2425": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2526": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    }
+   },
    "signalements_archive": {},
    "signature_couverture": "XXXCXXCXX",
    "type": "hors_europe",
@@ -509,10 +540,10 @@
   "CHN": {
    "archive_par_saison": {
     "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
-    "2223": "ARCHIVE_NON_EXAMINEE",
-    "2324": "ARCHIVE_NON_EXAMINEE",
-    "2425": "ARCHIVE_NON_EXAMINEE",
-    "2526": "ARCHIVE_NON_EXAMINEE"
+    "2223": "MATCH_ATTRIBUE_NON_JOUE",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU"
    },
    "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
@@ -596,9 +627,44 @@
      "matchs_additionnels": "non_examines",
      "phases_finales": "individuelle",
      "saison_reguliere": "comptes_par_equipe_et_total"
+    },
+    "2223": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas. Matchs attribues: 8 confirmes dans l'archive sur 9 cites par la page (la preuve precedente en comptait 7); un ecart non resolu (voir signalements_archive).",
+     "matchs_additionnels": "examines_non_resolus",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2324": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2425": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2526": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
     }
    },
-   "signalements_archive": {},
+   "signalements_archive": {
+    "2223": [
+     {
+      "code": "MATCH_ATTRIBUE_NON_JOUE",
+      "detail": "Wikipedia (2022 CSL) marque des matchs 'attribues' 3-0. Huit sont presents dans l'archive avec le score 3-0 attribue: Beijing Guoan 0-3 Shanghai Port (27/12), Cangzhou 3-0 Hebei (27/12), Guangzhou City 0-3 Dalian Pro (28/06), Henan 3-0 Shenzhen (23/12), Shandong 3-0 Beijing Guoan (31/12), Shandong 3-0 Meizhou Hakka (27/12), Tianjin 0-3 Dalian Pro (27/12), Wuhan Three Towns 3-0 Tianjin (31/12). Le neuvieme cite par la page, Dalian Pro 0-3 Guangzhou City, ne correspond pas a l'archive (Dalian Pro 2-0 Guangzhou City le 08/06/2022): ecart non resolu (lecture de la page a verifier). Les dates ne sont pas donnees par la page; la raison de chaque attribution n'est pas precisee.",
+      "matchs_attribues_non_joues": 8,
+      "matchs_documentes_absents": 0,
+      "niveau_preuve": "match_par_match",
+      "perimetre": "implique_un_club_de_la_ligue"
+     }
+    ]
+   },
    "signature_couverture": "XXXLXXCXX",
    "type": "hors_europe",
    "volume": {
@@ -1587,11 +1653,11 @@
   },
   "EC": {
    "archive_par_saison": {
-    "2122": "ARCHIVE_NON_EXAMINEE",
-    "2223": "ARCHIVE_NON_EXAMINEE",
-    "2324": "ARCHIVE_NON_EXAMINEE",
-    "2425": "ARCHIVE_NON_EXAMINEE",
-    "2526": "ARCHIVE_NON_EXAMINEE"
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL"
    },
    "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
@@ -1668,7 +1734,38 @@
    "indices_segmentation_historique": [
     "nombre de matchs different selon les saisons: {\"2122\": 506, \"2223\": 552, \"2324\": 552, \"2425\": 552, \"2526\": 552}"
    ],
-   "perimetre_examen_par_saison": {},
+   "perimetre_examen_par_saison": {
+    "2122": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Play-offs de la competition (hors table) non examines individuellement, absents de l'archive. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas. Dover Athletic: resultats effaces (reference BBC citee); 23 equipes dans l'archive, coherent avec la verification de completude.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2223": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Play-offs de la competition (hors table) non examines individuellement, absents de l'archive. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2324": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Play-offs de la competition (hors table) non examines individuellement, absents de l'archive. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas. Play-offs: Gateshead s'est retire, Altrincham a recu un walkover (match non joue, hors archive).",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2425": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Play-offs de la competition (hors table) non examines individuellement, absents de l'archive. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2526": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Play-offs de la competition (hors table) non examines individuellement, absents de l'archive. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas. Reference de presse citee par Wikipedia (BBC, 17/10/2025): 'Iron awarded Wealdstone win, will replay Eastleigh'; details et score de rejouer non donnes par la page: non resolu, non compare a l'archive.",
+     "matchs_additionnels": "examines_non_resolus",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "paires_completes_verifiees"
+    }
+   },
    "signalements_archive": {},
    "signature_couverture": "CCXCXCCXX",
    "type": "europe",
@@ -2704,11 +2801,11 @@
   },
   "JPN": {
    "archive_par_saison": {
-    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
     "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
-    "2324": "ARCHIVE_NON_EXAMINEE",
-    "2425": "ARCHIVE_NON_EXAMINEE",
-    "2526": "ARCHIVE_NON_EXAMINEE"
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU"
    },
    "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
@@ -2787,11 +2884,35 @@
     "structure aller-retour simple non respectee: 2223"
    ],
    "perimetre_examen_par_saison": {
+    "2122": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas. Urawa-Shonan (20/06/2021): la page Wikipedia indique que la JPFL a attribue 3-0 a Shonan (joueur non qualifie), score joue 3-2 pour Shonan; l'archive contient le score joue (Urawa 2-3 Shonan), pas le score attribue. Ecart de resultat documente, rien n'est modifie dans l'archive.",
+     "matchs_additionnels": "examines_non_resolus",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
     "2223": {
      "limites": "Identite des matchs de saison reguliere non prouvee individuellement (comptes par equipe et total seulement). Phases finales: 4 matchs de barrage compares un a un (J.League, RSSSF, ESPN).",
      "matchs_additionnels": "non_examines",
      "phases_finales": "individuelle",
      "saison_reguliere": "comptes_par_equipe_et_total"
+    },
+    "2324": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2425": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2526": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
     }
    },
    "signalements_archive": {},
@@ -3067,7 +3188,7 @@
     "2223": "ARCHIVE_NON_EXAMINEE",
     "2324": "ARCHIVE_NON_EXAMINEE",
     "2425": "ARCHIVE_NON_EXAMINEE",
-    "2526": "ARCHIVE_NON_EXAMINEE"
+    "2526": "MATCH_ARCHIVE_MANQUANT"
    },
    "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": false,
@@ -3145,8 +3266,25 @@
     "nombre de matchs different selon les saisons: {\"2122\": 241, \"2223\": 242, \"2324\": 242, \"2425\": 242, \"2526\": 240}",
     "structure aller-retour simple non respectee: 2122,2223,2324,2425"
    ],
-   "perimetre_examen_par_saison": {},
-   "signalements_archive": {},
+   "perimetre_examen_par_saison": {
+    "2526": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages de relegation connus par leur total cumule seulement. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas. Une defaite 0-3 par forfait de Kristiansund apres reclamation acceptee est mentionnee par la page sans nommer le match ni le score ajuste; match non identifie, resultat dans l'archive non compare.",
+     "matchs_additionnels": "examines_non_resolus",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "paires_completes_verifiees"
+    }
+   },
+   "signalements_archive": {
+    "2526": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrage de relegation Bryne (14e)-Aalesund, 4-1 cumule pour Aalesund: 2 matchs, scores individuels non obtenus. Absents de l'archive (table de saison reguliere)",
+      "matchs_documentes_absents": 2,
+      "niveau_preuve": "nombre_et_equipes",
+      "perimetre": "implique_un_club_de_la_ligue"
+     }
+    ]
+   },
    "signature_couverture": "XXXCXXCXX",
    "type": "hors_europe",
    "volume": {
@@ -3307,11 +3445,11 @@
   },
   "POL": {
    "archive_par_saison": {
-    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
     "2223": "ARCHIVE_NON_EXAMINEE",
-    "2324": "ARCHIVE_NON_EXAMINEE",
-    "2425": "ARCHIVE_NON_EXAMINEE",
-    "2526": "ARCHIVE_NON_EXAMINEE"
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU"
    },
    "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": false,
@@ -3388,7 +3526,32 @@
    "indices_segmentation_historique": [
     "structure aller-retour simple non respectee: 2223"
    ],
-   "perimetre_examen_par_saison": {},
+   "perimetre_examen_par_saison": {
+    "2122": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2324": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2425": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2526": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    }
+   },
    "signalements_archive": {},
    "signature_couverture": "XXXCXXCXX",
    "type": "hors_europe",
@@ -3535,8 +3698,8 @@
     "2122": "ARCHIVE_NON_EXAMINEE",
     "2223": "ARCHIVE_NON_EXAMINEE",
     "2324": "ARCHIVE_NON_EXAMINEE",
-    "2425": "ARCHIVE_NON_EXAMINEE",
-    "2526": "ARCHIVE_NON_EXAMINEE"
+    "2425": "MATCH_ARCHIVE_MANQUANT",
+    "2526": "MATCH_ARCHIVE_MANQUANT"
    },
    "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
@@ -3614,8 +3777,40 @@
     "nombre de matchs different selon les saisons: {\"2122\": 244, \"2223\": 244, \"2324\": 244, \"2425\": 240, \"2526\": 240}",
     "structure aller-retour simple non respectee: 2122,2223,2324"
    ],
-   "perimetre_examen_par_saison": {},
-   "signalements_archive": {},
+   "perimetre_examen_par_saison": {
+    "2425": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages de relegation connus par leur total cumule seulement. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2526": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages de relegation connus par leur total cumule seulement. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "paires_completes_verifiees"
+    }
+   },
+   "signalements_archive": {
+    "2425": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrages de relegation (deux matchs aller-retour chacun): Akhmat-Ural (3-2 cumule) et Pari NN-Sochi (3-4 cumule): 4 matchs, scores individuels non obtenus. Absents de l'archive (table de saison reguliere)",
+      "matchs_documentes_absents": 4,
+      "niveau_preuve": "nombre_et_equipes",
+      "perimetre": "implique_un_club_de_la_ligue"
+     }
+    ],
+    "2526": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrages de relegation: Dynamo Makhachkala-Ural (3-0 cumule) et Akron-Rotor (2-1 cumule), 23/05/2026: 4 matchs, scores individuels non obtenus. Absents de l'archive (table de saison reguliere)",
+      "matchs_documentes_absents": 4,
+      "niveau_preuve": "nombre_et_equipes",
+      "perimetre": "implique_un_club_de_la_ligue"
+     }
+    ]
+   },
    "signature_couverture": "XXXLXXCXX",
    "type": "hors_europe",
    "volume": {
@@ -4481,9 +4676,9 @@
    "archive_par_saison": {
     "2122": "ARCHIVE_NON_EXAMINEE",
     "2223": "ARCHIVE_NON_EXAMINEE",
-    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2324": "MATCH_ARCHIVE_MANQUANT",
     "2425": "ARCHIVE_NON_EXAMINEE",
-    "2526": "ARCHIVE_NON_EXAMINEE"
+    "2526": "MATCH_ARCHIVE_MANQUANT"
    },
    "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
@@ -4561,8 +4756,40 @@
     "nombre de matchs different selon les saisons: {\"2122\": 242, \"2223\": 242, \"2324\": 240, \"2425\": 242, \"2526\": 240}",
     "structure aller-retour simple non respectee: 2122,2223,2425"
    ],
-   "perimetre_examen_par_saison": {},
-   "signalements_archive": {},
+   "perimetre_examen_par_saison": {
+    "2324": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages de relegation connus par leur total cumule seulement. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2526": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages de relegation connus par leur total cumule seulement. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "paires_completes_verifiees"
+    }
+   },
+   "signalements_archive": {
+    "2324": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrage de relegation Brommapojkarna-Utsiktens, 7-0 cumule (Allsvenskan 14e contre 3e de Superettan 2023): 2 matchs, scores individuels non obtenus. Absents de l'archive (table de saison reguliere)",
+      "matchs_documentes_absents": 2,
+      "niveau_preuve": "nombre_et_equipes",
+      "perimetre": "implique_un_club_de_la_ligue"
+     }
+    ],
+    "2526": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrage de relegation, 14e d'Allsvenskan (IFK Norrkoping d'apres le classement de la page) contre Orgryte IS, 3-0 cumule pour Orgryte: 2 matchs, scores individuels non obtenus. Absents de l'archive (table de saison reguliere)",
+      "matchs_documentes_absents": 2,
+      "niveau_preuve": "nombre_et_equipes",
+      "perimetre": "implique_un_club_de_la_ligue"
+     }
+    ]
+   },
    "signature_couverture": "XXXCXXCXX",
    "type": "hors_europe",
    "volume": {
@@ -4714,11 +4941,11 @@
   },
   "T1": {
    "archive_par_saison": {
-    "2122": "ARCHIVE_NON_EXAMINEE",
-    "2223": "ARCHIVE_NON_EXAMINEE",
-    "2324": "ARCHIVE_NON_EXAMINEE",
-    "2425": "ARCHIVE_NON_EXAMINEE",
-    "2526": "ARCHIVE_NON_EXAMINEE"
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_ETENDU"
    },
    "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
@@ -4795,7 +5022,38 @@
    "indices_segmentation_historique": [
     "nombre de matchs different selon les saisons: {\"2122\": 380, \"2223\": 342, \"2324\": 380, \"2425\": 342, \"2526\": 306}"
    ],
-   "perimetre_examen_par_saison": {},
+   "perimetre_examen_par_saison": {
+    "2122": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2223": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas. Gaziantep et Hatayspor se sont retires le 12/02/2023: la page ne dit pas si leurs resultats ont ete annules ou conserves (elle liste 36 matchs pour chacun et l'archive les contient: 19 equipes, 342 lignes).",
+     "matchs_additionnels": "examines_non_resolus",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2324": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas. Championnat suspendu le 12/12/2023 (incident Ankaragucu-Rizespor), repris le 19/12; aucun match abandonne ou rejoue indique.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2425": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2526": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Aucune phase finale ni barrage dans cette competition d'apres la page consultee. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "aucune_phase_documentee",
+     "saison_reguliere": "paires_completes_verifiees"
+    }
+   },
    "signalements_archive": {},
    "signature_couverture": "LLLLLLCLL",
    "type": "europe",

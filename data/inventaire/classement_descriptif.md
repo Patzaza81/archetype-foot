@@ -15,13 +15,13 @@ La completude reelle d'une saison (nombre d'equipes et de matchs attendus) n'est
 
 Un match documente absent des fichiers n'est jamais ajoute a l'archive ni compte. `MATCH_ARCHIVE_MANQUANT` = rencontre disputee documentee et absente; `PHASE_EXCLUE_NON_DETAILLEE` = phase exclue sans rencontres individualisees; `MATCH_ATTRIBUE_NON_JOUE` = match attribue sans rencontre disputee. `ARCHIVE_COMPLETE_PERIMETRE_PARTIEL` = aucun match documente manquant dans le perimetre examine, mais ce perimetre n'inclut pas tout (voir `perimetre_examen`); `ARCHIVE_COMPLETE_PERIMETRE_ETENDU` = saison reguliere (paires verifiees) + phases finales examinees individuellement + matchs additionnels. `ARCHIVE_NON_EXAMINEE` = rien n'est affirme.
 
-- ARCHIVE_COMPLETE_PERIMETRE_ETENDU: 14 saisons (dont verifiees: 14)
-- ARCHIVE_COMPLETE_PERIMETRE_PARTIEL: 62 saisons (dont verifiees: 62)
-- MATCH_ARCHIVE_MANQUANT: 18 saisons (dont verifiees: 18)
+- ARCHIVE_COMPLETE_PERIMETRE_ETENDU: 33 saisons (dont verifiees: 33)
+- ARCHIVE_COMPLETE_PERIMETRE_PARTIEL: 69 saisons (dont verifiees: 69)
+- MATCH_ARCHIVE_MANQUANT: 23 saisons (dont verifiees: 23)
 - PHASE_EXCLUE_NON_DETAILLEE: 17 saisons (dont verifiees: 17)
-- MATCH_ATTRIBUE_NON_JOUE: 4 saisons (dont verifiees: 4)
-- ARCHIVE_NON_EXAMINEE: 75 saisons (dont verifiees: 66)
-- **Competitions comparables sans reserve sur l'archive (5 saisons verifiees ET perimetre etendu): 2 sur 38**
+- MATCH_ATTRIBUE_NON_JOUE: 5 saisons (dont verifiees: 5)
+- ARCHIVE_NON_EXAMINEE: 43 saisons (dont verifiees: 34)
+- **Competitions comparables sans reserve sur l'archive (5 saisons verifiees ET perimetre etendu): 3 sur 38**
 
 - AUT:2425 MATCH_ARCHIVE_MANQUANT (2 match(s) disputes; preuve: nombre_et_dates; perimetre: implique_un_club_de_la_ligue): Barrage Conference League (demi-finale 29/05/2025, finale 01/06/2025) absent de l'archive.
 - AUT:2526 MATCH_ARCHIVE_MANQUANT (3 match(s) disputes; preuve: match_par_match; perimetre: implique_un_club_de_la_ligue): Barrage Conference League: Ried 2-1 Wolfsberger (19/05/2026), Ried 2-1 Rapid (22/05), Rapid 3-0 Ried (25/05) (RSSSF), absents de l'archive.
@@ -29,6 +29,7 @@ Un match documente absent des fichiers n'est jamais ajoute a l'archive ni compte
 - B1:2223 MATCH_ARCHIVE_MANQUANT (24 match(s) disputes; preuve: nombre_seulement; perimetre: implique_un_club_de_la_ligue): Play-offs de la saison (24 matchs) non presents dans l'archive.
 - B1:2324 MATCH_ATTRIBUE_NON_JOUE (1 attribue(s); preuve: match_par_match; perimetre: implique_un_club_de_la_ligue): Standard-Westerlo attribue 0-5 (non joue: Standard n'a pas pris le coup d'envoi), absent de l'archive; ce n'est pas un match joue. (qualification corrigee: match attribue, aucune rencontre disputee absente)
 - B1:2324 MATCH_ARCHIVE_MANQUANT (2 match(s) disputes; preuve: nombre_et_equipes; perimetre: hors_clubs_de_la_ligue): Deux matchs de barrage de promotion/relegation contre Lommel, absents de l'archive.
+- CHN:2223 MATCH_ATTRIBUE_NON_JOUE (8 attribue(s); preuve: match_par_match; perimetre: implique_un_club_de_la_ligue): Wikipedia (2022 CSL) marque des matchs 'attribues' 3-0. Huit sont presents dans l'archive avec le score 3-0 attribue: Beijing Guoan 0-3 Shanghai Port (27/12), Cangzhou 3-0 Hebei (27/12), Guangzhou City 0-3 Dalian Pro (28/06), Henan 3-0 Shenzhen (23/12), Shandong 3-0 Beijing Guoan (31/12), Shandong 3-0 Meizhou Hakka (27/12), Tianjin 0-3 Dalian Pro (27/12), Wuhan Three Towns 3-0 Tianjin (31/12). Le neuvieme cite par la page, Dalian Pro 0-3 Guangzhou City, ne correspond pas a l'archive (Dalian Pro 2-0 Guangzhou City le 08/06/2022): ecart non resolu (lecture de la page a verifier). Les dates ne sont pas donnees par la page; la raison de chaque attribution n'est pas precisee.
 - D1:2122 MATCH_ATTRIBUE_NON_JOUE (1 attribue(s); preuve: match_par_match; perimetre: implique_un_club_de_la_ligue): Bochum-M'gladbach (18/03/2022): match interrompu, victoire 2-0 attribuee a M'gladbach par le tribunal sportif de la DFB (reference citee par Wikipedia, 24/03/2022). Present dans l'archive avec le score 0-2 (score attribue, pas le score au moment de l'interruption, que la source ne donne pas).
 - D1:2425 MATCH_ATTRIBUE_NON_JOUE (1 attribue(s); preuve: nombre_et_equipes; perimetre: implique_un_club_de_la_ligue): Union Berlin-Bochum (14/12/2024): match interrompu, donne a Bochum par la DFB (titre de la reference DFB.de du 09/01/2025 cite par Wikipedia; le score attribue n'est pas ecrit dans la page). Present dans l'archive avec le score 0-2, identique au tableau de resultats de Wikipedia.
 - DNK:2425 MATCH_ARCHIVE_MANQUANT (1 match(s) disputes; preuve: nombre_et_equipes; perimetre: implique_un_club_de_la_ligue): Barrage europeen Randers-Silkeborg (selon la page Wikipedia), absent de l'archive.
@@ -46,7 +47,10 @@ Un match documente absent des fichiers n'est jamais ajoute a l'archive ni compte
 - IRL:2324 MATCH_ARCHIVE_MANQUANT (nombre non documente; preuve: equipes_sans_nombre; perimetre: hors_clubs_de_la_ligue): Matchs de First Division du parcours de barrage (Waterford-Athlone, Cobh-Wexford, Waterford-Cobh le 04/11/2023...) absents de l'archive; seule la finale y figure.
 - IRL:2425 MATCH_ARCHIVE_MANQUANT (nombre non documente; preuve: equipes_sans_nombre; perimetre: hors_clubs_de_la_ligue): Matchs de First Division du parcours de barrage (demi-finales, finale Bray-Athlone) absents de l'archive; seule la finale Bray-Drogheda y figure.
 - IRL:2526 PHASE_EXCLUE_NON_DETAILLEE (nombre non documente; preuve: existence_seulement; perimetre: hors_clubs_de_la_ligue): Barrages (hors ligue) exclus: matchs non documentes individuellement, absents de l'archive.
+- NOR:2526 MATCH_ARCHIVE_MANQUANT (2 match(s) disputes; preuve: nombre_et_equipes; perimetre: implique_un_club_de_la_ligue): Barrage de relegation Bryne (14e)-Aalesund, 4-1 cumule pour Aalesund: 2 matchs, scores individuels non obtenus. Absents de l'archive (table de saison reguliere)
 - ROU:2425 MATCH_ARCHIVE_MANQUANT (4 match(s) disputes; preuve: nombre_seulement; perimetre: implique_un_club_de_la_ligue): Quatre matchs de barrage Liga I/Liga II absents de l'archive.
+- RUS:2425 MATCH_ARCHIVE_MANQUANT (4 match(s) disputes; preuve: nombre_et_equipes; perimetre: implique_un_club_de_la_ligue): Barrages de relegation (deux matchs aller-retour chacun): Akhmat-Ural (3-2 cumule) et Pari NN-Sochi (3-4 cumule): 4 matchs, scores individuels non obtenus. Absents de l'archive (table de saison reguliere)
+- RUS:2526 MATCH_ARCHIVE_MANQUANT (4 match(s) disputes; preuve: nombre_et_equipes; perimetre: implique_un_club_de_la_ligue): Barrages de relegation: Dynamo Makhachkala-Ural (3-0 cumule) et Akron-Rotor (2-1 cumule), 23/05/2026: 4 matchs, scores individuels non obtenus. Absents de l'archive (table de saison reguliere)
 - SC1:2122 PHASE_EXCLUE_NON_DETAILLEE (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
 - SC1:2223 PHASE_EXCLUE_NON_DETAILLEE (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
 - SC1:2324 PHASE_EXCLUE_NON_DETAILLEE (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
@@ -62,6 +66,8 @@ Un match documente absent des fichiers n'est jamais ajoute a l'archive ni compte
 - SC3:2324 PHASE_EXCLUE_NON_DETAILLEE (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
 - SC3:2425 PHASE_EXCLUE_NON_DETAILLEE (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
 - SC3:2526 PHASE_EXCLUE_NON_DETAILLEE (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
+- SWE:2324 MATCH_ARCHIVE_MANQUANT (2 match(s) disputes; preuve: nombre_et_equipes; perimetre: implique_un_club_de_la_ligue): Barrage de relegation Brommapojkarna-Utsiktens, 7-0 cumule (Allsvenskan 14e contre 3e de Superettan 2023): 2 matchs, scores individuels non obtenus. Absents de l'archive (table de saison reguliere)
+- SWE:2526 MATCH_ARCHIVE_MANQUANT (2 match(s) disputes; preuve: nombre_et_equipes; perimetre: implique_un_club_de_la_ligue): Barrage de relegation, 14e d'Allsvenskan (IFK Norrkoping d'apres le classement de la page) contre Orgryte IS, 3-0 cumule pour Orgryte: 2 matchs, scores individuels non obtenus. Absents de l'archive (table de saison reguliere)
 - SWZ:2425 MATCH_ARCHIVE_MANQUANT (2 match(s) disputes; preuve: nombre_seulement; perimetre: implique_un_club_de_la_ligue): Barrage de relegation (2 manches) absent de l'archive.
 - SWZ:2526 MATCH_ARCHIVE_MANQUANT (2 match(s) disputes; preuve: nombre_seulement; perimetre: implique_un_club_de_la_ligue): Barrage de relegation (2 manches) absent de l'archive.
 
