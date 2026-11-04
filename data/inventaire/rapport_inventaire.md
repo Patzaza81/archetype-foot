@@ -1,8 +1,8 @@
 # Rapport d'inventaire Football-Data
 
-- Version regles: `1.0.0` | script: `1.0.0`
-- Empreinte script: `8db8d0f952430db5c91244bed1711d4e14779b5e222b133c879a5089a83e6d44`
-- Empreinte config: `921830dd9e71f0887887d8a3ee96ed0983b398e3bc4d209e1cc22214373032c0`
+- Version regles: `1.0.1` | script: `1.0.1`
+- Empreinte script: `4260f603dd2847d3e39a211aa8d7f978ee35259545fba06c057e89cea61ba7e9`
+- Empreinte config: `31ec491c2bb3442c0d57fe777837214c640a4a07ff88b64491f0bfc04ef8592f`
 - Empreinte archives avant: `4abd0a252588b480b741243b2acb0ff6c5f4db939c02081b208f92735e28bd94` (220 fichiers)
 - Empreinte archives apres: `4abd0a252588b480b741243b2acb0ff6c5f4db939c02081b208f92735e28bd94`
 
@@ -101,9 +101,10 @@ C = confirmee, L = limitee, X = inexploitable. Details et raisons: `profils_capa
 ## Anomalies (comptage par type)
 
 - changement_nom_possible (a_verifier): 10
+- code_remplissage (avertissement): 33
 - date_hors_saison (avertissement): 1
 - editions_multiples (info): 4
 - format_ou_edition_variable (info): 21
 - lignes_sans_score_vide (info): 1
 - tirs_cadres_superieurs_aux_tirs (avertissement): 6
-- valeur_invalide (avertissement): 29
+- valeurs_manquantes (info): 180
