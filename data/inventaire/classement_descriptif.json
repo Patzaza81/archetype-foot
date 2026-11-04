@@ -1,6 +1,14 @@
 {
  "competitions": {
   "ARG": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_COMPLETE_EXAMINEE",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": false,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -78,6 +86,7 @@
     "libelle de competition different selon les saisons: {\"2122\": \"Copa De La Liga Profesional\", \"2223\": \"Copa De La Liga Profesional\", \"2324\": \"Liga Profesional\", \"2425\": \"Copa De La Liga Profesional\", \"2526\": \"Liga Profesional\"}",
     "structure aller-retour simple non respectee: 2122,2223,2324,2425,2526"
    ],
+   "signalements_archive": {},
    "signature_couverture": "XXXCXXCXX",
    "type": "hors_europe",
    "volume": {
@@ -101,6 +110,14 @@
    }
   },
   "AUT": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_COMPLETE_EXAMINEE",
+    "2324": "ARCHIVE_COMPLETE_EXAMINEE",
+    "2425": "MATCH_ARCHIVE_MANQUANT",
+    "2526": "MATCH_ARCHIVE_MANQUANT"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -176,6 +193,26 @@
     "nombre de matchs different selon les saisons: {\"2122\": 195, \"2223\": 195, \"2324\": 195, \"2425\": 192, \"2526\": 192}",
     "structure aller-retour simple non respectee: 2122,2223,2324,2425,2526"
    ],
+   "signalements_archive": {
+    "2425": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrage Conference League (demi-finale 29/05/2025, finale 01/06/2025) absent de l'archive.",
+      "matchs_documentes_absents": 2,
+      "niveau_preuve": "nombre_et_dates",
+      "perimetre": "implique_un_club_de_la_ligue"
+     }
+    ],
+    "2526": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrage Conference League: Ried 2-1 Wolfsberger (19/05/2026), Ried 2-1 Rapid (22/05), Rapid 3-0 Ried (25/05) (RSSSF), absents de l'archive.",
+      "matchs_documentes_absents": 3,
+      "niveau_preuve": "match_par_match",
+      "perimetre": "implique_un_club_de_la_ligue"
+     }
+    ]
+   },
    "signature_couverture": "XXXCXXCXX",
    "type": "hors_europe",
    "volume": {
@@ -199,6 +236,14 @@
    }
   },
   "B1": {
+   "archive_par_saison": {
+    "2122": "MATCH_ARCHIVE_MANQUANT",
+    "2223": "MATCH_ARCHIVE_MANQUANT",
+    "2324": "MATCH_ARCHIVE_MANQUANT",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": false,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -274,6 +319,42 @@
     "nombre de matchs different selon les saisons: {\"2122\": 306, \"2223\": 306, \"2324\": 312, \"2425\": 312, \"2526\": 311}",
     "structure aller-retour simple non respectee: 2324,2425,2526"
    ],
+   "signalements_archive": {
+    "2122": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Play-offs de la saison (14 matchs) non presents dans l'archive.",
+      "matchs_documentes_absents": 14,
+      "niveau_preuve": "nombre_seulement",
+      "perimetre": "implique_un_club_de_la_ligue"
+     }
+    ],
+    "2223": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Play-offs de la saison (24 matchs) non presents dans l'archive.",
+      "matchs_documentes_absents": 24,
+      "niveau_preuve": "nombre_seulement",
+      "perimetre": "implique_un_club_de_la_ligue"
+     }
+    ],
+    "2324": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Standard-Westerlo attribue 0-5 (non joue: Standard n'a pas pris le coup d'envoi), absent de l'archive; ce n'est pas un match joue.",
+      "matchs_documentes_absents": 1,
+      "niveau_preuve": "match_par_match",
+      "perimetre": "implique_un_club_de_la_ligue"
+     },
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Deux matchs de barrage de promotion/relegation contre Lommel, absents de l'archive.",
+      "matchs_documentes_absents": 2,
+      "niveau_preuve": "nombre_et_equipes",
+      "perimetre": "hors_clubs_de_la_ligue"
+     }
+    ]
+   },
    "signature_couverture": "LLLCLLCLL",
    "type": "europe",
    "volume": {
@@ -297,6 +378,14 @@
    }
   },
   "BRA": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -369,6 +458,7 @@
     "erreurs_et_codes_pour_1000_matchs": 0.0
    },
    "indices_segmentation_historique": [],
+   "signalements_archive": {},
    "signature_couverture": "XXXCXXCXX",
    "type": "hors_europe",
    "volume": {
@@ -392,6 +482,14 @@
    }
   },
   "CHN": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_COMPLETE_EXAMINEE",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -467,6 +565,7 @@
     "nombre de matchs different selon les saisons: {\"2122\": 180, \"2223\": 306, \"2324\": 240, \"2425\": 240, \"2526\": 240}",
     "structure aller-retour simple non respectee: 2122"
    ],
+   "signalements_archive": {},
    "signature_couverture": "XXXLXXCXX",
    "type": "hors_europe",
    "volume": {
@@ -490,6 +589,14 @@
    }
   },
   "D1": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -562,6 +669,7 @@
     "erreurs_et_codes_pour_1000_matchs": 2.614
    },
    "indices_segmentation_historique": [],
+   "signalements_archive": {},
    "signature_couverture": "LLLCLLCLL",
    "type": "europe",
    "volume": {
@@ -585,6 +693,14 @@
    }
   },
   "D2": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -657,6 +773,7 @@
     "erreurs_et_codes_pour_1000_matchs": 0.0
    },
    "indices_segmentation_historique": [],
+   "signalements_archive": {},
    "signature_couverture": "CCCCCCCCC",
    "type": "europe",
    "volume": {
@@ -680,6 +797,14 @@
    }
   },
   "DNK": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "MATCH_ARCHIVE_MANQUANT",
+    "2526": "MATCH_ARCHIVE_MANQUANT"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -755,6 +880,26 @@
     "nombre de matchs different selon les saisons: {\"2122\": 193, \"2223\": 193, \"2324\": 193, \"2425\": 192, \"2526\": 192}",
     "structure aller-retour simple non respectee: 2122,2223,2324,2425,2526"
    ],
+   "signalements_archive": {
+    "2425": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrage europeen Randers-Silkeborg (selon la page Wikipedia), absent de l'archive.",
+      "matchs_documentes_absents": 1,
+      "niveau_preuve": "nombre_et_equipes",
+      "perimetre": "implique_un_club_de_la_ligue"
+     }
+    ],
+    "2526": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrage europeen Brondby-Copenhague du 21/05/2026, absent de l'archive.",
+      "matchs_documentes_absents": 1,
+      "niveau_preuve": "nombre_et_equipes",
+      "perimetre": "implique_un_club_de_la_ligue"
+     }
+    ]
+   },
    "signature_couverture": "XXXCXXCXX",
    "type": "hors_europe",
    "volume": {
@@ -778,6 +923,14 @@
    }
   },
   "E0": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -850,6 +1003,7 @@
     "erreurs_et_codes_pour_1000_matchs": 1.579
    },
    "indices_segmentation_historique": [],
+   "signalements_archive": {},
    "signature_couverture": "CCCCCCCCL",
    "type": "europe",
    "volume": {
@@ -873,6 +1027,14 @@
    }
   },
   "E1": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -945,6 +1107,7 @@
     "erreurs_et_codes_pour_1000_matchs": 1.087
    },
    "indices_segmentation_historique": [],
+   "signalements_archive": {},
    "signature_couverture": "CCCCCCCCL",
    "type": "europe",
    "volume": {
@@ -968,6 +1131,14 @@
    }
   },
   "E2": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -1040,6 +1211,7 @@
     "erreurs_et_codes_pour_1000_matchs": 0.362
    },
    "indices_segmentation_historique": [],
+   "signalements_archive": {},
    "signature_couverture": "CCCCCCCCL",
    "type": "europe",
    "volume": {
@@ -1063,6 +1235,14 @@
    }
   },
   "E3": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -1135,6 +1315,7 @@
     "erreurs_et_codes_pour_1000_matchs": 0.0
    },
    "indices_segmentation_historique": [],
+   "signalements_archive": {},
    "signature_couverture": "CCCCCCCCC",
    "type": "europe",
    "volume": {
@@ -1158,6 +1339,14 @@
    }
   },
   "EC": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -1232,6 +1421,7 @@
    "indices_segmentation_historique": [
     "nombre de matchs different selon les saisons: {\"2122\": 506, \"2223\": 552, \"2324\": 552, \"2425\": 552, \"2526\": 552}"
    ],
+   "signalements_archive": {},
    "signature_couverture": "CCXCXCCXX",
    "type": "europe",
    "volume": {
@@ -1255,6 +1445,14 @@
    }
   },
   "F1": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -1329,6 +1527,7 @@
    "indices_segmentation_historique": [
     "nombre de matchs different selon les saisons: {\"2122\": 380, \"2223\": 380, \"2324\": 306, \"2425\": 306, \"2526\": 306}"
    ],
+   "signalements_archive": {},
    "signature_couverture": "CCCCCCCCC",
    "type": "europe",
    "volume": {
@@ -1352,6 +1551,14 @@
    }
   },
   "F2": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -1426,6 +1633,7 @@
    "indices_segmentation_historique": [
     "nombre de matchs different selon les saisons: {\"2122\": 380, \"2223\": 380, \"2324\": 380, \"2425\": 306, \"2526\": 305}"
    ],
+   "signalements_archive": {},
    "signature_couverture": "LLLCLLCLL",
    "type": "europe",
    "volume": {
@@ -1449,6 +1657,14 @@
    }
   },
   "FIN": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_COMPLETE_EXAMINEE",
+    "2223": "MATCH_ARCHIVE_MANQUANT",
+    "2324": "MATCH_ARCHIVE_MANQUANT",
+    "2425": "ARCHIVE_COMPLETE_EXAMINEE",
+    "2526": "MATCH_ARCHIVE_MANQUANT"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -1524,6 +1740,35 @@
     "nombre de matchs different selon les saisons: {\"2122\": 164, \"2223\": 170, \"2324\": 167, \"2425\": 169, \"2526\": 177}",
     "structure aller-retour simple non respectee: 2122,2223,2324,2425,2526"
    ],
+   "signalements_archive": {
+    "2223": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Jaro-EIF 2-1 le 12/10/2022 (premier tour du parcours de barrage de Ykkonen, RSSSF), absent de l'archive.",
+      "matchs_documentes_absents": 1,
+      "niveau_preuve": "match_par_match",
+      "perimetre": "hors_clubs_de_la_ligue"
+     }
+    ],
+    "2324": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrage de relegation Mariehamn-Gnistan: 0-0 le 25/10/2023 et 3-0 le 29/10/2023 (RSSSF), absents de l'archive.",
+      "matchs_documentes_absents": 2,
+      "niveau_preuve": "match_par_match",
+      "perimetre": "implique_un_club_de_la_ligue"
+     }
+    ],
+    "2526": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrage de relegation KTP-TPS absent de l'archive; nombre de matchs non documente dans la verification.",
+      "matchs_documentes_absents": null,
+      "niveau_preuve": "equipes_sans_nombre",
+      "perimetre": "implique_un_club_de_la_ligue"
+     }
+    ]
+   },
    "signature_couverture": "XXXCXXCXX",
    "type": "hors_europe",
    "volume": {
@@ -1547,6 +1792,14 @@
    }
   },
   "G1": {
+   "archive_par_saison": {
+    "2122": "MATCH_ARCHIVE_MANQUANT",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": false,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -1622,6 +1875,17 @@
     "nombre de matchs different selon les saisons: {\"2122\": 240, \"2223\": 240, \"2324\": 240, \"2425\": 233, \"2526\": 236}",
     "structure aller-retour simple non respectee: 2122,2223,2324,2425,2526"
    ],
+   "signalements_archive": {
+    "2122": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrage de relegation Lamia-Veria (2 manches), absent de l'archive.",
+      "matchs_documentes_absents": 2,
+      "niveau_preuve": "nombre_et_equipes",
+      "perimetre": "implique_un_club_de_la_ligue"
+     }
+    ]
+   },
    "signature_couverture": "LLLCLLCLL",
    "type": "europe",
    "volume": {
@@ -1645,6 +1909,14 @@
    }
   },
   "I1": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -1717,6 +1989,7 @@
     "erreurs_et_codes_pour_1000_matchs": 0.0
    },
    "indices_segmentation_historique": [],
+   "signalements_archive": {},
    "signature_couverture": "CCCCCCCCC",
    "type": "europe",
    "volume": {
@@ -1740,6 +2013,14 @@
    }
   },
   "I2": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -1812,6 +2093,7 @@
     "erreurs_et_codes_pour_1000_matchs": 0.0
    },
    "indices_segmentation_historique": [],
+   "signalements_archive": {},
    "signature_couverture": "CCCCCCCCC",
    "type": "europe",
    "volume": {
@@ -1835,6 +2117,14 @@
    }
   },
   "IRL": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "MATCH_ARCHIVE_MANQUANT",
+    "2324": "MATCH_ARCHIVE_MANQUANT",
+    "2425": "MATCH_ARCHIVE_MANQUANT",
+    "2526": "MATCH_ARCHIVE_MANQUANT"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -1910,6 +2200,44 @@
     "nombre de matchs different selon les saisons: {\"2122\": 186, \"2223\": 181, \"2324\": 181, \"2425\": 181, \"2526\": 180}",
     "structure aller-retour simple non respectee: 2122,2223,2324,2425,2526"
    ],
+   "signalements_archive": {
+    "2223": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Matchs de First Division du parcours de barrage absents de l'archive; seule la finale UC Dublin-Waterford y figure.",
+      "matchs_documentes_absents": null,
+      "niveau_preuve": "existence_seulement",
+      "perimetre": "hors_clubs_de_la_ligue"
+     }
+    ],
+    "2324": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Matchs de First Division du parcours de barrage (Waterford-Athlone, Cobh-Wexford, Waterford-Cobh le 04/11/2023...) absents de l'archive; seule la finale y figure.",
+      "matchs_documentes_absents": null,
+      "niveau_preuve": "equipes_sans_nombre",
+      "perimetre": "hors_clubs_de_la_ligue"
+     }
+    ],
+    "2425": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Matchs de First Division du parcours de barrage (demi-finales, finale Bray-Athlone) absents de l'archive; seule la finale Bray-Drogheda y figure.",
+      "matchs_documentes_absents": null,
+      "niveau_preuve": "equipes_sans_nombre",
+      "perimetre": "hors_clubs_de_la_ligue"
+     }
+    ],
+    "2526": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrages (hors ligue) exclus: matchs non documentes individuellement, absents de l'archive.",
+      "matchs_documentes_absents": null,
+      "niveau_preuve": "existence_seulement",
+      "perimetre": "hors_clubs_de_la_ligue"
+     }
+    ]
+   },
    "signature_couverture": "XXXCXXCXX",
    "type": "hors_europe",
    "volume": {
@@ -1933,6 +2261,14 @@
    }
   },
   "JPN": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_COMPLETE_EXAMINEE",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -2008,6 +2344,7 @@
     "nombre de matchs different selon les saisons: {\"2122\": 380, \"2223\": 310, \"2324\": 306, \"2425\": 380, \"2526\": 380}",
     "structure aller-retour simple non respectee: 2223"
    ],
+   "signalements_archive": {},
    "signature_couverture": "XXXCXXCXX",
    "type": "hors_europe",
    "volume": {
@@ -2031,6 +2368,14 @@
    }
   },
   "MEX": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": false,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -2106,6 +2451,7 @@
     "nombre de matchs different selon les saisons: {\"2122\": 342, \"2223\": 342, \"2324\": 340, \"2425\": 340, \"2526\": 336}",
     "structure aller-retour simple non respectee: 2122,2223,2324,2425,2526"
    ],
+   "signalements_archive": {},
    "signature_couverture": "XXXCXXCXX",
    "type": "hors_europe",
    "volume": {
@@ -2129,6 +2475,14 @@
    }
   },
   "N1": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -2201,6 +2555,7 @@
     "erreurs_et_codes_pour_1000_matchs": 1.961
    },
    "indices_segmentation_historique": [],
+   "signalements_archive": {},
    "signature_couverture": "CCCCCCCCC",
    "type": "europe",
    "volume": {
@@ -2224,6 +2579,14 @@
    }
   },
   "NOR": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": false,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -2299,6 +2662,7 @@
     "nombre de matchs different selon les saisons: {\"2122\": 241, \"2223\": 242, \"2324\": 242, \"2425\": 242, \"2526\": 240}",
     "structure aller-retour simple non respectee: 2122,2223,2324,2425"
    ],
+   "signalements_archive": {},
    "signature_couverture": "XXXCXXCXX",
    "type": "hors_europe",
    "volume": {
@@ -2322,6 +2686,14 @@
    }
   },
   "P1": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -2394,6 +2766,7 @@
     "erreurs_et_codes_pour_1000_matchs": 0.0
    },
    "indices_segmentation_historique": [],
+   "signalements_archive": {},
    "signature_couverture": "CCCCCCCCC",
    "type": "europe",
    "volume": {
@@ -2417,6 +2790,14 @@
    }
   },
   "POL": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": false,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -2491,6 +2872,7 @@
    "indices_segmentation_historique": [
     "structure aller-retour simple non respectee: 2223"
    ],
+   "signalements_archive": {},
    "signature_couverture": "XXXCXXCXX",
    "type": "hors_europe",
    "volume": {
@@ -2514,6 +2896,14 @@
    }
   },
   "ROU": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "MATCH_ARCHIVE_MANQUANT",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": false,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -2589,6 +2979,17 @@
     "nombre de matchs different selon les saisons: {\"2122\": 320, \"2223\": 321, \"2324\": 321, \"2425\": 315, \"2526\": 321}",
     "structure aller-retour simple non respectee: 2122,2223,2324,2425,2526"
    ],
+   "signalements_archive": {
+    "2425": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Quatre matchs de barrage Liga I/Liga II absents de l'archive.",
+      "matchs_documentes_absents": 4,
+      "niveau_preuve": "nombre_seulement",
+      "perimetre": "implique_un_club_de_la_ligue"
+     }
+    ]
+   },
    "signature_couverture": "XXXCXXCXX",
    "type": "hors_europe",
    "volume": {
@@ -2612,6 +3013,14 @@
    }
   },
   "RUS": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -2687,6 +3096,7 @@
     "nombre de matchs different selon les saisons: {\"2122\": 244, \"2223\": 244, \"2324\": 244, \"2425\": 240, \"2526\": 240}",
     "structure aller-retour simple non respectee: 2122,2223,2324"
    ],
+   "signalements_archive": {},
    "signature_couverture": "XXXLXXCXX",
    "type": "hors_europe",
    "volume": {
@@ -2710,6 +3120,14 @@
    }
   },
   "SC0": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -2784,6 +3202,7 @@
    "indices_segmentation_historique": [
     "structure aller-retour simple non respectee: 2122,2223,2324,2425,2526"
    ],
+   "signalements_archive": {},
    "signature_couverture": "CCCCCCCCC",
    "type": "europe",
    "volume": {
@@ -2807,6 +3226,14 @@
    }
   },
   "SC1": {
+   "archive_par_saison": {
+    "2122": "MATCH_ARCHIVE_MANQUANT",
+    "2223": "MATCH_ARCHIVE_MANQUANT",
+    "2324": "MATCH_ARCHIVE_MANQUANT",
+    "2425": "MATCH_ARCHIVE_MANQUANT",
+    "2526": "MATCH_ARCHIVE_MANQUANT"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -2881,6 +3308,53 @@
    "indices_segmentation_historique": [
     "structure aller-retour simple non respectee: 2122,2223,2324,2425,2526"
    ],
+   "signalements_archive": {
+    "2122": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).",
+      "matchs_documentes_absents": null,
+      "niveau_preuve": "existence_seulement",
+      "perimetre": "non_documente"
+     }
+    ],
+    "2223": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).",
+      "matchs_documentes_absents": null,
+      "niveau_preuve": "existence_seulement",
+      "perimetre": "non_documente"
+     }
+    ],
+    "2324": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).",
+      "matchs_documentes_absents": null,
+      "niveau_preuve": "existence_seulement",
+      "perimetre": "non_documente"
+     }
+    ],
+    "2425": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).",
+      "matchs_documentes_absents": null,
+      "niveau_preuve": "existence_seulement",
+      "perimetre": "non_documente"
+     }
+    ],
+    "2526": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).",
+      "matchs_documentes_absents": null,
+      "niveau_preuve": "existence_seulement",
+      "perimetre": "non_documente"
+     }
+    ]
+   },
    "signature_couverture": "CCCCCCCCL",
    "type": "europe",
    "volume": {
@@ -2904,6 +3378,14 @@
    }
   },
   "SC2": {
+   "archive_par_saison": {
+    "2122": "MATCH_ARCHIVE_MANQUANT",
+    "2223": "MATCH_ARCHIVE_MANQUANT",
+    "2324": "MATCH_ARCHIVE_MANQUANT",
+    "2425": "MATCH_ARCHIVE_MANQUANT",
+    "2526": "MATCH_ARCHIVE_MANQUANT"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -2978,6 +3460,53 @@
    "indices_segmentation_historique": [
     "structure aller-retour simple non respectee: 2122,2223,2324,2425,2526"
    ],
+   "signalements_archive": {
+    "2122": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).",
+      "matchs_documentes_absents": null,
+      "niveau_preuve": "existence_seulement",
+      "perimetre": "non_documente"
+     }
+    ],
+    "2223": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).",
+      "matchs_documentes_absents": null,
+      "niveau_preuve": "existence_seulement",
+      "perimetre": "non_documente"
+     }
+    ],
+    "2324": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).",
+      "matchs_documentes_absents": null,
+      "niveau_preuve": "existence_seulement",
+      "perimetre": "non_documente"
+     }
+    ],
+    "2425": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).",
+      "matchs_documentes_absents": null,
+      "niveau_preuve": "existence_seulement",
+      "perimetre": "non_documente"
+     }
+    ],
+    "2526": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).",
+      "matchs_documentes_absents": null,
+      "niveau_preuve": "existence_seulement",
+      "perimetre": "non_documente"
+     }
+    ]
+   },
    "signature_couverture": "CCLCLCCLL",
    "type": "europe",
    "volume": {
@@ -3001,6 +3530,14 @@
    }
   },
   "SC3": {
+   "archive_par_saison": {
+    "2122": "MATCH_ARCHIVE_MANQUANT",
+    "2223": "MATCH_ARCHIVE_MANQUANT",
+    "2324": "MATCH_ARCHIVE_MANQUANT",
+    "2425": "MATCH_ARCHIVE_MANQUANT",
+    "2526": "MATCH_ARCHIVE_MANQUANT"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -3076,6 +3613,53 @@
     "libelle de competition different selon les saisons: {\"2122\": \"League Two\", \"2223\": \"League Two\", \"2324\": \"League Two\", \"2425\": \"League Two\", \"2526\": null}",
     "structure aller-retour simple non respectee: 2122,2223,2324,2425,2526"
    ],
+   "signalements_archive": {
+    "2122": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).",
+      "matchs_documentes_absents": null,
+      "niveau_preuve": "existence_seulement",
+      "perimetre": "non_documente"
+     }
+    ],
+    "2223": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).",
+      "matchs_documentes_absents": null,
+      "niveau_preuve": "existence_seulement",
+      "perimetre": "non_documente"
+     }
+    ],
+    "2324": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).",
+      "matchs_documentes_absents": null,
+      "niveau_preuve": "existence_seulement",
+      "perimetre": "non_documente"
+     }
+    ],
+    "2425": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).",
+      "matchs_documentes_absents": null,
+      "niveau_preuve": "existence_seulement",
+      "perimetre": "non_documente"
+     }
+    ],
+    "2526": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).",
+      "matchs_documentes_absents": null,
+      "niveau_preuve": "existence_seulement",
+      "perimetre": "non_documente"
+     }
+    ]
+   },
    "signature_couverture": "CCCCLCCCC",
    "type": "europe",
    "volume": {
@@ -3099,6 +3683,14 @@
    }
   },
   "SP1": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -3171,6 +3763,7 @@
     "erreurs_et_codes_pour_1000_matchs": 1.053
    },
    "indices_segmentation_historique": [],
+   "signalements_archive": {},
    "signature_couverture": "CCCCCCCCC",
    "type": "europe",
    "volume": {
@@ -3194,6 +3787,14 @@
    }
   },
   "SP2": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -3266,6 +3867,7 @@
     "erreurs_et_codes_pour_1000_matchs": 0.433
    },
    "indices_segmentation_historique": [],
+   "signalements_archive": {},
    "signature_couverture": "CCCCCCCCL",
    "type": "europe",
    "volume": {
@@ -3289,6 +3891,14 @@
    }
   },
   "SWE": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -3364,6 +3974,7 @@
     "nombre de matchs different selon les saisons: {\"2122\": 242, \"2223\": 242, \"2324\": 240, \"2425\": 242, \"2526\": 240}",
     "structure aller-retour simple non respectee: 2122,2223,2425"
    ],
+   "signalements_archive": {},
    "signature_couverture": "XXXCXXCXX",
    "type": "hors_europe",
    "volume": {
@@ -3387,6 +3998,14 @@
    }
   },
   "SWZ": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "MATCH_ARCHIVE_MANQUANT",
+    "2526": "MATCH_ARCHIVE_MANQUANT"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": false,
    "completude_par_saison": {
     "2122": "COMPLETUDE_NON_VERIFIEE",
@@ -3462,6 +4081,26 @@
     "nombre de matchs different selon les saisons: {\"2122\": 181, \"2223\": 182, \"2324\": 230, \"2425\": 228, \"2526\": 228}",
     "structure aller-retour simple non respectee: 2122,2223,2324,2425,2526"
    ],
+   "signalements_archive": {
+    "2425": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrage de relegation (2 manches) absent de l'archive.",
+      "matchs_documentes_absents": 2,
+      "niveau_preuve": "nombre_seulement",
+      "perimetre": "implique_un_club_de_la_ligue"
+     }
+    ],
+    "2526": [
+     {
+      "code": "MATCH_ARCHIVE_MANQUANT",
+      "detail": "Barrage de relegation (2 manches) absent de l'archive.",
+      "matchs_documentes_absents": 2,
+      "niveau_preuve": "nombre_seulement",
+      "perimetre": "implique_un_club_de_la_ligue"
+     }
+    ]
+   },
    "signature_couverture": "XXXCXXCXX",
    "type": "hors_europe",
    "volume": {
@@ -3485,6 +4124,14 @@
    }
   },
   "T1": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2526": "ARCHIVE_NON_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -3559,6 +4206,7 @@
    "indices_segmentation_historique": [
     "nombre de matchs different selon les saisons: {\"2122\": 380, \"2223\": 342, \"2324\": 380, \"2425\": 342, \"2526\": 306}"
    ],
+   "signalements_archive": {},
    "signature_couverture": "LLLLLLCLL",
    "type": "europe",
    "volume": {
@@ -3582,6 +4230,14 @@
    }
   },
   "USA": {
+   "archive_par_saison": {
+    "2122": "ARCHIVE_COMPLETE_EXAMINEE",
+    "2223": "ARCHIVE_COMPLETE_EXAMINEE",
+    "2324": "ARCHIVE_COMPLETE_EXAMINEE",
+    "2425": "ARCHIVE_COMPLETE_EXAMINEE",
+    "2526": "ARCHIVE_COMPLETE_EXAMINEE"
+   },
+   "comparable_archive_sans_reserve": true,
    "comparable_sans_reserve": true,
    "completude_par_saison": {
     "2122": "COMPLETUDE_VERIFIEE",
@@ -3657,6 +4313,7 @@
     "nombre de matchs different selon les saisons: {\"2122\": 472, \"2223\": 489, \"2324\": 521, \"2425\": 522, \"2526\": 540}",
     "structure aller-retour simple non respectee: 2122,2223,2324,2425,2526"
    ],
+   "signalements_archive": {},
    "signature_couverture": "XXXCXXCXX",
    "type": "hors_europe",
    "volume": {
