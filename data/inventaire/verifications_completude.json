@@ -1,16 +1,353 @@
 {
-  "description": "Verifications EXTERNES de completude (nombre d'equipes et de matchs attendus). Le script compare ces valeurs a ce qui est observe dans l'archive; en cas de divergence le statut devient COMPLETUDE_INCOHERENTE.",
-  "verifications": [
-    {
-      "competition": "T1",
-      "saison": "2223",
-      "equipes_attendues": 19,
-      "matchs_attendus": 342,
-      "preuves": [
-        "Archive: 19 equipes, 342 lignes = 19x18, aucune paire (domicile, exterieur) manquante ni en double, dates du 2022-08-05 au 2023-06-07, 342 lignes avec score.",
-        "Source externe (une seule): https://en.wikipedia.org/wiki/2022%E2%80%9323_S%C3%BCper_Lig - '19 teams contested the league', 36 matchs par equipe, 342 matchs; memes 19 equipes que l'archive. Gaziantep et Hatayspor se sont retires le 12/02/2023 apres le seisme sans etre relegues."
-      ],
-      "date_verification": "2026-11-04"
-    }
-  ]
+ "description": "Verifications EXTERNES de completude (nombre d'equipes et de matchs attendus). Le script compare ces valeurs a ce qui est observe dans l'archive; en cas de divergence le statut devient COMPLETUDE_INCOHERENTE.",
+ "verifications": [
+  {
+   "competition": "T1",
+   "saison": "2223",
+   "equipes_attendues": 19,
+   "matchs_attendus": 342,
+   "preuves": [
+    "Archive: 19 equipes, 342 lignes = 19x18, aucune paire (domicile, exterieur) manquante ni en double, dates du 2022-08-05 au 2023-06-07, 342 lignes avec score.",
+    "Source externe (une seule): https://en.wikipedia.org/wiki/2022%E2%80%9323_S%C3%BCper_Lig - '19 teams contested the league', 36 matchs par equipe, 342 matchs; memes 19 equipes que l'archive. Gaziantep et Hatayspor se sont retires le 12/02/2023 apres le seisme sans etre relegues."
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "E0",
+   "saison": "2122",
+   "equipes_attendues": 20,
+   "matchs_attendus": 380,
+   "preuves": [
+    "Archive: 20 equipes, 380 lignes avec score = 20x19, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2021–22): 20 equipes, 380 matchs. https://en.wikipedia.org/wiki/2021%E2%80%9322_Premier_League",
+    "Remarque: matchs reportes (COVID) mais tous joues: 20 equipes a 38 matchs."
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "E0",
+   "saison": "2223",
+   "equipes_attendues": 20,
+   "matchs_attendus": 380,
+   "preuves": [
+    "Archive: 20 equipes, 380 lignes avec score = 20x19, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2022–23): 20 equipes, 380 matchs. https://en.wikipedia.org/wiki/2022%E2%80%9323_Premier_League"
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "E0",
+   "saison": "2324",
+   "equipes_attendues": 20,
+   "matchs_attendus": 380,
+   "preuves": [
+    "Archive: 20 equipes, 380 lignes avec score = 20x19, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2023–24): 20 equipes, 380 matchs. https://en.wikipedia.org/wiki/2023%E2%80%9324_Premier_League",
+    "Remarque: Bournemouth-Luton abandonne puis rejoue le 13/03/2024."
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "E0",
+   "saison": "2425",
+   "equipes_attendues": 20,
+   "matchs_attendus": 380,
+   "preuves": [
+    "Archive: 20 equipes, 380 lignes avec score = 20x19, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2024–25): 20 equipes, 380 matchs. https://en.wikipedia.org/wiki/2024%E2%80%9325_Premier_League"
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "E0",
+   "saison": "2526",
+   "equipes_attendues": 20,
+   "matchs_attendus": 380,
+   "preuves": [
+    "Archive: 20 equipes, 380 lignes avec score = 20x19, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2025–26): 20 equipes, 380 matchs. https://en.wikipedia.org/wiki/2025%E2%80%9326_Premier_League"
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "E1",
+   "saison": "2122",
+   "equipes_attendues": 24,
+   "matchs_attendus": 552,
+   "preuves": [
+    "Archive: 24 equipes, 552 lignes avec score = 24x23, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2021–22): 24 equipes, 552 matchs. https://en.wikipedia.org/wiki/2021%E2%80%9322_EFL_Championship"
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "E1",
+   "saison": "2223",
+   "equipes_attendues": 24,
+   "matchs_attendus": 552,
+   "preuves": [
+    "Archive: 24 equipes, 552 lignes avec score = 24x23, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2022–23): 24 equipes, 552 matchs. https://en.wikipedia.org/wiki/2022%E2%80%9323_EFL_Championship"
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "E1",
+   "saison": "2324",
+   "equipes_attendues": 24,
+   "matchs_attendus": 552,
+   "preuves": [
+    "Archive: 24 equipes, 552 lignes avec score = 24x23, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2023–24): 24 equipes, 552 matchs. https://en.wikipedia.org/wiki/2023%E2%80%9324_EFL_Championship"
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "E1",
+   "saison": "2425",
+   "equipes_attendues": 24,
+   "matchs_attendus": 552,
+   "preuves": [
+    "Archive: 24 equipes, 552 lignes avec score = 24x23, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2024–25): 24 equipes, 552 matchs. https://en.wikipedia.org/wiki/2024%E2%80%9325_EFL_Championship"
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "E1",
+   "saison": "2526",
+   "equipes_attendues": 24,
+   "matchs_attendus": 552,
+   "preuves": [
+    "Archive: 24 equipes, 552 lignes avec score = 24x23, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2025–26): 24 equipes, 552 matchs. https://en.wikipedia.org/wiki/2025%E2%80%9326_EFL_Championship",
+    "Remarque: walkover mentionne uniquement pour la finale de barrage, hors championnat."
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "E2",
+   "saison": "2122",
+   "equipes_attendues": 24,
+   "matchs_attendus": 552,
+   "preuves": [
+    "Archive: 24 equipes, 552 lignes avec score = 24x23, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2021–22): 24 equipes, 552 matchs. https://en.wikipedia.org/wiki/2021%E2%80%9322_EFL_League_One"
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "E2",
+   "saison": "2223",
+   "equipes_attendues": 24,
+   "matchs_attendus": 552,
+   "preuves": [
+    "Archive: 24 equipes, 552 lignes avec score = 24x23, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2022–23): 24 equipes, 552 matchs. https://en.wikipedia.org/wiki/2022%E2%80%9323_EFL_League_One"
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "E2",
+   "saison": "2324",
+   "equipes_attendues": 24,
+   "matchs_attendus": 552,
+   "preuves": [
+    "Archive: 24 equipes, 552 lignes avec score = 24x23, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2023–24): 24 equipes, 552 matchs. https://en.wikipedia.org/wiki/2023%E2%80%9324_EFL_League_One",
+    "Remarque: infobox Wikipedia indique 'Matches: 462' (incoherent); le tableau donne 24 equipes a 46 matchs = 552."
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "E2",
+   "saison": "2425",
+   "equipes_attendues": 24,
+   "matchs_attendus": 552,
+   "preuves": [
+    "Archive: 24 equipes, 552 lignes avec score = 24x23, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2024–25): 24 equipes, 552 matchs. https://en.wikipedia.org/wiki/2024%E2%80%9325_EFL_League_One"
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "E2",
+   "saison": "2526",
+   "equipes_attendues": 24,
+   "matchs_attendus": 552,
+   "preuves": [
+    "Archive: 24 equipes, 552 lignes avec score = 24x23, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2025–26): 24 equipes, 552 matchs. https://en.wikipedia.org/wiki/2025%E2%80%9326_EFL_League_One",
+    "Remarque: infobox Wikipedia indique 'Matches: 454' (incoherent); le tableau donne 24 equipes a 46 matchs = 552."
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "E3",
+   "saison": "2122",
+   "equipes_attendues": 24,
+   "matchs_attendus": 552,
+   "preuves": [
+    "Archive: 24 equipes, 552 lignes avec score = 24x23, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2021–22): 24 equipes, 552 matchs. https://en.wikipedia.org/wiki/2021%E2%80%9322_EFL_League_Two"
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "E3",
+   "saison": "2223",
+   "equipes_attendues": 24,
+   "matchs_attendus": 552,
+   "preuves": [
+    "Archive: 24 equipes, 552 lignes avec score = 24x23, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2022–23): 24 equipes, 552 matchs. https://en.wikipedia.org/wiki/2022%E2%80%9323_EFL_League_Two"
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "E3",
+   "saison": "2324",
+   "equipes_attendues": 24,
+   "matchs_attendus": 552,
+   "preuves": [
+    "Archive: 24 equipes, 552 lignes avec score = 24x23, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2023–24): 24 equipes, 552 matchs. https://en.wikipedia.org/wiki/2023%E2%80%9324_EFL_League_Two"
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "E3",
+   "saison": "2425",
+   "equipes_attendues": 24,
+   "matchs_attendus": 552,
+   "preuves": [
+    "Archive: 24 equipes, 552 lignes avec score = 24x23, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2024–25): 24 equipes, 552 matchs. https://en.wikipedia.org/wiki/2024%E2%80%9325_EFL_League_Two"
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "E3",
+   "saison": "2526",
+   "equipes_attendues": 24,
+   "matchs_attendus": 552,
+   "preuves": [
+    "Archive: 24 equipes, 552 lignes avec score = 24x23, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2025–26): 24 equipes, 552 matchs. https://en.wikipedia.org/wiki/2025%E2%80%9326_EFL_League_Two"
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "I1",
+   "saison": "2122",
+   "equipes_attendues": 20,
+   "matchs_attendus": 380,
+   "preuves": [
+    "Archive: 20 equipes, 380 lignes avec score = 20x19, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2021–22): 20 equipes, 380 matchs. https://en.wikipedia.org/wiki/2021%E2%80%9322_Serie_A"
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "I1",
+   "saison": "2223",
+   "equipes_attendues": 20,
+   "matchs_attendus": 380,
+   "preuves": [
+    "Archive: 20 equipes, 380 lignes avec score = 20x19, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2022–23): 20 equipes, 380 matchs. https://en.wikipedia.org/wiki/2022%E2%80%9323_Serie_A"
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "I1",
+   "saison": "2324",
+   "equipes_attendues": 20,
+   "matchs_attendus": 380,
+   "preuves": [
+    "Archive: 20 equipes, 380 lignes avec score = 20x19, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2023–24): 20 equipes, 380 matchs. https://en.wikipedia.org/wiki/2023%E2%80%9324_Serie_A"
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "I1",
+   "saison": "2425",
+   "equipes_attendues": 20,
+   "matchs_attendus": 380,
+   "preuves": [
+    "Archive: 20 equipes, 380 lignes avec score = 20x19, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2024–25): 20 equipes, 380 matchs. https://en.wikipedia.org/wiki/2024%E2%80%9325_Serie_A"
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "I1",
+   "saison": "2526",
+   "equipes_attendues": 20,
+   "matchs_attendus": 380,
+   "preuves": [
+    "Archive: 20 equipes, 380 lignes avec score = 20x19, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2025–26): 20 equipes, 380 matchs. https://en.wikipedia.org/wiki/2025%E2%80%9326_Serie_A",
+    "Remarque: un match propose a Perth (Milan-Como) n'a pas eu lieu; 380 matchs au total selon la page."
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "I2",
+   "saison": "2122",
+   "equipes_attendues": 20,
+   "matchs_attendus": 380,
+   "preuves": [
+    "Archive: 20 equipes, 380 lignes avec score = 20x19, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2021–22): 20 equipes, 380 matchs. https://en.wikipedia.org/wiki/2021%E2%80%9322_Serie_B"
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "I2",
+   "saison": "2223",
+   "equipes_attendues": 20,
+   "matchs_attendus": 380,
+   "preuves": [
+    "Archive: 20 equipes, 380 lignes avec score = 20x19, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2022–23): 20 equipes, 380 matchs. https://en.wikipedia.org/wiki/2022%E2%80%9323_Serie_B"
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "I2",
+   "saison": "2324",
+   "equipes_attendues": 20,
+   "matchs_attendus": 380,
+   "preuves": [
+    "Archive: 20 equipes, 380 lignes avec score = 20x19, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2023–24): 20 equipes, 380 matchs. https://en.wikipedia.org/wiki/2023%E2%80%9324_Serie_B"
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "I2",
+   "saison": "2425",
+   "equipes_attendues": 20,
+   "matchs_attendus": 380,
+   "preuves": [
+    "Archive: 20 equipes, 380 lignes avec score = 20x19, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2024–25): 20 equipes, 380 matchs. https://en.wikipedia.org/wiki/2024%E2%80%9325_Serie_B",
+    "Remarque: victoire 3-0 accordee lors d'un barrage de relegation (hors matchs de championnat)."
+   ],
+   "date_verification": "2026-11-04"
+  },
+  {
+   "competition": "I2",
+   "saison": "2526",
+   "equipes_attendues": 20,
+   "matchs_attendus": 380,
+   "preuves": [
+    "Archive: 20 equipes, 380 lignes avec score = 20x19, aucune paire dom/ext manquante ni en double.",
+    "Source externe (Wikipedia, 2025–26): 20 equipes, 380 matchs. https://en.wikipedia.org/wiki/2025%E2%80%9326_Serie_B"
+   ],
+   "date_verification": "2026-11-04"
+  }
+ ]
 }
