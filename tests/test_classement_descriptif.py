@@ -67,5 +67,34 @@ class Classement(unittest.TestCase):
         self.assertEqual(sorted(cd.structure_saison(p)), ["Copa", "Liga"])
 
 
+    def test_statut_archive_distinct_de_la_completude(self):
+        base = {"competition": "F1", "equipes_attendues": 2, "matchs_attendus": 2, "preuves": ["x"]}
+        sig = [{"code": "MATCH_ARCHIVE_MANQUANT", "matchs_documentes_absents": 1, "niveau_preuve": "match_par_match", "perimetre": "implique_un_club_de_la_ligue", "detail": "d"}]
+        v = []
+        for i, s in enumerate(CFG["saisons"]):
+            e = dict(base, saison=s)
+            if i == 0:
+                e["signalements_archive"] = sig
+            elif i == 1:
+                e["signalements_archive"] = []
+            v.append(e)
+        r = construire(self.tmp, v)
+        f1 = r["competitions"]["F1"]
+        a = [f1["archive_par_saison"][s] for s in CFG["saisons"]]
+        self.assertEqual(a[0], "MATCH_ARCHIVE_MANQUANT")
+        self.assertEqual(a[1], "ARCHIVE_COMPLETE_EXAMINEE")
+        self.assertTrue(all(x == "ARCHIVE_NON_EXAMINEE" for x in a[2:]))
+        self.assertTrue(all(st == "COMPLETUDE_VERIFIEE" for st in f1["completude_par_saison"].values()))
+        self.assertTrue(f1["comparable_sans_reserve"])
+        self.assertFalse(f1["comparable_archive_sans_reserve"])
+        self.assertEqual(list(f1["signalements_archive"]), [CFG["saisons"][0]])
+
+    def test_sans_cle_signalements_rien_n_est_affirme(self):
+        v = [{"competition": "F1", "saison": s, "equipes_attendues": 2, "matchs_attendus": 2, "preuves": ["x"]} for s in CFG["saisons"]]
+        r = construire(self.tmp, v)
+        self.assertTrue(all(x == "ARCHIVE_NON_EXAMINEE" for x in r["competitions"]["F1"]["archive_par_saison"].values()))
+        self.assertFalse(r["competitions"]["F1"]["comparable_archive_sans_reserve"])
+
+
 if __name__ == "__main__":
     unittest.main()

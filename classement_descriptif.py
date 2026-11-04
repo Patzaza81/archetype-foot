@@ -52,6 +52,18 @@ def statut_completude(code, saison, struct, verifs):
     return ("COMPLETUDE_VERIFIEE" if ok else "COMPLETUDE_INCOHERENTE"), v["preuves"]
 
 
+def statut_archive(code, saison, verifs):
+    """Seconde dimension, distincte de la completude de la competition: tous les matchs documentes sont-ils dans l'archive?
+    ARCHIVE_NON_EXAMINEE: aucune verification enregistree, ou verification sans cle `signalements_archive` (rien n'est affirme).
+    MATCH_ARCHIVE_MANQUANT: au moins un match documente (barrage, match attribue...) est absent des fichiers archives; jamais ajoute ni compte.
+    ARCHIVE_COMPLETE_EXAMINEE: `signalements_archive` explicitement vide apres examen des matchs documentes."""
+    v = verifs.get((code, saison))
+    if not v or "signalements_archive" not in v:
+        return "ARCHIVE_NON_EXAMINEE", []
+    sig = v["signalements_archive"]
+    return ("MATCH_ARCHIVE_MANQUANT" if sig else "ARCHIVE_COMPLETE_EXAMINEE"), sig
+
+
 def couverture(prof):
     res = {}
     for nom, cap in prof["capacites"].items():
@@ -112,6 +124,8 @@ def classer(dossier_inv, snapshots, cfg):
         if ecarts:
             indices.append("structure aller-retour simple non respectee: " + ",".join(ecarts))
         comp_st = {s: saisons[s]["completude"] for s in saisons}
+        arch = {s: statut_archive(code, s, verifs) for s in saisons}
+        arch_st = {s: arch[s][0] for s in arch}
         sortie["competitions"][code] = {
             "type": "europe" if eu else "hors_europe",
             "volume": {"matchs_avec_score": joues, "lignes_mesurees": p["lignes_mesurees"],
@@ -128,6 +142,9 @@ def classer(dossier_inv, snapshots, cfg):
             "indices_segmentation_historique": indices,
             "completude_par_saison": comp_st,
             "comparable_sans_reserve": all(v == "COMPLETUDE_VERIFIEE" for v in comp_st.values()),
+            "archive_par_saison": arch_st,
+            "signalements_archive": {s: arch[s][1] for s in arch if arch[s][1]},
+            "comparable_archive_sans_reserve": all(comp_st[x] == "COMPLETUDE_VERIFIEE" and arch_st[x] == "ARCHIVE_COMPLETE_EXAMINEE" for x in comp_st),
         }
     return sortie
 
@@ -143,6 +160,20 @@ def rapport(sortie, noms_capacites):
     v = [f"{c}:{s}" for c in C for s, st in C[c]["completude_par_saison"].items() if st == "COMPLETUDE_VERIFIEE"]
     L.append(f"- Saisons verifiees: {len(v)} sur {len(C) * 5} ({', '.join(v) or 'aucune'})")
     L.append(f"- **Competitions comparables sans reserve: {sum(1 for c in C.values() if c['comparable_sans_reserve'])} sur {len(C)}**")
+    st_arch = [st for c in C for st in C[c]["archive_par_saison"].values()]
+    L += ["", "## Completude de l'archive (dimension distincte de la completude de la competition)", "",
+          "Un match documente (barrage, match attribue) absent des fichiers n'est jamais ajoute a l'archive ni compte: la saison peut etre verifiee pour sa structure et porter `MATCH_ARCHIVE_MANQUANT`. "
+          "`ARCHIVE_NON_EXAMINEE` = aucun examen enregistre: rien n'est affirme. Le comptage ci-dessous n'inclut que les examens explicites.", "",
+          f"- ARCHIVE_COMPLETE_EXAMINEE: {st_arch.count('ARCHIVE_COMPLETE_EXAMINEE')} saisons",
+          f"- MATCH_ARCHIVE_MANQUANT: {st_arch.count('MATCH_ARCHIVE_MANQUANT')} saisons",
+          f"- ARCHIVE_NON_EXAMINEE: {st_arch.count('ARCHIVE_NON_EXAMINEE')} saisons",
+          "- Parmi les saisons COMPLETUDE_VERIFIEE: " + ", ".join(f"{k} {sum(1 for c in C for x, st in C[c]['archive_par_saison'].items() if C[c]['completude_par_saison'][x] == 'COMPLETUDE_VERIFIEE' and st == k)}" for k in ("ARCHIVE_COMPLETE_EXAMINEE", "MATCH_ARCHIVE_MANQUANT", "ARCHIVE_NON_EXAMINEE")),
+          f"- **Competitions comparables sans reserve sur l'archive (5 saisons verifiees ET archive complete examinee): {sum(1 for c in C.values() if c['comparable_archive_sans_reserve'])} sur {len(C)}**", ""]
+    for c in sorted(C):
+        for s_, sig in C[c]["signalements_archive"].items():
+            for g in sig:
+                L.append(f"- {c}:{s_} MATCH_ARCHIVE_MANQUANT ({g.get('matchs_documentes_absents') if g.get('matchs_documentes_absents') is not None else 'nombre non documente'}; preuve: {g['niveau_preuve']}; perimetre: {g['perimetre']}): {g['detail']}")
+    L.append("")
     L += ["", "## Volume (tri: matchs avec score decroissant)", "", "| Code | Matchs avec score | Saisons | Matchs/saison (min-max) |", "|---|---|---|---|"]
     for c in sorted(C, key=lambda k: -C[k]["volume"]["matchs_avec_score"]):
         m = C[c]["volume"]["matchs_par_saison"].values()
