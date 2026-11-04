@@ -13,48 +13,50 @@ La completude reelle d'une saison (nombre d'equipes et de matchs attendus) n'est
 
 ## Completude de l'archive (dimension distincte de la completude de la competition)
 
-Un match documente (barrage, match attribue) absent des fichiers n'est jamais ajoute a l'archive ni compte: la saison peut etre verifiee pour sa structure et porter `MATCH_ARCHIVE_MANQUANT`. `ARCHIVE_NON_EXAMINEE` = aucun examen enregistre: rien n'est affirme. Le comptage ci-dessous n'inclut que les examens explicites.
+Un match documente absent des fichiers n'est jamais ajoute a l'archive ni compte. `MATCH_ARCHIVE_MANQUANT` = rencontre disputee documentee et absente; `PHASE_EXCLUE_NON_DETAILLEE` = phase exclue sans rencontres individualisees; `MATCH_ATTRIBUE_NON_JOUE` = match attribue sans rencontre disputee. `ARCHIVE_COMPLETE_PERIMETRE_PARTIEL` = aucun match documente manquant dans le perimetre examine, mais ce perimetre n'inclut pas tout (voir `perimetre_examen`); `ARCHIVE_COMPLETE_PERIMETRE_ETENDU` = saison reguliere (paires verifiees) + phases finales examinees individuellement + matchs additionnels. `ARCHIVE_NON_EXAMINEE` = rien n'est affirme.
 
-- ARCHIVE_COMPLETE_EXAMINEE: 12 saisons
-- MATCH_ARCHIVE_MANQUANT: 33 saisons
-- ARCHIVE_NON_EXAMINEE: 145 saisons
-- Parmi les saisons COMPLETUDE_VERIFIEE: ARCHIVE_COMPLETE_EXAMINEE 12, MATCH_ARCHIVE_MANQUANT 33, ARCHIVE_NON_EXAMINEE 136
-- **Competitions comparables sans reserve sur l'archive (5 saisons verifiees ET archive complete examinee): 1 sur 38**
+- ARCHIVE_COMPLETE_PERIMETRE_ETENDU: 0 saisons (dont verifiees: 0)
+- ARCHIVE_COMPLETE_PERIMETRE_PARTIEL: 12 saisons (dont verifiees: 12)
+- MATCH_ARCHIVE_MANQUANT: 16 saisons (dont verifiees: 16)
+- PHASE_EXCLUE_NON_DETAILLEE: 17 saisons (dont verifiees: 17)
+- MATCH_ATTRIBUE_NON_JOUE: 0 saisons (dont verifiees: 0)
+- ARCHIVE_NON_EXAMINEE: 145 saisons (dont verifiees: 136)
+- **Competitions comparables sans reserve sur l'archive (5 saisons verifiees ET perimetre etendu): 0 sur 38**
 
-- AUT:2425 MATCH_ARCHIVE_MANQUANT (2; preuve: nombre_et_dates; perimetre: implique_un_club_de_la_ligue): Barrage Conference League (demi-finale 29/05/2025, finale 01/06/2025) absent de l'archive.
-- AUT:2526 MATCH_ARCHIVE_MANQUANT (3; preuve: match_par_match; perimetre: implique_un_club_de_la_ligue): Barrage Conference League: Ried 2-1 Wolfsberger (19/05/2026), Ried 2-1 Rapid (22/05), Rapid 3-0 Ried (25/05) (RSSSF), absents de l'archive.
-- B1:2122 MATCH_ARCHIVE_MANQUANT (14; preuve: nombre_seulement; perimetre: implique_un_club_de_la_ligue): Play-offs de la saison (14 matchs) non presents dans l'archive.
-- B1:2223 MATCH_ARCHIVE_MANQUANT (24; preuve: nombre_seulement; perimetre: implique_un_club_de_la_ligue): Play-offs de la saison (24 matchs) non presents dans l'archive.
-- B1:2324 MATCH_ARCHIVE_MANQUANT (1; preuve: match_par_match; perimetre: implique_un_club_de_la_ligue): Standard-Westerlo attribue 0-5 (non joue: Standard n'a pas pris le coup d'envoi), absent de l'archive; ce n'est pas un match joue.
-- B1:2324 MATCH_ARCHIVE_MANQUANT (2; preuve: nombre_et_equipes; perimetre: hors_clubs_de_la_ligue): Deux matchs de barrage de promotion/relegation contre Lommel, absents de l'archive.
-- DNK:2425 MATCH_ARCHIVE_MANQUANT (1; preuve: nombre_et_equipes; perimetre: implique_un_club_de_la_ligue): Barrage europeen Randers-Silkeborg (selon la page Wikipedia), absent de l'archive.
-- DNK:2526 MATCH_ARCHIVE_MANQUANT (1; preuve: nombre_et_equipes; perimetre: implique_un_club_de_la_ligue): Barrage europeen Brondby-Copenhague du 21/05/2026, absent de l'archive.
-- FIN:2223 MATCH_ARCHIVE_MANQUANT (1; preuve: match_par_match; perimetre: hors_clubs_de_la_ligue): Jaro-EIF 2-1 le 12/10/2022 (premier tour du parcours de barrage de Ykkonen, RSSSF), absent de l'archive.
-- FIN:2324 MATCH_ARCHIVE_MANQUANT (2; preuve: match_par_match; perimetre: implique_un_club_de_la_ligue): Barrage de relegation Mariehamn-Gnistan: 0-0 le 25/10/2023 et 3-0 le 29/10/2023 (RSSSF), absents de l'archive.
+- AUT:2425 MATCH_ARCHIVE_MANQUANT (2 match(s) disputes; preuve: nombre_et_dates; perimetre: implique_un_club_de_la_ligue): Barrage Conference League (demi-finale 29/05/2025, finale 01/06/2025) absent de l'archive.
+- AUT:2526 MATCH_ARCHIVE_MANQUANT (3 match(s) disputes; preuve: match_par_match; perimetre: implique_un_club_de_la_ligue): Barrage Conference League: Ried 2-1 Wolfsberger (19/05/2026), Ried 2-1 Rapid (22/05), Rapid 3-0 Ried (25/05) (RSSSF), absents de l'archive.
+- B1:2122 MATCH_ARCHIVE_MANQUANT (14 match(s) disputes; preuve: nombre_seulement; perimetre: implique_un_club_de_la_ligue): Play-offs de la saison (14 matchs) non presents dans l'archive.
+- B1:2223 MATCH_ARCHIVE_MANQUANT (24 match(s) disputes; preuve: nombre_seulement; perimetre: implique_un_club_de_la_ligue): Play-offs de la saison (24 matchs) non presents dans l'archive.
+- B1:2324 MATCH_ATTRIBUE_NON_JOUE (1 attribue(s); preuve: match_par_match; perimetre: implique_un_club_de_la_ligue): Standard-Westerlo attribue 0-5 (non joue: Standard n'a pas pris le coup d'envoi), absent de l'archive; ce n'est pas un match joue. (qualification corrigee: match attribue, aucune rencontre disputee absente)
+- B1:2324 MATCH_ARCHIVE_MANQUANT (2 match(s) disputes; preuve: nombre_et_equipes; perimetre: hors_clubs_de_la_ligue): Deux matchs de barrage de promotion/relegation contre Lommel, absents de l'archive.
+- DNK:2425 MATCH_ARCHIVE_MANQUANT (1 match(s) disputes; preuve: nombre_et_equipes; perimetre: implique_un_club_de_la_ligue): Barrage europeen Randers-Silkeborg (selon la page Wikipedia), absent de l'archive.
+- DNK:2526 MATCH_ARCHIVE_MANQUANT (1 match(s) disputes; preuve: nombre_et_equipes; perimetre: implique_un_club_de_la_ligue): Barrage europeen Brondby-Copenhague du 21/05/2026, absent de l'archive.
+- FIN:2223 MATCH_ARCHIVE_MANQUANT (1 match(s) disputes; preuve: match_par_match; perimetre: hors_clubs_de_la_ligue): Jaro-EIF 2-1 le 12/10/2022 (premier tour du parcours de barrage de Ykkonen, RSSSF), absent de l'archive.
+- FIN:2324 MATCH_ARCHIVE_MANQUANT (2 match(s) disputes; preuve: match_par_match; perimetre: implique_un_club_de_la_ligue): Barrage de relegation Mariehamn-Gnistan: 0-0 le 25/10/2023 et 3-0 le 29/10/2023 (RSSSF), absents de l'archive.
 - FIN:2526 MATCH_ARCHIVE_MANQUANT (nombre non documente; preuve: equipes_sans_nombre; perimetre: implique_un_club_de_la_ligue): Barrage de relegation KTP-TPS absent de l'archive; nombre de matchs non documente dans la verification.
-- G1:2122 MATCH_ARCHIVE_MANQUANT (2; preuve: nombre_et_equipes; perimetre: implique_un_club_de_la_ligue): Barrage de relegation Lamia-Veria (2 manches), absent de l'archive.
-- IRL:2223 MATCH_ARCHIVE_MANQUANT (nombre non documente; preuve: existence_seulement; perimetre: hors_clubs_de_la_ligue): Matchs de First Division du parcours de barrage absents de l'archive; seule la finale UC Dublin-Waterford y figure.
+- G1:2122 MATCH_ARCHIVE_MANQUANT (2 match(s) disputes; preuve: nombre_et_equipes; perimetre: implique_un_club_de_la_ligue): Barrage de relegation Lamia-Veria (2 manches), absent de l'archive.
+- IRL:2223 PHASE_EXCLUE_NON_DETAILLEE (nombre non documente; preuve: existence_seulement; perimetre: hors_clubs_de_la_ligue): Matchs de First Division du parcours de barrage absents de l'archive; seule la finale UC Dublin-Waterford y figure.
 - IRL:2324 MATCH_ARCHIVE_MANQUANT (nombre non documente; preuve: equipes_sans_nombre; perimetre: hors_clubs_de_la_ligue): Matchs de First Division du parcours de barrage (Waterford-Athlone, Cobh-Wexford, Waterford-Cobh le 04/11/2023...) absents de l'archive; seule la finale y figure.
 - IRL:2425 MATCH_ARCHIVE_MANQUANT (nombre non documente; preuve: equipes_sans_nombre; perimetre: hors_clubs_de_la_ligue): Matchs de First Division du parcours de barrage (demi-finales, finale Bray-Athlone) absents de l'archive; seule la finale Bray-Drogheda y figure.
-- IRL:2526 MATCH_ARCHIVE_MANQUANT (nombre non documente; preuve: existence_seulement; perimetre: hors_clubs_de_la_ligue): Barrages (hors ligue) exclus: matchs non documentes individuellement, absents de l'archive.
-- ROU:2425 MATCH_ARCHIVE_MANQUANT (4; preuve: nombre_seulement; perimetre: implique_un_club_de_la_ligue): Quatre matchs de barrage Liga I/Liga II absents de l'archive.
-- SC1:2122 MATCH_ARCHIVE_MANQUANT (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
-- SC1:2223 MATCH_ARCHIVE_MANQUANT (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
-- SC1:2324 MATCH_ARCHIVE_MANQUANT (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
-- SC1:2425 MATCH_ARCHIVE_MANQUANT (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
-- SC1:2526 MATCH_ARCHIVE_MANQUANT (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
-- SC2:2122 MATCH_ARCHIVE_MANQUANT (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
-- SC2:2223 MATCH_ARCHIVE_MANQUANT (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
-- SC2:2324 MATCH_ARCHIVE_MANQUANT (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
-- SC2:2425 MATCH_ARCHIVE_MANQUANT (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
-- SC2:2526 MATCH_ARCHIVE_MANQUANT (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
-- SC3:2122 MATCH_ARCHIVE_MANQUANT (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
-- SC3:2223 MATCH_ARCHIVE_MANQUANT (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
-- SC3:2324 MATCH_ARCHIVE_MANQUANT (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
-- SC3:2425 MATCH_ARCHIVE_MANQUANT (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
-- SC3:2526 MATCH_ARCHIVE_MANQUANT (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
-- SWZ:2425 MATCH_ARCHIVE_MANQUANT (2; preuve: nombre_seulement; perimetre: implique_un_club_de_la_ligue): Barrage de relegation (2 manches) absent de l'archive.
-- SWZ:2526 MATCH_ARCHIVE_MANQUANT (2; preuve: nombre_seulement; perimetre: implique_un_club_de_la_ligue): Barrage de relegation (2 manches) absent de l'archive.
+- IRL:2526 PHASE_EXCLUE_NON_DETAILLEE (nombre non documente; preuve: existence_seulement; perimetre: hors_clubs_de_la_ligue): Barrages (hors ligue) exclus: matchs non documentes individuellement, absents de l'archive.
+- ROU:2425 MATCH_ARCHIVE_MANQUANT (4 match(s) disputes; preuve: nombre_seulement; perimetre: implique_un_club_de_la_ligue): Quatre matchs de barrage Liga I/Liga II absents de l'archive.
+- SC1:2122 PHASE_EXCLUE_NON_DETAILLEE (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
+- SC1:2223 PHASE_EXCLUE_NON_DETAILLEE (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
+- SC1:2324 PHASE_EXCLUE_NON_DETAILLEE (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
+- SC1:2425 PHASE_EXCLUE_NON_DETAILLEE (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
+- SC1:2526 PHASE_EXCLUE_NON_DETAILLEE (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
+- SC2:2122 PHASE_EXCLUE_NON_DETAILLEE (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
+- SC2:2223 PHASE_EXCLUE_NON_DETAILLEE (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
+- SC2:2324 PHASE_EXCLUE_NON_DETAILLEE (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
+- SC2:2425 PHASE_EXCLUE_NON_DETAILLEE (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
+- SC2:2526 PHASE_EXCLUE_NON_DETAILLEE (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
+- SC3:2122 PHASE_EXCLUE_NON_DETAILLEE (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
+- SC3:2223 PHASE_EXCLUE_NON_DETAILLEE (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
+- SC3:2324 PHASE_EXCLUE_NON_DETAILLEE (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
+- SC3:2425 PHASE_EXCLUE_NON_DETAILLEE (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
+- SC3:2526 PHASE_EXCLUE_NON_DETAILLEE (nombre non documente; preuve: existence_seulement; perimetre: non_documente): Barrages exclus (verification: 'barrages exclus'); matchs non documentes individuellement, absents de l'archive (180 lignes de championnat).
+- SWZ:2425 MATCH_ARCHIVE_MANQUANT (2 match(s) disputes; preuve: nombre_seulement; perimetre: implique_un_club_de_la_ligue): Barrage de relegation (2 manches) absent de l'archive.
+- SWZ:2526 MATCH_ARCHIVE_MANQUANT (2 match(s) disputes; preuve: nombre_seulement; perimetre: implique_un_club_de_la_ligue): Barrage de relegation (2 manches) absent de l'archive.
 
 
 ## Volume (tri: matchs avec score decroissant)
