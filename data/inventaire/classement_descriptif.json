@@ -2,11 +2,11 @@
  "competitions": {
   "ARG": {
    "archive_par_saison": {
-    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
     "2223": "ARCHIVE_NON_EXAMINEE",
     "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
-    "2425": "ARCHIVE_NON_EXAMINEE",
-    "2526": "ARCHIVE_NON_EXAMINEE"
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL"
    },
    "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": false,
@@ -87,10 +87,28 @@
     "structure aller-retour simple non respectee: 2122,2223,2324,2425,2526"
    ],
    "perimetre_examen_par_saison": {
+    "2122": {
+     "limites": "Format multi-phases (scission, play-offs/play-outs, ou deux tournois): l'identite des matchs de saison reguliere n'est prouvee que par les comptes par equipe et le total, pas par la completude des paires. Phases finales/barrages presents dans l'archive, verifies par totaux ou comptes (pas match par match). Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas. Un match de Copa de la Liga Profesional 2021 (3e journee) est dit 'suspendu' (18 minutes restantes jouees plus tard) par la page Liga Profesional; l'issue n'est pas precisee: non resolu.",
+     "matchs_additionnels": "examines_non_resolus",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "comptes_par_equipe_et_total"
+    },
     "2324": {
      "limites": "Identite des matchs de saison reguliere non prouvee individuellement (comptes par equipe et total seulement). Phases finales: phase finale de la Copa et match de relegation compares un a un; Liga Profesional par total (378) et par equipe.",
      "matchs_additionnels": "non_examines",
      "phases_finales": "individuelle",
+     "saison_reguliere": "comptes_par_equipe_et_total"
+    },
+    "2425": {
+     "limites": "Format multi-phases (scission, play-offs/play-outs, ou deux tournois): l'identite des matchs de saison reguliere n'est prouvee que par les comptes par equipe et le total, pas par la completude des paires. Phases finales/barrages presents dans l'archive, verifies par totaux ou comptes (pas match par match). Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas. Godoy Cruz-San Lorenzo (25/05/2024) suspendu a la 48e minute, reste joue a huis clos le 12/10/2024: l'archive contient 1-1 a cette date (joue, non attribue).",
+     "matchs_additionnels": "examines",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "comptes_par_equipe_et_total"
+    },
+    "2526": {
+     "limites": "Format multi-phases (scission, play-offs/play-outs, ou deux tournois): l'identite des matchs de saison reguliere n'est prouvee que par les comptes par equipe et le total, pas par la completude des paires. Phases finales/barrages presents dans l'archive, verifies par totaux ou comptes (pas match par match). Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas. Godoy Cruz-Talleres (04/02/2025) suspendu, seconde mi-temps jouee le 22/03/2025: l'archive contient 0-0 a cette date; score a la reprise non verifie par une autre source.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "total_seulement",
      "saison_reguliere": "comptes_par_equipe_et_total"
     }
    },
@@ -119,7 +137,7 @@
   },
   "AUT": {
    "archive_par_saison": {
-    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
     "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
     "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
     "2425": "MATCH_ARCHIVE_MANQUANT",
@@ -202,6 +220,12 @@
     "structure aller-retour simple non respectee: 2122,2223,2324,2425,2526"
    ],
    "perimetre_examen_par_saison": {
+    "2122": {
+     "limites": "Format multi-phases (scission, play-offs/play-outs, ou deux tournois): l'identite des matchs de saison reguliere n'est prouvee que par les comptes par equipe et le total, pas par la completude des paires. Phases finales/barrages presents dans l'archive, verifies par totaux ou comptes (pas match par match). Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "comptes_par_equipe_et_total"
+    },
     "2223": {
      "limites": "Identite des matchs de saison reguliere non prouvee individuellement (comptes par equipe et total seulement). Phases finales: 3 matchs de barrage compares un a un a RSSSF.",
      "matchs_additionnels": "non_examines",
@@ -982,9 +1006,9 @@
   },
   "DNK": {
    "archive_par_saison": {
-    "2122": "ARCHIVE_NON_EXAMINEE",
-    "2223": "ARCHIVE_NON_EXAMINEE",
-    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
     "2425": "MATCH_ARCHIVE_MANQUANT",
     "2526": "MATCH_ARCHIVE_MANQUANT"
    },
@@ -1064,7 +1088,26 @@
     "nombre de matchs different selon les saisons: {\"2122\": 193, \"2223\": 193, \"2324\": 193, \"2425\": 192, \"2526\": 192}",
     "structure aller-retour simple non respectee: 2122,2223,2324,2425,2526"
    ],
-   "perimetre_examen_par_saison": {},
+   "perimetre_examen_par_saison": {
+    "2122": {
+     "limites": "Format multi-phases (scission, play-offs/play-outs, ou deux tournois): l'identite des matchs de saison reguliere n'est prouvee que par les comptes par equipe et le total, pas par la completude des paires. Phases finales/barrages presents dans l'archive, verifies par totaux ou comptes (pas match par match). Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "comptes_par_equipe_et_total"
+    },
+    "2223": {
+     "limites": "Format multi-phases (scission, play-offs/play-outs, ou deux tournois): l'identite des matchs de saison reguliere n'est prouvee que par les comptes par equipe et le total, pas par la completude des paires. Phases finales/barrages presents dans l'archive, verifies par totaux ou comptes (pas match par match). Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "comptes_par_equipe_et_total"
+    },
+    "2324": {
+     "limites": "Format multi-phases (scission, play-offs/play-outs, ou deux tournois): l'identite des matchs de saison reguliere n'est prouvee que par les comptes par equipe et le total, pas par la completude des paires. Phases finales/barrages presents dans l'archive, verifies par totaux ou comptes (pas match par match). Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "comptes_par_equipe_et_total"
+    }
+   },
    "signalements_archive": {
     "2425": [
      {
@@ -2239,10 +2282,10 @@
   "G1": {
    "archive_par_saison": {
     "2122": "MATCH_ARCHIVE_MANQUANT",
-    "2223": "ARCHIVE_NON_EXAMINEE",
-    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
     "2425": "ARCHIVE_NON_EXAMINEE",
-    "2526": "ARCHIVE_NON_EXAMINEE"
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL"
    },
    "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": false,
@@ -2320,7 +2363,26 @@
     "nombre de matchs different selon les saisons: {\"2122\": 240, \"2223\": 240, \"2324\": 240, \"2425\": 233, \"2526\": 236}",
     "structure aller-retour simple non respectee: 2122,2223,2324,2425,2526"
    ],
-   "perimetre_examen_par_saison": {},
+   "perimetre_examen_par_saison": {
+    "2223": {
+     "limites": "Format multi-phases (scission, play-offs/play-outs, ou deux tournois): l'identite des matchs de saison reguliere n'est prouvee que par les comptes par equipe et le total, pas par la completude des paires. Phases finales/barrages presents dans l'archive, verifies par totaux ou comptes (pas match par match). Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "comptes_par_equipe_et_total"
+    },
+    "2324": {
+     "limites": "Format multi-phases (scission, play-offs/play-outs, ou deux tournois): l'identite des matchs de saison reguliere n'est prouvee que par les comptes par equipe et le total, pas par la completude des paires. Phases finales/barrages presents dans l'archive, verifies par totaux ou comptes (pas match par match). Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas. Reference citee: decision juridique sur la defaite 0-3 d'Olympiacos contre Panathinaikos (22/10/2023), retrait d'un point et deux matchs a huis clos annules par le TAS; effet sur le resultat du match non precise par la page: non resolu, non compare a l'archive.",
+     "matchs_additionnels": "examines_non_resolus",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "comptes_par_equipe_et_total"
+    },
+    "2526": {
+     "limites": "Format multi-phases (scission, play-offs/play-outs, ou deux tournois): l'identite des matchs de saison reguliere n'est prouvee que par les comptes par equipe et le total, pas par la completude des paires. Phases finales/barrages presents dans l'archive, verifies par totaux ou comptes (pas match par match). Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "comptes_par_equipe_et_total"
+    }
+   },
    "signalements_archive": {
     "2122": [
      {
@@ -2656,7 +2718,7 @@
   },
   "IRL": {
    "archive_par_saison": {
-    "2122": "ARCHIVE_NON_EXAMINEE",
+    "2122": "MATCH_ATTRIBUE_NON_JOUE",
     "2223": "PHASE_EXCLUE_NON_DETAILLEE",
     "2324": "MATCH_ARCHIVE_MANQUANT",
     "2425": "MATCH_ARCHIVE_MANQUANT",
@@ -2738,8 +2800,25 @@
     "nombre de matchs different selon les saisons: {\"2122\": 186, \"2223\": 181, \"2324\": 181, \"2425\": 181, \"2526\": 180}",
     "structure aller-retour simple non respectee: 2122,2223,2324,2425,2526"
    ],
-   "perimetre_examen_par_saison": {},
+   "perimetre_examen_par_saison": {
+    "2122": {
+     "limites": "Format multi-phases (scission, play-offs/play-outs, ou deux tournois): l'identite des matchs de saison reguliere n'est prouvee que par les comptes par equipe et le total, pas par la completude des paires. Phases finales individuellement confirmees. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas. Barrages de First Division et de promotion/relegation presents dans l'archive, individuellement confirmes par des sources de presse (voir preuves).",
+     "matchs_additionnels": "examines",
+     "phases_finales": "individuelle",
+     "saison_reguliere": "comptes_par_equipe_et_total"
+    }
+   },
    "signalements_archive": {
+    "2122": [
+     {
+      "code": "MATCH_ATTRIBUE_NON_JOUE",
+      "detail": "Sligo Rovers-Waterford (15/05/2021): Waterford a declare forfait (cas de COVID-19), victoire 3-0 attribuee a Sligo (Wikipedia, '3-0*'). Present dans l'archive avec 3-0.",
+      "matchs_attribues_non_joues": 1,
+      "matchs_documentes_absents": 0,
+      "niveau_preuve": "match_par_match",
+      "perimetre": "implique_un_club_de_la_ligue"
+     }
+    ],
     "2223": [
      {
       "code": "PHASE_EXCLUE_NON_DETAILLEE",
@@ -2940,10 +3019,10 @@
   },
   "MEX": {
    "archive_par_saison": {
-    "2122": "ARCHIVE_NON_EXAMINEE",
-    "2223": "ARCHIVE_NON_EXAMINEE",
-    "2324": "ARCHIVE_NON_EXAMINEE",
-    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2122": "MATCH_ATTRIBUE_NON_JOUE",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
     "2526": "ARCHIVE_NON_EXAMINEE"
    },
    "comparable_archive_sans_reserve": false,
@@ -3022,8 +3101,44 @@
     "nombre de matchs different selon les saisons: {\"2122\": 342, \"2223\": 342, \"2324\": 340, \"2425\": 340, \"2526\": 336}",
     "structure aller-retour simple non respectee: 2122,2223,2324,2425,2526"
    ],
-   "perimetre_examen_par_saison": {},
-   "signalements_archive": {},
+   "perimetre_examen_par_saison": {
+    "2122": {
+     "limites": "Format multi-phases (scission, play-offs/play-outs, ou deux tournois): l'identite des matchs de saison reguliere n'est prouvee que par les comptes par equipe et le total, pas par la completude des paires. Phases finales/barrages presents dans l'archive, verifies par totaux ou comptes (pas match par match). Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "comptes_par_equipe_et_total"
+    },
+    "2223": {
+     "limites": "Format multi-phases (scission, play-offs/play-outs, ou deux tournois): l'identite des matchs de saison reguliere n'est prouvee que par les comptes par equipe et le total, pas par la completude des paires. Phases finales/barrages presents dans l'archive, verifies par totaux ou comptes (pas match par match). Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "comptes_par_equipe_et_total"
+    },
+    "2324": {
+     "limites": "Format multi-phases (scission, play-offs/play-outs, ou deux tournois): l'identite des matchs de saison reguliere n'est prouvee que par les comptes par equipe et le total, pas par la completude des paires. Phases finales/barrages presents dans l'archive, verifies par totaux ou comptes (pas match par match). Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas. Puebla-Tijuana (Apertura, journee 7): victoire de Puebla 3-0, attribuee 1-0 a Tijuana pour entraineur adjoint non enregistre, decision annulee par le TAS; l'archive contient 3-0 pour Puebla (resultat joue, confirme).",
+     "matchs_additionnels": "examines",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "comptes_par_equipe_et_total"
+    },
+    "2425": {
+     "limites": "Format multi-phases (scission, play-offs/play-outs, ou deux tournois): l'identite des matchs de saison reguliere n'est prouvee que par les comptes par equipe et le total, pas par la completude des paires. Phases finales/barrages presents dans l'archive, verifies par totaux ou comptes (pas match par match). Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "comptes_par_equipe_et_total"
+    }
+   },
+   "signalements_archive": {
+    "2122": [
+     {
+      "code": "MATCH_ATTRIBUE_NON_JOUE",
+      "detail": "Queretaro-Atlas (05/03/2022, Clausura): arrete a la 60e minute (Queretaro 0-1, bagarre), victoire 0-3 attribuee a Atlas (Wikipedia). Present dans l'archive avec 0-3 (score attribue, pas le score au moment de l'arret).",
+      "matchs_attribues_non_joues": 1,
+      "matchs_documentes_absents": 0,
+      "niveau_preuve": "match_par_match",
+      "perimetre": "implique_un_club_de_la_ligue"
+     }
+    ]
+   },
    "signature_couverture": "XXXCXXCXX",
    "type": "hors_europe",
    "volume": {
@@ -3184,10 +3299,10 @@
   },
   "NOR": {
    "archive_par_saison": {
-    "2122": "ARCHIVE_NON_EXAMINEE",
-    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
     "2324": "ARCHIVE_NON_EXAMINEE",
-    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
     "2526": "MATCH_ARCHIVE_MANQUANT"
    },
    "comparable_archive_sans_reserve": false,
@@ -3267,6 +3382,24 @@
     "structure aller-retour simple non respectee: 2122,2223,2324,2425"
    ],
    "perimetre_examen_par_saison": {
+    "2122": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires entre les 16 equipes. Barrages de relegation presents dans l'archive mais verifies par leur total cumule seulement (pas match par match). Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas. Barrage Brann-Jerv: un seul match; score de l'archive 1-1 (90 min) different du score final de la page (4-4 apres prolongation, tirs au but).",
+     "matchs_additionnels": "examines",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2223": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires entre les 16 equipes. Barrages de relegation presents dans l'archive mais verifies par leur total cumule seulement (pas match par match). Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2425": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires entre les 16 equipes. Barrages de relegation presents dans l'archive mais verifies par leur total cumule seulement (pas match par match). Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas. Rosenborg-Lillestrom (15e journee) abandonne puis rejoue le 21/08/2024 a huis clos (4-0); l'archive contient la rencontre une seule fois, avec le score du rejouer. Barrage de relegation: scores et adversaire non presents sur la page.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
     "2526": {
      "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages de relegation connus par leur total cumule seulement. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas. Une defaite 0-3 par forfait de Kristiansund apres reclamation acceptee est mentionnee par la page sans nommer le match ni le score ajuste; match non identifie, resultat dans l'archive non compare.",
      "matchs_additionnels": "examines_non_resolus",
@@ -3577,9 +3710,9 @@
   },
   "ROU": {
    "archive_par_saison": {
-    "2122": "ARCHIVE_NON_EXAMINEE",
-    "2223": "ARCHIVE_NON_EXAMINEE",
-    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
     "2425": "MATCH_ARCHIVE_MANQUANT",
     "2526": "ARCHIVE_NON_EXAMINEE"
    },
@@ -3659,7 +3792,26 @@
     "nombre de matchs different selon les saisons: {\"2122\": 320, \"2223\": 321, \"2324\": 321, \"2425\": 315, \"2526\": 321}",
     "structure aller-retour simple non respectee: 2122,2223,2324,2425,2526"
    ],
-   "perimetre_examen_par_saison": {},
+   "perimetre_examen_par_saison": {
+    "2122": {
+     "limites": "Format multi-phases (scission, play-offs/play-outs, ou deux tournois): l'identite des matchs de saison reguliere n'est prouvee que par les comptes par equipe et le total, pas par la completude des paires. Phases finales individuellement confirmees. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas. Barrages Liga I/Liga II: scores et dates individuels identiques a l'archive (preuve precedente).",
+     "matchs_additionnels": "examines",
+     "phases_finales": "individuelle",
+     "saison_reguliere": "comptes_par_equipe_et_total"
+    },
+    "2223": {
+     "limites": "Format multi-phases (scission, play-offs/play-outs, ou deux tournois): l'identite des matchs de saison reguliere n'est prouvee que par les comptes par equipe et le total, pas par la completude des paires. Phases finales/barrages presents dans l'archive, verifies par totaux ou comptes (pas match par match). Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "comptes_par_equipe_et_total"
+    },
+    "2324": {
+     "limites": "Format multi-phases (scission, play-offs/play-outs, ou deux tournois): l'identite des matchs de saison reguliere n'est prouvee que par les comptes par equipe et le total, pas par la completude des paires. Phases finales/barrages presents dans l'archive, verifies par totaux ou comptes (pas match par match). Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "comptes_par_equipe_et_total"
+    }
+   },
    "signalements_archive": {
     "2425": [
      {
@@ -3695,9 +3847,9 @@
   },
   "RUS": {
    "archive_par_saison": {
-    "2122": "ARCHIVE_NON_EXAMINEE",
-    "2223": "ARCHIVE_NON_EXAMINEE",
-    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
     "2425": "MATCH_ARCHIVE_MANQUANT",
     "2526": "MATCH_ARCHIVE_MANQUANT"
    },
@@ -3778,6 +3930,24 @@
     "structure aller-retour simple non respectee: 2122,2223,2324"
    ],
    "perimetre_examen_par_saison": {
+    "2122": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires entre les 16 equipes. Barrages de relegation presents dans l'archive mais verifies par leur total cumule seulement (pas match par match). Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2223": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires entre les 16 equipes. Barrages de relegation presents dans l'archive mais verifies par leur total cumule seulement (pas match par match). Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas. Pari NN-Torpedo Moscou (19/03/2023): 1-1 joue, attribue 3-0 a Torpedo par l'Union russe (joueur non eligible, 22/03/2023) d'apres Wikipedia; l'archive contient le score joue 1-1, pas le score attribue. Ecart de resultat documente; rien n'est modifie dans l'archive.",
+     "matchs_additionnels": "examines_non_resolus",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2324": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires entre les 16 equipes. Barrages de relegation presents dans l'archive mais verifies par leur total cumule seulement (pas match par match). Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
     "2425": {
      "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages de relegation connus par leur total cumule seulement. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
      "matchs_additionnels": "examines",
@@ -3835,11 +4005,11 @@
   },
   "SC0": {
    "archive_par_saison": {
-    "2122": "ARCHIVE_NON_EXAMINEE",
-    "2223": "ARCHIVE_NON_EXAMINEE",
-    "2324": "ARCHIVE_NON_EXAMINEE",
-    "2425": "ARCHIVE_NON_EXAMINEE",
-    "2526": "ARCHIVE_NON_EXAMINEE"
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2526": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL"
    },
    "comparable_archive_sans_reserve": false,
    "comparable_sans_reserve": true,
@@ -3916,7 +4086,38 @@
    "indices_segmentation_historique": [
     "structure aller-retour simple non respectee: 2122,2223,2324,2425,2526"
    ],
-   "perimetre_examen_par_saison": {},
+   "perimetre_examen_par_saison": {
+    "2122": {
+     "limites": "Format multi-phases (scission, play-offs/play-outs, ou deux tournois): l'identite des matchs de saison reguliere n'est prouvee que par les comptes par equipe et le total, pas par la completude des paires. Barrage de relegation Premiership/Championship eventuel non examine individuellement. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "comptes_par_equipe_et_total"
+    },
+    "2223": {
+     "limites": "Format multi-phases (scission, play-offs/play-outs, ou deux tournois): l'identite des matchs de saison reguliere n'est prouvee que par les comptes par equipe et le total, pas par la completude des paires. Barrage de relegation Premiership/Championship eventuel non examine individuellement. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "comptes_par_equipe_et_total"
+    },
+    "2324": {
+     "limites": "Format multi-phases (scission, play-offs/play-outs, ou deux tournois): l'identite des matchs de saison reguliere n'est prouvee que par les comptes par equipe et le total, pas par la completude des paires. Barrage de relegation Premiership/Championship eventuel non examine individuellement. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "comptes_par_equipe_et_total"
+    },
+    "2425": {
+     "limites": "Format multi-phases (scission, play-offs/play-outs, ou deux tournois): l'identite des matchs de saison reguliere n'est prouvee que par les comptes par equipe et le total, pas par la completude des paires. Barrage de relegation Premiership/Championship eventuel non examine individuellement. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "comptes_par_equipe_et_total"
+    },
+    "2526": {
+     "limites": "Format multi-phases (scission, play-offs/play-outs, ou deux tournois): l'identite des matchs de saison reguliere n'est prouvee que par les comptes par equipe et le total, pas par la completude des paires. Barrage de relegation Premiership/Championship eventuel non examine individuellement. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "non_examinee",
+     "saison_reguliere": "comptes_par_equipe_et_total"
+    }
+   },
    "signalements_archive": {},
    "signature_couverture": "CCCCCCCCC",
    "type": "europe",
@@ -4674,10 +4875,10 @@
   },
   "SWE": {
    "archive_par_saison": {
-    "2122": "ARCHIVE_NON_EXAMINEE",
-    "2223": "ARCHIVE_NON_EXAMINEE",
+    "2122": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
     "2324": "MATCH_ARCHIVE_MANQUANT",
-    "2425": "ARCHIVE_NON_EXAMINEE",
+    "2425": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
     "2526": "MATCH_ARCHIVE_MANQUANT"
    },
    "comparable_archive_sans_reserve": false,
@@ -4757,8 +4958,26 @@
     "structure aller-retour simple non respectee: 2122,2223,2425"
    ],
    "perimetre_examen_par_saison": {
+    "2122": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires entre les 16 equipes. Barrages de relegation presents dans l'archive mais verifies par leur total cumule seulement (pas match par match). Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2223": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires entre les 16 equipes. Barrages de relegation presents dans l'archive mais verifies par leur total cumule seulement (pas match par match). Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
     "2324": {
      "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires. Barrages de relegation connus par leur total cumule seulement. Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "paires_completes_verifiees"
+    },
+    "2425": {
+     "limites": "Saison reguliere: identite des matchs prouvee par la completude des paires entre les 16 equipes. Barrages de relegation presents dans l'archive mais verifies par leur total cumule seulement (pas match par match). Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
      "matchs_additionnels": "examines",
      "phases_finales": "total_seulement",
      "saison_reguliere": "paires_completes_verifiees"
@@ -4815,8 +5034,8 @@
   "SWZ": {
    "archive_par_saison": {
     "2122": "ARCHIVE_NON_EXAMINEE",
-    "2223": "ARCHIVE_NON_EXAMINEE",
-    "2324": "ARCHIVE_NON_EXAMINEE",
+    "2223": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
+    "2324": "ARCHIVE_COMPLETE_PERIMETRE_PARTIEL",
     "2425": "MATCH_ARCHIVE_MANQUANT",
     "2526": "MATCH_ARCHIVE_MANQUANT"
    },
@@ -4896,7 +5115,20 @@
     "nombre de matchs different selon les saisons: {\"2122\": 181, \"2223\": 182, \"2324\": 230, \"2425\": 228, \"2526\": 228}",
     "structure aller-retour simple non respectee: 2122,2223,2324,2425,2526"
    ],
-   "perimetre_examen_par_saison": {},
+   "perimetre_examen_par_saison": {
+    "2223": {
+     "limites": "Format multi-phases (scission, play-offs/play-outs, ou deux tournois): l'identite des matchs de saison reguliere n'est prouvee que par les comptes par equipe et le total, pas par la completude des paires. Phases finales/barrages presents dans l'archive, verifies par totaux ou comptes (pas match par match). Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas. Reference de presse citee par Wikipedia: 'Forfait-defaite pour le Servette FC' (21/03/2023), sans explication ni match nomme: non resolu.",
+     "matchs_additionnels": "examines_non_resolus",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "comptes_par_equipe_et_total"
+    },
+    "2324": {
+     "limites": "Format multi-phases (scission, play-offs/play-outs, ou deux tournois): l'identite des matchs de saison reguliere n'est prouvee que par les comptes par equipe et le total, pas par la completude des paires. Phases finales/barrages presents dans l'archive, verifies par totaux ou comptes (pas match par match). Matchs additionnels: examen d'une seule source (Wikipedia), qui peut omettre un cas.",
+     "matchs_additionnels": "examines",
+     "phases_finales": "total_seulement",
+     "saison_reguliere": "comptes_par_equipe_et_total"
+    }
+   },
    "signalements_archive": {
     "2425": [
      {

@@ -16,11 +16,11 @@ La completude reelle d'une saison (nombre d'equipes et de matchs attendus) n'est
 Un match documente absent des fichiers n'est jamais ajoute a l'archive ni compte. `MATCH_ARCHIVE_MANQUANT` = rencontre disputee documentee et absente; `PHASE_EXCLUE_NON_DETAILLEE` = phase exclue sans rencontres individualisees; `MATCH_ATTRIBUE_NON_JOUE` = match attribue sans rencontre disputee. `ARCHIVE_COMPLETE_PERIMETRE_PARTIEL` = aucun match documente manquant dans le perimetre examine, mais ce perimetre n'inclut pas tout (voir `perimetre_examen`); `ARCHIVE_COMPLETE_PERIMETRE_ETENDU` = saison reguliere (paires verifiees) + phases finales examinees individuellement + matchs additionnels. `ARCHIVE_NON_EXAMINEE` = rien n'est affirme.
 
 - ARCHIVE_COMPLETE_PERIMETRE_ETENDU: 33 saisons (dont verifiees: 33)
-- ARCHIVE_COMPLETE_PERIMETRE_PARTIEL: 69 saisons (dont verifiees: 69)
+- ARCHIVE_COMPLETE_PERIMETRE_PARTIEL: 101 saisons (dont verifiees: 101)
 - MATCH_ARCHIVE_MANQUANT: 23 saisons (dont verifiees: 23)
 - PHASE_EXCLUE_NON_DETAILLEE: 17 saisons (dont verifiees: 17)
-- MATCH_ATTRIBUE_NON_JOUE: 5 saisons (dont verifiees: 5)
-- ARCHIVE_NON_EXAMINEE: 43 saisons (dont verifiees: 34)
+- MATCH_ATTRIBUE_NON_JOUE: 7 saisons (dont verifiees: 7)
+- ARCHIVE_NON_EXAMINEE: 9 saisons (dont verifiees: 0)
 - **Competitions comparables sans reserve sur l'archive (5 saisons verifiees ET perimetre etendu): 3 sur 38**
 
 - AUT:2425 MATCH_ARCHIVE_MANQUANT (2 match(s) disputes; preuve: nombre_et_dates; perimetre: implique_un_club_de_la_ligue): Barrage Conference League (demi-finale 29/05/2025, finale 01/06/2025) absent de l'archive.
@@ -43,10 +43,12 @@ Un match documente absent des fichiers n'est jamais ajoute a l'archive ni compte
 - I1:2223 MATCH_ARCHIVE_MANQUANT (1 match(s) disputes; preuve: nombre_et_equipes; perimetre: implique_un_club_de_la_ligue): Match de depart Spezia-Hellas Verona (egalite a 31 points, 17e/18e): Verona 3-1, terrain neutre, date non indiquee par la source; absent de l'archive (aucune des deux equipes n'a plus de 38 matchs). Source: Wikipedia 2022-23 Serie A.
 - I2:2425 MATCH_ARCHIVE_MANQUANT (1 match(s) disputes; preuve: match_par_match; perimetre: implique_un_club_de_la_ligue): Play-out Sampdoria-Salernitana, match aller du 15/06/2025: 2-0 (Wikipedia 2024-25 Serie B), joue, absent de l'archive (table de saison reguliere seulement).
 - I2:2425 MATCH_ATTRIBUE_NON_JOUE (1 attribue(s); preuve: match_par_match; perimetre: implique_un_club_de_la_ligue): Play-out, match retour du 22/06/2025 a Salerne suspendu a la 74e minute (Sampdoria menait 2-0 sur le terrain), victoire 3-0 attribuee a la Sampdoria par la Lega B (Wikipedia); absent de l'archive; ce n'est pas un match joue en entier.
+- IRL:2122 MATCH_ATTRIBUE_NON_JOUE (1 attribue(s); preuve: match_par_match; perimetre: implique_un_club_de_la_ligue): Sligo Rovers-Waterford (15/05/2021): Waterford a declare forfait (cas de COVID-19), victoire 3-0 attribuee a Sligo (Wikipedia, '3-0*'). Present dans l'archive avec 3-0.
 - IRL:2223 PHASE_EXCLUE_NON_DETAILLEE (nombre non documente; preuve: existence_seulement; perimetre: hors_clubs_de_la_ligue): Matchs de First Division du parcours de barrage absents de l'archive; seule la finale UC Dublin-Waterford y figure.
 - IRL:2324 MATCH_ARCHIVE_MANQUANT (nombre non documente; preuve: equipes_sans_nombre; perimetre: hors_clubs_de_la_ligue): Matchs de First Division du parcours de barrage (Waterford-Athlone, Cobh-Wexford, Waterford-Cobh le 04/11/2023...) absents de l'archive; seule la finale y figure.
 - IRL:2425 MATCH_ARCHIVE_MANQUANT (nombre non documente; preuve: equipes_sans_nombre; perimetre: hors_clubs_de_la_ligue): Matchs de First Division du parcours de barrage (demi-finales, finale Bray-Athlone) absents de l'archive; seule la finale Bray-Drogheda y figure.
 - IRL:2526 PHASE_EXCLUE_NON_DETAILLEE (nombre non documente; preuve: existence_seulement; perimetre: hors_clubs_de_la_ligue): Barrages (hors ligue) exclus: matchs non documentes individuellement, absents de l'archive.
+- MEX:2122 MATCH_ATTRIBUE_NON_JOUE (1 attribue(s); preuve: match_par_match; perimetre: implique_un_club_de_la_ligue): Queretaro-Atlas (05/03/2022, Clausura): arrete a la 60e minute (Queretaro 0-1, bagarre), victoire 0-3 attribuee a Atlas (Wikipedia). Present dans l'archive avec 0-3 (score attribue, pas le score au moment de l'arret).
 - NOR:2526 MATCH_ARCHIVE_MANQUANT (2 match(s) disputes; preuve: nombre_et_equipes; perimetre: implique_un_club_de_la_ligue): Barrage de relegation Bryne (14e)-Aalesund, 4-1 cumule pour Aalesund: 2 matchs, scores individuels non obtenus. Absents de l'archive (table de saison reguliere)
 - ROU:2425 MATCH_ARCHIVE_MANQUANT (4 match(s) disputes; preuve: nombre_seulement; perimetre: implique_un_club_de_la_ligue): Quatre matchs de barrage Liga I/Liga II absents de l'archive.
 - RUS:2425 MATCH_ARCHIVE_MANQUANT (4 match(s) disputes; preuve: nombre_et_equipes; perimetre: implique_un_club_de_la_ligue): Barrages de relegation (deux matchs aller-retour chacun): Akhmat-Ural (3-2 cumule) et Pari NN-Sochi (3-4 cumule): 4 matchs, scores individuels non obtenus. Absents de l'archive (table de saison reguliere)
