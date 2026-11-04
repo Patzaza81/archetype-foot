@@ -15,8 +15,8 @@ Code : `approfondissement.py`. Contexte = conditions de la 1re famille validée.
 - Contexte : mu_dom > 1.460 ; ext_bc_exterieur <= 1.900 ; journee_min > 8.500 ; x_att_dom_def_ext > 2.362 → 1057 matchs (42% du championnat), BTTS 65.9% contre 56.6% annoncé.
 - Ce n'est pas propre à BTTS : même contexte, plus de 1,5 / 2,5 / 3,5 buts = +0,059 / +0,076 / +0,057 (z 4,7 / 5,0 / 4,0) ; domicile −0,03, extérieur −0,01. C'est un contexte « riche en buts » sous-estimé par P1.
 - Pas de concentration par équipe : 30 équipes, les 3 plus fréquentes ne font que 15 % ; sans elles résidu +0,092 (z 5,6).
-- P1 sous-estime BTTS dans presque tous les déciles (fréquence 59,5 % contre 55,0 % moyen annoncé). Buts par match 2,77 / 2,97 / 2,75 / 3,11 / 3,02 selon les saisons ; l'écart du contexte se réduit : +0,15 (2122), +0,14, +0,08, +0,07, +0,06 (2526) à mesure que P1 apprend le niveau de buts.
-- Saison : résidu −0,008 en début de saison (≤ 6 matchs), +0,02 puis +0,06 en milieu et fin ; les classes de facteurs sont non monotones (pic pour mu_dom 1,6–1,8 et attaque × défense 2,6–3,3, nul aux extrêmes).
+- P1 sous-estime BTTS dans presque tous les déciles (fréquence 59,4 % contre 55,5 % annoncé en moyenne ; 9 déciles sur 10 sous-estimés). Buts par match 2,77 / 2,97 / 2,75 / 3,11 / 3,02 selon les saisons ; l'écart du contexte se réduit : +0,15 (2122), +0,14, +0,08, +0,07, +0,06 (2526) à mesure que P1 apprend le niveau de buts.
+- Saison : résidu −0,008 en début de saison (≤ 6 matchs joués par la plus jeune des deux équipes), +0,02 jusqu'à 13, puis +0,07, +0,06 et +0,05 ensuite ; les classes de facteurs sont non monotones (pic pour mu_dom 1,6–1,7 et attaque × défense 2,6–2,9, quasi nul aux extrêmes).
 - Sensibilité de P1 : plus on lisse (k = 40), mieux c'est (perte 0,6785 contre 0,6857 pour k = 2) : les forces par équipe y sont bruitées.
 - Rejeu : une seule famille, 2526 = −0,0057 de perte log, écart de calibration 0,016 → 0,049. **Le phénomène était un biais de niveau en décroissance, pas une règle durable.**
 
