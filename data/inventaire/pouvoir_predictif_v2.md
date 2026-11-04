@@ -19,8 +19,8 @@ Généré par `pouvoir_predictif_v2.py`. Gain = perte log (fréquence historique
 
 ## Lecture
 - Entraîner un méta-modèle sur la compétition seule (LOC) fait **moins bien** que P1 : trop peu de matchs.
-- Mettre en commun toutes les compétitions (POOL) donne un petit gain sur 1X2, buts et BTTS : c'est la piste la plus générale.
-- Les tirs cadres améliorent nettement 1X2/dom/ext là où ils existent, mais pas les buts ni BTTS.
+- POOL (toutes compétitions) : gain marginal vs P1 (1X2 +0,0014, o25 +0,0010) ; meilleur méthode dans 21/38 compétitions en 1X2, mais écarts non significatifs. Aucune amélioration nette trouvée.
+- Les tirs cadres (21 compétitions) n'apportent **pas** de gain : SOT ≤ P1 sur les mêmes compétitions pour 1X2, dom, ext, nul, buts et BTTS. Piste non confirmée telle que codée (moyenne glissante simple).
 - Nul, BTTS, plus de 1,5/2,5/3,5 buts : gains presque nuls, aucune méthode robuste sur l'ensemble.
 - Choix automatique par validation (SEL) : moins bon que POOL fixe (le choix sur une saison est bruité).
 
