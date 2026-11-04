@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "genere_le": "2026-11-03T12:48:22.844081+00:00",
+  "genere_le": "2026-11-04T03:40:14.264709+00:00",
   "comptes": {
-    "total": 216,
-    "regles": 161,
-    "en_attente": 54,
+    "total": 221,
+    "regles": 163,
+    "en_attente": 57,
     "exclus": 1
   },
   "par_scenario": {
@@ -80,12 +80,12 @@
       }
     },
     "EQUILIBRE_8": {
-      "tickets_regles": 23,
-      "paris": 184,
-      "justes_attendus": 141.23,
-      "justes_observes": 111,
+      "tickets_regles": 24,
+      "paris": 192,
+      "justes_attendus": 146.59,
+      "justes_observes": 118,
       "erreurs": {
-        "1": 3,
+        "1": 4,
         "2": 5,
         "3": 5,
         "4": 6,
@@ -94,39 +94,39 @@
       },
       "plans": {
         "COMBINE": {
-          "tickets_regles": 23,
+          "tickets_regles": 24,
           "taux_rentable_observe": 0.0,
-          "proba_profit_prevue": 0.1273,
+          "proba_profit_prevue": 0.1237,
           "roi_observe": -1.0,
-          "esperance_prevue": 0.8865
+          "esperance_prevue": 0.8373
         },
         "SIMPLES": {
-          "tickets_regles": 23,
-          "taux_rentable_observe": 0.3043,
-          "proba_profit_prevue": 0.6932,
-          "roi_observe": -0.1583,
-          "esperance_prevue": 0.0722
+          "tickets_regles": 24,
+          "taux_rentable_observe": 0.3333,
+          "proba_profit_prevue": 0.6842,
+          "roi_observe": -0.1413,
+          "esperance_prevue": 0.0674
         },
         "TICKETS_2X4": {
-          "tickets_regles": 23,
-          "taux_rentable_observe": 0.3478,
-          "proba_profit_prevue": 0.5808,
-          "roi_observe": -0.3596,
-          "esperance_prevue": 0.3585
+          "tickets_regles": 24,
+          "taux_rentable_observe": 0.375,
+          "proba_profit_prevue": 0.5719,
+          "roi_observe": -0.2994,
+          "esperance_prevue": 0.3372
         },
         "TICKETS_3_DE_2_A_3": {
-          "tickets_regles": 23,
-          "taux_rentable_observe": 0.2609,
-          "proba_profit_prevue": 0.5022,
-          "roi_observe": -0.3557,
-          "esperance_prevue": 0.2132
+          "tickets_regles": 24,
+          "taux_rentable_observe": 0.2917,
+          "proba_profit_prevue": 0.4929,
+          "roi_observe": -0.3112,
+          "esperance_prevue": 0.2
         },
         "TICKETS_4X2": {
-          "tickets_regles": 23,
-          "taux_rentable_observe": 0.3478,
-          "proba_profit_prevue": 0.6174,
-          "roi_observe": -0.2844,
-          "esperance_prevue": 0.1559
+          "tickets_regles": 24,
+          "taux_rentable_observe": 0.375,
+          "proba_profit_prevue": 0.6171,
+          "roi_observe": -0.2504,
+          "esperance_prevue": 0.1461
         }
       }
     },
@@ -245,29 +245,29 @@
       }
     },
     "PRUDENT_2": {
-      "tickets_regles": 35,
-      "paris": 70,
-      "justes_attendus": 54.31,
-      "justes_observes": 41,
+      "tickets_regles": 36,
+      "paris": 72,
+      "justes_attendus": 55.9,
+      "justes_observes": 42,
       "erreurs": {
         "0": 11,
-        "1": 19,
+        "1": 20,
         "2": 5
       },
       "plans": {
         "COMBINE": {
-          "tickets_regles": 35,
-          "taux_rentable_observe": 0.3143,
-          "proba_profit_prevue": 0.6009,
-          "roi_observe": -0.2541,
-          "esperance_prevue": 0.386
+          "tickets_regles": 36,
+          "taux_rentable_observe": 0.3056,
+          "proba_profit_prevue": 0.6016,
+          "roi_observe": -0.2748,
+          "esperance_prevue": 0.3881
         },
         "SIMPLES": {
-          "tickets_regles": 35,
-          "taux_rentable_observe": 0.3143,
-          "proba_profit_prevue": 0.6009,
-          "roi_observe": -0.1118,
-          "esperance_prevue": 0.1749
+          "tickets_regles": 36,
+          "taux_rentable_observe": 0.3056,
+          "proba_profit_prevue": 0.6016,
+          "roi_observe": -0.1153,
+          "esperance_prevue": 0.1758
         }
       }
     }
@@ -280,21 +280,21 @@
       "justes": 235
     },
     "meme_jour": {
-      "tickets_regles": 76,
+      "tickets_regles": 78,
       "gagnants": 12,
-      "paris": 324,
-      "justes": 195
+      "paris": 334,
+      "justes": 203
     }
   },
   "par_source": {
     "journal": {
       "paris": 7,
-      "taux_reussite": 0.4286,
-      "proba_moyenne_estimee": 0.6424
+      "taux_reussite": 0.5714,
+      "proba_moyenne_estimee": 0.6381
     },
     "moteur_v3": {
-      "paris": 224,
-      "taux_reussite": 0.6027,
+      "paris": 226,
+      "taux_reussite": 0.6018,
       "proba_moyenne_estimee": 0.7895
     }
   },
