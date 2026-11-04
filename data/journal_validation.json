@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "genere_le": "2026-11-03T12:47:58Z",
+  "genere_le": "2026-11-04T03:58:03Z",
   "methode": "walk_forward",
   "anti_fuite": true,
   "groupes": {
@@ -489,6 +489,24 @@
       "par_regime": {}
     },
     "Shrewsbury|1x2_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Dep. Pereira|1x2_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Dep. Pereira|handicap_domicile_-0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Dep. Pereira|double_chance_1X": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -1007,14 +1025,24 @@
     "Arsenal|double_chance_X2": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Arsenal|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Arsenal|handicap_exterieur_1.5": {
       "methode": "walk_forward",
@@ -1125,6 +1153,18 @@
       "par_regime": {}
     },
     "Cardiff|over_under_total_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Stoke|1x2_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Stoke|buts_equipe_domicile_1.5_over": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -1349,6 +1389,12 @@
       "par_regime": {}
     },
     "Portsmouth|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Portsmouth|buts_equipe_exterieur_1.5_over": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
