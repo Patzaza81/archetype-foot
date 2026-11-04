@@ -68,7 +68,7 @@ def _probas_poisson(mh, ma):
     f = lambda mask: (M * mask[None]).sum(axis=(1, 2))
     return np.stack([f(dom), f(nul), f(ext), f(tot >= 2), f(tot >= 3), f(tot >= 4), f((i[:, None] > 0) & (i[None, :] > 0))], axis=1)
 
-def predire(matchs, famille, k, hl):
+def predire(matchs, famille, k, hl, ret_mu=False):
     """Probabilites (N,7) pour chaque match, calculees en parcourant le temps; NaN si aucune donnee anterieure dans la competition."""
     N = len(matchs); mu = np.full((N, 2), np.nan); P = np.full((N, 7), np.nan)
     lam = 0.0 if hl is None else math.log(2) / hl
@@ -123,7 +123,8 @@ def predire(matchs, famille, k, hl):
     if famille in ("P1", "P2"):
         ok = ~np.isnan(mu[:, 0])
         if ok.any(): P[ok] = _probas_poisson(mu[ok, 0], mu[ok, 1])
-    return np.clip(P, EPS, 1 - EPS)
+    P = np.clip(P, EPS, 1 - EPS)
+    return (P, mu) if ret_mu else P
 
 def reference(matchs):
     """Frequence historique expansive de la competition (Laplace), mises a jour apres chaque journee."""
