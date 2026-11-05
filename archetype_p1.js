@@ -55,13 +55,17 @@ function blocPari(m, ev) {
   const r = pa.retenu;
   if (!r) return `<div class="p1-pari p1-pari-aucun"><small>PARI P1</small><b>Aucun marché retenu</b><span>${pa.cotes_disponibles ? "Aucun marché n'a de valeur positive selon P1 face aux cotes (" + e(pa.cotes_disponibles) + " marchés examinés)." : "Cotes indisponibles pour ce match : aucun pari évalué."}</span></div>`;
   const res = ev && ev.pari ? (ev.pari.gagne ? `<em class="p1-ok">✓ Gagné (${signe(ev.pari.gain)} de la mise)</em>` : `<em class="p1-ko">✗ Perdu (−100 % de la mise)</em>`) : "";
-  return `<div class="p1-pari"><small>PARI P1</small><b>${e(r.libelle)}</b><div class="p1-pari-chiffres"><span>Probabilité P1 <strong>${pct0(r.p1)}</strong></span><span>Cote <strong>${fr(r.cote)}</strong></span><span>Valeur <strong>${signe(r.valeur)}</strong></span></div><p class="p1-pourquoi">Cote juste selon P1 : ${fr(1 / r.p1)}. La cote proposée (${fr(r.cote)}) est plus élevée : c'est ce décalage, et non le favori du match, qui fait retenir ce pari.</p>${res}</div>`;
+  return `<div class="p1-pari"><small>PARI P1</small><b>${e(r.libelle)}</b><div class="p1-pari-chiffres"><span>Probabilité P1 <strong>${pct0(r.p1)}</strong></span><span>Cote <strong>${fr(r.cote)}</strong></span><span>Valeur <strong>${signe(r.valeur)}</strong></span></div><p class="p1-pourquoi">Cote juste selon P1 : ${fr(1 / r.p1)}. La cote proposée (${fr(r.cote)}) est plus élevée : c'est ce décalage, et non le favori du match, qui fait retenir ce pari.</p>${autres(pa)}${res}</div>`;
+}
+function autres(pa) {
+  const L = (pa.marches || []).filter((x) => x.valeur > 0 && x.cle !== pa.retenu.cle).sort((a, b) => b.p1 - a.p1); if (!L.length) return "";
+  return `<div class="p1-autres"><small>AUTRES MARCHÉS À VALEUR POSITIVE (${L.length})</small>` + L.map((x) => `<span>${e(x.libelle)} <strong>${pct0(x.p1)}</strong> · cote ${fr(x.cote)} · ${signe(x.valeur)}</span>`).join("") + `</div>`;
 }
 function blocMarches(m) {
   const L = (m.pari && m.pari.marches) || []; if (!L.length) return "";
   const ret = m.pari.retenu ? m.pari.retenu.cle : null;
   return `<details class="p1-det"><summary>Tous les marchés évalués (${L.length})</summary><div class="p1-tabwrap"><table class="p1-tab"><tr><th>Marché</th><th>P1</th><th>Cote</th><th>Valeur</th></tr>` +
-    L.map((x) => `<tr${x.cle === ret ? ' class="p1-ligne-ret"' : ""}><td style="text-align:left">${e(x.libelle)}</td><td>${pct1(x.p1)}</td><td>${fr(x.cote)}</td><td>${signe(x.valeur)}</td></tr>`).join("") + `</table></div></details>`;
+    L.map((x) => `<tr${x.cle === ret ? ' class="p1-ligne-ret"' : x.valeur > 0 ? ' class="p1-ligne-pos"' : ""}><td style="text-align:left">${e(x.libelle)}</td><td>${pct1(x.p1)}</td><td>${fr(x.cote)}</td><td>${signe(x.valeur)}</td></tr>`).join("") + `</table></div></details>`;
 }
 function carte(m) {
   const h = horaire(m.coup_d_envoi_utc), fin = m.statut === "termine" && m.resultat, ev = fin ? m.evaluation : null;
