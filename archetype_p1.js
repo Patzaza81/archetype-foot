@@ -55,7 +55,7 @@ function blocPari(m, ev) {
   const r = pa.retenu;
   if (!r) return `<div class="p1-pari p1-pari-aucun"><small>PARI P1</small><b>Aucun marché retenu</b><span>${pa.cotes_disponibles ? "Aucun marché n'a de valeur positive selon P1 face aux cotes (" + e(pa.cotes_disponibles) + " marchés examinés)." : "Cotes indisponibles pour ce match : aucun pari évalué."}</span></div>`;
   const res = ev && ev.pari ? (ev.pari.gagne ? `<em class="p1-ok">✓ Gagné (${signe(ev.pari.gain)} de la mise)</em>` : `<em class="p1-ko">✗ Perdu (−100 % de la mise)</em>`) : "";
-  return `<div class="p1-pari"><small>PARI P1</small><b>${e(r.libelle)}</b><div class="p1-pari-chiffres"><span>Probabilité P1 <strong>${pct0(r.p1)}</strong></span><span>Cote <strong>${fr(r.cote)}</strong></span><span>Valeur <strong>${signe(r.valeur)}</strong></span></div>${res}</div>`;
+  return `<div class="p1-pari"><small>PARI P1</small><b>${e(r.libelle)}</b><div class="p1-pari-chiffres"><span>Probabilité P1 <strong>${pct0(r.p1)}</strong></span><span>Cote <strong>${fr(r.cote)}</strong></span><span>Valeur <strong>${signe(r.valeur)}</strong></span></div><p class="p1-pourquoi">Cote juste selon P1 : ${fr(1 / r.p1)}. La cote proposée (${fr(r.cote)}) est plus élevée : c'est ce décalage, et non le favori du match, qui fait retenir ce pari.</p>${res}</div>`;
 }
 function blocMarches(m) {
   const L = (m.pari && m.pari.marches) || []; if (!L.length) return "";
@@ -68,7 +68,10 @@ function carte(m) {
   if (!complet(m)) return `<article class="p1-carte"><div class="p1-tete"><p class="p1-comp-nom">${e(nomComp(m))}</p><div class="p1-equipes"><span class="p1-eq">${e(m.domicile)}</span><span class="p1-heure">${e(h.heure)}</span><span class="p1-eq p1-ext">${e(m.exterieur)}</span></div></div><p class="p1-vide">Prédiction P1 indisponible pour ce match.</p></article>`;
   const p = m.p1_original, fav = ["dom", "nul", "ext"].reduce((a, k) => (p[k] > p[a] ? k : a), "dom");
   const milieu = fin ? `<span class="p1-score">${e(m.resultat.buts_dom)} – ${e(m.resultat.buts_ext)}</span>` : `<span class="p1-heure"><strong>${e(h.heure)}</strong>${e(h.date)}</span>`;
-  const trio = ["dom", "nul", "ext"].map((k) => `<div class="${k === fav ? "p1-fav" : ""} ${ev && ev.original.issue_1x2 === k ? "p1-reel" : ""}"><small>${k === "dom" ? "1 · " + e(m.domicile) : k === "nul" ? "N · Nul" : "2 · " + e(m.exterieur)}</small><b>${pct0(p[k])}</b></div>`).join("");
+  const CIBLE = { "1": ["dom"], "N": ["nul"], "2": ["ext"], "1N": ["dom", "nul"], "N2": ["nul", "ext"], "12": ["dom", "ext"] };
+  const cle = m.pari && m.pari.retenu ? m.pari.retenu.cle : null, cibles = (cle && CIBLE[cle]) || [];
+  const trio = ["dom", "nul", "ext"].map((k) => { const pari = cibles.includes(k), f = k === fav; const tag = pari ? `<i class="p1-tag">${f ? "Pari P1 · favori" : "Pari P1"}</i>` : f ? `<i class="p1-tag p1-tag-fav">Favori P1</i>` : "";
+    return `<div class="${pari ? "p1-fav" : f ? "p1-favori" : ""} ${ev && ev.original.issue_1x2 === k ? "p1-reel" : ""}">${tag}<small>${k === "dom" ? "1 · " + e(m.domicile) : k === "nul" ? "N · Nul" : "2 · " + e(m.exterieur)}</small><b>${pct0(p[k])}</b></div>`; }).join("");
   const marches = P1_MARCHES.map(([k, nom]) => {
     const r = ev ? (ev.realise[k] ? '<span class="p1-ok"> ✓</span>' : '<span class="p1-ko"> ✗</span>') : "";
     return `<div><span>${nom}</span><b>${pct0(p[k])}${r}</b></div>`;
