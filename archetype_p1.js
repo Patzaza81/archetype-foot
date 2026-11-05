@@ -49,17 +49,22 @@ function blocDetail(m) {
     `</dl></details>`;
 }
 const signe = (x) => (num(x) == null ? "—" : (x >= 0 ? "+" : "−") + Math.abs(x * 100).toFixed(1).replace(".", ",") + " %");
+function sur100(p) { return Math.round(Number(p) * 100); }
 function blocPari(m, ev) {
-  const pa = m.pari;
-  if (!pa) return `<div class="p1-pari p1-pari-aucun"><small>PARI P1</small><b>Non évalué</b><span>Pari non enregistré pour ce match.</span></div>`;
+  const pa = m.pari, p = m.p1_original, gagne = ev && ev.pari ? (ev.pari.gagne ? `<em class="p1-ok">✓ Pari gagné</em>` : `<em class="p1-ko">✗ Pari perdu</em>`) : "";
+  if (!pa) return `<div class="p1-pari p1-pari-aucun"><small>PROPOSITION P1</small><b>Pas de proposition</b><span>Aucun pari n'a été enregistré pour ce match.</span></div>`;
   const r = pa.retenu;
-  if (!r) return `<div class="p1-pari p1-pari-aucun"><small>PARI P1</small><b>Aucun marché retenu</b><span>${pa.cotes_disponibles ? "Aucun marché n'a de valeur positive selon P1 face aux cotes (" + e(pa.cotes_disponibles) + " marchés examinés)." : "Cotes indisponibles pour ce match : aucun pari évalué."}</span></div>`;
-  const res = ev && ev.pari ? (ev.pari.gagne ? `<em class="p1-ok">✓ Gagné (${signe(ev.pari.gain)} de la mise)</em>` : `<em class="p1-ko">✗ Perdu (−100 % de la mise)</em>`) : "";
-  return `<div class="p1-pari"><small>PARI P1</small><b>${e(r.libelle)}</b><div class="p1-pari-chiffres"><span>Probabilité P1 <strong>${pct0(r.p1)}</strong></span><span>Cote <strong>${fr(r.cote)}</strong></span><span>Valeur <strong>${signe(r.valeur)}</strong></span></div><p class="p1-pourquoi">Cote juste selon P1 : ${fr(1 / r.p1)}. La cote proposée (${fr(r.cote)}) est plus élevée : c'est ce décalage, et non le favori du match, qui fait retenir ce pari.</p>${autres(pa)}${res}</div>`;
+  if (!r) return `<div class="p1-pari p1-pari-aucun"><small>PROPOSITION P1</small><b>Pas de proposition</b><span>${pa.cotes_disponibles ? "P1 ne trouve aucune cote plus généreuse que le risque réel : il ne propose rien sur ce match." : "Les cotes ne sont pas disponibles : P1 ne peut pas proposer de pari. Ses probabilités restent consultables ci-dessous."}</span></div>`;
+  const risque = r.p1 < 0.5 ? `Pari risqué : il se perd plus souvent qu'il ne se gagne, mais la cote paie en conséquence.` : `Pari qui se réalise plus souvent qu'il ne rate.`;
+  const fav = ["dom", "nul", "ext"].reduce((a, k) => (p[k] > p[a] ? k : a), "dom"), nomFav = fav === "dom" ? m.domicile : fav === "ext" ? m.exterieur : "le match nul";
+  const d = m.detail || {}, buts = num(d.buts_attendus_dom) != null && num(d.buts_attendus_ext) != null ? `<li>Buts attendus par P1 : ${e(m.domicile)} ${fr(d.buts_attendus_dom, 1)} – ${fr(d.buts_attendus_ext, 1)} ${e(m.exterieur)}.</li>` : "";
+  return `<div class="p1-pari"><small>PROPOSITION P1</small><b>${e(r.libelle)}</b><div class="p1-pari-chiffres"><span>Cote <strong>${fr(r.cote)}</strong></span><span>Chances selon P1 <strong>${sur100(r.p1)} sur 100</strong></span></div>${gagne}` +
+    `<p class="p1-pourquoi"><b class="p1-q">Pourquoi ?</b> P1 estime que ce pari se réalise environ ${sur100(r.p1)} fois sur 100. La cote ${fr(r.cote)} correspond à ${Math.round(100 / r.cote)} fois sur 100 : elle est donc plus généreuse que le risque réel (avantage ${signe(r.valeur)}). ${risque}</p>` +
+    `<ul class="p1-points">${buts}<li>Favori du match selon P1 : ${e(nomFav)} (${sur100(p[fav])} sur 100)${(r.cle === "1" && fav === "dom") || (r.cle === "2" && fav === "ext") ? "" : ". La proposition ne suit pas forcément le favori : elle cherche la meilleure cote par rapport au risque"}.</li></ul>${autres(pa)}</div>`;
 }
 function autres(pa) {
   const L = (pa.marches || []).filter((x) => x.valeur > 0 && x.cle !== pa.retenu.cle).sort((a, b) => b.p1 - a.p1); if (!L.length) return "";
-  return `<div class="p1-autres"><small>AUTRES MARCHÉS À VALEUR POSITIVE (${L.length})</small>` + L.map((x) => `<span>${e(x.libelle)} <strong>${pct0(x.p1)}</strong> · cote ${fr(x.cote)} · ${signe(x.valeur)}</span>`).join("") + `</div>`;
+  return `<div class="p1-autres"><small>AUTRES OPTIONS INTÉRESSANTES</small>` + L.map((x) => `<span>${e(x.libelle)} · cote ${fr(x.cote)} · ${sur100(x.p1)} chances sur 100</span>`).join("") + `</div>`;
 }
 function blocMarches(m) {
   const L = (m.pari && m.pari.marches) || []; if (!L.length) return "";
@@ -82,7 +87,7 @@ function carte(m) {
   }).join("");
   const etat = m.statut === "en_cours_ou_resultat_attendu" ? `<p class="p1-note">Coup d'envoi passé : résultat pas encore enregistré.</p>` : "";
   return `<article class="p1-carte"><div class="p1-tete"><p class="p1-comp-nom">${e(nomComp(m))}${fin ? " · " + e(h.date) : ""}</p><div class="p1-equipes"><span class="p1-eq">${e(m.domicile)}</span>${milieu}<span class="p1-eq p1-ext">${e(m.exterieur)}</span></div></div>` +
-    `<div class="p1-corps">${blocPari(m, ev)}<div class="p1-1n2" role="group" aria-label="Probabilités 1 N 2">${trio}</div><div class="p1-marches">${marches}</div>${etat}${blocMarches(m)}${blocCalibration(m)}${blocDetail(m)}</div></article>`;
+    `<div class="p1-corps">${blocPari(m, ev)}${etat}<details class="p1-det p1-stats"><summary>Voir les statistiques de P1</summary><div class="p1-1n2" role="group" aria-label="Probabilités 1 N 2">${trio}</div><div class="p1-marches">${marches}</div>${blocMarches(m)}${blocCalibration(m)}${blocDetail(m)}</details></div></article>`;
 }
 function filtres(liste) {
   const dates = [...new Set(liste.map((m) => horaire(m.coup_d_envoi_utc).iso).filter(Boolean))].sort();
