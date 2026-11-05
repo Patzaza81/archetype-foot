@@ -27,16 +27,16 @@ def affichage(page):
     with sync_playwright() as p:
         b = p.chromium.launch(); pg = b.new_page(viewport={"width": 390, "height": 844}, device_scale_factor=2)
         pg.on("console", lambda m: res["erreurs_console"].append(m.text) if m.type == "error" else None); pg.on("pageerror", lambda e: res["erreurs_console"].append(str(e)))
-        pg.goto(url); pg.wait_for_selector(".p1-carte"); cartes = pg.query_selector_all(".p1-carte"); a_venir = [m for m in page["matchs"] if m["statut"] != "termine"]
+        pg.goto(url); pg.wait_for_selector("section.ax-carte"); cartes = pg.query_selector_all("section.ax-carte"); a_venir = [m for m in page["matchs"] if m["statut"] != "termine"]
         res["cartes"] = len(cartes); res["attendu"] = len(a_venir); res["debordement_horizontal"] = pg.evaluate("document.documentElement.scrollWidth > window.innerWidth")
+        res["drapeaux"] = len(pg.query_selector_all(".af-drapeau")); res["blocs_derniers_matchs"] = len(pg.query_selector_all(".om-dm-eq"))
         for c, m in zip(cartes, a_venir):
-            trio = [int(t.replace("%", "").strip()) for t in c.eval_on_selector_all(".p1-1n2 b", "e=>e.map(x=>x.textContent)")]
-            mk = [int(t.replace("%", "").split("✓")[0].split("✗")[0].strip()) for t in c.eval_on_selector_all(".p1-marches b", "e=>e.map(x=>x.textContent)")]
-            pa = m.get("pari") or {}; r = pa.get("retenu"); txt = c.eval_on_selector(".p1-pari", "e=>e.innerText")
+            pa = m.get("pari") or {}; r = pa.get("retenu"); txt = c.eval_on_selector(".om-corps", "e=>e.textContent")
             ok_pari = (r["libelle"] in txt and f'{r["cote"]:.2f}'.replace(".", ",") in txt and f'{round(100 * r["p1"])} sur 100' in txt) if r else ("Pas de proposition" in txt)
             res["paris_affiches"] = res.get("paris_affiches", 0) + 1; res["paris_incoherents"] = res.get("paris_incoherents", 0) + (not ok_pari)
-            att = [round(100 * m["p1_original"][k]) for k in ("dom", "nul", "ext", "o15", "o25", "o35", "btts")]
-            res["valeurs"] += 7; res["ecarts"] += [abs(x - y) for x, y in zip(trio + mk, att)]
+            aff = {k: int(t.replace("%", "").strip()) for k, t in zip([x for x in ic.MARCHES], c.eval_on_selector_all(".p1-v", "e=>e.map(x=>x.textContent)"))}
+            att = {k: round(100 * m["p1_original"][k]) for k in ic.MARCHES}
+            res["valeurs"] += 7; res["ecarts"] += [abs(aff.get(k, -999) - att[k]) for k in ic.MARCHES]
         os.makedirs(os.path.join(ic.RACINE, "data", "calibration_p1", "captures"), exist_ok=True)
         pg.screenshot(path=os.path.join(ic.RACINE, "data", "calibration_p1", "captures", "p1_mobile.png"))
         pg.set_viewport_size({"width": 1280, "height": 900}); pg.screenshot(path=os.path.join(ic.RACINE, "data", "calibration_p1", "captures", "p1_bureau.png"))

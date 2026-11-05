@@ -1,151 +1,123 @@
-// Page P1 – Analyse statistique : affiche data/calibration_p1/page_p1.json (écrit par p1_page_donnees.py à partir du journal gelé). Lecture seule : AUCUN calcul de probabilité ici.
+// Page P1 – Analyse statistique, présentation calquée sur Gamma. Affiche data/calibration_p1/page_p1.json (écrit par p1_page_donnees.py à partir du journal gelé). Lecture seule : AUCUN calcul de probabilité ici.
 "use strict";
 const P1_URL = "data/calibration_p1/page_p1.json";
-const P1_MARCHES = [["o15", "Plus de 1,5 but"], ["o25", "Plus de 2,5 buts"], ["o35", "Plus de 3,5 buts"], ["btts", "Les deux marquent"]];
-const P1_NOMS = { dom: "Domicile", nul: "Nul", ext: "Extérieur" };
-let P1 = null, P1_ONGLET = "avenir", P1_DATE = "", P1_COMP = "";
-
+const P1_CLES = ["dom", "nul", "ext", "o15", "o25", "o35", "btts"];
+const P1_NOMS = { dom: "Victoire domicile", nul: "Match nul", ext: "Victoire extérieur", o15: "Plus de 1,5 but", o25: "Plus de 2,5 buts", o35: "Plus de 3,5 buts", btts: "Les deux équipes marquent" };
 const e = (x) => String(x == null ? "" : x).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const num = (x) => (x != null && Number.isFinite(Number(x)) ? Number(x) : null);
-const pct0 = (x) => (num(x) == null ? "—" : Math.round(Number(x) * 100) + " %");
+const pct = (x) => (num(x) == null ? "—" : Math.round(Number(x) * 100) + " %");
 const pct1 = (x) => (num(x) == null ? "—" : (Number(x) * 100).toFixed(1).replace(".", ",") + " %");
 const fr = (x, d) => (num(x) == null ? "—" : Number(x).toFixed(d == null ? 2 : d).replace(".", ","));
+const signe = (x) => (num(x) == null ? "—" : (x >= 0 ? "+" : "−") + Math.abs(x * 100).toFixed(1).replace(".", ",") + " %");
+const sur100 = (p) => Math.round(Number(p) * 100);
 function jourFr(iso) {
   const d = new Date(`${iso}T12:00:00`); if (Number.isNaN(d.getTime())) return iso || "";
   const t = d.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" }).replace(/\./g, "").trim(); return t.charAt(0).toUpperCase() + t.slice(1);
 }
+function jourCourt(iso) {
+  const d = new Date(`${iso}T12:00:00`); if (Number.isNaN(d.getTime())) return e(iso || "");
+  return e(d.toLocaleDateString("fr-FR", { day: "numeric", month: "short" }).replace(/\./g, ""));
+}
 function horaire(ko) {           // UTC -> heure du Cameroun (UTC+1)
   const d = ko ? new Date(ko) : null; if (!d || Number.isNaN(d.getTime())) return { heure: "—", date: "" };
-  const c = new Date(d.getTime() + 3600000); return { heure: c.toISOString().slice(11, 16).replace(":", "h"), date: jourFr(c.toISOString().slice(0, 10)), iso: c.toISOString().slice(0, 10) };
+  const c = new Date(d.getTime() + 3600000); return { heure: c.toISOString().slice(11, 16).replace(":", "h"), date: jourFr(c.toISOString().slice(0, 10)) };
 }
-const nomComp = (m) => String(m.competition || "").replace(/\s+/g, " ").trim();
-const memeValeurs = (m) => ["dom", "nul", "ext", "o15", "o25", "o35", "btts"].every((k) => m.p1_original[k] === m.p1_calibre[k]);
 const complet = (m) => m.p1_original && ["dom", "nul", "ext"].every((k) => num(m.p1_original[k]) != null);
 
-function blocStatut(d) {
-  const c = d.calibration || {}, ok = (c.couples_valides || 0) > 0;
-  return `<div class="p1-statut ${ok ? "p1-valide" : "p1-neutre"}"><b>Calibration : ${ok ? c.couples_valides + " correction(s) validée(s)" : "aucune correction validée"}</b> (${e(c.couples_valides)} sur ${e(c.couples_total)} couples compétition × marché, ${e(c.competitions)} compétitions). ` + paris(d) + +
-    `${ok ? e(c.texte) : "P1 calibré est donc identique à P1 original : aucune correction n'est appliquée."} Mode : <b>${e(d.mode)}</b>${d.mode === "parallele" ? " (enregistrement en parallèle, rien n'est modifié)" : ""}.</div>`;
+function derniers(m) {
+  const d = m.derniers_matchs; if (!d || !((d.dom && d.dom.length) || (d.ext && d.ext.length))) return "";
+  const eq = (nom, lieu, liste, domicile) => {
+    const l = Array.isArray(liste) ? liste : [], moy = (k) => (l.length ? l.reduce((a, x) => a + Number(x[k] || 0), 0) / l.length : NaN);
+    const lignes = l.map((x) => {
+      const a = Number(x.marques), b = Number(x.encaisses), lettre = a > b ? "V" : a < b ? "D" : "N", cls = a > b ? "om-v" : a < b ? "om-d" : "om-n";
+      const score = domicile ? `<b>${a}</b> – ${b}` : `${b} – <b>${a}</b>`;
+      return `<li class="om-dm"><span class="om-dm-date">${jourCourt(x.date)}</span><span class="om-dm-adv">${e(x.adversaire || "Adversaire inconnu")}</span><span class="om-dm-score">${score}</span><span class="om-dm-res ${cls}">${lettre}</span></li>`;
+    }).join("");
+    return `<div class="om-dm-eq"><div class="om-dm-tete"><span class="om-dm-nom">${e(nom)}</span><span class="om-dm-lieu">${lieu} · ${l.length} match${l.length > 1 ? "s" : ""}</span></div>` +
+      (l.length ? `<div class="om-dm-puces"><span>Marque <b>${fr(moy("marques"), 1)}</b></span><span>Encaisse <b>${fr(moy("encaisses"), 1)}</b></span></div><ul class="om-dm-liste">${lignes}</ul>` : `<p class="om-info">Matchs indisponibles.</p>`) + `</div>`;
+  };
+  return `<div class="om-bloc"><div class="om-bloc-titre">Derniers matchs</div><div class="om-dm-grille">${eq(m.domicile, "À domicile", d.dom, true)}${eq(m.exterieur, "À l'extérieur", d.ext, false)}</div></div>`;
 }
-function paris(d) {
-  const L = (d.matchs || []).filter((m) => m.statut === "a_venir"), n = L.filter((m) => m.pari && m.pari.retenu).length;
-  return `<b>${n} pari(s) retenu(s)</b> sur ${L.length} match(s) à venir. `;
+function ligne(x, m, principal, ev) {
+  const badge = principal && ev && ev.pari ? `<span class="om-badge om-${ev.pari.gagne ? "WIN" : "LOSS"}">${ev.pari.gagne ? "GAGNÉ" : "PERDU"}</span>` : "";
+  return `<div class="om-ligne ${principal ? "om-principal" : ""}"><span>${e(x.libelle)}<small class="om-sous">Chances selon P1 : ${sur100(x.p1)} sur 100</small></span><span><span class="om-cote">Cote ${fr(x.cote)}</span> ${badge}</span></div>`;
 }
-function blocCalibration(m) {
-  if (memeValeurs(m)) return `<div class="p1-cal">P1 calibré = P1 original (aucune correction validée pour cette compétition).</div>`;
-  const ligne = (k) => `<tr><th>${e(P1_NOMS[k] || k)}</th><td>${pct1(m.p1_original[k])}</td><td>${pct1(m.p1_calibre[k])}</td><td>${e((m.methode || {})[k] || "—")}</td></tr>`;
-  return `<div class="p1-cal p1-diff"><b>P1 original et P1 calibré diffèrent.</b><table><tr><th></th><th>Original</th><th>Calibré</th><th>Méthode</th></tr>${["dom", "nul", "ext", "o15", "o25", "o35", "btts"].map(ligne).join("")}</table></div>`;
-}
-function blocDetail(m) {
-  const d = m.detail || {};
-  const l = (a, b) => `<dt>${a}</dt><dd>${b}</dd>`;
-  return `<details class="p1-det"><summary>Détail statistique</summary><dl>` +
-    l("Buts attendus (dom.)", fr(d.buts_attendus_dom)) + l("Buts attendus (ext.)", fr(d.buts_attendus_ext)) +
-    l("Matchs antérieurs de l'équipe dom.", e(d.matchs_anterieurs_dom ?? "—")) + l("Matchs antérieurs de l'équipe ext.", e(d.matchs_anterieurs_ext ?? "—")) +
-    l("Historique de la compétition", e(m.n_historique_competition ?? "—")) +
-    l("Lissage k", e(d.k ?? "—")) + l("Demi-vie", d.demi_vie_jours == null ? "aucune" : e(d.demi_vie_jours) + " jours") +
-    l("Noms Football-Data", `${e(d.fd_dom || "—")} / ${e(d.fd_ext || "—")}`) +
-    l("Gelé le (UTC)", e(m.gele_le || "—")) + l("Empreinte", `<span class="p1-mono">${e(String(m.empreinte || "").slice(0, 16) || "—")}…</span>`) +
-    `</dl></details>`;
-}
-const signe = (x) => (num(x) == null ? "—" : (x >= 0 ? "+" : "−") + Math.abs(x * 100).toFixed(1).replace(".", ",") + " %");
-function sur100(p) { return Math.round(Number(p) * 100); }
-function blocPari(m, ev) {
-  const pa = m.pari, p = m.p1_original, gagne = ev && ev.pari ? (ev.pari.gagne ? `<em class="p1-ok">✓ Pari gagné</em>` : `<em class="p1-ko">✗ Pari perdu</em>`) : "";
-  if (!pa) return `<div class="p1-pari p1-pari-aucun"><small>PROPOSITION P1</small><b>Pas de proposition</b><span>Aucun pari n'a été enregistré pour ce match.</span></div>`;
-  const r = pa.retenu;
-  if (!r) return `<div class="p1-pari p1-pari-aucun"><small>PROPOSITION P1</small><b>Pas de proposition</b><span>${pa.cotes_disponibles ? "P1 ne trouve aucune cote plus généreuse que le risque réel : il ne propose rien sur ce match." : "Les cotes ne sont pas disponibles : P1 ne peut pas proposer de pari. Ses probabilités restent consultables ci-dessous."}</span></div>`;
-  const risque = r.p1 < 0.5 ? `Pari risqué : il se perd plus souvent qu'il ne se gagne, mais la cote paie en conséquence.` : `Pari qui se réalise plus souvent qu'il ne rate.`;
+function pourquoi(m, r) {
+  const p = m.p1_original, d = m.detail || {};
   const fav = ["dom", "nul", "ext"].reduce((a, k) => (p[k] > p[a] ? k : a), "dom"), nomFav = fav === "dom" ? m.domicile : fav === "ext" ? m.exterieur : "le match nul";
-  const d = m.detail || {}, buts = num(d.buts_attendus_dom) != null && num(d.buts_attendus_ext) != null ? `<li>Buts attendus par P1 : ${e(m.domicile)} ${fr(d.buts_attendus_dom, 1)} – ${fr(d.buts_attendus_ext, 1)} ${e(m.exterieur)}.</li>` : "";
-  return `<div class="p1-pari"><small>PROPOSITION P1</small><b>${e(r.libelle)}</b><div class="p1-pari-chiffres"><span>Cote <strong>${fr(r.cote)}</strong></span><span>Chances selon P1 <strong>${sur100(r.p1)} sur 100</strong></span></div>${gagne}` +
-    `<p class="p1-pourquoi"><b class="p1-q">Pourquoi ?</b> P1 estime que ce pari se réalise environ ${sur100(r.p1)} fois sur 100. La cote ${fr(r.cote)} correspond à ${Math.round(100 / r.cote)} fois sur 100 : elle est donc plus généreuse que le risque réel (avantage ${signe(r.valeur)}). ${risque}</p>` +
-    `<ul class="p1-points">${buts}<li>Favori du match selon P1 : ${e(nomFav)} (${sur100(p[fav])} sur 100)${(r.cle === "1" && fav === "dom") || (r.cle === "2" && fav === "ext") ? "" : ". La proposition ne suit pas forcément le favori : elle cherche la meilleure cote par rapport au risque"}.</li></ul>${autres(pa)}</div>`;
+  const memeFav = (r.cle === "1" && fav === "dom") || (r.cle === "2" && fav === "ext") || (r.cle === "N" && fav === "nul");
+  const buts = num(d.buts_attendus_dom) != null && num(d.buts_attendus_ext) != null ? `<span class="om-attendus">Buts attendus par P1 : ${e(m.domicile)} ${fr(d.buts_attendus_dom, 1)} – ${fr(d.buts_attendus_ext, 1)} ${e(m.exterieur)}.</span>` : "";
+  return `<div class="om-pq"><p class="om-pq-txt">${buts}<b>Pourquoi ?</b> P1 estime que ce pari se réalise environ ${sur100(r.p1)} fois sur 100. La cote ${fr(r.cote)} correspond à ${Math.round(100 / r.cote)} fois sur 100 : elle est plus généreuse que le risque réel (avantage ${signe(r.valeur)}). ` +
+    `${r.p1 < 0.5 ? "Pari risqué : il se perd plus souvent qu'il ne se gagne, mais la cote paie en conséquence." : "Pari qui se réalise plus souvent qu'il ne rate."} Favori du match selon P1 : ${e(nomFav)} (${sur100(p[fav])} sur 100)${memeFav ? "" : " ; la proposition ne suit pas forcément le favori, elle cherche la meilleure cote par rapport au risque"}.</p></div>`;
 }
-function autres(pa) {
-  const L = (pa.marches || []).filter((x) => x.valeur > 0 && x.cle !== pa.retenu.cle).sort((a, b) => b.p1 - a.p1); if (!L.length) return "";
-  return `<div class="p1-autres"><small>AUTRES OPTIONS INTÉRESSANTES</small>` + L.map((x) => `<span>${e(x.libelle)} · cote ${fr(x.cote)} · ${sur100(x.p1)} chances sur 100</span>`).join("") + `</div>`;
-}
-function blocMarches(m) {
-  const L = (m.pari && m.pari.marches) || []; if (!L.length) return "";
-  const ret = m.pari.retenu ? m.pari.retenu.cle : null;
-  return `<details class="p1-det"><summary>Tous les marchés évalués (${L.length})</summary><div class="p1-tabwrap"><table class="p1-tab"><tr><th>Marché</th><th>P1</th><th>Cote</th><th>Valeur</th></tr>` +
-    L.map((x) => `<tr${x.cle === ret ? ' class="p1-ligne-ret"' : x.valeur > 0 ? ' class="p1-ligne-pos"' : ""}><td style="text-align:left">${e(x.libelle)}</td><td>${pct1(x.p1)}</td><td>${fr(x.cote)}</td><td>${signe(x.valeur)}</td></tr>`).join("") + `</table></div></details>`;
+function stats(m) {
+  const p = m.p1_original, lignes = P1_CLES.map((k) => `<tr><td>${e(P1_NOMS[k].replace("domicile", m.domicile).replace("extérieur", m.exterieur))}</td><td class="p1-v" data-k="${k}">${pct(p[k])}</td></tr>`).join("");
+  const memes = P1_CLES.every((k) => m.p1_original[k] === m.p1_calibre[k]);
+  const cal = memes ? `<div class="om-info">P1 calibré = P1 original (aucune correction validée pour cette compétition).</div>` :
+    `<div class="om-info"><b>P1 original et P1 calibré diffèrent.</b></div><table class="om-table"><tr><th>Marché</th><th>Original</th><th>Calibré</th><th>Méthode</th></tr>${P1_CLES.map((k) => `<tr><td>${e(P1_NOMS[k])}</td><td>${pct1(m.p1_original[k])}</td><td>${pct1(m.p1_calibre[k])}</td><td>${e((m.methode || {})[k] || "—")}</td></tr>`).join("")}</table>`;
+  const d = m.detail || {}, L = (m.pari && m.pari.marches) || [], ret = m.pari && m.pari.retenu ? m.pari.retenu.cle : null;
+  const marches = L.length ? `<div class="om-bloc"><div class="om-bloc-titre">Tous les marchés évalués (${L.length})</div><table class="om-table"><tr><th>Marché</th><th>P1</th><th>Cote</th><th>Avantage</th></tr>` +
+    L.map((x) => `<tr${x.cle === ret ? ' style="font-weight:800"' : ""}><td style="text-align:left">${e(x.libelle)}</td><td>${pct1(x.p1)}</td><td>${fr(x.cote)}</td><td>${signe(x.valeur)}</td></tr>`).join("") + `</table></div>` : "";
+  return `<div class="om-bloc"><div class="om-bloc-titre">Probabilités de P1</div><table class="om-table p1-tabstats"><tr><th>Événement</th><th>P1</th></tr>${lignes}</table>${cal}</div>${marches}` +
+    `<div class="om-bloc"><div class="om-info">Buts attendus : ${fr(d.buts_attendus_dom)} – ${fr(d.buts_attendus_ext)} · matchs antérieurs : ${e(d.matchs_anterieurs_dom ?? "—")} / ${e(d.matchs_anterieurs_ext ?? "—")} · lissage k ${e(d.k ?? "—")} · demi-vie ${d.demi_vie_jours == null ? "aucune" : e(d.demi_vie_jours) + " jours"}</div>` +
+    `<div class="om-info">Gelé le ${e(m.gele_le || "—")} (UTC) · empreinte <span class="p1-mono">${e(String(m.empreinte || "").slice(0, 16))}…</span></div></div>`;
 }
 function carte(m) {
-  const h = horaire(m.coup_d_envoi_utc), fin = m.statut === "termine" && m.resultat, ev = fin ? m.evaluation : null;
-  if (!complet(m)) return `<article class="p1-carte"><div class="p1-tete"><p class="p1-comp-nom">${e(nomComp(m))}</p><div class="p1-equipes"><span class="p1-eq">${e(m.domicile)}</span><span class="p1-heure">${e(h.heure)}</span><span class="p1-eq p1-ext">${e(m.exterieur)}</span></div></div><p class="p1-vide">Prédiction P1 indisponible pour ce match.</p></article>`;
-  const p = m.p1_original, fav = ["dom", "nul", "ext"].reduce((a, k) => (p[k] > p[a] ? k : a), "dom");
-  const milieu = fin ? `<span class="p1-score">${e(m.resultat.buts_dom)} – ${e(m.resultat.buts_ext)}</span>` : `<span class="p1-heure"><strong>${e(h.heure)}</strong>${e(h.date)}</span>`;
-  const CIBLE = { "1": ["dom"], "N": ["nul"], "2": ["ext"], "1N": ["dom", "nul"], "N2": ["nul", "ext"], "12": ["dom", "ext"] };
-  const cle = m.pari && m.pari.retenu ? m.pari.retenu.cle : null, cibles = (cle && CIBLE[cle]) || [];
-  const trio = ["dom", "nul", "ext"].map((k) => { const pari = cibles.includes(k), f = k === fav; const tag = pari ? `<i class="p1-tag">${f ? "Pari P1 · favori" : "Pari P1"}</i>` : f ? `<i class="p1-tag p1-tag-fav">Favori P1</i>` : "";
-    return `<div class="${pari ? "p1-fav" : f ? "p1-favori" : ""} ${ev && ev.original.issue_1x2 === k ? "p1-reel" : ""}">${tag}<small>${k === "dom" ? "1 · " + e(m.domicile) : k === "nul" ? "N · Nul" : "2 · " + e(m.exterieur)}</small><b>${pct0(p[k])}</b></div>`; }).join("");
-  const marches = P1_MARCHES.map(([k, nom]) => {
-    const r = ev ? (ev.realise[k] ? '<span class="p1-ok"> ✓</span>' : '<span class="p1-ko"> ✗</span>') : "";
-    return `<div><span>${nom}</span><b>${pct0(p[k])}${r}</b></div>`;
-  }).join("");
-  const etat = m.statut === "en_cours_ou_resultat_attendu" ? `<p class="p1-note">Coup d'envoi passé : résultat pas encore enregistré.</p>` : "";
-  return `<article class="p1-carte"><div class="p1-tete"><p class="p1-comp-nom">${e(nomComp(m))}${fin ? " · " + e(h.date) : ""}</p><div class="p1-equipes"><span class="p1-eq">${e(m.domicile)}</span>${milieu}<span class="p1-eq p1-ext">${e(m.exterieur)}</span></div></div>` +
-    `<div class="p1-corps">${blocPari(m, ev)}${etat}<details class="p1-det p1-stats"><summary>Voir les statistiques de P1</summary><div class="p1-1n2" role="group" aria-label="Probabilités 1 N 2">${trio}</div><div class="p1-marches">${marches}</div>${blocMarches(m)}${blocCalibration(m)}${blocDetail(m)}</details></div></article>`;
+  const h = horaire(m.coup_d_envoi_utc), fin = m.statut === "termine" && m.resultat, ev = fin ? m.evaluation : null, pa = m.pari, r = pa && pa.retenu;
+  const section = document.createElement("section"); section.className = "ax-carte ax-replie"; section.setAttribute("aria-expanded", "false");
+  let corps;
+  if (!complet(m)) corps = `<div class="om-info"><b>Pas de proposition</b></div><p class="om-vide">Prédiction P1 indisponible pour ce match.</p>`;
+  else if (r) {
+    const autres = (pa.marches || []).filter((x) => x.valeur > 0 && x.cle !== r.cle).sort((a, b) => b.p1 - a.p1);
+    corps = `<div class="om-info"><b>Pari proposé</b></div>${ligne(r, m, true, ev)}${pourquoi(m, r)}` +
+      (autres.length ? `<div class="om-autres"><div class="om-autres-titre">Autres options intéressantes</div>${autres.map((x) => `<div class="om-ligne"><span>${e(x.libelle)}<small class="om-sous">Chances selon P1 : ${sur100(x.p1)} sur 100</small></span><span class="om-cote">Cote ${fr(x.cote)}</span></div>`).join("")}</div>` : "");
+  } else corps = `<div class="om-info"><b>Pas de proposition</b></div><p class="om-vide">${pa && pa.cotes_disponibles ? "P1 ne trouve aucune cote plus généreuse que le risque réel : il ne propose rien sur ce match." : "Les cotes ne sont pas disponibles : P1 ne peut pas proposer de pari. Ses probabilités restent consultables dans les détails."}</p>`;
+  if (m.statut === "en_cours_ou_resultat_attendu") corps += `<div class="om-info">Coup d'envoi passé : résultat pas encore enregistré.</div>`;
+  section.innerHTML = `<div class="ax-match"><div class="ax-ligne-match"><span class="ax-equipe ax-dom">${e(m.domicile)}</span><div class="ax-horaire"><strong>${fin ? e(m.resultat.buts_dom + " - " + m.resultat.buts_ext) : e(h.heure)}</strong><span>${e(h.date)}</span></div><span class="ax-equipe ax-ext">${e(m.exterieur)}</span></div>` +
+    `<div class="ax-match-bas"><p class="ax-competition">${e(String(m.competition || "").replace(/\s+/g, " ").trim())}</p><div class="ax-actions-tete"></div></div></div>` +
+    `<div class="om-corps">${corps}</div><details class="ax-details" open><summary class="ax-summary-cache" tabindex="-1">Détails</summary><div class="ax-details-corps">${derniers(m)}${complet(m) ? stats(m) : ""}</div></details>`;
+  section.addEventListener("click", (ev2) => {
+    if (ev2.target.closest("button, a, summary")) return;
+    const sel = window.getSelection && window.getSelection(); if (sel && String(sel).length) return;
+    const avant = section.getBoundingClientRect().top, replie = !section.classList.contains("ax-replie");
+    section.classList.toggle("ax-replie", replie); section.setAttribute("aria-expanded", String(!replie));
+    const apres = section.getBoundingClientRect().top; if (Math.abs(apres - avant) > 1) window.scrollBy(0, apres - avant);
+  });
+  return section;
 }
-function filtres(liste) {
-  const dates = [...new Set(liste.map((m) => horaire(m.coup_d_envoi_utc).iso).filter(Boolean))].sort();
-  const comps = [...new Set(liste.map(nomComp).filter(Boolean))].sort((a, b) => a.localeCompare(b, "fr"));
-  if (P1_DATE && !dates.includes(P1_DATE)) P1_DATE = ""; if (P1_COMP && !comps.includes(P1_COMP)) P1_COMP = "";
-  document.getElementById("p1-dates").innerHTML = [`<button type="button" class="p1-puce" data-date="" aria-pressed="${P1_DATE === ""}">Toutes les dates</button>`].concat(dates.map((d) => `<button type="button" class="p1-puce" data-date="${e(d)}" aria-pressed="${P1_DATE === d}">${e(jourFr(d))}</button>`)).join("");
-  const sel = document.getElementById("p1-competition"); sel.innerHTML = `<option value="">Toutes</option>` + comps.map((c) => `<option value="${e(c)}"${c === P1_COMP ? " selected" : ""}>${e(c)}</option>`).join("");
+function liste(id, L, vide) {
+  const el = document.getElementById(id); if (!el) return; el.innerHTML = "";
+  if (L.length) L.forEach((m) => el.appendChild(carte(m))); else el.innerHTML = `<p class="om-vide">${e(vide)}</p>`;
 }
-function tableauPerf(pv) {
-  const lignes = P1_MARCHES.map(([k, nom]) => { const a = pv.original.marches[k], b = pv.calibre.marches[k];
-    return `<tr><th>${nom}</th><td>${pct1(a.frequence_reelle)}</td><td>${pct1(a.probabilite_moyenne)}</td><td>${fr(a.brier, 3)}</td><td>${fr(b.brier, 3)}</td></tr>`; }).join("");
-  return `<div class="p1-tabwrap"><table class="p1-tab"><tr><th>Marché</th><th>Fréquence réelle</th><th>Proba. moyenne P1</th><th>Brier original</th><th>Brier calibré</th></tr>${lignes}</table></div>`;
+function bilan(d) {
+  const p = d.performance || {}, q = d.performance_paris || {}, c = d.calibration || {};
+  const ok = (c.couples_valides || 0) > 0;
+  let h = `<div class="p1-statut ${ok ? "p1-valide" : "p1-neutre"}"><b>Calibration : ${ok ? c.couples_valides + " correction(s) validée(s)" : "aucune correction validée"}</b> (${e(c.couples_valides)} sur ${e(c.couples_total)} couples compétition × marché). ${ok ? e(c.texte) : "P1 calibré est donc identique à P1 original."} Mode : <b>${e(d.mode)}</b>${d.mode === "parallele" ? " (enregistrement en parallèle)" : ""}.</div>`;
+  if (!q.paris) return [h, `<p class="om-info" style="margin:8px 14px">${e(q.note || "Aucun pari mesurable.")} Le bilan apparaîtra avec les premiers matchs terminés (${e(p.matchs_termines || 0)} terminé(s) à ce jour).</p>`];
+  const o = (p.par_version || {}).original || {};
+  return [h, `<table class="om-table"><tr><th>Paris P1 réglés</th><th>Gagnés</th><th>Réussite</th><th>Rendement moyen par mise</th></tr><tr><td>${e(q.paris)} (sur ${e(q.matchs_termines)} matchs, du ${e(jourFr(p.periode[0]))} au ${e(jourFr(p.periode[1]))})</td><td>${e(q.gagnes)}</td><td>${pct1(q.taux)} ± ${pct1(q.taux_erreur_type)}</td><td>${signe(q.rendement_moyen)} ± ${pct1(q.rendement_erreur_type)}</td></tr></table>` +
+    (o.logloss_1x2 != null ? `<p class="om-info" style="margin:4px 14px">Résultats 1/N/2 : perte logarithmique ${fr(o.logloss_1x2, 3)} · favori correct ${e(o.favori_correct)}/${e(p.matchs_termines)} (${pct1(o.favori_taux)} ± ${pct1(o.favori_erreur_type)}).</p>` : "")];
 }
-function vuePerfParis(d) {
-  const q = d.performance_paris || {};
-  if (!q.paris) return `<div class="p1-pleine"><h3 class="p1-h">Paris retenus par P1</h3><p class="p1-note">${e(q.note || "Aucun pari mesurable.")}</p></div>`;
-  return `<div class="p1-pleine"><h3 class="p1-h">Paris retenus par P1</h3><p class="p1-note">${e(q.paris)} pari(s) sur ${e(q.matchs_termines)} match(s) terminé(s) (${e(q.matchs_sans_pari)} sans pari retenu), mise unitaire, cotes relevées au gel.</p><div class="p1-tabwrap"><table class="p1-tab"><tr><th>Gagnés</th><th>Taux</th><th>Rendement moyen par mise</th></tr><tr><td>${e(q.gagnes)}/${e(q.paris)}</td><td>${pct1(q.taux)} ± ${pct1(q.taux_erreur_type)}</td><td>${signe(q.rendement_moyen)} ± ${pct1(q.rendement_erreur_type)}</td></tr></table></div></div>`;
+function histo(d) {
+  const j = d.journal || {}, rows = d.matchs.slice().sort((a, b) => (a.gele_le < b.gele_le ? 1 : -1)).map((m) => `<tr><td>${e(m.gele_le)}</td><td>${e(m.coup_d_envoi_utc)}</td><td style="text-align:left">${e(m.domicile)} – ${e(m.exterieur)}</td><td class="p1-mono">${e(String(m.empreinte || "").slice(0, 12))}</td></tr>`).join("");
+  return `<details class="ax-calcul"><summary>Historique gelé des prédictions (${e(j.lignes)})</summary><div class="ax-details-corps" style="overflow-x:auto"><p class="om-info">Journal immuable : chaque ligne est chaînée à la précédente par empreinte SHA-256 et enregistrée avant le coup d'envoi. ${(j.anomalies || []).length ? `<b>${j.anomalies.length} anomalie(s) détectée(s).</b>` : "Contrôle d'intégrité : aucune anomalie."}</p><table class="om-table"><tr><th>Gelé le (UTC)</th><th>Coup d'envoi (UTC)</th><th>Match</th><th>Empreinte</th></tr>${rows}</table></div></details>`;
 }
-function vuePerf(d) {
-  const p = d.performance || {};
-  if (!p.matchs_termines) return `<p class="p1-vide p1-pleine">${e(p.note || "Aucune performance mesurable.")} Les prédictions et paris du journal sont gelés depuis le ${e((d.matchs[0] || {}).gele_le || "—")} : les premières mesures arrivent avec les premiers matchs terminés.</p>` + vuePerfParis(d);
-  const o = p.par_version.original, c = p.par_version.calibre;
-  return `<div class="p1-pleine"><p class="p1-note"><b>${p.matchs_termines} match(s) terminé(s)</b>, du ${e(jourFr(p.periode[0]))} au ${e(jourFr(p.periode[1]))}. Mesures sur prédictions réellement gelées avant le coup d'envoi ; l'échantillon est celui-ci et rien d'autre : l'erreur-type indique l'incertitude.</p>` +
-    `<div class="p1-tabwrap"><table class="p1-tab"><tr><th></th><th>Original</th><th>Calibré</th></tr>` +
-    `<tr><th>Perte logarithmique 1/N/2</th><td>${fr(o.logloss_1x2, 3)}</td><td>${fr(c.logloss_1x2, 3)}</td></tr>` +
-    `<tr><th>Brier 1/N/2</th><td>${fr(o.brier_1x2, 3)}</td><td>${fr(c.brier_1x2, 3)}</td></tr>` +
-    `<tr><th>Favori correct</th><td>${e(o.favori_correct)}/${p.matchs_termines} (${pct1(o.favori_taux)} ± ${pct1(o.favori_erreur_type)})</td><td>${e(c.favori_correct)}/${p.matchs_termines} (${pct1(c.favori_taux)} ± ${pct1(c.favori_erreur_type)})</td></tr></table></div>${tableauPerf(p.par_version)}</div>` + vuePerfParis(d);
+function affiche(d) {
+  const L = d.matchs || [], av = L.filter((m) => m.statut === "a_venir"), ec = L.filter((m) => m.statut === "en_cours_ou_resultat_attendu"), tm = L.filter((m) => m.statut === "termine").reverse();
+  const [a, b] = bilan(d); document.getElementById("p1-statut").innerHTML = a; document.getElementById("om-bilan").innerHTML = b;
+  liste("om-avenir", av, "Aucun match à venir dans le journal P1."); liste("om-encours", ec, "Aucun match en cours."); liste("om-regles", tm, "Aucun match terminé avec prédiction gelée pour l'instant.");
+  const sans = av.filter((m) => m.pari && !m.pari.retenu).length;
+  document.getElementById("om-sans").textContent = sans ? `${sans} match${sans > 1 ? "s" : ""} à venir sans proposition : aucune cote n'est plus généreuse que le risque réel, ou les cotes manquent (P1 ne force jamais un pari).` : "";
+  document.getElementById("p1-histo").innerHTML = histo(d);
+  const g = d.genere_le ? new Date(d.genere_le) : null;
+  document.getElementById("maj").textContent = g && !Number.isNaN(g.getTime()) ? `Données du ${g.toLocaleString("fr-FR", { timeZone: "Africa/Douala", dateStyle: "medium", timeStyle: "short" })} (heure du Cameroun) · ${L.length} match(s) dans le journal` : "";
 }
-function vueHisto(d) {
-  const j = d.journal || {}, rows = d.matchs.slice().sort((a, b) => (a.gele_le < b.gele_le ? 1 : -1)).map((m) => `<tr><td>${e(m.gele_le)}</td><td>${e(m.coup_d_envoi_utc)}</td><td>${e(m.domicile)} – ${e(m.exterieur)}</td><td class="p1-mono">${e(String(m.empreinte || "").slice(0, 12))}</td></tr>`).join("");
-  return `<div class="p1-pleine"><p class="p1-note">Journal immuable : ${e(j.lignes)} prédiction(s), chaque ligne chaînée à la précédente par empreinte SHA-256 et enregistrée avant le coup d'envoi. ${(j.anomalies || []).length ? `<b class="p1-ko">${j.anomalies.length} anomalie(s) détectée(s).</b>` : "Contrôle d'intégrité : aucune anomalie."} Dernière empreinte : <span class="p1-mono">${e(String(j.derniere_empreinte || "—").slice(0, 16))}…</span></p>` +
-    `<div class="p1-tabwrap"><table class="p1-tab"><tr><th>Gelé le (UTC)</th><th>Coup d'envoi (UTC)</th><th>Match</th><th>Empreinte</th></tr>${rows}</table></div></div>`;
-}
-function rendre() {
-  if (!P1) return;
-  const d = P1, liste = d.matchs || [];
-  const base = P1_ONGLET === "termines" ? liste.filter((m) => m.statut === "termine") : P1_ONGLET === "avenir" ? liste.filter((m) => m.statut !== "termine") : [];
-  const avecFiltres = P1_ONGLET === "avenir" || P1_ONGLET === "termines";
-  document.getElementById("p1-filtres").hidden = !avecFiltres; const zone = document.getElementById("p1-contenu");
-  if (!avecFiltres) { zone.innerHTML = P1_ONGLET === "perf" ? vuePerf(d) : vueHisto(d); return; }
-  filtres(base);
-  const sel = base.filter((m) => (!P1_DATE || horaire(m.coup_d_envoi_utc).iso === P1_DATE) && (!P1_COMP || nomComp(m) === P1_COMP));
-  if (P1_ONGLET === "termines") sel.reverse();
-  zone.innerHTML = sel.length ? sel.map(carte).join("") : `<p class="p1-vide p1-pleine">${base.length ? "Aucun match pour ces filtres." : P1_ONGLET === "termines" ? "Aucun match terminé avec prédiction gelée pour l'instant." : "Aucun match à venir dans le journal P1."}</p>`;
-}
-async function charger() {
-  const maj = document.getElementById("maj");
-  try {
-    const r = await fetch(`${P1_URL}?t=${Date.now()}`, { cache: "no-store" }); if (!r.ok) throw new Error(r.status);
-    P1 = await r.json(); const n = (P1.matchs || []).length;
-    maj.textContent = `Données du ${P1.genere_le ? new Date(P1.genere_le).toLocaleString("fr-FR", { timeZone: "Africa/Douala", dateStyle: "medium", timeStyle: "short" }) : "—"} (heure du Cameroun) · ${n} match(s) dans le journal`;
-    document.getElementById("p1-statut").innerHTML = blocStatut(P1); rendre();
-  } catch (err) { maj.textContent = "Données P1 indisponibles."; document.getElementById("p1-contenu").innerHTML = `<p class="p1-vide">Impossible de charger les données P1. Aucune valeur n'est affichée.</p>`; }
-}
-document.addEventListener("click", (ev) => {
-  const o = ev.target.closest("[data-onglet]"); if (o) { P1_ONGLET = o.dataset.onglet; document.querySelectorAll("[data-onglet]").forEach((b) => b.setAttribute("aria-selected", String(b === o))); rendre(); return; }
-  const dt = ev.target.closest("[data-date]"); if (dt) { P1_DATE = dt.dataset.date; rendre(); }
-});
-document.getElementById("p1-competition").addEventListener("change", (ev) => { P1_COMP = ev.target.value; rendre(); });
-(function theme() { const b = document.getElementById("ax-bouton-theme"); if (!b) return; b.addEventListener("click", () => { const n = document.body.classList.toggle("theme-nuit"); try { localStorage.setItem("archetype_theme_nuit", n ? "1" : "0"); } catch (x) {} }); })();
-charger();
+(function theme() {
+  const bouton = document.getElementById("ax-bouton-theme"); if (!bouton) return;
+  const applique = (nuit) => { document.body.classList.toggle("theme-nuit", nuit); bouton.textContent = nuit ? "☀" : "☾"; bouton.setAttribute("aria-label", nuit ? "Activer le mode clair" : "Activer le mode nuit"); };
+  let nuit = false; try { nuit = localStorage.getItem("archetype_theme_nuit") === "1"; } catch (x) { /* stockage indisponible */ }
+  applique(nuit);
+  bouton.addEventListener("click", () => { const s = !document.body.classList.contains("theme-nuit"); try { localStorage.setItem("archetype_theme_nuit", s ? "1" : "0"); } catch (x) { /* ignoré */ } applique(s); });
+})();
+fetch(`${P1_URL}?t=${Date.now()}`, { cache: "no-store" }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }).then(affiche)
+  .catch((err) => { document.getElementById("maj").textContent = "Données P1 indisponibles : aucune valeur n'est affichée."; console.error(err); });

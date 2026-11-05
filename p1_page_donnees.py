@@ -53,13 +53,24 @@ def performance_paris(termines):
     w = sum(p["gagne"] for p in P); g = [p["gain"] for p in P]; moy = sum(g) / n; var = sum((x - moy) ** 2 for x in g) / max(n - 1, 1); t = w / n
     return {**res, "gagnes": w, "taux": t, "taux_erreur_type": math.sqrt(max(t * (1 - t), 0) / n), "rendement_moyen": moy, "rendement_erreur_type": math.sqrt(var / n)}
 
+def derniers_matchs(hist, fd_dom, fd_ext, jour, n=5):
+    """Derniers matchs REELS (donnees d'archive et de saison courante, strictement avant le match) de chaque equipe au meme lieu : dom = ses matchs a domicile, ext = ses matchs a l'exterieur."""
+    def f(equipe, domicile):
+        L = [h for h in hist if h[0] < jour and h[2 if domicile else 3] == equipe][-n:]
+        return [{"date": datetime.date.fromordinal(h[0]).isoformat(), "adversaire": h[3] if domicile else h[2], "marques": h[4] if domicile else h[5], "encaisses": h[5] if domicile else h[4]} for h in L]
+    return {"dom": f(fd_dom, True), "ext": f(fd_ext, False)}
+
 def construire(maintenant=None, dossier=ic.DOSSIER, flux=ic.FLUX, config=None):
     import calibration_p1 as cp
     config = config or cp.charger(); maintenant = maintenant or datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    J = ic.lire_journal(dossier); S = scores(flux); matchs, termines = [], []
+    import pouvoir_predictif as pp
+    J = ic.lire_journal(dossier); S = scores(flux); matchs, termines = [], []; H = {}
     for r in J:
         sc = S.get(r["match_id"]); st = "a_venir" if r["coup_d_envoi_utc"] > maintenant else ("termine" if sc else "en_cours_ou_resultat_attendu")
         m = {k: r.get(k) for k in ("match_id", "date", "coup_d_envoi_utc", "competition", "division", "domicile", "exterieur", "p1_original", "p1_calibre", "methode", "detail", "gele_le", "empreinte", "mode", "n_historique_competition", "pari", "cotes_au_gel")}
+        d = r.get("detail") or {}; code = r.get("division")
+        if code not in H: H[code] = ic.historique(code)
+        m["derniers_matchs"] = derniers_matchs(H[code], d.get("fd_dom"), d.get("fd_ext"), pp._date(r["date"])) if d.get("fd_dom") else None
         m.update(statut=st, resultat=sc if st == "termine" else None, evaluation=evaluer(r, sc) if st == "termine" else None)
         if st == "termine" and (r.get("pari") or {}).get("retenu"):
             pr = r["pari"]["retenu"]; g = p1_paris.gagne(pr["cle"], sc["buts_dom"], sc["buts_ext"]); m["evaluation"]["pari"] = {"cle": pr["cle"], "gagne": g, "gain": pr["cote"] - 1 if g else -1.0}

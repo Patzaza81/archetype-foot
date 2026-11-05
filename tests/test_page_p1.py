@@ -69,3 +69,23 @@ def test_affichage_exact_dans_le_navigateur():
     pytest.importorskip("playwright"); import verifier_page_p1 as v
     d = json.load(open(pd.SORTIE, encoding="utf-8")); r = v.affichage(d)
     assert r["cartes"] == r["attendu"] and r.get("paris_incoherents", 0) == 0 and r["ecart_max_pct"] == 0 and not r["erreurs_console"] and not r["debordement_horizontal"]
+
+def test_derniers_matchs_reels_sans_fuite():
+    import datetime, pouvoir_predictif as pp
+    d = json.load(open(pd.SORTIE, encoding="utf-8")); verifies = 0
+    for m in d["matchs"][:12]:
+        h = ic.historique(m["division"]); jour = pp._date(m["date"]); fd = m["detail"]
+        for cote, equipe, dom in (("dom", fd["fd_dom"], True), ("ext", fd["fd_ext"], False)):
+            L = m["derniers_matchs"][cote]; assert len(L) <= 5 and [x["date"] for x in L] == sorted(x["date"] for x in L)
+            for x in L:
+                j = pp._date(x["date"]); assert j < jour                                        # jamais le match lui-meme ni le futur
+                ref = [t for t in h if t[0] == j and t[2 if dom else 3] == equipe and t[3 if dom else 2] == x["adversaire"]]
+                assert len(ref) == 1 and (ref[0][4], ref[0][5]) == ((x["marques"], x["encaisses"]) if dom else (x["encaisses"], x["marques"])); verifies += 1
+    assert verifies > 20
+
+def test_derniers_matchs_cas_limites():
+    h = [(10, "s", "A", "B", 1, 0), (20, "s", "A", "C", 2, 2), (30, "s", "D", "A", 0, 3), (40, "s", "A", "E", 0, 1)]
+    r = pd.derniers_matchs(h, "A", "A", 40)
+    assert [x["adversaire"] for x in r["dom"]] == ["B", "C"] and [x["adversaire"] for x in r["ext"]] == ["D"]    # le match du jour 40 est exclu
+    assert r["ext"][0]["marques"] == 3 and r["ext"][0]["encaisses"] == 0 and pd.derniers_matchs(h, "Z", "Z", 99) == {"dom": [], "ext": []}
+    assert len(pd.derniers_matchs([(i, "s", "A", "B", 1, 1) for i in range(1, 12)], "A", "B", 99)["dom"]) == 5
