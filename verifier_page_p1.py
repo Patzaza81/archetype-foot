@@ -33,7 +33,7 @@ def affichage(page):
             trio = [int(t.replace("%", "").strip()) for t in c.eval_on_selector_all(".p1-1n2 b", "e=>e.map(x=>x.textContent)")]
             mk = [int(t.replace("%", "").split("✓")[0].split("✗")[0].strip()) for t in c.eval_on_selector_all(".p1-marches b", "e=>e.map(x=>x.textContent)")]
             pa = m.get("pari") or {}; r = pa.get("retenu"); txt = c.eval_on_selector(".p1-pari", "e=>e.innerText")
-            ok_pari = (r["libelle"] in txt and f'{r["cote"]:.2f}'.replace(".", ",") in txt and f'{round(100 * r["p1"])} sur 100' in txt) if r else ("Aucun marché retenu" in txt)
+            ok_pari = (r["libelle"] in txt and f'{r["cote"]:.2f}'.replace(".", ",") in txt and f'{round(100 * r["p1"])} sur 100' in txt) if r else ("Pas de proposition" in txt)
             res["paris_affiches"] = res.get("paris_affiches", 0) + 1; res["paris_incoherents"] = res.get("paris_incoherents", 0) + (not ok_pari)
             att = [round(100 * m["p1_original"][k]) for k in ("dom", "nul", "ext", "o15", "o25", "o35", "btts")]
             res["valeurs"] += 7; res["ecarts"] += [abs(x - y) for x, y in zip(trio + mk, att)]
