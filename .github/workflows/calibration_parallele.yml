@@ -1,0 +1,40 @@
+name: Calibration P1 (mode parallèle)
+
+# Workflow NOUVEAU et INDÉPENDANT : ne modifie aucun workflow existant, aucun moteur, aucun JSON publié.
+# Il lit data/archive_test/ (déjà écrit par le pipeline) et ajoute des lignes gelées à data/calibration_p1/parallele/ uniquement.
+# Mode lu dans data/calibration_p1/integration.json ("parallele" par défaut : rien n'est publié).
+on:
+  workflow_run:
+    workflows: ["Pipeline quotidien Archetype Foot"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pipeline-archetype-foot
+  cancel-in-progress: false
+
+jobs:
+  parallele:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install numpy pytest
+      - name: Tests
+        run: python -m pytest tests/test_calibration_p1.py tests/test_integration_calibration.py tests/test_page_p1.py -q
+      - name: Enregistrer P1 original et calibré
+        run: OMP_NUM_THREADS=1 python integration_calibration.py
+      - name: Données de la page P1 (lecture du journal gelé et des scores du flux)
+        run: python p1_page_donnees.py
+      - name: Commit du journal parallèle (dossier dédié seulement)
+        run: |
+          git config user.name "github-actions"; git config user.email "actions@github.com"
+          git add data/calibration_p1/parallele data/calibration_p1/page_p1.json
+          git diff --cached --quiet || (git commit -m "Calibration P1: journal parallèle et données de la page" && git pull --rebase origin main && git push origin HEAD:main)
