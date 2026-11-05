@@ -186,6 +186,24 @@ def construit_correspondances(fd, med):
     for div, equipes in correspondances.items():
         comp = competitions[div].most_common(1)[0][0] if competitions[div] else None
         divisions[div] = {"competition_matchendirect": comp, "equipes": equipes}
+    # CORRECTIF 05/11/2026 : un championnat Matchendirect n'appartient qu'à une seule division Football-Data. Deux coïncidences
+    # date + score avaient relié SC2 (Montrose) à la MLS et SC3 à la Superligaen : Montréal recevait l'historique de Montrose.
+    # La division qui a relié le plus d'équipes garde le championnat ; à égalité, aucune ne le garde (rien n'est inventé).
+    par_comp = defaultdict(list)
+    for div, info in divisions.items():
+        par_comp[normalise(info["competition_matchendirect"])].append(div)
+    for comp, divs in par_comp.items():
+        if not comp or len(divs) < 2:
+            continue
+        max_eq = max(len(divisions[x]["equipes"]) for x in divs)
+        gagnantes = [x for x in divs if len(divisions[x]["equipes"]) == max_eq]
+        for x in divs:
+            if len(gagnantes) == 1 and x == gagnantes[0]:
+                continue
+            for nom_fd, v in divisions[x]["equipes"].items():
+                ambigus.append({"division": x, "football_data": nom_fd, "matchendirect": v["matchendirect"],
+                                "concurrents": ["division " + g for g in divs if g != x]})
+            del divisions[x]
     return divisions, sorted(ambigus, key=lambda x: (x["division"], x["football_data"])), \
         sorted(non_resolus, key=lambda x: (x["division"], x["football_data"]))
 
@@ -208,6 +226,12 @@ def _equipe_du_cache(cle, divisions):
             continue
         candidats = [(similarite(slug, v["matchendirect"]), nom_fd, v["matchendirect"]) for nom_fd, v in info["equipes"].items()]
         candidats = [c for c in candidats if c[0] >= SIMILARITE_UNE_PREUVE]
+        # CORRECTIF 05/11/2026 : « Dundee FC » et « Dundee Utd » se réduisent au même mot une fois les mots vides retirés -> égalité
+        # et équipe jamais reliée. Un nom strictement identique (sans retirer aucun mot) l'emporte sur toute ressemblance.
+        exacts = [c for c in candidats if normalise(c[2]) == normalise(slug)]
+        if len(exacts) == 1:
+            _, nom_fd, nom_med = exacts[0]
+            return div, nom_fd, nom_med
         if len(candidats) == 1 or (candidats and sorted(candidats)[-1][0] > sorted(candidats)[-2][0]):
             _, nom_fd, nom_med = max(candidats)
             return div, nom_fd, nom_med

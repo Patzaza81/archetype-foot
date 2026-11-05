@@ -124,3 +124,97 @@ def test_championnat_non_couvert_matchendirect_seul_non_provisoire():
     eq, _ = ae.assemble(c, [], DIVISIONS)
     assert eq[0]["couverte_par_football_data"] is False and eq[0]["matchs"][0]["provisoire"] is False
     assert eq[0]["raison"] == "championnat non couvert par Football-Data"
+
+
+# --- Correctifs du 05/11/2026 : un championnat Matchendirect = une seule division ; nom identique prioritaire ---------------------
+MLS = "Etats-Unis : MLS"
+
+
+def _usa(extra_fd=(), extra_med=()):
+    fds = [fd("2026-09-01", "Seattle", "Portland", 1, 0, "USA"), fd("2026-09-08", "Seattle", "Portland", 2, 1, "USA"),
+           fd("2026-09-02", "Austin", "Dallas", 3, 1, "USA"), fd("2026-09-09", "Austin", "Dallas", 0, 0, "USA")]
+    meds = [med("2026-09-01", "Seattle", "Portland", 1, 0, MLS), med("2026-09-08", "Seattle", "Portland", 2, 1, MLS),
+            med("2026-09-02", "Austin", "Dallas", 3, 1, MLS), med("2026-09-09", "Austin", "Dallas", 0, 0, MLS)]
+    return fds + list(extra_fd), meds + list(extra_med)
+
+
+def _sc2_montrose():
+    return ([fd("2026-09-03", "Montrose", "Elgin", 2, 0, "SC2"), fd("2026-09-10", "Montrose", "Elgin", 1, 1, "SC2")],
+            [med("2026-09-03", "Montreal", "Zzz Qqq", 2, 0, MLS), med("2026-09-10", "Montreal", "Zzz Qqq", 1, 1, MLS)])
+
+
+# doivent réussir
+def test_division_unique_sur_son_championnat_conservee():
+    div, amb, _ = ae.construit_correspondances(*_usa())
+    assert set(div) == {"USA"} and len(div["USA"]["equipes"]) == 4 and amb == []
+
+
+def test_deux_divisions_deux_championnats_toutes_deux_conservees():
+    fds, meds = _usa([fd("2026-09-05", "Leeds", "Hull", 1, 0, "E1"), fd("2026-09-12", "Leeds", "Hull", 2, 0, "E1")],
+                     [med("2026-09-05", "Leeds", "Hull", 1, 0), med("2026-09-12", "Leeds", "Hull", 2, 0)])
+    div, amb, _ = ae.construit_correspondances(fds, meds)
+    assert set(div) == {"USA", "E1"} and amb == []
+
+
+def test_division_majoritaire_garde_le_championnat():
+    fds, meds = _usa(*_sc2_montrose())
+    div, amb, _ = ae.construit_correspondances(fds, meds)
+    assert "USA" in div and len(div["USA"]["equipes"]) == 4
+
+
+# doivent échouer (rejetées)
+def test_division_minoritaire_ecartee_montrose_n_est_plus_relie_a_montreal():
+    fds, meds = _usa(*_sc2_montrose())
+    div, _, _ = ae.construit_correspondances(fds, meds)
+    assert "SC2" not in div and all("Montrose" not in d["equipes"] for d in div.values())
+
+
+def test_division_ecartee_signalee_comme_ambigue():
+    fds, meds = _usa(*_sc2_montrose())
+    _, amb, _ = ae.construit_correspondances(fds, meds)
+    assert {a["division"] for a in amb} == {"SC2"} and ("Montrose", "Montreal") in {(a["football_data"], a["matchendirect"]) for a in amb}
+
+
+def test_egalite_entre_deux_divisions_aucune_ne_garde_le_championnat():
+    fds = [fd("2026-09-03", "Montrose", "Elgin", 2, 0, "SC2"), fd("2026-09-10", "Montrose", "Elgin", 1, 1, "SC2"),
+           fd("2026-09-01", "Seattle", "Portland", 1, 0, "USA"), fd("2026-09-08", "Seattle", "Portland", 2, 1, "USA")]
+    meds = [med("2026-09-03", "Montreal", "Zzz Qqq", 2, 0, MLS), med("2026-09-10", "Montreal", "Zzz Qqq", 1, 1, MLS),
+            med("2026-09-01", "Seattle", "Zzz Www", 1, 0, MLS), med("2026-09-08", "Seattle", "Zzz Www", 2, 1, MLS)]
+    div, amb, _ = ae.construit_correspondances(fds, meds)
+    assert div == {} and {a["division"] for a in amb} == {"SC2", "USA"}
+
+
+SC0 = {"SC0": {"competition_matchendirect": "Ecosse : Premier Ligue",
+               "equipes": {"Aberdeen": {"matchendirect": "Aberdeen", "preuves": 5, "similarite_nom": 1.0},
+                           "Dundee": {"matchendirect": "Dundee FC", "preuves": 5, "similarite_nom": 1.0},
+                           "Dundee United": {"matchendirect": "Dundee Utd.", "preuves": 5, "similarite_nom": 1.0}}}}
+
+
+def _cle(slug, comp="ecosse : premier ligue"):
+    return f"https://www.matchendirect.fr/equipe/{slug}_abcdefghijklmnopqrst1.html||{comp}"
+
+
+# doivent réussir
+def test_dundee_fc_relie_a_dundee():
+    assert ae._equipe_du_cache(_cle("dundee-fc"), SC0) == ("SC0", "Dundee", "Dundee FC")
+
+
+def test_dundee_utd_relie_a_dundee_united():
+    assert ae._equipe_du_cache(_cle("dundee-utd"), SC0) == ("SC0", "Dundee United", "Dundee Utd.")
+
+
+def test_club_au_nom_unique_toujours_relie():
+    assert ae._equipe_du_cache(_cle("aberdeen"), SC0) == ("SC0", "Aberdeen", "Aberdeen")
+
+
+# doivent échouer (restent non reliés)
+def test_club_inconnu_non_relie():
+    assert ae._equipe_du_cache(_cle("hamilton"), SC0) is None
+
+
+def test_nom_ambigu_sans_nom_identique_non_relie():
+    assert ae._equipe_du_cache(_cle("dundee-rovers"), SC0) is None
+
+
+def test_meme_nom_autre_championnat_non_relie():
+    assert ae._equipe_du_cache(_cle("dundee-fc", "angleterre : championnat"), SC0) is None
