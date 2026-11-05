@@ -1,12 +1,12 @@
 {
  "version": "1.0.0",
- "genere_le": "2026-11-05 12:02 UTC",
+ "genere_le": "2026-11-05 12:03 UTC",
  "pivot": "matchendirect",
  "methode": "même score, date à ± 1 jour, au moins un nom clairement semblable ; ≥ 2 preuves et 2× la suivante, ou 1 preuve avec noms presque identiques ; noms revendiqués deux fois rejetés",
  "bilan": {
-  "equipes_reliees": 598,
-  "divisions_reliees": 37,
-  "ambigues": 0,
+  "equipes_reliees": 596,
+  "divisions_reliees": 35,
+  "ambigues": 2,
   "non_resolues": 47
  },
  "divisions": {
@@ -2615,26 +2615,6 @@
     }
    }
   },
-  "SC2": {
-   "competition_matchendirect": "Etats-Unis : MLS",
-   "equipes": {
-    "Montrose": {
-     "matchendirect": "Montreal",
-     "preuves": 2,
-     "similarite_nom": 0.75
-    }
-   }
-  },
-  "SC3": {
-   "competition_matchendirect": "Danemark : Superligaen",
-   "equipes": {
-    "Kelty Hearts": {
-     "matchendirect": "Hearts",
-     "preuves": 1,
-     "similarite_nom": 0.9
-    }
-   }
-  },
   "SP1": {
    "competition_matchendirect": "Espagne : LaLiga",
    "equipes": {
@@ -3186,7 +3166,24 @@
    }
   }
  },
- "ambigues": [],
+ "ambigues": [
+  {
+   "division": "SC2",
+   "football_data": "Montrose",
+   "matchendirect": "Montreal",
+   "concurrents": [
+    "division USA"
+   ]
+  },
+  {
+   "division": "SC3",
+   "football_data": "Kelty Hearts",
+   "matchendirect": "Hearts",
+   "concurrents": [
+    "division DNK"
+   ]
+  }
+ ],
  "non_resolues": [
   {
    "division": "FIN",
