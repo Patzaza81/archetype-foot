@@ -3,6 +3,7 @@ Lecture seule des sorties reelles: journal gele (integration_calibration.py) + s
 une donnee absente reste null. Les performances ne portent que sur des matchs termines dont la prediction a ete gelee AVANT le coup d'envoi (verifie par integration_calibration.verifier_journal)."""
 import datetime, glob, gzip, json, math, os
 import integration_calibration as ic
+import p1_paris
 
 SORTIE = os.path.join(ic.RACINE, "data", "calibration_p1", "page_p1.json")
 MARCHES = ic.MARCHES
@@ -44,14 +45,24 @@ def performance(termines):
         res["par_version"][v] = d
     return res
 
+def performance_paris(termines):
+    """Paris retenus par P1 sur matchs termines (mise unitaire). n_matchs_sans_pari = matchs termines ou P1 n'avait retenu aucun marche."""
+    P = [m["evaluation"]["pari"] for m in termines if m["evaluation"].get("pari")]; n = len(P)
+    res = {"matchs_termines": len(termines), "paris": n, "matchs_sans_pari": len(termines) - n}
+    if not n: return {**res, "note": "Aucun pari retenu et termine : aucun taux ni rendement mesurable."}
+    w = sum(p["gagne"] for p in P); g = [p["gain"] for p in P]; moy = sum(g) / n; var = sum((x - moy) ** 2 for x in g) / max(n - 1, 1); t = w / n
+    return {**res, "gagnes": w, "taux": t, "taux_erreur_type": math.sqrt(max(t * (1 - t), 0) / n), "rendement_moyen": moy, "rendement_erreur_type": math.sqrt(var / n)}
+
 def construire(maintenant=None, dossier=ic.DOSSIER, flux=ic.FLUX, config=None):
     import calibration_p1 as cp
     config = config or cp.charger(); maintenant = maintenant or datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     J = ic.lire_journal(dossier); S = scores(flux); matchs, termines = [], []
     for r in J:
         sc = S.get(r["match_id"]); st = "a_venir" if r["coup_d_envoi_utc"] > maintenant else ("termine" if sc else "en_cours_ou_resultat_attendu")
-        m = {k: r[k] for k in ("match_id", "date", "coup_d_envoi_utc", "competition", "division", "domicile", "exterieur", "p1_original", "p1_calibre", "methode", "detail", "gele_le", "empreinte", "mode", "n_historique_competition")}
+        m = {k: r.get(k) for k in ("match_id", "date", "coup_d_envoi_utc", "competition", "division", "domicile", "exterieur", "p1_original", "p1_calibre", "methode", "detail", "gele_le", "empreinte", "mode", "n_historique_competition", "pari", "cotes_au_gel")}
         m.update(statut=st, resultat=sc if st == "termine" else None, evaluation=evaluer(r, sc) if st == "termine" else None)
+        if st == "termine" and (r.get("pari") or {}).get("retenu"):
+            pr = r["pari"]["retenu"]; g = p1_paris.gagne(pr["cle"], sc["buts_dom"], sc["buts_ext"]); m["evaluation"]["pari"] = {"cle": pr["cle"], "gagne": g, "gain": pr["cote"] - 1 if g else -1.0}
         matchs.append(m); termines += [m] if st == "termine" else []
     matchs.sort(key=lambda m: (m["coup_d_envoi_utc"], m["competition"], m["domicile"]))
     valides = [(c, mk) for c, v in config["competitions"].items() for mk in MARCHES if v[mk]["statut"] == "CORRECTION VALIDEE"]
@@ -59,7 +70,7 @@ def construire(maintenant=None, dossier=ic.DOSSIER, flux=ic.FLUX, config=None):
             "calibration": {"couples_valides": len(valides), "couples_total": sum(len(MARCHES) for _ in config["competitions"]), "competitions": len(config["competitions"]),
                             "texte": "Aucune correction validee : P1 calibre = P1 original." if not valides else "Corrections validees (voir methode par marche) : " + ", ".join(f"{c}/{m}" for c, m in valides)},
             "journal": {"lignes": len(J), "anomalies": ic.verifier_journal(dossier), "derniere_empreinte": J[-1]["empreinte"] if J else None},
-            "performance": performance(termines), "matchs": matchs}
+            "performance": performance(termines), "performance_paris": performance_paris(termines), "matchs": matchs}
 
 def ecrire(donnees=None, chemin=None):
     d = donnees or construire(); json.dump(d, open(chemin or SORTIE, "w", encoding="utf-8"), ensure_ascii=False, indent=1); return d

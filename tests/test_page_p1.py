@@ -68,4 +68,4 @@ def test_navigation_toutes_pages_a_navigation_moteurs():
 def test_affichage_exact_dans_le_navigateur():
     pytest.importorskip("playwright"); import verifier_page_p1 as v
     d = json.load(open(pd.SORTIE, encoding="utf-8")); r = v.affichage(d)
-    assert r["cartes"] == r["attendu"] and r["ecart_max_pct"] == 0 and not r["erreurs_console"] and not r["debordement_horizontal"]
+    assert r["cartes"] == r["attendu"] and r.get("paris_incoherents", 0) == 0 and r["ecart_max_pct"] == 0 and not r["erreurs_console"] and not r["debordement_horizontal"]

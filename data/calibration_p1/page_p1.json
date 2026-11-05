@@ -1,5 +1,5 @@
 {
- "genere_le": "2026-11-05T06:48:16Z",
+ "genere_le": "2026-11-05T07:04:08Z",
  "source": "journal gele data/calibration_p1/parallele/journal.jsonl + scores data/archive_test",
  "mode": "parallele",
  "calibration": {
@@ -11,12 +11,18 @@
  "journal": {
   "lignes": 40,
   "anomalies": [],
-  "derniere_empreinte": "2de000fbcd2420c1d003fe679dcda61adcc8c10050c08944c2f9749990a605de"
+  "derniere_empreinte": "b6a3f2ddc8b51054bc7e0e0b9f6b35f6bc07e3464d54401743e80fafbb1cbbab"
  },
  "performance": {
   "matchs_termines": 0,
   "periode": null,
   "note": "Aucun match termine avec prediction gelee : aucune performance mesurable."
+ },
+ "performance_paris": {
+  "matchs_termines": 0,
+  "paris": 0,
+  "matchs_sans_pari": 0,
+  "note": "Aucun pari retenu et termine : aucun taux ni rendement mesurable."
  },
  "matchs": [
   {
@@ -64,10 +70,136 @@
     "fd_dom": "Palmeiras",
     "fd_ext": "Remo"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "4edb8f9abd88fab7581a6eb31e3cf1e55bf8d895b2d1cc1754a5f2ac02526ce8",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "f36d5d2d5c837a9a10dfd4f716762569e76b5f171577e30b5979cdd884421b54",
    "mode": "parallele",
    "n_historique_competition": 2230,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.6994750725745225,
+     "cote": 1.56,
+     "valeur": 0.091181113216255
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Palmeiras",
+      "p1": 0.6958213193520669,
+      "cote": 1.2,
+      "valeur": -0.1650144167775197
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.19132748797069563,
+      "cote": 6.79,
+      "valeur": 0.2991136433210233
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Remo",
+      "p1": 0.11285119267723719,
+      "cote": 12.57,
+      "valeur": 0.41853949195287155
+     },
+     {
+      "cle": "1N",
+      "libelle": "Palmeiras ou match nul",
+      "p1": 0.8871488073227626,
+      "cote": 1.06,
+      "valeur": -0.05962226423787165
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Remo",
+      "p1": 0.3041786806479328,
+      "cote": 3.77,
+      "valeur": 0.1467536260427067
+     },
+     {
+      "cle": "12",
+      "libelle": "Palmeiras ou Remo (pas de nul)",
+      "p1": 0.8086725120293041,
+      "cote": 1.12,
+      "valeur": -0.09428678652717926
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7630825420506872,
+      "cote": 1.15,
+      "valeur": -0.12245507664170985
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.23691745794931285,
+      "cote": 5.01,
+      "valeur": 0.18695646432605728
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5224210617225898,
+      "cote": 1.52,
+      "valeur": -0.2059199861816634
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.47757893827741016,
+      "cote": 2.43,
+      "valeur": 0.16051682001410672
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.30052492742547754,
+      "cote": 2.33,
+      "valeur": -0.29977691909863735
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.6994750725745225,
+      "cote": 1.56,
+      "valeur": 0.091181113216255
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.4368296162751732,
+      "cote": 2.1,
+      "valeur": -0.08265780582213622
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.5631703837248268,
+      "cote": 1.66,
+      "valeur": -0.06513716301678762
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 1.2,
+    "N": 6.79,
+    "2": 12.57,
+    "1N": 1.06,
+    "N2": 3.77,
+    "12": 1.12,
+    "o15+": 1.15,
+    "o15-": 5.01,
+    "o25+": 1.52,
+    "o25-": 2.43,
+    "o35+": 2.33,
+    "o35-": 1.56,
+    "btts+": 2.1,
+    "btts-": 1.66
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -117,10 +249,136 @@
     "fd_dom": "Cruzeiro",
     "fd_ext": "Bahia"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "90c7eb409c05096c8bb4f43c1fc25b701fb585ac39309cfc7f5afe1b1e0fd876",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "e955985ae582559226f4e3392e3a95d1ae981d21dd282599dc5f4a3f070fd044",
    "mode": "parallele",
    "n_historique_competition": 2230,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.713024061806173,
+     "cote": 1.56,
+     "valeur": 0.11231753641762987
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Cruzeiro MG",
+      "p1": 0.5182538263417907,
+      "cote": 1.69,
+      "valeur": -0.12415103348237366
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.24385125159734367,
+      "cote": 4.03,
+      "valeur": -0.01727945606270498
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Bahia",
+      "p1": 0.23789492206086535,
+      "cote": 4.51,
+      "valeur": 0.07290609849450269
+     },
+     {
+      "cle": "1N",
+      "libelle": "Cruzeiro MG ou match nul",
+      "p1": 0.7621050779391344,
+      "cote": 1.22,
+      "valeur": -0.07023180491425607
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Bahia",
+      "p1": 0.48174617365820904,
+      "cote": 2.06,
+      "valeur": -0.007602882264089339
+     },
+     {
+      "cle": "12",
+      "libelle": "Cruzeiro MG ou Bahia (pas de nul)",
+      "p1": 0.7561487484026561,
+      "cote": 1.26,
+      "valeur": -0.047252577012653285
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7522171431645016,
+      "cote": 1.15,
+      "valeur": -0.1349502853608232
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.2477828568354984,
+      "cote": 5.0,
+      "valeur": 0.23891428417749205
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5075612463687008,
+      "cote": 1.54,
+      "valeur": -0.21835568059220067
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.4924387536312992,
+      "cote": 2.38,
+      "valeur": 0.17200423364249207
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.286975938193827,
+      "cote": 2.34,
+      "valeur": -0.32847630462644484
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.713024061806173,
+      "cote": 1.56,
+      "valeur": 0.11231753641762987
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5247215816536291,
+      "cote": 1.55,
+      "valeur": -0.1866815484368748
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.47527841834637086,
+      "cote": 2.3,
+      "valeur": 0.09314036219665289
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 1.69,
+    "N": 4.03,
+    "2": 4.51,
+    "1N": 1.22,
+    "N2": 2.06,
+    "12": 1.26,
+    "o15+": 1.15,
+    "o15-": 5.0,
+    "o25+": 1.54,
+    "o25-": 2.38,
+    "o35+": 2.34,
+    "o35-": 1.56,
+    "btts+": 1.55,
+    "btts-": 2.3
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -170,10 +428,136 @@
     "fd_dom": "UTA Arad",
     "fd_ext": "Petrolul"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "7e8a581b06e0c58fa80857fea86fbbdbd084801a37b8535e5357195fcad62803",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "719fdef8a7bf20909b51f55bd2dc3abec81c505ec9d519bbe581d8f6511cadc6",
    "mode": "parallele",
    "n_historique_competition": 1710,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.801815487111171,
+     "cote": 1.37,
+     "valeur": 0.09848721734230437
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire UTA Arad",
+      "p1": 0.46601423415185755,
+      "cote": 1.75,
+      "valeur": -0.18447509023424924
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.2763795813493919,
+      "cote": 3.75,
+      "valeur": 0.03642343006021953
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire P. Ploiesti",
+      "p1": 0.2576061844987506,
+      "cote": 4.13,
+      "valeur": 0.06391354197984
+     },
+     {
+      "cle": "1N",
+      "libelle": "UTA Arad ou match nul",
+      "p1": 0.7423938155012495,
+      "cote": 1.22,
+      "valeur": -0.09427954508847558
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou P. Ploiesti",
+      "p1": 0.5339857658481425,
+      "cote": 1.88,
+      "valeur": 0.003893239794507952
+     },
+     {
+      "cle": "12",
+      "libelle": "UTA Arad ou P. Ploiesti (pas de nul)",
+      "p1": 0.7236204186506081,
+      "cote": 1.25,
+      "valeur": -0.09547447668673992
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.6663312024733947,
+      "cote": 1.23,
+      "valeur": -0.18041262095772448
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.3336687975266053,
+      "cote": 3.78,
+      "valeur": 0.2612680546505679
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.40073293733887866,
+      "cote": 1.75,
+      "valeur": -0.29871735965696233
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.5992670626611214,
+      "cote": 1.97,
+      "valeur": 0.18055611344240918
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.19818451288882896,
+      "cote": 2.86,
+      "valeur": -0.43319229313794916
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.801815487111171,
+      "cote": 1.37,
+      "valeur": 0.09848721734230437
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.44995067223649954,
+      "cote": 1.69,
+      "valeur": -0.23958336392031576
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.5500493277635005,
+      "cote": 1.97,
+      "valeur": 0.08359717569409586
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 1.75,
+    "N": 3.75,
+    "2": 4.13,
+    "1N": 1.22,
+    "N2": 1.88,
+    "12": 1.25,
+    "o15+": 1.23,
+    "o15-": 3.78,
+    "o25+": 1.75,
+    "o25-": 1.97,
+    "o35+": 2.86,
+    "o35-": 1.37,
+    "btts+": 1.69,
+    "btts-": 1.97
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -223,10 +607,136 @@
     "fd_dom": "Motor Lublin",
     "fd_ext": "Wisla Plock"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "5e4394f0991d4a8448dd84905c50fb7ebd73b6d386cdc372df57540107ca6959",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "339bc5e475eb593448c20c2b28098601a7d998322d78665b86a446becf0b2be2",
    "mode": "parallele",
    "n_historique_competition": 1645,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.7097288916421924,
+     "cote": 1.47,
+     "valeur": 0.043301470714022905
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Motor Lublin",
+      "p1": 0.4660319490282936,
+      "cote": 1.96,
+      "valeur": -0.08657737990454462
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.25114311186912214,
+      "cote": 3.73,
+      "valeur": -0.06323619272817438
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Wisla Plock SA",
+      "p1": 0.2828249391025841,
+      "cote": 3.54,
+      "valeur": 0.0012002844231477905
+     },
+     {
+      "cle": "1N",
+      "libelle": "Motor Lublin ou match nul",
+      "p1": 0.7171750608974157,
+      "cote": 1.31,
+      "valeur": -0.06050067022438543
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Wisla Plock SA",
+      "p1": 0.5339680509717062,
+      "cote": 1.79,
+      "valeur": -0.044197188760645933
+     },
+     {
+      "cle": "12",
+      "libelle": "Motor Lublin ou Wisla Plock SA (pas de nul)",
+      "p1": 0.7488568881308777,
+      "cote": 1.29,
+      "valeur": -0.03397461431116777
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7549046740570259,
+      "cote": 1.19,
+      "valeur": -0.10166343787213927
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.24509532594297412,
+      "cote": 4.37,
+      "valeur": 0.071066574370797
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5112059366653442,
+      "cote": 1.64,
+      "valeur": -0.1616222638688356
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.4887940633346558,
+      "cote": 2.18,
+      "valeur": 0.06557105806954966
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.2902711083578075,
+      "cote": 2.57,
+      "valeur": -0.2540032515204348
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7097288916421924,
+      "cote": 1.47,
+      "valeur": 0.043301470714022905
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5421315963073203,
+      "cote": 1.57,
+      "valeur": -0.14885339379750706
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.45786840369267967,
+      "cote": 2.27,
+      "valeur": 0.03936127638238296
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 1.96,
+    "N": 3.73,
+    "2": 3.54,
+    "1N": 1.31,
+    "N2": 1.79,
+    "12": 1.29,
+    "o15+": 1.19,
+    "o15-": 4.37,
+    "o25+": 1.64,
+    "o25-": 2.18,
+    "o35+": 2.57,
+    "o35-": 1.47,
+    "btts+": 1.57,
+    "btts-": 2.27
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -276,10 +786,130 @@
     "fd_dom": "Gaziantep",
     "fd_ext": "Kasimpasa"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "2de000fbcd2420c1d003fe679dcda61adcc8c10050c08944c2f9749990a605de",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "b6a3f2ddc8b51054bc7e0e0b9f6b35f6bc07e3464d54401743e80fafbb1cbbab",
    "mode": "parallele",
    "n_historique_competition": 1840,
+   "pari": {
+    "retenu": null,
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Gaziantep FK",
+      "p1": 0.3924794866467569,
+      "cote": 2.51,
+      "valeur": -0.014876488516640252
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.2539285759157896,
+      "cote": 3.43,
+      "valeur": -0.1290249846088416
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Kasimpasa",
+      "p1": 0.35359193743745315,
+      "cote": 2.78,
+      "valeur": -0.017014413923880256
+     },
+     {
+      "cle": "1N",
+      "libelle": "Gaziantep FK ou match nul",
+      "p1": 0.6464080625625466,
+      "cote": 1.45,
+      "valeur": -0.06270830928430748
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Kasimpasa",
+      "p1": 0.6075205133532428,
+      "cote": 1.52,
+      "valeur": -0.07656881970307106
+     },
+     {
+      "cle": "12",
+      "libelle": "Gaziantep FK ou Kasimpasa (pas de nul)",
+      "p1": 0.7460714240842101,
+      "cote": 1.33,
+      "valeur": -0.00772500596800052
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7643831629777889,
+      "cote": 1.27,
+      "valeur": -0.029233383018208103
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.23561683702221115,
+      "cote": 3.63,
+      "valeur": -0.14471088160937362
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5242223505772996,
+      "cote": 1.87,
+      "valeur": -0.019704204420449734
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.4757776494227004,
+      "cote": 1.9,
+      "valeur": -0.09602246609686926
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.30218808938386676,
+      "cote": 3.14,
+      "valeur": -0.05112939933465832
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.6978119106161332,
+      "cote": 1.35,
+      "valeur": -0.05795392066822003
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5622281690980837,
+      "cote": 1.7,
+      "valeur": -0.04421211253325774
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.4377718309019163,
+      "cote": 2.12,
+      "valeur": -0.07192371848793744
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.51,
+    "N": 3.43,
+    "2": 2.78,
+    "1N": 1.45,
+    "N2": 1.52,
+    "12": 1.33,
+    "o15+": 1.27,
+    "o15-": 3.63,
+    "o25+": 1.87,
+    "o25-": 1.9,
+    "o35+": 3.14,
+    "o35-": 1.35,
+    "btts+": 1.7,
+    "btts-": 2.12
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -329,10 +959,136 @@
     "fd_dom": "Dresden",
     "fd_ext": "Greuther Furth"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "855e781320ed191b42a47ac42f7785194927ed58b81a2900822cdc4ad5f6e8f2",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "b5336ab2bdebde295720701195f64d78594fb151d1dd7f24fa798deb616bfed2",
    "mode": "parallele",
    "n_historique_competition": 1620,
+   "pari": {
+    "retenu": {
+     "cle": "2",
+     "libelle": "Victoire Greuther Fürth",
+     "p1": 0.28904716035655303,
+     "cote": 3.73,
+     "valeur": 0.07814590812994271
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire D. Dresde",
+      "p1": 0.4801056169909194,
+      "cote": 1.88,
+      "valeur": -0.09740144005707152
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.23084722265252758,
+      "cote": 3.86,
+      "valeur": -0.10892972056124361
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Greuther Fürth",
+      "p1": 0.28904716035655303,
+      "cote": 3.73,
+      "valeur": 0.07814590812994271
+     },
+     {
+      "cle": "1N",
+      "libelle": "D. Dresde ou match nul",
+      "p1": 0.710952839643447,
+      "cote": 1.28,
+      "valeur": -0.08998036525638775
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Greuther Fürth",
+      "p1": 0.5198943830090806,
+      "cote": 1.86,
+      "valeur": -0.032996447603109935
+     },
+     {
+      "cle": "12",
+      "libelle": "D. Dresde ou Greuther Fürth (pas de nul)",
+      "p1": 0.7691527773474724,
+      "cote": 1.28,
+      "valeur": -0.01548444499523527
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.8202491177368726,
+      "cote": 1.16,
+      "valeur": -0.04851102342522784
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.1797508822631274,
+      "cote": 4.81,
+      "valeur": -0.1353982563143572
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.6065548938353554,
+      "cote": 1.56,
+      "valeur": -0.053774365616845454
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.39344510616464456,
+      "cote": 2.33,
+      "valeur": -0.0832729026363781
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.3831814118226069,
+      "cote": 2.38,
+      "valeur": -0.08802823986219566
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.6168185881773931,
+      "cote": 1.54,
+      "valeur": -0.05009937420681465
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.6160813498372357,
+      "cote": 1.52,
+      "valeur": -0.06355634824740164
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.3839186501627643,
+      "cote": 2.37,
+      "valeur": -0.09011279911424863
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 1.88,
+    "N": 3.86,
+    "2": 3.73,
+    "1N": 1.28,
+    "N2": 1.86,
+    "12": 1.28,
+    "o15+": 1.16,
+    "o15-": 4.81,
+    "o25+": 1.56,
+    "o25-": 2.33,
+    "o35+": 2.38,
+    "o35-": 1.54,
+    "btts+": 1.52,
+    "btts-": 2.37
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -382,10 +1138,136 @@
     "fd_dom": "Silkeborg",
     "fd_ext": "Lyngby"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "968ff54bdecc26a5f4c78ecfc5f3ca537166dcbed3d2f0ab1233149c6a9f0943",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "ad468790b983d8f77444c6a17e3e33eaa529f12bcd60af82a3d142823e1e2ae5",
    "mode": "parallele",
    "n_historique_competition": 1041,
+   "pari": {
+    "retenu": {
+     "cle": "1",
+     "libelle": "Victoire Silkeborg",
+     "p1": 0.43870163424715,
+     "cote": 2.4,
+     "valeur": 0.05288392219315985
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Silkeborg",
+      "p1": 0.43870163424715,
+      "cote": 2.4,
+      "valeur": 0.05288392219315985
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.23643680006342302,
+      "cote": 3.77,
+      "valeur": -0.10863326376089522
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Lyngby",
+      "p1": 0.3248615656894269,
+      "cote": 2.64,
+      "valeur": -0.1423654665799129
+     },
+     {
+      "cle": "1N",
+      "libelle": "Silkeborg ou match nul",
+      "p1": 0.675138434310573,
+      "cote": 1.47,
+      "valeur": -0.007546501563457708
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Lyngby",
+      "p1": 0.56129836575285,
+      "cote": 1.55,
+      "valeur": -0.12998753308308253
+     },
+     {
+      "cle": "12",
+      "libelle": "Silkeborg ou Lyngby (pas de nul)",
+      "p1": 0.7635631999365768,
+      "cote": 1.29,
+      "valeur": -0.01500347208181585
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.8149844474306235,
+      "cote": 1.16,
+      "valeur": -0.054618040980476845
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.18501555256937652,
+      "cote": 4.88,
+      "valeur": -0.09712410346144262
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5983505998325825,
+      "cote": 1.54,
+      "valeur": -0.07854007625782289
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.40164940016741746,
+      "cote": 2.38,
+      "valeur": -0.04407442760154645
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.3746577683771038,
+      "cote": 2.33,
+      "valeur": -0.12704739968134815
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.6253422316228963,
+      "cote": 1.56,
+      "valeur": -0.024466118668281744
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.6164902998034499,
+      "cote": 1.47,
+      "valeur": -0.09375925928892859
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.38350970019655006,
+      "cote": 2.51,
+      "valeur": -0.037390652506659405
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.4,
+    "N": 3.77,
+    "2": 2.64,
+    "1N": 1.47,
+    "N2": 1.55,
+    "12": 1.29,
+    "o15+": 1.16,
+    "o15-": 4.88,
+    "o25+": 1.54,
+    "o25-": 2.38,
+    "o35+": 2.33,
+    "o35-": 1.56,
+    "btts+": 1.47,
+    "btts-": 2.51
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -435,10 +1317,136 @@
     "fd_dom": "SK Rapid",
     "fd_ext": "Wolfsberger AC"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "50ca99d81755c3a06c6df5d16f303622d4da860b129586e475e8794e9325b4c0",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "022ca9aaf7ccf1f56eaf5834eefa4692669e92dcaf7a66289d9d90cd352e388c",
    "mode": "parallele",
    "n_historique_competition": 1035,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.6768489050645239,
+     "cote": 1.92,
+     "valeur": 0.29954989772388574
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Rapid Wien",
+      "p1": 0.473449179968848,
+      "cote": 1.26,
+      "valeur": -0.40345403323925155
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.24308679955209647,
+      "cote": 6.66,
+      "valeur": 0.6189580850169625
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Wolfsberger AC",
+      "p1": 0.2834640204790558,
+      "cote": 9.22,
+      "valeur": 1.6135382688168947
+     },
+     {
+      "cle": "1N",
+      "libelle": "Rapid Wien ou match nul",
+      "p1": 0.7165359795209445,
+      "cote": 1.08,
+      "valeur": -0.2261411421173799
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Wolfsberger AC",
+      "p1": 0.5265508200311523,
+      "cote": 3.45,
+      "valeur": 0.8166003291074755
+     },
+     {
+      "cle": "12",
+      "libelle": "Rapid Wien ou Wolfsberger AC (pas de nul)",
+      "p1": 0.7569132004479038,
+      "cote": 1.13,
+      "valeur": -0.14468808349386886
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7801964266965123,
+      "cote": 1.09,
+      "valeur": -0.14958589490080143
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.21980357330348765,
+      "cote": 6.92,
+      "valeur": 0.5210407272601345
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.546520203062934,
+      "cote": 1.33,
+      "valeur": -0.27312812992629776
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.45347979693706597,
+      "cote": 3.22,
+      "valeur": 0.4602049461373525
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.32315109493547617,
+      "cote": 1.85,
+      "valeur": -0.40217047436936904
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.6768489050645239,
+      "cote": 1.92,
+      "valeur": 0.29954989772388574
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5691666645713315,
+      "cote": 1.67,
+      "valeur": -0.04949167016587652
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.43083333542866853,
+      "cote": 2.16,
+      "valeur": -0.06939999547407594
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 1.26,
+    "N": 6.66,
+    "2": 9.22,
+    "1N": 1.08,
+    "N2": 3.45,
+    "12": 1.13,
+    "o15+": 1.09,
+    "o15-": 6.92,
+    "o25+": 1.33,
+    "o25-": 3.22,
+    "o35+": 1.85,
+    "o35-": 1.92,
+    "btts+": 1.67,
+    "btts-": 2.16
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -488,10 +1496,136 @@
     "fd_dom": "Dijon",
     "fd_ext": "Red Star"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "a9b6ca309cb546168e95ba25fcfb33312cf39c5f61e48481747f84ae3ff10498",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "7506c8945e1c857a44ca705bec651e44d385deec176483b2b5e6f047a6aa78e3",
    "mode": "parallele",
    "n_historique_competition": 1850,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.734122370777698,
+     "cote": 1.51,
+     "valeur": 0.10852477987432407
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Dijon FCO",
+      "p1": 0.42421677765318844,
+      "cote": 2.61,
+      "valeur": 0.10720578967482175
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.2612460801064535,
+      "cote": 3.48,
+      "valeur": -0.09086364122954182
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Red Star",
+      "p1": 0.3145371422403581,
+      "cote": 2.56,
+      "valeur": -0.19478491586468316
+     },
+     {
+      "cle": "1N",
+      "libelle": "Dijon FCO ou match nul",
+      "p1": 0.685462857759642,
+      "cote": 1.5,
+      "valeur": 0.028194286639462884
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Red Star",
+      "p1": 0.5757832223468116,
+      "cote": 1.48,
+      "valeur": -0.14784083092671885
+     },
+     {
+      "cle": "12",
+      "libelle": "Dijon FCO ou Red Star (pas de nul)",
+      "p1": 0.7387539198935466,
+      "cote": 1.32,
+      "valeur": -0.024844825740518495
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7342775940519461,
+      "cote": 1.17,
+      "valeur": -0.14089521495922308
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.26572240594805385,
+      "cote": 4.64,
+      "valeur": 0.23295196359896986
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.4837352259405604,
+      "cote": 1.6,
+      "valeur": -0.22602363849510332
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.5162647740594396,
+      "cote": 2.25,
+      "valeur": 0.16159574163373902
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.26587762922230196,
+      "cote": 2.45,
+      "valeur": -0.3485998084053602
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.734122370777698,
+      "cote": 1.51,
+      "valeur": 0.10852477987432407
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.527169393603949,
+      "cote": 1.49,
+      "valeur": -0.21451760353011606
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.472830606396051,
+      "cote": 2.45,
+      "valeur": 0.1584349856703251
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.61,
+    "N": 3.48,
+    "2": 2.56,
+    "1N": 1.5,
+    "N2": 1.48,
+    "12": 1.32,
+    "o15+": 1.17,
+    "o15-": 4.64,
+    "o25+": 1.6,
+    "o25-": 2.25,
+    "o35+": 2.45,
+    "o35-": 1.51,
+    "btts+": 1.49,
+    "btts-": 2.45
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -541,10 +1675,136 @@
     "fd_dom": "Grenoble",
     "fd_ext": "Reims"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "3e5d36cf464b1c6f8222bad4b63a60fc0d0855b62f98c45d803bf94543898a35",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "9ad05278ac64a6cec8e5bea1f186a491fbabea4e8d407f659a13a3c0875fa454",
    "mode": "parallele",
    "n_historique_competition": 1850,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.7908627701065244,
+     "cote": 1.31,
+     "valeur": 0.036030228839547096
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Grenoble Foot",
+      "p1": 0.28054977014196136,
+      "cote": 3.88,
+      "valeur": 0.08853310815081006
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.2757175251958659,
+      "cote": 3.54,
+      "valeur": -0.02395996080663476
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Reims",
+      "p1": 0.44373270466217274,
+      "cote": 1.92,
+      "valeur": -0.14803320704862832
+     },
+     {
+      "cle": "1N",
+      "libelle": "Grenoble Foot ou match nul",
+      "p1": 0.5562672953378273,
+      "cote": 1.83,
+      "valeur": 0.017969150468224004
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Reims",
+      "p1": 0.7194502298580386,
+      "cote": 1.27,
+      "valeur": -0.08629820808029087
+     },
+     {
+      "cle": "12",
+      "libelle": "Grenoble Foot ou Reims (pas de nul)",
+      "p1": 0.7242824748041341,
+      "cote": 1.31,
+      "valeur": -0.051189958006584324
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.6785980240456038,
+      "cote": 1.28,
+      "valeur": -0.1313945292216272
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.32140197595439624,
+      "cote": 3.44,
+      "valeur": 0.10562279728312296
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.4149288352631996,
+      "cote": 1.9,
+      "valeur": -0.21163521299992072
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.5850711647368003,
+      "cote": 1.84,
+      "valeur": 0.07653094311571262
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.20913722989347558,
+      "cote": 3.25,
+      "valeur": -0.3203040028462044
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7908627701065244,
+      "cote": 1.31,
+      "valeur": 0.036030228839547096
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.4672120436556684,
+      "cote": 1.78,
+      "valeur": -0.16836256229291024
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.5327879563443316,
+      "cote": 1.93,
+      "valeur": 0.028280755744559904
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 3.88,
+    "N": 3.54,
+    "2": 1.92,
+    "1N": 1.83,
+    "N2": 1.27,
+    "12": 1.31,
+    "o15+": 1.28,
+    "o15-": 3.44,
+    "o25+": 1.9,
+    "o25-": 1.84,
+    "o35+": 3.25,
+    "o35-": 1.31,
+    "btts+": 1.78,
+    "btts-": 1.93
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -594,10 +1854,136 @@
     "fd_dom": "Montpellier",
     "fd_ext": "Metz"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "41ce21cafb4c52dd6968583b4e68f6226e2c4064b366d571582d8cd7fe30f5e7",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "5364dd2fb350ec56bfdc4ee5e8e961b21c57d21f424a67f71b1262f2a80591ac",
    "mode": "parallele",
    "n_historique_competition": 1850,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.7977639175729777,
+     "cote": 1.43,
+     "valeur": 0.14080240212935813
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Montpellier",
+      "p1": 0.36880937062154356,
+      "cote": 1.99,
+      "valeur": -0.26606935246312835
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.28304410344940134,
+      "cote": 3.5,
+      "valeur": -0.009345637927095307
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Metz",
+      "p1": 0.34814652592905493,
+      "cote": 3.68,
+      "valeur": 0.2811792154189221
+     },
+     {
+      "cle": "1N",
+      "libelle": "Montpellier ou match nul",
+      "p1": 0.651853474070945,
+      "cote": 1.29,
+      "valeur": -0.15910901844848102
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Metz",
+      "p1": 0.6311906293784563,
+      "cote": 1.77,
+      "valeur": 0.11720741399986756
+     },
+     {
+      "cle": "12",
+      "libelle": "Montpellier ou Metz (pas de nul)",
+      "p1": 0.7169558965505984,
+      "cote": 1.31,
+      "valeur": -0.06078777551871606
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.6709353768557019,
+      "cote": 1.2,
+      "valeur": -0.1948775477731577
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.3290646231442981,
+      "cote": 4.17,
+      "valeur": 0.37219947851172286
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.4060226463386038,
+      "cote": 1.7,
+      "valeur": -0.3097615012243735
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.5939773536613961,
+      "cote": 2.08,
+      "valeur": 0.23547289561570395
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.20223608242702232,
+      "cote": 2.68,
+      "valeur": -0.45800729909558013
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7977639175729777,
+      "cote": 1.43,
+      "valeur": 0.14080240212935813
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.4685280985842375,
+      "cote": 1.59,
+      "valeur": -0.2550403232510623
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.5314719014157625,
+      "cote": 2.21,
+      "valeur": 0.174552902128835
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 1.99,
+    "N": 3.5,
+    "2": 3.68,
+    "1N": 1.29,
+    "N2": 1.77,
+    "12": 1.31,
+    "o15+": 1.2,
+    "o15-": 4.17,
+    "o25+": 1.7,
+    "o25-": 2.08,
+    "o35+": 2.68,
+    "o35-": 1.43,
+    "btts+": 1.59,
+    "btts-": 2.21
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -647,10 +2033,136 @@
     "fd_dom": "Nancy",
     "fd_ext": "Sochaux"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "693315a48d40f8bb66193d5565975d67fc446b986d20755eaf576f37d047e99c",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "885f337df5c208844091b123bb366d8471644edce0523ea0ece2d75f78f23144",
    "mode": "parallele",
    "n_historique_competition": 1850,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.7849930875420491,
+     "cote": 1.29,
+     "valeur": 0.012641082929243375
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Nancy",
+      "p1": 0.26709686225389656,
+      "cote": 1.71,
+      "valeur": -0.5432643655458369
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.27166646946967327,
+      "cote": 3.66,
+      "valeur": -0.0057007217409957844
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Sochaux",
+      "p1": 0.4612366682764302,
+      "cote": 4.93,
+      "valeur": 1.2738967746028007
+     },
+     {
+      "cle": "1N",
+      "libelle": "Nancy ou match nul",
+      "p1": 0.5387633317235698,
+      "cote": 1.2,
+      "valeur": -0.35348400193171625
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Sochaux",
+      "p1": 0.7329031377461035,
+      "cote": 2.04,
+      "valeur": 0.4951224010020512
+     },
+     {
+      "cle": "12",
+      "libelle": "Nancy ou Sochaux (pas de nul)",
+      "p1": 0.7283335305303267,
+      "cote": 1.29,
+      "valeur": -0.06044974561587857
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.6849446394503645,
+      "cote": 1.3,
+      "valeur": -0.10957196871452601
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.31505536054963545,
+      "cote": 3.33,
+      "valeur": 0.04913435063028615
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.4224040109129172,
+      "cote": 1.96,
+      "valeur": -0.17208813861068228
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.5775959890870828,
+      "cote": 1.79,
+      "valeur": 0.033896820465878275
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.21500691245795087,
+      "cote": 3.38,
+      "valeur": -0.27327663589212614
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7849930875420491,
+      "cote": 1.29,
+      "valeur": 0.012641082929243375
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.46963606263607555,
+      "cote": 1.9,
+      "valeur": -0.10769148099145653
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.5303639373639244,
+      "cote": 1.81,
+      "valeur": -0.040041273371296815
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 1.71,
+    "N": 3.66,
+    "2": 4.93,
+    "1N": 1.2,
+    "N2": 2.04,
+    "12": 1.29,
+    "o15+": 1.3,
+    "o15-": 3.33,
+    "o25+": 1.96,
+    "o25-": 1.79,
+    "o35+": 3.38,
+    "o35-": 1.29,
+    "btts+": 1.9,
+    "btts-": 1.81
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -700,10 +2212,136 @@
     "fd_dom": "Dunkerque",
     "fd_ext": "Guingamp"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "1d2d9980b2d5d6e8ded27a81a0f26e9867cfa775d2a47c31de140b3e797e8b51",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "0ebf6bfeb1e4bb53bc4ad46ba73997fa4647ec60163d5602d96e4130e694aec0",
    "mode": "parallele",
    "n_historique_competition": 1850,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.7342885365998857,
+     "cote": 1.45,
+     "valeur": 0.06471837806983416
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire USL Dunkerque",
+      "p1": 0.36238685179307495,
+      "cote": 2.74,
+      "valeur": -0.007060026086974536
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.26342395171770255,
+      "cote": 3.53,
+      "valeur": -0.07011345043651007
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire EA Guingamp",
+      "p1": 0.3741891964892223,
+      "cote": 2.43,
+      "valeur": -0.09072025253118976
+     },
+     {
+      "cle": "1N",
+      "libelle": "USL Dunkerque ou match nul",
+      "p1": 0.6258108035107774,
+      "cote": 1.54,
+      "valeur": -0.03625136259340267
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou EA Guingamp",
+      "p1": 0.6376131482069248,
+      "cote": 1.45,
+      "valeur": -0.07546093509995899
+     },
+     {
+      "cle": "12",
+      "libelle": "USL Dunkerque ou EA Guingamp (pas de nul)",
+      "p1": 0.7365760482822972,
+      "cote": 1.31,
+      "valeur": -0.03508537675019063
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7341310405387441,
+      "cote": 1.2,
+      "valeur": -0.11904275135350706
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.2658689594612559,
+      "cote": 4.27,
+      "valeur": 0.13526045689956256
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.48354410208885606,
+      "cote": 1.67,
+      "valeur": -0.19248134951161044
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.516455897911144,
+      "cote": 2.13,
+      "valeur": 0.1000510625507367
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.26571146340011437,
+      "cote": 2.63,
+      "valeur": -0.3011788512576993
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7342885365998857,
+      "cote": 1.45,
+      "valeur": 0.06471837806983416
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5307249978509211,
+      "cote": 1.54,
+      "valeur": -0.1826835033095815
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.4692750021490789,
+      "cote": 2.31,
+      "valeur": 0.0840252549643723
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.74,
+    "N": 3.53,
+    "2": 2.43,
+    "1N": 1.54,
+    "N2": 1.45,
+    "12": 1.31,
+    "o15+": 1.2,
+    "o15-": 4.27,
+    "o25+": 1.67,
+    "o25-": 2.13,
+    "o35+": 2.63,
+    "o35-": 1.45,
+    "btts+": 1.54,
+    "btts-": 2.31
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -753,10 +2391,136 @@
     "fd_dom": "Castellon",
     "fd_ext": "Eibar"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "7556716351dd0c17b725c96ec822c8affb654f853ad096d1c77f0ec1f769b7e8",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "dde0abb947a2d70323caa6b85e4eb97f348a9aa88cdc7fa1934ee490a2fea586",
    "mode": "parallele",
    "n_historique_competition": 2441,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.7247168445208607,
+     "cote": 1.5,
+     "valeur": 0.08707526678129107
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Castellon",
+      "p1": 0.45615966089444016,
+      "cote": 1.63,
+      "valeur": -0.25645975274206256
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.25584898525131483,
+      "cote": 4.15,
+      "valeur": 0.06177328879295674
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Eibar",
+      "p1": 0.28799135385424507,
+      "cote": 4.91,
+      "valeur": 0.4140375474243434
+     },
+     {
+      "cle": "1N",
+      "libelle": "Castellon ou match nul",
+      "p1": 0.712008646145755,
+      "cote": 1.2,
+      "valeur": -0.14558962462509406
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Eibar",
+      "p1": 0.54384033910556,
+      "cote": 2.17,
+      "valeur": 0.180133535859065
+     },
+     {
+      "cle": "12",
+      "libelle": "Castellon ou Eibar (pas de nul)",
+      "p1": 0.7441510147486852,
+      "cote": 1.25,
+      "valeur": -0.06981123156414348
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7424358025119575,
+      "cote": 1.18,
+      "valeur": -0.12392575303589015
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.2575641974880425,
+      "cote": 4.54,
+      "valeur": 0.16934145659571298
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.494463497186886,
+      "cote": 1.6,
+      "valeur": -0.20885840450098236
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.505536502813114,
+      "cote": 2.25,
+      "valeur": 0.13745713132950654
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.2752831554791393,
+      "cote": 2.48,
+      "valeur": -0.31729777441173457
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7247168445208607,
+      "cote": 1.5,
+      "valeur": 0.08707526678129107
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.530548684642998,
+      "cote": 1.63,
+      "valeur": -0.13520564403191337
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.469451315357002,
+      "cote": 2.14,
+      "valeur": 0.00462581486398439
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 1.63,
+    "N": 4.15,
+    "2": 4.91,
+    "1N": 1.2,
+    "N2": 2.17,
+    "12": 1.25,
+    "o15+": 1.18,
+    "o15-": 4.54,
+    "o25+": 1.6,
+    "o25-": 2.25,
+    "o35+": 2.48,
+    "o35-": 1.5,
+    "btts+": 1.63,
+    "btts-": 2.14
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -806,10 +2570,136 @@
     "fd_dom": "Ascoli",
     "fd_ext": "Palermo"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "9203cde09c4b27dc9d6c8faa803f87fb700c7f016cfbe1243e893988a2784709",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "c6af02f40910e46d0b95721a05e96e67479e99c96cc828fd84d259ae7519ee27",
    "mode": "parallele",
    "n_historique_competition": 2000,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.7528131550753085,
+     "cote": 1.49,
+     "valeur": 0.12169160106220978
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Ascoli",
+      "p1": 0.39082886076206264,
+      "cote": 3.16,
+      "valeur": 0.23501920000811793
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.26819562714477874,
+      "cote": 3.55,
+      "valeur": -0.04790552363603551
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Palerme",
+      "p1": 0.3409755120931586,
+      "cote": 2.17,
+      "valeur": -0.26008313875784594
+     },
+     {
+      "cle": "1N",
+      "libelle": "Ascoli ou match nul",
+      "p1": 0.6590244879068414,
+      "cote": 1.66,
+      "valeur": 0.09398064992535682
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Palerme",
+      "p1": 0.6091711392379373,
+      "cote": 1.36,
+      "valeur": -0.17152725063640517
+     },
+     {
+      "cle": "12",
+      "libelle": "Ascoli ou Palerme (pas de nul)",
+      "p1": 0.7318043728552213,
+      "cote": 1.31,
+      "valeur": -0.04133627155966013
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.71723463050247,
+      "cote": 1.18,
+      "valeur": -0.15366313600708537
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.28276536949752995,
+      "cote": 4.52,
+      "valeur": 0.2780994701288353
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.46187717528454103,
+      "cote": 1.62,
+      "valeur": -0.2517589760390435
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.538122824715459,
+      "cote": 2.21,
+      "valeur": 0.18925144262116445
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.24718684492469142,
+      "cote": 2.5,
+      "valeur": -0.3820328876882715
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7528131550753085,
+      "cote": 1.49,
+      "valeur": 0.12169160106220978
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5128232834787219,
+      "cote": 1.52,
+      "valeur": -0.2205086091123427
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.48717671652127814,
+      "cote": 2.37,
+      "valeur": 0.15460881815542926
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 3.16,
+    "N": 3.55,
+    "2": 2.17,
+    "1N": 1.66,
+    "N2": 1.36,
+    "12": 1.31,
+    "o15+": 1.18,
+    "o15-": 4.52,
+    "o25+": 1.62,
+    "o25-": 2.21,
+    "o35+": 2.5,
+    "o35-": 1.49,
+    "btts+": 1.52,
+    "btts-": 2.37
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -859,10 +2749,136 @@
     "fd_dom": "Raith Rvs",
     "fd_ext": "Dunfermline"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "c81ccb70cd0f51b2295d304dd2bf390d82b8a6d81e57371501877579d2126a5f",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "9896c53708b7c2f1c2564b82c7e4a83ee4e058f51a374174d6c8b0f70d28a889",
    "mode": "parallele",
    "n_historique_competition": 964,
+   "pari": {
+    "retenu": {
+     "cle": "1N",
+     "libelle": "Raith Rovers FC ou match nul",
+     "p1": 0.7009672837533302,
+     "cote": 1.52,
+     "valeur": 0.06547027130506189
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Raith Rovers FC",
+      "p1": 0.42174199188623845,
+      "cote": 2.65,
+      "valeur": 0.11761627849853196
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.2792252918670917,
+      "cote": 3.34,
+      "valeur": -0.06738752516391366
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Dunfermline",
+      "p1": 0.29903271624666977,
+      "cote": 2.6,
+      "valeur": -0.2225149377586586
+     },
+     {
+      "cle": "1N",
+      "libelle": "Raith Rovers FC ou match nul",
+      "p1": 0.7009672837533302,
+      "cote": 1.52,
+      "valeur": 0.06547027130506189
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Dunfermline",
+      "p1": 0.5782580081137615,
+      "cote": 1.52,
+      "valeur": -0.12104782766708255
+     },
+     {
+      "cle": "12",
+      "libelle": "Raith Rovers FC ou Dunfermline (pas de nul)",
+      "p1": 0.7207747081329082,
+      "cote": 1.35,
+      "valeur": -0.026954144020573834
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.6743407779885894,
+      "cote": 1.38,
+      "valeur": -0.06940972637574672
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.3256592220114106,
+      "cote": 2.9,
+      "valeur": -0.05558825616690921
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.40996476426068085,
+      "cote": 2.12,
+      "valeur": -0.13087469976735655
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.5900352357393192,
+      "cote": 1.67,
+      "valeur": -0.014641156315337023
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.20527837634377916,
+      "cote": 3.93,
+      "valeur": -0.19325598096894792
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7947216236562209,
+      "cote": 1.23,
+      "valeur": -0.022492402902848263
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.46697279426527216,
+      "cote": 1.85,
+      "valeur": -0.13610033060924642
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.5330272057347278,
+      "cote": 1.85,
+      "valeur": -0.013899669390753489
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.65,
+    "N": 3.34,
+    "2": 2.6,
+    "1N": 1.52,
+    "N2": 1.52,
+    "12": 1.35,
+    "o15+": 1.38,
+    "o15-": 2.9,
+    "o25+": 2.12,
+    "o25-": 1.67,
+    "o35+": 3.93,
+    "o35-": 1.23,
+    "btts+": 1.85,
+    "btts-": 1.85
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -912,10 +2928,136 @@
     "fd_dom": "Toulouse",
     "fd_ext": "Strasbourg"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "3ca712530df18dbd7ab6e15b1619f2b93e37c931a04397805d627b168eb299e4",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "1a68f6238de7f84e9b1e564463b839acedc40d41c8585214702cc72f01c5e854",
    "mode": "parallele",
    "n_historique_competition": 1759,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.6530996949397724,
+     "cote": 1.56,
+     "valeur": 0.018835524106044943
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Toulouse",
+      "p1": 0.4102763197755788,
+      "cote": 2.07,
+      "valeur": -0.15072801806455194
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.24351989806142882,
+      "cote": 3.74,
+      "valeur": -0.08923558125025621
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Strasbourg",
+      "p1": 0.34620378216299236,
+      "cote": 3.34,
+      "valeur": 0.15632063242439442
+     },
+     {
+      "cle": "1N",
+      "libelle": "Toulouse ou match nul",
+      "p1": 0.6537962178370076,
+      "cote": 1.34,
+      "valeur": -0.12391306809840974
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Strasbourg",
+      "p1": 0.5897236802244212,
+      "cote": 1.73,
+      "valeur": 0.020221966788248613
+     },
+     {
+      "cle": "12",
+      "libelle": "Toulouse ou Strasbourg (pas de nul)",
+      "p1": 0.7564801019385712,
+      "cote": 1.29,
+      "valeur": -0.024140668499243123
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7969054066852285,
+      "cote": 1.17,
+      "valeur": -0.06762067417828277
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.20309459331477153,
+      "cote": 4.88,
+      "valeur": -0.008898384623914901
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5709163522445866,
+      "cote": 1.57,
+      "valeur": -0.10366132697599906
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.4290836477554134,
+      "cote": 2.37,
+      "valeur": 0.01692824518032987
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.3469003050602276,
+      "cote": 2.38,
+      "valeur": -0.17437727395665825
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.6530996949397724,
+      "cote": 1.56,
+      "valeur": 0.018835524106044943
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5977728723030602,
+      "cote": 1.52,
+      "valeur": -0.09138523409934851
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.4022271276969398,
+      "cote": 2.5,
+      "valeur": 0.005567819242349614
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.07,
+    "N": 3.74,
+    "2": 3.34,
+    "1N": 1.34,
+    "N2": 1.73,
+    "12": 1.29,
+    "o15+": 1.17,
+    "o15-": 4.88,
+    "o25+": 1.57,
+    "o25-": 2.37,
+    "o35+": 2.38,
+    "o35-": 1.56,
+    "btts+": 1.52,
+    "btts-": 2.5
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -965,10 +3107,136 @@
     "fd_dom": "Derby",
     "fd_ext": "Bolton"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "7f822cef1121b7b65c4700cad547474cf115d5e765f7699a107afef560b0476c",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "c90af0b90d7b594dc4e99f8a2bc235f9c039153d000a2f9ac22f14a981820a0b",
    "mode": "parallele",
    "n_historique_competition": 2916,
+   "pari": {
+    "retenu": {
+     "cle": "1N",
+     "libelle": "Derby County ou match nul",
+     "p1": 0.7020763756379891,
+     "cote": 1.44,
+     "valeur": 0.010989980918704179
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Derby County",
+      "p1": 0.452186985829613,
+      "cote": 2.37,
+      "valeur": 0.07168315641618284
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.24988938980837613,
+      "cote": 3.69,
+      "valeur": -0.07790815160709208
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Bolton",
+      "p1": 0.2979236243620107,
+      "cote": 2.8,
+      "valeur": -0.1658138517863701
+     },
+     {
+      "cle": "1N",
+      "libelle": "Derby County ou match nul",
+      "p1": 0.7020763756379891,
+      "cote": 1.44,
+      "valeur": 0.010989980918704179
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Bolton",
+      "p1": 0.5478130141703869,
+      "cote": 1.57,
+      "valeur": -0.13993356775249255
+     },
+     {
+      "cle": "12",
+      "libelle": "Derby County ou Bolton (pas de nul)",
+      "p1": 0.7501106101916237,
+      "cote": 1.3,
+      "valeur": -0.024856206750889065
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.764798604872919,
+      "cote": 1.2,
+      "valeur": -0.08224167415249728
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.23520139512708105,
+      "cote": 4.42,
+      "valeur": 0.03959016646169822
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5247987274911402,
+      "cote": 1.65,
+      "valeur": -0.1340820996396187
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.4752012725088598,
+      "cote": 2.2,
+      "valeur": 0.045442799519491706
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.3027211922612111,
+      "cote": 2.59,
+      "valeur": -0.21595211204346332
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.6972788077387889,
+      "cote": 1.48,
+      "valeur": 0.03197263545340756
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5558845694541544,
+      "cote": 1.56,
+      "valeur": -0.1328200716515191
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.44411543054584557,
+      "cote": 2.38,
+      "valeur": 0.05699472469911249
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.37,
+    "N": 3.69,
+    "2": 2.8,
+    "1N": 1.44,
+    "N2": 1.57,
+    "12": 1.3,
+    "o15+": 1.2,
+    "o15-": 4.42,
+    "o25+": 1.65,
+    "o25-": 2.2,
+    "o35+": 2.59,
+    "o35-": 1.48,
+    "btts+": 1.56,
+    "btts-": 2.38
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -1018,10 +3286,136 @@
     "fd_dom": "Everton",
     "fd_ext": "Coventry"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "42e2eefb7873aabb350891e008642f892bdc12a742f93e1c6026783a33fca5d6",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "b462c75d0970cf4a1aba9e8f77b436f82a3384edfa35249f74aadaab68b993b9",
    "mode": "parallele",
    "n_historique_competition": 1990,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.7681101888048113,
+     "cote": 1.44,
+     "valeur": 0.10607867187892817
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Everton",
+      "p1": 0.46322459881294875,
+      "cote": 1.71,
+      "valeur": -0.2078859360298576
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.26639139782950855,
+      "cote": 4.0,
+      "valeur": 0.06556559131803419
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Coventry",
+      "p1": 0.2703840033575428,
+      "cote": 4.62,
+      "valeur": 0.24917409551184777
+     },
+     {
+      "cle": "1N",
+      "libelle": "Everton ou match nul",
+      "p1": 0.7296159966424574,
+      "cote": 1.22,
+      "valeur": -0.10986848409620209
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Coventry",
+      "p1": 0.5367754011870514,
+      "cote": 2.06,
+      "valeur": 0.10575732644532576
+     },
+     {
+      "cle": "12",
+      "libelle": "Everton ou Coventry (pas de nul)",
+      "p1": 0.7336086021704915,
+      "cote": 1.26,
+      "valeur": -0.07565316126518074
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7023857581763119,
+      "cote": 1.22,
+      "valeur": -0.1430893750248995
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.2976142418236881,
+      "cote": 4.17,
+      "valeur": 0.24105138840477935
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.44341933445421267,
+      "cote": 1.71,
+      "valeur": -0.24175293808329634
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.5565806655457873,
+      "cote": 2.11,
+      "valeur": 0.1743852043016112
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.23188981119518867,
+      "cote": 2.74,
+      "valeur": -0.364621917325183
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7681101888048113,
+      "cote": 1.44,
+      "valeur": 0.10607867187892817
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.4868507643969613,
+      "cote": 1.71,
+      "valeur": -0.16748519288119623
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.5131492356030387,
+      "cote": 2.1,
+      "valeur": 0.0776133947663813
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 1.71,
+    "N": 4.0,
+    "2": 4.62,
+    "1N": 1.22,
+    "N2": 2.06,
+    "12": 1.26,
+    "o15+": 1.22,
+    "o15-": 4.17,
+    "o25+": 1.71,
+    "o25-": 2.11,
+    "o35+": 2.74,
+    "o35-": 1.44,
+    "btts+": 1.71,
+    "btts-": 2.1
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -1071,10 +3465,136 @@
     "fd_dom": "Sevilla",
     "fd_ext": "Alaves"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "e6fce96cad946b2e1e92cd5fc8daee5212689a2a430a7bdb88ea1466f162cde5",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "8b9bcf160045c1809de2c005ef553e9170996b4a85ed8268193ff8abdc61a0f5",
    "mode": "parallele",
    "n_historique_competition": 2009,
+   "pari": {
+    "retenu": {
+     "cle": "1",
+     "libelle": "Victoire Séville",
+     "p1": 0.5198322019014002,
+     "cote": 1.93,
+     "valeur": 0.003276149669702466
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Séville",
+      "p1": 0.5198322019014002,
+      "cote": 1.93,
+      "valeur": 0.003276149669702466
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.25559781875116316,
+      "cote": 3.42,
+      "valeur": -0.12585545987102198
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Alavés",
+      "p1": 0.22456997934743642,
+      "cote": 4.17,
+      "valeur": -0.06354318612119014
+     },
+     {
+      "cle": "1N",
+      "libelle": "Séville ou match nul",
+      "p1": 0.7754300206525634,
+      "cote": 1.25,
+      "valeur": -0.03071247418429579
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Alavés",
+      "p1": 0.48016779809859955,
+      "cote": 1.83,
+      "valeur": -0.12129292947956283
+     },
+     {
+      "cle": "12",
+      "libelle": "Séville ou Alavés (pas de nul)",
+      "p1": 0.7444021812488366,
+      "cote": 1.33,
+      "valeur": -0.00994509893904727
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7072162561884417,
+      "cote": 1.39,
+      "valeur": -0.016969403898066004
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.29278374381155825,
+      "cote": 2.96,
+      "valeur": -0.1333601183177876
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.4493655450057637,
+      "cote": 2.19,
+      "valeur": -0.01588945643737749
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.5506344549942364,
+      "cote": 1.66,
+      "valeur": -0.08594680470956773
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.23676959368468045,
+      "cote": 3.99,
+      "valeur": -0.05528932119812491
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7632304063153196,
+      "cote": 1.24,
+      "valeur": -0.053594296169003686
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.4748334982753866,
+      "cote": 2.01,
+      "valeur": -0.04558466846647302
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.5251665017246134,
+      "cote": 1.78,
+      "valeur": -0.06520362693018811
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 1.93,
+    "N": 3.42,
+    "2": 4.17,
+    "1N": 1.25,
+    "N2": 1.83,
+    "12": 1.33,
+    "o15+": 1.39,
+    "o15-": 2.96,
+    "o25+": 2.19,
+    "o25-": 1.66,
+    "o35+": 3.99,
+    "o35-": 1.24,
+    "btts+": 2.01,
+    "btts-": 1.78
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -1124,10 +3644,136 @@
     "fd_dom": "Famalicao",
     "fd_ext": "Arouca"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "0e825c6728ff39a8cfbd77fba955e1a421af56e1919cfad5be66ef9a5fa8dbcb",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "2597493c7c514ba64092ba7c7760930461bbc157431513112aab72db26497a6a",
    "mode": "parallele",
    "n_historique_competition": 1620,
+   "pari": {
+    "retenu": {
+     "cle": "btts-",
+     "libelle": "Au moins une équipe ne marque pas",
+     "p1": 0.5104676418612069,
+     "cote": 1.98,
+     "valeur": 0.010725930885189472
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Famalicão",
+      "p1": 0.4795927625876602,
+      "cote": 2.06,
+      "valeur": -0.012038909069419956
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.2621852892097512,
+      "cote": 3.49,
+      "valeur": -0.08497334065796824
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Arouca",
+      "p1": 0.2582219482025886,
+      "cote": 3.59,
+      "valeur": -0.07298320595270702
+     },
+     {
+      "cle": "1N",
+      "libelle": "Famalicão ou match nul",
+      "p1": 0.7417780517974114,
+      "cote": 1.3,
+      "valeur": -0.035688532663365136
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Arouca",
+      "p1": 0.5204072374123399,
+      "cote": 1.73,
+      "valeur": -0.09969547927665212
+     },
+     {
+      "cle": "12",
+      "libelle": "Famalicão ou Arouca (pas de nul)",
+      "p1": 0.7378147107902489,
+      "cote": 1.32,
+      "valeur": -0.02608458175687145
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7089987288549383,
+      "cote": 1.31,
+      "valeur": -0.07121166520003075
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.2910012711450617,
+      "cote": 3.39,
+      "valeur": -0.013505690818240823
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.4515738149157372,
+      "cote": 1.96,
+      "valeur": -0.11491532276515504
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.5484261850842628,
+      "cote": 1.82,
+      "valeur": -0.0018643431466417448
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.2385934506960506,
+      "cote": 3.38,
+      "valeur": -0.193554136647349
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7614065493039495,
+      "cote": 1.31,
+      "valeur": -0.002557420411826161
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.4895323581387932,
+      "cote": 1.8,
+      "valeur": -0.11884175535017227
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.5104676418612069,
+      "cote": 1.98,
+      "valeur": 0.010725930885189472
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.06,
+    "N": 3.49,
+    "2": 3.59,
+    "1N": 1.3,
+    "N2": 1.73,
+    "12": 1.32,
+    "o15+": 1.31,
+    "o15-": 3.39,
+    "o25+": 1.96,
+    "o25-": 1.82,
+    "o35+": 3.38,
+    "o35-": 1.31,
+    "btts+": 1.8,
+    "btts-": 1.98
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -1177,10 +3823,130 @@
     "fd_dom": "Vitoria",
     "fd_ext": "Fluminense"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "fc4b9421e9389ab74708b2dca2faf17bb929e9df530d0ae6a53356bd06d020e5",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "50952bd4397cfcab3ac7f9565d2c22025352b940543e549a702870fb765f4275",
    "mode": "parallele",
    "n_historique_competition": 2230,
+   "pari": {
+    "retenu": null,
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Vitoria BA",
+      "p1": 0.35484132906929877,
+      "cote": 2.75,
+      "valeur": -0.024186345059428405
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.2736348320676502,
+      "cote": 3.31,
+      "valeur": -0.09426870585607783
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Fluminense",
+      "p1": 0.3715238388630511,
+      "cote": 2.54,
+      "valeur": -0.05632944928785011
+     },
+     {
+      "cle": "1N",
+      "libelle": "Vitoria BA ou match nul",
+      "p1": 0.6284761611369489,
+      "cote": 1.51,
+      "valeur": -0.05100099668320712
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Fluminense",
+      "p1": 0.6451586709307013,
+      "cote": 1.45,
+      "valeur": -0.06451992715048305
+     },
+     {
+      "cle": "12",
+      "libelle": "Vitoria BA ou Fluminense (pas de nul)",
+      "p1": 0.72636516793235,
+      "cote": 1.34,
+      "valeur": -0.02667067497065101
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7009691370374975,
+      "cote": 1.32,
+      "valeur": -0.07472073911050325
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.2990308629625025,
+      "cote": 3.18,
+      "valeur": -0.04908185577924207
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.44168601420467074,
+      "cote": 2.03,
+      "valeur": -0.1033773911645185
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.5583139857953292,
+      "cote": 1.73,
+      "valeur": -0.034116804574080506
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.2304759304887258,
+      "cote": 3.58,
+      "valeur": -0.17489616885036163
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7695240695112742,
+      "cote": 1.26,
+      "valeur": -0.030399672415794554
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.49739755743617664,
+      "cote": 1.79,
+      "valeur": -0.10965837218924379
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.5026024425638234,
+      "cote": 1.92,
+      "valeur": -0.035003310277459176
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.75,
+    "N": 3.31,
+    "2": 2.54,
+    "1N": 1.51,
+    "N2": 1.45,
+    "12": 1.34,
+    "o15+": 1.32,
+    "o15-": 3.18,
+    "o25+": 2.03,
+    "o25-": 1.73,
+    "o35+": 3.58,
+    "o35-": 1.26,
+    "btts+": 1.79,
+    "btts-": 1.92
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -1230,10 +3996,136 @@
     "fd_dom": "Atl. San Luis",
     "fd_ext": "Juarez"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "3190d5c00bfe1d825083141e74b23d2160230fa87a46c70e40b741d822064b86",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "9df8c4db9e5b9955204f0d70b875352446eb04ea6ade3ce4728578755a777699",
    "mode": "parallele",
    "n_historique_competition": 1834,
+   "pari": {
+    "retenu": {
+     "cle": "o25+",
+     "libelle": "Plus de 2,5 buts",
+     "p1": 0.6006954824192791,
+     "cote": 1.7,
+     "valeur": 0.021182320112774322
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Atletico San L",
+      "p1": 0.5400282381886058,
+      "cote": 1.72,
+      "valeur": -0.07115143031559801
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.22259697449556393,
+      "cote": 3.88,
+      "valeur": -0.13632373895721195
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire FC Juarez",
+      "p1": 0.23737478731583025,
+      "cote": 4.54,
+      "valeur": 0.07768153441386927
+     },
+     {
+      "cle": "1N",
+      "libelle": "Atletico San L ou match nul",
+      "p1": 0.7626252126841697,
+      "cote": 1.22,
+      "valeur": -0.06959724052531302
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou FC Juarez",
+      "p1": 0.4599717618113942,
+      "cote": 2.04,
+      "valeur": -0.061657605904755775
+     },
+     {
+      "cle": "12",
+      "libelle": "Atletico San L ou FC Juarez (pas de nul)",
+      "p1": 0.7774030255044361,
+      "cote": 1.27,
+      "valeur": -0.012698157609366212
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.8164957360191145,
+      "cote": 1.21,
+      "valeur": -0.012040159416871421
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.18350426398088548,
+      "cote": 4.1,
+      "valeur": -0.24763251767836958
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.6006954824192791,
+      "cote": 1.7,
+      "valeur": 0.021182320112774322
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.39930451758072094,
+      "cote": 2.07,
+      "valeur": -0.17343964860790773
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.3770832750856369,
+      "cote": 2.73,
+      "valeur": 0.029437340983788696
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.6229167249143631,
+      "cote": 1.42,
+      "valeur": -0.11545825062160442
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5948586664206337,
+      "cote": 1.68,
+      "valeur": -0.0006374404133354661
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.4051413335793663,
+      "cote": 2.06,
+      "valeur": -0.1654088528265053
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 1.72,
+    "N": 3.88,
+    "2": 4.54,
+    "1N": 1.22,
+    "N2": 2.04,
+    "12": 1.27,
+    "o15+": 1.21,
+    "o15-": 4.1,
+    "o25+": 1.7,
+    "o25-": 2.07,
+    "o35+": 2.73,
+    "o35-": 1.42,
+    "btts+": 1.68,
+    "btts-": 2.06
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -1283,10 +4175,136 @@
     "fd_dom": "Necaxa",
     "fd_ext": "Club Tijuana"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "3e52269a514f5dacef35f990e725819c6e71f812b9eb348204a03aaa7b1b514c",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "00f3ea5f746769ac038f1008ba5fb4e61832d821ce27c7388288593f606c9a47",
    "mode": "parallele",
    "n_historique_competition": 1834,
+   "pari": {
+    "retenu": {
+     "cle": "2",
+     "libelle": "Victoire Tijuana",
+     "p1": 0.3700777992171974,
+     "cote": 2.73,
+     "valeur": 0.010312391862948855
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Club Necaxa",
+      "p1": 0.3869680694294898,
+      "cote": 2.37,
+      "valeur": -0.08288567545210912
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.24295413135331262,
+      "cote": 3.68,
+      "valeur": -0.10592879661980947
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Tijuana",
+      "p1": 0.3700777992171974,
+      "cote": 2.73,
+      "valeur": 0.010312391862948855
+     },
+     {
+      "cle": "1N",
+      "libelle": "Club Necaxa ou match nul",
+      "p1": 0.6299222007828025,
+      "cote": 1.45,
+      "valeur": -0.08661280886493639
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Tijuana",
+      "p1": 0.6130319305705101,
+      "cote": 1.57,
+      "valeur": -0.037539869004299176
+     },
+     {
+      "cle": "12",
+      "libelle": "Club Necaxa ou Tijuana (pas de nul)",
+      "p1": 0.7570458686466872,
+      "cote": 1.3,
+      "valeur": -0.015840370759306555
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.8008447582241331,
+      "cote": 1.16,
+      "valeur": -0.07102008046000563
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.19915524177586685,
+      "cote": 4.78,
+      "valeur": -0.04803794431135644
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.576799464536141,
+      "cote": 1.56,
+      "valeur": -0.10019283532362011
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.42320053546385905,
+      "cote": 2.33,
+      "valeur": -0.013942752369208389
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.3527576534310739,
+      "cote": 2.38,
+      "valeur": -0.1604367848340441
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.6472423465689261,
+      "cote": 1.54,
+      "valeur": -0.0032467862838537753
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.6034363855374927,
+      "cote": 1.48,
+      "valeur": -0.10691414940451083
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.3965636144625073,
+      "cote": 2.47,
+      "valeur": -0.020487872277606844
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.37,
+    "N": 3.68,
+    "2": 2.73,
+    "1N": 1.45,
+    "N2": 1.57,
+    "12": 1.3,
+    "o15+": 1.16,
+    "o15-": 4.78,
+    "o25+": 1.56,
+    "o25-": 2.33,
+    "o35+": 2.38,
+    "o35-": 1.54,
+    "btts+": 1.48,
+    "btts-": 2.47
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -1336,10 +4354,136 @@
     "fd_dom": "Atlante",
     "fd_ext": "Santos Laguna"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "e04af485cc799f5a5e148432381ef472fd48de85af35ec0ccd9c57bf341ce1fb",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "615df400985229d6b436b8b89cfdcb1d200cd6d3ce3c0e0b6435dca83a97b316",
    "mode": "parallele",
    "n_historique_competition": 1834,
+   "pari": {
+    "retenu": {
+     "cle": "1N",
+     "libelle": "Club Atlante ou match nul",
+     "p1": 0.7261858468276763,
+     "cote": 1.39,
+     "valeur": 0.00939832709047006
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Club Atlante",
+      "p1": 0.48515537571883827,
+      "cote": 2.18,
+      "valeur": 0.05763871906706752
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.24103047110883802,
+      "cote": 3.74,
+      "valeur": -0.0985460380529457
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Santos Laguna",
+      "p1": 0.2738141531723236,
+      "cote": 3.0,
+      "valeur": -0.1785575404830292
+     },
+     {
+      "cle": "1N",
+      "libelle": "Club Atlante ou match nul",
+      "p1": 0.7261858468276763,
+      "cote": 1.39,
+      "valeur": 0.00939832709047006
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Santos Laguna",
+      "p1": 0.5148446242811616,
+      "cote": 1.65,
+      "valeur": -0.15050636993608335
+     },
+     {
+      "cle": "12",
+      "libelle": "Club Atlante ou Santos Laguna (pas de nul)",
+      "p1": 0.7589695288911619,
+      "cote": 1.29,
+      "valeur": -0.020929307730401137
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7820537960303425,
+      "cote": 1.16,
+      "valeur": -0.09281759660480271
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.21794620396965747,
+      "cote": 4.89,
+      "valeur": 0.06575693741162492
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5491886727593503,
+      "cote": 1.54,
+      "valeur": -0.15424944395060047
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.45081132724064965,
+      "cote": 2.38,
+      "valeur": 0.07293095883274603
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.32570694571900904,
+      "cote": 2.33,
+      "valeur": -0.24110281647470888
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.674293054280991,
+      "cote": 1.56,
+      "valeur": 0.05189716467834593
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5686253022582304,
+      "cote": 1.48,
+      "valeur": -0.15843455265781903
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.4313746977417696,
+      "cote": 2.49,
+      "valeur": 0.07412299737700634
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.18,
+    "N": 3.74,
+    "2": 3.0,
+    "1N": 1.39,
+    "N2": 1.65,
+    "12": 1.29,
+    "o15+": 1.16,
+    "o15-": 4.89,
+    "o25+": 1.54,
+    "o25-": 2.38,
+    "o35+": 2.33,
+    "o35-": 1.56,
+    "btts+": 1.48,
+    "btts-": 2.49
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -1389,10 +4533,136 @@
     "fd_dom": "Shimizu S-Pulse",
     "fd_ext": "Verdy"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "ce6b19e272e8e6b4bf1fedabf7d86042ea16a2d7a765dbe70bc58fa2fab1a581",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "fabd929717afbc477f11d160fa05dd5adbafd47ac3aadafe111d096124d88b03",
    "mode": "parallele",
    "n_historique_competition": 1886,
+   "pari": {
+    "retenu": {
+     "cle": "2",
+     "libelle": "Victoire Tokyo Verdy",
+     "p1": 0.320696837540842,
+     "cote": 3.23,
+     "valeur": 0.03585078525691965
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Shimizu",
+      "p1": 0.3931387639939187,
+      "cote": 2.29,
+      "valeur": -0.09971223045392608
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.2861643984652392,
+      "cote": 3.18,
+      "valeur": -0.08999721288053919
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Tokyo Verdy",
+      "p1": 0.320696837540842,
+      "cote": 3.23,
+      "valeur": 0.03585078525691965
+     },
+     {
+      "cle": "1N",
+      "libelle": "Shimizu ou match nul",
+      "p1": 0.6793031624591579,
+      "cote": 1.35,
+      "valeur": -0.08294073068013674
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Tokyo Verdy",
+      "p1": 0.6068612360060812,
+      "cote": 1.6,
+      "valeur": -0.029022022390269964
+     },
+     {
+      "cle": "12",
+      "libelle": "Shimizu ou Tokyo Verdy (pas de nul)",
+      "p1": 0.7138356015347607,
+      "cote": 1.36,
+      "valeur": -0.02918358191272541
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.6583136059026508,
+      "cote": 1.42,
+      "valeur": -0.065194679618236
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.34168639409734924,
+      "cote": 2.73,
+      "valeur": -0.06719614411423658
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.39163023647114226,
+      "cote": 2.33,
+      "valeur": -0.0875015490222385
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.6083697635288577,
+      "cote": 1.56,
+      "valeur": -0.05094316889498185
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.19129460724872036,
+      "cote": 4.37,
+      "valeur": -0.164042566323092
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.8087053927512796,
+      "cote": 1.19,
+      "valeur": -0.03764058262597725
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.4551745219432174,
+      "cote": 1.99,
+      "valeur": -0.09420270133299735
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.5448254780567826,
+      "cote": 1.73,
+      "valeur": -0.057451922961766044
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.29,
+    "N": 3.18,
+    "2": 3.23,
+    "1N": 1.35,
+    "N2": 1.6,
+    "12": 1.36,
+    "o15+": 1.42,
+    "o15-": 2.73,
+    "o25+": 2.33,
+    "o25-": 1.56,
+    "o35+": 4.37,
+    "o35-": 1.19,
+    "btts+": 1.99,
+    "btts-": 1.73
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -1442,10 +4712,136 @@
     "fd_dom": "Yokohama F. Marinos",
     "fd_ext": "Okayama"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "7939d44252414f2ad43ed1213c63a6f9fab92963820e4e0e11b341972b3e6dc7",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "479e1bacca3548bb88b537371d2f574d07130a0049c6ffe132b6ecd24b39b757",
    "mode": "parallele",
    "n_historique_competition": 1886,
+   "pari": {
+    "retenu": {
+     "cle": "1N",
+     "libelle": "Yokohama M. ou match nul",
+     "p1": 0.8244098688864859,
+     "cote": 1.47,
+     "valeur": 0.2118825072631343
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Yokohama M.",
+      "p1": 0.6026757115262894,
+      "cote": 2.62,
+      "valeur": 0.5790103641988782
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.2217341573601965,
+      "cote": 3.32,
+      "valeur": -0.26384259756414763
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Fagiano",
+      "p1": 0.1755901311135139,
+      "cote": 2.66,
+      "valeur": -0.5329302512380529
+     },
+     {
+      "cle": "1N",
+      "libelle": "Yokohama M. ou match nul",
+      "p1": 0.8244098688864859,
+      "cote": 1.47,
+      "valeur": 0.2118825072631343
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Fagiano",
+      "p1": 0.3973242884737104,
+      "cote": 1.48,
+      "valeur": -0.4119600530589087
+     },
+     {
+      "cle": "12",
+      "libelle": "Yokohama M. ou Fagiano (pas de nul)",
+      "p1": 0.7782658426398033,
+      "cote": 1.34,
+      "valeur": 0.04287622913733635
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7627866146740442,
+      "cote": 1.25,
+      "valeur": -0.04651673165744474
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.23721338532595582,
+      "cote": 3.68,
+      "valeur": -0.1270547420004825
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5220119404118746,
+      "cote": 1.84,
+      "valeur": -0.039498029642150656
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.4779880595881254,
+      "cote": 1.9,
+      "valeur": -0.09182268678256178
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.30014787816126426,
+      "cote": 3.03,
+      "valeur": -0.09055192917136934
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.6998521218387357,
+      "cote": 1.35,
+      "valeur": -0.05519963551770679
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5003344136919312,
+      "cote": 1.64,
+      "valeur": -0.1794515615452329
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.4996655863080688,
+      "cote": 2.12,
+      "valeur": 0.059291042973105945
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.62,
+    "N": 3.32,
+    "2": 2.66,
+    "1N": 1.47,
+    "N2": 1.48,
+    "12": 1.34,
+    "o15+": 1.25,
+    "o15-": 3.68,
+    "o25+": 1.84,
+    "o25-": 1.9,
+    "o35+": 3.03,
+    "o35-": 1.35,
+    "btts+": 1.64,
+    "btts-": 2.12
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -1495,10 +4891,136 @@
     "fd_dom": "Avispa Fukuoka",
     "fd_ext": "V-Varen Nagasaki"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "c87726c5955c4e59833acac63dec6213c97a9ecc8147676f9113687f6b94add7",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "6a7ed3a5613d69ea4e204f393cfcf5b7f9f5b0066a4726f081b4681bce9b3f74",
    "mode": "parallele",
    "n_historique_competition": 1886,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.8164913796519155,
+     "cote": 1.28,
+     "valeur": 0.04510896595445191
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Fukuoka",
+      "p1": 0.39699188599919266,
+      "cote": 2.05,
+      "valeur": -0.1861666337016551
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.288869797536704,
+      "cote": 3.37,
+      "valeur": -0.026508782301307487
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire V-Varen",
+      "p1": 0.3141383164641034,
+      "cote": 3.63,
+      "valeur": 0.1403220887646952
+     },
+     {
+      "cle": "1N",
+      "libelle": "Fukuoka ou match nul",
+      "p1": 0.6858616835358966,
+      "cote": 1.3,
+      "valeur": -0.10837981140333441
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou V-Varen",
+      "p1": 0.6030081140008074,
+      "cote": 1.73,
+      "valeur": 0.043204037221396874
+     },
+     {
+      "cle": "12",
+      "libelle": "Fukuoka ou V-Varen (pas de nul)",
+      "p1": 0.7111302024632961,
+      "cote": 1.33,
+      "valeur": -0.0541968307238162
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.6489533780091493,
+      "cote": 1.31,
+      "valeur": -0.14987107480801432
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.3510466219908507,
+      "cote": 3.28,
+      "valeur": 0.1514329201299902
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.3811748491435376,
+      "cote": 1.99,
+      "valeur": -0.24146205020436018
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.6188251508564624,
+      "cote": 1.76,
+      "valeur": 0.08913226550737385
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.18350862034808443,
+      "cote": 3.45,
+      "valeur": -0.36689525979910864
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.8164913796519155,
+      "cote": 1.28,
+      "valeur": 0.04510896595445191
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.4460202863245851,
+      "cote": 1.8,
+      "valeur": -0.19716348461574673
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.5539797136754149,
+      "cote": 1.91,
+      "valeur": 0.05810125312004244
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.05,
+    "N": 3.37,
+    "2": 3.63,
+    "1N": 1.3,
+    "N2": 1.73,
+    "12": 1.33,
+    "o15+": 1.31,
+    "o15-": 3.28,
+    "o25+": 1.99,
+    "o25-": 1.76,
+    "o35+": 3.45,
+    "o35-": 1.28,
+    "btts+": 1.8,
+    "btts-": 1.91
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -1548,10 +5070,136 @@
     "fd_dom": "Korona Kielce",
     "fd_ext": "Radomiak Radom"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "3cdb35dc52068600bd3c8e3dddebb72f4840e53b1f61d131023ff2b638dab90e",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "8f1d126236e641fe7de76b4ae516660af5206b634f7c51a718489210067c51f5",
    "mode": "parallele",
    "n_historique_competition": 1645,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.7189669644913925,
+     "cote": 1.44,
+     "valeur": 0.03531242886760522
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Korona Kielce",
+      "p1": 0.47380943619439336,
+      "cote": 1.69,
+      "valeur": -0.19926205283147524
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.2522870796174145,
+      "cote": 3.94,
+      "valeur": -0.005988906307387021
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Radomiak",
+      "p1": 0.273903484188192,
+      "cote": 4.66,
+      "valeur": 0.2763902363169748
+     },
+     {
+      "cle": "1N",
+      "libelle": "Korona Kielce ou match nul",
+      "p1": 0.7260965158118078,
+      "cote": 1.21,
+      "valeur": -0.12142321586771265
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Radomiak",
+      "p1": 0.5261905638056065,
+      "cote": 2.07,
+      "valeur": 0.08921446707760539
+     },
+     {
+      "cle": "12",
+      "libelle": "Korona Kielce ou Radomiak (pas de nul)",
+      "p1": 0.7477129203825854,
+      "cote": 1.27,
+      "valeur": -0.05040459111411655
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7472942790128247,
+      "cote": 1.2,
+      "valeur": -0.10324686518461035
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.25270572098717525,
+      "cote": 4.24,
+      "valeur": 0.0714722569856232
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5009367615642604,
+      "cote": 1.67,
+      "valeur": -0.1634356081876852
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.49906323843573963,
+      "cote": 2.13,
+      "valeur": 0.06300469786812535
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.28103303550860753,
+      "cote": 2.65,
+      "valeur": -0.2552624559021901
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7189669644913925,
+      "cote": 1.44,
+      "valeur": 0.03531242886760522
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5319732931241938,
+      "cote": 1.66,
+      "valeur": -0.11692433341383823
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.46802670687580616,
+      "cote": 2.09,
+      "valeur": -0.021824182629565203
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 1.69,
+    "N": 3.94,
+    "2": 4.66,
+    "1N": 1.21,
+    "N2": 2.07,
+    "12": 1.27,
+    "o15+": 1.2,
+    "o15-": 4.24,
+    "o25+": 1.67,
+    "o25-": 2.13,
+    "o35+": 2.65,
+    "o35-": 1.44,
+    "btts+": 1.66,
+    "btts-": 2.09
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -1601,10 +5249,136 @@
     "fd_dom": "Bristol City",
     "fd_ext": "Norwich"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "444ff84609b12070517f94a8027c79fe030bb988f7c4b8a8fdbb16314d9eec04",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "8ee50167a5c96b380a42cb2ba53fcfd64d54e3b7057a1fd1dec9df533d5a9536",
    "mode": "parallele",
    "n_historique_competition": 2916,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.7086287827965716,
+     "cote": 1.45,
+     "valeur": 0.027511735055028685
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Bristol City",
+      "p1": 0.4219442571362865,
+      "cote": 2.59,
+      "valeur": 0.09283562598298212
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.25509003025528554,
+      "cote": 3.57,
+      "valeur": -0.08932859198863063
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Norwich City",
+      "p1": 0.322965712608428,
+      "cote": 2.61,
+      "valeur": -0.15705949009200304
+     },
+     {
+      "cle": "1N",
+      "libelle": "Bristol City ou match nul",
+      "p1": 0.677034287391572,
+      "cote": 1.49,
+      "valeur": 0.008781088213442256
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Norwich City",
+      "p1": 0.5780557428637135,
+      "cote": 1.5,
+      "valeur": -0.13291638570442976
+     },
+     {
+      "cle": "12",
+      "libelle": "Bristol City ou Norwich City (pas de nul)",
+      "p1": 0.7449099697447146,
+      "cote": 1.31,
+      "valeur": -0.024167939634423874
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7557953658552351,
+      "cote": 1.22,
+      "valeur": -0.0779296536566132
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.2442046341447649,
+      "cote": 4.2,
+      "valeur": 0.025659463408012506
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5124182837875554,
+      "cote": 1.7,
+      "valeur": -0.12888891756115584
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.4875817162124446,
+      "cote": 2.12,
+      "valeur": 0.03367323837038261
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.29137121720342846,
+      "cote": 2.71,
+      "valeur": -0.21038400137870894
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7086287827965716,
+      "cote": 1.45,
+      "valeur": 0.027511735055028685
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5504676903247602,
+      "cote": 1.59,
+      "valeur": -0.12475637238363124
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.4495323096752398,
+      "cote": 2.32,
+      "valeur": 0.04291495844655624
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.59,
+    "N": 3.57,
+    "2": 2.61,
+    "1N": 1.49,
+    "N2": 1.5,
+    "12": 1.31,
+    "o15+": 1.22,
+    "o15-": 4.2,
+    "o25+": 1.7,
+    "o25-": 2.12,
+    "o35+": 2.71,
+    "o35-": 1.45,
+    "btts+": 1.59,
+    "btts-": 2.32
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -1654,10 +5428,130 @@
     "fd_dom": "Portsmouth",
     "fd_ext": "Stoke"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "ad204b09c155b9b01e2ef3eff53cfa33899c56935d11df5b8d681db1438eeac5",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "b3ecda719468e34a0b499bcc9123772cce5882e36f2f7ac7a7a56067c8ae3f9e",
    "mode": "parallele",
    "n_historique_competition": 2916,
+   "pari": {
+    "retenu": null,
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Portsmouth",
+      "p1": 0.4236997958857047,
+      "cote": 2.35,
+      "valeur": -0.004305479668593848
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.2698111082581336,
+      "cote": 3.3,
+      "valeur": -0.10962334274815921
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Stoke",
+      "p1": 0.3064890958561617,
+      "cote": 3.11,
+      "valeur": -0.04681891188733722
+     },
+     {
+      "cle": "1N",
+      "libelle": "Portsmouth ou match nul",
+      "p1": 0.6935109041438383,
+      "cote": 1.38,
+      "valeur": -0.042954952281503256
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Stoke",
+      "p1": 0.5763002041142953,
+      "cote": 1.58,
+      "valeur": -0.08944567749941346
+     },
+     {
+      "cle": "12",
+      "libelle": "Portsmouth ou Stoke (pas de nul)",
+      "p1": 0.7301888917418664,
+      "cote": 1.35,
+      "valeur": -0.014244996148480293
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.705337319112377,
+      "cote": 1.35,
+      "valeur": -0.04779461919829109
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.29466268088762304,
+      "cote": 3.15,
+      "valeur": -0.07181255520398744
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.4470460183868477,
+      "cote": 2.09,
+      "valeur": -0.06567382157148838
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.5529539816131523,
+      "cote": 1.72,
+      "valeur": -0.048919151625377966
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.23486063998772266,
+      "cote": 3.7,
+      "valeur": -0.1310156320454261
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7651393600122773,
+      "cote": 1.27,
+      "valeur": -0.028273012784407747
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.4973944587561609,
+      "cote": 1.85,
+      "valeur": -0.07982025130110226
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.502605541243839,
+      "cote": 1.92,
+      "valeur": -0.034997360811829026
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.35,
+    "N": 3.3,
+    "2": 3.11,
+    "1N": 1.38,
+    "N2": 1.58,
+    "12": 1.35,
+    "o15+": 1.35,
+    "o15-": 3.15,
+    "o25+": 2.09,
+    "o25-": 1.72,
+    "o35+": 3.7,
+    "o35-": 1.27,
+    "btts+": 1.85,
+    "btts-": 1.92
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -1707,10 +5601,136 @@
     "fd_dom": "Wrexham",
     "fd_ext": "Wolves"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "7ae116563584232da6ac758aed58060b7080f81acfa756f1c688cc12eef36876",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "886ef56dbe3172c17d021331b81dd109b82e47d44cf1256b68900ff297fcd039",
    "mode": "parallele",
    "n_historique_competition": 2916,
+   "pari": {
+    "retenu": {
+     "cle": "1N",
+     "libelle": "Wrexham ou match nul",
+     "p1": 0.6637250325895069,
+     "cote": 1.62,
+     "valeur": 0.07523455279500113
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Wrexham",
+      "p1": 0.41053641720781037,
+      "cote": 3.02,
+      "valeur": 0.2398199799675873
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.2531886153816965,
+      "cote": 3.62,
+      "valeur": -0.08345721231825864
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Wolverhampton",
+      "p1": 0.3362749674104931,
+      "cote": 2.26,
+      "valeur": -0.24001857365228563
+     },
+     {
+      "cle": "1N",
+      "libelle": "Wrexham ou match nul",
+      "p1": 0.6637250325895069,
+      "cote": 1.62,
+      "valeur": 0.07523455279500113
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Wolverhampton",
+      "p1": 0.5894635827921897,
+      "cote": 1.39,
+      "valeur": -0.18064561991885641
+     },
+     {
+      "cle": "12",
+      "libelle": "Wrexham ou Wolverhampton (pas de nul)",
+      "p1": 0.7468113846183035,
+      "cote": 1.31,
+      "valeur": -0.021677086150022284
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7645114589238687,
+      "cote": 1.29,
+      "valeur": -0.013780217988209276
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.23548854107613126,
+      "cote": 3.53,
+      "valeur": -0.16872545000125672
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5244002930719092,
+      "cote": 1.89,
+      "valeur": -0.008883446094091751
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.47559970692809084,
+      "cote": 1.88,
+      "valeur": -0.10587255097518933
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.30235262307208755,
+      "cote": 3.25,
+      "valeur": -0.01735397501571545
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.6976473769279125,
+      "cote": 1.33,
+      "valeur": -0.07212898868587636
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5611576884351483,
+      "cote": 1.75,
+      "valeur": -0.017974045238490444
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.43884231156485165,
+      "cote": 2.04,
+      "valeur": -0.10476168440770262
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 3.02,
+    "N": 3.62,
+    "2": 2.26,
+    "1N": 1.62,
+    "N2": 1.39,
+    "12": 1.31,
+    "o15+": 1.29,
+    "o15-": 3.53,
+    "o25+": 1.89,
+    "o25-": 1.88,
+    "o35+": 3.25,
+    "o35-": 1.33,
+    "btts+": 1.75,
+    "btts-": 2.04
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -1760,10 +5780,136 @@
     "fd_dom": "Birmingham",
     "fd_ext": "Swansea"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "6bd32879811924dc8f409d1d4047c2e8f419e2bcadf08de63dc2e20474613d02",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "587b03a3a3919589478bd07d854dcb94ce919085dad28db3c822bb00667356ca",
    "mode": "parallele",
    "n_historique_competition": 2916,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.7487691548428766,
+     "cote": 1.35,
+     "valeur": 0.01083835903788355
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Birmingham",
+      "p1": 0.4445710132824297,
+      "cote": 1.91,
+      "valeur": -0.15086936463055933
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.26326393225347566,
+      "cote": 3.63,
+      "valeur": -0.04435192591988335
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Swansea",
+      "p1": 0.2921650544640948,
+      "cote": 3.97,
+      "valeur": 0.15989526622245642
+     },
+     {
+      "cle": "1N",
+      "libelle": "Birmingham ou match nul",
+      "p1": 0.7078349455359054,
+      "cote": 1.26,
+      "valeur": -0.10812796862475915
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Swansea",
+      "p1": 0.5554289867175705,
+      "cote": 1.85,
+      "valeur": 0.027543625427505436
+     },
+     {
+      "cle": "12",
+      "libelle": "Birmingham ou Swansea (pas de nul)",
+      "p1": 0.7367360677465244,
+      "cote": 1.3,
+      "valeur": -0.04224311192951824
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7210204908482348,
+      "cote": 1.28,
+      "valeur": -0.07709377171425935
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.27897950915176517,
+      "cote": 3.61,
+      "valeur": 0.007116028037872146
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.46666934876754723,
+      "cote": 1.87,
+      "valeur": -0.12732831780468667
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.5333306512324527,
+      "cote": 1.9,
+      "valeur": 0.01332823734166011
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.25123084515712335,
+      "cote": 3.15,
+      "valeur": -0.20862283775506152
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7487691548428766,
+      "cote": 1.35,
+      "valeur": 0.01083835903788355
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5100536772799095,
+      "cote": 1.78,
+      "valeur": -0.09210445444176119
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.48994632272009053,
+      "cote": 2.01,
+      "valeur": -0.015207891332618129
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 1.91,
+    "N": 3.63,
+    "2": 3.97,
+    "1N": 1.26,
+    "N2": 1.85,
+    "12": 1.3,
+    "o15+": 1.28,
+    "o15-": 3.61,
+    "o25+": 1.87,
+    "o25-": 1.9,
+    "o35+": 3.15,
+    "o35-": 1.35,
+    "btts+": 1.78,
+    "btts-": 2.01
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -1813,10 +5959,136 @@
     "fd_dom": "Blackburn",
     "fd_ext": "West Ham"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "e55049e2e50062310ddb4c528047ff08f3d9bae21db5e760b3d494fd66f43ef0",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "2aed20c7834f434fec4168bdcd3a639ed9282ab8ddccc8f8468fc935a1b30116",
    "mode": "parallele",
    "n_historique_competition": 2916,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.7081550350224166,
+     "cote": 1.54,
+     "valeur": 0.09055875393452162
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Blackburn",
+      "p1": 0.36275173483303286,
+      "cote": 5.04,
+      "valeur": 0.8282687435584857
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.25664494127586035,
+      "cote": 4.34,
+      "valeur": 0.11383904513723397
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire West Ham",
+      "p1": 0.3806033238911068,
+      "cote": 1.61,
+      "valeur": -0.387228648535318
+     },
+     {
+      "cle": "1N",
+      "libelle": "Blackburn ou match nul",
+      "p1": 0.6193966761088932,
+      "cote": 2.23,
+      "valeur": 0.3812545877228317
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou West Ham",
+      "p1": 0.6372482651669671,
+      "cote": 1.19,
+      "valeur": -0.2416745644513092
+     },
+     {
+      "cle": "12",
+      "libelle": "Blackburn ou West Ham (pas de nul)",
+      "p1": 0.7433550587241397,
+      "cote": 1.23,
+      "valeur": -0.08567327776930822
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7561779294136057,
+      "cote": 1.18,
+      "valeur": -0.10771004329194533
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.24382207058639427,
+      "cote": 4.74,
+      "valeur": 0.1557166145795088
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5129396836308602,
+      "cote": 1.58,
+      "valeur": -0.18955529986324093
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.4870603163691398,
+      "cote": 2.33,
+      "valeur": 0.13485053714009587
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.29184496497758344,
+      "cote": 2.43,
+      "valeur": -0.29081673510447215
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7081550350224166,
+      "cote": 1.54,
+      "valeur": 0.09055875393452162
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5537696095284302,
+      "cote": 1.65,
+      "valeur": -0.08628014427809017
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.44623039047156976,
+      "cote": 2.2,
+      "valeur": -0.018293140962546417
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 5.04,
+    "N": 4.34,
+    "2": 1.61,
+    "1N": 2.23,
+    "N2": 1.19,
+    "12": 1.23,
+    "o15+": 1.18,
+    "o15-": 4.74,
+    "o25+": 1.58,
+    "o25-": 2.33,
+    "o35+": 2.43,
+    "o35-": 1.54,
+    "btts+": 1.65,
+    "btts-": 2.2
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -1866,10 +6138,136 @@
     "fd_dom": "Cardiff",
     "fd_ext": "Burnley"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "2c20727c5578fcdb56b7904f83cb66d2431fc4c82efbbcc4f95719cc72935f69",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "e5d11e185f47e9594c45101034879f339c4a95417689131348917bfe21c9d672",
    "mode": "parallele",
    "n_historique_competition": 2916,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.7357741930926871,
+     "cote": 1.54,
+     "valeur": 0.13309225736273822
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Cardiff",
+      "p1": 0.35953303733185604,
+      "cote": 2.29,
+      "valeur": -0.17666934451004968
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.2637994480751929,
+      "cote": 3.82,
+      "valeur": 0.0077138916472367924
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Burnley",
+      "p1": 0.37666751459295106,
+      "cote": 2.85,
+      "valeur": 0.07350241658991052
+     },
+     {
+      "cle": "1N",
+      "libelle": "Cardiff ou match nul",
+      "p1": 0.623332485407049,
+      "cote": 1.43,
+      "valeur": -0.10863454586791998
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Burnley",
+      "p1": 0.640466962668144,
+      "cote": 1.61,
+      "valeur": 0.031151809895711757
+     },
+     {
+      "cle": "12",
+      "libelle": "Cardiff ou Burnley (pas de nul)",
+      "p1": 0.7362005519248072,
+      "cote": 1.29,
+      "valeur": -0.050301288016998735
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.732816918283976,
+      "cote": 1.18,
+      "valeur": -0.13527603642490837
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.267183081716024,
+      "cote": 4.74,
+      "valeur": 0.2664478073339538
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.48183281610020545,
+      "cote": 1.58,
+      "valeur": -0.23870415056167538
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.5181671838997945,
+      "cote": 2.33,
+      "valeur": 0.20732953848652125
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.26422580690731284,
+      "cote": 2.44,
+      "valeur": -0.35528903114615673
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7357741930926871,
+      "cote": 1.54,
+      "valeur": 0.13309225736273822
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5293260981220427,
+      "cote": 1.52,
+      "valeur": -0.19542433085449518
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.4706739018779573,
+      "cote": 2.47,
+      "valeur": 0.16256453763855472
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.29,
+    "N": 3.82,
+    "2": 2.85,
+    "1N": 1.43,
+    "N2": 1.61,
+    "12": 1.29,
+    "o15+": 1.18,
+    "o15-": 4.74,
+    "o25+": 1.58,
+    "o25-": 2.33,
+    "o35+": 2.44,
+    "o35-": 1.54,
+    "btts+": 1.52,
+    "btts-": 2.47
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -1919,10 +6317,136 @@
     "fd_dom": "Charlton",
     "fd_ext": "Sheffield United"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "9a92131150d6500e611b12be1608fed95f57c0fefe798f7093003e32d9e960ca",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "8598bec0024d3e2f7651e8acd90e2deec5112843885d42fa6b51827ad5941627",
    "mode": "parallele",
    "n_historique_competition": 2916,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.7727752883464392,
+     "cote": 1.34,
+     "valeur": 0.03551888638422862
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Charlton",
+      "p1": 0.3421475974065265,
+      "cote": 3.29,
+      "valeur": 0.12566559546747214
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.27439599859414743,
+      "cote": 3.53,
+      "valeur": -0.031382124962659685
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Sheffield Utd",
+      "p1": 0.3834564039993261,
+      "cote": 2.16,
+      "valeur": -0.17173416736145553
+     },
+     {
+      "cle": "1N",
+      "libelle": "Charlton ou match nul",
+      "p1": 0.616543596000674,
+      "cote": 1.67,
+      "valeur": 0.02962780532112541
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Sheffield Utd",
+      "p1": 0.6578524025934736,
+      "cote": 1.34,
+      "valeur": -0.11847778052474534
+     },
+     {
+      "cle": "12",
+      "libelle": "Charlton ou Sheffield Utd (pas de nul)",
+      "p1": 0.7256040014058527,
+      "cote": 1.32,
+      "valeur": -0.042202718144274454
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.6976819708577854,
+      "cote": 1.28,
+      "valeur": -0.1069670773020347
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.3023180291422146,
+      "cote": 3.59,
+      "valeur": 0.08532172462055043
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.4376821546444818,
+      "cote": 1.88,
+      "valeur": -0.17715754926837424
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.5623178453555182,
+      "cote": 1.89,
+      "valeur": 0.06278072772192944
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.2272247116535609,
+      "cote": 3.19,
+      "valeur": -0.2751531698251407
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7727752883464392,
+      "cote": 1.34,
+      "valeur": 0.03551888638422862
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.49372960435270075,
+      "cote": 1.74,
+      "valeur": -0.14091048842630072
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.5062703956472993,
+      "cote": 2.06,
+      "valeur": 0.04291701503343659
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 3.29,
+    "N": 3.53,
+    "2": 2.16,
+    "1N": 1.67,
+    "N2": 1.34,
+    "12": 1.32,
+    "o15+": 1.28,
+    "o15-": 3.59,
+    "o25+": 1.88,
+    "o25-": 1.89,
+    "o35+": 3.19,
+    "o35-": 1.34,
+    "btts+": 1.74,
+    "btts-": 2.06
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -1972,10 +6496,136 @@
     "fd_dom": "Preston",
     "fd_ext": "Southampton"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "3f9bfc50844f368859085d955b380ac3bfd6f396722c839c0867e6e23fc199c0",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "22ccdd3b7e291990704da1420d55bc8ceb6fc61c23158bdee64172d00bc3fd2b",
    "mode": "parallele",
    "n_historique_competition": 2916,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.689225978764052,
+     "cote": 1.57,
+     "valeur": 0.08208478665956176
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Preston",
+      "p1": 0.2928336634530056,
+      "cote": 5.13,
+      "valeur": 0.5022366935139186
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.24729802897071182,
+      "cote": 4.48,
+      "valeur": 0.1078951697887891
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Southampton",
+      "p1": 0.45986830757628283,
+      "cote": 1.58,
+      "valeur": -0.2734080740294731
+     },
+     {
+      "cle": "1N",
+      "libelle": "Preston ou match nul",
+      "p1": 0.5401316924237174,
+      "cote": 2.27,
+      "valeur": 0.22609894180183843
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Southampton",
+      "p1": 0.7071663365469947,
+      "cote": 1.19,
+      "valeur": -0.1584720595090764
+     },
+     {
+      "cle": "12",
+      "libelle": "Preston ou Southampton (pas de nul)",
+      "p1": 0.7527019710292884,
+      "cote": 1.22,
+      "valeur": -0.08170359534426819
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7709878687055114,
+      "cote": 1.17,
+      "valeur": -0.09794419361455176
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.2290121312944886,
+      "cote": 4.92,
+      "valeur": 0.12673968596888385
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5334451476729467,
+      "cote": 1.55,
+      "valeur": -0.17316002110693263
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.4665548523270533,
+      "cote": 2.41,
+      "valeur": 0.1243971941081985
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.31077402123594805,
+      "cote": 2.36,
+      "valeur": -0.26657330988316263
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.689225978764052,
+      "cote": 1.57,
+      "valeur": 0.08208478665956176
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5614137037912225,
+      "cote": 1.64,
+      "valeur": -0.07928152578239522
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.43858629620877754,
+      "cote": 2.23,
+      "valeur": -0.02195255945442609
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 5.13,
+    "N": 4.48,
+    "2": 1.58,
+    "1N": 2.27,
+    "N2": 1.19,
+    "12": 1.22,
+    "o15+": 1.17,
+    "o15-": 4.92,
+    "o25+": 1.55,
+    "o25-": 2.41,
+    "o35+": 2.36,
+    "o35-": 1.57,
+    "btts+": 1.64,
+    "btts-": 2.23
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -2025,10 +6675,136 @@
     "fd_dom": "QPR",
     "fd_ext": "Lincoln"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "2580fedc1bdaa7384663ed1b879a9a530f47469b2db0bb90a7e24e95034b831c",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "71c0c4086698ed875f23d3e0a0a8e253aaa1cfc77702cfda984341c4f2e276fa",
    "mode": "parallele",
    "n_historique_competition": 2916,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.7032331277094226,
+     "cote": 1.45,
+     "valeur": 0.0196880351786628
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Queens Park R.",
+      "p1": 0.464671006301996,
+      "cote": 1.8,
+      "valeur": -0.16359218865640723
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.2498335176158824,
+      "cote": 3.79,
+      "valeur": -0.05313096823580565
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Lincoln",
+      "p1": 0.2854954760821215,
+      "cote": 4.32,
+      "valeur": 0.233340456674765
+     },
+     {
+      "cle": "1N",
+      "libelle": "Queens Park R. ou match nul",
+      "p1": 0.7145045239178784,
+      "cote": 1.24,
+      "valeur": -0.1140143903418307
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Lincoln",
+      "p1": 0.5353289936980039,
+      "cote": 1.95,
+      "valeur": 0.04389153771110754
+     },
+     {
+      "cle": "12",
+      "libelle": "Queens Park R. ou Lincoln (pas de nul)",
+      "p1": 0.7501664823841174,
+      "cote": 1.28,
+      "valeur": -0.03978690254832962
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.760117246626798,
+      "cote": 1.22,
+      "valeur": -0.07265695911530645
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.23988275337320197,
+      "cote": 4.2,
+      "valeur": 0.007507564167448244
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.518332575042178,
+      "cote": 1.7,
+      "valeur": -0.11883462242829745
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.481667424957822,
+      "cote": 2.12,
+      "valeur": 0.021134940910582767
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.29676687229057747,
+      "cote": 2.71,
+      "valeur": -0.1957617760925351
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7032331277094226,
+      "cote": 1.45,
+      "valeur": 0.0196880351786628
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.548216194898911,
+      "cote": 1.67,
+      "valeur": -0.0844789545188186
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.45178380510108895,
+      "cote": 2.17,
+      "valeur": -0.019629142930637
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 1.8,
+    "N": 3.79,
+    "2": 4.32,
+    "1N": 1.24,
+    "N2": 1.95,
+    "12": 1.28,
+    "o15+": 1.22,
+    "o15-": 4.2,
+    "o25+": 1.7,
+    "o25-": 2.12,
+    "o35+": 2.71,
+    "o35-": 1.45,
+    "btts+": 1.67,
+    "btts-": 2.17
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -2078,10 +6854,136 @@
     "fd_dom": "Watford",
     "fd_ext": "Middlesbrough"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "2fe83a3f4f35e8a18de32e988ed7da049d7b76b1dfdfb88fbd35b8c02125cc20",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "fe34755637605e914a49f80a31805845d2c8be14d7fb04617efdb29aa566ed28",
    "mode": "parallele",
    "n_historique_competition": 2916,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.7123158175097345,
+     "cote": 1.71,
+     "valeur": 0.2180600479416459
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Watford",
+      "p1": 0.3179064591456542,
+      "cote": 6.17,
+      "valeur": 0.9614828529286863
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.25565113710272086,
+      "cote": 4.98,
+      "valeur": 0.2731426627715501
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Middlesbrough",
+      "p1": 0.4264424037516248,
+      "cote": 1.45,
+      "valeur": -0.3816585145601441
+     },
+     {
+      "cle": "1N",
+      "libelle": "Watford ou match nul",
+      "p1": 0.573557596248375,
+      "cote": 2.58,
+      "valeur": 0.4797785983208076
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Middlesbrough",
+      "p1": 0.6820935408543456,
+      "cote": 1.15,
+      "valeur": -0.21559242801750267
+     },
+     {
+      "cle": "12",
+      "libelle": "Watford ou Middlesbrough (pas de nul)",
+      "p1": 0.744348862897279,
+      "cote": 1.19,
+      "valeur": -0.11422485315223807
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.752797279727674,
+      "cote": 1.13,
+      "valeur": -0.1493390739077285
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.24720272027232604,
+      "cote": 5.71,
+      "valeur": 0.41152753275498166
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5083463040127763,
+      "cote": 1.45,
+      "valeur": -0.26289785918147446
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.49165369598722375,
+      "cote": 2.71,
+      "valeur": 0.33238151612537625
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.2876841824902655,
+      "cote": 2.1,
+      "valeur": -0.39586321677044245
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7123158175097345,
+      "cote": 1.71,
+      "valeur": 0.2180600479416459
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5466594027484345,
+      "cote": 1.61,
+      "valeur": -0.11987836157502041
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.4533405972515655,
+      "cote": 2.28,
+      "valeur": 0.033616561733569306
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 6.17,
+    "N": 4.98,
+    "2": 1.45,
+    "1N": 2.58,
+    "N2": 1.15,
+    "12": 1.19,
+    "o15+": 1.13,
+    "o15-": 5.71,
+    "o25+": 1.45,
+    "o25-": 2.71,
+    "o35+": 2.1,
+    "o35-": 1.71,
+    "btts+": 1.61,
+    "btts-": 2.28
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null
@@ -2131,10 +7033,136 @@
     "fd_dom": "West Brom",
     "fd_ext": "Millwall"
    },
-   "gele_le": "2026-11-05T06:48:13Z",
-   "empreinte": "17a57b93c88d2add9e3f894a30efa3edb400ac1337a1d4ed71af1b72d9a45dee",
+   "gele_le": "2026-11-05T07:04:08Z",
+   "empreinte": "506d1e478b24b098906de2121fba56b5e2f6bc96618508fa02ece1ed0ac38d65",
    "mode": "parallele",
    "n_historique_competition": 2916,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.7764580158620015,
+     "cote": 1.39,
+     "valeur": 0.07927664204818208
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire West Bromwich",
+      "p1": 0.41860112279853523,
+      "cote": 2.02,
+      "valeur": -0.15442573194695886
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.2736201721162684,
+      "cote": 3.66,
+      "valeur": 0.0014498299455423247
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Millwall",
+      "p1": 0.30777870508519645,
+      "cote": 3.54,
+      "valeur": 0.08953661600159535
+     },
+     {
+      "cle": "1N",
+      "libelle": "West Bromwich ou match nul",
+      "p1": 0.6922212949148037,
+      "cote": 1.31,
+      "valeur": -0.09319010366160718
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Millwall",
+      "p1": 0.5813988772014649,
+      "cote": 1.76,
+      "valeur": 0.023262023874578208
+     },
+     {
+      "cle": "12",
+      "libelle": "West Bromwich ou Millwall (pas de nul)",
+      "p1": 0.7263798278837317,
+      "cote": 1.3,
+      "valeur": -0.05570622375114875
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.693907630745541,
+      "cote": 1.25,
+      "valeur": -0.1326154615680738
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.30609236925445904,
+      "cote": 3.89,
+      "valeur": 0.1906993163998456
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.433116006646214,
+      "cote": 1.78,
+      "valeur": -0.22905350816973902
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.5668839933537859,
+      "cote": 2.0,
+      "valeur": 0.13376798670757184
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.22354198413799856,
+      "cote": 2.92,
+      "valeur": -0.34725740631704427
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7764580158620015,
+      "cote": 1.39,
+      "valeur": 0.07927664204818208
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.48665720096505743,
+      "cote": 1.69,
+      "valeur": -0.17754933036905296
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.5133427990349426,
+      "cote": 2.14,
+      "valeur": 0.09855358993477736
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.02,
+    "N": 3.66,
+    "2": 3.54,
+    "1N": 1.31,
+    "N2": 1.76,
+    "12": 1.3,
+    "o15+": 1.25,
+    "o15-": 3.89,
+    "o25+": 1.78,
+    "o25-": 2.0,
+    "o35+": 2.92,
+    "o35-": 1.39,
+    "btts+": 1.69,
+    "btts-": 2.14
+   },
    "statut": "a_venir",
    "resultat": null,
    "evaluation": null

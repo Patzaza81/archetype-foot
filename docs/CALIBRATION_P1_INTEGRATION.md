@@ -42,3 +42,8 @@ Le premier journal avait été gelé avec une heure de test fixée à 12:00Z : c
 
 ## Preuve d'exactitude
 `python verifier_page_p1.py` → `data/calibration_p1/preuve_page_p1.json` : recalcul de P1 depuis zéro pour chaque match (écart max avec journal et page), lecture du DOM dans Chromium (écart max en %), intégrité du journal. Captures : `data/calibration_p1/captures/`.
+
+## Pari retenu par P1 (ajout du 05/11/2026)
+- Règle (`p1_paris.py`, aucune constante) : marchés dont P1 donne la probabilité (1, N, 2, 1N, N2, 12, plus/moins de 1,5 / 2,5 / 3,5, les deux marquent oui/non, par somme ou complément exact) ET dont la cote réelle est présente dans `cotes_betpawa` du flux. Valeur = proba P1 × cote − 1. Pari retenu = marché à valeur > 0 de plus forte proba P1 ; sinon « aucun marché retenu ». Sans cote : marché non évalué.
+- Pari et cotes sont gelés dans le journal avec la prédiction. Mesure : taux et rendement moyen par mise unitaire (± erreur-type), sur matchs terminés seulement.
+- Limite : la valeur est jugée par P1 lui-même ; P1 n'a pas démontré de gain face aux cotes. Le journal a été régénéré le 05/11 (aucun match terminé à ce moment) pour inclure les paris.

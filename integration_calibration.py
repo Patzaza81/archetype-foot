@@ -13,6 +13,7 @@ Mode "parallele": P1 original et P1 calibre sont enregistres, rien n'est publie.
 import datetime, glob, gzip, hashlib, json, os, sys
 import numpy as np
 import calibration_p1 as cp
+import p1_paris
 import pouvoir_predictif as pp
 
 RACINE = os.path.dirname(os.path.abspath(__file__))
@@ -65,7 +66,7 @@ def lire_flux(jour_min, maintenant=None):
             a = x.get("assemblage") or {}; ed, ee = a.get("equipe_dom") or {}, a.get("equipe_ext") or {}
             res[x["match_id"]] = {"match_id": x["match_id"], "date": x["date"], "coup_d_envoi_utc": x.get("coup_d_envoi_utc"), "competition": x.get("competition"), "domicile": x.get("domicile"), "exterieur": x.get("exterieur"),
                                   "division": ed.get("division_football_data") if ed.get("couverte_par_football_data") and ee.get("couverte_par_football_data") and ed.get("division_football_data") == ee.get("division_football_data") else None,
-                                  "fd_dom": ed.get("nom_football_data"), "fd_ext": ee.get("nom_football_data")}
+                                  "fd_dom": ed.get("nom_football_data"), "fd_ext": ee.get("nom_football_data"), "cotes": x.get("cotes_betpawa")}
     return list(res.values())
 
 def traiter(matchs, config, mode_="parallele", ref_jour=None):
@@ -97,6 +98,7 @@ def traiter(matchs, config, mode_="parallele", ref_jour=None):
                                    "matchs_anterieurs_dom": sum(1 for h in hist if h[0] < f[0] and f[1] in (h[2], h[3])), "matchs_anterieurs_ext": sum(1 for h in hist if h[0] < f[0] and f[2] in (h[2], h[3])),
                                    "fd_dom": m["fd_dom"], "fd_ext": m["fd_ext"]},
                         "publie": cal if mode_ == "actif" else orig})
+            pub = out[-1]["publie"]; cotes = p1_paris.cotes_utiles(m.get("cotes")); out[-1]["cotes_au_gel"] = cotes; out[-1]["pari"] = p1_paris.choisir(pub, cotes, m["domicile"], m["exterieur"])
     return out
 
 def _base(m): return {"match_id": m["match_id"], "date": m["date"], "competition": m["competition"], "division": m["division"], "domicile": m["domicile"], "exterieur": m["exterieur"], "coup_d_envoi_utc": m["coup_d_envoi_utc"]}
