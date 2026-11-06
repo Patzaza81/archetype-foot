@@ -9,8 +9,13 @@ CHEMIN = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "calib
 MARCHES = ("dom", "nul", "ext", "o15", "o25", "o35", "btts")
 EPS = 1e-9
 
+CHEMIN_MED = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "calibration_p1", "config_med.json")
+
 def charger(chemin=None):
-    with open(chemin or CHEMIN, encoding="utf-8") as f: return json.load(f)
+    with open(chemin or CHEMIN, encoding="utf-8") as f: cfg = json.load(f)
+    if chemin is None and os.path.exists(CHEMIN_MED):        # championnats servis par Matchendirect (calibrer_p1_med.py) : ajoutes sans toucher a la config Football-Data
+        with open(CHEMIN_MED, encoding="utf-8") as f: cfg["competitions"].update(json.load(f)["competitions"])
+    return cfg
 
 def _logit(p): p = np.clip(np.asarray(p, float), EPS, 1 - EPS); return np.log(p / (1 - p))
 def _sigm(z): return 1.0 / (1.0 + np.exp(-np.clip(z, -30, 30)))

@@ -14,6 +14,7 @@ import datetime, glob, gzip, hashlib, json, os, sys
 import numpy as np
 import calibration_p1 as cp
 import p1_paris
+import p1_source_med as pm
 import pouvoir_predictif as pp
 
 RACINE = os.path.dirname(os.path.abspath(__file__))
@@ -31,6 +32,8 @@ def mode(chemin=None):
 
 def historique(code, jusqua_jour=None):
     """Matchs joues de la competition (jour ordinal, saison, dom, ext, buts dom, buts ext) triees: archives + saison courante normalisee. jusqua_jour: exclus ce jour et apres."""
+    if code in pm.COMPETITIONS_MED:           # championnat absent de Football-Data (Eerste Divisie) : source Matchendirect
+        return [m for m in pm.historique(code) if jusqua_jour is None or m[0] < jusqua_jour]
     H = list(pp.charger(code))
     for chemin in sorted(glob.glob(os.path.join(NORMALISE, "*", code + ".jsonl"))):
         saison = os.path.basename(os.path.dirname(chemin))
@@ -64,9 +67,13 @@ def lire_flux(jour_min, maintenant=None):
             if x.get("score") is not None and (x["score"] or {}).get("buts_dom") is not None: continue
             if maintenant and x.get("coup_d_envoi_utc") and x["coup_d_envoi_utc"] <= maintenant: continue
             a = x.get("assemblage") or {}; ed, ee = a.get("equipe_dom") or {}, a.get("equipe_ext") or {}
+            div = ed.get("division_football_data") if ed.get("couverte_par_football_data") and ee.get("couverte_par_football_data") and ed.get("division_football_data") == ee.get("division_football_data") else None
+            fd_dom, fd_ext = ed.get("nom_football_data"), ee.get("nom_football_data")
+            if div is None:                    # championnat servi par Matchendirect (Eerste Divisie) : division interne et noms de l'assemblage
+                med = pm.division_et_noms(x.get("competition"), ed.get("cle_cache"), ee.get("cle_cache"))
+                if med: div, fd_dom, fd_ext = med
             res[x["match_id"]] = {"match_id": x["match_id"], "date": x["date"], "coup_d_envoi_utc": x.get("coup_d_envoi_utc"), "competition": x.get("competition"), "domicile": x.get("domicile"), "exterieur": x.get("exterieur"),
-                                  "division": ed.get("division_football_data") if ed.get("couverte_par_football_data") and ee.get("couverte_par_football_data") and ed.get("division_football_data") == ee.get("division_football_data") else None,
-                                  "fd_dom": ed.get("nom_football_data"), "fd_ext": ee.get("nom_football_data"), "cotes": x.get("cotes_betpawa")}
+                                  "division": div, "fd_dom": fd_dom, "fd_ext": fd_ext, "cotes": x.get("cotes_betpawa")}
     return list(res.values())
 
 def traiter(matchs, config, mode_="parallele", ref_jour=None):
