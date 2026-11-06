@@ -49,7 +49,17 @@ jobs:
         run: |
           python -m moteur_v2_6_10 --autotest
           python pont_moteur.py --autotest
-          python -m pytest tests -q
+          python -m pytest tests -q --deselect tests/test_audit_identites.py::test_assemblage_courant_aucun_alias_rattache_sans_preuve_d_identifiant
+
+      # CHANGEMENT 06/11/2026 (ordre de Patrick) : ce contrôle lit l'assemblage du jour (données générées) ; un nom bizarre chez Football-Data
+      # bloquait tout le pipeline (5 et 6/11). Il ne bloque plus la publication mais l'erreur reste visible : annotation rouge + étape en échec.
+      - name: Audit des identités sur l'assemblage du jour (non bloquant, erreur visible)
+        continue-on-error: true
+        run: |
+          if ! python -m pytest tests/test_audit_identites.py::test_assemblage_courant_aucun_alias_rattache_sans_preuve_d_identifiant -q; then
+            echo "::error title=Audit des identités en échec::Alias rattachés sans preuve d'identifiant, voir python audit_identites.py"
+            exit 1
+          fi
 
       - name: Collecter et normaliser Football-Data
         run: python collecte_football_data.py
