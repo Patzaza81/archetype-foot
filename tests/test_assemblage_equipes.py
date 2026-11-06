@@ -218,3 +218,48 @@ def test_nom_ambigu_sans_nom_identique_non_relie():
 
 def test_meme_nom_autre_championnat_non_relie():
     assert ae._equipe_du_cache(_cle("dundee-fc", "angleterre : championnat"), SC0) is None
+
+
+# --- Correctif du 06/11/2026 : même club écrit de deux façons par Football-Data ----------------------------------------------------
+def _deux_graphies(n_long, n_court, long="Sheffield United", court="Sheffield Utd", nom_med="Sheffield Utd"):
+    fds, meds = [], []
+    for i in range(n_long):
+        j = f"2026-09-{i + 1:02d}"
+        fds.append(fd(j, long, f"Adv{i}", 1, 0)); meds.append(med(j, nom_med, f"Adv{i}", 1, 0))
+    for i in range(n_court):
+        j = f"2026-10-{i + 1:02d}"
+        fds.append(fd(j, court, f"Autre{i}", 2, 1)); meds.append(med(j, nom_med, f"Autre{i}", 2, 1))
+    return fds, meds
+
+
+# doivent réussir
+def test_graphie_majoritaire_gardee_sheffield():
+    div, amb, _ = ae.construit_correspondances(*_deux_graphies(13, 1))
+    assert div["E1"]["equipes"]["Sheffield United"]["matchendirect"] == "Sheffield Utd" and "Sheffield Utd" not in div["E1"]["equipes"]
+    assert [(a["football_data"]) for a in amb] == ["Sheffield Utd"]
+
+
+def test_graphie_majoritaire_gardee_oxford():
+    div, _, _ = ae.construit_correspondances(*_deux_graphies(12, 1, "Oxford", "Oxford Utd", "Oxford Utd"))
+    assert "Oxford" in div["E1"]["equipes"] and "Oxford Utd" not in div["E1"]["equipes"]
+
+
+def test_graphie_unique_toujours_reliee():
+    div, amb, _ = ae.construit_correspondances(*_deux_graphies(5, 0))
+    assert "Sheffield United" in div["E1"]["equipes"] and amb == []
+
+
+# doivent échouer (tous rejetés)
+def test_egalite_de_preuves_deux_graphies_rejetees():
+    div, amb, _ = ae.construit_correspondances(*_deux_graphies(3, 3))
+    assert not {"Sheffield United", "Sheffield Utd"} & set(div.get("E1", {}).get("equipes", {})) and {a["football_data"] for a in amb} == {"Sheffield United", "Sheffield Utd"}
+
+
+def test_pas_de_majorite_nette_rejetees():
+    div, amb, _ = ae.construit_correspondances(*_deux_graphies(5, 3))
+    assert not {"Sheffield United", "Sheffield Utd"} & set(div.get("E1", {}).get("equipes", {})) and len(amb) == 2
+
+
+def test_minoritaire_a_une_preuve_et_majoritaire_a_une_preuve_rejetees():
+    div, amb, _ = ae.construit_correspondances(*_deux_graphies(1, 1))
+    assert not {"Sheffield United", "Sheffield Utd"} & set(div.get("E1", {}).get("equipes", {})) and len(amb) == 2

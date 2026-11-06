@@ -173,12 +173,22 @@ def construit_correspondances(fd, med):
     # unicité : un nom Matchendirect ne peut appartenir qu'à une équipe Football-Data par division
     revendications = defaultdict(list)
     for (div, nom_fd), (nom_med, n) in retenus.items():
-        revendications[(div, normalise(nom_med))].append(nom_fd)
+        revendications[(div, normalise(nom_med))].append((n, nom_fd))
+    # CORRECTIF 06/11/2026 : Football-Data peut écrire un même club de deux façons (« Sheffield United » 13 matchs, « Sheffield Utd » 1 match).
+    # Les deux revendiquaient le même nom Matchendirect, tous deux étaient rejetés et le club perdait son lien (échec de l'audit des identités).
+    # Même règle de dominance que pour les votes ci-dessus : le revendicateur qui a au moins 2 preuves ET au moins le double du suivant garde
+    # le nom ; les autres sont écartés (signalés ambigus) ; à égalité ou sans majorité nette, tous sont rejetés comme avant.
+    dominants = {}
+    for cle_rev, rev in revendications.items():
+        (n1, nom1), *autres = sorted(rev, key=lambda x: (-x[0], x[1]))
+        if len(rev) == 1 or (n1 >= 2 and n1 >= 2 * autres[0][0]):
+            dominants[cle_rev] = nom1
     correspondances = defaultdict(dict)
     for (div, nom_fd), (nom_med, n) in sorted(retenus.items()):
-        if len(revendications[(div, normalise(nom_med))]) > 1:
+        cle_rev = (div, normalise(nom_med))
+        if dominants.get(cle_rev) != nom_fd:
             ambigus.append({"division": div, "football_data": nom_fd, "matchendirect": nom_med,
-                            "concurrents": revendications[(div, normalise(nom_med))]})
+                            "concurrents": sorted(x[1] for x in revendications[cle_rev])})
             continue
         correspondances[div][nom_fd] = {"matchendirect": nom_med, "preuves": n,
                                         "similarite_nom": round(sim_max[((div, nom_fd), nom_med)], 3)}
