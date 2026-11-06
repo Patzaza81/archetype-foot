@@ -66,9 +66,9 @@ def test_calibrage_note_seulement_les_saisons_passees_hors_premiere_et_bat_la_fr
 def test_saison_incomplete_ecartee():
     pm.saisons_passees("N2"); sauve = pm._cache["passees"]
     try:
-        pm._cache["passees"] = {**sauve, "2526": sauve["2526"][:379]}; assert "2526" not in pm.saisons_passees("N2") and "2425" in pm.saisons_passees("N2")
+        pm._cache["passees"] = {**sauve, "2425": sauve["2425"][:379]}; assert "2425" not in pm.saisons_passees("N2") and "2324" in pm.saisons_passees("N2")
         pm._cache["passees"] = {k: v[:100] for k, v in sauve.items()}; assert pm.saisons_passees("N2") == {}
     finally: pm._cache["passees"] = sauve
 
 def test_saison_en_cours_jamais_dupliquee_depuis_les_saisons_passees():
-    for s in ("2425", "2526"): assert len([x for x in pm.historique("N2", doc(), s) if x[1] == s]) == 3
+    for s in ("2425", "2324"): assert len([x for x in pm.historique("N2", doc(), s) if x[1] == s]) == 3
