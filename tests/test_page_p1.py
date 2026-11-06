@@ -77,7 +77,8 @@ def test_derniers_matchs_reels_sans_fuite():
     for m in d["matchs"][:12]:
         h = ic.historique(m["division"]); jour = pp._date(m["date"]); fd = m["detail"]
         for cote, equipe, dom in (("dom", fd["fd_dom"], True), ("ext", fd["fd_ext"], False)):
-            L = m["derniers_matchs"][cote]; assert len(L) <= 5 and [x["date"] for x in L] == sorted((x["date"] for x in L), reverse=True)   # du plus récent au plus ancien
+            L = m["derniers_matchs"][cote]; saison = max(t[1] for t in h)
+            assert len(L) == len([t for t in h if t[1] == saison and t[0] < jour and t[2 if dom else 3] == equipe]) and [x["date"] for x in L] == sorted((x["date"] for x in L), reverse=True)   # du plus récent au plus ancien
             for x in L:
                 j = pp._date(x["date"]); assert j < jour                                        # jamais le match lui-meme ni le futur
                 ref = [t for t in h if t[0] == j and t[2 if dom else 3] == equipe and t[3 if dom else 2] == x["adversaire"]]
@@ -89,7 +90,7 @@ def test_derniers_matchs_cas_limites():
     r = pd.derniers_matchs(h, "A", "A", 40)
     assert [x["adversaire"] for x in r["dom"]] == ["C", "B"] and [x["adversaire"] for x in r["ext"]] == ["D"]    # le match du jour 40 est exclu ; plus récent d'abord
     assert r["ext"][0]["marques"] == 3 and r["ext"][0]["encaisses"] == 0 and pd.derniers_matchs(h, "Z", "Z", 99) == {k: [] for k in ("dom", "ext", "dom_ext", "ext_dom", "h2h")}
-    assert len(pd.derniers_matchs([(i, "s", "A", "B", 1, 1) for i in range(1, 12)], "A", "B", 99)["dom"]) == 5
+    assert len(pd.derniers_matchs([(i, "s", "A", "B", 1, 1) for i in range(1, 12)], "A", "B", 99)["dom"]) == 11      # plus de plafond à 5 : toute la saison
 
 def test_onglets_autre_lieu_et_h2h():
     h = [(10, "s", "A", "B", 1, 0), (20, "s", "B", "A", 2, 2), (30, "s", "A", "C", 4, 1), (35, "s", "C", "B", 0, 5), (40, "s", "B", "A", 3, 0), (50, "s", "A", "B", 9, 9)]
@@ -104,3 +105,34 @@ def test_page_sans_rubriques_supprimees():
     js = open("archetype_p1.js", encoding="utf-8").read(); html = open("pronostics_p1.html", encoding="utf-8").read()
     for interdit in ("Autres options intéressantes", "om-autres", "Probabilités de P1", "p1-tabstats"): assert interdit not in js and interdit not in html, interdit
     assert "d'avantage (cote" in js and "Pourquoi ?" not in js and 'data-onglet' in js and '"H2H"' in js
+
+
+# --- 06/11/2026 : toute la saison en cours par lieu, 10 H2H au plus ----------------------------------------------------------------
+def _saisons():
+    old = [(1, "2526", "A", "X", 1, 0), (2, "2526", "Y", "A", 0, 2), (3, "2526", "A", "B", 3, 3)]                     # saison précédente
+    cur = [(10 + i, "2627", "A", f"O{i}", 1, 0) for i in range(8)] + [(30 + i, "2627", f"P{i}", "A", 0, 1) for i in range(7)] + [(50, "2627", "C", "D", 2, 2)]
+    return old + cur
+
+# doivent réussir
+def test_toute_la_saison_en_cours_a_domicile_sans_plafond():
+    r = pd.derniers_matchs(_saisons(), "A", "B", 99); assert len(r["dom"]) == 8 and r["dom"][0]["adversaire"] == "O7" and r["dom"][-1]["adversaire"] == "O0"
+
+def test_toute_la_saison_en_cours_a_l_exterieur_sans_plafond():
+    r = pd.derniers_matchs(_saisons(), "A", "B", 99); assert len(r["dom_ext"]) == 7 and r["dom_ext"][0]["adversaire"] == "P6"
+
+def test_h2h_dix_maximum_les_plus_recents_toutes_saisons():
+    h = [(i, "2526" if i < 6 else "2627", "A" if i % 2 else "B", "B" if i % 2 else "A", 1, 0) for i in range(1, 15)]
+    r = pd.derniers_matchs(h, "A", "B", 99)["h2h"]; assert len(r) == 10 and r[0]["date"] == datetime_date(14) and r[-1]["date"] == datetime_date(5)
+
+# doivent échouer (exclus)
+def test_saison_precedente_exclue_des_onglets_lieu():
+    r = pd.derniers_matchs(_saisons(), "A", "B", 99); assert all(x["adversaire"] not in ("X", "B") for x in r["dom"]) and all(x["adversaire"] != "Y" for x in r["dom_ext"])
+
+def test_match_du_jour_et_futur_exclus():
+    r = pd.derniers_matchs(_saisons(), "A", "B", 14); assert [x["adversaire"] for x in r["dom"]] == ["O3", "O2", "O1", "O0"] and r["dom_ext"] == []
+
+def test_h2h_sans_confrontation_vide_pas_de_minimum():
+    assert pd.derniers_matchs(_saisons(), "A", "Z", 99)["h2h"] == [] and len(pd.derniers_matchs(_saisons(), "A", "B", 99)["h2h"]) == 1
+
+def datetime_date(o):
+    import datetime; return datetime.date.fromordinal(o).isoformat()

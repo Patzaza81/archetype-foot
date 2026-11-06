@@ -53,14 +53,18 @@ def performance_paris(termines):
     w = sum(p["gagne"] for p in P); g = [p["gain"] for p in P]; moy = sum(g) / n; var = sum((x - moy) ** 2 for x in g) / max(n - 1, 1); t = w / n
     return {**res, "gagnes": w, "taux": t, "taux_erreur_type": math.sqrt(max(t * (1 - t), 0) / n), "rendement_moyen": moy, "rendement_erreur_type": math.sqrt(var / n)}
 
-def derniers_matchs(hist, fd_dom, fd_ext, jour, n=5):
-    """Derniers matchs REELS (archive + saison courante, strictement avant le match), du PLUS RECENT au plus ancien.
-    dom = l'equipe qui recoit, a domicile ; ext = l'equipe qui se deplace, a l'exterieur ; dom_ext / ext_dom = l'autre lieu de chacune (onglets de verification) ;
-    h2h = confrontations directes, du point de vue de l'equipe qui recoit (domicile = elle recevait ce jour-la)."""
+N_H2H = 10     # règle de Patrick (06/11/2026) : au plus les 10 dernières confrontations directes, pas de minimum
+
+def derniers_matchs(hist, fd_dom, fd_ext, jour):
+    """Matchs REELS (archive + saison courante, strictement avant le match), du PLUS RECENT au plus ancien.
+    dom = TOUS les matchs de la saison en cours de l'equipe qui recoit, a domicile ; ext = ceux de l'equipe qui se deplace, a l'exterieur ;
+    dom_ext / ext_dom = l'autre lieu de chacune (meme saison) ; saison en cours = la plus recente de l'historique ;
+    h2h = au plus les N_H2H dernieres confrontations directes, toutes saisons, du point de vue de l'equipe qui recoit (domicile = elle recevait ce jour-la)."""
+    saison = max((h[1] for h in hist), default=None)
     def f(equipe, domicile):
-        L = [h for h in hist if h[0] < jour and h[2 if domicile else 3] == equipe][-n:][::-1]
+        L = [h for h in hist if h[0] < jour and h[1] == saison and h[2 if domicile else 3] == equipe][::-1]
         return [{"date": datetime.date.fromordinal(h[0]).isoformat(), "adversaire": h[3] if domicile else h[2], "marques": h[4] if domicile else h[5], "encaisses": h[5] if domicile else h[4]} for h in L]
-    confront = [h for h in hist if h[0] < jour and fd_dom != fd_ext and {h[2], h[3]} == {fd_dom, fd_ext}][-n:][::-1]
+    confront = [h for h in hist if h[0] < jour and fd_dom != fd_ext and {h[2], h[3]} == {fd_dom, fd_ext}][-N_H2H:][::-1]
     return {"dom": f(fd_dom, True), "ext": f(fd_ext, False), "dom_ext": f(fd_dom, False), "ext_dom": f(fd_ext, True),
             "h2h": [{"date": datetime.date.fromordinal(h[0]).isoformat(), "domicile": h[2] == fd_dom, "marques": h[4] if h[2] == fd_dom else h[5], "encaisses": h[5] if h[2] == fd_dom else h[4]} for h in confront]}
 
