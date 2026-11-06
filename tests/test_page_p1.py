@@ -69,6 +69,7 @@ def test_affichage_exact_dans_le_navigateur():
     pytest.importorskip("playwright"); import verifier_page_p1 as v
     d = json.load(open(pd.SORTIE, encoding="utf-8")); r = v.affichage(d)
     assert r["cartes"] == r["attendu"] and r.get("paris_incoherents", 0) == 0 and r["ecart_max_pct"] == 0 and not r["erreurs_console"] and not r["debordement_horizontal"]
+    assert r.get("cartes_avec_onglets", 0) > 0 and r.get("onglets_defaut_incorrects", 0) == 0 and r.get("listes_incorrectes", 0) == 0
 
 def test_derniers_matchs_reels_sans_fuite():
     import datetime, pouvoir_predictif as pp
@@ -76,7 +77,7 @@ def test_derniers_matchs_reels_sans_fuite():
     for m in d["matchs"][:12]:
         h = ic.historique(m["division"]); jour = pp._date(m["date"]); fd = m["detail"]
         for cote, equipe, dom in (("dom", fd["fd_dom"], True), ("ext", fd["fd_ext"], False)):
-            L = m["derniers_matchs"][cote]; assert len(L) <= 5 and [x["date"] for x in L] == sorted(x["date"] for x in L)
+            L = m["derniers_matchs"][cote]; assert len(L) <= 5 and [x["date"] for x in L] == sorted((x["date"] for x in L), reverse=True)   # du plus récent au plus ancien
             for x in L:
                 j = pp._date(x["date"]); assert j < jour                                        # jamais le match lui-meme ni le futur
                 ref = [t for t in h if t[0] == j and t[2 if dom else 3] == equipe and t[3 if dom else 2] == x["adversaire"]]
@@ -86,6 +87,20 @@ def test_derniers_matchs_reels_sans_fuite():
 def test_derniers_matchs_cas_limites():
     h = [(10, "s", "A", "B", 1, 0), (20, "s", "A", "C", 2, 2), (30, "s", "D", "A", 0, 3), (40, "s", "A", "E", 0, 1)]
     r = pd.derniers_matchs(h, "A", "A", 40)
-    assert [x["adversaire"] for x in r["dom"]] == ["B", "C"] and [x["adversaire"] for x in r["ext"]] == ["D"]    # le match du jour 40 est exclu
-    assert r["ext"][0]["marques"] == 3 and r["ext"][0]["encaisses"] == 0 and pd.derniers_matchs(h, "Z", "Z", 99) == {"dom": [], "ext": []}
+    assert [x["adversaire"] for x in r["dom"]] == ["C", "B"] and [x["adversaire"] for x in r["ext"]] == ["D"]    # le match du jour 40 est exclu ; plus récent d'abord
+    assert r["ext"][0]["marques"] == 3 and r["ext"][0]["encaisses"] == 0 and pd.derniers_matchs(h, "Z", "Z", 99) == {k: [] for k in ("dom", "ext", "dom_ext", "ext_dom", "h2h")}
     assert len(pd.derniers_matchs([(i, "s", "A", "B", 1, 1) for i in range(1, 12)], "A", "B", 99)["dom"]) == 5
+
+def test_onglets_autre_lieu_et_h2h():
+    h = [(10, "s", "A", "B", 1, 0), (20, "s", "B", "A", 2, 2), (30, "s", "A", "C", 4, 1), (35, "s", "C", "B", 0, 5), (40, "s", "B", "A", 3, 0), (50, "s", "A", "B", 9, 9)]
+    r = pd.derniers_matchs(h, "A", "B", 50)
+    assert [x["adversaire"] for x in r["dom"]] == ["C", "B"] and [x["adversaire"] for x in r["dom_ext"]] == ["B", "B"]                # A à domicile / A à l'extérieur
+    assert [x["adversaire"] for x in r["ext"]] == ["C", "A"] and [x["adversaire"] for x in r["ext_dom"]] == ["A", "A"]                       # B à l'extérieur / B à domicile
+    assert [x["domicile"] for x in r["h2h"]] == [False, False, True]
+    assert [(x["marques"], x["encaisses"]) for x in r["h2h"]] == [(0, 3), (2, 2), (1, 0)] and len(r["h2h"]) == 3                                       # point de vue de A, plus récent d'abord, sans le match du jour
+    assert pd.derniers_matchs(h, "A", "Z", 99)["h2h"] == [] and pd.derniers_matchs(h, "A", "A", 99)["h2h"] == []
+
+def test_page_sans_rubriques_supprimees():
+    js = open("archetype_p1.js", encoding="utf-8").read(); html = open("pronostics_p1.html", encoding="utf-8").read()
+    for interdit in ("Autres options intéressantes", "om-autres", "Probabilités de P1", "p1-tabstats"): assert interdit not in js and interdit not in html, interdit
+    assert "d'avantage (cote" in js and "Pourquoi ?" not in js and 'data-onglet' in js and '"H2H"' in js

@@ -77,10 +77,6 @@
 .om-jauge i{display:block;height:100%;border-radius:99px;background:#087F78}
 .theme-nuit .om-jauge i{background:#4FD1C5}
 .om-pourquoi{margin-top:6px;font-size:12px}.om-pourquoi div{margin-top:3px}
-.om-autres{margin-top:4px;padding:8px 10px;border-radius:10px;border:1px solid rgba(8,127,120,.45);border-left:5px solid #087F78;background:rgba(8,127,120,.12)}
-.om-autres-titre{font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#087F78;margin-bottom:4px}
-.theme-nuit .om-autres-titre{color:#4FD1C5}
-.om-autres .om-ligne{padding:3px 0}
 .om-bloc{font-size:12px}
 .om-bloc-titre{font-weight:800;font-size:12px;margin-bottom:4px}
 .om-croix{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -107,6 +103,12 @@
 .om-dm-puces span{padding:3px 10px;border-radius:999px;background:#EEF5F3;color:#174743;font-size:12px;font-weight:600}
 .om-dm-puces b{font-weight:800}
 .om-dm-liste{list-style:none;margin:0;padding:0}
+.om-onglets{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}
+.om-onglet{appearance:none;cursor:pointer;min-height:32px;padding:6px 12px;border-radius:999px;border:1px solid rgba(8,127,120,.35);background:#fff;color:#174743;font:700 12px/1 system-ui,-apple-system,"Segoe UI",sans-serif}
+.om-onglet-actif{background:#087F78;border-color:#087F78;color:#fff}
+.om-dm-panneau[hidden]{display:none}
+.theme-nuit .om-onglet{background:#24272E;border-color:rgba(21,152,141,.4);color:#CFE9E5}
+.theme-nuit .om-onglet-actif{background:#15988D;border-color:#15988D;color:#fff}
 .om-dm{display:flex;align-items:center;gap:10px;min-height:42px;border-top:1px solid rgba(23,20,27,.07);font-size:13px}
 .om-dm:first-child{border-top:0}
 .om-dm-date{flex:0 0 52px;color:#5B6763;font-weight:600;font-variant-numeric:tabular-nums}

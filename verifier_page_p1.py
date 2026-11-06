@@ -27,16 +27,26 @@ def affichage(page):
     with sync_playwright() as p:
         b = p.chromium.launch(); pg = b.new_page(viewport={"width": 390, "height": 844}, device_scale_factor=2)
         pg.on("console", lambda m: res["erreurs_console"].append(m.text) if m.type == "error" else None); pg.on("pageerror", lambda e: res["erreurs_console"].append(str(e)))
-        pg.goto(url); pg.wait_for_selector("section.ax-carte"); cartes = pg.query_selector_all("section.ax-carte"); a_venir = [m for m in page["matchs"] if m["statut"] != "termine"]
+        pg.goto(url); pg.wait_for_selector("section.ax-carte"); cartes = pg.query_selector_all("section.ax-carte"); ms = page["matchs"]; a_venir = [m for m in ms if m["statut"] == "a_venir"] + [m for m in ms if m["statut"] == "en_cours_ou_resultat_attendu"] + [m for m in ms if m["statut"] == "termine"][::-1]   # ordre réel de la page : à venir, en cours, terminés (plus récent d'abord)
         res["cartes"] = len(cartes); res["attendu"] = len(a_venir); res["debordement_horizontal"] = pg.evaluate("document.documentElement.scrollWidth > window.innerWidth")
         res["drapeaux"] = len(pg.query_selector_all(".af-drapeau")); res["blocs_derniers_matchs"] = len(pg.query_selector_all(".om-dm-eq"))
         for c, m in zip(cartes, a_venir):
             pa = m.get("pari") or {}; r = pa.get("retenu"); txt = c.eval_on_selector(".om-corps", "e=>e.textContent")
             ok_pari = (r["libelle"] in txt and f'{r["cote"]:.2f}'.replace(".", ",") in txt and f'{round(100 * r["p1"])} sur 100' in txt) if r else ("Pas de proposition" in txt)
             res["paris_affiches"] = res.get("paris_affiches", 0) + 1; res["paris_incoherents"] = res.get("paris_incoherents", 0) + (not ok_pari)
-            aff = {k: int(t.replace("%", "").strip()) for k, t in zip([x for x in ic.MARCHES], c.eval_on_selector_all(".p1-v", "e=>e.map(x=>x.textContent)"))}
-            att = {k: round(100 * m["p1_original"][k]) for k in ic.MARCHES}
-            res["valeurs"] += 7; res["ecarts"] += [abs(aff.get(k, -999) - att[k]) for k in ic.MARCHES]
+            if r:    # le « pourquoi » affiche exactement : avantage, cote, réussite estimée et probabilité impliquée par la cote
+                pq = c.eval_on_selector(".om-pq-txt", "e=>e.textContent"); sg = "+" if r["valeur"] >= 0 else "−"
+                att = [f'{sg}{abs(r["valeur"] * 100):.1f}'.replace(".", ",") + f' % d\'avantage (cote {r["cote"]:.2f}'.replace(".", ",") + ")", f'{int(100 * r["p1"] + 0.5)} % de réussite', f'contre {int(100 / r["cote"] + 0.5)} % selon la cote']      # arrondi de la page (Math.round : .5 vers le haut)
+                res["valeurs"] += len(att); res["ecarts"] += [0 if a in pq else 1 for a in att]
+            dm = c.query_selector_all(".om-dm-eq")
+            if len(dm) == 2 and m.get("derniers_matchs"):                         # onglets : ouverture, ordre des dates, contenu = JSON
+                D = m["derniers_matchs"]; res["cartes_avec_onglets"] = res.get("cartes_avec_onglets", 0) + 1
+                for eq, defaut, cles in ((dm[0], "dom", {"dom": "dom", "ext": "dom_ext"}), (dm[1], "ext", {"dom": "ext_dom", "ext": "ext"})):
+                    actif = eq.eval_on_selector(".om-onglet-actif", "e=>e.dataset.onglet"); visibles = eq.eval_on_selector_all(".om-dm-panneau:not([hidden])", "e=>e.map(x=>x.dataset.panneau)")
+                    res["onglets_defaut_incorrects"] = res.get("onglets_defaut_incorrects", 0) + (actif != defaut or visibles != [defaut])
+                    for onglet, cle in (*cles.items(), ("h2h", "h2h")):
+                        dates = eq.eval_on_selector_all(f'.om-dm-panneau[data-panneau="{onglet}"] .om-dm', "e=>e.map(x=>x.dataset.date)")
+                        res["listes_incorrectes"] = res.get("listes_incorrectes", 0) + (dates != [x["date"] for x in D[cle]] or dates != sorted(dates, reverse=True))
         os.makedirs(os.path.join(ic.RACINE, "data", "calibration_p1", "captures"), exist_ok=True)
         pg.screenshot(path=os.path.join(ic.RACINE, "data", "calibration_p1", "captures", "p1_mobile.png"))
         pg.set_viewport_size({"width": 1280, "height": 900}); pg.screenshot(path=os.path.join(ic.RACINE, "data", "calibration_p1", "captures", "p1_bureau.png"))

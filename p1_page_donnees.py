@@ -54,11 +54,15 @@ def performance_paris(termines):
     return {**res, "gagnes": w, "taux": t, "taux_erreur_type": math.sqrt(max(t * (1 - t), 0) / n), "rendement_moyen": moy, "rendement_erreur_type": math.sqrt(var / n)}
 
 def derniers_matchs(hist, fd_dom, fd_ext, jour, n=5):
-    """Derniers matchs REELS (donnees d'archive et de saison courante, strictement avant le match) de chaque equipe au meme lieu : dom = ses matchs a domicile, ext = ses matchs a l'exterieur."""
+    """Derniers matchs REELS (archive + saison courante, strictement avant le match), du PLUS RECENT au plus ancien.
+    dom = l'equipe qui recoit, a domicile ; ext = l'equipe qui se deplace, a l'exterieur ; dom_ext / ext_dom = l'autre lieu de chacune (onglets de verification) ;
+    h2h = confrontations directes, du point de vue de l'equipe qui recoit (domicile = elle recevait ce jour-la)."""
     def f(equipe, domicile):
-        L = [h for h in hist if h[0] < jour and h[2 if domicile else 3] == equipe][-n:]
+        L = [h for h in hist if h[0] < jour and h[2 if domicile else 3] == equipe][-n:][::-1]
         return [{"date": datetime.date.fromordinal(h[0]).isoformat(), "adversaire": h[3] if domicile else h[2], "marques": h[4] if domicile else h[5], "encaisses": h[5] if domicile else h[4]} for h in L]
-    return {"dom": f(fd_dom, True), "ext": f(fd_ext, False)}
+    confront = [h for h in hist if h[0] < jour and fd_dom != fd_ext and {h[2], h[3]} == {fd_dom, fd_ext}][-n:][::-1]
+    return {"dom": f(fd_dom, True), "ext": f(fd_ext, False), "dom_ext": f(fd_dom, False), "ext_dom": f(fd_ext, True),
+            "h2h": [{"date": datetime.date.fromordinal(h[0]).isoformat(), "domicile": h[2] == fd_dom, "marques": h[4] if h[2] == fd_dom else h[5], "encaisses": h[5] if h[2] == fd_dom else h[4]} for h in confront]}
 
 def construire(maintenant=None, dossier=ic.DOSSIER, flux=ic.FLUX, config=None):
     import calibration_p1 as cp
