@@ -5,19 +5,29 @@ Sortie au meme format que integration_calibration.historique : (jour ordinal, sa
 import datetime, json, os
 from moteur_dc import donnees as D
 
-COMPETITIONS_MED = {"N2": "pays-bas : eerste divisie"}      # code interne P1 -> championnat Matchendirect (minuscules)
+COMPETITIONS_MED = {"N2": "pays-bas : eerste divisie", "PT2": "portugal : liga portugal 2", "AU1": "australie : a-ligue", "DE3": "allemagne : ligue 3",
+                    "HU1": "hongrie : nb i", "HR1": "croatie : hnl", "CZ1": "république tchèque : ligue tchèque", "RS1": "serbie : super ligue"}      # code interne P1 -> championnat Matchendirect (minuscules)
 _NORMALISE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "football_data", "normalized")
-_PASSEES = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "eerste_divisie", "matchs.json")
+_DOSSIER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+_FICHIERS = {"N2": os.path.join(_DOSSIER, "eerste_divisie", "matchs.json")}      # les autres : data/historique_med/<CODE>.json
 _cache = {}
-MATCHS_PAR_SAISON = {"N2": 380}      # 20 equipes, aller-retour : une saison n'est utilisee que si elle est complete
+
+def _saison_complete(lignes):
+    """Une saison n'est utilisee que si chaque rencontre domicile/exterieur possible entre ses equipes a ete jouee et a un score."""
+    if any(x[3] is None or x[4] is None for x in lignes): return False
+    equipes = {x[1] for x in lignes} | {x[2] for x in lignes}; jouees = {(x[1], x[2]) for x in lignes}
+    return len(equipes) >= 2 and all((a, b) in jouees for a in equipes for b in equipes if a != b)
 
 def saisons_passees(code):
-    """{etiquette: [(jour ordinal, dom, ext, buts dom, buts ext)]} des saisons passees COMPLETES (data/eerste_divisie/matchs.json). Une saison incomplete est ecartee."""
-    if code not in MATCHS_PAR_SAISON: return {}
-    if "passees" not in _cache:
-        with open(_PASSEES, encoding="utf-8") as f: _cache["passees"] = json.load(f)["saisons"]
-    return {s: [(datetime.date.fromisoformat(d).toordinal(), a, b, int(x), int(y)) for d, a, b, x, y in ms]
-            for s, ms in sorted(_cache["passees"].items()) if len(ms) == MATCHS_PAR_SAISON[code]}
+    """{etiquette: [(jour ordinal, dom, ext, buts dom, buts ext)]} des saisons passees COMPLETES du championnat (fichiers data/…). Une saison incomplete est ecartee."""
+    if code not in COMPETITIONS_MED: return {}
+    if code not in _cache:
+        with open(_FICHIERS.get(code) or os.path.join(_DOSSIER, "historique_med", code + ".json"), encoding="utf-8") as f: _cache[code] = json.load(f)["saisons"]
+    res = {}
+    for s, ms in sorted(_cache[code].items()):
+        lignes = [(datetime.date.fromisoformat(d).toordinal(), a, b, x, y) for d, a, b, x, y in ms]
+        if _saison_complete(lignes): res[s] = lignes
+    return res
 
 def _ligues(doc=None):
     if doc is not None: return D.Ligues(doc)

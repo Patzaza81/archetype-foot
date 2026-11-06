@@ -1,4 +1,4 @@
-"""Parametres P1 des championnats servis par Matchendirect (Eerste Divisie) -> data/calibration_p1/config_med.json.
+"""Parametres P1 des championnats servis par Matchendirect (Eerste Divisie, Liga Portugal 2, A-League, 3. Liga, NB I, HNL, ligue tcheque, SuperLiga serbe) -> data/calibration_p1/config_med.json.
 Aucune valeur posee a la main : k (lissage) et demi-vie sont ceux de la grille de pouvoir_predictif qui minimisent la perte logarithmique 1X2 des predictions
 chronologiques (chaque match predit avec les seuls matchs de dates strictement anterieures). Seules les saisons passees COMPLETES (data/eerste_divisie) sont notees ;
 la premiere sert de rodage (aucune equipe n'a d'historique) et la saison en cours, incomplete, n'est jamais notee. Le protocole de calibration des marches
@@ -20,7 +20,7 @@ def calibrer(code, matchs=None):
             if res is None or perte < res["perte"]: res = {"k": k, "demi_vie_jours": hl, "perte": perte, "n": int(ok.sum())}
     if res is None: return None
     note = "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
-    return {"p1": {"k": res["k"], "demi_vie_jours": res["demi_vie_jours"]}, "calibrage": {"source": "saisons passees completes (openfootball, Sofascore) + Matchendirect (saison en cours)", "saisons_notees": sorted(notees), "matchs_historique": len(matchs), "matchs_predits": res["n"], "perte_logarithmique_1x2": round(res["perte"], 5)},
+    return {"p1": {"k": res["k"], "demi_vie_jours": res["demi_vie_jours"]}, "calibrage": {"source": "saisons passees completes (data/eerste_divisie ou data/historique_med) + Matchendirect (saison en cours)", "saisons_notees": sorted(notees), "saisons_passees_completes": completes, "matchs_historique": len(matchs), "matchs_predits": res["n"], "perte_logarithmique_1x2": round(res["perte"], 5)},
             **{mk: {"statut": "P1 CONSERVE", "methode": "P1", "observation": note} for mk in cp.MARCHES}}
 
 def main(chemin=cp.CHEMIN_MED):

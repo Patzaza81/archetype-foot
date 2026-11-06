@@ -1,14 +1,319 @@
 {
  "description": "Parametres P1 des championnats absents de Football-Data, lus dans l'assemblage Matchendirect (calibrer_p1_med.py). Fusionne par calibration_p1.charger.",
  "competitions": {
+  "AU1": {
+   "p1": {
+    "k": 40,
+    "demi_vie_jours": 365
+   },
+   "calibrage": {
+    "source": "saisons passees completes (data/eerste_divisie ou data/historique_med) + Matchendirect (saison en cours)",
+    "saisons_notees": [
+     "1920",
+     "2021",
+     "2122",
+     "2223",
+     "2324"
+    ],
+    "saisons_passees_completes": [
+     "1819",
+     "1920",
+     "2021",
+     "2122",
+     "2223",
+     "2324"
+    ],
+    "matchs_historique": 961,
+    "matchs_predits": 804,
+    "perte_logarithmique_1x2": 1.05078
+   },
+   "dom": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "nul": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "ext": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "o15": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "o25": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "o35": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "btts": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   }
+  },
+  "CZ1": {
+   "p1": {
+    "k": 2,
+    "demi_vie_jours": 365
+   },
+   "calibrage": {
+    "source": "saisons passees completes (data/eerste_divisie ou data/historique_med) + Matchendirect (saison en cours)",
+    "saisons_notees": [
+     "2122",
+     "2324",
+     "2425"
+    ],
+    "saisons_passees_completes": [
+     "2021",
+     "2122",
+     "2324",
+     "2425"
+    ],
+    "matchs_historique": 1202,
+    "matchs_predits": 793,
+    "perte_logarithmique_1x2": 0.92485
+   },
+   "dom": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "nul": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "ext": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "o15": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "o25": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "o35": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "btts": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   }
+  },
+  "DE3": {
+   "p1": {
+    "k": 20,
+    "demi_vie_jours": 365
+   },
+   "calibrage": {
+    "source": "saisons passees completes (data/eerste_divisie ou data/historique_med) + Matchendirect (saison en cours)",
+    "saisons_notees": [
+     "2021",
+     "2324",
+     "2425"
+    ],
+    "saisons_passees_completes": [
+     "1920",
+     "2021",
+     "2324",
+     "2425"
+    ],
+    "matchs_historique": 1629,
+    "matchs_predits": 1140,
+    "perte_logarithmique_1x2": 1.06916
+   },
+   "dom": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "nul": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "ext": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "o15": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "o25": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "o35": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "btts": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   }
+  },
+  "HR1": {
+   "p1": {
+    "k": 2,
+    "demi_vie_jours": 365
+   },
+   "calibrage": {
+    "source": "saisons passees completes (data/eerste_divisie ou data/historique_med) + Matchendirect (saison en cours)",
+    "saisons_notees": [
+     "2021",
+     "2122",
+     "2324",
+     "2425"
+    ],
+    "saisons_passees_completes": [
+     "1920",
+     "2021",
+     "2122",
+     "2324",
+     "2425"
+    ],
+    "matchs_historique": 959,
+    "matchs_predits": 720,
+    "perte_logarithmique_1x2": 0.96075
+   },
+   "dom": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "nul": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "ext": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "o15": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "o25": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "o35": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "btts": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   }
+  },
+  "HU1": {
+   "p1": {
+    "k": 10,
+    "demi_vie_jours": 365
+   },
+   "calibrage": {
+    "source": "saisons passees completes (data/eerste_divisie ou data/historique_med) + Matchendirect (saison en cours)",
+    "saisons_notees": [
+     "2021",
+     "2122",
+     "2324",
+     "2425"
+    ],
+    "saisons_passees_completes": [
+     "1920",
+     "2021",
+     "2122",
+     "2324",
+     "2425"
+    ],
+    "matchs_historique": 1060,
+    "matchs_predits": 792,
+    "perte_logarithmique_1x2": 1.03141
+   },
+   "dom": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "nul": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "ext": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "o15": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "o25": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "o35": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "btts": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   }
+  },
   "N2": {
    "p1": {
     "k": 10,
     "demi_vie_jours": 365
    },
    "calibrage": {
-    "source": "saisons passees completes (openfootball, Sofascore) + Matchendirect (saison en cours)",
+    "source": "saisons passees completes (data/eerste_divisie ou data/historique_med) + Matchendirect (saison en cours)",
     "saisons_notees": [
+     "2122",
+     "2223",
+     "2324",
+     "2425"
+    ],
+    "saisons_passees_completes": [
+     "2021",
      "2122",
      "2223",
      "2324",
@@ -17,6 +322,122 @@
     "matchs_historique": 2030,
     "matchs_predits": 1520,
     "perte_logarithmique_1x2": 1.01486
+   },
+   "dom": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "nul": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "ext": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "o15": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "o25": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "o35": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "btts": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   }
+  },
+  "PT2": {
+   "p1": {
+    "k": 10,
+    "demi_vie_jours": 365
+   },
+   "calibrage": {
+    "source": "saisons passees completes (data/eerste_divisie ou data/historique_med) + Matchendirect (saison en cours)",
+    "saisons_notees": [
+     "2122",
+     "2223",
+     "2324"
+    ],
+    "saisons_passees_completes": [
+     "2021",
+     "2122",
+     "2223",
+     "2324"
+    ],
+    "matchs_historique": 1299,
+    "matchs_predits": 918,
+    "perte_logarithmique_1x2": 1.0621
+   },
+   "dom": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "nul": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "ext": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "o15": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "o25": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "o35": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   },
+   "btts": {
+    "statut": "P1 CONSERVE",
+    "methode": "P1",
+    "observation": "Aucune calibration des marches : protocole de selection/confirmation non applique a cette ligue, P1 conserve."
+   }
+  },
+  "RS1": {
+   "p1": {
+    "k": 5,
+    "demi_vie_jours": 365
+   },
+   "calibrage": {
+    "source": "saisons passees completes (data/eerste_divisie ou data/historique_med) + Matchendirect (saison en cours)",
+    "saisons_notees": [
+     "2021",
+     "2122",
+     "2425"
+    ],
+    "saisons_passees_completes": [
+     "1920",
+     "2021",
+     "2122",
+     "2425"
+    ],
+    "matchs_historique": 1308,
+    "matchs_predits": 972,
+    "perte_logarithmique_1x2": 0.93204
    },
    "dom": {
     "statut": "P1 CONSERVE",
